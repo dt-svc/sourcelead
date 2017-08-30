@@ -120,6 +120,7 @@ $(document).ready(function() {
 			assignedToValidation();
 		}	
 	} 
+	zipcodeMask('${requirement.country}','ReqZipCode');
 });
 </script>
 
@@ -692,7 +693,7 @@ $(document).ready(function () {
 		 <div class="form-group">
 			<label class="col-md-3">Zip Code</label>
 			<div class="col-md-9">
-			     <input type="text"  class="form-control" name="zipcode" id="ReqZipCode" value="${requirement.zipCode}" placeholder="Zip Code" field-name="zip Code" >
+			     <input type="text"  class="form-control" name="zipCode" id="ReqZipCode" value="${requirement.zipCode}" placeholder="Zip Code" field-name="zip Code" readonly>
 			</div>
 		</div>
 		
@@ -789,7 +790,7 @@ $(document).ready(function () {
             </div>
           
           <div class="form-group">
-	         <label class="col-md-3">Cooling-Off Period &nbsp;&nbsp;<i class="fa fa-info-circle" title="A Cooling Off Period is the time during which an applicant is disqualified from applying for requirement, because of applied recently."></i></label>
+	         <label class="col-md-3">Cooling-Off Period &nbsp;&nbsp;<i class="fa fa-info-circle" title="A Cooling Off Period is the time during which an applicant is disqualified from applying for job, because of applied recently."></i></label>
 	         <div class="col-md-9 selectpicker_maxheight">
 	             <select class="selectpicker" id="coolingOff" name="coolingOff" >
 	             
@@ -1004,7 +1005,7 @@ $(document).ready(function () {
                   <c:choose> 
 			 	<c:when test="${val == 'Y'}">
 			   		<div class="input-group-btn selp-custom-min">
-	                  <select class="selectpicker" disabled="disabled" id="clientCurrencyCode" name="clientCurrencyCode">
+	                  <select class="chosen-select" disabled="disabled" id="clientCurrencyCode" name="clientCurrencyCode">
 		                 <option  ${requirement.clientCurrencyCode  == 'INR' ? 'selected' : ''}>INR</option>
 		                 <option  ${requirement.clientCurrencyCode  == 'AUD' ? 'selected' : ''}>AUD</option>
 		                 <option  ${requirement.clientCurrencyCode  == 'USD' ? 'selected' : ''}>USD</option>
@@ -1016,7 +1017,7 @@ $(document).ready(function () {
 	                </div>
 	                <input type="text" disabled="disabled" class="form-control" id="clientRate" name="clientRate" field-name="Client Rate" value="${requirement.clientRate}" data-validation="validate_Space validate_float validate_length length1-8" data-validation-optional="true">
 	                <div class="input-group-btn selp-custom-min">
-	                 <select disabled="disabled" class="selectpicker ratetype"  id="clientRateType" field-name="Client Rate Per" value="${requirement.clientRateType}" name="clientRateType">
+	                 <select disabled="disabled" class="chosen-select ratetype"  id="clientRateType" field-name="Client Rate Per" value="${requirement.clientRateType}" name="clientRateType">
 	                    
 			                <option value="">Rate Per</option>
 		                    <option ${requirement.clientRateType  == 'Hourly' ? 'selected' : ''}>Hourly</option>
@@ -1301,6 +1302,24 @@ $(document).ready(function () {
                </select>					
           </div>
         </div>
+        
+        <div class="clearfix"></div>
+         <div class="form-group">
+				<div class="ml">
+					<c:set var="val" value="${requirement.releaseJobToAllUsers}" />
+					<c:choose>
+						<c:when test="${val == 'Y'}">
+							<input disabled="disabled" type="checkbox" checked name="releaseToAllUsers" id="releaseToAllUsers" value="Y">
+						</c:when>
+						<c:otherwise>
+							<input type="checkbox" name="releaseToAllUsers" id="releaseToAllUsers" value="Y">
+						</c:otherwise>
+					</c:choose>
+					<label>&nbsp;&nbsp;<strong>Release to all Users</strong>
+						&nbsp;&nbsp;
+					</label>
+				</div>
+			</div>
       </div>
     </div>
     <!-- Internal Details html Ends -->
@@ -1387,9 +1406,19 @@ $(document).ready(function () {
 
 <script>
   $( function() {
-	  
+	  var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+	  var finalDateFormatJobSave = '';
+	  if(locationDate.match("yyyy-MM-dd")){
+		  finalDateFormatJobSave = 'yy-mm-dd';
+	  }if(locationDate.match("dd-MM-yyyy")){
+		  finalDateFormatJobSave = 'dd-mm-yy'; 
+	  }if(locationDate.match("MM-dd-yyyy")){
+		  finalDateFormatJobSave = 'mm-dd-yy'; 
+	  }if(locationDate.match("yyyy-dd-MM")){
+		  finalDateFormatJobSave = 'yy-dd-mm'; 
+	  }
 	  $('#closedDate').datepicker({
-	      dateFormat: 'dd-mm-yy',
+	      dateFormat: finalDateFormatJobSave,
 	      changeMonth: true,
 	  	  changeYear: true,
 	  	  minDate: 1,
@@ -1837,9 +1866,10 @@ function getCities(){
 	     //Adding Customized Skills to the list
 	       var select, chosen;
 		    select = $("#skills");
-		    select.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) Or Tab To Add New Email:' });
+		    select.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) Or Tab To Add New Skills:' });
 		    chosen = select.data('chosen');
-		    chosen.search_field.on('keydown keyup', function(e)
+		   /*  chosen.search_field.on('keyup', function(e) */
+		    chosen.search_field.on('keyup  keydown', function(e)
 		    {
 		    	   var skillsArray = this.value.split(",");
 			    	 if(skillsArray.length > 1){
@@ -1852,16 +1882,24 @@ function getCities(){
 		                 }
 			    	 }else{
 		    			var newSkill = this.value.replace(","," ");
-		    			 if (tagItBykeyForSkills(e) && (newSkill != null  && newSkill != '' && newSkill != 'undefined'))
+		    			if ((e.which == 13 || e.which == 188) && (newSkill != null  && newSkill != '' && newSkill != 'undefined'))
 		                {
-		    				 preventTabkey(e); 
-		    				 var option = $("<option>").val(newSkill).text(newSkill);
-		                     select.append(option);
-		                     select.find(option).prop('selected', true);
-		                     $("#skills option").each(function(){
-		                         $(this).siblings("[value='"+ this.value+"']").remove();
+		    				//skills duplicate check
+							 var isNewSkill = true;
+							 $("#skills option:selected").each(function(){
+								 if(this.value.toUpperCase() === newSkill.toUpperCase()){
+									 //alert(newSkill);
+									 isNewSkill = false;
+									 return false;
+								 }
+		                    
 		                   });
-		                   $("#skills").trigger("chosen:updated");
+							if(isNewSkill){
+		    				 var option = $("<option>").val(newSkill).text(newSkill);
+							 select.append(option);
+		                     select.find(option).prop('selected', true);
+							}
+			               $("#skills").trigger("chosen:updated");
 		                }
 				       
 	    	         }
@@ -1874,12 +1912,11 @@ function getCities(){
 		    selectone = $("#education");
 		    selectone.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) Or Tab To Add New Education:' });
 		    chosenone = selectone.data('chosen');
-		    chosenone.search_field.on('keydown keyup', function(e1)
+		    chosenone.search_field.on('keyup', function(e1)
 		    {
 		    	var newEducation = this.value.replace("\'","");
-		    	   if (tagItBykeyForSkills(e1) && (newEducation != null  && newEducation != '' && newEducation != 'undefined'))
+		    	   if ((e1.which == 13 || e1.which == 188) && (newEducation != null  && newEducation != '' && newEducation != 'undefined'))
 			        {
-		    		   preventTabkey(e1); 
 		    		   var par = this.parent;
 			            var option = $("<option>").val(newEducation).text(newEducation);
 			            selectone.append(option);

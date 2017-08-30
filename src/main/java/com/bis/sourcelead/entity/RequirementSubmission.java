@@ -3,7 +3,9 @@ package com.bis.sourcelead.entity;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -15,6 +17,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
@@ -23,7 +26,9 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Type;
 
 import com.bis.sourcelead.enums.ApplicantSubmissionStatus;
+import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 import com.bis.sourcelead.enums.SubmissionRateStatus;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "REQUIREMENT_SUBMISSION")
@@ -44,6 +49,10 @@ public class RequirementSubmission implements Serializable{
 	@ManyToOne
 	@JoinColumn(name = "CANDIDATE_ID")
    	private Candidate candidate;
+	
+	@ManyToOne
+	@JoinColumn(name = "VENDOR_CANDIDATE_ID")
+   	private Candidate vendorCandidateId;
 	
 	@ManyToOne 
 	@JoinColumn(name = "SOURCE_SUBMISSION_ID") 
@@ -159,6 +168,7 @@ public class RequirementSubmission implements Serializable{
 	private String userName;
     
     @Transient
+    @JsonProperty
 	private String candidateName;
 	
     @Transient
@@ -195,6 +205,7 @@ public class RequirementSubmission implements Serializable{
    	private String resumeName;
     
     @Transient
+    @JsonProperty
    	private String requirementName;
     
     @Transient
@@ -401,7 +412,39 @@ public class RequirementSubmission implements Serializable{
     @Transient
    	private String referUUID;
     
+    @Transient
+	 private int profilePercentage;
     
+    @Transient
+	private REQUIREMENT_SUBMISSION_STATUS requirementCurrentStatus;
+    
+	
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "requirementSubmission")
+	private Set<RequirementSubmissionTemplateFields> requirementSubmissionTemplateFieldsList;
+    
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "submissionId")
+   	private Set<RequirementSubmissionHistory> requirementSubmissionHistoryList;
+    
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "submissionId")
+   	private Set<RequirementInterviewHistory> requirementInterviewHistory;
+    
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "submissionId")
+   	private Set<RequirementOffers> requirementOffersList;
+    
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "submissionId")
+   	private Set<RequirementOfferHistory> requirementOfferHistoryList;
+    
+
+	public int getProfilePercentage()
+	{
+		return profilePercentage;
+	}
+
+	public void setProfilePercentage(int profilePercentage)
+	{
+		this.profilePercentage = profilePercentage;
+	}
+	
 	public String getRatePer()
 	{
 		return ratePer;
@@ -1344,4 +1387,63 @@ public class RequirementSubmission implements Serializable{
 	public void setReferUUID(String referUUID) {
 		this.referUUID = referUUID;
 	}
+
+	public Set<RequirementSubmissionTemplateFields> getRequirementSubmissionTemplateFieldsList() {
+		return requirementSubmissionTemplateFieldsList;
+	}
+
+	public void setRequirementSubmissionTemplateFieldsList(
+			Set<RequirementSubmissionTemplateFields> requirementSubmissionTemplateFieldsList) {
+		this.requirementSubmissionTemplateFieldsList = requirementSubmissionTemplateFieldsList;
+	}
+
+	public Set<RequirementSubmissionHistory> getRequirementSubmissionHistoryList() {
+		return requirementSubmissionHistoryList;
+	}
+
+	public void setRequirementSubmissionHistoryList(Set<RequirementSubmissionHistory> requirementSubmissionHistoryList) {
+		this.requirementSubmissionHistoryList = requirementSubmissionHistoryList;
+	}
+
+	public Set<RequirementInterviewHistory> getRequirementInterviewHistory() {
+		return requirementInterviewHistory;
+	}
+
+	public void setRequirementInterviewHistory(Set<RequirementInterviewHistory> requirementInterviewHistory) {
+		this.requirementInterviewHistory = requirementInterviewHistory;
+	}
+
+	public Set<RequirementOffers> getRequirementOffersList() {
+		return requirementOffersList;
+	}
+
+	public void setRequirementOffersList(Set<RequirementOffers> requirementOffersList) {
+		this.requirementOffersList = requirementOffersList;
+	}
+
+	public Set<RequirementOfferHistory> getRequirementOfferHistoryList() {
+		return requirementOfferHistoryList;
+	}
+
+	public void setRequirementOfferHistoryList(Set<RequirementOfferHistory> requirementOfferHistoryList) {
+		this.requirementOfferHistoryList = requirementOfferHistoryList;
+	}
+
+	public Candidate getVendorCandidateId() {
+		return vendorCandidateId;
+	}
+
+	public void setVendorCandidateId(Candidate vendorCandidateId) {
+		this.vendorCandidateId = vendorCandidateId;
+	}
+
+	public REQUIREMENT_SUBMISSION_STATUS getRequirementCurrentStatus() {
+		return requirementCurrentStatus;
+	}
+
+	public void setRequirementCurrentStatus(REQUIREMENT_SUBMISSION_STATUS requirementCurrentStatus) {
+		this.requirementCurrentStatus = requirementCurrentStatus;
+	}
+
+	
 }

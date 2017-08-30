@@ -39,7 +39,10 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.elk.index.ClientVendorIndex;
+import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.ProjectApproverHierarchy;
 import com.bis.sourcelead.entity.ProjectMembers;
@@ -72,6 +75,10 @@ import com.thoughtworks.xstream.io.json.JsonWriter;
  * This is the commonutil for the certain common methods used throughout the application
  * @author: Naresh Bolisetty
  * 
+ */
+/**
+ * @author BIS104
+ *
  */
 @Component
 public class CommonUtil {
@@ -108,6 +115,9 @@ public class CommonUtil {
 	@Autowired
 	private OrgSpocService orgSpocService;
 	
+	@Autowired
+    private SourceleadELKBaseIndexer<ClientVendorIndex> sourceleadELKBaseIndexer;
+	
 	
 	/**
 	 * This method is used to store pre-defined sourcelead tasks for the particular project
@@ -118,6 +128,65 @@ public class CommonUtil {
 	public static Date currentDate() {
         return new Date();
     }
+	
+	/**
+	 * Converting Org based date format as string
+	 * @param orgDateFormat
+	 * @param date
+	 * @return String
+	 */
+	public String dateStrFromOrgDateFormatter(String orgDateFormat, Date date){
+		String dateStr = null;
+		if(date != null && StringUtils.isNotEmpty(orgDateFormat)){
+			SimpleDateFormat df = new SimpleDateFormat(orgDateFormat);
+			dateStr = df.format(date);
+		}
+		return dateStr;
+	}
+	
+	/**
+	 * Elk date format
+	 * @param dateString
+	 * @return
+	 */
+	public String elkDateFormatter(Date date){
+		String dateStr = null;
+		if(date != null){
+			SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+			dateStr = df.format(date);
+		}
+		return dateStr;
+	}
+	
+	/**
+	 *  Converting Org based date format as Util.Date
+	 * @param orgDateFormat
+	 * @param dateStr
+	 * @return Date
+	 */
+	public Date orgLocationDateFormat(String orgDateFormat, String dateStr){
+		DateFormat df = new SimpleDateFormat(orgDateFormat);
+		Date date = null;
+		 try {
+		        date = df.parse(dateStr);
+		    } catch (Exception e) {
+		        e.printStackTrace();
+		    }
+			return date;
+	}
+	
+	
+	public  Date  dateFromElk(String dateString){
+		DateFormat df = new SimpleDateFormat("yyyy-MM-dd"); 
+	    Date date = null;
+	    try {
+	        date = df.parse(dateString);
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    }
+		return date;
+	}
+	
 	
 	public void storeSourceleadTasks(User user,Projects projects) throws Exception{
 		Collection<ProjectTasks> tasksList = projectTasksService.getAllSourceleadTasks();
@@ -832,5 +901,18 @@ public class CommonUtil {
 			}
 			
 			return actualTimeString;
+		}
+
+		public void updateClientVendorElk(OrgRelations orgRelation, OrgLocations orgLocations, User user, String responderType) {
+			try {
+				  ClientVendorIndex  clientVendorIndex = new ClientVendorIndex();
+				  List<OrgSpoc> orgSpocsList = orgSpocService.getAllSpocsByOrgRelationId(orgRelation.getId(), user.getId(), orgLocations.getId(), responderType);
+				  clientVendorIndex.setNoContacts((long)orgSpocsList.size());
+				  sourceleadELKBaseIndexer.saveOrUpdateElkDocument(clientVendorIndex, Constants.ELK_CLIENTVENDOR_INDEX, Constants.ELK_CLIENTVENDOR_TYPE,orgRelation.getId().toString());
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			  
+			
 		}
 }

@@ -32,6 +32,7 @@ import com.bis.sourcelead.enums.Primary;
 import com.bis.sourcelead.enums.Status;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "PROJECT_MEMBERS")
@@ -92,30 +93,50 @@ public class ProjectMembers implements Serializable {
 	private String updatedBy;
 
 	@Transient
+	@JsonProperty
 	private String empName;
+	
 	@Transient
 	private String empEmail;
 	@Transient
 	private String startDate;
 	@Transient
 	private String endDate;
+	
+	@JsonProperty
 	@Transient
 	private String approvedHrs;
+	
+	@JsonProperty
 	@Transient
 	private String rejectedHrs;
 	@Transient
 	private String openHrs;
+	
+	@JsonProperty
 	@Transient
 	private String draftHrs;
+	
+	@JsonProperty
 	@Transient
 	private String submittedHrs;
 	@Transient
+	@JsonProperty
 	private String projectAssignedDateStr;
 	@Transient
+	@JsonProperty
 	private String projectEndDateStr;
+	
 	@Transient
+	@JsonProperty
 	private String projectName;
+	
+	@JsonProperty
 	@Transient
+	private String memberEnddate;
+	
+	@Transient
+	@JsonProperty
 	private String userId;
 	@Transient
 	@Enumerated(EnumType.STRING)
@@ -305,6 +326,7 @@ public class ProjectMembers implements Serializable {
 	private String employmentTypeVendors;
     //For Expenses 
 
+	@JsonProperty
 	@Transient
 	private String projectStatus;
 
@@ -334,6 +356,14 @@ public class ProjectMembers implements Serializable {
 	
 	@Transient
 	private String clientNameExpenses;
+	
+	@JsonProperty
+	@Transient
+	private Float userExpensesClaimedAmount;
+	
+	@JsonProperty
+	@Transient
+	private String projectUUID;
 	
 	public Long getSubmissionInvoiceId() {
 		return submissionInvoiceId;
@@ -1192,7 +1222,34 @@ public class ProjectMembers implements Serializable {
 		this.employmentTypeVendors = employmentTypeVendors;
 	}
 
-	
+	public Float getUserExpensesClaimedAmount()
+	{
+		return userExpensesClaimedAmount;
+	}
 
+	public void setUserExpensesClaimedAmount(Float userExpensesClaimedAmount)
+	{
+		this.userExpensesClaimedAmount = userExpensesClaimedAmount;
+	}
+
+	public String getProjectUUID()
+	{
+		return projectUUID;
+	}
+
+	public void setProjectUUID(String projectUUID)
+	{
+		this.projectUUID = projectUUID;
+	}
+
+	public String getMemberEnddate()
+	{
+		return memberEnddate;
+	}
+
+	public void setMemberEnddate(String memberEnddate)
+	{
+		this.memberEnddate = memberEnddate;
+	}
 	
 }

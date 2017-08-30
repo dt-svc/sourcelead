@@ -142,6 +142,17 @@ public class User implements Serializable{
     @Fetch(FetchMode.SELECT)
     private Set<PasswordResets> passwordResets;
 	
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "consultantUser")
+	private Set<Candidate> candidateSet;
+	
+	public Set<Candidate> getCandidateSet() {
+		return candidateSet;
+	}
+
+	public void setCandidateSet(Set<Candidate> candidateSet) {
+		this.candidateSet = candidateSet;
+	}
+
 	@Column(name = "DOC_FILE",columnDefinition="mediumblob")
 	@Lob
 	private  byte[] docFile;

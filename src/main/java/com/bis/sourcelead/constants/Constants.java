@@ -95,6 +95,8 @@ public class Constants {
 	public static final String EXPENSES_EMAIL_TO_MANAGER = "ExpensesEmailToManager";
 	public static final String INVITE_CLIENT = "Invite Client";
 	public static final String INVITE_VENDOR = "Invite Vendor";
+	public static final String MODIFY_CONTRACT_ENDDATE = "ModifyContractEndDate";
+	public static final String MODIFY_SOW_CONTRACT_ENDDATE = "ModifySowContractEndDate";
 	public static final String ACCEPT_CLIENT_INVITATION = "Accept Client Invitation";
 	public static final String ACCEPT_VENDOR_INVITATION = "Accept Vendor Invitation";
 	public static final String ACCEPT_CLIENT = "Accept Client";
@@ -136,6 +138,11 @@ public class Constants {
 	public static final String MAIL_TEAM_MANAGER_APPROVED_EXPENSE = "ExpensesApprovalManagerEmailToEmployee";
 	public static final String MAIL_TEAM_MANAGER_REJECTED_EXPENSE = "ExpensesApprovalRejectedEmailToEmployee";
 	public static final String MAIL_APPROVERS_REOPEN_EXPENSE = "ExpensesReopenEmailToSuperAdmin";
+
+	
+	public static final String MAIL_REOPEN_APPROVED_EXPENSES_EMAIL_TO_APPROVERS = "ReopenApprovedExpenseEmailToApprovers";
+	public static final String MAIL_REOPEN_REJECT_EXPENSES_EMAIL_TO_APPROVERS = "ReopenRejectExpenseEmailToApprovers";
+	
 	public static final String ENTITY_TYPE_EMAIL = "Email";
 	public static final String ENTITY_TYPE_NOTIFICATION = "Notification";
 	public static final String ENTITY_TYPE_TEMPLATE = "Notification";
@@ -207,6 +214,42 @@ public class Constants {
 	public static final String TIMESHEET_MANAGER_NOTIFICATION = "Timesheet Scheduler Level1 Manager";
 	public static final String UPDATEDREQUIREMENTNOTIFICATIONTOVENDOR = "updatedRequirementNotificationToVendor";
 	public static final String OFFBOARDINGPROCESSAPPLICANTTERMINATION = "OffBoardingProcessApplicantTermination";
+	
+	public static final String RESOURCE_REQUEST = "Resource Request";
+	public static final String RESOURCE_REQUEST_NOTIFICATION = "ResourceRequestNotification";
+	
+	public static final String NEW_RESOURCE_REQUEST = "New Resource Request";
+	public static final String NEW_RESOURCE_REQUEST_NOTIFICATION = "NewResourceRequestNotification";
+	
+	public static final String ACCEPT_SINGLE_NEW_RESOURCE_REQUEST = "Accept Single New Resource Request";
+	public static final String ACCEPT_SINGLE_NEW_RESOURCE_REQUEST_NOTIFICATION = "AcceptSingleNewResourceRequestNotification";
+	
+	public static final String REJECT_SINGLE_NEW_RESOURCE_REQUEST = "Reject Single New Resource Request";
+	public static final String REJECT_SINGLE_NEW_RESOURCE_REQUEST_NOTIFICATION = "RejectSingleNewResourceRequestNotification";
+	
+	public static final String ACCEPT_BULK_NEW_RESOURCE_REQUEST = "Accept Bulk New Resource Request";
+	public static final String ACCEPT_BULK_NEW_RESOURCE_REQUEST_NOTIFICATION = "AcceptBulkNewResourceRequestNotification";
+	
+	public static final String REJECT_BULK_NEW_RESOURCE_REQUEST = "Reject Bulk New Resource Request";
+	public static final String REJECT_BULK_NEW_RESOURCE_REQUEST_NOTIFICATION = "RejectBulkNewResourceRequesttNotification";
+	
+	public static final String ONHOLD_BULK_NEW_RESOURCE_REQUEST = "OnHold Bulk New Resource Request";
+	public static final String ONHOLD_BULK_NEW_RESOURCE_REQUEST_NOTIFICATION = "OnHoldBulkNewResourceRequesttNotification";
+	
+	public static final String ACCEPT_BULK_RESOURCE_REQUEST = "Accept Bulk Resource Request";
+	public static final String ACCEPT_BULK_RESOURCE_REQUEST_NOTIFICATION = "AcceptBulkResourceRequestNotification";
+	
+	public static final String REJECT_BULK_RESOURCE_REQUEST = "Reject Bulk Resource Request";
+	public static final String REJECT_BULK_RESOURCE_REQUEST_NOTIFICATION = "RejectBulkResourceRequestNotification";
+	
+	public static final String ONHOLD_BULK_RESOURCE_REQUEST = "OnHold Bulk Resource Request";
+	public static final String ONHOLD_BULK_RESOURCE_REQUEST_NOTIFICATION = "OnHoldBulkResourceRequestNotification";
+	
+	public static final String REJECT_SINGLE_RESOURCE_REQUEST = "Reject Single Resource Request";
+	public static final String REJECT_SINGLE_RESOURCE_REQUEST_NOTIFICATION = "RejectSingleResourceRequestNotification";
+	
+	public static final String ACCEPT_SINGLE_RESOURCE_REQUEST = "Accept Single Resource Request";
+	public static final String ACCEPT_SINGLE_RESOURCE_REQUEST_NOTIFICATION = "AcceptSingleResourceRequestNotification";
 	
 	public static final String INVITE_COMPANY = "inviteCompany";
 	public static final String UPDATED_USER_ROLE_EMAIL = "UserRoleChanged";
@@ -406,7 +449,7 @@ public class Constants {
 	public static final String[] REQUIREMENT_EXCEL_HEADERS = { "Requirement id", "Requirement Title",
 			"Experience", "Rate", "Location", "Skills", "Manager", "Priority",
 			"Application Form Name", "Client Name", "Client Contact Name", "Client Contact Email",
-			"Status" };
+			"Status", "Posted On"};
 	public static final String[] REQUIREMENT_PIPELINE_EXCEL_HEADERS = { "Name", "Email", "PhoneNumber",
 			"Resume", "Applied On", "Rate", "Source", "Score", "Experience", "Status",
 			"Submitted On", "Submitted By" };
@@ -615,6 +658,20 @@ public class Constants {
 	public static final String CURRENCYCODE_GBP = "GBP";
 	public static final String CURRENCYCODE_EUR = "EUR";
 	
+	public static final String RESOURCE_REQUEST_WAITING_FOR_APPROVAL = "Waiting For Approval";
+	public static final String RESOURCE_REQUEST_DRAFT = "Draft";
+	public static final String RESOURCE_REQUEST_APPROVED = "Approved";
+	public static final String RESOURCE_REQUEST_REJECTED = "Rejected";
+	public static final String RESOURCE_REQUEST_ON_HOLD = "On hold";
+	
+	public static final String RESOURCE_REQUEST_NEW_REQUEST = "New Request";
+	public static final String RESOURCE_REQUEST_ASSOCIATE_REQUEST = "Associate Request";
+	
+	
+	public static final int WORKING_HOURS = 8;
+	
+	
+	
 	public static final String PAYABLES = "payables";
 	public static final String RECEIVABLE ="Receivable";
 	public static final String DRAFT = "DRAFT";
@@ -684,9 +741,7 @@ public class Constants {
     public static final String APPROVED = "APPROVED";  
     
     public static final String PENDING = "PENDING";
-    
-    public static final String MAIL_REOPEN_APPROVED_EXPENSES_EMAIL_TO_APPROVERS = "ReopenApprovedExpenseEmailToApprovers";
-    
+
     public static final String WAITING_FOR_APPROVER = "WAITING_FOR_APPROVER";
     public static final String Client_SOW = "Client SOW";
 	public static final String Vendor_SOW = "Vendor SOW";
@@ -702,11 +757,62 @@ public class Constants {
 	public static final String VENDOR_NSA = "Vendor NSA";
 	public static final String CLIENT_NDA = "Client NDA";
 	public static final String CLIENT_NSA = "Client NSA";
-	
-    public static final String[] DEFAULT_TASKS = {"Holiday","Vacation Leave","Sick Leave","Casual Leave","Compensatory Leave","Work From Home"};
+
+	public static final String[] DEFAULT_TASKS = {"Holiday","Vacation Leave","Sick Leave","Casual Leave","Compensatory Leave","Work From Home"};
+	public static final String BIS_CHECKS = "BIS_CHECKS";
+
+
     public static final String HOLIDAY = "Holiday";
     public static final String COMPENSATORY_LEAVE = "Compensatory Leave";
     public static final String WORK_FROM_HOME = "Work From Home";
-    
+	
+	public static final String CANDIDATE_ENTITY = "CD";
+	public static final String JOB_ENTITY = "JB";
+	public static final String PROJECT_ENTITY = "PJ";
+	  
+	public static final String OLD_VALUE_TAG_INITIATION = "<span class='textline-throughold'>";
+	public static final String OLD_VALUE_TAG_END = "</span>";
+	public static final String NEW_VALUE_TAG_INITIATION = "<span class='textline-updated'>";
+	public static final String NEW_VALUE_TAG_END = "</span>";
+	
+	
+	public static final String JOBS_ACTION_ICON_CLASS = "fa fa-briefcase bgBlue";
+	public static final String CANDIDATE_ACTION_ICON_CLASS = "fa fa-user bg-olive";
+	public static final String PROJECTS_ACTION_ICON_CLASS = "fa fa-bar-chart bgAqua";
+	public static final String TIMESHEETS_ACTION_ICON_CLASS = "fa fa-clock-o bgYellow";
+	public static final String EXPENSES_ACTION_ICON_CLASS = "fa fa-calculator bgLime";
+	
+	
+	public static final String CANDIDATE_ADDED_MANUALLY = "added manually";
+	public static final String CANDIDATE_EDITTED = "updated profile";
+	public static final String CANDIDATE_DELETED = "deleted profile";
+	public static final String CANDIDATE_REACTIVATED = "reactivated profile";
+	public static final String CANDIDATE_DELETED_RESUME = "deleted resume";
+	public static final String CANDIDATE_DELETED_EMPLOYER = "deleted employer";
+	public static final String CANDIDATE_DELETED_EDUCATION = "deleted education";
+	public static final String CANDIDATE_DELETED_CERTIFICATION = "deleted certification";
+	public static final String CANDIDATE_DELETED_DOCUMENTS = "deleted document";
+	public static final String CANDIDATE_DELETED_REFERENCES = "deleted reference";
+	public static final String CANDIDATE_UPLOAD_NEW_PROFILE_IMAGE = "uploaded new profile image";
+	public static final String CANDIDATE_DELETED_PROFILE_IMAGE = "deleted profile image";
+	public static final String CANDIDATE_SKILL_UPDATED = "updated skills";
+	public static final String CANDIDATE_VISA_UPDATED = "updated immigration status";
+	public static final String CANDIDATE_RESUME_UPDATED = "updated resume";
+	public static final String CANDIDATE_EMPLOYERS_UPDATED = "updated employers information";
+	public static final String CANDIDATE_EDUCATION_UPDATED = "updated education details";
+	public static final String CANDIDATE_CERTIFICATION_UPDATED = "updated certification";
+	public static final String CANDIDATE_DOCUMENTS_UPDATED = "updated documents";
+	public static final String CANDIDATE_REFERENCES_UPDATED = "updated references";
+	public static final String CANDIDATE_COMMENTS_NEW = "posted new comment";
+	public static final String CANDIDATE_ADDED_FROM_JOB = "added candidate through ";
+	public static final String CANDIDATE_REQUEST_DOCUMENTS = "requested for documents";
+	public static final String CANDIDATE_ACCEPT_REQUEST_DOCUMENTS = "accepted documents";
+	public static final String CANDIDATE_REJECT_REQUEST_DOCUMENTS = "rejected documents";
+	
+	public static final String EXPENSES = "expenses";
+	public static final String VIEW_TYPE = "LISTVIEW"; 
+	public static final String GUEST = "Guest";
+	public static final String INVOICE_DATA = "INVOICE";
+	public static final String DIR_DEP = "Dir Dep";
 
 }

@@ -1,27 +1,20 @@
 <jsp:include page="../masterHeader.jsp" />
 <jsp:include page="../masterSideNav.jsp" />
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 
-<!-- these files for autocomplete with tagit -->
-<link href="resources/css/jquery-tagit.css" rel="stylesheet">
-<script src="resources/js/csc.js" type="text/javascript" charset="utf-8"></script>
-<script src="resources/js/tag-it.js" type="text/javascript" charset="utf-8"></script>
-<script src="resources/js/tag-it.min.js" type="text/javascript" charset="utf-8"></script>
-<!-- end files for autocomplete with tagit -->
 
-	
-	<link href="resources/css/candidate-common.css" rel="stylesheet">
-	
-	<script type="text/javascript">
+<link href="resources/css/candidate-common.css" rel="stylesheet">
+
+<script type="text/javascript">
 		window.onload = function () {
 			/* getAllCountries(); */
 			initLocationAuto('candidateLocation','candidateCountry','candidateState','candidateCity','candidateZipCode','candidateLatitude','candidateLongitude','');
 			disableMonths();
 		 };
 	</script>
-	 
-	 <script>
+
+<script>
 		$(document).ready(function() {
 			document.getElementById("addcandidate_form").reset();
 		});
@@ -29,431 +22,542 @@
 
 <!-- Content Area -->
 <section class="content-wraper">
-  <section class="content-header clearfix">
-    <div class="pull-left">
-      <h2>Add Candidate</h2>
-    </div>
-    <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}">
-   	 <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo;<a href="<c:url value='/candidatesList'/>"> Candidate List</a> &raquo; Add Candidate</div>
-    </c:if>
-     <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_RECRUITER'}">
-   	 <div class="pull-right brud-crum"><a href="<c:url value='/recruiterDashboard'/>">Home</a>&raquo;<a href="<c:url value='/candidatesList'/>"> Candidate List</a> &raquo; Add Candidate</div>
-    </c:if>
-  </section>
-  <div class="content-area content-new clearfix">
-  <div id="loading"></div> 
-  <form:form id="addcandidate_form" name="addcandidate_form"  enctype='multipart/form-data' >
-    <div class="row form-horizontal mt myForm">
-      <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12"> 
-        
-        <div class="form-group">
-          <label class="col-md-3">First Name<span class="text-danger">&nbsp;*</span></label>
-          <div class="col-md-9">
-            <input type="text" class="form-control" id="firstName" name="firstName" value="${firstName}"  field-name="First Name" data-validation="required validate_AlphaNumber validate_length length1-100" value="">
-            <div class="input-group hidden">
-              <div class="input-group-btn">
-                <button type="button" class="btn btn-danger dropdown-toggle"
-                                	data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Action <span class="caret"></span> </button>
-                <ul class="dropdown-menu">
-                  <li><a href="#">Action</a></li>
-                  <li><a href="#">Another action</a></li>
-                  <li><a href="#">Something else here</a></li>
-                  <li role="separator" class="divider"></li>
-                  <li><a href="#">Separated link</a></li>
-                </ul>
-              </div>
-              <!-- /btn-group -->
-              <input type="text" class="form-control" aria-label="...">
-            </div>
-            <!-- /input-group --> 
-          </div>
-        </div>
-        <div class="form-group">
-          <label class="col-md-3">Last Name</label>
-          <div class="col-md-9">
-           <input type="text" class="form-control" id="lastName" name="lastName" value="${lastName}"  field-name="Last Name" data-validation="validate_AlphaNumber validate_length length1-100" data-validation-optional="true" value="">
-          </div>
-        </div>
-        <div class="form-group" id="emailDiv">
-          <label class="col-md-3">Email<span class="text-danger">&nbsp;*</span></label>
-          <div class="col-md-9">
-            <input type="text" class="form-control" id="email" name="email" value="${email}"  field-name="Email" data-validation="required validate_length length2-100 validate_email" onblur="validateCandidateEmail();" onmouseout="validateCandidateEmail();" value="">
-          <span class="hidden">Valid Email</span>
-          </div>
-        </div>
-						
-        <div class="form-group">
-          <label class="col-md-3">Mobile</label>
-          <div class="col-md-9">
-            <input type="text" class="form-control" id="mobilePhone" name="mobilePhone" value="${phone}"  field-name="Mobile Number" data-validation="validate_length length9-20 validate_phone" data-validation-optional="true" value="">
-          </div>
-        </div>
-        
-        <div class="form-group">
-          <label class="col-md-3">Alternative Number</label>
-          <div class="col-md-9">
-            <input type="text" class="form-control" id="alternateMobilePhone" name="alternateMobilePhone"   field-name="Alternative Number" data-validation="validate_length length9-20 validate_phone" data-validation-optional="true" value="">
-          </div>
-        </div>
-        <div class="form-group">
-          <label class="col-md-3">Location<span class="text-danger">&nbsp;*</span></label>
-          <div class="col-md-9" id="locationField">
-          <div class="positionRelative">
-          <input class="form-control positionRelative" id="candidateLocation" name="location" placeholder="Enter your address"  type="text" field-name="Locatin" data-validation="required"></input>
-          <i class="fa fa-refresh btn btn-primary refresh-icon" title="Refresh" onClick="refreshGoogleApiLocation('candidateLocation','candidateCountry','candidateState','candidateCity','candidateZipCode');"></i>
-          </div>
-          </div>
-        </div>
-		
-		
-		<div class="form-group">
-          <label class="col-md-3">Country</label>
-          <div class="col-md-9">
-          <input class="form-control" id="candidateCountry" name="country" placeholder="Country" value ="${loginCountryName}" type="text" readonly></input>
-          </div>
-        </div>
-        
-        <div class="form-group">
-          <label class="col-md-3">State</label>
-          <div class="col-md-9">
-          <input class="form-control" id="candidateState" name="state" placeholder="State" type="text" readonly></input>
-          </div>
-        </div>
-        
-        <div class="form-group">
-          <label class="col-md-3">City</label>
-          <div class="col-md-9">
-          <input class="form-control" id="candidateCity" name="city" placeholder="City" type="text" readonly></input>
-          </div>
-        </div>
-        
-        <div class="form-group">
-          <label class="col-md-3">ZipCode</label>
-          <div class="col-md-9">
-          <input class="form-control" id="candidateZipCode" name="zipcode" placeholder="Zip code" type="text"></input>
-          </div>
-        </div>
-        
-		
-		<div class="form-group hidden">
-          <label class="col-md-3">Lat</label>
-          <div class="col-md-9">
-          <input class="form-control" id="candidateLatitude" name="latitude" type="text"></input>
-          </div>
-        </div>
-        
-        <div class="form-group hidden" >
-          <label class="col-md-3">Long</label>
-          <div class="col-md-9">
-          <input class="form-control" id="candidateLongitude" name="longitude"  type="text"></input>
-          </div>
-        </div> 
-		
-        
-        <div class="form-group">
-          <label class="col-md-3">Address</label>
-          <div class="col-md-9">
-           <input type="text" class="form-control" id="address" name="address" value="${address}"  field-name="Address" data-validation="validate_Space validate_length length2-250" data-validation-optional="true">
-          </div>
-        </div>
-        
-        <div class="form-group">
-         <label class="col-md-3">Designation</label>
-         <div class="col-md-9 ratetype">
-             <input type="text" id="designation" name="designation" value="${designation}" field-name="Designation"  data-validation="validate_Space validate_Name validate_length length2-250" data-validation-optional="true"  value="" class="form-control">
-         </div>
-       </div>
-       
-       <div class="form-group">
-         <label class="col-md-3">Employment Type<span class="text-danger">&nbsp;*</span></label>
-         <div class="col-md-9">
-             <select class="selectpicker form-control" id="designationType" name="designationType" onChange="getDesignationType(this);" field-name="Employment type" data-validation="required">
-                <option value="">--Select Employment Type--</option>
-                 <option>C2C</option>
-                 <option>C2C-1099</option>
-                 <option>W-2</option>
-                 <option>C2H</option>
-                 <option>C2H -1099</option>
-                 <option>Part Time</option>
-                 <option>Full Time</option>
-                 <option>Other</option>
-             </select>
-         </div>
-       </div>
-
-        <div class="form-group">
-          <label class="col-md-3">Experience</label>
-          <div class="col-md-9">
-            <div class="row exp-drop">
-             <div class="col-xs-6 col-md-6">
-             		<select class="form-control selectpicker" id="experienceYears" name="experienceYears" onchange="disableMonths();">
-             		  <option value="">Years</option>
-             		  <c:forEach begin="0" end="25" varStatus="loop">
-						    <option>${loop.index}</option>
-						</c:forEach>
-             		</select>
-             </div>
-             <div class="col-xs-6 col-md-6">
-             		<select class="form-control selectpicker" id="experienceMonths" name="experienceMonths">
-             		<option value="">Months</option>
-             		 <c:forEach begin="0" end="11" varStatus="loop">
-						    <option>${loop.index}</option>
-						</c:forEach>
-             		</select>
-             </div>
-            </div>
-          </div>
-        </div>
-       
-       <div class="form-group designationTypeDiv" id="designationTypeDiv" style="display:none">
-            <label class="col-md-3">Employment Type</label>
-            <div class="col-md-9">
-              <input type="text" class="form-control" id="designationOtherType" name="designationOtherType" value="${candidate.designationOtherType}"  field-name="Job Type" value="">
-            </div>
-          </div>
-       <c:if test="${SourceLeadWeb_userType != 'Recruiter'}">
-       <div class="clearfix" id="hideVendor" style="display:none">
-       <div class="form-group">
-			<label class="col-md-3" ><span class="pull-left">Vendor</span><span class="text-danger pull-left" id="man1">*</span></label>
-			<div class="col-md-9" id="errorvendor">
-			     <select  class="chosen-select form-control" name="vendors" id="vendors" placeholder="Select Vendor" field-name="Vendor" onchange="getVendorContactList();removeValiationVendor();">
-                 </select>
+	<section class="content-header clearfix">
+		<div class="pull-left">
+			<h2>Add Candidate</h2>
+		</div>
+		<c:if
+			test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}">
+			<div class="pull-right brud-crum">
+				<a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo;<a
+					href="<c:url value='/candidatesList'/>"> Candidate List</a> &raquo;
+				Add Candidate
 			</div>
-		</div>
-		
-		 <div class="form-group">
-			<label class="col-md-3" ><span class="pull-left">Vendor Contact</span><span class="text-danger pull-left" id="man2">*</span></label>
-			<div class="col-md-9" id="errorvendorContact">
-			     <select  class="chosen-select form-control" name="vendorcontact" id="vendorcontact" field-name="Vendor Contact"  placeholder="Select Vendor Contact" onchange="removeValiationVendorContact();">
-                 </select>
-			</div>
-		</div>
-		</div>
 		</c:if>
-       <div class="form-group">
-            <label class="col-md-3">Current Rate</label>
-            <div class="col-md-9">
-             <div class="input-group er ratetype">
-                <div class="input-group-btn tblminwidth-75">
-                  
-                  <select class="selectpicker" id="currentRateCurrency" name="currentRateCurrency">
-                 
-                 <option ${currencyCode  == 'INR' ? 'selected' : ''}>INR</option>
-                 <option ${currencyCode  == 'AUD' ? 'selected' : ''}>AUD</option>
-                 <option ${currencyCode  == 'USD' ? 'selected' : ''}>USD</option>
-                 <option ${currencyCode  == 'GBP' ? 'selected' : ''}>GBP</option>
-                 <option ${currencyCode  == 'SGD' ? 'selected' : ''}>SGD</option>
-                 <option ${currencyCode  == 'EUR' ? 'selected' : ''}>EUR</option>
-                 
-                </select>
-                
-                </div>
-                 <input type="text" id="currentRate" name="currentRate" value="${currentRate}" field-name="Current Rate" data-validation="validate_Space validate_float validate_length length1-8" data-validation-optional="true" value="" class="form-control">
-                <div class="input-group-btn tblminwidth-75 ratetype">
-                  <select class="selectpicker" id="currentRateType" name="currentRateType" field-name="Rate Per">
-                    <option value="">Rate Per</option>
-                    <option ${currentRateType  == 'Hourly' ? 'selected' : ''}>Hourly</option>
-                    <option ${currentRateType  == 'Weekly' ? 'selected' : ''}>Weekly</option>
-                    <option ${currentRateType  == 'Biweekly' ? 'selected' : ''}>Bi-weekly</option>
-                    <option ${currentRateType  == 'SemiMonthly' ? 'selected' : ''}>Semi-Monthly</option>
-                    <option ${currentRateType  == 'Monthly' ? 'selected' : ''}>Monthly</option>
-                    <option ${currentRateType  == 'BiMonthly' ? 'selected' : ''}>Bi-Monthly</option>
-                    <option ${currentRateType  == 'Yearly' ? 'selected' : ''}>Yearly</option>
-                  </select>
-                </div>
-                 <div class="clearfix"></div> <div class="clearfix"></div>
-              </div>
-            </div>
-          </div>
-       
-        
-        
-        <div class="form-group">
-            <label class="col-md-3">Expected Rate</label>
-            <div class="col-md-9">
-             <div class="input-group er ratetype">
-                <div class="input-group-btn tblminwidth-75">
-                  
-                  <select class="selectpicker" id="expectedRateCurrencey" name="expectedRateCurrencey">
-                 
-                 <option ${currencyCode  == 'INR' ? 'selected' : ''}>INR</option>
-                 <option ${currencyCode  == 'AUD' ? 'selected' : ''}>AUD</option>
-                 <option ${currencyCode  == 'USD' ? 'selected' : ''}>USD</option>
-                 <option ${currencyCode  == 'GBP' ? 'selected' : ''}>GBP</option>
-                 <option ${currencyCode  == 'SGD' ? 'selected' : ''}>SGD</option>
-                 <option ${currencyCode  == 'EUR' ? 'selected' : ''}>EUR</option>
-                 
-                </select>
-                
-                </div>
-                 <input type="text" id="expectedRate" name="expectedRate" value="${expectedRate}" field-name="Expected Rate" data-validation="validate_Space validate_int validate_length length1-8" data-validation-optional="true" value="" class="form-control">
-                <div class="input-group-btn tblminwidth-75 ratetype">
-                  <select class="selectpicker" id="rateType" name="rateType" field-name="Rate Per">
-                    <option value="">Rate Per</option>
-                    <option ${rateType  == 'Hourly' ? 'selected' : ''}>Hourly</option>
-                    <option ${rateType  == 'Weekly' ? 'selected' : ''}>Weekly</option>
-                    <option ${rateType  == 'Biweekly' ? 'selected' : ''}>Bi-weekly</option>
-                    <option ${rateType  == 'SemiMonthly' ? 'selected' : ''}>Semi-Monthly</option>
-                    <option ${rateType  == 'Monthly' ? 'selected' : ''}>Monthly</option>
-                    <option ${rateType  == 'BiMonthly' ? 'selected' : ''}>Bi-Monthly</option>
-                    <option ${rateType  == 'Yearly' ? 'selected' : ''}>Yearly</option>
-                  </select>
-                </div>
-                 <div class="clearfix"></div> <div class="clearfix"></div>
-              </div>
-            </div>
-          </div>
-        
-        
-         <div class="form-group">
-          <label class="col-md-3">Employer's</label>
-          <div class="col-md-9">
-            <input type="text" class="form-control" id="candidateEmployers" name="candidateEmployers" value="${candidateEmployers}"  field-name="Employers" data-validation="validate_Space validate_length length2-250" data-validation-optional="true"  value="">
-          </div>
-        </div>
-        
-        
-         
-       
-        <div class="form-group">
-         <label class="col-md-3">Notice Period</label>
-          <div class="col-md-9">
-               <select class="form-control valid selectpicker" id="noticePeriod" name="noticePeriod">
-                <option value="">---Select Notice Period---</option>
-                 <option ${noticePeriod  == 'Immediately available' ? 'selected' : ''}>Immediately available</option>
-                 <option ${noticePeriod  == '15 Days' ? 'selected' : ''}>15 Days</option>
-                 <option ${noticePeriod  == '1 Month' ? 'selected' : ''}>1 Month</option>
-                 <option ${noticePeriod  == '2 Months' ? 'selected' : ''}>2 Months</option>
-                 <option ${noticePeriod  == '3 Months' ? 'selected' : ''}>3 Months</option>
-                </select>
-             
-           </div>
-          </div> 
-        
-        <div class="clearfix"></div>
-        <div class="form-group innerForm_formGroup">
-        
-         <div class="form-group">
-            <label class="col-md-3">Attach Resume</label>
-            <div class="col-md-9">
-			 <div class="input-group col-md-12" id="uploadFileGroup" style="margin:0 auto">
-               <label class="input-group-btn"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
-                <input type="file" style="display: none;" multiple name ="uploadBtn" id="uploadBtn"  class="upload">
-                 </span> </label>
-                 <input type="text" class="form-control" readonly id="uploadFile" name="docFile" type="file"  name="" placeholder="Upload Resume ..." field-name="Upload Resume" data-validation="validatedoc " data-validation-optional="true" >
-           </div>
-         </div>
-        </div>
-         
-          <div class="form-group">
-              <label class="col-md-3">Skills</label>
-              <div class="col-md-9 mySkillsUl">
-                <select multiple data-placeholder="Select Skills" class="chosen-select form-control" name="candidateSkills" id="candidateSkills"  data-validation-optional="true" >
-                <c:forEach var="skill" items="${skillsList}">
-	                     <option value="${skill.name}">${skill.name}</option>
-                </c:forEach>
-                </select>
-              </div>
-            </div>
-            
-            <div class="form-group">
-              <label class="col-md-3">Immigration Status</label>
-              <div class="col-md-9">
-                <select multiple class="chosen-select form-control" name="visa" id="visa" data-placeholder="Select Visa" data-validation-optional="true">
-               <c:forEach var="visaList" items="${visaList}">
-               		<c:set var = "NUM" value = "${0}"/>
-               		<c:forEach var="existedVisa" items="${requirement.visaType}">
-					    <c:if test="${existedVisa eq visaList}">
-					    	<c:set var = "NUM" value = "${1}"/>
-					       <option  selected value="${visaList}">${visaList}</option>
-					    </c:if>
-					</c:forEach>
-					
-					<c:if test="${NUM == 0}">
-						<option  value="${visaList}">${visaList}</option>
+		<c:if
+			test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_RECRUITER'}">
+			<div class="pull-right brud-crum">
+				<a href="<c:url value='/recruiterDashboard'/>">Home</a>&raquo;<a
+					href="<c:url value='/candidatesList'/>"> Candidate List</a> &raquo;
+				Add Candidate
+			</div>
+		</c:if>
+	</section>
+	<div class="content-area content-new clearfix">
+		<div id="loading"></div>
+		<form:form id="addcandidate_form" name="addcandidate_form"
+			enctype='multipart/form-data'>
+			<div class="row form-horizontal mt myForm">
+				<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+
+					<div class="form-group">
+						<label class="col-md-3">First Name<span
+							class="text-danger">&nbsp;*</span></label>
+						<div class="col-md-9">
+							<input type="text" class="form-control" id="firstName"
+								name="firstName" value="${firstName}" field-name="First Name"
+								data-validation="required validate_AlphaNumber validate_length length1-100"
+								value="">
+							<div class="input-group hidden">
+								<div class="input-group-btn">
+									<button type="button" class="btn btn-danger dropdown-toggle"
+										data-toggle="dropdown" aria-haspopup="true"
+										aria-expanded="false">
+										Action <span class="caret"></span>
+									</button>
+									<ul class="dropdown-menu">
+										<li><a href="#">Action</a></li>
+										<li><a href="#">Another action</a></li>
+										<li><a href="#">Something else here</a></li>
+										<li role="separator" class="divider"></li>
+										<li><a href="#">Separated link</a></li>
+									</ul>
+								</div>
+								<!-- /btn-group -->
+								<input type="text" class="form-control" aria-label="...">
+							</div>
+							<!-- /input-group -->
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-md-3">Last Name</label>
+						<div class="col-md-9">
+							<input type="text" class="form-control" id="lastName"
+								name="lastName" value="${lastName}" field-name="Last Name"
+								data-validation="validate_AlphaNumber validate_length length1-100"
+								data-validation-optional="true" value="">
+						</div>
+					</div>
+					<div class="form-group" id="emailDiv">
+						<label class="col-md-3">Email<span class="text-danger">&nbsp;*</span></label>
+						<div class="col-md-9">
+							<input type="text" class="form-control" id="email" name="email"
+								value="${email}" field-name="Email"
+								data-validation="required validate_length length2-100 validate_email"
+								onblur="validateCandidateEmail();"
+								onmouseout="validateCandidateEmail();" value=""> <span
+								class="hidden">Valid Email</span>
+						</div>
+					</div>
+
+					<div class="form-group">
+						<label class="col-md-3">Mobile</label>
+						<div class="col-md-9">
+							<input type="text" class="form-control" id="mobilePhone"
+								name="mobilePhone" value="${phone}" field-name="Mobile Number"
+								data-validation="validate_length length9-20 validate_phone"
+								data-validation-optional="true" value="">
+						</div>
+					</div>
+
+					<div class="form-group">
+						<label class="col-md-3">Alternative Number</label>
+						<div class="col-md-9">
+							<input type="text" class="form-control" id="alternateMobilePhone"
+								name="alternateMobilePhone" field-name="Alternative Number"
+								data-validation="validate_length length9-20 validate_phone"
+								data-validation-optional="true" value="">
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-md-3">Location<span class="text-danger">&nbsp;*</span></label>
+						<div class="col-md-9" id="locationField">
+							<div class="positionRelative">
+								<input class="form-control positionRelative"
+									id="candidateLocation" name="location"
+									placeholder="Enter your address" type="text"
+									field-name="Locatin" data-validation="required"></input> <i
+									class="fa fa-refresh btn btn-primary refresh-icon"
+									title="Refresh"
+									onClick="refreshGoogleApiLocation('candidateLocation','candidateCountry','candidateState','candidateCity','candidateZipCode');"></i>
+							</div>
+						</div>
+					</div>
+
+
+					<div class="form-group">
+						<label class="col-md-3">Country</label>
+						<div class="col-md-9">
+							<input class="form-control" id="candidateCountry" name="country"
+								placeholder="Country" value="${loginCountryName}" type="text"
+								readonly></input>
+						</div>
+					</div>
+
+					<div class="form-group">
+						<label class="col-md-3">State</label>
+						<div class="col-md-9">
+							<input class="form-control" id="candidateState" name="state"
+								placeholder="State" type="text" readonly></input>
+						</div>
+					</div>
+
+					<div class="form-group">
+						<label class="col-md-3">City</label>
+						<div class="col-md-9">
+							<input class="form-control" id="candidateCity" name="city"
+								placeholder="City" type="text" readonly></input>
+						</div>
+					</div>
+
+					<div class="form-group">
+						<label class="col-md-3">ZipCode</label>
+						<div class="col-md-9">
+							<input class="form-control" id="candidateZipCode" name="zipcode"
+								placeholder="Zip code" type="text" readonly></input>
+						</div>
+					</div>
+
+
+					<div class="form-group hidden">
+						<label class="col-md-3">Lat</label>
+						<div class="col-md-9">
+							<input class="form-control" id="candidateLatitude"
+								name="latitude" type="text"></input>
+						</div>
+					</div>
+
+					<div class="form-group hidden">
+						<label class="col-md-3">Long</label>
+						<div class="col-md-9">
+							<input class="form-control" id="candidateLongitude"
+								name="longitude" type="text"></input>
+						</div>
+					</div>
+
+
+					<div class="form-group">
+						<label class="col-md-3">Address</label>
+						<div class="col-md-9">
+							<input type="text" class="form-control" id="address"
+								name="address" value="${address}" field-name="Address"
+								data-validation="validate_Space validate_length length2-250"
+								data-validation-optional="true">
+						</div>
+					</div>
+
+					<div class="form-group">
+						<label class="col-md-3">Designation</label>
+						<div class="col-md-9 ratetype">
+							<input type="text" id="designation" name="designation"
+								value="${designation}" field-name="Designation"
+								data-validation="validate_Space validate_Name validate_length length2-250"
+								data-validation-optional="true" value="" class="form-control">
+						</div>
+					</div>
+
+					<div class="form-group">
+						<label class="col-md-3">Employment Type<span
+							class="text-danger">&nbsp;*</span></label>
+						<div class="col-md-9">
+							<select class="selectpicker form-control" id="designationType"
+								name="designationType" onChange="getDesignationType(this);"
+								field-name="Employment type" data-validation="required">
+								<option value="">--Select Employment Type--</option>
+								<option>C2C</option>
+								<option>C2C-1099</option>
+								<option>W-2</option>
+								<option>C2H</option>
+								<option>C2H -1099</option>
+								<option>Part Time</option>
+								<option>Full Time</option>
+								<option>Other</option>
+							</select>
+						</div>
+					</div>
+
+					<div class="form-group">
+						<label class="col-md-3">Experience</label>
+						<div class="col-md-9">
+							<div class="row exp-drop">
+								<div class="col-xs-6 col-md-6">
+									<select class="form-control selectpicker" id="experienceYears"
+										name="experienceYears" onchange="disableMonths();">
+										<option value="">Years</option>
+										<c:forEach begin="0" end="25" varStatus="loop">
+											<option>${loop.index}</option>
+										</c:forEach>
+									</select>
+								</div>
+								<div class="col-xs-6 col-md-6">
+									<select class="form-control selectpicker" id="experienceMonths"
+										name="experienceMonths">
+										<option value="">Months</option>
+										<c:forEach begin="0" end="11" varStatus="loop">
+											<option>${loop.index}</option>
+										</c:forEach>
+									</select>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="form-group designationTypeDiv" id="designationTypeDiv"
+						style="display: none">
+						<label class="col-md-3">Employment Type</label>
+						<div class="col-md-9">
+							<input type="text" class="form-control" id="designationOtherType"
+								name="designationOtherType"
+								value="${candidate.designationOtherType}" field-name="Job Type"
+								value="">
+						</div>
+					</div>
+					<c:if test="${SourceLeadWeb_userType != 'Recruiter'}">
+						<div class="clearfix" id="hideVendor" style="display: none">
+							<div class="form-group">
+								<label class="col-md-3"><span class="pull-left">Vendor</span><span
+									class="text-danger pull-left" id="man1">*</span></label>
+								<div class="col-md-9" id="errorvendor">
+									<select class="chosen-select form-control" name="vendors"
+										id="vendors" placeholder="Select Vendor" field-name="Vendor"
+										onchange="getVendorContactList();removeValiationVendor();">
+									</select>
+								</div>
+							</div>
+
+							<div class="form-group">
+								<label class="col-md-3"><span class="pull-left">Vendor
+										Contact</span><span class="text-danger pull-left" id="man2">*</span></label>
+								<div class="col-md-9" id="errorvendorContact">
+									<select class="chosen-select form-control" name="vendorcontact"
+										id="vendorcontact" field-name="Vendor Contact"
+										placeholder="Select Vendor Contact"
+										onchange="removeValiationVendorContact();">
+									</select>
+								</div>
+							</div>
+						</div>
 					</c:if>
-                </c:forEach>
-                </select>
-              </div>
-            </div>
-            
-            <div class="form-group">
-          <label class="col-md-3">Primary Skill</label>
-          <div class="col-md-9">
-            <input type="text" class="form-control" id="primarySkill" name="primarySkill" value="${primarySkill}"  field-name="Primary Skill" data-validation="validate_Space validate_length length2-200" data-validation-optional="true">
-          </div>
-         </div>
-            
-         </div>
-         
-         <div class="form-group innerForm_formGroup">
-         <div class="form-group">
-              <label class="col-md-3">Education</label>
-              <div class="col-md-9 mySkillsUl">
-                <select multiple data-placeholder="Select Education" class="chosenone-selectone form-control" name="candidateEducation" id="candidateEducation" data-validation="validate_Space" data-validation-optional="true">
-                <c:forEach var="edu" items="${educationsList}">
-	                     <option value="${edu.name}">${edu.name}</option>
-                </c:forEach>
-                </select>
-              </div>
-            </div>
-         
-         <div class="form-group">
-          <label class="col-md-3">Summary</label>
-          <div class="col-md-9">
-            <textarea rows="2" class="form-control" id="summary" name="summary" value="${summary}" field-name="Summary" data-validation=" validate_length length2-5000" data-validation-optional="true"></textarea>
-          </div>
-        </div>
-        </div>
-        
-        <div class="clearfix"></div>
-        <div class="form-group">
-            <label class="col-md-3"></label>
-             <div class="col-md-9">
-              <div class="checkbox checkBox">
-                 <label>
-                   <input type="checkbox" value="Y" name="inviteEmail">
-                   Invite to SourceLead</label>
-               </div>
-                </div>
-         </div>
-           
-           
-         
-        
-         
-          <div class="clearfix"></div>
-          
-        <div class="form-group">
-          <label class="col-md-3"></label>
-        </div> 
-        
-        
-        <div class="clearfix"></div>
-      </div> 
-    </div>
-    
-    
-    <div class="form-footer clearfix">
-      <div class="col-lg-12">
-        <div class="pull-right">
-          <input type="button" value="Save" id="store_candidate" onclick="storeCandidate();" class="btn btn-primary">
-          <input type="button" value="Cancel" onClick="javascript:window.location.href = '<c:url value='/candidatesList'/>'" class="btn btn-default ml">
-        </div>
-      </div>
-    </div>
-    
-     </form:form>
-     
-    </div>
-    
-    <!-- Content Area Ends--> 
-  </section>
-	<!-- Footer Area -->
-	<jsp:include page="../masterFooter.jsp" />
-	<!-- Footer Area -->
-	
-	<%-- 
+					<div class="form-group">
+						<label class="col-md-3">Current Rate</label>
+						<div class="col-md-9">
+							<div class="input-group er ratetype">
+								<div class="input-group-btn tblminwidth-75">
+
+									<select class="selectpicker" id="currentRateCurrency"
+										name="currentRateCurrency">
+
+										<option ${currencyCode  == 'INR' ? 'selected' : ''}>INR</option>
+										<option ${currencyCode  == 'AUD' ? 'selected' : ''}>AUD</option>
+										<option ${currencyCode  == 'USD' ? 'selected' : ''}>USD</option>
+										<option ${currencyCode  == 'GBP' ? 'selected' : ''}>GBP</option>
+										<option ${currencyCode  == 'SGD' ? 'selected' : ''}>SGD</option>
+										<option ${currencyCode  == 'EUR' ? 'selected' : ''}>EUR</option>
+
+									</select>
+
+								</div>
+								<input type="text" id="currentRate" name="currentRate"
+									value="${currentRate}" field-name="Current Rate"
+									data-validation="validate_Space validate_float validate_length length1-8"
+									data-validation-optional="true" value="" class="form-control">
+								<div class="input-group-btn tblminwidth-75 ratetype">
+									<select class="selectpicker" id="currentRateType"
+										name="currentRateType" field-name="Rate Per">
+										<option value="">Rate Per</option>
+										<option ${currentRateType  == 'Hourly' ? 'selected' : ''}>Hourly</option>
+										<option ${currentRateType  == 'Weekly' ? 'selected' : ''}>Weekly</option>
+										<option ${currentRateType  == 'Biweekly' ? 'selected' : ''}>Bi-weekly</option>
+										<option ${currentRateType  == 'SemiMonthly' ? 'selected' : ''}>Semi-Monthly</option>
+										<option ${currentRateType  == 'Monthly' ? 'selected' : ''}>Monthly</option>
+										<option ${currentRateType  == 'BiMonthly' ? 'selected' : ''}>Bi-Monthly</option>
+										<option ${currentRateType  == 'Yearly' ? 'selected' : ''}>Yearly</option>
+									</select>
+								</div>
+								<div class="clearfix"></div>
+								<div class="clearfix"></div>
+							</div>
+						</div>
+					</div>
+
+
+
+					<div class="form-group">
+						<label class="col-md-3">Expected Rate</label>
+						<div class="col-md-9">
+							<div class="input-group er ratetype">
+								<div class="input-group-btn tblminwidth-75">
+
+									<select class="selectpicker" id="expectedRateCurrencey"
+										name="expectedRateCurrencey">
+
+										<option ${currencyCode  == 'INR' ? 'selected' : ''}>INR</option>
+										<option ${currencyCode  == 'AUD' ? 'selected' : ''}>AUD</option>
+										<option ${currencyCode  == 'USD' ? 'selected' : ''}>USD</option>
+										<option ${currencyCode  == 'GBP' ? 'selected' : ''}>GBP</option>
+										<option ${currencyCode  == 'SGD' ? 'selected' : ''}>SGD</option>
+										<option ${currencyCode  == 'EUR' ? 'selected' : ''}>EUR</option>
+
+									</select>
+
+								</div>
+								<input type="text" id="expectedRate" name="expectedRate"
+									value="${expectedRate}" field-name="Expected Rate"
+									data-validation="validate_Space validate_int validate_length length1-8"
+									data-validation-optional="true" value="" class="form-control">
+								<div class="input-group-btn tblminwidth-75 ratetype">
+									<select class="selectpicker" id="rateType" name="rateType"
+										field-name="Rate Per">
+										<option value="">Rate Per</option>
+										<option ${rateType  == 'Hourly' ? 'selected' : ''}>Hourly</option>
+										<option ${rateType  == 'Weekly' ? 'selected' : ''}>Weekly</option>
+										<option ${rateType  == 'Biweekly' ? 'selected' : ''}>Bi-weekly</option>
+										<option ${rateType  == 'SemiMonthly' ? 'selected' : ''}>Semi-Monthly</option>
+										<option ${rateType  == 'Monthly' ? 'selected' : ''}>Monthly</option>
+										<option ${rateType  == 'BiMonthly' ? 'selected' : ''}>Bi-Monthly</option>
+										<option ${rateType  == 'Yearly' ? 'selected' : ''}>Yearly</option>
+									</select>
+								</div>
+								<div class="clearfix"></div>
+								<div class="clearfix"></div>
+							</div>
+						</div>
+					</div>
+
+
+					<div class="form-group">
+						<label class="col-md-3">Employer's</label>
+						<div class="col-md-9">
+							<input type="text" class="form-control" id="candidateEmployers"
+								name="candidateEmployers" value="${candidateEmployers}"
+								field-name="Employers"
+								data-validation="validate_Space validate_length length2-250"
+								data-validation-optional="true" value="">
+						</div>
+					</div>
+
+
+
+
+					<div class="form-group">
+						<label class="col-md-3">Notice Period</label>
+						<div class="col-md-9">
+							<select class="form-control valid selectpicker" id="noticePeriod"
+								name="noticePeriod">
+								<option value="">---Select Notice Period---</option>
+								<option
+									${noticePeriod  == 'Immediately available' ? 'selected' : ''}>Immediately
+									available</option>
+								<option ${noticePeriod  == '15 Days' ? 'selected' : ''}>15
+									Days</option>
+								<option ${noticePeriod  == '1 Month' ? 'selected' : ''}>1
+									Month</option>
+								<option ${noticePeriod  == '2 Months' ? 'selected' : ''}>2
+									Months</option>
+								<option ${noticePeriod  == '3 Months' ? 'selected' : ''}>3
+									Months</option>
+							</select>
+
+						</div>
+					</div>
+
+					<div class="clearfix"></div>
+					<div class="form-group innerForm_formGroup">
+
+						<div class="form-group">
+							<label class="col-md-3">Attach Resume</label>
+							<div class="col-md-9">
+								<div class="input-group col-md-12" id="uploadFileGroup"
+									style="margin: 0 auto">
+									<label class="input-group-btn"> <span
+										class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse
+											File <input type="file" style="display: none;" multiple
+											name="uploadBtn" id="uploadBtn" class="upload"> </span>
+									</label> <input type="text" class="form-control" readonly
+										id="uploadFile" name="docFile" type="file" name=""
+										placeholder="Upload Resume ..." field-name="Upload Resume"
+										data-validation="validatedoc " data-validation-optional="true">
+								</div>
+							</div>
+						</div>
+
+						<div class="form-group">
+							<label class="col-md-3">Skills</label>
+							<div class="col-md-9 mySkillsUl">
+								<select multiple data-placeholder="Select Skills"
+									class="chosen-select form-control" name="candidateSkills"
+									id="candidateSkills" data-validation-optional="true">
+									<c:forEach var="skill" items="${skillsList}">
+										<option value="${skill.name}">${skill.name}</option>
+									</c:forEach>
+								</select>
+							</div>
+						</div>
+
+						<div class="form-group">
+							<label class="col-md-3">Immigration Status</label>
+							<div class="col-md-9">
+								<select multiple class="chosen-select form-control" name="visa"
+									id="visa" data-placeholder="Select Visa"
+									data-validation-optional="true">
+									<c:forEach var="visaList" items="${visaList}">
+										<c:set var="NUM" value="${0}" />
+										<c:forEach var="existedVisa" items="${requirement.visaType}">
+											<c:if test="${existedVisa eq visaList}">
+												<c:set var="NUM" value="${1}" />
+												<option selected value="${visaList}">${visaList}</option>
+											</c:if>
+										</c:forEach>
+
+										<c:if test="${NUM == 0}">
+											<option value="${visaList}">${visaList}</option>
+										</c:if>
+									</c:forEach>
+								</select>
+							</div>
+						</div>
+
+						<div class="form-group">
+							<label class="col-md-3">Primary Skill</label>
+							<div class="col-md-9">
+								<input type="text" class="form-control" id="primarySkill"
+									name="primarySkill" value="${primarySkill}"
+									field-name="Primary Skill"
+									data-validation="validate_Space validate_length length2-200"
+									data-validation-optional="true">
+							</div>
+						</div>
+
+					</div>
+
+					<div class="form-group innerForm_formGroup">
+						<div class="form-group">
+							<label class="col-md-3">Education</label>
+							<div class="col-md-9 mySkillsUl">
+								<select multiple data-placeholder="Select Education"
+									class="chosenone-selectone form-control"
+									name="candidateEducation" id="candidateEducation"
+									data-validation="validate_Space"
+									data-validation-optional="true">
+									<c:forEach var="edu" items="${educationsList}">
+										<option value="${edu.name}">${edu.name}</option>
+									</c:forEach>
+								</select>
+							</div>
+						</div>
+
+						<div class="form-group">
+							<label class="col-md-3">Summary</label>
+							<div class="col-md-9">
+								<textarea rows="2" class="form-control" id="summary"
+									name="summary" value="${summary}" field-name="Summary"
+									data-validation=" validate_length length2-5000"
+									data-validation-optional="true"></textarea>
+							</div>
+						</div>
+					</div>
+
+					<div class="clearfix"></div>
+					<div class="form-group">
+						<label class="col-md-3"></label>
+						<div class="col-md-9">
+							<div class="checkbox checkBox">
+								<label> <input type="checkbox" value="Y"
+									name="inviteEmail"> Invite to SourceLead
+								</label>
+							</div>
+						</div>
+					</div>
+
+
+
+
+
+					<div class="clearfix"></div>
+
+					<div class="form-group">
+						<label class="col-md-3"></label>
+					</div>
+
+
+					<div class="clearfix"></div>
+				</div>
+			</div>
+
+
+			<div class="form-footer clearfix">
+				<div class="col-lg-12">
+					<div class="pull-right">
+						<input type="button" value="Save" id="store_candidate"
+							onclick="storeCandidate();" class="btn btn-primary"> <input
+							type="button" value="Cancel"
+							onClick="javascript:window.location.href = '<c:url value='/candidatesList'/>'"
+							class="btn btn-default ml">
+					</div>
+				</div>
+			</div>
+
+		</form:form>
+
+	</div>
+
+	<!-- Content Area Ends-->
+</section>
+<!-- Footer Area -->
+<jsp:include page="../masterFooter.jsp" />
+<!-- Footer Area -->
+
+<%-- 
      @author : prasad k.
      this script is for save/store candidate.
      1.usage     : onclick.
@@ -467,7 +571,7 @@
 			scrollToTopOnError : true,
 			dateFormat : 'yyyy/mm/dd' 
             };
-</script> 
+</script>
 <script type="text/javascript">
 	function storeCandidate() {
 		
@@ -598,7 +702,8 @@ function validate_fileupload(fileName)
 		    	
 		    });
 		    
-		    chosen.search_field.on('keydown keyup', function(e)
+		   // chosen.search_field.on('keyup keydown', function(e)
+		    		chosen.search_field.on('keydown keyup', function(e)
 				    {
 				    	   var skillsArray = this.value.split(",");
 					    	 if(skillsArray.length > 1){
@@ -612,15 +717,44 @@ function validate_fileupload(fileName)
 					    	 }else{
 				    			var newSkill = this.value.replace(","," ");
 				    			 if (tagItBykeyForSkills(e) && (newSkill != null  && newSkill != '' && newSkill != 'undefined'))
-				                {
+				                 {
 				    				 preventTabkey(e);
-				    				 var option = $("<option>").val(newSkill).text(newSkill);
-				                     select.append(option);
-				                     select.find(option).prop('selected', true);
-				                     $("#candidateSkills option").each(function(){
-				                         $(this).siblings("[value='"+ this.value+"']").remove();
+				    				 
+				    				 // due to below code manually enter skills are not taken
+				    				 /* var isNewSkill = true;
+				    				 
+				                     $("#candidateSkills option:selected").each(function(){
+										 if(this.value.toUpperCase() === newSkill.toUpperCase() && this.value.toLowerCase() === newSkill.toLowerCase()){
+											 alert("isNewSkill"+isNewSkill);
+												isNewSkill = false;
+												return false;
+										 }
 				                   });
-				                   $("#candidateSkills").trigger("chosen:updated");
+								   if(isNewSkill){
+									   alert("isNewSkill"+isNewSkill);
+										select.append(option);
+								   }
+				                   $("#candidateSkills").trigger("chosen:updated");  */
+				                   
+				                  
+				                   // below code manually enter skills are taken
+				    				  
+				                   var isNewSkill = true;
+									 $("#candidateSkills option:selected").each(function(){
+										 if(this.value.toUpperCase() === newSkill.toUpperCase() && this.value.toLowerCase() === newSkill.toLowerCase()){
+											 //alert(newSkill);
+											 isNewSkill = false;
+											 return false;
+										 }
+				                    
+				                   });
+									if(isNewSkill){
+				    				 var option = $("<option>").val(newSkill).text(newSkill);
+									 select.append(option);
+				                     select.find(option).prop('selected', true);
+									}
+					               $("#candidateSkills").trigger("chosen:updated"); 
+				                   
 				                }
 						       
 			    	         }
@@ -672,7 +806,7 @@ function validate_fileupload(fileName)
 	       $("#candidateEducation").val('').trigger("chosen:updated");
 				
 				
-</script> 
+</script>
 <!-- Eductions and Skills Autocomplete Scripts End Here -->
 
 <!-- Candidate Email validation script starts here -->
@@ -704,12 +838,12 @@ function validate_fileupload(fileName)
 		    });
 	 }
  }
- </script>     
- 
- <!-- Candidate Email validation script ends here -->
- 
- <!-- Experience Years and Months validation Script years greater than  20 the months dropdown disabled script here -->
- <script type="text/javascript">
+ </script>
+
+<!-- Candidate Email validation script ends here -->
+
+<!-- Experience Years and Months validation Script years greater than  20 the months dropdown disabled script here -->
+<script type="text/javascript">
  function disableMonths() {
      $("#experienceYears").change(function() {
          if ($("#experienceYears").val() == '25'){
@@ -882,7 +1016,7 @@ var currentRate = document.getElementById("currentRate").value;
 		 });
  }
  </script>
- <script>
+<script>
  function  removeValiationVendor() {
 	$("#errorvendor").find("p.jquery_form_error_message").remove();
 }
@@ -893,7 +1027,7 @@ function  removeValiationVendorContact() {
 }
 </script>
 
-  <script>
+<script>
  function getVendorContactList(){
 	var orgRelationID = $('#vendors').val();
 	 var sourceleadUrl ='${sourceleadUrl}';
@@ -913,4 +1047,4 @@ function  removeValiationVendorContact() {
 		 }); 
  }
  </script>
- 
+

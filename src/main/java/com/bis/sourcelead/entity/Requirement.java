@@ -1,9 +1,11 @@
 package com.bis.sourcelead.entity;
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -21,16 +23,22 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
-import javax.persistence.criteria.CriteriaBuilder.In;
 
+import org.apache.commons.lang.StringUtils;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.Type;
 
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
+	/**
+	 * @author BIS101
+	 *
+	 */
 	@Entity
 	@Table(name = "REQUIREMENT", catalog = "sourcelead")
 	@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "requirement1")
@@ -83,6 +91,9 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	
 	@Column(name = "RATE_TYPE") 
 	private String rateType;
+	
+	@Column(name = "APPRVER_HIERARCHY")
+	private String approverHierarchy;
 	
 	
 	@Column(name = "COUNTRY")
@@ -239,8 +250,9 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	@Column(name = "CREATED_DATE")
 	private Date createdDate;
 	
-	@Column(name = "CREATED_BY")
-	private String createdBy;
+	@ManyToOne
+    @JoinColumn(name="CREATED_BY", nullable=false )        
+    private User createdBy;
 	
 	@Column(name = "UPDATED_DATE")
 	private Date updatedDate;
@@ -265,6 +277,9 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	
 	@Column(name = "REQ_COOLINGOFF_PERIOD")
 	private String reqCoolingOffPeriod;
+	
+	@Column(name = "RELEASE_JOB_TO_ALL_USERS")
+	private String releaseJobToAllUsers;
 	
 	@Transient
 	private String closedDateStringFormat;
@@ -296,6 +311,7 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	private String searchType;;
 	
 	@Transient
+	@JsonProperty
 	private String clientName;
 	
 	@Transient
@@ -317,6 +333,7 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	private String reqEducationListString;
 	
 	@Transient
+	@JsonProperty
 	private String manager;
 	
 	@Transient
@@ -362,9 +379,11 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	private String clientContactEmail;
 	
 	@Transient
+	@JsonProperty
 	private String isLoginUserAsTeamMember;
 	
 	@Transient
+	@JsonProperty
 	private String isLoginUserAsApprover;
 	
 	@Transient
@@ -413,6 +432,10 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	private String isRequirementReleasedByuser;
 	
 	@Transient
+	@JsonProperty
+	private String isRequirementReleased;
+	
+	@Transient
 	private String orgcode;
 
 	@Transient
@@ -439,7 +462,11 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	@Transient
 	private String requirementOrgName;
 	
+	@Column(name = "GENERATED_ID")
+	private String generatedId;
 	
+	@Transient
+	private String systemGeneratedId;
 	
 	@Transient
 	private Integer vendorInterviewsCount;
@@ -453,6 +480,21 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	@Transient
 	private Long referId;
 	
+    @Transient
+    @JsonProperty
+    private String isRequirementRelesedToPublic;
+	 
+    @Transient
+	@JsonProperty
+	private List<Long> requirementReleasedUserIds;
+
+	@Transient
+	@JsonProperty
+	private String postedOnStr;
+	
+	@Transient
+	@JsonProperty
+	private String DT_RowId;
 	
 	public String getRequirementOrgName() {
 		return requirementOrgName;
@@ -595,11 +637,19 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	public void setIsJobApplied(String isJobApplied) {
 		this.isJobApplied = isJobApplied;
 	}
-
 	public String getClientName() {
+		if(clientId != null){
+			if(clientId.getResponderType().equalsIgnoreCase("Client")){
+				clientName = clientId.getResponderLocationId().getOrg().getOrgName();
+			}
+			if(clientId.getResponderType().equalsIgnoreCase("Vendor")){
+				clientName = clientId.getLocationId().getOrg().getOrgName();
+			}
+		}
+		
 		return clientName;
 	}
-
+	
 	public void setClientName(String clientName) {
 		this.clientName = clientName;
 	}
@@ -806,6 +856,7 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	}
 
 	public Date getCreatedDate() {
+		
 		return createdDate;
 	}
 
@@ -813,11 +864,12 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 		this.createdDate = createdDate;
 	}
 
-	public String getCreatedBy() {
+	
+	public User getCreatedBy() {
 		return createdBy;
 	}
 
-	public void setCreatedBy(String createdBy) {
+	public void setCreatedBy(User createdBy) {
 		this.createdBy = createdBy;
 	}
 
@@ -886,9 +938,20 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	}
 
 	public String getManager() {
+		if(managerUserId != null){
+			String managerFirstName = "";
+			if(StringUtils.isNotEmpty(managerUserId.getFirstName())){
+				managerFirstName = managerUserId.getFirstName();
+			}
+			String managerLastName = "";
+			if(StringUtils.isNotEmpty(managerUserId.getLastName())){
+				managerLastName = managerUserId.getLastName();
+			}
+			StringBuilder name = new StringBuilder();
+			manager = name.append(managerFirstName).append(" ").append(managerLastName).toString();
+		}
 		return manager;
 	}
-
 	public void setManager(String manager) {
 		this.manager = manager;
 	}
@@ -1353,6 +1416,16 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 		this.reqCoolingOffPeriod = reqCoolingOffPeriod;
 	}
 
+	public String getReleaseJobToAllUsers()
+	{
+		return releaseJobToAllUsers;
+	}
+
+	public void setReleaseJobToAllUsers(String releaseJobToAllUsers)
+	{
+		this.releaseJobToAllUsers = releaseJobToAllUsers;
+	}
+
 	public String getNoticePeriod() {
 		return noticePeriod;
 	}
@@ -1525,7 +1598,91 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 		return serialVersionUID;
 	}
 
+	public String getGeneratedId()
+	{
+		return generatedId;
+	}
+
+	public String getApproverHierarchy() {
+		return approverHierarchy;
+	}
+
+	public void setApproverHierarchy(String approverHierarchy) {
+		this.approverHierarchy = approverHierarchy;
+	}
+
+	public void setGeneratedId(String generatedId)
+	{
+		this.generatedId = generatedId;
+	}
+
+	public String getSystemGeneratedId()
+	{
+		return systemGeneratedId;
+	}
+
+	public void setSystemGeneratedId(String systemGeneratedId)
+	{
+		this.systemGeneratedId = systemGeneratedId;
+	}
+
+	public List<Long> getRequirementReleasedUserIds() {
+		if(StringUtils.isNotEmpty(releasedBy) && requirementReleasedUserIds != null){
+			for (String s : releasedBy.split(",")){
+				requirementReleasedUserIds.add(Long.parseLong(s));
+			 }
+		}
+		return requirementReleasedUserIds;
+	}
+	public void setRequirementReleasedUserIds(List<Long> requirementReleasedUserIds) {
+		this.requirementReleasedUserIds = requirementReleasedUserIds;
+	}
+
+	public String getPostedOnStr() {
+		if(createdDate != null && orgLocationId != null){
+			SimpleDateFormat dateFormat = orgLocationId.getLocFullFormDateFormatter();
+			if(dateFormat != null)
+			postedOnStr = dateFormat.format(createdDate);	
+		}
+		return postedOnStr;
+	}
+
+	public void setPostedOnStr(String postedOnStr) {
+		this.postedOnStr = postedOnStr;
+	}
+
+	public String getIsRequirementRelesedToPublic() {
+		
+		if(isPublic == null   && isCrowdSourcing == null ){
+			isRequirementRelesedToPublic = Constants.NO;
+		}else{
+			isRequirementRelesedToPublic = Constants.YES;
+		}
+		return isRequirementRelesedToPublic;
+	}
+
+	public void setIsRequirementRelesedToPublic(String isRequirementRelesedToPublic) {
+		this.isRequirementRelesedToPublic = isRequirementRelesedToPublic;
+	}
+
+	public String getIsRequirementReleased() {
+		return isRequirementReleased;
+	}
+
+	public void setIsRequirementReleased(String isRequirementReleased) {
+		this.isRequirementReleased = isRequirementReleased;
+	}
+
+	public String getDT_RowId()
+	{
+		return DT_RowId;
+	}
+
+	public void setDT_RowId(String dT_RowId)
+	{
+		DT_RowId = dT_RowId;
+	}
 
 	
-
+	
 }

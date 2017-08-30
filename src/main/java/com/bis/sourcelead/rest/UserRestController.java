@@ -45,6 +45,7 @@ import com.bis.sourcelead.elk.index.ProjectsIndex;
 import com.bis.sourcelead.elk.index.helper.ProjectsIndexHelper;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.CandidateOffBoarding;
 import com.bis.sourcelead.entity.Department;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
@@ -63,6 +64,7 @@ import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Primary;
 import com.bis.sourcelead.enums.Status;
 import com.bis.sourcelead.form.RestResponsetUtil;
+import com.bis.sourcelead.service.CandidateOffBoardingService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.DepartmentService;
 import com.bis.sourcelead.service.EmailScenarioService;
@@ -104,8 +106,6 @@ public class UserRestController {
 	@Autowired
 	private ProjectsService projectsService;
 	
-	@Autowired
-	private ProjectMembersService projectMembersService;
 	
 	@Autowired
 	private ProjectMembersHistoryService projectMembersHistoryService;
@@ -165,6 +165,11 @@ public class UserRestController {
 	@Autowired
 	TabsService tabsService;
 	
+	@Autowired
+	ProjectMembersService projectMembersService;
+	
+	@Autowired
+	CandidateOffBoardingService candidateOffBoardingService;
 	
 	/**
 	 * To get All Approvers
@@ -644,7 +649,7 @@ public class UserRestController {
 					 if(null != pmh.getProjectMemberId()){
 						 user = userService.getUserById(projectApproverHierarchy.getApproverUserId().getId());
 				}
-				 
+				 //SimpleDateFormat dateFormat=orgLocations.getLocFullFormDateFormatter();
 				 EmailMessage emailMessage = new EmailMessage();
 				 emailMessage.setFirstName(user.getFirstName());
 				 emailMessage.setLastName(user.getLastName());
@@ -656,7 +661,7 @@ public class UserRestController {
 				// emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
 				//setting the class filed values
 				 Map<String, String> globalVarsMap = new HashMap<String, String>();
-				 String endDate = Constants.DMY.format(pmh.getProjectTerminationDate());
+				 String endDate = commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),pmh.getProjectTerminationDate());
 				 
 				 if(null != pmh.getProjectMemberId().getEmployee().getUser()){
 					 if(null != pmh.getProjectMemberId().getEmployee().getUser().getLastName() && !"".equalsIgnoreCase(pmh.getProjectMemberId().getEmployee().getUser().getLastName())){
@@ -755,7 +760,10 @@ private void terminatedMailToEmployee(User loginUser, ProjectMembersHistory pmh,
 			// emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
 			//setting the class filed values
 			 Map<String, String> globalVarsMap = new HashMap<String, String>();
-			 String endDate = Constants.DMY.format(pmh.getProjectTerminationDate());
+			 //SimpleDateFormat dateFormat=orgLocations.getLocFullFormDateFormatter();
+			 String endDate = commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),pmh.getProjectTerminationDate());
+			 
+			 String statrDate = commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),pmh.getProjectAssignedDate());
 			 
 			 if(null!= pmh.getProjectMemberId().getEmployee()){
 				 if(null != pmh.getProjectMemberId().getEmployee().getUser()){
@@ -778,7 +786,7 @@ private void terminatedMailToEmployee(User loginUser, ProjectMembersHistory pmh,
 			 }
 			 
 			 if(null != pmh.getProjectAssignedDate()){
-				 globalVarsMap.put("Project StartDate",pmh.getProjectAssignedDate().toString());
+				 globalVarsMap.put("Project StartDate",statrDate);
 			 }else{
 				 globalVarsMap.put("Project StartDate", "--");
 			 }
@@ -874,27 +882,27 @@ private void terminatedMailToEmployee(User loginUser, ProjectMembersHistory pmh,
 					OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 				
 					ProjectMembers projectMembers =	projectMembersService.getProjectMemberById(projectMemberId);
-					SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+					//SimpleDateFormat sdf = orgLocations.getLocFullFormDateFormatter();
 					
 					if (endDate != null && !"".equals(endDate) && !endDate.equalsIgnoreCase("--")) {
 						ProjectMembersHistory pmh = projectMembersHistoryService.getProjectMembersOpenHistoryByProjectMemberId(projectMembers.getId());
 						if(pmh == null){
 							pmh = projectMembersHistoryService.getProjectMembersRecentClosedByProjectMemberId(projectMembers.getId());
 						}
-						Date endDate1=sdf.parse(endDate);
+						Date endDate1=commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),endDate);
 						if(pmh.getProjectTerminationDate()== null){
 							/*projectMembersService.updateEndDateOfProjectMemberId(endDate1, projectMemberId);*/
 							projectMembersHistoryService.updateEndDateOfProjectMemberId(endDate1, projectMemberId);
 						}
 
-						if (pmh.getProjectTerminationDate() != null && pmh.getProjectTerminationDate().compareTo(sdf.parse(endDate)) != 0) {
+						if (pmh.getProjectTerminationDate() != null && pmh.getProjectTerminationDate().compareTo(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),endDate)) != 0) {
 							projectMembersHistoryService.updateEndDateOfProjectMemberId(endDate1, projectMemberId);
 							
 						}
 						// mail forward to members inline end date edit
 						projectEnddatechangetoEmployee(projectMembers,user, orgLocations, endDate );
 						
-						Date terminationDate = sdf.parse(endDate);
+						Date terminationDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),endDate);
 						Date currentDate = new  Date();
 						
 						if(currentDate.after(terminationDate) && !currentDate.equals(terminationDate)){
@@ -930,7 +938,7 @@ private void terminatedMailToEmployee(User loginUser, ProjectMembersHistory pmh,
 		
 		 private void projectEnddatechangetoEmployee(ProjectMembers emp, User loginUser,  OrgLocations loginOrgLocation, String changedEndDate) throws Exception {
 			 Projects projects = projectsService.getProjectById(emp.getProjects().getId());
-			 SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+			 //SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
 			 StringBuilder fromNameBuilder=new StringBuilder();
 		     EmailMessage emailMessage = new EmailMessage();
 			 emailMessage.setFirstName(emp.getEmployee().getUser().getFirstName());
@@ -943,7 +951,7 @@ private void terminatedMailToEmployee(User loginUser, ProjectMembersHistory pmh,
 			 //setting the class filed values
 			 Map<String, String> globalVarsMap = new HashMap<String, String>();
 			 
-			 globalVarsMap.put("projectStartdate",sdf.format(projects.getStartDate()));
+			 globalVarsMap.put("projectStartdate",commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),projects.getStartDate()));
 			 globalVarsMap.put("projectEnddate",changedEndDate);
 			 
 			 if(loginUser.getFirstName() != null && loginUser.getLastName()!=null && !"".equalsIgnoreCase(loginUser.getFirstName()) && !"".equalsIgnoreCase(loginUser.getLastName())){
@@ -1174,14 +1182,14 @@ private void terminatedMailToEmployee(User loginUser, ProjectMembersHistory pmh,
 					  
 					  pmh.setProjectMemberId(projectMembers);
 			  		  pmh.setStatus(Constants.PROJECT_MEMBER_HISTORY_OPEN);
-			  		  String pattern = "dd-MM-yyyy";
-		    	      SimpleDateFormat format = new SimpleDateFormat(pattern);
+			  		  //String pattern = "dd-MM-yyyy";
+		    	     // SimpleDateFormat format = new SimpleDateFormat(pattern);
 		    	      if(jsonObj.has("Re-StartDate") && !isNullOrEmpty(jsonObj.getString("Re-StartDate"))){
-		    	    	  Date startDate = format.parse(jsonObj.getString("Re-StartDate"));
+		    	    	  Date startDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),jsonObj.getString("Re-StartDate"));
 						  pmh.setProjectAssignedDate(startDate);
 		    	      }
 		    	      if(jsonObj.has("Re-EndDate") && !isNullOrEmpty(jsonObj.getString("Re-EndDate"))){
-		    	    	  Date endDate = format.parse(jsonObj.getString("Re-EndDate"));
+		    	    	  Date endDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),jsonObj.getString("Re-EndDate"));
 						  pmh.setProjectTerminationDate(endDate);
 		    	      }
 		    	      pmh.setCreatedDate(commonUtil.currentDate());
@@ -1229,9 +1237,10 @@ private void terminatedMailToEmployee(User loginUser, ProjectMembersHistory pmh,
 			// emailMessage.setFromName(msgBuild.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
 			// emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
 			//setting the class filed values
+			//SimpleDateFormat dateFormat=orgLocations.getLocFullFormDateFormatter();
 			 Map<String, String> globalVarsMap = new HashMap<String, String>();    
-			 String startDate = Constants.DMY.format(pmh.getProjectAssignedDate());
-			 String endDate = Constants.DMY.format(pmh.getProjectTerminationDate());
+			 String startDate = commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),pmh.getProjectAssignedDate());
+			 String endDate = commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),pmh.getProjectTerminationDate());
 			 if(null!= pmh.getProjectMemberId().getEmployee()){
 				 if(null != pmh.getProjectMemberId().getEmployee().getUser()){
 					 if(null != pmh.getProjectMemberId().getEmployee().getUser().getLastName() && !"".equalsIgnoreCase(pmh.getProjectMemberId().getEmployee().getUser().getLastName())){
@@ -1365,6 +1374,13 @@ private void terminatedMailToEmployee(User loginUser, ProjectMembersHistory pmh,
         			  if(null != employee){
         				  userService.saveOrUpdateUserElkDocument(userRole,employee,user.getUserCode());
         			  }
+        			  
+        			  
+        			  CandidateOffBoarding candidateOffBoarding =  candidateOffBoardingService.getCandidateOffBoardingByUserIdAndLocationId(Long.parseLong(userID), orgLocations.getId());
+        			  if(candidateOffBoarding != null){
+        				  candidateOffBoarding.setStatus(0);
+        				  candidateOffBoardingService.saveCandidateOffBoarding(candidateOffBoarding);
+        			  }
 				}
                 return "updated";
          }
@@ -1425,4 +1441,22 @@ private void terminatedMailToEmployee(User loginUser, ProjectMembersHistory pmh,
 	 protected static boolean isNullOrEmpty(String str) {
 			return (str == null || "".equals(str.trim()));
 		}
+	 
+	 
+	/**
+	 * To get the assigned projects list for user based on userId and
+	 * OrgLocationId
+	 * 
+	 * @param userId
+	 * @param orgLocationId
+	 * @return json object
+	 * @throws Exception
+	 */
+	@RequestMapping(value = { "/getAssignedProjectsListForUser",
+			"/rest/getAssignedProjectsListForUser" }, method = RequestMethod.GET)
+	public @ResponseBody List<ProjectMembers> getAssignedProjectsListForUser(@RequestParam(value = "userId", required = false) Long userId, @RequestParam(value = "orgLocationId", required = false) Long orgLocationId) throws Exception
+	{
+		List<ProjectMembers> projectMembersList = projectMembersService.getAllAssignedProjectsForUser(userId, orgLocationId);
+		return projectMembersList;
+	}
 }

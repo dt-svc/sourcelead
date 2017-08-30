@@ -2,15 +2,9 @@
 <jsp:include page="../masterSideNav.jsp" />
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
-<link rel="icon" type="resources/image/png"
-	href="resources/images/fav.png" />
 <link href="resources/css/register-style.css" rel="stylesheet">
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <link href="resources/css/register-style.css" rel="stylesheet">
-<!-- <script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script> -->
-<!-- these files for autocomplete with tagit -->
-<link href="resources/css/jquery-tagit.css" rel="stylesheet">
-<script src="resources/js/formvalidator.js"></script>
 <script src="resources/js/summernote.js"></script>
 <link href="resources/css/summernote.css" rel="stylesheet" />
 <%@taglib prefix="sec"
@@ -18,11 +12,6 @@
 
 <script src="resources/js/editor.js"></script>
 <link href="resources/css/editor.css" type="text/css" rel="stylesheet"/>
-		<script>
-			$(document).ready(function() {
-				$("#txtEditor").Editor();
-			});
-       </script> 
 <style>
 .clsDatePicker {
 	z-index: 100000 !important;
@@ -85,19 +74,43 @@ function validateTaskName(){
 	
 	var fileCounter = 0;
 	function addFileUpload(){
+		/* var result = '';
+		result = result + '<div class="pull-left" style="float:left; width:325px; margin-right:15px; margin-bottom:15px; border:1px solid #ddd; padding:5px;">';
+		result = result + '<div style="width:125px; margin-bottom:5px;"><lable class="paddingRight small">Is Confidential ?</label> <input type="checkbox" name="isclient" value="N" class="pull-right" /></div>';
 		
-		$('<div>').attr('style','float:left; width:245px; border:1px solid #ddd; margin:0 5px 5px 0; padding:5px;overflow: hidden').append('<input id="file' +  '" name = "project_files' + '" type="file" />' +
-	            '<input id="Button' + fileCounter + '" type="button" ' +
-	            'value="Remove Document" onclick = "RemoveFileUpload(this)" />').appendTo($('#FileUploadContainer'));
+		result = result + '<div style="margin:0; padding:5px;overflow: hidden; background-color:#367fa9; color:#fff;" >';
+		result = result + ' <input id="file" name = "project_files" type="file" class="pull-left" /> <a id="Button' + fileCounter + '"  value="" onclick = "RemoveFileUpload(this)"><i class="fa fa-times btn btn-danger btn-sm btn-sm2 pull-right"></i></a>';
+		result = result + '</div>';
+		
+		result = result + '</div>';
+		fileCounter++;
+		 $("#FileUploadContainer").append(result); */
+		
+// 		$('<div>').attr('style','width:150px; margin:0; padding:0 0 5px 0;').append('<lable class="paddingRight">Is Confidential ?</label>' + '<input type="checkbox" name="isclient" value="N" class="pull-right" />').appendTo($('#FileUploadContainer'));
+		$('<div>').attr('style','float:left; width:325px; border:1px solid #ddd; margin:0 15px 15px 0; padding:5px;overflow: hidden; background-color:#367fa9; color:#fff; ').append('<input id="file' +  '" name = "project_files' + '" type="file" class="pull-left" />' +
+	            '<a id="Button' + fileCounter + '' +
+	            'value="" onclick = "RemoveFileUpload(this)"><i class="fa fa-times btn btn-danger btn-sm btn-sm2 pull-right"></i></a>').appendTo($('#FileUploadContainer'));
 
-	    		fileCounter++;
+	    		fileCounter++; 
+	    		
 	}
 	function RemoveFileUpload(div)
 	{
 		 document.getElementById("FileUploadContainer").removeChild(div.parentNode);
 	}
 </script>
-
+<script>
+function isclientChckbox(){
+	if($("#isClinet").val() == "N"){
+		$("#isClinet").val("Y");
+		document.getElementById("selectClient").style.display="block";
+	}else{
+		document.getElementById("selectClient").style.display="none";
+		$("#isClinet").val("N");
+		
+	}
+}
+</script>
 
 <!-- Content Area -->
 <section class="content-wraper">
@@ -125,21 +138,29 @@ function validateTaskName(){
 								<input type="text" value="" id="ProjectSequeneNumber"
 									name="ProjectSequeneNumber"
 									data-validation="validate_Space validate_length length2-50"
-									data-validation-optional="true" class="form-control"
+									data-validation-optional="true" class="form-control" placeholder="Project Id"
 									onblur="validateProjectSequeneNumber();">
 							</div>
 						</div>
 
 						<div class="form-group">
-							<label class="col-md-3">Client</label>
+							<label class="col-md-3">Is Client project ?</label>
 							<div class="col-md-9">
-								<select class="form-control select-bg chosen-select"
-									name="selectClient" id="addClientId">
-									<option value=''>-- Select Client --</option>
-									<c:forEach var="option" items="${add_clientList}">
-										<option value="${option.orgLocationId}">${option.orgName}</option>
-									</c:forEach>
-								</select> <span class="hidden">Enter Project Id</span>
+								
+								<div class="row">
+									<div class="col-md-1 mt5 paddingRight">
+										<input type="checkbox" name="isclient" value="N" id="isClinet" onclick="isclientChckbox();">
+									</div>
+									<div class="col-md-11 paddingLeft" id="selectClient" style="display: none;">
+									<select class="form-control select-bg chosen-select" name="selectClient" id="addClientId" >
+										<option value=''>-- Select Client --</option>
+										<c:forEach var="option" items="${add_clientList}">
+											<option value="${option.orgLocationId}">${option.orgName}</option>
+										</c:forEach>
+									</select> <span class="hidden">Enter Project Id</span>
+							</div>
+								</div>
+							
 							</div>
 						</div>
 						<div class="form-group">
@@ -147,15 +168,12 @@ function validateTaskName(){
 							<div class="col-md-9">
 								<div class="row">
 									<div class="col-lg-6 positionRelative" id="StartDateDiv">
-										<input type="text" class="form-control" value=""
-											id="StartDate" name="StartDate" field-name="Start Date"
-											data-validation="required" readonly="readonly"> <span
-											class="input-group-addon input-groupAddon"><i
-											class="fa fa-calendar"></i></span>
+										<input type="text" class="form-control" value="" id="StartDate" name="StartDate" field-name="Start Date" placeholder="Start Date" data-validation="required" readonly="readonly" > <span
+											class="input-group-addon input-groupAddon"><i class="fa fa-calendar"></i></span>
 									</div>
 									<div class="col-lg-6 positionRelative" id="endDateDiv">
 										<input type="text" class="form-control" value="" id="EndDate"
-											name="EndDate" field-name="End Date" readonly="readonly">
+											name="EndDate" field-name="End Date" placeholder="End Date" readonly="readonly">
 										<span class="input-group-addon input-groupAddon"><i
 											class="fa fa-calendar"></i></span>
 									</div>
@@ -226,8 +244,8 @@ function validateTaskName(){
 							<label class="col-md-3"></label>
 							<div class="col-md-9">
 								<div class="input-group">
-									<div class="input-group-btn selp-custom-min" id="flatPercentageId" >
-										<select class="form-control chosen-select" name="flatPercentageId">
+									<div class="input-group-btn selp-custom-min tblminwidth-125" id="flatPercentageId" >
+										<select class="form-control chosen-select"  name="flatPercentageId">
 											<option value="flat">FLAT</option>
 											<option value="percentage">PERCENTAGE</option>
 										</select>
@@ -255,8 +273,8 @@ function validateTaskName(){
 							</label>
 							<div class="col-md-9">
 
-								<input type="text" class="form-control" name="ProjectName" data-validation="required validate_Space validate_length length2-100"
-									field-name="Project Name" value=""> <span class="hidden">Project Name</span> <span class="hidden">Enter Project Id</span>
+								<input type="text" class="form-control" name="ProjectName" placeholder="Project name" data-validation="required validate_Space validate_length length2-250"
+									field-name="Project Name" value=""> <span class="hidden">Project Name</span> <span class="hidden" >Enter Project Id</span>
 
 							</div>
 						</div>
@@ -270,7 +288,7 @@ function validateTaskName(){
 										<select class="form-control chosen-select"
 											name="level1Manager" id="level1Manager" field-name="Manager"
 											data-validation="required" onchange="getLevel2Approvers();">
-											<option value="">-- Level Manager --</option>
+											<option value="">-- Select Level1 Manager --</option>
 											<c:forEach var="option" items="${user_List}">
 												<option value="${option.id},${option.userType}">${option.firstName}
 													${option.lastName}</option>
@@ -350,9 +368,9 @@ function validateTaskName(){
 						<div class="form-group">
 							<label class="col-md-3">Invoice Frequency <span
 								class="text-danger">*</span></label>
-							<div class="col-md-9" id="chosen-frequency">
+							<div class="col-md-9" id="chosen-InvoiceFrequency">
 								<select class="form-control chosen-select" id="invoiceFrequency"
-									name="invoiceFrequency" onchange="removeFrequencyValidation();"
+									name="invoiceFrequency" onchange="removeInvoiceFrequencyValidation();"
 									field-name="Invoice Frequency" data-validation="required">
 									<option value="">-Invoice Frequency-</option>
 									<option value="Weekly">Weekly</option>
@@ -406,7 +424,7 @@ function validateTaskName(){
 
 				</div>
 				<!--  div row end -->
-
+<!-- dont remove the code because next implement code Laxman -->
 				<!--  div row start -->
 				<!-- <div class="row">
 					<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
@@ -418,6 +436,8 @@ function validateTaskName(){
 					</div>
 				</div> -->
 
+
+          
 				<div class="row">
 					<%-- <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
 
@@ -475,29 +495,37 @@ function validateTaskName(){
 
 					<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12  txtEditor_p">
 						<h5>Description</h5>
-						<textarea id="txtEditor" name="ProjectDescription" value="" class="form-control newContrtextarea"></textarea>
+						<textarea id="txtEditor" name="ProjectDescription" value="" class="form-control newContrtextarea" data-validation="validate_length length2-5000" data-validation-optional="true"></textarea>
 <!-- 						<textarea maxlength="5000" cols="80" rows="10" id="ProjectDescription" name="ProjectDescription"></textarea> -->
 
 					</div>
 
 					<!--  Documents Section -->
 					<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-						<h5>Documents</h5>
-						<input id="Button1" type="button" value="Add Document"
-							onclick="addFileUpload()" /> <br /> <br /> <br />
+						<div class="row mt mb10">
+						<h5 class="col-md-1 paddingRight">Documents</h5>
+						<div class="col-md-10 paddingLeft">
+						<input id="Button1" type="button" value="Add Document" onclick="addFileUpload()" class="btn btn-sm btn-primary" />
+						</div>
+							</div>
 						<div id="FileUploadContainer">
 							<!--FileUpload Controls will be added here -->
 						</div>
 						<br />
 						<!--<input type="file" name="project_files" id="project_files" multiple="multiple"/>-->
 					</div>
+					<div class="clearfix col-md-12">
+						<span class="paddingRight"><input type="checkbox" id="isMailToTeamMembers" name="isMailToTeamMembers">&nbsp;Mail to team members</span> 
+						<span class="paddingLeft"><input type="checkbox" id="isMailToProjectManager" name="isMailToProjectManager">&nbsp;Mail to manager</span>
+					</div>
+					
 
 				</div>
 
 				<!--  div row end -->
 
 
-				<div class="form-footer clearfix row">
+				<div class="form-footer clearfix row mt">
 					<div class="col-lg-12">
 						<div class="pull-right">
 							<input type="button" value="Save" id="save_project"
@@ -532,6 +560,9 @@ function allowOverTime(){
 		$('#flatPercentage').attr('style','visibility:hidden');
 	}
 	
+}
+function removeInvoiceFrequencyValidation(){
+	$('#chosen-InvoiceFrequency').find('p.jquery_form_error_message').remove();
 }
 </script>
 <script>
@@ -1006,6 +1037,7 @@ function flushProjectTasks(){
 
 							assignEmployeespagination();	
 						  //StartDate And EndDate Pickers
+						    
 					       if(json.length > 0){
 						    	for (var i = 0; i < json.length; i++) {
 									var opt = json[i];
@@ -1016,7 +1048,7 @@ function flushProjectTasks(){
 									datepickerStartDate.setDate(datepickerStartDate.getDate() + 1);
 									
 									$('#startDate'+opt.id).datepicker({
-										dateFormat : 'dd-mm-yy',
+										dateFormat : finalDateFormatProjectSave,
 										changeMonth: true,
 										changeYear: true, 
 										minDate:projectStartDate,
@@ -1031,11 +1063,11 @@ function flushProjectTasks(){
 									});
 		
 									$('#endDate'+opt.id).datepicker({
-										dateFormat : 'dd-mm-yy',
+										dateFormat : finalDateFormatProjectSave,
 										changeMonth: true,
 										changeYear: true, 
 										maxDate:projectEndDate,
-										minDate: datepickerStartDate,
+										minDate: projectStartDate,
 										onSelect : function(selected) {
 											var actualId = $(this).attr('id').split('endDate')[1];
 											var dt = toDate('#endDate'+actualId);
@@ -1162,27 +1194,38 @@ function assignEmployeeCancel(){
 
 <script>
 	$(function() {
-
+		 var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+		  var finalDateFormatProjectSave = '';
+		  if(locationDate.match("yyyy-MM-dd")){
+			  finalDateFormatProjectSave = 'yy-mm-dd';
+		  }if(locationDate.match("dd-MM-yyyy")){
+			  finalDateFormatProjectSave = 'dd-mm-yy'; 
+		  }if(locationDate.match("MM-dd-yyyy")){
+			  finalDateFormatProjectSave = 'mm-dd-yy'; 
+		  }if(locationDate.match("yyyy-dd-MM")){
+			  finalDateFormatProjectSave = 'yy-dd-mm'; 
+		  }
 		$('#StartDate').datepicker({
-			dateFormat : 'dd-mm-yy',
+			dateFormat : finalDateFormatProjectSave,
 			changeMonth: true,
 			changeYear: true, 
 			onSelect : function(selected) {
 				//var dt = new Date(selected);
-				var dt = toDate("#StartDate");
+				var dt = $(this).datepicker('getDate', '+1d');
+				//var dt = toDate("#StartDate");
 				dt.setDate(dt.getDate() + 1);
 				$("#EndDate").datepicker("option", "minDate", dt);
 				addValidClass();
 			}
 		});
-
 		$('#EndDate').datepicker({
-			dateFormat : 'dd-mm-yy',
+			dateFormat : finalDateFormatProjectSave,
 			changeMonth: true,
 			changeYear: true, 
 			onSelect : function(selected) {
 				//var dt = new Date(selected);
-				var dt = toDate("#EndDate");
+				var dt = $(this).datepicker('getDate', '-1d');
+			//	var dt = toDate("#EndDate");
 				dt.setDate(dt.getDate() - 1);
 				$("#StartDate").datepicker("option", "maxDate", dt);
 				addValidClass();
@@ -1199,12 +1242,22 @@ function assignEmployeeCancel(){
                 if(mm<10){
                     mm='0'+mm
                 } 
+                
                 var today = yyyy+'-'+mm+'-'+dd;
+                
                 var proStartDateTP = today.split("-");
                 var d1 = new Date(proStartDateTP[0], proStartDateTP[1] - 1, proStartDateTP[2]);
                 
                 var proEndDateTP = dummyDate.split("-");
-                var d2 = new Date(proEndDateTP[2], proEndDateTP[1] - 1, proEndDateTP[0]);
+                if(locationDate.match("yyyy-MM-dd")){
+                	 var d2 = new Date(proEndDateTP[0], proEndDateTP[1] - 1, proEndDateTP[2]);
+      		    }if(locationDate.match("dd-MM-yyyy")){
+      		    	var d2 = new Date(proEndDateTP[2], proEndDateTP[1] - 1, proEndDateTP[0]);
+      		    }if(locationDate.match("MM-dd-yyyy")){
+      		    	var d2 = new Date(proEndDateTP[2], proEndDateTP[0] - 1, proEndDateTP[1]);
+      		    }if(locationDate.match("yyyy-dd-MM")){
+      		    	var d2 = new Date(proEndDateTP[0], proEndDateTP[2] - 1, proEndDateTP[1]);
+      		    }
                 
 				if(d1 > d2){
 					$("#Satatus").empty();
@@ -1344,10 +1397,13 @@ function getChildLevel1Approvers(currentApproverId){
 </script>
 
 <!-- script for converting dateformat in datepicker -->
-<script>
-function toDate(selector) {
-    var from = $(selector).val().split("-");
-    return new Date(from[2], from[1] - 1, from[0]);
-}
-</script>
+
 <!-- script for dateformat in datepicker End -->
+
+<script>
+	$(document).ready(function() {
+		$("#txtEditor").Editor();
+		$("#txtEditor").find(".Editor-editor").data-validation('validate_length length2-5000');
+		$("#txtEditor").find(".Editor-editor").data-validation-optional('rule-required',true);
+	});
+ </script>

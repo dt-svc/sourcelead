@@ -6,7 +6,6 @@
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
-<script src="resources/js/formvalidator.js"></script>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <style type="text/css">
 .edit-details {
@@ -79,7 +78,7 @@ function vendorContracts(orgRelationId){
 	    result = result + '<ul>';
 	    result = result + '<li class="dropdown mt10"><div class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-filter"></i><span>Status</span><i class="glyphicon glyphicon-play"></i></div>';
 	    result = result + '<div class="dropdown-menu bootstrap_dropdownMenu dropdown-menu_width dropdown-menu-right">                                                                                                                                       ';
-	    result = result + '<ul>';
+	    result = result + '<ul class="paddingLi">';
 	    result = result + '<li>';
 	    result = result + '<input type="checkbox" value="DRAFT" name="contractStatus" id="contractStatus" onclick="vendorContractsList('+orgRelationId+');" >';
 	    result = result + '<label class="paddingLeft">Draft <b class="badge" id="draftCount">0</b></label>';
@@ -161,6 +160,16 @@ function vendorContractsList(orgRelationId){
 		contractStatus.push($(this).val());
     });
 	 var sourceleadUrl ='${sourceleadUrl}';
+	 var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
+ 	  if(locationList.match("yyyy-MM-dd")){
+ 		  contractVendorDatePattern = 'YYYY-MM-DD';
+ 	  }if(locationList.match("dd-MM-yyyy")){
+ 		 contractVendorDatePattern = 'DD-MM-YYYY'; 
+ 	  }if(locationList.match("MM-dd-yyyy")){
+ 		 contractVendorDatePattern = 'MM-DD-YYYY'; 
+ 	  }if(locationList.match("yyyy-dd-MM")){
+ 		 contractVendorDatePattern = 'YYYY-DD-MM'; 
+ 	  }
 	 $.ajax({  
           type : "POST",
           url: sourceleadUrl+"/getClientOrVendorContracts?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+orgRelationId+"&responderType=Vendor&contractStatus="+contractStatus,        
@@ -185,7 +194,7 @@ function vendorContractsList(orgRelationId){
 	                		result = result + '    <th>Type</th>';
 	                		result = result + '    <th>Owner</th>';
 	                		result = result + '    <th>Vendor Contact</th>';
-	                		result = result + '    <th>Duration</th>';
+	                		result = result + '    <th>Duration <br>(<small class="custom-small">'+contractVendorDatePattern+'</small>)</th>';
 	                		result = result + '    <th>Req.Docs</th>';
 	                		result = result + '    <th>Status</th>'; 
 	                		result = result + '    <th>Action</th>';
@@ -198,7 +207,7 @@ function vendorContractsList(orgRelationId){
 	                		    	result = result + '<tr id="row'+report.id+'">';
 	                		        result = result + '<td>';
 // 	                		        if(null == report.parentContractId || '' == report.parentContractId || 'undefined' == report.parentContractId){
-	                		        	result = result + '<div class="tbldata-dotdot-sm proj_show" onclick="PopUp(\''+report.contractUUID+'\');"><span title="'+report.contractTitle+'"><a>'+report.contractTitle+'</a></span><i class="fa fa-binoculars"></i></div>';
+	                		        	result = result + '<div class="tbldata-dotdot-sm proj_show" onclick="PopUp(\''+report.contractUUID+'\');"><span title="'+report.contractTitle+'"><a>'+report.contractTitle+'</a></span></div>';
 	                		        /* }else{
 	                		        	result = result + '<div class="tbldata-dotdot-sm proj_show" ><span title="'+report.contractTitle+'">'+report.contractTitle+'</span></div>';
 	                		        } */
@@ -301,7 +310,7 @@ function vendorContractsList(orgRelationId){
 	                	result = result + '	</tbody>';
 	                	result = result + '</table>';
 	                	
-	                	$("#draftCount").html(expiredCount);
+	                	$("#draftCount").html(draftCount);
                 		$("#WFACount").html(waitingForApprovalCount);
                 		$("#WTSCount").html(waitingToBeSignedCount);
                 		$("#finalizedCount").html(finalizedCount);
@@ -720,6 +729,12 @@ function PopUp(contractUUID){
 				result = result +	'	</div>';
 			}
 			
+			if(null != json.rejectedReason && "" != json.rejectedReason && 'undefined' != json.rejectedReason && json.templateSubmissionStatus == 'REJECTED' ){
+				result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
+				result = result +	'		<div class="col-md-4 col-sm-4">Reject Reason</div>';
+				result = result +	'		<div class="col-md-8 col-sm-8">: '+json.rejectedReason+'</div>';
+				result = result +	'	</div>';
+			}
 			result = result +	'<div class="clearfix"/>';
 			
 		if(json.contractType != "Vendor NDA" && json.contractType != "Vendor NSA" && json.contractType!="Full time offer"){
@@ -844,15 +859,35 @@ function previewTemplatePDF(uuid, templateName){
 
 <script>
 function editOne(startDate,endDate){
+	var contractEffectiveEndDate = startDate.split("-");
+	 var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+	  var finalDateeditOneSave = '';
+	  var d2 = '';
+	  if(locationDate.match("yyyy-MM-dd")){
+		  finalDateeditOneSave = 'yy-mm-dd';
+		   d2 = new Date(contractEffectiveEndDate[0], parseInt(contractEffectiveEndDate[1])-parseInt(1), parseInt(contractEffectiveEndDate[2])+parseInt(1));
+	  }if(locationDate.match("dd-MM-yyyy")){
+		  finalDateeditOneSave = 'dd-mm-yy'; 
+		   d2 = new Date(contractEffectiveEndDate[2], parseInt(contractEffectiveEndDate[1])-parseInt(1), parseInt(contractEffectiveEndDate[0])+parseInt(1));
+	  }if(locationDate.match("MM-dd-yyyy")){
+		  finalDateeditOneSave = 'mm-dd-yy'; 
+		   d2 = new Date(contractEffectiveEndDate[2], parseInt(contractEffectiveEndDate[0])-parseInt(1), parseInt(contractEffectiveEndDate[1])+parseInt(1));
+	  }if(locationDate.match("yyyy-dd-MM")){
+		  finalDateeditOneSave = 'yy-dd-mm';
+		   d2 = new Date(contractEffectiveEndDate[0], parseInt(contractEffectiveEndDate[2])-parseInt(1), parseInt(contractEffectiveEndDate[1])+parseInt(1));
+	  }
+	
 	$('.editNewDat').show();
 	$('#endDate').datepicker({
-        dateFormat: 'dd-mm-yy',
+        dateFormat: finalDateeditOneSave,
         changeMonth: true,
           changeYear: true,
-          minDate: startDate,
+          minDate:  d2,
           onSelect: function (selected) {
-              var dt = toDate("#endDate");
-              dt.setDate(dt.getDate() - 1);
+             // var dt = toDate("#endDate");
+        	  var dt = $(this).datepicker('getDate', '-1d');
+	            dt.setDate(dt.getDate() - 1);
+	            $("#startDate").datepicker("option", "maxDate", dt);
           }
     });
 }

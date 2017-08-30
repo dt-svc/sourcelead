@@ -3,15 +3,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 
-
 <link href="resources/css/candidate-common.css" rel="stylesheet">
-
-<!-- these files for autocomplete with tagit -->
-<link href="resources/css/jquery-tagit.css" rel="stylesheet">
-<script src="resources/js/csc.js" type="text/javascript" charset="utf-8"></script>
-<script src="resources/js/tag-it.js" type="text/javascript" charset="utf-8"></script>
-<script src="resources/js/tag-it.min.js" type="text/javascript" charset="utf-8"></script>
-<!-- end files for autocomplete with tagit -->
 	
 	<script type="text/javascript">
 		window.onload = function () {
@@ -167,7 +159,7 @@
         <div class="form-group">
           <label class="col-md-3">ZipCode</label>
           <div class="col-md-9">
-          <input class="form-control" id="associateZipCode" name="zipcode" placeholder="Enter your Zip code" type="text"></input>
+          <input class="form-control" id="associateZipCode" name="zipcode" placeholder="Enter your Zip code" type="text" readonly></input>
           </div>
         </div>
         
@@ -457,7 +449,7 @@
         </div> 
         
         <div class="clearfix"></div>
-        <div class="form-group">
+       <!--  <div class="form-group">
             <label class="col-md-3"></label>
              <div class="col-md-9">
                <div class="checkbox checkBox">
@@ -466,10 +458,19 @@
                    Invite to SourceLead</label>
                </div>
                 </div>
-         </div>
-        
-        
-        
+         </div> -->
+         
+              <div class="clearfix"></div>
+					<div class="form-group">
+						<label class="col-md-3"></label>
+						<div class="col-md-9">
+							<div class="checkbox checkBox">
+								<label> <input type="checkbox" value="Y"
+									name="inviteEmail"> Invite to SourceLead
+								</label>
+							</div>
+						</div>
+					</div>
         <div class="clearfix"></div>
       </div> 
     </div>

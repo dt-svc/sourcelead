@@ -29,6 +29,7 @@ import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.RequestedDocumentsHistoryService;
 import com.bis.sourcelead.service.RequestedDocumentsService;
 import com.bis.sourcelead.service.UserService;
+import com.bis.sourcelead.util.CandidateActivityCommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 
@@ -59,6 +60,9 @@ public class RequestedDocumentsServiceImpl implements RequestedDocumentsService{
 	@Autowired
 	RequestedDocumentsHistoryService requestedDocumentsHistoryService;
 	
+	@Autowired
+	 CandidateActivityCommonUtil candidateActivityCommonUtil;
+	
 	protected boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
 	}
@@ -83,30 +87,32 @@ public class RequestedDocumentsServiceImpl implements RequestedDocumentsService{
 			int docuemntMaxRowNumberCount = Integer.parseInt(docuemntMaxRowNumber);
 			
 			RequestedDocuments requestedDocuments = new RequestedDocuments();
-			
+			StringBuffer activitySummary = new StringBuffer();
 			Candidate candidate = candidateDao.getCandidateByCandidateId(Long.valueOf(jsonObj.getString("requestedCandidateId")));
 			requestedDocuments.setCandidateId(candidate);
 			requestedDocuments.setUserId(user);
 			requestedDocuments.setOrgLocationId(orgLocations);
 			requestedDocuments.setRequestDocUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 			requestedDocuments.setIsDocsUploaded(Constants.NO);
-			requestedDocuments.setStatus(1);
+			requestedDocuments.setStatus(Constants.RECORD_ACTIVE);
 			requestedDocuments.setCreatedBy(user.getUserCode());
 			requestedDocuments.setUpdatedBy(user.getUserCode());
 			requestedDocuments.setCreatedDate(new Date());
 			requestedDocuments.setUpdatedDate(new Date());
 			requestedDocumentsDao.saveRequestedDocuments(requestedDocuments);
-			
+			activitySummary.append("Document Types").append(" : ");
 			for (int a = 0; a < docuemntMaxRowNumberCount; a++) {
 				
 				if(jsonObj.has(a+"docType")){
 					
 					RequestedDocumentsHistory requestedDocumentsHistory = new RequestedDocumentsHistory();
 					requestedDocumentsHistory.setRequestedDocumentsId(requestedDocuments);
-					if(jsonObj.has(a+"otherDocType") && !isNullOrEmpty(a+"otherDocType")){
+					if(jsonObj.has(a+"otherDocType") && !isNullOrEmpty(a+"otherDocType") && !jsonObj.getString(a+"otherDocType").equalsIgnoreCase("")){
 						requestedDocumentsHistory.setDocumentType(jsonObj.getString(a+"otherDocType"));
+						activitySummary.append(Constants.NEW_VALUE_TAG_INITIATION).append(jsonObj.getString(a+"otherDocType")).append(Constants.NEW_VALUE_TAG_END).append(", ");
 					}else{
 						requestedDocumentsHistory.setDocumentType(jsonObj.getString(a+"docType"));
+						activitySummary.append(Constants.NEW_VALUE_TAG_INITIATION).append(jsonObj.getString(a+"docType")).append(Constants.NEW_VALUE_TAG_END).append(", ");
 					}
 					
 					if(jsonObj.has(a+"description") && !isNullOrEmpty(a+"description")){
@@ -122,7 +128,7 @@ public class RequestedDocumentsServiceImpl implements RequestedDocumentsService{
 						requestedDocumentsHistory.setIsRequestedDocRequired(Constants.NO);
 					}
 					
-					requestedDocumentsHistory.setStatus(1);
+					requestedDocumentsHistory.setStatus(Constants.RECORD_ACTIVE);
 					requestedDocumentsHistory.setCreatedBy(user.getUserCode());
 					requestedDocumentsHistory.setUpdatedBy(user.getUserCode());
 					requestedDocumentsHistory.setCreatedDate(new Date());
@@ -152,7 +158,7 @@ public class RequestedDocumentsServiceImpl implements RequestedDocumentsService{
 					
 					candidateDocuments.setOrgLocationId(orgLocations);
 					candidateDocuments.setDocumentUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
-					candidateDocuments.setStatus(1);
+					candidateDocuments.setStatus(Constants.RECORD_ACTIVE);
 					candidateDocuments.setCreatedBy(user.getUserCode());
 					candidateDocuments.setUpdatedBy(user.getUserCode());
 					candidateDocuments.setCreatedDate(new Date());
@@ -162,7 +168,7 @@ public class RequestedDocumentsServiceImpl implements RequestedDocumentsService{
 			}
 			
 			sendEmailToCandidateForDocument(user,candidate,orgLocations,requestedDocuments.getRequestDocUUID());
-			
+			candidateActivityCommonUtil.storeCandidateActivity(user, orgLocations, candidate, "", Constants.CANDIDATE_REQUEST_DOCUMENTS, activitySummary.toString().substring(0, activitySummary.toString().length() - 2), "CANDIDATE");
 		}
 	}
 	
@@ -232,7 +238,7 @@ public class RequestedDocumentsServiceImpl implements RequestedDocumentsService{
 		
 		 EmailMessage emailMessage = new EmailMessage();
 		 
-		 
+		 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
 		 emailMessage.setToEmail(requestedDocuments.getUserId().getEmail());
 		 emailMessage.setFromName(requestedDocuments.getCandidateId().getFirstName());
 		 emailMessage.setFromEmail(requestedDocuments.getCandidateId().getEmail());
@@ -301,7 +307,8 @@ public class RequestedDocumentsServiceImpl implements RequestedDocumentsService{
 			String[] documents = documentsIds.split(",");
 			
 				Candidate candidate = candidateDao.getCandidateByCandidateId(Long.valueOf(jsonObj.getString("rejectedDocsCandidateId")));
-				
+				StringBuffer activitySummary = new StringBuffer();
+				StringBuffer rejectSummary = new StringBuffer();
 				RequestedDocuments requestedDocuments = new RequestedDocuments();
 				requestedDocuments.setCandidateId(candidate);
 				requestedDocuments.setUserId(user);
@@ -315,7 +322,8 @@ public class RequestedDocumentsServiceImpl implements RequestedDocumentsService{
 				requestedDocuments.setUpdatedDate(new Date());
 				requestedDocumentsDao.saveRequestedDocuments(requestedDocuments);
 				
-				
+				activitySummary.append("Document Types").append(" : ");
+				rejectSummary.append("Rejected Reason").append(" : ");
 				for(int i=0; i<documents.length; i++){
 					
 					CandidateDocuments candidateDocuments = candidateDocumentsDao.getCandidateDocumentByDocumentId(Long.valueOf(documents[i]));
@@ -325,8 +333,10 @@ public class RequestedDocumentsServiceImpl implements RequestedDocumentsService{
 					
 					if(!isNullOrEmpty(candidateDocuments.getDocumentOtherType())){
 						requestedDocumentsHistory.setDocumentType(candidateDocuments.getDocumentOtherType());
+						activitySummary.append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDocuments.getDocumentOtherType()).append(Constants.NEW_VALUE_TAG_END).append(", ");
 					}else{
 						requestedDocumentsHistory.setDocumentType(candidateDocuments.getDocumentType());
+						activitySummary.append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDocuments.getDocumentType()).append(Constants.NEW_VALUE_TAG_END).append(", ");
 					}
 					
 					if(!isNullOrEmpty(candidateDocuments.getDescription())){
@@ -358,13 +368,17 @@ public class RequestedDocumentsServiceImpl implements RequestedDocumentsService{
 					candidateDocumentsDao.storeCandidateDocuments(candidateDocuments);
 				}
 				sendEmailToCandidateForDocument(user,candidate,orgLocations,requestedDocuments.getRequestDocUUID());
+				String summaryStr = activitySummary.toString().substring(0, activitySummary.toString().length() - 2) +"<br />" + rejectSummary.append(jsonObj.getString("rejectedReason")).toString();
+				candidateActivityCommonUtil.storeCandidateActivity(user, orgLocations, candidate, "", Constants.CANDIDATE_REJECT_REQUEST_DOCUMENTS, summaryStr, "CANDIDATE");
 		}
 	}
 
 	@Override
-	public void acceptRequestedDocuments(User user, String documentsIds) throws Exception
+	public void acceptRequestedDocuments(User user, String documentsIds, OrgLocations orgLocations, Candidate candidate) throws Exception
 	{
+		StringBuffer activitySummary = new StringBuffer();
 		if(!isNullOrEmpty(documentsIds)){
+			activitySummary.append("Document Types").append(" : ");
 			String[] documents = documentsIds.split(",");
 			for(int i=0; i<documents.length; i++){
 				CandidateDocuments candidateDocuments = candidateDocumentsDao.getCandidateDocumentByDocumentId(Long.valueOf(documents[i]));
@@ -374,8 +388,13 @@ public class RequestedDocumentsServiceImpl implements RequestedDocumentsService{
 				candidateDocuments.setCreatedDate(new Date());
 				candidateDocuments.setUpdatedDate(new Date());
 				candidateDocumentsDao.storeCandidateDocuments(candidateDocuments);
+				if(!isNullOrEmpty(candidateDocuments.getDocumentOtherType())){
+					activitySummary.append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDocuments.getDocumentOtherType()).append(Constants.NEW_VALUE_TAG_END).append(", ");
+				}else{
+					activitySummary.append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDocuments.getDocumentType()).append(Constants.NEW_VALUE_TAG_END).append(", ");
+				}
 			}
-			
+			candidateActivityCommonUtil.storeCandidateActivity(user, orgLocations, candidate, "", Constants.CANDIDATE_ACCEPT_REQUEST_DOCUMENTS, activitySummary.toString().substring(0, activitySummary.toString().length() - 2), "CANDIDATE");
 		}
 		
 	}

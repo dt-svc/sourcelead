@@ -1,6 +1,6 @@
 package com.bis.sourcelead.service.impl;
 
-import java.util.Date;
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,12 +9,15 @@ import org.springframework.stereotype.Service;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.RequirementOfferHistoryDao;
 import com.bis.sourcelead.dao.RequirementOffersDao;
+import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.RequirementOfferHistory;
 import com.bis.sourcelead.entity.RequirementOffers;
 import com.bis.sourcelead.entity.RequirementSubmission;
+import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.RequirementOfferHistoryService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
 import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.web.LoginSessionController;
 
 @Service
 public class RequirementOfferHistoryServiceImpl implements RequirementOfferHistoryService{
@@ -31,6 +34,9 @@ public class RequirementOfferHistoryServiceImpl implements RequirementOfferHisto
 	
 	@Autowired
 	private CommonUtil commonUtil;
+	
+	@Autowired
+	private OrgLocationService orgLocationService;
 
 	@Override
 	public RequirementOfferHistory storeRequirementOfferHistory(RequirementOfferHistory requirementOfferHistory)
@@ -47,14 +53,15 @@ public class RequirementOfferHistoryServiceImpl implements RequirementOfferHisto
 	@Override
 	public List<RequirementOfferHistory> getRequirementInternalAndIsClientOfferssBySubmissionIdAndOrgLocationsId(
 			Long submissionId, Long orgLocationsId) throws Exception {
-		
+		OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationsId);
+		//SimpleDateFormat format = orgLocations.getLocFullFormDateFormatter();
 		List<RequirementOfferHistory> offersList = null;
 		offersList = requirementOfferHistoryDao.getRequirementInternalAndIsClientOfferssBySubmissionIdAndOrgLocationsId(submissionId,orgLocationsId);
 		if (offersList != null && !offersList.isEmpty() ) {
 			for (RequirementOfferHistory requirementOfferHistory : offersList) {
 				RequirementOffers offers = requirementOffersDao.getRequirementOfferId(requirementOfferHistory.getOfferId().getId());
 				if(offers.getDateOfJoining() != null){
-					requirementOfferHistory.setDateOfJoiningStr(Constants.DF_DMY.format((offers.getDateOfJoining())));
+					requirementOfferHistory.setDateOfJoiningStr((commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),offers.getDateOfJoining())));
 				}
 				
 				if(requirementOfferHistory.getSubmissionId().getVendorLocationId() != null){
@@ -99,16 +106,17 @@ public class RequirementOfferHistoryServiceImpl implements RequirementOfferHisto
 	}
 
 	@Override
-	public List<RequirementOfferHistory> getCrowdSourcingOfferDetailsBySubmissionId(Long submissionId)
+	public List<RequirementOfferHistory> getCrowdSourcingOfferDetailsBySubmissionId(Long submissionId,String locationCode)
 			throws Exception {
 		
 		List<RequirementOfferHistory> offersList = null;
-		offersList = requirementOfferHistoryDao.getCrowdSourcingOfferDetailsBySubmissionId(submissionId);
+		offersList = requirementOfferHistoryDao.getCrowdSourcingOfferDetailsBySubmissionId(submissionId,locationCode);
+		OrgLocations orglo = orgLocationService.getOrgLocationsByLocationCode(locationCode);
 		if (offersList != null && !offersList.isEmpty() ) {
 			for (RequirementOfferHistory requirementOfferHistory : offersList) {
 				RequirementOffers offers = requirementOffersDao.getRequirementOfferId(requirementOfferHistory.getOfferId().getId());
 				if(offers.getDateOfJoining() != null){
-					requirementOfferHistory.setDateOfJoiningStr(Constants.DF_DMY.format((offers.getDateOfJoining())));
+					requirementOfferHistory.setDateOfJoiningStr(commonUtil.dateStrFromOrgDateFormatter(orglo.getDateFormat(),(offers.getDateOfJoining())));
 				}
 				
 				if(requirementOfferHistory.getSubmissionId().getVendorLocationId() != null){

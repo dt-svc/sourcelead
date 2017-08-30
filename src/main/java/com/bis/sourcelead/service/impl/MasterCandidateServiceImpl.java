@@ -48,6 +48,24 @@ public class MasterCandidateServiceImpl implements MasterCandidateService{
 			phoneNumber = jsonObj.getString("phoneNumber");
 		}
 		
+		if(jsonObj.has("userEmail") && !isNullOrEmpty(jsonObj.getString("userEmail"))){
+			email = jsonObj.getString("userEmail");
+		}
+		
+		
+		// Tihs for add applicant
+		if(jsonObj.has("EmailId") && !isNullOrEmpty(jsonObj.getString("EmailId"))){
+			email = jsonObj.getString("EmailId");
+		}
+		
+		if(jsonObj.has("PhoneNumber") && !isNullOrEmpty(jsonObj.getString("PhoneNumber"))){
+			phoneNumber = jsonObj.getString("PhoneNumber");
+		}
+		
+		if(jsonObj.has("AlternateNumber") && !isNullOrEmpty(jsonObj.getString("AlternateNumber"))){
+			phoneNumber = jsonObj.getString("AlternateNumber");
+		}
+		
 		MasterCandidate masterCandidate = masterCandidateDao.getMasterCandidateByEmailOrPhoneNumber(email, phoneNumber);
 		
 		return masterCandidate;
@@ -84,6 +102,29 @@ public class MasterCandidateServiceImpl implements MasterCandidateService{
 		
 		if(jsonObj.has("alternateMobilePhone") && !isNullOrEmpty(jsonObj.getString("alternateMobilePhone"))){
 			masterCandidate.setAlternatePhoneNumber(jsonObj.getString("alternateMobilePhone"));
+		}
+		
+		
+		// Tihs for add applicant
+		
+		if(jsonObj.has("FirstName")){
+			masterCandidate.setFirstName(jsonObj.getString("FirstName"));
+		}
+		
+		if(jsonObj.has("LastName")){
+			masterCandidate.setLastName(jsonObj.getString("LastName"));
+		}
+		
+		if(jsonObj.has("EmailId")){
+			masterCandidate.setEmail(jsonObj.getString("EmailId"));
+		}
+		
+		if(jsonObj.has("PhoneNumber") && !isNullOrEmpty(jsonObj.getString("PhoneNumber"))){
+			masterCandidate.setPhoneNumber(jsonObj.getString("PhoneNumber"));
+		}
+		
+		if(jsonObj.has("AlternateNumber") && !isNullOrEmpty(jsonObj.getString("AlternateNumber"))){
+			masterCandidate.setPhoneNumber(jsonObj.getString("AlternateNumber"));
 		}
 		
 		

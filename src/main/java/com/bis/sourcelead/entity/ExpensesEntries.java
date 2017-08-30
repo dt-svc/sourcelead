@@ -1,6 +1,7 @@
 package com.bis.sourcelead.entity;
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -26,6 +27,7 @@ import org.hibernate.annotations.FetchMode;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.enums.PaymentModes;
+import com.bis.sourcelead.web.LoginSessionController;
 
 @Entity
 @Table(name = "EXPENSES_ENTRIES", catalog = "sourcelead")
@@ -214,9 +216,10 @@ public class ExpensesEntries implements Serializable {
 	}
 
 	public String getExpenseDateStr() {
-		if(null != expenseDate){
-			expenseDateStr = Constants.DF_DMY.format(expenseDate);
-		}
+			if(expenseDate != null){
+				SimpleDateFormat dateFormat = expensesId.getOrgLocationId().getLocFullFormDateFormatter();
+				expenseDateStr = dateFormat.format(expenseDate);	
+			}
 		return expenseDateStr;
 	}
 

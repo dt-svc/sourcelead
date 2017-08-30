@@ -1,7 +1,5 @@
-
 <!DOCTYPE html>
 <html>
-
 <head>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <meta charset="utf-8">
@@ -41,8 +39,9 @@
     </div>
 </div>  
   
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-    <script src="http://code.jquery.com/ui/1.11.3/jquery-ui.js"></script>
+
+    <script src="resources/js/jquery-1.11.1.min.js"></script>
+    <script src="resources/js/jquery-ui.js"></script>
     <script src="resources/js/bootstrap.min.js"></script>
     <script src="resources/js/jquery-fun.js"></script> 
     

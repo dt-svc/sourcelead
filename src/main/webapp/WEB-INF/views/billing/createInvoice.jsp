@@ -2,10 +2,7 @@
 <jsp:include page="../masterSideNav.jsp" />
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
-<link rel="icon" type="resources/image/png"
-	href="resources/images/fav.png" />
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
-<script src="resources/js/formvalidator.js"></script>
 <%@taglib prefix="sec"
 	uri="http://www.springframework.org/security/tags"%>
 
@@ -22,6 +19,9 @@ margin-bottom: 0;
 .timesheet_week_comm.invoiceDocs_add span .fa-times {
     margin: 6px;
 }
+.project_wrap_table table i{
+    font-size: 13px;
+}    
 </style>
 
 
@@ -117,7 +117,7 @@ function errRemoveClientContact(){
 							</div>
 						</div>
 						<div class="form-group">
-							<label class="col-md-3">Due Date<span class="text-danger">&nbsp;*</span></label>
+							<label class="col-md-3" >Due Date<span class="text-danger">&nbsp;*</span></label>
 							<div class="col-md-9" id="errDuedate">
 								<input type="text" class="form-control calendar" id="dueDate"
 									name="dueDate" value="" placeholder="Due Date" id="dueDate"
@@ -149,9 +149,9 @@ function errRemoveClientContact(){
 
 				<footer class="form-footer">
 					<div class="pull-right mr">
-						<button type="button" class="btn btn-sm btn-primary"
+						<button type="button" id="saveButtonId" class="btn btn-sm btn-primary"
 							onclick="saveInvoice('DRAFT')">Save</button>
-						<button type="button" class="btn btn-sm btn-success ml"
+						<button type="button" id="sendButtonId" class="btn btn-sm btn-success ml"
 							onclick="saveInvoice('SENT')">Send</button>
 						<button type="button" class="btn btn-sm btn-default ml"
 							onClick="javascript:window.location.href = '<c:url value='/invoiceList'/>'">Cancel</button>
@@ -205,10 +205,10 @@ function errRemoveClientContact(){
 
 <div id="divTaskTd6" style="display: none; float: left;">
 	<div class="tbldata-dotdot-100">
-		<input type="text" class="form-control input-sm inline_field"
-			placeholder="HHH:MM" id="REPLACEROWIDtotalHours"
-			name="REPLACEROWIDtotalHours"
-			onblur="totalHoursCalculateAmount(REPLACEROWID);">
+		<input type="text" class="form-control input-sm inline_field" placeholder="HHH:MM" id="REPLACEROWIDtotalHours" name="REPLACEROWIDtotalHours" onblur="totalHoursCalculateAmount(REPLACEROWID);validationHours(REPLACEROWID);">
+			<input type="hidden" id="REPLACEROWIDhiddenHours" name="REPLACEROWIDhiddenHours">
+<!-- 			<i class=" text-info fa fa-info-circle" title="Before Assinging Team Project Start Date &amp; Manager is Mandatory"></i> -->
+			<u id="REPLACEROWIDerrMsg" style="display: none;"><i class=" text-info fa fa-info-circle" >Avg Hours</i></u>
 	</div>
 </div>
 
@@ -299,7 +299,7 @@ function errRemoveClientContact(){
          result = result +'  <div class="timesheet_week_comm invoiceDocs invoiceDocs_add" >';
          result = result +'  <div id="0invoicedocFileuploadFileGroup"> ';
          result = result +'  <span>';
-         result = result +'  <input type="file" name="0invoicedocFile" id="0invoicedocFile" field-name="Attachment"  class="timesheetAttachmentValidation"><i class="fa fa-plus" onClick="addInvoiceAttachment()"></i>';
+         result = result +'  <input type="file" name="0invoicedocFile" id="0invoicedocFile" field-name="Attachment"  class="timesheetAttachmentValidation"><i class="fa fa-times" mouseOver="Clear" title="Clear" onClick="remove()"></i><i class="fa fa-plus" mouseOver="Add" title="Add" onClick="addInvoiceAttachment()"></i>';
          result = result +'  </span> </div>';
          result = result +'  </div>';
          result = result +'  </td>';
@@ -319,13 +319,13 @@ function errRemoveClientContact(){
          result = result +'  <div class="col-md-7 select-field">';
          result = result +'  <div class="row">';
          result = result +'  <div class="col-md-7 paddingRight">';
-         result = result +'  <select class="form-control input-sm" id="disCount" name="disCount" onchange="calculateDiscount();">';
+         result = result +'  <select class="form-control input-sm" id="disCount" name="disCount" onchange="calculateDiscount();validateDiscount();">';
          result = result +'  <option value="percentage">Discount %</option>';
          result = result +'  <option value="flat">Discount Value</option>';
          result = result +'  </select>';
          result = result +'  </div>';
-         result = result +'  <div class="col-md-5 paddingLeft">';
-         result = result +'  <input type="text" class="form-control input-sm allownumericwithdecimal" id="discountValue" disabled="disabled" name="discountValue" placeholder="Enter value" onblur="calculateDiscount();">';
+         result = result +'  <div class="col-md-5 paddingLeft" id="discountValueDiv">';
+         result = result +'  <input type="text" class="form-control input-sm" id="discountValue" disabled="disabled" name="discountValue" placeholder="Enter value" onblur="calculateDiscount();"  onkeyup="validateDiscount();">';
          result = result +'  </div>';
          result = result +'  </div>';
          result = result +'  </div>';
@@ -386,8 +386,38 @@ function errRemoveClientContact(){
 	}
 	
 	</script>
+	
+<script>
+function remove(){
+	$('#0invoicedocFile').val("");
+	}
+</script>
 
-
+<script>
+function validateDiscount() {
+	$('#discountValueDiv').parent().find('p.jquery_form_error_message').remove(); 
+	 var selectedTextInvoice = document.getElementById("disCount").value;
+	 var enteredValue = document.getElementById("discountValue").value;
+	 
+	 if(selectedTextInvoice =='percentage'){
+		  var floatNum = /^(\d{0,2}(\.\d{0,2})?|100)$/
+		  if(enteredValue.match(floatNum)){
+			  $("#saveButtonId").removeAttr("disabled", "disabled");
+				$("#sendButtonId").removeAttr("disabled", "disabled");
+			   return true;
+		  }		  
+		 else{
+				$("#discountValueDiv").after("<p class='jquery_form_error_message'><span>Enter Valid Percentage</span>");
+				$("#saveButtonId").attr("disabled", "disabled");
+				$("#sendButtonId").attr("disabled", "disabled");
+				return false; 
+		 	 }
+	  }if(selectedTextInvoice =='flat'){
+			  $("#saveButtonId").removeAttr("disabled", "disabled");
+			  $("#sendButtonId").removeAttr("disabled", "disabled");
+		  }		  
+}
+</script>
 
 <script>
 	function loadInvoiceDetails(invoiceUUID){
@@ -619,21 +649,35 @@ function errRemoveClientContact(){
 				cell0.innerHTML = text;
 				
 				
+				var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+				   var finalDateFormatInvoiceEdit = '';
+				  if(locationDate.match("yyyy-MM-dd")){
+					  finalDateFormatInvoiceEdit = 'yy-mm-dd';
+				  }if(locationDate.match("dd-MM-yyyy")){
+					  finalDateFormatInvoiceEdit = 'dd-mm-yy'; 
+				  }if(locationDate.match("MM-dd-yyyy")){
+					  finalDateFormatInvoiceEdit = 'mm-dd-yy'; 
+				  }if(locationDate.match("yyyy-dd-MM")){
+					  finalDateFormatInvoiceEdit = 'yy-dd-mm'; 
+				  } 
+				
 				$( "#"+maxRowNum+"sdate-input" ).datepicker({
 					  changeMonth: true,
 				      changeYear: true,
-				      dateFormat : 'dd-mm-yy',
+				      dateFormat : finalDateFormatInvoiceEdit,
 				      minDate: 0  ,
 					  onSelect : function(selected) {
+						  getEstimatedHours(maxRowNum);
 				 	  }
 				    });
 				
 				$( "#"+maxRowNum+"edate-input" ).datepicker({
 					  changeMonth: true,
 				      changeYear: true,
-				      dateFormat : 'dd-mm-yy',
+				      dateFormat : finalDateFormatInvoiceEdit,
 				      minDate: 0  ,
 					  onSelect : function(selected) {
+						  getEstimatedHours(maxRowNum);
 				 	  }
 				    });
 				
@@ -687,7 +731,7 @@ function errRemoveClientContact(){
 				$('#'+maxRowNum+'totalHours').val(opt.totalHours);
 				$('#'+maxRowNum+'amount').val(opt.amount);
 				
-				
+				editHoursValidations(opt.startDateStr,opt.endDateStr,maxRowNum);
 	 			getSow(opt.candidateId,maxRowNum,opt.contractId);
 				maskme();  
 		 }
@@ -791,25 +835,47 @@ function cancel(){
 			text = text+'</div>';
 			cell0.innerHTML = text;
 			
+			var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+			   var finalDateFormatInvoiceSave = '';
+			  if(locationDate.match("yyyy-MM-dd")){
+				  finalDateFormatInvoiceSave = 'yy-mm-dd';
+			  }if(locationDate.match("dd-MM-yyyy")){
+				  finalDateFormatInvoiceSave = 'dd-mm-yy'; 
+			  }if(locationDate.match("MM-dd-yyyy")){
+				  finalDateFormatInvoiceSave = 'mm-dd-yy'; 
+			  }if(locationDate.match("yyyy-dd-MM")){
+				  finalDateFormatInvoiceSave = 'yy-dd-mm'; 
+			  } 
+			  
 			$( "#"+maxRowNum+"sdate-input" ).datepicker({
 				  changeMonth: true,
 			      changeYear: true,
-			      dateFormat : 'dd-mm-yy',
+			      dateFormat : finalDateFormatInvoiceSave,
 				  onSelect : function(selected) {
-					  var dt = toDate("#"+maxRowNum+"sdate-input");
+					  var dt = $(this).datepicker('getDate', '+1d');
+			            dt.setDate(dt.getDate() + 1);
+			            $("#"+maxRowNum+"edate-input").datepicker("option", "minDate", dt);
+			            getEstimatedHours(maxRowNum);
+			            
+					  /* var dt = toDate("#"+maxRowNum+"sdate-input");
 						dt.setDate(dt.getDate() + 1);
-						$("#"+maxRowNum+"edate-input").datepicker("option", "minDate", dt);
+						$("#"+maxRowNum+"edate-input").datepicker("option", "minDate", dt); */
 			 	  }
 			    });
 			
 			$( "#"+maxRowNum+"edate-input" ).datepicker({
 				  changeMonth: true,
 			      changeYear: true,
-			      dateFormat : 'dd-mm-yy',
+			      dateFormat : finalDateFormatInvoiceSave,
 				  onSelect : function(selected) {
-					  var dt = toDate("#"+maxRowNum+"edate-input");
+					  
+					  var dt = $(this).datepicker('getDate', '-1d');
+			            dt.setDate(dt.getDate() - 1);
+			            $("#"+maxRowNum+"sdate-input").datepicker("option", "maxDate", dt);
+			            getEstimatedHours(maxRowNum);
+					 /*  var dt = toDate("#"+maxRowNum+"edate-input");
 						dt.setDate(dt.getDate() - 1);
-						$("#"+maxRowNum+"sdate-input").datepicker("option", "maxDate", dt);
+						$("#"+maxRowNum+"sdate-input").datepicker("option", "maxDate", dt); */
 			 	  }
 			    });
 			
@@ -851,7 +917,7 @@ function cancel(){
 			divTsTd7Str = divTsTd7Str.replace(/REPLACEROWID/g, (maxRowNum));
 			cell1.innerHTML = divTsTd7Str;
 			
-			
+
 			$('#'+maxRowNum+'candidateId').val(checkbox_value[0]);
 			$('#'+maxRowNum+'candidateName').val(checkbox_value[1]);
 			getSow(checkbox_value[0],maxRowNum); 
@@ -944,7 +1010,7 @@ function cancel(){
 	                 	 result = result +'       </div>'; 
 	                 	 result = result +'   </div>'; 
 	                 	 result = result +'   <div class="modal-footer">';
-	                 	 result = result +'     <button data-dismiss="modal" class="btn btn-primary" type="button" onClick="addInvoice();">Add</button>';
+	                 	 result = result +'     <button data-dismiss="modal" class="btn btn-primary" type="button" onClick="addInvoice();$(this).blur();">Add</button>';
 	                 	 result = result +'   </div>'; 
 	                 	 $("#associatesListDiv").empty(); 
 	                     $("#associatesListDiv").append(result); 
@@ -1345,14 +1411,13 @@ function calculateDiscount(){
 			$("#conversionFrom").val(total);
 			$("#afterDiscountTotal").val(total.toFixed(2));
 		}else{
-			$("#discountTotal").val(subTotal);
+			$("#discountTotal").val("00.00");
 			$("#grandTotal").val(subTotal);
 			$("#conversionFrom").val(subTotal);
 			$("#afterDiscountTotal").val(subTotal);
 		}
 		
 	}
-	
 	if(discountType == 'percentage'){
 		if(discountValue && subTotal > 0){
 			var perCentValue = (subTotal * discountValue)/100;
@@ -1369,10 +1434,8 @@ function calculateDiscount(){
 		}
 		
 	}
-	 
 	 calculateTaxDiscount();
 	 conversion();
-	
 }
 </script>
 
@@ -1389,7 +1452,7 @@ function calculateDiscount(){
 			<span> <input type="file" name='REPLACEROWIDinvoicedocFile'
 				id='REPLACEROWIDinvoicedocFile'
 				onchange='validateContractsUploadFile(REPLACEROWID)'> <i
-				class="fa fa-times"
+				class="fa fa-times" mouseOver="Delete" title="Delete"
 				onclick="removeInvoiceAttachmentRow(REPLACEROWID);"></i>
 			</span>
 		</div>
@@ -1586,12 +1649,23 @@ function calculateTaxDiscount(){
 <!-- ********************************************* Add Rows AddTax Table functionality end  ************************************************************ -->
 <script>
 	$(function() {
+		 var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+		  var finalDateFormatEndDate = '';
+		  if(locationDate.match("yyyy-MM-dd")){
+			  finalDateFormatEndDate = 'yy-mm-dd';
+		  }if(locationDate.match("dd-MM-yyyy")){
+			  finalDateFormatEndDate = 'dd-mm-yy'; 
+		  }if(locationDate.match("MM-dd-yyyy")){
+			  finalDateFormatEndDate = 'mm-dd-yy'; 
+		  }if(locationDate.match("yyyy-dd-MM")){
+			  finalDateFormatEndDate = 'yy-dd-mm'; 
+		  }
 		$('#invoiceDate').datepicker({
-			dateFormat : 'dd-mm-yy',
+			dateFormat : finalDateFormatEndDate,
 			changeMonth: true,
 			changeYear: true, 
 			onSelect : function(selected) {
-			var dt = toDate("#invoiceDate");
+			var dt = $(this).datepicker('getDate', '+1d');
 			dt.setDate(dt.getDate() + 1);
 			$("#dueDate").datepicker("option", "minDate", dt);
 					errInvoiceDate();
@@ -1599,11 +1673,11 @@ function calculateTaxDiscount(){
 			}
 		});
 	  $('#dueDate').datepicker({
-			dateFormat : 'dd-mm-yy',
+			dateFormat : finalDateFormatEndDate,
 			changeMonth: true,
 			changeYear: true, 
 			onSelect : function(selected) {
-			var dt = toDate("#dueDate");
+			var dt = $(this).datepicker('getDate', '-1d');
 			dt.setDate(dt.getDate() - 1);
 			$("#invoiceDate").datepicker("option", "maxDate", dt);
 				errDueDate();
@@ -1661,10 +1735,22 @@ function getSowRate(id){
 	    });
 	  }); */
 	  
+	  var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+	  var finalDateFormatEndDate = '';
+	  if(locationDate.match("yyyy-MM-dd")){
+		  finalDateFormatEndDate = 'yy-mm-dd';
+	  }if(locationDate.match("dd-MM-yyyy")){
+		  finalDateFormatEndDate = 'dd-mm-yy'; 
+	  }if(locationDate.match("MM-dd-yyyy")){
+		  finalDateFormatEndDate = 'mm-dd-yy'; 
+	  }if(locationDate.match("yyyy-dd-MM")){
+		  finalDateFormatEndDate = 'yy-dd-mm'; 
+	  }
+	  
 	  $( "#0sdate-input" ).datepicker({
 		  changeMonth: true,
 	      changeYear: true,
-	      dateFormat : 'dd-mm-yy',
+	      dateFormat : finalDateFormatEndDate,
 	      minDate: 0  ,
 		  onSelect : function(selected) {
 	 	  }
@@ -1673,7 +1759,7 @@ function getSowRate(id){
 	$( "#0edate-input" ).datepicker({
 		  changeMonth: true,
 	      changeYear: true,
-	      dateFormat : 'dd-mm-yy',
+	      dateFormat : finalDateFormatEndDate,
 	      minDate: 0  ,
 		  onSelect : function(selected) {
 	 	  }
@@ -1774,7 +1860,7 @@ function getClientContacts(clientContactId){
 	if(clientContactId != null && clientContactId != "" && clientContactId !="undefined" && clientContactId == opt.spocUserId){
 		selected = 'selected';
 	}
-	output = output + "<option value='" +opt.spocUserId+ "' "+selected+">"+opt.ownerName+"</option>";
+	output = output + "<option value='" +opt.spocUserId+ "' "+selected+">"+opt.ownerName+"("+opt.spocName+")</option>";
 	$("#clientCurrency").val(opt.clientCurrency);
 	}
 	
@@ -1826,14 +1912,14 @@ function getPaymentTerms(){
 function getDueDateByFrequency(){
 	 var invoiceDate = document.getElementById("invoiceDate").value;
 	 var paymentFrequency = document.getElementById("paymentFrequency").value;
-	
+	 var locationCode ='${SourceLeadWeb_locationCode}';
 	 if(paymentFrequency && invoiceDate){
 	    var sourceleadUrl ='${sourceleadUrl}';
 	    $("#invoiceLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	    
 	    $.ajax({
 			type : "GET",
-			url: sourceleadUrl+"/getDueDateByFrequency?${_csrf.parameterName}=${_csrf.token}&paymentFrequency="+paymentFrequency+"&invoiceDate="+invoiceDate,
+			url: sourceleadUrl+"/getDueDateByFrequency?${_csrf.parameterName}=${_csrf.token}&paymentFrequency="+paymentFrequency+"&invoiceDate="+invoiceDate+"&locationCode="+locationCode,
 			success :function(dueDateStr) {
 				
 				$("#dueDate").val(dueDateStr);
@@ -1850,9 +1936,7 @@ function getDueDateByFrequency(){
 
 <script>
 function saveInvoice(saveType){
-         
-         
-	  var maxTsRowNum = parseInt($("input[name = 'maxTsRowNum']").val());
+	var maxTsRowNum = parseInt($("input[name = 'maxTsRowNum']").val());
 	    var selectedAssociates = '';
 		  if(maxTsRowNum > 1){
 			  for(var i=1; i<maxTsRowNum; i++){
@@ -1866,9 +1950,7 @@ function saveInvoice(saveType){
 				  }
 			  }
 		  }
-         
-         
-         if ($('#invoice_form').validate(false, validationSettings)){  
+		  if ($('#invoice_form').validate(false, validationSettings)){  
  		    var frm = $('#invoice_form').serializeFormJSON();
  	        var con = JSON.stringify(frm);
  	        con = con.replace(/[{}]/g, "");
@@ -1975,5 +2057,77 @@ var validationSettings = {
 		dateFormat : 'yyyy/mm/dd'
 	};
 </script>
+<script>
+function getEstimatedHours(rowId){
+	var startDate = document.getElementById(rowId+"sdate-input").value;
+	var endDate = document.getElementById(rowId+"edate-input").value;
+	var locationId = '${SourceLeadWeb_orgLocationId}';
+	if(startDate && endDate){
+		 var sourceleadUrl ='${sourceleadUrl}';
+		 var averageWorkingHours = '${SourceLeadWeb_orgLocations.averageWorkingHours}';
+		 $("#resourceListLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		 $.ajax({
+		    	type: "GET",
+		        url: sourceleadUrl+"/getTotalHosursForBilling?${_csrf.parameterName}=${_csrf.token}&startDate="+startDate+"&endDate="+endDate+"&averageWorkingHours="+averageWorkingHours+"&locationId="+locationId,
+		        success: function(estimatedHours) {
+		        	$('#'+rowId+'totalHours').val(estimatedHours);
+		        	$('#'+rowId+'hiddenHours').val(estimatedHours);
+		        	totalHoursCalculateAmount(rowId);
+		        	 $("#resourceListLoading").removeAttr("style"); 
+		        	
+		        }
+		        
+		 });
+	}
+}
+function editHoursValidations(startDate,endDate,rowId){
+	if(startDate && endDate){
+		 var sourceleadUrl ='${sourceleadUrl}';
+		 var locationId = '${SourceLeadWeb_orgLocationId}';
+		 var averageWorkingHours = '${SourceLeadWeb_orgLocations.averageWorkingHours}';
+		 $("#resourceListLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		 $.ajax({
+		    	type: "GET",
+		        url: sourceleadUrl+"/getTotalHosursForBilling?${_csrf.parameterName}=${_csrf.token}&startDate="+startDate+"&endDate="+endDate+"&averageWorkingHours="+averageWorkingHours+"&locationId="+locationId,
+		        success: function(estimatedHours) {
+		        	$('#'+rowId+'hiddenHours').val(estimatedHours);
+		        	totalHoursCalculateAmount(rowId);
+		        	 $("#resourceListLoading").removeAttr("style"); 
+		        	
+		        }
+		        
+		 });
+	}
+}
+</script>
+<script>
+function validationHours(rowId){
+	 var hiddenHours = $('#'+rowId+'hiddenHours').val();
+	  var split1 = hiddenHours.split(':');
+	  var splitHours1 = split1[0];
+	  var minute1 = split1[1];
+	  var hourminits1 = splitHours1 * 60;
+	  var hiddenFinalmin1 = parseInt(hourminits1) + parseInt(minute1);
+	    
+	  var totalHours = $("#"+rowId+"totalHours").val();
+	  var split2 = totalHours.split(':');
+	  var splitHours2 = split2[0];
+	  var minute2 = split2[1];
+	  var hourminits2 = splitHours2 * 60;
+	  var totalHoursFinalmin2 = parseInt(hourminits2) + parseInt(minute2);
+	 
+	 if(hiddenHours != null && hiddenHours != ""){
+		 if(hiddenFinalmin1 < totalHoursFinalmin2){
+			 document.getElementById(""+rowId+"errMsg").style.display="block";
+		 }else{
+			 document.getElementById(""+rowId+"errMsg").style.display="none";
+		 }
+	 }
+	 
+	
+}
 
+
+
+</script>
 <jsp:include page="../masterFooter.jsp" />

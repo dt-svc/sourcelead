@@ -204,6 +204,16 @@ function storeCertificate(candidateId){
 function candidateCertificateList(candidateId){
 	var candidateType = '${candidateType}';
 	var sourceleadUrl ='${sourceleadUrl}';
+	var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
+	  if(locationList.match("yyyy-MM-dd")){
+		  canCerDatePattern = 'YYYY-MM-DD';
+	  }if(locationList.match("dd-MM-yyyy")){
+		  canCerDatePattern = 'DD-MM-YYYY'; 
+	  }if(locationList.match("MM-dd-yyyy")){
+		  canCerDatePattern = 'MM-DD-YYYY'; 
+	  }if(locationList.match("yyyy-dd-MM")){
+		  canCerDatePattern = 'YYYY-DD-MM'; 
+	  }
 	 $.ajax({  
           type : "POST",
           url: sourceleadUrl+"/getCandidateCertificationListByCandidateIdAndOrgLocationID?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,        
@@ -235,8 +245,8 @@ function candidateCertificateList(candidateId){
 	                 	result  = result + "           <th>Score</th>";
 	                 	result  = result + "           <th>Score Type</th>";
 	                 	result  = result + "           <th>Description</th>";
-	                 	result  = result + "           <th>Valid from</th>";
-	                 	result  = result + "           <th>Valid to</th>";
+	                 	result  = result + "           <th>Valid from <br>(<small class='custom-small'>"+canCerDatePattern+"</small>)</th>";
+	                 	result  = result + "           <th>Valid to <br>(<small class='custom-small'>"+canCerDatePattern+"</small>)</th>";
 	                 	result  = result + "           <th>Action</th>";
 	                     result = result +"  </tr>"; 
 	                     result = result +"</thead>";
@@ -408,8 +418,8 @@ function addCertification(candidateId) {
 		result  = result + '                 </div>';
 		
 		result  = result + '                 <div class="clearfix mb10">';
-		result = result  +'	                     <div class="col-md-4" positionRelative>';
-		result = result  +'	                     <select class="chosen-select"  name="scoreType" id="scoreType" onchange="selectScoreType();clearSearchKey();">';
+		result = result  +'	                     <div class="col-md-4 dropdown-select positionRelative">';
+		result = result  +'	                     <select class=""  name="scoreType" id="scoreType" onchange="selectScoreType();clearSearchKey();">';
 		result = result  +' 					   <option value="" selected="selected">Score Type</option>';
 		result = result  +'	                       <option value="Percentage">Percentage</option>';
 		result = result  +'	                       <option value="CGPA">CGPA</option>';
@@ -466,42 +476,37 @@ function addCertification(candidateId) {
 			 e.stopPropagation();
 		 });
 		 
+		 var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+		  var finalDateFormatCerSave = '';
+		  if(locationDate.match("yyyy-MM-dd")){
+			  finalDateFormatCerSave = 'yy-mm-dd';
+		  }if(locationDate.match("dd-MM-yyyy")){
+			  finalDateFormatCerSave = 'dd-mm-yy'; 
+		  }if(locationDate.match("MM-dd-yyyy")){
+			  finalDateFormatCerSave = 'mm-dd-yy'; 
+		  }if(locationDate.match("yyyy-dd-MM")){
+			  finalDateFormatCerSave = 'yy-dd-mm'; 
+		  }
 		 
-		 /* $('html').click(function(){
-			$(".edit-details").removeClass("edit-details-active");
-		   });	 */
-		
-		
-		/*  $(".addUser-org").click(function(){
-			 $(".edit-details").toggleClass("edit-details-active");
-		 });  */
-		/* $(".edit-details").toggleClass("edit-details-active");
-		 $(".addUser-org, .assign-org, .collapse-div-adduser, .collapse-div, .edit-details").click(function(e){
-			 e.stopPropagation();
-		 }); */
-	 /* $('html').click(function(){
-		$(".edit-details").removeClass("edit-details-active");
-	   });	 */
-
 	  $('#StartDate').datepicker({
-	      dateFormat: 'dd-mm-yy',
+	      dateFormat: finalDateFormatCerSave,
 	      changeMonth: true,
 	  	  changeYear: true, 
 	      onSelect: function (selected) {
 	           // var dt = new Date(selected);
-	           var dt = toDate("#StartDate"); 
+	           var dt = 	  $(this).datepicker('getDate', '+1d'); 
 	           dt.setDate(dt.getDate() + 1);
 	            $("#EndDate").datepicker("option", "minDate", dt);
 	        }
 	  });
 	  
 	  $('#EndDate').datepicker({
-	      dateFormat: 'dd-mm-yy',
+	      dateFormat: finalDateFormatCerSave,
 	      changeMonth: true,
 	  	  changeYear: true, 
 	        onSelect: function (selected) {
 	            //var dt = new Date(selected);
-	            var dt = toDate("#EndDate");
+	            var dt = 	  $(this).datepicker('getDate', '-1d');
 	            dt.setDate(dt.getDate() - 1);
 	            $("#StartDate").datepicker("option", "maxDate", dt);
 	        }
@@ -641,53 +646,82 @@ function addCertification(candidateId) {
 								 });
 								 
 								 
-								 
-								/*  $('html').click(function(){
-									$(".edit-details").removeClass("edit-details-active");
-								   });	
-								 */
-								
-								/*  $(".addUser-org").click(function(){
-									 $(".edit-details").toggleClass("edit-details-active");
-								 });  */
-								/* $(".edit-details").toggleClass("edit-details-active");
-								 $(".addUser-org, .assign-org, .collapse-div-adduser, .collapse-div, .edit-details").click(function(e){
-									 e.stopPropagation();
-								 }); */
-							 /* $('html').click(function(){
-								$(".edit-details").removeClass("edit-details-active");
-							   });	 */
-
-							  /*  var certificateStartDate = $("#StartDateEdit").val();
-								var certificateEndDate = $("#EndDateEdit").val(); */
-								
-								var datepickerStartDate = toDate("#StartDateEdit");
+								/* var datepickerStartDate = toDate("#StartDateEdit");
 								datepickerStartDate.setDate(datepickerStartDate.getDate() + 1);
 								
 								var datepickerEndDate = toDate("#EndDateEdit");
-								datepickerEndDate.setDate(datepickerEndDate.getDate() - 1);
+								datepickerEndDate.setDate(datepickerEndDate.getDate() - 1); */
+								var cerStartDate = $("#StartDateEdit").val();
+								var cerEndDate = $("#EndDateEdit").val(); 
+								
+								
+								var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+								 var cerStartDateSplit = cerStartDate.split("-");
+								 var cerEndDateSplit = cerEndDate.split("-");
+								 
+								 var finalDateFormatCerEditOneSave = '';
+								  var cerStartDateEdit = '';
+								  var cerEndDateEdit = '';
+								  
+								  if(locationDate.match("yyyy-MM-dd")){
+									  finalDateFormatCerEditOneSave = 'yy-mm-dd';
+									  cerStartDateEdit = new Date(cerStartDateSplit[0], parseInt(cerStartDateSplit[1])-parseInt(1), parseInt(cerStartDateSplit[2])+parseInt(1));
+								  }if(locationDate.match("dd-MM-yyyy")){
+									  finalDateFormatCerEditOneSave = 'dd-mm-yy'; 
+									  cerStartDateEdit = new Date(cerStartDateSplit[2], parseInt(cerStartDateSplit[1])-parseInt(1), parseInt(cerStartDateSplit[0])+parseInt(1));
+								  }if(locationDate.match("MM-dd-yyyy")){
+									  finalDateFormatCerEditOneSave = 'mm-dd-yy'; 
+									  cerStartDateEdit = new Date(cerStartDateSplit[2], parseInt(cerStartDateSplit[0])-parseInt(1), parseInt(cerStartDateSplit[1])+parseInt(1));
+								  }if(locationDate.match("yyyy-dd-MM")){
+									  finalDateFormatCerEditOneSave = 'yy-dd-mm';
+									  cerStartDateEdit = new Date(cerStartDateSplit[0], parseInt(cerStartDateSplit[2])-parseInt(1), parseInt(cerStartDateSplit[1])+parseInt(1));
+								  }
+								  
+								  if(locationDate.match("yyyy-MM-dd")){
+									  finalDateFormatCerEditOneSave = 'yy-mm-dd';
+									  cerEndDateEdit = new Date(cerEndDateSplit[0], parseInt(cerEndDateSplit[1])-parseInt(1), parseInt(cerEndDateSplit[2])-parseInt(1));
+								  }if(locationDate.match("dd-MM-yyyy")){
+									  finalDateFormatCerEditOneSave = 'dd-mm-yy'; 
+									  cerEndDateEdit = new Date(cerEndDateSplit[2], parseInt(cerEndDateSplit[1])-parseInt(1), parseInt(cerEndDateSplit[0])-parseInt(1));
+								  }if(locationDate.match("MM-dd-yyyy")){
+									  finalDateFormatCerEditOneSave = 'mm-dd-yy'; 
+									  cerEndDateEdit = new Date(cerEndDateSplit[2], parseInt(cerEndDateSplit[0])-parseInt(1), parseInt(cerEndDateSplit[1])-parseInt(1));
+								  }if(locationDate.match("yyyy-dd-MM")){
+									  finalDateFormatCerEditOneSave = 'yy-dd-mm';
+									  cerEndDateEdit = new Date(cerEndDateSplit[0], parseInt(cerEndDateSplit[2])-parseInt(1), parseInt(cerEndDateSplit[1])-parseInt(1));
+								  }
+								  var finalDateFormatCerUpdate = '';
+								  if(locationDate.match("yyyy-MM-dd")){
+									  finalDateFormatCerUpdate = 'yy-mm-dd';
+								  }if(locationDate.match("dd-MM-yyyy")){
+									  finalDateFormatCerUpdate = 'dd-mm-yy'; 
+								  }if(locationDate.match("MM-dd-yyyy")){
+									  finalDateFormatCerUpdate = 'mm-dd-yy'; 
+								  }if(locationDate.match("yyyy-dd-MM")){
+									  finalDateFormatCerUpdate = 'yy-dd-mm'; 
+								  }
 							   
 							  $('#StartDateEdit').datepicker({
-							      dateFormat: 'dd-mm-yy',
+							      dateFormat: finalDateFormatCerUpdate,
 							      changeMonth: true,
 							  	  changeYear: true, 
-							  	  maxDate: datepickerEndDate,
+							  	  maxDate: cerEndDateEdit,
 							      onSelect: function (selected) {
 							            //var dt = new Date(selected);
-							            var dt = toDate("#StartDateEdit");
+							            var dt = $(this).datepicker('getDate', '+1d');
 							            dt.setDate(dt.getDate() + 1);
 							            $("#EndDateEdit").datepicker("option", "minDate", dt);
 							        }
 							  });
 							  
 							  $('#EndDateEdit').datepicker({
-							      dateFormat: 'dd-mm-yy',
+							      dateFormat: finalDateFormatCerUpdate,
 							      changeMonth: true,
 							  	  changeYear: true, 
-							  	  minDate: datepickerStartDate,
+							  	  minDate: cerStartDateEdit,
 							      onSelect: function (selected) {
 							            //var dt = new Date(selected);
-							            var dt = toDate("#EndDateEdit");
+							            var dt = $(this).datepicker('getDate', '-1d');
 							            dt.setDate(dt.getDate() - 1);
 							            $("#StartDateEdit").datepicker("option", "maxDate", dt);
 							        }
@@ -806,10 +840,11 @@ function removeCertification(candidateCertificationId, candidateId){
 function  deleteSelectedCertification(candidateCertificationId,candidateId){
 	
 	 var sourceleadUrl ='${sourceleadUrl}';
-	 
+	 var loginUserId = '${SourceLeadWeb_userId}';
+	 var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	 $.ajax({  
           type : "POST",
-          url: sourceleadUrl+"/removeCandidateCertificateBycandidateIdandcandidateCertificateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&candidateCertificationId="+candidateCertificationId,        
+          url: sourceleadUrl+"/removeCandidateCertificateBycandidateIdandcandidateCertificateId?${_csrf.parameterName}=${_csrf.token}&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&candidateCertificationId="+candidateCertificationId,        
           success :function(data) {
 
 				if(data != null && data != 'undefined' && data != ""){

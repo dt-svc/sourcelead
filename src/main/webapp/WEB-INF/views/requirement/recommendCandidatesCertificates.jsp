@@ -156,6 +156,18 @@ function storeCertificate(candidateId){
 <script>
 function candidateCertificateList(candidateId){
 	 var sourceleadUrl ='${sourceleadUrl}';
+	 
+	 var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
+	  if(locationList.match("yyyy-MM-dd")){
+		  candCertListDate = 'YYYY-MM-DD';
+	  }if(locationList.match("dd-MM-yyyy")){
+		  candCertListDate = 'DD-MM-YYYY'; 
+	  }if(locationList.match("MM-dd-yyyy")){
+		  candCertListDate = 'MM-DD-YYYY'; 
+	  }if(locationList.match("yyyy-dd-MM")){
+		  candCertListDate = 'YYYY-DD-MM'; 
+	  }  
+	 
 	 $.ajax({  
           type : "POST",
           url: sourceleadUrl+"/getCandidateCertificationListByCandidateIdAndOrgLocationID?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,        
@@ -178,8 +190,8 @@ function candidateCertificateList(candidateId){
 	                 	result  = result + "           <th>Score</th>";
 	                 	result  = result + "           <th>Score Type</th>";
 	                 	result  = result + "           <th>Description</th>";
-	                 	result  = result + "           <th>Valid from</th>";
-	                 	result  = result + "           <th>Valid to</th>";
+	                 	result  = result + "           <th>Valid from <br>(<small class='custom-small'>"+candCertListDate+"</small>)</th>";
+	                 	result  = result + "           <th>Valid to <br>(<small class='custom-small'>"+candCertListDate+"</small>)</th>";
 	                 	result  = result + "           <th>Action</th>";
 	                     result = result +"  </tr>"; 
 	                     result = result +"</thead>";
@@ -312,7 +324,7 @@ function addCertification(candidateId) {
 		result  = result + '                 </div>';
 		
 		result  = result + '                 <div class="clearfix mb10">';
-		result = result  +'	                     <div class="col-md-4" positionRelative>';
+		result = result  +'	                     <div class="col-md-4 dropdown-select positionRelative" positionRelative>';
 		result = result  +'	                     <select class="chosen-select"  name="scoreType" id="scoreType" onchange="selectScoreType();clearSearchKey();">';
 		result = result  +' 					   <option value="" selected="selected">Score Type</option>';
 		result = result  +'	                       <option value="Percentage">Percentage</option>';
@@ -378,19 +390,36 @@ function addCertification(candidateId) {
 		$(".edit-details").removeClass("edit-details-active");
 	   });	 */
 
+	   
+		 var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+		  var finalDateFormatRecomondedCandCertSave = '';
+		  if(locationDate.match("yyyy-MM-dd")){
+			  finalDateFormatRecomondedCandCertSave = 'yy-mm-dd';
+		  }if(locationDate.match("dd-MM-yyyy")){
+			  finalDateFormatRecomondedCandCertSave = 'dd-mm-yy'; 
+		  }if(locationDate.match("MM-dd-yyyy")){
+			  finalDateFormatRecomondedCandCertSave = 'mm-dd-yy'; 
+		  }if(locationDate.match("yyyy-dd-MM")){
+			  finalDateFormatRecomondedCandCertSave = 'yy-dd-mm'; 
+		  }
+		  
+	   
+	   
 	  $('#StartDate').datepicker({
-	      dateFormat: 'yy-mm-dd',
+	      dateFormat: finalDateFormatRecomondedCandCertSave,
 	      onSelect: function (selected) {
-	            var dt = new Date(selected);
+	           // var dt = new Date(selected);
+	             var dt = $(this).datepicker('getDate', '+1d');
 	            dt.setDate(dt.getDate() + 1);
 	            $("#EndDate").datepicker("option", "minDate", dt);
 	        }
 	  });
 	  
 	  $('#EndDate').datepicker({
-	      dateFormat: 'yy-mm-dd',
+	      dateFormat: finalDateFormatRecomondedCandCertSave,
 	        onSelect: function (selected) {
-	            var dt = new Date(selected);
+	          //  var dt = new Date(selected);
+	            var dt = $(this).datepicker('getDate', '-1d');
 	            dt.setDate(dt.getDate() - 1);
 	            $("#StartDate").datepicker("option", "maxDate", dt);
 	        }
@@ -547,19 +576,33 @@ function addCertification(candidateId) {
 								$(".edit-details").removeClass("edit-details-active");
 							   });	 */
 
+								 var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+								  var finalDateFormatRecCandCert = '';
+								  if(locationDate.match("yyyy-MM-dd")){
+									  finalDateFormatRecCandCert = 'yy-mm-dd';
+								  }if(locationDate.match("dd-MM-yyyy")){
+									  finalDateFormatRecCandCert = 'dd-mm-yy'; 
+								  }if(locationDate.match("MM-dd-yyyy")){
+									  finalDateFormatRecCandCert = 'mm-dd-yy'; 
+								  }if(locationDate.match("yyyy-dd-MM")){
+									  finalDateFormatRecCandCert = 'yy-dd-mm'; 
+								  }
+							   
 							  $('#StartDateEdit').datepicker({
-							      dateFormat: 'yy-mm-dd',
+							      dateFormat: finalDateFormatRecCandCert,
 							      onSelect: function (selected) {
-							            var dt = new Date(selected);
+							            //var dt = new Date(selected);
+							             var dt = $(this).datepicker('getDate', '+1d');
 							            dt.setDate(dt.getDate() + 1);
 							            $("#EndDateEdit").datepicker("option", "minDate", dt);
 							        }
 							  });
 							  
 							  $('#EndDateEdit').datepicker({
-							      dateFormat: 'yy-mm-dd',
+							      dateFormat: finalDateFormatRecCandCert,
 							        onSelect: function (selected) {
-							            var dt = new Date(selected);
+							           // var dt = new Date(selected);
+							            var dt = $(this).datepicker('getDate', '-1d');
 							            dt.setDate(dt.getDate() - 1);
 							            $("#StartDateEdit").datepicker("option", "maxDate", dt);
 							        }
@@ -646,10 +689,11 @@ function addCertification(candidateId) {
 function removeCertification(candidateCertificationId,candidateId){
 	
 	 var sourceleadUrl ='${sourceleadUrl}';
-	 
+	 var loginUserId = '${SourceLeadWeb_userId}';
+	 var orgLocationId = '${SourceLeadWeb_orgLocationId}';	
 	 $.ajax({  
           type : "POST",
-          url: sourceleadUrl+"/removeCandidateCertificateBycandidateIdandcandidateCertificateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&candidateCertificationId="+candidateCertificationId,        
+          url: sourceleadUrl+"/removeCandidateCertificateBycandidateIdandcandidateCertificateId?${_csrf.parameterName}=${_csrf.token}&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&candidateCertificationId="+candidateCertificationId,        
           success :function(data) {
 
 				if(data != null && data != 'undefined' && data != ""){

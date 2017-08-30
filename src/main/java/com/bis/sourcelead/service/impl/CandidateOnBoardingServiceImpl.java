@@ -53,6 +53,7 @@ import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
+import com.bis.sourcelead.web.LoginSessionController;
 
 @Service
 public class CandidateOnBoardingServiceImpl implements CandidateOnBoardingService{
@@ -122,6 +123,9 @@ public class CandidateOnBoardingServiceImpl implements CandidateOnBoardingServic
 			throws Exception {
 		
 		CandidateOnBoarding candidateOnBoarding = null;
+		
+		//date format code
+		//SimpleDateFormat dateFormat = orgLocations.getLocFullFormDateFormatter();
 		
 		if(jsonObj.has("savedonboardId") && !isNullOrEmpty(jsonObj.getString("savedonboardId"))){
 			candidateOnBoarding = candidateOnBoardingDao.getCandidateOnBoardingById(Long.valueOf(jsonObj.getString("savedonboardId")));
@@ -206,11 +210,11 @@ public class CandidateOnBoardingServiceImpl implements CandidateOnBoardingServic
 		}
 		
 		if(jsonObj.has("startDate") && !isNullOrEmpty(jsonObj.getString("startDate"))){
-			candidateOnBoarding.setStartDate(commonUtil.getDateFormat(jsonObj.getString("startDate")));
+			candidateOnBoarding.setStartDate(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),jsonObj.getString("startDate")));
 		}
 		
 		if(jsonObj.has("endDate") && !isNullOrEmpty(jsonObj.getString("endDate"))){
-			candidateOnBoarding.setEndDate(commonUtil.getDateFormat(jsonObj.getString("endDate")));
+			candidateOnBoarding.setEndDate(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),jsonObj.getString("endDate")));
 		}else{
 			candidateOnBoarding.setEndDate(null);
 		}
@@ -266,7 +270,7 @@ public class CandidateOnBoardingServiceImpl implements CandidateOnBoardingServic
 		}
 		
 		if(jsonObj.has("dueDate") && !isNullOrEmpty(jsonObj.getString("dueDate"))){
-			candidateOnBoarding.setDueDate(commonUtil.getDateFormat(jsonObj.getString("dueDate")));
+			candidateOnBoarding.setDueDate(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),jsonObj.getString("dueDate")));
 		}else{
 			candidateOnBoarding.setDueDate(null);
 		}
@@ -342,9 +346,6 @@ public class CandidateOnBoardingServiceImpl implements CandidateOnBoardingServic
 		if(onboardingUser == null){
 			onboardingUser = getUserDetails(candidateOnBoarding,password,loginUser);
 		    userDao.addUser(onboardingUser);
-		}else{
-			onboardingUser.setPassword(sourceleadPasswordEncoder.encode(password));
-			userDao.addUser(onboardingUser);
 		}
 		
 		onboardingUserRole = userRoleDao.getUserDetailsByUserIdAndLocationId(onboardingUser.getId(), orgLocations.getId());
@@ -685,20 +686,21 @@ public class CandidateOnBoardingServiceImpl implements CandidateOnBoardingServic
 		 StringBuilder msgBuild = new StringBuilder();
 		 emailMessage.setFromName(msgBuild.append(task.getTaskOwnerId().getFirstName()).append(" ").append(task.getTaskOwnerId().getLastName()).toString());
 		 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
+		// SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
 		//setting the class filed values
 		 Map<String, String> globalVarsMap = new HashMap<String, String>();
-		 if(task.getSubject()!= null  && !"".equalsIgnoreCase(task.getSubject())){
+		 if(!isNullOrEmpty(task.getSubject())){
 		 globalVarsMap.put("subject", task.getSubject()); 
 		 }else{
 		 globalVarsMap.put("subject", "--");	 
 		 }
-		 if(task.getPriority()!= null  && !"".equalsIgnoreCase(task.getPriority())){
-		 globalVarsMap.put("priority", task.getPriority()); 
+		 if(!isNullOrEmpty(task.getPriority())){
+		   globalVarsMap.put("priority", task.getPriority()); 
 		 }else{
 		 globalVarsMap.put("priority", "--");	 
 		 }
 		 if(null != task.getTaskDate() && !"".equalsIgnoreCase(task.getTaskDate().toString())){
-		 task.setTaskDateStr(Constants.DF_DMY.format(task.getTaskDate()));
+		 task.setTaskDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),task.getTaskDate()));
 		 if( task.getTaskDateStr()!= null  && !"".equalsIgnoreCase( task.getTaskDateStr().toString())){
 		 globalVarsMap.put("date", task.getTaskDateStr());	 
 		 	}

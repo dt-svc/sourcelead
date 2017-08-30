@@ -7,7 +7,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -21,6 +20,7 @@ import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CandidateReferencesService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.UserService;
+import com.bis.sourcelead.util.CandidateActivityCommonUtil;
 import com.bis.sourcelead.util.CommonUtil;
 
 /**
@@ -42,6 +42,8 @@ public class CandidateReferencesRestController {
 	private UserService userService;
 	@Autowired
 	private OrgLocationService orgLocationService;
+	@Autowired
+	CandidateActivityCommonUtil candidateActivityCommonUtil;
 	
 	/**
 	 * @author Prasad K
@@ -56,7 +58,7 @@ public class CandidateReferencesRestController {
 	 * 
 	 * @throws Exception
 	 */
-	@PreAuthorize("hasAnyRole('ROLE_ADD_CANDIDATE_REFERENCE','ROLE_ADD_ASSOCIATE_REFERENCE')")
+	//@PreAuthorize("hasAnyRole('ROLE_ADD_CANDIDATE_REFERENCE','ROLE_CROWDSOURCING_PROFILE','ROLE_CROWDSOURCING_CANDIDATES','ROLE_ADD_ASSOCIATE_REFERENCE')")
 	@RequestMapping(value = "/saveCandidateReferences", method = RequestMethod.POST)
 	public @ResponseBody String saveCandidateReferences(@RequestParam("json") String json, @RequestParam("candidateId") Long candidateId, @RequestParam("userId") Long userId, @RequestParam("locationCode") String locationCode) throws Exception
 	{
@@ -109,18 +111,25 @@ public class CandidateReferencesRestController {
 	 * 
 	 * @throws Exception
 	 */
-	@PreAuthorize("hasAnyRole('ROLE_VIEW_AND_EDIT_CANDIDATE_REFERENCE','ROLE_VIEW_AND_EDIT_ASSOCIATE_REFERENCE')")
+//	@PreAuthorize("hasAnyRole('ROLE_VIEW_AND_EDIT_CANDIDATE_REFERENCE','ROLE_CROWDSOURCING_PROFILE','ROLE_CROWDSOURCING_CANDIDATES','ROLE_VIEW_AND_EDIT_ASSOCIATE_REFERENCE')")
 	@RequestMapping(value = "/terminateReference", method = RequestMethod.POST)
-	public @ResponseBody String terminateReference(@RequestParam(value = "candidateId", required = false) Long candidateId, @RequestParam(value = "refId", required = false) String refId, @RequestParam(value = "userCode", required = false) String userCode) throws Exception
+	public @ResponseBody String terminateReference(@RequestParam(value = "loginUserId", required = false) Long loginUserId, @RequestParam(value = "orgLocationId", required = false) Long orgLocationId,
+													@RequestParam(value = "candidateId", required = false) Long candidateId, @RequestParam(value = "refId", required = false) String refId, @RequestParam(value = "userCode", required = false) String userCode) throws Exception
 	{
 		// User user = (User)
 			// SourceLeadSessionManager.getSessionAttribute(request, "user");
+		User user = userService.getUserById(loginUserId);
+		OrgLocations loginOrgLocation = orgLocationService.getOrgLocations(orgLocationId);
 		CandidateReferences candidateReferences = candidateReferencesService.getCandidateReferenceByReferenceId(Long.parseLong(refId));
 		if (candidateReferences != null) {
 			candidateReferences.setStatus(Constants.CANDIDATE_IN_ACTIVE);
 			candidateReferences.setUpdatedBy(userCode);
 			candidateReferences.setUpdatedDate(commonUtil.currentDate());
 			candidateReferencesService.updateCandidateReferences(candidateReferences);
+			StringBuffer activitySummary = new StringBuffer();
+		    activitySummary.append("Name").append(" : ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateReferences.getName()).append(Constants.NEW_VALUE_TAG_END);
+			candidateActivityCommonUtil.storeCandidateReferencesHistory(candidateReferences, user);
+			candidateActivityCommonUtil.storeCandidateActivity(user, loginOrgLocation, candidateReferences.getCandidateId(), "", Constants.CANDIDATE_DELETED_REFERENCES, activitySummary.toString(), "CANDIDATE");
 		}
 		return "success";
 	}

@@ -2,13 +2,6 @@
 <jsp:include page="../masterSideNav.jsp" />
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
-<script src="resources/js/jquery-fun.js"></script> 
-<!-- these files for autocomplete with tagit -->
-<script src="resources/js/csc.js" type="text/javascript" charset="utf-8"></script>
-<link href="resources/css/jquery-tagit.css" rel="stylesheet">
-<script src="resources/js/tag-it.js" type="text/javascript" charset="utf-8"></script>
-<script src="resources/js/tag-it.min.js" type="text/javascript" charset="utf-8"></script>
-<script src="resources/js/formvalidator.js"></script>
 
 <script type="text/javascript">
 function getOrgName(){
@@ -364,9 +357,9 @@ function validateEmail(){
 				var result = data;
 				if(result == 'Invalid Email') {
 					$('#EmailIdDiv').find('p.jquery_form_error_message').remove();
-					$("input#email").after( "<p class='jquery_form_error_message'>should not your org users email</span>");
+					$("input#email").after( "<p class='jquery_form_error_message'>Email should not your org user email</span>");
 					document.getElementById("email").setAttribute( 'record-exist', 'yes');
-					document.getElementById("email").setAttribute( 'record-exist-errorMsg',"should not your org users email");
+					document.getElementById("email").setAttribute( 'record-exist-errorMsg',"Email should not your org user email");
 					
 				}else if(result == 'Valid Email') {
 					$('input#email').removeAttr("class record-exist record-exist-errormsg");
@@ -542,7 +535,7 @@ function getSpocUserDetails(){
 	        		    $("#firstName").val(json[0]);
 	        		 }else{
 	        			 $("#firstName").attr("disabled", false);
-	        			 $("#firstName").val('');
+	        			 //$("#firstName").val('');
 	        		 }
 	        		 
 	        		 if(json[1] != null && json[1] != ''){
@@ -550,7 +543,7 @@ function getSpocUserDetails(){
 		        		    $("#lastName").val(json[1]);
 	        		 }else{
 	        			    $("#lastName").attr("disabled", false);
-	        			    $("#lastName").val('');
+	        			    //$("#lastName").val('');
 	        		 }
 		        		
 	        		 if(json[2] != null && json[2] != ''){
@@ -558,7 +551,7 @@ function getSpocUserDetails(){
 		        		    $("#phoneNumber").val(json[2]);
 	        		 }else{
 	        			    $("#phoneNumber").attr("disabled", false);
-	        			    $("#phoneNumber").val('');
+	        			    //$("#phoneNumber").val('');
 	        		 }
 	       
 	        		 

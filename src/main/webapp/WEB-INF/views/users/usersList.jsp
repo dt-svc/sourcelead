@@ -3,10 +3,6 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
-<link rel="stylesheet" href="resources/css/chosen.min.css">
-<script src="resources/js/chosen.jquery.min.js"></script> 
-<script src="resources/js/jquery-fun.js"></script> 
-<script src="resources/js/formvalidator.js"></script>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 
@@ -31,6 +27,7 @@ margin-right: 15px;
 window.onload = function () {
 //getUsersList('manual');
 	usersListCheck("${searchValue}","${searchResult}");
+	var view = $("#listView").val('GRIDVIEW');
  };
 </script>
 
@@ -95,7 +92,7 @@ function getUsersSearchResult(searchValue){
       
       <div class="pull-left cand-advsrche onboardBtn">
        <input id="searchElement" type="hidden"></input>
-       
+        <input type="hidden" name="listView" id="listView"/>
 			  <%--<a href="javascript:void(0)" class="btn btn-primary btn-sm" title="Advanced Search" onClick="openPop();loadChosenScripts();">
 			  Advanced Search&nbsp;&nbsp;
 			  <i class="fa fa-search"></i>
@@ -220,8 +217,12 @@ function getUsersSearchResult(searchValue){
        <div class="positionRelative clearfix">
        <ul class="pull-right list-unstyled list-inline">
         <input type="hidden" name="usersOffset" id="usersOffset" value="0"/>
+         <li><div class="gridFil grid-fil">
+					<i class="fa fa-th-list" onclick="showList('LISTVIEW');" id="ShowGrid"></i>
+					<i class="fa fa-th-large" onclick="showGrid();" id="ShowList"></i>
+			</div></li>	
           <li><i class="fa fa-filter"></i>&nbsp;
-               <select id="userState" onchange="getUsersList('manual');">
+               <select id="userState" onchange="getUsersView('manual','LISTVIEW');">
 				<option value="ACTIVE" >Active</option>
 				<option value="">All</option>
 				<option value="INACTIVE" >In Active</option>
@@ -231,7 +232,7 @@ function getUsersSearchResult(searchValue){
           </li>
           
 		   <li><i class="fa fa-filter"></i>&nbsp;
-				<select id="userRole" onchange="getUsersList('manual');">
+				<select id="userRole" onchange="getUsersViewBuRole('manual','LISTVIEW');">
 				<option value="">&nbsp;--Select Role--&nbsp;&nbsp;&nbsp;</option>
 				<!-- <option value="All" >All Roles</option> -->
 				<c:forEach var="roles" items="${rolesList}">
@@ -265,17 +266,22 @@ function getUsersSearchResult(searchValue){
 				</div>
 		   </li>
 		    </sec:authorize>
-		   
         </ul>
       </div>
       </div>
       </section>
-      
+      <div class="project_wrap_table datatable_filter" id="userListGrid">
+              <div id="userListViewDiv" class="filter_position backgroundWhite pdtop mt" style="display:none;"></div> 
+          </div>  
       <div class="clearfix form-area form-horizontal toggle-div remove-div">
       <div class="row">
           <div id="usersListBody"></div> 
+
           <div id="loadMoreDiv"></div> 
       </div>
+      
+               
+      
       <div id="usersListEmptyBody"></div>
       <div id="popUp"></div>
       </div>
@@ -293,13 +299,14 @@ function getUsersSearchResult(searchValue){
 function exportUserData(){
 	var userListEmpty = $("#noUsers").val();
 	var exportType = "xls";
+	var viewType = "LISTVIEW";
 	var sourceleadUrl = '${sourceleadUrl}';
 	var loginUserRole = '${SourceLeadWeb_loginUserRole}';
     var userRole = document.getElementById("userRole").value;
 	var searchByName = document.getElementById("searchByName").value;
 	var userState = document.getElementById("userState").value;
 	if(userListEmpty != 'nousers'){
-		window.location.href = sourceleadUrl + "/getExportUsers?&userRole="+userRole+"&searchByName="+searchByName+"&userState="+userState+"&loginUserRole="+loginUserRole+"&exportType=xls";
+		window.location.href = sourceleadUrl + "/getExportUsers?&userRole="+userRole+"&searchByName="+searchByName+"&userState="+userState+"&loginUserRole="+loginUserRole+"&exportType=xls&viewType=LISTVIEW";
 	}else{
 		 var result = "";
 			result = result +"	<div class='project_inn_mask'></div>";
@@ -345,13 +352,14 @@ function flushAdvancedData(){
 function exportToPdf(){
 	var userListEmpty = $("#noUsers").val();
 	var exportType = "pdf";
+	var viewType = "LISTVIEW";
 	var sourceleadUrl = '${sourceleadUrl}';
 	var loginUserRole = '${SourceLeadWeb_loginUserRole}';
     var userRole = document.getElementById("userRole").value;
 	var searchByName = document.getElementById("searchByName").value;
 	var userState = document.getElementById("userState").value;
 	if(userListEmpty != 'nousers'){
-	window.location.href = sourceleadUrl + "/getExportUsers?&userRole="+userRole+"&searchByName="+searchByName+"&userState="+userState+"&loginUserRole="+loginUserRole+"&exportType=pdf";
+	window.location.href = sourceleadUrl + "/getExportUsers?&userRole="+userRole+"&searchByName="+searchByName+"&userState="+userState+"&loginUserRole="+loginUserRole+"&exportType=pdf&viewType=LISTVIEW";
 	}else{
 		 var result = "";
 			result = result +"	<div class='project_inn_mask'></div>";
@@ -413,18 +421,24 @@ function exportToPdf(){
 <script>
 	$(document).scroll(function(e){
 	    // grab the scroll amount and the window height
-	    var scrollAmount = $(window).scrollTop();
-	    var documentHeight = $(document).height();
-	    offset = $("#usersOffset").val();
-	    var UsersCount = $("#totalUsersCount").val(); 
-	    // calculate the percentage the user has scrolled down the page
-	    if($(window).scrollTop() == $(document).height() - $(window).height()) {
-	    	var avilableCount = $("#usersOffset").val();
-	    	
-	    	avilableCount = parseInt(avilableCount) + parseInt(10); 
-	    	$("#usersOffset").val(avilableCount);
-	    	//searchUser("scroll");
-	    	 getUsersList("scroll");
+	    
+	    var view = $("#listView").val();
+	    if(view == "GRIDVIEW"){
+	    	var scrollAmount = $(window).scrollTop();
+		    var documentHeight = $(document).height();
+		    offset = $("#usersOffset").val();
+		    var UsersCount = $("#totalUsersCount").val(); 
+		    // calculate the percentage the user has scrolled down the page
+		    if($(window).scrollTop()+1 >= $(document).height() - $(window).height()) {
+		    	var avilableCount = $("#usersOffset").val();
+		    	
+		    	avilableCount = parseInt(avilableCount) + parseInt(10); 
+		    	$("#usersOffset").val(avilableCount);
+		    	//searchUser("scroll");
+		    	 getUsersList("scroll");
+		    }
+	    }else{
+	    	$('#loadMoreDiv').empty(); 
 	    }
 	});
 </script>
@@ -469,9 +483,8 @@ function exportToPdf(){
    		     $('#searchElement').append(searchByName);
     		 offset = 0;
     	}
-		
-		type
-		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	
+		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 		
 		 $.ajax({ 
 	    	type: "POST",
@@ -966,5 +979,204 @@ function getUserSummary(userId){
 				$this.next().css({'width': '100%'});
 				})
 </script> 
+
+<!-- Added By Rajashekar -->
+<script>
+	$("#ShowList, #listView").hide();
+	$("#ShowGrid").click(function(){
+		$("#ShowList").show();
+		$("#ShowGrid").hide();
+		$("#listView").show();
+		$("#gridView").hide();		
+	});
+	$("#ShowList").click(function(){
+		$("#ShowGrid").show();
+		$("#ShowList").hide();
+		$("#gridView").show();
+		$("#listView").hide();			
+	});	
+</script>
+
+  <script>
+  function getUsersView(type,viewFormat){
+	  var viewType = $("#listView").val();
+	  if(viewType != 'LISTVIEW'){
+		  getUsersList(type);
+	  }else{
+		  getUsersListView('manual',viewFormat);  
+	  }
+	   
+  } 
+  </script>
+  
+  <script>
+function getUsersViewBuRole(type,viewForm){
+	var viewType = $("#listView").val();
+	  if(viewType != 'LISTVIEW'){
+		  getUsersList(type);
+	  }else{
+		  getUsersListView('manual',viewForm);  
+	  }
+} 
+</script>
+
+<script>
+function showGrid(){
+	$("#listView").val('GRIDVIEW');
+	$("#userListViewDiv").hide();
+	getUsersList('manual');
+	$("#usersListBody").show();
+	
+}
+
+function showList(viewType){
+	var val = $("#listView").val("LISTVIEW");
+	$("#usersListBody").hide();
+	getUsersListView('manual',viewType);
+	$("#userListViewDiv").show();
+	$('#loadMoreDiv').empty();
+	
+}
+</script>
+
+
+<script type="text/javascript">
+	function getUsersListView(type,viewType){
+		var sourceleadUrl = '${sourceleadUrl}';
+		var loginUserRole = '${SourceLeadWeb_loginUserRole}';
+	    var userRole = document.getElementById("userRole").value;
+		
+		var searchByName = document.getElementById("searchByName").value;
+		var userState = document.getElementById("userState").value;
+		
+		/* if(type == "scroll"){
+			offset = $("#usersOffset").val();
+			var searchByName =  document.getElementById("searchElement").innerHTML
+    	} */
+		
+		if(type == "manual"){
+			$('#usersListBody').empty();
+    		$("#usersOffset").val(0);
+    		$("#searchElement").val("");
+    		var searchByName = document.getElementById("searchByName").value;
+   		     $('#searchElement').append(searchByName);
+    		 offset = 0;
+    	}
+		 $.ajax({ 
+	    	type: "POST",
+	    	url: sourceleadUrl+"/getUsersList?${_csrf.parameterName}=${_csrf.token}&userRole="+userRole+"&searchByName="+searchByName+"&userState="+userState+"&loginUserRole="+loginUserRole+"&offset="+offset+"&viewType="+viewType,
+	    			 
+            success: function(data) {
+            	 var json = JSON.parse(data);
+            	 var result = "";
+	    		    var result = "";				        	
+					result = result + '<table id="userListView" class="display" cellspacing="0" width="100%" >';
+					result = result + '<thead>';
+					result = result + '<tr>';
+					result = result + '<th>User Name</th>';
+					result = result + '<th>Email Id</th>';
+					result = result + '<th>Phone No.</th>';
+					result = result + '<th>Role</th>';
+					result = result + '<th>Manager</th>';
+					result = result + '<th>Employment Type</th>';
+					result = result + '<th>Status</th>';
+					/* result = result + '<th>Action</th>'; */
+					result = result + '</tr>';
+					result = result + '</thead>	';
+					result = result + '<tbody>';
+			if(data != null && data !='undefined' && data != ''){ 
+	 			for(var i=0; i<json.length; i++){
+	 				
+			 				var userRole = json[i];
+			 				var mobilePhone = ""
+			 			    
+			 			    if(userRole.user.mobilePhone != null && userRole.user.mobilePhone != ''){
+			 			    	mobilePhone = userRole.user.mobilePhone;
+			 			    }else{
+			 			    	mobilePhone = "--"
+			 			    }
+			 				
+			 				  result = result + ' <tr>';
+			        		   if(userRole.userName !=null && userRole.userName !='' && userRole.userName !='undefined'){
+			        			   '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_USER\',\'ROLE_VIEW_EDIT_USER\',\'ROLE_VIEW_DELETE_USER\')">' 
+			        			   result = result +"<td>"    
+			        			    result = result +" <a href='<c:url value='/userSummary/"+userRole.userId+"'/>'' class='UserTextLeft'>";
+					       	    	result = result +"<img onerror='predefineProfileImage(this);' class='m-t-xs'  src='"+sourceleadUrl+"/displayUserImage/"+userRole.userId+"' alt='image'>";
+									result = result + ''+userRole.userName+'</a></td>';
+									'</sec:authorize>';
+								}else{
+								result = result + ' <td><div>--</div></td>';
+								}
+			        		    
+			        		    if(userRole.userEmail !=null && userRole.userEmail !='' && userRole.userEmail !='undefined'){
+									result = result + ' <td><div class="tblminwidth-75">'+userRole.userEmail+'</div></td>';
+								}else{
+									result = result + ' <td><div>--</div></td>';
+								}
+			        		    if(mobilePhone !=null && mobilePhone !='' && mobilePhone !='undefined'){
+									result = result + ' <td><div class="tblminwidth-75">'+mobilePhone+'</div></td>';
+								}else{
+									result = result + ' <td><div>--</div></td>';
+								}
+			        		    result = result + ' <td><div class="tblminwidth-75">'+userRole.userRoleName+'</div></td>';
+			        		    if(userRole.reportingManagerName !=null && userRole.reportingManagerName !='' && userRole.reportingManagerName !='undefined'){
+									result = result + ' <td><div class="tblminwidth-75">'+userRole.reportingManagerName+'</div></td>';
+								}else{
+									result = result + ' <td><div>--</div></td>';
+								}
+			        		    if(userRole.employeMentType !=null && userRole.employeMentType !='' && userRole.employeMentType !='undefined'){
+									result = result + ' <td><div class="tblminwidth-75">'+userRole.employeMentType+'</div></td>';
+								}else{
+									result = result + ' <td><div>--</div></td>';
+								}
+			        		    if(userRole.isMailSent != null && userRole.isMailSent != "" && userRole.isMailSent == 'N'){
+					       	    	  result = result +"<td><p><label id='user"+userRole.userId+"' class='label label-info'><i class='fa fa-envelope' aria-hidden='true'></i><a href='javascript:void(0)' onClick='resendInvitation("+userRole.userId+");'>&nbsp;&nbsp;Invite</a></label></p></td>";
+					 			    }else if((userRole.isMailSent != null && userRole.isMailSent != "" && userRole.isMailSent == 'Y') &&
+					 			    		(userRole.userState != null && userRole.userState != "" && userRole.userState == 'NOT_LOGGEDIN') ){
+					 			    	 result = result +"<td><p><label id='user"+userRole.userId+"' class='label label-info'><i class='fa fa-envelope' aria-hidden='true'></i><a href='javascript:void(0)' onClick='resendInvitation("+userRole.userId+");'>&nbsp;&nbsp;Resend</a></label></p></td>";
+					 			    }else if(userRole.userState != null && userRole.userState != "" && userRole.userState == 'ACTIVE'){
+					 			    	result = result +"<td><p><label class='label label-success'><i class='fa fa-check'></i>&nbsp;&nbsp;Active</label></p></td>";
+					 			    }else if(userRole.userState != null && userRole.userState != "" && userRole.userState == 'INACTIVE'){
+					 			    	result = result +"<td><p><label class='label label-danger'><i class='fa fa-ban'></i>&nbsp;&nbsp;In-active</label></p></td>";
+					 			    } 
+					       	    	
+			        		    /* result = result + ' <td><div class="tblminwidth-75">Remove</div></td>'; */
+			        		   /*  result = result + '<td><div><i class="glyphicon glyphicon-trash" onClick="terminateUSer('+userRole.id+')"; title="Terminate User"></i></div></td>'; */
+								result = result + ' </tr>';
+				   }
+	   		    
+            }
+            result = result + '  </tbody>';
+			result = result + ' </table>';
+			$("#userListViewDiv").empty();
+			$("#userListViewDiv").append(result);
+			userListViewPagination();
+			 },
+	        error: function(e){
+	        }
+	    });  
+
+ }
+</script>
+
+<script>
+function userListViewPagination(){
+	 $('#userListView').DataTable( { 
+	    	"scrollCollapse": false,
+	    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+	    	"bLengthChange": true,
+	    	"bDestroy": true,
+	    	"ordering": true,
+	    	"oLanguage": {
+	            "sSearch": "",
+	            "sZeroRecords": "", "sEmptyTable": ""
+	       }
+	    });
+	    $("#WagesAndTaxListTable").wrap("<div class='overflow_Auto'></div>")
+}
+</script>
+
+
+<!-- End By Rajashekar -->
 
     

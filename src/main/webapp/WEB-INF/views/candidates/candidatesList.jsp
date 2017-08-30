@@ -39,33 +39,34 @@
 <jsp:include page="candidatesCertificates.jsp"></jsp:include>
 <jsp:include page="candidateDocuments.jsp"></jsp:include>
 <jsp:include page="candidateReferences.jsp"></jsp:include>
-<jsp:include page="requirementHistory.jsp"></jsp:include>
+ <jsp:include page="requirementHistory.jsp"></jsp:include>
  <sec:authorize access="hasAnyRole(\'ROLE_POST_COMMENTS\',\'ROLE_CROWDSOURCING_CANDIDATES\')">
-<jsp:include page="candidatesCommentsList.jsp"></jsp:include>
+ <jsp:include page="candidatesCommentsList.jsp"></jsp:include>
  </sec:authorize>
  <jsp:include page="candidatesQuickView.jsp"></jsp:include>
+ <jsp:include page="candidatesTimelineActivity.jsp"></jsp:include>
  
-<script>
-var isAssociate = 'N';
-var sourceleadUrl = "${sourceleadUrl}";
-var _csrfParam = '${_csrf.parameterName}';
-var _csrfToken = '${_csrf.token}';
-var associateFlag = false;
-'<sec:authorize access="hasAnyRole(\'ROLE_ADD_CANDIDATE_HOTLIST\',\'ROLE_CROWDSOURCING_CANDIDATES\')">';
-	associateFlag = true;
-'</sec:authorize>';
-var name1Flag = false;
-'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CANDIDATE\',\'ROLE_VIEW_EDIT_CANDIDATE\',\'ROLE_VIEW_DELETE_CANDIDATE\',\'ROLE_CROWDSOURCING_CANDIDATES\')">'; 
-name1Flag = true;
-'</sec:authorize>';
-var name2Flag = false;
-'<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_CANDIDATE\',\'ROLE_VIEW_EDIT_CANDIDATE\',\'ROLE_VIEW_DELETE_CANDIDATE\',\'ROLE_CROWDSOURCING_CANDIDATES\')">'; 
-name2Flag = true;
-'</sec:authorize>';
- window.onload = function() {
-	 candidateListCheck("${serachValue}","${universalCanddateList}","${candidateKeyword}","${candidateIdSearchId}");
-};
-</script>
+	<script>
+	var isAssociate = 'N';
+	var sourceleadUrl = "${sourceleadUrl}";
+	var _csrfParam = '${_csrf.parameterName}';
+	var _csrfToken = '${_csrf.token}';
+	var associateFlag = false;
+	'<sec:authorize access="hasAnyRole(\'ROLE_ADD_CANDIDATE_HOTLIST\',\'ROLE_CROWDSOURCING_CANDIDATES\')">';
+		associateFlag = true;
+	'</sec:authorize>';
+	var name1Flag = false;
+	'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CANDIDATE\',\'ROLE_VIEW_EDIT_CANDIDATE\',\'ROLE_VIEW_DELETE_CANDIDATE\',\'ROLE_CROWDSOURCING_CANDIDATES\')">'; 
+	name1Flag = true;
+	'</sec:authorize>';
+	var name2Flag = false;
+	'<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_CANDIDATE\',\'ROLE_VIEW_EDIT_CANDIDATE\',\'ROLE_VIEW_DELETE_CANDIDATE\',\'ROLE_CROWDSOURCING_CANDIDATES\')">'; 
+	name2Flag = true;
+	'</sec:authorize>';
+	 window.onload = function() {
+		 candidateListCheck("${serachValue}","${universalCanddateList}","${candidateKeyword}","${candidateIdSearchId}");
+	};
+	</script>
 
 <style type="text/css">
 .candidate_wrap_table table tr td:first-child {
@@ -76,6 +77,9 @@ name2Flag = true;
 }
 </style>
 <script type="text/javascript" src="resources/js/candidateTable.js"></script>
+
+<input type="hidden" id="noCandidates" name="noCandidates" />
+
 <%-- 
      @author : sarath kumar.
      this script is for show side bar when you click on the candidate name.
@@ -110,8 +114,8 @@ function candidateSideBar(candidateId){
 			            var state = '';
 			            var city = '';
 			            var currencyCodes = '';
+			            var generatedId = '';
 			            
-			            var currencyCode = '';
          			 	if(json.experienceMonths != null && json.experienceMonths != '' && json.experienceMonths != 'undefined'){
          			 		experienceMonths = json.experienceMonths+'-'+'Month/s';            			 		
          			 	}else{
@@ -204,6 +208,12 @@ function candidateSideBar(candidateId){
          			 		mobilePhone = '';
          			 	 }
          			 	 
+         			 	  if(json.generatedId != null && json.generatedId != '' && json.generatedId != 'undefined'){
+         			 		generatedId ='Generated ID'+ ' - '+json.generatedId;
+          			 	 }else{
+          			 		generatedId = '';
+          			 	 } 
+         			 	 
 	                	 var result = "";
 	                	 result = result+'<div id="popUp" ></div>  ';
 	                	
@@ -215,7 +225,7 @@ function candidateSideBar(candidateId){
 			             
 			             result = result+'<div class="col-xs-12 col-sm-5 col-md-5">';
 			             result = result+'<div id="candidateImageId">';
-			             result = result+'<div class="well well-sm text-center clearfix">';
+			             result = result+'<div class="well well-sm text-center clearfix nomr">';
 						 result = result+' <div class="profile-img-container profile-image text-center" style="position:relative;">';
 						 result = result+'   <img  id="userImage" onerror="predefineProfileImage(this);" src="<c:url value="/displayCandidateImage/'+candidateId+'"/>" alt="Profile Image" class=" img-responsive center-block img-circle">';
 						 result = result+'  <div class="btn-group uploadfile uploadfile-candidate">';
@@ -235,6 +245,30 @@ function candidateSideBar(candidateId){
 						 result = result+'  <a href="#" title="Close"><i class="fa fa-close text-danger"></i></a>';
 						 result = result+'  </div>'; */
 						 result = result+'  </div>';
+						 
+						 result = result+'  <div class="mb mt5 UsProBar">';                                                                                                                                        
+							result = result+' <div class="progress nomr">  ';
+						if(json.profilePercentage>=50){ 
+							result = result+'   <div class="progress-bar  progress-bar-success  ';
+						}
+						else{
+							result = result+'   <div class="progress-bar  progress-bar-danger  ';
+						}
+						result = result+' progress-bar-striped active" role="progressbar" id="perVal" aria-valuenow="'+json.profilePercentage+'" aria-valuemin="0" aria-valuemax="100" style="width:'+json.profilePercentage+'%">  ';
+						result = result+'     <p id="disVal">'+json.profilePercentage+'%</p>                                                                                                                                                                      ';
+						result = result+'   </div>  ';
+						result = result+' </div>                 ';                                                                                                                                                      
+						result = result+' </div> ';
+						/* else{ 
+							result = result+'  <div class="mb mt5 UsProBar">';                                                                                                                                        
+							result = result+' <div class="progress nomr">                                                                                                                                                       ';
+							result = result+'   <div class="progress-bar progress-bar-danger progress-bar-striped active" role="progressbar" id="perVal" aria-valuenow="'+json.profilePercentage+'" aria-valuemin="0" aria-valuemax="100" style="width:'+json.profilePercentage+'%">  ';
+							result = result+'    <p id="disVal"> '+json.profilePercentage+'%</p>                                                                                                                                                                      ';
+							result = result+'   </div>                                                                                                                                                                     ';
+							result = result+' </div>                                                                                                                                                                       ';
+							result = result+' </div> ';
+						} */
+						 
 						 result = result+' <p class="text-danger small" style="font-size: 11px; display: none;" id="errorImage" >Invalid Image/Size</p>';
 						 result = result+' <p class="text-muted small" style="font-size: 11px;"><i class="fa fa-info-circle"></i>&nbsp;png, svg and gif are not supported</p>';
 						 result = result+' <p class="text-muted small" style="font-size: 11px;"><i class="fa fa-info-circle"></i>&nbsp;Size should not more than 200kb</p>';
@@ -248,17 +282,21 @@ function candidateSideBar(candidateId){
 			             /* result = result+'<img  id="userImage" onerror="predefineProfileImage(this);" src="<c:url value="/displayUserImage/${SourceLeadWeb_userId}"/>"  alt="Profile Image" class="img-circle img-responsive">';
 			             result = result+'                     </div>';
 			             result = result+'                     </div>'; */
-			             result = result+'                     <div class="media-body candidate-details">';
-			             
-			             result = result+'                       <h4 class="media-heading" title = "'+json.firstName+' '+lastName+'">'+json.firstName+' '+lastName+'</h4>';
+			             result = result+'<div class="media-body candidate-details">';
+			            /*  result = result+'<h4 class="media-heading" title = "">'+json.generatedId+'</h4>'; */
+			             result = result+'<h4 class="media-heading" title = "'+json.firstName+' '+lastName+'">'+json.firstName+' '+lastName+'</h4>';
 			            
-			             result = result+'                       <ul class="list-unstyled">';
+			             result = result+'<ul class="list-unstyled">';
 			             
-// 			             result = result+'                        <li>Type - '+json.candidateType+'</li>';  
+// 			             result = result+'<li>Type - '+json.candidateType+'</li>';  
 			             
                          
 			             result = result+'                       </ul>';
-
+                         
+			             result = result+' <ul class="list-unstyled">';
+						 result = result+'<li>'+generatedId+'</li>';
+						 result = result+'</ul>';
+			             
 			             result = result+' <ul class="list-unstyled mrng0" >';
 						 result = result+'<li title="'+designation+'" class="tbldata-dotdot">'+designation+'</li>';
 						 result = result+'</ul>';
@@ -445,7 +483,7 @@ function candidateSideBar(candidateId){
 			             result = result + '<div id="tab-10" class="project_tabs_inn">';
 			             result = result+'     </div>';
 						 
-						 result = result + '<div id="tab-8" class="project_tabs_inn" style="min-height:450px">';
+						 result = result + '<div id="tab-8" class="project_tabs_inn">';
 						 result = result + '</div>';
 						 
 						 result = result + '<div id="tab-6" class="project_tabs_inn">';
@@ -460,7 +498,11 @@ function candidateSideBar(candidateId){
 						 $(".side_mask").fadeIn(200);
 						 $("body").css('overflow-y', 'hidden');
 						 candidateProfile(candidateId,candidateType);
-			 			 
+						 
+						 var output = "";
+						 output = output + '<a data-toggle="tab" href="#timelineview" onclick="getActivityDiv('+candidateId+')">Timeline</a>';
+						 $("#candTimelineView").empty();  
+			 		     $("#candTimelineView").append(output);
                 }else{
                	 $("#candidateSideDiv").removeAttr("style");
  	    	         var result ="";
@@ -504,6 +546,8 @@ function saveCandidateImage(candidateId){
   		        var jsonData = encodeURIComponent(con);
           		
           		var sourceleadUrl ='${sourceleadUrl}';
+          		var loginUserId = '${SourceLeadWeb_userId}';
+          		var orgLocationId = '${SourceLeadWeb_orgLocationId}';
           		var form = $('#candidate_form')[0];
            		var formData = new FormData(form);
 	            		
@@ -516,7 +560,7 @@ function saveCandidateImage(candidateId){
 	            	          contentType:false,
 	                	      dataType : 'json',
 	                	      
-	                      	  url: sourceleadUrl+"/saveCandidateProfile?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,
+	                      	  url: sourceleadUrl+"/saveCandidateProfile?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId,
 	                          success: function(result) {
 	                        	  cancel(candidateId);
 	    			          },  
@@ -571,7 +615,7 @@ function deleteImage(candidateId){
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 	result = result +"		<p>Are you sure ?</p>";
 	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
-	result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='deleteProfileImage("+candidateId+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel("+candidateId+");'></b>";
+	result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='deleteProfileImage("+candidateId+");this.disabled=true'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel("+candidateId+");'></b>";
 	result = result +"	</div>";
 	$("#popUp").append(result);
 	$("#remove_user_pop").slideDown(200);
@@ -587,9 +631,11 @@ function deleteImage(candidateId){
 <script type="text/javascript">
 function deleteProfileImage(candidateId){   
 	var sourceleadUrl ='${sourceleadUrl}';
+	var loginUserId = '${SourceLeadWeb_userId}';
+	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	 $.ajax({
 		    type: "GET",
-            url: sourceleadUrl+"/deleteCandidateImage?candidateId="+candidateId,
+            url: sourceleadUrl+"/deleteCandidateImage?candidateId="+candidateId+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId,
 	        success: function(data) {
 	        	 var result = data;
 	        	 $("#popUp").empty();
@@ -635,6 +681,20 @@ function refreshImageBlock(candidateId){
 						 
 						 
 						 result = result+'  </div>';
+						 
+						 result = result+' <div class="mb mt5 UsProBar">';
+						 result = result+' <div class="progress nomr"> ';
+						 if(json.profilePercentage>=50){
+						 result = result+' <div class="progress-bar progress-bar-success ';
+						 }
+						 else{
+						 result = result+' <div class="progress-bar progress-bar-danger ';
+						 }
+						 result = result+' progress-bar-striped active" role="progressbar" id="perVal" aria-valuenow="'+json.profilePercentage+'" aria-valuemin="0" aria-valuemax="100" style="width:'+json.profilePercentage+'%"> ';
+						 result = result+' <p id="disVal">'+json.profilePercentage+'%</p> ';
+						 result = result+' </div> ';
+						 result = result+' </div> ';
+						 
 						 result = result+' <p class="text-danger small" style="font-size: 11px; display: none;" id="errorImage" >Invalid Image/Size</p>';
 						 result = result+' <p class="text-muted small" style="font-size: 11px;"><i class="fa fa-info-circle"></i>&nbsp;png, svg and gif images are not supported</p>';
 						 result = result+' <p class="text-muted small" style="font-size: 11px;"><i class="fa fa-info-circle"></i>&nbsp;Image size should not more than 200 KB</p>';
@@ -1077,6 +1137,7 @@ function cancel(candidateId){
 						  </div>
 					  </div>
 				  </div>
+				  </div>
 			  </form:form>
       </div>
       <!-- <div class="timesheet_head  customtimesheet-head hdr-styles pull-right"> -->
@@ -1158,10 +1219,9 @@ function cancel(candidateId){
         		<input type='text' placeholder='search' id='dataTableSearch'/>
         </div>
       </div>
-      
+      <div id="emptyPopup"></div>
       <div class="candidate_wrap_table datatable_filter">
         <div id="candidateList"></div>
-        <div id="emptyPopup"></div>
       </div>
     </div>
     
@@ -1174,6 +1234,7 @@ function cancel(candidateId){
  <ul class="nav nav-tabs">
     <li class="active" id="candQuickView"><a data-toggle="tab" href="#quickview">Quickview</a></li>
     <li id="candDetailView"><a data-toggle="tab" href="#detailview">Detailed View</a></li>
+    <li id="candTimelineView"></li>
   </ul>
 
   <div class="tab-content">
@@ -1188,7 +1249,12 @@ function cancel(candidateId){
 			     </div>  
 	    </div>
 	     </div>
-  </div>			     
+				<div id="timelineview" class="tab-pane fade">
+					<div class="clients_side_wrap_inn">
+						<div id="candidateTimelineDiv"></div>
+					</div>
+				</div>
+			</div>			     
     </div>
     <!-- Compnay details Ends --> 
   </div>
@@ -1204,12 +1270,14 @@ function cancel(candidateId){
 
 
 <script>
-function activeTab(){
-	$("#candDetailView").removeClass("active");
-	$("#candQuickView").addClass("active");
-	$("#quickview").addClass("active in");
-	$("#detailview").removeClass("active in");
-}
+	function activeTab() {
+		$("#candDetailView").removeClass("active");
+		$("#candQuickView").addClass("active");
+		$("#quickview").addClass("active in");
+		$("#detailview").removeClass("active in");
+		$("#candTimelineView").removeClass("active");
+		$("#timelineview").removeClass("active in");
+	}
 </script>
 
  
@@ -1277,29 +1345,7 @@ $(document).ready(function() {
         $(tab).fadeIn();
     });
 
-	// Levels adding script
-	/*  $(".addUser-org").click(function(event){  
-		 $(".collapse-div-adduser").toggleClass("showMydiv");
-		 $(".collapse-div").removeClass("showMydiv");
-		 event.preventDefault();
-	 }); */
-	/*  $(".close-div").click(function(){
-		 $(this).parent().toggleClass("showMydiv");
-		 }); */
-	/*  $(".assign-org").click(function(){
-		 $(".collapse-div").toggleClass("show-div");
-		 $(".collapse-div-adduser").removeClass("show-div");
-	 }); */
-	/*  $(".addUser-org, .assign-org, .collapse-div-adduser, .collapse-div").click(function(e){
-		 e.stopPropagation();
-	 }); */
-	 /* $('html').click(function(){
-	    $(".collapse-div-adduser").removeClass("show-div");
-		$(".collapse-div").removeClass("show-div");
-	   });	
-	   $("#endDate").click(function(){
-		   $(".endDate").toggle(200);
-	   }); */
+	
 });
 </script>	
 
@@ -2046,47 +2092,7 @@ function getCities(){
 			  </div>
       <div class="pop_mask"></div>
     
-    <%-- <div class="addconsultant-popup">
-				  <div class="row">
-                      <div class="col-md-offset-2 col-md-8">
-				  <a href="javascript:void(0)" class="close-popdiv" onClick="closeConsultant()"><i class="fa fa-close"></i></a>
-                          <div class="col-md-6 mt">
-                        <div class="small-widget bg-purple">
-                            <a href="<c:url value='/addConsultant?type=parseConsultant'/>"  title="Parse Resume">
-                                <div class="clearfix mb10">
-                                <i class="fa fa-file-text-o fa-4x"></i>
-                                    <span class="fa fa-arrow-right"></span>
-                                </div>
-                                <strong class="clearfix">Parse Resume</strong>
-                                </a>
-                        </div>
-					  </div>
-					  <div class="col-md-6 mt">
-                          <div class="small-widget bg-yellow">
-                              <a href="<c:url value='/addConsultant?type=addConsultant'/>" title="Add Candidate">
-                                  <div class="clearfix mb10">
-                                      <i class="fa fa-user-circle fa-4x"></i>
-                                      <span class="fa fa-plus"></span>
-                                  </div>
-                                  <strong class="clearfix">Add Consultant</strong>
-                                </a>
-                                
-                          </div>
-					  </div>
-                      </div>
-                          <div class="col-md-4 hidden">
-                          <div class="small-widget bg-green">
-                              <a href="import-candidate.html" title="Import Candidate">
-                                  <div class="clearfix mb10">
-                                <i class="fa fa-user-circle fa-4x"></i>
-                                      <span class="fa fa-download"></span>
-                                  </div>
-                                  <strong class="clearfix">Import Candidate</strong>
-                                </a>
-                          </div>
-                      </div>
-				  </div>
-			  </div> --%>
+    
     
     <script>
     //addcandidate-popup script
@@ -2100,21 +2106,6 @@ function getCities(){
         $('.pop_mask').fadeOut(200);
        }
     </script>
-    
-     <script>
-    //addConsultant-popup script
-    /* function addConsultant(){
-        $('.addconsultant-popup').fadeIn(200);
-        $('.pop_mask').fadeIn(200);
-        $('#addmorepop').slideUp(200);
-    };
-       function closeConsultant(){
-        $('.addconsultant-popup').fadeOut(200);
-        $('.pop_mask').fadeOut(200);
-       } */
-    </script>
-    
-   
 
 <script>
 //Function to validate if maxExpYears  value is more the minExpYears  value

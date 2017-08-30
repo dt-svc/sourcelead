@@ -1,6 +1,7 @@
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!-- Footer Area -->
   <footer class="footer-area clearfix">
-    <div class="copyright"> @ Copyright : Source Lead, All right reserved </div>
+    <div class="copyright">@ Copyright : Source Lead, All right reserved </div>
     <div class="powered-by"> Powered by: businessintelli.com </div>
   </footer>
   <!-- Footer Area --> 
@@ -34,5 +35,9 @@
 				$this.next().css({'width': '100%'});
 				});
 </script>
+<c:if test='${viewPage == "orgChart"}'>
+	<script src="resources/js/jquery.orgchart.js"></script>
+	<link href="resources/css/jquery.orgchart.css" type='text/css' rel='stylesheet'/>
+</c:if>
 </body>
 </html>

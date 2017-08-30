@@ -44,7 +44,7 @@
 <section class="content-wraper">
     <section class="content-header clearfix">
       <div class="pull-left">
-        <h2>Onboard & Offboard Dashboard</h2>
+        <h2>Onboard & Offboard</h2>
       </div>
       <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>  &raquo; Onboard & Offboard</div>
  </section>
@@ -105,12 +105,24 @@
  
  <script>
  function getOnboardCandidatesList(){
-	 
 	  var sourceleadUrl ='${sourceleadUrl}';
+	  var locationCode = '${SourceLeadWeb_locationCode}';
 	  $("#onboardingLoading").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	
+	  var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
+	  if(locationList.match("yyyy-MM-dd")){
+		  candOnBoardListDate = 'YYYY-MM-DD';
+	  }if(locationList.match("dd-MM-yyyy")){
+		  candOnBoardListDate = 'DD-MM-YYYY'; 
+	  }if(locationList.match("MM-dd-yyyy")){
+		  candOnBoardListDate = 'MM-DD-YYYY'; 
+	  }if(locationList.match("yyyy-dd-MM")){
+		  candOnBoardListDate = 'YYYY-DD-MM'; 
+	  }
+	  
 	  $.ajax({
            type : "POST",
-           url: sourceleadUrl+"/getOnboardCandidateList?${_csrf.parameterName}=${_csrf.token}",    
+           url: sourceleadUrl+"/getOnboardCandidateList?${_csrf.parameterName}=${_csrf.token}&locationCode="+locationCode,    
             success :function(data) {
                		
 			    	     $("#onboardingLoading").removeAttr("style");
@@ -123,7 +135,7 @@
 	                     result = result +"  <tr>"; 
 	                     result = result +"    <th>Candidate Name</th>";
 	                     result = result +"    <th>Type</th>";
-	                     result = result +"    <th>Date Of Join</th>";
+	                     result = result +"    <th>Date Of Join<br>(<small class='custom-small'>"+candOnBoardListDate+"</small>)</th>";
 	                     result = result +"    <th>Onboard<br/>Documents</th>";
 	                     result = result +"    <th>Onboard Status</th>"; 
 	                     result = result +"    <th>Actions</th>"; 
@@ -171,14 +183,20 @@
                         			 if(opt.candidateOnBoardStatus == 'Rejected'){
                         				 result = result +"<td><div><span>"+opt.candidateOnBoardStatus+"</span></div><i class='glyphicon glyphicon-comment edit-reason'><div class='edit-status'><p>"+opt.rejectedReason+"</p></div></i></td>";
                         			 }else if(opt.candidateOnBoardStatus == 'Accepted'){
-                            			 result = result +"<td><div><span class='text-success'>Completed</span></div></td>";
+                            			 result = result +"<td><div>Completed</div></td>";
                             		 }else{
                         				 result = result +"<td><div><span>"+opt.candidateOnBoardStatus+"</span></div></td>";
                         			 }
                         			 
                         		 }
                     		 }else{
-                    			 result = result +"<td><div><span>"+opt.candidateOnBoardStatus+"</span></div></td>";
+                    			 if(opt.candidateOnBoardStatus == 'Accepted'){
+                    				 result = result +"<td><div>Completed</div></td>"
+                    			 }else{
+                    				 result = result +"<td><div><span>"+opt.candidateOnBoardStatus+"</span></div></td>";
+                    			 }
+                    			 
+                    			
                     		 }
                     		 
                     		 
@@ -217,10 +235,23 @@
  function getOffboardCandidatesList(){
 	 
 	  var sourceleadUrl ='${sourceleadUrl}';
+	  var locationCode = '${SourceLeadWeb_locationCode}'
 	  $("#onboardingLoading").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	
+	  var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
+	  if(locationList.match("yyyy-MM-dd")){
+		  candOffBoardListDate = 'YYYY-MM-DD';
+	  }if(locationList.match("dd-MM-yyyy")){
+		  candOffBoardListDate = 'DD-MM-YYYY'; 
+	  }if(locationList.match("MM-dd-yyyy")){
+		  candOffBoardListDate = 'MM-DD-YYYY'; 
+	  }if(locationList.match("yyyy-dd-MM")){
+		  candOffBoardListDate = 'YYYY-DD-MM'; 
+	  }
+	  
 	  $.ajax({
            type : "POST",
-           url: sourceleadUrl+"/getOffboardCandidateList?${_csrf.parameterName}=${_csrf.token}",    
+           url: sourceleadUrl+"/getOffboardCandidateList?${_csrf.parameterName}=${_csrf.token}&locationCode="+locationCode,    
             success :function(data) {
                		
 			    	     $("#onboardingLoading").removeAttr("style");
@@ -233,8 +264,8 @@
 	                     result = result +"  <tr>"; 
 	                     result = result +"    <th>Candidate Name</th>";
 	                     result = result +"    <th>Type</th>";
-	                     result = result +"    <th>End Date</th>";
-	                     result = result +"    <th>Effective Date</th>";
+	                     result = result +"    <th>End Date<br>(<small class='custom-small'>"+candOffBoardListDate+"</small>)</th>";
+	                     result = result +"    <th>Effective Date<br>(<small class='custom-small'>"+candOffBoardListDate+"</small>)</th>";
 	                     result = result +"    <th>Stage</th>"; 
 	                     result = result +"    <th>Offboard Stage</th>"; 
 	                     result = result +"  </tr>"; 
@@ -271,7 +302,7 @@
                     		 result = result +"<td><div><span>"+opt.offBoardStatus+"</span></div></td>";
                     		 
                     		 if(opt.offboardSubmitted == 'Y'){
-                    			 result = result +"<td><div><span class='text-success'>Submitted</span></div></td>";
+                    			 result = result +"<td><div><span class='text-success'>Completed</span></div></td>";
                     		 }else{
                     			 result = result +"<td><div><span class='text-warning'>Pending</span></div></td>";
                     		 }

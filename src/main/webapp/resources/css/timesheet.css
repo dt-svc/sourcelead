@@ -690,7 +690,7 @@ input.inline_field::-moz-placeholder { color: #333; }-->*/
     position:relative; background-color:#fff; z-index:5; border-top:2px solid #368ee0;
     }
 .project-tabs-menu li a, .canreq-tabs-menu li a {
-    padding:7px 25px; text-decoration:none; font-size:15px; color:#666; display:block;
+    padding:7px 15px; text-decoration:none; font-size:15px; color:#666; display:block;
     }
 .project-tabs-menu .current a, .canreq-tabs-menu .current a {
     color:#1d6cb5;
@@ -839,16 +839,16 @@ input.inline_field::-moz-placeholder { color: #333; }-->*/
        
        
 ::-webkit-scrollbar {
-    width: 6px; height: 6px; border-radius:2px;
+    width: 8px; height: 8px; border-radius:2px;
 }
 ::-webkit-scrollbar-button {
-    background: #ccc
+    background: #ccc;
 }
 ::-webkit-scrollbar-track-piece {
-    background: #fff
+    background: #fff;
 }
 ::-webkit-scrollbar-thumb {
-    background: #368ee0
+    background: #368ee0;
 }
           
        
@@ -1457,7 +1457,7 @@ background:url("../images/arrow-d-g.png") no-repeat right center; background-siz
     border-right:1px solid #4576a4 !important; -moz-border-right:1px solid #4576a4;
     }  
 .candidate_wrap_table table tr td {
-    color:#333; padding:0px 12px !important; border-left:1px solid #eae6e6 !important; -moz-border-left:1px solid #eae6e6; font-weight:400; height:35px;
+    color:#333; padding:0px 10px !important; border-left:1px solid #eae6e6 !important; -moz-border-left:1px solid #eae6e6; font-weight:400; height:35px;
     }  
 .candidate_wrap_table table tr td div {
     position:relative;
@@ -3859,7 +3859,7 @@ position: relative; padding: 0px 0px 5px 0px;
     list-style-type:none; float: left;
 }
 .contrHead ul li a {
-    display: block; padding: 8px 21px 8px 20px; background-color: #fff; border-radius: 2px; box-shadow: 0px 0px 3px rgba(0,0,0,0.2);
+    display: block; padding:8px 15px 8px 15px; background-color: #fff; border-radius: 2px; box-shadow: 0px 0px 3px rgba(0,0,0,0.2);
     margin: 0px 6px 0px 0px; font-size: 14px; font-weight: 400; color: #666; position: relative;
 }
 .contrHead ul li a span {
@@ -4445,7 +4445,7 @@ float: none !important; padding: 2px 5px; color: #333;
 }
  
 .gridFil {
-    position: absolute; right: -30px; top: -15px;
+    position: absolute; right: 0px; top: -15px;
 }
 .gridFil i {
     display: block; padding: 6px 0px 0px 0px; font-size: 18px; background-color: #ededed; cursor: pointer; color: #666;
@@ -4552,7 +4552,7 @@ float: none !important; padding: 2px 5px; color: #333;
     font-size: 14px; display: inline-block; cursor: pointer; padding: 1px; margin: 1px; color: #375d81 !important;
 }
 .project_wrap_table table i.glyphicon-trash {
-    color: #fe4556;
+    color: #fe4556 !important;
 }
 .expensHead {
     position: relative; background-color: #fff; border-top:1px solid #ededed; padding: 5px 15px;
@@ -4762,7 +4762,7 @@ display:none;
     padding:5px;
 }
 .newPrDetails {
-    padding:10px; min-height:450px;
+    padding:10px;
     }
  
  
@@ -4770,21 +4770,21 @@ display:none;
     margin:0px 0px; padding:10px 0px 15px 0px; position:relative; top:1px;
     }
 .newPrTabsMenu li {
-    float:left; list-style-type: none; border-bottom: 2px solid #ccc; margin: 0px 15px 0px 0px;
+    float:left; list-style-type: none; border-bottom: 2px solid #ccc; margin: 0px 10px 0px 0px;
     font-size: 16px; font-weight: 500; color: #454545;
     }
 .newPrTabsMenu li.current {
-    position: relative; border-bottom: 2px solid #ff8556; 
+    position: relative; border-bottom: 2px solid #0cc2aa; 
     }
 .newPrTabsMenu li.current:after {
-    top: 100%; left: 50%; border: solid transparent; content: " "; height: 0; width: 0;
-    position: absolute; border-color: rgba(136, 183, 213, 0); border-top-color: #ff8556; border-width: 10px; margin-left: -10px;
+    top: 100%; left: 50%; border: solid transparent; content: " "; height: 0; width: 0; z-index: 100;
+    position: absolute; border-color: rgba(136, 183, 213, 0); border-top-color: #0cc2aa; border-width: 10px; margin-left: -10px;
 }
 .newPrTabsMenu li a {
     padding:7px 20px; text-decoration:none; font-size:15px; color:#666; display:block; text-align: center;
     }
 .newPrTabsMenu .current a {
-    color:#1d6cb5;
+    color:#a21e23;
     }
 .newPrTabs_inn {
     padding:0px; display:none; position: relative;
@@ -4985,7 +4985,7 @@ top: -50px !important; right: 25px !important;
 display: inline-block !important; padding: 6px; font-size: 20px; margin: 0px 0px 0px 8px; color: #333;
 }
 .expAttView:hover {
-color: #33c38e;
+color: #368ee0;
 }
 .chosen-container {
     width: 100% !important;
@@ -5196,7 +5196,7 @@ width: 48%; margin: 0px 0.5%;
 	border-color: rgba(136, 183, 213, 0); border-top-color: #a21e23; border-width: 12px; margin-left: -12px;
 }
 
-/*    Org Chart CSS   */
+	/*    Org Chart CSS   */
 
 .timesheetAttachment .Cred, .project_wrap_table .Cred {
     color: #ef3d3d !important;
@@ -5204,8 +5204,132 @@ width: 48%; margin: 0px 0.5%;
 td.tbldata-dotdot_50 {
 	overflow: hidden; text-overflow: ellipsis; white-space: nowrap; width: 50px !important; display: block; margin: 0 auto;
 }
+.inpTextFil {
+	background-color: transparent; border: none; font-size: 14px; color: #232323;
+	box-shadow:0px 0px 0px #ccc; text-align: center; width: 100%;
+}
+.textLeft{
+	text-align: left !important;
+}
+.padLeft {
+padding: 0px 10px 0px 25px !important;
+}
+
+.ProImgPosit {
+    bottom: 33px !important; left: 10px !important; width: auto !important;
+}
+.compNoRecords {
+    background-color: #fff; height: 500px; background-image: url(../images/norecords.jpg);
+    background-repeat: no-repeat; background-position: center; background-size: 190px; display: block;
+}
+
+.textCenter {
+    text-align: center!important; padding: 14px !important;
+}
+
+.newPrDetailsPMO {
+	padding:0px 10px 10px; background-color: #fff; border-radius: 4px;
+}
+.newPrDetailsPMO .newPrTabsMenu {
+	padding: 10px 0px 0px 0px;
+}
+.newPrDetailsPMO .project_tabs {
+	border: 1px solid #ededed;
+}
 
 
+.projQueWrap {
+	width: 100%; padding: 10px;
+}
+.projQueCta {
+	width: auto; padding: 10px 12px;
+}
+.projQueCta h2 {
+	padding: 0px 0px 5px 0px; margin: 0px 0px; font-size: 14px; font-weight: 400; color: #454545;
+}
+.wid50 {
+	width: 50%;
+}
+.proRadio {}
+.Radi {
+  	position: relative; float: left; display: block; padding-left: 30px; margin: 5px 0px 0px 0px; width: 20%;
+  	line-height: 22px; font-size: 14px; color: #666; cursor: pointer; font-weight: 400;
+}
+.Radi:before {
+  	background: #fff; content: ""; position: absolute; display: inline-block; top: 3px; left: 0; width: 18px; height: 18px;
+  	border: 1px solid #bbb; border-radius: 100%; box-shadow: inset 0 0 3px 0 #ccc;
+}
+.proRadio input[type="radio"] {
+  	display: none;
+} 
+.proRadio input[type="radio"]:checked + label:before {
+  	content: "\2022"; text-align: center; line-height: 12px; font-family: Tahoma; font-size: 32px; color: #a21e23;  text-shadow: 0 0 4px #bbb;
+}
+.proCheck {}
+.Chec {
+  	position: relative; float: left; display: block; padding-left: 30px; margin: 5px 0px 0px 0px; width: 20%;
+  	line-height: 22px; font-size: 14px; color: #666; cursor: pointer; font-weight: 400;
+}
+.Chec:before {
+  	background: #fff; content: ""; position: absolute; display: inline-block; top: 3px; left: 0; width: 19px; height: 19px;
+  	border: 1px solid #929292; border-radius: 2px; box-shadow: inset 0 0 3px 0 #ccc;
+}
+.proCheck input[type="checkbox"] {
+  	display: none;
+} 
+.proCheck input[type="checkbox"]:checked + label:before {
+  	content: "\f00c"; line-height: 15px; font-family: FontAwesome; font-size: 14px; color: #a21e23;
+	text-shadow: 0 0 4px #bbb; text-align: center; padding: 1px 0px 0px 0px;
+}
+.miniFoot {
+	min-height: 60px; line-height: 60px;
+}
+.ProChecBo {
+	width:auto; margin: 15px 10px; background-color: #f1f1f1; padding: 8px 15px; border-radius: 3px;
+}
+.ProChecBo span {
+	display: block; width: 150px; font-size: 15px; font-weight: 500; color: #454545; padding: 2px 0px 0px 0px;
+}
+.ProChecBo .Radi {
+	width: auto; margin: 0px 50px 0px 0px;
+}
 
+.proDetaiNew {
+	display:none;
+}
 
-
+.clientNoWrap {
+	padding: 0px 10px 10px; display: none;
+}
+.clientNoCta {}
+.clientNoCtaInn {
+	border: 1px solid #f1f1f1; padding: 10px 0px 0px; border-radius: 2px; margin: 0px 0px 10px 0px;
+}
+.clientNoCtaInn .paddingLeft {
+	padding-bottom: 10px;
+}
+.minHePr {
+	min-height:400px;
+}
+.clientNoBtn {
+	
+}
+.clientNoBtn i {
+	width: 30px; height: 30px; background-color: #f1f1f1; box-shadow: 0px 0px 2px rgba(0,0,0,0.2); text-align: center;
+	font-size: 18px; padding: 6px 0px 0px 0px; margin: 5px 2px; color: #3081cb; cursor: pointer;
+}
+.clientNoBtn i.fa-times {
+	    color: #dc4444;
+}
+.clientNoCtaInn .Chec {
+	margin: 2px 0px 0px 0px; width: auto; padding: 1px 0px 0px 30px;
+}
+.proAddLe {
+	background-color: #f1f1f1; padding: 10px 0px; display: none;
+}
+.paddingLi{
+    padding: 5px 10px !important;
+}
+.widAu {
+width: auto !important;
+}

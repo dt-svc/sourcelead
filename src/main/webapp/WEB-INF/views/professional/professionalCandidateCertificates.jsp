@@ -181,6 +181,17 @@ function storeCertificate(candidateId){
 function candidateCertificateList(candidateId){
 	var candidateType = '${candidateType}';
 	var sourceleadUrl ='${sourceleadUrl}';
+	
+	 var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
+	  if(locationList.match("yyyy-MM-dd")){
+		  candidateCertificateListDate = 'YYYY-MM-DD';
+	  }if(locationList.match("dd-MM-yyyy")){
+		  candidateCertificateListDate = 'DD-MM-YYYY'; 
+	  }if(locationList.match("MM-dd-yyyy")){
+		  candidateCertificateListDate = 'MM-DD-YYYY'; 
+	  }if(locationList.match("yyyy-dd-MM")){
+		  candidateCertificateListDate = 'YYYY-DD-MM'; 
+	  }
 	 $.ajax({  
           type : "POST",
           url: sourceleadUrl+"/getCandidateCertificationListByCandidateIdAndOrgLocationID?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,        
@@ -212,8 +223,8 @@ function candidateCertificateList(candidateId){
 	                 	result  = result + "           <th>Score</th>";
 	                 	result  = result + "           <th>Score Type</th>";
 	                 	result  = result + "           <th>Description</th>";
-	                 	result  = result + "           <th>Valid from</th>";
-	                 	result  = result + "           <th>Valid to</th>";
+	                 	result  = result + "           <th>Valid from<br>(<small class='custom-small'>"+candidateCertificateListDate+"</small>)</th>";
+	                 	result  = result + "           <th>Valid to<br>(<small class='custom-small'>"+candidateCertificateListDate+"</small>)</th>";
 	                 	result  = result + "           <th>Action</th>";
 	                     result = result +"  </tr>"; 
 	                     result = result +"</thead>";
@@ -264,48 +275,32 @@ function candidateCertificateList(candidateId){
 	                    	 
 	                    	 if(window.candidateStatusGlobal == '0'){
 	                    		 if(candidateType == "Candidates"){
-	                    			 result = result +'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_CANDIDATE_CERTIFICATION\',\'ROLE_CROWDSOURCING_CANDIDATES\')"> ';
 		                    		 result = result  +'	            <a href="javascript:void(0)" disabled="disabled" class="glyphicon glyphicon-pencil" id="editCandidateCertificate"></a>';
-		                    		 result = result +' </sec:authorize>';
 	                    		 }else{
-	                    			 result = result +'<sec:authorize access="hasRole(\'ROLE_VIEW_EDIT_ASSOCIATE_CERTIFICATION_DETAILS\')"> ';
 		                    		 result = result  +'	            <a href="javascript:void(0)" disabled="disabled" class="glyphicon glyphicon-pencil" id="editCandidateCertificate"></a>';
-		                    		 result = result +' </sec:authorize>';
 	                    		 }
 	                    		 
 	                    	 }else{
 	                    		 if(candidateType == "Candidates"){
-	                    			 result = result +'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_CANDIDATE_CERTIFICATION\',\'ROLE_CROWDSOURCING_CANDIDATES\')"> ';
 	 	                    		result = result  +'	            <a href="javascript:void(0)" class="glyphicon glyphicon-pencil" id="editCandidateCertificate" href="javascript:void(0)" onClick="editCertification('+ opt.id+ ','+ candidateId+ ');" title="Edit"></a>';
-	 	                    		result = result +' </sec:authorize>';
 	                    		 }else{
-	                    			 result = result +'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_ASSOCIATE_CERTIFICATION_DETAILS\')"> ';
 	 	                    		result = result  +'	            <a href="javascript:void(0)" class="glyphicon glyphicon-pencil" id="editCandidateCertificate" href="javascript:void(0)" onClick="editCertification('+ opt.id+ ','+ candidateId+ ');" title="Edit"></a>';
-	 	                    		result = result +' </sec:authorize>';
 	                    		 }
 	                    		
 	                    	 }
 	                    	 
 	                    	 if(window.candidateStatusGlobal == '0'){
 	                    		 if(candidateType == "Candidates"){
-	                    			 result = result +'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_DELETE_CANDIDATE_CERTIFICATION\',\'ROLE_CROWDSOURCING_CANDIDATES\')"> ';
 		                    		 result = result  +'<i class="glyphicon glyphicon-trash"></i>';
-		                    		 result = result +' </sec:authorize>';
 	                    		 }else{
-	                    			 result = result +'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_DELETE_ASSOCIATE_CERTIFICATION_DETAILS\')"> ';
 		                    		 result = result  +'<i class="glyphicon glyphicon-trash"></i>';
-		                    		 result = result +' </sec:authorize>';
 	                    		 }
 	                    		 
 	                    	}else{
 	                    		if(candidateType == "Candidates"){
-	                    			result = result +'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_DELETE_CANDIDATE_CERTIFICATION\',\'ROLE_VIEW_EDIT_CANDIDATE_CERTIFICATION\',\'ROLE_CROWDSOURCING_CANDIDATES\')"> ';
 		                    		 result = result  +'<i class="glyphicon glyphicon-trash" onclick="removeCertification('+opt.id+','+candidateId+');" id="removeCandidate" title= "Remove"></i>';
-		                    		 result = result +' </sec:authorize>';
 	                    		}else{
-	                    			result = result +'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_DELETE_ASSOCIATE_CERTIFICATION_DETAILS\')"> ';
 		                    		 result = result  +'<i class="glyphicon glyphicon-trash" onclick="removeCertification('+opt.id+','+candidateId+');" id="removeCandidate" title= "Remove"></i>';
-		                    		 result = result +' </sec:authorize>';
 	                    		}
 	                    		
 	                    	}
@@ -317,24 +312,6 @@ function candidateCertificateList(candidateId){
 	                     $("#candidateCertificateList").append(result); 
 	                     certificationPagination(); 
 	                     msgFadein(); 
-             /*   }else{
-	    	         var result ="";
-		    	     result = result+"   <div class='row'>"; 
-					 result = result+"	<div class='col-lg-12'>"; 
-					 result = result+"		<div class='content-area clearfix'>"; 
-					 result = result+"			<div class='blank-pages'>";
-					 result = result+"			        <p><i class='fa fa-5x fa-bar-chart'></i></p>";
-					 result = result+"			        <p>No Candidate Certifications Found</p>";
-					 result = result+"			 </div>";
-					 result = result+"		</div>"; 
-					 result = result+"	</div>"; 
-					 result = result+"  </div> "; 
-					$("#candidateCertificateList").empty();
-				    $("#candidateCertificateList").append(result);
-				    
-				    $("#popUpDivEmp").empty();
-					$("#popUpDivEmp").append(result);
-               } */
         },
           
      }); 
@@ -423,9 +400,7 @@ function addCertification(candidateId) {
 			result  = result + '                   <button type="button" class="btn btn-sm btn-primary pull-right" id="addCandidate"  onclick="storeCertificate('+candidateId+');"  >Add</button>';
 			result = result +' </sec:authorize>';
 		}else{
-			result = result +'<sec:authorize access="hasRole(\'ROLE_ADD_ASSOCIATE_CERTIFICATION_DETAILS\')"> ';
 			result  = result + '                   <button type="button" class="btn btn-sm btn-primary pull-right" id="addCandidate"  onclick="storeCertificate('+candidateId+');"  >Add</button>';
-			result = result +' </sec:authorize>';
 		}
 		
 		result  = result + '                 </div>';
@@ -443,46 +418,40 @@ function addCertification(candidateId) {
 			 e.stopPropagation();
 		 });
 		 
-		 
-		 /* $('html').click(function(){
-			$(".edit-details").removeClass("edit-details-active");
-		   });	 */
-		
-		
-		/*  $(".addUser-org").click(function(){
-			 $(".edit-details").toggleClass("edit-details-active");
-		 });  */
-		/* $(".edit-details").toggleClass("edit-details-active");
-		 $(".addUser-org, .assign-org, .collapse-div-adduser, .collapse-div, .edit-details").click(function(e){
-			 e.stopPropagation();
-		 }); */
-	 /* $('html').click(function(){
-		$(".edit-details").removeClass("edit-details-active");
-	   });	 */
 
-	  $('#StartDate').datepicker({
-	      dateFormat: 'dd-mm-yy',
-	      changeMonth: true,
-	  	  changeYear: true, 
-	      onSelect: function (selected) {
-	           // var dt = new Date(selected);
-	           var dt = toDate("#StartDate"); 
-	           dt.setDate(dt.getDate() + 1);
-	            $("#EndDate").datepicker("option", "minDate", dt);
-	        }
-	  });
-	  
-	  $('#EndDate').datepicker({
-	      dateFormat: 'dd-mm-yy',
-	      changeMonth: true,
-	  	  changeYear: true, 
-	        onSelect: function (selected) {
-	            //var dt = new Date(selected);
-	            var dt = toDate("#EndDate");
-	            dt.setDate(dt.getDate() - 1);
-	            $("#StartDate").datepicker("option", "maxDate", dt);
-	        }
-	  });
+		 var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+		  var finalDateFormatCerAdd = '';
+		  if(locationDate.match("yyyy-MM-dd")){
+			  finalDateFormatCerAdd = 'yy-mm-dd';
+		  }if(locationDate.match("dd-MM-yyyy")){
+			  finalDateFormatCerAdd = 'dd-mm-yy'; 
+		  }if(locationDate.match("MM-dd-yyyy")){
+			  finalDateFormatCerAdd = 'mm-dd-yy'; 
+		  }if(locationDate.match("yyyy-dd-MM")){
+			  finalDateFormatCerAdd = 'yy-dd-mm'; 
+		  }
+		  $('#StartDate').datepicker({
+		      dateFormat: finalDateFormatCerAdd,
+		      changeMonth: true,
+		  	  changeYear: true, 
+		      onSelect: function (selected) {
+		            var dt = $(this).datepicker('getDate', '+1d');
+		            dt.setDate(dt.getDate() + 1);
+		            $("#EndDate").datepicker("option", "minDate", dt);
+		        }
+		  });
+		  
+		  $('#EndDate').datepicker({
+		      dateFormat: finalDateFormatCerAdd,
+		      changeMonth: true,
+		  	  changeYear: true, 
+		        onSelect: function (selected) {
+		            var dt = $(this).datepicker('getDate', '-1d');
+		            dt.setDate(dt.getDate() - 1);
+		            $("#StartDate").datepicker("option", "maxDate", dt);
+		        }
+		  });
+	 	
 	}
 </script>
 
@@ -616,7 +585,7 @@ function addCertification(candidateId) {
 								 $(".addUser-org, .assign-org, .collapse-div-adduser, .collapse-div, .edit-details").click(function(e){
 									 e.stopPropagation();
 								 });
-								 
+					 
 								 
 								 
 								/*  $('html').click(function(){
@@ -635,36 +604,82 @@ function addCertification(candidateId) {
 								$(".edit-details").removeClass("edit-details-active");
 							   });	 */
 
-							  /*  var certificateStartDate = $("#StartDateEdit").val();
-								var certificateEndDate = $("#EndDateEdit").val(); */
-								
-								var datepickerStartDate = toDate("#StartDateEdit");
+							    var proCertificateStartDate = $("#StartDateEdit").val();
+								var proCertificateEndDate = $("#EndDateEdit").val(); 
+
+								 var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+								 var proCertificateStartDateSplit = proCertificateStartDate.split("-");
+								 var proCertificateEndDateSplit = proCertificateEndDate.split("-");
+								 
+								 var finalDateFormatEduEditOneSave = '';
+								  var proCertificateStartDateEdit = '';
+								  var proCertificateEndDateEdit = '';
+								  
+								  if(locationDate.match("yyyy-MM-dd")){
+									  finalDateFormatEduEditOneSave = 'yy-mm-dd';
+									  proCertificateStartDateEdit = new Date(proCertificateStartDateSplit[0], parseInt(proCertificateStartDateSplit[1])-parseInt(1), parseInt(proCertificateStartDateSplit[2])+parseInt(1));
+								  }if(locationDate.match("dd-MM-yyyy")){
+									  finalDateFormatEduEditOneSave = 'dd-mm-yy'; 
+									  proCertificateStartDateEdit = new Date(proCertificateStartDateSplit[2], parseInt(proCertificateStartDateSplit[1])-parseInt(1), parseInt(proCertificateStartDateSplit[0])+parseInt(1));
+								  }if(locationDate.match("MM-dd-yyyy")){
+									  finalDateFormatEduEditOneSave = 'mm-dd-yy'; 
+									  proCertificateStartDateEdit = new Date(proCertificateStartDateSplit[2], parseInt(proCertificateStartDateSplit[0])-parseInt(1), parseInt(proCertificateStartDateSplit[1])+parseInt(1));
+								  }if(locationDate.match("yyyy-dd-MM")){
+									  finalDateFormatEduEditOneSave = 'yy-dd-mm';
+									  proCertificateStartDateEdit = new Date(proCertificateStartDateSplit[0], parseInt(proCertificateStartDateSplit[2])-parseInt(1), parseInt(proCertificateStartDateSplit[1])+parseInt(1));
+								  }
+								  
+								  if(locationDate.match("yyyy-MM-dd")){
+									  finalDateFormatEduEditOneSave = 'yy-mm-dd';
+									  proCertificateEndDateEdit = new Date(proCertificateEndDateSplit[0], parseInt(proCertificateEndDateSplit[1])-parseInt(1), parseInt(proCertificateEndDateSplit[2])-parseInt(1));
+								  }if(locationDate.match("dd-MM-yyyy")){
+									  finalDateFormatEduEditOneSave = 'dd-mm-yy'; 
+									  proCertificateEndDateEdit = new Date(proCertificateEndDateSplit[2], parseInt(proCertificateEndDateSplit[1])-parseInt(1), parseInt(proCertificateEndDateSplit[0])-parseInt(1));
+								  }if(locationDate.match("MM-dd-yyyy")){
+									  finalDateFormatEduEditOneSave = 'mm-dd-yy'; 
+									  proCertificateEndDateEdit = new Date(proCertificateEndDateSplit[2], parseInt(proCertificateEndDateSplit[0])-parseInt(1), parseInt(proCertificateEndDateSplit[1])-parseInt(1));
+								  }if(locationDate.match("yyyy-dd-MM")){
+									  finalDateFormatEduEditOneSave = 'yy-dd-mm';
+									  proCertificateEndDateEdit = new Date(proCertificateEndDateSplit[0], parseInt(proCertificateEndDateSplit[2])-parseInt(1), parseInt(proCertificateEndDateSplit[1])-parseInt(1));
+								  }
+								  var finalDateFormatCerEdit = '';
+								  if(locationDate.match("yyyy-MM-dd")){
+									  finalDateFormatCerEdit = 'yy-mm-dd';
+								  }if(locationDate.match("dd-MM-yyyy")){
+									  finalDateFormatCerEdit = 'dd-mm-yy'; 
+								  }if(locationDate.match("MM-dd-yyyy")){
+									  finalDateFormatCerEdit = 'mm-dd-yy'; 
+								  }if(locationDate.match("yyyy-dd-MM")){
+									  finalDateFormatCerEdit = 'yy-dd-mm'; 
+								  }
+								 
+								/* var datepickerStartDate = toDate("#StartDateEdit");
 								datepickerStartDate.setDate(datepickerStartDate.getDate() + 1);
 								
 								var datepickerEndDate = toDate("#EndDateEdit");
-								datepickerEndDate.setDate(datepickerEndDate.getDate() - 1);
+								datepickerEndDate.setDate(datepickerEndDate.getDate() - 1); */
 							   
 							  $('#StartDateEdit').datepicker({
-							      dateFormat: 'dd-mm-yy',
+							      dateFormat: finalDateFormatCerEdit,
 							      changeMonth: true,
 							  	  changeYear: true, 
-							  	  maxDate: datepickerEndDate,
+							  	  maxDate: proCertificateEndDateEdit,
 							      onSelect: function (selected) {
-							            //var dt = new Date(selected);
-							            var dt = toDate("#StartDateEdit");
+							            var dt = $(this).datepicker('getDate', '+1d');
+							            //var dt = toDate("#StartDateEdit");
 							            dt.setDate(dt.getDate() + 1);
 							            $("#EndDateEdit").datepicker("option", "minDate", dt);
 							        }
 							  });
 							  
 							  $('#EndDateEdit').datepicker({
-							      dateFormat: 'dd-mm-yy',
+							      dateFormat: finalDateFormatCerEdit,
 							      changeMonth: true,
-							  	  changeYear: true, 
-							  	  minDate: datepickerStartDate,
+							  	  changeYear: true,
+							  	  minDate: proCertificateStartDateEdit,
 							      onSelect: function (selected) {
-							            //var dt = new Date(selected);
-							            var dt = toDate("#EndDateEdit");
+							            var dt = $(this).datepicker('getDate', '-1d');
+							            //var dt = toDate("#EndDateEdit");
 							            dt.setDate(dt.getDate() - 1);
 							            $("#StartDateEdit").datepicker("option", "maxDate", dt);
 							        }
@@ -783,10 +798,11 @@ function removeCertification(candidateCertificationId, candidateId){
 function  deleteSelectedCertification(candidateCertificationId,candidateId){
 	
 	 var sourceleadUrl ='${sourceleadUrl}';
-	 
+	 var loginUserId = '${SourceLeadWeb_userId}';
+	 var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	 $.ajax({  
           type : "POST",
-          url: sourceleadUrl+"/removeCandidateCertificateBycandidateIdandcandidateCertificateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&candidateCertificationId="+candidateCertificationId,        
+          url: sourceleadUrl+"/removeCandidateCertificateBycandidateIdandcandidateCertificateId?${_csrf.parameterName}=${_csrf.token}&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&candidateCertificationId="+candidateCertificationId,        
           success :function(data) {
 
 				if(data != null && data != 'undefined' && data != ""){
@@ -840,11 +856,6 @@ function  deleteSelectedCertification(candidateCertificationId,candidateId){
 function selectScoreType(){
 	
 	 var selectedText = document.getElementById("scoreType").value;
-	/* if(selectedText != null && selectedText !='' && selectedText !='undefined'){
-		 $("#candidateScore").removeAttr("readonly");
-	}else{
-		 $("#candidateScore").attr("readonly", "readonly");
-	} */
 	 var canScore = document.getElementById("candidateScore").value;
 	 $('#candidateScoreDiv').parent().find('p.jquery_form_error_message').remove(); 
 	 if(selectedText =='Percentage'){

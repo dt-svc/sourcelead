@@ -3,10 +3,7 @@
 <meta http-equiv="Expires" content="0">
 <!-- these files for autocomplete with tagit -->
 
-
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
-<%@taglib prefix="sec"
-	uri="http://www.springframework.org/security/tags"%>
 
 <style>
 .addUser-org {
@@ -122,7 +119,7 @@
 							if (opt.name != null && opt.name != ''
 									&& opt.name != "undefined") {
 								result = result
-										+ "  <td><div title='"+opt.name+"'>"
+										+ "  <td><div class='tbldata-dotdot-me' title='"+opt.name+"'>"
 										+ opt.name + "</div></td>";
 							} else {
 								result = result + "  <td><div>----</div></td>";
@@ -178,17 +175,17 @@
 										+ '<i class="glyphicon glyphicon-trash" href="javascript:void(0)"></i>';
 							} else {
 								result = result
-										+ ' <sec:authorize access="hasAnyRole(\'ROLE_VIEW_AND_EDIT_CANDIDATE_REFERENCE\')"><a class="glyphicon glyphicon-pencil" href="javascript:void(0)" onClick="editCandidateReference('
+										+ ' <a class="glyphicon glyphicon-pencil" href="javascript:void(0)" onClick="editCandidateReference('
 										+ candidateId
 										+ ','
 										+ opt.id
-										+ ');editRelation(this);" title="Edit"></a></sec:authorize>';
+										+ ');editRelation(this);" title="Edit"></a>';
 								result = result
-										+ '<sec:authorize access="hasAnyRole(\'ROLE_DELETE_CANDIDATE_REFERENCE\')"><i class="glyphicon glyphicon-trash" onclick="removeReference('
+										+ '<i class="glyphicon glyphicon-trash" onclick="removeReference('
 										+ candidateId
 										+ ','
 										+ opt.id
-										+ ');" title= "Remove"></i></sec:authorize>';
+										+ ');" title= "Remove"></i>';
 							}
 
 						}
@@ -266,12 +263,6 @@
 		});
 	});
 
-	/* $(function() {
-	 $('#relation').change(function(){
-	 alert("X");
-	 $('#row_dim')[ ($("option[value='Work Related']").is(":checked"))? "show" : "hide" ]();  
-	 });
-	 }); */
 </script>
 <%-- 
      @author : prasad K.
@@ -319,6 +310,11 @@
 				+ ' <option id="workRelated" valeu="Work Related">Work Related</option>';
 		result = result
 				+ '<option  id="familyRelated" value="Family Related">Family Related</option>';
+		result = result
+				+ '<option  id="friend" value="Friend">Friend</option>';
+		result = result
+				+ '<option  id="neighbour" value="Neighbour">Neighbour</option>';
+				
 		result = result + ' </select>';
 		result = result + '</div>';
 		result = result + '</div>';
@@ -513,13 +509,15 @@
 <script>
 	function deleteReference(candidateId, refId) {
 		var sourceleadUrl = '${sourceleadUrl}';
+		var loginUserId = '${SourceLeadWeb_userId}';
+		var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 		//var message = confirm("You are choosing to delete the reference");
 		var userCode = '${SourceLeadWeb_userCode}';
 		$
 				.ajax({
 					type : "POST",
 					url : sourceleadUrl
-							+ "/terminateReference?${_csrf.parameterName}=${_csrf.token}&candidateId="
+							+ "/terminateReference?${_csrf.parameterName}=${_csrf.token}&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="
 							+ candidateId + "&refId=" + refId + "&userCode="
 							+ userCode,
 					success : function(data) {
@@ -660,7 +658,7 @@
 										result = result
 												+ '<div class="col-md-12">';
 										result = result
-												+ '<input type="text" name="mobilePhone" field-name="MobilePhone" value="'+json.mobilePhone+'" data-validation="validate_Space validate_length length1-20" data-validation-optional="true" class="form-control input-sm" value="" placeholder="Mobile Phone">';
+												+ '<input type="text" name="mobilePhone" field-name="MobilePhone" value="'+json.mobilePhone+'" data-validation="validate_length length9-20 validate_phone" data-validation-optional="true" class="form-control input-sm" value="" placeholder="Mobile Phone">';
 										result = result + '</div>';
 										result = result + '</div>';
 
@@ -682,6 +680,17 @@
 												+ (json.relation == "Family Related" ? "selected"
 														: '')
 												+ '>Family Related</option>';
+									   result = result
+												+ '<option  '
+												+ (json.relation == "Friend" ? "selected"
+														: '')
+												+ '>Friend</option>';
+												
+										result = result
+												+ '<option  '
+												+ (json.relation == "Neighbour" ? "selected"
+														: '')
+												+ '>Neighbour</option>';		
 										result = result + ' </select>';
 										result = result + '</div>';
 										result = result + '</div>';
@@ -747,14 +756,6 @@
 												.click(function(e) {
 													e.stopPropagation();
 												});
-
-										/* if(json.relation == "Family Related"){
-										    $("#dvDesignationEdit").remove();
-											$("#dvDesignationEdit").css("display", "none");
-											$("#designationValEdit").removeAttr("data-validation");
-											$("#designationValEdit").attr("data-validation-optional", "true");
-										} */
-
 									}
 
 								}

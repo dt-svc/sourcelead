@@ -49,7 +49,7 @@
 	</defaultCache>
 	<!-- Transactions are enabled on a cache-by-cache basis with the transactionalMode 
 		cache attribute. The allowed values are: *xa_strict *xa *local *off The default 
-		value is â€œoff.â€ In the following example, â€œxa_strictâ€ is enabled. timeToIdleSeconds="300" 
+		value is Ã¢â‚¬Å“off.Ã¢â‚¬Â In the following example, Ã¢â‚¬Å“xa_strictÃ¢â‚¬Â is enabled. timeToIdleSeconds="300" 
 		timeToLiveSeconds="600" diskExpiryThreadIntervalSeconds="1" -->
 
 
@@ -1164,6 +1164,36 @@
             	replicateRemovals=true" />
     </cache>
     
+     <cache name="projectPlanningRequest"
+        maxEntriesLocalHeap="5000" eternal="false" timeToLiveSeconds="3600" timeToIdleSeconds="3600" memoryStoreEvictionPolicy="LRU">
+        <persistence strategy="localTempSwap" />
+        <cacheEventListenerFactory
+			class="net.sf.ehcache.distribution.jgroups.JGroupsCacheReplicatorFactory"
+			properties="replicateAsynchronously=true, replicatePuts=true,
+            	replicateUpdates=true, replicateUpdatesViaCopy=false,
+            	replicateRemovals=true" />
+    </cache>
+    
+    <cache name="projectPlanningResourceRequest"
+        maxEntriesLocalHeap="5000" eternal="false" timeToLiveSeconds="3600" timeToIdleSeconds="3600" memoryStoreEvictionPolicy="LRU">
+        <persistence strategy="localTempSwap" />
+        <cacheEventListenerFactory
+			class="net.sf.ehcache.distribution.jgroups.JGroupsCacheReplicatorFactory"
+			properties="replicateAsynchronously=true, replicatePuts=true,
+            	replicateUpdates=true, replicateUpdatesViaCopy=false,
+            	replicateRemovals=true" />
+    </cache>
+    
+    <cache name="projectPlanningNewResourceRequest"
+        maxEntriesLocalHeap="5000" eternal="false" timeToLiveSeconds="3600" timeToIdleSeconds="3600" memoryStoreEvictionPolicy="LRU">
+        <persistence strategy="localTempSwap" />
+        <cacheEventListenerFactory
+			class="net.sf.ehcache.distribution.jgroups.JGroupsCacheReplicatorFactory"
+			properties="replicateAsynchronously=true, replicatePuts=true,
+            	replicateUpdates=true, replicateUpdatesViaCopy=false,
+            	replicateRemovals=true" />
+    </cache>
+    
     <cache name="accountDeductionsDetails"  maxEntriesLocalHeap="5000" eternal="false" timeToLiveSeconds="3600" timeToIdleSeconds="3600" memoryStoreEvictionPolicy="LRU">
         <persistence strategy="localTempSwap" />
         <cacheEventListenerFactory class="net.sf.ehcache.distribution.jgroups.JGroupsCacheReplicatorFactory" properties="replicateAsynchronously=true,
@@ -1177,6 +1207,18 @@
     </cache>
       
       <cache name="userPyaroll"  maxEntriesLocalHeap="5000" eternal="false" timeToLiveSeconds="3600" timeToIdleSeconds="3600" memoryStoreEvictionPolicy="LRU">
+        <persistence strategy="localTempSwap" />
+        <cacheEventListenerFactory class="net.sf.ehcache.distribution.jgroups.JGroupsCacheReplicatorFactory" properties="replicateAsynchronously=true,
+         replicatePuts=true, replicateUpdates=true, replicateUpdatesViaCopy=false, replicateRemovals=true" />
+    </cache>
+    
+    <cache name="checks"  maxEntriesLocalHeap="5000" eternal="false" timeToLiveSeconds="3600" timeToIdleSeconds="3600" memoryStoreEvictionPolicy="LRU">
+        <persistence strategy="localTempSwap" />
+        <cacheEventListenerFactory class="net.sf.ehcache.distribution.jgroups.JGroupsCacheReplicatorFactory" properties="replicateAsynchronously=true,
+         replicatePuts=true, replicateUpdates=true, replicateUpdatesViaCopy=false, replicateRemovals=true" />
+    </cache>
+    
+     <cache name="invoiceData"  maxEntriesLocalHeap="5000" eternal="false" timeToLiveSeconds="3600" timeToIdleSeconds="3600" memoryStoreEvictionPolicy="LRU">
         <persistence strategy="localTempSwap" />
         <cacheEventListenerFactory class="net.sf.ehcache.distribution.jgroups.JGroupsCacheReplicatorFactory" properties="replicateAsynchronously=true,
          replicatePuts=true, replicateUpdates=true, replicateUpdatesViaCopy=false, replicateRemovals=true" />

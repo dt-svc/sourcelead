@@ -1,6 +1,7 @@
 package com.bis.sourcelead.entity;
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -20,6 +21,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.apache.commons.lang3.StringUtils;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Fetch;
@@ -59,7 +61,12 @@ public class OrgLocations implements Serializable{
 	@OneToMany(mappedBy="responderLocationId",cascade = CascadeType.ALL,fetch=FetchType.LAZY)
     @Fetch(FetchMode.SELECT)
     private Set<OrgRelations> orgRelationsList;
+	
+	@Column(name = "DATE_FORMAT")
+	private String dateFormat;
 	 
+	@Column(name = "AVERAGE_WORKING_HOURS")
+	private Integer averageWorkingHours;
 	
 	@Column(name = "COUNTRY")
 	private String country;
@@ -101,7 +108,6 @@ public class OrgLocations implements Serializable{
 	@Column(name = "FAX")
 	private String fax;
 	
-	
 	@Column(name = "LOCATION_CODE")
 	private String locationCode;
 	
@@ -141,6 +147,13 @@ public class OrgLocations implements Serializable{
     @Column(name = "IS_PRIMARY")
 	private String isPrimary;
     
+    @Column(name = "GENERATED_USER_ID")
+	private String generatedUserId;
+    
+    
+    @Column(name = "SYSTEM_GENERATED_ID")
+	private String systemGeneratedId;
+    
     @Transient
     private String orgName;
     
@@ -179,6 +192,9 @@ public class OrgLocations implements Serializable{
     
     @Transient
     private String orgLocationUserLastName;
+    
+    @Transient
+    private SimpleDateFormat locFullFormDateFormatter;
     
 
 	public Timezone getTimezone() {
@@ -564,6 +580,55 @@ public class OrgLocations implements Serializable{
 		this.orgLocationUserLastName = orgLocationUserLastName;
 	}
 
-	
+
+	public String getGeneratedUserId()
+	{
+		return generatedUserId;
+	}
+
+	public void setGeneratedUserId(String generatedUserId)
+	{
+		this.generatedUserId = generatedUserId;
+	}
+
+	public String getSystemGeneratedId()
+	{
+		return systemGeneratedId;
+	}
+
+	public void setSystemGeneratedId(String systemGeneratedId)
+	{
+		this.systemGeneratedId = systemGeneratedId;
+	}
+
+
+	public String getDateFormat() {
+		return dateFormat;
+	}
+
+	public void setDateFormat(String dateFormat) {
+		this.dateFormat = dateFormat;
+	}
+
+
+	public SimpleDateFormat getLocFullFormDateFormatter() {
+		if(StringUtils.isNotEmpty(dateFormat)){
+			locFullFormDateFormatter = new SimpleDateFormat(dateFormat);
+		}
+		return locFullFormDateFormatter;
+	}
+
+
+	public void setLocFullFormDateFormatter(SimpleDateFormat locFullFormDateFormatter) {
+		this.locFullFormDateFormatter = locFullFormDateFormatter;
+	}
+
+	public Integer getAverageWorkingHours() {
+		return averageWorkingHours;
+	}
+
+	public void setAverageWorkingHours(Integer averageWorkingHours) {
+		this.averageWorkingHours = averageWorkingHours;
+	}
 	
 }

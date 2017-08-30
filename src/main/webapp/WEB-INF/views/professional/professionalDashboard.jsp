@@ -3,16 +3,6 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 
-<script src="resources/js/amcharts.js"></script>
-<script src="resources/js/serial.js"></script>
-<script src="resources/js/light.js"></script>
-<script src="resources/js/pie.js"></script>
-
-
-<!-- <script src="https://www.amcharts.com/lib/3/plugins/export/export.min.js"></script>
-<link rel="stylesheet" href="https://www.amcharts.com/lib/3/plugins/export/export.css" type="text/css" media="all" /> --> 
-
-
 <style>
 dataTables_empty {
     height: 285px !important;
@@ -669,13 +659,25 @@ function loadJobSummaryDoNutChart(appliedJobs,referToMeJobs,referByMeJobs){
  <script type="text/javascript">
   $( function() {
 	  
+	  var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+	  var finalDateFormatProDashboard = '';
+	  if(locationDate.match("yyyy-MM-dd")){
+		  finalDateFormatProDashboard = 'yy-mm-dd';
+	  }if(locationDate.match("dd-MM-yyyy")){
+		  finalDateFormatProDashboard = 'dd-mm-yy'; 
+	  }if(locationDate.match("MM-dd-yyyy")){
+		  finalDateFormatProDashboard = 'mm-dd-yy'; 
+	  }if(locationDate.match("yyyy-dd-MM")){
+		  finalDateFormatProDashboard = 'yy-dd-mm'; 
+	  }
 	  
 	  $('#dpfromdate').datepicker({
-	      dateFormat: 'dd-mm-yy',
+	      dateFormat: finalDateFormatProDashboard,
 	      changeMonth: true,
 	  	  changeYear: true, 
 	  	  onSelect : function(selected) {
-				var dt = new Date(selected);
+				//var dt = new Date(selected);
+				var dt = $(this).datepicker('getDate', '+1d');
 				dt.setDate(dt.getDate() + 1);
 				$("#dptodate").datepicker("option", "minDate", dt);
 			}
@@ -683,11 +685,12 @@ function loadJobSummaryDoNutChart(appliedJobs,referToMeJobs,referByMeJobs){
 	  });
 	  
 	  $('#dptodate').datepicker({
-	      dateFormat: 'dd-mm-yy',
+	      dateFormat: finalDateFormatProDashboard,
 	      changeMonth: true,
 	  	  changeYear: true, 
 	  	   onSelect : function(selected) {
-			var dt = new Date(selected);
+			//var dt = new Date(selected);
+			var dt = $(this).datepicker('getDate', '-1d');
 			dt.setDate(dt.getDate() - 1);
 			$("#dpfromdate").datepicker("option", "maxDate", dt);
 	  	}
@@ -696,11 +699,12 @@ function loadJobSummaryDoNutChart(appliedJobs,referToMeJobs,referByMeJobs){
 	  
 
 	  $('#portletfromdate').datepicker({
-	      dateFormat: 'dd-mm-yy',
+	      dateFormat: finalDateFormatProDashboard,
 	      changeMonth: true,
 	  	  changeYear: true, 
 	  	  onSelect : function(selected) {
-				var dt = new Date(selected);
+				//var dt = new Date(selected);
+				var dt = $(this).datepicker('getDate', '+1d');
 				dt.setDate(dt.getDate() + 1);
 				$("#portlettodate").datepicker("option", "minDate", dt);
 			}
@@ -708,11 +712,12 @@ function loadJobSummaryDoNutChart(appliedJobs,referToMeJobs,referByMeJobs){
 	  });
 	  
 	  $('#portlettodate').datepicker({
-	      dateFormat: 'dd-mm-yy',
+	      dateFormat: finalDateFormatProDashboard,
 	      changeMonth: true,
 	  	  changeYear: true, 
 		  onSelect : function(selected) {
-				var dt = new Date(selected);
+				//var dt = new Date(selected);
+				var dt = $(this).datepicker('getDate', '-1d');
 				dt.setDate(dt.getDate() - 1);
 				$("#portletfromdate").datepicker("option", "maxDate", dt);
 		  	}
@@ -720,7 +725,7 @@ function loadJobSummaryDoNutChart(appliedJobs,referToMeJobs,referByMeJobs){
 	  });
 	  
 	  $('#serialfromdate').datepicker({
-	      dateFormat: 'dd-mm-yy',
+	      dateFormat: finalDateFormatProDashboard,
 	      changeMonth: true,
 	  	  changeYear: true, 
 		  onSelect : function(selected) {
@@ -732,7 +737,7 @@ function loadJobSummaryDoNutChart(appliedJobs,referToMeJobs,referByMeJobs){
 	  });
 	  
 	  $('#serialtodate').datepicker({
-	      dateFormat: 'dd-mm-yy',
+	      dateFormat: finalDateFormatProDashboard,
 	      changeMonth: true,
 	  	  changeYear: true, 
 	  	  onSelect : function(selected) {
@@ -745,7 +750,7 @@ function loadJobSummaryDoNutChart(appliedJobs,referToMeJobs,referByMeJobs){
 	  
 	  
 	  $('#portletreferByMefromdate').datepicker({
-	      dateFormat: 'dd-mm-yy',
+	      dateFormat: finalDateFormatProDashboard,
 	      changeMonth: true,
 	  	  changeYear: true, 
 	  	  onSelect : function(selected) {
@@ -757,7 +762,7 @@ function loadJobSummaryDoNutChart(appliedJobs,referToMeJobs,referByMeJobs){
 	  });
 	  
 	  $('#portletreferByMetodate').datepicker({
-	      dateFormat: 'dd-mm-yy',
+	      dateFormat: finalDateFormatProDashboard,
 	      changeMonth: true,
 	  	  changeYear: true, 
 		  onSelect : function(selected) {

@@ -5,20 +5,11 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
-<script src="resources/js/formvalidator.js"></script>
 <link rel="stylesheet" href="resources/css/style.css" />
-
-<!-- newly added -->
-
-
-<!-- these files for autocomplete with tagit -->
-<link href="resources/css/jquery-tagit.css" rel="stylesheet">
-<script src="resources/js/csc.js" type="text/javascript" charset="utf-8"></script>
-<script src="resources/js/tag-it.js" type="text/javascript" charset="utf-8"></script>
-<script src="resources/js/tag-it.min.js" type="text/javascript" charset="utf-8"></script>
-
+<link href="resources/css/summernote.css" rel="stylesheet">
 <link rel="stylesheet" href="resources/css/bootstrap3-wysihtml5.min.css">
  <script src="resources/js/bootstrap3-wysihtml5.all.min.js"></script> 
+ <script src="resources/js/summernote.js"></script>
 
 <!-- newly added end -->
 
@@ -344,7 +335,6 @@ function cancelSumitToClient(){
 
 <script>
 function addEmailtemplate(requirementId){
- 	
 	var result ="";
 	 var sourceleadUrl ='${sourceleadUrl}';
 		 var selectedShortlists = [];
@@ -471,7 +461,17 @@ function addEmailtemplate(requirementId){
                     $("#submitToClientDiv").empty();
                     $("#emailTemplateDiv").empty();
                     $("#emailTemplateDiv").append(result);
-					$("#compose-textarea").wysihtml5();
+                    $('#compose-textarea').summernote({
+  					  toolbar: [
+  					    // [groupName, [list of button]]
+  					    ['style', ['bold', 'italic', 'underline', 'clear']],
+  					    ['font', ['strikethrough', 'superscript', 'subscript']],
+  					    ['fontsize', ['fontsize']],
+  					    ['color', ['color']],
+  					    ['para', ['ul', 'ol', 'paragraph']],
+  						['table',['table']],
+  					    ['height', ['height']]
+    					]});
 					$("#create-signature").wysihtml5();
                     $('#mailsTagit').tagit({
                         singleField: true,
@@ -495,11 +495,11 @@ function addEmailtemplate(requirementId){
 	result = result +"	   <div id='pipeline_user_pop' class='remove_user_pop remove_user_pop_a'>";
 	result = result +"		<p>Please select atleast one candidate</p>";
 	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
-	result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='cancel123();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelSumitToClient();'></b>";
+	result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='cancelSumitToClient();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelSumitToClient();'></b>";
 	result = result +"	</div>";
 	$("#popUp").append(result);
 	$("#pipeline_user_pop").slideDown(200);
-	$(".sideMask").fadeIn(200);
+	//$(".sideMask").fadeIn(200);
  }
 		 
  }else{

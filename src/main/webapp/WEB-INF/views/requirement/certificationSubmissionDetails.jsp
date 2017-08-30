@@ -27,6 +27,18 @@ function certificationSubmissionDetails(candidateId){
 <script>
 function certificationSubmissionDetailsList(candidateId){
 	 var sourceleadUrl ='${sourceleadUrl}';
+	 
+	 var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
+	  if(locationList.match("yyyy-MM-dd")){
+		  certSubListDate = 'YYYY-MM-DD';
+	  }if(locationList.match("dd-MM-yyyy")){
+		  certSubListDate = 'DD-MM-YYYY'; 
+	  }if(locationList.match("MM-dd-yyyy")){
+		  certSubListDate = 'MM-DD-YYYY'; 
+	  }if(locationList.match("yyyy-dd-MM")){
+		  certSubListDate = 'YYYY-DD-MM'; 
+	  }  
+	 
 	 $.ajax({  
           type : "POST",
           url: sourceleadUrl+"/getCandidateCertificationListByCandidateIdAndOrgLocationID?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,        
@@ -49,8 +61,8 @@ function certificationSubmissionDetailsList(candidateId){
 	                 	result  = result + "           <th>Score</th>";
 	                 	result  = result + "           <th>Score Type</th>";
 	                 	result  = result + "           <th>Description</th>";
-	                 	result  = result + "           <th>Valid from</th>";
-	                 	result  = result + "           <th>Valid to</th>";
+	                 	result  = result + "           <th>Valid from <br>(<small class='custom-small'>"+certSubListDate+"</small>)</th>";
+	                 	result  = result + "           <th>Valid to <br>(<small class='custom-small'>"+certSubListDate+"</small>)</th>";
 	                     result = result +"  </tr>"; 
 	                     result = result +"</thead>";
 	                     result = result +"<tbody>"; 
@@ -88,11 +100,11 @@ function certificationSubmissionDetailsList(candidateId){
 				            		candidatevalidToDateToString = "----";
 				            	}
 	                    	 result  = result + '         <tr>';
-	                    	 result  = result + '           <td><div><span>'+opt.name+'</span></div></td>';
-	                    	 result  = result + '           <td><div><span>'+opt.provider+'</span></div></td>';
+	                    	 result  = result + '           <td><div><span title="'+opt.name+'">'+opt.name+'</span></div></td>';
+	                    	 result  = result + '           <td><div><span title="'+opt.provider+'">'+opt.provider+'</span></div></td>';
 	                    	 result  = result + '           <td><div><span>'+score+'</span></div></td>';
 	                    	 result  = result + '           <td><div><span>'+scoreType+'</span></div></td>';
-	                    	 result  = result + '           <td><div><span>'+description+'</span></div></td>';
+	                    	 result  = result + '           <td><div><span title="'+description+'">'+description+'</span></div></td>';
 	                    	 result  = result + '           <td><div><span>'+candidatevalidFromDateToString+'</span></div></td>';
 	                    	 result  = result + '           <td><div><span>'+candidatevalidToDateToString+'</span></div></td>';
 	                     result  = result + '         </tr>';

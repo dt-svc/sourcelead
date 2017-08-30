@@ -2,7 +2,6 @@
 <jsp:include page="../masterSideNav.jsp" />
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
-<script src="resources/js/formvalidator.js"></script>
 <script src="resources/js/jquery.maskedinput-1.3.min.js"></script>
 
 <!-- <script src="resources/js/masklist.js" type="text/javascript"></script>
@@ -107,14 +106,14 @@
                 <div class="form-group" id="FirstNameDiv">
                   <label class="col-md-3">First Name<span class="text-danger">*</span></label>
                   <div class="col-md-9">
-                    <input type="text" class="form-control" id="FirstName" name="firstName" value="" field-name="First Name" data-validation="required validate_Space validate_AlphaNumber validate_length length1-100">
+                    <input type="text" class="form-control" id="FirstName" name="firstName" pattern="[A-Za-z\s]*" maxlength="100" required>
                   </div>
                 </div>
                 
                 <div class="form-group">
                   <label class="col-md-3">Last Name</label>
                   <div class="col-md-9">
-                    <input type="text" class="form-control" id="lastName" name="lastName" data-validation="validate_Space validate_AlphaNumber validate_length length1-100" data-validation-optional="true" value="">
+                    <input type="text" class="form-control" id="lastName" name="lastName" pattern="[A-Za-z\s]*" maxlength="100" required>
                   </div>
                 </div>
                 
@@ -600,7 +599,7 @@ function getEmployeementType(designationType){
 				        	$('#FirstNameDiv').find('p.jquery_form_error_message').remove();
 		        		}else{
 		        			 $("#FirstName").removeAttr("readonly", "readonly");
-		        			 $("#FirstName").val('');
+		        			 //$("#FirstName").val('');
 		        		}
 		        		
 		        		if(json.lastName != null && json.lastName != ''){
@@ -608,7 +607,7 @@ function getEmployeementType(designationType){
 		        			$("#lastName").val(json.lastName);
 		        		}else{
 		        			 $("#lastName").removeAttr("readonly", "readonly");
-		        			 $("#lastName").val('');
+		        			 //$("#lastName").val('');
 		        		}
 		        		
 		        		if(json.mobilePhone != null && json.mobilePhone != ''){
@@ -616,7 +615,7 @@ function getEmployeementType(designationType){
 				        	$("#phone").attr("readonly", "readonly");
 		        		}else{
 		        			 $("#phone").removeAttr("readonly", "readonly");
-		        			 $("#phone").val('');
+		        			 //$("#phone").val('');
 		        		}
 		        		
 		        	}
@@ -881,9 +880,19 @@ function getAssociateUserDetails(){
 <!-- start script for datepicker -->
 <script>
   $( function() {
-	  
+	  var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+	  var finalDateFormat = '';
+	  if(locationDate.match("yyyy-MM-dd")){
+		  finalDateFormat = 'yy-mm-dd';
+	  }if(locationDate.match("dd-MM-yyyy")){
+		  finalDateFormat = 'dd-mm-yy'; 
+	  }if(locationDate.match("MM-dd-yyyy")){
+		  finalDateFormat = 'mm-dd-yy'; 
+	  }if(locationDate.match("yyyy-dd-MM")){
+		  finalDateFormat = 'yy-dd-mm'; 
+	  }
 	  $('#DateofJoin').datepicker({
-	      dateFormat: 'dd-mm-yy',
+	      dateFormat: finalDateFormat,
 	      changeMonth: true,
 	  	  changeYear: true, 
 	      //minDate: 0  this line for to restrict selection of previous dates

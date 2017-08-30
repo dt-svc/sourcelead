@@ -78,6 +78,19 @@ function professionalCandidateEducation(candidateId){
 function candidateEducationList(candidateId){
 	var candidateType = '${candidateType}';
 	 var sourceleadUrl ='${sourceleadUrl}';
+	 
+	 var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
+	  if(locationList.match("yyyy-MM-dd")){
+		  candidateEducationListDate = 'YYYY-MM-DD';
+	  }if(locationList.match("dd-MM-yyyy")){
+		  candidateEducationListDate = 'DD-MM-YYYY'; 
+	  }if(locationList.match("MM-dd-yyyy")){
+		  candidateEducationListDate = 'MM-DD-YYYY'; 
+	  }if(locationList.match("yyyy-dd-MM")){
+		  candidateEducationListDate = 'YYYY-DD-MM'; 
+	  }
+	
+	 
 	 $.ajax({  
           type : "POST",
           url: sourceleadUrl+"/getCandidateEducationListByCandidateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,        
@@ -110,10 +123,10 @@ function candidateEducationList(candidateId){
 	                     result = result +"  <tr>"; 
 	                     result  = result + '           <th>Education</th>';
 	                 	 result  = result + '           <th>Specialization</th>';
-	                 	 result  = result + '           <th>Start date</th>';
-	                 	 result  = result + '           <th>End date</th>';
-	                 	 result  = result + '           <th>score</th>';
-	                 	 result  = result + '           <th>score Type</th>';
+	                 	 result  = result + '           <th>Start date<br>(<small class="custom-small">'+candidateEducationListDate+'</small>)</th>';
+	                 	 result  = result + '           <th>End date<br>(<small class="custom-small">'+candidateEducationListDate+'</small>)</th>';
+	                 	 result  = result + '           <th>Score</th>';
+	                 	 result  = result + '           <th>Score Type</th>';
 	                 	 result  = result + '           <th>Institute/University</th>';
 	                 	 result  = result + '           <th>Address</th>';
 	                 	 result  = result + '           <th>Action</th>';
@@ -170,19 +183,19 @@ function candidateEducationList(candidateId){
 	                    		 }
 	                    		 else{
 	                    			 if(candidateType == "Candidates"){
-	                    				 result = result+' <td><div class="tblicons tblminwidth-75"><sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_CANDIDATE_EDUCATION\',\'ROLE_CROWDSOURCING_CANDIDATES\')"><a class="glyphicon glyphicon-pencil" href="javascript:void(0)" onClick ="EditEducation('+ candidateId+ ','+ opt.id+ ');" title="Edit"></a></sec:authorize>';
+	                    				 result = result+' <td><div class="tblicons tblminwidth-75"><a class="glyphicon glyphicon-pencil" href="javascript:void(0)" onClick ="EditEducation('+ candidateId+ ','+ opt.id+ ');" title="Edit"></a>';
 	                    			 }else{
-	                    				 result = result+' <td><div class="tblicons tblminwidth-75"><sec:authorize access="hasRole(\'ROLE_VIEW_EDIT_ASSOCIATE_EDUCATION_DETAILS\')"><a class="glyphicon glyphicon-pencil" href="javascript:void(0)" onClick ="EditEducation('+ candidateId+ ','+ opt.id+ ');" title="Edit"></a></sec:authorize>';
+	                    				 result = result+' <td><div class="tblicons tblminwidth-75"><a class="glyphicon glyphicon-pencil" href="javascript:void(0)" onClick ="EditEducation('+ candidateId+ ','+ opt.id+ ');" title="Edit"></a>';
 	                    			 }
 	                    				 
 	                    		 }
 	                    		 if(window.candidateStatusGlobal == '0'){
-									result = result+'<i class="glyphicon glyphicon-trash"></i></div></td>';
+									result = result+'<i class="glyphicon glyphicon-trash"></i></div></td>';''
 	                    		 }else{
 	                    			 if(candidateType == "Candidates"){
-	                    				 result = result+'<sec:authorize access="hasAnyRole(\'ROLE_DELETE_CANDIDATE_EDUCATION\',\'ROLE_CROWDSOURCING_CANDIDATES\')"> <i class="glyphicon glyphicon-trash" onclick="removeEducation('+opt.id+','+candidateId+');" title="Remove"></i></sec:authorize></div></td>';	 
+	                    				 result = result+'<i class="glyphicon glyphicon-trash" onclick="removeEducation('+opt.id+','+candidateId+');" title="Remove"></i></div></td>';	 
 	                    			 }else{
-	                    				 result = result+'<sec:authorize access="hasRole(\'ROLE_VIEW_DELETE_ASSOCIATE_EDUCATION_DETAILS\')"> <i class="glyphicon glyphicon-trash" onclick="removeEducation('+opt.id+','+candidateId+');" title="Remove"></i></sec:authorize></div></td>';
+	                    				 result = result+' <i class="glyphicon glyphicon-trash" onclick="removeEducation('+opt.id+','+candidateId+');" title="Remove"></i></div></td>';
 	                    			 }
 	                    			  
 	                    		 }
@@ -335,30 +348,43 @@ function addEducation(candidateId) {
 	function educationStartDate(){
 	}
 	
-	$('#startDate').datepicker({
-	      dateFormat: 'dd-mm-yy',
+	var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+	  var finalDateFormat1 = '';
+	  if(locationDate.match("yyyy-MM-dd")){
+		  finalDateFormat1 = 'yy-mm-dd';
+	  }if(locationDate.match("dd-MM-yyyy")){
+		  finalDateFormat1 = 'dd-mm-yy'; 
+	  }if(locationDate.match("MM-dd-yyyy")){
+		  finalDateFormat1 = 'mm-dd-yy'; 
+	  }if(locationDate.match("yyyy-dd-MM")){
+		  finalDateFormat1 = 'yy-dd-mm'; 
+	  }
+	  
+	  
+	  $('#startDate').datepicker({
+	      dateFormat: finalDateFormat1,
 	      changeMonth: true,
 	  	  changeYear: true, 
 	      onSelect: function (selected) {
-	            //var dt = new Date(selected);
-	            var dt = toDate("#startDate");
+	            var dt =  $(this).datepicker('getDate', '+1d'); 
 	            dt.setDate(dt.getDate() + 1);
 	            $("#endDate").datepicker("option", "minDate", dt);
 	        }
 	  });
 	  
 	  $('#endDate').datepicker({
-	      dateFormat: 'dd-mm-yy',
+	      dateFormat: finalDateFormat1,
 	      changeMonth: true,
 	  	  changeYear: true, 
 	        onSelect: function (selected) {
-	            //var dt = new Date(selected);
-	            var dt = toDate("#endDate");
+	            var dt =  $(this).datepicker('getDate', '-1d'); 
 	            dt.setDate(dt.getDate() - 1);
 	            $("#startDate").datepicker("option", "maxDate", dt);
 	        }
 	  });
-	
+	  
+	  
+ 
 	/* $(".addUser-org").click(function(){
 		 $(".edit-details").toggleClass("edit-details-active");
 	 }); */
@@ -415,9 +441,6 @@ function addEducation(candidateId) {
 		<%-- Eductions and Skills Autocomplete Scripts Ends Here --%>
 	}
 </script>
-
-
-
 
 <script>
 function EditEducation(candidateId,candidateEducationId) {
@@ -576,35 +599,79 @@ function EditEducation(candidateId,candidateEducationId) {
 	function educationStartDate(){
 	}
 	
-	/* var projectStartDate = $("#startDateEdit").val();
-	var projectEndDate = $("#endDateEdit").val(); */
+	 var proEduStartDate = $("#startDateEdit").val();
+	var proEduEndDate = $("#endDateEdit").val(); 
 	
-	var datepickerStartDate = toDate("#startDateEdit");
+	var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+	var proEduStartDateSplit = proEduStartDate.split("-");
+	 var proEduEndDateSplit = proEduEndDate.split("-");
+	 
+	 var finalDateFormatEduEditOneSave = '';
+	  var eduStartDateEdit = '';
+	  var eduEndDateEdit = '';
+	  
+	  if(locationDate.match("yyyy-MM-dd")){
+		  finalDateFormatEduEditOneSave = 'yy-mm-dd';
+		  eduStartDateEdit = new Date(proEduStartDateSplit[0], parseInt(proEduStartDateSplit[1])-parseInt(1), parseInt(proEduStartDateSplit[2])+parseInt(1));
+	  }if(locationDate.match("dd-MM-yyyy")){
+		  finalDateFormatEduEditOneSave = 'dd-mm-yy'; 
+		  eduStartDateEdit = new Date(proEduStartDateSplit[2], parseInt(proEduStartDateSplit[1])-parseInt(1), parseInt(proEduStartDateSplit[0])+parseInt(1));
+	  }if(locationDate.match("MM-dd-yyyy")){
+		  finalDateFormatEduEditOneSave = 'mm-dd-yy'; 
+		  eduStartDateEdit = new Date(proEduStartDateSplit[2], parseInt(proEduStartDateSplit[0])-parseInt(1), parseInt(proEduStartDateSplit[1])+parseInt(1));
+	  }if(locationDate.match("yyyy-dd-MM")){
+		  finalDateFormatEduEditOneSave = 'yy-dd-mm';
+		  eduStartDateEdit = new Date(proEduStartDateSplit[0], parseInt(proEduStartDateSplit[2])-parseInt(1), parseInt(proEduStartDateSplit[1])+parseInt(1));
+	  }
+	  
+	  if(locationDate.match("yyyy-MM-dd")){
+		  finalDateFormatEduEditOneSave = 'yy-mm-dd';
+		  eduEndDateEdit = new Date(proEduEndDateSplit[0], parseInt(proEduEndDateSplit[1])-parseInt(1), parseInt(proEduEndDateSplit[2])-parseInt(1));
+	  }if(locationDate.match("dd-MM-yyyy")){
+		  finalDateFormatEduEditOneSave = 'dd-mm-yy'; 
+		  eduEndDateEdit = new Date(proEduEndDateSplit[2], parseInt(proEduEndDateSplit[1])-parseInt(1), parseInt(proEduEndDateSplit[0])-parseInt(1));
+	  }if(locationDate.match("MM-dd-yyyy")){
+		  finalDateFormatEduEditOneSave = 'mm-dd-yy'; 
+		  eduEndDateEdit = new Date(proEduEndDateSplit[2], parseInt(proEduEndDateSplit[0])-parseInt(1), parseInt(proEduEndDateSplit[1])-parseInt(1));
+	  }if(locationDate.match("yyyy-dd-MM")){
+		  finalDateFormatEduEditOneSave = 'yy-dd-mm';
+		  eduEndDateEdit = new Date(proEduEndDateSplit[0], parseInt(proEduEndDateSplit[2])-parseInt(1), parseInt(proEduEndDateSplit[1])-parseInt(1));
+	  }
+	  var finalDateFormat3 = '';
+	  if(locationDate.match("yyyy-MM-dd")){
+		  finalDateFormat3 = 'yy-mm-dd';
+	  }if(locationDate.match("dd-MM-yyyy")){
+		  finalDateFormat3 = 'dd-mm-yy'; 
+	  }if(locationDate.match("MM-dd-yyyy")){
+		  finalDateFormat3 = 'mm-dd-yy'; 
+	  }if(locationDate.match("yyyy-dd-MM")){
+		  finalDateFormat3 = 'yy-dd-mm'; 
+	  }
+	/* var datepickerStartDate = toDate("#startDateEdit");
 	datepickerStartDate.setDate(datepickerStartDate.getDate() + 1);
 	
 	var datepickerEndDate = toDate("#endDateEdit");
-	datepickerEndDate.setDate(datepickerEndDate.getDate() - 1);
-	$('#startDateEdit').datepicker({
-	      dateFormat: 'dd-mm-yy',
+	datepickerEndDate.setDate(datepickerEndDate.getDate() - 1); */
+	  
+	  $('#startDateEdit').datepicker({
+	      dateFormat: finalDateFormat3,
 	      changeMonth: true,
-	  	  changeYear: true, 
-	  	  maxDate: datepickerEndDate,
+	  	  changeYear: true,
+	  	  maxDate: eduEndDateEdit,
 	      onSelect: function (selected) {
-	            //var dt = new Date(selected);
-	            var dt = toDate("#startDateEdit");
+	            var dt = $(this).datepicker('getDate', '+1d');
 	            dt.setDate(dt.getDate() + 1);
 	            $("#endDateEdit").datepicker("option", "minDate", dt);
 	        }
 	  });
 	  
 	  $('#endDateEdit').datepicker({
-	      dateFormat: 'dd-mm-yy',
+	      dateFormat: finalDateFormat3,
 	      changeMonth: true,
-	  	  changeYear: true, 
-	  	  minDate: datepickerStartDate,
-	      onSelect: function (selected) {
-	            //var dt = new Date(selected);
-	            var dt = toDate("#endDateEdit");
+	  	  changeYear: true,
+	  	  minDate: eduStartDateEdit,
+	        onSelect: function (selected) {
+	            var dt = $(this).datepicker('getDate', '-1d');
 	            dt.setDate(dt.getDate() - 1);
 	            $("#startDateEdit").datepicker("option", "maxDate", dt);
 	        }
@@ -698,6 +765,17 @@ function candidateEducationStore(candidateId){
 				               			 location.replace(sourceleadUrl+"/errorPage");
 				               		}
 				               		else{
+				               			$('#perVal').attr('aria-valuenow', data).css('width',data+'%');
+				            			 if(data<50){
+				            			   $("#perVal").removeClass('progress-bar-success');
+				            			   $("#perVal").addClass("progress-bar-danger");
+				            			 }
+				            			 if(data>=50){
+				            				 $("#perVal").removeClass("progress-bar-danger");
+				            				 $("#perVal").addClass("progress-bar-success");
+				            			 }
+				            			 $("#disVal").empty();
+				            			$("#disVal").append(data+'%');
 				               		    $("#popUpDiv").removeClass("edit-details-active");
 				            			$("#selector4").removeAttr("style");
 				            			$("#selector4").css({ display: "block" });
@@ -782,9 +860,11 @@ function removeEducation(candidateEducationId, candidateId){
 <script>
 function deleteSelectedEducation(candidateEducationId,candidateId){
  var sourceleadUrl ='${sourceleadUrl}';
+ var loginUserId = '${SourceLeadWeb_userId}';
+ var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	 $.ajax({  
           type : "POST",
-          url: sourceleadUrl+"/removeCandidateEducationBycandidateIdandcandidateEducationId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&candidateEducationId="+candidateEducationId,        
+          url: sourceleadUrl+"/removeCandidateEducationBycandidateIdandcandidateEducationId?${_csrf.parameterName}=${_csrf.token}&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&candidateEducationId="+candidateEducationId,        
           success :function(data) {
 
 				if(data != null && data != 'undefined' && data != ""){
@@ -793,6 +873,18 @@ function deleteSelectedEducation(candidateEducationId,candidateId){
 			    	}else if (data.indexOf('exception') >= 0) {
              			 location.replace(sourceleadUrl+"/errorPage");
              		}else{
+             			$('#perVal').attr('aria-valuenow', data).css('width',data+'%');
+              			 if(data<50){
+              			  /* $("#perVal").removeClass("progress-bar-success"); */
+              			   $("#perVal").removeClass('progress-bar-success')
+              			   $("#perVal").addClass("progress-bar-danger");
+              			 }
+              			 if(data>=50){
+              				 $("#perVal").removeClass('progress-bar-danger');
+              				 $("#perVal").addClass("progress-bar-success");
+              			 }
+              			 $("#disVal").empty();
+              			$("#disVal").append(data+'%');
            			 	 $("#selector4").removeAttr("style");
             			 $("#selector4").css({ display: "block" });
             			 $("#eduMsgDiv").html("Education deleted");

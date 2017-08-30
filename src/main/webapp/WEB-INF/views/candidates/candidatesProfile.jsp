@@ -39,9 +39,9 @@
 	-ms-border-radius:0 3px 3px 0;
 	border-radius:0 3px 3px 0;
 	}
-	.selp-custom-min .open {
+	/* .selp-custom-min .open {
 	z-index: 999999999 !important;
-	}
+	} */
 	.ratetype p {
 	bottom: -14px;
 	left:0px !important;
@@ -415,19 +415,6 @@ function editCandidate(candidateId){
 							
 							
 							result = result + '<div class="clearfix mb10">';
-							
-							
-							result = result + '<div class="col-md-6 custom-fields select-arrow select-field">';
-							result = result + '<select class="form-control" id="noticePeriod" name="noticePeriod" field-name="Notice Period">';
-							result = result + '<option value="">--Select Notice Period--</option>';
-							result = result + ' <option '+(json.noticePeriod == "Immediately available" ? "selected" : '') +'>Immediately available</option>';
-							result = result + '<option  '+ (json.noticePeriod == "15 Days" ? "selected" : '') +'>15 Days</option>';
-							result = result + '<option  '+(json.noticePeriod == "1 Month" ? "selected" : '') +'>1 Month</option>';
-							result = result + '<option  '+(json.noticePeriod == "2 Months" ? "selected" : '') +'>2 Months</option>';
-							result = result + '<option  '+(json.noticePeriod == "3 Months" ? "selected" : '') +'>3 Months</option>';
-							result = result + ' </select>';
-							result = result + ' </div>';
-							
                             result = result + '<div class="col-md-6 custom-fields">';
 							
                             result = result + '<div class="input-group-btn tblminwidth-75 ratetype select-field">';
@@ -447,7 +434,7 @@ function editCandidate(candidateId){
 							result = result + '</div>';
 							 
 							
-							result = result + '<div class="col-md-6 designationTypeDiv mt" id="designationTypeDiv" style="display:none">';
+							result = result + '<div class="col-md-6 designationTypeDiv" id="designationTypeDiv" style="display:none">';
 							result = result + '<input type="text" class="form-control input-sm" name="designationOtherType"  id="designationOtherType1" value="'+designationOtherType+'" placeholder="Employment Other Type" field-name="Employment Other Type" data-validation="validate_Space validate_length length2-50" data-validation-optional="true">';
 							result = result + '</div>';
 							
@@ -490,10 +477,10 @@ function editCandidate(candidateId){
 							result = result + '		    </div>';
 							result = result + '		  </div>';
 							
-							
 							$("#profileEditPopup").empty(); 
 							$("#profileEditPopup").append(result); 
 							initLocationAuto('cpLocation','cpCountry','cpState','cpCity','cpZipCode','cpLatitude','cpLongitude');
+							zipcodeMask(json.country,'cpZipCode');
 							/* updateDesignationType(json.designationType); */
 							
 							if(json.designationType == "Other"){
@@ -655,13 +642,15 @@ function removeCandidateAlertMessage(candidateId,candidateType){
 function reActivateCandidateAlertMessage(candidateId){
 	var result = "";
 	var sourceleadUrl ='${sourceleadUrl}';
+	var loginUserId = '${SourceLeadWeb_userId}';
+	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	/* var message = confirm("You are choosing to ReActivate the Candidate");
 	if (message == true) { */
 		var reactivate = '1';
 		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		$.ajax({
 	        type : "POST",
-	         url: sourceleadUrl+"/reActivateCandidateByCandidateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&reActivate="+reactivate,        
+	         url: sourceleadUrl+"/reActivateCandidateByCandidateId?${_csrf.parameterName}=${_csrf.token}&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&reActivate="+reactivate,        
 	         success :function(data) {
 	               if(data != null && data != 'undefined' && data != ""){
 	            			 location.replace(sourceleadUrl+"/candidatesList");
@@ -1049,56 +1038,47 @@ function candidateProfile(candidateId,candidateType){
 	                 }
 		    	 }else{
 			    	var newSkill = this.value.replace(","," ");
-			    	
 			    	 
-			        if (tagItBykeyForSkills(e) && (newSkill != null  && newSkill != '' && newSkill != 'undefined'))
-			        {
-			        	preventTabkey(e); 
-			        	var par = this.parent;
-			        		 var option = $("<option>").val(newSkill.replace(",","")).text(newSkill.replace(",",""));
-			        		 select.append(option);
-			        		 select.find(option).prop('selected', true);
-				        		$("#skillName").trigger("chosen:updated");
-				        		
-				        		
-			        }
+			    	 if (tagItBykeyForSkills(e) && (newSkill != null  && newSkill != '' && newSkill != 'undefined'))
+				        {
+			    		 
+			    		//below code manually enter skills are not taken
+		    				/*  preventTabkey(e);
+							var isNewSkill = true;
+		                     $("#skillName option:selected").each(function(){
+								 if(this.value.toUpperCase() === newSkill.toUpperCase()){
+										isNewSkill = false;
+										return false;
+								 }
+		                   });
+						   if(isNewSkill){
+								select.append(option);
+						   }
+		                   $("#skillName").trigger("chosen:updated"); */
+		                   
+	                  
+	                   // below code manually enter skills are taken
+	    				  
+	                   var isNewSkill = true;
+						 $("#skillName option:selected").each(function(){
+							 if(this.value.toUpperCase() === newSkill.toUpperCase() && this.value.toLowerCase() === newSkill.toLowerCase()){
+								 //alert(newSkill);
+								 isNewSkill = false;
+								 return false;
+							 }
+	                    
+	                   });
+						if(isNewSkill){
+	    				 var option = $("<option>").val(newSkill).text(newSkill);
+						 select.append(option);
+	                     select.find(option).prop('selected', true);
+						}
+		               $("#skillName").trigger("chosen:updated"); 
+		                }
 		    	 }
 		    });
 		    
-		    
-		    
-		
-       /*  var select, chosen;
-	    select = $("#skillName");
-	    select.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add New Skill:' });
-	    chosen = select.data('chosen');
-	    chosen.search_field.on('keyup', function(e)
-			    {
-			    	   var skillsArray = this.value.split(",");
-				    	 if(skillsArray.length > 1){
-			        		 for (var i=0; i < skillsArray.length; i++) {
-			        			 var option = $("<option>").val(skillsArray[i].replace(",","")).text(skillsArray[i].replace(",",""));
-			        			 select.append(option);
-			 		             select.find(option).prop('selected', true);
-			 		             select.find(option).siblings("[value='"+ skillsArray[i].replace(",","")+"']").remove();
-			 	        		 $("#skillName").trigger("chosen:updated");
-			                 }
-				    	 }else{
-			    			var newSkill = this.value.replace(","," ");
-			    			 if ((e.which == 13 || e.which == 188) && (newSkill != null  && newSkill != '' && newSkill != 'undefined'))
-			                {
-			    				 var option = $("<option>").val(newSkill).text(newSkill);
-			                     select.append(option);
-			                     select.find(option).prop('selected', true);
-			                     $("#skillName option").each(function(){
-			                         $(this).siblings("[value='"+ this.value+"']").remove();
-			                   });
-			                   $("#skillName").trigger("chosen:updated");
-			                }
-					       
-		    	         }
-	    	}); */
-	    
+		  
 	    
 	    //Adding Customized Skills to the list
 	}
@@ -1134,41 +1114,25 @@ function candidateProfile(candidateId,candidateType){
 	 var skillName = $("#skillName").val();
 	 var jsonData = encodeURIComponent(skillName);
 	 var sourceleadUrl ='${sourceleadUrl}';
+	 var loginUserId = '${SourceLeadWeb_userId}';
+	 var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	 if(skillName != null && skillName != '' && skillName !='undefined'){
-		 Urlcheck = sourceleadUrl+"/saveOrUpdateOnlySkillBycandidateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&skillName="+jsonData
+		 Urlcheck = sourceleadUrl+"/saveOrUpdateOnlySkillBycandidateId?${_csrf.parameterName}=${_csrf.token}&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&skillName="+jsonData
 	 }else{
-		 Urlcheck = sourceleadUrl+"/saveOrUpdateOnlySkillBycandidateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&skillName="+""
+		 Urlcheck = sourceleadUrl+"/saveOrUpdateOnlySkillBycandidateId?${_csrf.parameterName}=${_csrf.token}&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&skillName="+""
 	 }
-	 
+	 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	 $.ajax({  
          type : "POST",
          url: Urlcheck,        
          success :function(data) {
-              if(data != null && data != 'undefined' && data != "" && data == "success"){
-           	  //candidateProfile(candidateId);
+            	  var candidateType = "Candidates";
+            	  candidateProfile(candidateId,candidateType);
             	  candidateQuickViewProfile(candidateId);
-              }
+            	  $("#loading").removeAttr('style');
        },
          
     }); 
-	 
-	 
-	 
-/* 	 if(skillName != null && skillName != '' && skillName !='undefined'){
-		 var sourceleadUrl ='${sourceleadUrl}';
-		 $.ajax({  
-	          type : "POST",
-	          url: sourceleadUrl+"/saveOrUpdateOnlySkillBycandidateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&skillName="+jsonData,        
-	          success :function(data) {
-	               if(data != null && data != 'undefined' && data != "" && data == "success"){
-	            	  //candidateProfile(candidateId);
-	               }
-	        },
-	          
-	     }); 
-	 }else{
-		 
-	 } */
 	 
  }  
 </script>
@@ -1626,6 +1590,7 @@ function updateDesignationOtherType(){
 	 
 	 var candidateType = $('#candidateType').val(); 
 	 $('#emailDiv').find('p.jquery_form_error_message').remove();
+	 $("#update_candidate").removeAttr("disabled");
 	 var sourceleadUrl ='${sourceleadUrl}';
 	 if(email != null && email != ""){
 		 $.ajax({
@@ -1824,41 +1789,6 @@ function  removeValiationVendorContact() {
 		$("#saveVisaBtnSpan").empty();
 		$("#saveVisaBtnSpan").append(result);
 		$("#saveVisaBtnSpan").show();
-		
-		//Adding Customized Visa to the list
-        var select, chosen;
-	    select = $("#visaName");
-	    select.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add New Visa:' });
-	    chosen = select.data('chosen');
-	    
-	    
-	    chosen.search_field.on('keyup', function(e)
-			    {
-			    	   var visaArray = this.value.split(",");
-				    	 if(visaArray.length > 1){
-			        		 for (var i=0; i < visaArray.length; i++) {
-			        			 var option = $("<option>").val(visaArray[i].replace(",","")).text(visaArray[i].replace(",",""));
-			        			 select.append(option);
-			 		             select.find(option).prop('selected', true);
-			 		             select.find(option).siblings("[value='"+ visaArray[i].replace(",","")+"']").remove();
-			 	        		 $("#visaName").trigger("chosen:updated");
-			                 }
-				    	 }else{
-			    			var newVisa = this.value.replace(","," ");
-			    			 if ((e.which == 13 || e.which == 188) && (newVisa != null  && newVisa != '' && newVisa != 'undefined'))
-			                {
-			    				 var option = $("<option>").val(newVisa).text(newVisa);
-			                     select.append(option);
-			                     select.find(option).prop('selected', true);
-			                     $("#visaName option").each(function(){
-			                         $(this).siblings("[value='"+ this.value+"']").remove();
-			                   });
-			                   $("#visaName").trigger("chosen:updated");
-			                }
-					       
-		    	         }
-	    	});
-	    
 	    
 	    //Adding Customized Skills to the list
 	}
@@ -1887,20 +1817,22 @@ function  removeValiationVendorContact() {
 	 var visaName = $("#visaName").val();
 	 var jsonData = encodeURIComponent(visaName);
 	 var sourceleadUrl ='${sourceleadUrl}';
+	 var loginUserId = '${SourceLeadWeb_userId}';
+	 var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	 if(visaName != null && visaName != '' && visaName !='undefined'){
-		 Urlcheck = sourceleadUrl+"/saveOrUpdateOnlyVisaBycandidateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&visaName="+jsonData
+		 Urlcheck = sourceleadUrl+"/saveOrUpdateOnlyVisaBycandidateId?${_csrf.parameterName}=${_csrf.token}&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&visaName="+jsonData
 	 }else{
-		 Urlcheck = sourceleadUrl+"/saveOrUpdateOnlyVisaBycandidateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&visaName="+""
+		 Urlcheck = sourceleadUrl+"/saveOrUpdateOnlyVisaBycandidateId?${_csrf.parameterName}=${_csrf.token}&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&visaName="+""
 	 }
-	 
+	 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	 $.ajax({  
          type : "POST",
          url: Urlcheck,        
          success :function(data) {
-              if(data != null && data != 'undefined' && data != "" && data == "success"){
-           	  //candidateProfile(candidateId);
+            	  var candidateType = "Candidates";
+           	  	  candidateProfile(candidateId,candidateType);
             	  candidateQuickViewProfile(candidateId);
-              }
+            	  $("#loading").removeAttr('style');
        },
          
     }); 

@@ -4,6 +4,15 @@
  <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
  <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
  <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+ 
+ <style>
+.moveErrorMsgUp{
+    position: absolute !important;
+    right: -30px !important;
+    top: 5px;
+}
+</style>
+ 
 <section class="content-wraper" id="themeroller">
     <section class="content-header clearfix">
       <div class="pull-left">
@@ -18,10 +27,10 @@
 				<div class="project_details project_detailsExp">
                 
                 
-					<div class="Expdit pull-right">
+					<div class="Expdit pull-right mr">
 					
 					     <c:if test="${submissionStatus == 'SUBMITTED' || submissionStatus == 'REJECTED'}">
-					        <a href="${sourceleadUrl}/addApprovalExpense?expenseId=${expenses.expenseId}&type=edit"  class="btn btn-default ml10" style='cursor: pointer !important'><i class="fa fa-pencil-square-o" ></i> &nbsp;Edit</a>
+					        <a href="${sourceleadUrl}/addApprovalExpense?expenseId=${expenses.expenseId}&type=edit"  class="btn btn-default ml10 mr10" style='cursor: pointer !important'><i class="fa fa-pencil-square-o" ></i> &nbsp;Edit</a>
 					     </c:if>
 					     
 					      <c:if test="${isExpenseTotallyApproved && submissionStatus == 'APPROVED' && empty eah.reopenReason}">
@@ -37,7 +46,7 @@
 					     </c:if> 
 					     
 					     <c:if test="${isSahReopened && !isSuperUser && !empty eah.reopenReason}">
-					          <i class='pull-right glyphicon glyphicon-comment rejectedHover'>
+					          <i class='pull-right glyphicon glyphicon-comment rejectedHover moveErrorMsgUp'>
 					            <div class='app_error_mes' id="rejectedMessage${expenses.id}">${eah.reopenReason}</div>
 						      </i>
 						      <p class='pull-right ml' style='width: 146px;'>Re-Open Request sent</p>
@@ -46,10 +55,10 @@
 					           <i class='pull-right  glyphicon glyphicon-comment rejectedHover'>
 					            <div class='app_error_mes' id="rejectedMessage${expenses.id}">${eah.reopenReason}</div>
 					            </i>
-					            <div class='pull-right  sm text-center Expreopen'>
+					            <div id ='acceptReopenExpenseBySuperUserDiv' class='pull-right  sm text-center Expreopen'>
 					                  <label class='clearfix reopen-label'>RE-OPEN</label>
-					                  <i class='reopen-text-success fa fa-check' title='Accept' alt='Accept'  onclick='acceptReopenExpenseBySuperUser(${expenses.id},${eah.reopenedUser.id});'></i>|
-					                  <i class='reopen-text-danger fa fa-times' title='Reject' alt='Reject' onclick='rejectReopenExpenseBySuperUser(${expenses.id},${eah.reopenedUser.id});'></i>
+					                  <i class='reopen-text-success fa fa-check' title='Accept' alt='Accept'  id ='acceptReopenExpenseBySuperUserId' onclick='acceptReopenExpenseBySuperUser(${expenses.id},${eah.reopenedUser.id});'></i>|
+					                  <i class='reopen-text-danger fa fa-times' title='Reject' alt='Reject' id='rejectReopenExpenseBySuperUserId' onclick='rejectReopenExpenseBySuperUser(${expenses.id},${eah.reopenedUser.id});'></i>
 					           </div> 
 					      </c:if>
 					     
@@ -68,7 +77,7 @@
 						  </c:if>
 						  <c:if test="${submissionStatus == 'REJECTED'}">
 						       <b class='proj_closed pull-right'>${submissionStatus}</b>
-						        <i class='pull-right glyphicon glyphicon-comment rejectedHover'>
+						        <i class='pull-right glyphicon glyphicon-comment rejectedHover moveErrorMsgUp'>
 					            <div class='app_error_mes' id="rejectedMessage1${expenses.id}">${eah.rejectedReason}</div>
 						      </i>
 						  </c:if>
@@ -89,7 +98,7 @@
 
                     <div class="clearfix"></div>
 					<div class="project_details_cta">
-						<strong>ExpenseId:</strong><span>${expenses != null ? expenses.expenseId : ExpensesId}</span><div class="clearfix"></div>
+						<strong>Expense Id:</strong><span>${expenses != null ? expenses.expenseId : ExpensesId}</span><div class="clearfix"></div>
 					</div>
 					<div class="project_details_cta">
 						<strong>Purpose:</strong><span>${expenses.purpose}</span><div class="clearfix"></div>
@@ -113,7 +122,7 @@
 						<strong>No of Expenses:</strong><span>${expenses.noOfExpenses}</span><div class="clearfix"></div>
 					</div>
 					<div class="project_details_cta">
-						<strong>Amount:</strong><span>${expenses.totalAmount}</span><div class="clearfix"></div>
+						<strong>Amount:</strong><span>${expenses.totalAmountRoundoffValue}</span><div class="clearfix"></div>
 					</div>
 					
 					<div class="project_details_cta">
@@ -138,7 +147,7 @@
 			<tbody>
 			     <c:forEach var="entry" items="${expenses.expensesEntries}" varStatus="entryCount">
 			        <tr id="divEntityTsRow${(2*(entryCount.count))-1}">
-			           <td><div class="ExpShow" id="categoryDateDiv${entryCount.count}"><i class="fa fa-plus-square-o" aria-hidden="true" onclick="hideAndShowDetailsRow(${2*(entryCount.count)},'Edit');"></i>${entry.expenseDateStr}</div></td>
+			           <td><div class="ExpShow" id="categoryDateDiv${entryCount.count}" onclick="hideAndShowDetailsRow(${2*(entryCount.count)},'Edit');"><i class="fa fa-plus-square-o" aria-hidden="true"></i>${entry.expenseDateStr}</div></td>
 			           <td><div id="categoryTypeDiv${entryCount.count}">${entry.expensesCategoryId.expensesName}</div></td>
 			           <td><div id="entryDesDiv${entryCount.count}" class="tbldata-dotdot_50" title="${entry.description}">${entry.description}</div></td>
 			           <td><div id="expenseAmountDiv${entryCount.count}"> <fmt:formatNumber value="${entry.amount}" minFractionDigits="2" maxFractionDigits="2"/></div></td>
@@ -151,15 +160,15 @@
 							<ul>
 							    <li><strong>Date :</strong><span>${entry.expenseDateStr}</span><div class="clearfix"></div></li>
 								<li><strong>Exp Category :</strong><span>${entry.expensesCategoryId.expensesName}</span><div class="clearfix"></div></li>
-								<li><strong>Description :</strong><p title="${entry.description}">${entry.description}</p>
+								<li><strong>Description :</strong><span title="${entry.description}">${entry.description}</span>
 								<li><strong>Receipt Issued by :</strong><span title="${entry.receiptIssuedBy}">${entry.receiptIssuedBy}</span><div class="clearfix"></div></li>
 								<li><strong>Amount :</strong><span> <fmt:formatNumber value="${entry.amount}" minFractionDigits="2" maxFractionDigits="2"/></span><div class="clearfix"></div></li>
 								<li><strong>Currency :</strong><span>${entry.currencyType}</span><div class="clearfix"></div></li>
 								<li><strong>Payment Mode :</strong><span>${entry.paymentMode.value}</span><div class="clearfix"></div></li>
 								<div class="clearfix"></div>
 								</li>
-								<div class="clearfix"></div>
-								<div id='attachmentSection' class='col-md-4 mb10'>
+								<div class="clearfix">
+								<div id='attachmentSection' class='col-md-4 mt10 noPad'>
 				                   <div class="uploadFile timesheet_week_comm">
 				                     <input type='hidden' name='dbAttachmentMaxRowNumber${entryCount.count}'  id='dbAttachmentMaxRowNumber${entryCount.count}' value='${entry.expensesEntryDocuments.size()}' />
 					                 <input type='hidden' name='attcahmentMaxRowNumber${entryCount.count}'  id='attcahmentMaxRowNumber${entryCount.count}' value='1' />
@@ -170,14 +179,15 @@
 					                          <input type='hidden' name='${entryDocCount.index}DbdocFileIsDeleted${entryCount.count}' id='${entryDocCount.index}DbdocFileIsDeleted${entryCount.count}' value='N'/>
 					                             <a class='downicon' href='<c:url value="/downloadExpensesEntryDocument?entryDocumentId=${entryDoc.id}"/>'>
 					                                 <i class='glyphicon glyphicon-save'></i>
-										             <input type='button' value='${entryDoc.fileName}'/>
+										             <input type='button' class='padLeft' value='${entryDoc.fileName}'/>
 										        </a>
 										        <a class="fa fa-eye expAttView" onclick="viewDocument('${entryDoc.fileName}','${entryDoc.id}');"></a>
 					                         </strong>
 					                       </c:forEach>
 					                 </div> 
 					             </div>
-					             </div>   				
+					             </div> 
+					             </div>  				
 								<div class="clearfix"></div>
 							</ul>
 						</div>

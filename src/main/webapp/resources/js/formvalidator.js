@@ -895,10 +895,10 @@ jQueryFormUtils.validate = function(value, el, language, config, form) {
 //------------------------------->New Validation  Entries for Peopleaxis.com by HariKrishna	
 //************************************************************************************************************************
 jQueryFormUtils.validatezipcode = function(zipcode) {
- var country=$('#country').val();
+ var country=$('#candidateCountry').val();
   var ZIPREG={
  OTH:'^[0-9]{3}-[0-9]{5}$',// Default Validation 111-55551
- IND:'^[0-9]{5}',//INDIA 520001
+ India:'^[0-9]{5}',//INDIA 520001
  USA:'^[0-9]{5}([\-]?[0-9]{4})?$',
  UK:'^(GIR|[A-Z]\d[A-Z\d]??|[A-Z]{2}\d[A-Z\d]??)[ ]??(\d[A-Z]{2})$',
  DE:'\b((?:0[1-46-9]\d{3})|(?:[1-357-9]\d{4})|(?:[4][0-24-9]\d{3})|(?:[6][013-9]\d{3}))\b',
@@ -1363,7 +1363,7 @@ jQueryFormUtils.LANG =  {
 	badAlphaNumber:'Allows Only Alphanumeric and must start with an Alphabet',
 	badImage:'Invalid Image Format Use .jpeg,jpg,gif,png formats only',
 	badDoc:'doc,docx,pdf,txt formats allowed',
-	badFileFormat:'Invalid Image Format Use .doc,pdf,txt,docx,jpeg,jpg,gif,png formats only',
+	badFileFormat:'Invalid Format Use .doc,pdf,txt,docx,jpeg,jpg,gif,png formats only',
 	badResume:'Invalid Resume Type Use .doc,.docx,.pdf,.rtf formats only',
 	badPdf:'Invalid Document Type Use .PDF formats only',
 	badImportFile:'Invalid File Type. Use xls,xlsx and csv formats only',

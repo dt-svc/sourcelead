@@ -1,6 +1,7 @@
 package com.bis.sourcelead.entity;
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -21,12 +22,18 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.apache.commons.lang3.StringUtils;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.enums.Submission_Status;
+import com.bis.sourcelead.web.LoginSessionController;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.ibm.icu.math.BigDecimal;
 
 @Entity
 @Table(name = "EXPENSES", catalog = "sourcelead")
@@ -40,11 +47,13 @@ private static final long serialVersionUID = 1L;
 	private Long id;
 	
 	@ManyToOne
-    @JoinColumn(name="LOCATION_ID", nullable=false )        
+    @JoinColumn(name="LOCATION_ID", nullable=false ) 
+	@JsonBackReference
     private OrgLocations orgLocationId;
 	
 	@ManyToOne(fetch=FetchType.EAGER)
 	@JoinColumn(name = "PROJECT_MEMBERS_ID", nullable=false)
+	@JsonBackReference
 	private ProjectMembers projectMembers;
 	
 	@Column(name = "EXPENSE_ID")
@@ -60,48 +69,62 @@ private static final long serialVersionUID = 1L;
 	private String clientName;
 	
 	@Column(name = "START_DATE")
+    @JsonBackReference
 	private Date startDate;
 	
 	@Column(name = "END_DATE")
+    @JsonBackReference
 	private Date endDate;
 	
 	@Column(name = "NO_OF_EXPENSES")
 	private String noOfExpenses;
 	
 	@Column(name = "STATUS")
+	@JsonBackReference
 	private String status;
 	
 	@Column(name = "CREATED_DATE")
+	@JsonBackReference
 	private Date createdDate;
 	
 	@Column(name = "CREATED_BY")
+	@JsonBackReference
 	private String createdBy;
 	
 	@Column(name = "UPDATED_DATE")
+	@JsonBackReference
 	private Date updatedDate;
 	
 	@Column(name = "UPDATED_BY")
+	 @JsonBackReference
 	private String updatedBy;
 	
 	@Column(name = "EXPENSE_STATUS")
 	@Enumerated(EnumType.STRING)
 	private Submission_Status expenseStatus;
+//	  
+	@Column(name = "BILLING_RECIEVABLE_STATUS")
+	private String billingRecievableStatus;
+	
+	@Column(name = "BILLING_PAYABLE_STATUS")
+	private String billingPayableStatus;
 	
 	@OneToMany(mappedBy="expensesId",cascade = CascadeType.ALL)
+	 @JsonBackReference
 //    @Fetch(FetchMode.SELECT)
     private Set<ExpensesEntries> expensesEntries;
 	
 	@OneToMany(mappedBy="expenseId",cascade = CascadeType.ALL)
-    @Fetch(FetchMode.SELECT)
+	 @JsonBackReference
+   // @Fetch(FetchMode.SELECT)
     private Set<ExpensesApproverHierarchy> approverHierarchyList;
 
 	@Transient
-	private String projectMemberId;
-	
-	@Transient
+	@JsonProperty
 	private String startDateStr;
 	
 	@Transient
+	@JsonProperty
 	private String endDateStr;
 	
 //	@Transient
@@ -120,11 +143,20 @@ private static final long serialVersionUID = 1L;
 	private String userEmail;
 	
 	@Transient
+	@JsonProperty
 	private String projectName;
 	
 	@Transient
 	private Map<String,String> monthsStringFormat;
+	
+	@Transient
+	@JsonProperty
+	private String dateFrequency;
     
+
+	@Transient
+	@JsonProperty
+	private BigDecimal totalAmountRoundoffValue;
 	
 	public Long getId() {
 		return id;
@@ -270,15 +302,14 @@ private static final long serialVersionUID = 1L;
 	public void setExpenseStatus(Submission_Status expenseStatus) {
 		this.expenseStatus = expenseStatus;
 	}
-	public String getProjectMemberId() {
-		return projectMemberId;
-	}
-
-	public void setProjectMemberId(String projectMemberId) {
-		this.projectMemberId = projectMemberId;
-	}
+	
 
 	public String getStartDateStr() {
+		if(startDate != null){
+			SimpleDateFormat dateFormat = orgLocationId.getLocFullFormDateFormatter();
+			startDateStr = dateFormat.format(startDate);
+		}
+		
 		return startDateStr;
 	}
 
@@ -287,6 +318,10 @@ private static final long serialVersionUID = 1L;
 	}
 
 	public String getEndDateStr() {
+		if(endDate != null){
+			SimpleDateFormat dateFormat = orgLocationId.getLocFullFormDateFormatter();
+			endDateStr = dateFormat.format(endDate);
+		}
 		return endDateStr;
 	}
 
@@ -328,6 +363,9 @@ private static final long serialVersionUID = 1L;
 	}
 
 	public String getProjectName() {
+		if(projectMembers != null && projectMembers.getProjects() != null && StringUtils.isNotEmpty(projectMembers.getProjects().getProjectName())){
+			projectName = projectMembers.getProjects().getProjectName();
+		}
 		return projectName;
 	}
 
@@ -342,6 +380,43 @@ private static final long serialVersionUID = 1L;
 	public void setMonthsStringFormat(Map<String, String> monthsStringFormat) {
 		this.monthsStringFormat = monthsStringFormat;
 	}
+
+	public String getDateFrequency() {
+		return dateFrequency;
+	}
+
+	public void setDateFrequency(String dateFrequency) {
+		this.dateFrequency = dateFrequency;
+	}
+
+	public static long getSerialversionuid() {
+		return serialVersionUID;
+	}
+
+	public String getBillingRecievableStatus() {
+		return billingRecievableStatus;
+	}
+
+	public void setBillingRecievableStatus(String billingRecievableStatus) {
+		this.billingRecievableStatus = billingRecievableStatus;
+	}
+
+	public String getBillingPayableStatus() {
+		return billingPayableStatus;
+	}
+
+	public void setBillingPayableStatus(String billingPayableStatus) {
+		this.billingPayableStatus = billingPayableStatus;
+	}
+
+	public BigDecimal getTotalAmountRoundoffValue() {
+		return totalAmountRoundoffValue;
+	}
+
+	public void setTotalAmountRoundoffValue(BigDecimal totalAmountRoundoffValue) {
+		this.totalAmountRoundoffValue = totalAmountRoundoffValue;
+	}
+
 
 
 //	public List<ExpensesEntries> getExpenseEntriesList() {

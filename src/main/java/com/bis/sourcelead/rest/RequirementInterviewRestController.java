@@ -33,6 +33,7 @@ import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.ApplicantSubmissionStatus;
+import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.ProposeTimeService;
 import com.bis.sourcelead.service.RequirementInterviewHistoryService;
 import com.bis.sourcelead.service.RequirementInterviewService;
@@ -45,6 +46,7 @@ import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
+import com.bis.sourcelead.web.LoginSessionController;
 
 /**
  * Prasanna Vadla
@@ -86,6 +88,9 @@ public class RequirementInterviewRestController {
 	 
 	 @Autowired
 	 ProposeTimeService  proposeTimeService;
+	 
+	 @Autowired
+	 private OrgLocationService orgLocationService; 
 	 
 	 @Autowired
 	 RequirementSubmissionHistoryService requirementSubmissionHistoryService;
@@ -281,15 +286,15 @@ public class RequirementInterviewRestController {
 		Org loginOrg = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
  	        String json1 = "{" + json + "}";
 			JSONObject jsonObj = new JSONObject(json1);
-			String pattern = "dd-MM-yyyy";
-	        SimpleDateFormat format = new SimpleDateFormat(pattern);
+			/*String pattern = "dd-MM-yyyy";
+	        SimpleDateFormat format = new SimpleDateFormat(pattern);*/
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			 RequirementInterview interview = requirementInterviewService.getRequirementInterviewById(jsonObj.getString("requirementInterviewId"));
 			int maxTaxRowCount = Integer.parseInt(jsonObj.getString("proposeNewTimeRowsNum"+interview.getId()+""));
 			 for(int i=0;i<maxTaxRowCount;i++){
 				 ProposeTime proposeTime = new ProposeTime();
 					 if(null != jsonObj.getString("interviewDate"+i) && !"".equalsIgnoreCase(jsonObj.getString("interviewDate"+i))){
-						 Date proposeDate = format.parse(jsonObj.getString("interviewDate"+i));
+						 Date proposeDate = commonUtil.orgLocationDateFormat(interview.getSubmissionId().getOrgLocations().getDateFormat(),jsonObj.getString("interviewDate"+i));
 						 proposeTime.setProposeDate(proposeDate);
 					 }
 					 if(null != jsonObj.getString("time"+i) && !"".equalsIgnoreCase(jsonObj.getString("time"+i))){
@@ -299,7 +304,9 @@ public class RequirementInterviewRestController {
 					 proposeTime.setInterviewId(interview);
 					 proposeTime.setStatus(Constants.RECORD_ACTIVE);
 					 proposeTime.setCreatedDate(commonUtil.currentDate());
+					 if(user != null){
 					 proposeTime.setCreatedBy(user.getUserCode());
+			 }
 					 proposeTimeService.saveProposeTime(proposeTime);
 			 }
 			 
@@ -313,9 +320,12 @@ public class RequirementInterviewRestController {
 			 
 			 requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.INTERVIEW_TENTATIVE);
 			 //Applicant to created by interviewer send Email
+			 if(orgLocations != null){
 			requirementInterviewService.applicantInterviewProposeTimeEmailToInterviewInitiator(jsonObj.getString("requirementInterviewId"),orgLocations,loginOrg,user);	 
-			
+			 }
+			 if(user != null){
 			 requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user, requirementSubmissionHistory);
+			 }
 			return "success";
 
   }
@@ -328,12 +338,14 @@ public class RequirementInterviewRestController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/getProposeTime" , method = RequestMethod.POST)
-	 public @ResponseBody  String getProposeTime(@RequestParam(value="interviewId", required=false) Long interviewId, HttpServletRequest request) throws Exception {
+	 public @ResponseBody  String getProposeTime(@RequestParam(value="interviewId", required=false) Long interviewId, @RequestParam(value="locationId", required=false) Long locationId,HttpServletRequest request) throws Exception {
 		 String resultJson = null;
 		 List<ProposeTime> proposeTimeList = proposeTimeService.getProposeTimeByInterViewId(interviewId);
+		 OrgLocations orgLocations = orgLocationService.getOrgLocations(locationId);
+		 //SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
 		 for(ProposeTime pst:proposeTimeList){
 			if(null != pst.getProposeDate()){
-				pst.setProposeDateStr(Constants.DMY.format(pst.getProposeDate()));	
+				pst.setProposeDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),pst.getProposeDate()));	
 				pst.setProposeTime(pst.getProposeTime());
 			}
 		 }
@@ -470,12 +482,12 @@ public class RequirementInterviewRestController {
 			if(loginOrgLocations.getTimezone() != null){
 				timezone = timeZoneService.getTimezone(loginOrgLocations.getTimezone().getId());
 			}
-			
+			//SimpleDateFormat simpleDateFormat = loginOrgLocations.getLocFullFormDateFormatter();
 			Date startUTCDate = null;
 			Date endUTCDate = null;
 			DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
 			DateFormat END_TZ_DF = new SimpleDateFormat ("yyyy-MM-dd'T'23:59:59");
-			Date startTime =  commonUtil.getDateFormat(date);
+			Date startTime =  commonUtil.orgLocationDateFormat(loginOrgLocations.getDateFormat(),date);
 			
 			String startTimeTS = Constants.TZ_DF.format(startTime); 
 			String endTimeTS = END_TZ_DF.format(startTime);

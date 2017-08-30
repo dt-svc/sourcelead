@@ -19,6 +19,7 @@ import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.payroll.dao.BisUserMappingDao;
 import com.bis.sourcelead.payroll.dao.WageTaxSummaryDao;
 import com.bis.sourcelead.payroll.entity.BisUserMapping;
+import com.bis.sourcelead.payroll.entity.Checks;
 import com.bis.sourcelead.payroll.entity.EmployerPayrollCost;
 import com.bis.sourcelead.payroll.entity.WageTaxSummary;
 
@@ -78,6 +79,46 @@ public class BisUserMappingDaoImpl implements BisUserMappingDao {
 		List<BisUserMapping> bisUserList = null;
 		String query = "from BisUserMapping bisUser  left join fetch bisUser.orgLocationId where bisUser.orgLocationId.id =:orgLocationId and bisUser.userId.id <> NULL";
 		bisUserList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+		if(bisUserList != null && bisUserList.size() >0)
+		{
+			return bisUserList;
+		}
+		return bisUserList;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Checks saveChecks(Checks checks) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		try {
+			session.saveOrUpdate(checks);
+		} catch (Exception exception) {
+			logger.error(ExceptionUtils.getFullStackTrace(exception));
+		}
+		return checks;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<BisUserMapping> getEmployeeList(Long orgLocationId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		List<BisUserMapping> bisUserList = null;
+		String query = "from BisUserMapping bisUser  left join fetch bisUser.orgLocationId where bisUser.orgLocationId.id =:orgLocationId";
+		bisUserList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+		if(bisUserList != null && bisUserList.size() >0)
+		{
+			return bisUserList;
+		}
+		return bisUserList;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<BisUserMapping> getMasterListByEmpId(Long empId, OrgLocations orgLocations) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		List<BisUserMapping> bisUserList = null;
+		String query = "from BisUserMapping bisUser  left join fetch bisUser.orgLocationId where bisUser.orgLocationId.id =:orgLocationId and bisUser.empId = :empId";
+		bisUserList = session.createQuery(query).setLong("orgLocationId", orgLocations.getId()).setLong("empId", empId).setCacheable(true).list();
 		if(bisUserList != null && bisUserList.size() >0)
 		{
 			return bisUserList;

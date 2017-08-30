@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Writer;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
@@ -54,6 +55,7 @@ import com.bis.sourcelead.service.SourceleadSignatureService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
+import com.bis.sourcelead.web.LoginSessionController;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.thoughtworks.xstream.XStream;
@@ -100,10 +102,12 @@ public class OrgSettingsRestController {
 		try {
 			org = orgService.saveOrgSettings(orgSettings, multiFile, org);
 			orgLocations = orgLocationService.saveOrgLocations(orgSettings, orgLocations);
+			//LoginSessionController.DATEFORMAT = new SimpleDateFormat(orgLocations.getDateFormat());
 			SourceLeadSessionManager.setSessionAttribute(request, "org", org);
 			SourceLeadSessionManager.setSessionAttribute(request, "orgLocations", orgLocations);
 			SourceLeadSessionManager.setSessionAttribute(request, "orgName", orgLocations.getOrgLocationName());
 			SourceLeadSessionManager.setSessionAttribute(request, "address", orgLocations.getOrgLocationAddress());
+			SourceLeadSessionManager.setSessionAttribute(request, "website", orgLocations.getWebsite());
 		} catch (Exception e) {
 			logger.error(ExceptionUtils.getFullStackTrace(e));
 		}
@@ -425,6 +429,7 @@ public class OrgSettingsRestController {
 		String resultJson = null;
 		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 		OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
+		//SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
 		if (null != orgLocations && null != orgLocations.getUser()) {
 			StringBuilder userName = new StringBuilder();
 			if (!isNullOrEmpty(orgLocations.getUser().getLastName())) {
@@ -439,7 +444,7 @@ public class OrgSettingsRestController {
 			orgLocations.setOrglocationUserId(orgLocations.getUser().getId());
 			orgLocations.setOrgCode(org.getOrgCode());
 			orgLocations.setTimeZoneName(orgLocations.getTimezone().getTimeZoneId());
-			orgLocations.setCreatedDateStr(Constants.DMY.format(orgLocations.getCreatedDate()));
+			orgLocations.setCreatedDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),orgLocations.getCreatedDate()));
 			UserRole userRole = userRoleService.getUserDetailsByUserIdAndLocationId(orgLocations.getUser().getId(), orgLocations.getId());
 			if (null != userRole) {
 				orgLocations.setOrglocationUserStatus(userRole.getUserState().toString());
@@ -496,6 +501,32 @@ public class OrgSettingsRestController {
 		}
 		resultJson = toJSON(orgLocations);
 		return resultJson;
+	}
+	
+	
+	@RequestMapping(value = "/saveOrgShortCodeform",method = RequestMethod.POST)
+	public String saveOrgShortCodeform(@RequestParam(value = "json", required = false) String json,@RequestParam(value = "locationCode", required = false) String locationCode) throws Exception
+	{
+		JSONObject jsonObj = new JSONObject(json);
+		OrgLocations orgLocations = orgLocationService.getOrgLocationsByLocationCode(locationCode);
+		orgLocationService.saveOrgLocationsOrgShortCode(orgLocations,jsonObj);
+		return "success";
+	}
+	
+	@RequestMapping(value = "/validateOrgShortCode",method = RequestMethod.POST)
+	public boolean validateOrgShortCode(@RequestParam(value = "orgShortId") String orgShortId) throws Exception
+	{
+		boolean validateCode = orgLocationService.validateOrgShortCode(orgShortId);
+		return validateCode;
+	}
+	
+	
+	@RequestMapping(value = "/getDateFormatByOrgLocation",method = RequestMethod.POST)
+	public String getDateFormatByOrgLocation(@RequestParam(value = "locationCode") String locationCode) throws Exception
+	{
+		OrgLocations orgLocations1 = orgLocationService.getOrgLocationsByLocationCode(locationCode);
+		String orgLocatDateFormat = orgLocationService.getDateFormatByOrgLocation(orgLocations1);
+		return orgLocatDateFormat;
 	}
 	
 	private String toJSON(Object obj)

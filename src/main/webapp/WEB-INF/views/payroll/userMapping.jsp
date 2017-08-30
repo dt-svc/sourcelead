@@ -3,15 +3,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 
-<!-- these files for autocomplete with tagit -->
-<link href="resources/css/jquery-tagit.css" rel="stylesheet">
-<script src="resources/js/csc.js" type="text/javascript" charset="utf-8"></script>
-<script src="resources/js/tag-it.js" type="text/javascript" charset="utf-8"></script>
-<script src="resources/js/tag-it.min.js" type="text/javascript" charset="utf-8"></script>
-<!-- end files for autocomplete with tagit -->
-
 <!-- Content Area -->
-
 <script>
 $(document).ready(function(){
    getMappedUserList();
@@ -21,9 +13,9 @@ $(document).ready(function(){
 <section class="content-wraper">
 <section class="content-header clearfix">
   <div class="pull-left">
-    <h2>Expenses New</h2>
+    <h2>User Mapping</h2>
   </div>
-  <div class="pull-right brud-crum">Home &raquo; Expenses New</div>
+  <div class="pull-right brud-crum">Home &raquo; payroll</div>
 </section>
 	<div id="loading"></div>
 	<div id="popUp"></div>
@@ -37,7 +29,7 @@ $(document).ready(function(){
                <select  class="chosen-select" class="form-control" id="importedUserId" name="importedUserId" field-name="Imported User" data-validation="required" onchange="removeImportValidation();">
                 <option value="" selected>-Select User-</option>
 	            <c:forEach var="masterUsers" items="${masterUsersList}">
-					<option value="${masterUsers.id}">${masterUsers.candidateName}</option>
+					<option value="${masterUsers.employeeId}">${masterUsers.employeeName}</option>
 				</c:forEach>
                  <!-- <option value="Select Month">---Select User---</option>
                  <option value="January">Type 1</option>
@@ -87,9 +79,10 @@ $(document).ready(function(){
 
 <script type="text/javascript">
 	function mergeUser() {
+		alert("Hi");
 		if ($('#userMapping_form').validate(false, validationSettings)) {
-			var importedUser = $('#importedUserId :selected').text();
-			var orgUser = $('#slUserId :selected').text();
+			var importedUser = $('#importedUserId :selected').text().trim();
+			var orgUser = $('#slUserId :selected').text().trim();
 			if(importedUser != orgUser){
 				showAlertMessage();
 			}else{
@@ -113,7 +106,6 @@ $(document).ready(function(){
 					type : "GET",
 					url : sourceleadUrl+ "/getMappedUserList?${_csrf.parameterName}=${_csrf.token}",
 					success : function(data) {
-						
 						var result = "";				        	
 						result = result + '<table id="userMappingTable" class="display" cellspacing="0" width="100%" >';
 						result = result + '<thead>';
@@ -124,13 +116,12 @@ $(document).ready(function(){
 						result = result + '</tr>';
 						result = result + '</thead>	';
 						result = result + '<tbody>';
-						var json = JSON.parse(data);
-			        	 for (var i=0; i<json.length; i++)
+			        	 for (var i=0; i<data.length; i++)
 						{ 
-			        		 var opt = json[i];
+			        		 var opt = data[i];
 			        		    result = result + ' <tr>';
-								result = result + ' <td><div class="tblminwidth-75">'+opt.empId+'</div></td>';
-								result = result + '<td><div class="tblminwidth-75">'+opt.candidateName+'</div></td>';
+								result = result + ' <td><div class="tblminwidth-75">'+opt.employeeId+'</div></td>';
+								result = result + '<td><div class="tblminwidth-75">'+opt.employeeName+'</div></td>';
 								result = result + '<td><div class="tblminwidth-75">Merged</div></td>';
 								result = result + ' </tr>';
 						}

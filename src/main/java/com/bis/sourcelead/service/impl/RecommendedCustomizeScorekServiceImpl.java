@@ -1,5 +1,7 @@
 package com.bis.sourcelead.service.impl;
 
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.slf4j.Logger;
@@ -7,13 +9,22 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.bis.sourcelead.beans.CandidateCompareDTO;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.RecommendedCustomizeScoreDao;
+import com.bis.sourcelead.elk.index.CandidateIndex;
+import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.RecommendedCustomizeScore;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.service.CandidateResumesService;
+import com.bis.sourcelead.service.CandidateService;
+import com.bis.sourcelead.service.OrgLocationService;
+import com.bis.sourcelead.service.RecommendationsService;
 import com.bis.sourcelead.service.RecommendedCustomizeScoreService;
+import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
@@ -30,6 +41,21 @@ public class RecommendedCustomizeScorekServiceImpl implements RecommendedCustomi
  
 	@Autowired
 	 private CommonUtil commonUtil;
+	
+	@Autowired
+	private CandidateResumesService candidateResumeSerivce;
+	 
+	@Autowired
+	private CandidateService candidateService;
+ 
+	@Autowired
+	private RecommendationsService recommendationsService;
+ 
+	@Autowired
+	private RequirementService requirementService;
+	
+	@Autowired
+	OrgLocationService orgLocationService;
 	
 	@Override
 	public RecommendedCustomizeScore getRecommendedCustomizeScoreByRequirementIdAndOrgLocationId(Long requirementId, Long orgLocationId) throws Exception {
@@ -122,6 +148,78 @@ public class RecommendedCustomizeScorekServiceImpl implements RecommendedCustomi
 		res.setCreatedDate(commonUtil.currentDate());
 		
 		return recommendedCustomizeScoreDao.saveCustomizeScore(res);
+	}
+
+	@Override
+	public CandidateCompareDTO getCandidateListToCompare(Long requirementId, Long orgLocationId) throws Exception
+	{
+		OrgLocations orglocation = orgLocationService.getOrgLocations(orgLocationId);
+		CandidateCompareDTO candidateCompare = new CandidateCompareDTO();
+		Requirement requirement = requirementService.getRequirementByRequirementId(requirementId);
+		List<CandidateIndex> candidateList = null;
+		RecommendedCustomizeScore recommendedCustomizeScore = getRecommendedCustomizeScoreByRequirementId(requirementId);
+		if (null != recommendedCustomizeScore) {
+			candidateList = recommendationsService.getRecommendationsUpdateWithScoreByUsingElk(orgLocationId, recommendedCustomizeScore, requirementId);
+		}
+		if (requirement != null) {
+			if (requirement.getJobId() != null && !"".equalsIgnoreCase(requirement.getJobId())) {
+				candidateCompare.setJobId(requirement.getJobId());
+			}
+			if (requirement.getJobTitle() != null
+					&& !"".equalsIgnoreCase(requirement.getJobTitle())) {
+				candidateCompare.setJobTitile(requirement.getJobTitle());
+			}
+			if (requirement.getRate() != null && !"".equalsIgnoreCase(requirement.getRate())) {
+				candidateCompare.setJobRate(requirement.getRate());
+			}
+			if (requirement.getRateType() != null
+					&& !"".equalsIgnoreCase(requirement.getRateType())) {
+				candidateCompare.setJobRatePer(requirement.getRateType());
+			}
+			if (requirement.getSkills() != null && !"".equalsIgnoreCase(requirement.getSkills())) {
+				candidateCompare.setJobSkills(requirement.getSkills());
+			}
+			if (requirement.getVisaType() != null
+					&& !"".equalsIgnoreCase(requirement.getVisaType())) {
+				candidateCompare.setJobVisa(requirement.getVisaType());
+			}
+			if (requirement.getLocation() != null
+					&& !"".equalsIgnoreCase(requirement.getLocation())) {
+				candidateCompare.setJobLocation(requirement.getLocation());
+			}
+			if (requirement.getMinExp() != null
+					&& !"".equalsIgnoreCase(requirement.getMinExp())) {
+				candidateCompare.setJobMinExp(requirement.getMinExp());
+			}
+			if (requirement.getMaxExp() != null
+					&& !"".equalsIgnoreCase(requirement.getMaxExp())) {
+				candidateCompare.setJobMaxExp(requirement.getMaxExp());
+			}
+			if (requirement.getNoticePeriod() != null
+					&& !"".equalsIgnoreCase(requirement.getNoticePeriod())) {
+				candidateCompare.setJobNoticePeriod(requirement.getNoticePeriod());
+			}
+			if (requirement.getEducation() != null
+					&& !"".equalsIgnoreCase(requirement.getEducation())) {
+				candidateCompare.setJobEducation(requirement.getEducation());
+			}
+		}
+		if (candidateList != null) {
+			for(int i = 0; i<candidateList.size(); i++){
+				CandidateIndex candidate = candidateList.get(i);
+				Candidate can = candidateService.getCandidateByCandidateId(candidate.getCandidateId());
+				CandidateResumes candidateResume =  candidateResumeSerivce.getCandidateLatesResumes(can.getId(), Constants.RECORD_ACTIVE);
+				if(candidateResume != null){
+					candidate.setCurrentResumeId(candidateResume.getId());
+					candidate.setCurrentResumeName(candidateResume.getFileName());
+					candidate.setCurrentResumeUUID(candidateResume.getResumeUUID());
+				}
+				int percentage = candidateService.getCandidatePercentage(can,orglocation);
+				candidate.setProfilePercentage(percentage);
+			}
+			candidateCompare.setCandidateList(candidateList);
+		}
+		return candidateCompare;
 	}
 
 }

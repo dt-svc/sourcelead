@@ -226,7 +226,7 @@ public class ContractsTemplateDaoImpl implements ContractsTemplateDao{
 			String query = "from Contracts contracts left join fetch contracts.contractsTemplate "
 					+ "left join fetch contracts.requirementSubmission "
 					+"left join fetch contracts.requirementSubmission.candidate "
-					+ "left join fetch contracts.requirementSubmission.candidateResumes "
+					+"left join fetch contracts.requirementSubmission.candidateResumes "
 					+ "left join fetch contracts.ownerUserId "
 					+ "left join fetch contracts.orgLocationId "
 					+ "left join fetch contracts.orgRelations "
@@ -393,7 +393,7 @@ public class ContractsTemplateDaoImpl implements ContractsTemplateDao{
 	@Transactional(rollbackFor = { Exception.class })
 	public List<Contracts> getListOfContractsEnvId() {
 		Session session = this.sessionFactory.getCurrentSession();
-		List<Contracts>  contractsList = session.createQuery("from Contracts ct where (ct.typeOfContract = 'New' or ct.typeOfContract = 'Existing' or ct.typeOfContract = 'Custom') and ct.templateSubmissionStatus != 'EXPIRED' and ct.parentContractId.id IS NULL").setCacheable(true).list();
+		List<Contracts>  contractsList = session.createQuery("from Contracts ct left join fetch ct.candidate where (ct.typeOfContract = 'New' or ct.typeOfContract = 'Existing' or ct.typeOfContract = 'Custom') and ct.templateSubmissionStatus != 'EXPIRED' and ct.parentContractId.id IS NULL").setCacheable(true).list();
 		return contractsList;
 	}
 
@@ -492,6 +492,7 @@ public class ContractsTemplateDaoImpl implements ContractsTemplateDao{
 					+ "left join fetch contracts.contractOrgLocationId "
 					+ "left join fetch contracts.contactUser "
 					+ "left join fetch contracts.approverUser "
+					+ "left join fetch contracts.candidate "
 					+ "where contracts.orgLocationId.id = :orgLocationId and contracts.orgRelations.id =:orgRelationId and contracts.contractType like '%"+responderType+"%' "+userRoleCondition+"and contracts.templateSubmissionStatus IN (:contractStatus)";
 			if(userRoleName != null && "ROLE_ADMIN".equalsIgnoreCase(userRoleName) || "ROLE_SOURCELEAD_ADMIN".equalsIgnoreCase(userRoleName)){
 				ContractsList = session.createQuery(query).setLong("orgLocationId", orgLocations.getId()).setLong("orgRelationId", orgRelationId).setParameterList("contractStatus", statusList).setCacheable(true).list();
@@ -510,6 +511,7 @@ public class ContractsTemplateDaoImpl implements ContractsTemplateDao{
 					+ "left join fetch contracts.contractOrgLocationId "
 					+ "left join fetch contracts.contactUser "
 					+ "left join fetch contracts.approverUser "
+					+ "left join fetch contracts.candidate "
 					+ "where contracts.orgLocationId.id = :orgLocationId and contracts.orgRelations.id =:orgRelationId and contracts.contractType like '%"+responderType+"%' "+userRoleCondition;
 			if(userRoleName != null && "ROLE_ADMIN".equalsIgnoreCase(userRoleName) || "ROLE_SOURCELEAD_ADMIN".equalsIgnoreCase(userRoleName)){
 				ContractsList = session.createQuery(query).setLong("orgLocationId", orgLocations.getId()).setLong("orgRelationId", orgRelationId).setCacheable(true).list();
@@ -549,5 +551,39 @@ public class ContractsTemplateDaoImpl implements ContractsTemplateDao{
 		}
 		return contractsHistory;
 	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Contracts getContractByReqSubmissionSowTypeAndOrgLocId(Long reqSub, OrgLocations loginOrgLocation, String contractType)
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		List<Contracts> contracts = new ArrayList<Contracts>();
+		if(null != reqSub){
+			contracts = session.createQuery("from Contracts contracts where contracts.requirementSubmission.id =:reqSub and contracts.contractType = :contractType and contracts.orgLocationId.id = :orgLocationId " )
+			.setString("contractType", contractType).setLong("orgLocationId", loginOrgLocation.getId() ).setLong("reqSub", reqSub ).setCacheable(true).list();
+		}
+		if (contracts.size() > 0) {
+			return contracts.get(0);
+		} else {
+			return null;
+		}
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Boolean getVendorMsaCreatedOrNot(Long vendorLocationId, Long loginLocatonId)
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		List<Contracts> contracts = null;
+		contracts = session.createQuery("from Contracts contracts where contracts.orgLocationId.id =:loginLocatonId and contracts.contractOrgLocationId.id = :vendorLocationId and contracts.contractType = 'Vendor MSA' and contracts.templateSubmissionStatus <> 'EXPIRED' " )
+				.setLong("loginLocatonId", loginLocatonId).setLong("vendorLocationId", vendorLocationId ).setCacheable(true).list();
+		if (contracts != null && contracts.size() > 0) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	
 
 }

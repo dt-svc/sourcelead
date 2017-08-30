@@ -6,20 +6,6 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 
-<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
-<link href="resources/css/jquery-ui.css" rel="stylesheet">
-<link rel="stylesheet" href="resources/css/chosen.min.css">
-<script src="resources/js/jquery-fun.js"></script> 
-<script src="resources/js/formvalidator.js"></script>
-<script src="resources/js/chosen.jquery.min.js"></script> 
-<script src="resources/js/bootstrap-select.min.js"></script>
-<link rel="stylesheet" href="resources/css/bootstrap-select.min.css">
-<!-- these files for autocomplete with tagit -->
-<link href="resources/css/jquery-tagit.css" rel="stylesheet">
-<link href="resources/css/bootstrap-colorpicker.min.css" rel="stylesheet">
-<script src="resources/js/tag-it.js" type="text/javascript" charset="utf-8"></script>
-<script src="resources/js/bootstrap-colorpicker.min.js"></script> 
-<script src="resources/js/tag-it.min.js" type="text/javascript" charset="utf-8"></script>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 <style type="text/css">
@@ -37,6 +23,7 @@ window.onload = function () {
 	editOrgLocationAuto('orgEditState','orgEditCity','orgEditZipCode');
 	getAllCountries();
 	colourpicker();
+	orgShortCode();
  };
 </script>
 
@@ -49,6 +36,8 @@ window.onload = function () {
 <script>
 	$(document).ready(function() {
 		document.getElementById("orgSettings_form").reset();
+		zipcodeMask('${SourceLeadWeb_country}','orgEditZipCode');
+		
 	});
 </script>
 
@@ -188,19 +177,17 @@ function cancelOrgImg(){
 				  <div class="profile-img-container" style="position:relative;">
 				   <img id="orgImage" onerror="predefineOrgImage(this);" src="<c:url value='/displayOrgImage/${SourceLeadWeb_orgCode}'/>" alt="Org Image" class="comp-image img-responsive">
 				  
-			    <c:if test="${SourceLeadWeb_isSuperAdmin == 'Y'}">
 				  <div class="btn-group uploadfile">
-				  <button type="button" class="btn btn-sm btn-primary">
-				  <i class="fa fa-upload"></i></button>
-				   <label class="btn btn-sm btn-primary">
-                    Upload / Change<input type="file" name="file" id="uploadedImage"  onchange="loadFile(event)" style="visibility:hidden;height:0;width:10px;overflow:hidden" >
-                  </label>
- 				  <c:if test="${!empty SourceLeadWeb_org.fileContentType}">
-	                  <button type="button" class="btn btn-sm btn-danger" onclick="deleteImage()">
-					  <i class="fa fa-trash"></i></button>
-				  </c:if>
+					  <button type="button" class="btn btn-sm btn-primary">
+					  <i class="fa fa-upload"></i></button>
+					   <label class="btn btn-sm btn-primary">
+	                    Upload / Change<input type="file" name="file" id="uploadedImage"  onchange="loadFile(event)" style="visibility:hidden;height:0;width:10px;overflow:hidden" >
+	                  </label>
+	 				  <c:if test="${!empty SourceLeadWeb_org.fileContentType}">
+		                  <button type="button" class="btn btn-sm btn-danger" onclick="deleteImage()">
+						  <i class="fa fa-trash"></i></button>
+					  </c:if>
 				  </div>
-			   </c:if>
 				  </div>
 				  </div>
 				  <p class="text-danger small" style="font-size: 11px; display: none;" id="errorImage" >Invalid Image/Size</p>
@@ -246,33 +233,6 @@ function cancelOrgImg(){
 								<input type="text"  class="form-control" name="zipcode" id="orgEditZipCode" field-name="Zip" data-validation="validate_int validate_Space validate_length length5-10" data-validation-optional="true" value="${SourceLeadWeb_orgLocations.zipCode}" />
 								</div>
 							</div>
-								
-								
-								
-							<%-- <div class="form-group">
-								<label class="col-md-3">Country</label>
-								<div class="col-md-9">
-								 <select class="chosen-select form-control select-bg" name="country" id="country" field-name="Country" readonly="readonly" >
-				                 </select>
-								</div>
-							</div>
-							 <input type="hidden" id="existingCountry" value="${SourceLeadWeb_country}"/>
-							
-							 <div class="form-group">
-								<label class="col-md-3">State</label>
-								<div class="col-md-9">
-								     <select  class="chosen-select form-control" name="state" id="state" field-name="State"  > </select>
-								</div>
-							 </div>
-							 <input type="hidden" id="existingState" value="${SourceLeadWeb_orgLocations.state}">
-							
-							<div class="form-group">
-								<label class="col-md-3">City</label>
-								<div class="col-md-9">
-								     <select  class="chosen-select form-control" name="city" id="city" field-name="City"  ></select>
-								</div>
-							</div> --%>
-							
 							
 							<div class="form-group">
 							<label class="col-md-3">Address</label>
@@ -301,14 +261,34 @@ function cancelOrgImg(){
 							</div>
 							</div>
 							
+							<div class="form-group">
+							<label class="col-md-3">Date Format</label>
+							<div class="col-md-9">
+							
+							 <select class="chosen-select form-control" id="dateFormat1" name="dateFormat1">
+							 <option ${SourceLeadWeb_orgLocations.dateFormat  == 'dd-MM-yyyy' ? 'selected' : ''} value="dd-MM-yyyy">dd-MM-yyyy</option>
+							 <option ${SourceLeadWeb_orgLocations.dateFormat  == 'MM-dd-yyyy' ? 'selected' : ''} value="MM-dd-yyyy">MM-dd-yyyy</option>
+							 <option ${SourceLeadWeb_orgLocations.dateFormat  == 'yyyy-dd-MM' ? 'selected' : ''} value="yyyy-dd-MM">yyyy-dd-MM</option>
+							 <option ${SourceLeadWeb_orgLocations.dateFormat  == 'yyyy-MM-dd' ? 'selected' : ''} value="yyyy-MM-dd">yyyy-MM-dd</option>
+							 </select>
+							</div>
+							</div>
+							
 							<input type="hidden" id="existingCity" value="${SourceLeadWeb_orgLocations.city}" >
 				   </div>
 				
 					<div class="col-md-5">
 						<div class="form-group">
-							<label class="col-md-3">Website</label>
-							<div class="col-md-9">
-							<input type="text" readonly="readonly" class="form-control" value="${SourceLeadWeb_website}">
+							<label class="col-md-3">Website<span class="text-danger">&nbsp;*</span></label>
+							<div class="col-md-9" id="websiteDiv">
+							<c:if test="${SourceLeadWeb_website == null}">
+							   <input type="text"  class="form-control"  onblur="validateOrgLocationWebsite();" data-validation="required" field-name="Website" id="website"  name="website" value="${SourceLeadWeb_website}">
+							</c:if>
+							
+							<c:if test="${SourceLeadWeb_website != null}">
+							   <input type="text" readonly="readonly" class="form-control" name="website" value="${SourceLeadWeb_website}">
+							</c:if>
+							
 							</div>
 							</div>
 						<div class="form-group mt">
@@ -425,6 +405,20 @@ function cancelOrgImg(){
                             </div>
                 			<div id="coolingOffPeriodDiv"></div>            
             			</div>
+            			
+            			
+                        <div class="tab-content panel-body">
+                            <div class="clearfix mb">
+                                <div class="pull-left">
+                                    <h4 id="orgShortCodeHeading">Organization Short Code</h4>
+                                    <div id="orgShortCodeLoading"></div>
+                                </div>
+                            </div>
+                			<div class="form-group">
+                			<label class="col-md-3">Organization Short Code<i class="" title="System Generated Id"></i></label>  
+                			<div class="col-md-4"><input type="text" name="generatedUserId" value="${generatedUserId}" id="generatedUserId" class="form-control input-sm" readonly></div>
+                			</div>         
+            			</div>            			
         			</div>
     			</div>
     
@@ -731,6 +725,7 @@ function configCoolingOff(){
 					result = result + '</select>';
 					result = result + '</div>';
 					result = result + '</div>';
+					
 					
 					result = result + '<div class="pull-right">';
 					result = result + '<input type="submit" value="Save" id="saveCoolingOff_button" class="btn btn-primary mr">';
@@ -1117,7 +1112,6 @@ var validationSettings = {
          $('body').on('submit', '#signature_form', function(e){
         	  if ($(this).validate(false, validationSettings)){
         		    e.preventDefault(); 
-	          		
         		    var sourceleadUrl = '${sourceleadUrl}';
         			var frm = $('#signature_form').serializeFormJSON();
         			var con = JSON.stringify(frm);
@@ -1326,9 +1320,15 @@ function getOrgLocationDetails(orgLocationId){
     		    var json = JSON.parse(data);
     	        var result = '';
     	        var editPrimaryUser = '';
+    	        var website = '';
     	        
     	        if(json.orglocationUserStatus == 'NOT_LOGGEDIN'){
     	        	editPrimaryUser = '<a id="edit-user" href="javascript:editPrimaryUser('+orgLocationId+');"><i class="fa fa-edit" title="Edit Contact Details"></i></a>';
+    	        }
+    	        if(json['website'] != null && json['website'] != '' && json['website'] != 'undefined'){
+    	        	website = json['website'];
+    	        }else{
+    	        	website = "-------";
     	        }
     	        
     	        result = result +'<div class="col-xs-12 col-sm-3 col-md-3">';
@@ -1357,7 +1357,7 @@ function getOrgLocationDetails(orgLocationId){
 	    								 
 	    	        result = result +'<div class="form-group">';
 	    	        result = result +'<label class="col-md-4">Website :</label>';
-	    	        result = result +'<p class="tbldata-dotdot-me">'+json['website']+'</p>';
+	    	        result = result +'<p class="tbldata-dotdot-me">'+website+'</p>';
 	    	        result = result +'</div>';
 	    	        
 	    	        result = result +'<div class="form-group">';
@@ -1390,6 +1390,11 @@ function getOrgLocationDetails(orgLocationId){
 	    	        result = result +'<div class="form-group">';
 	    	        result = result +'<label class="col-md-4">Time Zone :</label>';
 	    	        result = result +'<p class="tbldata-dotdot-me">'+json['timeZoneName']+'</p>';
+	    	        result = result +'</div>';
+	    	        
+	    	        result = result +'<div class="form-group">';
+	    	        result = result +'<label class="col-md-4">Date Format :</label>';
+	    	        result = result +'<p class="tbldata-dotdot-me">'+json['dateFormat']+'</p>';
 	    	        result = result +'</div>';
     	        
     	        result = result +'</div>';
@@ -1746,6 +1751,15 @@ function createOrg(){
 	            result = result +'</div>';
 	            result = result +'</div>';
 	            
+	            result = result +'<div class="form-group">';
+	            result = result +'<label class="col-md-3">Date Format</label>';
+	            result = result +'<div class="col-md-9">';
+	            result = result +'<select class="chosen-select form-control" data-placeholder="Date Format" field-name="Date Format" data-validation="required" id="dateFormat" name="dateFormat">';
+	            result = result +'</select>';
+	            //result = result +'<span class="hidden">Time Zone</span>';
+	            result = result +'</div>';
+	            result = result +'</div>';
+	            
           
 	            
         
@@ -1900,6 +1914,18 @@ function getLocationCities(){
 function getTimezonesList(){
 	var sourceleadUrl ='${sourceleadUrl}';
 	var country = $('#orgSetCountry').val();
+	$("#dateFormat").empty();
+	if(country == "India"){
+		$('#dateFormat').append("<option value='dd-MM-yyyy' selected>dd-MM-yyyy</option>");
+		$('#dateFormat').append("<option value='MM-dd-yyyy'>MM-dd-yyyy</option>");
+		$('#dateFormat').append("<option value='yyyy-dd-MM'>yyyy-dd-MM</option>");
+		$('#dateFormat').append("<option value='yyyy-MM-dd'>yyyy-MM-dd</option>");
+	}else{
+		$('#dateFormat').append("<option value='MM-dd-yyyy' selected>MM-dd-yyyy</option>");
+		$('#dateFormat').append("<option value='dd-MM-yyyy'>dd-MM-yyyy</option>");
+		$('#dateFormat').append("<option value='yyyy-dd-MM'>yyyy-dd-MM</option>");
+		$('#dateFormat').append("<option value='yyyy-MM-dd'>yyyy-MM-dd</option>");
+	}
 	 $.ajax({
 	    	type: "POST",
 	    	url : sourceleadUrl+"/getTimezonesList?${_csrf.parameterName}=${_csrf.token}", 
@@ -1974,6 +2000,52 @@ function validateCompanyName(){
 		   }); 
 		 
 	 }
+}
+</script>
+
+
+<script type="text/javascript">
+function validateOrgLocationWebsite (){
+      var website = document.getElementById("website").value; 
+     var sourceleadUrl ='${sourceleadUrl}';
+     var sourceleadBLockedwebsites ='${sourceLeadBlockedSocialDomains}';
+	 $('input#website').removeAttr( "record-exist record-exist-errormsg");
+	 if(website != null && website != ''){
+		
+		 $("#register_button").attr("disabled", "disabled");
+		 $( "#register_button" ).addClass('button').val('Processing..');
+			 $.ajax({
+				    type: "GET",
+       	            url: sourceleadUrl+"/ws/validateOrgWebsite?website="+website+"&sourceleadBLockedwebsites="+sourceleadBLockedwebsites,
+			        success: function(data) {
+			        	 var result = data;
+			        		if (result == "Website Duplicated" || result == "Invalid Website") {
+		        			//existed website
+		    	    		$('#websiteDiv').find('p.jquery_form_error_message').remove(); 
+		    	    		$('input#website').attr('class','error form-control');
+		    	    		$("input#website").closest('b').after("<p class='jquery_form_error_message'> "+website+" "+result+"</p>");
+		    				$('input#website').attr('record-exist','yes');
+		    				$('input#website').attr('record-exist-errorMsg',website+' '+result+''); 
+		    				$( "#save_button" ).addClass('sign_btn').val('Register');
+		    				$("#save_button").removeAttr("disabled");
+			        	}
+			        	else{
+			        		//New WebSite
+			        		$("#register_button").removeAttr("disabled");
+				    		$('input#website').removeAttr( "class record-exist record-exist-errormsg");
+							$('#websiteDiv').find('p.jquery_form_error_message').remove();
+							$('input#website').attr('class','valid form-control');
+							$( "#save_button" ).removeAttr("style");
+							$( "#save_button" ).addClass('sign_btn').val('Register');
+							$( "#save_button" ).click(function() {
+							 if ($(this).validate(false, validationSettings)){
+							 }
+							});
+			        	}  
+			       },
+			        
+		   }); 
+	}
 }
 </script>
 

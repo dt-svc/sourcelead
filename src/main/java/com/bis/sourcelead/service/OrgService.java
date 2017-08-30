@@ -4,8 +4,8 @@ import java.util.List;
 
 import org.springframework.web.multipart.MultipartFile;
 
+import com.bis.sourcelead.dto.UserDTO;
 import com.bis.sourcelead.entity.Org;
-import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.form.OrgSettings;
 
 public interface OrgService {
@@ -46,6 +46,8 @@ public interface OrgService {
 	public Org getOrgByOrgName(String orgName);
 	
 	public Boolean isLoginUserIsSuperAdmin(Long userId,Long orgId) throws Exception;
+
+	public List<UserDTO> getUserListForOrgChart(Long orgLocationId) throws Exception;
 
 
 }

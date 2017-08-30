@@ -41,6 +41,7 @@ import com.bis.sourcelead.service.TimesheetSubmissionsDocumentsService;
 import com.bis.sourcelead.service.TimesheetSubmissionsService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.service.impl.ExportTimesheetEntriesImpl;
+import com.bis.sourcelead.web.LoginSessionController;
 import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.Element;
@@ -122,17 +123,17 @@ public class TimeSheetPdfUtil {
      */
 	public File exportTimesheetPdf(ProjectMembers projectMember, String frequencyStartDate,String frequencyEndDate, OrgLocations orgLocations) throws Exception {
 
-		DateFormat format = Constants.DF_DMY;
+		//DateFormat format = LoginSessionController.DATEFORMAT;
 		Map<String,java.util.List<TimesheetHours>> map = new HashMap();
 		Map<String,Date> weekDates = new HashMap<>();
 		
 		File file = null;
 		
-		Date employeeStartDate = format.parse(frequencyStartDate.replaceAll("/", "-"));
-		Date employeeEndDate = format.parse(frequencyEndDate.replaceAll("/", "-"));
+		Date employeeStartDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),frequencyStartDate.replaceAll("/", "-"));
+		Date employeeEndDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),frequencyEndDate.replaceAll("/", "-"));
 		
 		StringBuilder sb = new StringBuilder();
-		sb.append(projectMember.getEmployee().getUser().getFirstName()).append("_").append(format.format(new Date()));
+		sb.append(projectMember.getEmployee().getUser().getFirstName()).append("_").append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),new Date()));
 		file = File.createTempFile(sb.toString(),".pdf");
 		file.setReadable(true);
 		
@@ -150,7 +151,7 @@ public class TimeSheetPdfUtil {
 		Submission_Status submissionStatus = sah.getSubmissionStatus();
 		String submissionStatusStr = submissionStatus.getValue();
 		
-		Map<String,String> tabFrequency = timesheetFrequencyGeneratorUtil.getTabFrequencyListFromProjectInvoiceFrequency(frequencyStartDate, frequencyEndDate);
+		Map<String,String> tabFrequency = timesheetFrequencyGeneratorUtil.getTabFrequencyListFromProjectInvoiceFrequency(frequencyStartDate, frequencyEndDate,orgLocations.getDateFormat());
 		if(tabFrequency != null && !tabFrequency.isEmpty()){
 			Float billableHours = 0f;
 			 Float nonBillableHours =  0f;
@@ -159,8 +160,8 @@ public class TimeSheetPdfUtil {
 				 String key = entry.getKey();
 			     String value = entry.getValue();
 			     
-				 Date weekStartDate = format.parse(key.replaceAll("/", "-"));
-				 Date weekEndDate = format.parse(value.replaceAll("/", "-"));
+				 Date weekStartDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),key.replaceAll("/", "-"));
+				 Date weekEndDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),value.replaceAll("/", "-"));
 				 
 				 java.util.List<TimesheetHours> hoursList = new ArrayList<>();
 				 int column = 0;
@@ -192,23 +193,23 @@ public class TimeSheetPdfUtil {
 				 Long satTotHours = 0L;
 				 Long sunTotHours = 0L;
 				 
-				 int dayOfTheDateWithStartDate = CalendarUtil.getDayOfTheDate(format.parse(key));
+				 int dayOfTheDateWithStartDate = CalendarUtil.getDayOfTheDate(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),key));
 		    		switch (dayOfTheDateWithStartDate) {
-		    	        case 1:  weekMondayDate = CalendarUtil.getPreviousDateByDecrementor(key,6);
+		    	        case 1:  weekMondayDate = CalendarUtil.getPreviousDateByDecrementor(key,6,orgLocations.getDateFormat());
 		    	                 break;
-		    	        case 2:  weekMondayDate = CalendarUtil.getPreviousDateByDecrementor(key,0);
+		    	        case 2:  weekMondayDate = CalendarUtil.getPreviousDateByDecrementor(key,0,orgLocations.getDateFormat());
 		    	                 break;
-		    	        case 3:  weekMondayDate = CalendarUtil.getPreviousDateByDecrementor(key,1);
+		    	        case 3:  weekMondayDate = CalendarUtil.getPreviousDateByDecrementor(key,1,orgLocations.getDateFormat());
 		    	             	 break;
-		    	        case 4:  weekMondayDate = CalendarUtil.getPreviousDateByDecrementor(key,2);
+		    	        case 4:  weekMondayDate = CalendarUtil.getPreviousDateByDecrementor(key,2,orgLocations.getDateFormat());
 		    	            	 break;
-		    	        case 5: weekMondayDate = CalendarUtil.getPreviousDateByDecrementor(key,3);
+		    	        case 5: weekMondayDate = CalendarUtil.getPreviousDateByDecrementor(key,3,orgLocations.getDateFormat());
 		    	            	 break;
-		    	        case 6:  weekMondayDate = CalendarUtil.getPreviousDateByDecrementor(key,4);
+		    	        case 6:  weekMondayDate = CalendarUtil.getPreviousDateByDecrementor(key,4,orgLocations.getDateFormat());
 		    	              	 break;
-		    	        case 7: weekMondayDate = CalendarUtil.getPreviousDateByDecrementor(key,5);
+		    	        case 7: weekMondayDate = CalendarUtil.getPreviousDateByDecrementor(key,5,orgLocations.getDateFormat());
 		    	             	 break;
-		    	        default:   weekMondayDate = CalendarUtil.getPreviousDateByDecrementor(key,0);
+		    	        default:   weekMondayDate = CalendarUtil.getPreviousDateByDecrementor(key,0,orgLocations.getDateFormat());
 		    	                break;
 		           }
 		    		
@@ -312,7 +313,7 @@ public class TimeSheetPdfUtil {
 					 for (Map.Entry<String, java.util.List<TimesheetHours>> entry1 : map.entrySet())
 				        {
 						 java.util.List<String[]> innerTableArrayData = new ArrayList<String[]>();
-					       String [] weekDayDate = getWeekDayDates(weekMondayDate);
+					       String [] weekDayDate = getWeekDayDates(weekMondayDate,orgLocations.getDateFormat());
 						    innerTableArrayData.add(weekDayDate);
 				        	 table1.addCell(entry1.getKey());
 				        	 
@@ -421,14 +422,14 @@ public class TimeSheetPdfUtil {
 		return file;
 	}
 
-	private String[] getWeekDayDates(String mondayDate) throws ParseException {
+	private String[] getWeekDayDates(String mondayDate,String dateFormat) throws ParseException {
 //			String mondayDate = weekMondayDate;
-			String tuesDayDate = CalendarUtil.getNextDate(mondayDate);
-			String wedDayDate = CalendarUtil.getNextDate(tuesDayDate);
-			String thusDayDate = CalendarUtil.getNextDate(wedDayDate);
-			String friDayDate = CalendarUtil.getNextDate(thusDayDate);
-			String satDayDate = CalendarUtil.getNextDate(friDayDate);
-			String sunDayDate = CalendarUtil.getNextDate(satDayDate);
+			String tuesDayDate = CalendarUtil.getNextDate(mondayDate,dateFormat);
+			String wedDayDate = CalendarUtil.getNextDate(tuesDayDate,dateFormat);
+			String thusDayDate = CalendarUtil.getNextDate(wedDayDate,dateFormat);
+			String friDayDate = CalendarUtil.getNextDate(thusDayDate,dateFormat);
+			String satDayDate = CalendarUtil.getNextDate(friDayDate,dateFormat);
+			String sunDayDate = CalendarUtil.getNextDate(satDayDate,dateFormat);
 			
 			 
 			String innerDateValues[] = { "", mondayDate, tuesDayDate, wedDayDate, thusDayDate, friDayDate,satDayDate, sunDayDate, "" };

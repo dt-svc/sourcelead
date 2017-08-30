@@ -14,12 +14,16 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateEmployers;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CandidateEmployersService;
 import com.bis.sourcelead.service.CandidateService;
+import com.bis.sourcelead.service.OrgLocationService;
+import com.bis.sourcelead.service.UserService;
+import com.bis.sourcelead.util.CandidateActivityCommonUtil;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
@@ -48,6 +52,15 @@ public class CandidateEmployersRestController {
 	
 	@Autowired
 	private CandidateService candidateService;
+	
+	@Autowired
+	private UserService userService;
+	
+	@Autowired
+	private OrgLocationService orgLocationService;
+	
+	@Autowired
+	private CandidateActivityCommonUtil candidateActivityCommonUtil;
 	
 	
 
@@ -83,7 +96,8 @@ public class CandidateEmployersRestController {
 		JSONObject jsonObject = new JSONObject(json1);
 	    candidateEmployersService.storeCandidateEmployers(jsonObject,users,loginOrgLocation,candidateId);
 		Candidate candidate = candidateService.getCandidateByCandidateId(candidateId);
-		return json;
+		Integer percentage = candidateService.getCandidatePercentage(candidate,loginOrgLocation);
+		return percentage.toString();
 	}
 	
 	/**
@@ -148,15 +162,20 @@ public class CandidateEmployersRestController {
 	
 	@PreAuthorize("hasAnyRole('ROLE_VIEW_DELETE_EMPLOYEER','ROLE_CROWDSOURCING_PROFILE','ROLE_CROWDSOURCING_CANDIDATES','ROLE_VIEW_DELETE_ASSOCIATE_EMPLOYER')")
 	@RequestMapping(value = "/removeCandidateEmployerBycandidateIdandCandidateEmployerID")
-	public String removeCandidateEmployerBycandidateIdandCandidateEmployerID(@RequestParam(value = "candidateId", required = false) Long candidateId,@RequestParam(value = "candidateemployerId", required = false) Long candidateemployerId,HttpServletRequest request) throws Exception {
+	public String removeCandidateEmployerBycandidateIdandCandidateEmployerID(@RequestParam(value = "loginUserId", required = false) Long loginUserId, @RequestParam(value = "orgLocationId", required = false) Long orgLocationId, @RequestParam(value = "candidateId", required = false) Long candidateId,@RequestParam(value = "candidateemployerId", required = false) Long candidateemployerId) throws Exception {
 
-		String resultJson;
-
+		//OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		User user = userService.getUserById(loginUserId);
+		OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
+		StringBuffer activitySummary = new StringBuffer();
 		CandidateEmployers  candidatesEmployersList = candidateEmployersService.removeCandidateEmployerBycandidateIdandCandidateEmployerID(candidateId, candidateemployerId);
-		 resultJson = commonUtil.toJSON(candidatesEmployersList);
-		//SourceLeadSessionManager.setSessionAttribute(request, "deleteExep", "Employer deleted");
-
-		 return resultJson;
+		Candidate candidate =candidateService.getCandidateById(candidateId);
+			activitySummary.append("Employer").append(" : ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidatesEmployersList.getName()).append(Constants.NEW_VALUE_TAG_END);
+			candidateActivityCommonUtil.storeCandidateEmployersHistory(candidatesEmployersList, user);
+			candidateActivityCommonUtil.storeCandidateActivity(user, orgLocations, candidatesEmployersList.getCandidateId(), "", Constants.CANDIDATE_DELETED_EMPLOYER, activitySummary.toString(), "CANDIDATE");
+			
+		 Integer percentage = candidateService.getCandidatePercentage(candidate,orgLocations);
+		 return percentage.toString();
 	}
 	
 	

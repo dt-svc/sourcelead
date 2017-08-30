@@ -1,7 +1,6 @@
 <meta http-equiv="Pragma" content="private">
 <meta http-equiv="Cache-Control" content="private">
 <meta http-equiv="Expires" content="0">
-<script src="resources/js/formvalidator.js"></script>
  
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
@@ -230,7 +229,7 @@ function editCandidate(candidateId){
 							result = result + '</div>';
 							
 							result = result + '<div class="col-md-6 custom-fields mt10">';
-							result = result + '<input class="form-control input-sm" id="pfZipCode" name="zipcode" value="'+zipCode+'" placeholder="Enter your Zip code" type="text" field-name="Address" data-validation="validate_Space validate_length length2-250" data-validation-optional="true"></input>';
+							result = result + '<input class="form-control input-sm" id="pfZipCode" name="zipcode" value="'+zipCode+'" placeholder="Enter your Zip code" type="text" field-name="Address" data-validation="validate_Space validate_length length2-250" data-validation-optional="true" readonly></input>';
 							result = result + '</div>';
 							
 
@@ -476,7 +475,7 @@ function editCandidate(candidateId){
 --%>
 <script>
 function professionalProfile(candidateId){
-	  var sourceleadUrl = '${sourceleadUrl}';
+	var sourceleadUrl = '${sourceleadUrl}';
 	  var skillsList = '${skillsList}'; 
 	  
 	  $.ajax({
@@ -867,17 +866,20 @@ function professionalProfile(candidateId){
 	 var skillName = $("#skillName").val();
 	 var jsonData = encodeURIComponent(skillName);
 	 var sourceleadUrl ='${sourceleadUrl}';
+	 var loginUserId = '${SourceLeadWeb_userId}';
+	 var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 		 if(skillName != null && skillName != '' && skillName !='undefined'){
-			 Urlcheck = sourceleadUrl+"/saveOrUpdateOnlySkillBycandidateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&skillName="+jsonData
+			 Urlcheck = sourceleadUrl+"/saveOrUpdateOnlySkillBycandidateId?${_csrf.parameterName}=${_csrf.token}&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&skillName="+jsonData
 		 }else{
-			 Urlcheck = sourceleadUrl+"/saveOrUpdateOnlySkillBycandidateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&skillName="+""
+			 Urlcheck = sourceleadUrl+"/saveOrUpdateOnlySkillBycandidateId?${_csrf.parameterName}=${_csrf.token}&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&skillName="+""
 		 }
-		 
+		 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		 $.ajax({  
 	          type : "POST",
 	          url: Urlcheck,        
 	          success :function(data) {
 	        	  getProfessionalInfo();
+	        	  $("#loading").removeAttr('style');
 	        },
 	          
 	     }); 
@@ -1447,7 +1449,7 @@ function makeAsPublicVisibility(){
 		$("#saveVisaBtnSpan").append(result);
 		$("#saveVisaBtnSpan").show();
 		
-		//Adding Customized Visa to the list
+		/* //Adding Customized Visa to the list
         var select, chosen;
 	    select = $("#visaName");
 	    select.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add New Visa:' });
@@ -1479,7 +1481,7 @@ function makeAsPublicVisibility(){
 			                }
 					       
 		    	         }
-	    	});
+	    	}); */
 	    
 	    
 	    //Adding Customized Skills to the list
@@ -1509,20 +1511,20 @@ function makeAsPublicVisibility(){
 	 var visaName = $("#visaName").val();
 	 var jsonData = encodeURIComponent(visaName);
 	 var sourceleadUrl ='${sourceleadUrl}';
+	 var loginUserId = '${SourceLeadWeb_userId}';
+	 var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	 if(visaName != null && visaName != '' && visaName !='undefined'){
-		 Urlcheck = sourceleadUrl+"/saveOrUpdateOnlyVisaBycandidateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&visaName="+jsonData
+		 Urlcheck = sourceleadUrl+"/saveOrUpdateOnlyVisaBycandidateId?${_csrf.parameterName}=${_csrf.token}&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&visaName="+jsonData
 	 }else{
-		 Urlcheck = sourceleadUrl+"/saveOrUpdateOnlyVisaBycandidateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&visaName="+""
+		 Urlcheck = sourceleadUrl+"/saveOrUpdateOnlyVisaBycandidateId?${_csrf.parameterName}=${_csrf.token}&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&visaName="+""
 	 }
-	 
+	 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	 $.ajax({  
          type : "POST",
          url: Urlcheck,        
          success :function(data) {
-              if(data != null && data != 'undefined' && data != "" && data == "success"){
-           	  //candidateProfile(candidateId);
-            	  candidateQuickViewProfile(candidateId);
-              }
+        	  getProfessionalInfo();
+        	  $("#loading").removeAttr('style');
        },
          
     }); 

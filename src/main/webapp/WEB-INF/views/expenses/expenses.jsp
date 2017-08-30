@@ -27,6 +27,7 @@
 	       		}else if("rejected" == $("#countType").val()){
 	       			$(":checkbox[value=REJECTED]").prop("checked",true);
 	       		}
+	       		$("#temp").val("temp");
 			}else{
 				getExpensesList();
 			}
@@ -43,9 +44,8 @@
         </section>
         
 		<!-- Timesheet -->
-
+<div id="emptyPopup"></div>
 <div class="timesheet_out">
-
 <div class="project_wrap">
 	<div class="timesheet_head">
         	<ul>
@@ -77,7 +77,7 @@
                <sec:authorize access="hasAnyRole('ROLE_ADD_MY_EXPENSES')">
 			   		<li><a href="<c:url value='/addExpense'/>"><i class="fa fa-plus"></i>Add Expenses</a></li>
 			   </sec:authorize>	
-			   <li title="Export"><a  id="export-pop"><i class="glyphicon glyphicon-export expIcon"></i>&nbsp;</a>
+			   <li title="Export"  id="hideExportExpenseLink"><a  id="export-pop"><i class="glyphicon glyphicon-export expIcon"></i>&nbsp;</a>
 					    <div id="exportPop" class="user_exp">
 						   <ul class="ul_padding">
 						   <li onclick="exportToPdf('pdf');" title="PDF"><i class="fa fa-file-pdf-o"></i>&nbsp; PDF</li>
@@ -132,11 +132,32 @@ function getExpensesList(){
     {
 		expenseStatus.push($(this).val());
     });
+	var obj = {}
+	obj['expenseStatus']=expenseStatus;
+	obj['startDate']=startDate;
+	obj['endDate']=endDate;
+	obj['userId']='${SourceLeadWeb_user.id}';
+	obj['locationCode']='${SourceLeadWeb_orgLocations.locationCode}';
+	var jsonData= JSON.stringify(obj);
+	
+	 var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
+	  if(locationList.match("yyyy-MM-dd")){
+		  expensesReqListDate = 'YYYY-MM-DD';
+	  }if(locationList.match("dd-MM-yyyy")){
+		  expensesReqListDate = 'DD-MM-YYYY'; 
+	  }if(locationList.match("MM-dd-yyyy")){
+		  expensesReqListDate = 'MM-DD-YYYY'; 
+	  }if(locationList.match("yyyy-dd-MM")){
+		  expensesReqListDate = 'YYYY-DD-MM'; 
+	  }
 	
 	 $.ajax({
-         type : "POST",
-          url: sourceleadUrl+"/getExpensesList?${_csrf.parameterName}=${_csrf.token}&expenseStatus="+expenseStatus+"&startDate="+startDate+"&endDate="+endDate,     
-          success :function(data) {
+		 type : "POST",
+		  data: jsonData,
+  	      contentType : 'application/json; charset=utf-8',
+  	      dataType : 'json',
+          url: sourceleadUrl+"/getExpensesList?${_csrf.parameterName}=${_csrf.token}",     
+          success :function(json) {
         	  var result = "";
 					result = result +" <table id='expensesPagination'>";
 					result = result +"<thead>";
@@ -145,8 +166,8 @@ function getExpensesList(){
 					result = result +"<th>Purpose</th>";
 					result = result +"<th>Project</th>";
 					result = result +"<th>Client</th>";
-					result = result +"<th>Start Date</th>";
-					result = result +"<th>End Date</th>";
+					result = result +"<th>Start Date<br>(<small class='custom-small'>"+expensesReqListDate+"</small>)</th>";
+					result = result +"<th>End Date<br>(<small class='custom-small'>"+expensesReqListDate+"</small>)</th>";
 					result = result +"<th>No of Items</th>";
 					result = result +"<th>Amount</th>";
 					result = result +"<th>Status</th>";
@@ -154,8 +175,7 @@ function getExpensesList(){
 					result = result +"</thead>";
 					result = result +"<tbody>";
 					
-					 if(data !=''){
-						 var json = JSON.parse(data);
+					 if(json !=''){
 			        	  for (var i = 0; i < json.length; i++) { 
 			        		  var report = json[i]; 
 			        		  if(report.expenseId != null && report.expenseId != '' && report.expenseId != 'undefined'){
@@ -168,10 +188,10 @@ function getExpensesList(){
 			        		  }else{
 			        			  purpose = "--";
 			        		  }
-			        		  if(report.projectMemberId != null && report.projectMemberId != '' && report.projectMemberId != 'undefined'){
-			        			  projectMemberId = report.projectMemberId;
+			        		  if(report.projectName != null && report.projectName != '' && report.projectName != 'undefined'){
+			        			  projectName = report.projectName;
 			        		  }else{
-			        			  projectMemberId = "--";
+			        			  projectName = "--";
 			        		  }
 			        		  if(report.clientName != null && report.clientName != '' && report.clientName != 'undefined'){
 			        			  clientName = report.clientName;
@@ -194,7 +214,8 @@ function getExpensesList(){
 			        			  noOfExpenses = "--";
 			        		  }
 			        		  if(report.totalAmount != null && report.totalAmount != '' && report.totalAmount != 'undefined'){
-			        			  totalAmount = report.totalAmount;
+			        			  var  numb = report.totalAmount.toFixed(2);
+			        			  totalAmount = numb;
 			        		  }else{
 			        			  totalAmount = "--";
 			        		  }
@@ -206,7 +227,7 @@ function getExpensesList(){
 								 result = result +"<td><div class='proj_show'><span>"+expenseId+"</span></div></td>";
 								 '</sec:authorize>';
 								 result = result +"<td><div title="+purpose+">"+purpose+"</div></td>";
-								 result = result +"<td><div title="+projectMemberId+">"+projectMemberId+"</div></td>";
+								 result = result +"<td><div title="+projectName+">"+projectName+"</div></td>";
 								 result = result +"<td><div>"+clientName+"</div></td>";
 								 result = result +"<td><div>"+startDateStr+"</div></td>";
 								 result = result +"<td><div>"+endDateStr+"</div></td>";
@@ -217,7 +238,8 @@ function getExpensesList(){
 			        	  }
 		        		  $("#temp").val("temp");
 		        	  }else{
-		        		  /* $("#temp").val(''); */
+		        		   $("#temp").val(''); 
+// 						  $('#hideExportExpenseLink').hide();
 		        	  }
 	        	 
    			
@@ -454,10 +476,21 @@ var sourceleadUrl = '${sourceleadUrl}';
 
 <script>
 	$(function() {
+		var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+		  var finalDateFormatExpenses = '';
+		  if(locationDate.match("yyyy-MM-dd")){
+			  finalDateFormatExpenses = 'yy-mm-dd';
+		  }if(locationDate.match("dd-MM-yyyy")){
+			  finalDateFormatExpenses = 'dd-mm-yy'; 
+		  }if(locationDate.match("MM-dd-yyyy")){
+			  finalDateFormatExpenses = 'mm-dd-yy'; 
+		  }if(locationDate.match("yyyy-dd-MM")){
+			  finalDateFormatExpenses = 'yy-dd-mm'; 
+		  }
 		$('#filterStartDate').datepicker({
 			changeMonth: true,
 			changeYear: true, 
-			dateFormat : 'dd-mm-yy',
+			dateFormat : finalDateFormatExpenses,
 			onSelect : function(selected) {
 				$("#filterEndDate").datepicker("option", "minDate", selected);
 			}
@@ -467,7 +500,7 @@ var sourceleadUrl = '${sourceleadUrl}';
 		$('#filterEndDate').datepicker({
 			changeMonth: true,
 			changeYear: true, 
-			dateFormat : 'dd-mm-yy',
+			dateFormat : finalDateFormatExpenses,
 			onSelect : function(selected) {
 				$("#filterStartDate").datepicker("option", "maxDate", selected);
 			}
@@ -490,8 +523,9 @@ function getEditExpense(eId){
 	window.location.replace(sourceleadUrl+'/addExpense?expenseId='+eId);
 }
 </script>
+
 <script>
-function exportToPdf(type){
+function exportToPdf(type){                                                                        
 	var temp = $("#temp").val();
 	if(temp != null && temp != ''){
 		var sourceleadUrl = '${sourceleadUrl}';
@@ -507,17 +541,27 @@ function exportToPdf(type){
 		var result = "";
 		result = result +"	<div class='project_inn_mask'></div>";
 		result = result +"	   <div id='expensesListDiv' class='remove_user_pop remove_user_pop_a'>";
-		result = result +"		<p>Candidate List is Empty</p>";
+		result = result +"		<p>Expenses List is Empty</p>";
 		result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
-		result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='candidtaeCancel();'><input class='u_can_color' type='button'  value='Cancel' onClick='candidtaeCancel();'></b>";
+		result = result +"		<b href='javascript:void(0)'><input type='button' class='text-center width100percnt' value='Ok' onclick='expensesCancel();'></b>";
 		result = result +"	</div>";
 		$("#emptyPopup").append(result);
 		$("#expensesListDiv").slideDown(200);
 		$(".project_inn_mask").fadeIn(200);
 	}
-	
 }
 </script>
+
+
+
+<script type="text/javascript">
+function expensesCancel(){
+	$("#emptyPopup").empty();
+	$(".project_inn_mask").fadeOut(200);
+}
+</script>
+
+
 <script>
   $("#selector").fadeIn(200);
   $('#selector').delay(2000).fadeOut('slow');
@@ -531,4 +575,3 @@ function exportToPdf(type){
 	       e.stopPropagation();
 	   });        
 </script> 
-<jsp:include page="../masterFooter.jsp" />

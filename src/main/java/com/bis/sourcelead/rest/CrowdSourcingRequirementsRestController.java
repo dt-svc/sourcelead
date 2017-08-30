@@ -24,7 +24,6 @@ import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import javax.ws.rs.PathParam;
 
 import org.apache.commons.lang.StringUtils;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -50,7 +49,6 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 import com.bis.sourcelead.constants.Constants;
-import com.bis.sourcelead.dao.SavedJobsDao;
 import com.bis.sourcelead.elk.index.CampaignIndex;
 import com.bis.sourcelead.elk.index.CandidateIndex;
 import com.bis.sourcelead.elk.index.RequirementIndex;
@@ -63,16 +61,15 @@ import com.bis.sourcelead.entity.ReferContacts;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementInterviewHistory;
 import com.bis.sourcelead.entity.RequirementOfferHistory;
-import com.bis.sourcelead.entity.RequirementOffers;
 import com.bis.sourcelead.entity.RequirementRefer;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.RequirementSubmissionHistory;
-import com.bis.sourcelead.entity.RequirementSubmissionTemplateFields;
 import com.bis.sourcelead.entity.SavedJobs;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.CrowdSourcingUserBankAccountsService;
+import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.ReferContactsService;
 import com.bis.sourcelead.service.RequirementInterviewHistoryService;
 import com.bis.sourcelead.service.RequirementInterviewService;
@@ -87,6 +84,7 @@ import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
+import com.bis.sourcelead.web.LoginSessionController;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
@@ -145,6 +143,8 @@ public class CrowdSourcingRequirementsRestController {
 	
 	@Autowired
 	TimeZoneService timeZoneService;
+	@Autowired
+	OrgLocationService orgLocationService;
 	
 	protected boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
@@ -265,7 +265,7 @@ public class CrowdSourcingRequirementsRestController {
 	   //for jobs filter when clicked on org name 
 		if(postedOrgName != null && !"".equalsIgnoreCase(postedOrgName) && !"undefined".equalsIgnoreCase(postedOrgName)){
 			BoolQueryBuilder postedOrgJobsBuilder = QueryBuilders.boolQuery();
-			postedOrgJobsBuilder.should(QueryBuilders.matchQuery("postedOrg", postedOrgName));
+			postedOrgJobsBuilder.should(QueryBuilders.matchQuery("orgLocationId", postedOrgName));
 			boolQueryBuilder.must(postedOrgJobsBuilder);
 		}
 		 
@@ -316,7 +316,7 @@ public class CrowdSourcingRequirementsRestController {
 	 		    		 if(loginUserRole.equalsIgnoreCase("ROLE_CROWDSOURCING_PROFESSIONAL")){
 	 		    			 RequirementSubmission submission = requirementSubmissionService.getRequirementSubmissionByRequirementIdAndCandidateId(requirementIndex.getRequirementId(), candidateId);
 	 		 	    		   if(null != submission){
-	 		 	    			  requirementIndex.setRequirementAppliedDate(Constants.DF_YMD.format(submission.getCreatedDate()));
+	 		 	    			  requirementIndex.setRequirementAppliedDate(commonUtil.dateStrFromOrgDateFormatter(submission.getOrgLocations().getDateFormat(),submission.getCreatedDate()));
 	 		 	    			  requirementIndex.setSubmissionId(submission.getId());
 	 		 	    		   }
 	 		    		 }else if(loginUserRole.equalsIgnoreCase("ROLE_CROWDSOURCING_RECRUITER")){
@@ -779,7 +779,7 @@ public class CrowdSourcingRequirementsRestController {
 			 	    	   if (requirementType.equalsIgnoreCase("AppliedJobs")){
 			 	    		   RequirementSubmission submission = requirementSubmissionService.getRequirementSubmissionByRequirementIdAndCandidateId(requirementIndex.getRequirementId(), candidateId);
 			 	    		   if(null != submission){
-			 	    			  requirementIndex.setRequirementAppliedDate(Constants.DF_YMD.format(submission.getCreatedDate()));
+			 	    			  requirementIndex.setRequirementAppliedDate(commonUtil.elkDateFormatter(submission.getCreatedDate()));
 			 	    		   }
 			 	    	   }
 			 	    	   
@@ -1031,7 +1031,7 @@ public class CrowdSourcingRequirementsRestController {
 	 
 	    @PreAuthorize("hasAnyRole('ROLE_CROWDSOURCING_CANDIDATES')")
 		@RequestMapping(value = "/getRecruiterSubmittiedInterviews")
-		public RequirementInterviewHistory getRecruiterSubmittiedInterviews(@RequestParam(value = "dateRange", required = true) String dateRange,@RequestParam(value = "userId", required = true) Long userId,@RequestParam(value = "timezoneId", required = false) Long timezoneId) throws Exception {
+		public RequirementInterviewHistory getRecruiterSubmittiedInterviews(@RequestParam(value = "dateRange", required = true) String dateRange,@RequestParam(value = "userId", required = true) Long userId,@RequestParam(value = "timezoneId", required = false) Long timezoneId,@RequestParam(value = "locationCode", required = false) String locationCode) throws Exception {
 			String resultJson;
 			
 			String currentTime = null;
@@ -1039,12 +1039,13 @@ public class CrowdSourcingRequirementsRestController {
   			if(timezoneId != null){
 				timezone = timeZoneService.getTimezone(timezoneId);
 			}
-  			
+  			 OrgLocations orglo = orgLocationService.getOrgLocationsByLocationCode(locationCode);
+  	        SimpleDateFormat formatter = orglo.getLocFullFormDateFormatter();
   			Date startUTCDate = null;
 			Date endUTCDate = null;
 			DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
 			DateFormat END_TZ_DF = new SimpleDateFormat ("yyyy-MM-dd'T'23:59:59");
-			Date startTime =  commonUtil.getDateFormat(dateRange);
+			Date startTime =  commonUtil.orgLocationDateFormat(orglo.getDateFormat(),dateRange);
 			
 			String startTimeTS = Constants.TZ_DF.format(startTime); 
 			String endTimeTS = END_TZ_DF.format(startTime);
@@ -1103,8 +1104,8 @@ public class CrowdSourcingRequirementsRestController {
 			}
 			   DateFormat week_Day = new SimpleDateFormat ("EEEE");
   			   String dayOfweek = week_Day.format(startTime);
-				SimpleDateFormat formatter = new SimpleDateFormat("MMM dd yyyy");
-				String selectedDate  = formatter.format(startTime);
+				//SimpleDateFormat formatter = new SimpleDateFormat("MMM dd yyyy");
+				String selectedDate  = commonUtil.dateStrFromOrgDateFormatter(orglo.getDateFormat(),startTime);
 				RequirementInterviewHistory reqInterviewHistory =  new RequirementInterviewHistory();
 				
 				reqInterviewHistory.setInterviewerList(requirementInterviewList);
@@ -1125,12 +1126,12 @@ public class CrowdSourcingRequirementsRestController {
 	  			if(timezoneId != null){
 					timezone = timeZoneService.getTimezone(timezoneId);
 				}
-	  			
+	  			Candidate candidate = candidateService.getCandidateByCandidateId(candidateId);
 	  			Date startUTCDate = null;
 				Date endUTCDate = null;
 				DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
 				DateFormat END_TZ_DF = new SimpleDateFormat ("yyyy-MM-dd'T'23:59:59");
-				Date startTime =  commonUtil.getDateFormat(dateRange);
+				Date startTime =  commonUtil.orgLocationDateFormat(candidate.getOrgLocationId().getDateFormat(),dateRange);
 				
 				String startTimeTS = Constants.TZ_DF.format(startTime); 
 				String endTimeTS = END_TZ_DF.format(startTime);
@@ -1888,7 +1889,7 @@ public class CrowdSourcingRequirementsRestController {
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 			Date jobPortletsStartDate = null;
 			Date jobPortletsEndDate = null;
-			
+			Candidate candidate = candidateService.getCandidateByCandidateId(candidateId);
 			if(!isNullOrEmpty(startDate) && !isNullOrEmpty(endDate)){
 				//Custom StartDate and EndDate
 				
@@ -1938,7 +1939,7 @@ public class CrowdSourcingRequirementsRestController {
 						}else{
 							rr.setReferredBy(referredUser.append(rr.getReferFromUser().getFirstName()).toString());
 						}
-						rr.setReferredOn(Constants.DF_DMY.format(rr.getCreatedDate()));
+						rr.setReferredOn(commonUtil.dateStrFromOrgDateFormatter(candidate.getOrgLocationId().getDateFormat(),rr.getCreatedDate()));
 						
 					}
 					refer.setReferToMeList(referedToMeJobs);
@@ -1965,7 +1966,7 @@ public class CrowdSourcingRequirementsRestController {
 							}else{
 								rs.setReferredBy(referredUser.append(requirementRefer.getReferFromUser().getFirstName()).toString());
 							}
-							rs.setReferredOn(Constants.DF_DMY.format(requirementRefer.getCreatedDate()));
+							rs.setReferredOn(commonUtil.dateStrFromOrgDateFormatter(candidate.getOrgLocationId().getDateFormat(),requirementRefer.getCreatedDate()));
 							refer.setReferUUID(requirementRefer.getReferUUID());
 						}
 						
@@ -2073,22 +2074,22 @@ public class CrowdSourcingRequirementsRestController {
 		@PreAuthorize("hasAnyRole('ROLE_CROWDSOURCING_REQUIREMENTS')")
 		@RequestMapping(value = "/getReferByMeJobSummaryPortletList", method = RequestMethod.GET)
 		public String getReferByMeJobSummaryPortletList(@RequestParam(value = "startDate", required = false) String startDate,
-				@RequestParam(value = "endDate", required = false) String endDate,@RequestParam(value = "requirementStatus", required = false) String status,HttpServletRequest request) throws Exception {
+				@RequestParam(value = "endDate", required = false) String endDate,@RequestParam(value = "requirementStatus", required = false) String status,@RequestParam(value = "locationCode", required = false) String locationCode,HttpServletRequest request) throws Exception {
 			String resultJson = null;
 			
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			Long candidateId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "candidateId");
-			
+			OrgLocations orglo = orgLocationService.getOrgLocationsByLocationCode(locationCode);
 			RequirementRefer refer = new RequirementRefer();
-			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+			//SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 			Date jobPortletsStartDate = null;
 			Date jobPortletsEndDate = null;
-			
+			Candidate candidate = candidateService.getCandidateByCandidateId(candidateId);
 			if(!isNullOrEmpty(startDate) && !isNullOrEmpty(endDate)){
 				//Custom StartDate and EndDate
 				
-				jobPortletsStartDate =  sdf.parse(startDate);
-				jobPortletsEndDate =  sdf.parse(endDate);
+				jobPortletsStartDate =  commonUtil.orgLocationDateFormat(orglo.getDateFormat(),startDate);
+				jobPortletsEndDate =  commonUtil.orgLocationDateFormat(orglo.getDateFormat(),endDate);
 			
 			}else{
 				
@@ -2103,8 +2104,8 @@ public class CrowdSourcingRequirementsRestController {
 	    	    c.set(Calendar.DATE, lastDate);	
 	    	    endDate = df.format(c.getTime());
 	    	    
-	    	    jobPortletsStartDate =  sdf.parse(startDate);
-	    	    jobPortletsEndDate =  sdf.parse(endDate);
+	    	    jobPortletsStartDate =  commonUtil.orgLocationDateFormat(orglo.getDateFormat(),startDate);
+	    	    jobPortletsEndDate =  commonUtil.orgLocationDateFormat(orglo.getDateFormat(),endDate);
 			}
 			
     		
@@ -2135,11 +2136,11 @@ public class CrowdSourcingRequirementsRestController {
 						rr.setRequirementJobId(rr.getRequirementId().getJobId());
 						rr.setRequirementUUID(rr.getRequirementId().getRequirementUUID());
 						rr.setRequirementState(rr.getRequirementId().getRequirementSubmissionStatus().toString());
-						rr.setReferredOn(Constants.DF_DMY.format(rr.getCreatedDate()));
+						rr.setReferredOn(commonUtil.dateStrFromOrgDateFormatter(orglo.getDateFormat(),rr.getCreatedDate()));
 						
 						/*RequirementRefer requirementRefer = requirementReferService.getAppliedRequirementReferByRequirementIdAndUserId(rr.getRequirementId().getId(), user.getId());
 						if(null != requirementRefer){
-							rr.setReferredOn(Constants.DF_DMY.format(requirementRefer.getCreatedDate()));
+							rr.setReferredOn(LoginSessionController.DATEFORMAT.format(requirementRefer.getCreatedDate()));
 						}*/
 					}
 					refer.setReferByMeJobsList(referedByMeJobsList);
@@ -2163,7 +2164,7 @@ public class CrowdSourcingRequirementsRestController {
 					rs.setSubmissionStatus(rs.getSubmissionStatus());
 					RequirementRefer requirementRefer = requirementReferService.getAppliedRequirementReferByRequirementIdAndUserId(rs.getRequirement().getId(), user.getId());
 					if(null != requirementRefer){
-						rs.setReferredOn(Constants.DF_DMY.format(requirementRefer.getCreatedDate()));
+						rs.setReferredOn(commonUtil.dateStrFromOrgDateFormatter(orglo.getDateFormat(),requirementRefer.getCreatedDate()));
 					}
 					
 				}
@@ -2195,21 +2196,21 @@ public class CrowdSourcingRequirementsRestController {
 		@PreAuthorize("hasAnyRole('ROLE_CROWDSOURCING_REQUIREMENTS')")
 		@RequestMapping(value = "/getRecruiterSubmttedJobSummaryPortletList", method = RequestMethod.GET)
 		public String getRecruiterSubmttedJobSummaryPortletList(@RequestParam(value = "startDate", required = false) String startDate,
-				@RequestParam(value = "endDate", required = false) String endDate,@RequestParam(value = "requirementStatus", required = false) String status,HttpServletRequest request) throws Exception {
+				@RequestParam(value = "endDate", required = false) String endDate,@RequestParam(value = "requirementStatus", required = false) String status,@RequestParam(value = "locationCode", required = false) String locationCode,HttpServletRequest request) throws Exception {
 			String resultJson = null;
 			
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-			
+			OrgLocations orglo = orgLocationService.getOrgLocationsByLocationCode(locationCode);
 			RequirementRefer refer = new RequirementRefer();
-			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+			//SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 			Date jobPortletsStartDate = null;
 			Date jobPortletsEndDate = null;
 			
 			if(!isNullOrEmpty(startDate) && !isNullOrEmpty(endDate)){
 				//Custom StartDate and EndDate
 				
-				jobPortletsStartDate =  sdf.parse(startDate);
-				jobPortletsEndDate =  sdf.parse(endDate);
+				jobPortletsStartDate =  commonUtil.orgLocationDateFormat(orglo.getDateFormat(),startDate);
+				jobPortletsEndDate =  commonUtil.orgLocationDateFormat(orglo.getDateFormat(),endDate);
 			
 			}else{
 				
@@ -2224,8 +2225,8 @@ public class CrowdSourcingRequirementsRestController {
 	    	    c.set(Calendar.DATE, lastDate);	
 	    	    endDate = df.format(c.getTime());
 	    	    
-	    	    jobPortletsStartDate =  sdf.parse(startDate);
-	    	    jobPortletsEndDate =  sdf.parse(endDate);
+	    	    jobPortletsStartDate =  commonUtil.orgLocationDateFormat(orglo.getDateFormat(),startDate);
+	    	    jobPortletsEndDate =  commonUtil.orgLocationDateFormat(orglo.getDateFormat(),endDate);
 			}
 			
     		
@@ -2245,7 +2246,7 @@ public class CrowdSourcingRequirementsRestController {
 					rs.setRequirementUUID(rs.getRequirement().getRequirementUUID());
 					rs.setRequirementJobType(rs.getRequirement().getJobType());
 					rs.setRequirementSubmissionStatus(rs.getRequirement().getRequirementSubmissionStatus().toString());
-					rs.setCreatedDateStr(Constants.DF_DMY.format(rs.getCreatedDate()));
+					rs.setCreatedDateStr(commonUtil.dateStrFromOrgDateFormatter(orglo.getDateFormat(),rs.getCreatedDate()));
 					rs.setSubmissionStatus(rs.getSubmissionStatus());
 					
 				}
@@ -2276,13 +2277,13 @@ public class CrowdSourcingRequirementsRestController {
 		
 		@PreAuthorize("hasRole('ROLE_CROWDSOURCING_REQUIREMENTS')")
 		@RequestMapping(value = "/getCrowdSourcingOfferDetails")
-		public @ResponseBody String getCrowdSourcingOfferDetails(@RequestParam(value="submissionId", required=false) Long submissionId,
+		public @ResponseBody String getCrowdSourcingOfferDetails(@RequestParam(value="submissionId", required=false) Long submissionId,@RequestParam(value="locationCode", required=false) String locationCode,
 				                                              HttpServletRequest request) throws Exception {
 			
 			
 			String resultJson = null;
 			
-			List<RequirementOfferHistory> offersList = requirementOfferHistoryService.getCrowdSourcingOfferDetailsBySubmissionId(submissionId);
+			List<RequirementOfferHistory> offersList = requirementOfferHistoryService.getCrowdSourcingOfferDetailsBySubmissionId(submissionId,locationCode);
 			resultJson = commonUtil.toJSON(offersList);
 			return resultJson ;
 			

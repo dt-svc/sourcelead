@@ -32,6 +32,7 @@ import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgDocuments;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.RequirementOffers;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.States;
 import com.bis.sourcelead.entity.User;
@@ -473,6 +474,64 @@ public class CandidateController {
 		          sos.close();
 
 		} 
+	 
+	 
+	 
+	 @PreAuthorize("hasAnyRole('ROLE_CREATE_CANDIDATE','ROLE_CROWDSOURCING_CANDIDATES')")
+	 @RequestMapping(value = "/candidateSummary")
+		public ModelAndView candidateSummary(@RequestParam(value="candidateId", required=false) String candidateId,HttpServletRequest request) throws Exception {
+		 	logger.debug("Display the candiade page");
+		 	OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			ModelAndView model = new ModelAndView();
+			model.setViewName("candidates/addCandidate");
+			model.addObject("sourceleadUrl", sourceleadUrl);
+			
+			/*Countries countries = countriesService.getCountriesByCountryName(orgLocations.getCountry());
+			if(null != countries){
+            model.addObject("loginCountryName", countries.getName());
+            model.addObject("currencyCode", countries.getCurrency());
+			}
+           
+			List<String> visaList = lookUpDataService.getAllVisaByCategory();
+			model.addObject("visaList", visaList);
+            
+            List<LookUpData> educationsList = lookUpDataService.getLookUpDataByCategory(Constants.EDUCATIONS);
+			model.addObject("educationsList", educationsList);
+			
+			List<LookUpData> skillsList = lookUpDataService.getLookUpDataByCategory(Constants.SKILLS);
+			model.addObject("skillsList", skillsList);*/
+			
+			return model;
+	    }
+	 
+	 
+	 @RequestMapping(value = "/viewInterviewListResumes/{title}", method = RequestMethod.GET)
+	 public void viewInterviewListResumes(@RequestParam(value="resumeUUID", required=false) String resumeUUID,
+	 		@PathVariable(value="title") String title,
+	 		HttpServletResponse response) throws Exception {
+	  
+	 	  CandidateResumes candidateResume = candidateResumesService.getCandidateResumeByResumeUUID(resumeUUID);
+	 	
+	 	 byte[] pdfBytes = null;
+	 		if("application/pdf".equalsIgnoreCase(candidateResume.getFileContentType())){
+	 			pdfBytes = candidateResume.getDocFile();
+	 		}
+	 		else{
+	 			 pdfBytes = pdfConversionUtil.convertDocToPdf(candidateResume.getDocFile());
+	 		}
+	 		 response.setHeader("Content-disposition","inline; filename=contractPdf.pdf");
+	 	  	    response.setContentType("application/pdf");
+	 	  	    ServletOutputStream sos = response.getOutputStream();
+	 	  	    if(null != pdfBytes){
+	 	  	    	response.setContentLength(pdfBytes.length);
+	 	  	    	sos.write(pdfBytes);
+	 	  	    }
+	 	          sos.flush();
+	 	          sos.close();
+
+	 } 
+	 
+	 
 	 
 	private boolean isNullOrEmpty(String msg) {
 		// TODO Auto-generated method stub

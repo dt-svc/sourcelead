@@ -2,7 +2,6 @@
 <meta http-equiv="Cache-Control" content="private">
 <meta http-equiv="Expires" content="0">
 
-<link href="resources/css/jquery-tagit.css" rel="stylesheet">
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <script>
@@ -50,6 +49,16 @@ function vendorSpocDocuments(orgRelationId,clientLocationId,spocName,userId){
 <script>
 function spocDocumentsList(clientLocationId,orgRelationId,userId,spocName){
 	 var sourceleadUrl ='${sourceleadUrl}';
+	 var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
+	  if(locationList.match("yyyy-MM-dd")){
+		  docListVendorDate = 'YYYY-MM-DD';
+	  }if(locationList.match("dd-MM-yyyy")){
+		  docListVendorDate = 'DD-MM-YYYY'; 
+	  }if(locationList.match("MM-dd-yyyy")){
+		  docListVendorDate = 'MM-DD-YYYY'; 
+	  }if(locationList.match("yyyy-dd-MM")){
+		  docListVendorDate = 'YYYY-DD-MM'; 
+	  }
 	 $.ajax({  
           type : "POST",
           url: sourceleadUrl+"/getclientDocumentsListByResponderLocationIdAndSpocUserId?${_csrf.parameterName}=${_csrf.token}&responderLocationId="+clientLocationId+"&userId="+userId,        
@@ -76,8 +85,8 @@ function spocDocumentsList(clientLocationId,orgRelationId,userId,spocName){
 	                 	 result  = result + '           <th>Type</th>';
 	                 	 result  = result + '           <th>Contact Person</th>';
 	                 	 result  = result + '           <th>Attachment</th>';
-	                 	 result  = result + '           <th>Start Date</th>';
-	                 	 result  = result + '           <th>End Date</th>';
+	                 	 result  = result + '           <th>Start Date <br>(<small class="custom-small">'+docListVendorDate+'</small>)</th>';
+	                 	 result  = result + '           <th>End Date <br>(<small class="custom-small">'+docListVendorDate+'</small>)</th>';
 	                 	 result  = result + '           <th>Owner</th>';
 	                 	 result  = result + '           <th>Description</th>';
 	                 	 result  = result + '           <th>Action</th>';
@@ -287,27 +296,37 @@ function addDocumentForSpoc(clientLocationId,orgRelationId,spocName,userId) {
 	
 	function educationStartDate(){
 	}
-	
+	 var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+	  var finalDateFormatSpocDocSave = '';
+	  if(locationDate.match("yyyy-MM-dd")){
+		  finalDateFormatSpocDocSave = 'yy-mm-dd';
+	  }if(locationDate.match("dd-MM-yyyy")){
+		  finalDateFormatSpocDocSave = 'dd-mm-yy'; 
+	  }if(locationDate.match("MM-dd-yyyy")){
+		  finalDateFormatSpocDocSave = 'mm-dd-yy'; 
+	  }if(locationDate.match("yyyy-dd-MM")){
+		  finalDateFormatSpocDocSave = 'yy-dd-mm'; 
+	  }
 	$('#startDate').datepicker({
-	      dateFormat: 'dd-mm-yy',
+	      dateFormat: finalDateFormatSpocDocSave,
 	      changeMonth: true,
 	  	  changeYear: true, 
 	      onSelect: function (selected) {
 	           // var dt = new Date(selected);
-	           var dt = toDate("#startDate"); 
-	           dt.setDate(dt.getDate() + 1);
-	            $("#endDate").datepicker("option", "minDate", dt);
+	    	     var dt = $(this).datepicker('getDate', '+1d');
+		            dt.setDate(dt.getDate() + 1);
+		            $("#endDate").datepicker("option", "minDate", dt);
 	        }
 	  });
 	  
 	  $('#endDate').datepicker({
-	      dateFormat: 'dd-mm-yy',
+	      dateFormat: finalDateFormatSpocDocSave,
 	      changeMonth: true,
 	  	  changeYear: true, 
 	        onSelect: function (selected) {
 	           // var dt = new Date(selected);
-	           var dt = toDate("#endDate"); 
-	           dt.setDate(dt.getDate() - 1);
+	            var dt = $(this).datepicker('getDate', '-1d');
+	            dt.setDate(dt.getDate() - 1);
 	            $("#startDate").datepicker("option", "maxDate", dt);
 	        }
 	  });
@@ -562,7 +581,7 @@ function getVendorSpocDocument(clientLocationId,orgRelationId,spocName,userId,do
     			 
     			 $("#update_doc").attr("onclick", 'storeSpocDocument(\''+clientLocationId+'\',\''+orgRelationId+'\',\''+userId+'\',\''+spocName+'\',\''+json.id+'\');');
     			 
-    			 manageDates(json.startDateStr,json.endDateStr);
+    			 //manageDates(json.startDateStr,json.endDateStr);
 		    }
      });
 }
@@ -570,7 +589,6 @@ function getVendorSpocDocument(clientLocationId,orgRelationId,spocName,userId,do
 
 <script>
 function manageDates(startDateStr,endDateStr) {
-	
 	  if($("#endDate").val() == "" ){
 		     
 			  var selected = $("#startDate").val();

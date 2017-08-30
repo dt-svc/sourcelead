@@ -240,6 +240,18 @@ function addResume(candidateId) {
 		        	    dataType : 'json',
 						url : sourceleadUrl+"/saveCandidateResume?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&candidateId="+candidateId+"&resumeId="+resumeId,
 						success : function(result) {
+							$('#perVal').attr('aria-valuenow', result).css('width',result+'%');
+		          			 if(result<50){
+			          			   $("#perVal").removeClass('progress-bar-success');
+			          			   $("#perVal").addClass("progress-bar-danger");
+			          			 }
+			          			 if(result>=50){
+			          				 $("#perVal").removeClass('progress-bar-danger');
+			          				 $("#perVal").addClass("progress-bar-success");
+			          			 }
+
+	            			$("#disVal").empty();
+	            			$("#disVal").append(result+'%');
 							 	$("#popUpDivResume").removeClass("edit-details-active");
 		             			$("#selector2").removeAttr("style");
 		             			$("#selector2").css({ display: "block" });
@@ -277,6 +289,19 @@ function addResume(candidateId) {
 	  var candidateId = candidateId;
 	  var result = "";
 	  var resumesCount = 0;
+	  
+	  
+	  var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
+	  if(locationList.match("yyyy-MM-dd")){
+	  	profCandResumeListDate = 'YYYY-MM-DD';
+	  }if(locationList.match("dd-MM-yyyy")){
+		  profCandResumeListDate = 'DD-MM-YYYY'; 
+	  }if(locationList.match("MM-dd-yyyy")){
+		  profCandResumeListDate = 'MM-DD-YYYY'; 
+	  }if(locationList.match("yyyy-dd-MM")){
+		  profCandResumeListDate = 'YYYY-DD-MM'; 
+	  }
+	  
 	  $.ajax({
 			type : "POST",
 			url : sourceleadUrl+"/candidateResumesListByCandidateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,
@@ -301,7 +326,7 @@ function addResume(candidateId) {
 							result = result+'	            <th>Attachment</th>';
 							result = result+'	            <th>Description</th>';
 							result = result+'	            <th>Created By</th>'; 
-							result = result+'	            <th>Updated Date</th>';
+							result = result+'	            <th>Updated Date<br>(<small class="custom-small">'+profCandResumeListDate+'</small>)</th>'; 
 							result = result+'	            <th>Action</th>';
 							result = result+'	          </tr>';
 							
@@ -421,12 +446,27 @@ function deleteResumePopUp(){
 <script>
 function deleteSelectedResume(candidateId, resumeId){
 	var sourceleadUrl ='${sourceleadUrl}';
+	var loginUserId = '${SourceLeadWeb_userId}';
+	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	$.ajax({
 	   	type: "POST",
-	    url: sourceleadUrl+"/terminateResume?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&resumeId="+resumeId, 	   
+	    url: sourceleadUrl+"/terminateResume?${_csrf.parameterName}=${_csrf.token}&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&resumeId="+resumeId, 	   
 		    success: function(data) {
 		    	
 		    	if(data != null && data != 'undefined' && data != ""){
+		    		$('#perVal').attr('aria-valuenow', data).css('width',data+'%');
+        			 if(data<50){
+	          			  /* $("#perVal").removeClass("progress-bar-success"); */
+	          			   $("#perVal").removeClass('progress-bar-success');
+	          			  $("#perVal").addClass("progress-bar-danger");
+	          			 }
+	          			 if(data>=50){
+	          				 $("#perVal").removeClass('progress-bar-danger');
+	          				 $("#perVal").addClass("progress-bar-success");
+	          			 }
+
+   			 	$("#disVal").empty();
+   				$("#disVal").append(data+'%');
     			 $("#selector2").removeAttr("style");
      			 $("#selector2").css({ display: "block" });
      			 $("#resumeMsgDiv").html("Resume deleted");

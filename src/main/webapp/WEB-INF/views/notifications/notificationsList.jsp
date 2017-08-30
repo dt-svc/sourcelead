@@ -3,7 +3,6 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
-<script src="resources/js/formvalidator.js"></script>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 <style type="text/css">
@@ -151,7 +150,7 @@ function getNotificationtLists(){
 					result = result +'			</div>';
 				    result = result +'   </td>';
 				    
-				    result = result +'   <td><div class="mailbox-date tbldata-dotdot-vsm">'+report.calDays+' </div></td>';
+				    result = result +'   <td><div class="mailbox-date tbldata-dotdot-vsm" title="'+report.calDays+'">'+report.calDays+' </div></td>';
 				    
 				    result = result +'   <td><div class="notiRej">';
 				     if(report.userNotificationStatus == "Sent" && report.userNotificationStatus != 'Rejected' && report.actionLink != null && report.actionLink != "" && report.actionLink != "undefined"){

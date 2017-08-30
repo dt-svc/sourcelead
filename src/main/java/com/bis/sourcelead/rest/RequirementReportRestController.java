@@ -101,7 +101,7 @@ public class RequirementReportRestController {
 	  * @throws Exception
 	  */
 	@RequestMapping(value = "/getRequirementReports")
-	public String getRequirementListByOrgLocationID(@RequestParam(value = "reportType", required = false) String reportType, @RequestParam(value = "startDate", required = false) String customStartDate, @RequestParam(value = "endDate", required = false) String customEndDate, HttpServletRequest request, HttpServletResponse response) throws Exception
+	public String getRequirementReports(@RequestParam(value = "reportType", required = false) String reportType, @RequestParam(value = "startDate", required = false) String customStartDate, @RequestParam(value = "endDate", required = false) String customEndDate, HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
 		String userRoleName = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");

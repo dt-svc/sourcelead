@@ -3,6 +3,8 @@ package com.bis.sourcelead.rest;
 import java.util.Date;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,8 +14,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.bis.sourcelead.dto.UserDTO;
 import com.bis.sourcelead.entity.Org;
+import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.service.OrgService;
+import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.bis.sourcelead.web.HomeController;
 /**
  * Handles requests for the Organization service.
@@ -99,5 +104,12 @@ public class OrgRestController {
 		return orgService.deleteOrg(Long.parseLong(id));
 
 
+	}
+	
+	@RequestMapping(value = "/orgChart", method = RequestMethod.POST)
+	public List<UserDTO> orgChart(HttpServletRequest request) throws Exception {
+		
+		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		return orgService.getUserListForOrgChart(loginOrgLocation.getId());
 	}
 }

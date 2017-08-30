@@ -2,10 +2,6 @@
 <jsp:include page="../masterSideNav.jsp" />
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
- <link href="resources/css/jquery-ui.css" rel="stylesheet">
-<script src="resources/js/formvalidator.js"></script>
-<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
-
 
 <script>
 	$(document).ready(function() {
@@ -107,7 +103,6 @@
             </div>
           </div> 
              
-          
           </div>
           
           <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
@@ -117,7 +112,7 @@
 				 <div class="col-md-9" id="locationField">
 			          <div class="positionRelative">
 				          <input class="form-control positionRelative" id="orgLocation" name="location" placeholder="Enter your Location"  type="text" field-name="Locatin" data-validation="required"></input>
-				          <i class="fa fa-refresh btn btn-primary refresh-icon" title="Refresh" onClick="refreshGoogleApiLocation('orgLocation','orgCountry','orgState','orgCity','orgZipCode');"></i>
+				          <i class="fa fa-refresh btn btn-primary refresh-icon" title="Refresh" onClick="refreshGoogleApiLocation('orgLocation','orgCountry','orgState','orgCity','orgZipCode');resetdate();"></i>
 				        </div>
 		          </div>
 			 </div>
@@ -150,36 +145,6 @@
 	          <input class="form-control" id="orgZipCode" name="zipCode" placeholder="Enter your Zip code" type="text"></input>
 	          </div>
 	        </div>
-	        
-            <%-- <div class="form-group">
-	            <label class="col-md-3">Country<span class="text-danger">&nbsp;*</span></label>
-	            <div class="col-md-9 dropdown-select">
-	              <select class="chosen-select form-control select-bg" name="country" id="country" field-name="Country" data-validation="required" value="${country}"  >
-	                <option value="" >Select Location</option>
-	                <option value="Australia">Australia</option>
-	                <option value="France">France</option>
-	                <option value="India">India</option>
-	                <option value="Singapore">Singapore</option>
-	                <option value="United Kingdom">United Kingdom</option>
-	                <option value="United States">United States</option>
-	              </select>
-	               <span class="hidden">Country</span>
-	            </div>
-            </div>
-            
-            <div class="form-group">
-				<label class="col-md-3">State<span class="text-danger">&nbsp;*</span></label>
-				<div class="col-md-9">
-				     <select  class="chosen-select form-control" name="state" id="state" field-name="State" data-validation="required" > </select>
-				</div>
-			 </div>
-							
-			<div class="form-group">
-				<label class="col-md-3">City<span class="text-danger">&nbsp;*</span></label>
-				<div class="col-md-9">
-				     <select  class="chosen-select form-control" name="city" id="city" field-name="City" data-validation="required" ></select>
-				</div>
-			</div> --%>
 			
 			<div class="form-group">
 			  <label class="col-md-3">Address</label>
@@ -187,7 +152,6 @@
 				 <input type="text" name="address" id="address" field-name="Address" data-validation-optional="true" data-validation="validate_length length5-5000" class="form-control"/>
 				</div>
 			 </div>
-       
                <div class="form-group">
 	            <label class="col-md-3">Time Zone<span class="text-danger">&nbsp;*</span></label>
 	            <div class="col-md-9">
@@ -196,6 +160,19 @@
                      <span class="hidden">Time Zone</span>
 				</div>
 				</div>
+				
+				<div class="form-group">
+	            <label class="col-md-3">Date Format</label>
+	            <div class="col-md-9 dropdown-select">
+					<select  id="dateFormat" name="dateFormat">
+						<option value=''>--Select Date Format--</option>
+						<option value='dd-MM-yyyy'>dd-MM-yyyy</option>
+						<option value='MM-dd-yyyy'>MM-dd-yyyy</option>
+						<option value='yyyy-dd-MM'>yyyy-dd-MM</option>
+						<option value='yyyy-MM-dd'>yyyy-MM-dd</option>
+					</select>
+				</div>
+		 </div>
 		</div>
       </div>
       
@@ -546,12 +523,24 @@ function validateCompanyEmail(){
             };
 
         
+</script>
+<script>
+
+function resetdate() {
+	$("select[name = 'dateFormat']").val('');
+}
 </script> 
 <script>
 function getTimezonesList(){
 	var sourceleadUrl ='${sourceleadUrl}';
 	var country = $('#orgCountry').val();
 	if(country){
+		if(country == "India"){
+			$("select[name = 'dateFormat']").val('dd-MM-yyyy');
+		}else{
+			$("select[name = 'dateFormat']").val('MM-dd-yyyy');
+		}
+		
 		 $.ajax({
 		    	type: "POST",
 		    	url : sourceleadUrl+"/getTimezonesList?${_csrf.parameterName}=${_csrf.token}", 
