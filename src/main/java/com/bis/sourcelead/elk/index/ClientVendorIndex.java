@@ -81,6 +81,8 @@ public class ClientVendorIndex implements Serializable {
 	
 	private Long noOfReleasedJobs;
 	
+	private String releasedJobsCount;
+	
 	
 	public String getSearchType() {
 		return searchType;
@@ -382,6 +384,14 @@ public class ClientVendorIndex implements Serializable {
 
 	public void setCreatedDate(String createdDate) {
 		this.createdDate = createdDate;
+	}
+
+	public String getReleasedJobsCount() {
+		return releasedJobsCount;
+	}
+
+	public void setReleasedJobsCount(String releasedJobsCount) {
+		this.releasedJobsCount = releasedJobsCount;
 	}
 	
 

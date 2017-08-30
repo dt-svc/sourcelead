@@ -367,9 +367,9 @@ window.onload = function () {
  };
 </script>
 
+<!-- PLEASE DO NOT DELETE COMMENTED SCRIPTS, IF YOU HAVE ANY QUERIES CONTACT RAJASHEKAR -->
 
-
-<script type="text/javascript">
+<!-- <script type="text/javascript">
 function clientOnLoad(clientSearchResult,clientKeyword,responderLocationId,orgRelationId,orgName){
 	if(clientSearchResult =="clientSearchResult"){
 		getClientUniversalSearchList("${searchValue}","${searchType}");
@@ -390,8 +390,8 @@ function clientOnLoad(clientSearchResult,clientKeyword,responderLocationId,orgRe
 	}
 	
 }
-</script>
-<script type="text/javascript">
+</script> -->
+<!-- <script type="text/javascript">
 function getClientUniversalSearchList(searchValue,searchType){
 	var sourceleadUrl ='${sourceleadUrl}';
 	 $.ajax({
@@ -403,7 +403,9 @@ function getClientUniversalSearchList(searchValue,searchType){
     }); 
 
 }
-</script>
+</script> -->
+
+<!-- PLEASE DO NOT DELETE COMMENTED SCRIPTS, IF YOU HAVE ANY QUERIES CONTACT RAJASHEKAR -->
 
 <script>
 function clearSearch(){
@@ -725,8 +727,9 @@ function clearSearch(){
 </script>   
 
 
+<!-- PLEASE DO NOT DELETE COMMENTED SCRIPTS, IF YOU HAVE ANY QUERIES CONTACT RAJASHEKAR -->
 
-<script type="text/javascript">
+<!-- <script type="text/javascript">
  function preparedClientDetails(data){
 	 
 	 var json = JSON.parse(data);
@@ -816,9 +819,9 @@ function clearSearch(){
 	    pagination();
 	    
  }
-</script>
+</script> -->
 
-<script>
+<!-- <script>
 function getClientDetails(){
 	closePop();
 	var values = [];
@@ -840,9 +843,9 @@ function getClientDetails(){
 	
 	
 }	
-</script>
+</script> -->
 
-<script>
+<!-- <script>
 function getClientDetailsELK(){
 	closePop();
 	var values = [];
@@ -863,7 +866,9 @@ function getClientDetailsELK(){
 	
 	
 }	
-</script> 
+</script>  -->
+
+<!-- PLEASE DO NOT DELETE COMMENTED SCRIPTS, IF YOU HAVE ANY QUERIES CONTACT RAJASHEKAR -->
 
 <script>
 	function msgFadein() {
@@ -991,7 +996,10 @@ function getClientNeworgname(clientNewOrgname){
 }
 </script>
 
-<script>
+
+<!-- PLEASE DO NOT DELETE COMMENTED SCRIPTS, IF YOU HAVE ANY QUERIES CONTACT RAJASHEKAR -->
+
+<!-- <script>
 function preparedClientContacts(data){
 			var json = JSON.parse(data);
 		   	var result = "";
@@ -1101,9 +1109,9 @@ function preparedClientContacts(data){
    	
 }
 </script>
-
+ -->
 <!-- contact list preparation from ELK result -->
-<script>
+<!-- <script>
 function preparedClientContactListFromElk(data){
 			var json = JSON.parse(data);
 		   	var result = "";
@@ -1221,11 +1229,11 @@ function preparedClientContactListFromElk(data){
 		    pagination1(); 
 			    
    }
-</script> 
+</script>  -->
 
 
 <!-- Client list preparation from ELK result -->
-<script>
+<!-- <script>
 function preparedClientListFromElk(data){
 			var json = JSON.parse(data);
 		   	var result = "";
@@ -1313,11 +1321,11 @@ function preparedClientListFromElk(data){
 		    $("#emptyClientList").val(json.length);
 		    pagination();
 }
-</script>
+</script> -->
 
 
 
-<script>
+<!-- <script>
 function getVendorContactLists(){
 	closePop();
 	var clientIds = [];
@@ -1351,7 +1359,7 @@ function getVendorContactLists(){
 	
 }	
 </script> 
-
+ -->
 
 <!-- <script>
 function getVendorContactListsELK(){
@@ -1389,6 +1397,9 @@ function getVendorContactListsELK(){
 	
 }	
 </script>  -->
+
+
+<!-- PLEASE DO NOT DELETE COMMENTED SCRIPTS, IF YOU HAVE ANY QUERIES CONTACT RAJASHEKAR -->
 
 <!-- This script is for resending the invitation mail -->
 <script type="text/javascript"><%-- <jsp:include page="submissionTemplate.jsp" />	 --%>
@@ -1511,11 +1522,11 @@ function getClientSpocname(clientNewSpocname){
 
 <script>
 function listChange(sel){
-	 if(sel.value=="listbyVendor"){
-		 document.getElementById("clientList").style.display="block";
+	if(sel.value=="listbyVendor"){
+		document.getElementById("clientList").style.display="block";
 		 document.getElementById("clientList").style.display="table";
 		 document.getElementById("vendorContactList").style.display="none";
-		 document.getElementById("vendorContactList_wrapper").style.display="none";
+// 		 document.getElementById("vendorContactList_wrapper").style.display="none";
 		 document.getElementById("contactLevel").style.display="block";
 // 		 document.getElementById("clientsList").style.display="none";
 		 document.getElementById("clientSatatus").style.display="none";
@@ -1523,18 +1534,18 @@ function listChange(sel){
 		 '<sec:authorize access="hasRole(\'ROLE_EXPORT_CLIENTS\')">'; 
 		 document.getElementById("clientImports").style.display="block";
 		 '</sec:authorize> ';
-		'<sec:authorize access="hasRole(\'ROLE_EXPORT_CLIENT_CONTACTS\')">'; 
+		 '<sec:authorize access="hasRole(\'ROLE_EXPORT_CLIENT_CONTACTS\')">'; 
 		 document.getElementById("ContactImports").style.display="none";
 		'</sec:authorize> ';	 
-		 document.getElementById("vendorContactList_paginate").style.display="none";
-		 document.getElementById("vendorContactList_info").style.display="none";
-		 document.getElementById("vendorContactList_filter").style.display="none";
+// 		 document.getElementById("vendorContactList_paginate").style.display="none";
+// 		 document.getElementById("vendorContactList_info").style.display="none";
+// 		 document.getElementById("vendorContactList_filter").style.display="none";
 // 		 document.getElementById("filter1ApprovePop").style.display="none";
 		 document.getElementById("filter3ApprovePop").style.display="none";
 		 document.getElementById("filter4ApprovePop").style.display="none";
-		 
 		/*  getClientDetails(); */
 		 /* getClientDetailsELK(); */
+		 $("#dataTableSearch").val("");
 		 getClientList();
 	 }
 	 if(sel.value=="listbyContact"){
@@ -1559,7 +1570,8 @@ function listChange(sel){
 		 
 		/*  getVendorContactLists(); */
 // 		 getVendorContactListsELK();
-		loadVendorDataTable("${clientSearchResult}");
+		$("#dataTableSearch").val("");
+		loadClientContactDataTable("${clientSearchResult}");
 	 }
 	 
 }

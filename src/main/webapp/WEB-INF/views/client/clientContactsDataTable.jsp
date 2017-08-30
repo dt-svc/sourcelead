@@ -6,7 +6,7 @@
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags"%>
 
 <script>
-	function loadVendorDataTable(clientSearchResult) {
+	function loadClientContactDataTable(clientSearchResult) {
 		if (clientSearchResult == "clientSearchResult") {
 			getClientContactList();
 			$("#dataTableSearch").val(clientSearchResult);
@@ -83,8 +83,6 @@ function getClientContactList(){
 	   	result = result +'<th>Action</th>';
 	   	result = result +'</tr>';
 		result = result + "</thead>";
-		result = result + "<tbody>";
-		result = result + " </tbody>";
 		result = result + "</table>";
 		$("#clientList").hide();
 		$("#vendorContactList").append(result);

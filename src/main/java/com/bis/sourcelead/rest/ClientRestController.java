@@ -1182,7 +1182,15 @@ public class ClientRestController {
 		/*
 		 * This array is used to enable the sorting feature in data tables. And, these names should match the ELK Candidate index field names.
 		 */
-		String[] tableColumns = {"orgName", "", "", "", "createdBy", "noContacts"};
+		String[] tableColumns1 = null;
+		if(Constants.CLIENT.equalsIgnoreCase(clientVendorDTO.getResponderType())){
+			String[] tableColumns = {"orgName", "", "", "", "createdBy", "noContacts"};
+			tableColumns1 = tableColumns;
+		}else if(Constants.VENDOR.equalsIgnoreCase(clientVendorDTO.getResponderType())){
+			String[] tableColumns = {"orgName", "", "", "","createdBy","releasedJobsCount", "noContacts"};
+			tableColumns1 = tableColumns;
+		}
+		
 	     int sortColumnIndex = 4; //by default sorting using updated date
 		boolean sortColumnOrder = false; //by default descending order
 		if(clientVendorDTO.getOrder() != null && !clientVendorDTO.getOrder().isEmpty()) {
@@ -1194,7 +1202,8 @@ public class ClientRestController {
 		 User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");		  
 		 
 		 OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
-		
+		 String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+		 
 		 BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();
 		 
 		 String responderType= "";
@@ -1354,7 +1363,7 @@ public class ClientRestController {
 				clientVendorDTO.getStart(), clientVendorDTO.getLength(), tableColumns[sortColumnIndex], sortColumnOrder ? SortOrder.ASC : SortOrder.DESC,boolQueryBuilder).getTotalHits();*/
 			SearchResponse searchResponse = sourceleadELKBaseIndexer
 					.searchDocumentWithMaxResults(Constants.ELK_CLIENTVENDOR_INDEX, Constants.ELK_CLIENTVENDOR_TYPE,
-							clientVendorDTO.getStart(), clientVendorDTO.getLength(), tableColumns[sortColumnIndex], sortColumnOrder ? SortOrder.ASC : SortOrder.DESC, boolQueryBuilder);
+							clientVendorDTO.getStart(), clientVendorDTO.getLength(), tableColumns1[sortColumnIndex], sortColumnOrder ? SortOrder.ASC : SortOrder.DESC, boolQueryBuilder);
 			
 			SearchHit searchHits[] = searchResponse.getHits().getHits();
 		 
@@ -1373,6 +1382,10 @@ public class ClientRestController {
 				//  This is to get the number of Contacts based  on Org Relation Id
 				 BoolQueryBuilder forNumberOfContacts= QueryBuilders.boolQuery();
 				 forNumberOfContacts.must(QueryBuilders.matchQuery("orgRelationId", clientVendor.getOrgRelationId()));
+				 if(Constants.VENDOR.equalsIgnoreCase(clientVendorDTO.getResponderType())){
+					 Integer releaseJobsCount = clientService.getReleasedJobsCountByOrgRelationId(clientVendor.getOrgRelationId(),loginOrgLocation,userRole,loginUser);
+					 clientVendor.setReleasedJobsCount(String.valueOf(releaseJobsCount));
+				 }
 				 if(clientVendor.getNoContacts() !=null) {
 					 clientVendor.setNoContacts(clientVendor.getNoContacts());
 				 }else {
@@ -1424,7 +1437,8 @@ public class ClientRestController {
 	}
 	
 	
-	 private ArrayList<MatchQueryBuilder> getMatchQueryBuilderList(String keywd){
+
+	private ArrayList<MatchQueryBuilder> getMatchQueryBuilderList(String keywd){
 		    ArrayList<MatchQueryBuilder> matchQueryBuilderList = new ArrayList<MatchQueryBuilder>();
 		   
 		    //Vendor Search 
