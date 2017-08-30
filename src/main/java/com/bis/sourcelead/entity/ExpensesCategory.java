@@ -2,7 +2,6 @@ package com.bis.sourcelead.entity;
 
 import java.io.Serializable;
 import java.util.Date;
-import java.util.LinkedHashSet;
 import java.util.List;
 
 import javax.persistence.Column;
@@ -17,6 +16,8 @@ import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
 
 @Entity
 @Table(name = "EXPENSE_CATEGORY", catalog = "sourcelead")
@@ -29,6 +30,7 @@ public class ExpensesCategory implements Serializable {
     @Column(name = "ID", nullable = false)
 	private Long id;
 	
+	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne
     @JoinColumn(name="LOCATION_ID", nullable=false )        
     private OrgLocations orgLocationId;

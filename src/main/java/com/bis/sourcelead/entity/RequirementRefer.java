@@ -17,6 +17,8 @@ import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
 
 @Entity
 @Table(name = "REQUIREMENT_REFER", catalog = "sourcelead")
@@ -31,23 +33,27 @@ public class RequirementRefer implements Serializable {
     @Column(name = "ID", nullable = false)
 	private Long id;
 	
+	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="REFER_FROM_USER_ID")        
     private User referFromUser;
 	
+	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="REFER_TO_USER_ID")        
     private User referToUser;
 	
+	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="REQUIREMENT_ID")        
     private Requirement requirementId;
 	
+	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="REFER_ID")        
     private RequirementRefer referId;
 	
-	
+	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne
     @JoinColumn(name="ORGLOCATION_ID")        
     private OrgLocations orgLocationId;
