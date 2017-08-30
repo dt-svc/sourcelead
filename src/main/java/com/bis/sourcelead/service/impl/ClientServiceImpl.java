@@ -40,6 +40,7 @@ import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
+import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RoleHierarchy;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.SourceleadActions;
@@ -57,6 +58,7 @@ import com.bis.sourcelead.service.OrgService;
 import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
 import com.bis.sourcelead.service.ProjectMembersService;
+import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.RoleHierarchyService;
 import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.SourceleadActionsService;
@@ -142,6 +144,9 @@ public class ClientServiceImpl implements ClientService {
 
 	@Autowired
 	private UniversalSearchHelper universalSearchHelper;
+	
+	@Autowired
+	private RequirementService requirementService;
 
 	@Value("${SourceLead.100}")
 	private String notFound;
@@ -1589,6 +1594,34 @@ public class ClientServiceImpl implements ClientService {
 				orgSpocService.addOrgSpoc(orgSpock);
 			}
 		}
+	}
+
+	@Override
+	public Integer getReleasedJobsCountByOrgRelationId(Long orgRelationId, OrgLocations orgLocations, String userRole,
+			User user) throws Exception {
+		 OrgRelations orgRelation =orgRelationsService.getOrRelationsById(orgRelationId);
+		 Integer releasedJobsSize =0;
+		    List<Requirement> vendorReleasedJobsList = null;
+		    if(Constants.ROLE_ADMIN.equalsIgnoreCase(userRole) || Constants.SOURCELEAD_ADMIN.equalsIgnoreCase(userRole)){
+		    	if(orgRelation !=null) {
+		    		vendorReleasedJobsList = requirementService.getAllReleasedJobsForVendor(orgRelation.getLocationId().getId(),orgRelation.getId(),user,orgLocations);
+		    	}
+		    }else{
+		    	List<Requirement> reqlist = requirementService.getAllReleasedJobsBasedOnUserIdAndLocationId(user,orgLocations);
+			    List<Long> parentreqIds = new ArrayList<>();
+			    for(Requirement req : reqlist){
+			    	parentreqIds.add(req.getId());
+			    }
+			    if(orgRelation !=null) {
+			    vendorReleasedJobsList = requirementService.getAllReleasedJobsBasedOnParetRequirementIdAndVendorLocationId(parentreqIds,orgRelation.getId());
+			    }
+			    }
+			
+			if(null != vendorReleasedJobsList ){
+				
+				releasedJobsSize = (Integer) vendorReleasedJobsList.size();
+			}
+				 return releasedJobsSize;
 	}
 
 }
