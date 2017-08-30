@@ -1,7 +1,6 @@
 package com.bis.sourcelead.entity;
 
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -39,22 +38,27 @@ public class Invoice {
     @Column(name = "ID", nullable = false)
 	private Long id;
 	
+	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne
     @JoinColumn(name="ORG_RELATION_ID", nullable=false )     
 	private OrgRelations orgRelationID;
 	
+	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "CONTACT_USER_ID")
 	private User contactUser;
 	
+	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne
     @JoinColumn(name="ORG_LOCATION_ID", nullable=false )     
 	private OrgLocations orgLocation;
 	
+	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne
     @JoinColumn(name="OWNER_USER_ID", nullable=false )     
 	private User ownerUserId;
 	
+	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne
     @JoinColumn(name="RESPONDER_LOCATION_ID", nullable=false )     
 	private OrgLocations responderLocationId;
@@ -62,6 +66,7 @@ public class Invoice {
 	@Column(name = "INVOICE_ID")
 	private String invoiceId;
 	
+	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne
     @JoinColumn(name="PROJECT_ID", nullable=true) 
 	private Projects projectID;
@@ -69,6 +74,7 @@ public class Invoice {
 	@Column(name = "INVOICE_TYPE")
 	private String invoiceType;
 	
+	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne
     @JoinColumn(name="PARENT_INVOICE_ID")        
 	private Invoice parentInvoiceId;
@@ -180,6 +186,7 @@ public class Invoice {
 	@Column(name = "EXPENSES_INVOICES")
 	private String expensesInvoices;
 	
+	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne
     @JoinColumn(name="EXPENSES_ID", nullable=true) 
 	private Expenses expensesId;
@@ -192,12 +199,15 @@ public class Invoice {
 	@Column(name = "IS_GENERATE_AUTOMATIC_INVOICE")
 	private String isAutomaticGenerateInvoice;
 	
+	@NotFound(action=NotFoundAction.IGNORE)
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "invoice")
 	private Set<InvoiceLineItems> invoiceLineItems;
 	
+	@NotFound(action=NotFoundAction.IGNORE)
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "invoice")
 	private Set<InvoiceTax> invoiceTax;
 	
+	@NotFound(action=NotFoundAction.IGNORE)
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "invoice")
 	private Set<InvoiceDocument> invoiceDocumentSet;
 	
