@@ -401,33 +401,48 @@ public class AccountDeductionsServiceImpl implements AccountDeductionsService{
 	@Override
 	public PayrollBalance getBalance(Long empId, OrgLocations orgLocations) throws Exception {
 		DecimalFormat df = new DecimalFormat("#0.00");
-		double income = 0.0;
-		double directDeposit = 0.0;
-		double manualProcessed = 0.0;
-		double manualDeposit = 0.0;
-		double advance = 0.0;
-		double generalExpenses = 0.0;
-		double vendorPayment = 0.0;
-		double insurance = 0.0;
-		double immigration = 0.0;
+		
+		
+		double income = 0; 
+		double due = 0; 
+		double directDepositGross = 0; // A
+		double directDepositNet = 0; // B 
+		double processedWithCheckOptionGross = 0; // C
+		double processedWithCheckOptionNet = 0; // D
+		double actualChecksDepositedNet = 0; // E
+		double manualAdvance = 0; //  F
+		double generalExpenses = 0; // G
+		double vendorPayment = 0; // H
+		double healthcareInsurance = 0; // I
+		double immigration = 0; // J
+		double directDepositAdvanceNegetive = 0; // K
+		double directDepositDeductionPositive = 0; // L 
+		
 		PayrollBalance payrollBalance = new PayrollBalance();
 		if(empId !=null){
 			 List<InvoiceData> invoiceDataList = invoiceDataService.getInvoiceDetailsByEmpId(empId, orgLocations);
 			 if(invoiceDataList !=null && invoiceDataList.size() >0){
-				 income = invoiceDataList.stream().filter(i->(i.getAmount() !=null)).mapToDouble(i-> Double.parseDouble(i.getAmount())).sum();
+				 income = invoiceDataList.stream().filter(i->(i.getAmount() !=null && "Paid".equalsIgnoreCase(i.getArPaid()))).mapToDouble(i-> Double.parseDouble(i.getAmount())).sum();
+				 due = invoiceDataList.stream().filter(i->(i.getAmount() !=null && "Unpaid".equalsIgnoreCase(i.getArPaid()))).mapToDouble(i-> Double.parseDouble(i.getAmount())).sum();
 			 }
-			 
 			 
 			 List<WageTaxSummary> wagesAndTaxList = wageTaxSummaryService.getWagesAndTaxListByEmployeeId(orgLocations,empId);
 			if(wagesAndTaxList !=null && wagesAndTaxList.size() >0){
 				 for(WageTaxSummary wageTaxSummary : wagesAndTaxList){
 					 if(wageTaxSummary.getCheckNo() !=null && !"".equals(wageTaxSummary.getCheckNo())){
 						if(Constants.DIR_DEP.equalsIgnoreCase(wageTaxSummary.getCheckNo())){
-							directDeposit = directDeposit + wageTaxSummary.getGross();
+							directDepositGross = directDepositGross + wageTaxSummary.getGross();
+							directDepositNet = directDepositNet + wageTaxSummary.getNet();
 						}
 						if(!Constants.DIR_DEP.equalsIgnoreCase(wageTaxSummary.getCheckNo())){
-							manualProcessed = manualProcessed + wageTaxSummary.getGross();
+							processedWithCheckOptionGross = processedWithCheckOptionGross + wageTaxSummary.getGross();
+							processedWithCheckOptionNet = processedWithCheckOptionNet + wageTaxSummary.getNet();
 						}
+					 }
+					 if(String.valueOf(wageTaxSummary.getDeds()).contains("-")) {
+						 directDepositAdvanceNegetive = directDepositAdvanceNegetive + wageTaxSummary.getDeds();
+					 }else {
+						 directDepositDeductionPositive = directDepositDeductionPositive + wageTaxSummary.getDeds();
 					 }
 				 }	
 			}
@@ -435,31 +450,39 @@ public class AccountDeductionsServiceImpl implements AccountDeductionsService{
 			 
 			List<Checks> checksList =userPayrollService.getChecksListByEmployeeId(empId, orgLocations);
 			if(checksList !=null && checksList.size() >0){
-				 manualDeposit = checksList.stream().mapToDouble(c->c.getPayrollChecks()).sum();
-				 advance = checksList.stream().mapToDouble(c->c.getAdvance()).sum();
+				actualChecksDepositedNet = checksList.stream().mapToDouble(c->c.getPayrollChecks()).sum();
+				manualAdvance = checksList.stream().mapToDouble(c->c.getAdvance()).sum();
 				 generalExpenses = checksList.stream().mapToDouble(c->c.getGeneralExpenses()).sum();
 				 vendorPayment = checksList.stream().mapToDouble(c->c.getVendorPayments()).sum();
 			}
 			
 			List<BisUserMapping> masterList = bisUserMappingService.getMasterListByEmpId(empId, orgLocations);
 			if(masterList !=null && masterList.size() >0){
-				 insurance = masterList.stream().mapToDouble(m->m.getInsurance()).sum();
+				healthcareInsurance = masterList.stream().mapToDouble(m->m.getInsurance()).sum();
 				 immigration = masterList.stream().filter(m->(m.getImmigration() !=null) ).mapToDouble(m->Double.parseDouble(m.getImmigration())).sum();	
 			}
 			
 		}
-		 payrollBalance.setIncome(df.format(income));
-		 payrollBalance.setDirectDeposit(df.format(directDeposit));
-		 payrollBalance.setManualProcessed(df.format(manualProcessed));
-		 payrollBalance.setManualDeposit(df.format(manualDeposit));
-		 payrollBalance.setAdvance(df.format(advance));
-		 payrollBalance.setGeneralExpenses(df.format(generalExpenses));
-		 payrollBalance.setVendorPayment(df.format(vendorPayment));
-		 payrollBalance.setInsurance(df.format(insurance));
-		 payrollBalance.setImmigration(df.format(immigration));
-		 double totalDebits = directDeposit + manualProcessed + manualDeposit + advance + generalExpenses + vendorPayment + insurance + immigration;
-		 double balance = income - totalDebits;
-		 payrollBalance.setBalance(df.format(balance));
+		payrollBalance.setIncome(df.format(income));
+		payrollBalance.setDirectDepositGross(df.format(directDepositGross));
+		payrollBalance.setDirectDepositNet(df.format(directDepositNet));
+		payrollBalance.setProcessedWithCheckOptionGross(df.format(processedWithCheckOptionGross));
+		payrollBalance.setProcessedWithCheckOptionNet(df.format(processedWithCheckOptionNet));
+		payrollBalance.setActualChecksDepositedNet(df.format(actualChecksDepositedNet));
+		payrollBalance.setManualAdvance(df.format(manualAdvance));
+		payrollBalance.setGeneralExpenses(df.format(generalExpenses));
+		payrollBalance.setVendorPayment(df.format(vendorPayment));
+		payrollBalance.setHealthcareInsurance(df.format(healthcareInsurance));
+		payrollBalance.setImmigration(df.format(immigration));
+		payrollBalance.setDirectDepositAdvanceNegetive(df.format(directDepositAdvanceNegetive));
+		payrollBalance.setDirectDepositDeductionPositive(df.format(directDepositDeductionPositive));
+		payrollBalance.setDue(df.format(due));
+		double deductionTotal = directDepositGross + actualChecksDepositedNet + manualAdvance + generalExpenses + vendorPayment + healthcareInsurance + immigration + directDepositAdvanceNegetive;
+		double total = income + directDepositDeductionPositive;
+		double balance = total - deductionTotal;
+		double billed = income + due;
+		payrollBalance.setBalance(String.valueOf(Math.round(balance * 100D) / 100D));
+		payrollBalance.setBilled(String.valueOf(Math.round(billed * 100D) / 100D));
 		return payrollBalance;
 	}
 }
