@@ -628,7 +628,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 								}
 				    	  }
 				    	 
-			    	    Collection<ProjectApproverHierarchy> projectApproverHierarchies = projectApproverHierarchyDao.getApproverUsersByProjectClientId(projectClients.getId());
+			    	    Set<ProjectApproverHierarchy> projectApproverHierarchies = projectClients.getProjectApproverHierarchyList();
 					    for(ProjectApproverHierarchy approverHierarchy :projectApproverHierarchies){
 					    	if(approverHierarchy.getLevel()==1){
 					    		StringBuilder manager1 = new StringBuilder();
@@ -851,11 +851,10 @@ public class ProjectsServiceImpl implements ProjectsService{
 	@Override
 	public String getProjectDetailsByProjectIdAndLoginOrgId(Long projectId, User user, String loginOrgLocation)throws Exception {
 		OrgLocations loginOrgLocations = orgLocationService.getOrgLocationsByLocationCode(loginOrgLocation);
-		Projects projects = getProjectByIdAndLoginOrgId(projectId, loginOrgLocations.getId());
+		
+		Projects projects = getProjectById(projectId);
 		
 		String resultJson =null;
-		
-		//SimpleDateFormat dateFormat=loginOrgLocations.getLocFullFormDateFormatter();
 		
 		if(projects.getCreatedDate() != null){
 			projects.setCreatedDateStr(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(),projects.getCreatedDate()));	
@@ -870,6 +869,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 	    if(projects.getProjectSequeneNumber() != null){
 	    	projects.setProjectSequeneNumber(projects.getProjectSequeneNumber());
 	    }
+	   
 	    User createdByUseraName= userService.getUserDetailsByUserCode(projects.getCreatedBy());
 	    if(null !=createdByUseraName){
 	    	StringBuilder userName = new StringBuilder();
@@ -880,49 +880,35 @@ public class ProjectsServiceImpl implements ProjectsService{
 	    	}
 	    	
 	    }
-	    StringBuilder projectApprover=new StringBuilder();
-	    projects.setCreatedBy(projectApprover.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
-	    Collection<ProjectApproverHierarchy> projectApproverHierarchies = projectApproverHierarchyService.getApproverUsersByProjectId(projectId);
-	   
+	    StringBuilder projectApprover = new StringBuilder();
+	  
+	    //  projects.setCreatedBy(projectApprover.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
+	    
+	    ProjectClients projectClients = projectClientService.getProjectClientsByProjectIdAndOrgLocationId(projects.getId(), loginOrgLocations.getId());
+	    Set<ProjectApproverHierarchy> projectApproverHierarchies = projectClients.getProjectApproverHierarchyList();
 	    /**
 	     * If the Project has Only Manager the His Level is taken as Higher Level  
 	     */
-	    if(projectApproverHierarchies.size()==1){
-	    	
-	    	for(ProjectApproverHierarchy approverHierarchy : projectApproverHierarchies){
-		    	if(approverHierarchy.getLevel() != null){
-		    		projects.setManager1(approverHierarchy.getApproverUserId().getId());
-		    		UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(approverHierarchy.getApproverUserId().getId(),loginOrgLocations.getId());
-		    		if(null != userRole){
-		    			projects.setManagerLevel1UserType(userRole.getUserType());
-		    		}
-		    		projects.setManagerLevel1(projectApprover.append(approverHierarchy.getApproverUserId().getFirstName()).append(" ").append(approverHierarchy.getApproverUserId().getLastName()).toString());
-		    	}
+	  
+	 	for(ProjectApproverHierarchy approverHierarchy : projectApproverHierarchies){
+	    	if(approverHierarchy.getLevel() != null && approverHierarchy.getLevel() == 1){
+	    		projects.setManager1(approverHierarchy.getApproverUserId().getId());
+	    		UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(approverHierarchy.getApproverUserId().getId(),loginOrgLocations.getId());
+	    		if(null != userRole){
+	    			projects.setManagerLevel1UserType(userRole.getUserType());
+	    		}
+	    		projects.setManagerLevel1(projectApprover.append(approverHierarchy.getApproverUserId().getFirstName()).append(" ").append(approverHierarchy.getApproverUserId().getLastName()).toString());
 	    	}
-	    }else{
+	    	if(approverHierarchy.getLevel() != null && approverHierarchy.getLevel() == 2){
+	    		projects.setManager2(approverHierarchy.getApproverUserId().getId());
+	    		projects.setManagerLevel2(projectApprover.append(approverHierarchy.getApproverUserId().getFirstName()).append(" ").append(approverHierarchy.getApproverUserId().getLastName()).toString());
+	    	}
 	    	
-	    	for(ProjectApproverHierarchy approverHierarchy : projectApproverHierarchies){
-		    	if(approverHierarchy.getLevel() != null && approverHierarchy.getLevel() == 1){
-		    		projects.setManager1(approverHierarchy.getApproverUserId().getId());
-		    		UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(approverHierarchy.getApproverUserId().getId(),loginOrgLocations.getId());
-		    		if(null != userRole){
-		    			projects.setManagerLevel1UserType(userRole.getUserType());
-		    		}
-		    		projects.setManagerLevel1(projectApprover.append(approverHierarchy.getApproverUserId().getFirstName()).append(" ").append(approverHierarchy.getApproverUserId().getLastName()).toString());
-		    	}
-		    	if(approverHierarchy.getLevel() != null && approverHierarchy.getLevel() == 2){
-		    		projects.setManager2(approverHierarchy.getApproverUserId().getId());
-		    		projects.setManagerLevel2(projectApprover.append(approverHierarchy.getApproverUserId().getFirstName()).append(" ").append(approverHierarchy.getApproverUserId().getLastName()).toString());
-		    	}
-		    	
-		    }
 	    }
-	    
 	    
 	    projects.setProjectApproverHierarchiesList(projectApproverHierarchies);
 	    
-	    //Collection<User> userList = userService.getUsersByUserRolesAndOrgLocationId(loginOrgLocations.getId());
-	    List<User> userList = userService.getTabAccessOwnersByOrgLocationIdAndTabId(loginOrgLocations.getId(),Long.valueOf(Constants.TAB_TIMESHEET_APPROVAL));
+	    List<User> userList = userService.getTabAccessOwnersByOrgLocationIdAndTabId(loginOrgLocations.getId(),Long.valueOf(Constants.TAB_PROJECTS));
 	    projects.setManagersList(userList);
 	    if(projects.getManager1() != null){
 	    	  List<User> userListwithoutmaneger1 = userService.getTabAccessOwnersByOrgLocationIdAndTabIdAndNoCurrentUser(projects.getManager1(),loginOrgLocations.getId(),Long.valueOf(Constants.TAB_TIMESHEET_APPROVAL));
@@ -938,7 +924,18 @@ public class ProjectsServiceImpl implements ProjectsService{
 	    }
 	    projects.setProjectManagerName(approvers);
 	    
-	    Collection<OrgRelations> orgClientList =orgRelationsService.getAllClientsByOrgLocationId(loginOrgLocations.getId()); 
+		 if(projectClients.getOrgRelationId() != null){
+    		 
+ 			if(null != projectClients.getOrgRelationId().getLocationId() && projectClients.getOrgRelationId().getLocationId().getId().longValue() == loginOrgLocations.getId().longValue()){
+					projects.setClient(projectClients.getOrgRelationId().getResponderLocationId().getOrgLocationName());
+				}if(null != projectClients.getOrgRelationId().getResponderLocationId() && projectClients.getOrgRelationId().getResponderLocationId().getId().longValue() == loginOrgLocations.getId().longValue()){
+					projects.setClient(projectClients.getOrgRelationId().getLocationId().getOrgLocationName());
+				}
+ 	  }
+	    
+	    
+	    
+	/*    Collection<OrgRelations> orgClientList = orgRelationsService.getAllClientsByOrgLocationId(loginOrgLocations.getId()); 
 	    String[] clientList = new String[orgClientList.size()];
 	    int j = 0;
 		for(OrgRelations ocl :orgClientList){
@@ -966,7 +963,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 			}
 			j++;
 		 }
-		projects.setClientName(clientList);
+		projects.setClientName(clientList);*/
 		
 		
 		Integer projectMembersCount  = projectMembersService.getAllProjectMembersCountByProjectId(projectId);
@@ -1228,14 +1225,14 @@ public class ProjectsServiceImpl implements ProjectsService{
 					    	}
 			    	}
 		    	
-		    		if(jsonObj.has("clientId")){
+		    /*		if(jsonObj.has("clientId")){
 			    		OrgRelations orgRelations = new OrgRelations();
 			    		if(!jsonObj.getString("clientId").isEmpty()){
 			    			orgRelations.setId(Long.valueOf(jsonObj.getString("clientId")));
 					    	projects.setOrgRelationId(orgRelations);
 			    		}
 			    		
-			    	}
+			    	}*/
 		    		
 		    		if((jsonObj.has("isTimesheetAttachmentRequired")) && StringUtils.isNotEmpty(jsonObj.getString("isTimesheetAttachmentRequired")) && ("Y".equals(jsonObj.getString("isTimesheetAttachmentRequired")))){
 		    	    	projects.setIsTimesheetAttachmentRequired(Constants.RECORD_ACTIVE);
