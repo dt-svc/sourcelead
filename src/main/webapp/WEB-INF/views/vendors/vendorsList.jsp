@@ -825,7 +825,11 @@ function preparedVendorsListFromElk(data){
 		   		result = result +'<tr>';
 		   		'<sec:authorize access="hasAnyRole(\"ROLE_VIEW_VENDOR\",\"ROLE_VIEW_EDIT_VENDOR\")">';
 		   			result = result +'<td>';
+		   			if(report.orgRelationId !=null && report.orgRelationId !='' && report.orgRelationId !='undefined'){
 		   			result = result +'<div class="proj_show" onclick="vendorSideBar(\''+report.responderLocationId+'\',\''+report.orgRelationId+'\',\''+orgName+'\');"><span class="tbldata-dotdot-me pull-left" title="'+report.orgName+'">'+report.orgName+'</span><i class="fa fa-binoculars pull-right"></i>';
+		   			}else{
+		   				result = result +'<div class="proj_show" onclick="vendorSideBar(\''+report.responderLocationId.id+'\',\''+report.id+'\',\''+orgName+'\');"><span class="tbldata-dotdot-me pull-left" title="'+report.orgName+'">'+report.orgName+'</span><i class="fa fa-binoculars pull-right"></i>';
+		   			}
 		   			result = result +'</div>';
 		   			result = result +'</td>';
 		   		'</sec:authorize>';
@@ -1212,7 +1216,7 @@ function preparedVendorContactListFromElk(data){
 		   		}
 		   		
 		   		if(report.spocUserId == "${SourceLeadWeb_userId}" && report.invitationStatus == 'New'){
-		            result = result +' ---';
+		            result = result +' ---11';
 		      	}
 		   		
 		   		if(report.ownerUserId == "${SourceLeadWeb_userId}" && report.invitationStatus == 'New'){
@@ -1230,7 +1234,6 @@ function preparedVendorContactListFromElk(data){
 		   		if(report.ownerUserId == "${SourceLeadWeb_userId}" && report.invitationStatus == 'Sent'){
 		   			result = result +' <b class="proj_process"><a href="javascript:void(0)" onClick="resendVendorSpocInvitation('+report.spocUserId+','+report.id+','+report.orgRelationId+');">Resend</a></b>';
 		   		}
-		   		
 		   		if(report.invitationStatus == 'Accepted'){ 
 		   			result = result +' <b class="proj_active">'+report.invitationStatus+'</b>';
 		   		}
