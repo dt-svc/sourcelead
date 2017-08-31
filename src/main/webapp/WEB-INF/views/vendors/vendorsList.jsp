@@ -276,8 +276,8 @@ border:none; background-color: none !important; padding:0 5px !important;
 		                <li id= "filter3ApprovePop" style="display:none"><i class="fa fa-filter"></i><span>Status</span><i class="glyphicon glyphicon-play" id="vendorSatatus"></i>|
 	                	<div id="filter3ApprovedPop" class="approved_pop">
 	                    	<ul>
-	                        	<li><input id="c5" type="checkbox"  name="vendorStatus"  value ="Active"      onclick="getVendorContactLists();"  ><label>Active</label></li>
-								<li><input id="c6" type="checkbox"  name="vendorStatus"  value ="In-Active"   onclick="getVendorContactLists();"><label>In-Active</label></li>
+	                        	<li><input id="c5" type="checkbox"  name="vendorStatus"  value ="Active"      onclick="getVendorContactList();"  ><label>Active</label></li>
+								<li><input id="c6" type="checkbox"  name="vendorStatus"  value ="In-Active"   onclick="getVendorContactList();"><label>In-Active</label></li>
 								<!-- <li><input id="c7" type="checkbox"  name="vendorStatus"  value ="New"         onclick="getVendorContactLists();"><label>New</label></li>
 								<li><input id="c8" type="checkbox"  name="vendorStatus"  value ="Negotiation" onclick="getVendorContactLists();"><label>Negotiation</label></li>
 	               				<li><input id="c9" type="checkbox"  name="vendorStatus"  value ="Contract"  onclick="getVendorContactLists();"><label>Contract</label></li> -->
@@ -287,10 +287,10 @@ border:none; background-color: none !important; padding:0 5px !important;
 	                  <li  id="filter4ApprovePop" style="display:none"><i class="fa fa-filter"></i><span>Invitation</span><i class="glyphicon glyphicon-play" id="vendorInvitation"></i>|
 	                	<div id="filter4ApprovedPop" class="approved_pop">
 	                    	<ul>
-	                        	<li><input id="c5" type="checkbox"  name="vendorInvitationStatus"  value ="Sent"      onclick="getVendorContactLists();"  ><label>Resend</label></li>
-								<li><input id="c6" type="checkbox"  name="vendorInvitationStatus"  value ="New"   onclick="getVendorContactLists();"><label>Send</label></li>
-								<li><input id="c7" type="checkbox"  name="vendorInvitationStatus"  value ="Accepted"         onclick="getVendorContactLists();"><label>Accepted</label></li>
-								<li><input id="c8" type="checkbox"  name="vendorInvitationStatus"  value ="Rejected" onclick="getVendorContactLists();"><label>Rejected</label></li>
+	                        	<li><input id="c5" type="checkbox"  name="vendorInvitationStatus"  value ="Sent"      onclick="getVendorContactList();"  ><label>Resend</label></li>
+								<li><input id="c6" type="checkbox"  name="vendorInvitationStatus"  value ="New"   onclick="getVendorContactList();"><label>Send</label></li>
+								<li><input id="c7" type="checkbox"  name="vendorInvitationStatus"  value ="Accepted"         onclick="getVendorContactList();"><label>Accepted</label></li>
+								<li><input id="c8" type="checkbox"  name="vendorInvitationStatus"  value ="Rejected" onclick="getVendorContactList();"><label>Rejected</label></li>
 	                        </ul>
 	                      </div>                	
 	                  </li>
@@ -300,11 +300,11 @@ border:none; background-color: none !important; padding:0 5px !important;
 					   <div id="filter2ApprovePop"><i class="fa fa-filter"></i><span>Tier</span><i class="glyphicon glyphicon-play" style="right:20px;"></i></div>
 		                	<div id="filter2ApprovedPop" class="approved_pop">
 		                    	<ul>
-									<li><input id="c6"  type="checkbox" name="clinetLevel" value ="Tier-1"  onclick="getVendorLists();"><label>Tier-1</label></li>
-									<li><input id="c7"  type="checkbox" name="clinetLevel" value ="Tier-2"  onclick="getVendorLists();"><label>Tier-2</label></li>
-									<li><input id="c8"  type="checkbox" name="clinetLevel" value ="Tier-3"  onclick="getVendorLists();"><label>Tier-3</label></li>
-		               				<li><input id="c9"  type="checkbox" name="clinetLevel" value ="Tier-4"  onclick="getVendorLists();"><label>Tier-4</label></li>
-		               				<li><input id="c10"  type="checkbox" name="clinetLevel"value ="Tier-5"  onclick="getVendorLists();"><label>Tier-5</label></li>
+									<li><input id="c6"  type="checkbox" name="clinetLevel" value ="Tier-1"  onclick="getVendorList();"><label>Tier-1</label></li>
+									<li><input id="c7"  type="checkbox" name="clinetLevel" value ="Tier-2"  onclick="getVendorList();"><label>Tier-2</label></li>
+									<li><input id="c8"  type="checkbox" name="clinetLevel" value ="Tier-3"  onclick="getVendorList();"><label>Tier-3</label></li>
+		               				<li><input id="c9"  type="checkbox" name="clinetLevel" value ="Tier-4"  onclick="getVendorList();"><label>Tier-4</label></li>
+		               				<li><input id="c10"  type="checkbox" name="clinetLevel"value ="Tier-5"  onclick="getVendorList();"><label>Tier-5</label></li>
 		                        </ul>
 		                    </div>                	
 		                </li>  
@@ -346,6 +346,9 @@ border:none; background-color: none !important; padding:0 5px !important;
 		            
             </ul>
             <div class="clearfix"></div>
+             <div class='remove_search'>
+        		          <input type='text' placeholder='search' id='dataTableSearch'/>
+                </div> 
         </div>
         
     <div class="clients_wrap_table datatable_filter">
@@ -772,14 +775,17 @@ function clearSearch(){
 <script> 
 $(document).ready(function(){
 	//getVendorContactLists();
-	 vendorListCheck("${searchValue}","${universalVendorList}","${searchType}","${responderLocationId}","${orgRelationId}","${orgName}","${vendorKeyword}");
-    listChange("listbyVendor");
-	document.getElementById('listOfVendors').value = 'listbyVendor';
+	loadVendorDatatable("${searchValue}","${universalVendorList}","${searchType}","${responderLocationId}","${orgRelationId}","${orgName}","${vendorKeyword}");
+// 	 vendorListCheck("${searchValue}","${universalVendorList}","${searchType}","${responderLocationId}","${orgRelationId}","${orgName}","${vendorKeyword}");
+//     listChange("listbyVendor");
+// 	document.getElementById('listOfVendors').value = 'listbyVendor';
 });
 </script>
 
+<!-- PLEASE DO NOT DELETE COMMENTED SCRIPTS, IF YOU HAVE ANY QUERIES CONTACT RAJASHEKAR -->
+
 <!-- Vendors list preparation from ELK result -->
-<script>
+<!-- <script>
 function preparedVendorsListFromElk(data){
 	var json = JSON.parse(data);
 		   	var result = "";
@@ -889,9 +895,9 @@ function preparedVendorsListFromElk(data){
 			    $("#emptyVendorList").val(json.length)
 			    pagination123456();
 }
-</script>
+</script> -->
 
-<script>
+<!-- <script>
 function preparedVendorsLists(data){
 	
 			var json = JSON.parse(data);
@@ -977,10 +983,10 @@ function preparedVendorsLists(data){
 			    pagination1();
 	    
 }
-</script>
+</script> -->
 
 
-<script>
+<!-- <script>
 function getVendorLists(){
 	closePop();
 	var values = [];
@@ -1001,10 +1007,10 @@ function getVendorLists(){
 	
 	
 }	
-</script> 
+</script>  -->
 
 
-<script>
+<!-- <script>
 function getVendorListsElk(){
 	closePop();
 	var values = [];
@@ -1026,7 +1032,10 @@ function getVendorListsElk(){
 	
 }	
 </script> 
-
+ -->
+ 
+ 
+ <!-- PLEASE DO NOT DELETE COMMENTED SCRIPTS, IF YOU HAVE ANY QUERIES CONTACT RAJASHEKAR -->
 
 
  <script>
@@ -1050,8 +1059,9 @@ function pagination123456(){
 </script>
 
 
+<!-- PLEASE DO NOT DELETE COMMENTED SCRIPTS, IF YOU HAVE ANY QUERIES CONTACT RAJASHEKAR -->
 
-<script>
+<!-- <script>
 function getVendorContactLists(){
 	closePop();
 	var vendorId = [];
@@ -1085,11 +1095,11 @@ function getVendorContactLists(){
 	
 	
 }	
-</script> 
+</script>  -->
 
 <!-- This VendorContactList method  is for getting veendorContacts from ELK  on Windows OnLoad--------- -->
 
-<script>
+<!-- <script>
 function getVendorContactListsELK(){
 	closePop();
 	var vendorId = [];
@@ -1124,10 +1134,10 @@ function getVendorContactListsELK(){
 	 });
 	
 }	
-</script>
+</script> -->
 
 <!-- contact list preparation from ELK result -->
-<script>
+<!-- <script>
 function preparedVendorContactListFromElk(data){
 			var json = JSON.parse(data);
 		   	var result = "";
@@ -1253,10 +1263,10 @@ function preparedVendorContactListFromElk(data){
 			    pagination(); 
 			    
    }
-</script> 
+</script>  -->
 
 
-<script>
+<!-- <script>
 function preparedVendorContactList(data){
 	  
 			var json = JSON.parse(data);
@@ -1375,7 +1385,9 @@ function preparedVendorContactList(data){
 			    
    }
 </script> 
-
+ -->
+ 
+ <!-- PLEASE DO NOT DELETE COMMENTED SCRIPTS, IF YOU HAVE ANY QUERIES CONTACT RAJASHEKAR -->
 
 <div id="popUp"></div>
 
@@ -1395,7 +1407,11 @@ function resendVendorSpocInvitation(spocUserId,orgSpocId,orgRelationId){
 			        success: function(result) {
 			        	 $("#row"+orgSpocId).empty();
 			    	     $("#row"+orgSpocId).html(rowHtmlContent);
+			    	     $("#venselector").removeAttr("style");
+			    		 $("#venselector").css({ display: "block" });
+			    	     $("#venmsgDiv").html("Invitation Sent Successfully..");
 			    	     $("#invitationStatus"+orgSpocId).html("<b class='proj_process'><a href='javascript:void(0)' onClick='resendVendorSpocInvitation("+spocUserId+','+orgSpocId+','+orgRelationId+");'>Resend</a></b>");
+			    	     msgFadein();
 			        },
 			    });
 		 } 
@@ -1449,14 +1465,15 @@ function saveReason1(spocId, orgRelationID){
 		   	type: "POST",
 		    url: sourceleadUrl+"/terminateSpoc?${_csrf.parameterName}=${_csrf.token}&spocId="+spocId+"&reason="+reason,	    	   
 		    success: function(data) {
+		    	getVendorContactList();
 		    	 $("#venselector").removeAttr("style");
 	  			 $("#venselector").css({ display: "block" });
 	  			 $("#venmsgDiv").html("vendor contact removed");
 	  			 $("#popUp").empty();
 	 			 $(".project_inn_mask").fadeOut(200);
 	 			 
-	 			 var table = $('#vendorContactList').DataTable();
-	  		     table.row("#row"+spocId).remove().draw( false );
+// 	 			 var table = $('#vendorContactList').DataTable();
+// 	  		     table.row("#row"+spocId).remove().draw( false );
    			     
 	 			 msgFadein();
 		    }
@@ -1518,7 +1535,9 @@ function pagination(){
 }
 </script>
 
-<script>
+<!-- PLEASE DO NOT DELETE COMMENTED SCRIPTS, IF YOU HAVE ANY QUERIES CONTACT RAJASHEKAR -->
+
+<!-- <script>
 function getClientDetails(){
 	var sourceleadUrl ='${sourceleadUrl}';
 	var loginOrgLocId = '${loginOrgLocId}';
@@ -1635,7 +1654,9 @@ function getClientDetails(){
 	
 	
 }	
-</script> 
+</script>  -->
+
+<!-- PLEASE DO NOT DELETE COMMENTED SCRIPTS, IF YOU HAVE ANY QUERIES CONTACT RAJASHEKAR -->
 
 <script>
 	function vendorSpocSideBar(spocId,ownerId,spocUserId,spocName,tempOwnerId,spocLocationId,orgRelationId,userId) {
@@ -1983,7 +2004,9 @@ function listChange(sel){
 		 document.getElementById("filter3ApprovePop").style.display="none";
 		 document.getElementById("filter4ApprovePop").style.display="none";
 		 //getVendorLists();
-		 getVendorListsElk();
+		 $("#dataTableSearch").val("");
+// 		 getVendorListsElk();
+		 getVendorList();
 	 }
 	 if(sel.value=="listbyContact"){
 		 document.getElementById("vendorContactList").style.display="block";
@@ -2005,7 +2028,9 @@ function listChange(sel){
 		 document.getElementById("filter3ApprovePop").style.display="block";
 		 document.getElementById("filter4ApprovePop").style.display="block";
 		 //getVendorContactLists();
-		 getVendorContactListsELK();
+// 		 getVendorContactListsELK();
+		$("#dataTableSearch").val("");
+		loadVendorContactDataTable("${universalVendorList}");
 	 }
 	 
 }
@@ -2167,8 +2192,8 @@ $(".addcon-pop").click(function(){
 <jsp:include page="vendorBilling.jsp" /> 
 <jsp:include page="vendorAssociatesList.jsp" /> 
 <jsp:include page="vendorNotesList.jsp" />
-
-
+<jsp:include page="vendorListDatatable.jsp" />
+<jsp:include page="vendorContactsDataTable.jsp" />
 
 <!-- Scripts for invitations  -->
 <script>
