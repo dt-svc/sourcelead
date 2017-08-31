@@ -20,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.ProjectMembersHistoryDao;
+import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.ProjectMembersHistory;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 
@@ -285,6 +286,21 @@ public class ProjectMembersHistoryDaoImpl implements ProjectMembersHistoryDao {
 		}
 		
 		return pmh;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<ProjectMembersHistory> getProjectMembersHistoryListByProjectMemberId(Long projectMemberId)
+			throws Exception {
+		
+		logger.debug("In getProjectMembersHistoryListByProjectMemberId method");
+		Session session = this.sessionFactory.getCurrentSession();
+		List<ProjectMembersHistory> pmhList = null;
+		Query pmhListQuery= session.createQuery("from ProjectMembersHistory pmh left join fetch pmh.projectMemberId pm left join fetch pmh.projectClientsId projectClients "
+				+ " left join fetch projectClients.orgLocationsId orgLoc left join fetch orgLoc.user where  pmh.projectMemberId.id = :projectMemberId ");
+		pmhList = pmhListQuery.setLong("projectMemberId", projectMemberId).setCacheable(true).list();
+		return pmhList;
+		
 	}
 
 }
