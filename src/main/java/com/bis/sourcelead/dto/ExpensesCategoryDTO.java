@@ -17,6 +17,8 @@ public class ExpensesCategoryDTO implements Serializable {
 	//storing fields
 	private String categoryType;
 	
+	private Long categoryTypeId;
+	
 	private String expenseDate;
 	
 	private String receiptIssuedBy;
@@ -135,6 +137,14 @@ public class ExpensesCategoryDTO implements Serializable {
 
 	public void setRemovedFilesIds(List<Long> removedFilesIds) {
 		this.removedFilesIds = removedFilesIds;
+	}
+
+	public Long getCategoryTypeId() {
+		return categoryTypeId;
+	}
+
+	public void setCategoryTypeId(Long categoryTypeId) {
+		this.categoryTypeId = categoryTypeId;
 	}
 	
 	
