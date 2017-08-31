@@ -1441,7 +1441,7 @@ function pagination1(){
      		"sSearch": "",
      		 "sZeroRecords": "", "sEmptyTable": ""
      	}
-    })
+    });
 }
 </script>
 

@@ -733,13 +733,12 @@ public class ContractRestController {
 				contract.setRequirementName(contract.getRequirementSubmission().getRequirement().getJobTitle());
 		 	}
 		 	
-		 	if(null != contract.getRequirementSubmission()){
-		 		
+		 	if(null != contract.getCandidate()){
 		 		StringBuilder applicant = new StringBuilder();
-		 		if(null != contract.getRequirementSubmission().getCandidate() && null != contract.getRequirementSubmission().getCandidate().getLastName()){
-		 			contract.setApplicantName(applicant.append(contract.getRequirementSubmission().getCandidate().getFirstName()).append(" ").append(contract.getRequirementSubmission().getCandidate().getLastName()).toString());
+		 		if(null != contract.getCandidate().getFirstName() && null != contract.getCandidate().getLastName()){
+		 			contract.setApplicantName(applicant.append(contract.getCandidate().getFirstName()).append(" ").append(contract.getCandidate().getLastName()).toString());
 		 		}else{
-		 			contract.setApplicantName(applicant.append(contract.getRequirementSubmission().getCandidate().getFirstName()).toString());
+		 			contract.setApplicantName(applicant.append(contract.getCandidate().getFirstName()).toString());
 		 		}
 				
 		 	}
