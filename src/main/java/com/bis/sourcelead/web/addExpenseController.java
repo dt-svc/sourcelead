@@ -23,6 +23,7 @@ import com.bis.sourcelead.entity.ExpensesEntryDocuments;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.enums.Submission_Status;
 import com.bis.sourcelead.service.AddExpensesService;
 import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.ExpensesApprovalService;
@@ -91,19 +92,22 @@ public class addExpenseController {
 				
 		}
 	    
-	    
+		Expenses expense = expensesService.getExpenseById(Long.parseLong(expenseId));
 		if(expenseId != null && null != type && !type.equalsIgnoreCase("rejecting")){
 			expensesApprovalService.updateExpenseStatusByExpenseIdAndReOpenReason(Long.parseLong(expenseId),reason,loginUser,type,Constants.YES);
-		  	
+			if(type.equalsIgnoreCase("accept")){
+				expense.setExpenseStatus(Submission_Status.SUBMITTED);
+				addExpensesService.storeAddExpensesData(expense);
+			}
 		}/*else if(expenseId != null &&  null != type && "reject".equalsIgnoreCase(type) && null != reason && !"".equalsIgnoreCase(reason)){
 			expensesApprovalService.updateExpenseStatusByExpenseIdAndReOpenReason(Long.parseLong(expenseId),reason,loginUser,type,Constants.YES);
 		}*/
 		
 		User superUser = userService.getUserById(Long.parseLong(reOpenedUserId));
-		ExpensesApproverHierarchy sah = expensesApprovalService.getExpensesApproverHierarchyByApproverUserIdAndExpenseId(loginUser.getId(), Long.parseLong(expenseId));
-		Expenses expense = expensesService.getExpenseByExpenseId(Long.parseLong(expenseId));
+		//ExpensesApproverHierarchy sah = expensesApprovalService.getExpensesApproverHierarchyByApproverUserIdAndExpenseId(loginUser.getId(), Long.parseLong(expenseId));
+		
 		if(StringUtils.isNotEmpty(expenseId) && null != type && !type.equalsIgnoreCase("rejecting")){
-			expensesApprovalService.sendReopenExpenseAcceptOrRejectMail (expense,reason,superUser,orgLoc,type,reopenedUser, sah.getExpenseId().getProjectMembers().getProjects().getProjectName());
+			expensesApprovalService.sendReopenExpenseAcceptOrRejectMail (expense,reason,superUser,orgLoc,type,reopenedUser, expense.getProjectMembers().getProjects().getProjectName());
 		}
 		
 		ModelAndView model = new ModelAndView();

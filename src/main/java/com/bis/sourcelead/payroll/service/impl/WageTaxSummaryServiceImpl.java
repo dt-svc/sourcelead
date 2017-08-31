@@ -5,6 +5,8 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -32,14 +34,19 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.bis.sourcelead.SourceleadPasswordEncoder;
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.dto.WagesTaxSummaryDTO;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.payroll.dao.WageTaxSummaryDao;
+import com.bis.sourcelead.payroll.entity.BisUserMapping;
 import com.bis.sourcelead.payroll.entity.EmployerPayrollCost;
+import com.bis.sourcelead.payroll.entity.InvoiceData;
 import com.bis.sourcelead.payroll.entity.PayrollHelper;
 import com.bis.sourcelead.payroll.entity.WageTaxSummary;
 import com.bis.sourcelead.payroll.rest.EmployeePayrollRestController;
 import com.bis.sourcelead.payroll.service.WageTaxSummaryService;
+import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.ConversionUtil;
 
 import org.apache.commons.lang3.StringUtils;
@@ -61,6 +68,9 @@ public class WageTaxSummaryServiceImpl implements WageTaxSummaryService{
 	
 	@Autowired
 	PayrollHelper payrollHelper;
+	
+	@Autowired
+	UserService userService;
 	
 	@Override
 	public WageTaxSummary saveWageTaxSummary(WageTaxSummary wageTaxSummary) throws Exception {
@@ -263,33 +273,42 @@ public class WageTaxSummaryServiceImpl implements WageTaxSummaryService{
 	
 	
 	@Override
-	public List<WageTaxSummary> getWagesAndTaxListByOrgLocationId(OrgLocations orgLocation)
+	public ResponseList<WageTaxSummary> getWagesAndTaxListByOrgLocationId(OrgLocations orgLocation,WagesTaxSummaryDTO wagesTaxSummaryDTO)
 	{
-		List<WageTaxSummary> wagesAndTaxList  = wageTaxSummaryDao.getWagesAndTaxListByOrgLocationId(orgLocation);
-		
-		if(wagesAndTaxList != null){
-			for(WageTaxSummary wts : wagesAndTaxList){
-				StringBuilder sb = new StringBuilder();
-				if(null !=  wts.getFromDate()){
-					wts.setFromDateStr(conversionUtil.getDateAsString(wts.getFromDate()));
-				}
-				if(null != wts.getToDate()){
-					wts.setToDateStr(conversionUtil.getDateAsString(wts.getToDate()));
-				}
-				
-				if(wts.getCheckDate() !=null   ){
-					wts.setCheckDateStr(conversionUtil.getDateAsString(wts.getCheckDate()));
-				}
-				if(wts.getCheckNo() != null){
-					wts.setCheckNo(wts.getCheckNo());
-				}
-				String ssn = wts.getSsnNumber();
-				String[] arr = ssn.split("-");
-				sb.append("xxx").append("-").append("xx").append("-").append(arr[0]);
-				wts.setSsnNumber(sb.toString());
-			}
-		}
-		return wagesAndTaxList;
+		return wageTaxSummaryDao.getWagesAndTaxListByOrgLocationId(orgLocation,wagesTaxSummaryDTO);
+	//TODO 	please do not remove
+//		if(wagesAndTaxList != null){
+//			for(WageTaxSummary wts : wagesAndTaxList){
+//				StringBuilder sb = new StringBuilder();
+//				if(null !=  wts.getFromDate()){
+//					wts.setFromDateStr(conversionUtil.getDateAsString(wts.getFromDate()));
+//				}
+//				if(null != wts.getToDate()){
+//					wts.setToDateStr(conversionUtil.getDateAsString(wts.getToDate()));
+//				}
+//				
+//				if(wts.getCheckDate() !=null   ){
+//					wts.setCheckDateStr(conversionUtil.getDateAsString(wts.getCheckDate()));
+//				}
+//				if(wts.getCheckNo() != null){
+//					wts.setCheckNo(wts.getCheckNo());
+//				}
+//				String ssn = wts.getSsnNumber();
+//				String[] arr = ssn.split("-");
+//				sb.append("xxx").append("-").append("xx").append("-").append(arr[0]);
+//				wts.setSsnNumber(sb.toString());
+//			}
+//			
+//			Collections.sort(wagesAndTaxList, new Comparator() {  
+//	            @Override  
+//	            public int compare(Object obj1, Object obj2) {  
+//	            	WageTaxSummary wageTaxSummary1 = (WageTaxSummary)obj1;  
+//	            	WageTaxSummary wageTaxSummary2 = (WageTaxSummary)obj2; 
+//	            	return wageTaxSummary1.getEmployeeName().compareToIgnoreCase(wageTaxSummary2.getEmployeeName());  
+//	            }  
+//	        });
+//		}
+//		return new ResponseList<>();
 	}
 
 	@Override
@@ -506,5 +525,77 @@ public class WageTaxSummaryServiceImpl implements WageTaxSummaryService{
 		}
 		return date;
 	}
-	
+
+	@Override
+	public List<WageTaxSummary> getWagesAndTaxListByEmployeeId(OrgLocations orgLocations, Long empId) throws Exception {
+		
+
+		List<WageTaxSummary> wagesAndTaxList = wageTaxSummaryDao.getWagesAndTaxListByEmployeeId(orgLocations,empId);
+		if(wagesAndTaxList != null){
+			for(WageTaxSummary wts : wagesAndTaxList){
+				StringBuilder sb = new StringBuilder();
+				if(null !=  wts.getFromDate()){
+					wts.setFromDateStr(conversionUtil.getDateAsString(wts.getFromDate()));
+				}
+				if(null != wts.getToDate()){
+					wts.setToDateStr(conversionUtil.getDateAsString(wts.getToDate()));
+				}
+				
+				if(wts.getCheckDate() !=null   ){
+					wts.setCheckDateStr(conversionUtil.getDateAsString(wts.getCheckDate()));
+				}
+				if(wts.getCheckNo() != null){
+					wts.setCheckNo(wts.getCheckNo());
+				}
+				String ssn = wts.getSsnNumber();
+				String[] arr = ssn.split("-");
+				sb.append("xxx").append("-").append("xx").append("-").append(arr[0]);
+				wts.setSsnNumber(sb.toString());
+			}
+			
+			Collections.sort(wagesAndTaxList, new Comparator() {  
+	            @Override  
+	            public int compare(Object obj1, Object obj2) {  
+	            	WageTaxSummary wageTaxSummary1 = (WageTaxSummary)obj1;  
+	            	WageTaxSummary wageTaxSummary2 = (WageTaxSummary)obj2; 
+	            	return wageTaxSummary1.getEmployeeName().compareToIgnoreCase(wageTaxSummary2.getEmployeeName());  
+	            }  
+	        });
+		}
+		return wagesAndTaxList;
+	}
+
+	@Override
+	public int mergeUser(JSONObject jsonObj, OrgLocations orgLocation) throws Exception {
+		BisUserMapping bisuser = null;
+		int count =0;
+		if(jsonObj.has("slUserId") && jsonObj.has("importedUserId")){
+			Long sluserId = Long.parseLong(jsonObj.getString("slUserId"));
+			Long importedUserId = Long.parseLong(jsonObj.getString("importedUserId"));
+			User slUser = userService.getUserById(sluserId);
+			List<WageTaxSummary> importUserList = wageTaxSummaryDao.getWagesAndTaxListByEmployeeId(orgLocation, importedUserId);
+			for(WageTaxSummary wageTaxSummary:importUserList){
+				wageTaxSummary.setUserId(slUser);
+				wageTaxSummaryDao.saveWageTaxSummary(wageTaxSummary);
+				count++;
+			}
+
+	}
+		return count;
+	}
+
+	@Override
+	public List<WageTaxSummary> getAllImportedUsers(OrgLocations orgLocations) throws Exception {
+		return wageTaxSummaryDao.getAllImportedUsers(orgLocations);
+	}
+
+	@Override
+	public List<WageTaxSummary> getMappedUsersListByOrgLocationId(Long locationId) throws Exception {
+		return wageTaxSummaryDao.getMappedUsersListByOrgLocationId(locationId);
+	}
+
+	@Override
+	public List<WageTaxSummary> getUniqueWagesAndTaxListByOrgLocationId(OrgLocations orgLocation) throws Exception {
+		return wageTaxSummaryDao.getUniqueWagesAndTaxListByOrgLocationId(orgLocation);
+	}
 }

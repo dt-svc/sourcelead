@@ -390,6 +390,7 @@ public class RequirementListRestController {
 
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		String loginUserRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+		
 		if (requirementId != null && !requirementId.isEmpty()) {
 			List<RequirementSubmission> requirementStatusList = null;
 			List<RequirementSubmission> submissionList = new ArrayList<RequirementSubmission>();
@@ -616,6 +617,7 @@ public class RequirementListRestController {
 						 */
 						submissionList.add(requirementSubmission);
 					}
+					requirementSubmission.setRequirementCurrentStatus(requirementSubmission.getRequirement().getRequirementSubmissionStatus());
 				}
 			}
 			resultJson = commonUtil.toJSON(submissionList);
@@ -1505,7 +1507,7 @@ public class RequirementListRestController {
 				if (sourceAsString != null) {
 					Requirement requirement = null;
 					RequirementIndex requirementIndex = mapper.readValue(sourceAsString, RequirementIndex.class);
-	            	if(userRole != null&&( "ROLE_ADMIN".equalsIgnoreCase(userRole) || "ROLE_SOURCELEAD_ADMIN".equalsIgnoreCase(userRole))){
+	            	if(userRole != null&&( "ROLE_ADMIN".equalsIgnoreCase(userRole) || (StringUtils.isNotEmpty(requirementIndex.getReleaseJobToAllUsers()) && requirementIndex.getReleaseJobToAllUsers().equalsIgnoreCase("Y") && !"DRAFT".equalsIgnoreCase(requirementIndex.getRequirementStatus()) && !"SUBMITTED".equalsIgnoreCase(requirementIndex.getRequirementStatus()) && !"REJECTED".equalsIgnoreCase(requirementIndex.getRequirementStatus()))|| "ROLE_SOURCELEAD_ADMIN".equalsIgnoreCase(userRole))){
 	            		requirement = getData(requirementIndex,user,orgLocation);
 	            	}
 	            	else if(requirementIndex.getReqCreatedBy().equals(user.getId()) && requirementIndex.getIsTemplate()!=null && requirementIndex.getIsTemplate().equalsIgnoreCase("Y"))

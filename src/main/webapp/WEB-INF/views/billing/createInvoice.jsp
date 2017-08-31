@@ -117,7 +117,7 @@ function errRemoveClientContact(){
 							</div>
 						</div>
 						<div class="form-group">
-							<label class="col-md-3">Due Date<span class="text-danger">&nbsp;*</span></label>
+							<label class="col-md-3" >Due Date<span class="text-danger">&nbsp;*</span></label>
 							<div class="col-md-9" id="errDuedate">
 								<input type="text" class="form-control calendar" id="dueDate"
 									name="dueDate" value="" placeholder="Due Date" id="dueDate"
@@ -917,7 +917,7 @@ function cancel(){
 			divTsTd7Str = divTsTd7Str.replace(/REPLACEROWID/g, (maxRowNum));
 			cell1.innerHTML = divTsTd7Str;
 			
-			
+
 			$('#'+maxRowNum+'candidateId').val(checkbox_value[0]);
 			$('#'+maxRowNum+'candidateName').val(checkbox_value[1]);
 			getSow(checkbox_value[0],maxRowNum); 
@@ -1010,7 +1010,7 @@ function cancel(){
 	                 	 result = result +'       </div>'; 
 	                 	 result = result +'   </div>'; 
 	                 	 result = result +'   <div class="modal-footer">';
-	                 	 result = result +'     <button data-dismiss="modal" class="btn btn-primary" type="button" onClick="addInvoice();">Add</button>';
+	                 	 result = result +'     <button data-dismiss="modal" class="btn btn-primary" type="button" onClick="addInvoice();$(this).blur();">Add</button>';
 	                 	 result = result +'   </div>'; 
 	                 	 $("#associatesListDiv").empty(); 
 	                     $("#associatesListDiv").append(result); 

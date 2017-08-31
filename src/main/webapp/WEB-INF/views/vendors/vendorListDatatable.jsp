@@ -6,27 +6,33 @@
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags"%>
 
 <script>
-	function loadClientDatatable(clientSearchResult, clientKeyword,responderLocationId, orgRelationId, orgName) {
-		if (clientSearchResult == "clientSearchResult") {
-			getClientList();
-			$("#dataTableSearch").val(searchValue);
-		} else {
-			if (clientKeyword == "clientSearch") {
-				clientSideBar(responderLocationId, orgRelationId, orgName);
-				getClientList();
-			} else {
-				getClientList();
-			}
-			listChange("listbyVendor");
-			document.getElementById('listOfVendors').value = 'listbyVendor';
-		}
+	function loadVendorDatatable(searchValue,universalvendorSearchList,searchType,responderLocationId,orgRelationId,orgName,vendorKeyword) {
+		if(universalvendorSearchList=="universalVendorList")	 {
+			var sourceleadUrl ='${sourceleadUrl}';
+				 $.ajax({
+			         type : "POST",
+			          url: sourceleadUrl+"/getUniversalSearchVendorList?${_csrf.parameterName}=${_csrf.token}&searchValue="+searchValue+"&searchType="+searchType,   
+			          success :function(data) {
+			        	  getVendorList();
+			         },
+			          
+			     }); 
+			  }else{
+				  if(vendorKeyword == "vendorSearch" && vendorKeyword != null && vendorKeyword !="" && vendorKeyword != 'undefined'){
+					  vendorSideBar(responderLocationId,orgRelationId,orgName);
+				    	getVendorList();
+				    }
+				else{
+					getVendorList();
+					}
+			  }
 
 	}
 	
 	
 
-function getClientList(){
-	var responderType = "Client";
+function getVendorList(){
+	var responderType = "Vendor";
 	var sourceleadUrl ='${sourceleadUrl}';
 	var values = [];
 	$('input:checkbox[name=clinetLevel]:checked').each(function() 
@@ -40,62 +46,60 @@ function getClientList(){
 			dateFormat : 'yyyy/mm/dd'
 		};
 
-	 if ($('#clientlist_form').validate(false, validationSettings)){ 
-			var frm = $('#clientlist_form').serializeFormJSON();
+	 if ($('#vendorList_form').validate(false, validationSettings)){ 
+			var frm = $('#vendorList_form').serializeFormJSON();
 			var con = JSON.stringify(frm);
 			con = con.replace(/[{}]/g, ""); 
 		    var jsonData = encodeURIComponent(con);
-			var form = $('#clientlist_form')[0];
+			var form = $('#vendorList_form')[0];
 	  		var formData = new FormData(form); 
 	  		var searchValue = $("#dataTableSearch").val();
 	  		searchValue = searchValue ? searchValue : "";
 	  		var url = sourceleadUrl+"/searchClientDetails?responderType="+responderType+"&searchValue="+searchValue+"&values="+values;
-	  	    url += "&"+$($('#clientlist_form')[0]).serialize();  
-	  		prepareClientList(url);
+	  	    url += "&"+$($('#vendorList_form')[0]).serialize();  
+	  		prepareVendorList(url);
 	  		closePop();
 			return true;
 		 }else{ 
 				return false;
 		 } 
 	
-	 $('body').on('blur', '#clientlist_form', function() {
-			$("#clientlist_form").showHelpOnFocus();
-			$("#clientlist_form").validateOnBlur(false, validationSettings);
+	 $('body').on('blur', '#vendorList_form', function() {
+			$("#vendorList_form").showHelpOnFocus();
+			$("#vendorList_form").validateOnBlur(false, validationSettings);
 		}); 
 }	
 
-	function prepareClientList(url) {
-		$("#clientList").removeAttr("style");
-		$("#clientList").empty();
+	function prepareVendorList(url) {
+		$("#vendorList").removeAttr("style");
+		$("#vendorList").empty();
 		var result = "";
-		result = result + "<table id='clientListPagination' class='display' cellspacing='0' width='100%' >";
-		result = result + "<thead>";
-		result = result + "  <tr>";
-		result = result + "    <th>Client Name</th>";
-		result = result + "    <th>Website</th>";
-		result = result + "    <th>Location</th>";
-		result = result + "    <th>Tier</th>";
-		result = result + "    <th>Created By</th>";
-		result = result + "    <th>No.of Contacts</th>";
-		result = result + "  </tr>";
-		result = result + "</thead>";
-		result = result + "<tbody>";
-		result = result + " </tbody>";
-		result = result + "</table>";
-		$("#clientList").append(result);
-		clientpagination(url);
+	   	result = result +'<thead>';
+	   	result = result +'<tr>';
+	   	result = result +' <th>Vendor Name</th>';
+	   	result = result +' <th>Website</th>';
+	   	result = result +'<th>Location</th>';
+	   	result = result +'<th>Tier</th>';
+	 	result = result +'<th>Created By</th>';
+	   	result = result +'<th>Released Jobs</th>';
+	   	result = result +'<th>No.of Contacts</th>';
+	   	result = result +'</tr>';
+	   	result = result +'</thead>';
+		$("#vendorContactList").hide();
+		$("#vendorList").append(result);
+		vendorpagination(url);
 	}
 	
-	function clientpagination(url){
+	function vendorpagination(url){
 		var colIndex = 0;
-		 $('#clientListPagination').DataTable( { 
+		 $('#vendorList').DataTable( { 
 	    	"processing": true,
 	        "serverSide": true,
 	        "searching": false,
 	        "ajax": $.fn.dataTable.pipeline( {
 	            url: url,
 	            method: 'POST',
-	            pages: 1
+	            pages: 10
 	        }),
 	        "columns": [
 	            { "data": "orgName" },
@@ -103,27 +107,30 @@ function getClientList(){
 	            { "data": "initiatorCountry" },
 	            { "data": "initiatorLevel"},
 	            { "data": "createdBy" },
+	            { "data": "releasedJobsCount" },
 	            { "data": "noContacts" }
 	        ],
 	        "columnDefs": [ {
 		    	  	"targets": colIndex++,
-		    	  	/*"className": "tbldata-dotdot_50",*/
 		    	  	"data": "orgName",
 		    	  	"render": function(data, type, report, meta) {
+		    	  		$("#emptyVendorList").val(1);
+		    	  		var pattern = new RegExp(/["'"]/g);
+				   		var orgName = (report.orgName).replace(pattern, "\\'");
 		    	  		var result = "";
-		    	  		  '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CLIENT\',\'ROLE_VIEW_EDIT_CLIENT\')">';
+		    	  		'<sec:authorize access="hasAnyRole(\"ROLE_VIEW_VENDOR\",\"ROLE_VIEW_EDIT_VENDOR\")">';
 			   			result = result +'<td>';
-			   			result = result +'<div class="proj_show" onclick="clientSideBar(\''+report.responderLocationId+'\',\''+report.orgRelationId+'\',\''+report.orgName+'\');"><span class="tbldata-dotdot-vsm" title="'+report.orgName+'">'+report.orgName+'</span><i class="fa fa-binoculars"></i>';
+			   			result = result +'<div class="proj_show" onclick="vendorSideBar(\''+report.responderLocationId+'\',\''+report.orgRelationId+'\',\''+orgName+'\');"><span class="tbldata-dotdot-me pull-left" title="'+report.orgName+'">'+report.orgName+'</span><i class="fa fa-binoculars pull-right"></i>';
 			   			result = result +'</div>';
 			   			result = result +'</td>';
-			   		   '</sec:authorize>';
+			   		'</sec:authorize>';
 			   		
-					'<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_CLIENT\',\'ROLE_VIEW_EDIT_CLIENT\')">';
+			   		'<sec:authorize access="!hasAnyRole(\"ROLE_VIEW_VENDOR\",\"ROLE_VIEW_EDIT_VENDOR\")">';
 						result = result +'<td>';
-						result = result +'<div class="proj_show" ><span class="tbldata-dotdot-vsm" title="${report.orgName}">'+report.orgName+'</span>';
+						result = result +'<div class="proj_show"><span class="tbldata-dotdot-me" title="${report.orgName}">'+report.orgName+'</span>';
 						result = result +'</div>';
 						result = result +'</td>';
-					'</sec:authorize>';  
+					'</sec:authorize>';
 			              return  result;
 		    	  	}
 		      },{
@@ -132,16 +139,16 @@ function getClientList(){
 	        	"sortable": false,
 	            "render": function ( data, type, report, meta ) {
 	            	    var result = "";
-	            		if( report.website != null && report.website != '' && report.website != 'undefined'){
-	            			result = result +'<td>';
+	            	    if( report.website != null && report.website != '' && report.website != 'undefined'){
+	    		   			result = result +'<td>';
 	    		   			result = result +'<div>';
-	    		   			result = result +'<span class="tbldata-dotdot-sm" title='+report.website+'>'+report.website+'</span>';
+	    		   			result = result +'<span class="tbldata-dotdot-vsm" title='+report.website+'>'+report.website+'</span>';
 	    		   			result = result +'</div>';
 	    		   			result = result +'</td>';
 	    		   		}else{
 	    		   			result = result +'<td><div>--</div></td>';
 	    		   		}
-		              return result;
+	            	    return  result;
 	            }
 	          }, {
 	              "targets": colIndex++,
@@ -161,7 +168,7 @@ function getClientList(){
 	    		   		if(location != null && location  != '' && location  != 'undefined'){
 	    		   			result = result +'<td>';
 	    		   			result = result +'<div>';
-	    		   			result = result +'<span class="tbldata-dotdot-me" title="'+location+'">'+location+'</span>';
+	    		   			result = result +'<span class="tbldata-dotdot" title="'+location+'">'+location+'</span>';
 	    		   			result = result +'</div>';
 	    		   			result = result +'</td>';
 	    		   		}else{
@@ -175,27 +182,40 @@ function getClientList(){
 	            	"sortable": false,
 	                "render": function ( data, type, report, meta ) {
 	                	  var result = "";
-	                		result = result +' <td><div><span class="tbldata-dotdot-vsm" title="'+report.initiatorLevel+'">'+report.initiatorLevel+'</span>';
+	                	  result = result +' <td><div><span class="tbldata-dotdot_80" title="'+report.initiatorLevel+'">'+report.initiatorLevel+'</span>';
 	    	              return result;
 	                }
 	          },{
-		    	  	"targets": colIndex++,
+	        	  "targets": colIndex++,
 		    	  	"data": "createdBy",
 		    	  	"render": function(data, type, report, meta) {
 		    	  		var result = "";
 		    	  		if(null != report.createdBy && report.createdBy  != '' && report.createdBy  != 'undefined'){
-		    				result = result +' <td><div>'+report.createdBy+'</div></td>';
-		    		   	}else{
-		    		   		result = result +'<td><div>---</div></td>';
-		    		   	}
+							result = result +' <td><div class="tbldata-dotdot-vsm">'+report.createdBy+'</div></td>';
+					   	}else{
+					   		result = result +'<td><div>---</div></td>';
+					   	}
 		    	  	   return result;
 		    	  	}
+	                
+	          },{
+	        	  "targets": colIndex++,
+	                "data": "releasedJobsCount",
+	                "render": function ( data, type, report, meta ) {
+	                	  var result = "";
+	                	  result = result +' <td><div class="tbldata-dotdot_80">'+report.releasedJobsCount+'</div></td>';
+	    	              return result;
+	                } 	
 		    	  },{
 		    	  	"targets": colIndex++,
 		    	  	"data": "noContacts",
 		    	  	"render": function(data, type, report, meta) {
 		    	  		var result = "";
-		    	  		result = result +'<td><div >'+report.noContacts+'</div></td>';
+		    	  		if(null != report.noContacts && report.noContacts  != '' && report.noContacts  != 'undefined'){
+							result = result +'<td><div class="tbldata-dotdot_80">'+report.noContacts+'</div></td>';
+						}else{
+							result = result +'<td><div >---</div></td>';
+						}
 		    	  		 return result;
 		    	  	}
 		    	  }],
@@ -211,11 +231,10 @@ function getClientList(){
 		     		
 		     }
 	    } );
-	    $("#clientListPagination").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>"); 
 	    $("input[type=search]").hide();
 	    $("#dataTableSearch").keyup(function(e) {
 	    	   if(e.which === 13) {
-	    		   getClientList();
+	    		   getVendorList();
 	    	   }
 	    	});
 }

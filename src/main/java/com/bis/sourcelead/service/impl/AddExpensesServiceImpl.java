@@ -107,6 +107,11 @@ public List<ProjectMembers> getAllProjectsForExpenses(OrgLocations orgLoc,User l
 	}
 
 @Override
+public Expenses storeAddExpensesData(Expenses expenses) throws Exception{
+	return addExpensesDao.storeAddExpensesData(expenses);
+}
+
+@Override
 public void storeAddExpensesData(JSONObject jsonObj, User loginUser, OrgLocations orgLoc,MultipartHttpServletRequest request,String status,String currencyCode) throws NumberFormatException, Exception {
 	Expenses expenses = null;
 	ProjectMembers projMembers = null;
@@ -114,7 +119,7 @@ public void storeAddExpensesData(JSONObject jsonObj, User loginUser, OrgLocation
 	//SimpleDateFormat dateFormat=orgLoc.getLocFullFormDateFormatter();
 	
 	if (jsonObj.has("expenseId") && !(jsonObj.getString("expenseId").isEmpty())){
-		expenses = expensesService.getExpenseByExpenseId(Long.parseLong(jsonObj.getString("expenseId")));
+		expenses = expensesService.getExpenseById(Long.parseLong(jsonObj.getString("expenseId")));
 	 }else{
 		 expenses = new Expenses();
 	 }

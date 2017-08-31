@@ -16,7 +16,11 @@ import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
 import org.hibernate.annotations.Type;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "CANDIDATE_ON_BOARDING", catalog = "sourcelead")
@@ -30,15 +34,17 @@ private static final long serialVersionUID = 1L;
     @Column(name = "ID", nullable = false)
     private Long id;
 	
-	
+	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "CANDIDATE_ID")
 	private Candidate candidateId;
 	
+	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "OFFER_ID")
 	private RequirementOffers offerId;
 	
+	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "BOARDING_USER_ID")
 	private User onboardingUser;
@@ -81,10 +87,12 @@ private static final long serialVersionUID = 1L;
 	@Column(name = "COMPANY_EMAIL")
 	private String companyEmail;
 	
+	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "DEPARTMENT_ID")
 	private Department departmentId;
 	
+	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "ROLE_ID")
 	private Roles roleId;
@@ -98,10 +106,12 @@ private static final long serialVersionUID = 1L;
 	@Column(name = "SALARY_RATE")
 	private String salaryRate;
 	
+	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "MANAGER_USER_ID")
 	private User managerUserId;
 	
+	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "TEAM_ID")
 	private Team teamId;
@@ -129,6 +139,7 @@ private static final long serialVersionUID = 1L;
 	@Type(type="text")
 	private String onboardTemplateId;
 	
+	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "ORG_LOCATION_ID")
 	private OrgLocations orgLocationId;
@@ -183,6 +194,7 @@ private static final long serialVersionUID = 1L;
 	private Long onBoardManagerId;
 	
 	@Transient
+	@JsonProperty
 	private Long onBoardTeamId;
 	
 	@Transient
@@ -578,6 +590,9 @@ private static final long serialVersionUID = 1L;
 	}
 
 	public Long getOnBoardTeamId() {
+		if(teamId != null){
+			onBoardTeamId = teamId.getId();
+		}
 		return onBoardTeamId;
 	}
 

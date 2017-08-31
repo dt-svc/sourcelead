@@ -17,6 +17,8 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.User;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "WAGE_TAX_SUMMARY", catalog = "sourcelead")
@@ -87,6 +89,10 @@ public class WageTaxSummary implements Serializable {
 	@Column(name = "SSN_NUMBER")
 	private String ssnNumber;
 	
+	@ManyToOne
+	@JoinColumn(name = "USER_ID", nullable = false)
+	private User userId;
+	
 
 	@Column(name = "CREATED_DATE")
 	private Date createdDate;
@@ -101,12 +107,15 @@ public class WageTaxSummary implements Serializable {
 	private String updatedBy;
 	
 	@Transient
+	@JsonProperty
 	private String fromDateStr;
 	
 	@Transient
+	@JsonProperty
 	private String toDateStr;
 	
 	@Transient
+	@JsonProperty
 	private String checkDateStr;
 
 	public Long getId() {
@@ -331,6 +340,14 @@ public class WageTaxSummary implements Serializable {
 
 	public void setCheckDateStr(String checkDateStr) {
 		this.checkDateStr = checkDateStr;
+	}
+
+	public User getUserId() {
+		return userId;
+	}
+
+	public void setUserId(User userId) {
+		this.userId = userId;
 	}
 	
 }
