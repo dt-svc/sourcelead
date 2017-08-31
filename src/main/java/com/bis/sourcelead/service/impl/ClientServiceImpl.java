@@ -698,6 +698,7 @@ public class ClientServiceImpl implements ClientService {
 				if (jsonObj.has("clientName") && jsonObj.getString("clientName") != null
 						&& !jsonObj.getString("clientName").isEmpty()) {
 					org.setOrgName(jsonObj.getString("clientName"));
+					orgLocations.setOrgLocationName(jsonObj.getString("clientName"));
 				}
 
 				if (jsonObj.has("companyWebsite") && jsonObj.getString("companyWebsite") != null
@@ -819,6 +820,7 @@ public class ClientServiceImpl implements ClientService {
 			if (null != org) {
 				if (jsonObj.getString(vendorName) != null && !jsonObj.getString(vendorName).isEmpty()) {
 					org.setOrgName(jsonObj.getString(vendorName));
+					orgLocations.setOrgLocationName(jsonObj.getString(vendorName));
 				}
 
 				if (jsonObj.has("companyWebsite") && jsonObj.getString(companyWebsite) != null
