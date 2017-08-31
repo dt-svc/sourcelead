@@ -1,5 +1,6 @@
 package com.bis.sourcelead.payroll.service;
 
+import java.util.Date;
 import java.util.List;
 
 import org.json.JSONObject;
@@ -29,5 +30,14 @@ public interface WageTaxSummaryService {
 	List<WageTaxSummary> getMappedUsersListByOrgLocationId(Long locationId)throws Exception;
 
 	List<WageTaxSummary> getUniqueWagesAndTaxListByOrgLocationId(OrgLocations orgLocation)throws Exception;
+	
+	/*
+	 *this service is used to get wagetaxsummary details of particular employee on particular date  
+	 */
+	WageTaxSummary getWageTaxSummaryByEmpIdandDuration(String EmpId,Long locationId,Date startDate, Date endDate);
+	
+	int getWageTaxSummaryVersionByEmpId(String EmpId,Long locationId);
+	
+	
 
 }

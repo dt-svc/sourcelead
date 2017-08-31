@@ -3,7 +3,9 @@ package com.bis.sourcelead.payroll.service.impl;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.text.DateFormat;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -25,6 +27,9 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,6 +50,7 @@ import com.bis.sourcelead.payroll.entity.WageTaxSummary;
 import com.bis.sourcelead.payroll.rest.EmployeePayrollRestController;
 import com.bis.sourcelead.payroll.service.WageTaxSummaryService;
 import com.bis.sourcelead.service.UserService;
+import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.ConversionUtil;
 
 import org.apache.commons.lang3.StringUtils;
@@ -97,11 +103,26 @@ public class WageTaxSummaryServiceImpl implements WageTaxSummaryService{
 			int numberOfSheets = workbook.getNumberOfSheets();
 			Map<String, String> map = new HashMap<String, String>();
 			int isValid = 0;
+			
+			DateTime zoned = new DateTime();
+			DateTimeFormatter outputFormatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'23:59:59");
+			DateTimeFormatter outputFormatter1 = DateTimeFormat.forPattern("yyyy-MM-dd'T'00:00:00");
+			DateFormat ts = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			
+			DateTime oneDay = zoned;
+			String oneDayStartDate = outputFormatter1.print(oneDay);
+			String oneDayStartDateString = CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE, Constants.UTC_TIMEZONE, oneDayStartDate);
+			Date startDate = ts.parse(oneDayStartDateString);
+			String oneDayEndDate = outputFormatter.print(oneDay);
+			String oneDayEndDateString = CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE, Constants.UTC_TIMEZONE, oneDayEndDate);
+			Date endDate = ts.parse(oneDayEndDateString);
+			
+			
 			for (int i = 0; i < numberOfSheets; i++) {
 				Sheet sheet = workbook.getSheetAt(i);
 				Iterator<Row> rowIterator = sheet.iterator();
 				String emppID = null;
-				
+				int version;
 				if(i == 0){
 					isValid =  payrollHelper.isValidTemplateForWagesTaxSummary(rowIterator);
 				}
@@ -117,6 +138,12 @@ public class WageTaxSummaryServiceImpl implements WageTaxSummaryService{
 							if (row.getCell(0) != null && !"".equalsIgnoreCase(row.getCell(0).toString())) {
 								String empID = getCellValueAsString(row.getCell(0), fileName);
 								emppID = empID.split("\\.")[0];
+							}
+							
+							if(emppID != null){
+								version = getWageTaxSummaryVersionByEmpId(emppID, orgLocation.getId());
+								version += 1;
+								wageTaxSummary.setVersion(version);
 							}
 
 							float gross = 0f;
@@ -356,6 +383,7 @@ public class WageTaxSummaryServiceImpl implements WageTaxSummaryService{
 								if (row.getCell(0) != null && !"".equalsIgnoreCase(row.getCell(0).toString())) {
 									String empId = getCellValueAsString(row.getCell(0), fileName);
 									employeeId = empId.split("\\.")[0];
+									
 								} 
 								if(employeeId !=null){
 									wageTaxSummary.setEmployeeId(employeeId);
@@ -595,5 +623,17 @@ public class WageTaxSummaryServiceImpl implements WageTaxSummaryService{
 	@Override
 	public List<WageTaxSummary> getUniqueWagesAndTaxListByOrgLocationId(OrgLocations orgLocation) throws Exception {
 		return wageTaxSummaryDao.getUniqueWagesAndTaxListByOrgLocationId(orgLocation);
+	}
+
+	@Override
+	public WageTaxSummary getWageTaxSummaryByEmpIdandDuration(String EmpId,Long locationId,Date startDate, Date endDate)
+	{
+		return wageTaxSummaryDao.getWageTaxSummaryByEmpIdandDuration(EmpId,locationId,startDate,endDate);
+	}
+
+	@Override
+	public int getWageTaxSummaryVersionByEmpId(String EmpId, Long locationId)
+	{
+		return wageTaxSummaryDao.getWageTaxSummaryVersionByEmpId(EmpId, locationId);
 	}
 }

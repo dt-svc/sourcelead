@@ -1,5 +1,6 @@
 package com.bis.sourcelead.payroll.dao.impl;
 
+import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
@@ -43,7 +44,7 @@ public class HrDeductionsDaoImpl implements HrDeductionsDao{
 	{
 		Session session = this.sessionFactory.getCurrentSession();
 		List<HrDeductions> hrdeductionlist = null;
-		String query = "from HrDeductions hrd  left join fetch hrd.orgLocationId where hrd.orgLocationId.id =:orgLocationId";
+		String query = "from HrDeductions hrd  left join fetch hrd.orgLocationId where hrd.orgLocationId.id =:orgLocationId and hrd.version = (SELECT MAX(hr.version)  FROM HrDeductions hr where hr.orgLocationId.id =:orgLocationId)";
 		hrdeductionlist = session.createQuery(query).setLong("orgLocationId", orgLocation.getId()).setCacheable(true).list();
 		if(hrdeductionlist != null && hrdeductionlist.size() >0)
 		{
@@ -79,6 +80,35 @@ public class HrDeductionsDaoImpl implements HrDeductionsDao{
 			return hrdeductionlist;
 		}
 		return hrdeductionlist;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public HrDeductions getHrDeductionsByEmpIdandDuration(String empId, Long locationId, Date startDate, Date endDate)
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		List<HrDeductions> hrDeductionslist = null;
+		String query = "from HrDeductions hr where hr.orgLocationId.id =:orgLocationId and hr.employeeId =:empId and ( hr.createdDate >= :startDateUTC and hr.createdDate <= :endDateUTC )";
+		hrDeductionslist = session.createQuery(query).setLong("orgLocationId", locationId).setString("empId", empId).setParameter("startDateUTC", startDate).setParameter("endDateUTC", endDate).setCacheable(true).list();
+		if(hrDeductionslist != null && hrDeductionslist.size() >0)
+		{
+			return hrDeductionslist.get(0);
+		}
+		return null;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public int getHrDeductionsVersionByEmpId(String empId, Long locationId)
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "select hr.version from HrDeductions hr where hr.version = (SELECT MAX(hrd.version)  FROM HrDeductions hrd where hrd.orgLocationId.id =:orgLocationId and hrd.employeeId =:empId) and hrd.employeeId =:empId";
+		List<Integer> version = session.createQuery(query).setLong("orgLocationId", locationId).setString("empId", empId).setCacheable(true).list();
+		Integer count = 0;
+		if(version != null && !version.isEmpty()){
+				count = version.get(0).intValue();
+		}
+		return count;
 	}
 
 }

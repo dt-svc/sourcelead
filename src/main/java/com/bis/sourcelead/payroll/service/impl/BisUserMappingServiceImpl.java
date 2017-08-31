@@ -76,6 +76,7 @@ public class BisUserMappingServiceImpl implements BisUserMappingService {
 			for (int i = 0; i < numberOfSheets; i++) {
 				Sheet sheet = workbook.getSheetAt(i);
 				Iterator<Row> rowIterator = sheet.iterator();
+				int version;
 				while (rowIterator.hasNext()) {
 					Row row = rowIterator.next();
 					if (row.getRowNum() > 0) { // Excluding column names
@@ -101,6 +102,9 @@ public class BisUserMappingServiceImpl implements BisUserMappingService {
 						if (row.getCell(2) != null && !"".equalsIgnoreCase(row.getCell(2).toString())) {
 							String empId = getCellValueAsString(row.getCell(2), fileName);
 							bisUserMapping.setEmpId(empId.split("\\.")[0]);
+							version = getBisUserMappingVersionByEmpId(empId.split("\\.")[0], orgLocation.getId());
+							version += 1;
+							bisUserMapping.setVersion(version);
 						}
 						if (row.getCell(3) != null && !"".equalsIgnoreCase(row.getCell(3).toString())) {
 							String candidateName = getCellValueAsString(row.getCell(3), fileName);
@@ -202,6 +206,7 @@ public class BisUserMappingServiceImpl implements BisUserMappingService {
 			for (int i = 0; i < numberOfSheets; i++) {
 				Sheet sheet = workbook.getSheetAt(i);
 				Iterator<Row> rowIterator = sheet.iterator();
+				int version;
 				while (rowIterator.hasNext()) {
 					Row row = rowIterator.next();
 					if (row.getRowNum() > 0) { // Excluding column names
@@ -215,7 +220,9 @@ public class BisUserMappingServiceImpl implements BisUserMappingService {
 						if (row.getCell(0) != null && !"".equalsIgnoreCase(row.getCell(0).toString())) {
 							String empId = getCellValueAsString(row.getCell(0), fileName);
 							checks.setEmpId(empId.split("\\.")[0]);
-							;
+							version = getChecksVersionByEmpId(empId.split("\\.")[0], orgLocation.getId());
+							version += 1;
+							checks.setVersion(version);
 						}
 						if (row.getCell(1) != null && !"".equalsIgnoreCase(row.getCell(1).toString())) {
 							String empName = getCellValueAsString(row.getCell(1), fileName);
@@ -389,6 +396,18 @@ public class BisUserMappingServiceImpl implements BisUserMappingService {
 	@Override
 	public List<BisUserMapping> getMasterListByEmpId(Long empId, OrgLocations orgLocations) throws Exception {
 		return bisUserMappingDao.getMasterListByEmpId(empId,orgLocations);
+	}
+
+	@Override
+	public int getBisUserMappingVersionByEmpId(String EmpId, Long locationId)
+	{
+		return bisUserMappingDao.getBisUserMappingVersionByEmpId(EmpId, locationId);
+	}
+	
+	@Override
+	public int getChecksVersionByEmpId(String EmpId, Long locationId)
+	{
+		return bisUserMappingDao.getChecksVersionByEmpId(EmpId, locationId);
 	}
 
 }

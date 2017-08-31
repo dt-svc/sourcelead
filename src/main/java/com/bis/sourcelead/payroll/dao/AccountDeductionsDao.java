@@ -22,4 +22,6 @@ public interface AccountDeductionsDao {
 
 	List<AccountDeductions> getAccountDeductionsByEmployeeId(OrgLocations orgLocations, Long empId)throws Exception;
 
+	int getAccountDeductionsVersionByEmpId(String empId, Long locationId);
+
 }

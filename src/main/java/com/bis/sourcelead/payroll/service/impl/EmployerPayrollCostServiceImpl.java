@@ -97,6 +97,7 @@ public class EmployerPayrollCostServiceImpl implements EmployerPayrollCostServic
 			for (int i = 0; i < numberOfSheets; i++) {
 				Sheet sheet = workbook.getSheetAt(i);
 				Iterator<Row> rowIterator = sheet.iterator();
+				int version = 0;
 				if(i == 0){
 					isValid =  payrollHelper.isValidTemplateForEmployeePayRoll(rowIterator);
 				}
@@ -106,7 +107,7 @@ public class EmployerPayrollCostServiceImpl implements EmployerPayrollCostServic
 					
 				/*	if (true) {*/
 						if (row.getRowNum() > 0) { // Excluding column names
-							EmployerPayrollCost  employerPayrollCost = null;
+							EmployerPayrollCost  employerPayrollCost = new EmployerPayrollCost();
 							float grossWages =0f;
 							float fica =0f;
 							float futa =0f;
@@ -118,11 +119,10 @@ public class EmployerPayrollCostServiceImpl implements EmployerPayrollCostServic
 							String empId = null;
 							if (row.getCell(1) != null && !"".equalsIgnoreCase(row.getCell(1).toString())) {
 								empId = getCellValueAsString(row.getCell(1), fileName);
-								employerPayrollCost = employerPayrollCostDao.getEmployeePayrollCostById(empId.split("\\.")[0]);
-							}
-							if(employerPayrollCost == null){
-								employerPayrollCost = new EmployerPayrollCost();
+								version = getEmployerPayrollCostVersionByEmpId(empId.split("\\.")[0], orgLocation.getId());
+								version += 1;
 								employerPayrollCost.setEmployeeId(empId.split("\\.")[0]);
+								employerPayrollCost.setVersion(version);
 							}
 							
 							if (row.getCell(0) != null && !"".equalsIgnoreCase(row.getCell(0).toString())) {
@@ -369,6 +369,13 @@ public class EmployerPayrollCostServiceImpl implements EmployerPayrollCostServic
 		dates[1] = calendar.getTime();
 		return dates;
 			
+	}
+
+
+	@Override
+	public int getEmployerPayrollCostVersionByEmpId(String EmpId, Long locationId)
+	{
+		return employerPayrollCostDao.getEmployerPayrollCostVersionByEmpId(EmpId, locationId);
 	}
 }
 

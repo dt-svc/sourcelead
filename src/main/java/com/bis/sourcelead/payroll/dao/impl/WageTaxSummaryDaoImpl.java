@@ -1,5 +1,6 @@
 package com.bis.sourcelead.payroll.dao.impl;
 
+import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
@@ -117,6 +118,36 @@ public class WageTaxSummaryDaoImpl implements WageTaxSummaryDao {
 			return wagesAndTaxlist;
 		}
 		return wagesAndTaxlist;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public WageTaxSummary getWageTaxSummaryByEmpIdandDuration(String empId,Long locationId,Date startDate, Date endDate)
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		List<WageTaxSummary> wagesAndTaxlist = null;
+		String query = "from WageTaxSummary wt where wt.orgLocationId.id =:orgLocationId and wt.employeeId =:empId and ( wt.createdDate >= :startDateUTC and wt.createdDate <= :endDateUTC )";
+		wagesAndTaxlist = session.createQuery(query).setLong("orgLocationId", locationId).setString("empId", empId).setParameter("startDateUTC", startDate).setParameter("endDateUTC", endDate).setCacheable(true).list();
+		if(wagesAndTaxlist != null && wagesAndTaxlist.size() >0)
+		{
+			return wagesAndTaxlist.get(0);
+		}
+		return null;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public int getWageTaxSummaryVersionByEmpId(String empId, Long locationId)
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "select wt.version from WageTaxSummary wt where wt.version = (SELECT MAX(wts.version)  FROM WageTaxSummary wts where wts.orgLocationId.id =:orgLocationId and wts.employeeId =:empId) and wts.employeeId =:empId";
+		List<Integer> version = session.createQuery(query).setLong("orgLocationId", locationId).setString("empId", empId).setCacheable(true).list();
+		Integer count = 0;
+		if(version != null && !version.isEmpty()){
+				count = version.get(0).intValue();
+		}
+		return count;
+		
 	}
 	
 

@@ -100,4 +100,18 @@ public class AccountDeductionsDaoImpl implements AccountDeductionsDao{
 		return accountDeductionslist;
 	}
 
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public int getAccountDeductionsVersionByEmpId(String empId, Long locationId)
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "select ad.version from AccountDeductions ad where ad.version = (SELECT MAX(acc.version)  FROM AccountDeductions acc where acc.orgLocationId.id =:orgLocationId and acc.employeeId =:empId) and ad.employeeId =:empId";
+		List<Integer> version = session.createQuery(query).setLong("orgLocationId", locationId).setString("empId", empId).setCacheable(true).list();
+		Integer count = 0;
+		if(version != null && !version.isEmpty()){
+				count = version.get(0).intValue();
+		}
+		return count;
+	}
+
 }
