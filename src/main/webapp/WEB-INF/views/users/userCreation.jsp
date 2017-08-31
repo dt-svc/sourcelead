@@ -302,7 +302,7 @@ if(type == 'C2C' || type == 'C2C-1099'){
 		        success: function(data) {
 		        	var json = JSON.parse(data);
 		        	$('#vendors').empty();
-		        	$('#vendors').append('<option value="">--select Vendor --</option>');
+		        	$('#vendors').append('<option value="">--Select Vendor --</option>');
 		            for(var i=0;i<json.length;i++){
 		            	  var opt = json[i];
 		            		$('#vendors').append('<option value='+opt.id+' >'+opt.orgName+'</option>');
