@@ -40,7 +40,7 @@ public class CandidateResumes implements Serializable{
     @Column(name = "ID", nullable = false)
 	private Long id;
 	
-	
+	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne
     @JoinColumn(name="ORG_LOCATION_ID", nullable=false )        
     private OrgLocations orgLocationId;

@@ -44,6 +44,7 @@ public class RequirementSubmission implements Serializable{
     @Column(name = "ID", nullable = false)
     private Long id;
  	
+	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne
 	@JoinColumn(name = "REQUIREMENT_ID")
    	private Requirement requirement;
@@ -68,10 +69,12 @@ public class RequirementSubmission implements Serializable{
 	@JoinColumn(name = "CANDIDATE_RESUEME_ID")
    	private CandidateResumes candidateResumes;
 	
+	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne
 	@JoinColumn(name = "ORG_LOCATION_ID")
    	private OrgLocations orgLocations;
 	
+	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne
 	@JoinColumn(name = "VENDOR_LOCATION_ID")
    	private OrgLocations vendorLocationId;
@@ -166,6 +169,7 @@ public class RequirementSubmission implements Serializable{
 	@Type(type="text")
 	private String updatedUser;
     
+    @NotFound(action=NotFoundAction.IGNORE)
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="RECRUITER_USER_ID")        
     private User recruiterUserId;
@@ -424,19 +428,23 @@ public class RequirementSubmission implements Serializable{
     @Transient
 	private REQUIREMENT_SUBMISSION_STATUS requirementCurrentStatus;
     
-	
+    @NotFound(action=NotFoundAction.IGNORE)
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "requirementSubmission")
 	private Set<RequirementSubmissionTemplateFields> requirementSubmissionTemplateFieldsList;
     
+    @NotFound(action=NotFoundAction.IGNORE)
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "submissionId")
    	private Set<RequirementSubmissionHistory> requirementSubmissionHistoryList;
     
+    @NotFound(action=NotFoundAction.IGNORE)
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "submissionId")
    	private Set<RequirementInterviewHistory> requirementInterviewHistory;
     
+    @NotFound(action=NotFoundAction.IGNORE)
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "submissionId")
    	private Set<RequirementOffers> requirementOffersList;
     
+    @NotFound(action=NotFoundAction.IGNORE)
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "submissionId")
    	private Set<RequirementOfferHistory> requirementOfferHistoryList;
     

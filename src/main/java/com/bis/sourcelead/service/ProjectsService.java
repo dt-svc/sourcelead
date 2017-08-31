@@ -56,8 +56,6 @@ public interface ProjectsService {
 		
 		List<Projects> getProjectsBasedOnClientsAndStatusSelectionInFilters(Long userId,String clients,String status,Long orgLocationId) throws Exception;
 		
-		List<Projects> getProjectsListByClientsAndStatus(Long userId,String clients,String status,Long orgLocationId,String userRole) throws Exception;
-		
 		List<Projects> getProjectByOrgLocationsIdAndUserId(Long id, Long userId);
 		
 		List<Projects> getProjectsByOrgLocationsIdAndApproverUserId(Long id, Long approverUserId);
@@ -85,8 +83,9 @@ public interface ProjectsService {
 		 
 		ProjectMembers getProjectEmployeeListByProjectId(Long projectId) throws Exception ;
 		
+		String saveProjectByUserOrgLocationsJson(User user,OrgLocations loginOrgLocation,String loginOrgCode,JSONObject jsonObj) throws Exception ;
         
-		Projects  storeProject(JSONObject jsonObj,List<ProjectDocumentBO> projectDocuments) throws Exception;
+		String  storeProject(JSONObject jsonObj,List<ProjectDocumentBO> projectDocuments) throws Exception;
 
 //		void userEmailNotificationForTimeSheetSubmissionToManagers(Map<UserRole, HashSet<TimesheetSubmissions>> timesheetSubmissionsMap, int level)throws Exception;
 //
@@ -109,7 +108,7 @@ public interface ProjectsService {
 		
 		Boolean validateTasksName(String taskname, Long projectId) throws Exception;
 		
-		ProjectMembers getProjectEmployeeListByProjectIdAndStatus(Long projectId,String status,OrgLocations loginOrgLocation) throws Exception ;
+		ProjectMembers getProjectEmployeeListByProjectIdAndStatus(Long projectId,String status) throws Exception ;
 
 		List<Projects> getClientProjectsByOrgRelationId(Long orgRelationId, Long orgLocationId)throws Exception ;
 

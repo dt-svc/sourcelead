@@ -25,6 +25,8 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
 import org.hibernate.annotations.Type;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -42,6 +44,7 @@ public class TimesheetSubmissions implements Serializable{
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long Id;
 	
+	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne
 	@JoinColumn(name = "PROJECT_MEMBER_ID", nullable=false)
 	private ProjectMembers projectMembers;
@@ -77,7 +80,7 @@ public class TimesheetSubmissions implements Serializable{
 	@Enumerated(EnumType.STRING)
     private Submission_ApprovalStatus submissionApprovalStatus;*/
 	
-	
+	@NotFound(action=NotFoundAction.IGNORE)
 	@OneToMany(mappedBy = "submissionId",cascade = CascadeType.ALL)
 	@Fetch(FetchMode.SELECT)
 	private Set<SubmissionApproverHierarchy> approverHierarchyList = new HashSet<SubmissionApproverHierarchy>(0);
@@ -90,6 +93,7 @@ public class TimesheetSubmissions implements Serializable{
 	@Column(name = "LEVEL_OF_APPROVER")
 	private Integer levelOfApprover;
 	
+	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne
 	@JoinColumn(name = "APPROVER_USER_ID", nullable=false)
 	private User approverUserId;

@@ -18,6 +18,8 @@ import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
 
 /**
  * @author Venkat Kesav
@@ -39,6 +41,7 @@ public class Team implements Serializable{
 	@Column(name = "NAME")
 	private String name ;
 	
+	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="OWNER_USER_ID", nullable=false )        
     private User ownerUserId;
@@ -64,6 +67,7 @@ public class Team implements Serializable{
 	@Column(name = "UPDATED_BY")
 	private String updatedBy;
 	
+	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne
     @JoinColumn(name = "ORG_LOCATION_ID")
     private OrgLocations orgLocationsId;

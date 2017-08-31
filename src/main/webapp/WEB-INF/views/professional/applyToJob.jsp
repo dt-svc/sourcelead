@@ -859,7 +859,12 @@ function getRequirementSubmissionTemaplate(jobTitle,requirementId,referId){
 		
 		result = result + '</div>';
 		
-		
+		result = result + '	<div class="col-md-6 upresume mb">';
+		result = result + '<label class="col-md-4">&nbsp;</label>';
+		result = result + '<input type="checkbox" name="needApplicantPermit" id="needApplicantPermit" onClick="ApplicantPermitProRecruter();" >&nbsp;&nbsp;<span><strong>Need applicant permission</strong></span><br>';
+		result = result + '<input type="checkbox" checked="checked" name="notifyToApplicant" id="notifyToApplicantId" onClick="ApplicantNotifyRequiremnentProRecruter();" >&nbsp;&nbsp;<span><strong>Notify to applicant</strong></span> ';
+		result = result + '</div>';
+		result = result + '</div>';
 		
 		
 		result = result + '<div class="form-footer clearfix mt">';
@@ -985,6 +990,28 @@ function getRequirementSubmissionTemaplate(jobTitle,requirementId,referId){
 		$('#newUploadFile').val($(this).val().replace(/C:\\fakepath\\/i, ''));
 	};
 	
+}
+</script>
+
+
+
+<script type="text/javascript">
+function ApplicantPermitProRecruter(){
+	 if($("#needApplicantPermit").is(':checked')){
+		  $("#needApplicantPermit").val("Y");
+	 }else{
+		 $("#needApplicantPermit").val("N");
+	 }
+}
+</script>
+
+<script type="text/javascript">
+function ApplicantNotifyRequiremnentProRecruter(){
+	 if($("#notifyToApplicantId").is(':checked')){
+		  $("#notifyToApplicantId").val("Y");
+	 }else{
+		 $("#notifyToApplicantId").val("N");
+	 }
 }
 </script>
 

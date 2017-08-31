@@ -6,7 +6,6 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -49,10 +48,11 @@ public class ProjectMembers implements Serializable {
 	@Column(name = "ID", nullable = false)
 	private Long id;
 
+	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "PROJECT_ID", nullable = false)
 	private Projects projects;
-	
+
 	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne
 	@JoinColumn(name = "EMPLOYEE_ID", nullable = false)
@@ -426,6 +426,7 @@ public class ProjectMembers implements Serializable {
 	private List<Contracts> contractsList;
 
 	@JsonIgnore
+	@NotFound(action=NotFoundAction.IGNORE)
 	@OneToMany(mappedBy = "projectMemberId", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	@JsonBackReference
 	@Fetch(FetchMode.SELECT)

@@ -5,7 +5,6 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Set;
@@ -32,18 +31,17 @@ import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.TimeZoneService;
-import com.bis.sourcelead.web.LoginSessionController;
 import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Chunk;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Element;
 import com.itextpdf.text.Font;
+import com.itextpdf.text.Font.FontFamily;
 import com.itextpdf.text.Image;
 import com.itextpdf.text.PageSize;
 import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.Phrase;
-import com.itextpdf.text.Font.FontFamily;
 import com.itextpdf.text.html.WebColors;
 import com.itextpdf.text.pdf.BaseFont;
 import com.itextpdf.text.pdf.PdfPCell;
@@ -497,7 +495,7 @@ public class ExpensesInvoicePdfHelper {
 					clientAddress.append(orgRel.getResponderLocationId().getCountry()).toString();
 				}
 
-				p = new Paragraph("To", font14);
+				p = new Paragraph("", font14);
 				p.setSpacingBefore(15f);
 				p.add(new Chunk(glue));
 				p.setFont(font14);
@@ -534,107 +532,85 @@ public class ExpensesInvoicePdfHelper {
 
 				document.add(tableq);
 				PdfPTable table = new PdfPTable(2);
-				table = new PdfPTable(7);
-				table.setWidthPercentage(100);
-				table.setSpacingBefore(10);
-				table.setSpacingAfter(10);
-				table.setWidths(new int[] { 3, 3, 3, 5, 2, 3, 3 });
-				table.addCell(getHeaderCell("Id", Element.ALIGN_CENTER, font12));
-				table.addCell(getHeaderCell("Name", Element.ALIGN_CENTER, font12));
-				table.addCell(getHeaderCell("Period", Element.ALIGN_CENTER, font12));
-				table.addCell(getHeaderCell("Brief Description", Element.ALIGN_CENTER, font12));
-				table.addCell(getHeaderCell("Qty", Element.ALIGN_CENTER, font12));
-				table.addCell(getHeaderCell("Rate", Element.ALIGN_CENTER, font12));
-				table.addCell(getHeaderCell("Total", Element.ALIGN_CENTER, font12));
-				Set<InvoiceLineItems> invoiveAssociateData = invoice.getInvoiceLineItems();
-				for (InvoiceLineItems invoiceLineItems : invoiveAssociateData) {
-					if (invoiceLineItems.getCandidate() != null) {
-						Employees employee = null;
-						if (invoiceLineItems.getCandidate().getConsultantUser() != null) {
-							employee = employeesService
-									.getEmployeeByUserId(invoiceLineItems.getCandidate().getConsultantUser().getId());
-						}
-						if (employee != null) {
-							if (null != employee.getEmployeeId() && !"".equalsIgnoreCase(employee.getEmployeeId())) {
-								table.addCell(getCell(employee.getEmployeeId(), Element.ALIGN_CENTER, font10));
-							} else {
-								table.addCell(getCell("--", Element.ALIGN_CENTER, font10));
-							}
+				if(invoice.getExpensesInvoices() !=null){
+					table = new PdfPTable(4);
+					table.setWidthPercentage(100);
+					table.setSpacingBefore(10);
+					table.setSpacingAfter(10);
+					table.setWidths(new int[] { 3, 3, 3, 5 });
+					table.addCell(getHeaderCell("Date", Element.ALIGN_CENTER, font12));
+					table.addCell(getHeaderCell("Category", Element.ALIGN_CENTER, font12));
+					table.addCell(getHeaderCell("Description/Price", Element.ALIGN_CENTER, font12));
+					table.addCell(getHeaderCell("Amount", Element.ALIGN_CENTER, font12));
+					Set<InvoiceLineItems> invoiveAssociateData = invoice.getInvoiceLineItems();
+					for (InvoiceLineItems invoiceLineItems : invoiveAssociateData) {
+						if (null != invoiceLineItems.getStartDate()) {
+							String StartDate = commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),invoiceLineItems.getStartDate());
+							table.addCell(getCell(StartDate, Element.ALIGN_CENTER, font10));
+						} 
+						if (null != invoiceLineItems.getExpenseCategory()
+								&& !"".equalsIgnoreCase(invoiceLineItems.getExpenseCategory())) {
+							table.addCell(getCell(invoiceLineItems.getExpenseCategory(), Element.ALIGN_CENTER, font10));
 						} else {
 							table.addCell(getCell("--", Element.ALIGN_CENTER, font10));
 						}
-					} else {
-						if (invoiceLineItems.getUser() != null) {
-							table.addCell(getCell(invoiceLineItems.getUser().getId().toString(), Element.ALIGN_CENTER,
-									font10));
+						if (null != invoiceLineItems.getInlineDescription()
+								&& !"".equalsIgnoreCase(invoiceLineItems.getInlineDescription())) {
+							table.addCell(getCell(invoiceLineItems.getInlineDescription(), Element.ALIGN_CENTER, font10));
 						} else {
 							table.addCell(getCell("--", Element.ALIGN_CENTER, font10));
 						}
-					}
-					StringBuffer name = new StringBuffer();
-
-					if (null != invoiceLineItems.getCandidate()) {
-						if (invoiceLineItems.getCandidate().getFirstName() != null
-								&& invoiceLineItems.getCandidate().getLastName() != null) {
-							table.addCell(getCell(
-									name.append(invoiceLineItems.getCandidate().getFirstName()).append(" ")
-											.append(invoiceLineItems.getCandidate().getLastName()).toString(),
-									Element.ALIGN_CENTER, font10));
+						if (null != invoiceLineItems.getAmount()
+								&& !"".equalsIgnoreCase(invoiceLineItems.getAmount())) {
+							table.addCell(getCell(invoiceLineItems.getAmount(), Element.ALIGN_CENTER, font10));
 						} else {
-							table.addCell(getCell(invoiceLineItems.getCandidate().getFirstName(), Element.ALIGN_CENTER,
-									font10));
-						}
-
-					} else {
-						if (null != invoiceLineItems.getUser()) {
-							table.addCell(getCell(
-									name.append(invoiceLineItems.getUser().getFirstName()).append(" ")
-											.append(invoiceLineItems.getUser().getLastName()).toString(),
-									Element.ALIGN_CENTER, font10));
+							table.addCell(getCell("--", Element.ALIGN_CENTER, font10));
+					  }
+					}
+				}else{
+					table = new PdfPTable(5);
+					table.setWidthPercentage(100);
+					table.setSpacingBefore(10);
+					table.setSpacingAfter(10);
+					table.setWidths(new int[] { 3, 3, 3, 5, 2 });
+					table.addCell(getHeaderCell("Date", Element.ALIGN_CENTER, font12));
+					table.addCell(getHeaderCell("Description", Element.ALIGN_CENTER, font12));
+					table.addCell(getHeaderCell("Quantity", Element.ALIGN_CENTER, font12));
+					table.addCell(getHeaderCell("Rate/Price", Element.ALIGN_CENTER, font12));
+					table.addCell(getHeaderCell("Total", Element.ALIGN_CENTER, font12));
+					Set<InvoiceLineItems> invoiveAssociateData = invoice.getInvoiceLineItems();
+					for (InvoiceLineItems invoiceLineItems : invoiveAssociateData) {
+						if (null != invoiceLineItems.getStartDate()) {
+							String StartDate = commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),invoiceLineItems.getStartDate());
+							table.addCell(getCell(StartDate, Element.ALIGN_CENTER, font10));
+						} 
+						if (null != invoiceLineItems.getInlineDescription()
+								&& !"".equalsIgnoreCase(invoiceLineItems.getInlineDescription())) {
+							table.addCell(getCell(invoiceLineItems.getInlineDescription(), Element.ALIGN_CENTER, font10));
 						} else {
-							table.addCell(
-									getCell(invoiceLineItems.getUser().getFirstName(), Element.ALIGN_CENTER, font10));
+							table.addCell(getCell("--", Element.ALIGN_CENTER, font10));
 						}
-					}
-
-					StringBuilder startAndEndDate = new StringBuilder();
-					if (null != invoiceLineItems.getStartDate() && null != invoiceLineItems.getEndDate()) {
-						String StartDate = commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),invoiceLineItems.getStartDate());
-						String endDate = commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),invoiceLineItems.getEndDate());
-						startAndEndDate.append(StartDate).append(System.getProperty("line.separator")).append("to")
-								.append(System.getProperty("line.separator")).append(endDate);
-						table.addCell(getCell(startAndEndDate.toString(), Element.ALIGN_CENTER, font10));
-					} else if (null != invoiceLineItems.getStartDate()) {
-						String StartDate = commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),invoiceLineItems.getStartDate());
-						table.addCell(
-								getCell(startAndEndDate.append(StartDate).toString(), Element.ALIGN_CENTER, font10));
-					} else {
-						table.addCell(getCell(startAndEndDate.append("--").toString(), Element.ALIGN_CENTER, font10));
-					}
-					if (null != invoiceLineItems.getInlineDescription()
-							&& !"".equalsIgnoreCase(invoiceLineItems.getInlineDescription())) {
-						table.addCell(getCell(invoiceLineItems.getInlineDescription(), Element.ALIGN_CENTER, font10));
-					} else {
-						table.addCell(getCell("--", Element.ALIGN_CENTER, font10));
-					}
-
-					if (null != invoiceLineItems.getTotalHours()
-							&& !"".equalsIgnoreCase(invoiceLineItems.getTotalHours())) {
-						table.addCell(getCell(invoiceLineItems.getTotalHours(), Element.ALIGN_CENTER, font10));
-					} else {
-						table.addCell(getCell("--", Element.ALIGN_CENTER, font10));
-					}
-					if (null != invoiceLineItems.getRate() && !"".equalsIgnoreCase(invoiceLineItems.getRate())) {
-						table.addCell(getCell(invoiceLineItems.getRate(), Element.ALIGN_CENTER, font10));
-					} else {
-						table.addCell(getCell("--", Element.ALIGN_CENTER, font10));
-					}
-					if (null != invoiceLineItems.getAmount() && !"".equalsIgnoreCase(invoiceLineItems.getAmount())) {
-						table.addCell(getCell(invoiceLineItems.getAmount(), Element.ALIGN_CENTER, font10));
-					} else {
-						table.addCell(getCell("--", Element.ALIGN_CENTER, font10));
-					}
+						if (null != invoiceLineItems.getQuantity()
+								&& !"".equalsIgnoreCase(invoiceLineItems.getQuantity())) {
+							table.addCell(getCell(invoiceLineItems.getQuantity(), Element.ALIGN_CENTER, font10));
+						} else {
+							table.addCell(getCell("--", Element.ALIGN_CENTER, font10));
+						}
+					
+						if (null != invoiceLineItems.getRate() && !"".equalsIgnoreCase(invoiceLineItems.getRate())) {
+							table.addCell(getCell(invoiceLineItems.getRate(), Element.ALIGN_CENTER, font10));
+						} else {
+							table.addCell(getCell("--", Element.ALIGN_CENTER, font10));
+						}
+						if (null != invoiceLineItems.getTotalHours()
+								&& !"".equalsIgnoreCase(invoiceLineItems.getTotalHours())) {
+							table.addCell(getCell(invoiceLineItems.getTotalHours(), Element.ALIGN_CENTER, font10));
+						} else {
+							table.addCell(getCell("--", Element.ALIGN_CENTER, font10));
+						}
 				}
+				
+					
 
 				PdfPCell cell = getCell("", Element.ALIGN_LEFT, font12b);
 				cell.setBorder(PdfPCell.NO_BORDER);
@@ -745,7 +721,7 @@ public class ExpensesInvoicePdfHelper {
 				p.setAlignment(Element.ALIGN_CENTER);
 				document.add(p);
 
-				// file.close();
+				}	// file.close();
 			} catch (DocumentException e) {
 				logger.error("Exception cause is : " + ExceptionUtils.getFullStackTrace(e));
 			} catch (FileNotFoundException e) {

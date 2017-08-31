@@ -1059,7 +1059,7 @@ function contractTypeLabels(){
 			
 			hideCommonSOWFields();
 			showCommonSOWFields();
-			getRequirements("Client SOW");
+// 			getRequirements("Client SOW");
 		}
 		if(contractType == "Vendor SOW"){
 			$('#clientOrgRelationId').removeAttr('data-validation');
@@ -1098,7 +1098,7 @@ function contractTypeLabels(){
 			
 			hideCommonSOWFields();
 			showCommonSOWFields();
-			getRequirements("Vendor SOW");
+// 			getRequirements("Vendor SOW");
 		}
 		if(contractType == "NDA" || contractType == "NSA"){
 
@@ -1238,7 +1238,7 @@ function contractTypeLabels(){
 		
 		$('#overtimeRate').val("");
 		$('#overtimeRateDiv').find('p.jquery_form_error_message').remove();
-		getRequirements("Vendor SOW");
+// 		getRequirements("Vendor SOW");
 	}
 	getContractTemplates();
 	
@@ -1264,12 +1264,12 @@ function showCommonSOWFields(){
 
 <script>
 function hideCommonSOWFields(){
-	$("#requirementsList option:selected").removeAttr("selected");
+	/* $("#requirementsList option:selected").removeAttr("selected");
 	$('#requirementsList').trigger("chosen:updated");
 	$('#requirementsList').removeAttr('data-validation');
 	$('#requirementsList').attr('data-validation-optional',"true");
 	$('#requirementDiv').find('p.jquery_form_error_message').remove();
-	document.getElementById("requirementDiv").style.display="none";
+	document.getElementById("requirementDiv").style.display="none"; */
 	
 	$("#submissionOffersList option:selected").removeAttr("selected");
 	$('#submissionOffersList').trigger("chosen:updated");

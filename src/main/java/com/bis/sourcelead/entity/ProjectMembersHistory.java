@@ -15,6 +15,8 @@ import javax.persistence.Table;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
@@ -30,6 +32,7 @@ public class ProjectMembersHistory implements Serializable{
     @Column(name = "ID", nullable = false)
     private Long id;
 	
+	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne(fetch=FetchType.EAGER)
 	@JoinColumn(name="PROJECT_MEMBERS_ID", nullable=false )	
 	private ProjectMembers projectMemberId;

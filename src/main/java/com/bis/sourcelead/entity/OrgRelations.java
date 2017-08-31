@@ -214,6 +214,7 @@ public class OrgRelations implements Serializable{
 	@JsonProperty
 	private String clientName;
 	
+	@NotFound(action=NotFoundAction.IGNORE)
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "orgRelations")
 	private Set<OrgSpoc> orgSpocList;
 	

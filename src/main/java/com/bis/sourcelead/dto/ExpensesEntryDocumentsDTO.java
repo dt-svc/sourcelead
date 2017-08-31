@@ -2,11 +2,14 @@ package com.bis.sourcelead.dto;
 
 import java.io.Serializable;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 public class ExpensesEntryDocumentsDTO implements Serializable {
 private static final long serialVersionUID = 1L;
 
 private Long id;
 
+@JsonBackReference
 private ExpensesEntriesDTO expensesEntriesId;
 
 private  byte[] docFile;

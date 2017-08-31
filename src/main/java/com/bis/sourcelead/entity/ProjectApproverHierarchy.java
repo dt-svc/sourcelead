@@ -21,6 +21,8 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -37,10 +39,12 @@ public class ProjectApproverHierarchy implements Serializable{
     @Column(name = "ID", nullable = false)
     private Long id;
 	
+	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne(fetch=FetchType.EAGER)
 	@JoinColumn(name="PROJECT_ID", nullable=false )	
 	private Projects projectId;
 	
+	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne(fetch=FetchType.EAGER)
 	@JoinColumn(name="APPROVER_USER_ID", nullable=false )	
 	private User approverUserId;
@@ -67,6 +71,7 @@ public class ProjectApproverHierarchy implements Serializable{
     @Column(name = "UPDATED_BY")
     private String updatedBy;
     
+    @NotFound(action=NotFoundAction.IGNORE)
     @OneToMany(mappedBy="projects",cascade = CascadeType.ALL,fetch=FetchType.LAZY)
     @Fetch(FetchMode.SELECT)
     private Set<ProjectMembers> projectMembers;

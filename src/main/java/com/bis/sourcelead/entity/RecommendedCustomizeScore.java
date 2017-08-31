@@ -1,33 +1,22 @@
 package com.bis.sourcelead.entity;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
-
-import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
 
 	@Entity
 	@Table(name = "RECOMMENDED_CUSTOMIZE_SCORE", catalog = "sourcelead")
@@ -41,10 +30,12 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
     @Column(name = "ID", nullable = false)
 	private Long id;
 	
+	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne
     @JoinColumn(name="REQIREMENT_ID", nullable=false )        
     private Requirement reqirementId;
 	
+	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne
     @JoinColumn(name="ORGLOCATION_ID", nullable=false )        
     private OrgLocations orgLocationId;
