@@ -4,6 +4,12 @@ package com.bis.sourcelead.dto;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.Column;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+
+import org.hibernate.annotations.Type;
+
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.UserRole;
@@ -84,7 +90,41 @@ import com.bis.sourcelead.enums.Status;
 		private String country;
 		
 		private String registerOptionalServiceId;
+		
+		private String employeeId;
+		
+		private String rate;
+		
+		private String RatePer;
+		
+		private String DayHours;
+		
+		private String currentCurrency;
+		
+		private String designationType;
+		
+		private String designationOtherType;
+		
+		private String department;
+		
+		private Long vendors;
+		
+		private Long vendorcontact;
+		
+		private Date dateofJoin;
 
+		private Integer isPrimary;
+
+		private String roleChangeReason;
+
+		private String designation;
+
+		private String newlyLoginUser;
+
+		private String roleType;
+		
+		private String roleTypeId;
+		
 		public Long getId() {
 			return id;
 		}
@@ -363,6 +403,142 @@ import com.bis.sourcelead.enums.Status;
 
 		public void setRegisterOptionalServiceId(String registerOptionalServiceId) {
 			this.registerOptionalServiceId = registerOptionalServiceId;
+		}
+
+		public String getEmployeeId() {
+			return employeeId;
+		}
+
+		public void setEmployeeId(String employeeId) {
+			this.employeeId = employeeId;
+		}
+
+		public String getRate() {
+			return rate;
+		}
+
+		public void setRate(String rate) {
+			this.rate = rate;
+		}
+
+		public String getRatePer() {
+			return RatePer;
+		}
+
+		public void setRatePer(String ratePer) {
+			RatePer = ratePer;
+		}
+
+		public String getDayHours() {
+			return DayHours;
+		}
+
+		public void setDayHours(String dayHours) {
+			DayHours = dayHours;
+		}
+
+		public String getCurrentCurrency() {
+			return currentCurrency;
+		}
+
+		public void setCurrentCurrency(String currentCurrency) {
+			this.currentCurrency = currentCurrency;
+		}
+
+		public String getDesignationType() {
+			return designationType;
+		}
+
+		public void setDesignationType(String designationType) {
+			this.designationType = designationType;
+		}
+
+		public String getDesignationOtherType() {
+			return designationOtherType;
+		}
+
+		public void setDesignationOtherType(String designationOtherType) {
+			this.designationOtherType = designationOtherType;
+		}
+
+		public String getDepartment() {
+			return department;
+		}
+
+		public void setDepartment(String department) {
+			this.department = department;
+		}
+
+		public Long getVendors() {
+			return vendors;
+		}
+
+		public void setVendors(Long vendors) {
+			this.vendors = vendors;
+		}
+
+		public Long getVendorcontact() {
+			return vendorcontact;
+		}
+
+		public void setVendorcontact(Long vendorcontact) {
+			this.vendorcontact = vendorcontact;
+		}
+
+		public Date getDateofJoin() {
+			return dateofJoin;
+		}
+
+		public void setDateofJoin(Date dateofJoin) {
+			this.dateofJoin = dateofJoin;
+		}
+
+		public Integer getIsPrimary() {
+			return isPrimary;
+		}
+
+		public void setIsPrimary(Integer isPrimary) {
+			this.isPrimary = isPrimary;
+		}
+
+		public String getRoleChangeReason() {
+			return roleChangeReason;
+		}
+
+		public void setRoleChangeReason(String roleChangeReason) {
+			this.roleChangeReason = roleChangeReason;
+		}
+
+		public String getDesignation() {
+			return designation;
+		}
+
+		public void setDesignation(String designation) {
+			this.designation = designation;
+		}
+
+		public String getNewlyLoginUser() {
+			return newlyLoginUser;
+		}
+
+		public void setNewlyLoginUser(String newlyLoginUser) {
+			this.newlyLoginUser = newlyLoginUser;
+		}
+
+		public String getRoleType() {
+			return roleType;
+		}
+
+		public void setRoleType(String roleType) {
+			this.roleType = roleType;
+		}
+
+		public String getRoleTypeId() {
+			return roleTypeId;
+		}
+
+		public void setRoleTypeId(String roleTypeId) {
+			this.roleTypeId = roleTypeId;
 		}
 		
 		

@@ -9,6 +9,7 @@ import org.json.JSONObject;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.bis.sourcelead.dto.AddUserDTO;
+import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.elk.index.UserIndex;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.Org;
@@ -70,7 +71,7 @@ public interface UserService  {
 	
 	public List<Employees> getAllUserOrgCodeAndLocationCodeTimeSheetNotification(Long userId) throws Exception;
 	
-	User storeUser(AddUserDTO addUserDTO,User users,OrgLocations orgLocations,String sourceType,String responderType,Org loginOrg)  throws Exception;
+	User storeUser(AddUserDTO addUserDTO,CandidateDTO candidateDTO,User users,OrgLocations orgLocations,String sourceType,String responderType,Org loginOrg)  throws Exception;
 	
 	/**
 	 * This method to fetch Owner used in Client and vendor

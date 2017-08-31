@@ -27,21 +27,17 @@ import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.MatchQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.jsoup.select.Evaluator.IsEmpty;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.CandidateDao;
 import com.bis.sourcelead.dao.CandidateTimelineActivityDao;
+import com.bis.sourcelead.dto.AddUserDTO;
 import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.elk.index.CandidateIndex;
@@ -1438,7 +1434,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	}
 	
 	@Override
-	public Candidate storeCandidateForUsers(JSONObject jsonObj,User user,OrgLocations orgLocations,MasterCandidate masterCandidate) throws Exception
+	public Candidate storeCandidateForUsers(CandidateDTO candidateDTO,User user,OrgLocations orgLocations,MasterCandidate masterCandidate) throws Exception
 	{
 		Candidate candidate = candidateDao.getCandidateByConsultantUserId(user.getId(), orgLocations.getId());
 		if(null == candidate){
@@ -1455,16 +1451,25 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 			candidate.setStatus(Constants.RECORD_ACTIVE);
 			candidate.setCreatedBy(user.getUserCode());
 			
-			if(jsonObj.has("phoneNumber") && !isNullOrEmpty(jsonObj.getString("phoneNumber"))){
-				candidate.setMobilePhone(jsonObj.getString("phoneNumber"));
+			if(StringUtils.isNotBlank(candidateDTO.getPhoneNumber())){
+				candidate.setMobilePhone(candidateDTO.getPhoneNumber());
+			}else
+			{
+				candidate.setMobilePhone(null);
 			}
 			
-			if(jsonObj.has("designationType") && !isNullOrEmpty(jsonObj.getString("designationType"))){
-				candidate.setDesignationType(jsonObj.getString("designationType"));
+			if(StringUtils.isNotBlank(candidateDTO.getDesignationType())){
+				candidate.setDesignationType(candidateDTO.getDesignationType());
+			}else
+			{
+				candidate.setDesignationType(null);
 			}
 			
-			if(jsonObj.has("designationOtherType") && !isNullOrEmpty(jsonObj.getString("designationOtherType"))){
-				candidate.setDesignationOtherType(jsonObj.getString("designationOtherType"));
+			if(StringUtils.isNotBlank(candidateDTO.getDesignationOtherType())){
+				candidate.setDesignationOtherType(candidateDTO.getDesignationOtherType());
+			}else
+			{
+				candidate.setDesignationOtherType(null);
 			}
 			
 			candidate.setCandidateUUID(SourceLeadRandomCodeHelper.generateRandomUUID());

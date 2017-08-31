@@ -36,6 +36,7 @@ import com.bis.sourcelead.dao.OrgDao;
 import com.bis.sourcelead.dao.OrgLocationsDao;
 import com.bis.sourcelead.dao.UserDao;
 import com.bis.sourcelead.dto.AddUserDTO;
+import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.elk.index.UserIndex;
 import com.bis.sourcelead.elk.index.helper.UserIndexHelper;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
@@ -182,7 +183,7 @@ public class UserServiceImpl implements UserService {
       *  @return 
       */
 	@Override
-	public User storeUser(AddUserDTO addUserDTO,User loginuser,OrgLocations orgLocations,String sourceType,String responderType,Org loginOrg) throws Exception {
+	public User storeUser(AddUserDTO addUserDTO,CandidateDTO candidateDTO,User loginuser,OrgLocations orgLocations,String sourceType,String responderType,Org loginOrg) throws Exception {
 	   User user1 = null;
 	   User user = null;
 	   String password = null;
@@ -258,8 +259,8 @@ public class UserServiceImpl implements UserService {
 		}
 		
 		//for updating cosultantUserId in candidate
-		if(jsonObj.has("associateId")&& !"".equalsIgnoreCase(jsonObj.getString("associateId"))){
-			Candidate candidate = candidateService.getCandidateByCandidateId(Long.parseLong(jsonObj.getString("associateId")));
+		if(candidateDTO.getAssociateId() >= 0){
+			Candidate candidate = candidateService.getCandidateByCandidateId(candidateDTO.getAssociateId());
 			if(null != candidate){
 				candidate.setConsultantUser(user1);
 				candidate.setUpdatedBy(loginuser.getUserCode());
@@ -269,16 +270,16 @@ public class UserServiceImpl implements UserService {
 			}	
 		}else{
 			MasterCandidate masterCandidate = null;
-			masterCandidate = masterCandidateService.getMasterCandidateByInteligence(jsonObj);
+			//masterCandidate = masterCandidateService.getMasterCandidateByInteligence(jsonObj);
 			if(null == masterCandidate){
-				masterCandidate = masterCandidateService.storeMasterCandidateByJsonObject(jsonObj, loginuser);
+				//masterCandidate = masterCandidateService.storeMasterCandidateByJsonObject(jsonObj, loginuser);
 			}
-			candidateService.storeCandidateForUsers(jsonObj, user, orgLocations, masterCandidate);
+			candidateService.storeCandidateForUsers(candidateDTO, user, orgLocations, masterCandidate);
 		}
 		
 		//For saving Employee details (Every User is an Employee)
-		if(jsonObj.has("projectId") && !isNullOrEmpty(jsonObj.getString("projectId"))){
-			ProjectMembers pm = getProjectMembersDetails(employee,jsonObj,loginuser.getUserCode(),orgLocations.getId());
+		if(candidateDTO.getProjectId() >= 0){
+			ProjectMembers pm = getProjectMembersDetails(employee,candidateDTO,loginuser.getUserCode(),orgLocations.getId());
 			try {
 				projectMembersService.saveProjectMember(pm);
 			} catch (Exception e) {
@@ -289,8 +290,8 @@ public class UserServiceImpl implements UserService {
 		
 		   //send mail to user
 			if(("".equals(responderType))  && (sourceType.equalsIgnoreCase("CREATEUSER") || sourceType.equalsIgnoreCase("PROJECTS"))
-					 &&  (jsonObj.has("isMailSent") && !isNullOrEmpty(jsonObj.getString("isMailSent")))
-					 && ("Y".equals(jsonObj.getString("isMailSent")))){
+					 &&  (StringUtils.isNotBlank(candidateDTO.getIsMailSent()))
+					 && ("Y".equals(candidateDTO.getIsMailSent()))){
 
 				sendEmail(user,loginuser,password,orgLocations.getId());
 			}
@@ -316,7 +317,7 @@ public class UserServiceImpl implements UserService {
 	
 	@Override
 	public void createUser(JSONObject jsonObj,User loginUser , Long orgLocationsId) throws Exception {
-		logger.debug("In UserService class createUser method...");
+		/*logger.debug("In UserService class createUser method...");
 		//For Saving of User Details
 		User user = getUserDetails(jsonObj,loginUser.getUserCode());
 		String password = SourceLeadRandomCodeHelper.generateRandomPassword();
@@ -361,10 +362,10 @@ public class UserServiceImpl implements UserService {
 
 			sendEmail(user,loginUser,password,orgLocationsId);
 		}
-		/*
+		
 		 * Saving/Update USER DB data as ElasticSearch Documents
-		 */
-		saveOrUpdateUserElkDocument(userRole,employee,loginUser.getUserCode());
+		 
+		saveOrUpdateUserElkDocument(userRole,employee,loginUser.getUserCode());*/
 
 		 
 	}
@@ -416,9 +417,9 @@ public class UserServiceImpl implements UserService {
 		
 		Roles roles = null;
 		
-		if(jsonObj.has("roleType")){
+		if(StringUtils.isNotBlank(addUserDTO.getRoleType())){
 			try {
-				roles = rolesService.getRolesById(Long.parseLong(jsonObj.getString("roleType")));
+				roles = rolesService.getRolesById(Long.parseLong(addUserDTO.getRoleType()));
 				userRole.setUserType(roles.getDisplayName());
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -426,24 +427,20 @@ public class UserServiceImpl implements UserService {
 			
 		}
 		
-		
-		
 		try {
-			
-			if(jsonObj.has("roleTypeId")){
-				if(!isNullOrEmpty(jsonObj.getString("roleTypeId"))){
-					roles = rolesService.getRolesById(Long.parseLong(jsonObj.getString("roleTypeId")));
-				}else{
-					roles = rolesService.getRolesByRoleNameAndOrgLocationId(Constants.ROLE_MANAGER,orgLocations.getId());
-				}
+
+			if(StringUtils.isNotBlank(addUserDTO.getRoleTypeId())){
+				roles = rolesService.getRolesById(Long.parseLong(addUserDTO.getRoleTypeId()));
+			}else{
+				roles = rolesService.getRolesByRoleNameAndOrgLocationId(Constants.ROLE_MANAGER,orgLocations.getId());
 			}
-			
-			
+
+
 		} catch (Exception e) {
 			logger.error(ExceptionUtils.getFullStackTrace(e));
 		}
 		
-		if(jsonObj.has("department") && !"".equalsIgnoreCase(jsonObj.getString("department"))){
+		if(StringUtils.isNotBlank(addUserDTO.getDepartment())){
 			
 			List<Department> departmentList = departmentService.getDepartmentByOrgLocationId(orgLocations.getId());
 		}
@@ -463,46 +460,46 @@ public class UserServiceImpl implements UserService {
 		OrgLocations orgLocations = new OrgLocations();
 		orgLocations.setId(orgLocationsId);
 		employees.setOrgLocations(orgLocations);
-		if(jsonObj.has("employeeId")){
-			employees.setEmployeeId(jsonObj.getString("employeeId"));
+		if(StringUtils.isNotBlank(addUserDTO.getEmployeeId())){
+			employees.setEmployeeId(addUserDTO.getEmployeeId());
 		}
-		if(jsonObj.has("rate")){
-			employees.setRate(jsonObj.getString("rate"));
+		if(StringUtils.isNotBlank(addUserDTO.getRate())){
+			employees.setRate(addUserDTO.getRate());
 		}
-		if(jsonObj.has("RatePer")){
-			employees.setRatePer(jsonObj.getString("RatePer"));
+		if(StringUtils.isNotBlank(addUserDTO.getRatePer())){
+			employees.setRatePer(addUserDTO.getRatePer());
 		}
-		if(jsonObj.has("DayHours")){
-			employees.setDailyHours(jsonObj.getString("DayHours"));
+		if(StringUtils.isNotBlank(addUserDTO.getDayHours())){
+			employees.setDailyHours(addUserDTO.getDayHours());
 		}
-		if(jsonObj.has("currentCurrency")){
-			employees.setCurrentCurrency(jsonObj.getString("currentCurrency"));
-		}
-		
-		if(jsonObj.has("designationType")){
-			employees.setUserEmploymentType(jsonObj.getString("designationType"));
+		if(StringUtils.isNotBlank(addUserDTO.getCurrentCurrency())){
+			employees.setCurrentCurrency(addUserDTO.getCurrentCurrency());
 		}
 		
-		if(jsonObj.has("designationOtherType")){
-			employees.setDesignationOtherType(jsonObj.getString("designationOtherType"));
+		if(StringUtils.isNotBlank(addUserDTO.getDesignationType())){
+			employees.setUserEmploymentType(addUserDTO.getDesignationType());
 		}
 		
-		if(jsonObj.has("department") && !"".equalsIgnoreCase(jsonObj.getString("department"))){
-			Department department= departmentService.getDepartmentById(Long.parseLong(jsonObj.getString("department")));
+		if(StringUtils.isNotBlank(addUserDTO.getDesignationOtherType())){
+			employees.setDesignationOtherType(addUserDTO.getDesignationOtherType());
+		}
+		
+		if(StringUtils.isNotBlank(addUserDTO.getDepartment())){
+			Department department= departmentService.getDepartmentById(Long.parseLong(addUserDTO.getDepartment()));
 			employees.setDepartmentId(department);
 		}else{
 			employees.setDepartmentId(null);
 		}
 		
-		if(jsonObj.has("vendors") && !"".equalsIgnoreCase(jsonObj.getString("vendors"))){
-			OrgRelations orgRelation = orgRelationsService.getOrRelationsById(Long.parseLong(jsonObj.getString("vendors")));
+		if(addUserDTO.getVendors() != null && addUserDTO.getVendors() > 0){
+			OrgRelations orgRelation = orgRelationsService.getOrRelationsById(addUserDTO.getVendors());
 			employees.setOrgRelationId(orgRelation);
 		}else{
 			employees.setOrgRelationId(null);
 		}
 		
-		if(jsonObj.has("vendorcontact") && !"".equalsIgnoreCase(jsonObj.getString("vendorcontact"))){
-			OrgSpoc orgspoc = orgSpocService.getOrgSpocById(Long.parseLong(jsonObj.getString("vendorcontact")));
+		if(addUserDTO.getVendorcontact() != null && addUserDTO.getVendorcontact() > 0){
+			OrgSpoc orgspoc = orgSpocService.getOrgSpocById(addUserDTO.getVendorcontact());
 			employees.setSpocId(orgspoc);
 		}else{
 			employees.setSpocId(null);
@@ -516,12 +513,12 @@ public class UserServiceImpl implements UserService {
 			
 		}*/
 		
-		if(jsonObj.has("dateofJoin") && !isNullOrEmpty(jsonObj.getString("dateofJoin"))){
+		if(addUserDTO.getDateofJoin() != null){
 			try {
 				   //SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
 					 OrgLocations orgLoc = orgLocationService.getOrgLocations(orgLocationsId);
 						 //SimpleDateFormat formatter = orgLoc.getLocFullFormDateFormatter();
-						 employees.setHireDate(commonUtil.orgLocationDateFormat(orgLoc.getDateFormat(), jsonObj.getString("dateofJoin")));
+						 employees.setHireDate(commonUtil.orgLocationDateFormat(orgLoc.getDateFormat(), addUserDTO.getDateofJoin().toString()));
 				  
 				} catch (Exception e) {
 				  e.printStackTrace();
@@ -533,7 +530,7 @@ public class UserServiceImpl implements UserService {
 	}
 
 	
-	private ProjectMembers getProjectMembersDetails(Employees employee, JSONObject jsonObj, String userCode, Long orgLocationsId) throws Exception {
+	private ProjectMembers getProjectMembersDetails(Employees employee, CandidateDTO candidateDTO, String userCode, Long orgLocationsId) throws Exception {
 		ProjectMembers pm = new ProjectMembers();
 
 		
@@ -548,7 +545,7 @@ public class UserServiceImpl implements UserService {
 			pm.setProjects(project);
 		}*/
 		Projects project = new Projects();
-		project.setId(Long.parseLong(jsonObj.getString("projectId")));
+		project.setId(candidateDTO.getProjectId());
 		pm.setProjects(project);
 		pm.setEmployee(employee);
 		pm.setStatus(Constants.MEMBER_ACTIVE);

@@ -478,6 +478,7 @@ function getEmployeementType(designationType){
 	        var sourceleadUrl = '${sourceleadUrl}';
 			var form = $('#createUser_form')[0];
       		var formData = new FormData(form);
+      		alert(formData);
 	        
 	        //It will escape all the special characters
 	       // var jsonData = encodeURIComponent(con);

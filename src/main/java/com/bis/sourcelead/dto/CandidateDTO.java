@@ -38,7 +38,7 @@ public class CandidateDTO {
 	private User recruiterUserId;
 
 	private String candidateType;
-
+	
 	@Required(desc = "first name")
 	private String firstName;
 
@@ -159,6 +159,12 @@ public class CandidateDTO {
 	private String phoneNumber;
 	
 	private String visa;
+	
+	private Long associateId;
+	
+	private Long projectId;
+	
+	private String isMailSent;
 
 	public long getCandidateId() {
 		return candidateId;
@@ -696,4 +702,29 @@ public class CandidateDTO {
 		this.uploadedFileInfo = uploadedFileInfo;
 	}
 
+	public Long getAssociateId() {
+		return associateId;
+	}
+
+	public void setAssociateId(Long associateId) {
+		this.associateId = associateId;
+	}
+
+	public Long getProjectId() {
+		return projectId;
+	}
+
+	public void setProjectId(Long projectId) {
+		this.projectId = projectId;
+	}
+
+	public String getIsMailSent() {
+		return isMailSent;
+	}
+
+	public void setIsMailSent(String isMailSent) {
+		this.isMailSent = isMailSent;
+	}
+
+	
 }

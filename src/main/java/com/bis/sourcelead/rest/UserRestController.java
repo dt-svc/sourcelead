@@ -40,6 +40,7 @@ import org.springframework.web.client.RestTemplate;
 import com.bis.sourcelead.SourceleadPasswordEncoder;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.AddUserDTO;
+import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.OrgLocationDTO;
 import com.bis.sourcelead.dto.UserProfileDTO;
 import com.bis.sourcelead.elk.index.ProjectsIndex;
@@ -268,7 +269,7 @@ public class UserRestController {
 	 */
 	 @PreAuthorize("hasRole('ROLE_CREATE_USER')")
 	 @RequestMapping(value = "/createUser" , method = RequestMethod.POST)
-	 public  String createUser(AddUserDTO addUserDTO, HttpServletRequest request) throws Exception {
+	 public  String createUser(AddUserDTO addUserDTO,CandidateDTO candidateDTO ,HttpServletRequest request) throws Exception {
 		 	
 		 /*json = "{"+json+"}";
 		 
@@ -278,7 +279,7 @@ public class UserRestController {
 	 	 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 	 	
 	 	 //For Saving of User Details
-	 	 userService.storeUser(addUserDTO,user,orgLocations,"CREATEUSER","",new Org());
+	 	 userService.storeUser(addUserDTO,candidateDTO,user,orgLocations,"CREATEUSER","",new Org());
 	 	
 	 	
 	 	 //For Saving of User Details
