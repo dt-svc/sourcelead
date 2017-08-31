@@ -165,6 +165,14 @@ public class CandidateDTO {
 	private Long projectId;
 	
 	private String isMailSent;
+	
+	private String userEmail;
+	
+	private String EmailId;
+	
+	private String candidateEducation;
+	
+	private String candidateEmployers;
 
 	public long getCandidateId() {
 		return candidateId;
@@ -724,6 +732,38 @@ public class CandidateDTO {
 
 	public void setIsMailSent(String isMailSent) {
 		this.isMailSent = isMailSent;
+	}
+
+	public String getUserEmail() {
+		return userEmail;
+	}
+
+	public void setUserEmail(String userEmail) {
+		this.userEmail = userEmail;
+	}
+
+	public String getEmailId() {
+		return EmailId;
+	}
+
+	public void setEmailId(String emailId) {
+		EmailId = emailId;
+	}
+
+	public String getCandidateEducation() {
+		return candidateEducation;
+	}
+
+	public void setCandidateEducation(String candidateEducation) {
+		this.candidateEducation = candidateEducation;
+	}
+
+	public String getCandidateEmployers() {
+		return candidateEmployers;
+	}
+
+	public void setCandidateEmployers(String candidateEmployers) {
+		this.candidateEmployers = candidateEmployers;
 	}
 
 	

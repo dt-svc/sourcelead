@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,10 +13,10 @@ import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.CandidateEmployersDao;
+import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.elk.index.CandidateIndex;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
-import com.bis.sourcelead.entity.CandidateEducation;
 import com.bis.sourcelead.entity.CandidateEmployers;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
@@ -217,11 +218,11 @@ public class CandidateEmployersServiceImpl implements CandidateEmployersService 
 	 * @throws Exception
     */
 	@Override
-	public  HashSet<CandidateEmployers> getCandidateEmployersDetails(JSONObject jsonObj,OrgLocations orgLocations,Candidate candidate,String userCode)throws JSONException{
+	public  HashSet<CandidateEmployers> getCandidateEmployersDetails(CandidateDTO candidateDTO,OrgLocations orgLocations,Candidate candidate,String userCode)throws JSONException{
 		  HashSet<CandidateEmployers> candidateEmployersList = new HashSet<CandidateEmployers>();
 		  
-		  if(jsonObj.has("candidateEmployers")){
-	    	  String employers = jsonObj.getString("candidateEmployers");
+		  if(StringUtils.isNotBlank(candidateDTO.getCandidateEmployers())){
+	    	  String employers = candidateDTO.getCandidateEmployers();
 	    	  if(employers != null && !employers.isEmpty() ){
 		    	  employers = employers.replaceAll("\\[", "").replaceAll("\\]","");
 		  	      String[] candidateEmployers = employers.split(",");

@@ -1,6 +1,5 @@
 package com.bis.sourcelead.rest;
 
-import java.text.SimpleDateFormat;
 import java.util.LinkedHashSet;
 import java.util.List;
 
@@ -17,7 +16,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.bis.sourcelead.annotations.Validator;
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.CandidateEducationDTO;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateEducation;
 import com.bis.sourcelead.entity.LookUpData;
@@ -85,17 +86,21 @@ public class CandidateEducationRestController {
 	 */
 	@PreAuthorize("hasAnyRole('ROLE_ADD_CANDIDATE_EDUCATION','ROLE_CROWDSOURCING_PROFILE','ROLE_CROWDSOURCING_CANDIDATES','ROLE_ADD_ASSOCIATE_EDUCATION_DETAILS')")
 	@RequestMapping(value = "/storeCandidateEducation", method = RequestMethod.POST)
-	public @ResponseBody String storeCandidateEducation(@RequestParam(value = "json", required = false) String json,@RequestParam(value = "candidateId", required = false) String candidateId,HttpServletRequest request) throws Exception {
+	public @ResponseBody String storeCandidateEducation(CandidateEducationDTO candidateEducationDTO,@RequestParam(value = "candidateId", required = false) String candidateId,HttpServletRequest request) throws Exception {
 
-		String jsonc = "{" + json + "}";
-		JSONObject jsonObject = new JSONObject(jsonc);
+		/*String jsonc = "{" + json + "}";
+		JSONObject jsonObject = new JSONObject(jsonc);*/
+		if(Validator.validate(candidateEducationDTO)) {
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 
-		candidateEducationService.storeCandidateEducation(jsonObject,Long.parseLong(candidateId),loginOrgLocation.getId(), user);
+		candidateEducationService.storeCandidateEducation(candidateEducationDTO,Long.parseLong(candidateId),loginOrgLocation.getId(), user);
 		Candidate candidate = candidateService.getCandidateByCandidateId(Long.parseLong(candidateId));
 		Integer percentage = candidateService.getCandidatePercentage(candidate,loginOrgLocation);
 		return percentage.toString();
+		}else{
+			return "DataMissing";
+		}
 	}
 	
 	/**
@@ -211,7 +216,7 @@ public class CandidateEducationRestController {
 			String jsonc = "{" + json + "}";
 			JSONObject jsonObj = new JSONObject(jsonc);
 			
-			candidateEdu = candidateEducationService.storeCandidateEducation(jsonObj,candidateId,loginOrgLocation.getId(),user);
+			//candidateEdu = candidateEducationService.storeCandidateEducation(jsonObj,candidateId,loginOrgLocation.getId(),user);
 			return "success";
 	}
 	
