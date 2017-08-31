@@ -148,7 +148,7 @@ window.onload = function () {
 						</div>
 
 						<div class="form-group" id="zipCodeDiv" style="display: block;">
-							<label class="col-md-3">ZipCode1</label>
+							<label class="col-md-3">ZipCode</label>
 							<div class="col-md-9">
 								<input class="form-control" id="clientZipCode" name="zipcode"
 									placeholder="Enter your Zip code" type="text" readonly onclick="zipcodeMask('${loginCountryName}','clientZipCode');"></input>
