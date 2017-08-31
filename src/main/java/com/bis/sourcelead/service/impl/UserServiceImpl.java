@@ -3,7 +3,6 @@ package com.bis.sourcelead.service.impl;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -15,13 +14,13 @@ import java.util.TimeZone;
 
 import javax.mail.internet.InternetAddress;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.MatchQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -36,6 +35,7 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.OrgDao;
 import com.bis.sourcelead.dao.OrgLocationsDao;
 import com.bis.sourcelead.dao.UserDao;
+import com.bis.sourcelead.dto.AddUserDTO;
 import com.bis.sourcelead.elk.index.UserIndex;
 import com.bis.sourcelead.elk.index.helper.UserIndexHelper;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
@@ -74,7 +74,6 @@ import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
-import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.bis.sourcelead.util.UniversalSearchHelper;
 
 /**
@@ -183,19 +182,19 @@ public class UserServiceImpl implements UserService {
       *  @return 
       */
 	@Override
-	public User storeUser(JSONObject jsonObj,User loginuser,OrgLocations orgLocations,String sourceType,String responderType,Org loginOrg) throws Exception {
+	public User storeUser(AddUserDTO addUserDTO,User loginuser,OrgLocations orgLocations,String sourceType,String responderType,Org loginOrg) throws Exception {
 	   User user1 = null;
 	   User user = null;
 	   String password = null;
 	   UserRole userRole = null;
 	   boolean isUserActive = false;
-	   user = userDao.findByUserName(jsonObj.getString("email"));
+	   user = userDao.findByUserName(addUserDTO.getEmail());
 	   if(null != user){
 		  isUserActive = userRoleService.isUserActive(user.getId());
 	   }
 	   
 	   if(null == user){
-		   user = getUserDetails(jsonObj,loginuser.getUserCode());
+		   user = getUserDetails(addUserDTO,loginuser.getUserCode());
 		   password = SourceLeadRandomCodeHelper.generateRandomPassword();
  		   user.setPassword(sourceleadPasswordEncoder.encode(password));
 		}else if(isUserActive == false){
@@ -203,24 +202,24 @@ public class UserServiceImpl implements UserService {
 			user.setPassword(sourceleadPasswordEncoder.encode(password));
 		}
 	   
-	    if(jsonObj.has("phoneNumber")){
+	    /*if(jsonObj.has("phoneNumber")){
 			user.setMobilePhone(jsonObj.getString("phoneNumber"));
-		}
+		}*/
 		
-	    if((jsonObj.has("isMailSent") && !isNullOrEmpty(jsonObj.getString("isMailSent"))) && ("Y".equals(jsonObj.getString("isMailSent")))){
+	    /*if((jsonObj.has("isMailSent") && !isNullOrEmpty(jsonObj.getString("isMailSent"))) && ("Y".equals(jsonObj.getString("isMailSent")))){
 			user.setIsMailSent(Status.Y);
 		}else{
 			user.setIsMailSent(Status.N);
-		}
+		}*/
 	   
 	    if(sourceType.equalsIgnoreCase("PROJECTS")){
 	 		user.setUserType("Employee");
 	    } 
 		
        //For saving the User Role 
-	   userRole = userRoleService.getUserDetailsByEmailAndLocationId(jsonObj.getString("email"),orgLocations.getId());
+	   userRole = userRoleService.getUserDetailsByEmailAndLocationId(addUserDTO.getEmail(),orgLocations.getId());
 	   if(userRole == null){
-		   userRole = getUserRoleDetails(jsonObj,user,loginuser.getUserCode(),orgLocations.getId());
+		   userRole = getUserRoleDetails(addUserDTO,user,loginuser.getUserCode(),orgLocations.getId());
 		   if(null == user.getId()){
 				userRole.setIsPrimary(1);
 				 if(sourceType.equalsIgnoreCase("PROJECTS")){
@@ -245,7 +244,7 @@ public class UserServiceImpl implements UserService {
 			employee = employeesService.getEmployeeByUserIdAndOrgLocationsId(user.getId(), orgLocations.getId());
 		}
 		if(null == employee){
-			employee = getEmployeeDetails(user,jsonObj,orgLocations.getId(),loginuser.getUserCode());
+			employee = getEmployeeDetails(user,addUserDTO,orgLocations.getId(),loginuser.getUserCode());
 			HashSet<Employees> employeeList = new HashSet<Employees>();
 			employeeList.add(employee);
 			user.setEmployee(employeeList);
@@ -276,8 +275,6 @@ public class UserServiceImpl implements UserService {
 			}
 			candidateService.storeCandidateForUsers(jsonObj, user, orgLocations, masterCandidate);
 		}
-		
-		
 		
 		//For saving Employee details (Every User is an Employee)
 		if(jsonObj.has("projectId") && !isNullOrEmpty(jsonObj.getString("projectId"))){
@@ -372,25 +369,28 @@ public class UserServiceImpl implements UserService {
 		 
 	}
 	
-	private User getUserDetails(JSONObject jsonObj,String userCode) throws JSONException {
+	private User getUserDetails(AddUserDTO addUserDTO,String userCode) throws JSONException {
 		User user = new User();
 		
-		if(jsonObj.has("firstName")){
-			user.setFirstName(jsonObj.getString("firstName"));
+		if(StringUtils.isNotBlank(addUserDTO.getFirstName())){
+			user.setFirstName(addUserDTO.getFirstName());
+		}else{
+			user.setFirstName(null);
 		}
 		
-		if(jsonObj.has("lastName")){
-			user.setLastName(jsonObj.getString("lastName"));
+		if(StringUtils.isNotBlank(addUserDTO.getLastName())){
+			user.setLastName(addUserDTO.getLastName());
+		}else{
+			user.setLastName(null);
 		}
 		
-		if(jsonObj.has("email")){
-			user.setEmail(jsonObj.getString("email"));
+		if(StringUtils.isNotBlank(addUserDTO.getEmail())){
+			user.setEmail(addUserDTO.getEmail());
+			user.setUserName(addUserDTO.getEmail());
+		}else{
+			user.setEmail(null);
+			user.setUserName(null);
 		}
-		
-		if(jsonObj.has("email")){
-			user.setUserName(jsonObj.getString("email"));
-		}  
-		
 		
 		user.setUserCode(SourceLeadRandomCodeHelper.generateRandomUserCode());
 		user.setCreatedBy(userCode);
@@ -398,7 +398,7 @@ public class UserServiceImpl implements UserService {
 		return user;
 	}
 	
-	private UserRole getUserRoleDetails(JSONObject jsonObj,User user,String userCode, Long orgLocationsId) throws Exception {
+	private UserRole getUserRoleDetails(AddUserDTO addUserDTO,User user,String userCode, Long orgLocationsId) throws Exception {
 		UserRole userRole = new UserRole();
 		userRole.setUser(user);
 		
@@ -406,9 +406,9 @@ public class UserServiceImpl implements UserService {
 		orgLocations.setId(orgLocationsId);
 		userRole.setOrgLocations(orgLocations);
 		
-		if(jsonObj.has("reportingManager") && !isNullOrEmpty(jsonObj.getString("reportingManager"))){
+		if(addUserDTO.getReportingManager() >= 0 && null != addUserDTO.getReportingManager()){
 			User reportingManager = new User();
-			reportingManager.setId(Long.parseLong(jsonObj.getString("reportingManager")));
+			reportingManager.setId(addUserDTO.getReportingManager());
 			userRole.setReportingManager(reportingManager);
 		}
 		
@@ -457,7 +457,7 @@ public class UserServiceImpl implements UserService {
 		return userRole;
 	}
 	
-	private Employees getEmployeeDetails(User user,JSONObject jsonObj, Long orgLocationsId,String userCode) throws NumberFormatException, Exception {
+	private Employees getEmployeeDetails(User user,AddUserDTO addUserDTO, Long orgLocationsId,String userCode) throws NumberFormatException, Exception {
 		Employees employees = new Employees();
 		employees.setUser(user);
 		OrgLocations orgLocations = new OrgLocations();

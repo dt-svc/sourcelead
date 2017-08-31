@@ -117,7 +117,7 @@ public interface CandidateService {
 	
 	public List<Candidate> getCandidatesByOrgLocationIDAndSearchText(Long orgLocationId,Long requirementId, String candidateType,String searchApplicant) throws Exception;
 	
-	public Candidate storeProfessionalParseCandidate(JSONObject jsonObj,OrgLocations orgLocations,User user,MultipartFile multiFile,Long candidateId) throws Exception;
+	public Candidate storeProfessionalParseCandidate(CandidateDTO candidateDTO,OrgLocations orgLocations,User user,Long candidateId) throws Exception;
 
 	/*
 	 * This Method is to  get the consolidated reports which candidates are created on current Date for individual  user 

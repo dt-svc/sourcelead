@@ -51,7 +51,7 @@
 	</c:choose>
     
     </section>
-    <form:form id="add_expenses_form" name="add_expenses_form"  enctype='multipart/form-data'>
+    <form:form id="add_expenses_form" name="add_expenses_form">
 	<div class="content-area content-new clearfix">
          
           <div class="clearfix form-horizontal inner-content">
@@ -286,11 +286,16 @@
 				$("#draftForApprovalExpensesId").prop('disabled', true);
 				$("#cancelForApprovalExpensesId").prop('disabled', true);
 				
-				var frm = $('#add_expenses_form').serializeFormJSON();
+				/* var frm = $('#add_expenses_form').serializeFormJSON();
 				var jsonData = JSON.stringify(frm);
 				var form = $('#add_expenses_form')[0];
 	      		var formData = new FormData(form); 
-	      		formData.append("json",jsonData);
+	      		formData.append("json",jsonData); */
+	      		
+				var form = $('#add_expenses_form')[0];
+	      		var formData = new FormData(form); 
+	      		
+	      		
 				var sourceleadUrl = '${sourceleadUrl}';
 				$( "#submitForApprovalExpensesId" ).addClass('button').val('Processing..');
 	     		$.ajax({
