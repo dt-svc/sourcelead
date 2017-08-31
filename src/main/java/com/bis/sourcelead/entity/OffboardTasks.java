@@ -17,6 +17,8 @@ import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
 import org.hibernate.annotations.Type;
 
 @Entity
@@ -34,10 +36,12 @@ private static final long serialVersionUID = 1L;
 	@Column(name = "TASK_NAME")
    	private String taskName;
     
+	@NotFound(action=NotFoundAction.IGNORE)
     @ManyToOne(fetch = FetchType.LAZY)
    	@JoinColumn(name = "CANDIDATE_OFF_BOARDING_ID", nullable = false)
    	private CandidateOffBoarding candidateOffBoardingId;
     
+	@NotFound(action=NotFoundAction.IGNORE)
     @ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "OFF_BOARDING_TEMPLATE_ID", nullable = false)
 	private OffBoardingTemplate offboardingTemplateId;

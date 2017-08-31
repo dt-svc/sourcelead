@@ -23,7 +23,7 @@ public class ClientVendorIndex implements Serializable {
 	
 	private String initiatorLevel;
 	
-	private String responderLevel;
+	private String responderLevel ;
 	
 	private String initiatorCountry;
 	
@@ -80,6 +80,8 @@ public class ClientVendorIndex implements Serializable {
 	private Long noContacts;
 	
 	private Long noOfReleasedJobs;
+	
+	private String releasedJobsCount;
 	
 	
 	public String getSearchType() {
@@ -382,6 +384,14 @@ public class ClientVendorIndex implements Serializable {
 
 	public void setCreatedDate(String createdDate) {
 		this.createdDate = createdDate;
+	}
+
+	public String getReleasedJobsCount() {
+		return releasedJobsCount;
+	}
+
+	public void setReleasedJobsCount(String releasedJobsCount) {
+		this.releasedJobsCount = releasedJobsCount;
 	}
 	
 

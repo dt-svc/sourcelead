@@ -417,16 +417,16 @@ function addCertification(candidateId) {
 		result  = result + '                   </div>';
 		result  = result + '                 </div>';
 		
-		result  = result + '                 <div class="clearfix mb10">';
-		result = result  +'	                     <div class="col-md-4" positionRelative>';
-		result = result  +'	                     <select class="chosen-select"  name="scoreType" id="scoreType" onchange="selectScoreType();clearSearchKey();">';
+		result  = result + '                 <div class="clearfix mb10" id="candidateScoreDiv">';
+		result = result  +'	                     <div class="col-md-6 dropdown-select positionRelative PaddingRight">';
+		result = result  +'	                     <select class=""  name="scoreType" id="scoreType" onchange="selectScoreType();clearSearchKey();">';
 		result = result  +' 					   <option value="" selected="selected">Score Type</option>';
 		result = result  +'	                       <option value="Percentage">Percentage</option>';
 		result = result  +'	                       <option value="CGPA">CGPA</option>';
 		result = result  +'	                       <option value="GRADE">GRADE</option>';
 		result = result  +'	                      </select>';
 		result = result  +'	                   </div>';
-		result  = result + '                   <div class="col-md-8" positionRelative id="candidateScoreDiv">';
+		result  = result + '                   <div class="col-md-6 PaddingLeft" positionRelative >';
 		result  = result + '                     <input type="text" class="form-control input-sm" value="" name="score" placeholder="Score" id="candidateScore" onkeyup="selectScoreType();scoreAndScoreType();"';
 		result  = result + '                     data-validation-optional="true" data-validation="required validate_length length1-5" field-name="score">';
 		result  = result + '                 	 </div>';
@@ -646,13 +646,50 @@ function addCertification(candidateId) {
 								 });
 								 
 								 
-								var datepickerStartDate = toDate("#StartDateEdit");
+								/* var datepickerStartDate = toDate("#StartDateEdit");
 								datepickerStartDate.setDate(datepickerStartDate.getDate() + 1);
 								
 								var datepickerEndDate = toDate("#EndDateEdit");
-								datepickerEndDate.setDate(datepickerEndDate.getDate() - 1);
+								datepickerEndDate.setDate(datepickerEndDate.getDate() - 1); */
+								var cerStartDate = $("#StartDateEdit").val();
+								var cerEndDate = $("#EndDateEdit").val(); 
+								
 								
 								var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+								 var cerStartDateSplit = cerStartDate.split("-");
+								 var cerEndDateSplit = cerEndDate.split("-");
+								 
+								 var finalDateFormatCerEditOneSave = '';
+								  var cerStartDateEdit = '';
+								  var cerEndDateEdit = '';
+								  
+								  if(locationDate.match("yyyy-MM-dd")){
+									  finalDateFormatCerEditOneSave = 'yy-mm-dd';
+									  cerStartDateEdit = new Date(cerStartDateSplit[0], parseInt(cerStartDateSplit[1])-parseInt(1), parseInt(cerStartDateSplit[2])+parseInt(1));
+								  }if(locationDate.match("dd-MM-yyyy")){
+									  finalDateFormatCerEditOneSave = 'dd-mm-yy'; 
+									  cerStartDateEdit = new Date(cerStartDateSplit[2], parseInt(cerStartDateSplit[1])-parseInt(1), parseInt(cerStartDateSplit[0])+parseInt(1));
+								  }if(locationDate.match("MM-dd-yyyy")){
+									  finalDateFormatCerEditOneSave = 'mm-dd-yy'; 
+									  cerStartDateEdit = new Date(cerStartDateSplit[2], parseInt(cerStartDateSplit[0])-parseInt(1), parseInt(cerStartDateSplit[1])+parseInt(1));
+								  }if(locationDate.match("yyyy-dd-MM")){
+									  finalDateFormatCerEditOneSave = 'yy-dd-mm';
+									  cerStartDateEdit = new Date(cerStartDateSplit[0], parseInt(cerStartDateSplit[2])-parseInt(1), parseInt(cerStartDateSplit[1])+parseInt(1));
+								  }
+								  
+								  if(locationDate.match("yyyy-MM-dd")){
+									  finalDateFormatCerEditOneSave = 'yy-mm-dd';
+									  cerEndDateEdit = new Date(cerEndDateSplit[0], parseInt(cerEndDateSplit[1])-parseInt(1), parseInt(cerEndDateSplit[2])-parseInt(1));
+								  }if(locationDate.match("dd-MM-yyyy")){
+									  finalDateFormatCerEditOneSave = 'dd-mm-yy'; 
+									  cerEndDateEdit = new Date(cerEndDateSplit[2], parseInt(cerEndDateSplit[1])-parseInt(1), parseInt(cerEndDateSplit[0])-parseInt(1));
+								  }if(locationDate.match("MM-dd-yyyy")){
+									  finalDateFormatCerEditOneSave = 'mm-dd-yy'; 
+									  cerEndDateEdit = new Date(cerEndDateSplit[2], parseInt(cerEndDateSplit[0])-parseInt(1), parseInt(cerEndDateSplit[1])-parseInt(1));
+								  }if(locationDate.match("yyyy-dd-MM")){
+									  finalDateFormatCerEditOneSave = 'yy-dd-mm';
+									  cerEndDateEdit = new Date(cerEndDateSplit[0], parseInt(cerEndDateSplit[2])-parseInt(1), parseInt(cerEndDateSplit[1])-parseInt(1));
+								  }
 								  var finalDateFormatCerUpdate = '';
 								  if(locationDate.match("yyyy-MM-dd")){
 									  finalDateFormatCerUpdate = 'yy-mm-dd';
@@ -668,7 +705,7 @@ function addCertification(candidateId) {
 							      dateFormat: finalDateFormatCerUpdate,
 							      changeMonth: true,
 							  	  changeYear: true, 
-							  	  //maxDate: datepickerEndDate,
+							  	  maxDate: cerEndDateEdit,
 							      onSelect: function (selected) {
 							            //var dt = new Date(selected);
 							            var dt = $(this).datepicker('getDate', '+1d');
@@ -681,7 +718,7 @@ function addCertification(candidateId) {
 							      dateFormat: finalDateFormatCerUpdate,
 							      changeMonth: true,
 							  	  changeYear: true, 
-							  	  //minDate: datepickerStartDate,
+							  	  minDate: cerStartDateEdit,
 							      onSelect: function (selected) {
 							            //var dt = new Date(selected);
 							            var dt = $(this).datepicker('getDate', '-1d');
@@ -858,87 +895,98 @@ function  deleteSelectedCertification(candidateCertificationId,candidateId){
      this script is to display candidate score validation based on scoreType.
 --%>
 <script type="text/javascript">
-function selectScoreType(){
-	
-	 var selectedText = document.getElementById("scoreType").value;
-	/* if(selectedText != null && selectedText !='' && selectedText !='undefined'){
-		 $("#candidateScore").removeAttr("readonly");
-	}else{
-		 $("#candidateScore").attr("readonly", "readonly");
-	} */
-	 var canScore = document.getElementById("candidateScore").value;
-	 $('#candidateScoreDiv').parent().find('p.jquery_form_error_message').remove(); 
-	 if(selectedText =='Percentage'){
-		  var floatNum = /^(\d{0,2}(\.\d{0,2})?|100)$/
-		  if(canScore.match(floatNum)){
-			  $("#addCandidate").removeAttr("disabled");
-			   return true;
-		  }		  
-		 else{
-				$("input#candidateScore").parent().after("<p class='jquery_form_error_message'><span>Enter your Valid Percentage</span>");
-				 $("#addCandidate").attr("disabled", "disabled");
-				return false; 
-		 	 }
-	  }
-	 else if(selectedText =='CGPA'){
-		  var cgpanum = /^(([\d][\.])?([\d])|10)?$/
-			  if(canScore.match(cgpanum)){
-				  $("#addCandidate").removeAttr("disabled");
-				   return true;
-			  }		  
-			 else{
-				 $("input#candidateScore").parent().after("<p class='jquery_form_error_message'><span>Enter your Valid CGPA value</span>");
-				 $("#addCandidate").attr("disabled", "disabled");
-			return false; 
-			 }
-	  } 
-	 else if(selectedText =='GRADE'){
-		 var grades = /^([A-E][-+]{0,2})?$/
-			 if (canScore.match(grades)) {
-				 $("#addCandidate").removeAttr("disabled");
-				 return true;
-			}else{
-				$("input#candidateScore").parent().after("<p class='jquery_form_error_message'> Enter your Valid Grade </p>");
-				 $("#addCandidate").attr("disabled", "disabled");
-	    		return false;
-	    		
+	function selectScoreType() {
+		
+		var str = document.getElementById("candidateScore").value;
+		if (str == 'a' || str == 'b' || str == 'c' || str == 'd' || str == 'e') {
+			var strToUpper = str.toUpperCase();
+			$('#candidateScore').val(strToUpper);
+		}
+		var selectedText = document.getElementById("scoreType").value;
+		var canScore = document.getElementById("candidateScore").value;
+		$('#candidateScoreDiv').parent().find('p.jquery_form_error_message')
+				.remove();
+		if (selectedText == 'Percentage') {
+			var floatNum = /^(\d{0,2}(\.\d{0,2})?|100)$/
+			if (canScore.match(floatNum)) {
+				$("#addCandidate").removeAttr("disabled");
+				return true;
+			} else {
+				$("input#candidateScore")
+						.parent()
+						.after(
+								"<p class='jquery_form_error_message'><span>Enter your Valid Percentage</span>");
+				$("#addCandidate").attr("disabled", "disabled");
+				return false;
 			}
-   		}
-		 }
-	  
+		} else if (selectedText == 'CGPA') {
+			var cgpanum = /^(([\d][\.])?([\d])|10)?$/
+			if (canScore.match(cgpanum)) {
+				$("#addCandidate").removeAttr("disabled");
+				return true;
+			} else {
+				$("input#candidateScore")
+						.parent()
+						.after(
+								"<p class='jquery_form_error_message'><span>Enter your Valid CGPA value</span>");
+				$("#addCandidate").attr("disabled", "disabled");
+				return false;
+			}
+		} else if (selectedText == 'GRADE') {
+			var grades = /^([A-E][-+]{0,2})?$/
+			if (canScore.match(grades)) {
+				$("#addCandidate").removeAttr("disabled");
+				return true;
+			} else {
+				$("input#candidateScore")
+						.parent()
+						.after(
+								"<p class='jquery_form_error_message'> Enter your Valid Grade </p>");
+				$("#addCandidate").attr("disabled", "disabled");
+				return false;
+
+			}
+		}
+	}
 </script>
 
 
 <script type="text/javascript">
-function scoreAndScoreType(){
-	 var candidateScore = document.getElementById("candidateScore").value;
-	 var selectedText = document.getElementById("scoreType").value;
-	 var floatNum = /^(\d{0,2}(\.\d{0,2})?|100)$/
-	 var cgpanum = /^(([\d][\.])?([\d])|10)?$/
-	 var grades = /^([A-E][-+]{0,2})?$/
-	 if(candidateScore.match(floatNum)){
-		 $("#scoreType").val('Percentage'); 
-		 $('#candidateScoreDiv').parent().find('p.jquery_form_error_message').remove();
-		 $("#addCandidate").removeAttr("disabled");
-	 }
-	 if(candidateScore.match(grades)){
-		 $("#scoreType").val('GRADE'); 
-	 }
-	 if(candidateScore.match(cgpanum)){
-		 $("#scoreType").val('CGPA'); 
-	 }
-	 if((selectedText == '') && (!candidateScore.match(floatNum)) && (!candidateScore.match( cgpanum)) && (!candidateScore.match(grades))){
-		 $("input#candidateScore").parent().after("<p class='jquery_form_error_message'> Enter your Valid Score </p>");
-	 }
-	 if(selectedText == '' && candidateScore == ''){
-		 $('#candidateScoreDiv').parent().find('p.jquery_form_error_message').remove(); 
-	 }
-	 if(candidateScore == ''){
-		 $("#scoreType").val('');
-	 }
-}
+	function scoreAndScoreType() {
+		var candidateScore = document.getElementById("candidateScore").value;
+		var selectedText = document.getElementById("scoreType").value;
+		var floatNum = /^(\d{0,2}(\.\d{0,2})?|100)$/
+		var cgpanum = /^(([\d][\.])?([\d])|10)?$/
+		var grades = /^([A-E][-+]{0,2})?$/
+		if (candidateScore.match(floatNum)) {
+			$("#scoreType").val('Percentage');
+			$('#candidateScoreDiv').parent()
+					.find('p.jquery_form_error_message').remove();
+			$("#addCandidate").removeAttr("disabled");
+		}
+		if (candidateScore.match(grades)) {
+			$("#scoreType").val('GRADE');
+		}
+		if (candidateScore.match(cgpanum)) {
+			$("#scoreType").val('CGPA');
+		}
+		if ((selectedText == '') && (!candidateScore.match(floatNum))
+				&& (!candidateScore.match(cgpanum))
+				&& (!candidateScore.match(grades))) {
+			$("input#candidateScore")
+					.parent()
+					.after(
+							"<p class='jquery_form_error_message'> Enter your Valid Score </p>");
+		}
+		if (selectedText == '' && candidateScore == '') {
+			$('#candidateScoreDiv').parent()
+					.find('p.jquery_form_error_message').remove();
+		}
+		if (candidateScore == '') {
+			$("#scoreType").val('');
+		}
+	}
 </script>
-
 
 
 

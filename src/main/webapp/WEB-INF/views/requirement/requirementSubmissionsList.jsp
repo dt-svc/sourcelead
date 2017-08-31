@@ -7,49 +7,15 @@
   <!-- Header Area -->
   <section class="content-wraper">
     <section class="content-header clearfix">
-       <div class="pull-right brud-crum">Home &raquo; Submission List</div>
+       <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Submission List</div>
     </section>
     
     <!-- Project -->
     <div class="timesheet_out">
       <div class="clients_wrap">
-        <div class="timesheet_head">
-        <div class="pull-left ml mt10">
-				<p><span class="select-fild">
-				    <select id="reqList">
-                  		<option value="appList" onclick="loadRequirementApplicants();" >Applicant List</option>
-                        <option value="subList" selected="selected" onclick="loadRequirementSubmissions();">Submission List</option> 
-                        <option value="interList" onclick="loadRequirementInterviews();">Interview List</option>
-                        <option value="offerlist" onclick="loadRequirementOffers();">Offer List</option> 
-                    </select>
-				</span>
-				</p>
-			</div>
-			 <div class="pull-left ml mt10">
-				<p><span class="select-fild">
-				    <c:if test="${tab == 'today'}">
-				    <select id="tabList" onchange="tabsList(this);" >
-                  		<option value="today" selected="selected">Today</option>
-                        <option value="previous">Previous</option> 
-                    </select>
-                </c:if>
-                <c:if test="${tab == 'previous'}">
-				    <select id="tabList" onchange="tabsList(this);" >
-                  		<option value="today">Today</option>
-                        <option value="previous" selected="selected">Previous</option> 
-                    </select>
-                </c:if>
-				</span>
-				</p>
-			</div>
-          <div class="clearfix"></div>
-          <div class="remove_search hidden">
-            <input type="text" placeholder="search" />
-          </div>
-        </div>
+        <jsp:include page="JobCountFilter.jsp"></jsp:include>
         <div class="clients_wrap_table datatable_filter">
                 <table id="appTable">
-            
             <thead>
               <tr>
                 <th>Applicant name</th>
@@ -63,7 +29,7 @@
                 <th>Source</th>
                 <th>Score</th>
                 <th>Submitted by</th>
-                <th>Status</th>
+                <th>Current Status</th>
               </tr>
             </thead>
             <tbody>
@@ -76,7 +42,14 @@
             <sec:authorize access="!hasAnyRole(\'ROLE_VIEW_REQUIREMENT\',\'ROLE_VIEW_EDIT_REQUIREMENT\')">
             	<td><div><span>${reqSub.submissionId.requirement.jobTitle}</span></div></td>
             </sec:authorize>
-              <td><div><span>${reqSub.submissionId.requirement.orgLocationId.org.orgName}</span></div></td>
+              <td><div><span>
+              <c:if test="${not empty reqSub.submissionId.requirement.parentRequirement.orgLocationId.org.orgName}">
+              	${reqSub.submissionId.requirement.parentRequirement.orgLocationId.org.orgName}
+              </c:if>
+              <c:if test="${empty reqSub.submissionId.requirement.parentRequirement.orgLocationId.org.orgName}">
+              	--
+              </c:if>
+              </span></div></td>
               <td><div><span>${reqSub.submissionId.createdDateStr}</span></div></td>
               <td><div><span>
 	              <c:if test="${not empty reqSub.submissionId.submittedOn}">
@@ -91,6 +64,7 @@
                <td><div><span>
 	              <c:if test="${not empty reqSub.submissionId.candidateResumes.resumeUUID}">
 	              <a href='<c:url value='/downloadResume?resumeUUID=${reqSub.submissionId.candidateResumes.resumeUUID}'/>'><i class='fa fa-download'></i></a>
+	              <a href="javascript:void(0)" onclick="submissionDocumentListDocumentView('${reqSub.submissionId.candidateResumes.resumeUUID}','${reqSub.submissionId.candidateResumes.fileName}');" class="fa fa-eye ml10 paddingRight"></a>
 	               <%-- <a href="<c:url value='/downloadResumeCandidate/${reqSub.submissionId.candidateResumes.resumeUUID}'/>"><i class="fa fa-download"></i> </a> --%>
 	              </c:if>
 	              <c:if test="${empty reqSub.submissionId.candidateResumes.resumeUUID}">
@@ -174,6 +148,18 @@
       </div>
     </div>
   </section>
+  
+  
+    
+ <script>
+ function submissionDocumentListDocumentView(resumeUUID,title){
+	 var sourceleadUrl ='${sourceleadUrl}';
+		if(resumeUUID != null && resumeUUID != ""){
+			window.open(sourceleadUrl+'/viewInterviewListResumes/'+title+'?resumeUUID='+resumeUUID,title,"height=600,width=600");
+		}
+ }
+</script>
+  
   <script>
 function pagination1(){ 
     $('#appTable').DataTable( { 
@@ -196,51 +182,3 @@ window.onload = function () {
  };
 </script>
 
-<script type="text/javascript">
-	function loadRequirementApplicants(){
-		var tab = document.getElementById("tabList").value;
-		var sourceleadUrl = '${sourceleadUrl}';
-		var orgLocId = '${SourceLeadWeb_orgLocationId}';
-		window.location.href = sourceleadUrl + "/requirementApplicantsList?&tab="+tab+"&orgLocationId="+orgLocId;
-	}
-	function loadRequirementSubmissions(){
-		var tab = document.getElementById("tabList").value;
-		var sourceleadUrl = '${sourceleadUrl}';
-		var orgLocId = '${SourceLeadWeb_orgLocationId}';
-		window.location.href = sourceleadUrl + "/requirementSubmissionsList?&tab="+tab+"&orgLocationId="+orgLocId;
-	}
-	function loadRequirementInterviews(){
-		var tab = document.getElementById("tabList").value;
-		var sourceleadUrl = '${sourceleadUrl}';
-		var orgLocId = '${SourceLeadWeb_orgLocationId}';
-		window.location.href = sourceleadUrl + "/requirementInterviewsList?&tab="+tab+"&orgLocationId="+orgLocId;
-	}
-	function loadRequirementOffers(){
-		var tab = document.getElementById("tabList").value;
-		var sourceleadUrl = '${sourceleadUrl}';
-		var orgLocId = '${SourceLeadWeb_orgLocationId}';
-		window.location.href = sourceleadUrl + "/requirementOffersList?&tab="+tab+"&orgLocationId="+orgLocId;
-	}
-
-	function tabsList(sel){
-		var tab = sel.value;
-		var reqList = document.getElementById("reqList").value;
-		var orgLocId = '${SourceLeadWeb_orgLocationId}';
-		if(reqList=="appList"){
-			var sourceleadUrl = '${sourceleadUrl}';
-			window.location.href = sourceleadUrl + "/requirementApplicantsList?&tab="+tab+"&orgLocationId="+orgLocId;
-		}
-		if(reqList=="subList"){
-			var sourceleadUrl = '${sourceleadUrl}';
-			window.location.href = sourceleadUrl + "/requirementSubmissionsList?&tab="+tab+"&orgLocationId="+orgLocId;
-			 }
-		if(reqList=="interList"){
-			var sourceleadUrl = '${sourceleadUrl}';
-			window.location.href = sourceleadUrl + "/requirementInterviewsList?&tab="+tab+"&orgLocationId="+orgLocId;
-		}
-		if(reqList=="offerlist"){
-			var sourceleadUrl = '${sourceleadUrl}';
-			window.location.href = sourceleadUrl + "/requirementOffersList?&tab="+tab+"&orgLocationId="+orgLocId;
-		}
-	}
-	</script> 

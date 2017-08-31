@@ -324,7 +324,7 @@ function addCertification(candidateId) {
 		result  = result + '                 </div>';
 		
 		result  = result + '                 <div class="clearfix mb10">';
-		result = result  +'	                     <div class="col-md-4" positionRelative>';
+		result = result  +'	                     <div class="col-md-6 dropdown-select positionRelative paddingRight">';
 		result = result  +'	                     <select class="chosen-select"  name="scoreType" id="scoreType" onchange="selectScoreType();clearSearchKey();">';
 		result = result  +' 					   <option value="" selected="selected">Score Type</option>';
 		result = result  +'	                       <option value="Percentage">Percentage</option>';
@@ -332,7 +332,7 @@ function addCertification(candidateId) {
 		result = result  +'	                       <option value="GRADE">GRADE</option>';
 		result = result  +'	                      </select>';
 		result = result  +'	                   </div>';
-		result  = result + '                   <div class="col-md-8" positionRelative id="candidateScoreDiv">';
+		result  = result + '                   <div class="col-md-6 paddginLeft" positionRelative id="candidateScoreDiv">';
 		result  = result + '                     <input type="text" class="form-control input-sm" value="" name="score" placeholder="Score" id="candidateScore" onkeyup="selectScoreType();scoreAndScoreType();"';
 		result  = result + '                     data-validation-optional="true" data-validation="required validate_length length1-5" field-name="score">';
 		result  = result + '                 	 </div>';
@@ -740,6 +740,11 @@ function removeCertification(candidateCertificationId,candidateId){
 --%>
 <script type="text/javascript">
 function selectScoreType(){
+	var str = document.getElementById("candidateScore").value;
+	if (str == 'a' || str == 'b' || str == 'c' || str == 'd' || str == 'e') {
+		var strToUpper = str.toUpperCase();
+		$('#candidateScore').val(strToUpper);
+	}
 	
 	 var selectedText = document.getElementById("scoreType").value;
 	/* if(selectedText != null && selectedText !='' && selectedText !='undefined'){

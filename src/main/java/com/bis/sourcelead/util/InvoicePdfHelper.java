@@ -880,8 +880,10 @@ public class InvoicePdfHelper {
 			Paragraph p = new Paragraph("Company Name :" + orgName);
 			p.add(new Chunk(glue));
 			p.setIndentationLeft(0);
+
 			p.add("Duration  :" + exportStartDate + " - " + exportEndDate);
-			p.setIndentationRight(223);
+			p.setIndentationRight(3);
+
 			document.add(p);
 
 			Chunk glue1 = new Chunk(new VerticalPositionMark());
@@ -889,15 +891,15 @@ public class InvoicePdfHelper {
 			p1.add(new Chunk(glue1));
 			p1.setIndentationLeft(0);
 			p1.add("Total Unpaid Amount(OverDue) :" + totalStagesAmount.getTotalOverDueUnpaidAmount());
-			p1.setIndentationRight(220);
+			p1.setIndentationRight(0);
 			document.add(p1);
-
+			
 			Chunk glue2 = new Chunk(new VerticalPositionMark());
 			Paragraph p2 = new Paragraph("Total Paid Amount :" + totalStagesAmount.getTotalPaidAmount());
 			p2.add(new Chunk(glue2));
 			p2.setIndentationLeft(0);
 			p2.add("Total Unbilled Amount  :" + totalStagesAmount.getTotalUnbilledAmount());
-			p2.setIndentationRight(227);
+			p2.setIndentationRight(20);
 			document.add(p2);
 
 			PdfPTable table = new PdfPTable(headers.length);
@@ -1070,9 +1072,9 @@ public class InvoicePdfHelper {
 			billingArray[11] = "--";
 		}
 
-		if (null != invoice.getLinkInvoiceReferenceId()
-				&& !"".equalsIgnoreCase(String.valueOf(invoice.getLinkInvoiceReferenceId()))) {
-			billingArray[12] = String.valueOf(invoice.getLinkInvoiceReferenceId());
+		if (null != invoice.getLinkInvoiceRefInvoiceId()
+				&& !"".equalsIgnoreCase(String.valueOf(invoice.getLinkInvoiceRefInvoiceId()))) {
+			billingArray[12] = String.valueOf(invoice.getLinkInvoiceRefInvoiceId());
 		} else {
 			billingArray[12] = "--";
 		}

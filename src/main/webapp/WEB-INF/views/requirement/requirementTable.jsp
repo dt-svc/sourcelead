@@ -55,10 +55,10 @@ function requirementList(searchType,sourceleadUrl){
 	    			closePop();
 	    			clearAlldata();
 	    }
-	    prepareRequirementData(url);
+	    prepareRequirementData(url,sourceleadUrl);
  } 
 
-function prepareRequirementData(url){
+function prepareRequirementData(url,sourceleadUrl){
 	var orgATS = '${SourceLeadWeb_ats}';
 	var orgVMS = '${SourceLeadWeb_vms}';
 	 $("#requirementList").removeAttr("style");
@@ -67,6 +67,7 @@ function prepareRequirementData(url){
 	 result = result +"<table id='requirementPagination' class='display' cellspacing='0' width='100%' >"; 
    result = result +"<thead>"; 
    result = result +"  <tr>"; 
+   result = result +"    <th>Generated ID</th>"; 
    result = result +"    <th>ID</th>"; 
    result = result +"    <th>Title</th>"; 
    result = result +"    <th>Client</th>"; 
@@ -92,13 +93,10 @@ function prepareRequirementData(url){
    result = result +"</table>"; 
    $("#noReq").val('');
    $("#requirementList").append(result); 
-   //$("#requirementEmptyListMessage").val(json.length);
-   /* for (var i = 0; i < json.length; i++) { 
-     	 var opt = json[i];
-     	statusvalidating(opt.id);
-   } */
-   jpagination(url); 
-   /* msgFadein1(); */ 
+   jpagination(url,sourceleadUrl); 
+   
+   /* to call requirement conformation saving message */
+   msgFadein1();
 }
 
 function clearAlldata(){
@@ -128,7 +126,7 @@ function clearSearch(){
 	$('#requirementTitle').val('').trigger('chosen:updated');
 	$('#jobId').val('').trigger('chosen:updated');
 }
-function jpagination(url){ 
+function jpagination(url,sourceleadUrl){ 
 	var colIndex = 0;
    $('#requirementPagination').DataTable( { 
    		"processing": true,
@@ -140,6 +138,7 @@ function jpagination(url){
            pages: 1
        }),
        "columns": [
+    	   { "data": "generatedId"},
            { "data": "jobId" },
            { "data": "jobTitle"},
            { "data": "clientName"},
@@ -151,7 +150,23 @@ function jpagination(url){
            { "data": "requirementSubmissionStatus" },
            { "data": "requirementUUID" }
        ],
-       "columnDefs": [ {
+	       "columnDefs": [ {
+	   	  	"targets": colIndex++,
+		  	"data": "generatedId",
+		  	"sortable": false,
+		  	"render": function(data, type, opt, meta) {
+		  		 var result = "";
+		  		 result = result +"<td>";
+		  	  	 if(opt.generatedId != '' && opt.generatedId != null){
+		  	  		
+		  		   	 result = result +"<div class='tbldata-dotdot_50' title='"+opt.generatedId+"'>"+opt.generatedId+"</span></div>";
+		  	    	}else{
+		  	  		 result = result +"<div>-----</div>";
+		  	  	 }
+		  		 result = result +"</td>";
+	             return  result;
+		  	}
+	        },{
 	    	  	"targets": colIndex++,
 	    	  	"data": "jobId",
 	    	  	"sortable": false,
@@ -319,6 +334,7 @@ function jpagination(url){
 			         			}
 			         			else if(opt.requirementSubmissionStatus == "CANCEL"){
 			         				result = result +"<option disabled selected >"+opt.requirementSubmissionStatus+"</option>";
+			         				result = result +"<option value='OPEN'>OPEN</option>";
 
 			         			}else if(opt.requirementSubmissionStatus == "OPEN"){
 			         				result = result +"<option disabled selected>"+opt.requirementSubmissionStatus+"</option>";
@@ -470,7 +486,7 @@ function jpagination(url){
            ],
 	    	"scrollCollapse": false,
 	    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
-	    	"aaSorting": [[7,'desc']],
+	    	"aaSorting": [[8,'desc']],
 	    	"bLengthChange": true,
 	    	"bDestroy": true,
 	    	"ordering": true,
@@ -484,7 +500,7 @@ function jpagination(url){
    $("input[type=search]").hide();
    $("#dataTableSearch").keyup(function(e) {
    	   if(e.which === 13) {
-   		 requirementList('list');
+   		 requirementList('list',sourceleadUrl);
    	   }
    	});
  }

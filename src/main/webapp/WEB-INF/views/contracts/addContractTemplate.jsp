@@ -48,27 +48,21 @@
 									field-name="Template Type" name="contractType"
 									onchange="contractTemplateType(); validateContractTemplateName();">
 									<option
-										${contractsTemplate.templateType  == 'Client MSA' ? 'selected' : ''}>Client
-										MSA</option>
+										${contractsTemplate.templateType  == 'Client MSA' ? 'selected' : ''}>Client MSA</option>
 									<option
-										${contractsTemplate.templateType  == 'Vendor MSA' ? 'selected' : ''}>Vendor
-										MSA</option>
+										${contractsTemplate.templateType  == 'Vendor MSA' ? 'selected' : ''}>Vendor MSA</option>
 									<option
-										${contractsTemplate.templateType  == 'Client SOW' ? 'selected' : ''}>Client
-										SOW</option>
+										${contractsTemplate.templateType  == 'Client SOW' ? 'selected' : ''}>Client SOW</option>
 									<option
-										${contractsTemplate.templateType  == 'Vendor SOW' ? 'selected' : ''}>Vendor
-										SOW</option>
+										${contractsTemplate.templateType  == 'Vendor SOW' ? 'selected' : ''}>Vendor SOW</option>
 									<option
 										${contractsTemplate.templateType  == 'NDA' ? 'selected' : ''}>NDA</option>
 									<option
 										${contractsTemplate.templateType  == 'NSA' ? 'selected' : ''}>NSA</option>
 									<option
-										${contractsTemplate.templateType  == 'W-4 Form' ? 'selected' : ''}>W-4
-										Form</option>
+										${contractsTemplate.templateType  == 'W-4 Form' ? 'selected' : ''}>W-4 Form</option>
 									<option
-										${contractsTemplate.templateType  == 'I-9 Form' ? 'selected' : ''}>I-9
-										Form</option>
+										${contractsTemplate.templateType  == 'I-9 Form' ? 'selected' : ''}>I-9 Form</option>
 									<option
 										${contractsTemplate.templateType  == 'Full Time Offer' ? 'selected' : ''}>Full Time Offer</option>
 
@@ -437,7 +431,13 @@
     ['para', ['ul', 'ol', 'paragraph']],
 	['link',['link','insert','unlink']],
     ['height', ['height']]
-  ]
+  ],
+  callbacks:{
+	  onImageUpload: function (data) {
+		             	data.pop();
+                   	}
+	  
+  	}
 });
 </script>
 

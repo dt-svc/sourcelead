@@ -91,8 +91,7 @@ function statusvalidating(id){
 <jsp:include page="requirementTable.jsp" />
 <!-- <script type="text/javascript" src="resources/js/requirementTable.js"></script> -->
 <input type="hidden" name="noReq" id="noReq" />
-<input type="hidden" id="requirementEmptyListMessage"
-	name="requirementEmptyListMessage" />
+<input type="hidden" id="requirementEmptyListMessage" name="requirementEmptyListMessage" />
 <div id="popUp"></div>
 <section class="content-wraper">
 	<section class="content-header clearfix">
@@ -127,7 +126,16 @@ function statusvalidating(id){
 
 					<div class="row">
 						<div class="clearfix">
-							<div class="col-md-8">
+							<div class="col-md-4">
+								<label>Generated ID</label>
+								<div class="clearfix">
+									<select class="chosen-select form-control input-sm" multiple
+										data-placeholder="Generated ID" id="generatedId" name="generatedId">
+									</select>
+								</div>
+							</div>
+							
+							<div class="col-md-4">
 								<label>Title</label>
 								<div class="clearfix">
 									<select class="chosen-select form-control input-sm" multiple
@@ -136,6 +144,7 @@ function statusvalidating(id){
 									</select>
 								</div>
 							</div>
+							
 							<div class="col-md-4">
 								<label>Id</label>
 								<div class="clearfix">
@@ -308,14 +317,14 @@ function statusvalidating(id){
 										<c:if test="${report.locationId.id == loginOrgLocId}">
 											<li><input id="clientName${report.id}"
 												name="clientNameById" value="${report.id}"
-												onclick="requirementList('list','${sourceleadUrl}','${sourceleadUrl}');" type="checkbox"><label
+												onclick="requirementList('list','${sourceleadUrl}');" type="checkbox"><label
 												title="${report.responderLocationId.org.orgName}">${report.responderLocationId.org.orgName}</label></li>
 											<%-- 			                    	<option value="${report.id},${report.responderLocationId.org.orgName}" ${report.id  == requirement.clientId.id ? 'selected' : ''} >${report.responderLocationId.org.orgName}</option> --%>
 										</c:if>
 										<c:if test="${report.responderLocationId.id == loginOrgLocId}">
 											<li><input id="clientName${report.id}"
 												name="clientNameById" value="${report.id}"
-												onclick="requirementList('list','${sourceleadUrl}','${sourceleadUrl}');" type="checkbox"><label
+												onclick="requirementList('list','${sourceleadUrl}');" type="checkbox"><label
 												title="${report.locationId.org.orgName}">${report.locationId.org.orgName}</label></li>
 											<%-- 			                  	 	<option value="${report.id},${report.responderLocationId.org.orgName}" ${report.id  == requirement.clientId.id ? 'selected' : ''}>${report.locationId.org.orgName}</option> --%>
 										</c:if>
@@ -329,7 +338,7 @@ function statusvalidating(id){
 								<ul>
 									<li><input id="c6" type="checkbox"
 										name="requirementStatus" value="NEW"
-										onclick="requirementList('list','${sourceleadUrl}','${sourceleadUrl}');"><label for="c6">New<span
+										onclick="requirementList('list','${sourceleadUrl}');"><label for="c6">New<span
 											id="newRequirementCount"></span></label></li>
 									<li><input id="c7" name="requirementStatus"
 										type="checkbox" value="DRAFT" onclick="requirementList('list','${sourceleadUrl}');"><label
@@ -428,6 +437,13 @@ function statusvalidating(id){
 			</div>
 		</div>
 	</div>
+	
+	
+	<div class="side_mask">
+  <div class="proj_close" onClick="activeTab();"></div>
+</div>
+	
+	
 </section>
 
 <jsp:include page="addApplicantFromRequirementList.jsp" />
@@ -462,12 +478,13 @@ function changeStatus(requirementId, requirementStatus){
 	var status = document.getElementById('changeStatusId' + requirementId).value;
 	 var sourceleadUrl ='${sourceleadUrl}';
 	 var userId ='${SourceLeadWeb_userId}';
-         if(requirementStatus == "DRAFT"){
+	 
+     if(requirementStatus == "DRAFT"){
         	 $.ajax({
              type : "POST",
         	 url: sourceleadUrl+"/saveChangedStatusFromDraft?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&status="+status+"&userId="+userId,
 	        	 success :function(data) {
-	       		  $("#changeStatusId" +requirementId).val('');
+	       		  $("#changeStatusId" +requirementId).val(status);
 	           	  location.replace(sourceleadUrl+"/requirementList");
 	         	}
         	});
@@ -476,11 +493,22 @@ function changeStatus(requirementId, requirementStatus){
              type : "POST",
         	 url: sourceleadUrl+"/saveChangedStatus?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&status="+status,
 	        	 success :function(data) {
-	       		  $("#changeStatusId" +requirementId).val('');
-	           	  location.replace(sourceleadUrl+"/requirementList");
+	       		  $("#changeStatusId" +requirementId).val(status);
+	           	 location.replace(sourceleadUrl+"/requirementList");
 	         	}
         	});
          }
+	 /* var statusArray = [];
+	 $("input:checkbox[name=requirementStatus]:checked").each(function () {
+		 statusArray.push($(this).val());
+     });
+	 if(statusArray.indexOf(status) > -1){
+		
+	 }else{
+		 var table = $('#requirementPagination').DataTable();
+		 $('#Row_'+requirementId).remove();
+	 } */
+     
 	}
 </script>
 <script>
@@ -641,6 +669,28 @@ function getActions(){
 		        }
 		    });
 		    
+		    var selecttwo, chosentwo;
+		    selecttwo = $("#generatedId");
+		    selecttwo.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) Or Tab To Add Add Generated ID:' });
+		    chosentwo = selecttwo.data('chosen');
+		    chosentwo.search_field.on('keydown keyup', function(e1)
+		    {
+		    	var genId = this.value.replace(",","");
+		        if (tagItBykeyForSkills(e1) && (genId != null  && genId != '' && genId != 'undefined'))
+		        {
+		        	preventTabkey(e1); 
+		        	var par = this.parent;
+		            var option = $("<option>").val(genId).text(genId);
+		            selecttwo.append(option);
+		            selecttwo.find(option).prop('selected', true);
+                    $("#generatedId option").each(function(){
+                          $(this).siblings("[value='"+ this.value+"']").remove();
+                    });
+	        		$("#generatedId").trigger("chosen:updated");
+	        		
+		        }
+		    });
+		    
 		      $("#country").on('change', function (e) {
 		    	   getStates();
 		       }); 
@@ -733,6 +783,22 @@ function getCities(){
     	$('#city').append('<option value="">---select city---</option>');
     	$('#city').trigger("chosen:updated");
 	}
+}
+</script>
+
+<script>
+function clearSearch(){
+	document.getElementById("requirement_form").reset();
+	$('#requirementStatu').val('').trigger('chosen:updated');
+	$('#updatedOn').val('').trigger('chosen:updated');
+	$('#client').val('').trigger('chosen:updated');
+	/* $('#country').val('').trigger('chosen:updated'); */
+	$('#state').val('').trigger('chosen:updated');
+	$('#city').val('').trigger('chosen:updated');
+	$('#noticePeriod').val('').trigger('chosen:updated');
+	$('#requirementTitle').val('').trigger('chosen:updated');
+	$('#jobId').val('').trigger('chosen:updated');
+	$('#generatedId').val('').trigger('chosen:updated');
 }
 </script>
 <jsp:include page="../masterFooter.jsp" />

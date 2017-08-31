@@ -39,34 +39,34 @@
 <jsp:include page="candidatesCertificates.jsp"></jsp:include>
 <jsp:include page="candidateDocuments.jsp"></jsp:include>
 <jsp:include page="candidateReferences.jsp"></jsp:include>
-<jsp:include page="requirementHistory.jsp"></jsp:include>
+ <jsp:include page="requirementHistory.jsp"></jsp:include>
  <sec:authorize access="hasAnyRole(\'ROLE_POST_COMMENTS\',\'ROLE_CROWDSOURCING_CANDIDATES\')">
-<jsp:include page="candidatesCommentsList.jsp"></jsp:include>
+ <jsp:include page="candidatesCommentsList.jsp"></jsp:include>
  </sec:authorize>
  <jsp:include page="candidatesQuickView.jsp"></jsp:include>
  <jsp:include page="candidatesTimelineActivity.jsp"></jsp:include>
  
-<script>
-var isAssociate = 'N';
-var sourceleadUrl = "${sourceleadUrl}";
-var _csrfParam = '${_csrf.parameterName}';
-var _csrfToken = '${_csrf.token}';
-var associateFlag = false;
-'<sec:authorize access="hasAnyRole(\'ROLE_ADD_CANDIDATE_HOTLIST\',\'ROLE_CROWDSOURCING_CANDIDATES\')">';
-	associateFlag = true;
-'</sec:authorize>';
-var name1Flag = false;
-'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CANDIDATE\',\'ROLE_VIEW_EDIT_CANDIDATE\',\'ROLE_VIEW_DELETE_CANDIDATE\',\'ROLE_CROWDSOURCING_CANDIDATES\')">'; 
-name1Flag = true;
-'</sec:authorize>';
-var name2Flag = false;
-'<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_CANDIDATE\',\'ROLE_VIEW_EDIT_CANDIDATE\',\'ROLE_VIEW_DELETE_CANDIDATE\',\'ROLE_CROWDSOURCING_CANDIDATES\')">'; 
-name2Flag = true;
-'</sec:authorize>';
- window.onload = function() {
-	 candidateListCheck("${serachValue}","${universalCanddateList}","${candidateKeyword}","${candidateIdSearchId}");
-};
-</script>
+	<script>
+	var isAssociate = 'N';
+	var sourceleadUrl = "${sourceleadUrl}";
+	var _csrfParam = '${_csrf.parameterName}';
+	var _csrfToken = '${_csrf.token}';
+	var associateFlag = false;
+	'<sec:authorize access="hasAnyRole(\'ROLE_ADD_CANDIDATE_HOTLIST\',\'ROLE_CROWDSOURCING_CANDIDATES\')">';
+		associateFlag = true;
+	'</sec:authorize>';
+	var name1Flag = false;
+	'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CANDIDATE\',\'ROLE_VIEW_EDIT_CANDIDATE\',\'ROLE_VIEW_DELETE_CANDIDATE\',\'ROLE_CROWDSOURCING_CANDIDATES\')">'; 
+	name1Flag = true;
+	'</sec:authorize>';
+	var name2Flag = false;
+	'<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_CANDIDATE\',\'ROLE_VIEW_EDIT_CANDIDATE\',\'ROLE_VIEW_DELETE_CANDIDATE\',\'ROLE_CROWDSOURCING_CANDIDATES\')">'; 
+	name2Flag = true;
+	'</sec:authorize>';
+	 window.onload = function() {
+		 candidateListCheck("${serachValue}","${universalCanddateList}","${candidateKeyword}","${candidateIdSearchId}");
+	};
+	</script>
 
 <style type="text/css">
 .candidate_wrap_table table tr td:first-child {
@@ -77,6 +77,9 @@ name2Flag = true;
 }
 </style>
 <script type="text/javascript" src="resources/js/candidateTable.js"></script>
+
+<input type="hidden" id="noCandidates" name="noCandidates" />
+
 <%-- 
      @author : sarath kumar.
      this script is for show side bar when you click on the candidate name.
@@ -111,8 +114,8 @@ function candidateSideBar(candidateId){
 			            var state = '';
 			            var city = '';
 			            var currencyCodes = '';
+			            var generatedId = '';
 			            
-			            var currencyCode = '';
          			 	if(json.experienceMonths != null && json.experienceMonths != '' && json.experienceMonths != 'undefined'){
          			 		experienceMonths = json.experienceMonths+'-'+'Month/s';            			 		
          			 	}else{
@@ -205,12 +208,11 @@ function candidateSideBar(candidateId){
          			 		mobilePhone = '';
          			 	 }
          			 	 
-         			 	/*  if(json.generatedId != null && json.generatedId != '' && json.generatedId != 'undefined'){
-         			 		generatedId =json.generatedId;
+         			 	  if(json.generatedId != null && json.generatedId != '' && json.generatedId != 'undefined'){
+         			 		generatedId ='Generated ID'+ ' - '+json.generatedId;
           			 	 }else{
-          			 		 
           			 		generatedId = '';
-          			 	 } */
+          			 	 } 
          			 	 
 	                	 var result = "";
 	                	 result = result+'<div id="popUp" ></div>  ';
@@ -290,7 +292,11 @@ function candidateSideBar(candidateId){
 			             
                          
 			             result = result+'                       </ul>';
-
+                         
+			             result = result+' <ul class="list-unstyled">';
+						 result = result+'<li>'+generatedId+'</li>';
+						 result = result+'</ul>';
+			             
 			             result = result+' <ul class="list-unstyled mrng0" >';
 						 result = result+'<li title="'+designation+'" class="tbldata-dotdot">'+designation+'</li>';
 						 result = result+'</ul>';
@@ -609,7 +615,7 @@ function deleteImage(candidateId){
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 	result = result +"		<p>Are you sure ?</p>";
 	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
-	result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='deleteProfileImage("+candidateId+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel("+candidateId+");'></b>";
+	result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='deleteProfileImage("+candidateId+");this.disabled=true'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel("+candidateId+");'></b>";
 	result = result +"	</div>";
 	$("#popUp").append(result);
 	$("#remove_user_pop").slideDown(200);
@@ -1213,10 +1219,9 @@ function cancel(candidateId){
         		<input type='text' placeholder='search' id='dataTableSearch'/>
         </div>
       </div>
-      
+      <div id="emptyPopup"></div>
       <div class="candidate_wrap_table datatable_filter">
         <div id="candidateList"></div>
-        <div id="emptyPopup"></div>
       </div>
     </div>
     

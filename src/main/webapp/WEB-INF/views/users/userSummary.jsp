@@ -218,7 +218,7 @@ $(document).ready(function(){
 				    '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_DELETE_USER\')">'
 						result = result + ' <a id="remove-user" href="javascript:removeUser('+userId+');"><i class="glyphicon glyphicon-trash"></i>Terminate</a>';
 						result = result + ' <form id="deleteUser_form"  name="deleteUser_form" method="post">';	
-						result = result + ' <div id="remove_user_id" class="remove_user_pop" >';
+						result = result + ' <div id="remove_user_id" class="remove_user_pop terminate-popup" >';
 									
 									result = result + '<div class="clearfix assignroles">';
 									result = result + ' <div id="deleteLoading"></div>';
@@ -1666,7 +1666,7 @@ function removeUser(userId){
 	
 	var sourceleadUrl= '${sourceleadUrl}';
 	
-	$("#deleteLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	//$("#deleteLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	
 	 $.ajax({
 	    	type: "POST",

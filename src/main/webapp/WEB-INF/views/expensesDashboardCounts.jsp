@@ -10,16 +10,16 @@ $(document).ready(function(){
 		expensesCount("myExpenses");
 });
 </script>
-<sec:authorize access="hasAnyRole('ROLE_ADD_EMPLOYEE_EXPENSES','ROLE_VIEW_EDIT_EMPLOYEE_EXPENSES','ROLE_EXPORT_EMPLOYEE_EXPENSES')">
+<sec:authorize access="hasAnyRole('ROLE_ADD_MY_EXPENSES','ROLE_VIEW_EDIT_MY_EXPENSES','ROLE_EXPORT_MY_EXPENSES', 'ROLE_ADD_EMPLOYEE_EXPENSES','ROLE_VIEW_EDIT_EMPLOYEE_EXPENSES','ROLE_EXPORT_EMPLOYEE_EXPENSES')">
 <div class="col-md-6">
         <div class="dashboard-widget dashboard-widget-icons">
           <h4 class="clearfix">Expenses &nbsp;&nbsp;</h4>
           <div class="clearfix dashboard-data mt">
             <ul class="nav nav-tabs">
             
-            <sec:authorize access="hasAnyRole('ROLE_ADD_MY_EXPENSES','ROLE_VIEW_EDIT_MY_EXPENSES','ROLE_EXPORT_MY_EXPENSES')">
+            <%-- <sec:authorize access="hasAnyRole('ROLE_ADD_MY_EXPENSES','ROLE_VIEW_EDIT_MY_EXPENSES','ROLE_EXPORT_MY_EXPENSES')"> --%>
               <li class="active"><a data-toggle="tab" onclick="expensesCount('myExpenses');" href="#today-myExpense">Self</a></li>
-            </sec:authorize> 
+            <%--   </sec:authorize>  --%>
              
              <sec:authorize access="hasAnyRole('ROLE_ADD_EMPLOYEE_EXPENSES','ROLE_VIEW_EDIT_EMPLOYEE_EXPENSES','ROLE_EXPORT_EMPLOYEE_EXPENSES')">
               <li><a data-toggle="tab" onclick="expensesCount('employeeExpenses');" href="#prev-employeeExpense">Employees</a></li>

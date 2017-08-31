@@ -265,7 +265,7 @@ public class CrowdSourcingRequirementsRestController {
 	   //for jobs filter when clicked on org name 
 		if(postedOrgName != null && !"".equalsIgnoreCase(postedOrgName) && !"undefined".equalsIgnoreCase(postedOrgName)){
 			BoolQueryBuilder postedOrgJobsBuilder = QueryBuilders.boolQuery();
-			postedOrgJobsBuilder.should(QueryBuilders.matchQuery("postedOrg", postedOrgName));
+			postedOrgJobsBuilder.should(QueryBuilders.matchQuery("orgLocationId", postedOrgName));
 			boolQueryBuilder.must(postedOrgJobsBuilder);
 		}
 		 
@@ -316,7 +316,7 @@ public class CrowdSourcingRequirementsRestController {
 	 		    		 if(loginUserRole.equalsIgnoreCase("ROLE_CROWDSOURCING_PROFESSIONAL")){
 	 		    			 RequirementSubmission submission = requirementSubmissionService.getRequirementSubmissionByRequirementIdAndCandidateId(requirementIndex.getRequirementId(), candidateId);
 	 		 	    		   if(null != submission){
-	 		 	    			  requirementIndex.setRequirementAppliedDate(commonUtil.elkDateFormatter(submission.getCreatedDate()));
+	 		 	    			  requirementIndex.setRequirementAppliedDate(commonUtil.dateStrFromOrgDateFormatter(submission.getOrgLocations().getDateFormat(),submission.getCreatedDate()));
 	 		 	    			  requirementIndex.setSubmissionId(submission.getId());
 	 		 	    		   }
 	 		    		 }else if(loginUserRole.equalsIgnoreCase("ROLE_CROWDSOURCING_RECRUITER")){
@@ -1102,10 +1102,13 @@ public class CrowdSourcingRequirementsRestController {
   				}
 				
 			}
+			
+			
+			
 			   DateFormat week_Day = new SimpleDateFormat ("EEEE");
   			   String dayOfweek = week_Day.format(startTime);
-				//SimpleDateFormat formatter = new SimpleDateFormat("MMM dd yyyy");
-				String selectedDate  = commonUtil.dateStrFromOrgDateFormatter(orglo.getDateFormat(),startTime);
+				SimpleDateFormat formatterRec = new SimpleDateFormat("MMM dd yyyy");
+				String selectedDate  = formatterRec.format(startTime);
 				RequirementInterviewHistory reqInterviewHistory =  new RequirementInterviewHistory();
 				
 				reqInterviewHistory.setInterviewerList(requirementInterviewList);

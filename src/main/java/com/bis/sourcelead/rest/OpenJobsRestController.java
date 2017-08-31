@@ -77,7 +77,7 @@ public class OpenJobsRestController {
 			@RequestParam(value = "orgLocationIds", required = false) String orgLocationIds,
 			@RequestParam(value = "dates", required = false) String dates,
 			@RequestParam(value = "country", required = false) String country,
-			@RequestParam(value = "postedOrgName", required = false) String postedOrgName,
+			@RequestParam(value = "postedOrgName", required = false) Long postedOrgName,
 			HttpServletRequest request) throws Exception{
 		
 		boolean isELKSearchEnable = true;
@@ -214,9 +214,9 @@ public class OpenJobsRestController {
 				}
 				
 				//for jobs filter when clicked on org name 
-				if(postedOrgName != null && !"".equalsIgnoreCase(postedOrgName)){
+				if(postedOrgName != null){
 					BoolQueryBuilder postedOrgJobsBuilder = QueryBuilders.boolQuery();
-					postedOrgJobsBuilder.should(QueryBuilders.matchQuery("postedOrg", postedOrgName));
+					postedOrgJobsBuilder.should(QueryBuilders.matchQuery("orgLocationId", postedOrgName));
 					boolQueryBuilder.must(postedOrgJobsBuilder);
 				}
 				
@@ -593,12 +593,11 @@ public class OpenJobsRestController {
 	 }
 	 
 	 @RequestMapping(value = "/openRequirementsSummary")
-	 public @ResponseBody  String openRequirementsSummary(@RequestParam(value = "requirementsUUID", required = false) String requirementsUUID,@RequestParam(value = "locationCode", required = false) String locationCode) throws Exception{
+	 public @ResponseBody  String openRequirementsSummary(@RequestParam(value = "requirementsUUID", required = false) String requirementsUUID) throws Exception{
 		 Requirement requirementDeatils = requirementService.getRequirementByRequirementUUID(requirementsUUID);
-		 OrgLocations orglo = orgLocationService.getOrgLocationsByLocationCode(locationCode);
 		 Requirement requirementDeatilsSummary = requirementService.getRequirementByRequirementId(requirementDeatils.getId());
 		 requirementDeatilsSummary.setRequirementOrgName(requirementDeatilsSummary.getOrgLocationId().getOrgLocationName());
-		 requirementDeatilsSummary.setRequirementCreatedDateToString(commonUtil.dateStrFromOrgDateFormatter(orglo.getDateFormat(),requirementDeatilsSummary.getCreatedDate()));
+		 requirementDeatilsSummary.setRequirementCreatedDateToString(commonUtil.dateStrFromOrgDateFormatter(requirementDeatils.getOrgLocationId().getDateFormat(),requirementDeatilsSummary.getCreatedDate()));
 		 return commonUtil.toJSON(requirementDeatilsSummary);
 		 
 	 }

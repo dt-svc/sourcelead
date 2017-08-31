@@ -255,7 +255,7 @@ function addAttachment(entityRowId,from){
 	                 </div>
 					<div class="col-md-4 mb10">
 						<label>Description<span class='text-danger'>&nbsp;*</span></label>
-						<textarea rows="2"  id="entryDesREPLACEROWID" name="entryDesREPLACEROWID" class="form-control" placeholder="Description" field-name="Description" data-validation="required validate_Space validate_length length1-5000"></textarea>
+						<textarea rows="2"  id="entryDesREPLACEROWID" name="entryDesREPLACEROWID" class="form-control" placeholder="Description" field-name="Description" data-validation="required validate_Space validate_length length1-5000" onblur="removeWhiteSpacesAdd(REPLACEROWID);"></textarea>
 					</div>		
 	                   <div id='attachmentSection' class='col-md-4 mb10'>
 	                   <label>Attachments<span class="text-danger">&nbsp;*</span></label>
@@ -283,6 +283,15 @@ function addAttachment(entityRowId,from){
 
 		   </div>
 </div>
+
+
+<script type="text/javascript">
+function removeWhiteSpacesAdd(rowCount){
+	var el = document.getElementsByName("entryDes"+rowCount)[0];
+	var val = el.value.replace(/(^\s*)|(\s*$)/gi,"")
+	$("#entryDes"+rowCount).val(val);
+}
+</script>
 
 <script>
 function addExpenseRow(){ 
@@ -447,13 +456,14 @@ function addExpenseRow(){
 			var expenseRateType = $("#expenseRateType"+entityId).val();
 			var expenseAmount = parseFloat($("#expenseAmount"+entityId).val());
 			
+			var expenseRoundOffAmount = expenseAmount.toFixed(2);
 			var descriptions = $("#entryDes"+entityId).val();
 			$("#categoryTypeDiv"+entityId).html(categoryTypeName);
 			$("#categoryDateDiv"+entityId).html(categoryDate);
 			$("#receiptIssuedByDiv"+entityId).html(receiptIssuedBy);
 			$("#paymentModeDiv"+entityId).html(paymentMode);
 			$("#expenseRateTypeDiv"+entityId).html(expenseRateType);
-			$("#expenseAmountDiv"+entityId).html(expenseAmount);
+			$("#expenseAmountDiv"+entityId).html(expenseRoundOffAmount);
 			$("#entryDesDiv"+entityId).html(descriptions);
 			$("#entryDesDiv"+entityId).prop("title", descriptions);
 			
@@ -525,15 +535,15 @@ function validate_fileupload(fileName)
 		  if(validate_fileupload(selectedFile)){
 			   var docSize = $('#'+id+'docFile'+entityId)[0].files[0].size;
 		       $("#"+id+"docFileuploadFileGroup"+entityId).find('p.jquery_form_error_message').remove();
-		      if(docSize > 2097152){
+		      /* if(docSize > 2097152){
 		    	  $('#'+id+'docFileuploadFileGroup'+entityId).find('p.jquery_form_error_message').remove();
 		    	  $('#'+id+'docFileuploadFileGroup'+entityId).find('i').after("<p class='jquery_form_error_message'>Limit is exceeded than 2MB </span>");
 				  $('#'+id+'docFile'+entityId).attr('record-exist','yes');
 				  $('#'+id+'docFile'+entityId).attr('record-exist-errorMsg','Limit is exceeded than 2MB'); 
-		      }else{
+		      }else{ */
 		    	  $('input#'+id+'docFile'+entityId).removeAttr( "record-exist record-exist-errormsg");
-	   		       $('#'+id+'docFileuploadFileGroup'+entityId).find('p.jquery_form_error_message').remove(); 
-		      }
+	   		      $('#'+id+'docFileuploadFileGroup'+entityId).find('p.jquery_form_error_message').remove(); 
+		      /* } */
 		  }
 		  else{
 			      $('#'+id+'docFileuploadFileGroup'+entityId).find('p.jquery_form_error_message').remove();

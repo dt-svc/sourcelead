@@ -65,11 +65,11 @@ public class InvoicePaymentServiceImpl implements InvoicePaymentService {
 		Invoice invoice = invoiceDao.getInvoicetById(invoiceId);
 
 		InvoicePayment invoicePayment = new InvoicePayment();
-		String pattern = "dd-MM-yyyy";
-		SimpleDateFormat format = new SimpleDateFormat(pattern);
+		/*String pattern = "dd-MM-yyyy";
+		SimpleDateFormat format = new SimpleDateFormat(pattern);*/
 
 		if (jsonObj.has("paymentDate") && !"".equalsIgnoreCase(jsonObj.getString("paymentDate"))) {
-			Date paymentDate = format.parse(jsonObj.getString("paymentDate"));
+			Date paymentDate = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(),jsonObj.getString("paymentDate"));
 			invoicePayment.setPaymentDate(paymentDate);
 		}
 		if (jsonObj.has("paymentMethod") && !"".equalsIgnoreCase(jsonObj.getString("paymentMethod"))) {

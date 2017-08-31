@@ -83,7 +83,7 @@ function clientContracts(orgRelationId){
 	    result = result + '<ul>';
 	    result = result + '<li class="dropdown mt10"><div class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-filter"></i><span>Status</span><i class="glyphicon glyphicon-play"></i></div>';
 	    result = result + '<div class="dropdown-menu bootstrap_dropdownMenu dropdown-menu_width">                                                                                                                                       ';
-	    result = result + '<ul>';
+	    result = result + '<ul class="paddingLi">';
 	    result = result + '<li>';
 	    result = result + '<input type="checkbox" value="DRAFT" name="contractStatus" id="contractStatus" onclick="clientContractsList('+orgRelationId+');" >';
 	    result = result + '<label class="paddingLeft">Draft <b class="badge" id="draftCount">0</b></label>';
@@ -318,7 +318,7 @@ function clientContractsList(orgRelationId){
 	                		opt = opt + '	</tbody>';
 	                		opt = opt + '</table>';
 	                    
-	                		$("#draftCount").html(expiredCount);
+	                		$("#draftCount").html(draftCount);
 	                		$("#WFACount").html(waitingForApprovalCount);
 	                		$("#WTSCount").html(waitingToBeSignedCount);
 	                		$("#finalizedCount").html(finalizedCount);
@@ -648,6 +648,7 @@ function PopUp(contractUUID){
 				}
 				
 			}
+			
 			if(json.contractType =="Full time offer"){
 				if(null != json.billingAmount && "" != json.billingAmount && 'undefined' != json.billingAmount){
 					result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
@@ -734,6 +735,13 @@ function PopUp(contractUUID){
 				result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
 				result = result +	'		<div class="col-md-4 col-sm-4">Description</div>';
 				result = result +	'		<div class="col-md-8 col-sm-8"><i style="display: inline-block; font-style:normal; float:left;">:</i><span style=" padding: 0px 0px 0px 3px; display: inline-block; width:90%; float:left;">'+json.description+'</span></div>';
+				result = result +	'	</div>';
+			}
+			
+			if(null != json.rejectedReason && "" != json.rejectedReason && 'undefined' != json.rejectedReason && json.templateSubmissionStatus == 'REJECTED' ){
+				result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
+				result = result +	'		<div class="col-md-4 col-sm-4">Reject Reason</div>';
+				result = result +	'		<div class="col-md-8 col-sm-8">: '+json.rejectedReason+'</div>';
 				result = result +	'	</div>';
 			}
 			

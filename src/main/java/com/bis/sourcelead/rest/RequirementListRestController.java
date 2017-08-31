@@ -390,6 +390,7 @@ public class RequirementListRestController {
 
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		String loginUserRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+		
 		if (requirementId != null && !requirementId.isEmpty()) {
 			List<RequirementSubmission> requirementStatusList = null;
 			List<RequirementSubmission> submissionList = new ArrayList<RequirementSubmission>();
@@ -616,6 +617,7 @@ public class RequirementListRestController {
 						 */
 						submissionList.add(requirementSubmission);
 					}
+					requirementSubmission.setRequirementCurrentStatus(requirementSubmission.getRequirement().getRequirementSubmissionStatus());
 				}
 			}
 			resultJson = commonUtil.toJSON(submissionList);
@@ -1364,7 +1366,7 @@ public class RequirementListRestController {
 		/*
 		 * This array is used to enable the sorting feature in data tables. And, these names should match the ELK Candidate index field names.
 		 */
-		String[] tableColumns = {"", "jobTitle", "client", "jobType", "country", "", "manager", "createdDate", "", ""};
+		String[] tableColumns = {"", "generatedId","jobTitle", "client", "jobType", "country", "", "manager", "createdDate", "", ""};
 		
 		int sortColumnIndex = 8; //by default sorting using updated date
 		boolean sortColumnOrder = false; //by default descending order
@@ -1400,7 +1402,12 @@ public class RequirementListRestController {
 				} 
 		 }
 		 
-			
+		
+		//Generated Id
+		if(StringUtils.isNotEmpty(search.getGeneratedId())){
+			boolQueryBuilder.must(QueryBuilders.matchQuery("generatedId", search.getGeneratedId()));
+	    }
+		
 		//Requirement Title
 		if(StringUtils.isNotEmpty(search.getRequirementTitle())){
 			boolQueryBuilder.must(QueryBuilders.matchQuery("jobTitle", search.getRequirementTitle()));
@@ -1500,7 +1507,7 @@ public class RequirementListRestController {
 				if (sourceAsString != null) {
 					Requirement requirement = null;
 					RequirementIndex requirementIndex = mapper.readValue(sourceAsString, RequirementIndex.class);
-	            	if(userRole != null&&( "ROLE_ADMIN".equalsIgnoreCase(userRole) || "ROLE_SOURCELEAD_ADMIN".equalsIgnoreCase(userRole))){
+	            	if(userRole != null&&( "ROLE_ADMIN".equalsIgnoreCase(userRole) || (StringUtils.isNotEmpty(requirementIndex.getReleaseJobToAllUsers()) && requirementIndex.getReleaseJobToAllUsers().equalsIgnoreCase("Y") && !"DRAFT".equalsIgnoreCase(requirementIndex.getRequirementStatus()) && !"SUBMITTED".equalsIgnoreCase(requirementIndex.getRequirementStatus()) && !"REJECTED".equalsIgnoreCase(requirementIndex.getRequirementStatus()))|| "ROLE_SOURCELEAD_ADMIN".equalsIgnoreCase(userRole))){
 	            		requirement = getData(requirementIndex,user,orgLocation);
 	            	}
 	            	else if(requirementIndex.getReqCreatedBy().equals(user.getId()) && requirementIndex.getIsTemplate()!=null && requirementIndex.getIsTemplate().equalsIgnoreCase("Y"))
@@ -1575,6 +1582,7 @@ public class RequirementListRestController {
 			matchQueryBuilderList.add(QueryBuilders.matchQuery("client", keywd));
 			matchQueryBuilderList.add(QueryBuilders.matchQuery("jobType", keywd));
 			matchQueryBuilderList.add(QueryBuilders.matchQuery("priority", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchQuery("generatedId", keywd));
 			Matcher matcher = Pattern.compile("\\d+").matcher(keywd);
 			if(matcher.find()){
 				Float expYears = Float.valueOf(matcher.group());
@@ -1616,6 +1624,7 @@ public class RequirementListRestController {
       	requirement.setJobType(requirementIndex.getJobType());
       	requirement.setOtherJobType(requirementIndex.getOtherJobType());
       	requirement.setJobTitle(requirementIndex.getJobTitle());
+      	requirement.setGeneratedId(requirementIndex.getGeneratedId());
       	String convertedStirng = requirementIndex.getCreatedDate();
       	
       	DateFormat elkFormat = new SimpleDateFormat("yyyy-MM-dd"); 

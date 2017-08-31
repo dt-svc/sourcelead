@@ -818,7 +818,11 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 			    	
 			    	if(requirementOffers.getSubmissionId().getRequirement().getIsClientJob().equalsIgnoreCase(Constants.YES) && 
 			    			requirementOffers.getSubmissionId().getRequirement().getParentRequirement() == null){
-			    		   addCandidateToClientAfterOfferAccepted(requirementOffers,requirementOffers.getSubmissionId().getOrgLocations());
+			    		RequirementSubmission clientSubmission = requirementSubmissionService.getClientSubmissionsBySourceSubmissionIdAndVendorLocationId(requirementOffers.getSubmissionId().getId(), orgLocations.getId());
+			    		if(clientSubmission != null){
+			    			addCandidateToClientAfterOfferAccepted(requirementOffers,requirementOffers.getSubmissionId().getOrgLocations());
+			    		}
+			    		
 			    	}
 			    	
 		    	}else{
@@ -1278,7 +1282,9 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 		if(requirementOffers.getSubmissionId().getRequirement().getIsClientJob().equalsIgnoreCase(Constants.YES) && 
     			requirementOffers.getSubmissionId().getRequirement().getParentRequirement() == null){
 			clientSubmission = requirementSubmissionService.getClientSubmissionsBySourceSubmissionIdAndVendorLocationId(requirementOffers.getSubmissionId().getId(), orgLocations.getId());
-			candidate = candidateService.findByCandidateEmail(clientSubmission.getCandidate().getEmail(), clientSubmission.getOrgLocations().getId());
+			if(clientSubmission != null){
+				candidate = candidateService.findByCandidateEmail(clientSubmission.getCandidate().getEmail(), clientSubmission.getOrgLocations().getId());
+			}
 		}else{
 			candidate = candidateService.findByCandidateEmail(requirementOffers.getSubmissionId().getCandidate().getEmail(), orgLocations.getId());
 		}
@@ -1303,8 +1309,13 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 		    		candidate.setState(templateFields.getState());
 		    		candidate.setCity(templateFields.getCity());
 		    		candidate.setZipCode(templateFields.getZipCode());
-		    		candidate.setExperienceYears(templateFields.getCandidateWorkExperienceYears().toString());
-		    		candidate.setExperienceMonths(templateFields.getCandidateWorkExperienceMonths().toString());
+		    		if(templateFields.getCandidateWorkExperienceYears() != null){
+		    			candidate.setExperienceYears(templateFields.getCandidateWorkExperienceYears().toString());
+		    		}
+		    		if(templateFields.getCandidateWorkExperienceMonths() != null){
+		    			candidate.setExperienceMonths(templateFields.getCandidateWorkExperienceMonths().toString());
+		    		}
+		    		
     			}
     		}
     		
@@ -1328,9 +1339,13 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
         		candidate.setOrgLocationId(orgLocations);
         		candidate.setIsAssociate(Constants.YES);
     		}else{
-    			candidate.setOrgRelationId(requirementOffers.getSubmissionId().getRequirement().getClientId());
-    			candidate.setSpocId(requirementOffers.getSubmissionId().getRequirement().getSpocId());
-    			candidate.setOrgLocationId(clientSubmission.getOrgLocations());
+    			if(clientSubmission != null){
+    				candidate.setOrgRelationId(requirementOffers.getSubmissionId().getRequirement().getClientId());
+    				candidate.setSpocId(requirementOffers.getSubmissionId().getRequirement().getSpocId());
+    				candidate.setOrgLocationId(clientSubmission.getOrgLocations());
+				}else{
+    				candidate.setOrgLocationId(orgLocations);
+				}
     			candidate.setIsAssociate(Constants.NO);
     		}
     		
@@ -1346,9 +1361,15 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 		    	requirementSubmission.setCandidate(candidate);
 		    	requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
 	    	}else{
-	    		clientSubmission.setVendorCandidateId(requirementSubmission.getCandidate());
-	    		clientSubmission.setCandidate(candidate);
-	    		requirementSubmissionService.storeRequirementSubmission(clientSubmission);
+	    		if(clientSubmission != null){
+		    			clientSubmission.setVendorCandidateId(requirementSubmission.getCandidate());
+		    			clientSubmission.setCandidate(candidate);
+		    			requirementSubmissionService.storeRequirementSubmission(clientSubmission);
+	    			}else{
+		    			requirementSubmission.setVendorCandidateId(requirementSubmission.getCandidate());
+		    			requirementSubmission.setCandidate(candidate);
+		    			requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
+	    			}
 	    	}
     		
 		}

@@ -8,12 +8,15 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.Query;
+import org.hibernate.ScrollMode;
+import org.hibernate.ScrollableResults;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
@@ -26,7 +29,9 @@ import org.springframework.transaction.annotation.Transactional;
 import com.bis.sourcelead.dao.RequirementDao;
 import com.bis.sourcelead.dao.UserDao;
 import com.bis.sourcelead.dao.UserRoleDao;
+import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementAssignTo;
 import com.bis.sourcelead.entity.TeamMembers;
@@ -1527,6 +1532,87 @@ public class RequirementDaoImpl implements RequirementDao {
 			return null;
 		}
 		return requirement.iterator().next();	
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public boolean checkForOldrecordsUsingOrgLocationid(Long orglocationId,String tableName) {
+		Session session = this.sessionFactory.getCurrentSession();
+		Boolean data  = true;
+		if(StringUtils.isNotEmpty(tableName)){
+			String query = "select table.generatedId from "+tableName+" table where table.orgLocationId.id =:orglocationId"; 
+			List<String> requirement  =  session.createQuery(query).setLong("orglocationId",orglocationId).setCacheable(true).list();
+			 data  = requirement.contains(null);
+		}
+		else{
+			LinkedList<String> tableNames = new LinkedList<String>();
+			tableNames.add("Requirement");
+			tableNames.add("Projects");
+			tableNames.add("Candidate");
+			l1:{
+				for(String tabName : tableNames){
+					if(tabName != "Projects"){
+						String query = "select table.generatedId from "+tabName+" table where table.orgLocationId.id =:orglocationId";
+						List<String> result  =  session.createQuery(query).setLong("orglocationId",orglocationId).setCacheable(true).list();
+						data  = result.contains(null);
+					}else{
+						String query = "select table.generatedId from "+tabName+" table where table.orgLocationsId.id =:orglocationId";
+						List<String> result  =  session.createQuery(query).setLong("orglocationId",orglocationId).setCacheable(true).list();
+						data  = result.contains(null);
+					}
+					
+					if(!data){
+						break l1;
+					}
+				}
+			}
+		}
+		
+		return data;
+	}
+	
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	@SuppressWarnings("unchecked")
+	public List<Requirement> addGeneratedIdRecordsToJobsForOldRecords(Long orglocationId) {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from Requirement requirement left join fetch requirement.orgLocationId orgLocation where orgLocation.id =:orglocationId";
+		List<Requirement> requirement  =  session.createQuery(query).setLong("orglocationId",orglocationId).setCacheable(true).list();
+		if(!requirement.isEmpty()){
+			return requirement;
+		}else{
+			return null;
+		}
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	@SuppressWarnings("unchecked")
+	public List<Projects> addGeneratedIdRecordsToProjectsForOldRecords(Long orglocationId) {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "select projects from Projects projects left join fetch projects.orgLocationsId orgLocation where orgLocation.id =:orglocationId";
+		List<Projects> projects  =  session.createQuery(query).setLong("orglocationId",orglocationId).setCacheable(true).list();
+		if(!projects.isEmpty()){
+			return projects;
+		}else{
+			return null;
+		}
+	}
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	@SuppressWarnings("unchecked")
+	public List<Candidate> addGeneratedIdRecordsToCandidatesForOldRecords(Long orglocationId) {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "select candidate from Candidate candidate left join fetch candidate.orgLocationId orgLocation where orgLocation.id =:orglocationId";
+		List<Candidate> candidate  =  session.createQuery(query).setLong("orglocationId",orglocationId).setCacheable(true).list();
+		if(!candidate.isEmpty()){
+			return candidate;
+		}else{
+			return null;
+		}
 	}
 
 	

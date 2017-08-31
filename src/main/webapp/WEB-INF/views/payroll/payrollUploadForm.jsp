@@ -27,56 +27,6 @@ window.onload = function () {
 </div>
 
      <ul class="pull-right">
-    <%--  <li class="hidden">
-     <a href="javascript:void(0)" onclick="flushValues();" class="addcon-pop">
-      	<i class="glyphicon glyphicon-plus paddingRight" ></i>Import File</a>
-                  <!-- Popup Div -->
-                 <form:form id="upload_payroll_form" name="upload_payroll_form" method="post">
-                  <div class="collapse-div-adduser col-md-4" id="adddocDiv" style='width:400px; right: 35px; top:25px;'> <i class="fa fa-close close-div" onclick="flushValues();"></i>
-                    <div class="form-horizontal clearfix">
-                     
-                      <div class="clearfix mb10">
-                        <div class="col-md-6" id="fromDateDiv"><input type="text" class="form-control calendar input-sm" id="fromDate" name="fromDate" value="" placeholder="From Date*" field-name="From Date" data-validation="required"></div>
-                        <div class="col-md-6" id="toDateDiv"><input type="text" class="form-control calendar input-sm" id="toDate" name="toDate" value="" placeholder="To Date*" field-name="To Date" data-validation="required"></div>
-                      </div>                     
-                     
-                      <div class="clearfix mb10">
-                        <div class="col-md-12" id="batchNumberDiv">
-                          <input type="text" class="form-control input-sm" value="" placeholder="Batch Name" id="batchNumber" name="batchNumber" field-name="Batch name" data-validation="required">
-                        </div>
-                      </div>
-                      <div class="clearfix mb10">
-                        <div class="col-md-12 chosenSelect_li" id="payrollTypeDiv">
-                          <select id="payrollType" name="payrollType" class="chosen-select" field-name="PayRoll Type" data-validation="required">
-                            <option value="">Select Type</option>
-                            <option value="EMPLOYEE_PAYROLL">Employee Payroll</option>
-                            <option value="WAGE_TAX">Wage & Tax Summary</option>
-                            <option value="ACCOUNT_DEDUCTIONS">Account Deductions</option>
-                            <option value="HR_DEDUCTIONS">HR Deductions</option>
-                             <option value="BIS_USERS">BIS Users</option>
-                             <option value="BIS_CHECKS">BIS Checks</option>
-                          </select>
-                        </div>
-                        <div class="col-md-12 mt10">
-                          <div class="input-group ratetype" id="uploadFileGroup">
-	                        <label class="input-group-btn"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
-	                          <input type="file" name="uploadBtn" id="uploadBtn" style="display: none;"  multiple="" class="upload">
-	                            </span> </label>
-		                          <input type="text" class="form-control" readonly id="uploadFile" name="docFile" placeholder="Upload File." field-name="Attachment" data-validation="required validate_importFile">
-	                        </div>
-                          
-                        </div>
-                      </div>
-                      <div class="clearfix mr">
-                        <button type="button" class="btn btn-sm btn-primary pull-right" id="uploadPayroll" onclick="uploadPayrollDocument();">Upload</button>
-                      </div>
-                    </div>
-                  </div>
-                   </form:form>
-                  </li>
-                    --%>
-                  
-                  
                   
                   <!-- Start -->
                   
@@ -86,13 +36,13 @@ window.onload = function () {
                   <a href="<c:url value='/userMapping'/>" class="btn btn-primary btn-sm ml10 mt5" title="User Mapping" onClick="userMaping();">User Mapping </a>
                   <!-- Popup Div -->
                   	<form:form id="upload_bulk_payroll_form" name="upload_bulk_payroll_form" method="post">
-                  <div class="collapse-bulk-adduser col-md-4" id="addbulkDiv" style='width:400px; right: 20px; top:25px; padding:10px 0'> <i class="fa fa-close close-div"></i>
+                  <div class="collapse-bulk-adduser col-md-4 mt" id="addbulkDiv" style='width:400px; right: 110px; top:25px; padding:10px 0'> <i class="fa fa-close close-div"></i>
                     <div class="form-horizontal clearfix">
                         <div class="col-md-12 mt10">
                           <div class="input-group ratetype" id="uploadBulkFileGroup">
-	                        <label class="input-group-btn"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
+	                        <label class="input-group-btn"> <div class="btn btn-primary pull-left"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
 	                          <input type="file" name="uploadBulkBtn" id="uploadBulkBtn" style="display: none;"  multiple="" class="upload">
-	                            </span> </label>
+	                            </div> </label>
 		                          <input type="text" class="form-control" readonly id="uploadBulkFile" name="docBulkFile" placeholder="Upload Bulk File." field-name="Attachment" data-validation="required validate_importFile">
 	                        </div>
                           
@@ -130,7 +80,7 @@ window.onload = function () {
                         </div>
                      
                         <div class="form-group" id="batchNumberDiv">
-                          <label class="col-md-3">Batch Name</label>
+                          <label class="col-md-3">Batch Number</label>
                           	<div class="col-md-9">
                           		<input type="text" class="form-control input-sm" value="" placeholder="Batch Name" id="batchNumber" name="batchNumber" field-name="Batch name" data-validation="required">
                         	</div>
@@ -147,6 +97,7 @@ window.onload = function () {
                             <option value="HR_DEDUCTIONS">HR Deductions</option>
                              <option value="BIS_USERS">Employees</option>
                              <option value="BIS_CHECKS">Checks</option>
+                              <option value="INVOICE">Invoice Data</option>
                           </select>
                         </div>
                         </div>

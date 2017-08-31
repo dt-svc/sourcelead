@@ -134,6 +134,7 @@ public class InvoiceController {
 		}else{
 			model.setViewName("billing/createInvoice");
 		}
+		model.addObject("isGenerateAutomaticInvoice",invoice.getIsAutomaticGenerateInvoice());
 		model.addObject("invoiceUUID", invoiceUUID);
 		model.addObject("projectId", projectId);
 		model.addObject("sourceleadUrl", sourceleadUrl);
@@ -306,6 +307,7 @@ public class InvoiceController {
 	 */
 	@RequestMapping(value = "/createReceivableExpensesBill")
 	public ModelAndView createReceivableExpenseBill(HttpServletRequest request,HttpServletResponse response) throws Exception {
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		ModelAndView model = new ModelAndView();
 		SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
 		if(null == sessionData)
@@ -313,6 +315,7 @@ public class InvoiceController {
 			sessionData = new SessionMaintainanceData();
 		}
 		model.setViewName("billing/createExpensesReceivableInvoice");
+		model.addObject("currentDate", commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),new Date()));
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		sessionData.setNav(Constants.Receivable);
 		request.getSession().setAttribute("sessionData",sessionData);
@@ -328,6 +331,7 @@ public class InvoiceController {
 	 */
 	@RequestMapping(value = "/createExpensesPayableBill")
 	public ModelAndView createExpensesPayableBill(HttpServletRequest request,HttpServletResponse response) throws Exception {
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		ModelAndView model = new ModelAndView();
 		SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
 		if(null == sessionData)
@@ -336,6 +340,7 @@ public class InvoiceController {
 		}
 		model.setViewName("billing/createExpensesPayableBill");
 		model.addObject("sourceleadUrl", sourceleadUrl);
+		model.addObject("currentDate", commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),new Date()));
 		sessionData.setNav(Constants.Receivable);
 		request.getSession().setAttribute("sessionData",sessionData);
 	return model;

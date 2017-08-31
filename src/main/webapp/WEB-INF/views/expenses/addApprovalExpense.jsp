@@ -18,7 +18,6 @@
 				$('#maxRecCount').val('1');
 			}
 			calculateTotalamount();
-			getMembersForSelectedProject();
 			getClientBasedOnSelectedProject();
 		 };
 </script>
@@ -66,7 +65,7 @@
 				<div class="form-group">
 					<label class="col-md-3">Select Project <span class="text-danger">&nbsp;*</span></label>
 					<div class="col-md-9" id="errProject">
-						<select class="chosen-select form-control" autocomplete="off" onchange="getClientBasedOnSelectedProject(); getMembersForSelectedProject();removeErrProject();" id="projectId" name="projectId" field-name="Project" data-validation="required">
+						<select class="chosen-select form-control" autocomplete="off" onchange="getClientBasedOnSelectedProject(); getMembersForSelectedProject();removeErrProject();flushOnchange();" id="projectId" name="projectId" field-name="Project" data-validation="required">
 							 <c:if test="${fn:length(projectsList) gt 0}">
 								<option value="">Select Project</option>
 							</c:if>
@@ -201,7 +200,7 @@
 		                 </div>
 						<div class="col-md-4 mb10 minHe">
 							<label>Description<span class='text-danger'>&nbsp;*</span></label>
-							<textarea rows="2"  id="entryDes${entryCount.count}" name="entryDes${entryCount.count}" class="form-control" placeholder="Description" field-name="Description" data-validation="required validate_Space validate_length length1-5000">${entry.description}</textarea>
+							<textarea rows="2"  id="entryDes${entryCount.count}" name="entryDes${entryCount.count}" class="form-control" placeholder="Description" field-name="Description" data-validation="required validate_Space validate_length length1-5000" onblur="removeWhiteSpaces('${entryCount.count}');">${entry.description}</textarea>
 						</div>		
 		                   <div id='attachmentSection' class='col-md-4 mb10 minHe'>
 		                   <div class="uploadFile timesheet_week_comm">
@@ -237,7 +236,7 @@
 							        <input type="button" id="cancelExpenseCategoryButton${entryCount.count}" value="Cancel" class="btn btn-default ml" onclick="hideAndShowDetailsRow(${2*(entryCount.count)},'Cancel');">
 							      </div>
 						      </div>
-							 <div class="clearfix"></div>
+							 <div class="clearfix" style="position: static;"></div>
 			             </div>
 			            </td>
 			        </tr>
@@ -274,6 +273,8 @@ $(".allownumericwithdecimal").on("keypress keyup blur",function (event) {
 
 <script>
 function acceptReopenExpenseBySuperUser(expenseId,reOpenedUserId){
+	$("#acceptReopenExpenseBySuperUserDiv").empty();
+	$("#acceptReopenExpenseBySuperUserDiv").prepend('<i class="fa fa-cog fa-spin"></i>');
 	var sourceleadUrl = '${sourceleadUrl}';
 	var userId = '${SourceLeadWeb_user.id}';
 	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
@@ -410,6 +411,15 @@ function getMembersForSelectedProject(){
 }
 </script>
 
+<script type="text/javascript">
+function removeWhiteSpaces(rowCount){
+	var el = document.getElementsByName("entryDes"+rowCount)[0];
+	var val = el.value.replace(/(^\s*)|(\s*$)/gi,"")
+	$("#entryDes"+rowCount).val(val);
+}
+</script>
+
+
 <script>
 	function saveAddExpensesData(status) {
 		if ($('#add_expenses_form').validate(false, validationSettings)){
@@ -528,13 +538,18 @@ function getClientBasedOnSelectedProject(){
 					  var projectEndDate = json.endDateStr;
 					  expensesDatePickerStartDate(projectStartDate,projectEndDate);
 		    	  }	
-		    	  $('#expensePurpose').val('');
-		    	  $('#projectStartDateExpensesId').val('');
-		    	  $('#projectEndDateExpensesId').val('');
-		    	    
 	    	   }
 	       },
 	});
+}
+</script>
+
+<script type="text/javascript">
+function flushOnchange(){
+$('#expensePurpose').val('');
+$('#projectStartDateExpensesId').val('');
+$('#projectEndDateExpensesId').val('');
+$("#projectMemberId").val('')
 }
 </script>
 

@@ -29,12 +29,18 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
 import org.hibernate.annotations.Type;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+	/**
+	 * @author BIS101
+	 *
+	 */
 	@Entity
 	@Table(name = "REQUIREMENT", catalog = "sourcelead")
 	@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "requirement1")
@@ -48,6 +54,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
     @Column(name = "ID", nullable = false)
 	private Long id;
 	
+	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne
     @JoinColumn(name="ORG_LOCATION_ID", nullable=false )        
     private OrgLocations orgLocationId;
@@ -144,10 +151,12 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	@Column(name = "INDUSTRY_NAME")
 	private String industryName;
 	
+	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne
     @JoinColumn(name="ORG_RELATION_ID", nullable=false )        
     private OrgRelations clientId;
-	    
+	   
+	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne
     @JoinColumn(name="SPOC_ID", nullable=false )        
     private OrgSpoc spocId;
@@ -185,14 +194,17 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	@Column(name = "REWARD_TYPE")
 	private String rewardType;
 	
+	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne
     @JoinColumn(name="SUBMISSION_TEMPLATE_ID" )        
     private SubmissionTemplate submissionTemplateId;
 	
+	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne
     @JoinColumn(name="CLIENT_SUBMISSION_TEMPLATE_ID" )        
     private SubmissionTemplate clientSubmissionTemplateId;
 	
+	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne
     @JoinColumn(name="MANAGER_USER_ID", nullable=false )        
     private User managerUserId;
@@ -220,7 +232,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	@Column(name = "CLIENT_SUBMISSION_TEMPLATE_JSON_STRING", columnDefinition = "TEXT default NULL")
 	private String clientSubmissionTemplateJsonString;
 	
-	
+	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="PARENT_REQUIREMENT_ID")        
     private Requirement parentRequirement;
@@ -246,6 +258,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	@Column(name = "CREATED_DATE")
 	private Date createdDate;
 	
+	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne
     @JoinColumn(name="CREATED_BY", nullable=false )        
     private User createdBy;
@@ -295,10 +308,12 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	@Transient
 	private String msg;
 	
+	@NotFound(action=NotFoundAction.IGNORE)
 	@OneToMany(mappedBy = "requirementId",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
 	@Fetch(FetchMode.SELECT)
 	private Set<RequirementAssignTo> requirementAssignTo = new HashSet<RequirementAssignTo>(0);
 	
+	@NotFound(action=NotFoundAction.IGNORE)
 	@OneToMany(mappedBy = "requirementId",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
 	@Fetch(FetchMode.SELECT)
 	private Set<RequirementApproverHierarchy> requirementApprover = new HashSet<RequirementApproverHierarchy>(0);
@@ -487,6 +502,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	@Transient
 	@JsonProperty
 	private String postedOnStr;
+	
+	@Transient
+	@JsonProperty
+	private String DT_RowId;
 	
 	public String getRequirementOrgName() {
 		return requirementOrgName;
@@ -1665,5 +1684,16 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 		this.isRequirementReleased = isRequirementReleased;
 	}
 
+	public String getDT_RowId()
+	{
+		return DT_RowId;
+	}
+
+	public void setDT_RowId(String dT_RowId)
+	{
+		DT_RowId = dT_RowId;
+	}
+
+	
 	
 }

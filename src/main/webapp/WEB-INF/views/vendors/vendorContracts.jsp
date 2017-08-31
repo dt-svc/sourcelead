@@ -78,7 +78,7 @@ function vendorContracts(orgRelationId){
 	    result = result + '<ul>';
 	    result = result + '<li class="dropdown mt10"><div class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-filter"></i><span>Status</span><i class="glyphicon glyphicon-play"></i></div>';
 	    result = result + '<div class="dropdown-menu bootstrap_dropdownMenu dropdown-menu_width dropdown-menu-right">                                                                                                                                       ';
-	    result = result + '<ul>';
+	    result = result + '<ul class="paddingLi">';
 	    result = result + '<li>';
 	    result = result + '<input type="checkbox" value="DRAFT" name="contractStatus" id="contractStatus" onclick="vendorContractsList('+orgRelationId+');" >';
 	    result = result + '<label class="paddingLeft">Draft <b class="badge" id="draftCount">0</b></label>';
@@ -207,7 +207,7 @@ function vendorContractsList(orgRelationId){
 	                		    	result = result + '<tr id="row'+report.id+'">';
 	                		        result = result + '<td>';
 // 	                		        if(null == report.parentContractId || '' == report.parentContractId || 'undefined' == report.parentContractId){
-	                		        	result = result + '<div class="tbldata-dotdot-sm proj_show" onclick="PopUp(\''+report.contractUUID+'\');"><span title="'+report.contractTitle+'"><a>'+report.contractTitle+'</a></span><i class="fa fa-binoculars"></i></div>';
+	                		        	result = result + '<div class="tbldata-dotdot-sm proj_show" onclick="PopUp(\''+report.contractUUID+'\');"><span title="'+report.contractTitle+'"><a>'+report.contractTitle+'</a></span></div>';
 	                		        /* }else{
 	                		        	result = result + '<div class="tbldata-dotdot-sm proj_show" ><span title="'+report.contractTitle+'">'+report.contractTitle+'</span></div>';
 	                		        } */
@@ -310,7 +310,7 @@ function vendorContractsList(orgRelationId){
 	                	result = result + '	</tbody>';
 	                	result = result + '</table>';
 	                	
-	                	$("#draftCount").html(expiredCount);
+	                	$("#draftCount").html(draftCount);
                 		$("#WFACount").html(waitingForApprovalCount);
                 		$("#WTSCount").html(waitingToBeSignedCount);
                 		$("#finalizedCount").html(finalizedCount);
@@ -729,6 +729,12 @@ function PopUp(contractUUID){
 				result = result +	'	</div>';
 			}
 			
+			if(null != json.rejectedReason && "" != json.rejectedReason && 'undefined' != json.rejectedReason && json.templateSubmissionStatus == 'REJECTED' ){
+				result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
+				result = result +	'		<div class="col-md-4 col-sm-4">Reject Reason</div>';
+				result = result +	'		<div class="col-md-8 col-sm-8">: '+json.rejectedReason+'</div>';
+				result = result +	'	</div>';
+			}
 			result = result +	'<div class="clearfix"/>';
 			
 		if(json.contractType != "Vendor NDA" && json.contractType != "Vendor NSA" && json.contractType!="Full time offer"){
