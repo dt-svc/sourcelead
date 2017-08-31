@@ -355,18 +355,22 @@ function displyContract(stage){
 			}
 			
 			if(null != json.typeOfContract && (json.contractType.includes("SOW") || json.contractType =="Full time offer")){
+				if(null != json.requirementName && "" != json.requirementName && 'undefined' != json.requirementName){
 				result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
 				result = result +	'		<div class="col-md-4 col-sm-4">Requirement Title</div>';
 				result = result +	'		<div class="col-md-8 col-sm-8">: '+json.requirementName+'</div>';
 				result = result +	'	</div>';
 			}
+		}
 			
 			if(null != json.typeOfContract && (json.contractType.includes("SOW") || json.contractType =="Full time offer")){
+				if(null != json.applicantName && "" != json.applicantName && 'undefined' != json.applicantName){
 				result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
 				result = result +	'		<div class="col-md-4 col-sm-4">Applicant Name</div>';
 				result = result +	'		<div class="col-md-8 col-sm-8">: '+json.applicantName+'</div>';
 				result = result +	'	</div>';
 			}
+		}
 			
 			if(null != json.typeOfContract && json.contractType.includes("SOW")){
 				if(null != json.offerValue && "" != json.offerValue && 'undefined' != json.offerValue){
