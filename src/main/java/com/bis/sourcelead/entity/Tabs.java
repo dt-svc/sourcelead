@@ -14,6 +14,8 @@ import javax.persistence.Table;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
 
 @Entity
 @Table(name = "TABS", catalog = "sourcelead")
@@ -32,6 +34,7 @@ public class Tabs implements Serializable{
 	@Column(name = "TAB_NAME")
 	private String tabName;
 	
+	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "TAB_ID", nullable = false)
 	private Tabs tabs;
