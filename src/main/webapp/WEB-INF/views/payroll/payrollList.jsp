@@ -244,7 +244,7 @@ function loadEmployeePayrollCost(){
 								result = result + '<td><div class="tblminwidth-75">'+opt.fromDateStr+'</div></td>';
 								result = result + ' <td><div class="tblminwidth-75">'+opt.toDateStr+'</div></td>';
 								result = result + '<td class="tblminwidth-75"><div>'+opt.employeeId+'</div></td>';
-								result = result + '<td><div class="tbldata-dotdot-vsm">'+opt.employeeName+'</div></td>';
+								result = result + '<td><div class="tbldata-dotdot-vsm" title="'+opt.employeeName+'">'+opt.employeeName+'</div></td>';
 								if(opt.ssn !=null && opt.ssn !='' && opt.ssn !='undefined'){
 									result = result + ' <td><div class="tbldata-dotdot-sm">'+opt.ssn+'</div></td>';
 								}else{
