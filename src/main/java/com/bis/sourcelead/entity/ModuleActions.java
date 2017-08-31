@@ -14,6 +14,8 @@ import javax.persistence.Table;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
 
 @Entity
 @Table(name = "MODULE_ACTIONS", catalog = "sourcelead")
@@ -28,11 +30,12 @@ public class ModuleActions implements Serializable{
     @Column(name = "ID", nullable = false)
 	private Long id;
 	
-	
+	@NotFound(action=NotFoundAction.IGNORE)
     @ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "MODULE_ID")
 	private Modules modules;
     
+	@NotFound(action=NotFoundAction.IGNORE)
     @ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "ACTION_ID")
 	private SourceleadActions sourceleadActions;

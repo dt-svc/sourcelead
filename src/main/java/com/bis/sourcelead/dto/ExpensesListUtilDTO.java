@@ -3,6 +3,9 @@ package com.bis.sourcelead.dto;
 import java.io.Serializable;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+@JsonIgnoreProperties(ignoreUnknown=true)
 public class ExpensesListUtilDTO implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
@@ -16,6 +19,8 @@ public class ExpensesListUtilDTO implements Serializable{
 	private String startDate;
 	
 	private String endDate;
+	
+	private String expenseId;
 	
 
 	public Long getUserId() {
@@ -61,11 +66,13 @@ public class ExpensesListUtilDTO implements Serializable{
 	{
 		this.endDate = endDate;
 	}
-	
-	
-	
-	
 
+	public String getExpenseId() {
+		return expenseId;
+	}
 
+	public void setExpenseId(String expenseId) {
+		this.expenseId = expenseId;
+	}
 	
 }

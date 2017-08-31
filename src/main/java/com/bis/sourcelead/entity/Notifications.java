@@ -15,6 +15,8 @@ import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
 import org.hibernate.annotations.Type;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -33,14 +35,17 @@ public class Notifications implements Serializable{
 	@Column(name="ID")
 	private Long id;
 	
+	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne
 	@JoinColumn(name="NOTIFICATION_SCENARIO_ID", nullable=false )	
 	private EmailScenario notificationScenarioId;
 	
+	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne
 	@JoinColumn(name="NOTIFICATION_TO", nullable=false )	
 	private User notificationTo;
 	
+	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne
 	@JoinColumn(name="NOTIFICATION_FORM", nullable=false )	
 	private User notificationFrom;

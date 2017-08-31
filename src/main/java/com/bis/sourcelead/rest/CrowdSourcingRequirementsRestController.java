@@ -48,7 +48,9 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
+import com.bis.sourcelead.annotations.Validator;
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.elk.index.CampaignIndex;
 import com.bis.sourcelead.elk.index.CandidateIndex;
 import com.bis.sourcelead.elk.index.RequirementIndex;
@@ -82,6 +84,7 @@ import com.bis.sourcelead.service.SavedJobsService;
 import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.util.FileUploadUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.bis.sourcelead.web.LoginSessionController;
@@ -95,6 +98,9 @@ public class CrowdSourcingRequirementsRestController {
 	
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
+	
+	@Value("${static.path}")
+	private String staticPath;
 	
 	@Autowired
 	private CommonUtil commonUtil;
@@ -1102,10 +1108,13 @@ public class CrowdSourcingRequirementsRestController {
   				}
 				
 			}
+			
+			
+			
 			   DateFormat week_Day = new SimpleDateFormat ("EEEE");
   			   String dayOfweek = week_Day.format(startTime);
-				//SimpleDateFormat formatter = new SimpleDateFormat("MMM dd yyyy");
-				String selectedDate  = commonUtil.dateStrFromOrgDateFormatter(orglo.getDateFormat(),startTime);
+				SimpleDateFormat formatterRec = new SimpleDateFormat("MMM dd yyyy");
+				String selectedDate  = formatterRec.format(startTime);
 				RequirementInterviewHistory reqInterviewHistory =  new RequirementInterviewHistory();
 				
 				reqInterviewHistory.setInterviewerList(requirementInterviewList);
@@ -1333,22 +1342,31 @@ public class CrowdSourcingRequirementsRestController {
 	 
 	 
 	 @RequestMapping(value = "/storeProfessionalParseCandidate", method = RequestMethod.POST)
-		public @ResponseBody String storeCandidate(@RequestParam(value = "json", required = false) String json,
-				@RequestParam(value = "candidateId", required = false) Long candidateId,MultipartHttpServletRequest request) throws Exception {
+		public @ResponseBody String storeCandidate(CandidateDTO candidateDTO,
+				@RequestParam(value = "candidateId", required = false) Long candidateId,HttpServletRequest request) throws Exception {
 			
-			MultipartFile multiFile = null;
+			/*MultipartFile multiFile = null;
 			Iterator<String> itrator = request.getFileNames();
 			if(itrator.hasNext()){
 		        multiFile = request.getFile(itrator.next());
 			}
 			String jsonc = "{" + json + "}";
-			JSONObject jsonObj = new JSONObject(jsonc);
+			JSONObject jsonObj = new JSONObject(jsonc);*/
+		 
+		 if(Validator.validate(candidateDTO)) {
+			 candidateDTO.setStaticPath(staticPath);
+				FileUploadUtil.fillUploadedFileInfo(candidateDTO, candidateDTO.getFileInfo());
+				User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+				OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+				Candidate candidate = candidateService.storeProfessionalParseCandidate(candidateDTO,orgLocation,user,candidateId);
+			} else
+				return "DataMissing";
 			
-			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-			Candidate candidate = candidateService.storeProfessionalParseCandidate(jsonObj,orgLocation,user,multiFile,candidateId);
+			return "success";
 			
-			if(candidate.getCandidateType().equalsIgnoreCase("Candidate")){
+			
+			
+			/*if(candidate.getCandidateType().equalsIgnoreCase("Candidate")){
 				StringBuilder candidateCreateMsg = new StringBuilder();
 			    SourceLeadSessionManager.setSessionAttribute(request, "candidateCreateMsg", candidateCreateMsg.append("Success !! ").append(candidate.getFirstName()).append(" Candidate Added").toString());
 			}
@@ -1356,7 +1374,7 @@ public class CrowdSourcingRequirementsRestController {
 				StringBuilder consultantCreateMsg = new StringBuilder();
 				SourceLeadSessionManager.setSessionAttribute(request, "consultantCreateMsg", consultantCreateMsg.append("Success !! ").append(candidate.getFirstName()).append(" Consultant Added").toString());
 			}
-			return "success";
+			return "success";*/
 		}
 	 
 	 
