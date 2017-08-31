@@ -80,16 +80,16 @@ public class BisUserMappingServiceImpl implements BisUserMappingService {
 					Row row = rowIterator.next();
 					if (row.getRowNum() > 0) { // Excluding column names
 						BisUserMapping bisUserMapping = new BisUserMapping();
-						float rate = 0f;
-						float fixedRate = 0f;
-						float payRate = 0f;
-						float fixedPay = 0f;
-						float insurance = 0f;
+						float rate = 0;
+						float fixedRate = 0;
+						float payRate = 0;
+						float fixedPay = 0;
+						float insurance = 0;
 						float ded = 0f;
-						float effectiveRate = 0f;
-						float payrollDiff = 0f;
-						float advanceHp = 0f;
-						float balance = 0f;
+						float effectiveRate = 0;
+						float payrollDiff = 0;
+						float advanceHp = 0;
+						float balance = 0;
 						if (row.getCell(0) != null && !"".equalsIgnoreCase(row.getCell(0).toString())) {
 							String company = getCellValueAsString(row.getCell(0), fileName);
 							bisUserMapping.setCompany(company);
