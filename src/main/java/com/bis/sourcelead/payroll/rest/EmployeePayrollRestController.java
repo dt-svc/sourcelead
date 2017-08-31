@@ -14,7 +14,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -25,6 +24,7 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.InvoiceDetailsDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.WagesTaxSummaryDTO;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -400,13 +400,29 @@ public class EmployeePayrollRestController {
 	  * @return 
 	  * @throws Exception
 	  */
-	 @RequestMapping(value = { "/getInvoiceDetails"}, method = RequestMethod.GET)
-		public List<InvoiceData> getInvoiceDetails(@RequestParam(value = "userId", required = false) Long userId,
-				@RequestParam(value = "orgLocationId", required = false) Long orgLocationId)throws Exception {
-			List<InvoiceData> invoiceDataList = invoiceDataService.getInvoiceDetails(userId, orgLocationId);
-			return invoiceDataList;
+	 
+																				 
+	 
+	 @RequestMapping(value = { "/getInvoiceDetails"}, method = RequestMethod.POST)
+	 @ResponseBody
+		public  ResponseList<InvoiceData> getInvoiceDetails(InvoiceDetailsDTO invoiceDetailsDTO ,HttpServletRequest request) throws Exception
+		{
+		 OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		 
+		 String[] tableColumns = {"sku", "productService", "empName", "number", "memoDescription", "date","lastmodified","dueDate","rate","qty","amount","arPaid","oldNew"};
+	     int sortColumnIndex = 2; //by default sorting using updated date
+		String sortColumnOrder = "desc"; //by default descending order
+		if(invoiceDetailsDTO.getOrder() != null && !invoiceDetailsDTO.getOrder().isEmpty()) {
+			sortColumnIndex = Integer.parseInt(invoiceDetailsDTO.getOrder().get(0).get("column"));
+			sortColumnOrder = invoiceDetailsDTO.getOrder().get(0).get("dir");
+		}
+		invoiceDetailsDTO.setSortColumn(tableColumns[sortColumnIndex]);
+		invoiceDetailsDTO.setSortOrder(sortColumnOrder);
+		
+		return invoiceDataService.getInvoiceDetails(invoiceDetailsDTO, orgLocation.getId());
 		}
 		
+	 
 	 
 	/**
 	 * Get Invoice Data Details
