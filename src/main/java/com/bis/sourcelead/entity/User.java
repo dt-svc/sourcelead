@@ -26,6 +26,8 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
 import org.hibernate.annotations.Type;
 
 import com.bis.sourcelead.enums.Status;
@@ -76,6 +78,7 @@ public class User implements Serializable{
 	@Column(name = "STATUS")
 	private String status;
 	
+	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "REPORTING_MANAGER_ID")
 	private User reportingManager;
@@ -130,18 +133,22 @@ public class User implements Serializable{
 	@Column(name = "RECRUITER_REGISTER_COUNTRY")
 	private String recruiterRegisterCountry;
 	
+	@NotFound(action=NotFoundAction.IGNORE)
 	@OneToMany(mappedBy = "user",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
 	@Fetch(FetchMode.SELECT)
 	private Set<UserRole> userRole = new HashSet<UserRole>(0);
 	
+	@NotFound(action=NotFoundAction.IGNORE)
 	@OneToMany(mappedBy = "user",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
 	@Fetch(FetchMode.SELECT)
 	private Set<Employees> employee = new HashSet<Employees>(0);
 	
+	@NotFound(action=NotFoundAction.IGNORE)
 	@OneToMany(mappedBy="user",cascade = CascadeType.ALL)
     @Fetch(FetchMode.SELECT)
     private Set<PasswordResets> passwordResets;
 	
+	@NotFound(action=NotFoundAction.IGNORE)
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "consultantUser")
 	private Set<Candidate> candidateSet;
 	

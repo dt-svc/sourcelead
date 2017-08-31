@@ -35,6 +35,8 @@ public interface ClientService {
 	List<Object> getAllUniversalSearchVendorList(OrgLocations orgLocation, String searchValue, String searchType) throws Exception;
 	
 	List<Object> getAllUniversalSearchClientList(OrgLocations orgLocations, String serachValue, String searchType) throws Exception;
+	
+	public Integer getReleasedJobsCountByOrgRelationId(Long orgRelationId,OrgLocations orgLocations,String userRole,User loginUser) throws Exception;
 
 
 }

@@ -24,6 +24,8 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
 import org.hibernate.annotations.Type;
 
 import com.bis.sourcelead.enums.Status;
@@ -62,6 +64,7 @@ public class Org implements Serializable{
 	@Enumerated(EnumType.STRING)
 	private Status status;
 	
+	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "PRIMARY_CONTACT_USER_ID")
     private User user;
@@ -106,6 +109,7 @@ public class Org implements Serializable{
 	@Enumerated(EnumType.STRING)
 	private Status timeSheet;
 	
+	@NotFound(action=NotFoundAction.IGNORE)
 	@OneToMany(mappedBy="org",cascade = CascadeType.ALL,fetch=FetchType.LAZY)
     @Fetch(FetchMode.SELECT)
     private Set<OrgLocations> orgLocationsList;

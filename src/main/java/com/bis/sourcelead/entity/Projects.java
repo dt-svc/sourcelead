@@ -17,7 +17,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -27,11 +26,11 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
 
-import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.enums.Project_Status;
 import com.bis.sourcelead.enums.Status;
-import com.bis.sourcelead.web.LoginSessionController;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -98,7 +97,7 @@ public class Projects implements Serializable{
     @Column(name="OVERTIME_RATE_TYPE")
     private String overtimeRateType;
 
-    
+    @NotFound(action=NotFoundAction.IGNORE)
     @ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "SUPERIOR_USER_ID")
    	private User superiorUser;
@@ -122,12 +121,12 @@ public class Projects implements Serializable{
 	@Column(name = "IS_TIMESHEET_ATTACHMENT_REQUIRED")
 	private Integer isTimesheetAttachmentRequired;
 	
-    
+	@NotFound(action=NotFoundAction.IGNORE)
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "ORG_RELATION_ID")
     private OrgRelations orgRelationId;
    
-    
+	@NotFound(action=NotFoundAction.IGNORE)
     @ManyToOne
     @JoinColumn(name = "ORG_LOCATIONS_ID")
     private OrgLocations orgLocationsId;
@@ -150,19 +149,22 @@ public class Projects implements Serializable{
     @Column(name = "UPDATED_BY")
     private String updatedBy;
     
+    @NotFound(action=NotFoundAction.IGNORE)
     @OneToMany(mappedBy="projects",cascade = CascadeType.ALL)
     @Fetch(FetchMode.SELECT)
     private Set<ProjectMembers> projectMembers;
     
+    @NotFound(action=NotFoundAction.IGNORE)
     @OneToMany(mappedBy="projectId",cascade = CascadeType.ALL)
     @Fetch(FetchMode.SELECT)
     private Set<ProjectApproverHierarchy> projectApprovers;
     
+    @NotFound(action=NotFoundAction.IGNORE)
     @OneToMany(mappedBy="projectId",cascade = CascadeType.ALL)
     @Fetch(FetchMode.SELECT)
     private Set<ProjectTasks> projectTasks;
     
-  
+    @NotFound(action=NotFoundAction.IGNORE)
     @OneToMany(mappedBy="projects",cascade = CascadeType.ALL)
     @Fetch(FetchMode.SELECT)
     private Set<ProjectDocuments> projectDocuments = new HashSet<>();

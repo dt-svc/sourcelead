@@ -258,7 +258,7 @@ function addEducation(candidateId) {
 	result = result  +'                                                                                                                                                       ';
 	
 	result  = result + '                 <div class="clearfix mb10">';
-	result = result  +'	                     <div class="col-md-4 dropdown-select positionRelative" positionRelative>';
+	result = result  +'	                     <div class="col-md-6 dropdown-select positionRelative PaddingRight">';
 	result = result  +'	                     <select class=""  name="gradeType" id="scoreType" onchange="recSelectType();clearSearchKey();">';
 	result = result  +' 					   <option value="" selected="selected">Score Type</option>';
 	result = result  +'	                       <option value="Percentage">%</option>';
@@ -266,7 +266,7 @@ function addEducation(candidateId) {
 	result = result  +'	                       <option value="GRADE">GRADE</option>';
 	result = result  +'	                      </select>';
 	result = result  +'	                   </div>';
-	result  = result + '                   <div class="col-md-7" positionRelative id="candidateScoreDiv">';
+	result  = result + '                   <div class="col-md-6 paddingLeft" positionRelative id="candidateScoreDiv">';
 	result  = result + '                     <input type="text" class="form-control" value="" name="grade" placeholder="Score" id="candidateScore" onkeyup="recSelectType();scoreAndScoreType();"';
 	result  = result + '                     data-validation-optional="true" data-validation="required validate_length length1-5" field-name="score">';
 	result  = result + '                 	 </div>';
@@ -510,7 +510,7 @@ function EditEducation(candidateId,candidateEducationId) {
 												}
 	result = result  +'	                      </select>';
 	result = result  +'	                   </div>';
-	result  = result + '                   <div class="col-md-8" positionRelative id="candidateScoreDiv">';
+	result  = result + '                  <div class="col-md-6 dropdown-select positionRelative paddingRight">';
 	result  = result + '                     <input type="text" class="form-control input-sm" value="'+grade+'" name="grade" placeholder="Score" id="candidateScore" onkeyup="recSelectType();"';
 	result  = result + '                     data-validation-optional="true" data-validation="required validate_length length1-5" field-name="score">';
 	result  = result + '                 	 </div>';
@@ -795,6 +795,11 @@ function removeEducation(candidateEducationId,candidateId){
 
 <script type="text/javascript">
 function recSelectType(){
+	var str = document.getElementById("candidateScore").value;
+	if (str == 'a' || str == 'b' || str == 'c' || str == 'd' || str == 'e') {
+		var strToUpper = str.toUpperCase();
+		$('#candidateScore').val(strToUpper);
+	}
 	
 	 var selectedText = document.getElementById("scoreType").value;
 	/* if(selectedText != null && selectedText !='' && selectedText !='undefined'){
@@ -875,51 +880,6 @@ function scoreAndScoreType(){
 }
 </script>
 
-<!-- <script type="text/javascript">
-function selectScoreType(){
-	
-	 var selectedText = document.getElementById("scoreType").value;
-	 var canScore = document.getElementById("candidateScore").value;
-	 $('#candidateScoreDiv').parent().find('p.jquery_form_error_message').remove(); 
-	 if(selectedText =='Percentage'){
-		  var floatNum = /^(\d{0,2}(\.\d{0,2})?|100)$/
-		  if(canScore.match(floatNum)){
-			  $("#addCandidate").removeAttr("disabled");
-			   return true;
-		  }		  
-		 else{
-				$("input#candidateScore").parent().after("<p class='jquery_form_error_message'><span>Enter your Percentage</span>");
-				 $("#addCandidate").attr("disabled", "disabled");
-				return false; 
-		 	 }
-	  }
-	 else if(selectedText =='CGPA'){
-		  var cgpanum = /^(([\d][\.])?([\d])|10)?$/
-			  if(canScore.match(cgpanum)){
-				  $("#addCandidate").removeAttr("disabled");
-				   return true;
-			  }		  
-			 else{
-				 $("input#candidateScore").parent().after("<p class='jquery_form_error_message'><span>Enter your CGPA value</span>");
-				 $("#addCandidate").attr("disabled", "disabled");
-			return false; 
-			 }
-	  } 
-	 else if(selectedText =='GRADE'){
-		 var grades = /^([A-E][-+]{0,2})?$/
-			 if (canScore.match(grades)) {
-				 $("#addCandidate").removeAttr("disabled");
-				 return true;
-			}else{
-				$("input#candidateScore").parent().after("<p class='jquery_form_error_message'> Enter  a Valid Grade </p>");
-				 $("#addCandidate").attr("disabled", "disabled");
-	    		return false;
-	    		
-			}
-   		}
-		 }
-	  
-</script> -->
 
 
 <%-- 
