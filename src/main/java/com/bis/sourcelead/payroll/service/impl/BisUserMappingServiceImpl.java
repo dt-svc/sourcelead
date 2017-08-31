@@ -85,7 +85,7 @@ public class BisUserMappingServiceImpl implements BisUserMappingService {
 						float payRate = 0;
 						float fixedPay = 0;
 						float insurance = 0;
-						float ded = 0f;
+						float ded = 0;
 						float effectiveRate = 0;
 						float payrollDiff = 0;
 						float advanceHp = 0;
