@@ -17,6 +17,8 @@ import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
 
 @Entity
 @Table(name = "REQUIREMENT_SUBMISSION_HISTORY", catalog = "sourcelead")
@@ -29,10 +31,12 @@ public class RequirementSubmissionHistory implements Serializable{
     @Column(name = "ID", nullable = false)
 	private Long id;
 	
+	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="REQUIREMENT_SUBMISSION_ID", nullable=false )        
     private RequirementSubmission submissionId;
 	
+	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne
     @JoinColumn(name="INTERVIEWER_ID", nullable=false )        
     private RequirementInterviewer interviewerId;

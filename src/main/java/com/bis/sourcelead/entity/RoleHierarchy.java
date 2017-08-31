@@ -17,6 +17,8 @@ import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
 
 @Entity
 @Table(name = "ROLE_HIERARCHY", catalog = "sourcelead")
@@ -36,6 +38,7 @@ public class RoleHierarchy implements Serializable{
 	@Column(name = "HIERARCHY_LEVEL")
 	private Integer hierarchyLevel;
 	
+	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "ORG_LOCATION_ID")
 	private OrgLocations orgLocations;
