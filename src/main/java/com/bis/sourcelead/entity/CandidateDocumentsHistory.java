@@ -13,10 +13,11 @@ import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
 import org.hibernate.annotations.Type;
 
 /**
@@ -32,6 +33,7 @@ public class CandidateDocumentsHistory implements Serializable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "ID", nullable = false)
 	private Long id;
+	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne
 	@JoinColumn(name = "CANDIDATE_DOCUMENTS", nullable = false)
 	private CandidateDocuments candidateDocuments;
@@ -68,6 +70,7 @@ public class CandidateDocumentsHistory implements Serializable {
 	private Integer status;
 	@Column(name = "IS_CONFIDENTIAL")
 	private String isConfidential;
+	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "CREATED_USER")
 	private User createdUser;

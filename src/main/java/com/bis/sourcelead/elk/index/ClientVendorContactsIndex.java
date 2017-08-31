@@ -76,6 +76,8 @@ public class ClientVendorContactsIndex implements Serializable {
 	//dummy
 	private Long spocLocationId;
 	
+	private String action;
+	
 	
 	
 	public Long getOwnerUserId() {
@@ -133,6 +135,18 @@ public class ClientVendorContactsIndex implements Serializable {
 
 	public void setSpocEmail(String spocEmail) {
 		this.spocEmail = spocEmail;
+	}
+
+	public String getAction() {
+		return action;
+	}
+
+	public void setAction(String action) {
+		this.action = action;
+	}
+
+	public static long getSerialversionuid() {
+		return serialVersionUID;
 	}
 
 	public ArrayList<String> getOwnerName() {

@@ -18,7 +18,7 @@ function getEmployeeList(){
 						result = result + '<th>COMPANY</th>';
 						result = result + '<th>BRANCH</th>';
 						result = result + '<th>Emp Id</th>';
-						result = result + '<th>Candidte Name</th>';
+						result = result + '<th>Candidate Name</th>';
 						result = result + '<th>RATE</th>';
 						result = result + '<th>FIXED RATE</th>';
 						result = result + '<th>PAY RATE</th>';
@@ -58,31 +58,31 @@ function getEmployeeList(){
 								}
 			        		    
 			        		    if(opt.candidateName !=null && opt.candidateName !='' && opt.candidateName !='undefined'){
-									result = result + ' <td><div class="tblminwidth-75">'+opt.candidateName+'</div></td>';
+									result = result + ' <td><div class="tbldata-dotdot-vsm" title="'+opt.candidateName+'">'+opt.candidateName+'</div></td>';
 								}else{
 									result = result + ' <td><div class="tblminwidth-75">--</div></td>';
 								}
 								
 								if(opt.rate !=null && opt.rate !='' && opt.rate !='undefined'){
-									result = result + ' <td><div class="tblminwidth-75">'+opt.rate+'</div></td>';
+									result = result + ' <td><div class="tblminwidth-75"><i class="fa fa-dollar"style="color:#454545;"></i> '+opt.rate.toFixed(2)+'</div></td>';
 								}else{
 									result = result + ' <td><div class="tblminwidth-75">--</div></td>';
 								}
 								
 								if(opt.fixedRate !=null && opt.fixedRate !='' && opt.fixedRate !='undefined'){
-									result = result + ' <td><div class="tblminwidth-75">'+opt.fixedRate+'</div></td>';
+									result = result + ' <td><div class="tblminwidth-75"><i class="fa fa-dollar"style="color:#454545;"></i> '+opt.fixedRate+'</div></td>';
 								}else{
 									result = result + ' <td><div class="tblminwidth-75">--</div></td>';
 								}
-								
+								var gyu = opt.payRate;
 								if(opt.payRate !=null && opt.payRate !='' && opt.payRate !='undefined'){
-									result = result + '<td><div class="tblminwidth-75">'+opt.payRate+'</div></td>';
+									result = result + '<td><div class="tblminwidth-75"><i class="fa fa-dollar"style="color:#454545;"></i> '+opt.payRate.toFixed(2)+'</div></td>';
 								}else{
 									result = result + ' <td><div class="tblminwidth-75">--</div></td>';
 								}
 								
 								if(opt.fixedPay !=null && opt.fixedPay !='' && opt.fixedPay !='undefined'){
-									result = result + '<td><div class="tblminwidth-75">$ '+opt.fixedPay+'</div></td>';
+									result = result + '<td><div class="tblminwidth-75"><i class="fa fa-dollar"style="color:#454545;"></i> '+opt.fixedPay.toFixed(2)+'</div></td>';
 								}else{
 									result = result + ' <td><div class="tblminwidth-75">--</div></td>';
 								}
@@ -99,25 +99,25 @@ function getEmployeeList(){
 								}
 								
 								if(opt.effectiveRate !=null && opt.effectiveRate !='' && opt.effectiveRate !='undefined'){
-									result = result + '<td><div class="tblminwidth-75">'+opt.effectiveRate+'</div></td>';
+									result = result + '<td><div class="tblminwidth-75"><i class="fa fa-dollar"style="color:#454545;"></i> '+opt.effectiveRate.toFixed(2)+'</div></td>';
 								}else{
 									result = result + ' <td><div class="tblminwidth-75">--</div></td>';
 								}
 								
 								if(opt.payrollDifference !=null && opt.payrollDifference !='' && opt.payrollDifference !='undefined'){
-									result = result + '<td><div class="tblminwidth-75">$ '+opt.payrollDifference+'</div></td>';
+									result = result + '<td><div class="tblminwidth-75"><i class="fa fa-dollar"style="color:#454545;"></i> '+opt.payrollDifference+'</div></td>';
 								}else{
 									result = result + ' <td><div class="tblminwidth-75">--</div></td>';
 								}
 								
 								if(opt.immigration !=null && opt.immigration !='' && opt.immigration !='undefined'){
-									result = result + '<td><div class="tblminwidth-75">$ '+opt.immigration+'</div></td>';
+									result = result + '<td><div class="tblminwidth-75"><i class="fa fa-dollar"style="color:#454545;"></i> '+opt.immigration+'</div></td>';
 								}else{
 									result = result + ' <td><div class="tblminwidth-75">--</div></td>';
 								}
 								
 								if(opt.comments !=null && opt.comments !='' && opt.comments !='undefined'){
-									result = result + '<td><div class="tblminwidth-75">'+opt.comments+'</div></td>';
+									result = result + '<td><div class="tbldata-dotdot-vsm" title="'+opt.comments+'">'+opt.comments+'</div></td>';
 								}else{
 									result = result + ' <td><div class="tblminwidth-75">--</div></td>';
 								}

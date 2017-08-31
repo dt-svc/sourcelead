@@ -203,7 +203,7 @@
 		                 </div>
 						<div class="col-md-4 mb10">
 							<label>Description<span class='text-danger'>&nbsp;*</span></label>
-							<textarea rows="2"  id="entryDes${entryCount.count}" name="entryDes${entryCount.count}" class="form-control" placeholder="Description" field-name="Description" data-validation="required validate_Space validate_length length1-5000">${entry.description}</textarea>
+							<textarea rows="2"  id="entryDes${entryCount.count}" name="entryDes${entryCount.count}" class="form-control" placeholder="Description" field-name="Description" data-validation="required validate_Space validate_length length1-5000" onblur="removeWhiteSpacesMyExp(${entryCount.count});">${entry.description}</textarea>
 						</div>		
 		                   <div id='attachmentSection' class='col-md-4 mb10'>
 		                   <div class="uploadFile timesheet_week_comm">
@@ -239,7 +239,7 @@
 							        <input type="button" id="cancelExpenseCategoryButton${entryCount.count}" value="Cancel" class="btn btn-default ml" onclick="hideAndShowDetailsRow(${2*(entryCount.count)},'Cancel');">
 							      </div>
 						      </div>
-							 <div class="clearfix"></div>
+							 <div class="clearfix" style="position: static;"></div>
 			             </div>
 			            </td>
 			        </tr>
@@ -263,6 +263,17 @@
 </form:form>
   </section>
 </c:if>
+
+
+<script type="text/javascript">
+function removeWhiteSpacesMyExp(rowCount){
+	var el = document.getElementsByName("entryDes"+rowCount)[0];
+	var val = el.value.replace(/(^\s*)|(\s*$)/gi,"")
+	$("#entryDes"+rowCount).val(val);
+}
+</script>
+
+
 <script>
 	function saveAddExpensesData(status) {
 		if ($('#add_expenses_form').validate(false, validationSettings)){

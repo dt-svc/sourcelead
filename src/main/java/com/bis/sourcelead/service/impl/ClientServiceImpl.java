@@ -40,6 +40,7 @@ import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
+import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RoleHierarchy;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.SourceleadActions;
@@ -57,6 +58,7 @@ import com.bis.sourcelead.service.OrgService;
 import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
 import com.bis.sourcelead.service.ProjectMembersService;
+import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.RoleHierarchyService;
 import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.SourceleadActionsService;
@@ -142,6 +144,9 @@ public class ClientServiceImpl implements ClientService {
 
 	@Autowired
 	private UniversalSearchHelper universalSearchHelper;
+	
+	@Autowired
+	private RequirementService requirementService;
 
 	@Value("${SourceLead.100}")
 	private String notFound;
@@ -693,6 +698,7 @@ public class ClientServiceImpl implements ClientService {
 				if (jsonObj.has("clientName") && jsonObj.getString("clientName") != null
 						&& !jsonObj.getString("clientName").isEmpty()) {
 					org.setOrgName(jsonObj.getString("clientName"));
+					orgLocations.setOrgLocationName(jsonObj.getString("clientName"));
 				}
 
 				if (jsonObj.has("companyWebsite") && jsonObj.getString("companyWebsite") != null
@@ -814,6 +820,7 @@ public class ClientServiceImpl implements ClientService {
 			if (null != org) {
 				if (jsonObj.getString(vendorName) != null && !jsonObj.getString(vendorName).isEmpty()) {
 					org.setOrgName(jsonObj.getString(vendorName));
+					orgLocations.setOrgLocationName(jsonObj.getString(vendorName));
 				}
 
 				if (jsonObj.has("companyWebsite") && jsonObj.getString(companyWebsite) != null
@@ -822,9 +829,13 @@ public class ClientServiceImpl implements ClientService {
 				}
 				if (jsonObj.has("address") && !isNullOrEmpty(jsonObj.getString("address"))) {
 					org.setClientAddress(jsonObj.getString("address"));
+				}else{
+					org.setClientAddress(null);
 				}
 				if (jsonObj.has("billingAddress") && !isNullOrEmpty(jsonObj.getString("billingAddress"))) {
 					org.setClientBillingAddress(jsonObj.getString("billingAddress"));
+				}else{
+					org.setClientBillingAddress(null);
 				}
 				if (jsonObj.has("PaymentTerm") && !isNullOrEmpty(jsonObj.getString("PaymentTerm"))) {
 					org.setPaymentTerm(jsonObj.getString("PaymentTerm"));
@@ -854,7 +865,11 @@ public class ClientServiceImpl implements ClientService {
 			if (jsonObj.has("vendorLocation") && jsonObj.getString(vendorLocation) != null
 					&& !jsonObj.getString(vendorLocation).isEmpty()) {
 				orgLocations.setLocation(jsonObj.getString(vendorLocation));
-			} else {
+			}else if (jsonObj.has("clientLocation") && jsonObj.getString("clientLocation") != null
+					&& !jsonObj.getString("clientLocation").isEmpty()) {
+				orgLocations.setLocation(jsonObj.getString("clientLocation"));
+			}  
+			else {
 				orgLocations.setLocation("");
 			}
 			if (jsonObj.has("vendorZipCode") && jsonObj.getString(vendorZipCode) != null
@@ -1589,6 +1604,34 @@ public class ClientServiceImpl implements ClientService {
 				orgSpocService.addOrgSpoc(orgSpock);
 			}
 		}
+	}
+
+	@Override
+	public Integer getReleasedJobsCountByOrgRelationId(Long orgRelationId, OrgLocations orgLocations, String userRole,
+			User user) throws Exception {
+		 OrgRelations orgRelation =orgRelationsService.getOrRelationsById(orgRelationId);
+		 Integer releasedJobsSize =0;
+		    List<Requirement> vendorReleasedJobsList = null;
+		    if(Constants.ROLE_ADMIN.equalsIgnoreCase(userRole) || Constants.SOURCELEAD_ADMIN.equalsIgnoreCase(userRole)){
+		    	if(orgRelation !=null) {
+		    		vendorReleasedJobsList = requirementService.getAllReleasedJobsForVendor(orgRelation.getLocationId().getId(),orgRelation.getId(),user,orgLocations);
+		    	}
+		    }else{
+		    	List<Requirement> reqlist = requirementService.getAllReleasedJobsBasedOnUserIdAndLocationId(user,orgLocations);
+			    List<Long> parentreqIds = new ArrayList<>();
+			    for(Requirement req : reqlist){
+			    	parentreqIds.add(req.getId());
+			    }
+			    if(orgRelation !=null) {
+			    vendorReleasedJobsList = requirementService.getAllReleasedJobsBasedOnParetRequirementIdAndVendorLocationId(parentreqIds,orgRelation.getId());
+			    }
+			    }
+			
+			if(null != vendorReleasedJobsList ){
+				
+				releasedJobsSize = (Integer) vendorReleasedJobsList.size();
+			}
+				 return releasedJobsSize;
 	}
 
 }

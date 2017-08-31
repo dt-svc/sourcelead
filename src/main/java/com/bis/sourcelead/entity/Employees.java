@@ -17,6 +17,8 @@ import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
 
 @Entity
 @Table(name="EMPLOYEE")
@@ -30,6 +32,7 @@ public class Employees implements Serializable{
 	@Column(name = "ID",nullable = false)
 	private Long id;
 	
+	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="USER_ID", nullable=false )        
     private User user;
@@ -55,6 +58,7 @@ public class Employees implements Serializable{
 	@Column(name="EMPLOYEE_STATE")
 	private String employeeState;
 	
+	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne
     @JoinColumn(name="ORG_LOCATIONS_ID", nullable=false )        
     private OrgLocations orgLocations;
@@ -77,15 +81,17 @@ public class Employees implements Serializable{
 	@Column(name="UPDATED_BY")
 	private String updatedBy;
 	
+	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne
     @JoinColumn(name="ORG_RELATION_ID", nullable=false )        
     private OrgRelations orgRelationId;
 	    
-	
+	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne
     @JoinColumn(name="DEPARTMENT_ID", nullable=false )        
     private Department departmentId;
 	
+	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne
     @JoinColumn(name="SPOC_ID", nullable=false )        
     private OrgSpoc spocId;
