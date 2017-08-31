@@ -17,6 +17,7 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.ExpenseEntryDetailsDTO;
 import com.bis.sourcelead.dto.ExpenseEntryDetailsUtilDTO;
 import com.bis.sourcelead.dto.ExpensesDTO;
+import com.bis.sourcelead.dto.ExpensesListUtilDTO;
 import com.bis.sourcelead.entity.Expenses;
 import com.bis.sourcelead.entity.ExpensesApproverHierarchy;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -104,8 +105,11 @@ public class ExpensesController {
 		sessionData.setNav(Constants.MY_EXPENSES);
 		request.getSession().setAttribute("sessionData", sessionData);
 		if(null != expenseId && !expenseId.isEmpty()){
-			
-			ExpensesDTO expensesDTO = expensesRestController.getExpenseDetailsByExpenseId(loginUser.getId(), orgLoc.getLocationCode(), expenseId);
+			ExpensesListUtilDTO elDTO = new ExpensesListUtilDTO();
+			elDTO.setUserId(loginUser.getId());
+			elDTO.setLocationCode(orgLoc.getLocationCode());
+			elDTO.setExpenseId(expenseId);
+			ExpensesDTO expensesDTO = expensesRestController.getExpenseDetailsByExpenseId(elDTO);
 			model.addObject("expenses", expensesDTO);
 			if(expensesDTO != null){
 				 Submission_Status submissionStatus = expensesDTO.getCombinedSubmissionStatus();
@@ -142,6 +146,14 @@ public class ExpensesController {
 		    }
 		    model.addObject("isSahApproved", isSahApproved);	
 			model.addObject("expenses", expenses);*/
+			StringBuffer rejectedReason = new StringBuffer();
+			List<ExpensesApproverHierarchy> eahList =expensesApprovalService.getExpensesApproverHierarchyListByExpenseId(Long.parseLong(expenseId));
+			for(ExpensesApproverHierarchy eah : eahList){
+				if(eah.getExpenseApprovalStatus().toString().equalsIgnoreCase("REJECTED")){
+					rejectedReason.append(eah.getRejectedReason()).append(""); 
+				}
+			}
+			model.addObject("expenseApproverHierarchy", rejectedReason.toString());
 		}
 		ExpenseEntryDetailsUtilDTO eedDTO = new ExpenseEntryDetailsUtilDTO();
 		eedDTO.setUserId(loginUser.getId());

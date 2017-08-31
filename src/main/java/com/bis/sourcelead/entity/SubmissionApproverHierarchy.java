@@ -19,6 +19,8 @@ import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
 import org.hibernate.annotations.Type;
 
 import com.bis.sourcelead.enums.Approval_Mechanism_Type;
@@ -37,11 +39,12 @@ public class SubmissionApproverHierarchy implements  Serializable{
     @Column(name = "ID", nullable = false)
 	private Long id;
 	
+	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne(fetch = FetchType.EAGER)
    	@JoinColumn(name = "HIERARCHY_ID", nullable = false)
 	private ProjectApproverHierarchy hierarchyId;
 	
-	
+	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne(fetch = FetchType.EAGER)
    	@JoinColumn(name = "SUBMISSION_ID", nullable = false)
 	private TimesheetSubmissions submissionId;
@@ -82,6 +85,7 @@ public class SubmissionApproverHierarchy implements  Serializable{
 	@Column(name = "STATUS")
 	private String status;
 	
+	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne(fetch = FetchType.EAGER)
    	@JoinColumn(name = "REOPENED_USER_ID", nullable = false)
 	private User reopenedUser;
