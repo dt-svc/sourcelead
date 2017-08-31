@@ -28,6 +28,8 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
 
 import com.bis.sourcelead.enums.Primary;
 import com.bis.sourcelead.enums.Status;
@@ -51,6 +53,7 @@ public class ProjectMembers implements Serializable {
 	@JoinColumn(name = "PROJECT_ID", nullable = false)
 	private Projects projects;
 	
+	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne
 	@JoinColumn(name = "EMPLOYEE_ID", nullable = false)
 	private Employees employee;

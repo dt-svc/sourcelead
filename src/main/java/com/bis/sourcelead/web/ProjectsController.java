@@ -177,6 +177,8 @@ public class ProjectsController {
 		public ModelAndView projectSummary(@RequestParam(value="projectUUID", required=true) String projectUUID,@RequestParam(value="tabType", required=false) String tabType,
 				HttpServletRequest request) throws Exception {
 				ModelAndView model = new ModelAndView();
+				
+				OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 				Projects projects = projectsService.getProjectByProjectUUID(projectUUID);
 				OrgLocations locations=orgLocationService.getOrgLocations(projects.getOrgLocationsId().getId());
 				//SimpleDateFormat dateFormat=locations.getLocFullFormDateFormatter();
@@ -191,18 +193,20 @@ public class ProjectsController {
 					}
 					model.addObject("projectStatus", projects.getProjectStatus());
 				}
-				model.addObject("projectUUID", projectUUID);
+				
 				if(null != tabType && !tabType.isEmpty() && tabType != ""){
 					model.addObject("tabType", tabType);
 				}
 				
-				Integer projectMembersCount = projectMembersService.getAllProjectMembersCountByProjectId(projects.getId());
-				model.addObject("projectMembersCount", projectMembersCount);
+				
+				List<ProjectMembers> projectMembersList =  projectMembersService.getAllProjectMembersByProjectIdAndStatus(projects.getId(), "Active", orgLocations);
+				model.addObject("projectMembersCount", projectMembersList.size());
 				
 				Integer resourceRequestsCount = projectPlanningRequestService.getProjectPlanningRequestCountByProjectId(projects.getId());
 				model.addObject("resourceRequestsCount", resourceRequestsCount);
 				
-				
+				model.addObject("projectUUID", projectUUID);
+				model.addObject("postedOrgLocationId", projects.getOrgLocationsId().getId());
 				model.setViewName("project/projectSummary");
 				model.addObject("sourceleadUrl", sourceleadUrl);
 				return model;

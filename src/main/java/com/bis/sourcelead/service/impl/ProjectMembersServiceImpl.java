@@ -27,6 +27,7 @@ import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.ProjectMembersDao;
+import com.bis.sourcelead.dao.ProjectMembersHistoryDao;
 import com.bis.sourcelead.dao.impl.ProjectsDaoImpl;
 import com.bis.sourcelead.dto.ProjectAssignedMembersDTO;
 import com.bis.sourcelead.dto.ProjectMembersDTO;
@@ -118,6 +119,9 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 	 
 	 @Autowired
 	 ProjectClientService projectClientService;
+	 
+	 @Autowired
+	 ProjectMembersHistoryDao projectMembersHistoryDao;
 	 
 	private static final Logger logger = LoggerFactory.getLogger(ProjectsDaoImpl.class);
 	
@@ -672,34 +676,10 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 	@Override
 	public List<ProjectMembers> getAllProjectMembersByProjectIdAndStatus(Long projectId, String status,OrgLocations loginOrgLocation)
 			throws Exception {
-		Collection<ProjectMembers> projectMembersList = projectMembersDao.getAllProjectMembersByProjectIdAndStatus(projectId,status);
-		List<ProjectMembers> pmList = new ArrayList<>();
-		for(ProjectMembers pm : projectMembersList){
-			 if(pm.getCandidateId() != null){
-				 Candidate candidate = candidateService.getCandidateByCandidateId(pm.getCandidateId());
-				 if(candidate != null && candidate.getOrgLocationId().getId().equals(loginOrgLocation.getId())){
-					 pmList.add(pm);
-				 }else{
-					 if(candidate.getParentCandidateId() != null){
-							Long parentCandidatId = candidate.getParentCandidateId().getId();
-							while(parentCandidatId != null){
-								Candidate cand = candidateService.getCandidateByCandidateId(parentCandidatId);
-								if(cand != null){
-									 if(cand != null && cand.getOrgLocationId().getId().equals(loginOrgLocation.getId())){
-										 pmList.add(pm);
-									 }
-									if(cand.getParentCandidateId() != null){
-										parentCandidatId = cand.getParentCandidateId().getId();
-									}else{
-										parentCandidatId = null;
-									}
-								}
-							}
-						}
-				 }
-			 }
-		}
-		return pmList;
+		
+		ProjectClients projectClients = projectClientService.getProjectClientsByProjectIdAndOrgLocationId(projectId, loginOrgLocation.getId());
+		List<ProjectMembers> projectMembersList = projectMembersDao.getAllProjectMembersByProjectClientIdAndStatus(projectClients.getId(),status);
+		return projectMembersList;
 	}
 
 	@Override
@@ -858,7 +838,7 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 						projectMembers.setId(projectMembersDTO.getProjectMemberId());
 						updatedProjectMembers.add(projectMembersDTO.getProjectMemberId());
 					}
-					Candidate candidate = candidateService.getCandidateById(projectMembersDTO.getCandidateId());
+					Candidate candidate = candidateService.getCandidateByCandidateId(projectMembersDTO.getCandidateId());
 					candidate.setId(projectMembersDTO.getCandidateId());
 					projectMembers.setProjectMemberCandidteId(candidate);
 					projectMembers.setProjects(projects);
@@ -911,16 +891,23 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 					projectMembers.setUpdatedBy(user.getUserCode());
 					projectMembers.setCreatedDate(new Date());
 					projectMembers.setUpdatedDate(new Date());
+					projectMembersDao.saveProjectMember(projectMembers);
+					
+					if(projects.getOrgLocationsId().getId().equals(orgLocations.getId())){
+						ProjectClients projectClients = projectClientService.getProjectClientsByProjectIdAndOrgLocationId(projects.getId(), orgLocations.getId());
+						saveProjectMembersHistory(projectMembers,user,orgLocations,projectClients);
+					}
 					
 					if(candidate.getParentCandidateId() != null){
 						Long parentCandidatId = candidate.getParentCandidateId().getId();
 						while(parentCandidatId != null){
 							Candidate cand = candidateService.getCandidateByCandidateId(parentCandidatId);
 							if(cand != null){
-								ProjectClients pc = projectClientService.getProjectClientsByProjectIdAndOrgLocationId(projects.getId(), cand.getOrgLocationId().getId());
-								if(pc == null){
+								ProjectClients projectClients = null;
+								projectClients = projectClientService.getProjectClientsByProjectIdAndOrgLocationId(projects.getId(), cand.getOrgLocationId().getId());
+								if(projectClients == null){
 									Candidate clildCandidate = candidateService.getCandidateByParentCandidateId(parentCandidatId);
-									ProjectClients projectClients = new ProjectClients();
+									projectClients = new ProjectClients();
 									projectClients.setProjectId(projects);
 									projectClients.setOrgRelationId(clildCandidate.getOrgRelationId());
 									projectClients.setOrgLocationsId(cand.getOrgLocationId());
@@ -944,6 +931,7 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 									
 									projectClientService.storeProjectClients(projectClients);
 								}
+								saveProjectMembersHistory(projectMembers,user,orgLocations,projectClients);
 								if(cand.getParentCandidateId() != null){
 									parentCandidatId = cand.getParentCandidateId().getId();
 								}else{
@@ -952,10 +940,7 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 							}
 						}
 					}
-					
-					Set<ProjectMembersHistory> memberHistoryList = saveProjectMembersHistory(projectMembers,user,orgLocations,projects.getId());
-					projectMembers.setMemberHistoryList(memberHistoryList);
-				    projectMembersDao.saveProjectMember(projectMembers);
+				  
 				}
 			}
 		}
@@ -977,48 +962,38 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 		
 	}
 	
-	private Set<ProjectMembersHistory> saveProjectMembersHistory(ProjectMembers projectMembers,User user,OrgLocations orgLocations,Long projectId) throws Exception{
+	private void saveProjectMembersHistory(ProjectMembers projectMembers,User user,OrgLocations orgLocations,ProjectClients projectClients) throws Exception{
 		
-		Set<ProjectMembersHistory> projectMembersHistoryList = new HashSet<>();
-		List<ProjectClients> projectClientsList = projectClientService.getProjectClientsListByProjectId(projectId);
-		if(projectClientsList != null && projectClientsList.size() > 0){
-			
-			for(ProjectClients projectClients : projectClientsList){
-				ProjectMembersHistory projectMembersHistory = null;
-				if(projectMembers.getId() != null){
-					projectMembersHistory = projectMembersHistoryService.getProjectMembersOpenHistoryByProjectClientsId(projectClients.getId(),projectMembers.getId());
-				}
-				
-				if(projectMembersHistory == null){
-					projectMembersHistory = new ProjectMembersHistory();
-				}
-				
-				projectMembersHistory.setProjectMemberId(projectMembers);
-				projectMembersHistory.setProjectClientsId(projectClients);
-				
-				if(projectMembers.getProjectAssignedDate() != null){
-					projectMembersHistory.setProjectAssignedDate(projectMembers.getProjectAssignedDate());
-				}else{
-					projectMembersHistory.setProjectAssignedDate(null);
-				}
-				
-				if(projectMembers.getProjectEndDate() != null){
-					projectMembersHistory.setProjectTerminationDate(projectMembers.getProjectEndDate());
-				}else{
-					projectMembersHistory.setProjectTerminationDate(null);
-				}
-				
-				projectMembersHistory.setStatus("OPEN");
-				projectMembersHistory.setCreatedBy(user.getUserCode());
-				projectMembersHistory.setUpdatedBy(user.getUserCode());
-				projectMembersHistory.setCreatedDate(new Date());
-				projectMembersHistory.setUpdatedDate(new Date());
-				projectMembersHistoryList.add(projectMembersHistory);
-			}
-			
+		ProjectMembersHistory projectMembersHistory = null;
+		if(projectMembers.getId() != null){
+			projectMembersHistory = projectMembersHistoryService.getProjectMembersOpenHistoryByProjectClientsId(projectClients.getId(),projectMembers.getId());
 		}
 		
-		return projectMembersHistoryList;
+		if(projectMembersHistory == null){
+			projectMembersHistory = new ProjectMembersHistory();
+		}
+		
+		projectMembersHistory.setProjectMemberId(projectMembers);
+		projectMembersHistory.setProjectClientsId(projectClients);
+		
+		if(projectMembers.getProjectAssignedDate() != null){
+			projectMembersHistory.setProjectAssignedDate(projectMembers.getProjectAssignedDate());
+		}else{
+			projectMembersHistory.setProjectAssignedDate(null);
+		}
+		
+		if(projectMembers.getProjectEndDate() != null){
+			projectMembersHistory.setProjectTerminationDate(projectMembers.getProjectEndDate());
+		}else{
+			projectMembersHistory.setProjectTerminationDate(null);
+		}
+		
+		projectMembersHistory.setStatus("OPEN");
+		projectMembersHistory.setCreatedBy(user.getUserCode());
+		projectMembersHistory.setUpdatedBy(user.getUserCode());
+		projectMembersHistory.setCreatedDate(new Date());
+		projectMembersHistory.setUpdatedDate(new Date());
+		projectMembersHistoryDao.updateProjectMembersHistory(projectMembersHistory);
 		
 	}
 
