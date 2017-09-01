@@ -307,6 +307,8 @@ function employeesPagination(url){
 }
 
 </script>
+
+<!--  TODO do not delete @Rajashekar -->
 <!-- <script>
 function getEmployeeList(){
 	$("#addPayrollDiv").hide();
@@ -482,3 +484,5 @@ function employeeListPagination(){
 </script>
 
  -->
+ 
+ <!--  TODO do not delete @Rajashekar -->

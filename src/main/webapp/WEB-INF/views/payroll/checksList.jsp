@@ -279,6 +279,8 @@ function checksPagination(url){
 
 </script>
 
+<!-- TODO do not delete @Rajashekar -->
+
 <!--  <script>
 function bisChecksList(){
 	$("#addPayrollDiv").hide();
@@ -443,4 +445,6 @@ function checksListPagination(){
     $("#checksListTable").wrap("<div class='overflow_Auto  width100percnt'></div>")
 }
 </script> -->
+
+<!--  TODO do not delete @Rajashekar -->
 

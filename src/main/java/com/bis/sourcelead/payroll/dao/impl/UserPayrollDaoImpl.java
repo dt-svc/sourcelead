@@ -155,6 +155,7 @@ public class UserPayrollDaoImpl implements UserPayrollDao{
 		}
 		return response;
 		
+		// TODO do not delete @Rajashekar
 		/*Session session = this.sessionFactory.getCurrentSession();
 		List<Checks> checkslList = null;
 		String query = "from Checks checks  left join fetch checks.orgLocationId where checks.orgLocationId.id =:orgLocationId";

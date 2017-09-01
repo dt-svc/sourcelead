@@ -160,6 +160,8 @@ public class BisUserMappingDaoImpl implements BisUserMappingDao {
 		}
 		return response;
 		
+		// TODO do not delete @Rajashekar
+		
 		/*Session session = this.sessionFactory.getCurrentSession();
 		List<BisUserMapping> bisUserList = null;
 		String query = "from BisUserMapping bisUser  left join fetch bisUser.orgLocationId where bisUser.orgLocationId.id =:orgLocationId";

@@ -371,6 +371,7 @@ public class EmployeePayrollRestController {
 		
 		return userPayrollService.getChecksList(checksDTO, orgLocation.getId());
 		
+		// TODO do not delete @Rajashekar
 		/*List<Checks> checksList = userPayrollService.getChecksList(userId, orgLocationId);
 		return checksList;*/
 	}
@@ -415,6 +416,7 @@ public class EmployeePayrollRestController {
 			employeeListDTO.setSortOrder(sortColumnOrder);
 			
 			return bisUserMappingService.getEmployeeList(employeeListDTO,orgLocation.getId());
+			// TODO do not delete @Rajashekar
 //			List<BisUserMapping> bisUsersList = bisUserMappingService.getEmployeeList(orgLocationId);
 //			return bisUsersList;
 		}
