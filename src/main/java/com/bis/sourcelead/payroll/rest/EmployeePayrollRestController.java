@@ -14,7 +14,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -25,6 +24,9 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.ChecksDTO;
+import com.bis.sourcelead.dto.EmployeeListDTO;
+import com.bis.sourcelead.dto.InvoiceDetailsDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.WagesTaxSummaryDTO;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -347,19 +349,31 @@ public class EmployeePayrollRestController {
 		return userpayroll;
 	}
 	
-	/**
-	 * Get Checks list of payroll
-	 * @param userId
-	 * @param orgLocationId
-	 * @return json object
-	 * @throws Exception
-	 */
-	@RequestMapping(value = { "/getChecksList", "/rest/getChecksList" }, method = RequestMethod.GET)
-	public List<Checks> getChecksList(@RequestParam(value = "userId", required = false) Long userId,
-			@RequestParam(value = "orgLocationId", required = false) Long orgLocationId)
+	
+	
+	@RequestMapping(value = { "/getChecksList", "/rest/getChecksList" }, method = RequestMethod.POST)
+	@ResponseBody
+	public ResponseList<Checks> getChecksList(ChecksDTO checksDTO,HttpServletRequest request)
 					throws Exception {
-		List<Checks> checksList = userPayrollService.getChecksList(userId, orgLocationId);
-		return checksList;
+		
+		
+	OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		
+		String[] tableColumns = {"empId", "empName", "date", "typeOfExpense", "bankName", "month","legalFees","advance","generalExpenses","vendorPayments","electronicWithdrawals","payrollChecks","amount","checkNo"};
+	     int sortColumnIndex = 1; //by default sorting using updated date
+		String sortColumnOrder = "desc"; //by default descending order
+		if(checksDTO.getOrder() != null && !checksDTO.getOrder().isEmpty()) {
+			sortColumnIndex = Integer.parseInt(checksDTO.getOrder().get(0).get("column"));
+			sortColumnOrder = checksDTO.getOrder().get(0).get("dir");
+		}
+		checksDTO.setSortColumn(tableColumns[sortColumnIndex]);
+		checksDTO.setSortOrder(sortColumnOrder);
+		
+		return userPayrollService.getChecksList(checksDTO, orgLocation.getId());
+		
+		// TODO do not delete @Rajashekar
+		/*List<Checks> checksList = userPayrollService.getChecksList(userId, orgLocationId);
+		return checksList;*/
 	}
 	
 	
@@ -385,12 +399,26 @@ public class EmployeePayrollRestController {
 
 		}
 	 
-	 @RequestMapping(value = { "/getEmployeeList", "/rest/getEmployeeList" }, method = RequestMethod.GET)
-		public List<BisUserMapping> getEmployeeList(@RequestParam(value = "userId", required = false) Long userId,
-				@RequestParam(value = "orgLocationId", required = false) Long orgLocationId)
+	 @RequestMapping(value = { "/getEmployeeList", "/rest/getEmployeeList" }, method = RequestMethod.POST)
+	 @ResponseBody
+	 public ResponseList<BisUserMapping> getEmployeeList(EmployeeListDTO employeeListDTO,HttpServletRequest request)
 						throws Exception {
-			List<BisUserMapping> bisUsersList = bisUserMappingService.getEmployeeList(orgLocationId);
-			return bisUsersList;
+		 OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			
+			String[] tableColumns = {"company", "branch", "empId", "candidateName", "rate", "fixedRate","payRate","fixedPay","insurance","ded","effectiveRate","payrollDifference","immigration","comments","advanceHcp","balance"};
+		     int sortColumnIndex = 3; //by default sorting using updated date
+			String sortColumnOrder = "desc"; //by default descending order
+			if(employeeListDTO.getOrder() != null && !employeeListDTO.getOrder().isEmpty()) {
+				sortColumnIndex = Integer.parseInt(employeeListDTO.getOrder().get(0).get("column"));
+				sortColumnOrder = employeeListDTO.getOrder().get(0).get("dir");
+			}
+			employeeListDTO.setSortColumn(tableColumns[sortColumnIndex]);
+			employeeListDTO.setSortOrder(sortColumnOrder);
+			
+			return bisUserMappingService.getEmployeeList(employeeListDTO,orgLocation.getId());
+			// TODO do not delete @Rajashekar
+//			List<BisUserMapping> bisUsersList = bisUserMappingService.getEmployeeList(orgLocationId);
+//			return bisUsersList;
 		}
 	 
 	 /**
@@ -400,13 +428,29 @@ public class EmployeePayrollRestController {
 	  * @return 
 	  * @throws Exception
 	  */
-	 @RequestMapping(value = { "/getInvoiceDetails"}, method = RequestMethod.GET)
-		public List<InvoiceData> getInvoiceDetails(@RequestParam(value = "userId", required = false) Long userId,
-				@RequestParam(value = "orgLocationId", required = false) Long orgLocationId)throws Exception {
-			List<InvoiceData> invoiceDataList = invoiceDataService.getInvoiceDetails(userId, orgLocationId);
-			return invoiceDataList;
+	 
+																				 
+	 
+	 @RequestMapping(value = { "/getInvoiceDetails"}, method = RequestMethod.POST)
+	 @ResponseBody
+		public  ResponseList<InvoiceData> getInvoiceDetails(InvoiceDetailsDTO invoiceDetailsDTO ,HttpServletRequest request) throws Exception
+		{
+		 OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		 
+		 String[] tableColumns = {"sku", "productService", "empName", "number", "memoDescription", "date","lastmodified","dueDate","rate","qty","amount","arPaid","oldNew"};
+	     int sortColumnIndex = 2; //by default sorting using updated date
+		String sortColumnOrder = "desc"; //by default descending order
+		if(invoiceDetailsDTO.getOrder() != null && !invoiceDetailsDTO.getOrder().isEmpty()) {
+			sortColumnIndex = Integer.parseInt(invoiceDetailsDTO.getOrder().get(0).get("column"));
+			sortColumnOrder = invoiceDetailsDTO.getOrder().get(0).get("dir");
+		}
+		invoiceDetailsDTO.setSortColumn(tableColumns[sortColumnIndex]);
+		invoiceDetailsDTO.setSortOrder(sortColumnOrder);
+		
+		return invoiceDataService.getInvoiceDetails(invoiceDetailsDTO, orgLocation.getId());
 		}
 		
+	 
 	 
 	/**
 	 * Get Invoice Data Details
