@@ -223,6 +223,13 @@ public class CandidateOnBoardingServiceImpl implements CandidateOnBoardingServic
 			candidateOnBoarding.setSalaryRate(jsonObj.getString("salaryRate"));
 		}
 		
+		if(jsonObj.has("paymentType") && !isNullOrEmpty(jsonObj.getString("paymentType"))){
+			candidateOnBoarding.setPaymentType(jsonObj.getString("paymentType"));
+		}	
+		
+		if(jsonObj.has("paymentMode") && !isNullOrEmpty(jsonObj.getString("paymentMode"))){
+			candidateOnBoarding.setPaymentMode(jsonObj.getString("paymentMode"));
+		}
 		if(jsonObj.has("reportingManager") && !isNullOrEmpty(jsonObj.getString("reportingManager"))){
 			User reportingManager = new User();
 			reportingManager.setId(Long.valueOf(jsonObj.getString("reportingManager")));
