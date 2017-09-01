@@ -211,9 +211,11 @@ public class Projects implements Serializable{
 	}
 
 	@Transient
+	@JsonProperty
     private String managerLevel1;
     
     @Transient
+    @JsonProperty
     private String managerLevel2;
     
     @Transient
@@ -237,12 +239,18 @@ public class Projects implements Serializable{
     private String endDateStr;
     
     @Transient
+    @JsonProperty
+    private String projStatus;
+    
+    
+    @Transient
     private String[] projectManagerName;
     
     @Transient
     private String[] clientName;
     
     @Transient
+    @JsonProperty
     private String client;
     
     @Transient
@@ -872,6 +880,14 @@ public class Projects implements Serializable{
 
 	public void setProjectDocumentsList(Set<ProjectDocuments> projectDocumentsList) {
 		this.projectDocumentsList = projectDocumentsList;
+	}
+
+	public String getProjStatus() {
+		return projStatus;
+	}
+
+	public void setProjStatus(String projStatus) {
+		this.projStatus = projStatus;
 	}
 	
 }

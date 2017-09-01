@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
-public class ProjectsDTO implements Serializable{
+public class ProjectsDTO extends SearchDTO implements Serializable{
 
 	private static final long serialVersionUID = 1L;
 	
@@ -57,6 +57,22 @@ public class ProjectsDTO implements Serializable{
     private List<Map<String, String>> fileInfo;
 
 	private List<FileInfo> uploadedFileInfo;
+	
+	private String projectManagers;
+	
+	private String projectDate;
+	
+	private String client;
+	
+	private String projectStatus;
+	
+	private String startDateStr;
+	
+	private String endDateStr;
+	
+	
+	
+	
 	
 	
 
@@ -258,6 +274,54 @@ public class ProjectsDTO implements Serializable{
 
 	public void setUploadedFileInfo(List<FileInfo> uploadedFileInfo) {
 		this.uploadedFileInfo = uploadedFileInfo;
+	}
+
+	public String getProjectManagers() {
+		return projectManagers;
+	}
+
+	public void setProjectManagers(String projectManagers) {
+		this.projectManagers = projectManagers;
+	}
+
+	public String getProjectDate() {
+		return projectDate;
+	}
+
+	public void setProjectDate(String projectDate) {
+		this.projectDate = projectDate;
+	}
+
+	public String getClient() {
+		return client;
+	}
+
+	public void setClient(String client) {
+		this.client = client;
+	}
+
+	public String getProjectStatus() {
+		return projectStatus;
+	}
+
+	public void setProjectStatus(String projectStatus) {
+		this.projectStatus = projectStatus;
+	}
+
+	public String getStartDateStr() {
+		return startDateStr;
+	}
+
+	public void setStartDateStr(String startDateStr) {
+		this.startDateStr = startDateStr;
+	}
+
+	public String getEndDateStr() {
+		return endDateStr;
+	}
+
+	public void setEndDateStr(String endDateStr) {
+		this.endDateStr = endDateStr;
 	}
 	
 	

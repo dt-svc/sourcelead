@@ -1,21 +1,17 @@
 package com.bis.sourcelead.service;
 
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.json.JSONObject;
 
 import com.bis.sourcelead.dto.ProjectsDTO;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.Projects;
-import com.bis.sourcelead.entity.TimesheetSubmissions;
 import com.bis.sourcelead.entity.User;
-import com.bis.sourcelead.entity.UserRole;
-import com.bis.sourcelead.model.ProjectDocumentBO;
 
 public interface ProjectsService {
 
@@ -115,7 +111,7 @@ public interface ProjectsService {
 		
 		Projects getProjectByProjectUUID(String projectUUID) throws Exception;
 		
-		List<Projects> getProjectsListByClientsAndStatus(Long userId,String clients,String status,Long orgLocationId,String userRole) throws Exception;
+		ResponseList<Projects> getProjectsListByClientsAndStatus(ProjectsDTO projectsDTO,Long userId,String clients,String status,Long orgLocationId,String userRole) throws Exception;
 		
 //		public String getProjectId(OrgLocations orgLocations);
 		

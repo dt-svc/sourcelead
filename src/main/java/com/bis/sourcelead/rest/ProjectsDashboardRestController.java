@@ -6,13 +6,10 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.TimeZone;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
@@ -41,6 +38,8 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.ProjectsDTO;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.elk.index.ClientVendorIndex;
 import com.bis.sourcelead.elk.index.ProjectsIndex;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
@@ -182,23 +181,25 @@ public class ProjectsDashboardRestController {
 		 * @throws Exception
         */
 			@RequestMapping(value = "/getProjectsByStatusAndClient")
-			public String getProjectsByStatusAndClient(@RequestParam(value="values", required=false) String values,HttpServletRequest request,@RequestParam(value="clients", required=false) String clients) throws Exception {
+			public ResponseList<Projects> getProjectsByStatusAndClient(ProjectsDTO projectsDTO,@RequestParam(value="values", required=false) String values,HttpServletRequest request,@RequestParam(value="clients", required=false) String clients) throws Exception {
 
 			    String loginOrgLocation = (String) SourceLeadSessionManager.getSessionAttribute(request, "locationCode");
 			    OrgLocations loginOrgLocations = orgLocationService.getOrgLocationsByLocationCode(loginOrgLocation);
 			    String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
-				String resultJson;
 				User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-			    //List<Projects> projectsList = projectsService.getProjectsBasedOnClientsAndStatusSelectionInFilters(user.getId(), clients, values,loginOrgLocations.getId());
-				List<Projects> projectsList = projectsService.getProjectsListByClientsAndStatus(user.getId(), clients, values,loginOrgLocations.getId(),userRole);
-			    /*for(Projects ps : projectsList){
-			    	ps.setManagerLevel1(ps.getManagerLevel1());
-			    	if(ps.getManagerLevel2() != null){
-			    		ps.setManagerLevel2(ps.getManagerLevel2());	
-			    	}
-			    }*/
-				 resultJson = commonUtil.toJSON(projectsList);
-				 return resultJson;
+
+				String[] tableColumns = {"projectSequeneNumber", "projectName", "projectManagers", "invoiceFrequency", "projectDate", "client","status"};
+			    int sortColumnIndex = 1; //by default sorting using updated date
+				String sortColumnOrder = "desc"; //by default descending order
+				if(projectsDTO.getOrder() != null && !projectsDTO.getOrder().isEmpty()) {
+					sortColumnIndex = Integer.parseInt(projectsDTO.getOrder().get(0).get("column"));
+					sortColumnOrder = projectsDTO.getOrder().get(0).get("dir");
+				}
+				projectsDTO.setSortColumn(tableColumns[sortColumnIndex]);
+				projectsDTO.setSortOrder(sortColumnOrder);
+				ResponseList<Projects> projectsList = projectsService.getProjectsListByClientsAndStatus(projectsDTO,user.getId(), clients, values,loginOrgLocations.getId(),userRole);
+			    
+				return projectsList;
 			}
 	
 	/**
