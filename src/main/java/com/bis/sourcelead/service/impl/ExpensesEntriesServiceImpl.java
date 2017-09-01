@@ -1,24 +1,39 @@
 package com.bis.sourcelead.service.impl;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.ExpensesEntriesDao;
 import com.bis.sourcelead.dao.ExpensesEntryDocumentsDao;
 import com.bis.sourcelead.dto.ExpensesDTO;
+import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.Expenses;
+import com.bis.sourcelead.entity.ExpensesCategory;
 import com.bis.sourcelead.entity.ExpensesEntries;
+import com.bis.sourcelead.entity.ExpensesEntryDocuments;
+import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.Timezone;
+import com.bis.sourcelead.enums.PaymentModes;
 import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.ExpensesEntriesService;
 import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.ConversionUtil;
+import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @Service
 public class ExpensesEntriesServiceImpl implements ExpensesEntriesService{
@@ -45,8 +60,7 @@ public class ExpensesEntriesServiceImpl implements ExpensesEntriesService{
 	@Override
 	public Set<ExpensesEntries> prepareExpensesEntriesListByJson(ExpensesDTO expensesDTO,  HttpServletRequest request,
 			Expenses expenses) throws Exception {
-		HashSet<ExpensesEntries> expensesEntriesList = new HashSet<ExpensesEntries>(); 
-		    /*List<Long> expenseEntryDbIds = null;
+		    List<Long> expenseEntryDbIds = null;
 		    ArrayList<Long> expenseEntryIds = new ArrayList<>();
 		    if(null != expenses && null != expenses.getId()){
 		    	expenseEntryDbIds = expensesEntriesDao.getExpensesEntryIdsByExpenseId(expenses.getId());
@@ -174,7 +188,7 @@ public class ExpensesEntriesServiceImpl implements ExpensesEntriesService{
 		    	if(expenseEntryDbIds != null && !expenseEntryDbIds.isEmpty()){
 		    		expensesEntriesDao.removeAllExpenseEntries(expenseEntryDbIds);
 		    	}
-		    }*/
+		    }
 		   return expensesEntriesList;
 		    		  
 	}

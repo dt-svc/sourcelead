@@ -285,7 +285,7 @@ public class ClientServiceImpl implements ClientService {
 		}
 
 		if (jsonObj.has("email")) {
-			spocUser = userService.storeUser(jsonObj, user, clientOrgLocations, "CREATEUSER", responderType, loginOrg);
+			//spocUser = userService.storeUser(jsonObj, user, clientOrgLocations, "CREATEUSER", responderType, loginOrg);
 
 		}
 

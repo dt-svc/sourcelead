@@ -128,21 +128,21 @@ public void storeAddExpensesData(ExpensesDTO expensesDTO, User loginUser, OrgLoc
 	/*if (jsonObj.has("ExpenseAutoId") && !(jsonObj.getString("ExpenseAutoId").isEmpty())){
 		expenses.setExpenseId(jsonObj.getString("ExpenseAutoId"));	
 	 }*/
-	if (StringUtils.isNotBlank(expensesDTO.getPurpose())){
-		expenses.setPurpose(expensesDTO.getPurpose());
+	if (StringUtils.isNotBlank(expensesDTO.getExpensePurpose())){
+		expenses.setPurpose(expensesDTO.getExpensePurpose());
 	 }
 	if (expensesDTO.getProjectMemberId() != null ){
 	    projMembers = projectMembersService.getProjectMemberById(expensesDTO.getProjectMemberId());
 		expenses.setProjectMembers(projMembers);
 	}
-	if (StringUtils.isNotBlank(expensesDTO.getClientName())){
-		expenses.setClientName(expensesDTO.getClientName()); 
+	if (StringUtils.isNotBlank(expensesDTO.getClientNameExpense())){
+		expenses.setClientName(expensesDTO.getClientNameExpense()); 
 	}
-	if (StringUtils.isNotBlank(expensesDTO.getStartDate())){
-		expenses.setStartDate(commonUtil.orgLocationDateFormat(orgLoc.getDateFormat(),expensesDTO.getStartDate()));
+	if (StringUtils.isNotBlank(expensesDTO.getStartDateExpense())){
+		expenses.setStartDate(commonUtil.orgLocationDateFormat(orgLoc.getDateFormat(),expensesDTO.getStartDateExpense()));
 	}
-	if (StringUtils.isNotBlank(expensesDTO.getEndDate())){
-		expenses.setEndDate(commonUtil.orgLocationDateFormat(orgLoc.getDateFormat(),expensesDTO.getEndDate()));
+	if (StringUtils.isNotBlank(expensesDTO.getEndDateExpense())){
+		expenses.setEndDate(commonUtil.orgLocationDateFormat(orgLoc.getDateFormat(),expensesDTO.getEndDateExpense()));
 	 }
 	if(null != orgLoc){
 		expenses.setOrgLocationId(orgLoc);
