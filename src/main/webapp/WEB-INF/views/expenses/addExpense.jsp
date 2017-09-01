@@ -277,6 +277,7 @@ function removeWhiteSpacesMyExp(rowCount){
 
 <script>
 	function saveAddExpensesData(status) {
+		alert("status : "+status);
 		if ($('#add_expenses_form').validate(false, validationSettings)){
 			
 			var maxRecCount = $('#maxRecCount').val();
@@ -303,12 +304,11 @@ function removeWhiteSpacesMyExp(rowCount){
 				var form = $('#add_expenses_form')[0];
 	      		var formData = new FormData(form); 
 	      		formData.append("json",jsonData); */
-	      		
+	      		var sourceleadUrl = '${sourceleadUrl}';
+	      		alert("sourceleadUrl"+sourceleadUrl);
 				var form = $('#add_expenses_form')[0];
 	      		var formData = new FormData(form); 
-	      		
-	      		
-				var sourceleadUrl = '${sourceleadUrl}';
+	      		alert(formData);
 				$( "#submitForApprovalExpensesId" ).addClass('button').val('Processing..');
 	     		$.ajax({
 	       	        type : "POST",

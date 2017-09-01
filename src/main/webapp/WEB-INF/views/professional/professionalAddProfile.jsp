@@ -401,6 +401,7 @@
 			var sourceleadUrl = '${sourceleadUrl}';
 			var form = $('#addcandidate_form')[0];
       		var formData = new FormData(form);
+      		alert("formData"+formData);
 			//It will escape all the special characters
 			$("#store_candidate").attr("disabled", "disabled");
 			$("#store_candidate").addClass('button').val('Processing..');

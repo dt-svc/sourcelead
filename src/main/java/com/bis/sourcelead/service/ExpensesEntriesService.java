@@ -3,15 +3,15 @@ package com.bis.sourcelead.service;
 import java.util.List;
 import java.util.Set;
 
-import org.json.JSONObject;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
+import javax.servlet.http.HttpServletRequest;
 
+import com.bis.sourcelead.dto.ExpensesDTO;
 import com.bis.sourcelead.entity.Expenses;
 import com.bis.sourcelead.entity.ExpensesEntries;
 
 public interface ExpensesEntriesService {
 
-	public Set<ExpensesEntries> prepareExpensesEntriesListByJson(JSONObject jsonObj, MultipartHttpServletRequest request,Expenses expenses) throws Exception;
+	public Set<ExpensesEntries> prepareExpensesEntriesListByJson(ExpensesDTO expensesDTO, HttpServletRequest request,Expenses expenses) throws Exception;
 
 	public List<ExpensesEntries> getExpensesEntriesByExpenseId(long parseLong);
 

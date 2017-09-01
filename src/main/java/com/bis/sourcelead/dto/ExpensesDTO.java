@@ -2,7 +2,9 @@ package com.bis.sourcelead.dto;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Map;
 
+import com.bis.sourcelead.entity.MasterCandidate;
 import com.bis.sourcelead.enums.Submission_Status;
 import com.ibm.icu.math.BigDecimal;
 
@@ -40,6 +42,12 @@ private static final long serialVersionUID = 1L;
 	private String expCreatedBy;
 	
 	private BigDecimal totalAmontRoundOffValue;
+	
+	private String staticPath;
+
+	private List<Map<String, String>> fileInfo;
+	
+	private List<FileInfo> uploadedFileInfo;
 	
 	public Long getId() {
 		return id;
@@ -171,5 +179,31 @@ private static final long serialVersionUID = 1L;
 	{
 		this.totalAmontRoundOffValue = totalAmontRoundOffValue;
 	}
+
+	public String getStaticPath() {
+		return staticPath;
+	}
+
+	public void setStaticPath(String staticPath) {
+		this.staticPath = staticPath;
+	}
+
+	public List<Map<String, String>> getFileInfo() {
+		return fileInfo;
+	}
+
+	public void setFileInfo(List<Map<String, String>> fileInfo) {
+		this.fileInfo = fileInfo;
+	}
+
+	public List<FileInfo> getUploadedFileInfo() {
+		return uploadedFileInfo;
+	}
+
+	public void setUploadedFileInfo(List<FileInfo> uploadedFileInfo) {
+		this.uploadedFileInfo = uploadedFileInfo;
+	}
+	
+	
 	
 }
