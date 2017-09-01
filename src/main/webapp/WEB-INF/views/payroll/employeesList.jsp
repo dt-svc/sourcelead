@@ -68,13 +68,12 @@ function getEmployeeList(){
 								}else{
 									result = result + ' <td><div class="tblminwidth-75">--</div></td>';
 								}
-								
+// 								alert("hai"+opt.fixedRate);
 								if(opt.fixedRate !=null && opt.fixedRate !='' && opt.fixedRate !='undefined'){
-									result = result + ' <td><div class="tblminwidth-75"><i class="fa fa-dollar"style="color:#454545;"></i> '+opt.fixedRate+'</div></td>';
+									result = result + ' <td><div class="tblminwidth-75"><i class="fa fa-dollar"style="color:#454545;"></i> '+opt.fixedRate.toFixed(2)+'</div></td>';
 								}else{
 									result = result + ' <td><div class="tblminwidth-75">--</div></td>';
 								}
-								var gyu = opt.payRate;
 								if(opt.payRate !=null && opt.payRate !='' && opt.payRate !='undefined'){
 									result = result + '<td><div class="tblminwidth-75"><i class="fa fa-dollar"style="color:#454545;"></i> '+opt.payRate.toFixed(2)+'</div></td>';
 								}else{
@@ -87,13 +86,13 @@ function getEmployeeList(){
 									result = result + ' <td><div class="tblminwidth-75">--</div></td>';
 								}
 								if(opt.insurance !=null && opt.insurance !='' && opt.insurance !='undefined'){
-									result = result + '<td><div class="tblminwidth-75">'+opt.insurance+'</div></td>';
+									result = result + '<td><div class="tblminwidth-75"><i class="fa fa-dollar"style="color:#454545;"></i> '+opt.insurance.toFixed(2)+'</div></td>';
 								}else{
 									result = result + ' <td><div class="tblminwidth-75">--</div></td>';
 								}
 								
 								if(opt.ded !=null && opt.ded !='' && opt.ded !='undefined'){
-									result = result + '<td><div class="tblminwidth-75">$ '+opt.ded+'</div></td>';
+									result = result + '<td><div class="tblminwidth-75">$ '+opt.ded.toFixed(2)+'</div></td>';
 								}else{
 									result = result + ' <td><div class="tblminwidth-75">--</div></td>';
 								}
@@ -109,9 +108,9 @@ function getEmployeeList(){
 								}else{
 									result = result + ' <td><div class="tblminwidth-75">--</div></td>';
 								}
-								
+								var visa = parseFloat(opt.immigration);
 								if(opt.immigration !=null && opt.immigration !='' && opt.immigration !='undefined'){
-									result = result + '<td><div class="tblminwidth-75"><i class="fa fa-dollar"style="color:#454545;"></i> '+opt.immigration+'</div></td>';
+									result = result + '<td><div class="tblminwidth-75"><i class="fa fa-dollar"style="color:#454545;"></i> '+visa.toFixed(2)+'</div></td>';
 								}else{
 									result = result + ' <td><div class="tblminwidth-75">--</div></td>';
 								}
