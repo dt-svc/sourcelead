@@ -24,6 +24,8 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.ChecksDTO;
+import com.bis.sourcelead.dto.EmployeeListDTO;
 import com.bis.sourcelead.dto.InvoiceDetailsDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.WagesTaxSummaryDTO;
@@ -347,19 +349,31 @@ public class EmployeePayrollRestController {
 		return userpayroll;
 	}
 	
-	/**
-	 * Get Checks list of payroll
-	 * @param userId
-	 * @param orgLocationId
-	 * @return json object
-	 * @throws Exception
-	 */
-	@RequestMapping(value = { "/getChecksList", "/rest/getChecksList" }, method = RequestMethod.GET)
-	public List<Checks> getChecksList(@RequestParam(value = "userId", required = false) Long userId,
-			@RequestParam(value = "orgLocationId", required = false) Long orgLocationId)
+	
+	
+	@RequestMapping(value = { "/getChecksList", "/rest/getChecksList" }, method = RequestMethod.POST)
+	@ResponseBody
+	public ResponseList<Checks> getChecksList(ChecksDTO checksDTO,HttpServletRequest request)
 					throws Exception {
-		List<Checks> checksList = userPayrollService.getChecksList(userId, orgLocationId);
-		return checksList;
+		
+		
+	OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		
+		String[] tableColumns = {"empId", "empName", "date", "typeOfExpense", "bankName", "month","legalFees","advance","generalExpenses","vendorPayments","electronicWithdrawals","payrollChecks","amount","checkNo"};
+	     int sortColumnIndex = 1; //by default sorting using updated date
+		String sortColumnOrder = "desc"; //by default descending order
+		if(checksDTO.getOrder() != null && !checksDTO.getOrder().isEmpty()) {
+			sortColumnIndex = Integer.parseInt(checksDTO.getOrder().get(0).get("column"));
+			sortColumnOrder = checksDTO.getOrder().get(0).get("dir");
+		}
+		checksDTO.setSortColumn(tableColumns[sortColumnIndex]);
+		checksDTO.setSortOrder(sortColumnOrder);
+		
+		return userPayrollService.getChecksList(checksDTO, orgLocation.getId());
+		
+		// TODO do not delete @Rajashekar
+		/*List<Checks> checksList = userPayrollService.getChecksList(userId, orgLocationId);
+		return checksList;*/
 	}
 	
 	
@@ -385,12 +399,26 @@ public class EmployeePayrollRestController {
 
 		}
 	 
-	 @RequestMapping(value = { "/getEmployeeList", "/rest/getEmployeeList" }, method = RequestMethod.GET)
-		public List<BisUserMapping> getEmployeeList(@RequestParam(value = "userId", required = false) Long userId,
-				@RequestParam(value = "orgLocationId", required = false) Long orgLocationId)
+	 @RequestMapping(value = { "/getEmployeeList", "/rest/getEmployeeList" }, method = RequestMethod.POST)
+	 @ResponseBody
+	 public ResponseList<BisUserMapping> getEmployeeList(EmployeeListDTO employeeListDTO,HttpServletRequest request)
 						throws Exception {
-			List<BisUserMapping> bisUsersList = bisUserMappingService.getEmployeeList(orgLocationId);
-			return bisUsersList;
+		 OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			
+			String[] tableColumns = {"company", "branch", "empId", "candidateName", "rate", "fixedRate","payRate","fixedPay","insurance","ded","effectiveRate","payrollDifference","immigration","comments","advanceHcp","balance"};
+		     int sortColumnIndex = 3; //by default sorting using updated date
+			String sortColumnOrder = "desc"; //by default descending order
+			if(employeeListDTO.getOrder() != null && !employeeListDTO.getOrder().isEmpty()) {
+				sortColumnIndex = Integer.parseInt(employeeListDTO.getOrder().get(0).get("column"));
+				sortColumnOrder = employeeListDTO.getOrder().get(0).get("dir");
+			}
+			employeeListDTO.setSortColumn(tableColumns[sortColumnIndex]);
+			employeeListDTO.setSortOrder(sortColumnOrder);
+			
+			return bisUserMappingService.getEmployeeList(employeeListDTO,orgLocation.getId());
+			// TODO do not delete @Rajashekar
+//			List<BisUserMapping> bisUsersList = bisUserMappingService.getEmployeeList(orgLocationId);
+//			return bisUsersList;
 		}
 	 
 	 /**
