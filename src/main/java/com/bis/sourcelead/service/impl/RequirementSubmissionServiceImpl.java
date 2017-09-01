@@ -493,7 +493,7 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 			 if(multiFile != null && multiFile.getOriginalFilename() != null && !multiFile.getOriginalFilename().isEmpty()){
 				 candidateResumes = new CandidateResumes();
 				 candidateResumes.setCandidateId(candidate);
-				 candidateResumes.setDocFile(multiFile.getBytes());
+				 //candidateResumes.setDocFile(multiFile.getBytes());
 				 candidateResumes.setFileName(multiFile.getOriginalFilename());
 				 candidateResumes.setTitle(multiFile.getOriginalFilename());
 				 candidateResumes.setFileContentType(multiFile.getContentType());
@@ -3530,7 +3530,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 			 if(multiFile != null && multiFile.getOriginalFilename() != null && !multiFile.getOriginalFilename().isEmpty()){
 				 candidateResumes = new CandidateResumes();
 				 candidateResumes.setCandidateId(candidate);
-				 candidateResumes.setDocFile(multiFile.getBytes());
+				 //candidateResumes.setDocFile(multiFile.getBytes());
 				 candidateResumes.setFileName(multiFile.getOriginalFilename());
 				 candidateResumes.setTitle(multiFile.getOriginalFilename());
 				 candidateResumes.setFileContentType(multiFile.getContentType());

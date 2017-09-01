@@ -1184,7 +1184,7 @@ function candidateProfile(candidateId,candidateType){
 			$("#update_candidate").addClass('button').val('Processing..');
 			$.ajax({
 						type : "POST",
-						url : sourceleadUrl+"/updateCandidate?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
+						url : sourceleadUrl+"/updateCandidate?${_csrf.parameterName}&"+$($('#candidateProfileEdit_form')[0]).serialize(),
 						success : function(result) {
 							/* location.replace(sourceleadUrl+"/candidatesList");  */
 							candidateSideBar(candidateId);

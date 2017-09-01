@@ -80,7 +80,7 @@ window.onload = function () {
 		  	
 		  	'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_PROJECT_TASKS\',\'ROLE_VIEW_EDIT_PROJECT_TASKS\')">' ; 
 			  	'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_PROJECT\',\'ROLE_VIEW_EDIT_PROJECT\',\'ROLE_VIEW_PROJECT_EMPLOYEES\',\'ROLE_VIEW_EDIT_PROJECT_EMPLOYEES\',\'ROLE_VIEW_DELETE_PROJECT_EMPLOYEES\')">' 
-			      	 result = result + '<li><a href="#tab-3" id="taskTab" onClick="projectTask('+projectId+',\''+status+'\');">Tasks</a></li>';
+			      	 result = result + '<li id="projectTaskTab"><a href="#tab-3" id="taskTab" onClick="projectTask('+projectId+',\''+status+'\');">Tasks</a></li>';
 			  	'</sec:authorize>';
 			  	'<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_PROJECT\',\'ROLE_VIEW_EDIT_PROJECT\',\'ROLE_VIEW_PROJECT_EMPLOYEES\',\'ROLE_VIEW_EDIT_PROJECT_EMPLOYEES\',\'ROLE_VIEW_DELETE_PROJECT_EMPLOYEES\')">' 
 			  	     result = result + '<li class="current"><a href="#tab-3" onClick="projectTask('+projectId+',\''+status+'\');">Tasks</a></li>';
@@ -111,11 +111,15 @@ window.onload = function () {
 		    $("#projectSideDiv").append(result);  
 		    $("#projectNameById").empty(); 
 		    $("#projectNameById").append(projectName); 
-		 	
 		  	if(tabType != null && tabType != '' && tabType != 'undefined'){
-		  		 projectEmployee(projectId,startDateStr,endDateStr,status,projectName);
-				 document.getElementById('resourceTab').click();
-				 document.getElementById('requestResources').className = 'current'
+				 if(tabType == "tasks"){
+					 document.getElementById('projectTaskTab').className = 'current'
+					 projectTask(projectId, status)
+				 }else{
+					 document.getElementById('requestResources').className = 'current'
+					 projectEmployee(projectId,startDateStr,endDateStr,status,projectName);
+					 document.getElementById('resourceTab').click();
+				 }
 			     document.getElementById("details").removeAttribute("class")
 			}else{
 				  '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_PROJECT\',\'ROLE_VIEW_EDIT_PROJECT\')">'; 

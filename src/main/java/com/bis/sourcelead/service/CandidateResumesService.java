@@ -8,6 +8,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -23,13 +24,17 @@ public interface CandidateResumesService {
 	 * @param jsonObj
 	 * @param user
 	 * @param candidate
+	 * @param resumeId
 	 * @param orgLocation
-	 * @param multiFile
+	 * @param fileURL
+	 * @param fileName
+	 * @param contentType
 	 * @return
 	 * @throws JSONException
 	 * @throws Exception
 	 */
-	public CandidateResumes storeCandidateResume(JSONObject jsonObj, User user, Candidate candidate, String resumeId, OrgLocations orgLocation, MultipartFile multiFile) throws JSONException,Exception;
+	public CandidateResumes storeCandidateResume(JSONObject jsonObj, User user, Candidate candidate, String resumeId, OrgLocations orgLocation, String fileURL, String fileName, String contentType) throws JSONException,Exception;
+	
 	
 	/**
 	 * @param orgLocations
@@ -40,7 +45,7 @@ public interface CandidateResumesService {
 	 * @throws JSONException
 	 * @throws IOException
 	 */
-	public HashSet<CandidateResumes> getCandidateResumesDetails(OrgLocations orgLocations,String userCode,Candidate candidate,MultipartFile multiFile)throws JSONException, IOException;
+	public HashSet<CandidateResumes> getCandidateResumesDetails(OrgLocations orgLocations,String userCode,Candidate candidate,FileInfo fileInfo)throws Exception;
 	 
 	/**
 	 * @param candidateId

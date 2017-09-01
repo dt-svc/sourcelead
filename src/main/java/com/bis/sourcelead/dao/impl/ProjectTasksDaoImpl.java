@@ -1,6 +1,8 @@
 package com.bis.sourcelead.dao.impl;
 
 import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
@@ -69,11 +71,19 @@ public class ProjectTasksDaoImpl implements ProjectTasksDao {
 		return tasks;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public ProjectTasks getTasksId(String id) throws Exception {
+	public ProjectTasks getTasksId(String projectTaskId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
-		return (ProjectTasks) session.get(ProjectTasks.class, Long.valueOf(id));
+		String query = "from ProjectTasks pt left join fetch pt.severity severity left join fetch pt.taskType taskType left join fetch pt.priority priority where pt.id = :projectTaskId " ;
+		List<ProjectTasks> projectTasksList =session.createQuery(query.toString()).setString("projectTaskId", projectTaskId).setCacheable(true) .list(); 
+		ProjectTasks projectTasks = null;
+		if(projectTasksList != null && !projectTasksList.isEmpty())
+		{
+			projectTasks = (ProjectTasks) projectTasksList.iterator().next();
+		}
+		return projectTasks;
 	}
 
 	@Override
@@ -109,8 +119,6 @@ public class ProjectTasksDaoImpl implements ProjectTasksDao {
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public List<ProjectTasks> getAllTasksByProjectId(Long projectId) throws Exception {
-		// TODO Auto-generated method stub
-
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from ProjectTasks pt where pt.projectId.id = :projectId " ;
 		List<ProjectTasks> projectTasksList =session.createQuery(query.toString()).setInteger("projectId", projectId.intValue()).setCacheable(true) 
@@ -179,4 +187,80 @@ public class ProjectTasksDaoImpl implements ProjectTasksDao {
 		}
 		return projectTasks;
 	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<ProjectTasks> getAllTasksByProjectIdAndTaskType(Long projectId, Long TaskType) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from ProjectTasks pt where pt.projectId.id = :projectId and pt.taskType = :TaskType" ;
+		List<ProjectTasks> projectTasksList =session.createQuery(query.toString()).setInteger("projectId", projectId.intValue()).setLong("TaskType", TaskType).setCacheable(true).list(); 
+		return projectTasksList; 
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<ProjectTasks> getAllTasksByProjectIdAndSubTaskType(Long projectId, Long subTaskType)
+			throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from ProjectTasks pt where pt.projectId.id = :projectId and pt.taskType <> :subTaskType" ;
+		List<ProjectTasks> projectTasksList =session.createQuery(query.toString()).setInteger("projectId", projectId.intValue()).setLong("subTaskType", subTaskType).setCacheable(true).list(); 
+		return projectTasksList; 
+	} 
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<ProjectTasks> getAllTasksByProjectIdAndTaskTypeAndTaskStatus(Long projectId, String taskType, String taskStatus) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		
+		
+		String[] type1 = null;
+		if(null != taskType && !"".equals(taskType)){	
+			 type1 = taskType.split(",");
+		}
+		List<Long> taskTypeList = new ArrayList<>();
+		if(type1 != null){
+			for(int i=0;i<type1.length;i++){
+				taskTypeList.add(Long.parseLong(type1[i]));
+			}
+		}
+		
+		String[] status1 = null;
+		if(null != taskStatus && !"".equals(taskStatus)){	
+			status1 = taskStatus.split(",");
+		}
+		List<Long> taskStatusList = new ArrayList<>();
+		if(status1 != null){
+			for(int i=0;i<status1.length;i++){
+				taskStatusList.add(Long.parseLong(status1[i]));
+			}
+		}
+		
+		String query = null;
+		List<ProjectTasks> projectTasksList  = null;
+		if((taskType != null && taskType != "")  || (taskStatus != null && taskStatus != "")) {
+			if(taskType != null && taskType != "") {
+				 query = "from ProjectTasks pt where pt.projectId.id = :projectId  and pt.taskType.id IN (:taskTypeList)" ;
+				 projectTasksList =session.createQuery(query.toString()).setInteger("projectId", projectId.intValue()).setParameterList("taskTypeList", taskTypeList).setCacheable(true).list(); 
+			}
+			if(taskStatus != null && taskStatus != "") {
+				query = "from ProjectTasks pt where pt.projectId.id = :projectId  and pt.taskStatus.id IN (:taskStatusList)" ;
+				 projectTasksList =session.createQuery(query.toString()).setInteger("projectId", projectId.intValue()).setParameterList("taskStatusList", taskStatusList).setCacheable(true).list(); 
+			}
+		}else {
+			 query = "from ProjectTasks pt where pt.projectId.id = :projectId" ;
+			 projectTasksList =session.createQuery(query.toString()).setInteger("projectId", projectId.intValue()).setCacheable(true).list(); 
+			
+		}
+	   return projectTasksList;  
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<ProjectTasks> getAllTasksByProjectIdAndParentTaskId(Long projectId, Long parentTaskId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query  = "from ProjectTasks pt where pt.projectId.id = :projectId  and pt.parentTaskId =:parentTaskId" ;
+		List<ProjectTasks>  projectTasksList =session.createQuery(query.toString()).setLong("projectId", projectId).setLong("parentTaskId", parentTaskId).setCacheable(true).list(); 
+		 return projectTasksList;  
+	}
+
 }

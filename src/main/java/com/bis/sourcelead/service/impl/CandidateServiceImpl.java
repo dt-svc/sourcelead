@@ -17,6 +17,7 @@ import java.util.TimeZone;
 
 import javax.mail.internet.InternetAddress;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -29,6 +30,7 @@ import org.elasticsearch.search.SearchHit;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.jsoup.select.Evaluator.IsEmpty;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,6 +42,8 @@ import org.springframework.web.multipart.MultipartFile;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.CandidateDao;
 import com.bis.sourcelead.dao.CandidateTimelineActivityDao;
+import com.bis.sourcelead.dto.CandidateDTO;
+import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.elk.index.CandidateIndex;
 import com.bis.sourcelead.elk.index.helper.CandidateIndexHelper;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
@@ -74,6 +78,7 @@ import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CandidateActivityCommonUtil;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
+import com.bis.sourcelead.util.FileUploadUtil;
 import com.bis.sourcelead.util.PdfUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.UniversalSearchHelper;
@@ -222,21 +227,21 @@ public class CandidateServiceImpl implements CandidateService {
 	 */
 	
 	@Override
-	public Candidate storeCandidate(JSONObject jsonObj,OrgLocations orgLocations,User user,MultipartFile multiFile) throws Exception {
+	public Candidate storeCandidate(CandidateDTO candidateDto,OrgLocations orgLocations,User user) throws Exception {
 		
 		
 		StringBuffer activitySummary = new StringBuffer();
         Candidate candidate = null;
-		if(jsonObj.has("candidateId") && jsonObj.getString("candidateId") != null && !"".equals(jsonObj.getString("candidateId"))){
-			candidate = candidateDao.getCandidateByCandidateId(Long.parseLong(jsonObj.getString("candidateId")));
+		if(candidateDto.getCandidateId() > 0){
+			candidate = candidateDao.getCandidateByCandidateId(candidateDto.getCandidateId());
 		}else{	
 			candidate = new Candidate();
 			candidate.setCreatedDate(commonUtil.currentDate());
 			candidate.setCreatedBy(user.getUserCode());
 			
-			if(jsonObj.has("consultantUser") && jsonObj.getString("consultantUser") !=null){
+			if(candidateDto.getConsultantUser() > 0){
 				User consultantUser = new User();
-				consultantUser.setId(Long.valueOf(jsonObj.getString("consultantUser")));
+				consultantUser.setId(candidateDto.getConsultantUser());
 				candidate.setConsultantUser(consultantUser);
 				candidate.setCandidateType("Consultant");
 			}else{
@@ -246,183 +251,183 @@ public class CandidateServiceImpl implements CandidateService {
 			candidate.setIsFavourite(0);
 			candidate.setIsFavouriteAssociate(0);
 			
-			MasterCandidate masterCandidate = null;
-			masterCandidate = masterCandidateService.getMasterCandidateByInteligence(jsonObj);
+			/*MasterCandidate masterCandidate = null;
+			masterCandidate = masterCandidateService.getMasterCandidateByInteligence(candidateDto);
 			if(null == masterCandidate){
-				masterCandidate = masterCandidateService.storeMasterCandidateByJsonObject(jsonObj, user);
+				masterCandidate = masterCandidateService.storeMasterCandidateByJsonObject(candidateDto, user);
 			}
-			candidate.setMasterCandidateId(masterCandidate);
+			candidate.setMasterCandidateId(masterCandidate);*/
 		}
         
 		if(orgLocations != null){
 		candidate.setOrgLocationId(orgLocations);
 		}
-		if(jsonObj.has("firstName") && jsonObj.getString("firstName") !=null){
-			if(candidate.getFirstName() != null && candidate.getFirstName() != "" && !candidate.getFirstName().equalsIgnoreCase(jsonObj.getString("firstName"))){
-				activitySummary.append("First Name").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidate.getFirstName()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(jsonObj.getString("firstName")).append(Constants.NEW_VALUE_TAG_END).append(" ");
+		if(candidateDto.getFirstName() != null){
+			if(candidate.getFirstName() != null){
+				activitySummary.append("First Name").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidate.getFirstName()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDto.getFirstName()).append(Constants.NEW_VALUE_TAG_END).append(" ");
 			}
-		candidate.setFirstName(jsonObj.getString("firstName"));
+		candidate.setFirstName(candidateDto.getFirstName());
 		}
 		
-		if(jsonObj.has("lastName") && jsonObj.getString("lastName") !=null){
-			if(candidate.getLastName() != null && candidate.getLastName() != "" && !candidate.getLastName().equalsIgnoreCase(jsonObj.getString("lastName"))){
-				activitySummary.append("Last Name").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidate.getLastName()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(jsonObj.getString("lastName")).append(Constants.NEW_VALUE_TAG_END).append(" ");
+		if(candidateDto.getLastName() != null){
+			if(candidate.getLastName() != null ){
+				activitySummary.append("Last Name").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidate.getLastName()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDto.getLastName()).append(Constants.NEW_VALUE_TAG_END).append(" ");
 			}
-		candidate.setLastName(jsonObj.getString("lastName") );
+		candidate.setLastName(candidateDto.getLastName());
 		}
 		
-		if(jsonObj.has("country") && jsonObj.getString("country") != null && jsonObj.getString("country") !="" && jsonObj.getString("country")!="undefined"){
-			if(candidate.getCountry() != null && candidate.getCountry() != "" && !candidate.getCountry().equalsIgnoreCase(jsonObj.getString("country"))){
-				activitySummary.append("Country").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidate.getCountry()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(jsonObj.getString("country")).append(Constants.NEW_VALUE_TAG_END).append(" ");
+		if(candidateDto.getCountry() != null){
+			if(candidate.getCountry() != null){
+				activitySummary.append("Country").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidate.getCountry()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDto.getCountry()).append(Constants.NEW_VALUE_TAG_END).append(" ");
 			}
-		candidate.setCountry(jsonObj.getString("country"));
+		candidate.setCountry(candidateDto.getCountry());
 		}
-		if(jsonObj.has("state") && jsonObj.getString("state") !=null){
-			if(candidate.getState() != null && candidate.getState() != "" && !candidate.getState().equalsIgnoreCase(jsonObj.getString("state"))){
-				activitySummary.append("State").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidate.getState()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(jsonObj.getString("state")).append(Constants.NEW_VALUE_TAG_END).append(" ");
+		if(candidateDto.getState() != null){
+			if(candidate.getState() != null ){
+				activitySummary.append("State").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidate.getState()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDto.getState()).append(Constants.NEW_VALUE_TAG_END).append(" ");
 			}
-		candidate.setState(jsonObj.getString("state"));
+		candidate.setState(candidateDto.getState());
 		}
-		if(jsonObj.has("city") && jsonObj.getString("city") !=null){
-			if(candidate.getCity() != null && candidate.getCity() != "" && !candidate.getCity().equalsIgnoreCase(jsonObj.getString("city"))){
-				activitySummary.append("City").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidate.getCity()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(jsonObj.getString("city")).append(Constants.NEW_VALUE_TAG_END).append(" ");
+		if(candidateDto.getCity() != null){
+			if(candidate.getCity() != null ){
+				activitySummary.append("City").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidate.getCity()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDto.getCity()).append(Constants.NEW_VALUE_TAG_END).append(" ");
 			}
-		candidate.setCity(jsonObj.getString("city"));
+		candidate.setCity(candidateDto.getCity());
 		}
-		if(jsonObj.has("location") && jsonObj.getString("location") !=null){
-			candidate.setLocation(jsonObj.getString("location"));
+		if(candidateDto.getLocation() != null){
+			candidate.setLocation(candidateDto.getLocation());
 		}
-		if(jsonObj.has("zipcode") && jsonObj.getString("zipcode") !=null){
-			if(candidate.getZipCode() != null && candidate.getZipCode() != "" && !candidate.getZipCode().equalsIgnoreCase(jsonObj.getString("zipcode"))){
-				activitySummary.append("Zip Code").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidate.getZipCode()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(jsonObj.getString("zipcode")).append(Constants.NEW_VALUE_TAG_END).append(" ");
+		if(candidateDto.getZipCode() != null){
+			if(candidate.getZipCode() != null){
+				activitySummary.append("Zip Code").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidate.getZipCode()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDto.getZipCode()).append(Constants.NEW_VALUE_TAG_END).append(" ");
 			}
-			candidate.setZipCode(jsonObj.getString("zipcode"));
-		}
-		
-		if(jsonObj.has("latitude") && jsonObj.getString("latitude") !=null){
-			candidate.setLatitude(jsonObj.getString("latitude"));
+			candidate.setZipCode(candidateDto.getZipCode());
 		}
 		
-		if(jsonObj.has("longitude") && jsonObj.getString("longitude") !=null){
-			candidate.setLongitude(jsonObj.getString("longitude"));
+		if(candidateDto.getLatitude() != null){
+			candidate.setLatitude(candidateDto.getLatitude());
 		}
 		
-		if(jsonObj.has("mobilePhone") && jsonObj.getString("mobilePhone") !=null){
-			if(candidate.getMobilePhone() != null && candidate.getMobilePhone() != "" && !candidate.getMobilePhone().equalsIgnoreCase(jsonObj.getString("mobilePhone"))){
-				activitySummary.append("Mobile Phone").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidate.getMobilePhone()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(jsonObj.getString("mobilePhone")).append(Constants.NEW_VALUE_TAG_END).append(" ");
-			}
-		candidate.setMobilePhone(jsonObj.getString("mobilePhone"));
-		}
-		if(jsonObj.has("alternateMobilePhone") && jsonObj.getString("alternateMobilePhone") !=null){
-			if(candidate.getAlternateMobilePhone() != null && candidate.getAlternateMobilePhone() != "" && !candidate.getAlternateMobilePhone().equalsIgnoreCase(jsonObj.getString("alternateMobilePhone"))){
-				activitySummary.append("Alternate Mobile Phone").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidate.getAlternateMobilePhone()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(jsonObj.getString("alternateMobilePhone")).append(Constants.NEW_VALUE_TAG_END).append(" ");
-			}
-			candidate.setAlternateMobilePhone(jsonObj.getString("alternateMobilePhone"));
-		}
-		if(jsonObj.has("email") && jsonObj.getString("email") !=null){
-			if(candidate.getEmail() != null && candidate.getEmail() != "" && !candidate.getEmail().equalsIgnoreCase(jsonObj.getString("email"))){
-				activitySummary.append("Email").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidate.getEmail()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(jsonObj.getString("email")).append(Constants.NEW_VALUE_TAG_END).append(" ");
-			}
-		candidate.setEmail(jsonObj.getString("email").trim());
-		}
-		if(jsonObj.has("currentRate") && jsonObj.getString("currentRate") !=null){
-			if(candidate.getCurrentRate() != null && candidate.getCurrentRate() != "" && !candidate.getCurrentRate().equalsIgnoreCase(jsonObj.getString("currentRate"))){
-				activitySummary.append("Current Rate").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidate.getCurrentRate()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(jsonObj.getString("currentRate")).append(Constants.NEW_VALUE_TAG_END).append(" ");
-			}
-		candidate.setCurrentRate(jsonObj.getString("currentRate"));
+		if(candidateDto.getLongitude() != null){
+			candidate.setLongitude(candidateDto.getLongitude());
 		}
 		
-		if(jsonObj.has("currentRateType") && jsonObj.getString("currentRateType") !=null){
-			if(candidate.getCurrentRateType() != null && candidate.getCurrentRateType() != "" && !candidate.getCurrentRateType().equalsIgnoreCase(jsonObj.getString("currentRateType"))){
-				activitySummary.append("Current Rate Type").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidate.getCurrentRateType()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(jsonObj.getString("currentRateType")).append(Constants.NEW_VALUE_TAG_END).append(" ");
+		if(candidateDto.getMobilePhone() != null){
+			if(candidate.getMobilePhone() != null ){
+				activitySummary.append("Mobile Phone").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidate.getMobilePhone()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDto.getMobilePhone()).append(Constants.NEW_VALUE_TAG_END).append(" ");
 			}
-			candidate.setCurrentRateType(jsonObj.getString("currentRateType"));
+		candidate.setMobilePhone(candidateDto.getMobilePhone());
+		}
+		if(candidateDto.getAlternateMobilePhone() != null){
+			if(candidate.getAlternateMobilePhone() != null){
+				activitySummary.append("Alternate Mobile Phone").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidate.getAlternateMobilePhone()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDto.getAlternateMobilePhone()).append(Constants.NEW_VALUE_TAG_END).append(" ");
+			}
+			candidate.setAlternateMobilePhone(candidateDto.getAlternateMobilePhone());
+		}
+		if(candidateDto.getEmail() != null){
+			if(candidate.getEmail() != null){
+				activitySummary.append("Email").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidate.getEmail()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDto.getEmail()).append(Constants.NEW_VALUE_TAG_END).append(" ");
+			}
+		candidate.setEmail(candidateDto.getEmail().trim());
+		}
+		if(candidateDto.getCurrentRate() !=null){
+			if(candidate.getCurrentRate() != null ){
+				activitySummary.append("Current Rate").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidate.getCurrentRate()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDto.getCurrentRate()).append(Constants.NEW_VALUE_TAG_END).append(" ");
+			}
+		candidate.setCurrentRate(candidateDto.getCurrentRate());
+		}
+		
+		if(candidateDto.getCurrentRateType() != null){
+			if(candidate.getCurrentRateType() != null){
+				activitySummary.append("Current Rate Type").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidate.getCurrentRateType()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDto.getCurrentRateType()).append(Constants.NEW_VALUE_TAG_END).append(" ");
+			}
+			candidate.setCurrentRateType(candidateDto.getCurrentRateType());
 			}
 		
-		if(jsonObj.has("currentRateCurrency") && jsonObj.getString("currentRateCurrency") !=null){
-			if(candidate.getCurrentRateCurrency() != null && candidate.getCurrentRateCurrency() != "" && !candidate.getCurrentRateCurrency().equalsIgnoreCase(jsonObj.getString("currentRateCurrency"))){
-				activitySummary.append("Current Rate Currency").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidate.getCurrentRateCurrency()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(jsonObj.getString("currentRateCurrency")).append(Constants.NEW_VALUE_TAG_END).append(" ");
+		if(candidateDto.getCurrentRateCurrency() !=null){
+			if(candidate.getCurrentRateCurrency() != null){
+				activitySummary.append("Current Rate Currency").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidate.getCurrentRateCurrency()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDto.getCurrentRateCurrency()).append(Constants.NEW_VALUE_TAG_END).append(" ");
 			}
-		candidate.setCurrentRateCurrency(jsonObj.getString("currentRateCurrency"));
+		candidate.setCurrentRateCurrency(candidateDto.getCurrentRateCurrency());
 		}
-		if(jsonObj.has("designation") && jsonObj.getString("designation") !=null){
-			if(candidate.getDesignation() != null && candidate.getDesignation() != "" && !candidate.getDesignation().equalsIgnoreCase(jsonObj.getString("designation"))){
-				activitySummary.append("Designation").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidate.getDesignation()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(jsonObj.getString("designation")).append(Constants.NEW_VALUE_TAG_END).append(" ");
+		if(candidateDto.getDesignation() !=null){
+			if(candidate.getDesignation() != null){
+				activitySummary.append("Designation").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidate.getDesignation()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDto.getDesignation()).append(Constants.NEW_VALUE_TAG_END).append(" ");
 			}
-		candidate.setDesignation(jsonObj.getString("designation"));
+		candidate.setDesignation(candidateDto.getDesignation());
 		}
 		
-		if(jsonObj.has("designationOtherType") && jsonObj.has("designationType") && "Other".equalsIgnoreCase(jsonObj.getString("designationType"))){
-			if(candidate.getDesignationOtherType() != null && candidate.getDesignationOtherType() != "" && !candidate.getDesignationOtherType().equalsIgnoreCase(jsonObj.getString("designationOtherType"))){
-				activitySummary.append("Designation Other Type").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidate.getDesignationOtherType()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(jsonObj.getString("designationOtherType")).append(Constants.NEW_VALUE_TAG_END).append(" ");
+		if(candidateDto.getDesignationOtherType() !=null){
+			if(candidate.getDesignationOtherType() != null){
+				activitySummary.append("Designation Other Type").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidate.getDesignationOtherType()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDto.getDesignationOtherType()).append(Constants.NEW_VALUE_TAG_END).append(" ");
 			}
-			candidate.setDesignationOtherType(jsonObj.getString("designationOtherType"));
+			candidate.setDesignationOtherType(candidateDto.getDesignationOtherType());
 		}else{
 			candidate.setDesignationOtherType(null);
 		}
 		
-		if(jsonObj.has("expectedRate") && jsonObj.getString("expectedRate") !=null ){
-			if(candidate.getExpectedRate() != null && candidate.getExpectedRate() != "" && !candidate.getExpectedRate().equalsIgnoreCase(jsonObj.getString("expectedRate"))){
-				activitySummary.append("Expected Rate").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidate.getExpectedRate()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(jsonObj.getString("expectedRate")).append(Constants.NEW_VALUE_TAG_END).append(" ");
+		if(candidateDto.getExpectedRate() !=null ){
+			if(candidate.getExpectedRate() != null){
+				activitySummary.append("Expected Rate").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidate.getExpectedRate()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDto.getExpectedRate()).append(Constants.NEW_VALUE_TAG_END).append(" ");
 			}
-		candidate.setExpectedRate(jsonObj.getString("expectedRate"));
+		candidate.setExpectedRate(candidateDto.getExpectedRate());
 		}
 		
-		if(jsonObj.has("rateType") && jsonObj.getString("rateType") !=null ){
-			if(candidate.getRateType() != null && candidate.getRateType() != "" && !candidate.getRateType().equalsIgnoreCase(jsonObj.getString("rateType"))){
-				activitySummary.append("Rate Type").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidate.getRateType()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(jsonObj.getString("rateType")).append(Constants.NEW_VALUE_TAG_END).append(" ");
+		if(candidateDto.getRateType() != null){
+			if(candidate.getRateType() != null){
+				activitySummary.append("Rate Type").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidate.getRateType()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDto.getRateType()).append(Constants.NEW_VALUE_TAG_END).append(" ");
 			}
-			candidate.setRateType(jsonObj.getString("rateType"));
+			candidate.setRateType(candidateDto.getRateType());
 			}
 		
-		if(jsonObj.has("expectedRateCurrencey") && jsonObj.getString("expectedRateCurrencey") !=null ){
-			if(candidate.getExpectedRateCurrencey() != null && candidate.getExpectedRateCurrencey() != "" && !candidate.getExpectedRateCurrencey().equalsIgnoreCase(jsonObj.getString("expectedRateCurrencey"))){
-				activitySummary.append("Expected Rate Currencey").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidate.getExpectedRateCurrencey()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(jsonObj.getString("expectedRateCurrencey")).append(Constants.NEW_VALUE_TAG_END).append(" ");
+		if(candidateDto.getExpectedRateCurrencey() !=null ){
+			if(candidate.getExpectedRateCurrencey() != null ){
+				activitySummary.append("Expected Rate Currencey").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidate.getExpectedRateCurrencey()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDto.getExpectedRateCurrencey()).append(Constants.NEW_VALUE_TAG_END).append(" ");
 			}
-			candidate.setExpectedRateCurrencey(jsonObj.getString("expectedRateCurrencey"));
+			candidate.setExpectedRateCurrencey(candidateDto.getExpectedRateCurrencey());
 		}
 		
-		if(jsonObj.has("summary") && jsonObj.getString("summary") !=null){
-			if(candidate.getSummary() != null && candidate.getSummary() != "" && !candidate.getSummary().equalsIgnoreCase(jsonObj.getString("summary"))){
-				activitySummary.append("Summary").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidate.getSummary()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(jsonObj.getString("summary")).append(Constants.NEW_VALUE_TAG_END).append(" ");
+		if(candidateDto.getSummary() !=null){
+			if(candidate.getSummary() != null){
+				activitySummary.append("Summary").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidate.getSummary()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDto.getSummary()).append(Constants.NEW_VALUE_TAG_END).append(" ");
 			}
-		candidate.setSummary(jsonObj.getString("summary"));
+		candidate.setSummary(candidateDto.getSummary());
 		}
-		if(jsonObj.has("designationType") && jsonObj.getString("designationType") !=null){
-			if(candidate.getDesignationType() != null && candidate.getDesignationType() != "" && !candidate.getDesignationType().equalsIgnoreCase(jsonObj.getString("designationType"))){
-				activitySummary.append("Designation Type").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidate.getDesignationType()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(jsonObj.getString("designationType")).append(Constants.NEW_VALUE_TAG_END).append(" ");
+		if(StringUtils.isNotBlank(candidateDto.getDesignationType())){
+			if(candidate.getDesignationType() != null ){
+				activitySummary.append("Designation Type").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidate.getDesignationType()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDto.getDesignationType()).append(Constants.NEW_VALUE_TAG_END).append(" ");
 			}
-		candidate.setDesignationType(jsonObj.getString("designationType"));
+		candidate.setDesignationType(candidateDto.getDesignationType());
 		}
-		if(jsonObj.has("experienceYears") && jsonObj.getString("experienceYears") !=null){
-			if(candidate.getExperienceYears() != null && candidate.getExperienceYears() != "" && !candidate.getExperienceYears().equalsIgnoreCase(jsonObj.getString("experienceYears"))){
-				activitySummary.append("Experience Years").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidate.getExperienceYears()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(jsonObj.getString("experienceYears")).append(Constants.NEW_VALUE_TAG_END).append(" ");
+		if(StringUtils.isNotBlank(candidateDto.getExperienceYears())){
+			if(candidate.getExperienceYears() != null ){
+				activitySummary.append("Experience Years").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidate.getExperienceYears()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDto.getExperienceYears()).append(Constants.NEW_VALUE_TAG_END).append(" ");
 			}
-		candidate.setExperienceYears(jsonObj.getString("experienceYears"));
+		candidate.setExperienceYears(candidateDto.getExperienceYears());
 		}
 		
 		
-		if(jsonObj.has("experienceMonths") && jsonObj.getString("experienceMonths") !=null){
-			if(candidate.getExperienceMonths() != null && candidate.getExperienceMonths() != "" && !candidate.getExperienceMonths().equalsIgnoreCase(jsonObj.getString("experienceMonths"))){
-				activitySummary.append("Experience Months").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidate.getExperienceMonths()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(jsonObj.getString("experienceMonths")).append(Constants.NEW_VALUE_TAG_END).append(" ");
+		if(StringUtils.isNotBlank(candidateDto.getExperienceMonths())){
+			if(candidate.getExperienceMonths() != null){
+				activitySummary.append("Experience Months").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidate.getExperienceMonths()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDto.getExperienceMonths()).append(Constants.NEW_VALUE_TAG_END).append(" ");
 			}
-			candidate.setExperienceMonths(jsonObj.getString("experienceMonths"));	
+			candidate.setExperienceMonths(candidateDto.getExperienceMonths());	
 		}else{
 			candidate.setExperienceMonths(null);	
 		}
 		
-		if(jsonObj.has("noticePeriod") && jsonObj.getString("noticePeriod") !=null){
-			if(candidate.getNoticePeriod() != null && candidate.getNoticePeriod() != "" && !candidate.getNoticePeriod().equalsIgnoreCase(jsonObj.getString("noticePeriod"))){
-				activitySummary.append("Notice Period").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidate.getNoticePeriod()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(jsonObj.getString("noticePeriod")).append(Constants.NEW_VALUE_TAG_END).append(" ");
+		if(StringUtils.isNotBlank(candidateDto.getNoticePeriod())){
+			if(candidate.getNoticePeriod() != null){
+				activitySummary.append("Notice Period").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidate.getNoticePeriod()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDto.getNoticePeriod()).append(Constants.NEW_VALUE_TAG_END).append(" ");
 			}
-			candidate.setNoticePeriod(jsonObj.getString("noticePeriod"));	
+			candidate.setNoticePeriod(candidateDto.getNoticePeriod());	
 		}
 		
-		if(jsonObj.has("address") && jsonObj.getString("address") !=null){
-			if(candidate.getAddress() != null && candidate.getAddress() != "" && !candidate.getAddress().equalsIgnoreCase(jsonObj.getString("address"))){
-				activitySummary.append("Address").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidate.getAddress()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(jsonObj.getString("address")).append(Constants.NEW_VALUE_TAG_END).append(" ");
+		if(StringUtils.isNotBlank(candidateDto.getAddress())){
+			if(candidate.getAddress() != null ){
+				activitySummary.append("Address").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidate.getAddress()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDto.getAddress()).append(Constants.NEW_VALUE_TAG_END).append(" ");
 			}
-			candidate.setAddress(jsonObj.getString("address"));
+			candidate.setAddress(candidateDto.getAddress());
 		}
 		
 		UserRole userRole = userRoleService.getUserDetailsByUserIdAndLocationIdAndUserType(user.getId(),orgLocations.getId(),"Recruiter");
@@ -430,54 +435,56 @@ public class CandidateServiceImpl implements CandidateService {
 			candidate.setRecruiterUserId(userRole.getUser());	
 		}
 		
-		if(jsonObj.has("candidateSkills") && jsonObj.getString("candidateSkills") !=null){
-			String candidateSkills = null;
-			try{
-	    		   JSONArray jsonArray = jsonObj.getJSONArray("candidateSkills");
-	    		   candidateSkills = jsonArray.toString();
+		if(StringUtils.isNotBlank(candidateDto.getCandidateSkills())){
+//			String candidateSkills = null;
+			/*try{
+				String[] strArray = new String[] {candidateDto.getCandidateSkills()};
+	    		   //JSONArray jsonArray = candidateDto.getCandidateSkills();
+	    		   candidateSkills = strArray.toString();
 	    	  }
-	    	  catch(JSONException e){
-	    		  candidateSkills= jsonObj.getString("candidateSkills");
+	    	  catch(Exception e){
+	    		  candidateSkills= candidateDto.getCandidateSkills();
 	    	  }
-			candidateSkills = candidateSkills.replaceAll("\"", "").replaceAll("\\[", "").replaceAll("\\]","");
+			candidateSkills = candidateSkills.replaceAll("\"", "").replaceAll("\\[", "").replaceAll("\\]","");*/
 			
-			if(candidate.getSkillsName() != null && candidate.getSkillsName() != "" && !candidate.getSkillsName().equalsIgnoreCase(jsonObj.getString("candidateSkills"))){
-				activitySummary.append("Skills").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidate.getSkillsName()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateSkills).append(Constants.NEW_VALUE_TAG_END).append(" ");
+			if(candidate.getSkillsName() != null){
+				activitySummary.append("Skills").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidate.getSkillsName()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDto.getCandidateSkills()).append(Constants.NEW_VALUE_TAG_END).append(" ");
 			}
-			candidate.setSkillsName(candidateSkills);
+			candidate.setSkillsName(candidateDto.getCandidateSkills());
 		}
 		
-		if(jsonObj.has("visa")&& jsonObj.getString("visa") !=null){
+		if(StringUtils.isNotBlank(candidateDto.getVisa())){
 			
-			String visaList =null;
+			/*String visaList =null;
 			try{
-				JSONArray jsonArray = jsonObj.getJSONArray("visa");
-				visaList = jsonArray.toString();
+				String[] strArray = new String[] {candidateDto.getVisa()};
+				//JSONArray jsonArray = candidateDto.getVisa();
+				visaList = strArray.toString();
 			}
-			catch(JSONException e){
-				visaList =jsonObj.getString("visa");
+			catch(Exception e){
+				visaList = candidateDto.getVisa();
 			}
 			visaList = visaList.replaceAll("\\[", "").replaceAll("\\]","");
 			visaList = visaList.replaceAll("\"", "");
-			
-			if(candidate.getVisaType() != null && candidate.getVisaType() != "" && !candidate.getVisaType().equalsIgnoreCase(jsonObj.getString("visa"))){
-				activitySummary.append("Immigration Status").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidate.getVisaType()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(visaList).append(Constants.NEW_VALUE_TAG_END).append(" ");
+			*/
+			if(candidate.getVisaType() != null){
+				activitySummary.append("Immigration Status").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidate.getVisaType()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDto.getVisa()).append(Constants.NEW_VALUE_TAG_END).append(" ");
 			}
-			candidate.setVisaType(visaList);
+			candidate.setVisaType(candidateDto.getVisa());
 	  	 
 		}
 		
-		if(jsonObj.has("primarySkill") && jsonObj.getString("primarySkill") != null){
-			if(candidate.getPrimarySkill() != null && candidate.getPrimarySkill() != "" && !candidate.getPrimarySkill().equalsIgnoreCase(jsonObj.getString("primarySkill"))){
-				activitySummary.append("Primary Skills").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidate.getPrimarySkill()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(jsonObj.getString("primarySkill")).append(Constants.NEW_VALUE_TAG_END).append(" ");
+		if(StringUtils.isNotBlank(candidateDto.getPrimarySkill())){
+			if(candidate.getPrimarySkill() != null){
+				activitySummary.append("Primary Skills").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidate.getPrimarySkill()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDto.getPrimarySkill()).append(Constants.NEW_VALUE_TAG_END).append(" ");
 			}
-			candidate.setPrimarySkill(jsonObj.getString("primarySkill"));
+			candidate.setPrimarySkill(candidateDto.getPrimarySkill());
 		}
 
 		
 		
-		if(jsonObj.has("vendors") && !"".equalsIgnoreCase(jsonObj.getString("vendors"))){
-			OrgRelations orgRelation = orgRelationsService.getOrRelationsById(Long.parseLong(jsonObj.getString("vendors")));
+		if(candidateDto.getVendors() != null ){
+			OrgRelations orgRelation = orgRelationsService.getOrRelationsById(candidateDto.getVendors());
 			candidate.setOrgRelationId(orgRelation);
 			Candidate vendorCandidate = commonUtil.getVendorCandidate(jsonObj, orgRelation, orgLocations, user);
 			candidate.setParentCandidateId(vendorCandidate);
@@ -487,33 +494,44 @@ public class CandidateServiceImpl implements CandidateService {
 			candidate.setParentCandidateId(null);
 		}
 		
-		if(jsonObj.has("vendorcontact") && !"".equalsIgnoreCase(jsonObj.getString("vendorcontact"))){
-			OrgSpoc orgspoc = orgSpocService.getOrgSpocById(Long.parseLong(jsonObj.getString("vendorcontact")));
+		if(candidateDto.getVendorcontact() != null ){
+			OrgSpoc orgspoc = orgSpocService.getOrgSpocById(candidateDto.getVendorcontact());
 			candidate.setSpocId(orgspoc);
 		}else{
 			candidate.setSpocId(null);
 		}
 		
-		HashSet<CandidateEducation>	 candidateEducationList = candidateEducationService.getCandidateEducationDetails(jsonObj, orgLocations,candidate,user.getUserCode());
+		/*HashSet<CandidateEducation>	 candidateEducationList = candidateEducationService.getCandidateEducationDetails(candidateDto, orgLocations,candidate,user.getUserCode());
 		candidate.setCandidateEducation(candidateEducationList);
 		
-		HashSet<CandidateEmployers> candidateEmployersList = candidateEmployersService.getCandidateEmployersDetails(jsonObj,orgLocations,candidate,user.getUserCode());
+		HashSet<CandidateEmployers> candidateEmployersList = candidateEmployersService.getCandidateEmployersDetails(candidateDto,orgLocations,candidate,user.getUserCode());
 		candidate.setCandidateEmployers(candidateEmployersList);
 		
-		/*HashSet<CandidateSkills> candidateSkillsList = candidateSkillsService.getCandidateSkillsDetails(jsonObj, orgLocations,candidate,user.getUserCode());
-		candidate.setCandidateSkills(candidateSkillsList);*/
+		HashSet<CandidateSkills> candidateSkillsList = candidateSkillsService.getCandidateSkillsDetails(jsonObj, orgLocations,candidate,user.getUserCode());
+		candidate.setCandidateSkills(candidateSkillsList);
         
-		if(multiFile != null){
-		HashSet<CandidateResumes> candidateResumesList = candidateResumesService.getCandidateResumesDetails(orgLocations,user.getUserCode(),candidate,multiFile);
+		if(fileName != null){
+		HashSet<CandidateResumes> candidateResumesList = candidateResumesService.getCandidateResumesDetails(orgLocations,user.getUserCode(),candidate,fileURL, fileName, contentType);
 		candidate.setCandidateResumes(candidateResumesList);
 		}
-		/*if(multiFile != null){
+		if(multiFile != null){
 			if(multiFile.getOriginalFilename()!=null){
 				candidate.setFileName(multiFile.getOriginalFilename());
 			}
 		}*/
 		
-		if(jsonObj.has("isAssociate") && jsonObj.getString("isAssociate") != null && Constants.YES.equalsIgnoreCase(jsonObj.getString("isAssociate"))){
+		if(candidateDto.getUploadedFileInfo() != null && candidateDto.getUploadedFileInfo().size()>=0){
+			FileInfo fileInfo = candidateDto.getUploadedFileInfo().get(0);
+			HashSet<CandidateResumes> candidateResumesList = candidateResumesService.getCandidateResumesDetails(orgLocations,user.getUserCode(),candidate, fileInfo);
+			candidate.setCandidateResumes(candidateResumesList);
+			
+			if(fileInfo != null){
+					candidate.setFileName(fileInfo.getFileName());
+					FileUploadUtil.moveFile(candidateDto.getStaticPath(), fileInfo, "resumes");
+				}
+			}
+		
+		if(StringUtils.isNotBlank(candidateDto.getIsAssociate()) && Constants.YES.equalsIgnoreCase(candidateDto.getIsAssociate())){
 			candidate.setIsAssociate(Constants.YES);
 		}else{
 			candidate.setIsAssociate(Constants.NO);
@@ -533,7 +551,7 @@ public class CandidateServiceImpl implements CandidateService {
 		/*
 		 * this method is for track candidate activity
 		 */
-		if(jsonObj.has("candidateId") && jsonObj.getString("candidateId") != null && !"".equals(jsonObj.getString("candidateId"))){
+		if(candidateDto.getCandidateId() >0 ){
 			candidateActivityCommonUtil.storeCandidateActivity(user, orgLocations, savedCandidate, "", Constants.CANDIDATE_EDITTED, activitySummary.toString(), "CANDIDATE");
 		}else{
 			candidateActivityCommonUtil.storeCandidateActivity(user, orgLocations, savedCandidate, "", Constants.CANDIDATE_ADDED_MANUALLY, "", "CANDIDATE");
@@ -543,7 +561,7 @@ public class CandidateServiceImpl implements CandidateService {
 		/*
 		 * this method is for inviting candidate to sourcelead
 		 */
-		 if(jsonObj.has("inviteEmail") && null != jsonObj.getString("inviteEmail") && Constants.YES.equalsIgnoreCase(jsonObj.getString("inviteEmail"))){
+		 if(StringUtils.isNotBlank(candidateDto.getInviteEmail()) && Constants.YES.equalsIgnoreCase(candidateDto.getInviteEmail())){
 				inviteCandidateToSourceLead(user,savedCandidate,orgLocations);
 			}
 		
@@ -1150,10 +1168,10 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 			HashSet<CandidateEmployers> candidateEmployersList = candidateEmployersService.getCandidateEmployersDetails(jsonObj,orgLocations,candidate,user.getUserCode());
 			candidate.setCandidateEmployers(candidateEmployersList);
 			
-			if(multiFile != null){
+			/*if(multiFile != null){
 			HashSet<CandidateResumes> candidateResumesList = candidateResumesService.getCandidateResumesDetails(orgLocations,user.getUserCode(),candidate,multiFile);
 			candidate.setCandidateResumes(candidateResumesList);
-			}
+			}*/
 			candidate.setUpdatedBy(user.getUserCode());
 			candidate.setUpdatedDate(commonUtil.currentDate());
 			candidate.setStatus(Constants.CANDIDATE_ACTIVE);

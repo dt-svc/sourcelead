@@ -342,6 +342,7 @@ function addResume(candidateId) {
 	  var result = "";
 	  var resumesCount = 0;
 	  var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
+	  candResumeListDate = "MM-DD-YYYY";
 	  if(locationList.match("yyyy-MM-dd")){
 		  candResumeListDate = 'YYYY-MM-DD';
 	  }if(locationList.match("dd-MM-yyyy")){
@@ -384,6 +385,7 @@ function addResume(candidateId) {
 				             for (var i = 0; i < json.length; i++) {
 				            	 	resumesCount = json.length;
 					            	var opt = json[i];
+					            	console.log(opt);
 					            	var title = "";
 					            	var description = "";
 					            	if(opt.title != null && opt.title != 'undefined' && opt.title != ""){
@@ -416,8 +418,8 @@ function addResume(candidateId) {
 					           		result = result+'<td><div><span>'+createdBy+'</span></div></td>';
 
 									result = result+'<td><div><span>'+candidateResumeUpdateDateToString+'</span></div></td>';
-					           		result = result+'<td><div class="tblicons_4"> <a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadResume?resumeUUID='+opt.resumeUUID+'\"title="Download"></a>';
-					           		result = result+' <a class="fa fa-eye" href="javascript:void(0)" onClick="getCandiResume(\''+opt.resumeUUID+'\',\''+opt.fileName+'\');"title="preview"></a>';
+					           		result = result+'<td><div class="tblicons_4"> <a class="glyphicon glyphicon-download-alt" href=\"'+opt.fileURL+'\" title="Download"></a>';
+					           		result = result+' <a class="fa fa-eye" href="javascript:void(0)" onClick="viewFile(\'${sourceleadUrl}\',\''+opt.fileURL+'\',\''+opt.fileName+'\');"title="preview"></a>';
 		           						          
 					           		if(window.candidateStatusGlobal == 0){
 					           			result = result+'<a class="glyphicon glyphicon-pencil" href="javascript:void(0)"></a>';
@@ -477,26 +479,10 @@ function addResume(candidateId) {
      3.ajax url implementation in CandidateResumeRestController.
 --%>
 <script type="text/javascript">
-function getCandiResume(uuid,title){
+function getCandiResume(fileURL,title){
 	var sourceleadUrl ='${sourceleadUrl}';
-//	 $(".ifraMask").fadeIn(200);
-//	$(".framViePop").show();
-	
-/* 	$.ajax({
-			type : "POST",
-			url : sourceleadUrl+"/viewResume1?${_csrf.parameterName}=${_csrf.token}&resumeUUID="+uuid,
-			success : function(data) {
-				 var doc = document.getElementById('myFrame').contentWindow.document;
-				doc.open();
-				doc.write('Test'+data);
-				doc.close(); 
-				
-			 },
-		});  */ 
-	
-	  var sourceleadUrl ='${sourceleadUrl}';
-	if(uuid != null && uuid != ""){
-		window.open(sourceleadUrl+'/viewResume/'+title+'?resumeUUID='+uuid,title,"height=600,width=600");
+	if(fileURL != null && fileURL != ""){
+		window.open(sourceleadUrl+'/viewDocumentsForCan/'+title+'?docFile='+encodeURI(fileURL),title,"height=600,width=600");
 	}  
 }
 function getIframeDocument(element)

@@ -768,7 +768,7 @@ $(document).ready(function () {
           </div> --%>
           <div class="clearfix"></div>
           <div class="clearfix mb">
-          <label class="col-md-3">Description</label>
+          <label class="col-md-3">Description </label>
           <div class="col-md-12 txtEditor_p">
           <%-- <textarea rows="5" class="form-control" id="bodytext" name="description" value="${requirement.description}" field-name="Description" data-validation="" data-validation-optional="true">${requirement.description}</textarea> --%> 
           <textarea id="txtEditor" name="description" value="${requirement.description}" class="form-control newContrtextarea">${requirement.description}</textarea>

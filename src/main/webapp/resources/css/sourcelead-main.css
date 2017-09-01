@@ -75,9 +75,12 @@ textarea {
 	margin-top: 25px;
 }
 /* Maring Styles ends*/
-
+html, body {
+height: 100%;
+}
 .wraper {
-	min-height: 100%; position: relative; width: 100%; /*overflow: hidden;*/
+	/* min-height: 100%; position: relative; width: 100%; overflow: hidden; */
+    min-height: 100%; height: auto !important; height: 100%; margin: 0 auto -15px;
 }
 .wrapper::before, .wrapper::after {
 	content: " "; display: table;
@@ -551,7 +554,7 @@ height: 35px; width: 35px; float: left; margin-right: 10px; border: 1px solid #3
     transform: rotate(-180deg);
 }
 .user-details {
-background: #3081cb; padding: 15px; position: absolute; line-height: 22px; color: #fff; min-height: 50px; box-shadow: 1px 1px 2px #505050; width: 250px; text-align: center; z-index: 1; top:48px; right:-750px;
+background: #3081cb; padding: 15px; position: absolute; line-height: 22px; color: #fff; min-height: 50px; box-shadow: 1px 1px 2px #505050; width: 250px; text-align: center; z-index: 1; top:48px; right:-2000px;
 transition: all 0.3s linear; -webkit-transition: all 0.3s linear; -moz-transition: all 0.3s linear; -o-transition: all 0.3s linear;
 -ms-transition: all 0.3s linear;
 }
@@ -800,13 +803,9 @@ position: absolute; top: 40%; width: 100%;
 /* upload fiels ends */
 
 /* Footer Styles */
-/* .footer-area {
-background: #fff; clear: both; line-height: 35px; padding: 10px 15px; margin-left: 190px; transition: all ease-in-out 0.2s;
-bottom: 0; height: 45px; right: 0;
-} */
 .footer-area {
-background: #fff; clear: both; line-height: 35px; padding: 10px 15px; margin-left: 190px; transition: all ease-in-out 0.2s;
-bottom: 0; height: 45px; right: 0; position: fixed; width: 88%;
+background: #fff; clear: both; padding: 10px 215px 10px 25px; margin-left: 190px; transition: all ease-in-out 0.2s;
+bottom: 0; height: 45px; right: 0; position: relative; width: 100%; line-height: 25px;
 }
 .footer-area.footer-area-active {
  margin-left: 50px;
@@ -1377,6 +1376,9 @@ overflow: hidden; text-overflow: ellipsis; white-space: nowrap; width: 180px; di
 }
 .tbldata-dotdot-big {
 overflow: hidden; text-overflow: ellipsis; white-space: nowrap; width: 275px; display: block; margin: 0 auto;
+}
+.tbldata-dotdot-verybig {
+overflow: hidden; text-overflow: ellipsis; white-space: nowrap; width: 375px; display: block; margin: 0 auto;
 }
 .tbldata-dotdot_140 {
 	overflow: hidden; text-overflow: ellipsis; white-space: nowrap; width: 140px; display: block; margin: 0 auto;
@@ -5861,7 +5863,7 @@ ul.jobs-360{
     margin-bottom: 0;
 }
 .jobs-360 li {
-text-align: center; font-size: 16px; min-width: 150px; min-width: 15%; padding:0 10px;transition: all 0.3s linear;
+text-align: center; font-size: 15px; min-width: 150px; min-width: 12%; padding:0 10px;transition: all 0.3s linear;
 }
 .jobs-360 li label, .jobscount-360 label{
     margin-bottom: 0;
@@ -6210,9 +6212,84 @@ background-position: center; background-size: 200px; position: relative;top:-8px
 .grid-fil.gridFil {
        right:0;
 }
-.project_inn_mask.projectMask-zindex {
-z-index: 5000;
+.timesheet_head.timesheet_headul-custom ul li {
+	margin: 0; top:8px;
 }
+.taskview_wrapinn {
+    padding: 10px; background: #fff; margin: 0px; border: 1px solid #ddd; border-radius: 3px;
+}
+.select-loader{
+	background-color: #cecece; min-height: 30px; width: 100%; line-height: 30px; border-radius:3px;
+	position: relative;
+}
+.select-loader span.pull-right{
+	line-height: 30px; color:#101010; padding-right: 10px;
+}
+.select-loader select, select.sel {
+    width:100%;  height:30px; padding:0px 10px; -webkit-border-radius:3px; -moz-border-radius:3px; -ms-border-radius:3px; border-radius:3px; box-sizing:border-box; -webkit-appearance:none; -moz-appearance:none; appearance:none;
+    background: #cecece url("../images/arrow-d-g.png") no-repeat 95% center;background-size: 10px; border:transparent; color:#101010;
+}
+.select-loader select {
+	width: 65%;
+}
+.select-loader select option {
+	padding:2px 10px;
+}
+.select-loader select::-ms-expand {
+  display:none;
+}
+ .select-loader .faSpin {
+ color:#f60; position: absolute;right: 10px; top:8px;
+ }
+ .alert-custom .alert {
+ padding: 5px 0px; margin-bottom: 10px;
+ }
+  .alert-custom label{
+  margin-bottom: 0
+  }
+ .saveBtn .save-btn {
+ position: absolute; top:18px; right: 25px;
+ }
+/* task styles */
+ .media.activities-projecttask {
+ margin-top: 5px;
+ }
+ .media.activities-projecttask h5{
+ margin-bottom: 0px;
+ }
+  .media.activities-projecttask .tbldata-dotdot-big {
+  width: 450px;
+  }
+  .media.activities-projecttask .description-task {
+  min-height: 20px; max-height: 100px; overflow-y:auto;
+  }
+  .projecttask-div {
+  min-height: 100px; max-height: 550px; overflow-y:auto;
+  }
+  .taskheaader-inlineedit {
+  padding: 5px 15px; min-height: 30px;
+  }
+  .bg-success.taskheaader-inlineedit {
+  border-radius:3px; background-color: #eee; border: 1px solid #ccc;
+  }
+  .taskheaader-inlineedit .fa {
+  font-size:1.5em; color:#909090;position: relative;top:5px; cursor: pointer;
+  }
+  .taskheaader-inlineedit input[type="text"] {
+  font-size: 17px; font-weight: 500px !important; height: 30px;
+  }
+  .taskheaader-inlineedit .formcontrol-edit {
+  float:left; width:94%; border: none; background: transparent; box-shadow: none;
+  }
+  .editicon {
+  float:right; padding-right:10px; cursor: pointer; display: none;
+  }
+  .edit-inputfield:hover .editicon{
+  display: block;
+  }
+  .project_inn_mask.projectMask-zindex {
+    z-index: 5000;
+   }
 /* Questionay styles */
 .questionaryHeader h2{
     font-size: 18px;
@@ -6248,6 +6325,149 @@ z-index: 5000;
 }
 .remove_user_pop.terminate-popup {
     position: absolute !important; right: 30px;
+}
+.generateButtons a:hover{
+    text-decoration: underline;
+}
+.OverdueWorkItems table tr {
+    border-bottom: 1px solid #ededed; border-radius: 0 0 0 0 !important;
+}
+.OverdueWorkItems table tr td {
+    padding: 5px 5px;
+}
+.OverdueWorkItems table tr td img{
+    margin: 0 auto;
+}
+.OverdueWorkItems table tr td .fa {
+  border: 1px solid #909090; padding: 0; border-radius: 3px; width: 25px; height: 25px; line-height: 22px; text-align: center;
+}
+.payrollValue {
+ margin-top: 10px; text-align: right; padding: 5px 15px 5px 5px;
+}
+.payrollCount {
+    font-size: 26px; font-weight: 100;margin-top: 25%;
+}
+.payrollValue label{
+    font-size: 26px; font-weight: 100;
+}
+.payrollValue small{
+    font-size: 14px; font-weight: 400; color: #5a5858;
+}
+.amchartAnchor-Hide a {
+    display: none !important;
+}
+.imgpayroll {
+    padding: 10px; border: 1px solid #ededed;  margin-bottom: 15px; border-radius:5px;
+    -moz-border-radius:5px; -webkit-border-radius:5px; -o-border-radius:5px;
+}
+.billableValues {
+    font-size: 16px; margin-top: 50%;
+}
+.billableValues label{
+    font-weight: 600; font-size: 14px; margin-bottom: 10px;
+}
+.workstatus-titles h5{
+    margin: 0; text-align: center; font-size: 16px; margin-bottom: 15px;
+}
+.workstatus-titles .amcharts-legend-div {
+    top: 0px !important;
+}
+.workstatus-titles ul li.status-priority{
+    float: left; padding: 2px 5px;
+}
+.workstatus-titles ul li.status-priority label{
+    margin: 0;
+}
+.projectGraph {
+    padding: 10px 5px; border-radius: 3px; -webkit-box-shadow: 0px 0px 3px #707070; -moz-box-shadow: 0px 0px 3px #707070;
+    box-shadow: 0px 0px 3px #707070;
+}
+.projectgraph-inner {
+    padding: 0 15px;
+    
+}
+.activities-widget {
+background: #f5f5f5; border-radius: 5px; min-height:100px;
+-webkit-box-shadow: 0px 0px 3px #707070; -moz-box-shadow: 0px 0px 3px #707070;
+box-shadow: 0px 0px 3px #707070;  padding: 10px 15px; position: relative; box-sizing: border-box; width: 100%;
+}
+.activitieswidget-inner {
+    height: 350px;
+}
+.activitieswidget-inner .media {
+    width: 100% !important; border-bottom: 1px dotted #909090;
+}
+.table-payroll .table thead, .table-payroll .table tfoot{
+    background: #e0f2f1 !important; 
+}
+.table-payroll .table tr td, .table-payroll .table tr th {
+    text-align: left; border-top:none;
+}
+.table-payroll .table thead tr th, .table-payroll .table tbody tr th {
+    border-bottom: none; font-weight: normal; color: #101010;
+}
+.table-payroll .table tfoot tr {
+    color: #101010;
+}
+.table-payroll .table tbody tr:nth-child(even){
+    background-color: #e3f2fd; color: #101010;
+    }
+.table-payroll .table tbody tr:nth-child(odd) {
+    background-color: #bbdefb; color: #101010;
+}
+/* jQuery UI Tooltip */ 
+.ui-tooltip {
+    min-width: 80px; text-align: center; padding: 0; opacity: 1;border:none !important; box-shadow: 1px 1px 2px #909090 !important;
+}
+.ui-tooltip-content {
+    position: relative; padding: 0.3em 0.5em; background-color: #f5f5f5; border:1px solid #909090 !important; border-radius: 2px !important;
+    font-size: 13px; 
+    }
+.ui-tooltip-content::after, .ui-tooltip-content::before {
+    content: ""; position: absolute; border-style: solid; display: block; right:15px;
+}
+.bottom .ui-tooltip-content::before {
+    bottom: -10px; border-color: #AAA transparent; border-width: 10px 10px 0;
+}
+.bottom .ui-tooltip-content::after {
+    bottom: -7px; border-color: #f5f5f5 transparent; border-width: 10px 10px 0;
+}
+.top .ui-tooltip-content::before {
+    top: -10px; border-color: #AAA transparent; border-width: 0 10px 10px;
+}
+.top .ui-tooltip-content::after {
+    top: -7px; border-color: #f5f5f5 transparent; border-width: 0 10px 10px;
+}
+.usageGrid {
+    border: 1px solid #9fa8da; background: #e8eaf6; position: relative;
+}
+.usageGrid:after{
+    content: ""; position: absolute; border-style: solid; display: block; right:0px;
+    bottom: -15px; border-color: #9fa8da transparent; border-width:15px;
+    border-bottom: 10px; right: 40%;
+}
+/* jQuery UI Tooltip Ends */
+.userlistGrid {
+    border: 1px solid #9fa8da; border-radius: 3px; margin: 0 5px; top: -7px;
+}
+.userlistGrid strong{
+    color: #3f51b5; font-size: 15px;
+}
+.show-multiple .multiple-div {
+    border: 1px solid #ddd; padding:5px 10px; min-width: 125px;
+    position: fixed; z-index: 9; top: 50%; right: 20%; background: #eeeeee; box-shadow: 1px 1px 3px #505050;
+    display: none; transition: all 0.3s ease-in-out;
+}
+.show-multiple .multiple-div p{
+    margin-bottom: 2px;
+}
+.show-multiple:hover .multiple-div {
+    display: block;
+}
+.multiple-div:after{
+    content: ""; position: absolute; border-style: solid; display: block; right: 0px;
+    bottom: -15px; border-color: #eeeeee transparent; border-width:15px;
+    border-bottom: 10px; right: 40%;
 }
 /* media 320px */
 @media (max-width: 320px) {
