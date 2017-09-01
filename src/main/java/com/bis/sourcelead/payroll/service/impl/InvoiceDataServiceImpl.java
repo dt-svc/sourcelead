@@ -251,6 +251,7 @@ public class InvoiceDataServiceImpl implements InvoiceDataService{
 	public ResponseList<InvoiceData> getInvoiceDetails(InvoiceDetailsDTO invoiceDetailsDTO, Long orgLocationId) throws Exception {
 		return invoiceDataDao.getInvoiceDetails(invoiceDetailsDTO, orgLocationId);
 
+		// TODO do not delete @Rajashekar
 		/*List<InvoiceData> invoiceDataList = invoiceDataDao.getInvoiceDetails(userId, orgLocationId);
 		
 		for (InvoiceData invoiceData : invoiceDataList) {
