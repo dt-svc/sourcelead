@@ -306,7 +306,7 @@ function wagesAndTaxListRajashekar(){
 									result = result + ' <td><div>--</div></td>';
 								}
 								result = result + '<td><div class="tblminwidth-75">'+opt.employeeId+'</div></td>';
-								result = result + '<td><div class="tbldata-dotdot-vsm">'+opt.employeeName+'</div></td>';
+								result = result + '<td><div class="tbldata-dotdot-vsm" title="'+opt.employeeName+'">'+opt.employeeName+'</div></td>';
 								if(opt.ssnNumber !=null && opt.ssnNumber !='' && opt.ssnNumber !='undefined'){
 									result = result + ' <td><div class="tbldata-dotdot-sm"">'+opt.ssnNumber+'</div></td>';
 								}else{
