@@ -172,6 +172,13 @@ private static final long serialVersionUID = 1L;
 	@Column(name = "UPDATED_BY")
 	private String updatedBy;
 	
+	@Column(name = "PAYMENT_TYPE")
+	private String paymentType;
+	
+	
+	@Column(name = "PAYMENT_MODE")
+	private String paymentMode;
+	
 	@Transient
 	private String joiningDateStr;
 	
@@ -695,4 +702,26 @@ private static final long serialVersionUID = 1L;
 	public void setEmploymentOtherType(String employmentOtherType) {
 		this.employmentOtherType = employmentOtherType;
 	}
+
+	public String getPaymentType()
+	{
+		return paymentType;
+	}
+
+	public void setPaymentType(String paymentType)
+	{
+		this.paymentType = paymentType;
+	}
+
+	public String getPaymentMode()
+	{
+		return paymentMode;
+	}
+
+	public void setPaymentMode(String paymentMode)
+	{
+		this.paymentMode = paymentMode;
+	}
+	
+	
 }

@@ -30,6 +30,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.bis.sourcelead.dto.EmployeeListDTO;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.payroll.dao.BisUserMappingDao;
@@ -382,8 +384,8 @@ public class BisUserMappingServiceImpl implements BisUserMappingService {
 	}
 
 	@Override
-	public List<BisUserMapping> getEmployeeList(Long orgLocationId) throws Exception {
-		return bisUserMappingDao.getEmployeeList(orgLocationId);
+	public ResponseList<BisUserMapping> getEmployeeList(EmployeeListDTO employeeListDTO,Long orgLocationId) throws Exception {
+		return bisUserMappingDao.getEmployeeList(employeeListDTO,orgLocationId);
 	}
 
 	@Override

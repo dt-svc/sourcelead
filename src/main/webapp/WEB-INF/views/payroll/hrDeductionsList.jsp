@@ -55,7 +55,7 @@ function hrDeductionsList(){
 								}
 								
 								if(opt.dedAmount !=null && opt.dedAmount !='' && opt.dedAmount !='undefined'){
-									result = result + ' <td><div class="tblminwidth-75">'+opt.dedAmount+'</div></td>';
+									result = result + ' <td><div class="tblminwidth-75"><i class="fa fa-dollar"style="color:#454545;"></i> '+opt.dedAmount.toFixed(2)+'</div></td>';
 								}else{
 									result = result + ' <td><div class="tblminwidth-75">--</div></td>';
 								}

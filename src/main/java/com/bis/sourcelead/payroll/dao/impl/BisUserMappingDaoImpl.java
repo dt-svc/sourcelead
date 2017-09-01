@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.json.JSONObject;
@@ -14,6 +15,8 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.bis.sourcelead.dto.EmployeeListDTO;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.payroll.dao.BisUserMappingDao;
@@ -100,8 +103,66 @@ public class BisUserMappingDaoImpl implements BisUserMappingDao {
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public List<BisUserMapping> getEmployeeList(Long orgLocationId) throws Exception {
+	public ResponseList<BisUserMapping> getEmployeeList(EmployeeListDTO employeeListDTO,Long orgLocationId) throws Exception {
+		
 		Session session = this.sessionFactory.getCurrentSession();
+		List<BisUserMapping> employeesList = null;
+		ResponseList<BisUserMapping> response = new ResponseList<>();
+		String query = "from BisUserMapping bis  left join fetch bis.orgLocationId where bis.orgLocationId.id =:orgLocationId";
+		String countQuery = "from BisUserMapping bis  where bis.orgLocationId.id =:orgLocationId";
+		
+		StringBuilder query1 = new StringBuilder("");
+			if(employeeListDTO.getSearchValue() !=null && !"".equalsIgnoreCase(employeeListDTO.getSearchValue())) {
+			query1.append(" and bis.company like '%" + employeeListDTO.getSearchValue() + "%' ")
+					.append("OR bis.branch like '%" + employeeListDTO.getSearchValue() + "%' ")
+					.append("OR bis.empId like '%" + employeeListDTO.getSearchValue() + "%' ")
+					.append("OR bis.candidateName like '%" + employeeListDTO.getSearchValue() + "%' ")
+					.append("OR bis.rate like '%" + employeeListDTO.getSearchValue() + "%' ")
+					.append("OR bis.fixedRate like '%" + employeeListDTO.getSearchValue() + "%' ")
+					.append("OR bis.payRate like '%" + employeeListDTO.getSearchValue() + "%' ")
+					.append("OR bis.fixedPay like '%" + employeeListDTO.getSearchValue() + "%' ")
+					.append("OR bis.insurance like '%" + employeeListDTO.getSearchValue() + "%' ")
+					.append("OR bis.ded like '%" + employeeListDTO.getSearchValue() + "%' ")
+					.append("OR bis.effectiveRate like '%" + employeeListDTO.getSearchValue() + "%' ")
+					.append("OR bis.payrollDifference like '%" + employeeListDTO.getSearchValue() + "%' ")
+					.append("OR bis.immigration like '%" + employeeListDTO.getSearchValue() + "%' ")
+					.append("OR bis.comments like '%" + employeeListDTO.getSearchValue() + "%' ")
+					.append("OR bis.advanceHcp like '%" + employeeListDTO.getSearchValue() + "%' ")
+					.append("OR bis.balance like '%" + employeeListDTO.getSearchValue() + "%' ");
+						
+			}
+		Query queryObj = session.createQuery(query + query1.toString());
+		if (employeeListDTO != null && employeeListDTO.getLength() > 0) {
+			queryObj.setFirstResult(employeeListDTO.getStart());
+			queryObj.setMaxResults(employeeListDTO.getLength());
+			queryObj.setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+		}
+		employeesList = queryObj.list();
+		int count = 0;
+		int filteredCount = 0;
+		List<Long> countlist = session.createQuery("select count(*) " + countQuery).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+		if(countlist != null && !countlist.isEmpty()) {
+			count = countlist.iterator().next().intValue();
+		}
+		response.setRecordsTotal(count);
+		if (employeeListDTO != null) {
+			List<Long> filteredCountlist  = session.createQuery("select count(*) " + countQuery + query1.toString()).setLong("orgLocationId", orgLocationId).list();
+			if(filteredCountlist != null && !filteredCountlist.isEmpty()) {
+				filteredCount = filteredCountlist.iterator().next().intValue();
+			}
+			response.setRecordsFiltered(filteredCount);
+		} else {
+			response.setRecordsFiltered(filteredCount);
+		}
+
+		if (employeesList != null && employeesList.size() > 0) {
+			response.setData(employeesList);
+		}
+		return response;
+		
+		// TODO do not delete @Rajashekar
+		
+		/*Session session = this.sessionFactory.getCurrentSession();
 		List<BisUserMapping> bisUserList = null;
 		String query = "from BisUserMapping bisUser  left join fetch bisUser.orgLocationId where bisUser.orgLocationId.id =:orgLocationId";
 		bisUserList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
@@ -109,7 +170,7 @@ public class BisUserMappingDaoImpl implements BisUserMappingDao {
 		{
 			return bisUserList;
 		}
-		return bisUserList;
+		return bisUserList;*/
 	}
 
 	@Override
