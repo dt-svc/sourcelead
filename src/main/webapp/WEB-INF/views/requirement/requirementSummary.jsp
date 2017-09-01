@@ -2928,14 +2928,14 @@ function requirementPipelineSC(requirementId,submissionType){
 							           }else{
 							        	   if(report.proposedSubmissionRate != null && report.proposedSubmissionRate != '' && report.proposedSubmissionRate != 'undefined'){
 												'<sec:authorize access="hasAnyRole(\'ROLE_RATE_NEGOTIATION\')">';
-														result = result + '         <td><div><span class="showRate '+colorHint+'" onclick="getRateListDiv('+report.id+','+report.candidateId+');">'+report.proposedSubmissionRate+'</span><i class="ratepop rate_pop" id="ratepop"></div></td>';
+														result = result + '         <td><div><span class="showRate '+colorHint+'" onclick="getRateListDiv('+report.clientSubmissionId+','+report.candidateId+');">'+report.proposedSubmissionRate+'</span><i class="ratepop rate_pop" id="ratepop"></div></td>';
 								        		   '</sec:authorize>';
 													'<sec:authorize access="!hasAnyRole(\'ROLE_RATE_NEGOTIATION\')">';
 														result = result + '         <td><div><span class="showRate '+colorHint+'">'+report.proposedSubmissionRate+'</span><i class="ratepop rate_pop" id="ratepop"></div></td>';
 								        		   '</sec:authorize>';
 							        	   }else{
 							        		   '<sec:authorize access="hasAnyRole(\'ROLE_RATE_NEGOTIATION\')">';
-														result = result + '         <td><div><span class="showRate '+colorHint+'" onclick="getRateListDiv('+report.id+','+report.candidateId+');"><i class="glyphicon fa fa-money"></i></span><i class="ratepop rate_pop" id="ratepop"></div></td>';
+														result = result + '         <td><div><span class="showRate '+colorHint+'" onclick="getRateListDiv('+report.clientSubmissionId+','+report.candidateId+');"><i class="glyphicon fa fa-money"></i></span><i class="ratepop rate_pop" id="ratepop"></div></td>';
 								        		   '</sec:authorize>';
 													'<sec:authorize access="!hasAnyRole(\'ROLE_RATE_NEGOTIATION\')">';
 														result = result + '         <td><div><span class="showRate '+colorHint+'"><i class="glyphicon fa fa-money"></i></span><i class="ratepop rate_pop" id="ratepop"></div></td>';
