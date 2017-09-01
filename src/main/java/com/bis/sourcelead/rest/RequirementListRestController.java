@@ -1493,6 +1493,63 @@ public class RequirementListRestController {
 				}
 			}
 		}
+		
+		if(userRole != null&& !("ROLE_ADMIN".equalsIgnoreCase(userRole) || "ROLE_SOURCELEAD_ADMIN".equalsIgnoreCase(userRole))){
+			BoolQueryBuilder assignedBoolQueryBuilder = QueryBuilders.boolQuery();
+			//releaseJob To AllUsers
+			BoolQueryBuilder releaseJobToAllUsersQueryBuilder = QueryBuilders.boolQuery();
+			releaseJobToAllUsersQueryBuilder.must(QueryBuilders.matchQuery("releaseJobToAllUsers", "Y"));
+			releaseJobToAllUsersQueryBuilder.mustNot(QueryBuilders.matchQuery("requirementStatus", "DRAFT"));
+			releaseJobToAllUsersQueryBuilder.mustNot(QueryBuilders.matchQuery("requirementStatus", "SUBMITTED"));
+			releaseJobToAllUsersQueryBuilder.mustNot(QueryBuilders.matchQuery("requirementStatus", "REJECTED"));
+			assignedBoolQueryBuilder.should(releaseJobToAllUsersQueryBuilder);
+			
+			//Created By User
+			BoolQueryBuilder createdByQueryBuilder = QueryBuilders.boolQuery();
+			createdByQueryBuilder.must(QueryBuilders.termQuery("reqCreatedBy",user.getId().toString()));
+			assignedBoolQueryBuilder.should(createdByQueryBuilder);
+			
+			//For Level1 Approver
+			BoolQueryBuilder reqLevel1ApproverUserIdQueryBuilder = QueryBuilders.boolQuery();
+			reqLevel1ApproverUserIdQueryBuilder.must(QueryBuilders.termQuery("reqLevel1ApproverUserId", user.getId().toString()));
+			reqLevel1ApproverUserIdQueryBuilder.mustNot(QueryBuilders.matchQuery("requirementStatus", "DRAFT"));
+			assignedBoolQueryBuilder.should(reqLevel1ApproverUserIdQueryBuilder);
+			
+			
+			//For Level2 Approver
+			BoolQueryBuilder reqLevel2ApproverUserIdQueryBuilder = QueryBuilders.boolQuery();
+			reqLevel2ApproverUserIdQueryBuilder.must(QueryBuilders.termQuery("reqLevel2ApproverUserId", user.getId().toString()));
+			reqLevel2ApproverUserIdQueryBuilder.mustNot(QueryBuilders.matchQuery("requirementStatus", "DRAFT"));
+			reqLevel2ApproverUserIdQueryBuilder.must(QueryBuilders.matchQuery("reqLevel1ApproverStatus", "APPROVED"));
+			assignedBoolQueryBuilder.should(reqLevel2ApproverUserIdQueryBuilder);
+			
+			//For Requirement Manager
+			BoolQueryBuilder reqManagerUserIdQueryBuilder = QueryBuilders.boolQuery();
+			reqManagerUserIdQueryBuilder.must(QueryBuilders.termQuery("managerUserId",user.getId().toString()));
+			reqManagerUserIdQueryBuilder.mustNot(QueryBuilders.matchQuery("requirementStatus", "DRAFT"));
+			assignedBoolQueryBuilder.should(reqManagerUserIdQueryBuilder);
+			
+			//For Team Owner
+			BoolQueryBuilder teamOwnerQueryBuilder = QueryBuilders.boolQuery();
+			teamOwnerQueryBuilder.must(QueryBuilders.termQuery("teamOwnerUserId", user.getId().toString()));
+			teamOwnerQueryBuilder.mustNot(QueryBuilders.matchQuery("requirementStatus", "DRAFT"));
+			teamOwnerQueryBuilder.mustNot(QueryBuilders.matchQuery("requirementStatus", "REJECTED"));
+			assignedBoolQueryBuilder.should(teamOwnerQueryBuilder);
+			
+			//For Team AssignedUser
+			BoolQueryBuilder teamAssignedUserQueryBuilder = QueryBuilders.boolQuery();
+			teamAssignedUserQueryBuilder.must(QueryBuilders.termQuery("teamAssignUserId", user.getId().toString()));
+			teamAssignedUserQueryBuilder.mustNot(QueryBuilders.matchQuery("requirementStatus", "DRAFT"));
+			teamAssignedUserQueryBuilder.mustNot(QueryBuilders.matchQuery("requirementStatus", "SUBMITTED"));
+			teamAssignedUserQueryBuilder.mustNot(QueryBuilders.matchQuery("requirementStatus", "REJECTED"));
+			assignedBoolQueryBuilder.should(teamAssignedUserQueryBuilder);
+			
+			
+			boolQueryBuilder.must(assignedBoolQueryBuilder);
+			boolQueryBuilderForCount.must(assignedBoolQueryBuilder);
+		}
+		
+		//boolQueryBuilder.must(QueryBuilders.termQuery("reqLevel1ApproverUserId", "323"));
 			
 		SearchResponse searchResponse = sourceleadELKBaseIndexer
 				.searchDocumentWithMaxResults(Constants.ELK_REQUIREMENT_INDEX, Constants.ELK_REQUIREMENT_TYPE,
@@ -1505,43 +1562,8 @@ public class RequirementListRestController {
 				String sourceAsString = hit.getSourceAsString();
 				ObjectMapper mapper = new ObjectMapper();
 				if (sourceAsString != null) {
-					Requirement requirement = null;
 					RequirementIndex requirementIndex = mapper.readValue(sourceAsString, RequirementIndex.class);
-	            	if(userRole != null&&( "ROLE_ADMIN".equalsIgnoreCase(userRole) || "ROLE_SOURCELEAD_ADMIN".equalsIgnoreCase(userRole))){
-	            		requirement = getData(requirementIndex,user,orgLocation);
-	            	}
-	            	else if(requirementIndex.getReqCreatedBy().equals(user.getId()) && requirementIndex.getIsTemplate()!=null && requirementIndex.getIsTemplate().equalsIgnoreCase("Y"))
-	            	{
-	            		requirement = getData(requirementIndex,user,orgLocation);
-	            	}
-	            	
-	            	else if((requirementIndex.getReqLevel1ApproverUserId()!=null&&Arrays.asList(requirementIndex.getReqLevel1ApproverUserId()).contains(user.getId().toString())&&!"DRAFT".equalsIgnoreCase(requirementIndex.getRequirementStatus()))
-	            			||((requirementIndex.getReqLevel1ApproverUserId()!=null&&Arrays.asList(requirementIndex.getReqLevel1ApproverUserId()).contains(user.getId().toString()))
-	            			&& ("APPROVED".equalsIgnoreCase(requirementIndex.getReqLevel1ApproverStatus()) || "OPEN".equalsIgnoreCase(requirementIndex.getRequirementStatus()) || "SUBMITTED".equalsIgnoreCase(requirementIndex.getRequirementStatus()))
-	            			)){
-	            		requirement = getData(requirementIndex,user,orgLocation);
-	            	}
-	            	else if(requirementIndex.getReqLevel2ApproverUserId()!=null&&Arrays.asList(requirementIndex.getReqLevel2ApproverUserId()).contains(user.getId().toString())&&!"DRAFT".equalsIgnoreCase(requirementIndex.getRequirementStatus())
-	            			&&(requirementIndex.getReqLevel1ApproverUserId()!=null&&Arrays.asList(requirementIndex.getReqLevel1ApproverUserId()).contains(user.getId().toString())&&"APPROVED".equalsIgnoreCase(requirementIndex.getReqLevel2ApproverStatus()))
-	            			|| (requirementIndex.getReqLevel1ApproverUserId()!=null&&Arrays.asList(requirementIndex.getReqLevel1ApproverUserId()).contains(user.getId().toString())
-	            			&&("APPROVED".equalsIgnoreCase(requirementIndex.getReqLevel2ApproverStatus())||"OPEN".equalsIgnoreCase(requirementIndex.getRequirementStatus()) || "SUBMITTED".equalsIgnoreCase(requirementIndex.getRequirementStatus()))
-	            			)){
-	            		requirement = getData(requirementIndex,user,orgLocation);
-	            	}
-	            	
-	            	else if(requirementIndex.getManagerUserId().equalsIgnoreCase(user.getId().toString())&&!"DRAFT".equalsIgnoreCase(requirementIndex.getRequirementStatus())&&!"SUBMITTED".equalsIgnoreCase(requirementIndex.getRequirementStatus())){
-	            		requirement = getData(requirementIndex,user,orgLocation);
-	            	}
-	            	
-	            	else if(requirementIndex.getTeamOwnerUserId()!=null&&Arrays.asList(requirementIndex.getTeamOwnerUserId()).contains(user.getId().toString())&&!"DRAFT".equalsIgnoreCase(requirementIndex.getRequirementStatus())&&!"SUBMITTED".equalsIgnoreCase(requirementIndex.getRequirementStatus())){
-	            		requirement = getData(requirementIndex,user,orgLocation);
-	            	}
-	            	else if(requirementIndex.getTeamAssignUserId()!=null&&Arrays.asList(requirementIndex.getTeamAssignUserId()).contains(user.getId().toString())&&!"DRAFT".equalsIgnoreCase(requirementIndex.getRequirementStatus())){
-	            		//&&!"SUBMITTED".equalsIgnoreCase(requirementIndex.getRequirementStatus())
-	            		requirement = getData(requirementIndex,user,orgLocation);
-	            	}
-	            	
-	            	
+					Requirement	requirement = getData(requirementIndex,user,orgLocation);
 	            	if(requirement !=null){
 	            		reqList.add(requirement);
 	            	}
