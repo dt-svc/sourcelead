@@ -26,6 +26,7 @@ import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.util.CandidateActivityCommonUtil;
 import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.util.FileUploadUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 
 /**
@@ -103,6 +104,10 @@ public class CandidateResumesServiceImpl implements CandidateResumesService {
 				candidateResume.setFileURL(fileInfo.getFileURL());
 				candidateResume.setFileName(fileInfo.getFileName());
 				candidateResume.setFileContentType(fileInfo.getContentType());
+				if(fileInfo != null){
+					candidate.setFileName(fileInfo.getFileName());
+					FileUploadUtil.moveFile(candidateResumeDTO.getStaticPath(), fileInfo, "resumes");
+				}
 			}
 		}
 		else {
@@ -137,6 +142,10 @@ public class CandidateResumesServiceImpl implements CandidateResumesService {
 				candidateResume.setFileURL(info.getFileURL());
 				candidateResume.setFileName(info.getFileName());
 				candidateResume.setFileContentType(info.getContentType());
+				if(info != null){
+					candidate.setFileName(info.getFileName());
+					FileUploadUtil.moveFile(candidateResumeDTO.getStaticPath(), info, "resumes");
+				}
 			}
 		}
 		candidateResumesDao.updateCandidateResume(candidateResume);
