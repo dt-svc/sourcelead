@@ -8,6 +8,7 @@ import java.util.Set;
 
 import org.json.JSONObject;
 
+import com.bis.sourcelead.dto.ProjectsDTO;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.Projects;
@@ -83,7 +84,7 @@ public interface ProjectsService {
 		 
 		ProjectMembers getProjectEmployeeListByProjectId(Long projectId) throws Exception ;
 		
-		Projects  storeProject(JSONObject jsonObj,List<ProjectDocumentBO> projectDocuments) throws Exception;
+		Projects  storeProject(ProjectsDTO projectsDTO) throws Exception;
 
 //		void userEmailNotificationForTimeSheetSubmissionToManagers(Map<UserRole, HashSet<TimesheetSubmissions>> timesheetSubmissionsMap, int level)throws Exception;
 //

@@ -486,8 +486,8 @@ public class CandidateServiceImpl implements CandidateService {
 		if(candidateDto.getVendors() != null ){
 			OrgRelations orgRelation = orgRelationsService.getOrRelationsById(candidateDto.getVendors());
 			candidate.setOrgRelationId(orgRelation);
-			Candidate vendorCandidate = commonUtil.getVendorCandidate(jsonObj, orgRelation, orgLocations, user);
-			candidate.setParentCandidateId(vendorCandidate);
+			/*Candidate vendorCandidate = commonUtil.getVendorCandidate(jsonObj, orgRelation, orgLocations, user);
+			candidate.setParentCandidateId(vendorCandidate);*/
 			
 		}else{
 			candidate.setOrgRelationId(null);

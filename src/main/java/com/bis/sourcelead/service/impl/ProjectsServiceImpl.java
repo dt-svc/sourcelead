@@ -37,6 +37,8 @@ import com.bis.sourcelead.SourceleadPasswordEncoder;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.ProjectApproverHierarchyDao;
 import com.bis.sourcelead.dao.ProjectsDao;
+import com.bis.sourcelead.dto.FileInfo;
+import com.bis.sourcelead.dto.ProjectsDTO;
 import com.bis.sourcelead.elk.index.ProjectsIndex;
 import com.bis.sourcelead.elk.index.helper.ProjectsIndexHelper;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
@@ -51,6 +53,7 @@ import com.bis.sourcelead.entity.ProjectClients;
 import com.bis.sourcelead.entity.ProjectDocuments;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.ProjectMembersHistory;
+import com.bis.sourcelead.entity.ProjectTaskDocuments;
 import com.bis.sourcelead.entity.ProjectTasks;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.Roles;
@@ -78,6 +81,7 @@ import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
+import com.bis.sourcelead.util.FileUploadUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.bis.sourcelead.util.UniversalSearchHelper;
@@ -322,7 +326,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 	 */
 	
 	@Override
-	public Projects storeProject(JSONObject jsonObj, List<ProjectDocumentBO> projectDocumentBOList) throws Exception {
+	public Projects storeProject(ProjectsDTO projectsDTO) throws Exception {
 		    
 		  
 	 	OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
@@ -330,99 +334,112 @@ public class ProjectsServiceImpl implements ProjectsService{
 	 	String loginOrgCode = (String) SourceLeadSessionManager.getSessionAttribute(request, "orgCode");
         
 	 	Projects projects = null;
-	 	if(jsonObj.has("projectId") && !isNullOrEmpty(jsonObj.getString("projectId"))){
-	 		projects =  projectsDao.getProjectById(Long.parseLong(jsonObj.getString("projectId")));
+	 	if(!isNullOrEmpty(projectsDTO.getProjectId())){
+	 		projects =  projectsDao.getProjectById(Long.parseLong(projectsDTO.getProjectId()));
 	 	}else{
 	 		projects =  new Projects();
-	 		projects.setProjectSequeneNumber(jsonObj.getString("ProjectSequeneNumber").trim());
+	 		projects.setProjectSequeneNumber(projectsDTO.getProjectSequeneNumber().trim());
 	 		projects.setProjectUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 	 	}
     	
-    	projects.setProjectName(jsonObj.getString("ProjectName").trim());
+    	projects.setProjectName(projectsDTO.getProjectName().trim());
     	
     	
-    	if((jsonObj.has("ProjectDescription"))){
-    	projects.setDescription(jsonObj.getString("ProjectDescription"));
+    	if(!isNullOrEmpty(projectsDTO.getProjectDescription())){
+    	projects.setDescription(projectsDTO.getProjectDescription());
     	}
-    	if(jsonObj.getString("StartDate") != null && jsonObj.getString("StartDate") != "" && jsonObj.getString("StartDate") != "undefined"){
-    		Date startDate = commonUtil.orgLocationDateFormat(loginOrgLocation.getDateFormat(),jsonObj.getString("StartDate"));
+    	if(!isNullOrEmpty(projectsDTO.getStartDate())){
+    		Date startDate = commonUtil.orgLocationDateFormat(loginOrgLocation.getDateFormat(),projectsDTO.getStartDate());
 	    	projects.setStartDate(startDate);
     	}
-    	if(!jsonObj.getString("EndDate").isEmpty()){
-    		Date endDate = commonUtil.orgLocationDateFormat(loginOrgLocation.getDateFormat(),jsonObj.getString("EndDate"));
+    	if(!isNullOrEmpty(projectsDTO.getEndDate())){
+    		Date endDate = commonUtil.orgLocationDateFormat(loginOrgLocation.getDateFormat(),projectsDTO.getEndDate());
 	    	projects.setEndDate(endDate);
     	}
     	
     	
-		if(jsonObj.has("invoiceFrequency") && jsonObj.getString("invoiceFrequency") != null && !"".equalsIgnoreCase(jsonObj.getString("invoiceFrequency"))){
-			projects.setInvoiceFrequency(jsonObj.getString("invoiceFrequency"));
+		if(!isNullOrEmpty(projectsDTO.getInvoiceFrequency())){
+			projects.setInvoiceFrequency(projectsDTO.getInvoiceFrequency());
 	    }else{
 	    	projects.setInvoiceFrequency(Constants.WEEKLY);
 	    }
-		if(jsonObj.has("timeSheetFrequency") && StringUtils.isNotEmpty(jsonObj.getString("timeSheetFrequency"))){
-			projects.setTimesheetFrequency(jsonObj.getString("timeSheetFrequency"));
+		
+		if(!isNullOrEmpty(projectsDTO.getTimeSheetFrequency())){
+			projects.setTimesheetFrequency(projectsDTO.getTimeSheetFrequency());
 		}
 		
-		if(jsonObj.has("EstimatedHours") && StringUtils.isNotEmpty(jsonObj.getString("EstimatedHours"))){
-			projects.setEstimatedHours(jsonObj.getDouble("EstimatedHours"));
-		}
-		if(jsonObj.has("EstimatedBudget") && StringUtils.isNotEmpty(jsonObj.getString("EstimatedBudget"))){
-			projects.setEstimatedBudget(jsonObj.getDouble("EstimatedBudget"));
-		}
 		
-		if(jsonObj.has("isAllowFreelanceDevelopers") && StringUtils.isNotEmpty(jsonObj.getString("isAllowFreelanceDevelopers"))){
-			projects.setAllowFreeLance(BooleanUtils.toBoolean(jsonObj.getString("isAllowFreelanceDevelopers"),"Y",""));
+		if(!isNullOrEmpty(projectsDTO.getIsAllowFreelanceDevelopers())){
+			projects.setAllowFreeLance(BooleanUtils.toBoolean(projectsDTO.getIsAllowFreelanceDevelopers(),"Y",""));
 		}else{
 			projects.setAllowFreeLance(null);
 		}
-		if(jsonObj.has("isAllowRemoteWork") && StringUtils.isNotEmpty(jsonObj.getString("isAllowRemoteWork"))){
-			projects.setAllowRemote(BooleanUtils.toBoolean(jsonObj.getString("isAllowRemoteWork"),"Y",""));
+		
+		if(!isNullOrEmpty(projectsDTO.getIsAllowRemoteWork())){
+			projects.setAllowRemote(BooleanUtils.toBoolean(projectsDTO.getIsAllowRemoteWork(),"Y",""));
 		}else{
 			projects.setAllowRemote(null);
 		}
-		if(jsonObj.has("isAllowOverTime") && StringUtils.isNotEmpty(jsonObj.getString("isAllowOverTime"))){
-			projects.setAllowOvertime(BooleanUtils.toBoolean(jsonObj.getString("isAllowOverTime"),"Y",""));
+		
+		if(!isNullOrEmpty(projectsDTO.getIsAllowOverTime())){
+			projects.setAllowOvertime(BooleanUtils.toBoolean(projectsDTO.getIsAllowOverTime(),"Y",""));
 		}else{
 			projects.setAllowOvertime(null);
 		}
 		
-		if(jsonObj.has("flatPercentage") && StringUtils.isNotEmpty(jsonObj.getString("flatPercentage"))){
-			projects.setFlatPercent(jsonObj.getDouble("flatPercentage"));
+		if(projectsDTO.getFlatPercentage() != null){
+			projects.setFlatPercent(projectsDTO.getFlatPercentage());
 		}
 		
-		if(jsonObj.has("flatPercentageId") && StringUtils.isNotEmpty(jsonObj.getString("flatPercentageId"))){
-			projects.setOvertimeRateType(jsonObj.getString("flatPercentageId"));
+		if(!isNullOrEmpty(projectsDTO.getFlatPercentageId())){
+			projects.setOvertimeRateType(projectsDTO.getFlatPercentageId());
 		}
 		
-		if(jsonObj.has("isAllowOffshoreResource") && StringUtils.isNotEmpty(jsonObj.getString("isAllowOffshoreResource"))){
-			projects.setAllowOffShore(BooleanUtils.toBoolean(jsonObj.getString("isAllowOffshoreResource"),"Y",""));
+		
+		if(projectsDTO.getIsTimesheetAttachmentRequired() != null){
+	    	projects.setIsTimesheetAttachmentRequired(Constants.RECORD_ACTIVE);
+	    }else{
+	    	projects.setIsTimesheetAttachmentRequired(Constants.RECORD_INACTIVE);
+	    }	
+		
+		if(!isNullOrEmpty(projectsDTO.getIsAllowOffshoreResource())){
+			projects.setAllowOffShore(BooleanUtils.toBoolean(projectsDTO.getIsAllowOffshoreResource(),"Y",""));
 		}else{
 			projects.setAllowOffShore(null);
 		}
-		if(jsonObj.has("isTimeEntryAfterDeadline") && StringUtils.isNotEmpty(jsonObj.getString("isTimeEntryAfterDeadline"))){
-			projects.setAllowTimeEntryAfterDeadLine(BooleanUtils.toBoolean(jsonObj.getString("isTimeEntryAfterDeadline"),"Y",""));
+		
+		if(!isNullOrEmpty(projectsDTO.getIsTimeEntryAfterDeadline())){
+			projects.setAllowTimeEntryAfterDeadLine(BooleanUtils.toBoolean(projectsDTO.getIsTimeEntryAfterDeadline(),"Y",""));
 		}else{
 			projects.setAllowTimeEntryAfterDeadLine(null);
 		}
-		if(jsonObj.has("isAllowBidding") && StringUtils.isNotEmpty(jsonObj.getString("isAllowBidding"))){
-			projects.setAllowBidding(BooleanUtils.toBoolean(jsonObj.getString("isAllowBidding"),"Y",""));
+		
+		if(!isNullOrEmpty(projectsDTO.getIsAllowBidding())){
+			projects.setAllowBidding(BooleanUtils.toBoolean(projectsDTO.getIsAllowBidding(),"Y",""));
 		}else{
 			projects.setAllowBidding(null);
 		}
 		
-		
-		
 		Set<ProjectDocuments> projDocDBList = new HashSet<>();
-		
-		for(ProjectDocumentBO bo :projectDocumentBOList){
-			ProjectDocuments projectDocuments = new ProjectDocuments(bo.getFileName(), bo.getFileType(),bo.getFileContents(),projects,bo.getStatus());
-			projDocDBList.add(projectDocuments);
+		if(projectsDTO .getUploadedFileInfo() != null &&  !projectsDTO.getUploadedFileInfo().isEmpty()) {
+			List<FileInfo> projectDocumentsList = projectsDTO .getUploadedFileInfo();
+			for(FileInfo fileInfo : projectDocumentsList){
+				ProjectDocuments documents = new ProjectDocuments();
+				documents.setFileName(fileInfo.getFileName());
+				documents.setFileType(fileInfo.getContentType());
+				documents.setFileUrl(fileInfo.getFileURL());
+				documents.setStatus(Constants.CANDIDATE_ACTIVE);
+				documents.setProjects(projects);
+				projDocDBList.add(documents);
+			}
+			projects.setProjectDocuments(projDocDBList);
+	        for(FileInfo fileInfo : projectsDTO.getUploadedFileInfo()){
+				FileUploadUtil.moveFile(projectsDTO.getStaticPath(), fileInfo, "projects");
+			}
 		}
 		
-		projects.setProjectDocuments(projDocDBList);
-	
-    	if((jsonObj.has("Satatus"))){
-    	projects.setProjectStatus(Project_Status.getNameByValue((jsonObj.getString("Satatus"))));
+		if(!isNullOrEmpty(projectsDTO.getStatus())){
+    	projects.setProjectStatus(Project_Status.getNameByValue((projectsDTO.getStatus())));
     	}
     	projects.setCreatedDate(commonUtil.currentDate());
     	projects.setUpdatedDate(commonUtil.currentDate());
@@ -431,21 +448,6 @@ public class ProjectsServiceImpl implements ProjectsService{
     	}
     	projects.setOrgLocationsId(loginOrgLocation);
     	
-    	// Saving of Client by bringing OrgRelation id based on Client OrgId
-    	if((jsonObj.has("selectClient"))){
-	    String clientOrgLocationId = jsonObj.getString("selectClient");	
-	    if(!clientOrgLocationId.isEmpty() && clientOrgLocationId !=null){
-	    	  OrgLocations clientOrgLocations = orgLocationService.getOrgLocations(Long.valueOf(clientOrgLocationId));
-	    	  if(clientOrgLocations!=null){
-	    		  OrgRelations  orgRelations = orgRelationsService.getOrgRelationIdByOrgLocationIdAndClientLocationId(loginOrgLocation.getId(), clientOrgLocations.getId());
-		    		  if(orgRelations!=null){
-		    			  projects.setOrgRelationId(orgRelations);
-		    		  }
-	    	  }
-	    	  
-	    }
-    	}
-	    
     	
     	//save the default tasks
 	    if(projects.getId() == null){
@@ -453,7 +455,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 			projects.setProjectTasks(projectTasksList);
 	    }
 		
-		Set<ProjectClients> projectClientsList = getProjectClientsForProject(jsonObj,projects,loginOrgLocation,user);
+		Set<ProjectClients> projectClientsList = getProjectClientsForProject(projectsDTO,projects,loginOrgLocation,user);
 		projects.setProjectClients(projectClientsList);
 		
 		
@@ -469,27 +471,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 		 */
 		saveOrUpdateProjectElkDocument(updatedProjects);
 		
-		
-		
-		
-		//send mail to assigned team members
-		if((jsonObj.has("isMailToTeamMembers") && !isNullOrEmpty(jsonObj.getString("isMailToTeamMembers"))) && ("on".equals(jsonObj.getString("isMailToTeamMembers")))){
-			
-			User  approverUserId2  = null;
-			User  approverUserId1 = null;
-			if( null !=  jsonObj.getString("level1Manager")  && jsonObj.has("level1Manager") && !jsonObj.getString("level1Manager").isEmpty()){
-				  String level1UserDetails[] = jsonObj.getString("level1Manager").split(",");
-				  approverUserId1 =   userService.getUserById(Long.valueOf(level1UserDetails[0]));
-			if(jsonObj.has("level2Manager") && null != jsonObj.getString("level2Manager") &&jsonObj.has("level2Manager")  && !jsonObj.getString("level2Manager").isEmpty()){
-		      approverUserId2 =   userService.getUserById(Long.valueOf(jsonObj.getString("level2Manager")));
-			}
-			
-			
-			
-			}
-		}
-		
-	  return updatedProjects;
+	    return updatedProjects;
 		 
 		
 	}
@@ -521,7 +503,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 	}
 	
 	
-	private Set<ProjectClients> getProjectClientsForProject(JSONObject jsonObj,Projects projects,OrgLocations orglocations,User user) throws Exception {
+	private Set<ProjectClients> getProjectClientsForProject(ProjectsDTO projectsDTO,Projects projects,OrgLocations orglocations,User user) throws Exception {
 		Set<ProjectClients> projectClientsSet = new HashSet<>();
 		ProjectClients projectClients = null;
 		if(projects.getId() == null){
@@ -546,7 +528,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 		}
 		
 		//prepare ProjectApproverHierarchy
-		Set<ProjectApproverHierarchy> projectApproverHierarchyList = projectApproverHierarchyService.prepareProjectApproverHierarchyListByJson(jsonObj,request,projects,projectClients);
+		Set<ProjectApproverHierarchy> projectApproverHierarchyList = projectApproverHierarchyService.prepareProjectApproverHierarchyListByJson(projectsDTO,request,projects,projectClients);
 		projectClients.setProjectApproverHierarchyList(projectApproverHierarchyList);
     	projectClientsSet.add(projectClients);
 		return projectClientsSet;

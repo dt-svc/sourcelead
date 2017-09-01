@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.ProjectApproverHierarchyDao;
+import com.bis.sourcelead.dto.ProjectsDTO;
 import com.bis.sourcelead.entity.ProjectApproverHierarchy;
 import com.bis.sourcelead.entity.ProjectClients;
 import com.bis.sourcelead.entity.Projects;
@@ -86,10 +87,14 @@ public class ProjectApproverHierarchyServiceImpl implements ProjectApproverHiera
 			throws Exception {
 		return projectApproverHierarchyDao.getByProjectApproverHierarchyId(projectApproverHierarchy);
 	}
+	
+	protected static boolean isNullOrEmpty(String str) {
+		return (str == null || "".equals(str.trim()));
+	}
 
 
 	@Override
-	public Set<ProjectApproverHierarchy> prepareProjectApproverHierarchyListByJson(JSONObject jsonObj, HttpServletRequest request,
+	public Set<ProjectApproverHierarchy> prepareProjectApproverHierarchyListByJson(ProjectsDTO projectsDTO, HttpServletRequest request,
 			Projects projects,ProjectClients projectClients) throws Exception {
 		    
 		    Long[] ids = new Long[1000];
@@ -97,14 +102,13 @@ public class ProjectApproverHierarchyServiceImpl implements ProjectApproverHiera
 	    	
 			if(projectClients.getId() == null){
 				
-				  if(jsonObj.has("level1Manager")){
-				    	if(jsonObj.getString("level1Manager") != null && !jsonObj.getString("level1Manager").isEmpty()){
+				  if(!isNullOrEmpty(projectsDTO.getLevel1Manager())){
 				    		
 				    		ProjectApproverHierarchy pah1 = new ProjectApproverHierarchy();
 					    	pah1.setProjectId(projects);
 					    	pah1.setProjectClientsId(projectClients);
 					    	User approverUserId1 = new User();
-					    	String level1UserDetails[] = jsonObj.getString("level1Manager").split(",");
+					    	String level1UserDetails[] = projectsDTO.getLevel1Manager().split(",");
 				    		approverUserId1.setId(Long.parseLong(level1UserDetails[0]));
 					    	pah1.setApproverUserId(approverUserId1);
 					    	pah1.setLevel(1);
@@ -112,34 +116,32 @@ public class ProjectApproverHierarchyServiceImpl implements ProjectApproverHiera
 					    	//ProjectApproverHierarchy saveProjectApproverHierarchy = projectApproverHierarchyService.saveProjectApproverHierarchy(pah1);
 					    	ids[0] = approverUserId1.getId();
 					    	projectApproverHierarchyList.add(pah1);
-				    	}
 			    	}
 		    	//send mail to assigned Project Manager
-				if(jsonObj.has("level2Manager")){ 	
-					if(!jsonObj.getString("level2Manager").isEmpty()){
+				
+				  if(!isNullOrEmpty(projectsDTO.getLevel2Manager())){	
 						User approverUserId2 = new User();
 						ProjectApproverHierarchy pah2 = new ProjectApproverHierarchy();
 						pah2.setProjectId(projects);
 						pah2.setProjectClientsId(projectClients);
-						approverUserId2.setId(Long.parseLong(jsonObj.getString("level2Manager")));
+						approverUserId2.setId(Long.parseLong(projectsDTO.getLevel2Manager()));
 						pah2.setApproverUserId(approverUserId2);
 						pah2.setLevel(2);
 						pah2.setStatus("1");
 						//ProjectApproverHierarchy projectApproverHierarchy = projectApproverHierarchyService.saveProjectApproverHierarchy(pah2);
 						ids[1] = approverUserId2.getId();
 						projectApproverHierarchyList.add(pah2);
-					}
 				 }
 			}else{
 				Set<ProjectApproverHierarchy> approverHierarchyList = projectClients.getProjectApproverHierarchyList();
 				for(ProjectApproverHierarchy approverHierarchy : approverHierarchyList){
-					 if(jsonObj.has("level1Manager") && jsonObj.getString("level1Manager") != null && !jsonObj.getString("level1Manager").isEmpty()){
+					 if(!isNullOrEmpty(projectsDTO.getLevel1Manager())){
 						 
 						 if(approverHierarchy.getLevel().equals(1)){
 							 approverHierarchy.setProjectId(projects);
 							    approverHierarchy.setProjectClientsId(projectClients);
 						    	User approverUserId1 = new User();
-						    	String level1UserDetails[] = jsonObj.getString("level1Manager").split(",");
+						    	String level1UserDetails[] = projectsDTO.getLevel1Manager().split(",");
 					    		approverUserId1.setId(Long.parseLong(level1UserDetails[0]));
 					    		approverHierarchy.setApproverUserId(approverUserId1);
 					    		approverHierarchy.setLevel(1);
@@ -151,13 +153,13 @@ public class ProjectApproverHierarchyServiceImpl implements ProjectApproverHiera
 					 }
 					 
 					 if(approverHierarchy.getLevel().equals(2)){
-						 if(jsonObj.getString("level2Manager") == null || jsonObj.getString("level2Manager").isEmpty()){
+						 if(isNullOrEmpty(projectsDTO.getLevel2Manager())){	
 							 projectApproverHierarchyDao.deleteProjectApproverHierarchy(approverHierarchy);
 						 }else{
 							    User approverUserId2 = new User();
 							    approverHierarchy.setProjectId(projects);
 							    approverHierarchy.setProjectClientsId(projectClients);
-								approverUserId2.setId(Long.parseLong(jsonObj.getString("level2Manager")));
+								approverUserId2.setId(Long.parseLong(projectsDTO.getLevel2Manager()));
 								approverHierarchy.setApproverUserId(approverUserId2);
 								approverHierarchy.setLevel(2);
 								approverHierarchy.setStatus("1");
@@ -168,12 +170,12 @@ public class ProjectApproverHierarchyServiceImpl implements ProjectApproverHiera
 				}
 				
 				if(approverHierarchyList.size() == 1){
-					if(jsonObj.has("level2Manager") && !jsonObj.getString("level2Manager").isEmpty()){ 	
+					if(!isNullOrEmpty(projectsDTO.getLevel2Manager())){	
 						User approverUserId2 = new User();
 						ProjectApproverHierarchy pah2 = new ProjectApproverHierarchy();
 						pah2.setProjectId(projects);
 						pah2.setProjectClientsId(projectClients);
-						approverUserId2.setId(Long.parseLong(jsonObj.getString("level2Manager")));
+						approverUserId2.setId(Long.parseLong(projectsDTO.getLevel2Manager()));
 						pah2.setApproverUserId(approverUserId2);
 						pah2.setLevel(2);
 						pah2.setStatus("1");

@@ -23,9 +23,11 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.bis.sourcelead.annotations.Validator;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.ProjectAdditionalDetailsDTO;
 import com.bis.sourcelead.dto.ProjectAssignedMembersDTO;
+import com.bis.sourcelead.dto.ProjectsDTO;
 import com.bis.sourcelead.elk.index.ProjectsIndex;
 import com.bis.sourcelead.elk.index.helper.ProjectsIndexHelper;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
@@ -52,11 +54,15 @@ import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
+import com.bis.sourcelead.util.FileUploadUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @RestController
 @PropertySource("${propertyLocation:app.properties}")
 public class ProjectsRestController {
+	
+	@Value("${static.path}")
+	private String staticPath;
 
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
@@ -122,21 +128,15 @@ public class ProjectsRestController {
 	 */
 
 	@RequestMapping(value = "/storeProject", method = RequestMethod.POST)
-	public @ResponseBody Projects storeProject(@RequestParam("project_files") MultipartFile[] files,
-			@RequestParam("json") String jsonPayload) throws Exception {
-		JSONObject jsonObj = new JSONObject(jsonPayload);
-		List<ProjectDocumentBO> projectDocuments = Arrays.asList(files).stream().filter(p->!p.isEmpty()).map(file -> {
-			try {
-				return new ProjectDocumentBO(file.getOriginalFilename(), file.getContentType(), file.getBytes());
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			return null;
-		}).collect(Collectors.toList());
-
-		Projects projects = projectsService.storeProject(jsonObj, projectDocuments);
+	public @ResponseBody Projects storeProject(ProjectsDTO projectsDTO) throws Exception {
+		
+		Projects projects = null;
+		 if(Validator.validate(projectsDTO)) {
+			 projectsDTO.setStaticPath(staticPath);
+			 FileUploadUtil.fillUploadedFileInfo(projectsDTO, projectsDTO.getFileInfo());
+			 projects = projectsService.storeProject(projectsDTO);
+		 }
 		return projects;
-
 	}
 	
 	
