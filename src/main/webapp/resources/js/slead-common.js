@@ -1,6 +1,6 @@
-function viewFile(sourceleadUrl, fileURL,title){
+function viewFile(sourceleadUrl, fileURL, title, contentType){
 	if(fileURL != null && fileURL != ""){
-		window.open(sourceleadUrl+'/viewDocument/'+title+'?docFile='+encodeURI(fileURL),title,"height=600,width=600");
+		window.open(sourceleadUrl+'/viewFile?documentPath='+encodeURI(fileURL)+"&contentType="+contentType,title,"height=600,width=600");
 	}  
 }
 
@@ -36,6 +36,16 @@ function fileUpload(sourceleadUrl, id, type, formId) {
 		} 
 	});
 }
+
+function getFormData(formId) {
+	var $form = $("#"+formId);
+	var unindexed_array = $($form).serializeArray();
+	var indexed_array = {};
+	$.map(unindexed_array, function (n, i) {
+	indexed_array[n['name']] = n['value'];
+	});
+	return indexed_array;
+	}
 
 function showError(error) {
     showMessage(error, 2);

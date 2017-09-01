@@ -1,23 +1,19 @@
 package com.bis.sourcelead.service.impl;
 
-import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.CandidateResumesDao;
+import com.bis.sourcelead.dto.CandidateResumeDTO;
 import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.elk.index.CandidateIndex;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
@@ -31,7 +27,6 @@ import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.util.CandidateActivityCommonUtil;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
-import com.bis.sourcelead.web.LoginSessionController;
 
 /**
  * @author Ajith Matta
@@ -79,47 +74,44 @@ public class CandidateResumesServiceImpl implements CandidateResumesService {
 	 * @throws NullPointer
 	 */
 	@Override
-	public CandidateResumes storeCandidateResume(JSONObject jsonObj, User user, Candidate candidate, String resumeId, OrgLocations orgLocations, String fileURL, String fileName, String contentType) throws Exception
+	public CandidateResumes storeCandidateResume(CandidateResumeDTO candidateResumeDTO, User user, Candidate candidate, String resumeId, OrgLocations orgLocations) throws Exception
 	{
 		CandidateResumes candidateResume = null;
 		StringBuffer activitySummary = new StringBuffer();
 		if (!resumeId.equalsIgnoreCase("null")) {
 			candidateResume = candidateResumesDao.getCandidateResumeByResumeId(Long.parseLong(resumeId));
-			if (jsonObj.has("title")) {
-				if (candidateResume.getTitle() != null && candidateResume.getTitle() != ""
-						&& !candidateResume.getTitle().equalsIgnoreCase(jsonObj.getString("title"))) {
-					activitySummary.append("Title").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidateResume.getTitle()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(jsonObj.getString("title")).append(Constants.NEW_VALUE_TAG_END).append(" ");
+			if (StringUtils.isNotBlank(candidateResumeDTO.getTitle())) {
+				if (candidateResume.getTitle() != null) {
+					activitySummary.append("Title").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidateResume.getTitle()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateResumeDTO.getTitle()).append(Constants.NEW_VALUE_TAG_END).append(" ");
 				}
-				candidateResume.setTitle(jsonObj.getString("title"));
+				candidateResume.setTitle(candidateResumeDTO.getTitle());
 			}
-			if (jsonObj.has("description")) {
-				if (candidateResume.getDescription() != null
-						&& candidateResume.getDescription() != ""
-						&& !candidateResume.getDescription().equalsIgnoreCase(jsonObj.getString("description"))) {
-					activitySummary.append("Description").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidateResume.getDescription()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(jsonObj.getString("description")).append(Constants.NEW_VALUE_TAG_END).append(" ");
+			if (StringUtils.isNotBlank(candidateResumeDTO.getDescription())) {
+				if (candidateResume.getDescription() != null) {
+					activitySummary.append("Description").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidateResume.getDescription()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateResumeDTO.getDescription()).append(Constants.NEW_VALUE_TAG_END).append(" ");
 				}
-				candidateResume.setDescription(jsonObj.getString("description"));
+				candidateResume.setDescription(candidateResumeDTO.getDescription());
 			}
 			candidateResume.setUpdatedBy(user.getUserCode());
 			candidateResume.setUpdatedDate(CommonUtil.currentDate());
-			if (fileURL != null) {
-				if (candidateResume.getFileName() != null && candidateResume.getFileName() != ""
-						&& !candidateResume.getFileName().equalsIgnoreCase(fileName)) {
-					activitySummary.append("File").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidateResume.getFileName()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(fileName).append(Constants.NEW_VALUE_TAG_END).append(" ");
+			if (candidateResumeDTO.getUploadedFileInfo() != null) {
+				FileInfo fileInfo = candidateResumeDTO.getUploadedFileInfo().get(0);
+				if (fileInfo.getFileName() != null ) {
+					activitySummary.append("File").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidateResume.getFileName()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(fileInfo.getFileName()).append(Constants.NEW_VALUE_TAG_END).append(" ");
 				}
 				// candidateResume.setDocFile(multiFile.getBytes());
-				candidateResume.setFileURL(fileURL);
-				candidateResume.setFileName(fileName);
-				candidateResume.setFileContentType(contentType);
+				candidateResume.setFileURL(fileInfo.getFileURL());
+				candidateResume.setFileName(fileInfo.getFileName());
+				candidateResume.setFileContentType(fileInfo.getContentType());
 			}
 		}
 		else {
 			candidateResume = new CandidateResumes();
-			if (jsonObj.has("title")) {
-				candidateResume.setTitle(jsonObj.getString("title"));
+			if (StringUtils.isNotBlank(candidateResumeDTO.getTitle())) {
+				candidateResume.setTitle(candidateResumeDTO.getTitle());
 			}
-			if (jsonObj.has("description")) {
-				candidateResume.setDescription(jsonObj.getString("description"));
+			if (StringUtils.isNotBlank(candidateResumeDTO.getDescription())) {
+				candidateResume.setDescription(candidateResumeDTO.getDescription());
 			}
 			if (candidate != null) {
 				candidateResume.setCandidateId(candidate);
@@ -133,18 +125,18 @@ public class CandidateResumesServiceImpl implements CandidateResumesService {
 			candidateResume.setUpdatedBy(user.getUserCode());
 			candidateResume.setCreatedBy(user.getUserCode());
 			candidateResume.setUpdatedDate(commonUtil.currentDate());
-			if (fileURL != null) {
-				if (candidateResume.getTitle() != null && candidateResume.getTitle() != ""
-						&& candidateResume.getTitle() != "undefined") {
+			if (candidateResumeDTO.getUploadedFileInfo() != null) {
+				FileInfo info = candidateResumeDTO.getUploadedFileInfo().get(0);
+				if (candidateResume.getTitle() != null ) {
 					activitySummary.append("Title").append(" : ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateResume.getTitle()).append(Constants.NEW_VALUE_TAG_END);
 				}
 				else {
-					activitySummary.append("File").append(" : ").append(Constants.NEW_VALUE_TAG_INITIATION).append(fileName).append(Constants.NEW_VALUE_TAG_END);
+					activitySummary.append("File").append(" : ").append(Constants.NEW_VALUE_TAG_INITIATION).append(info.getFileName()).append(Constants.NEW_VALUE_TAG_END);
 				}
 				// candidateResume.setDocFile(multiFile.getBytes());
-				candidateResume.setFileURL(fileURL);
-				candidateResume.setFileName(fileName);
-				candidateResume.setFileContentType(contentType);
+				candidateResume.setFileURL(info.getFileURL());
+				candidateResume.setFileName(info.getFileName());
+				candidateResume.setFileContentType(info.getContentType());
 			}
 		}
 		candidateResumesDao.updateCandidateResume(candidateResume);

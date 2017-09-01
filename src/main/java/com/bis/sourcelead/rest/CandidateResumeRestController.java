@@ -31,10 +31,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.bis.sourcelead.constants.Constants;
-import com.bis.sourcelead.db.DatabaseConnectionConfig;
+import com.bis.sourcelead.dto.CandidateResumeDTO;
 import com.bis.sourcelead.elk.index.CandidateIndex;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
@@ -100,9 +99,9 @@ public class CandidateResumeRestController {
 	 */
 	@PreAuthorize("hasAnyRole('ROLE_ADD_CANDIDATE_RESUMES','ROLE_CROWDSOURCING_PROFILE','ROLE_CROWDSOURCING_CANDIDATES','ROLE_ADD_ASSOCIATE_RESUMES')")
 	@RequestMapping(value = "/saveCandidateResume", method = RequestMethod.POST)
-	public @ResponseBody String saveCandidateResume(@RequestParam(value = "json", required = false) String json, @RequestParam(value = "candidateId", required = false) String candidateId, @RequestParam(value = "resumeId", required = false) String resumeId, MultipartHttpServletRequest request) throws Exception
+	public @ResponseBody String saveCandidateResume(CandidateResumeDTO  candidateResumeDTO,@RequestParam(value = "candidateId", required = false) String candidateId, @RequestParam(value = "resumeId", required = false) String resumeId, HttpServletRequest request) throws Exception
 	{
-		String json1 = "{" + json + "}";
+		/*String json1 = "{" + json + "}";
 		JSONObject jsonObj = new JSONObject(json1);
 		MultipartFile multiFile = null;
 		Iterator<String> itrator = request.getFileNames();
@@ -116,12 +115,14 @@ public class CandidateResumeRestController {
 			fileURL = new FileUploadUtil().uploadFile(staticPath, org.getId(), loginOrgLocation.getId(), "resumes", multiFile);
 			fileName = multiFile.getOriginalFilename();
 			contentType = multiFile.getContentType();
-		}
+		}*/
+		candidateResumeDTO.setStaticPath(staticPath);
+		FileUploadUtil.fillUploadedFileInfo(candidateResumeDTO, candidateResumeDTO.getFileInfo());
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		if (StringUtils.isNotEmpty(candidateId)) {
 			Candidate candidate = candidateService.getCandidateByCandidateId(Long.parseLong(candidateId));
-			candidateResumesService.storeCandidateResume(jsonObj, user, candidate, resumeId, orgLocation, fileURL, fileName, contentType);
+			candidateResumesService.storeCandidateResume(candidateResumeDTO, user, candidate, resumeId, orgLocation);
 			Integer percentage = candidateService.getCandidatePercentage(candidate, orgLocation);
 			return percentage.toString();
 		}
