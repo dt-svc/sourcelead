@@ -850,6 +850,10 @@ function validateUploadFile(id)
 		        	
 			    	 if(json['amount'] != null && json['amount'] != "" && json['amount'] != 'undefined'){
 			    		 $("#salaryRate").val(json['amount']);
+			    		 $("#paymentType").val(json['paymentType']);
+				    	 $('#paymentType').trigger("chosen:updated");
+				    	 $("#paymentMode").val(json['paymentMode']);
+				    	 $('#paymentMode').trigger("chosen:updated");
 			    	 }
 						if(json['positionType'] != null && json['positionType'] != "" && json['positionType'] != 'undefined'){
 			    		 if(json['positionType'] == 'Other'){
@@ -2279,11 +2283,37 @@ function addCandidateDetailsForOnboarding(){
 	 result = result +'</div>';
 	 result = result +'</div>';
 	 result = result +'<div class="form-group">';
-	 result = result +'<label class="col-md-3 control-label">Rate / Salary <span class="text-danger">*</span></label>';
+	 result = result +'<label class="col-md-3 control-label">Rate</label>';
 	 result = result +'<div class="col-md-6">';
-	 result = result +'<input type="text" class="form-control input-sm" id="salaryRate" name="salaryRate">';
+	 result = result +'<div class="input-group er ratetype">';
+	 result = result +'<div class="input-group-btn tblminwidth-75 displyBlock">';
+	 result = result +'<select class="chosen-select"  disabled id="paymentType" name="paymentType">';
+	 result = result +'<option value=""  selected="selected"></option>';
+	 result = result +'<option value="INR">INR</option>';
+	 result = result +'<option value="AUD">AUD</option>';
+	 result = result +'<option value="GBP">GBP</option>';
+	 result = result +'<option value="SGD">SGD</option>';
+	 result = result +'<option value="EUR">EUR</option>';
+	 result = result +'</select>';
 	 result = result +'</div>';
+	 result = result +' <input type="text" class="form-control" id="salaryRate" field-name="Rate" name="salaryRate" value="" data-validation="validate_Space validate_float validate_length length1-8" data-validation-optional="true">';
+	 result = result +' <span class="hidden">Rate</span>';
+	 result = result +' <div class="input-group-btn tblminwidth-75 ratetype">';
+	 result = result +'<select class="chosen-select"  disabled id="paymentMode" name="paymentMode">';
+	 result = result +'<option value=""  selected="selected"></option>';
+	 result = result +'<option value="Hourly">Hourly</option>';
+	 result = result +'<option value="Daily">Daily</option>';
+	 result = result +'<option value="Weekly">Weekly</option>';
+	 result = result +'<option value="Semi-Monthly">Semi-Monthly</option>';
+	 result = result +'<option value="Bi-Monthly">Bi-Monthly</option>';
+	 result = result +'<option value="Monthly">Monthly</option>';
+	 result = result +'<option value="Yearly">Yearly</option>';
+	 result = result +'</select>';
+	 result = result +' </div>';
+	 result = result +' </div>';
+	 result = result +' </div>';
 	 result = result +'</div>';
+	 
 	 result = result +'<div class="form-group">';
 	 result = result +'<label class="col-md-3 control-label">Manager</label>';
 	 result = result +'<div class="col-md-6">';
