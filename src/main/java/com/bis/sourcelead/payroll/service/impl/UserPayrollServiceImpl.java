@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.ChecksDTO;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.payroll.dao.UserPayrollDao;
 import com.bis.sourcelead.payroll.entity.Checks;
@@ -54,8 +56,8 @@ public class UserPayrollServiceImpl implements UserPayrollService{
 	}
 
 	@Override
-	public List<Checks> getChecksList(Long userId, Long orgLocationId) throws Exception {
-		return userPayrollDao.getChecksList(userId, orgLocationId);
+	public ResponseList<Checks> getChecksList(ChecksDTO checksDTO, Long orgLocationId) throws Exception {
+		return userPayrollDao.getChecksList(checksDTO, orgLocationId);
 	}
 
 	@Override

@@ -1,6 +1,6 @@
 
 
-ss<script type="text/javascript">
+<script type="text/javascript">
 function wagesAndTaxList(){
 		var sourceleadUrl ='${sourceleadUrl}';
 		var searchValue = $("#dataTableSearch").val();
@@ -167,50 +167,50 @@ function wagesTaxpagination(url){
                   "targets": colIndex++,
                   "data": "gross",
                   "render": function ( data, type, opt, meta ) {
-                	  return '<td><div class="tblminwidth-75">'+opt.gross+'</div></td>';
+                	  return '<td><div class="tblminwidth-75">'+opt.gross.toFixed(2)+'</div></td>';
                   }
                 },{
                     "targets": colIndex++,
                     "data": "fwt",
                     "render": function ( data, type, opt, meta ) {
-                    	return '<td><div class="tblminwidth-75">'+opt.fwt+'</div></td>';
+                    	return '<td><div class="tblminwidth-75">'+opt.fwt.toFixed(2)+'</div></td>';
                     }
                   },{
                       "targets": colIndex++,
                       "data": "ssec",
                       "render": function ( data, type, opt, meta ) {
-                    	  return ' <td><div class="tblminwidth-75">'+opt.ssec+'</div></td>';
+                    	  return ' <td><div class="tblminwidth-75">'+opt.ssec.toFixed(2)+'</div></td>';
                       }
                     },{
                         "targets": colIndex++,
                         "data": "med",
                         "render": function ( data, type, opt, meta ) {
-                        	return '<td><div class="tblminwidth-75">'+opt.med+'</div></td>';
+                        	return '<td><div class="tblminwidth-75">'+opt.med.toFixed(2)+'</div></td>';
                         }
                       },{
                           "targets": colIndex++,
                           "data": "swt",
                           "render": function ( data, type, opt, meta ) {
-                        	 return' <td><div class="tblminwidth-75">'+opt.swt+'</div></td>';
+                        	 return' <td><div class="tblminwidth-75">'+opt.swt.toFixed(2)+'</div></td>';
                           }
                         },{
                             "targets": colIndex++,
                             "data": "sdiSui",
                             "render": function ( data, type, opt, meta ) {
-                            	return '<td><div class="tblminwidth-75">'+opt.sdiSui+'</div></td>';
+                            	return '<td><div class="tblminwidth-75">'+opt.sdiSui.toFixed(2)+'</div></td>';
                             }
                           },{
                               "targets": colIndex++,
                               "data": "local",
                               "render": function ( data, type, opt, meta ) {
-                            	  return '<td><div class="tblminwidth-75">'+opt.local+'</div></td>';
+                            	  return '<td><div class="tblminwidth-75">'+opt.local.toFixed(2)+'</div></td>';
                               }
                             },{
                                 "targets": colIndex++,
                                 "data": "deds",
                                 "render": function ( data, type, opt, meta ) {
                                 	var result = "";
-                                	result = result + '<td><div class="deeds tblminwidth-125">'+opt.deds+'</div>';
+                                	result = result + '<td><div class="deeds tblminwidth-125">'+opt.deds.toFixed(2)+'</div>';
                                 	result = result + '<div class="edit-input tblminwidth-125" style="display:none;"><input type="text" class="form-control input-sm tbldata-dotdot-100 pull-left" value="" id=""><small class="fa fa-floppy-o ml10 pull-right mt5"  onClick="saveEdit(this)"></small></div></td>';
                                     return result;
                                 }
@@ -218,7 +218,7 @@ function wagesTaxpagination(url){
                                   "targets": colIndex++,
                                   "data": "net",
                                   "render": function ( data, type, opt, meta ) {
-                                	 return '<td><div class="tblminwidth-75">'+opt.net+'</div></td>';
+                                	 return '<td><div class="tblminwidth-75">'+opt.net.toFixed(2)+'</div></td>';
                                   }
                                 }, {
                   "targets": colIndex++,

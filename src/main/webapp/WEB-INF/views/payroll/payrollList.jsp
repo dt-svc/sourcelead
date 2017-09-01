@@ -255,14 +255,14 @@ function loadEmployeePayrollCost(){
 								}else{
 									result = result + ' <td><div>--</div></td>';
 								}
-								result = result + ' <td><i class="fa fa-dollar paddingLeft text-left pull-left"></i><div class="tblminwidth-125 text-right">'+opt.grossWages+'</div></td>';
-								result = result + '<td><div class="tblminwidth-75">'+opt.fica+'</div></td>';
-								result = result + '<td><div class="tblminwidth-75">'+opt.futa+'</div></td>';
-								result = result + ' <td><div class="tblminwidth-75">'+opt.sui+'</div></td>';
+								result = result + ' <td><div class="tblminwidth-125 text-right"><i class="fa fa-dollar"style="color:#454545;"></i> '+opt.grossWages.toFixed(2)+'</div></td>';
+								result = result + '<td><div class="tblminwidth-75"><i class="fa fa-dollar"style="color:#454545;"></i> '+opt.fica+'</div></td>';
+								result = result + '<td><div class="tblminwidth-75"><i class="fa fa-dollar"style="color:#454545;"></i> '+opt.futa+'</div></td>';
+								result = result + ' <td><div class="tblminwidth-75"><i class="fa fa-dollar"style="color:#454545;"></i> '+opt.sui+'</div></td>';
 								result = result + '<td><div class="tblminwidth-75">'+opt.erLocals+'</div></td>';
 								result = result + ' <td><div class="tblminwidth-75">'+opt.wcCost+'</div></td>';
 								result = result + '<td><div class="tblminwidth-100">'+opt.adminFee+'</div></td>';
-								result = result + '<td><i class="fa fa-dollar paddingLeft text-left pull-left"></i><div class="tblminwidth-150 text-right">'+opt.totalErCost+'</div></td>';
+								result = result + '<td><div class="tblminwidth-150 text-right"><i class="fa fa-dollar"style="color:#454545;"></i> '+opt.totalErCost+'</div></td>';
 								result = result + ' </tr>';
 						}
 						result = result + '  </table>';
