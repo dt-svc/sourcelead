@@ -66,5 +66,10 @@ public class LookUpDataServiceImpl implements LookUpDataService {
 	public LookUpData getTasksById(Long id) throws Exception {
 		return lookUpDataDao.getTasksById(id);
 	}
+
+	@Override
+	public LookUpData getTasksTypeByUniqueKey(String uniqueKey) throws Exception {
+		return lookUpDataDao.getTasksTypeByUniqueKey(uniqueKey);
+	}
 	
 }

@@ -38,7 +38,7 @@ public class BlobToFile {
 //				Path tempPath = Files.createTempFile(fileName, "");
 				byte[] b = new byte[in.available()];
 				in.read(b);
-				File folder = new File("D:/BlobRemove/slead-static/"+rs.getString("ORG_ID")+"/"+rs.getString("ORG_LOCATION_ID")+"/resumes/");
+				File folder = new File("F:/BlobRemove/slead-static/"+rs.getString("ORG_ID")+"/"+rs.getString("ORG_LOCATION_ID")+"/resumes/");
 				if(!folder.exists())
 					folder.mkdirs();
 				File file = new File(folder,fileName.substring(0, fileName.lastIndexOf("."))+"-"+(new Date().getTime())+(fileName.substring(fileName.lastIndexOf("."))));
@@ -66,7 +66,7 @@ public class BlobToFile {
 	private Connection getDBConnection() throws Exception
 	{
 		Class.forName("com.mysql.jdbc.Driver");
-		return DriverManager.getConnection("jdbc:mysql://localhost:3306/sourcelead", "root", "Bis@123");
+		return DriverManager.getConnection("jdbc:mysql://localhost:3306/sourcelead", "root", "BIS@123");
 	}
 	
 	public static void main(String... args)

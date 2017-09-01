@@ -16,10 +16,10 @@ import javax.persistence.Table;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
 import org.hibernate.annotations.Type;
 import org.springframework.format.annotation.DateTimeFormat;
-
-import com.bis.sourcelead.constants.Constants;
 
 @Entity
 @Table(name = "PROJECT_TASK_DOCUMENTS")
@@ -41,6 +41,7 @@ public class ProjectTaskDocuments implements Serializable {
 	@Column(name = "FILE_TYPE")
 	private String fileType;
 	
+	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="PROJECT_TASK_ID", nullable=false )	
 	private ProjectTasks projectTaskId;
@@ -53,10 +54,8 @@ public class ProjectTaskDocuments implements Serializable {
 	@Type(type="text")
 	private String description;
 	
-	
 	@Column(name = "STATUS")
 	private Integer status;
-	
 	
     @DateTimeFormat(pattern="dd/MM/yyyy  HH:mm:ss") 
 	@Column(name = "CREATED_DATE")
@@ -71,6 +70,9 @@ public class ProjectTaskDocuments implements Serializable {
 		
 	@Column(name = "UPDATED_BY")
 	private String updatedBy;
+	
+	@Column(name = "FILE_URL")
+	private String fileURL;
 	
 	
 	public Long getId() {
@@ -118,12 +120,11 @@ public class ProjectTaskDocuments implements Serializable {
 		
 	}
 
-	public ProjectTaskDocuments(String fileName, String fileType, byte[] fileContents, ProjectTasks projectTasks,Integer status) {
+	public ProjectTaskDocuments(String fileName, String fileURL, String fileType, ProjectTasks projectTasks) {
 		super();
 		this.fileName = fileName;
+		this.fileURL = fileURL;
 		this.fileType = fileType;
-		this.fileContents = fileContents;
-		this.status = Constants.CANDIDATE_ACTIVE;
 		this.projectTaskId = projectTasks;
 	}
 
@@ -181,5 +182,13 @@ public class ProjectTaskDocuments implements Serializable {
 
 	public void setUpdatedBy(String updatedBy) {
 		this.updatedBy = updatedBy;
+	}
+
+	public String getFileURL() {
+		return fileURL;
+	}
+
+	public void setFileURL(String fileURL) {
+		this.fileURL = fileURL;
 	}
 }

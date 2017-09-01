@@ -1,15 +1,14 @@
 package com.bis.sourcelead.rest;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletResponse;
 
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,14 +19,18 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
+import com.bis.sourcelead.annotations.Validator;
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.ProjectTasksDTO;
+import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.LookUpData;
+import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectTaskActivity;
 import com.bis.sourcelead.entity.ProjectTaskComments;
 import com.bis.sourcelead.entity.ProjectTaskDocuments;
 import com.bis.sourcelead.entity.ProjectTasks;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
-import com.bis.sourcelead.model.ProjectTaskDocumentBO;
 import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.service.ProjectAssignTasksService;
 import com.bis.sourcelead.service.ProjectTaskActivityService;
@@ -37,11 +40,17 @@ import com.bis.sourcelead.service.ProjectTasksService;
 import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.util.FileUploadUtil;
+import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.ibm.icu.text.DateFormat;
 import com.ibm.icu.text.SimpleDateFormat;
 @RestController 
 @RequestMapping("/ProjectTasks")
 public class ProjectTasksRestController {
+	
+	@Value("${static.path}")
+	private String staticPath;
+	
 	@Autowired
 	public ProjectTasksService tasksService;
 	
@@ -119,23 +128,26 @@ public class ProjectTasksRestController {
 	  */
 	 @PreAuthorize("hasAnyRole('ROLE_CREATE_PROJECT_TASKS')")
 	 @RequestMapping(value = "/saveProjectTasks" , method = RequestMethod.POST)
-	 public @ResponseBody  String saveProjectTasks(@RequestParam(value="json", required=false) String json, @RequestParam(value="projectId", required=false) Long projectId,@RequestParam("project_files") MultipartFile[] files,@RequestParam(value="userId", required=false) Long userId) throws Exception {
-		 JSONObject jsonObj = new JSONObject(json);
-		 List<ProjectTaskDocumentBO> projectTaskDocument = Arrays.asList(files).stream().filter(p->!p.isEmpty()).map(file -> {
-			 try {
-				return new ProjectTaskDocumentBO(file.getOriginalFilename(), file.getContentType(), file.getBytes());
-			} catch (java.io.IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-				return null;
-		 }).collect(Collectors.toList());
+	 public @ResponseBody  String saveProjectTasks(ProjectTasksDTO projectTasksDTO,  @RequestParam(value="projectId", required=false) Long projectId,@RequestParam(value="userId", required=false) Long userId) throws Exception {
+		 if(Validator.validate(projectTasksDTO)) {
+			 projectTasksDTO.setStaticPath(staticPath);
+			 FileUploadUtil.fillUploadedFileInfo(projectTasksDTO, projectTasksDTO.getFileInfo());
+			 String  saveProjectTasks = tasksService.saveProjectTasksDTOByProjectId(projectId, projectTasksDTO,userId);
+		 }else
+			 return "DataMissing";
 		 
-		 	String saveProjectTasks = tasksService.saveProjectTasksByProjectId(projectId, jsonObj,projectTaskDocument,userId);
 		 	
-			 return saveProjectTasks;
+			 return "success";
 	 }
 	 
+	 /**]
+	  * @author Laxman
+	  * @param comment
+	  * @param projectTaskId
+	  * @param userId
+	  * @return success
+	  * @throws Exception
+	  */
 	 
 	 @RequestMapping(value = "/saveProjectTaskComment" , method = RequestMethod.POST)
 	 public @ResponseBody  String saveProjectTaskComment(@RequestParam(value="comment", required=false) String comment, @RequestParam(value="projectTaskId", required=false) String projectTaskId, 
@@ -146,19 +158,34 @@ public class ProjectTasksRestController {
 			 return "success";
 	 }
 	 
+	 /**
+	  * @author Laxman
+	  * @param projectTasksDTO
+	  * @param projectTaskId
+	  * @param userId
+	  * @param documentId
+	  * @return success
+	  * @throws Exception
+	  */
 	 @RequestMapping(value = "/saveProjectTaskDocuments" , method = RequestMethod.POST)
-	 public @ResponseBody  String saveProjectTaskDocuments(@RequestParam(value="json", required=false) String json, @RequestParam(value="projectTaskId", required=false) String projectTaskId, 
-			 @RequestParam(value="userId", required=false) Long userId, @RequestParam(value="documentId", required=false) Long documentId, MultipartHttpServletRequest request) throws Exception {
-		 JSONObject jsonObj = new JSONObject(json);
-		 MultipartFile multiFile = null;
-			Iterator<String> itrator = request.getFileNames();
-			if (itrator.hasNext()) {
-				multiFile = request.getFile(itrator.next());
-			}
-			projectTaskDocumentsService.storeProjectTaskDocuments(jsonObj, projectTaskId,multiFile,documentId,userId);
-			 return "success";
+	 public @ResponseBody  String saveProjectTaskDocuments(ProjectTasksDTO projectTasksDTO, @RequestParam(value="projectTaskId", required=false) String projectTaskId, 
+			 @RequestParam(value="userId", required=false) Long userId, @RequestParam(value="documentId", required=false) Long documentId) throws Exception {
+			 if(Validator.validate(projectTasksDTO)) {
+				 projectTasksDTO.setStaticPath(staticPath);
+					FileUploadUtil.fillUploadedFileInfo(projectTasksDTO, projectTasksDTO.getFileInfo());
+					projectTaskDocumentsService.storeProjectTaskDocuments(projectTasksDTO, projectTaskId,documentId,userId);
+				} else
+				  return "DataMissing";
+			return "success";
+			
 	 }
 	 
+	 /**
+	  * @author Laxman
+	  * @param projectTaskId
+	  * @return commnetList
+	  * @throws Exception
+	  */
 	 @RequestMapping(value = "/getTaskCommentList" , method = RequestMethod.POST)
 	 public @ResponseBody  List<ProjectTaskComments> getTaskCommentList( @RequestParam(value="projectTaskId", required=false) Long projectTaskId) throws Exception {
 		 List<ProjectTaskComments> commnetList=projectTaskCommentsService.getProjectTaskCommentsByProjectTaskId(projectTaskId);
@@ -198,18 +225,37 @@ public class ProjectTasksRestController {
 		 return commnetList;
 	 }
 	 
+	 /**
+	  * @author Laxman
+	  * @param projectTaskId
+	  * @return taskDocumentList
+	  * @throws Exception
+	  */
 	 @RequestMapping(value = "/getProjectTasksDocuments" , method = RequestMethod.POST)
 	 public @ResponseBody   List<ProjectTaskDocuments> getProjectTasksDocuments(@RequestParam(value="projectTaskId", required=false) Long projectTaskId) throws Exception {
 		 List<ProjectTaskDocuments> taskDocumentList =  projectTaskDocumentsService.getProjectTaskDocumentsListByProjectIdId(projectTaskId);
 		 return taskDocumentList;
 	 }
 	 
+	 /**
+	  * @author Laxman
+	  * @param projectId
+	  * @param subTaskId
+	  * @return taskList;
+	  * @throws Exception
+	  */
 	 @RequestMapping(value = "/getsubTasksList" , method = RequestMethod.POST)
 	 public @ResponseBody   List<ProjectTasks> getsubTasksList(@RequestParam(value="projectId", required=false) Long projectId,@RequestParam(value="subTaskId", required=false) Long subTaskId) throws Exception {
 		 List<ProjectTasks> taskList=tasksService.getAllTasksByProjectIdAndParentTaskId(projectId,subTaskId);
 		 return taskList;
 	 }
 	 
+	 /**
+	  * @author Laxman
+	  * @param projectTaskId
+	  * @return taskActivityList
+	  * @throws Exception
+	  */
 	 @RequestMapping(value = "/getTaskActivityList" , method = RequestMethod.POST)
 	 public @ResponseBody   List<ProjectTaskActivity> getTaskActivityList(@RequestParam(value="projectTaskId", required=false) Long projectTaskId) throws Exception {
 		 List<ProjectTaskActivity> taskActivityList=projectTaskActivityService.getProjectTaskActivityByProjectTaskId(projectTaskId);
@@ -261,7 +307,8 @@ public class ProjectTasksRestController {
 	  */
 	 @RequestMapping(value = "/getProjectTasksByTaskType" , method = RequestMethod.POST)
 	 public @ResponseBody   Collection<ProjectTasks> getProjectTasksByTaskType(@RequestParam(value="projectId", required=false) Long projectId,@RequestParam(value="taskType", required=false) String taskType) throws Exception {
-			 Collection<ProjectTasks> taskList=tasksService.getAllTasksByProjectIdAndTaskType(projectId, taskType);
+		    LookUpData lookupdata = lookUpDataService.getTasksTypeByUniqueKey(taskType); 
+		 	Collection<ProjectTasks> taskList=tasksService.getAllTasksByProjectIdAndTaskType(projectId, lookupdata.getId());
 			 return taskList;
 	 }
 	 
@@ -384,18 +431,25 @@ public class ProjectTasksRestController {
 		  return "success";
 	  }
 	
-	@RequestMapping(value = "/downloadProjectTaskDoc", method = RequestMethod.GET)
-	public void downloadProjectTaskDoc(@RequestParam(value = "porjectTaskDocumentId", required = false) Long porjectTaskDocumentId, HttpServletResponse response) throws Exception
-	{
-		projectTaskDocumentsService.downloadProjectTaskDocuments(porjectTaskDocumentId,response);
-		 
-	}
-	
+	/**
+	 * @author Laxman
+	 * @param documentId
+	 * @param title
+	 * @param response
+	 * @throws Exception
+	 */
 	 @RequestMapping(value = "/viewProjectTaskDocument/{title}", method = RequestMethod.GET)
 	 public void viewProjectTaskDocument(@RequestParam(value="documentId", required=false) Long documentId, @PathVariable(value="title") String title, HttpServletResponse response) throws Exception {
 		 projectTaskDocumentsService.viewProjectTaskDocument(documentId,response);
 	} 
 			 
+	 /**
+	  * @author Laxman
+	  * @param porjectTaskDocumentId
+	  * @param userId
+	  * @return success
+	  * @throws Exception
+	  */
 
 	 @RequestMapping(value = "/deleteProjectTaskDocument", method = RequestMethod.POST)
 	 public @ResponseBody String deleteProjectTaskDocument(@RequestParam(value = "porjectTaskDocumentId", required = false) Long porjectTaskDocumentId,@RequestParam(value="userId", required=false) Long userId) throws Exception {
@@ -413,7 +467,12 @@ public class ProjectTasksRestController {
 		return "success";
 	 }
 	 
-	 
+	 /**
+	  * @author Laxman
+	  * @param projectTaskDocId
+	  * @return projectTaskDoc
+	  * @throws Exception
+	  */
 	 @RequestMapping(value = "/getProjectTaskDocument", method = RequestMethod.POST)
 	 public ProjectTaskDocuments getProjectTaskDocument(@RequestParam(value = "projectTaskDocId", required = false) Long projectTaskDocId) throws Exception
 	 {
@@ -421,9 +480,17 @@ public class ProjectTasksRestController {
 		return projectTaskDoc;
 	}
  
+	 /**
+	  * @author Laxman
+	  * @param projectId
+	  * @param taskType
+	  * @return taskList
+	  * @throws Exception
+	  */
 	 @RequestMapping(value = "/getProjectTasksBySubTaskType" , method = RequestMethod.POST)
 	 public @ResponseBody   Collection<ProjectTasks> getProjectTasksBySubTaskType(@RequestParam(value="projectId", required=false) Long projectId,@RequestParam(value="taskType", required=false) String taskType) throws Exception {
-			 Collection<ProjectTasks> taskList=tasksService.getAllTasksByProjectIdAndSubTaskType(projectId, taskType);
+		 LookUpData lookupdata = lookUpDataService.getTasksTypeByUniqueKey(taskType);
+			 Collection<ProjectTasks> taskList=tasksService.getAllTasksByProjectIdAndSubTaskType(projectId,  lookupdata.getId());
 			 return taskList;
 	 }
 		 

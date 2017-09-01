@@ -2,28 +2,53 @@ package com.bis.sourcelead.dto;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.web.multipart.MultipartFile;
 
 @SuppressWarnings("serial")
 public class ProjectTasksDTO implements Serializable {
 	private Long id;
+	
 	private String taskName;
+	
 	private String taskBillableType;
-	private Long epic;
-	private Long userStory;
-	private Long subTask;
+
+	private String epic;
+	
+	private String taskstype;
+	
+	private String userStory;
+	
+	private String subTask;
+	
 	private Long priority;
+	
 	private Long severity;
+	
 	private String duDate;
+	
 	private String estimatedDate;
+	
 	private Long taskStatus;
+	
 	private String taskDescription;
+	
 	private String currencyType;
+	
 	private String businessValue;
+	
 	private Long taskOwner;
+	
 	private List<Long> assignTaskId;
-	private  MultipartFile[] project_files;
+	
+	private String staticPath;
+	
+    private List<Map<String, String>> fileInfo;
+	
+	private List<FileInfo> uploadedFileInfo;
+	
+	private String documentName;
 	
 	public Long getId() {
 		return id;
@@ -43,22 +68,29 @@ public class ProjectTasksDTO implements Serializable {
 	public void setTaskBillableType(String taskBillableType) {
 		this.taskBillableType = taskBillableType;
 	}
-	public Long getEpic() {
+	public String getEpic() {
 		return epic;
 	}
-	public void setEpic(Long epic) {
+	public void setEpic(String epic) {
 		this.epic = epic;
 	}
-	public Long getUserStory() {
+	
+	public String getTaskstype() {
+		return taskstype;
+	}
+	public void setTaskstype(String taskstype) {
+		this.taskstype = taskstype;
+	}
+	public String getUserStory() {
 		return userStory;
 	}
-	public void setUserStory(Long userStory) {
+	public void setUserStory(String userStory) {
 		this.userStory = userStory;
 	}
-	public Long getSubTask() {
+	public String getSubTask() {
 		return subTask;
 	}
-	public void setSubTask(Long subTask) {
+	public void setSubTask(String subTask) {
 		this.subTask = subTask;
 	}
 	public Long getPriority() {
@@ -121,10 +153,28 @@ public class ProjectTasksDTO implements Serializable {
 	public void setAssignTaskId(List<Long> assignTaskId) {
 		this.assignTaskId = assignTaskId;
 	}
-	public MultipartFile[] getProject_files() {
-		return project_files;
+	public String getStaticPath() {
+		return staticPath;
 	}
-	public void setProject_files(MultipartFile[] project_files) {
-		this.project_files = project_files;
+	public void setStaticPath(String staticPath) {
+		this.staticPath = staticPath;
+	}
+	public List<FileInfo> getUploadedFileInfo() {
+		return uploadedFileInfo;
+	}
+	public void setUploadedFileInfo(List<FileInfo> uploadedFileInfo) {
+		this.uploadedFileInfo = uploadedFileInfo;
+	}
+	public List<Map<String, String>> getFileInfo() {
+		return fileInfo;
+	}
+	public void setFileInfo(List<Map<String, String>> fileInfo) {
+		this.fileInfo = fileInfo;
+	}
+	public String getDocumentName() {
+		return documentName;
+	}
+	public void setDocumentName(String documentName) {
+		this.documentName = documentName;
 	}
 }

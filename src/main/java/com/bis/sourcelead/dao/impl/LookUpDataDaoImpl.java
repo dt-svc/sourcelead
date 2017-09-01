@@ -144,5 +144,17 @@ public class LookUpDataDaoImpl implements LookUpDataDao {
 		}		
 	}
 
+	@SuppressWarnings("unchecked")
+	@Override
+	public LookUpData getTasksTypeByUniqueKey(String uniqueKey) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		List<LookUpData> tasks = new ArrayList<LookUpData>();
+		tasks = session.createQuery("from LookUpData lookupdata where lookupdata.uniqueKey = :uniqueKey").setCacheable(true).setString( "uniqueKey",uniqueKey ).setCacheable(true).list();
+		if (tasks.size() > 0) {
+			return tasks.get(0);
+		} else {
+			return null;
+		}		
+	}
  
 }

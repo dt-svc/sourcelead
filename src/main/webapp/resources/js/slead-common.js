@@ -21,7 +21,7 @@ function fileUpload(sourceleadUrl, id, type, formId) {
 				if($("#"+formId+" input[name*=fileInfo][data-id="+id+"]").length > 0) {
 					$("#"+formId+" input[name*=fileInfo][data-id="+id+"]").remove();
 				}
-				var i = 0;
+				var i = $("#"+formId+" input[type=hidden][name*=fileInfo]").length / 3;
 				for(var e in data) {
 					var html = "<input type='hidden' name='fileInfo["+i+"][fileURL]' data-id="+id+" value='"+data[e].fileURL+"'/>";
 					html += "<input type='hidden' name='fileInfo["+i+"][fileName]' data-id="+id+" value='"+data[e].fileName+"'/>";

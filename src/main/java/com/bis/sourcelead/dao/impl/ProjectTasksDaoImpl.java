@@ -190,20 +190,20 @@ public class ProjectTasksDaoImpl implements ProjectTasksDao {
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public List<ProjectTasks> getAllTasksByProjectIdAndTaskType(Long projectId, String TaskType) throws Exception {
+	public List<ProjectTasks> getAllTasksByProjectIdAndTaskType(Long projectId, Long TaskType) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from ProjectTasks pt where pt.projectId.id = :projectId and pt.taskType = :TaskType" ;
-		List<ProjectTasks> projectTasksList =session.createQuery(query.toString()).setInteger("projectId", projectId.intValue()).setString("TaskType", TaskType).setCacheable(true).list(); 
+		List<ProjectTasks> projectTasksList =session.createQuery(query.toString()).setInteger("projectId", projectId.intValue()).setLong("TaskType", TaskType).setCacheable(true).list(); 
 		return projectTasksList; 
 	}
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public List<ProjectTasks> getAllTasksByProjectIdAndSubTaskType(Long projectId, String subTaskType)
+	public List<ProjectTasks> getAllTasksByProjectIdAndSubTaskType(Long projectId, Long subTaskType)
 			throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from ProjectTasks pt where pt.projectId.id = :projectId and pt.taskType <> :subTaskType" ;
-		List<ProjectTasks> projectTasksList =session.createQuery(query.toString()).setInteger("projectId", projectId.intValue()).setString("subTaskType", subTaskType).setCacheable(true).list(); 
+		List<ProjectTasks> projectTasksList =session.createQuery(query.toString()).setInteger("projectId", projectId.intValue()).setLong("subTaskType", subTaskType).setCacheable(true).list(); 
 		return projectTasksList; 
 	} 
 	

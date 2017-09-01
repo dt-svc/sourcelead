@@ -80,7 +80,7 @@
 	         <div class="project_side_wrap_inn_tabs">
 	          <ul class="project-tabs-menu">
 	            <li class="current"><a href="#tab-task1">Time Entry</a></li>
-	            <c:if test="${projectTask.taskType.id != 1050}">
+	            <c:if test="${projectTask.taskType.id != 1059}">
 	            <li><a href="#tab-task2" onclick="getSubTaskList();">Sub Tasks</a></li>
 	            </c:if>
 	            <li><a href="#tab-task3" onclick="closeTimeEntry();documentTableList();">Documents</a></li>
@@ -489,7 +489,7 @@ function inlineEditDescription(taskId){
 				 result = result +' </div> ';
 				 
 			   	 result  = result + '<div class="col-md-12 clearfix txtEditor_p saveBtn">';
-			   	 result = result + '<textarea id="txtEditor2" name="description" value="'+ json.description +'" class="form-control newContrtextarea" >' + json.description + '</textarea>';
+			   	 result = result + '<textarea id="txtEditor2" name="taskDescription" value="'+ json.description +'" class="form-control newContrtextarea" >' + json.description + '</textarea>';
 			   	 result  = result  + '<div class="mt5 clearfix"><button type"button" class="pull-right btn btn-sm btn-warning save-btn" onclick="inlineEditDescription('+projectTaskId+');">Save</button></span>';
 			   	 result  = result  + '</div>';
 			   	 result  = result  + '</div>';
@@ -650,7 +650,7 @@ function addDocumentEntry(){
 		result = result + '    <form id="addDocument_form" name="addDocument_form">';
 		
 		result  = result + '	    <div class="col-md-12 mb10">';
-		result  = result + '	      <textarea class="form-control" rows="1" placeholder="Description" name="description" data-validation-optional="true" data-validation="validate_length length1-250" ></textarea>';
+		result  = result + '	      <textarea class="form-control" rows="1" placeholder="Description" name="taskDescription" data-validation-optional="true" data-validation="validate_length length1-250" ></textarea>';
 		result  = result + '	    </div>';
 		
 		result  = result + '	    <div class="col-md-5">';
@@ -665,7 +665,7 @@ function addDocumentEntry(){
 		result  = result + '	      <div class="row">';
 		result  = result + '	        <div class="col-md-12 clearfix">';
 		result  = result + '	                <div class="input-group pull-left errorInptgroup">';
-		result  = result + '	                  <label class="input-group-btn"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File <input type="file" name="uploadBtn" id="uploadBtn" style="display: none;"  multiple="" class="upload">';
+		result  = result + '	                  <label class="input-group-btn"> <span class="btn btn-primary" onchange="taskUploadFile();"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File <input type="file" id="uploadBtn" style="display: none;"  class="upload" >';
 		result  = result + '	                    </span> </label>';
 		result  = result + '	                  <input class="form-control" readonly id="uploadFile" name="docFile"  placeholder="Attachment" type="text" field-name="Document" data-validation="required validate_docimgpdf">';
 		result  = result + '	                </div>';
@@ -701,7 +701,13 @@ function addDocumentEntry(){
 	    	  $("#uploadFileGroup").append("<p class='jquery_form_error_message'>Limit is exceeded than 2MB </p>");
 	      }
 	    });
+	    
+	     
 	
+}
+function taskUploadFile(){
+	var sourceleadUrl = '${sourceleadUrl}';
+	fileUpload(sourceleadUrl, "uploadBtn", "tasks", "addDocument_form");
 }
 
 function documentTableList(){
@@ -744,7 +750,7 @@ function documentTableList(){
 	   		 		result  = result + '		          <td>';
 	   		 		result  = result + '		          <div class="tbldata-dotdot-me" title="'+description+'">'+description+'</div>';
 	   		 		result  = result + '		        </td>';
-	   		 	    result  = result + '               <td><div class="tblminwidth-50"><a href="javascript:void(0)" onclick="projectTaskDocumentView(\''+report.id+'\',\''+report.fileName+'\');" class="fa fa-eye ml10 paddingRight"></a><a class="paddingLeft glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/ProjectTasks/downloadProjectTaskDoc?porjectTaskDocumentId='+report.id+'\"></a></div></td>';
+	   		 	    result  = result + '               <td><div class="tblminwidth-50"><a href="javascript:void(0)" onclick="projectTaskDocumentView(\''+report.id+'\',\''+report.fileName+'\');" class="fa fa-eye ml10 paddingRight"></a><a class="paddingLeft glyphicon glyphicon-download-alt" href=\"'+report.fileURL+'\"></a></div></td>';
 	   		 	    result  = result + '               <td><div><a class="glyphicon glyphicon-pencil padddigRight" title="Edit" onclick="getEditTaskDocument('+report.id+');"></a><i title="Delete" class="glyphicon glyphicon-trash paddingLeft" onclick="removeProjectTaskDocuments('+report.id+');"></i></div></td>';
 	   		 		result  = result + '		      </tr>';
    				}
@@ -787,7 +793,7 @@ function getEditTaskDocument(projectTaskDocId){
 					result = result + '    <form id="updateDocument_form" name="updateDocument_form">';
 					
 					result  = result + '	    <div class="col-md-12 mb10">';
-					result  = result + '	      <textarea class="form-control" rows="1" placeholder="Description" id="description" name="description" value="'+description+'" data-validation-optional="true" data-validation="validate_length length1-250" >'+description+'</textarea>';
+					result  = result + '	      <textarea class="form-control" rows="1" placeholder="Description" id="description" name="taskDescription" value="'+description+'" data-validation-optional="true" data-validation="validate_length length1-250" >'+description+'</textarea>';
 					result  = result + '	    </div>';
 					
 					result  = result + '	    <div class="col-md-5">';
@@ -802,7 +808,7 @@ function getEditTaskDocument(projectTaskDocId){
 					result  = result + '	      <div class="row">';
 					result  = result + '	        <div class="col-md-12 clearfix">';
 					result  = result + '	                <div class="input-group col-md-10 pull-left errorInptgroup">';
-					result  = result + '	                  <label class="input-group-btn"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File <input type="file" name="uploadBtn" id="uploadBtn" style="display: none;"  multiple="" class="upload">';
+					result  = result + '	                  <label class="input-group-btn"> <span class="btn btn-primary" onchange="editUploadFile();"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File <input type="file"  id="uploadBtn" style="display: none;"   class="upload">';
 					result  = result + '	                    </span> </label>';
 					result  = result + '	                  <input class="form-control" readonly id="uploadFile" name="docFile"  placeholder="Attachment" type="text" field-name="Document" data-validation="required validate_docimgpdf">';
 					result  = result + '	                </div>';
@@ -812,8 +818,8 @@ function getEditTaskDocument(projectTaskDocId){
 					
 					result = result+'<div class="col-md-7" id="docNameDiv">';
 		   			result = result+'	  <div class="col-md-12 clearfix form-control">';
-		   			result = result + '	      <div class="input-group col-md-10 pull-left">';
-		   			result = result+'		   <label id="docsName" name="docName" class="text-primary pull-left paddingRight" title="'+documentName+'">'+documentName+'</label><span id="delete_doc" onclick="removeDocNameDiv();"><i class="cursorPointer text-danger paddingLeft fa fa-trash removeIcon" title="Delete"></i></span>';
+		   			result = result + '	      <div class="input-group col-md-12 pull-left">';
+		   			result = result+'		   <label id="docsName" name="docName" class="text-primary pull-left paddingRight tbldata-dotdot-verybig" title="'+json.fileName+'">'+json.fileName+'</label><span id="delete_doc" onclick="removeDocNameDiv();"><i class="cursorPointer text-danger paddingLeft fa fa-trash removeIcon" title="Delete"></i></span>';
 		   			result = result+'	     </div>';
 		   			result = result+'	  </div>';
 		   			result = result+'</div>';
@@ -850,9 +856,17 @@ function getEditTaskDocument(projectTaskDocId){
 				    	  $("#uploadFileGroup").append("<p class='jquery_form_error_message'>Limit is exceeded than 2MB </p>");
 				      }
 				    });
+				    
+				    
 			    }
 	 });
 	 
+}
+</script>
+<script>
+function editUploadFile(){
+	var sourceleadUrl ='${sourceleadUrl}';
+	fileUpload(sourceleadUrl, "uploadBtn", "tasks", "updateDocument_form");
 }
 </script>
 <script>
@@ -867,10 +881,8 @@ function removeDocNameDiv(){
 function saveDocument(){
 	 if ($('#addDocument_form').validate(false, validationSettings)) {
 			var frm = $('#addDocument_form').serializeFormJSON();
-			var jsonData = JSON.stringify(frm);
 			var form = $('#addDocument_form')[0];
 			var formData = new FormData(form);
-			formData.append("json",jsonData)
 			var projectTaskId = '${projectTask.id}';
 		  	var sourceleadUrl = '${sourceleadUrl}';
 		  	var userId = '${SourceLeadWeb_userId}';
@@ -879,10 +891,8 @@ function saveDocument(){
 			$.ajax({
 				 type : "POST",
 				 data: formData,
-	    	     contentType : 'application/json; charset=utf-8',
 		         processData: false,
 		         contentType:false, 
-	    	     dataType : 'json',
 				 url : sourceleadUrl + "/ProjectTasks/saveProjectTaskDocuments?${_csrf.parameterName}=${_csrf.token}&projectTaskId="+projectTaskId+"&userId="+userId,
 				  success : function(data) {
 					  closeTimeEntry();
@@ -939,7 +949,7 @@ function updateDocument(documentId){
 <script>
 function projectTaskDocumentView(documentId,title){
 	 var sourceleadUrl ='${sourceleadUrl}';
-		if(documentId != null && documentId != ""){deleteProjectTaskDocument
+		if(documentId != null && documentId != ""){
 			window.open(sourceleadUrl+'/ProjectTasks/viewProjectTaskDocument/'+title+'?documentId='+documentId,title,"height=600,width=600");
 		}
 }
@@ -1001,7 +1011,7 @@ function addSubTasks(){
 			result = result	+ '           <div class="col-md-8 dropdown-select">';
 		    result = result	+ '             <select class="form-control" onchange="showtasktype()" id="taskstype" name="taskstype" field-name="Task Type"  data-validation="required">'; 
 		    result = result	+ '         <c:forEach var="type" items="${taskTypeList}">  ';       
-		    result = result	+ '            <option value="${type.id}" ${type.id  == 1050 ? "selected" : ''} >${type.name}</option>'; 
+		    result = result	+ '            <option value="${type.uniqueKey}" >${type.name}</option>'; 
 		    result = result	+ '  		</c:forEach>  ';                                           
 			result = result	+ '             </select>'; 
 			result = result	+ '           </div>';
@@ -1041,7 +1051,7 @@ function addSubTasks(){
 			result = result	+ '         <div class="form-group">';
 			result = result	+ '           <label class="col-md-4">Assign To</label>';
 			result = result	+ '           <div class="col-md-8">';
-			result = result	+ '             <select class="form-control chosen-select choose" multiple  id="assignTaskId" name="assignToTask" data-placeholder="Select Assign To">';
+			result = result	+ '             <select class="form-control chosen-select choose" multiple  id="assignTaskId" name="assignTaskId" data-placeholder="Select Assign To">';
 			result = result	+ '             </select>';
 			result = result	+ '           </div>';
 			result = result	+ '         </div>';
@@ -1210,7 +1220,7 @@ function addSubTasks(){
 var fileCounter = 0;
 function addFileUpload(){
 	
-	$('<div>').attr('style','float:left; width:325px; border:1px solid #ddd; margin:0 15px 15px 0; padding:5px;overflow: hidden; background-color:#367fa9; color:#fff; ').append('<input id="file' +  '" name = "project_files' + '" type="file" class="pull-left" />' +
+	$('<div>').attr('style','float:left; width:325px; border:1px solid #ddd; margin:0 15px 15px 0; padding:5px;overflow: hidden; background-color:#367fa9; color:#fff; ').append('<input id="file'+fileCounter+'"  type="file" class="pull-left" onchange="uploadButton('+fileCounter+');"/>' +
             '<a id="Button' + fileCounter + '' +
             'value="" onclick = "RemoveFileUpload(this)"><i class="fa fa-times btn btn-danger btn-sm btn-sm2 pull-right"></i></a>').appendTo($('#FileUploadContainer'));
 
@@ -1232,6 +1242,12 @@ function cancelTask(){
 	$("projectTask_form").validate().resetForm();
 	
 	 
+}
+</script>
+<script>
+function uploadButton(id){
+	var sourceleadUrl ='${sourceleadUrl}';
+	fileUpload(sourceleadUrl, "file"+id+"", "tasks", "projectTask_form");
 }
 </script>
 <script>
@@ -1277,7 +1293,7 @@ function subTasksAssignList(projectId){
         	for (var i=0; i<json.projectMembersList.length; i++)
 			{
 	        		var opt = json.projectMembersList[i];
-	        		output = output + "<option value='" +opt.id+ "'>"+opt.empName+"</option>";
+	        		output = output + "<option value='"+opt.id+"'>"+opt.empName+"</option>";
 			}
         	$("#assignTaskId").chosen();
         	$("#assignTaskId").empty();
@@ -1291,85 +1307,89 @@ function subTasksAssignList(projectId){
 <script>
  function showtasktype(){
 	 var taskType = $("#taskstype").val();
-	 //dont remove the comments by Laxman
-	 //1047 Epic
-	 //1048 UserStory
-	 //1049 Bug
-	 //1050 SubTask these are Lookupdata TaskType id's
-	 if(taskType == '1048'){
+	 if(taskType ==  "General" || taskType == "Epic"){
+		 document.getElementById("userStory").style.display="none";
+		 document.getElementById("epic").style.display="none";
+		 document.getElementById("task").style.display="none";
+		 $('#taskId').removeAttr("data-validation","required");
+	 }
+	   if(taskType ==  "UserStory"){
 		 document.getElementById("epic").style.display="block";
+		 document.getElementById("userStory").style.display="none";
 		 document.getElementById("task").style.display="none";
 		 $('#taskId').removeAttr("data-validation","required");
-		 getSubEpics(taskType);
+		 getSubEpicsByUserStory();
 	 }
-	 if(taskType == '1049' || taskType == '1050'){
+	    if(taskType ==  "Bug"){
+		 document.getElementById("epic").style.display="none";
 		 document.getElementById("userStory").style.display="block";
-		 document.getElementById("epic").style.display="none";
 		 document.getElementById("task").style.display="none";
 		 $('#taskId').removeAttr("data-validation","required");
-		 getSubEpics(taskType)
+		 getUserStoryByBug();
 	 }
-	 if(taskType == '1047'){
-		 document.getElementById("userStory").style.display="none";
+	 if(taskType ==  "SubTask"){
 		 document.getElementById("epic").style.display="none";
-		 document.getElementById("task").style.display="none";
-		 $('#taskId').removeAttr("data-validation","required");
-	 } 
-	 if(taskType == '1050'){
+		 document.getElementById("userStory").style.display="none";
 		 document.getElementById("task").style.display="block";
-		 document.getElementById("epic").style.display="none";
-		 document.getElementById("userStory").style.display="none";
 		 $('#taskId').attr("data-validation","required"); 
-		 getSubTasks(taskType)
-	 }
+		 getSubTasks(taskType);
+	 } 
+	 
  }
  </script>
  <script>
- function getSubEpics(type){
-	var taskType = null;
-	 if(type == '1048'){
-		 taskType = "1047";
-	 }else if(type == '1049'){
-		 taskType = "1048";
-	 }
+ function getSubEpicsByUserStory(type){
 	 var projectId =  "${projectId}";
-	var sourceleadUrl ='${sourceleadUrl}';
-	$.ajax({
+	 var sourceleadUrl ='${sourceleadUrl}';
+	 var taskType = "Epic";
+	 $.ajax({
 	    	type: "POST",
 	    	 url: sourceleadUrl+"/ProjectTasks/getProjectTasksByTaskType?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId+"&taskType="+taskType,
 	    		success: function(json) {
-	     		var output = "";
-	     		if(type == '1048'){
-	     			output = output + "<option value=''>--Select Epic--</option>";
-	     		}else{
-	     			output = output + "<option value=''>--Select User Story--</option>";
-	     		}
-	     			
-	     		for (var i=0; i<json.length; i++)
-	     		{
-		     		var opt = json[i];
-		     		
-		     			output = output + "<option value='" +opt.id+ "'>"+opt.taskName+"</option>";
-	     		}
-	     		if(type == '1048'){
-	     			$("#epicId").empty();
+	    			var output = "";
+	    				output = output + "<option value=''>--Select Epic--</option>";
+	    			for (var i=0; i<json.length; i++)
+		     		{
+			     		var opt = json[i];
+			     			output = output + "<option value='" +opt.id+ "'>"+opt.taskName+"</option>";
+		     		}
+	    			 
+	    			$("#epicId").empty();
 		     		$("#epicId").append(output);
 		     		$('#epicId').trigger("chosen:updated");
-	     		}else{
-	     			$("#userStroyId").empty();
-		     		$("#userStroyId").append(output);
-		     		$('#userStroyId').trigger("chosen:updated");
-	     		}
-	     		
-	         }
+	    		}
 	 });
  }
+ function getUserStoryByBug(){
+	 var projectId =  "${projectId}";
+	 var sourceleadUrl ='${sourceleadUrl}';
+	 var taskType = "UserStory";
+	 $.ajax({
+	    	type: "POST",
+	    	 url: sourceleadUrl+"/ProjectTasks/getProjectTasksByTaskType?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId+"&taskType="+taskType,
+	    		success: function(json) {
+	    			var output = "";
+	    				output = output + "<option value=''>--Select User Story--</option>";
+	    			 
+	    			for (var i=0; i<json.length; i++)
+		     		{
+			     		var opt = json[i];
+			     			output = output + "<option value='" +opt.id+ "'>"+opt.taskName+"</option>";
+		     		}
+	    				$("#userStroyId").empty();
+			     		$("#userStroyId").append(output);
+			     		$('#userStroyId').trigger("chosen:updated");
+	    		}
+	 });
+ }
+ 
  </script>
  <script>
- function getSubTasks(taskType){
+ function getSubTasks(){
 	 var projectId =  "${projectId}";
 	var sourceleadUrl ='${sourceleadUrl}';
 	var projectTaskId = "${projectTask.id}";
+	taskType = "SubTask";
 	$.ajax({
 	    	type: "POST",
 	    	 url: sourceleadUrl+"/ProjectTasks/getProjectTasksBySubTaskType?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId+"&taskType="+taskType,
@@ -1400,10 +1420,8 @@ function saveTasks(){
 	 if ($('#projectTask_form').validate(false, validationSettings)) {
 		var frm = $('#projectTask_form').serializeFormJSON();
 		var ee = $("#txtEditor").val($('.Editor-editor').html()); 
-		var jsonData = JSON.stringify(frm);
 		var form = $('#projectTask_form')[0];
 		var formData = new FormData(form);
-		formData.append("json",jsonData)
 		var projectId =  "${projectId}";
 	  	var sourceleadUrl = '${sourceleadUrl}';
 	  	$("#save_task").attr("disabled", "disabled");
@@ -1412,10 +1430,8 @@ function saveTasks(){
 		$.ajax({
 			 type : "POST",
 			 data: formData,
-    	     contentType : 'application/json; charset=utf-8',
 	         processData: false,
 	         contentType:false, 
-    	     dataType : 'json',
 			 url : sourceleadUrl + "/ProjectTasks/saveProjectTasks?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId+"&userId="+userId,
 			  success : function(data) {
 				  getSubTaskList();

@@ -57,7 +57,7 @@ public class ProjectTaskDocumentDaoImpl implements ProjectTaskDocumentDao{
 	@Transactional(rollbackFor = { Exception.class })	
 	public List<ProjectTaskDocuments> getProjectTaskDocumentsListByProjectIdId(Long projectTaskId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from ProjectTaskDocuments  projectTaskDoc  where projectTaskDoc.projectTaskId.id =:projectTaskId and projectTaskDoc.status ='1'";
+		String query = "from ProjectTaskDocuments  projectTaskDoc  where projectTaskDoc.projectTaskId.id =:projectTaskId";
 		List<ProjectTaskDocuments> projectTaskDocumentList = session.createQuery(query).setLong("projectTaskId", projectTaskId).setCacheable(true).list();
 		return projectTaskDocumentList;
 	}

@@ -323,68 +323,113 @@ function editCancel(){
  <script>
  function showtasktype(){
 	 var taskType = $("#taskstype").val();
-	 //dont rempve the comments by Laxman
-	 //1047 Epic
-	 //1048 UserStory
-	 //1049 Bug
-	 //1050 SubTask these are Lookupdata TaskType id's
-	 if(taskType == '1048'){
-		 document.getElementById("epic").style.display="block";
-		 getSubEpics(taskType);
-	 }
-	 if(taskType == '1049' || taskType == '1050'){
-		 document.getElementById("userStory").style.display="block";
-		 document.getElementById("epic").style.display="none";
-		 getSubEpics(taskType)
-	 }
-	 if(taskType == '1047'){
+	  if(taskType ==  "General" || taskType == "Epic"){
 		 document.getElementById("userStory").style.display="none";
 		 document.getElementById("epic").style.display="none";
+		 document.getElementById("task").style.display="none";
+		 $('#taskId').removeAttr("data-validation","required");
+	 }
+	   if(taskType ==  "UserStory"){
+		 document.getElementById("epic").style.display="block";
+		 document.getElementById("userStory").style.display="none";
+		 document.getElementById("task").style.display="none";
+		 $('#taskId').removeAttr("data-validation","required");
+		 getSubEpicsByUserStory();
+	 }
+	    if(taskType ==  "Bug"){
+		 document.getElementById("epic").style.display="none";
+		 document.getElementById("userStory").style.display="block";
+		 document.getElementById("task").style.display="none";
+		 $('#taskId').removeAttr("data-validation","required");
+		 getUserStoryByBug();
+	 }
+	 if(taskType ==  "SubTask"){
+		 document.getElementById("epic").style.display="none";
+		 document.getElementById("userStory").style.display="none";
+		 document.getElementById("task").style.display="block";
+		 $('#taskId').attr("data-validation","required"); 
+		 getSubTasks(taskType);
 	 } 
+	 
  }
  </script>
  <script>
- function getSubEpics(type){
-	var taskType = null;
-	 if(type == '1048'){
-		 taskType = "1047";
-	 }else if(type == '1049' || type == '1050'){
-		 taskType = "1048";
-	 }
-	var projectId = $("#projectId").val();
+ function getSubEpicsByUserStory(type){
+	 var projectId = $("#projectId").val();
+	 var sourceleadUrl ='${sourceleadUrl}';
+	 var taskType = "Epic";
+	 $.ajax({
+	    	type: "POST",
+	    	 url: sourceleadUrl+"/ProjectTasks/getProjectTasksByTaskType?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId+"&taskType="+taskType,
+	    		success: function(json) {
+	    			var output = "";
+	    				output = output + "<option value=''>--Select Epic--</option>";
+	    			for (var i=0; i<json.length; i++)
+		     		{
+			     		var opt = json[i];
+			     			output = output + "<option value='" +opt.id+ "'>"+opt.taskName+"</option>";
+		     		}
+	    			 
+	    			$("#epicId").empty();
+		     		$("#epicId").append(output);
+		     		$('#epicId').trigger("chosen:updated");
+	    		}
+	 });
+ }
+ function getUserStoryByBug(){
+	 var projectId = $("#projectId").val();
+	 var sourceleadUrl ='${sourceleadUrl}';
+	 var taskType = "UserStory";
+	 $.ajax({
+	    	type: "POST",
+	    	 url: sourceleadUrl+"/ProjectTasks/getProjectTasksByTaskType?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId+"&taskType="+taskType,
+	    		success: function(json) {
+	    			var output = "";
+	    				output = output + "<option value=''>--Select User Story--</option>";
+	    			 
+	    			for (var i=0; i<json.length; i++)
+		     		{
+			     		var opt = json[i];
+			     			output = output + "<option value='" +opt.id+ "'>"+opt.taskName+"</option>";
+		     		}
+	    				$("#userStroyId").empty();
+			     		$("#userStroyId").append(output);
+			     		$('#userStroyId').trigger("chosen:updated");
+	    		}
+	 });
+ }
+ </script>
+ <script>
+ function getSubTasks(taskType){
+	 var projectId =  "${projectId}";
 	var sourceleadUrl ='${sourceleadUrl}';
+	var projectTaskId = "${projectTask.id}";
+	taskType = "SubTask";
 	$.ajax({
 	    	type: "POST",
-	    	 url: sourceleadUrl+"/getProjectTasksByTaskType?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId+"&taskType="+taskType,
+	    	 url: sourceleadUrl+"/ProjectTasks/getProjectTasksBySubTaskType?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId+"&taskType="+taskType,
 	    		success: function(json) {
 	     		var output = "";
-	     		if(type == '1048'){
-	     			output = output + "<option value=''>--Select Epic--</option>";
-	     		}else{
-	     			output = output + "<option value=''>--Select User Story--</option>";
-	     		}
-	     			
+	     			output = output + "<option value=''>--Select Task--</option>";
 	     		for (var i=0; i<json.length; i++)
 	     		{
 		     		var opt = json[i];
+		     		if(opt.id == projectTaskId){
+	        			output = output + "<option value='"+opt.id+"' selected>"+opt.taskName+"</option>";
+	        		}else{
+	        			output = output + "<option value='"+opt.id+"'>"+opt.taskName+"</option>";
+	        		}
 		     		
-		     			output = output + "<option value='" +opt.id+ "'>"+opt.taskName+"</option>";
+		     		
 	     		}
-	     		if(type == '1048'){
-	     			$("#epicId").empty();
-		     		$("#epicId").append(output);
-		     		$('#epicId').trigger("chosen:updated");
-	     		}else{
-	     			$("#userStroyId").empty();
-		     		$("#userStroyId").append(output);
-		     		$('#userStroyId').trigger("chosen:updated");
-	     		}
+	     			$("#subTasksId").empty();
+		     		$("#subTasksId").append(output);
+		     		$('#subTasksId').trigger("chosen:updated");
 	     		
 	         }
 	 });
  }
  </script>
- 
 <script>
     function addTimeEntry(){
         $(".modal-Time").fadeIn();
@@ -405,7 +450,7 @@ function editCancel(){
 			result = result	+ '           <div class="col-md-8 dropdown-select">';
 		    result = result	+ '             <select class="form-control" onchange="showtasktype()" id="taskstype" name="taskstype" field-name="Task Type"  data-validation="required">'; 
 		    result = result	+ '     <c:forEach var="type" items="${taskTypeList}">  ';        
-		    result = result	+ '  	 	  <option value="${type.id}">${type.name}</option>';   
+		    result = result	+ '  	 	  <option value="${type.uniqueKey}">${type.name}</option>';   
 		    result = result	+ '  		</c:forEach>  ';                                           
 			result = result	+ '             </select>'; 
 			result = result	+ '           </div>';
@@ -424,6 +469,16 @@ function editCancel(){
 			result = result	+ '             </select>';
 			result = result	+ '           </div>';
 			result = result	+ '         </div>';
+			
+			result = result	+ '           <div class="form-group" style="display: none" id="task">';
+			result = result	+ '           <label class="col-md-4">Task<span class="text-danger paddingLeft">*</span></label>';
+			result = result	+ '           <div class="col-md-8 dropdown-select">';
+			result = result	+ '             <select class="chosen-select form-control" id="subTasksId" name="subTask" field-name="Task">';
+			result = result	+ '             </select>';
+			result = result	+ '           </div>';
+			result = result	+ '         </div>';
+			
+			
 			result = result	+ '         <div class="form-group">';
 			result = result	+ '           <label class="col-md-4">Task Title<span class="text-danger paddingLeft">*</span></label>';
 			result = result	+ '           <div class="col-md-8">';
@@ -433,7 +488,7 @@ function editCancel(){
 			result = result	+ '         <div class="form-group">';
 			result = result	+ '           <label class="col-md-4">Assign To</label>';
 			result = result	+ '           <div class="col-md-8">';
-			result = result	+ '             <select class="form-control chosen-select choose" multiple  id="assignTaskId" name="assignToTask" data-placeholder="Select Assign To">';
+			result = result	+ '             <select class="form-control chosen-select choose" multiple  id="assignTaskId" name="assignTaskId" data-placeholder="Select Assign To">';
 			result = result	+ '             </select>';
 			result = result	+ '           </div>';
 			result = result	+ '         </div>';
@@ -611,9 +666,8 @@ function editCancel(){
 	var fileCounter = 0;
 	function addFileUpload(){
 		
-		$('<div>').attr('style','float:left; width:325px; border:1px solid #ddd; margin:0 15px 15px 0; padding:5px;overflow: hidden; background-color:#367fa9; color:#fff; ').append('<input id="file' +  '" name = "project_files' + '" type="file" class="pull-left" />' +
-	            '<a id="Button' + fileCounter + '' +
-	            'value="" onclick = "RemoveFileUpload(this)"><i class="fa fa-times btn btn-danger btn-sm btn-sm2 pull-right"></i></a>').appendTo($('#FileUploadContainer'));
+		$('<div>').attr('style','float:left; width:325px; border:1px solid #ddd; margin:0 15px 15px 0; padding:5px;overflow: hidden; background-color:#367fa9; color:#fff; ').append('<input id="file'+fileCounter+'"  type="file" class="pull-left" onchange="uploadButton('+fileCounter+');"/>' +
+	            '<a id="Button' + fileCounter + '" onclick = "RemoveFileUpload(this)"><i class="fa fa-times btn btn-danger btn-sm btn-sm2 pull-right"></i></a>').appendTo($('#FileUploadContainer'));
 
 	    		fileCounter++;
 	}
@@ -635,7 +689,12 @@ function editCancel(){
 		 
 	}
 </script>
-
+<script>
+function uploadButton(id){
+	var sourceleadUrl ='${sourceleadUrl}';
+	fileUpload(sourceleadUrl, "file"+id+"", "tasks", "projectTask_form");
+}
+</script>
  
  <script>
 function getOwnerList(){
@@ -680,7 +739,7 @@ function tasksAssignList(projectId){
         	for (var i=0; i<json.projectMembersList.length; i++)
 			{
 	        		var opt = json.projectMembersList[i];
-	        		output = output + "<option value='" +opt.id+ "'>"+opt.empName+"</option>";
+	        		output = output + "<option value='"+opt.id+"'>"+opt.empName+"</option>";
 			}
         	$("#assignTaskId").chosen();
         	$("#assignTaskId").empty();
@@ -694,12 +753,9 @@ function tasksAssignList(projectId){
 <script>
 function saveTasks(){
 	 if ($('#projectTask_form').validate(false, validationSettings)) {
-		var frm = $('#projectTask_form').serializeFormJSON();
 		var ee = $("#txtEditor").val($('.Editor-editor').html()); 
-		var jsonData = JSON.stringify(frm);
 		var form = $('#projectTask_form')[0];
 		var formData = new FormData(form);
-		formData.append("json",jsonData)
 		var projectId = $("#projectId").val();
 		var userId = '${SourceLeadWeb_userId}';
 	  	var sourceleadUrl = '${sourceleadUrl}';
@@ -708,10 +764,8 @@ function saveTasks(){
 		$.ajax({
 			 type : "POST",
 			 data: formData,
-    	     contentType : 'application/json; charset=utf-8',
 	         processData: false,
 	         contentType:false, 
-    	     dataType : 'json',
     	     url : sourceleadUrl + "/ProjectTasks/saveProjectTasks?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId+"&userId="+userId,
 			  success : function(data) {
 				var status = $("#projectStatus").val();

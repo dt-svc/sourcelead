@@ -265,7 +265,9 @@ public class ProjectsController {
 				 
 				 List<ProjectAssignTask> assignedUsers = projectAssignTasksService.getProjectAssignTaskListByProjectTaskId(Long.valueOf(taskId)); 
 				 for(ProjectAssignTask pat:assignedUsers) {
-					 pat.setAssignedUserName(pat.getProjectMemberId().getEmployee().getUser().getFullName());
+					 if(pat.getProjectMemberId() != null) {
+						 pat.setAssignedUserName(pat.getProjectMemberId().getEmployee().getUser().getFullName());
+					 }
 				 }
 				 model.addObject("assignedUsers", assignedUsers);
 				 

@@ -5,6 +5,7 @@ public class FileInfo {
 	private String fileURL;
 	private String fileName;
 	private String contentType;
+	private Integer status;
 
 	public String getFileURL() {
 		return fileURL;
@@ -28,6 +29,14 @@ public class FileInfo {
 
 	public void setContentType(String contentType) {
 		this.contentType = contentType;
+	}
+
+	public Integer getStatus() {
+		return status;
+	}
+
+	public void setStatus(Integer status) {
+		this.status = status;
 	}
 
 }

@@ -17,6 +17,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.dao.ProjectTasksDao;
+import com.bis.sourcelead.dto.FileInfo;
+import com.bis.sourcelead.dto.ProjectTasksDTO;
+import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectAssignTask;
@@ -33,6 +36,7 @@ import com.bis.sourcelead.service.ProjectTasksService;
 import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.util.FileUploadUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @Service
@@ -108,13 +112,13 @@ public class ProjectTasksServiceImpl implements ProjectTasksService {
 
 	
 	@Override
-	public List<ProjectTasks> getAllTasksByProjectIdAndTaskType(Long projectId, String TaskType) throws Exception {
+	public List<ProjectTasks> getAllTasksByProjectIdAndTaskType(Long projectId, Long TaskType) throws Exception {
 		List<ProjectTasks> taskList = tasksDao.getAllTasksByProjectIdAndTaskType(projectId,TaskType);
 		return taskList;
 	}
 
 	@Override
-	public List<ProjectTasks> getAllTasksByProjectIdAndSubTaskType(Long projectId, String subTaskType) throws Exception {
+	public List<ProjectTasks> getAllTasksByProjectIdAndSubTaskType(Long projectId, Long subTaskType) throws Exception {
 		List<ProjectTasks> taskList = tasksDao.getAllTasksByProjectIdAndSubTaskType(projectId,subTaskType);
 		return taskList;
 	}
@@ -151,85 +155,85 @@ public class ProjectTasksServiceImpl implements ProjectTasksService {
 		return allparentTaskList;
 	}
 
-
 	@Override
-	public String saveProjectTasksByProjectId(Long projectId, JSONObject jsonObj, List<ProjectTaskDocumentBO> projectTaskDocumentBOList,Long userId) throws Exception {
+	public String saveProjectTasksDTOByProjectId(Long projectId, ProjectTasksDTO projectTasksDTO, Long userId) throws Exception {
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		ProjectTasks  tasks  = new ProjectTasks();
 		
-		LookUpData taskType = lookUpDataService.getTasksById(Long.parseLong(jsonObj.getString("taskstype")));
+		LookUpData taskType = lookUpDataService.getTasksTypeByUniqueKey(projectTasksDTO.getTaskstype());
 		tasks.setTaskType(taskType);
-		tasks.setTaskName(jsonObj.getString("taskName"));
-		tasks.setBillableType(jsonObj.getString("taskBillableType"));
+		tasks.setTaskName(projectTasksDTO.getTaskName());
+		tasks.setBillableType(projectTasksDTO.getTaskBillableType());
 		Projects projects = projectsService.getProjectById(projectId);
 		tasks.setProjectId(projects);
-		if(jsonObj.has("epic") && StringUtils.isNotEmpty(jsonObj.getString("epic"))){
-			ProjectTasks parentTaks = tasksDao.getTasksId(jsonObj.getString("epic"));
+		
+		if(projectTasksDTO.getEpic() != null ) {
+			ProjectTasks parentTaks = tasksDao.getTasksId(projectTasksDTO.getEpic());
 			if(parentTaks != null) {
 				tasks.setParentTaskId(parentTaks);
 			}
 		}
-		if(jsonObj.has("userStory") && StringUtils.isNotEmpty(jsonObj.getString("userStory"))){
-			ProjectTasks parentTaks = tasksDao.getTasksId(jsonObj.getString("userStory"));
+		if(projectTasksDTO.getUserStory() != null ){
+			ProjectTasks parentTaks = tasksDao.getTasksId(projectTasksDTO.getUserStory());
 			if(parentTaks != null) {
 				tasks.setParentTaskId(parentTaks);
 			}
 		}
-		if(jsonObj.has("subTask") && StringUtils.isNotEmpty(jsonObj.getString("subTask"))){
-			ProjectTasks parentSubTask = tasksDao.getTasksId(jsonObj.getString("subTask"));
+		if(projectTasksDTO.getSubTask() != null){
+			ProjectTasks parentSubTask = tasksDao.getTasksId(projectTasksDTO.getSubTask());
 			if(parentSubTask != null) {
 				tasks.setParentTaskId(parentSubTask);
 			}
 		}
 		
-		if(jsonObj.has("duDate")){
-			if(!jsonObj.getString("duDate").isEmpty()){
-	    		Date duDate = commonUtil.orgLocationDateFormat(loginOrgLocation.getDateFormat(),jsonObj.getString("duDate"));
+		if(projectTasksDTO.getDuDate() != null && !projectTasksDTO.getDuDate().isEmpty()){
+	    		Date duDate = commonUtil.orgLocationDateFormat(loginOrgLocation.getDateFormat(),projectTasksDTO.getDuDate());
 	    		tasks.setDueDate(duDate);
-	    	}
 		}
-		if(jsonObj.has("estimatedDate")){
-			if(!jsonObj.getString("estimatedDate").isEmpty()){
-	    		Date estimatedDate = commonUtil.orgLocationDateFormat(loginOrgLocation.getDateFormat(),jsonObj.getString("estimatedDate"));
+		if(projectTasksDTO.getEstimatedDate() != null && !projectTasksDTO.getEstimatedDate().isEmpty()){
+	    		Date estimatedDate = commonUtil.orgLocationDateFormat(loginOrgLocation.getDateFormat(),projectTasksDTO.getEstimatedDate());
 	    		tasks.setEstimateDate(estimatedDate);
-	    	}
 		}
 		
 		
-		if(jsonObj.has("priority") && StringUtils.isNotEmpty(jsonObj.getString("priority"))){
-			LookUpData priority = lookUpDataService.getTasksById(Long.parseLong(jsonObj.getString("priority")));
+		if(projectTasksDTO.getPriority() != null){
+			LookUpData priority = lookUpDataService.getTasksById(projectTasksDTO.getPriority());
 			tasks.setPriority(priority);
 		}
-		if(jsonObj.has("severity") && StringUtils.isNotEmpty(jsonObj.getString("severity"))){
-			LookUpData severity = lookUpDataService.getTasksById(Long.parseLong(jsonObj.getString("severity")));
+		if(projectTasksDTO.getSeverity() != null){
+			LookUpData severity = lookUpDataService.getTasksById(projectTasksDTO.getSeverity());
 			tasks.setSeverity(severity);
 		}
-		if(jsonObj.has("taskStatus") && StringUtils.isNotEmpty(jsonObj.getString("taskStatus"))){
-			LookUpData taskStatus = lookUpDataService.getTasksById(Long.parseLong(jsonObj.getString("taskStatus")));
+		if(projectTasksDTO.getTaskStatus() != null){
+			LookUpData taskStatus = lookUpDataService.getTasksById(projectTasksDTO.getTaskStatus());
 			tasks.setTaskStatus(taskStatus);
 		}
 		
-		if(jsonObj.has("taskDescription") && StringUtils.isNotEmpty(jsonObj.getString("taskDescription"))){
-			tasks.setDescription(jsonObj.getString("taskDescription"));
+		if(projectTasksDTO.getTaskDescription() != null){
+			tasks.setDescription(projectTasksDTO.getTaskDescription());
 		}
-		if(jsonObj.has("currencyType") && StringUtils.isNotEmpty(jsonObj.getString("currencyType"))){
-			tasks.setBusinessCurrency(jsonObj.getString("currencyType"));
+		if(projectTasksDTO.getCurrencyType() != null){
+			tasks.setBusinessCurrency(projectTasksDTO.getCurrencyType());
 		}
-		if(jsonObj.has("businessValue") && StringUtils.isNotEmpty(jsonObj.getString("businessValue"))){
-			tasks.setBusinessValue(jsonObj.getString("businessValue"));
+		if(projectTasksDTO.getBusinessValue() != null){
+			tasks.setBusinessValue(projectTasksDTO.getBusinessValue());
 		}
 		
-		if(jsonObj.has("taskOwner") && StringUtils.isNotEmpty(jsonObj.getString("taskOwner"))){
-			User user = userService.getUserById(Long.parseLong(jsonObj.getString("taskOwner")));
+		if(projectTasksDTO.getTaskOwner() != null){
+			User user = userService.getUserById(projectTasksDTO.getTaskOwner());
 			if(user != null) {
 				tasks.setOwnerUserId(user);
 			}
 		}
-		
-        List<ProjectTaskDocuments> projDocDBList = projectTaskDocumentBOList.stream().map(bo -> new ProjectTaskDocuments(bo.getFileName(), bo.getFileType(),bo.getFileContents(),tasks,bo.getStatus())).collect(Collectors.toList());
-        tasks.getProjectTaskDocuments().addAll(projDocDBList);
-        
-        Set<ProjectAssignTask> assignProjetcTasks = getAssignProjectTasks(jsonObj,tasks); 
+		if(projectTasksDTO .getUploadedFileInfo() != null &&  !projectTasksDTO.getUploadedFileInfo().isEmpty()) {
+			List<ProjectTaskDocuments> projDocDBList = projectTasksDTO .getUploadedFileInfo().stream()
+					.map(bo -> new ProjectTaskDocuments(bo.getFileName(), bo.getFileURL(),bo.getContentType(),tasks)).collect(Collectors.toList());
+	        tasks.getProjectTaskDocuments().addAll(projDocDBList);
+	        for(FileInfo fileInfo : projectTasksDTO.getUploadedFileInfo()){
+				FileUploadUtil.moveFile(projectTasksDTO.getStaticPath(), fileInfo, "tasks");
+			}
+		}
+        Set<ProjectAssignTask> assignProjetcTasks = getAssignProjectTasks(projectTasksDTO,tasks); 
         tasks.setProjectAssignTask(assignProjetcTasks);
         User user = userService.getUserById(userId);
         tasks.setCreatedBy(user.getUserCode());
@@ -239,25 +243,19 @@ public class ProjectTasksServiceImpl implements ProjectTasksService {
         return "success";
 	}
 
-	private Set<ProjectAssignTask> getAssignProjectTasks(JSONObject jsonObj, ProjectTasks tasks) throws Exception {
+	private Set<ProjectAssignTask> getAssignProjectTasks(ProjectTasksDTO projectTasksDTO, ProjectTasks tasks) throws Exception {
 		 Set<ProjectAssignTask> projectAssignTaskSet = new HashSet<>();
-		if(jsonObj.has("assignToTask")){
+		 
+		if(projectTasksDTO != null && projectTasksDTO.getAssignTaskId() != null){
 			String assignId =null;
-			try{
-				JSONArray jsonArray = jsonObj.getJSONArray("assignToTask");
-				assignId = jsonArray.toString();
-			}
-			catch(JSONException e){
-				assignId =jsonObj.getString("assignToTask");
-			}
-			assignId = assignId.replaceAll("\\[", "").replaceAll("\\]","");
+				List<Long> jsonArray = projectTasksDTO.getAssignTaskId();
+				assignId = jsonArray.toString().replaceAll("\\[", "").replaceAll("\\]","").trim();
 			String[] assign = assignId.split(",");
-			for(int i=0 ;i<assign.length;i++ ){
-				
+			for(String memberId : assign)
+			{
 				ProjectAssignTask assignTask = new ProjectAssignTask();
-				
 				assignTask.setProjectTaskId(tasks);
-				ProjectMembers pm = projectMembersService.getProjectMemberById(Long.parseLong(assign[i].replace("\"", "")));
+				ProjectMembers pm = projectMembersService.getProjectMemberById(Long.parseLong(memberId.trim()));
 				assignTask.setProjectMemberId(pm);
 				assignTask.setStatus("1");
 				assignTask.setCreatedDate(CommonUtil.currentDate());

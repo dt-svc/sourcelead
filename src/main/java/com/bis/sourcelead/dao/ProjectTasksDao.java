@@ -20,9 +20,9 @@ public interface ProjectTasksDao {
     
     public List<ProjectTasks> getAllTasks()throws Exception;
     
-    public List<ProjectTasks> getAllTasksByProjectIdAndTaskType(Long projectId,String TaskType)throws Exception;
+    public List<ProjectTasks> getAllTasksByProjectIdAndTaskType(Long projectId,Long TaskType)throws Exception;
     
-    public List<ProjectTasks> getAllTasksByProjectIdAndSubTaskType(Long projectId,String subTaskType)throws Exception;
+    public List<ProjectTasks> getAllTasksByProjectIdAndSubTaskType(Long projectId,Long subTaskType)throws Exception;
     
     public List<ProjectTasks> getAllTasksByProjectId(Long projectId)throws Exception;
     
