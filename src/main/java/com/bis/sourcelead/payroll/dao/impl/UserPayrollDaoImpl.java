@@ -150,10 +150,8 @@ public class UserPayrollDaoImpl implements UserPayrollDao{
 			response.setRecordsFiltered(filteredCount);
 		}
 
-		if (checksList != null && checksList.size() > 0) {
 			response.setData(checksList);
-		}
-		return response;
+			return response;
 		
 		// TODO do not delete @Rajashekar
 		/*Session session = this.sessionFactory.getCurrentSession();
