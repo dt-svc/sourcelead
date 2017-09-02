@@ -1,6 +1,6 @@
-function viewFile(sourceleadUrl, fileURL,title){
+function viewFile(sourceleadUrl, fileURL, title, contentType){
 	if(fileURL != null && fileURL != ""){
-		window.open(sourceleadUrl+'/viewDocument/'+title+'?docFile='+encodeURI(fileURL),title,"height=600,width=600");
+		window.open(sourceleadUrl+'/viewFile?documentPath='+encodeURI(fileURL)+"&contentType="+contentType,title,"height=600,width=600");
 	}  
 }
 

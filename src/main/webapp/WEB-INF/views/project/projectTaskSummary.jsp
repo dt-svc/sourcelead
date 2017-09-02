@@ -79,9 +79,9 @@
 	       <div class="clearfix">
 	         <div class="project_side_wrap_inn_tabs">
 	          <ul class="project-tabs-menu">
-	            <li class="current"><a href="#tab-task1">Time Entry</a></li>
+<!-- 	            <li class="current"><a href="#tab-task1">Time Entry</a></li> -->
 	            <c:if test="${projectTask.taskType.id != 1059}">
-	            <li><a href="#tab-task2" onclick="getSubTaskList();">Sub Tasks</a></li>
+	            <li class="current"><a href="#tab-task2" onclick="getSubTaskList();">Sub Tasks</a></li>
 	            </c:if>
 	            <li><a href="#tab-task3" onclick="closeTimeEntry();documentTableList();">Documents</a></li>
 	            <li><a href="#tab-task4" onclick="getTaskActivities();">Activities</a></li>
@@ -1010,8 +1010,8 @@ function addSubTasks(){
 			result = result	+ '           <label class="col-md-4">Task Type<span class="text-danger paddingLeft">*</span></label>';
 			result = result	+ '           <div class="col-md-8 dropdown-select">';
 		    result = result	+ '             <select class="form-control" onchange="showtasktype()" id="taskstype" name="taskstype" field-name="Task Type"  data-validation="required">'; 
-		    result = result	+ '         <c:forEach var="type" items="${taskTypeList}">  ';       
-		    result = result	+ '            <option value="${type.uniqueKey}" >${type.name}</option>'; 
+		    result = result	+ '         <c:forEach var="type" items="${taskTypeList}">  ';      
+		    result = result	+ '            <option value="${type.uniqueKey}" ${type.uniqueKey  == "SubTask" ? "selected" : ''} >${type.name}</option>'; 
 		    result = result	+ '  		</c:forEach>  ';                                           
 			result = result	+ '             </select>'; 
 			result = result	+ '           </div>';
@@ -1307,6 +1307,7 @@ function subTasksAssignList(projectId){
 <script>
  function showtasktype(){
 	 var taskType = $("#taskstype").val();
+	 alert("taskType"+taskType)
 	 if(taskType ==  "General" || taskType == "Epic"){
 		 document.getElementById("userStory").style.display="none";
 		 document.getElementById("epic").style.display="none";
@@ -1332,7 +1333,7 @@ function subTasksAssignList(projectId){
 		 document.getElementById("userStory").style.display="none";
 		 document.getElementById("task").style.display="block";
 		 $('#taskId').attr("data-validation","required"); 
-		 getSubTasks(taskType);
+		 getSubTasks();
 	 } 
 	 
  }
@@ -1351,7 +1352,7 @@ function subTasksAssignList(projectId){
 	    			for (var i=0; i<json.length; i++)
 		     		{
 			     		var opt = json[i];
-			     			output = output + "<option value='" +opt.id+ "'>"+opt.taskName+"</option>";
+			     			output = output + "<option value='" +opt.id+ "'>"+opt.taskName+" ("+opt.generatedId+")</option>";
 		     		}
 	    			 
 	    			$("#epicId").empty();
@@ -1374,7 +1375,7 @@ function subTasksAssignList(projectId){
 	    			for (var i=0; i<json.length; i++)
 		     		{
 			     		var opt = json[i];
-			     			output = output + "<option value='" +opt.id+ "'>"+opt.taskName+"</option>";
+			     			output = output + "<option value='" +opt.id+ "'>"+opt.taskName+" ("+opt.generatedId+")</option>";
 		     		}
 	    				$("#userStroyId").empty();
 			     		$("#userStroyId").append(output);
@@ -1400,9 +1401,9 @@ function subTasksAssignList(projectId){
 	     		{
 		     		var opt = json[i];
 		     		if(opt.id == projectTaskId){
-	        			output = output + "<option value='"+opt.id+"' selected>"+opt.taskName+"</option>";
+	        			output = output + "<option value='"+opt.id+"' selected>"+opt.taskName+" ("+opt.generatedId+")</option>";
 	        		}else{
-	        			output = output + "<option value='"+opt.id+"'>"+opt.taskName+"</option>";
+	        			output = output + "<option value='"+opt.id+"'>"+opt.taskName+" ("+opt.generatedId+")</option>";
 	        		}
 		     		
 		     		

@@ -419,7 +419,7 @@ function addResume(candidateId) {
 
 									result = result+'<td><div><span>'+candidateResumeUpdateDateToString+'</span></div></td>';
 					           		result = result+'<td><div class="tblicons_4"> <a class="glyphicon glyphicon-download-alt" href=\"'+opt.fileURL+'\" title="Download"></a>';
-					           		result = result+' <a class="fa fa-eye" href="javascript:void(0)" onClick="viewFile(\'${sourceleadUrl}\',\''+opt.fileURL+'\',\''+opt.fileName+'\');"title="preview"></a>';
+					           		result = result+' <a class="fa fa-eye" href="javascript:void(0)" onClick="viewFile(\'${sourceleadUrl}\',\''+opt.fileURL+'\',\''+opt.fileName+'\',\''+opt.fileContentType+'\');"title="preview"></a>';
 		           						          
 					           		if(window.candidateStatusGlobal == 0){
 					           			result = result+'<a class="glyphicon glyphicon-pencil" href="javascript:void(0)"></a>';

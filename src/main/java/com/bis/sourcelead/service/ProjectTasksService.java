@@ -26,6 +26,8 @@ public interface ProjectTasksService {
     
     public ProjectTasks getTasksId(String id)throws Exception;
     
+    public ProjectTasks getProjectTasksByUUID(String taskUUD)throws Exception;
+    
     public Boolean deleteTask(String id)throws Exception;
     
     public List<ProjectTasks> getAllTasks()throws Exception;
@@ -39,8 +41,6 @@ public interface ProjectTasksService {
     public List<ProjectTasks> getAllTasksByProjectIdAndExistedProjectTaskIds(Long projectId,List<Long> avilableProjectTaskIds)throws Exception;
     
     public Collection	<ProjectTasks> getAllSourceleadTasks()throws Exception;
-    
-//    String saveProjectTasksByProjectId(Long projectId,JSONObject jsonObj,List<ProjectTaskDocumentBO> projectTaskDocuments,Long userId) throws Exception ;
     
     Set<ProjectTasks> prepareProjectTasksListByJson(JSONObject jsonObj,HttpServletRequest request,Projects projects) throws Exception;
     
@@ -59,4 +59,8 @@ public interface ProjectTasksService {
 	public void updateTaskName(String taskName, String taskId, Long userId)throws Exception;
     
 	public String saveProjectTasksDTOByProjectId(Long projectId, ProjectTasksDTO projectTasksDTO, Long userId) throws Exception;
+	
+	public Long getProjectTasksGeneratedIdByProjectId(Long projectId,Integer generatedIdCount) throws Exception;
+	
+	
 }

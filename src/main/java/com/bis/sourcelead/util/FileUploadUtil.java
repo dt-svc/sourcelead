@@ -31,7 +31,10 @@ public class FileUploadUtil {
 			url = "/slead-static/"+fileType+"/"+fileName+new Date().getTime()+extenstion;
 			fileName = "/slead-static/temp/"+fileName+new Date().getTime()+extenstion;
 		}
-		File folderFile = new File(staticPath, "/slead-static"+orgId+"/"+locationId+"/"+fileType);
+		File folderFile = new File(staticPath, "/slead-static/"+orgId+"/"+locationId+"/"+fileType);
+		if(!folderFile.exists())
+			folderFile.mkdirs();
+		folderFile = new File(staticPath, "/slead-static/"+orgId+"/"+locationId+"/temp");
 		if(!folderFile.exists())
 			folderFile.mkdirs();
 		File file = new File(staticPath, fileName);

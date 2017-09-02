@@ -42,9 +42,14 @@ public class ProjectTasks implements Serializable{
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long Id;
 	
-		 
 	@Column(name = "TASK_NAME")
 	private String taskName;
+	
+	@Column(name = "PROJECT_TASKS_UUID")
+	private String projectTasksUUID;
+		 
+	@Column(name = "GENERATED_ID")
+	private String generatedId;
 	  
 	@Column(name = "DESCRIPTION")
 	@Type(type="text")
@@ -145,6 +150,22 @@ public class ProjectTasks implements Serializable{
 
 	public void setId(Long id) {
 		Id = id;
+	}
+	
+	public String getProjectTasksUUID() {
+		return projectTasksUUID;
+	}
+
+	public void setProjectTasksUUID(String projectTasksUUID) {
+		this.projectTasksUUID = projectTasksUUID;
+	}
+
+	public String getGeneratedId() {
+		return generatedId;
+	}
+
+	public void setGeneratedId(String generatedId) {
+		this.generatedId = generatedId;
 	}
 
 	public String getTaskName() {

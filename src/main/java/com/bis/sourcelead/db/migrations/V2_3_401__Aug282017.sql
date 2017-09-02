@@ -28,6 +28,10 @@ CALL sourcelead.AlterTableAddColumn ('sourcelead','PROJECT_TASKS','OWNER_NAME','
 
 CALL sourcelead.AlterTableAddColumn ('sourcelead','LOOKUP_DATA','UNIQUE_KEY','VARCHAR(500) NULL  AFTER `CATEGORY`');
 
+CALL sourcelead.AlterTableAddColumn ('sourcelead','PROJECT_TASKS','GENERATED_ID','VARCHAR(50) NULL AFTER `ID`');
+
+CALL sourcelead.AlterTableAddColumn ('sourcelead','PROJECT_TASKS','PROJECT_TASKS_UUID','VARCHAR(50) NULL AFTER `GENERATED_ID`');
+
 
 DROP TABLE IF EXISTS `sourcelead`.`PROJECT_ASSIGN_TASK`;
 CREATE TABLE `sourcelead`.`PROJECT_ASSIGN_TASK` (
