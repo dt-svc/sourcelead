@@ -38,7 +38,7 @@ public class CandidateDTO {
 	private User recruiterUserId;
 
 	private String candidateType;
-
+	
 	@Required(desc = "first name")
 	private String firstName;
 
@@ -159,6 +159,20 @@ public class CandidateDTO {
 	private String phoneNumber;
 	
 	private String visa;
+	
+	private Long associateId;
+	
+	private Long projectId;
+	
+	private String isMailSent;
+	
+	private String userEmail;
+	
+	private String EmailId;
+	
+	private String candidateEducation;
+	
+	private String candidateEmployers;
 
 	public long getCandidateId() {
 		return candidateId;
@@ -696,4 +710,61 @@ public class CandidateDTO {
 		this.uploadedFileInfo = uploadedFileInfo;
 	}
 
+	public Long getAssociateId() {
+		return associateId;
+	}
+
+	public void setAssociateId(Long associateId) {
+		this.associateId = associateId;
+	}
+
+	public Long getProjectId() {
+		return projectId;
+	}
+
+	public void setProjectId(Long projectId) {
+		this.projectId = projectId;
+	}
+
+	public String getIsMailSent() {
+		return isMailSent;
+	}
+
+	public void setIsMailSent(String isMailSent) {
+		this.isMailSent = isMailSent;
+	}
+
+	public String getUserEmail() {
+		return userEmail;
+	}
+
+	public void setUserEmail(String userEmail) {
+		this.userEmail = userEmail;
+	}
+
+	public String getEmailId() {
+		return EmailId;
+	}
+
+	public void setEmailId(String emailId) {
+		EmailId = emailId;
+	}
+
+	public String getCandidateEducation() {
+		return candidateEducation;
+	}
+
+	public void setCandidateEducation(String candidateEducation) {
+		this.candidateEducation = candidateEducation;
+	}
+
+	public String getCandidateEmployers() {
+		return candidateEmployers;
+	}
+
+	public void setCandidateEmployers(String candidateEmployers) {
+		this.candidateEmployers = candidateEmployers;
+	}
+
+	
 }

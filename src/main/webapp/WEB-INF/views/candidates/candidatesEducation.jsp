@@ -348,7 +348,7 @@ function addEducation(candidateId) {
 	
 	
 	result  = result + '                 <div class="clearfix mb10">';
-	result = result  +'	                     <div class="col-md-4 dropdown-select positionRelative">';
+	result = result  +'	                     <div class="col-md-6 dropdown-select positionRelative paddingRight">';
 	result = result  +'	                     <select class=""  name="scoreType" id="scoreEducationType" onchange="educationSelectScoreType();clearSearchKeyEducation();">';
 	result = result  +' 					   <option value="" selected="selected">Score Type</option>';
 	result = result  +'	                       <option value="Percentage">Percentage</option>';
@@ -356,7 +356,7 @@ function addEducation(candidateId) {
 	result = result  +'	                       <option value="GRADE">GRADE</option>';
 	result = result  +'	                      </select>';
 	result = result  +'	                   </div>';
-	result  = result + '                   <div class="col-md-8" positionRelative id="candidateScoreDiv">';
+	result  = result + '                   <div class="col-md-6" positionRelative paddingLeft id="candidateScoreDiv">';
 	result  = result + '                     <input type="text" class="form-control input-sm" value="" name="score" placeholder="Score" id="candidateEducationScore" onkeyup="educationSelectScoreType();educationscoreAndScoreType();"';
 	result  = result + '                     data-validation-optional="true" data-validation="required validate_length length1-5" field-name="score">';
 	result  = result + '                 	 </div>';
@@ -792,17 +792,25 @@ function candidateEducationStore(candidateId){
 	  
 	  if ($('#education_form').validate(false, validationSettings)) {
 		  
-			 var frm = $('#education_form').serializeFormJSON();
+		  /*var frm = $('#education_form').serializeFormJSON();
 			 var con = JSON.stringify(frm);
+			 alert(con);
 			 con = con.replace(/[{}]/g, "");
-		     var jsonData = encodeURIComponent(con);
+		     var jsonData = encodeURIComponent(con);  */
+		     var formData = getFormData("education_form");
 			 var sourceleadUrl = '${sourceleadUrl}';
 			 $("#education_form").attr("disabled", "disabled");
 			 $("#save_button").attr("disabled", "disabled");
-
-			$.ajax({
+			 
+			 $.post(sourceleadUrl+"/storeCandidateEducation?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId, formData, function(data) {
+				 candidateEducationList(candidateId);
+		        });
+			/* $.ajax({
 					type : "POST",
-					url : sourceleadUrl+"/storeCandidateEducation?${_csrf.parameterName}=${_csrf.token}&json="+con+"&candidateId="+candidateId,
+					data : con,
+					processData: false,
+	    	        contentType: true,
+					url : sourceleadUrl+"/storeCandidateEducation?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,
 					success :function(data) {  
 				                 if(data != null && data != 'undefined' && data != ""){
 				               		if( data.indexOf('Sign In') >= 0){
@@ -847,7 +855,7 @@ function candidateEducationStore(candidateId){
 							    	}
 				                 }   
 				      }, 
-		    });
+		    }); */
 			return true; 
 		} else {
 			return false;
@@ -1032,7 +1040,12 @@ function selectScoreType(){
 
 <script type="text/javascript">
 function educationSelectScoreType(){
-	 var selectedText = document.getElementById("scoreEducationType").value;
+	var str = document.getElementById("candidateEducationScore").value;
+	if (str == 'a' || str == 'b' || str == 'c' || str == 'd' || str == 'e') {
+		var strToUpper = str.toUpperCase();
+		$('#candidateEducationScore').val(strToUpper);
+	}
+	 var selectedText = document.getElementById("candidateEducationScore").value;
 	/* if(selectedText != null && selectedText !='' && selectedText !='undefined'){
 		 $("#candidateScore").removeAttr("readonly");
 	}else{
@@ -1083,6 +1096,7 @@ function educationSelectScoreType(){
 
 <script type="text/javascript">
 function educationscoreAndScoreType(){
+	
 	 var candidateScore = document.getElementById("candidateEducationScore").value;
 	 var selectedText = document.getElementById("scoreEducationType").value;
 	 var floatNum = /^(\d{0,2}(\.\d{0,2})?|100)$/

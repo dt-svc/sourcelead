@@ -51,7 +51,7 @@
 	</c:choose>
     
     </section>
-    <form:form id="add_expenses_form" name="add_expenses_form"  enctype='multipart/form-data'>
+    <form:form id="add_expenses_form" name="add_expenses_form">
 	<div class="content-area content-new clearfix">
          
           <div class="clearfix form-horizontal inner-content">
@@ -203,7 +203,7 @@
 		                 </div>
 						<div class="col-md-4 mb10">
 							<label>Description<span class='text-danger'>&nbsp;*</span></label>
-							<textarea rows="2"  id="entryDes${entryCount.count}" name="entryDes${entryCount.count}" class="form-control" placeholder="Description" field-name="Description" data-validation="required validate_Space validate_length length1-5000">${entry.description}</textarea>
+							<textarea rows="2"  id="entryDes${entryCount.count}" name="entryDes${entryCount.count}" class="form-control" placeholder="Description" field-name="Description" data-validation="required validate_Space validate_length length1-5000" onblur="removeWhiteSpacesMyExp(${entryCount.count});">${entry.description}</textarea>
 						</div>		
 		                   <div id='attachmentSection' class='col-md-4 mb10'>
 		                   <div class="uploadFile timesheet_week_comm">
@@ -263,6 +263,17 @@
 </form:form>
   </section>
 </c:if>
+
+
+<script type="text/javascript">
+function removeWhiteSpacesMyExp(rowCount){
+	var el = document.getElementsByName("entryDes"+rowCount)[0];
+	var val = el.value.replace(/(^\s*)|(\s*$)/gi,"")
+	$("#entryDes"+rowCount).val(val);
+}
+</script>
+
+
 <script>
 	function saveAddExpensesData(status) {
 		if ($('#add_expenses_form').validate(false, validationSettings)){
@@ -286,11 +297,16 @@
 				$("#draftForApprovalExpensesId").prop('disabled', true);
 				$("#cancelForApprovalExpensesId").prop('disabled', true);
 				
-				var frm = $('#add_expenses_form').serializeFormJSON();
+				/* var frm = $('#add_expenses_form').serializeFormJSON();
 				var jsonData = JSON.stringify(frm);
 				var form = $('#add_expenses_form')[0];
 	      		var formData = new FormData(form); 
-	      		formData.append("json",jsonData);
+	      		formData.append("json",jsonData); */
+	      		
+				var form = $('#add_expenses_form')[0];
+	      		var formData = new FormData(form); 
+	      		
+	      		
 				var sourceleadUrl = '${sourceleadUrl}';
 				$( "#submitForApprovalExpensesId" ).addClass('button').val('Processing..');
 	     		$.ajax({

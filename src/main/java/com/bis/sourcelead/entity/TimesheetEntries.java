@@ -18,6 +18,8 @@ import javax.validation.constraints.NotNull;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
 import org.hibernate.annotations.Type;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -36,11 +38,12 @@ public class TimesheetEntries implements Serializable{
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long Id;
 	
-	
+	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne(fetch=FetchType.EAGER)
 	@JoinColumn(name="TIMESHEET_SUBMISSION_ID") 
 	private TimesheetSubmissions timesheetSubmissions;
 	
+	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne(fetch=FetchType.EAGER)
 	@JoinColumn(name = "PROJECT_TASK")
 	private ProjectTasks projectTask;

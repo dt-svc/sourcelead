@@ -25,6 +25,8 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
 
 @Entity
 @Table(name = "CANDIDATE_HISTORY", catalog = "sourcelead")
@@ -35,6 +37,7 @@ public class CandidateHistory implements Serializable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "ID", nullable = false)
 	private Long id;
+	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "CANDIDATE_ID", nullable = false)
 	private Candidate candidateId;
@@ -123,6 +126,7 @@ public class CandidateHistory implements Serializable {
 	private String candidateUUID;
 	@Column(name = "IS_ASSOCIATE")
 	private String isAssociate;
+	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "CREATED_USER")
 	private User createdUser;
@@ -146,12 +150,15 @@ public class CandidateHistory implements Serializable {
 	private String linkedUrl;
 	@Column(name = "TWITTER_PROFILE_URL")
 	private String twitterUrl;
+	@NotFound(action=NotFoundAction.IGNORE)
 	@OneToMany(mappedBy = "candidateId", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@Fetch(FetchMode.SELECT)
 	private Set<CandidateEducation> candidateEducation = new HashSet<CandidateEducation>(0);
+	@NotFound(action=NotFoundAction.IGNORE)
 	@OneToMany(mappedBy = "candidateId", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@Fetch(FetchMode.SELECT)
 	private Set<CandidateResumes> candidateResumes = new HashSet<CandidateResumes>(0);
+	@NotFound(action=NotFoundAction.IGNORE)
 	@OneToMany(mappedBy = "candidateId", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@Fetch(FetchMode.SELECT)
 	private Set<CandidateEmployers> candidateEmployers = new HashSet<CandidateEmployers>(0);

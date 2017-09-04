@@ -418,13 +418,10 @@
 							<div class="col-md-9">
 								<div class="input-group col-md-12" id="uploadFileGroup"
 									style="margin: 0 auto">
-									<label class="input-group-btn"> <span
-										class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse
-											File <input type="file" style="display: none;"
-											 id="uploadBtn" class="upload"> </span>
-									</label> <input type="text" class="form-control" readonly
-										id="uploadFile" name="docFile"
-										placeholder="Upload Resume ..." field-name="Upload Resume"
+									<label class="input-group-btn"> 
+									<span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File <input type="file" style="display: none;" id="uploadBtn" class="upload"> </span>
+									</label> 
+									<input type="text" class="form-control" readonly id="uploadFile" name="docFile" placeholder="Upload Resume ..." field-name="Upload Resume"
 										data-validation="validatedoc " data-validation-optional="true">
 								</div>
 							</div>
@@ -602,7 +599,7 @@
 						success : function(result) {
 							if(result && result === "DataMissing") {
 								$("#store_candidate").removeAttr("disabled");
-								$("#store_candidate").addClass('button').val('Save');	
+								$("#store_candidate").removeAttr('button').val('Save');	
 								showError("Invalid data");
 							} else if(result && result === "success")
 								location.replace(sourceleadUrl+"/candidatesList");
