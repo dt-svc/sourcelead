@@ -117,12 +117,15 @@ public class WageTaxSummaryServiceImpl implements WageTaxSummaryService{
 			String oneDayEndDateString = CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE, Constants.UTC_TIMEZONE, oneDayEndDate);
 			Date endDate = ts.parse(oneDayEndDateString);
 			
+			int version;
+			version = getWageTaxSummaryVersionByLocationId(orgLocation.getId());
+			version += 1;
 			
 			for (int i = 0; i < numberOfSheets; i++) {
 				Sheet sheet = workbook.getSheetAt(i);
 				Iterator<Row> rowIterator = sheet.iterator();
 				String emppID = null;
-				int version;
+				
 				if(i == 0){
 					isValid =  payrollHelper.isValidTemplateForWagesTaxSummary(rowIterator);
 				}
@@ -141,8 +144,6 @@ public class WageTaxSummaryServiceImpl implements WageTaxSummaryService{
 							}
 							
 							if(emppID != null){
-								version = getWageTaxSummaryVersionByEmpId(emppID, orgLocation.getId());
-								version += 1;
 								wageTaxSummary.setVersion(version);
 							}
 
@@ -357,6 +358,11 @@ public class WageTaxSummaryServiceImpl implements WageTaxSummaryService{
 			workbook = WorkbookFactory.create(fis);
 			int numberOfSheets = workbook.getNumberOfSheets();
 			Map<String,String> map = new HashMap<String,String>();
+			
+			int version;
+			version = getWageTaxSummaryVersionByLocationId(orgLocation.getId());
+			version += 1;
+			
 			for (int i = 0; i < numberOfSheets; i++) {
 				Sheet sheet = workbook.getSheetAt(i);
 				Iterator<Row> rowIterator = sheet.iterator();
@@ -388,7 +394,9 @@ public class WageTaxSummaryServiceImpl implements WageTaxSummaryService{
 								if(employeeId !=null){
 									wageTaxSummary.setEmployeeId(employeeId);
 								}
-							
+								
+								wageTaxSummary.setVersion(version);
+								
 								if (row.getCell(1) != null && !"".equalsIgnoreCase(row.getCell(1).toString())) {
 									String empName = getCellValueAsString(row.getCell(1), fileName);
 									if(StringUtils.containsIgnoreCase(empName, "SSN:")){
@@ -632,8 +640,8 @@ public class WageTaxSummaryServiceImpl implements WageTaxSummaryService{
 	}
 
 	@Override
-	public int getWageTaxSummaryVersionByEmpId(String EmpId, Long locationId)
+	public int getWageTaxSummaryVersionByLocationId(Long locationId)
 	{
-		return wageTaxSummaryDao.getWageTaxSummaryVersionByEmpId(EmpId, locationId);
+		return wageTaxSummaryDao.getWageTaxSummaryVersionByLocationId(locationId);
 	}
 }

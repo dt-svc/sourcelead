@@ -99,13 +99,13 @@ public class HrDeductionsDaoImpl implements HrDeductionsDao{
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public int getHrDeductionsVersionByEmpId(String empId, Long locationId)
+	public int getHrDeductionsVersionByLocationId(Long locationId)
 	{
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "select hr.version from HrDeductions hr where hr.version = (SELECT MAX(hrd.version)  FROM HrDeductions hrd where hrd.orgLocationId.id =:orgLocationId and hrd.employeeId =:empId) and hrd.employeeId =:empId";
-		List<Integer> version = session.createQuery(query).setLong("orgLocationId", locationId).setString("empId", empId).setCacheable(true).list();
+		String query = "SELECT MAX(hrd.version)  FROM HrDeductions hrd where hrd.orgLocationId.id =:orgLocationId";
+		List<Integer> version = session.createQuery(query).setLong("orgLocationId", locationId).setCacheable(true).list();
 		Integer count = 0;
-		if(version != null && !version.isEmpty()){
+		if(version != null && !version.isEmpty() && version.get(0) != null){
 				count = version.get(0).intValue();
 		}
 		return count;

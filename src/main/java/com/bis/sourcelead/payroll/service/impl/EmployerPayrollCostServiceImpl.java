@@ -94,10 +94,12 @@ public class EmployerPayrollCostServiceImpl implements EmployerPayrollCostServic
 			workbook = WorkbookFactory.create(fis);
 			int numberOfSheets = workbook.getNumberOfSheets();
 			int isValid = 0;
+			int version = 0;
+			version = getEmployerPayrollCostVersionByLocationId(orgLocation.getId());
+			version += 1;
 			for (int i = 0; i < numberOfSheets; i++) {
 				Sheet sheet = workbook.getSheetAt(i);
 				Iterator<Row> rowIterator = sheet.iterator();
-				int version = 0;
 				if(i == 0){
 					isValid =  payrollHelper.isValidTemplateForEmployeePayRoll(rowIterator);
 				}
@@ -119,8 +121,6 @@ public class EmployerPayrollCostServiceImpl implements EmployerPayrollCostServic
 							String empId = null;
 							if (row.getCell(1) != null && !"".equalsIgnoreCase(row.getCell(1).toString())) {
 								empId = getCellValueAsString(row.getCell(1), fileName);
-								version = getEmployerPayrollCostVersionByEmpId(empId.split("\\.")[0], orgLocation.getId());
-								version += 1;
 								employerPayrollCost.setEmployeeId(empId.split("\\.")[0]);
 								employerPayrollCost.setVersion(version);
 							}
@@ -373,9 +373,9 @@ public class EmployerPayrollCostServiceImpl implements EmployerPayrollCostServic
 
 
 	@Override
-	public int getEmployerPayrollCostVersionByEmpId(String EmpId, Long locationId)
+	public int getEmployerPayrollCostVersionByLocationId(Long locationId)
 	{
-		return employerPayrollCostDao.getEmployerPayrollCostVersionByEmpId(EmpId, locationId);
+		return employerPayrollCostDao.getEmployerPayrollCostVersionByLocationId(locationId);
 	}
 }
 

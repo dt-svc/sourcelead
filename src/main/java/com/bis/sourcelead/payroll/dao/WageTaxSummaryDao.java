@@ -25,6 +25,6 @@ public interface WageTaxSummaryDao {
 
 	WageTaxSummary getWageTaxSummaryByEmpIdandDuration(String empId,Long locationId, Date startDate, Date endDate);
 
-	int getWageTaxSummaryVersionByEmpId(String empId, Long locationId);
+	int getWageTaxSummaryVersionByLocationId(Long locationId);
 
 }

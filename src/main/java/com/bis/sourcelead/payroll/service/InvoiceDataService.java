@@ -16,4 +16,6 @@ public interface InvoiceDataService {
 	List<InvoiceData> getInvoiceDetails(Long userId, Long orgLocationId)throws Exception;
 
 	List<InvoiceData> getInvoiceDetailsByEmpId(Long empId, OrgLocations orgLocations)throws Exception;
+	
+	int getInvoiceDataVersionByOrgLocationId(Long orgLocationId);
 }

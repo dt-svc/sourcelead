@@ -128,13 +128,13 @@ public class BisUserMappingDaoImpl implements BisUserMappingDao {
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public int getBisUserMappingVersionByEmpId(String empId, Long locationId)
+	public int getBisUserMappingVersionByLocationId(Long locationId)
 	{
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "select bum.version from BisUserMapping bum where bum.version = (SELECT MAX(bis.version)  FROM BisUserMapping bis where bis.orgLocationId.id =:orgLocationId and bis.empId =:empId) and bum.empId =:empId";
-		List<Integer> version = session.createQuery(query).setLong("orgLocationId", locationId).setString("empId", empId).setCacheable(true).list();
+		String query = "SELECT MAX(bis.version)  FROM BisUserMapping bis where bis.orgLocationId.id =:orgLocationId";
+		List<Integer> version = session.createQuery(query).setLong("orgLocationId", locationId).setCacheable(true).list();
 		Integer count = 0;
-		if(version != null && !version.isEmpty()){
+		if(version != null && !version.isEmpty() && version.get(0) != null){
 				count = version.get(0).intValue();
 		}
 		return count;
@@ -142,13 +142,13 @@ public class BisUserMappingDaoImpl implements BisUserMappingDao {
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public int getChecksVersionByEmpId(String empId, Long locationId)
+	public int getChecksVersionByLocationId(Long locationId)
 	{
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "select che.version from Checks che where che.version = (SELECT MAX(ch.version)  FROM Checks ch where ch.orgLocationId.id =:orgLocationId and ch.empId =:empId) and che.empId =:empId";
-		List<Integer> version = session.createQuery(query).setLong("orgLocationId", locationId).setString("empId", empId).setCacheable(true).list();
+		String query = "SELECT MAX(ch.version)  FROM Checks ch where ch.orgLocationId.id =:orgLocationId";
+		List<Integer> version = session.createQuery(query).setLong("orgLocationId", locationId).setCacheable(true).list();
 		Integer count = 0;
-		if(version != null && !version.isEmpty()){
+		if(version != null && !version.isEmpty() && version.get(0) != null){
 				count = version.get(0).intValue();
 		}
 		return count;

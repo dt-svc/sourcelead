@@ -26,6 +26,6 @@ public interface HrDeductionsService {
 	 */
 	HrDeductions getHrDeductionsByEmpIdandDuration(String EmpId,Long locationId,Date startDate, Date endDate);
 	
-	int getHrDeductionsVersionByEmpId(String EmpId,Long locationId);
+	int getHrDeductionsVersionByLocationId(Long locationId);
 
 }

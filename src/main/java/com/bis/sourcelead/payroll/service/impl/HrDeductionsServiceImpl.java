@@ -92,10 +92,14 @@ public class HrDeductionsServiceImpl implements HrDeductionsService{
 			String oneDayEndDateString = CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE, Constants.UTC_TIMEZONE, oneDayEndDate);
 			Date endDate = ts.parse(oneDayEndDateString);
 			
+			int version;
+			version = getHrDeductionsVersionByLocationId(orgLocation.getId());
+			version += 1;
+			
 			for (int i = 0; i < numberOfSheets; i++) {
 				Sheet sheet = workbook.getSheetAt(i);
 				Iterator<Row> rowIterator = sheet.iterator();
-				int version;
+				
 				if(i == 0){
 					isValid =  payrollHelper.isValidTemplateForHrDeductions(rowIterator);
 				}
@@ -116,8 +120,6 @@ public class HrDeductionsServiceImpl implements HrDeductionsService{
 							} 
 							
 							if(hrDeductions.getEmployeeId() != null){
-								version = getHrDeductionsVersionByEmpId(hrDeductions.getEmployeeId(), orgLocation.getId());
-								version += 1;
 								hrDeductions.setVersion(version);
 							}
 							
@@ -350,8 +352,8 @@ public class HrDeductionsServiceImpl implements HrDeductionsService{
 
 
 	@Override
-	public int getHrDeductionsVersionByEmpId(String EmpId, Long locationId)
+	public int getHrDeductionsVersionByLocationId(Long locationId)
 	{
-		return hrDeductionsDao.getHrDeductionsVersionByEmpId(EmpId, locationId);
+		return hrDeductionsDao.getHrDeductionsVersionByLocationId(locationId);
 	}
 }

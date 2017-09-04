@@ -73,10 +73,13 @@ public class BisUserMappingServiceImpl implements BisUserMappingService {
 			workbook = WorkbookFactory.create(fis);
 			int numberOfSheets = workbook.getNumberOfSheets();
 			int isValid = 0;
+			int version;
+			version = getBisUserMappingVersionByLocationId(orgLocation.getId());
+			version += 1;
 			for (int i = 0; i < numberOfSheets; i++) {
 				Sheet sheet = workbook.getSheetAt(i);
 				Iterator<Row> rowIterator = sheet.iterator();
-				int version;
+				
 				while (rowIterator.hasNext()) {
 					Row row = rowIterator.next();
 					if (row.getRowNum() > 0) { // Excluding column names
@@ -102,8 +105,6 @@ public class BisUserMappingServiceImpl implements BisUserMappingService {
 						if (row.getCell(2) != null && !"".equalsIgnoreCase(row.getCell(2).toString())) {
 							String empId = getCellValueAsString(row.getCell(2), fileName);
 							bisUserMapping.setEmpId(empId.split("\\.")[0]);
-							version = getBisUserMappingVersionByEmpId(empId.split("\\.")[0], orgLocation.getId());
-							version += 1;
 							bisUserMapping.setVersion(version);
 						}
 						if (row.getCell(3) != null && !"".equalsIgnoreCase(row.getCell(3).toString())) {
@@ -203,10 +204,15 @@ public class BisUserMappingServiceImpl implements BisUserMappingService {
 			FileInputStream fis = new FileInputStream(file);
 			workbook = WorkbookFactory.create(fis);
 			int numberOfSheets = workbook.getNumberOfSheets();
+			
+			int version;
+			version = getChecksVersionByLocationId(orgLocation.getId());
+			version += 1;
+			
 			for (int i = 0; i < numberOfSheets; i++) {
 				Sheet sheet = workbook.getSheetAt(i);
 				Iterator<Row> rowIterator = sheet.iterator();
-				int version;
+				
 				while (rowIterator.hasNext()) {
 					Row row = rowIterator.next();
 					if (row.getRowNum() > 0) { // Excluding column names
@@ -220,8 +226,6 @@ public class BisUserMappingServiceImpl implements BisUserMappingService {
 						if (row.getCell(0) != null && !"".equalsIgnoreCase(row.getCell(0).toString())) {
 							String empId = getCellValueAsString(row.getCell(0), fileName);
 							checks.setEmpId(empId.split("\\.")[0]);
-							version = getChecksVersionByEmpId(empId.split("\\.")[0], orgLocation.getId());
-							version += 1;
 							checks.setVersion(version);
 						}
 						if (row.getCell(1) != null && !"".equalsIgnoreCase(row.getCell(1).toString())) {
@@ -399,15 +403,15 @@ public class BisUserMappingServiceImpl implements BisUserMappingService {
 	}
 
 	@Override
-	public int getBisUserMappingVersionByEmpId(String EmpId, Long locationId)
+	public int getBisUserMappingVersionByLocationId(Long locationId)
 	{
-		return bisUserMappingDao.getBisUserMappingVersionByEmpId(EmpId, locationId);
+		return bisUserMappingDao.getBisUserMappingVersionByLocationId(locationId);
 	}
 	
 	@Override
-	public int getChecksVersionByEmpId(String EmpId, Long locationId)
+	public int getChecksVersionByLocationId(Long locationId)
 	{
-		return bisUserMappingDao.getChecksVersionByEmpId(EmpId, locationId);
+		return bisUserMappingDao.getChecksVersionByLocationId(locationId);
 	}
 
 }

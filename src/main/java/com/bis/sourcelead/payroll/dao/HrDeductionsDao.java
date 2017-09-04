@@ -19,6 +19,6 @@ public interface HrDeductionsDao {
 
 	HrDeductions getHrDeductionsByEmpIdandDuration(String empId, Long locationId, Date startDate, Date endDate);
 
-	int getHrDeductionsVersionByEmpId(String empId, Long locationId);
+	int getHrDeductionsVersionByLocationId(Long locationId);
 
 }

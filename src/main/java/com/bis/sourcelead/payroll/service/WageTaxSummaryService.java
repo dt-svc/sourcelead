@@ -36,7 +36,7 @@ public interface WageTaxSummaryService {
 	 */
 	WageTaxSummary getWageTaxSummaryByEmpIdandDuration(String EmpId,Long locationId,Date startDate, Date endDate);
 	
-	int getWageTaxSummaryVersionByEmpId(String EmpId,Long locationId);
+	int getWageTaxSummaryVersionByLocationId(Long locationId);
 	
 	
 
