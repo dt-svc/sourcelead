@@ -257,7 +257,7 @@ function projectsPagination(url,sourceleadUrl){
       "ajax": $.fn.dataTable.pipeline( {
           url: url,
           method: 'POST',
-          pages: 4
+          pages: 1
         }),
         "columns": [
             { "data": "projectSequeneNumber" },
