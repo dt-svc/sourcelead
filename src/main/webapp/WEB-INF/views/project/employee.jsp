@@ -581,7 +581,7 @@ function saveReason(projectMemberId,projectId,startDateStr,endDateStr){
 
 
 <!-- this script is for TeamMembers List functionality at Projects screen -->
-<script type="text/javascript">
+<!-- <script type="text/javascript">
 function getTeamMembers(projectId,startDateStr,endDateStr) {
 	if(projectId == null || projectId == '' || projectId == 'undefined'){
 		projectId  = document.getElementById("projectId").value;
@@ -788,8 +788,10 @@ function getTeamMembers(projectId,startDateStr,endDateStr) {
 	$('#lastName').val('');}
 	$('#employeeEmail').val('');
 </script>
-
-<script>
+ -->
+ 
+ 
+<!-- <script>
 function assignEmployeespagination(){  
     $('#assignEmployeePagination').DataTable( { 
     	"scrollCollapse": false,
@@ -809,11 +811,11 @@ function assignEmployeespagination(){
 		
     } );
 }
-</script>
+</script> -->
 
 
 <!-- this script is for Assign Employee functionality at Projects screen -->
-<script>
+<!-- <script>
 function assignEmployee(){
 	    $('#assignEmployeePagination').DataTable().search('').draw();
 	 	var projectId = $("#projectId").val();
@@ -854,9 +856,9 @@ function assignEmployee(){
 		})
 	    
 }
-</script>
+</script> -->
 
- <script>
+<!--  <script>
 function toggleCheck() {
 	var checked = document.getElementById("empChekId").checked  
 	
@@ -870,14 +872,11 @@ function toggleCheck() {
         });         
     } 
 
- /* var selectedsubmissionslists = [];
- $("input[name='submissionList[]']:checked").each( function (i) {
-	 selectedsubmissionslists[i] = $(this).val(); 
-});*/
-}
-</script>
 
-<script type="text/javascript">
+}
+</script> -->
+
+<!-- <script type="text/javascript">
 function flushEmployee(){
 	 $("#add_employee").removeAttr("disabled");
      $('#firstName').val('');
@@ -890,7 +889,7 @@ function flushEmployee(){
 </script>
 
 
-<!-- this script is for Add Employee functionality at Projects screen -->
+this script is for Add Employee functionality at Projects screen
 <script type="text/javascript">
 	function addEmployee() {
 		 if ($('#employee_form').validate(false, validationSettings)){
@@ -917,7 +916,7 @@ function flushEmployee(){
 		$("#employee_form").showHelpOnFocus();;
 		$("#employee_form").validateOnBlur(false, validationSettings);  
 	});
-</script>
+</script> -->
 
 
 <script>
@@ -934,14 +933,35 @@ function flushEmployee(){
 <script>
 function exportToPdf(projectId){
 	var sourceleadUrl ='${sourceleadUrl}';
-	window.location.href = sourceleadUrl+"/exportProjectEmployeeList?&projectId="+projectId+"&exportType=pdf";
+	
+	 var values = [];
+	 var chekbox = $('input:checkbox[name=employeeStatus]:checked').val();
+	 if(chekbox != 'undefined' && chekbox != '' && chekbox != null){
+			$('input:checkbox[name=employeeStatus]:checked').each(function() 
+				    {
+						values.push($(this).val());
+				    });
+	 }else{
+		 values = "Active";
+	 }
+	window.location.href = sourceleadUrl+"/exportProjectEmployeeList?&projectId="+projectId+"&status="+values+"&exportType=pdf";
 }
 </script>
 
 <script>
 function exportToExcel(projectId){
 	var sourceleadUrl ='${sourceleadUrl}';
-	window.location.href = sourceleadUrl+"/exportProjectEmployeeList?&projectId="+projectId+"&exportType=xls";
+	var values = [];
+	 var chekbox = $('input:checkbox[name=employeeStatus]:checked').val();
+	 if(chekbox != 'undefined' && chekbox != '' && chekbox != null){
+			$('input:checkbox[name=employeeStatus]:checked').each(function() 
+				    {
+						values.push($(this).val());
+				    });
+	 }else{
+		 values = "Active";
+	 }
+	window.location.href = sourceleadUrl+"/exportProjectEmployeeList?&projectId="+projectId+"&status="+values+"&exportType=xls";
 }
 </script>
 

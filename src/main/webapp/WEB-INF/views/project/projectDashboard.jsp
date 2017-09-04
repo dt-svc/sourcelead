@@ -82,7 +82,7 @@ overflow-x: auto;
 							<div class="action-pop">
 								<span> 
 								<a href="<c:url value='/project'/>"><i class="fa fa-plus"></i>Internal Project</a>
-								<a href="<c:url value='/project'/>"><i class="fa fa-plus"></i>Client Project</a>
+								<a href="#"><i class="fa fa-plus"></i>Client Project</a>
 								</span>
 							</div>
 						</sec:authorize></li>
@@ -257,7 +257,7 @@ function projectsPagination(url,sourceleadUrl){
       "ajax": $.fn.dataTable.pipeline( {
           url: url,
           method: 'POST',
-          pages: 10
+          pages: 4
         }),
         "columns": [
             { "data": "projectSequeneNumber" },

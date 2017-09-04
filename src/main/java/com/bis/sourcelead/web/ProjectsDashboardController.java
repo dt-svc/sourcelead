@@ -24,12 +24,14 @@ import org.springframework.web.servlet.ModelAndView;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
+import com.bis.sourcelead.entity.ProjectClients;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.service.ClientVendorExport;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
+import com.bis.sourcelead.service.ProjectClientService;
 import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.util.SessionMaintainanceData;
@@ -61,6 +63,9 @@ public class ProjectsDashboardController {
 	 
 	 @Autowired
 	 private ClientVendorExport clientVendorExport;
+	 
+	 @Autowired
+	 private ProjectClientService projectClientService;
 	 
 	 /**
 	 * This method for redirect projectDashboard
@@ -202,12 +207,15 @@ public class ProjectsDashboardController {
 	  */
 	 @PreAuthorize("hasAnyRole('ROLE_EXPORT_EMPLOYEE')")
 	 @RequestMapping(value = "/exportProjectEmployeeList")
-	 public void  exportProjectEmployeeList(@RequestParam(value="projectId", required=false) Long projectId,@RequestParam(value="exportType", required=false) String exportType,HttpServletRequest request,HttpServletResponse response) throws Exception{ 
-		 ProjectMembers employeeList = projectsService.getProjectEmployeeListByProjectId(projectId);
-		 List<ProjectMembers> list = employeeList.getProjectMembersList();
+	 public void  exportProjectEmployeeList(@RequestParam(value="projectId", required=false) Long projectId,
+			 @RequestParam(value="status", required=false) String status,@RequestParam(value="exportType", required=false) String exportType,HttpServletRequest request,HttpServletResponse response) throws Exception{ 
+		
+		 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		 ProjectClients projectClients = projectClientService.getProjectClientsByProjectIdAndOrgLocationId(projectId, orgLocations.getId());
+		 List<ProjectMembers> projectMembersList = projectMembersService.getAllProjectMembersByProjectClientIdAndStatus(projectClients.getId(),status);
 		 Projects project = projectsService.getProjectById(projectId);
 		 
-		 File file = clientVendorExport.getexportProjectEmployeeFile(list,exportType,project); 
+		 File file = clientVendorExport.getexportProjectEmployeeFile(projectMembersList,exportType,project,projectClients); 
 		 String mimeType = URLConnection.guessContentTypeFromName(file.getName());
 			if (mimeType == null) {
 				mimeType = "application/octet-stream";

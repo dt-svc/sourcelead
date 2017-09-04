@@ -28,6 +28,7 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.ProjectApproverHierarchy;
+import com.bis.sourcelead.entity.ProjectClients;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.UserRole;
@@ -300,12 +301,12 @@ public class ClientVendorExportImpl implements ClientVendorExport {
 
 
 	@Override
-	public File getexportProjectEmployeeFile(List<ProjectMembers> employeeList,String exportType,Projects project)throws Exception {
+	public File getexportProjectEmployeeFile(List<ProjectMembers> employeeList,String exportType,Projects project,ProjectClients projectClients)throws Exception {
 		String headers[] = Constants.PROJECT_ASSIGNED_EMPLOYEES;
 
 		File file =null;
 		
-		Set<ProjectApproverHierarchy> projectApproverHierarchySet = project.getProjectApprovers();
+		Set<ProjectApproverHierarchy> projectApproverHierarchySet = projectClients.getProjectApproverHierarchyList();
 		 StringBuilder sb = new StringBuilder();
 		 for(ProjectApproverHierarchy ProjectApproverHierarchy:projectApproverHierarchySet ){
 			 sb.append(ProjectApproverHierarchy.getApproverUserId().getFirstName()).append(",");
