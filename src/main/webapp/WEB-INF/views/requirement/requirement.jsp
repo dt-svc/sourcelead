@@ -1073,7 +1073,6 @@ $(document).ready(function () {
 	                <input type="text" disabled="disabled" class="form-control" id="clientRate" name="clientRate" field-name="Client Rate" value="${requirement.clientRate}" data-validation="validate_Space validate_float validate_length length1-8" data-validation-optional="true">
 	                <div class="input-group-btn selp-custom-min">
 	                 <select disabled="disabled" class="chosen-select ratetype"  id="clientRateType" field-name="Client Rate Per" value="${requirement.clientRateType}" name="clientRateType">
-	                    
 			                <option value="">Rate Per</option>
 		                    <option ${requirement.clientRateType  == 'Hourly' ? 'selected' : ''}>Hourly</option>
 		                    <option ${requirement.clientRateType  == 'Weekly' ? 'selected' : ''}>Weekly</option>
@@ -2876,7 +2875,7 @@ var existingValue = document.getElementById('isClientJob').value;
 		 
 		 var isEdit = '${val}'
 		 if(isEdit != 'Y'){
-			$("#clientRateType").val("").trigger('change');
+			//$("#clientRateType").val("").trigger('change');
 		 }
 		 $('#clientDetails').find('p.jquery_form_error_message').remove();
 
