@@ -3,14 +3,10 @@ package com.bis.sourcelead.dto;
 import java.io.Serializable;
 import java.util.Date;
 
-import com.bis.sourcelead.entity.OrgLocations;
-import com.bis.sourcelead.entity.User;
-
 public class ChecksDTO extends SearchDTO implements Serializable{
 
 	private String empId;
 	private String empName;
-	private OrgLocations orgLocationId;
 	private String typeOfExpense;
 	private String bankName;
 	private String month;
@@ -36,12 +32,6 @@ public class ChecksDTO extends SearchDTO implements Serializable{
 	}
 	public void setEmpName(String empName) {
 		this.empName = empName;
-	}
-	public OrgLocations getOrgLocationId() {
-		return orgLocationId;
-	}
-	public void setOrgLocationId(OrgLocations orgLocationId) {
-		this.orgLocationId = orgLocationId;
 	}
 	public String getTypeOfExpense() {
 		return typeOfExpense;
