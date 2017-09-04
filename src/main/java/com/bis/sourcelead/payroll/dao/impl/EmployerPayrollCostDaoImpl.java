@@ -64,4 +64,18 @@ public class EmployerPayrollCostDaoImpl implements EmployerPayrollCostDao{
 		return null;
 	}
 
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public int getEmployerPayrollCostVersionByLocationId(Long locationId)
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "SELECT MAX(ep.version)  FROM EmployerPayrollCost ep where ep.orgLocationId.id =:orgLocationId";
+		List<Integer> version = session.createQuery(query).setLong("orgLocationId", locationId).setCacheable(true).list();
+		Integer count = 0;
+		if(version != null && !version.isEmpty() && version.get(0) != null){
+				count = version.get(0);
+		}
+		return count;
+	}
+
 }

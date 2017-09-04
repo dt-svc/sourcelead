@@ -30,7 +30,7 @@ window.onload = function () {
 <section class="contrHead">
 		<ul id="parentUl">
 			<li title="Employer Payroll Cost"><a class="wVer" id="empPayrollCostLi" onclick="loadEmployeePayrollCost();">Employer Payroll</a></li>
-				<li title="Employee list"><a id="empList" onclick="getEmployeeList();">Employee List</a></li>
+				<li title="Employee list"><a id="empList" onclick="getEmployeeList();">Master Data</a></li>
 			<li title="Wages & Tax Summary"><a id="WageTaxSummaryLi" onclick="wagesAndTaxList();">Wages & Tax Summary</a></li>
 			<li title="Account Deductions"><a id="accountDedLi" onclick="accountDeductionsList();">Account Deductions</a></li>
 			<li title="HR Deductions"><a id="HrdedLi" onclick="hrDeductionsList();">HR Deductions</a></li>
@@ -255,14 +255,14 @@ function loadEmployeePayrollCost(){
 								}else{
 									result = result + ' <td><div>--</div></td>';
 								}
-								result = result + ' <td><i class="fa fa-dollar paddingLeft text-left pull-left"></i><div class="tblminwidth-125 text-right">'+opt.grossWages+'</div></td>';
-								result = result + '<td><div class="tblminwidth-75">'+opt.fica+'</div></td>';
-								result = result + '<td><div class="tblminwidth-75">'+opt.futa+'</div></td>';
-								result = result + ' <td><div class="tblminwidth-75">'+opt.sui+'</div></td>';
+								result = result + ' <td><div class="tblminwidth-125 text-right"><i class="fa fa-dollar"style="color:#454545;"></i> '+opt.grossWages.toFixed(2)+'</div></td>';
+								result = result + '<td><div class="tblminwidth-75"><i class="fa fa-dollar"style="color:#454545;"></i> '+opt.fica+'</div></td>';
+								result = result + '<td><div class="tblminwidth-75"><i class="fa fa-dollar"style="color:#454545;"></i> '+opt.futa+'</div></td>';
+								result = result + ' <td><div class="tblminwidth-75"><i class="fa fa-dollar"style="color:#454545;"></i> '+opt.sui+'</div></td>';
 								result = result + '<td><div class="tblminwidth-75">'+opt.erLocals+'</div></td>';
 								result = result + ' <td><div class="tblminwidth-75">'+opt.wcCost+'</div></td>';
 								result = result + '<td><div class="tblminwidth-100">'+opt.adminFee+'</div></td>';
-								result = result + '<td><i class="fa fa-dollar paddingLeft text-left pull-left"></i><div class="tblminwidth-150 text-right">'+opt.totalErCost+'</div></td>';
+								result = result + '<td><div class="tblminwidth-150 text-right"><i class="fa fa-dollar"style="color:#454545;"></i> '+opt.totalErCost+'</div></td>';
 								result = result + ' </tr>';
 						}
 						result = result + '  </table>';

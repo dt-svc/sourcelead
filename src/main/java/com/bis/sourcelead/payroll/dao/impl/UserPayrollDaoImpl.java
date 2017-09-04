@@ -15,6 +15,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.bis.sourcelead.dto.ChecksDTO;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.payroll.dao.UserPayrollDao;
 import com.bis.sourcelead.payroll.entity.Checks;
@@ -99,15 +101,67 @@ public class UserPayrollDaoImpl implements UserPayrollDao{
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public List<Checks> getChecksList(Long userId, Long orgLocationId) throws Exception {
+	public ResponseList<Checks> getChecksList(ChecksDTO checksDTO, Long orgLocationId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
+		List<Checks> checksList = null;
+		ResponseList<Checks> response = new ResponseList<>();
+		String query = "from Checks checks  left join fetch checks.orgLocationId where checks.orgLocationId.id =:orgLocationId";
+		String countQuery = "from Checks checks  where checks.orgLocationId.id =:orgLocationId";
+		
+		StringBuilder query1 = new StringBuilder("");
+			if(checksDTO.getSearchValue() !=null && !"".equalsIgnoreCase(checksDTO.getSearchValue())) {
+			query1.append(" and checks.empId like '%" + checksDTO.getSearchValue() + "%' ")
+					.append("OR checks.empName like '%" + checksDTO.getSearchValue() + "%' ")
+					.append("OR checks.date like '%" + checksDTO.getSearchValue() + "%' ")
+					.append("OR checks.typeOfExpense like '%" + checksDTO.getSearchValue() + "%' ")
+					.append("OR checks.bankName like '%" + checksDTO.getSearchValue() + "%' ")
+					.append("OR checks.month like '%" + checksDTO.getSearchValue() + "%' ")
+					.append("OR checks.legalFees like '%" + checksDTO.getSearchValue() + "%' ")
+					.append("OR checks.advance like '%" + checksDTO.getSearchValue() + "%' ")
+					.append("OR checks.generalExpenses like '%" + checksDTO.getSearchValue() + "%' ")
+					.append("OR checks.vendorPayments like '%" + checksDTO.getSearchValue() + "%' ")
+					.append("OR checks.electronicWithdrawals like '%" + checksDTO.getSearchValue() + "%' ")
+					.append("OR checks.payrollChecks like '%" + checksDTO.getSearchValue() + "%' ")
+					.append("OR checks.amount like '%" + checksDTO.getSearchValue() + "%' ")
+					.append("OR checks.checkNo like '%" + checksDTO.getSearchValue() + "%' ");
+						
+			}
+		Query queryObj = session.createQuery(query + query1.toString());
+		if (checksDTO != null && checksDTO.getLength() > 0) {
+			queryObj.setFirstResult(checksDTO.getStart());
+			queryObj.setMaxResults(checksDTO.getLength());
+			queryObj.setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+		}
+		checksList = queryObj.list();
+		int count = 0;
+		int filteredCount = 0;
+		List<Long> countlist = session.createQuery("select count(*) " + countQuery).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+		if(countlist != null && !countlist.isEmpty()) {
+			count = countlist.iterator().next().intValue();
+		}
+		response.setRecordsTotal(count);
+		if (checksDTO != null) {
+			List<Long> filteredCountlist  = session.createQuery("select count(*) " + countQuery + query1.toString()).setLong("orgLocationId", orgLocationId).list();
+			if(filteredCountlist != null && !filteredCountlist.isEmpty()) {
+				filteredCount = filteredCountlist.iterator().next().intValue();
+			}
+			response.setRecordsFiltered(filteredCount);
+		} else {
+			response.setRecordsFiltered(filteredCount);
+		}
+
+			response.setData(checksList);
+			return response;
+		
+		// TODO do not delete @Rajashekar
+		/*Session session = this.sessionFactory.getCurrentSession();
 		List<Checks> checkslList = null;
 		String query = "from Checks checks  left join fetch checks.orgLocationId where checks.orgLocationId.id =:orgLocationId";
 		checkslList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
 		if (checkslList != null && checkslList.size() > 0) {
 			return checkslList;
 		}
-		return checkslList;
+		return checkslList;*/
 	}
 
 	@Override
