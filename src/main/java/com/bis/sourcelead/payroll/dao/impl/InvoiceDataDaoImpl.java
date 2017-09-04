@@ -95,10 +95,8 @@ public class InvoiceDataDaoImpl implements InvoiceDataDao{
 			response.setRecordsFiltered(filteredCount);
 		}
 
-		if (invoiceDetailsList != null && invoiceDetailsList.size() > 0) {
 			response.setData(getInvoiceListSorting(invoiceDetailsList));
-		}
-		return response;
+			return response;
 	}
 		
 		private List<InvoiceData> getInvoiceListSorting(List<InvoiceData> invoiceDataList)

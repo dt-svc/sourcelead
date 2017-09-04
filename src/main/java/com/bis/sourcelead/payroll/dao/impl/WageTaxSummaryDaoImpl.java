@@ -98,10 +98,8 @@ public class WageTaxSummaryDaoImpl implements WageTaxSummaryDao {
 			response.setRecordsFiltered(filteredCount);
 		}
 
-		if (wagesAndTaxlist != null && wagesAndTaxlist.size() > 0) {
 			response.setData(getSortWageTaxList(wagesAndTaxlist));
-		}
-		return response;
+			return response;
 	}
 
 	/**
