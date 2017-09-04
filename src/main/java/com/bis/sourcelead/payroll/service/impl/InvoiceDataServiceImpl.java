@@ -30,6 +30,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.bis.sourcelead.dto.InvoiceDetailsDTO;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.payroll.dao.InvoiceDataDao;
@@ -251,9 +253,11 @@ public class InvoiceDataServiceImpl implements InvoiceDataService{
 	}
 
 	@Override
-	public List<InvoiceData> getInvoiceDetails(Long userId, Long orgLocationId) throws Exception {
+	public ResponseList<InvoiceData> getInvoiceDetails(InvoiceDetailsDTO invoiceDetailsDTO, Long orgLocationId) throws Exception {
+		return invoiceDataDao.getInvoiceDetails(invoiceDetailsDTO, orgLocationId);
 
-		List<InvoiceData> invoiceDataList = invoiceDataDao.getInvoiceDetails(userId, orgLocationId);
+		// TODO do not delete @Rajashekar
+		/*List<InvoiceData> invoiceDataList = invoiceDataDao.getInvoiceDetails(userId, orgLocationId);
 		
 		for (InvoiceData invoiceData : invoiceDataList) {
 			if (invoiceData.getDate() != null) {
@@ -274,7 +278,7 @@ public class InvoiceDataServiceImpl implements InvoiceDataService{
             	return invoiceData1.getEmpName().compareToIgnoreCase(invoiceData2.getEmpName());  
             }  
         });
-		return invoiceDataList;
+		return invoiceDataList;*/
 	}
 	@Override
 	public List<InvoiceData> getInvoiceDetailsByEmpId(Long empId, OrgLocations orgLocations) throws Exception {
