@@ -6,7 +6,7 @@
 
  <style type="text/css">
  .require_wrap_details_cta b {
-    width: 110px;
+    width: 150px;
 }
 .require_wrap_details.require_textarea textarea {
 height: 225px;
@@ -316,12 +316,26 @@ function requirementDetails(requirementUUID){
 
 				 if(json.fileName != null && json.fileName != '' && json.fileName != 'undefined'){
 		            	result = result +'<div class="require_wrap_details_cta require_wrap_details_view require_uploadfile"><b>Attachment:</b><span>'+json.fileName+'</span><a class="glyphicon glyphicon-download-alt ml10" href=\"'+sourceleadUrl+'/downloadRequirementAttachment?requirementId='+json.id+'\"></a><a class="fa fa-eye ml10" onclick="viewProfessionalRequirementProfile(\''+json.id+'\',\''+json.fileName+'\')"></a> ';
-		            }
+		            	result = result +'                  <div class="clearfix"></div>';
+						 result = result +'                </div>';   
+				 }
 		            else{
-		            result = result +'<div class="require_wrap_details_cta"> <b>Attachment:</b> <span> -- </span>';	
+		            result = result +'<div class="require_wrap_details_cta"> <b>Attachment:</b> <span> -- </span>';
+		            result = result +'                  <div class="clearfix"></div>';
+					 result = result +'                </div>';
 		            }
+				 if(json.visaType != null && json.visaType != '' && json.visaType != 'undefined')
+					{
+					 result = result +'                <div class="require_wrap_details_cta"> <b>Immigration Type:</b> <span title="'+json.visaType+'">'+json.visaType+'</span>';
+					 result = result +'                  <div class="clearfix"></div>';
+					 result = result +'                </div>';
+					}
+				 else{
+					 result = result +'                <div class="require_wrap_details_cta"> <b>Immigration Type:</b> <span title="--">--</span>';
+					 result = result +'                  <div class="clearfix"></div>';
+					 result = result +'                </div>';
+				 }
 				 
-				 result = result +'                <div class="require_wrap_details_cta"> <b>Immigration Type:</b> <span title="'+json.visaType+'">'+json.visaType+'</span>';
 				 result = result +'                  <div class="clearfix"></div>';
 				 result = result +'                </div>';
 				 result = result +'                  <div class="clearfix"></div>';
@@ -550,7 +564,7 @@ function getRateNegotiationDetails(submissionId, candidateId){
 	                    result = result + '  <div class="col-md-12 mt">';
 	                    result = result + '  <label class="col-md-12">Comment</label>';
 	                    result = result + '  <div class="col-md-12">';
-	                    result = result + '    <textarea rows="2" class="form-control" placeholder="Comment" id="comment" name="comment" field-name="Reason"></textarea>';
+	                    result = result + '    <textarea rows="2" class="form-control" placeholder="Comment" id="comment" name="comment" data-validation-optional="true" data-validation="validate_length length2-500" field-name="Reason"></textarea>';
 	                    result = result + '  </div>';
 	                    result = result + '  </div>';
 	                    
@@ -630,7 +644,7 @@ function getRateNegotiationDetails(submissionId, candidateId){
 		                     else{
 		                         result = result + '<td><div class="tblminwidth-75">----</div></td>'; 
 		                     }
-		                     result = result + '    <td><div class="tblminwidth-75">';
+		                     result = result + '    <td><div class="tblminwidth-75" id="rateActionDiv">';
 		                     
 		                     if(i == json.length-1 && report.rateStage == 'NEWRATE' && isLastNegotiator=="false"){
 		                    	 var Accepted = 'Accepted';
@@ -733,6 +747,8 @@ function proposeNewRate(submissionId, candidateId) {
 
 <script type="text/javascript">
 	function acceptRejectRate(submissionId, status, candidateId) {
+		$("#rateActionDiv").empty();
+		$("#rateActionDiv").prepend('<i class="fa fa-cog fa-spin"></i>');
 			var sourceleadUrl ='${sourceleadUrl}';
 			$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 			$.ajax({
