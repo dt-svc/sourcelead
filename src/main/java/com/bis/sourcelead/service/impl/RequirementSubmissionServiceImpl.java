@@ -2137,6 +2137,13 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 				 }else{
 					 globalVarsMap.put("vendorName","--"); 
 				 }
+			 
+			 
+			 if(reqSub.getRequirement().getSpocId().getVendorLocationId()!= null  && !"".equalsIgnoreCase(reqSub.getRequirement().getSpocId().getVendorLocationId().getOrg().getOrgName())){
+				 globalVarsMap.put("vendorOrgName", reqSub.getRequirement().getSpocId().getVendorLocationId().getOrg().getOrgName());
+				 }else{
+					 globalVarsMap.put("vendorOrgName","--"); 
+				 }
 			}
 
 			// getting the current EmailScenario by EmailScenario unique name
