@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.json.JSONObject;
 
+import com.bis.sourcelead.dto.CandidateCertificationDTO;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateCertifications;
 import com.bis.sourcelead.entity.CandidateEmployers;
@@ -30,7 +31,7 @@ public interface CandidateCertificationsService {
 	 * @return
 	 * @throws Exception
 	 */
-	public CandidateCertifications storeCandidateCertifications(JSONObject jsonObject, User user, OrgLocations orgLocationId,Long candidateId)throws Exception;
+	public CandidateCertifications storeCandidateCertifications(CandidateCertificationDTO candidateCertificationDTO, User user, OrgLocations orgLocationId,Long candidateId)throws Exception;
 	
 	/**
 	 * @param candidateId

@@ -803,6 +803,7 @@ function candidateEducationStore(candidateId){
 			 $("#save_button").attr("disabled", "disabled");
 			 
 			 $.post(sourceleadUrl+"/storeCandidateEducation?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId, formData, function(data) {
+				 closePopup();
 				 candidateEducationList(candidateId);
 		        });
 			/* $.ajax({
