@@ -93,12 +93,8 @@
 						<label class="col-md-3">Location<span class="text-danger">&nbsp;*</span></label>
 						<div class="col-md-9" id="locationField">
 							<div class="positionRelative">
-								<input class="form-control positionRelative"
-									id="candidateLocation" name="location"
-									placeholder="Enter your address" type="text"
-									field-name="Locatin" data-validation="required"></input> <i
-									class="fa fa-refresh btn btn-primary refresh-icon"
-									title="Refresh"
+								<input class="form-control positionRelative" id="candidateLocation" name="location" 
+									field-name="Locatin" data-validation="required"></input> <i class="fa fa-refresh btn btn-primary refresh-icon" title="Refresh"
 									onClick="refreshGoogleApiLocation('candidateLocation','candidateCountry','candidateState','candidateCity','candidateZipCode');"></i>
 							</div>
 						</div>

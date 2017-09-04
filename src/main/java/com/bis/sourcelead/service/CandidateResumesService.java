@@ -8,6 +8,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.bis.sourcelead.dto.CandidateResumeDTO;
 import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateResumes;
@@ -33,7 +34,7 @@ public interface CandidateResumesService {
 	 * @throws JSONException
 	 * @throws Exception
 	 */
-	public CandidateResumes storeCandidateResume(JSONObject jsonObj, User user, Candidate candidate, String resumeId, OrgLocations orgLocation, String fileURL, String fileName, String contentType) throws JSONException,Exception;
+	public CandidateResumes storeCandidateResume(CandidateResumeDTO candidateResumeDTO, User user, Candidate candidate, String resumeId, OrgLocations orgLocation) throws JSONException,Exception;
 	
 	
 	/**

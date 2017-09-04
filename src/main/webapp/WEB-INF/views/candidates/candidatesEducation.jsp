@@ -792,17 +792,25 @@ function candidateEducationStore(candidateId){
 	  
 	  if ($('#education_form').validate(false, validationSettings)) {
 		  
-			 var frm = $('#education_form').serializeFormJSON();
+		  /*var frm = $('#education_form').serializeFormJSON();
 			 var con = JSON.stringify(frm);
+			 alert(con);
 			 con = con.replace(/[{}]/g, "");
-		     var jsonData = encodeURIComponent(con);
+		     var jsonData = encodeURIComponent(con);  */
+		     var formData = getFormData("education_form");
 			 var sourceleadUrl = '${sourceleadUrl}';
 			 $("#education_form").attr("disabled", "disabled");
 			 $("#save_button").attr("disabled", "disabled");
-
-			$.ajax({
+			 
+			 $.post(sourceleadUrl+"/storeCandidateEducation?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId, formData, function(data) {
+				 candidateEducationList(candidateId);
+		        });
+			/* $.ajax({
 					type : "POST",
-					url : sourceleadUrl+"/storeCandidateEducation?${_csrf.parameterName}=${_csrf.token}&json="+con+"&candidateId="+candidateId,
+					data : con,
+					processData: false,
+	    	        contentType: true,
+					url : sourceleadUrl+"/storeCandidateEducation?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,
 					success :function(data) {  
 				                 if(data != null && data != 'undefined' && data != ""){
 				               		if( data.indexOf('Sign In') >= 0){
@@ -847,7 +855,7 @@ function candidateEducationStore(candidateId){
 							    	}
 				                 }   
 				      }, 
-		    });
+		    }); */
 			return true; 
 		} else {
 			return false;
