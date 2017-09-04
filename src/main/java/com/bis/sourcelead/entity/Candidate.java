@@ -48,6 +48,11 @@ public class Candidate implements Serializable{
     private MasterCandidate masterCandidateId;
 	
 	@NotFound(action=NotFoundAction.IGNORE)
+	@ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="PARENT_CANDIDATE_ID")        
+    private Candidate parentCandidateId;
+	
+
 	@ManyToOne
     @JoinColumn(name="ORG_LOCATION_ID", nullable=false )        
     private OrgLocations orgLocationId;
@@ -1570,6 +1575,14 @@ public class Candidate implements Serializable{
 	public void setVenSpocId(Long venSpocId)
 	{
 		this.venSpocId = venSpocId;
+	}
+
+	public Candidate getParentCandidateId() {
+		return parentCandidateId;
+	}
+
+	public void setParentCandidateId(Candidate parentCandidateId) {
+		this.parentCandidateId = parentCandidateId;
 	}
 
 }

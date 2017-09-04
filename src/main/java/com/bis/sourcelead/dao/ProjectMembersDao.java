@@ -88,6 +88,8 @@ public interface ProjectMembersDao {
 	public List<ProjectMembers> getAllProjectsByOrgLocationId(Long orglocationId)throws Exception;
 
 	public List<ProjectMembers> getAllProjectsbyEmployeeId(Long employeeId);
+	
+	public List<ProjectMembers> getAllProjectMembersByProjectClientIdAndStatus(Long projectClientsId,String status) throws Exception;
 
 	
 	

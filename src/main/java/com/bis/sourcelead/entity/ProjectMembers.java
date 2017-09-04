@@ -53,17 +53,11 @@ public class ProjectMembers implements Serializable {
 	@JoinColumn(name = "PROJECT_ID", nullable = false)
 	private Projects projects;
 
-
 	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne
 	@JoinColumn(name = "EMPLOYEE_ID", nullable = false)
 	private Employees employee;
 
-	@ManyToOne
-	@JoinColumn(name = "PROJECT_CLIENTS_ID")
-	@JsonBackReference
-    private ProjectClients projectClientsId;
-	
 	@ManyToOne
 	@JoinColumn(name = "CANDIDATE_ID", nullable = false)
 	@JsonBackReference
@@ -1376,6 +1370,8 @@ public class ProjectMembers implements Serializable {
 		if(projectAssignedDate != null){
 			SimpleDateFormat dateFormat = projects.getOrgLocationsId().getLocFullFormDateFormatter();
 				startDateStr = dateFormat.format(projectAssignedDate);	
+		}else{
+			startDateStr = "";
 		}
 		return startDateStr;
 	}
@@ -1388,6 +1384,8 @@ public class ProjectMembers implements Serializable {
 		if(projectEndDate != null){
 			SimpleDateFormat dateFormat = projects.getOrgLocationsId().getLocFullFormDateFormatter();
 			endDateStr = dateFormat.format(projectEndDate);	
+		}else{
+			endDateStr = "";
 		}
 		return endDateStr;
 	}
@@ -1424,12 +1422,6 @@ public class ProjectMembers implements Serializable {
 		this.billRateStr = billRateStr;
 	}
 
-	public ProjectClients getProjectClientsId() {
-		return projectClientsId;
-	}
-
-	public void setProjectClientsId(ProjectClients projectClientsId) {
-		this.projectClientsId = projectClientsId;
-	}
+	
 	
 }

@@ -486,8 +486,12 @@ public class CandidateServiceImpl implements CandidateService {
 		if(candidateDto.getVendors() != null ){
 			OrgRelations orgRelation = orgRelationsService.getOrRelationsById(candidateDto.getVendors());
 			candidate.setOrgRelationId(orgRelation);
+			/*Candidate vendorCandidate = commonUtil.getVendorCandidate(jsonObj, orgRelation, orgLocations, user);
+			candidate.setParentCandidateId(vendorCandidate);*/
+			
 		}else{
 			candidate.setOrgRelationId(null);
+			candidate.setParentCandidateId(null);
 		}
 		
 		if(candidateDto.getVendorcontact() != null ){
@@ -1239,6 +1243,12 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 		return candidateDao.getCandidateById(candidateId);
 	}
 	
+	
+	@Override
+	public Candidate getCandidateByParentCandidateId(Long parentCandidateId) throws Exception {
+		return candidateDao.getCandidateByParentCandidateId(parentCandidateId);
+	}
+	
 	@Override
 	public List<User> getAllCandidateOwnersByLocationIdAndCandidateType(Long orgLocationId, String candidateType)
 			throws Exception {
@@ -1414,6 +1424,23 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 			candidate.setStatus(Constants.RECORD_ACTIVE);
 			candidate.setCreatedBy(user.getUserCode());
 			
+			if(jsonObj.has("vendors") && !"".equalsIgnoreCase(jsonObj.getString("vendors"))){
+				OrgRelations orgRelation = orgRelationsService.getOrRelationsById(Long.parseLong(jsonObj.getString("vendors")));
+				candidate.setOrgRelationId(orgRelation);
+				Candidate vendorCandidate =  commonUtil.getVendorCandidate(jsonObj, orgRelation, orgLocations, user);
+				candidate.setParentCandidateId(vendorCandidate);
+			}else{
+				candidate.setOrgRelationId(null);
+				candidate.setParentCandidateId(null);
+			}
+			
+			if(jsonObj.has("vendorcontact") && !"".equalsIgnoreCase(jsonObj.getString("vendorcontact"))){
+				OrgSpoc orgspoc = orgSpocService.getOrgSpocById(Long.parseLong(jsonObj.getString("vendorcontact")));
+				candidate.setSpocId(orgspoc);
+			}else{
+				candidate.setSpocId(null);
+			}
+			
 			if(jsonObj.has("phoneNumber") && !isNullOrEmpty(jsonObj.getString("phoneNumber"))){
 				candidate.setMobilePhone(jsonObj.getString("phoneNumber"));
 			}
@@ -1535,5 +1562,6 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 		}
 		return associateList;
 	}
+	
 
 }

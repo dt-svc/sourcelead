@@ -284,8 +284,9 @@ public class CandidateDaoImpl implements CandidateDao {
 				+ "left join fetch cnadidate.teamId "
 				+ "left join fetch cnadidate.recruiterUserId "
 				+ "left join fetch cnadidate.masterCandidateId "
+				+ "left join fetch cnadidate.parentCandidateId "
 				+ "left join fetch cnadidate.orgRelationId left "
-				+ "join fetch cnadidate.spocId left join fetch cnadidate.orgLocationId where cnadidate.id =:candidateId";
+				+ "join fetch cnadidate.spocId left join fetch cnadidate.orgLocationId left join fetch cnadidate.orgLocationId.user where cnadidate.id =:candidateId";
 		List candidateList = session.createQuery(query).setLong("candidateId", candidateId).setCacheable(true).list();
 		Candidate candidate = null;
 		if(candidateList != null && !candidateList.isEmpty())
@@ -310,7 +311,7 @@ public class CandidateDaoImpl implements CandidateDao {
 	public Candidate getCandidateByCandidateIdAndOrgLocationId(Long candidateId, Long orgLocationId)throws Exception {
 			
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from Candidate cnadidate  where cnadidate.id = :candidateId and cnadidate.orgLocationId.id =:orgLocationId";  
+		String query = "from Candidate cnadidate left join fetch cnadidate.parentCandidateId  where cnadidate.id = :candidateId and cnadidate.orgLocationId.id =:orgLocationId";  
 		List<Candidate> candidateList = session.createQuery(query).setLong("candidateId", candidateId).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
 		Candidate candidate = null;
 		if(candidateList != null && !candidateList.isEmpty()){
@@ -1126,6 +1127,23 @@ public class CandidateDaoImpl implements CandidateDao {
 		    associatesList = session.createQuery(query).setLong( "locationId", locationId).setCacheable(true).list();
 		}
 		return associatesList;
+	}
+
+	@Override
+	@Transactional
+	public Candidate getCandidateByParentCandidateId(Long parentCandidateId) throws Exception {
+
+		Session session = this.sessionFactory.getCurrentSession();
+		List<Candidate> candidate = new ArrayList<Candidate>();
+		logger.debug("getCandidateByParentCandidateId start");
+		candidate = session.createQuery("from Candidate candidate  left join fetch candidate.orgRelationId where candidate.parentCandidateId.id =:parentCandidateId" ).setCacheable(true).setLong( "parentCandidateId", parentCandidateId ).setCacheable(true).list();
+		logger.debug("getCandidateByParentCandidateId end");
+		if (candidate.size() > 0) {
+			return candidate.get(0);
+		} else {
+			return null;
+		}
+   	
 	}
 }
 

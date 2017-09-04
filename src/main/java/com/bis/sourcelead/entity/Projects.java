@@ -32,8 +32,15 @@ import org.hibernate.annotations.NotFoundAction;
 
 import com.bis.sourcelead.enums.Project_Status;
 import com.bis.sourcelead.enums.Status;
+<<<<<<< HEAD
 import com.bis.sourcelead.web.LoginSessionController;
 import com.fasterxml.jackson.annotation.JsonBackReference;
+=======
+
+import com.bis.sourcelead.web.LoginSessionController;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
+>>>>>>> 6a546cda22fe6cf1ffca1abab570d798e3d0f2c4
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -155,7 +162,10 @@ public class Projects implements Serializable{
     @Column(name = "UPDATED_BY")
     private String updatedBy;
     
+<<<<<<< HEAD
     
+=======
+>>>>>>> 6a546cda22fe6cf1ffca1abab570d798e3d0f2c4
     @Column(name = "PROJECT_MODE")
     private String projectMode;
     
@@ -210,9 +220,11 @@ public class Projects implements Serializable{
 	}
 
 	@Transient
+	@JsonProperty
     private String managerLevel1;
     
     @Transient
+    @JsonProperty
     private String managerLevel2;
     
     @Transient
@@ -236,12 +248,18 @@ public class Projects implements Serializable{
     private String endDateStr;
     
     @Transient
+    @JsonProperty
+    private String projStatus;
+    
+    
+    @Transient
     private String[] projectManagerName;
     
     @Transient
     private String[] clientName;
     
     @Transient
+    @JsonProperty
     private String client;
     
     @Transient
@@ -871,6 +889,14 @@ public class Projects implements Serializable{
 
 	public void setProjectDocumentsList(Set<ProjectDocuments> projectDocumentsList) {
 		this.projectDocumentsList = projectDocumentsList;
+	}
+
+	public String getProjStatus() {
+		return projStatus;
+	}
+
+	public void setProjStatus(String projStatus) {
+		this.projStatus = projStatus;
 	}
 	
 }

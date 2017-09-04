@@ -970,5 +970,40 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 		
 		
 	}
+
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<ProjectMembers> getAllProjectMembersByProjectClientIdAndStatus(Long projectClientsId, String status)
+			throws Exception {
+
+		 Session session = this.sessionFactory.getCurrentSession();
+	        List<ProjectMembers> projectsMembersList = null;
+	        String[] tokens = status.split(",");
+	        
+	        String subQuery2 = "";
+	     
+	        if (Arrays.asList(tokens).contains("Active")) {
+				subQuery2 = subQuery2 + "pm.status ='1' or ";
+			}
+	        
+	        if (Arrays.asList(tokens).contains("In-Active")) {
+				subQuery2 = subQuery2 + "pm.status ='0' or ";
+			}
+	        
+	        if ((tokens[0] != null && tokens[0].length() > 0) ) {
+				subQuery2 = "and (" + subQuery2.substring(0, subQuery2.length() - 4) + ")";
+			} else if (subQuery2 != null && !"".equals(subQuery2)) {
+				subQuery2 = " (" + subQuery2.substring(0, subQuery2.length() - 4) + ")";
+			}
+	        
+		Query projectsMembersListQuery= session.createQuery("from ProjectMembers pm left join fetch pm.projectMemberCandidteId cand "
+				+ "left join fetch pm.projects left join fetch pm.employee emp left join fetch cand.consultantUser "
+				+ "where pm.id IN (select pmh.projectMemberId.id from ProjectMembersHistory pmh where pmh.projectClientsId = :projectClientsId and pmh.status = 'OPEN') "+ subQuery2 + "");
+
+		projectsMembersList = projectsMembersListQuery.setLong("projectClientsId", projectClientsId).setCacheable(true).list();
+		return projectsMembersList;
+	
+	}
 }
 

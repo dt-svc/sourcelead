@@ -6,13 +6,10 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.TimeZone;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
@@ -41,6 +38,8 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.ProjectsDTO;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.elk.index.ClientVendorIndex;
 import com.bis.sourcelead.elk.index.ProjectsIndex;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
@@ -182,21 +181,25 @@ public class ProjectsDashboardRestController {
 		 * @throws Exception
         */
 			@RequestMapping(value = "/getProjectsByStatusAndClient")
-			public String getProjectsByStatusAndClient(@RequestParam(value="values", required=false) String values,HttpServletRequest request,@RequestParam(value="clients", required=false) String clients) throws Exception {
+			public ResponseList<Projects> getProjectsByStatusAndClient(ProjectsDTO projectsDTO,@RequestParam(value="values", required=false) String values,HttpServletRequest request,@RequestParam(value="clients", required=false) String clients) throws Exception {
 
 			    String loginOrgLocation = (String) SourceLeadSessionManager.getSessionAttribute(request, "locationCode");
 			    OrgLocations loginOrgLocations = orgLocationService.getOrgLocationsByLocationCode(loginOrgLocation);
-				String resultJson;
+			    String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
 				User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-			    List<Projects> projectsList = projectsService.getProjectsBasedOnClientsAndStatusSelectionInFilters(user.getId(), clients, values,loginOrgLocations.getId());
-			    for(Projects ps : projectsList){
-			    	ps.setManagerLevel1(ps.getManagerLevel1());
-			    	if(ps.getManagerLevel2() != null){
-			    		ps.setManagerLevel2(ps.getManagerLevel2());	
-			    	}
-			    }
-				 resultJson = commonUtil.toJSON(projectsList);
-				 return resultJson;
+
+				String[] tableColumns = {"projectSequeneNumber", "projectName", "projectManagers", "invoiceFrequency", "projectDate", "client","status"};
+			    int sortColumnIndex = 1; //by default sorting using updated date
+				String sortColumnOrder = "desc"; //by default descending order
+				if(projectsDTO.getOrder() != null && !projectsDTO.getOrder().isEmpty()) {
+					sortColumnIndex = Integer.parseInt(projectsDTO.getOrder().get(0).get("column"));
+					sortColumnOrder = projectsDTO.getOrder().get(0).get("dir");
+				}
+				projectsDTO.setSortColumn(tableColumns[sortColumnIndex]);
+				projectsDTO.setSortOrder(sortColumnOrder);
+				ResponseList<Projects> projectsList = projectsService.getProjectsListByClientsAndStatus(projectsDTO,user.getId(), clients, values,loginOrgLocations.getId(),userRole);
+			    
+				return projectsList;
 			}
 	
 	/**
@@ -221,17 +224,20 @@ public class ProjectsDashboardRestController {
 	 @RequestMapping(value = "/getProjectDetailsByProjectId", method = RequestMethod.POST)
 	 public @ResponseBody Projects getProjectDetailsByProjectId(@RequestParam(value="projectId", required=false) Long projectId,HttpServletRequest request) throws Exception{ 
 		   
+		     OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		     Projects projects = projectsService.getProjectById(projectId);
 		     Set<ProjectClients> projectClientsList = projects.getProjectClients();
 		     if(projectClientsList != null){
 		    	 for(ProjectClients projectClients : projectClientsList){
-		    		 Set<ProjectApproverHierarchy> approverHierarchiesList =  projectClients.getProjectApproverHierarchyList();
-		    		 if(approverHierarchiesList != null){
-		    			 Set<ProjectApproverHierarchy> hirearchySet = new LinkedHashSet<ProjectApproverHierarchy>();
-		    			 for(ProjectApproverHierarchy hierarcy : approverHierarchiesList){
-		    				 hirearchySet.add(hierarcy);
+		    		 if(projectClients.getOrgLocationsId().getId().equals(loginOrgLocation.getId())){
+		    			 Set<ProjectApproverHierarchy> approverHierarchiesList =  projectClients.getProjectApproverHierarchyList();
+			    		 if(approverHierarchiesList != null){
+			    			 Set<ProjectApproverHierarchy> hirearchySet = new LinkedHashSet<ProjectApproverHierarchy>();
+			    			 for(ProjectApproverHierarchy hierarcy : approverHierarchiesList){
+			    				 hirearchySet.add(hierarcy);
+				    		 }
+			    			 projects.setApproverHierarchyList(hirearchySet);
 			    		 }
-		    			 projects.setApproverHierarchyList(hirearchySet);
 		    		 }
 		    	 }
 		     }
@@ -293,9 +299,11 @@ public class ProjectsDashboardRestController {
 	 */
 	 @PreAuthorize("hasAnyRole('ROLE_VIEW_PROJECT_EMPLOYEES', 'ROLE_VIEW_EDIT_PROJECT_EMPLOYEES', 'ROLE_VIEW_DELETE_PROJECT_EMPLOYEES')")
 	 @RequestMapping(value = "/getProjectEmployeeListById", method = RequestMethod.POST)
-	 public @ResponseBody String  getProjectEmployeeListById(@RequestParam(value="status", required=false) String status,@RequestParam(value="projectId", required=false) Long projectId) throws Exception{ 
+	 public @ResponseBody String  getProjectEmployeeListById(@RequestParam(value="status", required=false) String status,@RequestParam(value="projectId", required=false) Long projectId,
+			 HttpServletRequest request) throws Exception{ 
 		 String resultJson;
-		 ProjectMembers employeeList = projectsService.getProjectEmployeeListByProjectIdAndStatus(projectId,status);
+		 OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		 ProjectMembers employeeList = projectsService.getProjectEmployeeListByProjectIdAndStatus(projectId,status,loginOrgLocation);
 		
 		 resultJson = commonUtil.toJSON(employeeList);
 		 return resultJson;

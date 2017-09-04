@@ -33,7 +33,7 @@
 
 <script type="text/javascript">
 	function validateProjectSequeneNumber() {
-		var ProjectSequeneNumber = document.getElementById("ProjectSequeneNumber").value.trim();
+		var ProjectSequeneNumber = document.getElementById("projectSequeneNumber").value.trim();
 		 //space value  consider this condition 
 		if(ProjectSequeneNumber.match(/^[^\s-](.*)*$/) !== null){
 		var sourceleadUrl = '${sourceleadUrl}';
@@ -45,12 +45,12 @@
 						url : sourceleadUrl+ "/validateProjectSequeneNumberById?${_csrf.parameterName}=${_csrf.token}&ProjectSequeneNumber="+ ProjectSequeneNumber+"&orgLocId="+orgLocId,
 						success : function(data) {
 							if (data == true) {
-								$("input#ProjectSequeneNumber").after("<p class='jquery_form_error_message'>"+ ProjectSequeneNumber+ " is Already Existed</span>");
-								document.getElementById("ProjectSequeneNumber").setAttribute('record-exist', 'yes');
-								document.getElementById("ProjectSequeneNumber").setAttribute('record-exist-errorMsg',ProjectSequeneNumber+ ' is Already Existed');
-								$('input#ProjectSequeneNumber').removeAttr( "record-exist record-exist-errorMsg");
+								$("input#projectSequeneNumber").after("<p class='jquery_form_error_message'>"+ ProjectSequeneNumber+ " is Already Existed</span>");
+								document.getElementById("projectSequeneNumber").setAttribute('record-exist', 'yes');
+								document.getElementById("projectSequeneNumber").setAttribute('record-exist-errorMsg',ProjectSequeneNumber+ ' is Already Existed');
+								$('input#projectSequeneNumber').removeAttr( "record-exist record-exist-errorMsg");
 							} else {
-								$('input#ProjectSequeneNumber').removeAttr("record-exist record-exist-errormsg");
+								$('input#projectSequeneNumber').removeAttr("record-exist record-exist-errormsg");
 							}
 						},
 					});
@@ -58,33 +58,26 @@
 		}
 	}
 	
-	
 	var fileCounter = 0;
 	function addFileUpload(){
-		/* var result = '';
-		result = result + '<div class="pull-left" style="float:left; width:325px; margin-right:15px; margin-bottom:15px; border:1px solid #ddd; padding:5px;">';
-		result = result + '<div style="width:125px; margin-bottom:5px;"><lable class="paddingRight small">Is Confidential ?</label> <input type="checkbox" name="isclient" value="N" class="pull-right" /></div>';
-		
-		result = result + '<div style="margin:0; padding:5px;overflow: hidden; background-color:#367fa9; color:#fff;" >';
-		result = result + ' <input id="file" name = "project_files" type="file" class="pull-left" /> <a id="Button' + fileCounter + '"  value="" onclick = "RemoveFileUpload(this)"><i class="fa fa-times btn btn-danger btn-sm btn-sm2 pull-right"></i></a>';
-		result = result + '</div>';
-		
-		result = result + '</div>';
-		fileCounter++;
-		 $("#FileUploadContainer").append(result); */
-		
-// 		$('<div>').attr('style','width:150px; margin:0; padding:0 0 5px 0;').append('<lable class="paddingRight">Is Confidential ?</label>' + '<input type="checkbox" name="isclient" value="N" class="pull-right" />').appendTo($('#FileUploadContainer'));
-		$('<div>').attr('style','float:left; width:325px; border:1px solid #ddd; margin:0 15px 15px 0; padding:5px;overflow: hidden; background-color:#367fa9; color:#fff; ').append('<input id="file' +  '" name = "project_files' + '" type="file" class="pull-left" />' +
+		$('<div>').attr('style','float:left; width:325px; border:1px solid #ddd; margin:0 15px 15px 0; padding:5px;overflow: hidden; background-color:#367fa9; color:#fff; ').append('<input id="file'+fileCounter+'"  type="file" class="pull-left" onchange="uploadButton('+fileCounter+');"/>' +
 	            '<a id="Button' + fileCounter + '' +
 	            'value="" onclick = "RemoveFileUpload(this)"><i class="fa fa-times btn btn-danger btn-sm btn-sm2 pull-right"></i></a>').appendTo($('#FileUploadContainer'));
 
-	    		fileCounter++; 
+	    		fileCounter++;
 	    		
 	}
 	function RemoveFileUpload(div)
 	{
 		 document.getElementById("FileUploadContainer").removeChild(div.parentNode);
 	}
+</script>
+
+<script>
+function uploadButton(id){
+	var sourceleadUrl ='${sourceleadUrl}';
+	fileUpload(sourceleadUrl, "file"+id+"", "projects", "project_form");
+}
 </script>
 
 <!-- Content Area -->
@@ -113,16 +106,15 @@
 		
 		<div class="project_tabs">
 		<div class="clearfix form-area form-horizontal toggle-div remove-div  newPrTabs_inn mt" id="tab-a">
-			<form:form id="project_form" name="project_form" method="post"
-				enctype="multipart/form-data">
+			<form:form id="project_form" name="project_form" method="post">
 				<div class="row">
 					<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
 
 						<div class="form-group" id="ProjectIdDiv">
 							<label class="col-lg-3">Project Id</label>
 							<div class="col-lg-9">
-								<input type="text" value="" id="ProjectSequeneNumber"
-									name="ProjectSequeneNumber"
+								<input type="text" value="" id="projectSequeneNumber"
+									name="projectSequeneNumber"
 									data-validation="validate_Space validate_length length2-50"
 									data-validation-optional="true" class="form-control" placeholder="Project Id"
 									onblur="validateProjectSequeneNumber();">
@@ -137,12 +129,12 @@
 							<div class="col-md-9">
 								<div class="row">
 									<div class="col-lg-6 positionRelative" id="StartDateDiv">
-										<input type="text" class="form-control" value="" id="StartDate" name="StartDate" field-name="Start Date" placeholder="Start Date" data-validation="required" readonly="readonly" > <span
+										<input type="text" class="form-control" value="" id="startDate" name="startDate" field-name="Start Date" placeholder="Start Date" data-validation="required" readonly="readonly" > <span
 											class="input-group-addon input-groupAddon"><i class="fa fa-calendar"></i></span>
 									</div>
 									<div class="col-lg-6 positionRelative" id="endDateDiv">
-										<input type="text" class="form-control" value="" id="EndDate"
-											name="EndDate" field-name="End Date" placeholder="End Date" readonly="readonly">
+										<input type="text" class="form-control" value="" id="endDate"
+											name="endDate" field-name="End Date" placeholder="End Date" readonly="readonly">
 										<span class="input-group-addon input-groupAddon"><i
 											class="fa fa-calendar"></i></span>
 									</div>
@@ -154,7 +146,7 @@
 							<label class="col-md-3" for="Project Id">Status<span
 								class="text-danger">*</span></label>
 							<div class="col-md-9 select-field">
-								<select class="form-control" name="Satatus" id="Satatus" onchange="getStatus();" field-name="Status" data-validation="required">
+								<select class="form-control" name="status" id="status" onchange="getStatus();" field-name="Status" data-validation="required">
 									<option value="">Select Status</option>
 									<option value="Not Started">Not Started</option>
 									<option value="In-Progress">In-Progress</option>
@@ -242,7 +234,7 @@
 							</label>
 							<div class="col-md-9">
 
-								<input type="text" class="form-control" name="ProjectName" placeholder="Project name" data-validation="required validate_Space validate_length length2-250"
+								<input type="text" class="form-control" name="projectName" id="projectName" placeholder="Project name" data-validation="required validate_Space validate_length length2-250"
 									field-name="Project Name" value=""> <span class="hidden">Project Name</span> <span class="hidden" >Enter Project Id</span>
 
 							</div>
@@ -409,7 +401,7 @@
 
 					<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12  txtEditor_p">
 						<h5>Description</h5>
-						<textarea id="txtEditor" name="ProjectDescription"  id="projectDescription"  value="" class="form-control newContrtextarea" data-validation="validate_length length2-5000" data-validation-optional="true"></textarea>
+						<textarea id="txtEditor" name="projectDescription"   value="" class="form-control newContrtextarea" data-validation="validate_length length2-5000" data-validation-optional="true"></textarea>
 <!-- 						<textarea maxlength="5000" cols="80" rows="10" id="ProjectDescription" name="ProjectDescription"></textarea> -->
 
 					</div>
@@ -532,7 +524,6 @@ function getStatus(){
 	$(document).ready(function() {
 		$('#flatPercentageId').attr('style','visibility:hidden');
 		$('#flatPercentage').attr('style','visibility:hidden');
-		$('#ProjectDescription').summernote({height:300});
 		
 			
 		var savedProjectId = '${savedProjectId}';
@@ -605,34 +596,25 @@ function getStatus(){
 		
 		var ee = $("#txtEditor").val($('.Editor-editor').html()); 
 
-		$('#addTask').find('p.jquery_form_error_message').remove();
 		if ($('#project_form').validate(false, validationSettings)) {
 			var frm = $('#project_form').serializeFormJSON();
 			 
-// 			frm.ProjectDescription = projDesc;
-			var jsonData = JSON.stringify(frm);
 		    var form = $('#project_form')[0];
 		    var formData = new FormData(form);
-		  	formData.append("json",jsonData)
-
-			//It will escape all the special characters
-		//	var jsonData = encodeURIComponent(con);
 			
 			var sourceleadUrl = '${sourceleadUrl}';
      		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-
+ 
 
 			$.ajax({
-						 type : "POST",
-						 data: formData,
-		  	    	     contentType : 'application/json; charset=utf-8',
-		  		         processData: false,
-		  		         contentType:false, 
-		  	    	     dataType : 'json',
+						type : "POST",
+						data: formData,
+		  		        processData: false,
+		  		        contentType:false, 
 						url : sourceleadUrl+ "/storeProject?${_csrf.parameterName}=${_csrf.token}",
-						success : function(Projects) {
-								 $("#projectId").val(Projects.id);
-								 $("#projectUUID").val(Projects.projectUUID);
+						success : function(projects) {
+								 $("#projectId").val(projects.id);
+								 $("#projectUUID").val(projects.projectUUID);
 								 $("#loading").removeAttr("style");
 								 var assignedMembers = document.getElementById("assignedMembers");
 								 $("assignedMembers").removeClass("disabledLink");
@@ -675,14 +657,15 @@ function getProjectDetails(){
 	        	var level2ApproverUser = '';
 	        	
 	        	if(json.projectSequeneNumber != null && json.projectSequeneNumber != 'undefined'){
-	        		 $("input[name=ProjectSequeneNumber]").val(json.projectSequeneNumber);
-	        		 $("input[name=ProjectSequeneNumber]").attr("readonly","readonly");
-	        		 $('#ProjectSequeneNumber').removeAttr('onblur');
+	        		 $("input[name=projectSequeneNumber]").val(json.projectSequeneNumber);
+	        		 $("input[name=projectSequeneNumber]").attr("readonly","readonly");
+	        		 $('#projectSequeneNumber').removeAttr('onblur');
 	        	}
 	        	
-	        	 $("input[name=ProjectName]").val(json.projectName);
-	        	 $("input[name=StartDate]").val(json.startDateStr);
-	        	 $("input[name=EndDate]").val(json.endDateStr);
+	        	
+	        	 $("input[name=projectName]").val(json.projectName);
+	        	 $("input[name=startDate]").val(json.startDateStr);
+	        	 $("input[name=endDate]").val(json.endDateStr);
 	        	 
 	        	 
 	        	 
@@ -700,7 +683,7 @@ function getProjectDetails(){
 	           }
 	           
 	           
-        	   $("select[name=Satatus]").val(projectStatus);
+        	   $("select[name=status]").val(projectStatus);
         	   
         	   $('#timeSheetFrequency').val(json.timesheetFrequency).trigger('chosen:updated');
         	   $('#invoiceFrequency').val(json.invoiceFrequency).trigger('chosen:updated');
@@ -739,8 +722,9 @@ function getProjectDetails(){
         		   document.getElementById("isAllowBidding").checked = true;
         	   }
         	   
-        	   $("textarea[name=ProjectDescription]").val(json.description);
-        	   $(".Editor-editor").val(json.description);
+        	   
+        	   $("textarea[name=projectDescription]").val(json.description);
+        	   $(".Editor-editor").html(json.description);
         	   
         	   
         	   if(json.projectDocumentsList.length > 0){
@@ -749,7 +733,7 @@ function getProjectDetails(){
         			   var opt = json.projectDocumentsList[i];
         			  
         			     result = result +"<strong id='projectDocument"+opt.id+"'>";
-      	    		     result = result +"<i class=''><a class='glyphicon glyphicon-save' href=\""+sourceleadUrl+"/downloadProjectDoc?porjectDocumentId="+opt.id+"\"></a></i>";
+      	    		     result = result +"<i class=''><a class='glyphicon glyphicon-save' href=\""+opt.fileUrl+"\"></a></i>";
       					 result = result +"<input type='button' value='"+opt.fileName+"'>";
       					 result = result +"</a>";
       					 result = result +"<input class='dele' type='button' onClick='removeProjectDocuments("+opt.id+","+json.id+");' >";
@@ -782,9 +766,6 @@ function getProjectDetails(){
       			 
       			   
       			   $("#loading").removeAttr("style");
-      			 
-        	
-        	   
 		        
 	        },
 	    });  
@@ -799,7 +780,7 @@ function removeProjectDocuments(documentId,projectId){
 	   	type: "POST",
 	    url: sourceleadUrl+"/terminateProjectDoc?${_csrf.parameterName}=${_csrf.token}&porjectDocumentId="+documentId, 	   
 		    success: function(data) {
-		    	projectDocuments(projectId);
+		    	$("#projectDocument"+documentId).remove();
 		    },
      });
 
@@ -843,29 +824,25 @@ function assignEmployeeCancel(){
 		  }if(locationDate.match("yyyy-dd-MM")){
 			  finalDateFormatProjectSave = 'yy-dd-mm'; 
 		  }
-		$('#StartDate').datepicker({
+		$('#startDate').datepicker({
 			dateFormat : finalDateFormatProjectSave,
 			changeMonth: true,
 			changeYear: true, 
 			onSelect : function(selected) {
-				//var dt = new Date(selected);
 				var dt = $(this).datepicker('getDate', '+1d');
-				//var dt = toDate("#StartDate");
 				dt.setDate(dt.getDate() + 1);
-				$("#EndDate").datepicker("option", "minDate", dt);
+				$("#endDate").datepicker("option", "minDate", dt);
 				addValidClass();
 			}
 		});
-		$('#EndDate').datepicker({
+		$('#endDate').datepicker({
 			dateFormat : finalDateFormatProjectSave,
 			changeMonth: true,
 			changeYear: true, 
 			onSelect : function(selected) {
-				//var dt = new Date(selected);
 				var dt = $(this).datepicker('getDate', '-1d');
-			//	var dt = toDate("#EndDate");
 				dt.setDate(dt.getDate() - 1);
-				$("#StartDate").datepicker("option", "maxDate", dt);
+				$("#startDate").datepicker("option", "maxDate", dt);
 				addValidClass();
 				//this is section is for compare project end date with current date
 				//if project end date is less than current date, the project state should be COMPLETED
@@ -915,13 +892,13 @@ function assignEmployeeCancel(){
 </script>
 <script type="text/javascript"> 
 	function addValidClass(){
-		 var StartDate = document.getElementById("StartDate").value;
-		 if(StartDate){
+		 var startDate = document.getElementById("startDate").value;
+		 if(startDate){
 			 $('#StartDateDiv').find('p.jquery_form_error_message').remove(); 
 		 }
 		 
-		 var EndDate = document.getElementById("EndDate").value;
-		 if(EndDate){
+		 var endDate = document.getElementById("endDate").value;
+		 if(endDate){
 			 $('#endDateDiv').find('p.jquery_form_error_message').remove(); 
 		 }
 }

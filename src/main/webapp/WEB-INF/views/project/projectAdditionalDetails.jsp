@@ -547,3 +547,169 @@ function projectLocation(){
 	$("#userLocation").val('');
 }
 </script>
+
+
+<!-- <script type="text/javascript">
+	       
+//Adding Customized Front End Technologies to the list 
+var selectone, chosenone;
+selectone = $("#frontEnd");
+selectone.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) Or Tab To Add New Front End Technologies:' });
+chosenone = selectone.data('chosen');
+chosenone.search_field.on('keyup', function(e1)
+{
+	var frontEndTech = this.value.replace(","," ");
+	   if ((e1.which == 13 || e1.which == 188) && (frontEndTech != null  && frontEndTech != '' && frontEndTech != 'undefined'))
+        {
+		   var par = this.parent;
+            var option = $("<option>").val(frontEndTech).text(frontEndTech);
+            selectone.append(option);
+            selectone.find(option).prop('selected', true);
+            
+            $("#frontEnd option").each(function(){
+                 $(this).siblings("[value='"+ this.value+"']").remove();
+           });
+            
+            $("#frontEnd").trigger("chosen:updated");
+           
+        }
+
+});
+
+
+
+//Adding Customized Back End Technologies to the list 
+var selecttwo, chosentwo;
+selecttwo = $("#backEnd");
+selecttwo.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) Or Tab To Add New Back End Technologies:' });
+chosentwo = selecttwo.data('chosen');
+chosentwo.search_field.on('keyup', function(e2)
+{
+	var backEndTech = this.value.replace(","," ");
+	   if ((e2.which == 13 || e2.which == 188) && (backEndTech != null  && backEndTech != '' && backEndTech != 'undefined'))
+        {
+		   var par = this.parent;
+            var option = $("<option>").val(backEndTech).text(backEndTech);
+            selecttwo.append(option);
+            selecttwo.find(option).prop('selected', true);
+            
+            $("#backEnd option").each(function(){
+                 $(this).siblings("[value='"+ this.value+"']").remove();
+           });
+            
+            $("#backEnd").trigger("chosen:updated");
+           
+        }
+
+});
+
+
+
+
+
+//Adding Customized Database to the list 
+var selectthree, chosenthree;
+selectthree = $("#projectDatabase");
+selectthree.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) Or Tab To Add New Database:' });
+chosenthree = selectthree.data('chosen');
+chosenthree.search_field.on('keyup', function(e3)
+{
+	var projectDatabase = this.value.replace(","," ");
+	   if ((e3.which == 13 || e3.which == 188) && (projectDatabase != null  && projectDatabase != '' && projectDatabase != 'undefined'))
+        {
+		   var par = this.parent;
+            var option = $("<option>").val(projectDatabase).text(projectDatabase);
+            selectthree.append(option);
+            selectthree.find(option).prop('selected', true);
+            
+            $("#projectDatabase option").each(function(){
+                 $(this).siblings("[value='"+ this.value+"']").remove();
+           });
+            
+            $("#projectDatabase").trigger("chosen:updated");
+           
+        }
+
+});
+
+
+
+
+//Adding Customized Other Technologies to the list 
+var selectfour, chosenfour;
+selectfour = $("#otherTechnologies");
+selectfour.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) Or Tab To Add New Other Technologies:' });
+chosenfour = selectfour.data('chosen');
+chosenfour.search_field.on('keyup', function(e4)
+{
+	var otherTechnologies = this.value.replace(","," ");
+	   if ((e4.which == 13 || e4.which == 188) && (otherTechnologies != null  && otherTechnologies != '' && otherTechnologies != 'undefined'))
+        {
+		   var par = this.parent;
+            var option = $("<option>").val(otherTechnologies).text(otherTechnologies);
+            selectfour.append(option);
+            selectfour.find(option).prop('selected', true);
+            
+            $("#otherTechnologies option").each(function(){
+                 $(this).siblings("[value='"+ this.value+"']").remove();
+           });
+            
+            $("#otherTechnologies").trigger("chosen:updated");
+           
+        }
+
+});
+
+//Adding Customized Other Technologies to the list 
+var selectfive, chosenfive;
+selectfive = $("#testManagement");
+selectfive.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) Or Tab To Add New Test Management:' });
+chosenfive = selectfive.data('chosen');
+chosenfive.search_field.on('keyup', function(e5)
+{
+	var testManagement = this.value.replace(","," ");
+	   if ((e5.which == 13 || e5.which == 188) && (testManagement != null  && testManagement != '' && testManagement != 'undefined'))
+        {
+		   var par = this.parent;
+            var option = $("<option>").val(testManagement).text(testManagement);
+            selectfive.append(option);
+            selectfive.find(option).prop('selected', true);
+            
+            $("#testManagement option").each(function(){
+                 $(this).siblings("[value='"+ this.value+"']").remove();
+           });
+            
+            $("#testManagement").trigger("chosen:updated");
+           
+        }
+
+});
+
+//Adding Customized Other Technologies to the list 
+var selectsix, chosensix;
+selectsix = $("#agileMethodologies");
+selectsix.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) Or Tab To Add New Agile Methdologies:' });
+chosensix = selectsix.data('chosen');
+chosensix.search_field.on('keyup', function(e6)
+{
+	var agileMethodologies = this.value.replace(","," ");
+	   if ((e6.which == 13 || e6.which == 188) && (agileMethodologies != null  && agileMethodologies != '' && agileMethodologies != 'undefined'))
+        {
+		   var par = this.parent;
+            var option = $("<option>").val(agileMethodologies).text(agileMethodologies);
+            selectsix.append(option);
+            selectsix.find(option).prop('selected', true);
+            
+            $("#agileMethodologies option").each(function(){
+                 $(this).siblings("[value='"+ this.value+"']").remove();
+           });
+            
+            $("#agileMethodologies").trigger("chosen:updated");
+           
+        }
+
+});
+
+
+				
+</script>  -->

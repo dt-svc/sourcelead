@@ -42,7 +42,7 @@ overflow-x: auto;
           <div class="pull-left">
             <h2>Projects</h2>
           </div>
-          <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;Projects</div>
+          <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Projects</div>
         </section>
 
         
@@ -50,6 +50,7 @@ overflow-x: auto;
 		
         <div class="timesheet_head topfilters">
         	<ul>
+				<c:if test="${clientListSize > 0}">
 				<li id="filter1ApprovePop"><i class="fa fa-filter"></i><span>Client</span><i class="glyphicon glyphicon-play"  ></i>|
                 	<div id="filter1ApprovedPop" class="approved_pop">
                     	<ul>
@@ -59,16 +60,16 @@ overflow-x: auto;
                         </ul>
                     </div>                	
                 </li>
+                </c:if>
                 <li id="filter2ApprovePop"><i class="fa fa-filter"></i><span>Status</span><i class="glyphicon glyphicon-play" ></i>|
                 	<div id="filter2ApprovedPop" class="approved_pop">
                     	<ul>
-                        	<li><input id="c5" type="checkbox" name="projectStatus" value ="All" onclick="filter();"  ><label for="c5">All</label></li>
-                        	<li><input id="c7" name="projectStatus" type="checkbox" value ="INPROGRESS"  onclick="filter();"><label for="c7">In-Progress</label></li>
-<!-- 							<li><input id="c6" type="checkbox" name="projectStatus" value ="STARTED"  onclick="filter();"><label for="c6">Started</label></li> -->
-							<li><input id="c9" type="checkbox" name="projectStatus" value ="NOTSTARTED"  onclick="filter();"><label for="c8">Not Started</label></li>
-							<li><input id="c8" type="checkbox"  name="projectStatus"  type="checkbox" value ="COMPLETED"  onclick="filter();"><label for="c8">Completed</label></li>
-               				<li><input id="c8" type="checkbox"  name="projectStatus"  type="checkbox" value ="ONHOLD"  onclick="filter();"><label for="c8">On-Hold</label></li>
-               				<li><input id="c10" type="checkbox"  name="projectStatus"  type="checkbox" value ="DROPPED"  onclick="filter();"><label for="c8">Dropped</label></li>
+                        	<!-- <li><input id="c5" type="checkbox" name="projectStatus" value ="All" onclick="filter();"  ><label for="c5">All</label></li> -->
+                        	<li><input id="c7" name="projectStatus" type="checkbox" value ="In-Progress"  onclick="filter();"><label for="c7">In-Progress</label></li>
+							<li><input id="c9" type="checkbox" name="projectStatus" value ="Not Started"  onclick="filter();"><label for="c8">Not Started</label></li>
+							<li><input id="c8" type="checkbox"  name="projectStatus"  type="checkbox" value ="Completed"  onclick="filter();"><label for="c8">Completed</label></li>
+               				<li><input id="c8" type="checkbox"  name="projectStatus"  type="checkbox" value ="On-Hold"  onclick="filter();"><label for="c8">On-Hold</label></li>
+               				<li><input id="c10" type="checkbox"  name="projectStatus"  type="checkbox" value ="Dropped"  onclick="filter();"><label for="c8">Dropped</label></li>
                         </ul>
                     </div>                	
                 </li>
@@ -81,7 +82,7 @@ overflow-x: auto;
 							<div class="action-pop">
 								<span> 
 								<a href="<c:url value='/project'/>"><i class="fa fa-plus"></i>Internal Project</a>
-								<a href="<c:url value='/project'/>"><i class="fa fa-plus"></i>Client Project</a>
+								<a href="#"><i class="fa fa-plus"></i>Client Project</a>
 								</span>
 							</div>
 						</sec:authorize></li>
@@ -91,11 +92,9 @@ overflow-x: auto;
             <div class="clearfix"></div>
         </div>
 			
-		    <div id="projectFilterList"></div>
-		    <div class="project_wrap_table datatable_filter" onclick="removeErroeMsg();">
-		    				<table id="example" class="display" cellspacing="0" width="100%">
-							</table>
-			</div>	   
+	<div class="project_tabs_inn_table vendor_wrap_inn_table dataFilterNew pdtop">
+    	<div id="projectFilterList" class="datatable_filter"></div>
+	</div>	   
 				
 		</div>
 		<%-- </c:if> --%>
@@ -150,136 +149,6 @@ function projectsList(searchValue,searchresult,projectId,projectName,startDate,e
 }
 </script>
 
-
-<script>
-//project side bar
-$(document).ready(function() {
-     $(".proj_close, .side_mask").click(function(){
-    	$(".project_side_wrap").removeClass("project_side_wrap_active");
- 		$(".side_mask").fadeOut(200);
- 		$("body").css('overflow-y', 'auto');
-	});	
-});
-//project side bar tabs
-$(document).ready(function() {
-	$("#tab-1").show();
- $(".project-tabs-menu a").click(function(event) {
-     event.preventDefault();
-     $(this).parent().addClass("current");
-     $(this).parent().siblings().removeClass("current");
-     var tab = $(this).attr("href");
-     $(".project_tabs_inn").not(tab).css("display", "none");
-     $(tab).fadeIn();
- });
-});
-
-//project active dropdown
-$(document).ready(function() {
- $("#ac-drop").click(function(){
-		$(".project_details_cta ul").slideToggle(200);
-	});
- $("html").click(function() {
-     $(".project_details_cta ul").slideUp(200);
- });
- $(".project_details_cta ul, #ac-drop").click(function(e) {
-     e.stopPropagation();
- });
-});
-
-//project error message
-$(document).ready(function() {
- $(".project_tabs_inn_table i").click(function(){
-		$(".project_error").slideDown(200);
-		$(".project_inn_mask").fadeIn(200);
-	});
- $(".project_error a").click(function() {
-     $(".project_error").slideUp(200);
-		$(".project_inn_mask").fadeOut(200);
- });
-});
-</script> 
-<!-- this script is for side navigation functionality at Projects screen -->
- <script>
- function projectSideBar(projectId,projectName,startDateStr,endDateStr, status){ 
-	  	    var result = "";
-	  	    result = result + '<input type="hidden" name="projectId" id="projectId" value="'+projectId+'" >';
-	  	    result = result + '<div class="project_side_wrap_inn_tabs">';
-		  	result = result + '<ul class="project-tabs-menu">';
-		  	
-			'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_PROJECT\',\'ROLE_VIEW_EDIT_PROJECT\')">'; 
-		  	   result = result + ' <li class="current"><a href="#tab-1" onClick="projectDetails('+projectId+');" >Details</a></li>';
-			'</sec:authorize>';
-		  	
-		  	'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_PROJECT_EMPLOYEES\',\'ROLE_VIEW_EDIT_PROJECT_EMPLOYEES\',\'ROLE_VIEW_DELETE_PROJECT_EMPLOYEES\')">'; 
-		  	    '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_PROJECT\',\'ROLE_VIEW_EDIT_PROJECT\')">' 
-		  	         result = result + '<li><a href="#tab-2" id="empTab" onClick="projectEmployee('+projectId+',\''+startDateStr+'\',\''+endDateStr+'\',\''+status+'\',\''+projectName+'\');" >Employees</a></li>';
-		  	    '</sec:authorize>';
-		  	    '<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_PROJECT\',\'ROLE_VIEW_EDIT_PROJECT\')">'
-			  	    result = result + '<li class="current"><a href="#tab-2" onClick="projectEmployee('+projectId+',\''+startDateStr+'\',\''+endDateStr+'\',\''+status+'\',\''+projectName+'\');" >Employees</a></li>';
-			  	'</sec:authorize>';
-		  	  '</sec:authorize>';
-		  	
-		  	'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_PROJECT_TASKS\',\'ROLE_VIEW_EDIT_PROJECT_TASKS\')">' ; 
-			  	'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_PROJECT\',\'ROLE_VIEW_EDIT_PROJECT\',\'ROLE_VIEW_PROJECT_EMPLOYEES\',\'ROLE_VIEW_EDIT_PROJECT_EMPLOYEES\',\'ROLE_VIEW_DELETE_PROJECT_EMPLOYEES\')">' 
-			      	 result = result + '<li><a href="#tab-3" id="taskTab" onClick="projectTask('+projectId+',\''+status+'\');">Tasks</a></li>';
-			  	'</sec:authorize>';
-			  	'<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_PROJECT\',\'ROLE_VIEW_EDIT_PROJECT\',\'ROLE_VIEW_PROJECT_EMPLOYEES\',\'ROLE_VIEW_EDIT_PROJECT_EMPLOYEES\',\'ROLE_VIEW_DELETE_PROJECT_EMPLOYEES\')">' 
-			  	     result = result + '<li class="current"><a href="#tab-3" onClick="projectTask('+projectId+',\''+status+'\');">Tasks</a></li>';
-			  	'</sec:authorize>';
-		  	'</sec:authorize>';
-		  	'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_PROJECT\',\'ROLE_VIEW_EDIT_PROJECT\')">'; 
-		  	   result = result + ' <li><a href="#tab-4" onClick="projectDocuments('+projectId+',\''+status+'\');" >Documents</a></li>';
-			'</sec:authorize>';
-			
-			
-			
-		  	result = result + ' <div class="clearfix"></div>';
-		  	result = result + ' </ul>';
-		  	 
-		  	result = result + '<div class="project_tabs">';
-		  	result = result + ' <div id="tab-1" class="project_tabs_inn">';
-		  	result = result + '</div>';
-		  	
-		  	result = result + '<div id="tab-2" class="project_tabs_inn">';
-		  	result = result + '<p> "hi" </p>';
-		  	result = result + '</div>';
-		  	
-		  	result = result + '<div id="tab-3" class="project_tabs_inn datatable_filter">';
-		  	result = result + '</div>';
-		  	result = result + '<div id="tab-4" class="project_tabs_inn">';
-		  	result = result + '</div>';
-		  	
-		  	result = result + '</div>'; 
-		  	$("#projectSideDiv").empty();  
-		    $("#projectSideDiv").append(result);  
-		    $("#projectNameById").empty(); 
-		    $("#projectNameById").append(projectName); 
-		    
-		    $(".project_side_wrap").addClass("project_side_wrap_active");
-		    $(".side_mask").fadeIn(200);
-			$("body").css('overflow-y', 'hidden');
-			
-		    '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_PROJECT\',\'ROLE_VIEW_EDIT_PROJECT\')">'; 
-		        projectDetails(projectId);
-			'</sec:authorize>';
-			
-			'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_PROJECT_EMPLOYEES\',\'ROLE_VIEW_EDIT_PROJECT_EMPLOYEES\',\'ROLE_VIEW_DELETE_PROJECT_EMPLOYEES\')">'; 
-			    '<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_PROJECT\',\'ROLE_VIEW_EDIT_PROJECT\')">'; 
-			       projectEmployee(projectId,startDateStr,endDateStr,status,projectName);
-			    '</sec:authorize>';
-			'</sec:authorize>';
-			
-			'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_PROJECT_TASKS\',\'ROLE_VIEW_EDIT_PROJECT_TASKS\')">' ; 
-			 '<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_PROJECT\',\'ROLE_VIEW_EDIT_PROJECT\',\'ROLE_VIEW_PROJECT_EMPLOYEES\',\'ROLE_VIEW_EDIT_PROJECT_EMPLOYEES\',\'ROLE_VIEW_DELETE_PROJECT_EMPLOYEES\')">'; 
-			      projectTask(projectId, status)
-			  '</sec:authorize>';
-		  	'</sec:authorize>';
- }
- </script> 
- 
-
-
-
 <script>
 $(document).ready(function() {
     $("#filter1ApprovePop").click(function(){
@@ -311,36 +180,51 @@ $(document).ready(function() {
 
 </script>
 
-<!-- this script is for Projects Filter functionality at Projects screen -->
 
-<script>
-function pagination(){  
-// 	 $.fn.dataTable.moment( 'DD-MM-YYYY' );
-    $('#example').DataTable( { 
-    	"scrollCollapse": false,
-    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
-		"aaSorting": [[4,'desc']],
-    	"bLengthChange": true,
-    	"bDestroy": true,
-    	"ordering": true,
-    	"oLanguage": {
-     		"sSearch": "",
-     		"sZeroRecords": "", "sEmptyTable": ""
-     	}
-    } );
-}
-</script>
-
-<script>
-function removeErroeMsg(){
-	$(".dataTables_empty").html("");
-	$(".odd").td(empty);
-}
-</script>
 <script>
 function filter(){
+	var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
+	  if(locationList.match("yyyy-MM-dd")){
+		  projectListDate = 'YYYY-MM-DD';
+	  }if(locationList.match("dd-MM-yyyy")){
+		  projectListDate = 'DD-MM-YYYY'; 
+	  }if(locationList.match("MM-dd-yyyy")){
+		  projectListDate = 'MM-DD-YYYY'; 
+	  }if(locationList.match("yyyy-dd-MM")){
+		  projectListDate = 'YYYY-DD-MM'; 
+	  }
+	  
+	  var result = "";
+	 	result = result +" <div class='remove_search'>";
+	 	result = result +" <input type='text' placeholder='Search' id='projectsDataTableSearch'/>";
+	 	result = result +"</div>";
+	 	
+	 	result = result + '<table id="projectsListTable" class="display" cellspacing="0" width="100%" >';
+		result = result + '<thead>';
+		result = result + '<tr>';
+		result = result +'	<th>Seq. Id</th>';
+    	result = result +'    <th>Name</th>'; 
+    	result = result +'     <th>Manager</th>';
+    	result = result +'     <th>Invoice Frequency</th>';
+    	result = result +'     <th>Date<br>(<small class="custom-small">'+projectListDate+'</small>)</th>';
+    	result = result +'      <th>Client</th>';
+    	result = result +'       <th>Status</th>';
+		result = result + '</tr>';
+		result = result + '</thead>	';
+	    result = result +"</table>";
+	    $("#projectFilterList").empty();
+	    $("#projectFilterList").append(result);
+	    
+	    projectDataTableList();
+		projectsPagination(url);
+	  
+}
+
+</script>
+
+<script>
+function projectDataTableList(){
 	
-	var sourceleadUrl ='${sourceleadUrl}';
 	var values = [];
 	$('input:checkbox[name=projectStatus]:checked').each(function() 
     {
@@ -353,143 +237,168 @@ function filter(){
 		clients.push($(this).val());
 		    });
 	
-	var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
-	  if(locationList.match("yyyy-MM-dd")){
-		  projectListDate = 'YYYY-MM-DD';
-	  }if(locationList.match("dd-MM-yyyy")){
-		  projectListDate = 'DD-MM-YYYY'; 
-	  }if(locationList.match("MM-dd-yyyy")){
-		  projectListDate = 'MM-DD-YYYY'; 
-	  }if(locationList.match("yyyy-dd-MM")){
-		  projectListDate = 'YYYY-DD-MM'; 
-	  }
-	 $.ajax({
-		   	type: "POST",
-		    url: sourceleadUrl+"/getProjectsByStatusAndClient?${_csrf.parameterName}=${_csrf.token}&values="+values+"&clients="+clients, 	   
-   		    success: function(data) {
-   		    	var json = JSON.parse(data);
-   	        	var result = "";
-   		    	result = result +'<thead>';
-   		    	result = result +'	<tr>';
-   		    	result = result +'	<th>Id</th>';
-   		    	result = result +'    <th>Name</th>'; 
-   		    	result = result +'     <th>Manager</th>';
-   		    	result = result +'     <th>Invoice Frequency</th>';
-   		    	result = result +'     <th>Date<br>(<small class="custom-small">'+projectListDate+'</small>)</th>';
-   		    	result = result +'      <th>Client</th>';
-   		    	result = result +'       <th>Status</th>';
-   		    	result = result +'    </tr>';
-   		    	result = result +'</thead>	';
-   		    	result = result +'<tbody>';
-   		    	for (var i=0; i<json.length; i++)
-   				{   
-   		    		var report = json[i];
-   		    		
-   		    		var projectSequeneNumber;
-   		    		if(report.projectSequeneNumber != null && report.projectSequeneNumber != '' && report.projectSequeneNumber !='undefined'){
-   		    				projectSequeneNumber = report.projectSequeneNumber;
-   		    		}else{
-   		    			projectSequeneNumber = "---";
-   		    		}
-   		    		if(report.employeeEndDateStr != null && report.employeeEndDateStr != '' && report.employeeEndDateStr != 'undefined'){
-   		    			employeeEndDateStr = report.employeeEndDateStr;
-   		    		}else{
-   		    			employeeEndDateStr = "";
-   		    		}
-   		    		result = result +'<tr>';
-   		    		result = result +'<td data-title="Id"><div><span title='+projectSequeneNumber+'>'+projectSequeneNumber+'</span></div></td>';
+	 var sourceleadUrl ='${sourceleadUrl}';
+	 var searchValue = $("#projectsDataTableSearch").val();
+	 searchValue = searchValue ? searchValue : "";
+	 var url = sourceleadUrl+"/getProjectsByStatusAndClient?searchValue="+searchValue+"&values="+values+"&clients="+clients;
+	 projectsPagination(url,sourceleadUrl);
+}
+</script>
 
-   		    		
-   		    		'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_PROJECT\',\'ROLE_VIEW_EDIT_PROJECT\',\'ROLE_VIEW_PROJECT_TASKS\',\'ROLE_VIEW_EDIT_PROJECT_TASKS\',\'ROLE_VIEW_PROJECT_EMPLOYEES\',\'ROLE_VIEW_EDIT_PROJECT_EMPLOYEES\',\'ROLE_VIEW_DELETE_PROJECT_EMPLOYEES\')">'
-   		    		  
-   		    		if(report.projectMode != null && report.projectMode == 'Draft'){
-   		    			result = result +'<td data-title="Name"><div class="proj_show tbldata-dotdot_140"><a href="'+sourceleadUrl+'/project?projectUUID='+report.projectUUID+'"><span title="'+report.projectName+'">'+report.projectName+'</span></a><i class="fa fa-binoculars"></i></div></td>';
-   		    		}else{
-   		    			result = result +'<td data-title="Name"><div class="proj_show tbldata-dotdot_140"><a href="'+sourceleadUrl+'/projectSummary?projectUUID='+report.projectUUID+'"><span title="'+report.projectName+'">'+report.projectName+'</span></a><i class="fa fa-binoculars"></i></div></td>';
-   		    		}
-   		    		
 
-   		    		'</sec:authorize>';
-   		    		
-   		    		'<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_PROJECT\',\'ROLE_VIEW_EDIT_PROJECT\',\'ROLE_VIEW_PROJECT_TASKS\',\'ROLE_VIEW_EDIT_PROJECT_TASKS\',\'ROLE_VIEW_PROJECT_EMPLOYEES\',\'ROLE_VIEW_EDIT_PROJECT_EMPLOYEES\',\'ROLE_VIEW_DELETE_PROJECT_EMPLOYEES\')">'
- 		    		  result = result +'<td data-title="Name"><div class="proj_show"><span title="'+report.projectName+'">'+report.projectName+'</span></div></td>';
- 		    		'</sec:authorize>';
 
-   		    		/*result = result +'<td data-title="Name"><div class="proj_show" onclick="projectSideBar('+report.id+',\''+report.projectName+'\',\''+report.employeeStartDateStr+'\',\''+report.employeeEndDateStr+'\',\''+report.projectStatus+'\');"><span class="tbldata-dotdot-vsm">'+report.projectName+'</span><i class="fa fa-binoculars"></i></div></td>';*/
+<script>
+function projectsPagination(url,sourceleadUrl){
+	var colIndex = 0;
+    $('#projectsListTable').DataTable( { 
+	  "processing": true,
+      "serverSide": true,
+      "searching": false,
+      "ajax": $.fn.dataTable.pipeline( {
+          url: url,
+          method: 'POST',
+          pages: 4
+        }),
+        "columns": [
+            { "data": "projectSequeneNumber" },
+            { "data": "projectName"},
+            { "data": "projectManagers"},
+            { "data": "invoiceFrequency" },
+            { "data": "projectDate" },
+            { "data": "client"},
+            { "data": "projectStatus"}
+        ],
+        "columnDefs": [ {
+	    	  	"targets": colIndex++,
+	    	  	"data": "projectSequeneNumber",
+	    	  	"render": function(data, type, opt, meta) {
+	    	  		  var result = "";
+	    	  		  if(opt.projectSequeneNumber !=null && opt.projectSequeneNumber !='' && opt.projectSequeneNumber !='undefined'){
+			        		    	result = result + '<td data-title="Id"><div class="tblminwidth-75">'+opt.projectSequeneNumber+'</div></td>';
+			        		    }else{
+			        		    	result = result + '<td data-title="Id"><div class="tblminwidth-75">---</div></td>';
+			        		    }
+		             return result;
+	    	  	}
+	      },{
+	    	  "targets": colIndex++,
+              "data": "projectName",
+              "render": function ( data, type, opt, meta ) {
+            	  var result = "";
+            	  
+            	  '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_PROJECT\',\'ROLE_VIEW_EDIT_PROJECT\',\'ROLE_VIEW_PROJECT_TASKS\',\'ROLE_VIEW_EDIT_PROJECT_TASKS\',\'ROLE_VIEW_PROJECT_EMPLOYEES\',\'ROLE_VIEW_EDIT_PROJECT_EMPLOYEES\',\'ROLE_VIEW_DELETE_PROJECT_EMPLOYEES\')">'
+ 		    		if(opt.projectMode != null && opt.projectMode == 'Draft'){
+ 		    			result = result +'<td data-title="Name"><div class="proj_show tbldata-dotdot_140"><a href="'+sourceleadUrl+'/project?projectUUID='+opt.projectUUID+'" class="pull-left"><span title="'+opt.projectName+'">'+opt.projectName+'</span></a><i class="fa fa-binoculars pull-right"></i></div></td>';
+ 		    		}else{
+ 		    			result = result +'<td data-title="Name"><div class="proj_show tbldata-dotdot_140"><a href="'+sourceleadUrl+'/projectSummary?projectUUID='+opt.projectUUID+'" class="pull-left"><span title="'+opt.projectName+'">'+opt.projectName+'</span></a><i class="fa fa-binoculars pull-right"></i></div></td>';
+ 		    		}
+	    		  '</sec:authorize>';
+            	  
+	              return result;
+              		
+              }
+	      
+	          },{
+		    	  "targets": colIndex++,
+	              "data": "projectManagers",
+	              "render": function ( data, type, opt, meta ) {
+	            	  var result = "";
+	            	  var projectManagers = '';
+	            	  
+	            	    if(opt.managerLevel2 != null && opt.managerLevel2 != '' && opt.managerLevel2 != 'undefined'){
+	            		  projectManagers = opt.managerLevel1+","+opt.managerLevel2;
+   		    		     }else{
+   		    			  projectManagers = opt.managerLevel1;
+	   		    		}
+	            		result = result + '<td><div class="tblminwidth-75"><span title="'+projectManagers+'">'+projectManagers+'</span></div></td>';
+	            		return result;
+	              }
+		     },{
+		    	  "targets": colIndex++,
+	              "data": "invoiceFrequency",
+	              "render": function ( data, type, opt, meta ) {
+	            	    var result = "";
+	            		result = result + '<td><div class="tblminwidth-75">'+opt.invoiceFrequency+'</div></td>';
+	            		return result;
+	              }
+		     },{
+		    	  "targets": colIndex++,
+	              "data": "projectDate",
+	              "render": function ( data, type, opt, meta ) {
+	            	  var result = "";
+	            	  var projectDate = '';
+	            	  
+	            	    if(opt.endDateStr != null && opt.endDateStr != '' && opt.endDateStr != 'undefined'){
+	            	    	projectDate = opt.startDateStr+" - "+opt.endDateStr;
+   		    		     }else{
+   		    		    	projectDate = opt.startDateStr;
+	   		    		}
+	            		result = result + '<td><div class="tblminwidth-75">'+projectDate+'</div></td>';
+	            		return result;
+	              }
+		     },{
+		    	  "targets": colIndex++,
+	              "data": "client",
+	              "render": function ( data, type, opt, meta ) {
+	            	  var result = "";
+	            	  
+	            	    if(opt.client != null && opt.client != '' && opt.client != 'undefined'){
+	            	    	result = result + '<td><div class="tblminwidth-75"><span title="'+opt.client+'">'+opt.client+'</span></div></td>';
+   		    		     }else{
+   		    		    	result = result + '<td><div class="tblminwidth-75">---</div></td>';
+	   		    		}
+	            		return result;
+	              }
+		     },{
+		    	  "targets": colIndex++,
+	              "data": "projectStatus",
+	              "render": function ( data, type, opt, meta ) {
+	            	  var result = "";
+	            	  result = result +'<td data-title="Status"><div>';
+	   		    		if(opt.projectStatus == 'INPROGRESS'){
+	  	    			  result = result +'<b class="proj_process">In-Progress</b>';
+	  	    			}
+	   		    		else if(opt.projectStatus == 'COMPLETED'){
+	  	    			  result = result +'<b class="proj_active">Completed</b>';
+	  	    			}
+	   		    		else if(opt.projectStatus == 'ONHOLD'){
+	  	    			  result = result +'<b class="proj_deactivate">On-Hold</b>';
+	  	    			}
+	   		    		else if(opt.projectStatus == 'NOTSTARTED'){
+	   	    			  result = result +'<b class="proj_deactivate">Not-Started</b>';
+	   	    			}
+	   		    		else if(opt.projectStatus == 'DROPPED'){
+	   	    			  result = result +'<b class="proj_deactivate">Dropped</b>';
+	   	    			}
+	   		    		result = result +'</div></td>';
+	            	  
+	            	  return result;
+	              }
+		     }],
+		     
+	    	"scrollCollapse": false,
+	    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
+	    	"aaSorting": [[1,'desc']],
+	    	"bLengthChange": true,
+	    	"bDestroy": true,
+	    	"ordering": true,
+	    	"oLanguage": {
+	     		"sSearch": "",
+	     		 "sZeroRecords": "", "sEmptyTable": "", 
+	     		 "sProcessing": "<img src='resources/images/loading.gif' style='width: 75px; height: 75px;'/>"
+	     }
+    } );
+    $("#projectsListTable").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>"); 
+    $("input[type=search]").hide();
+    $("#projectsDataTableSearch").keyup(function(e) {
+    	   if(e.which === 13) {
+    		   projectDataTableList();
+    	   }
+    	});
+}
 
-   		    		result = result +'<td data-title="Manager">';
-   		    		result = result +'<div>';
-   		    		if(report.managerLevel1 !=null && report.managerLevel1 !='' && report.managerLevel1 !='undefined'){
-   		    			result = result +'<span title="'+report.managerLevel1+'">'+report.managerLevel1+'</span>';
-   		    		}
-   		    		if(report.managerLevel1 !=null && report.managerLevel1 !='' && report.managerLevel1 !='undefined' && report.managerLevel2!=null && report.managerLevel2!='' && report.managerLevel2 !='undefined'){
-   		    			result = result + " , ";
-   		    		}
-   		    		if(report.managerLevel2!=null && report.managerLevel2!='' && report.managerLevel2 !='undefined'){
-   		    			result = result +'<span title="'+report.managerLevel2+'">'+report.managerLevel2+'</span>'; 
-   		    		} 
-   		    		result = result +'</div>';
-   		    		result = result +'</td>';
-   		    		
-   		    		
-   		    		result = result +'<td data-title="Invoice Frequency">';
-   		    		result = result +'<div><span title="'+report.invoiceFrequency+'">';
-   		    		if(report.invoiceFrequency !=null && report.invoiceFrequency !='' && report.invoiceFrequency !='undefined'){
-   		    			result = result +report.invoiceFrequency;
-   		    		}
-   		    		
-   		    		result = result +'</span></div>';
-   		    		result = result +'</td>';
-   		    		var endDateStr = report.endDateStr;
-   		    		if(report.endDateStr == null || report.endDateStr == '' || report.endDateStr == 'undefined'){
-   		    			endDateStr = "";
-   		    		}else{
-   		    			endDateStr = ' - '+ endDateStr;
-   		    		}
-   		    		result = result +'<td data-title="Date"><div><span title=" '+report.startDateStr+endDateStr+'">'+report.startDateStr+'';
-   		    		if(report.endDateStr != null && report.endDateStr != '' && report.endDateStr != 'undefined'){
-   	   		    		result = result +' - '+report.endDateStr;
-   		    		}
-   		    		result = result +'</span></div>';
-   		    		result = result +'</td>';
-   		    		
-   		    		if(report.client != null && report.client != '' && report.client != 'undefined'){
-   		    			result = result +'<td data-title="Client"><div><span title="'+report.client+'">'+report.client+'</span></div></td>';  
-   		    		}else{
-   		    			result = result +'<td data-title="Client"><div>---</div></td>';  
-   		    		}
-   		    		result = result +'<td data-title="Status"><div>';
-   		    		if(report.projectStatus == 'INPROGRESS'){
-  	    			  result = result +'<b class="proj_process">In-Progress</b>';
-  	    			}
-   		    		if(report.projectStatus == 'COMPLETED'){
-  	    			  result = result +'<b class="proj_active">Completed</b>';
-  	    			}
-   		    		if(report.projectStatus == 'ONHOLD'){
-  	    			  result = result +'<b class="proj_deactivate">On-Hold</b>';
-  	    			}
-   		    		if(report.projectStatus == 'NOTSTARTED'){
-   	    			  result = result +'<b class="proj_deactivate">Not-Started</b>';
-   	    			}
-   		    		if(report.projectStatus == 'DROPPED'){
-   	    			  result = result +'<b class="proj_deactivate">Dropped</b>';
-   	    			}
-   		    		result = result +'</div></td>';
-   		    		
-                    result = result +'</tr>';
-   				}
-                result = result +'  </tbody>';
-                result = result +' </table>';
-                result = result +'</div>';
-                $("#example").empty();  
-   	    	    $("#example").append(result);
-   	    	    pagination();	
-   		    }
-	 }); 
-	
-	
-}	
-</script> 
+</script>
+
 <script type="text/javascript">
         var validationSettings = {
             errorMessagePosition : 'element',

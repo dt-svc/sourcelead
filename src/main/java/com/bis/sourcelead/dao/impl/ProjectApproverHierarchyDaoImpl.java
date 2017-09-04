@@ -301,4 +301,16 @@ public class ProjectApproverHierarchyDaoImpl implements ProjectApproverHierarchy
 
 	
 	}
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })	
+	public List<ProjectApproverHierarchy> getApproverUsersByProjectClientId(Long projectClientsId) throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from  ProjectApproverHierarchy projectHirachy left join fetch projectHirachy.approverUserId usr where  projectHirachy.projectClientsId.id =:projectClientsId ";
+	    List<ProjectApproverHierarchy>  projectHirachyList =   session.createQuery(query.toString()).setLong("projectClientsId", projectClientsId)
+	        																							.list();
+	        return projectHirachyList;
+		
+	}
 }

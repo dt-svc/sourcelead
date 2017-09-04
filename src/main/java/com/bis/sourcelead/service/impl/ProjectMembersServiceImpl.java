@@ -27,6 +27,7 @@ import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.ProjectMembersDao;
+import com.bis.sourcelead.dao.ProjectMembersHistoryDao;
 import com.bis.sourcelead.dao.impl.ProjectsDaoImpl;
 import com.bis.sourcelead.dto.ProjectAssignedMembersDTO;
 import com.bis.sourcelead.dto.ProjectMembersDTO;
@@ -51,6 +52,7 @@ import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.ExpensesReportService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
+import com.bis.sourcelead.service.ProjectClientService;
 import com.bis.sourcelead.service.ProjectMembersHistoryService;
 import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.ProjectsService;
@@ -60,6 +62,7 @@ import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.ConversionUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
+import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.bis.sourcelead.web.LoginSessionController;
 
@@ -113,6 +116,12 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 	 
 	 @Autowired
 	 CandidateService candidateService;
+	 
+	 @Autowired
+	 ProjectClientService projectClientService;
+	 
+	 @Autowired
+	 ProjectMembersHistoryDao projectMembersHistoryDao;
 	 
 	private static final Logger logger = LoggerFactory.getLogger(ProjectsDaoImpl.class);
 	
@@ -665,9 +674,11 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 	}
 
 	@Override
-	public Collection<ProjectMembers> getAllProjectMembersByProjectIdAndStatus(Long projectId, String status)
+	public List<ProjectMembers> getAllProjectMembersByProjectIdAndStatus(Long projectId, String status,OrgLocations loginOrgLocation)
 			throws Exception {
-		Collection<ProjectMembers> projectMembersList = projectMembersDao.getAllProjectMembersByProjectIdAndStatus(projectId,status);
+		
+		ProjectClients projectClients = projectClientService.getProjectClientsByProjectIdAndOrgLocationId(projectId, loginOrgLocation.getId());
+		List<ProjectMembers> projectMembersList = projectMembersDao.getAllProjectMembersByProjectClientIdAndStatus(projectClients.getId(),status);
 		return projectMembersList;
 	}
 
@@ -827,7 +838,7 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 						projectMembers.setId(projectMembersDTO.getProjectMemberId());
 						updatedProjectMembers.add(projectMembersDTO.getProjectMemberId());
 					}
-					Candidate candidate = candidateService.getCandidateById(projectMembersDTO.getCandidateId());
+					Candidate candidate = candidateService.getCandidateByCandidateId(projectMembersDTO.getCandidateId());
 					candidate.setId(projectMembersDTO.getCandidateId());
 					projectMembers.setProjectMemberCandidteId(candidate);
 					projectMembers.setProjects(projects);
@@ -880,11 +891,56 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 					projectMembers.setUpdatedBy(user.getUserCode());
 					projectMembers.setCreatedDate(new Date());
 					projectMembers.setUpdatedDate(new Date());
-					
-					Set<ProjectMembersHistory> memberHistoryList = saveProjectMembersHistory(projectMembers,user,orgLocations);
-					projectMembers.setMemberHistoryList(memberHistoryList);
 					projectMembersDao.saveProjectMember(projectMembers);
 					
+					if(projects.getOrgLocationsId().getId().equals(orgLocations.getId())){
+						ProjectClients projectClients = projectClientService.getProjectClientsByProjectIdAndOrgLocationId(projects.getId(), orgLocations.getId());
+						saveProjectMembersHistory(projectMembers,user,orgLocations,projectClients);
+					}
+					
+					if(candidate.getParentCandidateId() != null){
+						Long parentCandidatId = candidate.getParentCandidateId().getId();
+						while(parentCandidatId != null){
+							Candidate cand = candidateService.getCandidateByCandidateId(parentCandidatId);
+							if(cand != null){
+								ProjectClients projectClients = null;
+								projectClients = projectClientService.getProjectClientsByProjectIdAndOrgLocationId(projects.getId(), cand.getOrgLocationId().getId());
+								if(projectClients == null){
+									Candidate clildCandidate = candidateService.getCandidateByParentCandidateId(parentCandidatId);
+									projectClients = new ProjectClients();
+									projectClients.setProjectId(projects);
+									projectClients.setOrgRelationId(clildCandidate.getOrgRelationId());
+									projectClients.setOrgLocationsId(cand.getOrgLocationId());
+									projectClients.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
+									projectClients.setStatus(1);
+									projectClients.setCreatedDate(new Date());
+									projectClients.setCreatedBy(user);
+									projectClients.setUpdatedDate(new Date());
+									projectClients.setUpdatedBy(user);
+									
+									//prepare ProjectApproverHierarchy
+									Set<ProjectApproverHierarchy> projectApproverHierarchyList = new HashSet<ProjectApproverHierarchy>();
+									ProjectApproverHierarchy pah = new ProjectApproverHierarchy();
+									pah.setProjectId(projects);
+									pah.setProjectClientsId(projectClients);
+									pah.setApproverUserId(cand.getOrgLocationId().getUser());
+									pah.setLevel(1);
+									pah.setStatus("1");
+									projectApproverHierarchyList.add(pah);
+									projectClients.setProjectApproverHierarchyList(projectApproverHierarchyList);
+									
+									projectClientService.storeProjectClients(projectClients);
+								}
+								saveProjectMembersHistory(projectMembers,user,orgLocations,projectClients);
+								if(cand.getParentCandidateId() != null){
+									parentCandidatId = cand.getParentCandidateId().getId();
+								}else{
+									parentCandidatId = null;
+								}
+							}
+						}
+					}
+				  
 				}
 			}
 		}
@@ -904,24 +960,21 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 			}
 		}
 		
-		
 	}
 	
-	private Set<ProjectMembersHistory> saveProjectMembersHistory(ProjectMembers projectMembers,User user,OrgLocations orgLocations) throws Exception{
+	private void saveProjectMembersHistory(ProjectMembers projectMembers,User user,OrgLocations orgLocations,ProjectClients projectClients) throws Exception{
 		
-		ProjectMembersHistory memberHistory = null;
+		ProjectMembersHistory projectMembersHistory = null;
 		if(projectMembers.getId() != null){
-		  memberHistory = projectMembersHistoryService.getProjectMembersOpenHistoryByProjectMemberId(projectMembers.getId());
+			projectMembersHistory = projectMembersHistoryService.getProjectMembersOpenHistoryByProjectClientsId(projectClients.getId(),projectMembers.getId());
 		}
 		
-		Set<ProjectMembersHistory> projectMembersHistoryList = new HashSet<>();
-		
-		ProjectMembersHistory projectMembersHistory = new ProjectMembersHistory();
-		if(memberHistory != null){
-			projectMembersHistory.setId(memberHistory.getId());
+		if(projectMembersHistory == null){
+			projectMembersHistory = new ProjectMembersHistory();
 		}
 		
 		projectMembersHistory.setProjectMemberId(projectMembers);
+		projectMembersHistory.setProjectClientsId(projectClients);
 		
 		if(projectMembers.getProjectAssignedDate() != null){
 			projectMembersHistory.setProjectAssignedDate(projectMembers.getProjectAssignedDate());
@@ -940,9 +993,7 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 		projectMembersHistory.setUpdatedBy(user.getUserCode());
 		projectMembersHistory.setCreatedDate(new Date());
 		projectMembersHistory.setUpdatedDate(new Date());
-		projectMembersHistoryList.add(projectMembersHistory);
-		
-		return projectMembersHistoryList;
+		projectMembersHistoryDao.updateProjectMembersHistory(projectMembersHistory);
 		
 	}
 
@@ -955,6 +1006,12 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 	public void deleteProjectMember(ProjectMembers projectMembers) throws Exception {
 		projectMembersDao.deleteProjectMember(projectMembers);
 		
+	}
+
+	@Override
+	public List<ProjectMembers> getAllProjectMembersByProjectClientIdAndStatus(Long projectClientsId, String status)
+			throws Exception {
+		return projectMembersDao.getAllProjectMembersByProjectClientIdAndStatus(projectClientsId, status);
 	}
 
 }

@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.json.JSONObject;
 
+import com.bis.sourcelead.dto.ProjectsDTO;
 import com.bis.sourcelead.entity.ProjectApproverHierarchy;
 import com.bis.sourcelead.entity.ProjectClients;
 import com.bis.sourcelead.entity.Projects;
@@ -35,7 +36,7 @@ public interface ProjectApproverHierarchyService {
 	
 	public List<Long> getProjectIdsByLoginUserId(Long userId);
 	
-	Set<ProjectApproverHierarchy> prepareProjectApproverHierarchyListByJson(JSONObject jsonObj,HttpServletRequest request,Projects projects,ProjectClients projectClients) throws Exception;
+	Set<ProjectApproverHierarchy> prepareProjectApproverHierarchyListByJson(ProjectsDTO projectsDTO,HttpServletRequest request,Projects projects,ProjectClients projectClients) throws Exception;
 
 	public List<ProjectApproverHierarchy> getAllProjectApproverHierarchyByProjectIdForManager(Long projectId, Long userId, int managerLevel) throws Exception;
 

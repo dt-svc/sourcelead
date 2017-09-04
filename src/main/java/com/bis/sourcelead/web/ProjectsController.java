@@ -24,6 +24,7 @@ import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.ProjectAssignTask;
+import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.ProjectTasks;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.Roles;
@@ -169,6 +170,14 @@ public class ProjectsController {
 						model.addObject("savedProjectId", projects.getId());
 						model.addObject("isProjectDetailsFilled", projects.getIsProjectDetailsFilled());
 						model.addObject("isProjectMembersFilled", projects.getIsProjectMembersFilled());
+						
+						if(projects.getStartDate() != null){
+							model.addObject("projectStartDate", commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(),projects.getStartDate()));
+						}
+						if(projects.getEndDate() != null){
+							model.addObject("projectEndDate", commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(),projects.getEndDate()));
+						}
+						
 					}
 					
 				}
@@ -191,6 +200,8 @@ public class ProjectsController {
 		public ModelAndView projectSummary(@RequestParam(value="projectUUID", required=true) String projectUUID,@RequestParam(value="tabType", required=false) String tabType,
 				HttpServletRequest request) throws Exception {
 				ModelAndView model = new ModelAndView();
+				
+				OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 				Projects projects = projectsService.getProjectByProjectUUID(projectUUID);
 				OrgLocations locations=orgLocationService.getOrgLocations(projects.getOrgLocationsId().getId());
 				//SimpleDateFormat dateFormat=locations.getLocFullFormDateFormatter();
@@ -205,17 +216,19 @@ public class ProjectsController {
 					}
 					model.addObject("projectStatus", projects.getProjectStatus());
 				}
-				model.addObject("projectUUID", projectUUID);
+				
 				if(null != tabType && !tabType.isEmpty() && tabType != ""){
 					model.addObject("tabType", tabType);
 				}
 				
-				Integer projectMembersCount = projectMembersService.getAllProjectMembersCountByProjectId(projects.getId());
-				model.addObject("projectMembersCount", projectMembersCount);
+				List<ProjectMembers> projectMembersList =  projectMembersService.getAllProjectMembersByProjectIdAndStatus(projects.getId(), "Active", orgLocations);
+				model.addObject("projectMembersCount", projectMembersList.size());
 				
 				Integer resourceRequestsCount = projectPlanningRequestService.getProjectPlanningRequestCountByProjectId(projects.getId());
 				model.addObject("resourceRequestsCount", resourceRequestsCount);
 				
+				model.addObject("projectUUID", projectUUID);
+				model.addObject("postedOrgLocationId", projects.getOrgLocationsId().getId());
 				
 				 List<LookUpData> taskTypeList = lookUpDataService.getLookUpDataByCategory(Constants.TASKTYPE);
 				 model.addObject("taskTypeList", taskTypeList);
@@ -358,6 +371,46 @@ public class ProjectsController {
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		return model;
     }
+    
+    
+    @RequestMapping(value = "/addNewProjectMembers")
+	public ModelAndView addNewProjectMembers(@RequestParam(value="projectUUID", required=true) String projectUUID,HttpServletRequest request) throws Exception {
+	    Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+	    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+	    
+	    ModelAndView model = new ModelAndView();
+	    
+	    SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
+		if(sessionData == null)
+		{
+			sessionData = new SessionMaintainanceData();
+		}
+		sessionData.setNav(Constants.Projects);
+		
+		request.getSession().setAttribute("sessionData",sessionData);
+	
+	    
+		Projects projects = projectsService.getProjectByProjectUUID(projectUUID);
+		if(projects != null){
+			model.addObject("projectId", projects.getId());
+			model.addObject("projectName", projects.getProjectName());
+			if(projects.getStartDate() != null){
+				model.addObject("projectStartDate", commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),projects.getStartDate()));
+			}
+			if(projects.getEndDate() != null){
+				model.addObject("projectEndDate", commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),projects.getEndDate()));
+			}
+			model.addObject("projectStatus", projects.getProjectStatus());
+		}
+		model.addObject("projectUUID", projectUUID);
+		
+		
+		model.setViewName("project/addNewProjectMembers");
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		return model;
+    }
+    
+    
     
     
     @RequestMapping(value = "/editResourceRequest")

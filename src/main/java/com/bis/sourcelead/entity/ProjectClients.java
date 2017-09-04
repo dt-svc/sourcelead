@@ -20,6 +20,8 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
@@ -40,6 +42,7 @@ public class ProjectClients implements Serializable{
 	@JsonBackReference
     private Projects projectId;
 	
+    @NotFound(action=NotFoundAction.IGNORE)
     @ManyToOne
     @JoinColumn(name = "ORG_RELATION_ID")
     private OrgRelations orgRelationId;
@@ -77,7 +80,7 @@ public class ProjectClients implements Serializable{
 	@OneToMany(mappedBy="projectClientsId",cascade = CascadeType.ALL)
     @Fetch(FetchMode.SELECT)
 	@JsonBackReference
-    private Set<ProjectMembers> projectMembersList;
+    private Set<ProjectMembersHistory> projectMembersHistoryList;
 
 	
 
@@ -170,11 +173,13 @@ public class ProjectClients implements Serializable{
 		this.projectApproverHierarchyList = projectApproverHierarchyList;
 	}
 
-	public Set<ProjectMembers> getProjectMembersList() {
-		return projectMembersList;
+	public Set<ProjectMembersHistory> getProjectMembersHistoryList() {
+		return projectMembersHistoryList;
 	}
 
-	public void setProjectMembersList(Set<ProjectMembers> projectMembersList) {
-		this.projectMembersList = projectMembersList;
+	public void setProjectMembersHistoryList(Set<ProjectMembersHistory> projectMembersHistoryList) {
+		this.projectMembersHistoryList = projectMembersHistoryList;
 	}
+
+	
 }

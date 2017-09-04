@@ -1,5 +1,14 @@
 package com.bis.sourcelead.dao;
 
+import java.util.List;
+
+import com.bis.sourcelead.entity.ProjectClients;
+
 public interface ProjectClientDao {
 
+    ProjectClients storeProjectClients(ProjectClients projectClients) throws Exception;
+	
+	ProjectClients getProjectClientsByProjectIdAndOrgLocationId(Long projectId,Long orgLocationsId) throws Exception;
+	
+	List<ProjectClients> getProjectClientsListByProjectId(Long projectId) throws Exception;
 }

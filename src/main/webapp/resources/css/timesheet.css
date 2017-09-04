@@ -631,6 +631,9 @@ input.inline_field::-moz-placeholder { color: #333; }-->*/
 .proj_show i {
     font-size:12px; color:#375d81; float:right; padding:4px 0px 0px 0px; visibility:hidden; opacity:0;
     }
+.proj_show:hover i{
+    visibility:visible; opacity:1;
+    }
 .project_wrap_table table tr:hover .proj_show i {
     visibility:visible; opacity:1;
     }

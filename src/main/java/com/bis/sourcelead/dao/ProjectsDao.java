@@ -3,7 +3,8 @@ package com.bis.sourcelead.dao;
 import java.util.Date;
 import java.util.List;
 
-import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.dto.ProjectsDTO;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
 
@@ -44,6 +45,8 @@ public interface ProjectsDao {
 	public Projects getProjectByProjectSequenceNumber(String projectSequeneNumber) throws Exception;
 
 	List<Projects> getProjectsBasedOnClientsAndStatusSelectionInFilters(Long userId,String clients,String status,Long orgLocationId) throws Exception;
+	
+	ResponseList<Projects> getProjectsListByClientsAndStatus(ProjectsDTO projectsDTO,Long userId,String clients,String status,Long orgLocationId,String userRole) throws Exception;
 	
 	public List<Projects> getProjectByOrgLocationsIdAndUserId(Long id, Long userId);
 	
