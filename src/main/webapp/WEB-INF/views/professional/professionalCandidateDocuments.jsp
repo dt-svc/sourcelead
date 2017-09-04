@@ -121,7 +121,7 @@ function candDocumentsList(candidateId){
 	    	             	 }
 	                    	 
 	                    	 if(opt.fileName != null && opt.fileName != '' && opt.fileName != 'undefined'){
-	                    	 result  = result + ' <td><div class="tbldata-dotdot-me widAu" title="'+opt.fileName+'"><a class="fa fa-eye" onclick="viewProfessionalCandidateDocument(\''+opt.documentUUID+'\',\''+opt.fileName+'\');"></a><a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadDoc?documentUUID='+opt.documentUUID+'\">&nbsp;&nbsp;&nbsp;'+opt.fileName+'</a></div></td>';
+	                    	 result  = result + ' <td><div class="tbldata-dotdot-me widAu" title="'+opt.fileName+'"><a class="fa fa-eye" onClick="viewFile(\'${sourceleadUrl}\',\''+opt.fileURL+'\',\''+opt.fileName+'\',\''+opt.fileContentType+'\');"></a><a class="glyphicon glyphicon-download-alt" href=\"'+opt.fileURL+'\" title="'+opt.fileName+'">&nbsp;&nbsp;&nbsp;'+opt.fileName+'</a></div></td>';
 	                    	 }else{
 	                    		 result  = result + ' <td><div><span>----</span></div></td>';
 	                    	 }
@@ -254,7 +254,7 @@ function addDocument(candidateId, documentUUID) {
 	result = result+'<div class="clearfix mb10" id="uploadDocDiv">';
 	result = result+'<div class="col-md-12 validation_p">';
 	result = result+'<div class="input-group positionRelative" id="uploadFileGroup">';
-	result = result+'<label class="input-group-btn"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File';
+	result = result+'<label class="input-group-btn"   onchange="uploadFileDoc();"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File';
 	result = result+'<input type="file" name="uploadBtn" id="uploadBtn" style="display: none;"  multiple="" class="upload">';
 	result = result+'</span> </label>';
 	result = result+'<input type="text" class="form-control" readonly id="uploadFile" name="docFile" placeholder="Upload Document..." field-name="Document" data-validation="required validate_Space validate_docimgpdf">';
@@ -391,17 +391,47 @@ function getDocumentType(documentType){
 					dateFormat : 'yyyy/mm/dd' 
 		         }; 
 			 if ($('#documentType_form').validate(false, validationSettings)){
-				var frm = $('#documentType_form').serializeFormJSON();
+				
+				 /* var frm = $('#documentType_form').serializeFormJSON();
 				var con = JSON.stringify(frm);
 				con = con.replace(/[{}]/g, "");
 				var form = $('#documentType_form')[0];
 	      		var formData = new FormData(form); 
 				var sourceleadUrl = '${sourceleadUrl}';
-				$("#save_doc").attr("disabled", "disabled");
-         		$("#save_doc" ).addClass('button').val('Processing..');
 				//It will escape all the special characters
 		        var jsonData = encodeURIComponent(con);
-				$.ajax({
+				*/
+				
+				var formData = getFormData("documentType_form");
+				var sourceleadUrl = '${sourceleadUrl}';
+				$("#save_doc").attr("disabled", "disabled");
+         		$("#save_doc" ).addClass('button').val('Processing..');
+         		
+         		$.post(sourceleadUrl+"/saveCandidateDocument?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&documentUUID="+documentUUID, formData, function(data) {
+		        	closePopup();
+		        	
+		        	$('#perVal').attr('aria-valuenow', result).css('width',result+'%');
+         			 if(result<50){
+         			   $("#perVal").removeClass('progress-bar-success');
+         			   $("#perVal").addClass("progress-bar-danger");
+         			 }
+         			 if(result>=50){
+         				 $("#perVal").removeClass('progress-bar-danger');
+         				 $("#perVal").addClass("progress-bar-success");
+         			 }
+         			 $("#disVal").empty();
+         			$("#disVal").append(result+'%');
+					$("#popUpDiv").removeClass("edit-details-active");
+	       			$("#selector6").removeAttr("style");
+	       			$("#selector6").css({ display: "block" });
+	   				$("#docMsgDiv").html("Success!! New Candidate Document added");
+	   				
+	   				candDocumentsList(candidateId);
+			 		docMsgFadein();
+		        });
+				
+				
+				/* $.ajax({
 						type : "POST",
 		        	    data: formData,
 		        	    contentType : 'application/json; charset=utf-8',
@@ -431,7 +461,7 @@ function getDocumentType(documentType){
 						 		docMsgFadein();
 		            		 
 						},
-					});
+					}); */
 					return true;
 			 }else{ 
 					return false;
@@ -442,6 +472,13 @@ function getDocumentType(documentType){
 		$("#documentType_form").validateOnBlur(false, validationSettings);
 	});
 		
+</script>
+
+<script>
+function uploadFileDoc(){
+	var sourceleadUrl ='${sourceleadUrl}';
+	fileUpload(sourceleadUrl, "uploadBtn", "resumes", "documentType_form");
+}
 </script>
 
 <%-- 
