@@ -81,6 +81,9 @@ public class EmployerPayrollCost implements Serializable {
 	
 	@Column(name = "STATUS")
 	private String status;
+	
+	@Column(name = "VERSION")
+	private int version;
 
 	@Column(name = "CREATED_DATE")
 	private Date createdDate;
@@ -299,7 +302,14 @@ public class EmployerPayrollCost implements Serializable {
 		this.toDateStr = toDateStr;
 	}
 
-	
-	
-	
+	public int getVersion()
+	{
+		return version;
+	}
+
+	public void setVersion(int version)
+	{
+		this.version = version;
+	}
+
 }

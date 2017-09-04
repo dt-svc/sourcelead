@@ -24,4 +24,5 @@ public interface EmployerPayrollCostService {
 
 	List<UserPayroll> runPayrollCycle(OrgLocations orgLocation, User user, JSONObject jsonObj)throws Exception;
 	
+	int getEmployerPayrollCostVersionByLocationId(Long locationId);
 }

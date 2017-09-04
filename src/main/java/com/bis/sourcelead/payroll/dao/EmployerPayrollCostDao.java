@@ -13,4 +13,6 @@ public interface EmployerPayrollCostDao {
 	
 	EmployerPayrollCost getEmployeePayrollCostById(String EmpId);
 
+	int getEmployerPayrollCostVersionByLocationId(Long locationId);
+
 }
