@@ -155,10 +155,8 @@ public class BisUserMappingDaoImpl implements BisUserMappingDao {
 			response.setRecordsFiltered(filteredCount);
 		}
 
-		if (employeesList != null && employeesList.size() > 0) {
 			response.setData(employeesList);
-		}
-		return response;
+			return response;
 		
 		// TODO do not delete @Rajashekar
 		
