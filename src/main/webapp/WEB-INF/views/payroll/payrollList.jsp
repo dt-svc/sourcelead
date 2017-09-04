@@ -26,7 +26,7 @@ window.onload = function () {
  </div>
 </section>
 
-
+<form:form id="payroll_list_form" name="payroll_list_form" method="post">
 <section class="contrHead">
 		<ul id="parentUl">
 			<li title="Employer Payroll Cost"><a class="wVer" id="empPayrollCostLi" onclick="loadEmployeePayrollCost();">Employer Payroll</a></li>
@@ -42,6 +42,7 @@ window.onload = function () {
 		<div class="clearfix"></div>
 	</section>
 	
+	</form:form>
 <div class="content-area content-new clearfix">
  <!-- <div class="project_wrap"> -->
  <div class="clearfix">
@@ -105,7 +106,7 @@ window.onload = function () {
     <div class="project_tabs_inn_table vendor_wrap_inn_table dataFilterNew pdtop">
     	<div id="loading"></div>
     	<div id="employerCostDiv" class="datatable_filter"></div>
-    	<div id="wagesAndTaxListDiv" class="datatable_filter"></div>
+    	<div id="wagesAndTaxListDiv" class="datatable_filter"> </div>
     	<div id="accountDeductionsListDiv" class="datatable_filter"></div> 
     	<div id="hrDeductionsListDiv" class="datatable_filter"></div>
     	<div id="checksListDiv" class="datatable_filter"></div>
@@ -243,7 +244,7 @@ function loadEmployeePayrollCost(){
 								result = result + '<td><div class="tblminwidth-75">'+opt.fromDateStr+'</div></td>';
 								result = result + ' <td><div class="tblminwidth-75">'+opt.toDateStr+'</div></td>';
 								result = result + '<td class="tblminwidth-75"><div>'+opt.employeeId+'</div></td>';
-								result = result + '<td><div class="tbldata-dotdot-vsm">'+opt.employeeName+'</div></td>';
+								result = result + '<td><div class="tbldata-dotdot-vsm" title="'+opt.employeeName+'">'+opt.employeeName+'</div></td>';
 								if(opt.ssn !=null && opt.ssn !='' && opt.ssn !='undefined'){
 									result = result + ' <td><div class="tbldata-dotdot-sm">'+opt.ssn+'</div></td>';
 								}else{
@@ -254,14 +255,14 @@ function loadEmployeePayrollCost(){
 								}else{
 									result = result + ' <td><div>--</div></td>';
 								}
-								result = result + ' <td><i class="fa fa-dollar paddingLeft text-left pull-left"></i><div class="tblminwidth-125 text-right">'+opt.grossWages+'</div></td>';
-								result = result + '<td><div class="tblminwidth-75">'+opt.fica+'</div></td>';
-								result = result + '<td><div class="tblminwidth-75">'+opt.futa+'</div></td>';
-								result = result + ' <td><div class="tblminwidth-75">'+opt.sui+'</div></td>';
+								result = result + ' <td><div class="tblminwidth-125 text-right"><i class="fa fa-dollar"style="color:#454545;"></i> '+opt.grossWages.toFixed(2)+'</div></td>';
+								result = result + '<td><div class="tblminwidth-75"><i class="fa fa-dollar"style="color:#454545;"></i> '+opt.fica+'</div></td>';
+								result = result + '<td><div class="tblminwidth-75"><i class="fa fa-dollar"style="color:#454545;"></i> '+opt.futa+'</div></td>';
+								result = result + ' <td><div class="tblminwidth-75"><i class="fa fa-dollar"style="color:#454545;"></i> '+opt.sui+'</div></td>';
 								result = result + '<td><div class="tblminwidth-75">'+opt.erLocals+'</div></td>';
 								result = result + ' <td><div class="tblminwidth-75">'+opt.wcCost+'</div></td>';
 								result = result + '<td><div class="tblminwidth-100">'+opt.adminFee+'</div></td>';
-								result = result + '<td><i class="fa fa-dollar paddingLeft text-left pull-left"></i><div class="tblminwidth-150 text-right">'+opt.totalErCost+'</div></td>';
+								result = result + '<td><div class="tblminwidth-150 text-right"><i class="fa fa-dollar"style="color:#454545;"></i> '+opt.totalErCost+'</div></td>';
 								result = result + ' </tr>';
 						}
 						result = result + '  </table>';

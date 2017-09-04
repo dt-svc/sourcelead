@@ -34,6 +34,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.bis.sourcelead.SourceleadPasswordEncoder;
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.dto.WagesTaxSummaryDTO;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.payroll.dao.WageTaxSummaryDao;
@@ -271,42 +273,42 @@ public class WageTaxSummaryServiceImpl implements WageTaxSummaryService{
 	
 	
 	@Override
-	public List<WageTaxSummary> getWagesAndTaxListByOrgLocationId(OrgLocations orgLocation)
+	public ResponseList<WageTaxSummary> getWagesAndTaxListByOrgLocationId(OrgLocations orgLocation,WagesTaxSummaryDTO wagesTaxSummaryDTO)
 	{
-		List<WageTaxSummary> wagesAndTaxList  = wageTaxSummaryDao.getWagesAndTaxListByOrgLocationId(orgLocation);
-		
-		if(wagesAndTaxList != null){
-			for(WageTaxSummary wts : wagesAndTaxList){
-				StringBuilder sb = new StringBuilder();
-				if(null !=  wts.getFromDate()){
-					wts.setFromDateStr(conversionUtil.getDateAsString(wts.getFromDate()));
-				}
-				if(null != wts.getToDate()){
-					wts.setToDateStr(conversionUtil.getDateAsString(wts.getToDate()));
-				}
-				
-				if(wts.getCheckDate() !=null   ){
-					wts.setCheckDateStr(conversionUtil.getDateAsString(wts.getCheckDate()));
-				}
-				if(wts.getCheckNo() != null){
-					wts.setCheckNo(wts.getCheckNo());
-				}
-				String ssn = wts.getSsnNumber();
-				String[] arr = ssn.split("-");
-				sb.append("xxx").append("-").append("xx").append("-").append(arr[0]);
-				wts.setSsnNumber(sb.toString());
-			}
-			
-			Collections.sort(wagesAndTaxList, new Comparator() {  
-	            @Override  
-	            public int compare(Object obj1, Object obj2) {  
-	            	WageTaxSummary wageTaxSummary1 = (WageTaxSummary)obj1;  
-	            	WageTaxSummary wageTaxSummary2 = (WageTaxSummary)obj2; 
-	            	return wageTaxSummary1.getEmployeeName().compareToIgnoreCase(wageTaxSummary2.getEmployeeName());  
-	            }  
-	        });
-		}
-		return wagesAndTaxList;
+		return wageTaxSummaryDao.getWagesAndTaxListByOrgLocationId(orgLocation,wagesTaxSummaryDTO);
+	//TODO 	please do not remove
+//		if(wagesAndTaxList != null){
+//			for(WageTaxSummary wts : wagesAndTaxList){
+//				StringBuilder sb = new StringBuilder();
+//				if(null !=  wts.getFromDate()){
+//					wts.setFromDateStr(conversionUtil.getDateAsString(wts.getFromDate()));
+//				}
+//				if(null != wts.getToDate()){
+//					wts.setToDateStr(conversionUtil.getDateAsString(wts.getToDate()));
+//				}
+//				
+//				if(wts.getCheckDate() !=null   ){
+//					wts.setCheckDateStr(conversionUtil.getDateAsString(wts.getCheckDate()));
+//				}
+//				if(wts.getCheckNo() != null){
+//					wts.setCheckNo(wts.getCheckNo());
+//				}
+//				String ssn = wts.getSsnNumber();
+//				String[] arr = ssn.split("-");
+//				sb.append("xxx").append("-").append("xx").append("-").append(arr[0]);
+//				wts.setSsnNumber(sb.toString());
+//			}
+//			
+//			Collections.sort(wagesAndTaxList, new Comparator() {  
+//	            @Override  
+//	            public int compare(Object obj1, Object obj2) {  
+//	            	WageTaxSummary wageTaxSummary1 = (WageTaxSummary)obj1;  
+//	            	WageTaxSummary wageTaxSummary2 = (WageTaxSummary)obj2; 
+//	            	return wageTaxSummary1.getEmployeeName().compareToIgnoreCase(wageTaxSummary2.getEmployeeName());  
+//	            }  
+//	        });
+//		}
+//		return new ResponseList<>();
 	}
 
 	@Override
