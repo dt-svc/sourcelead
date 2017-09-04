@@ -715,43 +715,34 @@ function validate_fileupload(fileName)
 				 	        		 $("#candidateSkills").trigger("chosen:updated");
 				                 }
 					    	 }else{
+					    		var focussedSkills = $("ul.chosen-results").find("li.active-result.highlighted");
 				    			var newSkill = this.value.replace(","," ");
 				    			 if (tagItBykeyForSkills(e) && (newSkill != null  && newSkill != '' && newSkill != 'undefined'))
 				                 {
 				    				 preventTabkey(e);
-				    				 
-				    				 // due to below code manually enter skills are not taken
-				    				 /* var isNewSkill = true;
-				    				 
-				                     $("#candidateSkills option:selected").each(function(){
-										 if(this.value.toUpperCase() === newSkill.toUpperCase() && this.value.toLowerCase() === newSkill.toLowerCase()){
-											 alert("isNewSkill"+isNewSkill);
-												isNewSkill = false;
-												return false;
-										 }
-				                   });
-								   if(isNewSkill){
-									   alert("isNewSkill"+isNewSkill);
-										select.append(option);
-								   }
-				                   $("#candidateSkills").trigger("chosen:updated");  */
-				                   
-				                  
 				                   // below code manually enter skills are taken
 				    				  
 				                   var isNewSkill = true;
 									 $("#candidateSkills option:selected").each(function(){
 										 if(this.value.toUpperCase() === newSkill.toUpperCase() && this.value.toLowerCase() === newSkill.toLowerCase()){
-											 //alert(newSkill);
 											 isNewSkill = false;
 											 return false;
 										 }
 				                    
 				                   });
 									if(isNewSkill){
-				    				 var option = $("<option>").val(newSkill).text(newSkill);
-									 select.append(option);
-				                     select.find(option).prop('selected', true);
+										if(focussedSkills.length > 0){
+											var skillOption  = $("<option>").val(focussedSkills.first().text()).text(focussedSkills.first().text());
+											select.append(skillOption);
+											select.find(skillOption).prop('selected',true);
+											select.find(option).siblings("[value='"+ focussedSkills.first().text()+"']").remove();
+											$("#candidateSkills").trigger("chosen:updated");
+									   }
+									   else{
+											var option = $("<option>").val(newSkill).text(newSkill);
+											select.append(option);
+											select.find(option).prop('selected', true);
+									   }
 									}
 					               $("#candidateSkills").trigger("chosen:updated"); 
 				                   
@@ -768,18 +759,37 @@ function validate_fileupload(fileName)
 	        chosenone = selectone.data('chosen');
 	        chosenone.search_field.on('keydown keyup', function(e1)
 		    {
+	        	var focussedEducations = $("ul.chosen-results").find("li.active-result.highlighted");
 		    	var newEducation = this.value.replace(",","");
 		        if (tagItBykeyForSkills(e1) && (newEducation != null  && newEducation != '' && newEducation != 'undefined'))
 		        {
 		        	preventTabkey(e1);
-		        	var par = this.parent;
-		            var option = $("<option>").val(newEducation).text(newEducation);
-		            selectone.append(option);
-		            selectone.find(option).prop('selected', true);
-		          //to doesn't allow duplicates
-                    $("#candidateEducation option").each(function(){
-                          $(this).siblings("[value='"+ this.value+"']").remove();
-                    });
+		        	var isNewEducation = true;
+					 $("#candidateEducation option:selected").each(function(){
+						 if(this.value.toUpperCase() === newEducation.toUpperCase() && this.value.toLowerCase() === newEducation.toLowerCase()){
+							 isNewEducation = false;
+							 return false;
+						 }
+                   
+                  });
+					 
+					 if(isNewEducation){
+							if(focussedEducations.length > 0){
+								var educationOption  = $("<option>").val(focussedEducations.first().text()).text(focussedEducations.first().text());
+								selectone.append(educationOption);
+								selectone.find(educationOption).prop('selected',true);
+								selectone.find(option).siblings("[value='"+ focussedEducations.first().text()+"']").remove();
+								$("#candidateEducation").trigger("chosen:updated");
+						   }
+						   else{
+								var option = $("<option>").val(newEducation).text(newEducation);
+								selectone.append(option);
+								selectone.find(option).prop('selected', true);
+						   }
+						}
+					 
+					 
+		        	
                     //end
 	        		$("#candidateEducation").trigger("chosen:updated");
 	        		
