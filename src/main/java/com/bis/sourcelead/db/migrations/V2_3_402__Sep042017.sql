@@ -1,5 +1,5 @@
 SET SQL_SAFE_UPDATES = 0;
-ALTER TABLE `sourcelead`.`wage_tax_summary` 
+ALTER TABLE `sourcelead`.`WAGE_TAX_SUMMARY` 
 ADD COLUMN `VERSION` INT(50) NULL DEFAULT NULL AFTER `USER_ID`;
 
 update sourcelead.WAGE_TAX_SUMMARY set VERSION=1;
