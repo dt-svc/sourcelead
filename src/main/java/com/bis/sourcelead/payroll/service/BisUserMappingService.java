@@ -5,6 +5,8 @@ import java.util.List;
 import org.json.JSONObject;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.bis.sourcelead.dto.EmployeeListDTO;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.payroll.entity.BisUserMapping;
@@ -23,7 +25,7 @@ public interface BisUserMappingService {
 
 	Integer saveChecksData(MultipartFile multipartFile, OrgLocations orgLocation, User user, JSONObject jsonObj)throws Exception;
 
-	List<BisUserMapping> getEmployeeList(Long orgLocationId)throws Exception;
+	ResponseList<BisUserMapping> getEmployeeList(EmployeeListDTO employeeListDTO, Long orgLocationId)throws Exception;
 
 	List<BisUserMapping> getMasterListByEmpId(Long empId, OrgLocations orgLocations)throws Exception;
 

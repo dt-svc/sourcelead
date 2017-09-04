@@ -698,6 +698,7 @@ public class ClientServiceImpl implements ClientService {
 				if (jsonObj.has("clientName") && jsonObj.getString("clientName") != null
 						&& !jsonObj.getString("clientName").isEmpty()) {
 					org.setOrgName(jsonObj.getString("clientName"));
+					orgLocations.setOrgLocationName(jsonObj.getString("clientName"));
 				}
 
 				if (jsonObj.has("companyWebsite") && jsonObj.getString("companyWebsite") != null
@@ -819,6 +820,7 @@ public class ClientServiceImpl implements ClientService {
 			if (null != org) {
 				if (jsonObj.getString(vendorName) != null && !jsonObj.getString(vendorName).isEmpty()) {
 					org.setOrgName(jsonObj.getString(vendorName));
+					orgLocations.setOrgLocationName(jsonObj.getString(vendorName));
 				}
 
 				if (jsonObj.has("companyWebsite") && jsonObj.getString(companyWebsite) != null
@@ -827,9 +829,13 @@ public class ClientServiceImpl implements ClientService {
 				}
 				if (jsonObj.has("address") && !isNullOrEmpty(jsonObj.getString("address"))) {
 					org.setClientAddress(jsonObj.getString("address"));
+				}else{
+					org.setClientAddress(null);
 				}
 				if (jsonObj.has("billingAddress") && !isNullOrEmpty(jsonObj.getString("billingAddress"))) {
 					org.setClientBillingAddress(jsonObj.getString("billingAddress"));
+				}else{
+					org.setClientBillingAddress(null);
 				}
 				if (jsonObj.has("PaymentTerm") && !isNullOrEmpty(jsonObj.getString("PaymentTerm"))) {
 					org.setPaymentTerm(jsonObj.getString("PaymentTerm"));
@@ -859,7 +865,11 @@ public class ClientServiceImpl implements ClientService {
 			if (jsonObj.has("vendorLocation") && jsonObj.getString(vendorLocation) != null
 					&& !jsonObj.getString(vendorLocation).isEmpty()) {
 				orgLocations.setLocation(jsonObj.getString(vendorLocation));
-			} else {
+			}else if (jsonObj.has("clientLocation") && jsonObj.getString("clientLocation") != null
+					&& !jsonObj.getString("clientLocation").isEmpty()) {
+				orgLocations.setLocation(jsonObj.getString("clientLocation"));
+			}  
+			else {
 				orgLocations.setLocation("");
 			}
 			if (jsonObj.has("vendorZipCode") && jsonObj.getString(vendorZipCode) != null
