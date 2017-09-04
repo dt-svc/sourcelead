@@ -664,6 +664,10 @@ function getAssociatesFilter(){
 <script type="text/javascript">
 	function addRequestedResources() {
 		
+		var projectStartDate = '${projectStartDate}';
+		var projectEndDate = '${projectEndDate}';
+		
+		
 		var oTable = $('#associatesListPagination').dataTable();
 		var rowcollection =  oTable.$("input[name='associates[]']:checked", {"page": "all"});
 		
@@ -724,7 +728,7 @@ function getAssociatesFilter(){
 			var startDateText = "";
 			var cell3 = row.insertCell(3);
 			startDateText = startDateText+"<div  class='tbldata-dotdot-100' id='"+maxRowNum+"startDate' >";
-			startDateText = startDateText+'<input type="text" class="form-control input-sm calendar" data-validation="required" field-name="Start Date" id="'+maxRowNum+'memberStartDate"  name="'+maxRowNum+'memberStartDate" >';
+			startDateText = startDateText+'<input type="text" class="form-control input-sm calendar" data-validation="required" value="'+projectStartDate+'" field-name="Start Date" id="'+maxRowNum+'memberStartDate"  name="'+maxRowNum+'memberStartDate" >';
 			startDateText = startDateText+'</div>';
 			cell3.innerHTML = startDateText;
 			
@@ -732,7 +736,7 @@ function getAssociatesFilter(){
 			var endDateText = "";
 			var cell4 = row.insertCell(4);
 			endDateText = endDateText+"<div  class='tbldata-dotdot-100'>";
-			endDateText = endDateText+'<input type="text" class="form-control input-sm calendar" id="'+maxRowNum+'memberEndDate"  name="'+maxRowNum+'memberEndDate" >';
+			endDateText = endDateText+'<input type="text" class="form-control input-sm calendar" id="'+maxRowNum+'memberEndDate" value="'+projectEndDate+'" name="'+maxRowNum+'memberEndDate" >';
 			endDateText = endDateText+'</div>';
 			cell4.innerHTML = endDateText;
 			

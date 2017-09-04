@@ -170,6 +170,14 @@ public class ProjectsController {
 						model.addObject("savedProjectId", projects.getId());
 						model.addObject("isProjectDetailsFilled", projects.getIsProjectDetailsFilled());
 						model.addObject("isProjectMembersFilled", projects.getIsProjectMembersFilled());
+						
+						if(projects.getStartDate() != null){
+							model.addObject("projectStartDate", commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(),projects.getStartDate()));
+						}
+						if(projects.getEndDate() != null){
+							model.addObject("projectEndDate", commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(),projects.getEndDate()));
+						}
+						
 					}
 					
 				}
