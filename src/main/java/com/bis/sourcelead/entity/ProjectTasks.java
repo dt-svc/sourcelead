@@ -101,6 +101,9 @@ public class ProjectTasks implements Serializable{
 	@Column(name = "OWNER_NAME")
 	private String ownerName;
 	
+	@Column(name = "PERCENTAGE")
+	private Integer percentage;
+	
 	@Column(name = "STATUS")
 	private String status;
 	
@@ -288,6 +291,14 @@ public class ProjectTasks implements Serializable{
 
 	public void setOwnerName(String ownerName) {
 		this.ownerName = ownerName;
+	}
+
+	public Integer getPercentage() {
+		return percentage;
+	}
+
+	public void setPercentage(Integer percentage) {
+		this.percentage = percentage;
 	}
 
 	public String getStatus() {

@@ -367,7 +367,7 @@ function editCancel(){
 	    			for (var i=0; i<json.length; i++)
 		     		{
 			     		var opt = json[i];
-			     			output = output + "<option value='" +opt.id+ "'>"+opt.taskName+"</option>";
+			     			output = output + "<option value='" +opt.id+ "'>"+opt.generatedId+" - "+opt.taskName+"</option>";
 		     		}
 	    			 
 	    			$("#epicId").empty();
@@ -390,7 +390,7 @@ function editCancel(){
 	    			for (var i=0; i<json.length; i++)
 		     		{
 			     		var opt = json[i];
-			     			output = output + "<option value='" +opt.id+ "'>"+opt.taskName+"</option>";
+			     			output = output + "<option value='" +opt.id+ "'>"+opt.generatedId+" - "+opt.taskName+"</option>";
 		     		}
 	    				$("#userStroyId").empty();
 			     		$("#userStroyId").append(output);
@@ -415,9 +415,9 @@ function editCancel(){
 	     		{
 		     		var opt = json[i];
 		     		if(opt.id == projectTaskId){
-	        			output = output + "<option value='"+opt.id+"' selected>"+opt.taskName+"</option>";
+	        			output = output + "<option value='"+opt.id+"' selected>"+opt.generatedId+" - "+opt.taskName+"</option>";
 	        		}else{
-	        			output = output + "<option value='"+opt.id+"'>"+opt.taskName+"</option>";
+	        			output = output + "<option value='"+opt.id+"'>"+opt.generatedId+" - "+opt.taskName+"</option>";
 	        		}
 		     		
 		     		
@@ -567,7 +567,7 @@ function editCancel(){
 			result = result	+ '						<option>EUR</option>';
 			result = result	+ '					</select>';
 			result = result	+ '					</div>';
-			result = result	+ '					<input type="text" class="form-control" id="businessValue" name="businessValue">';
+			result = result	+ '					<input type="text" class="form-control" id="businessValue" name="businessValue" data-validation="validate_Space validate_length length1-8 validate_int" data-validation-optional="true">';
 			result = result	+ '					</div>';
 			result = result	+ '					<div class="clearfix"></div>';
 			result = result	+ '					</div>';

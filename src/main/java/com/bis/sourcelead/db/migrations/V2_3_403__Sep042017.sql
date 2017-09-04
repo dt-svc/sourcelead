@@ -32,6 +32,10 @@ CALL sourcelead.AlterTableAddColumn ('sourcelead','PROJECT_TASKS','GENERATED_ID'
 
 CALL sourcelead.AlterTableAddColumn ('sourcelead','PROJECT_TASKS','PROJECT_TASKS_UUID','VARCHAR(50) NULL AFTER `GENERATED_ID`');
 
+CALL sourcelead.AlterTableAddColumn ('sourcelead','PROJECT_TASKS','PERCENTAGE','INT(5) NULL AFTER `BUSINESS_VALUE`');
+
+
+
 
 DROP TABLE IF EXISTS `sourcelead`.`PROJECT_ASSIGN_TASK`;
 CREATE TABLE `sourcelead`.`PROJECT_ASSIGN_TASK` (

@@ -367,6 +367,13 @@ public class ProjectTasksRestController {
 		 return "success";
 	  }
 	 
+	 
+	 @RequestMapping(value = "/updateTaskPercentage", method = RequestMethod.POST)
+	 public String updateTaskPercentage(@RequestParam(value="percentage", required=false) Integer percentage, @RequestParam(value="taskId", required=false) String taskId,@RequestParam(value="userId", required=false) Long userId) throws Exception{ 
+		 tasksService.updateTaskPercentage(percentage,taskId,userId);
+		 return "success";
+	  }
+	 
 	 /**
 	  * @author Laxman
 	  * @param getProjectTasksDescrption

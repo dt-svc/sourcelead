@@ -182,12 +182,12 @@ public class ProjectTasksServiceImpl implements ProjectTasksService {
 	            			splitProjectName = sb.toString().toUpperCase();
 	                        break;
 	                    default:
-	            			sb.append(projectNmae.substring(0, 3));
+	            			sb.append(projectNmae.substring(0, 2));
 	            			 splitProjectName = sb.toString().toUpperCase();
 		                }
 		        break;
 		  case 2: 
-				String first = splitName[0].substring(0, 2);
+				String first = splitName[0].substring(0, 1);
 				String second = splitName[1].substring(0, 1);
 				 splitProjectName = sb.append(first).append(second).toString().toUpperCase();
 		        break;
@@ -195,7 +195,7 @@ public class ProjectTasksServiceImpl implements ProjectTasksService {
 				for (String s : projectNmae.split(" ")){
 					sb.append(s.charAt(0));
 				}
-				 splitProjectName = sb.toString().substring(0, 3).toUpperCase();
+				 splitProjectName = sb.toString().substring(0, 2).toUpperCase();
 		        break;
 		}
 		
@@ -307,6 +307,7 @@ public class ProjectTasksServiceImpl implements ProjectTasksService {
         tasks.setProjectAssignTask(assignProjetcTasks);
         User user = userService.getUserById(userId);
         tasks.setCreatedBy(user.getUserCode());
+        tasks.setPercentage(Constants.CANDIDATE_IN_ACTIVE);
         tasks.setGeneratedId(getProjectTaskGenaratedId(projects));
         tasks.setProjectTasksUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
         tasks.setCreatedDate(commonUtil.currentDate());
@@ -480,6 +481,25 @@ public class ProjectTasksServiceImpl implements ProjectTasksService {
 	}
 
 	@Override
+	public void updateTaskPercentage(Integer percentage, String taskId, Long userId) throws Exception {
+		User user = userService.getUserById(userId);
+		ProjectTasks projectTasks = tasksDao.getTasksId(taskId);
+		
+		 //Task Percentage activity	
+		 ProjectTasks  oldData = tasksDao.getTasksId(taskId);
+	     StringBuffer activity = new StringBuffer();
+	     StringBuffer activitySummary = new StringBuffer();
+	     activity.append("Task Percentage");
+	     projectTasks.setPercentage(percentage);
+	     projectTasks.setUpdatedDate(commonUtil.currentDate());
+	     tasksDao.updateTasks(projectTasks);
+	    
+	     activitySummary.append(oldData.getPercentage()).append(" to ").append(projectTasks.getPercentage());
+		 projectTaskActivityService.saveProjectTaskActivities(activity.toString(), activitySummary.toString(),projectTasks,user);
+		
+	}
+	
+	@Override
 	public Long getProjectTasksGeneratedIdByProjectId(Long projectId, Integer generatedIdCount) throws Exception {
 		return tasksDao.getProjectTasksGeneratedIdByProjectId(projectId, generatedIdCount);
 	}
@@ -488,6 +508,8 @@ public class ProjectTasksServiceImpl implements ProjectTasksService {
 	public ProjectTasks getProjectTasksByUUID(String taskUUD) throws Exception {
 		return tasksDao.getProjectTasksByUUID(taskUUD);
 	}
+
+	
 
 	
 
