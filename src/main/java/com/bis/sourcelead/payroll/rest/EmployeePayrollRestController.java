@@ -24,8 +24,10 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.AccountDeductionsDTO;
 import com.bis.sourcelead.dto.ChecksDTO;
 import com.bis.sourcelead.dto.EmployeeListDTO;
+import com.bis.sourcelead.dto.HrDeductionsDTO;
 import com.bis.sourcelead.dto.InvoiceDetailsDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.WagesTaxSummaryDTO;
@@ -197,13 +199,32 @@ public class EmployeePayrollRestController {
 	 * @return json
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "/getAccountDeductionsList", method = RequestMethod.GET)
-	public @ResponseBody String getAccountDeductionsList(HttpServletRequest request) throws Exception
+	@RequestMapping(value = "/getAccountDeductionsList", method = RequestMethod.POST)
+	public  ResponseList<AccountDeductions> getAccountDeductionsList(AccountDeductionsDTO accountDeductionsDTO ,HttpServletRequest request) throws Exception
+	{
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		
+		String[] tableColumns = {"employeeId", "employeeName", "fromDate", "toDate", "dedAmount", "batchNumber","requestSubDate","requestApprovedDate","repaidStatus"};
+	     int sortColumnIndex = 1; //by default sorting using updated date
+		String sortColumnOrder = "desc"; //by default descending order
+		if(accountDeductionsDTO.getOrder() != null && !accountDeductionsDTO.getOrder().isEmpty()) {
+			sortColumnIndex = Integer.parseInt(accountDeductionsDTO.getOrder().get(0).get("column"));
+			sortColumnOrder = accountDeductionsDTO.getOrder().get(0).get("dir");
+		}
+		accountDeductionsDTO.setSortColumn(tableColumns[sortColumnIndex]);
+		accountDeductionsDTO.setSortOrder(sortColumnOrder);
+		
+		return accountDeductionsService.getAccountDeductionsListByOrgLocationId(orgLocation,accountDeductionsDTO);
+	}
+	
+	
+	
+	/*public @ResponseBody String getAccountDeductionsList(HttpServletRequest request) throws Exception
 	{
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		List<AccountDeductions> accountDeductionsList = accountDeductionsService.getAccountDeductionsListByOrgLocationId(orgLocation);
 		return commonUtil.toJSON(accountDeductionsList);
-	}
+	}*/
 	
 	/**
 	 * @author : Pavan Jampana
@@ -222,13 +243,31 @@ public class EmployeePayrollRestController {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "/getHrDeductionsList", method = RequestMethod.GET)
-	public @ResponseBody String getHrDeductionsList(HttpServletRequest request) throws Exception
+	@RequestMapping(value = "/getHrDeductionsList", method = RequestMethod.POST)
+	@ResponseBody
+	public  ResponseList<HrDeductions> getHrDeductionsList(HrDeductionsDTO hrDeductionsDTO ,HttpServletRequest request) throws Exception
 	{
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		List<HrDeductions> hrDeductionsList = hrDeductionsService.getHrDeductionsListByOrgLocationid(orgLocation);
-		return commonUtil.toJSON(hrDeductionsList);
+		
+		String[] tableColumns = {"employeeId", "employeeName", "fromDate", "toDate", "dedAmount", "batchNumber","requestSubDate","requestApprovedDate","repaidStatus"};
+	     int sortColumnIndex = 1; //by default sorting using updated date
+		String sortColumnOrder = "desc"; //by default descending order
+		if(hrDeductionsDTO.getOrder() != null && !hrDeductionsDTO.getOrder().isEmpty()) {
+			sortColumnIndex = Integer.parseInt(hrDeductionsDTO.getOrder().get(0).get("column"));
+			sortColumnOrder = hrDeductionsDTO.getOrder().get(0).get("dir");
+		}
+		hrDeductionsDTO.setSortColumn(tableColumns[sortColumnIndex]);
+		hrDeductionsDTO.setSortOrder(sortColumnOrder);
+		
+		return hrDeductionsService.getHrDeductionsListByOrgLocationid(orgLocation,hrDeductionsDTO);
 	}
+	
+	/*public @ResponseBody String getHrDeductionsList(HttpServletRequest request, HrDeductionsDTO hrDeductionsDTO) throws Exception
+	{
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		ResponseList<HrDeductions> hrDeductionsList = hrDeductionsService.getHrDeductionsListByOrgLocationid(orgLocation, hrDeductionsDTO);
+		return commonUtil.toJSON(hrDeductionsList);
+	}*/
 	
 	/**
 	 * @author : Pavan Jampana
@@ -329,6 +368,17 @@ public class EmployeePayrollRestController {
 		accountDeductions.setDedAmount(Float.parseFloat(dedAmount));
 		AccountDeductions updatedAccountDeductions = accountDeductionsService.saveAccountDeductions(accountDeductions);
 		return commonUtil.toJSON(updatedAccountDeductions.getId());
+	}
+	
+	
+	@RequestMapping(value = "/updateHrDeduction", method = RequestMethod.POST)
+	@ResponseBody 
+	public String updateHrDeduction(@RequestParam(value = "hrDeductionId", required = false) String hrDeductionId,@RequestParam(value = "dedAmount", required = false) String dedAmount,HttpServletRequest request, String hrrDeductionId) throws Exception {
+		
+		HrDeductions hrDeductions = hrDeductionsService.getDeductionsbyId(Long.parseLong(hrDeductionId));
+		hrDeductions.setDedAmount(Float.parseFloat(dedAmount));
+		HrDeductions updatedHrDeductions = hrDeductionsService.saveHrDeductions(hrDeductions);
+		return commonUtil.toJSON(updatedHrDeductions.getId());
 	}
 	
 	/**
