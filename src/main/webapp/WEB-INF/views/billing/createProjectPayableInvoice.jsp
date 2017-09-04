@@ -300,37 +300,46 @@ function getProjectsList(projectName){
 <!-- Get Project Frequency Based on project id -->
 <script type="text/javascript">
 function getProjectFrequency(invoiceFrequency){
-	$('#frequency').val('').trigger('chosen:updated');
 	var projectId = null;
 	projectId = $("#projectId").val();
-	if(projectId == null){
+	
+	/* if(projectId == null){
 	projectId = '${projectId}';
-	}
+	} */
 	var sourceleadUrl ='${sourceleadUrl}';
-	$.ajax({
-	type : "GET",
-	url: sourceleadUrl+"/getProjectFrequency?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId,
-	success :function(data) {
-		var json = JSON.parse(data);
+	
+	if(projectId != null && projectId != '' && projectId != 'undefined'){
+			$.ajax({
+			type : "GET",
+			url: sourceleadUrl+"/getProjectFrequency?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId,
+			success :function(data) {
+				var json = JSON.parse(data);
+				var output = "";
+				output = output + "<option value=''>Select Frequency</option>";
+				for (var i=0; i<json.length; i++)
+				{
+				var opt = json[i];
+				/* output = output + "<option value='" +opt+ "'>"+opt+"</option>"; */
+				var selected = "";
+				if(invoiceFrequency != null && invoiceFrequency != "" && invoiceFrequency !="undefined" && invoiceFrequency == opt){
+					selected = 'selected';
+					/* getProjectAssignedMem1();  */
+				}
+				output = output + "<option value='" +opt+ "' "+selected+">"+opt+"</option>";
+				}
+				$("#frequency").empty();
+				$("#frequency").append(output);
+				$('#frequency').trigger("chosen:updated");
+			},
+			});
+	 }
+	else{
+		$("#frequency").empty();
 		var output = "";
 		output = output + "<option value=''>Select Frequency</option>";
-		for (var i=0; i<json.length; i++)
-		{
-		var opt = json[i];
-		/* output = output + "<option value='" +opt+ "'>"+opt+"</option>"; */
-		var selected = "";
-		if(invoiceFrequency != null && invoiceFrequency != "" && invoiceFrequency !="undefined" && invoiceFrequency == opt){
-			selected = 'selected';
-			/* getProjectAssignedMem1();  */
-		}
-		output = output + "<option value='" +opt+ "' "+selected+">"+opt+"</option>";
-		}
-		
-		$("#frequency").empty();
 		$("#frequency").append(output);
 		$('#frequency').trigger("chosen:updated");
-	},
-	});
+	}
 
 }
 </script>

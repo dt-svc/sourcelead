@@ -84,7 +84,7 @@ public class ProjectTasksRestController {
 	/**
 	 * @author David sammeta
 	 * @return
-	 * @throws Exception
+	 * @throws Exception 
 	 */
 	@RequestMapping(value = "/saveOrUpdate", method = RequestMethod.GET)
 	public @ResponseBody  ProjectTasks addTasks() throws Exception {

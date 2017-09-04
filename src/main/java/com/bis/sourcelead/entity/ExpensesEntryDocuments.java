@@ -15,6 +15,8 @@ import javax.persistence.Table;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
 
 /**
 * This class is used to store all the Attachments of every Expense that is added in Add Expense Screen.
@@ -39,6 +41,7 @@ private static final long serialVersionUID = 1L;
 @Column(name = "ID", nullable = false)
 private Long id;
 
+@NotFound(action=NotFoundAction.IGNORE)
 @ManyToOne
 @JoinColumn(name="EXPENSES_ENTRIES_ID", nullable=false )        
 private ExpensesEntries expensesEntriesId;
