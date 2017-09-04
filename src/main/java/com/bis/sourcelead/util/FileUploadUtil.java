@@ -2,10 +2,7 @@ package com.bis.sourcelead.util;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.nio.file.CopyOption;
 import java.nio.file.Files;
-import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
@@ -31,7 +28,10 @@ public class FileUploadUtil {
 			url = "/slead-static/"+fileType+"/"+fileName+new Date().getTime()+extenstion;
 			fileName = "/slead-static/temp/"+fileName+new Date().getTime()+extenstion;
 		}
-		File folderFile = new File(staticPath, "/slead-static"+orgId+"/"+locationId+"/"+fileType);
+		File folderFile = new File(staticPath, "/slead-static/"+orgId+"/"+locationId+"/"+fileType);
+		if(!folderFile.exists())
+			folderFile.mkdirs();
+		folderFile = new File(staticPath, "/slead-static/"+orgId+"/"+locationId+"/temp");
 		if(!folderFile.exists())
 			folderFile.mkdirs();
 		File file = new File(staticPath, fileName);
@@ -77,5 +77,8 @@ public class FileUploadUtil {
 		}
 		object.getClass().getMethod("setUploadedFileInfo", List.class).invoke(object, uploadedFileInfo);
 	}
+	
+	
+	
 	
 }

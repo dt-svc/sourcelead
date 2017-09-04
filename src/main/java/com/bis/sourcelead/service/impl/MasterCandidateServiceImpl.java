@@ -154,7 +154,7 @@ public class MasterCandidateServiceImpl implements MasterCandidateService{
 		}
 		
 		if(StringUtils.isNotBlank(candidateDTO.getEmail())){
-			masterCandidate.setEmail(candidateDTO.getLastName());
+			masterCandidate.setEmail(candidateDTO.getEmail());
 		}
 		
 		if(StringUtils.isNotBlank(candidateDTO.getPhoneNumber())){
@@ -231,10 +231,10 @@ public class MasterCandidateServiceImpl implements MasterCandidateService{
 		
 		
 		// Tihs for add applicant
-		/*if(jsonObj.has("EmailId") && !isNullOrEmpty(jsonObj.getString("EmailId"))){
-			email = jsonObj.getString("EmailId");
+		if(StringUtils.isNotBlank(candidateDTO.getEmailId())){
+			email = candidateDTO.getEmailId();
 		}
-		
+		/*
 		if(jsonObj.has("PhoneNumber") && !isNullOrEmpty(jsonObj.getString("PhoneNumber"))){
 			phoneNumber = jsonObj.getString("PhoneNumber");
 		}

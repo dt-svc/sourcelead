@@ -1,9 +1,15 @@
 package com.bis.sourcelead.web;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,6 +23,7 @@ import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.util.FileUploadUtil;
+import com.bis.sourcelead.util.PdfConversionUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @Controller
@@ -24,6 +31,9 @@ public class FileController {
 
 	@Value("${static.path}")
 	private String staticPath;
+	
+	@Autowired
+	private PdfConversionUtil pdfConversionUtil;
 
 	@RequestMapping(value = "/upload/{type}", method = RequestMethod.POST)
 	@ResponseBody
@@ -43,4 +53,33 @@ public class FileController {
 		}
 		return fileInfoList;
 	}
+	@RequestMapping(value = "/viewFile")
+	public void viewFile(HttpServletResponse response, String documentPath, String contentType) {
+		File file = new File(staticPath, documentPath);
+		try (FileInputStream fis = new FileInputStream(file);) {
+
+			byte[] pdfBytes = new byte[fis.available()];
+			fis.read(pdfBytes);
+			if (!"application/pdf".equalsIgnoreCase(contentType)) {
+				pdfBytes = pdfConversionUtil.convertDocToPdf(pdfBytes);
+			}
+			response.setHeader("Content-disposition", "inline; filename=contractPdf.pdf");
+			response.setContentType("application/pdf");
+			ServletOutputStream sos = response.getOutputStream();
+			if (null != pdfBytes) {
+				response.setContentLength(pdfBytes.length);
+				sos.write(pdfBytes);
+			}
+			sos.flush();
+			sos.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	
 }
+
+
+
+
