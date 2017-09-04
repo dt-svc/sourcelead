@@ -471,32 +471,11 @@ function getEmployeementType(designationType){
 	 
 	 
 	   if ($('#createUser_form').validate(false, validationSettings)){ 
-		    /* var frm = $('#createUser_form').serializeFormJSON();
-	        var con = JSON.stringify(frm);
-	        con = con.replace(/[{}]/g, ""); */
-	        
-	        var sourceleadUrl = '${sourceleadUrl}';
-			var form = $('#createUser_form')[0];
-      		var formData = new FormData(form);
-      		alert(formData);
-	        
-	        //It will escape all the special characters
-	       // var jsonData = encodeURIComponent(con);
-	        
-	       // var sourceleadUrl ='${sourceleadUrl}';
-	        $("#create_user").attr("disabled", "disabled");
-     		$( "#create_user" ).addClass('button').val('Processing..');
-     		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-	        $.ajax({
-		    	type: "POST",
-		    	 url: sourceleadUrl+"/createUser?${_csrf.parameterName}=${_csrf.token}", 
-		        success: function(result) {
-		        	if((result == 'usersList')){
-		        		location.replace(sourceleadUrl+"/usersList");  
-		        	}
-			        
-		        },
-		    });
+		
+		    var formData = getFormData("createUser_form");
+			var sourceleadUrl = '${sourceleadUrl}';
+			$.post(sourceleadUrl+"/createUser?${_csrf.parameterName}=${_csrf.token}", formData, function(data) {
+				});
 	        return true;
 		
 	  }else{
