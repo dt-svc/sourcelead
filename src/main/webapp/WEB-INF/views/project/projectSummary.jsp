@@ -115,7 +115,13 @@ window.onload = function () {
 				 if(tabType == "tasks"){
 					 document.getElementById('projectTaskTab').className = 'current'
 					 projectTask(projectId, status)
-				 }else{
+				 }
+				 if(tabType == "projectMembers"){
+					 document.getElementById('requestResources').className = 'current'
+					 projectEmployee(projectId,startDateStr,endDateStr,status,projectName);
+					 document.getElementById('projectMembersTab').click();
+				 }
+				 else{
 					 document.getElementById('requestResources').className = 'current'
 					 projectEmployee(projectId,startDateStr,endDateStr,status,projectName);
 					 document.getElementById('resourceTab').click();

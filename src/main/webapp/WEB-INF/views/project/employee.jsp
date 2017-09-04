@@ -142,6 +142,10 @@ function filterStatus() {
  
  <script>
  function projectEmployee(projectId,startDateStr,endDateStr,status,projectName){
+	 
+	 var projectUUID = '${projectUUID}';
+	 var sourceleadUrl = '${sourceleadUrl}';
+	 	 
 	   $("#employeesLoadingImg").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;'); 
  	 
 	   var resourceRequestsCount = '${resourceRequestsCount}';
@@ -171,7 +175,7 @@ function filterStatus() {
 	
 result = result + '<div class="newPrTabs col-md-12">';
 result = result + '<ul class="newPrTabsMenu">';
-result = result + '<li class="current"><a href="#tab-a">Resources ('+projectMembersCount+')</a></li>';
+result = result + '<li class="current"><a href="#tab-a" id="projectMembersTab" >Resources ('+projectMembersCount+')</a></li>';
 
 /* Dont delete this commented code. Functionality is in progress */
  result = result + '<li class=""><a href="#tab-b" id="resourceTab" onclick="resourceRequestsTab();">Resource Requests ('+resourceRequestsCount+')</a></li>'; 
@@ -189,7 +193,9 @@ result = result + '<div class="project_tabs mb">';
 			if(status != 'COMPLETED' &&  status != '' &&  status != 'undefined' ){
 			result = result +'<li>';
 	 		'<sec:authorize access="hasAnyRole(\'ROLE_ASSIGN_EMPLOYEE_TO_PROJECT\')">';
-	 			result = result + '<span data-target="#assignTeam" data-toggle="modal" onclick="getTeamMembers('+projectId+',\''+startDateStr+'\',\''+endDateStr+'\');"><i class="paddingRight glyphicon glyphicon-plus"></i>Assign Emp</span>';
+	 		    result = result + '<a href="'+sourceleadUrl+'/addNewProjectMembers?projectUUID='+projectUUID+'">';
+	 		    result = result + '<i class="glyphicon glyphicon-plus"></i>Assign Emp</a></li>';
+	 			//result = result + '<span data-target="#assignTeam" data-toggle="modal" onclick="getTeamMembers('+projectId+',\''+startDateStr+'\',\''+endDateStr+'\');"><i class="paddingRight glyphicon glyphicon-plus"></i>Assign Emp</span>';
 	 		'</sec:authorize>';
 	 		result = result +'</li>';
 			} 

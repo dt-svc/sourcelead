@@ -365,6 +365,46 @@ public class ProjectsController {
     }
     
     
+    @RequestMapping(value = "/addNewProjectMembers")
+	public ModelAndView addNewProjectMembers(@RequestParam(value="projectUUID", required=true) String projectUUID,HttpServletRequest request) throws Exception {
+	    Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+	    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+	    
+	    ModelAndView model = new ModelAndView();
+	    
+	    SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
+		if(sessionData == null)
+		{
+			sessionData = new SessionMaintainanceData();
+		}
+		sessionData.setNav(Constants.Projects);
+		
+		request.getSession().setAttribute("sessionData",sessionData);
+	
+	    
+		Projects projects = projectsService.getProjectByProjectUUID(projectUUID);
+		if(projects != null){
+			model.addObject("projectId", projects.getId());
+			model.addObject("projectName", projects.getProjectName());
+			if(projects.getStartDate() != null){
+				model.addObject("projectStartDate", commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),projects.getStartDate()));
+			}
+			if(projects.getEndDate() != null){
+				model.addObject("projectEndDate", commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),projects.getEndDate()));
+			}
+			model.addObject("projectStatus", projects.getProjectStatus());
+		}
+		model.addObject("projectUUID", projectUUID);
+		
+		
+		model.setViewName("project/addNewProjectMembers");
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		return model;
+    }
+    
+    
+    
+    
     @RequestMapping(value = "/editResourceRequest")
 	public ModelAndView editResourceRequest(@RequestParam(value="requestUUID", required=true) String requestUUID,@RequestParam(value="projectUUID", required=true) String projectUUID,HttpServletRequest request) throws Exception {
 	    Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");

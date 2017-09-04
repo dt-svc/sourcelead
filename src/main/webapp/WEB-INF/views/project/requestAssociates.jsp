@@ -22,7 +22,7 @@
       <div class="pull-left">
         <h2>Request Associates</h2>
       </div>
-		<div class="pull-right brud-crum"><a href="<c:url value='/projectDashboard'/>">Home</a> &raquo; <a href="<c:url value='/projectSummary?projectUUID=${projectUUID}&tabType=resources'/>">Planning</a> &raquo; Request Associates</div>
+		<div class="pull-right brud-crum"><a href="<c:url value='/projectDashboard'/>">Home</a> &raquo; <a href="<c:url value='/projectSummary?projectUUID=${projectUUID}&tabType=projectMembers'/>">Planning</a> &raquo; Request Associates</div>
     </section>
     
 <div class="content-area content-new clearfix">
@@ -87,7 +87,7 @@
 			<div class="pull-right">
 			  <input type="button" value="Draft" class="btn btn-warning mr" onclick="requestAssociate('Draft');">
 			  <input type="button" value="Send" class="btn btn-primary" onclick="requestAssociate('Send');">
-			  <input type="button" value="Cancel" onClick="javascript:window.location.href = '<c:url value='/projectSummary?projectUUID=${projectUUID}&tabType=resources'/>'" class="btn btn-default ml">
+			  <input type="button" value="Cancel" onClick="javascript:window.location.href = '<c:url value='/projectSummary?projectUUID=${projectUUID}&tabType=projectMembers'/>'" class="btn btn-default ml">
 			</div>
 		  </div>
 	</div>        
