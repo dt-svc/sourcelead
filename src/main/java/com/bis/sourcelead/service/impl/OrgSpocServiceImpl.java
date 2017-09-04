@@ -100,7 +100,7 @@ public class OrgSpocServiceImpl implements OrgSpocService{
 			respondingOrgLocation = orgLocationService.getOrgLocations(Long.parseLong(realtionId[1]));
 		}
 		
-		User spocUser = userService.storeUser(jsonObj,user,respondingOrgLocation,"CREATEUSER",responderType,loginOrg);
+		//User spocUser = userService.storeUser(jsonObj,user,respondingOrgLocation,"CREATEUSER",responderType,loginOrg);
 		
 		if(jsonObj.has("owner")){
 			String ownersId = jsonObj.getString("owner");
@@ -127,14 +127,14 @@ public class OrgSpocServiceImpl implements OrgSpocService{
 				if(responderType.equalsIgnoreCase("Client")){
 					orgSpoc.setClientLocationId(respondingOrgLocation);
 					orgSpoc.setVendorLocationId(orgLocations);
-					orgSpoc.setClientUser(spocUser);
+					//orgSpoc.setClientUser(spocUser);
 					orgSpoc.setVendorUser(ownerUser);
 					orgSpoc.setOwnerUser(ownerUser);
 				}else if(responderType.equalsIgnoreCase("Vendor")){
 					orgSpoc.setVendorLocationId(respondingOrgLocation);
 					orgSpoc.setClientLocationId(orgLocations);
 					orgSpoc.setClientUser(ownerUser);
-					orgSpoc.setVendorUser(spocUser);
+					//orgSpoc.setVendorUser(spocUser);
 					orgSpoc.setOwnerUser(ownerUser);
 				}
 			
@@ -163,7 +163,7 @@ public class OrgSpocServiceImpl implements OrgSpocService{
 				  if((("Client".equals(responderType) || "Vendor".equals(responderType)) 
 							&& jsonObj.has("isMailSent") && null != jsonObj.getString("isMailSent") ) 
 							&& ("Y".equals(jsonObj.getString("isMailSent")))){
-						userService.sendEmailToClientOrVendor(orgSpoc.getUUID(),spocUser,ownerUser,user,spocUser.getTempPwd(),responderType,loginOrg,respondingOrgLocation.getOrg(),respondingOrgLocation,orgLocations);
+						//userService.sendEmailToClientOrVendor(orgSpoc.getUUID(),spocUser,ownerUser,user,spocUser.getTempPwd(),responderType,loginOrg,respondingOrgLocation.getOrg(),respondingOrgLocation,orgLocations);
 					}
 				  
 				 commonUtil.updateClientVendorElk(orgRelation,orgLocations,user,responderType);

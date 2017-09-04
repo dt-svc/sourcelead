@@ -345,13 +345,14 @@ function getOrgDetails()
 			dateFormat : 'yyyy/mm/dd'
 		};
 		if ($('#vendor_contact_form').validate(false, validationSettings)) {
-			var frm = $('#vendor_contact_form').serializeFormJSON();
+			/* var frm = $('#vendor_contact_form').serializeFormJSON();
 			var con = JSON.stringify(frm);
 			con = con.replace(/[{}]/g, "");
-	        var jsonData = encodeURIComponent(con);
+	        var jsonData = encodeURIComponent(con); */
+	        var formData = getFormData("vendor_contact_form");
 			var sourceleadUrl = '${sourceleadUrl}';
 			$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-			$.ajax({
+			/* $.ajax({
 						type : "POST",
 						url : sourceleadUrl+ "/saveClinentAndVendorContact?${_csrf.parameterName}=${_csrf.token}&json="+ jsonData+"&orgRelationId="+orgRelationId+"&responderType=Vendor",
 						success : function(result) {
@@ -361,6 +362,9 @@ function getOrgDetails()
 							}
 
 						},
+					}); */
+					
+					$.post(sourceleadUrl+"/saveClinentAndVendorContact?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+orgRelationId+"&responderType=Vendor", formData, function(data) {
 					});
 			return true;
 		} else {
@@ -439,15 +443,16 @@ function getOrgDetails()
 			dateFormat : 'yyyy/mm/dd'
 		};
 		if ($('#client_form').validate(false, validationSettings)) {
-			var frm = $('#client_form').serializeFormJSON();
+			/* var frm = $('#client_form').serializeFormJSON();
 			var con = JSON.stringify(frm);
 			con = con.replace(/[{}]/g, "");
 			  //It will escape all the special characters
-	        var jsonData = encodeURIComponent(con);
+	        var jsonData = encodeURIComponent(con); */
+	        var formData = getFormData("client_form");
 			var sourceleadUrl = '${sourceleadUrl}';
 			$("#save_client").attr("disabled", "disabled");
 			$("#save_client").addClass('button').val('Processing..');
-			$
+			/* $
 					.ajax({
 						type : "POST",
 						url : sourceleadUrl + "/saveClient?${_csrf.parameterName}=${_csrf.token}&json="+ jsonData+"&responderType=Client",
@@ -458,6 +463,9 @@ function getOrgDetails()
 							}
 
 						},
+					}); */
+					
+					$.post(sourceleadUrl+"/saveClient?${_csrf.parameterName}=${_csrf.token}&responderType=Client", formData, function(data) {
 					});
 			return true;
 		} else {
@@ -512,20 +520,11 @@ function validateClientName(){
 		};
 		if ($('#vendor_form').validate(false, validationSettings)) {
 			var orgLocationId = document.getElementById("orgLocationId").value;
-			/* var con = JSON.stringify(frm); */
-			var frm = $('#vendor_form').serializeFormJSON();
-		    var jsonData = JSON.stringify(frm);
-		     /* jsonData = jsonData.replace(/[{}]/g, "");  */
-		    var form = $('#vendor_form')[0];
-		    var formData = new FormData(form);
-		  	formData.append("json",jsonData);
-			/* con = con.replace(/[{}]/g, "");
-			  //It will escape all the special characters
-	        var jsonData = encodeURIComponent(con); */
+			var formData = getFormData("vendor_form");
 			var sourceleadUrl = '${sourceleadUrl}';
 			$("#vendor_form").attr("disabled", "disabled");
 			$("#vendor_form").addClass('button').val('Processing..');
-			$.ajax({
+			/* $.ajax({
 						type : "POST",
 						data: formData,
 		  	    	     contentType : 'application/json; charset=utf-8',
@@ -536,6 +535,8 @@ function validateClientName(){
 						success : function(result) {
 							location.replace(sourceleadUrl+ "/addVendorContact");
 						},
+					}); */
+					$.post(sourceleadUrl+"/saveClient?${_csrf.parameterName}=${_csrf.token}&orgLocationId="+orgLocationId+"&responderType=Vendor", formData, function(data) {
 					});
 			return true;
 		} else {
