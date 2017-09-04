@@ -589,4 +589,19 @@ public class EmployeePayrollRestController {
 		PayrollBalance payrollBalance = accountDeductionsService.getBalance(empId, orgLocations);
 		return payrollBalance;
 	}
+	
+//	//
+	
+	@RequestMapping(value = { "/addCheques" }, method = RequestMethod.POST)
+	public Checks addCheques(@RequestParam(value = "orgLocationId", required = false) Long orgLocationId,
+			                 @RequestParam(value = "userId", required = false) Long userId,ChecksDTO checksDTO) throws Exception {
+		
+		System.out.println("---------------------CheckNo = "+checksDTO.getCheckNo());
+		System.out.println("---------------------EmpName = "+checksDTO.getEmpId());
+		System.out.println("---------------------Date = "+checksDTO.getDate());
+		System.out.println("---------------------Date = "+checksDTO.getTypeOfExpense());
+		System.out.println("---------------------Date = "+checksDTO.getMemo());
+		System.out.println("---------------------Date = "+checksDTO.getAmount());
+		return new Checks();
+	}
 }
