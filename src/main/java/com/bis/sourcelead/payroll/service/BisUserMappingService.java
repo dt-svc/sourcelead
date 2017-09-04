@@ -28,5 +28,9 @@ public interface BisUserMappingService {
 	ResponseList<BisUserMapping> getEmployeeList(EmployeeListDTO employeeListDTO, Long orgLocationId)throws Exception;
 
 	List<BisUserMapping> getMasterListByEmpId(Long empId, OrgLocations orgLocations)throws Exception;
+	
+	int getBisUserMappingVersionByLocationId(Long locationId);
+	
+	int getChecksVersionByLocationId(Long locationId);
 
 }

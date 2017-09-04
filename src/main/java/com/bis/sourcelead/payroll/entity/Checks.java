@@ -84,6 +84,9 @@ public class Checks implements Serializable {
 	@Column(name = "STATUS")
 	private String status;
 	
+	@Column(name = "VERSION")
+	private int version;
+	
 	@Column(name = "CREATED_DATE")
 	private Date createdDate;
 
@@ -344,19 +347,15 @@ public class Checks implements Serializable {
 		}
 		return amountStr;
 	}
-	
 
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+	public int getVersion()
+	{
+		return version;
+	}
 
-	
+	public void setVersion(int version)
+	{
+		this.version = version;
+	}
 	
 }

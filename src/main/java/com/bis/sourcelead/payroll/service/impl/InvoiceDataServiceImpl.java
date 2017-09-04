@@ -71,9 +71,13 @@ public class InvoiceDataServiceImpl implements InvoiceDataService{
 			int numberOfSheets = workbook.getNumberOfSheets();
 			int isValid = 0;
 			List<InvoiceData>  invoicedatalist = new ArrayList<>();
+			int version;
+			version = getInvoiceDataVersionByOrgLocationId(orgLocation.getId());
+			version += 1;
 			for (int i = 0; i < numberOfSheets; i++) {
 				Sheet sheet = workbook.getSheetAt(i);
 				Iterator<Row> rowIterator = sheet.iterator();
+				
 				while (rowIterator.hasNext()) {
 					Row row = rowIterator.next();
 					if (row.getRowNum() > 0) { // Excluding column names
@@ -82,6 +86,7 @@ public class InvoiceDataServiceImpl implements InvoiceDataService{
 						if (row.getCell(0) != null && !"".equalsIgnoreCase(row.getCell(0).toString())) {
 							String sku = getCellValueAsString(row.getCell(0), fileName);
 							invoiceData.setSku(sku.split("\\.")[0]);
+							invoiceData.setVersion(version);
 						}
 						if (row.getCell(1) != null && !"".equalsIgnoreCase(row.getCell(1).toString())) {
 							String productService = getCellValueAsString(row.getCell(1), fileName);
@@ -278,5 +283,11 @@ public class InvoiceDataServiceImpl implements InvoiceDataService{
 	@Override
 	public List<InvoiceData> getInvoiceDetailsByEmpId(Long empId, OrgLocations orgLocations) throws Exception {
 		return invoiceDataDao.getInvoiceDetailsByEmpId(empId,orgLocations);
+	}
+	
+	@Override
+	public int getInvoiceDataVersionByOrgLocationId(Long orgLocationId)
+	{
+		return invoiceDataDao.getInvoiceDataVersionByOrgLocationId(orgLocationId);
 	}
 }
