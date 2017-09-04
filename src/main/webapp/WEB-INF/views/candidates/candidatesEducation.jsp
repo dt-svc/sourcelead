@@ -798,7 +798,6 @@ function candidateEducationStore(candidateId){
 			 con = con.replace(/[{}]/g, "");
 		     var jsonData = encodeURIComponent(con);  */
 		     var formData = getFormData("education_form");
-		     alert(formData);
 			 var sourceleadUrl = '${sourceleadUrl}';
 			 $("#education_form").attr("disabled", "disabled");
 			 $("#save_button").attr("disabled", "disabled");

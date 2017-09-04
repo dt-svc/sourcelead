@@ -247,12 +247,12 @@ public class CandidateServiceImpl implements CandidateService {
 			candidate.setIsFavourite(0);
 			candidate.setIsFavouriteAssociate(0);
 			
-			/*MasterCandidate masterCandidate = null;
-			masterCandidate = masterCandidateService.getMasterCandidateByInteligence(candidateDto);
+			MasterCandidate masterCandidate = null;
+			masterCandidate = masterCandidateService.getMasterCandidateByInteligenceCandidateDTO(candidateDto);
 			if(null == masterCandidate){
-				masterCandidate = masterCandidateService.storeMasterCandidateByJsonObject(candidateDto, user);
+				masterCandidate = masterCandidateService.storeMasterCandidateByCandidateDTO(candidateDto, user);
 			}
-			candidate.setMasterCandidateId(masterCandidate);*/
+			candidate.setMasterCandidateId(masterCandidate);
 		}
         
 		if(orgLocations != null){
@@ -493,12 +493,12 @@ public class CandidateServiceImpl implements CandidateService {
 			candidate.setSpocId(null);
 		}
 		
-		/*HashSet<CandidateEducation>	 candidateEducationList = candidateEducationService.getCandidateEducationDetails(candidateDto, orgLocations,candidate,user.getUserCode());
+		HashSet<CandidateEducation>	 candidateEducationList = candidateEducationService.getCandidateEducationDetails(candidateDto, orgLocations,candidate,user.getUserCode());
 		candidate.setCandidateEducation(candidateEducationList);
 		
 		HashSet<CandidateEmployers> candidateEmployersList = candidateEmployersService.getCandidateEmployersDetails(candidateDto,orgLocations,candidate,user.getUserCode());
 		candidate.setCandidateEmployers(candidateEmployersList);
-		
+		/*
 		HashSet<CandidateSkills> candidateSkillsList = candidateSkillsService.getCandidateSkillsDetails(jsonObj, orgLocations,candidate,user.getUserCode());
 		candidate.setCandidateSkills(candidateSkillsList);
         
@@ -512,7 +512,7 @@ public class CandidateServiceImpl implements CandidateService {
 			}
 		}*/
 		
-		if(candidateDto.getUploadedFileInfo() != null && candidateDto.getUploadedFileInfo().size()>=0){
+		if(candidateDto.getUploadedFileInfo() != null && !candidateDto.getUploadedFileInfo().isEmpty()){
 			FileInfo fileInfo = candidateDto.getUploadedFileInfo().get(0);
 			HashSet<CandidateResumes> candidateResumesList = candidateResumesService.getCandidateResumesDetails(orgLocations,user.getUserCode(),candidate, fileInfo);
 			candidate.setCandidateResumes(candidateResumesList);
