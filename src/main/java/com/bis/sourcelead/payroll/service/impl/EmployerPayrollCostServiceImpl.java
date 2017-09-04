@@ -32,6 +32,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.bis.sourcelead.SourceleadPasswordEncoder;
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.EmployerPayrollCostDTO;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
@@ -40,6 +42,7 @@ import com.bis.sourcelead.payroll.dao.EmployerPayrollCostDao;
 import com.bis.sourcelead.payroll.entity.EmployerPayrollCost;
 import com.bis.sourcelead.payroll.entity.PayrollHelper;
 import com.bis.sourcelead.payroll.entity.UserPayroll;
+import com.bis.sourcelead.payroll.entity.WageTaxSummary;
 import com.bis.sourcelead.payroll.service.EmployerPayrollCostService;
 import com.bis.sourcelead.payroll.service.UserPayrollService;
 import com.bis.sourcelead.service.ProjectMembersService;
@@ -257,8 +260,8 @@ public class EmployerPayrollCostServiceImpl implements EmployerPayrollCostServic
 	}
 
 	@Override
-	public List<EmployerPayrollCost> loadEmployerPayrollCostByOrgLocationId(OrgLocations orgLocation) throws Exception {
-		return employerPayrollCostDao.loadEmployerPayrollCostByOrgLocationId(orgLocation);
+	public ResponseList<EmployerPayrollCost> loadEmployerPayrollCostByOrgLocationId(OrgLocations orgLocation,EmployerPayrollCostDTO employerPayrollCostDTO) throws Exception {
+		return employerPayrollCostDao.loadEmployerPayrollCostByOrgLocationId(orgLocation,employerPayrollCostDTO);
 	}
 
 	@Override

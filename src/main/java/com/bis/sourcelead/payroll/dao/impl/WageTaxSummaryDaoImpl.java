@@ -98,50 +98,10 @@ public class WageTaxSummaryDaoImpl implements WageTaxSummaryDao {
 			response.setRecordsFiltered(filteredCount);
 		}
 
-			response.setData(getSortWageTaxList(wagesAndTaxlist));
+			response.setData(wagesAndTaxlist);
 			return response;
 	}
 
-	/**
-	 * Hiding ssn number into unreadable format
-	 * @param wagesAndTaxList
-	 * @return List<WageTaxSummary>
-	 */
-	private List<WageTaxSummary> getSortWageTaxList(List<WageTaxSummary> wagesAndTaxList) {
-		if(wagesAndTaxList != null){
-			for(WageTaxSummary wts : wagesAndTaxList){
-				StringBuilder sb = new StringBuilder();
-				if(null !=  wts.getFromDate()){
-					wts.setFromDateStr(conversionUtil.getDateAsString(wts.getFromDate()));
-				}
-				if(null != wts.getToDate()){
-					wts.setToDateStr(conversionUtil.getDateAsString(wts.getToDate()));
-				}
-				
-				if(wts.getCheckDate() !=null   ){
-					wts.setCheckDateStr(conversionUtil.getDateAsString(wts.getCheckDate()));
-				}
-				if(wts.getCheckNo() != null){
-					wts.setCheckNo(wts.getCheckNo());
-				}
-				String ssn = wts.getSsnNumber();
-				String[] arr = ssn.split("-");
-				sb.append("xxx").append("-").append("xx").append("-").append(arr[0]);
-				wts.setSsnNumber(sb.toString());
-			}
-			
-			Collections.sort(wagesAndTaxList, new Comparator() {  
-	            @Override  
-	            public int compare(Object obj1, Object obj2) {  
-	            	WageTaxSummary wageTaxSummary1 = (WageTaxSummary)obj1;  
-	            	WageTaxSummary wageTaxSummary2 = (WageTaxSummary)obj2; 
-	            	return wageTaxSummary1.getEmployeeName().compareToIgnoreCase(wageTaxSummary2.getEmployeeName());  
-	            }  
-	        });
-		}
-		return wagesAndTaxList;
-		
-	}
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })

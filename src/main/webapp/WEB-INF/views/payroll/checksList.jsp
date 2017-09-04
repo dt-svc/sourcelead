@@ -87,7 +87,6 @@ function checksPagination(url){
         ],
         "columnDefs": [ {
 	    	  	"targets": colIndex++,
-	    	  	"className": "tbldata-dotdot_50",
 	    	  	"data": "empId",
 	    	  	"render": function(data, type, opt, meta) {
 	    	  		  var result = "";

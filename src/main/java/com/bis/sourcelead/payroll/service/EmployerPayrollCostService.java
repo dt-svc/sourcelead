@@ -6,18 +6,21 @@ import org.json.JSONObject;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.bis.sourcelead.dto.EmployerPayrollCostDTO;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.payroll.entity.EmployerPayrollCost;
 import com.bis.sourcelead.payroll.entity.UserPayroll;
+import com.bis.sourcelead.payroll.entity.WageTaxSummary;
 
 @Service
 public interface EmployerPayrollCostService {
 
 	Integer saveEmployerPayrollCost(MultipartFile multipartFile,OrgLocations orgLocation,User user, JSONObject jsonObj)throws Exception;
 
-	List<EmployerPayrollCost> loadEmployerPayrollCostByOrgLocationId(OrgLocations orgLocation)throws Exception;
+	ResponseList<EmployerPayrollCost> loadEmployerPayrollCostByOrgLocationId(OrgLocations orgLocation, EmployerPayrollCostDTO employerPayrollCostDTO)throws Exception;
 
 	List<UserPayroll> runPayrollCycle(OrgLocations orgLocation, User user, JSONObject jsonObj)throws Exception;
 	
