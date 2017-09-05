@@ -414,7 +414,7 @@ $(".addcon-pop").click(function() {
 							+ jsonData,
 					success : function(result) {
 					/* 	var json = JSON.parse(result); */
-						$("#loading").removeAttr('style');
+					$("#loading").removeAttr('style');
 						$("#selector1").removeAttr("style");
 		    			$("#selector1").css("display", "block");
 		    			$("#msgDiv").html(result+" Records Imported Successfully.");
