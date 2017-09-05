@@ -41,7 +41,7 @@ public class CandidateDocumentsServiceImpl implements CandidateDocumentsService 
 	 CandidateActivityCommonUtil candidateActivityCommonUtil;
 	
 	@Override
-	public CandidateDocuments storeCandidateDocuments(CandidateDocumentsDTO candidateDocumentsDTO, Long candidateId, String documentUUID, Long orgLocationId, User user) throws JSONException, Exception
+	public CandidateDocuments storeCandidateDocuments(CandidateDocumentsDTO candidateDocumentsDTO, Long candidateId, String documentUUID, Long orgLocationId, User user) throws Exception
 	{
 		CandidateDocuments candidateDocuments = null;
 		Candidate candidate = new Candidate();
@@ -118,8 +118,8 @@ public class CandidateDocumentsServiceImpl implements CandidateDocumentsService 
 					
 					candidateDocuments.setFileURL(fileInfo.getFileURL());;
 					if(fileInfo != null){
-						candidate.setFileName(fileInfo.getFileName());
-						FileUploadUtil.moveFile(candidateDocumentsDTO.getStaticPath(), fileInfo, "resumes");
+						//candidate.setFileName(fileInfo.getFileName());
+						FileUploadUtil.moveFile(candidateDocumentsDTO.getStaticPath(), fileInfo, "documents");
 					}
 				
 				}
@@ -199,8 +199,8 @@ public class CandidateDocumentsServiceImpl implements CandidateDocumentsService 
 					candidateDocuments.setFileContentType(fileInfo.getContentType());
 					candidateDocuments.setFileURL(fileInfo.getFileURL());;
 					if(fileInfo != null){
-						candidate.setFileName(fileInfo.getFileName());
-						FileUploadUtil.moveFile(candidateDocumentsDTO.getStaticPath(), fileInfo, "resumes");
+						//candidate.setFileName(fileInfo.getFileName());
+						FileUploadUtil.moveFile(candidateDocumentsDTO.getStaticPath(), fileInfo, "documents");
 					}
 				
 				}

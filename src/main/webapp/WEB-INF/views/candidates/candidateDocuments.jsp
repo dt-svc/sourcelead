@@ -367,7 +367,7 @@ function documentsPagination(){
 --%>
 
 <script>
-function closePopup(){
+function closePopup1(){
 	 $("#popUpDiv").removeClass("edit-details-active");
 }
 </script>
@@ -589,7 +589,7 @@ function getDocumentType(documentType){
          		$("#save_doc" ).addClass('button').val('Processing..');
          		
 		        $.post(sourceleadUrl+"/saveCandidateDocument?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&documentUUID="+documentUUID, formData, function(data) {
-		        	closePopup();
+		        	closePopup1();
 		        	
 		        	$('#perVal').attr('aria-valuenow', result).css('width',result+'%');
          			 if(result<50){
@@ -603,74 +603,29 @@ function getDocumentType(documentType){
          			 $("#disVal").empty();
          			$("#disVal").append(result+'%');
          			
-         		// for quick view bar update
-       			$('#quickPerVal').attr('aria-valuenow', result).css('width',result+'%');
-         			 if(result<50){
-	          			   $("#quickPerVal").removeClass('progress-bar-success');
-	          			   $("#quickPerVal").addClass("progress-bar-danger");
-	          			 }
-	          			 if(result>=50){
-	          				 $("#quickPerVal").removeClass('progress-bar-danger');
-	          				 $("#quickPerVal").addClass("progress-bar-success");
-	          			 }
-
-       			$("#quickDisVal").empty();
-       			$("#quickDisVal").append(result+'%');
-         			
-				$("#popUpDiv").removeClass("edit-details-active");
-       			$("#selector9").removeAttr("style");
-       			$("#selector9").css({ display: "block" });
-   				$("#docMsgDiv").html("Success!! New Candidate Document added");
-		        	candDocumentsList(candidateId);
-			 		resMsgFadeinResumes();
+	         		// for quick view bar update
+	       			$('#quickPerVal').attr('aria-valuenow', result).css('width',result+'%');
+	         			 if(result<50){
+		          			   $("#quickPerVal").removeClass('progress-bar-success');
+		          			   $("#quickPerVal").addClass("progress-bar-danger");
+		          			 }
+		          			 if(result>=50){
+		          				 $("#quickPerVal").removeClass('progress-bar-danger');
+		          				 $("#quickPerVal").addClass("progress-bar-success");
+		          			 }
+	
+	       			$("#quickDisVal").empty();
+	       			$("#quickDisVal").append(result+'%');
+	         			
+					$("#popUpDiv").removeClass("edit-details-active");
+	       			$("#selector9").removeAttr("style");
+	       			$("#selector9").css({ display: "block" });
+	   				$("#docMsgDiv").html("Success!! New Candidate Document added");
+			        	candDocumentsList(candidateId);
+			        	docMsgFadein();
 		        });
 				
-			/* 	$.ajax({
-						type : "POST",
-		        	    data: formData,
-		        	    contentType : 'application/json; charset=utf-8',
-		        	    enctype: 'multipart/form-data',
-		    	        processData: false,
-		    	        contentType:false,
-		        	    dataType : 'json',
-						url : sourceleadUrl+"/saveCandidateDocument?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&candidateId="+candidateId+"&documentUUID="+documentUUID,
-						success : function(result) {
-								closePopup();
-								$('#perVal').attr('aria-valuenow', result).css('width',result+'%');
-			          			 if(result<50){
-			          			   $("#perVal").removeClass('progress-bar-success');
-			          			   $("#perVal").addClass("progress-bar-danger");
-			          			 }
-			          			 if(result>=50){
-			          				 $("#perVal").removeClass('progress-bar-danger');
-			          				 $("#perVal").addClass("progress-bar-success");
-			          			 }
-			          			 $("#disVal").empty();
-			          			$("#disVal").append(result+'%');
-			          			
-			          		// for quick view bar update
-		            			$('#quickPerVal').attr('aria-valuenow', result).css('width',result+'%');
-			          			 if(result<50){
-				          			   $("#quickPerVal").removeClass('progress-bar-success');
-				          			   $("#quickPerVal").addClass("progress-bar-danger");
-				          			 }
-				          			 if(result>=50){
-				          				 $("#quickPerVal").removeClass('progress-bar-danger');
-				          				 $("#quickPerVal").addClass("progress-bar-success");
-				          			 }
-
-		            			$("#quickDisVal").empty();
-		            			$("#quickDisVal").append(result+'%');
-			          			
-								$("#popUpDiv").removeClass("edit-details-active");
-		            			$("#selector9").removeAttr("style");
-		            			$("#selector9").css({ display: "block" });
-	            				$("#docMsgDiv").html("Success!! New Candidate Document added");
-		             			candDocumentsList(candidateId);
-		             			docMsgFadein();
-		            		 
-						},
-					}); */
+			
 					return true;
 			 }else{ 
 					return false;
@@ -686,7 +641,7 @@ function getDocumentType(documentType){
 <script>
 function uploadFileDoc(){
 	var sourceleadUrl ='${sourceleadUrl}';
-	fileUpload(sourceleadUrl, "uploadBtn", "resumes", "documentType_form");
+	fileUpload(sourceleadUrl, "uploadBtn", "documents", "documentType_form");
 }
 </script>
 

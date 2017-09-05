@@ -392,16 +392,6 @@ function getDocumentType(documentType){
 		         }; 
 			 if ($('#documentType_form').validate(false, validationSettings)){
 				
-				 /* var frm = $('#documentType_form').serializeFormJSON();
-				var con = JSON.stringify(frm);
-				con = con.replace(/[{}]/g, "");
-				var form = $('#documentType_form')[0];
-	      		var formData = new FormData(form); 
-				var sourceleadUrl = '${sourceleadUrl}';
-				//It will escape all the special characters
-		        var jsonData = encodeURIComponent(con);
-				*/
-				
 				var formData = getFormData("documentType_form");
 				var sourceleadUrl = '${sourceleadUrl}';
 				$("#save_doc").attr("disabled", "disabled");
@@ -431,37 +421,6 @@ function getDocumentType(documentType){
 		        });
 				
 				
-				/* $.ajax({
-						type : "POST",
-		        	    data: formData,
-		        	    contentType : 'application/json; charset=utf-8',
-		        	    enctype: 'multipart/form-data',
-		    	        processData: false,
-		    	        contentType:false,
-		        	    dataType : 'json',
-						url : sourceleadUrl+"/saveCandidateDocument?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&candidateId="+candidateId+"&documentUUID="+documentUUID,
-						success : function(result) {
-								closePopup();
-								$('#perVal').attr('aria-valuenow', result).css('width',result+'%');
-			          			 if(result<50){
-			          			   $("#perVal").removeClass('progress-bar-success');
-			          			   $("#perVal").addClass("progress-bar-danger");
-			          			 }
-			          			 if(result>=50){
-			          				 $("#perVal").removeClass('progress-bar-danger');
-			          				 $("#perVal").addClass("progress-bar-success");
-			          			 }
-			          			 $("#disVal").empty();
-			          			$("#disVal").append(result+'%');
-								$("#popUpDiv").removeClass("edit-details-active");
-		            			$("#selector6").removeAttr("style");
-		            			$("#selector6").css({ display: "block" });
-	            				$("#docMsgDiv").html("Success!! New Candidate Document added");
-		             			candDocumentsList(candidateId);
-						 		docMsgFadein();
-		            		 
-						},
-					}); */
 					return true;
 			 }else{ 
 					return false;
@@ -477,7 +436,7 @@ function getDocumentType(documentType){
 <script>
 function uploadFileDoc(){
 	var sourceleadUrl ='${sourceleadUrl}';
-	fileUpload(sourceleadUrl, "uploadBtn", "resumes", "documentType_form");
+	fileUpload(sourceleadUrl, "uploadBtn", "documents", "documentType_form");
 }
 </script>
 
