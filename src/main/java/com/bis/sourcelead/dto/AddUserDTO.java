@@ -3,16 +3,21 @@ package com.bis.sourcelead.dto;
 	import java.util.HashSet;
 import java.util.Set;
 
+import com.bis.sourcelead.annotations.Email;
+import com.bis.sourcelead.annotations.Required;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.UserRole;
 
 	public class AddUserDTO {
 
+		@Required(desc = "first name")
 		private String firstName;
 		
 		private String lastName;
 		
+		@Required(desc = "email")
+		@Email
 		private String email;
 		
 		private String workPhone;
@@ -111,6 +116,7 @@ import com.bis.sourcelead.entity.UserRole;
 
 		private String newlyLoginUser;
 
+		@Required(desc = "roleType")
 		private String roleType;
 		
 		private String roleTypeId;

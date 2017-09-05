@@ -11,6 +11,8 @@ import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.OrgSpocDao;
+import com.bis.sourcelead.dto.AddUserDTO;
+import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.ClientDTO;
 import com.bis.sourcelead.elk.index.ClientVendorContactsIndex;
 import com.bis.sourcelead.elk.index.helper.ClientVendorContactsIndexHelper;
@@ -86,7 +88,7 @@ public class OrgSpocServiceImpl implements OrgSpocService{
 	 * Add Vendor contact
 	 */
 	@Override
-	public void addVendorContacts(ClientDTO clientDTO, User user, OrgLocations orgLocations, String orgRelationId, String clientLocationId,String responderType,Org loginOrg) throws Exception {
+	public void addVendorContacts(ClientDTO clientDTO,AddUserDTO addUserDTO,CandidateDTO candidateDTO, User user, OrgLocations orgLocations, String orgRelationId, String clientLocationId,String responderType,Org loginOrg) throws Exception {
 		
 		
 		OrgRelations orgRelation = null;
@@ -101,12 +103,10 @@ public class OrgSpocServiceImpl implements OrgSpocService{
 			respondingOrgLocation = orgLocationService.getOrgLocations(Long.parseLong(realtionId[1]));
 		}
 		
-		User spocUser = userService.storeUser(clientDTO.getAddUserDTO(),clientDTO.getCandidateDTO(),user,respondingOrgLocation,"CREATEUSER",responderType,loginOrg);
+		User spocUser = userService.storeUser(addUserDTO,candidateDTO,user,respondingOrgLocation,"CREATEUSER",responderType,loginOrg);
 		
-		if(StringUtils.isNotBlank(clientDTO.getOwner())){
-			String ownersId = clientDTO.getOwner();
-			ownersId = ownersId.replaceAll("\\[", "").replaceAll("\\]","");
-			String[] owners = ownersId.split(",");
+		if(!(clientDTO.getOwner().contains(null) || clientDTO.getOwner().contains(""))){
+			String[] owners = (String[]) clientDTO.getOwner().toArray();
 			for(int i=0 ;i<owners.length;i++ ){
 				User ownerUser = userService.getUserById(Long.parseLong(owners[i].replace("\"", "")));
 				OrgSpoc orgSpoc = orgSpocDao.validateSpacEmailIdByOwnerUserIdAndOrgRelationId(clientDTO.getEmail(), Long.parseLong(orgRelationId), ownerUser.getId(),Constants.RECORD_INACTIVE);
@@ -128,14 +128,14 @@ public class OrgSpocServiceImpl implements OrgSpocService{
 				if(responderType.equalsIgnoreCase("Client")){
 					orgSpoc.setClientLocationId(respondingOrgLocation);
 					orgSpoc.setVendorLocationId(orgLocations);
-					//orgSpoc.setClientUser(spocUser);
+					orgSpoc.setClientUser(spocUser);
 					orgSpoc.setVendorUser(ownerUser);
 					orgSpoc.setOwnerUser(ownerUser);
 				}else if(responderType.equalsIgnoreCase("Vendor")){
 					orgSpoc.setVendorLocationId(respondingOrgLocation);
 					orgSpoc.setClientLocationId(orgLocations);
 					orgSpoc.setClientUser(ownerUser);
-					//orgSpoc.setVendorUser(spocUser);
+					orgSpoc.setVendorUser(spocUser);
 					orgSpoc.setOwnerUser(ownerUser);
 				}
 			

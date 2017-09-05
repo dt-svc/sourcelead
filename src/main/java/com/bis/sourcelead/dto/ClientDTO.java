@@ -2,45 +2,90 @@ package com.bis.sourcelead.dto;
 
 import java.util.List;
 
+import com.bis.sourcelead.annotations.Email;
+import com.bis.sourcelead.annotations.Required;
+
 public class ClientDTO {
 	
+	@Required(desc = "client name")
 	private String orgName;
+	
 	private String orgLocationId;
+	
 	private String webSite;
+	
 	private String CompanyWebSite;
+	
+	@Required(desc = "location")
 	private String location;
+	
 	private String orgLocation;
+	
 	private String orgCountry;
+	
 	private String country;
+	
 	private String orgState;
+	
 	private String state;
+	
 	private String orgCity;
+	
 	private String city;
+	
 	private String zipcode;
+	
 	private String orgZipcode;
+	
 	private String latitude;
+	
 	private String longitude;
+	
 	private String level;
+	
 	private String address;
+	
 	private String billingAddress;
+	
 	private String PaymentTerm;
+	
+	@Required(desc = "email")
+	@Email
 	private String email;
+	
+	@Required(desc = "first name")
 	private String firstName;
+	
 	private String lastName;
+	
 	private String phoneNumber;
+	
 	private String spocStatus;
-	private String owner;
+	
+	private List<String> owner;
+	
 	private String isMailSent;
+	
 	private String userRoleText;
+	
 	private String roleTypeId;
+	
 	private String responderType;
+	
 	private List<String> values;
+	
 	private List<String> orgNameAdvanced;
+	
 	private List<String> createdByAdvanced;
+	
 	private List<String> tierAdvanced;
+	
 	private List<String> clientIds;
+	
 	private String status;
+	
 	private List<String> invitationStatus;
+	
 	private String vendorName;
 	
 	private String reportingManager;
@@ -196,10 +241,11 @@ public class ClientDTO {
 	public void setSpocStatus(String spocStatus) {
 		this.spocStatus = spocStatus;
 	}
-	public String getOwner() {
+	
+	public List<String> getOwner() {
 		return owner;
 	}
-	public void setOwner(String owner) {
+	public void setOwner(List<String> owner) {
 		this.owner = owner;
 	}
 	public String getIsMailSent() {

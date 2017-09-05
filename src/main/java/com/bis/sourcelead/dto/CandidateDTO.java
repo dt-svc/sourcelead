@@ -23,19 +23,19 @@ public class CandidateDTO {
 	
 	private String staticPath;
 
-	private MasterCandidate masterCandidateId;
+	//private MasterCandidate masterCandidateId;
 
 	private List<Map<String, String>> fileInfo;
 	
 	private List<FileInfo> uploadedFileInfo;
 
-	private OrgLocations orgLocationId;
+	//private OrgLocations orgLocationId;
 
 	private String consultantUser;
 
-	private Org orgId;
+	//private Org orgId;
 
-	private User recruiterUserId;
+	//private User recruiterUserId;
 
 	private String candidateType;
 	
@@ -102,8 +102,6 @@ public class CandidateDTO {
 
 	private String visaType;
 
-	private byte[] docFile;
-
 	private String fileContentType;
 
 	private String fileName;
@@ -112,7 +110,7 @@ public class CandidateDTO {
 
 	private String status;
 
-	private Team teamId;
+	//private Team teamId;
 
 	private String isFavourite;
 
@@ -134,9 +132,9 @@ public class CandidateDTO {
 
 	private String isAssociate;
 
-	private OrgRelations orgRelationId;
+	//private OrgRelations orgRelationId;
 
-	private OrgSpoc spocId;
+	//private OrgSpoc spocId;
 
 	private String skillsName;
 
@@ -190,13 +188,13 @@ public class CandidateDTO {
 		this.staticPath = staticPath;
 	}
 
-	public MasterCandidate getMasterCandidateId() {
+	/*public MasterCandidate getMasterCandidateId() {
 		return masterCandidateId;
 	}
 
 	public void setMasterCandidateId(MasterCandidate masterCandidateId) {
 		this.masterCandidateId = masterCandidateId;
-	}
+	}*/
 
 	public List<Map<String, String>> getFileInfo() {
 		return fileInfo;
@@ -214,13 +212,13 @@ public class CandidateDTO {
 		this.uploadedFileInfo = uploadedFileInfo;
 	}
 
-	public OrgLocations getOrgLocationId() {
+	/*public OrgLocations getOrgLocationId() {
 		return orgLocationId;
 	}
 
 	public void setOrgLocationId(OrgLocations orgLocationId) {
 		this.orgLocationId = orgLocationId;
-	}
+	}*/
 
 	public String getConsultantUser() {
 		return consultantUser;
@@ -230,7 +228,7 @@ public class CandidateDTO {
 		this.consultantUser = consultantUser;
 	}
 
-	public Org getOrgId() {
+	/*public Org getOrgId() {
 		return orgId;
 	}
 
@@ -244,7 +242,7 @@ public class CandidateDTO {
 
 	public void setRecruiterUserId(User recruiterUserId) {
 		this.recruiterUserId = recruiterUserId;
-	}
+	}*/
 
 	public String getCandidateType() {
 		return candidateType;
@@ -478,14 +476,6 @@ public class CandidateDTO {
 		this.visaType = visaType;
 	}
 
-	public byte[] getDocFile() {
-		return docFile;
-	}
-
-	public void setDocFile(byte[] docFile) {
-		this.docFile = docFile;
-	}
-
 	public String getFileContentType() {
 		return fileContentType;
 	}
@@ -518,14 +508,14 @@ public class CandidateDTO {
 		this.status = status;
 	}
 
-	public Team getTeamId() {
+/*	public Team getTeamId() {
 		return teamId;
 	}
 
 	public void setTeamId(Team teamId) {
 		this.teamId = teamId;
 	}
-
+*/
 	public String getIsFavourite() {
 		return isFavourite;
 	}
@@ -606,7 +596,7 @@ public class CandidateDTO {
 		this.isAssociate = isAssociate;
 	}
 
-	public OrgRelations getOrgRelationId() {
+	/*public OrgRelations getOrgRelationId() {
 		return orgRelationId;
 	}
 
@@ -620,7 +610,7 @@ public class CandidateDTO {
 
 	public void setSpocId(OrgSpoc spocId) {
 		this.spocId = spocId;
-	}
+	}*/
 
 	public String getSkillsName() {
 		return skillsName;

@@ -2,6 +2,8 @@ package com.bis.sourcelead.service;
 
 import java.util.List;
 
+import com.bis.sourcelead.dto.AddUserDTO;
+import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.ClientDTO;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -26,7 +28,7 @@ public interface OrgSpocService {
  * @param orgLocations
  * @throws Exception
  */
-	void addVendorContacts(ClientDTO clientDTO,User user,OrgLocations orgLocations, String orgRelationId, String clientLocationId,String responderType,Org org)throws Exception;
+	void addVendorContacts(ClientDTO clientDTO,AddUserDTO addUserDTO,CandidateDTO candidateDTO,User user,OrgLocations orgLocations, String orgRelationId, String clientLocationId,String responderType,Org org)throws Exception;
 
 	/**
 	 * @author Prasad Salina 

@@ -285,25 +285,15 @@ public class ClientServiceImpl implements ClientService {
 			orgService.addOrganization(org);
 		}
 		
-		/*AddUserDTO userDTO = getUserDTOFromClientDTO(clientDTO);
-		
-		CandidateDTO  candidateDTO  = getCandidateDTOFromClientDTO(clientDTO);*/
-
 		if (StringUtils.isNotBlank(clientDTO.getEmail())) {
 			spocUser = userService.storeUser(addUserDTO,candidateDTO, user, clientOrgLocations, "CREATEUSER", responderType, loginOrg);
 
 		}
 
 		if (clientDTO.getOwner() != null) {
-			String ownersId = null;
-			/*try {
-				JSONArray jsonArray = jsonObj.getJSONArray("owner");
-				ownersId = jsonArray.toString();
-			} catch (JSONException e) {
-				ownersId = jsonObj.getString("owner");
-			}pradeep*/
-			ownersId = ownersId.replaceAll("\\[", "").replaceAll("\\]", "");
-			String[] owners = ownersId.split(",");
+			List<String> ownersId = null;
+			ownersId = clientDTO.getOwner();
+			String[] owners = clientDTO.getOwner().toArray(new String[ownersId.size()]);
 
 			for (int i = 0; i < owners.length; i++) {
 				orgSpoc = new OrgSpoc();
@@ -454,25 +444,6 @@ public class ClientServiceImpl implements ClientService {
 		}
 	}
 
-	/*private CandidateDTO getCandidateDTOFromClientDTO(ClientDTO clientDTO) {
-
-		CandidateDTO candidateDTO = new CandidateDTO();
-		candidateDTO.setEmail(clientDTO.getEmail());
-		
-		return candidateDTO;
-	}
-
-	private AddUserDTO getUserDTOFromClientDTO(ClientDTO clientDTO) {
-		
-		AddUserDTO userDTO = new AddUserDTO();
-		userDTO.setFirstName(clientDTO.getFirstName());
-		userDTO.setLastName(clientDTO.getLastName());
-		userDTO.setEmail(clientDTO.getEmail());
-		userDTO.setMobilePhone(clientDTO.getPhoneNumber());
-		userDTO.setIsMailSent(clientDTO.getIsMailSent());
-		
-		return userDTO;
-	}*/
 
 	/**
 	 * populating Org data

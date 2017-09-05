@@ -241,7 +241,7 @@ public class UsersListRestController {
 					}
 					role.setUserEmail(role.getUser().getEmail());
 					role.setUserId(role.getUser().getId());
-					role.setIsMailSent((role.getUser().getIsMailSent()).toString());	
+					role.setIsMailSent(role.getUser().getIsMailSent().toString());	
 					
 					if(role.getReportingManager() !=null){
 						StringBuilder reportingManagerName = new StringBuilder();
