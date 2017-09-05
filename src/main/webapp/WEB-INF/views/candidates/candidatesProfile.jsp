@@ -1179,15 +1179,16 @@ function candidateProfile(candidateId,candidateType){
 			
 			var form = $('#candidateProfileEdit_form')[0];
       		var formData = new FormData(form);  */
-			
+      		var formData = getFormData("candidateProfileEdit_form");
+			var sourceleadUrl = '${sourceleadUrl}';
 			$("#update_candidate").attr("disabled", "disabled");
 			$("#update_candidate").addClass('button').val('Processing..');
 				//var form = $('#candidateResume_form')[0];
-				var formData = getFormData("candidateProfileEdit_form");
-				var sourceleadUrl = '${sourceleadUrl}';
-		        $.post(sourceleadUrl+"/candidateProfileEdit_form?${_csrf.parameterName}=${_csrf.token}", formData, function(data) {
-		        	candidateResumesList(candidateId);
-			 		resMsgFadeinResumes();
+				
+		        $.post(sourceleadUrl+"/updateCandidate?${_csrf.parameterName}=${_csrf.token}", formData, function(data) {
+		        	location.replace(sourceleadUrl+"/candidatesList"); 
+		        	candidateSideBar(candidateId);
+					candidateQuickViewProfile(candidateId);
 		        });
 			 
 			return true;
