@@ -191,6 +191,9 @@ public class AddExpensesRestController {
 			if(expenseId != null){
 			 	
 				expensesApprovalService.updateExpenseStatusByExpenseIdAndReOpenReason(expenseId,reason,loginUser,"notify",isSuperUser);
+				Expenses expenses = expensesService.getExpenseById(expenseId);
+				expenses.setExpenseStatus(Submission_Status.SUBMITTED);
+				addExpensesService.storeAddExpensesData(expenses);
 				sendEmailToSuperUserForReOpenExpenseApprovalStatus(expenseId,loginUser,orgLoc,reason,currencyCode);
 			    //send mail & notification logic
 			  	/*if(isSuperUser.equalsIgnoreCase(Constants.NO)){

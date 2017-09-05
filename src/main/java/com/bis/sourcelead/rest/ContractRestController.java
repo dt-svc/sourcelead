@@ -703,11 +703,11 @@ public class ContractRestController {
 		 	if(null != contract.getOrgRelations()){
 		 	OrgRelations orgRelations = orgRelationsService.getClientAndVendorOrgDeatilsById(orgLocation.getId(), contract.getOrgRelations().getId());
 		 	if(null != orgRelations){
-		 		if(orgRelations.getLocationId().getId().equals(orgLocation.getId())){
-		 			contract.setContractWith(orgRelations.getResponderLocationId().getOrgLocationName());
-				}	
-				else if(orgRelations.getResponderLocationId().getId() == orgLocation.getId()){
+		 		if(orgRelations.getResponderLocationId().getId().equals(orgLocation.getId())){
 					contract.setContractWith(orgRelations.getLocationId().getOrgLocationName());
+				}	
+		 		else if(orgRelations.getLocationId().getId().equals(orgLocation.getId())){
+		 			contract.setContractWith(orgRelations.getResponderLocationId().getOrgLocationName());
 				}
 		 	}
 		 	
