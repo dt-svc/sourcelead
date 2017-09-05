@@ -120,7 +120,7 @@ function errRemoveClientContact(){
 							<label class="col-md-3" >Due Date<span class="text-danger">&nbsp;*</span></label>
 							<div class="col-md-9" id="errDuedate">
 								<input type="text" class="form-control calendar" id="dueDate"
-									name="dueDate" value="" placeholder="Due Date" id="dueDate"
+									name="dueDate" value="" placeholder="Due Date"
 									readonly data-validation="required" field-name="Due Date">
 							</div>
 						</div>
@@ -168,7 +168,7 @@ function errRemoveClientContact(){
 <div id="divTaskTd2" style="display: none; float: left;">
 	<div class="tbldata-dotdot-vsm select-field">
 		<input type="text" class="form-control input-sm" readonly="readonly"
-			id="REPLACEROWIDcandidateName">
+			id="REPLACEROWIDcandidateName" name="REPLACEROWIDcandidateName">
 		</inmput>
 		<input type="hidden" class="form-control input-sm"
 			id="REPLACEROWIDcandidateId" name="REPLACEROWIDcandidate">

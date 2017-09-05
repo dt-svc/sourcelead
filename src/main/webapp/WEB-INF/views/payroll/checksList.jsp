@@ -88,7 +88,6 @@ function checksPagination(url){
         ],
         "columnDefs": [ {
 	    	  	"targets": colIndex++,
-	    	  	"className": "tbldata-dotdot_50",
 	    	  	"data": "empId",
 	    	  	"render": function(data, type, opt, meta) {
 	    	  		  var result = "";
@@ -105,7 +104,7 @@ function checksPagination(url){
               "render": function ( data, type, opt, meta ) {
             	  var result = "";
             	   if(opt.empName !=null && opt.empName !='' && opt.empName !='undefined'){
-			        		    	result = result + '<td><div><a>'+opt.empName+'</a></div></td>';
+			        		    	result = result + '<td><div>'+opt.empName+'</div></td>';
 			        		    }else{
 			        		    	result = result + '<td><div>---</div></td>';
 			        		    }
