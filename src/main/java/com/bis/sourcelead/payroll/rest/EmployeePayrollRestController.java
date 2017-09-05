@@ -1,6 +1,5 @@
 package com.bis.sourcelead.payroll.rest;
 
-import java.text.DecimalFormat;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
@@ -28,6 +27,7 @@ import com.bis.sourcelead.dto.AccountDeductionsDTO;
 import com.bis.sourcelead.dto.ChecksDTO;
 import com.bis.sourcelead.dto.EmployeeListDTO;
 import com.bis.sourcelead.dto.HrDeductionsDTO;
+import com.bis.sourcelead.dto.EmployerPayrollCostDTO;
 import com.bis.sourcelead.dto.InvoiceDetailsDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.WagesTaxSummaryDTO;
@@ -56,6 +56,7 @@ import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.ConversionUtil;
 import com.bis.sourcelead.util.SessionMaintainanceData;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
+import com.ibm.icu.text.DecimalFormat;
 
 @RestController
 public class EmployeePayrollRestController {
@@ -146,10 +147,28 @@ public class EmployeePayrollRestController {
 	 * @return json
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "/loadEmployerPayrollCostByOrgLocationId", method = RequestMethod.GET)
-	public @ResponseBody String loadEmployerPayrollCostByOrgLocationId(HttpServletRequest request, HttpServletResponse response) throws Exception
+	@RequestMapping(value = "/loadEmployerPayrollCostByOrgLocationId", method = RequestMethod.POST)
+	public @ResponseBody  ResponseList<EmployerPayrollCost> loadEmployerPayrollCostByOrgLocationId(EmployerPayrollCostDTO employerPayrollCostDTO,HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
-		String resultJson = "";
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		
+		String[] tableColumns = {"fromDate", "toDate", "employeeId", "employeeName", "ssn", "totalHrs","grossWages","fica","futa","sui","erLocals","wcCost","adminFee","totalErCost"};
+	     int sortColumnIndex = 3; //by default sorting using updated date
+		String sortColumnOrder = "desc"; //by default descending order
+		if(employerPayrollCostDTO.getOrder() != null && !employerPayrollCostDTO.getOrder().isEmpty()) {
+			sortColumnIndex = Integer.parseInt(employerPayrollCostDTO.getOrder().get(0).get("column"));
+			sortColumnOrder = employerPayrollCostDTO.getOrder().get(0).get("dir");
+		}
+		employerPayrollCostDTO.setSortColumn(tableColumns[sortColumnIndex]);
+		employerPayrollCostDTO.setSortOrder(sortColumnOrder);
+		
+		ResponseList<EmployerPayrollCost> list = employerPayrollCostService.loadEmployerPayrollCostByOrgLocationId(orgLocation,employerPayrollCostDTO);
+		List<EmployerPayrollCost> data = getEmployerCostSortedList(list.getData());
+		list.setData(data);
+//		return employerPayrollCostService.loadEmployerPayrollCostByOrgLocationId(orgLocation,employerPayrollCostDTO);
+		return list;
+		
+		/*String resultJson = "";
 		DecimalFormat df = new DecimalFormat("#.00");
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		List<EmployerPayrollCost>  employerPayrollCostList = employerPayrollCostService.loadEmployerPayrollCostByOrgLocationId(orgLocation);
@@ -167,9 +186,29 @@ public class EmployeePayrollRestController {
 			}
 			resultJson = commonUtil.toJSON(employerPayrollCostList);
 		}
-		return resultJson;
+		return resultJson;*/
 	}
 	
+	
+
+	private List<EmployerPayrollCost> getEmployerCostSortedList(List<EmployerPayrollCost> employerPayrollCostList) {
+		if(employerPayrollCostList != null && !employerPayrollCostList.isEmpty()){
+			DecimalFormat df = new DecimalFormat("#.00");
+			for(EmployerPayrollCost employerPayrollCost:employerPayrollCostList){
+				StringBuilder sb = new StringBuilder();
+				employerPayrollCost.setFromDateStr(conversionUtil.getDateAsString(employerPayrollCost.getFromDate()));
+				employerPayrollCost.setToDateStr(conversionUtil.getDateAsString(employerPayrollCost.getToDate()));
+				String ssn = employerPayrollCost.getSsn();
+				String[] arr = ssn.split("-");
+				sb.append("xxx").append("-").append("xx").append("-").append(arr[0]);
+				employerPayrollCost.setSsn(sb.toString());
+				double totHrs = Double.parseDouble(employerPayrollCost.getTotalHrs());
+				employerPayrollCost.setTotalHrs(String.valueOf(df.format(totHrs)));
+			}
+		}
+		return employerPayrollCostList;
+	}
+
 	/**
 	 * @author  Pavan Jampana
 	 * @return json
@@ -191,7 +230,53 @@ public class EmployeePayrollRestController {
 		wagesTaxSummaryDTO.setSortColumn(tableColumns[sortColumnIndex]);
 		wagesTaxSummaryDTO.setSortOrder(sortColumnOrder);
 		
-		return wageTaxSummaryService.getWagesAndTaxListByOrgLocationId(orgLocation,wagesTaxSummaryDTO);
+		ResponseList<WageTaxSummary> list = wageTaxSummaryService.getWagesAndTaxListByOrgLocationId(orgLocation,wagesTaxSummaryDTO);
+		List<WageTaxSummary> data = getSortWageTaxList(list.getData());
+		list.setData(data);
+		return list;
+//		return wageTaxSummaryService.getWagesAndTaxListByOrgLocationId(orgLocation,wagesTaxSummaryDTO);
+	}
+	
+	
+	/**
+	 * Hiding ssn number into unreadable format
+	 * @param wagesAndTaxList
+	 * @return List<WageTaxSummary>
+	 */
+	private List<WageTaxSummary> getSortWageTaxList(List<WageTaxSummary> wagesAndTaxList) {
+		if(wagesAndTaxList != null){
+			for(WageTaxSummary wts : wagesAndTaxList){
+				StringBuilder sb = new StringBuilder();
+				if(null !=  wts.getFromDate()){
+					wts.setFromDateStr(conversionUtil.getDateAsString(wts.getFromDate()));
+				}
+				if(null != wts.getToDate()){
+					wts.setToDateStr(conversionUtil.getDateAsString(wts.getToDate()));
+				}
+				
+				if(wts.getCheckDate() !=null   ){
+					wts.setCheckDateStr(conversionUtil.getDateAsString(wts.getCheckDate()));
+				}
+				if(wts.getCheckNo() != null){
+					wts.setCheckNo(wts.getCheckNo());
+				}
+				String ssn = wts.getSsnNumber();
+				String[] arr = ssn.split("-");
+				sb.append("xxx").append("-").append("xx").append("-").append(arr[0]);
+				wts.setSsnNumber(sb.toString());
+			}
+			
+			Collections.sort(wagesAndTaxList, new Comparator() {  
+	            @Override  
+	            public int compare(Object obj1, Object obj2) {  
+	            	WageTaxSummary wageTaxSummary1 = (WageTaxSummary)obj1;  
+	            	WageTaxSummary wageTaxSummary2 = (WageTaxSummary)obj2; 
+	            	return wageTaxSummary1.getEmployeeName().compareToIgnoreCase(wageTaxSummary2.getEmployeeName());  
+	            }  
+	        });
+		}
+		return wagesAndTaxList;
+		
 	}
 	
 	/**
@@ -638,5 +723,18 @@ public class EmployeePayrollRestController {
 		
 		PayrollBalance payrollBalance = accountDeductionsService.getBalance(empId, orgLocations);
 		return payrollBalance;
+	}
+	
+//	//
+	
+	@RequestMapping(value = { "/addCheques" }, method = RequestMethod.POST)
+	public boolean addCheques(@RequestParam(value = "orgLocationId", required = false) Long orgLocationId,
+			                 @RequestParam(value = "userId", required = false) Long userId,ChecksDTO checksDTO) throws Exception {
+		boolean isInserted = false;
+		Checks checks = userPayrollService.getUniqueChecksListByEmployeeId(checksDTO.getEmpId(), orgLocationId,checksDTO);
+		if(checks !=null) {
+			isInserted = true;
+		}
+		return isInserted;
 	}
 }

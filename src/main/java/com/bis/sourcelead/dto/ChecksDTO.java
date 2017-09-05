@@ -3,28 +3,26 @@ package com.bis.sourcelead.dto;
 import java.io.Serializable;
 import java.util.Date;
 
-import com.bis.sourcelead.entity.OrgLocations;
-import com.bis.sourcelead.entity.User;
-
 public class ChecksDTO extends SearchDTO implements Serializable{
 
 	private String empId;
 	private String empName;
-	private OrgLocations orgLocationId;
 	private String typeOfExpense;
 	private String bankName;
 	private String month;
-	private double legalFees;
+	private String legalFees;
 	private String electronicWithdrawals;
 	private String checkNo;
-	private Long userId;
-	private Date date;
-	private double advance;
-	private double generalExpenses;
-	private double vendorPayments;
-	private double payrollChecks;
-	private double amount;
-
+	private String userId;
+	private String date;
+	private String advance;
+	private String generalExpenses;
+	private String vendorPayments;
+	private String payrollChecks;
+	private String amount;
+	private String memo;
+	
+	
 	public String getEmpId() {
 		return empId;
 	}
@@ -36,12 +34,6 @@ public class ChecksDTO extends SearchDTO implements Serializable{
 	}
 	public void setEmpName(String empName) {
 		this.empName = empName;
-	}
-	public OrgLocations getOrgLocationId() {
-		return orgLocationId;
-	}
-	public void setOrgLocationId(OrgLocations orgLocationId) {
-		this.orgLocationId = orgLocationId;
 	}
 	public String getTypeOfExpense() {
 		return typeOfExpense;
@@ -61,10 +53,10 @@ public class ChecksDTO extends SearchDTO implements Serializable{
 	public void setMonth(String month) {
 		this.month = month;
 	}
-	public double getLegalFees() {
+	public String getLegalFees() {
 		return legalFees;
 	}
-	public void setLegalFees(double legalFees) {
+	public void setLegalFees(String legalFees) {
 		this.legalFees = legalFees;
 	}
 	public String getElectronicWithdrawals() {
@@ -79,48 +71,55 @@ public class ChecksDTO extends SearchDTO implements Serializable{
 	public void setCheckNo(String checkNo) {
 		this.checkNo = checkNo;
 	}
-	public Long getUserId() {
+	public String getUserId() {
 		return userId;
 	}
-	public void setUserId(Long userId) {
+	public void setUserId(String userId) {
 		this.userId = userId;
 	}
-	public Date getDate() {
+	public String getDate() {
 		return date;
 	}
-	public void setDate(Date date) {
+	public void setDate(String date) {
 		this.date = date;
 	}
-	public double getAdvance() {
+	public String getAdvance() {
 		return advance;
 	}
-	public void setAdvance(double advance) {
+	public void setAdvance(String advance) {
 		this.advance = advance;
 	}
-	public double getGeneralExpenses() {
+	public String getGeneralExpenses() {
 		return generalExpenses;
 	}
-	public void setGeneralExpenses(double generalExpenses) {
+	public void setGeneralExpenses(String generalExpenses) {
 		this.generalExpenses = generalExpenses;
 	}
-	public double getVendorPayments() {
+	public String getVendorPayments() {
 		return vendorPayments;
 	}
-	public void setVendorPayments(double vendorPayments) {
+	public void setVendorPayments(String vendorPayments) {
 		this.vendorPayments = vendorPayments;
 	}
-	public double getPayrollChecks() {
+	public String getPayrollChecks() {
 		return payrollChecks;
 	}
-	public void setPayrollChecks(double payrollChecks) {
+	public void setPayrollChecks(String payrollChecks) {
 		this.payrollChecks = payrollChecks;
 	}
-	public double getAmount() {
+	public String getMemo() {
+		return memo;
+	}
+	public void setMemo(String memo) {
+		this.memo = memo;
+	}
+	public String getAmount() {
 		return amount;
 	}
-	public void setAmount(double amount) {
+	public void setAmount(String amount) {
 		this.amount = amount;
 	}
+
 	
 	
 	

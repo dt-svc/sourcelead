@@ -25,7 +25,8 @@ function prepareBisChecksList(url){
 	 $("#checksListDiv").removeAttr("style");
  	 $("#checksListDiv").empty();
  	 var result = "";
- 	result = result +" <div class='modal-header'>";
+ 	result = result +" <div class='clearfix col-md-12 mb10'>";
+ 	result = result +'<a href="/sourcelead/addChecks" class="btn btn-primary btn-sm pull-left" id="generateReportId" title="Generate Report">Add Checks</a>';
  	result = result +" <div class='remove_search'>";
  	result = result +" <input type='text' placeholder='Search' id='checksDataTableSearch'/>";
  	result = result +"</div>";
@@ -88,7 +89,6 @@ function checksPagination(url){
         ],
         "columnDefs": [ {
 	    	  	"targets": colIndex++,
-	    	  	"className": "tbldata-dotdot_50",
 	    	  	"data": "empId",
 	    	  	"render": function(data, type, opt, meta) {
 	    	  		  var result = "";
@@ -105,7 +105,7 @@ function checksPagination(url){
               "render": function ( data, type, opt, meta ) {
             	  var result = "";
             	   if(opt.empName !=null && opt.empName !='' && opt.empName !='undefined'){
-			        		    	result = result + '<td><div><a>'+opt.empName+'</a></div></td>';
+			        		    	result = result + '<td><div>'+opt.empName+'</div></td>';
 			        		    }else{
 			        		    	result = result + '<td><div>---</div></td>';
 			        		    }

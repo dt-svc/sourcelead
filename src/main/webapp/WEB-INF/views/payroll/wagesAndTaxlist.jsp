@@ -21,7 +21,6 @@ function prepareWagesAndTaxList(url){
 	$("#employeeListDiv").empty();
 	$("#invoiceDataDiv").empty();
 	$("#finalPayrollReportDiv").empty();
-	$("#wagesAndTaxListDiv").append(result);
 	$("#loading").removeAttr("style");
 	$('#payScale').css('display','none');
 	
@@ -67,7 +66,6 @@ function prepareWagesAndTaxList(url){
 <script>
 function wagesTaxpagination(url){
 	var colIndex = 0;
-	/*$.fn.dataTable.moment( 'DD-MM-YYYY' );*/
     $('#wageTaxPagination').DataTable( { 
     		"processing": true,
         "serverSide": true,
@@ -98,7 +96,6 @@ function wagesTaxpagination(url){
         ],
         "columnDefs": [ {
 	    	  	"targets": colIndex++,
-	    	  	"className": "tbldata-dotdot_50",
 	    	  	"data": "fromDate",
 	    	  	"render": function(data, type, opt, meta) {
 	    	  		  var result = "";
