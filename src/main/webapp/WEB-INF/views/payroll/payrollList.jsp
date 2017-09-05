@@ -30,7 +30,7 @@ window.onload = function () {
 <section class="contrHead">
 		<ul id="parentUl">
 			<li title="Employer Payroll Cost"><a class="wVer" id="empPayrollCostLi" onclick="loadEmployeePayrollCost();">Employer Payroll</a></li>
-				<li title="Employee list"><a id="empList" onclick="getEmployeeList();">Employee List</a></li>
+				<li title="Employee list"><a id="empList" onclick="getEmployeeList();">Master Data</a></li>
 			<li title="Wages & Tax Summary"><a id="WageTaxSummaryLi" onclick="wagesAndTaxList();">Wages & Tax Summary</a></li>
 			<li title="Account Deductions"><a id="accountDedLi" onclick="accountDeductionsList();">Account Deductions</a></li>
 			<li title="HR Deductions"><a id="HrdedLi" onclick="hrDeductionsList();">HR Deductions</a></li>
@@ -205,7 +205,7 @@ function flush(){
 }
 </script>
 
-<script>
+<!-- <script>
 function loadEmployeePayrollCost(){
 	$("#addPayrollDiv").hide();
 	$("#loading").attr('style','position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
@@ -303,7 +303,7 @@ function employeePayrollCostPagination(){
     });
     $("#EmployeePayrollCostTable").wrap("<div class='overflow_Auto width100percnt'></div>")
 }
-</script>
+</script> -->
 
 
 
@@ -552,6 +552,236 @@ function showPayrollDiv(){
 	runPayrollCycles();
 	
 }
+</script>
+
+<script>
+function loadEmployeePayrollCost(){
+	var sourceleadUrl ='${sourceleadUrl}';
+	var searchValue = $("#employeeDataTableSearch").val();
+	searchValue = searchValue ? searchValue : "";
+	var url = sourceleadUrl+"/loadEmployerPayrollCostByOrgLocationId?searchValue="+searchValue;
+    prepareEmployeePayrollList(url);
+}
+
+</script>
+
+<script>
+function prepareEmployeePayrollList(url){
+	$("#checksListDiv").empty();
+	$("#accountDeductionsListDiv").empty();
+	$("#hrDeductionsListDiv").empty();
+	$("#wagesAndTaxListDiv").empty();
+	$("#employeeListDiv").empty();
+	$("#invoiceDataDiv").empty();
+	$("#finalPayrollReportDiv").empty();
+	$("#loading").removeAttr("style");
+	$('#payScale').css('display','none');
+	
+	 $("#employerCostDiv").removeAttr("style");
+ 	 $("#employerCostDiv").empty();
+ 	 var result = "";
+ 	result = result +" <div class='remove_search'>";
+ 	result = result +" <input type='text' placeholder='Search' id='employeeDataTableSearch'/>";
+ 	result = result +"</div>";
+ 	result = result + '<table id="employeePayrollTable" class="display" cellspacing="0" width="100%" >';
+	result = result + '<thead>';
+	result = result + '<tr>';
+	result = result + '<th>From Date</th>';
+	result = result + '<th>To Date</th>';
+	result = result + '<th>Employee Id</th>';
+	result = result + '<th>Employee Name</th>';
+	result = result + '<th>SSN</th>';
+	result = result + '<th>Total Hrs</th>';
+	result = result + '<th>Gross Wages</th>';
+	result = result + '<th>FICA</th>';
+	result = result + '<th>FUTA</th>';
+	result = result + '<th>SUI</th>';
+	result = result + '<th>ER Locals</th>';
+	result = result + '<th>WC Cost</th>';
+	result = result + '<th>Admin Fee</th>';
+	result = result + '<th>Total ER Cost</th>';
+	result = result + '</tr>';
+	result = result + '</thead>	';
+    result = result +"</table>";
+    $("#employerCostDiv").append(result);
+    employeePayrollPagination(url); 
+	
+	
+}
+
+</script>
+
+<script>
+function employeePayrollPagination(url){
+	var colIndex = 0;
+    $('#employeePayrollTable').DataTable( { 
+	  "processing": true,
+      "serverSide": true,
+      "searching": false,
+      "ajax": $.fn.dataTable.pipeline( {
+          url: url,
+          method: 'POST',
+          pages: 10
+        }),
+        "columns": [
+            { "data": "fromDate" },
+            { "data": "toDate"},
+            { "data": "employeeId"},
+            { "data": "employeeName" },
+            { "data": "ssn" },
+            { "data": "totalHrs"},
+            { "data": "grossWages"},
+            { "data": "fica"},
+            { "data": "futa"},
+            { "data": "sui"},
+            { "data": "erLocals"},
+            { "data": "wcCost"},
+            { "data": "adminFee"},
+            { "data": "totalErCost"}
+        ],
+        "columnDefs": [ {
+	    	  	"targets": colIndex++,
+	    	  	"data": "fromDate",
+	    	  	"render": function(data, type, opt, meta) {
+	    	  		  var result = "";
+	    	  		result = result + '<td><div class="tblminwidth-75">'+opt.fromDateStr+'</div></td>';
+		             return result;
+	    	  	}
+	      },{
+	    	  "targets": colIndex++,
+              "data": "toDate",
+              "render": function ( data, type, opt, meta ) {
+            	  var result = "";
+            	  result = result + ' <td><div class="tblminwidth-75">'+opt.toDateStr+'</div></td>';
+	              return result;
+              		
+              }
+	          },{
+            "targets": colIndex++,
+            "data": "employeeId",
+            "render": function ( data, type, opt, meta ) {
+            	var result = "";
+            	result = result + '<td class="tblminwidth-75"><div>'+opt.employeeId+'</div></td>';
+            	 return result;
+            }
+          }, {
+              "targets": colIndex++,
+              "data": "employeeName",
+              "render": function ( data, type, opt, meta ) {
+            	  var result = "";
+            	  result = result + '<td><div class="tbldata-dotdot-vsm" title="'+opt.employeeName+'">'+opt.employeeName+'</div></td>';
+            	  return result;
+              }
+            }, {
+                "targets": colIndex++,
+                "data": "ssn",
+                "render": function ( data, type, opt, meta ) {
+                	var result = "";
+                	if(opt.ssn !=null && opt.ssn !='' && opt.ssn !='undefined'){
+						result = result + ' <td><div class="tbldata-dotdot-sm">'+opt.ssn+'</div></td>';
+					}else{
+						result = result + ' <td><div>--</div></td>';
+					}
+    	              return result;
+                }
+          },{
+	    	  	"targets": colIndex++,
+	    	  	"data": "totalHrs",
+	    	  	"render": function(data, type, opt, meta) {
+	    	  		var result = "";
+	    	  		if(opt.totalHrs !=null && opt.totalHrs !='' && opt.totalHrs !='undefined'){
+						result = result + '<td><div class="tblminwidth-50">'+opt.totalHrs+'</div></td>';
+					}else{
+						result = result + ' <td><div>--</div></td>';
+					}
+  	              return result;
+	    	  	}
+	    	  },{
+	    	  	"targets": colIndex++,
+	    	  	"data": "grossWages",
+	    	  	"render": function(data, type, opt, meta) {
+	    	  		var result = "";
+	    	  		result = result + ' <td><div class="tblminwidth-125 text-right"><i class="fa fa-dollar"style="color:#454545;"></i> '+opt.grossWages.toFixed(2)+'</div></td>';
+	    	  		 return result;
+	    	  	}
+	    	  }, {
+                  "targets": colIndex++,
+                  "data": "fica",
+                  "render": function ( data, type, opt, meta ) {
+                	  var result = "";
+                	  result = result + '<td><div class="tblminwidth-75"><i class="fa fa-dollar"style="color:#454545;"></i> '+opt.fica+'</div></td>';
+                	  return result;
+                  }
+                },{
+                    "targets": colIndex++,
+                    "data": "futa",
+                    "render": function ( data, type, opt, meta ) {
+                    	var result = "";
+                    	result = result + '<td><div class="tblminwidth-75"><i class="fa fa-dollar"style="color:#454545;"></i> '+opt.futa+'</div></td>';
+                    	 return result;
+                    }
+                  },{
+                      "targets": colIndex++,
+                      "data": "sui",
+                      "render": function ( data, type, opt, meta ) {
+                    	  var result = "";
+                    	  result = result + ' <td><div class="tblminwidth-75"><i class="fa fa-dollar"style="color:#454545;"></i> '+opt.sui+'</div></td>';
+                    	  return result;
+                      }
+                    },{
+                        "targets": colIndex++,
+                        "data": "erLocals",
+                        "render": function ( data, type, opt, meta ) {
+                        	var result = "";
+                        	result = result + '<td><div class="tblminwidth-75">'+opt.erLocals+'</div></td>';
+                        	 return result;
+                        }
+                      },{
+                          "targets": colIndex++,
+                          "data": "wcCost",
+                          "render": function ( data, type, opt, meta ) {
+                        	  var result = "";
+                        	  result = result + ' <td><div class="tblminwidth-75">'+opt.wcCost+'</div></td>';
+                        	  return result;
+                          }
+                        },{
+                            "targets": colIndex++,
+                            "data": "adminFee",
+                            "render": function ( data, type, opt, meta ) {
+                            	var result = "";
+                            	result = result + '<td><div class="tblminwidth-100">'+opt.adminFee+'</div></td>';
+                            	 return result;
+                            }
+                          },{
+                              "targets": colIndex++,
+                              "data": "totalErCost",
+                              "render": function ( data, type, opt, meta ) {
+                            	  var result = "";
+                            	  result = result + '<td><div class="tblminwidth-150 text-right"><i class="fa fa-dollar"style="color:#454545;"></i> '+opt.totalErCost+'</div></td>';
+                            	  return result;
+                              }
+                } ],
+	    	"scrollCollapse": false,
+	    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
+	    	"aaSorting": [[3,'desc']],
+	    	"bLengthChange": true,
+	    	"bDestroy": true,
+	    	"ordering": true,
+	    	"oLanguage": {
+	     		"sSearch": "",
+	     		 "sZeroRecords": "", "sEmptyTable": "", 
+	     		 "sProcessing": "<img src='resources/images/loading.gif' style='width: 75px; height: 75px;'/>"
+	     }
+    } );
+    $("#employeePayrollTable").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>"); 
+    $("input[type=search]").hide();
+    $("#employeeDataTableSearch").keyup(function(e) {
+    	   if(e.which === 13) {
+    		   loadEmployeePayrollCost();
+    	   }
+    	});
+}
+
 </script>
 
 

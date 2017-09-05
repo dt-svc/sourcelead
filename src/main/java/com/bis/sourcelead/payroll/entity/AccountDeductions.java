@@ -67,6 +67,9 @@ public class AccountDeductions implements Serializable {
 	@Column(name = "STATUS")
 	private String status;
 	
+	@Column(name = "VERSION")
+	private int version;
+	
 	@Column(name = "DESCRIPTION", columnDefinition = "TEXT default NULL")
 	private String description;
 
@@ -254,17 +257,16 @@ public class AccountDeductions implements Serializable {
 	public void setAccountDeductionsDetails(Set<AccountDeductionsDetails> accountDeductionsDetails) {
 		this.accountDeductionsDetails = accountDeductionsDetails;
 	}
-	
-	
 
-	
-	
+	public int getVersion()
+	{
+		return version;
+	}
 
-	
-
-	
-	
-	
+	public void setVersion(int version)
+	{
+		this.version = version;
+	}
 }
 
 

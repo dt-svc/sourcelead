@@ -1,5 +1,6 @@
 package com.bis.sourcelead.payroll.dao;
 
+import java.util.Date;
 import java.util.List;
 
 import com.bis.sourcelead.entity.OrgLocations;
@@ -15,5 +16,9 @@ public interface HrDeductionsDao {
 	List<HrDeductionsDetails> getHrDeductionsDetailsbyId(long hrDeductionId);
 
 	List<HrDeductions> getHrDeductionsByEmployeeId(OrgLocations orgLocations, Long empId)throws Exception;
+
+	HrDeductions getHrDeductionsByEmpIdandDuration(String empId, Long locationId, Date startDate, Date endDate);
+
+	int getHrDeductionsVersionByLocationId(Long locationId);
 
 }

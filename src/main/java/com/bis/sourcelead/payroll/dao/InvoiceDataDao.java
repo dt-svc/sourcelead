@@ -13,6 +13,8 @@ public interface InvoiceDataDao {
 
 	List<InvoiceData> getInvoiceDetailsByEmpId(Long empId, OrgLocations orgLocations)throws Exception;
 
+	int getInvoiceDataVersionByOrgLocationId(Long orgLocationId);
+
 	ResponseList<InvoiceData> getInvoiceDetails(InvoiceDetailsDTO invoiceDetailsDTO, Long orgLocationId) throws Exception;
 
 }
