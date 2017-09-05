@@ -203,8 +203,8 @@ public class UserServiceImpl implements UserService {
 			user.setPassword(sourceleadPasswordEncoder.encode(password));
 		}
 	   
-	    if(StringUtils.isNotBlank(addUserDTO.getMobilePhone())){
-			user.setMobilePhone(addUserDTO.getMobilePhone());
+	    if(StringUtils.isNotBlank(addUserDTO.getPhoneNumber())){
+			user.setMobilePhone(addUserDTO.getPhoneNumber());
 		}
 		
 	    if(StringUtils.isNotBlank(addUserDTO.getIsMailSent()) && ("Y".equals(addUserDTO.getIsMailSent()))){
