@@ -475,8 +475,9 @@ function getEmployeementType(designationType){
 		    var formData = getFormData("createUser_form");
 			var sourceleadUrl = '${sourceleadUrl}';
 			$.post(sourceleadUrl+"/createUser?${_csrf.parameterName}=${_csrf.token}", formData, function(data) {
-				});
-			location.replace(sourceleadUrl+"/usersList");
+				location.replace(sourceleadUrl+"/usersList");	
+			});
+			
 	        return true;
 		
 	  }else{
