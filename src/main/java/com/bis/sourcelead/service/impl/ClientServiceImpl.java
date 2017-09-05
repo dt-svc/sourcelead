@@ -179,7 +179,7 @@ public class ClientServiceImpl implements ClientService {
 	 */
 	@SuppressWarnings("unused")
 	@Override
-	public void storeClient(ClientDTO clientDTO, User user, OrgLocations orgLocations, String responderType,
+	public void storeClient(ClientDTO clientDTO,AddUserDTO addUserDTO,CandidateDTO candidateDTO, User user, OrgLocations orgLocations, String responderType,
 			Org loginOrg) throws Exception {
 		HashSet<OrgLocations> orgLocationsList = new HashSet<OrgLocations>();
 		OrgLocations clientOrgLocations = null;
@@ -285,12 +285,12 @@ public class ClientServiceImpl implements ClientService {
 			orgService.addOrganization(org);
 		}
 		
-		AddUserDTO userDTO = getUserDTOFromClientDTO(clientDTO);
+		/*AddUserDTO userDTO = getUserDTOFromClientDTO(clientDTO);
 		
-		CandidateDTO  candidateDTO  = getCandidateDTOFromClientDTO(clientDTO);
+		CandidateDTO  candidateDTO  = getCandidateDTOFromClientDTO(clientDTO);*/
 
 		if (StringUtils.isNotBlank(clientDTO.getEmail())) {
-			spocUser = userService.storeUser(userDTO,candidateDTO, user, clientOrgLocations, "CREATEUSER", responderType, loginOrg);
+			spocUser = userService.storeUser(addUserDTO,candidateDTO, user, clientOrgLocations, "CREATEUSER", responderType, loginOrg);
 
 		}
 
@@ -454,7 +454,7 @@ public class ClientServiceImpl implements ClientService {
 		}
 	}
 
-	private CandidateDTO getCandidateDTOFromClientDTO(ClientDTO clientDTO) {
+	/*private CandidateDTO getCandidateDTOFromClientDTO(ClientDTO clientDTO) {
 
 		CandidateDTO candidateDTO = new CandidateDTO();
 		candidateDTO.setEmail(clientDTO.getEmail());
@@ -469,13 +469,10 @@ public class ClientServiceImpl implements ClientService {
 		userDTO.setLastName(clientDTO.getLastName());
 		userDTO.setEmail(clientDTO.getEmail());
 		userDTO.setMobilePhone(clientDTO.getPhoneNumber());
-		userDTO.setReportingManager(clientDTO.getReportingManager());
 		userDTO.setIsMailSent(clientDTO.getIsMailSent());
-		userDTO.setRoleType(clientDTO.getUserRoleText());
-		userDTO.setRoleTypeId(clientDTO.getRoleTypeId());
 		
 		return userDTO;
-	}
+	}*/
 
 	/**
 	 * populating Org data
