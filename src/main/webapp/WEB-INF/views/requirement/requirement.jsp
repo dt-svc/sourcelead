@@ -591,14 +591,69 @@ $(document).ready(function () {
               </div> 
                 <div class="input-group-btn selp-custom-min payrate_p">
                   <select class="selectpicker ratetype" id="rateType" name="rateType" field-name="Rate Per">
-                    <option value="">Rate Per</option>
-                    <option ${requirement.rateType  == 'Hourly' ? 'selected' : ''}>Hourly</option>
-                    <option ${requirement.rateType  == 'Weekly' ? 'selected' : ''}>Weekly</option>
-                    <option ${requirement.rateType  == 'Bi-weekly' ? 'selected' : ''}>Bi-weekly</option>
-                    <option ${requirement.rateType  == 'Semi-Monthly' ? 'selected' : ''}>Semi-Monthly</option>
-                    <option ${requirement.rateType  == 'Monthly' ? 'selected' : ''}>Monthly</option>
-                    <option ${requirement.rateType  == 'Bi-Monthly' ? 'selected' : ''}>Bi-Monthly</option>
-                    <option ${requirement.rateType  == 'Yearly' ? 'selected' : ''}>Yearly</option>
+                    <c:if test="${SourceLeadWeb_currencyCode == 'INR'}">
+                        <option ${requirement.rateType  == 'Monthly' ? 'selected' : ''}>Monthly</option>
+	                    <option ${requirement.rateType  == 'Hourly' ? 'selected' : ''}>Hourly</option>
+	                    <option ${requirement.rateType  == 'Weekly' ? 'selected' : ''}>Weekly</option>
+	                    <option ${requirement.rateType  == 'Bi-weekly' ? 'selected' : ''}>Bi-weekly</option>
+	                    <option ${requirement.rateType  == 'Semi-Monthly' ? 'selected' : ''}>Semi-Monthly</option>
+	                    <option ${requirement.rateType  == 'Bi-Monthly' ? 'selected' : ''}>Bi-Monthly</option>
+	                    <option ${requirement.rateType  == 'Yearly' ? 'selected' : ''}>Yearly</option>
+                    </c:if>
+                  
+                  <c:if test="${SourceLeadWeb_currencyCode == 'USD'}">
+                        <option ${requirement.rateType  == 'Hourly' ? 'selected' : ''}>Hourly</option>
+                        <option ${requirement.rateType  == 'Monthly' ? 'selected' : ''}>Monthly</option>
+	                    <option ${requirement.rateType  == 'Weekly' ? 'selected' : ''}>Weekly</option>
+	                    <option ${requirement.rateType  == 'Bi-weekly' ? 'selected' : ''}>Bi-weekly</option>
+	                    <option ${requirement.rateType  == 'Semi-Monthly' ? 'selected' : ''}>Semi-Monthly</option>
+	                    <option ${requirement.rateType  == 'Bi-Monthly' ? 'selected' : ''}>Bi-Monthly</option>
+	                    <option ${requirement.rateType  == 'Yearly' ? 'selected' : ''}>Yearly</option>
+                    </c:if>
+                    
+                  <c:if test="${SourceLeadWeb_currencyCode == 'AUD'}">
+                        <option value="">Rate Per</option>
+                        <option ${requirement.rateType  == 'Hourly' ? 'selected' : ''}>Hourly</option>
+                        <option ${requirement.rateType  == 'Monthly' ? 'selected' : ''}>Monthly</option>
+	                    <option ${requirement.rateType  == 'Weekly' ? 'selected' : ''}>Weekly</option>
+	                    <option ${requirement.rateType  == 'Bi-weekly' ? 'selected' : ''}>Bi-weekly</option>
+	                    <option ${requirement.rateType  == 'Semi-Monthly' ? 'selected' : ''}>Semi-Monthly</option>
+	                    <option ${requirement.rateType  == 'Bi-Monthly' ? 'selected' : ''}>Bi-Monthly</option>
+	                    <option ${requirement.rateType  == 'Yearly' ? 'selected' : ''}>Yearly</option>
+	                  </c:if>
+	                     
+	               <c:if test="${SourceLeadWeb_currencyCode == 'GBP'}">
+                        <option value="">Rate Per</option>
+                        <option ${requirement.rateType  == 'Hourly' ? 'selected' : ''}>Hourly</option>
+                        <option ${requirement.rateType  == 'Monthly' ? 'selected' : ''}>Monthly</option>
+	                    <option ${requirement.rateType  == 'Weekly' ? 'selected' : ''}>Weekly</option>
+	                    <option ${requirement.rateType  == 'Bi-weekly' ? 'selected' : ''}>Bi-weekly</option>
+	                    <option ${requirement.rateType  == 'Semi-Monthly' ? 'selected' : ''}>Semi-Monthly</option>
+	                    <option ${requirement.rateType  == 'Bi-Monthly' ? 'selected' : ''}>Bi-Monthly</option>
+	                    <option ${requirement.rateType  == 'Yearly' ? 'selected' : ''}>Yearly</option>
+	                  </c:if>
+	                     
+	               <c:if test="${SourceLeadWeb_currencyCode == 'SGD'}">
+                        <option value="">Rate Per</option>
+                        <option ${requirement.rateType  == 'Hourly' ? 'selected' : ''}>Hourly</option>
+                        <option ${requirement.rateType  == 'Monthly' ? 'selected' : ''}>Monthly</option>
+	                    <option ${requirement.rateType  == 'Weekly' ? 'selected' : ''}>Weekly</option>
+	                    <option ${requirement.rateType  == 'Bi-weekly' ? 'selected' : ''}>Bi-weekly</option>
+	                    <option ${requirement.rateType  == 'Semi-Monthly' ? 'selected' : ''}>Semi-Monthly</option>
+	                    <option ${requirement.rateType  == 'Bi-Monthly' ? 'selected' : ''}>Bi-Monthly</option>
+	                    <option ${requirement.rateType  == 'Yearly' ? 'selected' : ''}>Yearly</option>
+	                  </c:if>
+	                     
+	                        <c:if test="${SourceLeadWeb_currencyCode == 'EUR'}">
+                        <option value="">Rate Per</option>
+                        <option ${requirement.rateType  == 'Hourly' ? 'selected' : ''}>Hourly</option>
+                        <option ${requirement.rateType  == 'Monthly' ? 'selected' : ''}>Monthly</option>
+	                    <option ${requirement.rateType  == 'Weekly' ? 'selected' : ''}>Weekly</option>
+	                    <option ${requirement.rateType  == 'Bi-weekly' ? 'selected' : ''}>Bi-weekly</option>
+	                    <option ${requirement.rateType  == 'Semi-Monthly' ? 'selected' : ''}>Semi-Monthly</option>
+	                    <option ${requirement.rateType  == 'Bi-Monthly' ? 'selected' : ''}>Bi-Monthly</option>
+	                    <option ${requirement.rateType  == 'Yearly' ? 'selected' : ''}>Yearly</option>
+	                  </c:if>
                   </select>
                 </div>
               </div>
