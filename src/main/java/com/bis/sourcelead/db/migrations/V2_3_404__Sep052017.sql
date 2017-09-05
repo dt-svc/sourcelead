@@ -1,0 +1,4 @@
+SET SQL_SAFE_UPDATES = 0;
+INSERT INTO `sourcelead`.`CLASS_FIELD` (`ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_STR`) VALUES ((SELECT MAX( ID ) FROM `sourcelead`.`ENTITY_TYPE`), 'loginOrg', '{{InterviewerInvitationRedifined.loginOrg}}');
+UPDATE `sourcelead`.`EMAIL_SCENARIO` SET `BODY`='{{InterviewerInvitationRedifined.LoginUser}} invited you to Interview/Screen, the following candidate for {{InterviewerInvitationRedifined.RequirementTitle}} position with {{InterviewerInvitationRedifined.loginOrg}}\n {{InterviewerInvitationRedifined.interviewTableDetails}}\n\nFor more details Please Login.\n{{InterviewerInvitationRedifined.LoginLink}}',`SIGNATURE`='Best Regards,\n{{InterviewerInvitationRedifined.LoginUser}}\n{{InterviewerInvitationRedifined.loginOrg}}' WHERE `UNIQUE_SCENARIO_NAME`='Interviewer InvitationRedifined' and `ENTITY_TYPE`='Email';
+SET SQL_SAFE_UPDATES = 1;
