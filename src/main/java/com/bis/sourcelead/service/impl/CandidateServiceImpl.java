@@ -1443,13 +1443,13 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 			}
 			
 			candidate.setCandidateUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+			candidate.setGeneratedId(getCandidateId(orgLocations));
 			candidate.setCreatedDate(commonUtil.currentDate());
 			candidate.setUpdatedDate(commonUtil.currentDate());
 		}else{
 			candidate.setConsultantUser(user);
 			candidate.setMasterCandidateId(masterCandidate);
 		}
-		
 		candidateDao.storeCandidate(candidate);
 		saveOrUpdateCandidateElkDocument(candidate);
 		return candidate;
