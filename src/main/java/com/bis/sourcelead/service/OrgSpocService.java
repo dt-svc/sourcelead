@@ -2,8 +2,7 @@ package com.bis.sourcelead.service;
 
 import java.util.List;
 
-import org.json.JSONObject;
-
+import com.bis.sourcelead.dto.ClientDTO;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgSpoc;
@@ -27,7 +26,7 @@ public interface OrgSpocService {
  * @param orgLocations
  * @throws Exception
  */
-	void addVendorContacts(JSONObject jsonObj,User user,OrgLocations orgLocations, String orgRelationId, String clientLocationId,String responderType,Org org)throws Exception;
+	void addVendorContacts(ClientDTO clientDTO,User user,OrgLocations orgLocations, String orgRelationId, String clientLocationId,String responderType,Org org)throws Exception;
 
 	/**
 	 * @author Prasad Salina 

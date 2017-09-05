@@ -21,7 +21,6 @@ import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.MatchQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +28,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.AddUserDTO;
+import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.ClientDTO;
 import com.bis.sourcelead.elk.index.ClientVendorIndex;
 import com.bis.sourcelead.elk.index.helper.ClientVendorIndexHelper;
@@ -197,9 +198,9 @@ public class ClientServiceImpl implements ClientService {
 			}
 			if (StringUtils.isNotBlank(clientDTO.getOrgState())) {
 				clientOrgLocations.setState(clientDTO.getOrgState());
-			} else if (StringUtils.isNotBlank(clientDTO.getUserState())) {
+			} /*else if (StringUtils.isNotBlank(clientDTO.getUserState())) {
 				clientOrgLocations.setState(clientDTO.getUserState());
-			}
+			}*/
 			if (StringUtils.isNotBlank(clientDTO.getOrgCity())) {
 				clientOrgLocations.setCity(clientDTO.getOrgCity());
 			} else if (StringUtils.isNotBlank(clientDTO.getCity())) {
@@ -283,9 +284,13 @@ public class ClientServiceImpl implements ClientService {
 			org.setOrgLocationsList(orgLocationsList);
 			orgService.addOrganization(org);
 		}
+		
+		AddUserDTO userDTO = getUserDTOFromClientDTO(clientDTO);
+		
+		CandidateDTO  candidateDTO  = getCandidateDTOFromClientDTO(clientDTO);
 
 		if (StringUtils.isNotBlank(clientDTO.getEmail())) {
-			spocUser = userService.storeUser(clientDTO.getAddUserDTO(),clientDTO.getCandidateDTO(), user, clientOrgLocations, "CREATEUSER", responderType, loginOrg);
+			spocUser = userService.storeUser(userDTO,candidateDTO, user, clientOrgLocations, "CREATEUSER", responderType, loginOrg);
 
 		}
 
@@ -447,6 +452,29 @@ public class ClientServiceImpl implements ClientService {
 					submissionTemplate, user, orgLocations);
 
 		}
+	}
+
+	private CandidateDTO getCandidateDTOFromClientDTO(ClientDTO clientDTO) {
+
+		CandidateDTO candidateDTO = new CandidateDTO();
+		candidateDTO.setEmail(clientDTO.getEmail());
+		
+		return candidateDTO;
+	}
+
+	private AddUserDTO getUserDTOFromClientDTO(ClientDTO clientDTO) {
+		
+		AddUserDTO userDTO = new AddUserDTO();
+		userDTO.setFirstName(clientDTO.getFirstName());
+		userDTO.setLastName(clientDTO.getLastName());
+		userDTO.setEmail(clientDTO.getEmail());
+		userDTO.setMobilePhone(clientDTO.getPhoneNumber());
+		userDTO.setReportingManager(clientDTO.getReportingManager());
+		userDTO.setIsMailSent(clientDTO.getIsMailSent());
+		userDTO.setRoleType(clientDTO.getUserRoleText());
+		userDTO.setRoleTypeId(clientDTO.getRoleTypeId());
+		
+		return userDTO;
 	}
 
 	/**
