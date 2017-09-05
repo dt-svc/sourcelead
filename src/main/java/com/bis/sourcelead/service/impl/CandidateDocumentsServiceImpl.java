@@ -2,6 +2,7 @@ package com.bis.sourcelead.service.impl;
 
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -12,6 +13,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.CandidateDocumentsDao;
+import com.bis.sourcelead.dto.CandidateDocumentsDTO;
+import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.elk.index.CandidateIndex;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
@@ -21,6 +24,7 @@ import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CandidateDocumentsService;
 import com.bis.sourcelead.util.CandidateActivityCommonUtil;
 import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.util.FileUploadUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 
 @Service
@@ -37,7 +41,7 @@ public class CandidateDocumentsServiceImpl implements CandidateDocumentsService 
 	 CandidateActivityCommonUtil candidateActivityCommonUtil;
 	
 	@Override
-	public CandidateDocuments storeCandidateDocuments(JSONObject jsonObj, Long candidateId, String documentUUID, Long orgLocationId, User user, MultipartFile multiFile) throws JSONException, Exception
+	public CandidateDocuments storeCandidateDocuments(CandidateDocumentsDTO candidateDocumentsDTO, Long candidateId, String documentUUID, Long orgLocationId, User user) throws Exception
 	{
 		CandidateDocuments candidateDocuments = null;
 		Candidate candidate = new Candidate();
@@ -46,38 +50,38 @@ public class CandidateDocumentsServiceImpl implements CandidateDocumentsService 
 		if (null != candidateId) {
 			candidateDocuments = candidateDocumentsDao.getCandidateDocumentByCandidateId(candidateId, documentUUID);
 			if (null != candidateDocuments) {
-				if (jsonObj.has("name")) {
-					if (jsonObj.getString("name").equalsIgnoreCase("Other")) {
-						if(candidateDocuments != null && candidateDocuments.getDocumentType() != null && candidateDocuments.getDocumentType() != "" && !candidateDocuments.getDocumentType().equalsIgnoreCase(jsonObj.getString("name"))){
-							activitySummary.append("Name").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidateDocuments.getDocumentType()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(jsonObj.getString("name")).append(Constants.NEW_VALUE_TAG_END).append(" ");
+				if (StringUtils.isNotBlank(candidateDocumentsDTO.getName())) {
+					if (candidateDocumentsDTO.getName().equalsIgnoreCase("Other")) {
+						if(candidateDocuments != null && candidateDocuments.getDocumentType() != null && candidateDocuments.getDocumentType() != "" && !candidateDocuments.getDocumentType().equalsIgnoreCase(candidateDocumentsDTO.getName())){
+							activitySummary.append("Name").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidateDocuments.getDocumentType()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDocumentsDTO.getName()).append(Constants.NEW_VALUE_TAG_END).append(" ");
 						}
-						candidateDocuments.setDocumentType(jsonObj.getString("name"));
+						candidateDocuments.setDocumentType(candidateDocumentsDTO.getName());
 						
-						if(candidateDocuments != null && candidateDocuments.getDocumentOtherType() != null && candidateDocuments.getDocumentOtherType() != "" && !candidateDocuments.getDocumentOtherType().equalsIgnoreCase(jsonObj.getString("documentOtherType"))){
-							activitySummary.append("Document Other Type").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidateDocuments.getDocumentOtherType()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(jsonObj.getString("documentOtherType")).append(Constants.NEW_VALUE_TAG_END).append(" ");
+						if(candidateDocuments != null && candidateDocuments.getDocumentOtherType() != null && candidateDocuments.getDocumentOtherType() != "" && !candidateDocuments.getDocumentOtherType().equalsIgnoreCase(candidateDocumentsDTO.getDocumentOtherType())){
+							activitySummary.append("Document Other Type").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidateDocuments.getDocumentOtherType()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDocumentsDTO.getDocumentOtherType()).append(Constants.NEW_VALUE_TAG_END).append(" ");
 						}
-						candidateDocuments.setDocumentOtherType(jsonObj.getString("documentOtherType"));
+						candidateDocuments.setDocumentOtherType(candidateDocumentsDTO.getDocumentOtherType());
 					}
 					else {
-						if(candidateDocuments != null && candidateDocuments.getDocumentType() != null && candidateDocuments.getDocumentType() != "" && !candidateDocuments.getDocumentType().equalsIgnoreCase(jsonObj.getString("name"))){
-							activitySummary.append("Name").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidateDocuments.getDocumentType()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(jsonObj.getString("name")).append(Constants.NEW_VALUE_TAG_END).append(" ");
+						if(candidateDocuments != null && candidateDocuments.getDocumentType() != null && candidateDocuments.getDocumentType() != "" && !candidateDocuments.getDocumentType().equalsIgnoreCase(candidateDocumentsDTO.getName())){
+							activitySummary.append("Name").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidateDocuments.getDocumentType()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDocumentsDTO.getName()).append(Constants.NEW_VALUE_TAG_END).append(" ");
 						}
-						candidateDocuments.setDocumentType(jsonObj.getString("name"));
-						if(candidateDocuments != null && candidateDocuments.getDocumentOtherType() != null && candidateDocuments.getDocumentOtherType() != "" && !candidateDocuments.getDocumentOtherType().equalsIgnoreCase(jsonObj.getString("documentOtherType"))){
+						candidateDocuments.setDocumentType(candidateDocumentsDTO.getName());
+						if(candidateDocuments != null && candidateDocuments.getDocumentOtherType() != null && candidateDocuments.getDocumentOtherType() != "" && !candidateDocuments.getDocumentOtherType().equalsIgnoreCase(candidateDocumentsDTO.getDocumentOtherType())){
 							activitySummary.append("Document Other Type").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidateDocuments.getDocumentOtherType()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append("").append(Constants.NEW_VALUE_TAG_END).append(" ");
 						}
 						candidateDocuments.setDocumentOtherType(null);
 					}
 				}
-				if (jsonObj.has("description")) {
-					if(candidateDocuments != null && candidateDocuments.getDescription() != null && candidateDocuments.getDescription() != "" && !candidateDocuments.getDescription().equalsIgnoreCase(jsonObj.getString("description"))){
-						activitySummary.append("Description").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidateDocuments.getDescription()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(jsonObj.getString("description")).append(Constants.NEW_VALUE_TAG_END).append(" ");
+				if (StringUtils.isNotBlank(candidateDocumentsDTO.getDescription())) {
+					if(candidateDocuments != null && candidateDocuments.getDescription() != null && candidateDocuments.getDescription() != "" && !candidateDocuments.getDescription().equalsIgnoreCase(candidateDocumentsDTO.getDescription())){
+						activitySummary.append("Description").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidateDocuments.getDescription()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDocumentsDTO.getDescription()).append(Constants.NEW_VALUE_TAG_END).append(" ");
 					}
-					candidateDocuments.setDescription(jsonObj.getString("description"));
+					candidateDocuments.setDescription(candidateDocumentsDTO.getDescription());
 				}
 				// for professional user add is confidential Y/N
-				if (jsonObj.has("isConfidential")
-						&& !(jsonObj.getString("isConfidential").isEmpty())) {
+				if (StringUtils.isNotBlank(candidateDocumentsDTO.getIsConfidential())
+						&& !(candidateDocumentsDTO.getIsConfidential().isEmpty())) {
 					if(candidateDocuments != null && candidateDocuments.getIsConfidential() != null && candidateDocuments.getIsConfidential() != "" && !candidateDocuments.getIsConfidential().equalsIgnoreCase("Y")){
 						activitySummary.append("Is Confidential").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidateDocuments.getIsConfidential()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append("Y").append(Constants.NEW_VALUE_TAG_END).append(" ");
 					}
@@ -91,7 +95,8 @@ public class CandidateDocumentsServiceImpl implements CandidateDocumentsService 
 				}
 				candidateDocuments.setUpdatedBy(user.getUserCode());
 				candidateDocuments.setUpdatedDate(commonUtil.currentDate());
-				if (!jsonObj.getString("docFile").equalsIgnoreCase("")) {
+				
+				/*if (!jsonObj.getString("docFile").equalsIgnoreCase("")) {
 					if (multiFile != null) {
 						candidateDocuments.setDocFile(multiFile.getBytes());
 						if(multiFile.getOriginalFilename() != null && multiFile.getOriginalFilename() != "" && !multiFile.getOriginalFilename().equalsIgnoreCase(candidateDocuments.getFileName())){
@@ -100,6 +105,23 @@ public class CandidateDocumentsServiceImpl implements CandidateDocumentsService 
 						candidateDocuments.setFileName(multiFile.getOriginalFilename());
 						candidateDocuments.setFileContentType(multiFile.getContentType());
 					}
+				}*/
+				
+				if (candidateDocumentsDTO.getUploadedFileInfo() != null && candidateDocumentsDTO.getUploadedFileInfo().size()>0) {
+					FileInfo fileInfo = candidateDocumentsDTO.getUploadedFileInfo().get(0);
+					if(fileInfo.getFileName() != null ){
+						activitySummary.append("Document").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidateDocuments.getFileName()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(fileInfo.getFileName()).append(Constants.NEW_VALUE_TAG_END).append(" ");
+					}
+					
+					candidateDocuments.setFileName(fileInfo.getFileName());
+					candidateDocuments.setFileContentType(fileInfo.getContentType());
+					
+					candidateDocuments.setFileURL(fileInfo.getFileURL());;
+					if(fileInfo != null){
+						//candidate.setFileName(fileInfo.getFileName());
+						FileUploadUtil.moveFile(candidateDocumentsDTO.getStaticPath(), fileInfo, "documents");
+					}
+				
 				}
 				
 				candidate.setId(candidateDocuments.getCandidateId().getId());
@@ -107,33 +129,32 @@ public class CandidateDocumentsServiceImpl implements CandidateDocumentsService 
 			}
 			else {
 				candidateDocuments = new CandidateDocuments();
-				if (jsonObj.has("name")) {
-					if (jsonObj.getString("name").equalsIgnoreCase("Other")) {
-						if(candidateDocuments != null && candidateDocuments.getDocumentType() != null && candidateDocuments.getDocumentType() != "" && !candidateDocuments.getDocumentType().equalsIgnoreCase(jsonObj.getString("name"))){
-							activitySummary.append("Name").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidateDocuments.getDocumentType()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(jsonObj.getString("name")).append(Constants.NEW_VALUE_TAG_END).append(" ");
+				if (StringUtils.isNotBlank(candidateDocumentsDTO.getName())) {
+					if (candidateDocumentsDTO.getName().equalsIgnoreCase("Other")) {
+						if(candidateDocuments != null && candidateDocuments.getDocumentType() != null && candidateDocuments.getDocumentType() != "" && !candidateDocuments.getDocumentType().equalsIgnoreCase(candidateDocumentsDTO.getName())){
+							activitySummary.append("Name").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidateDocuments.getDocumentType()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDocumentsDTO.getName()).append(Constants.NEW_VALUE_TAG_END).append(" ");
 						}
-						candidateDocuments.setDocumentType(jsonObj.getString("name"));
-						if(candidateDocuments != null && candidateDocuments.getDocumentOtherType() != null && candidateDocuments.getDocumentOtherType() != "" && !candidateDocuments.getDocumentOtherType().equalsIgnoreCase(jsonObj.getString("documentOtherType"))){
-							activitySummary.append("Document Other Type").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidateDocuments.getDocumentOtherType()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(jsonObj.getString("documentOtherType")).append(Constants.NEW_VALUE_TAG_END).append(" ");
+						candidateDocuments.setDocumentType(candidateDocumentsDTO.getName());
+						if(candidateDocuments != null && candidateDocuments.getDocumentOtherType() != null && candidateDocuments.getDocumentOtherType() != "" && !candidateDocuments.getDocumentOtherType().equalsIgnoreCase(candidateDocumentsDTO.getDocumentOtherType())){
+							activitySummary.append("Document Other Type").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidateDocuments.getDocumentOtherType()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDocumentsDTO.getDocumentOtherType()).append(Constants.NEW_VALUE_TAG_END).append(" ");
 						}
-						candidateDocuments.setDocumentOtherType(jsonObj.getString("documentOtherType"));
+						candidateDocuments.setDocumentOtherType(candidateDocumentsDTO.getDocumentOtherType());
 					}
 					else {
-						if(candidateDocuments != null && candidateDocuments.getDocumentType() != null && candidateDocuments.getDocumentType() != "" && !candidateDocuments.getDocumentType().equalsIgnoreCase(jsonObj.getString("name"))){
-							activitySummary.append("Name").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidateDocuments.getDocumentType()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(jsonObj.getString("name")).append(Constants.NEW_VALUE_TAG_END).append(" ");
+						if(candidateDocuments != null && candidateDocuments.getDocumentType() != null && candidateDocuments.getDocumentType() != "" && !candidateDocuments.getDocumentType().equalsIgnoreCase(candidateDocumentsDTO.getName())){
+							activitySummary.append("Name").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidateDocuments.getDocumentType()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDocumentsDTO.getName()).append(Constants.NEW_VALUE_TAG_END).append(" ");
 						}
-						candidateDocuments.setDocumentType(jsonObj.getString("name"));
+						candidateDocuments.setDocumentType(candidateDocumentsDTO.getName());
 					}
 				}
-				if (jsonObj.has("description")) {
-					if(candidateDocuments != null && candidateDocuments.getDescription() != null && candidateDocuments.getDescription() != "" && !candidateDocuments.getDescription().equalsIgnoreCase(jsonObj.getString("description"))){
-						activitySummary.append("Description").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidateDocuments.getDescription()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(jsonObj.getString("description")).append(Constants.NEW_VALUE_TAG_END).append(" ");
+				if (StringUtils.isNotBlank(candidateDocumentsDTO.getDescription())){
+					if(candidateDocuments != null && candidateDocuments.getDescription() != null && candidateDocuments.getDescription() != "" && !candidateDocuments.getDescription().equalsIgnoreCase(candidateDocumentsDTO.getDescription())){
+						activitySummary.append("Description").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidateDocuments.getDescription()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDocumentsDTO.getDescription()).append(Constants.NEW_VALUE_TAG_END).append(" ");
 					}
-					candidateDocuments.setDescription(jsonObj.getString("description"));
+					candidateDocuments.setDescription(candidateDocumentsDTO.getDescription());
 				}
 				// for professional user add is confidential Y/N
-				if (jsonObj.has("isConfidential")
-						&& !(jsonObj.getString("isConfidential").isEmpty())) {
+				if (StringUtils.isNotBlank(candidateDocumentsDTO.getIsConfidential())){
 					if(candidateDocuments != null && candidateDocuments.getIsConfidential() != null && candidateDocuments.getIsConfidential() != "" && !candidateDocuments.getIsConfidential().equalsIgnoreCase("Y")){
 						activitySummary.append("Is Confidential").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidateDocuments.getIsConfidential()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append("Y").append(Constants.NEW_VALUE_TAG_END).append(" ");
 					}
@@ -158,14 +179,32 @@ public class CandidateDocumentsServiceImpl implements CandidateDocumentsService 
 				candidateDocuments.setUpdatedBy(user.getUserCode());
 				candidateDocuments.setCreatedBy(user.getUserCode());
 				candidateDocuments.setUpdatedDate(commonUtil.currentDate());
-				if (multiFile != null) {
+				
+				/*if (multiFile != null) {
 					candidateDocuments.setDocFile(multiFile.getBytes());
 					if(multiFile.getOriginalFilename() != null && multiFile.getOriginalFilename() != ""){
 						activitySummary.append("Document").append(" : ").append(Constants.NEW_VALUE_TAG_INITIATION).append(multiFile.getOriginalFilename()).append(Constants.NEW_VALUE_TAG_END).append(" ");
 					}
 					candidateDocuments.setFileName(multiFile.getOriginalFilename());
 					candidateDocuments.setFileContentType(multiFile.getContentType());
+				}*/
+				
+				if (candidateDocumentsDTO.getUploadedFileInfo() != null) {
+					FileInfo fileInfo = candidateDocumentsDTO.getUploadedFileInfo().get(0);
+					if(fileInfo.getFileName() != null ){
+						activitySummary.append("Document").append(" : ").append(Constants.NEW_VALUE_TAG_INITIATION).append(fileInfo.getFileName()).append(Constants.NEW_VALUE_TAG_END).append(" ");
+					}
+					
+					candidateDocuments.setFileName(fileInfo.getFileName());
+					candidateDocuments.setFileContentType(fileInfo.getContentType());
+					candidateDocuments.setFileURL(fileInfo.getFileURL());;
+					if(fileInfo != null){
+						//candidate.setFileName(fileInfo.getFileName());
+						FileUploadUtil.moveFile(candidateDocumentsDTO.getStaticPath(), fileInfo, "documents");
+					}
+				
 				}
+				
 			}
 			candidateDocuments = candidateDocumentsDao.updateCandidateDocuments(candidateDocuments);
 			
