@@ -252,10 +252,20 @@
                 <div class="form-group">
                   <label class="col-md-4 control-label">Rate / Salary</label>
                   <div class="col-md-8">
-                    <input type="text" class="form-control input-sm" id="salaryRate" name="salaryRate" readonly="readonly" value="${SourceLeadWeb_candidateOnBoarding.salaryRate}">
+                  <div class="input-group er ratetype">
+			                <div class="input-group-btn tblminwidth-75" style="min-width: 65px !important;">
+				                <input type="text" class="pull-left btn btn-primary btn-block" value="${SourceLeadWeb_candidateOnBoarding.paymentType}" readonly>
+				                </div>
+                    <input type="text" class="form-control" id="salaryRate" name="salaryRate" readonly="readonly" value="${SourceLeadWeb_candidateOnBoarding.salaryRate}">
+                  <div class="input-group-btn tblminwidth-75 ratetype">
+			                <input type="text" class="pull-left btn btn-primary btn-block" value="${SourceLeadWeb_candidateOnBoarding.paymentMode}" readonly>
+			                </div>
                   </div>
                 </div>
 		</div>
+		      
+	</div>
+		
 	</div>
 	<div class="clearfix">
  		<div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
