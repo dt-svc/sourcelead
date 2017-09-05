@@ -116,8 +116,10 @@ window.onload = function () {
                         </div>
                       </div>
                       <div class="clearfix mr">
-                        <button type="button" class="btn btn-sm btn-primary pull-right" id="uploadPayroll" onclick="uploadPayrollDocument();">Upload</button>
-                      </div>
+                      <div class="pull-right">
+                        <button type="button" class="btn btn-sm btn-default" onclick="cancelUpload();">Cancel</button>
+                        <button type="button" class="btn btn-sm btn-primary ml" id="uploadPayroll" onclick="uploadPayrollDocument();">Upload</button>
+                      </div></div>
                     </div>
                   </div>
                    </form:form>
@@ -178,6 +180,11 @@ function runPayrollCycles(type){
 function flushPayrollCycle(){
 	$("#payrollCycleDiv").find('p.jquery_form_error_message').remove();
 	$('#payrollCycle').val('').trigger("chosen:updated");
+}
+
+function cancelUpload(){
+	var sourceleadUrl = '${sourceleadUrl}';
+	window.location.href = sourceleadUrl + "/payrollList";
 }
 
 </script>
