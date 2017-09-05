@@ -339,6 +339,8 @@ function getProjectFrequency(invoiceFrequency){
 	projectId = '${projectId}';
 	}
 	var sourceleadUrl ='${sourceleadUrl}';
+	
+	if(projectId != null && projectId != "" && projectId != 'undefined'){
 	$.ajax({
 	type : "GET",
 	url: sourceleadUrl+"/getProjectFrequency?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId,
@@ -363,6 +365,15 @@ function getProjectFrequency(invoiceFrequency){
 		$('#frequency').trigger("chosen:updated");
 	},
 	});
+}
+	else{
+		$("#frequency").empty();
+		var output = "";
+		output = output + "<option value=''>Select Frequency</option>";
+		$("#frequency").append(output);
+		$('#frequency').trigger("chosen:updated");
+		
+	}
 
 }
 </script>

@@ -1,5 +1,6 @@
 package com.bis.sourcelead.payroll.service;
 
+import java.util.Date;
 import java.util.List;
 
 import org.json.JSONObject;
@@ -19,5 +20,12 @@ public interface HrDeductionsService {
 	List<HrDeductionsDetails> getHrDeductionsDetailsbyId(long hrDeductionId);
 
 	List<HrDeductions> getHrDeductionsByEmployeeId(OrgLocations orgLocations, Long empId)throws Exception;
+	
+	/*
+	 *this service is used to get HrDeductionss details of particular employee on particular date  
+	 */
+	HrDeductions getHrDeductionsByEmpIdandDuration(String EmpId,Long locationId,Date startDate, Date endDate);
+	
+	int getHrDeductionsVersionByLocationId(Long locationId);
 
 }
