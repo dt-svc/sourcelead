@@ -122,6 +122,10 @@ import com.bis.sourcelead.enums.Status;
 		private String roleType;
 		
 		private String roleTypeId;
+		
+		private String EmailId;
+		
+		private String phoneNumber;
 
 		public String getFirstName() {
 			return firstName;
@@ -530,9 +534,22 @@ import com.bis.sourcelead.enums.Status;
 		public void setRoleTypeId(String roleTypeId) {
 			this.roleTypeId = roleTypeId;
 		}
+
+		public String getEmailId() {
+			return EmailId;
+		}
+
+		public void setEmailId(String emailId) {
+			EmailId = emailId;
+		}
+
+		public String getPhoneNumber() {
+			return phoneNumber;
+		}
+
+		public void setPhoneNumber(String phoneNumber) {
+			this.phoneNumber = phoneNumber;
+		}
 		
 		
-		
-		
-	
 }

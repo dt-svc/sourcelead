@@ -1027,7 +1027,7 @@ function getChangeRole(userId,userRoleId){
                         $( "#update_user" ).addClass('button').val('Processing..');
                         $.ajax({
                             type: "POST",
-                            url: sourceleadUrl+"/updateUser?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&userId="+userId+"&emailId="+emailId,
+                            url: sourceleadUrl+"/updateUser?${_csrf.parameterName}=${_csrf.token}&"+$($('#editUser_form')[0]).serialize()+"&userId="+userId+"&emailId="+emailId,
                             success: function(result) {
                             	 $("#selectoruser").removeAttr("style");
 	                       		  $("#selectoruser").css({ display: "block" });
@@ -1064,7 +1064,7 @@ function getChangeRole(userId,userRoleId){
                               $( "#update_user" ).addClass('button').val('Processing..');
                               $.ajax({
                                   type: "POST",
-                                  url: sourceleadUrl+"/updateUser?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&userId="+userId+"&emailId="+emailId,
+                                  url: sourceleadUrl+"/updateUser?${_csrf.parameterName}=${_csrf.token}&"+$($('#editUser_form')[0]).serialize()+"&userId="+userId+"&emailId="+emailId,
                                   success: function(result) {
                                 	  $("#selectoruser").removeAttr("style");
                             		  $("#selectoruser").css({ display: "block" });
@@ -1090,7 +1090,7 @@ function getChangeRole(userId,userRoleId){
                   $( "#update_user" ).addClass('button').val('Processing..');
                   $.ajax({
                       type: "POST",
-                      url: sourceleadUrl+"/updateUser?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&userId="+userId+"&emailId="+emailId,
+                      url: sourceleadUrl+"/updateUser?${_csrf.parameterName}=${_csrf.token}&"+$($('#editUser_form')[0]).serialize()+"&userId="+userId+"&emailId="+emailId,
                       success: function(result) {
                     	  $("#selectoruser").removeAttr("style");
                 		  $("#selectoruser").css({ display: "block" });

@@ -43,6 +43,7 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.bis.sourcelead.SourceleadPasswordEncoder;
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.AddUserDTO;
 import com.bis.sourcelead.elk.index.ClientVendorContactsIndex;
 import com.bis.sourcelead.elk.index.UserIndex;
 import com.bis.sourcelead.elk.index.helper.ClientVendorContactsIndexHelper;
@@ -96,7 +97,6 @@ import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
-import com.bis.sourcelead.web.LoginSessionController;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
@@ -1604,7 +1604,7 @@ public class UsersListRestController {
 	@PreAuthorize("hasRole('ROLE_VIEW_EDIT_USER')")
 	@RequestMapping(value = "/updateUser", method = RequestMethod.POST)
 	@ResponseBody
-	String updateUser(@RequestParam(value = "json", required = false) String json,
+	String updateUser(AddUserDTO addUserDTO,
 			@RequestParam(value = "userId", required = false) Long userId,
 			@RequestParam(value = "emailId", required = false) String emailId, HttpServletRequest request)
 			throws Exception {
@@ -1616,29 +1616,29 @@ public class UsersListRestController {
 		User user = userService.getUserById(userId);
 		UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(), orgLocations.getId());
 
-		json = "{" + json + "}";
-		JSONObject jsonObj = new JSONObject(json);
+		/*json = "{" + json + "}";
+		JSONObject jsonObj = new JSONObject(json);*/
 		String password = "";
 		boolean isUserActive = false;
 		//SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
 		
 		if (user != null) {
-			user.setFirstName(jsonObj.getString("FirstName"));
-			user.setLastName(jsonObj.getString("LastName"));
-			user.setMobilePhone(jsonObj.getString("PhoneNumber"));
-			if (jsonObj.has("reportingManager") && !isNullOrEmpty(jsonObj.getString("reportingManager"))) {
+			user.setFirstName(addUserDTO.getFirstName());
+			user.setLastName(addUserDTO.getLastName());
+			user.setMobilePhone(addUserDTO.getPhoneNumber());
+			if (StringUtils.isNotBlank(addUserDTO.getReportingManager())) {
 				User reportingManager = new User();
-				reportingManager.setId(Long.parseLong(jsonObj.getString("reportingManager")));
+				reportingManager.setId(Long.parseLong(addUserDTO.getReportingManager()));
 				userRole.setReportingManager(reportingManager);
 			} else {
 				userRole.setReportingManager(null);
 			}
 
 			isUserActive = userRoleService.isUserActive(user.getId());
-			if (isUserActive == false && !emailId.equalsIgnoreCase(jsonObj.getString("EmailId"))) {
+			if (isUserActive == false && !emailId.equalsIgnoreCase(addUserDTO.getEmailId())) {
 				// generate random password
-				user.setEmail(jsonObj.getString("EmailId"));
-				user.setUserName(jsonObj.getString("EmailId"));
+				user.setEmail(addUserDTO.getEmailId());
+				user.setUserName(addUserDTO.getEmailId());
 				password = SourceLeadRandomCodeHelper.generateRandomPassword();
 				user.setPassword(sourceleadPasswordEncoder.encode(password));
 				user.setIsMailSent(Status.Y);
@@ -1650,42 +1650,42 @@ public class UsersListRestController {
 			userService.addUser(user);
 			userRoleService.addUserRole(userRole);
 
-			if (isUserActive == false && !emailId.equalsIgnoreCase(jsonObj.getString("EmailId"))) {
+			if (isUserActive == false && !emailId.equalsIgnoreCase(addUserDTO.getEmailId())) {
 				userService.sendEmail(user, loginUser, password, orgLocations.getId());
 			}
 		}
 		Employees employees = employeesService.getEmployeeByUserIdAndOrgLocationsId(userId, orgLocations.getId());
 
 		if (employees != null) {
-			employees.setEmployeeId(jsonObj.getString("EmployeeId"));
-			employees.setRate(jsonObj.getString("Rate"));
-			employees.setRatePer(jsonObj.getString("RatePer"));
-			employees.setDailyHours(jsonObj.getString("DayHours"));
-			employees.setCurrentCurrency(jsonObj.getString("currentCurrency"));
+			employees.setEmployeeId(addUserDTO.getEmployeeId());
+			employees.setRate(addUserDTO.getRate());
+			employees.setRatePer(addUserDTO.getRatePer());
+			employees.setDailyHours(addUserDTO.getDayHours());
+			employees.setCurrentCurrency(addUserDTO.getCurrentCurrency());
 			
-			if(jsonObj.has("designationType")){
-				employees.setUserEmploymentType(jsonObj.getString("designationType"));
+			if(StringUtils.isNotBlank(addUserDTO.getDesignationType())){
+				employees.setUserEmploymentType(addUserDTO.getDesignationType());
 			}
-			if(jsonObj.has("designationOtherType")){
-				employees.setDesignationOtherType(jsonObj.getString("designationOtherType"));
+			if(StringUtils.isNotBlank(addUserDTO.getDesignationOtherType())){
+				employees.setDesignationOtherType(addUserDTO.getDesignationOtherType());
 			}
 			
-			if(jsonObj.has("department") && !"".equalsIgnoreCase(jsonObj.getString("department"))){
-				Department department= departmentService.getDepartmentById(Long.parseLong(jsonObj.getString("department")));
+			if(StringUtils.isNotBlank(addUserDTO.getDepartment())){
+				Department department= departmentService.getDepartmentById(Long.parseLong(addUserDTO.getDepartment()));
 				employees.setDepartmentId(department);
 			}else{
 				employees.setDepartmentId(null);
 			}
 			
-			if(jsonObj.has("vendors") && !"".equalsIgnoreCase(jsonObj.getString("vendors"))){
-				OrgRelations orgRelation = orgRelationsService.getOrRelationsById(Long.parseLong(jsonObj.getString("vendors")));
+			if(StringUtils.isNotBlank(addUserDTO.getVendors())){
+				OrgRelations orgRelation = orgRelationsService.getOrRelationsById(Long.parseLong(addUserDTO.getVendors()));
 				employees.setOrgRelationId(orgRelation);
 			}else{
 				employees.setOrgRelationId(null);
 			}
 			
-			if(jsonObj.has("vendorcontact") && !"".equalsIgnoreCase(jsonObj.getString("vendorcontact"))){
-				OrgSpoc orgspoc = orgSpocService.getOrgSpocById(Long.parseLong(jsonObj.getString("vendorcontact")));
+			if(StringUtils.isNotBlank(addUserDTO.getVendorcontact())){
+				OrgSpoc orgspoc = orgSpocService.getOrgSpocById(Long.parseLong(addUserDTO.getVendorcontact()));
 				employees.setSpocId(orgspoc);
 			}else{
 				employees.setSpocId(null);
@@ -1694,10 +1694,10 @@ public class UsersListRestController {
 			 * employees.setInvoiceFrequency(jsonObj.getString(
 			 * "InvoiceFrequency"));
 			 */
-			if (jsonObj.has("DateofJoin") && !isNullOrEmpty(jsonObj.getString("DateofJoin"))) {
+			if (StringUtils.isNotBlank(addUserDTO.getDateofJoin())) {
 				try {
 					//DateFormat sdf = simpleDateFormat;
-					employees.setHireDate(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),jsonObj.getString("DateofJoin")));
+					employees.setHireDate(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),addUserDTO.getDateofJoin()));
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
