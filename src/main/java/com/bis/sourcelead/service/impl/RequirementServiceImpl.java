@@ -1752,6 +1752,13 @@ private void releaseUpdatedMailScenario(User loginUser, Requirement requirement,
 			 globalVarsMap.put("loginUserName",loginUser.getFirstName()); 
 			 }
 			 
+			 if(requirement.getJobTitle()!= null  && !"".equalsIgnoreCase(requirement.getJobTitle())){
+				 globalVarsMap.put("requirementName", requirement.getJobTitle()); 
+				 }else{
+				 globalVarsMap.put("requirementName","--"); 
+				 }
+			 
+			 
 			 globalVarsMap.put("role", loginUserRole.getUserType());
 		 
 		 //setting the Recipient information

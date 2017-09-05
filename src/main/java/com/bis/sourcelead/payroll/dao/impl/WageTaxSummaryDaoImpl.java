@@ -1,5 +1,6 @@
 package com.bis.sourcelead.payroll.dao.impl;
 
+import java.util.Date;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -8,6 +9,7 @@ import org.apache.commons.lang.exception.ExceptionUtils;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -98,10 +100,8 @@ public class WageTaxSummaryDaoImpl implements WageTaxSummaryDao {
 			response.setRecordsFiltered(filteredCount);
 		}
 
-		if (wagesAndTaxlist != null && wagesAndTaxlist.size() > 0) {
 			response.setData(getSortWageTaxList(wagesAndTaxlist));
-		}
-		return response;
+			return response;
 	}
 
 	/**
@@ -208,6 +208,37 @@ public class WageTaxSummaryDaoImpl implements WageTaxSummaryDao {
 			return wagesAndTaxlist;
 		}
 		return wagesAndTaxlist;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public WageTaxSummary getWageTaxSummaryByEmpIdandDuration(String empId,Long locationId,Date startDate, Date endDate)
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		List<WageTaxSummary> wagesAndTaxlist = null;
+		Date date = new Date();
+		String query = "from WageTaxSummary wt where wt.orgLocationId.id =:orgLocationId and wt.employeeId =:empId and ( wt.createdDate >= :startDateUTC)";
+		wagesAndTaxlist = session.createQuery(query).setLong("orgLocationId", locationId).setString("empId", empId).setParameter("startDateUTC", date).setCacheable(true).list();
+		if(wagesAndTaxlist != null && wagesAndTaxlist.size() >0)
+		{
+			return wagesAndTaxlist.get(0);
+		}
+		return null;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public int getWageTaxSummaryVersionByLocationId(Long locationId)
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "SELECT MAX(wts.version) FROM WageTaxSummary wts where wts.orgLocationId.id =:orgLocationId";
+		List<Integer> version = session.createQuery(query).setLong("orgLocationId", locationId).setCacheable(true).list();
+		Integer count = 0;
+		if(version != null && !version.isEmpty() && version.get(0) != null){
+				count = version.get(0).intValue();
+		}
+		return count;
+		
 	}
 	
 

@@ -71,6 +71,9 @@ public class HrDeductions implements Serializable {
 	
 	@Column(name = "DESCRIPTION", columnDefinition = "TEXT default NULL")
 	private String description;
+	
+	@Column(name = "VERSION")
+	private Integer version;
 
 	@Column(name = "CREATED_DATE")
 	private Date createdDate;
@@ -259,6 +262,15 @@ public class HrDeductions implements Serializable {
 		this.hrDeductionsDetails = hrDeductionsDetails;
 	}
 
+	public Integer getVersion()
+	{
+		return version;
+	}
+
+	public void setVersion(Integer version)
+	{
+		this.version = version;
+	}
 
 }
 

@@ -95,9 +95,13 @@ public class AccountDeductionsServiceImpl implements AccountDeductionsService{
 			FileInputStream fis = new FileInputStream(file);
 			workbook = WorkbookFactory.create(fis);
 			int numberOfSheets = workbook.getNumberOfSheets();
+			int version;
+			version = getAccountDeductionsVersionByLocationId(orgLocation.getId());
+			version += 1;
 			for (int i = 0; i < numberOfSheets; i++) {
 				Sheet sheet = workbook.getSheetAt(i);
 				Iterator<Row> rowIterator = sheet.iterator();
+				
 				int isValid = 0;
 				if(i == 0){
 					isValid =  payrollHelper.isValidTemplateForAccountDeductions(rowIterator);
@@ -116,6 +120,7 @@ public class AccountDeductionsServiceImpl implements AccountDeductionsService{
 							if (row.getCell(0) != null && !"".equalsIgnoreCase(row.getCell(0).toString())) {
 								String empId = getCellValueAsString(row.getCell(0), fileName);
 								accountDeductions.setEmployeeId(empId.split("\\.")[0]);
+								accountDeductions.setVersion(version);
 							} 
 							if (row.getCell(1) != null && !"".equalsIgnoreCase(row.getCell(1).toString())) {
 								String empName = getCellValueAsString(row.getCell(1), fileName);
@@ -488,5 +493,12 @@ public class AccountDeductionsServiceImpl implements AccountDeductionsService{
 		payrollBalance.setBalance(String.valueOf(Math.round(balance * 100D) / 100D));
 		payrollBalance.setBilled(String.valueOf(Math.round(billed * 100D) / 100D));
 		return payrollBalance;
+	}
+
+
+	@Override
+	public int getAccountDeductionsVersionByLocationId(Long locationId)
+	{
+		return accountDeductionsDao.getAccountDeductionsVersionByLocationId(locationId);
 	}
 }

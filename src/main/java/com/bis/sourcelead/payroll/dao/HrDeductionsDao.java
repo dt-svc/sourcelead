@@ -1,5 +1,6 @@
 package com.bis.sourcelead.payroll.dao;
 
+import java.util.Date;
 import java.util.List;
 
 import com.bis.sourcelead.dto.HrDeductionsDTO;
@@ -16,10 +17,16 @@ public interface HrDeductionsDao {
 
 	List<HrDeductions> getHrDeductionsByEmployeeId(OrgLocations orgLocations, Long empId)throws Exception;
 
+
 	ResponseList<HrDeductions> getHrDeductionsListByOrgLocationid(OrgLocations orgLocation, HrDeductionsDTO hrDeductionsDTO);
 
 	HrDeductions getDeductionsbyId(Long deductionId);
 
 	HrDeductions saveAccountDeductions(HrDeductions hrDeductions) throws Exception;
+
+	HrDeductions getHrDeductionsByEmpIdandDuration(String empId, Long locationId, Date startDate, Date endDate);
+
+	int getHrDeductionsVersionByLocationId(Long locationId);
+
 
 }
