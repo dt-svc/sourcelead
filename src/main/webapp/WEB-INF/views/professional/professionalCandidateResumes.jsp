@@ -118,7 +118,7 @@ function refreshResumeList(candidateId){
 <script>
 function addResume(candidateId) {	
 	var result = "";
-	result = result+'	           <form id="candidateResume_form" name="candidateResume_form" action="upload" enctype="multipart/form-data" method="post">';
+	result = result+'	           <form id="candidateResume_form" name="candidateResume_form" action="upload" method="post">';
 	result = result+'	           <i class="fa fa-close close-div" onClick="closeResumePopup();"></i>';
 	result = result+'	                <div class="form-horizontal clearfix" id="newResumeDiv">';
 	result = result+'	                  <div class="clearfix mb10">';
@@ -134,8 +134,8 @@ function addResume(candidateId) {
 	result = result+'	                  <div class="clearfix mb10" id="uploadResumeDiv">';
 	result = result+'	                    <div class="col-md-12">';
 	result = result+'							<div class="input-group positionRelative" id="uploadFileGroup">';
-	result = result+'	                          <label class="input-group-btn"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File';
-	result = result+'	                            <input type="file" name="uploadBtn" id="uploadBtn" style="display: none;"  multiple="" class="upload">';
+	result = result+'	                          <label class="input-group-btn"> <span class="btn btn-primary" onchange = "uploadProfileResume();"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File';
+	result = result+'	                            <input type="file" id="uploadBtn" style="display: none;"   class="upload">';
 	result = result+'	                            </span> </label>';
 	result = result+'	                          <input type="text" class="form-control" readonly id="uploadFile" name="docFile" placeholder="Upload Resume..." field-name="Resume" data-validation="required validate_Space validatedoc">';
 	result = result+'	                        </div>';
@@ -202,7 +202,12 @@ function addResume(candidateId) {
 }
 </script>
 	
-	 
+	<script>
+function uploadProfileResume(){
+	var sourceleadUrl ='${sourceleadUrl}';
+	fileUpload(sourceleadUrl, "uploadBtn", "resumes", "candidateResume_form");
+}
+</script> 
   
 <%-- 
      @author : Venkat Kesav
@@ -220,17 +225,17 @@ function addResume(candidateId) {
 					dateFormat : 'yyyy/mm/dd' 
 		         }; 
 			 if ($('#candidateResume_form').validate(false, validationSettings)){
-				var frm = $('#candidateResume_form').serializeFormJSON();
-				var con = JSON.stringify(frm);
-				con = con.replace(/[{}]/g, "");
-				var form = $('#candidateResume_form')[0];
-	      		var formData = new FormData(form); 
+				
+		        var formData = getFormData("candidateResume_form");
 				var sourceleadUrl = '${sourceleadUrl}';
 				$("#add_resume").attr("disabled", "disabled");
          		$("#add_resume" ).addClass('button').val('Processing..');
-				//It will escape all the special characters
-		        var jsonData = encodeURIComponent(con);
-				$.ajax({
+		        $.post(sourceleadUrl+"/saveCandidateResume?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&resumeId="+resumeId, formData, function(data) {
+		        	closeResumePopup();
+		        	candidateResumesList(candidateId);
+			 		resMsgFadeinResumes();
+		        });
+				/* $.ajax({
 						type : "POST",
 		        	    data: formData,
 		        	    contentType : 'application/json; charset=utf-8',
@@ -263,7 +268,7 @@ function addResume(candidateId) {
 						 		candidateResumesList(candidateId);
 						 		resumesMsgFadein();
 						},
-					});
+					}); */
 					return true;
 			 }else{ 
 					return false;
@@ -360,7 +365,7 @@ function addResume(candidateId) {
 					            	
 					            	result = result+'<tr>';
 					           		result = result+'<td><div><span title = "'+title+'">'+title+'</span></div></td>';
-					           		result = result+'<td><div><span title ="'+opt.fileName+'">'+opt.fileName+'</span><a class="fa fa-eye" onClick="viewProfessionalCandidateResume(\''+opt.resumeUUID+'\',\''+opt.fileName+'\');"></a><a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadResume?resumeUUID='+opt.resumeUUID+'\"></a></div></td>';
+					           		result = result+'<td><div><span title ="'+opt.fileName+'">'+opt.fileName+'</span><a class="fa fa-eye" onClick="viewFile(\'${sourceleadUrl}\',\''+opt.fileURL+'\',\''+opt.fileName+'\',\''+opt.fileContentType+'\');"></a><a class="glyphicon glyphicon-download-alt" href=\"'+opt.fileURL+'\" title="Download"></a></div></td>';
 					           		result = result+'<td><div><span title="'+description+'">'+description+'</span></div></td>';
 					           		result = result+'<td><div><span>'+createdBy+'</span></div></td>';
 					           		result = result+'<td><div><span>'+candidateResumeUpdateDateToString+'</span></div></td>';

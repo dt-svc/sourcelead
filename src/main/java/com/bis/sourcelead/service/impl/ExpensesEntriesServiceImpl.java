@@ -9,16 +9,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.commons.lang3.StringUtils;
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.ExpensesEntriesDao;
 import com.bis.sourcelead.dao.ExpensesEntryDocumentsDao;
+import com.bis.sourcelead.dto.ExpensesDTO;
 import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.Expenses;
 import com.bis.sourcelead.entity.ExpensesCategory;
@@ -57,9 +58,8 @@ public class ExpensesEntriesServiceImpl implements ExpensesEntriesService{
 	private CommonUtil commonUtil;
 	
 	@Override
-	public Set<ExpensesEntries> prepareExpensesEntriesListByJson(JSONObject jsonObj,  MultipartHttpServletRequest request,
+	public Set<ExpensesEntries> prepareExpensesEntriesListByJson(ExpensesDTO expensesDTO,  HttpServletRequest request,
 			Expenses expenses) throws Exception {
-		
 		    List<Long> expenseEntryDbIds = null;
 		    ArrayList<Long> expenseEntryIds = new ArrayList<>();
 		    if(null != expenses && null != expenses.getId()){
@@ -68,8 +68,8 @@ public class ExpensesEntriesServiceImpl implements ExpensesEntriesService{
 			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		 
 		    HashSet<ExpensesEntries> expensesEntriesList = new HashSet<ExpensesEntries>(); 
-		    if(jsonObj.has("maxRecCount")){
-			int maxCount = Integer.parseInt(jsonObj.getString("maxRecCount"));
+		    //if(jsonObj.has("maxRecCount")){
+			int maxCount = Integer.parseInt(expensesDTO.getNoOfExpenses());
 			//SimpleDateFormat dateFormat=orgLocation.getLocFullFormDateFormatter();
 			for (int c = 1; c < maxCount; c++) {
 					ExpensesEntries  entries  = new ExpensesEntries();
@@ -96,13 +96,13 @@ public class ExpensesEntriesServiceImpl implements ExpensesEntriesService{
 						entries.setReceiptIssuedBy(jsonObj.getString("receiptIssuedBy"+c));
 					}
 					
-					/*if(jsonObj.has("expenseRateType"+c)){
+					if(jsonObj.has("expenseRateType"+c)){
 						entries.setCurrencyType(jsonObj.getString("expenseRateType"+c));
 					}
 					
 					if(jsonObj.has("expenseAmount"+c)){
 						entries.setAmount(Float.valueOf(jsonObj.getString("expenseAmount"+c)));
-					}*/
+					}
 					if(jsonObj.has("expenseRateType"+c) && jsonObj.has("expenseAmount"+c)){
 						if(StringUtils.isNotEmpty(jsonObj.getString("expenseRateType"+c)) && jsonObj.getString("expenseAmount"+c) != null){
 						Countries country = countriesService.getCountriesByCountryName(orgLocation.getCountry());
@@ -182,7 +182,7 @@ public class ExpensesEntriesServiceImpl implements ExpensesEntriesService{
 						expensesEntriesList.add(entries);
 					}
 			  }
-		    }
+		    //}
 		    if(expenseEntryDbIds != null && !expenseEntryDbIds.isEmpty()){
 		    	expenseEntryDbIds.removeAll(expenseEntryIds);
 		    	if(expenseEntryDbIds != null && !expenseEntryDbIds.isEmpty()){

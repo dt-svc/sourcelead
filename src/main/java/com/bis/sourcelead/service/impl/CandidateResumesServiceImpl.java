@@ -95,7 +95,7 @@ public class CandidateResumesServiceImpl implements CandidateResumesService {
 			}
 			candidateResume.setUpdatedBy(user.getUserCode());
 			candidateResume.setUpdatedDate(CommonUtil.currentDate());
-			if (candidateResumeDTO.getUploadedFileInfo() != null) {
+			if (candidateResumeDTO.getUploadedFileInfo() != null && candidateResumeDTO.getUploadedFileInfo().size()>0) {
 				FileInfo fileInfo = candidateResumeDTO.getUploadedFileInfo().get(0);
 				if (fileInfo.getFileName() != null ) {
 					activitySummary.append("File").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidateResume.getFileName()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(fileInfo.getFileName()).append(Constants.NEW_VALUE_TAG_END).append(" ");

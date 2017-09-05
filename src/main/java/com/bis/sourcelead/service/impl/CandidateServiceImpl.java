@@ -228,16 +228,16 @@ public class CandidateServiceImpl implements CandidateService {
 		
 		StringBuffer activitySummary = new StringBuffer();
         Candidate candidate = null;
-		if(candidateDto.getCandidateId() > 0){
-			candidate = candidateDao.getCandidateByCandidateId(candidateDto.getCandidateId());
+		if(StringUtils.isNotBlank(candidateDto.getCandidateId())){
+			candidate = candidateDao.getCandidateByCandidateId(Long.parseLong(candidateDto.getCandidateId()));
 		}else{	
 			candidate = new Candidate();
 			candidate.setCreatedDate(commonUtil.currentDate());
 			candidate.setCreatedBy(user.getUserCode());
 			
-			if(candidateDto.getConsultantUser() > 0){
+			if(StringUtils.isNotBlank(candidateDto.getConsultantUser())){
 				User consultantUser = new User();
-				consultantUser.setId(candidateDto.getConsultantUser());
+				consultantUser.setId(Long.parseLong(candidateDto.getConsultantUser()));
 				candidate.setConsultantUser(consultantUser);
 				candidate.setCandidateType("Consultant");
 			}else{
@@ -479,15 +479,15 @@ public class CandidateServiceImpl implements CandidateService {
 
 		
 		
-		if(candidateDto.getVendors() != null ){
-			OrgRelations orgRelation = orgRelationsService.getOrRelationsById(candidateDto.getVendors());
+		if(StringUtils.isNotBlank(candidateDto.getVendors())){
+			OrgRelations orgRelation = orgRelationsService.getOrRelationsById(Long.parseLong(candidateDto.getVendors()));
 			candidate.setOrgRelationId(orgRelation);
 		}else{
 			candidate.setOrgRelationId(null);
 		}
 		
-		if(candidateDto.getVendorcontact() != null ){
-			OrgSpoc orgspoc = orgSpocService.getOrgSpocById(candidateDto.getVendorcontact());
+		if(StringUtils.isNotBlank(candidateDto.getVendorcontact())){
+			OrgSpoc orgspoc = orgSpocService.getOrgSpocById(Long.parseLong(candidateDto.getVendorcontact()));
 			candidate.setSpocId(orgspoc);
 		}else{
 			candidate.setSpocId(null);
@@ -543,7 +543,7 @@ public class CandidateServiceImpl implements CandidateService {
 		/*
 		 * this method is for track candidate activity
 		 */
-		if(candidateDto.getCandidateId() >0 ){
+		if(StringUtils.isNotBlank(candidateDto.getCandidateId())){
 			candidateActivityCommonUtil.storeCandidateActivity(user, orgLocations, savedCandidate, "", Constants.CANDIDATE_EDITTED, activitySummary.toString(), "CANDIDATE");
 		}else{
 			candidateActivityCommonUtil.storeCandidateActivity(user, orgLocations, savedCandidate, "", Constants.CANDIDATE_ADDED_MANUALLY, "", "CANDIDATE");

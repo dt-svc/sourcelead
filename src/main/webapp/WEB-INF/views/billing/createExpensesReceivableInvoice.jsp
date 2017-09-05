@@ -428,6 +428,7 @@ function populateExpensesDetailsGrid(data){
         result = result +' </tbody>';
         result = result +' </table>';
         $("#subTotal").val(subTotal);
+        $("#grandTotal").val(subTotal);
         $("#tableBody").empty();
         $("#tableBody").append(result);
         maskme();
@@ -791,7 +792,6 @@ function populateInlineItemsGrid(){
 					  changeMonth: true,
 				      changeYear: true,
 				      dateFormat : 'dd-mm-yy',
-				      minDate: 0  ,
 					  onSelect : function(selected) {
 				 	  }
 				    });
