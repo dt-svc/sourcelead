@@ -25,7 +25,7 @@ window.onload = function () {
  <a href="<c:url value='/payrollReport'/>" class="ml10 mt5" id=generateReportId title="Generate Report">Generate Report</a>
  </div>
 </section>
-
+ <a href="<c:url value='/addChecks'/>" class="ml10 mt5" id=generateReportId title="Generate Report">Add Checks</a>
 <form:form id="payroll_list_form" name="payroll_list_form" method="post">
 <section class="contrHead">
 		<ul id="parentUl">
