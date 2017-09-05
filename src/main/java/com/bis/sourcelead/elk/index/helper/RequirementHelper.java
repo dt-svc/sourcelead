@@ -120,7 +120,7 @@ public class RequirementHelper {
 			}
 			
 			// to store approver of the req in elk
-			if(jsonObj.has("parallelApprover") && null !=jsonObj){
+			if(null!= jsonObj && jsonObj.length()!=0 && jsonObj.has("parallelApprover") && !jsonObj.getString("parallelApprover").isEmpty()){
 				String parallelApprovers =null;
 				try{
 					JSONArray jsonArray = jsonObj.getJSONArray("parallelApprover");

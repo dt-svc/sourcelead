@@ -492,23 +492,9 @@ public class EMailJobScheduler {
 		List<Org> orgList = orgService.getOrgs();
 		Map<String,String>  timesheetFrequencyMap = null;
 		for (Org org : orgList) {
-				StringBuilder tempHTML = new StringBuilder();
-				int count=0;
-				tempHTML.append("<table width='100%' bgcolor='#F9F9F9' cellpadding='0' border='2' cellspacing='0' style='background-color:#F9F9F9;'>");
 				
 				List<OrgLocations> orgLocations = orgLocationService.getAllOrgLocationsByOrgId(org.getId());
 				for (OrgLocations ol : orgLocations) {
-					     if(count==0){	
-						            tempHTML.append("<tr>");
-							        tempHTML.append("<th> Employee Name </th>");
-							        tempHTML.append("<th> Frequency </th>");
-									tempHTML.append("<th> Project Name </th>");
-									if(managerLevel != 1){
-										tempHTML.append("<th> Manager Name </th>");
-									}
-									tempHTML.append("</tr>");
-									count++;
-						  }
 					     
 					     List<ProjectApproverHierarchy> projectApproverHierarchyList = projectApproverHierarchyService.getApproverUserIdsByOrgLocationIdAndLevelAndFrequency(ol.getId(), invoiceFrequency, managerLevel);
 					   
@@ -517,6 +503,22 @@ public class EMailJobScheduler {
 					    	 HashSet<ProjectMembers> projectMembersList = userRoleService.getAllUserPrevoiusWeekTimeSheetSubmissionStatusByApproverUserId(invoiceFrequency,pah.getApproverUserId().getId());
 							
 					    	 if(null != projectMembersList && !projectMembersList.isEmpty()){
+					    		 StringBuilder tempHTML = new StringBuilder();
+									int count=0;
+									 if(count==0){	
+										    tempHTML.append("<table width='100%' bgcolor='#F9F9F9' cellpadding='0' border='2' cellspacing='0' style='background-color:#F9F9F9;'>");
+								            tempHTML.append("<tr>");
+									        tempHTML.append("<th> Employee Name </th>");
+									        tempHTML.append("<th> Frequency </th>");
+											tempHTML.append("<th> Project Name </th>");
+											if(managerLevel != 1){
+												tempHTML.append("<th> Manager Name </th>");
+											}else {
+												
+											}
+											tempHTML.append("</tr>");
+											count++;
+									 }
 								for (ProjectMembers projectMembers : projectMembersList) {
 									timesheetFrequencyMap = timesheetFrequencyGeneratorUtil.getTimesheetFrequencyListFromProjectInvoiceFrequency(projectMembers,"approverScheduler");
 									  if(null != timesheetFrequencyMap && !timesheetFrequencyMap.isEmpty()){
@@ -556,12 +558,13 @@ public class EMailJobScheduler {
 												  }
 												  tempHTML.append("</tr>");
 									          }
-								       }	
+								       }if(StringUtils.isNotEmpty(tempHTML.toString())) {
+											 tempHTML.append("</table> ");
+										 }if(null != pah.getApproverUserId() && null != timesheetFrequencyMap && !timesheetFrequencyMap.isEmpty()){
+											   projectsService.userEmailToAdmin(tempHTML,ol,pah.getApproverUserId());
+										}	
 								}
-					    	 tempHTML.append("</table> ");
-								if(null != pah.getApproverUserId() && null != timesheetFrequencyMap && !timesheetFrequencyMap.isEmpty()){
-								   projectsService.userEmailToAdmin(tempHTML,ol,pah.getApproverUserId());
-								}
+								
 						}
 				}
 			}

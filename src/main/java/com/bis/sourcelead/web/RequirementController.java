@@ -829,6 +829,7 @@ public class RequirementController {
 							Candidate candidate = candidateService.getCandidateByCandidateIdAndOrgLocationId(requirementOffers.getSubmissionId().getCandidate().getId(),requirementOffers.getSubmissionId().getOrgLocations().getId());
 							if(candidate != null){
 								candidate.setIsAssociate(Constants.YES);
+								candidate.setGeneratedId(candidateService.getCandidateId(requirementOffers.getSubmissionId().getOrgLocations()));
 								candidateService.saveOrUpdateCandidate(candidate);
 						    	candidateService.saveOrUpdateCandidateElkDocument(candidate);
 							}else{

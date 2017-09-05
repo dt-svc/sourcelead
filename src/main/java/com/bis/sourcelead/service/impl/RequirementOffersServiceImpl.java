@@ -1349,8 +1349,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
     			candidate.setIsAssociate(Constants.NO);
     		}
     		
-    		
-    		
+    		candidate.setGeneratedId(candidateService.getCandidateId(orgLocations));
     		candidate.setCreatedDate(new Date());
     		candidate.setUpdatedDate(new Date());
     		candidateService.saveOrUpdateCandidate(candidate);

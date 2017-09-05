@@ -186,29 +186,8 @@ public class RequirementServiceImpl implements RequirementService {
 	@Autowired
 	private ProjectsDao projectsDao;
 	
-	/* @Override
-		public String getRequirementId(OrgLocations orgLocations) {
-			
-	    	Long number = 000000001L;
-			String requirementId = null;
-			Requirement checkNumber = requirementDao.checkRequirementIdNumberInDatebase(orgLocations.getId());
-			if(checkNumber == null || checkNumber.getGeneratedId().isEmpty()){
-				requirementId = number.toString();
-			}else{
-			String reqIdNumber = checkNumber.getGeneratedId();
-			String reqIdNum = reqIdNumber.substring(2, reqIdNumber.length());
-			Long reqId = Long.parseLong(reqIdNum)+1;
-			requirementId = reqId.toString();
-			}
-			
-	        final DecimalFormat decimalFormat = new DecimalFormat("000000000");                
-	        String ConvetredRequirementsId = decimalFormat.format(Long.parseLong(requirementId));
-	        StringBuffer sb = new StringBuffer();
-			return sb.append(Constants.JOB_ENTITY).append(ConvetredRequirementsId).toString();
-			
-		}*/
-	 
-	 public String getRequirementId(OrgLocations orgLocations) {
+	
+	/* public String getRequirementId(OrgLocations orgLocations) {
 	    	String companyShortCode = null;
 	    	Long number = 1L;
 			String requirementId = null;
@@ -237,6 +216,38 @@ public class RequirementServiceImpl implements RequirementService {
 	        }
 			return sb.append(companyShortCode).append(Constants.JOB_ENTITY).append(convetredRequirementsId).toString();
 			
+		}*/
+	
+	 @Override
+	 public String getRequirementId(OrgLocations orgLocations) {
+	    	String companyShortCode = null;
+	    	Long number = 1L;
+			String requirementId = null;
+			Integer generatedIdcount =0;
+			StringBuilder sbuilder = new StringBuilder();
+			sbuilder.append(orgLocations.getGeneratedUserId()).append(Constants.JOB_ENTITY);
+			String generatedUsreId = sbuilder.toString();
+			for(int i=0;i< generatedUsreId.length();i++){
+				char ch = generatedUsreId.charAt(i);
+				if(Character.isAlphabetic(ch)){
+					generatedIdcount++;
+				}
+			}
+			generatedIdcount = generatedIdcount+1;
+			Long checkNumber = requirementDao.getRequirementGeneratedIdByOrgLocationId(orgLocations.getId(),generatedIdcount);
+			if(checkNumber == null){
+				requirementId = number.toString();
+			}else{
+			Long reqId = checkNumber+1;
+			requirementId = reqId.toString();
+			}
+			final DecimalFormat decimalFormat = new DecimalFormat("0");                
+	        String convetredRequirementsId = decimalFormat.format(Long.parseLong(requirementId));
+	        StringBuffer sb = new StringBuffer();
+	        if(orgLocations.getGeneratedUserId() != null && !"".equalsIgnoreCase(orgLocations.getGeneratedUserId())){
+	        	 companyShortCode = orgLocations.getGeneratedUserId();
+	        }
+			return sb.append(companyShortCode).append(Constants.JOB_ENTITY).append(convetredRequirementsId).toString();
 		}
 	 
 	/**
@@ -3312,7 +3323,7 @@ private void releaseUpdatedMailScenario(User loginUser, Requirement requirement,
 	@Override
 	public boolean checkForOldrecordsUsingOrgLocationid(Long orglocationId) throws Exception {
 		  boolean flag = requirementDao.checkForOldrecordsUsingOrgLocationid(orglocationId,"");
-		  if(flag){
+		  if(!flag){
 			 flag = addGeneratedIdRecordsToJobsForOldRecords(orglocationId);
 		  }
 		  return flag;
@@ -3331,9 +3342,9 @@ private void releaseUpdatedMailScenario(User loginUser, Requirement requirement,
 		String finalProjectsGeneratedId = null;
 		// for jobs
 		OrgLocations orgLocation = orgLocationService.getOrgLocations(orglocationId);
-		if(!requirementList.isEmpty() && requirementList!= null){
+		if( requirementList!= null && !requirementList.isEmpty()){
 		 for(Requirement req:requirementList){
-			if(req.getGeneratedId() == null){
+			if(req.getGeneratedId() == null ||(req.getGeneratedId() != null && req.getGeneratedId().substring(0,4).equalsIgnoreCase("null"))){
 				if(orgLocation.getGeneratedUserId()!= null && !orgLocation.getGeneratedUserId().equalsIgnoreCase("")){
 					jobsGeneratedId = jobsGeneratedId + 1;
 					final DecimalFormat decimalFormat = new DecimalFormat("0");                
@@ -3348,9 +3359,9 @@ private void releaseUpdatedMailScenario(User loginUser, Requirement requirement,
 			}
 		}
 		 System.out.println("Requirement data successfully");
-	 }if(!candidateList.isEmpty() && candidateList!= null){
+	 }if(candidateList!= null && !candidateList.isEmpty()){
 		for(Candidate candidate:candidateList){
-			if(candidate.getGeneratedId() == null){
+			if(candidate.getGeneratedId() == null||(candidate.getGeneratedId() != null && candidate.getGeneratedId().substring(0,4).equalsIgnoreCase("null"))){
 				if(orgLocation.getGeneratedUserId()!= null && !orgLocation.getGeneratedUserId().equalsIgnoreCase("")){
 					candidateGeneratedId = candidateGeneratedId + 1;
 					final DecimalFormat decimalFormat = new DecimalFormat("0");                
@@ -3365,9 +3376,9 @@ private void releaseUpdatedMailScenario(User loginUser, Requirement requirement,
 			}
 		}
 		System.out.println("candidate data successfully");
-	}if(!projectList.isEmpty() && projectList!= null){
+	}if(projectList!= null && !projectList.isEmpty()){
 		for(Projects projects:projectList){
-			if(projects.getGeneratedId() == null){
+			if(projects.getGeneratedId() == null||(projects.getGeneratedId() != null && projects.getGeneratedId().substring(0,4).equalsIgnoreCase("null"))){
 				if(orgLocation.getGeneratedUserId()!= null && !orgLocation.getGeneratedUserId().equalsIgnoreCase("")){
 					projectsGeneratedId = projectsGeneratedId + 1;
 					final DecimalFormat decimalFormat = new DecimalFormat("0");                

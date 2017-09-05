@@ -7,6 +7,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.DateFormat;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -390,7 +391,7 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 					MasterCandidate masterCandidate = null;
 					masterCandidate = masterCandidateService.getMasterCandidateByInteligence(jsonObj);
 					if(null == masterCandidate){
-						masterCandidate = masterCandidateService.storeMasterCandidateByJsonObject(jsonObj, user);
+						masterCandidate = masterCandidateService.storeMasterCandidateByJsonObject(jsonObj, user,orgLocations);
 					}
 					candidate.setMasterCandidateId(masterCandidate);
 					 
@@ -432,7 +433,7 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 //				    		  candidateSkillsService.storeCandidateSkills(candSkill);
 //						 }
 					 }
-					
+					 candidate.setGeneratedId(candidateService.getCandidateId(orgLocations));
 					 candidate = candidateDao.storeCandidate(candidate);
 					CandidateIndex candidateIndex = candidateIndexHelper.getCandidateIndexFromCandidate(candidate);
 					
@@ -689,7 +690,7 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 		return requirementSubmission;
 		
 	}
-
+	
 	private void notifyToapplicantMailAboutRequirement(Long submissionId ,Requirement requirement,  Candidate candidate ,User loginUser,OrgLocations orgLocations) throws Exception {
 		RequirementSubmissionTemplateFields requirementSubmissionTemplateFields = requirementSubmissionTemplateFieldsService.getSubmissionsTemplateFieldsByRequirementSubmissionsId(submissionId);
 		
@@ -3485,7 +3486,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 			    MasterCandidate masterCandidate = null;
 				masterCandidate = masterCandidateService.getMasterCandidateByInteligence(jsonObj);
 				if(null == masterCandidate){
-					masterCandidate = masterCandidateService.storeMasterCandidateByJsonObject(jsonObj, user);
+					masterCandidate = masterCandidateService.storeMasterCandidateByJsonObject(jsonObj, user,orgLocations);
 				}
 				candidate.setMasterCandidateId(masterCandidate);
 			    

@@ -1,12 +1,16 @@
 package com.bis.sourcelead.service.impl;
 
+import java.text.DecimalFormat;
+
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dao.CandidateDao;
 import com.bis.sourcelead.dao.MasterCandidateDao;
 import com.bis.sourcelead.entity.MasterCandidate;
+import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.MasterCandidateService;
 import com.bis.sourcelead.util.CommonUtil;
@@ -19,6 +23,9 @@ public class MasterCandidateServiceImpl implements MasterCandidateService{
 	
 	@Autowired
 	CommonUtil commonUtil;
+	
+	@Autowired
+	private CandidateDao candidateDao;
 	
 	protected boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
@@ -72,7 +79,7 @@ public class MasterCandidateServiceImpl implements MasterCandidateService{
 	}
 
 	@Override
-	public MasterCandidate storeMasterCandidateByJsonObject(JSONObject jsonObj,User user) throws Exception
+	public MasterCandidate storeMasterCandidateByJsonObject(JSONObject jsonObj,User user,OrgLocations orgLocations) throws Exception
 	{
 		MasterCandidate masterCandidate = new MasterCandidate();
 		
@@ -134,10 +141,41 @@ public class MasterCandidateServiceImpl implements MasterCandidateService{
 		masterCandidate.setCreatedDate(commonUtil.currentDate());
 		masterCandidate.setUpdatedBy(user.getUserCode());
 		masterCandidate.setUpdatedDate(commonUtil.currentDate());
+		masterCandidate.setGeneratedId(getCandidateId(orgLocations));
 		masterCandidateDao.saveMasterCandidate(masterCandidate);
 		
 		return masterCandidate;
 	}
 
-	
+	private String getCandidateId(OrgLocations orgLocations) {
+		String companyShortCode = null;
+    	Long number = 1L;
+		String candidateId = null;
+		Integer generatedIdcount = 0;
+		StringBuilder sbuilder = new StringBuilder();
+		sbuilder.append(orgLocations.getGeneratedUserId()).append(Constants.CANDIDATE_ENTITY);
+		String generatedUsreId = sbuilder.toString();
+		for(int i=0;i< generatedUsreId.length();i++){
+			char ch = generatedUsreId.charAt(i);
+			if(Character.isAlphabetic(ch)){
+				generatedIdcount++;
+			}
+		}
+		// in dao to count from next character
+		generatedIdcount = generatedIdcount+1;
+		 Long checkNumber = candidateDao.getCandidateGeneratedIdByOrgLocationId(orgLocations.getId(),generatedIdcount);
+		if(checkNumber == null){
+			candidateId = number.toString();
+		}else{
+		Long canId = checkNumber+1;
+		candidateId = canId.toString();
+		}
+		final DecimalFormat decimalFormat = new DecimalFormat("0");                
+        String convetredCandidateId = decimalFormat.format(Long.parseLong(candidateId));
+        StringBuffer sb = new StringBuffer();
+        if(orgLocations.getGeneratedUserId() != null && !"".equalsIgnoreCase(orgLocations.getGeneratedUserId())){
+        	 companyShortCode = orgLocations.getGeneratedUserId();
+        }
+		return sb.append(companyShortCode).append(Constants.CANDIDATE_ENTITY).append(convetredCandidateId).toString();
+	}
 }
