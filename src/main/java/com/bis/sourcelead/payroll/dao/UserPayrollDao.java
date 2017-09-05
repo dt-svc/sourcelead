@@ -21,4 +21,6 @@ public interface UserPayrollDao {
 
 	List<Checks> getChecksListByEmployeeId(Long empId, OrgLocations orgLocations)throws Exception;
 
+	Checks getUniqueChecksListByEmployeeId(String empId, Long orgLocationId)throws Exception;
+
 }

@@ -45,13 +45,12 @@ window.onload = function () {
                           	<div class="col-md-9">
                           	<select class="chosen-select" id="typeOfExpense" name="typeOfExpense" data-validation="required" field-name="Type Of Expense">
                           	<option value=''>---Select Type Of Expenses-</option>
-                        	<option>Legal Fees</option>
-                        	<option>Advance</option>
-                        	<option>Legal Fees</option>
-                        	<option>General Expenses</option>
-                        	<option>Vendor Payments</option>
-                        	<option>Electronic withdrawls</option>
-                        	<option>Payroll chks</option>	
+                        	<option value="LEGAL_FEES">Legal Fees</option>
+                        	<option value="ADVANCE">Advance</option>
+                        	<option value="GENERAL_EXPENSES">General Expenses</option>
+                        	<option value="VENDOR_PAYMENTS">Vendor Payments</option>
+                        	<option value="ELECTRONIC_WITHDRAWLS">Electronic withdrawls</option>
+                        	<option value="PAYROLL_CHKS">Payroll chks</option>	
                         	</select>
                         	</div>
                         </div>
@@ -67,7 +66,7 @@ window.onload = function () {
                         <div class="form-group" id="toDateDiv">
 	                        <label class="col-md-3">Date<span class="text-danger paddingLeft">*</span></label>
 	                        <div class="col-md-9">
-	                        <input type="text" class="form-control calendar" id="date" name="checkDate" value="" placeholder="Date*" field-name="Date" data-validation="required">
+	                        <input type="text" class="form-control calendar" id="date" name="date" value="" placeholder="Date*" field-name="Date" data-validation="required">
 	                        </div>
                         </div>
                         
@@ -90,7 +89,7 @@ window.onload = function () {
                       <div class="clearfix  form-footer row mt">
                       <div class="pull-right">
                         <button type="button" class="btn btn-sm btn-primary mr" onclick="saveChecks()">Add Check</button>
-                        <button type="button" class="btn btn-sm btn-default mr">Cancel Check</button>
+                        <button type="button" class="btn btn-sm btn-default mr" onclick="cancelChecks()">Cancel Check</button>
                         </div>
                       </div>
                     </div>
@@ -114,6 +113,9 @@ function saveChecks(){
 			var formData = getFormData("add_cheques_form");
 			var sourceleadUrl = '${sourceleadUrl}';
 			$.post(sourceleadUrl+ "/addCheques?${_csrf.parameterName}=${_csrf.token}&orgLocationId="+orgLocationId+"&userId="+userId, formData, function(data) {
+				if(data == true){
+					location.replace(sourceleadUrl+'/payrollList');
+				}
 			}); 
 		
 		}   
@@ -135,6 +137,12 @@ function getFormData(formId) {
 	}
 </script>
 
+<script type="text/javascript">
+function cancelChecks(){
+	var sourceleadUrl = '${sourceleadUrl}';
+	location.replace(sourceleadUrl+'/payrollList');
+}
+</script>
 
 <!-- <script>
 function runPayrollCycles(type){
