@@ -674,4 +674,17 @@ public class EmployeePayrollRestController {
 		PayrollBalance payrollBalance = accountDeductionsService.getBalance(empId, orgLocations);
 		return payrollBalance;
 	}
+	
+//	//
+	
+	@RequestMapping(value = { "/addCheques" }, method = RequestMethod.POST)
+	public boolean addCheques(@RequestParam(value = "orgLocationId", required = false) Long orgLocationId,
+			                 @RequestParam(value = "userId", required = false) Long userId,ChecksDTO checksDTO) throws Exception {
+		boolean isInserted = false;
+		Checks checks = userPayrollService.getUniqueChecksListByEmployeeId(checksDTO.getEmpId(), orgLocationId,checksDTO);
+		if(checks !=null) {
+			isInserted = true;
+		}
+		return isInserted;
+	}
 }

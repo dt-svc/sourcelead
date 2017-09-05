@@ -24,7 +24,8 @@ function prepareBisChecksList(url){
 	 $("#checksListDiv").removeAttr("style");
  	 $("#checksListDiv").empty();
  	 var result = "";
- 	result = result +" <div class='modal-header'>";
+ 	result = result +" <div class='clearfix col-md-12 mb10'>";
+ 	result = result +'<a href="/sourcelead/addChecks" class="btn btn-primary btn-sm pull-left" id="generateReportId" title="Generate Report">Add Checks</a>';
  	result = result +" <div class='remove_search'>";
  	result = result +" <input type='text' placeholder='Search' id='checksDataTableSearch'/>";
  	result = result +"</div>";
