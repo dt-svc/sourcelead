@@ -1,6 +1,7 @@
 
 <script type="text/javascript">
 function getInvoiceDetails(){
+	    $("#addPayrollDiv").hide();
 		var sourceleadUrl ='${sourceleadUrl}';
 		var searchValue = $("#invoiceDataTableSearch").val();
 		searchValue = searchValue ? searchValue : "";
@@ -84,7 +85,6 @@ function invoiceDetailsPagination(url){
         ],
         "columnDefs": [ {
 	    	  	"targets": colIndex++,
-	    	  	"className": "tbldata-dotdot_50",
 	    	  	"data": "sku",
 	    	  	"render": function(data, type, opt, meta) {
 	    	  		  var result = "";

@@ -1,5 +1,6 @@
 <script>
 function getEmployeeList(){
+	$("#addPayrollDiv").hide();
 	var sourceleadUrl ='${sourceleadUrl}';
 	var searchValue = $("#employeesDataTableSearch").val();
 	searchValue = searchValue ? searchValue : "";

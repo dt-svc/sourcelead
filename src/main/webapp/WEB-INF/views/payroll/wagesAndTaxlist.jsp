@@ -2,6 +2,7 @@
 
 <script type="text/javascript">
 function wagesAndTaxList(){
+	    $("#addPayrollDiv").hide();
 		var sourceleadUrl ='${sourceleadUrl}';
 		var searchValue = $("#dataTableSearch").val();
 		searchValue = searchValue ? searchValue : "";

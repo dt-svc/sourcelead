@@ -1,5 +1,6 @@
 <script>
 function bisChecksList(){
+	$("#addPayrollDiv").hide();
 	var sourceleadUrl ='${sourceleadUrl}';
 	var searchValue = $("#checksDataTableSearch").val();
 	searchValue = searchValue ? searchValue : "";
