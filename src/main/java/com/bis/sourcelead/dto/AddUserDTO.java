@@ -126,6 +126,28 @@ import com.bis.sourcelead.enums.Status;
 		private String EmailId;
 		
 		private String phoneNumber;
+		
+		private String assignReportingManagers;
+		
+		private String managerUsers;
+		
+		private String clientUsers;
+		
+		private String vendorUsers;
+		
+		private String approverUser;
+		
+		private String projectApproverUser;
+		
+		private String clientDocsOwnerUser;
+		
+		private String vendorDocsOwnerUser;
+		
+		private String userChangeRole;
+		
+		private String teamOwnerUser;
+		
+		private String reason;
 
 		public String getFirstName() {
 			return firstName;
@@ -550,6 +572,93 @@ import com.bis.sourcelead.enums.Status;
 		public void setPhoneNumber(String phoneNumber) {
 			this.phoneNumber = phoneNumber;
 		}
-		
+
+		public String getAssignReportingManagers() {
+			return assignReportingManagers;
+		}
+
+		public void setAssignReportingManagers(String assignReportingManagers) {
+			this.assignReportingManagers = assignReportingManagers;
+		}
+
+		public String getManagerUsers() {
+			return managerUsers;
+		}
+
+		public void setManagerUsers(String managerUsers) {
+			this.managerUsers = managerUsers;
+		}
+
+		public String getClientUsers() {
+			return clientUsers;
+		}
+
+		public void setClientUsers(String clientUsers) {
+			this.clientUsers = clientUsers;
+		}
+
+		public String getVendorUsers() {
+			return vendorUsers;
+		}
+
+		public void setVendorUsers(String vendorUsers) {
+			this.vendorUsers = vendorUsers;
+		}
+
+		public String getApproverUser() {
+			return approverUser;
+		}
+
+		public void setApproverUser(String approverUser) {
+			this.approverUser = approverUser;
+		}
+
+		public String getProjectApproverUser() {
+			return projectApproverUser;
+		}
+
+		public void setProjectApproverUser(String projectApproverUser) {
+			this.projectApproverUser = projectApproverUser;
+		}
+
+		public String getClientDocsOwnerUser() {
+			return clientDocsOwnerUser;
+		}
+
+		public void setClientDocsOwnerUser(String clientDocsOwnerUser) {
+			this.clientDocsOwnerUser = clientDocsOwnerUser;
+		}
+
+		public String getVendorDocsOwnerUser() {
+			return vendorDocsOwnerUser;
+		}
+
+		public void setVendorDocsOwnerUser(String vendorDocsOwnerUser) {
+			this.vendorDocsOwnerUser = vendorDocsOwnerUser;
+		}
+
+		public String getUserChangeRole() {
+			return userChangeRole;
+		}
+
+		public void setUserChangeRole(String userChangeRole) {
+			this.userChangeRole = userChangeRole;
+		}
+
+		public String getTeamOwnerUser() {
+			return teamOwnerUser;
+		}
+
+		public void setTeamOwnerUser(String teamOwnerUser) {
+			this.teamOwnerUser = teamOwnerUser;
+		}
+
+		public String getReason() {
+			return reason;
+		}
+
+		public void setReason(String reason) {
+			this.reason = reason;
+		}
 		
 }
