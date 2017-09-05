@@ -135,14 +135,14 @@ public class VendorRestController {
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 		
-		if(jsonObj.has("owner")){
+		/*if(jsonObj.has("owner")){
 			String ownersId = jsonObj.getString("owner");
 			ownersId = ownersId.replaceAll("\\[", "").replaceAll("\\]","");
 			String[] owners = ownersId.split(",");
-			/*for(int i=0 ;i<owners.length;i++ ){
+			for(int i=0 ;i<owners.length;i++ ){
 				User ownerUser = userService.getUserById(Long.parseLong(owners[i].replace("\"", "")));
 				OrgSpoc orgSpoc = orgSpocService.validateSpacEmailIdByOwnerUserIdAndOrgRelationId(jsonObj.getString("email"), Long.parseLong(orgRelationId), ownerUser.getId());
-			     if(orgSpoc == null){*/
+			     if(orgSpoc == null){
 			    	orgSpocService.addVendorContacts(jsonObj, user, orgLocations, orgRelationId, clientLocationId,responderType,org);
 			    	if(responderType.equalsIgnoreCase("Vendor")){
 			    		SourceLeadSessionManager.setSessionAttribute(request, "vendorContactCreateMsg","Success !! New contact added.");
@@ -150,9 +150,9 @@ public class VendorRestController {
 				 		SourceLeadSessionManager.setSessionAttribute(request, "clientContactCreateMsg","Success !! New contact added.");
 				 	}
 					
-			    /*}
-			} */
-		}
+			    }
+			} 
+		}*/
 		
 			return "vendorsList";
 	}

@@ -5,6 +5,7 @@ import java.util.List;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.bis.sourcelead.dto.ClientDTO;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
@@ -15,7 +16,7 @@ import com.bis.sourcelead.entity.User;
 public interface ClientService {
 	
 
-	public void storeClient(JSONObject jsonObj,User user,OrgLocations orgLocations,String responderType,Org org) throws Exception;
+	public void storeClient(ClientDTO clientDTO,User user,OrgLocations orgLocations,String responderType,Org org) throws Exception;
 
 	public void updateClientDetails(JSONObject jsonObj,Long orgRelationId, Long clientLocationId, Long loginLocationId, User user) throws Exception;
 

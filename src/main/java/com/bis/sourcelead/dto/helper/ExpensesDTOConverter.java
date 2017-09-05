@@ -16,20 +16,20 @@ public class ExpensesDTOConverter {
 		expensesDTO = new ExpensesDTO();
 		expensesDTO.setId(expenses.getId());
 		expensesDTO.setExpenseId(expenses.getExpenseId());
-		expensesDTO.setPurpose(expenses.getPurpose());
+		expensesDTO.setExpensePurpose(expenses.getPurpose());
 		expensesDTO.setTotalAmount(expenses.getTotalAmount());
 		BigDecimal totalAmo = new BigDecimal(expenses.getTotalAmount());
 		BigDecimal totalAmountRoundOff = totalAmo.setScale(2, BigDecimal.ROUND_HALF_EVEN);
-		expensesDTO.setTotalAmontRoundOffValue(totalAmountRoundOff);
-		expensesDTO.setClientName(expenses.getClientName());
+		expensesDTO.setExpenseAmountDivId(totalAmountRoundOff);
+		expensesDTO.setClientNameExpense(expenses.getClientName());
 		expensesDTO.setProjectName(expenses.getProjectMembers().getProjects().getProjectName());
 		expensesDTO.setProjectMemberId(expenses.getProjectMembers().getId());
 		SimpleDateFormat dateFormat=expenses.getOrgLocationId().getLocFullFormDateFormatter();
 		if(expenses.getStartDate() != null){
-			expensesDTO.setStartDate(dateFormat.format(expenses.getStartDate()));	
+			expensesDTO.setStartDateExpense(dateFormat.format(expenses.getStartDate()));	
 		}
 		if(expenses.getEndDate() != null){
-			expensesDTO.setEndDate(dateFormat.format(expenses.getEndDate()));	
+			expensesDTO.setEndDateExpense(dateFormat.format(expenses.getEndDate()));	
 		}
 		expensesDTO.setNoOfExpenses(expenses.getNoOfExpenses());
 		List<ExpensesEntriesDTO> eeDTOList = new ArrayList<>();

@@ -203,15 +203,15 @@ public class UserServiceImpl implements UserService {
 			user.setPassword(sourceleadPasswordEncoder.encode(password));
 		}
 	   
-	    /*if(jsonObj.has("phoneNumber")){
-			user.setMobilePhone(jsonObj.getString("phoneNumber"));
-		}*/
+	    if(StringUtils.isNotBlank(addUserDTO.getMobilePhone())){
+			user.setMobilePhone(addUserDTO.getMobilePhone());
+		}
 		
-	    /*if((jsonObj.has("isMailSent") && !isNullOrEmpty(jsonObj.getString("isMailSent"))) && ("Y".equals(jsonObj.getString("isMailSent")))){
+	    if(StringUtils.isNotBlank(addUserDTO.getIsMailSent()) && ("Y".equals(addUserDTO.getIsMailSent()))){
 			user.setIsMailSent(Status.Y);
 		}else{
 			user.setIsMailSent(Status.N);
-		}*/
+		}
 	   
 	    if(sourceType.equalsIgnoreCase("PROJECTS")){
 	 		user.setUserType("Employee");
@@ -259,8 +259,8 @@ public class UserServiceImpl implements UserService {
 		}
 		
 		//for updating cosultantUserId in candidate
-		if(candidateDTO.getAssociateId() >= 0){
-			Candidate candidate = candidateService.getCandidateByCandidateId(candidateDTO.getAssociateId());
+		if(StringUtils.isNotBlank(candidateDTO.getAssociateId())){
+			Candidate candidate = candidateService.getCandidateByCandidateId(Long.parseLong(candidateDTO.getAssociateId()));
 			if(null != candidate){
 				candidate.setConsultantUser(user1);
 				candidate.setUpdatedBy(loginuser.getUserCode());
@@ -270,15 +270,15 @@ public class UserServiceImpl implements UserService {
 			}	
 		}else{
 			MasterCandidate masterCandidate = null;
-			//masterCandidate = masterCandidateService.getMasterCandidateByInteligence(jsonObj);
+			masterCandidate = masterCandidateService.getMasterCandidateByInteligenceCandidateDTO(candidateDTO);
 			if(null == masterCandidate){
-				//masterCandidate = masterCandidateService.storeMasterCandidateByJsonObject(jsonObj, loginuser);
+				masterCandidate = masterCandidateService.storeMasterCandidateByCandidateDTO(candidateDTO, loginuser);
 			}
 			candidateService.storeCandidateForUsers(candidateDTO, user, orgLocations, masterCandidate);
 		}
 		
 		//For saving Employee details (Every User is an Employee)
-		if(candidateDTO.getProjectId() >= 0){
+		if(StringUtils.isNotBlank(candidateDTO.getProjectId())){
 			ProjectMembers pm = getProjectMembersDetails(employee,candidateDTO,loginuser.getUserCode(),orgLocations.getId());
 			try {
 				projectMembersService.saveProjectMember(pm);
@@ -407,9 +407,9 @@ public class UserServiceImpl implements UserService {
 		orgLocations.setId(orgLocationsId);
 		userRole.setOrgLocations(orgLocations);
 		
-		if(addUserDTO.getReportingManager() >= 0 && null != addUserDTO.getReportingManager()){
+		if(StringUtils.isNotBlank(addUserDTO.getReportingManager())){
 			User reportingManager = new User();
-			reportingManager.setId(addUserDTO.getReportingManager());
+			reportingManager.setId(Long.parseLong(addUserDTO.getReportingManager()));
 			userRole.setReportingManager(reportingManager);
 		}
 		
@@ -491,15 +491,15 @@ public class UserServiceImpl implements UserService {
 			employees.setDepartmentId(null);
 		}
 		
-		if(addUserDTO.getVendors() != null && addUserDTO.getVendors() > 0){
-			OrgRelations orgRelation = orgRelationsService.getOrRelationsById(addUserDTO.getVendors());
+		if(StringUtils.isNotBlank(addUserDTO.getVendors())){
+			OrgRelations orgRelation = orgRelationsService.getOrRelationsById(Long.parseLong(addUserDTO.getVendors()));
 			employees.setOrgRelationId(orgRelation);
 		}else{
 			employees.setOrgRelationId(null);
 		}
 		
-		if(addUserDTO.getVendorcontact() != null && addUserDTO.getVendorcontact() > 0){
-			OrgSpoc orgspoc = orgSpocService.getOrgSpocById(addUserDTO.getVendorcontact());
+		if(StringUtils.isNotBlank(addUserDTO.getVendorcontact())){
+			OrgSpoc orgspoc = orgSpocService.getOrgSpocById(Long.parseLong(addUserDTO.getVendorcontact()));
 			employees.setSpocId(orgspoc);
 		}else{
 			employees.setSpocId(null);
@@ -513,12 +513,12 @@ public class UserServiceImpl implements UserService {
 			
 		}*/
 		
-		if(addUserDTO.getDateofJoin() != null){
+		if(StringUtils.isNotBlank(addUserDTO.getDateofJoin())){
 			try {
 				   //SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
 					 OrgLocations orgLoc = orgLocationService.getOrgLocations(orgLocationsId);
 						 //SimpleDateFormat formatter = orgLoc.getLocFullFormDateFormatter();
-						 employees.setHireDate(commonUtil.orgLocationDateFormat(orgLoc.getDateFormat(), addUserDTO.getDateofJoin().toString()));
+						 employees.setHireDate(commonUtil.orgLocationDateFormat(orgLoc.getDateFormat(), addUserDTO.getDateofJoin()));
 				  
 				} catch (Exception e) {
 				  e.printStackTrace();
@@ -545,7 +545,7 @@ public class UserServiceImpl implements UserService {
 			pm.setProjects(project);
 		}*/
 		Projects project = new Projects();
-		project.setId(candidateDTO.getProjectId());
+		project.setId(Long.parseLong(candidateDTO.getProjectId()));
 		pm.setProjects(project);
 		pm.setEmployee(employee);
 		pm.setStatus(Constants.MEMBER_ACTIVE);

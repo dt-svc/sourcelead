@@ -40,10 +40,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.UserRoleDao;
-import com.bis.sourcelead.dto.CandidateSearchDTO;
+import com.bis.sourcelead.dto.ClientDTO;
 import com.bis.sourcelead.dto.ClientVendorDTO;
 import com.bis.sourcelead.dto.ResponseList;
-import com.bis.sourcelead.elk.index.CandidateIndex;
 import com.bis.sourcelead.elk.index.ClientVendorContactsIndex;
 import com.bis.sourcelead.elk.index.ClientVendorIndex;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
@@ -248,21 +247,20 @@ public class ClientRestController {
 	@PreAuthorize("hasAnyRole('ROLE_CREATE_CLIENT','ROLE_CREATE_VENDOR')")
 	@RequestMapping(value = "/saveClient", method = RequestMethod.POST)
 	@ResponseBody
-	public String saveClient(@RequestParam(value = "json", required = false) String json,
+	public String saveClient(ClientDTO clientDTO,
 			@RequestParam(value = "responderType", required = false) String responderType,
 			@RequestParam(value = "orgLocationId", required = false) Long orgLocationId, HttpServletRequest request)
 			throws Exception {
 
-		JSONObject jsonObj = new JSONObject(json);
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 
 		if (null != orgLocationId) {
-			jsonObj.put("orgLocationId", orgLocationId);
+			clientDTO.setOrgLocationId(orgLocationId.toString());
 		}
 
-		clientService.storeClient(jsonObj, user, orgLocation, responderType, org);
+		clientService.storeClient(clientDTO, user, orgLocation, responderType, org);
 		if (responderType.equalsIgnoreCase("Vendor")) {
 			SourceLeadSessionManager.setSessionAttribute(request, "vendorCreateMsg", "Success!! New Vendor created");
 		} else if (responderType.equalsIgnoreCase("Client")) {
