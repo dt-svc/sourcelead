@@ -188,6 +188,32 @@ public class ProjectsController {
 	}
 	 
 	 
+	 
+	 @PreAuthorize("hasRole('ROLE_CREATE_PROJECT')")
+	 @RequestMapping(value = "/clientProject")
+		public ModelAndView clientProject(HttpServletRequest request) throws Exception {
+		     String loginOrgLocation = (String) SourceLeadSessionManager.getSessionAttribute(request, "locationCode");
+		    OrgLocations loginOrgLocations = orgLocationService.getOrgLocationsByLocationCode(loginOrgLocation);
+		    User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+				ModelAndView model = new ModelAndView();
+				
+				 SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
+					if(sessionData == null)
+					{
+						sessionData = new SessionMaintainanceData();
+					}
+					sessionData.setNav(Constants.Projects);
+					
+					request.getSession().setAttribute("sessionData",sessionData);
+					
+					List<OrgRelations> clientsList = orgRelationsService.getAllClientsByOrgLocationId(loginOrgLocations.getId());
+					model.addObject("clientsList", clientsList);
+					model.addObject("sourceleadUrl", sourceleadUrl);
+					model.setViewName("project/clientProject");
+					return model;
+	}
+	 
+	 
 	 @RequestMapping(value = "/getProjectLevel1Approvers", method = RequestMethod.GET)
 		public @ResponseBody List<User> getProjectLevel1Approvers(HttpServletRequest request) throws Exception {
 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
