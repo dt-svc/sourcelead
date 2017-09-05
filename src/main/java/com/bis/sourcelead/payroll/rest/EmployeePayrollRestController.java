@@ -570,7 +570,7 @@ public class EmployeePayrollRestController {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping(value = { "/getChecksListByEmployeeId"}, method = RequestMethod.GET)
+	@RequestMapping(value = { "/getChecksListByEmployeeId", "/rest/getChecksListByEmployeeId" } , method = RequestMethod.GET)
 	public List<Checks> getChecksListByEmployeeId(@RequestParam(value = "empId", required = false) Long empId,
 			@RequestParam(value = "orgLocationId", required = false) Long orgLocationId) throws Exception {
 		OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
