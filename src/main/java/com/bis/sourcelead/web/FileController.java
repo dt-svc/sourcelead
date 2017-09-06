@@ -15,6 +15,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
@@ -37,7 +38,8 @@ public class FileController {
 
 	@RequestMapping(value = "/upload/{type}", method = RequestMethod.POST)
 	@ResponseBody
-	public List<FileInfo> uploadFile(MultipartHttpServletRequest request, @PathVariable String type) {
+	public List<FileInfo> uploadFile(MultipartHttpServletRequest request, @PathVariable String type,
+			@RequestParam(defaultValue = "0") long orgId, @RequestParam(defaultValue = "0") long orgLocationId) {
 		List<FileInfo> fileInfoList = new ArrayList<>();
 		Iterator<String> itrator = request.getFileNames();
 		while (itrator.hasNext()) {
@@ -45,7 +47,12 @@ public class FileController {
 			MultipartFile multiFile = request.getFile(itrator.next());
 			Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 			OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
-			String fileURL = new FileUploadUtil().uploadFile(staticPath, org.getId(), loginOrgLocation.getId(),	type, multiFile);
+			orgId = orgId == 0 && org != null ? org.getId() : orgId;
+			orgLocationId = orgLocationId == 0 && loginOrgLocation != null ? loginOrgLocation.getId() : orgLocationId;
+			if(orgId == 0 || orgLocationId == 0) {
+				return fileInfoList;
+			}
+			String fileURL = new FileUploadUtil().uploadFile(staticPath, orgId, orgLocationId,	type, multiFile);
 			fileInfo.setFileName(multiFile.getOriginalFilename());
 			fileInfo.setFileURL(fileURL);
 			fileInfo.setContentType(multiFile.getContentType());

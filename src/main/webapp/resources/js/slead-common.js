@@ -4,12 +4,16 @@ function viewFile(sourceleadUrl, fileURL, title, contentType){
 	}  
 }
 
-function fileUpload(sourceleadUrl, id, type, formId) {
+function fileUpload(sourceleadUrl, id, type, formId, orgId, locationId) {
 	var data = new FormData();
 	var files = document.getElementById(id).files;
+	orgId = orgId ? orgId : 0;
+	locationId = locationId ? locationId : 0;
 	for(var e in files) {
 		data.append('file', files[e]);
 	}
+	data.append('orgId', orgId);
+	data.append("locationId", locationId);
 	$.ajax({ 
 		url: sourceleadUrl+"/upload/"+type, 
 		data: data, 
@@ -21,7 +25,7 @@ function fileUpload(sourceleadUrl, id, type, formId) {
 				if($("#"+formId+" input[name*=fileInfo][data-id="+id+"]").length > 0) {
 					$("#"+formId+" input[name*=fileInfo][data-id="+id+"]").remove();
 				}
-				var i = 0;
+				var i = $("#"+formId+" input[type=hidden][name*=fileInfo]").length / 3;
 				for(var e in data) {
 					var html = "<input type='hidden' name='fileInfo["+i+"][fileURL]' data-id="+id+" value='"+data[e].fileURL+"'/>";
 					html += "<input type='hidden' name='fileInfo["+i+"][fileName]' data-id="+id+" value='"+data[e].fileName+"'/>";
@@ -29,6 +33,8 @@ function fileUpload(sourceleadUrl, id, type, formId) {
 					$("#"+formId).append(html);
 					i ++;
 				}
+			} else if(data && data.length === 0) {
+				showError("Unable to upload the file");
 			}
 		}, 
 		error: function (err) { 

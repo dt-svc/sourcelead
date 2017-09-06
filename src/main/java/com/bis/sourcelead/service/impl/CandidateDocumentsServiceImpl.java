@@ -96,32 +96,20 @@ public class CandidateDocumentsServiceImpl implements CandidateDocumentsService 
 				candidateDocuments.setUpdatedBy(user.getUserCode());
 				candidateDocuments.setUpdatedDate(commonUtil.currentDate());
 				
-				/*if (!jsonObj.getString("docFile").equalsIgnoreCase("")) {
-					if (multiFile != null) {
-						candidateDocuments.setDocFile(multiFile.getBytes());
-						if(multiFile.getOriginalFilename() != null && multiFile.getOriginalFilename() != "" && !multiFile.getOriginalFilename().equalsIgnoreCase(candidateDocuments.getFileName())){
-							activitySummary.append("Document").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidateDocuments.getFileName()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(multiFile.getOriginalFilename()).append(Constants.NEW_VALUE_TAG_END).append(" ");
-						}
-						candidateDocuments.setFileName(multiFile.getOriginalFilename());
-						candidateDocuments.setFileContentType(multiFile.getContentType());
-					}
-				}*/
-				
 				if (candidateDocumentsDTO.getUploadedFileInfo() != null && candidateDocumentsDTO.getUploadedFileInfo().size()>0) {
 					FileInfo fileInfo = candidateDocumentsDTO.getUploadedFileInfo().get(0);
-					if(fileInfo.getFileName() != null ){
-						activitySummary.append("Document").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidateDocuments.getFileName()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(fileInfo.getFileName()).append(Constants.NEW_VALUE_TAG_END).append(" ");
+					if(fileInfo != null) {
+						if(fileInfo.getFileName() != null ){
+							activitySummary.append("Document").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidateDocuments.getFileName()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(fileInfo.getFileName()).append(Constants.NEW_VALUE_TAG_END).append(" ");
+						}
+						
+						candidateDocuments.setFileName(fileInfo.getFileName());
+						candidateDocuments.setFileContentType(fileInfo.getContentType());
+						
+						candidateDocuments.setFileURL(fileInfo.getFileURL());;
+							//candidate.setFileName(fileInfo.getFileName());
+							FileUploadUtil.moveFile(candidateDocumentsDTO.getStaticPath(), fileInfo, "documents");
 					}
-					
-					candidateDocuments.setFileName(fileInfo.getFileName());
-					candidateDocuments.setFileContentType(fileInfo.getContentType());
-					
-					candidateDocuments.setFileURL(fileInfo.getFileURL());;
-					if(fileInfo != null){
-						//candidate.setFileName(fileInfo.getFileName());
-						FileUploadUtil.moveFile(candidateDocumentsDTO.getStaticPath(), fileInfo, "documents");
-					}
-				
 				}
 				
 				candidate.setId(candidateDocuments.getCandidateId().getId());

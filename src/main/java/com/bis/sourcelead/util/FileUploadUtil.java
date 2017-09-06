@@ -78,7 +78,4 @@ public class FileUploadUtil {
 		object.getClass().getMethod("setUploadedFileInfo", List.class).invoke(object, uploadedFileInfo);
 	}
 	
-	
-	
-	
 }
