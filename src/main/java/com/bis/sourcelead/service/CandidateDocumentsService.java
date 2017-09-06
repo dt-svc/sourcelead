@@ -6,6 +6,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.bis.sourcelead.dto.CandidateDocumentsDTO;
 import com.bis.sourcelead.entity.CandidateDocuments;
 import com.bis.sourcelead.entity.User;
 
@@ -19,7 +20,7 @@ public interface CandidateDocumentsService {
 	 * @throws JSONException
 	 * @throws Exception
 	 */
-	public CandidateDocuments storeCandidateDocuments(JSONObject jsonObj, Long candidateId, String documentUUID, Long orgLocationId, User user, MultipartFile multiFile) throws JSONException, Exception;
+	public CandidateDocuments storeCandidateDocuments(CandidateDocumentsDTO candidateDocumentsDTO, Long candidateId, String documentUUID, Long orgLocationId, User user) throws JSONException, Exception;
 	
 	public List<CandidateDocuments> getCandidateDocumentsListByCandidateIdAndOrgLocationID(Long candidateId, Long orgLocationId) throws Exception;
 	

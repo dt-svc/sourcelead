@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.CandidateReferencesDTO;
 import com.bis.sourcelead.entity.CandidateReferences;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
@@ -60,14 +61,15 @@ public class CandidateReferencesRestController {
 	 */
 	//@PreAuthorize("hasAnyRole('ROLE_ADD_CANDIDATE_REFERENCE','ROLE_CROWDSOURCING_PROFILE','ROLE_CROWDSOURCING_CANDIDATES','ROLE_ADD_ASSOCIATE_REFERENCE')")
 	@RequestMapping(value = "/saveCandidateReferences", method = RequestMethod.POST)
-	public @ResponseBody String saveCandidateReferences(@RequestParam("json") String json, @RequestParam("candidateId") Long candidateId, @RequestParam("userId") Long userId, @RequestParam("locationCode") String locationCode) throws Exception
+	public @ResponseBody String saveCandidateReferences(CandidateReferencesDTO candidateReferencesDTO, @RequestParam("candidateId") Long candidateId, @RequestParam("userId") Long userId, @RequestParam("locationCode") String locationCode) throws Exception
 	{
-		/* String json1 = "{" + json + "}"; */
-		JSONObject jsonObj = new JSONObject(json);
-		User user = userService.getUserById(userId);
+		/* String json1 = "{" + json + "}";
+		JSONObject jsonObj = new JSONObject(json);*/
+		User user = userService.getUserById(userId); 
+		
 		OrgLocations orgLocation = orgLocationService.getOrgLocationsByLocationCode(locationCode);
 		if (null != candidateId) {
-			candidateReferencesService.storeCandidateReferences(jsonObj, candidateId, orgLocation.getId(), user);
+			candidateReferencesService.storeCandidateReferences(candidateReferencesDTO, candidateId, orgLocation.getId(), user);
 			return "success";
 		}
 		else {
@@ -148,7 +150,7 @@ public class CandidateReferencesRestController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/updateCandidateReferenceBycandidateIdAndReferenceId", method = RequestMethod.POST)
-	public @ResponseBody String updateCandidateReferenceBycandidateIdAndReferenceId(@RequestParam("json") String json, @RequestParam("candidateId") Long candidateId, @RequestParam("userId") Long userId, @RequestParam("locationCode") String locationCode) throws Exception
+	public @ResponseBody CandidateReferencesDTO updateCandidateReferenceBycandidateIdAndReferenceId(CandidateReferencesDTO candidateReferencesDTO, @RequestParam("candidateId") Long candidateId, @RequestParam("userId") Long userId, @RequestParam("locationCode") String locationCode) throws Exception
 	{
 		/*
 		 * OrgLocations loginOrgLocation = (OrgLocations)
@@ -159,9 +161,9 @@ public class CandidateReferencesRestController {
 		/* String json1 = "{"+json+"}"; */
 		User user = userService.getUserById(userId);
 		OrgLocations orgLocation = orgLocationService.getOrgLocationsByLocationCode(locationCode);
-		JSONObject jsonObject = new JSONObject(json);
-		candidateReferencesService.storeCandidateReferences(jsonObject, candidateId, orgLocation.getId(), user);
-		return json;
+		//JSONObject jsonObject = new JSONObject(json);
+		candidateReferencesService.storeCandidateReferences(candidateReferencesDTO, candidateId, orgLocation.getId(), user);
+		return candidateReferencesDTO;
 	}
 	
 	/**

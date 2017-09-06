@@ -310,7 +310,7 @@ function addEducation(candidateId) {
 	
 	result  = result + '                 <div class="clearfix mb10">';
 	result = result  +'	                     <div class="col-md-5" positionRelative>';
-	result = result  +'	                     <select class="chosen-select"  name="gradeType" id="scoreType" onchange="selectScoreType();clearSearchKey();">';
+	result = result  +'	                     <select class="chosen-select"  name="scoreType" id="scoreType" onchange="selectScoreType();clearSearchKey();">';
 	result = result  +' 					   <option value="" selected="selected">Score Type</option>';
 	result = result  +'	                       <option value="Percentage">Percentage</option>';
 	result = result  +'	                       <option value="CGPA">CGPA</option>';
@@ -318,7 +318,7 @@ function addEducation(candidateId) {
 	result = result  +'	                      </select>';
 	result = result  +'	                   </div>';
 	result  = result + '                   <div class="col-md-7" positionRelative id="candidateScoreDiv">';
-	result  = result + '                     <input type="text" class="form-control" value="" name="grade" placeholder="Score" id="candidateScore" onkeyup="selectScoreType();"';
+	result  = result + '                     <input type="text" class="form-control" value="" name="score" placeholder="Score" id="candidateScore" onkeyup="selectScoreType();"';
 	result  = result + '                     data-validation-optional="true" data-validation="required validate_length length1-5" field-name="score">';
 	result  = result + '                 	 </div>';
 	result = result  +'	                   </div>';
@@ -544,7 +544,7 @@ function EditEducation(candidateId,candidateEducationId) {
 	
 	result  = result + '                 <div class="clearfix mb10">';
 	result = result  +'	                     <div class="col-md-4" positionRelative>';
-	result = result  +'	                     <select class="chosen-select" value="'+ json.gradeType +'" name="gradeType" id="scoreType" onchange="selectScoreType();clearSearchKey();">';
+	result = result  +'	                     <select class="chosen-select" value="'+ json.gradeType +'" name="scoreType" id="scoreType" onchange="selectScoreType();clearSearchKey();">';
 	result = result  +' 					   <option value="" selected="selected">Score Type</option>';
 												if (json.gradeType == "Percentage") {
 													result = result + '<option selected>Percentage</option>';
@@ -564,7 +564,7 @@ function EditEducation(candidateId,candidateEducationId) {
 	result = result  +'	                      </select>';
 	result = result  +'	                   </div>';
 	result  = result + '                   <div class="col-md-8" positionRelative id="candidateScoreDiv">';
-	result  = result + '                     <input type="text" class="form-control input-sm" value="'+grade+'" name="grade" placeholder="Score" id="candidateScore" onkeyup="selectScoreType();"';
+	result  = result + '                     <input type="text" class="form-control input-sm" value="'+grade+'" name="score" placeholder="Score" id="candidateScore" onkeyup="selectScoreType();"';
 	result  = result + '                     data-validation-optional="true" data-validation="required validate_length length1-5" field-name="score">';
 	result  = result + '                 	 </div>';
 	result = result  +'	                   </div>';
@@ -745,15 +745,34 @@ function candidateEducationStore(candidateId){
 	  
 	  if ($('#education_form').validate(false, validationSettings)) {
 		  
-			 var frm = $('#education_form').serializeFormJSON();
-			 var con = JSON.stringify(frm);
-			 con = con.replace(/[{}]/g, "");
-		     var jsonData = encodeURIComponent(con);
+		  var formData = getFormData("education_form");
 			 var sourceleadUrl = '${sourceleadUrl}';
 			 $("#education_form").attr("disabled", "disabled");
 			 $("#save_button").attr("disabled", "disabled");
+			 
+			 $.post(sourceleadUrl+"/storeCandidateEducation?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId, formData, function(data) {
+				 closePopup();
+				 $('#perVal').attr('aria-valuenow', data).css('width',data+'%');
+    			 if(data<50){
+    			   $("#perVal").removeClass('progress-bar-success');
+    			   $("#perVal").addClass("progress-bar-danger");
+    			 }
+    			 if(data>=50){
+    				 $("#perVal").removeClass("progress-bar-danger");
+    				 $("#perVal").addClass("progress-bar-success");
+    			 }
+    			 $("#disVal").empty();
+    			$("#disVal").append(data+'%');
+       		    $("#popUpDiv").removeClass("edit-details-active");
+    			$("#selector4").removeAttr("style");
+    			$("#selector4").css({ display: "block" });
+				$("#eduMsgDiv").html("Success!! New Education added");
+       			candidateEducationList(candidateId);
+       			eduMsgFadeinFunction();
+       			qveducationSubmission(candidateId);
+		        });
 
-			$.ajax({
+			/* $.ajax({
 					type : "POST",
 					url : sourceleadUrl+"/storeCandidateEducation?${_csrf.parameterName}=${_csrf.token}&json="+con+"&candidateId="+candidateId,
 					success :function(data) {  
@@ -786,7 +805,7 @@ function candidateEducationStore(candidateId){
 							    	}
 				                 }   
 				      }, 
-		    });
+		    }); */
 			return true; 
 		} else {
 			return false;
@@ -979,15 +998,17 @@ function clearSearchKey() {
 		if ($('#education_form').validate(false,
 				validationSettings)) {
 
-			var frm = $('#education_form').serializeFormJSON();
+			var formData = getFormData("education_form");
+			 var sourceleadUrl = '${sourceleadUrl}';
+			 $("#education_form").attr("disabled", "disabled");
+			 $("#save_button").attr("disabled", "disabled");
+			 
+			 $.post(sourceleadUrl+"/upDateCandidateEducationByCandidateIdAndCandidateEducationId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId, formData, function(data) {
+				 closePopup();
+				 candidateEducationList(candidateId);
+		        });
 
-			var con = JSON.stringify(frm);
-			con = con.replace(/[{}]/g, "");
-			var jsonData = encodeURIComponent(con);
-			//It will escape all the special characters
-			var sourceleadUrl = '${sourceleadUrl}';
-
-			$.ajax({
+			/* $.ajax({
 						type : "POST",
 						url : sourceleadUrl
 								+ "/upDateCandidateEducationByCandidateIdAndCandidateEducationId?${_csrf.parameterName}=${_csrf.token}&json="+ jsonData + "&candidateId=" + candidateId ,
@@ -1000,7 +1021,7 @@ function clearSearchKey() {
 							eduMsgFadeinFunction();
 							qveducationSubmission(candidateId);
 						},
-					});
+					}); */
 			return true;
 		} else {
 			return false;
