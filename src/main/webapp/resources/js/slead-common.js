@@ -29,6 +29,8 @@ function fileUpload(sourceleadUrl, id, type, formId) {
 					$("#"+formId).append(html);
 					i ++;
 				}
+			} else if(data && data.length === 0) {
+				showError("Unable to upload the file");
 			}
 		}, 
 		error: function (err) { 
