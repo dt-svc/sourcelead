@@ -290,12 +290,8 @@ public class ClientServiceImpl implements ClientService {
 
 		}
 
-		if (clientDTO.getOwner() != null) {
-			List<String> ownersId = null;
-			ownersId = clientDTO.getOwner();
-			String[] owners = clientDTO.getOwner().toArray(new String[ownersId.size()]);
-
-			for (int i = 0; i < owners.length; i++) {
+		if(clientDTO.getOwner() != null && !clientDTO.getOwner().isEmpty()){
+			for(String owners :clientDTO.getOwner()){
 				orgSpoc = new OrgSpoc();
 				for (OrgLocations orl : orgLocationsList) {
 					Set<OrgRelations> orgr = orl.getOrgRelationsList();
@@ -305,7 +301,7 @@ public class ClientServiceImpl implements ClientService {
 				}
 
 				// to differentiate client and vendor in ORG_SPOC Table
-				User ownerUser = userService.getUserById(Long.parseLong(owners[i].replace("\"", "")));
+				User ownerUser = userService.getUserById(Long.parseLong(owners));
 				if (responderType.equalsIgnoreCase("Client")) {
 					orgSpoc.setClientLocationId(clientOrgLocations);
 					orgSpoc.setVendorLocationId(orgLocations);
