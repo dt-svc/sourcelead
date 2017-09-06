@@ -374,20 +374,20 @@ public class CandidateController {
 		 
 		 CandidateResumes candidateResume =  candidateResumesService.getCandidateResumeByResumeUUID(resumeUUID);	
 			    
-		 byte[] pdfBytes = null;
+		 /*byte[] pdfBytes = null;
 			if("application/pdf".equalsIgnoreCase(candidateResume.getFileContentType())){
 				pdfBytes = candidateResume.getDocFile();
 			}
 			else{
 				 pdfBytes = pdfConversionUtil.convertDocToPdf(candidateResume.getDocFile());
-			}
+			}*/
 			 response.setHeader("Content-disposition","inline; filename=contractPdf.pdf");
 		  	    response.setContentType("application/pdf");
 		  	    ServletOutputStream sos = response.getOutputStream();
-		  	    if(null != pdfBytes){
+		  	    /*if(null != pdfBytes){
 		  	    	response.setContentLength(pdfBytes.length);
 		  	    	sos.write(pdfBytes);
-		  	    }
+		  	    }*/
 		          sos.flush();
 		          sos.close();
 
@@ -430,19 +430,19 @@ public class CandidateController {
 			    StringBuilder fileName = new StringBuilder();
 		        response.setHeader("Content-Disposition", fileName.append("attachment; filename=\"").append(candidateResumes.getFileName()).append("\"").toString());
 			    
-				InputStream inputStream = new ByteArrayInputStream(candidateResumes.getDocFile());
+				//InputStream inputStream = new ByteArrayInputStream(candidateResumes.getDocFile());
 				try {
 					OutputStream outStream = response.getOutputStream();
 
 					byte[] buffer = new byte[4096];
 					int bytesRead = -1;
 
-					while ((bytesRead = inputStream.read(buffer)) != -1) {
+					/*while ((bytesRead = inputStream.read(buffer)) != -1) {
 						outStream.write(buffer, 0, bytesRead);
 					}
 
 					inputStream.close();
-					outStream.close();
+					outStream.close();*/
 
 				} catch (FileNotFoundException e) {
 					logger.error(ExceptionUtils.getFullStackTrace(e));
@@ -457,19 +457,19 @@ public class CandidateController {
 		 CandidateResumes candidateResumes =  candidateResumesService.getCandidateResumesListByCandidateId(Long.parseLong(candidateId));	
 			    
 		 byte[] pdfBytes = null;
-			if("application/pdf".equalsIgnoreCase(candidateResumes.getFileContentType())){
+			/*if("application/pdf".equalsIgnoreCase(candidateResumes.getFileContentType())){
 				pdfBytes = candidateResumes.getDocFile();
 			}
 			else{
 				 pdfBytes = pdfConversionUtil.convertDocToPdf(candidateResumes.getDocFile());
-			}
+			}*/
 			 response.setHeader("Content-disposition","inline; filename=contractPdf.pdf");
 		  	    response.setContentType("application/pdf");
 		  	    ServletOutputStream sos = response.getOutputStream();
-		  	    if(null != pdfBytes){
+		  	    /*if(null != pdfBytes){
 		  	    	response.setContentLength(pdfBytes.length);
 		  	    	sos.write(pdfBytes);
-		  	    }
+		  	    }*/
 		          sos.flush();
 		          sos.close();
 
@@ -513,19 +513,19 @@ public class CandidateController {
 	 	  CandidateResumes candidateResume = candidateResumesService.getCandidateResumeByResumeUUID(resumeUUID);
 	 	
 	 	 byte[] pdfBytes = null;
-	 		if("application/pdf".equalsIgnoreCase(candidateResume.getFileContentType())){
+	 		/*if("application/pdf".equalsIgnoreCase(candidateResume.getFileContentType())){
 	 			pdfBytes = candidateResume.getDocFile();
 	 		}
 	 		else{
 	 			 pdfBytes = pdfConversionUtil.convertDocToPdf(candidateResume.getDocFile());
-	 		}
+	 		}*/
 	 		 response.setHeader("Content-disposition","inline; filename=contractPdf.pdf");
 	 	  	    response.setContentType("application/pdf");
 	 	  	    ServletOutputStream sos = response.getOutputStream();
-	 	  	    if(null != pdfBytes){
+	 	  	    /*if(null != pdfBytes){
 	 	  	    	response.setContentLength(pdfBytes.length);
 	 	  	    	sos.write(pdfBytes);
-	 	  	    }
+	 	  	    }*/
 	 	          sos.flush();
 	 	          sos.close();
 

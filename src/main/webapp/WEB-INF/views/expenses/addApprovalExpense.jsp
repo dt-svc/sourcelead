@@ -42,7 +42,7 @@
 	    </c:otherwise>
 	</c:choose>
     </section>
-    <form:form id="add_expenses_form" name="add_expenses_form"  enctype='multipart/form-data'>
+    <form:form id="add_expenses_form" name="add_expenses_form">
 	<div class="content-area content-new clearfix">
          
           <div class="clearfix form-horizontal inner-content">
@@ -441,21 +441,22 @@ function removeWhiteSpaces(rowCount){
 			else{
 				//$("#submitForApprovalExpensesId").prop('disabled', true);
 				//$("#cancelForApprovalExpensesId").prop('disabled', true);
-			var frm = $('#add_expenses_form').serializeFormJSON();
+			/* var frm = $('#add_expenses_form').serializeFormJSON();
 			var jsonData = JSON.stringify(frm);
 			var form = $('#add_expenses_form')[0];
       		var formData = new FormData(form); 
       		formData.append("json",jsonData);
+			var sourceleadUrl = '${sourceleadUrl}'; */
 			var sourceleadUrl = '${sourceleadUrl}';
+			var form = $('#add_expenses_form')[0];
+      		var formData = new FormData(form); 
+			
 			$( "#submitForApprovalExpensesId" ).addClass('button').val('Processing..');
 			$.ajax({
        	        type : "POST",
         	    data: formData,
-        	    contentType : 'application/json; charset=utf-8',
-        	    enctype: 'multipart/form-data',
     	        processData: false,
     	        contentType:false,
-        	    dataType : 'json',
 				url : sourceleadUrl+"/storeAddExpensesData?${_csrf.parameterName}=${_csrf.token}&status="+status,
 				success : function(data) {
 					$( "#submitForApprovalExpensesId" ).addClass('button').val('Sub for Approval');
