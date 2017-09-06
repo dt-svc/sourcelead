@@ -183,7 +183,8 @@ public class CandidateActivityCommonUtil {
 			candidateResumesHistory.setCandidateResumes(candidateResumes);
 			candidateResumesHistory.setTitle(candidateResumes.getTitle());
 			candidateResumesHistory.setDescription(candidateResumes.getDescription());
-			candidateResumesHistory.setDocFile(candidateResumes.getDocFile());
+//			candidateResumesHistory.setDocFile(candidateResumes.getDocFile());
+			candidateResumesHistory.setFileURL(candidateResumes.getFileURL());
 			candidateResumesHistory.setFileContentType(candidateResumes.getFileContentType());
 			candidateResumesHistory.setFileName(candidateResumes.getFileName());
 			candidateResumesHistory.setResumeStatus(candidateResumes.getResumeStatus());
@@ -247,7 +248,7 @@ public class CandidateActivityCommonUtil {
 		candidateResumesHistory.setCandidateResumes(candidateResumes);
 		candidateResumesHistory.setTitle(candidateResumes.getTitle());
 		candidateResumesHistory.setDescription(candidateResumes.getDescription());
-		candidateResumesHistory.setDocFile(candidateResumes.getDocFile());
+		candidateResumesHistory.setFileURL(candidateResumes.getFileURL());
 		candidateResumesHistory.setFileContentType(candidateResumes.getFileContentType());
 		candidateResumesHistory.setFileName(candidateResumes.getFileName());
 		candidateResumesHistory.setResumeStatus(candidateResumes.getResumeStatus());

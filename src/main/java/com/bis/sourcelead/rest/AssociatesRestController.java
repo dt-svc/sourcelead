@@ -22,6 +22,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.elk.index.CandidateIndex;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
@@ -140,19 +141,19 @@ public class AssociatesRestController {
 
 	
 	@RequestMapping(value = "/storeAssociate", method = RequestMethod.POST)
-	public @ResponseBody String storeAssociate(@RequestParam(value = "json", required = false) String json,MultipartHttpServletRequest request) throws Exception {
+	public @ResponseBody String storeAssociate(CandidateDTO candidateDto, HttpServletRequest request) throws Exception {
 		
-		MultipartFile multiFile = null;
+		/*MultipartFile multiFile = null;
 		Iterator<String> itrator = request.getFileNames();
 		if(itrator.hasNext()){
 	        multiFile = request.getFile(itrator.next());
 		}
 		String jsonc = "{" + json + "}";
 		JSONObject jsonObj = new JSONObject(jsonc);
-		
+		*/
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		Candidate candidate = candidateService.storeCandidate(jsonObj,orgLocation,user,multiFile);
+		Candidate candidate = candidateService.storeCandidate(candidateDto,orgLocation,user);
 		
 		if(candidate.getCandidateType().equalsIgnoreCase("Candidate")){
 			StringBuilder candidateCreateMsg = new StringBuilder();

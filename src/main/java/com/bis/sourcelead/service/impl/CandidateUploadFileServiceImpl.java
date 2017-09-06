@@ -468,7 +468,7 @@ public class CandidateUploadFileServiceImpl implements CandidateUploadFileServic
 	{
 		
 		JSONObject jsonObj = populateJsonObject(candidatesImport, orgLocations,isMailChecked);
-		candidateService.storeCandidate(jsonObj, orgLocations, user, null);
+//		candidateService.storeCandidate(jsonObj, orgLocations, user,null,null,null);
 		
 		
 	}
