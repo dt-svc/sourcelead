@@ -67,9 +67,10 @@
               
 				<div class="form-footer clearfix mt">
 					<div class="col-lg-12">
+					<i class='fa fa-info-circle' title='Save & Continue will be disabled until you select the end client'></i>
 						<div class="pull-right">
 							<input type="button" value="Cancel" onClick="javascript:window.location.href = '<c:url value='/projectDashboard'/>'" class="btn btn-danger ml">
-							<input type="button" value="Save & Continue" id="save_project" onclick="saveProject();flushSaveProject()" class="btn btn-primary">
+							<input type="button" value="Save & Continue" disabled="disabled" id="save_project" onclick="saveClientProject()" class="btn btn-primary">
 						</div>
 					</div>
 				</div>
@@ -124,7 +125,7 @@
 </div>  
 
 <jsp:include page="../masterFooter.jsp" />
-
+<div class="backtotop" style="display: none;"><img src="resources/images/backtotop.png"></div>  
 
 
 
@@ -171,7 +172,7 @@ function getClientLevels(){
 	result = result +'<div class="dropdown-select">';
 	
 	result = result +'<input type="hidden" id="0clientOrgLocId" value="" />';
-	result = result +'<select class="form-control select-bg chosen-select" id="0levelClient" name="0levelClient" onchange="getClientOrgLocValue();">';
+	result = result +'<select class="form-control select-bg chosen-select" data-validation="required" field-name="Client" id="0levelClient" name="0levelClient" onchange="getClientOrgLocValue();">';
 	result = result +'<option value="">--Select Client--</option>';
 	<c:forEach var="report" items="${clientsList}">
 	    if('${report.locationId.id}' == '${SourceLeadWeb_orgLocations.id}'){
@@ -196,6 +197,10 @@ function getClientLevels(){
 	result = result +'</td>';
 	
 	result = result +'<td width="80px">';
+	result = result +'<div class="pull-left paddingRight mt10" id="addLevelTxtMsg" style="display : none">';
+	result = result +'<i class="fa fa-info-circle" title="After selection of end client no new level has added"></i>';
+	result = result +'</div>';
+	
 	result = result +'<div class="pull-right">';
 	result = result +'<button type="button" class="btn btm-sm pull-right mt5" id="addClientRow" onclick="addLevelRow();"><i id="addButton" class="fa fa-plus text-primary"></i></button>';
 	result = result +'</div>';
@@ -226,12 +231,18 @@ function checkEndClient(id){
 		$("#"+id+"checked").val("Y");
 		$("#addClientRow").attr('disabled', 'disabled');
 		 document.getElementById("addButton").removeAttribute("class");
-		 document.getElementById('addButton').className = 'fa fa-plus text-danger';
+		 document.getElementById('addButton').className = 'fa fa-plus text-success';
+		 $("#addClientRow").attr('disabled', 'disabled');
+		 document.getElementById("addLevelTxtMsg").style.display="";
+		 $("#save_project").removeAttr('disabled');
+		 
 	}else{
 		$("#"+id+"checked").val("N");
 		$("#addClientRow").removeAttr('disabled');
+		 document.getElementById("addLevelTxtMsg").style.display="none";
 		 document.getElementById("addButton").removeAttribute("class");
 		 document.getElementById('addButton').className = 'fa fa-plus text-primary';
+		 $("#save_project").attr('disabled', 'disabled');
 	}
 }
 </script>
@@ -261,6 +272,8 @@ function getClientOrgLocValue(){
 		 
 	}
 </script>
+
+
 
 <script>
 function addLevelRow(){
@@ -297,6 +310,7 @@ function cancel(){
 	$(".project_inn_mask").fadeOut(200);
 }
 </script>
+
 
 <script>
 function addClientLevelRow(){
@@ -514,6 +528,33 @@ function getChildLevel1Approvers(currentApproverId,level2ApproverUserId){
 </script>
 
 
+
+
+<script>
+function saveClientProject(){
+	 if ($('#project_form').validate(false, validationSettings)){ 
+		 
+	 }else{
+			return false;
+	  }
+	 
+	  $('body').on('blur', '#project_form', function() {
+  		$("#project_form").showHelpOnFocus();
+  		$("#project_form").validateOnBlur(false, validationSettings);
+  	});
+}
+</script>
+
+<script type="text/javascript">
+        var validationSettings = {
+            errorMessagePosition : 'element',
+            borderColorOnError : '',
+			scrollToTopOnError : true,
+			dateFormat : 'yyyy/mm/dd' 
+            };
+</script>
+
+
  <script type="text/javascript">
  function prepareChosenScripts(){ 
 		var config = {
@@ -532,3 +573,19 @@ function getChildLevel1Approvers(currentApproverId,level2ApproverUserId){
 					});
  }
 </script>
+
+
+<script>
+// Back To Top 
+    $(window).scroll(function() {
+        if ($(this).scrollTop() > 200) {
+            $('.backtotop').fadeIn('slow');
+        } else {
+            $('.backtotop').fadeOut('slow');
+        }
+    });
+    $('.backtotop').click(function() {
+        $("html, body").animate({scrollTop: 0}, 500);
+        return false;
+    });
+</script> 
