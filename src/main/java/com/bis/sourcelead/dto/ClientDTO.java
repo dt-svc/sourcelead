@@ -1,49 +1,94 @@
 package com.bis.sourcelead.dto;
 
-import java.io.Serializable;
 import java.util.List;
 
-public class ClientDTO extends AddUserDTO implements Serializable{
+import com.bis.sourcelead.annotations.Email;
+import com.bis.sourcelead.annotations.Required;
+
+public class ClientDTO {
 	
+	@Required(desc = "client name")
 	private String orgName;
+	
 	private String orgLocationId;
+	
 	private String webSite;
+	
 	private String CompanyWebSite;
+	
+	@Required(desc = "location")
 	private String location;
+	
 	private String orgLocation;
+	
 	private String orgCountry;
+	
 	private String country;
+	
 	private String orgState;
+	
 	private String state;
+	
 	private String orgCity;
+	
 	private String city;
+	
 	private String zipcode;
+	
 	private String orgZipcode;
+	
 	private String latitude;
+	
 	private String longitude;
+	
 	private String level;
+	
 	private String address;
+	
 	private String billingAddress;
+	
 	private String PaymentTerm;
+	
+	@Required(desc = "email")
+	@Email
 	private String email;
+	
+	@Required(desc = "first name")
 	private String firstName;
+	
 	private String lastName;
+	
 	private String phoneNumber;
+	
 	private String spocStatus;
+	
 	private List<String> owner;
+	
 	private String isMailSent;
+	
 	private String userRoleText;
+	
 	private String roleTypeId;
+	
 	private String responderType;
+	
 	private List<String> values;
+	
 	private List<String> orgNameAdvanced;
+	
 	private List<String> createdByAdvanced;
+	
 	private List<String> tierAdvanced;
+	
 	private List<String> clientIds;
+	
 	private String status;
+	
 	private List<String> invitationStatus;
-	private AddUserDTO addUserDTO;
-	private CandidateDTO candidateDTO;
+	
+	private String vendorName;
+	
+	private String reportingManager;
 	
 	
 	public String getOrgName() {
@@ -64,6 +109,12 @@ public class ClientDTO extends AddUserDTO implements Serializable{
 	public void setWebSite(String webSite) {
 		this.webSite = webSite;
 	}
+	public String getCompanyWebSite() {
+		return CompanyWebSite;
+	}
+	public void setCompanyWebSite(String companyWebSite) {
+		CompanyWebSite = companyWebSite;
+	}
 	public String getLocation() {
 		return location;
 	}
@@ -82,17 +133,35 @@ public class ClientDTO extends AddUserDTO implements Serializable{
 	public void setOrgCountry(String orgCountry) {
 		this.orgCountry = orgCountry;
 	}
+	public String getCountry() {
+		return country;
+	}
+	public void setCountry(String country) {
+		this.country = country;
+	}
 	public String getOrgState() {
 		return orgState;
 	}
 	public void setOrgState(String orgState) {
 		this.orgState = orgState;
 	}
+	public String getState() {
+		return state;
+	}
+	public void setState(String state) {
+		this.state = state;
+	}
 	public String getOrgCity() {
 		return orgCity;
 	}
 	public void setOrgCity(String orgCity) {
 		this.orgCity = orgCity;
+	}
+	public String getCity() {
+		return city;
+	}
+	public void setCity(String city) {
+		this.city = city;
 	}
 	public String getZipcode() {
 		return zipcode;
@@ -172,6 +241,7 @@ public class ClientDTO extends AddUserDTO implements Serializable{
 	public void setSpocStatus(String spocStatus) {
 		this.spocStatus = spocStatus;
 	}
+	
 	public List<String> getOwner() {
 		return owner;
 	}
@@ -244,42 +314,21 @@ public class ClientDTO extends AddUserDTO implements Serializable{
 	public void setInvitationStatus(List<String> invitationStatus) {
 		this.invitationStatus = invitationStatus;
 	}
-	public AddUserDTO getAddUserDTO() {
-		return addUserDTO;
+	public String getVendorName() {
+		return vendorName;
 	}
-	public void setAddUserDTO(AddUserDTO addUserDTO) {
-		this.addUserDTO = addUserDTO;
+	public void setVendorName(String vendorName) {
+		this.vendorName = vendorName;
 	}
-	public CandidateDTO getCandidateDTO() {
-		return candidateDTO;
+	public String getReportingManager() {
+		return reportingManager;
 	}
-	public void setCandidateDTO(CandidateDTO candidateDTO) {
-		this.candidateDTO = candidateDTO;
+	public void setReportingManager(String reportingManager) {
+		this.reportingManager = reportingManager;
 	}
-	public String getCountry() {
-		return country;
-	}
-	public void setCountry(String country) {
-		this.country = country;
-	}
-	public String getState() {
-		return state;
-	}
-	public void setState(String state) {
-		this.state = state;
-	}
-	public String getCity() {
-		return city;
-	}
-	public void setCity(String city) {
-		this.city = city;
-	}
-	public String getCompanyWebSite() {
-		return CompanyWebSite;
-	}
-	public void setCompanyWebSite(String companyWebSite) {
-		CompanyWebSite = companyWebSite;
-	}
+	
+	
+	
 	
 	
 	

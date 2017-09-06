@@ -26,11 +26,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
-import com.bis.sourcelead.annotations.Validator;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.OrgLocationsDao;
-import com.bis.sourcelead.dto.ExpensesDTO;
-import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
@@ -55,7 +52,6 @@ import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
-import com.bis.sourcelead.util.FileUploadUtil;
 import com.bis.sourcelead.util.PdfConversionUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
@@ -64,9 +60,6 @@ public class AddExpensesRestController {
 	private static final Logger logger = LoggerFactory.getLogger(TimesheetRestController.class);
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
-	
-	@Value("${static.path}")
-	private String staticPath;
 	
 	@Autowired
 	private ProjectsService projectsService; 
@@ -198,6 +191,9 @@ public class AddExpensesRestController {
 			if(expenseId != null){
 			 	
 				expensesApprovalService.updateExpenseStatusByExpenseIdAndReOpenReason(expenseId,reason,loginUser,"notify",isSuperUser);
+				Expenses expenses = expensesService.getExpenseById(expenseId);
+				expenses.setExpenseStatus(Submission_Status.SUBMITTED);
+				addExpensesService.storeAddExpensesData(expenses);
 				sendEmailToSuperUserForReOpenExpenseApprovalStatus(expenseId,loginUser,orgLoc,reason,currencyCode);
 			    //send mail & notification logic
 			  	/*if(isSuperUser.equalsIgnoreCase(Constants.NO)){
@@ -241,19 +237,12 @@ public class AddExpensesRestController {
 	
 	
 	@RequestMapping(value = "/storeAddExpensesData",method = RequestMethod.POST)
-	public @ResponseBody String storeAddExpensesData(ExpensesDTO expensesDTO,HttpServletRequest request,@RequestParam(value="status", required=false) String status) throws Exception {
-		
-		if(Validator.validate(expensesDTO)) {
-			expensesDTO.setStaticPath(staticPath);
-				FileUploadUtil.fillUploadedFileInfo(expensesDTO, expensesDTO.getFileInfo());
-				User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-				OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-				 String currencyCode = (String) SourceLeadSessionManager.getSessionAttribute(request, "currencyCode");
-				//JSONObject jsonObj = new JSONObject(request.getParameter("json"));
-				addExpensesService.storeAddExpensesData(expensesDTO,loginUser,orgLoc,request,status,currencyCode);
-			} else
-				return "DataMissing";
-			
+	public @ResponseBody String storeAddExpensesData(MultipartHttpServletRequest request,@RequestParam(value="status", required=false) String status) throws Exception {
+		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		 String currencyCode = (String) SourceLeadSessionManager.getSessionAttribute(request, "currencyCode");
+		JSONObject jsonObj = new JSONObject(request.getParameter("json"));
+		addExpensesService.storeAddExpensesData(jsonObj,loginUser,orgLoc,request,status,currencyCode);
 		return "DataSaved";
 }
 	

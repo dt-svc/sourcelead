@@ -1,26 +1,23 @@
 package com.bis.sourcelead.dto;
 
-	import java.util.Date;
-import java.util.HashSet;
+	import java.util.HashSet;
 import java.util.Set;
 
-import javax.persistence.Column;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-
-import org.hibernate.annotations.Type;
-
+import com.bis.sourcelead.annotations.Email;
+import com.bis.sourcelead.annotations.Required;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.UserRole;
-import com.bis.sourcelead.enums.Status;
 
 	public class AddUserDTO {
 
+		@Required(desc = "first name")
 		private String firstName;
 		
 		private String lastName;
 		
+		@Required(desc = "email")
+		@Email
 		private String email;
 		
 		private String workPhone;
@@ -119,6 +116,7 @@ import com.bis.sourcelead.enums.Status;
 
 		private String newlyLoginUser;
 
+		@Required(desc = "roleType")
 		private String roleType;
 		
 		private String roleTypeId;

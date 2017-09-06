@@ -9,16 +9,15 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.mail.internet.InternetAddress;
-import javax.servlet.http.HttpServletRequest;
 
-import org.apache.commons.lang.StringUtils;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.AddExpensesDao;
-import com.bis.sourcelead.dto.ExpensesDTO;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
@@ -113,36 +112,36 @@ public Expenses storeAddExpensesData(Expenses expenses) throws Exception{
 }
 
 @Override
-public void storeAddExpensesData(ExpensesDTO expensesDTO, User loginUser, OrgLocations orgLoc,HttpServletRequest request,String status,String currencyCode) throws NumberFormatException, Exception {
+public void storeAddExpensesData(JSONObject jsonObj, User loginUser, OrgLocations orgLoc,MultipartHttpServletRequest request,String status,String currencyCode) throws NumberFormatException, Exception {
 	Expenses expenses = null;
 	ProjectMembers projMembers = null;
 	
 	//SimpleDateFormat dateFormat=orgLoc.getLocFullFormDateFormatter();
 	
-	if (StringUtils.isNotBlank(expensesDTO.getExpenseId())){
-		expenses = expensesService.getExpenseById(Long.parseLong(expensesDTO.getExpenseId()));
+	if (jsonObj.has("expenseId") && !(jsonObj.getString("expenseId").isEmpty())){
+		expenses = expensesService.getExpenseById(Long.parseLong(jsonObj.getString("expenseId")));
 	 }else{
 		 expenses = new Expenses();
 	 }
 	
-	/*if (jsonObj.has("ExpenseAutoId") && !(jsonObj.getString("ExpenseAutoId").isEmpty())){
+	if (jsonObj.has("ExpenseAutoId") && !(jsonObj.getString("ExpenseAutoId").isEmpty())){
 		expenses.setExpenseId(jsonObj.getString("ExpenseAutoId"));	
-	 }*/
-	if (StringUtils.isNotBlank(expensesDTO.getExpensePurpose())){
-		expenses.setPurpose(expensesDTO.getExpensePurpose());
 	 }
-	if (expensesDTO.getProjectMemberId() != null ){
-	    projMembers = projectMembersService.getProjectMemberById(expensesDTO.getProjectMemberId());
+	if (jsonObj.has("expensePurpose") && !(jsonObj.getString("expensePurpose").isEmpty())){
+		expenses.setPurpose(jsonObj.getString("expensePurpose"));
+	 }
+	if (jsonObj.has("projectMemberId") && !(jsonObj.getString("projectMemberId").isEmpty())){
+	    projMembers = projectMembersService.getProjectMemberById(Long.parseLong(jsonObj.getString("projectMemberId")));
 		expenses.setProjectMembers(projMembers);
 	}
-	if (StringUtils.isNotBlank(expensesDTO.getClientNameExpense())){
-		expenses.setClientName(expensesDTO.getClientNameExpense()); 
+	if (jsonObj.has("clientNameExpense") && !(jsonObj.getString("clientNameExpense").isEmpty())){
+		expenses.setClientName(jsonObj.getString("clientNameExpense")); 
 	}
-	if (StringUtils.isNotBlank(expensesDTO.getStartDateExpense())){
-		expenses.setStartDate(commonUtil.orgLocationDateFormat(orgLoc.getDateFormat(),expensesDTO.getStartDateExpense()));
+	if (jsonObj.has("startDateExpense") && !(jsonObj.getString("startDateExpense").isEmpty())){
+		expenses.setStartDate(commonUtil.orgLocationDateFormat(orgLoc.getDateFormat(),jsonObj.getString("startDateExpense")));
 	}
-	if (StringUtils.isNotBlank(expensesDTO.getEndDateExpense())){
-		expenses.setEndDate(commonUtil.orgLocationDateFormat(orgLoc.getDateFormat(),expensesDTO.getEndDateExpense()));
+	if (jsonObj.has("endDateExpense") && !(jsonObj.getString("endDateExpense").isEmpty())){
+		expenses.setEndDate(commonUtil.orgLocationDateFormat(orgLoc.getDateFormat(),jsonObj.getString("endDateExpense")));
 	 }
 	if(null != orgLoc){
 		expenses.setOrgLocationId(orgLoc);
@@ -171,7 +170,7 @@ public void storeAddExpensesData(ExpensesDTO expensesDTO, User loginUser, OrgLoc
 		
 	}*/
 	expenses.setStatus(Constants.EXPENSES_STATUS);
-	Set<ExpensesEntries>  expensesEntriesList = expensesEntriesService.prepareExpensesEntriesListByJson(expensesDTO, request, expenses);
+	Set<ExpensesEntries>  expensesEntriesList = expensesEntriesService.prepareExpensesEntriesListByJson(jsonObj, request, expenses);
 	expenses.setExpensesEntries(expensesEntriesList);
 	
 	expenses.setNoOfExpenses(String.valueOf(expensesEntriesList.size()));
@@ -184,8 +183,8 @@ public void storeAddExpensesData(ExpensesDTO expensesDTO, User loginUser, OrgLoc
 	if(projMembers != null){
 		ArrayList<User> managers = new ArrayList<User>() ;
 		HashSet<ExpensesApproverHierarchy> eaHierarchyList = new HashSet<ExpensesApproverHierarchy>();
-		if (StringUtils.isNotBlank(expensesDTO.getExpenseId())){
-		   List<ExpensesApproverHierarchy>eaSubHierarchyList  = expensesApprovalService.getExpensesApproverHierarchyListByExpenseId(Long.parseLong(expensesDTO.getExpenseId()));
+		if (jsonObj.has("expenseId") && !(jsonObj.getString("expenseId").isEmpty())){
+		   List<ExpensesApproverHierarchy>eaSubHierarchyList  = expensesApprovalService.getExpensesApproverHierarchyListByExpenseId(Long.parseLong(jsonObj.getString("expenseId")));
 		   if(eaSubHierarchyList != null && !eaSubHierarchyList.isEmpty()){
 			   for(ExpensesApproverHierarchy eaHierarchy : eaSubHierarchyList){
 					if(status.equalsIgnoreCase(Submission_Status.SUBMITTED.getValue()) || status.equalsIgnoreCase(Submission_Status.APPROVED.getValue())){

@@ -400,10 +400,7 @@
 			 var candidateId = '${candidateId}'
 			var sourceleadUrl = '${sourceleadUrl}';
 			var form = $('#addcandidate_form')[0];
-			alert($('#addcandidate_form')[0]);
-			alert("form.mobilePhone"+form.mobilePhone);
       		var formData = new FormData(form);
-      		alert("formData.mobilePhone"+formData.mobilePhone);
 			//It will escape all the special characters
 			$("#store_candidate").attr("disabled", "disabled");
 			$("#store_candidate").addClass('button').val('Processing..');

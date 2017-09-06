@@ -21,7 +21,6 @@ import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.MatchQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +28,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.AddUserDTO;
+import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.ClientDTO;
 import com.bis.sourcelead.elk.index.ClientVendorIndex;
 import com.bis.sourcelead.elk.index.helper.ClientVendorIndexHelper;
@@ -178,7 +179,7 @@ public class ClientServiceImpl implements ClientService {
 	 */
 	@SuppressWarnings("unused")
 	@Override
-	public void storeClient(ClientDTO clientDTO, User user, OrgLocations orgLocations, String responderType,
+	public void storeClient(ClientDTO clientDTO,AddUserDTO addUserDTO,CandidateDTO candidateDTO, User user, OrgLocations orgLocations, String responderType,
 			Org loginOrg) throws Exception {
 		HashSet<OrgLocations> orgLocationsList = new HashSet<OrgLocations>();
 		OrgLocations clientOrgLocations = null;
@@ -197,9 +198,9 @@ public class ClientServiceImpl implements ClientService {
 			}
 			if (StringUtils.isNotBlank(clientDTO.getOrgState())) {
 				clientOrgLocations.setState(clientDTO.getOrgState());
-			} else if (StringUtils.isNotBlank(clientDTO.getUserState())) {
+			} /*else if (StringUtils.isNotBlank(clientDTO.getUserState())) {
 				clientOrgLocations.setState(clientDTO.getUserState());
-			}
+			}*/
 			if (StringUtils.isNotBlank(clientDTO.getOrgCity())) {
 				clientOrgLocations.setCity(clientDTO.getOrgCity());
 			} else if (StringUtils.isNotBlank(clientDTO.getCity())) {
@@ -283,22 +284,16 @@ public class ClientServiceImpl implements ClientService {
 			org.setOrgLocationsList(orgLocationsList);
 			orgService.addOrganization(org);
 		}
-
+		
 		if (StringUtils.isNotBlank(clientDTO.getEmail())) {
-			spocUser = userService.storeUser(clientDTO.getAddUserDTO(),clientDTO.getCandidateDTO(), user, clientOrgLocations, "CREATEUSER", responderType, loginOrg);
+			spocUser = userService.storeUser(addUserDTO,candidateDTO, user, clientOrgLocations, "CREATEUSER", responderType, loginOrg);
 
 		}
 
 		if (clientDTO.getOwner() != null) {
-			String ownersId = null;
-			/*try {
-				JSONArray jsonArray = jsonObj.getJSONArray("owner");
-				ownersId = jsonArray.toString();
-			} catch (JSONException e) {
-				ownersId = jsonObj.getString("owner");
-			}pradeep*/
-			ownersId = ownersId.replaceAll("\\[", "").replaceAll("\\]", "");
-			String[] owners = ownersId.split(",");
+			List<String> ownersId = null;
+			ownersId = clientDTO.getOwner();
+			String[] owners = clientDTO.getOwner().toArray(new String[ownersId.size()]);
 
 			for (int i = 0; i < owners.length; i++) {
 				orgSpoc = new OrgSpoc();
@@ -448,6 +443,7 @@ public class ClientServiceImpl implements ClientService {
 
 		}
 	}
+
 
 	/**
 	 * populating Org data
