@@ -1,26 +1,23 @@
 package com.bis.sourcelead.dto;
 
-	import java.util.Date;
-import java.util.HashSet;
+	import java.util.HashSet;
 import java.util.Set;
 
-import javax.persistence.Column;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-
-import org.hibernate.annotations.Type;
-
+import com.bis.sourcelead.annotations.Email;
+import com.bis.sourcelead.annotations.Required;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.UserRole;
-import com.bis.sourcelead.enums.Status;
 
 	public class AddUserDTO {
 
+		@Required(desc = "first name")
 		private String firstName;
 		
 		private String lastName;
 		
+		@Required(desc = "email")
+		@Email
 		private String email;
 		
 		private String workPhone;
@@ -119,9 +116,36 @@ import com.bis.sourcelead.enums.Status;
 
 		private String newlyLoginUser;
 
+		@Required(desc = "roleType")
 		private String roleType;
 		
 		private String roleTypeId;
+		
+		private String EmailId;
+		
+		private String phoneNumber;
+		
+		private String assignReportingManagers;
+		
+		private String managerUsers;
+		
+		private String clientUsers;
+		
+		private String vendorUsers;
+		
+		private String approverUser;
+		
+		private String projectApproverUser;
+		
+		private String clientDocsOwnerUser;
+		
+		private String vendorDocsOwnerUser;
+		
+		private String userChangeRole;
+		
+		private String teamOwnerUser;
+		
+		private String reason;
 
 		public String getFirstName() {
 			return firstName;
@@ -530,9 +554,109 @@ import com.bis.sourcelead.enums.Status;
 		public void setRoleTypeId(String roleTypeId) {
 			this.roleTypeId = roleTypeId;
 		}
+
+		public String getEmailId() {
+			return EmailId;
+		}
+
+		public void setEmailId(String emailId) {
+			EmailId = emailId;
+		}
+
+		public String getPhoneNumber() {
+			return phoneNumber;
+		}
+
+		public void setPhoneNumber(String phoneNumber) {
+			this.phoneNumber = phoneNumber;
+		}
+
+		public String getAssignReportingManagers() {
+			return assignReportingManagers;
+		}
+
+		public void setAssignReportingManagers(String assignReportingManagers) {
+			this.assignReportingManagers = assignReportingManagers;
+		}
+
+		public String getManagerUsers() {
+			return managerUsers;
+		}
+
+		public void setManagerUsers(String managerUsers) {
+			this.managerUsers = managerUsers;
+		}
+
+		public String getClientUsers() {
+			return clientUsers;
+		}
+
+		public void setClientUsers(String clientUsers) {
+			this.clientUsers = clientUsers;
+		}
+
+		public String getVendorUsers() {
+			return vendorUsers;
+		}
+
+		public void setVendorUsers(String vendorUsers) {
+			this.vendorUsers = vendorUsers;
+		}
+
+		public String getApproverUser() {
+			return approverUser;
+		}
+
+		public void setApproverUser(String approverUser) {
+			this.approverUser = approverUser;
+		}
+
+		public String getProjectApproverUser() {
+			return projectApproverUser;
+		}
+
+		public void setProjectApproverUser(String projectApproverUser) {
+			this.projectApproverUser = projectApproverUser;
+		}
+
+		public String getClientDocsOwnerUser() {
+			return clientDocsOwnerUser;
+		}
+
+		public void setClientDocsOwnerUser(String clientDocsOwnerUser) {
+			this.clientDocsOwnerUser = clientDocsOwnerUser;
+		}
+
+		public String getVendorDocsOwnerUser() {
+			return vendorDocsOwnerUser;
+		}
+
+		public void setVendorDocsOwnerUser(String vendorDocsOwnerUser) {
+			this.vendorDocsOwnerUser = vendorDocsOwnerUser;
+		}
+
+		public String getUserChangeRole() {
+			return userChangeRole;
+		}
+
+		public void setUserChangeRole(String userChangeRole) {
+			this.userChangeRole = userChangeRole;
+		}
+
+		public String getTeamOwnerUser() {
+			return teamOwnerUser;
+		}
+
+		public void setTeamOwnerUser(String teamOwnerUser) {
+			this.teamOwnerUser = teamOwnerUser;
+		}
+
+		public String getReason() {
+			return reason;
+		}
+
+		public void setReason(String reason) {
+			this.reason = reason;
+		}
 		
-		
-		
-		
-	
 }

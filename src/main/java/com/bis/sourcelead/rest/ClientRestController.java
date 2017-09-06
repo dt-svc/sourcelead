@@ -40,6 +40,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.UserRoleDao;
+import com.bis.sourcelead.dto.AddUserDTO;
+import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.ClientDTO;
 import com.bis.sourcelead.dto.ClientVendorDTO;
 import com.bis.sourcelead.dto.ResponseList;
@@ -247,7 +249,7 @@ public class ClientRestController {
 	@PreAuthorize("hasAnyRole('ROLE_CREATE_CLIENT','ROLE_CREATE_VENDOR')")
 	@RequestMapping(value = "/saveClient", method = RequestMethod.POST)
 	@ResponseBody
-	public String saveClient(ClientDTO clientDTO,
+	public String saveClient(ClientDTO clientDTO,AddUserDTO addUserDTO,CandidateDTO candidateDTO,
 			@RequestParam(value = "responderType", required = false) String responderType,
 			@RequestParam(value = "orgLocationId", required = false) Long orgLocationId, HttpServletRequest request)
 			throws Exception {
@@ -260,7 +262,7 @@ public class ClientRestController {
 			clientDTO.setOrgLocationId(orgLocationId.toString());
 		}
 
-		clientService.storeClient(clientDTO, user, orgLocation, responderType, org);
+		clientService.storeClient(clientDTO,addUserDTO,candidateDTO, user, orgLocation, responderType, org);
 		if (responderType.equalsIgnoreCase("Vendor")) {
 			SourceLeadSessionManager.setSessionAttribute(request, "vendorCreateMsg", "Success!! New Vendor created");
 		} else if (responderType.equalsIgnoreCase("Client")) {

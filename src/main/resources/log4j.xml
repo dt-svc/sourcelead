@@ -22,6 +22,8 @@
 	</appender> -->
 	<appender name="RollingAppender" class="org.apache.log4j.DailyRollingFileAppender">
        <param name="File" value="${catalina.home}/logs/sourcelead.log" />
+       
+       <param name="maxFileSize" value="10MB" />
        <param name="DatePattern" value="'.'yyyy-MM-dd" />
        <layout class="org.apache.log4j.PatternLayout">
           <param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss} [%t] %-5p %c{1}:%L - %m%n"/>          

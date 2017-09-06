@@ -415,7 +415,7 @@
 
 						<div class="form-group">
 							<label class="col-md-3">Attach Resume</label>
-							<div class="col-md-9">
+							<div class="col-md-9 zindex">
 								<div class="input-group col-md-12" id="uploadFileGroup"
 									style="margin: 0 auto">
 									<label class="input-group-btn"> 

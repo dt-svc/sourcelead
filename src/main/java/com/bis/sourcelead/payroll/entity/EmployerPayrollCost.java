@@ -17,6 +17,7 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import com.bis.sourcelead.entity.OrgLocations;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "EMPLOYER_PAYROLL_COST", catalog = "sourcelead")
@@ -97,9 +98,11 @@ public class EmployerPayrollCost implements Serializable {
 	private String updatedBy;
 	
 	@Transient
+	@JsonProperty
 	private String fromDateStr;
 	
 	@Transient
+	@JsonProperty
 	private String toDateStr;
 	
 

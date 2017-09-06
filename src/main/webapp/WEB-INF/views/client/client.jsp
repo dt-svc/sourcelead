@@ -510,21 +510,12 @@ function getRolesList(){
 	function saveClient() {
 		if ($('#client_form').validate(false, validationSettings)) {
 			var orgLocationId = document.getElementById("orgLocationId").value;
-			/* var frm = $('#client_form').serializeFormJSON();
-			
-			var jsonData = JSON.stringify(frm);
-		    var form = $('#client_form')[0];
-		    var formData = new FormData(form);
-		  	formData.append("json",jsonData); */
 		  	 var formData = getFormData("client_form");
-		//	con = con.replace(/[{}]/g, "");
-			  //It will escape all the special characters
-	      //  var jsonData = encodeURIComponent(con);
 			var sourceleadUrl = '${sourceleadUrl}';
 			$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 			$.post(sourceleadUrl+"/saveClient?${_csrf.parameterName}=${_csrf.token}&orgLocationId="+orgLocationId+"&responderType=Client", formData, function(data) {
+				location.replace(sourceleadUrl+ "/clientDashboard");
 			});
-// 					location.replace(sourceleadUrl+ "/clientDashboard");
 			return true;
 		} else {
 			return false;
@@ -535,8 +526,6 @@ function getRolesList(){
 		$("#client_form").validateOnBlur(false, validationSettings);
 	});
 </script>
-
-
 
 <script type="text/javascript">
 function validateEmail(){
