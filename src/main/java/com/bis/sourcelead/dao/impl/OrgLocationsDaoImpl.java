@@ -297,4 +297,13 @@ public class OrgLocationsDaoImpl implements OrgLocationsDao {
 		return false;
 	}
 
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<OrgLocations> getAllRegisteredOrgLocationsForClientProject(List<Long> orgLocationId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from OrgLocations orgLocations left join fetch orgLocations.user where orgLocations.org.id <> '1' and orgLocations.id NOT IN (:orgLocationId) ";
+		List orgLocList = session.createQuery(query).setParameterList("orgLocationId", orgLocationId).setCacheable(true).list();
+		return orgLocList;
+	}
+
 }

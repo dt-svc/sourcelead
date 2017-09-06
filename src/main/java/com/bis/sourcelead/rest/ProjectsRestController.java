@@ -1,6 +1,7 @@
 package com.bis.sourcelead.rest;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -142,7 +143,7 @@ public class ProjectsRestController {
 	
 	
        @RequestMapping(value = "/assignProjectMembersToProject", method = RequestMethod.POST)
-		public  String assignProjectMembersToProject(@RequestBody ProjectAssignedMembersDTO projectAssignedMembersDTO,@RequestParam(value="projectUUID", required=true) String projectUUID,
+		public  String assignProjectMembersToProject(ProjectAssignedMembersDTO projectAssignedMembersDTO,@RequestParam(value="projectUUID", required=true) String projectUUID,
 			   @RequestParam(value="userId", required=true) Long userId,@RequestParam(value="orgLocationId", required=true) Long orgLocationId) throws Exception {
 		    
 		    User user = userService.getUserById(userId);
@@ -346,6 +347,22 @@ public class ProjectsRestController {
 			throws Exception {
 		return projectsService.validateTasksName(TaskName, projectId);
 	}
+	
+	
+	
+	  @RequestMapping(value = "/getSourceLeadRegisteredOrgsForClientProject", method = RequestMethod.GET)
+			public  List<OrgLocations> getSourceLeadRegisteredOrgsForClientProject(@RequestParam(value="orgLocationIds", required=true) String orgLocationIds) throws Exception {
+			    
+			   String[] orgLocIds = orgLocationIds.split(",");
+			   List<Long> orgLocationIdsList = new ArrayList<>();
+			   for(int i=0; i<orgLocIds.length; i++){
+				   orgLocationIdsList.add(Long.valueOf(orgLocIds[i])); 
+			   }
+			   
+			   List<OrgLocations> orgLocationsList = orgLocationService.getAllRegisteredOrgLocationsForClientProject(orgLocationIdsList);
+		       return orgLocationsList;
+		    }
+	
 
 	protected static boolean isNullOrEmpty(String str) {
 		return str == null || "".equals(str.trim());

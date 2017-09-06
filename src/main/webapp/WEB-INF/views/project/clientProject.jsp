@@ -19,6 +19,7 @@
 	
 	<div class="content-area clearfix">
 	  <div id="loading"></div>
+	  <div id="choicepopUp"></div>
 	<div class="newPrDetails newPrDetailsPMO"> 
       		<div class="newPrTabs">
    			  <ul class="newPrTabsMenu">
@@ -59,18 +60,16 @@
 
 <div id="divLevelTd1" style="display: none; float: left;">
 	<div class="" id="REPLACEROWIDlevel" name="REPLACEROWIDlevel">
+	<input type="hidden" id="REPLACEROWIDlevelValue" value="" />
 	<span id="REPLACEROWIDlevelName"></span>
 	</div>
  </div>
  
  <div id="divLevelTd2" style="display: none; float: left;">
+  <input type="hidden" id="REPLACEROWIDclientOrgLocId" value="" />
   <div class="dropdown-select">
-              <select class="form-control select-bg CHOOSEN-SELECT-CLASS" data-validation="required" field-name="Client" id="REPLACEROWIDlevelClient" name="REPLACEROWIDlevelClient" >
-                <option selected value="">--Select Client--</option>
-                <c:forEach var="client" items="${clientsList}">
-					<option value="${client.id}" >${client.id}</option>
-    			</c:forEach> 
-              </select>
+          <select class="form-control select-bg CHOOSEN-SELECT-CLASS" data-validation="required" field-name="Client" onchange="getClientOrgLocValue();" id="REPLACEROWIDlevelClient" name="REPLACEROWIDlevelClient" >
+          </select>
   </div>
  </div>
  
@@ -88,7 +87,7 @@
 <div id="divLevelTd4" style="display: none; float: left;">
   <div>
          <div class="pull-right">
-               <button type="button" class="btn btm-sm pull-right mt5" onclick="removelevel(REPLACEROWID)"><i class="fa fa-remove text-danger"></i></button>
+               <button type="button" class="btn btm-sm pull-right mt5" onclick="removeLevel(REPLACEROWID)"><i class="fa fa-remove text-danger"></i></button>
           </div>
    </div>
 </div>  
@@ -122,6 +121,7 @@ function getClientLevels(){
         
 	result = result +'<div class="clearfix mb10 mt5">';
 	result = result +'<input type="hidden" name="levelMaxRowNumber"  id="levelMaxRowNumber" value="1" />';
+	result = result +'<input type="hidden" name="levelMaxValue"  id="levelMaxValue" value="1" />';
 	result = result +'<table class="table table-responsive table-bordered table-hover"  width="100%" id="clientLevelTable" border="0">';
 	result = result +'<tbody>';
 	result = result +'<tr id="levelTsRow0">';
@@ -129,6 +129,7 @@ function getClientLevels(){
 	
 	result = result +'<td width="150px">';
 	result = result +'<div class="">';
+	result = result +'<input type="hidden" id="0levelValue" value="1" />';
 	result = result +'<span>Level 1</span>';
 	result = result +'</div>';
 	result = result +'</td>';
@@ -136,14 +137,15 @@ function getClientLevels(){
 	result = result +'<td width="100px">';
 	result = result +'<div class="dropdown-select">';
 	
-	result = result +'<select class="form-control select-bg chosen-select" id="0levelClient" name="0levelClient">';
+	result = result +'<input type="hidden" id="0clientOrgLocId" value="" />';
+	result = result +'<select class="form-control select-bg chosen-select" id="0levelClient" name="0levelClient" onchange="getClientOrgLocValue();">';
 	result = result +'<option value="">--Select Client--</option>';
 	<c:forEach var="report" items="${clientsList}">
 	    if('${report.locationId.id}' == '${SourceLeadWeb_orgLocations.id}'){
-	    	result = result +'<option value="${report.id},${report.responderLocationId.id}">${report.responderLocationId.org.orgName}</option>';
+	    	result = result +'<option value="${report.responderLocationId.id}">${report.responderLocationId.org.orgName}</option>';
 	    } 
 	    if('${report.responderLocationId.id}' == '${SourceLeadWeb_orgLocations.id}'){
-	    	result = result +'<option value="${report.id},${report.locationId.id}">${report.locationId.org.orgName}</option>';
+	    	result = result +'<option value="${report.locationId.id}">${report.locationId.org.orgName}</option>';
 	    }
     </c:forEach> 
  
@@ -184,9 +186,69 @@ function getClientLevels(){
 </script>
 
 
+<script>
+function getClientOrgLocValue(){
+	 var checkMaxTsRowNum = parseInt($("input[name = 'levelMaxRowNumber']").val() - 1);
+	 var orgLocId = document.getElementById(checkMaxTsRowNum+"levelClient");
+     $("#"+checkMaxTsRowNum+"clientOrgLocId").val(orgLocId.value);
+}
+</script>
+
+
+
+<script type="text/javascript">
+	function removeLevel(rowId) {
+		 document.getElementById("divRequestedLevelRow"+rowId).style.display = 'none';
+		 document.getElementById("divRequestedLevelRow"+rowId).value= '';
+		 var  rId = "divRequestedLevelRow"+rowId;
+		  var r = document.getElementById("clientLevelTable").rows[rId];
+          var count = 2*(r.cells.length);
+		    for(i=0;i<=count;i++){
+		        r.deleteCell(0);
+		        updateLevelName();
+		    } 
+		 
+	}
+</script>
 
 <script>
 function addLevelRow(){
+	var checkMaxTsRowNum = $("#levelMaxRowNumber").val();
+	var orgLocId = document.getElementById(checkMaxTsRowNum-1+"clientOrgLocId");
+	if(orgLocId != null && (orgLocId.value == null || orgLocId.value == '' || orgLocId.value == 'undefined')){
+		alertMessage();
+	}else{
+		addClientLevelRow();
+	}
+	
+}
+</script>
+
+<script type="text/javascript">
+function alertMessage(){
+	var result = "";
+	result = result +"	<div class='project_inn_mask'></div>";
+	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+	result = result +"		<p>Client must be selected</p>";
+	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='cancel();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
+	result = result +"	</div>";
+	$("#choicepopUp").append(result);
+	$("#remove_user_pop").slideDown(200);
+	$(".project_inn_mask").fadeIn(200);
+
+}
+</script>
+
+<script type="text/javascript">
+function cancel(){
+	$("#choicepopUp").empty();
+	$(".project_inn_mask").fadeOut(200);
+}
+</script>
+
+<script>
+function addClientLevelRow(){
 	
 	var checkMaxTsRowNum = $("#levelMaxRowNumber").val();
 	var tbl = document.getElementById("clientLevelTable");
@@ -238,9 +300,62 @@ function addLevelRow(){
 </script>
 
 <script>
-function getLevelDetails(rowNum){
-	$("#"+rowNum+"levelName").html("Level "+ parseInt(rowNum + 1));
+function updateLevelName(){
 	var checkMaxTsRowNum = $("#levelMaxRowNumber").val();
+	var j = 1;
+	 for(var i=0; i < checkMaxTsRowNum; i++){
+		 var orgLocId = document.getElementById(i+"levelClient");
+		 if(orgLocId != null){
+			 $("#"+i+"levelName").html("Level "+ parseInt(j));
+			 $("#"+i+"levelValue").val(j);
+			 j++;
+		 }
+	 }
+	 $("input[name = 'levelMaxValue']").val(j-1);
+	
+}
+</script>
+
+<script>
+function getLevelDetails(rowNum){
+	
+	var levelMaxValue = parseInt($("input[name = 'levelMaxValue']").val());
+	$("#"+rowNum+"levelName").html("Level "+ parseInt(levelMaxValue + 1));
+	$("input[name = 'levelMaxValue']").val(levelMaxValue + 1);
+	
+	$("#"+rowNum+"levelValue").val(levelMaxValue+1);
+	
+	
+	 var sourceleadUrl ='${sourceleadUrl}';
+	 var orgLocationIds = [];
+	 var loginOrgLocationId = '${SourceLeadWeb_orgLocations.id}';
+	 orgLocationIds.push(loginOrgLocationId);
+	 
+	 for(var i=0; i < rowNum; i++){
+		 var orgLocId = document.getElementById(i+"levelClient");
+		 if(orgLocId != null){
+			 orgLocationIds.push(orgLocId.value);
+		 }
+		
+	 }
+	
+	 $.ajax({
+	    	type: "GET",
+	        url: sourceleadUrl+"/getSourceLeadRegisteredOrgsForClientProject?${_csrf.parameterName}=${_csrf.token}&orgLocationIds="+orgLocationIds,
+	        success: function(json) {
+	        	var output = "";
+	        	output = output + "<option value=''>-- Select Client --</option>";
+	        	for (var i=0; i<json.length; i++)
+				{
+	        		var opt = json[i];
+	        		output = output + "<option value='" +opt.id+ "'>"+opt.orgLocationName+"</option>";
+				}
+	        	
+	        	$("#"+rowNum+"levelClient").append(output);
+	        	$("#"+rowNum+"levelClient").trigger("chosen:updated");
+	        }
+	    });
+	
 }
 </script>
 

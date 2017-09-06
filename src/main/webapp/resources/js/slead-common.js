@@ -4,6 +4,17 @@ function viewFile(sourceleadUrl, fileURL,title){
 	}  
 }
 
+
+function getFormData(formId) {
+	var $form = $("#" + formId);
+	var unindexed_array = $($form).serializeArray();
+	var indexed_array = {};
+	$.map(unindexed_array, function(n, i) {
+		indexed_array[n['name']] = n['value'];
+	});
+	return indexed_array;
+}
+
 function fileUpload(sourceleadUrl, id, type, formId) {
 	var data = new FormData();
 	var files = document.getElementById(id).files;
