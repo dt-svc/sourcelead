@@ -29,7 +29,7 @@ margin:10px 220px 0;
       <%-- <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="clientDashboard">Client & Contact List</a> &raquo; Client & Contact Import </div> --%>
     <div class="pull-right brud-crum"><a href="#">Home</a> &raquo; <a href="clientDashboard">Client & Contact List</a> &raquo; Import Client & Contacts </div>
     </section>
-    <form:form id="upload_form" name="upload_form" enctype="multipart/form-data">
+    <form:form id="upload_form" name="upload_form">
     <%-- <form:form id="upload_form" name="upload_form" method="post" enctype="multipart/form-data" modelAttribute="uploadedFile" action="clientFileUpload?${_csrf.parameterName}=${_csrf.token}&type=Client"> --%>
     <div class="content-area clearfix">
     <div id="loadinggif"></div> 
@@ -204,18 +204,11 @@ function saveBulkImport(){
 			dateFormat : 'yyyy/mm/dd' 
             };
 if ($('#upload_form').validate(false, validationSettings)){
-	var frm = $('#upload_form').serializeFormJSON();
-	var con = JSON.stringify(frm);
-	con = con.replace(/[{}]/g, "");
-	
-	//It will escape all the special characters
-	var jsonData = encodeURIComponent(con);
-	var form = $('#upload_form')[0];
-	var formData = new FormData(form); 
+	var formData = getFormData("client_form");
 	var sourceleadUrl = '${sourceleadUrl}';
 	
 	$("#loadinggif").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-	 $.ajax({
+	 /* $.ajax({
 		   	type: "POST",
 		   	data: formData,
     	    contentType : 'application/json; charset=utf-8',
@@ -256,7 +249,11 @@ if ($('#upload_form').validate(false, validationSettings)){
  		   error: function(e){
  			  alert(e);
 	        }
-	 });
+	 }); */
+	 alert("pradeep");
+	$.post(sourceleadUrl+"/clientExcelFileUpload?${_csrf.parameterName}=${_csrf.token}&responderType=Client", formData, function(data) {
+		location.replace(sourceleadUrl+ "/clientDashboard");
+	});
 	 
 }
 }

@@ -1169,7 +1169,7 @@ function candidateProfile(candidateId,candidateType){
 		
 		 $('#emailDiv').find('p.jquery_form_error_message').remove();
 		 if ($('#candidateProfileEdit_form').validate(false, validationSettings)){ 
-			var sourceleadUrl = '${sourceleadUrl}';
+			/* var sourceleadUrl = '${sourceleadUrl}';
 			var frm = $('#candidateProfileEdit_form').serializeFormJSON();
 			
 			 var con = JSON.stringify(frm);
@@ -1178,19 +1178,19 @@ function candidateProfile(candidateId,candidateType){
 			var jsonData = encodeURIComponent(con);
 			
 			var form = $('#candidateProfileEdit_form')[0];
-      		var formData = new FormData(form); 
-			
+      		var formData = new FormData(form);  */
+      		var formData = getFormData("candidateProfileEdit_form");
+			var sourceleadUrl = '${sourceleadUrl}';
 			$("#update_candidate").attr("disabled", "disabled");
 			$("#update_candidate").addClass('button').val('Processing..');
-			$.ajax({
-						type : "POST",
-						url : sourceleadUrl+"/updateCandidate?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
-						success : function(result) {
-							/* location.replace(sourceleadUrl+"/candidatesList");  */
-							candidateSideBar(candidateId);
-							candidateQuickViewProfile(candidateId);
-						},
-					});
+				//var form = $('#candidateResume_form')[0];
+				
+		        $.post(sourceleadUrl+"/updateCandidate?${_csrf.parameterName}=${_csrf.token}", formData, function(data) {
+		        	location.replace(sourceleadUrl+"/candidatesList"); 
+		        	candidateSideBar(candidateId);
+					candidateQuickViewProfile(candidateId);
+		        });
+			 
 			return true;
 		 }else{ 
 				return false;

@@ -5,12 +5,13 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.json.JSONObject;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.OrgRelationsDao;
+import com.bis.sourcelead.dto.ClientDTO;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
@@ -95,7 +96,7 @@ public class OrgRelationsServiceImpl implements OrgRelationsService {
 	 * @throws NullPointer
 	 */
 	@Override
-	public Set<OrgRelations> orgRelationsListByJson(JSONObject jsonObj, OrgLocations clientOrgLocation, OrgLocations orgLocations, String loginUserCode,String responderType) throws Exception {
+	public Set<OrgRelations> orgRelationsListByJson(ClientDTO clientDTO, OrgLocations clientOrgLocation, OrgLocations orgLocations, String loginUserCode,String responderType) throws Exception {
 		
 		HashSet<OrgRelations> orgRelationsList = new HashSet<OrgRelations>();
 		
@@ -116,9 +117,9 @@ public class OrgRelationsServiceImpl implements OrgRelationsService {
 				orgRelations.setResponderType("Vendor");
 			}
 		  }
-		if(jsonObj.has("level")){
+		if(StringUtils.isNotBlank(clientDTO.getLevel())){
 			//orgRelations.setLevel(jsonObj.getString("level"));
-			orgRelations.setInitiatorLevel(jsonObj.getString("level"));
+			orgRelations.setInitiatorLevel(clientDTO.getLevel());
 			orgRelations.setResponderLevel("Tier-5");
 		}else{
 			orgRelations.setInitiatorLevel("Tier-5");

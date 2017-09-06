@@ -17,6 +17,8 @@ import org.springframework.test.context.web.WebAppConfiguration;
 
 import com.bis.sourcelead.SecurityConfig;
 import com.bis.sourcelead.WebAppConfig;
+import com.bis.sourcelead.dto.CandidateDTO;
+import com.bis.sourcelead.dto.CandidateEducationDTO;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateEducation;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -41,18 +43,18 @@ public class CandidateEducationServiceTest {
 	public void storeCandidateEducation() throws Exception{
 		CandidateEducation candidateEducation = new CandidateEducation();
 		
-		JSONObject jsonObject = new JSONObject();
-		jsonObject.put("institute", "NEWHORIZON");
-		jsonObject.put("name", "BE");
-		jsonObject.put("specialization", "ElectroniceAndCommunication");
-		jsonObject.put("grade", "A");
-		jsonObject.put("gradeType", "percentage");
-		jsonObject.put("address", "Madhapur");
-		jsonObject.put("startDate", "22-01-2001");
-		jsonObject.put("endDate", "02-01-2001");
-		jsonObject.put("createdDate", "09-01-2001");
-		jsonObject.put("createdBy", "shiva");
-		jsonObject.put("updatedBy", "yogi");
+		CandidateEducationDTO candidateEducationDTO = new  CandidateEducationDTO();
+		candidateEducationDTO.setInstitute("NEWHORIZON");
+		candidateEducationDTO.setName("BE");
+		candidateEducationDTO.setSpecialization("ElectroniceAndCommunication");
+		candidateEducationDTO.setScore("A");
+		candidateEducationDTO.setScoreType("percentage");
+		candidateEducationDTO.setAddress("Madhapur");
+		candidateEducationDTO.setStartDate("22-01-2001");
+		candidateEducationDTO.setEndDate("02-01-2001");
+		candidateEducationDTO.setCreatedDate("09-01-2001");
+		candidateEducationDTO.setCreatedBy("shiva");
+		candidateEducationDTO.setUpdatedBy("yogi");
 		Candidate candidateId = new Candidate();
 		candidateId.setId(1l);
 		candidateEducation.setCandidateId(candidateId );
@@ -61,7 +63,7 @@ public class CandidateEducationServiceTest {
 		candidateEducation.setOrglocationId(orglocationId);
 		User user = new  User();
 		user.setId(1l);
-		candidateEducationService.storeCandidateEducation(jsonObject, 1l, 1l,user);
+		candidateEducationService.storeCandidateEducation(candidateEducationDTO, 1l, 1l,user);
 		logger.info("candidateEducationTest added successfully");
 	}
 	//@Test	
@@ -76,14 +78,14 @@ public class CandidateEducationServiceTest {
 	
 	//@Test
 	public void getCandidateEducationDetails() throws Exception{
-		JSONObject jsonObject = new JSONObject();
-		jsonObject.put("candidateEducation", "NEWHORIZON");
+		CandidateDTO candidateDTO = new CandidateDTO();
+		candidateDTO.setCandidateEducation("NEWHORIZON");
 		OrgLocations orgLocations = new OrgLocations();
 		orgLocations.setId(1l);
 		Candidate candidate = new Candidate();
 		candidate.setId(1l);
 		String userCode = "A001";
-		HashSet<CandidateEducation> candidateEducations = candidateEducationService.getCandidateEducationDetails(jsonObject, orgLocations, candidate, userCode);
+		HashSet<CandidateEducation> candidateEducations = candidateEducationService.getCandidateEducationDetails(candidateDTO, orgLocations, candidate, userCode);
 		for(@SuppressWarnings("unused") CandidateEducation education :candidateEducations){
 			logger.info("getCandidateEducationDetails added successfully"+candidateEducations.size());
 		}

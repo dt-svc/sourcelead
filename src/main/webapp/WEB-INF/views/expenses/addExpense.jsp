@@ -51,7 +51,7 @@
 	</c:choose>
     
     </section>
-    <form:form id="add_expenses_form" name="add_expenses_form"  enctype='multipart/form-data'>
+    <form:form id="add_expenses_form" name="add_expenses_form">
 	<div class="content-area content-new clearfix">
          
           <div class="clearfix form-horizontal inner-content">
@@ -226,7 +226,8 @@
 			                 <span> 
 			                     <table class='timesheetAttachment' id='attachmentTable${entryCount.count}' cellpadding='0' cellspacing='0' width="100%">
 			                       <tr id='${entryCount.count}divAttachmentTsRow0'>
-			                           <td><div id='0docFileuploadFileGroup${entryCount.count}'><input type='file' name='0docFile${entryCount.count}' id='0docFile${entryCount.count}' field-name='Attachment' onchange='validateUploadFile(0,${entryCount.count})' class='timesheetAttachmentValidation'><i class='fa fa-plus' onClick='addAttachment(${entryCount.count},"EDIT")'></i></div></td> 
+			                           <td><div id='0docFileuploadFileGroup${entryCount.count}'>
+			                           <input type='file' name='0docFile${entryCount.count}' id='0docFile${entryCount.count}' field-name='Attachment' onchange='validateUploadFile(0,${entryCount.count})' class='timesheetAttachmentValidation'><i class='fa fa-plus' onClick='addAttachment(${entryCount.count},"EDIT")'></i></div></td> 
 			                       </tr>
 			                   </table>
 			                 </span>
@@ -297,21 +298,20 @@ function removeWhiteSpacesMyExp(rowCount){
 				$("#draftForApprovalExpensesId").prop('disabled', true);
 				$("#cancelForApprovalExpensesId").prop('disabled', true);
 				
-				var frm = $('#add_expenses_form').serializeFormJSON();
+				/* var frm = $('#add_expenses_form').serializeFormJSON();
 				var jsonData = JSON.stringify(frm);
 				var form = $('#add_expenses_form')[0];
 	      		var formData = new FormData(form); 
-	      		formData.append("json",jsonData);
-				var sourceleadUrl = '${sourceleadUrl}';
+	      		formData.append("json",jsonData); */
+	      		var sourceleadUrl = '${sourceleadUrl}';
+				var form = $('#add_expenses_form')[0];
+	      		var formData = new FormData(form); 
 				$( "#submitForApprovalExpensesId" ).addClass('button').val('Processing..');
 	     		$.ajax({
 	       	        type : "POST",
 	        	    data: formData,
-	        	    contentType : 'application/json; charset=utf-8',
-	        	    enctype: 'multipart/form-data',
 	    	        processData: false,
 	    	        contentType:false,
-	        	    dataType : 'json',
 					url : sourceleadUrl+"/storeAddExpensesData?${_csrf.parameterName}=${_csrf.token}&status="+status,
 					success : function(data) {
 						$( "#submitForApprovalExpensesId" ).addClass('button').val('Submit for Approval');
