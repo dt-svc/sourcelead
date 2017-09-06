@@ -204,6 +204,8 @@ function getClientLevels(){
 	result = result +'<div class="pull-right">';
 	result = result +'<button type="button" class="btn btm-sm pull-right mt5" id="addClientRow" onclick="addLevelRow();"><i id="addButton" class="fa fa-plus text-primary"></i></button>';
 	result = result +'</div>';
+	
+	
 	result = result +'</div>';
 	result = result +'</td>';
 	
