@@ -1,5 +1,8 @@
 package com.bis.sourcelead.dto;
 
+import java.util.List;
+import java.util.Map;
+
 public class ContractsDTO {
 	private String contractType;
 	private String contractTitle;
@@ -34,6 +37,28 @@ public class ContractsDTO {
 	private String taxPercentageReward;
 	private String taxFlatReward;
 	private String taxFlatRateType;
+	private List<Map<String, String>> fileInfo;
+	private List<FileInfo> uploadedFileInfo;
+	
+	public List<Map<String, String>> getFileInfo()
+	{
+		return fileInfo;
+	}
+	
+	public void setFileInfo(List<Map<String, String>> fileInfo)
+	{
+		this.fileInfo = fileInfo;
+	}
+	
+	public List<FileInfo> getUploadedFileInfo()
+	{
+		return uploadedFileInfo;
+	}
+	
+	public void setUploadedFileInfo(List<FileInfo> uploadedFileInfo)
+	{
+		this.uploadedFileInfo = uploadedFileInfo;
+	}
 	
 	public String getContractType()
 	{
