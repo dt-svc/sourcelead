@@ -155,7 +155,7 @@ function getClientLevels(){
 	result = result +'</td>';
 	
 	result = result +'<td width="150px">';
-	result = result +'<label class="switch ml10 pull-left">';
+	result = result +'<label class="switch ml10 pull-left" id="">';
 	result = result +'<input type="checkbox"  id="0checked" name="0checked" onclick="checkDocument(0)" value="N">';
 	result = result +'<div class="slider round"></div>';
 	result = result +'</label>';
@@ -255,6 +255,9 @@ function addClientLevelRow(){
 	var maxRowNum = parseInt($("input[name = 'levelMaxRowNumber']").val());
 	$("input[name = 'levelMaxRowNumber']").val(maxRowNum + 1);
 	
+	for(i=0; i < maxRowNum; i++){
+		$("#"+i+"checked").attr('disabled', 'disabled');
+	}
 
 	var row = tbl.insertRow(maxRowNum);
 	row.setAttribute("id", "divRequestedLevelRow" + maxRowNum);
@@ -312,6 +315,8 @@ function updateLevelName(){
 		 }
 	 }
 	 $("input[name = 'levelMaxValue']").val(j-1);
+	 var number = j-2;
+	 $("#"+number+"checked").removeAttr('disabled', 'disabled');
 	
 }
 </script>
