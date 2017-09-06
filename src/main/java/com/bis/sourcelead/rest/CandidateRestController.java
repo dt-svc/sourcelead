@@ -174,9 +174,9 @@ public class CandidateRestController {
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			Candidate candidate = candidateService.storeCandidate(candidateDto, orgLocation, user);
-		} else
+		} else{
 			return "DataMissing";
-		
+		}
 		return "success";
 	}
 	
