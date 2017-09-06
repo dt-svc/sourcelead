@@ -64,6 +64,8 @@ public class ClientDTO {
 	
 	private List<String> owner;
 	
+	private String OwnerUserId;
+	
 	private String isMailSent;
 	
 	private String userRoleText;
@@ -89,6 +91,10 @@ public class ClientDTO {
 	private String vendorName;
 	
 	private String reportingManager;
+	
+	private AddUserDTO addUserDTO;
+	
+	private CandidateDTO candidateDTO;
 	
 	
 	public String getOrgName() {
@@ -248,6 +254,12 @@ public class ClientDTO {
 	public void setOwner(List<String> owner) {
 		this.owner = owner;
 	}
+	public String getOwnerUserId() {
+		return OwnerUserId;
+	}
+	public void setOwnerUserId(String ownerUserId) {
+		OwnerUserId = ownerUserId;
+	}
 	public String getIsMailSent() {
 		return isMailSent;
 	}
@@ -326,10 +338,17 @@ public class ClientDTO {
 	public void setReportingManager(String reportingManager) {
 		this.reportingManager = reportingManager;
 	}
-	
-	
-	
-	
-	
+	public AddUserDTO getAddUserDTO() {
+		return addUserDTO;
+	}
+	public void setAddUserDTO(AddUserDTO addUserDTO) {
+		this.addUserDTO = addUserDTO;
+	}
+	public CandidateDTO getCandidateDTO() {
+		return candidateDTO;
+	}
+	public void setCandidateDTO(CandidateDTO candidateDTO) {
+		this.candidateDTO = candidateDTO;
+	}
 	
 }
