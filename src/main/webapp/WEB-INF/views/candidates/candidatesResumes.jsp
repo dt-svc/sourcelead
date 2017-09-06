@@ -251,6 +251,7 @@ function addResume(candidateId) {
 				var formData = getFormData("candidateResume_form");
 				var sourceleadUrl = '${sourceleadUrl}';
 		        $.post(sourceleadUrl+"/saveCandidateResume?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&resumeId="+resumeId, formData, function(data) {
+		        	closeResumePopup();
 		        	candidateResumesList(candidateId);
 			 		resMsgFadeinResumes();
 		        });
