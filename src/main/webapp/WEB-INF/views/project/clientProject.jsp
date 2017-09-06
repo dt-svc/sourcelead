@@ -17,7 +17,7 @@
 			&raquo; Client Project
 	</section>
 	
-	<div class="content-area clearfix">
+	<div class="content-area clearfix noPad">
 	  <div id="loading"></div>
 	  <div id="choicepopUp"></div>
 	<div class="newPrDetails newPrDetailsPMO"> 
@@ -31,9 +31,40 @@
 			  <div class="clearfix"></div>
 		
 		<div class="project_tabs">
-		<div class="clearfix form-area form-horizontal toggle-div remove-div  newPrTabs_inn mt" id="tab-a">
+		<div class="clearfix form-area form-horizontal toggle-div remove-div  newPrTabs_inn mt5" id="tab-a">
 			<form:form id="project_form" name="project_form" method="post">
+			<div class="col-md-12 clearfix mt5 mb5">
+			<div class="col-md-6 col-lg-6">
+				<div class="form-group mb10">
+					<label class="col-md-3 mt10" for="Project Manager">Manager <span
+						class="text-danger">*&nbsp;</span></label>
+					<div class="col-md-9">
+						<div class="form-icon-min" id="chosen-level1Manager">
+							<select class="form-control chosen-select"
+								name="level1Manager" id="level1Manager" field-name="Manager"
+								data-validation="required" onchange="getLevel2Approvers();">
+								<option value="">-- Select Level1 Manager --</option>
+							</select> <span class="btn btn-default formic1 addLevel"
+								id="level2Toggle" onclick="getLevel2Approvers();">Add
+								Level-II</span>
+						</div>
+						<span class="hidden">Select Project Manager</span>
+					</div>
+				</div>
+				</div>
+				<div class="col-md-6 col-lg-6">
+				<div class="form-group level-second mb10" id="level2Div">
+					<label class="col-md-3 mt10" for="Level-II">Level-II</label>
+					<div class="col-md-9">
+						<select class="form-control chosen-select" name="level2Manager"
+							id="level2Manager">
+						</select>
+					</div>
+				</div>
+			</div>
+			</div>
               <div id="clientLevelsDiv"></div>
+              
 				<div class="form-footer clearfix mt">
 					<div class="col-lg-12">
 						<div class="pull-right">
@@ -61,7 +92,7 @@
 <div id="divLevelTd1" style="display: none; float: left;">
 	<div class="" id="REPLACEROWIDlevel" name="REPLACEROWIDlevel">
 	<input type="hidden" id="REPLACEROWIDlevelValue" value="" />
-	<span id="REPLACEROWIDlevelName"></span>
+	<span class="block mt5" id="REPLACEROWIDlevelName"></span>
 	</div>
  </div>
  
@@ -75,11 +106,11 @@
  
  <div id="divLevelTd3" style="display: none; float: left;">
   <div>
-     <label class="switch ml10 pull-left">
-       <input type="checkbox" id="REPLACEROWIDchecked" name="REPLACEROWIDchecked" onclick="checkDocument(REPLACEROWID)" value="N">
+     <label class="switch ml10 pull-left mt5">
+       <input type="checkbox" id="REPLACEROWIDchecked" name="REPLACEROWIDchecked" onclick="checkEndClient(REPLACEROWID)" value="N">
        <div class="slider round"></div>
        </label>
-       <span>Is end Client ?</span>
+       <span class="block mt5">Is end Client ?</span>
    </div>
 </div>  
 
@@ -100,6 +131,7 @@
 <script>
 	$(document).ready(function() {
 		$("#tab-a").show();
+		getProjectLevel1Approvers();
 		getClientLevels();
 	    $(".newPrTabsMenu a").click(function(event) {
 	        event.preventDefault();
@@ -122,15 +154,16 @@ function getClientLevels(){
 	result = result +'<div class="clearfix mb10 mt5">';
 	result = result +'<input type="hidden" name="levelMaxRowNumber"  id="levelMaxRowNumber" value="1" />';
 	result = result +'<input type="hidden" name="levelMaxValue"  id="levelMaxValue" value="1" />';
+	result = result +'<div class="clearfix col-md-12 clientProjTab">';
 	result = result +'<table class="table table-responsive table-bordered table-hover"  width="100%" id="clientLevelTable" border="0">';
 	result = result +'<tbody>';
 	result = result +'<tr id="levelTsRow0">';
 	result = result +'<div id="0levelFileGroup">';
 	
-	result = result +'<td width="150px">';
+	result = result +'<td width="100px">';
 	result = result +'<div class="">';
 	result = result +'<input type="hidden" id="0levelValue" value="1" />';
-	result = result +'<span>Level 1</span>';
+	result = result +'<span class="block mt5">Level 1</span>';
 	result = result +'</div>';
 	result = result +'</td>';
 	
@@ -155,16 +188,16 @@ function getClientLevels(){
 	result = result +'</td>';
 	
 	result = result +'<td width="150px">';
-	result = result +'<label class="switch ml10 pull-left" id="">';
-	result = result +'<input type="checkbox"  id="0checked" name="0checked" onclick="checkDocument(0)" value="N">';
+	result = result +'<label class="switch ml10 pull-left mt5">';
+	result = result +'<input type="checkbox"  id="0checked" name="0checked" onclick="checkEndClient(0)" value="N">';
 	result = result +'<div class="slider round"></div>';
 	result = result +'</label>';
-	result = result +'<span>Is end Client ?</span>';	
+	result = result +'<span class="block mt5">Is end Client ?</span>';	
 	result = result +'</td>';
 	
-	result = result +'<td width="150px">';
+	result = result +'<td width="80px">';
 	result = result +'<div class="pull-right">';
-	result = result +'<button type="button" class="btn btm-sm pull-right mt5" onclick="addLevelRow();"><i class="fa fa-plus text-primary"></i></button>';
+	result = result +'<button type="button" class="btn btm-sm pull-right mt5" id="addClientRow" onclick="addLevelRow();"><i id="addButton" class="fa fa-plus text-primary"></i></button>';
 	result = result +'</div>';
 	result = result +'</div>';
 	result = result +'</td>';
@@ -176,12 +209,30 @@ function getClientLevels(){
 	result = result +'</div>';
 	result = result +'</div>';
 	result = result +'</div>';
+	result = result +'</div>';
 	
 	$("#clientLevelsDiv").append(result);
 	
 	prepareChosenScripts();
 	
 	
+}
+</script>
+
+<script>
+function checkEndClient(id){
+	var checked = document.getElementById(id+"checked").checked
+	if(checked == true){
+		$("#"+id+"checked").val("Y");
+		$("#addClientRow").attr('disabled', 'disabled');
+		 document.getElementById("addButton").removeAttribute("class");
+		 document.getElementById('addButton').className = 'fa fa-plus text-danger';
+	}else{
+		$("#"+id+"checked").val("N");
+		$("#addClientRow").removeAttr('disabled');
+		 document.getElementById("addButton").removeAttribute("class");
+		 document.getElementById('addButton').className = 'fa fa-plus text-primary';
+	}
 }
 </script>
 
@@ -362,6 +413,104 @@ function getLevelDetails(rowNum){
 	    });
 	
 }
+</script>
+
+
+<script type="text/javascript">
+function getProjectLevel1Approvers(approverUserId){
+	 var sourceleadUrl ='${sourceleadUrl}';
+	 $("#level1Manager").empty();
+		 $.ajax({
+		    	type: "GET",
+		        url: sourceleadUrl+"/getProjectLevel1Approvers?${_csrf.parameterName}=${_csrf.token}",
+		        success: function(json) {
+		        	var output = "";
+		        	output = output + "<option value=''>-- Select Level1 Manager --</option>";
+		        	for (var i=0; i<json.length; i++)
+					{
+		        		var selected = "";
+		        		var opt = json[i];
+		        		if(approverUserId != null && approverUserId != 'undefied' && approverUserId != '' && approverUserId == opt.id){
+		        			selected = "selected";
+		        		}
+			        		output = output + "<option value='" +opt.id+ ","+opt.userType+"' "+selected+">"+opt.firstName+" "+opt.lastName+"</option>";
+					}
+		        	
+			        $("#level1Manager").append(output);
+			        $('#level1Manager').trigger("chosen:updated");
+		        }
+		    });
+	 }
+</script>
+
+
+<script type="text/javascript">
+function getLevel2Approvers(level1ApproverUser){
+	var currentApproverId = '';
+	$('#chosen-level1Manager').find('p.jquery_form_error_message').remove();
+	if(level1ApproverUser != null && level1ApproverUser != '' && level1ApproverUser != 'undefined'){
+		currentApproverId = level1ApproverUser;
+	}else{
+		currentApproverId = document.getElementById("level1Manager").value;
+	}
+	var currentUser = currentApproverId.split(',');
+	var currentUserId = currentUser[0];
+	var currentUserType = currentUser[1];
+	var count = 1;
+	$(".myCheckbox").each(
+					function() {
+						var localId = this.id;
+						document.getElementById(localId).checked = false; 
+	});
+	$(".myCheckbox").val('');
+	
+	$("#level2Manager").empty();    
+	$('#level2Manager').val('').trigger('chosen:updated');
+	if(currentUserType != null && currentUserType != '' && currentUserType !='undefined' && currentUserType != 'Admin'){
+	    $("#level2Toggle").show();
+		getChildLevel1Approvers(currentUserId);
+	}else if(currentUserType != null && currentUserType != '' && currentUserType !='undefined' && currentUserType == 'Admin'){
+	    $("#level2Toggle").hide();   
+	    $("#level2Div").removeClass("level-second-active");
+	}
+	
+	
+} 
+</script>
+
+<script type="text/javascript">
+function getChildLevel1Approvers(currentApproverId,level2ApproverUserId){
+	 var sourceleadUrl ='${sourceleadUrl}';
+	 if(currentApproverId != null && currentApproverId != ''  && currentApproverId != 'undefined'){
+		 $.ajax({
+		    	type: "POST",
+		        url: sourceleadUrl+"/getApproversByUserId?${_csrf.parameterName}=${_csrf.token}&currentApproverId="+currentApproverId,
+		        success: function(data) {
+		        	var json = JSON.parse(data);
+		        	var output = "";
+		        	output = output + "<option value=''>-Select Manager-</option>"; 
+		        	for (var i=0; i<json.length; i++)
+					{
+			        		var opt = json[i];
+			        		var selected = '';
+			        		if(level2ApproverUserId != null && level2ApproverUserId != 'undefied' && level2ApproverUserId != '' && level2ApproverUserId == opt.id){
+			        			selected = "selected";
+			        		}
+			        		output = output + "<option value='" +opt.id+ "' "+selected+">"+opt.firstName+" "+opt.lastName+"</option>";
+					}
+		        	$("#level2Manager").empty();
+			        $("#level2Manager").append(output);
+			        $('#level2Manager').trigger("chosen:updated");
+		        },
+		        error: function(e){
+		            
+		        }
+		    });
+	 }else{
+		 getApproversLevel2();
+		
+	 }
+} 
 </script>
 
 
