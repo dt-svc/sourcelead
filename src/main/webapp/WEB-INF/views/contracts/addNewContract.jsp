@@ -725,14 +725,14 @@ function removeDocument(id){
 	<div class="select-field tblminwidth-75">
 		<div class="tblminwidth-50">
 			<input type="text" class="form-control input-sm" value=""
-				placeholder="Document Name" name='REPLACEROWIDdocumentName'
+				placeholder="Document Name" name='document[REPLACEROWID].documentName'
 				id='REPLACEROWIDdocumentName' field-name="Document Name" data-validation="required"> 
 		</div>
 	</div>
 </div>
 
 <div id="divTaxTd2" style="display: none; float: left;">
-   	 <select class="form-control input-sm sel"  id="REPLACEROWIDcandiDoc" name="REPLACEROWIDcandiDoc" >
+   	 <select class="form-control input-sm sel"  id="REPLACEROWIDcandiDoc" name="document[REPLACEROWID].candiDoc" >
 		<option value="">--Select Type--</option>
 		<c:forEach var="doctype" items="${documentsList}">
 		<option value="${doctype.name}">${doctype.name}</option>
@@ -742,7 +742,7 @@ function removeDocument(id){
 <div id="divTaxTd3" style="display: none; float: left;">
 	<div class="tblminwidth-75">
 			<textarea class="form-control miDHei" rows="3" placeholder="Description" id="REPLACEROWIDdescription"
-			 name="REPLACEROWIDdescription"></textarea>
+			 name="document[REPLACEROWID].description"></textarea>
 	</div>
 </div>
 
@@ -1488,16 +1488,17 @@ function hideCommonSOWFields(){
 
 <script type="text/javascript">
 	function saveNewContract(saveType) {
+		alert("hii")
 		if ($('#newcontract_form').validate(false, validationSettings)) {
-			var frm = $('#newcontract_form').serializeFormJSON();
-			var con = JSON.stringify(frm);
-			con = con.replace(/[{}]/g, "");
-	        var jsonData = encodeURIComponent(con);
-	        var form = $('#newcontract_form')[0];
- 	 	    var formData = new FormData(form); 
+			  var formData = getFormData("newcontract_form");
 			var sourceleadUrl = '${sourceleadUrl}';
-			$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-	 		$.ajax({
+            $.post( sourceleadUrl+ "/saveNewContract?${_csrf.parameterName}=${_csrf.token}&saveType="+saveType, formData, function(data) {
+                       if(data == true){
+                    	   location.replace(sourceleadUrl+"/contractListbyStatus");
+                       }
+                    });
+            
+			/* 	$.ajax({
 	 			 type: "POST",
 		    	 data: formData,
 			     contentType : 'application/json; charset=utf-8',
@@ -1509,7 +1510,7 @@ function hideCommonSOWFields(){
 						success : function(result) {
 							location.replace(sourceleadUrl+"/contractListbyStatus");
 						},
-					}); 
+					}); */ 
 			return true;
 		} else {
 			$('#submissionOffersListDiv').find('p.text-primary').remove();

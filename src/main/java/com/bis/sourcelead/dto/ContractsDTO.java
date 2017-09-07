@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Map;
 
 public class ContractsDTO {
+	private String staticPath;
+	private String contrId;
 	private String contractType;
 	private String contractTitle;
 	private String template;
@@ -37,10 +39,32 @@ public class ContractsDTO {
 	private String taxPercentageReward;
 	private String taxFlatReward;
 	private String taxFlatRateType;
-	private List<Map<String, String>> fileInfo;
-	private List<FileInfo> uploadedFileInfo;
+	private String overtimeRateType;
+//	private List<Map<String, String>> fileInfo;
+	private List<FileInfo> fileInfo;
+	private List<ContractDocumentsDTO> document;
 	
-	public List<Map<String, String>> getFileInfo()
+	public String getStaticPath()
+	{
+		return staticPath;
+	}
+	
+	public void setStaticPath(String staticPath)
+	{
+		this.staticPath = staticPath;
+	}
+	
+	public String getContrId()
+	{
+		return contrId;
+	}
+	
+	public void setContrId(String contrId)
+	{
+		this.contrId = contrId;
+	}
+	
+	/*public List<Map<String, String>> getFileInfo()
 	{
 		return fileInfo;
 	}
@@ -58,13 +82,23 @@ public class ContractsDTO {
 	public void setUploadedFileInfo(List<FileInfo> uploadedFileInfo)
 	{
 		this.uploadedFileInfo = uploadedFileInfo;
-	}
+	}*/
 	
 	public String getContractType()
 	{
 		return contractType;
 	}
 	
+	public List<FileInfo> getFileInfo()
+	{
+		return fileInfo;
+	}
+
+	public void setFileInfo(List<FileInfo> fileInfo)
+	{
+		this.fileInfo = fileInfo;
+	}
+
 	public void setContractType(String contractType)
 	{
 		this.contractType = contractType;
@@ -388,5 +422,25 @@ public class ContractsDTO {
 	public void setTaxFlatRateType(String taxFlatRateType)
 	{
 		this.taxFlatRateType = taxFlatRateType;
+	}
+	
+	public String getOvertimeRateType()
+	{
+		return overtimeRateType;
+	}
+	
+	public void setOvertimeRateType(String overtimeRateType)
+	{
+		this.overtimeRateType = overtimeRateType;
+	}
+	
+	public List<ContractDocumentsDTO> getDocument()
+	{
+		return document;
+	}
+	
+	public void setDocument(List<ContractDocumentsDTO> document)
+	{
+		this.document = document;
 	}
 }
