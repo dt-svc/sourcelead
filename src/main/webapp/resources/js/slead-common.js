@@ -4,40 +4,46 @@ function viewFile(sourceleadUrl, fileURL, title, contentType){
 	}  
 }
 
-function fileUpload(sourceleadUrl, id, type, formId) {
+function fileUpload(sourceleadUrl, id, type, formId,name) {
+	
+	if (name == null || name == 'undefined' || name == '') {
+		name = 'fileInfo';
+	}
+
 	var data = new FormData();
 	var files = document.getElementById(id).files;
-	for(var e in files) {
+	for ( var e in files) {
 		data.append('file', files[e]);
 	}
-	$.ajax({ 
-		url: sourceleadUrl+"/upload/"+type, 
-		data: data, 
-		processData: false, 
-		type: 'POST', 
-		contentType: false, 
-		success: function (data) {
-			if(data && data.length > 0) {
-				if($("#"+formId+" input[name*=fileInfo][data-id="+id+"]").length > 0) {
-					$("#"+formId+" input[name*=fileInfo][data-id="+id+"]").remove();
+	$.ajax({
+		url : sourceleadUrl + "/upload/" + type,
+		data : data,
+		processData : false,
+		type : 'POST',
+		contentType : false,
+		success : function(data) {
+			if (data && data.length > 0) {
+				if ($("#" + formId + " input[name*='" + name + "'][data-id=" + id+ "]").length > 0) {
+					$("#" + formId + " input[name*='" + name+ "'][data-id=" + id + "]").remove();
 				}
-				var i = 0;
-				for(var e in data) {
-					var html = "<input type='hidden' name='fileInfo["+i+"][fileURL]' data-id="+id+" value='"+data[e].fileURL+"'/>";
-					html += "<input type='hidden' name='fileInfo["+i+"][fileName]' data-id="+id+" value='"+data[e].fileName+"'/>";
-					html += "<input type='hidden' name='fileInfo["+i+"][contentType]' data-id="+id+" value='"+data[e].contentType+"'/>";
-					$("#"+formId).append(html);
-					i ++;
+				var i = $("#" + formId + " input[type=hidden][name*='" + name+ "']").length / 3;
+				for ( var e in data) {
+					var html = "<input type='hidden' name='" + name + "[" + i+ "].fileURL' data-id=" + id + " value='"+ data[e].fileURL + "'/>";
+					html += "<input type='hidden' name='" + name + "[" + i+ "].fileName' data-id=" + id + " value='"+ data[e].fileName + "'/>";
+					html += "<input type='hidden' name='" + name + "[" + i+ "].contentType' data-id=" + id + " value='"+ data[e].contentType + "'/>";
+					
+					$("#" + formId).append(html);
+					i++;
 				}
-			} else if(data && data.length === 0) {
-				showError("Unable to upload the file");
 			}
-		}, 
-		error: function (err) { 
-			 showError(err); 
-		} 
+		},
+		error : function(err) {
+			showError(err);
+		}
 	});
 }
+	
+	
 
 function getFormData(formId) {
 	var $form = $("#"+formId);

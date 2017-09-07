@@ -152,11 +152,11 @@
 			        <tr id="divEntityTsRow${2*(entryCount.count)}" style="display:none;">
 			          <td colspan="7">
 				         <div class="expDetails">
-				         <input type="hidden" id="expenseEntryId${entryCount.count}" name="expenseEntryId${entryCount.count}" value='${entry.id}'/>
+				         <input type="hidden" id="expenseEntryId${entryCount.count}" name="categoryDTO[${entryCount.index}].expenseEntryId" value='${entry.id}'/>
 				          <div class="col-xs-12 col-sm-12 col-md-12 expAddRo myForm noPad clearfix">            
 							<div class="col-md-4 mb10 chosen-custom minHe">
 							<label>Category Type<span class="text-danger">&nbsp;*</span></label>
-								<select id="categoryType${entryCount.count}" name="categoryType${entryCount.count}" class="chosen-select form-control" field-name="Category Type" data-validation="required" onchange="getAmountValueCategory(${entryCount.count});">
+								<select id="categoryType${entryCount.count}" name="categoryDTO[${entryCount.index}].categoryType" class="chosen-select form-control" field-name="Category Type" data-validation="required" onchange="getAmountValueCategory(${entryCount.count});">
 								   <option value="">Select Category Type</option>				 							   
 								   <c:forEach var="expCat" items="${expEntry.expenseCategoryList}">
 						                 <option value="${expCat.id},${expCat.allowedAmount}" ${entry.expensesCategoryId.id == expCat.id ? 'selected' : ''}>${expCat.expensesName}</option>
@@ -165,15 +165,15 @@
 							</div>
 							<div class="col-md-4 mb10 minHe">
 								<label>Date<span class="text-danger">&nbsp;*</span></label>
-								<input type="text" id="categoryDate${entryCount.count}" name="categoryDate${entryCount.count}" readonly="readonly" onclick="displayCalendar('${entryCount.count}')" class="form-control calendar" value="${entry.expenseDateStr}" placeholder="Date" field-name="Date" data-validation="required"> 
+								<input type="text" id="categoryDate${entryCount.count}" name="categoryDTO[${entryCount.index}].categoryDate" readonly="readonly" onclick="displayCalendar('${entryCount.count}')" class="form-control calendar" value="${entry.expenseDateStr}" placeholder="Date" field-name="Date" data-validation="required"> 
 							</div>
 							<div class="col-md-4 mb10 minHe">
 								<label>Receipt Issued by</label>
-								<input type="text" id="receiptIssuedBy${entryCount.count}" name="receiptIssuedBy${entryCount.count}" class="form-control" value="${entry.receiptIssuedBy}"  placeholder="Receipt Issued By" field-name="Receipt Issued By" data-validation-optional="true" data-validation="validate_length length1-100"> 
+								<input type="text" id="receiptIssuedBy${entryCount.count}" name="categoryDTO[${entryCount.index}].receiptIssuedBy" class="form-control" value="${entry.receiptIssuedBy}"  placeholder="Receipt Issued By" field-name="Receipt Issued By" data-validation-optional="true" data-validation="validate_length length1-100"> 
 							</div>
 							<div class="col-md-4 mb10 minHe">
 								<label>Payment Mode</label>
-								<select id="paymentMode${entryCount.count}" name="paymentMode${entryCount.count}" class="form-control" field-name="Payment Mode" data-validation-optional="true">
+								<select id="paymentMode${entryCount.count}" name="categoryDTO[${entryCount.index}].paymentMode" class="form-control" field-name="Payment Mode" data-validation-optional="true">
 								         <option value="">Select Mode</option>
 		                                 <option  value="Credit Card" ${entry.paymentMode.value == 'Credit Card' ? 'selected' : ''}>Credit Card</option>
 		                                 <option  value="Debit Card" ${entry.paymentMode.value == 'Debit Card' ? 'selected' : ''}>Debit Card</option>
@@ -186,7 +186,7 @@
 			                   <label>Amount<span class="text-danger">&nbsp;*</span></label>
 								  <div class="input-group positionRelative ">
 										<div class="input-group-btn tblminwidth-75 select-field dropdown_inr" style="min-width: 65px !important;">
-												  <select class="btn btn-info" id="expenseRateType${entryCount.count}" name="expenseRateType${entryCount.count}" field-name="Rate Type" field-name="Rate Type" data-validation="required">
+												  <select class="btn btn-info" id="expenseRateType${entryCount.count}" name="categoryDTO[${entryCount.index}].expenseRateType" field-name="Rate Type" field-name="Rate Type" data-validation="required">
 												  	<option value="INR" ${entry.currencyType == 'INR' ? 'selected' : ''}>INR</option>
 												  	<option value="AUD" ${entry.currencyType == 'AUD' ? 'selected' : ''}>AUD</option>
 												  	<option value="USD" ${entry.currencyType == 'USD' ? 'selected' : ''}>USD</option>
@@ -195,12 +195,12 @@
 												  	<option value="EUR" ${entry.currencyType == 'EUR' ? 'selected' : ''}>EUR</option>
 												  </select>
 									</div>
-								         <input type="text" class="form-control allownumericwithdecimal"  placeholder="Amount"  name="expenseAmount${entryCount.count}" id="expenseAmount${entryCount.count}" value="${entry.amount}" field-name="Amount" data-validation="required validate_float validate_length length1-10" onkeyup="getAmountValue(${entryCount.count});">
+								         <input type="text" class="form-control allownumericwithdecimal"  placeholder="Amount"  name="categoryDTO[${entryCount.index}].expenseAmount" id="expenseAmount${entryCount.count}" value="${entry.amount}" field-name="Amount" data-validation="required validate_float validate_length length1-10" onkeyup="getAmountValue(${entryCount.count});">
 									</div>
 		                 </div>
 						<div class="col-md-4 mb10 minHe">
 							<label>Description<span class='text-danger'>&nbsp;*</span></label>
-							<textarea rows="2"  id="entryDes${entryCount.count}" name="entryDes${entryCount.count}" class="form-control" placeholder="Description" field-name="Description" data-validation="required validate_Space validate_length length1-5000" onblur="removeWhiteSpaces('${entryCount.count}');">${entry.description}</textarea>
+							<textarea rows="2"  id="entryDes${entryCount.count}" name="categoryDTO[${entryCount.index}].entryDes" class="form-control" placeholder="Description" field-name="Description" data-validation="required validate_Space validate_length length1-5000" onblur="removeWhiteSpaces('${entryCount.count}');">${entry.description}</textarea>
 						</div>		
 		                   <div id='attachmentSection' class='col-md-4 mb10 minHe'>
 		                   <div class="uploadFile timesheet_week_comm">
@@ -208,6 +208,7 @@
 			                 <input type='hidden' name='attcahmentMaxRowNumber${entryCount.count}'  id='attcahmentMaxRowNumber${entryCount.count}' value='1' />
 			                 <div id='timesheetDocumentsId' class=''>
 			                       <c:forEach var="entryDoc" items="${entry.expensesEntryDocuments}" varStatus="entryDocCount">
+			                       <c:if test = '${entryDoc.status == 1}'>
 			                         <strong class='proDown' id='${entryDocCount.index}document${entryCount.count}'>
 			                          <input type='hidden' name='${entryDocCount.index}DbdocFileId${entryCount.count}' id='${entryDocCount.index}DbdocFileId${entryCount.count}' value='${entryDoc.id}'/>
 			                          <input type='hidden' name='${entryDocCount.index}DbdocFileIsDeleted${entryCount.count}' id='${entryDocCount.index}DbdocFileIsDeleted${entryCount.count}' value='N'/>
@@ -215,8 +216,9 @@
 			                                 <i class='glyphicon glyphicon-save'></i>
 								             <input type='button' value='${entryDoc.fileName}'/>
 								        </a>
-								        <input class='dele' type='button' onclick="removeDbAttachment(${entryDocCount.index},${entryCount.count})" />
+								        <input class='dele' type='button' onclick="removeDbAttachment(${entryDocCount.index},${entryCount.count});deleteAttchment(${entryDoc.id})" />
 			                         </strong>
+			                         </c:if>
 			                       </c:forEach>
 			                 </div> 
 			                 <i class='fa fa-info-circle' title='Allowed File Formats: ppt,pptx,pps,ppsx,doc,docx,pdf,rtf,odt,xls,xlsx,csv,  zip,txt,jpg,jpeg,bmp,png,gif,eps,tiff,TGA,psd,svg,msg,wpd,wps      Allowed Size : 2MB '></i>
@@ -261,6 +263,19 @@
   </section>
 </c:if>
 </div>
+
+<script>
+function deleteAttchment(documentId){
+var sourceleadUrl = '${sourceleadUrl}';
+$.ajax({
+	type : "POST",
+	url : sourceleadUrl+"/deleteDocumentByDocumentId?${_csrf.parameterName}=${_csrf.token}&documentId="+documentId,
+	success : function(data) {
+		 alert(data); 
+	},
+});
+}
+</script>
 
 <script>
 $(".allownumericwithdecimal").on("keypress keyup blur",function (event) {
@@ -448,15 +463,13 @@ function removeWhiteSpaces(rowCount){
       		formData.append("json",jsonData);
 			var sourceleadUrl = '${sourceleadUrl}'; */
 			var sourceleadUrl = '${sourceleadUrl}';
-			var form = $('#add_expenses_form')[0];
-      		var formData = new FormData(form); 
-			
+			/* var form = $('#add_expenses_form')[0];
+      		var formData = new FormData(form);  */
+      		 var formData = getFormData("add_expenses_form");
 			$( "#submitForApprovalExpensesId" ).addClass('button').val('Processing..');
 			$.ajax({
        	        type : "POST",
         	    data: formData,
-    	        processData: false,
-    	        contentType:false,
 				url : sourceleadUrl+"/storeAddExpensesData?${_csrf.parameterName}=${_csrf.token}&status="+status,
 				success : function(data) {
 					$( "#submitForApprovalExpensesId" ).addClass('button').val('Sub for Approval');
