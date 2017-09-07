@@ -18,6 +18,8 @@ public class SearchDTO implements Serializable {
 	private String searchValue;
 	private Map<String, String> search;
 	private List<Map<String, String>> order;
+	private String sortColumn;
+	private String sortOrder;
 	
 	public List<String> getAnyOfKeyword()
 	{
@@ -147,5 +149,21 @@ public class SearchDTO implements Serializable {
 	public void setSearchValue(String searchValue)
 	{
 		this.searchValue = searchValue;
+	}
+
+	public String getSortColumn() {
+		return sortColumn;
+	}
+
+	public void setSortColumn(String sortColumn) {
+		this.sortColumn = sortColumn;
+	}
+
+	public String getSortOrder() {
+		return sortOrder;
+	}
+
+	public void setSortOrder(String sortOrder) {
+		this.sortOrder = sortOrder;
 	}
 }

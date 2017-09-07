@@ -17,6 +17,8 @@ import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
 
 /**
  * @author Shivayogi
@@ -34,10 +36,12 @@ public class CandidateEducation implements Serializable{
 	@Column(name = "ID", nullable = false)
 	private Long id;
 	
+	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne
 	@JoinColumn(name = "ORG_LOCATION_ID", nullable = false)
 	private OrgLocations orglocationId;
 
+	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne
 	@JoinColumn(name = "CANDIDATE_ID", nullable = false)
 	private Candidate candidateId;

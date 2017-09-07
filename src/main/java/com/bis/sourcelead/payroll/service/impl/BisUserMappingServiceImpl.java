@@ -30,6 +30,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.bis.sourcelead.dto.EmployeeListDTO;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.payroll.dao.BisUserMappingDao;
@@ -73,9 +75,13 @@ public class BisUserMappingServiceImpl implements BisUserMappingService {
 			workbook = WorkbookFactory.create(fis);
 			int numberOfSheets = workbook.getNumberOfSheets();
 			int isValid = 0;
+			int version;
+			version = getBisUserMappingVersionByLocationId(orgLocation.getId());
+			version += 1;
 			for (int i = 0; i < numberOfSheets; i++) {
 				Sheet sheet = workbook.getSheetAt(i);
 				Iterator<Row> rowIterator = sheet.iterator();
+				
 				while (rowIterator.hasNext()) {
 					Row row = rowIterator.next();
 					if (row.getRowNum() > 0) { // Excluding column names
@@ -101,6 +107,7 @@ public class BisUserMappingServiceImpl implements BisUserMappingService {
 						if (row.getCell(2) != null && !"".equalsIgnoreCase(row.getCell(2).toString())) {
 							String empId = getCellValueAsString(row.getCell(2), fileName);
 							bisUserMapping.setEmpId(empId.split("\\.")[0]);
+							bisUserMapping.setVersion(version);
 						}
 						if (row.getCell(3) != null && !"".equalsIgnoreCase(row.getCell(3).toString())) {
 							String candidateName = getCellValueAsString(row.getCell(3), fileName);
@@ -199,9 +206,15 @@ public class BisUserMappingServiceImpl implements BisUserMappingService {
 			FileInputStream fis = new FileInputStream(file);
 			workbook = WorkbookFactory.create(fis);
 			int numberOfSheets = workbook.getNumberOfSheets();
+			
+			int version;
+			version = getChecksVersionByLocationId(orgLocation.getId());
+			version += 1;
+			
 			for (int i = 0; i < numberOfSheets; i++) {
 				Sheet sheet = workbook.getSheetAt(i);
 				Iterator<Row> rowIterator = sheet.iterator();
+				
 				while (rowIterator.hasNext()) {
 					Row row = rowIterator.next();
 					if (row.getRowNum() > 0) { // Excluding column names
@@ -215,7 +228,7 @@ public class BisUserMappingServiceImpl implements BisUserMappingService {
 						if (row.getCell(0) != null && !"".equalsIgnoreCase(row.getCell(0).toString())) {
 							String empId = getCellValueAsString(row.getCell(0), fileName);
 							checks.setEmpId(empId.split("\\.")[0]);
-							;
+							checks.setVersion(version);
 						}
 						if (row.getCell(1) != null && !"".equalsIgnoreCase(row.getCell(1).toString())) {
 							String empName = getCellValueAsString(row.getCell(1), fileName);
@@ -382,13 +395,25 @@ public class BisUserMappingServiceImpl implements BisUserMappingService {
 	}
 
 	@Override
-	public List<BisUserMapping> getEmployeeList(Long orgLocationId) throws Exception {
-		return bisUserMappingDao.getEmployeeList(orgLocationId);
+	public ResponseList<BisUserMapping> getEmployeeList(EmployeeListDTO employeeListDTO,Long orgLocationId) throws Exception {
+		return bisUserMappingDao.getEmployeeList(employeeListDTO,orgLocationId);
 	}
 
 	@Override
 	public List<BisUserMapping> getMasterListByEmpId(Long empId, OrgLocations orgLocations) throws Exception {
 		return bisUserMappingDao.getMasterListByEmpId(empId,orgLocations);
+	}
+
+	@Override
+	public int getBisUserMappingVersionByLocationId(Long locationId)
+	{
+		return bisUserMappingDao.getBisUserMappingVersionByLocationId(locationId);
+	}
+	
+	@Override
+	public int getChecksVersionByLocationId(Long locationId)
+	{
+		return bisUserMappingDao.getChecksVersionByLocationId(locationId);
 	}
 
 }

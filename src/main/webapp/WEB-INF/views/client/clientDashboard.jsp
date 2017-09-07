@@ -261,18 +261,18 @@ overflow-x: auto;
 		                <li  id="filter3ApprovePop" style="display:none"><i class="fa fa-filter"></i><span>Status</span><i class="glyphicon glyphicon-play" id="clientSatatus"></i>|
 	                	<div id="filter3ApprovedPop" class="approved_pop">
 	                    	<ul>
-	                        	<li><input id="c5" type="checkbox"  name="clientStatus"  value ="Active"      onclick="getVendorContactLists();"  ><label>Active</label></li>
-								<li><input id="c6" type="checkbox"  name="clientStatus"  value ="In-Active"   onclick="getVendorContactLists();"><label>In-Active</label></li>
+	                        	<li><input id="c5" type="checkbox"  name="clientStatus"  value ="Active"      onclick="getClientContactList();"  ><label>Active</label></li>
+								<li><input id="c6" type="checkbox"  name="clientStatus"  value ="In-Active"   onclick="getClientContactList();"><label>In-Active</label></li>
 	                        </ul>
 	                      </div>                	
 	                  </li>
 	                  <li  id="filter4ApprovePop" style="display:none"><i class="fa fa-filter"></i><span>Invitation</span><i class="glyphicon glyphicon-play" id="clientInvitation"></i>|
 	                	<div id="filter4ApprovedPop" class="approved_pop">
 	                    	<ul>
-	                        	<li><input id="c5" type="checkbox"  name="clientInvitationStatus"  value ="Sent"      onclick="getVendorContactLists();"  ><label>Resend</label></li>
-								<li><input id="c6" type="checkbox"  name="clientInvitationStatus"  value ="New"   onclick="getVendorContactLists();"><label>Send</label></li>
-								<li><input id="c7" type="checkbox"  name="clientInvitationStatus"  value ="Accepted"         onclick="getVendorContactLists();"><label>Accepted</label></li>
-								<li><input id="c8" type="checkbox"  name="clientInvitationStatus"  value ="Rejected" onclick="getVendorContactLists();"><label for="c8">Rejected</label></li>
+	                        	<li><input id="c5" type="checkbox"  name="clientInvitationStatus"  value ="Sent"      onclick="getClientContactList();"  ><label>Resend</label></li>
+								<li><input id="c6" type="checkbox"  name="clientInvitationStatus"  value ="New"   onclick="getClientContactList();"><label>Send</label></li>
+								<li><input id="c7" type="checkbox"  name="clientInvitationStatus"  value ="Accepted"         onclick="getClientContactList();"><label>Accepted</label></li>
+								<li><input id="c8" type="checkbox"  name="clientInvitationStatus"  value ="Rejected" onclick="getClientContactList();"><label for="c8">Rejected</label></li>
 	                        </ul>
 	                      </div>                	
 	                  </li>
@@ -330,6 +330,7 @@ overflow-x: auto;
 					 <div class='remove_search'>
         		          <input type='text' placeholder='search' id='dataTableSearch'/>
                 </div> 
+                
 				</div>
 				
 				<div class="clients_wrap_table datatable_scroll datatable_filter" id ="vendorListFilter">
@@ -366,9 +367,9 @@ window.onload = function () {
  };
 </script>
 
+<!-- PLEASE DO NOT DELETE COMMENTED SCRIPTS, IF YOU HAVE ANY QUERIES CONTACT RAJASHEKAR -->
 
-
-<script type="text/javascript">
+<!-- <script type="text/javascript">
 function clientOnLoad(clientSearchResult,clientKeyword,responderLocationId,orgRelationId,orgName){
 	if(clientSearchResult =="clientSearchResult"){
 		getClientUniversalSearchList("${searchValue}","${searchType}");
@@ -389,8 +390,8 @@ function clientOnLoad(clientSearchResult,clientKeyword,responderLocationId,orgRe
 	}
 	
 }
-</script>
-<script type="text/javascript">
+</script> -->
+<!-- <script type="text/javascript">
 function getClientUniversalSearchList(searchValue,searchType){
 	var sourceleadUrl ='${sourceleadUrl}';
 	 $.ajax({
@@ -402,7 +403,9 @@ function getClientUniversalSearchList(searchValue,searchType){
     }); 
 
 }
-</script>
+</script> -->
+
+<!-- PLEASE DO NOT DELETE COMMENTED SCRIPTS, IF YOU HAVE ANY QUERIES CONTACT RAJASHEKAR -->
 
 <script>
 function clearSearch(){
@@ -724,8 +727,9 @@ function clearSearch(){
 </script>   
 
 
+<!-- PLEASE DO NOT DELETE COMMENTED SCRIPTS, IF YOU HAVE ANY QUERIES CONTACT RAJASHEKAR -->
 
-<script type="text/javascript">
+<!-- <script type="text/javascript">
  function preparedClientDetails(data){
 	 
 	 var json = JSON.parse(data);
@@ -815,9 +819,9 @@ function clearSearch(){
 	    pagination();
 	    
  }
-</script>
+</script> -->
 
-<script>
+<!-- <script>
 function getClientDetails(){
 	closePop();
 	var values = [];
@@ -839,9 +843,9 @@ function getClientDetails(){
 	
 	
 }	
-</script>
+</script> -->
 
-<script>
+<!-- <script>
 function getClientDetailsELK(){
 	closePop();
 	var values = [];
@@ -862,7 +866,9 @@ function getClientDetailsELK(){
 	
 	
 }	
-</script> 
+</script>  -->
+
+<!-- PLEASE DO NOT DELETE COMMENTED SCRIPTS, IF YOU HAVE ANY QUERIES CONTACT RAJASHEKAR -->
 
 <script>
 	function msgFadein() {
@@ -990,7 +996,10 @@ function getClientNeworgname(clientNewOrgname){
 }
 </script>
 
-<script>
+
+<!-- PLEASE DO NOT DELETE COMMENTED SCRIPTS, IF YOU HAVE ANY QUERIES CONTACT RAJASHEKAR -->
+
+<!-- <script>
 function preparedClientContacts(data){
 			var json = JSON.parse(data);
 		   	var result = "";
@@ -1100,10 +1109,9 @@ function preparedClientContacts(data){
    	
 }
 </script>
-
-
+ -->
 <!-- contact list preparation from ELK result -->
-<script>
+<!-- <script>
 function preparedClientContactListFromElk(data){
 			var json = JSON.parse(data);
 		   	var result = "";
@@ -1221,11 +1229,11 @@ function preparedClientContactListFromElk(data){
 		    pagination1(); 
 			    
    }
-</script> 
+</script>  -->
 
 
 <!-- Client list preparation from ELK result -->
-<script>
+<!-- <script>
 function preparedClientListFromElk(data){
 			var json = JSON.parse(data);
 		   	var result = "";
@@ -1313,11 +1321,11 @@ function preparedClientListFromElk(data){
 		    $("#emptyClientList").val(json.length);
 		    pagination();
 }
-</script>
+</script> -->
 
 
 
-<script>
+<!-- <script>
 function getVendorContactLists(){
 	closePop();
 	var clientIds = [];
@@ -1351,9 +1359,9 @@ function getVendorContactLists(){
 	
 }	
 </script> 
+ -->
 
-
-<script>
+<!-- <script>
 function getVendorContactListsELK(){
 	closePop();
 	var clientIds = [];
@@ -1388,7 +1396,10 @@ function getVendorContactListsELK(){
 	
 	
 }	
-</script> 
+</script>  -->
+
+
+<!-- PLEASE DO NOT DELETE COMMENTED SCRIPTS, IF YOU HAVE ANY QUERIES CONTACT RAJASHEKAR -->
 
 <!-- This script is for resending the invitation mail -->
 <script type="text/javascript"><%-- <jsp:include page="submissionTemplate.jsp" />	 --%>
@@ -1404,9 +1415,13 @@ function resendClientSpocInvitation(spocUserId,orgSpocId,orgRelationId){
 			    	type: "POST",
 			        url: sourceleadUrl+"/resendSpocInvitationEmail?${_csrf.parameterName}=${_csrf.token}&spocUserId="+spocUserId+"&orgSpocId="+orgSpocId+"&responderType=Client&orgRelationID="+orgRelationId, 
 			        success: function(result) {
-			        	 $("#row"+orgSpocId).empty();
+			        	$("#row"+orgSpocId).empty();
 			    	     $("#row"+orgSpocId).html(rowHtmlContent);
+			    	     $("#selector1").removeAttr("style");
+			    		 $("#selector1").css({ display: "block" });
+			    	     $("#msgDiv").html("Invitation Sent Successfully..");
 			    	     $("#invitationStatus"+orgSpocId).html("<b class='proj_process'><a href='javascript:void(0)' onClick='resendClientSpocInvitation("+spocUserId+','+orgSpocId+','+orgRelationId+");'>Resend</a></b>");
+			    	     msgFadein();
 			        },
 			    });
 		 }
@@ -1426,7 +1441,7 @@ function pagination1(){
      		"sSearch": "",
      		 "sZeroRecords": "", "sEmptyTable": ""
      	}
-    })
+    });
 }
 </script>
 
@@ -1507,11 +1522,11 @@ function getClientSpocname(clientNewSpocname){
 
 <script>
 function listChange(sel){
-	 if(sel.value=="listbyVendor"){
-		 document.getElementById("clientList").style.display="block";
+	if(sel.value=="listbyVendor"){
+		document.getElementById("clientList").style.display="block";
 		 document.getElementById("clientList").style.display="table";
 		 document.getElementById("vendorContactList").style.display="none";
-		 document.getElementById("vendorContactList_wrapper").style.display="none";
+// 		 document.getElementById("vendorContactList_wrapper").style.display="none";
 		 document.getElementById("contactLevel").style.display="block";
 // 		 document.getElementById("clientsList").style.display="none";
 		 document.getElementById("clientSatatus").style.display="none";
@@ -1519,18 +1534,18 @@ function listChange(sel){
 		 '<sec:authorize access="hasRole(\'ROLE_EXPORT_CLIENTS\')">'; 
 		 document.getElementById("clientImports").style.display="block";
 		 '</sec:authorize> ';
-		'<sec:authorize access="hasRole(\'ROLE_EXPORT_CLIENT_CONTACTS\')">'; 
+		 '<sec:authorize access="hasRole(\'ROLE_EXPORT_CLIENT_CONTACTS\')">'; 
 		 document.getElementById("ContactImports").style.display="none";
 		'</sec:authorize> ';	 
-		 document.getElementById("vendorContactList_paginate").style.display="none";
-		 document.getElementById("vendorContactList_info").style.display="none";
-		 document.getElementById("vendorContactList_filter").style.display="none";
+// 		 document.getElementById("vendorContactList_paginate").style.display="none";
+// 		 document.getElementById("vendorContactList_info").style.display="none";
+// 		 document.getElementById("vendorContactList_filter").style.display="none";
 // 		 document.getElementById("filter1ApprovePop").style.display="none";
 		 document.getElementById("filter3ApprovePop").style.display="none";
 		 document.getElementById("filter4ApprovePop").style.display="none";
-		 
 		/*  getClientDetails(); */
 		 /* getClientDetailsELK(); */
+		 $("#dataTableSearch").val("");
 		 getClientList();
 	 }
 	 if(sel.value=="listbyContact"){
@@ -1554,8 +1569,9 @@ function listChange(sel){
 		 document.getElementById("filter4ApprovePop").style.display="block";
 		 
 		/*  getVendorContactLists(); */
-		 getVendorContactListsELK();
-		// loadVendorDataTable();
+// 		 getVendorContactListsELK();
+		$("#dataTableSearch").val("");
+		loadClientContactDataTable("${clientSearchResult}");
 	 }
 	 
 }
@@ -1819,7 +1835,8 @@ function getEndDatePickerById(projectId,localFieldName){
 			//update the details in list.
 			var vendorCont = document.getElementById('listOfVendors').value;
 			if(vendorCont == "listbyContact"){
-				getVendorContactListsELK();
+				getClientContactList();
+				//getVendorContactListsELK();
 			}if(vendorCont == "listbyVendor" ){
 				/* getClientDetailsELK(); */
 				getClientList();
@@ -1888,6 +1905,7 @@ function cancelRejectPopupClient(){
 
 <script>
 function terminateSpoc1(spocId, orgRelationID){
+	
 	$(".project_inn_mask").remove();
 	var result = "";
 	result = result +"	<div class='project_inn_mask'></div>";
@@ -1924,17 +1942,16 @@ function saveReason1(spocId, orgRelationID){
 		   	type: "POST",
 		   url: sourceleadUrl+"/terminateSpoc?${_csrf.parameterName}=${_csrf.token}&spocId="+spocId+"&reason="+reason,	    	   
 		    success: function(data) {
-   			   
+		    	getClientContactList();
 	   			 $("#selector1").removeAttr("style");
 	  			 $("#selector1").css({ display: "block" });
 	  			 $("#msgDiv").html("Client contact removed");
 	  			 $("#popUp").empty();
 	 			 $(".project_inn_mask").fadeOut(200);
-	 			 
-	 			 var table = $('#vendorContactList').DataTable();
-	 		     table.row("#row"+spocId).remove().draw( false );
-				 	
+// 	 			 var table = $('#vendorContactList').DataTable();
+// 	 		     table.row("#row"+spocId).remove().draw( false );
 	             msgFadein();
+	             
 		    }
 	   });
 	}else{

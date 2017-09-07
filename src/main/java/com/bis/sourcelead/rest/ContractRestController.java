@@ -703,11 +703,11 @@ public class ContractRestController {
 		 	if(null != contract.getOrgRelations()){
 		 	OrgRelations orgRelations = orgRelationsService.getClientAndVendorOrgDeatilsById(orgLocation.getId(), contract.getOrgRelations().getId());
 		 	if(null != orgRelations){
-		 		if(orgRelations.getLocationId().getId().equals(orgLocation.getId())){
-		 			contract.setContractWith(orgRelations.getResponderLocationId().getOrgLocationName());
-				}	
-				else if(orgRelations.getResponderLocationId().getId() == orgLocation.getId()){
+		 		if(orgRelations.getResponderLocationId().getId().equals(orgLocation.getId())){
 					contract.setContractWith(orgRelations.getLocationId().getOrgLocationName());
+				}	
+		 		else if(orgRelations.getLocationId().getId().equals(orgLocation.getId())){
+		 			contract.setContractWith(orgRelations.getResponderLocationId().getOrgLocationName());
 				}
 		 	}
 		 	
@@ -733,13 +733,12 @@ public class ContractRestController {
 				contract.setRequirementName(contract.getRequirementSubmission().getRequirement().getJobTitle());
 		 	}
 		 	
-		 	if(null != contract.getRequirementSubmission()){
-		 		
+		 	if(null != contract.getCandidate()){
 		 		StringBuilder applicant = new StringBuilder();
-		 		if(null != contract.getRequirementSubmission().getCandidate() && null != contract.getRequirementSubmission().getCandidate().getLastName()){
-		 			contract.setApplicantName(applicant.append(contract.getRequirementSubmission().getCandidate().getFirstName()).append(" ").append(contract.getRequirementSubmission().getCandidate().getLastName()).toString());
+		 		if(null != contract.getCandidate().getFirstName() && null != contract.getCandidate().getLastName()){
+		 			contract.setApplicantName(applicant.append(contract.getCandidate().getFirstName()).append(" ").append(contract.getCandidate().getLastName()).toString());
 		 		}else{
-		 			contract.setApplicantName(applicant.append(contract.getRequirementSubmission().getCandidate().getFirstName()).toString());
+		 			contract.setApplicantName(applicant.append(contract.getCandidate().getFirstName()).toString());
 		 		}
 				
 		 	}

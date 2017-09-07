@@ -17,8 +17,9 @@ import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
 
-import com.bis.sourcelead.constants.Constants;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
@@ -33,11 +34,12 @@ public class ProjectPlanningResourceRequest implements Serializable{
     @Column(name = "ID", nullable = false)
     private Long id;
 	
-	
+	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne(fetch = FetchType.LAZY)
    	@JoinColumn(name = "PROJECT_PLANNING_REQUREST_ID")
   	private ProjectPlanningRequest projectPlanningRequestId;
 	
+	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne
    	@JoinColumn(name = "CANDIDATE_ID")
   	private Candidate candidateId;
@@ -93,6 +95,7 @@ public class ProjectPlanningResourceRequest implements Serializable{
     @Column(name = "REQUEST_UUID")
    	private String requestUUID;
     
+    @NotFound(action=NotFoundAction.IGNORE)
     @ManyToOne(fetch = FetchType.LAZY)
    	@JoinColumn(name = "ORG_LOCATION_ID")
   	private OrgLocations orgLocationId;
@@ -103,10 +106,12 @@ public class ProjectPlanningResourceRequest implements Serializable{
 	@Column(name = "UPDATED_DATE")
 	private Date updatedDate;
 	
+	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne(fetch = FetchType.LAZY)
    	@JoinColumn(name = "CREATED_BY")
   	private User createdBy;
 	
+	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne(fetch = FetchType.LAZY)
    	@JoinColumn(name = "UPDATED_BY")
   	private User updatedBy;

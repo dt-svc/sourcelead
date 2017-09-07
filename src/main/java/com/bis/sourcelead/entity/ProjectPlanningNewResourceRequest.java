@@ -17,8 +17,9 @@ import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
 
-import com.bis.sourcelead.constants.Constants;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
@@ -39,10 +40,12 @@ public class ProjectPlanningNewResourceRequest implements Serializable{
 	@Column(name = "OTHER_ROLE")
 	private String otherRole;
     
+	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne
    	@JoinColumn(name = "ROLE_ID")
   	private Roles roleId;
 	 
+	@NotFound(action=NotFoundAction.IGNORE)
     @ManyToOne(fetch = FetchType.LAZY)
    	@JoinColumn(name = "PROJECT_PLANNING_REQUREST_ID")
   	private ProjectPlanningRequest projectPlanningRequestId;
@@ -107,14 +110,17 @@ public class ProjectPlanningNewResourceRequest implements Serializable{
     @Column(name = "UPDATED_DATE")
     private Date updatedDate;
     
+    @NotFound(action=NotFoundAction.IGNORE)
     @ManyToOne(fetch = FetchType.LAZY)
    	@JoinColumn(name = "CREATED_BY")
   	private User createdBy;
 	
+    @NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne(fetch = FetchType.LAZY)
    	@JoinColumn(name = "UPDATED_BY")
   	private User updatedBy;
 
+    @NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne(fetch = FetchType.LAZY)
    	@JoinColumn(name = "ORG_LOCATION_ID")
   	private OrgLocations orgLocationId;
