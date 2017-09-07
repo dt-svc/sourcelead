@@ -1,0 +1,2 @@
+CALL sourcelead.AlterTableAddColumn ('sourcelead','CONTRACTS','FILE_URL','VARCHAR(2000) NULL AFTER `FILE_NAME`');
+CALL sourcelead.AlterTableAddColumn ('sourcelead','CONTRACT_REQUEST_DOCUMENTS','FILE_URL','VARCHAR(2000) NULL AFTER `FILE_NAME`');

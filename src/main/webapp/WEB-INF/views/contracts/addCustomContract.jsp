@@ -62,7 +62,7 @@
 							<div class="input-group positionRelative ratetype" id="uploadFileGroup" title="Document Type: .pdf format only
 							">
 	                        <label class="input-group-btn"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
-	                          <input type="file" name="uploadBtn" id="uploadBtn" style="display: none;"  multiple="" class="upload">
+	                          <input type="file" id="uploadBtn" style="display: none;" class="upload">
 	                            </span> </label>
 		                          <input type="text" class="form-control" readonly id="uploadFile" name="docFile" value="${contract.fileName}" placeholder="Upload .pdf File." field-name="Attachment" data-validation="required validate_Space validatepdf">
 	                        </div>
@@ -514,14 +514,14 @@
 	<div class="select-field tblminwidth-75">
 		<div class="tblminwidth-50">
 			<input type="text" class="form-control input-sm" value=""
-				placeholder="Document Name" name='REPLACEROWIDdocumentName'
+				placeholder="Document Name" name='document[REPLACEROWID].documentName'
 				id='REPLACEROWIDdocumentName' field-name="Document Name" data-validation="required"> 
 		</div>
 	</div>
 </div>
 
 <div id="divTaxTd2" style="display: none; float: left;">
-   	 <select class="form-control input-sm sel"  id="REPLACEROWIDcandiDoc" name="REPLACEROWIDcandiDoc" >
+   	 <select class="form-control input-sm sel"  id="REPLACEROWIDcandiDoc" name="document[REPLACEROWID].candiDoc" >
 		<option value="">--Select Type--</option>
 		<c:forEach var="doctype" items="${documentsList}">
 		<option value="${doctype.name}">${doctype.name}</option>
@@ -530,7 +530,7 @@
 </div>
 <div id="divTaxTd3" style="display: none; float: left;">
 	<div class="tblminwidth-75">
-			<textarea class="form-control miDHei" rows="3" placeholder="Description" id="REPLACEROWIDdescription"
+			<textarea class="form-control miDHei" rows="3" placeholder="Description" id="document[REPLACEROWID].description"
 			 name="REPLACEROWIDdescription"></textarea>
 	</div>
 </div>
@@ -1345,27 +1345,14 @@ function hideCommonSOWFields(){
 	function saveNewContract(saveType) {
 		if ($('#newcontract_form').validate(false, validationSettings)) {
 			var conType1 = "custom";
-			var frm = $('#newcontract_form').serializeFormJSON();
-			var con = JSON.stringify(frm);
-			con = con.replace(/[{}]/g, "");
-	        var jsonData = encodeURIComponent(con);
-	        var form = $('#newcontract_form')[0];
-      		var formData = new FormData(form); 
-			var sourceleadUrl = '${sourceleadUrl}';
 			$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-			$.ajax({
-						type : "POST",
-						data: formData,
-		        	    contentType : 'application/json; charset=utf-8',
-		        	    enctype: 'multipart/form-data',
-		    	        processData: false,
-		    	        contentType:false,
-		        	    dataType : 'json',
-						url : sourceleadUrl+ "/saveCustomContract?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&saveType="+saveType+"&conType1="+conType1,
-						success : function(result) {
-							location.replace(sourceleadUrl+"/contractListbyStatus");
-						},
-					}); 
+			 var formData = getFormData("newcontract_form");
+				var sourceleadUrl = '${sourceleadUrl}';
+	            $.post( sourceleadUrl+ "/saveCustomContract?${_csrf.parameterName}=${_csrf.token}&saveType="+saveType+"&conType1="+conType1, formData, function(data) {
+	                       if(data == true){
+	                    	   location.replace(sourceleadUrl+"/contractListbyStatus");
+	                       }
+	                    });
 			return true;
 		} else {
 			$('#submissionOffersListDiv').find('p.text-primary').remove();
@@ -1659,6 +1646,7 @@ function cancelContract(){
 </script>
 
 <script>
+var sourceleadUrl ='${sourceleadUrl}';
 function validateContractTitle(){
 	var contractTitle = $('#contractTitle').val();
 	var contractType = $('#contractType').val();
@@ -1684,6 +1672,12 @@ function validateContractTitle(){
 	
 }
 
+
+$(function() {
+	$("#uploadBtn").change(function() {
+		fileUpload(sourceleadUrl, "uploadBtn", "ContractDocs", "newcontract_form");
+	});
+ });
 </script>
 
 <script>

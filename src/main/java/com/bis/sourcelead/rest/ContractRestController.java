@@ -90,6 +90,9 @@ public class ContractRestController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(ContractRestController.class);
 	
+	@Value("${static.path}")
+	private String staticPath;
+	
 	@Autowired
 	ContractsTemplateService contractsTemplateService;
 	
@@ -303,17 +306,17 @@ public class ContractRestController {
 //	/saveNewContract
 	
 	@RequestMapping(value = "/saveNewContract", method = RequestMethod.POST)
-	public @ResponseBody boolean saveNewContract(@RequestParam(value = "json", required = false) String json,@RequestParam(value = "saveType", required = false) String saveType,HttpServletRequest request) throws Exception {
+	public @ResponseBody boolean saveNewContract(ContractsDTO contractsDTO, @RequestParam(value = "json", required = false) String json,@RequestParam(value = "saveType", required = false) String saveType,HttpServletRequest request) throws Exception {
 
 		boolean isContractSaved = false;
-		String json1 = "{" + json + "}";
-		JSONObject jsonObj = new JSONObject(json1);
+//		String json1 = "{" + json + "}";
+//		JSONObject jsonObj = new JSONObject(json1);
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		
 		MultipartFile multiFile = null;
-		Contracts contracts = contractsTemplateService.saveNewContract(jsonObj,orgLocation,saveType,user,org,"",multiFile);
+		Contracts contracts = contractsTemplateService.saveNewContract(contractsDTO,null,orgLocation,saveType,user,org,"",multiFile);
 	   if(null != contracts){
 		   isContractSaved = true;
 	   }
@@ -322,21 +325,22 @@ public class ContractRestController {
 	
 	
 	@RequestMapping(value = "/saveCustomContract", method = RequestMethod.POST)
-	public @ResponseBody boolean saveCustomContract(@RequestParam(value = "json", required = false) String json,@RequestParam(value = "saveType", required = false) String saveType,@RequestParam(value = "conType1", required = false) String conType,MultipartHttpServletRequest request) throws Exception {
+	public @ResponseBody boolean saveCustomContract(ContractsDTO contractsDTO, @RequestParam(value = "json", required = false) String json,@RequestParam(value = "saveType", required = false) String saveType,@RequestParam(value = "conType1", required = false) String conType,HttpServletRequest request) throws Exception {
 
 		boolean isContractSaved = false;
-		String json1 = "{" + json + "}";
-		JSONObject jsonObj = new JSONObject(json1);
+//		String json1 = "{" + json + "}";
+//		JSONObject jsonObj = new JSONObject(json1);
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		
-		MultipartFile multiFile = null;
-		Iterator<String> itrator = request.getFileNames();
-		if(itrator.hasNext()){
-	        multiFile = request.getFile(itrator.next());
-		} 
-		Contracts contracts = contractsTemplateService.saveNewContract(jsonObj,orgLocation,saveType,user,org,conType,multiFile);
+//		MultipartFile multiFile = null;
+//		Iterator<String> itrator = request.getFileNames();
+//		if(itrator.hasNext()){
+//	        multiFile = request.getFile(itrator.next());
+//		} 
+		contractsDTO.setStaticPath(staticPath);
+		Contracts contracts = contractsTemplateService.saveNewContract(contractsDTO,null,orgLocation,saveType,user,org,conType,null);
 	   if(null != contracts){
 		   isContractSaved = true;
 	   }
