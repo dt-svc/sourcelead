@@ -37,7 +37,6 @@ function contractList(){
            type : "POST",
            url: sourceleadUrl+"/getDashboardContracts?${_csrf.parameterName}=${_csrf.token}&locationId="+locationId,    
             success :function(data) {
-               		
 			    	     $("#contractList").removeAttr("style");
 	                	 $("#contractList").empty();
 	                	 var result = "";
@@ -56,8 +55,8 @@ function contractList(){
 	                     result = result +"<tbody>"; 
 	                     
 	                     for (var i = 0; i < data.length; i++) { 
-	                    	 var opt = data[i]; 
-	                    	 if(opt.contractUUID != null && opt.contractUUID !='' && opt.contractUUID !='undefined'){
+	                    	 var opt = data[i];
+// 	                    	 if(opt.contractUUID != null && opt.contractUUID !='' && opt.contractUUID !='undefined'){
 	                    		 result = result +"<tr>";
 		                    	 if(opt.candidateName !=null && opt.candidateName !='' && opt.candidateName !='undefined'){
 		                    		 result = result +"<td><div class=''><span title='"+opt.candidateName+"'>"+opt.candidateName+"</span></a></div></td>";
@@ -98,7 +97,7 @@ function contractList(){
 			                     
 			                     result = result +"</tr>";
 	                    	 }
-	                     }
+// 	                     }
 	                     result = result +" </tbody>";
 	                     result = result +"</table>"; 
 	                     $("#contractList").append(result); 

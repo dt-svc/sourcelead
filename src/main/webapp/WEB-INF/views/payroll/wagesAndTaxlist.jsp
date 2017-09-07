@@ -2,10 +2,12 @@
 
 <script type="text/javascript">
 function wagesAndTaxList(){
+	    $("#addPayrollDiv").hide();
 		var sourceleadUrl ='${sourceleadUrl}';
 		var searchValue = $("#dataTableSearch").val();
+		var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 		searchValue = searchValue ? searchValue : "";
-		var url = sourceleadUrl+"/getWagesAndTaxList?searchValue="+searchValue;
+		var url = sourceleadUrl+"/getWagesAndTaxList?searchValue="+searchValue+"&orgLocationId="+orgLocationId;
 		/* url += "&"+$($('#payroll_list_form')[0]).serialize(); */
 	    prepareWagesAndTaxList(url);
 }
@@ -20,7 +22,6 @@ function prepareWagesAndTaxList(url){
 	$("#employeeListDiv").empty();
 	$("#invoiceDataDiv").empty();
 	$("#finalPayrollReportDiv").empty();
-	$("#wagesAndTaxListDiv").append(result);
 	$("#loading").removeAttr("style");
 	$('#payScale').css('display','none');
 	
@@ -66,7 +67,6 @@ function prepareWagesAndTaxList(url){
 <script>
 function wagesTaxpagination(url){
 	var colIndex = 0;
-	/*$.fn.dataTable.moment( 'DD-MM-YYYY' );*/
     $('#wageTaxPagination').DataTable( { 
     		"processing": true,
         "serverSide": true,
@@ -97,7 +97,6 @@ function wagesTaxpagination(url){
         ],
         "columnDefs": [ {
 	    	  	"targets": colIndex++,
-	    	  	"className": "tbldata-dotdot_50",
 	    	  	"data": "fromDate",
 	    	  	"render": function(data, type, opt, meta) {
 	    	  		  var result = "";

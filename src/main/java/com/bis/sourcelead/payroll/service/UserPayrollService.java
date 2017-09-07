@@ -20,4 +20,6 @@ public interface UserPayrollService {
 	ResponseList<Checks> getChecksList(ChecksDTO checksDTO, Long orgLocationId)throws Exception;
 
 	List<Checks> getChecksListByEmployeeId(Long empId, OrgLocations orgLocations)throws Exception;
+
+	Checks getUniqueChecksListByEmployeeId(String empId, Long orgLocationId, ChecksDTO checksDTO)throws Exception;
 }
