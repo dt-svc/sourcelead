@@ -20,10 +20,10 @@ public interface ClientService {
 
 	public void storeClient(ClientDTO clientDTO,AddUserDTO AddUserDTO,CandidateDTO candidateDTO,User user,OrgLocations orgLocations,String responderType,Org org) throws Exception;
 
-	public void updateClientDetails(JSONObject jsonObj,Long orgRelationId, Long clientLocationId, Long loginLocationId, User user) throws Exception;
+	public void updateClientDetails(ClientDTO clientDTO,Long orgRelationId, Long clientLocationId, Long loginLocationId, User user) throws Exception;
 
 
-	public void updateVendorDetails(JSONObject jsonObj, Long orgRelationId, Long vendorLocationId, Long loginOrgId, User user) throws JSONException, Exception;
+	public void updateVendorDetails(ClientDTO clientDTO, Long orgRelationId, Long vendorLocationId, Long loginOrgId, User user) throws JSONException, Exception;
 
 
 	public OrgSpoc updateVendorContactDetails(JSONObject jsonObj, Long spocId, Long id, User loginUser, Long ownerId, Long spocUserId,OrgLocations orgLocation, String type) throws Exception;
