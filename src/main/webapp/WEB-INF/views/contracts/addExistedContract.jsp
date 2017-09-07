@@ -61,7 +61,7 @@
 							
 							<div class="input-group positionRelative ratetype" id="uploadFileGroup" title="Document Type: .pdf format only">
 	                        <label class="input-group-btn"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
-	                          <input type="file" name="uploadBtn" id="uploadBtn" style="display: none;"  multiple="" class="upload">
+	                          <input type="file" id="uploadBtn" style="display: none;"  class="upload">
 	                            </span> </label>
 		                          <input type="text" class="form-control" readonly id="uploadFile" name="docFile" placeholder="Upload .pdf File." field-name="Attachment" data-validation="required validate_Space validatepdf">
 	                        </div>
@@ -1303,10 +1303,6 @@ function hideCommonSOWFields(){
 <script type="text/javascript">
 	function saveExistigContract() {
 		if ($('#newcontract_form').validate(false, validationSettings)) {
-			var frm = $('#newcontract_form').serializeFormJSON();
-			var con = JSON.stringify(frm);
-			con = con.replace(/[{}]/g, "");
-	        var jsonData = encodeURIComponent(con);
 			$("#save_template").attr("disabled", "disabled");
 			$("#save_template" ).addClass('button').val('Processing..');
 			var form = $('#newcontract_form')[0];
@@ -1318,12 +1314,10 @@ function hideCommonSOWFields(){
 	 		$.ajax({
 		 			type : "POST",
 	        	    data: formData,
-	        	    contentType : 'application/json; charset=utf-8',
-	        	    enctype: 'multipart/form-data',
 	    	        processData: false,
 	    	        contentType:false,
 	        	    dataType : 'json',
-					url : sourceleadUrl+ "/saveExistigContract?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
+					url : sourceleadUrl+ "/saveExistigContract?${_csrf.parameterName}=${_csrf.token}",
 					success : function(result) {
 						location.replace(sourceleadUrl+"/contractListbyStatus");
 					},
@@ -1710,6 +1704,15 @@ function cancelContract(){
 	location.replace(sourceleadUrl+"/contractListbyStatus");
 }
 
+</script>
+
+<script>
+var sourceleadUrl = '${sourceleadUrl}';
+ $(function() {
+	$("#uploadBtn").change(function() {
+		fileUpload(sourceleadUrl, "uploadBtn", "ContractDocs", "newcontract_form");
+	});
+ }); 
 </script>
 
 <!-- Footer Area -->

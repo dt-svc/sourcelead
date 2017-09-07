@@ -29,6 +29,7 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -43,6 +44,7 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.ContractRequestDocumentsDao;
 import com.bis.sourcelead.dao.ContractsTemplateDao;
+import com.bis.sourcelead.dto.ContractsDTO;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.ContractRequestDocuments;
 import com.bis.sourcelead.entity.Contracts;
@@ -633,26 +635,24 @@ public class ContractRestController {
 	   }
 
 	 @RequestMapping(value = "/saveExistigContract", method = RequestMethod.POST)
-		public @ResponseBody boolean saveExistigContract(@RequestParam(value = "json", required = false) String json,MultipartHttpServletRequest request) throws Exception {
-
+		 public @ResponseBody boolean saveExistigContract(ContractsDTO contractsDTO,HttpServletRequest request) throws Exception {
 			boolean isContractSaved = false;
-			String json1 = "{" + json + "}";
-			JSONObject jsonObj = new JSONObject(json1);
+			contractsDTO.setStaticPath(staticPath);
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 			
-			MultipartFile multiFile1 = null;
+			/*MultipartFile multiFile1 = null;
 			Iterator<String> itrator = request.getFileNames();
 			if(itrator.hasNext()){
 		        multiFile1 = request.getFile(itrator.next());
-			}
+			}*/
 			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-			Contracts contracts = contractsTemplateService.saveExistigContract(jsonObj,multiFile1,orgLocation,user,org);
-			final MultipartHttpServletRequest multiRequest = (MultipartHttpServletRequest) request;
-			final Map files = multiRequest.getFileMap();
-			int maxCount = Integer.parseInt(jsonObj.getString("maxTaxRowNum"));
+			Contracts contracts = contractsTemplateService.saveExistigContract(contractsDTO,orgLocation,user,org);
+//			final MultipartHttpServletRequest multiRequest = (MultipartHttpServletRequest) request;
+//			final Map files = multiRequest.getFileMap();
+//			int maxCount = Integer.parseInt(contractsDTO.getMaxTaxRowNum());
 			
-			for (long c = 1; c < maxCount; c++) {
+			/*for (long c = 1; c < maxCount; c++) {
 					ContractRequestDocuments contractRequestDocuments = new ContractRequestDocuments();
 					MultipartFile  multiFile = (MultipartFile)files.get("uploadBtn"+c);
 					
@@ -678,7 +678,7 @@ public class ContractRestController {
 						contractRequestDocuments.setCreatedBy(user.getUserCode());
 						contractRequestDocuments.setUpdatedBy(user.getUserCode());
 						contractRequestDocumentsService.saveContractRequestDocuments(contractRequestDocuments);
-			}
+			}*/
 		   if(null != contracts){
 			   isContractSaved = true;
 		   }

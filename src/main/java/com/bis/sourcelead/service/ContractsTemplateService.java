@@ -6,6 +6,7 @@ import java.util.List;
 import org.json.JSONObject;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.bis.sourcelead.dto.ContractsDTO;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.ContractsHistory;
@@ -51,7 +52,7 @@ public interface ContractsTemplateService {
 	
 	Contracts findContractTitleByOrgLocationAndContractType(String contractTitle,String contractType,Long orgLocationId, Long contractId);
 
-	Contracts saveExistigContract(JSONObject jsonObj, MultipartFile multiFile, OrgLocations orgLocation, User user, Org org) throws Exception;
+	Contracts saveExistigContract(ContractsDTO contractsDTO, OrgLocations orgLocation, User user, Org org) throws Exception;
 
 	ContractsTemplate getContractTemplateByTemplateUUID(String tempUUID);
 
