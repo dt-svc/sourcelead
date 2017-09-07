@@ -821,5 +821,7 @@ public class Constants {
 	public static final String VENDOR_PAYMENTS = "VENDOR_PAYMENTS";
 	public static final String ELECTRONIC_WITHDRAWLS = "ELECTRONIC_WITHDRAWLS";
 	public static final String PAYROLL_CHKS = "PAYROLL_CHKS";
+	
+	public static final String DEFAULT_COOLINGOFF_PERIOD = "3 Months";
 
 }
