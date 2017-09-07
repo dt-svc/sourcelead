@@ -26,6 +26,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.annotations.Validator;
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.ClientProjectDTO;
 import com.bis.sourcelead.dto.ProjectAdditionalDetailsDTO;
 import com.bis.sourcelead.dto.ProjectAssignedMembersDTO;
 import com.bis.sourcelead.dto.ProjectsDTO;
@@ -166,6 +167,19 @@ public class ProjectsRestController {
 		   
 		    return "success";
 	    }
+       
+       
+       
+       
+	   @RequestMapping(value = "/storeClientProject", method = RequestMethod.POST)
+	   	public @ResponseBody Projects storeClientProject(ClientProjectDTO clientProjectDTO) throws Exception {
+	   		
+	   		Projects projects = null;
+	   		
+	   		return projects;
+	   	}
+       
+       
       
        
        @RequestMapping(value = "/getProjectAssignedMembesListByProjectId", method = RequestMethod.GET)
@@ -362,6 +376,18 @@ public class ProjectsRestController {
 			   List<OrgLocations> orgLocationsList = orgLocationService.getAllRegisteredOrgLocationsForClientProject(orgLocationIdsList);
 		       return orgLocationsList;
 		    }
+	  
+	  
+	    @RequestMapping(value = "/getEndClientProjects", method = RequestMethod.GET)
+		public  List<Projects> getEndClientProjects(@RequestParam(value="clientOrgLocationId", required=true) Long clientOrgLocationId) throws Exception {
+		   
+		   List<Projects> projectsList = projectsService.getProjectByOrgLocationsId(clientOrgLocationId);
+	       return projectsList;
+	    }
+
+	  
+	  
+	  
 	
 
 	protected static boolean isNullOrEmpty(String str) {

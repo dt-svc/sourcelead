@@ -52,17 +52,39 @@
 					</div>
 				</div>
 				</div>
+				 
 				<div class="col-md-6 col-lg-6">
-				<div class="form-group level-second mb10" id="level2Div">
-					<label class="col-md-3 mt10" for="Level-II">Level-II</label>
+					<div class="form-group mb10">
+					<label class="col-md-3 mt10" for="Project Manager">Client Project <span
+						class="text-danger">*&nbsp;</span></label>
 					<div class="col-md-9">
-						<select class="form-control chosen-select" name="level2Manager"
-							id="level2Manager">
-						</select>
+						<div class="form-icon-min" id="clientProjectDiv">
+							<select class="form-control chosen-select"
+								name="clientProject" id="clientProject" field-name="Client Project"
+								data-validation="required"">
+								<option value="">-- Select Project --</option>
+							</select> 
+							<i class='fa fa-info-circle' title='Client projects will be auto populate after selection of end client'></i>
+						</div>
+						<span class="hidden">Select Client Project</span>
 					</div>
 				</div>
+				</div> 
 			</div>
-			</div>
+			
+			
+			<div class="col-md-12 clearfix mt5 mb5">
+			<div class="col-md-6 col-lg-6">
+				<div class="form-group level-second mb10" id="level2Div">
+						<label class="col-md-3 mt10" for="Level-II">Level-II</label>
+						<div class="col-md-9">
+							<select class="form-control chosen-select" name="level2Manager"
+								id="level2Manager">
+							</select>
+						</div>
+					</div>
+				</div>
+				</div>
               <div id="clientLevelsDiv"></div>
               
 				<div class="form-footer clearfix mt">
@@ -92,15 +114,15 @@
 
 <div id="divLevelTd1" style="display: none; float: left;">
 	<div class="" id="REPLACEROWIDlevel" name="REPLACEROWIDlevel">
-	<input type="hidden" id="REPLACEROWIDlevelValue" value="" />
+	<input type="hidden" id="REPLACEROWIDlevelValue" name="clientProjectLevel[REPLACEROWID].levelValue" value="" />
 	<span class="block mt5" id="REPLACEROWIDlevelName"></span>
 	</div>
  </div>
  
  <div id="divLevelTd2" style="display: none; float: left;">
-  <input type="hidden" id="REPLACEROWIDclientOrgLocId" value="" />
+  <input type="hidden" id="REPLACEROWIDclientOrgLocId" name="clientProjectLevel[REPLACEROWID].clientOrgLocId" value="" />
   <div class="dropdown-select">
-          <select class="form-control select-bg CHOOSEN-SELECT-CLASS" data-validation="required" field-name="Client" onchange="getClientOrgLocValue();" id="REPLACEROWIDlevelClient" name="REPLACEROWIDlevelClient" >
+          <select class="form-control select-bg CHOOSEN-SELECT-CLASS" data-validation="required" field-name="Client" onchange="getClientOrgLocValue();" id="REPLACEROWIDlevelClient" name="clientProjectLevel[REPLACEROWID].levelClient" >
           </select>
   </div>
  </div>
@@ -108,7 +130,7 @@
  <div id="divLevelTd3" style="display: none; float: left;">
   <div>
      <label class="switch ml10 pull-left mt5">
-       <input type="checkbox" id="REPLACEROWIDchecked" name="REPLACEROWIDchecked" onclick="checkEndClient(REPLACEROWID)" value="N">
+       <input type="checkbox" id="REPLACEROWIDchecked" name="clientProjectLevel[REPLACEROWID].endClientchecked" onclick="checkEndClient(REPLACEROWID)" value="N">
        <div class="slider round"></div>
        </label>
        <span class="block mt5">Is end Client ?</span>
@@ -163,7 +185,7 @@ function getClientLevels(){
 	
 	result = result +'<td width="100px">';
 	result = result +'<div class="">';
-	result = result +'<input type="hidden" id="0levelValue" value="1" />';
+	result = result +'<input type="hidden" id="0levelValue" name="clientProjectLevel[0].levelValue" value="1" />';
 	result = result +'<span class="block mt5">Level 1</span>';
 	result = result +'</div>';
 	result = result +'</td>';
@@ -171,8 +193,8 @@ function getClientLevels(){
 	result = result +'<td width="100px">';
 	result = result +'<div class="dropdown-select">';
 	
-	result = result +'<input type="hidden" id="0clientOrgLocId" value="" />';
-	result = result +'<select class="form-control select-bg chosen-select" data-validation="required" field-name="Client" id="0levelClient" name="0levelClient" onchange="getClientOrgLocValue();">';
+	result = result +'<input type="hidden" id="0clientOrgLocId" name="clientProjectLevel[0].clientOrgLocId" value="" />';
+	result = result +'<select class="form-control select-bg chosen-select" data-validation="required" field-name="Client" id="0levelClient" name="clientProjectLevel[0].levelClient" onchange="getClientOrgLocValue();">';
 	result = result +'<option value="">--Select Client--</option>';
 	<c:forEach var="report" items="${clientsList}">
 	    if('${report.locationId.id}' == '${SourceLeadWeb_orgLocations.id}'){
@@ -190,7 +212,7 @@ function getClientLevels(){
 	
 	result = result +'<td width="150px">';
 	result = result +'<label class="switch ml10 pull-left mt5">';
-	result = result +'<input type="checkbox"  id="0checked" name="0checked" onclick="checkEndClient(0)" value="N">';
+	result = result +'<input type="checkbox"  id="0checked" name="clientProjectLevel[0].endClientchecked" onclick="checkEndClient(0)" value="N">';
 	result = result +'<div class="slider round"></div>';
 	result = result +'</label>';
 	result = result +'<span class="block mt5">Is end Client ?</span>';	
@@ -230,13 +252,22 @@ function getClientLevels(){
 function checkEndClient(id){
 	var checked = document.getElementById(id+"checked").checked
 	if(checked == true){
-		$("#"+id+"checked").val("Y");
-		$("#addClientRow").attr('disabled', 'disabled');
-		 document.getElementById("addButton").removeAttribute("class");
-		 document.getElementById('addButton').className = 'fa fa-plus text-success';
-		 $("#addClientRow").attr('disabled', 'disabled');
-		 document.getElementById("addLevelTxtMsg").style.display="";
-		 $("#save_project").removeAttr('disabled');
+		var clientOrgLocId = $("#"+id+"clientOrgLocId").val();
+		if(clientOrgLocId){
+			$("#"+id+"checked").val("Y");
+			$("#addClientRow").attr('disabled', 'disabled');
+			 document.getElementById("addButton").removeAttribute("class");
+			 document.getElementById('addButton').className = 'fa fa-plus text-success';
+			 $("#addClientRow").attr('disabled', 'disabled');
+			 document.getElementById("addLevelTxtMsg").style.display="";
+			 $("#save_project").removeAttr('disabled');
+			 
+			 getEndClientProjects(clientOrgLocId)
+			 
+		}else{
+			alertMessage();
+			document.getElementById(id+"checked").checked = false;
+		}
 		 
 	}else{
 		$("#"+id+"checked").val("N");
@@ -245,9 +276,42 @@ function checkEndClient(id){
 		 document.getElementById("addButton").removeAttribute("class");
 		 document.getElementById('addButton').className = 'fa fa-plus text-primary';
 		 $("#save_project").attr('disabled', 'disabled');
+		 
+	    var output = "";
+     	output = output + "<option value=''>-- Select Project --</option>";
+     	$("#clientProject").empty();
+     	$("#clientProject").append(output);
+     	$("#clientProject").trigger("chosen:updated");
 	}
 }
 </script>
+
+
+
+<script>
+function getEndClientProjects(clientOrgLocationId){
+	var sourceleadUrl ='${sourceleadUrl}';
+	
+	 $.ajax({
+	    	type: "GET",
+	        url: sourceleadUrl+"/getEndClientProjects?${_csrf.parameterName}=${_csrf.token}&clientOrgLocationId="+clientOrgLocationId,
+	        success: function(json) {
+	        	var output = "";
+	        	output = output + "<option value=''>-- Select Project --</option>";
+	        	for (var i=0; i<json.length; i++)
+				{
+	        		var opt = json[i];
+	        		output = output + "<option value='" +opt.id+ "'>"+opt.projectName+"</option>";
+				}
+	        	
+	        	$("#clientProject").empty();
+	        	$("#clientProject").append(output);
+	        	$("#clientProject").trigger("chosen:updated");
+	        }
+	    });
+}
+</script>
+
 
 
 <script>
@@ -535,6 +599,19 @@ function getChildLevel1Approvers(currentApproverId,level2ApproverUserId){
 <script>
 function saveClientProject(){
 	 if ($('#project_form').validate(false, validationSettings)){ 
+		 
+		 var sourceleadUrl ='${sourceleadUrl}';
+		 var formData = getFormData("project_form");
+		 
+	 		$.ajax({
+				type : "POST",
+  	    	    data : formData,
+				url : sourceleadUrl+"/storeClientProject?${_csrf.parameterName}=${_csrf.token}", 
+				success : function(result) {
+
+				},
+			}); 
+  		 return true;
 		 
 	 }else{
 			return false;

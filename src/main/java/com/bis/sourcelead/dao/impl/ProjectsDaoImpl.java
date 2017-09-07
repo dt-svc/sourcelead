@@ -141,7 +141,7 @@ public class ProjectsDaoImpl implements ProjectsDao{
 	public List<Projects> getProjectByOrgLocationsId(Long orgLocationsId) throws Exception {
 		logger.debug("In ProjectsDaoImpl class getProjectByOrgLocationsId method");
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from Projects project where project.orgLocationsId = :orgLocationsId ";
+		String query = "from Projects project where project.orgLocationsId = :orgLocationsId and project.projectMode = 'Finished' ";
 		List<Projects> projectsList =  session.createQuery(query.toString()).setLong("orgLocationsId", orgLocationsId).setCacheable(true).list();
 		
 		return projectsList;
