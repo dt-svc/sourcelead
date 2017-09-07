@@ -147,10 +147,11 @@ public class EmployeePayrollRestController {
 	 * @return json
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "/loadEmployerPayrollCostByOrgLocationId", method = RequestMethod.POST)
+	@RequestMapping(value = {"/loadEmployerPayrollCostByOrgLocationId", "/rest/loadEmployerPayrollCostByOrgLocationId"}, method = RequestMethod.POST)
 	public @ResponseBody  ResponseList<EmployerPayrollCost> loadEmployerPayrollCostByOrgLocationId(EmployerPayrollCostDTO employerPayrollCostDTO,HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
-		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+//		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		OrgLocations orgLocation = orgLocationService.getOrgLocations(Long.parseLong(employerPayrollCostDTO.getOrgLocationId()));
 		
 		String[] tableColumns = {"fromDate", "toDate", "employeeId", "employeeName", "ssn", "totalHrs","grossWages","fica","futa","sui","erLocals","wcCost","adminFee","totalErCost"};
 	     int sortColumnIndex = 3; //by default sorting using updated date
@@ -214,11 +215,12 @@ public class EmployeePayrollRestController {
 	 * @return json
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "/getWagesAndTaxList", method = RequestMethod.POST)
+	@RequestMapping(value = {"/getWagesAndTaxList", "/rest/getWagesAndTaxList"}, method = RequestMethod.POST)
 	@ResponseBody
 	public  ResponseList<WageTaxSummary> getWagesAndTaxList(WagesTaxSummaryDTO wagesTaxSummaryDTO ,HttpServletRequest request) throws Exception
 	{
-		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+//		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		OrgLocations orgLocation = orgLocationService.getOrgLocations(Long.parseLong(wagesTaxSummaryDTO.getOrgLocationId()));
 		
 		String[] tableColumns = {"fromDate", "toDate", "employeeId", "employeeName", "ssnNumber", "checkDate","checkNo","gross","fwt","ssec","med","swt","sdiSui","local","deds","net","batchNumber"};
 	     int sortColumnIndex = 3; //by default sorting using updated date
@@ -284,10 +286,11 @@ public class EmployeePayrollRestController {
 	 * @return json
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "/getAccountDeductionsList", method = RequestMethod.POST)
+	@RequestMapping(value = {"/getAccountDeductionsList", "/rest/getAccountDeductionsList"}, method = RequestMethod.POST)
 	public  ResponseList<AccountDeductions> getAccountDeductionsList(AccountDeductionsDTO accountDeductionsDTO ,HttpServletRequest request) throws Exception
 	{
-		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+//		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		OrgLocations orgLocation = orgLocationService.getOrgLocations(Long.parseLong(accountDeductionsDTO.getOrgLocationId()));
 		
 		String[] tableColumns = {"employeeId", "employeeName", "fromDate", "toDate", "dedAmount", "batchNumber","requestSubDate","requestApprovedDate","repaidStatus"};
 	     int sortColumnIndex = 1; //by default sorting using updated date
@@ -316,11 +319,12 @@ public class EmployeePayrollRestController {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "/getDeductionsDetailsbyId", method = RequestMethod.GET)
-	public @ResponseBody String getDeductionsDetailsbyId(@RequestParam(value = "deductionId", required = false) String deductionId, HttpServletRequest request) throws Exception
+	@RequestMapping(value = {"/getDeductionsDetailsbyId", "/rest/getDeductionsDetailsbyId"}, method = RequestMethod.GET)
+	@ResponseBody
+	public  List<AccountDeductionsDetails> getDeductionsDetailsbyId(@RequestParam(value = "deductionId", required = false) String deductionId, HttpServletRequest request) throws Exception
 	{
 		List<AccountDeductionsDetails> accountDeductionsDetailsList = accountDeductionsService.getDeductionsDetailsbyId(Long.parseLong(deductionId));
-		return commonUtil.toJSON(accountDeductionsDetailsList);
+		return accountDeductionsDetailsList;
 	}
 	
 	/**
@@ -328,11 +332,12 @@ public class EmployeePayrollRestController {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "/getHrDeductionsList", method = RequestMethod.POST)
+	@RequestMapping(value = {"/getHrDeductionsList", "/rest/getHrDeductionsList"}, method = RequestMethod.POST)
 	@ResponseBody
 	public  ResponseList<HrDeductions> getHrDeductionsList(HrDeductionsDTO hrDeductionsDTO ,HttpServletRequest request) throws Exception
 	{
-		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+//		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		OrgLocations orgLocation = orgLocationService.getOrgLocations(Long.parseLong(hrDeductionsDTO.getOrgLocationId()));
 		
 		String[] tableColumns = {"employeeId", "employeeName", "fromDate", "toDate", "dedAmount", "batchNumber","requestSubDate","requestApprovedDate","repaidStatus"};
 	     int sortColumnIndex = 1; //by default sorting using updated date
@@ -359,11 +364,12 @@ public class EmployeePayrollRestController {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "/getEmpHrDeductionsDetailsbyId", method = RequestMethod.GET)
-	public @ResponseBody String getEmpHrDeductionsDetailsbyId(@RequestParam(value = "hrDeductionId", required = false) String hrDeductionId, HttpServletRequest request) throws Exception
+	@RequestMapping(value = {"/getEmpHrDeductionsDetailsbyId","/rest/getEmpHrDeductionsDetailsbyId"}, method = RequestMethod.GET)
+	@ResponseBody
+	public  List<HrDeductionsDetails> getEmpHrDeductionsDetailsbyId(@RequestParam(value = "hrDeductionId", required = false) String hrDeductionId, HttpServletRequest request) throws Exception
 	{
 		List<HrDeductionsDetails> hrDeductionsList = hrDeductionsService.getHrDeductionsDetailsbyId(Long.parseLong(hrDeductionId));
-		return commonUtil.toJSON(hrDeductionsList);
+		return hrDeductionsList;
 	}
 	
 	/**
@@ -376,7 +382,7 @@ public class EmployeePayrollRestController {
 	 * @throws Exception
 	 */
 	@SuppressWarnings("unchecked")
-	@RequestMapping(value = "/runPayrollCycle", method = RequestMethod.GET)
+	@RequestMapping(value = {"/runPayrollCycle","/rest/runPayrollCycle"}, method = RequestMethod.GET)
 	public @ResponseBody String generatePayroll(@RequestParam(value = "json", required = false) String json,HttpServletRequest request, HttpServletResponse response)throws Exception {
 		
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
@@ -432,12 +438,12 @@ public class EmployeePayrollRestController {
 	 * @return json string
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "/getMappedUserList", method = RequestMethod.GET)
+	@RequestMapping(value = {"/getMappedUserList", "/rest/getMappedUserList"}, method = RequestMethod.GET)
 	@ResponseBody
-	public List<WageTaxSummary> getMappedUserList(HttpServletRequest request, HttpServletResponse response) throws Exception {
+	public List<WageTaxSummary> getMappedUserList(@RequestParam(value = "orgLocationId", required = false) Long orgLocationId,HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		List<WageTaxSummary>  wageTaxSummaryList = wageTaxSummaryService.getMappedUsersListByOrgLocationId(orgLocation.getId());
+		OrgLocations orgLocation = orgLocationService.getOrgLocations(orgLocationId);
+		List<WageTaxSummary>  wageTaxSummaryList = wageTaxSummaryService.getMappedUsersListByOrgLocationId(orgLocationId);
 //		List<BisUserMapping> usersList = bisUserMappingService.getMappedUsersListByOrgLocationId(orgLocation.getId());
 		if (wageTaxSummaryList != null) {
 			return wageTaxSummaryList;
@@ -486,13 +492,13 @@ public class EmployeePayrollRestController {
 	
 	
 	
-	@RequestMapping(value = { "/getChecksList", "/rest/getChecksList" }, method = RequestMethod.POST)
+	@RequestMapping(value = { "/getChecksList", "/rest/getChecksList" }, method = RequestMethod.POST,produces = "application/json")
 	@ResponseBody
 	public ResponseList<Checks> getChecksList(ChecksDTO checksDTO,HttpServletRequest request)
 					throws Exception {
 		
 		
-	OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+//	OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		
 		String[] tableColumns = {"empId", "empName", "date", "typeOfExpense", "bankName", "month","legalFees","advance","generalExpenses","vendorPayments","electronicWithdrawals","payrollChecks","amount","checkNo"};
 	     int sortColumnIndex = 1; //by default sorting using updated date
@@ -504,7 +510,7 @@ public class EmployeePayrollRestController {
 		checksDTO.setSortColumn(tableColumns[sortColumnIndex]);
 		checksDTO.setSortOrder(sortColumnOrder);
 		
-		return userPayrollService.getChecksList(checksDTO, orgLocation.getId());
+		return userPayrollService.getChecksList(checksDTO, Long.parseLong(checksDTO.getOrgLocationId()));
 		
 		// TODO do not delete @Rajashekar
 		/*List<Checks> checksList = userPayrollService.getChecksList(userId, orgLocationId);
@@ -534,11 +540,11 @@ public class EmployeePayrollRestController {
 
 		}
 	 
-	 @RequestMapping(value = { "/getEmployeeList", "/rest/getEmployeeList" }, method = RequestMethod.POST)
+	 @RequestMapping(value = { "/getEmployeeList", "/rest/getEmployeeList" }, method = RequestMethod.POST,produces = "application/json")
 	 @ResponseBody
 	 public ResponseList<BisUserMapping> getEmployeeList(EmployeeListDTO employeeListDTO,HttpServletRequest request)
 						throws Exception {
-		 OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+//		 OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			
 			String[] tableColumns = {"company", "branch", "empId", "candidateName", "rate", "fixedRate","payRate","fixedPay","insurance","ded","effectiveRate","payrollDifference","immigration","comments","advanceHcp","balance"};
 		     int sortColumnIndex = 3; //by default sorting using updated date
@@ -550,7 +556,7 @@ public class EmployeePayrollRestController {
 			employeeListDTO.setSortColumn(tableColumns[sortColumnIndex]);
 			employeeListDTO.setSortOrder(sortColumnOrder);
 			
-			return bisUserMappingService.getEmployeeList(employeeListDTO,orgLocation.getId());
+			return bisUserMappingService.getEmployeeList(employeeListDTO, Long.parseLong(employeeListDTO.getOrgLocationId()));
 			// TODO do not delete @Rajashekar
 //			List<BisUserMapping> bisUsersList = bisUserMappingService.getEmployeeList(orgLocationId);
 //			return bisUsersList;
@@ -566,11 +572,11 @@ public class EmployeePayrollRestController {
 	 
 																				 
 	 
-	 @RequestMapping(value = { "/getInvoiceDetails"}, method = RequestMethod.POST)
+	 @RequestMapping(value = { "/getInvoiceDetails", "/rest/getInvoiceDetails"}, method = RequestMethod.POST,produces = "application/json")
 	 @ResponseBody
-		public  ResponseList<InvoiceData> getInvoiceDetails(InvoiceDetailsDTO invoiceDetailsDTO ,HttpServletRequest request) throws Exception
+		public  ResponseList<InvoiceData> getInvoiceDetails (InvoiceDetailsDTO invoiceDetailsDTO ,HttpServletRequest request) throws Exception
 		{
-		 OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+//		 OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		 
 		 String[] tableColumns = {"sku", "productService", "empName", "number", "memoDescription", "date","lastmodified","dueDate","rate","qty","amount","arPaid","oldNew"};
 	     int sortColumnIndex = 2; //by default sorting using updated date
@@ -582,7 +588,7 @@ public class EmployeePayrollRestController {
 		invoiceDetailsDTO.setSortColumn(tableColumns[sortColumnIndex]);
 		invoiceDetailsDTO.setSortOrder(sortColumnOrder);
 		
-		return invoiceDataService.getInvoiceDetails(invoiceDetailsDTO, orgLocation.getId());
+		return invoiceDataService.getInvoiceDetails(invoiceDetailsDTO, Long.parseLong(invoiceDetailsDTO.getOrgLocationId()));
 		}
 		
 	 
@@ -595,7 +601,7 @@ public class EmployeePayrollRestController {
 	 * @return List<InvoiceData>
 	 * @throws Exception
 	 */
-	@RequestMapping(value = { "/getInvoiceDetailsByEmpId"}, method = RequestMethod.GET)
+	@RequestMapping(value = { "/getInvoiceDetailsByEmpId","/rest/getInvoiceDetailsByEmpId"}, method = RequestMethod.GET)
 	public List<InvoiceData> getInvoiceDetailsByEmpId(@RequestParam(value = "empId", required = false) Long empId,
 			@RequestParam(value = "orgLocationId", required = false) Long orgLocationId) throws Exception {
 		OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
@@ -620,7 +626,7 @@ public class EmployeePayrollRestController {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping(value = { "/getChecksListByEmployeeId"}, method = RequestMethod.GET)
+	@RequestMapping(value = { "/getChecksListByEmployeeId", "/rest/getChecksListByEmployeeId"}, method = RequestMethod.GET)
 	public List<Checks> getChecksListByEmployeeId(@RequestParam(value = "empId", required = false) Long empId,
 			@RequestParam(value = "orgLocationId", required = false) Long orgLocationId) throws Exception {
 		OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
@@ -645,7 +651,7 @@ public class EmployeePayrollRestController {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping(value = { "/getWagesTaxSummaryByEmpId"}, method = RequestMethod.GET)
+	@RequestMapping(value = { "/getWagesTaxSummaryByEmpId", "/rest/getWagesTaxSummaryByEmpId"}, method = RequestMethod.GET)
 	public List<WageTaxSummary> getWagesTaxSummaryByEmpId(@RequestParam(value = "empId", required = false) Long empId,
 			@RequestParam(value = "orgLocationId", required = false) Long orgLocationId) throws Exception {
 		OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
@@ -669,7 +675,7 @@ public class EmployeePayrollRestController {
 	 * @return List<AccountDeductions>
 	 * @throws Exception
 	 */
-	@RequestMapping(value = { "/getAccontDeductionsByEmpId" }, method = RequestMethod.GET)
+	@RequestMapping(value = { "/getAccontDeductionsByEmpId", "/rest/getAccontDeductionsByEmpId"}, method = RequestMethod.GET)
 	public List<AccountDeductions> getAccontDeductionsByEmpId(
 			@RequestParam(value = "empId", required = false) Long empId,
 			@RequestParam(value = "orgLocationId", required = false) Long orgLocationId) throws Exception {
@@ -696,7 +702,7 @@ public class EmployeePayrollRestController {
 	 * @return List<HrDeductions>
 	 * @throws Exception
 	 */
-	@RequestMapping(value = { "/getHRDeductionsByEmployeeId" }, method = RequestMethod.GET)
+	@RequestMapping(value = { "/getHRDeductionsByEmployeeId", "/rest/getHRDeductionsByEmployeeId" }, method = RequestMethod.GET)
 	public List<HrDeductions> getHRDeductionsByEmployeeId(
 			@RequestParam(value = "empId", required = false) Long empId,
 			@RequestParam(value = "orgLocationId", required = false) Long orgLocationId) throws Exception {
@@ -715,7 +721,7 @@ public class EmployeePayrollRestController {
 	}
 	
 	
-	@RequestMapping(value = { "/getfinalBalanceByEmpId" }, method = RequestMethod.GET)
+	@RequestMapping(value = { "/getfinalBalanceByEmpId", "/rest/getfinalBalanceByEmpId" }, method = RequestMethod.GET)
 	public PayrollBalance getfinalBalanceByEmpId(
 			@RequestParam(value = "empId", required = false) Long empId,
 			@RequestParam(value = "orgLocationId", required = false) Long orgLocationId) throws Exception {

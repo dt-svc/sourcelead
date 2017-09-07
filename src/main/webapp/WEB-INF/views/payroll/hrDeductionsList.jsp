@@ -3,8 +3,9 @@ function hrDeductionsList(){
 	    $("#addPayrollDiv").hide();
 		var sourceleadUrl ='${sourceleadUrl}';
 		var searchValue = $("#hrDataTableSearch").val();
+		var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 		searchValue = searchValue ? searchValue : "";
-		var url = sourceleadUrl+"/getHrDeductionsList?searchValue="+searchValue;
+		var url = sourceleadUrl+"/getHrDeductionsList?searchValue="+searchValue+"&orgLocationId="+orgLocationId;
 		/* url += "&"+$($('#payroll_list_form')[0]).serialize(); */
 	    prepareHrDeductionsList(url);
 }
@@ -237,6 +238,7 @@ function getHrDeductionDetails(hrDedId,empName){
 	$(".sideMask").fadeIn("slow");
 	$(".hrDedu").fadeIn("slow");
 	  var sourceleadUrl ='${sourceleadUrl}';
+	  var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 			  $.ajax({
 			    	type: "GET",
 			        url: sourceleadUrl+"/getEmpHrDeductionsDetailsbyId?${_csrf.parameterName}=${_csrf.token}&hrDeductionId="+hrDedId,

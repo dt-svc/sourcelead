@@ -8,218 +8,276 @@ import com.bis.sourcelead.entity.User;
 
 public class WagesTaxSummaryDTO extends SearchDTO implements Serializable{
 
-	private Long id;
-	private OrgLocations orgLocationId;
+	private String id;
+	private String orgLocationId;
 	private String employeeId;
 	private String employeeName;
-	private Date checkDate;
+	private String checkDate;
 	private String checkNo;
-	private float gross;
-	private float fwt;
-	private float ssec;
-	private float med;
-	private float swt;
-	private float sdiSui;
-	private float local;
-	private float deds;
-	private float net;
-	private Date fromDate;
-	private Date 	toDate;
+	private String gross;
+	private String fwt;
+	private String ssec;
+	private String med;
+	private String swt;
+	private String sdiSui;
+	private String local;
+	private String deds;
+	private String net;
+	private String fromDate;
+	private String 	toDate;
 	private String batchNumber;
 	private String status;
 	private String ssnNumber;
-	private User userId;
-	private Date createdDate;
+	private String userId;
+	private String createdDate;
 	private String createdBy;
-	private Date updatedDate;
+	private String updatedDate;
 	private String updatedBy;
 	private String fromDateStr;
 	private String toDateStr;
 	private String checkDateStr;
 	private String sortColumn;
 	private String sortOrder;
-	
-	public Long getId() {
+	public String getId()
+	{
 		return id;
 	}
-	public void setId(Long id) {
+	public void setId(String id)
+	{
 		this.id = id;
 	}
-	public OrgLocations getOrgLocationId() {
+	public String getOrgLocationId()
+	{
 		return orgLocationId;
 	}
-	public void setOrgLocationId(OrgLocations orgLocationId) {
+	public void setOrgLocationId(String orgLocationId)
+	{
 		this.orgLocationId = orgLocationId;
 	}
-	public String getEmployeeId() {
+	public String getEmployeeId()
+	{
 		return employeeId;
 	}
-	public void setEmployeeId(String employeeId) {
+	public void setEmployeeId(String employeeId)
+	{
 		this.employeeId = employeeId;
 	}
-	public String getEmployeeName() {
+	public String getEmployeeName()
+	{
 		return employeeName;
 	}
-	public void setEmployeeName(String employeeName) {
+	public void setEmployeeName(String employeeName)
+	{
 		this.employeeName = employeeName;
 	}
-	public Date getCheckDate() {
+	public String getCheckDate()
+	{
 		return checkDate;
 	}
-	public void setCheckDate(Date checkDate) {
+	public void setCheckDate(String checkDate)
+	{
 		this.checkDate = checkDate;
 	}
-	public String getCheckNo() {
+	public String getCheckNo()
+	{
 		return checkNo;
 	}
-	public void setCheckNo(String checkNo) {
+	public void setCheckNo(String checkNo)
+	{
 		this.checkNo = checkNo;
 	}
-	public float getGross() {
+	public String getGross()
+	{
 		return gross;
 	}
-	public void setGross(float gross) {
+	public void setGross(String gross)
+	{
 		this.gross = gross;
 	}
-	public float getFwt() {
+	public String getFwt()
+	{
 		return fwt;
 	}
-	public void setFwt(float fwt) {
+	public void setFwt(String fwt)
+	{
 		this.fwt = fwt;
 	}
-	public float getSsec() {
+	public String getSsec()
+	{
 		return ssec;
 	}
-	public void setSsec(float ssec) {
+	public void setSsec(String ssec)
+	{
 		this.ssec = ssec;
 	}
-	public float getMed() {
+	public String getMed()
+	{
 		return med;
 	}
-	public void setMed(float med) {
+	public void setMed(String med)
+	{
 		this.med = med;
 	}
-	public float getSwt() {
+	public String getSwt()
+	{
 		return swt;
 	}
-	public void setSwt(float swt) {
+	public void setSwt(String swt)
+	{
 		this.swt = swt;
 	}
-	public float getSdiSui() {
+	public String getSdiSui()
+	{
 		return sdiSui;
 	}
-	public void setSdiSui(float sdiSui) {
+	public void setSdiSui(String sdiSui)
+	{
 		this.sdiSui = sdiSui;
 	}
-	public float getLocal() {
+	public String getLocal()
+	{
 		return local;
 	}
-	public void setLocal(float local) {
+	public void setLocal(String local)
+	{
 		this.local = local;
 	}
-	public float getDeds() {
+	public String getDeds()
+	{
 		return deds;
 	}
-	public void setDeds(float deds) {
+	public void setDeds(String deds)
+	{
 		this.deds = deds;
 	}
-	public float getNet() {
+	public String getNet()
+	{
 		return net;
 	}
-	public void setNet(float net) {
+	public void setNet(String net)
+	{
 		this.net = net;
 	}
-	public Date getFromDate() {
+	public String getFromDate()
+	{
 		return fromDate;
 	}
-	public void setFromDate(Date fromDate) {
+	public void setFromDate(String fromDate)
+	{
 		this.fromDate = fromDate;
 	}
-	public Date getToDate() {
+	public String getToDate()
+	{
 		return toDate;
 	}
-	public void setToDate(Date toDate) {
+	public void setToDate(String toDate)
+	{
 		this.toDate = toDate;
 	}
-	public String getBatchNumber() {
+	public String getBatchNumber()
+	{
 		return batchNumber;
 	}
-	public void setBatchNumber(String batchNumber) {
+	public void setBatchNumber(String batchNumber)
+	{
 		this.batchNumber = batchNumber;
 	}
-	public String getStatus() {
+	public String getStatus()
+	{
 		return status;
 	}
-	public void setStatus(String status) {
+	public void setStatus(String status)
+	{
 		this.status = status;
 	}
-	public String getSsnNumber() {
+	public String getSsnNumber()
+	{
 		return ssnNumber;
 	}
-	public void setSsnNumber(String ssnNumber) {
+	public void setSsnNumber(String ssnNumber)
+	{
 		this.ssnNumber = ssnNumber;
 	}
-	public User getUserId() {
+	public String getUserId()
+	{
 		return userId;
 	}
-	public void setUserId(User userId) {
+	public void setUserId(String userId)
+	{
 		this.userId = userId;
 	}
-	public Date getCreatedDate() {
+	public String getCreatedDate()
+	{
 		return createdDate;
 	}
-	public void setCreatedDate(Date createdDate) {
+	public void setCreatedDate(String createdDate)
+	{
 		this.createdDate = createdDate;
 	}
-	public String getCreatedBy() {
+	public String getCreatedBy()
+	{
 		return createdBy;
 	}
-	public void setCreatedBy(String createdBy) {
+	public void setCreatedBy(String createdBy)
+	{
 		this.createdBy = createdBy;
 	}
-	public Date getUpdatedDate() {
+	public String getUpdatedDate()
+	{
 		return updatedDate;
 	}
-	public void setUpdatedDate(Date updatedDate) {
+	public void setUpdatedDate(String updatedDate)
+	{
 		this.updatedDate = updatedDate;
 	}
-	public String getUpdatedBy() {
+	public String getUpdatedBy()
+	{
 		return updatedBy;
 	}
-	public void setUpdatedBy(String updatedBy) {
+	public void setUpdatedBy(String updatedBy)
+	{
 		this.updatedBy = updatedBy;
 	}
-	public String getFromDateStr() {
+	public String getFromDateStr()
+	{
 		return fromDateStr;
 	}
-	public void setFromDateStr(String fromDateStr) {
+	public void setFromDateStr(String fromDateStr)
+	{
 		this.fromDateStr = fromDateStr;
 	}
-	public String getToDateStr() {
+	public String getToDateStr()
+	{
 		return toDateStr;
 	}
-	public void setToDateStr(String toDateStr) {
+	public void setToDateStr(String toDateStr)
+	{
 		this.toDateStr = toDateStr;
 	}
-	public String getCheckDateStr() {
+	public String getCheckDateStr()
+	{
 		return checkDateStr;
 	}
-	public void setCheckDateStr(String checkDateStr) {
+	public void setCheckDateStr(String checkDateStr)
+	{
 		this.checkDateStr = checkDateStr;
 	}
-	public String getSortColumn() {
+	public String getSortColumn()
+	{
 		return sortColumn;
 	}
-	public void setSortColumn(String sortColumn) {
+	public void setSortColumn(String sortColumn)
+	{
 		this.sortColumn = sortColumn;
 	}
-	public String getSortOrder() {
+	public String getSortOrder()
+	{
 		return sortOrder;
 	}
-	public void setSortOrder(String sortOrder) {
+	public void setSortOrder(String sortOrder)
+	{
 		this.sortOrder = sortOrder;
 	}
-	
 	
 	
 }

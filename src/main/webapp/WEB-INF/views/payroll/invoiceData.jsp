@@ -4,8 +4,9 @@ function getInvoiceDetails(){
 	    $("#addPayrollDiv").hide();
 		var sourceleadUrl ='${sourceleadUrl}';
 		var searchValue = $("#invoiceDataTableSearch").val();
+		var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 		searchValue = searchValue ? searchValue : "";
-		var url = sourceleadUrl+"/getInvoiceDetails?searchValue="+searchValue;
+		var url = sourceleadUrl+"/getInvoiceDetails?searchValue="+searchValue+"&orgLocationId="+orgLocationId;
 	    prepareInvoiceDetailsList(url);
 }
 </script> 

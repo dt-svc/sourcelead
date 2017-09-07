@@ -3,8 +3,9 @@ function accountDeductionsList(){
 	    $("#addPayrollDiv").hide();
 		var sourceleadUrl ='${sourceleadUrl}';
 		var searchValue = $("#accountDataTableSearch").val();
+		var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 		searchValue = searchValue ? searchValue : "";
-		var url = sourceleadUrl+"/getAccountDeductionsList?searchValue="+searchValue;
+		var url = sourceleadUrl+"/getAccountDeductionsList?searchValue="+searchValue+"&orgLocationId="+orgLocationId;
 		/* url += "&"+$($('#payroll_list_form')[0]).serialize(); */
 	    prepareAccountDeductionsList(url);
 }
@@ -237,6 +238,7 @@ function getEmpAccountDeductionDetails(accountDedId,empName){
 	$(".sideMask").fadeIn("slow");
 	$(".AccountDedu").fadeIn("slow");
 	  var sourceleadUrl ='${sourceleadUrl}';
+	  var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 			  $.ajax({
 			    	type: "GET",
 			        url: sourceleadUrl+"/getDeductionsDetailsbyId?${_csrf.parameterName}=${_csrf.token}&deductionId="+accountDedId,

@@ -3,8 +3,9 @@ function bisChecksList(){
 	$("#addPayrollDiv").hide();
 	var sourceleadUrl ='${sourceleadUrl}';
 	var searchValue = $("#checksDataTableSearch").val();
+	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	searchValue = searchValue ? searchValue : "";
-	var url = sourceleadUrl+"/getChecksList?searchValue="+searchValue;
+	var url = sourceleadUrl+"/getChecksList?searchValue="+searchValue+"&orgLocationId="+orgLocationId;
     prepareBisChecksList(url);
 }
 

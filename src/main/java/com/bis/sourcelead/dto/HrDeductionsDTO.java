@@ -9,41 +9,39 @@ import com.bis.sourcelead.payroll.entity.HrDeductionsDetails;
 
 public class HrDeductionsDTO extends SearchDTO implements Serializable {
 	
-	private Long id;
-	private OrgLocations orgLocationId;
+	private String id;
+	private String orgLocationId;
 	private String employeeId;
 	private String employeeName;
-	private float dedAmount;
-	private Date fromDate;
-	private Date toDate;
+	private String dedAmount;
+	private String fromDate;
+	private String toDate;
 	private String batchNumber;
-	private Date requestSubDate;
-	private Date requestApprovedDate;
+	private String requestSubDate;
+	private String requestApprovedDate;
 	private String repaidStatus;
 	private String status;
 	private String description;
-	private Date createdDate;
+	private String createdDate;
 	private String createdBy;
-	private Date updatedDate;
+	private String updatedDate;
 	private String updatedBy;
 	private Set<HrDeductionsDetails> hrDeductionsDetails;
 	private String fromDateStr;
 	private String toDateStr;
-	
-	
-	public Long getId()
+	public String getId()
 	{
 		return id;
 	}
-	public void setId(Long id)
+	public void setId(String id)
 	{
 		this.id = id;
 	}
-	public OrgLocations getOrgLocationId()
+	public String getOrgLocationId()
 	{
 		return orgLocationId;
 	}
-	public void setOrgLocationId(OrgLocations orgLocationId)
+	public void setOrgLocationId(String orgLocationId)
 	{
 		this.orgLocationId = orgLocationId;
 	}
@@ -63,27 +61,27 @@ public class HrDeductionsDTO extends SearchDTO implements Serializable {
 	{
 		this.employeeName = employeeName;
 	}
-	public float getDedAmount()
+	public String getDedAmount()
 	{
 		return dedAmount;
 	}
-	public void setDedAmount(float dedAmount)
+	public void setDedAmount(String dedAmount)
 	{
 		this.dedAmount = dedAmount;
 	}
-	public Date getFromDate()
+	public String getFromDate()
 	{
 		return fromDate;
 	}
-	public void setFromDate(Date fromDate)
+	public void setFromDate(String fromDate)
 	{
 		this.fromDate = fromDate;
 	}
-	public Date getToDate()
+	public String getToDate()
 	{
 		return toDate;
 	}
-	public void setToDate(Date toDate)
+	public void setToDate(String toDate)
 	{
 		this.toDate = toDate;
 	}
@@ -95,19 +93,19 @@ public class HrDeductionsDTO extends SearchDTO implements Serializable {
 	{
 		this.batchNumber = batchNumber;
 	}
-	public Date getRequestSubDate()
+	public String getRequestSubDate()
 	{
 		return requestSubDate;
 	}
-	public void setRequestSubDate(Date requestSubDate)
+	public void setRequestSubDate(String requestSubDate)
 	{
 		this.requestSubDate = requestSubDate;
 	}
-	public Date getRequestApprovedDate()
+	public String getRequestApprovedDate()
 	{
 		return requestApprovedDate;
 	}
-	public void setRequestApprovedDate(Date requestApprovedDate)
+	public void setRequestApprovedDate(String requestApprovedDate)
 	{
 		this.requestApprovedDate = requestApprovedDate;
 	}
@@ -135,11 +133,11 @@ public class HrDeductionsDTO extends SearchDTO implements Serializable {
 	{
 		this.description = description;
 	}
-	public Date getCreatedDate()
+	public String getCreatedDate()
 	{
 		return createdDate;
 	}
-	public void setCreatedDate(Date createdDate)
+	public void setCreatedDate(String createdDate)
 	{
 		this.createdDate = createdDate;
 	}
@@ -151,11 +149,11 @@ public class HrDeductionsDTO extends SearchDTO implements Serializable {
 	{
 		this.createdBy = createdBy;
 	}
-	public Date getUpdatedDate()
+	public String getUpdatedDate()
 	{
 		return updatedDate;
 	}
-	public void setUpdatedDate(Date updatedDate)
+	public void setUpdatedDate(String updatedDate)
 	{
 		this.updatedDate = updatedDate;
 	}
@@ -191,6 +189,7 @@ public class HrDeductionsDTO extends SearchDTO implements Serializable {
 	{
 		this.toDateStr = toDateStr;
 	}
+	
 	
 	
 }

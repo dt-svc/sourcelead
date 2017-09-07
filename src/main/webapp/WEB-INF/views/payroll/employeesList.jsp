@@ -3,8 +3,9 @@ function getEmployeeList(){
 	$("#addPayrollDiv").hide();
 	var sourceleadUrl ='${sourceleadUrl}';
 	var searchValue = $("#employeesDataTableSearch").val();
+	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	searchValue = searchValue ? searchValue : "";
-	var url = sourceleadUrl+"/getEmployeeList?searchValue="+searchValue;
+	var url = sourceleadUrl+"/getEmployeeList?searchValue="+searchValue+"&orgLocationId="+orgLocationId;
     prepareEmployeeList(url);
 }
 
