@@ -43,6 +43,8 @@ public class ContractsDTO {
 //	private List<Map<String, String>> fileInfo;
 	private List<FileInfo> fileInfo;
 	private List<ContractDocumentsDTO> document;
+	private String percentageReward;
+	private String flatRateType;
 	
 	public String getStaticPath()
 	{
@@ -443,4 +445,21 @@ public class ContractsDTO {
 	{
 		this.document = document;
 	}
+
+	public String getPercentageReward() {
+		return percentageReward;
+	}
+
+	public void setPercentageReward(String percentageReward) {
+		this.percentageReward = percentageReward;
+	}
+
+	public String getFlatRateType() {
+		return flatRateType;
+	}
+
+	public void setFlatRateType(String flatRateType) {
+		this.flatRateType = flatRateType;
+	}
+	
 }

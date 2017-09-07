@@ -1780,8 +1780,8 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		/*if(jsonObj.has("overtimeRateType") && null != jsonObj.getString("overtimeRateType") && !"".equals(jsonObj.getString("overtimeRateType"))){
 			contracts.setOvertimeRateType(jsonObj.getString("overtimeRateType"));
 		}*/
-		if(StringUtils.isNotBlank(contractsDTO.getOvertimeRatetype())){
-			contracts.setOvertimeRateType(contractsDTO.getOvertimeRatetype());
+		if(StringUtils.isNotBlank(contractsDTO.getOvertimeRateType())){
+			contracts.setOvertimeRateType(contractsDTO.getOvertimeRateType());
 		}
 		
 		contracts.setTypeOfContract(Constants.EXISTING_TYPE);
