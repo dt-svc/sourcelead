@@ -622,19 +622,17 @@ public class ClientRestController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/clientDetailsUpdateUsingId", method = RequestMethod.POST)
-	public String clientDetailsUpdateUsingId(@RequestParam(value = "json", required = false) String json,
+	public String clientDetailsUpdateUsingId(ClientDTO clientDTO,
 				@RequestParam(value = "vendorLocationId", required = false) Long clientLocationId,
 				@RequestParam(value = "orgRelationId", required = false) Long orgRelationId) throws Exception {
 		
 		    OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		    User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		    
-	       String json1 = "{" + json + "}";
-	       JSONObject jsonObj = new JSONObject(json1);
-	       clientService.updateClientDetails(jsonObj, orgRelationId,clientLocationId, orgLocation.getId(),user);
+	       clientService.updateClientDetails(clientDTO, orgRelationId,clientLocationId, orgLocation.getId(),user);
 	       
 	       StringBuilder editClientMsg = new StringBuilder();
-		   SourceLeadSessionManager.setSessionAttribute(request, "editClient", editClientMsg.append("Success !! ").append(jsonObj.getString("clientName")).append(" details updated.").toString());
+		   SourceLeadSessionManager.setSessionAttribute(request, "editClient", editClientMsg.append("Success !! ").append(clientDTO.getOrgName()).append(" details updated.").toString());
 
 		return "success";
 	}
@@ -850,19 +848,18 @@ public class ClientRestController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/vendorDetailsUpdateUsingId", method = RequestMethod.POST)
-	public String vendorDetailsUpdateUsingId(@RequestParam(value = "json", required = false) String json,
+	public String vendorDetailsUpdateUsingId(ClientDTO clientDTO,
 			@RequestParam(value = "vendorLocationId", required = false) Long vendorLocationId,
 			@RequestParam(value = "orgRelationId", required = false) Long orgRelationId) throws Exception {
 
-		JSONObject jsonObj = new JSONObject(json);
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 
-		clientService.updateVendorDetails(jsonObj, orgRelationId, vendorLocationId, orgLocation.getId(), user);
+		clientService.updateVendorDetails(clientDTO, orgRelationId, vendorLocationId, orgLocation.getId(), user);
 
 		StringBuilder editVendorMsg = new StringBuilder();
 		SourceLeadSessionManager.setSessionAttribute(request, "editVendor", editVendorMsg.append("Success !! ")
-				.append(jsonObj.getString("vendorName")).append(" details updated.").toString());
+				.append(clientDTO.getVendorName()).append(" details updated.").toString());
 
 		return "success";
 	}
