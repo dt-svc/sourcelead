@@ -109,6 +109,9 @@ public class CandidateDocuments implements Serializable{
 	@Column(name="IS_CONFIDENTIAL")
 	private String isConfidential;
 	
+	@Column(name = "FILE_URL")
+	private String fileURL;
+	
 	@Transient
 	private Long userIdStr;
 
@@ -297,5 +300,17 @@ public class CandidateDocuments implements Serializable{
 	public void setUserIdStr(Long userIdStr) {
 		this.userIdStr = userIdStr;
 	}
+
+	public String getFileURL()
+	{
+		return fileURL;
+	}
+
+	public void setFileURL(String fileURL)
+	{
+		this.fileURL = fileURL;
+	}
+	
+	
 	
 }

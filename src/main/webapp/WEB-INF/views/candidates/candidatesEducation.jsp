@@ -585,7 +585,7 @@ function EditEducation(candidateId,candidateEducationId) {
 	
 	result  = result + '                 <div class="clearfix mb10">';
 	result = result  +'	                     <div class="col-md-4" positionRelative>';
-	result = result  +'	                     <select class="chosen-select" value="'+ json.gradeType +'" name="gradeType" id="scoreEducationType" onchange="educationSelectScoreType();clearSearchKeyEducation();">';
+	result = result  +'	                     <select class="chosen-select" value="'+ json.gradeType +'" name="scoreType" id="scoreEducationType" onchange="educationSelectScoreType();clearSearchKeyEducation();">';
 	result = result  +' 					   <option value="" selected="selected">Score Type</option>';
 												if (json.gradeType == "Percentage") {
 													result = result + '<option selected>Percentage</option>';
@@ -605,7 +605,7 @@ function EditEducation(candidateId,candidateEducationId) {
 	result = result  +'	                      </select>';
 	result = result  +'	                   </div>';
 	result  = result + '                   <div class="col-md-8" positionRelative id="candidateScoreDiv">';
-	result  = result + '                     <input type="text" class="form-control input-sm" value="'+grade+'" name="grade" placeholder="Score" id="candidateEducationScore" onkeyup="educationSelectScoreType();educationscoreAndScoreType();"';
+	result  = result + '                     <input type="text" class="form-control input-sm" value="'+grade+'" name="score" placeholder="Score" id="candidateEducationScore" onkeyup="educationSelectScoreType();educationscoreAndScoreType();"';
 	result  = result + '                     data-validation-optional="true" data-validation="required validate_length length1-5" field-name="score">';
 	result  = result + '                 	 </div>';
 	result = result  +'	                   </div>';
@@ -792,17 +792,57 @@ function candidateEducationStore(candidateId){
 	  
 	  if ($('#education_form').validate(false, validationSettings)) {
 		  
-			 var frm = $('#education_form').serializeFormJSON();
+		  /*var frm = $('#education_form').serializeFormJSON();
 			 var con = JSON.stringify(frm);
+			 alert(con);
 			 con = con.replace(/[{}]/g, "");
-		     var jsonData = encodeURIComponent(con);
+		     var jsonData = encodeURIComponent(con);  */
+		     var formData = getFormData("education_form");
 			 var sourceleadUrl = '${sourceleadUrl}';
 			 $("#education_form").attr("disabled", "disabled");
 			 $("#save_button").attr("disabled", "disabled");
+			 
+			 $.post(sourceleadUrl+"/storeCandidateEducation?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId, formData, function(data) {
+				 closePopup();
+				 $('#perVal').attr('aria-valuenow', data).css('width',data+'%');
+    			 if(data<50){
+    			   $("#perVal").removeClass('progress-bar-success');
+    			   $("#perVal").addClass("progress-bar-danger");
+    			 }
+    			 if(data>=50){
+    				 $("#perVal").removeClass("progress-bar-danger");
+    				 $("#perVal").addClass("progress-bar-success");
+    			 }
+    			 $("#disVal").empty();
+    			$("#disVal").append(data+'%');
+    			// for quick view bar update
+    			$('#quickPerVal').attr('aria-valuenow', data).css('width',data+'%');
+      			 if(data<50){
+          			   $("#quickPerVal").removeClass('progress-bar-success');
+          			   $("#quickPerVal").addClass("progress-bar-danger");
+          			 }
+          			 if(data>=50){
+          				 $("#quickPerVal").removeClass('progress-bar-danger');
+          				 $("#quickPerVal").addClass("progress-bar-success");
+          			 }
 
-			$.ajax({
+    			$("#quickDisVal").empty();
+    			$("#quickDisVal").append(data+'%');
+    			
+       		    $("#popUpDiv").removeClass("edit-details-active");
+    			$("#selector4").removeAttr("style");
+    			$("#selector4").css({ display: "block" });
+				$("#eduMsgDiv").html("Success!! New Education added");
+       			candidateEducationList(candidateId);
+       			eduMsgFadeinFunction();
+       			qveducationSubmission(candidateId);
+		        });
+			/* $.ajax({
 					type : "POST",
-					url : sourceleadUrl+"/storeCandidateEducation?${_csrf.parameterName}=${_csrf.token}&json="+con+"&candidateId="+candidateId,
+					data : con,
+					processData: false,
+	    	        contentType: true,
+					url : sourceleadUrl+"/storeCandidateEducation?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,
 					success :function(data) {  
 				                 if(data != null && data != 'undefined' && data != ""){
 				               		if( data.indexOf('Sign In') >= 0){
@@ -847,7 +887,7 @@ function candidateEducationStore(candidateId){
 							    	}
 				                 }   
 				      }, 
-		    });
+		    }); */
 			return true; 
 		} else {
 			return false;
@@ -1146,13 +1186,15 @@ function clearSearchKeyEducation() {
 
 			var frm = $('#education_form').serializeFormJSON();
 
-			var con = JSON.stringify(frm);
-			con = con.replace(/[{}]/g, "");
-			var jsonData = encodeURIComponent(con);
-			//It will escape all the special characters
-			var sourceleadUrl = '${sourceleadUrl}';
-
-			$.ajax({
+			var formData = getFormData("education_form");
+			 var sourceleadUrl = '${sourceleadUrl}';
+			 $("#education_form").attr("disabled", "disabled");
+			 $("#save_button").attr("disabled", "disabled");
+			 
+			 $.post(sourceleadUrl+"/upDateCandidateEducationByCandidateIdAndCandidateEducationId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId, formData, function(data) {
+				 candidateEducationList(candidateId);
+		        });
+			/* $.ajax({
 						type : "POST",
 						url : sourceleadUrl
 								+ "/upDateCandidateEducationByCandidateIdAndCandidateEducationId?${_csrf.parameterName}=${_csrf.token}&json="+ jsonData + "&candidateId=" + candidateId ,
@@ -1165,7 +1207,7 @@ function clearSearchKeyEducation() {
 							eduMsgFadeinFunction();
 							qveducationSubmission(candidateId);
 						},
-					});
+					}); */
 			return true;
 		} else {
 			return false;

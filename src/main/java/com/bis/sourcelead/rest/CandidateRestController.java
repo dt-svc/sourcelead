@@ -1,6 +1,7 @@
 package com.bis.sourcelead.rest;
 
-import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -36,7 +37,9 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
+import com.bis.sourcelead.annotations.Validator;
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.elk.index.CandidateIndex;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
@@ -69,10 +72,10 @@ import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CalendarUtil;
 import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.util.FileUploadUtil;
 import com.bis.sourcelead.util.PrimarySkillUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.bis.sourcelead.util.SourceleadResumeParser;
-import com.bis.sourcelead.web.LoginSessionController;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
@@ -90,6 +93,8 @@ public class CandidateRestController {
 	private static final Logger logger = LoggerFactory.getLogger(CandidateRestController.class);
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
+	@Value("${static.path}")
+	private String staticPath;
 	@Autowired
 	private CandidateService candidateService;
 	@Autowired
@@ -161,31 +166,17 @@ public class CandidateRestController {
 	 */
 	@PreAuthorize("hasAnyRole('ROLE_CREATE_CANDIDATE','ROLE_VIEW_CANDIDATE','ROLE_VIEW_EDIT_CANDIDATE_EDUCATION','ROLE_CROWDSOURCING_CANDIDATES')")
 	@RequestMapping(value = "/storeCandidate", method = RequestMethod.POST)
-	public @ResponseBody String storeCandidate(@RequestParam(value = "json", required = false) String json, MultipartHttpServletRequest request) throws Exception
+	public @ResponseBody String storeCandidate(CandidateDTO candidateDto, HttpServletRequest request) throws Exception
 	{
-		MultipartFile multiFile = null;
-		Iterator<String> itrator = request.getFileNames();
-		if (itrator.hasNext()) {
-			multiFile = request.getFile(itrator.next());
+		if(Validator.validate(candidateDto)) {
+			candidateDto.setStaticPath(staticPath);
+			FileUploadUtil.fillUploadedFileInfo(candidateDto, candidateDto.getFileInfo());
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			Candidate candidate = candidateService.storeCandidate(candidateDto, orgLocation, user);
+		} else{
+			return "DataMissing";
 		}
-		String jsonc = "{" + json + "}";
-		JSONObject jsonObj = new JSONObject(jsonc);
-		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		Candidate candidate = candidateService.storeCandidate(jsonObj, orgLocation, user, multiFile);
-		/*
-		 * if(candidate.getCandidateType().equalsIgnoreCase("Candidate")){
-		 * StringBuilder candidateCreateMsg = new StringBuilder();
-		 * SourceLeadSessionManager.setSessionAttribute(request,
-		 * "candidateCreateMsg",
-		 * candidateCreateMsg.append("Success !! ").append(candidate.
-		 * getFirstName()).append(" Candidate Added").toString()); } else{
-		 * StringBuilder consultantCreateMsg = new StringBuilder();
-		 * SourceLeadSessionManager.setSessionAttribute(request,
-		 * "consultantCreateMsg",
-		 * consultantCreateMsg.append("Success !! ").append(candidate.
-		 * getFirstName()).append(" Consultant Added").toString()); }
-		 */
 		return "success";
 	}
 	
@@ -334,8 +325,8 @@ public class CandidateRestController {
 		response.setContentType("application/octet-stream");
 		StringBuilder fileName = new StringBuilder();
 		response.setHeader("Content-Disposition", fileName.append("attachment; filename=\"").append(candidateResume.getFileName()).append("\"").toString());
-		if (candidateResume.getDocFile() != null) {
-			InputStream inputStream = new ByteArrayInputStream(candidateResume.getDocFile());
+		if (candidateResume.getFileURL() != null) {
+			InputStream inputStream = new FileInputStream(new File(staticPath, candidateResume.getFileURL()));
 			try {
 				OutputStream outStream = response.getOutputStream();
 				byte[] buffer = new byte[4096];
@@ -349,31 +340,6 @@ public class CandidateRestController {
 				logger.error(ExceptionUtils.getFullStackTrace(e));
 			}
 		}
-		/*
-		 * byte[] pdfData = candidateResume.getDocFile(); FileOutputStream
-		 * fileOuputStream =null; try { fileOuputStream = new
-		 * FileOutputStream(candidateResume.getFileName());
-		 * fileOuputStream.write(pdfData); } finally { fileOuputStream.close();
-		 * } String mimeType = "application/msword"; if (mimeType == null) {
-		 * mimeType = "application/octet-stream"; }
-		 * response.setContentType(mimeType); String headerKey =
-		 * "Content-Disposition"; String headerValue =
-		 * String.format("attachment; filename=\"%s\"",
-		 * candidateResume.getFileName()); response.setHeader(headerKey,
-		 * headerValue); InputStream inputStream = new
-		 * ByteArrayInputStream(candidateResume.getDocFile()); try {
-		 * OutputStream outStream = response.getOutputStream();
-		 * 
-		 * byte[] buffer = new byte[500]; int bytesRead = -1;
-		 * 
-		 * while ((bytesRead = inputStream.read(buffer)) != -1) {
-		 * outStream.write(buffer, 0, bytesRead); }
-		 * 
-		 * inputStream.close(); outStream.close();
-		 * 
-		 * } catch (FileNotFoundException e) { e.printStackTrace(); } catch
-		 * (IOException e) { e.printStackTrace(); }
-		 */
 	}
 	
 	@RequestMapping(value = "/getUserByRoleId", method = RequestMethod.POST)

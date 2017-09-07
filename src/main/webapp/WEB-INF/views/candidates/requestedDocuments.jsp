@@ -57,7 +57,7 @@ top: 20%; right: auto; left: 40%;
    </header>
    
    <c:if test="${isDocsUploaded == 'N'}">
-	   <form:form class="login-form clearfix reqDocuments container"  id="requestForDocs_form"  name="requestForDocs_form" enctype='multipart/form-data' >
+	   <form:form class="login-form clearfix reqDocuments container"  id="requestForDocs_form"  name="requestForDocs_form">
 	   <div id="loading"></div>
 	   <input type="hidden" name="requestDocUUID" id="requestDocUUID" value="${requestDocUUID}">
 		   <div class="clearfix clients_wrap_table">
@@ -93,11 +93,13 @@ top: 20%; right: auto; left: 40%;
 								    <td class="text-center">
 								    <div class="width300px mt5">
 								        <c:if test="${docs.isRequestedDocRequired == 'Y'}">
-								        	<input type="file"  class="form-control welFile" readonly id="uploadDocFile${docs.id}" name="docFile${docs.id}"   placeholder="Upload Resume ..." field-name="Document" data-validation="required validate_docimgpdf">
+								            <%-- <input type="file"  class="form-control welFile" readonly id="uploadDocFile${docs.id}" name="docFile${docs.id}"   placeholder="Upload Resume ..." field-name="Document" data-validation="required validate_docimgpdf" onchange="uploadFileReqDoc();"> --%>
+								        	<input type="file"  class="form-control welFile" readonly id="uploadDocFile${docs.id}"    placeholder="Upload Resume ..." field-name="Document" data-validation="required validate_docimgpdf" onchange="uploadFileReqDoc(${docs.id});">
 								        </c:if>
 								        
 								        <c:if test="${docs.isRequestedDocRequired == 'N'}">
-								        	<input type="file"  class="form-control welFile" readonly id="uploadDocFile${docs.id}" name="docFile${docs.id}"   placeholder="Upload Resume ..." field-name="Document" data-validation="validatedoc" data-validation-optional="true" >
+								           <%--  <input type="file"  class="form-control welFile" readonly id="uploadDocFile${docs.id}" name="docFile${docs.id}"   placeholder="Upload Resume ..." field-name="Document" data-validation="validatedoc" data-validation-optional="true" onchange="uploadFileReqDoc();"> --%>
+								        	<input type="file"  class="form-control welFile" readonly id="uploadDocFile${docs.id}"   placeholder="Upload Resume ..." field-name="Document" data-validation="validatedoc" data-validation-optional="true" onchange="uploadFileReqDoc(${docs.id});">
 								        </c:if>
 								     </div>
 								    </td>
@@ -137,7 +139,7 @@ $('body').on('submit', '#requestForDocs_form', function(e){
 	  if ($(this).validate(false, validationSettings)){
       e.preventDefault();
      
-      var frm = $('#requestForDocs_form').serializeFormJSON();
+     /*  var frm = $('#requestForDocs_form').serializeFormJSON();
       var con = JSON.stringify(frm);
       con = con.replace(/[{}]/g, "");
       
@@ -145,9 +147,17 @@ $('body').on('submit', '#requestForDocs_form', function(e){
       var jsonData = encodeURIComponent(con);
       
       var form = $('#requestForDocs_form')[0];
-	  var formData = new FormData(form); 
+	  var formData = new FormData(form);  */
 	  
-      var sourceleadUrl ='${sourceleadUrl}';
+	    var formData = getFormData("requestForDocs_form");
+		var sourceleadUrl = '${sourceleadUrl}';
+		$("#save_doc").attr("disabled", "disabled");
+		$("#save_doc" ).addClass('button').val('Processing..');
+		
+      $.post(sourceleadUrl+"/uploadRequestedDocuments?${_csrf.parameterName}=${_csrf.token}", formData, function(data) {
+    	  location.replace(sourceleadUrl+"/requestedDocuments?requestDocUUID="+requestDocUUID); 
+      });
+     /*  var sourceleadUrl ='${sourceleadUrl}';
       var requestDocUUID = '${requestDocUUID}';
       
         $("#submit_docs").attr("disabled", "disabled");
@@ -161,11 +171,11 @@ $('body').on('submit', '#requestForDocs_form', function(e){
 	           processData: false,
 	           contentType:false,
 	 	       dataType : 'json',
-		       url: sourceleadUrl+"/uploadRequestedDocuments?${_csrf.parameterName}=${_csrf.token}&json="+jsonData, 
+		       url: sourceleadUrl+"/uploadRequestedDocuments?${_csrf.parameterName}=${_csrf.token}", 
 		       success: function(result) {
 		    	   location.replace(sourceleadUrl+"/requestedDocuments?requestDocUUID="+requestDocUUID); 
 		        },
-		    });   
+		    });    */
       return true; 
     }
     else{
@@ -179,7 +189,12 @@ $('body').on('submit', '#requestForDocs_form', function(e){
 	});
   </script>
   
-  
+<script>
+function uploadFileReqDoc(id){
+	var sourceleadUrl ='${sourceleadUrl}';
+	fileUpload(sourceleadUrl, "uploadDocFile"+id+"", "resumes", "requestForDocs_form");
+}
+</script> 
   
   <script type="text/javascript">
 (function ($) {

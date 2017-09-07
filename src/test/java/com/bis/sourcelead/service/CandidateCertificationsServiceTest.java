@@ -16,6 +16,7 @@ import org.springframework.test.context.web.WebAppConfiguration;
 
 import com.bis.sourcelead.SecurityConfig;
 import com.bis.sourcelead.WebAppConfig;
+import com.bis.sourcelead.dto.CandidateCertificationDTO;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateCertifications;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -47,16 +48,16 @@ public class CandidateCertificationsServiceTest {
 		candidateCertifications.setOrgLocationId(orgLocationId);
 		User user = new User();
 
-		JSONObject jsonObject = new JSONObject();
-		jsonObject.put("name", "shivayogi");
-		jsonObject.put("provider", "Businessinelli");
-		jsonObject.put("score", "10");
-		jsonObject.put("scoreType", "GPA");
-		jsonObject.put("updatedBy", "shiva");
-		jsonObject.put("ValidFrom", "22-01-2001");
-		jsonObject.put("ValidTo", "20-01-2001");
-		jsonObject.put("updatedDate", "09-01-2001");
-		candidateCertificationsService.storeCandidateCertifications(jsonObject, user, orgLocationId, 1l);
+		CandidateCertificationDTO candidateCertificationDTO = new CandidateCertificationDTO();
+		candidateCertificationDTO.setName("pradeep");
+		candidateCertificationDTO.setProvider("Businessinelli");
+		candidateCertificationDTO.setScore("10");
+		candidateCertificationDTO.setScoreType("GPA");
+		candidateCertificationDTO.setUpdatedBy("pradeep");
+		candidateCertificationDTO.setValidFrom("22-01-2001");
+		candidateCertificationDTO.setValidTo("20-01-2001");
+		candidateCertificationDTO.setUpdatedDate("09-01-2001");
+		candidateCertificationsService.storeCandidateCertifications(candidateCertificationDTO, user, orgLocationId, 1l);
 		logger.info("CandidateCertificationsServiceTest added successfully");
 	}
 
