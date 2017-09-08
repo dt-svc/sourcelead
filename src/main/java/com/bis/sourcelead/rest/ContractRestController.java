@@ -874,7 +874,7 @@ public class ContractRestController {
 			ContractRequestDocuments contractRequestDocuments = contractRequestDocumentsService.getContractRequestDocumentsById(Long.parseLong(reqDoc.getDocId()));
 			if (contractDocumentsDTO.getFileInfo() != null && contractDocumentsDTO.getFileInfo().size() > 0) {
 				for (FileInfo fileInfo : contractDocumentsDTO.getFileInfo()) {
-					if (reqDoc.getDocFileName().equalsIgnoreCase(fileInfo.getFileName())) {
+					if (reqDoc.getDocFileName() != null && reqDoc.getDocFileName().equalsIgnoreCase(fileInfo.getFileName())) {
 						contractRequestDocuments.setDocFileName(fileInfo.getFileName());
 						contractRequestDocuments.setFileType(fileInfo.getContentType());
 						contractRequestDocuments.setFileURL(fileInfo.getFileURL());
