@@ -44,9 +44,9 @@ public class ProjectTasksDTO implements Serializable {
 	
 	private String staticPath;
 	
-    private List<Map<String, String>> fileInfo;
+//    private List<Map<String, String>> fileInfo;
 	
-	private List<FileInfo> uploadedFileInfo;
+	private List<FileInfo> fileInfo;
 	
 	private String documentName;
 	
@@ -159,20 +159,28 @@ public class ProjectTasksDTO implements Serializable {
 	public void setStaticPath(String staticPath) {
 		this.staticPath = staticPath;
 	}
-	public List<FileInfo> getUploadedFileInfo() {
-		return uploadedFileInfo;
-	}
-	public void setUploadedFileInfo(List<FileInfo> uploadedFileInfo) {
-		this.uploadedFileInfo = uploadedFileInfo;
-	}
-	public List<Map<String, String>> getFileInfo() {
-		return fileInfo;
-	}
-	public void setFileInfo(List<Map<String, String>> fileInfo) {
-		this.fileInfo = fileInfo;
-	}
+//	public List<FileInfo> getUploadedFileInfo() {
+//		return uploadedFileInfo;
+//	}
+//	public void setUploadedFileInfo(List<FileInfo> uploadedFileInfo) {
+//		this.uploadedFileInfo = uploadedFileInfo;
+//	}
+//	public List<Map<String, String>> getFileInfo() {
+//		return fileInfo;
+//	}
+//	public void setFileInfo(List<Map<String, String>> fileInfo) {
+//		this.fileInfo = fileInfo;
+//	}
+	
+	
 	public String getDocumentName() {
 		return documentName;
+	}
+	public List<FileInfo> getFileInfo() {
+		return fileInfo;
+	}
+	public void setFileInfo(List<FileInfo> fileInfo) {
+		this.fileInfo = fileInfo;
 	}
 	public void setDocumentName(String documentName) {
 		this.documentName = documentName;

@@ -4,8 +4,6 @@ import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Date;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -32,15 +30,7 @@ import org.hibernate.annotations.NotFoundAction;
 
 import com.bis.sourcelead.enums.Project_Status;
 import com.bis.sourcelead.enums.Status;
-<<<<<<< HEAD
-import com.bis.sourcelead.web.LoginSessionController;
 import com.fasterxml.jackson.annotation.JsonBackReference;
-=======
-
-import com.bis.sourcelead.web.LoginSessionController;
-import com.fasterxml.jackson.annotation.JsonBackReference;
-
->>>>>>> 6a546cda22fe6cf1ffca1abab570d798e3d0f2c4
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -162,10 +152,7 @@ public class Projects implements Serializable{
     @Column(name = "UPDATED_BY")
     private String updatedBy;
     
-<<<<<<< HEAD
-    
-=======
->>>>>>> 6a546cda22fe6cf1ffca1abab570d798e3d0f2c4
+
     @Column(name = "PROJECT_MODE")
     private String projectMode;
     

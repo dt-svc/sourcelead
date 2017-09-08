@@ -5,6 +5,7 @@ import java.util.List;
 import org.json.JSONObject;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
+import com.bis.sourcelead.dto.OnBoardingTemplateDTO;
 import com.bis.sourcelead.entity.OnBoardingTemplateDocuments;
 import com.bis.sourcelead.entity.User;
 
@@ -28,7 +29,7 @@ public interface OnBoardingTemplateDocumentsService {
 	
 	Integer getCandidateAcceptedOnboardingDocumentsCountByCandidateOnboardingId(Long candidateOnBoardingId) throws Exception;
 	
-	void storeOnBoardTemplateDocuments(JSONObject jsonObj, User loginUser,MultipartHttpServletRequest request) throws Exception;
+	void storeOnBoardTemplateDocuments(OnBoardingTemplateDTO onBoardingTemplateDTO, User loginUser) throws Exception;
 	
 	
 }

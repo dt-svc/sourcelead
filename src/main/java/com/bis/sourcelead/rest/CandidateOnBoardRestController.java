@@ -7,12 +7,15 @@ import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -27,9 +30,16 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
+import com.bis.sourcelead.annotations.Validator;
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.CandidateOnBoardingDTO;
+import com.bis.sourcelead.dto.FileInfo;
+import com.bis.sourcelead.dto.OnBoardingTemplateDTO;
+import com.bis.sourcelead.dto.OnBoardingTemplateDocumentsDTO;
+import com.bis.sourcelead.dto.OnboardTasksDTO;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateOnBoarding;
+import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.OnBoardingTemplate;
 import com.bis.sourcelead.entity.OnBoardingTemplateDocuments;
@@ -59,14 +69,20 @@ import com.bis.sourcelead.service.TeamService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.util.FileUploadUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.bis.sourcelead.web.LoginSessionController;
+
+import cucumber.deps.difflib.StringUtills;
 
 @RestController
 public class CandidateOnBoardRestController {
 
 	private static final Logger logger = LoggerFactory.getLogger(TimesheetRestController.class);
+	
+	@Value("${static.path}")
+	private String staticPath;
 	
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
@@ -144,13 +160,11 @@ public class CandidateOnBoardRestController {
 	
 	
 	@RequestMapping(value = "/createNewOnBoardingTemplate" , method = RequestMethod.POST)
-	 public @ResponseBody  Long createNewOnBoardingTemplate(@RequestParam("json") String jsonPayload,HttpServletRequest request) throws Exception {
-		
-		 JSONObject jsonObj = new JSONObject(jsonPayload);
+	 public @ResponseBody  OnBoardingTemplate createNewOnBoardingTemplate(OnBoardingTemplateDTO onBoardingTemplateDTO,HttpServletRequest request) throws Exception {
 	 	 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 	 	 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-	 	 OnBoardingTemplate onBoardingTemplate = onBoardingTemplateService.getOnBoardTemplateDetails(jsonObj, user, orgLocations);
-		 return onBoardingTemplate.getId();
+	 	 OnBoardingTemplate onBoardingTemplate = onBoardingTemplateService.getOnBoardTemplateDetails(onBoardingTemplateDTO, user, orgLocations);
+		 return onBoardingTemplate;
 	  
 	}
 	
@@ -212,11 +226,16 @@ public class CandidateOnBoardRestController {
 	}
 	
 	@RequestMapping(value = "/saveOnboardingTemplateDocuments", method = RequestMethod.POST)
-	public @ResponseBody String saveOnboardingTemplateDocuments(@RequestParam("json") String jsonPayload,
-			MultipartHttpServletRequest request) throws Exception {
+	public @ResponseBody String saveOnboardingTemplateDocuments(OnBoardingTemplateDTO onBoardingTemplateDTO, HttpServletRequest request) throws Exception {
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		JSONObject jsonObj = new JSONObject(jsonPayload);
-		onBoardingTemplateDocumentsService.storeOnBoardTemplateDocuments(jsonObj, loginUser, request);
+		if(Validator.validate(onBoardingTemplateDTO)) {
+			onBoardingTemplateDTO.setStaticPath(staticPath);
+//			FileUploadUtil.fillUploadedFileInfo(onBoardingTemplateDTO, onBoardingTemplateDTO.getFileInfo());
+			onBoardingTemplateDocumentsService.storeOnBoardTemplateDocuments(onBoardingTemplateDTO, loginUser);
+		 }else
+			 return "DataMissing";
+		
+		
 		return "success";
 			
 	}
@@ -299,26 +318,20 @@ public class CandidateOnBoardRestController {
 	 
 	 
 	 @RequestMapping(value = "/saveOnBoardTasks" , method = RequestMethod.POST)
-	 public @ResponseBody  String saveOnBoardTasks(@RequestParam("json") String jsonPayload, HttpServletRequest request) throws Exception {
-		
-		 
-		 JSONObject jsonObj = new JSONObject(jsonPayload);
-		 
+	 public @ResponseBody  String saveOnBoardTasks(OnboardTasksDTO onboardTasksDTO, HttpServletRequest request) throws Exception {
 		 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		 
 		 OnboardTasks onboardTasks = new OnboardTasks();
-		 
-		 if(jsonObj.has("taskName") && !isNullOrEmpty(jsonObj.getString("taskName"))){
-			 onboardTasks.setTaskName(jsonObj.getString("taskName"));
+		 if(StringUtils.isNotBlank(onboardTasksDTO.getTaskName())){
+			 onboardTasks.setTaskName(onboardTasksDTO.getTaskName());
 		 }
 		 
 		 OnBoardingTemplate template = new OnBoardingTemplate();
-		 template.setId(Long.valueOf(jsonObj.getString("templateId")));
+		 template.setId(Long.valueOf(onboardTasksDTO.getTemplateId()));
 		 onboardTasks.setOnboardingTemplateId(template);
 		 
-		 if(jsonObj.has("onboardAssignedTo") && !isNullOrEmpty(jsonObj.getString("onboardAssignedTo"))){
+		 if(StringUtils.isNotBlank(onboardTasksDTO.getOnboardAssignedTo())){
 			
-			 String userIds = jsonObj.getString("onboardAssignedTo");
+			 String userIds = onboardTasksDTO.getOnboardAssignedTo();
 			 
 			 userIds = userIds.replaceAll("\\[", "").replaceAll("\\]","");
 			 userIds = userIds.replaceAll("\"", "");
@@ -327,40 +340,40 @@ public class CandidateOnBoardRestController {
 			 onboardTasks.setAssignToCandidate(Constants.YES);
 		 }
 		 
-		 if(jsonObj.has("taskPriority") && !isNullOrEmpty(jsonObj.getString("taskPriority"))){
-			 onboardTasks.setPriority(jsonObj.getString("taskPriority"));
+		 if(StringUtils.isNotBlank(onboardTasksDTO.getTaskPriority())){
+			 onboardTasks.setPriority(onboardTasksDTO.getTaskPriority());
 		 }
 		 
-		 if(jsonObj.has("taskRepeat") && !isNullOrEmpty(jsonObj.getString("taskRepeat"))){
-			 onboardTasks.setTaskRepeat(jsonObj.getString("taskRepeat"));
+		 if(StringUtils.isNotBlank(onboardTasksDTO.getTaskRepeat())){
+			 onboardTasks.setTaskRepeat(onboardTasksDTO.getTaskRepeat());
 		 }
 		 
-		 if(jsonObj.has("taskMonths") && !isNullOrEmpty(jsonObj.getString("taskMonths"))){
-			 onboardTasks.setDueAfterMonths(Integer.parseInt(jsonObj.getString("taskMonths")));
+		 if(StringUtils.isNotBlank(onboardTasksDTO.getTaskMonths())){
+			 onboardTasks.setDueAfterMonths(Integer.parseInt(onboardTasksDTO.getTaskMonths()));
 		 }
 		 
-		 if(jsonObj.has("taskDays") && !isNullOrEmpty(jsonObj.getString("taskDays"))){
-			 onboardTasks.setDueAfterDays(Integer.parseInt(jsonObj.getString("taskDays")));
+		 if(StringUtils.isNotBlank(onboardTasksDTO.getTaskDays())){
+			 onboardTasks.setDueAfterDays(Integer.parseInt(onboardTasksDTO.getTaskDays()));
 		 }
 		 
-		 if(jsonObj.has("taskHours") && !isNullOrEmpty(jsonObj.getString("taskHours"))){
-			 onboardTasks.setDueAfterHours(Integer.parseInt(jsonObj.getString("taskHours")));
+		 if(StringUtils.isNotBlank(onboardTasksDTO.getTaskHours())){
+			 onboardTasks.setDueAfterHours(Integer.parseInt(onboardTasksDTO.getTaskHours()));
 		 }
 		 
-		 if(jsonObj.has("taskMinutes") && !isNullOrEmpty(jsonObj.getString("taskMinutes"))){
-			 onboardTasks.setDueAfterMinutes(Integer.parseInt(jsonObj.getString("taskMinutes")));
+		 if(StringUtils.isNotBlank(onboardTasksDTO.getTaskMinutes())){
+			 onboardTasks.setDueAfterMinutes(Integer.parseInt(onboardTasksDTO.getTaskMinutes()));
 		 }
 		 
-		 if(jsonObj.has("taskNotification") && !isNullOrEmpty(jsonObj.getString("taskNotification"))){
-			 onboardTasks.setTaskNotification(jsonObj.getString("taskNotification"));
+		 if(StringUtils.isNotBlank(onboardTasksDTO.getTaskNotification())){
+			 onboardTasks.setTaskNotification(onboardTasksDTO.getTaskNotification());
 		 }
 		 
-		 if(jsonObj.has("taskEmail") && !isNullOrEmpty(jsonObj.getString("taskEmail"))){
-			 onboardTasks.setTaskEmail(jsonObj.getString("taskEmail"));
+		 if(StringUtils.isNotBlank(onboardTasksDTO.getTaskEmail())){
+			 onboardTasks.setTaskEmail(onboardTasksDTO.getTaskEmail());
 		 }
 		 
-		 if(jsonObj.has("taskdescription") && !isNullOrEmpty(jsonObj.getString("taskdescription"))){
-			 onboardTasks.setDescription(jsonObj.getString("taskdescription"));
+		 if(StringUtils.isNotBlank(onboardTasksDTO.getTaskdescription())){
+			 onboardTasks.setDescription(onboardTasksDTO.getTaskdescription());
 		 }
 		 
 		 onboardTasks.setStatus(Constants.CANDIDATE_ACTIVE);
@@ -369,9 +382,7 @@ public class CandidateOnBoardRestController {
 		 onboardTasks.setUpdatedDate(CommonUtil.currentDate());
 		 onboardTasks.setUpdatedBy(user.getUserCode());
 		 
-		 
 		 onboardTasksService.saveOnboardTasks(onboardTasks);
-		
 		  return "success";
 	   }
 	 
@@ -546,21 +557,15 @@ public class CandidateOnBoardRestController {
 	 
 	 
 	 @RequestMapping(value = "/saveOnboardingCandidateDetails" , method = RequestMethod.POST)
-	 public @ResponseBody  String saveOnboardingCandidateDetails(@RequestParam(value="json", required=false) String json, HttpServletRequest request) throws Exception {
+	 public @ResponseBody  CandidateOnBoarding saveOnboardingCandidateDetails(CandidateOnBoardingDTO candidateOnBoardingDTO , HttpServletRequest request) throws Exception {
 		
 		 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		 OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
-		 
-		 String resultJson;
-		 
-		 json = "{"+json+"}";
-		 
-		 JSONObject jsonObj = new JSONObject(json);
-		 
-		 CandidateOnBoarding candidateOnBoarding = candidateOnBoardingService.saveOnBoardingCandidatesDetails(jsonObj, loginOrgLocation, user);
+		 CandidateOnBoarding candidateOnBoarding = candidateOnBoardingService.saveOnBoardingCandidatesDetails(candidateOnBoardingDTO, loginOrgLocation, user);
+		return candidateOnBoarding;
 		 	
-	 	resultJson = commonUtil.toJSON(Long.valueOf(candidateOnBoarding.getId()));
-		return resultJson;
+	 /*	resultJson = commonUtil.toJSON(Long.valueOf(candidateOnBoarding.getId()));
+		return resultJson;*/
 	   }
 	 
 	 
@@ -723,19 +728,230 @@ public class CandidateOnBoardRestController {
 	 
 	 
 		@RequestMapping(value = "/saveCandidatedOnboardingTemplateDocuments", method = RequestMethod.POST)
-		public @ResponseBody String saveCandidatedOnboardingTemplateDocuments(TimesheetEntriesForm timesheetEntriesForm,@RequestParam(value="json", required=false) String json,
-				MultipartHttpServletRequest request) throws Exception {
+		public @ResponseBody String saveCandidatedOnboardingTemplateDocuments(OnBoardingTemplateDocumentsDTO onBoardingTemplateDocumentsDTO,TimesheetEntriesForm timesheetEntriesForm,
+				HttpServletRequest request) throws Exception {
+			   onBoardingTemplateDocumentsDTO.setStaticPath(staticPath);
+			    User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			   CandidateOnBoarding onBoarding = candidateOnBoardingService.getCandidateOnBoardingById(Long.valueOf(onBoardingTemplateDocumentsDTO.getCandidateonboardingId()));
+			   
+			   //Contracts document saving...
+			   if(onBoardingTemplateDocumentsDTO.getContractsFileInfo() != null &&  onBoardingTemplateDocumentsDTO.getContractsFileInfo().size() > 0) {
+					for(FileInfo fileInfo : onBoardingTemplateDocumentsDTO.getContractsFileInfo()) {
+						OnBoardingTemplateDocuments documents = new OnBoardingTemplateDocuments();
+						if(fileInfo != null && fileInfo.getFileURL() != null) {
+							   documents.setFileName(fileInfo.getFileName());
+							   documents.setFileContentType(fileInfo.getContentType());
+							   documents.setFileURL(fileInfo.getFileURL());
+						   }
+						documents.setCandidateOnBoardingId(onBoarding);
+						documents.setDocumentStatus(OnboardStatus.NEW);
+						documents.setDocumentType("Contracts");
+	                    documents.setStatus(Constants.CANDIDATE_ACTIVE);
+	                    documents.setDocumentUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+	                    documents.setCreatedDate(CommonUtil.currentDate());
+	                    documents.setCreatedBy(loginUser.getUserCode());
+	                    documents.setUpdatedDate(CommonUtil.currentDate());
+	                    documents.setUpdatedBy(loginUser.getUserCode());
+	                    onBoardingTemplateDocumentsService.saveOnBoardingTemplateDocuments(documents);
+		                    FileUploadUtil.moveFile(onBoardingTemplateDocumentsDTO .getStaticPath(), fileInfo, "Candidate-Onboard-Contracts");
+					}
+				}
 			
-			User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-			
-			json = "{"+json+"}";
-			JSONObject jsonObj = new JSONObject(json);
-			
-			CandidateOnBoarding onBoarding = candidateOnBoardingService.getCandidateOnBoardingById(Long.valueOf(jsonObj.getString("candidateonboardingId")));
-			
-			
-			if(jsonObj.has("savedPoliciesAttcahments") && !isNullOrEmpty(jsonObj.getString("savedPoliciesAttcahments"))){
-				 String templateIds = jsonObj.getString("savedPoliciesAttcahments");
+			   //Contracts document updating...
+				if(StringUtils.isNotBlank(onBoardingTemplateDocumentsDTO.getSavedContractsAttcahments())){
+					 String templateIds = onBoardingTemplateDocumentsDTO.getSavedContractsAttcahments();
+					 templateIds = templateIds.replaceAll("\\[", "").replaceAll("\\]","");
+					 templateIds = templateIds.replaceAll("\"", "");
+					 
+					 String[] savedTemplateIds = templateIds.split(",");
+					 for(int i=0; i < savedTemplateIds.length; i++){
+						 OnBoardingTemplateDocuments templateDocument = onBoardingTemplateDocumentsService.getOnBoardingTemplateDocumentsById(Long.valueOf(savedTemplateIds[i]));
+						 
+					 
+						    OnBoardingTemplateDocuments documents = new OnBoardingTemplateDocuments();
+		       		        documents.setCandidateOnBoardingId(onBoarding);
+		       		       
+		       		        documents.setFileURL(templateDocument.getFileURL());
+	         	            documents.setFileName(templateDocument.getFileName());
+	         	            documents.setFileContentType(templateDocument.getFileContentType());
+		                  
+			       		    documents.setDocumentType("Contracts");
+			       		    documents.setDocumentStatus(OnboardStatus.NEW);
+		                    documents.setStatus(Constants.CANDIDATE_ACTIVE);
+		                    documents.setDocumentUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+		                    documents.setCreatedDate(CommonUtil.currentDate());
+		                    documents.setCreatedBy(loginUser.getUserCode());
+		                    documents.setUpdatedDate(CommonUtil.currentDate());
+		                    documents.setUpdatedBy(loginUser.getUserCode());
+		                    onBoardingTemplateDocumentsService.saveOnBoardingTemplateDocuments(documents);
+					 
+					 }
+					 
+				}
+				
+			   
+			   	// Forms documents saving....
+				if(onBoardingTemplateDocumentsDTO.getFormsFileInfo() != null && onBoardingTemplateDocumentsDTO.getFormsFileInfo().size() > 0) {
+					for(FileInfo fileInfo : onBoardingTemplateDocumentsDTO.getFormsFileInfo()) {
+						OnBoardingTemplateDocuments documents = new OnBoardingTemplateDocuments();
+						if(fileInfo != null && fileInfo.getFileURL() != null) {
+							   documents.setFileName(fileInfo.getFileName());
+							   documents.setFileContentType(fileInfo.getContentType());
+							   documents.setFileURL(fileInfo.getFileURL());
+						   }
+						    documents.setCandidateOnBoardingId(onBoarding);
+						    documents.setDocumentType("Forms");
+			       		    documents.setDocumentStatus(OnboardStatus.NEW);
+		                    documents.setStatus(Constants.CANDIDATE_ACTIVE);
+		                    documents.setDocumentUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+		                    documents.setCreatedDate(CommonUtil.currentDate());
+		                    documents.setCreatedBy(loginUser.getUserCode());
+		                    documents.setUpdatedDate(CommonUtil.currentDate());
+		                    documents.setUpdatedBy(loginUser.getUserCode());
+		                    onBoardingTemplateDocumentsService.saveOnBoardingTemplateDocuments(documents);
+	       					FileUploadUtil.moveFile(onBoardingTemplateDocumentsDTO .getStaticPath(), fileInfo, "Candidate-Onboard-Forms");
+					}
+				}
+				
+				// Forms documents updating....
+				if(StringUtils.isNotBlank(onBoardingTemplateDocumentsDTO.getSavedFormsAttcahments())){
+					 String templateIds = onBoardingTemplateDocumentsDTO.getSavedFormsAttcahments();
+					 templateIds = templateIds.replaceAll("\\[", "").replaceAll("\\]","");
+					 templateIds = templateIds.replaceAll("\"", "");
+					 String[] savedTemplateIds = templateIds.split(",");
+					 for(int i=0; i < savedTemplateIds.length; i++){
+						 OnBoardingTemplateDocuments templateDocument = onBoardingTemplateDocumentsService.getOnBoardingTemplateDocumentsById(Long.valueOf(savedTemplateIds[i]));
+						    OnBoardingTemplateDocuments documents = new OnBoardingTemplateDocuments();
+		       		        documents.setCandidateOnBoardingId(onBoarding);
+		       		        documents.setDocFile(templateDocument.getDocFile());
+	         	            documents.setFileName(templateDocument.getFileName());
+	         	            documents.setFileContentType(templateDocument.getFileContentType());
+			       		    documents.setDocumentType("Forms");
+			       		    documents.setDocumentStatus(OnboardStatus.NEW);
+		                    documents.setStatus(Constants.CANDIDATE_ACTIVE);
+		                    documents.setDocumentUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+		                    documents.setCreatedDate(CommonUtil.currentDate());
+		                    documents.setCreatedBy(loginUser.getUserCode());
+		                    documents.setUpdatedDate(CommonUtil.currentDate());
+		                    documents.setUpdatedBy(loginUser.getUserCode());
+		                    onBoardingTemplateDocumentsService.saveOnBoardingTemplateDocuments(documents);
+					 
+					 }
+					 
+				}
+				
+				//Polacies documents saving.....
+				if(onBoardingTemplateDocumentsDTO.getPolaciesFileInfo() != null && onBoardingTemplateDocumentsDTO.getPolaciesFileInfo().size() > 0) {
+					for(FileInfo fileInfo : onBoardingTemplateDocumentsDTO.getPolaciesFileInfo()) {
+						OnBoardingTemplateDocuments documents = new OnBoardingTemplateDocuments();
+						if(fileInfo != null && fileInfo.getFileURL() != null) {
+							   documents.setFileName(fileInfo.getFileName());
+							   documents.setFileContentType(fileInfo.getContentType());
+							   documents.setFileURL(fileInfo.getFileURL());
+						   }
+						    documents.setCandidateOnBoardingId(onBoarding);
+		                    documents.setDocumentType("Policies");
+		                    documents.setDocumentStatus(OnboardStatus.NEW);
+		                    documents.setStatus(Constants.CANDIDATE_ACTIVE);
+		                    documents.setDocumentUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+		                    documents.setCreatedDate(CommonUtil.currentDate());
+		                    documents.setCreatedBy(loginUser.getUserCode());
+		                    documents.setUpdatedDate(CommonUtil.currentDate());
+		                    documents.setUpdatedBy(loginUser.getUserCode());
+		                    onBoardingTemplateDocumentsService.saveOnBoardingTemplateDocuments(documents);
+		   					FileUploadUtil.moveFile(onBoardingTemplateDocumentsDTO .getStaticPath(), fileInfo, "Candidate-Onboard-Policies");
+					}
+				}
+				
+				//Polacies documents updating.....
+				if(StringUtils.isNotBlank(onBoardingTemplateDocumentsDTO.getSavedPoliciesAttcahments())){
+					 String templateIds = onBoardingTemplateDocumentsDTO.getSavedPoliciesAttcahments();
+					 templateIds = templateIds.replaceAll("\\[", "").replaceAll("\\]","");
+					 templateIds = templateIds.replaceAll("\"", "");
+					 
+					 String[] savedTemplateIds = templateIds.split(",");
+					 for(int i=0; i < savedTemplateIds.length; i++){
+						 OnBoardingTemplateDocuments templateDocument = onBoardingTemplateDocumentsService.getOnBoardingTemplateDocumentsById(Long.valueOf(savedTemplateIds[i]));
+						 
+					 
+						    OnBoardingTemplateDocuments documents = new OnBoardingTemplateDocuments();
+		       		        documents.setCandidateOnBoardingId(onBoarding);
+		       		        
+		       		        documents.setFileURL(templateDocument.getFileURL());
+	          	            documents.setFileName(templateDocument.getFileName());
+	          	            documents.setFileContentType(templateDocument.getFileContentType());
+	          	            documents.setDocumentStatus(OnboardStatus.NEW);
+			       		    documents.setDocumentType("Policies");
+		                    documents.setStatus(Constants.CANDIDATE_ACTIVE);
+		                    documents.setDocumentUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+		                    documents.setCreatedDate(CommonUtil.currentDate());
+		                    documents.setCreatedBy(loginUser.getUserCode());
+		                    documents.setUpdatedDate(CommonUtil.currentDate());
+		                    documents.setUpdatedBy(loginUser.getUserCode());
+		                    onBoardingTemplateDocumentsService.saveOnBoardingTemplateDocuments(documents);
+					 
+					 }
+				}
+				
+				//Supporting documents saving..
+				if(onBoardingTemplateDocumentsDTO.getSupportingFileInfo() != null && onBoardingTemplateDocumentsDTO.getSupportingFileInfo().size() > 0) {
+					for(FileInfo fileInfo : onBoardingTemplateDocumentsDTO.getSupportingFileInfo()) {
+						OnBoardingTemplateDocuments documents = new OnBoardingTemplateDocuments();
+						 if(fileInfo != null && fileInfo.getFileURL() != null) {
+							   documents.setFileName(fileInfo.getFileName());
+							   documents.setFileContentType(fileInfo.getContentType());
+							   documents.setFileURL(fileInfo.getFileURL());
+						   }
+						        documents.setCandidateOnBoardingId(onBoarding);  
+		                        documents.setDocumentType("Supported");
+		                        documents.setDocumentStatus(OnboardStatus.NEW);
+			                    documents.setStatus(Constants.CANDIDATE_ACTIVE);
+			                    documents.setDocumentUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+			                    documents.setCreatedDate(CommonUtil.currentDate());
+			                    documents.setCreatedBy(loginUser.getUserCode());
+			                    documents.setUpdatedDate(CommonUtil.currentDate());
+			                    documents.setUpdatedBy(loginUser.getUserCode());
+			                    onBoardingTemplateDocumentsService.saveOnBoardingTemplateDocuments(documents);
+			      			 FileUploadUtil.moveFile(onBoardingTemplateDocumentsDTO .getStaticPath(), fileInfo, "Candidate-Onboard-Supporting");
+					}
+				}
+				
+				//Supporting documents updating..
+				if(StringUtils.isNotBlank(onBoardingTemplateDocumentsDTO.getSavedSupportedAttcahments())){
+					 String templateIds = onBoardingTemplateDocumentsDTO.getSavedSupportedAttcahments();
+					 templateIds = templateIds.replaceAll("\\[", "").replaceAll("\\]","");
+					 templateIds = templateIds.replaceAll("\"", "");
+					 
+					 String[] savedTemplateIds = templateIds.split(",");
+					 for(int i=0; i < savedTemplateIds.length; i++){
+						 OnBoardingTemplateDocuments templateDocument = onBoardingTemplateDocumentsService.getOnBoardingTemplateDocumentsById(Long.valueOf(savedTemplateIds[i]));
+						 
+					 
+						    OnBoardingTemplateDocuments documents = new OnBoardingTemplateDocuments();
+		       		        documents.setCandidateOnBoardingId(onBoarding);
+		       		       
+		       		        documents.setFileURL(templateDocument.getFileURL());
+	         	            documents.setFileName(templateDocument.getFileName());
+	         	            documents.setFileContentType(templateDocument.getFileContentType());
+		                  
+			       		    documents.setDocumentType("Supported");
+			       		    documents.setDocumentStatus(OnboardStatus.NEW);
+		                    documents.setStatus(Constants.CANDIDATE_ACTIVE);
+		                    documents.setDocumentUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+		                    documents.setCreatedDate(CommonUtil.currentDate());
+		                    documents.setCreatedBy(loginUser.getUserCode());
+		                    documents.setUpdatedDate(CommonUtil.currentDate());
+		                    documents.setUpdatedBy(loginUser.getUserCode());
+		                    onBoardingTemplateDocumentsService.saveOnBoardingTemplateDocuments(documents);
+					 
+					 }
+					 
+				}
+				
+		/*	   
+			   
+			if(StringUtils.isNotBlank(onBoardingTemplateDocumentsDTO.getSavedPoliciesAttcahments())){
+				 String templateIds = onBoardingTemplateDocumentsDTO.getSavedPoliciesAttcahments();
 				 templateIds = templateIds.replaceAll("\\[", "").replaceAll("\\]","");
 				 templateIds = templateIds.replaceAll("\"", "");
 				 
@@ -746,12 +962,12 @@ public class CandidateOnBoardRestController {
 				 
 					    OnBoardingTemplateDocuments documents = new OnBoardingTemplateDocuments();
 	       		        documents.setCandidateOnBoardingId(onBoarding);
-	       		       
-	       		        documents.setDocFile(templateDocument.getDocFile());
+	       		        
+	       		        documents.setFileURL(templateDocument.getFileURL());
+//	       		        documents.setDocFile(templateDocument.getDocFile());
           	            documents.setFileName(templateDocument.getFileName());
           	            documents.setFileContentType(templateDocument.getFileContentType());
           	            documents.setDocumentStatus(OnboardStatus.NEW);
-	                  
 		       		    documents.setDocumentType("Policies");
 	                    documents.setStatus(Constants.CANDIDATE_ACTIVE);
 	                    documents.setDocumentUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
@@ -762,12 +978,11 @@ public class CandidateOnBoardRestController {
 	                    onBoardingTemplateDocumentsService.saveOnBoardingTemplateDocuments(documents);
 				 
 				 }
-				 
 			}
 			
 			//save  mutliple attachment for policies Documents.
-			if ((jsonObj.has("policiesAttcahmentMaxRowNumber"))){
-		    	String policiesAttcahmentMaxRowNumber = jsonObj.getString("policiesAttcahmentMaxRowNumber");
+			if (StringUtils.isNotBlank(onBoardingTemplateDocumentsDTO.getPoliciesAttcahmentMaxRowNumber())){
+		    	String policiesAttcahmentMaxRowNumber = onBoardingTemplateDocumentsDTO.getPoliciesAttcahmentMaxRowNumber();
 				int policiesAttcahmentMaxRowNumberCount = Integer.parseInt(policiesAttcahmentMaxRowNumber);
 				
 		    	for (int a = 0; a < policiesAttcahmentMaxRowNumberCount; a++) {
@@ -803,8 +1018,10 @@ public class CandidateOnBoardRestController {
 			
 			
 			
-			if(jsonObj.has("savedSupportedAttcahments") && !isNullOrEmpty(jsonObj.getString("savedSupportedAttcahments"))){
-				 String templateIds = jsonObj.getString("savedSupportedAttcahments");
+			
+			
+			if(StringUtils.isNotBlank(onBoardingTemplateDocumentsDTO.getSavedSupportedAttcahments())){
+				 String templateIds = onBoardingTemplateDocumentsDTO.getSavedSupportedAttcahments();
 				 templateIds = templateIds.replaceAll("\\[", "").replaceAll("\\]","");
 				 templateIds = templateIds.replaceAll("\"", "");
 				 
@@ -816,7 +1033,8 @@ public class CandidateOnBoardRestController {
 					    OnBoardingTemplateDocuments documents = new OnBoardingTemplateDocuments();
 	       		        documents.setCandidateOnBoardingId(onBoarding);
 	       		       
-	       		        documents.setDocFile(templateDocument.getDocFile());
+	       		        documents.setFileURL(templateDocument.getFileURL());
+//	       		        documents.setDocFile(templateDocument.getDocFile());
          	            documents.setFileName(templateDocument.getFileName());
          	            documents.setFileContentType(templateDocument.getFileContentType());
 	                  
@@ -836,8 +1054,8 @@ public class CandidateOnBoardRestController {
 			
 			
 			//save  mutliple attachment for supported Documents.
-					if ((jsonObj.has("supportingAttcahmentMaxRowNumber"))){
-				    	String supportingAttcahmentMaxRowNumber = jsonObj.getString("supportingAttcahmentMaxRowNumber");
+					if (StringUtils.isNotBlank(onBoardingTemplateDocumentsDTO.getSavedSupportedAttcahments())  ){
+				    	String supportingAttcahmentMaxRowNumber = onBoardingTemplateDocumentsDTO.getSavedSupportedAttcahments();
 						int supportedAttcahmentMaxRowNumberCount = Integer.parseInt(supportingAttcahmentMaxRowNumber);
 						
 				    	for (int a = 0; a < supportedAttcahmentMaxRowNumberCount; a++) {
@@ -877,8 +1095,8 @@ public class CandidateOnBoardRestController {
 					
 					
 					
-					if(jsonObj.has("savedContractsAttcahments") && !isNullOrEmpty(jsonObj.getString("savedContractsAttcahments"))){
-						 String templateIds = jsonObj.getString("savedContractsAttcahments");
+					if(StringUtils.isNotBlank(onBoardingTemplateDocumentsDTO.getSavedContractsAttcahments())){
+						 String templateIds = onBoardingTemplateDocumentsDTO.getSavedContractsAttcahments();
 						 templateIds = templateIds.replaceAll("\\[", "").replaceAll("\\]","");
 						 templateIds = templateIds.replaceAll("\"", "");
 						 
@@ -890,7 +1108,8 @@ public class CandidateOnBoardRestController {
 							    OnBoardingTemplateDocuments documents = new OnBoardingTemplateDocuments();
 			       		        documents.setCandidateOnBoardingId(onBoarding);
 			       		       
-			       		        documents.setDocFile(templateDocument.getDocFile());
+			       		        documents.setFileURL(templateDocument.getFileURL());
+//			       		        documents.setDocFile(templateDocument.getDocFile());
 		         	            documents.setFileName(templateDocument.getFileName());
 		         	            documents.setFileContentType(templateDocument.getFileContentType());
 			                  
@@ -910,8 +1129,8 @@ public class CandidateOnBoardRestController {
 					
 					
 					//save  mutliple attachment for supported Documents.
-							if ((jsonObj.has("contractsAttcahmentMaxRowNumber"))){
-						    	String contractsAttcahmentMaxRowNumber = jsonObj.getString("contractsAttcahmentMaxRowNumber");
+							if (StringUtils.isNotBlank(onBoardingTemplateDocumentsDTO.getContractsAttcahmentMaxRowNumber())){
+						    	String contractsAttcahmentMaxRowNumber = onBoardingTemplateDocumentsDTO.getContractsAttcahmentMaxRowNumber();
 								int contractsAttcahmentMaxRowNumberCount = Integer.parseInt(contractsAttcahmentMaxRowNumber);
 								
 						    	for (int a = 0; a < contractsAttcahmentMaxRowNumberCount; a++) {
@@ -946,8 +1165,8 @@ public class CandidateOnBoardRestController {
 							}
 					
 					
-							if(jsonObj.has("savedFormsAttcahments") && !isNullOrEmpty(jsonObj.getString("savedFormsAttcahments"))){
-								 String templateIds = jsonObj.getString("savedFormsAttcahments");
+							if(StringUtils.isNotBlank(onBoardingTemplateDocumentsDTO.getSavedFormsAttcahments())){
+								 String templateIds = onBoardingTemplateDocumentsDTO.getSavedFormsAttcahments();
 								 templateIds = templateIds.replaceAll("\\[", "").replaceAll("\\]","");
 								 templateIds = templateIds.replaceAll("\"", "");
 								 
@@ -979,8 +1198,8 @@ public class CandidateOnBoardRestController {
 							
 							
 							//save  mutliple attachment for supported Documents.
-									if ((jsonObj.has("formsAttcahmentMaxRowNumber"))){
-								    	String formsAttcahmentMaxRowNumber = jsonObj.getString("formsAttcahmentMaxRowNumber");
+									if (StringUtils.isNotBlank(onBoardingTemplateDocumentsDTO.getFormsAttcahmentMaxRowNumber())){
+								    	String formsAttcahmentMaxRowNumber = onBoardingTemplateDocumentsDTO.getFormsAttcahmentMaxRowNumber();
 										int formsAttcahmentMaxRowNumberCount = Integer.parseInt(formsAttcahmentMaxRowNumber);
 										
 								    	for (int a = 0; a < formsAttcahmentMaxRowNumberCount; a++) {
@@ -1010,7 +1229,7 @@ public class CandidateOnBoardRestController {
 												   
 							                   }
 								    	}
-									}
+									}*/
 			
 			return "success";
 				
@@ -1265,13 +1484,11 @@ public class CandidateOnBoardRestController {
 		
 		 
 		 @RequestMapping(value = "/saveCandidateOnBoardTasks" , method = RequestMethod.POST)
-		 public @ResponseBody  String saveCandidateOnBoardTasks(@RequestParam(value="json", required=false) String json,
+		 public @ResponseBody  String saveCandidateOnBoardTasks(OnboardTasksDTO onboardTasksDTO,
 				 @RequestParam(value="tasks", required=false) String tasks,HttpServletRequest request) throws Exception {
 			
 			 
-			 json = "{"+json+"}";
-			 
-			 JSONObject jsonObj = new JSONObject(json);
+			
 			 
 			 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			 
@@ -1279,17 +1496,17 @@ public class CandidateOnBoardRestController {
 			 
 			 OnboardTasks onboardTasks = new OnboardTasks();
 			 
-			 if(jsonObj.has("taskName") && !isNullOrEmpty(jsonObj.getString("taskName"))){
-				 onboardTasks.setTaskName(jsonObj.getString("taskName"));
+			 if(StringUtils.isNotBlank(onboardTasksDTO.getTaskName())){
+				 onboardTasks.setTaskName(onboardTasksDTO.getTaskName());
 			 }
 			 
 			 CandidateOnBoarding onBoarding = new CandidateOnBoarding();
-			 onBoarding.setId(Long.valueOf(jsonObj.getString("onboardTaskId")));
+			 onBoarding.setId(Long.valueOf(onboardTasksDTO.getOnboardTaskId()));
 			 onboardTasks.setCandidateOnBoardingId(onBoarding);
 			 
-			 if(jsonObj.has("onboardAssignedTo") && !isNullOrEmpty(jsonObj.getString("onboardAssignedTo"))){
+			 if(StringUtils.isNotBlank(onboardTasksDTO.getOnboardAssignedTo())){
 				
-				 String userIds = jsonObj.getString("onboardAssignedTo");
+				 String userIds =onboardTasksDTO.getOnboardAssignedTo(); //jsonObj.getString("onboardAssignedTo");
 				 
 				 userIds = userIds.replaceAll("\\[", "").replaceAll("\\]","");
 				 userIds = userIds.replaceAll("\"", "");
@@ -1298,40 +1515,40 @@ public class CandidateOnBoardRestController {
 				 onboardTasks.setAssignToCandidate(Constants.YES);
 			 }
 			 
-			 if(jsonObj.has("taskPriority") && !isNullOrEmpty(jsonObj.getString("taskPriority"))){
-				 onboardTasks.setPriority(jsonObj.getString("taskPriority"));
+			 if(StringUtils.isNotBlank(onboardTasksDTO.getTaskPriority())){
+				 onboardTasks.setPriority(onboardTasksDTO.getTaskPriority());
 			 }
 			 
-			 if(jsonObj.has("taskRepeat") && !isNullOrEmpty(jsonObj.getString("taskRepeat"))){
-				 onboardTasks.setTaskRepeat(jsonObj.getString("taskRepeat"));
+			 if(StringUtils.isNotBlank(onboardTasksDTO.getTaskRepeat())){
+				 onboardTasks.setTaskRepeat(onboardTasksDTO.getTaskRepeat());
 			 }
 			 
-			 if(jsonObj.has("taskMonths") && !isNullOrEmpty(jsonObj.getString("taskMonths"))){
-				 onboardTasks.setDueAfterMonths(Integer.parseInt(jsonObj.getString("taskMonths")));
+			 if(StringUtils.isNotBlank(onboardTasksDTO.getTaskMonths())){
+				 onboardTasks.setDueAfterMonths(Integer.parseInt(onboardTasksDTO.getTaskMonths()));
 			 }
 			 
-			 if(jsonObj.has("taskDays") && !isNullOrEmpty(jsonObj.getString("taskDays"))){
-				 onboardTasks.setDueAfterDays(Integer.parseInt(jsonObj.getString("taskDays")));
+			 if(StringUtils.isNotBlank(onboardTasksDTO.getTaskDays())){
+				 onboardTasks.setDueAfterDays(Integer.parseInt(onboardTasksDTO.getTaskDays()));
 			 }
 			 
-			 if(jsonObj.has("taskHours") && !isNullOrEmpty(jsonObj.getString("taskHours"))){
-				 onboardTasks.setDueAfterHours(Integer.parseInt(jsonObj.getString("taskHours")));
+			 if(StringUtils.isNotBlank(onboardTasksDTO.getTaskHours())){
+				 onboardTasks.setDueAfterHours(Integer.parseInt(onboardTasksDTO.getTaskHours()));
 			 }
 			 
-			 if(jsonObj.has("taskMinutes") && !isNullOrEmpty(jsonObj.getString("taskMinutes"))){
-				 onboardTasks.setDueAfterMinutes(Integer.parseInt(jsonObj.getString("taskMinutes")));
+			 if(StringUtils.isNotBlank(onboardTasksDTO.getTaskMinutes())){
+				 onboardTasks.setDueAfterMinutes(Integer.parseInt(onboardTasksDTO.getTaskMinutes()));
 			 }
 			 
-			 if(jsonObj.has("taskNotification") && !isNullOrEmpty(jsonObj.getString("taskNotification"))){
-				 onboardTasks.setTaskNotification(jsonObj.getString("taskNotification"));
+			 if(StringUtils.isNotBlank(onboardTasksDTO.getTaskNotification())){
+				 onboardTasks.setTaskNotification(onboardTasksDTO.getTaskNotification());
 			 }
 			 
-			 if(jsonObj.has("taskEmail") && !isNullOrEmpty(jsonObj.getString("taskEmail"))){
-				 onboardTasks.setTaskEmail(jsonObj.getString("taskEmail"));
+			 if(StringUtils.isNotBlank(onboardTasksDTO.getTaskEmail())){
+				 onboardTasks.setTaskEmail(onboardTasksDTO.getTaskEmail());
 			 }
 			 
-			 if(jsonObj.has("taskdescription") && !isNullOrEmpty(jsonObj.getString("taskdescription"))){
-				 onboardTasks.setDescription(jsonObj.getString("taskdescription"));
+			 if(StringUtils.isNotBlank(onboardTasksDTO.getTaskdescription())){
+				 onboardTasks.setDescription(onboardTasksDTO.getTaskdescription());
 			 }
 			 
 			 onboardTasks.setStatus(Constants.CANDIDATE_ACTIVE);

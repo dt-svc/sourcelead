@@ -82,6 +82,9 @@ private static final long serialVersionUID = 1L;
     @Column(name = "STATUS")
 	private Integer status;
 		
+    @Column(name = "FILE_URL", columnDefinition = "TEXT default NULL")
+	private String fileURL;
+    
 	@Column(name = "CREATED_DATE")
 	private Date createdDate;
 	
@@ -247,5 +250,13 @@ private static final long serialVersionUID = 1L;
 	public void setUploadedDocFileName(String uploadedDocFileName)
 	{
 		this.uploadedDocFileName = uploadedDocFileName;
+	}
+
+	public String getFileURL() {
+		return fileURL;
+	}
+
+	public void setFileURL(String fileURL) {
+		this.fileURL = fileURL;
 	}
 }

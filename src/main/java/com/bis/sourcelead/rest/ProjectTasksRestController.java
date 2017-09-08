@@ -131,7 +131,7 @@ public class ProjectTasksRestController {
 	 public @ResponseBody  String saveProjectTasks(ProjectTasksDTO projectTasksDTO,  @RequestParam(value="projectId", required=false) Long projectId,@RequestParam(value="userId", required=false) Long userId) throws Exception {
 		 if(Validator.validate(projectTasksDTO)) {
 			 projectTasksDTO.setStaticPath(staticPath);
-			 FileUploadUtil.fillUploadedFileInfo(projectTasksDTO, projectTasksDTO.getFileInfo());
+			// FileUploadUtil.fillUploadedFileInfo(projectTasksDTO, projectTasksDTO.getFileInfo());
 			 String  saveProjectTasks = tasksService.saveProjectTasksDTOByProjectId(projectId, projectTasksDTO,userId);
 		 }else
 			 return "DataMissing";
@@ -172,7 +172,7 @@ public class ProjectTasksRestController {
 			 @RequestParam(value="userId", required=false) Long userId, @RequestParam(value="documentId", required=false) Long documentId) throws Exception {
 			 if(Validator.validate(projectTasksDTO)) {
 				 projectTasksDTO.setStaticPath(staticPath);
-					FileUploadUtil.fillUploadedFileInfo(projectTasksDTO, projectTasksDTO.getFileInfo());
+					//FileUploadUtil.fillUploadedFileInfo(projectTasksDTO, projectTasksDTO.getFileInfo());
 					projectTaskDocumentsService.storeProjectTaskDocuments(projectTasksDTO, projectTaskId,documentId,userId);
 				} else
 				  return "DataMissing";

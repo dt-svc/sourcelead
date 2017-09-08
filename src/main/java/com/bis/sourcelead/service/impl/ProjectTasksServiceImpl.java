@@ -295,11 +295,11 @@ public class ProjectTasksServiceImpl implements ProjectTasksService {
 				tasks.setOwnerUserId(user);
 			}
 		}
-		if(projectTasksDTO .getUploadedFileInfo() != null &&  !projectTasksDTO.getUploadedFileInfo().isEmpty()) {
-			List<ProjectTaskDocuments> projDocDBList = projectTasksDTO .getUploadedFileInfo().stream()
+		if(projectTasksDTO .getFileInfo() != null &&  !projectTasksDTO.getFileInfo().isEmpty()) {
+			List<ProjectTaskDocuments> projDocDBList = projectTasksDTO .getFileInfo().stream()
 					.map(bo -> new ProjectTaskDocuments(bo.getFileName(), bo.getFileURL(),bo.getContentType(),tasks)).collect(Collectors.toList());
 	        tasks.getProjectTaskDocuments().addAll(projDocDBList);
-	        for(FileInfo fileInfo : projectTasksDTO.getUploadedFileInfo()){
+	        for(FileInfo fileInfo : projectTasksDTO.getFileInfo()){
 				FileUploadUtil.moveFile(projectTasksDTO.getStaticPath(), fileInfo, "tasks");
 			}
 		}
