@@ -13,8 +13,8 @@ public class ClientDTO {
 	private String orgLocationId;
 	
 	private String webSite;
-	
-	private String CompanyWebSite;
+
+	private String companyWebsite;
 	
 	@Required(desc = "location")
 	private String location;
@@ -115,11 +115,11 @@ public class ClientDTO {
 	public void setWebSite(String webSite) {
 		this.webSite = webSite;
 	}
-	public String getCompanyWebSite() {
-		return CompanyWebSite;
+	public String getCompanyWebsite() {
+		return companyWebsite;
 	}
-	public void setCompanyWebSite(String companyWebSite) {
-		CompanyWebSite = companyWebSite;
+	public void setCompanyWebsite(String companyWebsite) {
+		this.companyWebsite = companyWebsite;
 	}
 	public String getLocation() {
 		return location;
