@@ -66,6 +66,8 @@ public class ClientDTO {
 	
 	private String OwnerUserId;
 	
+	private String existingSpocUserId;
+	
 	private String isMailSent;
 	
 	private String userRoleText;
@@ -349,6 +351,12 @@ public class ClientDTO {
 	}
 	public void setCandidateDTO(CandidateDTO candidateDTO) {
 		this.candidateDTO = candidateDTO;
+	}
+	public String getExistingSpocUserId() {
+		return existingSpocUserId;
+	}
+	public void setExistingSpocUserId(String existingSpocUserId) {
+		this.existingSpocUserId = existingSpocUserId;
 	}
 	
 }
