@@ -8,7 +8,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URLDecoder;
-import java.util.Iterator;
 import java.util.List;
 
 import javax.servlet.ServletOutputStream;
@@ -17,7 +16,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
-import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +28,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.CandidateResumeDTO;
@@ -38,7 +35,6 @@ import com.bis.sourcelead.elk.index.CandidateIndex;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateResumes;
-import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.RequirementOffers;
 import com.bis.sourcelead.entity.User;
@@ -101,21 +97,7 @@ public class CandidateResumeRestController {
 	@RequestMapping(value = "/saveCandidateResume", method = RequestMethod.POST)
 	public @ResponseBody String saveCandidateResume(CandidateResumeDTO  candidateResumeDTO,@RequestParam(value = "candidateId", required = false) String candidateId, @RequestParam(value = "resumeId", required = false) String resumeId, HttpServletRequest request) throws Exception
 	{
-		/*String json1 = "{" + json + "}";
-		JSONObject jsonObj = new JSONObject(json1);
-		MultipartFile multiFile = null;
-		Iterator<String> itrator = request.getFileNames();
-		String fileURL = null;
-		String fileName = null;
-		String contentType = null;
-		if (itrator.hasNext()) {
-			multiFile = request.getFile(itrator.next());
-			Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
-			OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-			fileURL = new FileUploadUtil().uploadFile(staticPath, org.getId(), loginOrgLocation.getId(), "resumes", multiFile);
-			fileName = multiFile.getOriginalFilename();
-			contentType = multiFile.getContentType();
-		}*/
+		
 		candidateResumeDTO.setStaticPath(staticPath);
 		FileUploadUtil.fillUploadedFileInfo(candidateResumeDTO, candidateResumeDTO.getFileInfo());
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
