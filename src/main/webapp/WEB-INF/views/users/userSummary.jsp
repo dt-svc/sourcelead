@@ -1348,7 +1348,7 @@ $("#editRoleDetailsList").empty();
 					
 					result = result + ' <div class="user_summary_edit_cta">';
 					result = result + ' <label>Phone number</label>';
-					result = result + ' <input type="text" value="'+mobilePhone+'" name="PhoneNumber" data-validation="validate_Space validate_phone validate_length length9-20" data-validation-optional="true">';
+					result = result + ' <input type="text" value="'+mobilePhone+'" name="phoneNumber" data-validation="validate_Space validate_phone validate_length length9-20" data-validation-optional="true">';
 					result = result + ' </div>';
 					
 					if(json.userState == "NOT_LOGGEDIN"){

@@ -105,10 +105,9 @@ public class OrgSpocServiceImpl implements OrgSpocService{
 		
 		User spocUser = userService.storeUser(addUserDTO,candidateDTO,user,respondingOrgLocation,"CREATEUSER",responderType,loginOrg);
 		
-		if(!(clientDTO.getOwner().contains(null) || clientDTO.getOwner().contains(""))){
-			String[] owners = (String[]) clientDTO.getOwner().toArray();
-			for(int i=0 ;i<owners.length;i++ ){
-				User ownerUser = userService.getUserById(Long.parseLong(owners[i].replace("\"", "")));
+		if(clientDTO.getOwner() != null && !clientDTO.getOwner().isEmpty()){
+			for(String owners :clientDTO.getOwner()){
+				User ownerUser = userService.getUserById(Long.parseLong(owners));
 				OrgSpoc orgSpoc = orgSpocDao.validateSpacEmailIdByOwnerUserIdAndOrgRelationId(clientDTO.getEmail(), Long.parseLong(orgRelationId), ownerUser.getId(),Constants.RECORD_INACTIVE);
 			     if(orgSpoc == null){
 			    	 orgSpoc = new OrgSpoc();

@@ -4308,7 +4308,7 @@ function assignedMemberList(requirementId){
 
 
 
-<script type="text/javascript">
+<!-- <script type="text/javascript">
 function requirementRecommendations(requirementId){
 	var sourceleadUrl = '${sourceleadUrl}';
 	 $.ajax({
@@ -4323,7 +4323,7 @@ function requirementRecommendations(requirementId){
 	 
 	
 }
-</script>
+</script> -->
 <script>
 function requirementNotes(requirementId){
 		var result = "";
@@ -4534,7 +4534,8 @@ function reqNotes(requirementId){
 <script type="text/javascript">
 function requirementRecommendations(requirementId){
 	$("#actionsDiv" ).hide();
-	  var sourceleadUrl = '${sourceleadUrl}';
+	var sourceleadUrl = '${sourceleadUrl}';
+	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	$("#recommendationsLoading").attr('style','position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	
 	 var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
@@ -4552,7 +4553,7 @@ function requirementRecommendations(requirementId){
 	$.ajax({
     type : "POST",
      //url: sourceleadUrl+"/getRequirementRecommendationsByRequirementId?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&count="+count,        
-     url: sourceleadUrl+"/getRequirementRecommendationsByRequirementId?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId,
+     url: sourceleadUrl+"/getRequirementRecommendationsByRequirementId?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&orgLocationId="+orgLocationId,
      success :function(data) {
     	 var json = JSON.parse(data);
     	    var result = '';

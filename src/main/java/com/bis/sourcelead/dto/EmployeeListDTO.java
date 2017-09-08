@@ -5,120 +5,159 @@ import java.io.Serializable;
 public class EmployeeListDTO extends SearchDTO implements Serializable{
 
 	private String company;
+	private String orgLocationId;
 	private String branch;
 	private String empId;
 	private String candidateName;
-	private double rate;
-	private double fixedRate;
-	private double payRate;
-	private double fixedPay;
-	private double insurance;
-	private double ded;
-	private double effectiveRate;
-	private double payrollDifference;
+	private String rate;
+	private String fixedRate;
+	private String payRate;
+	private String fixedPay;
+	private String insurance;
+	private String ded;
+	private String effectiveRate;
+	private String payrollDifference;
 	private String immigration;
 	private String comments;
-	private double advanceHcp;
-	private double balance;
+	private String advanceHcp;
+	private String balance;
 	
-	
-	public String getCompany() {
+	public String getCompany()
+	{
 		return company;
 	}
-	public void setCompany(String company) {
+	public void setCompany(String company)
+	{
 		this.company = company;
 	}
-	public String getBranch() {
+	public String getOrgLocationId()
+	{
+		return orgLocationId;
+	}
+	public void setOrgLocationId(String orgLocationId)
+	{
+		this.orgLocationId = orgLocationId;
+	}
+	public String getBranch()
+	{
 		return branch;
 	}
-	public void setBranch(String branch) {
+	public void setBranch(String branch)
+	{
 		this.branch = branch;
 	}
-	public String getEmpId() {
+	public String getEmpId()
+	{
 		return empId;
 	}
-	public void setEmpId(String empId) {
+	public void setEmpId(String empId)
+	{
 		this.empId = empId;
 	}
-	public String getCandidateName() {
+	public String getCandidateName()
+	{
 		return candidateName;
 	}
-	public void setCandidateName(String candidateName) {
+	public void setCandidateName(String candidateName)
+	{
 		this.candidateName = candidateName;
 	}
-	public double getRate() {
+	public String getRate()
+	{
 		return rate;
 	}
-	public void setRate(double rate) {
+	public void setRate(String rate)
+	{
 		this.rate = rate;
 	}
-	public double getFixedRate() {
+	public String getFixedRate()
+	{
 		return fixedRate;
 	}
-	public void setFixedRate(double fixedRate) {
+	public void setFixedRate(String fixedRate)
+	{
 		this.fixedRate = fixedRate;
 	}
-	public double getPayRate() {
+	public String getPayRate()
+	{
 		return payRate;
 	}
-	public void setPayRate(double payRate) {
+	public void setPayRate(String payRate)
+	{
 		this.payRate = payRate;
 	}
-	public double getFixedPay() {
+	public String getFixedPay()
+	{
 		return fixedPay;
 	}
-	public void setFixedPay(double fixedPay) {
+	public void setFixedPay(String fixedPay)
+	{
 		this.fixedPay = fixedPay;
 	}
-	public double getInsurance() {
+	public String getInsurance()
+	{
 		return insurance;
 	}
-	public void setInsurance(double insurance) {
+	public void setInsurance(String insurance)
+	{
 		this.insurance = insurance;
 	}
-	public double getDed() {
+	public String getDed()
+	{
 		return ded;
 	}
-	public void setDed(double ded) {
+	public void setDed(String ded)
+	{
 		this.ded = ded;
 	}
-	public double getEffectiveRate() {
+	public String getEffectiveRate()
+	{
 		return effectiveRate;
 	}
-	public void setEffectiveRate(double effectiveRate) {
+	public void setEffectiveRate(String effectiveRate)
+	{
 		this.effectiveRate = effectiveRate;
 	}
-	public double getPayrollDifference() {
+	public String getPayrollDifference()
+	{
 		return payrollDifference;
 	}
-	public void setPayrollDifference(double payrollDifference) {
+	public void setPayrollDifference(String payrollDifference)
+	{
 		this.payrollDifference = payrollDifference;
 	}
-	public String getImmigration() {
+	public String getImmigration()
+	{
 		return immigration;
 	}
-	public void setImmigration(String immigration) {
+	public void setImmigration(String immigration)
+	{
 		this.immigration = immigration;
 	}
-	public String getComments() {
+	public String getComments()
+	{
 		return comments;
 	}
-	public void setComments(String comments) {
+	public void setComments(String comments)
+	{
 		this.comments = comments;
 	}
-	public double getAdvanceHcp() {
+	public String getAdvanceHcp()
+	{
 		return advanceHcp;
 	}
-	public void setAdvanceHcp(double advanceHcp) {
+	public void setAdvanceHcp(String advanceHcp)
+	{
 		this.advanceHcp = advanceHcp;
 	}
-	public double getBalance() {
+	public String getBalance()
+	{
 		return balance;
 	}
-	public void setBalance(double balance) {
+	public void setBalance(String balance)
+	{
 		this.balance = balance;
 	}
-	
 	
 	
 }

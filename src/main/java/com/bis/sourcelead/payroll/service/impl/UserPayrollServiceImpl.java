@@ -33,7 +33,7 @@ public class UserPayrollServiceImpl implements UserPayrollService{
 	private BisUserMappingDao bisUserMappingDao;
 	
 	@Autowired
-	private OrgLocationService OrgLocationService;
+	private OrgLocationService orgLocationService;
 	
 	@Override
 	public UserPayroll saveUserPayroll(UserPayroll userPayroll) throws Exception {
@@ -77,7 +77,7 @@ public class UserPayrollServiceImpl implements UserPayrollService{
 	@Override
 	public Checks getUniqueChecksListByEmployeeId(String empId, Long orgLocationId,ChecksDTO checksDTO) throws Exception {
 		
-		OrgLocations orgLocations = OrgLocationService.getOrgLocations(orgLocationId);
+		OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
 		Checks checks = userPayrollDao.getUniqueChecksListByEmployeeId(empId, orgLocationId);
 		Checks checksnew = new Checks();
 		checksnew.setEmpId(empId);
