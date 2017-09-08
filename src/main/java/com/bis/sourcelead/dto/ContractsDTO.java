@@ -46,6 +46,8 @@ public class ContractsDTO {
 	private String percentageReward;
 	private String flatRateType;
 	
+	private List<FileInfo> reqDocs;
+	
 	public String getStaticPath()
 	{
 		return staticPath;
@@ -461,5 +463,14 @@ public class ContractsDTO {
 	public void setFlatRateType(String flatRateType) {
 		this.flatRateType = flatRateType;
 	}
+
+	public List<FileInfo> getReqDocs() {
+		return reqDocs;
+	}
+
+	public void setReqDocs(List<FileInfo> reqDocs) {
+		this.reqDocs = reqDocs;
+	}
+	
 	
 }

@@ -2051,6 +2051,29 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 			}
 			vendorContracts.setContractUUID(contracts.getContractUUID());
 			Contracts savedChildContracts = contractsTemplateDao.saveNewContract(vendorContracts);
+			
+			if (contractsDTO.getReqDocs() != null && contractsDTO.getReqDocs().size() > 0) {
+						
+						for(FileInfo inf2: contractsDTO.getReqDocs()){
+								if(inf2 != null){
+									ContractRequestDocuments contractRequestDocuments = new ContractRequestDocuments();
+									contractRequestDocuments.setFileURL(inf2.getFileURL());
+									contractRequestDocuments.setFileName(inf2.getFileName());
+									contractRequestDocuments.setFileType(inf2.getContentType());
+									FileUploadUtil.moveFile(contractsDTO.getStaticPath(), inf2, "RequestDocuments");
+									contractRequestDocuments.setContractId(savedContracts);
+									contractRequestDocuments.setStatus(Constants.MEMBER_ACTIVE);
+									contractRequestDocuments.setCreatedDate(new Date());
+									if (null != user) {
+										contractRequestDocuments.setCreatedBy(user.getUserCode());
+										contractRequestDocuments.setUpdatedBy(user.getUserCode());
+									}
+									contractRequestDocuments.setUpdatedDate(new Date());
+									contractRequestDocumentsService.saveContractRequestDocuments(contractRequestDocuments);
+								}
+						}
+						
+			}
 		return savedContracts;
 	}
 

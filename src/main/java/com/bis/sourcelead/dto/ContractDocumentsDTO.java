@@ -4,6 +4,7 @@ public class ContractDocumentsDTO {
 	private String documentName;
 	private String candiDoc;
 	private String description;
+	private String fileUrl;
 	
 	public String getDocumentName()
 	{
@@ -34,4 +35,13 @@ public class ContractDocumentsDTO {
 	{
 		this.description = description;
 	}
+
+	public String getFileUrl() {
+		return fileUrl;
+	}
+
+	public void setFileUrl(String fileUrl) {
+		this.fileUrl = fileUrl;
+	}
+
 }
