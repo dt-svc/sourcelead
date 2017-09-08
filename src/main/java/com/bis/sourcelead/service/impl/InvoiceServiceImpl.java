@@ -104,6 +104,7 @@ import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.ConversionUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.ExpensesInvoicePdfHelper;
+import com.bis.sourcelead.util.FileUploadUtil;
 import com.bis.sourcelead.util.InvoicePdfHelper;
 import com.bis.sourcelead.util.PdfUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
@@ -142,6 +143,9 @@ public class InvoiceServiceImpl implements InvoiceService{
 	
 	@Value("${sourceleadUrl}")
     private String sourceleadUrl;
+	
+	@Value("${static.path}")
+	private String staticPath;
 	
 	@Autowired
 	private EmailScenerioUtil emailScenerioUtil;
@@ -368,15 +372,14 @@ public class InvoiceServiceImpl implements InvoiceService{
 		if(invoiceDTO.getFileInfo() !=null && !invoiceDTO.getFileInfo().isEmpty()){
 			Set<InvoiceDocument> invoiceDocumentsSet = getInvoiceDocuments(invoiceDTO,user,orgLocation,invoice);	
 			invoice.setInvoiceDocumentSet(invoiceDocumentsSet);
-		}
+		}	
 		
 		//store attached Documents (after)
 		File file = invoicePdfHelper.createPdfTableForInvoice(invoice,orgLocation,user,org,invoiceType,vendorCurrencyCode,loginOrgCurrencyCode);
 		        invoice.setFileName(file.getName());
-//		        byte[] bytesArray = new byte[(int) file.length()];
-		        byte[] bytesArray = getByteArray(file);
-		        invoice.setDocFile(bytesArray);
-//		        invoiceDao.saveInvoce(invoice);
+		        invoice.setFileUrl(FileUploadUtil.moveFile(staticPath, org.getId(), orgLocation.getId(), "InvoicePdf", file));
+		        
+		        
 		        if(null != file){
 		        	file.delete();
 		        }
@@ -866,7 +869,7 @@ public class InvoiceServiceImpl implements InvoiceService{
 		 }
 		 
 		 }
-		 emailAttachment.setDocFile(invoice.getDocFile());
+		 emailAttachment.setDocFile(readBytesFromFile(staticPath+invoice.getFileUrl()));
 		 emailAttachment.setName(invoice.getFileName());
 		 attachmentList.add(emailAttachment);
 
@@ -2725,6 +2728,31 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 			expenses.setBillingPayableStatus("SENT");	
 		}
 		addExpensesDao.storeAddExpensesData(expenses);
+	}
+	
+	private static byte[] readBytesFromFile(String filePath)
+	{
+	FileInputStream fileInputStream = null;
+	byte[] bytesArray = null;
+	try {
+	File file = new File(filePath);
+	bytesArray = new byte[(int) file.length()];
+	// read file into bytes[]
+	fileInputStream = new FileInputStream(file);
+	fileInputStream.read(bytesArray);
+	} catch (IOException e) {
+	e.printStackTrace();
+	}
+	finally {
+	if (fileInputStream != null) {
+	try {
+	fileInputStream.close();
+	} catch (IOException e) {
+	e.printStackTrace();
+	}
+	}
+	}
+	return bytesArray;
 	}
 	
 }
