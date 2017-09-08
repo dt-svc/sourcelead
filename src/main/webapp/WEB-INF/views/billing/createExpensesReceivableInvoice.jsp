@@ -426,9 +426,6 @@ function populateExpensesDetailsGrid(data){
         $("#tableBody").append(result);
         maskme();
         $("#currencyCode").html(currencyCode);
-      /*   document.getElementById("bottomGrid").style.display="block";
-        document.getElementById("bottomGrid").style.display="block"; */
-      /*   document.getElementById("lineItemAddRows").style.display="block"; */
          $("#addbutton").hide();
         document.getElementById("tableBody").style.display="block";
         addTaxDivs();   
@@ -443,7 +440,6 @@ function populateExpensesDetailsGrid(data){
 function editExpensesDetailsEdit(data){
 		   var currencyCode = '${SourceLeadWeb_currencyCode}';
            var result = '';
-           /* var subTotal = '0'; */
             result = result +'<input type="hidden" name="invoiceExpMaxRowNumber"  id="invoiceExpMaxRowNumber" value='+data.length+' />';
             result = result +' <table width="100%" width="100%" cellpadding="0" cellspacing="0"  id="invoiceExpTbl">';
             result = result +' <thead>';
@@ -458,9 +454,7 @@ function editExpensesDetailsEdit(data){
             result = result +' <tbody>';
             if(data !=null && data !=''){
             	 for(var i=0;i < data.length;i++){
-                 	/* S.no. Date, category, description , amount  */
                  	  var opt = data[i];
-                 	 /*  subTotal = opt.subTotal; */
                  	  result = result +'   <tr>';
                  	 result = result +' <input type="hidden" value='+opt.id+' id="'+i+'lineItemId"   name="expenseInvoice['+i+'].lineItemId">';
          		      result = result +'   <td>';
@@ -608,11 +602,9 @@ function getProjectFrequency(invoiceFrequency){
 		{
 		var opt = json[i];
 		var convertOpt = opt.replace(/\//g, " to ");
-		/* output = output + "<option value='" +opt+ "'>"+opt+"</option>"; */
 		var selected = "";
 		if(invoiceFrequency != null && invoiceFrequency != "" && invoiceFrequency !="undefined" && invoiceFrequency == opt){
 			selected = 'selected';
-			/* getProjectAssignedMem1();  */
 		}
 		output = output + "<option value='" +opt+ "' "+selected+">"+convertOpt+"</option>";
 		}
@@ -628,8 +620,6 @@ function getProjectFrequency(invoiceFrequency){
 <script>
 function populateInlineItemsGrid(){
 	var currencyCode = '${SourceLeadWeb_currencyCode}';
-  /*   if(data != '' && data !=null){ */
-       /*  var json = JSON.parse(data); */
            var result = '';
            result = result +'<input type="hidden" name="invoiceExpMaxRowNumber"  id="invoiceExpMaxRowNumber" value="0" />';
             result = result +' <table width="100%" width="100%" cellpadding="0" cellspacing="0"  id="invoiceExpTbl">';
@@ -1182,20 +1172,6 @@ function saveInvoice(saveType){
 	    		     			location.replace(sourceleadUrl+"/invoiceList");
 			  				}
 			  			   }); 
-		        	  /*        $.ajax({
-		    		    	 type: "POST",
-		    		    	 data: formData,
-		    			     contentType : 'application/json; charset=utf-8',
-		    			     enctype: 'multipart/form-data',
-		    		         processData: false,
-		    		         contentType:false,
-		    			     dataType : 'json',
-		     		    	 url: sourceleadUrl+"/saveExpensesInvoice?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&userId="+userId+"&orgLocationId="+orgLocationId+"&saveType="+saveType+"&currencyCode="+currencyCode+"&invoiceType=Receivable&type=expenses", 
-		    		        success: function(result) {
-		    		     		$("#invoiceLoading").removeAttr("style");
-		    		     			location.replace(sourceleadUrl+"/invoiceList");
-		    		        },
-		    		    });  */
 		    	         return true; 
          }else{
 	    		return false;

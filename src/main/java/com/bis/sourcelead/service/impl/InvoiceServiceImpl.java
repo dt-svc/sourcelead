@@ -2367,7 +2367,6 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 		}
 
 		OrgLocations vendorOrgLocation = null;
-		;
 		if (Constants.PAYABLE.equalsIgnoreCase(invoiceType)) {
 			if (StringUtils.isNotBlank(invoiceDTO.getVendorOrgRelationId())) {
 				OrgRelations orgRelation = orgRelationsService

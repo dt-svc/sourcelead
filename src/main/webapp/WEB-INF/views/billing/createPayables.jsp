@@ -1699,13 +1699,6 @@ function errDueDate(){
 </script>
 
 <script>
-	 /*  $(function() {
-	    $( "#invoiceDate, #dueDate" ).datepicker({
-	    	dateFormat : 'dd-mm-yy',
-		  changeMonth: true,
-	      changeYear: true,
-	    });
-	  }); */
 	  
 	  $( "#0sdate-input" ).datepicker({
 		  changeMonth: true,
@@ -1718,9 +1711,6 @@ function errDueDate(){
 	            dt.setDate(dt.getDate() - 1);
 	            $("#"+maxRowNum+"sdate-input").datepicker("option", "maxDate", dt);
 	            getEstimatedHours(maxRowNum);
-			 /*  var dt = toDate("#"+maxRowNum+"edate-input");
-				dt.setDate(dt.getDate() - 1);
-				$("#"+maxRowNum+"sdate-input").datepicker("option", "maxDate", dt); */
 	 	  }
 	    });
 	
@@ -1735,9 +1725,6 @@ function errDueDate(){
 	            dt.setDate(dt.getDate() - 1);
 	            $("#"+maxRowNum+"sdate-input").datepicker("option", "maxDate", dt);
 	            getEstimatedHours(maxRowNum);
-			 /*  var dt = toDate("#"+maxRowNum+"edate-input");
-				dt.setDate(dt.getDate() - 1);
-				$("#"+maxRowNum+"sdate-input").datepicker("option", "maxDate", dt); */
 	 	  }
 	    });
 	  </script>
@@ -1926,20 +1913,6 @@ function saveInvoice(saveType){
 	    		     			location.replace(sourceleadUrl+"/invoiceList");
 			  				}
 			  			   }); 
-		        	  /*       $.ajax({
-		    		    	 type: "POST",
-		    		    	 data: formData,
-		    			     contentType : 'application/json; charset=utf-8',
-		    			     enctype: 'multipart/form-data',
-		    		         processData: false,
-		    		         contentType:false,
-		    			     dataType : 'json',
-		     		    	 url: sourceleadUrl+"/saveInvoice?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&saveType="+saveType+"&invoiceType=payable", 
-		    		        success: function(result) {
-		    		     		$("#invoiceLoading").removeAttr("style");
-		    		     			location.replace(sourceleadUrl+"/payablesList");
-		    		        },
-		    		    });  */
 		    	         return true; 
 	        }
          }else{
