@@ -7,7 +7,7 @@ public class InvoiceExpensesDTO {
 	private String total;
 	private String quantity;
 	private String rate;
-
+    private String lineItemId;
 	public String getEdate() {
 		return edate;
 	}
@@ -54,6 +54,14 @@ public class InvoiceExpensesDTO {
 
 	public void setRate(String rate) {
 		this.rate = rate;
+	}
+
+	public String getLineItemId() {
+		return lineItemId;
+	}
+
+	public void setLineItemId(String lineItemId) {
+		this.lineItemId = lineItemId;
 	}
 
 }
