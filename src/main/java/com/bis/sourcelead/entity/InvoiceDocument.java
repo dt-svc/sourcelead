@@ -64,6 +64,10 @@ public class InvoiceDocument {
 	
 	@Column(name = "UPDATED_BY")
 	private String updatedBy;
+	
+	@Column(name = "FILE_URL")
+	private String fileUrl;
+	
 
 	public Long getId()
 	{
@@ -173,6 +177,18 @@ public class InvoiceDocument {
 	public void setUpdatedBy(String updatedBy)
 	{
 		this.updatedBy = updatedBy;
+	}
+
+	public String getFileUrl() {
+		return fileUrl;
+	}
+
+	public void setFileUrl(String fileUrl) {
+		this.fileUrl = fileUrl;
+	}
+
+	public static long getSerialversionuid() {
+		return serialVersionUID;
 	}
 	
 	

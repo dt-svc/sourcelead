@@ -136,11 +136,9 @@ public class VendorRestController {
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 		
-		if((clientDTO.getOwner().contains(null) || (clientDTO.getOwner().contains("")))){
-			String[] owners = (String[]) clientDTO.getOwner().toArray();
-			for(int i=0 ;i<owners.length;i++ ){
-				User ownerUser = userService.getUserById(Long.parseLong(owners[i].replace("\"", "")));
-				//TODO--Pradeep
+		if(clientDTO.getOwner() != null && !clientDTO.getOwner().isEmpty()){
+			for(String owners :clientDTO.getOwner()){
+				User ownerUser = userService.getUserById(Long.parseLong(owners));
 				OrgSpoc orgSpoc = orgSpocService.validateSpacEmailIdByOwnerUserIdAndOrgRelationId(clientDTO.getEmail(), Long.parseLong(orgRelationId), ownerUser.getId(),1);	
 		     if(orgSpoc == null){
 			    	orgSpocService.addVendorContacts(clientDTO,addUserDTO,candidateDTO, user, orgLocations, orgRelationId, clientLocationId,responderType,org);

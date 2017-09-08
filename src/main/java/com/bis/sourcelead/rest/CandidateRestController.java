@@ -59,6 +59,7 @@ import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.service.CandidateResumesService;
 import com.bis.sourcelead.service.CandidateService;
+import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.RequirementInterviewHistoryService;
 import com.bis.sourcelead.service.RequirementInterviewService;
 import com.bis.sourcelead.service.RequirementInterviewerService;
@@ -130,6 +131,8 @@ public class CandidateRestController {
 	private SourceleadELKBaseIndexer<CandidateIndex> sourceleadELKBaseIndexer;
 	@Autowired
 	RequirementService requirementService;
+	@Autowired
+	OrgLocationService orgLocationService;
 	
 	protected boolean isNullOrEmpty(String str)
 	{
@@ -174,9 +177,9 @@ public class CandidateRestController {
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			Candidate candidate = candidateService.storeCandidate(candidateDto, orgLocation, user);
-		} else
+		} else{
 			return "DataMissing";
-		
+		}
 		return "success";
 	}
 	
@@ -433,13 +436,13 @@ public class CandidateRestController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/verifyCoolingOffPeriod")
-	public String verifyCoolingOffPeriod(@RequestParam(value = "requirementId", required = false) Long requirementId, @RequestParam(value = "candidateEmail", required = false) String candidateEmail, @RequestParam(value = "reqCoolingOffPeriod", required = false) String reqCoolingOffPeriod, HttpServletRequest request) throws Exception
+	public String verifyCoolingOffPeriod(@RequestParam(value = "requirementId", required = false) Long requirementId, @RequestParam(value = "candidateEmail", required = false) String candidateEmail, @RequestParam(value = "reqCoolingOffPeriod", required = false) String reqCoolingOffPeriod, Long orgLocationId) throws Exception
 	{
-		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		OrgLocations loginOrgLocation = orgLocationService.getOrgLocations(orgLocationId);
 		String resultJson = "false";
 		String[] coolingOffArr = null;
 		String period = "0";
-		if (reqCoolingOffPeriod != null && reqCoolingOffPeriod != "") {
+		if (reqCoolingOffPeriod != null && !reqCoolingOffPeriod.isEmpty() && reqCoolingOffPeriod != "undefined") {
 			coolingOffArr = reqCoolingOffPeriod.split(" ");
 			period = coolingOffArr[1];
 		}

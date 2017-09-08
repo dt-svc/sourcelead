@@ -62,8 +62,7 @@ function errRemoveClientContact(){
 	</section>
 	<div class="content-area content-new clearfix">
 		<div id="invoiceLoading"></div>
-		<form:form id="invoice_form" name="invoice_form" method="post"
-			enctype='multipart/form-data'>
+		<form:form id="invoice_form" name="invoice_form" method="post">
 			<div class="clearfix form-horizontal inner-content">
 				<div class="row">
 					<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">
@@ -168,27 +167,28 @@ function errRemoveClientContact(){
 <div id="divTaskTd2" style="display: none; float: left;">
 	<div class="tbldata-dotdot-vsm select-field">
 		<input type="text" class="form-control input-sm" readonly="readonly"
-			id="REPLACEROWIDcandidateName" name="REPLACEROWIDcandidateName">
+			id="REPLACEROWIDcandidateName" name="lineItems[REPLACEROWID].candidateName">
 		</inmput>
 		<input type="hidden" class="form-control input-sm"
-			id="REPLACEROWIDcandidateId" name="REPLACEROWIDcandidate">
+			id="REPLACEROWIDcandidateId" name="lineItems[REPLACEROWID].candidate">
 		</inmput>
 		<input type="hidden" class="form-control input-sm"
-			id="REPLACEROWIDlineItemId" name="REPLACEROWIDlineItemId">
+			id="REPLACEROWIDlineItemId" name="lineItems[REPLACEROWID].lineItemId">
 		</inmput>
+		<input type= "hidden" class="form-control input-sm" id="REPLACEROWIDsubmissionInvoiceId" name = "lineItems[REPLACEROWID].submissionInvoiceId">
 	</div>
 </div>
 
 <div id="divTaskTd3" style="display: none; float: left;">
 	<div class="tbldata-dotdot select-field">
-		<textarea type="text" class="form-control input-sm" placeholder="Description" id="REPLACEROWIDDescription" name="REPLACEROWIDDescription"
+		<textarea type="text" class="form-control input-sm" placeholder="Description" id="REPLACEROWIDDescription" name="lineItems[REPLACEROWID].Description"
 			data-validation="validate_length length1-100" field-name="Description"></textarea>
 	</div>
 </div>
 
 <div id="divTaskTd4" style="display: none; float: left;">
 	<div class="tbldata-dotdot-100 select-field">
-		<select class="form-control input-sm" id="REPLACEROWIDsow" name="REPLACEROWIDsow" onchange="getSowRate(REPLACEROWID);">
+		<select class="form-control input-sm" id="REPLACEROWIDsow" name="lineItems[REPLACEROWID].sow" onchange="getSowRate(REPLACEROWID);">
 			<option value=''>-Select sow-</option>
 		</select>
 	</div>
@@ -198,14 +198,14 @@ function errRemoveClientContact(){
 	<div class="tbldata-dotdot_80">
 		<input type="text"
 			class="form-control input-sm allownumericwithdecimal"
-			placeholder="Rate" id="REPLACEROWIDrate" name="REPLACEROWIDrate"
+			placeholder="Rate" id="REPLACEROWIDrate" name="lineItems[REPLACEROWID].rate"
 			onblur="totalHoursCalculateAmount(REPLACEROWID);" data-validation="required" field-name="Rate">
 	</div>
 </div>
 
 <div id="divTaskTd6" style="display: none; float: left;">
 	<div class="tbldata-dotdot-100">
-		<input type="text" class="form-control input-sm inline_field" placeholder="HHH:MM" id="REPLACEROWIDtotalHours" name="REPLACEROWIDtotalHours" onblur="totalHoursCalculateAmount(REPLACEROWID);validationHours(REPLACEROWID);">
+		<input type="text" class="form-control input-sm inline_field" placeholder="HHH:MM" id="REPLACEROWIDtotalHours" name="lineItems[REPLACEROWID].totalHours" onblur="totalHoursCalculateAmount(REPLACEROWID);validationHours(REPLACEROWID);">
 			<input type="hidden" id="REPLACEROWIDhiddenHours" name="REPLACEROWIDhiddenHours">
 <!-- 			<i class=" text-info fa fa-info-circle" title="Before Assinging Team Project Start Date &amp; Manager is Mandatory"></i> -->
 			<u id="REPLACEROWIDerrMsg" style="display: none;"><i class=" text-info fa fa-info-circle" >Avg Hours</i></u>
@@ -214,7 +214,7 @@ function errRemoveClientContact(){
 
 <div id="divTaskTd7" style="display: none; float: left;">
 	<div class="tbldata-dotdot-vsm text-right">
-		<input type="text" name="REPLACEROWIDamount" id="REPLACEROWIDamount"
+		<input type="text" name="lineItems[REPLACEROWID].amount" id="REPLACEROWIDamount"
 			placeholder="00:00" class="ReadTextFli" readonly>
 	</div>
 </div>
@@ -232,7 +232,7 @@ function errRemoveClientContact(){
 		var currencyCode = '${SourceLeadWeb_currencyCode}';
 		 var result = '';
 		 result = result +'  <div class="project_wrap_table mt25 invoice_table table_custompadding" id="invoiceTable">';
-		 result = result +'  <input type="hidden" id="maxTsRowNum" name="maxTsRowNum" value="1" />';
+		 result = result +'  <input type="hidden" id="maxTsRowNum" name="maxTsRowNum" value="0" />';
 		 result = result +'  <table width="100%">';
 		 result = result +'  <thead id="addInvoiceTbl">';
 		 result = result +'  <tr id="divTsRow0">';
@@ -299,7 +299,7 @@ function errRemoveClientContact(){
          result = result +'  <div class="timesheet_week_comm invoiceDocs invoiceDocs_add" >';
          result = result +'  <div id="0invoicedocFileuploadFileGroup"> ';
          result = result +'  <span>';
-         result = result +'  <input type="file" name="0invoicedocFile" id="0invoicedocFile" field-name="Attachment"  class="timesheetAttachmentValidation"><i class="fa fa-times" mouseOver="Clear" title="Clear" onClick="remove()"></i><i class="fa fa-plus" mouseOver="Add" title="Add" onClick="addInvoiceAttachment()"></i>';
+         result = result +'  <input type="file"  id="0invoicedocFile" field-name="Attachment"  class="timesheetAttachmentValidation" onchange="attachFile(0);"><i class="fa fa-times" mouseOver="Clear" title="Clear" onClick="remove()"></i><i class="fa fa-plus" mouseOver="Add" title="Add" onClick="addInvoiceAttachment()"></i>';
          result = result +'  </span> </div>';
          result = result +'  </div>';
          result = result +'  </td>';
@@ -338,7 +338,7 @@ function errRemoveClientContact(){
          result = result +'  <div class="col-md-5 text-right"><span class="pull-left">'+currencyCode+'</span><input type="text"  id="afterDiscountTotal" name="afterDiscountTotal"  value="00.00" class="ReadTextFli" readonly="readonly"></div>';
          result = result +'  </div>';
          result = result +'  <div class="addtax_table">';
-         result = result +'  <input type="hidden" id="maxTaxRowNum" name="maxTaxRowNum" value="1" />';
+         result = result +'  <input type="hidden" id="maxTaxRowNum" name="maxTaxRowNum" value="0" />';
          result = result +'  <table width="100%" cellpadding="0" cellspacing="0" class="table-bordered table-striped table-responsive">';
          result = result +'  <thead id="addTaxTbl">';
          result = result +'  <tr>';
@@ -637,17 +637,17 @@ function validateDiscount() {
 				$("#discountValue").removeAttr("disabled");
 				
 				
-				var row = tbl.insertRow(maxRowNum);
+				var row = tbl.insertRow(maxRowNum+1);
 				row.setAttribute("id", "divTsRow" + maxRowNum);
 				
 				var text = "";
 				var cell0 = row.insertCell(0);
 				text = text+"<div  class='inputCustom'>";
-				text = text+'<input type="text" class="calendar paddingRight" id="'+maxRowNum+'sdate-input" name="'+maxRowNum+'invoiceStartDate" placeholder="Start Date">';
-				text = text+'<input type="text" class="calendar paddingLeft" id="'+maxRowNum+'edate-input" name="'+maxRowNum+'invoiceEndDate" placeholder="End Date">';
+				text = text+'<input type="text" class="calendar paddingRight" id="'+maxRowNum+'sdate-input" name="lineItems['+maxRowNum+'].invoiceStartDate" placeholder="Start Date">';
+				text = text+'<input type="text" class="calendar paddingLeft" id="'+maxRowNum+'edate-input" name="lineItems['+maxRowNum+'].invoiceEndDate" placeholder="End Date">';
 				text = text+'</div>';
 				cell0.innerHTML = text;
-				
+				alert(text);
 				
 				var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
 				   var finalDateFormatInvoiceEdit = '';
@@ -762,7 +762,7 @@ function cancel(){
 					var maxRowNum = parseInt($("input[name = 'maxTaxRowNum']").val());
 					$("input[name = 'maxTaxRowNum']").val(maxRowNum + 1);
 					
-					var row = tbl.insertRow(maxRowNum);
+					var row = tbl.insertRow(maxRowNum+1);
 					row.setAttribute("id", "divTaxRow" + maxRowNum);
 					
 					var cell0 = row.insertCell(0);
@@ -824,14 +824,14 @@ function cancel(){
 			$("#discountValue").removeAttr("disabled");
 			
 			
-			var row = tbl.insertRow(maxRowNum);
+			var row = tbl.insertRow(maxRowNum+1);
 			row.setAttribute("id", "divTsRow" + maxRowNum);
 			
 			var text = "";
 			var cell0 = row.insertCell(0);
 			text = text+"<div  class='inputCustom'>";
-			text = text+'<input type="text" class="calendar paddingRight" id="'+maxRowNum+'sdate-input" name="'+maxRowNum+'invoiceStartDate" placeholder="Start Date">';
-			text = text+'<input type="text" class="calendar paddingLeft" id="'+maxRowNum+'edate-input" name="'+maxRowNum+'invoiceEndDate" placeholder="End Date">';
+			text = text+'<input type="text" class="calendar paddingRight" id="'+maxRowNum+'sdate-input" name="lineItems['+maxRowNum+'].invoiceStartDate" placeholder="Start Date">';
+			text = text+'<input type="text" class="calendar paddingLeft" id="'+maxRowNum+'edate-input" name="lineItems['+maxRowNum+'].invoiceEndDate" placeholder="End Date">';
 			text = text+'</div>';
 			cell0.innerHTML = text;
 			
@@ -1451,7 +1451,7 @@ function calculateDiscount(){
 		<div class="form-group" id="REPLACEROWIDinvoicedocFileuploadFileGroup">
 			<span> <input type="file" name='REPLACEROWIDinvoicedocFile'
 				id='REPLACEROWIDinvoicedocFile'
-				onchange='validateContractsUploadFile(REPLACEROWID)'> <i
+				onchange='attachFile(REPLACEROWID);validateContractsUploadFile(REPLACEROWID)'> <i
 				class="fa fa-times" mouseOver="Delete" title="Delete"
 				onclick="removeInvoiceAttachmentRow(REPLACEROWID);"></i>
 			</span>
@@ -1503,17 +1503,17 @@ function calculateDiscount(){
 	<div class="select-field tblminwidth-75">
 		<div class="tblminwidth-50">
 			<input type="text" class="form-control input-sm" value=""
-				placeholder="Tax type" name='REPLACEROWIDtaxType'
+				placeholder="Tax type" name='invoiceTax[REPLACEROWID].taxType'
 				id='REPLACEROWIDtaxType'> <input type="hidden"
-				name="REPLACEROWIDinvoiceTaxId" id="REPLACEROWIDinvoiceTaxId">
-				<input type= "hidden" id="submissionInvoiceId" name = "submissionInvoiceId">
+				name="invoiceTax[REPLACEROWID].invoiceTaxId" id="REPLACEROWIDinvoiceTaxId">
+			<!-- 	<input type= "hidden" id="REPLACEROWIDsubmissionInvoiceId" name = "invoiceTax[REPLACEROWID].submissionInvoiceId"> -->
 		</div>
 	</div>
 </div>
 
 <div id="divTaxTd2" style="display: none; float: left;">
 	<div class="btn-group tblminwidth-75">
-		<select class="form-control input-sm" id="REPLACEROWIDtaxdiscountType" name="REPLACEROWIDtaxdiscountType" onchange="calculateTaxDiscount(REPLACEROWID);">
+		<select class="form-control input-sm" id="REPLACEROWIDtaxdiscountType" name="invoiceTax[REPLACEROWID].taxdiscountType" onchange="calculateTaxDiscount(REPLACEROWID);">
 			<option value="percentage">Percentage</option>
 			<option value="flat">Flat</option>
 		</select>
@@ -1524,7 +1524,7 @@ function calculateDiscount(){
 	<div class="tblminwidth-75">
 		<input type="text"
 			class="form-control input-sm allownumericwithdecimal" value=""
-			placeholder="Flat / Discount" name='REPLACEROWIDtaxdiscountvalue'
+			placeholder="Flat / Discount" name='invoiceTax[REPLACEROWID].taxdiscountvalue'
 			id='REPLACEROWIDtaxdiscountvalue'
 			onblur="calculateTaxDiscount(REPLACEROWID);">
 	</div>
@@ -1533,7 +1533,7 @@ function calculateDiscount(){
 <div id="divTaxTd4" style="display: none; float: left;">
 	<div class="tblminwidth-75">
 		<input type="text" class="form-control input-sm" value="00.00"
-			placeholder="Total Value" name='REPLACEROWIDtaxTotal'
+			placeholder="Total Value" name='invoiceTax[REPLACEROWID].taxTotal'
 			id='REPLACEROWIDtaxTotal' readonly="readonly">
 	</div>
 </div>
@@ -1548,7 +1548,7 @@ function calculateDiscount(){
 				var maxRowNum = parseInt($("input[name = 'maxTaxRowNum']").val());
 				$("input[name = 'maxTaxRowNum']").val(maxRowNum + 1);
 				
-				var row = tbl.insertRow(maxRowNum);
+				var row = tbl.insertRow(maxRowNum+1);
 				row.setAttribute("id", "divTaxRow" + maxRowNum);
 				
 				var cell0 = row.insertCell(0);
@@ -1610,7 +1610,7 @@ function calculateTaxDiscount(){
 	var maxTaxRowNum = $("#maxTaxRowNum").val();
 	var afterDiscountTotal = $("#afterDiscountTotal").val();
 	
-	for(var i=1; i<maxTaxRowNum; i++){
+	for(var i=0; i<maxTaxRowNum; i++){
 		if($("#"+i+"taxdiscountType").val() != '' && $("#"+i+"taxdiscountType").val() != null && $("#"+i+"taxdiscountType").val() != 'undefined'){
 			var taxType = $("#"+i+"taxdiscountType").val();
 		    var taxValue = $("#"+i+"taxdiscountvalue").val();
@@ -1632,7 +1632,7 @@ function calculateTaxDiscount(){
 	}
 	
 	var taxGrandTotal = 0;
-	for(var i=1; i<maxTaxRowNum; i++){
+	for(var i=0; i<maxTaxRowNum; i++){
 		if($("#"+i+"taxTotal").val() != null && $("#"+i+"taxTotal").val() != '' && $("#"+i+"taxTotal").val() != 'undefined'){
 			taxGrandTotal = parseFloat(taxGrandTotal + parseFloat($("#"+i+"taxTotal").val()));
 		}
@@ -1938,8 +1938,8 @@ function getDueDateByFrequency(){
 function saveInvoice(saveType){
 	var maxTsRowNum = parseInt($("input[name = 'maxTsRowNum']").val());
 	    var selectedAssociates = '';
-		  if(maxTsRowNum > 1){
-			  for(var i=1; i<maxTsRowNum; i++){
+		  if(maxTsRowNum > 0){
+			  for(var i=0; i<maxTsRowNum; i++){
 				  if(document.getElementById(i+"candidateId")){
 					  var associateId = document.getElementById(i+"candidateId").value;
 					  if(selectedAssociates == ''){
@@ -1951,16 +1951,8 @@ function saveInvoice(saveType){
 			  }
 		  }
 		  if ($('#invoice_form').validate(false, validationSettings)){  
- 		    var frm = $('#invoice_form').serializeFormJSON();
- 	        var con = JSON.stringify(frm);
- 	        con = con.replace(/[{}]/g, "");
- 	        //It will escape all the special characters
- 	        var jsonData = encodeURIComponent(con);
- 	        
- 	        var form = $('#invoice_form')[0];
- 	 	    var formData = new FormData(form); 
  	 	    var sourceleadUrl ='${sourceleadUrl}';
- 	 	    
+ 	 	    var formData = getFormData("invoice_form");
          
  	 	    if(selectedAssociates == null || selectedAssociates == '' || selectedAssociates == 'undefined'){
 	        	var result = "";
@@ -1974,23 +1966,14 @@ function saveInvoice(saveType){
 	     		$("#invoice_pop").slideDown(200);
 	     		$(".project_inn_mask").fadeIn(200);
 		        }else{
-		        	
-		    	        
 		        	  $("#invoiceLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-		    	        $.ajax({
-		    		    	 type: "POST",
-		    		    	 data: formData,
-		    			     contentType : 'application/json; charset=utf-8',
-		    			     enctype: 'multipart/form-data',
-		    		         processData: false,
-		    		         contentType:false,
-		    			     dataType : 'json',
-		     		    	 url: sourceleadUrl+"/saveInvoice?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&saveType="+saveType+"&invoiceType=Receivable", 
-		    		        success: function(result) {
-		    		     		$("#invoiceLoading").removeAttr("style");
-		    		     			location.replace(sourceleadUrl+"/invoiceList");
-		    		        },
-		    		    }); 
+		        	  $.post(sourceleadUrl+"/saveInvoice?${_csrf.parameterName}=${_csrf.token}&saveType="+saveType+"&invoiceType=Receivable", formData, function(data) {
+		  				if(data == "success"){
+		  					$("#invoiceLoading").removeAttr("style");
+    		     			location.replace(sourceleadUrl+"/invoiceList");
+		  				}
+		  			   }); 
+		        	  
 		    	         return true; 
 	        }
          }else{
@@ -2124,10 +2107,13 @@ function validationHours(rowId){
 		 }
 	 }
 	 
-	
 }
 
-
-
+function attachFile(id){
+	var sourceleadUrl ='${sourceleadUrl}';
+	fileUpload(sourceleadUrl, ""+id+"invoicedocFile", "incoiceDocuments", "invoice_form","fileInfo");
+}
+ 
+ 
 </script>
 <jsp:include page="../masterFooter.jsp" />
