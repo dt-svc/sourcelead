@@ -52,6 +52,8 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.InvoiceDao;
 import com.bis.sourcelead.dto.ExpensesDTO;
 import com.bis.sourcelead.dto.ExpensesEntriesDTO;
+import com.bis.sourcelead.dto.FileInfo;
+import com.bis.sourcelead.dto.InvoiceDTO;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.EmailAttachment;
@@ -95,6 +97,7 @@ import com.bis.sourcelead.service.impl.InvoiceDocumentsService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.ConversionUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
+import com.bis.sourcelead.util.FileUploadUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.bis.sourcelead.util.TimesheetFrequencyGeneratorUtil;
 import com.bis.sourcelead.web.LoginSessionController;
@@ -238,27 +241,46 @@ public class InvoiceRestController {
  }
 	
 	@RequestMapping(value = "/saveInvoice", method = RequestMethod.POST)
-	public @ResponseBody String saveInvoice(@RequestParam(value = "json", required = false) String json,@RequestParam(value = "saveType", required = false) String saveType,
-			@RequestParam(value = "invoiceType", required = false) String invoiceType,MultipartHttpServletRequest request) throws Exception {
+	public @ResponseBody String saveInvoice(InvoiceDTO invoiceDTO,@RequestParam(value = "saveType", required = false) String saveType,
+			@RequestParam(value = "invoiceType", required = false) String invoiceType,HttpServletRequest request) throws Exception {
 
-		String json1 = "{" + json + "}";
+//		String json1 = "{" + json + "}";
+//		logger.info("client id = "+invoiceDTO.getClientOrgRelationId());
+//		logger.info("client id = "+invoiceDTO.getLineItems().size());
+//		logger.info("client id = "+invoiceDTO.getInvoiceTax().size());
+//		logger.info("client id = "+invoiceDTO.getFileInfo().size());
 		String invoiceSaved = "failed";
-		JSONObject jsonObj = new JSONObject(json1);
+//		JSONObject jsonObj = new JSONObject("");
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		String currencyCode = (String) SourceLeadSessionManager.getSessionAttribute(request, "currencyCode");
 		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
-		List<MultipartFile> attachedfileList = new ArrayList<MultipartFile>();
-		int attcahmentMaxRowNumber = Integer.parseInt(jsonObj.getString("invoiceAttcahmentMaxRowNumber"));
-		 final Map files = request.getFileMap();
-		for(int i=0;i<attcahmentMaxRowNumber;i++){
-			MultipartFile  multiFile = (MultipartFile)files.get(i+"invoicedocFile");
-			if(multiFile != null && !multiFile.isEmpty()){
-				attachedfileList.add(multiFile); 
-			}
-		}
+//		List<MultipartFile> attachedfileList = new ArrayList<MultipartFile>();
+//		int attcahmentMaxRowNumber = Integer.parseInt(jsonObj.getString("invoiceAttcahmentMaxRowNumber"));
+//		 final Map files = request.getFileMap();
+//		 final Map files = new HashMap<>();
+//		for(int i=0;i<attcahmentMaxRowNumber;i++){
+//			MultipartFile  multiFile = (MultipartFile)files.get(i+"invoicedocFile");
+//			if(multiFile != null && !multiFile.isEmpty()){
+//				attachedfileList.add(multiFile); 
+//			}
+//		}
+//		if (candidateResumeDTO.getUploadedFileInfo() != null && candidateResumeDTO.getUploadedFileInfo().size()>0) {
+//			FileInfo fileInfo = candidateResumeDTO.getUploadedFileInfo().get(0);
+//			if (fileInfo.getFileName() != null ) {
+//				activitySummary.append("File").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidateResume.getFileName()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(fileInfo.getFileName()).append(Constants.NEW_VALUE_TAG_END).append(" ");
+//			}
+//			// candidateResume.setDocFile(multiFile.getBytes());
+//			candidateResume.setFileURL(fileInfo.getFileURL());
+//			candidateResume.setFileName(fileInfo.getFileName());
+//			candidateResume.setFileContentType(fileInfo.getContentType());
+//			if(fileInfo != null){
+//				candidate.setFileName(fileInfo.getFileName());
+//				FileUploadUtil.moveFile(candidateResumeDTO.getStaticPath(), fileInfo, "resumes");
+//			}
+//		}
 
-		Invoice invoice = invoiceService.saveInvoice(jsonObj,user,orgLocation,saveType,attachedfileList,invoiceType,org,currencyCode);
+		Invoice invoice = invoiceService.saveInvoice(user,orgLocation,saveType,invoiceType,org,currencyCode,invoiceDTO);
 		
 		if(invoiceType.equals("payable") && saveType.equals("DRAFT")){
 		 SourceLeadSessionManager.setSessionAttribute(request, "payableInvoiceCreateMsg", "Successfully you have created a Bill");

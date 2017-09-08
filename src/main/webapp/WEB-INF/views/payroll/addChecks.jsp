@@ -126,7 +126,7 @@ function saveChecks(){
 		
 		
 }
-function getFormData(formId) {
+<!-- function getFormData(formId) {
 	var $form = $("#"+formId);
 	var unindexed_array = $($form).serializeArray();
 	var indexed_array = {};
@@ -134,7 +134,7 @@ function getFormData(formId) {
 	indexed_array[n['name']] = n['value'];
 	});
 	return indexed_array;
-	}
+	} -->
 </script>
 
 <script type="text/javascript">
