@@ -79,7 +79,6 @@ $(document).ready(function(){
 
 <script type="text/javascript">
 	function mergeUser() {
-		alert("Hi");
 		if ($('#userMapping_form').validate(false, validationSettings)) {
 			var importedUser = $('#importedUserId :selected').text().trim();
 			var orgUser = $('#slUserId :selected').text().trim();
@@ -102,9 +101,10 @@ $(document).ready(function(){
 <script>
 	function getMappedUserList() {
 		var sourceleadUrl = '${sourceleadUrl}';
+		var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 		$.ajax({
 					type : "GET",
-					url : sourceleadUrl+ "/getMappedUserList?${_csrf.parameterName}=${_csrf.token}",
+					url : sourceleadUrl+ "/getMappedUserList?${_csrf.parameterName}=${_csrf.token}&orgLocationId="+orgLocationId,
 					success : function(data) {
 						var result = "";				        	
 						result = result + '<table id="userMappingTable" class="display" cellspacing="0" width="100%" >';
