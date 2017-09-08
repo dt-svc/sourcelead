@@ -392,34 +392,40 @@ function getDocumentType(documentType){
 		         }; 
 			 if ($('#documentType_form').validate(false, validationSettings)){
 				
-				var formData = getFormData("documentType_form");
-				var sourceleadUrl = '${sourceleadUrl}';
+				 var sourceleadUrl = '${sourceleadUrl}';
+				 var form = $('#documentType_form')[0];
+				var formData = new FormData(form);
 				$("#save_doc").attr("disabled", "disabled");
          		$("#save_doc" ).addClass('button').val('Processing..');
          		
-         		$.post(sourceleadUrl+"/saveCandidateDocument?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&documentUUID="+documentUUID, formData, function(data) {
-		        	closePopup();
-		        	
-		        	$('#perVal').attr('aria-valuenow', result).css('width',result+'%');
-         			 if(result<50){
-         			   $("#perVal").removeClass('progress-bar-success');
-         			   $("#perVal").addClass("progress-bar-danger");
-         			 }
-         			 if(result>=50){
-         				 $("#perVal").removeClass('progress-bar-danger');
-         				 $("#perVal").addClass("progress-bar-success");
-         			 }
-         			 $("#disVal").empty();
-         			$("#disVal").append(result+'%');
-					$("#popUpDiv").removeClass("edit-details-active");
-	       			$("#selector6").removeAttr("style");
-	       			$("#selector6").css({ display: "block" });
-	   				$("#docMsgDiv").html("Success!! New Candidate Document added");
-	   				
-	   				candDocumentsList(candidateId);
-			 		docMsgFadein();
-		        });
-				
+         		$.ajax({
+					type : "POST",
+	        	    data: formData,
+	    	        processData: false,
+	    	        contentType:false,
+					url : sourceleadUrl+"/saveCandidateDocument?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&documentUUID="+documentUUID,
+					success : function(result) {
+							closePopup();
+							$('#perVal').attr('aria-valuenow', result).css('width',result+'%');
+		          			 if(result<50){
+		          			   $("#perVal").removeClass('progress-bar-success');
+		          			   $("#perVal").addClass("progress-bar-danger");
+		          			 }
+		          			 if(result>=50){
+		          				 $("#perVal").removeClass('progress-bar-danger');
+		          				 $("#perVal").addClass("progress-bar-success");
+		          			 }
+		          			 $("#disVal").empty();
+		          			$("#disVal").append(result+'%');
+							$("#popUpDiv").removeClass("edit-details-active");
+	            			$("#selector6").removeAttr("style");
+	            			$("#selector6").css({ display: "block" });
+            				$("#docMsgDiv").html("Success!! New Candidate Document added");
+	             			candDocumentsList(candidateId);
+					 		docMsgFadein();
+	            		 
+					},
+				});
 				
 					return true;
 			 }else{ 
