@@ -295,13 +295,8 @@ var validationSettings = {
 <script type="text/javascript">
 	function storeClientNotes(orgRelationId){
 		if ($('#clinetNotes_form').validate(false, validationSettings)){
-				/* var frm = $('#clinetNotes_form').serializeFormJSON();
-				var con = JSON.stringify(frm);
-				//con = con.replace(/[{}]/g, "");
 				var form = $('#clinetNotes_form')[0];
 	      		var formData = new FormData(form);
-	      		formData.append("json",con); */
-	      		var formData = getFormData("clinetNotes_form");
 	      		var userId = '${SourceLeadWeb_user.id}';
 	      		formData.append("userId",userId);
 	      	    var locationCode ='${SourceLeadWeb_locationCode}'; 
@@ -310,14 +305,12 @@ var validationSettings = {
 				var sourceleadUrl = '${sourceleadUrl}';
 				$("#save_note").attr("disabled", "disabled");
          		$("#save_note" ).addClass('button').val('Processing..');
-		        var jsonData = encodeURIComponent(con);
 				$.ajax({
 						type : "POST",
 		        	    data: formData,
-		        	    contentType : 'application/json; charset=utf-8',
 		    	        processData: false,
 		    	        contentType:false,
-						url : sourceleadUrl+"/storeNotes?${_csrf.parameterName}=${_csrf.token}",
+						url : sourceleadUrl+"/storeNotes?${_csrf.parameterName}=${_csrf.token}&userId="+userId+"&locationCode="+locationCode,
 						success : function(result) {
 							closeDocPopup();
 							clientNotes(orgRelationId);

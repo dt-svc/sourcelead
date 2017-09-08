@@ -190,15 +190,9 @@ output  = output + '        </div>';
 	function storeContractNotes(){
 		var contractUUID = getParameterByName('contractUUID');
 		if ($('#notes_Contracts').validate(false, validationSettings)){
-				var frm = $('#notes_Contracts').serializeFormJSON();
-				var conOne = JSON.stringify(frm);
-				var json_obj = JSON.parse(conOne);
-				json_obj['contractUUID'] = contractUUID;
-				var con = JSON.stringify(json_obj);
-				//con = con.replace(/[{}]/g, "");
+				
 				var form = $('#notes_Contracts')[0];
 	      		var formData = new FormData(form);
-	      		formData.append("json",con);
 	      		
 	      		var userId = '${SourceLeadWeb_user.id}';
 	      		formData.append("userId",userId);
@@ -206,16 +200,12 @@ output  = output + '        </div>';
 	      	    formData.append("locationCode",locationCode);
 	      	    
 				var sourceleadUrl = '${sourceleadUrl}';
-		        var jsonData = encodeURIComponent(con);
 				$.ajax({
 						type : "POST",
 		        	    data: formData,
-		        	    contentType : 'application/json; charset=utf-8',
-		        	    enctype: 'multipart/form-data',
 		    	        processData: false,
 		    	        contentType:false,
-		        	    dataType : 'json',
-						url : sourceleadUrl+"/storeNotes?${_csrf.parameterName}=${_csrf.token}",
+						url : sourceleadUrl+"/storeNotes?${_csrf.parameterName}=${_csrf.token}&userId="+userId+"&locationCode="+locationCode,
 						success : function(result) {
 							closeDocPopup();
 							addContractNotes();
