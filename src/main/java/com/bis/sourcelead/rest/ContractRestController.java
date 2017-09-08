@@ -43,6 +43,9 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.ContractRequestDocumentsDao;
 import com.bis.sourcelead.dao.ContractsTemplateDao;
+import com.bis.sourcelead.dto.AccountDeductionsDTO;
+import com.bis.sourcelead.dto.ContractTemplateDTO;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.ContractRequestDocuments;
 import com.bis.sourcelead.entity.Contracts;
@@ -57,6 +60,7 @@ import com.bis.sourcelead.entity.RequirementOffers;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.payroll.entity.AccountDeductions;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.ContractRequestDocumentsService;
 import com.bis.sourcelead.service.ContractsTemplateService;
@@ -134,19 +138,19 @@ public class ContractRestController {
 	CandidateService candidateService;
 	
 	@RequestMapping(value = "/saveTemplate", method = RequestMethod.POST)
-	public @ResponseBody String saveClient(
+	public @ResponseBody String saveClient(ContractTemplateDTO contractTemplateDTO,
 			HttpServletRequest request) throws Exception {
 
 		/*String json1 = "{" + json + "}";
 		JSONObject jsonObj = new JSONObject(json1);*/
 		
-		JSONObject jsonObj = new JSONObject(request.getParameter("json"));
+//		JSONObject jsonObj = new JSONObject(request.getParameter("json"));
 		
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		
 		
-		ContractsTemplate contractsTemplate = contractsTemplateService.saveContractTemplate(jsonObj, user, orgLocation);
+		ContractsTemplate contractsTemplate = contractsTemplateService.saveContractTemplate(contractTemplateDTO,null, user, orgLocation);
 		
 			return contractsTemplate.getId().toString();
 	} 
@@ -236,13 +240,26 @@ public class ContractRestController {
 	}
 	
 	
-	@RequestMapping(value = "/getAllTemplatesByOrgLocationId", method = RequestMethod.GET)
-	public @ResponseBody String getAllTemplates(@RequestParam(value = "templateType", required = false) String templateType , HttpServletRequest request,HttpServletResponse response) throws Exception {
-		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		List<ContractsTemplate> contractsTemplate = contractsTemplateService.getAllContractsTemplatesByContractTypeLandLocationId(orgLocation.getId(), templateType);
-		return commonUtil.toJSON(contractsTemplate);
+	@RequestMapping(value = "/getAllTemplatesByOrgLocationId", method = RequestMethod.POST)
+	public ResponseList<ContractsTemplate> getAllTemplates(ContractTemplateDTO contractTemplateDTO, HttpServletRequest request,HttpServletResponse response) throws Exception {
+		
+		
+		OrgLocations orgLocation = orgLocationService.getOrgLocations(Long.parseLong(contractTemplateDTO.getOrgLocationId()));
+		
+		String[] tableColumns = {"templateName", "templateType", "description", "action"};
+	     int sortColumnIndex = 0; //by default sorting using updated date
+		String sortColumnOrder = "desc"; //by default descending order
+		if(contractTemplateDTO.getOrder() != null && !contractTemplateDTO.getOrder().isEmpty()) {
+			sortColumnIndex = Integer.parseInt(contractTemplateDTO.getOrder().get(0).get("column"));
+			sortColumnOrder = contractTemplateDTO.getOrder().get(0).get("dir");
+		}
+		contractTemplateDTO.setSortColumn(tableColumns[sortColumnIndex]);
+		contractTemplateDTO.setSortOrder(sortColumnOrder);
+		
+		
+//		List<ContractsTemplate> contractsTemplate = contractsTemplateService.getAllContractsTemplatesByContractTypeLandLocationId(orgLocation.getId(), templateType);
+		return contractsTemplateService.getAllContractsTemplatesByOrgLocationid(orgLocation, contractTemplateDTO);
 	} 
-	
 	
 //	/getVendorContactsByOrgRelationId
 	
