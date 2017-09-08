@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.json.JSONObject;
 
+import com.bis.sourcelead.dto.ClientProjectDTO;
 import com.bis.sourcelead.dto.ProjectsDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -24,6 +25,8 @@ public interface ProjectsService {
 	    Projects getProjectById(Long id) throws Exception;
 		
 		List<Projects> getProjectByOrgLocationsId(Long orgLocationsId) throws Exception;
+		
+		List<Projects> getEndClientProjectByOrgLocationsIdAndClientOrgLocationId(Long orgLocationsId,Long clientOrgLocationId) throws Exception;
 	
 		List<Projects> getProjectByOrgLocationsIdAndEndDateGraterthanCurrentDate(Long orgLocationsId, Long loginUserId) throws Exception;
 		
@@ -81,6 +84,8 @@ public interface ProjectsService {
 		ProjectMembers getProjectEmployeeListByProjectId(Long projectId) throws Exception ;
 		
 		Projects  storeProject(ProjectsDTO projectsDTO) throws Exception;
+		
+		Projects  storeClientProject(ClientProjectDTO clientProjectDTO) throws Exception;
 
 //		void userEmailNotificationForTimeSheetSubmissionToManagers(Map<UserRole, HashSet<TimesheetSubmissions>> timesheetSubmissionsMap, int level)throws Exception;
 //

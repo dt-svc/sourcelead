@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
@@ -35,6 +36,7 @@ import com.bis.sourcelead.elk.index.helper.ProjectsIndexHelper;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.ProjectClients;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.ProjectQuestionnaire;
 import com.bis.sourcelead.entity.ProjectTasks;
@@ -175,6 +177,7 @@ public class ProjectsRestController {
 	   	public @ResponseBody Projects storeClientProject(ClientProjectDTO clientProjectDTO) throws Exception {
 	   		
 	   		Projects projects = null;
+	   		projects = projectsService.storeClientProject(clientProjectDTO);
 	   		
 	   		return projects;
 	   	}
@@ -379,9 +382,10 @@ public class ProjectsRestController {
 	  
 	  
 	    @RequestMapping(value = "/getEndClientProjects", method = RequestMethod.GET)
-		public  List<Projects> getEndClientProjects(@RequestParam(value="clientOrgLocationId", required=true) Long clientOrgLocationId) throws Exception {
+		public  List<Projects> getEndClientProjects(@RequestParam(value="clientOrgLocationId", required=true) Long clientOrgLocationId,HttpServletRequest request) throws Exception {
 		   
-		   List<Projects> projectsList = projectsService.getProjectByOrgLocationsId(clientOrgLocationId);
+	       OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		   List<Projects> projectsList = projectsService.getEndClientProjectByOrgLocationsIdAndClientOrgLocationId(orgLocations.getId(),clientOrgLocationId);
 	       return projectsList;
 	    }
 

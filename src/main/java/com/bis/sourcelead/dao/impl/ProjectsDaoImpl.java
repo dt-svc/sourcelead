@@ -984,6 +984,20 @@ public HashSet<User> getAllUserTimeSheetSubmissionStatusCurrentWeek() {
 		return project.iterator().next();	
 	}
 
+	@Override
+	@Transactional
+	public List<Projects> getEndClientProjectByOrgLocationsIdAndClientOrgLocationId(Long orgLocationsId,
+			Long clientOrgLocationId) throws Exception {
+		
+		logger.debug("In ProjectsDaoImpl class getEndClientProjectByOrgLocationsIdAndClientOrgLocationId method");
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from Projects projects where projects.orgLocationsId = :clientOrgLocationId and projects.projectMode = 'Finished' "
+				+ " and projects.id NOT IN (select projectClients.projectId from ProjectClients projectClients where projectClients.orgLocationsId = :orgLocationsId)";
+		List<Projects> projectsList =  session.createQuery(query.toString()).setLong("clientOrgLocationId", clientOrgLocationId).setLong("orgLocationsId", orgLocationsId).setCacheable(true).list();
+		
+		return projectsList;
+	}
+
 
 }
 

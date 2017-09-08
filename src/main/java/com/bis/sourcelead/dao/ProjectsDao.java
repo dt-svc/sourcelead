@@ -18,6 +18,8 @@ public interface ProjectsDao {
 	
 	List<Projects> getProjectByOrgLocationsId(Long orgLocationsId) throws Exception;
 	
+	List<Projects> getEndClientProjectByOrgLocationsIdAndClientOrgLocationId(Long orgLocationsId,Long clientOrgLocationId) throws Exception;
+	
 	List<Projects> getProjectByOrgLocationsIdAndEndDateGraterthanCurrentDate(Long orgLocationsId, Long loginUserId) throws Exception;
 	
 	List<Projects> getAllProjectsEndDateGraterthanCurrentDate() throws Exception;

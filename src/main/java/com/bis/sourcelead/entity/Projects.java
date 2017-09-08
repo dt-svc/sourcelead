@@ -110,7 +110,6 @@ public class Projects implements Serializable{
 	@JoinColumn(name = "SUPERIOR_USER_ID")
    	private User superiorUser;
     
-    
 	@Column(name = "PROJECT_STATUS")
 	@Enumerated(EnumType.STRING)
 	private Project_Status projectStatus;
@@ -138,9 +137,12 @@ public class Projects implements Serializable{
     @ManyToOne
     @JoinColumn(name = "ORG_LOCATIONS_ID")
     private OrgLocations orgLocationsId;
-    
+	
     @Column(name = "STATUS")
     private String status;
+    
+    @Column(name = "IS_DEFAULT_PROJECT")
+    private String isDefaultProject;
     
     @Column(name = "PROJECT_UUID")
 	private String projectUUID;
@@ -889,5 +891,14 @@ public class Projects implements Serializable{
 	public void setProjStatus(String projStatus) {
 		this.projStatus = projStatus;
 	}
+
+	public String getIsDefaultProject() {
+		return isDefaultProject;
+	}
+
+	public void setIsDefaultProject(String isDefaultProject) {
+		this.isDefaultProject = isDefaultProject;
+	}
+
 	
 }

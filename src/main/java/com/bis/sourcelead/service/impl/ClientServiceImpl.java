@@ -476,6 +476,7 @@ public class ClientServiceImpl implements ClientService {
 	    	projects.setStartDate(new Date());
 	    	projects.setInvoiceFrequency(Constants.WEEKLY);
 	    	projects.setProjectStatus(Project_Status.INPROGRESS);
+	    	projects.setIsDefaultProject(Constants.YES);
 	    	projects.setIsPrimary(1);
 	    	projects.setCreatedDate(new Date());
 	    	projects.setUpdatedDate(new Date());

@@ -91,5 +91,24 @@ public class ProjectClientDaoImpl implements ProjectClientDao{
 		projectClientsList = candidateListQuery.setLong("projectId", projectId).setCacheable(true).list();
 		return projectClientsList;
 	}
+
+	@Override
+	@Transactional
+	public ProjectClients getProjectClientsByProjectIdAndOrgLocationIdAndOrgRelationId(Long projectId,
+			Long orgLocationsId, Long orgRelationId) throws Exception {
+		
+		logger.debug("In Project Clients getProjectClientsByProjectIdAndOrgLocationId method");
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = " from ProjectClients pc left join fetch pc.projectId left join fetch pc.orgLocationsId "
+				+ "left join fetch pc.orgRelationId ol left join fetch ol.locationId left join fetch ol.responderLocationId  "
+				+ "where pc.projectId.id = :projectId and pc.orgLocationsId.id = :orgLocationsId and pc.orgRelationId.id = :orgRelationId " ;
+		List<ProjectClients> pcList =session.createQuery(query).setLong("projectId", projectId).setLong("orgLocationsId", orgLocationsId).setLong("orgRelationId", orgRelationId).setCacheable(true).list(); 
+		ProjectClients pc = null;
+		if(pcList != null && !pcList.isEmpty()){
+			pc = pcList.iterator().next();
+		}
+		return pc;  
+		
+	}
 	
 }

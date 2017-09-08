@@ -5338,8 +5338,10 @@ width: auto !important;
 }
 
 
-.clientProjTab {
+.clientProjSpan {
+	display: inline-block !important; float: left; padding: 0px 0px 0px 10px;
 }
-.clientProjTab table>tbody>tr>td {
-	padding:8px 8px 3px 8px !important;
+.clientInfo {
+	font-size: 20px; color: #9E9E9E !important; padding: 6px 5px 0px 5px;
+
 }

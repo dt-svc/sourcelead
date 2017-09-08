@@ -1,39 +1,20 @@
 package com.bis.sourcelead.dto;
 
 import java.io.Serializable;
+import java.util.LinkedList;
 import java.util.List;
 
 public class ClientProjectDTO implements Serializable{
 
 	private static final long serialVersionUID = 1L; 
 	
-	private String levelMaxRowNumber;
-	
-	private String levelMaxValue;
-	
     private String level1Manager;
 	
 	private String level2Manager;
 	
-	private String clientProject;
+	private String clientOrgLocId;
 	
-	private List<ClientProjectLevelsDTO> clientProjectLevel;
-
-	public String getLevelMaxRowNumber() {
-		return levelMaxRowNumber;
-	}
-
-	public void setLevelMaxRowNumber(String levelMaxRowNumber) {
-		this.levelMaxRowNumber = levelMaxRowNumber;
-	}
-
-	public String getLevelMaxValue() {
-		return levelMaxValue;
-	}
-
-	public void setLevelMaxValue(String levelMaxValue) {
-		this.levelMaxValue = levelMaxValue;
-	}
+	private String clientProject;
 
 	public String getLevel1Manager() {
 		return level1Manager;
@@ -51,6 +32,14 @@ public class ClientProjectDTO implements Serializable{
 		this.level2Manager = level2Manager;
 	}
 
+	public String getClientOrgLocId() {
+		return clientOrgLocId;
+	}
+
+	public void setClientOrgLocId(String clientOrgLocId) {
+		this.clientOrgLocId = clientOrgLocId;
+	}
+
 	public String getClientProject() {
 		return clientProject;
 	}
@@ -59,11 +48,4 @@ public class ClientProjectDTO implements Serializable{
 		this.clientProject = clientProject;
 	}
 
-	public List<ClientProjectLevelsDTO> getClientProjectLevel() {
-		return clientProjectLevel;
-	}
-
-	public void setClientProjectLevel(List<ClientProjectLevelsDTO> clientProjectLevel) {
-		this.clientProjectLevel = clientProjectLevel;
-	}
 }

@@ -34,6 +34,8 @@ import com.bis.sourcelead.SourceleadPasswordEncoder;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.ProjectApproverHierarchyDao;
 import com.bis.sourcelead.dao.ProjectsDao;
+import com.bis.sourcelead.dto.ClientProjectDTO;
+import com.bis.sourcelead.dto.ClientProjectLevelsDTO;
 import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.dto.ProjectsDTO;
 import com.bis.sourcelead.dto.ResponseList;
@@ -45,6 +47,8 @@ import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.OrgRelations;
+import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.ProjectApproverHierarchy;
 import com.bis.sourcelead.entity.ProjectClients;
 import com.bis.sourcelead.entity.ProjectDocuments;
@@ -80,6 +84,7 @@ import com.bis.sourcelead.util.FileUploadUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.bis.sourcelead.util.UniversalSearchHelper;
+import com.bis.sourcelead.web.RegistrationController;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Service
@@ -164,6 +169,10 @@ public class ProjectsServiceImpl implements ProjectsService{
 	 
 	 @Autowired
 	 private ProjectClientService projectClientService;
+	 
+	 @Autowired
+	 RegistrationController registrationController;
+	 
      
 	 
 	 
@@ -334,6 +343,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 	 		projects =  new Projects();
 	 		projects.setProjectSequeneNumber(projectsDTO.getProjectSequeneNumber().trim());
 	 		projects.setProjectUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+	 		projects.setIsDefaultProject(Constants.NO);
 	 	}
     	
     	projects.setProjectName(projectsDTO.getProjectName().trim());
@@ -506,6 +516,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 			projectClients.setOrgLocationsId(orglocations);
 			projectClients.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
 			projectClients.setStatus(1);
+			projectClients.setIsEndClient(Constants.YES);
 			projectClients.setCreatedDate(new Date());
 			projectClients.setUpdatedDate(new Date());
 			projectClients.setCreatedBy(user);
@@ -2025,6 +2036,103 @@ public void userEmailToAdmin(StringBuilder tempHTML, OrgLocations orgLocations,U
 			@Override
 			public Projects getProjectByProjectUUID(String projectUUID) throws Exception {
 				return projectsDao.getProjectByProjectUUID(projectUUID);
+			}
+
+			@Override
+			public Projects storeClientProject(ClientProjectDTO clientProjectDTO) throws Exception {
+				
+				OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			 	User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			 	
+			 	Projects projects = projectsDao.getProjectById(Long.valueOf(clientProjectDTO.getClientProject()));
+			 	Set<ProjectClients> projectClientsList = new HashSet<>();
+			 	
+			 	OrgRelations orgRelations = orgRelationsService.getVendorOrgRelationByResponderLocationIdAndLocationId(loginOrgLocation.getId(), Long.valueOf(clientProjectDTO.getClientOrgLocId()));
+			 	
+			 	projectClientsList = getProjectClientsForClientProject(clientProjectDTO,projects,loginOrgLocation,user,orgRelations,projectClientsList);
+	 			projects.setProjectClients(projectClientsList);
+			 	
+			 	Projects updatedProjects = saveProject(projects);
+				saveOrUpdateProjectElkDocument(updatedProjects);
+			    return updatedProjects;
+			}
+			
+			
+			private Set<ProjectClients> getProjectClientsForClientProject(ClientProjectDTO clientProjectDTO,Projects projects,OrgLocations orglocations,User user,OrgRelations orgRelations,Set<ProjectClients> projectClientsList) throws Exception {
+				    
+				    OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+				    ProjectClients projectClients = projectClientService.getProjectClientsByProjectIdAndOrgLocationIdAndOrgRelationId(projects.getId(), orglocations.getId(), orgRelations.getId());
+					if(projectClients == null){
+							projectClients = new ProjectClients();
+							projectClients.setProjectId(projects);
+							projectClients.setOrgLocationsId(orglocations);
+							projectClients.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
+							projectClients.setStatus(1);
+							projectClients.setOrgRelationId(orgRelations);
+							projectClients.setCreatedDate(new Date());
+							projectClients.setUpdatedDate(new Date());
+							projectClients.setCreatedBy(user);
+							projectClients.setUpdatedBy(user);
+							
+					}
+						projectClientsList = projects.getProjectClients();
+						if(projectClientsList != null){
+							for(ProjectClients projClients : projectClientsList){
+								if(projClients.getOrgLocationsId().getId().equals(loginOrgLocation.getId())){
+									projectClients = projClients;
+								}
+							}
+						}
+						
+						ProjectsDTO projectsDTO = new ProjectsDTO();
+						projectsDTO.setLevel1Manager(clientProjectDTO.getLevel1Manager());
+						projectsDTO.setLevel2Manager(clientProjectDTO.getLevel2Manager());
+						
+						Set<ProjectApproverHierarchy> projectApproverHierarchyList = projectApproverHierarchyService.prepareProjectApproverHierarchyListByJson(projectsDTO,request,projects,projectClients);
+						projectClients.setProjectApproverHierarchyList(projectApproverHierarchyList);
+					
+					projectClientsList.add(projectClients);
+					
+				return projectClientsList;	
+			}
+			
+			public OrgRelations saveOrgRelations(OrgLocations vendorOrgLocations,OrgLocations clientOrgLocation,User user){
+				
+				OrgRelations orgRelations = new OrgRelations();
+ 				orgRelations.setLocationId(vendorOrgLocations);
+ 				orgRelations.setResponderLocationId(clientOrgLocation);
+ 				orgRelations.setInitiatorType("Vendor");
+ 				orgRelations.setResponderType("Client");
+ 				orgRelations.setInitiatorLevel("Tier-5");
+ 				orgRelations.setResponderLevel("Tier-5");
+ 				orgRelations.setStatus("ACTIVE");
+ 				orgRelations.setCreatedBy(user.getUserCode());
+ 				orgRelations.setCreatedDate(new Date());
+ 				orgRelations.setUpdatedBy(user.getUserCode());
+ 				orgRelations.setUpdatedDate(new Date());
+ 				
+ 				Set<OrgSpoc> orgSpocSet = new HashSet<>();
+ 				OrgSpoc orgSpoc = new OrgSpoc();
+ 				orgSpoc.setOrgRelations(orgRelations);
+ 				orgSpoc.setClientUser(clientOrgLocation.getUser());
+ 				orgSpoc.setVendorUser(user);
+ 				orgSpoc.setInvitationStatus(Constants.MAIL_NEW);
+ 				orgSpoc.setClientLocationId(clientOrgLocation);
+				orgSpoc.setVendorLocationId(vendorOrgLocations);
+				orgSpoc.setUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+				orgSpoc.setStatus(Constants.MEMBER_ACTIVE);
+				orgSpoc.setCreatedDate(new Date());
+				orgSpoc.setCreatedBy(user.getUserCode());
+				orgSpoc.setUpdatedDate(new Date());
+				orgSpoc.setUpdatedBy(user.getUserCode());
+				orgRelations.setOrgSpocList(orgSpocSet);
+				return orgRelations;
+			}
+
+			@Override
+			public List<Projects> getEndClientProjectByOrgLocationsIdAndClientOrgLocationId(Long orgLocationsId,
+					Long clientOrgLocationId) throws Exception {
+				return projectsDao.getEndClientProjectByOrgLocationsIdAndClientOrgLocationId(orgLocationsId, clientOrgLocationId);
 			}
 
 

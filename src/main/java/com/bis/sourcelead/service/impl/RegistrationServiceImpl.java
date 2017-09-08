@@ -425,6 +425,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 	    	projects.setIsPrimary(1);
 	    	projects.setCreatedDate(new Date());
 	    	projects.setUpdatedDate(new Date());
+	    	projects.setIsDefaultProject(Constants.YES);
 	    	projects.setOrgLocationsId(orgLocations);
 	    	Set<ProjectClients> projectClientsList = getProjectClientsForProject(projects,orgLocations,approverUser);
 	    	projects.setProjectClients(projectClientsList);
