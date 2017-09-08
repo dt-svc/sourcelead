@@ -72,6 +72,8 @@ public class InvoicePayment {
 	@Column(name = "FILE_NAME", columnDefinition = "TEXT default NULL")
 	private String fileName;
 	
+	@Column(name = "FILE_URL")
+	private String fileURL;
 	
 	@Column(name = "CREATED_DATE")
 	private Date createdDate;
@@ -243,6 +245,16 @@ public class InvoicePayment {
 	public void setCurrencyCode(String currencyCode)
 	{
 		this.currencyCode = currencyCode;
+	}
+
+	public String getFileURL()
+	{
+		return fileURL;
+	}
+
+	public void setFileURL(String fileURL)
+	{
+		this.fileURL = fileURL;
 	}
 	
 }
