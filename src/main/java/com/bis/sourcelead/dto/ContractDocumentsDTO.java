@@ -1,10 +1,37 @@
 package com.bis.sourcelead.dto;
 
+import java.util.List;
+
 public class ContractDocumentsDTO {
+	private String staticPath;
+	private String docId;
 	private String documentName;
 	private String candiDoc;
 	private String description;
+	private List<String> docFile;
+	private List<FileInfo> fileInfo;
+	private List<ContractReqDocsDTO> docfiles;
 	
+	public String getStaticPath()
+	{
+		return staticPath;
+	}
+
+	public void setStaticPath(String staticPath)
+	{
+		this.staticPath = staticPath;
+	}
+
+	public String getDocId()
+	{
+		return docId;
+	}
+
+	public void setDocId(String docId)
+	{
+		this.docId = docId;
+	}
+
 	public String getDocumentName()
 	{
 		return documentName;
@@ -33,5 +60,35 @@ public class ContractDocumentsDTO {
 	public void setDescription(String description)
 	{
 		this.description = description;
+	}
+
+	public List<FileInfo> getFileInfo()
+	{
+		return fileInfo;
+	}
+
+	public void setFileInfo(List<FileInfo> fileInfo)
+	{
+		this.fileInfo = fileInfo;
+	}
+
+	public List<String> getDocFile()
+	{
+		return docFile;
+	}
+
+	public void setDocFile(List<String> docFile)
+	{
+		this.docFile = docFile;
+	}
+
+	public List<ContractReqDocsDTO> getDocfiles()
+	{
+		return docfiles;
+	}
+
+	public void setDocfiles(List<ContractReqDocsDTO> docfiles)
+	{
+		this.docfiles = docfiles;
 	}
 }

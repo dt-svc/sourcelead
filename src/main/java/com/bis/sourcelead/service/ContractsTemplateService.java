@@ -27,7 +27,7 @@ public interface ContractsTemplateService {
 
 	List<ContractsTemplate> getAllContractsTemplatesByContractTypeLandLocationId(Long orgLocationId, String contractType)throws Exception;
 
-	Contracts saveNewContract(ContractsDTO contractsDTO, JSONObject jsonObj, OrgLocations orgLocation, String saveType, User user, Org org, String contractType, MultipartFile multiFile)throws Exception;
+	Contracts saveNewContract(ContractsDTO contractsDTO, OrgLocations orgLocation, String saveType, User user, Org org, String contractType)throws Exception;
 
 	Contracts getAllContractsByLocationIdAndStatus(OrgLocations orgLocation, String contractSubmissionType, String tabType, String contractsType, String contractStatus,User user,String userRoleName)throws Exception;
 	
