@@ -283,29 +283,12 @@
 <script type="text/javascript">
 	function storeVendorDetails(orgRelationId,vendorLocationId) {
 		if ($('#editClient_form').validate(false, validationSettings)){
-			var frm = $('#editClient_form').serializeFormJSON();
-             var con = JSON.stringify(frm);
- 		    var form = $('#editClient_form')[0];
- 		    var formData = new FormData(form);
- 		  	formData.append("json",con)
-            // con = con.replace(/[{}]/g, "");
-             //It will escape all the special characters
-            // var jsonData = encodeURIComponent(con);
-             
+             var formData = getFormData("editClient_form");
              var sourceleadUrl ='${sourceleadUrl}';
-	 	 $.ajax({
-	 		     type : "POST",
-			     data: formData,
-	    	     contentType : 'application/json; charset=utf-8',
-		         processData: false,
-		         contentType:false, 
-	    	     dataType : 'json',
-			    url: sourceleadUrl+"/vendorDetailsUpdateUsingId?${_csrf.parameterName}=${_csrf.token}&vendorLocationId="+vendorLocationId+"&orgRelationId="+orgRelationId, 	   
-	   		    success: function(data) {
-	   		    	vendorDetailsbyLocationId(vendorLocationId,orgRelationId);
-	   		    	getVendorListsElk();
-	   		    }
-		 }); 
+		 $.post(sourceleadUrl+"/vendorDetailsUpdateUsingId?${_csrf.parameterName}=${_csrf.token}&vendorLocationId="+vendorLocationId+"&orgRelationId="+orgRelationId, formData, function(data) {
+			 vendorDetailsbyLocationId(vendorLocationId,orgRelationId);
+		    	getVendorListsElk();
+			});
 	     	return true;
          }else{
              return false;

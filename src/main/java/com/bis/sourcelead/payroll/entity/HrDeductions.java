@@ -22,6 +22,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import com.bis.sourcelead.entity.InvoiceLineItems;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "HR_DEDUCTIONS", catalog = "sourcelead")
@@ -90,9 +91,11 @@ public class HrDeductions implements Serializable {
 	private Set<HrDeductionsDetails> hrDeductionsDetails;
 	
 	@Transient
+	@JsonProperty
 	private String fromDateStr;
 	
 	@Transient
+	@JsonProperty
 	private String toDateStr;
 
 	public Long getId() {

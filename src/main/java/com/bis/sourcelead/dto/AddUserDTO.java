@@ -22,8 +22,6 @@ import com.bis.sourcelead.entity.UserRole;
 		
 		private String workPhone;
 		
-		private String mobilePhone;
-		
 		private String userState;
 		
 		private String userType;
@@ -179,13 +177,6 @@ import com.bis.sourcelead.entity.UserRole;
 			this.workPhone = workPhone;
 		}
 
-		public String getMobilePhone() {
-			return mobilePhone;
-		}
-
-		public void setMobilePhone(String mobilePhone) {
-			this.mobilePhone = mobilePhone;
-		}
 
 		public String getUserState() {
 			return userState;
