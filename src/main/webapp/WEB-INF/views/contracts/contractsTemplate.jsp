@@ -62,6 +62,10 @@ $(document).ready(function(){
 						<li><input id="c4" type="checkbox" name="templateType" value="Vendor SOW" onclick="getTemplateList();"><label for="c4">Vendor SOW</label></li>
 						<li><input id="c5" type="checkbox" name="templateType" value="NDA" onclick="getTemplateList();"><label for="c5">NDA</label></li>
 						<li><input id="c6" type="checkbox" name="templateType" value="NSA" onclick="getTemplateList();"><label for="c6">NSA</label></li>
+	                	<li><input id="c7" type="checkbox" name="templateType" value="W-4 Form" onclick="getTemplateList();"><label for="c7">W-4 Form</label></li>               
+                        <li><input id="c8" type="checkbox" name="templateType" value="I-9 Form" onclick="getTemplateList();"><label for="c8">I-9 Form</label></li> 
+                        <li><input id="c9" type="checkbox" name="templateType" value="Full Time Offer" onclick="getTemplateList();"><label for="c9">Full Time Offer</label></li> 
+ 
 					</ul>
 				</div>	                	
 			</li>
@@ -83,13 +87,11 @@ $(document).ready(function(){
       
 <script type="text/javascript">
 function getTemplateList(){
-	
 	var templateType = [];
 	$('input:checkbox[name=templateType]:checked').each(function() 
     {
 		templateType.push($(this).val());
     });
-	
 		var sourceleadUrl ='${sourceleadUrl}';
 		 $.ajax({
 	       type : "GET",
@@ -124,21 +126,21 @@ function preparedTemplateList(data){
     	result = result + '<tr id="row'+report.id+'">';
         result = result + '<td>';
         if(report.templateName != null && report.templateName != '' && report.templateName !='undefined'){
-           	result = result + '<div><span>'+report.templateName+'</span></div>';
+           	result = result + '<div><span title="'+report.templateName+'">'+report.templateName+'</span></div>';
      		} else{
     		result = result + '<div><span>---</span></div>';
     		    }
         result = result + '</td>';
     	result = result + '<td>';
         if(report.templateType != null && report.templateType != '' && report.templateType !='undefined'){
-       	result = result + '<div><span>'+report.templateType+'</span></div>';
+       	result = result + '<div><span title="'+report.templateType+'">'+report.templateType+'</span></div>';
  		} else{
 		result = result + '<div><span>---</span></div>';
 		    }
         result = result + '</td>';
         result = result + '<td>';
         if(report.description != null && report.description != '' && report.description !='undefined'){
-         result = result + '<div><span>'+report.description+'</span></div>';
+         result = result + '<div><span title="'+report.description+'">'+report.description+'</span></div>';
         }
         else{
 		 result = result + '<div><span>---</span></div>';

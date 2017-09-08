@@ -21,6 +21,7 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import com.bis.sourcelead.entity.OrgLocations;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "ACCOUNT_DEDUCTIONS", catalog = "sourcelead")
@@ -67,6 +68,9 @@ public class AccountDeductions implements Serializable {
 	@Column(name = "STATUS")
 	private String status;
 	
+	@Column(name = "VERSION")
+	private int version;
+	
 	@Column(name = "DESCRIPTION", columnDefinition = "TEXT default NULL")
 	private String description;
 
@@ -86,9 +90,11 @@ public class AccountDeductions implements Serializable {
 	private Set<AccountDeductionsDetails> accountDeductionsDetails;
 	
 	@Transient
+	@JsonProperty
 	private String fromDateStr;
 	
 	@Transient
+	@JsonProperty
 	private String toDateStr;
 
 	public Long getId() {
@@ -254,17 +260,16 @@ public class AccountDeductions implements Serializable {
 	public void setAccountDeductionsDetails(Set<AccountDeductionsDetails> accountDeductionsDetails) {
 		this.accountDeductionsDetails = accountDeductionsDetails;
 	}
-	
-	
 
-	
-	
+	public int getVersion()
+	{
+		return version;
+	}
 
-	
-
-	
-	
-	
+	public void setVersion(int version)
+	{
+		this.version = version;
+	}
 }
 
 
