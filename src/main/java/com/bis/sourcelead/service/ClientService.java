@@ -26,7 +26,7 @@ public interface ClientService {
 	public void updateVendorDetails(ClientDTO clientDTO, Long orgRelationId, Long vendorLocationId, Long loginOrgId, User user) throws JSONException, Exception;
 
 
-	public OrgSpoc updateVendorContactDetails(JSONObject jsonObj, Long spocId, Long id, User loginUser, Long ownerId, Long spocUserId,OrgLocations orgLocation, String type) throws Exception;
+	public OrgSpoc updateVendorContactDetails(ClientDTO clientDTO, Long spocId, Long id, User loginUser, Long ownerId, Long spocUserId,OrgLocations orgLocation, String type) throws Exception;
 
 	void saveOrUpdateClientVendorElkDocument(Org org,OrgLocations clientOrgLocations, String responderType, OrgSpoc orgSpoc,
 			OrgRelations orgRelationsList, SubmissionTemplate submissionTemplate, User user,OrgLocations loginOrgId) throws Exception;
