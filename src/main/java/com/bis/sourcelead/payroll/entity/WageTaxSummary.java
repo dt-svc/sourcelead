@@ -89,10 +89,12 @@ public class WageTaxSummary implements Serializable {
 	@Column(name = "SSN_NUMBER")
 	private String ssnNumber;
 	
+	@Column(name = "VERSION")
+	private Integer version;
+	
 	@ManyToOne
 	@JoinColumn(name = "USER_ID", nullable = false)
 	private User userId;
-	
 
 	@Column(name = "CREATED_DATE")
 	private Date createdDate;
@@ -348,6 +350,16 @@ public class WageTaxSummary implements Serializable {
 
 	public void setUserId(User userId) {
 		this.userId = userId;
+	}
+
+	public Integer getVersion()
+	{
+		return version;
+	}
+
+	public void setVersion(Integer version)
+	{
+		this.version = version;
 	}
 	
 }

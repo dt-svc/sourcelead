@@ -95,10 +95,8 @@ public class InvoiceDataDaoImpl implements InvoiceDataDao{
 			response.setRecordsFiltered(filteredCount);
 		}
 
-		if (invoiceDetailsList != null && invoiceDetailsList.size() > 0) {
 			response.setData(getInvoiceListSorting(invoiceDetailsList));
-		}
-		return response;
+			return response;
 	}
 		
 		private List<InvoiceData> getInvoiceListSorting(List<InvoiceData> invoiceDataList)
@@ -148,6 +146,20 @@ public class InvoiceDataDaoImpl implements InvoiceDataDao{
 			return invoiceDataList;
 		}
 		return invoiceDataList;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public int getInvoiceDataVersionByOrgLocationId(Long orgLocationId)
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "SELECT MAX(inv.version) FROM InvoiceData inv where inv.orgLocationId.id =:orgLocationId";
+		List<Integer> version = session.createQuery(query).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+		Integer count = 0;
+		if(version != null && !version.isEmpty() && version.get(0) != null){
+				count = version.get(0).intValue();
+		}
+		return count;
 	}
 
 }

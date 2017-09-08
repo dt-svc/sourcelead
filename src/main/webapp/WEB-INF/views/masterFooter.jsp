@@ -1,4 +1,5 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+</div>
 <!-- Footer Area -->
   <footer class="footer-area clearfix">
     <div class="copyright">@ Copyright : Source Lead, All right reserved </div>
@@ -34,6 +35,19 @@
 				var $this = $(this);
 				$this.next().css({'width': '100%'});
 				});
+</script>
+<script>
+$(document).tooltip({
+position: {
+my: "center bottom",
+at: "center top-10",
+collision: "flip",
+using: function( position, feedback ) {
+$( this ).addClass( feedback.vertical )
+.css( position );
+}
+}
+});
 </script>
 <c:if test='${viewPage == "orgChart"}'>
 	<script src="resources/js/jquery.orgchart.js"></script>

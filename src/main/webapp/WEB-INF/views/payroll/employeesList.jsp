@@ -1,9 +1,11 @@
 <script>
 function getEmployeeList(){
+	$("#addPayrollDiv").hide();
 	var sourceleadUrl ='${sourceleadUrl}';
 	var searchValue = $("#employeesDataTableSearch").val();
+	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	searchValue = searchValue ? searchValue : "";
-	var url = sourceleadUrl+"/getEmployeeList?searchValue="+searchValue;
+	var url = sourceleadUrl+"/getEmployeeList?searchValue="+searchValue+"&orgLocationId="+orgLocationId;
     prepareEmployeeList(url);
 }
 
@@ -91,7 +93,6 @@ function employeesPagination(url){
         ],
         "columnDefs": [ {
 	    	  	"targets": colIndex++,
-	    	  	"className": "tbldata-dotdot_50",
 	    	  	"data": "company",
 	    	  	"render": function(data, type, opt, meta) {
 	    	  		  var result = "";
@@ -108,7 +109,7 @@ function employeesPagination(url){
               "render": function ( data, type, opt, meta ) {
             	  var result = "";
             	  if(opt.branch !=null && opt.branch !='' && opt.branch !='undefined'){
-      		    	result = result + '<td><div><a>'+opt.branch+'</a></div></td>';
+      		    	result = result + '<td><div>'+opt.branch+'</div></td>';
       		    }else{
       		    	result = result + '<td><div>---</div></td>';
       		    }
@@ -133,9 +134,9 @@ function employeesPagination(url){
               "render": function ( data, type, opt, meta ) {
             	  var result = "";
             	  if(opt.candidateName !=null && opt.candidateName !='' && opt.candidateName !='undefined'){
-						result = result + ' <td><div class="tblminwidth-75">'+opt.candidateName+'</div></td>';
+						result = result + ' <td><div class="tbldata-dotdot-vsm">'+opt.candidateName+'</div></td>';
 					}else{
-						result = result + ' <td><div class="tblminwidth-75">--</div></td>';
+						result = result + ' <td><div class="tbldata-dotdot-vsm">--</div></td>';
 					}
             	  return result;
               }
