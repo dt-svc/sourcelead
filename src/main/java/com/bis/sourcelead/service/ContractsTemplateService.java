@@ -6,6 +6,7 @@ import java.util.List;
 import org.json.JSONObject;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.bis.sourcelead.dto.ContractsDTO;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.ContractsHistory;
@@ -26,7 +27,7 @@ public interface ContractsTemplateService {
 
 	List<ContractsTemplate> getAllContractsTemplatesByContractTypeLandLocationId(Long orgLocationId, String contractType)throws Exception;
 
-	Contracts saveNewContract(JSONObject jsonObj, OrgLocations orgLocation, String saveType, User user, Org org, String contractType, MultipartFile multiFile)throws Exception;
+	Contracts saveNewContract(ContractsDTO contractsDTO, OrgLocations orgLocation, String saveType, User user, Org org, String contractType)throws Exception;
 
 	Contracts getAllContractsByLocationIdAndStatus(OrgLocations orgLocation, String contractSubmissionType, String tabType, String contractsType, String contractStatus,User user,String userRoleName)throws Exception;
 	
