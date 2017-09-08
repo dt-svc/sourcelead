@@ -24,6 +24,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.ContractsTemplateDao;
 import com.bis.sourcelead.dto.ContractDocumentsDTO;
+import com.bis.sourcelead.dto.ContractReqDocsDTO;
 import com.bis.sourcelead.dto.ContractsDTO;
 import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.entity.Candidate;
@@ -2052,27 +2053,27 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 			vendorContracts.setContractUUID(contracts.getContractUUID());
 			Contracts savedChildContracts = contractsTemplateDao.saveNewContract(vendorContracts);
 			
-			if (contractsDTO.getReqDocs() != null && contractsDTO.getReqDocs().size() > 0) {
+			for (ContractDocumentsDTO doc : contractsDTO.getDocument()) {
+				for(FileInfo file : contractsDTO.getReqDocs()){
+					if(doc.getDocFileName() != null && doc.getDocFileName().equalsIgnoreCase(file.getFileName())){
+						ContractRequestDocuments contractRequestDocuments = new ContractRequestDocuments();
+						contractRequestDocuments.setFileURL(file.getFileURL());
+						contractRequestDocuments.setDocFileName(file.getFileName());
+						contractRequestDocuments.setFileType(file.getContentType());
+						contractRequestDocuments.setFileName(doc.getDocumentName());
 						
-						for(FileInfo inf2: contractsDTO.getReqDocs()){
-								if(inf2 != null){
-									ContractRequestDocuments contractRequestDocuments = new ContractRequestDocuments();
-									contractRequestDocuments.setFileURL(inf2.getFileURL());
-									contractRequestDocuments.setFileName(inf2.getFileName());
-									contractRequestDocuments.setFileType(inf2.getContentType());
-									FileUploadUtil.moveFile(contractsDTO.getStaticPath(), inf2, "RequestDocuments");
-									contractRequestDocuments.setContractId(savedContracts);
-									contractRequestDocuments.setStatus(Constants.MEMBER_ACTIVE);
-									contractRequestDocuments.setCreatedDate(new Date());
-									if (null != user) {
-										contractRequestDocuments.setCreatedBy(user.getUserCode());
-										contractRequestDocuments.setUpdatedBy(user.getUserCode());
-									}
-									contractRequestDocuments.setUpdatedDate(new Date());
-									contractRequestDocumentsService.saveContractRequestDocuments(contractRequestDocuments);
-								}
+						FileUploadUtil.moveFile(contractsDTO.getStaticPath(), file, "RequestDocuments");
+						contractRequestDocuments.setContractId(savedContracts);
+						contractRequestDocuments.setStatus(Constants.MEMBER_ACTIVE);
+						contractRequestDocuments.setCreatedDate(new Date());
+						if (null != user) {
+							contractRequestDocuments.setCreatedBy(user.getUserCode());
+							contractRequestDocuments.setUpdatedBy(user.getUserCode());
 						}
-						
+						contractRequestDocuments.setUpdatedDate(new Date());
+						contractRequestDocumentsService.saveContractRequestDocuments(contractRequestDocuments);
+					}
+				}
 			}
 		return savedContracts;
 	}

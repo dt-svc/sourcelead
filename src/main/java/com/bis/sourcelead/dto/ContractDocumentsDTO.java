@@ -6,6 +6,7 @@ public class ContractDocumentsDTO {
 	private String staticPath;
 	private String docId;
 	private String documentName;
+	private String docFileName;
 	private String candiDoc;
 	private String description;
 	private String fileUrl;
@@ -99,6 +100,14 @@ public class ContractDocumentsDTO {
 	public void setDocfiles(List<ContractReqDocsDTO> docfiles)
 	{
 		this.docfiles = docfiles;
+	}
+
+	public String getDocFileName() {
+		return docFileName;
+	}
+
+	public void setDocFileName(String docFileName) {
+		this.docFileName = docFileName;
 	}
 
 }

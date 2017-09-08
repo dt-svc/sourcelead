@@ -446,7 +446,7 @@
 					  				<label class="input-group-btn"> <span class="btn btn-primary padSm"><i class="fa fa-folder-open-o"></i>&nbsp;Browse        
 					               <input id="uploadBtnREPLACEROWID" style="display: none;" multiple="" class="upload" type="file" onclick="check(REPLACEROWID);fileStore(REPLACEROWID);"  >                      
 					               </span> </label>                                                                                                                
-					  				<input class="form-control padSm"  id="uploadFileREPLACEROWID" name="docFileREPLACEROWID"  field-name="Attachment" data-validation="required" placeholder="Upload File" readonly type="text" >  
+					  				<input class="form-control padSm"  id="uploadFileREPLACEROWID" name="document[REPLACEROWID].docFileName"  field-name="Attachment" data-validation="required" placeholder="Upload File" readonly type="text" >  
 					  			</div>                                                                                                                       
 					         </div>			                                                                                                                 
 				
