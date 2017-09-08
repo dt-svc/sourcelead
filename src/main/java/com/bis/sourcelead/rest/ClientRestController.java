@@ -873,21 +873,19 @@ public class ClientRestController {
 	 */
 	
 	@RequestMapping(value = "/vendorContactDetailsUpdateUsingId", method = RequestMethod.POST)
-	 String vendorContactDetailsUpdateUsingId(@RequestParam(value = "json", required = false) String json,
+	 String vendorContactDetailsUpdateUsingId(ClientDTO clientDTO,
 			@RequestParam(value = "spocId", required = false) Long spocId,
 			@RequestParam(value = "ownerId", required = false) Long ownerId,@RequestParam(value = "spocUserId", required = false) Long spocUserId,
 			@RequestParam(value = "type", required = false) String type) throws Exception {
 		
-	       String jsonVal = "{" + json + "}";
-	       JSONObject jsonObj = new JSONObject(jsonVal);
 	       User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 	       OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-	       OrgSpoc orgSpoc = clientService.updateVendorContactDetails(jsonObj, spocId, orgLocation.getId(),loginUser,ownerId,spocUserId,orgLocation,type);
+	       OrgSpoc orgSpoc = clientService.updateVendorContactDetails(clientDTO, spocId, orgLocation.getId(),loginUser,ownerId,spocUserId,orgLocation,type);
 	       
 	       StringBuilder editSpocMsg = new StringBuilder();
 		   //SourceLeadSessionManager.setSessionAttribute(request, "editSpocMsg", editSpocMsg.append("Success !! ").append(orgSpoc.getSpocUser().getFirstName()).append(" details updated.").toString());
 
-		return jsonObj.getString("owner");
+		return orgSpoc.getOwnerUser().getId().toString();
 	}
 	
 	
