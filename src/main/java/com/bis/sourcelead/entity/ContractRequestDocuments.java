@@ -74,6 +74,9 @@ public class ContractRequestDocuments {
 	@Column(name = "FILE_URL")
 	private String fileURL;
 	
+	@Column(name = "DOC_FILE_NAME")
+	private String docFileName;
+	
 	public String getDocType()
 	{
 		return docType;
@@ -202,5 +205,15 @@ public class ContractRequestDocuments {
 	public void setFileURL(String fileURL)
 	{
 		this.fileURL = fileURL;
+	}
+
+	public String getDocFileName()
+	{
+		return docFileName;
+	}
+
+	public void setDocFileName(String docFileName)
+	{
+		this.docFileName = docFileName;
 	}
 }

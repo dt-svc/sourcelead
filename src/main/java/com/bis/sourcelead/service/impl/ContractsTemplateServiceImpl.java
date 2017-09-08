@@ -194,7 +194,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 	}
 
 	@Override
-	public Contracts saveNewContract(ContractsDTO contractsDTO,JSONObject jsonObj, OrgLocations orgLocation, String saveType,User user,Org org,String contractType, MultipartFile multiFile) throws Exception
+	public Contracts saveNewContract(ContractsDTO contractsDTO, OrgLocations orgLocation, String saveType,User user,Org org,String contractType) throws Exception
 	{
 		Contracts contracts;
 		Contracts vendorContracts = null;
