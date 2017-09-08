@@ -187,7 +187,7 @@ function checkBox(){
               <textarea class="form-control" rows="2" id="comment" name="comment"></textarea>
             </div>
             <div class="clearfix mb invoiceAttachment">
-            <input type='hidden' name='invoiceAttcahmentMaxRowNumber'  id='invoiceAttcahmentMaxRowNumber' value='1' />
+            <input type='hidden' name='invoiceAttcahmentMaxRowNumber'  id='invoiceAttcahmentMaxRowNumber' value='0' />
             <table width="100%" width="100%" cellpadding="0" cellspacing="0"  id="invoiceAttachmentTbl">
             <tbody>
               <tr id='divAttachmentTsRow0'>
@@ -198,7 +198,7 @@ function checkBox(){
 	              <div class="timesheet_week_comm col-md-12 invoiceDocs invoiceDocs_add" >
 	                <div class="form-group" id='0invoicedocFileuploadFileGroup'> 
 	                <span>
-	                  <input type='file' name='0invoicedocFile' id='0invoicedocFile' field-name='Attachment'  class='timesheetAttachmentValidation'><i class='fa fa-times mt5' mouseOver="Clear" title="Clear" onClick='remove()'></i><i class='fa fa-plus' mouseOver="Add" title="Add" onClick='addInvoiceAttachment()'></i>
+	                  <input type='file' name='0invoicedocFile' id='0invoicedocFile' field-name='Attachment'  class='timesheetAttachmentValidation' onchange="attachFile(0);"><i class='fa fa-times mt5' mouseOver="Clear" title="Clear" onClick='remove()'></i><i class='fa fa-plus' mouseOver="Add" title="Add" onClick='addInvoiceAttachment()'></i>
 	                 </span> </div>
 	              </div>
             	</td>
@@ -651,44 +651,8 @@ function populateInlineItemsGrid(){
             result = result +' </tr>';
             result = result +' </thead>';
             result = result +' <tbody>';
-            
 		      result = result +'   <tr id="divInvoiceExpTsRow0">';
-		    /*   result = result +'   <td>';
-		      result = result +'     <div class="tbldata-dotdot-100">';
-		      result = result +'       <input type="text" class="calendar form-control input-sm hasDatepicker" id="edate-input" placeholder="End Date">';
-		      result = result +'     </div>';
-		      result = result +'   </td>';
-		      result = result +'   <td>';
-		      result = result +'     <div class="tbldata-dotdot-big">';
-		      result = result +'         <textarea placeholder="Description" class="form-control" rows="1">Description</textarea>';
-		      result = result +'     </div>';
-		      result = result +'   </td>';
-		      result = result +'   <td>';
-		      result = result +'     <div class="tbldata-dotdot-100">';
-		      result = result +'       <input type="text" class="form-control input-sm" placeholder="Rate">';
-		      result = result +'     </div>';
-		      result = result +'   </td>';
-		      result = result +'   <td>';
-		      result = result +'     <div class="tbldata-dotdot-100">';
-		      result = result +'       <input type="text" class="form-control input-sm" placeholder="Rate">';
-		      result = result +'     </div>';
-		      result = result +'   </td>';
-		      result = result +'   <td>';
-		      result = result +'     <div class="tbldata-dotdot-vsm">';
-		      result = result +'       <input type="text" class="form-control input-sm" placeholder="Total">';
-		      result = result +'     </div>';
-		      result = result +'   </td>';
-		      result = result +'   <td><a class="text-danger" title="Remove row"><i class="fa fa-remove"></i></a></td>'; */
 		      result = result +' </tr>';
-          
-            
-      /*   for (var i = 0; i < json.length; i++) {  
-    	   <input type='hidden' name='invoiceAttcahmentMaxRowNumber'  id='invoiceAttcahmentMaxRowNumber' value='1' />
-            <table width="100%" width="100%" cellpadding="0" cellspacing="0"  id="invoiceAttachmentTbl">
-            <tbody>
-              <tr id='divAttachmentTsRow0'>
-             
-        } */
         result = result +' <tfoot class="table_footer">';
         result = result +' <tr>';
         result = result +' <td colspan="4"></td>';
@@ -703,13 +667,9 @@ function populateInlineItemsGrid(){
         $("#tableBody").append(result);
         maskme();
         $("#currencyCode").html(currencyCode);
-      /*   document.getElementById("bottomGrid").style.display="block";
-        document.getElementById("bottomGrid").style.display="block"; */
-      /*   document.getElementById("lineItemAddRows").style.display="block"; */
          $("#addbutton").show();
         document.getElementById("tableBody").style.display="block";
         addTaxDivs();   
-       /*  addConversionDiv(); */
 }
 </script>
 
@@ -1039,7 +999,7 @@ function calculateDisCount(){
 				var maxRowNum = parseInt($("input[name = 'maxTaxRowNum']").val());
 				$("input[name = 'maxTaxRowNum']").val(maxRowNum + 1);
 				
-				var row = tbl.insertRow(maxRowNum);
+				var row = tbl.insertRow(maxRowNum+1);
 				row.setAttribute("id", "divTaxRow" + maxRowNum);
 				
 				var cell0 = row.insertCell(0);
@@ -1127,7 +1087,7 @@ function calculateTaxDiscount(){
 	var maxTaxRowNum = $("#maxTaxRowNum").val();
 	var afterDiscountTotal = $("#afterDiscountTotal").val();
 	
-	for(var i=1; i<maxTaxRowNum; i++){
+	for(var i=0; i<maxTaxRowNum; i++){
 		if($("#"+i+"taxdiscountType").val() != '' && $("#"+i+"taxdiscountType").val() != null && $("#"+i+"taxdiscountType").val() != 'undefined'){
 			var taxType = $("#"+i+"taxdiscountType").val();
 		    var taxValue = $("#"+i+"taxdiscountvalue").val();
@@ -1149,7 +1109,7 @@ function calculateTaxDiscount(){
 	}
 	
 	var taxGrandTotal = 0;
-	for(var i=1; i<maxTaxRowNum; i++){
+	for(var i=0; i<maxTaxRowNum; i++){
 		if($("#"+i+"taxTotal").val() != null && $("#"+i+"taxTotal").val() != '' && $("#"+i+"taxTotal").val() != 'undefined'){
 			taxGrandTotal = parseFloat(taxGrandTotal + parseFloat($("#"+i+"taxTotal").val()));	
 		}
@@ -1170,7 +1130,7 @@ function calculateTaxDiscount(){
   			<div class="timesheet_week_comm col-md-12 invoiceDocs invoiceDocs_add">
                 <div class="form-group" id="REPLACEROWIDinvoicedocFileuploadFileGroup"> 
                		 <span> 
-               		 	<input type="file" name='REPLACEROWIDinvoicedocFile' id='REPLACEROWIDinvoicedocFile' onchange='validateContractsUploadFile(REPLACEROWID)'>
+               		 	<input type="file" name='REPLACEROWIDinvoicedocFile' id='REPLACEROWIDinvoicedocFile' onchange='attachFile(REPLACEROWID);validateContractsUploadFile(REPLACEROWID)'>
                		    <i class="fa fa-times mt5" mouseOver="Delete" title="Delete" onclick="removeInvoiceAttachmentRow(REPLACEROWID);"></i>
                		   </span>
                 </div>
@@ -1185,7 +1145,7 @@ function calculateTaxDiscount(){
 				var maxRowNum = parseInt($("input[name = 'invoiceAttcahmentMaxRowNumber']").val());
 				$("input[name = 'invoiceAttcahmentMaxRowNumber']").val(maxRowNum + 1);
 				
-				var row = tbl.insertRow(maxRowNum);
+				var row = tbl.insertRow(maxRowNum+1);
 				row.setAttribute("id", "divAttachmentContractsRow" + maxRowNum);
 				
 				var cell0 = row.insertCell(0);
@@ -1211,48 +1171,7 @@ function calculateTaxDiscount(){
 	}
 </script>
 
-<!-- <script>
-function rajashekar(){
-	var userId = '${SourceLeadWeb_user.id}';
-	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
-	var currencyCode = '${SourceLeadWeb_currencyCode}';
-	
-	 if ($('#project_invoice_form').validate(false, validationSettings)){  
-    	 var frm = $('#project_invoice_form').serializeFormJSON();
-	        var con = JSON.stringify(frm);
-	        con = con.replace(/[{}]/g, "");
-	        //It will escape all the special characters
-	        var jsonData = encodeURIComponent(con);
-	        
-	        var form = $('#project_invoice_form')[0];
-	 	    var formData = new FormData(form); 
-	 	    var sourceleadUrl ='${sourceleadUrl}';
-	    	        
-	        	  $("#invoiceLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-	    	        $.ajax({
-	    		    	 type: "POST",
-	    		    	 data: formData,
-	    			     contentType : 'application/json; charset=utf-8',
-	    			     enctype: 'multipart/form-data',
-	    		         processData: false,
-	    		         contentType:false,
-	    			     dataType : 'json',
-	     		    	 url: sourceleadUrl+"/saveExpensesInvoice?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&userId="+userId+"&orgLocationId="+orgLocationId+"&saveType="+saveType+"&currencyCode="+currencyCode+"&invoiceType=Receivable&type=expenses", 
-	    		        success: function(result) {
-	    		     		$("#invoiceLoading").removeAttr("style");
-	    		     			location.replace(sourceleadUrl+"/invoiceList");
-	    		        },
-	    		    }); 
-	    	         return true; 
-     }else{
-    		return false;
-    	  } 
-	 $('body').on('blur', '#project_invoice_form', function() {
-			$("#project_invoice_form").showHelpOnFocus();
-			$("#project_invoice_form").validateOnBlur(false, validationSettings);  
-		}); 
-}
-</script> -->
+
 
 <!-- Saving Project Invoice --> 
 <script>
@@ -1608,7 +1527,7 @@ function editExpensesInlineItems(invoiceLineItemsList){
 					var maxRowNum = parseInt($("input[name = 'maxTaxRowNum']").val());
 					$("input[name = 'maxTaxRowNum']").val(maxRowNum + 1);
 					
-					var row = tbl.insertRow(maxRowNum);
+					var row = tbl.insertRow(maxRowNum+1);
 					row.setAttribute("id", "divTaxRow" + maxRowNum);
 					
 					var cell0 = row.insertCell(0);
@@ -1753,7 +1672,7 @@ function maskme(){
 function addTaxDivs(){
 	var result = "";
 	result = result +'  <div class="addtax_table">';
-    result = result +'  <input type="hidden" id="maxTaxRowNum" name="maxTaxRowNum" value="1" />';
+    result = result +'  <input type="hidden" id="maxTaxRowNum" name="maxTaxRowNum" value="0" />';
     result = result +'  <table width="100%" cellpadding="0" cellspacing="0" class="table-bordered table-striped table-responsive">';
     result = result +'  <thead id="addTaxTbl">';
     result = result +'  <tr>';
@@ -1871,6 +1790,11 @@ function errInvoiceDate(){
 } 
 </script>
 
-
+<script type="text/javascript">
+function attachFile(id){
+	var sourceleadUrl ='${sourceleadUrl}';
+	fileUpload(sourceleadUrl, ""+id+"invoicedocFile", "incoiceDocuments", "project_invoice_form","jhgfgf");
+}
+</script>
     
  <jsp:include page="../masterFooter.jsp" />	
