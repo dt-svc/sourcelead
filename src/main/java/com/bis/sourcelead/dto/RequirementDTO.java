@@ -35,7 +35,7 @@ public class RequirementDTO {
 	
     private String positions;
 	
-    private List<String> education;	
+    private String education;	
 	
     private String minExp;
 	
@@ -72,13 +72,13 @@ public class RequirementDTO {
 	
 	private String zipCode;
 	
-	private List<String> skills;
+	private String skills;
 	
 	private List<String> visa;
 	
 	private String description;
 	
-	private String noticePeriod;
+	private List<String> noticePeriod;
 	
 	private String coolingOff;
 	
@@ -131,10 +131,9 @@ public class RequirementDTO {
 	
 	private String assignedTeamId;
 	
-	private List<String> assignUserId;
+	private List<String> assignUsers;
 	
 	private String jobOtherType;
-	
 
 	public String getStaticPath()
 	{
@@ -256,14 +255,12 @@ public class RequirementDTO {
 		this.positions = positions;
 	}
 
-	
-
-	public List<String> getEducation()
+	public String getEducation()
 	{
 		return education;
 	}
 
-	public void setEducation(List<String> education)
+	public void setEducation(String education)
 	{
 		this.education = education;
 	}
@@ -439,12 +436,14 @@ public class RequirementDTO {
 		this.zipCode = zipCode;
 	}
 
-	public List<String> getSkills()
+	
+
+	public String getSkills()
 	{
 		return skills;
 	}
 
-	public void setSkills(List<String> skills)
+	public void setSkills(String skills)
 	{
 		this.skills = skills;
 	}
@@ -469,12 +468,12 @@ public class RequirementDTO {
 		this.description = description;
 	}
 
-	public String getNoticePeriod()
+	public List<String> getNoticePeriod()
 	{
 		return noticePeriod;
 	}
 
-	public void setNoticePeriod(String noticePeriod)
+	public void setNoticePeriod(List<String> noticePeriod)
 	{
 		this.noticePeriod = noticePeriod;
 	}
@@ -713,14 +712,15 @@ public class RequirementDTO {
 		this.assignedTeamId = assignedTeamId;
 	}
 
-	public List<String> getAssignUserId()
+	
+	public List<String> getAssignUsers()
 	{
-		return assignUserId;
+		return assignUsers;
 	}
 
-	public void setAssignUserId(List<String> assignUserId)
+	public void setAssignUsers(List<String> assignUsers)
 	{
-		this.assignUserId = assignUserId;
+		this.assignUsers = assignUsers;
 	}
 
 	public String getJobOtherType()
@@ -742,6 +742,6 @@ public class RequirementDTO {
 	{
 		this.assignedTo = assignedTo;
 	}
-	
+
 	
 }

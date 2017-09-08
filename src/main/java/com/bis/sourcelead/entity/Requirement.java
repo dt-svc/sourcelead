@@ -507,6 +507,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	@JsonProperty
 	private String DT_RowId;
 	
+	@Column(name = "FILE_URL")
+	private String fileURL;
+	
 	public String getRequirementOrgName() {
 		return requirementOrgName;
 	}
@@ -1694,6 +1697,15 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 		DT_RowId = dT_RowId;
 	}
 
-	
+	public String getFileURL()
+	{
+		return fileURL;
+	}
+
+	public void setFileURL(String fileURL)
+	{
+		this.fileURL = fileURL;
+	}
+
 	
 }

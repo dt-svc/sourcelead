@@ -247,41 +247,20 @@ width: 100% !important;
        
 <script type="text/javascript">
 	function storeRequiremetTemplate() {
-		
-		
+		alert("sss");
 		 var ee = $("#txtEditor").val($('.Editor-editor').html()); 
 		 if ($('#requirementtemplate_form').validate(false, validationSettings)){ 
+			 
+			    var formData = getFormData("requirementtemplate_form");
+				var sourceleadUrl = '${sourceleadUrl}';
+				$("#store_RequirementTemplate").attr("disabled", "disabled");
+				$("#store_RequirementTemplate").addClass('button').val('Processing..');
+				
+		        $.post(sourceleadUrl+"/storeRequirementTemplate?${_csrf.parameterName}=${_csrf.token}", formData, function(data) {
+		        	location.replace(sourceleadUrl+"/template");
+		        });
 			
-			var sourceleadUrl = '${sourceleadUrl}';
-			var frm = $('#requirementtemplate_form').serializeFormJSON();
 			
-			var jsonData = JSON.stringify(frm);
-			
-		   //	var con = JSON.stringify(frm);
-		  //	con = con.replace(/[{}]/g, ""); 
-		
-		   // var jsonData = encodeURIComponent(con);
-			var form = $('#requirementtemplate_form')[0];
-      		var formData = new FormData(form); 
-      		formData.append("json",jsonData);
-			//It will escape all the special characters
-			$("#store_RequirementTemplate").attr("disabled", "disabled");
-			$("#store_RequirementTemplate").addClass('button').val('Processing..');
-			
-
-			$.ajax({
-						type : "POST",
-		        	    data: formData,
-		        	    contentType : 'application/json; charset=utf-8',
-		        	    enctype: 'multipart/form-data',
-		    	        processData: false,
-		    	        contentType:false,
-		        	    dataType : 'json',
-						url : sourceleadUrl+"/storeRequirementTemplate?${_csrf.parameterName}=${_csrf.token}",
-						success : function(result) {
-								location.replace(sourceleadUrl+"/template");
-						},
-					});
 			return true;
 		 }else{ 
 				return false;
@@ -412,40 +391,6 @@ width: 100% !important;
 		    	 }
 		    });
 		    
-		    
-	    /*    var select, chosen;
-		    select = $("#skills");
-		    select.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add New Skills:' });
-		    chosen = select.data('chosen');
-		    chosen.search_field.on('keydown keyup', function(e)
-		    {
-		    	   var skillsArray = this.value.split(",");
-			    	 if(skillsArray.length > 1){
-		        		 for (var i=0; i < skillsArray.length; i++) {
-		        			 var option = $("<option>").val(skillsArray[i].replace(",","")).text(skillsArray[i].replace(",",""));
-		        			 select.append(option);
-		 		             select.find(option).prop('selected', true);
-		 		             select.find(option).siblings("[value='"+ skillsArray[i].replace(",","")+"']").remove();
-		 	        		 $("#skills").trigger("chosen:updated");
-		                 }
-			    	 }else{
-		    			var newSkill = this.value.replace(","," ");
-		    			 if (tagItBykeyForSkills(e) && (newSkill != null  && newSkill != '' && newSkill != 'undefined'))
-		                {
-		    				 preventTabkey(e);
-		    				 var option = $("<option>").val(newSkill).text(newSkill);
-		                     select.append(option);
-		                     select.find(option).prop('selected', true);
-		                     $("#skills option").each(function(){
-		                         $(this).siblings("[value='"+ this.value+"']").remove();
-		                   });
-		                   $("#skills").trigger("chosen:updated");
-		                }
-				       
-	    	         }
-		    });
-            */
-	       
 			for (var selector in config) {
 			  $(selector).chosen(config[selector]);
 			}
