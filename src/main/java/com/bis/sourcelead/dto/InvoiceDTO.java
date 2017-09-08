@@ -36,6 +36,14 @@ public class InvoiceDTO {
     private String projectMemberId;
     private String expensesId;
     private List<InvoiceExpensesDTO> expenseInvoice;
+	public List<InvoiceExpensesDTO> getExpenseInvoice() {
+		return expenseInvoice;
+	}
+
+	public void setExpenseInvoice(List<InvoiceExpensesDTO> expenseInvoice) {
+		this.expenseInvoice = expenseInvoice;
+	}
+
 	public String getVendorCurrency() {
 		return vendorCurrency;
 	}
@@ -278,6 +286,5 @@ public class InvoiceDTO {
 	public void setExpensesId(String expensesId) {
 		this.expensesId = expensesId;
 	}
-	
 
 }

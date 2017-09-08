@@ -1848,34 +1848,34 @@ public class InvoiceRestController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/saveExpensesInvoice", method = RequestMethod.POST)
-	public @ResponseBody String saveExpensesInvoice(@RequestParam(value = "json", required = false) String json,
+	public @ResponseBody String saveExpensesInvoice(InvoiceDTO invoiceDTO,
 			@RequestParam(value = "userId", required = false) String userId,
 			@RequestParam(value = "orgLocationId", required = false) String orgLocationId,
 			@RequestParam(value = "saveType", required = false) String saveType,
 			@RequestParam(value = "currencyCode", required = false) String currencyCode,
 			@RequestParam(value = "invoiceType", required = false) String invoiceType,
-			@RequestParam(value = "type", required = false) String invoiceCategory, MultipartHttpServletRequest request)
+			@RequestParam(value = "type", required = false) String invoiceCategory, HttpServletRequest request)
 					throws Exception {
 
 		String invoiceSaved = "failed";
 
-		String json1 = "{" + json + "}";
+//		String json1 = "{" + json + "}";
 
-		JSONObject jsonObj = new JSONObject(json1);
+//		JSONObject jsonObj = new JSONObject(json1);
 		User user = userService.getUserById(Long.parseLong(userId));
 		OrgLocations orgLocation = orgLocationService.getOrgLocations(Long.parseLong(orgLocationId));
 		Org org = orgLocation.getOrg();
-		List<MultipartFile> attachedfileList = new ArrayList<MultipartFile>();
-		int attcahmentMaxRowNumber = Integer.parseInt(jsonObj.getString("invoiceAttcahmentMaxRowNumber"));
-		final Map files = request.getFileMap();
-		for (int i = 0; i < attcahmentMaxRowNumber; i++) {
-			MultipartFile multiFile = (MultipartFile) files.get(i + "invoicedocFile");
-			if (multiFile != null && !multiFile.isEmpty()) {
-				attachedfileList.add(multiFile);
-			}
-		}
+//		List<MultipartFile> attachedfileList = new ArrayList<MultipartFile>();
+//		int attcahmentMaxRowNumber = Integer.parseInt(jsonObj.getString("invoiceAttcahmentMaxRowNumber"));
+//		final Map files = request.getFileMap();
+//		for (int i = 0; i < attcahmentMaxRowNumber; i++) {
+//			MultipartFile multiFile = (MultipartFile) files.get(i + "invoicedocFile");
+//			if (multiFile != null && !multiFile.isEmpty()) {
+//				attachedfileList.add(multiFile);
+//			}
+//		}
 
-		Invoice invoice = invoiceService.saveExpenseInvoice(jsonObj, user, orgLocation, saveType, attachedfileList,invoiceType, org, currencyCode,invoiceCategory);
+		Invoice invoice = invoiceService.saveExpenseInvoice(invoiceDTO, user, orgLocation, saveType,invoiceType, org, currencyCode,invoiceCategory);
 
 		if(invoice !=null && invoice.getExpensesId() !=null && Constants.SENT.equalsIgnoreCase(saveType)) {
 			invoiceService.updateExpensesForinvoice(invoice,invoiceType);

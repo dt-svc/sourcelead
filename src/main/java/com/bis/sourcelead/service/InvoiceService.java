@@ -75,7 +75,7 @@ public interface InvoiceService {
 
 	boolean deleteInvoice(Long invoiceId, String reason, String invoiceType)throws Exception;
 
-	Invoice saveExpenseInvoice(JSONObject jsonObj, User user, OrgLocations orgLocation, String saveType,List<MultipartFile> attachedfileList, String invoiceType, Org org, String currencyCode, String invoiceCategory)throws Exception;
+	Invoice saveExpenseInvoice(InvoiceDTO invoiceDTO, User user, OrgLocations orgLocation, String saveType,String invoiceType, Org org, String currencyCode, String invoiceCategory)throws Exception;
 
 	void updateExpensesForinvoice(Invoice invoice, String invoiceType)throws Exception;
 

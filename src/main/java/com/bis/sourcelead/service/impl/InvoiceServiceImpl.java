@@ -109,6 +109,7 @@ import com.bis.sourcelead.util.PdfUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.TimesheetFrequencyGeneratorUtil;
 import com.bis.sourcelead.web.LoginSessionController;
+import com.google.gson.JsonObject;
 
 
 @Service
@@ -2377,16 +2378,13 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 	}
 	
 	@Override
-	public Invoice saveExpenseInvoice(JSONObject jsonObj, User user, OrgLocations orgLocation, String saveType,
-			List<MultipartFile> attachedfileList, String invoiceType, Org org, String loginOrgCurrencyCode, String invoiceCategory)
+	public Invoice saveExpenseInvoice(InvoiceDTO invoiceDTO, User user, OrgLocations orgLocation, String saveType,String invoiceType, Org org, String loginOrgCurrencyCode, String invoiceCategory)
 					throws Exception {
-
 		
-
 		Invoice invoice = null;
-
-		if (jsonObj.has("savedInvoiceId") && !isNullOrEmpty(jsonObj.getString("savedInvoiceId"))) {
-			invoice = invoiceDao.getInvoicetById(Long.valueOf(jsonObj.getString("savedInvoiceId")));
+		
+		if (StringUtils.isNotBlank(invoiceDTO.getSavedInvoiceId())) {
+			invoice = invoiceDao.getInvoicetById(Long.valueOf(invoiceDTO.getSavedInvoiceId()));
 		} else {
 			invoice = new Invoice();
 			invoice.setInvoiceUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
@@ -2395,7 +2393,7 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 		OrgLocations vendorOrgLocation = null;
 		;
 		if (Constants.PAYABLE.equalsIgnoreCase(invoiceType)) {
-			if (jsonObj.has("vendorOrgRelationId") && !"".equalsIgnoreCase(jsonObj.getString("vendorOrgRelationId"))) {
+			if (StringUtils.isNotBlank(invoiceDTO.getVendorOrgRelationId())) {
 				OrgRelations orgRelation = orgRelationsService
 						.getOrRelationsById(Long.parseLong(jsonObj.getString("vendorOrgRelationId")));
 				if (orgRelation.getResponderLocationId().getId().longValue() == orgLocation.getId().longValue()) {
