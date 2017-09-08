@@ -64,27 +64,27 @@
 					<div class="project_details_cta">
 						<strong>ExpenseId:</strong><span>${expenses != null ? expenses.expenseId : ExpensesId}</span><div class="clearfix"></div>
 					</div>
-					<div class="project_details_cta">
-						<strong>Purpose:</strong><span>${expenses.purpose}</span><div class="clearfix"></div>
-					</div>
+					 <div class="project_details_cta">
+						<strong>Purpose:</strong><span>${expenses.expensePurpose}</span><div class="clearfix"></div>
+					</div> 
 					<div class="project_details_cta">
 						<strong>Project Name:</strong><span>${expenses.projectName}</span><div class="clearfix"></div>
 					</div>
+					 <div class="project_details_cta">
+						<strong>Client:</strong><span>${expenses.clientNameExpense}</span><div class="clearfix"></div>
+					</div> 
 					<div class="project_details_cta">
-						<strong>Client:</strong><span>${expenses.clientName}</span><div class="clearfix"></div>
+						<strong>Start date:</strong><span>${expenses.startDateExpense}</span><div class="clearfix"></div>
 					</div>
-					<div class="project_details_cta">
-						<strong>Start date:</strong><span>${expenses.startDate}</span><div class="clearfix"></div>
-					</div>
-					<div class="project_details_cta">
-						<strong>End date:</strong><span>${expenses.endDate}</span><div class="clearfix"></div>
-					</div>
+					 <div class="project_details_cta">
+						<strong>End date:</strong><span>${expenses.endDateExpense}</span><div class="clearfix"></div>
+					</div> 
 					<div class="project_details_cta">
 						<strong>No of Expenses:</strong><span>${expenses.noOfExpenses}</span><div class="clearfix"></div>
 					</div>
 					<div class="project_details_cta">
-						<strong>Amount:</strong><span>${expenses.totalAmontRoundOffValue}</span><div class="clearfix"></div>
-					</div>	 
+						<strong>Amount:</strong><span>${expenses.totalAmount}</span><div class="clearfix"></div>
+					</div> 
 					<div class="project_details_cta">
 						<strong>Exp Created By:</strong><span>${expenses.expCreatedBy}</span><div class="clearfix"></div>
 					</div>
