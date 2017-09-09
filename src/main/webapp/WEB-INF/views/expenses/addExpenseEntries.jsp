@@ -215,7 +215,7 @@ function addAttachment(entityRowId,from){
 			          <div class="col-xs-12 col-sm-12 col-md-12 expAddRo myForm noPad clearfix">            
 						<div class="col-md-4 mb10 chosen-custom minHe">
 						<label>Category Type<span class="text-danger">&nbsp;*</span></label>
-							<select id="categoryTypeREPLACEROWID" name="categoryTypeREPLACEROWID" class="form-control" field-name="Category Type" data-validation="required" onchange="getAmountValueCategory(REPLACEROWID);">
+							<select id="categoryTypeREPLACEROWID" name="categoryDTO[REPLACENAMEROWID].categoryType" class="form-control" field-name="Category Type" data-validation="required" onchange="getAmountValueCategory(REPLACEROWID);">
 							   <option value="">Select Category Type</option>				 							   
 							   <c:forEach var="expCat" items="${expEntry.expenseCategoryList}">
 					                 <option value="${expCat.id},${expCat.allowedAmount}">${expCat.expensesName}</option>
@@ -224,16 +224,16 @@ function addAttachment(entityRowId,from){
 						</div>
 						<div class="col-md-4 mb10 minHe">
 							<label>Date<span class="text-danger">&nbsp;*</span></label>
-							<input type="text" id="categoryDateREPLACEROWID" name="categoryDateREPLACEROWID" readonly="readonly"  class="form-control calendar"  value="" placeholder="Date" field-name="Date" data-validation="required"> 
+							<input type="text" id="categoryDateREPLACEROWID" name="categoryDTO[REPLACENAMEROWID].categoryDate" readonly="readonly"  class="form-control calendar"  value="" placeholder="Date" field-name="Date" data-validation="required"> 
 						</div>
 						<div class="col-md-4 mb10 minHe">
 							<label>Receipt Issued by</label>
-							<input type="text" id="receiptIssuedByREPLACEROWID" name="receiptIssuedByREPLACEROWID" class="form-control" value=""  placeholder="Receipt Issued By" field-name="Receipt Issued By" data-validation-optional="true" data-validation="validate_length length1-100"> 
+							<input type="text" id="receiptIssuedByREPLACEROWID" name="categoryDTO[REPLACENAMEROWID].receiptIssuedBy" class="form-control" value=""  placeholder="Receipt Issued By" field-name="Receipt Issued By" data-validation-optional="true" data-validation="validate_length length1-100"> 
 						</div>
 
 						<div class="col-md-4 mb10 chosen-custom minHe">
 							<label>Payment Mode<span class="text-danger">&nbsp;*</span></label>
-							<select id="paymentModeREPLACEROWID" name="paymentModeREPLACEROWID" class="form-control" field-name="Payment Mode" data-validation="required">
+							<select id="paymentModeREPLACEROWID" name="categoryDTO[REPLACENAMEROWID].paymentMode" class="form-control" field-name="Payment Mode" data-validation="required">
 							         <option value="">Select Mode</option>
 							          <c:forEach var="paymentMode" items="${expEntry.paymentModes}">
 							                  <option value="${paymentMode}">${paymentMode}</option>
@@ -244,18 +244,18 @@ function addAttachment(entityRowId,from){
 		                   <label>Amount<span class="text-danger">&nbsp;*</span></label>
 							  <div class="input-group positionRelative">
 									<div class="input-group-btn tblminwidth-75 select-field dropdown_inr" style="min-width: 65px !important;">
-											  <select class="btn btn-info" id="expenseRateTypeREPLACEROWID" name="expenseRateTypeREPLACEROWID" field-name="Rate Type" field-name="Rate Type" data-validation="required">
+											  <select class="btn btn-info" id="expenseRateTypeREPLACEROWID" name="categoryDTO[REPLACENAMEROWID].expenseRateType" field-name="Rate Type" field-name="Rate Type" data-validation="required">
 											  	   <c:forEach var="currencyType" items="${expEntry.currencyCodeList}">
 									                  <option ${expEntry.currencyCode == currencyType ? 'selected' : ''}   value="${currencyType}">${currencyType}</option>
 									               </c:forEach>
 											  </select>
 								</div>
-							         <input type="text" class="form-control allownumericwithdecimal"  placeholder="Amount"  name="expenseAmountREPLACEROWID" id="expenseAmountREPLACEROWID" value="" field-name="Amount" data-validation="required validate_float validate_length length1-10" onkeyup="getAmountValue(REPLACEROWID);">
+							         <input type="text" class="form-control allownumericwithdecimal"  placeholder="Amount"  name="categoryDTO[REPLACENAMEROWID].expenseAmount" id="expenseAmountREPLACEROWID" value="" field-name="Amount" data-validation="required validate_float validate_length length1-10" onkeyup="getAmountValue(REPLACEROWID);">
 								</div>
 	                 </div>
 					<div class="col-md-4 mb10">
 						<label>Description<span class='text-danger'>&nbsp;*</span></label>
-						<textarea rows="2"  id="entryDesREPLACEROWID" name="entryDesREPLACEROWID" class="form-control" placeholder="Description" field-name="Description" data-validation="required validate_Space validate_length length1-5000" onblur="removeWhiteSpacesAdd(REPLACEROWID);"></textarea>
+						<textarea rows="2"  id="entryDesREPLACEROWID" name="categoryDTO[REPLACENAMEROWID].entryDes" class="form-control" placeholder="Description" field-name="Description" data-validation="required validate_Space validate_length length1-5000" onblur="removeWhiteSpacesAdd(REPLACEROWID);"></textarea>
 					</div>		
 	                   <div id='attachmentSection' class='col-md-4 mb10'>
 	                   <label>Attachments<span class="text-danger">&nbsp;*</span></label>
@@ -376,6 +376,7 @@ function addExpenseRow(){
 			var divRowTd2_0Str = document.getElementById("divAddRowTr2").innerHTML;
 			divRowTd2_0Str = divRowTd2_0Str.replace(/REPLACEROWID/g, (maxRowNum));
 			divRowTd2_0Str = divRowTd2_0Str.replace(/REPLACEDOWNROWID/g, (maxRowNum+1));
+			divRowTd2_0Str = divRowTd2_0Str.replace(/REPLACENAMEROWID/g, ((maxRowNum+1)/2-1));
 			cell2_0.innerHTML = divRowTd2_0Str;
 			cell2_0.colSpan = 7;
 			
@@ -532,7 +533,7 @@ function validate_fileupload(fileName)
  function validateUploadFile(id,entityId)
 	{
 	 var sourceleadUrl ='${sourceleadUrl}';
-		fileUpload(sourceleadUrl, ""+id+"docFile"+entityId+"", "resumes", "add_expenses_form");
+		fileUpload(sourceleadUrl, ""+id+"docFile"+entityId+"", "expsesDocuments", "add_expenses_form","categoryDTO["+parseInt(((entityId+1)/2)-1)+"].fileInfo");
 
 		var selectedFile = $('#'+id+'docFile'+entityId).val();
 		  if(validate_fileupload(selectedFile)){
