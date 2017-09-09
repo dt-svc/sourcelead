@@ -530,7 +530,6 @@ $(".allownumericwithdecimal").on("keypress keyup blur",function (event) {
 
 <script>
 function deleteAttchment(documentId){
-	alert(documentId);
 var sourceleadUrl = '${sourceleadUrl}';
 $.ajax({
 	type : "POST",
