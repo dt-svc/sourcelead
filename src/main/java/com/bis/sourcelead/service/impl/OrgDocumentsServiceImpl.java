@@ -55,14 +55,14 @@ public class OrgDocumentsServiceImpl implements OrgDocumentsService{
 		
 		if(!"null".equalsIgnoreCase(docId) && docId != null){
 			orgDocuments = orgDocumentsDao.getOrgDocumentsById(Long.parseLong(docId));
-				FileInfo fileinfo = clientDocumentsDTO.getUploadedFileInfo().get(0);
-				if(fileinfo != null){
-					orgDocuments.setFileName(fileinfo.getFileName());
-					orgDocuments.setFileType(fileinfo.getContentType());
-					orgDocuments.setFileUrl(fileinfo.getFileURL());
-					FileUploadUtil.moveFile(clientDocumentsDTO.getStaticPath(), fileinfo, "clientDocuments");
+			for(FileInfo fileinfo : clientDocumentsDTO.getFileInfo())
+			{
+				orgDocuments.setFileName(fileinfo.getFileName());
+				orgDocuments.setFileType(fileinfo.getContentType());
+				orgDocuments.setFileUrl(fileinfo.getFileURL());
+				FileUploadUtil.moveFile(clientDocumentsDTO.getStaticPath(), fileinfo, "clientDocuments");
 
-				}
+			}
 			
 		}else{
 			orgDocuments = new OrgDocuments();
@@ -70,22 +70,16 @@ public class OrgDocumentsServiceImpl implements OrgDocumentsService{
 			orgDocuments.setCreatedBy(user.getUserCode());
 			orgDocuments.setCreatedDate(new Date());
 			
-			FileInfo fileinfo = clientDocumentsDTO.getUploadedFileInfo().get(0);
-			if(fileinfo != null){
+			for(FileInfo fileinfo : clientDocumentsDTO.getFileInfo())
+			{
 				orgDocuments.setFileName(fileinfo.getFileName());
 				orgDocuments.setFileType(fileinfo.getContentType());
 				orgDocuments.setFileUrl(fileinfo.getFileURL());
 				FileUploadUtil.moveFile(clientDocumentsDTO.getStaticPath(), fileinfo, "clientDocuments");
-
-
 			}
-
-			 
+			
 		}
 		
-		
-		//SimpleDateFormat formatter = orgLocation.getLocFullFormDateFormatter();
-        
         orgDocuments.setSourceType(sourceType);
 		
 		if(StringUtils.isNotBlank(clientDocumentsDTO.getDocName())){

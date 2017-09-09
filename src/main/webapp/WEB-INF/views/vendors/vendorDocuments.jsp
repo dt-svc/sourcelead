@@ -711,7 +711,6 @@ function toDate(selector) {
 <script>
 function vendorDocumentFileSaving()
 {
-	alert("test");
 	var sourceleadUrl ='${sourceleadUrl}';
 	fileUpload(sourceleadUrl, "uploadBtn", "clientDocuments", "document_form");
 }
