@@ -922,6 +922,8 @@ public class CommonUtil {
 			
 		}
 		
+		//common method for saveElkRequirement
+		
 		public RequirementDTO getRequirementDTO(Requirement requirement) throws Exception
 		{
 			RequirementDTO requirementDTO = new RequirementDTO();
@@ -1098,19 +1100,19 @@ public class CommonUtil {
 					&& !"".equalsIgnoreCase(requirement.getReqlevel1ApproverStatus())) {
 				requirementDTO.setReqLevel2ApproverStatus(requirement.getReqlevel2ApproverStatus());
 			}
-			if (!isNullOrEmpty(requirement.getRewardType())) {
+			if (StringUtils.isNotBlank(requirement.getRewardType())) {
 				requirementDTO.setRewardType(requirement.getRewardType());
 			}
-			if (!isNullOrEmpty(requirement.getRewardPercentage())) {
+			if (StringUtils.isNotBlank(requirement.getRewardPercentage())) {
 				requirementDTO.setRewardPercentage(requirement.getRewardPercentage());
 			}
-			if (!isNullOrEmpty(requirement.getRewardFlat())) {
+			if (StringUtils.isNotBlank(requirement.getRewardFlat())) {
 				requirementDTO.setRewardFlat(requirement.getRewardFlat());
 			}
-			if (!isNullOrEmpty(requirement.getRewardFlatRateType())) {
+			if (StringUtils.isNotBlank(requirement.getRewardFlatRateType())) {
 				requirementDTO.setRewardFlatRateType(requirement.getRewardFlatRateType());
 			}
-			if (!isNullOrEmpty(requirement.getRewardGuaranteePeriod())) {
+			if (StringUtils.isNotBlank(requirement.getRewardGuaranteePeriod())) {
 				requirementDTO.setRewardGuaranteePeriod(requirement.getRewardGuaranteePeriod());
 			}
 			if (null != requirement.getVisaType()) {
@@ -1124,9 +1126,5 @@ public class CommonUtil {
 			return requirementDTO;
 		}
 
-		private boolean isNullOrEmpty(String rewardType)
-		{
-			// TODO Auto-generated method stub
-			return false;
-		}
+		
 }
