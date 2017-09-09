@@ -4,9 +4,7 @@ import java.io.ByteArrayInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -22,11 +20,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.CandidateDocumentsDTO;
+import com.bis.sourcelead.dto.CandidateRequestDocumentsDTO;
 import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateDocuments;
@@ -95,7 +92,7 @@ public class CandidateDocumentsRestController {
 	{
 		
 		candidateDocumentsDTO.setStaticPath(staticPath);
-		FileUploadUtil.fillUploadedFileInfo(candidateDocumentsDTO, candidateDocumentsDTO.getFileInfo());
+		//FileUploadUtil.fillUploadedFileInfo(candidateDocumentsDTO, candidateDocumentsDTO.getFileInfo());
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		if(null !=candidateId){
@@ -237,13 +234,11 @@ public class CandidateDocumentsRestController {
 	}
 	
 	@RequestMapping(value = "/requestCandidateForDocuments", method = RequestMethod.POST)
-	public @ResponseBody String requestCandidateForDocuments(@RequestParam(value = "json", required = false) String json, HttpServletRequest request) throws Exception
+	public @ResponseBody String requestCandidateForDocuments(CandidateDocumentsDTO candidateDocumentsDTO, HttpServletRequest request) throws Exception
 	{
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		String json1 = "{" + json + "}";
-		JSONObject jsonObj = new JSONObject(json1);
-		requestedDocumentsService.storeRequestedDocumentsDetails(jsonObj, user, loginOrgLocation);
+		requestedDocumentsService.storeRequestedDocumentsDetails(candidateDocumentsDTO, user, loginOrgLocation);
 		return "success";
 	}
 	
@@ -254,7 +249,7 @@ public class CandidateDocumentsRestController {
 		JSONObject jsonObj = new JSONObject(json1);*/
 		
 		candidateDocumentsDTO.setStaticPath(staticPath);
-		FileUploadUtil.fillUploadedFileInfo(candidateDocumentsDTO, candidateDocumentsDTO.getFileInfo());
+		//FileUploadUtil.fillUploadedFileInfo(candidateDocumentsDTO, candidateDocumentsDTO.getFileInfo());
 		
 		//RequestedDocuments requestedDocuments = requestedDocumentsService.getRequestedDocumentsByRequestDocUUID(jsonObj.getString("requestDocUUID"));
 		RequestedDocuments requestedDocuments = requestedDocumentsService.getRequestedDocumentsByRequestDocUUID(candidateDocumentsDTO.getRequestDocUUID());
@@ -264,28 +259,12 @@ public class CandidateDocumentsRestController {
 			if (null != candidateDocumentsList && candidateDocumentsList.size() > 0) {
 				
 				for (CandidateDocuments candidateDocuments : candidateDocumentsList) {
-					/*final MultipartHttpServletRequest multiRequest = (MultipartHttpServletRequest) request;
-					final Map files = multiRequest.getFileMap();
-					MultipartFile multiFile = (MultipartFile) files.get("docFile"
-							+ candidateDocuments.getId());
-					if (multiFile != null && !multiFile.isEmpty()) {
-						candidateDocuments.setDocFile(multiFile.getBytes());
-						candidateDocuments.setFileName(multiFile.getOriginalFilename());
-					}
-					if (null != multiFile.getContentType()) {
-						candidateDocuments.setFileContentType(multiFile.getContentType());
-					}*/
-					
-					if (candidateDocumentsDTO.getUploadedFileInfo() != null && candidateDocumentsDTO.getUploadedFileInfo().size()>0) {
-						FileInfo fileInfo = candidateDocumentsDTO.getUploadedFileInfo().get(0);
-						
+					if (candidateDocumentsDTO.getFileInfo() != null && !candidateDocumentsDTO.getFileInfo().isEmpty()) {
+						FileInfo fileInfo = candidateDocumentsDTO.getFileInfo().get(0);
 						candidateDocuments.setFileName(fileInfo.getFileName());
 						candidateDocuments.setFileContentType(fileInfo.getContentType());
-						
 						candidateDocuments.setFileURL(fileInfo.getFileURL());;
-						if(fileInfo != null){
-							FileUploadUtil.moveFile(candidateDocumentsDTO.getStaticPath(), fileInfo, "resumes");
-						}
+						FileUploadUtil.moveFile(candidateDocumentsDTO.getStaticPath(), fileInfo, "requestedDocuments");
 					}
 					candidateDocuments.setRequestedDocStatus(Constants.REQUESTED_DOCUMENT_SUBMITTED);
 					candidateDocumentsService.updateCandidateDocuments(candidateDocuments);

@@ -99,7 +99,7 @@ public class CandidateResumeRestController {
 	{
 		
 		candidateResumeDTO.setStaticPath(staticPath);
-		FileUploadUtil.fillUploadedFileInfo(candidateResumeDTO, candidateResumeDTO.getFileInfo());
+		//FileUploadUtil.fillUploadedFileInfo(candidateResumeDTO, candidateResumeDTO.getFileInfo());
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		if (StringUtils.isNotEmpty(candidateId)) {
