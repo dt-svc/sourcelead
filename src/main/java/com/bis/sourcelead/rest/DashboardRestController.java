@@ -13,7 +13,6 @@ import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -762,7 +761,8 @@ public class DashboardRestController {
 				}
 			}
 			
-			RequirementDTO requirementDTO=commonUtil.getRequirementDTO(requirement);
+			// pass dto as parameter
+			RequirementDTO requirementDTO = commonUtil.getRequirementDTO(requirement);
 			requirementElkUtil.saveElkRequirement(requirement,requirementDTO);
 			return "success";
 			
