@@ -218,7 +218,6 @@ public class InvoiceServiceImpl implements InvoiceService{
 	public Invoice saveInvoice(User user, OrgLocations orgLocation,String saveType,String invoiceType,Org org,String loginOrgCurrencyCode,InvoiceDTO invoiceDTO) throws Exception {
 		
         Invoice invoice = null;
-        
         if(StringUtils.isNotBlank(invoiceDTO.getSavedInvoiceId())){
         	invoice = invoiceDao.getInvoicetById(Long.valueOf(invoiceDTO.getSavedInvoiceId()));
         }else{
@@ -530,6 +529,9 @@ public class InvoiceServiceImpl implements InvoiceService{
 				invoiceDocument.setUpdatedDate(new Date());
 				invoiceDocument.setOrgLocation(orgLocation);
 				invoiceDocument.setInvoice(invoice);
+				if(fileInfo != null){
+					FileUploadUtil.moveFile(invoiceDTO.getStaticPath(), fileInfo, "invoiceDocuments");
+				}
 				invoiceDocumentSet.add(invoiceDocument);
 			}
 		}
@@ -844,6 +846,7 @@ public class InvoiceServiceImpl implements InvoiceService{
 			 Set<InvoiceDocument> documenetSet = invoice.getInvoiceDocumentSet();
 			 for(InvoiceDocument doc:documenetSet){
 				 EmailAttachment docAttachment = new EmailAttachment();
+				 if(StringUtils.isNotBlank(doc.getFileUrl()))
 				 docAttachment.setDocFile(readBytesFromFile(staticPath+doc.getFileUrl()));
 				 docAttachment.setName(doc.getFileName());
 				 documentList.add(docAttachment);
