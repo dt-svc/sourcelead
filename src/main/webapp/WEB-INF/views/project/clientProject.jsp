@@ -38,9 +38,8 @@
 	  <div class="newPrDetails newPrDetailsPMO"> 
      <div class="clearfix mt"></div>
 		
-		<div class="clearfix form-area form-horizontal toggle-div remove-div  newPrTabs_inn mt5" id="tab-a">
 			<form:form id="project_form" name="project_form" method="post">
-			 <input type="hidden" name="projectClientId" id=projectClientId value=""/>
+			 <input type="hidden" name="projectClientId" id="projectClientId" value=""/>
 			<div class="col-md-12 clearfix mt5 mb5">
 			<div class="col-md-6 col-lg-6">
 				<div class="form-group mb10">
@@ -102,8 +101,7 @@
 			
 			<div class="col-md-6 col-lg-6">
 				<div class="form-group mb10">
-					<label class="col-md-3 mt10" for="Project Manager">Client Project <span
-						class="text-danger">*&nbsp;</span></label>
+					<label class="col-md-3" >Client Project <span class="text-danger">*&nbsp;</span></label>
 					<div class="col-md-9">
 						<div class="form-icon-min" id="clientProjectDiv">
 							<select class="form-control chosen-select"
@@ -131,7 +129,6 @@
 
 
 			</form:form>
-		</div>
    	</div>
 	
 	
@@ -289,6 +286,7 @@ function saveClientProject(){
 				url : sourceleadUrl+"/storeClientProject?${_csrf.parameterName}=${_csrf.token}", 
 				success : function(project) {
 					 $("#loading").removeAttr("style");
+					 location.replace(sourceleadUrl+"/projectSummary?projectUUID="+project.projectUUID+"&tabType=projectMembers");
 				},
 			}); 
   		 return true;

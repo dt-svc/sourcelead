@@ -248,7 +248,12 @@ public class ProjectsController {
 				}
 				
 				List<ProjectMembers> projectMembersList =  projectMembersService.getAllProjectMembersByProjectIdAndStatus(projects.getId(), "Active", orgLocations);
-				model.addObject("projectMembersCount", projectMembersList.size());
+				if(projectMembersList != null){
+					model.addObject("projectMembersCount", projectMembersList.size());
+				}else{
+					model.addObject("projectMembersCount", 0);
+				}
+				
 				
 				Integer resourceRequestsCount = projectPlanningRequestService.getProjectPlanningRequestCountByProjectId(projects.getId());
 				model.addObject("resourceRequestsCount", resourceRequestsCount);
@@ -427,6 +432,7 @@ public class ProjectsController {
 				model.addObject("projectEndDate", commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),projects.getEndDate()));
 			}
 			model.addObject("projectStatus", projects.getProjectStatus());
+			model.addObject("projectOrgLocationId", projects.getOrgLocationsId().getId());
 		}
 		model.addObject("projectUUID", projectUUID);
 		

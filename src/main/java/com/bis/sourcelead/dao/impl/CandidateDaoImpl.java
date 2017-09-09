@@ -339,7 +339,7 @@ public class CandidateDaoImpl implements CandidateDao {
 		List<Candidate> candidate = new ArrayList<Candidate>();
 		logger.debug("findByCandidateEmail start");
 		try{
-			candidate = session.createQuery("from Candidate can where can.email=:email and can.orgLocationId.id = :orgLocationId ORDER BY can.id DESC" )
+			candidate = session.createQuery("from Candidate can left join fetch can.masterCandidateId where can.email=:email and can.orgLocationId.id = :orgLocationId ORDER BY can.id DESC" )
 					.setString( "email", email ).setLong("orgLocationId", orgLocationId ).setCacheable(true).list();
 			
 			logger.debug("findByCandidateEmail end");

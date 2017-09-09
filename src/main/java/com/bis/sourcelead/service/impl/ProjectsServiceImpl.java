@@ -1695,13 +1695,17 @@ public class ProjectsServiceImpl implements ProjectsService{
 		Projects pr = projectsDao.getProjectById(projectId);
 		
 		ArrayList<ProjectMembers> projectMembersArrList = new ArrayList<ProjectMembers>();
-		 for(ProjectMembers pm : projectMembersList){
+		if(projectMembersList != null && projectMembersList.size() > 0){ 
+		for(ProjectMembers pm : projectMembersList){
 			 if(pm.getCandidateId() != null){
 				 StringBuilder membersListStringBuilder=new StringBuilder();
 				 pm.setEmpName(membersListStringBuilder.append(pm.getProjectMemberCandidteId().getFirstName()).append(" ").append(pm.getProjectMemberCandidteId().getLastName()).toString());	 
 				 pm.setEmpEmail(pm.getEmployee().getUser().getEmail());	
 				 UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(pm.getProjectMemberCandidteId().getConsultantUser().getId(), pm.getProjects().getOrgLocationsId().getId());
-				 pm.setUserRoleType(userRole.getUserType());	
+				 if(userRole != null){
+					 pm.setUserRoleType(userRole.getUserType());
+				 }
+					
 			 }
 			 pm.setProjectStatus(pr.getProjectStatus().getValue());
 			 
@@ -1744,6 +1748,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 	       	 }	
 			 projectMembersArrList.add(pm);
 		 }
+		}
 		 ObjectMapper mapper = new ObjectMapper();
 		 String jsonInString = mapper.writeValueAsString(projectMembersArrList);
 		 

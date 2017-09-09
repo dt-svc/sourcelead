@@ -5,7 +5,12 @@
  <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
-<script src="resources/js/addRowToJson.js"></script>
+<style>
+.text-muted {
+    color: #ededed !important; 
+}
+</style>
+
 
     <script type="text/javascript">
 		window.onload = function () {
@@ -53,10 +58,10 @@
 		</div>
 		
 		<input type="hidden" class="form-control input-sm"
-			id="REPLACEROWIDcandidateId" name="REPLACEROWIDcandidateId" />
+			id="REPLACEROWIDcandidateId" name="projectMembers[REPLACEROWID].candidateId" />
 		
 		<input type="hidden" class="form-control input-sm"
-			id="REPLACEROWIDprojectMemberId" name="REPLACEROWIDprojectMemberId">
+			id="REPLACEROWIDprojectMemberId" name="projectMembers[REPLACEROWID].projectMemberId">
 		</input>
 		
 	</div>
@@ -66,7 +71,7 @@
 <div id="divTaskTd2" style="display: none; float: left;">
 	<div class="changeRate_div changeRateDiv">
                   <div class="pull-left dropdown-select drpdownCurrency">
-                      <select id="REPLACEROWIDpayRateCurrency" name="REPLACEROWIDpayRateCurrency">
+                      <select id="REPLACEROWIDpayRateCurrency" name="projectMembers[REPLACEROWID].payRateCurrency">
 	                     <option ${SourceLeadWeb_currencyCode == 'INR' ? 'selected' : ''}>INR</option>
 		                 <option ${SourceLeadWeb_currencyCode == 'AUD' ? 'selected' : ''}>AUD</option>
 		                 <option ${SourceLeadWeb_currencyCode == 'USD' ? 'selected' : ''}>USD</option>
@@ -76,11 +81,11 @@
                      </select>
                   </div>
                   <div class="pull-left inputRate">
-                      <input class="form-control input-sm" type="text" id="REPLACEROWIDpayRate" name="REPLACEROWIDpayRate" field-name="Pay Rate" data-validation="required validate_Space validate_int validate_length length1-15">
+                      <input class="form-control input-sm" type="text" id="REPLACEROWIDpayRate" name="projectMembers[REPLACEROWID].payRate" field-name="Pay Rate" data-validation="required validate_Space validate_int validate_length length1-15">
                   </div>
                   
                   <div class="pull-left drpdownMonthly dropdown-select">
-                  <select id="REPLACEROWIDpayRateRateType" name="REPLACEROWIDpayRateRateType">
+                  <select id="REPLACEROWIDpayRateRateType" name="projectMembers[REPLACEROWID].payRateRateType">
 	                    <option value="Hourly">Hourly</option>
 	                    <option value="Weekly">Weekly</option>
 	                    <option value="Bi-weekly">Bi-weekly</option>
@@ -97,7 +102,7 @@
 <div id="divTaskTd3" style="display: none; float: left;">
 	<div class="changeRate_div changeRateDiv">
                   <div class="pull-left dropdown-select drpdownCurrency">
-                      <select id="REPLACEROWIDbillRateCurrency" name="REPLACEROWIDbillRateCurrency">
+                      <select id="REPLACEROWIDbillRateCurrency" name="projectMembers[REPLACEROWID].billRateCurrency">
 	                     <option ${SourceLeadWeb_currencyCode == 'INR' ? 'selected' : ''}>INR</option>
 		                 <option ${SourceLeadWeb_currencyCode == 'AUD' ? 'selected' : ''}>AUD</option>
 		                 <option ${SourceLeadWeb_currencyCode == 'USD' ? 'selected' : ''}>USD</option>
@@ -107,10 +112,10 @@
                      </select>
                   </div>
                   <div class="pull-left inputRate">
-                      <input class="form-control input-sm" type="text" id="REPLACEROWIDbillRate" name="REPLACEROWIDbillRate" data-validation-optional="true"  data-validation="validate_Space validate_int validate_length length1-15">
+                      <input class="form-control input-sm" type="text" id="REPLACEROWIDbillRate" name="projectMembers[REPLACEROWID].billRate" data-validation-optional="true"  data-validation="validate_Space validate_int validate_length length1-15">
                   </div>
                   <div class="pull-left drpdownMonthly dropdown-select">
-                  <select id="REPLACEROWIDbillRateRateType" name="REPLACEROWIDbillRateRateType">
+                  <select id="REPLACEROWIDbillRateRateType" name="projectMembers[REPLACEROWID].billRateRateType">
 	                    <option value="Hourly">Hourly</option>
 	                    <option value="Weekly">Weekly</option>
 	                    <option value="Bi-weekly">Bi-weekly</option>
@@ -127,7 +132,7 @@
 
 <div id="divTaskTd6" style="display: none; float: left;">
 	<div class="tbldata-dotdot-100">
-         <input class="form-control input-sm timeicon" type="text" id="REPLACEROWIDestHours" name="REPLACEROWIDestHours" data-validation-optional="true" onblur="calculateTotalEstimateHours();" data-validation="validate_Space validate_int" field-name="Est Hours">
+         <input class="form-control input-sm timeicon" type="text" id="REPLACEROWIDestHours" name="projectMembers[REPLACEROWID].estHours" data-validation-optional="true" onblur="calculateTotalEstimateHours();" data-validation="validate_Space validate_int" field-name="Est Hours">
 	</div>
 </div>
 
@@ -135,11 +140,11 @@
 	<div class="changeRate_div estRate_div">
           
           <div class="pull-left mt10">
-                 <div id="REPLACEROWIDestBudgetCurrencyType" name="REPLACEROWIDestBudgetCurrencyType" value='${SourceLeadWeb_currencyCode}'>${SourceLeadWeb_currencyCode}</div>
+                 <div id="REPLACEROWIDestBudgetCurrencyType" name="projectMembers[REPLACEROWID].estBudgetCurrencyType" value='${SourceLeadWeb_currencyCode}'>${SourceLeadWeb_currencyCode}</div>
           </div> 
 		  
          <div class="pull-left inputRate">
-         	<input class="form-control input-sm" type="text" id="REPLACEROWIDestBudget" name="REPLACEROWIDestBudget" data-validation-optional="true" onblur="calculateTotalEstimateBudget();"  data-validation="validate_int validate_Space validate_length length1-15" field-name="Est Budget">
+         	<input class="form-control input-sm" type="text" id="REPLACEROWIDestBudget" name="projectMembers[REPLACEROWID].estBudget" data-validation-optional="true" onblur="calculateTotalEstimateBudget();"  data-validation="validate_int validate_Space validate_length length1-15" field-name="Est Budget">
          </div>
         
 	</div>
@@ -151,11 +156,37 @@
 		class="fa fa-remove"></i></a>
  </div> 
 	
+		
+	
 
 <div class="side_mask">
     <div class="proj_close"></div>
 </div> 
 <div id="associatesList"></div>
+<jsp:include page="../masterFooter.jsp" />
+
+
+<script type="text/javascript">
+	function removeRow(rowId) {
+		
+		var associatesRowsCount = $("#associatesRowsCount").val();
+		var rowsCount = parseInt($("input[name = 'associatesRowsCount']").val());
+		$("input[name = 'associatesRowsCount']").val(rowsCount - 1);
+		
+		associatesRowsCount = $("#associatesRowsCount").val();
+		if(associatesRowsCount == 0){
+			emptyRecordsList();
+		}
+		
+		document.getElementById('divTsRow' + rowId).style.display = 'none';
+		
+		var r = document.getElementById('addRequestTbl').rows[rowId];
+		var count = 2 * (r.cells.length);
+		for (i = 0; i <= count; i++) {
+			r.deleteCell(0);
+		}
+	}
+</script>
 
 
 <script>
@@ -292,7 +323,7 @@ function emptyRecordsList(){
 		      				var startDateText = "";
 		    				var cell3 = row.insertCell(3);
 		    				startDateText = startDateText+"<div  class='tbldata-dotdot-100'>";
-		    				startDateText = startDateText+'<input type="text" class="form-control input-sm calendar" id="'+maxRowNum+'memberStartDate" value="'+opt.startDateStr+'"  name="'+maxRowNum+'memberStartDate" >';
+		    				startDateText = startDateText+'<input type="text" class="form-control input-sm calendar" id="'+maxRowNum+'memberStartDate" value="'+opt.startDateStr+'"  name="projectMembers['+maxRowNum+'].memberStartDate"  >';
 		    				startDateText = startDateText+'</div>';
 		    				cell3.innerHTML = startDateText;
 		    				
@@ -300,7 +331,7 @@ function emptyRecordsList(){
 		    				var endDateText = "";
 		    				var cell4 = row.insertCell(4);
 		    				endDateText = endDateText+"<div  class='tbldata-dotdot-100'>";
-		    				endDateText = endDateText+'<input type="text" class="form-control input-sm calendar" id="'+maxRowNum+'memberEndDate" value="'+opt.endDateStr+'"  name="'+maxRowNum+'memberEndDate" >';
+		    				endDateText = endDateText+'<input type="text" class="form-control input-sm calendar" id="'+maxRowNum+'memberEndDate" value="'+opt.endDateStr+'"  name="projectMembers['+maxRowNum+'].memberEndDate" >';
 		    				endDateText = endDateText+'</div>';
 		    				cell4.innerHTML = endDateText;
 		    				
@@ -360,11 +391,16 @@ function emptyRecordsList(){
 		      					$('#'+maxRowNum+'estBudget').val(opt.estimatedBudget);
 		    				}
 		    				
+		    				var remove = "";
 		    				var cell7 = row.insertCell(7);
-		    				var divTaskTd8Str = document.getElementById("divTaskTd8").innerHTML;
-		    				divTaskTd8Str = divTaskTd8Str.replace(/REPLACEROWID/g, (maxRowNum));
-		    				divTaskTd8Str = divTaskTd8Str.replace(/PRICECALCULATION/g,("")); 
-		    				cell7.innerHTML = divTaskTd8Str;
+		    				remove = remove+"<div  class='tbldata-dotdot-100'>";
+		    				if('${projectOrgLocationId}' == '${SourceLeadWeb_orgLocations.id}'){
+		    					remove = remove+'<a class="text-danger tblminwidth-50" title="Remove row" id="REPLACEROWIDremoveLineItem" onclick="removeRow(REPLACEROWID)"><i class="fa fa-remove"></i></a>';
+		    				}else{
+		    					remove = remove+'<i class="fa fa-remove text-muted"></i>';
+		    				}
+		    				remove = remove+'</div>';
+		    				cell7.innerHTML = remove;
 		    				
 		    				
 		        		}
@@ -378,6 +414,39 @@ function emptyRecordsList(){
 	  
   }
   </script>
+  
+  
+  <script>
+function toDate(selector) {
+    var from = $(selector).val().split("-");
+    return new Date(from[2], from[1] - 1, from[0]);
+}
+</script>
+
+
+<script>
+function getEstimatedHours(rowId){
+	var startDate = document.getElementById(rowId+"memberStartDate").value;
+	var endDate = document.getElementById(rowId+"memberEndDate").value;
+	var locationId = '${SourceLeadWeb_orgLocationId}';
+	if(startDate && endDate){
+		 var sourceleadUrl ='${sourceleadUrl}';
+		 var averageWorkingHours = '${SourceLeadWeb_orgLocations.averageWorkingHours}';
+		 $("#resourceListLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		 $.ajax({
+		    	type: "GET",
+		        url: sourceleadUrl+"/getEstimatedHoursForResourceRequest?${_csrf.parameterName}=${_csrf.token}&startDate="+startDate+"&endDate="+endDate+"&averageWorkingHours="+averageWorkingHours+"&locationId="+locationId, 
+		        success: function(estimatedHours) {
+		        	
+		        	$('#'+rowId+'estHours').val(estimatedHours);
+		        	 $("#resourceListLoading").removeAttr("style"); 
+		        	
+		        }
+		        
+		 });
+	}
+}
+</script>
 
 <script>
 function getAssociates(){
@@ -728,7 +797,7 @@ function getAssociatesFilter(){
 			var startDateText = "";
 			var cell3 = row.insertCell(3);
 			startDateText = startDateText+"<div  class='tbldata-dotdot-100' id='"+maxRowNum+"startDate' >";
-			startDateText = startDateText+'<input type="text" class="form-control input-sm calendar" data-validation="required" value="'+projectStartDate+'" field-name="Start Date" id="'+maxRowNum+'memberStartDate"  name="'+maxRowNum+'memberStartDate" >';
+			startDateText = startDateText+'<input type="text" class="form-control input-sm calendar" data-validation="required" value="'+projectStartDate+'" field-name="Start Date" id="'+maxRowNum+'memberStartDate"  name="projectMembers['+maxRowNum+'].memberStartDate" >';
 			startDateText = startDateText+'</div>';
 			cell3.innerHTML = startDateText;
 			
@@ -736,7 +805,7 @@ function getAssociatesFilter(){
 			var endDateText = "";
 			var cell4 = row.insertCell(4);
 			endDateText = endDateText+"<div  class='tbldata-dotdot-100'>";
-			endDateText = endDateText+'<input type="text" class="form-control input-sm calendar" id="'+maxRowNum+'memberEndDate" value="'+projectEndDate+'" name="'+maxRowNum+'memberEndDate" >';
+			endDateText = endDateText+'<input type="text" class="form-control input-sm calendar" id="'+maxRowNum+'memberEndDate" value="'+projectEndDate+'" name="projectMembers['+maxRowNum+'].memberEndDate" >';
 			endDateText = endDateText+'</div>';
 			cell4.innerHTML = endDateText;
 			
@@ -826,27 +895,7 @@ function assignMembers(){
  		}else{
  			
  			
- 			var checkMaxTsRowNum = $("#maxTsRowNum").val();
- 	      	
- 	      	var fields = [];
- 	      	fields.push('candidateId');
- 	      	fields.push('projectMemberId');
- 	      	fields.push('payRateCurrency');
- 	      	fields.push('payRate');
- 	      	fields.push('payRateRateType');
- 	      	fields.push('billRateCurrency');
- 	      	fields.push('billRate');
- 	      	fields.push('billRateRateType');
- 	     	fields.push('memberStartDate');
- 	     	fields.push('memberEndDate');
- 	     	fields.push('estHours');
- 	     	fields.push('estBudget');
- 	      	var projectMembers = $('#projectAssignedMembers').addRowToJSON(fields,checkMaxTsRowNum);
- 			
- 			var frm = $('#assignMembers_form').serializeFormJSON();
- 	      	frm['projectMembers'] = projectMembers;
- 			var jsonData = JSON.stringify(frm);
- 		  	
+ 		    var formData = getFormData("assignMembers_form");
       		var sourceleadUrl ='${sourceleadUrl}';
       		var projectUUID = '${projectUUID}';
       		var userId = '${SourceLeadWeb_user.id}';
@@ -855,9 +904,7 @@ function assignMembers(){
        		$("#associateRequestLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
       		$.ajax({
 					type : "POST",
-	  	    	    data : jsonData,
-	  	    	    contentType : 'application/json; charset=utf-8',
-	  	    	    dataType : 'json',
+	  	    	    data : formData,
 					url : sourceleadUrl+"/assignProjectMembersToProject?${_csrf.parameterName}=${_csrf.token}&projectUUID="+projectUUID+"&userId="+userId+"&orgLocationId="+orgLocationId, 
 					success : function(result) {
 						location.replace(sourceleadUrl+"/projectSummary?projectUUID="+projectUUID+"&tabType=projectMembers");
