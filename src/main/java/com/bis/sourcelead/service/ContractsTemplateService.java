@@ -53,7 +53,7 @@ public interface ContractsTemplateService {
 	
 	Contracts findContractTitleByOrgLocationAndContractType(String contractTitle,String contractType,Long orgLocationId, Long contractId);
 
-	Contracts saveExistigContract(JSONObject jsonObj, MultipartFile multiFile, OrgLocations orgLocation, User user, Org org) throws Exception;
+	Contracts saveExistigContract(ContractsDTO contractsDTO, OrgLocations orgLocation, User user, Org org) throws Exception;
 
 	ContractsTemplate getContractTemplateByTemplateUUID(String tempUUID);
 
