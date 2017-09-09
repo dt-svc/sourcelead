@@ -959,7 +959,6 @@ $('body').on('submit', '#requestForDocuments_form', function(e){
      
       var sourceleadUrl ='${sourceleadUrl}';
       var requestedCandidateId = document.getElementById("requestedCandidateId").value;
-      alert(requestedCandidateId);
      /*  var form = $('#requestForDocuments_form')[0];
       var formData = new FormData(form); */
       var formData = getFormData("requestForDocuments_form");
