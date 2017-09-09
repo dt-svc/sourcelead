@@ -2,6 +2,7 @@ package com.bis.sourcelead.service;
 
 import org.json.JSONObject;
 
+import com.bis.sourcelead.dto.CandidateDocumentsDTO;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.RequestedDocuments;
@@ -11,7 +12,7 @@ public interface RequestedDocumentsService {
 	
 	RequestedDocuments saveRequestedDocuments(RequestedDocuments requestedDocuments) throws Exception;
 	
-	public void storeRequestedDocumentsDetails(JSONObject jsonObj,User user,OrgLocations orgLocations) throws Exception;
+	public void storeRequestedDocumentsDetails(CandidateDocumentsDTO candidateDocumentsDTO,User user,OrgLocations orgLocations) throws Exception;
 	
 	RequestedDocuments getRequestedDocumentsByRequestDocUUID(String requestDocUUID) throws Exception;
 	
