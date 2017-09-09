@@ -7,6 +7,7 @@ public class ChecksDTO extends SearchDTO implements Serializable{
 
 	private String empId;
 	private String empName;
+	private String orgLocationId;
 	private String typeOfExpense;
 	private String bankName;
 	private String month;
@@ -118,6 +119,12 @@ public class ChecksDTO extends SearchDTO implements Serializable{
 	}
 	public void setAmount(String amount) {
 		this.amount = amount;
+	}
+	public String getOrgLocationId() {
+		return orgLocationId;
+	}
+	public void setOrgLocationId(String orgLocationId) {
+		this.orgLocationId = orgLocationId;
 	}
 
 	

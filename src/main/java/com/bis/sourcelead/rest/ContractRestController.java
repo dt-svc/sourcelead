@@ -657,52 +657,14 @@ public class ContractRestController {
 	   }
 
 	 @RequestMapping(value = "/saveExistigContract", method = RequestMethod.POST)
-		public @ResponseBody boolean saveExistigContract(@RequestParam(value = "json", required = false) String json,MultipartHttpServletRequest request) throws Exception {
-
+		 public @ResponseBody boolean saveExistigContract(ContractsDTO contractsDTO,HttpServletRequest request) throws Exception {
 			boolean isContractSaved = false;
-			String json1 = "{" + json + "}";
-			JSONObject jsonObj = new JSONObject(json1);
+			contractsDTO.setStaticPath(staticPath);
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 			
-			MultipartFile multiFile1 = null;
-			Iterator<String> itrator = request.getFileNames();
-			if(itrator.hasNext()){
-		        multiFile1 = request.getFile(itrator.next());
-			}
 			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-			Contracts contracts = contractsTemplateService.saveExistigContract(jsonObj,multiFile1,orgLocation,user,org);
-			final MultipartHttpServletRequest multiRequest = (MultipartHttpServletRequest) request;
-			final Map files = multiRequest.getFileMap();
-			int maxCount = Integer.parseInt(jsonObj.getString("maxTaxRowNum"));
-			
-			for (long c = 1; c < maxCount; c++) {
-					ContractRequestDocuments contractRequestDocuments = new ContractRequestDocuments();
-					MultipartFile  multiFile = (MultipartFile)files.get("uploadBtn"+c);
-					
-						contractRequestDocuments.setContractId(contracts);
-						if(jsonObj.has(c+"documentName") && !jsonObj.getString(c+"documentName").isEmpty()){
-							contractRequestDocuments.setFileName(jsonObj.getString(c+"documentName"));
-						if(jsonObj.has(c+"description") && !jsonObj.getString(c+"description").isEmpty()){
-							contractRequestDocuments.setDescription(jsonObj.getString(c+"description"));
-						}
-						if (jsonObj.has(c + "candiDoc")
-								&& !jsonObj.getString(c + "candiDoc").isEmpty()) {
-							contractRequestDocuments.setDocType(jsonObj.getString(c + "candiDoc"));
-							
-						}
-						}
-						if(multiFile != null){
-							contractRequestDocuments.setDocFile(multiFile.getBytes());
-							contractRequestDocuments.setFileType(multiFile.getContentType());
-						}
-						contractRequestDocuments.setCreatedDate(new Date());
-						contractRequestDocuments.setUpdatedDate(new Date());
-						contractRequestDocuments.setStatus(Constants.MEMBER_ACTIVE);
-						contractRequestDocuments.setCreatedBy(user.getUserCode());
-						contractRequestDocuments.setUpdatedBy(user.getUserCode());
-						contractRequestDocumentsService.saveContractRequestDocuments(contractRequestDocuments);
-			}
+			Contracts contracts = contractsTemplateService.saveExistigContract(contractsDTO,orgLocation,user,org);
 		   if(null != contracts){
 			   isContractSaved = true;
 		   }
