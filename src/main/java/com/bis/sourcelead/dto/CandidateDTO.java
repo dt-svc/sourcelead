@@ -25,7 +25,7 @@ public class CandidateDTO {
 
 	//private MasterCandidate masterCandidateId;
 
-	private List<Map<String, String>> fileInfo;
+	private List<FileInfo> fileInfo;
 	
 	private List<FileInfo> uploadedFileInfo;
 
@@ -196,16 +196,17 @@ public class CandidateDTO {
 		this.masterCandidateId = masterCandidateId;
 	}*/
 
-	public List<Map<String, String>> getFileInfo() {
+	
+	public List<FileInfo> getUploadedFileInfo() {
+		return uploadedFileInfo;
+	}
+
+	public List<FileInfo> getFileInfo() {
 		return fileInfo;
 	}
 
-	public void setFileInfo(List<Map<String, String>> fileInfo) {
+	public void setFileInfo(List<FileInfo> fileInfo) {
 		this.fileInfo = fileInfo;
-	}
-
-	public List<FileInfo> getUploadedFileInfo() {
-		return uploadedFileInfo;
 	}
 
 	public void setUploadedFileInfo(List<FileInfo> uploadedFileInfo) {

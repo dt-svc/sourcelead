@@ -7,6 +7,7 @@ import java.util.Map;
 
 import javax.mail.internet.InternetAddress;
 
+import org.apache.commons.lang.StringUtils;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -16,6 +17,8 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.CandidateDao;
 import com.bis.sourcelead.dao.CandidateDocumentsDao;
 import com.bis.sourcelead.dao.RequestedDocumentsDao;
+import com.bis.sourcelead.dto.CandidateDocumentsDTO;
+import com.bis.sourcelead.dto.RequestDocumentList;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateDocuments;
 import com.bis.sourcelead.entity.EmailAttachment;
@@ -79,16 +82,16 @@ public class RequestedDocumentsServiceImpl implements RequestedDocumentsService{
 	}
 	
 	@Override
-	public void storeRequestedDocumentsDetails(JSONObject jsonObj, User user, OrgLocations orgLocations) throws Exception
+	public void storeRequestedDocumentsDetails(CandidateDocumentsDTO candidateDocumentsDTO, User user, OrgLocations orgLocations) throws Exception
 	{
 		
-		if ((jsonObj.has("docuemntMaxRowNumber")) && jsonObj.has("requestedCandidateId") && !isNullOrEmpty("requestedCandidateId")){
-			String docuemntMaxRowNumber = jsonObj.getString("docuemntMaxRowNumber");
+		if (StringUtils.isNotBlank(candidateDocumentsDTO.getDocuemntMaxRowNumber()) && StringUtils.isNotBlank(candidateDocumentsDTO.getRequestedCandidateId())){
+			String docuemntMaxRowNumber = candidateDocumentsDTO.getDocuemntMaxRowNumber();
 			int docuemntMaxRowNumberCount = Integer.parseInt(docuemntMaxRowNumber);
 			
 			RequestedDocuments requestedDocuments = new RequestedDocuments();
 			StringBuffer activitySummary = new StringBuffer();
-			Candidate candidate = candidateDao.getCandidateByCandidateId(Long.valueOf(jsonObj.getString("requestedCandidateId")));
+			Candidate candidate = candidateDao.getCandidateByCandidateId(Long.valueOf(candidateDocumentsDTO.getRequestedCandidateId()));
 			requestedDocuments.setCandidateId(candidate);
 			requestedDocuments.setUserId(user);
 			requestedDocuments.setOrgLocationId(orgLocations);
@@ -101,7 +104,70 @@ public class RequestedDocumentsServiceImpl implements RequestedDocumentsService{
 			requestedDocuments.setUpdatedDate(new Date());
 			requestedDocumentsDao.saveRequestedDocuments(requestedDocuments);
 			activitySummary.append("Document Types").append(" : ");
-			for (int a = 0; a < docuemntMaxRowNumberCount; a++) {
+			
+			
+			for( RequestDocumentList docList:candidateDocumentsDTO.getRequestDocumentList()){
+				RequestedDocumentsHistory requestedDocumentsHistory = new RequestedDocumentsHistory();
+				requestedDocumentsHistory.setRequestedDocumentsId(requestedDocuments);
+				if(StringUtils.isNotBlank(docList.getOtherDocType())){
+					requestedDocumentsHistory.setDocumentType(docList.getOtherDocType());
+					activitySummary.append(Constants.NEW_VALUE_TAG_INITIATION).append(docList.getOtherDocType()).append(Constants.NEW_VALUE_TAG_END).append(", ");
+				}else{
+					requestedDocumentsHistory.setDocumentType(docList.getDocType());
+					activitySummary.append(Constants.NEW_VALUE_TAG_INITIATION).append(docList.getDocType()).append(Constants.NEW_VALUE_TAG_END).append(", ");
+				}
+				
+				if(StringUtils.isNotBlank(docList.getDescription())){
+					requestedDocumentsHistory.setDescription(docList.getDescription());
+				}else{
+					requestedDocumentsHistory.setDescription(null);
+				}
+				
+				if(StringUtils.isNotBlank(docList.getChecked())&&"Y".equalsIgnoreCase(docList.getChecked())){
+					requestedDocumentsHistory.setIsRequestedDocRequired(docList.getChecked());
+				}else{
+					requestedDocumentsHistory.setIsRequestedDocRequired(Constants.NO);
+				}
+				
+				requestedDocumentsHistory.setStatus(Constants.RECORD_ACTIVE);
+				requestedDocumentsHistory.setCreatedBy(user.getUserCode());
+				requestedDocumentsHistory.setUpdatedBy(user.getUserCode());
+				requestedDocumentsHistory.setCreatedDate(new Date());
+				requestedDocumentsHistory.setUpdatedDate(new Date());
+				requestedDocumentsHistoryService.saveRequestedDocumentsHistory(requestedDocumentsHistory);
+				
+				CandidateDocuments candidateDocuments = new CandidateDocuments();	
+				candidateDocuments.setRequestedDocumentsId(requestedDocuments);
+				candidateDocuments.setCandidateId(candidate);
+				candidateDocuments.setDocUploadStatus(Constants.DOCUMENT_UPLOAD_REQUESTED);
+				candidateDocuments.setDocumentType(docList.getDocType());
+				
+				if(StringUtils.isNotBlank(docList.getOtherDocType())){
+					candidateDocuments.setDocumentOtherType(docList.getOtherDocType());
+				}
+				
+				if(StringUtils.isNotBlank(docList.getOtherDocType())){
+					candidateDocuments.setDescription(docList.getDescription());
+				}
+				
+				if(StringUtils.isNotBlank(docList.getChecked())&&"Y".equalsIgnoreCase(docList.getChecked())){
+					candidateDocuments.setIsRequestedDocRequired(docList.getChecked());
+				}else{
+					candidateDocuments.setIsRequestedDocRequired(Constants.NO);
+				}
+				
+				candidateDocuments.setOrgLocationId(orgLocations);
+				candidateDocuments.setDocumentUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+				candidateDocuments.setStatus(Constants.RECORD_ACTIVE);
+				candidateDocuments.setCreatedBy(user.getUserCode());
+				candidateDocuments.setUpdatedBy(user.getUserCode());
+				candidateDocuments.setCreatedDate(new Date());
+				candidateDocuments.setUpdatedDate(new Date());
+				candidateDocumentsDao.storeCandidateDocuments(candidateDocuments);
+				
+			}
+			
+			/*for (int a = 0; a < docuemntMaxRowNumberCount; a++) {
 				
 				if(jsonObj.has(a+"docType")){
 					
@@ -165,7 +231,7 @@ public class RequestedDocumentsServiceImpl implements RequestedDocumentsService{
 					candidateDocuments.setUpdatedDate(new Date());
 					candidateDocumentsDao.storeCandidateDocuments(candidateDocuments);
 				}
-			}
+			}*/
 			
 			sendEmailToCandidateForDocument(user,candidate,orgLocations,requestedDocuments.getRequestDocUUID());
 			candidateActivityCommonUtil.storeCandidateActivity(user, orgLocations, candidate, "", Constants.CANDIDATE_REQUEST_DOCUMENTS, activitySummary.toString().substring(0, activitySummary.toString().length() - 2), "CANDIDATE");

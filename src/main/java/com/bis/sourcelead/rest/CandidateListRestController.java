@@ -1048,26 +1048,12 @@ public class CandidateListRestController {
 	@RequestMapping(value = "/updateCandidate")
 	public String updateCandidate(CandidateDTO CandidateDto,HttpServletRequest request) throws Exception {
 
-		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
-				"orgLocations");
+		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		Candidate candidate;
-		/*MultipartFile multiFile = null;
-		
-		String jsonc = "{" + json + "}";
-		JSONObject jsonObj = new JSONObject(jsonc);*/
 
 		StringBuilder candidateCreateMsg = new StringBuilder();
 		candidate = candidateService.storeCandidate(CandidateDto, loginOrgLocation, user);
-		/*
-		 * if(jsonObj.has("candidateId") && jsonObj.getString("candidateId") != null &&
-		 * !"".equals(jsonObj.getString("candidateId"))){
-		 * SourceLeadSessionManager.setSessionAttribute(request, "candidateCreateMsg",
-		 * candidateCreateMsg.append("Success!!  ").append(candidate.getFirstName()).
-		 * append(" Details Updated").toString());
-		 * 
-		 * }
-		 */
 
 		return "success";
 
