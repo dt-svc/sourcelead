@@ -1359,7 +1359,7 @@ public class CrowdSourcingRequirementsRestController {
 		 
 		 if(Validator.validate(candidateDTO)) {
 			 candidateDTO.setStaticPath(staticPath);
-				FileUploadUtil.fillUploadedFileInfo(candidateDTO, candidateDTO.getFileInfo());
+				//FileUploadUtil.fillUploadedFileInfo(candidateDTO, candidateDTO.getFileInfo());
 				User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 				OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 				Candidate candidate = candidateService.storeProfessionalParseCandidate(candidateDTO,orgLocation,user,candidateId);

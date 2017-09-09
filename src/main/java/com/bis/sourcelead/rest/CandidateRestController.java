@@ -173,7 +173,7 @@ public class CandidateRestController {
 	{
 		if(Validator.validate(candidateDto)) {
 			candidateDto.setStaticPath(staticPath);
-			FileUploadUtil.fillUploadedFileInfo(candidateDto, candidateDto.getFileInfo());
+			//FileUploadUtil.fillUploadedFileInfo(candidateDto, candidateDto.getFileInfo());
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			Candidate candidate = candidateService.storeCandidate(candidateDto, orgLocation, user);

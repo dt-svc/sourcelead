@@ -96,8 +96,8 @@ public class CandidateDocumentsServiceImpl implements CandidateDocumentsService 
 				candidateDocuments.setUpdatedBy(user.getUserCode());
 				candidateDocuments.setUpdatedDate(commonUtil.currentDate());
 				
-				if (candidateDocumentsDTO.getUploadedFileInfo() != null && candidateDocumentsDTO.getUploadedFileInfo().size()>0) {
-					FileInfo fileInfo = candidateDocumentsDTO.getUploadedFileInfo().get(0);
+				if (candidateDocumentsDTO.getFileInfo() != null && candidateDocumentsDTO.getFileInfo().size()>0) {
+					FileInfo fileInfo = candidateDocumentsDTO.getFileInfo().get(0);
 					if(fileInfo != null) {
 						if(fileInfo.getFileName() != null ){
 							activitySummary.append("Document").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidateDocuments.getFileName()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(fileInfo.getFileName()).append(Constants.NEW_VALUE_TAG_END).append(" ");
@@ -177,8 +177,8 @@ public class CandidateDocumentsServiceImpl implements CandidateDocumentsService 
 					candidateDocuments.setFileContentType(multiFile.getContentType());
 				}*/
 				
-				if (candidateDocumentsDTO.getUploadedFileInfo() != null) {
-					FileInfo fileInfo = candidateDocumentsDTO.getUploadedFileInfo().get(0);
+				if (candidateDocumentsDTO.getFileInfo() != null) {
+					FileInfo fileInfo = candidateDocumentsDTO.getFileInfo().get(0);
 					if(fileInfo.getFileName() != null ){
 						activitySummary.append("Document").append(" : ").append(Constants.NEW_VALUE_TAG_INITIATION).append(fileInfo.getFileName()).append(Constants.NEW_VALUE_TAG_END).append(" ");
 					}
