@@ -54,6 +54,7 @@ import com.bis.sourcelead.dto.ExpensesDTO;
 import com.bis.sourcelead.dto.ExpensesEntriesDTO;
 import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.dto.InvoiceDTO;
+import com.bis.sourcelead.dto.InvoicePaymentDTO;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.EmailAttachment;
@@ -511,20 +512,20 @@ public class InvoiceRestController {
     
 
 	@RequestMapping(value = "/saveInvoicePayment", method = RequestMethod.POST)
-	public @ResponseBody String saveInvoicePayment(@RequestParam(value = "json", required = false) String json,@RequestParam(value = "invoiceId", required = false) Long invoiceId,MultipartHttpServletRequest request) throws Exception {
+	public @ResponseBody String saveInvoicePayment(InvoicePaymentDTO invoicePaymentDTO,@RequestParam(value = "json", required = false) String json,@RequestParam(value = "invoiceId", required = false) Long invoiceId,HttpServletRequest request) throws Exception {
 
-		String json1 = "{" + json + "}";
+//		String json1 = "{" + json + "}";
 		String invoicePaymentSaved = "failed";
-		JSONObject jsonObj = new JSONObject(json1);
+//		JSONObject jsonObj = new JSONObject(json1);
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		
-		MultipartFile multiFile = null;
-		Iterator<String> itrator = request.getFileNames();
-		if(itrator.hasNext()){
-	        multiFile = request.getFile(itrator.next());
-		}
-		InvoicePayment invoicePayment = invoicePaymentService.saveInvoicePayment(jsonObj, user, orgLocation, multiFile,invoiceId);
+//		MultipartFile multiFile = null;
+//		Iterator<String> itrator = request.getFileNames();
+//		if(itrator.hasNext()){
+//	        multiFile = request.getFile(itrator.next());
+//		}
+		InvoicePayment invoicePayment = invoicePaymentService.saveInvoicePayment(invoicePaymentDTO,null, user, orgLocation, null,invoiceId);
 		if(null !=invoicePayment){
 			invoicePaymentSaved = "success";
 		}
@@ -819,9 +820,6 @@ public class InvoiceRestController {
      			contractsList = invoiceService.getSowcontractListByAssociateId(candidateId,orgLocation.getId(),orgRelationId,Constants.Client_SOW);	
      		}
      		 	
-//     		if(null != contractsList && contractsList.size() >0){
-//         		resultJson = commonUtil.toJSON(contractsList);	
-//         	}
      	}
 		return contractsList;
 		
@@ -1457,112 +1455,7 @@ public class InvoiceRestController {
 			resultJson = commonUtil.toJSON(invoiceList);	
 		}
 		return resultJson;
-		/*DateTimeFormatter startDateOutputFormatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'00:00:00");
-		DateTimeFormatter endDateOutputFormatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'23:59:59");
-
-		LocalDate today = LocalDate.now();
-		LocalDate monthStartDate = new LocalDate().withDayOfMonth(1);
-		LocalDate monthEndDate = new LocalDate().plusMonths(1).withDayOfMonth(1).minusDays(1);
-
-		Date startDateUTC = null;
-		Date endDateUTC = null;
-		switch (billingReportType) {
-		case Constants.THIS_MONTH:
-			startDateUTC = conversionUtil.getUtcDateFormat(orgLocation, monthStartDate, startDateOutputFormatter);
-			endDateUTC = conversionUtil.getUtcDateFormat(orgLocation, monthEndDate, endDateOutputFormatter);
-			break;
-		case Constants.THIS_QUARTER:
-			LocalDate[] dates = conversionUtil.getThisMonthQuarterDates(monthStartDate);
-			startDateUTC = conversionUtil.getUtcDateFormat(orgLocation, dates[0], startDateOutputFormatter);
-			endDateUTC = conversionUtil.getUtcDateFormat(orgLocation, dates[1], endDateOutputFormatter);
-			break;
-		case Constants.THIS_YEAR:
-			LocalDate[] currentYearDates = conversionUtil.getThisYearStartDateEndDate();
-			startDateUTC = conversionUtil.getUtcDateFormat(orgLocation, currentYearDates[0], startDateOutputFormatter);
-			endDateUTC = conversionUtil.getUtcDateFormat(orgLocation, currentYearDates[1], endDateOutputFormatter);
-			break;
-		case Constants.LAST_30DAYS:
-			Date[] last30Days = conversionUtil.getPreviousDates(30, orgLocation, startDateOutputFormatter,
-					endDateOutputFormatter);
-			startDateUTC = last30Days[0];
-			endDateUTC = last30Days[1];
-			break;
-		case Constants.LAST_MONTH:
-			LocalDate firstOfThisMonth = today.withDayOfMonth(1);
-			LocalDate loastMonthStartDate = firstOfThisMonth.minusMonths(1);
-			LocalDate lastMonthEndDate = firstOfThisMonth.minusDays(1);
-			startDateUTC = conversionUtil.getUtcDateFormat(orgLocation, loastMonthStartDate, startDateOutputFormatter);
-			endDateUTC = conversionUtil.getUtcDateFormat(orgLocation, lastMonthEndDate, endDateOutputFormatter);
-			break;
-		case Constants.LAST_QUARTER:
-			LocalDate lastQuarterDate = today.minusMonths(3); // 2015-10-24
-			LocalDate[] quarterDates = conversionUtil.getThisMonthQuarterDates(lastQuarterDate);
-			startDateUTC = conversionUtil.getUtcDateFormat(orgLocation, quarterDates[0], startDateOutputFormatter);
-			endDateUTC = conversionUtil.getUtcDateFormat(orgLocation, quarterDates[1], endDateOutputFormatter);
-			break;
-		case Constants.LAST_YEAR:
-			if (Constants.COUNTRY_INDIA.equalsIgnoreCase(orgLocation.getCountry())) {
-				LocalDate finStartDate = conversionUtil.getFinMonthFromDate();
-				if (null != finStartDate) {
-					LocalDate finEndDate = conversionUtil.getFinMonthEndDate();
-					startDateUTC = conversionUtil.getUtcDateFormat(orgLocation, finStartDate, startDateOutputFormatter);
-					endDateUTC = conversionUtil.getUtcDateFormat(orgLocation, finEndDate, endDateOutputFormatter);
-				}
-			} else {
-				LocalDate[] financialDates = conversionUtil.getOtherCountryFinYeraDates();
-				startDateUTC = conversionUtil.getUtcDateFormat(orgLocation, financialDates[0],
-						startDateOutputFormatter);
-				endDateUTC = conversionUtil.getUtcDateFormat(orgLocation, financialDates[1], endDateOutputFormatter);
-			}
-			break;
-		case Constants.CUSTOM:
-			LocalDate localStartDate = LocalDate.fromDateFields(conversionUtil.getDateFromString(startDate));
-			LocalDate localEndDate = LocalDate.fromDateFields(conversionUtil.getDateFromString(endDate));
-			startDateUTC = conversionUtil.getUtcDateFormat(orgLocation, localStartDate, startDateOutputFormatter);
-			endDateUTC = conversionUtil.getUtcDateFormat(orgLocation, localEndDate, endDateOutputFormatter);
-			break;
-		default:
-			logger.info("No Frequency");
-			;
-		}
-		// End Time conversion
-
-		float recievableAmount = 0;
-		float payableAmount = 0;
-		float netAmount = 0;
-		List<Invoice> invoiceNetIncomeList = invoiceService.getInvoiceByOrgLocationIdNetIncome(orgLocation.getId(),
-				startDateUTC, endDateUTC);
-		List<Invoice> invoiceList = invoiceService.getInvoiceByOrgLocationId(orgLocation.getId(), startDateUTC,
-				endDateUTC, invoiceType);
-		if (null != invoiceNetIncomeList && invoiceNetIncomeList.size() > 0) {
-			for (Invoice invoice : invoiceNetIncomeList) {
-				if (Constants.RECEIVABLE.equalsIgnoreCase(invoice.getInvoiceType())) {
-					recievableAmount = recievableAmount + Float.parseFloat(invoice.getTotal());
-				} else {
-					payableAmount = payableAmount + Float.parseFloat(invoice.getTotal());
-				}
-			}
-			netAmount = recievableAmount - payableAmount;
-		}
-		long stopTime = System.currentTimeMillis();
-		long elapsedTime = stopTime - startTime;
-//		logger.info("Final Response time = " + elapsedTime + " Millis");
-		if(invoiceList !=null && invoiceList.size()>0){
-			for(Invoice invoice : invoiceList){
-				if(invoice.getOrgRelationID().getLocationId().getId().longValue() == orgLocation.getId().longValue()){
-					invoice.setOrgName(invoice.getOrgRelationID().getResponderLocationId().getOrgLocationName());
-				}
-				if (invoice.getOrgRelationID().getResponderLocationId().getId().longValue() == orgLocation.getId()
-						.longValue()) {
-					invoice.setOrgName(invoice.getOrgRelationID().getLocationId().getOrgLocationName());
-				}
-				invoice.setInvoiceDateStr(conversionUtil.getDateAsString(invoice.getInvoiceDate()));
-				invoice.setDueDateStr(conversionUtil.getDateAsString(invoice.getDueDate()));
-				invoice.setNetIncome(netAmount);
-				invoice.setRecievableAmount(recievableAmount);
-				invoice.setPayableAmount(payableAmount);
-			}
-		}*/
+		
 		
 	}
 
@@ -1818,34 +1711,22 @@ public class InvoiceRestController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/saveExpensesInvoice", method = RequestMethod.POST)
-	public @ResponseBody String saveExpensesInvoice(@RequestParam(value = "json", required = false) String json,
+	public @ResponseBody String saveExpensesInvoice(InvoiceDTO invoiceDTO,
 			@RequestParam(value = "userId", required = false) String userId,
 			@RequestParam(value = "orgLocationId", required = false) String orgLocationId,
 			@RequestParam(value = "saveType", required = false) String saveType,
 			@RequestParam(value = "currencyCode", required = false) String currencyCode,
 			@RequestParam(value = "invoiceType", required = false) String invoiceType,
-			@RequestParam(value = "type", required = false) String invoiceCategory, MultipartHttpServletRequest request)
+			@RequestParam(value = "type", required = false) String invoiceCategory, HttpServletRequest request)
 					throws Exception {
 
 		String invoiceSaved = "failed";
 
-		String json1 = "{" + json + "}";
-
-		JSONObject jsonObj = new JSONObject(json1);
 		User user = userService.getUserById(Long.parseLong(userId));
 		OrgLocations orgLocation = orgLocationService.getOrgLocations(Long.parseLong(orgLocationId));
 		Org org = orgLocation.getOrg();
-		List<MultipartFile> attachedfileList = new ArrayList<MultipartFile>();
-		int attcahmentMaxRowNumber = Integer.parseInt(jsonObj.getString("invoiceAttcahmentMaxRowNumber"));
-		final Map files = request.getFileMap();
-		for (int i = 0; i < attcahmentMaxRowNumber; i++) {
-			MultipartFile multiFile = (MultipartFile) files.get(i + "invoicedocFile");
-			if (multiFile != null && !multiFile.isEmpty()) {
-				attachedfileList.add(multiFile);
-			}
-		}
 
-		Invoice invoice = invoiceService.saveExpenseInvoice(jsonObj, user, orgLocation, saveType, attachedfileList,invoiceType, org, currencyCode,invoiceCategory);
+		Invoice invoice = invoiceService.saveExpenseInvoice(invoiceDTO, user, orgLocation, saveType,invoiceType, org, currencyCode,invoiceCategory);
 
 		if(invoice !=null && invoice.getExpensesId() !=null && Constants.SENT.equalsIgnoreCase(saveType)) {
 			invoiceService.updateExpensesForinvoice(invoice,invoiceType);

@@ -26,7 +26,7 @@ border:none; background: none; font-size:14px; font-weight:600; box-shadow: none
     <div class="content-area content-new clearfix">
       <div class="clearfix form-horizontal inner-content">
        <div id="invoiceLoading"></div>
-       <form:form id="project_payable_invoice_form"  name="project_payable_invoice_form" method="post"  enctype='multipart/form-data'> 
+       <form:form id="project_payable_invoice_form"  name="project_payable_invoice_form" method="post"> 
         <div class="row">
           <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">
             <div class="form-group">
@@ -110,12 +110,6 @@ border:none; background: none; font-size:14px; font-weight:600; box-shadow: none
               <div class="col-md-9 select-field">
               <c:if test="${isGenerateAutomaticInvoice == 'Y'}">
                 <select class="chosen-select  form-control" id="frequency" name="frequency" data-validation="required" field-name="Frequency" onchange="getProjectAssignedMem();" disabled>
-                 <!--  <option value=''>--Select Payment Term--</option>
-                  <option>10 days</option>
-                  <option>15 days</option>
-                  <option>20 days</option>
-                  <option>30 days</option>
-                  <option>60 days</option>-->
                   </select>
                    </c:if>
                    <c:if test="${empty isGenerateAutomaticInvoice}">
@@ -124,13 +118,6 @@ border:none; background: none; font-size:14px; font-weight:600; box-shadow: none
                    </c:if>
               </div>
             </div>
-<!-- 	   
-	       <div class="form-group">
-              <label class="col-md-3">Invoice Frequency</label>
-              <div class="col-md-9">
-                <input class="form-control" id="invoiceFrequency" name="invoiceFrequency" placeholder="Invoice Frequency" type="text">
-              </div>
-            </div> -->
               
             <div class="form-group">
               <label class="col-md-3">Billing Address</label>
@@ -649,41 +636,7 @@ function populateInlineItemsGrid1(data){
 	 
   }
   </script> 
- <!--  <script>
-  function getSow(id,candidateId,opt,contractId){
-	 /*  var candidateId = $('#'+id+'candidate').val(); */
-	  var orgRelationId = $("#vendorOrgRelationId").val();
-	  var sourceleadUrl ='${sourceleadUrl}';
-	  $.ajax({
-	    	type: "GET",
-	        url: sourceleadUrl+"/getSowcontractListByAssociateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&orgRelationId="+orgRelationId+"&contractType=vendorSow",
-	        success: function(data) {
-	        	var result = "";
-	        	result = result + "<option value='' >select sow</option>"
-	        	if(data != null && data != ''){
-	        		var json = JSON.parse(data);
-		        	 for (var i=0; i<json.length; i++)
-					{
-			        		var opt = json[i];
-			        		var selected = '';
-			        		
-			        		 if(contractId != null && contractId != "" && contractId !="undefined" && contractId == opt.id){
-			        			selected = 'selected';
-			        		} 
-			        		 result = result +"<option value="+opt.id+" >"+opt.contractTitle+"</option>";
-					} 
-		        	 $('#'+id+'sow').empty();
-		        	 $('#'+id+'sow').append(result);
-		        	 /*$ ('#'+id+'rate').val(opt.billingAmount);
-		        		calculateTotalAmount(id); */
-	        	}else{
-	        		
-	        	}
-	        },
-	        
-	    });
-  }
-  </script> -->
+ 
   
 <script>
 function getSowRate(id){
@@ -1205,21 +1158,7 @@ function saveInvoice(saveType){
 	    		     			location.replace(sourceleadUrl+"/invoiceList");
 			  				}
 			  			   }); 
-		        	  /*    $.ajax({
-		    		    	 type: "POST",
-		    		    	 data: formData,
-		    			     contentType : 'application/json; charset=utf-8',
-		    			     enctype: 'multipart/form-data',
-		    		         processData: false,
-		    		         contentType:false,
-		    			     dataType : 'json',
-		     		    	 url: sourceleadUrl+"/saveInvoice?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&saveType="+saveType+"&invoiceType=payable", 
-		    		        success: function(result) {
-		    		     		$("#invoiceLoading").removeAttr("style");
-		    		     			location.replace(sourceleadUrl+"/payablesList");
-		    		     		
-		    		        },
-		    		    });  */
+		        	 
 		    	         return true; 
          }else{
 	    		return false;
@@ -1377,39 +1316,7 @@ $(document).ready(function(){
 });
 </script>
   
-<!-- <script>
-function getClientContactsExisted(clientContactId){
-	var orgRelationId = $("#orgRelationId").val();
-	var sourceleadUrl ='${sourceleadUrl}';
-	$.ajax({
-	type : "GET",
-	url: sourceleadUrl+"/getClientContactsByOrgRelationId?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+orgRelationId,
-	success :function(data) {
-	var json = JSON.parse(data);
-	var output = "";
-	output = output + "<option value=''>Select Client Contact</option>";
-	for (var i=0; i<json.length; i++)
-	{
-	var opt = json[i];
-	var selected = "";
-	if(clientContactId != null && clientContactId != "" && clientContactId !="undefined" && clientContactId == opt.spocUserId){
-		selected = 'selected';
-	}
-	output = output + "<option value='" +opt.spocUserId+ "' "+selected+">"+opt.ownerName+"</option>";
-	}
-	
-	$("#clientContact").empty();
-	$("#clientContact").append(output);
-	$('#clientContact').trigger("chosen:updated");
-	},
-	});
-
-	}
-</script> -->
-
 <!-- Get alla clients when editing -->
-
-
 <script>
 function getVendors(){
 	var sourceleadUrl ='${sourceleadUrl}';
@@ -1736,7 +1643,7 @@ function maskme(){
 <script type="text/javascript">
 function attachFile(id){
 	var sourceleadUrl ='${sourceleadUrl}';
-	fileUpload(sourceleadUrl, ""+id+"invoicedocFile", "incoiceDocuments", "project_payable_invoice_form","fileInfo");
+	fileUpload(sourceleadUrl, ""+id+"invoicedocFile", "invoiceDocuments", "project_payable_invoice_form","fileInfo");
 }
 </script>
  <jsp:include page="../masterFooter.jsp" />	

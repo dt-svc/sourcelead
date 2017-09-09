@@ -61,6 +61,7 @@ import com.bis.sourcelead.dao.InvoiceLineItemDao;
 import com.bis.sourcelead.dao.InvoiceTaxDao;
 import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.dto.InvoiceDTO;
+import com.bis.sourcelead.dto.InvoiceExpensesDTO;
 import com.bis.sourcelead.dto.InvoiceLineItemsDTO;
 import com.bis.sourcelead.dto.InvoiceTaxDTO;
 import com.bis.sourcelead.entity.Candidate;
@@ -110,6 +111,7 @@ import com.bis.sourcelead.util.PdfUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.TimesheetFrequencyGeneratorUtil;
 import com.bis.sourcelead.web.LoginSessionController;
+import com.google.gson.JsonObject;
 
 
 @Service
@@ -592,11 +594,7 @@ public class InvoiceServiceImpl implements InvoiceService{
 	     
 	     List<Long> updatedInvoiceLineItems = new ArrayList<Long>();
 		
-//		 int maxRowCount = Integer.parseInt(jsonObj.getString("maxTsRowNum"));
-//	     if(invoiceDTO.getLineItems() !=null && !invoiceDTO.getLineItems().isEmpty()) {
 		 for(InvoiceLineItemsDTO invoiceLineItemsDTO : invoiceDTO.getLineItems()){
-			 
-			 if(StringUtils.isNotBlank(invoiceLineItemsDTO.getInvoiceStartDate())){
 			 
 				 if(StringUtils.isNotBlank(invoiceLineItemsDTO.getInvoiceStartDate()) || StringUtils.isNotBlank(invoiceLineItemsDTO.getInvoiceEndDate()) || StringUtils.isNotBlank(invoiceLineItemsDTO.getCandidate()) || StringUtils.isNotBlank(invoiceLineItemsDTO.getSow()) || StringUtils.isNotBlank(invoiceLineItemsDTO.getRate()) || StringUtils.isNotBlank(invoiceLineItemsDTO.getTotalHours())){
 					 
@@ -657,10 +655,9 @@ public class InvoiceServiceImpl implements InvoiceService{
 					 if(StringUtils.isNotBlank(invoiceLineItemsDTO.getDescription())){
 						 invoiceLineItems.setInlineDescription(invoiceLineItemsDTO.getDescription());
 					 }
-					 // TODO dont delete Rajashekar
-//					if(jsonObj.has(i+"submissionApproverHierarchyId") && !"".equalsIgnoreCase(jsonObj.getString(i+"submissionApproverHierarchyId"))){
-//						submissionApproverHierarchyIds.add(jsonObj.getString(i+"submissionApproverHierarchyId"));
-//					 }
+					if(StringUtils.isNotBlank(invoiceLineItemsDTO.getSubmissionApproverHierarchyId())){
+						submissionApproverHierarchyIds.add(invoiceLineItemsDTO.getSubmissionApproverHierarchyId());
+					 }
 					if(StringUtils.isNotBlank(invoiceLineItemsDTO.getSubmissionInvoiceId()) ){
 						       List<TimesheetSubmissionsDocuments> documentList = timesheetSubmissionsDocumentsService.getAllTimesheetSubmissionsDocumentsBySubmissionId(Long.parseLong(invoiceLineItemsDTO.getSubmissionInvoiceId()));
 					           if(null != documentList && documentList.size() >0){
@@ -679,7 +676,6 @@ public class InvoiceServiceImpl implements InvoiceService{
 				 }
 //			 }
 			 
-		 }
 		 
 		 if(null != invoice.getId()){
 			 updatedInvoiceLineItems.retainAll(invoiceLineItemsIdsList);
@@ -894,36 +890,10 @@ public class InvoiceServiceImpl implements InvoiceService{
 	public Invoice updateInvoice(Invoice invoice) throws Exception {
 		return invoiceDao.updateInvoice(invoice);
 	}
-	@Override
+	/*@Override
 	public Invoice saveProjectInvoice(JSONObject jsonObj, User user, OrgLocations orgLocation, String saveType, List<MultipartFile> attachedfileList, String invoiceType) throws Exception
 	{
 		Invoice invoice = new Invoice();
-		//String pattern = "dd-MM-yyyy";
-        //SimpleDateFormat format = orgLocation.getLocFullFormDateFormatter();
-        
-        
-        //-----------------------------
-        
-        
-       /* "":"5",
-        "":"12",
-        "":"23456",
-        "":"31-05-2017",
-        "":"30 days",
-        "":"31-05-2017",
-        "projectId":"9",
-        "":"Hyderabad",
-        "maxRowNum":"7"
-        
-        "rowTotal":"2800.00",
-        "":"Y",
-        "":"project invoice",
-        "invoiceAttcahmentMaxRowNumber":"1",
-        "":"2620",
-        "_csrf":"1a98ab78-21f6-4db8-b933-9091179589db"*/
-        
-        
-        
         
 		//--------------------------------
         if(invoiceType.equalsIgnoreCase("payable")){
@@ -1039,7 +1009,7 @@ public class InvoiceServiceImpl implements InvoiceService{
 		}
 		
 		return invoiceDao.saveInvoce(invoice);
-	}
+	}*/
 
 	
 	
@@ -2365,28 +2335,25 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 		return result;
 	}
 	
+	
 	@Override
-	public Invoice saveExpenseInvoice(JSONObject jsonObj, User user, OrgLocations orgLocation, String saveType,
-			List<MultipartFile> attachedfileList, String invoiceType, Org org, String loginOrgCurrencyCode, String invoiceCategory)
-					throws Exception {
-
-		
+	public Invoice saveExpenseInvoice(InvoiceDTO invoiceDTO, User user, OrgLocations orgLocation, String saveType,
+			String invoiceType, Org org, String loginOrgCurrencyCode, String invoiceCategory) throws Exception {
 
 		Invoice invoice = null;
 
-		if (jsonObj.has("savedInvoiceId") && !isNullOrEmpty(jsonObj.getString("savedInvoiceId"))) {
-			invoice = invoiceDao.getInvoicetById(Long.valueOf(jsonObj.getString("savedInvoiceId")));
+		if (StringUtils.isNotBlank(invoiceDTO.getSavedInvoiceId())) {
+			invoice = invoiceDao.getInvoicetById(Long.valueOf(invoiceDTO.getSavedInvoiceId()));
 		} else {
 			invoice = new Invoice();
 			invoice.setInvoiceUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 		}
 
 		OrgLocations vendorOrgLocation = null;
-		;
 		if (Constants.PAYABLE.equalsIgnoreCase(invoiceType)) {
-			if (jsonObj.has("vendorOrgRelationId") && !"".equalsIgnoreCase(jsonObj.getString("vendorOrgRelationId"))) {
+			if (StringUtils.isNotBlank(invoiceDTO.getVendorOrgRelationId())) {
 				OrgRelations orgRelation = orgRelationsService
-						.getOrRelationsById(Long.parseLong(jsonObj.getString("vendorOrgRelationId")));
+						.getOrRelationsById(Long.parseLong(invoiceDTO.getVendorOrgRelationId()));
 				if (orgRelation.getResponderLocationId().getId().longValue() == orgLocation.getId().longValue()) {
 					vendorOrgLocation = orgRelation.getLocationId();
 					invoice.setResponderLocationId(vendorOrgLocation);
@@ -2398,15 +2365,15 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 				invoice.setOrgRelationID(orgRelation);
 			}
 
-			if (jsonObj.has("vendorContact") && !"".equalsIgnoreCase(jsonObj.getString("vendorContact"))) {
-				User contactUser = userService.getUserById(Long.parseLong(jsonObj.getString("vendorContact")));
+			if (StringUtils.isNotBlank(invoiceDTO.getVendorContact())) {
+				User contactUser = userService.getUserById(Long.parseLong(invoiceDTO.getVendorContact()));
 				invoice.setContactUser(contactUser);
 			}
 			invoice.setInvoiceType(Constants.Payables);
 		} else {
-			if (jsonObj.has("clientOrgRelationId") && !"".equalsIgnoreCase(jsonObj.getString("clientOrgRelationId"))) {
+			if (StringUtils.isNotBlank(invoiceDTO.getClientOrgRelationId())) {
 				OrgRelations orgRelation = orgRelationsService
-						.getOrRelationsById(Long.parseLong(jsonObj.getString("clientOrgRelationId")));
+						.getOrRelationsById(Long.parseLong(invoiceDTO.getClientOrgRelationId()));
 				if (orgRelation.getResponderLocationId().getId().longValue() == orgLocation.getId().longValue()) {
 					vendorOrgLocation = orgRelation.getLocationId();
 					invoice.setResponderLocationId(vendorOrgLocation);
@@ -2418,8 +2385,8 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 				invoice.setOrgRelationID(orgRelation);
 			}
 
-			if (jsonObj.has("clientContact") && !"".equalsIgnoreCase(jsonObj.getString("clientContact"))) {
-				User userContactName = userService.getUserById(Long.parseLong(jsonObj.getString("clientContact")));
+			if (StringUtils.isNotBlank(invoiceDTO.getClientContact())) {
+				User userContactName = userService.getUserById(Long.parseLong(invoiceDTO.getClientContact()));
 				invoice.setContactUser(userContactName);
 			}
 			invoice.setInvoiceType(Constants.Receivable);
@@ -2430,7 +2397,7 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 		if (!loginOrgCurrencyCode.equalsIgnoreCase(vendorCurrencyCode)) {
 			if (null != vendorCurrencyCode) {
 				float convertedAmount = conversionUtil.convert(loginOrgCurrencyCode, vendorCurrencyCode,
-						Float.parseFloat(jsonObj.getString("grandTotal")));
+						Float.parseFloat(invoiceDTO.getGrandTotal()));
 				float exchangeAmoiunt = conversionUtil.convert(loginOrgCurrencyCode, vendorCurrencyCode, 1);
 				float convertedAmount1 = (float) (Math.round(convertedAmount * 100.0) / 100.0);
 				invoice.setConvertCurrencyCode(vendorCurrencyCode);
@@ -2441,85 +2408,81 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 
 		invoice.setOwnerUserId(user);
 		invoice.setOrgLocation(orgLocation);
-		if (jsonObj.has("invoiceId") && !"".equalsIgnoreCase(jsonObj.getString("invoiceId"))) {
-			invoice.setInvoiceId(jsonObj.getString("invoiceId"));
+		if (StringUtils.isNotBlank(invoiceDTO.getInvoiceId())) {
+			invoice.setInvoiceId(invoiceDTO.getInvoiceId());
 		}
-		if (jsonObj.has("billingAddress") && !"".equalsIgnoreCase(jsonObj.getString("billingAddress"))) {
-			invoice.setBillingAddress(jsonObj.getString("billingAddress"));
-		} else {
-			invoice.setBillingAddress(null);
+		if (StringUtils.isNotBlank(invoiceDTO.getBillingAddress())) {
+			invoice.setBillingAddress(invoiceDTO.getBillingAddress());
 		}
-
-		if (jsonObj.has("accountDetails") && !"".equalsIgnoreCase(jsonObj.getString("accountDetails"))) {
-			invoice.setAccountDetails(jsonObj.getString("accountDetails"));
+		if (StringUtils.isNotBlank(invoiceDTO.getAccountDetails())) {
+			invoice.setAccountDetails(invoiceDTO.getAccountDetails());
 		}
 
-		if (jsonObj.has("invoiceDate") && !"".equalsIgnoreCase(jsonObj.getString("invoiceDate"))) {
-			Date invoiceDate = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(),jsonObj.getString("invoiceDate"));
+		if (StringUtils.isNotBlank(invoiceDTO.getInvoiceDate())) {
+			Date invoiceDate = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(),
+					invoiceDTO.getInvoiceDate());
 			invoice.setInvoiceDate(invoiceDate);
 		}
-		if (jsonObj.has("dueDate") && !"".equalsIgnoreCase(jsonObj.getString("dueDate"))) {
-			Date dueDate = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(),jsonObj.getString("dueDate"));
+		if (StringUtils.isNotBlank(invoiceDTO.getDueDate())) {
+			Date dueDate = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), invoiceDTO.getDueDate());
 			invoice.setDueDate(dueDate);
 		}
 
-		if (jsonObj.has("paymentFrequency") && !"".equalsIgnoreCase(jsonObj.getString("paymentFrequency"))) {
-			invoice.setPaymentFrequency(jsonObj.getString("paymentFrequency"));
+		if (StringUtils.isNotBlank(invoiceDTO.getPaymentFrequency())) {
+			invoice.setPaymentFrequency(invoiceDTO.getPaymentFrequency());
 		} else {
 			invoice.setPaymentFrequency(null);
 		}
 
-		if (jsonObj.has("disCount") && !"".equalsIgnoreCase(jsonObj.getString("disCount"))) {
-			invoice.setDiscountType(jsonObj.getString("disCount"));
-			;
+		if (StringUtils.isNotBlank(invoiceDTO.getDisCount())) {
+			invoice.setDiscountType(invoiceDTO.getDisCount());
+
 		}
 
-		if (jsonObj.has("discountValue") && !"".equalsIgnoreCase(jsonObj.getString("discountValue"))) {
-			invoice.setDiscountAmount(jsonObj.getString("discountValue"));
-			;
+		if (StringUtils.isNotBlank(invoiceDTO.getDiscountTotal())) {
+			invoice.setDiscountAmount(invoiceDTO.getDiscountTotal());
 		}
-		if (jsonObj.has("discountTotal") && !"".equalsIgnoreCase(jsonObj.getString("discountTotal"))) {
-			invoice.setDiscountValue(jsonObj.getString("discountTotal"));
-			;
+		if (StringUtils.isNotBlank(invoiceDTO.getDiscountTotal())) {
+			invoice.setDiscountValue(invoiceDTO.getDiscountTotal());
+
 		}
-		if (jsonObj.has("inoviceTotal") && !"".equalsIgnoreCase(jsonObj.getString("inoviceTotal"))) {
-			invoice.setSubTotal(jsonObj.getString("inoviceTotal"));
-			;
+		if (StringUtils.isNotBlank(invoiceDTO.getInoviceTotal())) {
+			invoice.setSubTotal(invoiceDTO.getInoviceTotal());
+
 		}
 
-		if (jsonObj.has("comment") && !"".equalsIgnoreCase(jsonObj.getString("comment"))) {
-			invoice.setInvoiceComment(jsonObj.getString("comment"));
-		} else {
-			invoice.setInvoiceComment(null);
+		if (StringUtils.isNotBlank(invoiceDTO.getComment())) {
+			invoice.setInvoiceComment(invoiceDTO.getComment());
 		}
 
-		if (jsonObj.has("grandTotal") && !"".equalsIgnoreCase(jsonObj.getString("grandTotal"))) {
-			invoice.setTotal(jsonObj.getString("grandTotal"));
-			invoice.setDueAmount(jsonObj.getString("grandTotal"));
+		if (StringUtils.isNotBlank(invoiceDTO.getGrandTotal())) {
+			invoice.setTotal(invoiceDTO.getGrandTotal());
+			invoice.setDueAmount(invoiceDTO.getGrandTotal());
 		}
 
-		if (jsonObj.has("afterDiscountTotal") && !"".equalsIgnoreCase(jsonObj.getString("afterDiscountTotal"))) {
-			invoice.setAfterDiscountValue(jsonObj.getString("afterDiscountTotal"));
+		if (StringUtils.isNotBlank(invoiceDTO.getAfterDiscountTotal())) {
+			invoice.setAfterDiscountValue(invoiceDTO.getAfterDiscountTotal());
 		}
 		invoice.setPaymentStatus(Constants.INVOICE_STATUS_UNPAID);
-		if (jsonObj.has("projectId") && !"".equalsIgnoreCase(jsonObj.getString("projectId"))) {
-			Projects projects = projectsService.getProjectById(Long.parseLong(jsonObj.getString("projectId")));
+		if (StringUtils.isNotBlank(invoiceDTO.getProjectId())) {
+			Projects projects = projectsService.getProjectById(Long.parseLong(invoiceDTO.getProjectId()));
 			invoice.setProjectID(projects);
 		}
 
-		if (jsonObj.has("frequency") && !"".equalsIgnoreCase(jsonObj.getString("frequency"))) {
-			invoice.setInvoiceFrequency(jsonObj.getString("frequency"));
+		if (StringUtils.isNotBlank(invoiceDTO.getFrequency())) {
+			invoice.setInvoiceFrequency(invoiceDTO.getFrequency());
 		}
-		
-		if (jsonObj.has("projectMemberId") && !"".equalsIgnoreCase(jsonObj.getString("projectMemberId"))) {
-			ProjectMembers pm = projectMembersService.getProjectMemberById(Long.parseLong(jsonObj.getString("projectMemberId")));
+
+		if (StringUtils.isNotBlank(invoiceDTO.getProjectMemberId())) {
+			ProjectMembers pm = projectMembersService
+					.getProjectMemberById(Long.parseLong(invoiceDTO.getProjectMemberId()));
 			invoice.setProjectMemberId(pm);
 		}
-		if (jsonObj.has("expensesId") && !"".equalsIgnoreCase(jsonObj.getString("expensesId"))) {
-			Expenses expenses = expensesService.getExpenseById(Long.parseLong(jsonObj.getString("expensesId")));
-			invoice.setExpensesId(expenses);;
+		if (StringUtils.isNotBlank(invoiceDTO.getExpensesId())) {
+			Expenses expenses = expensesService.getExpenseById(Long.parseLong(invoiceDTO.getExpensesId()));
+			invoice.setExpensesId(expenses);
+			;
 		}
-		
 
 		invoice.setCurrencyCode(loginOrgCurrencyCode);
 		invoice.setCreatedBy(user.getUserCode());
@@ -2536,7 +2499,8 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 		if (null != invoice.getId()) {
 			invoiceLineItemsIdsList = invoiceLineItemDao.getInvoiceLineItemsIdsByInvoiceId(invoice.getId());
 		}
-		Set<InvoiceLineItems> invoiceLineItemsSet = getExpensesInvoiceLineItems(jsonObj, user, orgLocation, invoice,invoiceLineItemsIdsList, submissionApproverHierarchyIds, docusList);
+		Set<InvoiceLineItems> invoiceLineItemsSet = getExpensesInvoiceLineItems(invoiceDTO, user, orgLocation, invoice,
+				invoiceLineItemsIdsList, submissionApproverHierarchyIds, docusList);
 		invoice.setInvoiceLineItems(invoiceLineItemsSet);
 
 		invoice.setSubmissionApproverHierarchyIds(submissionApproverHierarchyIds);
@@ -2546,22 +2510,22 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 		if (null != invoice.getId()) {
 			invoiceTaxItemsIdsList = invoiceTaxDao.getInvoiceTaxIdsByInvoiceId(invoice.getId());
 		}
-		Set<InvoiceTax> invoiceTax = getInvoiceTax(jsonObj, user, orgLocation, invoice, invoiceTaxItemsIdsList);
+		Set<InvoiceTax> invoiceTax = getInvoiceTax(user, orgLocation, invoice, invoiceTaxItemsIdsList, invoiceDTO);
 		invoice.setInvoiceTax(invoiceTax);
 
 		// store attached Documents
-		if (null != attachedfileList && attachedfileList.size() > 0) {
-			Set<InvoiceDocument> invoiceDocumentsSet = getInvoiceDocuments(jsonObj, user, orgLocation, invoice,
-					attachedfileList);
+		if (invoiceDTO.getFileInfo() != null && !invoiceDTO.getFileInfo().isEmpty()) {
+			Set<InvoiceDocument> invoiceDocumentsSet = getInvoiceDocuments(invoiceDTO, user, orgLocation, invoice);
 			invoice.setInvoiceDocumentSet(invoiceDocumentsSet);
 		}
 
-		//store attached Documents (after)
-		File file = expensesInvoicePdfHelper.createPdfTableForExpensesInvoice(invoice, orgLocation, user, org, invoiceType,	vendorCurrencyCode, loginOrgCurrencyCode);
+		// store attached Documents (after)
+		File file = expensesInvoicePdfHelper.createPdfTableForExpensesInvoice(invoice, orgLocation, user, org,
+				invoiceType, vendorCurrencyCode, loginOrgCurrencyCode);
 		invoice.setFileName(file.getName());
 		byte[] bytesArray = getByteArray(file);
 		invoice.setDocFile(bytesArray);
-//		invoiceDao.saveInvoce(invoice);
+		// invoiceDao.saveInvoce(invoice);
 		if (null != file) {
 			file.delete();
 		}
@@ -2573,10 +2537,10 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 			invoice.setSubmissionApproverHierarchyId(submissionIds);
 		}
 		invoice.setInvoiceCategory(invoiceCategory);
-		if(jsonObj.has("invoiceforexpenses")){
-			invoice.setExpensesInvoices(jsonObj.getString("invoiceforexpenses"));
+		if (StringUtils.isNotBlank(invoiceDTO.getInvoiceforexpenses())) {
+			invoice.setExpensesInvoices(invoiceDTO.getInvoiceforexpenses());
 		}
-		
+
 		invoiceDao.saveInvoce(invoice);
 		if (Constants.SENT.equalsIgnoreCase(saveType)) {
 			sendInvoiceMail(user, orgLocation, invoice, invoiceType, docusList);
@@ -2615,103 +2579,85 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 	 * @throws Exception
 	 * @throws NumberFormatException
 	 */
-	private Set<InvoiceLineItems> getExpensesInvoiceLineItems(JSONObject jsonObj, User user,
+	private Set<InvoiceLineItems> getExpensesInvoiceLineItems(InvoiceDTO invoiceDTO, User user,
 			OrgLocations orgLocation, Invoice invoice, List<Long> invoiceLineItemsIdsList,
 			List<String> submissionApproverHierarchyIds, List<TimesheetSubmissionsDocuments> docusList)
-					throws NumberFormatException, Exception {
+			throws NumberFormatException, Exception {
 		Set<InvoiceLineItems> expensesinvoicelineitemsSet = new HashSet<>();
 
-		/*String pattern = "dd-MM-yyyy";
-		SimpleDateFormat format = new SimpleDateFormat(pattern);*/
+		/*
+		 * String pattern = "dd-MM-yyyy"; SimpleDateFormat format = new
+		 * SimpleDateFormat(pattern);
+		 */
 
 		List<Long> updatedInvoiceLineItems = new ArrayList<Long>();
-
-		int maxRowCount = Integer.parseInt(jsonObj.getString("invoiceExpMaxRowNumber"));
-		for (int i =0; i < maxRowCount; i++) {
-			// expensesDate invoice; orgLocation; description; quantity; total;
-			// status;
-			if (jsonObj.has(i + "description")) {
-
-//				if (null != jsonObj.getString(i + "quantity") || null != jsonObj.getString(i + "rate") || !"".equalsIgnoreCase(jsonObj.getString(i + "quantity"))
-//		|| !"".equalsIgnoreCase(jsonObj.getString(i + "rate"))) {
-
+		List<InvoiceExpensesDTO> invoiceExpensesDtoList = invoiceDTO.getExpenseInvoice();
+		if (invoiceExpensesDtoList != null && !invoiceExpensesDtoList.isEmpty()) {
+			for (InvoiceExpensesDTO invoiceExpensesDTO : invoiceExpensesDtoList) {
+				// expensesDate invoice; orgLocation; description; quantity; total;
+				// status;
+				if (StringUtils.isNotBlank(invoiceExpensesDTO.getDescription())) {
 					InvoiceLineItems invoiceLineItems = new InvoiceLineItems();
-					/*
-					 * if(jsonObj.has(i+"lineItemId") && null !=
-					 * jsonObj.getString(i+"lineItemId") &&
-					 * !"".equalsIgnoreCase(jsonObj.getString(i+"lineItemId"))){
-					 * expensesInvoiceLineItems.setId(Long.valueOf(jsonObj.
-					 * getString(i+"lineItemId")));
-					 * updatedInvoiceLineItems.add(Long.valueOf(jsonObj.
-					 * getString(i+"lineItemId"))); }
-					 */
-					if(jsonObj.has(i + "edate")){
-						if (null != jsonObj.getString(i + "edate")
-								&& !"".equalsIgnoreCase(jsonObj.getString(i + "edate"))) {
-							Date expenseDate = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(),jsonObj.getString(i + "edate"));
-							invoiceLineItems.setStartDate(expenseDate);
-						}	
+
+					if (StringUtils.isNotBlank(invoiceExpensesDTO.getLineItemId())) {
+						// expensesInvoiceLineItems.setId(Long.valueOf(jsonObj.
+						// getString(i+"lineItemId")));
+						updatedInvoiceLineItems.add(Long.valueOf(invoiceExpensesDTO.getLineItemId()));
 					}
-					if(jsonObj.has(i + "description")){
-						if (null != jsonObj.getString(i + "description")
-								&& !"".equalsIgnoreCase(jsonObj.getString(i + "description"))) {
-							String description = jsonObj.getString(i + "description");
-							invoiceLineItems.setInlineDescription(description);;
-						}	
+
+					if (StringUtils.isNotBlank(invoiceExpensesDTO.getEdate())) {
+						Date expenseDate = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(),
+								invoiceExpensesDTO.getEdate());
+						invoiceLineItems.setStartDate(expenseDate);
 					}
-					
-					
-					if(jsonObj.has(i + "quantity")){
-						if (null != jsonObj.getString(i + "quantity")
-								&& !"".equalsIgnoreCase(jsonObj.getString(i + "quantity"))) {
-							String quantity = jsonObj.getString(i + "quantity");
-							invoiceLineItems.setQuantity(quantity);
-						}
+					if (StringUtils.isNotBlank(invoiceExpensesDTO.getDescription())) {
+						String description = invoiceExpensesDTO.getDescription();
+						invoiceLineItems.setInlineDescription(description);
+						;
 					}
-					
-					if(jsonObj.has(i + "rate")){
-						if (null != jsonObj.getString(i + "rate") && !"".equalsIgnoreCase(jsonObj.getString(i + "rate"))) {
-							invoiceLineItems.setRate(jsonObj.getString(i + "rate"));
-						}	
+					if (StringUtils.isNotBlank(invoiceExpensesDTO.getQuantity())) {
+						invoiceLineItems.setQuantity(invoiceExpensesDTO.getQuantity());
 					}
-					
-					if (null != jsonObj.getString(i + "total")
-							&& !"".equalsIgnoreCase(jsonObj.getString(i + "total"))) {
-						invoiceLineItems.setAmount(jsonObj.getString(i + "total"));
+
+					if (StringUtils.isNotBlank(invoiceExpensesDTO.getRate())) {
+						invoiceLineItems.setRate(invoiceExpensesDTO.getRate());
 					}
-					if(jsonObj.has(i + "category")){
-						if (null != jsonObj.getString(i + "category")
-								&& !"".equalsIgnoreCase(jsonObj.getString(i + "category"))) {
-							invoiceLineItems.setExpenseCategory(jsonObj.getString(i + "category"));
-						}
+
+					if (StringUtils.isNotBlank(invoiceExpensesDTO.getTotal())) {
+						invoiceLineItems.setAmount(invoiceExpensesDTO.getTotal());
 					}
-					
+					if (StringUtils.isNotBlank(invoiceExpensesDTO.getCategory())) {
+						invoiceLineItems.setExpenseCategory(invoiceExpensesDTO.getCategory());
+					}
+
 					invoiceLineItems.setOrgLocation(orgLocation);
 					invoiceLineItems.setStatus(Constants.RECORD_ACTIVE.toString());
 					invoiceLineItems.setCreatedBy(user.getUserCode());
 					invoiceLineItems.setCreatedDate(commonUtil.currentDate());
 					invoiceLineItems.setInvoice(invoice);
 					expensesinvoicelineitemsSet.add(invoiceLineItems);
-//				}
+					// }
+				}
+
 			}
 
-		}
-
-		if (null != invoice.getId()) {
-			updatedInvoiceLineItems.retainAll(invoiceLineItemsIdsList);
-			invoiceLineItemsIdsList.removeAll(updatedInvoiceLineItems);
+			if (null != invoice.getId()) {
+				updatedInvoiceLineItems.retainAll(invoiceLineItemsIdsList);
+				invoiceLineItemsIdsList.removeAll(updatedInvoiceLineItems);
+			}
 		}
 
 		return expensesinvoicelineitemsSet;
 
 	}
+
 	@Override
-	public void updateExpensesForinvoice(Invoice invoice,String invoiceType) throws Exception {
+	public void updateExpensesForinvoice(Invoice invoice, String invoiceType) throws Exception {
 		Expenses expenses = invoice.getExpensesId();
-		if(Constants.RECEIVABLE.equalsIgnoreCase(invoiceType)) {
-		   expenses.setBillingRecievableStatus("SENT");
-		}else {
-			expenses.setBillingPayableStatus("SENT");	
+		if (Constants.RECEIVABLE.equalsIgnoreCase(invoiceType)) {
+			expenses.setBillingRecievableStatus("SENT");
+		} else {
+			expenses.setBillingPayableStatus("SENT");
 		}
 		addExpensesDao.storeAddExpensesData(expenses);
 	}
@@ -2740,5 +2686,5 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 	}
 	return bytesArray;
 	}
-	
+
 }

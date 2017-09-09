@@ -58,8 +58,7 @@ function errRemoveVendorContact(){
 	</section>
 	<div class="content-area content-new clearfix">
 		<div id="invoiceLoading"></div>
-		<form:form id="invoice_form" name="invoice_form" method="post"
-			enctype='multipart/form-data'>
+		<form:form id="invoice_form" name="invoice_form" method="post">
 			<div class="clearfix form-horizontal inner-content">
 				<div class="row">
 					<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">
@@ -1700,13 +1699,6 @@ function errDueDate(){
 </script>
 
 <script>
-	 /*  $(function() {
-	    $( "#invoiceDate, #dueDate" ).datepicker({
-	    	dateFormat : 'dd-mm-yy',
-		  changeMonth: true,
-	      changeYear: true,
-	    });
-	  }); */
 	  
 	  $( "#0sdate-input" ).datepicker({
 		  changeMonth: true,
@@ -1719,9 +1711,6 @@ function errDueDate(){
 	            dt.setDate(dt.getDate() - 1);
 	            $("#"+maxRowNum+"sdate-input").datepicker("option", "maxDate", dt);
 	            getEstimatedHours(maxRowNum);
-			 /*  var dt = toDate("#"+maxRowNum+"edate-input");
-				dt.setDate(dt.getDate() - 1);
-				$("#"+maxRowNum+"sdate-input").datepicker("option", "maxDate", dt); */
 	 	  }
 	    });
 	
@@ -1736,9 +1725,6 @@ function errDueDate(){
 	            dt.setDate(dt.getDate() - 1);
 	            $("#"+maxRowNum+"sdate-input").datepicker("option", "maxDate", dt);
 	            getEstimatedHours(maxRowNum);
-			 /*  var dt = toDate("#"+maxRowNum+"edate-input");
-				dt.setDate(dt.getDate() - 1);
-				$("#"+maxRowNum+"sdate-input").datepicker("option", "maxDate", dt); */
 	 	  }
 	    });
 	  </script>
@@ -1927,20 +1913,6 @@ function saveInvoice(saveType){
 	    		     			location.replace(sourceleadUrl+"/invoiceList");
 			  				}
 			  			   }); 
-		        	  /*       $.ajax({
-		    		    	 type: "POST",
-		    		    	 data: formData,
-		    			     contentType : 'application/json; charset=utf-8',
-		    			     enctype: 'multipart/form-data',
-		    		         processData: false,
-		    		         contentType:false,
-		    			     dataType : 'json',
-		     		    	 url: sourceleadUrl+"/saveInvoice?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&saveType="+saveType+"&invoiceType=payable", 
-		    		        success: function(result) {
-		    		     		$("#invoiceLoading").removeAttr("style");
-		    		     			location.replace(sourceleadUrl+"/payablesList");
-		    		        },
-		    		    });  */
 		    	         return true; 
 	        }
          }else{
@@ -2131,7 +2103,7 @@ function validationHours(rowId){
 <script type="text/javascript">
  function attachFile(id){
 	var sourceleadUrl ='${sourceleadUrl}';
-	fileUpload(sourceleadUrl, ""+id+"invoicedocFile", "incoiceDocuments", "invoice_form","fileInfo");
+	fileUpload(sourceleadUrl, ""+id+"invoicedocFile", "invoiceDocuments", "invoice_form","fileInfo");
 }
 </script>
 
