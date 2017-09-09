@@ -11,6 +11,7 @@ public class ClientVendorDTO extends SearchDTO implements Serializable {
 	private String orgName;
 	private String orgLocationId;
 	private String webSite;
+	private String companyWebSite;
 	private String location;
 	private String orgLocation;
 	private String orgCountry;
@@ -41,6 +42,8 @@ public class ClientVendorDTO extends SearchDTO implements Serializable {
 	private List<String> clientIds;
 	private List<String> status;
 	private List<String> invitationStatus;
+	
+	private AddUserDTO addUserDTO;
 	
 	public String getOrgName() {
 		return orgName;
@@ -304,6 +307,22 @@ public class ClientVendorDTO extends SearchDTO implements Serializable {
 
 	public void setInvitationStatus(List<String> invitationStatus) {
 		this.invitationStatus = invitationStatus;
+	}
+
+	public AddUserDTO getAddUserDTO() {
+		return addUserDTO;
+	}
+
+	public void setAddUserDTO(AddUserDTO addUserDTO) {
+		this.addUserDTO = addUserDTO;
+	}
+
+	public String getCompanyWebSite() {
+		return companyWebSite;
+	}
+
+	public void setCompanyWebSite(String companyWebSite) {
+		this.companyWebSite = companyWebSite;
 	}
 
 

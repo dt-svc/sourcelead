@@ -94,7 +94,7 @@ public class InvoicePdfHelper {
 		Countries countries = countriesService.getCountriesByCountryName(orgLocation.getCountry());
 		String countryCurrency = countries.getCurrency();
 		/*SimpleDateFormat simpleDateFormat = orgLocation.getLocFullFormDateFormatter();*/
-		File invoiceFile = new File(orgLocation.getOrgLocationName() + "_" + invoice.getInvoiceId() + ".pdf");
+		File invoiceFile = new File(orgLocation.getOrgLocationName() + "_" + invoice.getInvoiceId() + new Date().getTime()+ ".pdf");
 		if (Constants.PAYABLE.equalsIgnoreCase(invoiceType)) {
 			Document document = new Document();
 			invoiceFile.setReadable(true);

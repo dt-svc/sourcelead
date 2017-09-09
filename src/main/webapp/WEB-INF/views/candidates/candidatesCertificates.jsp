@@ -123,15 +123,25 @@ function storeCertificate(candidateId){
 		 
 			
 		if ($('#Candidate_certification_form').validate(false,validationSettings)) {
-			var frm = $('#Candidate_certification_form').serializeFormJSON();
+			/* var frm = $('#Candidate_certification_form').serializeFormJSON();
 			var con = JSON.stringify(frm);
 			con = con.replace(/[{}]/g, "");
 			var jsonData = encodeURIComponent(con);
 			var sourceleadUrl = '${sourceleadUrl}';
 			 
 			$("#Candidate_certification_form").attr("disabled", "disabled");
-			 $("#addCandidate").attr("disabled", "disabled");
-				$.ajax({
+			 $("#addCandidate").attr("disabled", "disabled"); */
+			 var formData = getFormData("Candidate_certification_form");
+				var sourceleadUrl = '${sourceleadUrl}';
+				$("#Candidate_certification_form").attr("disabled", "disabled");
+				 $("#addCandidate").attr("disabled", "disabled");
+		        $.post(sourceleadUrl+"/storeCandidateCertifications?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId, formData, function(data) {
+		        	closeCertificatePopup();
+		        	candidateCertificateList(candidateId);
+               		cerMsgFadein();
+               		qwikCertificates(candidateId);
+		        });
+				/* $.ajax({
 						type : "POST",
 						url : sourceleadUrl
 								+ "/storeCandidateCertifications?${_csrf.parameterName}=${_csrf.token}&json="
@@ -155,7 +165,7 @@ function storeCertificate(candidateId){
 							    	}
 							   }
 						},
-					});
+					}); */
 			return true;
 		} else {
 			return false;
@@ -582,16 +592,27 @@ function addCertification(candidateId) {
 								result = result  +'	                      </select>';
 								result = result  +'	                   </div>';
 								result  = result + '                   <div class="col-md-8" positionRelative id="candidateScoreDiv">';
-								result  = result + '                     <input type="text" class="form-control input-sm" value="'+ json.score+ '" name="score" placeholder="Score" id="candidateScore" onkeyup="selectScoreType();scoreAndScoreType();"';
+								if(json.score !=null && json.score!='undefined'&& json.score !=''){
+								result  = result + '                     <input type="text" class="form-control input-sm" value="'+json.score+ '" name="score" placeholder="Score" id="candidateScore" onkeyup="selectScoreType();scoreAndScoreType();"';
 								result  = result + '                     data-validation-optional="true" data-validation="required validate_length length1-5" field-name="score">';
+								}else{
+								result  = result + '                     <input type="text" class="form-control input-sm" value="" name="score" placeholder="Score" id="candidateScore" onkeyup="selectScoreType();scoreAndScoreType();"';
+								result  = result + '                     data-validation-optional="true" data-validation="required validate_length length1-5" field-name="score">';
+								}
 								result  = result + '                 	 </div>';
 								result = result  +'	                   </div>';
-								
 								result  = result + '                 <div class="clearfix mb10">';
+								if(json.description !=null && json.description!='undefined'&& json.description !=''){
 								result  = result + '                   <div class="col-md-12">';
-								result  = result + '                     <input type="text" class="form-control" rows="1" name ="description" value="'+ json.description+ '"  placeholder="Description" id="candidateDescription"';
+								result  = result + '                     <input type="text" class="form-control" rows="1" name ="description" value="'+json.description+ '"  placeholder="Description" id="candidateDescription"';
 								result  = result + '                     data-validation-optional="true" data-validation="required">';
 								result  = result + '                   </div>';
+								}else{
+									result  = result + '                   <div class="col-md-12">';
+									result  = result + '                     <input type="text" class="form-control" rows="1" name ="description" value=""  placeholder="Description" id="candidateDescription"';
+									result  = result + '                     data-validation-optional="true" data-validation="required">';
+									result  = result + '                   </div>';	
+								}
 								result  = result + '                 </div>';
 								result  = result + '                 <div class="clearfix mb10">';
 								result  = result + '                   <div class="col-md-6 positionRelative">';
@@ -767,28 +788,20 @@ function addCertification(candidateId) {
 		if ($('#candidateCertificationEdit_form').validate(false,
 				validationSettings)) {
 
-			var frm = $('#candidateCertificationEdit_form').serializeFormJSON();
-
-			var con = JSON.stringify(frm);
-			con = con.replace(/[{}]/g, "");
-			var jsonData = encodeURIComponent(con);
+			 var formData = getFormData("candidateCertificationEdit_form");
 			//It will escape all the special characters
 			var sourceleadUrl = '${sourceleadUrl}';
+			
+			 $.post(sourceleadUrl+"/updateCandidateCertificationsBycandidateIdandcandidateCertificateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&candidateCertificationId"+ candidateCertificationId, formData, function(data) {
+				 closeCertificatePopup();
+     			$("#selector5").removeAttr("style");
+     			$("#selector5").css({ display: "block" });
+     			$("#cerMsgDiv").html("Certification details updated");
+					candidateCertificateList(candidateId);
+					cerMsgFadein();
+					qwikCertificates(candidateId);
+		        });			
 
-			$.ajax({
-						type : "POST",
-						url : sourceleadUrl
-								+ "/updateCandidateCertificationsBycandidateIdandcandidateCertificateId?${_csrf.parameterName}=${_csrf.token}&json="+ jsonData + "&candidateId=" + candidateId	+ "&candidateCertificationId"+ candidateCertificationId,
-						success : function(data) {
-							closeCertificatePopup();
-	            			$("#selector5").removeAttr("style");
-	            			$("#selector5").css({ display: "block" });
-	            			$("#cerMsgDiv").html("Certification details updated");
-							candidateCertificateList(candidateId);
-							cerMsgFadein();
-							qwikCertificates(candidateId);
-						},
-					});
 			return true;
 		} else {
 			return false;

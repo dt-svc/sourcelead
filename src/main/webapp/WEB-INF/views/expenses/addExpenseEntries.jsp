@@ -531,7 +531,10 @@ function validate_fileupload(fileName)
  <script type="text/javascript">
  function validateUploadFile(id,entityId)
 	{
-		 var selectedFile = $('#'+id+'docFile'+entityId).val();
+	 var sourceleadUrl ='${sourceleadUrl}';
+		fileUpload(sourceleadUrl, ""+id+"docFile"+entityId+"", "resumes", "add_expenses_form");
+
+		var selectedFile = $('#'+id+'docFile'+entityId).val();
 		  if(validate_fileupload(selectedFile)){
 			   var docSize = $('#'+id+'docFile'+entityId)[0].files[0].size;
 		       $("#"+id+"docFileuploadFileGroup"+entityId).find('p.jquery_form_error_message').remove();
@@ -552,6 +555,7 @@ function validate_fileupload(fileName)
 				  $('#'+id+'docFile'+entityId).attr('record-exist-errorMsg','Invalid Format'); 
 		  }
 		
+		 
 	 }
 </script>
 

@@ -327,13 +327,9 @@ var validationSettings = {
 <script type="text/javascript">
 	function storeVendorNotes(orgRelationId){
 		if ($('#vendorNotes_form').validate(false, validationSettings)){ 
-				var frm = $('#vendorNotes_form').serializeFormJSON();
-				var con = JSON.stringify(frm);
-// 				con = con.replace(/[{}]/g, "");
+				
 				var form = $('#vendorNotes_form')[0];
 	      		var formData = new FormData(form); 
-	      		formData.append("json",con);
-	      		
 	      		var userId = '${SourceLeadWeb_user.id}';
 	      		formData.append("userId",userId);
 	      	    var locationCode ='${SourceLeadWeb_locationCode}'; 
@@ -342,16 +338,12 @@ var validationSettings = {
 				var sourceleadUrl = '${sourceleadUrl}';
 				$("#save_note").attr("disabled", "disabled");
          		$("#save_note" ).addClass('button').val('Processing..');
-		        var jsonData = encodeURIComponent(con);
 				$.ajax({
 						type : "POST",
 		        	    data: formData,
-		        	    contentType : 'application/json; charset=utf-8',
-		        	    enctype: 'multipart/form-data',
 		    	        processData: false,
 		    	        contentType:false,
-		        	    dataType : 'json',
-						url : sourceleadUrl+"/storeNotes?${_csrf.parameterName}=${_csrf.token}",
+						url : sourceleadUrl+"/storeNotes?${_csrf.parameterName}=${_csrf.token}&userId="+userId+"&locationCode="+locationCode,
 						success : function(result) {
 							closeDocPopup();
 							vendorNotes(orgRelationId);
