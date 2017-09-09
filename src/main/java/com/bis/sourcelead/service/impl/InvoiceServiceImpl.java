@@ -215,11 +215,6 @@ public class InvoiceServiceImpl implements InvoiceService{
 	@Override
 	public Invoice saveInvoice(User user, OrgLocations orgLocation,String saveType,String invoiceType,Org org,String loginOrgCurrencyCode,InvoiceDTO invoiceDTO) throws Exception {
 		
-		
-		
-		//String pattern = "dd-MM-yyyy";
-        //SimpleDateFormat format = orgLocation.getLocFullFormDateFormatter();
-        
         Invoice invoice = null;
         
         if(StringUtils.isNotBlank(invoiceDTO.getSavedInvoiceId())){
@@ -376,14 +371,15 @@ public class InvoiceServiceImpl implements InvoiceService{
 		
 		//store attached Documents (after)
 		File file = invoicePdfHelper.createPdfTableForInvoice(invoice,orgLocation,user,org,invoiceType,vendorCurrencyCode,loginOrgCurrencyCode);
+		
+		if(file.exists() && !file.isDirectory()) 
+		{
 		        invoice.setFileName(file.getName());
 		        invoice.setFileUrl(FileUploadUtil.moveFile(staticPath, org.getId(), orgLocation.getId(), "InvoicePdf", file));
-		        
-		        
+		}
 		        if(null != file){
 		        	file.delete();
 		        }
-		        
 		        if(invoice.getSubmissionApproverHierarchyIds() !=null && invoice.getSubmissionApproverHierarchyIds().size() >0){
 		        	String submissionIds = invoice.getSubmissionApproverHierarchyIds().stream().map(Object::toString).collect(Collectors.joining(","));
 		        	invoice.setSubmissionApproverHierarchyId(submissionIds);
@@ -392,15 +388,6 @@ public class InvoiceServiceImpl implements InvoiceService{
 		invoiceDao.saveInvoce(invoice);
 		if(Constants.SENT.equalsIgnoreCase(saveType)){
 			//mail scenario for client accept or reject
-			/*int maxRowCount = Integer.parseInt(jsonObj.getString("maxTsRowNum"));
-			 for(int i=0;i<maxRowCount;i++){
-			List<TimesheetSubmissionsDocuments> documentList = timesheetSubmissionsDocumentsService.getAllTimesheetSubmissionsDocumentsBySubmissionId(Long.parseLong(jsonObj.getString(i+"submissionInvoiceId")));
-			if(null != documentList && documentList.size() >0){
-	     	   for(TimesheetSubmissionsDocuments document : documentList){
-	     		   docusList.add(document);
-	     	   }
-	        }
-		  }*/
 			sendInvoiceMail(user,orgLocation,invoice,invoiceType,docusList);
 			
 			saveParentInvoice(invoice,loginOrgCurrencyCode,vendorOrgLocation);	
@@ -807,12 +794,10 @@ public class InvoiceServiceImpl implements InvoiceService{
 		 emailMessage.setFromName(msgBuild.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
 		 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
 
-		 //SimpleDateFormat dateFormat=orglocations.getLocFullFormDateFormatter();
 		 String date = (commonUtil.dateStrFromOrgDateFormatter(orglocations.getDateFormat(),invoice.getDueDate()));
 
 		String invoiceDate= (commonUtil.dateStrFromOrgDateFormatter(orglocations.getDateFormat(),invoice.getInvoiceDate()));
 
-		//setting the class filed values
 		 Map<String, String> globalVarsMap = new HashMap<String, String>();
 		 globalVarsMap.put("invoiceID",invoice.getInvoiceId());
 		 globalVarsMap.put("LoginUser",user.getFirstName());
@@ -860,16 +845,17 @@ public class InvoiceServiceImpl implements InvoiceService{
 		 emailAttachment.setUUID(UUID);
 		 EmailAttachment attachmentZip = zipFiles(docusList);
 		 if(null != invoice.getInvoiceDocumentSet() && invoice.getInvoiceDocumentSet().size() > 0 && !invoice.getInvoiceDocumentSet().isEmpty()){
-		 Set<InvoiceDocument> documenetSet = invoice.getInvoiceDocumentSet();
-		 for(InvoiceDocument doc:documenetSet){
-			 EmailAttachment docAttachment = new EmailAttachment();
-			 docAttachment.setDocFile(doc.getDocFile());
-			 docAttachment.setName(doc.getFileName());
-			 documentList.add(docAttachment);
+			 Set<InvoiceDocument> documenetSet = invoice.getInvoiceDocumentSet();
+			 for(InvoiceDocument doc:documenetSet){
+				 EmailAttachment docAttachment = new EmailAttachment();
+				 docAttachment.setDocFile(readBytesFromFile(staticPath+doc.getFileUrl()));
+				 docAttachment.setName(doc.getFileName());
+				 documentList.add(docAttachment);
+			 }
 		 }
-		 
-		 }
+		 if(StringUtils.isNotBlank(invoice.getFileUrl()))
 		 emailAttachment.setDocFile(readBytesFromFile(staticPath+invoice.getFileUrl()));
+		 if(StringUtils.isNotBlank(invoice.getFileName()))
 		 emailAttachment.setName(invoice.getFileName());
 		 attachmentList.add(emailAttachment);
 

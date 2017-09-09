@@ -57,7 +57,7 @@ public class FileUploadUtil {
 	}
 	
 	public static String moveFile(String staticPath, long orgId, long orgLocationId, String type, File file) throws IOException {
-		String url = "/slead-static/"+orgId+"/"+orgLocationId+"/"+type+"/"+new Date().getTime();
+		String url = "/slead-static/"+orgId+"/"+orgLocationId+"/"+type+"/"+file.getPath();
 		File saveFileFolder = new File(staticPath, "/slead-static/"+orgId+"/"+orgLocationId+"/"+type);
 		if(!saveFileFolder.exists())
 		saveFileFolder.mkdirs();
