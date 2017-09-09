@@ -6,8 +6,10 @@ public class ContractDocumentsDTO {
 	private String staticPath;
 	private String docId;
 	private String documentName;
+	private String docFileName;
 	private String candiDoc;
 	private String description;
+	private String fileUrl;
 	private List<String> docFile;
 	private List<FileInfo> fileInfo;
 	private List<ContractReqDocsDTO> docfiles;
@@ -62,6 +64,14 @@ public class ContractDocumentsDTO {
 		this.description = description;
 	}
 
+	public String getFileUrl() {
+		return fileUrl;
+	}
+
+	public void setFileUrl(String fileUrl) {
+		this.fileUrl = fileUrl;
+	}
+
 	public List<FileInfo> getFileInfo()
 	{
 		return fileInfo;
@@ -91,4 +101,13 @@ public class ContractDocumentsDTO {
 	{
 		this.docfiles = docfiles;
 	}
+
+	public String getDocFileName() {
+		return docFileName;
+	}
+
+	public void setDocFileName(String docFileName) {
+		this.docFileName = docFileName;
+	}
+
 }
