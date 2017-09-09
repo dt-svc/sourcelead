@@ -54,6 +54,7 @@ import com.bis.sourcelead.dto.ExpensesDTO;
 import com.bis.sourcelead.dto.ExpensesEntriesDTO;
 import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.dto.InvoiceDTO;
+import com.bis.sourcelead.dto.InvoicePaymentDTO;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.EmailAttachment;
@@ -511,20 +512,20 @@ public class InvoiceRestController {
     
 
 	@RequestMapping(value = "/saveInvoicePayment", method = RequestMethod.POST)
-	public @ResponseBody String saveInvoicePayment(@RequestParam(value = "json", required = false) String json,@RequestParam(value = "invoiceId", required = false) Long invoiceId,MultipartHttpServletRequest request) throws Exception {
+	public @ResponseBody String saveInvoicePayment(InvoicePaymentDTO invoicePaymentDTO,@RequestParam(value = "json", required = false) String json,@RequestParam(value = "invoiceId", required = false) Long invoiceId,HttpServletRequest request) throws Exception {
 
-		String json1 = "{" + json + "}";
+//		String json1 = "{" + json + "}";
 		String invoicePaymentSaved = "failed";
-		JSONObject jsonObj = new JSONObject(json1);
+//		JSONObject jsonObj = new JSONObject(json1);
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		
-		MultipartFile multiFile = null;
-		Iterator<String> itrator = request.getFileNames();
-		if(itrator.hasNext()){
-	        multiFile = request.getFile(itrator.next());
-		}
-		InvoicePayment invoicePayment = invoicePaymentService.saveInvoicePayment(jsonObj, user, orgLocation, multiFile,invoiceId);
+//		MultipartFile multiFile = null;
+//		Iterator<String> itrator = request.getFileNames();
+//		if(itrator.hasNext()){
+//	        multiFile = request.getFile(itrator.next());
+//		}
+		InvoicePayment invoicePayment = invoicePaymentService.saveInvoicePayment(invoicePaymentDTO,null, user, orgLocation, null,invoiceId);
 		if(null !=invoicePayment){
 			invoicePaymentSaved = "success";
 		}
