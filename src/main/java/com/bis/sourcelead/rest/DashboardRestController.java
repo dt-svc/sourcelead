@@ -13,6 +13,7 @@ import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -24,7 +25,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bis.sourcelead.constants.Constants;
-import com.bis.sourcelead.dto.RequirementDTO;
 import com.bis.sourcelead.elk.index.RequirementIndex;
 import com.bis.sourcelead.elk.setup.RequirementElkUtil;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
@@ -760,10 +760,7 @@ public class DashboardRestController {
 						requirementService.addRequirement(requirement);
 				}
 			}
-			
-			// pass dto as parameter
-			RequirementDTO requirementDTO = commonUtil.getRequirementDTO(requirement);
-			requirementElkUtil.saveElkRequirement(requirement,requirementDTO);
+			requirementElkUtil.saveElkRequirement(requirement,new JSONObject());
 			return "success";
 			
 		}
