@@ -1027,7 +1027,7 @@ function getChangeRole(userId,userRoleId){
                         $( "#update_user" ).addClass('button').val('Processing..');
                         $.ajax({
                             type: "POST",
-                            url: sourceleadUrl+"/updateUser?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&userId="+userId+"&emailId="+emailId,
+                            url: sourceleadUrl+"/updateUser?${_csrf.parameterName}=${_csrf.token}&"+$($('#editUser_form')[0]).serialize()+"&userId="+userId+"&emailId="+emailId,
                             success: function(result) {
                             	 $("#selectoruser").removeAttr("style");
 	                       		  $("#selectoruser").css({ display: "block" });
@@ -1064,7 +1064,7 @@ function getChangeRole(userId,userRoleId){
                               $( "#update_user" ).addClass('button').val('Processing..');
                               $.ajax({
                                   type: "POST",
-                                  url: sourceleadUrl+"/updateUser?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&userId="+userId+"&emailId="+emailId,
+                                  url: sourceleadUrl+"/updateUser?${_csrf.parameterName}=${_csrf.token}&"+$($('#editUser_form')[0]).serialize()+"&userId="+userId+"&emailId="+emailId,
                                   success: function(result) {
                                 	  $("#selectoruser").removeAttr("style");
                             		  $("#selectoruser").css({ display: "block" });
@@ -1090,7 +1090,7 @@ function getChangeRole(userId,userRoleId){
                   $( "#update_user" ).addClass('button').val('Processing..');
                   $.ajax({
                       type: "POST",
-                      url: sourceleadUrl+"/updateUser?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&userId="+userId+"&emailId="+emailId,
+                      url: sourceleadUrl+"/updateUser?${_csrf.parameterName}=${_csrf.token}&"+$($('#editUser_form')[0]).serialize()+"&userId="+userId+"&emailId="+emailId,
                       success: function(result) {
                     	  $("#selectoruser").removeAttr("style");
                 		  $("#selectoruser").css({ display: "block" });
@@ -1129,16 +1129,18 @@ function getChangeRole(userId,userRoleId){
 		   }; 
 	 if ($('#deleteUser_form').validate(false, validationSettings)){ 
 		 
-		 var frm = $('#deleteUser_form').serializeFormJSON();
+		 /* var frm = $('#deleteUser_form').serializeFormJSON();
          var con = JSON.stringify(frm);
          con = con.replace(/[{}]/g, "");
          //It will escape all the special characters
-         var jsonData = encodeURIComponent(con);
+         var jsonData = encodeURIComponent(con); */
          var sourceleadUrl ='${sourceleadUrl}';
-         
+         var formData = getFormData("deleteUser_form");
          $("#deleteLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-         
-         $.ajax({
+         $.post(sourceleadUrl+"/terminateUser?${_csrf.parameterName}=${_csrf.token}&userId="+userId, formData, function(data) {
+        	 location.replace(sourceleadUrl+"/usersList");
+		});
+         /* $.ajax({
              type: "POST",
              url: sourceleadUrl+"/terminateUser?${_csrf.parameterName}=${_csrf.token}&userId="+userId+"&json="+jsonData,
              success: function(data) {
@@ -1151,7 +1153,7 @@ function getChangeRole(userId,userRoleId){
                  }
                  
              }
-             }); 
+             });  */
          
 		 
 		 return true;
@@ -1179,17 +1181,19 @@ function getChangeRole(userId,userRoleId){
 		   }; 
 	 if ($('#editRole_form').validate(false, validationSettings)){ 
 		 
-		 var frm = $('#editRole_form').serializeFormJSON();
+		 /* var frm = $('#editRole_form').serializeFormJSON();
          var con = JSON.stringify(frm);
          con = con.replace(/[{}]/g, "");
          //It will escape all the special characters
-         var jsonData = encodeURIComponent(con);
+         var jsonData = encodeURIComponent(con); */
          var sourceleadUrl ='${sourceleadUrl}';
-         
+         var formData = getFormData("editRole_form");
          
         $("#editRoleLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-          
-         $.ajax({
+        $.post(sourceleadUrl+"/editUserRole?${_csrf.parameterName}=${_csrf.token}&userId="+userId, formData, function(data) {
+        	 location.replace(sourceleadUrl+"/usersList");
+		});
+         /* $.ajax({
              type: "POST",
              url: sourceleadUrl+"/editUserRole?${_csrf.parameterName}=${_csrf.token}&userId="+userId+"&json="+jsonData,
              success: function(data) {
@@ -1202,7 +1206,7 @@ function getChangeRole(userId,userRoleId){
                  }
                  
              }
-             }); 
+             });  */
          
 		 
 		 return true;
@@ -1344,7 +1348,7 @@ $("#editRoleDetailsList").empty();
 					
 					result = result + ' <div class="user_summary_edit_cta">';
 					result = result + ' <label>Phone number</label>';
-					result = result + ' <input type="text" value="'+mobilePhone+'" name="PhoneNumber" data-validation="validate_Space validate_phone validate_length length9-20" data-validation-optional="true">';
+					result = result + ' <input type="text" value="'+mobilePhone+'" name="phoneNumber" data-validation="validate_Space validate_phone validate_length length9-20" data-validation-optional="true">';
 					result = result + ' </div>';
 					
 					if(json.userState == "NOT_LOGGEDIN"){

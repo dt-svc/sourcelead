@@ -7,8 +7,6 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
-import org.json.JSONObject;
-import org.jsoup.select.Evaluator.IsEmpty;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,15 +19,14 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.TeamDTO;
 import com.bis.sourcelead.entity.Candidate;
-import com.bis.sourcelead.entity.CandidateHotList;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Team;
 import com.bis.sourcelead.entity.TeamMembers;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
-import com.bis.sourcelead.service.CandidateHotListService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.RequirementAssignToService;
 import com.bis.sourcelead.service.TeamMembersService;
@@ -38,6 +35,7 @@ import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
+
 /**
  * Handles requests for the Requirement service.
  * 
@@ -45,434 +43,383 @@ import com.bis.sourcelead.util.SourceLeadSessionManager;
  * @date 13th Sept 2016
  *
  */
-
 @RestController
 public class TeamRestController {
-
 	private static final Logger logger = LoggerFactory.getLogger(TeamRestController.class);
-
-	 @Value("${sourceleadUrl}")
-	 private String sourceleadUrl;
-		
+	@Value("${sourceleadUrl}")
+	private String sourceleadUrl;
+	@Autowired
+	CommonUtil commonUtil;
+	@Autowired
+	TeamService teamService;
+	@Autowired
+	TeamMembersService teamMembersService;
+	@Autowired
+	RequirementAssignToService requirementAssignToService;
+	@Autowired
+	UserService userService;
+	@Autowired
+	private UserRoleService userRoleService;
+	@Autowired
+	CandidateService candidateService;
 	
-	
-	 @Autowired
-	 CommonUtil commonUtil;
-	 
-
-	 @Autowired
-	 TeamService teamService;
-	 
-	 @Autowired
-	 TeamMembersService teamMembersService;
-	 
-	 @Autowired
-	 RequirementAssignToService requirementAssignToService;
-	 
-	 @Autowired
-	 UserService userService;
-	 
-	 @Autowired
-	 private UserRoleService userRoleService;
-	 
-	 @Autowired
-	 private CandidateHotListService candidateHotListService;
-	 
-	 @Autowired
-	 CandidateService candidateService;
-	 
-	 /**
-	   * @author sarath kumar
-	   * @since  sep 14 2016
-	   * @version 0.0.1
-	   * 
-	   * This method is used to for getting TeamList By OrgLocationID
-	   * 
-	   *  
-	   * @return string 
-	   * 
-	   * @throws NullPointer
-	   */
-	  @PreAuthorize("hasAnyRole('ROLE_VIEW_TEAM','ROLE_VIEW_EDIT_TEAM','ROLE_VIEW_DELETE_TEAM')")
-	  @RequestMapping(value = "/getTeamListByOrgLocationID")
-	  public String getTeamListByOrgLocationID(HttpServletRequest request) throws Exception {
-
+	/**
+	 * @author sarath kumar
+	 * @since sep 14 2016
+	 * @version 0.0.1
+	 * 
+	 *          This method is used to for getting TeamList By OrgLocationID
+	 * 
+	 * 
+	 * @return string
+	 * 
+	 * @throws NullPointer
+	 */
+	@PreAuthorize("hasAnyRole('ROLE_VIEW_TEAM','ROLE_VIEW_EDIT_TEAM','ROLE_VIEW_DELETE_TEAM')")
+	@RequestMapping(value = "/getTeamListByOrgLocationID")
+	public String getTeamListByOrgLocationID(HttpServletRequest request) throws Exception
+	{
 		String resultJson;
-		Org   org = (Org)SourceLeadSessionManager.getSessionAttribute(request, "org");
-		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		List<Team> teamList = teamService.getTeamListByOrgLocationID(loginOrgLocation.getId());
-		String teamMembers="";
-		for(Team team : teamList){
+		for (Team team : teamList) {
 			StringBuilder ownerNameSB = new StringBuilder();
 			team.setTeamOwnerName(ownerNameSB.append(team.getOwnerUserId().getFirstName()).append(" ").append(team.getOwnerUserId().getLastName()).toString());
-			Collection<TeamMembers>	teamMembersList  = teamMembersService.getTeamMembersListByTeamID(team.getId(),loginOrgLocation.getId());
+			Collection<TeamMembers> teamMembersList = teamMembersService.getTeamMembersListByTeamID(team.getId(), loginOrgLocation.getId());
 			team.setTeamMembersCount(teamMembersList.size());
 			Integer favouriteCount = candidateService.getHotlistCandidatesCountByTeamIdAndOrgLocationId(team.getId(), loginOrgLocation.getId());
 			team.setCandidateHotlistCount(favouriteCount);
 		}
 		resultJson = commonUtil.toJSON(teamList);
 		return resultJson;
-		
-	 }
-	  
-	  
-	  /**
-	   * @author sarath kumar
-	   * @since  sep 14 2016
-	   * @version 0.0.1
-	   * 
-	   * This method is used to for getting TeamList By OrgLocationID
-	   * 
-	   *  
-	   * @return string 
-	   * 
-	   * @throws NullPointer
-	   */
-	 
-	  @RequestMapping(value = "/getTeamMembersListByLocationId")
-	  public String getTeamMembersListByLocationId(HttpServletRequest request) throws Exception {
-
+	}
+	
+	/**
+	 * @author sarath kumar
+	 * @since sep 14 2016
+	 * @version 0.0.1
+	 * 
+	 *          This method is used to for getting TeamList By OrgLocationID
+	 * 
+	 * 
+	 * @return string
+	 * 
+	 * @throws NullPointer
+	 */
+	@RequestMapping(value = "/getTeamMembersListByLocationId")
+	public String getTeamMembersListByLocationId(HttpServletRequest request) throws Exception
+	{
 		String resultJson;
-		Org   org = (Org)SourceLeadSessionManager.getSessionAttribute(request, "org");
-		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		List<TeamMembers> teamMembersList = teamMembersService.getTeamMembersListByLocationId(loginOrgLocation.getId());
-		
 		resultJson = commonUtil.toJSON(teamMembersList);
 		return resultJson;
-		
-	 }
-	  
-	  /**
-	   * @author sarath kumar
-	   * @since  sep 14 2016
-	   * @version 0.0.1
-	   * 
-	   * This method is used to for getting TeamList By OrgLocationID
-	   * 
-	   *  
-	   * @return string 
-	   * 
-	   * @throws NullPointer
-	   */
-	 
-	  @RequestMapping(value = "/getTeamMembersListByTeamID")
-	  public String getTeamMembersListByTeamID(@RequestParam(value="teamId", required=false) String  teamId,HttpServletRequest request) throws Exception {
-
+	}
+	
+	/**
+	 * @author sarath kumar
+	 * @since sep 14 2016
+	 * @version 0.0.1
+	 * 
+	 *          This method is used to for getting TeamList By OrgLocationID
+	 * 
+	 * 
+	 * @return string
+	 * 
+	 * @throws NullPointer
+	 */
+	@RequestMapping(value = "/getTeamMembersListByTeamID")
+	public String getTeamMembersListByTeamID(@RequestParam(value = "teamId", required = false) String teamId, HttpServletRequest request) throws Exception
+	{
 		String resultJson;
-		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
-		List<TeamMembers> teamMembersList = teamMembersService.getTeamMembersListByTeamID(Long.parseLong(teamId),orgLocation.getId());
-		for(TeamMembers  teamMembers : teamMembersList){
-			 StringBuilder ownerNameSB = new StringBuilder();
-			 StringBuilder memberNameSB = new StringBuilder();
- 			 teamMembers.setTeamName(teamMembers.getTeamId().getName());
-			 teamMembers.setOwnerName(ownerNameSB.append(teamMembers.getTeamId().getOwnerUserId().getFirstName()).append(" ").append(teamMembers.getTeamId().getOwnerUserId().getLastName()).toString());
-			 teamMembers.setMemberName(memberNameSB.append(teamMembers.getMemberUserId().getFirstName()).append(" ").append(teamMembers.getMemberUserId().getLastName()).toString());
-			 teamMembers.setEmail(teamMembers.getMemberUserId().getEmail());
-			 UserRole userRole = userRoleService.getUserDetailsByUserIdAndLocationId(teamMembers.getMemberUserId().getId(), orgLocation.getId());
-			 teamMembers.setUserType(userRole.getUserType());
-			 
-			 teamMembers.setTeamMemberUserId(teamMembers.getMemberUserId().getId());
-			
-			 Integer teamMemberRequirementAssignedCount =  requirementAssignToService.getAssignedTeamMembersCountByTeamMemberUserId(teamMembers.getMemberUserId().getId(), "all");
-			 teamMembers.setTeamMemberRequirementAssignedCount(teamMemberRequirementAssignedCount);
-			
-			 Integer teamMemberRequirementAssignedOpenCount =  requirementAssignToService.getAssignedTeamMembersCountByTeamMemberUserId(teamMembers.getMemberUserId().getId(), "open");
-			 teamMembers.setTeamMemberRequirementAssignedOpenCount(teamMemberRequirementAssignedOpenCount);
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		List<TeamMembers> teamMembersList = teamMembersService.getTeamMembersListByTeamID(Long.parseLong(teamId), orgLocation.getId());
+		for (TeamMembers teamMembers : teamMembersList) {
+			StringBuilder ownerNameSB = new StringBuilder();
+			StringBuilder memberNameSB = new StringBuilder();
+			teamMembers.setTeamName(teamMembers.getTeamId().getName());
+			teamMembers.setOwnerName(ownerNameSB.append(teamMembers.getTeamId().getOwnerUserId().getFirstName()).append(" ").append(teamMembers.getTeamId().getOwnerUserId().getLastName()).toString());
+			teamMembers.setMemberName(memberNameSB.append(teamMembers.getMemberUserId().getFirstName()).append(" ").append(teamMembers.getMemberUserId().getLastName()).toString());
+			teamMembers.setEmail(teamMembers.getMemberUserId().getEmail());
+			UserRole userRole = userRoleService.getUserDetailsByUserIdAndLocationId(teamMembers.getMemberUserId().getId(), orgLocation.getId());
+			teamMembers.setUserType(userRole.getUserType());
+			teamMembers.setTeamMemberUserId(teamMembers.getMemberUserId().getId());
+			Integer teamMemberRequirementAssignedCount = requirementAssignToService.getAssignedTeamMembersCountByTeamMemberUserId(teamMembers.getMemberUserId().getId(), "all");
+			teamMembers.setTeamMemberRequirementAssignedCount(teamMemberRequirementAssignedCount);
+			Integer teamMemberRequirementAssignedOpenCount = requirementAssignToService.getAssignedTeamMembersCountByTeamMemberUserId(teamMembers.getMemberUserId().getId(), "open");
+			teamMembers.setTeamMemberRequirementAssignedOpenCount(teamMemberRequirementAssignedOpenCount);
 		}
-		
 		resultJson = commonUtil.toJSON(teamMembersList);
 		return resultJson;
-	 } 
-	  
-	  /**
-	   * @author prasad k
-	   * @since  sep 14 2016
-	   * @version 0.0.1
-	   * 
-	   * This method is used to for getting TeamList By OrgLocationID
-	   * 
-	   *  
-	   * @return string 
-	   * 
-	   * @throws NullPointer
-	   */
-	 
-	  @RequestMapping(value = "/getTeamMembersListExceptExistedTeamMembersList")
-	  public String getTeamMembersListExceptExistedTeamMembersList(@RequestParam(value="existedTeamMembersIds", required=false) String  existedTeamMembersIds,@RequestParam(value="teamId", required=false) Long  teamId,HttpServletRequest request) throws Exception {
-		  
-		Org   org = (Org)SourceLeadSessionManager.getSessionAttribute(request, "org");
-		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
-			
-		Team  team = teamService.getTeamByTeamId(teamId);	
+	}
+	
+	/**
+	 * @author prasad k
+	 * @since sep 14 2016
+	 * @version 0.0.1
+	 * 
+	 *          This method is used to for getting TeamList By OrgLocationID
+	 * 
+	 * 
+	 * @return string
+	 * 
+	 * @throws NullPointer
+	 */
+	@RequestMapping(value = "/getTeamMembersListExceptExistedTeamMembersList")
+	public String getTeamMembersListExceptExistedTeamMembersList(@RequestParam(value = "existedTeamMembersIds", required = false) String existedTeamMembersIds, @RequestParam(value = "teamId", required = false) Long teamId, HttpServletRequest request) throws Exception
+	{
+		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		Team team = teamService.getTeamByTeamId(teamId);
 		String resultJson;
 		List<Long> ids = new ArrayList<Long>();
-		if(team.getOwnerUserId() !=null){
+		if (team.getOwnerUserId() != null) {
 			ids.add(team.getOwnerUserId().getId());
 		}
 		String[] existedTeamMemberUserIds = existedTeamMembersIds.split(",");
-		
-		if(null != existedTeamMemberUserIds && existedTeamMemberUserIds.length>0 && !existedTeamMembersIds.isEmpty()){
-		for(String id  : existedTeamMemberUserIds){
-			ids.add(Long.parseLong(id));
+		if (null != existedTeamMemberUserIds && existedTeamMemberUserIds.length > 0
+				&& !existedTeamMembersIds.isEmpty()) {
+			for (String id : existedTeamMemberUserIds) {
+				ids.add(Long.parseLong(id));
+			}
 		}
-		}
-//		List<User> newUserList = new ArrayList<>();
+		// List<User> newUserList = new ArrayList<>();
 		List<User> userList = userService.getUserListExceptExistedTeamMembersList(ids, loginOrgLocation.getId());
-		
 		/**
-		 * commented by Pavan Jampana
-		 * this piece of code is commented to allow employees as team members.
+		 * commented by Pavan Jampana this piece of code is commented to allow
+		 * employees as team members.
 		 */
-		/*for(User user :userList){
-			System.out.println(user.getId());
-			 UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(), loginOrgLocation.getId());
-			 if(!Constants.EMPLOYEE.equals(userRole.getUserType())){
-				 newUserList.add(user);
-			 }
-		}*/
+		/*
+		 * for(User user :userList){ System.out.println(user.getId()); UserRole
+		 * userRole =
+		 * userRoleService.getUserRoleByUserIdAndLocationId(user.getId(),
+		 * loginOrgLocation.getId());
+		 * if(!Constants.EMPLOYEE.equals(userRole.getUserType())){
+		 * newUserList.add(user); } }
+		 */
 		resultJson = commonUtil.toJSON(userList);
 		return resultJson;
-	 } 
-	  
-	  /**
-	  *  This Method is for update Candidate details
-	  * @author David Raju
-	  * @param json   This is the first parameter to updateCandidate method
-	  * @param  request    This is the second parameter to updateCandidate method
-	  * @return String
-	  * @throws NullPointerException
-	  */ 
-	   @RequestMapping(value = "/deleteTeamMemberById")
-	   public @ResponseBody  String deleteTeamMemberById(@RequestParam(value="teamMemberId", required=false) String  teamMemberId,@RequestParam(value="reason", required=false) String  reason, HttpServletRequest request) throws Exception {
-		    OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
-			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-			 
-			TeamMembers teamMembers = teamMembersService.getTeamMemberByIdAndLocationId(Long.valueOf(teamMemberId),loginOrgLocation.getId());
-			if(teamMembers != null){
-				
-					teamMembers.setStatus(Constants.TEAM_IN_ACTIVE);
-					if(StringUtils.isNotEmpty(reason)){
-						/*teamMembers.setTerminateReason(reason);*/
-					}
-				
-					teamMembers.setUpdatedBy(user.getUserCode());
-					teamMembers.setUpdatedDate(commonUtil.currentDate());
-					teamMembersService.saveOrUpdateTeamMembers(teamMembers);
+	}
+	
+	/**
+	 * This Method is for update Candidate details
+	 * 
+	 * @author David Raju
+	 * @param json
+	 *            This is the first parameter to updateCandidate method
+	 * @param request
+	 *            This is the second parameter to updateCandidate method
+	 * @return String
+	 * @throws NullPointerException
+	 */
+	@RequestMapping(value = "/deleteTeamMemberById")
+	public @ResponseBody String deleteTeamMemberById(@RequestParam(value = "teamMemberId", required = false) String teamMemberId, @RequestParam(value = "reason", required = false) String reason, HttpServletRequest request) throws Exception
+	{
+		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		TeamMembers teamMembers = teamMembersService.getTeamMemberByIdAndLocationId(Long.valueOf(teamMemberId), loginOrgLocation.getId());
+		if (teamMembers != null) {
+			teamMembers.setStatus(Constants.TEAM_IN_ACTIVE);
+			if (StringUtils.isNotEmpty(reason)) {
+				/* teamMembers.setTerminateReason(reason); */
 			}
-			return "success";
-	 }
-	  
-	   @RequestMapping(value = "/storeTeamMembers", method = RequestMethod.POST)
-		public @ResponseBody String storeTeamMembers(@RequestParam(value = "json", required = false) String json,Long teamId,HttpServletRequest request) throws Exception {
-			
-			String json1 = "{" + json + "}";
-			JSONObject jsonObj = new JSONObject(json1);
-			
-			teamMembersService.saveTeamMembersByJsonData(jsonObj,teamId);
-			return "success";
+			teamMembers.setUpdatedBy(user.getUserCode());
+			teamMembers.setUpdatedDate(commonUtil.currentDate());
+			teamMembersService.saveOrUpdateTeamMembers(teamMembers);
 		}
-	   
-	   /**
-		 * @author prasad k
-		 * @since  sep 19 2016
-		 * @version 0.0.1
-		 * 
-		 * This method is used to store/save team in team table.
-		 * 1.internalley store/save in teamMember in teamMember table .
-		 * 
-		 * @param jsonObj This is the first paramter to storeTeam method
-		 * @param orgLocations This is the second paramter to storeTeam method
-		 * 
-		 * @return Team 
-		 * 
-		 * @throws NullPointer
-		*/
-	   @PreAuthorize("hasRole('ROLE_ADD_TEAM')")
-	   @RequestMapping(value = "/storeTeam", method = RequestMethod.POST)
-		public @ResponseBody String storeTeam(@RequestParam(value = "json", required = false) String json,HttpServletRequest request) throws Exception {
-		    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-			String json1 = "{" + json + "}";
-			
-			JSONObject jsonObj = new JSONObject(json1);
-			teamService.storeTeam(jsonObj,orgLocations);
-			 SourceLeadSessionManager.setSessionAttribute(request, "userCreateMsg", "Team Created Successfully");
-
-			return "success";
-		}
-	   
-	   /**
-		  * This method for delete team by id
-		  * @param id
-		  * @return
-		  * @throws Exception
-		  */
-	   	 @PreAuthorize("hasRole('ROLE_VIEW_DELETE_TEAM')")
-		 @RequestMapping(value = "/deleteTeamById", method = RequestMethod.POST,headers="Accept=application/json")
-		 public String deleteTeamById(@RequestParam( value = "teamId", required = false) Long teamId,HttpServletRequest request) throws Exception { 
-	   		 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-	   		 List<Candidate> hotListCandidatesList = candidateService.getHotCandidateListByTeamIdAndOrgLocationId(teamId, orgLocations.getId());
-	   		 if(null != hotListCandidatesList){
-	   			 for(Candidate hotList : hotListCandidatesList){
-	   				hotList.setTeamId(null);
-	   				candidateService.saveOrUpdateCandidate(hotList);
-	   				candidateService.saveOrUpdateCandidateElkDocument(hotList);
-	   			 }
-	   		 }
-	   		 Team team = teamService.deleteTeamById(teamId);
-			 return "success";
-
-		  }
-		 
-		 
-		 /**
-		  * This method for delete team by id
-		  * @param teamMemberId
-		  * @return
-		  * @throws Exception
-		  */
-		 @RequestMapping(value = "/deleteTeamMemberByCandidateId", method = RequestMethod.POST,headers="Accept=application/json")
-		 public String deleteTeamMemberByCandidateId(@RequestParam( value = "teamMemberId", required = false) Long teamMemberId) throws Exception { 
-			
-			 TeamMembers  teamMembers = teamMembersService.deleteTeamMemberById(teamMemberId);
-			 return "success";
-		  }
-		 
-		 
-		 
-		 
-		 /**
-		  * This method for delete team by id
-		  * @param teamMemberId
-		  * @return
-		  * @throws Exception
-		  */
-		 @RequestMapping(value = "/getTeamByTeamID", method = RequestMethod.POST,headers="Accept=application/json")
-		 public String getTeamByTeamID(@RequestParam( value = "teamId", required = false) Long teamId) throws Exception { 
-			
-			  String  resultJson =null;
-			  
-			  Team team  = teamService.getTeamByTeamId(teamId);
-			  StringBuilder ownerNameSB = new StringBuilder();
-			  team.setTeamOwnerName(ownerNameSB.append(team.getOwnerUserId().getFirstName()).append(" ").append(team.getOwnerUserId().getLastName()).toString());
-			  resultJson = commonUtil.toJSON(team);
-			  return resultJson;
-		  }
-		 
-		 
-		 
-		 /**
-		   * @author David Raju
-		   * @since  sep 14 2016
-		   * @version 0.0.1
-		   * 
-		   * This method is used get All Users By OrgLocationCode ExceptTeamOwner 
-		   * 
-		   * @param teamOwnerUserId This is the first paramter to getAllUsersByOrgLocationCodeExceptTeamOwner
-		   
-		   * @return string 
-		   * 
-		   * @throws NullPointer
-		   */
-		 
-		  @RequestMapping(value = "/getAllUsersByOrgLocationCodeExceptTeamOwner")
-		  public String getAllUsersByOrgLocationCodeExceptTeamOwner(@RequestParam(value="teamOwnerUserId", required=false) Long  teamOwnerUserId,HttpServletRequest request) throws Exception {
-
-			String resultJson;
-			Org   org = (Org)SourceLeadSessionManager.getSessionAttribute(request, "org");
-			OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
-			
-			List<User> freshUserList = userService.getAllUsersByOrgLocationCodeExceptTeamOwner(teamOwnerUserId, loginOrgLocation.getId(), Long.valueOf(Constants.TAB_REQUIREMENT));
-			
-			resultJson = commonUtil.toJSON(freshUserList);
-			return resultJson;
-		 } 
-		  
-		  
-		  
-		  @RequestMapping(value = "/storeEditedTeam")
-		  public @ResponseBody String storeEditedTeam(@RequestParam(value = "json", required = false) String json,HttpServletRequest request) throws Exception {
-			    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-				String json1 = "{" + json + "}";
-				JSONObject jsonObj = new JSONObject(json1);
-				teamService.storeTeam(jsonObj,orgLocations);
-				return "success";
+		return "success";
+	}
+	
+	@RequestMapping(value = "/storeTeamMembers", method = RequestMethod.POST)
+	public @ResponseBody String storeTeamMembers(TeamDTO teamDTO, Long teamId, HttpServletRequest request) throws Exception
+	{
+		teamMembersService.saveTeamMembersByJsonData(teamDTO, teamId);
+		return "success";
+	}
+	
+	/**
+	 * @author prasad k
+	 * @since sep 19 2016
+	 * @version 0.0.1
+	 * 
+	 *          This method is used to store/save team in team table.
+	 *          1.internalley store/save in teamMember in teamMember table .
+	 * 
+	 * @param jsonObj
+	 *            This is the first paramter to storeTeam method
+	 * @param orgLocations
+	 *            This is the second paramter to storeTeam method
+	 * 
+	 * @return Team
+	 * 
+	 * @throws NullPointer
+	 */
+	@PreAuthorize("hasRole('ROLE_ADD_TEAM')")
+	@RequestMapping(value = "/storeTeam", method = RequestMethod.POST)
+	public @ResponseBody String storeTeam(TeamDTO teamDTO, HttpServletRequest request) throws Exception
+	{
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		teamService.storeTeam(teamDTO, orgLocations);
+		SourceLeadSessionManager.setSessionAttribute(request, "userCreateMsg", "Team Created Successfully");
+		return "success";
+	}
+	
+	/**
+	 * This method for delete team by id
+	 * 
+	 * @param id
+	 * @return
+	 * @throws Exception
+	 */
+	@PreAuthorize("hasRole('ROLE_VIEW_DELETE_TEAM')")
+	@RequestMapping(value = "/deleteTeamById", method = RequestMethod.POST, headers = "Accept=application/json")
+	public String deleteTeamById(@RequestParam(value = "teamId", required = false) Long teamId, HttpServletRequest request) throws Exception
+	{
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		List<Candidate> hotListCandidatesList = candidateService.getHotCandidateListByTeamIdAndOrgLocationId(teamId, orgLocations.getId());
+		if (null != hotListCandidatesList) {
+			for (Candidate hotList : hotListCandidatesList) {
+				hotList.setTeamId(null);
+				candidateService.saveOrUpdateCandidate(hotList);
+				candidateService.saveOrUpdateCandidateElkDocument(hotList);
 			}
-		  
-		  
-		  @RequestMapping(value = "/getHotCandidateListForTeamByTeamId")
-		  public @ResponseBody String getHotCandidateListForTeamByTeamId(@RequestParam(value = "teamId", required = false) Long teamId, HttpServletRequest request) throws Exception {
-			  String resultJson;
-			  OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-			    
-			  List<Candidate> candidaeList = candidateService.getHotListCandidatesByTeamAndOrgLocationId(teamId, orgLocations.getId());
-			  List<Candidate> candidateHotList = new ArrayList<Candidate>();
-			  
-			  if(null != candidaeList){
-				  for(Candidate hotCandidate : candidaeList){
-						  if(hotCandidate.getFirstName() != null){
-							  hotCandidate.setCandidateName(hotCandidate.getFirstName());
-							  if(StringUtils.isNotEmpty(hotCandidate.getLastName())){
-								  StringBuilder canNameSB = new StringBuilder();
-								  hotCandidate.setCandidateName(canNameSB.append(hotCandidate.getCandidateName()).append(" ").append(hotCandidate.getLastName()).toString());
-							  }
-						  }
-						  
-						  
-						  if(StringUtils.isNotEmpty(hotCandidate.getCountry())){
-							  hotCandidate.setCandidateLocation(hotCandidate.getCountry());
-							  if(StringUtils.isNotEmpty(hotCandidate.getState())){
-								  StringBuilder canStateSB = new StringBuilder();
-								  hotCandidate.setCandidateLocation(canStateSB.append(hotCandidate.getCandidateLocation()).append(", ").append(hotCandidate.getState()).toString());
-								  if(StringUtils.isNotEmpty(hotCandidate.getCity())){
-									  StringBuilder canCitySB = new StringBuilder();
-									  hotCandidate.setCandidateLocation(canCitySB.append(hotCandidate.getCandidateLocation()).append(", ").append(hotCandidate.getCity()).toString());
-								  }
-							  }
-						  }
-						  candidateHotList.add(hotCandidate);
-						  
-				  }
-			  }
-			    
-			  resultJson = commonUtil.toJSON(candidateHotList);
-			  return resultJson;
 		}
-		  
-		  
-		  
-		  @RequestMapping(value = "/removeFromTeam")
-		  public @ResponseBody String removeFromTeam(@RequestParam(value = "id", required = false) Long id, HttpServletRequest request) throws Exception {
-			    
-			  Candidate candidate = candidateService.getCandidateByCandidateId(id);
-			  if(null != candidate){
-				  candidate.setTeamId(null);
-				  candidateService.saveOrUpdateCandidate(candidate);
-				  candidateService.saveOrUpdateCandidateElkDocument(candidate);
-			  }
-			    
-			  return "success";
-		}
-
-		  
-		     /**
-			  * To  validate Team Name
-			  * @param name
-			  * @return
-			  */
-			 @RequestMapping(value = "/validateTeamName" , method = RequestMethod.POST)
-			 public @ResponseBody  String validateTeamName(@RequestParam(value="name", required=false) String name,HttpServletRequest request) throws Exception {
-				 	
-				 	String result = null;
-				 	OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-				 	Team team = teamService.findByTeamName(name,orgLocation.getId());
-				 	
-				 	if (null != team) {
-						result = "true";
-					}else{
-						result = "false";
+		Team team = teamService.deleteTeamById(teamId);
+		return "success";
+	}
+	
+	/**
+	 * This method for delete team by id
+	 * 
+	 * @param teamMemberId
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/deleteTeamMemberByCandidateId", method = RequestMethod.POST, headers = "Accept=application/json")
+	public String deleteTeamMemberByCandidateId(@RequestParam(value = "teamMemberId", required = false) Long teamMemberId) throws Exception
+	{
+		TeamMembers teamMembers = teamMembersService.deleteTeamMemberById(teamMemberId);
+		return "success";
+	}
+	
+	/**
+	 * This method for delete team by id
+	 * 
+	 * @param teamMemberId
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/getTeamByTeamID", method = RequestMethod.POST, headers = "Accept=application/json")
+	public String getTeamByTeamID(@RequestParam(value = "teamId", required = false) Long teamId) throws Exception
+	{
+		String resultJson = null;
+		Team team = teamService.getTeamByTeamId(teamId);
+		StringBuilder ownerNameSB = new StringBuilder();
+		team.setTeamOwnerName(ownerNameSB.append(team.getOwnerUserId().getFirstName()).append(" ").append(team.getOwnerUserId().getLastName()).toString());
+		resultJson = commonUtil.toJSON(team);
+		return resultJson;
+	}
+	
+	/**
+	 * @author David Raju
+	 * @since sep 14 2016
+	 * @version 0.0.1
+	 * 
+	 *          This method is used get All Users By OrgLocationCode
+	 *          ExceptTeamOwner
+	 * 
+	 * @param teamOwnerUserId
+	 *            This is the first paramter to
+	 *            getAllUsersByOrgLocationCodeExceptTeamOwner
+	 * 
+	 * @return string
+	 * 
+	 * @throws NullPointer
+	 */
+	@RequestMapping(value = "/getAllUsersByOrgLocationCodeExceptTeamOwner")
+	public String getAllUsersByOrgLocationCodeExceptTeamOwner(@RequestParam(value = "teamOwnerUserId", required = false) Long teamOwnerUserId, HttpServletRequest request) throws Exception
+	{
+		String resultJson;
+		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		List<User> freshUserList = userService.getAllUsersByOrgLocationCodeExceptTeamOwner(teamOwnerUserId, loginOrgLocation.getId(), Long.valueOf(Constants.TAB_REQUIREMENT));
+		resultJson = commonUtil.toJSON(freshUserList);
+		return resultJson;
+	}
+	
+	@RequestMapping(value = "/storeEditedTeam")
+	public @ResponseBody String storeEditedTeam(TeamDTO teamDTO, HttpServletRequest request) throws Exception
+	{
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		teamService.storeTeam(teamDTO, orgLocations);
+		return "success";
+	}
+	
+	@RequestMapping(value = "/getHotCandidateListForTeamByTeamId")
+	public @ResponseBody String getHotCandidateListForTeamByTeamId(@RequestParam(value = "teamId", required = false) Long teamId, HttpServletRequest request) throws Exception
+	{
+		String resultJson;
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		List<Candidate> candidaeList = candidateService.getHotListCandidatesByTeamAndOrgLocationId(teamId, orgLocations.getId());
+		List<Candidate> candidateHotList = new ArrayList<Candidate>();
+		if (null != candidaeList) {
+			for (Candidate hotCandidate : candidaeList) {
+				if (hotCandidate.getFirstName() != null) {
+					hotCandidate.setCandidateName(hotCandidate.getFirstName());
+					if (StringUtils.isNotEmpty(hotCandidate.getLastName())) {
+						StringBuilder canNameSB = new StringBuilder();
+						hotCandidate.setCandidateName(canNameSB.append(hotCandidate.getCandidateName()).append(" ").append(hotCandidate.getLastName()).toString());
 					}
-					return result;
-			   }
-			 
-		      
+				}
+				if (StringUtils.isNotEmpty(hotCandidate.getCountry())) {
+					hotCandidate.setCandidateLocation(hotCandidate.getCountry());
+					if (StringUtils.isNotEmpty(hotCandidate.getState())) {
+						StringBuilder canStateSB = new StringBuilder();
+						hotCandidate.setCandidateLocation(canStateSB.append(hotCandidate.getCandidateLocation()).append(", ").append(hotCandidate.getState()).toString());
+						if (StringUtils.isNotEmpty(hotCandidate.getCity())) {
+							StringBuilder canCitySB = new StringBuilder();
+							hotCandidate.setCandidateLocation(canCitySB.append(hotCandidate.getCandidateLocation()).append(", ").append(hotCandidate.getCity()).toString());
+						}
+					}
+				}
+				candidateHotList.add(hotCandidate);
+			}
+		}
+		resultJson = commonUtil.toJSON(candidateHotList);
+		return resultJson;
+	}
+	
+	@RequestMapping(value = "/removeFromTeam")
+	public @ResponseBody String removeFromTeam(@RequestParam(value = "id", required = false) Long id, HttpServletRequest request) throws Exception
+	{
+		Candidate candidate = candidateService.getCandidateByCandidateId(id);
+		if (null != candidate) {
+			candidate.setTeamId(null);
+			candidateService.saveOrUpdateCandidate(candidate);
+			candidateService.saveOrUpdateCandidateElkDocument(candidate);
+		}
+		return "success";
+	}
+	
+	/**
+	 * To validate Team Name
+	 * 
+	 * @param name
+	 * @return
+	 */
+	@RequestMapping(value = "/validateTeamName", method = RequestMethod.POST)
+	public @ResponseBody String validateTeamName(@RequestParam(value = "name", required = false) String name, HttpServletRequest request) throws Exception
+	{
+		String result = null;
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		Team team = teamService.findByTeamName(name, orgLocation.getId());
+		if (null != team) {
+			result = "true";
+		}
+		else {
+			result = "false";
+		}
+		return result;
+	}
 }

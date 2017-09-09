@@ -471,7 +471,7 @@ public class EmailMessageServiceImpl implements EmailMessageService {
 						int i = 0;
 						for (CandidateResumes wte : candidateResumesList) {
 							EmailAttachment emailAttachment = new EmailAttachment();
-							emailAttachment.setDocFile(wte.getDocFile());
+							//emailAttachment.setDocFile(wte.getDocFile());
 							emailAttachment.setName(wte.getFileName());
 							emailAttachment.setType(wte.getFileContentType());
 							i++;
@@ -510,7 +510,7 @@ public class EmailMessageServiceImpl implements EmailMessageService {
 							String lastIndex = st.substring(0, st.lastIndexOf("."));
 							String newFilename = (sb.append(lastIndex).append("-").append(i)
 									.append(st.substring(st.lastIndexOf("."))).toString());
-							addToZipFile(wte.getDocFile(), outZip, newFilename);
+							//addToZipFile(wte.getDocFile(), outZip, newFilename);
 							i++;
 						}
 

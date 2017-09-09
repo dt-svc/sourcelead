@@ -71,6 +71,8 @@ public class CandidateDocumentsController {
 					model.addObject("candidateDocumentsList", candidateDocumentsList);
 					model.addObject("candidateDocumentsListSize", candidateDocumentsList.size());
 					model.addObject("orgName",requestedDocuments.getOrgLocationId().getOrg().getOrgName());
+					model.addObject("orgId",requestedDocuments.getOrgLocationId().getOrg().getId());
+					model.addObject("orgLocationId",requestedDocuments.getOrgLocationId().getId());
 					model.addObject("isDocsUploaded",requestedDocuments.getIsDocsUploaded());
 				}
 			}
