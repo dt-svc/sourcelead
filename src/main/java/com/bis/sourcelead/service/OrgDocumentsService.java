@@ -2,9 +2,7 @@ package com.bis.sourcelead.service;
 
 import java.util.List;
 
-import org.json.JSONObject;
-import org.springframework.web.multipart.MultipartFile;
-
+import com.bis.sourcelead.dto.ClientDocumentsDTO;
 import com.bis.sourcelead.entity.OrgDocuments;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
@@ -16,7 +14,7 @@ import com.bis.sourcelead.entity.User;
  */
 public interface OrgDocumentsService {
 
-	void saveDocument(JSONObject jsonObj, MultipartFile multiFile, String responderLocationId,String docId, OrgLocations orgLocation, User user, String sourceType) throws Exception;
+	void saveDocument(ClientDocumentsDTO clientDocumentsDTO, String responderLocationId,String docId, OrgLocations orgLocation, User user, String sourceType) throws Exception;
 
 	/**to get OrgDocumnets list
 	 * @author Prasad Salina

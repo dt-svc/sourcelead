@@ -87,8 +87,6 @@ public class CandidateEducationRestController {
 	@RequestMapping(value = "/storeCandidateEducation", method = RequestMethod.POST)
 	public @ResponseBody String storeCandidateEducation(CandidateEducationDTO candidateEducationDTO,@RequestParam(value = "candidateId", required = false) String candidateId,HttpServletRequest request) throws Exception {
 
-		/*String jsonc = "{" + json + "}";
-		JSONObject jsonObject = new JSONObject(jsonc);*/
 		if(Validator.validate(candidateEducationDTO)) {
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");

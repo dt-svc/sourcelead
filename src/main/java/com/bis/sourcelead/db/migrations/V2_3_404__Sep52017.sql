@@ -9,3 +9,5 @@ CALL sourcelead.AlterTableAddColumn ('sourcelead','CANDIDATE_RESUMES','FILE_URL'
 CALL sourcelead.AlterTableAddColumn ('sourcelead','CANDIDATE_RESUMES_HISTORY','FILE_URL','VARCHAR(2000) NULL AFTER `RESUME_UUID`');
 
 CALL sourcelead.AlterTableAddColumn ('sourcelead','REQUIREMENT','FILE_URL','VARCHAR(2000) NULL AFTER `STATUS`');
+
+

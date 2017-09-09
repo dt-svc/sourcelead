@@ -5,27 +5,25 @@ import java.io.ByteArrayInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.Iterator;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
-import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.ClientDocumentsDTO;
 import com.bis.sourcelead.entity.OrgDocuments;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgSpoc;
@@ -34,6 +32,7 @@ import com.bis.sourcelead.service.OrgDocumentsService;
 import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.util.FileUploadUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 /**
@@ -53,6 +52,9 @@ public class OrgDocumentsRestController {
 	@Autowired
 	OrgDocumentsService orgDocumentsService;
 	
+	@Value("${static.path}")
+	private String staticPath;
+	
 	@Autowired
 	private OrgSpocService orgSpocService;
 	
@@ -61,23 +63,22 @@ public class OrgDocumentsRestController {
 	
 	@PreAuthorize("hasAnyRole('ROLE_EDIT_CLIENT_DOCUMENT','ROLE_CREATE_CLIENT_DOCUMENT','ROLE_EDIT_VENDOR_DOCUMENT','ROLE_CREATE_VENDOR_DOCUMENT')")
 	@RequestMapping(value = "/saveDocuments", method = RequestMethod.POST)
-	@ResponseBody String saveDocuments(@RequestParam(value = "json", required = false) String json,
+	@ResponseBody String saveDocuments(ClientDocumentsDTO clientDocumentsDTO,
 			@RequestParam(value = "responderLocationId", required = false) String responderLocationId,
 			@RequestParam(value = "docId", required = false) String docId,
 			@RequestParam(value = "sourceType", required = false) String sourceType,
-			MultipartHttpServletRequest request) throws Exception {
+			HttpServletRequest request) throws Exception {
 
-		String json1 = "{" + json + "}";
-		JSONObject jsonObj = new JSONObject(json1);
-
-		MultipartFile multiFile = null;
+		/*MultipartFile multiFile = null;
 		Iterator<String> itrator = request.getFileNames();
 		if(itrator.hasNext()){
 	        multiFile = request.getFile(itrator.next());
-		}
+		}*/
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		orgDocumentsService.saveDocument(jsonObj,multiFile,responderLocationId,docId, orgLocation,user, sourceType);
+		clientDocumentsDTO.setStaticPath(staticPath);
+		FileUploadUtil.fillUploadedFileInfo(clientDocumentsDTO, clientDocumentsDTO.getFileInfo());
+		orgDocumentsService.saveDocument(clientDocumentsDTO,responderLocationId,docId, orgLocation,user, sourceType);
 		if(docId.equalsIgnoreCase("null")){
 			SourceLeadSessionManager.setSessionAttribute(request, "addDocument", "Success !! New document added.");
 		}else{

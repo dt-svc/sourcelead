@@ -14,10 +14,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.bis.sourcelead.dto.SourceleadNotesDTO;
 import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.Invoice;
 import com.bis.sourcelead.entity.OrgLocations;
-import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.SourceleadNotes;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CandidateService;
@@ -78,16 +78,14 @@ public class SourceleadNotesRestController {
 	
 	
 	@RequestMapping(value = "/storeNotes", method = RequestMethod.POST)
-	public @ResponseBody String storeNotes(@RequestParam("json") String json,
+	public @ResponseBody String storeNotes(SourceleadNotesDTO sourceleadNotesDTO,
 			@RequestParam("userId") Long userId,
 			@RequestParam("locationCode") String locationCode) throws Exception
 	{
-		/*String json = request.getParameter("json");*/
-		//String jsonc = "{" + json + "}";
-		JSONObject jsonObj = new JSONObject(json);
+		
 		User user =  userService.getUserById(userId);
 		OrgLocations orgLocation = orgLocationService.getOrgLocationsByLocationCode(locationCode);
-		sourceleadNotesService.storeComments(jsonObj, user,orgLocation);
+		sourceleadNotesService.storeComments(sourceleadNotesDTO, user,orgLocation);
 		return "success";
 	}
 	

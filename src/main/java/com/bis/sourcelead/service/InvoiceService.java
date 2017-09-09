@@ -9,6 +9,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.bis.sourcelead.beans.BillingReportDTO;
 import com.bis.sourcelead.beans.CurrencyConversionResponse;
+import com.bis.sourcelead.dto.InvoiceDTO;
 import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.Invoice;
 import com.bis.sourcelead.entity.InvoiceAmount;
@@ -27,7 +28,7 @@ public interface InvoiceService {
 	
 	List<Contracts> getSowcontractListByAssociateId(Long candidateId, Long orgLocationId, Long orgRelationId,String contractType)throws Exception;
 
-	Invoice saveInvoice(JSONObject jsonObj, User user, OrgLocations orgLocation, String saveType, List<MultipartFile> attachedfileList,String invoiceType, Org org, String currencyCode)throws Exception;
+	Invoice saveInvoice(User user, OrgLocations orgLocation, String saveType,String invoiceType, Org org, String currencyCode, InvoiceDTO invoiceDTO)throws Exception;
 	
 	Invoice getInvoicetByInvoiceUUID(String invoiceUUID) throws Exception;
 	
@@ -39,7 +40,7 @@ public interface InvoiceService {
 
 	/*void getPdfFileForInvoice(Invoice invoice, OrgLocations orgLocation, User user, Org org) throws Exception;*/
 
-	Invoice saveProjectInvoice(JSONObject jsonObj, User user, OrgLocations orgLocation, String saveType, List<MultipartFile> attachedfileList, String invoiceType)throws Exception;
+//	Invoice saveProjectInvoice(JSONObject jsonObj, User user, OrgLocations orgLocation, String saveType, List<MultipartFile> attachedfileList, String invoiceType)throws Exception;
 
 
 	void updateSubmissionApproverHiearachy(List<String> submissionApproverHierarchyIds, String invoiceFrequency,String invoiceType)throws Exception;
@@ -74,7 +75,7 @@ public interface InvoiceService {
 
 	boolean deleteInvoice(Long invoiceId, String reason, String invoiceType)throws Exception;
 
-	Invoice saveExpenseInvoice(JSONObject jsonObj, User user, OrgLocations orgLocation, String saveType,List<MultipartFile> attachedfileList, String invoiceType, Org org, String currencyCode, String invoiceCategory)throws Exception;
+	Invoice saveExpenseInvoice(InvoiceDTO invoiceDTO, User user, OrgLocations orgLocation, String saveType,String invoiceType, Org org, String currencyCode, String invoiceCategory)throws Exception;
 
 	void updateExpensesForinvoice(Invoice invoice, String invoiceType)throws Exception;
 
