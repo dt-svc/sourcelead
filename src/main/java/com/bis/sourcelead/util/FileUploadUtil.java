@@ -58,6 +58,20 @@ public class FileUploadUtil {
 		File fromFile = new File(staticPath, fileInfo.getFileURL().replaceFirst(type, "temp"));
 		Files.move(fromFile.toPath(), file.toPath());
 	}
+	
+	public static String moveFile(String staticPath, long orgId, long orgLocationId, String type, File file) throws IOException {
+		String url = "/slead-static/"+orgId+"/"+orgLocationId+"/"+type+"/"+file.getPath();
+		File saveFileFolder = new File(staticPath, "/slead-static/"+orgId+"/"+orgLocationId+"/"+type);
+		if(!saveFileFolder.exists())
+		saveFileFolder.mkdirs();
+		try {
+			Files.move(file.toPath(), new File(saveFileFolder, file.getName()).toPath());
+			return url;
+		} catch (IllegalStateException | IOException e) {
+			e.printStackTrace();
+		}
+		return "";
+		}
 
 	public static void fillUploadedFileInfo(Object object, List<Map<String, String>> fileInfo) throws Exception {
 		List<FileInfo> uploadedFileInfo = new ArrayList<>();
@@ -80,5 +94,8 @@ public class FileUploadUtil {
 		}
 		object.getClass().getMethod("setUploadedFileInfo", List.class).invoke(object, uploadedFileInfo);
 	}
+	
+	
+	
 
 }
