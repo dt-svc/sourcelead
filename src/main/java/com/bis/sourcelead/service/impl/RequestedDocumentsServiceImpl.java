@@ -146,7 +146,7 @@ public class RequestedDocumentsServiceImpl implements RequestedDocumentsService{
 					candidateDocuments.setDocumentOtherType(docList.getOtherDocType());
 				}
 				
-				if(StringUtils.isNotBlank(docList.getOtherDocType())){
+				if(StringUtils.isNotBlank(docList.getDescription())){
 					candidateDocuments.setDescription(docList.getDescription());
 				}
 				
