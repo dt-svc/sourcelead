@@ -53,7 +53,6 @@ import com.bis.sourcelead.service.RequirementAssignToService;
 import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
 import com.bis.sourcelead.service.RolesService;
-import com.bis.sourcelead.service.SourceleadRolesService;
 import com.bis.sourcelead.service.TeamService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
@@ -109,6 +108,8 @@ public class RequirementRestController {
 	RequirementSubmissionService requirementSubmissionService;
 	@Autowired
 	private SourceleadELKBaseIndexer<CandidateIndex> sourceleadELKBaseIndexer;
+	@Autowired
+	RequirementElkUtil requirementElkUtil;
 	
 	/**
 	 * @author prasad k
@@ -396,7 +397,11 @@ public class RequirementRestController {
 				requirementService.addRequirement(requirement);
 			}
 		}
-		// requirementElkUtil.saveElkRequirement(requirement,new JSONObject());
+		
+		RequirementDTO requirementDTO = commonUtil.getRequirementDTO(requirement);
+		requirementElkUtil.saveElkRequirement(requirement,requirementDTO);
+		
+		
 		return "success";
 	}
 	// Old Code

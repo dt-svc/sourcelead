@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.RequirementDTO;
 import com.bis.sourcelead.elk.index.RequirementIndex;
 import com.bis.sourcelead.elk.setup.RequirementElkUtil;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
@@ -760,7 +761,9 @@ public class DashboardRestController {
 						requirementService.addRequirement(requirement);
 				}
 			}
-			requirementElkUtil.saveElkRequirement(requirement,new JSONObject());
+			
+			RequirementDTO requirementDTO=commonUtil.getRequirementDTO(requirement);
+			requirementElkUtil.saveElkRequirement(requirement,requirementDTO);
 			return "success";
 			
 		}

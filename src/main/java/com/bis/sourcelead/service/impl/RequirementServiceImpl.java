@@ -3164,6 +3164,7 @@ public class RequirementServiceImpl implements RequirementService {
 						finalJobsGeneratedId = sb.append(orgLocation.getGeneratedUserId().toUpperCase()).append(Constants.JOB_ENTITY).append(ConvetredjobsId).toString();
 						req.setGeneratedId(finalJobsGeneratedId);
 						Requirement savedRequirement = requirementDao.storeRequirement(req);
+						RequirementDTO requirementDTO = commonUtil.getRequirementDTO(savedRequirement);
 						requirementElkUtil.saveElkRequirement(savedRequirement, null);
 						data = true;
 					}
@@ -3209,5 +3210,14 @@ public class RequirementServiceImpl implements RequirementService {
 			}
 		}
 		return data;
+	}
+	
+	private RequirementDTO getRequirementDTO(Requirement requirement)
+	{
+		RequirementDTO  requirementDTO = new RequirementDTO();
+		requirementDTO.setJobId(requirement.getJobId());
+		requirementDTO.setJobTitle(requirement.getJobTitle());
+		
+		return requirementDTO;
 	}
 }
