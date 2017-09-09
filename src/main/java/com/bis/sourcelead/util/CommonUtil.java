@@ -915,4 +915,208 @@ public class CommonUtil {
 			  
 			
 		}
+		
+		//common method for saveElkRequirement
+		
+		public RequirementDTO getRequirementDTO(Requirement requirement) throws Exception
+		{
+			RequirementDTO requirementDTO = new RequirementDTO();
+			requirementDTO.setRequirementId(requirement.getId().toString());
+			requirementDTO.setOrgLocationId(requirement.getOrgLocationId().getId());
+			requirementDTO.setJobTitle(requirement.getJobTitle());
+			requirementDTO.setJobType(requirement.getJobType());
+			requirementDTO.setOtherJobType(requirement.getOtherJobType());
+			requirementDTO.setIndustryName(requirement.getIndustryName());
+			requirementDTO.setTravelAllowance(requirement.getTravelAllowance());
+			requirementDTO.setCoolingOff(requirement.getReqCoolingOffPeriod());
+			requirementDTO.setReleaseToAllUsers(requirement.getReleaseJobToAllUsers());
+			requirementDTO.setProjectDurationMonths(requirement.getProjectDurationMonths());
+			requirementDTO.setProjectDurationYears(requirement.getProjectDurationYears());
+			requirementDTO.setIsreceivingApplicants(requirement.getIsreceivingApplicants());
+			requirementDTO.setGeneratedId(requirement.getGeneratedId());
+			if (null != requirement.getDescription() && !"".equals(requirement.getDescription())) {
+				requirementDTO.setDescription(requirement.getDescription());
+			}
+			if (null != requirement.getMaxRate() && !"".equals(requirement.getMaxRate())) {
+				requirementDTO.setMaxRate(requirement.getMaxRate());
+			}
+			if (null != requirement.getRate() && !"".equals(requirement.getRate())) {
+				requirementDTO.setRate(requirement.getRate());
+			}
+			if (null != requirement.getRateType() && !"".equals(requirement.getRateType())) {
+				requirementDTO.setRateType(requirement.getRateType());
+			}
+			if (null != requirement.getMinExp()) {
+				requirementDTO.setMinExp(requirement.getMinExp());
+			}
+			if (null != requirement.getMaxExp()) {
+				requirementDTO.setMaxExp(requirement.getMaxExp());
+			}
+			requirementDTO.setRequirementStatus(requirement.getRequirementSubmissionStatus().toString());
+			// requirementIndex.setRequirementSubmissionPreviousStatus(requirement.getRequirementSubmissionPreviousStatus().toString());
+			requirementDTO.setCountry(requirement.getCountry());
+			requirementDTO.setState(requirement.getState());
+			requirementDTO.setCity(requirement.getCity());
+			requirementDTO.setLocation(requirement.getLocation());
+			requirementDTO.setZipCode(requirement.getZipCode());
+			requirementDTO.setReqCreatedBy(requirement.getCreatedBy().getId());
+			requirementDTO.setReqUpdatedBy(requirement.getUpdatedBy());
+			if (requirement.getManagerUserId() != null) {
+				requirementDTO.setManagerUserId(requirement.getManagerUserId().getId().toString());
+			}
+			DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+			if (null != requirement.getClosedDate()) {
+				String reqclosedDate = dateFormat.format(requirement.getClosedDate());
+				requirementDTO.setClosedDate(reqclosedDate);
+			}
+			String reqcreatedDate = dateFormat.format(requirement.getCreatedDate());
+			requirementDTO.setCreatedDate(reqcreatedDate);
+			String reqUpDatedDate = dateFormat.format(requirement.getCreatedDate());
+			requirementDTO.setUpdatedDate(reqUpDatedDate);
+			Long userId = requirement.getManagerUserId().getId();
+			User ownerUser = userService.getUserById(userId);
+			StringBuilder sbilder = new StringBuilder();
+			if (ownerUser != null) {
+				if (ownerUser.getFirstName() != null && ownerUser.getLastName() != null) {
+					sbilder.append((ownerUser.getFirstName())).append(" ").append(ownerUser.getLastName());
+				}
+				else {
+					sbilder.append((ownerUser.getFirstName()));
+				}
+				requirementDTO.setManager(sbilder.toString());
+			}
+			// to store approver of the req in elk
+			if (requirementDTO.getParallelApprover() != null
+					&& !requirementDTO.getParallelApprover().isEmpty()) {
+				String[] reqApproverUserId = requirementDTO.getParallelApprover().toArray(new String[requirementDTO.getParallelApprover().size()]);
+				requirementDTO.setReqLevel1ApproverUserId(reqApproverUserId);
+			}
+			if (StringUtils.isNotBlank(requirementDTO.getSequentialApprover1())) {
+				String sequentialApprovers1 = requirementDTO.getSequentialApprover1();
+				String sequentialApprovers2 = requirementDTO.getSequentialApprover2();
+				requirementDTO.setReqLevel1ApproverUserId(sequentialApprovers1.split(","));
+				requirementDTO.setReqLevel2ApproverUserId(sequentialApprovers2.split(","));
+			}
+			if (StringUtils.isNotBlank(requirementDTO.getAssignedToMaxCount())) {
+				if (StringUtils.isNotBlank(requirementDTO.getAssignedTeamId())) {
+					String assignedTeamId = requirementDTO.getAssignedTeamId();
+					String[] teamOwnerUserId = assignedTeamId.split(",");
+					requirementDTO.setTeamOwnerUserId(teamOwnerUserId);
+				}
+				if (requirementDTO.getAssignUsers() != null) {
+					String[] teamAssignUserId = requirementDTO.getAssignUsers().toArray(new String[requirementDTO.getAssignUsers().size()]);
+					requirementDTO.setTeamAssignUserId(teamAssignUserId);
+				}
+			}
+			// requirementIndex.setRequirementSubmissionStatus(requirement.getRequirementSubmissionStatus().toString());
+			requirementDTO.setIsTemplate(requirement.getIsTemplate());
+			// education
+			if (null != requirement.getEducation()) {
+				String[] education = requirement.getEducation().split(",");
+				requirementDTO.setEducation(Arrays.toString(education));
+			}
+			if (requirement.getClientId() != null) {
+				Requirement requirement1 = requirementService.getRequirementByRequirementId(requirement.getId());
+				StringBuilder sb = new StringBuilder();
+				if (Constants.CLIENT.equalsIgnoreCase(requirement1.getClientId().getResponderType())) {
+					if (requirement1.getClientId().getResponderLocationId() != null) {
+						requirementDTO.setClient(requirement1.getClientId().getResponderLocationId().getOrgLocationName());
+					}
+				}
+				if (Constants.VENDOR.equalsIgnoreCase(requirement1.getClientId().getResponderType())) {
+					requirementDTO.setClient(requirement1.getClientId().getLocationId().getOrgLocationName());
+				}
+				// Prasad salina
+				if (null != requirement1.getSpocId()) {
+					if (requirement1.getSpocId().getClientUser() != null
+							&& requirement1.getSpocId().getClientUser().getLastName() != null
+							&& !"".equals(requirement1.getSpocId().getClientUser().getLastName())) {
+						sb.append(requirement1.getSpocId().getClientUser().getFirstName()).append(" ").append(requirement1.getSpocId().getClientUser().getLastName());
+					}
+					else {
+						sb.append(requirement1.getSpocId().getClientUser().getFirstName());
+					}
+					requirementDTO.setClientContactName(sb.toString());
+					requirementDTO.setClientContactEmail(requirement1.getSpocId().getClientUser().getEmail());
+				}
+				// requirementIndex.setClientContactEmail(requirement1.getClientId().getLocationId().getUser().getEmail());
+			}
+			// requirementIndex.setClient(requirement.getClientName());
+			// skill pending
+			if (null != requirement.getSkills()) {
+				String[] skills = requirement.getSkills().split(",");
+				requirementDTO.setSkills(Arrays.toString(skills));
+			}
+			if (null != requirement.getNoticePeriod()) {
+				String[] noticePeriod = requirement.getNoticePeriod().split(",");
+				requirementDTO.setNoticePeriod(Arrays.asList(noticePeriod));
+			}
+			requirementDTO.setJobId(requirement.getJobId());
+			requirementDTO.setPriority(requirement.getPriority());
+			requirementDTO.setCurrentRateCurrency(requirement.getCurrencyCode());
+			requirementDTO.setPositions(requirement.getPositions());
+			if (null != requirement.getTotalApplicants()) {
+				requirementDTO.setNumberOfApplicants(requirement.getTotalApplicants().toString());
+			}
+			requirementDTO.setReleasedBy(requirement.getReleasedBy());
+			requirementDTO.setRequirementUUID(requirement.getRequirementUUID());
+			if (null != requirement.getIsPublic()) {
+				requirementDTO.setIsPublicJob(requirement.getIsPublic());
+			}
+			else {
+				requirementDTO.setIsPublicJob("N");
+			}
+			if (null != requirement.getIsCrowdSourcing()) {
+				requirementDTO.setIsCrowdSourcingJob(requirement.getIsCrowdSourcing());
+			}
+			else {
+				requirementDTO.setIsCrowdSourcingJob("N");
+			}
+			if (null != requirement.getPostedOrgName()
+					&& !requirement.getPostedOrgName().isEmpty()) {
+				requirementDTO.setPostedOrg(requirement.getPostedOrgName());
+			}
+			if (null != requirement.getAppliedProfessionals()
+					&& !"".equalsIgnoreCase(requirement.getAppliedProfessionals())) {
+				String[] appliedProfessionals = requirement.getAppliedProfessionals().split(",");
+				requirementDTO.setAppliedProfessionals(appliedProfessionals);
+			}
+			if (null != requirement.getAppliedRecruiters()
+					&& !"".equalsIgnoreCase(requirement.getAppliedRecruiters())) {
+				String[] appliedRecruiters = requirement.getAppliedRecruiters().split(",");
+				requirementDTO.setAppliedRecruiters(appliedRecruiters);
+			}
+			if (null != requirement.getReqlevel1ApproverStatus()
+					&& !"".equalsIgnoreCase(requirement.getReqlevel1ApproverStatus())) {
+				requirementDTO.setReqLevel1ApproverStatus(requirement.getReqlevel1ApproverStatus());
+			}
+			if (null != requirement.getReqlevel2ApproverStatus()
+					&& !"".equalsIgnoreCase(requirement.getReqlevel1ApproverStatus())) {
+				requirementDTO.setReqLevel2ApproverStatus(requirement.getReqlevel2ApproverStatus());
+			}
+			if (StringUtils.isNotBlank(requirement.getRewardType())) {
+				requirementDTO.setRewardType(requirement.getRewardType());
+			}
+			if (StringUtils.isNotBlank(requirement.getRewardPercentage())) {
+				requirementDTO.setRewardPercentage(requirement.getRewardPercentage());
+			}
+			if (StringUtils.isNotBlank(requirement.getRewardFlat())) {
+				requirementDTO.setRewardFlat(requirement.getRewardFlat());
+			}
+			if (StringUtils.isNotBlank(requirement.getRewardFlatRateType())) {
+				requirementDTO.setRewardFlatRateType(requirement.getRewardFlatRateType());
+			}
+			if (StringUtils.isNotBlank(requirement.getRewardGuaranteePeriod())) {
+				requirementDTO.setRewardGuaranteePeriod(requirement.getRewardGuaranteePeriod());
+			}
+			if (null != requirement.getVisaType()) {
+				String[] visaTypes = requirement.getVisaType().split(",");
+				requirementDTO.setVisa(Arrays.asList(visaTypes));
+			}
+			if (null != requirement.getGeneratedId()
+					&& !"".equalsIgnoreCase(requirement.getGeneratedId())) {
+				requirementDTO.setGeneratedId(requirement.getGeneratedId());
+			}
+			return requirementDTO;
+		}
 }

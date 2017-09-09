@@ -2,9 +2,7 @@ package com.bis.sourcelead.service;
 
 import java.util.List;
 
-import org.json.JSONObject;
-
-import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.dto.TeamDTO;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Team;
 
@@ -16,7 +14,7 @@ public interface TeamService {
 	
 	public List<Team> getTeamListByOrgLocationID(Long orgLocationId) throws Exception;
 	
-	public Team storeTeam(JSONObject jsonObj,OrgLocations orgLocations)throws Exception;
+	public Team storeTeam(TeamDTO teamDTO,OrgLocations orgLocations)throws Exception;
 	
 	public Team getTeamByTeamId(Long teamId)throws Exception;
 	
