@@ -37,7 +37,6 @@ import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.query.RangeQueryBuilder;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.sort.SortOrder;
-import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,7 +53,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.RequirementSearchDTO;
 import com.bis.sourcelead.dto.ResponseList;
-import com.bis.sourcelead.elk.index.CandidateIndex;
 import com.bis.sourcelead.elk.index.RequirementIndex;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
@@ -1395,6 +1393,18 @@ public class RequirementListRestController {
 							for(MatchQueryBuilder matchQueryBuilder :matchQueryBuilderList){
 								anyBoolSubQueryBuilder.should(matchQueryBuilder);
 							}
+							DateFormat df = orgLocation.getLocFullFormDateFormatter();
+							try{
+								if(keywd.contains("/")){
+									keywd = keywd.replaceAll("/", "-");
+								}
+								Date d = df.parse(keywd);
+								anyBoolSubQueryBuilder = QueryBuilders.boolQuery();
+								String dateStr = commonUtil.elkDateFormatter(d);
+								anyBoolSubQueryBuilder.should(QueryBuilders.termQuery("createdDate", dateStr));
+							 }
+							 catch(Exception e){}
+							
 							anyBoolQueryBuilder.should(anyBoolSubQueryBuilder);
 						}
 					}
@@ -1596,6 +1606,7 @@ public class RequirementListRestController {
 	 private ArrayList<MatchQueryBuilder> getMatchQueryBuilderListForUniversalSearch(String keywd){
 		    ArrayList<MatchQueryBuilder> matchQueryBuilderList = new ArrayList<MatchQueryBuilder>();
 		    matchQueryBuilderList.add(QueryBuilders.matchQuery("jobTitle", keywd));
+		    matchQueryBuilderList.add(QueryBuilders.matchQuery("jobId", keywd));
 		    matchQueryBuilderList.add(QueryBuilders.matchQuery("skills", keywd));
 			matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("requirementStatus", keywd));
 			matchQueryBuilderList.add(QueryBuilders.matchQuery("country", keywd));
@@ -1605,6 +1616,8 @@ public class RequirementListRestController {
 			matchQueryBuilderList.add(QueryBuilders.matchQuery("jobType", keywd));
 			matchQueryBuilderList.add(QueryBuilders.matchQuery("priority", keywd));
 			matchQueryBuilderList.add(QueryBuilders.matchQuery("generatedId", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchQuery("manager", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchQuery("requirementStatus", keywd));
 			Matcher matcher = Pattern.compile("\\d+").matcher(keywd);
 			if(matcher.find()){
 				Float expYears = Float.valueOf(matcher.group());
