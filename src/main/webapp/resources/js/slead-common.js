@@ -4,47 +4,6 @@ function viewFile(sourceleadUrl, fileURL, title, contentType){
 	}  
 }
 
-function fileUpload(sourceleadUrl, id, type, formId,name) {
-	
-	if (name == null || name == 'undefined' || name == '') {
-		name = 'fileInfo';
-	}
-
-	var data = new FormData();
-	var files = document.getElementById(id).files;
-	for ( var e in files) {
-		data.append('file', files[e]);
-	}
-	$.ajax({
-		url : sourceleadUrl + "/upload/" + type,
-		data : data,
-		processData : false,
-		type : 'POST',
-		contentType : false,
-		success : function(data) {
-			if (data && data.length > 0) {
-				if ($("#" + formId + " input[name*='" + name + "'][data-id=" + id+ "]").length > 0) {
-					$("#" + formId + " input[name*='" + name+ "'][data-id=" + id + "]").remove();
-				}
-				var i = $("#" + formId + " input[type=hidden][name*='" + name+ "']").length / 3;
-				for ( var e in data) {
-					var html = "<input type='hidden' name='" + name + "[" + i+ "].fileURL' data-id=" + id + " value='"+ data[e].fileURL + "'/>";
-					html += "<input type='hidden' name='" + name + "[" + i+ "].fileName' data-id=" + id + " value='"+ data[e].fileName + "'/>";
-					html += "<input type='hidden' name='" + name + "[" + i+ "].contentType' data-id=" + id + " value='"+ data[e].contentType + "'/>";
-					
-					$("#" + formId).append(html);
-					i++;
-				}
-			}
-		},
-		error : function(err) {
-			showError(err);
-		}
-	});
-}
-	
-	
-
 function getFormData(formId) {
 	var $form = $("#"+formId);
 	var unindexed_array = $($form).serializeArray();
@@ -53,7 +12,60 @@ function getFormData(formId) {
 	indexed_array[n['name']] = n['value'];
 	});
 	return indexed_array;
+}
+
+function getFormData1(formId) {
+	var $form = $("#"+formId);
+	var unindexed_array = $($form).serializeArray();
+	var formData = new FormData();
+	$.map(unindexed_array, function (n, i) {
+		formData.append(n['name'], n['value']);
+	});
+	return formData;
+}
+
+
+function fileUpload(sourceleadUrl, id, type, formId, name, orgId, orgLocationId) {
+	if(name == null || name == 'undefined' || name == ''){
+		name = 'fileInfo';
 	}
+	if(orgId == null || orgId == "undefined" || orgId == "")
+		orgId = 0;
+	if(orgLocationId == null || orgLocationId == "undefined" || orgLocationId == "")
+		orgLocationId = 0;
+	var data = new FormData();
+	var files = document.getElementById(id).files;
+	for(var e in files) {
+		data.append('file', files[e]);
+	}
+	data.append('orgId', orgId);
+	data.append('orgLocationId', orgLocationId);
+	$.ajax({ 
+		url: sourceleadUrl+"/upload/"+type, 
+		data: data, 
+		processData: false, 
+		type: 'POST', 
+		contentType: false, 
+		success: function (data) {
+			if(data && data.length > 0) {
+				if($("#"+formId+" input[name*="+name+"][data-id="+id+"]").length > 0) {
+					$("#"+formId+" input[name*="+name+"][data-id="+id+"]").remove();
+				}
+				var i = $("#"+formId+" input[type=hidden][name*="+name+"]").length / 3;
+				for(var e in data) {
+					var html = "<input type='hidden' name='"+name+"["+i+"].fileURL' data-id="+id+" value='"+data[e].fileURL+"'/>";
+					html += "<input type='hidden' name='"+name+"["+i+"].fileName' data-id="+id+" value='"+data[e].fileName+"'/>";
+					html += "<input type='hidden' name='"+name+"["+i+"].contentType' data-id="+id+" value='"+data[e].contentType+"'/>";
+					$("#"+formId).append(html);
+					i ++;
+				}
+			}
+		}, 
+		error: function (err) { 
+			 showError(err); 
+		} 
+	});
+}
 
 function showError(error) {
     showMessage(error, 2);

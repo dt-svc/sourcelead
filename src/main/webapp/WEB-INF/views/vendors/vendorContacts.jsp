@@ -503,24 +503,17 @@ $('html').click(function(){
 <script type="text/javascript">
 	function checkVendorContactAdd(orgRelationId,vendorLocationId) {
 		if ($('#clinetContact_form').validate(false, validationSettings)) {
-			var frm = $('#clinetContact_form').serializeFormJSON();
-			var con = JSON.stringify(frm);
-			con = con.replace(/[{}]/g, "");
-	        var jsonData = encodeURIComponent(con);
+			var formData = getFormData("clinetContact_form");
 			var sourceleadUrl = '${sourceleadUrl}';
 			$("#addClientContact").attr("disabled", "disabled");
 			$("#addClientContact").addClass('button').val('Processing..');
-			$.ajax({
-						type : "POST",
-						url : sourceleadUrl+ "/saveClinentAndVendorContact?${_csrf.parameterName}=${_csrf.token}&json="+ jsonData+"&orgRelationId="+orgRelationId+"&clientLocationId="+vendorLocationId+"&responderType=Vendor",
-						success : function(result) {
-							$("#popUpDivContact").removeClass("edit-details-active");
-							$("#vendorConactTerminateMsgDiv").removeAttr("style");
-				 			$("#vendorConactTerminateMsgDiv").css({ display: "block" });
-				 			$("#vendorConactTerminateMsg").html("Success !! New Contact Added");
-							vendorContactList(orgRelationId,vendorLocationId);
-							vendorConactTerminateMsgFadein();
-						},
+			$.post(sourceleadUrl+"/saveClinentAndVendorContact?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+orgRelationId+"&clientLocationId="+vendorLocationId+"&responderType=Vendor", formData, function(data) {
+				$("#popUpDivContact").removeClass("edit-details-active");
+				$("#vendorConactTerminateMsgDiv").removeAttr("style");
+	 			$("#vendorConactTerminateMsgDiv").css({ display: "block" });
+	 			$("#vendorConactTerminateMsg").html("Success !! New Contact Added");
+				vendorContactList(orgRelationId,vendorLocationId);
+				vendorConactTerminateMsgFadein();
 			});
 			return true;
 		} else {

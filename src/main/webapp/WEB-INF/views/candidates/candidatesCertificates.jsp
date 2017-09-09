@@ -592,16 +592,27 @@ function addCertification(candidateId) {
 								result = result  +'	                      </select>';
 								result = result  +'	                   </div>';
 								result  = result + '                   <div class="col-md-8" positionRelative id="candidateScoreDiv">';
-								result  = result + '                     <input type="text" class="form-control input-sm" value="'+ json.score+ '" name="score" placeholder="Score" id="candidateScore" onkeyup="selectScoreType();scoreAndScoreType();"';
+								if(json.score !=null && json.score!='undefined'&& json.score !=''){
+								result  = result + '                     <input type="text" class="form-control input-sm" value="'+json.score+ '" name="score" placeholder="Score" id="candidateScore" onkeyup="selectScoreType();scoreAndScoreType();"';
 								result  = result + '                     data-validation-optional="true" data-validation="required validate_length length1-5" field-name="score">';
+								}else{
+								result  = result + '                     <input type="text" class="form-control input-sm" value="" name="score" placeholder="Score" id="candidateScore" onkeyup="selectScoreType();scoreAndScoreType();"';
+								result  = result + '                     data-validation-optional="true" data-validation="required validate_length length1-5" field-name="score">';
+								}
 								result  = result + '                 	 </div>';
 								result = result  +'	                   </div>';
-								
 								result  = result + '                 <div class="clearfix mb10">';
+								if(json.description !=null && json.description!='undefined'&& json.description !=''){
 								result  = result + '                   <div class="col-md-12">';
-								result  = result + '                     <input type="text" class="form-control" rows="1" name ="description" value="'+ json.description+ '"  placeholder="Description" id="candidateDescription"';
+								result  = result + '                     <input type="text" class="form-control" rows="1" name ="description" value="'+json.description+ '"  placeholder="Description" id="candidateDescription"';
 								result  = result + '                     data-validation-optional="true" data-validation="required">';
 								result  = result + '                   </div>';
+								}else{
+									result  = result + '                   <div class="col-md-12">';
+									result  = result + '                     <input type="text" class="form-control" rows="1" name ="description" value=""  placeholder="Description" id="candidateDescription"';
+									result  = result + '                     data-validation-optional="true" data-validation="required">';
+									result  = result + '                   </div>';	
+								}
 								result  = result + '                 </div>';
 								result  = result + '                 <div class="clearfix mb10">';
 								result  = result + '                   <div class="col-md-6 positionRelative">';
@@ -782,26 +793,15 @@ function addCertification(candidateId) {
 			var sourceleadUrl = '${sourceleadUrl}';
 			
 			 $.post(sourceleadUrl+"/updateCandidateCertificationsBycandidateIdandcandidateCertificateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&candidateCertificationId"+ candidateCertificationId, formData, function(data) {
-		        	closeCertificatePopup();
-		        	candidateCertificateList(candidateId);
-            		cerMsgFadein();
-            		qwikCertificates(candidateId);
+				 closeCertificatePopup();
+     			$("#selector5").removeAttr("style");
+     			$("#selector5").css({ display: "block" });
+     			$("#cerMsgDiv").html("Certification details updated");
+					candidateCertificateList(candidateId);
+					cerMsgFadein();
+					qwikCertificates(candidateId);
 		        });			
 
-			/* $.ajax({
-						type : "POST",
-						url : sourceleadUrl
-								+ "/updateCandidateCertificationsBycandidateIdandcandidateCertificateId?${_csrf.parameterName}=${_csrf.token}&json="+ jsonData + "&candidateId=" + candidateId	+ "&candidateCertificationId"+ candidateCertificationId,
-						success : function(data) {
-							closeCertificatePopup();
-	            			$("#selector5").removeAttr("style");
-	            			$("#selector5").css({ display: "block" });
-	            			$("#cerMsgDiv").html("Certification details updated");
-							candidateCertificateList(candidateId);
-							cerMsgFadein();
-							qwikCertificates(candidateId);
-						},
-					}); */
 			return true;
 		} else {
 			return false;

@@ -19,9 +19,6 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.bis.sourcelead.constants.Constants;
-import com.bis.sourcelead.dto.AddUserDTO;
-import com.bis.sourcelead.dto.CandidateDTO;
-import com.bis.sourcelead.dto.ClientDTO;
 import com.bis.sourcelead.entity.BulkClientDetails;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateEducation;
@@ -62,7 +59,7 @@ public class ClientImportRestController {
 	@PreAuthorize("hasAnyRole('ROLE_VENDOR_BULK_IMPORTS','ROLE_CLIENT_BULK_IMPORTS')")
 	@RequestMapping(value = "/clientExcelFileUpload", method = RequestMethod.POST)
 	@ResponseBody
-	public String fileUploaded(ClientDTO clientDTO,AddUserDTO addUserDTO,CandidateDTO candidateDTO,HttpServletRequest request,@RequestParam(value = "responderType", required = false) String responderType)throws Exception{
+	public String fileUploaded(MultipartHttpServletRequest request,@RequestParam(value = "responderType", required = false) String responderType)throws Exception{
 
 		String isSuccess =  "failure";
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
@@ -70,10 +67,10 @@ public class ClientImportRestController {
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		
 		MultipartFile multipartFile = null;
-		/*Iterator<String> itrator = request.getFileNames();
+		Iterator<String> itrator = request.getFileNames();
 		if (itrator.hasNext()) {
 			multipartFile = request.getFile(itrator.next());
-		}*/
+		}
 		
 		String isFileCreated = "";
 		if(multipartFile != null){
@@ -157,4 +154,3 @@ public class ClientImportRestController {
 }
 	
 }
-

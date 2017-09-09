@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.OrgLocationsDao;
 import com.bis.sourcelead.dto.ClientDTO;
 import com.bis.sourcelead.entity.Org;
@@ -37,13 +38,16 @@ public class OrgLocationsServiceImpl implements OrgLocationService {
 
 	@Override
 	public OrgLocations addOrgLocations(OrgLocations orgLocations) throws Exception {
-		orgLocations.setCoolingOffPeriod("3 Months"); //to set default cooling-off period to three months
+		orgLocations.setCoolingOffPeriod(Constants.DEFAULT_COOLINGOFF_PERIOD); //to set default cooling-off period to three months
 		return orgLocationsDao.addOrgLocations(orgLocations);
 	}
 
 	@Override
 	public OrgLocations updateOrgLocations(OrgLocations orgLocations) throws Exception {
 		orgLocations.setUpdatedDate(commonUtil.currentDate());
+		if(orgLocations.getCoolingOffPeriod() == null || orgLocations.getCoolingOffPeriod().isEmpty()){
+			orgLocations.setCoolingOffPeriod(Constants.DEFAULT_COOLINGOFF_PERIOD); //to set default cooling-off period to three months
+		}
 		return orgLocationsDao.updateOrgLocations(orgLocations);
 	}
 
@@ -97,8 +101,9 @@ public class OrgLocationsServiceImpl implements OrgLocationService {
         orgLocations.setWebsite(convertWebsite(orgSettings.getWebsite()));
         orgLocations.setOrgDescription(orgSettings.getAboutCompany());
       
-        
-		
+        if(orgLocations.getCoolingOffPeriod() == null || orgLocations.getCoolingOffPeriod().isEmpty()){
+			orgLocations.setCoolingOffPeriod(Constants.DEFAULT_COOLINGOFF_PERIOD); //to set default cooling-off period to three months
+		}
         orgLocationsDao.updateOrgLocations(orgLocations);
 		
 		return orgLocations;

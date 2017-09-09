@@ -201,7 +201,7 @@ public class OrgLocations implements Serializable{
     @Transient
     private SimpleDateFormat locFullFormDateFormatter;
     
-
+   
 	public Timezone getTimezone() {
 		return timezone;
 	}
