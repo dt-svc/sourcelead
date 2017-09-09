@@ -27,7 +27,9 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
+import com.bis.sourcelead.annotations.Validator;
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.RequirementDTO;
 import com.bis.sourcelead.elk.index.CandidateIndex;
 import com.bis.sourcelead.elk.index.RequirementIndex;
 import com.bis.sourcelead.elk.index.helper.RequirementHelper;
@@ -63,6 +65,7 @@ import com.bis.sourcelead.service.TeamService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.util.FileUploadUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
@@ -84,6 +87,9 @@ public class RequirementRestController {
 
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
+	
+	@Value("${static.path}")
+	private String staticPath;
 
 	@Autowired
 	private RequirementService requirementService;
@@ -643,7 +649,8 @@ public class RequirementRestController {
 	 * @return Json
 	 * @throws Exception
 	 */
-	@PreAuthorize("hasRole('ROLE_CREATE_CLIENT_CONTACT')")
+	//TODO Dont delete
+	/*@PreAuthorize("hasRole('ROLE_CREATE_CLIENT_CONTACT')")
 	@RequestMapping(value = "/saveClientContact", method = RequestMethod.POST)
 	@ResponseBody
 	public String saveClientContact(@RequestParam(value = "json", required = false) String json,
@@ -678,7 +685,7 @@ public class RequirementRestController {
 			orgSpoc.setSpocUserId(orgSpoc.getClientUser().getId());
 		}
 		return commonUtil.toJSON(orgSpocsList);
-	}
+	}*/
 
 	/**
 	 * @author Venkat Kesav
