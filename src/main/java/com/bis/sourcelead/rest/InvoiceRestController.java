@@ -118,6 +118,9 @@ public class InvoiceRestController {
 	@Value("${sourceleadUrl}")
     private String sourceleadUrl;
 	
+	@Value("${static.path}")
+    private String staticPath;
+	
 	@Autowired
 	EmailScenarioService emailScenarioService;
 	
@@ -250,7 +253,7 @@ public class InvoiceRestController {
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		String currencyCode = (String) SourceLeadSessionManager.getSessionAttribute(request, "currencyCode");
 		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
-
+        invoiceDTO.setStaticPath(staticPath);
 		Invoice invoice = invoiceService.saveInvoice(user,orgLocation,saveType,invoiceType,org,currencyCode,invoiceDTO);
 		
 		if(invoiceType.equals("payable") && saveType.equals("DRAFT")){
