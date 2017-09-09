@@ -107,7 +107,9 @@ public class CommonUtil {
 	private UserService userService;
 	
 	@Autowired
+	private RequirementService requirementService;
 	
+	@Autowired
 	private UserRoleService userRoleService;
 	
 	@Autowired
@@ -122,8 +124,6 @@ public class CommonUtil {
 	@Autowired
     private SourceleadELKBaseIndexer<ClientVendorIndex> sourceleadELKBaseIndexer;
 	
-	@Autowired
-    private RequirementService requirementService;
 	
 	/**
 	 * This method is used to store pre-defined sourcelead tasks for the particular project
@@ -921,7 +921,7 @@ public class CommonUtil {
 			  
 			
 		}
-
+		
 		public RequirementDTO getRequirementDTO(Requirement requirement) throws Exception
 		{
 			RequirementDTO requirementDTO = new RequirementDTO();
@@ -1129,5 +1129,4 @@ public class CommonUtil {
 			// TODO Auto-generated method stub
 			return false;
 		}
-		}
-
+}
