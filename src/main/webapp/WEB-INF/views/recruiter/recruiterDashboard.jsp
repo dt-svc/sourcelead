@@ -48,7 +48,7 @@ $(document).ready(function(){
 						  		  <div class="col-md-5 paddingRight paddingLeft">
 								     <input type="text" value="" placeholder="To Date" class="form-control input-sm calendar" id="serialtodate" name="To Date" readonly="readonly">
 								  </div>
-								  <div class="col-md-2 paddingLeft">
+								  <div class="col-md-1 noPad">
 									  <button type="button" class="btn btn-sm btn-primary" onclick="getJobSummarySerialChart();"><i class="fa fa-search"></i></button>
 								  </div>
 							  </div>
@@ -80,7 +80,7 @@ $(document).ready(function(){
 					  		  <div class="col-md-5 paddingLeft paddingRight">
 							     <input type="text" value="" placeholder="To Date" class="form-control input-sm calendar" id="dptodate" name="To Date" readonly="readonly">
 							  </div>
-							  <div class="col-md-2 paddingLeft">
+							  <div class="col-md-1 noPad">
 								  <button type="button" class="btn btn-sm btn-primary" onclick="getJobSummaryDoNutChart();"><i class="fa fa-search"></i></button>
 							  </div>
 						  </div>
@@ -112,7 +112,7 @@ $(document).ready(function(){
 			  		  <div class="col-md-5 paddingLeft paddingRight">
 					     <input type="text" value="" placeholder="To Date" class="form-control input-sm calendar" id="portlettodate" name="To Date" readonly="readonly">
 					  </div>
-					  <div class="col-md-2 paddingLeft">
+					  <div class="col-md-1 noPad">
 						  <button type="button" class="btn btn-sm btn-primary btn-block" onclick="getSubmittedByMeJobPortlets();"><i class="fa fa-search"></i></button>
 					  </div>
 					  </div>
@@ -142,7 +142,7 @@ $(document).ready(function(){
 			  		  <div class="col-md-5 paddingLeft paddingRight">
 					     <input type="text" value="" placeholder="To Date" class="form-control input-sm calendar" id="portletreferByMetodate" name="To Date" readonly="readonly">
 					  </div>
-					  <div class="col-md-2 paddingLeft">
+					  <div class="col-md-1 noPad">
 						  <button type="button" class="btn btn-sm btn-primary btn-block" onclick="getReferByMeJobPortlets();"><i class="fa fa-search"></i></button>
 					  </div>
 					  </div>

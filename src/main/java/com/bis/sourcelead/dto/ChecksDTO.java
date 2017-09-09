@@ -6,7 +6,6 @@ import java.util.Date;
 public class ChecksDTO extends SearchDTO implements Serializable{
 
 	private String empId;
-	private String orgLocationId;
 	private String empName;
 	private String typeOfExpense;
 	private String bankName;
@@ -23,142 +22,105 @@ public class ChecksDTO extends SearchDTO implements Serializable{
 	private String amount;
 	private String memo;
 	
-	public String getEmpId()
-	{
+	
+	public String getEmpId() {
 		return empId;
 	}
-	public void setEmpId(String empId)
-	{
+	public void setEmpId(String empId) {
 		this.empId = empId;
 	}
-	public String getOrgLocationId()
-	{
-		return orgLocationId;
-	}
-	public void setOrgLocationId(String orgLocationId)
-	{
-		this.orgLocationId = orgLocationId;
-	}
-	public String getEmpName()
-	{
+	public String getEmpName() {
 		return empName;
 	}
-	public void setEmpName(String empName)
-	{
+	public void setEmpName(String empName) {
 		this.empName = empName;
 	}
-	public String getTypeOfExpense()
-	{
+	public String getTypeOfExpense() {
 		return typeOfExpense;
 	}
-	public void setTypeOfExpense(String typeOfExpense)
-	{
+	public void setTypeOfExpense(String typeOfExpense) {
 		this.typeOfExpense = typeOfExpense;
 	}
-	public String getBankName()
-	{
+	public String getBankName() {
 		return bankName;
 	}
-	public void setBankName(String bankName)
-	{
+	public void setBankName(String bankName) {
 		this.bankName = bankName;
 	}
-	public String getMonth()
-	{
+	public String getMonth() {
 		return month;
 	}
-	public void setMonth(String month)
-	{
+	public void setMonth(String month) {
 		this.month = month;
 	}
-	public String getLegalFees()
-	{
+	public String getLegalFees() {
 		return legalFees;
 	}
-	public void setLegalFees(String legalFees)
-	{
+	public void setLegalFees(String legalFees) {
 		this.legalFees = legalFees;
 	}
-	public String getElectronicWithdrawals()
-	{
+	public String getElectronicWithdrawals() {
 		return electronicWithdrawals;
 	}
-	public void setElectronicWithdrawals(String electronicWithdrawals)
-	{
+	public void setElectronicWithdrawals(String electronicWithdrawals) {
 		this.electronicWithdrawals = electronicWithdrawals;
 	}
-	public String getCheckNo()
-	{
+	public String getCheckNo() {
 		return checkNo;
 	}
-	public void setCheckNo(String checkNo)
-	{
+	public void setCheckNo(String checkNo) {
 		this.checkNo = checkNo;
 	}
-	public String getUserId()
-	{
+	public String getUserId() {
 		return userId;
 	}
-	public void setUserId(String userId)
-	{
+	public void setUserId(String userId) {
 		this.userId = userId;
 	}
-	public String getDate()
-	{
+	public String getDate() {
 		return date;
 	}
-	public void setDate(String date)
-	{
+	public void setDate(String date) {
 		this.date = date;
 	}
-	public String getAdvance()
-	{
+	public String getAdvance() {
 		return advance;
 	}
-	public void setAdvance(String advance)
-	{
+	public void setAdvance(String advance) {
 		this.advance = advance;
 	}
-	public String getGeneralExpenses()
-	{
+	public String getGeneralExpenses() {
 		return generalExpenses;
 	}
-	public void setGeneralExpenses(String generalExpenses)
-	{
+	public void setGeneralExpenses(String generalExpenses) {
 		this.generalExpenses = generalExpenses;
 	}
-	public String getVendorPayments()
-	{
+	public String getVendorPayments() {
 		return vendorPayments;
 	}
-	public void setVendorPayments(String vendorPayments)
-	{
+	public void setVendorPayments(String vendorPayments) {
 		this.vendorPayments = vendorPayments;
 	}
-	public String getPayrollChecks()
-	{
+	public String getPayrollChecks() {
 		return payrollChecks;
 	}
-	public void setPayrollChecks(String payrollChecks)
-	{
+	public void setPayrollChecks(String payrollChecks) {
 		this.payrollChecks = payrollChecks;
 	}
-	public String getAmount()
-	{
-		return amount;
-	}
-	public void setAmount(String amount)
-	{
-		this.amount = amount;
-	}
-	public String getMemo()
-	{
+	public String getMemo() {
 		return memo;
 	}
-	public void setMemo(String memo)
-	{
+	public void setMemo(String memo) {
 		this.memo = memo;
 	}
+	public String getAmount() {
+		return amount;
+	}
+	public void setAmount(String amount) {
+		this.amount = amount;
+	}
+
+	
 	
 	
 }

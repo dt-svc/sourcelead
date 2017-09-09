@@ -29,7 +29,7 @@
   </section>
   <div class="content-area content-new clearfix">
   <div id="loading"></div> 
-  <form:form id="addcandidate_form" name="addcandidate_form"  enctype='multipart/form-data' >
+  <form:form id="addcandidate_form" name="addcandidate_form">
     <div class="row form-horizontal mt myForm">
       <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12"> 
         
@@ -300,9 +300,9 @@
             <div class="col-md-9">
 			 <div class="input-group col-md-12" id="uploadFileGroup" style="margin:0 auto">
                <label class="input-group-btn"> <span class="btn btn-danger"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
-                <input type="file" style="display: none;" multiple name ="uploadBtn" id="uploadBtn"  class="upload">
+                <input type="file" style="display: none;"  id="uploadBtn"  class="upload">
                  </span> </label>
-                 <input type="text" class="form-control" readonly id="uploadFile" name="docFile" type="file"  name="" placeholder="Upload Resume ..." field-name="Upload Resume" data-validation="required validate_Space validatedoc" >
+                 <input type="text" class="form-control" readonly id="uploadFile" name="docFile" type="text"  name="" placeholder="Upload Resume ..." field-name="Upload Resume" data-validation="required validate_Space validatedoc" >
            </div>
          </div>
         </div>
@@ -399,12 +399,8 @@
 		 if ($('#addcandidate_form').validate(false, validationSettings)){ 
 			 var candidateId = '${candidateId}'
 			var sourceleadUrl = '${sourceleadUrl}';
-			var frm = $('#addcandidate_form').serializeFormJSON();
-			var con = JSON.stringify(frm);
-			con = con.replace(/[{}]/g, ""); 
-		    var jsonData = encodeURIComponent(con);
 			var form = $('#addcandidate_form')[0];
-      		var formData = new FormData(form); 
+      		var formData = new FormData(form);
 			//It will escape all the special characters
 			$("#store_candidate").attr("disabled", "disabled");
 			$("#store_candidate").addClass('button').val('Processing..');
@@ -417,7 +413,7 @@
 		    	        processData: false,
 		    	        contentType:false,
 		        	    dataType : 'json',
-		        	    url : sourceleadUrl+"/storeProfessionalParseCandidate?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&candidateId="+candidateId,
+		        	    url : sourceleadUrl+"/storeProfessionalParseCandidate?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,
 						success : function(result) {
 								location.replace(sourceleadUrl+"/professionalProfile");
 						},
@@ -677,7 +673,7 @@ function getDesignationType(designationType){
 
 <!-- This script for Current Rate ,Rate Type,Expected Rate, Expected Rate Type validation checks -->
 <script>
-
+var sourceleadUrl ='${sourceleadUrl}';
 function rateValidations(){
 var rateType = document.getElementById("rateType").value; 
 if(rateType != null && rateType != ""){
@@ -728,6 +724,12 @@ var currentRate = document.getElementById("currentRate").value;
 	 }
 	 
 }
+
+$(function() {
+	$("#uploadBtn").change(function() {
+		fileUpload(sourceleadUrl, "uploadBtn", "resumes", "addcandidate_form");
+	});
+ });
 </script>
 
 
