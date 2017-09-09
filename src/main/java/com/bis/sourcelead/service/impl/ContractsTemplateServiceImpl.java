@@ -26,6 +26,8 @@ import com.bis.sourcelead.dao.ContractsTemplateDao;
 import com.bis.sourcelead.dto.ContractDocumentsDTO;
 import com.bis.sourcelead.dto.ContractsDTO;
 import com.bis.sourcelead.dto.FileInfo;
+import com.bis.sourcelead.dto.ContractTemplateDTO;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.ContractRequestDocuments;
 import com.bis.sourcelead.entity.Contracts;
@@ -113,13 +115,13 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 	ProjectMembersService projectMembersService;
 	
 	@Override
-	public ContractsTemplate saveContractTemplate(JSONObject jsonObj, User user, OrgLocations orgLocation) throws Exception {
+	public ContractsTemplate saveContractTemplate(ContractTemplateDTO contractTemplateDTO, JSONObject jsonObj, User user, OrgLocations orgLocation) throws Exception {
 		
 		
 		ContractsTemplate contractsTemplate = null;
-		if(jsonObj.has("templateId")&& null != jsonObj.getString("templateId") && !"".equalsIgnoreCase(jsonObj.getString("templateId"))){
+		if(StringUtils.isNotBlank(contractTemplateDTO.getTemplateId())){
 //			if(){
-				contractsTemplate = contractsTemplateDao.getContractTemplateById(Long.parseLong(jsonObj.getString("templateId")));
+				contractsTemplate = contractsTemplateDao.getContractTemplateById(Long.parseLong(contractTemplateDTO.getTemplateId()));
 //			}else{
 //				contractsTemplate = new ContractsTemplate();
 //			}
@@ -128,20 +130,22 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		}
 		contractsTemplate.setOrgLocationId(orgLocation);
 		
-		contractsTemplate.setTemplateName(jsonObj.getString("templateName"));
+		contractsTemplate.setTemplateName(contractTemplateDTO.getTemplateName());
 		
-		contractsTemplate.setTemplateType(jsonObj.getString("contractType"));
+		for(String templateType : contractTemplateDTO.getContractType())
+		contractsTemplate.setTemplateType(templateType);
 		
-		if(jsonObj.has("letterHead") && !isNullOrEmpty(jsonObj.getString("letterHead"))){
+		//This Is Not Using.
+		/*if(jsonObj.has("letterHead") && !isNullOrEmpty(jsonObj.getString("letterHead"))){
 			contractsTemplate.setLetterHead(jsonObj.getString("letterHead"));
+		}*/
+		
+		if(StringUtils.isNotBlank(contractTemplateDTO.getDescription())){
+			contractsTemplate.setDescription(contractTemplateDTO.getDescription().trim());
 		}
 		
-		if(jsonObj.has("description") && !isNullOrEmpty(jsonObj.getString("description"))){
-			contractsTemplate.setDescription(jsonObj.getString("description").trim());
-		}
-		
-		if(jsonObj.has("templateContent") && !isNullOrEmpty(jsonObj.getString("templateContent"))){
-			String content = jsonObj.getString("templateContent");
+		if(StringUtils.isNotBlank(contractTemplateDTO.getTemplateContent())){
+			String content = contractTemplateDTO.getTemplateContent();
 		//	String header = "<div style='text-align: center;'>"+jsonObj.getString("templateName")+"<br></div><br>";
 		//	String totalBody = header + content;
 			contractsTemplate.setTemplateContent(content);
@@ -181,9 +185,9 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 	}
 
 	@Override
-	public List<ContractsTemplate> getAllContractsTemplatesByOrgLocationid(OrgLocations orgLocation) throws Exception
+	public ResponseList<ContractsTemplate> getAllContractsTemplatesByOrgLocationid(OrgLocations orgLocation, ContractTemplateDTO contractTemplateDTO) throws Exception
 	{
-		return contractsTemplateDao.getAllContractsTemplatesByOrgLocationid(orgLocation);
+		return contractsTemplateDao.getAllContractsTemplatesByOrgLocationid(orgLocation, contractTemplateDTO);
 	}
 
 	@Override
