@@ -318,7 +318,7 @@ public class SubmissionsRestController {
 			}
 			
 			RequirementDTO requirementDTO =commonUtil.getRequirementDTO(requirement);
-			requirementElkUtil.saveElkRequirement(requirement,requirementDTO);	
+			requirementElkUtil.saveElkRequirement(requirement,requirementDTO);	       
 		}
 		return "success";
 
