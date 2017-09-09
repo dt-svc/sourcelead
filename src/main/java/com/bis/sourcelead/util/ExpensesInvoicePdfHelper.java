@@ -262,8 +262,12 @@ public class ExpensesInvoicePdfHelper {
 											.append(invoiceLineItems.getUser().getLastName()).toString(),
 									Element.ALIGN_CENTER, font10));
 						} else {
-							table.addCell(
-									getCell(invoiceLineItems.getUser().getFirstName(), Element.ALIGN_CENTER, font10));
+							if(invoiceLineItems.getUser() !=null) {
+								table.addCell(getCell(invoiceLineItems.getUser().getFirstName(), Element.ALIGN_CENTER, font10));
+							}else {
+								table.addCell(getCell("--", Element.ALIGN_CENTER, font10));
+							}
+							
 						}
 					}
 
