@@ -235,7 +235,7 @@ $(document).ready(function(){
 		      <div class="col-md-12"> <a href="javascript:void(0)" class="close-popdiv" onClick="closeCandidate()">&times;</a>
 		      <div class="col-md-4 mt25">
 		        <div class="small-widget bgGreen">
-		            <a  href="<c:url value='/createInvoice'/>" title="Create custom invoice">
+		            <a  href="<c:url value='/createInvoice'/>" title="Create Client Based Invoice">
 		          <div class="clearfix mb10"> 
 		              <img src="resources/images/invoice_icon.png" class="text-center" alt="create_receivables">
 		          </div>
@@ -245,7 +245,7 @@ $(document).ready(function(){
 		
 		        <div class="col-md-4 mt25">
 		          <div class="small-widget bg-yellow"> 
-		          <a href="<c:url value='/createInvoiceProjectBased'/>" title="Create project based invoice">
+		          <a href="<c:url value='/createInvoiceProjectBased'/>" title="Create Project Based Invoice">
 		            <div class="clearfix mb10">
 		                <!--<i class="fa fa-usd fa-3x"></i>-->
 		                <img src="resources/images/invoice_icon.png" class="text-center" alt="Invoice">
@@ -255,7 +255,7 @@ $(document).ready(function(){
 		          
 		         <div class="col-md-4 mt25">
 		          <div class="small-widget bg-purple"> <a href="other_receivables.html" title="Create other invoice">
-		            <a  href="<c:url value='/createReceivableExpensesBill'/>" title="Create custom invoice">
+		            <a  href="<c:url value='/createReceivableExpensesBill'/>" title="Create Other Invoice">
 		            <div class="clearfix mb10">
 		              <i class="fa fa-usd fa-3x"></i>             
 		             <img src="resources/images/invoice_icon.png" class="text-center" alt="Invoice">
