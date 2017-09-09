@@ -29,6 +29,7 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.RequirementDTO;
 import com.bis.sourcelead.elk.index.RequirementIndex;
 import com.bis.sourcelead.elk.setup.RequirementElkUtil;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
@@ -315,7 +316,10 @@ public class SubmissionsRestController {
 			}else{
 				requirement.setTotalApplicants(0); 
 			}
-			requirementElkUtil.saveElkRequirement(requirement,new JSONObject());	
+			
+			// pass dto as parameter
+			RequirementDTO requirementDTO = commonUtil.getRequirementDTO(requirement);
+			requirementElkUtil.saveElkRequirement(requirement,requirementDTO);	
 		}
 		return "success";
 
