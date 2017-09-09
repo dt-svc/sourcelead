@@ -52,6 +52,8 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.InvoiceDao;
 import com.bis.sourcelead.dto.ExpensesDTO;
 import com.bis.sourcelead.dto.ExpensesEntriesDTO;
+import com.bis.sourcelead.dto.InvoiceDTO;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.EmailAttachment;
@@ -351,17 +353,23 @@ public class InvoiceRestController {
  	  return resultJson;
  	}
     
-    @RequestMapping(value = "/getInvoiceList")
-	public String getInvoiceList(@RequestParam(value = "invoiceStatus", required = false) String invoiceStatus,
-			@RequestParam(value = "paymentStatus", required = false) String paymentStatus,
-			@RequestParam(value = "dayWisetype", required = false) String reportType,
-			@RequestParam(value = "startDate", required = false) String customStartDate,
-			@RequestParam(value = "endDate", required = false) String customEndDate,
-			@RequestParam(value = "invoiceType", required = false) String invoiceType,HttpServletRequest request) throws Exception {
+    @RequestMapping(value = "/getInvoiceList",method = RequestMethod.POST)
+	public ResponseList<Invoice> getInvoiceList(InvoiceDTO invoiceDTO,HttpServletRequest request) throws Exception {
 		
     	String resultJson;
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		List<Invoice> invoiceList = null;
+		
+		String[] tableColumns = {"invoiceId", "clientName", "clientContact", "projectName", "invoiceDate", "inoviceTotal","inoviceDue","dueDate","inoviceStatus","paymentStatus","action"};
+	     int sortColumnIndex = 1; //by default sorting using updated date
+		String sortColumnOrder = "desc"; //by default descending order
+		if(invoiceDTO.getOrder() != null && !invoiceDTO.getOrder().isEmpty()) {
+			sortColumnIndex = Integer.parseInt(invoiceDTO.getOrder().get(0).get("column"));
+			sortColumnOrder = invoiceDTO.getOrder().get(0).get("dir");
+		}
+		invoiceDTO.setSortColumn(tableColumns[sortColumnIndex]);
+		invoiceDTO.setSortOrder(sortColumnOrder);
+		
+		
 		List<Invoice> billingInvoiceList = new ArrayList<Invoice>();
 		
 		Timezone timezone = timeZoneService.getTimezone(orgLocations.getTimezone().getId());
@@ -371,38 +379,38 @@ public class InvoiceRestController {
 		DateFormat TZ_DF_TS = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		Date endDateUTC = null;
 		Date startDateUTC = null;
-		if (!Constants.CUSTOM_REPORTS.equalsIgnoreCase(reportType)) {
+		if (!Constants.CUSTOM_REPORTS.equalsIgnoreCase(invoiceDTO.getDayWisetype())) {
 			String endDate = outputFormatter1.print(zoned);
 			String endDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE, endDate);
 			endDateUTC = TZ_DF_TS.parse(endDateString);
 		}
-		if (null != reportType && !"".equals(reportType)) {
-			if (!Constants.CUSTOM_REPORTS.equalsIgnoreCase(reportType)) {
+		if (null != invoiceDTO.getDayWisetype() && !"".equals(invoiceDTO.getDayWisetype())) {
+			if (!Constants.CUSTOM_REPORTS.equalsIgnoreCase(invoiceDTO.getDayWisetype())) {
 			String startDate = outputFormatter.print(zoned);
 				String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE, startDate);
 				startDateUTC = TZ_DF_TS.parse(startDateString);
-			 if (Constants.ONE_MONTH.equals(reportType)) {
+			 if (Constants.ONE_MONTH.equals(invoiceDTO.getDayWisetype())) {
 				startDateUTC = getPreviousDate(zoned, outputFormatter, TZ_DF_TS, timezone, 30);
 			}
-			else if (Constants.TWO_MONTHS.equals(reportType)) {
+			else if (Constants.TWO_MONTHS.equals(invoiceDTO.getDayWisetype())) {
 				startDateUTC = getPreviousDate(zoned, outputFormatter, TZ_DF_TS, timezone, 60);
 			}
-			else if (Constants.THREE_MONTHS.equals(reportType)) {
+			else if (Constants.THREE_MONTHS.equals(invoiceDTO.getDayWisetype())) {
 				startDateUTC = getPreviousDate(zoned, outputFormatter, TZ_DF_TS, timezone, 90);
 			}
-			else if (Constants.SIX_MONTHS.equals(reportType)) {
+			else if (Constants.SIX_MONTHS.equals(invoiceDTO.getDayWisetype())) {
 				startDateUTC = getPreviousDate(zoned, outputFormatter, TZ_DF_TS, timezone, 180);
 			}
-			else if (Constants.ONE_YEAR.equals(reportType)) {
+			else if (Constants.ONE_YEAR.equals(invoiceDTO.getDayWisetype())) {
 				startDateUTC = getPreviousDate(zoned, outputFormatter, TZ_DF_TS, timezone, 365);
 			}
 			}
 		}else {
-			if (!"".equalsIgnoreCase(customStartDate) && !"".equalsIgnoreCase(customEndDate) && !"undefined".equalsIgnoreCase(customStartDate) && !"undefined".equalsIgnoreCase(customEndDate)) {
+			if (!"".equalsIgnoreCase(invoiceDTO.getCustomStartDate()) && !"".equalsIgnoreCase(invoiceDTO.getCustomEndDate()) && !"undefined".equalsIgnoreCase(invoiceDTO.getCustomStartDate()) && !"undefined".equalsIgnoreCase(invoiceDTO.getCustomEndDate())) {
 				DateFormat TZ_DF_CSD = new SimpleDateFormat("yyyy-MM-dd'T'00:00:00");
 				DateFormat TZ_DF_CED = new SimpleDateFormat("yyyy-MM-dd'T'23:59:59");
-				Date startTime = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),customStartDate);
-				Date endTime = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),customEndDate);
+				Date startTime = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),invoiceDTO.getCustomStartDate());
+				Date endTime = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),invoiceDTO.getCustomEndDate());
 				String customStartTimeStr = TZ_DF_CSD.format(startTime);
 				String customEndTimeStr = TZ_DF_CED.format(endTime);
 				String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE, customStartTimeStr);
@@ -414,14 +422,12 @@ public class InvoiceRestController {
 			}
 		}
 		
-		
-		invoiceList = invoiceService.invoiceListByOrgLocationId(orgLocations.getId(),invoiceStatus,paymentStatus,startDateUTC,endDateUTC,invoiceType);
-		
-		
+//		invoiceList = invoiceService.invoiceListByOrgLocationId(orgLocations.getId(),invoiceStatus,paymentStatus,startDateUTC,endDateUTC,invoiceType);
+		ResponseList<Invoice>  invoiceList = invoiceService.invoiceListByOrgLocationId(orgLocations.getId(),startDateUTC,endDateUTC,invoiceDTO);
 		Date todayDate = new Date();
-		
 		SimpleDateFormat dateFormat = orgLocations.getLocFullFormDateFormatter();
-		for(Invoice invoice :invoiceList){
+		List<Invoice> invoiceFilterList = invoiceList.getData();
+		for(Invoice invoice :invoiceFilterList){
 			Integer draftCount = 0;
 			Integer paidCount = 0;
 			Integer overDueInvoiceCount = 0;
@@ -475,7 +481,7 @@ public class InvoiceRestController {
 				}
 				
 				if(!invoice.getInvoiceStatus().equalsIgnoreCase("DRAFT") && !invoice.getInvoiceStatus().equalsIgnoreCase("Rejected") &&
-						(invoice.getPaymentStatus().equalsIgnoreCase("Unpaid") || invoice.getPaymentStatus().equalsIgnoreCase("Partial Paid"))){
+						(invoice.getPaymentStatus().equalsIgnoreCase("Unpaid") || invoice.getPaymentStatus().equalsIgnoreCase("Partial Paid")) || invoice.getPaymentStatus().equalsIgnoreCase("Overdue")){
 					
 					String dueDate = commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),invoice.getDueDate());
 					Date invoiceDueDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),dueDate);
@@ -505,15 +511,14 @@ public class InvoiceRestController {
 			invoice.setPaidInvoiceCount(paidCount);
 			invoice.setDueAfterInvoiceCount(overDueInvoiceCount);
 			invoice.setDueBeforeInvoiceCount(openInvoiceCount);
-			
-			
-			billingInvoiceList.add(invoice);
 		}
+		invoiceList.setData(invoiceFilterList);
+		return invoiceList;
 		
 		
 		
-	    resultJson = commonUtil.toJSON(billingInvoiceList);
-	  return resultJson;
+//	    resultJson = commonUtil.toJSON(billingInvoiceList);
+//	  return resultJson;
 	}
 	
     

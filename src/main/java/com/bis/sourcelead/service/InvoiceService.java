@@ -9,6 +9,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.bis.sourcelead.beans.BillingReportDTO;
 import com.bis.sourcelead.beans.CurrencyConversionResponse;
+import com.bis.sourcelead.dto.InvoiceDTO;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.Invoice;
 import com.bis.sourcelead.entity.InvoiceAmount;
@@ -21,7 +23,7 @@ import com.bis.sourcelead.entity.User;
 public interface InvoiceService {
 	
 
-	List<Invoice> invoiceListByOrgLocationId(Long orgLocationId, String invoiceStatus, String paymentStatus,Date startDateUTC, Date endDateUTC,String invoiceType) throws Exception;
+	ResponseList<Invoice> invoiceListByOrgLocationId(Long orgLocationId,Date startDateUTC, Date endDateUTC,InvoiceDTO invoiceDTO) throws Exception;
 
 	Invoice getInvoicetById(Long invoiceId) throws Exception;
 	
