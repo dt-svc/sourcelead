@@ -247,18 +247,25 @@ width: 100% !important;
        
 <script type="text/javascript">
 	function storeRequiremetTemplate() {
-		alert("sss");
 		 var ee = $("#txtEditor").val($('.Editor-editor').html()); 
 		 if ($('#requirementtemplate_form').validate(false, validationSettings)){ 
 			 
-			    var formData = getFormData("requirementtemplate_form");
+			    var formData = getFormData1("requirementtemplate_form");
 				var sourceleadUrl = '${sourceleadUrl}';
 				$("#store_RequirementTemplate").attr("disabled", "disabled");
 				$("#store_RequirementTemplate").addClass('button').val('Processing..');
-				
-		        $.post(sourceleadUrl+"/storeRequirementTemplate?${_csrf.parameterName}=${_csrf.token}", formData, function(data) {
-		        	location.replace(sourceleadUrl+"/template");
-		        });
+		        $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		         $.ajax({
+					 type : "POST",
+					 data: formData,
+	  		         processData: false,
+	  		         contentType:false, 
+					  url : sourceleadUrl+"/storeRequirementTemplate?${_csrf.parameterName}=${_csrf.token}",
+					  	success : function(data) {
+					  		location.replace(sourceleadUrl+"/template");
+
+					},
+				});
 			
 			
 			return true;

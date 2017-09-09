@@ -1493,15 +1493,20 @@ function validate_fileupload(fileName)
 			
 			var sourceleadUrl = '${sourceleadUrl}';
       		
-      		var formData = getFormData("requirement_form");
-			
+      		var formData = getFormData1("requirement_form");
 			$( "#submitForApproval" ).addClass('button').val('Processing..');
-     		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-     		$.post(sourceleadUrl+"/storeRequirement?${_csrf.parameterName}=${_csrf.token}&saveType="+saveType, formData, function(data) {
-     			location.replace(sourceleadUrl+"/requirementList");
-     		});
-     		
-			
+			$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		         $.ajax({
+					 type : "POST",
+					 data: formData,
+	  		         processData: false,
+	  		         contentType:false, 
+					  url : sourceleadUrl+"/storeRequirement?${_csrf.parameterName}=${_csrf.token}&saveType="+saveType,
+					  	success : function(data) {
+						location.replace(sourceleadUrl+"/requirementList");
+
+					},
+				});
 			return true;
 		   }else{ 
 				return false;
