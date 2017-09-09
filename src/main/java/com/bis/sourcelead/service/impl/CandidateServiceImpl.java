@@ -1157,8 +1157,8 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 			HashSet<CandidateResumes> candidateResumesList = candidateResumesService.getCandidateResumesDetails(orgLocations,user.getUserCode(),candidate,multiFile);
 			candidate.setCandidateResumes(candidateResumesList);
 			}*/
-			if(candidateDTO.getUploadedFileInfo() != null && candidateDTO.getUploadedFileInfo().size()>=0){
-				FileInfo fileInfo = candidateDTO.getUploadedFileInfo().get(0);
+			if(candidateDTO.getFileInfo() != null && !candidateDTO.getFileInfo().isEmpty()){
+				FileInfo fileInfo = candidateDTO.getFileInfo().get(0);
 				HashSet<CandidateResumes> candidateResumesList = candidateResumesService.getCandidateResumesDetails(orgLocations,user.getUserCode(),candidate, fileInfo);
 				candidate.setCandidateResumes(candidateResumesList);
 				
