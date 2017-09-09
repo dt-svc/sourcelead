@@ -602,6 +602,7 @@ public class RequirementRestController {
 		return resultJson;
 	}
 	
+	// TODO Dont't delet until regression testing done @prasad Korasika
 	/**
 	 * Handles Vendor Contacts
 	 * 
@@ -610,7 +611,7 @@ public class RequirementRestController {
 	 * @return Json
 	 * @throws Exception
 	 */
-	@PreAuthorize("hasRole('ROLE_CREATE_CLIENT_CONTACT')")
+	/*@PreAuthorize("hasRole('ROLE_CREATE_CLIENT_CONTACT')")
 	@RequestMapping(value = "/saveClientContact", method = RequestMethod.POST)
 	@ResponseBody
 	public String saveClientContact(@RequestParam(value = "json", required = false) String json, @RequestParam(value = "orgRelationId", required = false) String orgRelationId, @RequestParam(value = "clientLocationId", required = false) String clientLocationId, HttpServletRequest request) throws Exception
@@ -638,7 +639,7 @@ public class RequirementRestController {
 			orgSpoc.setSpocUserId(orgSpoc.getClientUser().getId());
 		}
 		return commonUtil.toJSON(orgSpocsList);
-	}
+	}*/
 	
 	/**
 	 * @author Venkat Kesav
