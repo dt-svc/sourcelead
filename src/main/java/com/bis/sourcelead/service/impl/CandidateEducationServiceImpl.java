@@ -209,20 +209,9 @@ public class CandidateEducationServiceImpl implements CandidateEducationService 
 	public HashSet<CandidateEducation> getCandidateEducationDetails(CandidateDTO candidateDTO,OrgLocations orgLocations,Candidate candidate,String userCode) throws Exception {
 		    HashSet<CandidateEducation> candidateEducationList = new HashSet<CandidateEducation>(); 
 		    if(StringUtils.isNotBlank(candidateDTO.getCandidateEducation())){
-		    	  String education = null;
-		    	  /*try{
-		    		   JSONArray jsonArray = jsonObj.getJSONArray("candidateEducation");
-		    		   education = jsonArray.toString();
-		    	  }
-		    	  catch(JSONException e){
-		    		  education= jsonObj.getString("candidateEducation");
-		    	  }*/
-		    	  //education = education.replaceAll("\\[", "").replaceAll("\\]","");
 		  	      String[] educations = candidateDTO.getCandidateEducation().split(",");
 		  	    Set<String> courses = new HashSet();
 		    	  for (String edu : educations) {
-		    		  /*CandidateEducation ce = new  CandidateEducation();
-		    		  edu = edu.replace("\"", "");*/
 		    		  CandidateEducation ce = null;
 		    		  edu = edu.replace("\"", "");
 		    		  String eduTrim = edu.trim();
