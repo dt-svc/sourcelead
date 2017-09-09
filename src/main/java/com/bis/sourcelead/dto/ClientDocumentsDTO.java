@@ -9,9 +9,7 @@ public class ClientDocumentsDTO {
 	
 private String staticPath;
 	
-	private List<Map<String, String>> fileInfo;
-	
-	private List<FileInfo> uploadedFileInfo;
+	private List<FileInfo> fileInfo;
 	
 	private String docName;
 	
@@ -40,20 +38,12 @@ private String staticPath;
 		this.staticPath = staticPath;
 	}
 
-	public List<Map<String, String>> getFileInfo() {
+	public List<FileInfo> getFileInfo() {
 		return fileInfo;
 	}
 
-	public void setFileInfo(List<Map<String, String>> fileInfo) {
+	public void setFileInfo(List<FileInfo> fileInfo) {
 		this.fileInfo = fileInfo;
-	}
-
-	public List<FileInfo> getUploadedFileInfo() {
-		return uploadedFileInfo;
-	}
-
-	public void setUploadedFileInfo(List<FileInfo> uploadedFileInfo) {
-		this.uploadedFileInfo = uploadedFileInfo;
 	}
 
 	public String getDocName() {
