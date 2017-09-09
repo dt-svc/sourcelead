@@ -604,11 +604,7 @@ public class InvoiceServiceImpl implements InvoiceService{
 	     
 	     List<Long> updatedInvoiceLineItems = new ArrayList<Long>();
 		
-//		 int maxRowCount = Integer.parseInt(jsonObj.getString("maxTsRowNum"));
-//	     if(invoiceDTO.getLineItems() !=null && !invoiceDTO.getLineItems().isEmpty()) {
 		 for(InvoiceLineItemsDTO invoiceLineItemsDTO : invoiceDTO.getLineItems()){
-			 
-			 if(StringUtils.isNotBlank(invoiceLineItemsDTO.getInvoiceStartDate())){
 			 
 				 if(StringUtils.isNotBlank(invoiceLineItemsDTO.getInvoiceStartDate()) || StringUtils.isNotBlank(invoiceLineItemsDTO.getInvoiceEndDate()) || StringUtils.isNotBlank(invoiceLineItemsDTO.getCandidate()) || StringUtils.isNotBlank(invoiceLineItemsDTO.getSow()) || StringUtils.isNotBlank(invoiceLineItemsDTO.getRate()) || StringUtils.isNotBlank(invoiceLineItemsDTO.getTotalHours())){
 					 
@@ -669,10 +665,9 @@ public class InvoiceServiceImpl implements InvoiceService{
 					 if(StringUtils.isNotBlank(invoiceLineItemsDTO.getDescription())){
 						 invoiceLineItems.setInlineDescription(invoiceLineItemsDTO.getDescription());
 					 }
-					 // TODO dont delete Rajashekar
-//					if(jsonObj.has(i+"submissionApproverHierarchyId") && !"".equalsIgnoreCase(jsonObj.getString(i+"submissionApproverHierarchyId"))){
-//						submissionApproverHierarchyIds.add(jsonObj.getString(i+"submissionApproverHierarchyId"));
-//					 }
+					if(StringUtils.isNotBlank(invoiceLineItemsDTO.getSubmissionApproverHierarchyId())){
+						submissionApproverHierarchyIds.add(invoiceLineItemsDTO.getSubmissionApproverHierarchyId());
+					 }
 					if(StringUtils.isNotBlank(invoiceLineItemsDTO.getSubmissionInvoiceId()) ){
 						       List<TimesheetSubmissionsDocuments> documentList = timesheetSubmissionsDocumentsService.getAllTimesheetSubmissionsDocumentsBySubmissionId(Long.parseLong(invoiceLineItemsDTO.getSubmissionInvoiceId()));
 					           if(null != documentList && documentList.size() >0){
@@ -691,7 +686,6 @@ public class InvoiceServiceImpl implements InvoiceService{
 				 }
 //			 }
 			 
-		 }
 		 
 		 if(null != invoice.getId()){
 			 updatedInvoiceLineItems.retainAll(invoiceLineItemsIdsList);

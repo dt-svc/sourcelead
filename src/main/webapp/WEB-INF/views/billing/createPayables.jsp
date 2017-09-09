@@ -2103,7 +2103,7 @@ function validationHours(rowId){
 <script type="text/javascript">
  function attachFile(id){
 	var sourceleadUrl ='${sourceleadUrl}';
-	fileUpload(sourceleadUrl, ""+id+"invoicedocFile", "incoiceDocuments", "invoice_form","fileInfo");
+	fileUpload(sourceleadUrl, ""+id+"invoicedocFile", "invoiceDocuments", "invoice_form","fileInfo");
 }
 </script>
 

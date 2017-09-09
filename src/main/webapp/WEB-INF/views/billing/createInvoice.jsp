@@ -623,7 +623,6 @@ function validateDiscount() {
 
 <script type="text/javascript">
 	function editInvoice(invoiceLineItemsList) {
-		
 		 for(var i=0; i<invoiceLineItemsList.length; i++){
 			 var opt = invoiceLineItemsList[i];
 			 
@@ -645,7 +644,6 @@ function validateDiscount() {
 				text = text+'<input type="text" class="calendar paddingLeft" id="'+maxRowNum+'edate-input" name="lineItems['+maxRowNum+'].invoiceEndDate" placeholder="End Date">';
 				text = text+'</div>';
 				cell0.innerHTML = text;
-				alert(text);
 				
 				var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
 				   var finalDateFormatInvoiceEdit = '';
@@ -2101,7 +2099,7 @@ function validationHours(rowId){
 
 function attachFile(id){
 	var sourceleadUrl ='${sourceleadUrl}';
-	fileUpload(sourceleadUrl, ""+id+"invoicedocFile", "incoiceDocuments", "invoice_form","fileInfo");
+	fileUpload(sourceleadUrl, ""+id+"invoicedocFile", "invoiceDocuments", "invoice_form","fileInfo");
 }
  
 </script>

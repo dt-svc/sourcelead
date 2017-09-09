@@ -1760,7 +1760,7 @@ function errInvoiceDate(){
 <script type="text/javascript">
 function attachFile(id){
 	var sourceleadUrl ='${sourceleadUrl}';
-	fileUpload(sourceleadUrl, ""+id+"invoicedocFile", "incoiceDocuments", "project_invoice_form","fileInfo");
+	fileUpload(sourceleadUrl, ""+id+"invoicedocFile", "invoiceDocuments", "project_invoice_form","fileInfo");
 }
 </script>
     

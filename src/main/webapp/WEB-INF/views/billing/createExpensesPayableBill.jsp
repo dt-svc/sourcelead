@@ -1808,7 +1808,7 @@ function editExpensesDetailsEdit(data){
 <script type="text/javascript">
 function attachFile(id){
 	var sourceleadUrl ='${sourceleadUrl}';
-	fileUpload(sourceleadUrl, ""+id+"invoicedocFile", "incoiceDocuments", "project_payable_invoice_form","fileInfo");
+	fileUpload(sourceleadUrl, ""+id+"invoicedocFile", "invoiceDocuments", "project_payable_invoice_form","fileInfo");
 }
 </script>
 
