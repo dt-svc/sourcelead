@@ -134,15 +134,19 @@
 					                 <input type='hidden' name='attcahmentMaxRowNumber${entryCount.count}'  id='attcahmentMaxRowNumber${entryCount.count}' value='1' />
 					                 <div id='timesheetDocumentsId' class=''>
 					                       <c:forEach var="entryDoc" items="${entry.expensesEntryDocuments}" varStatus="entryDocCount">
+					                        <c:if test = '${entryDoc.status == 1}'>
 					                         <strong class='proDown' id='${entryDocCount.index}document${entryCount.count}'>
 					                          <input type='hidden' name='${entryDocCount.index}DbdocFileId${entryCount.count}' id='${entryDocCount.index}DbdocFileId${entryCount.count}' value='${entryDoc.id}'/>
 					                          <input type='hidden' name='${entryDocCount.index}DbdocFileIsDeleted${entryCount.count}' id='${entryDocCount.index}DbdocFileIsDeleted${entryCount.count}' value='N'/>
-					                             <a class='downicon' href='<c:url value="/downloadExpensesEntryDocument?entryDocumentId=${entryDoc.id}"/>'>
+					                             <%-- <a class='downicon' href='<c:url value="/downloadExpensesEntryDocument?entryDocumentId=${entryDoc.id}"/>'> --%>
+					                              <a class='downicon' href='${entryDoc.fileURL}'>
 					                                 <i class='glyphicon glyphicon-save'></i>
 										             <input type='button' class='padLeft' value='${entryDoc.fileName}'/>
 										        </a>
-										        <a class="fa fa-eye expAttView" onclick="viewDocument('${entryDoc.fileName}','${entryDoc.id}');"></a>
+										        <%-- <a class="fa fa-eye expAttView" onclick="viewDocument('${entryDoc.fileName}','${entryDoc.id}');"></a> --%>
+										        <a class="fa fa-eye expAttView" onclick="viewFile('${sourceleadUrl}','${entryDoc.fileURL}','${entryDoc.fileName}','${entryDoc.fileContentType}');"></a>
 					                         </strong>
+					                         </c:if>
 					                       </c:forEach>
 					                 </div> 
 					             </div>

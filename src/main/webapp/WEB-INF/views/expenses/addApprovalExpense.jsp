@@ -271,7 +271,7 @@ $.ajax({
 	type : "POST",
 	url : sourceleadUrl+"/deleteDocumentByDocumentId?${_csrf.parameterName}=${_csrf.token}&documentId="+documentId,
 	success : function(data) {
-		 alert(data); 
+		return true;
 	},
 });
 }
