@@ -4,3 +4,4 @@ CALL sourcelead.AlterTableAddColumn ('sourcelead','CONTRACT_REQUEST_DOCUMENTS','
 
 CALL sourcelead.AlterTableAddColumn ('sourcelead','INVOICE_DOCUMENTS','FILE_URL','VARCHAR(2000) NULL AFTER `UPDATED_BY`');
 CALL sourcelead.AlterTableAddColumn ('sourcelead','INVOICE_PAYMENT','FILE_URL','VARCHAR(2000) NULL AFTER `FILE_NAME`');
+

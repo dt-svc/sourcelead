@@ -360,7 +360,6 @@ function errRemoveClientContact(){
                    result = result +'  <label class="col-md-7 text-right"><strong>Total</strong></label>';
                    result = result +'  <div class="col-md-5 text-right"><span class="pull-left">'+currencyCode+'</span><input type="text" value = "00.00" id="grandTotal" name="grandTotal" class="ReadTextFli" readonly></div>';
                    result = result +'  </div>';
-                   //New Div for currency conversion: srinivas l
                  if(clientCurrency != currencyCode){ 
                 	 result = result +'  <div class="row">';
                      result = result +'  <div class="clearfix mt col-md-offset-2 col-md-10" style="padding-right:0;">';
@@ -373,7 +372,6 @@ function errRemoveClientContact(){
                      
                      result = result +'  </div>';
                      result = result +'  </div>'; 
-                   //New Div for currency conversion: srinivas l 
                  }
                    
                    result = result +'  </div>';
@@ -1727,14 +1725,6 @@ function getSowRate(id){
 </script>
 
 <script>
-	 /*  $(function() {
-	    $( "#invoiceDate, #dueDate" ).datepicker({
-	    	dateFormat : 'dd-mm-yy',
-		  changeMonth: true,
-	      changeYear: true,
-	    });
-	  }); */
-	  
 	  var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
 	  var finalDateFormatEndDate = '';
 	  if(locationDate.match("yyyy-MM-dd")){
@@ -2113,7 +2103,6 @@ function attachFile(id){
 	var sourceleadUrl ='${sourceleadUrl}';
 	fileUpload(sourceleadUrl, ""+id+"invoicedocFile", "incoiceDocuments", "invoice_form","fileInfo");
 }
- 
  
 </script>
 <jsp:include page="../masterFooter.jsp" />

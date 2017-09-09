@@ -69,10 +69,6 @@ function checkBox(){
               <label class="col-md-3">Client<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-9 select-field">
                 <select class="chosen-select form-control" id="clientOrgRelationId" name="clientOrgRelationId" onchange="getClientContacts();getPaymentTerms();flushValues();" data-validation="required" field-name="Client">
-                   <%--  <option value=''>--Select Clinet--</option>
-                   <c:forEach var="orgrelations" items="${clientList}">
-                         <option value="${orgrelations.id}">${orgrelations.orgName}</option>
-                  </c:forEach> --%>
                 </select>
               </div>
                <input type="hidden" name="savedInvoiceId" id="savedInvoiceId">
@@ -289,8 +285,6 @@ function getClientContacts(){
 	for (var i=0; i<json.length; i++)
 	{
 	var opt = json[i];
-	// need to use in edit
-	//output = output + "<option value='" +opt.vendorUser.id+ "' selected>"+opt.spocName+"</option>";
 	output = output + "<option value='" +opt.spocUserId+ "'>"+opt.ownerName+"</option>";
 	$("#clientCurrency").val(opt.clientCurrency);
 	}
@@ -319,7 +313,6 @@ function getProjectsList(projectName){
 	for (var i=0; i<json.length; i++)
 	{
 	var opt = json[i];
-	/* output = output + "<option value='" +opt.id+ "'>"+opt.projectName+"</option>"; */
 	var selected = "";
 	if(projectName != null && projectName != "" && projectName !="undefined" && projectName == opt.projectName){
 		selected = 'selected';
@@ -433,9 +426,6 @@ function populateExpensesDetailsGrid(data){
         $("#tableBody").append(result);
         maskme();
         $("#currencyCode").html(currencyCode);
-      /*   document.getElementById("bottomGrid").style.display="block";
-        document.getElementById("bottomGrid").style.display="block"; */
-      /*   document.getElementById("lineItemAddRows").style.display="block"; */
          $("#addbutton").hide();
         document.getElementById("tableBody").style.display="block";
         addTaxDivs();   
@@ -450,7 +440,6 @@ function populateExpensesDetailsGrid(data){
 function editExpensesDetailsEdit(data){
 		   var currencyCode = '${SourceLeadWeb_currencyCode}';
            var result = '';
-           /* var subTotal = '0'; */
             result = result +'<input type="hidden" name="invoiceExpMaxRowNumber"  id="invoiceExpMaxRowNumber" value='+data.length+' />';
             result = result +' <table width="100%" width="100%" cellpadding="0" cellspacing="0"  id="invoiceExpTbl">';
             result = result +' <thead>';
@@ -465,9 +454,7 @@ function editExpensesDetailsEdit(data){
             result = result +' <tbody>';
             if(data !=null && data !=''){
             	 for(var i=0;i < data.length;i++){
-                 	/* S.no. Date, category, description , amount  */
                  	  var opt = data[i];
-                 	 /*  subTotal = opt.subTotal; */
                  	  result = result +'   <tr>';
                  	 result = result +' <input type="hidden" value='+opt.id+' id="'+i+'lineItemId"   name="expenseInvoice['+i+'].lineItemId">';
          		      result = result +'   <td>';
@@ -615,11 +602,9 @@ function getProjectFrequency(invoiceFrequency){
 		{
 		var opt = json[i];
 		var convertOpt = opt.replace(/\//g, " to ");
-		/* output = output + "<option value='" +opt+ "'>"+opt+"</option>"; */
 		var selected = "";
 		if(invoiceFrequency != null && invoiceFrequency != "" && invoiceFrequency !="undefined" && invoiceFrequency == opt){
 			selected = 'selected';
-			/* getProjectAssignedMem1();  */
 		}
 		output = output + "<option value='" +opt+ "' "+selected+">"+convertOpt+"</option>";
 		}
@@ -635,8 +620,6 @@ function getProjectFrequency(invoiceFrequency){
 <script>
 function populateInlineItemsGrid(){
 	var currencyCode = '${SourceLeadWeb_currencyCode}';
-  /*   if(data != '' && data !=null){ */
-       /*  var json = JSON.parse(data); */
            var result = '';
            result = result +'<input type="hidden" name="invoiceExpMaxRowNumber"  id="invoiceExpMaxRowNumber" value="0" />';
             result = result +' <table width="100%" width="100%" cellpadding="0" cellspacing="0"  id="invoiceExpTbl">';
@@ -963,7 +946,7 @@ function calculateDisCount(){
   <div id="divTaxTd1" style="display: none; float: left;">
 	<div class="select-field tblminwidth-75">
 		  <div class="tblminwidth-50">
-		        <input type="text" class="form-control input-sm" value="" placeholder="Tax type" name='REPLACEROWIDtaxType' id='REPLACEROWIDtaxType'>
+		        <input type="text" class="form-control input-sm" value="" placeholder="Tax type" name='invoiceTax[REPLACEROWID].taxType' id='REPLACEROWIDtaxType'>
 		         <input type="hidden" name="REPLACEROWIDinvoiceTaxId" id="REPLACEROWIDinvoiceTaxId">
 		  </div>
 	 </div>
@@ -971,7 +954,7 @@ function calculateDisCount(){
 
   <div id="divTaxTd2" style="display: none; float: left;">
 	 <div class="btn-group tblminwidth-75">
-	 <select class="form-control input-sm" id="REPLACEROWIDtaxdiscountType" name="REPLACEROWIDtaxdiscountType" onchange="calculateTaxDiscount();">
+	 <select class="form-control input-sm" id="REPLACEROWIDtaxdiscountType" name="invoiceTax[REPLACEROWID].taxdiscountType" onchange="calculateTaxDiscount();">
 		 <option value="percentage">Percentage</option>
 		 <option value="flat">Flat</option>
  		  </select>
@@ -980,13 +963,13 @@ function calculateDisCount(){
   
   <div id="divTaxTd3" style="display: none; float: left;">
      <div class="tblminwidth-75">
-        <input type="text" class="form-control input-sm allownumericwithdecimal" value="" placeholder="Flat / Discount" name='REPLACEROWIDtaxdiscountvalue' id='REPLACEROWIDtaxdiscountvalue' onblur="calculateTaxDiscount();">
+        <input type="text" class="form-control input-sm allownumericwithdecimal" value="" placeholder="Flat / Discount" name='invoiceTax[REPLACEROWID].taxdiscountvalue' id='REPLACEROWIDtaxdiscountvalue' onblur="calculateTaxDiscount();">
     </div>
   </div>
   
   <div id="divTaxTd4" style="display: none; float: left;">
 	  <div class="tblminwidth-75">  
-	       <input type="text" class="form-control input-sm" value ="00.00" placeholder="Total Value" name='REPLACEROWIDtaxTotal' id='REPLACEROWIDtaxTotal' readonly="readonly">
+	       <input type="text" class="form-control input-sm" value ="00.00" placeholder="Total Value" name='invoiceTax[REPLACEROWID].taxTotal' id='REPLACEROWIDtaxTotal' readonly="readonly">
 	   </div>
   </div>
   <div id="divTaxTd5" style="display: none; float: left;">
@@ -1182,7 +1165,6 @@ function saveInvoice(saveType){
          if ($('#project_invoice_form').validate(false, validationSettings)){  
  	 	    var sourceleadUrl ='${sourceleadUrl}';
  	 	    var formData = getFormData("project_invoice_form");
- 	 	    alert("Hi");
 		        	  $("#invoiceLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		        	  $.post(sourceleadUrl+"/saveExpensesInvoice?${_csrf.parameterName}=${_csrf.token}&userId="+userId+"&orgLocationId="+orgLocationId+"&saveType="+saveType+"&currencyCode="+currencyCode+"&invoiceType=Receivable&type=expenses", formData, function(data) {
 			  				if(data == "success"){
@@ -1190,20 +1172,6 @@ function saveInvoice(saveType){
 	    		     			location.replace(sourceleadUrl+"/invoiceList");
 			  				}
 			  			   }); 
-		        	  /*        $.ajax({
-		    		    	 type: "POST",
-		    		    	 data: formData,
-		    			     contentType : 'application/json; charset=utf-8',
-		    			     enctype: 'multipart/form-data',
-		    		         processData: false,
-		    		         contentType:false,
-		    			     dataType : 'json',
-		     		    	 url: sourceleadUrl+"/saveExpensesInvoice?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&userId="+userId+"&orgLocationId="+orgLocationId+"&saveType="+saveType+"&currencyCode="+currencyCode+"&invoiceType=Receivable&type=expenses", 
-		    		        success: function(result) {
-		    		     		$("#invoiceLoading").removeAttr("style");
-		    		     			location.replace(sourceleadUrl+"/invoiceList");
-		    		        },
-		    		    });  */
 		    	         return true; 
          }else{
 	    		return false;
@@ -1315,7 +1283,6 @@ function toDate(selector) {
 		        	$("#discountTotal").val(json['discountValue']);
 		        	$("#comment").val(json['invoiceComment']);
 		        	$("#afterDiscountTotal").val(json['afterDiscountValue']);http://localhost:8080/sourcelead/getReceivableInvoiceByUUID?invoiceUUID=sTljRS5n&projectId=15
-		        	
 		        	editTax(json['invoiceTaxList'])
 		        	
 		        	getSavedAttachments(json['invoiceDocumentsList']);
@@ -1400,6 +1367,7 @@ function getClients(){
 		}else{
 			output = output + "<option value='" +opt.id+ "'>"+opt.orgName+"</option>";
 		}
+		$("#clientCurrency").val(opt.clientCurrency);
 		}
 		$("#clientOrgRelationId").empty();
 		$("#clientOrgRelationId").append(output);
