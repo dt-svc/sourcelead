@@ -36,7 +36,7 @@ public class InvoiceDTO {
     private String projectMemberId;
     private String expensesId;
     private List<InvoiceExpensesDTO> expenseInvoice;
-    
+    private String staticPath;
 	public List<InvoiceExpensesDTO> getExpenseInvoice() {
 		return expenseInvoice;
 	}
@@ -287,5 +287,14 @@ public class InvoiceDTO {
 	public void setExpensesId(String expensesId) {
 		this.expensesId = expensesId;
 	}
+
+	public String getStaticPath() {
+		return staticPath;
+	}
+
+	public void setStaticPath(String staticPath) {
+		this.staticPath = staticPath;
+	}
+	
 
 }

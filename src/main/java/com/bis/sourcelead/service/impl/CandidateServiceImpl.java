@@ -432,16 +432,6 @@ public class CandidateServiceImpl implements CandidateService {
 		}
 		
 		if(StringUtils.isNotBlank(candidateDto.getCandidateSkills())){
-//			String candidateSkills = null;
-			/*try{
-				String[] strArray = new String[] {candidateDto.getCandidateSkills()};
-	    		   //JSONArray jsonArray = candidateDto.getCandidateSkills();
-	    		   candidateSkills = strArray.toString();
-	    	  }
-	    	  catch(Exception e){
-	    		  candidateSkills= candidateDto.getCandidateSkills();
-	    	  }
-			candidateSkills = candidateSkills.replaceAll("\"", "").replaceAll("\\[", "").replaceAll("\\]","");*/
 			
 			if(candidate.getSkillsName() != null){
 				activitySummary.append("Skills").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidate.getSkillsName()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDto.getCandidateSkills()).append(Constants.NEW_VALUE_TAG_END).append(" ");
@@ -451,18 +441,6 @@ public class CandidateServiceImpl implements CandidateService {
 		
 		if(StringUtils.isNotBlank(candidateDto.getVisa())){
 			
-			/*String visaList =null;
-			try{
-				String[] strArray = new String[] {candidateDto.getVisa()};
-				//JSONArray jsonArray = candidateDto.getVisa();
-				visaList = strArray.toString();
-			}
-			catch(Exception e){
-				visaList = candidateDto.getVisa();
-			}
-			visaList = visaList.replaceAll("\\[", "").replaceAll("\\]","");
-			visaList = visaList.replaceAll("\"", "");
-			*/
 			if(candidate.getVisaType() != null){
 				activitySummary.append("Immigration Status").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidate.getVisaType()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDto.getVisa()).append(Constants.NEW_VALUE_TAG_END).append(" ");
 			}
@@ -477,8 +455,6 @@ public class CandidateServiceImpl implements CandidateService {
 			candidate.setPrimarySkill(candidateDto.getPrimarySkill());
 		}
 
-		
-		
 		if(StringUtils.isNotBlank(candidateDto.getVendors())){
 			OrgRelations orgRelation = orgRelationsService.getOrRelationsById(Long.parseLong(candidateDto.getVendors()));
 			candidate.setOrgRelationId(orgRelation);
@@ -498,28 +474,14 @@ public class CandidateServiceImpl implements CandidateService {
 		
 		HashSet<CandidateEmployers> candidateEmployersList = candidateEmployersService.getCandidateEmployersDetails(candidateDto,orgLocations,candidate,user.getUserCode());
 		candidate.setCandidateEmployers(candidateEmployersList);
-		/*
-		HashSet<CandidateSkills> candidateSkillsList = candidateSkillsService.getCandidateSkillsDetails(jsonObj, orgLocations,candidate,user.getUserCode());
-		candidate.setCandidateSkills(candidateSkillsList);
-        
-		if(fileName != null){
-		HashSet<CandidateResumes> candidateResumesList = candidateResumesService.getCandidateResumesDetails(orgLocations,user.getUserCode(),candidate,fileURL, fileName, contentType);
-		candidate.setCandidateResumes(candidateResumesList);
-		}
-		if(multiFile != null){
-			if(multiFile.getOriginalFilename()!=null){
-				candidate.setFileName(multiFile.getOriginalFilename());
-			}
-		}*/
 		
 		if(candidateDto.getUploadedFileInfo() != null && !candidateDto.getUploadedFileInfo().isEmpty()){
 			FileInfo fileInfo = candidateDto.getUploadedFileInfo().get(0);
+			if(fileInfo != null){
 			HashSet<CandidateResumes> candidateResumesList = candidateResumesService.getCandidateResumesDetails(orgLocations,user.getUserCode(),candidate, fileInfo);
 			candidate.setCandidateResumes(candidateResumesList);
-			
-			if(fileInfo != null){
-					candidate.setFileName(fileInfo.getFileName());
-					FileUploadUtil.moveFile(candidateDto.getStaticPath(), fileInfo, "resumes");
+			candidate.setFileName(fileInfo.getFileName());
+			FileUploadUtil.moveFile(candidateDto.getStaticPath(), fileInfo, "resumes");
 				}
 			}
 		

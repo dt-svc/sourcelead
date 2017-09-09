@@ -93,13 +93,6 @@ public class CandidateDocumentsRestController {
 	@RequestMapping(value = "/saveCandidateDocument", method = RequestMethod.POST)
 	public @ResponseBody String saveCandidateDocument(CandidateDocumentsDTO candidateDocumentsDTO, @RequestParam(value = "candidateId", required = false) Long candidateId, @RequestParam(value = "documentUUID", required = false) String documentUUID, HttpServletRequest request) throws Exception
 	{
-		/*String json1 = "{" + json + "}";
-		JSONObject jsonObj = new JSONObject(json1);
-		MultipartFile multiFile = null;
-		Iterator<String> itrator = request.getFileNames();
-		if (itrator.hasNext()) {
-			multiFile = request.getFile(itrator.next());
-		}*/
 		
 		candidateDocumentsDTO.setStaticPath(staticPath);
 		FileUploadUtil.fillUploadedFileInfo(candidateDocumentsDTO, candidateDocumentsDTO.getFileInfo());
