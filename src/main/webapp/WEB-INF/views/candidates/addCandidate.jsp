@@ -730,20 +730,22 @@ function validate_fileupload(fileName)
 										 }
 				                    
 				                   });
-									if(isNewSkill){
+									
 										if(focussedSkills.length > 0){
 											var skillOption  = $("<option>").val(focussedSkills.first().text()).text(focussedSkills.first().text());
 											select.append(skillOption);
 											select.find(skillOption).prop('selected',true);
-											select.find(option).siblings("[value='"+ focussedSkills.first().text()+"']").remove();
+											select.find(skillOption).siblings("[value='"+ focussedSkills.first().text()+"']").remove();
 											$("#candidateSkills").trigger("chosen:updated");
 									   }
 									   else{
+										   if(isNewSkill){
 											var option = $("<option>").val(newSkill).text(newSkill);
 											select.append(option);
 											select.find(option).prop('selected', true);
+										   }
 									   }
-									}
+									
 					               $("#candidateSkills").trigger("chosen:updated"); 
 				                   
 				                }
@@ -773,20 +775,22 @@ function validate_fileupload(fileName)
                    
                   });
 					 
-					 if(isNewEducation){
+					 
 							if(focussedEducations.length > 0){
 								var educationOption  = $("<option>").val(focussedEducations.first().text()).text(focussedEducations.first().text());
 								selectone.append(educationOption);
 								selectone.find(educationOption).prop('selected',true);
-								selectone.find(option).siblings("[value='"+ focussedEducations.first().text()+"']").remove();
+								selectone.find(educationOption).siblings("[value='"+ focussedEducations.first().text()+"']").remove();
 								$("#candidateEducation").trigger("chosen:updated");
 						   }
 						   else{
+							   if(isNewEducation){
 								var option = $("<option>").val(newEducation).text(newEducation);
 								selectone.append(option);
 								selectone.find(option).prop('selected', true);
+							   }
 						   }
-						}
+						
 					 
 					 
 		        	

@@ -253,20 +253,22 @@ function getAddApplicant(requirementId,reqCoolingOffPeriod){
 									 }
 			                    
 			                   });
-								if(isNewSkill){
+								
 									if(focussedSkills.length > 0){
 										var skillOption  = $("<option>").val(focussedSkills.first().text()).text(focussedSkills.first().text());
 										select.append(skillOption);
 										select.find(skillOption).prop('selected',true);
-										select.find(option).siblings("[value='"+ focussedSkills.first().text()+"']").remove();
+										select.find(skillOption).siblings("[value='"+ focussedSkills.first().text()+"']").remove();
 										$("#candidateSkills").trigger("chosen:updated");
 								   }
 								   else{
+									   if(isNewSkill){
 										var option = $("<option>").val(newSkill).text(newSkill);
 										select.append(option);
 										select.find(option).prop('selected', true);
+									   }
 								   }
-								}
+								
 				               $("#candidateSkills").trigger("chosen:updated"); 
 			                   
 			                }
