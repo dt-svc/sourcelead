@@ -13,6 +13,11 @@
 .side-bar-active .fa-fw {
   position: absolute !important; right: 0 !important;
 }
+
+.remove_user_pop.remove_user_pop_a {
+top:20% !important;
+left: 115px !important;
+}
 </style>
  <style type="text/css">
  table#assignEmployeePagination tr th {
@@ -1352,7 +1357,7 @@ function getAssociates(){
 	result = result +'<div class="clients_side_wrap">';
 	result = result +'<div id="projectDetailsLoading"></div>';
 	result = result +'<div class="new_side_wrap_inn">';
-	result = result +'<div class="timesheet_head">';
+	result = result +'<div class="timesheet_head" style="border-bottom: 1px solid #ededed; background: #f5f5f5;">';
 	      
 	result = result +'<ul class="pull-right">';
 	
@@ -1387,7 +1392,7 @@ function getAssociates(){
 	result = result +'</div>';
 	
 	result = result +'<div id="projectDetailsDiv"></div>';
-
+	result = result +'<div id="membersChoicepopUp"></div>';
 	result = result +'</div>';
 	result = result +'</div>';
 	
@@ -1518,14 +1523,6 @@ function getProjectDetails(){
 						
 						var result = "";
 						result = result	+ '<div class="project_tabs_inn_table">';
-						result = result + '<div class="project_details">';
-						result = result + '<div class="useredit useredit_a">';
-						result  = result + '<div class="success_pop" id="selector2" style="display: none;">';
-					    result  = result + '<i class="fa fa-check-circle"></i><span id="docMsgDiv2"></span>';
-					    result  = result + '</div>';
-						
-									
-	   		    		result = result + '</div>';
 	   		    		
 						result = result	+ '<div class="project_details_cta">';
 						result = result + '<strong>Status:</strong><span>';
@@ -1595,19 +1592,16 @@ function getProjectDetails(){
 						result = result + '</div>';
 						result = result + '<div class="clearfix"></div>';
 						
-						
-						
 						result = result + '<div class="clearfix"></div>';
 						
 						result = result + '<div class="form-footer clearfix miniFoot">';
 						result = result + '<div class="col-lg-12">';
 						result = result + '<div class="pull-right">';
-						result = result + '<input type="button" value="Save" onClick="transferToProject()" class="btn btn-primary ml10">';
+						result = result + '<input type="button" value="Transfer" onClick="transferToProject()" class="btn btn-primary ml10">';
 						result = result + '</div>';
 						result = result + '</div>';
 						result = result + '</div>';
 						
-						result = result + '</div>';
 						result = result + '</div>';
 						result = result + ' </div>';
 						result = result + '</div>';
@@ -1643,8 +1637,36 @@ function transferToProject(){
 	});
 	 
 	 var orgLocationProjects = document.getElementById("orgLocationProjects").value;
+	 if(projectMembers != null || projectMembers != ''){
+		 alertProjectMembersMessage();
+	 }
+	
 }
 </script>
+
+<script>
+function alertProjectMembersMessage(){
+	var result = "";
+	result = result +"	<div class='project_inn_mask'></div>";
+	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+	result = result +"		<p>Add atleast one project member</p>";
+	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='cancel();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
+	result = result +"	</div>";
+	$("#membersChoicepopUp").append(result);
+	$("#remove_user_pop").slideDown(200);
+	$(".project_inn_mask").fadeIn(200);
+}
+</script>
+
+<script type="text/javascript">
+function cancel(){
+	$("#membersChoicepopUp").empty();
+	$(".project_inn_mask").fadeOut(200);
+}
+</script>
+	
+
 
 <script type="text/javascript">
  function prepareChosenScripts(){ 
