@@ -303,8 +303,8 @@ result = result + '<div class="project_tabs mb">';
 	    $.ajax({
 	    	type: "POST",
 	        url: sourceleadUrl+"/getProjectEmployeeListById?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId+"&status="+values, 
-	        success: function(data) {
-	        	var json = JSON.parse(data);
+	        success: function(json) {
+	        	
 	        	var result = "";
 	        	result = result + '        <div class="project_tabs_inn_table overflow-data">';
 	    		result = result + ' <div class="success_pop" id="selector3" style="display: none;">';
@@ -346,7 +346,7 @@ result = result + '<div class="project_tabs mb">';
 		        		}
 		        		result = result + '	 <tr>';
 		                
-		                result = result + '	 	<td><div class="tbldata-dotdot" title="'+opt.empName+'"><span title="'+opt.empName+'">'+opt.empName+'</span></div></td>';
+		                result = result + '	 	<td><div class="tbldata-dotdot" title="'+opt.candidateName+'"><span title="'+opt.candidateName+'">'+opt.candidateName+'</span></div></td>';
 		                result = result + '	 	<td><div class="tbldata-dotdot" title="'+opt.empEmail+'"><span title="'+opt.empEmail+'">'+opt.empEmail+'</span></div></td>';
 		                result = result + '	 	<td><div class="tbldata-dotdot_80" title="'+role+'"><span title="'+role+'">'+role+'</span></div></td>';
 		                result = result + '	     <td><div class="tbldata-dotdot_80"><span title="'+opt.projectAssignedDateStr+'">'+opt.projectAssignedDateStr+'</span></div></td>';

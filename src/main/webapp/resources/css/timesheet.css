@@ -5350,3 +5350,11 @@ width: auto !important;
 .exadRadio label {
 	cursor: pointer;
 }
+
+.clientProjSpan {
+	display: inline-block !important; float: left; padding: 0px 0px 0px 10px;
+}
+.clientInfo {
+	font-size: 20px; color: #9E9E9E !important; padding: 6px 5px 0px 5px;
+
+}

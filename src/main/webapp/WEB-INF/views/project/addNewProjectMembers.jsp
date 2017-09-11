@@ -820,6 +820,11 @@ function getAssociatesFilter(){
 			  }if(locationDate.match("yyyy-dd-MM")){
 				  finalDateFormatResourceReqSave = 'yy-dd-mm'; 
 			  }
+			  
+			  
+			  if(projectStartDate != null && projectEndDate != null){
+				  getEstimatedHours(maxRowNum)
+			  }
 			
 			$( "#"+maxRowNum+"memberStartDate" ).datepicker({
 				  changeMonth: true,

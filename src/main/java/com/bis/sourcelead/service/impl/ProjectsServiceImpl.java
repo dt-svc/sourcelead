@@ -1617,11 +1617,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 		//SimpleDateFormat dateFormat=pr.getOrgLocationsId().getLocFullFormDateFormatter();
 		ArrayList<ProjectMembers> projectMembersArrList = new ArrayList<ProjectMembers>();
 		 for(ProjectMembers pm : projectMembersList){
-			 if(pm.getEmployee() != null){
-				 StringBuilder membersListStringBuilder=new StringBuilder();
-				 pm.setEmpName(membersListStringBuilder.append(pm.getEmployee().getUser().getFirstName()).append(" ").append(pm.getEmployee().getUser().getLastName()).toString());	 
-				 pm.setEmpEmail(pm.getEmployee().getUser().getEmail());	 
-			 }
+		
 			 pm.setProjectStatus(pr.getProjectStatus().getValue());
 			 
 			 ProjectMembersHistory pmh = projectMembersHistoryService.getProjectMembersOpenHistoryByProjectMemberId(pm.getId());
@@ -1700,7 +1696,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 			 if(pm.getCandidateId() != null){
 				 StringBuilder membersListStringBuilder=new StringBuilder();
 				 pm.setEmpName(membersListStringBuilder.append(pm.getProjectMemberCandidteId().getFirstName()).append(" ").append(pm.getProjectMemberCandidteId().getLastName()).toString());	 
-				 pm.setEmpEmail(pm.getEmployee().getUser().getEmail());	
+				 pm.setEmpEmail(pm.getProjectMemberCandidteId().getConsultantUser().getEmail());	
 				 UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(pm.getProjectMemberCandidteId().getConsultantUser().getId(), pm.getProjects().getOrgLocationsId().getId());
 				 if(userRole != null){
 					 pm.setUserRoleType(userRole.getUserType());

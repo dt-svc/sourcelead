@@ -36,6 +36,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.RequirementDTO;
 import com.bis.sourcelead.elk.index.ClientVendorIndex;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
@@ -988,6 +989,61 @@ public class CommonUtil {
 		  
 		  return candidate;
 	  }
+		
+		
+		public Candidate getVendorCandidateForCandidateCreation(CandidateDTO candidateDTO,OrgRelations orgRelation,OrgLocations orgLocations,User loginUser) throws Exception{
+			  Candidate candidate = null;
+			  OrgLocations vendorOrgLocation = null;
+			  if(orgRelation.getInitiatorType().equalsIgnoreCase("Client") && orgRelation.getLocationId().getId().equals(orgLocations.getId())){
+				  vendorOrgLocation = orgRelation.getResponderLocationId();
+			  }else if(orgRelation.getInitiatorType().equalsIgnoreCase("Vendor") && orgRelation.getResponderLocationId().getId().equals(orgLocations.getId())){
+				  vendorOrgLocation = orgRelation.getLocationId();
+			  }
+			  
+			  if(StringUtils.isNotBlank(candidateDTO.getEmail())){
+				  candidate = candidateService.findByCandidateEmail(candidateDTO.getEmail().trim(),vendorOrgLocation.getId());
+			  }else if(StringUtils.isNotBlank(candidateDTO.getEmailId())){
+				  candidate = candidateService.findByCandidateEmail(candidateDTO.getEmailId().trim(),vendorOrgLocation.getId());
+			  }
+			  
+			  if(candidate == null){
+				  candidate = new Candidate();
+				  
+				  MasterCandidate masterCandidate = null;
+					masterCandidate = masterCandidateService.getMasterCandidateByInteligenceCandidateDTO(candidateDTO);
+					if(null == masterCandidate){
+						masterCandidate = masterCandidateService.storeMasterCandidateByCandidateDTO(candidateDTO, loginUser);
+					}
+					candidate.setMasterCandidateId(masterCandidate);
+				  
+					candidate.setOrgLocationId(vendorOrgLocation);
+					candidate.setCandidateType("Candidate");
+					candidate.setCandidateUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+					
+					if(StringUtils.isNotBlank(candidateDTO.getFirstName())){
+						candidate.setFirstName(candidateDTO.getFirstName());
+					}
+				
+					if(StringUtils.isNotBlank(candidateDTO.getLastName())){
+						candidate.setLastName(candidateDTO.getLastName());
+					}
+					
+					if(StringUtils.isNotBlank(candidateDTO.getEmail())){
+						candidate.setEmail(candidateDTO.getEmail());
+					}
+					
+					if(StringUtils.isNotBlank(candidateDTO.getCountry())){
+						candidate.setCountry(candidateDTO.getCountry());
+					}
+				
+				candidate.setIsAssociate(Constants.NO);
+				candidate.setStatus(1);
+	  			candidateService.saveOrUpdateCandidate(candidate);
+	  			candidateService.saveOrUpdateCandidateElkDocument(candidate);
+			  }
+			  
+			  return candidate;
+		  }
 		
 
 		

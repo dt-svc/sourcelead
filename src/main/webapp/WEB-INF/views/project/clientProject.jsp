@@ -285,8 +285,8 @@ function saveClientProject(){
   	    	    data : formData,
 				url : sourceleadUrl+"/storeClientProject?${_csrf.parameterName}=${_csrf.token}", 
 				success : function(project) {
-					 $("#loading").removeAttr("style");
 					 location.replace(sourceleadUrl+"/projectSummary?projectUUID="+project.projectUUID+"&tabType=projectMembers");
+					 $("#loading").removeAttr("style");
 				},
 			}); 
   		 return true;
