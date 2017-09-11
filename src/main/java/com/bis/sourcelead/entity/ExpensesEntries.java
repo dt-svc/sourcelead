@@ -59,7 +59,7 @@ public class ExpensesEntries implements Serializable {
 
 	@NotFound(action=NotFoundAction.IGNORE)
 	@OneToMany(mappedBy = "expensesEntriesId", cascade = CascadeType.ALL)
-	@Fetch(FetchMode.SELECT)
+	//@Fetch(FetchMode.SELECT)
 	private Set<ExpensesEntryDocuments> expensesEntryDocuments;
 
 	@Column(name = "RECEIPT_ISSUED_BY")

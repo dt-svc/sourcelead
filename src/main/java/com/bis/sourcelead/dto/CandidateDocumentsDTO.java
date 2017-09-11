@@ -11,7 +11,7 @@ public class CandidateDocumentsDTO {
 	
 	private String staticPath;
 	
-	private List<Map<String, String>> fileInfo;
+	private List<FileInfo> fileInfo;
 	
 	private List<FileInfo> uploadedFileInfo;
 	
@@ -24,6 +24,20 @@ public class CandidateDocumentsDTO {
 	private String isConfidential;
 	
 	private String requestDocUUID;
+	
+	private String docuemntMaxRowNumber;
+	
+	private List<RequestDocumentList> requestDocumentList;
+	
+	private String requestedCandidateId;
+	
+	private String checked;
+	
+	private String doctype;
+	
+	private String otherDocType;
+
+	private String requestDocType;
 
 	public String getCandidateId()
 	{
@@ -45,13 +59,13 @@ public class CandidateDocumentsDTO {
 		this.staticPath = staticPath;
 	}
 
-	public List<Map<String, String>> getFileInfo()
-	{
+	
+
+	public List<FileInfo> getFileInfo() {
 		return fileInfo;
 	}
 
-	public void setFileInfo(List<Map<String, String>> fileInfo)
-	{
+	public void setFileInfo(List<FileInfo> fileInfo) {
 		this.fileInfo = fileInfo;
 	}
 
@@ -114,6 +128,61 @@ public class CandidateDocumentsDTO {
 	{
 		this.requestDocUUID = requestDocUUID;
 	}
-	
+
+	public String getDocuemntMaxRowNumber() {
+		return docuemntMaxRowNumber;
+	}
+
+	public void setDocuemntMaxRowNumber(String docuemntMaxRowNumber) {
+		this.docuemntMaxRowNumber = docuemntMaxRowNumber;
+	}
+
+	public String getRequestedCandidateId() {
+		return requestedCandidateId;
+	}
+
+	public void setRequestedCandidateId(String requestedCandidateId) {
+		this.requestedCandidateId = requestedCandidateId;
+	}
+
+	public String getChecked() {
+		return checked;
+	}
+
+	public void setChecked(String checked) {
+		this.checked = checked;
+	}
+
+	public String getDoctype() {
+		return doctype;
+	}
+
+	public void setDoctype(String doctype) {
+		this.doctype = doctype;
+	}
+
+	public String getOtherDocType() {
+		return otherDocType;
+	}
+
+	public void setOtherDocType(String otherDocType) {
+		this.otherDocType = otherDocType;
+	}
+
+	public List<RequestDocumentList> getRequestDocumentList() {
+		return requestDocumentList;
+	}
+
+	public void setRequestDocumentList(List<RequestDocumentList> requestDocumentList) {
+		this.requestDocumentList = requestDocumentList;
+	}
+
+	public String getRequestDocType() {
+		return requestDocType;
+	}
+
+	public void setRequestDocType(String requestDocType) {
+		this.requestDocType = requestDocType;
+	}
 	
 }

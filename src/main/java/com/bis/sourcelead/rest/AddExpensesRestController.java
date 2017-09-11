@@ -14,7 +14,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
-import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,10 +23,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.OrgLocationsDao;
+import com.bis.sourcelead.dto.AddExpensesDTO;
+import com.bis.sourcelead.dto.CategoryDTO;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
@@ -237,14 +237,23 @@ public class AddExpensesRestController {
 	
 	
 	@RequestMapping(value = "/storeAddExpensesData",method = RequestMethod.POST)
-	public @ResponseBody String storeAddExpensesData(MultipartHttpServletRequest request,@RequestParam(value="status", required=false) String status) throws Exception {
+	public @ResponseBody String storeAddExpensesData(HttpServletRequest request,@RequestParam(value="status", required=false) String status,AddExpensesDTO addExpensesDTO,CategoryDTO categoryDTO) throws Exception {
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		 String currencyCode = (String) SourceLeadSessionManager.getSessionAttribute(request, "currencyCode");
-		JSONObject jsonObj = new JSONObject(request.getParameter("json"));
-		addExpensesService.storeAddExpensesData(jsonObj,loginUser,orgLoc,request,status,currencyCode);
+		//JSONObject jsonObj = new JSONObject(request.getParameter("json"));
+		addExpensesService.storeAddExpensesData(addExpensesDTO,loginUser,orgLoc,request,status,currencyCode);
 		return "DataSaved";
 }
+	
+	
+	@RequestMapping(value = "/deleteDocumentByDocumentId",method = RequestMethod.POST)
+	public @ResponseBody String deleteDocumentByDocumentId(@RequestParam(value="documentId", required=false) String documentId) throws Exception {
+		addExpensesService.deleteDocumentByDocumentId(documentId);
+		return "DataSaved";
+}
+	
+	
 	
 	 @RequestMapping(value = "/getMembersForSelectedProject",  method = RequestMethod.GET)
 	 public @ResponseBody  String getMembersForSelectedProject(

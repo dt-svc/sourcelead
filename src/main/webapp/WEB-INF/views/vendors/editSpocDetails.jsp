@@ -341,7 +341,6 @@
              var sourceleadUrl ='${sourceleadUrl}';
 		 $.post(sourceleadUrl+"/vendorContactDetailsUpdateUsingId?${_csrf.parameterName}=${_csrf.token}&spocId="+spocId+"&ownerId="+ownerId+"&spocUserId="+spocUserId+"&type=Vendor", formData, function(data) {
 			 var newOwner = data;
-			 alert(newOwner);
 		    	$("#spocDetailsId").removeAttr("onClick")
 		    	$("#spocDetailsId").attr("onclick","vendorDetailsbySpocId('"+spocId+"', '"+newOwner+"', '"+spocUserId+"', '"+ownerId+"')");
 		 		$("#vendorEditMsgDiv").removeAttr("style");
