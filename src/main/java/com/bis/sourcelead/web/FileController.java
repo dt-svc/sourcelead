@@ -5,10 +5,12 @@ import java.io.FileInputStream;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -22,6 +24,8 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.parser.Reader;
+import com.bis.sourcelead.parser.ResumeParser;
 import com.bis.sourcelead.util.FileUploadUtil;
 import com.bis.sourcelead.util.PdfConversionUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
@@ -45,7 +49,7 @@ public class FileController {
 			MultipartFile multiFile = request.getFile(itrator.next());
 			Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 			OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
-			String fileURL = new FileUploadUtil().uploadFile(staticPath, org.getId(), loginOrgLocation.getId(),	type, multiFile);
+			String fileURL = new FileUploadUtil().uploadFile(staticPath, org.getId(), loginOrgLocation.getId(), type, multiFile);
 			fileInfo.setFileName(multiFile.getOriginalFilename());
 			fileInfo.setFileURL(fileURL);
 			fileInfo.setContentType(multiFile.getContentType());
@@ -53,6 +57,29 @@ public class FileController {
 		}
 		return fileInfoList;
 	}
+	
+	@RequestMapping(value = "/parse-resumes", method = RequestMethod.POST)
+	@ResponseBody
+	public List<Map<String, Object>> uploadResume(MultipartHttpServletRequest request) {
+		List<Map<String, Object>> resumeContent = new ArrayList<>();
+		List<FileInfo> fileInfoList = uploadFile(request, "resumes");
+		Reader reader = new Reader();
+		ResumeParser resumeParser = new ResumeParser();
+		for(FileInfo fileInfo : fileInfoList) {
+			System.out.println(fileInfo.getFileName());
+			String fileContent = reader.readFileContent(new File(staticPath, fileInfo.getFileURL().replace("resumes", "temp")).getAbsolutePath());
+			if(StringUtils.isNotBlank(fileContent)) {
+				Map<String, Object> parsedResume = resumeParser.parseResume(fileContent);
+				if(parsedResume != null && !parsedResume.isEmpty()) {
+					parsedResume.put("fileInfo", fileInfo);
+					resumeContent.add(parsedResume);
+				}
+			}
+		}
+		
+		return resumeContent;
+	}
+	
 	@RequestMapping(value = "/viewFile")
 	public void viewFile(HttpServletResponse response, String documentPath, String contentType) {
 		File file = new File(staticPath, documentPath);
