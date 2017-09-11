@@ -1404,7 +1404,12 @@ function subTasksAssignList(projectId){
 	    			for (var i=0; i<json.length; i++)
 		     		{
 			     		var opt = json[i];
-			     			output = output + "<option value='" +opt.id+ "'> "+opt.generatedId+" -  "+opt.taskName+"</option>";
+			     		if(opt.generatedId != null && opt.generatedId != "" && opt.generatedId != "undefined"){
+			     			generatedId = opt.generatedId +" - ";
+			     		}else{
+			     			generatedId = "";
+			     		}
+			     			output = output + "<option value='" +opt.id+ "'> "+generatedId+"   "+opt.taskName+"</option>";
 		     		}
 	    			 
 	    			$("#epicId").empty();
@@ -1427,7 +1432,12 @@ function subTasksAssignList(projectId){
 	    			for (var i=0; i<json.length; i++)
 		     		{
 			     		var opt = json[i];
-			     			output = output + "<option value='" +opt.id+ "'>"+opt.generatedId+" - "+opt.taskName+" </option>";
+			     		if(opt.generatedId != null && opt.generatedId != "" && opt.generatedId != "undefined"){
+			     			generatedId = opt.generatedId +" - ";
+			     		}else{
+			     			generatedId = "";
+			     		}
+			     			output = output + "<option value='" +opt.id+ "'>"+generatedId+"  "+opt.taskName+" </option>";
 		     		}
 	    				$("#userStroyId").empty();
 			     		$("#userStroyId").append(output);
@@ -1452,10 +1462,16 @@ function subTasksAssignList(projectId){
 	     		for (var i=0; i<json.length; i++)
 	     		{
 		     		var opt = json[i];
+		     		if(opt.generatedId != null && opt.generatedId != "" && opt.generatedId != "undefined"){
+		     			generatedId = opt.generatedId +" - ";
+		     		}else{
+		     			generatedId = "";
+		     		}
+		     		
 		     		if(opt.id == projectTaskId){
-	        			output = output + "<option value='"+opt.id+"' selected>"+opt.generatedId+" - "+opt.taskName+"</option>";
+	        			output = output + "<option value='"+opt.id+"' selected>"+generatedId+"  "+opt.taskName+"</option>";
 	        		}else{
-	        			output = output + "<option value='"+opt.id+"'>"+opt.generatedId+" - "+opt.taskName+"</option>";
+	        			output = output + "<option value='"+opt.id+"'>"+generatedId+"  "+opt.taskName+"</option>";
 	        		}
 		     		
 		     		

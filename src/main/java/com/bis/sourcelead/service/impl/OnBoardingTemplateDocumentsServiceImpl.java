@@ -432,6 +432,11 @@ public class OnBoardingTemplateDocumentsServiceImpl implements OnBoardingTemplat
 			    	}*/
 	    }
 
+	@Override
+	public List<Long> getOnBoardingTemplateDocumentIdsByCandidateOnBoardingId(Long candidateOnBoardingId,String documentType) throws Exception {
+		return onBoardingTemplateDocumentsDao.getOnBoardingTemplateDocumentIdsByCandidateOnBoardingId(candidateOnBoardingId, documentType);
+	}
+
 	
 	
 	

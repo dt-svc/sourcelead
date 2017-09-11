@@ -1679,11 +1679,13 @@ function createTemplateDocs(saveType){
 	  if ($('#templateDocuments_form').validate(false, validationSettings)){ 
 		   $("#save_docs_button").attr("disabled", "disabled");
 		   $("#save_continue_docs_button").attr("disabled", "disabled");
-		   var formData = getFormData("templateDocuments_form");
+		   var formData = getFormData1("templateDocuments_form");
 	       $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		   $.ajax({
 	        type : "POST",
 		      data: formData,
+		      processData: false, 
+		 	  contentType: false,
 	    	  url: sourceleadUrl+"/saveCandidatedOnboardingTemplateDocuments?${_csrf.parameterName}=${_csrf.token}",		
 		      success :function(result) {
 		    	  
@@ -1839,7 +1841,7 @@ function saveOnboardTask(){
 	
 	  if ($('#addonboardTask_form').validate(false, validationSettings)){ 
 		    var sourceleadUrl ='${sourceleadUrl}';
-	        var formData = getFormData("addonboardTask_form");
+	        var formData = getFormData1("addonboardTask_form");
 	    	var tasksIds = document.getElementsByName("savedTemplateTask");
 	    	var tasks = '';
 	    	for(var i=0; i < tasksIds.length; i++){
@@ -1853,6 +1855,8 @@ function saveOnboardTask(){
 	        $.ajax({
 		    	type: "POST",
 		    	 data: formData,
+		    	 processData: false,
+			     contentType:false,
 		    	 url: sourceleadUrl+"/saveCandidateOnBoardTasks?${_csrf.parameterName}=${_csrf.token}&tasks="+tasks, 
 		        success: function(result) {
 		        	if(result == 'success'){

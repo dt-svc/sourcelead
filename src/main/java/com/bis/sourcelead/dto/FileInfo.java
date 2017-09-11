@@ -6,6 +6,7 @@ public class FileInfo {
 	private String fileName;
 	private String contentType;
 	private Integer status;
+	private String fileDbId;
 
 	public String getFileURL() {
 		return fileURL;
@@ -37,6 +38,14 @@ public class FileInfo {
 
 	public void setStatus(Integer status) {
 		this.status = status;
+	}
+
+	public String getFileDbId() {
+		return fileDbId;
+	}
+
+	public void setFileDbId(String fileDbId) {
+		this.fileDbId = fileDbId;
 	}
 
 }

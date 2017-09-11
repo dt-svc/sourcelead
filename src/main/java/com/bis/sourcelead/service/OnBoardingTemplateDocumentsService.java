@@ -25,6 +25,8 @@ public interface OnBoardingTemplateDocumentsService {
 	
 	List<OnBoardingTemplateDocuments> getOnBoardingTemplateDocumentsByCandidateOnBoardingId(Long candidateOnBoardingId,String documentType) throws Exception;
 	
+	List<Long> getOnBoardingTemplateDocumentIdsByCandidateOnBoardingId(Long candidateOnBoardingId,String documentType) throws Exception;
+	
 	Integer getCandidateOnboardingDocumentsCountByCandidateOnboardingIdExpectSupportDocs(Long candidateOnBoardingId) throws Exception;
 	
 	Integer getCandidateAcceptedOnboardingDocumentsCountByCandidateOnboardingId(Long candidateOnBoardingId) throws Exception;

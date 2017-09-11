@@ -24,12 +24,13 @@ public class FileUploadUtil {
 		String extenstion = fileName.substring(fileName.lastIndexOf("."));
 		fileName = fileName.substring(0, fileName.lastIndexOf("."));
 		String url = "";
+		long time = new Date().getTime();
 		if(orgId > 0) {
-			url = "/slead-static/"+orgId+"/"+locationId+"/"+fileType+"/"+fileName+new Date().getTime()+extenstion;
-			fileName = "/slead-static/"+orgId+"/"+locationId+"/temp/"+fileName+new Date().getTime()+extenstion;
+			url = "/slead-static/"+orgId+"/"+locationId+"/"+fileType+"/"+fileName+time+extenstion;
+			fileName = "/slead-static/"+orgId+"/"+locationId+"/temp/"+fileName+time+extenstion;
 		} else {
-			url = "/slead-static/"+fileType+"/"+fileName+new Date().getTime()+extenstion;
-			fileName = "/slead-static/temp/"+fileName+new Date().getTime()+extenstion;
+			url = "/slead-static/"+fileType+"/"+fileName+time+extenstion;
+			fileName = "/slead-static/temp/"+fileName+time+extenstion;
 		}
 		File folderFile = new File(staticPath, "/slead-static/"+orgId+"/"+locationId+"/"+fileType);
 		if(!folderFile.exists())

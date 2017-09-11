@@ -1132,11 +1132,13 @@ function createTemplateDocs(saveType){
 	  if ($('#templateDocuments_form').validate(false, validationSettings)){ 
 		   $("#save_docs_button").attr("disabled", "disabled");
 		   $("#save_continue_docs_button").attr("disabled", "disabled");
-		   var formData = getFormData("templateDocuments_form");
+		   var formData = getFormData1("templateDocuments_form");
 	   $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		$.ajax({
 	        type : "POST",
 		      data: formData,
+		      processData: false,
+		      contentType:false, 
 	    	  url: sourceleadUrl+"/saveCandidatedOffboardingDocuments?${_csrf.parameterName}=${_csrf.token}",		
 		      success :function(result) {
 		    	  

@@ -243,18 +243,9 @@ width : 6% !important;
 												<div class="select-field">
 													<select class="form-control input-sm" id="taskMonths" data-validation="required" field-name="Due after" name="taskMonths" onchange="validateDueAfter();">
 														<option selected value=''>--Select Month--</option>
-														<option value="1">1</option>
-														<option value="2">2</option>
-														<option value="3">3</option>
-														<option value="4">4</option>
-														<option value="5">5</option>
-														<option value="6">6</option>
-														<option value="7">7</option>
-														<option value="8">8</option>
-														<option value="9">9</option>
-														<option value="10">10</option>
-														<option value="11">11</option>
-														<option value="12">12</option>
+														<c:forEach begin="1" end="12" varStatus="loop">
+															<option>${loop.index}</option>
+														</c:forEach>
 														</select>
 												</div>
 											</div> 
@@ -265,36 +256,9 @@ width : 6% !important;
 											<div class="select-field">
 												<select class="form-control input-sm" id="taskDays" name="taskDays" onchange="validateDueAfter();">
 													<option selected value=''>--Select Days--</option>
-													    <option value="1">1</option>
-														<option value="2">2</option>
-														<option value="3">3</option>
-														<option value="4">4</option>
-														<option value="5">5</option>
-														<option value="6">6</option>
-														<option value="7">7</option>
-														<option value="8">8</option>
-														<option value="9">9</option>
-														<option value="10">10</option>
-														<option value="11">11</option>
-														<option value="12">12</option>
-														<option value="13">13</option>
-														<option value="14">14</option>
-														<option value="15">15</option>
-														<option value="16">16</option>
-														<option value="17">17</option>
-														<option value="18">18</option>
-														<option value="19">19</option>
-														<option value="20">20</option>
-														<option value="21">21</option>
-														<option value="22">22</option>
-														<option value="23">23</option>
-														<option value="24">24</option>
-														<option value="25">25</option>
-														<option value="26">26</option>
-														<option value="27">27</option>
-														<option value="28">28</option>
-														<option value="29">29</option>
-														<option value="30">30</option>
+													<c:forEach begin="1" end="30" varStatus="loop">
+															<option>${loop.index}</option>
+													</c:forEach>
 												</select>
 											</div>
                                       </div>
@@ -435,7 +399,8 @@ width : 6% !important;
 			$("#templateId").val(templateId);
   	        $("#onboardtemplateId").val(templateId);
   	        $("#documentstemplateId").val(templateId);
-  	        
+  	        $("#taskstemplateId").val(templateId);
+  	      
   	      document.getElementById("templateDocs").disabled = false;
   	      document.getElementById("templateTasks").disabled = false;
   	      $("#onboardTaskDiv").val('Y');
@@ -639,7 +604,7 @@ function addFormsAttachment(){
 
 <script>
 function getAssignToUsersList(){
-	var templateId = document.getElementById("templateId").value;
+	var templateId = document.getElementById("taskstemplateId").value;
     $("#taskstemplateId").val(templateId);
     
 	var sourceleadUrl = '${sourceleadUrl}';
@@ -710,7 +675,8 @@ function createTemplate(saveType){
 	     	        $("#templateId").val(templateId);
 	     	        $("#onboardtemplateId").val(json.id);
 	     	        $("#documentstemplateId").val(json.id);
-	     	        
+	     	       $("#taskstemplateId").val(json.id);
+	     	       
 	     	        $("#save_button").removeAttr("disabled")
 	        	    $("#save_continue_button").removeAttr("disabled")
 	        	    
@@ -801,12 +767,14 @@ function saveOnboardTask(){
 	  if ($('#addonboardTask_form').validate(false, validationSettings)){ 
 		  	
 	        var sourceleadUrl ='${sourceleadUrl}';
-	        var formData = getFormData("addonboardTask_form");
+	        var formData = getFormData1("addonboardTask_form");
 	        
 	        $("#onboardtasksLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	        $.ajax({
 	        	type : "POST",
   	    	    data: formData,
+  	    	    processData: false,
+		        contentType:false,
 		    	 url: sourceleadUrl+"/saveOnBoardTasks?${_csrf.parameterName}=${_csrf.token}", 
 		        success: function(result) {
 		        	
@@ -1137,11 +1105,9 @@ function validateTemplateName(){
 
 <script>
 function getOnboardingTasksList(){
-	var templateId = document.getElementById("templateId").value;
+	var templateId = document.getElementById("documentstemplateId").value;
 	var onboardTaskDiv = document.getElementById("onboardTaskDiv").value;
-	
 	if(onboardTaskDiv == 'Y'){
-	
 	var sourceleadUrl = '${sourceleadUrl}';
 	var locationId = '${SourceLeadWeb_orgLocationId}';
 	
@@ -1152,7 +1118,6 @@ function getOnboardingTasksList(){
 	    success: function(data) {
 	    	 var json = JSON.parse(data);
         	 var result = "";
-        	 
         	if(json.length > 0){ 
 	        	for (var i=0; i<json.length; i++)
 				{
