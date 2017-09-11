@@ -23,7 +23,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.CandidateDocumentsDTO;
-import com.bis.sourcelead.dto.CandidateRequestDocumentsDTO;
 import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateDocuments;
@@ -260,18 +259,22 @@ public class CandidateDocumentsRestController {
 				
 				for (CandidateDocuments candidateDocuments : candidateDocumentsList) {
 					if (candidateDocumentsDTO.getFileInfo() != null && !candidateDocumentsDTO.getFileInfo().isEmpty()) {
-						FileInfo fileInfo = candidateDocumentsDTO.getFileInfo().get(0);
-						candidateDocuments.setFileName(fileInfo.getFileName());
-						candidateDocuments.setFileContentType(fileInfo.getContentType());
-						candidateDocuments.setFileURL(fileInfo.getFileURL());;
-						FileUploadUtil.moveFile(candidateDocumentsDTO.getStaticPath(), fileInfo, "requestedDocuments");
+						
+						if(!candidateDocumentsDTO.getFileInfo().isEmpty())
+						{
+							FileInfo fileInfo =candidateDocumentsDTO.getFileInfo().get(0);
+							candidateDocuments.setFileName(fileInfo.getFileName());
+							candidateDocuments.setFileContentType(fileInfo.getContentType());
+							candidateDocuments.setFileURL(fileInfo.getFileURL());
+							FileUploadUtil.moveFile(candidateDocumentsDTO.getStaticPath(), fileInfo, "requestedDocuments");
+							candidateDocuments.setRequestedDocStatus(Constants.REQUESTED_DOCUMENT_SUBMITTED);
+							candidateDocumentsService.updateCandidateDocuments(candidateDocuments);
+							candidateDocumentsDTO.getFileInfo().remove(0);
+						}
 					}
-					candidateDocuments.setRequestedDocStatus(Constants.REQUESTED_DOCUMENT_SUBMITTED);
-					candidateDocumentsService.updateCandidateDocuments(candidateDocuments);
 				}
 				
 			}
-			
 			requestedDocuments.setIsDocsUploaded(Constants.YES);
 			requestedDocumentsService.saveRequestedDocuments(requestedDocuments);
 		}
