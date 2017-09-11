@@ -491,7 +491,7 @@ function EditEducation(candidateId,candidateEducationId) {
 	
 	result  = result + '                 <div class="clearfix mb10">';
 	result = result  +'	                     <div class="col-md-4" positionRelative>';
-	result = result  +'	                     <select class="chosen-select" value="'+ json.gradeType +'" name="gradeType" id="scoreType" onchange="recSelectType();clearSearchKey();">';
+	result = result  +'	                     <select class="chosen-select" value="'+ json.gradeType +'" name="scoreType" id="scoreType" onchange="recSelectType();clearSearchKey();">';
 	result = result  +' 					   <option value="" selected="selected">Score Type</option>';
 												if (json.gradeType == "Percentage") {
 													result = result + '<option selected>Percentage</option>';
@@ -511,7 +511,7 @@ function EditEducation(candidateId,candidateEducationId) {
 	result = result  +'	                      </select>';
 	result = result  +'	                   </div>';
 	result  = result + '                  <div class="col-md-6 dropdown-select positionRelative paddingRight">';
-	result  = result + '                     <input type="text" class="form-control input-sm" value="'+grade+'" name="grade" placeholder="Score" id="candidateScore" onkeyup="recSelectType();"';
+	result  = result + '                     <input type="text" class="form-control input-sm" value="'+grade+'" name="score" placeholder="Score" id="candidateScore" onkeyup="recSelectType();"';
 	result  = result + '                     data-validation-optional="true" data-validation="required validate_length length1-5" field-name="score">';
 	result  = result + '                 	 </div>';
 	result = result  +'	                   </div>';
@@ -644,16 +644,14 @@ function candidateEducationStore(candidateId){
 	  
 	  if ($('#education_form').validate(false, validationSettings)) {
 		  
-			 var frm = $('#education_form').serializeFormJSON();
-			 var con = JSON.stringify(frm);
-			 con = con.replace(/[{}]/g, "");
-		     var jsonData = encodeURIComponent(con);
+			var formData = getFormData('education_form');
 			 var sourceleadUrl = '${sourceleadUrl}';
 			 $("#education_form").attr("disabled", "disabled");
 			
 			$.ajax({
 					type : "POST",
-					url : sourceleadUrl+"/storeCandidateEducation?${_csrf.parameterName}=${_csrf.token}&json="+con+"&candidateId="+candidateId,
+					data : formData,
+					url : sourceleadUrl+"/storeCandidateEducation?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,
 					success :function(data) {  
 				                 if(data != null && data != 'undefined' && data != ""){
 				               		if( data.indexOf('Sign In') >= 0){
@@ -904,21 +902,15 @@ function clearSearchKey() {
 		}; */
 		
 		
-		if ($('#education_form').validate(false,
-				validationSettings)) {
+		if ($('#education_form').validate(false,validationSettings)) {
 
-			var frm = $('#education_form').serializeFormJSON();
-
-			var con = JSON.stringify(frm);
-			con = con.replace(/[{}]/g, "");
-			var jsonData = encodeURIComponent(con);
-			//It will escape all the special characters
+			var formData = getFormData('education_form');
 			var sourceleadUrl = '${sourceleadUrl}';
-
+			$("#save_button").attr("disabled", "disabled");
 			$.ajax({
 						type : "POST",
-						url : sourceleadUrl
-								+ "/upDateCandidateEducationByCandidateIdAndCandidateEducationId?${_csrf.parameterName}=${_csrf.token}&json="+ jsonData + "&candidateId=" + candidateId ,
+						data : formData,
+						url : sourceleadUrl+ "/upDateCandidateEducationByCandidateIdAndCandidateEducationId?${_csrf.parameterName}=${_csrf.token}&candidateId=" + candidateId,
 						success : function(result) {
 							closePopup();
 							candidateEducationList(candidateId)

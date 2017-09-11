@@ -194,12 +194,8 @@ public class CandidateCertificationsRestController {
 
 			OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			User users = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-			
-			/*String json1 = "{"+json+"}";
-			JSONObject jsonObject = new JSONObject(json1);*/
 			candidateCertificationsService.storeCandidateCertifications(candidateCertificationDTO,users,loginOrgLocation,candidateId);
 			//SourceLeadSessionManager.setSessionAttribute(request, "editCertification", "Certification details updated ");
-
 			return "success";
 		 }
 
