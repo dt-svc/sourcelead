@@ -675,36 +675,38 @@ function getDocument(candidateId, documentId){
 		   	type: "POST",
 		    url: sourceleadUrl+"/getDocument?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&documentId="+documentId, 	   
    		    success: function(data) {
-   		    	var json = JSON.parse(data);
+   		    	
         			 $("#uploadDocDiv").hide();
         			 $("#docAddButton").hide();
         			 $("#uploadFile").removeAttr("data-validation");
-        			 if(json.fileName != null && json.fileName !="undefined" && json.fileName != ""){
+        			 if(data.fileName != null && data.fileName !="undefined" && data.fileName != ""){
         			 $("#docNameDiv").show();
         			 }
-        			 $("#docsName").append(json.fileName);
-        			 $("#docsName").prop('title', json.fileName);
+        			 $("#docsName").append(data.fileName);
+        			 $("#docsName").prop('title', data.fileName);
         			 $("#docUpdateButton").show();
-        			 if(json.documentType != null && json.documentType != "undefined" && json.documentType != ""){
+        			 if(data !=null){
+        			 if(data.documentType != null && data.documentType != "undefined" && data.documentType != ""){
         				
-	                     $("select#docName").val(json.documentType);
-	                     $("#docName").trigger("chosen:updated");
-	                     
+	                     $("select#docName").val(data.documentType);
+	                     $("select#docName").trigger("chosen:updated");
+	                   
 	                    //here documentType is Other then documentOtherType  also display in Edit.
 	                   
-	                     if(json.documentType == 'Other'){
-		        				 if(json.documentOtherType !=null && json.documentOtherType !='' && json.documentOtherType !="undefined"){
+	                     if(data.documentType == 'Other'){
+		        				 if(data.documentOtherType !=null && data.documentOtherType !='' && data.documentOtherType !="undefined"){
 		        					 document.getElementById("documentTypeDiv").style.display="block";
-		        					 $("#documentOtherType").val(json.documentOtherType);
+		        					 $("#documentOtherType").val(data.documentOtherType);
 			    	             }
 	        			 }
 
         			 }
         			 
-        			 $("#update_doc").attr("onclick", "storeCandidateDocument("+json.candidateId.id+", \""+json.documentUUID+"\");");
+        			 $("#update_doc").attr("onclick", "storeCandidateDocument("+data.candidateId.id+", \""+data.documentUUID+"\");");
         			 
-        			 if(json.description != null && json.description != "undefined" && json.description != ""){
-        				 $("textarea#description").val(json.description);
+        			 if(data.description != null && data.description != "undefined" && data.description != ""){
+        				 $("textarea#description").val(data.description);
+        			 }
         			 }
         			 
    		    }
