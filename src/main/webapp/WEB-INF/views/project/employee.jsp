@@ -126,6 +126,14 @@
              </div>
            </div>
            <!-- Add Team modal popup ends --> 
+           
+           
+           
+           
+<div class="side_mask">
+    <div class="proj_close"></div>
+</div> 
+<div id="associatesList"></div>
  
  
  <script>
@@ -193,9 +201,10 @@ result = result + '<div class="project_tabs mb">';
 			if(status != 'COMPLETED' &&  status != '' &&  status != 'undefined' ){
 			result = result +'<li>';
 	 		'<sec:authorize access="hasAnyRole(\'ROLE_ASSIGN_EMPLOYEE_TO_PROJECT\')">';
+	 		  result = result + '<a href="javascript:void(0)" onclick="getAssociates();" id="addDiv">';
+	 		    result = result + '<i class="fa fa-exchange"></i>&nbsp;Transfer</a>&nbsp;&nbsp;&nbsp;&nbsp;';
 	 		    result = result + '<a href="'+sourceleadUrl+'/addNewProjectMembers?projectUUID='+projectUUID+'">';
 	 		    result = result + '<i class="glyphicon glyphicon-plus"></i>Assign Emp</a></li>';
-	 			//result = result + '<span data-target="#assignTeam" data-toggle="modal" onclick="getTeamMembers('+projectId+',\''+startDateStr+'\',\''+endDateStr+'\');"><i class="paddingRight glyphicon glyphicon-plus"></i>Assign Emp</span>';
 	 		'</sec:authorize>';
 	 		result = result +'</li>';
 			} 
@@ -315,6 +324,7 @@ result = result + '<div class="project_tabs mb">';
 	    	    result = result + '	<table id="projectEmployeePagination" class="display" cellspacing="0" width="100%">';
 	    		result = result + '	<thead>';
 	    		result = result + '		<tr>';
+	    		result = result + ' <th><input type="checkbox" onclick="selectAllMembers();"  id="selectAllMembers" ></th>';
 	            result = result + '	 	<th>Emp Name</th>';
 	            result = result + '	 	<th>Emp Email</th>';
 	            result = result + '	 	<th>Emp Role</th>';
@@ -345,7 +355,7 @@ result = result + '<div class="project_tabs mb">';
 		        			projectEndDateStr = "--"
 		        		}
 		        		result = result + '	 <tr>';
-		                
+		        		result = result + '<td><input type="checkbox" onclick="selectedMember();"  class="projectMembersChecks" value='+opt.id+' name="projectMembers[]" ></td>';
 		                result = result + '	 	<td><div class="tbldata-dotdot" title="'+opt.candidateName+'"><span title="'+opt.candidateName+'">'+opt.candidateName+'</span></div></td>';
 		                result = result + '	 	<td><div class="tbldata-dotdot" title="'+opt.empEmail+'"><span title="'+opt.empEmail+'">'+opt.empEmail+'</span></div></td>';
 		                result = result + '	 	<td><div class="tbldata-dotdot_80" title="'+role+'"><span title="'+role+'">'+role+'</span></div></td>';
@@ -507,6 +517,25 @@ function projectEmployeePagination(){
     } );
 }
 </script>
+
+<script>
+function selectAllMembers(){
+	
+	var checked = document.getElementById("selectAllMembers").checked  
+	
+        if(checked) {
+            $('.projectMembersChecks').each(function() {
+                this.checked = true;   
+            });
+        }else{
+            $('.projectMembersChecks').each(function() {
+                this.checked = false;      
+            });         
+        } 
+	
+}
+</script> 
+
 <!-- this script is for Employee EndDate Inline functionality at Projects screen -->
 <script> 
 function inlineEditForEndDate(id,projectMemberId){
@@ -1313,6 +1342,339 @@ function resourceRequestsTab(){
      });
 		 
 }
+</script>
+
+
+<script>
+function getAssociates(){
+	var result = '';
+	
+	result = result +'<div class="clients_side_wrap">';
+	result = result +'<div id="projectDetailsLoading"></div>';
+	result = result +'<div class="new_side_wrap_inn">';
+	result = result +'<div class="timesheet_head">';
+	      
+	result = result +'<ul class="pull-right">';
+	
+
+	        
+	result = result +'<li class="dropdown pull-left">';
+	result = result +'<span class="dropdown-toggle mt5" id="menu1" data-toggle="dropdown">';
+	result = result +'<i class="fa fa-filter mt5"></i><span>Location</span><i class="glyphicon glyphicon-play mt10"></i></span>|';
+	result = result +'<div class="dropdown-menu bootstrap_dropdownMenu bootstrap_dropdownMenu-right" role="menu" aria-labelledby="menu1">';
+	result = result +'<ul class="location-filter">';
+	result = result +'<c:forEach var="locations" items="${orgLocationsList}">';
+	result = result +'<li>';
+	result = result +'<input class="ml10" value="${locations.id}" onclick="getOrgLocationProjects();"  name="orgLocations" ${SourceLeadWeb_orgLocations.id  == locations.id ? "checked" : ''} type="radio">';
+	result = result +'<label class="radioAlign"><img src="resources/images/${locations.country}.gif">${locations.orgLocationName}</label>';
+	result = result +'</li>';
+	result = result +'</c:forEach>';
+	result = result +'</ul>';
+	result = result +'</div>';
+	result = result +'</li>';
+	
+	result = result +'<li class="pull-left">';  
+	result = result +'<select class="form-control chosen-select" name="orgLocationProjects" id="orgLocationProjects" onchange="getProjectDetails();">';
+	result = result +'<option value="">-- Select Project --</option>';
+	result = result +'</select>';
+	result = result +'</li>';  
+	
+
+	
+	result = result +'<div class="clearfix"></div>';
+	result = result +'</ul>';
+	result = result +'<div class="clearfix"></div>';
+	result = result +'</div>';
+	
+	result = result +'<div id="projectDetailsDiv"></div>';
+
+	result = result +'</div>';
+	result = result +'</div>';
+	
+	
+	 $("#associatesList").empty();
+     $("#associatesList").append(result);
+     
+     $(".clients_side_wrap").addClass("clients_side_wrap_active");
+	 $(".side_mask").fadeIn(200);
+	 $("body").css('overflow-y', 'hidden');
+    
+	 prepareChosenScripts();
+     getOrgLocationProjects();
+     getProjectDetails();
+ 	
+}
+</script>
+
+
+<script type="text/javascript">
+function getOrgLocationProjects(){
+	
+	var orgLocations = [];
+	$('input:radio[name=orgLocations]:checked').each(function() 
+		    {
+		orgLocations.push($(this).val());
+	    });
+	
+	 var sourceleadUrl = '${sourceleadUrl}';
+	 $("#projectDetailsLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	 $.ajax({
+	    	type: "GET",
+	        url: sourceleadUrl+"/getProjectsListByOrgLocationForTransfer?${_csrf.parameterName}=${_csrf.token}&orgLocationId="+orgLocations, 
+	        success: function(json) {
+	        
+	        	var output = "";
+	        	output = output + '<option value="">--Select Project--</option>';
+	        	for (var i=0; i<json.length; i++)
+				{
+		        		var opt = json[i];
+		        		output = output + '<option value="'+opt.id+'">'+opt.projectName+'</option>';
+				}
+	        	
+	        	$("#orgLocationProjects").empty();
+		        $("#orgLocationProjects").append(output);
+		        $('#orgLocationProjects').trigger("chosen:updated");
+		        $("#projectDetailsLoading").removeAttr("style"); 
+	        }
+	   
+     });
+		 
+}
+</script>
+
+<script>
+function getProjectDetails(){
+	var orgLocationProjects = document.getElementById("orgLocationProjects").value;
+	
+	if(orgLocationProjects){
+		$("#projectDetailsLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		var sourceleadUrl = '${sourceleadUrl}';
+				$.ajax({
+					type : "POST",
+					url : sourceleadUrl	+ "/getProjectById?${_csrf.parameterName}=${_csrf.token}&ProjectId="+ orgLocationProjects,
+					success : function(data) {
+						var json = JSON.parse(data);
+						var endDateStr = "";
+						var description = "";
+						var clientName = "";
+						var projectSequeneNumber = "";
+						var invoiceFrequency = "";
+						
+						
+					
+						if (json.endDateStr != null && json.endDateStr != ''
+								&& json.endDateStr != 'undefined') {
+							endDateStr = json.endDateStr;
+						} else {
+							endDateStr = "--";
+						}
+						if (json.description != null && json.description != ''
+								&& json.description != 'undefined') {
+							description = json.description;
+						} else {
+							description = "----";
+						}
+						
+						if (json.invoiceFrequency != null && json.invoiceFrequency != '' && json.invoiceFrequency != 'undefined') {
+							invoiceFrequency = json.invoiceFrequency;
+					     } else {
+					    	 invoiceFrequency = "----";
+					    }
+						
+						if (json.projectSequeneNumber != null
+								&& json.projectSequeneNumber != ''
+								&& json.projectSequeneNumber != 'undefiend') {
+							projectSequeneNumber = json.projectSequeneNumber;
+						} else {
+							projectSequeneNumber = "--";
+						}
+						if (json.client != null && json.client != ''
+								&& json.client != 'undefined') {
+							clientName = json.client
+						} else {
+							clientName = "--";
+						}
+						
+						if (json.overtimeRateType != null && json.overtimeRateType != '' && json.overtimeRateType != 'undefined') {
+							flatPercentageId = json.overtimeRateType
+						} else {
+							flatPercentageId = "";
+						}
+						
+						var proStatus ='';
+						if(json.projectStatus == 'NOTSTARTED'){
+							proStatus = 'Not Started';
+						}else if(json.projectStatus == 'INPROGRESS'){
+							proStatus = 'In-Progress';
+						}else if(json.projectStatus == 'ONHOLD'){
+							proStatus = 'On-Hold';
+						}else if(json.projectStatus == 'COMPLETED'){
+							proStatus = 'Completed';
+						}else if(json.projectStatus == 'DROPPED'){
+							proStatus = 'Dropped';
+						}
+						
+						
+						
+						var result = "";
+						result = result	+ '<div class="project_tabs_inn_table">';
+						result = result + '<div class="project_details">';
+						result = result + '<div class="useredit useredit_a">';
+						result  = result + '<div class="success_pop" id="selector2" style="display: none;">';
+					    result  = result + '<i class="fa fa-check-circle"></i><span id="docMsgDiv2"></span>';
+					    result  = result + '</div>';
+						
+									
+	   		    		result = result + '</div>';
+	   		    		
+						result = result	+ '<div class="project_details_cta">';
+						result = result + '<strong>Status:</strong><span>';
+						result = result +  proStatus;
+						result = result + '</span>';
+						result = result	+ '</div><div class="clearfix"></div>';
+						
+						result = result + '<input type="hidden" name="dbProjectStatus" id="dbProjectStatus" value="'+json.projectStatus+'" >';
+						result = result + '<div class="clearfix"></div>';
+
+						result = result	+ '<div class="project_details_cta" id="ProjectIdDiv">';
+						result = result + '<strong>Project Id:</strong>';
+						result = result + '<span>'+projectSequeneNumber+'</span>';
+						result = result + '<div class="clearfix"></div>';
+						result = result + '</div>';
+
+						result = result	+ '	<div class="project_details_cta" id="projectNameId">';
+						result = result + '	<strong>Project name:</strong>';
+						result = result + '	<span title="'+json.projectName+'">'+json.projectName+'</span><div class="clearfix"></div>';
+						result = result + '	</div>';
+
+						result = result + '<div class="project_details_cta">';
+						result = result + '<strong>Manager 1:</strong><span>';
+
+						for (var j = 0; j < json.managersList.length; j++) {
+							var manager = json.managersList[j];
+							if (json.manager1 == manager.id) {
+								result = result + manager.firstName + " "
+										+ manager.lastName;
+							}
+						}
+						result = result	+ '</span><div class="clearfix"></div>';
+						result = result + '	</div>';
+
+						if (json.manager2 != null && json.manager2 != "" && json.manager2 != "undefined") {
+							result = result	+ '<div class="project_details_cta">';
+							result = result	+ '	<strong>Manager 2:</strong><span>';
+
+							for (var j = 0; j < json.managersList.length; j++) {
+								var manager = json.managersList[j];
+								if (json.manager2 == manager.id) {
+									result = result + manager.firstName + " "
+											+ manager.lastName;
+								}
+							}
+							result = result	+ '</span><div class="clearfix"></div>';
+							result = result + '	</div>';
+						}
+						
+						
+						result = result + '<div class="project_details_cta">';
+						result = result + '<strong>Client:</strong>';
+						result = result + '<span title="'+clientName+'">'+clientName+'</span><div class="clearfix"></div>';
+						result = result + '<div class="clearfix"></div>';
+						result = result + '</div>';
+						
+						
+						
+						result = result + '<div class="clearfix"></div>';
+						result = result	+ '<div class="project_details_cta">';
+						result = result + '<strong>Start date:</strong>';
+						result = result + '<span title="'+json.startDateStr+'">'+json.startDateStr+'</span><div class="clearfix"></div>';
+						result = result + '</div>';
+						result = result	+ '<div class="project_details_cta">';
+						result = result + '<strong>End date:</strong>';
+						result = result + '<span title="'+endDateStr+'">'+endDateStr+'</span><div class="clearfix"></div>';
+						result = result + '</div>';
+						result = result + '<div class="clearfix"></div>';
+						
+						
+						
+						result = result + '<div class="clearfix"></div>';
+						
+						result = result + '<div class="form-footer clearfix miniFoot">';
+						result = result + '<div class="col-lg-12">';
+						result = result + '<div class="pull-right">';
+						result = result + '<input type="button" value="Save" onClick="transferToProject()" class="btn btn-primary ml10">';
+						result = result + '</div>';
+						result = result + '</div>';
+						result = result + '</div>';
+						
+						result = result + '</div>';
+						result = result + '</div>';
+						result = result + ' </div>';
+						result = result + '</div>';
+
+						$("#projectDetailsDiv").empty();
+						$("#projectDetailsDiv").append(result);
+						$("#projectDetailsLoading").removeAttr("style"); 
+
+					}
+				});
+	}else{
+		 var result = '';
+		 result = result+"   <div class='row'>"; 
+		 result = result+"	<div class='col-lg-12'>"; 
+		 result = result+"		<div class='dataTables_empty'>"; 
+		 result = result+"		</div>"; 
+		 result = result+"	</div>"; 
+		 result = result+"  </div> ";
+		 
+		 $("#projectDetailsDiv").empty();
+	     $("#projectDetailsDiv").append(result);
+	}
+	
+}
+</script>
+
+
+<script>
+function transferToProject(){
+	var projectMembers = [];
+	 $("input[name='projectMembers[]']:checked").each( function (i) {
+		 projectMembers.push($(this).val());
+	});
+	 
+	 var orgLocationProjects = document.getElementById("orgLocationProjects").value;
+}
+</script>
+
+<script type="text/javascript">
+ function prepareChosenScripts(){ 
+		var config = {
+				  '.chosen-select'           : {},
+				  '.chosen-select-deselect'  : {allow_single_deselect:true},
+				  '.chosen-select-no-single' : {disable_search_threshold:10},
+				  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
+				  '.chosen-select-width'     : {width:"95%"}
+				}
+				for (var selector in config) {
+				  $(selector).chosen(config[selector]);
+				}
+				$('.chosen-select').each(function() {
+					var $this = $(this);
+					$this.next().css({'width': '100%'});
+					});
+ }
+</script>
+
+
+  <script type="text/javascript">
+    $(document).ready(function() {
+    $(".proj_close, .side_mask").click(function(){
+		$(".clients_side_wrap").removeClass("clients_side_wrap_active");
+		$(".side_mask").fadeOut(200);
+		$("body").css('overflow-y', 'auto');
+        $('.addcandidate-popup').fadeOut(200);
+	});	
+});
 </script>
 
 <script>

@@ -227,6 +227,7 @@ public class ProjectsController {
 				HttpServletRequest request) throws Exception {
 				ModelAndView model = new ModelAndView();
 				
+			    Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 				OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 				Projects projects = projectsService.getProjectByProjectUUID(projectUUID);
 				OrgLocations locations=orgLocationService.getOrgLocations(projects.getOrgLocationsId().getId());
@@ -260,6 +261,9 @@ public class ProjectsController {
 				
 				model.addObject("projectUUID", projectUUID);
 				model.addObject("postedOrgLocationId", projects.getOrgLocationsId().getId());
+				
+				List<OrgLocations> orgLocationsList = orgLocationService.getAllOrgLocationsByOrgId(org.getId());
+				model.addObject("orgLocationsList", orgLocationsList);
 				
 				 List<LookUpData> taskTypeList = lookUpDataService.getLookUpDataByCategory(Constants.TASKTYPE);
 				 model.addObject("taskTypeList", taskTypeList);

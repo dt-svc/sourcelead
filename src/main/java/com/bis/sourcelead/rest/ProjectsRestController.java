@@ -389,7 +389,14 @@ public class ProjectsRestController {
 	       return projectsList;
 	    }
 
-	  
+	    @RequestMapping(value = "/getProjectsListByOrgLocationForTransfer", method = RequestMethod.GET)
+		public  List<Projects> getProjectsListByOrgLocationForTransfer(@RequestParam(value="orgLocationId", required=true) Long orgLocationId) throws Exception {
+		   
+		   List<Projects> projectsList = projectsService.getAllProjectsByOrgLocationIdAndStatus(orgLocationId);
+	       return projectsList;
+	    }
+	    
+	    
 	  
 	  
 	
