@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.Invoice;
@@ -836,7 +837,7 @@ public class InvoicePdfHelper {
 		return table;
 	}
 
-	public File getBillingPdf(java.util.List<Invoice> invoiceList, String orgName, InvoiceAmount totalStagesAmount,
+	public File getBillingPdf(ResponseList<Invoice> invoiceList, String orgName, InvoiceAmount totalStagesAmount,
 			String exportStartDate, String exportEndDate, String invoiceType,OrgLocations locations) throws Exception {
 		
 //		 OrgLocations orglo = orgLocationService.getOrgLocations(locations.getId());
@@ -926,7 +927,7 @@ public class InvoicePdfHelper {
 			}
 			table.completeRow();
 			java.util.List<String[]> invoices = new ArrayList<>();
-			for (Invoice invoice : invoiceList) {
+			for (Invoice invoice : invoiceList.getData()) {
 				invoices.add(prepareBillingToArray(invoice,locations));
 			}
 
