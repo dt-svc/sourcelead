@@ -1,7 +1,5 @@
 package com.bis.sourcelead.service.impl;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -37,7 +35,9 @@ import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.Expenses;
+import com.bis.sourcelead.entity.MasterCandidate;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.ProjectApproverHierarchy;
 import com.bis.sourcelead.entity.ProjectClients;
 import com.bis.sourcelead.entity.ProjectMembers;
@@ -45,12 +45,12 @@ import com.bis.sourcelead.entity.ProjectMembersHistory;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Primary;
-import com.bis.sourcelead.enums.Status;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.ExpensesReportService;
 import com.bis.sourcelead.service.OrgLocationService;
+import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
 import com.bis.sourcelead.service.ProjectClientService;
 import com.bis.sourcelead.service.ProjectMembersHistoryService;
@@ -64,7 +64,6 @@ import com.bis.sourcelead.util.ConversionUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
-import com.bis.sourcelead.web.LoginSessionController;
 
 @Service
 public class ProjectMembersServiceImpl implements ProjectMembersService{
@@ -122,6 +121,9 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 	 
 	 @Autowired
 	 ProjectMembersHistoryDao projectMembersHistoryDao;
+	 
+	 @Autowired
+	 OrgRelationsService orgRelationsService;
 	 
 	private static final Logger logger = LoggerFactory.getLogger(ProjectsDaoImpl.class);
 	
@@ -678,7 +680,10 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 			throws Exception {
 		
 		ProjectClients projectClients = projectClientService.getProjectClientsByProjectIdAndOrgLocationId(projectId, loginOrgLocation.getId());
-		List<ProjectMembers> projectMembersList = projectMembersDao.getAllProjectMembersByProjectClientIdAndStatus(projectClients.getId(),status);
+		List<ProjectMembers> projectMembersList = null;
+		if(projectClients != null){
+			projectMembersList = projectMembersDao.getAllProjectMembersByProjectClientIdAndStatus(projectClients.getId(),status);
+		}
 		return projectMembersList;
 	}
 
@@ -833,15 +838,18 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 		if(projectAssignedMembersDTO.getProjectMembers() != null && projectAssignedMembersDTO.getProjectMembers().size() > 0){
 			for(ProjectMembersDTO projectMembersDTO : projectAssignedMembersDTO.getProjectMembers()){
 				if(projectMembersDTO.getCandidateId() != null){
-					ProjectMembers projectMembers = new ProjectMembers();
+					ProjectMembers projectMembers = null;
 					if(projectMembersDTO.getProjectMemberId() != null){
+						projectMembers = projectMembersDao.getProjectMemberById(projectMembersDTO.getProjectMemberId());
 						projectMembers.setId(projectMembersDTO.getProjectMemberId());
 						updatedProjectMembers.add(projectMembersDTO.getProjectMemberId());
+					}else{
+						projectMembers = new ProjectMembers();
+						projectMembers.setProjects(projects);
 					}
 					Candidate candidate = candidateService.getCandidateByCandidateId(projectMembersDTO.getCandidateId());
 					candidate.setId(projectMembersDTO.getCandidateId());
 					projectMembers.setProjectMemberCandidteId(candidate);
-					projectMembers.setProjects(projects);
 					Employees employees = employeesService.getEmployeeByUserIdAndOrgLocationsId(candidate.getConsultantUser().getId(), orgLocations.getId());
 					projectMembers.setEmployee(employees);
 					
@@ -896,6 +904,47 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 					if(projects.getOrgLocationsId().getId().equals(orgLocations.getId())){
 						ProjectClients projectClients = projectClientService.getProjectClientsByProjectIdAndOrgLocationId(projects.getId(), orgLocations.getId());
 						saveProjectMembersHistory(projectMembers,user,orgLocations,projectClients);
+					}else{
+						
+						ProjectClients projectClients = projectClientService.getProjectClientsByProjectIdAndOrgLocationId(projects.getId(), orgLocations.getId());
+						saveProjectMembersHistory(projectMembers,user,orgLocations,projectClients);
+						
+						ProjectClients clientProjectClients = null;
+						OrgRelations orgRelations = null;
+						Candidate clientCandidate = candidateService.findByCandidateEmail(candidate.getEmail(), projects.getOrgLocationsId().getId());
+						if(clientCandidate == null){
+							clientCandidate = new Candidate();
+							MasterCandidate masterCandidate = new MasterCandidate();
+							masterCandidate.setId(candidate.getMasterCandidateId().getId());
+							clientCandidate.setMasterCandidateId(masterCandidate);
+							clientCandidate.setParentCandidateId(candidate);
+							clientCandidate.setOrgLocationId(projects.getOrgLocationsId());
+							clientCandidate.setCandidateType("Candidate");
+							clientCandidate.setFirstName(candidate.getFirstName());
+							clientCandidate.setLastName(candidate.getLastName());
+							clientCandidate.setEmail(candidate.getEmail());
+							clientCandidate.setCountry(candidate.getCountry());
+							clientCandidate.setStatus(1);
+							clientCandidate.setIsAssociate(Constants.YES);
+							clientCandidate.setCandidateUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+							
+							orgRelations = orgRelationsService.getVendorOrgRelationByResponderLocationIdAndLocationId(orgLocations.getId(), projects.getOrgLocationsId().getId());
+							clientCandidate.setOrgRelationId(orgRelations);
+							clientCandidate.setCreatedBy(user.getUserCode());
+							clientCandidate.setCreatedDate(new Date());
+							clientCandidate.setUpdatedDate(new Date());
+							Candidate savedCandidate = candidateService.addCandidate(clientCandidate);
+							candidateService.saveOrUpdateCandidateElkDocument(savedCandidate);
+						}
+							
+						    clientProjectClients = projectClientService.getProjectClientsByProjectIdAndOrgLocationId(projects.getId(), projects.getOrgLocationsId().getId());
+							saveProjectMembersHistory(projectMembers,user,projects.getOrgLocationsId(),clientProjectClients);
+						
+						if(clientProjectClients != null && clientProjectClients.getOrgLocationsId().equals(projects.getOrgLocationsId().getId())){
+							projectClients.setOrgRelationId(orgRelations);
+							projectClientService.storeProjectClients(projectClients);
+						}
+						
 					}
 					
 					if(candidate.getParentCandidateId() != null){

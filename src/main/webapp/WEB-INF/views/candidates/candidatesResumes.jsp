@@ -144,7 +144,7 @@ function refreshResumeList(candidateId){
 <script>
 function addResume(candidateId) {	
 	var result = "";
-	result = result+'	           <form id="candidateResume_form" name="candidateResume_form" action="upload" enctype="multipart/form-data" method="post">';
+	result = result+'	           <form id="candidateResume_form" name="candidateResume_form" action="upload" method="post">';
 	result = result+'	           <i class="fa fa-close close-div" onClick="closeResumePopup();"></i>';
 	result = result+'	                <div class="form-horizontal clearfix" id="newResumeDiv">';
 	result = result+'	                  <div class="clearfix mb10">';
@@ -160,8 +160,8 @@ function addResume(candidateId) {
 	result = result+'	                  <div class="clearfix mb10" id="uploadResumeDiv">';
 	result = result+'	                    <div class="col-md-12">';
 	result = result+'							<div class="input-group positionRelative" id="uploadFileGroup">';
-	result = result+'	                          <label class="input-group-btn"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File';
-	result = result+'	                            <input type="file" name="uploadBtn" id="uploadBtn" style="display: none;"  multiple="" class="upload">';
+	result = result+'	                          <label class="input-group-btn"> <span class="btn btn-primary" onchange="uploadFile();"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File';
+	result = result+'	                            <input type="file" id="uploadBtn" style="display: none;" class="upload" >';
 	result = result+'	                            </span> </label>';
 	result = result+'	                          <input type="text" class="form-control" readonly id="uploadFile" name="docFile" placeholder="Upload Resume..." field-name="Resume" data-validation="required validate_Space validatedoc">';
 	result = result+'	                        </div>';
@@ -246,75 +246,66 @@ function addResume(candidateId) {
 					dateFormat : 'yyyy/mm/dd' 
 		         }; 
 			 if ($('#candidateResume_form').validate(false, validationSettings)){
-				var frm = $('#candidateResume_form').serializeFormJSON();
-				var con = JSON.stringify(frm);
-				con = con.replace(/[{}]/g, "");
+				 var sourceleadUrl = '${sourceleadUrl}';
 				var form = $('#candidateResume_form')[0];
-	      		var formData = new FormData(form); 
-				var sourceleadUrl = '${sourceleadUrl}';
-				$("#add_resume").attr("disabled", "disabled");
-         		$("#add_resume" ).addClass('button').val('Processing..');
-				//It will escape all the special characters
-		        var jsonData = encodeURIComponent(con);
+				//var formData = getFormData("candidateResume_form");
+				var formData = new FormData(form); 
 				$.ajax({
-						type : "POST",
-		        	    data: formData,
-		        	    contentType : 'application/json; charset=utf-8',
-		        	    enctype: 'multipart/form-data',
-		    	        processData: false,
-		    	        contentType:false,
-		        	    dataType : 'json',
-						url : sourceleadUrl+"/saveCandidateResume?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&candidateId="+candidateId+"&resumeId="+resumeId,
-						success : function(result) {
-							 if( result.indexOf('Sign In') >= 0){
-					    		location.replace(sourceleadUrl);
-					    	 }
-		            		 else if (result.indexOf('exception') >= 0) {
-		            			 location.replace(sourceleadUrl+"/errorPage");
-		            		 }
-		            		 else{
-		            			$('#perVal').attr('aria-valuenow', result).css('width',result+'%');
-			          			 if(result<50){
-				          			   $("#perVal").removeClass('progress-bar-success');
-				          			   $("#perVal").addClass("progress-bar-danger");
-				          			 }
-				          			 if(result>=50){
-				          				 $("#perVal").removeClass('progress-bar-danger');
-				          				 $("#perVal").addClass("progress-bar-success");
-				          			 }
+					type : "POST",
+	        	    data: formData,
+	    	        processData: false,
+	    	        contentType:false,
+					url : sourceleadUrl+"/saveCandidateResume?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&resumeId="+resumeId,
+					success : function(result) {
+						 if( result.indexOf('Sign In') >= 0){
+				    		location.replace(sourceleadUrl);
+				    	 }
+	            		 else if (result.indexOf('exception') >= 0) {
+	            			 location.replace(sourceleadUrl+"/errorPage");
+	            		 }
+	            		 else{
+	            			$('#perVal').attr('aria-valuenow', result).css('width',result+'%');
+		          			 if(result<50){
+			          			   $("#perVal").removeClass('progress-bar-success');
+			          			   $("#perVal").addClass("progress-bar-danger");
+			          			 }
+			          			 if(result>=50){
+			          				 $("#perVal").removeClass('progress-bar-danger');
+			          				 $("#perVal").addClass("progress-bar-success");
+			          			 }
 
-		            			$("#disVal").empty();
-		            			$("#disVal").append(result+'%');
-		            			// for quick view bar update
-		            			$('#quickPerVal').attr('aria-valuenow', result).css('width',result+'%');
-			          			 if(result<50){
-				          			   $("#quickPerVal").removeClass('progress-bar-success');
-				          			   $("#quickPerVal").addClass("progress-bar-danger");
-				          			 }
-				          			 if(result>=50){
-				          				 $("#quickPerVal").removeClass('progress-bar-danger');
-				          				 $("#quickPerVal").addClass("progress-bar-success");
-				          			 }
+	            			$("#disVal").empty();
+	            			$("#disVal").append(result+'%');
+	            			// for quick view bar update
+	            			$('#quickPerVal').attr('aria-valuenow', result).css('width',result+'%');
+		          			 if(result<50){
+			          			   $("#quickPerVal").removeClass('progress-bar-success');
+			          			   $("#quickPerVal").addClass("progress-bar-danger");
+			          			 }
+			          			 if(result>=50){
+			          				 $("#quickPerVal").removeClass('progress-bar-danger');
+			          				 $("#quickPerVal").addClass("progress-bar-success");
+			          			 }
 
-		            			$("#quickDisVal").empty();
-		            			$("#quickDisVal").append(result+'%');
-		            			
-		            			
-							 	$("#popUpDivResume").removeClass("edit-details-active");
-		             			$("#selector2").removeAttr("style");
-		             			$("#selector2").css({ display: "block" });
-		             			if(resumeId != null){
-		             				$("#resMsgDiv").html("Resume details updated");
-		             			}else{
-		             				$("#resMsgDiv").html("Success!! New Resume added");
-		             			}		             			
-						 		candidateResumesList(candidateId);
-						 		resMsgFadeinResumes();
-		            		 }
-							 /* $("#conMsg").fadeIn(200);
-							 $('#conMsg').delay(2000).fadeOut('slow'); */
-						},
-					});
+	            			$("#quickDisVal").empty();
+	            			$("#quickDisVal").append(result+'%');
+	            			
+	            			
+						 	$("#popUpDivResume").removeClass("edit-details-active");
+	             			$("#selector2").removeAttr("style");
+	             			$("#selector2").css({ display: "block" });
+	             			if(resumeId != null){
+	             				$("#resMsgDiv").html("Resume details updated");
+	             			}else{
+	             				$("#resMsgDiv").html("Success!! New Resume added");
+	             			}		             			
+					 		candidateResumesList(candidateId);
+					 		resMsgFadeinResumes();
+	            		 }
+						 /* $("#conMsg").fadeIn(200);
+						 $('#conMsg').delay(2000).fadeOut('slow'); */
+					},
+				});
 					return true;
 			 }else{ 
 					return false;
@@ -419,8 +410,7 @@ function addResume(candidateId) {
 
 									result = result+'<td><div><span>'+candidateResumeUpdateDateToString+'</span></div></td>';
 					           		result = result+'<td><div class="tblicons_4"> <a class="glyphicon glyphicon-download-alt" href=\"'+opt.fileURL+'\" title="Download"></a>';
-					           		result = result+' <a class="fa fa-eye" href="javascript:void(0)" onClick="viewFile(\'${sourceleadUrl}\',\''+opt.fileURL+'\',\''+opt.fileName+'\',\''+opt.fileContentType+'\');"title="preview"></a>';
-		           						          
+					           		result = result+' <a class="fa fa-eye" href="javascript:void(0)" onClick="viewFile(\'${sourceleadUrl}\',\''+opt.fileURL+'\',\''+opt.fileName+'\',\''+opt.fileContentType+'\');"title="preview"></a>';		           						          
 					           		if(window.candidateStatusGlobal == 0){
 					           			result = result+'<a class="glyphicon glyphicon-pencil" href="javascript:void(0)"></a>';
 						           		result = result+'<i class="glyphicon glyphicon-trash" href="javascript:void(0)"></i>';
@@ -593,8 +583,9 @@ function deleteResume(candidateId, resumeId){
      3.ajax url implementation in CandidateResumeRestController.
 --%>
 <script>
+var sourceleadUrl ='${sourceleadUrl}';
 function getResume(candidateId, resumeId){
-	var sourceleadUrl ='${sourceleadUrl}';
+	
 		$.ajax({
 		   	type: "POST",
 		    url: sourceleadUrl+"/getResume?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&resumeId="+resumeId, 	   
@@ -629,8 +620,15 @@ function removeResumeNameDiv(){
 	$("#uploadResumeDiv").show();
 	$("#uploadFile").attr("data-validation", "required validate_Space validatedoc");
 }
-</script>
 
+
+</script>
+<script>
+function uploadFile(){
+	var sourceleadUrl ='${sourceleadUrl}';
+	fileUpload(sourceleadUrl, "uploadBtn", "resumes", "candidateResume_form");
+}
+</script>
 <script type="text/javascript">
 	(function($) {
 		$.fn.serializeFormJSON = function() {

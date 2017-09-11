@@ -188,6 +188,32 @@ public class ProjectsController {
 	}
 	 
 	 
+	 
+	 @PreAuthorize("hasRole('ROLE_CREATE_PROJECT')")
+	 @RequestMapping(value = "/clientProject")
+		public ModelAndView clientProject(HttpServletRequest request) throws Exception {
+		     String loginOrgLocation = (String) SourceLeadSessionManager.getSessionAttribute(request, "locationCode");
+		    OrgLocations loginOrgLocations = orgLocationService.getOrgLocationsByLocationCode(loginOrgLocation);
+		    User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+				ModelAndView model = new ModelAndView();
+				
+				 SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
+					if(sessionData == null)
+					{
+						sessionData = new SessionMaintainanceData();
+					}
+					sessionData.setNav(Constants.Projects);
+					
+					request.getSession().setAttribute("sessionData",sessionData);
+					
+					List<OrgRelations> clientsList = orgRelationsService.getAllClientsByOrgLocationId(loginOrgLocations.getId());
+					model.addObject("clientsList", clientsList);
+					model.addObject("sourceleadUrl", sourceleadUrl);
+					model.setViewName("project/clientProject");
+					return model;
+	}
+	 
+	 
 	 @RequestMapping(value = "/getProjectLevel1Approvers", method = RequestMethod.GET)
 		public @ResponseBody List<User> getProjectLevel1Approvers(HttpServletRequest request) throws Exception {
 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
@@ -201,6 +227,7 @@ public class ProjectsController {
 				HttpServletRequest request) throws Exception {
 				ModelAndView model = new ModelAndView();
 				
+			    Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 				OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 				Projects projects = projectsService.getProjectByProjectUUID(projectUUID);
 				OrgLocations locations=orgLocationService.getOrgLocations(projects.getOrgLocationsId().getId());
@@ -222,13 +249,21 @@ public class ProjectsController {
 				}
 				
 				List<ProjectMembers> projectMembersList =  projectMembersService.getAllProjectMembersByProjectIdAndStatus(projects.getId(), "Active", orgLocations);
-				model.addObject("projectMembersCount", projectMembersList.size());
+				if(projectMembersList != null){
+					model.addObject("projectMembersCount", projectMembersList.size());
+				}else{
+					model.addObject("projectMembersCount", 0);
+				}
+				
 				
 				Integer resourceRequestsCount = projectPlanningRequestService.getProjectPlanningRequestCountByProjectId(projects.getId());
 				model.addObject("resourceRequestsCount", resourceRequestsCount);
 				
 				model.addObject("projectUUID", projectUUID);
 				model.addObject("postedOrgLocationId", projects.getOrgLocationsId().getId());
+				
+				List<OrgLocations> orgLocationsList = orgLocationService.getAllOrgLocationsByOrgId(org.getId());
+				model.addObject("orgLocationsList", orgLocationsList);
 				
 				 List<LookUpData> taskTypeList = lookUpDataService.getLookUpDataByCategory(Constants.TASKTYPE);
 				 model.addObject("taskTypeList", taskTypeList);
@@ -401,6 +436,7 @@ public class ProjectsController {
 				model.addObject("projectEndDate", commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),projects.getEndDate()));
 			}
 			model.addObject("projectStatus", projects.getProjectStatus());
+			model.addObject("projectOrgLocationId", projects.getOrgLocationsId().getId());
 		}
 		model.addObject("projectUUID", projectUUID);
 		

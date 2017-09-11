@@ -57,6 +57,13 @@ public class ProjectClients implements Serializable{
     @Column(name = "STATUS")
     private Integer status;
     
+    @Column(name = "LEVEL")
+    private Integer level;
+    
+    @Column(name = "IS_END_CLIENT")
+    private String isEndClient;
+    
+    
 	@Column(name = "CREATED_DATE")
 	private Date createdDate;
 	
@@ -179,6 +186,22 @@ public class ProjectClients implements Serializable{
 
 	public void setProjectMembersHistoryList(Set<ProjectMembersHistory> projectMembersHistoryList) {
 		this.projectMembersHistoryList = projectMembersHistoryList;
+	}
+
+	public Integer getLevel() {
+		return level;
+	}
+
+	public void setLevel(Integer level) {
+		this.level = level;
+	}
+
+	public String getIsEndClient() {
+		return isEndClient;
+	}
+
+	public void setIsEndClient(String isEndClient) {
+		this.isEndClient = isEndClient;
 	}
 
 	

@@ -75,7 +75,7 @@ public class OrgLocationsDaoImpl implements OrgLocationsDao {
 		OrgLocations orgLocations = session.get(OrgLocations.class, id);
 		return orgLocations;*/
 		   Session session = this.sessionFactory.getCurrentSession();
-	       String query = ("from OrgLocations orgLocations left join fetch orgLocations.org org "
+	       String query = ("from OrgLocations orgLocations left join fetch orgLocations.user left join fetch orgLocations.org org "
 	       		+ " left join fetch org.user left join fetch orgLocations.timezone where orgLocations.id =:id ");
 		  
 	       List<OrgLocations> orgLocations = session.createQuery(query.toString()).setLong("id", id).list();
@@ -195,7 +195,7 @@ public class OrgLocationsDaoImpl implements OrgLocationsDao {
 			throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 
-		String query = "from OrgLocations orgLocations where orgLocations.org.orgCode <> :orgCode and orgLocations.org.orgCode != 'slead' and orgLocations.modulesId IN (2,3) and orgLocations.org.status <> 'INACTIVE' and orgLocations.status <> 'INACTIVE' ";
+		String query = "from OrgLocations orgLocations where orgLocations.org.orgCode <> :orgCode and orgLocations.org.orgCode != 'slead' and orgLocations.modulesId IN (2,3)";
 		
 		List orgList = session.createQuery(query).setString("orgCode", orgCode).setCacheable(true).list();
 		return orgList;}
@@ -295,6 +295,15 @@ public class OrgLocationsDaoImpl implements OrgLocationsDao {
 			return true;
 		}
 		return false;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<OrgLocations> getAllRegisteredOrgLocationsForClientProject(List<Long> orgLocationId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from OrgLocations orgLocations left join fetch orgLocations.user where orgLocations.org.id <> '1' and orgLocations.id NOT IN (:orgLocationId) ";
+		List orgLocList = session.createQuery(query).setParameterList("orgLocationId", orgLocationId).setCacheable(true).list();
+		return orgLocList;
 	}
 
 }

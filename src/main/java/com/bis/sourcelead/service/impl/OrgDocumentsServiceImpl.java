@@ -1,11 +1,9 @@
 package com.bis.sourcelead.service.impl;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
-import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +12,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.OrgDocumentsDao;
+import com.bis.sourcelead.dto.ClientDTO;
+import com.bis.sourcelead.dto.ClientDocumentsDTO;
+import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.entity.OrgDocuments;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
@@ -21,7 +22,7 @@ import com.bis.sourcelead.service.OrgDocumentsService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.util.CommonUtil;
-import com.bis.sourcelead.web.LoginSessionController;
+import com.bis.sourcelead.util.FileUploadUtil;
 
 
 /**
@@ -48,52 +49,55 @@ public class OrgDocumentsServiceImpl implements OrgDocumentsService{
 	OrgLocationService orgLocationService;
 	
 	@Override
-	public void saveDocument(JSONObject jsonObj, MultipartFile multiFile, String responderLocationId,String docId, OrgLocations orgLocation,User user, String sourceType) throws  Exception {
+	public void saveDocument(ClientDocumentsDTO clientDocumentsDTO, String responderLocationId,String docId, OrgLocations orgLocation,User user, String sourceType) throws  Exception {
 		
 		OrgDocuments orgDocuments = null;
 		
 		if(!"null".equalsIgnoreCase(docId) && docId != null){
 			orgDocuments = orgDocumentsDao.getOrgDocumentsById(Long.parseLong(docId));
-			if(!jsonObj.getString("docFile").equalsIgnoreCase("")){
-				if(multiFile != null){
-					orgDocuments.setDocFile(multiFile.getBytes());
-					orgDocuments.setFileName(multiFile.getOriginalFilename());
-					orgDocuments.setFileType(multiFile.getContentType());
-				 }
+			for(FileInfo fileinfo : clientDocumentsDTO.getFileInfo())
+			{
+				orgDocuments.setFileName(fileinfo.getFileName());
+				orgDocuments.setFileType(fileinfo.getContentType());
+				orgDocuments.setFileUrl(fileinfo.getFileURL());
+				FileUploadUtil.moveFile(clientDocumentsDTO.getStaticPath(), fileinfo, "clientDocuments");
+
 			}
+			
 		}else{
 			orgDocuments = new OrgDocuments();
 			orgDocuments.setStatus(Constants.MEMBER_ACTIVE);
 			orgDocuments.setCreatedBy(user.getUserCode());
 			orgDocuments.setCreatedDate(new Date());
-			if(multiFile != null){
-				orgDocuments.setDocFile(multiFile.getBytes());
-				orgDocuments.setFileName(multiFile.getOriginalFilename());
-				orgDocuments.setFileType(multiFile.getContentType());
-			 }
+			
+			for(FileInfo fileinfo : clientDocumentsDTO.getFileInfo())
+			{
+				orgDocuments.setFileName(fileinfo.getFileName());
+				orgDocuments.setFileType(fileinfo.getContentType());
+				orgDocuments.setFileUrl(fileinfo.getFileURL());
+				FileUploadUtil.moveFile(clientDocumentsDTO.getStaticPath(), fileinfo, "clientDocuments");
+			}
+			
 		}
 		
-		
-		//SimpleDateFormat formatter = orgLocation.getLocFullFormDateFormatter();
-        
         orgDocuments.setSourceType(sourceType);
 		
-		if(jsonObj.has("docName")){
-			orgDocuments.setDocName(jsonObj.getString("docName"));
+		if(StringUtils.isNotBlank(clientDocumentsDTO.getDocName())){
+			orgDocuments.setDocName(clientDocumentsDTO.getDocName());
 		}
 		
-		if(jsonObj.has("contractType")){
-			orgDocuments.setContractType(jsonObj.getString("contractType"));
+		if(StringUtils.isNotBlank(clientDocumentsDTO.getContractType())){
+			orgDocuments.setContractType(clientDocumentsDTO.getContractType());
 		}
 		
-		if(jsonObj.has("owner") && StringUtils.isNotBlank(jsonObj.getString("owner")) && StringUtils.isNotEmpty(jsonObj.getString("owner"))){
+		if(StringUtils.isNotBlank(clientDocumentsDTO.getOwner())){
 			User ownerUser = new User();
-			ownerUser.setId(Long.parseLong(jsonObj.getString("owner")));
+			ownerUser.setId(Long.parseLong(clientDocumentsDTO.getOwner()));
 			orgDocuments.setOwnerUser(ownerUser);
 		}else{
 			orgDocuments.setOwnerUser(null);
 		}
-		String userId="userId";
+		/*String userId="userId";
 		if(jsonObj.has("userId") && jsonObj.getString(userId)!=null){
 			if(jsonObj.has(userId) && StringUtils.isNotBlank(jsonObj.getString(userId)) && StringUtils.isNotEmpty(jsonObj.getString(userId))){
 				User spocUser = new User();
@@ -103,26 +107,26 @@ public class OrgDocumentsServiceImpl implements OrgDocumentsService{
 				orgDocuments.setSpocUser(null);
 			}
 		}
-		else{
-			if(jsonObj.has("spoc") && StringUtils.isNotBlank(jsonObj.getString("spoc")) && StringUtils.isNotEmpty(jsonObj.getString("spoc"))){
+		else{TODO-pradeep*/
+			if(StringUtils.isNotBlank(clientDocumentsDTO.getSpoc())){
 				User spocUser = new User();
-				spocUser.setId(Long.parseLong(jsonObj.getString("spoc")));
+				spocUser.setId(Long.parseLong(clientDocumentsDTO.getSpoc()));
 				orgDocuments.setSpocUser(spocUser);
 			}else{
 				orgDocuments.setSpocUser(null);
 			}
-		}
-		if(jsonObj.has("startDate") && StringUtils.isNotBlank(jsonObj.getString("startDate")) && StringUtils.isNotEmpty(jsonObj.getString("startDate"))){
-			Date startDate = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(),jsonObj.getString("startDate"));
+		//}
+		if(StringUtils.isNotBlank(clientDocumentsDTO.getStartDate())){
+			Date startDate = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(),clientDocumentsDTO.getStartDate());
 			orgDocuments.setStartDate(startDate);
 		}
-		if(jsonObj.has("endDate") && StringUtils.isNotBlank(jsonObj.getString("endDate")) && StringUtils.isNotEmpty(jsonObj.getString("endDate"))){
-			Date endDate = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(),jsonObj.getString("endDate"));
+		if(StringUtils.isNotBlank(clientDocumentsDTO.getStartDate())){
+			Date endDate = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(),clientDocumentsDTO.getStartDate());
 			orgDocuments.setEndDate(endDate);
 		}
 		
-		if(jsonObj.has("description")){
-			orgDocuments.setDescription(jsonObj.getString("description"));
+		if(StringUtils.isNotBlank(clientDocumentsDTO.getDescription())){
+			orgDocuments.setDescription(clientDocumentsDTO.getDescription());
 		}
 		
 		if(responderLocationId!= null){

@@ -141,7 +141,7 @@ public class ProjectsDaoImpl implements ProjectsDao{
 	public List<Projects> getProjectByOrgLocationsId(Long orgLocationsId) throws Exception {
 		logger.debug("In ProjectsDaoImpl class getProjectByOrgLocationsId method");
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from Projects project where project.orgLocationsId = :orgLocationsId ";
+		String query = "from Projects project where project.orgLocationsId = :orgLocationsId and project.projectMode = 'Finished' ";
 		List<Projects> projectsList =  session.createQuery(query.toString()).setLong("orgLocationsId", orgLocationsId).setCacheable(true).list();
 		
 		return projectsList;
@@ -951,7 +951,7 @@ public HashSet<User> getAllUserTimeSheetSubmissionStatusCurrentWeek() {
 	public List<Projects> getAllProjectsByOrgLocationIdAndStatus(Long orgLocationsId) throws Exception
 	{
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from Projects project where project.orgLocationsId = :orgLocationsId and project.projectStatus <> 'ONHOLD'";
+		String query = "from  Projects ps where ps.id IN(select pc.projectId.id from  ProjectClients pc where pc.orgLocationsId = :orgLocationsId) and  ps.projectStatus <> 'ONHOLD' and (ps.orgLocationsId = :orgLocationsId OR ps.projectMode = 'Finished') "; 
 		List<Projects> projectsList =  session.createQuery(query.toString()).setLong("orgLocationsId", orgLocationsId).setCacheable(true).list();
 		return projectsList;
 	}
@@ -982,6 +982,20 @@ public HashSet<User> getAllUserTimeSheetSubmissionStatusCurrentWeek() {
 			return null;
 		}
 		return project.iterator().next();	
+	}
+
+	@Override
+	@Transactional
+	public List<Projects> getEndClientProjectByOrgLocationsIdAndClientOrgLocationId(Long orgLocationsId,
+			Long clientOrgLocationId) throws Exception {
+		
+		logger.debug("In ProjectsDaoImpl class getEndClientProjectByOrgLocationsIdAndClientOrgLocationId method");
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from Projects projects where projects.orgLocationsId = :clientOrgLocationId and projects.projectMode = 'Finished' "
+				+ " and projects.id NOT IN (select projectClients.projectId from ProjectClients projectClients where projectClients.orgLocationsId = :orgLocationsId)";
+		List<Projects> projectsList =  session.createQuery(query.toString()).setLong("clientOrgLocationId", clientOrgLocationId).setLong("orgLocationsId", orgLocationsId).setCacheable(true).list();
+		
+		return projectsList;
 	}
 
 

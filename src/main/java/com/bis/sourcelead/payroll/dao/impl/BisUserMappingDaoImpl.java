@@ -185,7 +185,33 @@ public class BisUserMappingDaoImpl implements BisUserMappingDao {
 		return bisUserList;
 	}
 
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public int getBisUserMappingVersionByLocationId(Long locationId)
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "SELECT MAX(bis.version)  FROM BisUserMapping bis where bis.orgLocationId.id =:orgLocationId";
+		List<Integer> version = session.createQuery(query).setLong("orgLocationId", locationId).setCacheable(true).list();
+		Integer count = 0;
+		if(version != null && !version.isEmpty() && version.get(0) != null){
+				count = version.get(0).intValue();
+		}
+		return count;
+	}
 
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public int getChecksVersionByLocationId(Long locationId)
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "SELECT MAX(ch.version)  FROM Checks ch where ch.orgLocationId.id =:orgLocationId";
+		List<Integer> version = session.createQuery(query).setLong("orgLocationId", locationId).setCacheable(true).list();
+		Integer count = 0;
+		if(version != null && !version.isEmpty() && version.get(0) != null){
+				count = version.get(0).intValue();
+		}
+		return count;
+	}
 
 
 	

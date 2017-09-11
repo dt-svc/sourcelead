@@ -124,6 +124,7 @@ public class ProjectMembers implements Serializable {
 	private String empName;
 	
 	@Transient
+	@JsonProperty
 	private String empEmail;
 	
 	@Transient
@@ -433,6 +434,7 @@ public class ProjectMembers implements Serializable {
 	private Set<ProjectMembersHistory> memberHistoryList = new HashSet<ProjectMembersHistory>(0);
 
 	@Transient
+	@JsonProperty
 	private List<ProjectMembers> projectMembersList;
 
 	public Date getProjectAssignedDate() {
@@ -615,6 +617,9 @@ public class ProjectMembers implements Serializable {
 	}
 
 	public String getEmpEmail() {
+		if(projectMemberCandidteId != null){
+			empEmail = projectMemberCandidteId.getConsultantUser().getEmail();
+		}
 		return empEmail;
 	}
 

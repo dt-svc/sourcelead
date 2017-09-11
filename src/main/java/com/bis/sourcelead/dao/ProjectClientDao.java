@@ -11,4 +11,6 @@ public interface ProjectClientDao {
 	ProjectClients getProjectClientsByProjectIdAndOrgLocationId(Long projectId,Long orgLocationsId) throws Exception;
 	
 	List<ProjectClients> getProjectClientsListByProjectId(Long projectId) throws Exception;
+	
+	ProjectClients getProjectClientsByProjectIdAndOrgLocationIdAndOrgRelationId(Long projectId,Long orgLocationsId,Long orgRelationId) throws Exception;
 }

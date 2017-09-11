@@ -49,6 +49,7 @@ import com.bis.sourcelead.dao.RequirementReferDao;
 import com.bis.sourcelead.dao.RequirementSubmissionDao;
 import com.bis.sourcelead.dao.RequirementSubmissionTemplateFieldsDao;
 import com.bis.sourcelead.dao.UserDao;
+import com.bis.sourcelead.dto.RequirementDTO;
 import com.bis.sourcelead.elk.index.CandidateIndex;
 import com.bis.sourcelead.elk.index.helper.CandidateIndexHelper;
 import com.bis.sourcelead.elk.setup.RequirementElkUtil;
@@ -371,7 +372,7 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 					if(jsonObj.has("vendors") && !"".equalsIgnoreCase(jsonObj.getString("vendors"))){
 						OrgRelations orgRelation = orgRelationsService.getOrRelationsById(Long.parseLong(jsonObj.getString("vendors")));
 						candidate.setOrgRelationId(orgRelation);
-						Candidate vendorCandidate = commonUtil.getVendorCandidate(jsonObj, orgRelation, orgLocations, user);
+						Candidate vendorCandidate =  commonUtil.getVendorCandidate(jsonObj, orgRelation, orgLocations, user);
 						candidate.setParentCandidateId(vendorCandidate);
 					}else{
 						candidate.setOrgRelationId(null);
@@ -3719,7 +3720,9 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 				
 				requirement.setUpdatedDate(new Date());
 				requirementService.updateRequirement(requirement);
-				requirementElkUtil.saveElkRequirement(requirement,new JSONObject());	
+				
+				RequirementDTO requirementDTO =commonUtil.getRequirementDTO(requirement);
+				requirementElkUtil.saveElkRequirement(requirement,requirementDTO);	
 			}
 			
 			

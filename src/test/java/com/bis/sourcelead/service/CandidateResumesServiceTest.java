@@ -25,6 +25,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.bis.sourcelead.SecurityConfig;
 import com.bis.sourcelead.WebAppConfig;
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.CandidateResumeDTO;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -57,10 +58,10 @@ public class CandidateResumesServiceTest {
 		orgLocationId.setId(1l);
 		user.setId(1l);
 		candidate.setId(1l);
-		JSONObject jsonObj = new JSONObject();
-		jsonObj.put("title", "exp");
-		jsonObj.put("description", "hello hi");
-		jsonObj.put("docFile", "input.txt");
+		CandidateResumeDTO candidateResumeDTO = new CandidateResumeDTO();
+		candidateResumeDTO.setTitle("exp");
+		candidateResumeDTO.setDescription("hello hi");
+		candidateResumeDTO.setFileName("input.txt");
 		candidateResumes.setId(1l);
 		candidateResumes.setStatus(Constants.CANDIDATE_ACTIVE);
 		candidate.setOrgLocationId(orgLocationId);
@@ -68,7 +69,7 @@ public class CandidateResumesServiceTest {
 		String fileURL = new FileUploadUtil().uploadFile(staticPath, 1l, orgLocationId.getId(), "resume", multipartFile);
 		String fileName = multipartFile.getOriginalFilename();
 		String contentType = multipartFile.getContentType();
-		candidateResumes = candidateResumesService.storeCandidateResume(jsonObj, user, candidate, "1", orgLocationId, fileURL, fileName, contentType);
+		candidateResumes = candidateResumesService.storeCandidateResume(candidateResumeDTO, user, candidate, "1", orgLocationId);
 		logger.info("success fully store " + candidateResumes.getStatus());
 	}
 	

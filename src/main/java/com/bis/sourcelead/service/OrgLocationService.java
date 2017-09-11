@@ -1,11 +1,11 @@
 package com.bis.sourcelead.service;
 
 import java.util.List;
-import java.util.Set;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.bis.sourcelead.dto.ClientDTO;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
@@ -31,13 +31,15 @@ public interface OrgLocationService {
 
 	public OrgLocations findByEmail(String email,Long orgLocationId) throws Exception;
 
-	OrgLocations orgLocationsListByJson(JSONObject jsonObj, Org addOrg, OrgLocations orgLocations,String loginUserCode,String responderType) throws Exception;
+	OrgLocations orgLocationsListByJson(ClientDTO clientDTO, Org addOrg, OrgLocations orgLocations,String loginUserCode,String responderType) throws Exception;
 	
 	public List<OrgLocations> getOrgsListForClientAndVendorOrgSearch(String orgCode) throws Exception;
 	
 	public List<OrgLocations> getAllOrgLocationsByOrgId(Long orgId) throws Exception;
 	
 	public List<OrgLocations> getAllOrgsStartsWithAlphabet(String alphabet);
+	
+	public List<OrgLocations> getAllRegisteredOrgLocationsForClientProject(List<Long> orgLocationId) throws Exception;
 	
 	public List<OrgLocations> getAllRegisteredOrgLocations() throws Exception;
 	

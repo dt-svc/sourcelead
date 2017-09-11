@@ -32,4 +32,10 @@ public class ProjectClientServiceImpl implements ProjectClientService {
 		return projectClientDao.getProjectClientsListByProjectId(projectId);
 	}
 
+	@Override
+	public ProjectClients getProjectClientsByProjectIdAndOrgLocationIdAndOrgRelationId(Long projectId,
+			Long orgLocationsId, Long orgRelationId) throws Exception {
+		return projectClientDao.getProjectClientsByProjectIdAndOrgLocationIdAndOrgRelationId(projectId, orgLocationsId, orgRelationId);
+	}
+
 }

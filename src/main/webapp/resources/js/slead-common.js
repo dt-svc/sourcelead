@@ -25,15 +25,21 @@ function getFormData1(formId) {
 }
 
 
-function fileUpload(sourceleadUrl, id, type, formId,name) {
+function fileUpload(sourceleadUrl, id, type, formId, name, orgId, orgLocationId) {
 	if(name == null || name == 'undefined' || name == ''){
 		name = 'fileInfo';
 	}
+	if(orgId == null || orgId == "undefined" || orgId == "")
+		orgId = 0;
+	if(orgLocationId == null || orgLocationId == "undefined" || orgLocationId == "")
+		orgLocationId = 0;
 	var data = new FormData();
 	var files = document.getElementById(id).files;
 	for(var e in files) {
 		data.append('file', files[e]);
 	}
+	data.append('orgId', orgId);
+	data.append('orgLocationId', orgLocationId);
 	$.ajax({ 
 		url: sourceleadUrl+"/upload/"+type, 
 		data: data, 
@@ -45,21 +51,11 @@ function fileUpload(sourceleadUrl, id, type, formId,name) {
 				if($("#"+formId+" input[name*="+name+"][data-id="+id+"]").length > 0) {
 					$("#"+formId+" input[name*="+name+"][data-id="+id+"]").remove();
 				}
-				
-				if(name == 'uploadContractsFile' || name == 'uploadFormsFile'){
-					var i = $("#"+formId+" input[type=hidden][name*="+name+"]").length / 4;
-				}
-				else{
-					var i = $("#"+formId+" input[type=hidden][name*="+name+"]").length / 3;
-				}
-				 
+				var i = $("#"+formId+" input[type=hidden][name*="+name+"]").length / 3;
 				for(var e in data) {
 					var html = "<input type='hidden' name='"+name+"["+i+"].fileURL' data-id="+id+" value='"+data[e].fileURL+"'/>";
 					html += "<input type='hidden' name='"+name+"["+i+"].fileName' data-id="+id+" value='"+data[e].fileName+"'/>";
 					html += "<input type='hidden' name='"+name+"["+i+"].contentType' data-id="+id+" value='"+data[e].contentType+"'/>";
-					if(name == 'uploadContractsFile' || name == 'uploadFormsFile'){
-						html += "<input type='hidden' name='"+name+"["+i+"].fileDbId' data-id="+id+" value='"+id.split(name)[1]+"'/>";
-					}
 					$("#"+formId).append(html);
 					i ++;
 				}

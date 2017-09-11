@@ -1,9 +1,11 @@
 package com.bis.sourcelead.rest;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
@@ -25,6 +27,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.annotations.Validator;
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.ClientProjectDTO;
 import com.bis.sourcelead.dto.ProjectAdditionalDetailsDTO;
 import com.bis.sourcelead.dto.ProjectAssignedMembersDTO;
 import com.bis.sourcelead.dto.ProjectsDTO;
@@ -33,6 +36,7 @@ import com.bis.sourcelead.elk.index.helper.ProjectsIndexHelper;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.ProjectClients;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.ProjectQuestionnaire;
 import com.bis.sourcelead.entity.ProjectTasks;
@@ -142,7 +146,7 @@ public class ProjectsRestController {
 	
 	
        @RequestMapping(value = "/assignProjectMembersToProject", method = RequestMethod.POST)
-		public  String assignProjectMembersToProject(@RequestBody ProjectAssignedMembersDTO projectAssignedMembersDTO,@RequestParam(value="projectUUID", required=true) String projectUUID,
+		public  String assignProjectMembersToProject(ProjectAssignedMembersDTO projectAssignedMembersDTO,@RequestParam(value="projectUUID", required=true) String projectUUID,
 			   @RequestParam(value="userId", required=true) Long userId,@RequestParam(value="orgLocationId", required=true) Long orgLocationId) throws Exception {
 		    
 		    User user = userService.getUserById(userId);
@@ -154,7 +158,7 @@ public class ProjectsRestController {
        
        
        @RequestMapping(value = "/storeProjectAdditionalDetails", method = RequestMethod.POST)
-		public  String assignProjectMembersToProject(ProjectAdditionalDetailsDTO projectAdditionalDetailsDTO,@RequestParam(value="projectId", required=true) Long projectId,
+		public  String storeProjectAdditionalDetails(ProjectAdditionalDetailsDTO projectAdditionalDetailsDTO,@RequestParam(value="projectId", required=true) Long projectId,
 			   @RequestParam(value="userId", required=true) Long userId,@RequestParam(value="orgLocationId", required=true) Long orgLocationId,
 			   @RequestParam(value="saveType", required=true) String saveType) throws Exception {
 		    
@@ -165,6 +169,20 @@ public class ProjectsRestController {
 		   
 		    return "success";
 	    }
+       
+       
+       
+       
+	   @RequestMapping(value = "/storeClientProject", method = RequestMethod.POST)
+	   	public @ResponseBody Projects storeClientProject(ClientProjectDTO clientProjectDTO) throws Exception {
+	   		
+	   		Projects projects = null;
+	   		projects = projectsService.storeClientProject(clientProjectDTO);
+	   		
+	   		return projects;
+	   	}
+       
+       
       
        
        @RequestMapping(value = "/getProjectAssignedMembesListByProjectId", method = RequestMethod.GET)
@@ -346,6 +364,42 @@ public class ProjectsRestController {
 			throws Exception {
 		return projectsService.validateTasksName(TaskName, projectId);
 	}
+	
+	
+	
+	  @RequestMapping(value = "/getSourceLeadRegisteredOrgsForClientProject", method = RequestMethod.GET)
+			public  List<OrgLocations> getSourceLeadRegisteredOrgsForClientProject(@RequestParam(value="orgLocationIds", required=true) String orgLocationIds) throws Exception {
+			    
+			   String[] orgLocIds = orgLocationIds.split(",");
+			   List<Long> orgLocationIdsList = new ArrayList<>();
+			   for(int i=0; i<orgLocIds.length; i++){
+				   orgLocationIdsList.add(Long.valueOf(orgLocIds[i])); 
+			   }
+			   
+			   List<OrgLocations> orgLocationsList = orgLocationService.getAllRegisteredOrgLocationsForClientProject(orgLocationIdsList);
+		       return orgLocationsList;
+		    }
+	  
+	  
+	    @RequestMapping(value = "/getEndClientProjects", method = RequestMethod.GET)
+		public  List<Projects> getEndClientProjects(@RequestParam(value="clientOrgLocationId", required=true) Long clientOrgLocationId,HttpServletRequest request) throws Exception {
+		   
+	       OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		   List<Projects> projectsList = projectsService.getEndClientProjectByOrgLocationsIdAndClientOrgLocationId(orgLocations.getId(),clientOrgLocationId);
+	       return projectsList;
+	    }
+
+	    @RequestMapping(value = "/getProjectsListByOrgLocationForTransfer", method = RequestMethod.GET)
+		public  List<Projects> getProjectsListByOrgLocationForTransfer(@RequestParam(value="orgLocationId", required=true) Long orgLocationId) throws Exception {
+		   
+		   List<Projects> projectsList = projectsService.getAllProjectsByOrgLocationIdAndStatus(orgLocationId);
+	       return projectsList;
+	    }
+	    
+	    
+	  
+	  
+	
 
 	protected static boolean isNullOrEmpty(String str) {
 		return str == null || "".equals(str.trim());

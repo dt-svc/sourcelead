@@ -4,9 +4,7 @@ import java.io.ByteArrayInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -22,10 +20,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.CandidateDocumentsDTO;
+import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateDocuments;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -39,6 +37,7 @@ import com.bis.sourcelead.service.RequestedDocumentsService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CandidateActivityCommonUtil;
 import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.util.FileUploadUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 /**
@@ -53,6 +52,10 @@ public class CandidateDocumentsRestController {
 	private static final Logger logger = LoggerFactory.getLogger(CandidateDocumentsRestController.class);
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
+	
+	@Value("${static.path}")
+	private String staticPath;
+	
 	@Autowired
 	private CandidateDocumentsService candidateDocumentsService;
 	@Autowired
@@ -84,19 +87,15 @@ public class CandidateDocumentsRestController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/saveCandidateDocument", method = RequestMethod.POST)
-	public @ResponseBody String saveCandidateDocument(@RequestParam(value = "json", required = false) String json, @RequestParam(value = "candidateId", required = false) Long candidateId, @RequestParam(value = "documentUUID", required = false) String documentUUID, MultipartHttpServletRequest request) throws Exception
+	public @ResponseBody String saveCandidateDocument(CandidateDocumentsDTO candidateDocumentsDTO, @RequestParam(value = "candidateId", required = false) Long candidateId, @RequestParam(value = "documentUUID", required = false) String documentUUID, HttpServletRequest request) throws Exception
 	{
-		String json1 = "{" + json + "}";
-		JSONObject jsonObj = new JSONObject(json1);
-		MultipartFile multiFile = null;
-		Iterator<String> itrator = request.getFileNames();
-		if (itrator.hasNext()) {
-			multiFile = request.getFile(itrator.next());
-		}
+		
+		candidateDocumentsDTO.setStaticPath(staticPath);
+		//FileUploadUtil.fillUploadedFileInfo(candidateDocumentsDTO, candidateDocumentsDTO.getFileInfo());
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		if(null !=candidateId){
-			candidateDocumentsService.storeCandidateDocuments(jsonObj, candidateId,documentUUID, orgLocation.getId(), user, multiFile);
+			candidateDocumentsService.storeCandidateDocuments(candidateDocumentsDTO, candidateId,documentUUID, orgLocation.getId(), user);
 			Candidate candidate = candidateService.getCandidateByCandidateId(candidateId);
 			Integer percentage = candidateService.getCandidatePercentage(candidate,orgLocation);
 			return percentage.toString();
@@ -234,40 +233,47 @@ public class CandidateDocumentsRestController {
 	}
 	
 	@RequestMapping(value = "/requestCandidateForDocuments", method = RequestMethod.POST)
-	public @ResponseBody String requestCandidateForDocuments(@RequestParam(value = "json", required = false) String json, HttpServletRequest request) throws Exception
+	public @ResponseBody String requestCandidateForDocuments(CandidateDocumentsDTO candidateDocumentsDTO, HttpServletRequest request) throws Exception
 	{
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		String json1 = "{" + json + "}";
-		JSONObject jsonObj = new JSONObject(json1);
-		requestedDocumentsService.storeRequestedDocumentsDetails(jsonObj, user, loginOrgLocation);
+		requestedDocumentsService.storeRequestedDocumentsDetails(candidateDocumentsDTO, user, loginOrgLocation);
 		return "success";
 	}
 	
 	@RequestMapping(value = "/uploadRequestedDocuments", method = RequestMethod.POST)
-	public @ResponseBody String uploadRequestedDocuments(@RequestParam(value = "json", required = false) String json, MultipartHttpServletRequest request) throws Exception
+	public @ResponseBody String uploadRequestedDocuments(CandidateDocumentsDTO candidateDocumentsDTO, HttpServletRequest request) throws Exception
 	{
-		String json1 = "{" + json + "}";
-		JSONObject jsonObj = new JSONObject(json1);
-		RequestedDocuments requestedDocuments = requestedDocumentsService.getRequestedDocumentsByRequestDocUUID(jsonObj.getString("requestDocUUID"));
+		/*String json1 = "{" + json + "}";
+		JSONObject jsonObj = new JSONObject(json1);*/
+		
+		candidateDocumentsDTO.setStaticPath(staticPath);
+		//FileUploadUtil.fillUploadedFileInfo(candidateDocumentsDTO, candidateDocumentsDTO.getFileInfo());
+		
+		//RequestedDocuments requestedDocuments = requestedDocumentsService.getRequestedDocumentsByRequestDocUUID(jsonObj.getString("requestDocUUID"));
+		RequestedDocuments requestedDocuments = requestedDocumentsService.getRequestedDocumentsByRequestDocUUID(candidateDocumentsDTO.getRequestDocUUID());
 		if (null != requestedDocuments) {
 			List<CandidateDocuments> candidateDocumentsList = candidateDocumentsService.getCandidateDocumentsListByRequestedDocumentsId(requestedDocuments.getId());
+			
 			if (null != candidateDocumentsList && candidateDocumentsList.size() > 0) {
+				
 				for (CandidateDocuments candidateDocuments : candidateDocumentsList) {
-					final MultipartHttpServletRequest multiRequest = (MultipartHttpServletRequest) request;
-					final Map files = multiRequest.getFileMap();
-					MultipartFile multiFile = (MultipartFile) files.get("docFile"
-							+ candidateDocuments.getId());
-					if (multiFile != null && !multiFile.isEmpty()) {
-						candidateDocuments.setDocFile(multiFile.getBytes());
-						candidateDocuments.setFileName(multiFile.getOriginalFilename());
+					if (candidateDocumentsDTO.getFileInfo() != null && !candidateDocumentsDTO.getFileInfo().isEmpty()) {
+						
+						if(!candidateDocumentsDTO.getFileInfo().isEmpty())
+						{
+							FileInfo fileInfo =candidateDocumentsDTO.getFileInfo().get(0);
+							candidateDocuments.setFileName(fileInfo.getFileName());
+							candidateDocuments.setFileContentType(fileInfo.getContentType());
+							candidateDocuments.setFileURL(fileInfo.getFileURL());
+							FileUploadUtil.moveFile(candidateDocumentsDTO.getStaticPath(), fileInfo, "requestedDocuments");
+							candidateDocuments.setRequestedDocStatus(Constants.REQUESTED_DOCUMENT_SUBMITTED);
+							candidateDocumentsService.updateCandidateDocuments(candidateDocuments);
+							candidateDocumentsDTO.getFileInfo().remove(0);
+						}
 					}
-					if (null != multiFile.getContentType()) {
-						candidateDocuments.setFileContentType(multiFile.getContentType());
-					}
-					candidateDocuments.setRequestedDocStatus(Constants.REQUESTED_DOCUMENT_SUBMITTED);
-					candidateDocumentsService.updateCandidateDocuments(candidateDocuments);
 				}
+				
 			}
 			requestedDocuments.setIsDocsUploaded(Constants.YES);
 			requestedDocumentsService.saveRequestedDocuments(requestedDocuments);
