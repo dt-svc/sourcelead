@@ -110,7 +110,7 @@ public class RequirementHelper {
 				requirementIndex.setManager(sbilder.toString());
 			}
 			// to store approver of the req in elk
-			if (requirementDTO !=null && null != requirementDTO.getParallelApprover()) {
+			if (null != requirementDTO.getParallelApprover()) {
 				String[] reqApproverUserId = requirementDTO.getParallelApprover().toArray(new String[requirementDTO.getParallelApprover().size()]);
 				requirementIndex.setReqLevel1ApproverUserId(reqApproverUserId);
 			}
