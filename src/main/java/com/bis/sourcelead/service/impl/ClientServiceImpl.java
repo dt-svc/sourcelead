@@ -21,7 +21,6 @@ import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.MatchQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +28,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.AddUserDTO;
+import com.bis.sourcelead.dto.CandidateDTO;
+import com.bis.sourcelead.dto.ClientDTO;
 import com.bis.sourcelead.elk.index.ClientVendorIndex;
 import com.bis.sourcelead.elk.index.helper.ClientVendorIndexHelper;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
@@ -75,7 +77,6 @@ import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
-import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.bis.sourcelead.util.UniversalSearchHelper;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -187,7 +188,7 @@ public class ClientServiceImpl implements ClientService {
 	 */
 	@SuppressWarnings("unused")
 	@Override
-	public void storeClient(JSONObject jsonObj, User user, OrgLocations orgLocations, String responderType,
+	public void storeClient(ClientDTO clientDTO,AddUserDTO addUserDTO,CandidateDTO candidateDTO, User user, OrgLocations orgLocations, String responderType,
 			Org loginOrg) throws Exception {
 		HashSet<OrgLocations> orgLocationsList = new HashSet<OrgLocations>();
 		OrgLocations clientOrgLocations = null;
@@ -197,69 +198,71 @@ public class ClientServiceImpl implements ClientService {
 		OrgSpoc orgSpoc = null;
 		SubmissionTemplate submissionTemplate = null;
 		SubmissionTemplate sourceLeadDefaultTemplate = null;
+
 		String newlyRegistred = "N";
-		if (jsonObj.has("orgLocationId")) {
-			clientOrgLocations = orgLocationService.getOrgLocations(jsonObj.getLong("orgLocationId"));
-			if (jsonObj.has("orgCountry") && !isNullOrEmpty(jsonObj.getString("orgCountry"))) {
-				clientOrgLocations.setCountry(jsonObj.getString("orgCountry"));
-			} else if (jsonObj.has("country") && !isNullOrEmpty(jsonObj.getString("country"))) {
-				clientOrgLocations.setCountry(jsonObj.getString("country"));
+	
+		if (StringUtils.isNotBlank(clientDTO.getOrgLocationId())) {
+			clientOrgLocations = orgLocationService.getOrgLocations(Long.parseLong(clientDTO.getOrgLocationId()));
+			if (StringUtils.isNotBlank(clientDTO.getOrgCountry())) {
+				clientOrgLocations.setCountry(clientDTO.getOrgCountry());
+			} else if (StringUtils.isNotBlank(clientDTO.getCountry())) {
+				clientOrgLocations.setCountry(clientDTO.getCountry());
 			}
-			if (jsonObj.has("orgState") && !isNullOrEmpty(jsonObj.getString("orgState"))) {
-				clientOrgLocations.setState(jsonObj.getString("orgState"));
-			} else if (jsonObj.has("state") && !isNullOrEmpty(jsonObj.getString("state"))) {
-				clientOrgLocations.setState(jsonObj.getString("state"));
-			}
-			if (jsonObj.has("orgCity") && !isNullOrEmpty(jsonObj.getString("orgCity"))) {
-				clientOrgLocations.setCity(jsonObj.getString("orgCity"));
-			} else if (jsonObj.has("city") && !isNullOrEmpty(jsonObj.getString("city"))) {
-				clientOrgLocations.setCity(jsonObj.getString("city"));
-			}
-
-			if (jsonObj.has("orgZipcode") && !isNullOrEmpty(jsonObj.getString("orgZipcode"))) {
-				clientOrgLocations.setZipCode(jsonObj.getString("orgZipcode"));
-			} else if (jsonObj.has("zipcode") && !isNullOrEmpty(jsonObj.getString("zipcode"))) {
-				clientOrgLocations.setZipCode(jsonObj.getString("zipcode"));
+			if (StringUtils.isNotBlank(clientDTO.getOrgState())) {
+				clientOrgLocations.setState(clientDTO.getOrgState());
+			} /*else if (StringUtils.isNotBlank(clientDTO.getUserState())) {
+				clientOrgLocations.setState(clientDTO.getUserState());
+			}*/
+			if (StringUtils.isNotBlank(clientDTO.getOrgCity())) {
+				clientOrgLocations.setCity(clientDTO.getOrgCity());
+			} else if (StringUtils.isNotBlank(clientDTO.getCity())) {
+				clientOrgLocations.setCity(clientDTO.getCity());
 			}
 
-			if (jsonObj.has("orgLocation") && !isNullOrEmpty(jsonObj.getString("orgLocation"))) {
-				clientOrgLocations.setLocation(jsonObj.getString("orgLocation"));
-			} else if (jsonObj.has("location") && !isNullOrEmpty(jsonObj.getString("location"))) {
-				clientOrgLocations.setLocation(jsonObj.getString("location"));
+			if (StringUtils.isNotBlank(clientDTO.getOrgZipcode())) {
+				clientOrgLocations.setZipCode(clientDTO.getOrgZipcode());
+			} else if (StringUtils.isNotBlank(clientDTO.getZipcode())) {
+				clientOrgLocations.setZipCode(clientDTO.getZipcode());
 			}
 
-			if (jsonObj.has("latitude") && !isNullOrEmpty(jsonObj.getString("latitude"))) {
-				clientOrgLocations.setLatitude(jsonObj.getString("latitude"));
+			if (StringUtils.isNotBlank(clientDTO.getOrgLocation())) {
+				clientOrgLocations.setLocation(clientDTO.getOrgLocation());
+			} else if (StringUtils.isNotBlank(clientDTO.getLocation())) {
+				clientOrgLocations.setLocation(clientDTO.getLocation());
 			}
 
-			if (jsonObj.has("longitude") && !isNullOrEmpty(jsonObj.getString("longitude"))) {
-				clientOrgLocations.setLongitude(jsonObj.getString("longitude"));
+			if (StringUtils.isNotBlank(clientDTO.getLatitude())) {
+				clientOrgLocations.setLatitude(clientDTO.getLatitude());
+			}
+
+			if (StringUtils.isNotBlank(clientDTO.getLongitude())) {
+				clientOrgLocations.setLongitude(clientDTO.getLongitude());
 			}
 
 		}
 
 		if (clientOrgLocations == null) {
-			org = populateOrg(jsonObj, user.getUserCode(), responderType);
-			clientOrgLocations = orgLocationService.orgLocationsListByJson(jsonObj, org, orgLocations,
+			org = populateOrg(clientDTO, user.getUserCode(), responderType);
+			clientOrgLocations = orgLocationService.orgLocationsListByJson(clientDTO, org, orgLocations,
 					user.getUserCode(), responderType);
 
-			orgRelationsList = orgRelationsService.orgRelationsListByJson(jsonObj, clientOrgLocations, orgLocations,
+			orgRelationsList = orgRelationsService.orgRelationsListByJson(clientDTO, clientOrgLocations, orgLocations,
 					user.getUserCode(), responderType);
 			clientOrgLocations.setOrgRelationsList(orgRelationsList);
 
-			if (jsonObj.has("orgName")) {
-				clientOrgLocations.setOrgLocationName(jsonObj.getString("orgName"));
+			if (StringUtils.isNotBlank(clientDTO.getOrgName())) {
+				clientOrgLocations.setOrgLocationName(clientDTO.getOrgName());
 			}
 			if (responderType.equalsIgnoreCase("Client")) {
 				clientOrgLocations.setModulesId(Integer.toString(Constants.MODULE_VMS));
 			} else if (responderType.equalsIgnoreCase("Vendor")) {
 				clientOrgLocations.setModulesId(Integer.toString(Constants.MODULE_ATS));
 			}
-			if (jsonObj.has("companyWebsite")) {
-				org.setWebSite(convertWebsite(jsonObj.getString("companyWebsite")));
+			if (StringUtils.isNotBlank(clientDTO.getCompanyWebsite())) {
+				org.setWebSite(convertWebsite(clientDTO.getCompanyWebsite()));
 			}
-			if (jsonObj.has("webSite")) {
-				org.setWebSite(convertWebsite(jsonObj.getString("webSite")));
+			if (StringUtils.isNotBlank(clientDTO.getWebSite())) {
+				org.setWebSite(convertWebsite(clientDTO.getWebSite()));
 			}
 			clientOrgLocations.setIsPrimary(Constants.YES);
 			clientOrgLocations.setCoolingOffPeriod("3 Months");
@@ -270,48 +273,38 @@ public class ClientServiceImpl implements ClientService {
 			saveOrgBasedRoles(org, clientOrgLocations, user);
 			newlyRegistred = "Y";
 		} else {
-			orgRelationsList = orgRelationsService.orgRelationsListByJson(jsonObj, clientOrgLocations, orgLocations,
+			orgRelationsList = orgRelationsService.orgRelationsListByJson(clientDTO, clientOrgLocations, orgLocations,
 					user.getUserCode(), responderType);
 			clientOrgLocations.setOrgRelationsList(orgRelationsList);
 			orgLocationsList.add(clientOrgLocations);
 			org = clientOrgLocations.getOrg();
-			if (jsonObj.has("companyWebsite")) {
-				org.setWebSite(convertWebsite(jsonObj.getString("companyWebsite")));
+			if (StringUtils.isNotBlank(clientDTO.getCompanyWebsite())) {
+				org.setWebSite(convertWebsite(clientDTO.getCompanyWebsite()));
 			}
-			if (jsonObj.has("webSite")) {
-				org.setWebSite(convertWebsite(jsonObj.getString("webSite")));
+			if (StringUtils.isNotBlank(clientDTO.getWebSite())) {
+				org.setWebSite(convertWebsite(clientDTO.getWebSite()));
 			}
-			if (jsonObj.has("address") && !isNullOrEmpty(jsonObj.getString("address"))) {
-				org.setClientAddress(jsonObj.getString("address"));
+			if (StringUtils.isNotBlank(clientDTO.getAddress())) {
+				org.setClientAddress(clientDTO.getAddress());
 			}
-			if (jsonObj.has("billingAddress") && !isNullOrEmpty(jsonObj.getString("billingAddress"))) {
-				org.setClientBillingAddress(jsonObj.getString("billingAddress"));
+			if (StringUtils.isNotBlank(clientDTO.getBillingAddress())) {
+				org.setClientBillingAddress(clientDTO.getBillingAddress());
 			}
-			if (jsonObj.has("PaymentTerm") && !isNullOrEmpty(jsonObj.getString("PaymentTerm"))) {
-				org.setPaymentTerm(jsonObj.getString("PaymentTerm"));
+			if (StringUtils.isNotBlank(clientDTO.getPaymentTerm())) {
+				org.setPaymentTerm(clientDTO.getPaymentTerm());
 			}
 			org.setId(org.getId());
 			org.setOrgLocationsList(orgLocationsList);
 			orgService.addOrganization(org);
 		}
-
-		if (jsonObj.has("email")) {
-			spocUser = userService.storeUser(jsonObj, user, clientOrgLocations, "CREATEUSER", responderType, loginOrg);
+		
+		if (StringUtils.isNotBlank(clientDTO.getEmail())) {
+			spocUser = userService.storeUser(addUserDTO,candidateDTO, user, clientOrgLocations, "CREATEUSER", responderType, loginOrg);
 
 		}
 
-		if (jsonObj.has("owner")) {
-			String ownersId = null;
-			try {
-				JSONArray jsonArray = jsonObj.getJSONArray("owner");
-				ownersId = jsonArray.toString();
-			} catch (JSONException e) {
-				ownersId = jsonObj.getString("owner");
-			}
-			ownersId = ownersId.replaceAll("\\[", "").replaceAll("\\]", "");
-			String[] owners = ownersId.split(",");
-
-			for (int i = 0; i < owners.length; i++) {
+		if(clientDTO.getOwner() != null && !clientDTO.getOwner().isEmpty()){
+			for(String owners :clientDTO.getOwner()){
 				orgSpoc = new OrgSpoc();
 				for (OrgLocations orl : orgLocationsList) {
 					Set<OrgRelations> orgr = orl.getOrgRelationsList();
@@ -321,7 +314,7 @@ public class ClientServiceImpl implements ClientService {
 				}
 
 				// to differentiate client and vendor in ORG_SPOC Table
-				User ownerUser = userService.getUserById(Long.parseLong(owners[i].replace("\"", "")));
+				User ownerUser = userService.getUserById(Long.parseLong(owners));
 				if (responderType.equalsIgnoreCase("Client")) {
 					orgSpoc.setClientLocationId(clientOrgLocations);
 					orgSpoc.setVendorLocationId(orgLocations);
@@ -336,12 +329,12 @@ public class ClientServiceImpl implements ClientService {
 					orgSpoc.setOwnerUser(ownerUser);
 				}
 
-				if (jsonObj.has("spocStatus")) {
-					orgSpoc.setSpocStatus(jsonObj.getString("spocStatus"));
+				if (StringUtils.isNotBlank(clientDTO.getSpocStatus())) {
+					orgSpoc.setSpocStatus(clientDTO.getSpocStatus());
 				} else {
 					orgSpoc.setSpocStatus(Constants.ACTIVE);
 				}
-				if (jsonObj.has("isMailSent")) {
+				if (StringUtils.isNotBlank(clientDTO.getIsMailSent())) {
 					orgSpoc.setInvitationStatus(Constants.MAIL_SENT);
 				} else {
 					orgSpoc.setInvitationStatus(Constants.MAIL_NEW);
@@ -355,9 +348,9 @@ public class ClientServiceImpl implements ClientService {
 				orgSpoc.setUpdatedBy(user.getUserCode());
 				orgSpocService.addOrgSpoc(orgSpoc);
 
-				if ((("Client".equals(responderType) || "Vendor".equals(responderType)) && jsonObj.has("isMailSent")
-						&& !isNullOrEmpty(jsonObj.getString("isMailSent")))
-						&& ("Y".equals(jsonObj.getString("isMailSent")))) {
+				if ((("Client".equals(responderType) || "Vendor".equals(responderType))
+						&& !StringUtils.isNotBlank(clientDTO.getIsMailSent()))
+						&& ("Y".equals(clientDTO.getIsMailSent()))) {
 					userService.sendEmailToClientOrVendor(orgSpoc.getUUID(), spocUser, ownerUser, user,
 							spocUser.getTempPwd(), responderType, loginOrg, clientOrgLocations.getOrg(),
 							clientOrgLocations, orgLocations);
@@ -523,6 +516,7 @@ public class ClientServiceImpl implements ClientService {
 			return projectClientsSet;
 		}
 
+
 	/**
 	 * populating Org data
 	 * 
@@ -531,26 +525,26 @@ public class ClientServiceImpl implements ClientService {
 	 * @return Org
 	 * @throws JSONException
 	 */
-	private Org populateOrg(JSONObject jsonObj, String loginUserCode, String responderType) throws JSONException {
+	private Org populateOrg(ClientDTO clientDTO, String loginUserCode, String responderType) throws JSONException {
 		Org org = new Org();
 
-		if (jsonObj.has("orgName")) {
-			org.setOrgName(jsonObj.getString("orgName"));
+		if (StringUtils.isNotBlank(clientDTO.getOrgName())) {
+			org.setOrgName(clientDTO.getOrgName());
 		}
-		if (jsonObj.has("address") && !isNullOrEmpty(jsonObj.getString("address"))) {
-			org.setClientAddress(jsonObj.getString("address"));
+		if (StringUtils.isNotBlank(clientDTO.getAddress())) {
+			org.setClientAddress(clientDTO.getAddress());
 		}
-		if (jsonObj.has("billingAddress") && !isNullOrEmpty(jsonObj.getString("billingAddress"))) {
-			org.setClientBillingAddress(jsonObj.getString("billingAddress"));
+		if (StringUtils.isNotBlank(clientDTO.getBillingAddress())) {
+			org.setClientBillingAddress(clientDTO.getBillingAddress());
 		}
-		if (jsonObj.has("PaymentTerm") && !isNullOrEmpty(jsonObj.getString("PaymentTerm"))) {
-			org.setPaymentTerm(jsonObj.getString("PaymentTerm"));
+		if (StringUtils.isNotBlank(clientDTO.getPaymentTerm())) {
+			org.setPaymentTerm(clientDTO.getPaymentTerm());
 		}
-		if (jsonObj.has("companyWebsite")) {
-			org.setWebSite(convertWebsite(jsonObj.getString("companyWebsite")));
+		if (StringUtils.isNotBlank(clientDTO.getCompanyWebsite())) {
+			org.setWebSite(convertWebsite(clientDTO.getCompanyWebsite()));
 		}
-		if (jsonObj.has("webSite")) {
-			org.setWebSite(convertWebsite(jsonObj.getString("webSite")));
+		if (StringUtils.isNotBlank(clientDTO.getWebSite())) {
+			org.setWebSite(convertWebsite(clientDTO.getWebSite()));
 		}
 		org.setOrgType("Guest");
 
@@ -737,7 +731,7 @@ public class ClientServiceImpl implements ClientService {
 	}
 
 	@Override
-	public void updateClientDetails(JSONObject jsonObj, Long orgRelationId, Long clientLocationId, Long loginLocationId,
+	public void updateClientDetails(ClientDTO clientDTO, Long orgRelationId, Long clientLocationId, Long loginLocationId,
 			User user) throws Exception {
 
 		OrgRelations orgRelation = orgRelationsService.getClientAndVendorOrgDeatilsById(clientLocationId,
@@ -754,14 +748,14 @@ public class ClientServiceImpl implements ClientService {
 			// of ResponderLocationId Org details
 			if (orgRelation.getLocationId().getId().longValue() == loginLocationId.longValue()) {
 				orgLocations = orgRelation.getResponderLocationId();
-				if (jsonObj.getString(level) != null && !jsonObj.getString(level).isEmpty()) {
-					orgRelation.setInitiatorLevel(jsonObj.getString(level));
+				if (StringUtils.isNotBlank(clientDTO.getLevel())) {
+					orgRelation.setInitiatorLevel(clientDTO.getLevel());
 				}
 			}
 			if (orgRelation.getResponderLocationId().getId().longValue() == loginLocationId.longValue()) {
 				orgLocations = orgRelation.getLocationId();
-				if (jsonObj.getString(level) != null && !jsonObj.getString(level).isEmpty()) {
-					orgRelation.setResponderLevel(jsonObj.getString(level));
+				if (StringUtils.isNotBlank(clientDTO.getLevel())) {
+					orgRelation.setResponderLevel(clientDTO.getLevel());
 				}
 			}
 
@@ -769,63 +763,55 @@ public class ClientServiceImpl implements ClientService {
 
 			Org org = orgLocations.getOrg();
 			if (null != org) {
-				if (jsonObj.has("clientName") && jsonObj.getString("clientName") != null
-						&& !jsonObj.getString("clientName").isEmpty()) {
-					org.setOrgName(jsonObj.getString("clientName"));
-					orgLocations.setOrgLocationName(jsonObj.getString("clientName"));
+				if (StringUtils.isNotBlank(clientDTO.getOrgName())) {
+					org.setOrgName(clientDTO.getOrgName());
+					orgLocations.setOrgLocationName(clientDTO.getOrgName());
 				}
 
-				if (jsonObj.has("companyWebsite") && jsonObj.getString("companyWebsite") != null
-						&& !jsonObj.getString("companyWebsite").isEmpty()) {
-					org.setWebSite(jsonObj.getString("companyWebsite"));
+				if (StringUtils.isNotBlank(clientDTO.getWebSite())) {
+					org.setWebSite(clientDTO.getWebSite());
 				}
-				if (jsonObj.has("address") && !isNullOrEmpty(jsonObj.getString("address"))) {
-					org.setClientAddress(jsonObj.getString("address"));
+				if (StringUtils.isNotBlank(clientDTO.getAddress())) {
+					org.setClientAddress(clientDTO.getAddress());
 				}
-				if (jsonObj.has("billingAddress") && !isNullOrEmpty(jsonObj.getString("billingAddress"))) {
-					org.setClientBillingAddress(jsonObj.getString("billingAddress"));
+				if (StringUtils.isNotBlank(clientDTO.getBillingAddress())) {
+					org.setClientBillingAddress(clientDTO.getBillingAddress());
 				}
-				if (jsonObj.has("PaymentTerm") && !isNullOrEmpty(jsonObj.getString("PaymentTerm"))) {
-					org.setPaymentTerm(jsonObj.getString("PaymentTerm"));
+				if (StringUtils.isNotBlank(clientDTO.getPaymentTerm())) {
+					org.setPaymentTerm(clientDTO.getPaymentTerm());
 				}
 				orgForElk = orgService.updateOrg(org);
 			}
-			if (jsonObj.has("clientCity") && jsonObj.getString("clientCity") != null
-					&& !jsonObj.getString("clientCity").isEmpty()) {
-				orgLocations.setCity(jsonObj.getString("clientCity"));
+			if (StringUtils.isNotBlank(clientDTO.getCity())) {
+				orgLocations.setCity(clientDTO.getCity());
 			} else {
 				orgLocations.setCity("");
 			}
-			if (jsonObj.has("companyWebsite") && jsonObj.getString("companyWebsite") != null
-					&& !jsonObj.getString("companyWebsite").isEmpty()) {
-				orgLocations.setWebsite(jsonObj.getString("companyWebsite"));
+			if (StringUtils.isNotBlank(clientDTO.getWebSite())) {
+				orgLocations.setWebsite(clientDTO.getWebSite());
 			}
-			if (jsonObj.has("clientState") && jsonObj.getString("clientState") != null
-					&& !jsonObj.getString("clientState").isEmpty()) {
-				orgLocations.setState(jsonObj.getString("clientState"));
+			if (StringUtils.isNotBlank(clientDTO.getState())) {
+				orgLocations.setState(clientDTO.getState());
 			} else {
 
 				orgLocations.setState("");
 			}
-			if (jsonObj.has("clientCountry") && jsonObj.getString("clientCountry") != null
-					&& !jsonObj.getString("clientCountry").isEmpty()) {
-				orgLocations.setCountry(jsonObj.getString("clientCountry"));
+			if (StringUtils.isNotBlank(clientDTO.getCountry())) {
+				orgLocations.setCountry(clientDTO.getCountry());
 			} else {
 
 				orgLocations.setCountry("");
 			}
 
-			if (jsonObj.has("clientLocation") && jsonObj.getString("clientLocation") != null
-					&& !jsonObj.getString("clientLocation").isEmpty()) {
-				orgLocations.setLocation(jsonObj.getString("clientLocation"));
+			if (StringUtils.isNotBlank(clientDTO.getLocation())) {
+				orgLocations.setLocation(clientDTO.getLocation());
 			} else {
 
 				orgLocations.setLocation("");
 			}
 
-			if (jsonObj.has("clientZipCode") && jsonObj.getString("clientZipCode") != null
-					&& !jsonObj.getString("clientZipCode").isEmpty()) {
-				orgLocations.setZipCode(jsonObj.getString("clientZipCode"));
+			if (StringUtils.isNotBlank(clientDTO.getZipcode())) {
+				orgLocations.setZipCode(clientDTO.getZipcode());
 			} else {
 
 				orgLocations.setZipCode("");
@@ -849,7 +835,7 @@ public class ClientServiceImpl implements ClientService {
 	}
 
 	@Override
-	public void updateVendorDetails(JSONObject jsonObj, Long orgRelationId, Long vendorLocationId, Long loginOrgId,
+	public void updateVendorDetails(ClientDTO clientDTO, Long orgRelationId, Long vendorLocationId, Long loginOrgId,
 			User user) throws Exception {
 
 		OrgRelations orgRelation = orgRelationsService.getClientAndVendorOrgDeatilsById(vendorLocationId,
@@ -877,14 +863,14 @@ public class ClientServiceImpl implements ClientService {
 			// of ResponderLocationId Org details
 			if (orgRelation.getLocationId().getId().longValue() == loginOrgId.longValue()) {
 				orgLocations = orgRelation.getResponderLocationId();
-				if (jsonObj.getString(level) != null && !jsonObj.getString(level).isEmpty()) {
-					orgRelation.setInitiatorLevel(jsonObj.getString(level));
+				if (StringUtils.isNotBlank(clientDTO.getLevel())) {
+					orgRelation.setInitiatorLevel(clientDTO.getLevel());
 				}
 			}
 			if (orgRelation.getResponderLocationId().getId().longValue() == loginOrgId.longValue()) {
 				orgLocations = orgRelation.getLocationId();
-				if (jsonObj.getString(level) != null && !jsonObj.getString(level).isEmpty()) {
-					orgRelation.setResponderLevel(jsonObj.getString(level));
+				if (StringUtils.isNotBlank(clientDTO.getLevel())) {
+					orgRelation.setResponderLevel(clientDTO.getLevel());
 				}
 			}
 			// orgRelation.setLevel(jsonObj.getString(level));
@@ -892,63 +878,56 @@ public class ClientServiceImpl implements ClientService {
 
 			Org org = orgLocations.getOrg();
 			if (null != org) {
-				if (jsonObj.getString(vendorName) != null && !jsonObj.getString(vendorName).isEmpty()) {
-					org.setOrgName(jsonObj.getString(vendorName));
-					orgLocations.setOrgLocationName(jsonObj.getString(vendorName));
+				if (StringUtils.isNotBlank(clientDTO.getVendorName())) {
+					org.setOrgName(clientDTO.getVendorName());
+					orgLocations.setOrgLocationName(clientDTO.getVendorName());
 				}
 
-				if (jsonObj.has("companyWebsite") && jsonObj.getString(companyWebsite) != null
-						&& !jsonObj.getString(companyWebsite).isEmpty()) {
-					org.setWebSite(jsonObj.getString(companyWebsite));
+				if (StringUtils.isNotBlank(clientDTO.getCompanyWebsite())) {
+					org.setWebSite(clientDTO.getCompanyWebsite());
 				}
-				if (jsonObj.has("address") && !isNullOrEmpty(jsonObj.getString("address"))) {
-					org.setClientAddress(jsonObj.getString("address"));
+				if (StringUtils.isNotBlank(clientDTO.getAddress())) {
+					org.setClientAddress(clientDTO.getAddress());
 				}else{
 					org.setClientAddress(null);
 				}
-				if (jsonObj.has("billingAddress") && !isNullOrEmpty(jsonObj.getString("billingAddress"))) {
-					org.setClientBillingAddress(jsonObj.getString("billingAddress"));
+				if (StringUtils.isNotBlank(clientDTO.getBillingAddress())) {
+					org.setClientBillingAddress(clientDTO.getBillingAddress());
 				}else{
 					org.setClientBillingAddress(null);
 				}
-				if (jsonObj.has("PaymentTerm") && !isNullOrEmpty(jsonObj.getString("PaymentTerm"))) {
-					org.setPaymentTerm(jsonObj.getString("PaymentTerm"));
+				if (StringUtils.isNotBlank(clientDTO.getPaymentTerm())) {
+					org.setPaymentTerm(clientDTO.getPaymentTerm());
 				}
 				orgForElk = orgService.updateOrg(org);
 			}
-			if (jsonObj.has("vendorCity") && jsonObj.getString(vendorCity) != null
-					&& !jsonObj.getString(vendorCity).isEmpty()) {
-				orgLocations.setCity(jsonObj.getString(vendorCity));
+			if (StringUtils.isNotBlank(clientDTO.getCity())) {
+				orgLocations.setCity(clientDTO.getCity());
 			} else {
 				orgLocations.setCity("");
 			}
-			if (jsonObj.has("vendorState") && jsonObj.getString(vendorState) != null
-					&& !jsonObj.getString(vendorState).isEmpty()) {
-				orgLocations.setState(jsonObj.getString(vendorState));
+			if (StringUtils.isNotBlank(clientDTO.getState())) {
+				orgLocations.setState(clientDTO.getState());
 			} else {
 
 				orgLocations.setState("");
 			}
-			if (jsonObj.has("vendorCountry") && jsonObj.getString(vendorCountry) != null
-					&& !jsonObj.getString(vendorCountry).isEmpty()) {
-				orgLocations.setCountry(jsonObj.getString(vendorCountry));
+			if (StringUtils.isNotBlank(clientDTO.getCountry())) {
+				orgLocations.setCountry(clientDTO.getCountry());
 			} else {
 
 				orgLocations.setCountry("");
 			}
-			if (jsonObj.has("vendorLocation") && jsonObj.getString(vendorLocation) != null
-					&& !jsonObj.getString(vendorLocation).isEmpty()) {
-				orgLocations.setLocation(jsonObj.getString(vendorLocation));
-			}else if (jsonObj.has("clientLocation") && jsonObj.getString("clientLocation") != null
-					&& !jsonObj.getString("clientLocation").isEmpty()) {
-				orgLocations.setLocation(jsonObj.getString("clientLocation"));
+			if (StringUtils.isNotBlank(clientDTO.getLocation())) {
+				orgLocations.setLocation(clientDTO.getLocation());
+			}else if (StringUtils.isNotBlank(clientDTO.getOrgLocation())) {
+				orgLocations.setLocation(clientDTO.getOrgLocation());
 			}  
 			else {
 				orgLocations.setLocation("");
 			}
-			if (jsonObj.has("vendorZipCode") && jsonObj.getString(vendorZipCode) != null
-					&& !jsonObj.getString(vendorZipCode).isEmpty()) {
-				orgLocations.setZipCode(jsonObj.getString(vendorZipCode));
+			if (StringUtils.isNotBlank(clientDTO.getZipcode())) {
+				orgLocations.setZipCode(clientDTO.getZipcode());
 			} else {
 				orgLocations.setZipCode("");
 			}
@@ -978,7 +957,7 @@ public class ClientServiceImpl implements ClientService {
 	}
 
 	@Override
-	public OrgSpoc updateVendorContactDetails(JSONObject jsonObj, Long spocId, Long loginOrgId, User loginUser,
+	public OrgSpoc updateVendorContactDetails(ClientDTO clientDTO, Long spocId, Long loginOrgId, User loginUser,
 			Long ownerId, Long spocUserId, OrgLocations orgLocation, String type) throws Exception {
 
 		// OrgRelations orgRelation =
@@ -995,30 +974,28 @@ public class ClientServiceImpl implements ClientService {
 
 		if (null != orgSpoc) {
 			User editUser = null;
-			if (jsonObj.getString("existingSpocUserId") != null && !jsonObj.getString("existingSpocUserId").isEmpty()) {
-				User existingUser = userService.getUserById(Long.parseLong(jsonObj.getString("existingSpocUserId")));
+			if (StringUtils.isNotBlank(clientDTO.getExistingSpocUserId())) {
+				User existingUser = userService.getUserById(Long.parseLong(clientDTO.getExistingSpocUserId()));
 				UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(loginUser.getId(),
 						orgLocation.getId());
 
-				if (jsonObj.getString(vendorContactFirstName) != null
-						&& !jsonObj.getString(vendorContactFirstName).isEmpty()) {
-					existingUser.setFirstName(jsonObj.getString(vendorContactFirstName));
+				if (StringUtils.isNotBlank(clientDTO.getFirstName())) {
+					existingUser.setFirstName(clientDTO.getFirstName());
 				} else {
 					existingUser.setFirstName("");
 				}
-				if (jsonObj.getString(vendorContactLastName) != null
-						&& !jsonObj.getString(vendorContactLastName).isEmpty()) {
-					existingUser.setLastName(jsonObj.getString(vendorContactLastName));
+				if (StringUtils.isNotBlank(clientDTO.getLastName())){
+					existingUser.setLastName(clientDTO.getLastName());
 				} else {
 					existingUser.setLastName("");
 				}
-				if (jsonObj.getString(mobilePhone) != null && !jsonObj.getString(mobilePhone).isEmpty()) {
-					existingUser.setMobilePhone(jsonObj.getString(mobilePhone));
+				if (StringUtils.isNotBlank(clientDTO.getPhoneNumber())) {
+					existingUser.setMobilePhone(clientDTO.getPhoneNumber());
 				} else {
 					existingUser.setMobilePhone("");
 				}
-				if (jsonObj.getString(emailId) != null && !jsonObj.getString(emailId).isEmpty()) {
-					existingUser.setEmail(jsonObj.getString(emailId));
+				if (StringUtils.isNotBlank(clientDTO.getEmail())) {
+					existingUser.setEmail(clientDTO.getEmail());
 				} else {
 					existingUser.setEmail("");
 				}
@@ -1032,56 +1009,55 @@ public class ClientServiceImpl implements ClientService {
 
 			}
 
-			if (jsonObj.has(spocStatus) && jsonObj.getString(spocStatus) != null
-					&& !jsonObj.getString(spocStatus).isEmpty()) {
-				orgSpoc.setSpocStatus(jsonObj.getString(spocStatus));
+			if (StringUtils.isNotBlank(clientDTO.getSpocStatus())) {
+				orgSpoc.setSpocStatus(clientDTO.getSpocStatus());
 			}
 
 			if (null != type && !"".equalsIgnoreCase(type) && "Client".equalsIgnoreCase(type)) {
 				User user = orgSpoc.getClientUser();
-				if (jsonObj.getString(owner) != null && !jsonObj.getString(owner).isEmpty()) {
+				for(String owners : clientDTO.getOwner()){
 					orgSpoc.setTempOwnerId(orgSpoc.getVendorUser().getId());
 					User spocUser = new User();
-					spocUser.setId(Long.parseLong(jsonObj.getString(owner)));
+					spocUser.setId(Long.parseLong(owners));
 					orgSpoc.setVendorUser(spocUser);
 					// new owner filed updated when owner updated
 					orgSpoc.setOwnerUser(spocUser);
-				}
 
 				OrgSpoc orSpocElk = orgSpocService.addOrgSpoc(orgSpoc);
 
-				if (null != orgSpoc.getTempOwnerId()
-						&& orgSpoc.getTempOwnerId().longValue() != orgSpoc.getVendorUser().getId().longValue()) {
-					user = userService.getUserById(Long.parseLong(jsonObj.getString(owner)));
+				if (null != orgSpoc.getTempOwnerId()&& orgSpoc.getTempOwnerId().longValue() != orgSpoc.getVendorUser().getId().longValue()) {
+					user = userService.getUserById(Long.parseLong(owners));
 					sendEmailToClientContact(user, editUser, orgLocation, loginUser, orgSpoc);
+				}
 				}
 			} else if (null != type && !"".equalsIgnoreCase(type) && "Vendor".equalsIgnoreCase(type)) {
 				User user = orgSpoc.getVendorUser();
-				if (jsonObj.getString(owner) != null && !jsonObj.getString(owner).isEmpty()) {
+				for(String owners : clientDTO.getOwner()){
 					orgSpoc.setTempOwnerId(orgSpoc.getClientUser().getId());
 					User spocUser = new User();
-					spocUser.setId(Long.parseLong(jsonObj.getString(owner)));
+					spocUser.setId(Long.parseLong(owners));
 					orgSpoc.setClientUser(spocUser);
 					// new owner filed updated when owner updated
 					orgSpoc.setOwnerUser(spocUser);
-				}
 				OrgSpoc orSpocElk = orgSpocService.addOrgSpoc(orgSpoc);
 
 				if (null != orgSpoc.getTempOwnerId()
 						&& orgSpoc.getTempOwnerId().longValue() != orgSpoc.getClientUser().getId().longValue()) {
-					user = userService.getUserById(Long.parseLong(jsonObj.getString(owner)));
+					user = userService.getUserById(Long.parseLong(owners));
 					sendEmailToClientContact(user, editUser, orgLocation, loginUser, orgSpoc);
 				}
 			}
-
+			}
 		} else {
 			StringBuilder message = new StringBuilder(MessageFormat.format(statusUpdate, "ORG RELATIONS"));
 			throw new SourceLeadObjectNotFoundException(message.toString());
 		}
-
-		User changedUser = userService.getUserById(Long.parseLong(jsonObj.getString(owner)));
+		
+		for(String owners : clientDTO.getOwner()){
+		User changedUser = userService.getUserById(Long.parseLong(owners));
 		if (!loginUser.getId().equals(changedUser.getId())) {
-			sendupdatedownerMailTopocUser(loginUser, spocId, jsonObj.getString(owner), orgLocation);
+			sendupdatedownerMailTopocUser(loginUser, spocId, owners, orgLocation);
+		}
 		}
 		return orgSpoc;
 

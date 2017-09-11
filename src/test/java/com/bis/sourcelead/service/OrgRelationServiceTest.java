@@ -17,6 +17,7 @@ import org.springframework.test.context.web.AnnotationConfigWebContextLoader;
 import org.springframework.test.context.web.WebAppConfiguration;
 
 import com.bis.sourcelead.WebAppConfig;
+import com.bis.sourcelead.dto.ClientDTO;
 import com.bis.sourcelead.SecurityConfig;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
@@ -122,8 +123,8 @@ public class OrgRelationServiceTest {
 	@Test
 	public void orgRelationsListByJson() throws Exception {
 		
-		JSONObject jsonObj = new JSONObject();
-		jsonObj.put("level", "1");
+		ClientDTO clientDTO = new ClientDTO();
+		clientDTO.setLevel("1");
 		
 		OrgLocations clientOrgLocation = new OrgLocations();
 		clientOrgLocation.setId(3L);
@@ -134,7 +135,7 @@ public class OrgRelationServiceTest {
 		String loginUserCode = "9rYSE8Pz";
 		String responderType = "Client";
 		
-		Set<OrgRelations> orgRelations = orgRelationsService.orgRelationsListByJson(jsonObj, clientOrgLocation, orgLocations, loginUserCode, responderType);
+		Set<OrgRelations> orgRelations = orgRelationsService.orgRelationsListByJson(clientDTO, clientOrgLocation, orgLocations, loginUserCode, responderType);
 		logger.info("orgRelationsListByJson "+orgRelations.size());
 	}
 	

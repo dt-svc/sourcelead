@@ -7,45 +7,44 @@ import com.bis.sourcelead.entity.OrgLocations;
 
 public class InvoiceDetailsDTO extends SearchDTO implements Serializable {
 	
-	private Long id;
-	private OrgLocations orgLocationId;
+	private String id;
+	private String orgLocationId;
 	private String sku;
 	private String productService;
 	private String empName;
 	private String number;
 	private String memoDescription;
-	private Date date;
-	private Date lastmodified;
-	private Date dueDate;
+	private String date;
+	private String lastmodified;
+	private String dueDate;
 	private String rate;
 	private String qty;
 	private String amount;
 	private String arPaid;
 	private String oldNew;
-	private Date fromDate;
-	private Date toDate;
+	private String fromDate;
+	private String toDate;
 	private String batchNumber;
 	private String status;
-	private Date createdDate;
+	private String createdDate;
 	private String createdBy;
-	private Date updatedDate;
+	private String updatedDate;
 	private String updatedBy;
 	private String dateStr;
-	private Long userId;
-	
-	public Long getId()
+	private String userId;
+	public String getId()
 	{
 		return id;
 	}
-	public void setId(Long id)
+	public void setId(String id)
 	{
 		this.id = id;
 	}
-	public OrgLocations getOrgLocationId()
+	public String getOrgLocationId()
 	{
 		return orgLocationId;
 	}
-	public void setOrgLocationId(OrgLocations orgLocationId)
+	public void setOrgLocationId(String orgLocationId)
 	{
 		this.orgLocationId = orgLocationId;
 	}
@@ -89,27 +88,27 @@ public class InvoiceDetailsDTO extends SearchDTO implements Serializable {
 	{
 		this.memoDescription = memoDescription;
 	}
-	public Date getDate()
+	public String getDate()
 	{
 		return date;
 	}
-	public void setDate(Date date)
+	public void setDate(String date)
 	{
 		this.date = date;
 	}
-	public Date getLastmodified()
+	public String getLastmodified()
 	{
 		return lastmodified;
 	}
-	public void setLastmodified(Date lastmodified)
+	public void setLastmodified(String lastmodified)
 	{
 		this.lastmodified = lastmodified;
 	}
-	public Date getDueDate()
+	public String getDueDate()
 	{
 		return dueDate;
 	}
-	public void setDueDate(Date dueDate)
+	public void setDueDate(String dueDate)
 	{
 		this.dueDate = dueDate;
 	}
@@ -153,19 +152,19 @@ public class InvoiceDetailsDTO extends SearchDTO implements Serializable {
 	{
 		this.oldNew = oldNew;
 	}
-	public Date getFromDate()
+	public String getFromDate()
 	{
 		return fromDate;
 	}
-	public void setFromDate(Date fromDate)
+	public void setFromDate(String fromDate)
 	{
 		this.fromDate = fromDate;
 	}
-	public Date getToDate()
+	public String getToDate()
 	{
 		return toDate;
 	}
-	public void setToDate(Date toDate)
+	public void setToDate(String toDate)
 	{
 		this.toDate = toDate;
 	}
@@ -185,11 +184,11 @@ public class InvoiceDetailsDTO extends SearchDTO implements Serializable {
 	{
 		this.status = status;
 	}
-	public Date getCreatedDate()
+	public String getCreatedDate()
 	{
 		return createdDate;
 	}
-	public void setCreatedDate(Date createdDate)
+	public void setCreatedDate(String createdDate)
 	{
 		this.createdDate = createdDate;
 	}
@@ -201,11 +200,11 @@ public class InvoiceDetailsDTO extends SearchDTO implements Serializable {
 	{
 		this.createdBy = createdBy;
 	}
-	public Date getUpdatedDate()
+	public String getUpdatedDate()
 	{
 		return updatedDate;
 	}
-	public void setUpdatedDate(Date updatedDate)
+	public void setUpdatedDate(String updatedDate)
 	{
 		this.updatedDate = updatedDate;
 	}
@@ -225,13 +224,15 @@ public class InvoiceDetailsDTO extends SearchDTO implements Serializable {
 	{
 		this.dateStr = dateStr;
 	}
-	public Long getUserId()
+	public String getUserId()
 	{
 		return userId;
 	}
-	public void setUserId(Long userId)
+	public void setUserId(String userId)
 	{
 		this.userId = userId;
 	}
+	
+	
 
 }

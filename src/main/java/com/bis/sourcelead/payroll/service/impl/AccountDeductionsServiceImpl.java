@@ -30,6 +30,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.AccountDeductionsDTO;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.payroll.dao.AccountDeductionsDao;
@@ -93,9 +95,13 @@ public class AccountDeductionsServiceImpl implements AccountDeductionsService{
 			FileInputStream fis = new FileInputStream(file);
 			workbook = WorkbookFactory.create(fis);
 			int numberOfSheets = workbook.getNumberOfSheets();
+			int version;
+			version = getAccountDeductionsVersionByLocationId(orgLocation.getId());
+			version += 1;
 			for (int i = 0; i < numberOfSheets; i++) {
 				Sheet sheet = workbook.getSheetAt(i);
 				Iterator<Row> rowIterator = sheet.iterator();
+				
 				int isValid = 0;
 				if(i == 0){
 					isValid =  payrollHelper.isValidTemplateForAccountDeductions(rowIterator);
@@ -114,6 +120,7 @@ public class AccountDeductionsServiceImpl implements AccountDeductionsService{
 							if (row.getCell(0) != null && !"".equalsIgnoreCase(row.getCell(0).toString())) {
 								String empId = getCellValueAsString(row.getCell(0), fileName);
 								accountDeductions.setEmployeeId(empId.split("\\.")[0]);
+								accountDeductions.setVersion(version);
 							} 
 							if (row.getCell(1) != null && !"".equalsIgnoreCase(row.getCell(1).toString())) {
 								String empName = getCellValueAsString(row.getCell(1), fileName);
@@ -353,9 +360,11 @@ public class AccountDeductionsServiceImpl implements AccountDeductionsService{
 		return cellValue;
 	}
 	@Override
-	public List<AccountDeductions> getAccountDeductionsListByOrgLocationId(OrgLocations orgLocation) throws Exception
-	{
-		List<AccountDeductions> accountDeductionsList =  accountDeductionsDao.getAccountDeductionsListByOrgLocationId(orgLocation);
+	public ResponseList<AccountDeductions> getAccountDeductionsListByOrgLocationId(OrgLocations orgLocation, AccountDeductionsDTO accountDeductionsDTO) throws Exception{
+		return accountDeductionsDao.getAccountDeductionsListByOrgLocationId(orgLocation, accountDeductionsDTO); 
+		
+		
+		/*List<AccountDeductions> accountDeductionsList =  accountDeductionsDao.getAccountDeductionsListByOrgLocationId(orgLocation);
 		
 		if(accountDeductionsList != null){
 			for(AccountDeductions ad : accountDeductionsList){
@@ -367,7 +376,7 @@ public class AccountDeductionsServiceImpl implements AccountDeductionsService{
 				}
 			}
 		}
-		return accountDeductionsList;
+		return accountDeductionsList;*/
 	}
 
 	@Override
@@ -484,5 +493,12 @@ public class AccountDeductionsServiceImpl implements AccountDeductionsService{
 		payrollBalance.setBalance(String.valueOf(Math.round(balance * 100D) / 100D));
 		payrollBalance.setBilled(String.valueOf(Math.round(billed * 100D) / 100D));
 		return payrollBalance;
+	}
+
+
+	@Override
+	public int getAccountDeductionsVersionByLocationId(Long locationId)
+	{
+		return accountDeductionsDao.getAccountDeductionsVersionByLocationId(locationId);
 	}
 }

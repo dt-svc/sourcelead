@@ -150,10 +150,8 @@ public class UserPayrollDaoImpl implements UserPayrollDao{
 			response.setRecordsFiltered(filteredCount);
 		}
 
-		if (checksList != null && checksList.size() > 0) {
 			response.setData(checksList);
-		}
-		return response;
+			return response;
 		
 		// TODO do not delete @Rajashekar
 		/*Session session = this.sessionFactory.getCurrentSession();
@@ -177,6 +175,19 @@ public class UserPayrollDaoImpl implements UserPayrollDao{
 			return checkslList;
 		}
 		return checkslList;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Checks getUniqueChecksListByEmployeeId(String empId, Long orgLocationId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		Checks checks = null;
+		String query = "from Checks checks  left join fetch checks.orgLocationId where checks.orgLocationId.id =:orgLocationId and checks.empId = :empId";
+		List<Checks> checkslList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setParameter("empId", empId).setCacheable(true).list();
+		if (checkslList != null && checkslList.size() > 0) {
+			checks =  checkslList.get(0);
+		}
+		return checks;
 	}
 
 	

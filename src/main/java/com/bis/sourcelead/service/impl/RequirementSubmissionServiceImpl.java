@@ -49,6 +49,7 @@ import com.bis.sourcelead.dao.RequirementReferDao;
 import com.bis.sourcelead.dao.RequirementSubmissionDao;
 import com.bis.sourcelead.dao.RequirementSubmissionTemplateFieldsDao;
 import com.bis.sourcelead.dao.UserDao;
+import com.bis.sourcelead.dto.RequirementDTO;
 import com.bis.sourcelead.elk.index.CandidateIndex;
 import com.bis.sourcelead.elk.index.helper.CandidateIndexHelper;
 import com.bis.sourcelead.elk.setup.RequirementElkUtil;
@@ -371,11 +372,8 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 					if(jsonObj.has("vendors") && !"".equalsIgnoreCase(jsonObj.getString("vendors"))){
 						OrgRelations orgRelation = orgRelationsService.getOrRelationsById(Long.parseLong(jsonObj.getString("vendors")));
 						candidate.setOrgRelationId(orgRelation);
-						Candidate vendorCandidate = commonUtil.getVendorCandidate(jsonObj, orgRelation, orgLocations, user);
-						candidate.setParentCandidateId(vendorCandidate);
 					}else{
 						candidate.setOrgRelationId(null);
-						candidate.setParentCandidateId(null);
 					}
 					
 					if(jsonObj.has("vendorContact") && !"".equalsIgnoreCase(jsonObj.getString("vendorContact"))){
@@ -2140,6 +2138,13 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 				 }else{
 					 globalVarsMap.put("vendorName","--"); 
 				 }
+			 
+			 
+			 if(reqSub.getRequirement().getSpocId().getVendorLocationId()!= null  && !"".equalsIgnoreCase(reqSub.getRequirement().getSpocId().getVendorLocationId().getOrg().getOrgName())){
+				 globalVarsMap.put("vendorOrgName", reqSub.getRequirement().getSpocId().getVendorLocationId().getOrg().getOrgName());
+				 }else{
+					 globalVarsMap.put("vendorOrgName","--"); 
+				 }
 			}
 
 			// getting the current EmailScenario by EmailScenario unique name
@@ -3712,7 +3717,9 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 				
 				requirement.setUpdatedDate(new Date());
 				requirementService.updateRequirement(requirement);
-				requirementElkUtil.saveElkRequirement(requirement,new JSONObject());	
+				
+				RequirementDTO requirementDTO =commonUtil.getRequirementDTO(requirement);
+				requirementElkUtil.saveElkRequirement(requirement,requirementDTO);	
 			}
 			
 			

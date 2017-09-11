@@ -1,26 +1,45 @@
-function viewFile(sourceleadUrl, fileURL,title){
+function viewFile(sourceleadUrl, fileURL, title, contentType){
 	if(fileURL != null && fileURL != ""){
-		window.open(sourceleadUrl+'/viewDocument/'+title+'?docFile='+encodeURI(fileURL),title,"height=600,width=600");
+		window.open(sourceleadUrl+'/viewFile?documentPath='+encodeURI(fileURL)+"&contentType="+contentType,title,"height=600,width=600");
 	}  
 }
 
-
 function getFormData(formId) {
-	var $form = $("#" + formId);
+	var $form = $("#"+formId);
 	var unindexed_array = $($form).serializeArray();
 	var indexed_array = {};
-	$.map(unindexed_array, function(n, i) {
-		indexed_array[n['name']] = n['value'];
+	$.map(unindexed_array, function (n, i) {
+	indexed_array[n['name']] = n['value'];
 	});
 	return indexed_array;
 }
 
-function fileUpload(sourceleadUrl, id, type, formId) {
+function getFormData1(formId) {
+	var $form = $("#"+formId);
+	var unindexed_array = $($form).serializeArray();
+	var formData = new FormData();
+	$.map(unindexed_array, function (n, i) {
+		formData.append(n['name'], n['value']);
+	});
+	return formData;
+}
+
+
+function fileUpload(sourceleadUrl, id, type, formId, name, orgId, orgLocationId) {
+	if(name == null || name == 'undefined' || name == ''){
+		name = 'fileInfo';
+	}
+	if(orgId == null || orgId == "undefined" || orgId == "")
+		orgId = 0;
+	if(orgLocationId == null || orgLocationId == "undefined" || orgLocationId == "")
+		orgLocationId = 0;
 	var data = new FormData();
 	var files = document.getElementById(id).files;
 	for(var e in files) {
 		data.append('file', files[e]);
 	}
+	data.append('orgId', orgId);
+	data.append('orgLocationId', orgLocationId);
 	$.ajax({ 
 		url: sourceleadUrl+"/upload/"+type, 
 		data: data, 
@@ -29,14 +48,14 @@ function fileUpload(sourceleadUrl, id, type, formId) {
 		contentType: false, 
 		success: function (data) {
 			if(data && data.length > 0) {
-				if($("#"+formId+" input[name*=fileInfo][data-id="+id+"]").length > 0) {
-					$("#"+formId+" input[name*=fileInfo][data-id="+id+"]").remove();
+				if($("#"+formId+" input[name*="+name+"][data-id="+id+"]").length > 0) {
+					$("#"+formId+" input[name*="+name+"][data-id="+id+"]").remove();
 				}
-				var i = $("#"+formId+" input[type=hidden][name*=fileInfo]").length / 3;
+				var i = $("#"+formId+" input[type=hidden][name*="+name+"]").length / 3;
 				for(var e in data) {
-					var html = "<input type='hidden' name='fileInfo["+i+"][fileURL]' data-id="+id+" value='"+data[e].fileURL+"'/>";
-					html += "<input type='hidden' name='fileInfo["+i+"][fileName]' data-id="+id+" value='"+data[e].fileName+"'/>";
-					html += "<input type='hidden' name='fileInfo["+i+"][contentType]' data-id="+id+" value='"+data[e].contentType+"'/>";
+					var html = "<input type='hidden' name='"+name+"["+i+"].fileURL' data-id="+id+" value='"+data[e].fileURL+"'/>";
+					html += "<input type='hidden' name='"+name+"["+i+"].fileName' data-id="+id+" value='"+data[e].fileName+"'/>";
+					html += "<input type='hidden' name='"+name+"["+i+"].contentType' data-id="+id+" value='"+data[e].contentType+"'/>";
 					$("#"+formId).append(html);
 					i ++;
 				}

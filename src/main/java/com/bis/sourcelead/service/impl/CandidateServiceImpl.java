@@ -27,21 +27,17 @@ import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.MatchQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.jsoup.select.Evaluator.IsEmpty;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.CandidateDao;
 import com.bis.sourcelead.dao.CandidateTimelineActivityDao;
+import com.bis.sourcelead.dto.AddUserDTO;
 import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.elk.index.CandidateIndex;
@@ -232,16 +228,16 @@ public class CandidateServiceImpl implements CandidateService {
 		
 		StringBuffer activitySummary = new StringBuffer();
         Candidate candidate = null;
-		if(candidateDto.getCandidateId() > 0){
-			candidate = candidateDao.getCandidateByCandidateId(candidateDto.getCandidateId());
+		if(StringUtils.isNotBlank(candidateDto.getCandidateId())){
+			candidate = candidateDao.getCandidateByCandidateId(Long.parseLong(candidateDto.getCandidateId()));
 		}else{	
 			candidate = new Candidate();
 			candidate.setCreatedDate(commonUtil.currentDate());
 			candidate.setCreatedBy(user.getUserCode());
 			
-			if(candidateDto.getConsultantUser() > 0){
+			if(StringUtils.isNotBlank(candidateDto.getConsultantUser())){
 				User consultantUser = new User();
-				consultantUser.setId(candidateDto.getConsultantUser());
+				consultantUser.setId(Long.parseLong(candidateDto.getConsultantUser()));
 				candidate.setConsultantUser(consultantUser);
 				candidate.setCandidateType("Consultant");
 			}else{
@@ -251,12 +247,12 @@ public class CandidateServiceImpl implements CandidateService {
 			candidate.setIsFavourite(0);
 			candidate.setIsFavouriteAssociate(0);
 			
-			/*MasterCandidate masterCandidate = null;
-			masterCandidate = masterCandidateService.getMasterCandidateByInteligence(candidateDto);
+			MasterCandidate masterCandidate = null;
+			masterCandidate = masterCandidateService.getMasterCandidateByInteligenceCandidateDTO(candidateDto);
 			if(null == masterCandidate){
-				masterCandidate = masterCandidateService.storeMasterCandidateByJsonObject(candidateDto, user);
+				masterCandidate = masterCandidateService.storeMasterCandidateByCandidateDTO(candidateDto, user);
 			}
-			candidate.setMasterCandidateId(masterCandidate);*/
+			candidate.setMasterCandidateId(masterCandidate);
 		}
         
 		if(orgLocations != null){
@@ -436,16 +432,6 @@ public class CandidateServiceImpl implements CandidateService {
 		}
 		
 		if(StringUtils.isNotBlank(candidateDto.getCandidateSkills())){
-//			String candidateSkills = null;
-			/*try{
-				String[] strArray = new String[] {candidateDto.getCandidateSkills()};
-	    		   //JSONArray jsonArray = candidateDto.getCandidateSkills();
-	    		   candidateSkills = strArray.toString();
-	    	  }
-	    	  catch(Exception e){
-	    		  candidateSkills= candidateDto.getCandidateSkills();
-	    	  }
-			candidateSkills = candidateSkills.replaceAll("\"", "").replaceAll("\\[", "").replaceAll("\\]","");*/
 			
 			if(candidate.getSkillsName() != null){
 				activitySummary.append("Skills").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidate.getSkillsName()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDto.getCandidateSkills()).append(Constants.NEW_VALUE_TAG_END).append(" ");
@@ -455,18 +441,6 @@ public class CandidateServiceImpl implements CandidateService {
 		
 		if(StringUtils.isNotBlank(candidateDto.getVisa())){
 			
-			/*String visaList =null;
-			try{
-				String[] strArray = new String[] {candidateDto.getVisa()};
-				//JSONArray jsonArray = candidateDto.getVisa();
-				visaList = strArray.toString();
-			}
-			catch(Exception e){
-				visaList = candidateDto.getVisa();
-			}
-			visaList = visaList.replaceAll("\\[", "").replaceAll("\\]","");
-			visaList = visaList.replaceAll("\"", "");
-			*/
 			if(candidate.getVisaType() != null){
 				activitySummary.append("Immigration Status").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidate.getVisaType()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDto.getVisa()).append(Constants.NEW_VALUE_TAG_END).append(" ");
 			}
@@ -481,53 +455,33 @@ public class CandidateServiceImpl implements CandidateService {
 			candidate.setPrimarySkill(candidateDto.getPrimarySkill());
 		}
 
-		
-		
-		if(candidateDto.getVendors() != null ){
-			OrgRelations orgRelation = orgRelationsService.getOrRelationsById(candidateDto.getVendors());
+		if(StringUtils.isNotBlank(candidateDto.getVendors())){
+			OrgRelations orgRelation = orgRelationsService.getOrRelationsById(Long.parseLong(candidateDto.getVendors()));
 			candidate.setOrgRelationId(orgRelation);
-			/*Candidate vendorCandidate = commonUtil.getVendorCandidate(jsonObj, orgRelation, orgLocations, user);
-			candidate.setParentCandidateId(vendorCandidate);*/
-			
 		}else{
 			candidate.setOrgRelationId(null);
-			candidate.setParentCandidateId(null);
 		}
 		
-		if(candidateDto.getVendorcontact() != null ){
-			OrgSpoc orgspoc = orgSpocService.getOrgSpocById(candidateDto.getVendorcontact());
+		if(StringUtils.isNotBlank(candidateDto.getVendorcontact())){
+			OrgSpoc orgspoc = orgSpocService.getOrgSpocById(Long.parseLong(candidateDto.getVendorcontact()));
 			candidate.setSpocId(orgspoc);
 		}else{
 			candidate.setSpocId(null);
 		}
 		
-		/*HashSet<CandidateEducation>	 candidateEducationList = candidateEducationService.getCandidateEducationDetails(candidateDto, orgLocations,candidate,user.getUserCode());
+		HashSet<CandidateEducation>	 candidateEducationList = candidateEducationService.getCandidateEducationDetails(candidateDto, orgLocations,candidate,user.getUserCode());
 		candidate.setCandidateEducation(candidateEducationList);
 		
 		HashSet<CandidateEmployers> candidateEmployersList = candidateEmployersService.getCandidateEmployersDetails(candidateDto,orgLocations,candidate,user.getUserCode());
 		candidate.setCandidateEmployers(candidateEmployersList);
 		
-		HashSet<CandidateSkills> candidateSkillsList = candidateSkillsService.getCandidateSkillsDetails(jsonObj, orgLocations,candidate,user.getUserCode());
-		candidate.setCandidateSkills(candidateSkillsList);
-        
-		if(fileName != null){
-		HashSet<CandidateResumes> candidateResumesList = candidateResumesService.getCandidateResumesDetails(orgLocations,user.getUserCode(),candidate,fileURL, fileName, contentType);
-		candidate.setCandidateResumes(candidateResumesList);
-		}
-		if(multiFile != null){
-			if(multiFile.getOriginalFilename()!=null){
-				candidate.setFileName(multiFile.getOriginalFilename());
-			}
-		}*/
-		
-		if(candidateDto.getUploadedFileInfo() != null && candidateDto.getUploadedFileInfo().size()>=0){
-			FileInfo fileInfo = candidateDto.getUploadedFileInfo().get(0);
+		if(candidateDto.getFileInfo()!= null && !candidateDto.getFileInfo().isEmpty()){
+			FileInfo fileInfo = candidateDto.getFileInfo().get(0);
+			if(fileInfo != null){
 			HashSet<CandidateResumes> candidateResumesList = candidateResumesService.getCandidateResumesDetails(orgLocations,user.getUserCode(),candidate, fileInfo);
 			candidate.setCandidateResumes(candidateResumesList);
-			
-			if(fileInfo != null){
-					candidate.setFileName(fileInfo.getFileName());
-					FileUploadUtil.moveFile(candidateDto.getStaticPath(), fileInfo, "resumes");
+			candidate.setFileName(fileInfo.getFileName());
+			FileUploadUtil.moveFile(candidateDto.getStaticPath(), fileInfo, "resumes");
 				}
 			}
 		
@@ -551,7 +505,7 @@ public class CandidateServiceImpl implements CandidateService {
 		/*
 		 * this method is for track candidate activity
 		 */
-		if(candidateDto.getCandidateId() >0 ){
+		if(StringUtils.isNotBlank(candidateDto.getCandidateId())){
 			candidateActivityCommonUtil.storeCandidateActivity(user, orgLocations, savedCandidate, "", Constants.CANDIDATE_EDITTED, activitySummary.toString(), "CANDIDATE");
 		}else{
 			candidateActivityCommonUtil.storeCandidateActivity(user, orgLocations, savedCandidate, "", Constants.CANDIDATE_ADDED_MANUALLY, "", "CANDIDATE");
@@ -1024,8 +978,8 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	}
 
 	@Override
-	public Candidate storeProfessionalParseCandidate(JSONObject jsonObj, OrgLocations orgLocations, User user,
-			MultipartFile multiFile, Long candidateId) throws Exception {
+	public Candidate storeProfessionalParseCandidate(CandidateDTO candidateDTO, OrgLocations orgLocations, User user,
+			 Long candidateId) throws Exception {
 		
             Candidate  candidate = candidateDao.getCandidateByCandidateId(candidateId);
 			if(orgLocations != null){
@@ -1036,97 +990,126 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 				candidate.setLastName(candidate.getLastName());	
 			}
 //			candidate.setCountry(candidate.getCountry());
-			if(jsonObj.has("country") && jsonObj.getString("country") !=null){
-				candidate.setCountry(jsonObj.getString("country"));
+			if(StringUtils.isNotBlank(candidateDTO.getCountry())){
+				candidate.setCountry(candidateDTO.getCountry());
+			}else{
+				candidate.setCountry(null);
 			}
 			
-			if(jsonObj.has("state") && jsonObj.getString("state") !=null){
-			candidate.setState(jsonObj.getString("state"));
+			if(StringUtils.isNotBlank(candidateDTO.getState())){
+			candidate.setState(candidateDTO.getState());
+			}else{
+				candidate.setState(null);
 			}
-			if(jsonObj.has("city") && jsonObj.getString("city") !=null){
-			candidate.setCity(jsonObj.getString("city"));
+			if(StringUtils.isNotBlank(candidateDTO.getCity())){
+			candidate.setCity(candidateDTO.getCity());
+			}else{
+				candidate.setCity(null);
 			}
-			if(jsonObj.has("location") && jsonObj.getString("location") !=null){
-				candidate.setLocation(jsonObj.getString("location"));
+			if(StringUtils.isNotBlank(candidateDTO.getLocation())){
+				candidate.setLocation(candidateDTO.getLocation());
+			}else{
+				candidate.setLocation(null);
 			}
-			if(jsonObj.has("zipcode") && jsonObj.getString("zipcode") !=null){
-				candidate.setZipCode(jsonObj.getString("zipcode"));
+			if(StringUtils.isNotBlank(candidateDTO.getZipCode())){
+				candidate.setZipCode(candidateDTO.getZipCode());
+			}else{
+				candidate.setZipCode(null);
+			}			
+			if(StringUtils.isNotBlank(candidateDTO.getMobilePhone())){
+			candidate.setMobilePhone(candidateDTO.getMobilePhone());
+			}else{
+				candidate.setMobilePhone(null);
 			}
-			
-			if(jsonObj.has("mobilePhone") && jsonObj.getString("mobilePhone") !=null){
-			candidate.setMobilePhone(jsonObj.getString("mobilePhone"));
-			}
-			if(jsonObj.has("alternateMobilePhone") && jsonObj.getString("alternateMobilePhone") !=null){
-				candidate.setAlternateMobilePhone(jsonObj.getString("alternateMobilePhone"));
-			}
-			
+			if(StringUtils.isNotBlank(candidateDTO.getAlternateMobilePhone())){
+				candidate.setAlternateMobilePhone(candidateDTO.getAlternateMobilePhone());
+			}else{
+				candidate.setAlternateMobilePhone(null);
+			}			
 			if(null != candidate.getEmail()){
 				candidate.setEmail(candidate.getEmail());	
+			}else{
+				candidate.setEmail(null);
+			}
+			if(StringUtils.isNotBlank(candidateDTO.getCurrentRate())){
+				candidate.setCurrentRate(candidateDTO.getCurrentRate());
+			}else{
+				candidate.setCurrentRate(null);
+			}
+			if(StringUtils.isNotBlank(candidateDTO.getCurrentRateType())){
+				candidate.setCurrentRateType(candidateDTO.getCurrentRateType());
+			}else{
+				candidate.setCurrentRateType(null);
+			}
+			if(StringUtils.isNotBlank(candidateDTO.getCurrentRateCurrency())){
+				candidate.setCurrentRateCurrency(candidateDTO.getCurrentRateCurrency());
+			}else{
+				candidate.setCurrentRateCurrency(null);
+			}
+			if(StringUtils.isNotBlank(candidateDTO.getDesignation())){
+				candidate.setDesignation(candidateDTO.getDesignation());
+			}else{
+				candidate.setDesignation(null);
 			}
 			
-
-			if(jsonObj.has("currentRate") && jsonObj.getString("currentRate") !=null){
-			candidate.setCurrentRate(jsonObj.getString("currentRate"));
-			}
-			
-			if(jsonObj.has("currentRateType") && jsonObj.getString("currentRateType") !=null){
-				candidate.setCurrentRateType(jsonObj.getString("currentRateType"));
-				}
-			
-			if(jsonObj.has("currentRateCurrency") && jsonObj.getString("currentRateCurrency") !=null){
-			candidate.setCurrentRateCurrency(jsonObj.getString("currentRateCurrency"));
-			}
-			if(jsonObj.has("designation") && jsonObj.getString("designation") !=null){
-			candidate.setDesignation(jsonObj.getString("designation"));
-			}
-			
-			if(jsonObj.has("designationOtherType") && jsonObj.has("designationType") && "Other".equalsIgnoreCase(jsonObj.getString("designationType"))){
-				candidate.setDesignationOtherType(jsonObj.getString("designationOtherType"));
+			if(StringUtils.isNotBlank(candidateDTO.getDesignationOtherType())){
+				candidate.setDesignationOtherType(candidateDTO.getDesignationOtherType());
 			}else{
 				candidate.setDesignationOtherType(null);
 			}
 			
-			if(jsonObj.has("expectedRate") && jsonObj.getString("expectedRate") !=null ){
-			candidate.setExpectedRate(jsonObj.getString("expectedRate"));
+			if(StringUtils.isNotBlank(candidateDTO.getExpectedRate())){
+			candidate.setExpectedRate(candidateDTO.getExpectedRate());
+			}else{
+				candidate.setExpectedRate(null);
 			}
-			
-			if(jsonObj.has("rateType") && jsonObj.getString("rateType") !=null ){
-				candidate.setRateType(jsonObj.getString("rateType"));
-				}
-			
-			if(jsonObj.has("expectedRateCurrencey") && jsonObj.getString("expectedRateCurrencey") !=null ){
-				candidate.setExpectedRateCurrencey(jsonObj.getString("expectedRateCurrencey"));
+			if(StringUtils.isNotBlank(candidateDTO.getRateType())){
+				candidate.setRateType(candidateDTO.getRateType());
+			}else{
+				candidate.setRateType(null);
 			}
-			if(jsonObj.has("summary") && jsonObj.getString("summary") !=null){
-			candidate.setSummary(jsonObj.getString("summary"));
+			if(StringUtils.isNotBlank(candidateDTO.getExpectedRateCurrencey())){
+				candidate.setExpectedRateCurrencey(candidateDTO.getExpectedRateCurrencey());
+			}else{
+				candidate.setExpectedRateCurrencey(null);
 			}
-			if(jsonObj.has("designationType") && jsonObj.getString("designationType") !=null){
-			candidate.setDesignationType(jsonObj.getString("designationType"));
+			if(StringUtils.isNotBlank(candidateDTO.getSummary())){
+			candidate.setSummary(candidateDTO.getSummary());
+			}else{
+				candidate.setSummary(null);
 			}
-			if(jsonObj.has("experienceYears") && jsonObj.getString("experienceYears") !=null){
-			candidate.setExperienceYears(jsonObj.getString("experienceYears"));
+			if(StringUtils.isNotBlank(candidateDTO.getDesignationType())){
+			candidate.setDesignationType(candidateDTO.getDesignationType());
+			}else{
+				candidate.setDesignationType(null);
 			}
-			
-			
-			if(jsonObj.has("experienceMonths") && jsonObj.getString("experienceMonths") !=null){
-				candidate.setExperienceMonths(jsonObj.getString("experienceMonths"));	
+			if(StringUtils.isNotBlank(candidateDTO.getExperienceYears())){
+			candidate.setExperienceYears(candidateDTO.getExperienceYears());
+			}else{
+				candidate.setExperienceYears(null);
 			}
-			
-			if(jsonObj.has("noticePeriod") && jsonObj.getString("noticePeriod") !=null){
-				candidate.setNoticePeriod(jsonObj.getString("noticePeriod"));	
+			if(StringUtils.isNotBlank(candidateDTO.getExperienceMonths())){
+				candidate.setExperienceMonths(candidateDTO.getExperienceMonths());	
+			}else{
+				candidate.setExperienceMonths(null);
 			}
-			
-			if(jsonObj.has("address") && jsonObj.getString("address") !=null){
-				candidate.setAddress(jsonObj.getString("address"));
+			if(StringUtils.isNotBlank(candidateDTO.getNoticePeriod())){
+				candidate.setNoticePeriod(candidateDTO.getNoticePeriod());	
+			}else{
+				candidate.setNoticePeriod(null);
 			}
-			
+			if(StringUtils.isNotBlank(candidateDTO.getAddress())){
+				candidate.setAddress(candidateDTO.getAddress());
+			}else{
+				candidate.setAddress(null);
+			}
 			UserRole userRole = userRoleService.getLoginUserPrimaryRole(user.getId());
 			if(null != userRole && userRole.getRoles().getRoleName().equalsIgnoreCase("ROLE_CROWDSOURCING_RECRUITER")){
 				candidate.setRecruiterUserId(userRole.getUser());	
 			}
 			
-			if(jsonObj.has("candidateSkills") && jsonObj.getString("candidateSkills") !=null){
-				String candidateSkills = null;
+			if(StringUtils.isNotBlank(candidateDTO.getCandidateSkills())){
+				/*String candidateSkills = null;
 				try{
 		    		   JSONArray jsonArray = jsonObj.getJSONArray("candidateSkills");
 		    		   candidateSkills = jsonArray.toString();
@@ -1134,18 +1117,20 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 		    	  catch(JSONException e){
 		    		  candidateSkills= jsonObj.getString("candidateSkills");
 		    	  }
-				candidateSkills = candidateSkills.replaceAll("\"", "").replaceAll("\\[", "").replaceAll("\\]","");
+				candidateSkills = candidateSkills.replaceAll("\"", "").replaceAll("\\[", "").replaceAll("\\]","");*/
 				
-				candidate.setSkillsName(candidateSkills);
+				candidate.setSkillsName(candidateDTO.getCandidateSkills().replaceAll("\"", "").replaceAll("\\[", "").replaceAll("\\]",""));
+			}else{
+				candidate.setSkillsName(null);
 			}
 			
-			if(jsonObj.has("primarySkill") && jsonObj.getString("primarySkill") !=null){
-				candidate.setPrimarySkill(jsonObj.getString("primarySkill"));
+			if(StringUtils.isNotBlank(candidateDTO.getPrimarySkill())){
+				candidate.setPrimarySkill(candidateDTO.getPrimarySkill());
 			}
 			
-			if(jsonObj.has("visa")){
+			if(StringUtils.isNotBlank(candidateDTO.getVisa())){
 				
-				String visaList =null;
+				/*String visaList =null;
 				try{
 					JSONArray jsonArray = jsonObj.getJSONArray("visa");
 					visaList = jsonArray.toString();
@@ -1154,24 +1139,34 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 					visaList =jsonObj.getString("visa");
 				}
 				visaList = visaList.replaceAll("\\[", "").replaceAll("\\]","");
-				visaList = visaList.replaceAll("\"", "");
-				candidate.setVisaType(visaList);
+				visaList = visaList.replaceAll("\"", "");*/
+				candidate.setVisaType(candidateDTO.getVisa());
 		  	 
 			}else{
 				candidate.setVisaType(null);
 			}
 			
 			
-			HashSet<CandidateEducation>	 candidateEducationList = candidateEducationService.getCandidateEducationDetails(jsonObj, orgLocations,candidate,user.getUserCode());
+			/*HashSet<CandidateEducation>	 candidateEducationList = candidateEducationService.getCandidateEducationDetails(jsonObj, orgLocations,candidate,user.getUserCode());
 			candidate.setCandidateEducation(candidateEducationList);
 			
 			HashSet<CandidateEmployers> candidateEmployersList = candidateEmployersService.getCandidateEmployersDetails(jsonObj,orgLocations,candidate,user.getUserCode());
-			candidate.setCandidateEmployers(candidateEmployersList);
+			candidate.setCandidateEmployers(candidateEmployersList);*/
 			
 			/*if(multiFile != null){
 			HashSet<CandidateResumes> candidateResumesList = candidateResumesService.getCandidateResumesDetails(orgLocations,user.getUserCode(),candidate,multiFile);
 			candidate.setCandidateResumes(candidateResumesList);
 			}*/
+			if(candidateDTO.getFileInfo() != null && !candidateDTO.getFileInfo().isEmpty()){
+				FileInfo fileInfo = candidateDTO.getFileInfo().get(0);
+				HashSet<CandidateResumes> candidateResumesList = candidateResumesService.getCandidateResumesDetails(orgLocations,user.getUserCode(),candidate, fileInfo);
+				candidate.setCandidateResumes(candidateResumesList);
+				
+				if(fileInfo != null){
+						candidate.setFileName(fileInfo.getFileName());
+						FileUploadUtil.moveFile(candidateDTO.getStaticPath(), fileInfo, "resumes");
+					}
+				}
 			candidate.setUpdatedBy(user.getUserCode());
 			candidate.setUpdatedDate(commonUtil.currentDate());
 			candidate.setStatus(Constants.CANDIDATE_ACTIVE);
@@ -1241,12 +1236,6 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	public Candidate getCandidateById(Long candidateId) throws Exception
 	{
 		return candidateDao.getCandidateById(candidateId);
-	}
-	
-	
-	@Override
-	public Candidate getCandidateByParentCandidateId(Long parentCandidateId) throws Exception {
-		return candidateDao.getCandidateByParentCandidateId(parentCandidateId);
 	}
 	
 	@Override
@@ -1407,7 +1396,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	}
 	
 	@Override
-	public Candidate storeCandidateForUsers(JSONObject jsonObj,User user,OrgLocations orgLocations,MasterCandidate masterCandidate) throws Exception
+	public Candidate storeCandidateForUsers(CandidateDTO candidateDTO,User user,OrgLocations orgLocations,MasterCandidate masterCandidate) throws Exception
 	{
 		Candidate candidate = candidateDao.getCandidateByConsultantUserId(user.getId(), orgLocations.getId());
 		if(null == candidate){
@@ -1424,33 +1413,25 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 			candidate.setStatus(Constants.RECORD_ACTIVE);
 			candidate.setCreatedBy(user.getUserCode());
 			
-			if(jsonObj.has("vendors") && !"".equalsIgnoreCase(jsonObj.getString("vendors"))){
-				OrgRelations orgRelation = orgRelationsService.getOrRelationsById(Long.parseLong(jsonObj.getString("vendors")));
-				candidate.setOrgRelationId(orgRelation);
-				Candidate vendorCandidate =  commonUtil.getVendorCandidate(jsonObj, orgRelation, orgLocations, user);
-				candidate.setParentCandidateId(vendorCandidate);
-			}else{
-				candidate.setOrgRelationId(null);
-				candidate.setParentCandidateId(null);
+			if(StringUtils.isNotBlank(candidateDTO.getPhoneNumber())){
+				candidate.setMobilePhone(candidateDTO.getPhoneNumber());
+			}else
+			{
+				candidate.setMobilePhone(null);
 			}
 			
-			if(jsonObj.has("vendorcontact") && !"".equalsIgnoreCase(jsonObj.getString("vendorcontact"))){
-				OrgSpoc orgspoc = orgSpocService.getOrgSpocById(Long.parseLong(jsonObj.getString("vendorcontact")));
-				candidate.setSpocId(orgspoc);
-			}else{
-				candidate.setSpocId(null);
+			if(StringUtils.isNotBlank(candidateDTO.getDesignationType())){
+				candidate.setDesignationType(candidateDTO.getDesignationType());
+			}else
+			{
+				candidate.setDesignationType(null);
 			}
 			
-			if(jsonObj.has("phoneNumber") && !isNullOrEmpty(jsonObj.getString("phoneNumber"))){
-				candidate.setMobilePhone(jsonObj.getString("phoneNumber"));
-			}
-			
-			if(jsonObj.has("designationType") && !isNullOrEmpty(jsonObj.getString("designationType"))){
-				candidate.setDesignationType(jsonObj.getString("designationType"));
-			}
-			
-			if(jsonObj.has("designationOtherType") && !isNullOrEmpty(jsonObj.getString("designationOtherType"))){
-				candidate.setDesignationOtherType(jsonObj.getString("designationOtherType"));
+			if(StringUtils.isNotBlank(candidateDTO.getDesignationOtherType())){
+				candidate.setDesignationOtherType(candidateDTO.getDesignationOtherType());
+			}else
+			{
+				candidate.setDesignationOtherType(null);
 			}
 			
 			candidate.setCandidateUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
@@ -1562,6 +1543,5 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 		}
 		return associateList;
 	}
-	
 
 }

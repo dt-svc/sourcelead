@@ -755,9 +755,10 @@ function discordApplicant(){
 	var candidateEmail =   $("input[name=EmailId]").val();
 	var sourceleadUrl ='${sourceleadUrl}';
 	var reqCoolingOffPeriod ='${requirement.reqCoolingOffPeriod}';
+	var orgLocationId ='${SourceLeadWeb_orgLocationId}';
 	$.ajax({
 		type: "POST",
-	    url: sourceleadUrl+"/verifyCoolingOffPeriod?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&candidateEmail="+candidateEmail+"&reqCoolingOffPeriod="+reqCoolingOffPeriod, 
+	    url: sourceleadUrl+"/verifyCoolingOffPeriod?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&candidateEmail="+candidateEmail+"&reqCoolingOffPeriod="+reqCoolingOffPeriod+"&orgLocationId="+orgLocationId, 
 	    success: function(data) {
 	    	if(data == "true"){
 	    		isCoolingOffAlert();

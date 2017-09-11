@@ -1,12 +1,11 @@
 package com.bis.sourcelead.service.impl;
 
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.json.JSONObject;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.CandidateCertificationsDao;
+import com.bis.sourcelead.dto.CandidateCertificationDTO;
 import com.bis.sourcelead.elk.index.CandidateIndex;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
@@ -25,7 +25,6 @@ import com.bis.sourcelead.service.CandidateCertificationsService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.util.CandidateActivityCommonUtil;
 import com.bis.sourcelead.util.CommonUtil;
-import com.bis.sourcelead.web.LoginSessionController;
 
 /**
  * @author shivayogi
@@ -72,57 +71,57 @@ public class CandidateCertificationsServiceImpl implements CandidateCertificatio
 	 * 
 	 */
 	 @Override
-	 public CandidateCertifications storeCandidateCertifications(JSONObject jsonObject ,User user, OrgLocations orgLocationId,Long candidateId) throws Exception {
+	 public CandidateCertifications storeCandidateCertifications(CandidateCertificationDTO candidateCertificationDTO ,User user, OrgLocations orgLocationId,Long candidateId) throws Exception {
 			CandidateCertifications candidatecertificate  = new CandidateCertifications();
 			Candidate can = new Candidate();
 			//SimpleDateFormat simpleDateFormat = orgLocationId.getLocFullFormDateFormatter();
 			StringBuffer activitySummary = new StringBuffer();
 			 if(candidateId!= null){
-				 if(jsonObject.has("candidatecertificateID")){
-		       		 if(jsonObject.getString("candidatecertificateID")!=null && !jsonObject.getString("candidatecertificateID").isEmpty()){
+				 if(StringUtils.isNotBlank(candidateCertificationDTO.getCandidatecertificateID())){
+//		       		 if(jsonObject.getString("candidatecertificateID")!=null && !jsonObject.getString("candidatecertificateID").isEmpty()){
 		       			//candidatecertificate.setId(Long.valueOf(jsonObject.getString("candidatecertificateID")));
-		       			candidatecertificate = candidateCertificationsDao.getCandidateCertificateBycandidateIdandCertificateId(candidateId, Long.valueOf(jsonObject.getString("candidatecertificateID")));
-		       	     }
+		       			candidatecertificate = candidateCertificationsDao.getCandidateCertificateBycandidateIdandCertificateId(candidateId, Long.valueOf(candidateCertificationDTO.getCandidatecertificateID()));
+//		       	     }
 	       	    }
-			if (jsonObject.has("name")) {
-				if(candidatecertificate != null && candidatecertificate.getName() != null && candidatecertificate.getName() != "" && !candidatecertificate.getName().equalsIgnoreCase(jsonObject.getString("name"))){
-					activitySummary.append("Name").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidatecertificate.getName()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(jsonObject.getString("name")).append(Constants.NEW_VALUE_TAG_END).append(" ");
+			if (StringUtils.isNotBlank(candidateCertificationDTO.getName())) {
+				if(candidatecertificate != null && candidatecertificate.getName() != null){
+					activitySummary.append("Name").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidatecertificate.getName()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateCertificationDTO.getName()).append(Constants.NEW_VALUE_TAG_END).append(" ");
 				}else if(candidatecertificate != null && candidatecertificate.getId() == null){
-					activitySummary.append("Name").append(" : ").append(Constants.NEW_VALUE_TAG_INITIATION).append(jsonObject.getString("name")).append(Constants.NEW_VALUE_TAG_END);
+					activitySummary.append("Name").append(" : ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateCertificationDTO.getName()).append(Constants.NEW_VALUE_TAG_END);
 				}
-				candidatecertificate.setName(jsonObject.getString("name"));
+				candidatecertificate.setName(candidateCertificationDTO.getName());
 			}
-			if (jsonObject.has("provider")) {
-				if(candidatecertificate != null && candidatecertificate.getProvider() != null && candidatecertificate.getProvider() != "" && !candidatecertificate.getProvider().equalsIgnoreCase(jsonObject.getString("provider"))){
-					activitySummary.append("Provider").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidatecertificate.getProvider()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(jsonObject.getString("provider")).append(Constants.NEW_VALUE_TAG_END).append(" ");
+			if (StringUtils.isNotBlank(candidateCertificationDTO.getProvider())) {
+				if(candidatecertificate != null && candidatecertificate.getProvider() != null ){
+					activitySummary.append("Provider").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidatecertificate.getProvider()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateCertificationDTO.getProvider()).append(Constants.NEW_VALUE_TAG_END).append(" ");
 				}
-				candidatecertificate.setProvider(jsonObject.getString("provider"));
+				candidatecertificate.setProvider(candidateCertificationDTO.getProvider());
 			}
-			if (jsonObject.has("score")) {
-				if(candidatecertificate != null && candidatecertificate.getScore() != null && candidatecertificate.getScore() != "" && !candidatecertificate.getScore().equalsIgnoreCase(jsonObject.getString("score"))){
-					activitySummary.append("Score").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidatecertificate.getScore()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(jsonObject.getString("score")).append(Constants.NEW_VALUE_TAG_END).append(" ");
+			if (StringUtils.isNotBlank(candidateCertificationDTO.getScore())) {
+				if(candidatecertificate != null && candidatecertificate.getScore() != null){
+					activitySummary.append("Score").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidatecertificate.getScore()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateCertificationDTO.getScore()).append(Constants.NEW_VALUE_TAG_END).append(" ");
 				}
-				candidatecertificate.setScore(jsonObject.getString("score"));
+				candidatecertificate.setScore(candidateCertificationDTO.getScore());
 			}
-			if (jsonObject.has("scoreType")) {
-				if(candidatecertificate != null && candidatecertificate.getScoreType() != null && candidatecertificate.getScoreType() != "" && !candidatecertificate.getScoreType().equalsIgnoreCase(jsonObject.getString("scoreType"))){
-					activitySummary.append("Score Type").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidatecertificate.getScoreType()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(jsonObject.getString("scoreType")).append(Constants.NEW_VALUE_TAG_END).append(" ");
+			if (StringUtils.isNotBlank(candidateCertificationDTO.getScoreType())) {
+				if(candidatecertificate != null && candidatecertificate.getScoreType() != null){
+					activitySummary.append("Score Type").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidatecertificate.getScoreType()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateCertificationDTO.getScoreType()).append(Constants.NEW_VALUE_TAG_END).append(" ");
 				}
-				candidatecertificate.setScoreType(jsonObject.getString("scoreType"));
+				candidatecertificate.setScoreType(candidateCertificationDTO.getScoreType());
 			}
-			if (jsonObject.has("description")) {
-				if(candidatecertificate != null && candidatecertificate.getDescription() != null && candidatecertificate.getDescription() != "" && !candidatecertificate.getDescription().equalsIgnoreCase(jsonObject.getString("description"))){
-					activitySummary.append("Description").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidatecertificate.getDescription()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(jsonObject.getString("description")).append(Constants.NEW_VALUE_TAG_END).append(" ");
+			if (StringUtils.isNotBlank(candidateCertificationDTO.getDescription())) {
+				if(candidatecertificate != null && candidatecertificate.getDescription() != null ){
+					activitySummary.append("Description").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidatecertificate.getDescription()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateCertificationDTO.getDescription()).append(Constants.NEW_VALUE_TAG_END).append(" ");
 				}
-				candidatecertificate.setDescription(jsonObject.getString("description"));
+				candidatecertificate.setDescription(candidateCertificationDTO.getDescription());
 			}
-				if (jsonObject.has("validFrom") && !(jsonObject.getString("validFrom").isEmpty()) && !" ".equals(jsonObject.get("validFrom"))) {
+				if (StringUtils.isNotBlank(candidateCertificationDTO.getValidFrom())) {
 					try {
 						
 						//String pattern = "dd-MM-yyyy";
                         //DateFormat format = LoginSessionController.DATEFORMAT;
                         
-                        Date validFrom = commonUtil.orgLocationDateFormat(orgLocationId.getDateFormat(),jsonObject.getString("validFrom"));
+                        Date validFrom = commonUtil.orgLocationDateFormat(orgLocationId.getDateFormat(),candidateCertificationDTO.getValidFrom());
                         candidatecertificate.setValidFrom(validFrom);
 						
 						/*SimpleDateFormat sdf = new SimpleDateFormat("yyyy-mm-dd");
@@ -133,12 +132,12 @@ public class CandidateCertificationsServiceImpl implements CandidateCertificatio
 						e.printStackTrace();
 					}
 				}
-				if (jsonObject.has("validTo") && !(jsonObject.getString("validTo").isEmpty()) && !" ".equals(jsonObject.get("validTo"))) {
+				if (StringUtils.isNotBlank(candidateCertificationDTO.getValidTo())) {
 					try {
 						//String pattern = "dd-MM-yyyy";
 						//DateFormat format = LoginSessionController.DATEFORMAT;
                         
-                        Date validTo = commonUtil.orgLocationDateFormat(orgLocationId.getDateFormat(),jsonObject.getString("validTo"));
+                        Date validTo = commonUtil.orgLocationDateFormat(orgLocationId.getDateFormat(),candidateCertificationDTO.getValidTo());
                         candidatecertificate.setValidTo(validTo);
 						
 						/*SimpleDateFormat sdf = new SimpleDateFormat("yyyy-mm-dd");

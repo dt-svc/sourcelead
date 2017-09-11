@@ -324,7 +324,7 @@ public class ProjectsDashboardRestController {
 		 	OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		 	User users = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			
-		 	userService.storeUser(jsonObj,users,loginOrgLocation,"PROJECTS","",new Org());
+		 	//userService.storeUser(jsonObj,users,loginOrgLocation,"PROJECTS","",new Org());
 			return "SUCCESS";
 		}
 		 
