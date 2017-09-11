@@ -3,9 +3,11 @@ package com.bis.sourcelead.payroll.service.impl;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -33,11 +35,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.HrDeductionsDTO;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.payroll.dao.HrDeductionsDao;
-import com.bis.sourcelead.payroll.entity.AccountDeductions;
-import com.bis.sourcelead.payroll.entity.AccountDeductionsDetails;
 import com.bis.sourcelead.payroll.entity.HrDeductions;
 import com.bis.sourcelead.payroll.entity.HrDeductionsDetails;
 import com.bis.sourcelead.payroll.entity.PayrollHelper;
@@ -314,29 +316,17 @@ public class HrDeductionsServiceImpl implements HrDeductionsService{
 	}
 
 	@Override
-	public List<HrDeductions> getHrDeductionsListByOrgLocationid(OrgLocations orgLocation)
-	{
-		 List<HrDeductions> hrDeductionsList = hrDeductionsDao.getHrDeductionsListByOrgLocationid(orgLocation);
-		
-		if(hrDeductionsList != null){
-			for(HrDeductions hd : hrDeductionsList){
-				if(null !=  hd.getFromDate()){
-					hd.setFromDateStr(conversionUtil.getDateAsString(hd.getFromDate()));
-				}
-				if(null != hd.getToDate()){
-					hd.setToDateStr(conversionUtil.getDateAsString(hd.getToDate()));
-				}
-			}
-		}
-		return hrDeductionsList;
+	public ResponseList<HrDeductions> getHrDeductionsListByOrgLocationid(OrgLocations orgLocation, HrDeductionsDTO hrDeductionsDTO){
+		return hrDeductionsDao.getHrDeductionsListByOrgLocationid(orgLocation, hrDeductionsDTO);
+	
 	}
 
 	@Override
 	public List<HrDeductionsDetails> getHrDeductionsDetailsbyId(long hrDeductionId)
 	{
 		return hrDeductionsDao.getHrDeductionsDetailsbyId(hrDeductionId);
+	
 	}
-
 
 	@Override
 	public List<HrDeductions> getHrDeductionsByEmployeeId(OrgLocations orgLocations, Long empId) throws Exception {
@@ -345,15 +335,30 @@ public class HrDeductionsServiceImpl implements HrDeductionsService{
 
 
 	@Override
+
+	public HrDeductions getDeductionsbyId(Long deductionId)
+	{
+		return hrDeductionsDao.getDeductionsbyId(deductionId);
+	}
+	@Override
 	public HrDeductions getHrDeductionsByEmpIdandDuration(String EmpId, Long locationId, Date startDate, Date endDate)
 	{
 		return hrDeductionsDao.getHrDeductionsByEmpIdandDuration(EmpId, locationId, startDate, endDate);
+
 	}
 
 
 	@Override
+
+	public HrDeductions saveHrDeductions(HrDeductions hrDeductions) throws Exception
+	{
+		return hrDeductionsDao.saveAccountDeductions(hrDeductions);
+	}
+
+    @Override
 	public int getHrDeductionsVersionByLocationId(Long locationId)
 	{
 		return hrDeductionsDao.getHrDeductionsVersionByLocationId(locationId);
 	}
+
 }

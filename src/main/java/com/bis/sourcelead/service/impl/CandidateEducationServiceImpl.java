@@ -107,6 +107,8 @@ public class CandidateEducationServiceImpl implements CandidateEducationService 
 				activitySummary.append("Specialization").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidateEducation.getSpecialization()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateEducationDTO.getSpecialization()).append(Constants.NEW_VALUE_TAG_END).append(" ");
 			}
 			candidateEducation.setSpecialization(candidateEducationDTO.getSpecialization());
+		}else{
+			candidateEducation.setSpecialization("");
 		}
 		if(candidateEducationDTO.getStartDate() != null){
 			try {
@@ -137,24 +139,32 @@ public class CandidateEducationServiceImpl implements CandidateEducationService 
 				activitySummary.append("Grade").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidateEducation.getGrade()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateEducationDTO.getScore()).append(Constants.NEW_VALUE_TAG_END).append(" ");
 			}
 			candidateEducation.setGrade(candidateEducationDTO.getScore());
+		}else{
+			candidateEducation.setGrade("");
 		}
 		if(StringUtils.isNotBlank(candidateEducationDTO.getScoreType())){
 			if(candidateEducation != null && candidateEducation.getGradeType() != null){
 				activitySummary.append("Grade Type").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidateEducation.getGradeType()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateEducationDTO.getScoreType()).append(Constants.NEW_VALUE_TAG_END).append(" ");
 			}
 			candidateEducation.setGradeType(candidateEducationDTO.getScoreType());
+		}else{
+			candidateEducation.setGradeType("");
 		}
 		if(StringUtils.isNotBlank(candidateEducationDTO.getInstitute())){
 			if(candidateEducation != null && candidateEducation.getInstitute() != null){
 				activitySummary.append("Institute").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidateEducation.getInstitute()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateEducationDTO.getInstitute()).append(Constants.NEW_VALUE_TAG_END).append(" ");
 			}
 			candidateEducation.setInstitute(candidateEducationDTO.getInstitute());
+		}else{
+			candidateEducation.setInstitute("");
 		}
 		if(StringUtils.isNotBlank(candidateEducationDTO.getAddress())){
 			if(candidateEducation != null && candidateEducation.getAddress() != null ){
 				activitySummary.append("Address").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidateEducation.getAddress()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateEducationDTO.getAddress()).append(Constants.NEW_VALUE_TAG_END).append(" ");
 			}
 			candidateEducation.setAddress(candidateEducationDTO.getAddress());
+		}else{
+			candidateEducation.setAddress("");
 		}
 		candidateEducation.setStatus(Constants.CANDIDATE_ACTIVE);
 		candidateEducation.setCreatedBy(user.getUserCode());
@@ -209,20 +219,9 @@ public class CandidateEducationServiceImpl implements CandidateEducationService 
 	public HashSet<CandidateEducation> getCandidateEducationDetails(CandidateDTO candidateDTO,OrgLocations orgLocations,Candidate candidate,String userCode) throws Exception {
 		    HashSet<CandidateEducation> candidateEducationList = new HashSet<CandidateEducation>(); 
 		    if(StringUtils.isNotBlank(candidateDTO.getCandidateEducation())){
-		    	  String education = null;
-		    	  /*try{
-		    		   JSONArray jsonArray = jsonObj.getJSONArray("candidateEducation");
-		    		   education = jsonArray.toString();
-		    	  }
-		    	  catch(JSONException e){
-		    		  education= jsonObj.getString("candidateEducation");
-		    	  }*/
-		    	  //education = education.replaceAll("\\[", "").replaceAll("\\]","");
 		  	      String[] educations = candidateDTO.getCandidateEducation().split(",");
 		  	    Set<String> courses = new HashSet();
 		    	  for (String edu : educations) {
-		    		  /*CandidateEducation ce = new  CandidateEducation();
-		    		  edu = edu.replace("\"", "");*/
 		    		  CandidateEducation ce = null;
 		    		  edu = edu.replace("\"", "");
 		    		  String eduTrim = edu.trim();

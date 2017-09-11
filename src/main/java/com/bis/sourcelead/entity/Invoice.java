@@ -145,6 +145,9 @@ public class Invoice {
 	@Column(name = "CREATED_DATE")
 	private Date createdDate;
 	
+	@Column(name = "FILE_URL")
+	private String fileUrl;
+	
 	@Column(name = "CREATED_BY")
 	private String createdBy;
 	
@@ -1076,6 +1079,14 @@ public class Invoice {
 
 	public void setIsAutomaticGenerateInvoice(String isAutomaticGenerateInvoice) {
 		this.isAutomaticGenerateInvoice = isAutomaticGenerateInvoice;
+	}
+
+	public String getFileUrl() {
+		return fileUrl;
+	}
+
+	public void setFileUrl(String fileUrl) {
+		this.fileUrl = fileUrl;
 	}
 
 	

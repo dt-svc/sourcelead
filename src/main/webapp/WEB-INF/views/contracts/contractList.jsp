@@ -3465,7 +3465,6 @@ function CountClick(contractUUID,parentId){
 	$(".mask_time").fadeIn(200);
 	$(".DocAccPopup").fadeIn(100);	
 	var sourceleadUrl ='${sourceleadUrl}';
-	var staticPath ='${staticPath}';
 	$("#DocAccPopupDiv").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	 $.ajax({
       type : "GET",
@@ -3507,10 +3506,10 @@ function CountClick(contractUUID,parentId){
 							  result = result +'	       </div>			                                                                                                                  ';
 							  result = result +'	       <div class="col-md-8" id="uploadDocumentDiv'+opt.id+'" style="display: none;">                                                                                                             ';
 							  result = result +'				<div class="input-group positionRelative ratetype" id="uploadFileGroup'+opt.id+'" title="Document Type: .pdf format only">                  ';
-							  result = result +'					<label class="input-group-btn"> <span class="btn btn-primary padSm"><i class="fa fa-folder-open-o"></i>&nbsp;Browse           ';
-							  result = result +'	             <input name="uploadBtn'+opt.id+'" id="uploadBtn'+opt.id+'" style="display: none;" multiple="" class="upload" type="file" onclick="check('+opt.id+');">                            ';
+							  result = result +'					<label class="input-group-btn"> <span class="btn btn-primary padSm" onchange="uploadRequestedDocuments('+opt.id+');"><i class="fa fa-folder-open-o"></i>&nbsp;Browse           ';
+							  result = result +'	             <input name="uploadBtn'+opt.id+'" id="uploadBtn'+opt.id+'" style="display: none;" class="upload" type="file" onclick="check('+opt.id+');">                            ';
 							  result = result +'	             </span> </label>                                                                                                                 ';
-							  result = result +'					<input class="form-control padSm"  id="uploadFile'+opt.id+'" name="docFile'+opt.id+'"  placeholder="Upload File" readonly type="text">  ';
+							  result = result +'					<input class="form-control padSm"  id="uploadFile'+opt.id+'" name="docfiles['+i+'].docFileName"  placeholder="Upload File" readonly type="text">  ';
 							  result = result +'				</div>                                                                                                                            ';
 							  result = result +'	       </div>			                                                                                                                  ';
 						  }

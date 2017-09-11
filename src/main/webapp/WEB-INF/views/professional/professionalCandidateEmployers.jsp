@@ -686,8 +686,6 @@ function alertMessageforEmp(candidateemployerId, candidateId){
 			};
 		  if ($('#candidateExperianceEdit_form').validate(false,validationSettings)) {
 			
-			var frm = $('#candidateExperianceEdit_form').serializeFormJSON();
-
 			var formData = getFormData("candidateExperianceEdit_form");
 			var sourceleadUrl = '${sourceleadUrl}';
 			

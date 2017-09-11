@@ -1959,9 +1959,10 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 		
 		@Override
 		@Transactional
-		public Integer getReferByMeJobAppliedCandidateCount(Long userId, Date startDate, Date endDate)
+		public Integer getReferByMeJobAppliedCandidateCount(Long userId, Date startDateFormat, Date endDateFormat)
 				throws Exception {
-			
+			 java.sql.Timestamp startDate = new java.sql.Timestamp(startDateFormat.getTime());
+			 java.sql.Timestamp endDate = new java.sql.Timestamp(endDateFormat.getTime());
 			Session session = this.sessionFactory.getCurrentSession();
 		     
 			 String query = "select count(*) from RequirementSubmission rs where "

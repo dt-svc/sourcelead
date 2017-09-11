@@ -246,14 +246,66 @@ function addResume(candidateId) {
 					dateFormat : 'yyyy/mm/dd' 
 		         }; 
 			 if ($('#candidateResume_form').validate(false, validationSettings)){
-				
-				//var form = $('#candidateResume_form')[0];
-				var formData = getFormData("candidateResume_form");
-				var sourceleadUrl = '${sourceleadUrl}';
-		        $.post(sourceleadUrl+"/saveCandidateResume?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&resumeId="+resumeId, formData, function(data) {
-		        	candidateResumesList(candidateId);
-			 		resMsgFadeinResumes();
-		        });
+				 var sourceleadUrl = '${sourceleadUrl}';
+				var form = $('#candidateResume_form')[0];
+				//var formData = getFormData("candidateResume_form");
+				var formData = new FormData(form); 
+				$.ajax({
+					type : "POST",
+	        	    data: formData,
+	    	        processData: false,
+	    	        contentType:false,
+					url : sourceleadUrl+"/saveCandidateResume?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&resumeId="+resumeId,
+					success : function(result) {
+						 if( result.indexOf('Sign In') >= 0){
+				    		location.replace(sourceleadUrl);
+				    	 }
+	            		 else if (result.indexOf('exception') >= 0) {
+	            			 location.replace(sourceleadUrl+"/errorPage");
+	            		 }
+	            		 else{
+	            			$('#perVal').attr('aria-valuenow', result).css('width',result+'%');
+		          			 if(result<50){
+			          			   $("#perVal").removeClass('progress-bar-success');
+			          			   $("#perVal").addClass("progress-bar-danger");
+			          			 }
+			          			 if(result>=50){
+			          				 $("#perVal").removeClass('progress-bar-danger');
+			          				 $("#perVal").addClass("progress-bar-success");
+			          			 }
+
+	            			$("#disVal").empty();
+	            			$("#disVal").append(result+'%');
+	            			// for quick view bar update
+	            			$('#quickPerVal').attr('aria-valuenow', result).css('width',result+'%');
+		          			 if(result<50){
+			          			   $("#quickPerVal").removeClass('progress-bar-success');
+			          			   $("#quickPerVal").addClass("progress-bar-danger");
+			          			 }
+			          			 if(result>=50){
+			          				 $("#quickPerVal").removeClass('progress-bar-danger');
+			          				 $("#quickPerVal").addClass("progress-bar-success");
+			          			 }
+
+	            			$("#quickDisVal").empty();
+	            			$("#quickDisVal").append(result+'%');
+	            			
+	            			
+						 	$("#popUpDivResume").removeClass("edit-details-active");
+	             			$("#selector2").removeAttr("style");
+	             			$("#selector2").css({ display: "block" });
+	             			if(resumeId != null){
+	             				$("#resMsgDiv").html("Resume details updated");
+	             			}else{
+	             				$("#resMsgDiv").html("Success!! New Resume added");
+	             			}		             			
+					 		candidateResumesList(candidateId);
+					 		resMsgFadeinResumes();
+	            		 }
+						 /* $("#conMsg").fadeIn(200);
+						 $('#conMsg').delay(2000).fadeOut('slow'); */
+					},
+				});
 					return true;
 			 }else{ 
 					return false;

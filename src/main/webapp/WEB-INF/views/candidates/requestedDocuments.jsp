@@ -60,6 +60,7 @@ top: 20%; right: auto; left: 40%;
 	   <form:form class="login-form clearfix reqDocuments container"  id="requestForDocs_form"  name="requestForDocs_form">
 	   <div id="loading"></div>
 	   <input type="hidden" name="requestDocUUID" id="requestDocUUID" value="${requestDocUUID}">
+	   <input  type="hidden" name="requestDocType" id="requestDocType" value="${docs.documentType}"/>
 		   <div class="clearfix clients_wrap_table">
 		   	<h4>${orgName}</h4>
 		   	<table class="" width="100%">
@@ -127,16 +128,15 @@ top: 20%; right: auto; left: 40%;
     </c:if>
    
    <script type="text/javascript">
-$('body').on('submit', '#requestForDocs_form', function(e){
-	
-	var validationSettings = {
+   var validationSettings = {
 	        errorMessagePosition : 'element',
 	        borderColorOnError : '',
 			scrollToTopOnError : true,
 			dateFormat : 'yyyy/mm/dd' 
-         }; 
+        }; 
+$('body').on('submit', '#requestForDocs_form', function(e){
 	
-	  if ($(this).validate(false, validationSettings)){
+	  if ($("#requestForDocs_form").validate(false, validationSettings)){
       e.preventDefault();
      
      /*  var frm = $('#requestForDocs_form').serializeFormJSON();
@@ -148,34 +148,29 @@ $('body').on('submit', '#requestForDocs_form', function(e){
       
       var form = $('#requestForDocs_form')[0];
 	  var formData = new FormData(form);  */
-	  
-	    var formData = getFormData("requestForDocs_form");
+	  var requestDocUUID = '${requestDocUUID}';
+	    var formData = getFormData1("requestForDocs_form");
 		var sourceleadUrl = '${sourceleadUrl}';
 		$("#save_doc").attr("disabled", "disabled");
 		$("#save_doc" ).addClass('button').val('Processing..');
 		
-      $.post(sourceleadUrl+"/uploadRequestedDocuments?${_csrf.parameterName}=${_csrf.token}", formData, function(data) {
+		$.ajax({
+				 type : "POST",
+				 data: formData,
+		         processData: false,
+		         contentType:false, 
+			url : sourceleadUrl+"/uploadRequestedDocuments?${_csrf.parameterName}=${_csrf.token}",
+			success : function(data) {
+				 location.replace(sourceleadUrl+"/requestedDocuments?requestDocUUID="+requestDocUUID); 
+
+			},
+		});
+		
+	/* 	
+      $.post(sourceleadUrl+"/uploadRequestedDocuments?${_csrf.parameterName}=${_csrf.token}", formData,processData: false,contentType:false, function(data) {
     	  location.replace(sourceleadUrl+"/requestedDocuments?requestDocUUID="+requestDocUUID); 
-      });
-     /*  var sourceleadUrl ='${sourceleadUrl}';
-      var requestDocUUID = '${requestDocUUID}';
-      
-        $("#submit_docs").attr("disabled", "disabled");
-		$("#submit_docs" ).addClass('button').val('Processing..');
-		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-	       $.ajax({
-	    	   type : "POST",
-	 	       data: formData,
-	 	       contentType : 'application/json; charset=utf-8',
-	 	       enctype: 'multipart/form-data',
-	           processData: false,
-	           contentType:false,
-	 	       dataType : 'json',
-		       url: sourceleadUrl+"/uploadRequestedDocuments?${_csrf.parameterName}=${_csrf.token}", 
-		       success: function(result) {
-		    	   location.replace(sourceleadUrl+"/requestedDocuments?requestDocUUID="+requestDocUUID); 
-		        },
-		    });    */
+      }); */
+     
       return true; 
     }
     else{
@@ -192,7 +187,7 @@ $('body').on('submit', '#requestForDocs_form', function(e){
 <script>
 function uploadFileReqDoc(id){
 	var sourceleadUrl ='${sourceleadUrl}';
-	fileUpload(sourceleadUrl, "uploadDocFile"+id+"", "resumes", "requestForDocs_form");
+	fileUpload(sourceleadUrl, "uploadDocFile"+id+"", "requestedDocuments", "requestForDocs_form", '', '${orgId}', '${orgLocationId}');
 }
 </script> 
   
@@ -223,5 +218,6 @@ function uploadFileReqDoc(id){
     <div class="pull-right"> Powered by: businessintelli.com </div>
     </div>
   </footer>
+  <script type="text/javascript" src='resources/js/slead-common.js'></script>
 </div>
 </body>

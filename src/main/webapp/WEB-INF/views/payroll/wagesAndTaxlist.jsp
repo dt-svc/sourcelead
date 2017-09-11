@@ -2,10 +2,12 @@
 
 <script type="text/javascript">
 function wagesAndTaxList(){
+	    $("#addPayrollDiv").hide();
 		var sourceleadUrl ='${sourceleadUrl}';
 		var searchValue = $("#dataTableSearch").val();
+		var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 		searchValue = searchValue ? searchValue : "";
-		var url = sourceleadUrl+"/getWagesAndTaxList?searchValue="+searchValue;
+		var url = sourceleadUrl+"/getWagesAndTaxList?searchValue="+searchValue+"&orgLocationId="+orgLocationId;
 		/* url += "&"+$($('#payroll_list_form')[0]).serialize(); */
 	    prepareWagesAndTaxList(url);
 }

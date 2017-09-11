@@ -307,9 +307,10 @@ function receivePaymentPop1(invoiceId,total){
 
 	result = result +'        <!-- Add New Task Widget -->                                                ';
 	result = result +'        <div class="col-md-12 clearfix">                                            ';
-	result = result +'        <form class="form-horizontal clearfix" id="receivePayment-form" name="receivePayment-form" enctype="multipart/form-data">                                     ';
+	result = result +'        <form class="form-horizontal clearfix" id="receivePayment-form" name="receivePayment-form">                                     ';
 	result = result +'          <div class="row mt">                                                      ';
 	result = result +'            <div class="col-md-4" id="errPaymentDate">     ';
+	result = result +' <input type="hidden" id="paymentInvoiceId" name="invoiceId" value="'+invoiceId+'">';
 	result = result +'              <label>Payment Date<span class="text-danger paddingLeft">*</span></label>    ';
 	result = result +'              <input class="form-control input-sm calendar" placeholder="Payment Date" type="text" id="paymentDate" name="paymentDate" data-validation="required" field-name="Payment Date" readonly> ';
 	result = result +'            </div>';
@@ -355,11 +356,11 @@ function receivePaymentPop1(invoiceId,total){
 	result = result +'            </div>                                                                ';
 	result = result +'            <div class="col-md-6 mt">                                                ';
 	result = result +'              <div class="clearfix mb invoiceAttachment">                         ';
-	result = result +'              <label><strong>Attachments</strong></label>                         ';
+	result = result +'              <label><strong>Attachment</strong></label>                         ';
 	result = result +'              <div class="timesheet_week_comm col-md-12 ">                        ';
 	result = result +'                <div class="form-group"> <span>                                   ';
-	result = result +'                  <input type="file"  id="paymentAttachment" name="paymentAttachment"> ';
-	result = result +'                  <i class="fa fa-times" onClick="remove()"></i></span> </div>';
+	result = result +'                  <input type="file"  id="paymentAttachment" name="paymentAttachment" onchange="getfileUrl()"> ';
+	result = result +'                  </span> </div>';
 	result = result +'              </div>                                                              ';
 	result = result +'            </div>                                                                ';
 	result = result +'            </div>                                                                ';
@@ -397,6 +398,11 @@ function receivePaymentPop1(invoiceId,total){
     
 }
 
+function getfileUrl(){
+	var sourceleadUrl ='${sourceleadUrl}';
+	fileUpload(sourceleadUrl, "paymentAttachment", "incoiceDocuments", "receivePayment-form");
+}
+
 </script> 
 <script> 
 function remove(){
@@ -427,17 +433,24 @@ function removeErr(){
 <script>
 function saveReceivePayment(invoiceId){
 	 if ($('#receivePayment-form').validate(false, validationSettings)){  
-		    var frm = $('#receivePayment-form').serializeFormJSON();
-	        var con = JSON.stringify(frm);
-	        con = con.replace(/[{}]/g, "");
-	        //It will escape all the special characters
-	        var jsonData = encodeURIComponent(con);
+// 		    var frm = $('#receivePayment-form').serializeFormJSON();
+// 	        var con = JSON.stringify(frm);
+// 	        con = con.replace(/[{}]/g, "");
+// 	        //It will escape all the special characters
+// 	        var jsonData = encodeURIComponent(con);
 	        
-	        var form = $('#receivePayment-form')[0];
-	 	   var formData = new FormData(form); 
+// 	        var form = $('#receivePayment-form')[0];
+// 	 	   var formData = new FormData(form); 
 	        var sourceleadUrl ='${sourceleadUrl}';
 	        $("#save_payment").attr("disabled", "disabled");
      		$("#save_payment" ).addClass('button').val('Processing..');
+     		
+     		 var formData = getFormData("receivePayment-form");
+	            $.post( sourceleadUrl+ "/saveInvoicePayment?${_csrf.parameterName}=${_csrf.token}", formData, function(data) {
+	                    	   location.replace(sourceleadUrl+"/invoiceList");
+	                    });
+     		
+     		/* 
 	        $.ajax({
 		    	type: "POST",
 		    	 data: formData,
@@ -451,7 +464,7 @@ function saveReceivePayment(invoiceId){
 		     		location.replace(sourceleadUrl+"/invoiceList");
 		     		
 		        },
-		    });  
+		    }); */  
 	         return true; 
 		
 	   }else{

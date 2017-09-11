@@ -10,7 +10,7 @@ public class RequirementDTO {
 	
 	private String staticPath;
 
-	private List<Map<String, String>> fileInfo;
+	private List<FileInfo> fileInfo;
 	
 	private List<FileInfo> uploadedFileInfo;
 	
@@ -35,7 +35,7 @@ public class RequirementDTO {
 	
     private String positions;
 	
-    private List<String> education;	
+    private String education;	
 	
     private String minExp;
 	
@@ -72,13 +72,13 @@ public class RequirementDTO {
 	
 	private String zipCode;
 	
-	private List<String> skills;
+	private String skills;
 	
 	private List<String> visa;
 	
 	private String description;
 	
-	private String noticePeriod;
+	private List<String> noticePeriod;
 	
 	private String coolingOff;
 	
@@ -131,10 +131,88 @@ public class RequirementDTO {
 	
 	private String assignedTeamId;
 	
-	private List<String> assignUserId;
+	private List<String> assignUsers;
 	
 	private String jobOtherType;
 	
+	
+	// for save elk requirement
+	private String generatedId;
+	
+	private String createdDate;
+
+	private Long reqCreatedBy;
+		
+	private String reqCreatedDate;
+		
+	private String reqUpdatedDate;
+
+	private String updatedDate;
+
+	private String reqUpdatedBy;
+	
+	private String requirementStatus;
+	
+    private String[] reqLevel1ApproverUserId;
+	
+	private String[] reqLevel2ApproverUserId;
+	
+	private String[] teamOwnerUserId;
+	
+	private String[] teamAssignUserId;
+	
+    private String requirementUUID;
+	
+	private String requirementAppliedDate;
+
+	private String isPublicJob;
+	
+	private String isCrowdSourcingJob;
+	
+	private String postedOrg;
+	
+    private String[] appliedProfessionals;
+	
+	private String[] appliedRecruiters;
+	
+	private String rewardType;
+	
+    private String rewardPercentage;
+	
+	private String rewardFlat;
+	
+	private String rewardFlatRateType;
+	
+	private String rewardGuaranteePeriod;
+	
+    private String reqLevel1ApproverStatus;
+	
+	private String reqLevel2ApproverStatus;
+	
+	private String managerUserId;
+	
+	private String client;
+	
+    private String clientContactName;
+	
+	private String clientContactEmail;
+	
+	private String numberOfApplicants;
+	
+	private String releasedBy;
+	
+	private String currentRateCurrency;
+	
+
+	public String getRequirementStatus()
+	{
+		return requirementStatus;
+	}
+
+	public void setRequirementStatus(String requirementStatus)
+	{
+		this.requirementStatus = requirementStatus;
+	}
 
 	public String getStaticPath()
 	{
@@ -146,12 +224,14 @@ public class RequirementDTO {
 		this.staticPath = staticPath;
 	}
 
-	public List<Map<String, String>> getFileInfo()
+	
+
+	public List<FileInfo> getFileInfo()
 	{
 		return fileInfo;
 	}
 
-	public void setFileInfo(List<Map<String, String>> fileInfo)
+	public void setFileInfo(List<FileInfo> fileInfo)
 	{
 		this.fileInfo = fileInfo;
 	}
@@ -256,14 +336,12 @@ public class RequirementDTO {
 		this.positions = positions;
 	}
 
-	
-
-	public List<String> getEducation()
+	public String getEducation()
 	{
 		return education;
 	}
 
-	public void setEducation(List<String> education)
+	public void setEducation(String education)
 	{
 		this.education = education;
 	}
@@ -439,12 +517,14 @@ public class RequirementDTO {
 		this.zipCode = zipCode;
 	}
 
-	public List<String> getSkills()
+	
+
+	public String getSkills()
 	{
 		return skills;
 	}
 
-	public void setSkills(List<String> skills)
+	public void setSkills(String skills)
 	{
 		this.skills = skills;
 	}
@@ -469,12 +549,12 @@ public class RequirementDTO {
 		this.description = description;
 	}
 
-	public String getNoticePeriod()
+	public List<String> getNoticePeriod()
 	{
 		return noticePeriod;
 	}
 
-	public void setNoticePeriod(String noticePeriod)
+	public void setNoticePeriod(List<String> noticePeriod)
 	{
 		this.noticePeriod = noticePeriod;
 	}
@@ -713,14 +793,15 @@ public class RequirementDTO {
 		this.assignedTeamId = assignedTeamId;
 	}
 
-	public List<String> getAssignUserId()
+	
+	public List<String> getAssignUsers()
 	{
-		return assignUserId;
+		return assignUsers;
 	}
 
-	public void setAssignUserId(List<String> assignUserId)
+	public void setAssignUsers(List<String> assignUsers)
 	{
-		this.assignUserId = assignUserId;
+		this.assignUsers = assignUsers;
 	}
 
 	public String getJobOtherType()
@@ -741,6 +822,326 @@ public class RequirementDTO {
 	public void setAssignedTo(List<String> assignedTo)
 	{
 		this.assignedTo = assignedTo;
+	}
+
+	public String getGeneratedId()
+	{
+		return generatedId;
+	}
+
+	public void setGeneratedId(String generatedId)
+	{
+		this.generatedId = generatedId;
+	}
+
+	public String getCreatedDate()
+	{
+		return createdDate;
+	}
+
+	public void setCreatedDate(String createdDate)
+	{
+		this.createdDate = createdDate;
+	}
+
+	public Long getReqCreatedBy()
+	{
+		return reqCreatedBy;
+	}
+
+	public void setReqCreatedBy(Long reqCreatedBy)
+	{
+		this.reqCreatedBy = reqCreatedBy;
+	}
+
+	public String getReqCreatedDate()
+	{
+		return reqCreatedDate;
+	}
+
+	public void setReqCreatedDate(String reqCreatedDate)
+	{
+		this.reqCreatedDate = reqCreatedDate;
+	}
+
+	public String getReqUpdatedDate()
+	{
+		return reqUpdatedDate;
+	}
+
+	public void setReqUpdatedDate(String reqUpdatedDate)
+	{
+		this.reqUpdatedDate = reqUpdatedDate;
+	}
+
+	public String getUpdatedDate()
+	{
+		return updatedDate;
+	}
+
+	public void setUpdatedDate(String updatedDate)
+	{
+		this.updatedDate = updatedDate;
+	}
+
+	public String getReqUpdatedBy()
+	{
+		return reqUpdatedBy;
+	}
+
+	public void setReqUpdatedBy(String reqUpdatedBy)
+	{
+		this.reqUpdatedBy = reqUpdatedBy;
+	}
+
+	public String[] getReqLevel1ApproverUserId()
+	{
+		return reqLevel1ApproverUserId;
+	}
+
+	public void setReqLevel1ApproverUserId(String[] reqLevel1ApproverUserId)
+	{
+		this.reqLevel1ApproverUserId = reqLevel1ApproverUserId;
+	}
+
+	public String[] getReqLevel2ApproverUserId()
+	{
+		return reqLevel2ApproverUserId;
+	}
+
+	public void setReqLevel2ApproverUserId(String[] reqLevel2ApproverUserId)
+	{
+		this.reqLevel2ApproverUserId = reqLevel2ApproverUserId;
+	}
+
+	public String[] getTeamOwnerUserId()
+	{
+		return teamOwnerUserId;
+	}
+
+	public void setTeamOwnerUserId(String[] teamOwnerUserId)
+	{
+		this.teamOwnerUserId = teamOwnerUserId;
+	}
+
+	public String[] getTeamAssignUserId()
+	{
+		return teamAssignUserId;
+	}
+
+	public void setTeamAssignUserId(String[] teamAssignUserId)
+	{
+		this.teamAssignUserId = teamAssignUserId;
+	}
+
+	public String getRequirementUUID()
+	{
+		return requirementUUID;
+	}
+
+	public void setRequirementUUID(String requirementUUID)
+	{
+		this.requirementUUID = requirementUUID;
+	}
+
+	public String getRequirementAppliedDate()
+	{
+		return requirementAppliedDate;
+	}
+
+	public void setRequirementAppliedDate(String requirementAppliedDate)
+	{
+		this.requirementAppliedDate = requirementAppliedDate;
+	}
+
+	public String getIsPublicJob()
+	{
+		return isPublicJob;
+	}
+
+	public void setIsPublicJob(String isPublicJob)
+	{
+		this.isPublicJob = isPublicJob;
+	}
+
+	public String getIsCrowdSourcingJob()
+	{
+		return isCrowdSourcingJob;
+	}
+
+	public void setIsCrowdSourcingJob(String isCrowdSourcingJob)
+	{
+		this.isCrowdSourcingJob = isCrowdSourcingJob;
+	}
+
+	public String getPostedOrg()
+	{
+		return postedOrg;
+	}
+
+	public void setPostedOrg(String postedOrg)
+	{
+		this.postedOrg = postedOrg;
+	}
+
+	public String[] getAppliedProfessionals()
+	{
+		return appliedProfessionals;
+	}
+
+	public void setAppliedProfessionals(String[] appliedProfessionals)
+	{
+		this.appliedProfessionals = appliedProfessionals;
+	}
+
+	public String[] getAppliedRecruiters()
+	{
+		return appliedRecruiters;
+	}
+
+	public void setAppliedRecruiters(String[] appliedRecruiters)
+	{
+		this.appliedRecruiters = appliedRecruiters;
+	}
+
+	public String getRewardType()
+	{
+		return rewardType;
+	}
+
+	public void setRewardType(String rewardType)
+	{
+		this.rewardType = rewardType;
+	}
+
+	public String getRewardPercentage()
+	{
+		return rewardPercentage;
+	}
+
+	public void setRewardPercentage(String rewardPercentage)
+	{
+		this.rewardPercentage = rewardPercentage;
+	}
+
+	public String getRewardFlat()
+	{
+		return rewardFlat;
+	}
+
+	public void setRewardFlat(String rewardFlat)
+	{
+		this.rewardFlat = rewardFlat;
+	}
+
+	public String getRewardFlatRateType()
+	{
+		return rewardFlatRateType;
+	}
+
+	public void setRewardFlatRateType(String rewardFlatRateType)
+	{
+		this.rewardFlatRateType = rewardFlatRateType;
+	}
+
+	public String getRewardGuaranteePeriod()
+	{
+		return rewardGuaranteePeriod;
+	}
+
+	public void setRewardGuaranteePeriod(String rewardGuaranteePeriod)
+	{
+		this.rewardGuaranteePeriod = rewardGuaranteePeriod;
+	}
+
+	public String getReqLevel1ApproverStatus()
+	{
+		return reqLevel1ApproverStatus;
+	}
+
+	public void setReqLevel1ApproverStatus(String reqLevel1ApproverStatus)
+	{
+		this.reqLevel1ApproverStatus = reqLevel1ApproverStatus;
+	}
+
+	public String getReqLevel2ApproverStatus()
+	{
+		return reqLevel2ApproverStatus;
+	}
+
+	public void setReqLevel2ApproverStatus(String reqLevel2ApproverStatus)
+	{
+		this.reqLevel2ApproverStatus = reqLevel2ApproverStatus;
+	}
+
+	public String getManagerUserId()
+	{
+		return managerUserId;
+	}
+
+	public void setManagerUserId(String managerUserId)
+	{
+		this.managerUserId = managerUserId;
+	}
+
+	public String getClient()
+	{
+		return client;
+	}
+
+	public void setClient(String client)
+	{
+		this.client = client;
+	}
+
+	public String getClientContactName()
+	{
+		return clientContactName;
+	}
+
+	public void setClientContactName(String clientContactName)
+	{
+		this.clientContactName = clientContactName;
+	}
+
+	public String getClientContactEmail()
+	{
+		return clientContactEmail;
+	}
+
+	public void setClientContactEmail(String clientContactEmail)
+	{
+		this.clientContactEmail = clientContactEmail;
+	}
+
+	public String getNumberOfApplicants()
+	{
+		return numberOfApplicants;
+	}
+
+	public void setNumberOfApplicants(String numberOfApplicants)
+	{
+		this.numberOfApplicants = numberOfApplicants;
+	}
+
+	public String getReleasedBy()
+	{
+		return releasedBy;
+	}
+
+	public void setReleasedBy(String releasedBy)
+	{
+		this.releasedBy = releasedBy;
+	}
+
+	public String getCurrentRateCurrency()
+	{
+		return currentRateCurrency;
+	}
+
+	public void setCurrentRateCurrency(String currentRateCurrency)
+	{
+		this.currentRateCurrency = currentRateCurrency;
 	}
 	
 	

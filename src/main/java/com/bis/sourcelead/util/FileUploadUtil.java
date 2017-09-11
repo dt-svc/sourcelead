@@ -15,27 +15,30 @@ import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.dto.OrgStorageDetailDTO;
 
 public class FileUploadUtil {
-	 
-	public String uploadFile(String staticPath, long orgId, long locationId, String fileType, MultipartFile multipartFile) {
+
+	public String uploadFile(String staticPath, long orgId, long locationId, String fileType,
+			MultipartFile multipartFile) {
 		String fileName = multipartFile.getOriginalFilename();
 		String extenstion = fileName.substring(fileName.lastIndexOf("."));
 		fileName = fileName.substring(0, fileName.lastIndexOf("."));
 		String url = "";
-		if(orgId > 0) {
-			url = "/slead-static/"+orgId+"/"+locationId+"/"+fileType+"/"+fileName+new Date().getTime()+extenstion;
-			fileName = "/slead-static/"+orgId+"/"+locationId+"/temp/"+fileName+new Date().getTime()+extenstion;
+		long time = new Date().getTime();
+		if (orgId > 0) {
+			url = "/slead-static/" + orgId + "/" + locationId + "/" + fileType + "/" + fileName + time + extenstion;
+			fileName = "/slead-static/" + orgId + "/" + locationId + "/temp/" + fileName + time + extenstion;
 		} else {
-			url = "/slead-static/"+fileType+"/"+fileName+new Date().getTime()+extenstion;
-			fileName = "/slead-static/temp/"+fileName+new Date().getTime()+extenstion;
+			url = "/slead-static/" + fileType + "/" + fileName + time + extenstion;
+			fileName = "/slead-static/temp/" + fileName + time + extenstion;
 		}
-		File folderFile = new File(staticPath, "/slead-static/"+orgId+"/"+locationId+"/"+fileType);
-		if(!folderFile.exists())
+		File folderFile = new File(staticPath, "/slead-static/" + orgId + "/" + locationId + "/" + fileType);
+		if (!folderFile.exists())
 			folderFile.mkdirs();
-		folderFile = new File(staticPath, "/slead-static/"+orgId+"/"+locationId+"/temp");
-		if(!folderFile.exists())
+		folderFile = new File(staticPath, "/slead-static/" + orgId + "/" + locationId + "/temp");
+		if (!folderFile.exists())
 			folderFile.mkdirs();
 		File file = new File(staticPath, fileName);
 		try {
+
 			multipartFile.transferTo(file);
 			return url;
 		} catch (IllegalStateException | IOException e) {
@@ -43,10 +46,10 @@ public class FileUploadUtil {
 		}
 		return "";
 	}
-	
+
 	public OrgStorageDetailDTO getOrgStorageDetails(String staticPath, long orgId, String orgName) {
-		File file = new File(staticPath, orgId+"");
-		
+		File file = new File(staticPath, orgId + "");
+
 		return null;
 	}
 
@@ -56,18 +59,32 @@ public class FileUploadUtil {
 		Files.move(fromFile.toPath(), file.toPath());
 	}
 	
+	public static String moveFile(String staticPath, long orgId, long orgLocationId, String type, File file) throws IOException {
+		String url = "/slead-static/"+orgId+"/"+orgLocationId+"/"+type+"/"+file.getPath();
+		File saveFileFolder = new File(staticPath, "/slead-static/"+orgId+"/"+orgLocationId+"/"+type);
+		if(!saveFileFolder.exists())
+		saveFileFolder.mkdirs();
+		try {
+			Files.move(file.toPath(), new File(saveFileFolder, file.getName()).toPath());
+			return url;
+		} catch (IllegalStateException | IOException e) {
+			e.printStackTrace();
+		}
+		return "";
+		}
+
 	public static void fillUploadedFileInfo(Object object, List<Map<String, String>> fileInfo) throws Exception {
 		List<FileInfo> uploadedFileInfo = new ArrayList<>();
-		if(fileInfo != null) {
-			for(Map<String, String> map : fileInfo) {
+		if (fileInfo != null) {
+			for (Map<String, String> map : fileInfo) {
 				Iterator<String> it = map.keySet().iterator();
 				FileInfo f = new FileInfo();
-				while(it.hasNext()) {
+				while (it.hasNext()) {
 					String key = it.next();
 					String value = map.get(key);
-					if(key.equalsIgnoreCase("fileName"))
+					if (key.equalsIgnoreCase("fileName"))
 						f.setFileName(value);
-					else if(key.equalsIgnoreCase("fileURL"))
+					else if (key.equalsIgnoreCase("fileURL"))
 						f.setFileURL(value);
 					else
 						f.setContentType(value);
@@ -80,4 +97,5 @@ public class FileUploadUtil {
 	
 	
 	
+
 }

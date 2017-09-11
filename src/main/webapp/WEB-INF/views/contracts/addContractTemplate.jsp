@@ -604,22 +604,30 @@ function generatePDF(id) {
 		var ee = $("#txtEditor").summernote('code');
 	//	var content = $('textarea[name="templateContent"]').html($('#txtEditor').code());
 		if ($('#template_form').validate(false, validationSettings)) {
-			var frm = $('#template_form').serializeFormJSON();
+			/* var frm = $('#template_form').serializeFormJSON();
 			var jsonData = JSON.stringify(frm);
 			/* var con = JSON.stringify(frm);
-			 con = con.replace(/[{}]/g, ""); */
+			 con = con.replace(/[{}]/g, ""); 
 			
 			var form = $('#template_form')[0];
 		    var formData = new FormData(form);
-		  	formData.append("json",jsonData);
+		  	formData.append("json",jsonData); */
 			
 	  		
 			  //It will escape all the special characters
 	       // var jsonData = encodeURIComponent(con);
 	        $( "#save_template" ).addClass('button').val('Processing..');
+	       
+	        var formData = getFormData("template_form");
 			var sourceleadUrl = '${sourceleadUrl}';
-			$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-	 		$.ajax({
+// 			$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+            $.post( sourceleadUrl+ "/saveTemplate?${_csrf.parameterName}=${_csrf.token}",formData, function(data) {
+            	if(data != null){
+                           location.replace(sourceleadUrl+"/orgContractTemplate");
+                       }
+                    });
+			
+			/* $.ajax({
 						type : "POST",
 		  	    	    data: formData,
 		  	    	    contentType : 'application/json; charset=utf-8',
@@ -629,10 +637,10 @@ function generatePDF(id) {
 						url : sourceleadUrl
 							+ "/saveTemplate?${_csrf.parameterName}=${_csrf.token}", 
 						success : function(result) {
-							 /* generatePDF(result);  */
+							 /* generatePDF(result);  
 							location.replace(sourceleadUrl+ "/orgContractTemplate");
 						},
-					}); 
+					});  */
 			return true;
 		} else {
 			return false;

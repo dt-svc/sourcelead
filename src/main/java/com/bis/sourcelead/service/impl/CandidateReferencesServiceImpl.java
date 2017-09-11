@@ -77,6 +77,8 @@ public class CandidateReferencesServiceImpl implements CandidateReferencesServic
 				activitySummary.append("Mobile Phone").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidateReferences.getMobilePhone()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateReferencesDTO.getMobilePhone()).append(Constants.NEW_VALUE_TAG_END).append(" ");
 			}
 			candidateReferences.setMobilePhone(candidateReferencesDTO.getMobilePhone());
+		}else{
+			candidateReferences.setMobilePhone("");
 		}
 		
 		if(StringUtils.isNotBlank(candidateReferencesDTO.getRelation())){
@@ -84,6 +86,8 @@ public class CandidateReferencesServiceImpl implements CandidateReferencesServic
 				activitySummary.append("Relation").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidateReferences.getRelation()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateReferencesDTO.getRelation()).append(Constants.NEW_VALUE_TAG_END).append(" ");
 			}
 			candidateReferences.setRelation(candidateReferencesDTO.getRelation());
+		}else{
+			candidateReferences.setRelation("");
 		}
 		
 		if(StringUtils.isNotBlank(candidateReferencesDTO.getDesignation())){
@@ -91,6 +95,8 @@ public class CandidateReferencesServiceImpl implements CandidateReferencesServic
 				activitySummary.append("Designation").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidateReferences.getDesignation()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateReferencesDTO.getDesignation()).append(Constants.NEW_VALUE_TAG_END).append(" ");
 			}
 			candidateReferences.setDesignation(candidateReferencesDTO.getDesignation());
+		}else{
+			candidateReferences.setDesignation("");
 		}
 		
 		if(StringUtils.isNotBlank(candidateReferencesDTO.getComment())){
@@ -98,6 +104,8 @@ public class CandidateReferencesServiceImpl implements CandidateReferencesServic
 				activitySummary.append("Comment").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidateReferences.getComment()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateReferencesDTO.getComment()).append(Constants.NEW_VALUE_TAG_END).append(" ");
 			}
 			candidateReferences.setComment(candidateReferencesDTO.getComment());
+		}else{
+			candidateReferences.setComment("");
 		}
 		
 		candidateReferences.setStatus(Constants.CANDIDATE_ACTIVE);
