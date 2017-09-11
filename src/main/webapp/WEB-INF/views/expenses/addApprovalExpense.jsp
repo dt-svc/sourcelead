@@ -66,7 +66,7 @@
 				<div class="form-group">
 					<label class="col-md-3">Select Project <span class="text-danger">&nbsp;*</span></label>
 					<div class="col-md-9" id="errProject">
-						<select class="chosen-select form-control" autocomplete="off" onchange="getClientBasedOnSelectedProject(); getMembersForSelectedProject();removeErrProject();" id="projectId" name="projectId" field-name="Project" data-validation="required">
+						<select class="chosen-select form-control" autocomplete="off" onchange="getClientBasedOnSelectedProject(); getMembersForSelectedProject();removeErrProject();flushDataOnChange();" id="projectId" name="projectId" field-name="Project" data-validation="required">
 							 <c:if test="${fn:length(projectsList) gt 0}">
 								<option value="">Select Project</option>
 							</c:if>
@@ -403,7 +403,7 @@ function getMembersForSelectedProject(){
 				        var opt = json[i];
 				        result = result + '<option  value="'+opt.id+'">'+opt.empName+'</option>';
 			       	}
-				$("#projectMemberId").empty();
+				//$("#projectMemberId").empty();
 				$("#projectMemberId").append(result);
 				$("#projectMemberId").trigger("chosen:updated");
 	    	   }
@@ -531,8 +531,8 @@ function getClientBasedOnSelectedProject(){
 					  expensesDatePickerStartDate(projectStartDate,projectEndDate);
 		    	  }	
 		    	  $('#expensePurpose').val('');
-		    	  $('#projectStartDateExpensesId').val('');
-		    	  $('#projectEndDateExpensesId').val('');
+		    	  //$('#projectStartDateExpensesId').val('');
+		    	 // $('#projectEndDateExpensesId').val('');
 		    	    
 	    	   }
 	       },
@@ -645,6 +645,14 @@ if(expenseAmount !=null && expenseAmount !='' && expenseAmount!='Undefined'){
 	}
    }	
   }
+}
+</script>
+
+<script type="text/javascript">
+function flushDataOnChange(){
+	$('#projectStartDateExpensesId').val('');
+	$('#projectEndDateExpensesId').val('');
+	$("#projectMemberId").empty();
 }
 </script>
 
