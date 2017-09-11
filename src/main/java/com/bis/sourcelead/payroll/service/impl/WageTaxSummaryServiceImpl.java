@@ -567,6 +567,7 @@ public class WageTaxSummaryServiceImpl implements WageTaxSummaryService{
 		
 
 		List<WageTaxSummary> wagesAndTaxList = wageTaxSummaryDao.getWagesAndTaxListByEmployeeId(orgLocations,empId);
+		
 		if(wagesAndTaxList != null){
 			for(WageTaxSummary wts : wagesAndTaxList){
 				StringBuilder sb = new StringBuilder();
