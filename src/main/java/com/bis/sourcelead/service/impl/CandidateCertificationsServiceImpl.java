@@ -102,18 +102,26 @@ public class CandidateCertificationsServiceImpl implements CandidateCertificatio
 					activitySummary.append("Score").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidatecertificate.getScore()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateCertificationDTO.getScore()).append(Constants.NEW_VALUE_TAG_END).append(" ");
 				}
 				candidatecertificate.setScore(candidateCertificationDTO.getScore());
+			}else{
+				candidatecertificate.setScore("");
 			}
 			if (StringUtils.isNotBlank(candidateCertificationDTO.getScoreType())) {
 				if(candidatecertificate != null && candidatecertificate.getScoreType() != null){
 					activitySummary.append("Score Type").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidatecertificate.getScoreType()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateCertificationDTO.getScoreType()).append(Constants.NEW_VALUE_TAG_END).append(" ");
 				}
 				candidatecertificate.setScoreType(candidateCertificationDTO.getScoreType());
+			}else{
+				candidatecertificate.setScoreType("");
+	
 			}
 			if (StringUtils.isNotBlank(candidateCertificationDTO.getDescription())) {
 				if(candidatecertificate != null && candidatecertificate.getDescription() != null ){
 					activitySummary.append("Description").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidatecertificate.getDescription()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateCertificationDTO.getDescription()).append(Constants.NEW_VALUE_TAG_END).append(" ");
 				}
 				candidatecertificate.setDescription(candidateCertificationDTO.getDescription());
+			}else{
+				candidatecertificate.setDescription("");
+
 			}
 				if (StringUtils.isNotBlank(candidateCertificationDTO.getValidFrom())) {
 					try {
