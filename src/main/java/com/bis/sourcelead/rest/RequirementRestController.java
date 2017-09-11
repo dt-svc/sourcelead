@@ -168,7 +168,7 @@ public class RequirementRestController {
 	{
 		if (Validator.validate(requirementDTO)) {
 			requirementDTO.setStaticPath(staticPath);
-			FileUploadUtil.fillUploadedFileInfo(requirementDTO, requirementDTO.getFileInfo());
+		//	FileUploadUtil.fillUploadedFileInfo(requirementDTO, requirementDTO.getFileInfo());
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			Requirement requirement = requirementService.storeRequirement(requirementDTO, orgLocation, user);
