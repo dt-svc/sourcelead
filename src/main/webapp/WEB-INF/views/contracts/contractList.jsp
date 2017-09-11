@@ -452,7 +452,7 @@ function preparedContractListDraft(data){
 		         result = result + '<div class="tbldata-dotdot_80">';
 		     	if(report.templateSubmissionStatus == "DRAFT"){
 		     		'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CONTRACT\')">';
-		     		result = result + '<a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+report.contractUUID+'\', \''+report.contractTitle+'\')"></i></a>';
+		     		result = result + '<a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+report.fileURL+'\', \''+report.fileName+'\', \''+report.fileType+'\')"></i></a>';
 		     		'</sec:authorize>';
 		     		'<sec:authorize access="hasAnyRole(\'ROLE_EDIT_CONTRACT\')">';
 		     		if(report.typeOfContract == "New"){
@@ -533,7 +533,7 @@ function preparedContractListDraft(data){
 	         opt = opt + '<td>';
 	         opt = opt + '<div class="tbldata-dotdot_80">';
 	     	  if(output.templateSubmissionStatus == "DRAFT" ){
-	     		 opt = opt + '<a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+output.contractUUID+'\', \''+output.contractTitle+'\')"></i></a>';
+	     		 opt = opt + '<a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+output.fileURL+'\', \''+output.fileName+'\', \''+output.fileType+'\')"></i></a>';
 	     		'<sec:authorize access="hasAnyRole(\'ROLE_EDIT_CONTRACT\')">';
 		     		if(output.typeOfContract == "New"){
 		     			opt = opt + '| <a href="<c:url value="/addNewContract?contractUUID='+output.contractUUID+'" />" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
@@ -615,7 +615,7 @@ function preparedContractListDraft(data){
 		         res = res + '<div class="tbldata-dotdot_80">';
 		     	if(appReport.templateSubmissionStatus == "DRAFT"){
 		     		'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CONTRACT\')">';
-		     		res = res + '<a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+appReport.contractUUID+'\', \''+appReport.contractTitle+'\')"></i></a>';
+		     		res = res + '<a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+appReport.fileURL+'\', \''+appReport.fileName+'\', \''+appReport.fileType+'\')"></i></a>';
 		     		'</sec:authorize>';
 		     		'<sec:authorize access="hasAnyRole(\'ROLE_EDIT_CONTRACT\')">';
 		     		if(appReport.typeOfContract == "New"){
@@ -878,7 +878,7 @@ function preparedContractListWFA(data){
 	      	     		}
 	        			'</sec:authorize>';
 	        			'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CONTRACT\')">';
-	        			result = result + '|<a href="#" title="Preview"><i class="fa fa-eye paddingLeft" onclick="previewContractPDF(\''+report.contractUUID+'\', \''+report.contractTitle+'\')"></i></a>';
+	        			result = result + '|<a href="#" title="Preview"><i class="fa fa-eye paddingLeft" onclick="previewContractPDF(\''+report.fileURL+'\', \''+report.fileName+'\', \''+report.fileType+'\')"></i></a>';
 	        			'</sec:authorize>';
 	        			
 	        	  }
@@ -986,7 +986,7 @@ function preparedContractListWFA(data){
      	     		}
        			'</sec:authorize>';
        			'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CONTRACT\')">';
-       			opt = opt + '|<a href="#" title="Preview"><i class="fa fa-eye paddingLeft" onclick="previewContractPDF(\''+output.contractUUID+'\', \''+output.contractTitle+'\')"></i></a>';
+       			opt = opt + '|<a href="#" title="Preview"><i class="fa fa-eye paddingLeft" onclick="previewContractPDF(\''+output.fileURL+'\', \''+output.fileName+'\', \''+output.fileType+'\')"></i></a>';
        			'</sec:authorize>';
         	  }
 	     	 
@@ -1072,7 +1072,7 @@ function preparedContractListWFA(data){
 					res = res +' <div><div class="CurDiv" id="removeStatus'+appReport.id+'"><i class="fa fa-check" title="Approve" alt="Approve" onclick="approveContract('+appReport.id+',\'WAITING_FOR_APPROVER\');"></i>|<i class="fa fa-times" title="Reject" alt="Rejected" onclick="rejectedContractReason('+appReport.id+',\'REJECTED\');"></i></div></div>';
 					}
 		     		'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CONTRACT\')">';
-		     		res = res + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+appReport.contractUUID+'\', \''+appReport.contractTitle+'\')"></i></a>';
+		     		res = res + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+appReport.fileURL+'\', \''+appReport.fileName+'\', \''+appReport.fileType+'\')"></i></a>';
 		     		'</sec:authorize>';
 		     		'<sec:authorize access="hasAnyRole(\'ROLE_EDIT_CONTRACT\')">';
 		     		if(appReport.typeOfContract == "New"){
@@ -1320,7 +1320,7 @@ function preparedContractListWTS(data){
 		         
 		         result = result + '<td>';//Waiting to be signed
 		         '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CONTRACT\')">';
-		         result = result + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+report.contractUUID+'\', \''+report.contractTitle+'\')"></i></a></div>';
+		         result = result + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+report.fileURL+'\', \''+report.fileName+'\', \''+report.fileType+'\')"></i></a></div>';
 		         '</sec:authorize>';
 		         result = result + '</td>';
 		     	 
@@ -1402,7 +1402,7 @@ function preparedContractListWTS(data){
 	         
 	         opt = opt + '<td>';//Waiting to be signed
 	         '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CONTRACT\')">';
-     		 opt = opt + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+output.contractUUID+'\', \''+output.contractTitle+'\')"></i></a></div>';
+     		 opt = opt + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+output.fileURL+'\', \''+output.fileName+'\', \''+output.fileType+'\')"></i></a></div>';
      		'</sec:authorize>';
      		 opt = opt + '</td>';
 	     	
@@ -1481,7 +1481,7 @@ function preparedContractListWTS(data){
 		         
 		         res = res + '<td>';//Waiting to be signed
 		         '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CONTRACT\')">';
-		         res = res + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+appReport.contractUUID+'\', \''+appReport.contractTitle+'\')"></i></a></div>';
+		         res = res + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+appReport.fileURL+'\', \''+appReport.fileName+'\', \''+appReport.fileType+'\')"></i></a></div>';
 		         '</sec:authorize>';
 		         res = res + '</td>';
 		     	 
@@ -1731,7 +1731,7 @@ function preparedContractListWTV(data){
 	            	 }
 		         }
 		         '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CONTRACT\')">';
-	     		 result = result + '<a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+report.contractUUID+'\', \''+report.contractTitle+'\')"></i></a>';
+	     		 result = result + '<a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+report.fileURL+'\', \''+report.fileName+'\', \''+report.fileType+'\')"></i></a>';
 	     		'</sec:authorize>';
 		         result = result + '</div></td>';
 		        result = result + '</tr>';
@@ -1820,7 +1820,7 @@ function preparedContractListWTV(data){
 		     		}
  	         }
 	         '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CONTRACT\')">';
-     		 opt = opt + '<a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+output.contractUUID+'\', \''+output.contractTitle+'\')"></i></a>';
+     		 opt = opt + '<a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+output.fileURL+'\', \''+output.fileName+'\', \''+output.fileType+'\')"></i></a>';
      		'</sec:authorize>';
      		 opt = opt + '</div></td>';
 	     	
@@ -1905,7 +1905,7 @@ function preparedContractListWTV(data){
 			     		}
 		         }
 		         '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CONTRACT\')">';
-		         res = res + '<a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+appReport.contractUUID+'\', \''+appReport.contractTitle+'\')"></i></a>';
+		         res = res + '<a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+appReport.fileURL+'\', \''+appReport.fileName+'\', \''+appReport.fileType+'\')"></i></a>';
 		         '</sec:authorize>';
 		         res = res + '</div></td>';
 		     	 
@@ -2135,7 +2135,7 @@ function preparedContractListFinalize(data){
 		         
 		         result = result + '<td>';
 		         '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CONTRACT\')">';
-		         result = result + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+report.contractUUID+'\', \''+report.contractTitle+'\')"></i></a></div>';
+		         result = result + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+report.fileURL+'\', \''+report.fileName+'\', \''+report.fileType+'\')"></i></a></div>';
 		         '</sec:authorize>';
 		         result = result + '</td>';
 		        result = result + '</tr>';
@@ -2215,7 +2215,7 @@ function preparedContractListFinalize(data){
 
 	         opt = opt + '<td>';
 	         '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CONTRACT\')">';
-     		 opt = opt + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+output.contractUUID+'\', \''+output.contractTitle+'\')"></i></a></div>';
+     		 opt = opt + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+output.fileURL+'\', \''+output.fileName+'\', \''+output.fileType+'\')"></i></a></div>';
      		 '</sec:authorize>';
      		 opt = opt + '</td>';
      		 
@@ -2287,7 +2287,7 @@ function preparedContractListFinalize(data){
 		         
 		         res = res + '<td>';
 		         '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CONTRACT\')">';
-		         res = res + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+appReport.contractUUID+'\', \''+appReport.contractTitle+'\')"></i></a></div>';
+		         res = res + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+appReport.fileURL+'\', \''+appReport.fileName+'\', \''+appReport.fileType+'\')"></i></a></div>';
 		         '</sec:authorize>';
 		         res = res + '</td>';
 		     	 
@@ -2508,7 +2508,7 @@ function preparedContractListExpired(data){
 		         result = result + '<td>';
 		         result = result + '<div class="tbldata-dotdot_80">';
 		         '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CONTRACT\')">';
-		     		 result = result + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+report.contractUUID+'\', \''+report.contractTitle+'\')"></i></a></div>';
+		     		 result = result + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+report.fileURL+'\', \''+report.fileName+'\', \''+report.fileType+'\')"></i></a></div>';
 	     		 '</sec:authorize>';
 			         result = result + '</div></td>';
 		     	 
@@ -2576,7 +2576,7 @@ function preparedContractListExpired(data){
 	         
 	         opt = opt + '<div class="tbldata-dotdot_80">';
 	         '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CONTRACT\')">';
-	     		 opt = opt + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+output.contractUUID+'\', \''+output.contractTitle+'\')"></i></a></div>';
+	     		 opt = opt + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+output.fileURL+'\', \''+output.fileName+'\', \''+output.fileType+'\')"></i></a></div>';
      		 '</sec:authorize>';
 	     		 opt = opt + '</div></td>';
 	     	
@@ -2642,7 +2642,7 @@ function preparedContractListExpired(data){
 		         res = res + '<td>';
 		         res = res + '<div class="tbldata-dotdot_80">';
 		         '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CONTRACT\')">';
-		         res = res + '<a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+output.contractUUID+'\', \''+output.contractTitle+'\')"></i></a>';
+		         res = res + '<a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+appReport.fileURL+'\', \''+appReport.fileName+'\', \''+appReport.fileType+'\')"></i></a>';
 		         '</sec:authorize>';
 		         res = res + '</div></td>';
 		     	 
@@ -2869,7 +2869,7 @@ function preparedContractListRejected(data){
 		         result = result + '<td>';
 		         result = result + '<div class="tbldata-dotdot_80">';
 		         '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CONTRACT\')">';
-		     		result = result + '<a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+report.contractUUID+'\', \''+report.contractTitle+'\')"></i></a>';
+		     		result = result + '<a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+report.fileURL+'\', \''+report.fileName+'\', \''+report.fileType+'\')"></i></a>';
 	     		 '</sec:authorize>';
 	     		'<sec:authorize access="hasAnyRole(\'ROLE_EDIT_CONTRACT\')">';
 		     		if(report.typeOfContract == "New"){
@@ -2949,7 +2949,7 @@ function preparedContractListRejected(data){
 	         
 	         opt = opt + '<div class="tbldata-dotdot_80">';
 	         '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CONTRACT\')">';
-	     		 opt = opt + '<a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+output.contractUUID+'\', \''+output.contractTitle+'\')"></i></a>';
+	     		 opt = opt + '<a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+output.fileURL+'\', \''+output.fileName+'\', \''+output.fileType+'\')"></i></a>';
      		 '</sec:authorize>';
 	     		'<sec:authorize access="hasAnyRole(\'ROLE_EDIT_CONTRACT\')">';
 		     		if(output.typeOfContract == "New"){
@@ -3023,7 +3023,7 @@ function preparedContractListRejected(data){
 		         res = res + '<td>';
 		         res = res + '<div class="tbldata-dotdot_80">';
 		     		 '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CONTRACT\')">';
-		     		 res = res + '<a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+appReport.contractUUID+'\', \''+appReport.contractTitle+'\')"></i></a>';
+		     		 res = res + '<a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+appReport.fileURL+'\', \''+appReport.fileName+'\', \''+appReport.fileType+'\')"></i></a>';
 		     		'</sec:authorize>';
 		     		'<sec:authorize access="hasAnyRole(\'ROLE_EDIT_CONTRACT\')">';
 			     		if(appReport.typeOfContract == "New"){
@@ -3178,9 +3178,11 @@ function applicantsContractsPaginationREJ(SourceLeadWeb_loginOrg){
 </script>
 
 <script type="text/javascript">
-function previewContractPDF(uuid, templateName) {
+function previewContractPDF(fileURL, fileName, fileType) {
 	var sourceleadUrl ='${sourceleadUrl}';
-	window.open(sourceleadUrl+'/viewContractPdf/'+uuid+'/'+templateName+'','_newtab');
+	alert(fileURL + "     "+fileName+ "     "+fileType)
+	viewFile(sourceleadUrl, fileURL, fileName, fileType);
+// 	window.open(sourceleadUrl+'/viewContractPdf/'+uuid+'/'+templateName+'','_newtab');
 }</script>
 
 <script>
