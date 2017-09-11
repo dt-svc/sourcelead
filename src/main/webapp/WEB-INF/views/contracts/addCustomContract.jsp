@@ -864,7 +864,7 @@ function getContractTemplates(){
 		document.getElementById("offeredSubmissionDiv").style.display="none";
 	}
  	if(contractType == "Client MSA"){
- 		document.getElementById("billingDiv").style.display="block";
+ 		document.getElementById("billingDiv").style.display="none";
 		document.getElementById("clientDiv").style.display="block";
 		document.getElementById("clientContactDiv").style.display="block";
 		document.getElementById("vendorDiv").style.display="none";
@@ -876,7 +876,7 @@ function getContractTemplates(){
 		document.getElementById("offerRateDiv").style.display="none";
  	}
 	if(contractType == "Vendor MSA"){
-		document.getElementById("billingDiv").style.display="block";
+		document.getElementById("billingDiv").style.display="none";
 		document.getElementById("clientDiv").style.display="none";
 		document.getElementById("clientContactDiv").style.display="none";
 		document.getElementById("vendorDiv").style.display="block";
@@ -988,7 +988,25 @@ function contractTypeLabels(){
 		$('#clientContact').removeAttr('data-validation-optional');
 		$('#clientContact').attr("data-validation","required");
 		
-		$('#flatReward').removeAttr('data-validation-optional');
+		//added by Pavan Jampana for change request #5851(taiga Id)
+		$("#billingDiv").hide();
+		$('#billingRateType').removeAttr('data-validation');
+		$('#billingRateType').attr('data-validation-optional',"true");
+		
+		$('#flatReward').removeAttr('data-validation');
+		$('#flatReward').attr('data-validation-optional',"true");
+		
+		$('#billingRatePer').removeAttr('data-validation');
+		$('#billingRatePer').attr('data-validation-optional',"true");
+		
+		$('#invoiceFrequency').removeAttr('data-validation');
+		$('#invoiceFrequency').attr('data-validation-optional',"true");
+		
+		$('#paymentFrequency').removeAttr('data-validation');
+		$('#paymentFrequency').attr('data-validation-optional',"true");
+		
+		
+		/* $('#flatReward').removeAttr('data-validation-optional');
 		$('#flatReward').attr('data-validation',"required");
 		
 		$('#billingRateType').removeAttr('data-validation-optional');
@@ -1001,7 +1019,7 @@ function contractTypeLabels(){
 		$('#invoiceFrequency').attr('data-validation',"required");
 		
 		$('#paymentFrequency').removeAttr('data-validation-optional');
-		$('#paymentFrequency').attr('data-validation',"required");
+		$('#paymentFrequency').attr('data-validation',"required"); */
 		
 		$('#candiFlatReward').removeAttr('data-validation');
 		$('#candiFlatReward').attr('data-validation-optional',"true");
@@ -1026,7 +1044,25 @@ function contractTypeLabels(){
 		$('#vendorContact').removeAttr('data-validation-optional');
 		$('#vendorContact').attr("data-validation","required");
 		
-		$('#flatReward').removeAttr('data-validation-optional');
+		
+		//added by Pavan Jampana for change request #5851(taiga Id)
+		$("#billingDiv").hide();
+		$('#billingRateType').removeAttr('data-validation');
+		$('#billingRateType').attr('data-validation-optional',"true");
+		
+		$('#flatReward').removeAttr('data-validation');
+		$('#flatReward').attr('data-validation-optional',"true");
+		
+		$('#billingRatePer').removeAttr('data-validation');
+		$('#billingRatePer').attr('data-validation-optional',"true");
+		
+		$('#invoiceFrequency').removeAttr('data-validation');
+		$('#invoiceFrequency').attr('data-validation-optional',"true");
+		
+		$('#paymentFrequency').removeAttr('data-validation');
+		$('#paymentFrequency').attr('data-validation-optional',"true");
+		
+		/* $('#flatReward').removeAttr('data-validation-optional');
 		$('#flatReward').attr('data-validation',"required");
 		
 		$('#billingRateType').removeAttr('data-validation-optional');
@@ -1039,7 +1075,7 @@ function contractTypeLabels(){
 		$('#invoiceFrequency').attr('data-validation',"required");
 		
 		$('#paymentFrequency').removeAttr('data-validation-optional');
-		$('#paymentFrequency').attr('data-validation',"required");
+		$('#paymentFrequency').attr('data-validation',"required"); */
 		
 		$('#candiFlatReward').removeAttr('data-validation');
 		$('#candiFlatReward').attr('data-validation-optional',"true");
