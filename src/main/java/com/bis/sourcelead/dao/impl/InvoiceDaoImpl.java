@@ -115,15 +115,6 @@ public class InvoiceDaoImpl implements InvoiceDao {
 			subQuery3 = " and invoice.invoiceStatus <> 'Linked' ";
 		}
 		
-//		String query =null;
-//		 query = "from Invoice invoice  left join fetch invoice.projectMemberId pm left join fetch pm.projects left join fetch pm.employee emp left join fetch emp.user "
-//		 		+ "left join fetch invoice.expensesId where  invoice.orgLocation.id =:orgLocationId and invoice.status = '1' "+subQuery+" "+subQuery1+" "+subQuery2+" "+subQuery3+" and invoice.createdDate >= :startDateUTC and invoice.createdDate <= :endDateUTC ORDER BY invoice.id DESC"; 
-//		 List<Invoice> invoiceList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setParameter("startDateUTC", startDateUTC).setParameter("endDateUTC", endDateUTC).setCacheable(true).list();
-//		return invoiceList;
-		
-		
-		
-		
 		List<Invoice> invoiceList = null;
 		ResponseList<Invoice> response = new ResponseList<>();
 		String query = "from Invoice invoice  left join fetch invoice.projectMemberId pm left join fetch pm.projects left join fetch pm.employee emp left join fetch emp.user "
@@ -144,7 +135,6 @@ public class InvoiceDaoImpl implements InvoiceDao {
 				.append("OR invoice.dueDate like '%" + invoiceDTO.getSearchValue() + "%' ")
 				.append("OR invoice.invoiceStatus like '%" + invoiceDTO.getSearchValue() + "%' ")
 				.append("OR invoice.paymentStatus like '%" + invoiceDTO.getSearchValue() + "%' )");
-//					.append("OR invoice.action like '%" + invoiceDTO.getSearchValue() + "%' ");
 						
 			}
 		Query queryObj = session.createQuery(query + query1.toString() + "  ORDER BY invoice.id DESC");
