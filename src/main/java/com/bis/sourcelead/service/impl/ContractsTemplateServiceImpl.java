@@ -746,11 +746,11 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 	}
 
 	@Override
-	public Contracts getAllContractsByLocationIdAndStatus(OrgLocations orgLocation,ContractsDTO contractsDTO, User user, String userRoleName) throws Exception
+	public Contracts getAllContractsByLocationIdAndStatus(OrgLocations orgLocation,String contractSubmissionType, String tabType, String contractsType, String contractStatus, User user, String userRoleName) throws Exception
 	{
-		List<Contracts> vendorcontractsList = contractsTemplateDao.getAllContractsByLocationIdAndStatus(orgLocation,contractsDTO.getContractSubmissionType(),Constants.VENDOR, contractsDTO.getContractType(), contractsDTO.getContractStatus(), user, userRoleName);
-		List<Contracts> clientcontractsList = contractsTemplateDao.getAllContractsByLocationIdAndStatus(orgLocation,contractsDTO.getContractSubmissionType(),Constants.CLIENT, contractsDTO.getContractType(), contractsDTO.getContractStatus(), user, userRoleName);
-		List<Contracts> fullTimeoffercontractsList = contractsTemplateDao.getAllContractsByLocationIdAndStatus(orgLocation, contractsDTO.getContractSubmissionType(), Constants.FULL_TIME_OFFER, contractsDTO.getContractType(), contractsDTO.getContractStatus(), user, userRoleName);
+		List<Contracts> vendorcontractsList = contractsTemplateDao.getAllContractsByLocationIdAndStatus(orgLocation,contractSubmissionType,Constants.VENDOR, contractsType, contractStatus, user, userRoleName);
+		List<Contracts> clientcontractsList = contractsTemplateDao.getAllContractsByLocationIdAndStatus(orgLocation,contractSubmissionType,Constants.CLIENT, contractsType, contractStatus, user, userRoleName);
+		List<Contracts> fullTimeoffercontractsList = contractsTemplateDao.getAllContractsByLocationIdAndStatus(orgLocation, contractSubmissionType, Constants.FULL_TIME_OFFER, contractsType, contractStatus, user, userRoleName);
 		Contracts contractsForList = new Contracts();
 		
 		for(Contracts contracts :vendorcontractsList ){

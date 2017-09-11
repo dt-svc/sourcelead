@@ -1203,7 +1203,7 @@ public class InvoiceServiceImpl implements InvoiceService{
 	
 	
 	@Override
-	public File getExportBillingFile(List<Invoice> invoiceList,String orgName, String exportType,InvoiceAmount totalStagesAmount,String exportStartDate,String exportEndDate,String invoiceType,OrgLocations orgLocations) throws Exception {
+	public File getExportBillingFile(ResponseList<Invoice> invoiceList,String orgName, String exportType,InvoiceAmount totalStagesAmount,String exportStartDate,String exportEndDate,String invoiceType,OrgLocations orgLocations) throws Exception {
 		
 		File file = null;
 		if (!"pdf".equalsIgnoreCase(exportType)) {
@@ -1213,7 +1213,7 @@ public class InvoiceServiceImpl implements InvoiceService{
 			Row writeRow = null;
 			createExcelsheet = getExcelSheetWithHeader(createExcelsheet, writeRow, createExcelworkbook,totalStagesAmount,orgName,exportStartDate,exportEndDate,invoiceType);
 			int column = 0;
-			for (Invoice invoice : invoiceList) {
+			for (Invoice invoice : invoiceList.getData()) {
 				writeRow = createExcelsheet.createRow(column + 10);
 				createExcelsheet = createXlsSheet(createExcelsheet, writeRow, invoice);
 				column++;

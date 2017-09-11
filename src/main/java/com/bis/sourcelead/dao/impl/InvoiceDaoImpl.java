@@ -127,31 +127,33 @@ public class InvoiceDaoImpl implements InvoiceDao {
 		List<Invoice> invoiceList = null;
 		ResponseList<Invoice> response = new ResponseList<>();
 		String query = "from Invoice invoice  left join fetch invoice.projectMemberId pm left join fetch pm.projects left join fetch pm.employee emp left join fetch emp.user "
-		 		+ "left join fetch invoice.expensesId where  invoice.orgLocation.id =:orgLocationId and invoice.status = '1' "+subQuery+" "+subQuery1+" "+subQuery2+" "+subQuery3+" and invoice.createdDate >= :startDateUTC and invoice.createdDate <= :endDateUTC ORDER BY invoice.id DESC";
+		 		+ "left join fetch invoice.expensesId where  invoice.orgLocation.id =:orgLocationId and invoice.status = '1' "+subQuery+" "+subQuery1+" "+subQuery2+" "+subQuery3+" and invoice.createdDate >= :startDateUTC and invoice.createdDate <= :endDateUTC";
 		String countQuery = "from Invoice invoice  where invoice.orgLocation.id =:orgLocationId";
 		
 		StringBuilder query1 = new StringBuilder("");
 			if(invoiceDTO.getSearchValue() !=null && !"".equalsIgnoreCase(invoiceDTO.getSearchValue())) {
-			query1.append(" and invoice.invoiceId like '%" + invoiceDTO.getSearchValue() + "%' ")
-					.append("OR invoice.clientName like '%" + invoiceDTO.getSearchValue() + "%' ")
-					.append("OR invoice.clientContactName like '%" + invoiceDTO.getSearchValue() + "%' ")
-					.append("OR invoice.projectName like '%" + invoiceDTO.getSearchValue() + "%' ")
-					.append("OR invoice.invoiceDate like '%" + invoiceDTO.getSearchValue() + "%' ")
-					.append("OR invoice.total like '%" + invoiceDTO.getSearchValue() + "%' ")
-					.append("OR invoice.dueAmount like '%" + invoiceDTO.getSearchValue() + "%' ")
-					.append("OR invoice.dueDate like '%" + invoiceDTO.getSearchValue() + "%' ")
-					.append("OR invoice.invoiceStatus like '%" + invoiceDTO.getSearchValue() + "%' ")
-					.append("OR invoice.paymentStatus like '%" + invoiceDTO.getSearchValue() + "%' ");
+				query1.append(" and (invoice.invoiceId like '%" + invoiceDTO.getSearchValue() + "%' ")
+				.append("OR invoice.responderLocationId.orgLocationName like '%" + invoiceDTO.getSearchValue() + "%' ")
+				.append("OR invoice.orgLocation.orgLocationName like '%" + invoiceDTO.getSearchValue() + "%' ")
+				.append("OR invoice.contactUser.firstName like '%" + invoiceDTO.getSearchValue() + "%' ")
+				.append("OR invoice.contactUser.lastName like '%" + invoiceDTO.getSearchValue() + "%' ")
+				.append("OR invoice.projectID.projectName like '%" + invoiceDTO.getSearchValue() + "%' ")
+				.append("OR invoice.invoiceDate like '%" + invoiceDTO.getSearchValue() + "%' ")
+				.append("OR invoice.total like '%" + invoiceDTO.getSearchValue() + "%' ")
+				.append("OR invoice.dueAmount like '%" + invoiceDTO.getSearchValue() + "%' ")
+				.append("OR invoice.dueDate like '%" + invoiceDTO.getSearchValue() + "%' ")
+				.append("OR invoice.invoiceStatus like '%" + invoiceDTO.getSearchValue() + "%' ")
+				.append("OR invoice.paymentStatus like '%" + invoiceDTO.getSearchValue() + "%' )");
 //					.append("OR invoice.action like '%" + invoiceDTO.getSearchValue() + "%' ");
 						
 			}
-		Query queryObj = session.createQuery(query + query1.toString());
+		Query queryObj = session.createQuery(query + query1.toString() + "  ORDER BY invoice.id DESC");
 		if (invoiceDTO != null && invoiceDTO.getLength() > 0) {
 			queryObj.setFirstResult(invoiceDTO.getStart());
 			queryObj.setMaxResults(invoiceDTO.getLength());
-			queryObj.setLong("orgLocationId", orgLocationId).setParameter("startDateUTC", startDateUTC).setParameter("endDateUTC", endDateUTC).setCacheable(true).list();
+//			queryObj.setLong("orgLocationId", orgLocationId).setParameter("startDateUTC", startDateUTC).setParameter("endDateUTC", endDateUTC).setCacheable(true).list();
 		}
-		invoiceList = queryObj.list();
+		invoiceList = queryObj.setLong("orgLocationId", orgLocationId).setParameter("startDateUTC", startDateUTC).setParameter("endDateUTC", endDateUTC).setCacheable(true).list();
 		int count = 0;
 		int filteredCount = 0;
 		List<Long> countlist = session.createQuery("select count(*) " + countQuery).setLong("orgLocationId", orgLocationId).setCacheable(true).list();

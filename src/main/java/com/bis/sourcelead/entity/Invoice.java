@@ -249,6 +249,7 @@ public class Invoice {
 	List<InvoiceTax> invoiceTaxList;
 
 	@Transient
+	@JsonProperty
 	private String projectId;
 	
 	@Transient

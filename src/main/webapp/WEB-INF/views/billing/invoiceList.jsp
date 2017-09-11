@@ -536,7 +536,7 @@ function prepareInvoiceList(url,locationdateForList){
     $("#invoiceList").empty();  
     $("#invoiceList").append(result);
     invoicePagination(url); 
-	
+//     closePopup();
 	
 }
 
@@ -571,58 +571,35 @@ function invoicePagination(url){
 	    	  	"targets": colIndex++,
 	    	  	"data": "invoiceId",
 	    	  	"render": function(data, type, report, meta) {
-	    	  		
+	    	  		$("#emptyInvoiceId").val(1);
 	    	  		var result = "";
-	    	  		alert(data)
-	    	  		var draftCount = 0;
-	            	var draftTotalAmount = 0;
-	            	
-	            	var paidCount = 0;
-	            	var paidTotalAmount = 0;
-	            	
-	            	var dueAfterInvoiceCount = 0;
-	            	var dueAfterInvoiceAmount = 0;
-	            	
-	            	var dueBeforeInvoiceCount = 0;
-	            	var dueBeforeInvoiceAmount = 0;
-	            	draftCount = parseInt(draftCount) + parseInt(report.draftInvoiceCount);
-	       			if(report.draftInvoiceAmount != null && report.draftInvoiceAmount != '' && report.draftInvoiceAmount != 'undefined'){
-	       				draftTotalAmount = parseFloat(draftTotalAmount) + parseFloat(report.draftInvoiceAmount);
-	       			}
-	       			
-	       			
-					paidCount = parseInt(paidCount) + parseInt(report.paidInvoiceCount);
-	       			if(report.paidInvoiceAmount != null && report.paidInvoiceAmount != '' && report.paidInvoiceAmount != 'undefined'){
-	       				paidTotalAmount = parseFloat(paidTotalAmount) + parseFloat(report.paidInvoiceAmount);
-	       			}
-	       			
-	       			dueAfterInvoiceCount = parseInt(dueAfterInvoiceCount) + parseInt(report.dueAfterInvoiceCount);
-	       			alert(dueAfterInvoiceCount)
-	       			alert(report.dueAfterInvoiceAmount)
-	       			if(report.dueAfterInvoiceAmount != null && report.dueAfterInvoiceAmount != '' && report.dueAfterInvoiceAmount != 'undefined'){
-	       				dueAfterInvoiceAmount = parseFloat(dueAfterInvoiceAmount) + parseFloat(report.dueAfterInvoiceAmount);
-	       			}
-	       			
-	       			dueBeforeInvoiceCount = parseInt(dueBeforeInvoiceCount) + parseInt(report.dueBeforeInvoiceCount);
-	       			alert(dueBeforeInvoiceCount)
-	       			alert(report.dueBeforeInvoiceAmount)
-	       			if(report.dueBeforeInvoiceAmount != null && report.dueBeforeInvoiceAmount != '' && report.dueBeforeInvoiceAmount != 'undefined'){
-	       				dueBeforeInvoiceAmount = parseFloat(dueBeforeInvoiceAmount) + parseFloat(report.dueBeforeInvoiceAmount);
-	       			}
 	    	  		
-	       			$("#draftInvoiceCount").html(draftCount);
-	    		    $("#unbilledAmoumt").html(draftTotalAmount.toFixed(2));
-	    		    		    
-	    		    $("#paidInvoiceCount").html(paidCount);
-	    		    $("#paidInvoiceAmount").html(paidTotalAmount.toFixed(2));
-	    		    
-	    		    $("#dueAfterInvoiceCount").html(dueAfterInvoiceCount);
-	    		    $("#dueAfterInvoiceAmount").html(dueAfterInvoiceAmount.toFixed(2));
-	    		    
-	    		    $("#dueBeforeInvoiceCount").html(dueBeforeInvoiceCount);
-	    		    $("#dueBeforeInvoiceAmount").html(dueBeforeInvoiceAmount.toFixed(2));
-	    		    
-	    	  		  result = result +'         <td>';
+					if(report.dueBeforeInvoiceAmount != null && report.dueBeforeInvoiceAmount != '' && report.dueBeforeInvoiceAmount != 'undefined'){
+ 						$("#dueBeforeInvoiceAmount").html(report.dueBeforeInvoiceAmount);
+					}
+	    	  		if(report.dueBeforeInvoiceCount != null && report.dueBeforeInvoiceCount != '' && report.dueBeforeInvoiceCount != 'undefined'){
+	    	  			$("#dueBeforeInvoiceCount").html(report.dueBeforeInvoiceCount);
+					}
+	    	  		if(report.dueAfterInvoiceAmount != null && report.dueAfterInvoiceAmount != '' && report.dueAfterInvoiceAmount != 'undefined'){
+	 					$("#dueAfterInvoiceAmount").html(report.dueAfterInvoiceAmount);
+					}
+		    	  	if(report.dueAfterInvoiceCount != null && report.dueAfterInvoiceCount != '' && report.dueAfterInvoiceCount != 'undefined'){
+		    	  		$("#dueAfterInvoiceCount").html(report.dueAfterInvoiceCount);
+					}
+		    	  	if(report.draftInvoiceCount != null && report.draftInvoiceCount != '' && report.draftInvoiceCount != 'undefined'){
+	 					$("#draftInvoiceCount").html(report.draftInvoiceCount);
+					}
+		    	  	if(report.draftInvoiceAmount != null && report.draftInvoiceAmount != '' && report.draftInvoiceAmount != 'undefined'){
+		    	  		$("#unbilledAmoumt").html(report.draftInvoiceAmount);
+					}
+		    	  	if(report.paidInvoiceCount != null && report.paidInvoiceCount != '' && report.paidInvoiceCount != 'undefined'){
+		 				$("#paidInvoiceCount").html(report.paidInvoiceCount);
+					}
+			    	if(report.paidInvoiceAmount != null && report.paidInvoiceAmount != '' && report.paidInvoiceAmount != 'undefined'){
+			    	  	$("#paidInvoiceAmount").html(report.paidInvoiceAmount);
+					}
+	    		     
+	    	  	    result = result +'         <td>';
 					if(report.invoiceStatus == "DRAFT" || report.invoiceStatus == "Rejected"){
 						'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_INVOICE\')">';
 						result = result +'           <div class="tbldata-dotdot_80 invoiceId_Anchor2"><a href="'+sourceleadUrl+'/getReceivableInvoiceByUUID?invoiceUUID='+report.invoiceUUID+'&projectId='+report.projectId+'">'+report.invoiceId+'</a></div>   ';
@@ -633,7 +610,7 @@ function invoicePagination(url){
 						result = result +'           <div class="tbldata-dotdot_80 invoiceId_Anchor1"><a href="<c:url value="/viewInvoice?invoiceUUID='+report.invoiceUUID+'&invoiceType=Receivable"/>">'+report.invoiceId+'</a></div>';				
 						'</sec:authorize>' ;
 					}
-					result = result +'         </td>  ';
+					result = result +'         </td>  ';  
 					
 		             return result;
 	    	  	}
