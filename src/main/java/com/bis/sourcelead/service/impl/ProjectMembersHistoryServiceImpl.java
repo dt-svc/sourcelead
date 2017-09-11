@@ -84,4 +84,10 @@ public class ProjectMembersHistoryServiceImpl implements ProjectMembersHistorySe
 		return projectMembersHistoryDao.getProjectMembersHistoryListByProjectMemberId(projectMemberId);
 	}
 
+	@Override
+	public ProjectMembersHistory getProjectMembersHistoryByProjectMemberIdAndOrgLoctionId(Long projectMemberId,
+			Long orgLocationId) throws Exception {
+		return projectMembersHistoryDao.getProjectMembersHistoryByProjectMemberIdAndOrgLoctionId(projectMemberId, orgLocationId);
+	}
+
 }

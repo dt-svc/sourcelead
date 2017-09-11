@@ -36,6 +36,7 @@ import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.Expenses;
 import com.bis.sourcelead.entity.MasterCandidate;
+import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.ProjectApproverHierarchy;
@@ -1061,6 +1062,122 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 	public List<ProjectMembers> getAllProjectMembersByProjectClientIdAndStatus(Long projectClientsId, String status)
 			throws Exception {
 		return projectMembersDao.getAllProjectMembersByProjectClientIdAndStatus(projectClientsId, status);
+	}
+
+	@Override
+	public String transferMembers(OrgLocations orgLocations, Org org, Projects projects,String projectMembers,User user) throws Exception {
+		
+		String result = "failure";
+		String isInternalOrgProject = null;
+    	if(projects.getOrgLocationsId().getOrg().getId().equals(org.getId())){
+    		isInternalOrgProject = Constants.YES;
+		}else{
+			isInternalOrgProject = Constants.NO;
+		}
+    	
+    	String[] transferedPMs = projectMembers.split(",");
+    	for(int i=0; i <transferedPMs.length; i++){
+    		List<ProjectMembersHistory>  pmhList = projectMembersHistoryService.getProjectMembersHistoryListByProjectMemberId(Long.valueOf(transferedPMs[i]));
+    		if(pmhList != null && pmhList.size() > 0){
+    			for(ProjectMembersHistory pmh : pmhList){
+    				pmh.setProjectTerminationDate(new Date());
+    				pmh.setStatus("CLOSED");
+    	    		projectMembersHistoryService.updateProjectMembersHistory(pmh);
+    	    		
+    			}
+    		}
+    		
+    		ProjectMembers pm = projectMembersDao.getProjectMemberById(Long.valueOf(transferedPMs[i]));
+    		pm.setProjects(projects);
+    		projectMembersDao.updateProjectMember(pm);
+    		
+    		
+    		if(isInternalOrgProject.equalsIgnoreCase(Constants.YES)){
+    			
+    		}else{
+    			OrgRelations orgRelations = orgRelationsService.getVendorOrgRelationByResponderLocationIdAndLocationId(orgLocations.getId(), projects.getOrgLocationsId().getId());
+    			ProjectClients projectClients = projectClientService.getProjectClientsByProjectIdAndOrgLocationIdAndOrgRelationId(projects.getId(), orgLocations.getId(), orgRelations.getId());
+    			saveProjectMembersHistory(pm,user,orgLocations,projectClients);
+    			
+    			ProjectClients clientPC = projectClientService.getProjectClientsByProjectIdAndOrgLocationId(projects.getId(), projects.getOrgLocationsId().getId());
+    			saveProjectMembersHistory(pm,user,orgLocations,clientPC);
+    			
+    			Candidate candidate = candidateService.findByCandidateEmail(pm.getProjectMemberCandidteId().getEmail(), orgLocations.getId());
+    			Candidate clientCandidate = candidateService.findByCandidateEmail(pm.getProjectMemberCandidteId().getEmail(), projects.getOrgLocationsId().getId());
+				if(clientCandidate == null){
+					clientCandidate = new Candidate();
+					MasterCandidate masterCandidate = new MasterCandidate();
+					masterCandidate.setId(candidate.getMasterCandidateId().getId());
+					clientCandidate.setMasterCandidateId(masterCandidate);
+					clientCandidate.setParentCandidateId(candidate);
+					clientCandidate.setOrgLocationId(projects.getOrgLocationsId());
+					clientCandidate.setCandidateType("Candidate");
+					clientCandidate.setFirstName(candidate.getFirstName());
+					clientCandidate.setLastName(candidate.getLastName());
+					clientCandidate.setEmail(candidate.getEmail());
+					clientCandidate.setCountry(candidate.getCountry());
+					clientCandidate.setStatus(1);
+					clientCandidate.setIsAssociate(Constants.YES);
+					clientCandidate.setCandidateUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+					
+					orgRelations = orgRelationsService.getVendorOrgRelationByResponderLocationIdAndLocationId(orgLocations.getId(), projects.getOrgLocationsId().getId());
+					clientCandidate.setOrgRelationId(orgRelations);
+					clientCandidate.setCreatedBy(user.getUserCode());
+					clientCandidate.setCreatedDate(new Date());
+					clientCandidate.setUpdatedDate(new Date());
+					Candidate savedCandidate = candidateService.addCandidate(clientCandidate);
+					candidateService.saveOrUpdateCandidateElkDocument(savedCandidate);
+				}
+				
+				
+				if(candidate.getParentCandidateId() != null){
+					Long parentCandidatId = candidate.getParentCandidateId().getId();
+					while(parentCandidatId != null){
+						Candidate cand = candidateService.getCandidateByCandidateId(parentCandidatId);
+						if(cand != null){
+							ProjectClients pc = null;
+							pc = projectClientService.getProjectClientsByProjectIdAndOrgLocationId(projects.getId(), cand.getOrgLocationId().getId());
+							if(pc == null){
+								Candidate clildCandidate = candidateService.getCandidateByParentCandidateId(parentCandidatId);
+								pc = new ProjectClients();
+								pc.setProjectId(projects);
+								pc.setOrgRelationId(clildCandidate.getOrgRelationId());
+								pc.setOrgLocationsId(cand.getOrgLocationId());
+								pc.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
+								pc.setStatus(1);
+								pc.setCreatedDate(new Date());
+								pc.setCreatedBy(user);
+								pc.setUpdatedDate(new Date());
+								pc.setUpdatedBy(user);
+								
+								//prepare ProjectApproverHierarchy
+								Set<ProjectApproverHierarchy> projectApproverHierarchyList = new HashSet<ProjectApproverHierarchy>();
+								ProjectApproverHierarchy pah = new ProjectApproverHierarchy();
+								pah.setProjectId(projects);
+								pah.setProjectClientsId(projectClients);
+								pah.setApproverUserId(cand.getOrgLocationId().getUser());
+								pah.setLevel(1);
+								pah.setStatus("1");
+								projectApproverHierarchyList.add(pah);
+								projectClients.setProjectApproverHierarchyList(projectApproverHierarchyList);
+								
+								projectClientService.storeProjectClients(projectClients);
+							}
+							saveProjectMembersHistory(pm,user,orgLocations,pc);
+							if(cand.getParentCandidateId() != null){
+								parentCandidatId = cand.getParentCandidateId().getId();
+							}else{
+								parentCandidatId = null;
+							}
+						}
+					}
+				}
+				
+    		}
+    	}
+		
+    	result = "success";
+		return result;
 	}
 
 }

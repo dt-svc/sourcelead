@@ -207,7 +207,7 @@ result = result + '<div class="project_tabs mb">';
 			result = result +'<li>';
 	 		'<sec:authorize access="hasAnyRole(\'ROLE_ASSIGN_EMPLOYEE_TO_PROJECT\')">';
 	 		  result = result + '<a href="javascript:void(0)" onclick="getAssociates();" id="addDiv">';
-	 		    result = result + '<i class="fa fa-exchange"></i>&nbsp;Transfer</a>&nbsp;&nbsp;&nbsp;&nbsp;';
+	 		    result = result + '<i class="fa fa-exchange"></i>&nbsp;Transfer Emp</a>&nbsp;&nbsp;&nbsp;&nbsp;';
 	 		    result = result + '<a href="'+sourceleadUrl+'/addNewProjectMembers?projectUUID='+projectUUID+'">';
 	 		    result = result + '<i class="glyphicon glyphicon-plus"></i>Assign Emp</a></li>';
 	 		'</sec:authorize>';
@@ -1597,7 +1597,7 @@ function getProjectDetails(){
 						result = result + '<div class="form-footer clearfix miniFoot">';
 						result = result + '<div class="col-lg-12">';
 						result = result + '<div class="pull-right">';
-						result = result + '<input type="button" value="Transfer" onClick="transferToProject()" class="btn btn-primary ml10">';
+						result = result + '<input type="button" value="Transfer" onClick="transferToProject()" class="btn btn-success ml10">';
 						result = result + '</div>';
 						result = result + '</div>';
 						result = result + '</div>';
@@ -1636,8 +1636,28 @@ function transferToProject(){
 		 projectMembers.push($(this).val());
 	});
 	 
-	 var orgLocationProjects = document.getElementById("orgLocationProjects").value;
-	 if(projectMembers != null || projectMembers != ''){
+	 var projectUUID = '${projectUUID}';
+	 var projectOrgLocationId = document.getElementById("orgLocationProjects").value;
+	 var projectId = document.getElementById("orgLocationProjects").value;
+	 if(projectMembers.length > 0){
+		 
+		 $("#projectDetailsLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		 var projectUUID = '${projectUUID}';
+		 var sourceleadUrl = '${sourceleadUrl}';
+		 
+		 $.ajax({
+		    	type: "POST",
+		        url: sourceleadUrl+"/transferProjectMembers?${_csrf.parameterName}=${_csrf.token}&projectUUID="+projectUUID+"&projectId="+projectId+"&projectOrgLocationId="+projectOrgLocationId+"&projectMembers="+projectMembers, 
+		        success: function() {
+		        
+		        	location.replace(sourceleadUrl+"/projectSummary?projectUUID="+projectUUID+"&tabType=projectMembers");
+			        $("#projectDetailsLoading").removeAttr("style"); 
+		        }
+		   
+	     });
+			 
+		 
+	 }else{
 		 alertProjectMembersMessage();
 	 }
 	
@@ -1649,7 +1669,7 @@ function alertProjectMembersMessage(){
 	var result = "";
 	result = result +"	<div class='project_inn_mask'></div>";
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
-	result = result +"		<p>Add atleast one project member</p>";
+	result = result +"		<p>Select atleast one project member</p>";
 	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
 	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='cancel();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
 	result = result +"	</div>";
