@@ -228,16 +228,16 @@ public class CandidateServiceImpl implements CandidateService {
 		
 		StringBuffer activitySummary = new StringBuffer();
         Candidate candidate = null;
-		if(candidateDto.getCandidateId() > 0){
-			candidate = candidateDao.getCandidateByCandidateId(candidateDto.getCandidateId());
+		if(StringUtils.isNotBlank(candidateDto.getCandidateId())){
+			candidate = candidateDao.getCandidateByCandidateId(Long.parseLong(candidateDto.getCandidateId()));
 		}else{	
 			candidate = new Candidate();
 			candidate.setCreatedDate(commonUtil.currentDate());
 			candidate.setCreatedBy(user.getUserCode());
 			
-			if(candidateDto.getConsultantUser() > 0){
+			if(StringUtils.isNotBlank(candidateDto.getConsultantUser())){
 				User consultantUser = new User();
-				consultantUser.setId(candidateDto.getConsultantUser());
+				consultantUser.setId(Long.parseLong(candidateDto.getConsultantUser()));
 				candidate.setConsultantUser(consultantUser);
 				candidate.setCandidateType("Consultant");
 			}else{
@@ -247,12 +247,12 @@ public class CandidateServiceImpl implements CandidateService {
 			candidate.setIsFavourite(0);
 			candidate.setIsFavouriteAssociate(0);
 			
-			/*MasterCandidate masterCandidate = null;
-			masterCandidate = masterCandidateService.getMasterCandidateByInteligence(candidateDto);
+			MasterCandidate masterCandidate = null;
+			masterCandidate = masterCandidateService.getMasterCandidateByInteligenceCandidateDTO(candidateDto);
 			if(null == masterCandidate){
-				masterCandidate = masterCandidateService.storeMasterCandidateByJsonObject(candidateDto, user);
+				masterCandidate = masterCandidateService.storeMasterCandidateByCandidateDTO(candidateDto, user);
 			}
-			candidate.setMasterCandidateId(masterCandidate);*/
+			candidate.setMasterCandidateId(masterCandidate);
 		}
         
 		if(orgLocations != null){
@@ -432,16 +432,6 @@ public class CandidateServiceImpl implements CandidateService {
 		}
 		
 		if(StringUtils.isNotBlank(candidateDto.getCandidateSkills())){
-//			String candidateSkills = null;
-			/*try{
-				String[] strArray = new String[] {candidateDto.getCandidateSkills()};
-	    		   //JSONArray jsonArray = candidateDto.getCandidateSkills();
-	    		   candidateSkills = strArray.toString();
-	    	  }
-	    	  catch(Exception e){
-	    		  candidateSkills= candidateDto.getCandidateSkills();
-	    	  }
-			candidateSkills = candidateSkills.replaceAll("\"", "").replaceAll("\\[", "").replaceAll("\\]","");*/
 			
 			if(candidate.getSkillsName() != null){
 				activitySummary.append("Skills").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidate.getSkillsName()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDto.getCandidateSkills()).append(Constants.NEW_VALUE_TAG_END).append(" ");
@@ -451,18 +441,6 @@ public class CandidateServiceImpl implements CandidateService {
 		
 		if(StringUtils.isNotBlank(candidateDto.getVisa())){
 			
-			/*String visaList =null;
-			try{
-				String[] strArray = new String[] {candidateDto.getVisa()};
-				//JSONArray jsonArray = candidateDto.getVisa();
-				visaList = strArray.toString();
-			}
-			catch(Exception e){
-				visaList = candidateDto.getVisa();
-			}
-			visaList = visaList.replaceAll("\\[", "").replaceAll("\\]","");
-			visaList = visaList.replaceAll("\"", "");
-			*/
 			if(candidate.getVisaType() != null){
 				activitySummary.append("Immigration Status").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidate.getVisaType()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDto.getVisa()).append(Constants.NEW_VALUE_TAG_END).append(" ");
 			}
@@ -477,49 +455,33 @@ public class CandidateServiceImpl implements CandidateService {
 			candidate.setPrimarySkill(candidateDto.getPrimarySkill());
 		}
 
-		
-		
-		if(candidateDto.getVendors() != null ){
-			OrgRelations orgRelation = orgRelationsService.getOrRelationsById(candidateDto.getVendors());
+		if(StringUtils.isNotBlank(candidateDto.getVendors())){
+			OrgRelations orgRelation = orgRelationsService.getOrRelationsById(Long.parseLong(candidateDto.getVendors()));
 			candidate.setOrgRelationId(orgRelation);
 		}else{
 			candidate.setOrgRelationId(null);
 		}
 		
-		if(candidateDto.getVendorcontact() != null ){
-			OrgSpoc orgspoc = orgSpocService.getOrgSpocById(candidateDto.getVendorcontact());
+		if(StringUtils.isNotBlank(candidateDto.getVendorcontact())){
+			OrgSpoc orgspoc = orgSpocService.getOrgSpocById(Long.parseLong(candidateDto.getVendorcontact()));
 			candidate.setSpocId(orgspoc);
 		}else{
 			candidate.setSpocId(null);
 		}
 		
-		/*HashSet<CandidateEducation>	 candidateEducationList = candidateEducationService.getCandidateEducationDetails(candidateDto, orgLocations,candidate,user.getUserCode());
+		HashSet<CandidateEducation>	 candidateEducationList = candidateEducationService.getCandidateEducationDetails(candidateDto, orgLocations,candidate,user.getUserCode());
 		candidate.setCandidateEducation(candidateEducationList);
 		
 		HashSet<CandidateEmployers> candidateEmployersList = candidateEmployersService.getCandidateEmployersDetails(candidateDto,orgLocations,candidate,user.getUserCode());
 		candidate.setCandidateEmployers(candidateEmployersList);
 		
-		HashSet<CandidateSkills> candidateSkillsList = candidateSkillsService.getCandidateSkillsDetails(jsonObj, orgLocations,candidate,user.getUserCode());
-		candidate.setCandidateSkills(candidateSkillsList);
-        
-		if(fileName != null){
-		HashSet<CandidateResumes> candidateResumesList = candidateResumesService.getCandidateResumesDetails(orgLocations,user.getUserCode(),candidate,fileURL, fileName, contentType);
-		candidate.setCandidateResumes(candidateResumesList);
-		}
-		if(multiFile != null){
-			if(multiFile.getOriginalFilename()!=null){
-				candidate.setFileName(multiFile.getOriginalFilename());
-			}
-		}*/
-		
-		if(candidateDto.getUploadedFileInfo() != null && candidateDto.getUploadedFileInfo().size()>=0){
-			FileInfo fileInfo = candidateDto.getUploadedFileInfo().get(0);
+		if(candidateDto.getFileInfo()!= null && !candidateDto.getFileInfo().isEmpty()){
+			FileInfo fileInfo = candidateDto.getFileInfo().get(0);
+			if(fileInfo != null){
 			HashSet<CandidateResumes> candidateResumesList = candidateResumesService.getCandidateResumesDetails(orgLocations,user.getUserCode(),candidate, fileInfo);
 			candidate.setCandidateResumes(candidateResumesList);
-			
-			if(fileInfo != null){
-					candidate.setFileName(fileInfo.getFileName());
-					FileUploadUtil.moveFile(candidateDto.getStaticPath(), fileInfo, "resumes");
+			candidate.setFileName(fileInfo.getFileName());
+			FileUploadUtil.moveFile(candidateDto.getStaticPath(), fileInfo, "resumes");
 				}
 			}
 		
@@ -543,7 +505,7 @@ public class CandidateServiceImpl implements CandidateService {
 		/*
 		 * this method is for track candidate activity
 		 */
-		if(candidateDto.getCandidateId() >0 ){
+		if(StringUtils.isNotBlank(candidateDto.getCandidateId())){
 			candidateActivityCommonUtil.storeCandidateActivity(user, orgLocations, savedCandidate, "", Constants.CANDIDATE_EDITTED, activitySummary.toString(), "CANDIDATE");
 		}else{
 			candidateActivityCommonUtil.storeCandidateActivity(user, orgLocations, savedCandidate, "", Constants.CANDIDATE_ADDED_MANUALLY, "", "CANDIDATE");
@@ -1195,8 +1157,8 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 			HashSet<CandidateResumes> candidateResumesList = candidateResumesService.getCandidateResumesDetails(orgLocations,user.getUserCode(),candidate,multiFile);
 			candidate.setCandidateResumes(candidateResumesList);
 			}*/
-			if(candidateDTO.getUploadedFileInfo() != null && candidateDTO.getUploadedFileInfo().size()>=0){
-				FileInfo fileInfo = candidateDTO.getUploadedFileInfo().get(0);
+			if(candidateDTO.getFileInfo() != null && !candidateDTO.getFileInfo().isEmpty()){
+				FileInfo fileInfo = candidateDTO.getFileInfo().get(0);
 				HashSet<CandidateResumes> candidateResumesList = candidateResumesService.getCandidateResumesDetails(orgLocations,user.getUserCode(),candidate, fileInfo);
 				candidate.setCandidateResumes(candidateResumesList);
 				

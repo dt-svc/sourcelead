@@ -73,10 +73,10 @@ public class CandidateEducationServiceImpl implements CandidateEducationService 
 		OrgLocations orgLocations = new OrgLocations();
 		StringBuffer activitySummary = new StringBuffer();
 		if(candidateId!=null){
-        	if(candidateEducationDTO.getCandidateId() >=0){
-	       		 if(candidateEducationDTO.getCandidateId() !=null){
+        	if(StringUtils.isNotBlank(candidateEducationDTO.getCandidateEduId())){
+	       		 if(candidateEducationDTO.getCandidateEduId() !=null){
 	       			//candidateEducation.setId(Long.valueOf(jsonObject.getString("candidateEduId")));
-	       			candidateEducation = candidateEducationDao.getCandidateEducationBycandidateIdandEducationId(candidateId, candidateEducationDTO.getCandidateId());
+	       			candidateEducation = candidateEducationDao.getCandidateEducationBycandidateIdandEducationId(candidateId, Long.valueOf(candidateEducationDTO.getCandidateEduId()));
 	       	     }
        	    }else{
        	    	candidateEducation =new CandidateEducation();
@@ -107,13 +107,15 @@ public class CandidateEducationServiceImpl implements CandidateEducationService 
 				activitySummary.append("Specialization").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidateEducation.getSpecialization()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateEducationDTO.getSpecialization()).append(Constants.NEW_VALUE_TAG_END).append(" ");
 			}
 			candidateEducation.setSpecialization(candidateEducationDTO.getSpecialization());
+		}else{
+			candidateEducation.setSpecialization("");
 		}
 		if(candidateEducationDTO.getStartDate() != null){
 			try {
 				
 				//String pattern = "dd-MM-yyyy";
 				//DateFormat format = LoginSessionController.DATEFORMAT;
-                Date startDate = commonUtil.orgLocationDateFormat(locations.getDateFormat(),candidateEducationDTO.getStartDate().toString());
+                Date startDate = commonUtil.orgLocationDateFormat(locations.getDateFormat(),candidateEducationDTO.getStartDate());
                 candidateEducation.setStartDate(startDate);
 				
 			} catch (Exception e) {
@@ -124,7 +126,7 @@ public class CandidateEducationServiceImpl implements CandidateEducationService 
 			try {
 				//String pattern = "dd-MM-yyyy";
 				//DateFormat format = LoginSessionController.DATEFORMAT;
-                Date validTo = commonUtil.orgLocationDateFormat(locations.getDateFormat(),candidateEducationDTO.getEndDate().toString());
+                Date validTo = commonUtil.orgLocationDateFormat(locations.getDateFormat(),candidateEducationDTO.getEndDate());
                 candidateEducation.setEndDate(validTo);
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -132,29 +134,37 @@ public class CandidateEducationServiceImpl implements CandidateEducationService 
 		}
 		
 		
-		if(StringUtils.isNotBlank(candidateEducationDTO.getGrade())){
+		if(StringUtils.isNotBlank(candidateEducationDTO.getScore())){
 			if(candidateEducation != null && candidateEducation.getGrade() != null){
-				activitySummary.append("Grade").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidateEducation.getGrade()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateEducationDTO.getGrade()).append(Constants.NEW_VALUE_TAG_END).append(" ");
+				activitySummary.append("Grade").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidateEducation.getGrade()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateEducationDTO.getScore()).append(Constants.NEW_VALUE_TAG_END).append(" ");
 			}
-			candidateEducation.setGrade(candidateEducationDTO.getGrade());
+			candidateEducation.setGrade(candidateEducationDTO.getScore());
+		}else{
+			candidateEducation.setGrade("");
 		}
-		if(StringUtils.isNotBlank(candidateEducationDTO.getGradeType())){
+		if(StringUtils.isNotBlank(candidateEducationDTO.getScoreType())){
 			if(candidateEducation != null && candidateEducation.getGradeType() != null){
-				activitySummary.append("Grade Type").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidateEducation.getGradeType()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateEducationDTO.getGradeType()).append(Constants.NEW_VALUE_TAG_END).append(" ");
+				activitySummary.append("Grade Type").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidateEducation.getGradeType()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateEducationDTO.getScoreType()).append(Constants.NEW_VALUE_TAG_END).append(" ");
 			}
-			candidateEducation.setGradeType(candidateEducationDTO.getGradeType());
+			candidateEducation.setGradeType(candidateEducationDTO.getScoreType());
+		}else{
+			candidateEducation.setGradeType("");
 		}
 		if(StringUtils.isNotBlank(candidateEducationDTO.getInstitute())){
 			if(candidateEducation != null && candidateEducation.getInstitute() != null){
 				activitySummary.append("Institute").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidateEducation.getInstitute()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateEducationDTO.getInstitute()).append(Constants.NEW_VALUE_TAG_END).append(" ");
 			}
 			candidateEducation.setInstitute(candidateEducationDTO.getInstitute());
+		}else{
+			candidateEducation.setInstitute("");
 		}
 		if(StringUtils.isNotBlank(candidateEducationDTO.getAddress())){
 			if(candidateEducation != null && candidateEducation.getAddress() != null ){
 				activitySummary.append("Address").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidateEducation.getAddress()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateEducationDTO.getAddress()).append(Constants.NEW_VALUE_TAG_END).append(" ");
 			}
 			candidateEducation.setAddress(candidateEducationDTO.getAddress());
+		}else{
+			candidateEducation.setAddress("");
 		}
 		candidateEducation.setStatus(Constants.CANDIDATE_ACTIVE);
 		candidateEducation.setCreatedBy(user.getUserCode());
@@ -209,20 +219,9 @@ public class CandidateEducationServiceImpl implements CandidateEducationService 
 	public HashSet<CandidateEducation> getCandidateEducationDetails(CandidateDTO candidateDTO,OrgLocations orgLocations,Candidate candidate,String userCode) throws Exception {
 		    HashSet<CandidateEducation> candidateEducationList = new HashSet<CandidateEducation>(); 
 		    if(StringUtils.isNotBlank(candidateDTO.getCandidateEducation())){
-		    	  String education = null;
-		    	  /*try{
-		    		   JSONArray jsonArray = jsonObj.getJSONArray("candidateEducation");
-		    		   education = jsonArray.toString();
-		    	  }
-		    	  catch(JSONException e){
-		    		  education= jsonObj.getString("candidateEducation");
-		    	  }*/
-		    	  //education = education.replaceAll("\\[", "").replaceAll("\\]","");
 		  	      String[] educations = candidateDTO.getCandidateEducation().split(",");
 		  	    Set<String> courses = new HashSet();
 		    	  for (String edu : educations) {
-		    		  /*CandidateEducation ce = new  CandidateEducation();
-		    		  edu = edu.replace("\"", "");*/
 		    		  CandidateEducation ce = null;
 		    		  edu = edu.replace("\"", "");
 		    		  String eduTrim = edu.trim();

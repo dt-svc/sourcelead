@@ -426,7 +426,7 @@ function addContact(orgRelationID,clientLocationId) {
 	
 	result = result  +'	 <div class="clearfix mb10" id="EmailIdDiv">';
 	result = result  +'	  <div class="col-md-12">';
-	result = result  +'	    <input type="text" class="form-control input-sm" id="EmailId" name="email"  value="" field-name="Email" placeholder="Email Id *" onblur="validateEmail('+orgRelationID+'); getSpocUserDetails('+clientLocationId+','+orgRelationID+');" data-validation="required validate_Space validate_length length2-100 validate_email">';
+	result = result  +'	    <input type="text" class="form-control input-sm" id="email" name="email"  value="" field-name="Email" placeholder="Email Id *" onblur="validateEmail('+orgRelationID+'); getSpocUserDetails('+clientLocationId+','+orgRelationID+');" data-validation="required validate_Space validate_length length2-100 validate_email">';
 	result = result  +'	   </div>';
 	result = result  +'	 </div>';
 	
@@ -552,17 +552,14 @@ function closePopupDiv(){
 <script type="text/javascript">
 	function checkClientContactAdd(orgRelationId,clientLocationId) {
 		if ($('#clinetContact_form').validate(false, validationSettings)) {
-			var frm = $('#clinetContact_form').serializeFormJSON();
-			var con = JSON.stringify(frm);
-			con = con.replace(/[{}]/g, "");
-	        var jsonData = encodeURIComponent(con);
+	        var formData = getFormData("clinetContact_form");
 			var sourceleadUrl = '${sourceleadUrl}';
 			$("#addClientContact").attr("disabled", "disabled");
 			$("#addClientContact").addClass('button').val('Processing..');
 			
-			$.ajax({
+			/* $.ajax({
 						type : "POST",
-						url : sourceleadUrl+ "/saveClinentAndVendorContact?${_csrf.parameterName}=${_csrf.token}&json="+ jsonData+"&orgRelationId="+orgRelationId+"&clientLocationId="+clientLocationId+"&responderType=Client",
+						url : sourceleadUrl+ "/saveClinentAndVendorContact?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+orgRelationId+"&clientLocationId="+clientLocationId+"&responderType=Client",
 						success : function(result) {
 							 $("#popUpDivContact").removeClass("edit-details-active");
 							 $("#clientTerminateMsgDiv").removeAttr("style");
@@ -571,6 +568,15 @@ function closePopupDiv(){
 							 clientContactList(orgRelationId,clientLocationId);
 							 clientTerminateMsgFadein();
 						},
+			}); */
+			
+			$.post(sourceleadUrl+"/saveClinentAndVendorContact?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+orgRelationId+"&clientLocationId="+clientLocationId+"&responderType=Client", formData, function(data) {
+				$("#popUpDivContact").removeClass("edit-details-active");
+				 $("#clientTerminateMsgDiv").removeAttr("style");
+		 			$("#clientTerminateMsgDiv").css({ display: "block" });
+		 			$("#clientTerminateMsg").html("Success!! New Contact Added");
+				clientContactList(orgRelationId,clientLocationId);
+				 clientTerminateMsgFadein();
 			});
 			return true;
 		} else {

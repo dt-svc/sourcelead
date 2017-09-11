@@ -180,10 +180,12 @@ public class BillingPayableController {
 				String orgName = "";
 				if(orgRelations.getResponderLocationId().getId().longValue() == orgLocations.getId().longValue()){
 					orgName = orgRelations.getLocationId().getOrgLocationName();
+					orgRelations.setClientCurrency(conversionUtil.getVendorOrgCurrencyCode(orgRelations.getLocationId().getCountry()));
 				}
 				
 				if(orgRelations.getLocationId().getId().longValue() == orgLocations.getId().longValue()){
 					orgName = orgRelations.getResponderLocationId().getOrgLocationName();
+					orgRelations.setClientCurrency(conversionUtil.getVendorOrgCurrencyCode(orgRelations.getLocationId().getCountry()));
 				}
 				orgRelations.setOrgName(orgName);
 				vendorsList.add(orgRelations);

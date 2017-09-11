@@ -6,62 +6,33 @@ import com.bis.sourcelead.annotations.Required;
 
 public class CandidateEducationDTO {
 
-	private Long id;
-	
-	private Long orglocationId;
-
-	private Long candidateId;
 	
 	@Required(desc = "Education name")
 	private String name;
 	
 	private String specialization;
+	
+	private String candidateEduId;
 	 
-	private Date startDate;
+	private String startDate;
 	
-	private Date endDate;
+	private String endDate;
 
-	private String grade;
-	
-	private String gradeType;
-	
 	private String institute;
 	
 	private String address;
 	
-	private Date createdDate;
+	private String createdDate;
 	
 	private String createdBy;
 	
-	private Date updatedDate;
+	private String updatedDate;
 	
 	private String updatedBy;
-
-	private Integer status;
-
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-	public Long getOrglocationId() {
-		return orglocationId;
-	}
-
-	public void setOrglocationId(Long orglocationId) {
-		this.orglocationId = orglocationId;
-	}
-
-	public Long getCandidateId() {
-		return candidateId;
-	}
-
-	public void setCandidateId(Long candidateId) {
-		this.candidateId = candidateId;
-	}
+	
+	private String scoreType;
+	
+	private String score;
 
 	public String getName() {
 		return name;
@@ -79,36 +50,20 @@ public class CandidateEducationDTO {
 		this.specialization = specialization;
 	}
 
-	public Date getStartDate() {
+	public String getStartDate() {
 		return startDate;
 	}
 
-	public void setStartDate(Date startDate) {
+	public void setStartDate(String startDate) {
 		this.startDate = startDate;
 	}
 
-	public Date getEndDate() {
+	public String getEndDate() {
 		return endDate;
 	}
 
-	public void setEndDate(Date endDate) {
+	public void setEndDate(String endDate) {
 		this.endDate = endDate;
-	}
-
-	public String getGrade() {
-		return grade;
-	}
-
-	public void setGrade(String grade) {
-		this.grade = grade;
-	}
-
-	public String getGradeType() {
-		return gradeType;
-	}
-
-	public void setGradeType(String gradeType) {
-		this.gradeType = gradeType;
 	}
 
 	public String getInstitute() {
@@ -127,11 +82,11 @@ public class CandidateEducationDTO {
 		this.address = address;
 	}
 
-	public Date getCreatedDate() {
+	public String getCreatedDate() {
 		return createdDate;
 	}
 
-	public void setCreatedDate(Date createdDate) {
+	public void setCreatedDate(String createdDate) {
 		this.createdDate = createdDate;
 	}
 
@@ -143,11 +98,11 @@ public class CandidateEducationDTO {
 		this.createdBy = createdBy;
 	}
 
-	public Date getUpdatedDate() {
+	public String getUpdatedDate() {
 		return updatedDate;
 	}
 
-	public void setUpdatedDate(Date updatedDate) {
+	public void setUpdatedDate(String updatedDate) {
 		this.updatedDate = updatedDate;
 	}
 
@@ -159,14 +114,32 @@ public class CandidateEducationDTO {
 		this.updatedBy = updatedBy;
 	}
 
-	public Integer getStatus() {
-		return status;
+	public String getCandidateEduId() {
+		return candidateEduId;
 	}
 
-	public void setStatus(Integer status) {
-		this.status = status;
+	public void setCandidateEduId(String candidateEduId) {
+		this.candidateEduId = candidateEduId;
 	}
+
 	
-	
+
+	public String getScoreType() {
+		return scoreType;
+	}
+
+	public void setScoreType(String scoreType) {
+		this.scoreType = scoreType;
+	}
+
+	public String getScore() {
+		return score;
+	}
+
+	public void setScore(String score) {
+		this.score = score;
+	}
+
+
 
 }

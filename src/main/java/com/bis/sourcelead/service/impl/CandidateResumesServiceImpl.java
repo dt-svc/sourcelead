@@ -92,11 +92,13 @@ public class CandidateResumesServiceImpl implements CandidateResumesService {
 					activitySummary.append("Description").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidateResume.getDescription()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateResumeDTO.getDescription()).append(Constants.NEW_VALUE_TAG_END).append(" ");
 				}
 				candidateResume.setDescription(candidateResumeDTO.getDescription());
+			}else{
+				candidateResume.setDescription("");
 			}
 			candidateResume.setUpdatedBy(user.getUserCode());
 			candidateResume.setUpdatedDate(CommonUtil.currentDate());
-			if (candidateResumeDTO.getUploadedFileInfo() != null) {
-				FileInfo fileInfo = candidateResumeDTO.getUploadedFileInfo().get(0);
+			if (candidateResumeDTO.getFileInfo() != null) {
+				FileInfo fileInfo = candidateResumeDTO.getFileInfo().get(0);
 				if (fileInfo.getFileName() != null ) {
 					activitySummary.append("File").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidateResume.getFileName()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(fileInfo.getFileName()).append(Constants.NEW_VALUE_TAG_END).append(" ");
 				}
@@ -130,22 +132,20 @@ public class CandidateResumesServiceImpl implements CandidateResumesService {
 			candidateResume.setUpdatedBy(user.getUserCode());
 			candidateResume.setCreatedBy(user.getUserCode());
 			candidateResume.setUpdatedDate(commonUtil.currentDate());
-			if (candidateResumeDTO.getUploadedFileInfo() != null) {
-				FileInfo info = candidateResumeDTO.getUploadedFileInfo().get(0);
+			if (candidateResumeDTO.getFileInfo() != null) {
+				FileInfo fileInfo = candidateResumeDTO.getFileInfo().get(0);
 				if (candidateResume.getTitle() != null ) {
 					activitySummary.append("Title").append(" : ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateResume.getTitle()).append(Constants.NEW_VALUE_TAG_END);
 				}
 				else {
-					activitySummary.append("File").append(" : ").append(Constants.NEW_VALUE_TAG_INITIATION).append(info.getFileName()).append(Constants.NEW_VALUE_TAG_END);
+					activitySummary.append("File").append(" : ").append(Constants.NEW_VALUE_TAG_INITIATION).append(fileInfo.getFileName()).append(Constants.NEW_VALUE_TAG_END);
 				}
 				// candidateResume.setDocFile(multiFile.getBytes());
-				candidateResume.setFileURL(info.getFileURL());
-				candidateResume.setFileName(info.getFileName());
-				candidateResume.setFileContentType(info.getContentType());
-				if(info != null){
-					candidate.setFileName(info.getFileName());
-					FileUploadUtil.moveFile(candidateResumeDTO.getStaticPath(), info, "resumes");
-				}
+				candidateResume.setFileURL(fileInfo.getFileURL());
+				candidateResume.setFileName(fileInfo.getFileName());
+				candidateResume.setFileContentType(fileInfo.getContentType());
+					candidate.setFileName(fileInfo.getFileName());
+					FileUploadUtil.moveFile(candidateResumeDTO.getStaticPath(), fileInfo, "resumes");
 			}
 		}
 		candidateResumesDao.updateCandidateResume(candidateResume);

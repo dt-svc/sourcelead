@@ -1,35 +1,28 @@
 package com.bis.sourcelead.dto;
 
-	import java.util.Date;
-import java.util.HashSet;
+	import java.util.HashSet;
 import java.util.Set;
 
-import javax.persistence.Column;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-
-import org.hibernate.annotations.Type;
-
+import com.bis.sourcelead.annotations.Email;
+import com.bis.sourcelead.annotations.Required;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.UserRole;
-import com.bis.sourcelead.enums.Status;
 
 	public class AddUserDTO {
 
-		private Long id;
-		
+		@Required(desc = "first name")
 		private String firstName;
 		
 		private String lastName;
 		
+		@Required(desc = "email")
+		@Email
 		private String email;
 		
 		private String workPhone;
 		
-		private String mobilePhone;
-		
-		private Status userState;
+		private String userState;
 		
 		private String userType;
 		
@@ -41,9 +34,9 @@ import com.bis.sourcelead.enums.Status;
 		
 		private String status;
 		
-		private Long reportingManager;
+		private String reportingManager;
 		
-		private Status isMailSent;
+		private String isMailSent;
 		
 		private String jobTitle;
 		
@@ -57,11 +50,11 @@ import com.bis.sourcelead.enums.Status;
 		
 		private String googlePlus;
 		
-		private Date createdDate;
+		private String createdDate;
 		
 		private String createdBy;
 		
-		private Date updatedDate;
+		private String updatedDate;
 		
 		private String updatedBy;
 		
@@ -85,7 +78,7 @@ import com.bis.sourcelead.enums.Status;
 		
 		private String terminateReason;
 		
-		private Status previousUserState;
+		private String previousUserState;
 		
 		private String country;
 		
@@ -107,13 +100,13 @@ import com.bis.sourcelead.enums.Status;
 		
 		private String department;
 		
-		private Long vendors;
+		private String vendors;
 		
-		private Long vendorcontact;
+		private String vendorcontact;
 		
-		private Date dateofJoin;
+		private String dateofJoin;
 
-		private Integer isPrimary;
+		private String isPrimary;
 
 		private String roleChangeReason;
 
@@ -121,17 +114,36 @@ import com.bis.sourcelead.enums.Status;
 
 		private String newlyLoginUser;
 
+		@Required(desc = "roleType")
 		private String roleType;
 		
 		private String roleTypeId;
 		
-		public Long getId() {
-			return id;
-		}
-
-		public void setId(Long id) {
-			this.id = id;
-		}
+		private String EmailId;
+		
+		private String phoneNumber;
+		
+		private String assignReportingManagers;
+		
+		private String managerUsers;
+		
+		private String clientUsers;
+		
+		private String vendorUsers;
+		
+		private String approverUser;
+		
+		private String projectApproverUser;
+		
+		private String clientDocsOwnerUser;
+		
+		private String vendorDocsOwnerUser;
+		
+		private String userChangeRole;
+		
+		private String teamOwnerUser;
+		
+		private String reason;
 
 		public String getFirstName() {
 			return firstName;
@@ -165,19 +177,12 @@ import com.bis.sourcelead.enums.Status;
 			this.workPhone = workPhone;
 		}
 
-		public String getMobilePhone() {
-			return mobilePhone;
-		}
 
-		public void setMobilePhone(String mobilePhone) {
-			this.mobilePhone = mobilePhone;
-		}
-
-		public Status getUserState() {
+		public String getUserState() {
 			return userState;
 		}
 
-		public void setUserState(Status userState) {
+		public void setUserState(String userState) {
 			this.userState = userState;
 		}
 
@@ -221,19 +226,19 @@ import com.bis.sourcelead.enums.Status;
 			this.status = status;
 		}
 
-		public Long getReportingManager() {
+		public String getReportingManager() {
 			return reportingManager;
 		}
 
-		public void setReportingManager(Long reportingManager) {
+		public void setReportingManager(String reportingManager) {
 			this.reportingManager = reportingManager;
 		}
 
-		public Status getIsMailSent() {
+		public String getIsMailSent() {
 			return isMailSent;
 		}
 
-		public void setIsMailSent(Status isMailSent) {
+		public void setIsMailSent(String isMailSent) {
 			this.isMailSent = isMailSent;
 		}
 
@@ -285,11 +290,11 @@ import com.bis.sourcelead.enums.Status;
 			this.googlePlus = googlePlus;
 		}
 
-		public Date getCreatedDate() {
+		public String getCreatedDate() {
 			return createdDate;
 		}
 
-		public void setCreatedDate(Date createdDate) {
+		public void setCreatedDate(String createdDate) {
 			this.createdDate = createdDate;
 		}
 
@@ -301,11 +306,11 @@ import com.bis.sourcelead.enums.Status;
 			this.createdBy = createdBy;
 		}
 
-		public Date getUpdatedDate() {
+		public String getUpdatedDate() {
 			return updatedDate;
 		}
 
-		public void setUpdatedDate(Date updatedDate) {
+		public void setUpdatedDate(String updatedDate) {
 			this.updatedDate = updatedDate;
 		}
 
@@ -381,11 +386,11 @@ import com.bis.sourcelead.enums.Status;
 			this.terminateReason = terminateReason;
 		}
 
-		public Status getPreviousUserState() {
+		public String getPreviousUserState() {
 			return previousUserState;
 		}
 
-		public void setPreviousUserState(Status previousUserState) {
+		public void setPreviousUserState(String previousUserState) {
 			this.previousUserState = previousUserState;
 		}
 
@@ -469,35 +474,35 @@ import com.bis.sourcelead.enums.Status;
 			this.department = department;
 		}
 
-		public Long getVendors() {
+		public String getVendors() {
 			return vendors;
 		}
 
-		public void setVendors(Long vendors) {
+		public void setVendors(String vendors) {
 			this.vendors = vendors;
 		}
 
-		public Long getVendorcontact() {
+		public String getVendorcontact() {
 			return vendorcontact;
 		}
 
-		public void setVendorcontact(Long vendorcontact) {
+		public void setVendorcontact(String vendorcontact) {
 			this.vendorcontact = vendorcontact;
 		}
 
-		public Date getDateofJoin() {
+		public String getDateofJoin() {
 			return dateofJoin;
 		}
 
-		public void setDateofJoin(Date dateofJoin) {
+		public void setDateofJoin(String dateofJoin) {
 			this.dateofJoin = dateofJoin;
 		}
 
-		public Integer getIsPrimary() {
+		public String getIsPrimary() {
 			return isPrimary;
 		}
 
-		public void setIsPrimary(Integer isPrimary) {
+		public void setIsPrimary(String isPrimary) {
 			this.isPrimary = isPrimary;
 		}
 
@@ -540,7 +545,109 @@ import com.bis.sourcelead.enums.Status;
 		public void setRoleTypeId(String roleTypeId) {
 			this.roleTypeId = roleTypeId;
 		}
+
+		public String getEmailId() {
+			return EmailId;
+		}
+
+		public void setEmailId(String emailId) {
+			EmailId = emailId;
+		}
+
+		public String getPhoneNumber() {
+			return phoneNumber;
+		}
+
+		public void setPhoneNumber(String phoneNumber) {
+			this.phoneNumber = phoneNumber;
+		}
+
+		public String getAssignReportingManagers() {
+			return assignReportingManagers;
+		}
+
+		public void setAssignReportingManagers(String assignReportingManagers) {
+			this.assignReportingManagers = assignReportingManagers;
+		}
+
+		public String getManagerUsers() {
+			return managerUsers;
+		}
+
+		public void setManagerUsers(String managerUsers) {
+			this.managerUsers = managerUsers;
+		}
+
+		public String getClientUsers() {
+			return clientUsers;
+		}
+
+		public void setClientUsers(String clientUsers) {
+			this.clientUsers = clientUsers;
+		}
+
+		public String getVendorUsers() {
+			return vendorUsers;
+		}
+
+		public void setVendorUsers(String vendorUsers) {
+			this.vendorUsers = vendorUsers;
+		}
+
+		public String getApproverUser() {
+			return approverUser;
+		}
+
+		public void setApproverUser(String approverUser) {
+			this.approverUser = approverUser;
+		}
+
+		public String getProjectApproverUser() {
+			return projectApproverUser;
+		}
+
+		public void setProjectApproverUser(String projectApproverUser) {
+			this.projectApproverUser = projectApproverUser;
+		}
+
+		public String getClientDocsOwnerUser() {
+			return clientDocsOwnerUser;
+		}
+
+		public void setClientDocsOwnerUser(String clientDocsOwnerUser) {
+			this.clientDocsOwnerUser = clientDocsOwnerUser;
+		}
+
+		public String getVendorDocsOwnerUser() {
+			return vendorDocsOwnerUser;
+		}
+
+		public void setVendorDocsOwnerUser(String vendorDocsOwnerUser) {
+			this.vendorDocsOwnerUser = vendorDocsOwnerUser;
+		}
+
+		public String getUserChangeRole() {
+			return userChangeRole;
+		}
+
+		public void setUserChangeRole(String userChangeRole) {
+			this.userChangeRole = userChangeRole;
+		}
+
+		public String getTeamOwnerUser() {
+			return teamOwnerUser;
+		}
+
+		public void setTeamOwnerUser(String teamOwnerUser) {
+			this.teamOwnerUser = teamOwnerUser;
+		}
+
+		public String getReason() {
+			return reason;
+		}
+
+		public void setReason(String reason) {
+			this.reason = reason;
+		}
 		
-		
-	
 }

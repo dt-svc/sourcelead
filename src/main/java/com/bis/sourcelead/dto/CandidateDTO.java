@@ -19,23 +19,23 @@ import com.bis.sourcelead.entity.User;
 
 public class CandidateDTO {
 
-	private long candidateId;
+	private String candidateId;
 	
 	private String staticPath;
 
-	private MasterCandidate masterCandidateId;
+	//private MasterCandidate masterCandidateId;
 
-	private List<Map<String, String>> fileInfo;
+	private List<FileInfo> fileInfo;
 	
 	private List<FileInfo> uploadedFileInfo;
 
-	private OrgLocations orgLocationId;
+	//private OrgLocations orgLocationId;
 
-	private long consultantUser;
+	private String consultantUser;
 
-	private Org orgId;
+	//private Org orgId;
 
-	private User recruiterUserId;
+	//private User recruiterUserId;
 
 	private String candidateType;
 	
@@ -102,29 +102,27 @@ public class CandidateDTO {
 
 	private String visaType;
 
-	private byte[] docFile;
-
 	private String fileContentType;
 
 	private String fileName;
 
 	private String invitationstatus;
 
-	private Integer status;
+	private String status;
 
-	private Team teamId;
+	//private Team teamId;
 
-	private Integer isFavourite;
+	private String isFavourite;
 
-	private Integer isFavouriteAssociate;
+	private String isFavouriteAssociate;
 
 	private String terminateReason;
 
-	private Date createdDate;
+	private String createdDate;
 
 	private String createdBy;
 
-	private Date updatedDate;
+	private String updatedDate;
 
 	private String updatedBy;
 
@@ -134,9 +132,9 @@ public class CandidateDTO {
 
 	private String isAssociate;
 
-	private OrgRelations orgRelationId;
+	//private OrgRelations orgRelationId;
 
-	private OrgSpoc spocId;
+	//private OrgSpoc spocId;
 
 	private String skillsName;
 
@@ -150,9 +148,9 @@ public class CandidateDTO {
 	
 	private String candidateSkills;
 	
-	private Long vendors;
+	private String vendors;
 	
-	private Long vendorcontact;
+	private String vendorcontact;
 	
 	private String inviteEmail;
 	
@@ -160,9 +158,9 @@ public class CandidateDTO {
 	
 	private String visa;
 	
-	private Long associateId;
+	private String associateId;
 	
-	private Long projectId;
+	private String projectId;
 	
 	private String isMailSent;
 	
@@ -174,39 +172,64 @@ public class CandidateDTO {
 	
 	private String candidateEmployers;
 
-	public long getCandidateId() {
+	public String getCandidateId() {
 		return candidateId;
 	}
 
-	public void setCandidateId(long candidateId) {
+	public void setCandidateId(String candidateId) {
 		this.candidateId = candidateId;
 	}
 
-	public MasterCandidate getMasterCandidateId() {
+	public String getStaticPath() {
+		return staticPath;
+	}
+
+	public void setStaticPath(String staticPath) {
+		this.staticPath = staticPath;
+	}
+
+	/*public MasterCandidate getMasterCandidateId() {
 		return masterCandidateId;
 	}
 
 	public void setMasterCandidateId(MasterCandidate masterCandidateId) {
 		this.masterCandidateId = masterCandidateId;
+	}*/
+
+	
+	public List<FileInfo> getUploadedFileInfo() {
+		return uploadedFileInfo;
 	}
 
-	public OrgLocations getOrgLocationId() {
+	public List<FileInfo> getFileInfo() {
+		return fileInfo;
+	}
+
+	public void setFileInfo(List<FileInfo> fileInfo) {
+		this.fileInfo = fileInfo;
+	}
+
+	public void setUploadedFileInfo(List<FileInfo> uploadedFileInfo) {
+		this.uploadedFileInfo = uploadedFileInfo;
+	}
+
+	/*public OrgLocations getOrgLocationId() {
 		return orgLocationId;
 	}
 
 	public void setOrgLocationId(OrgLocations orgLocationId) {
 		this.orgLocationId = orgLocationId;
-	}
+	}*/
 
-	public long getConsultantUser() {
+	public String getConsultantUser() {
 		return consultantUser;
 	}
 
-	public void setConsultantUser(long consultantUser) {
+	public void setConsultantUser(String consultantUser) {
 		this.consultantUser = consultantUser;
 	}
 
-	public Org getOrgId() {
+	/*public Org getOrgId() {
 		return orgId;
 	}
 
@@ -220,7 +243,7 @@ public class CandidateDTO {
 
 	public void setRecruiterUserId(User recruiterUserId) {
 		this.recruiterUserId = recruiterUserId;
-	}
+	}*/
 
 	public String getCandidateType() {
 		return candidateType;
@@ -454,14 +477,6 @@ public class CandidateDTO {
 		this.visaType = visaType;
 	}
 
-	public byte[] getDocFile() {
-		return docFile;
-	}
-
-	public void setDocFile(byte[] docFile) {
-		this.docFile = docFile;
-	}
-
 	public String getFileContentType() {
 		return fileContentType;
 	}
@@ -486,35 +501,35 @@ public class CandidateDTO {
 		this.invitationstatus = invitationstatus;
 	}
 
-	public Integer getStatus() {
+	public String getStatus() {
 		return status;
 	}
 
-	public void setStatus(Integer status) {
+	public void setStatus(String status) {
 		this.status = status;
 	}
 
-	public Team getTeamId() {
+/*	public Team getTeamId() {
 		return teamId;
 	}
 
 	public void setTeamId(Team teamId) {
 		this.teamId = teamId;
 	}
-
-	public Integer getIsFavourite() {
+*/
+	public String getIsFavourite() {
 		return isFavourite;
 	}
 
-	public void setIsFavourite(Integer isFavourite) {
+	public void setIsFavourite(String isFavourite) {
 		this.isFavourite = isFavourite;
 	}
 
-	public Integer getIsFavouriteAssociate() {
+	public String getIsFavouriteAssociate() {
 		return isFavouriteAssociate;
 	}
 
-	public void setIsFavouriteAssociate(Integer isFavouriteAssociate) {
+	public void setIsFavouriteAssociate(String isFavouriteAssociate) {
 		this.isFavouriteAssociate = isFavouriteAssociate;
 	}
 
@@ -526,11 +541,11 @@ public class CandidateDTO {
 		this.terminateReason = terminateReason;
 	}
 
-	public Date getCreatedDate() {
+	public String getCreatedDate() {
 		return createdDate;
 	}
 
-	public void setCreatedDate(Date createdDate) {
+	public void setCreatedDate(String createdDate) {
 		this.createdDate = createdDate;
 	}
 
@@ -542,11 +557,11 @@ public class CandidateDTO {
 		this.createdBy = createdBy;
 	}
 
-	public Date getUpdatedDate() {
+	public String getUpdatedDate() {
 		return updatedDate;
 	}
 
-	public void setUpdatedDate(Date updatedDate) {
+	public void setUpdatedDate(String updatedDate) {
 		this.updatedDate = updatedDate;
 	}
 
@@ -582,7 +597,7 @@ public class CandidateDTO {
 		this.isAssociate = isAssociate;
 	}
 
-	public OrgRelations getOrgRelationId() {
+	/*public OrgRelations getOrgRelationId() {
 		return orgRelationId;
 	}
 
@@ -596,7 +611,7 @@ public class CandidateDTO {
 
 	public void setSpocId(OrgSpoc spocId) {
 		this.spocId = spocId;
-	}
+	}*/
 
 	public String getSkillsName() {
 		return skillsName;
@@ -637,14 +652,6 @@ public class CandidateDTO {
 	public void setTwitterUrl(String twitterUrl) {
 		this.twitterUrl = twitterUrl;
 	}
-	
-	public List<Map<String, String>> getFileInfo() {
-		return fileInfo;
-	}
-
-	public void setFileInfo(List<Map<String, String>> fileInfo) {
-		this.fileInfo = fileInfo;
-	}
 
 	public String getCandidateSkills() {
 		return candidateSkills;
@@ -654,19 +661,19 @@ public class CandidateDTO {
 		this.candidateSkills = candidateSkills;
 	}
 
-	public Long getVendors() {
+	public String getVendors() {
 		return vendors;
 	}
 
-	public void setVendors(Long vendors) {
+	public void setVendors(String vendors) {
 		this.vendors = vendors;
 	}
 
-	public Long getVendorcontact() {
+	public String getVendorcontact() {
 		return vendorcontact;
 	}
 
-	public void setVendorcontact(Long vendorcontact) {
+	public void setVendorcontact(String vendorcontact) {
 		this.vendorcontact = vendorcontact;
 	}
 
@@ -694,35 +701,19 @@ public class CandidateDTO {
 		this.visa = visa;
 	}
 
-	public List<FileInfo> getUploadedFileInfo() {
-		return uploadedFileInfo;
-	}
-
-	public String getStaticPath() {
-		return staticPath;
-	}
-
-	public void setStaticPath(String staticPath) {
-		this.staticPath = staticPath;
-	}
-
-	public void setUploadedFileInfo(List<FileInfo> uploadedFileInfo) {
-		this.uploadedFileInfo = uploadedFileInfo;
-	}
-
-	public Long getAssociateId() {
+	public String getAssociateId() {
 		return associateId;
 	}
 
-	public void setAssociateId(Long associateId) {
+	public void setAssociateId(String associateId) {
 		this.associateId = associateId;
 	}
 
-	public Long getProjectId() {
+	public String getProjectId() {
 		return projectId;
 	}
 
-	public void setProjectId(Long projectId) {
+	public void setProjectId(String projectId) {
 		this.projectId = projectId;
 	}
 
@@ -766,5 +757,6 @@ public class CandidateDTO {
 		this.candidateEmployers = candidateEmployers;
 	}
 
+	
 	
 }

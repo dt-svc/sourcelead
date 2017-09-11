@@ -6,7 +6,6 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -88,8 +87,6 @@ public class CandidateEducationRestController {
 	@RequestMapping(value = "/storeCandidateEducation", method = RequestMethod.POST)
 	public @ResponseBody String storeCandidateEducation(CandidateEducationDTO candidateEducationDTO,@RequestParam(value = "candidateId", required = false) String candidateId,HttpServletRequest request) throws Exception {
 
-		/*String jsonc = "{" + json + "}";
-		JSONObject jsonObject = new JSONObject(jsonc);*/
 		if(Validator.validate(candidateEducationDTO)) {
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
@@ -208,14 +205,15 @@ public class CandidateEducationRestController {
 	}
 	
 	@RequestMapping(value = "/upDateCandidateEducationByCandidateIdAndCandidateEducationId")
-	public String upDateCandidateEducationByCandidateIdAndCandidateEducationId(@RequestParam(value="json", required=false) String  json,@RequestParam(value = "candidateId", required = false) Long candidateId,HttpServletRequest request) throws Exception {
+	public String upDateCandidateEducationByCandidateIdAndCandidateEducationId(CandidateEducationDTO candidateEducationDTO,@RequestParam(value = "candidateId", required = false) Long candidateId,HttpServletRequest request) throws Exception {
 
 		    OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 		    User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			CandidateEducation candidateEdu;
-			String jsonc = "{" + json + "}";
-			JSONObject jsonObj = new JSONObject(jsonc);
-			
+			/*String jsonc = "{" + json + "}";
+			JSONObject jsonObj = new JSONObject(jsonc);*/
+			candidateEdu = candidateEducationService.storeCandidateEducation(candidateEducationDTO,candidateId,loginOrgLocation.getId(), user);
+
 			//candidateEdu = candidateEducationService.storeCandidateEducation(jsonObj,candidateId,loginOrgLocation.getId(),user);
 			return "success";
 	}

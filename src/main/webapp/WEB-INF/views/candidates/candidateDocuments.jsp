@@ -145,7 +145,7 @@ function candDocumentsList(candidateId){
 	    	             	 }
 	                    	 
 	                    	 if(opt.fileName != null && opt.fileName != '' && opt.fileName != 'undefined'){
-	                    	 result  = result + ' <td><div class="tbldata-dotdot-me" title="'+opt.fileName+'"><a class="fa fa-eye ml10" onclick="candidateDocumentView(\''+opt.documentUUID+'\',\''+opt.fileName+'\');"></a><a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadDoc?documentUUID='+opt.documentUUID+'\">&nbsp;&nbsp;&nbsp;'+opt.fileName+'</a></div></td>';
+	                    	 result  = result + ' <td><div class="tbldata-dotdot-me" title='+opt.fileName+'><a class="fa fa-eye ml10" onClick="viewFile(\'${sourceleadUrl}\',\''+opt.fileURL+'\',\''+opt.fileName+'\',\''+opt.fileContentType+'\'  title='+opt.fileName+');"></a><a class="glyphicon glyphicon-download-alt" href=\"'+opt.fileURL+'\" title="'+opt.fileName+'"></a>'+opt.fileName+'</div></td>';
 	                    	 }else{
 	                    		 result  = result + ' <td><div><span>----</span></div></td>';
 	                    	 }
@@ -367,7 +367,7 @@ function documentsPagination(){
 --%>
 
 <script>
-function closePopup(){
+function closePopup1(){
 	 $("#popUpDiv").removeClass("edit-details-active");
 }
 </script>
@@ -383,7 +383,7 @@ function closePopup(){
   
   <div id="divDocsTd1" style="display: none; float: left;">
   <div class="dropdown-select paddingRight">
-              <select class="width100percnt form-control selectborder" data-validation="required" onchange="getSelectedDocumentType(REPLACEROWID);" field-name="Document Type" id="REPLACEROWIDdocType" name="REPLACEROWIDdocType">
+              <select class="width100percnt form-control selectborder" data-validation="required" onchange="getSelectedDocumentType(REPLACEROWID);" field-name="Document Type" id="REPLACEROWIDdocType" name="requestDocumentList[REPLACEROWID].docType">
                 <option selected value="">--Document Type--</option>
                 <c:forEach var="doctype" items="${documentsList}">
 					<option value="${doctype.name}" >${doctype.name}</option>
@@ -392,20 +392,20 @@ function closePopup(){
   </div>
   
  <div class="clearfix mt5" id="REPLACEROWIDotherType" name="REPLACEROWIDotherType" style="display: none;">
-	<input type="text" class="form-control input-sm" placeholder="Other Type" data-validation-optional="true" field-name="Other Type" name="REPLACEROWIDotherDocType" id="REPLACEROWIDotherDocType">
+	<input type="text" class="form-control input-sm" placeholder="Other Type" data-validation-optional="true" field-name="Other Type" name="requestDocumentList[REPLACEROWID].otherDocType" id="REPLACEROWIDotherDocType">
  </div>
  </div>
   
   <div id="divDocsTd2" style="display: none; float: left;">
   <div>
-              <textarea rows="2" placeholder="Description" class="form-control" id="REPLACEROWIDdescription" name="REPLACEROWIDdescription"></textarea>
+              <textarea rows="2" placeholder="Description" class="form-control" id="REPLACEROWIDdescription" name="requestDocumentList[REPLACEROWID].description"></textarea>
    </div>
   </div>
   
   <div id="divDocsTd3" style="display: none; float: left;">
   <div>
      <label class="switch mt10 ml10 pull-left">
-       <input type="checkbox" checked id="REPLACEROWIDchecked" name="REPLACEROWIDchecked" onclick="checkDocument(REPLACEROWID)" value="Y">
+       <input type="checkbox" checked id="REPLACEROWIDchecked" name="requestDocumentList[REPLACEROWID].checked" onclick="checkDocument(REPLACEROWID)" value="Y">
        <div class="slider round"></div>
        </label>
          <div class="pull-right">
@@ -448,8 +448,8 @@ function addDocument(candidateId, documentUUID) {
 	result = result+'<div class="clearfix mb10" id="uploadDocDiv">';
 	result = result+'<div class="col-md-12 validation_p">';
 	result = result+'<div class="input-group positionRelative" id="uploadFileGroup">';
-	result = result+'<label class="input-group-btn"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File';
-	result = result+'<input type="file" name="uploadBtn" id="uploadBtn" style="display: none;"  multiple="" class="upload">';
+	result = result+'<label class="input-group-btn" onchange="uploadFileDoc();"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File';
+	result = result+'<input type="file"  id="uploadBtn" style="display: none;"  multiple="" class="upload">';
 	result = result+'</span> </label>';
 	result = result+'<input type="text" class="form-control" readonly id="uploadFile" name="docFile" placeholder="Upload Document..." field-name="Document" data-validation="required validate_Space validate_docimgpdf">';
 	result = result+'</div>';
@@ -582,62 +582,58 @@ function getDocumentType(documentType){
 					dateFormat : 'yyyy/mm/dd' 
 		         }; 
 			 if ($('#documentType_form').validate(false, validationSettings)){
-				var frm = $('#documentType_form').serializeFormJSON();
-				var con = JSON.stringify(frm);
-				con = con.replace(/[{}]/g, "");
-				var form = $('#documentType_form')[0];
-	      		var formData = new FormData(form); 
-				var sourceleadUrl = '${sourceleadUrl}';
+				
+				 var sourceleadUrl = '${sourceleadUrl}';
+		        var frm = $('#documentType_form')[0];
+				var formData = new FormData(frm);
 				$("#save_doc").attr("disabled", "disabled");
          		$("#save_doc" ).addClass('button').val('Processing..');
-				//It will escape all the special characters
-		        var jsonData = encodeURIComponent(con);
-				$.ajax({
-						type : "POST",
-		        	    data: formData,
-		        	    contentType : 'application/json; charset=utf-8',
-		        	    enctype: 'multipart/form-data',
-		    	        processData: false,
-		    	        contentType:false,
-		        	    dataType : 'json',
-						url : sourceleadUrl+"/saveCandidateDocument?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&candidateId="+candidateId+"&documentUUID="+documentUUID,
-						success : function(result) {
-								closePopup();
-								$('#perVal').attr('aria-valuenow', result).css('width',result+'%');
-			          			 if(result<50){
-			          			   $("#perVal").removeClass('progress-bar-success');
-			          			   $("#perVal").addClass("progress-bar-danger");
+         		
+         		$.ajax({
+					type : "POST",
+	        	    data: formData,
+	    	        processData: false,
+	    	        contentType:false,
+	        	   	url : sourceleadUrl+"/saveCandidateDocument?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&documentUUID="+documentUUID,
+					success : function(result) {
+							closePopup();
+							$('#perVal').attr('aria-valuenow', result).css('width',result+'%');
+		          			 if(result<50){
+		          			   $("#perVal").removeClass('progress-bar-success');
+		          			   $("#perVal").addClass("progress-bar-danger");
+		          			 }
+		          			 if(result>=50){
+		          				 $("#perVal").removeClass('progress-bar-danger');
+		          				 $("#perVal").addClass("progress-bar-success");
+		          			 }
+		          			 $("#disVal").empty();
+		          			$("#disVal").append(result+'%');
+		          			
+		          		// for quick view bar update
+	            			$('#quickPerVal').attr('aria-valuenow', result).css('width',result+'%');
+		          			 if(result<50){
+			          			   $("#quickPerVal").removeClass('progress-bar-success');
+			          			   $("#quickPerVal").addClass("progress-bar-danger");
 			          			 }
 			          			 if(result>=50){
-			          				 $("#perVal").removeClass('progress-bar-danger');
-			          				 $("#perVal").addClass("progress-bar-success");
+			          				 $("#quickPerVal").removeClass('progress-bar-danger');
+			          				 $("#quickPerVal").addClass("progress-bar-success");
 			          			 }
-			          			 $("#disVal").empty();
-			          			$("#disVal").append(result+'%');
-			          			
-			          		// for quick view bar update
-		            			$('#quickPerVal').attr('aria-valuenow', result).css('width',result+'%');
-			          			 if(result<50){
-				          			   $("#quickPerVal").removeClass('progress-bar-success');
-				          			   $("#quickPerVal").addClass("progress-bar-danger");
-				          			 }
-				          			 if(result>=50){
-				          				 $("#quickPerVal").removeClass('progress-bar-danger');
-				          				 $("#quickPerVal").addClass("progress-bar-success");
-				          			 }
 
-		            			$("#quickDisVal").empty();
-		            			$("#quickDisVal").append(result+'%');
-			          			
-								$("#popUpDiv").removeClass("edit-details-active");
-		            			$("#selector9").removeAttr("style");
-		            			$("#selector9").css({ display: "block" });
-	            				$("#docMsgDiv").html("Success!! New Candidate Document added");
-		             			candDocumentsList(candidateId);
-		             			docMsgFadein();
-		            		 
-						},
-					});
+	            			$("#quickDisVal").empty();
+	            			$("#quickDisVal").append(result+'%');
+		          			
+							$("#popUpDiv").removeClass("edit-details-active");
+	            			$("#selector9").removeAttr("style");
+	            			$("#selector9").css({ display: "block" });
+            				$("#docMsgDiv").html("Success!! New Candidate Document added");
+	             			candDocumentsList(candidateId);
+	             			docMsgFadein();
+	            		 
+					},
+				}); 
+				
+			
 					return true;
 			 }else{ 
 					return false;
@@ -650,6 +646,18 @@ function getDocumentType(documentType){
 		
 </script>
 
+<script>
+function uploadFileDoc(){
+	var sourceleadUrl ='${sourceleadUrl}';
+	fileUpload(sourceleadUrl, "uploadBtn", "documents", "documentType_form");
+}
+</script>
+
+<script>
+function refreshDocList(candidateId){
+	candDocumentsList(candidateId);
+}
+</script>
 
 <%-- 
      @author : Prasad K
@@ -814,11 +822,7 @@ function removeDocNameDiv(){
      this script is for add document popup
      1.usage     : onload
 --%>
-<script>
-function refreshDocList(candidateId){
-	candDocumentsList(candidateId);
-}
-</script>
+
 
 <script>
 
@@ -861,7 +865,7 @@ function createDocsType(candidateId){
 	result = result +'<div id="0requestedDocumentsFileGroup">';
 	result = result +'<td width="200px">';
 	result = result +'<div class="dropdown-select">';
-	result = result +'<select class="width100percnt form-control selectborder" data-validation="required" field-name="Document Type" onchange="getSelectedDocumentType(0);" id="0docType" name="0docType">';
+	result = result +'<select class="width100percnt form-control selectborder" data-validation="required" field-name="Document Type" onchange="getSelectedDocumentType(0);" id="0docType" name="requestDocumentList[0].docType">';
 	result = result +'<option selected value="">--Document Type--</option>';
 	
     <c:forEach var="doctype" items="${documentsList}">
@@ -870,19 +874,19 @@ function createDocsType(candidateId){
     
 	result = result +'</select>';
 	result = result +'<div class="clearfix mt5" id="0otherType" name="0otherType" style="display: none;">';
-	result = result +'<input type="text" class="form-control input-sm" placeholder="Other Type" data-validation-optional="true" field-name="Other Type" name="0otherDocType" id="0otherDocType">';
+	result = result +'<input type="text" class="form-control input-sm" placeholder="Other Type" data-validation-optional="true" field-name="Other Type" name="requestDocumentList[0].otherDocType" id="0otherDocType">';
 	result = result +'</div>';
 	result = result +'</div>';
 	result = result +'</td>';
 	result = result +'<td width="auto">';
 	result = result +'<div class="">';
-	result = result +'<textarea rows="2" placeholder="Description" class="form-control" id="0description" name="0description" field-name="Description" data-validation-optional="true" data-validation="validate_length length1-500"></textarea>';
+	result = result +'<textarea rows="2" placeholder="Description" class="form-control" id="description" name="requestDocumentList[0].description" field-name="Description" data-validation-optional="true" data-validation="validate_length length1-500"></textarea>';
 	result = result +'</div>';
 	result = result +'</td>';
 	result = result +'<td width="150px">';
 	result = result +'<div class="">';
 	result = result +'<label class="switch mt10 ml10 pull-left">';
-	result = result +'<input type="checkbox" checked id="0checked" name="0checked" onclick="checkDocument(0)" value="Y">';
+	result = result +'<input type="checkbox" checked id="0checked" name="requestDocumentList[0].checked" onclick="checkDocument(0)" value="Y">';
 	result = result +'<div class="slider round"></div>';
 	result = result +'</label>';
 	result = result +'<div class="pull-right">';
@@ -950,24 +954,23 @@ $('body').on('submit', '#requestForDocuments_form', function(e){
 			dateFormat : 'yyyy/mm/dd' 
          }; 
 	
-	  if ($(this).validate(false, validationSettings)){
+	if ($('#requestForDocuments_form').validate(false, validationSettings)){
       e.preventDefault();
      
-      var frm = $('#requestForDocuments_form').serializeFormJSON();
-      var con = JSON.stringify(frm);
-      con = con.replace(/[{}]/g, "");
-      
-      //It will escape all the special characters
-      var jsonData = encodeURIComponent(con);
       var sourceleadUrl ='${sourceleadUrl}';
       var requestedCandidateId = document.getElementById("requestedCandidateId").value;
-      
+     /*  var form = $('#requestForDocuments_form')[0];
+      var formData = new FormData(form); */
+      var formData = getFormData("requestForDocuments_form");
         $("#submit_docs").attr("disabled", "disabled");
 		$("#submit_docs" ).addClass('button').val('Processing..');
 		$("#documentLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	       $.ajax({
 		    	type: "POST",
-		    	 url: sourceleadUrl+"/requestCandidateForDocuments?${_csrf.parameterName}=${_csrf.token}&json="+jsonData, 
+		    	data : formData,
+		    	 //processData: false,
+	    	   //  contentType:false,
+		    	 url: sourceleadUrl+"/requestCandidateForDocuments?${_csrf.parameterName}=${_csrf.token}", 
 		        success: function(result) {
 		        	$("#documentLoading").removeAttr("style"); 
 		        	closeRD();

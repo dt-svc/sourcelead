@@ -51,6 +51,7 @@ import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import com.bis.sourcelead.annotations.Validator;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.CandidateDTO;
+import com.bis.sourcelead.dto.RequirementDTO;
 import com.bis.sourcelead.elk.index.CampaignIndex;
 import com.bis.sourcelead.elk.index.CandidateIndex;
 import com.bis.sourcelead.elk.index.RequirementIndex;
@@ -669,11 +670,14 @@ public class CrowdSourcingRequirementsRestController {
 		Requirement requirement = requirementSubmission.getRequirement();
 		Integer count = requirementSubmissionService.getNumberOfApplicantsForRequirement(requirement.getOrgLocationId().getId(), requirement.getId());
 		requirement.setTotalApplicantsForRequirement(count);
-		requirementElkUtil.saveElkRequirement(requirement,new JSONObject());
+		
+	    RequirementDTO requirementDTO=commonUtil.getRequirementDTO(requirement);
+		requirementElkUtil.saveElkRequirement(requirement,requirementDTO);
 		return "success";
 
 	}
 	
+
 	/*@PreAuthorize("hasRole('ROLE_CROWDSOURCING_REQUIREMENTS')")*/
 	@RequestMapping(value = "/saveBankAccountDetails", method = RequestMethod.POST)
 	public String saveBankAccountDetails(@RequestParam(value = "jsonData", required = false) String json,HttpServletRequest request)
@@ -1355,7 +1359,7 @@ public class CrowdSourcingRequirementsRestController {
 		 
 		 if(Validator.validate(candidateDTO)) {
 			 candidateDTO.setStaticPath(staticPath);
-				FileUploadUtil.fillUploadedFileInfo(candidateDTO, candidateDTO.getFileInfo());
+				//FileUploadUtil.fillUploadedFileInfo(candidateDTO, candidateDTO.getFileInfo());
 				User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 				OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 				Candidate candidate = candidateService.storeProfessionalParseCandidate(candidateDTO,orgLocation,user,candidateId);
@@ -2099,20 +2103,17 @@ public class CrowdSourcingRequirementsRestController {
 			Long candidateId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "candidateId");
 			OrgLocations orglo = orgLocationService.getOrgLocationsByLocationCode(locationCode);
 			RequirementRefer refer = new RequirementRefer();
-			//SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 			Date jobPortletsStartDate = null;
 			Date jobPortletsEndDate = null;
 			Candidate candidate = candidateService.getCandidateByCandidateId(candidateId);
 			if(!isNullOrEmpty(startDate) && !isNullOrEmpty(endDate)){
 				//Custom StartDate and EndDate
-				
 				jobPortletsStartDate =  commonUtil.orgLocationDateFormat(orglo.getDateFormat(),startDate);
 				jobPortletsEndDate =  commonUtil.orgLocationDateFormat(orglo.getDateFormat(),endDate);
 			
 			}else{
-				
 				//For This Month
-				
 				Calendar c = Calendar.getInstance();   
 	    	    c.set(Calendar.DAY_OF_MONTH, 1);
 	    	    DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
@@ -2121,9 +2122,8 @@ public class CrowdSourcingRequirementsRestController {
 	    	    int lastDate = c.getActualMaximum(Calendar.DATE);
 	    	    c.set(Calendar.DATE, lastDate);	
 	    	    endDate = df.format(c.getTime());
-	    	    
-	    	    jobPortletsStartDate =  commonUtil.orgLocationDateFormat(orglo.getDateFormat(),startDate);
-	    	    jobPortletsEndDate =  commonUtil.orgLocationDateFormat(orglo.getDateFormat(),endDate);
+	    	    jobPortletsStartDate =  sdf.parse(startDate);
+				jobPortletsEndDate =  sdf.parse(endDate);
 			}
 			
     		
