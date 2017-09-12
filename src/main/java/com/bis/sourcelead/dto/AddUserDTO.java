@@ -144,6 +144,10 @@ import com.bis.sourcelead.entity.UserRole;
 		private String teamOwnerUser;
 		
 		private String reason;
+		
+		private String registeredOrgLocationId;
+		
+		private String registredOrgId;
 
 		public String getFirstName() {
 			return firstName;
@@ -649,5 +653,23 @@ import com.bis.sourcelead.entity.UserRole;
 		public void setReason(String reason) {
 			this.reason = reason;
 		}
+
+		public String getRegisteredOrgLocationId() {
+			return registeredOrgLocationId;
+		}
+
+		public void setRegisteredOrgLocationId(String registeredOrgLocationId) {
+			this.registeredOrgLocationId = registeredOrgLocationId;
+		}
+
+		public String getRegistredOrgId() {
+			return registredOrgId;
+		}
+
+		public void setRegistredOrgId(String registredOrgId) {
+			this.registredOrgId = registredOrgId;
+		}
+		
+		
 		
 }
