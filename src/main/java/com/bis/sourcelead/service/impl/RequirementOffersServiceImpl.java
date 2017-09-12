@@ -869,6 +869,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 					 requirementSubmission.setUpdatedDate(commonUtil.currentDate());
 					 requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
 			  }
+	    	
 	    	requirementOffers.setRejectedReason(reason);
 	    		if(requirementOffers.getSubmissionId().getOrgLocations().getId().longValue() != orgLocations.getId().longValue()){
 	    			sendOfferRejectedMail(requirementOffers,loginUser,orgLocations);
