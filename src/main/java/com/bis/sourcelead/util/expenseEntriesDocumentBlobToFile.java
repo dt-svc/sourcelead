@@ -96,7 +96,7 @@ public class expenseEntriesDocumentBlobToFile {
 	public static void main(String... args)
 	{
 		long st = new Date().getTime();
-		new expenseEntriesDocumentBlobToFile().convertBlobToFile("EXPENSES_ENTRIES_DOCUMENTS", "ID", "DOC_FILE", "FILE_NAME", "FILE_URL", "sourcelead", "local");
+		new expenseEntriesDocumentBlobToFile().convertBlobToFile("EXPENSES_ENTRIES_DOCUMENTS", "ID", "DOC_FILE", "FILE_NAME", "FILE_URL", "sourcelead", "dev");
 		long end = new Date().getTime();
 		System.out.println(end-st);
 	}
