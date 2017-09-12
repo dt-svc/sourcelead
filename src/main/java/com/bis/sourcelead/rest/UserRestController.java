@@ -269,23 +269,16 @@ public class UserRestController {
 	 */
 	 @PreAuthorize("hasRole('ROLE_CREATE_USER')")
 	 @RequestMapping(value = "/createUser" , method = RequestMethod.POST)
-	 public  String createUser(AddUserDTO addUserDTO,CandidateDTO candidateDTO ,HttpServletRequest request) throws Exception {
-		 	
-		 /*json = "{"+json+"}";
-		 
-		 JSONObject jsonObj = new JSONObject(json);*/
-		 	
-	 	 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-	 	 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-	 	
-	 	 userService.storeUser(addUserDTO,candidateDTO,user,orgLocations,"CREATEUSER","",new Org());
-	 	
-	 	
-	 	 //For Saving of User Details
+	public String createUser(AddUserDTO addUserDTO, CandidateDTO candidateDTO, HttpServletRequest request)
+			throws Exception {
+
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		userService.storeUser(addUserDTO, candidateDTO, user, orgLocations, "CREATEUSER", "", new Org());
 		// userService.createUser(jsonObj,user,orgLocations.getId());
-		 SourceLeadSessionManager.setSessionAttribute(request, "userCreateMsg", "Successfully you have created a user");
-		 return "usersList";
-	   }
+		SourceLeadSessionManager.setSessionAttribute(request, "userCreateMsg", "Successfully you have created a user");
+		return "usersList";
+	}
 	 
 	 /**
 	  * To get the Project Manager Name by using projectId
