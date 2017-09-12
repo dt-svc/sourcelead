@@ -56,6 +56,9 @@ public class DatabaseConnectionConfig {
 	@Value("${elk.host}")
 	private String host;
 	
+	@Value("${static.path}")
+	private String staticPath;
+	
 
 	public ComboPooledDataSource getComboPooledDataSource() {
 		return comboPooledDataSource;
@@ -101,6 +104,16 @@ public class DatabaseConnectionConfig {
 
 	public void setEnv(Environment env) {
 		this.env = env;
+	}
+
+	public String getStaticPath()
+	{
+		return staticPath;
+	}
+
+	public void setStaticPath(String staticPath)
+	{
+		this.staticPath = staticPath;
 	}
 	
 	

@@ -52,16 +52,6 @@ public class HrDeductionsDaoImpl implements HrDeductionsDao{
 	@Transactional(rollbackFor = { Exception.class })
 	public ResponseList<HrDeductions> getHrDeductionsListByOrgLocationid(OrgLocations orgLocation, HrDeductionsDTO hrDeductionsDTO)
 	{
-		/*Session session = this.sessionFactory.getCurrentSession();
-		List<HrDeductions> hrdeductionlist = null;
-		String query = "from HrDeductions hrd  left join fetch hrd.orgLocationId where hrd.orgLocationId.id =:orgLocationId and hrd.version = (SELECT MAX(hr.version)  FROM HrDeductions hr where hr.orgLocationId.id =:orgLocationId)";
-		hrdeductionlist = session.createQuery(query).setLong("orgLocationId", orgLocation.getId()).setCacheable(true).list();
-		if(hrdeductionlist != null && hrdeductionlist.size() >0)
-		{
-			return hrdeductionlist;
-		}
-		return hrdeductionlist;
-*/	
 		
 		Session session = this.sessionFactory.getCurrentSession();
 		List<HrDeductions> hrDeductionsList = null;
@@ -106,7 +96,7 @@ public class HrDeductionsDaoImpl implements HrDeductionsDao{
 			response.setRecordsFiltered(filteredCount);
 		}
 
-		if (hrDeductionsList != null && hrDeductionsList.size() > 0) {
+		if (hrDeductionsList != null) {
 			response.setData(getHrDeductionsListSorting(hrDeductionsList));
 		}
 		return response;

@@ -363,20 +363,6 @@ public class AccountDeductionsServiceImpl implements AccountDeductionsService{
 	public ResponseList<AccountDeductions> getAccountDeductionsListByOrgLocationId(OrgLocations orgLocation, AccountDeductionsDTO accountDeductionsDTO) throws Exception{
 		return accountDeductionsDao.getAccountDeductionsListByOrgLocationId(orgLocation, accountDeductionsDTO); 
 		
-		
-		/*List<AccountDeductions> accountDeductionsList =  accountDeductionsDao.getAccountDeductionsListByOrgLocationId(orgLocation);
-		
-		if(accountDeductionsList != null){
-			for(AccountDeductions ad : accountDeductionsList){
-				if(null !=  ad.getFromDate()){
-					ad.setFromDateStr(conversionUtil.getDateAsString(ad.getFromDate()));
-				}
-				if(null != ad.getToDate()){
-					ad.setToDateStr(conversionUtil.getDateAsString(ad.getToDate()));
-				}
-			}
-		}
-		return accountDeductionsList;*/
 	}
 
 	@Override

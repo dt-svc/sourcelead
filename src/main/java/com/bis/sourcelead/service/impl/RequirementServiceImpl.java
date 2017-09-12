@@ -377,9 +377,8 @@ public class RequirementServiceImpl implements RequirementService {
 		if (StringUtils.isNotBlank(requirementDTO.getEducation())) {
 			requirement.setEducation(requirementDTO.getEducation());
 		}
-		if (requirementDTO.getUploadedFileInfo() != null
-				&& requirementDTO.getUploadedFileInfo().size() > 0) {
-			FileInfo fileInfo = requirementDTO.getUploadedFileInfo().get(0);
+		if (requirementDTO.getFileInfo() != null && !requirementDTO.getFileInfo().isEmpty()) {
+			FileInfo fileInfo = requirementDTO.getFileInfo().get(0);
 			requirement.setFileName(fileInfo.getFileName());
 			requirement.setFileContentType(fileInfo.getContentType());
 			requirement.setFileURL(fileInfo.getFileURL());;
@@ -1179,7 +1178,8 @@ public class RequirementServiceImpl implements RequirementService {
 	public Requirement addRequirement(Requirement requirement) throws Exception
 	{
 		Requirement savedRequirement = requirementDao.storeRequirement(requirement);
-		requirementElkUtil.saveElkRequirement(savedRequirement, null);
+		RequirementDTO requirementDTO = commonUtil.getRequirementDTO(savedRequirement);
+		requirementElkUtil.saveElkRequirement(savedRequirement, requirementDTO);
 		return savedRequirement;
 	}
 	

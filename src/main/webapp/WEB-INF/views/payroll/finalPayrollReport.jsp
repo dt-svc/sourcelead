@@ -93,8 +93,6 @@ function generatrPayroll(data,payrollCycle){
 				$("#invoiceDataDiv").empty();
 				$("#finalPayrollReportDiv").empty();
 				$("#finalPayrollReportDiv").append(result);
-				/*  document.getElementById("applicantsContractsList").style.display="block"; 
-				$("#payScale"). */
 				$('#payScale').css('display','block');
 				$('#payCycleName').html(payrollCycle);
 				finalPayrollreportPagination();

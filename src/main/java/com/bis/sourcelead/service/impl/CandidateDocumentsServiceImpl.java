@@ -168,16 +168,8 @@ public class CandidateDocumentsServiceImpl implements CandidateDocumentsService 
 				candidateDocuments.setCreatedBy(user.getUserCode());
 				candidateDocuments.setUpdatedDate(commonUtil.currentDate());
 				
-				/*if (multiFile != null) {
-					candidateDocuments.setDocFile(multiFile.getBytes());
-					if(multiFile.getOriginalFilename() != null && multiFile.getOriginalFilename() != ""){
-						activitySummary.append("Document").append(" : ").append(Constants.NEW_VALUE_TAG_INITIATION).append(multiFile.getOriginalFilename()).append(Constants.NEW_VALUE_TAG_END).append(" ");
-					}
-					candidateDocuments.setFileName(multiFile.getOriginalFilename());
-					candidateDocuments.setFileContentType(multiFile.getContentType());
-				}*/
 				
-				if (candidateDocumentsDTO.getFileInfo() != null) {
+				if (candidateDocumentsDTO.getFileInfo() != null && !candidateDocumentsDTO.getFileInfo().isEmpty()) {
 					FileInfo fileInfo = candidateDocumentsDTO.getFileInfo().get(0);
 					if(fileInfo.getFileName() != null ){
 						activitySummary.append("Document").append(" : ").append(Constants.NEW_VALUE_TAG_INITIATION).append(fileInfo.getFileName()).append(Constants.NEW_VALUE_TAG_END).append(" ");
