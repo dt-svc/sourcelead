@@ -873,6 +873,8 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 	    	
 	    	
 	    	
+	    	
+	    	
 	    	requirementOffers.setRejectedReason(reason);
 	    		if(requirementOffers.getSubmissionId().getOrgLocations().getId().longValue() != orgLocations.getId().longValue()){
 	    			sendOfferRejectedMail(requirementOffers,loginUser,orgLocations);
