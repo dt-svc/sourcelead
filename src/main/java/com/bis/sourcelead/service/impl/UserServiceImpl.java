@@ -591,8 +591,7 @@ public class UserServiceImpl implements UserService {
 		 
 		 StringBuilder sb = new StringBuilder();
 		 EmailMessage emailMessage = new EmailMessage();
-		 StringBuilder builder=new StringBuilder();
-		 emailMessage.setFirstName(builder.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
+		 emailMessage.setFirstName(user.getFirstName());
 		 emailMessage.setLastName(user.getLastName());
 		 emailMessage.setToEmail(user.getEmail());
 		 emailMessage.setFromEmail(loginUser.getEmail());
@@ -604,7 +603,12 @@ public class UserServiceImpl implements UserService {
 		 
 		//setting the class filed values
 		 Map<String, String> globalVarsMap = new HashMap<String, String>();
-		 globalVarsMap.put("firstName", emailMessage.getFirstName());
+		 StringBuilder builder=new StringBuilder();
+		 if(user.getLastName() != null && user.getLastName() !=""){
+			 globalVarsMap.put("firstName",builder.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());	 
+		 }else{
+			 globalVarsMap.put("firstName", user.getFirstName());	 
+		 }
 		 /*globalVarsMap.put("lastName",emailMessage.getLastName());*/
 		 globalVarsMap.put("administratorFirstName", loginUser.getFirstName());
 		 globalVarsMap.put("administratorLastName",loginUser.getLastName());
