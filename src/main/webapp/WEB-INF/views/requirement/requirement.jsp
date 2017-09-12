@@ -466,6 +466,7 @@ $(document).ready(function () {
                 <div class="input-group-btn selp-custom-min payrate_p">
                   <select class="selectpicker ratetype" id="rateType" name="rateType" field-name="Rate Per">
                     <c:if test="${SourceLeadWeb_currencyCode == 'INR'}">
+                        <option value="">Rate Per</option>
                         <option ${requirement.rateType  == 'Monthly' ? 'selected' : ''}>Monthly</option>
 	                    <option ${requirement.rateType  == 'Hourly' ? 'selected' : ''}>Hourly</option>
 	                    <option ${requirement.rateType  == 'Weekly' ? 'selected' : ''}>Weekly</option>
@@ -476,6 +477,7 @@ $(document).ready(function () {
                     </c:if>
                   
                   <c:if test="${SourceLeadWeb_currencyCode == 'USD'}">
+                        <option value="">Rate Per</option>
                         <option ${requirement.rateType  == 'Hourly' ? 'selected' : ''}>Hourly</option>
                         <option ${requirement.rateType  == 'Monthly' ? 'selected' : ''}>Monthly</option>
 	                    <option ${requirement.rateType  == 'Weekly' ? 'selected' : ''}>Weekly</option>
@@ -3045,7 +3047,7 @@ $(document).ready(function(){
 var sourceleadUrl = '${sourceleadUrl}';
 $(function() {
 	$("#uploadBtn").change(function() {
-		fileUpload(sourceleadUrl, "uploadBtn", "resumes", "requirement_form");
+		fileUpload(sourceleadUrl, "uploadBtn", "requirementDocuments", "requirement_form");
 	});
  }); 
 </script>
