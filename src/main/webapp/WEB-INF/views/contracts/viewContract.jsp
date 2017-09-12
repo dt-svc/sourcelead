@@ -469,7 +469,7 @@ function displyContract(stage){
 			}
 					
 			
-		if(json.contractType != "Vendor NDA" && json.contractType != "Vendor NSA" && json.contractType!="Full time offer"){
+		if(json.contractType != "Vendor NDA" && json.contractType != "Client MSA" && json.contractType != "Vendor MSA" && json.contractType != "Vendor NSA" && json.contractType!="Full time offer"){
 			result = result +	'<h4>Billing Details</h4>';
 			
 			if(null != json.typeOfContract && json.contractType.includes("SOW")){
