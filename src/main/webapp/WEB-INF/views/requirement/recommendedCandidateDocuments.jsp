@@ -562,6 +562,6 @@ function refreshDocList(candidateId){
 <script>
 function uploadFileDoc(){
 	var sourceleadUrl ='${sourceleadUrl}';
-	fileUpload(sourceleadUrl, "uploadBtn", "documents", "documentType_form");
+	fileUpload(sourceleadUrl, "uploadBtn", "candidateDocuments", "documentType_form");
 }
 </script>

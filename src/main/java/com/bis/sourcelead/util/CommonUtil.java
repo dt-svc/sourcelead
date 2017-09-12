@@ -1,5 +1,8 @@
 package com.bis.sourcelead.util;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.Writer;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -1121,5 +1124,30 @@ public class CommonUtil {
 				requirementDTO.setGeneratedId(requirement.getGeneratedId());
 			}
 			return requirementDTO;
+		}
+		
+		public static byte[] readBytesFromFile(String filePath)
+		{
+			FileInputStream fileInputStream = null;
+			byte[] bytesArray = null;
+			try {
+				File file = new File(filePath);
+				bytesArray = new byte[(int) file.length()];
+				// read file into bytes[]
+				fileInputStream = new FileInputStream(file);
+				fileInputStream.read(bytesArray);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			finally {
+				if (fileInputStream != null) {
+					try {
+						fileInputStream.close();
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				}
+			}
+			return bytesArray;
 		}
 }

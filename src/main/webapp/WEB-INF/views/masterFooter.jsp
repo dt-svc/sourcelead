@@ -51,7 +51,7 @@
 				$this.next().css({'width': '100%'});
 				});
 </script>
-<script>
+<!-- <script>
 $(document).tooltip({
 position: {
 my: "center bottom",
@@ -63,7 +63,7 @@ $( this ).addClass( feedback.vertical )
 }
 }
 });
-</script>
+</script> -->
 <c:if test='${viewPage == "orgChart"}'>
 	<script src="resources/js/jquery.orgchart.js"></script>
 	<link href="resources/css/jquery.orgchart.css" type='text/css' rel='stylesheet'/>
