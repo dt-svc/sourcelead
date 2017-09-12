@@ -354,10 +354,9 @@ public class InvoiceRestController {
     @RequestMapping(value = "/getInvoiceList",method = RequestMethod.POST)
 	public ResponseList<Invoice> getInvoiceList(InvoiceDTO invoiceDTO,HttpServletRequest request) throws Exception {
 		
-    	String resultJson;
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		
-		String[] tableColumns = {"invoiceId", "clientName", "clientContact", "projectName", "invoiceDate", "inoviceTotal","inoviceDue","dueDate","inoviceStatus","paymentStatus","action"};
+		/*String[] tableColumns = {"invoiceId", "clientName", "clientContact", "projectName", "invoiceDate", "inoviceTotal","inoviceDue","dueDate","inoviceStatus","paymentStatus","action"};
 	     int sortColumnIndex = 1; //by default sorting using updated date
 		String sortColumnOrder = "desc"; //by default descending order
 		if(invoiceDTO.getOrder() != null && !invoiceDTO.getOrder().isEmpty()) {
@@ -365,10 +364,8 @@ public class InvoiceRestController {
 			sortColumnOrder = invoiceDTO.getOrder().get(0).get("dir");
 		}
 		invoiceDTO.setSortColumn(tableColumns[sortColumnIndex]);
-		invoiceDTO.setSortOrder(sortColumnOrder);
+		invoiceDTO.setSortOrder(sortColumnOrder);*/
 		
-		
-		List<Invoice> billingInvoiceList = new ArrayList<Invoice>();
 		
 		Timezone timezone = timeZoneService.getTimezone(orgLocations.getTimezone().getId());
 		DateTime zoned = new DateTime(DateTimeZone.forID(timezone.getTimeZoneId()));
@@ -465,7 +462,7 @@ public class InvoiceRestController {
 			invoice.setInvoiceStatus(invoice.getInvoiceStatus());
 			invoice.setPaymentStatus(invoice.getPaymentStatus());
 			if(null != invoice.getProjectID()){
-				invoice.setProjectId(invoice.getProjectID().getId().toString());	
+				invoice.setProjectId(invoice.getProjectID().getId().toString());
 			}
 			
 			

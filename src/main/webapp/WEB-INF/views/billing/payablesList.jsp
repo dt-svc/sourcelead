@@ -536,6 +536,379 @@ function getPayableInvoiceList(){
 	var invoice = [];
 	var payment = [];
 	var dayWisetype = $("#dayWiseTypeId").val();
+	var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
+	  if(locationList.match("yyyy-MM-dd")){
+		  orgLocationDate = 'YYYY-MM-DD';
+	  }if(locationList.match("dd-MM-yyyy")){
+		  orgLocationDate = 'DD-MM-YYYY'; 
+	  }if(locationList.match("MM-dd-yyyy")){
+		  orgLocationDate = 'MM-DD-YYYY'; 
+	  }if(locationList.match("yyyy-dd-MM")){
+		  orgLocationDate = 'YYYY-DD-MM'; 
+	  } 
+	if(dayWisetype=="custom"){
+		dayWisetype = "";
+	}
+	var startDate = $("#billingStartDate").val();
+	var endDate = $("#billingEndDate").val();
+	
+	if(startDate == null || startDate == '' || startDate == 'undefined'){
+		$("#invoiceStartDate").empty().append("Start Date is Required") ; 
+	}
+	if(endDate == null || endDate == '' || endDate == 'undefined'){
+		$("#invoiceEndDate").empty().append("End Date is Required") ; 
+	}
+	
+	$('input:checkbox[name=invoiceStatus]:checked').each(function() 
+    {
+		invoice.push($(this).val());
+    });
+	
+	$('input:checkbox[name=paymentStatus]:checked').each(function() 
+	 {
+		payment.push($(this).val());
+	 });
+	var searchValue = $("#payableDataTableSearch").val();
+	searchValue = searchValue ? searchValue : "";
+	var url = sourceleadUrl+"/getInvoiceList?&invoiceStatus="+invoice+"&paymentStatus="+payment+"&dayWisetype="+dayWisetype+"&startDate="+startDate+"&endDate="+endDate+"&invoiceType=payables&searchValue="+searchValue;
+	preparePayableList(url,orgLocationDate);
+}
+
+</script>
+
+<script>
+function preparePayableList(url,orgLocationDate){
+ 	var result = "";
+ 	result = result +" <div class='remove_search'>";
+ 	result = result +" <input type='text' placeholder='Search' id='payableDataTableSearch'/>";
+ 	result = result +"</div>";
+ 	result = result + '<table id="payableListTable" class="display" cellspacing="0" width="100%" >';
+	result = result + '<thead>';
+	result = result +'       <tr>                             ';
+	result = result +'         <th>ID</th>                    ';
+	result = result +'         <th>Vendor Name</th>           ';
+	result = result +'         <th>Contact</th>               ';
+	result = result +'         <th>Project Name</th>          ';
+	result = result +'         <th>Bill Date<br>(<small class="custom-small">'+orgLocationDate+'</small>)</th>             ';
+	result = result +'         <th>Total</th>                 ';
+	result = result +'         <th>Due</th>                   ';
+	result = result +'         <th>Due Date<br>(<small class="custom-small">'+orgLocationDate+'</small>)</th>              ';
+	result = result +'         <th>Status</th>                ';
+	result = result +'         <th>Payment Status</th>        ';
+	result = result +'         <th>Action</th>                ';
+	result = result +'       </tr> 							  ';
+	result = result + '</thead>	';
+    result = result +"</table>";
+    $("#invoiceList").empty();  
+    $("#invoiceList").append(result);
+    payablePagination(url); 
+//     closePopup();
+	
+}
+
+</script>
+
+<script>
+function payablePagination(url){
+	var colIndex = 0;
+    $('#payableListTable').DataTable( { 
+	  "processing": true,
+      "serverSide": true,
+      "searching": false,
+      "ajax": $.fn.dataTable.pipeline( {
+          url: url,
+          method: 'POST',
+          pages: 10
+        }),
+        "columns": [
+            { "data": "invoiceId" },
+            { "data": "vendorName"},
+            { "data": "vendorContact"},
+            { "data": "projectName" },
+            { "data": "invoiceDate" },
+            { "data": "inoviceTotal"},
+            { "data": "inoviceDue"},
+            { "data": "dueDate"},
+            { "data": "inoviceStatus"},
+            { "data": "paymentStatus"},
+            { "data": "action"}
+        ],
+        "columnDefs": [ {
+	    	  	"targets": colIndex++,
+	    	  	"data": "invoiceId",
+	    	  	"render": function(data, type, report, meta) {
+	    	  		$("#emptyPayableInvoiceId").val(1);
+	    	  		var result = "";
+	    	  		
+					if(report.dueBeforeInvoiceAmount != null && report.dueBeforeInvoiceAmount != '' && report.dueBeforeInvoiceAmount != 'undefined'){
+ 						$("#dueBeforeInvoiceAmount").html(report.dueBeforeInvoiceAmount);
+					}
+	    	  		if(report.dueBeforeInvoiceCount != null && report.dueBeforeInvoiceCount != '' && report.dueBeforeInvoiceCount != 'undefined'){
+	    	  			$("#dueBeforeInvoiceCount").html(report.dueBeforeInvoiceCount);
+					}
+	    	  		if(report.dueAfterInvoiceAmount != null && report.dueAfterInvoiceAmount != '' && report.dueAfterInvoiceAmount != 'undefined'){
+	 					$("#dueAfterInvoiceAmount").html(report.dueAfterInvoiceAmount);
+					}
+		    	  	if(report.dueAfterInvoiceCount != null && report.dueAfterInvoiceCount != '' && report.dueAfterInvoiceCount != 'undefined'){
+		    	  		$("#dueAfterInvoiceCount").html(report.dueAfterInvoiceCount);
+					}
+		    	  	if(report.draftInvoiceCount != null && report.draftInvoiceCount != '' && report.draftInvoiceCount != 'undefined'){
+	 					$("#draftInvoiceCount").html(report.draftInvoiceCount);
+					}
+		    	  	if(report.draftInvoiceAmount != null && report.draftInvoiceAmount != '' && report.draftInvoiceAmount != 'undefined'){
+		    	  		$("#unbilledAmoumt").html(report.draftInvoiceAmount);
+					}
+		    	  	if(report.paidInvoiceCount != null && report.paidInvoiceCount != '' && report.paidInvoiceCount != 'undefined'){
+		 				$("#paidInvoiceCount").html(report.paidInvoiceCount);
+					}
+			    	if(report.paidInvoiceAmount != null && report.paidInvoiceAmount != '' && report.paidInvoiceAmount != 'undefined'){
+			    	  	$("#paidInvoiceAmount").html(report.paidInvoiceAmount);
+					}
+	    		     
+			    	result = result +'         <td>';
+					if(report.invoiceStatus == "DRAFT" || report.invoiceStatus == "Rejected"){
+						var sourceleadUrl ='${sourceleadUrl}';
+						if(report.projectId != null && report.projectId != '' && report.projectId != 'undefined'){
+							'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_BILL\')">';
+							result = result +'           <div class="tbldata-dotdot_80 invoiceId_Anchor"><a href="'+sourceleadUrl+'/getInvoiceByUUID?invoiceUUID='+report.invoiceUUID+'&projectId='+report.projectId+'" title = "'+report.invoiceId+'">'+report.invoiceId+'</a></div>   ';
+							'</sec:authorize>';
+						}else{
+							result = result +'           <div class="tbldata-dotdot_80 invoiceId_Anchor"><a href="'+sourceleadUrl+'/getInvoiceByUUID?invoiceUUID='+report.invoiceUUID+'" title = "'+report.invoiceId+'">'+report.invoiceId+'</a></div>   ';
+						}
+						
+
+					}
+					if(report.invoiceStatus == "SENT" || report.invoiceStatus == "Received" || report.invoiceStatus == "Accepted" || report.invoiceStatus == "Linked"){
+						'<sec:authorize access="hasAnyRole(\'ROLE_BILL_PAYMENT_HISTORY\')">';
+						result = result +'           <div class="tbldata-dotdot_80 invoiceId_Anchor"><a href="<c:url value="/viewInvoice?invoiceUUID='+report.invoiceUUID+'&invoiceType=Payables"/>" title = "'+report.invoiceId+'">'+report.invoiceId+'</a></div>   ';				
+						'</sec:authorize>';
+					}
+					
+					result = result +'         </td>  ';
+					
+		             return result;
+	    	  	}
+	      },{
+	    	  "targets": colIndex++,
+              "data": "vendorName",
+              "render": function ( data, type, report, meta ) {
+            	  var result = "";
+            	  result = result +'         <td>   ';
+  				result = result +'           <div class="tbldata-dotdot-vsm" title="'+report.clientName+'">'+report.clientName+'</div>';
+  				result = result +'         </td> ';
+	              return result;
+              		
+              }
+	          },{
+            "targets": colIndex++,
+            "data": "vendorContact",
+            "render": function ( data, type, report, meta ) {
+            	var result = "";
+            	result = result +'         <td>';
+				if(report.clientContactName !='' && report.clientContactName != null && report.clientContactName != 'undefined'){
+					result = result +'           <div class="tbldata-dotdot-vsm" title="'+report.clientContactName+'">'+report.clientContactName+'</div>  ';	
+				}else{
+					result = result +'<div class="tbldata-dotdot-vsm">--</div>  ';
+				}
+				result = result +'         </td>';
+            	 return result;
+            }
+          }, {
+              "targets": colIndex++,
+              "data": "projectName",
+              "render": function ( data, type, report, meta ) {
+            	  var result = "";
+            		result = result +'         <td> ';
+           			if(report.projectName != null && report.projectName != '' && report.projectName != 'undefined'){
+           				result = result +'<div class="tblminwidth-100">'+report.projectName+'</div>';
+            		}else{
+            			result = result +'<div class="tblminwidth-100">--</div>';
+            		}
+           			result = result +'         </td>';
+            	  return result;
+              }
+            }, {
+                "targets": colIndex++,
+                "data": "invoiceDate",
+                "render": function ( data, type, report, meta ) {
+                	var result = "";
+                	if(report.invoiceDateStr != null && report.invoiceDateStr != '' && report.invoiceDateStr != 'undefined'){
+                		result = result +'<div class="tblminwidth-100">'+report.invoiceDateStr+'</div>';
+            		}else{
+            			result = result +'<div class="tblminwidth-100">--</div>';
+            		}
+    	              return result;
+                }
+          },{
+	    	  	"targets": colIndex++,
+	    	  	"data": "inoviceTotal",
+	    	  	"render": function(data, type, report, meta) {
+	    	  		var result = "";
+	    	  		result = result +'         <td> ';
+					result = result +'           <div class="tbldata-dotdot_80" title="'+report.total+'">'+report.total+'</div>';
+					result = result +'         </td>';
+  	              return result;
+	    	  	}
+	    	  },{
+	    	  	"targets": colIndex++,
+	    	  	"data": "inoviceDue",
+	    	  	"render": function(data, type, report, meta) {
+	    	  		var result = "";
+	    	  		result = result +'         <td> ';
+					result = result +'           <div class="tbldata-dotdot_80" title="'+report.dueAmount+'">'+report.dueAmount+'</div>';
+					result = result +'         </td>';
+	    	  		 return result;
+	    	  	}
+	    	  }, {
+                  "targets": colIndex++,
+                  "data": "dueDate",
+                  "render": function ( data, type, report, meta ) {
+                	  var result = "";
+                	  if(report.dueDateStr != null && report.dueDateStr != '' && report.dueDateStr !='undefined'){
+                		  result = result +'<div class="tblminwidth-100">'+report.dueDateStr+'</div>';
+              		}else{
+              		  result = result +'<div class="tblminwidth-100">--</div>';
+              		}
+                	  return result;
+                  }
+                },{
+                    "targets": colIndex++,
+                    "data": "inoviceStatus",
+                    "render": function ( data, type, report, meta ) {
+                    	var result = "";
+                    	var invoiceStatus = null;
+               			if(report.invoiceStatus == "SENT"){
+               				invoiceStatus = "Sent"
+               			}else if(report.invoiceStatus == "DRAFT"){
+               				invoiceStatus = "Draft"
+               			}else{
+               				invoiceStatus = report.invoiceStatus
+               			}
+                    	
+                    	result = result +'         <td> ';
+        				result = result +'           <div class="tbldata-dotdot_100">'+invoiceStatus+'</div>';
+        				if(report.invoiceStatus == "Rejected"){
+        			 		result = result + '    <i class="glyphicon glyphicon-comment ml10 edit-reason"><div class="edit-status"><p>'+report.rejectReason+'</p></div></i>';
+        					}
+        				result = result +'         </td>';
+                    	 return result;
+                    }
+                  },{
+                      "targets": colIndex++,
+                      "data": "paymentStatus",
+                      "render": function ( data, type, report, meta ) {
+                    	  var result = "";
+                    	  result = result +'         <td> ';
+          				result = result +'           <div class="tbldata-dotdot-100">'+report.paymentStatus+'</div> ';
+          				result = result +'         </td>';
+                    	  return result;
+                      }
+                    },{
+                        "targets": colIndex++,
+                        "data": "action",
+                        "render": function ( data, type, report, meta ) {
+                        	var result = "";
+            				result = result +'         <td> ';
+            				result = result +'     <div class="tblminwidth-90">';
+            				 result = result +'  <div class="pull-right positionRelative menuWidget" >';
+            				if(report.invoiceStatus == "SENT" || report.invoiceStatus == "Received" || report.invoiceStatus == "Accepted"){
+            					 result = result +' <i class="fa fa-ellipsis-v" onClick="showPopUp('+report.id+',\''+report.invoiceStatus+'\',\''+report.invoiceParentId+'\',\''+report.total+'\');" ></i>  ';
+            						result = result +'  <div id="popupDiv'+report.id+'"></div>';
+            				} 
+            				result = result +'  </div> ';  
+            				if(report.invoiceType=="Payables" && report.invoiceParentId != null && report.invoiceParentId != '' && report.invoiceParentId != "undefined"){
+            					if(report.paymentStatus == "Paid" || report.invoiceStatus == "DRAFT" || report.invoiceStatus == "Rejected"){
+            						if(report.paymentStatus == "Paid"){
+            							result = result +'           <span class="text-primary successBtn primary pull-left" title="Paid" >Paid</span> </td>          ';
+            						}else if(report.invoiceStatus == "DRAFT"){
+            							result = result +'           <span class="text-primary successBtn primary pull-left" title="Paid">Send</span><i class="fa fa-trash text-danger pull-right cursorPointer" title="Remove Bill" onClick="deleteBill('+report.id+');";></i></td>          ';
+            						}else if(report.invoiceStatus == "Rejected"){
+            							result = result +'           <span class="text-primary successBtn primary pull-left" title="Paid" >Send</span> </td>          ';
+            						}
+            							
+            					}else{
+            						if(report.invoiceStatus == "Accepted"){
+            							result = result +'           <span class="text-primary receiveBtn receive_Btn pull-left" onclick="receivePaymentPop1('+report.id+','+report.dueAmount+');" title="Pay">Pay</span> </td>';
+            						}else{
+            							if(report.invoiceStatus == "Rejected"){
+            								result = result +'           <span class="text-danger successBtn primary pull-left" >Rejected</span> </td>          ';	
+            							}else if(report.invoiceStatus == "Linked"){
+            								result = result +' <a class="text-primary successBtn primary pull-left cursorPointer" onClick="unLinkBill('+report.id+')">UnLink</a>  ';
+            							}else{
+            								result = result +'           <span class="clearfix" ><a onclick="acceptedInvoice('+report.id+');" title="Accept"><i class="fa fa-check text-success paddingRight"></i></a><a onclick="rejectInvoice('+report.id+');" title="Reject"><i class="paddingLeft fa fa-times text-danger"></i></a></span> </td>';
+            							}
+            							
+            						}
+            					}
+            					
+            				}else{
+            					if((report.paymentStatus == "Paid" && report.invoiceStatus != "Linked") || report.invoiceStatus == "DRAFT" || report.invoiceStatus == "Rejected"){
+            						if(report.paymentStatus == "Paid"){
+            							result = result +'           <span class="text-primary successBtn primary pull-left" title="Paid" >Paid</span> </td>          ';	
+            						}else if(report.invoiceStatus == "DRAFT"){
+            							result = result +'           <span class="text-primary successBtn primary pull-left" title="Paid">Send</span><i class="fa fa-trash text-danger pull-right cursorPointer" title="Remove Bill" onClick="deleteBill('+report.id+');";></i></td>          ';
+            						}else{
+            							result = result +'           <span class="text-primary successBtn primary pull-left" title="Paid" >Send</span> </td>          ';
+            						}
+            							
+            					}else{
+            						if(report.invoiceStatus == "Linked"){
+            							result = result +' <a class="text-primary successBtn primary pull-left" onClick="unLinkBill('+report.id+')">UnLink</a>  ';
+            						}else{
+            							result = result +'           <span class="text-primary receiveBtn receive_Btn pull-left" onclick="receivePaymentPop1('+report.id+','+report.dueAmount+');" title="Pay">Pay</span> </td>          ';
+            						}
+            					}
+            					
+            					
+            				}
+            				
+            				/* if(report.invoiceType=="Receivable"){
+            					if(report.paymentStatus == "Paid" || report.invoiceStatus == "DRAFT"){
+            						result = result +'           <span class="text-primary successBtn primary pull-left" >Receive</span> </td>          ';	
+            					}else{
+            						result = result +'           <span class="text-primary receiveBtn receive_Btn pull-left" onclick="receivePaymentPop1('+report.id+','+report.dueAmount+');">Receive</span> </td>          ';
+            					}
+            				} */
+            				 
+            		 
+            		        result = result +'</div>';
+            		        result = result +'</td>';
+                        	 return result;
+                        }
+                } ],
+	    	"scrollCollapse": false,
+	    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
+	    	"aaSorting": [[1,'desc']],
+	    	"bLengthChange": true,
+	    	"bDestroy": true,
+	    	"ordering": true,
+	    	"oLanguage": {
+	     		"sSearch": "",
+	     		 "sZeroRecords": "", "sEmptyTable": "", 
+	     		 "sProcessing": "<img src='resources/images/loading.gif' style='width: 75px; height: 75px;'/>"
+	     }
+    } );
+    $("#payableListTable").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>"); 
+    $("input[type=search]").hide();
+    $("#payableDataTableSearch").keyup(function(e) {
+    	   if(e.which === 13) {
+    		   getPayableInvoiceList();
+    	   }
+    	});
+}
+
+</script>
+
+
+
+
+
+<!-- <script>
+function getPayableInvoiceList(){
+	var sourceleadUrl ='${sourceleadUrl}';
+	var invoice = [];
+	var payment = [];
+	var dayWisetype = $("#dayWiseTypeId").val();
 	
 	var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
 	  if(locationList.match("yyyy-MM-dd")){
@@ -838,7 +1211,7 @@ function invoicePagination(){
     });
     $('#invoiceListPagination').wrap("<div class='overflow_Auto'></div>");
 }
-</script>
+</script> -->
 <script>
 function showPopUp(id,invoiceStatus,invoiceParentId,totalAmount){
 		 removePopup();

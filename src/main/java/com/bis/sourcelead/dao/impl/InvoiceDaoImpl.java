@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.InvoiceDao;
 import com.bis.sourcelead.dto.InvoiceDTO;
 import com.bis.sourcelead.dto.ResponseList;
@@ -118,9 +119,17 @@ public class InvoiceDaoImpl implements InvoiceDao {
 		List<Invoice> invoiceList = null;
 		ResponseList<Invoice> response = new ResponseList<>();
 		String query = "from Invoice invoice  left join fetch invoice.projectMemberId pm left join fetch pm.projects left join fetch pm.employee emp left join fetch emp.user "
-		 		+ "left join fetch invoice.expensesId where  invoice.orgLocation.id =:orgLocationId and invoice.status = '1' "+subQuery+" "+subQuery1+" "+subQuery2+" "+subQuery3+" and invoice.createdDate >= :startDateUTC and invoice.createdDate <= :endDateUTC";
-		String countQuery = "from Invoice invoice  where invoice.orgLocation.id =:orgLocationId";
+		 		+ "left join fetch invoice.expensesId left join fetch invoice.projectID where  invoice.orgLocation.id =:orgLocationId and invoice.status = '1' "+subQuery+" "+subQuery1+" "+subQuery2+" "+subQuery3+" and invoice.createdDate >= :startDateUTC and invoice.createdDate <= :endDateUTC";
+		String countQuery = "";
+		if(invoiceDTO.getInvoiceType().equalsIgnoreCase(Constants.RECEIVABLE)){
+			countQuery = "from Invoice invoice  where invoice.orgLocation.id =:orgLocationId and invoice.invoiceType='Receivable'";
+		}else{
+		    countQuery = "from Invoice invoice  where invoice.orgLocation.id =:orgLocationId and invoice.invoiceType='payables'";
+		}
 		
+		if(invoiceDTO.getSearchValue().contains("/")){
+			invoiceDTO.getSearchValue().replaceAll("/", "-");
+		}
 		StringBuilder query1 = new StringBuilder("");
 			if(invoiceDTO.getSearchValue() !=null && !"".equalsIgnoreCase(invoiceDTO.getSearchValue())) {
 				query1.append(" and (invoice.invoiceId like '%" + invoiceDTO.getSearchValue() + "%' ")

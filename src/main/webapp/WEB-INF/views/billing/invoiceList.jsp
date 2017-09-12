@@ -613,8 +613,9 @@ function invoicePagination(url){
 					}
 	    		     
 	    	  	    result = result +'         <td>';
-					if(report.invoiceStatus == "DRAFT" || report.invoiceStatus == "Rejected"){
+	    	  	    if(report.invoiceStatus == "DRAFT" || report.invoiceStatus == "Rejected"){
 						'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_INVOICE\')">';
+						var sourceleadUrl ='${sourceleadUrl}';
 						result = result +'           <div class="tbldata-dotdot_80 invoiceId_Anchor2"><a href="'+sourceleadUrl+'/getReceivableInvoiceByUUID?invoiceUUID='+report.invoiceUUID+'&projectId='+report.projectId+'">'+report.invoiceId+'</a></div>   ';
 						'</sec:authorize>' ;
 					}
@@ -723,7 +724,12 @@ function invoicePagination(url){
                			}else{
                				invoiceStatus = report.invoiceStatus
                			}
+               			result = result +'         <td> ';
                     	result = result +'           <div class="tbldata-dotdot-100">'+invoiceStatus+'</div>';
+                    	if(report.invoiceStatus == "Rejected"){
+        			 		result = result + '    <i class="glyphicon glyphicon-comment ml10 edit-reason"><div class="edit-status"><p>'+report.rejectReason+'</p></div></i>';
+        				}
+                    	result = result +'         </td> ';
                     	 return result;
                     }
                   },{
