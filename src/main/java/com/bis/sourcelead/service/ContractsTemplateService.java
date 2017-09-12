@@ -30,7 +30,7 @@ public interface ContractsTemplateService {
 
 	Contracts saveNewContract(ContractsDTO contractsDTO, OrgLocations orgLocation, String saveType, User user, Org org, String contractType)throws Exception;
 
-	Contracts getAllContractsByLocationIdAndStatus(OrgLocations orgLocation, String contractSubmissionType, String tabType, String contractsType, String contractStatus,User user,String userRoleName)throws Exception;
+	Contracts getAllContractsByLocationIdAndStatus(OrgLocations orgLocation,String contractSubmissionType, String tabType, String contractsType, String contractStatus,User user,String userRoleName)throws Exception;
 	
 	Contracts getAllContractsCountByLocationIdAndStatus(OrgLocations orgLocation, String contractSubmissionType, String tabType, String contractsType, String contractStatus, User user, String userRoleName)throws Exception;
 
