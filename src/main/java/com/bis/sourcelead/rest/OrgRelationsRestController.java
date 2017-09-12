@@ -47,12 +47,14 @@ public class OrgRelationsRestController {
 	private ClientService clientService;
 	
 	/*------------Create a OrgRelations--------------------------------*/
+
+	// TODO Don't delete until regression testing done @Rajashekar
 	/**
 	 * Handles request for storing OrgRelations into Database
 	 * @return orgRelations
 	 * @throws NullPointerException
 	 */
-	@PreAuthorize("hasAnyRole('ROLE_CREATE_CLIENT')")
+	/*@PreAuthorize("hasAnyRole('ROLE_CREATE_CLIENT')")
 	@RequestMapping(value = "/saveClientFromProject", method = RequestMethod.GET)
 	public @ResponseBody  String saveClientFromProject(
 			@RequestParam(value="json", required=false) String json ,
@@ -84,7 +86,7 @@ public class OrgRelationsRestController {
 		
 		 resultJson = commonUtil.toJSON(orgClientList);
 		 return resultJson;
-	}
+	}*/
 	
 	
 }

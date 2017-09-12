@@ -54,16 +54,6 @@ public class AccountDeductionsDaoImpl implements AccountDeductionsDao{
 	@Transactional(rollbackFor = { Exception.class })
 	public ResponseList<AccountDeductions> getAccountDeductionsListByOrgLocationId(OrgLocations orgLocation, AccountDeductionsDTO accountDeductionsDTO) throws Exception
 	{
-		/*Session session = this.sessionFactory.getCurrentSession();
-		List<AccountDeductions> accountDeductionslist = null;
-		String query = "from AccountDeductions ad left join fetch ad.orgLocationId where ad.orgLocationId.id =:orgLocationId";
-		accountDeductionslist = session.createQuery(query).setLong("orgLocationId", orgLocation.getId()).setCacheable(true).list();
-		if(accountDeductionslist != null && accountDeductionslist.size() >0)
-		{
-			return accountDeductionslist;
-		}
-		return accountDeductionslist;*/
-		
 		
 		Session session = this.sessionFactory.getCurrentSession();
 		List<AccountDeductions> accountDeductionsList = null;
@@ -108,7 +98,7 @@ public class AccountDeductionsDaoImpl implements AccountDeductionsDao{
 			response.setRecordsFiltered(filteredCount);
 		}
 
-		if (accountDeductionsList != null && accountDeductionsList.size() > 0) {
+		if (accountDeductionsList != null) {
 			response.setData(getAccountDeductionsListSorting(accountDeductionsList));
 		}
 		return response;

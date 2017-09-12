@@ -61,7 +61,7 @@
 							
 							<div class="input-group positionRelative ratetype" id="uploadFileGroup" title="Document Type: .pdf format only">
 	                        <label class="input-group-btn"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
-	                          <input type="file" name="uploadBtn" id="uploadBtn" style="display: none;"  multiple="" class="upload">
+	                          <input type="file" id="uploadBtn" style="display: none;"  class="upload">
 	                            </span> </label>
 		                          <input type="text" class="form-control" readonly id="uploadFile" name="docFile" placeholder="Upload .pdf File." field-name="Attachment" data-validation="required validate_Space validatepdf">
 	                        </div>
@@ -430,7 +430,7 @@
 	<div class="select-field tblminwidth-75">
 		<div class="tblminwidth-50">
 			<input type="text" class="form-control" value=""
-				placeholder="Document Name" name='REPLACEROWIDdocumentName'
+				placeholder="Document Name" name='document[REPLACEROWID].documentName'
 				id='REPLACEROWIDdocumentName' field-name="Document Name" data-validation="required"> 
 		</div>
 	</div>
@@ -444,9 +444,9 @@
 							 <div class="col-md-12">                                                                                                            
 					  			<div class="input-group positionRelative ratetype" id="uploadFileGroupREPLACEROWID" title="Upload a file">     
 					  				<label class="input-group-btn"> <span class="btn btn-primary padSm"><i class="fa fa-folder-open-o"></i>&nbsp;Browse        
-					               <input name="uploadBtnREPLACEROWID" id="uploadBtnREPLACEROWID" style="display: none;" multiple="" class="upload" type="file" onclick="check(REPLACEROWID);"  >                      
+					               <input id="uploadBtnREPLACEROWID" style="display: none;" multiple="" class="upload" type="file" onclick="check(REPLACEROWID);fileStore(REPLACEROWID);"  >                      
 					               </span> </label>                                                                                                                
-					  				<input class="form-control padSm"  id="uploadFileREPLACEROWID" name="docFileREPLACEROWID"  field-name="Attachment" data-validation="required" placeholder="Upload File" readonly type="text" >  
+					  				<input class="form-control padSm"  id="uploadFileREPLACEROWID" name="document[REPLACEROWID].docFileName"  field-name="Attachment" data-validation="required" placeholder="Upload File" readonly type="text" >  
 					  			</div>                                                                                                                       
 					         </div>			                                                                                                                 
 				
@@ -454,7 +454,7 @@
 
 
 <div id="divTaxTd3" style="display: none; float: left;">
-   	 <select class="form-control input-sm sel"  id="REPLACEROWIDcandiDoc" name="REPLACEROWIDcandiDoc" >
+   	 <select class="form-control input-sm sel"  id="REPLACEROWIDcandiDoc" name="document[REPLACEROWID].candiDoc" >
 		<option value="">--Select Type--</option>
 		<c:forEach var="doctype" items="${documentsList}">
 		<option value="${doctype.name}">${doctype.name}</option>
@@ -465,7 +465,7 @@
 <div id="divTaxTd4" style="display: none; float: left;">
 	<div class="tblminwidth-75">
 			<textarea class="form-control miDHei" rows="3" placeholder="Description" id="REPLACEROWIDdescription"
-			 name="REPLACEROWIDdescription"></textarea>
+			 name="document[REPLACEROWID].description"></textarea>
 	</div>
 </div>
 
@@ -499,6 +499,12 @@ document.getElementById("uploadBtn"+id).onchange = function () {
     	  $("#uploadFileGroup"+id).append("<p class='jquery_form_error_message'>Limit is exceeded than 2MB </p>");
       }
     });
+}
+
+function fileStore(id){
+	 $("#uploadBtn"+id).change(function() {
+		fileUpload(sourceleadUrl, "uploadBtn"+id, "RequestDocuments", "newcontract_form","reqDocs");
+	});
 }
 </script>
 <script>
@@ -1303,10 +1309,6 @@ function hideCommonSOWFields(){
 <script type="text/javascript">
 	function saveExistigContract() {
 		if ($('#newcontract_form').validate(false, validationSettings)) {
-			var frm = $('#newcontract_form').serializeFormJSON();
-			var con = JSON.stringify(frm);
-			con = con.replace(/[{}]/g, "");
-	        var jsonData = encodeURIComponent(con);
 			$("#save_template").attr("disabled", "disabled");
 			$("#save_template" ).addClass('button').val('Processing..');
 			var form = $('#newcontract_form')[0];
@@ -1314,16 +1316,14 @@ function hideCommonSOWFields(){
 			var sourceleadUrl = '${sourceleadUrl}';
 			$("#newcontract_form").attr("disabled", "disabled");
 			
-			$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+			$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:999;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	 		$.ajax({
 		 			type : "POST",
 	        	    data: formData,
-	        	    contentType : 'application/json; charset=utf-8',
-	        	    enctype: 'multipart/form-data',
 	    	        processData: false,
 	    	        contentType:false,
 	        	    dataType : 'json',
-					url : sourceleadUrl+ "/saveExistigContract?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
+					url : sourceleadUrl+ "/saveExistigContract?${_csrf.parameterName}=${_csrf.token}",
 					success : function(result) {
 						location.replace(sourceleadUrl+"/contractListbyStatus");
 					},
@@ -1710,6 +1710,15 @@ function cancelContract(){
 	location.replace(sourceleadUrl+"/contractListbyStatus");
 }
 
+</script>
+
+<script>
+var sourceleadUrl = '${sourceleadUrl}';
+ $(function() {
+	$("#uploadBtn").change(function() {
+		fileUpload(sourceleadUrl, "uploadBtn", "ContractDocs", "newcontract_form");
+	});
+ }); 
 </script>
 
 <!-- Footer Area -->

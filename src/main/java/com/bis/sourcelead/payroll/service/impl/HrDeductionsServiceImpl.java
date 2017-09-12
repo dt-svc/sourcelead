@@ -319,22 +319,6 @@ public class HrDeductionsServiceImpl implements HrDeductionsService{
 	public ResponseList<HrDeductions> getHrDeductionsListByOrgLocationid(OrgLocations orgLocation, HrDeductionsDTO hrDeductionsDTO){
 		return hrDeductionsDao.getHrDeductionsListByOrgLocationid(orgLocation, hrDeductionsDTO);
 	
-		
-	
-		/* ResponseList<HrDeductions> hrDeductionsList = hrDeductionsDao.getHrDeductionsListByOrgLocationid(orgLocation, hrDeductionsDao);
-		
-		if(hrDeductionsList != null){
-			for(HrDeductions hd : hrDeductionsList){
-				if(null !=  hd.getFromDate()){
-					hd.setFromDateStr(conversionUtil.getDateAsString(hd.getFromDate()));
-				}
-				if(null != hd.getToDate()){
-					hd.setToDateStr(conversionUtil.getDateAsString(hd.getToDate()));
-				}
-			}
-		}
-		return hrDeductionsList;
-	}*/
 	}
 
 	@Override
