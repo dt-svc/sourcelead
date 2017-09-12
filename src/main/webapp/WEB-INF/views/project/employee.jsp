@@ -158,6 +158,8 @@ function filterStatus() {
 	 
 	 var projectUUID = '${projectUUID}';
 	 var sourceleadUrl = '${sourceleadUrl}';
+	 var postedOrgLocationId = '${postedOrgLocationId}';
+	 var loginOrgLocationId = '${SourceLeadWeb_orgLocations.id}'
 	 	 
 	   $("#employeesLoadingImg").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;'); 
  	 
@@ -206,8 +208,11 @@ result = result + '<div class="project_tabs mb">';
 			if(status != 'COMPLETED' &&  status != '' &&  status != 'undefined' ){
 			result = result +'<li>';
 	 		'<sec:authorize access="hasAnyRole(\'ROLE_ASSIGN_EMPLOYEE_TO_PROJECT\')">';
-	 		  result = result + '<a href="javascript:void(0)" onclick="getAssociates();" id="addDiv">';
-	 		    result = result + '<i class="fa fa-exchange"></i>&nbsp;Transfer Emp</a>&nbsp;&nbsp;&nbsp;&nbsp;';
+	 		 
+	 		if(postedOrgLocationId == loginOrgLocationId){
+	 			  result = result + '<a href="javascript:void(0)" onclick="getAssociates();" id="addDiv">';
+		 		  result = result + '<i class="fa fa-exchange"></i>&nbsp;Transfer Emp</a>&nbsp;&nbsp;&nbsp;&nbsp;'; 
+	 		 }
 	 		    result = result + '<a href="'+sourceleadUrl+'/addNewProjectMembers?projectUUID='+projectUUID+'">';
 	 		    result = result + '<i class="glyphicon glyphicon-plus"></i>Assign Emp</a></li>';
 	 		'</sec:authorize>';
