@@ -5,14 +5,14 @@
     <div class="copyright">@ Copyright : Source Lead, All right reserved </div>
     <div class="powered-by"> Powered by: businessintelli.com </div>
   </footer>
-  <div class="alert alert-danger" role="alert">
+  <div class="alert alert-danger" role="alert" style='display:none;'>
 	<div>
 		<strong>Alert</strong>
 		<div class="close" data-type="2"></div>
 	</div>
 	<span></span>
   </div>
-  <div class="alert alert-success" role="alert">
+  <div class="alert alert-success" role="alert" style='display:none;'>
 	<div>
 		<strong>Message</strong>
 		<div class="close" data-type="1"></div>
