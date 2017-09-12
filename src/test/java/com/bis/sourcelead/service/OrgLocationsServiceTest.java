@@ -26,6 +26,7 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import com.bis.sourcelead.WebAppConfig;
 import com.bis.sourcelead.SecurityConfig;
 import com.bis.sourcelead.dao.OrgLocationsDao;
+import com.bis.sourcelead.dto.ClientDTO;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
@@ -192,12 +193,12 @@ public class OrgLocationsServiceTest {
 	@Test
 	public void orgLocationsListByJson() throws Exception {
 		
-		 JSONObject jsonObj = new JSONObject();
-		 jsonObj.put("phone", "9874563210");
-		 jsonObj.put("country", "INdia");
-		 jsonObj.put("state", "Telangana");
-		 jsonObj.put("emailId", "rajesh@gmail.com");
-		 jsonObj.put("city", "Hyderabad");
+		ClientDTO clientDTO = new ClientDTO();
+		clientDTO.setPhoneNumber("9874563210");
+		clientDTO.setCountry("INdia");
+		clientDTO.setState("Telangana");
+		clientDTO.setEmail("rajesh@gmail.com");
+		clientDTO.setCity("Hyderabad");
 		 
 		 Org addOrg = new Org();
 		 addOrg.setOrgName("xyz");
@@ -208,7 +209,7 @@ public class OrgLocationsServiceTest {
 		 String loginUserCode = "abc";
 		 String responderType = "Client";
 		 
-		 orgLocations = orgLocationService.orgLocationsListByJson(jsonObj, addOrg, orgLocations, loginUserCode, responderType);
+		 orgLocations = orgLocationService.orgLocationsListByJson(clientDTO, addOrg, orgLocations, loginUserCode, responderType);
 		 logger.info("orgLocations List By Json " + orgLocations.getId());
 	}
 	

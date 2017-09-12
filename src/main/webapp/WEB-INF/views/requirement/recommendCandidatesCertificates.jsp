@@ -83,17 +83,14 @@ function storeCertificate(candidateId){
 		 
 			
 		if ($('#Candidate_certification_form').validate(false,validationSettings)) {
-			var frm = $('#Candidate_certification_form').serializeFormJSON();
-			var con = JSON.stringify(frm);
-			con = con.replace(/[{}]/g, "");
-			var jsonData = encodeURIComponent(con);
+			
 			var sourceleadUrl = '${sourceleadUrl}';
+			var formData = getFormData('Candidate_certification_form');
 			$("#Candidate_certification_form").attr("disabled", "disabled");
 				$.ajax({
 						type : "POST",
-						url : sourceleadUrl
-								+ "/storeCandidateCertifications?${_csrf.parameterName}=${_csrf.token}&json="
-								+ jsonData + "&candidateId=" + candidateId,
+						data : formData,
+						url : sourceleadUrl+ "/storeCandidateCertifications?${_csrf.parameterName}=${_csrf.token}&candidateId=" + candidateId,
 						success : function(data) {
 							if (data != null && data != 'undefined'
 									&& data != "") {
@@ -629,13 +626,6 @@ function addCertification(candidateId) {
       <script type="text/javascript">
 	function updateCandidateCertification(candidateId, candidateCertificationId) {
 
-		var validationSettings = {
-			errorMessagePosition : 'element',
-			borderColorOnError : '',
-			scrollToTopOnError : true,
-			dateFormat : 'yyyy/mm/dd'
-		};
-		
 		var scoreType = document.getElementById("scoreType").value; 
 		 if(scoreType != null && scoreType != ""){
 			 $('#candidateScore').removeAttr('data-validation-optional');
@@ -645,21 +635,15 @@ function addCertification(candidateId) {
 			 $('#candidateScore').attr("data-validation-optional","true"); 
 		 }
 		
-		if ($('#candidateCertificationEdit_form').validate(false,
-				validationSettings)) {
+		if ($('#candidateCertificationEdit_form').validate(false,validationSettings)) {
 
-			var frm = $('#candidateCertificationEdit_form').serializeFormJSON();
-
-			var con = JSON.stringify(frm);
-			con = con.replace(/[{}]/g, "");
-			var jsonData = encodeURIComponent(con);
-			//It will escape all the special characters
+			var formData = getFormData('candidateCertificationEdit_form');
 			var sourceleadUrl = '${sourceleadUrl}';
-
+			$("#addCandidate").attr("disabled", "disabled");
 			$.ajax({
 						type : "POST",
-						url : sourceleadUrl
-								+ "/updateCandidateCertificationsBycandidateIdandcandidateCertificateId?${_csrf.parameterName}=${_csrf.token}&json="+ jsonData + "&candidateId=" + candidateId	+ "&candidateCertificationId"+ candidateCertificationId,
+						data : formData,
+						url : sourceleadUrl+ "/updateCandidateCertificationsBycandidateIdandcandidateCertificateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&candidateCertificationId"+ candidateCertificationId,
 						success : function(data) {
 							closeCertificatePopup();
 							candidateCertificateList(candidateId);

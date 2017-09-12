@@ -200,6 +200,9 @@ public class Contracts {
 	@Column(name = "FILE_TYPE")
 	private String fileType;
 	
+	@Column(name = "FILE_URL")
+	private String fileURL;
+	
 	@Column(name = "REJECTED_REASON" , columnDefinition = "TEXT default NULL")
 	private String rejectedReason;
 	
@@ -1053,6 +1056,16 @@ public class Contracts {
 	public void setRejectedReason(String rejectedReason)
 	{
 		this.rejectedReason = rejectedReason;
+	}
+
+	public String getFileURL()
+	{
+		return fileURL;
+	}
+
+	public void setFileURL(String fileURL)
+	{
+		this.fileURL = fileURL;
 	}
 
 }

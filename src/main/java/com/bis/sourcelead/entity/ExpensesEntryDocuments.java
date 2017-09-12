@@ -71,6 +71,9 @@ private Date updatedDate;
 @Column(name = "UPDATED_BY")
 private String updatedBy;
 
+@Column(name="FILEURL")
+private String fileURL;
+
 public Long getId() {
 	return id;
 }
@@ -154,6 +157,15 @@ public void setUpdatedBy(String updatedBy) {
 public static long getSerialversionuid() {
 	return serialVersionUID;
 }
+
+public String getFileURL() {
+	return fileURL;
+}
+
+public void setFileURL(String fileURL) {
+	this.fileURL = fileURL;
+}
+
 
 
 }

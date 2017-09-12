@@ -218,6 +218,10 @@ public class OrgRelations implements Serializable{
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "orgRelations")
 	private Set<OrgSpoc> orgSpocList;
 	
+	 @Transient
+	 @JsonProperty
+	 private String clientCurrency;
+	
 	public String getStringDate()
 	{
 		return stringDate;
@@ -701,4 +705,13 @@ public class OrgRelations implements Serializable{
 	public void setOrgSpocList(Set<OrgSpoc> orgSpocList) {
 		this.orgSpocList = orgSpocList;
 	}
+
+	public String getClientCurrency() {
+		return clientCurrency;
+	}
+
+	public void setClientCurrency(String clientCurrency) {
+		this.clientCurrency = clientCurrency;
+	}
+	
 }

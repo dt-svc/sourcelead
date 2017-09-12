@@ -15,6 +15,7 @@ import java.util.Set;
 import javax.mail.internet.InternetAddress;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +29,8 @@ import org.springframework.stereotype.Service;
 import com.bis.sourcelead.SourceleadPasswordEncoder;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.OrgDao;
+import com.bis.sourcelead.dto.AddUserDTO;
+import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.elk.index.UserIndex;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
@@ -827,22 +830,24 @@ public class RegistrationServiceImpl implements RegistrationService{
 	}
 
 	@Override
-	public void addUserBySourcelead(User user, JSONObject jsonObj) throws Exception {
+	public void addUserBySourcelead(User user, AddUserDTO addUserDTO,CandidateDTO candidateDTO) throws Exception {
 		
-		User orgUser = userService.findByUserName(jsonObj.getString("userEmail"));
+		User orgUser = userService.findByUserName(addUserDTO.getEmail());
 		UserRole userRole = new UserRole();
 		String password = null;
 		if(null == orgUser){
 			orgUser = new User();
-			orgUser.setFirstName(jsonObj.getString("firstName"));
-			if(jsonObj.has("lastName") && !isNullOrEmpty(jsonObj.getString("lastName"))){
-				orgUser.setLastName(jsonObj.getString("lastName"));
+			orgUser.setFirstName(addUserDTO.getFirstName());
+			if(StringUtils.isNotBlank(addUserDTO.getLastName())){
+				orgUser.setLastName(addUserDTO.getLastName());
+			}else{
+				orgUser.setLastName("");
 			}
-			orgUser.setEmail(jsonObj.getString("userEmail"));
+			orgUser.setEmail(addUserDTO.getEmail());
 			orgUser.setCreatedBy(user.getUserCode());
 			orgUser.setCreatedDate(new Date());
 			orgUser.setUpdatedBy(user.getUserCode());
-			orgUser.setUserName(jsonObj.getString("userEmail"));
+			orgUser.setUserName(addUserDTO.getEmail());
 			password = SourceLeadRandomCodeHelper.generateRandomPassword();
 			orgUser.setPassword(sourceleadPasswordEncoder.encode(password));
 			orgUser.setIsMailSent(Status.Y);
@@ -857,9 +862,9 @@ public class RegistrationServiceImpl implements RegistrationService{
 		
 		
 		userRole.setUser(orgUser);
-		OrgLocations orgLocations = orgLocationService.getOrgLocations(Long.valueOf(jsonObj.getString("registeredOrgLocationId")));
+		OrgLocations orgLocations = orgLocationService.getOrgLocations(Long.valueOf(addUserDTO.getRegisteredOrgLocationId()));
 		userRole.setOrgLocations(orgLocations);
-		Roles roles = rolesService.getRolesById(Long.valueOf(jsonObj.getString("userRole")));
+		Roles roles = rolesService.getRolesById(Long.valueOf(addUserDTO.getRoleTypeId()));
 		userRole.setRoles(roles);
 		userRole.setUserState(Status.NOT_LOGGEDIN);
 		userRole.setUserType(roles.getDisplayName());
@@ -881,14 +886,16 @@ public class RegistrationServiceImpl implements RegistrationService{
 		employeesService.addEmployee(employees);
 		
 		 MasterCandidate masterCandidate = null; 
-		 masterCandidate = masterCandidateService.getMasterCandidateByInteligence(jsonObj);
+		 masterCandidate = masterCandidateService.getMasterCandidateByInteligenceCandidateDTO(candidateDTO);
 		 if(null == masterCandidate){
 		    masterCandidate = new MasterCandidate();
-			masterCandidate.setFirstName(jsonObj.getString("firstName"));
-			if(jsonObj.has("lastName") && !isNullOrEmpty(jsonObj.getString("lastName"))){
-				masterCandidate.setLastName(jsonObj.getString("lastName"));
+			masterCandidate.setFirstName(addUserDTO.getFirstName());
+			if(StringUtils.isNotBlank(addUserDTO.getLastName())){
+				masterCandidate.setLastName(addUserDTO.getLastName());
+			}else{
+				masterCandidate.setLastName("");
 			}
-			masterCandidate.setEmail(jsonObj.getString("userEmail"));
+			masterCandidate.setEmail(addUserDTO.getEmail());
 			masterCandidate.setStatus(Constants.RECORD_ACTIVE);
 			masterCandidate.setCreatedBy(user.getUserCode());
 			masterCandidate.setCreatedDate(commonUtil.currentDate());
@@ -928,7 +935,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 		 * Saving USER DB data as ElasticSearch Documents
 		 */
 		userService.saveOrUpdateUserElkDocument(userRole,employees,orgUser.getUserCode());
-		sendEmail(orgUser,user,password,orgLocations.getId(),jsonObj.getString("registredOrgId"));
+		sendEmail(orgUser,user,password,orgLocations.getId(),addUserDTO.getRegistredOrgId());
 		
 		
 		

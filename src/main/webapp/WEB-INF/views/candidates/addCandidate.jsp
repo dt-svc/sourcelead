@@ -45,8 +45,7 @@
 	</section>
 	<div class="content-area content-new clearfix">
 		<div id="loading"></div>
-		<form:form id="addcandidate_form" name="addcandidate_form"
-			enctype='multipart/form-data'>
+		<form:form id="addcandidate_form" name="addcandidate_form">
 			<div class="row form-horizontal mt myForm">
 				<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 
@@ -419,13 +418,10 @@
 							<div class="col-md-9 zindex">
 								<div class="input-group col-md-12" id="uploadFileGroup"
 									style="margin: 0 auto">
-									<label class="input-group-btn"> <span
-										class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse
-											File <input type="file" style="display: none;" multiple
-											name="uploadBtn" id="uploadBtn" class="upload"> </span>
-									</label> <input type="text" class="form-control" readonly
-										id="uploadFile" name="docFile" type="file" name=""
-										placeholder="Upload Resume ..." field-name="Upload Resume"
+									<label class="input-group-btn"> 
+									<span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File <input type="file" style="display: none;" id="uploadBtn" class="upload"> </span>
+									</label> 
+									<input type="text" class="form-control" readonly id="uploadFile" name="docFile" placeholder="Upload Resume ..." field-name="Upload Resume"
 										data-validation="validatedoc " data-validation-optional="true">
 								</div>
 							</div>
@@ -587,27 +583,31 @@
 		 if ($('#addcandidate_form').validate(false, validationSettings)){ 
 			
 			var sourceleadUrl = '${sourceleadUrl}';
-			var frm = $('#addcandidate_form').serializeFormJSON();
-			var con = JSON.stringify(frm);
-			con = con.replace(/[{}]/g, ""); 
-		    var jsonData = encodeURIComponent(con);
 			var form = $('#addcandidate_form')[0];
       		var formData = new FormData(form); 
 			//It will escape all the special characters
 			$("#store_candidate").attr("disabled", "disabled");
 			$("#store_candidate").addClass('button').val('Processing..');
-
+			
 			$.ajax({
 						type : "POST",
 		        	    data: formData,
-		        	    contentType : 'application/json; charset=utf-8',
-		        	    enctype: 'multipart/form-data',
 		    	        processData: false,
 		    	        contentType:false,
 		        	    dataType : 'json',
-						url : sourceleadUrl+"/storeCandidate?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
+						url : sourceleadUrl+"/storeCandidate?${_csrf.parameterName}=${_csrf.token}",
 						success : function(result) {
+							if(result && result === "DataMissing") {
+								$("#store_candidate").removeAttr("disabled");
+								$("#store_candidate").removeAttr('button').val('Save');	
+								showError("Invalid data");
+							} else if(result && result === "success")
 								location.replace(sourceleadUrl+"/candidatesList");
+							else {
+								$("#store_candidate").removeAttr("disabled");
+								$("#store_candidate").addClass('button').val('Save');
+								showError("Operation failed, please try again");
+							}
 						},
 					});
 			return true;
@@ -715,44 +715,37 @@ function validate_fileupload(fileName)
 				 	        		 $("#candidateSkills").trigger("chosen:updated");
 				                 }
 					    	 }else{
+					    		var focussedSkills = $("ul.chosen-results").find("li.active-result.highlighted");
 				    			var newSkill = this.value.replace(","," ");
 				    			 if (tagItBykeyForSkills(e) && (newSkill != null  && newSkill != '' && newSkill != 'undefined'))
 				                 {
 				    				 preventTabkey(e);
-				    				 
-				    				 // due to below code manually enter skills are not taken
-				    				 /* var isNewSkill = true;
-				    				 
-				                     $("#candidateSkills option:selected").each(function(){
-										 if(this.value.toUpperCase() === newSkill.toUpperCase() && this.value.toLowerCase() === newSkill.toLowerCase()){
-											 alert("isNewSkill"+isNewSkill);
-												isNewSkill = false;
-												return false;
-										 }
-				                   });
-								   if(isNewSkill){
-									   alert("isNewSkill"+isNewSkill);
-										select.append(option);
-								   }
-				                   $("#candidateSkills").trigger("chosen:updated");  */
-				                   
-				                  
 				                   // below code manually enter skills are taken
 				    				  
 				                   var isNewSkill = true;
 									 $("#candidateSkills option:selected").each(function(){
 										 if(this.value.toUpperCase() === newSkill.toUpperCase() && this.value.toLowerCase() === newSkill.toLowerCase()){
-											 //alert(newSkill);
 											 isNewSkill = false;
 											 return false;
 										 }
 				                    
 				                   });
-									if(isNewSkill){
-				    				 var option = $("<option>").val(newSkill).text(newSkill);
-									 select.append(option);
-				                     select.find(option).prop('selected', true);
-									}
+									
+										if(focussedSkills.length > 0){
+											var skillOption  = $("<option>").val(focussedSkills.first().text()).text(focussedSkills.first().text());
+											select.append(skillOption);
+											select.find(skillOption).prop('selected',true);
+											select.find(skillOption).siblings("[value='"+ focussedSkills.first().text()+"']").remove();
+											$("#candidateSkills").trigger("chosen:updated");
+									   }
+									   else{
+										   if(isNewSkill){
+											var option = $("<option>").val(newSkill).text(newSkill);
+											select.append(option);
+											select.find(option).prop('selected', true);
+										   }
+									   }
+									
 					               $("#candidateSkills").trigger("chosen:updated"); 
 				                   
 				                }
@@ -768,18 +761,39 @@ function validate_fileupload(fileName)
 	        chosenone = selectone.data('chosen');
 	        chosenone.search_field.on('keydown keyup', function(e1)
 		    {
+	        	var focussedEducations = $("ul.chosen-results").find("li.active-result.highlighted");
 		    	var newEducation = this.value.replace(",","");
 		        if (tagItBykeyForSkills(e1) && (newEducation != null  && newEducation != '' && newEducation != 'undefined'))
 		        {
 		        	preventTabkey(e1);
-		        	var par = this.parent;
-		            var option = $("<option>").val(newEducation).text(newEducation);
-		            selectone.append(option);
-		            selectone.find(option).prop('selected', true);
-		          //to doesn't allow duplicates
-                    $("#candidateEducation option").each(function(){
-                          $(this).siblings("[value='"+ this.value+"']").remove();
-                    });
+		        	var isNewEducation = true;
+					 $("#candidateEducation option:selected").each(function(){
+						 if(this.value.toUpperCase() === newEducation.toUpperCase() && this.value.toLowerCase() === newEducation.toLowerCase()){
+							 isNewEducation = false;
+							 return false;
+						 }
+                   
+                  });
+					 
+					 
+							if(focussedEducations.length > 0){
+								var educationOption  = $("<option>").val(focussedEducations.first().text()).text(focussedEducations.first().text());
+								selectone.append(educationOption);
+								selectone.find(educationOption).prop('selected',true);
+								selectone.find(educationOption).siblings("[value='"+ focussedEducations.first().text()+"']").remove();
+								$("#candidateEducation").trigger("chosen:updated");
+						   }
+						   else{
+							   if(isNewEducation){
+								var option = $("<option>").val(newEducation).text(newEducation);
+								selectone.append(option);
+								selectone.find(option).prop('selected', true);
+							   }
+						   }
+						
+					 
+					 
+		        	
                     //end
 	        		$("#candidateEducation").trigger("chosen:updated");
 	        		
@@ -1028,9 +1042,9 @@ function  removeValiationVendorContact() {
 </script>
 
 <script>
+var sourceleadUrl ='${sourceleadUrl}';
  function getVendorContactList(){
 	var orgRelationID = $('#vendors').val();
-	 var sourceleadUrl ='${sourceleadUrl}';
 		 $.ajax({
 			    type: "POST",
 		        url: sourceleadUrl+"/getOrgSpocsList?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+orgRelationID+"&type=Vendor",  
@@ -1046,5 +1060,11 @@ function  removeValiationVendorContact() {
 		        }
 		 }); 
  }
+ 
+ $(function() {
+	$("#uploadBtn").change(function() {
+		fileUpload(sourceleadUrl, "uploadBtn", "resumes", "addcandidate_form");
+	});
+ });
  </script>
 

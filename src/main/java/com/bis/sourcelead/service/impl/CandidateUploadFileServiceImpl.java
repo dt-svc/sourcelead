@@ -30,6 +30,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidatesImport;
 import com.bis.sourcelead.entity.Org;
@@ -467,67 +468,73 @@ public class CandidateUploadFileServiceImpl implements CandidateUploadFileServic
 	private void saveBulkCandidates(CandidatesImport candidatesImport, OrgLocations orgLocations, User user, String isMailChecked) throws Exception
 	{
 		
-		JSONObject jsonObj = populateJsonObject(candidatesImport, orgLocations,isMailChecked);
-		candidateService.storeCandidate(jsonObj, orgLocations, user, null);
+		CandidateDTO candidateDTO = populateJsonObject(candidatesImport, orgLocations,isMailChecked);
+		candidateService.storeCandidate(candidateDTO, orgLocations, user);
 		
 		
 	}
 	
-	private JSONObject populateJsonObject(CandidatesImport candidate, OrgLocations orgLocations, String isMailChecked) throws JSONException, ParseException
+	private CandidateDTO populateJsonObject(CandidatesImport candidate, OrgLocations orgLocations, String isMailChecked) throws JSONException, ParseException
 	{
-		JSONObject jsonObj = new JSONObject();
-		jsonObj.put("firstName", candidate.getFirstName());
+		
+		CandidateDTO  candidateDTO = new CandidateDTO();
+		//JSONObject jsonObj = new JSONObject();
+		candidateDTO.setFirstName(candidate.getFirstName());
 		if (null != candidate.getLastName()) {
-			jsonObj.put("lastName", candidate.getLastName());
+			candidateDTO.setLastName(candidate.getLastName());
 		}
-		jsonObj.put("email", candidate.getEmailId());
+		candidateDTO.setEmail(candidate.getEmailId());
+//		jsonObj.put("email", candidate.getEmailId());
 		if (null != candidate.getMobileNumber()) {
-			jsonObj.put("mobilePhone", candidate.getMobileNumber());
+			candidateDTO.setMobilePhone(candidate.getMobileNumber());
 		}
 		if (null != candidate.getCountry()) {
-			jsonObj.put("country", candidate.getCountry());
+			//jsonObj.put("country", candidate.getCountry());
+			candidateDTO.setCountry(candidate.getCountry());
 		}
 		if (null != candidate.getState()) {
-			jsonObj.put("state", candidate.getState());
+			candidateDTO.setState(candidate.getState());
 		}
 		if (null != candidate.getCity()) {
-			jsonObj.put("city", candidate.getCity());
+			candidateDTO.setCity(candidate.getCity());
 		}
 		if (null != candidate.getAddress()) {
-			jsonObj.put("address", candidate.getAddress());
+			candidateDTO.setAddress(candidate.getAddress());
 		}
 		if (null != candidate.getDesignation()) {
-			jsonObj.put("designation", candidate.getDesignation());
+			candidateDTO.setDesignation(candidate.getDesignation());
 		}
 		if (null != candidate.getDesignationType() && !"".equals(candidate.getDesignationType())) {
-			jsonObj.put("designationType", candidate.getDesignationType());
+			candidateDTO.setDesignationType(candidate.getDesignationType());
 		}
 		else {
-			jsonObj.put("designationType", "C2C");
+			//jsonObj.put("designationType", "C2C");
+			candidateDTO.setDesignationType("C2C");
 		}
 		if (null != candidate.getExperience()) {
 			if (candidate.getExperience().matches("[-a-zA-Z]+")) {
-				jsonObj.put("experienceYears", "0");
-				jsonObj.put("experienceMonths", "0");
+				//jsonObj.put("experienceYears", "0");
+				candidateDTO.setExperienceYears("0");
+				candidateDTO.setExperienceMonths("0");
 			}else{
 				 String exp[] = getExperienceYearsAndMonths(candidate.getExperience());
 				 if(exp.length >1){
-					 jsonObj.put("experienceYears", exp[0]);
+					 candidateDTO.setExperienceYears(exp[0]);
 						if(!exp[1].matches("[a-zA-Z]+")){
 							if(!"years".equalsIgnoreCase(exp[1])){
 							int months = ((Number)NumberFormat.getInstance().parse(exp[1])).intValue();
-							jsonObj.put("experienceMonths", String.valueOf(months));
+							candidateDTO.setExperienceMonths(String.valueOf(months));
 							}
 								
 						} 
 				 }else{
 					 if(exp[0].contains("years") || exp[0].contains("Years") ){
 						 int years = ((Number)NumberFormat.getInstance().parse(exp[0])).intValue();
-						 jsonObj.put("experienceYears", String.valueOf(years));
-						 jsonObj.put("experienceMonths", "0");
+						 candidateDTO.setExperienceYears(String.valueOf(years));
+						 candidateDTO.setExperienceMonths("0");
 					 }else{
-						 jsonObj.put("experienceYears", "");
-						 jsonObj.put("experienceMonths", "");
+						 candidateDTO.setExperienceYears("");
+						 candidateDTO.setExperienceMonths("");
 					 }
 					 
 				 }
@@ -541,104 +548,108 @@ public class CandidateUploadFileServiceImpl implements CandidateUploadFileServic
 		if (null != candidate.getExpectedRate()) {
 			String rate = getExpectedRate(candidate.getExpectedRate());
 			if (null != rate) {
-				jsonObj.put("expectedRate", rate);
+				candidateDTO.setExpectedRate(rate);
 				if (null != candidate.getExpectedRateType()
 						&& !"".equals(candidate.getExpectedRateType())) {
-					jsonObj.put("rateType", candidate.getExpectedRateType());
+					candidateDTO.setRateType(candidate.getExpectedRateType());
 				}
 				else {
 					// jsonObj.put("rateType", "Hourly");
 					String countryCheck = orgLocations.getCountry();
 					switch (countryCheck) {
 						case "India":
-							jsonObj.put("rateType", "Monthly");
+							candidateDTO.setRateType("Monthly");
 							break;
 						default:
-							jsonObj.put("rateType", "Hourly");
+							candidateDTO.setRateType("Hourly");
 					}
 				}
 				if ("India".equals(orgLocations.getCountry())) {
 					
-					jsonObj.put("expectedRateCurrencey", "INR");
+					//jsonObj.put("expectedRateCurrencey", "INR");
+					candidateDTO.setExpectedRateCurrencey("INR");
 				}
 				else if ("Australia".equals(orgLocations.getCountry())) {
 					
-					jsonObj.put("expectedRateCurrencey", "AUD");
+					candidateDTO.setExpectedRateCurrencey("AUD");
 				}
 				else if ("United States".equals(orgLocations.getCountry())) {
 					
-					jsonObj.put("expectedRateCurrencey", "USD");
+					candidateDTO.setExpectedRateCurrencey("USD");
 				}
 				else if ("Singapore".equals(orgLocations.getCountry())) {
 					
-					jsonObj.put("expectedRateCurrencey", "SGD");
+					candidateDTO.setExpectedRateCurrencey("SGD");
 				}
 				else if ("United Kingdom".equals(orgLocations.getCountry())) {
 					
-					jsonObj.put("expectedRateCurrencey", "GBP");
+					candidateDTO.setExpectedRateCurrencey("GBP");
 				}
 				else if ("France".equals(orgLocations.getCountry())) {
 					
-					jsonObj.put("expectedRateCurrencey", "EUR");
+					candidateDTO.setExpectedRateCurrencey("EUR");
 				}
 			}
 			else {
 				
 				if ("India".equals(orgLocations.getCountry())) {
 					
-					jsonObj.put("expectedRateCurrencey", "INR");
+					candidateDTO.setExpectedRateCurrencey("INR");
 				}
 				else if ("Australia".equals(orgLocations.getCountry())) {
 					
-					jsonObj.put("expectedRateCurrencey", "AUD");
+					candidateDTO.setExpectedRateCurrencey("AUD");
 				}
 				else if ("United States".equals(orgLocations.getCountry())) {
 					
-					jsonObj.put("expectedRateCurrencey", "USD");
+					candidateDTO.setExpectedRateCurrencey("USD");
 				}
 				else if ("Singapore".equals(orgLocations.getCountry())) {
 					
-					jsonObj.put("expectedRateCurrencey", "SGD");
+					candidateDTO.setExpectedRateCurrencey("SGD");
 				}
 				else if ("United Kingdom".equals(orgLocations.getCountry())) {
 					
-					jsonObj.put("expectedRateCurrencey", "GBP");
+					candidateDTO.setExpectedRateCurrencey("GBP");
 				}
 				else if ("France".equals(orgLocations.getCountry())) {
 					
-					jsonObj.put("expectedRateCurrencey", "EUR");
+					candidateDTO.setExpectedRateCurrencey("EUR");
 				}
 				String countryCheck = orgLocations.getCountry();
 				switch (countryCheck) {
 					case "India":
-						jsonObj.put("rateType", "Monthly");
+						//jsonObj.put("rateType", "Monthly");
+						candidateDTO.setRateType("Monthly");
 						break;
 					default:
-						jsonObj.put("rateType", "Hourly");
+						candidateDTO.setRateType("Hourly");
 				}
 			}
 		}
 		if (null != candidate.getSkillsName()) {
-			jsonObj.put("candidateSkills", candidate.getSkillsName());
+			//jsonObj.put("candidateSkills", candidate.getSkillsName());
+			candidateDTO.setCandidateSkills(candidate.getSkillsName());
 		}
 		
 		if (null != candidate.getEducation()) {
-			jsonObj.put("candidateEducation", candidate.getEducation());
+			//jsonObj.put("candidateEducation", candidate.getEducation());
+			candidateDTO.setCandidateEducation(candidate.getEducation());
 		}
 		
 		if (null != candidate.getEmployers()) {
-			jsonObj.put("candidateEmployers", candidate.getEmployers());
+			candidateDTO.setCandidateEmployers(candidate.getEmployers());
 		}
 		
 		if (null != candidate.getPrimarySkill()) {
-			jsonObj.put("primarySkill", candidate.getPrimarySkill());
+			candidateDTO.setPrimarySkill(candidate.getPrimarySkill());
 		}
 		
 		if (null != isMailChecked) {
-			jsonObj.put("inviteEmail", isMailChecked);
+			candidateDTO.setInviteEmail(isMailChecked);
 		}
 		
-		return jsonObj;
+		return candidateDTO;
 	}
 	
 	private String[] getExperienceYearsAndMonths(String experience) {

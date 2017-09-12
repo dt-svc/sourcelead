@@ -51,7 +51,7 @@ $(document).ready(function(){
           
           <ul class="nav nav-tabs" id="tab_bar">
             <li class="active">
-              <a href="#bill" data-toggle="tab" title="Bill" aria-expanded="true">
+              <a href="#bill" data-toggle="tab" title="Details" aria-expanded="true">
                 <h5>Details</h5>
               </a>
             </li>
@@ -66,7 +66,7 @@ $(document).ready(function(){
             
               <li class="">
 <%--             <sec:authorize access="hasAnyRole(\'ROLE_BILL_PAYMENT_HISTORY\')"> --%>
-              <a href="#notesList" data-toggle="tab" title="Payment History" aria-expanded="false" onclick="invoiceNotesList();">
+              <a href="#notesList" data-toggle="tab" title="Notes" aria-expanded="false" onclick="invoiceNotesList();">
 <%--               </sec:authorize> --%>
                 <h5>Notes</h5>
               </a>
@@ -751,13 +751,9 @@ function addNotes() {
 <script type="text/javascript">
 	function storeInvoiceNotes(){
 		if ($('#invoiceNotes_form').validate(false, validationSettings)){ 
-				var frm = $('#invoiceNotes_form').serializeFormJSON();
-				var con = JSON.stringify(frm);
-				//con = con.replace(/[{}]/g, "");
+				
 				var form = $('#invoiceNotes_form')[0];
 	      		var formData = new FormData(form);
-	      		formData.append("json",con);
-	      		
 	      		var userId = '${SourceLeadWeb_user.id}';
 	      		formData.append("userId",userId);
 	      	    var locationCode ='${SourceLeadWeb_locationCode}'; 
@@ -766,16 +762,12 @@ function addNotes() {
 				var sourceleadUrl = '${sourceleadUrl}';
 				$("#save_note").attr("disabled", "disabled");
          		$("#save_note" ).addClass('button').val('Processing..');
-		        var jsonData = encodeURIComponent(con);
 				$.ajax({
 						type : "POST",
 		        	    data: formData,
-		        	    contentType : 'application/json; charset=utf-8',
-		        	    enctype: 'multipart/form-data',
 		    	        processData: false,
 		    	        contentType:false,
-		        	    dataType : 'json',
-						url : sourceleadUrl+"/storeNotes?${_csrf.parameterName}=${_csrf.token}",
+						url : sourceleadUrl+"/storeNotes?${_csrf.parameterName}=${_csrf.token}&userId="+userId+"locationCode="+locationCode,
 						success : function(result) {
 							closeDocPopup();
 							invoiceNotes();
