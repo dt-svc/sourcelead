@@ -11,7 +11,7 @@
 	
 	<script src="resources/js/editor.js"></script>
 	<link href="resources/css/editor.css" type="text/css" rel="stylesheet"/>
-	<link href="resources/css/requirement.css" type="text/css" rel="stylesheet"/>
+	
 	<script>
 		$(document).ready(function() {
 			$("#txtEditor").Editor();
@@ -1873,6 +1873,7 @@ function setTemplateValues(){
 			    	$("#jobType").val(json.jobType);
 			    	
 			    	$("#coolingOff").val(json.reqCoolingOffPeriod);
+			    	$('#coolingOff').trigger('chosen:updated');
 			    	$("#industryName").val(json.industryName);
 			    	$("#industryName").trigger("chosen:updated");
 			    	
@@ -1978,7 +1979,7 @@ function setTemplateValues(){
 					$("#existingCountry").val('');
 					$("#existingState").val('');
 					$("#existingCity").val('');
-					
+					$("#coolingOff").val('');
 		            $("#skills").val('');
 		            $("#education").val('');
 		            $(".Editor-editor").text('');
@@ -1990,8 +1991,8 @@ function setTemplateValues(){
 			    	$(".")
 			    	
 			    	existedFile = json.fileName;
-			    	 $("#fileName").val(existedFile);
-			    	 $('#fileName').trigger("chosen:updated");
+			    	$("#fileName").val(existedFile);
+			    	$('#fileName').trigger("chosen:updated");
 		    	}
 		    }
      });
