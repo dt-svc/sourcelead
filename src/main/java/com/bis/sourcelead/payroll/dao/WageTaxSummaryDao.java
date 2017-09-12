@@ -1,7 +1,10 @@
 package com.bis.sourcelead.payroll.dao;
 
+import java.util.Date;
 import java.util.List;
 
+import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.dto.WagesTaxSummaryDTO;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.payroll.entity.WageTaxSummary;
@@ -10,7 +13,7 @@ public interface WageTaxSummaryDao {
 
 	WageTaxSummary saveWageTaxSummary(WageTaxSummary wageTaxSummary)throws Exception;
 
-	List<WageTaxSummary> getWagesAndTaxListByOrgLocationId(OrgLocations orgLocation);
+	ResponseList<WageTaxSummary> getWagesAndTaxListByOrgLocationId(OrgLocations orgLocation, WagesTaxSummaryDTO wagesTaxSummaryDTO);
 
 	List<WageTaxSummary> getWagesAndTaxListByEmployeeId(OrgLocations orgLocations, Long empId)throws Exception;
 
@@ -22,5 +25,8 @@ public interface WageTaxSummaryDao {
 
 	List<WageTaxSummary> getUniqueWagesAndTaxListByOrgLocationId(OrgLocations orgLocation)throws Exception;
 
+	WageTaxSummary getWageTaxSummaryByEmpIdandDuration(String empId,Long locationId, Date startDate, Date endDate);
+
+	int getWageTaxSummaryVersionByLocationId(Long locationId);
 
 }

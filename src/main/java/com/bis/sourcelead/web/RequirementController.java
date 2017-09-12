@@ -30,6 +30,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.ContractsDTO;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.Countries;
@@ -840,8 +841,9 @@ public class RequirementController {
 				      if((null != requirementOffers.getSubmissionId().getVendorLocationId() && null != requirementOffers.getSubmissionId().getSourceSubmission()) &&
 					      	  ("C2C".equalsIgnoreCase(requirementOffers.getSubmissionId().getRequirement().getJobType()) || "C2H".equalsIgnoreCase(requirementOffers.getSubmissionId().getRequirement().getJobType()) || "Contract".equalsIgnoreCase(requirementOffers.getSubmissionId().getRequirement().getJobType())) ){
 					      		
-					      		JSONObject jsonObj = populateJsonObject(requirementOffers,null);
-					      		contractsTemplateService.saveNewContract(jsonObj, requirementOffers.getSubmissionId().getOrgLocations(), "DRAFT", null, requirementOffers.getSubmissionId().getOrgLocations().getOrg(), "NEW", null);
+//					      		JSONObject jsonObj = populateJsonObject(requirementOffers,null);
+					      		ContractsDTO contractsDTO = populateContractsDTO(requirementOffers,null,requirementOffers.getSubmissionId().getOrgLocations());
+					      		contractsTemplateService.saveNewContract(contractsDTO, requirementOffers.getSubmissionId().getOrgLocations(), "DRAFT", null, requirementOffers.getSubmissionId().getOrgLocations().getOrg(), "NEW");
 						      }
 			    }
 		    }
@@ -849,42 +851,38 @@ public class RequirementController {
 		return model;
 	}
 	
-	private JSONObject populateJsonObject(RequirementOffers requirementOffers, User loginUser) throws JSONException
+	private ContractsDTO populateContractsDTO(RequirementOffers requirementOffers, User loginUser, OrgLocations orgLocations) throws Exception
 	{
-		JSONObject jsonObj = new JSONObject(); 
-		
+		ContractsDTO contractsDTO = new ContractsDTO();
+		// SimpleDateFormat simpleDateFormat =
+		// orgLocations.getLocFullFormDateFormatter();
 		RequirementSubmissionTemplateFields candidate = requirementSubmissionTemplateFieldsService.getSubmissionsTemplateFieldsByRequirementSubmissionsId(requirementOffers.getSubmissionId().getId());
-		if(null != candidate){
-		jsonObj.put("contractType", "Vendor SOW");
-		
-		if(null != candidate.getFirstName() && null != candidate.getLastName()){
-			StringBuilder candisb = new StringBuilder();
-			jsonObj.put("contractTitle", candisb.append(candidate.getFirstName()).append(" ").append(candidate.getLastName()).append(" SOW").toString());
-		}else{
-			StringBuilder candisb = new StringBuilder();
-			jsonObj.put("contractTitle", candisb.append(candidate.getFirstName()).append(" ").append(" SOW").toString());
+		if (candidate != null) {
+			contractsDTO.setContractType("Vendor SOW");
+			if (null != candidate.getFirstName() && null != candidate.getLastName()) {
+				StringBuilder candisb = new StringBuilder();
+				contractsDTO.setContractTitle(candisb.append(candidate.getFirstName()).append(" ").append(candidate.getLastName()).append(" SOW").toString());
+			}
+			else {
+				StringBuilder candisb = new StringBuilder();
+				contractsDTO.setContractTitle(candisb.append(candidate.getFirstName()).append(" ").append(" SOW").toString());
+			}
+			contractsDTO.setSubmissionOffersList(requirementOffers.getSubmissionId().getId().toString());
+			/*
+			 * to allow default owner un-comment the below line --Pavan jampana
+			 */
+			// jsonObj.put("owner", loginUser.getId());
+			contractsDTO.setOrgRelationId(requirementOffers.getSubmissionId().getSourceSubmission().getRequirement().getClientId().getId().toString());
+			contractsDTO.setVendorContact(requirementOffers.getSubmissionId().getSourceSubmission().getRequirement().getSpocId().getVendorUser().getId().toString());
+			contractsDTO.setFlatReward(requirementOffers.getAmount());
+			contractsDTO.setBillingRatePer(requirementOffers.getPaymentMode());
+			contractsDTO.setBillingRateType(requirementOffers.getPaymentType());
+			// Date startTime =
+			// commonUtil.getDateFormat(jsonObj.getString("startDate"));
+			String currentTimeStr = commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), requirementOffers.getDateOfJoining());
+			contractsDTO.setStartDate(currentTimeStr);
 		}
-		
-		jsonObj.put("submissionOffersList", requirementOffers.getSubmissionId().getId());
-		
-		/*
-		 * to allow default owner un-comment the below line --Pavan jampana
-		 */
-//		jsonObj.put("owner", loginUser.getId());
-		
-		jsonObj.put("orgRelationId", requirementOffers.getSubmissionId().getSourceSubmission().getRequirement().getClientId().getId());
-		
-		jsonObj.put("vendorContact", requirementOffers.getSubmissionId().getSourceSubmission().getRequirement().getSpocId().getVendorUser().getId());
-		
-		jsonObj.put("flatReward", requirementOffers.getAmount());
-		
-		jsonObj.put("billingRatePer", requirementOffers.getPaymentMode());
-		
-		jsonObj.put("billingRateType", requirementOffers.getPaymentType());
-		
-		jsonObj.put("startDate", requirementOffers.getDateOfJoining());
-		}
-		return jsonObj;
+		return contractsDTO;
 	}
 
 	

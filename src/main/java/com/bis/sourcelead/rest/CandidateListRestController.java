@@ -56,6 +56,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.CandidateSearchDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.elk.index.CandidateIndex;
@@ -1045,29 +1046,14 @@ public class CandidateListRestController {
 	 * @throws NullPointerException
 	 */
 	@RequestMapping(value = "/updateCandidate")
-	public String updateCandidate(@RequestParam(value = "json", required = false) String json,
-			HttpServletRequest request) throws Exception {
+	public String updateCandidate(CandidateDTO CandidateDto,HttpServletRequest request) throws Exception {
 
-		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
-				"orgLocations");
+		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-
-		MultipartFile multiFile = null;
 		Candidate candidate;
-		String jsonc = "{" + json + "}";
-		JSONObject jsonObj = new JSONObject(jsonc);
 
 		StringBuilder candidateCreateMsg = new StringBuilder();
-		candidate = candidateService.storeCandidate(jsonObj, loginOrgLocation, user, multiFile);
-		/*
-		 * if(jsonObj.has("candidateId") && jsonObj.getString("candidateId") != null &&
-		 * !"".equals(jsonObj.getString("candidateId"))){
-		 * SourceLeadSessionManager.setSessionAttribute(request, "candidateCreateMsg",
-		 * candidateCreateMsg.append("Success!!  ").append(candidate.getFirstName()).
-		 * append(" Details Updated").toString());
-		 * 
-		 * }
-		 */
+		candidate = candidateService.storeCandidate(CandidateDto, loginOrgLocation, user);
 
 		return "success";
 

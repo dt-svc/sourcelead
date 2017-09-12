@@ -1,6 +1,7 @@
 package com.bis.sourcelead.util;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -13,6 +14,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.bis.sourcelead.entity.Contracts;
@@ -46,6 +48,9 @@ public class SignatureRequestUtil {
 	
 	@Autowired
 	private Html2PdfUtil html2PdfUtil;
+	
+	@Value("${static.path}")
+	private String staticPath;
 	
 	public Contracts sendDocumentForSignatureRequest(User vendorUser, ContractsTemplate contractsTemplate, OrgLocations orgLocation, User loginUser, Contracts contracts, Org org, RequirementSubmission requirementSubmission) throws Exception{
 		
@@ -227,9 +232,7 @@ public class SignatureRequestUtil {
 				}
 				
 				// create a byte array that will hold our document bytes
-				byte[] fileBytes = null;
-
-				fileBytes = contracts.getDocFile();
+				byte[] fileBytes = CommonUtil.readBytesFromFile(staticPath+contracts.getFileURL());
 				
 				 PdfReader pdfReader = new PdfReader(fileBytes);
 			        Integer numberOfPages = pdfReader.getNumberOfPages();
@@ -297,5 +300,8 @@ public class SignatureRequestUtil {
 					//logger.info("EnvelopeSummary: " + envelopeSummary);
 				return con;
 	}
+	
+	
+	
 	
 }

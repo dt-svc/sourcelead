@@ -1559,8 +1559,6 @@ public class RequirementListRestController {
 			boolQueryBuilderForCount.must(assignedBoolQueryBuilder);
 		}
 		
-		//boolQueryBuilder.must(QueryBuilders.termQuery("reqLevel1ApproverUserId", "323"));
-			
 		SearchResponse searchResponse = sourceleadELKBaseIndexer
 				.searchDocumentWithMaxResults(Constants.ELK_REQUIREMENT_INDEX, Constants.ELK_REQUIREMENT_TYPE,
 						search.getStart(), search.getLength(), tableColumns[sortColumnIndex], sortColumnOrder ? SortOrder.ASC : SortOrder.DESC, boolQueryBuilder);

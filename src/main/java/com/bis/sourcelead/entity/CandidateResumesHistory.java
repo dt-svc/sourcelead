@@ -17,8 +17,8 @@ import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
-
-import com.fasterxml.jackson.annotation.JsonBackReference;
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
 
 @Entity
 @Table(name = "CANDIDATE_RESUMES_HISTORY", catalog = "sourcelead")
@@ -29,6 +29,7 @@ public class CandidateResumesHistory implements Serializable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "ID", nullable = false)
 	private Long id;
+	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne
 	@JoinColumn(name = "CANDIDATE_RESUMES", nullable = false)
 	private CandidateResumes candidateResumes;
@@ -55,9 +56,13 @@ public class CandidateResumesHistory implements Serializable {
 	private Date createdDate;
 	@Column(name = "CREATED_BY")
 	private String createdBy;
+	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "CREATED_USER")
 	private User createdUser;
+	
+	@Column(name = "FILE_URL")
+	private String fileURL;
 	
 	public Long getId()
 	{
@@ -187,5 +192,15 @@ public class CandidateResumesHistory implements Serializable {
 	public void setResumeUUID(String resumeUUID)
 	{
 		this.resumeUUID = resumeUUID;
+	}
+
+	public String getFileURL()
+	{
+		return fileURL;
+	}
+
+	public void setFileURL(String fileURL)
+	{
+		this.fileURL = fileURL;
 	}
 }

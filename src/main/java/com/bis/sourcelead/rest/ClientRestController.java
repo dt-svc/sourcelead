@@ -39,10 +39,13 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bis.sourcelead.constants.Constants;
-import com.bis.sourcelead.dto.CandidateSearchDTO;
+import com.bis.sourcelead.dao.UserRoleDao;
+import com.bis.sourcelead.dto.AddUserDTO;
+import com.bis.sourcelead.dto.CandidateDTO;
+import com.bis.sourcelead.dto.ClientDTO;
 import com.bis.sourcelead.dto.ClientVendorDTO;
 import com.bis.sourcelead.dto.ResponseList;
-import com.bis.sourcelead.elk.index.CandidateIndex;
+import com.bis.sourcelead.elk.index.ClientVendorContactsIndex;
 import com.bis.sourcelead.elk.index.ClientVendorIndex;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Contracts;
@@ -161,6 +164,9 @@ public class ClientRestController {
 	@Autowired
 	RequirementReportService requirementReportService;
 	
+	@Autowired
+	private UserRoleDao userRoleDao;
+	
 	/**
 	 * Handles to get Orgs
 	 * @param json
@@ -243,21 +249,20 @@ public class ClientRestController {
 	@PreAuthorize("hasAnyRole('ROLE_CREATE_CLIENT','ROLE_CREATE_VENDOR')")
 	@RequestMapping(value = "/saveClient", method = RequestMethod.POST)
 	@ResponseBody
-	public String saveClient(@RequestParam(value = "json", required = false) String json,
+	public String saveClient(ClientDTO clientDTO,AddUserDTO addUserDTO,CandidateDTO candidateDTO,
 			@RequestParam(value = "responderType", required = false) String responderType,
 			@RequestParam(value = "orgLocationId", required = false) Long orgLocationId, HttpServletRequest request)
 			throws Exception {
 
-		JSONObject jsonObj = new JSONObject(json);
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 
 		if (null != orgLocationId) {
-			jsonObj.put("orgLocationId", orgLocationId);
+			clientDTO.setOrgLocationId(orgLocationId.toString());
 		}
 
-		clientService.storeClient(jsonObj, user, orgLocation, responderType, org);
+		clientService.storeClient(clientDTO,addUserDTO,candidateDTO, user, orgLocation, responderType, org);
 		if (responderType.equalsIgnoreCase("Vendor")) {
 			SourceLeadSessionManager.setSessionAttribute(request, "vendorCreateMsg", "Success!! New Vendor created");
 		} else if (responderType.equalsIgnoreCase("Client")) {
@@ -617,19 +622,17 @@ public class ClientRestController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/clientDetailsUpdateUsingId", method = RequestMethod.POST)
-	public String clientDetailsUpdateUsingId(@RequestParam(value = "json", required = false) String json,
+	public String clientDetailsUpdateUsingId(ClientDTO clientDTO,
 				@RequestParam(value = "vendorLocationId", required = false) Long clientLocationId,
 				@RequestParam(value = "orgRelationId", required = false) Long orgRelationId) throws Exception {
 		
 		    OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		    User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		    
-	       String json1 = "{" + json + "}";
-	       JSONObject jsonObj = new JSONObject(json1);
-	       clientService.updateClientDetails(jsonObj, orgRelationId,clientLocationId, orgLocation.getId(),user);
+	       clientService.updateClientDetails(clientDTO, orgRelationId,clientLocationId, orgLocation.getId(),user);
 	       
 	       StringBuilder editClientMsg = new StringBuilder();
-		   SourceLeadSessionManager.setSessionAttribute(request, "editClient", editClientMsg.append("Success !! ").append(jsonObj.getString("clientName")).append(" details updated.").toString());
+		   SourceLeadSessionManager.setSessionAttribute(request, "editClient", editClientMsg.append("Success !! ").append(clientDTO.getOrgName()).append(" details updated.").toString());
 
 		return "success";
 	}
@@ -845,19 +848,18 @@ public class ClientRestController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/vendorDetailsUpdateUsingId", method = RequestMethod.POST)
-	public String vendorDetailsUpdateUsingId(@RequestParam(value = "json", required = false) String json,
+	public String vendorDetailsUpdateUsingId(ClientDTO clientDTO,
 			@RequestParam(value = "vendorLocationId", required = false) Long vendorLocationId,
 			@RequestParam(value = "orgRelationId", required = false) Long orgRelationId) throws Exception {
 
-		JSONObject jsonObj = new JSONObject(json);
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 
-		clientService.updateVendorDetails(jsonObj, orgRelationId, vendorLocationId, orgLocation.getId(), user);
+		clientService.updateVendorDetails(clientDTO, orgRelationId, vendorLocationId, orgLocation.getId(), user);
 
 		StringBuilder editVendorMsg = new StringBuilder();
 		SourceLeadSessionManager.setSessionAttribute(request, "editVendor", editVendorMsg.append("Success !! ")
-				.append(jsonObj.getString("vendorName")).append(" details updated.").toString());
+				.append(clientDTO.getVendorName()).append(" details updated.").toString());
 
 		return "success";
 	}
@@ -871,21 +873,19 @@ public class ClientRestController {
 	 */
 	
 	@RequestMapping(value = "/vendorContactDetailsUpdateUsingId", method = RequestMethod.POST)
-	 String vendorContactDetailsUpdateUsingId(@RequestParam(value = "json", required = false) String json,
+	 String vendorContactDetailsUpdateUsingId(ClientDTO clientDTO,
 			@RequestParam(value = "spocId", required = false) Long spocId,
 			@RequestParam(value = "ownerId", required = false) Long ownerId,@RequestParam(value = "spocUserId", required = false) Long spocUserId,
 			@RequestParam(value = "type", required = false) String type) throws Exception {
 		
-	       String jsonVal = "{" + json + "}";
-	       JSONObject jsonObj = new JSONObject(jsonVal);
 	       User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 	       OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-	       OrgSpoc orgSpoc = clientService.updateVendorContactDetails(jsonObj, spocId, orgLocation.getId(),loginUser,ownerId,spocUserId,orgLocation,type);
+	       OrgSpoc orgSpoc = clientService.updateVendorContactDetails(clientDTO, spocId, orgLocation.getId(),loginUser,ownerId,spocUserId,orgLocation,type);
 	       
 	       StringBuilder editSpocMsg = new StringBuilder();
 		   //SourceLeadSessionManager.setSessionAttribute(request, "editSpocMsg", editSpocMsg.append("Success !! ").append(orgSpoc.getSpocUser().getFirstName()).append(" details updated.").toString());
 
-		return jsonObj.getString("owner");
+		return orgSpoc.getOwnerUser().getId().toString();
 	}
 	
 	
@@ -1177,7 +1177,15 @@ public class ClientRestController {
 		/*
 		 * This array is used to enable the sorting feature in data tables. And, these names should match the ELK Candidate index field names.
 		 */
-		String[] tableColumns = {"orgName", "", "", "", "createdBy", "noContacts"};
+		String[] tableColumns1 = null;
+		if(Constants.CLIENT.equalsIgnoreCase(clientVendorDTO.getResponderType())){
+			String[] tableColumns = {"orgName", "", "", "", "createdBy", "noContacts"};
+			tableColumns1 = tableColumns;
+		}else if(Constants.VENDOR.equalsIgnoreCase(clientVendorDTO.getResponderType())){
+			String[] tableColumns = {"orgName", "", "", "","createdBy","releasedJobsCount", "noContacts"};
+			tableColumns1 = tableColumns;
+		}
+		
 	     int sortColumnIndex = 4; //by default sorting using updated date
 		boolean sortColumnOrder = false; //by default descending order
 		if(clientVendorDTO.getOrder() != null && !clientVendorDTO.getOrder().isEmpty()) {
@@ -1189,7 +1197,8 @@ public class ClientRestController {
 		 User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");		  
 		 
 		 OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
-		
+		 String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+		 
 		 BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();
 		 
 		 String responderType= "";
@@ -1349,7 +1358,7 @@ public class ClientRestController {
 				clientVendorDTO.getStart(), clientVendorDTO.getLength(), tableColumns[sortColumnIndex], sortColumnOrder ? SortOrder.ASC : SortOrder.DESC,boolQueryBuilder).getTotalHits();*/
 			SearchResponse searchResponse = sourceleadELKBaseIndexer
 					.searchDocumentWithMaxResults(Constants.ELK_CLIENTVENDOR_INDEX, Constants.ELK_CLIENTVENDOR_TYPE,
-							clientVendorDTO.getStart(), clientVendorDTO.getLength(), tableColumns[sortColumnIndex], sortColumnOrder ? SortOrder.ASC : SortOrder.DESC, boolQueryBuilder);
+							clientVendorDTO.getStart(), clientVendorDTO.getLength(), tableColumns1[sortColumnIndex], sortColumnOrder ? SortOrder.ASC : SortOrder.DESC, boolQueryBuilder);
 			
 			SearchHit searchHits[] = searchResponse.getHits().getHits();
 		 
@@ -1368,6 +1377,10 @@ public class ClientRestController {
 				//  This is to get the number of Contacts based  on Org Relation Id
 				 BoolQueryBuilder forNumberOfContacts= QueryBuilders.boolQuery();
 				 forNumberOfContacts.must(QueryBuilders.matchQuery("orgRelationId", clientVendor.getOrgRelationId()));
+				 if(Constants.VENDOR.equalsIgnoreCase(clientVendorDTO.getResponderType())){
+					 Integer releaseJobsCount = clientService.getReleasedJobsCountByOrgRelationId(clientVendor.getOrgRelationId(),loginOrgLocation,userRole,loginUser);
+					 clientVendor.setReleasedJobsCount(String.valueOf(releaseJobsCount));
+				 }
 				 if(clientVendor.getNoContacts() !=null) {
 					 clientVendor.setNoContacts(clientVendor.getNoContacts());
 				 }else {
@@ -1419,7 +1432,8 @@ public class ClientRestController {
 	}
 	
 	
-	 private ArrayList<MatchQueryBuilder> getMatchQueryBuilderList(String keywd){
+
+	private ArrayList<MatchQueryBuilder> getMatchQueryBuilderList(String keywd){
 		    ArrayList<MatchQueryBuilder> matchQueryBuilderList = new ArrayList<MatchQueryBuilder>();
 		   
 		    //Vendor Search 
@@ -1441,4 +1455,290 @@ public class ClientRestController {
 			
 			return matchQueryBuilderList; 
 	 }
+	 
+	 /**
+	  * client contacts
+	  * @param clientVendorDTO
+	  * @param request
+	  * @return ResponseList<ClientVendorContactsIndex>
+	  * @throws Exception
+	  */
+	 @RequestMapping(value = "/searchClientContactDetails")
+		public ResponseList<ClientVendorContactsIndex> searchClientContactDetails(ClientVendorDTO clientVendorDTO, HttpServletRequest request)
+				throws Exception {
+			/*
+			 * This array is used to enable the sorting feature in data tables. And, these names should match the ELK Candidate index field names.
+			 */
+			String[] tableColumns = {"orgName", "spocName", "spocEmail", "", "", "","",""};
+		     int sortColumnIndex = 0; //by default sorting using updated date
+			boolean sortColumnOrder = false; //by default descending order
+			if(clientVendorDTO.getOrder() != null && !clientVendorDTO.getOrder().isEmpty()) {
+				sortColumnIndex = Integer.parseInt(clientVendorDTO.getOrder().get(0).get("column"));
+				sortColumnOrder = !clientVendorDTO.getOrder().get(0).get("dir").equalsIgnoreCase("desc");
+			}
+			
+			
+			 OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+			 User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");		
+
+		     Boolean isadmin = userRoleDao.isUserAdminByOrgLocationId(loginUser.getId(),loginOrgLocation.getId());
+				
+			 BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();
+			 
+			// boolQueryBuilder.must(QueryBuilders.matchQuery("orgLocationId", loginOrgLocation.getId()));
+			
+			 BoolQueryBuilder responderQueryBuilder = QueryBuilders.boolQuery();
+			 
+			 if("Vendor".equalsIgnoreCase(clientVendorDTO.getResponderType())){
+				 responderQueryBuilder.must(QueryBuilders.matchQuery("clientLocationId", loginOrgLocation.getId()));
+			 }else if("Client".equalsIgnoreCase(clientVendorDTO.getResponderType())){
+				 responderQueryBuilder.must(QueryBuilders.matchQuery("vendorLocationId", loginOrgLocation.getId()));
+			 }
+			 
+			 BoolQueryBuilder statusQueryBuilder = QueryBuilders.boolQuery();
+			 statusQueryBuilder.must(QueryBuilders.matchQuery("status", "1"));
+			 
+			 boolQueryBuilder.must(responderQueryBuilder);
+			 boolQueryBuilder.must(statusQueryBuilder);
+			 
+			 //  this condition is if Login user is Owner or SpocUserId
+			 if(!isadmin){
+								 
+						 BoolQueryBuilder ownerLoginQueryBuilder = QueryBuilders.boolQuery();
+						 BoolQueryBuilder spockQueryBuilder = QueryBuilders.boolQuery();
+						 BoolQueryBuilder combinationQueryBuilder = QueryBuilders.boolQuery();
+						 
+						 ownerLoginQueryBuilder.must(QueryBuilders.matchQuery("clientUserId", loginUser.getId()));
+						 spockQueryBuilder.must(QueryBuilders.matchQuery("vendorUserId", loginUser.getId()));
+						 
+						 combinationQueryBuilder.should(ownerLoginQueryBuilder);
+						 combinationQueryBuilder.should(spockQueryBuilder);
+						 boolQueryBuilder.must(combinationQueryBuilder);
+			}
+			 
+// Advance search start
+				//Spoc Status
+				 List<String> statusAdvancedArray = clientVendorDTO.getStatus();
+				if(statusAdvancedArray != null && !statusAdvancedArray.isEmpty()){
+					BoolQueryBuilder statusAdvancedBoolQueryBuilder = QueryBuilders.boolQuery();
+					for(String keywd : statusAdvancedArray){
+							if(Constants.ACTIVE.equalsIgnoreCase(keywd)){
+								statusAdvancedBoolQueryBuilder.should(QueryBuilders.matchPhrasePrefixQuery("spocStatus", "Active"));
+								statusAdvancedBoolQueryBuilder.mustNot(QueryBuilders.matchPhrasePrefixQuery("spocStatus", "In-Active"));
+							}else{
+								  statusAdvancedBoolQueryBuilder.should(QueryBuilders.matchPhrasePrefixQuery("spocStatus", keywd));
+							}
+					}
+					boolQueryBuilder.must(statusAdvancedBoolQueryBuilder);
+				}
+				
+				
+				
+				List<String> invitationAdvancedArray = clientVendorDTO.getInvitationStatus();
+				if(invitationAdvancedArray != null && !invitationAdvancedArray.isEmpty()){
+					BoolQueryBuilder invitationAdvancedBoolQueryBuilder = QueryBuilders.boolQuery();
+					for(String keywd : invitationAdvancedArray){
+						invitationAdvancedBoolQueryBuilder.should(QueryBuilders.matchPhraseQuery("invitationStatus", keywd));
+					}
+					boolQueryBuilder.must(invitationAdvancedBoolQueryBuilder);
+				}
+				
+				
+				/* List<String> anyKeyWordArray = clientVendorDTO.getAnyOfKeyword();
+					if(anyKeyWordArray == null)
+						anyKeyWordArray = new ArrayList<>();
+					if(StringUtils.isNotEmpty(clientVendorDTO.getSearchValue())) {
+						anyKeyWordArray.add(clientVendorDTO.getSearchValue());
+					}
+					 // getSearchKeywordsFromChosenSelectField(jsonObj, "anyOfKeyword");
+					if(anyKeyWordArray != null && !anyKeyWordArray.isEmpty()){
+						 BoolQueryBuilder anyBoolQueryBuilder = QueryBuilders.boolQuery();
+						 for(String keywd : anyKeyWordArray){
+							 BoolQueryBuilder anyBoolSubQueryBuilder = QueryBuilders.boolQuery();
+							ArrayList<MatchQueryBuilder> matchQueryBuilderList =getMatchQueryBuilderList(keywd);
+							if(matchQueryBuilderList != null && !matchQueryBuilderList.isEmpty()){
+								for(MatchQueryBuilder matchQueryBuilder :matchQueryBuilderList){
+									anyBoolSubQueryBuilder.should(matchQueryBuilder);
+								}
+								anyBoolQueryBuilder.should(anyBoolSubQueryBuilder);
+							}
+						}
+						 boolQueryBuilder.must(anyBoolQueryBuilder);
+					}*/
+					
+					
+					//Any Keyword
+				List<String> anyKeyWordArray = clientVendorDTO.getAnyOfKeyword();
+				if(anyKeyWordArray == null)
+					anyKeyWordArray = new ArrayList<>();
+				if(StringUtils.isNotEmpty(clientVendorDTO.getSearchValue())) {
+					anyKeyWordArray.add(clientVendorDTO.getSearchValue());
+				}
+					if(anyKeyWordArray != null && !anyKeyWordArray.isEmpty()){
+						 BoolQueryBuilder anyBoolQueryBuilder = QueryBuilders.boolQuery();
+						 for(String keywd : anyKeyWordArray){
+							 BoolQueryBuilder anyBoolSubQueryBuilder = QueryBuilders.boolQuery();
+							ArrayList<MatchQueryBuilder> matchQueryBuilderList = getMatchQueryBuilderListForContacts(keywd,clientVendorDTO.getResponderType());
+							if(matchQueryBuilderList != null && !matchQueryBuilderList.isEmpty()){
+								for(MatchQueryBuilder matchQueryBuilder :matchQueryBuilderList){
+									anyBoolSubQueryBuilder.should(matchQueryBuilder);
+								}
+								anyBoolQueryBuilder.should(anyBoolSubQueryBuilder);
+							}
+						}
+						 boolQueryBuilder.must(anyBoolQueryBuilder);
+					}
+				
+// Advance search end
+				
+				SearchResponse searchResponse = sourceleadELKBaseIndexer
+						.searchDocumentWithMaxResults(Constants.ELK_CLIENTVENDOR_CONTACT_INDEX, Constants.ELK_CLIENTVENDOR_CONTACT_TYPE,
+								clientVendorDTO.getStart(), clientVendorDTO.getLength(), tableColumns[sortColumnIndex], sortColumnOrder ? SortOrder.ASC : SortOrder.DESC, boolQueryBuilder);
+				
+//				SearchHit[] searchHits = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_CLIENTVENDOR_CONTACT_INDEX, Constants.ELK_CLIENTVENDOR_CONTACT_TYPE,0,maxResults.intValue(),boolQueryBuilder).getHits();
+
+				SearchHit searchHits[] = searchResponse.getHits().getHits();
+				
+				List<ClientVendorContactsIndex> clientVendorContactsList = new ArrayList<ClientVendorContactsIndex>();
+				DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+				df.setTimeZone(TimeZone.getTimeZone("GMT"));
+				ResponseList<ClientVendorContactsIndex> response = new ResponseList<>();
+				if(searchHits != null && searchHits.length >0){
+					ObjectMapper mapper = new ObjectMapper();
+					for (SearchHit hit : searchHits) {
+						String json = hit.getSourceAsString();
+						mapper.setDateFormat(df);
+						ClientVendorContactsIndex clientVendorContactsIndex = mapper.readValue(json, ClientVendorContactsIndex.class);
+						clientVendorContactsList.add(clientVendorContactsIndex);
+					}
+					
+					for(ClientVendorContactsIndex clientVendorContactsIndex : clientVendorContactsList){
+						if("Vendor".equalsIgnoreCase(clientVendorDTO.getResponderType())){
+							if(null != clientVendorContactsIndex.getVendorUserFirstName() && clientVendorContactsIndex.getVendorUserFirstName() != "" && clientVendorContactsIndex.getVendorUserLastName() != null && clientVendorContactsIndex.getVendorUserLastName() != "" ){
+								StringBuilder spocNameSB = new StringBuilder();
+								clientVendorContactsIndex.setSpocName(spocNameSB.append(clientVendorContactsIndex.getVendorUserFirstName()).append(" ").append(clientVendorContactsIndex.getVendorUserLastName()).toString());
+							}else{
+								clientVendorContactsIndex.setSpocName(clientVendorContactsIndex.getVendorUserFirstName());
+							}
+							if(clientVendorContactsIndex.getClientUserFirstName() != null && clientVendorContactsIndex.getClientUserFirstName() != "" && clientVendorContactsIndex.getClientUserLastName()!= null && clientVendorContactsIndex.getClientUserLastName() != "" ){
+								StringBuilder ownerNameSB = new StringBuilder();
+								clientVendorContactsIndex.setOwnerNames(ownerNameSB.append(clientVendorContactsIndex.getClientUserFirstName()).append(" ").append(clientVendorContactsIndex.getClientUserLastName()).toString());
+							}else{
+								clientVendorContactsIndex.setOwnerNames(clientVendorContactsIndex.getClientUserFirstName());
+							}
+							clientVendorContactsIndex.setSpocEmail(clientVendorContactsIndex.getVendorUserEmail());
+							clientVendorContactsIndex.setSpocMobilePhone(clientVendorContactsIndex.getVendorUserPhNo());
+							
+						    clientVendorContactsIndex.setTempOwnerId(clientVendorContactsIndex.getClientUserId());
+	    				    clientVendorContactsIndex.setUserId(clientVendorContactsIndex.getVendorUserId());
+		    				 
+							clientVendorContactsIndex.setSpocLocationId(clientVendorContactsIndex.getVendorLocationId());
+							clientVendorContactsIndex.setOrgName(clientVendorContactsIndex.getVendorOrgName());
+							
+							if(null != clientVendorContactsIndex.getOwnerUserId() && null != clientVendorContactsIndex.getClientUserId() && clientVendorContactsIndex.getOwnerUserId().longValue() == clientVendorContactsIndex.getClientUserId().longValue()){
+								 clientVendorContactsIndex.setSpocUserId(clientVendorContactsIndex.getVendorUserId());
+								 clientVendorContactsIndex.setOwnerUserId(clientVendorContactsIndex.getClientUserId());
+							}
+							else{
+								 clientVendorContactsIndex.setSpocUserId(clientVendorContactsIndex.getClientUserId());
+								 clientVendorContactsIndex.setOwnerUserId(clientVendorContactsIndex.getVendorUserId());
+							}
+							
+						 }else if("Client".equalsIgnoreCase(clientVendorDTO.getResponderType())){
+							 if(null != clientVendorContactsIndex.getClientUserFirstName() && clientVendorContactsIndex.getClientUserFirstName() != "" && clientVendorContactsIndex.getClientUserLastName() != null && clientVendorContactsIndex.getClientUserLastName() != "" ){
+									StringBuilder spocNameSB = new StringBuilder();
+									clientVendorContactsIndex.setSpocName(spocNameSB.append(clientVendorContactsIndex.getClientUserFirstName()).append(" ").append(clientVendorContactsIndex.getClientUserLastName()).toString());
+								}else{
+									clientVendorContactsIndex.setSpocName(clientVendorContactsIndex.getClientUserFirstName());
+								}
+								if(clientVendorContactsIndex.getVendorUserFirstName() != null && clientVendorContactsIndex.getVendorUserFirstName() != "" && clientVendorContactsIndex.getVendorUserLastName()!= null && clientVendorContactsIndex.getVendorUserLastName() != "" ){
+									StringBuilder ownerNameSB = new StringBuilder();
+									clientVendorContactsIndex.setOwnerNames(ownerNameSB.append(clientVendorContactsIndex.getVendorUserFirstName()).append(" ").append(clientVendorContactsIndex.getVendorUserLastName()).toString());
+								}else{
+									clientVendorContactsIndex.setOwnerNames(clientVendorContactsIndex.getVendorUserFirstName());
+								}
+								clientVendorContactsIndex.setSpocEmail(clientVendorContactsIndex.getClientUserEmail());
+								clientVendorContactsIndex.setSpocMobilePhone(clientVendorContactsIndex.getClientUserPhNo());
+								
+							    clientVendorContactsIndex.setTempOwnerId(clientVendorContactsIndex.getVendorUserId());
+		    				    clientVendorContactsIndex.setUserId(clientVendorContactsIndex.getClientUserId());
+			    				 
+								clientVendorContactsIndex.setSpocLocationId(clientVendorContactsIndex.getClientLocationId());
+								clientVendorContactsIndex.setOrgName(clientVendorContactsIndex.getClientOrgName());
+								
+								if(null != clientVendorContactsIndex.getClientUserId() && null != clientVendorContactsIndex.getOwnerUserId() && clientVendorContactsIndex.getOwnerUserId().longValue() == clientVendorContactsIndex.getClientUserId().longValue()){
+									 clientVendorContactsIndex.setSpocUserId(clientVendorContactsIndex.getVendorUserId());
+									 clientVendorContactsIndex.setOwnerUserId(clientVendorContactsIndex.getClientUserId());
+								}
+								else{
+									 clientVendorContactsIndex.setSpocUserId(clientVendorContactsIndex.getClientUserId());
+									 clientVendorContactsIndex.setOwnerUserId(clientVendorContactsIndex.getVendorUserId());
+								}
+						 }
+					}	
+					
+				}
+				response.setRecordsFiltered(searchHits.length);
+				SearchResponse searchResponseForCount = sourceleadELKBaseIndexer
+						.searchDocumentWithMaxResults(Constants.ELK_CLIENTVENDOR_INDEX, Constants.ELK_CLIENTVENDOR_TYPE,
+								0, 10, "createdBy", SortOrder.DESC, boolQueryBuilder);
+				
+				response.setRecordsTotal(searchResponseForCount == null ? response.getRecordsFiltered() : Long.valueOf(searchResponseForCount.getHits().getTotalHits()).intValue());
+			response.setData(clientVendorContactsList);
+			 return response;
+		}
+	 
+	 
+	 private ArrayList<MatchQueryBuilder> getMatchQueryBuilderListForContacts(String keywd,String responderType){
+		    ArrayList<MatchQueryBuilder> matchQueryBuilderListForContacts = new ArrayList<MatchQueryBuilder>();
+		   
+		    //Contact  Search 
+		    matchQueryBuilderListForContacts.add(QueryBuilders.matchPhraseQuery("spocStatus", keywd));
+		    
+		    if("Vendor".equalsIgnoreCase(responderType)){
+		    	 // Client OrgName
+			    matchQueryBuilderListForContacts.add(QueryBuilders.matchQuery("vendorOrgName", keywd));
+		    }
+		    if("Client".equalsIgnoreCase(responderType)){
+		    	 // Vendor OrgName
+			    matchQueryBuilderListForContacts.add(QueryBuilders.matchQuery("clientOrgName", keywd));
+		    }
+		   
+		    
+		    //owner Name
+		    matchQueryBuilderListForContacts.add(QueryBuilders.matchQuery("clientUserFirstName", keywd));
+		    matchQueryBuilderListForContacts.add(QueryBuilders.matchQuery("clientUserLastName", keywd));
+		    
+		    //spock Name
+		    matchQueryBuilderListForContacts.add(QueryBuilders.matchQuery("vendorUserFirstName", keywd));
+		    matchQueryBuilderListForContacts.add(QueryBuilders.matchQuery("vendorUserLastName", keywd));
+		    
+		    
+		    if("Client".equalsIgnoreCase(responderType)){
+		    // ClientUser Email
+		    matchQueryBuilderListForContacts.add(QueryBuilders.matchPhraseQuery("clientUserEmail", keywd));
+		    }
+		    if("Vendor".equalsIgnoreCase(responderType)){
+		    // VendorUser Email
+		    matchQueryBuilderListForContacts.add(QueryBuilders.matchPhraseQuery("vendorUserEmail", keywd));
+		    }
+		    if("Client".equalsIgnoreCase(responderType)){
+		   // ClientUser PhoneNumber
+		    matchQueryBuilderListForContacts.add(QueryBuilders.matchPhraseQuery("clientUserPhNo", keywd));
+		    }
+		    if("Vendor".equalsIgnoreCase(responderType)){
+		    // VendorUser PhoneNumber
+		    matchQueryBuilderListForContacts.add(QueryBuilders.matchPhraseQuery("vendorUserPhNo", keywd));
+		    }
+			 
+		    
+		    if(keywd.equalsIgnoreCase("Resend") || keywd.equalsIgnoreCase("resend") ){
+		    	matchQueryBuilderListForContacts.add(QueryBuilders.matchQuery("invitationStatus", "Sent"));
+		    }else{
+		    	matchQueryBuilderListForContacts.add(QueryBuilders.matchQuery("invitationStatus", keywd));
+		    }
+			return matchQueryBuilderListForContacts; 
+	 }
+	 
+
 }

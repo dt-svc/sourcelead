@@ -26,6 +26,7 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
@@ -52,6 +53,12 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.InvoiceDao;
 import com.bis.sourcelead.dto.ExpensesDTO;
 import com.bis.sourcelead.dto.ExpensesEntriesDTO;
+import com.bis.sourcelead.dto.InvoiceDTO;
+import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.dto.FileInfo;
+import com.bis.sourcelead.dto.InvoiceDTO;
+import com.bis.sourcelead.dto.InvoicePaymentDTO;
+
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.EmailAttachment;
@@ -95,6 +102,7 @@ import com.bis.sourcelead.service.impl.InvoiceDocumentsService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.ConversionUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
+import com.bis.sourcelead.util.FileUploadUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.bis.sourcelead.util.TimesheetFrequencyGeneratorUtil;
 import com.bis.sourcelead.web.LoginSessionController;
@@ -113,6 +121,9 @@ public class InvoiceRestController {
 	
 	@Value("${sourceleadUrl}")
     private String sourceleadUrl;
+	
+	@Value("${static.path}")
+    private String staticPath;
 	
 	@Autowired
 	EmailScenarioService emailScenarioService;
@@ -238,27 +249,16 @@ public class InvoiceRestController {
  }
 	
 	@RequestMapping(value = "/saveInvoice", method = RequestMethod.POST)
-	public @ResponseBody String saveInvoice(@RequestParam(value = "json", required = false) String json,@RequestParam(value = "saveType", required = false) String saveType,
-			@RequestParam(value = "invoiceType", required = false) String invoiceType,MultipartHttpServletRequest request) throws Exception {
+	public @ResponseBody String saveInvoice(InvoiceDTO invoiceDTO,@RequestParam(value = "saveType", required = false) String saveType,
+			@RequestParam(value = "invoiceType", required = false) String invoiceType,HttpServletRequest request) throws Exception {
 
-		String json1 = "{" + json + "}";
 		String invoiceSaved = "failed";
-		JSONObject jsonObj = new JSONObject(json1);
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		String currencyCode = (String) SourceLeadSessionManager.getSessionAttribute(request, "currencyCode");
 		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
-		List<MultipartFile> attachedfileList = new ArrayList<MultipartFile>();
-		int attcahmentMaxRowNumber = Integer.parseInt(jsonObj.getString("invoiceAttcahmentMaxRowNumber"));
-		 final Map files = request.getFileMap();
-		for(int i=0;i<attcahmentMaxRowNumber;i++){
-			MultipartFile  multiFile = (MultipartFile)files.get(i+"invoicedocFile");
-			if(multiFile != null && !multiFile.isEmpty()){
-				attachedfileList.add(multiFile); 
-			}
-		}
-
-		Invoice invoice = invoiceService.saveInvoice(jsonObj,user,orgLocation,saveType,attachedfileList,invoiceType,org,currencyCode);
+        invoiceDTO.setStaticPath(staticPath);
+		Invoice invoice = invoiceService.saveInvoice(user,orgLocation,saveType,invoiceType,org,currencyCode,invoiceDTO);
 		
 		if(invoiceType.equals("payable") && saveType.equals("DRAFT")){
 		 SourceLeadSessionManager.setSessionAttribute(request, "payableInvoiceCreateMsg", "Successfully you have created a Bill");
@@ -351,17 +351,23 @@ public class InvoiceRestController {
  	  return resultJson;
  	}
     
-    @RequestMapping(value = "/getInvoiceList")
-	public String getInvoiceList(@RequestParam(value = "invoiceStatus", required = false) String invoiceStatus,
-			@RequestParam(value = "paymentStatus", required = false) String paymentStatus,
-			@RequestParam(value = "dayWisetype", required = false) String reportType,
-			@RequestParam(value = "startDate", required = false) String customStartDate,
-			@RequestParam(value = "endDate", required = false) String customEndDate,
-			@RequestParam(value = "invoiceType", required = false) String invoiceType,HttpServletRequest request) throws Exception {
+    @RequestMapping(value = "/getInvoiceList",method = RequestMethod.POST)
+	public ResponseList<Invoice> getInvoiceList(InvoiceDTO invoiceDTO,HttpServletRequest request) throws Exception {
 		
     	String resultJson;
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		List<Invoice> invoiceList = null;
+		
+		String[] tableColumns = {"invoiceId", "clientName", "clientContact", "projectName", "invoiceDate", "inoviceTotal","inoviceDue","dueDate","inoviceStatus","paymentStatus","action"};
+	     int sortColumnIndex = 1; //by default sorting using updated date
+		String sortColumnOrder = "desc"; //by default descending order
+		if(invoiceDTO.getOrder() != null && !invoiceDTO.getOrder().isEmpty()) {
+			sortColumnIndex = Integer.parseInt(invoiceDTO.getOrder().get(0).get("column"));
+			sortColumnOrder = invoiceDTO.getOrder().get(0).get("dir");
+		}
+		invoiceDTO.setSortColumn(tableColumns[sortColumnIndex]);
+		invoiceDTO.setSortOrder(sortColumnOrder);
+		
+		
 		List<Invoice> billingInvoiceList = new ArrayList<Invoice>();
 		
 		Timezone timezone = timeZoneService.getTimezone(orgLocations.getTimezone().getId());
@@ -371,38 +377,38 @@ public class InvoiceRestController {
 		DateFormat TZ_DF_TS = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		Date endDateUTC = null;
 		Date startDateUTC = null;
-		if (!Constants.CUSTOM_REPORTS.equalsIgnoreCase(reportType)) {
+		if (!Constants.CUSTOM_REPORTS.equalsIgnoreCase(invoiceDTO.getDayWisetype()) && !"".equals(invoiceDTO.getDayWisetype())) {
 			String endDate = outputFormatter1.print(zoned);
 			String endDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE, endDate);
 			endDateUTC = TZ_DF_TS.parse(endDateString);
 		}
-		if (null != reportType && !"".equals(reportType)) {
-			if (!Constants.CUSTOM_REPORTS.equalsIgnoreCase(reportType)) {
+		if (null != invoiceDTO.getDayWisetype() && !"".equals(invoiceDTO.getDayWisetype())) {
+			if (!Constants.CUSTOM_REPORTS.equalsIgnoreCase(invoiceDTO.getDayWisetype())) {
 			String startDate = outputFormatter.print(zoned);
 				String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE, startDate);
 				startDateUTC = TZ_DF_TS.parse(startDateString);
-			 if (Constants.ONE_MONTH.equals(reportType)) {
+			 if (Constants.ONE_MONTH.equals(invoiceDTO.getDayWisetype())) {
 				startDateUTC = getPreviousDate(zoned, outputFormatter, TZ_DF_TS, timezone, 30);
 			}
-			else if (Constants.TWO_MONTHS.equals(reportType)) {
+			else if (Constants.TWO_MONTHS.equals(invoiceDTO.getDayWisetype())) {
 				startDateUTC = getPreviousDate(zoned, outputFormatter, TZ_DF_TS, timezone, 60);
 			}
-			else if (Constants.THREE_MONTHS.equals(reportType)) {
+			else if (Constants.THREE_MONTHS.equals(invoiceDTO.getDayWisetype())) {
 				startDateUTC = getPreviousDate(zoned, outputFormatter, TZ_DF_TS, timezone, 90);
 			}
-			else if (Constants.SIX_MONTHS.equals(reportType)) {
+			else if (Constants.SIX_MONTHS.equals(invoiceDTO.getDayWisetype())) {
 				startDateUTC = getPreviousDate(zoned, outputFormatter, TZ_DF_TS, timezone, 180);
 			}
-			else if (Constants.ONE_YEAR.equals(reportType)) {
+			else if (Constants.ONE_YEAR.equals(invoiceDTO.getDayWisetype())) {
 				startDateUTC = getPreviousDate(zoned, outputFormatter, TZ_DF_TS, timezone, 365);
 			}
 			}
 		}else {
-			if (!"".equalsIgnoreCase(customStartDate) && !"".equalsIgnoreCase(customEndDate) && !"undefined".equalsIgnoreCase(customStartDate) && !"undefined".equalsIgnoreCase(customEndDate)) {
+			if (StringUtils.isNotBlank(invoiceDTO.getStartDate()) && StringUtils.isNotBlank(invoiceDTO.getEndDate()) && !"undefined".equalsIgnoreCase(invoiceDTO.getStartDate()) && !"undefined".equalsIgnoreCase(invoiceDTO.getEndDate())) {
 				DateFormat TZ_DF_CSD = new SimpleDateFormat("yyyy-MM-dd'T'00:00:00");
 				DateFormat TZ_DF_CED = new SimpleDateFormat("yyyy-MM-dd'T'23:59:59");
-				Date startTime = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),customStartDate);
-				Date endTime = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),customEndDate);
+				Date startTime = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),invoiceDTO.getStartDate());
+				Date endTime = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),invoiceDTO.getEndDate());
 				String customStartTimeStr = TZ_DF_CSD.format(startTime);
 				String customEndTimeStr = TZ_DF_CED.format(endTime);
 				String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE, customStartTimeStr);
@@ -414,18 +420,20 @@ public class InvoiceRestController {
 			}
 		}
 		
-		
-		invoiceList = invoiceService.invoiceListByOrgLocationId(orgLocations.getId(),invoiceStatus,paymentStatus,startDateUTC,endDateUTC,invoiceType);
-		
-		
+		ResponseList<Invoice>  invoiceList = invoiceService.invoiceListByOrgLocationId(orgLocations.getId(),startDateUTC,endDateUTC,invoiceDTO);
 		Date todayDate = new Date();
-		
 		SimpleDateFormat dateFormat = orgLocations.getLocFullFormDateFormatter();
-		for(Invoice invoice :invoiceList){
-			Integer draftCount = 0;
-			Integer paidCount = 0;
-			Integer overDueInvoiceCount = 0;
-			Integer openInvoiceCount = 0;
+		List<Invoice> invoiceFilterList = invoiceList.getData();
+		Integer draftCount = 0;
+		Integer paidCount = 0;
+		Integer overDueInvoiceCount = 0;
+		Integer openInvoiceCount = 0;
+		
+		Float draftTotalAmount = 0f;
+		Float paidTotalAmount = 0f;
+		Float dueAfterInvoiceAmount = 0f;
+		Float dueBeforeInvoiceAmount = 0f;
+		for(Invoice invoice :invoiceFilterList){
 			
 			boolean isInvoiceDueDate = false;
 			
@@ -464,18 +472,20 @@ public class InvoiceRestController {
 			if(!isNullOrEmpty(invoice.getInvoiceStatus())){
 				if(invoice.getInvoiceStatus().equalsIgnoreCase("DRAFT") || invoice.getInvoiceStatus().equalsIgnoreCase("Rejected")){
 					draftCount = draftCount+1;
-					invoice.setDraftInvoiceAmount(invoice.getDueAmount());
+					draftTotalAmount = draftTotalAmount + Float.parseFloat(invoice.getDueAmount()) ;
+					invoice.setDraftInvoiceAmount(String.valueOf(draftTotalAmount));
 				}
 				
 				if(!invoice.getInvoiceStatus().equalsIgnoreCase("DRAFT") && !invoice.getInvoiceStatus().equalsIgnoreCase("Rejected") && (invoice.getPaymentStatus().equalsIgnoreCase("Paid") || invoice.getPaymentStatus().equalsIgnoreCase("Partial Paid")) && 
 						!invoice.getPaymentStatus().equalsIgnoreCase("Unpaid")){
 					paidCount = paidCount+1;
 					Float paidAmount = Float.parseFloat(invoice.getTotal()) - Float.parseFloat(invoice.getDueAmount());
-					invoice.setPaidInvoiceAmount(paidAmount.toString());
+					paidTotalAmount = paidTotalAmount + paidAmount;
+					invoice.setPaidInvoiceAmount(String.valueOf(paidTotalAmount));
 				}
 				
 				if(!invoice.getInvoiceStatus().equalsIgnoreCase("DRAFT") && !invoice.getInvoiceStatus().equalsIgnoreCase("Rejected") &&
-						(invoice.getPaymentStatus().equalsIgnoreCase("Unpaid") || invoice.getPaymentStatus().equalsIgnoreCase("Partial Paid"))){
+						(invoice.getPaymentStatus().equalsIgnoreCase("Unpaid") || invoice.getPaymentStatus().equalsIgnoreCase("Partial Paid")) || invoice.getPaymentStatus().equalsIgnoreCase("Overdue")){
 					
 					String dueDate = commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),invoice.getDueDate());
 					Date invoiceDueDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),dueDate);
@@ -486,11 +496,13 @@ public class InvoiceRestController {
 					
 						if(todayDate.after(invoiceDueDate)){
 							overDueInvoiceCount = overDueInvoiceCount+1;
-							invoice.setDueAfterInvoiceAmount(invoice.getDueAmount());
+							dueAfterInvoiceAmount = dueAfterInvoiceAmount + Float.parseFloat(invoice.getDueAmount());
+							invoice.setDueAfterInvoiceAmount(String.valueOf(dueAfterInvoiceAmount));
 							isInvoiceDueDate = true;
 						}else{
 							openInvoiceCount = openInvoiceCount+1;
-							invoice.setDueBeforeInvoiceAmount(invoice.getDueAmount());
+							dueBeforeInvoiceAmount = dueBeforeInvoiceAmount + Float.parseFloat(invoice.getDueAmount());
+							invoice.setDueBeforeInvoiceAmount(String.valueOf(dueBeforeInvoiceAmount));
 						}
 					}
 					
@@ -505,34 +517,29 @@ public class InvoiceRestController {
 			invoice.setPaidInvoiceCount(paidCount);
 			invoice.setDueAfterInvoiceCount(overDueInvoiceCount);
 			invoice.setDueBeforeInvoiceCount(openInvoiceCount);
-			
-			
-			billingInvoiceList.add(invoice);
 		}
+		invoiceList.setData(invoiceFilterList);
+		return invoiceList;
 		
-		
-		
-	    resultJson = commonUtil.toJSON(billingInvoiceList);
-	  return resultJson;
 	}
 	
     
 
 	@RequestMapping(value = "/saveInvoicePayment", method = RequestMethod.POST)
-	public @ResponseBody String saveInvoicePayment(@RequestParam(value = "json", required = false) String json,@RequestParam(value = "invoiceId", required = false) Long invoiceId,MultipartHttpServletRequest request) throws Exception {
+	public @ResponseBody String saveInvoicePayment(InvoicePaymentDTO invoicePaymentDTO,@RequestParam(value = "json", required = false) String json,@RequestParam(value = "invoiceId", required = false) Long invoiceId,HttpServletRequest request) throws Exception {
 
-		String json1 = "{" + json + "}";
+//		String json1 = "{" + json + "}";
 		String invoicePaymentSaved = "failed";
-		JSONObject jsonObj = new JSONObject(json1);
+//		JSONObject jsonObj = new JSONObject(json1);
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		
-		MultipartFile multiFile = null;
-		Iterator<String> itrator = request.getFileNames();
-		if(itrator.hasNext()){
-	        multiFile = request.getFile(itrator.next());
-		}
-		InvoicePayment invoicePayment = invoicePaymentService.saveInvoicePayment(jsonObj, user, orgLocation, multiFile,invoiceId);
+//		MultipartFile multiFile = null;
+//		Iterator<String> itrator = request.getFileNames();
+//		if(itrator.hasNext()){
+//	        multiFile = request.getFile(itrator.next());
+//		}
+		InvoicePayment invoicePayment = invoicePaymentService.saveInvoicePayment(invoicePaymentDTO,null, user, orgLocation, null,invoiceId);
 		if(null !=invoicePayment){
 			invoicePaymentSaved = "success";
 		}
@@ -827,9 +834,6 @@ public class InvoiceRestController {
      			contractsList = invoiceService.getSowcontractListByAssociateId(candidateId,orgLocation.getId(),orgRelationId,Constants.Client_SOW);	
      		}
      		 	
-//     		if(null != contractsList && contractsList.size() >0){
-//         		resultJson = commonUtil.toJSON(contractsList);	
-//         	}
      	}
 		return contractsList;
 		
@@ -1283,13 +1287,7 @@ public class InvoiceRestController {
 	
 	
 	@RequestMapping(value = "/getBillingExportList")
-	public void getBillingExportList(@RequestParam(value = "invoiceStatus", required = false) String invoiceStatus,
-			@RequestParam(value = "paymentStatus", required = false) String paymentStatus,
-			@RequestParam(value = "exportType", required = false) String exportType,
-			@RequestParam(value = "invoiceType", required = false) String invoiceType,
-			@RequestParam(value = "durationType", required = false) String durationType,
-			@RequestParam(value = "exportStartDate", required = false) String exportStartDate,
-			@RequestParam(value = "exportEndDate", required = false) String exportEndDate,HttpServletRequest request,HttpServletResponse response) throws Exception {
+	public void getBillingExportList(InvoiceDTO invoiceDTO,HttpServletRequest request,HttpServletResponse response) throws Exception {
 			
 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			
@@ -1302,38 +1300,38 @@ public class InvoiceRestController {
 				String filterDate = null;
 				Date startDateUTC = null;
 				
-				if (!Constants.CUSTOM_REPORTS.equalsIgnoreCase(durationType)) {
+				if (!Constants.CUSTOM_REPORTS.equalsIgnoreCase(invoiceDTO.getDurationType())) {
 					String endDate = outputFormatter1.print(zoned);
 					String endDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE, endDate);
 					endDateUTC = TZ_DF_TS.parse(endDateString);
 				}
-				if (null != durationType && !"".equals(durationType)) {
-					if (!Constants.CUSTOM_REPORTS.equalsIgnoreCase(durationType)) {
+				if (null != invoiceDTO.getDurationType() && !"".equals(invoiceDTO.getDurationType())) {
+					if (!Constants.CUSTOM_REPORTS.equalsIgnoreCase(invoiceDTO.getDurationType())) {
 				String startDate = outputFormatter.print(zoned);
 				String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE, startDate);
 				filterDate = CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE, startDate);
 				startDateUTC = TZ_DF_TS.parse(startDateString);
-			    if (Constants.ONE_MONTH.equals(durationType)) {
+			    if (Constants.ONE_MONTH.equals(invoiceDTO.getDurationType())) {
 					startDateUTC = getPreviousDate(zoned, outputFormatter, TZ_DF_TS, timezone, 30);
 				}
-				else if (Constants.TWO_MONTHS.equals(durationType)) {
+				else if (Constants.TWO_MONTHS.equals(invoiceDTO.getDurationType())) {
 					startDateUTC = getPreviousDate(zoned, outputFormatter, TZ_DF_TS, timezone, 60);
 				}
-				else if (Constants.THREE_MONTHS.equals(durationType)) {
+				else if (Constants.THREE_MONTHS.equals(invoiceDTO.getDurationType())) {
 					startDateUTC = getPreviousDate(zoned, outputFormatter, TZ_DF_TS, timezone, 90);
 				}
-				else if (Constants.SIX_MONTHS.equals(durationType)) {
+				else if (Constants.SIX_MONTHS.equals(invoiceDTO.getDurationType())) {
 					startDateUTC = getPreviousDate(zoned, outputFormatter, TZ_DF_TS, timezone, 180);
 				}
-				else if (Constants.ONE_YEAR.equals(durationType)) {
+				else if (Constants.ONE_YEAR.equals(invoiceDTO.getDurationType())) {
 					startDateUTC = getPreviousDate(zoned, outputFormatter, TZ_DF_TS, timezone, 365);
 				}
 				}else {
-					if (!"".equalsIgnoreCase(exportStartDate) && !"".equalsIgnoreCase(exportEndDate) && !"undefined".equalsIgnoreCase(exportStartDate) && !"undefined".equalsIgnoreCase(exportEndDate)) {
+					if (!"".equalsIgnoreCase(invoiceDTO.getExportStartDate()) && !"".equalsIgnoreCase(invoiceDTO.getExportEndDate()) && !"undefined".equalsIgnoreCase(invoiceDTO.getExportStartDate()) && !"undefined".equalsIgnoreCase(invoiceDTO.getExportEndDate())) {
 							DateFormat TZ_DF_CSD = new SimpleDateFormat("yyyy-MM-dd'T'00:00:00");
 							DateFormat TZ_DF_CED = new SimpleDateFormat("yyyy-MM-dd'T'23:59:59");
-							Date startTime = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),exportStartDate);
-							Date endTime = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),exportEndDate);
+							Date startTime = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),invoiceDTO.getExportStartDate());
+							Date endTime = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),invoiceDTO.getExportEndDate());
 							String customStartTimeStr = TZ_DF_CSD.format(startTime);
 							String customEndTimeStr = TZ_DF_CED.format(endTime);
 							String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE, customStartTimeStr);
@@ -1345,14 +1343,14 @@ public class InvoiceRestController {
 				}
 			
 			
-			List<Invoice> invoiceList = invoiceService.invoiceListByOrgLocationId(orgLocations.getId(),invoiceStatus,paymentStatus,startDateUTC,endDateUTC,invoiceType);
+			ResponseList<Invoice>  invoiceList = invoiceService.invoiceListByOrgLocationId(orgLocations.getId(),startDateUTC,endDateUTC,invoiceDTO);
 			
 			InvoiceAmount totalStagesAmount = getTotalAmountInBilling(invoiceList);
 			
 			File file= null;
 			String convertedExportStartDate = commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),startDateUTC);
 			String convertedExportEndDate = commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),endDateUTC);
-			file = invoiceService.getExportBillingFile(invoiceList,orgLocations.getOrgLocationName(),exportType,totalStagesAmount,convertedExportStartDate,convertedExportEndDate,invoiceType,orgLocations);
+			file = invoiceService.getExportBillingFile(invoiceList,orgLocations.getOrgLocationName(),invoiceDTO.getExportType(),totalStagesAmount,convertedExportStartDate,convertedExportEndDate,invoiceDTO.getInvoiceType(),orgLocations);
 	
 			String mimeType = URLConnection.guessContentTypeFromName(file.getName());
 			if (mimeType == null) {
@@ -1373,7 +1371,7 @@ public class InvoiceRestController {
 		}
 
 
-	private InvoiceAmount getTotalAmountInBilling(List<Invoice> invoiceList) throws ParseException {
+	private InvoiceAmount getTotalAmountInBilling(ResponseList<Invoice> invoiceList) throws ParseException {
 
 		InvoiceAmount invoiceAmount = new InvoiceAmount();
 		
@@ -1382,7 +1380,7 @@ public class InvoiceRestController {
 		double totalPaidAmount = 0;
 		double totalUnbilledAmount = 0;
 		
-		for(Invoice invoice : invoiceList){
+		for(Invoice invoice : invoiceList.getData()){
 			
 			if(!Constants.REQUIREMENT_STATUS.equalsIgnoreCase(invoice.getInvoiceStatus()) && !Constants.INVOICE_REJECTED.equalsIgnoreCase(invoice.getInvoiceStatus()) &&
 					Constants.INVOICE_STATUS_UNPAID.equalsIgnoreCase(invoice.getPaymentStatus()) || Constants.INVOICE_STATUS_PARTIAL_PAID.equalsIgnoreCase(invoice.getPaymentStatus())){
@@ -1465,112 +1463,7 @@ public class InvoiceRestController {
 			resultJson = commonUtil.toJSON(invoiceList);	
 		}
 		return resultJson;
-		/*DateTimeFormatter startDateOutputFormatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'00:00:00");
-		DateTimeFormatter endDateOutputFormatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'23:59:59");
-
-		LocalDate today = LocalDate.now();
-		LocalDate monthStartDate = new LocalDate().withDayOfMonth(1);
-		LocalDate monthEndDate = new LocalDate().plusMonths(1).withDayOfMonth(1).minusDays(1);
-
-		Date startDateUTC = null;
-		Date endDateUTC = null;
-		switch (billingReportType) {
-		case Constants.THIS_MONTH:
-			startDateUTC = conversionUtil.getUtcDateFormat(orgLocation, monthStartDate, startDateOutputFormatter);
-			endDateUTC = conversionUtil.getUtcDateFormat(orgLocation, monthEndDate, endDateOutputFormatter);
-			break;
-		case Constants.THIS_QUARTER:
-			LocalDate[] dates = conversionUtil.getThisMonthQuarterDates(monthStartDate);
-			startDateUTC = conversionUtil.getUtcDateFormat(orgLocation, dates[0], startDateOutputFormatter);
-			endDateUTC = conversionUtil.getUtcDateFormat(orgLocation, dates[1], endDateOutputFormatter);
-			break;
-		case Constants.THIS_YEAR:
-			LocalDate[] currentYearDates = conversionUtil.getThisYearStartDateEndDate();
-			startDateUTC = conversionUtil.getUtcDateFormat(orgLocation, currentYearDates[0], startDateOutputFormatter);
-			endDateUTC = conversionUtil.getUtcDateFormat(orgLocation, currentYearDates[1], endDateOutputFormatter);
-			break;
-		case Constants.LAST_30DAYS:
-			Date[] last30Days = conversionUtil.getPreviousDates(30, orgLocation, startDateOutputFormatter,
-					endDateOutputFormatter);
-			startDateUTC = last30Days[0];
-			endDateUTC = last30Days[1];
-			break;
-		case Constants.LAST_MONTH:
-			LocalDate firstOfThisMonth = today.withDayOfMonth(1);
-			LocalDate loastMonthStartDate = firstOfThisMonth.minusMonths(1);
-			LocalDate lastMonthEndDate = firstOfThisMonth.minusDays(1);
-			startDateUTC = conversionUtil.getUtcDateFormat(orgLocation, loastMonthStartDate, startDateOutputFormatter);
-			endDateUTC = conversionUtil.getUtcDateFormat(orgLocation, lastMonthEndDate, endDateOutputFormatter);
-			break;
-		case Constants.LAST_QUARTER:
-			LocalDate lastQuarterDate = today.minusMonths(3); // 2015-10-24
-			LocalDate[] quarterDates = conversionUtil.getThisMonthQuarterDates(lastQuarterDate);
-			startDateUTC = conversionUtil.getUtcDateFormat(orgLocation, quarterDates[0], startDateOutputFormatter);
-			endDateUTC = conversionUtil.getUtcDateFormat(orgLocation, quarterDates[1], endDateOutputFormatter);
-			break;
-		case Constants.LAST_YEAR:
-			if (Constants.COUNTRY_INDIA.equalsIgnoreCase(orgLocation.getCountry())) {
-				LocalDate finStartDate = conversionUtil.getFinMonthFromDate();
-				if (null != finStartDate) {
-					LocalDate finEndDate = conversionUtil.getFinMonthEndDate();
-					startDateUTC = conversionUtil.getUtcDateFormat(orgLocation, finStartDate, startDateOutputFormatter);
-					endDateUTC = conversionUtil.getUtcDateFormat(orgLocation, finEndDate, endDateOutputFormatter);
-				}
-			} else {
-				LocalDate[] financialDates = conversionUtil.getOtherCountryFinYeraDates();
-				startDateUTC = conversionUtil.getUtcDateFormat(orgLocation, financialDates[0],
-						startDateOutputFormatter);
-				endDateUTC = conversionUtil.getUtcDateFormat(orgLocation, financialDates[1], endDateOutputFormatter);
-			}
-			break;
-		case Constants.CUSTOM:
-			LocalDate localStartDate = LocalDate.fromDateFields(conversionUtil.getDateFromString(startDate));
-			LocalDate localEndDate = LocalDate.fromDateFields(conversionUtil.getDateFromString(endDate));
-			startDateUTC = conversionUtil.getUtcDateFormat(orgLocation, localStartDate, startDateOutputFormatter);
-			endDateUTC = conversionUtil.getUtcDateFormat(orgLocation, localEndDate, endDateOutputFormatter);
-			break;
-		default:
-			logger.info("No Frequency");
-			;
-		}
-		// End Time conversion
-
-		float recievableAmount = 0;
-		float payableAmount = 0;
-		float netAmount = 0;
-		List<Invoice> invoiceNetIncomeList = invoiceService.getInvoiceByOrgLocationIdNetIncome(orgLocation.getId(),
-				startDateUTC, endDateUTC);
-		List<Invoice> invoiceList = invoiceService.getInvoiceByOrgLocationId(orgLocation.getId(), startDateUTC,
-				endDateUTC, invoiceType);
-		if (null != invoiceNetIncomeList && invoiceNetIncomeList.size() > 0) {
-			for (Invoice invoice : invoiceNetIncomeList) {
-				if (Constants.RECEIVABLE.equalsIgnoreCase(invoice.getInvoiceType())) {
-					recievableAmount = recievableAmount + Float.parseFloat(invoice.getTotal());
-				} else {
-					payableAmount = payableAmount + Float.parseFloat(invoice.getTotal());
-				}
-			}
-			netAmount = recievableAmount - payableAmount;
-		}
-		long stopTime = System.currentTimeMillis();
-		long elapsedTime = stopTime - startTime;
-//		logger.info("Final Response time = " + elapsedTime + " Millis");
-		if(invoiceList !=null && invoiceList.size()>0){
-			for(Invoice invoice : invoiceList){
-				if(invoice.getOrgRelationID().getLocationId().getId().longValue() == orgLocation.getId().longValue()){
-					invoice.setOrgName(invoice.getOrgRelationID().getResponderLocationId().getOrgLocationName());
-				}
-				if (invoice.getOrgRelationID().getResponderLocationId().getId().longValue() == orgLocation.getId()
-						.longValue()) {
-					invoice.setOrgName(invoice.getOrgRelationID().getLocationId().getOrgLocationName());
-				}
-				invoice.setInvoiceDateStr(conversionUtil.getDateAsString(invoice.getInvoiceDate()));
-				invoice.setDueDateStr(conversionUtil.getDateAsString(invoice.getDueDate()));
-				invoice.setNetIncome(netAmount);
-				invoice.setRecievableAmount(recievableAmount);
-				invoice.setPayableAmount(payableAmount);
-			}
-		}*/
+		
 		
 	}
 
@@ -1826,34 +1719,22 @@ public class InvoiceRestController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/saveExpensesInvoice", method = RequestMethod.POST)
-	public @ResponseBody String saveExpensesInvoice(@RequestParam(value = "json", required = false) String json,
+	public @ResponseBody String saveExpensesInvoice(InvoiceDTO invoiceDTO,
 			@RequestParam(value = "userId", required = false) String userId,
 			@RequestParam(value = "orgLocationId", required = false) String orgLocationId,
 			@RequestParam(value = "saveType", required = false) String saveType,
 			@RequestParam(value = "currencyCode", required = false) String currencyCode,
 			@RequestParam(value = "invoiceType", required = false) String invoiceType,
-			@RequestParam(value = "type", required = false) String invoiceCategory, MultipartHttpServletRequest request)
+			@RequestParam(value = "type", required = false) String invoiceCategory, HttpServletRequest request)
 					throws Exception {
 
 		String invoiceSaved = "failed";
 
-		String json1 = "{" + json + "}";
-
-		JSONObject jsonObj = new JSONObject(json1);
 		User user = userService.getUserById(Long.parseLong(userId));
 		OrgLocations orgLocation = orgLocationService.getOrgLocations(Long.parseLong(orgLocationId));
 		Org org = orgLocation.getOrg();
-		List<MultipartFile> attachedfileList = new ArrayList<MultipartFile>();
-		int attcahmentMaxRowNumber = Integer.parseInt(jsonObj.getString("invoiceAttcahmentMaxRowNumber"));
-		final Map files = request.getFileMap();
-		for (int i = 0; i < attcahmentMaxRowNumber; i++) {
-			MultipartFile multiFile = (MultipartFile) files.get(i + "invoicedocFile");
-			if (multiFile != null && !multiFile.isEmpty()) {
-				attachedfileList.add(multiFile);
-			}
-		}
 
-		Invoice invoice = invoiceService.saveExpenseInvoice(jsonObj, user, orgLocation, saveType, attachedfileList,invoiceType, org, currencyCode,invoiceCategory);
+		Invoice invoice = invoiceService.saveExpenseInvoice(invoiceDTO, user, orgLocation, saveType,invoiceType, org, currencyCode,invoiceCategory);
 
 		if(invoice !=null && invoice.getExpensesId() !=null && Constants.SENT.equalsIgnoreCase(saveType)) {
 			invoiceService.updateExpensesForinvoice(invoice,invoiceType);

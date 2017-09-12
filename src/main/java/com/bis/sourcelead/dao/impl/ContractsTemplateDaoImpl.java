@@ -2,10 +2,13 @@ package com.bis.sourcelead.dao.impl;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
@@ -16,17 +19,25 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.ContractsTemplateDao;
+import com.bis.sourcelead.dto.AccountDeductionsDTO;
+import com.bis.sourcelead.dto.ContractTemplateDTO;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.ContractsHistory;
 import com.bis.sourcelead.entity.ContractsTemplate;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
+import com.bis.sourcelead.payroll.entity.AccountDeductions;
+import com.bis.sourcelead.util.ConversionUtil;
 
 @Repository
 public class ContractsTemplateDaoImpl implements ContractsTemplateDao{
 	@Autowired
 	private SessionFactory sessionFactory;
+	
+	@Autowired
+	private ConversionUtil conversionUtil;
 	
 	private static final Logger logger = LoggerFactory.getLogger(ContractsTemplateDaoImpl.class);
 	
@@ -75,15 +86,106 @@ public class ContractsTemplateDaoImpl implements ContractsTemplateDao{
 	}*/
 
 	@Override
-	@Transactional
-	public List<ContractsTemplate> getAllContractsTemplatesByOrgLocationid(OrgLocations orgLocation) throws Exception
+	@Transactional(rollbackFor = { Exception.class })
+	public ResponseList<ContractsTemplate> getAllContractsTemplatesByOrgLocationid(OrgLocations orgLocation, ContractTemplateDTO contractTemplateDTO) throws Exception
 	{
-		Long orgLocationId = orgLocation.getId();
+		
+		List<String> statusList = new ArrayList<>();
+		if(contractTemplateDTO.getTemplateType() != null){
+			for(int i=0;i<contractTemplateDTO.getTemplateType().size();i++){
+				
+				if("Vendor NSA".equalsIgnoreCase(contractTemplateDTO.getTemplateType().get(i))){
+					statusList.add("NSA");
+				}else if("Vendor NDA".equalsIgnoreCase(contractTemplateDTO.getTemplateType().get(i))){
+					statusList.add("NDA");
+				}else{
+					statusList.add(contractTemplateDTO.getTemplateType().get(i));
+				}
+			}
+		}
+		
 		Session session = this.sessionFactory.getCurrentSession();
-		List<ContractsTemplate>  contractsTemplateList = session.createQuery("from ContractsTemplate ct where ct.orgLocationId.id =:orgLocationId and ct.templateStatus = '0'" ).setLong("orgLocationId", orgLocationId ).setCacheable(true).list();
-			return contractsTemplateList;
+		List<ContractsTemplate> templateList = null;
+		ResponseList<ContractsTemplate> response = new ResponseList<>();
+		String query = "";
+		String countQuery = "";
+		if(statusList != null && !statusList.isEmpty()){
+			query = "from ContractsTemplate ct  left join fetch ct.orgLocationId where ct.orgLocationId.id =:orgLocationId and ct.templateType IN (:statusList)";
+			countQuery = "from ContractsTemplate ct  where ct.orgLocationId.id =:orgLocationId and ct.templateType IN (:statusList)";
+		}else{
+			query = "from ContractsTemplate ct  left join fetch ct.orgLocationId where ct.orgLocationId.id =:orgLocationId";
+			countQuery = "from ContractsTemplate ct  where ct.orgLocationId.id =:orgLocationId";
+		}
+		
+		
+		StringBuilder query1 = new StringBuilder("");
+			if(contractTemplateDTO.getSearchValue() !=null && !"".equalsIgnoreCase(contractTemplateDTO.getSearchValue())) {
+			query1.append(" and ct.templateName like '%" + contractTemplateDTO.getSearchValue() + "%' ")
+					.append("OR ct.templateType like '%" + contractTemplateDTO.getSearchValue() + "%' ")
+					.append("OR ct.description like '%" + contractTemplateDTO.getSearchValue() + "%' ");
+			}
+		Query queryObj = session.createQuery(query + query1.toString());
+		if (contractTemplateDTO != null && contractTemplateDTO.getLength() > 0) {
+			queryObj.setFirstResult(contractTemplateDTO.getStart());
+			queryObj.setMaxResults(contractTemplateDTO.getLength());
+			if(statusList != null && !statusList.isEmpty()){
+				queryObj.setParameterList("statusList", statusList);
+			}
+			queryObj.setLong("orgLocationId", orgLocation.getId()).setCacheable(true).list();
+		}
+		templateList = queryObj.list();
+		int count = 0;
+		int filteredCount = 0;
+		List<Long> countlist = null;
+		if(statusList != null && !statusList.isEmpty()){
+			countlist = session.createQuery("select count(*) " + countQuery).setLong("orgLocationId", orgLocation.getId()).setParameterList("statusList", statusList).setCacheable(true).list();
+		}else{
+			countlist = session.createQuery("select count(*) " + countQuery).setLong("orgLocationId", orgLocation.getId()).setCacheable(true).list();
+		}
+		
+		if(countlist != null && !countlist.isEmpty()) {
+			count = countlist.iterator().next().intValue();
+		}
+		response.setRecordsTotal(count);
+		if (contractTemplateDTO != null) {
+			List<Long> filteredCountlist = null;
+			if(statusList != null && !statusList.isEmpty()){
+			 filteredCountlist  = session.createQuery("select count(*) " + countQuery + query1.toString()).setLong("orgLocationId", orgLocation.getId()).setParameterList("statusList", statusList).list();
+			}else{
+			 filteredCountlist  = session.createQuery("select count(*) " + countQuery + query1.toString()).setLong("orgLocationId", orgLocation.getId()).list();
+			}
+			if(filteredCountlist != null && !filteredCountlist.isEmpty()) {
+				filteredCount = filteredCountlist.iterator().next().intValue();
+			}
+			response.setRecordsFiltered(filteredCount);
+		} else {
+			response.setRecordsFiltered(filteredCount);
 		}
 
+		if (templateList != null && templateList.size() > 0) {
+			response.setData(getTemplateListSorting(templateList));
+		}
+	
+			return response;
+}
+		
+		private List<ContractsTemplate> getTemplateListSorting(List<ContractsTemplate> templateList)
+	{
+			
+			Collections.sort(templateList, new Comparator() {  
+	            @Override  
+	            public int compare(Object obj1, Object obj2) {  
+	            	ContractsTemplate contractsTemplate1 = (ContractsTemplate)obj1;  
+	            	ContractsTemplate contractsTemplate2 = (ContractsTemplate)obj2; 
+	            	return contractsTemplate1.getTemplateName().compareToIgnoreCase(contractsTemplate2.getTemplateName());  
+	            }  
+	        });
+			return templateList;
+		
+	}
+	
+	
+	
 	@Override
 	@Transactional
 	public List<ContractsTemplate> getAllContractsTemplatesByContractTypeLandLocationId(Long orgLocationId, String contractType) throws Exception
@@ -216,6 +318,7 @@ public class ContractsTemplateDaoImpl implements ContractsTemplateDao{
 					+ "left join fetch contracts.contractOrgLocationId "
 					+ "left join fetch contracts.contactUser "
 					+ "left join fetch contracts.approverUser "
+					+ "left join fetch contracts.candidate "
 					+ "where contracts.orgLocationId.id = :orgLocationId and contracts.contractType like '%"+tabType+"%' "+subQuery+" "+userRoleCondition+" and contracts.templateSubmissionStatus IN (:contractStatus)";
 			if(userRoleName != null && "ROLE_ADMIN".equalsIgnoreCase(userRoleName) || "ROLE_SOURCELEAD_ADMIN".equalsIgnoreCase(userRoleName)){
 				ContractsList = session.createQuery(query).setLong("orgLocationId", orgLocation.getId()).setParameterList("contractStatus", statusList).setCacheable(true).list();
@@ -234,6 +337,7 @@ public class ContractsTemplateDaoImpl implements ContractsTemplateDao{
 					+ "left join fetch contracts.contractOrgLocationId "
 					+ "left join fetch contracts.contactUser "
 					+ "left join fetch contracts.approverUser "
+					+ "left join fetch contracts.candidate "
 					+ "where contracts.orgLocationId.id = :orgLocationId and contracts.templateSubmissionStatus = :submissionType and contracts.contractType like '%"+tabType+"%' "+subQuery+" "+userRoleCondition;
 			if(userRoleName != null && "ROLE_ADMIN".equalsIgnoreCase(userRoleName) || "ROLE_SOURCELEAD_ADMIN".equalsIgnoreCase(userRoleName)){
 				ContractsList = session.createQuery(query).setLong("orgLocationId", orgLocation.getId()).setString("submissionType", submissionType).setCacheable(true).list();
@@ -307,6 +411,7 @@ public class ContractsTemplateDaoImpl implements ContractsTemplateDao{
 					+ "left join fetch contracts.contractOrgLocationId "
 					+ "left join fetch contracts.contactUser "
 					+ "left join fetch contracts.approverUser "
+					+ "left join fetch contracts.candidate "
 					+ "where contracts.orgLocationId.id = :orgLocationId and contracts.contractType like '%"+tabType+"%' "+subQuery+" "+userRoleCondition+" and contracts.templateSubmissionStatus IN (:contractStatus)";
 			if(userRoleName != null && "ROLE_ADMIN".equalsIgnoreCase(userRoleName) || "ROLE_SOURCELEAD_ADMIN".equalsIgnoreCase(userRoleName)){
 				ContractsList = session.createQuery(query).setLong("orgLocationId", orgLocation.getId()).setParameterList("contractStatus", statusList).setCacheable(true).list();
@@ -325,6 +430,7 @@ public class ContractsTemplateDaoImpl implements ContractsTemplateDao{
 					+ "left join fetch contracts.contractOrgLocationId "
 					+ "left join fetch contracts.contactUser "
 					+ "left join fetch contracts.approverUser "
+					+ "left join fetch contracts.candidate "
 					+ "where contracts.orgLocationId.id = :orgLocationId and contracts.templateSubmissionStatus = :submissionType and contracts.contractType like '%"+tabType+"%' "+subQuery+" "+userRoleCondition;
 			if(userRoleName != null && "ROLE_ADMIN".equalsIgnoreCase(userRoleName) || "ROLE_SOURCELEAD_ADMIN".equalsIgnoreCase(userRoleName)){
 				ContractsList = session.createQuery(query).setLong("orgLocationId", orgLocation.getId()).setString("submissionType", submissionType).setCacheable(true).list();

@@ -243,36 +243,38 @@ function getAddApplicant(requirementId){
 			 	        		 $("#candidateSkills").trigger("chosen:updated");
 			                 }
 				    	 }else{
+				    		var focussedSkills = $("ul.chosen-results").find("li.active-result.highlighted");
 			    			var newSkill = this.value.replace(","," ");
 			    			 if (tagItBykeyForSkills(e) && (newSkill != null  && newSkill != '' && newSkill != 'undefined'))
-			                {
-			    				
-			    				 
+			                 {
 			    				 preventTabkey(e);
-			    				/*  var option = $("<option>").val(newSkill).text(newSkill);
-			                     select.append(option);
-			                     select.find(option).prop('selected', true);
-			                     $("#candidateSkills option").each(function(){
-			                         $(this).siblings("[value='"+ this.value+"']").remove();
-			                   });
-			                   $("#candidateSkills").trigger("chosen:updated"); */
-			                   
-			    				 var isNewSkill = true;
+			                   // below code manually enter skills are taken
+			    				  
+			                   var isNewSkill = true;
 								 $("#candidateSkills option:selected").each(function(){
 									 if(this.value.toUpperCase() === newSkill.toUpperCase() && this.value.toLowerCase() === newSkill.toLowerCase()){
-										 //alert(newSkill);
 										 isNewSkill = false;
 										 return false;
 									 }
 			                    
 			                   });
-								if(isNewSkill){
-			    				 var option = $("<option>").val(newSkill).text(newSkill);
-								 select.append(option);
-			                     select.find(option).prop('selected', true);
-								}
+								
+									if(focussedSkills.length > 0){
+										var skillOption  = $("<option>").val(focussedSkills.first().text()).text(focussedSkills.first().text());
+										select.append(skillOption);
+										select.find(skillOption).prop('selected',true);
+										select.find(skillOption).siblings("[value='"+ focussedSkills.first().text()+"']").remove();
+										$("#candidateSkills").trigger("chosen:updated");
+								   }
+								   else{
+									   if(isNewSkill){
+										var option = $("<option>").val(newSkill).text(newSkill);
+										select.append(option);
+										select.find(option).prop('selected', true);
+									   }
+								   }
+								
 				               $("#candidateSkills").trigger("chosen:updated"); 
-			                   
 			                   
 			                }
 					       
@@ -755,9 +757,10 @@ function discordApplicant(){
 	var candidateEmail =   $("input[name=EmailId]").val();
 	var sourceleadUrl ='${sourceleadUrl}';
 	var reqCoolingOffPeriod ='${requirement.reqCoolingOffPeriod}';
+	var orgLocationId ='${SourceLeadWeb_orgLocationId}';
 	$.ajax({
 		type: "POST",
-	    url: sourceleadUrl+"/verifyCoolingOffPeriod?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&candidateEmail="+candidateEmail+"&reqCoolingOffPeriod="+reqCoolingOffPeriod, 
+	    url: sourceleadUrl+"/verifyCoolingOffPeriod?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&candidateEmail="+candidateEmail+"&reqCoolingOffPeriod="+reqCoolingOffPeriod+"&orgLocationId="+orgLocationId, 
 	    success: function(data) {
 	    	if(data == "true"){
 	    		isCoolingOffAlert();

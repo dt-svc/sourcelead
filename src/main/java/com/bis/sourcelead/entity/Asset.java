@@ -18,6 +18,8 @@ import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
 import org.hibernate.annotations.Type;
 
 @Entity
@@ -40,7 +42,7 @@ public class Asset implements Serializable{
 	@Column(name = "NAME")
 	private String name;
 	
-	
+	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "ASSET_CATEGORY_ID")
 	private AssetCategory assetCategory;
@@ -78,6 +80,7 @@ public class Asset implements Serializable{
 	@Column(name = "FILE_NAME")
 	private String fileName;
 	
+	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "SHIFT_A_EMPLOYEE")
 	private Employees shiftAEmployee;
@@ -92,7 +95,7 @@ public class Asset implements Serializable{
 	@Column(name = "SHIFT_A_FILE_NAME")
 	private String shiftAFileName;
 	
-
+	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "SHIFT_B_EMPLOYEE")
 	private Employees shiftBEmployee;
@@ -107,6 +110,7 @@ public class Asset implements Serializable{
 	@Column(name = "SHIFT_B_FILE_NAME")
 	private String shiftBFileName;
 	
+	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "ORG_LOCATION_ID")
 	private OrgLocations orgLocations;

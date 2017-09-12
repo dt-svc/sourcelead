@@ -7,7 +7,6 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.DateFormat;
-import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -50,6 +49,7 @@ import com.bis.sourcelead.dao.RequirementReferDao;
 import com.bis.sourcelead.dao.RequirementSubmissionDao;
 import com.bis.sourcelead.dao.RequirementSubmissionTemplateFieldsDao;
 import com.bis.sourcelead.dao.UserDao;
+import com.bis.sourcelead.dto.RequirementDTO;
 import com.bis.sourcelead.elk.index.CandidateIndex;
 import com.bis.sourcelead.elk.index.helper.CandidateIndexHelper;
 import com.bis.sourcelead.elk.setup.RequirementElkUtil;
@@ -433,7 +433,7 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 //				    		  candidateSkillsService.storeCandidateSkills(candSkill);
 //						 }
 					 }
-					 candidate.setGeneratedId(candidateService.getCandidateId(orgLocations));
+					 candidate.setGeneratedId(candidateService.getCandidateId(orgLocations)); 
 					 candidate = candidateDao.storeCandidate(candidate);
 					CandidateIndex candidateIndex = candidateIndexHelper.getCandidateIndexFromCandidate(candidate);
 					
@@ -491,7 +491,7 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 			 if(multiFile != null && multiFile.getOriginalFilename() != null && !multiFile.getOriginalFilename().isEmpty()){
 				 candidateResumes = new CandidateResumes();
 				 candidateResumes.setCandidateId(candidate);
-				 candidateResumes.setDocFile(multiFile.getBytes());
+				 //candidateResumes.setDocFile(multiFile.getBytes());
 				 candidateResumes.setFileName(multiFile.getOriginalFilename());
 				 candidateResumes.setTitle(multiFile.getOriginalFilename());
 				 candidateResumes.setFileContentType(multiFile.getContentType());
@@ -690,7 +690,7 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 		return requirementSubmission;
 		
 	}
-	
+
 	private void notifyToapplicantMailAboutRequirement(Long submissionId ,Requirement requirement,  Candidate candidate ,User loginUser,OrgLocations orgLocations) throws Exception {
 		RequirementSubmissionTemplateFields requirementSubmissionTemplateFields = requirementSubmissionTemplateFieldsService.getSubmissionsTemplateFieldsByRequirementSubmissionsId(submissionId);
 		
@@ -2138,6 +2138,13 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 				 }else{
 					 globalVarsMap.put("vendorName","--"); 
 				 }
+			 
+			 
+			 if(reqSub.getRequirement().getSpocId().getVendorLocationId()!= null  && !"".equalsIgnoreCase(reqSub.getRequirement().getSpocId().getVendorLocationId().getOrg().getOrgName())){
+				 globalVarsMap.put("vendorOrgName", reqSub.getRequirement().getSpocId().getVendorLocationId().getOrg().getOrgName());
+				 }else{
+					 globalVarsMap.put("vendorOrgName","--"); 
+				 }
 			}
 
 			// getting the current EmailScenario by EmailScenario unique name
@@ -3528,7 +3535,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 			 if(multiFile != null && multiFile.getOriginalFilename() != null && !multiFile.getOriginalFilename().isEmpty()){
 				 candidateResumes = new CandidateResumes();
 				 candidateResumes.setCandidateId(candidate);
-				 candidateResumes.setDocFile(multiFile.getBytes());
+				 //candidateResumes.setDocFile(multiFile.getBytes());
 				 candidateResumes.setFileName(multiFile.getOriginalFilename());
 				 candidateResumes.setTitle(multiFile.getOriginalFilename());
 				 candidateResumes.setFileContentType(multiFile.getContentType());
@@ -3710,7 +3717,9 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 				
 				requirement.setUpdatedDate(new Date());
 				requirementService.updateRequirement(requirement);
-				requirementElkUtil.saveElkRequirement(requirement,new JSONObject());	
+				
+				RequirementDTO requirementDTO =commonUtil.getRequirementDTO(requirement);
+				requirementElkUtil.saveElkRequirement(requirement,requirementDTO);	
 			}
 			
 			

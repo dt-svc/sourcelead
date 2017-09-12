@@ -17,6 +17,8 @@ import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
 
 import com.bis.sourcelead.enums.Status;
 
@@ -37,11 +39,12 @@ public class Modules implements Serializable{
 	@Column(name = "MODULE_NAME")
 	private String moduleName;
 	
-	
+	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "ORG_ID", nullable = false)
 	private Org org;
 	
+	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "PARENT_MODULE_ID")
 	private Modules parentModule;

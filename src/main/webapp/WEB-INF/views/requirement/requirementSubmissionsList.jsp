@@ -64,6 +64,7 @@
                <td><div><span>
 	              <c:if test="${not empty reqSub.submissionId.candidateResumes.resumeUUID}">
 	              <a href='<c:url value='/downloadResume?resumeUUID=${reqSub.submissionId.candidateResumes.resumeUUID}'/>'><i class='fa fa-download'></i></a>
+	              <a href="javascript:void(0)" onclick="submissionDocumentListDocumentView('${reqSub.submissionId.candidateResumes.resumeUUID}','${reqSub.submissionId.candidateResumes.fileName}');" class="fa fa-eye ml10 paddingRight"></a>
 	               <%-- <a href="<c:url value='/downloadResumeCandidate/${reqSub.submissionId.candidateResumes.resumeUUID}'/>"><i class="fa fa-download"></i> </a> --%>
 	              </c:if>
 	              <c:if test="${empty reqSub.submissionId.candidateResumes.resumeUUID}">
@@ -147,6 +148,18 @@
       </div>
     </div>
   </section>
+  
+  
+    
+ <script>
+ function submissionDocumentListDocumentView(resumeUUID,title){
+	 var sourceleadUrl ='${sourceleadUrl}';
+		if(resumeUUID != null && resumeUUID != ""){
+			window.open(sourceleadUrl+'/viewInterviewListResumes/'+title+'?resumeUUID='+resumeUUID,title,"height=600,width=600");
+		}
+ }
+</script>
+  
   <script>
 function pagination1(){ 
     $('#appTable').DataTable( { 

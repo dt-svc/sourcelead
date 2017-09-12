@@ -1639,10 +1639,13 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 
 		@Override
 		@Transactional
-		public Integer getProfessionalJobAppliedCount(Long candidateId, Date startDate,Date endDate) throws Exception {
+		public Integer getProfessionalJobAppliedCount(Long candidateId, Date startDateFormat,Date endDateFormat) throws Exception {
 			
 			 Session session = this.sessionFactory.getCurrentSession();
 		     
+			 java.sql.Timestamp startDate = new java.sql.Timestamp(startDateFormat.getTime());
+			 java.sql.Timestamp endDate = new java.sql.Timestamp(endDateFormat.getTime());
+			 
 			 String query = "select count(distinct rs.requirement) from RequirementSubmission rs where rs.candidate.id = :candidateId and (rs.createdDate BETWEEN :startDate and :endDate)";
 		     
 		     List<Long> appliedCount = session.createQuery(query).setLong("candidateId", candidateId)
@@ -1659,10 +1662,14 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 		@Override
 		@Transactional
 		public Integer getProfessionalJobSubmisssionsCountBySubmissionType(Long candidateId, String submissionStatus,
-				Date startDate, Date endDate) throws Exception {
+				Date startDateFormat, Date endDateFormat) throws Exception {
 			
 			 Session session = this.sessionFactory.getCurrentSession();
 		     
+			 java.sql.Timestamp startDate = new java.sql.Timestamp(startDateFormat.getTime());
+			 java.sql.Timestamp endDate = new java.sql.Timestamp(endDateFormat.getTime());
+			 
+			 
 			 String query = "select count(distinct rs.requirement) from RequirementSubmission rs where rs.candidate.id = :candidateId and "
 			 		+ "rs.submissionStatus = :submissionStatus and (rs.createdDate BETWEEN :startDate and :endDate)";
 		     
@@ -1952,9 +1959,10 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 		
 		@Override
 		@Transactional
-		public Integer getReferByMeJobAppliedCandidateCount(Long userId, Date startDate, Date endDate)
+		public Integer getReferByMeJobAppliedCandidateCount(Long userId, Date startDateFormat, Date endDateFormat)
 				throws Exception {
-			
+			 java.sql.Timestamp startDate = new java.sql.Timestamp(startDateFormat.getTime());
+			 java.sql.Timestamp endDate = new java.sql.Timestamp(endDateFormat.getTime());
 			Session session = this.sessionFactory.getCurrentSession();
 		     
 			 String query = "select count(*) from RequirementSubmission rs where "
@@ -2228,7 +2236,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 		@Transactional(rollbackFor = { Exception.class })
 		public List<RequirementSubmission> getOfferAcceptedCandidatesListByOrgLocationId(Long orgLocationId) {
 			 Session session = this.sessionFactory.getCurrentSession();
-			 String query = "from RequirementSubmission rs left join fetch rs.candidateResumes left join fetch rs.requirement left join fetch rs.candidate candidate "
+			 String query = "from RequirementSubmission rs left join fetch rs.candidateResumes left join fetch rs.requirement left join fetch rs.candidate candidate left join fetch rs.vendorCandidateId "
 			 		+ "left join fetch candidate.consultantUser consultantUser where consultantUser.id IS NULL and rs.orgLocations.id = :orgLocationId and rs.submissionStatus = 'OFFERACCEPTED'";
 			 List<RequirementSubmission>  offerAcceptedCandidatesList = session.createQuery(query).setLong( "orgLocationId", orgLocationId).setCacheable(true).list();
 		     return offerAcceptedCandidatesList;

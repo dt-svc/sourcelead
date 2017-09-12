@@ -148,7 +148,7 @@ window.onload = function () {
 						</div>
 
 						<div class="form-group" id="zipCodeDiv" style="display: block;">
-							<label class="col-md-3">ZipCode1</label>
+							<label class="col-md-3">ZipCode</label>
 							<div class="col-md-9">
 								<input class="form-control" id="clientZipCode" name="zipcode"
 									placeholder="Enter your Zip code" type="text" readonly onclick="zipcodeMask('${loginCountryName}','clientZipCode');"></input>
@@ -597,33 +597,12 @@ function getRolesList(){
 	function saveVendor() {
 		if ($('#client_form').validate(false, validationSettings)) {
 			var orgLocationId = document.getElementById("orgLocationId").value;
-			var frm = $('#client_form').serializeFormJSON();
-			/* var con = JSON.stringify(frm); */
-			var jsonData = JSON.stringify(frm);
-		    var form = $('#client_form')[0];
-		    var formData = new FormData(form);
-		  	formData.append("json",jsonData);
-			/* con = con.replace(/[{}]/g, ""); */
-			  //It will escape all the special characters
-	       /*  var jsonData = encodeURIComponent(con); */
+		  	var formData = getFormData("client_form");
 			var sourceleadUrl = '${sourceleadUrl}';
 			$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-	 		$.ajax({
-						type : "POST",
-						data: formData,
-		  	    	     contentType : 'application/json; charset=utf-8',
-		  		         processData: false,
-		  		         contentType:false, 
-		  	    	     dataType : 'json',
-						url : sourceleadUrl
-								+ "/saveClient?${_csrf.parameterName}=${_csrf.token}&&orgLocationId="+orgLocationId+"&responderType=Vendor",
-						success : function(result) {
-							if (result == 'clientDashboard') {
-								location.replace(sourceleadUrl
-										+ "/vendorsList");
-							}
-						},
-					}); 
+					$.post(sourceleadUrl+"/saveClient?${_csrf.parameterName}=${_csrf.token}&orgLocationId="+orgLocationId+"&responderType=Vendor", formData, function(data) {
+						location.replace(sourceleadUrl+ "/vendorsList");
+					});
 			return true;
 		} else {
 			return false;

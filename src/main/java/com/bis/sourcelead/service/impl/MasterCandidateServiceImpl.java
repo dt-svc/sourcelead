@@ -1,7 +1,7 @@
 package com.bis.sourcelead.service.impl;
 
 import java.text.DecimalFormat;
-
+import org.apache.commons.lang.StringUtils;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.CandidateDao;
 import com.bis.sourcelead.dao.MasterCandidateDao;
+import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.entity.MasterCandidate;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
@@ -61,7 +62,7 @@ public class MasterCandidateServiceImpl implements MasterCandidateService{
 		
 		
 		// Tihs for add applicant
-		if(jsonObj.has("EmailId") && !isNullOrEmpty(jsonObj.getString("EmailId"))){
+		/*if(jsonObj.has("EmailId") && !isNullOrEmpty(jsonObj.getString("EmailId"))){
 			email = jsonObj.getString("EmailId");
 		}
 		
@@ -71,7 +72,7 @@ public class MasterCandidateServiceImpl implements MasterCandidateService{
 		
 		if(jsonObj.has("AlternateNumber") && !isNullOrEmpty(jsonObj.getString("AlternateNumber"))){
 			phoneNumber = jsonObj.getString("AlternateNumber");
-		}
+		}*/
 		
 		MasterCandidate masterCandidate = masterCandidateDao.getMasterCandidateByEmailOrPhoneNumber(email, phoneNumber);
 		
@@ -177,5 +178,111 @@ public class MasterCandidateServiceImpl implements MasterCandidateService{
         	 companyShortCode = orgLocations.getGeneratedUserId();
         }
 		return sb.append(companyShortCode).append(Constants.CANDIDATE_ENTITY).append(convetredCandidateId).toString();
+	}
+	@Override
+	public MasterCandidate storeMasterCandidateByCandidateDTO(CandidateDTO candidateDTO, User user) throws Exception {
+		MasterCandidate masterCandidate = new MasterCandidate();
+		
+		if(StringUtils.isNotBlank(candidateDTO.getFirstName())){
+			masterCandidate.setFirstName(candidateDTO.getFirstName());
+		}
+		
+		if(StringUtils.isNotBlank(candidateDTO.getLastName())){
+			masterCandidate.setLastName(candidateDTO.getLastName());
+		}
+		
+		if(StringUtils.isNotBlank(candidateDTO.getEmail())){
+			masterCandidate.setEmail(candidateDTO.getEmail());
+		}
+		
+		if(StringUtils.isNotBlank(candidateDTO.getPhoneNumber())){
+			masterCandidate.setPhoneNumber(candidateDTO.getPhoneNumber());
+		}
+		
+		if(StringUtils.isNotBlank(candidateDTO.getMobilePhone())){
+			masterCandidate.setPhoneNumber(candidateDTO.getMobilePhone());
+		}
+		
+		/*if(jsonObj.has("mobilePhone") && !isNullOrEmpty(jsonObj.getString("mobilePhone"))){
+			masterCandidate.setPhoneNumber(jsonObj.getString("mobilePhone"));
+		}*/
+		
+		if(StringUtils.isNotBlank(candidateDTO.getAlternateMobilePhone())){
+			masterCandidate.setAlternatePhoneNumber(candidateDTO.getAlternateMobilePhone());
+		}
+		
+		if(StringUtils.isNotBlank(candidateDTO.getEmailId())){
+			masterCandidate.setEmail(candidateDTO.getEmailId());
+		}
+		
+		// Tihs for add applicant
+		
+		/*if(jsonObj.has("FirstName")){
+			masterCandidate.setFirstName(jsonObj.getString("FirstName"));
+		}
+		
+		if(jsonObj.has("LastName")){
+			masterCandidate.setLastName(jsonObj.getString("LastName"));
+		}
+		
+		
+		if(jsonObj.has("PhoneNumber") && !isNullOrEmpty(jsonObj.getString("PhoneNumber"))){
+			masterCandidate.setPhoneNumber(jsonObj.getString("PhoneNumber"));
+		}
+		
+		if(jsonObj.has("AlternateNumber") && !isNullOrEmpty(jsonObj.getString("AlternateNumber"))){
+			masterCandidate.setPhoneNumber(jsonObj.getString("AlternateNumber"));
+		}*/
+		
+		
+		
+		masterCandidate.setStatus(Constants.RECORD_ACTIVE);
+		masterCandidate.setCreatedBy(user.getUserCode());
+		masterCandidate.setCreatedDate(commonUtil.currentDate());
+		masterCandidate.setUpdatedBy(user.getUserCode());
+		masterCandidate.setUpdatedDate(commonUtil.currentDate());
+		masterCandidateDao.saveMasterCandidate(masterCandidate);
+		
+		return masterCandidate;
+	}
+
+	@Override
+	public MasterCandidate getMasterCandidateByInteligenceCandidateDTO(CandidateDTO candidateDTO) throws Exception {
+		String email = null;
+		String phoneNumber = null;
+		
+		if(StringUtils.isNotBlank(candidateDTO.getEmail())){
+			email = candidateDTO.getEmail();
+		}
+		
+		if(StringUtils.isNotBlank(candidateDTO.getMobilePhone())){
+			phoneNumber = candidateDTO.getMobilePhone();
+		}
+		
+		if(StringUtils.isNotBlank(candidateDTO.getPhoneNumber())){
+			phoneNumber = candidateDTO.getPhoneNumber();
+		}
+		
+		if(StringUtils.isNotBlank(candidateDTO.getUserEmail())){
+			email = candidateDTO.getUserEmail();
+		}
+		
+		
+		// Tihs for add applicant
+		if(StringUtils.isNotBlank(candidateDTO.getEmailId())){
+			email = candidateDTO.getEmailId();
+		}
+		/*
+		if(jsonObj.has("PhoneNumber") && !isNullOrEmpty(jsonObj.getString("PhoneNumber"))){
+			phoneNumber = jsonObj.getString("PhoneNumber");
+		}
+		
+		if(jsonObj.has("AlternateNumber") && !isNullOrEmpty(jsonObj.getString("AlternateNumber"))){
+			phoneNumber = jsonObj.getString("AlternateNumber");
+		}*/
+		
+		MasterCandidate masterCandidate = masterCandidateDao.getMasterCandidateByEmailOrPhoneNumber(email, phoneNumber);
+		
+		return masterCandidate;
 	}
 }

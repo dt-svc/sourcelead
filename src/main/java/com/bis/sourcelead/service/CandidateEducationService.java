@@ -6,6 +6,8 @@ import java.util.List;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.bis.sourcelead.dto.CandidateDTO;
+import com.bis.sourcelead.dto.CandidateEducationDTO;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateEducation;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -23,7 +25,7 @@ public interface CandidateEducationService {
 	 * @return CandidateEducation
 	 * @throws Exception
 	 */
-	public CandidateEducation storeCandidateEducation(JSONObject jsonObject,Long candidateId, Long orgLocationId,User user) throws Exception;
+	public CandidateEducation storeCandidateEducation(CandidateEducationDTO candidateEducationDTO,Long candidateId, Long orgLocationId,User user) throws Exception;
 	
 
 	/**
@@ -42,7 +44,7 @@ public interface CandidateEducationService {
 	 * @return HashSet<CandidateEducation>
 	 * @throws JSONException
 	 */
-	HashSet<CandidateEducation> getCandidateEducationDetails(JSONObject jsonObj,OrgLocations orgLocations,Candidate candidate,String userCode) throws Exception;
+	HashSet<CandidateEducation> getCandidateEducationDetails(CandidateDTO candidateDTO,OrgLocations orgLocations,Candidate candidate,String userCode) throws Exception;
 
 	/**
 	 * @param candidateId
