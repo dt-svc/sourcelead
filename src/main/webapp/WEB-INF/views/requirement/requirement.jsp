@@ -1394,7 +1394,6 @@ function validate_fileupload(fileName)
 
 <script type="text/javascript">
 	function storeRequirement(saveType) {
-		
 		var validationSettings = {
 		        errorMessagePosition : 'element',
 		       borderColorOnError : '',
