@@ -16,6 +16,8 @@ import org.springframework.test.context.web.WebAppConfiguration;
 
 import com.bis.sourcelead.SecurityConfig;
 import com.bis.sourcelead.WebAppConfig;
+import com.bis.sourcelead.dto.CandidateDTO;
+import com.bis.sourcelead.dto.CandidateEmployerDTO;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateEmployers;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -33,17 +35,15 @@ public class CandidateEmployersServiceTest {
 	@Test
 	public void storeCandidateEmployers() throws Exception{
 		CandidateEmployers candidateEmployers = new CandidateEmployers();
-		
-		JSONObject jsonObject = new JSONObject();
-		jsonObject.put("name", "shivayogi");
-		jsonObject.put("address", "Madhapur");
-		jsonObject.put("isCurrentPosition", "ACTIVE");
-		jsonObject.put("specialization", "ElectroniceAndCommunication");
-		jsonObject.put("designation", "Developer");
-		jsonObject.put("startYear", "2001");
-		jsonObject.put("startMonth", "FEB");
-		jsonObject.put("endYear", "2010");
-		jsonObject.put("endMonth", "DEC");
+		CandidateEmployerDTO candemp = new CandidateEmployerDTO();
+		candemp.setName("shivayogi");
+		candemp.setAddress("madhapur");
+		candemp.setIsCurrentPosition("Active");
+		candemp.setDesignation("developer");
+		candemp.setStartYear("2001");
+		candemp.setStartMonth("FEB");
+		candemp.setEndYear("2010");
+		candemp.setEndMonth("DEC");
 		Candidate candidateId = new Candidate();
 		candidateId.setId(1l);
 		candidateEmployers.setCandidateId(candidateId );
@@ -52,8 +52,8 @@ public class CandidateEmployersServiceTest {
 		candidateEmployers.setOrgLocationId(orglocationId);
 		User user = new  User();
 		long candidateid = 1l;
-		/*CandidateEmployers candidateEmp = candidateEmployersService.storeCandidateEmployers(jsonObject, user,orglocationId,candidateid);
-		logger.info("CandidateEmployer added successfully"+candidateEmp.getId());*/
+		CandidateEmployers candidateEmp = candidateEmployersService.storeCandidateEmployers(candemp, user,orglocationId,candidateid);
+		logger.info("CandidateEmployer added successfully"+candidateEmp.getId());
 	}
 
 	@SuppressWarnings("unused")
@@ -70,17 +70,17 @@ public class CandidateEmployersServiceTest {
 	@SuppressWarnings("unused")
 	@Test
 	public void getCandidateEmployersDetails() throws Exception{
-		JSONObject jsonObject = new JSONObject();
-		jsonObject.put("candidateEmployers", "yes");
+		CandidateDTO dto = new CandidateDTO();
+		dto.setCandidateEmployers("yes");
 		OrgLocations orgLocations = new OrgLocations();
 		orgLocations.setId(1l);
 		Candidate candidate = new Candidate();
 		candidate.setId(1l);
 		String userCode ="AOO2";
-		/*Set<CandidateEmployers> canEmp = candidateEmployersService.getCandidateEmployersDetails(jsonObject, orgLocations, candidate, userCode);
+		Set<CandidateEmployers> canEmp = candidateEmployersService.getCandidateEmployersDetails(dto, orgLocations, candidate, userCode);
 		for(CandidateEmployers candidateEmp:canEmp){
 			logger.info("getCandidateEmployersDetails added successfully"+canEmp.size());
-		}*/
+		}
 	}
 	
 	@Test

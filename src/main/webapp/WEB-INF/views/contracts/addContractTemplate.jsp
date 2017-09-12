@@ -120,11 +120,11 @@
 										Jurisdiction]</p></li>
 								<!--    <li onclick="copyToClipboard('text_element9')"><i></i><p class="copyText" id="text_element9">[Offer Rate]</li> -->
 								<li onclick="copyToClipboard('text_element10')"><i></i>
-								<p class="copyText" id="text_element10">[Billing Rate]</li>
+								<!-- <p class="copyText" id="text_element10">[Billing Rate]</li>
 								<li onclick="copyToClipboard('text_element11')"><i></i>
 								<p class="copyText" id="text_element11">[Overtime]</li>
 								<li onclick="copyToClipboard('text_element12')"><i></i>
-								<p class="copyText" id="text_element12">[Payment Term]</li>
+								<p class="copyText" id="text_element12">[Payment Term]</li> -->
 							</ul>
 
 							<ul id="vendormsa" style="display: none">
@@ -146,12 +146,12 @@
 								<p class="copyText" id="text_element20">[State Of
 										Jurisdiction]</p></li>
 								<!--  <li onclick="copyToClipboard('text_element21')"><i></i><p class="copyText" id="text_element21">[Offer Rate]</li> -->
-								<li onclick="copyToClipboard('text_element22')"><i></i>
+								<!-- <li onclick="copyToClipboard('text_element22')"><i></i>
 								<p class="copyText" id="text_element22">[Billing Rate]</li>
 								<li onclick="copyToClipboard('text_element23')"><i></i>
 								<p class="copyText" id="text_element23">[Overtime]</li>
 								<li onclick="copyToClipboard('text_element24')"><i></i>
-								<p class="copyText" id="text_element24">[Payment Term]</li>
+								<p class="copyText" id="text_element24">[Payment Term]</li> -->
 							</ul>
 							<ul id="clientsow" style="display: none">
 								<li onclick="copyToClipboard('text_element25')"><i></i>

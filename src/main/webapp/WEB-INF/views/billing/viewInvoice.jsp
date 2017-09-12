@@ -51,7 +51,7 @@ $(document).ready(function(){
           
           <ul class="nav nav-tabs" id="tab_bar">
             <li class="active">
-              <a href="#bill" data-toggle="tab" title="Bill" aria-expanded="true">
+              <a href="#bill" data-toggle="tab" title="Details" aria-expanded="true">
                 <h5>Details</h5>
               </a>
             </li>
@@ -66,7 +66,7 @@ $(document).ready(function(){
             
               <li class="">
 <%--             <sec:authorize access="hasAnyRole(\'ROLE_BILL_PAYMENT_HISTORY\')"> --%>
-              <a href="#notesList" data-toggle="tab" title="Payment History" aria-expanded="false" onclick="invoiceNotesList();">
+              <a href="#notesList" data-toggle="tab" title="Notes" aria-expanded="false" onclick="invoiceNotesList();">
 <%--               </sec:authorize> --%>
                 <h5>Notes</h5>
               </a>

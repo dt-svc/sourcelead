@@ -10,6 +10,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.bis.sourcelead.beans.BillingReportDTO;
 import com.bis.sourcelead.beans.CurrencyConversionResponse;
 import com.bis.sourcelead.dto.InvoiceDTO;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.Invoice;
 import com.bis.sourcelead.entity.InvoiceAmount;
@@ -22,7 +23,7 @@ import com.bis.sourcelead.entity.User;
 public interface InvoiceService {
 	
 
-	List<Invoice> invoiceListByOrgLocationId(Long orgLocationId, String invoiceStatus, String paymentStatus,Date startDateUTC, Date endDateUTC,String invoiceType) throws Exception;
+	ResponseList<Invoice> invoiceListByOrgLocationId(Long orgLocationId,Date startDateUTC, Date endDateUTC,InvoiceDTO invoiceDTO) throws Exception;
 
 	Invoice getInvoicetById(Long invoiceId) throws Exception;
 	
@@ -49,7 +50,7 @@ public interface InvoiceService {
 
 	CurrencyConversionResponse getExchangeCurrency(String loginOrgCurrencyCode, OrgLocations orgLocation, Long orgRelationId, String grandTotal)throws Exception;
 
-	File getExportBillingFile(List<Invoice> invoiceList, String orgName, String exportType,InvoiceAmount totalStagesAmount,String exportStartDate,String exportEndDate, String invoiceType,OrgLocations orgLocations) throws Exception;
+	File getExportBillingFile(ResponseList<Invoice> invoiceList, String orgName, String exportType,InvoiceAmount totalStagesAmount,String exportStartDate,String exportEndDate, String invoiceType,OrgLocations orgLocations) throws Exception;
 
 	Integer getAutomaticInvoice(OrgLocations orgLocation, String loginOrgCurrencyCode, String invoiceType, User user, String contractType)throws Exception;
 

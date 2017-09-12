@@ -143,14 +143,15 @@ public class CandidateDocumentsRestController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/getDocument", method = RequestMethod.POST)
-	public @ResponseBody String getDocument(@RequestParam(value = "candidateId", required = false) Long candidateId, @RequestParam(value = "documentId", required = false) String documentId, HttpServletRequest request) throws Exception
+	@ResponseBody
+	public  CandidateDocuments getDocument(@RequestParam(value = "candidateId", required = false) Long candidateId, @RequestParam(value = "documentId", required = false) String documentId, HttpServletRequest request) throws Exception
 	{
-		String resultJson = null;
-		CandidateDocuments candidateDocuments = candidateDocumentsService.getCandidateDocumentByDocumentId(Long.parseLong(documentId));
+		CandidateDocuments candidateDocuments = null;
+		 candidateDocuments = candidateDocumentsService.getCandidateDocumentByDocumentId(Long.parseLong(documentId));
 		if (candidateDocuments != null) {
-			resultJson = commonUtil.toJSON(candidateDocuments);
+			return candidateDocuments;
 		}
-		return resultJson;
+		return candidateDocuments;
 	}
 	
 	/**

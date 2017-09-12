@@ -10,7 +10,7 @@ public class RequirementDTO {
 	
 	private String staticPath;
 
-	private List<Map<String, String>> fileInfo;
+	private List<FileInfo> fileInfo;
 	
 	private List<FileInfo> uploadedFileInfo;
 	
@@ -224,12 +224,14 @@ public class RequirementDTO {
 		this.staticPath = staticPath;
 	}
 
-	public List<Map<String, String>> getFileInfo()
+	
+
+	public List<FileInfo> getFileInfo()
 	{
 		return fileInfo;
 	}
 
-	public void setFileInfo(List<Map<String, String>> fileInfo)
+	public void setFileInfo(List<FileInfo> fileInfo)
 	{
 		this.fileInfo = fileInfo;
 	}
