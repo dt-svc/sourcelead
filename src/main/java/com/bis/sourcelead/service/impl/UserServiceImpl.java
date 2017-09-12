@@ -436,11 +436,13 @@ public class UserServiceImpl implements UserService {
 			}*/
 			
 			if(StringUtils.isNotBlank(addUserDTO.getRoleTypeId())){
-				if(!isNullOrEmpty(addUserDTO.getRoleTypeId())){
-					roles = rolesService.getRolesById(Long.parseLong(addUserDTO.getRoleTypeId()));
-				}else{
-					roles = rolesService.getRolesByRoleNameAndOrgLocationId(Constants.ROLE_MANAGER,orgLocations.getId());
-				}
+			roles = rolesService.getRolesById(Long.parseLong(addUserDTO.getRoleTypeId()));
+			}else if(StringUtils.isNotBlank(addUserDTO.getRoleType())){
+			roles = rolesService.getRolesById(Long.parseLong(addUserDTO.getRoleType()));
+			userRole.setUserType(roles.getDisplayName()); 
+			}
+			else{
+			roles = rolesService.getRolesByRoleNameAndOrgLocationId(Constants.ROLE_MANAGER,orgLocations.getId());
 			}
 
 
