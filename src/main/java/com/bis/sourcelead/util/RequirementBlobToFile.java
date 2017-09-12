@@ -22,6 +22,10 @@ import com.mchange.v2.c3p0.ComboPooledDataSource;
 
 public class RequirementBlobToFile {
 	private ComboPooledDataSource comboPooledDataSource;
+	@SuppressWarnings("resource")
+	ApplicationContext ctx = new AnnotationConfigApplicationContext(PropertyPathConfiguration.class);
+	DatabaseConnectionConfig dbconfig = ctx.getBean(DatabaseConnectionConfig.class);
+	
 	private void convertBlobToFile(String table, String idColumn, String blobColumn, String fileNameColumn, String urlColumn, String bucketName, String environment)
 	{
 		DataSource dataSource = comboPooledDataSource();
@@ -51,7 +55,7 @@ public class RequirementBlobToFile {
 //				Path tempPath = Files.createTempFile(fileName, "");
 				byte[] b = new byte[in.available()];
 				in.read(b);
-				File folder = new File("C:/blob/slead-static/"+rs.getString("ORG_ID")+"/"+rs.getString("ORG_LOCATION_ID")+"/requirementDocuments/");
+				File folder = new File(dbconfig.getStaticPath()+"/slead-static/"+rs.getString("ORG_ID")+"/"+rs.getString("ORG_LOCATION_ID")+"/requirementDocuments/");
 				if(!folder.exists())
 					folder.mkdirs();
 				File file = new File(folder,fileName.substring(0, fileName.lastIndexOf("."))+"-"+(new Date().getTime())+(fileName.substring(fileName.lastIndexOf("."))));
@@ -73,9 +77,6 @@ public class RequirementBlobToFile {
 	}
 	
 	private DataSource comboPooledDataSource() {
-		@SuppressWarnings("resource")
-		ApplicationContext ctx = new AnnotationConfigApplicationContext(PropertyPathConfiguration.class);
-		DatabaseConnectionConfig dbconfig = ctx.getBean(DatabaseConnectionConfig.class);
 
 		this.comboPooledDataSource = new ComboPooledDataSource();
 		try {
