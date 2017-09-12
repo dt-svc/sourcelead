@@ -52,7 +52,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.EmployerPayrollCostDTO;
 import com.bis.sourcelead.dto.RequirementSearchDTO;
+import com.bis.sourcelead.dto.RequirementSubmissionsDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.elk.index.CandidateIndex;
 import com.bis.sourcelead.elk.index.RequirementIndex;
@@ -82,6 +84,7 @@ import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.ApplicantSubmissionStatus;
 import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 import com.bis.sourcelead.enums.SubmissionRateStatus;
+import com.bis.sourcelead.payroll.entity.EmployerPayrollCost;
 import com.bis.sourcelead.service.CandidateResumesService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.EmailScenarioService;
@@ -102,8 +105,10 @@ import com.bis.sourcelead.service.RequirementSubmissionTemplateFieldsService;
 import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.util.ConversionUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
+import com.ibm.icu.text.DecimalFormat;
 
 /**
  * Handles requests for the Candidate List Service.
@@ -161,6 +166,8 @@ public class RequirementListRestController {
 	RequirementOfferHistoryService requirementOfferHistoryService;
 	@Autowired
 	OrgLocationService orgLocationService;
+	@Autowired
+	ConversionUtil conversionUtil;
 	
 	protected boolean isNullOrEmpty(String str)
 	{
@@ -629,6 +636,230 @@ public class RequirementListRestController {
 		return resultJson;
 	}
 	
+	
+	
+	/**
+	 * load loadSubmissionsListByRequirementId using RequirementId
+	 * @param request
+	 * @param response
+	 * @return json
+	 * @throws Exception
+	 */
+	@RequestMapping(value = {"/loadSubmissionsListByRequirementId", "/rest/loadSubmissionsListByRequirementId"}, method = RequestMethod.POST)
+	public @ResponseBody  ResponseList<RequirementSubmission> loadSubmissionsListByRequirementId(RequirementSubmissionsDTO requirementSubmissionsDTO, HttpServletRequest request) throws Exception
+	{
+		OrgLocations orgLocation = orgLocationService.getOrgLocations(requirementSubmissionsDTO.getOrgLocationId());
+		Timezone timezone = (Timezone) SourceLeadSessionManager.getSessionAttribute(request, "timezone");
+		List<RequirementSubmission> submissionList = new ArrayList<RequirementSubmission>();
+		String[] tableColumns = null;
+		if(requirementSubmissionsDTO.getSubmissionType().equalsIgnoreCase("SHORTLIST")){
+			String[] columns = {"name", "email", "phNo", "resume", "appliedOn", "rate", "source", "shortlistedBy", "score", "exp", "status"};
+			tableColumns = columns;
+		}else if(requirementSubmissionsDTO.getSubmissionType().equalsIgnoreCase("INTERVIEW")){
+			String[] columns = {"name", "email", "phNo", "resume", "noOfInterviews", "status"};
+			tableColumns = columns;
+		}else if(requirementSubmissionsDTO.getSubmissionType().equalsIgnoreCase("OFFERMADE")){
+			String[] columns = {"name", "email", "phNo", "resume", "offerJoinDate", "positionType", "offerRate", "attachment", "status"};
+			tableColumns = columns;
+		}else if(requirementSubmissionsDTO.getSubmissionType().equalsIgnoreCase("REJECTED")){
+			String[] columns = {"name", "email", "resume", "appliedOn", "rate", "subRate", "source", "rejectedOn", "rejectedBy", "status"};
+			tableColumns = columns;
+		}else if(requirementSubmissionsDTO.getSubmissionType().equalsIgnoreCase("BACKOUT")){
+			String[] columns = {"name", "email", "resume", "appliedOn", "rate", "subRate", "source", "backOutOn", "backOutBy", "status"};
+			tableColumns = columns;
+		}else if(requirementSubmissionsDTO.getSubmissionType().equalsIgnoreCase("SUBMIT_TO_CLIENT")){
+			String[] columns = {"name", "email", "phNo", "resume", "appliedOn", "subRate", "source", "score", "exp", "status"};
+			tableColumns = columns;
+		}else{
+			String[] columns = {"name", "email", "phNo", "resume", "appliedOn", "rate", "source", "score", "exp", "status"};
+			tableColumns = columns;
+		}
+		
+	    int sortColumnIndex = 3; //by default sorting using updated date
+		String sortColumnOrder = "desc"; //by default descending order
+		if(requirementSubmissionsDTO.getOrder() != null && !requirementSubmissionsDTO.getOrder().isEmpty()) {
+			sortColumnIndex = Integer.parseInt(requirementSubmissionsDTO.getOrder().get(0).get("column"));
+			sortColumnOrder = requirementSubmissionsDTO.getOrder().get(0).get("dir");
+		}
+		
+		requirementSubmissionsDTO.setSortColumn(tableColumns[sortColumnIndex]);
+		requirementSubmissionsDTO.setSortOrder(sortColumnOrder);
+		
+		ResponseList<RequirementSubmission> list = requirementSubmissionService.loadSubmissionsListByRequirementId(requirementSubmissionsDTO);
+		
+		if (list.getData() != null && list.getData().size() > 0) {
+			for (RequirementSubmission requirementSubmission : list.getData()) {
+				if (requirementSubmission.getCandidateResumes() != null) {
+					RequirementSubmissionTemplateFields requirementSubmissionTemplateFields = null;
+					Set<RequirementSubmissionTemplateFields> requirementSubmissionTemplateFieldsList = requirementSubmission.getRequirementSubmissionTemplateFieldsList();
+					for(RequirementSubmissionTemplateFields templateFields : requirementSubmissionTemplateFieldsList){
+						if(templateFields.getRequirementSubmission().getId().equals(requirementSubmission.getId())){
+							requirementSubmissionTemplateFields = templateFields;
+						}
+					}
+					
+					
+					if (requirementSubmissionsDTO.getSubmissionType() != null
+							&& requirementSubmissionsDTO.getSubmissionType().equalsIgnoreCase("INTERVIEW")) {
+						
+						Set<RequirementInterviewHistory> requirementInterviewHistoryList = requirementSubmission.getRequirementInterviewHistory();
+						requirementSubmission.setTotalNoOfInterviews(requirementInterviewHistoryList.size());
+					}
+					
+					if (requirementSubmissionsDTO.getSubmissionType() != null
+							&& requirementSubmissionsDTO.getSubmissionType().equalsIgnoreCase("OFFERMADE")) {
+						
+						Set<RequirementOffers> requirementOffersList = requirementSubmission.getRequirementOffersList();
+						
+						if (requirementOffersList.size() == 0
+								&& (ApplicantSubmissionStatus.CLIENT_OFFERMADE.toString().equalsIgnoreCase(requirementSubmission.getSubmissionStatus().toString())
+										|| ApplicantSubmissionStatus.CLIENT_OFFERACCEPTED.toString().equalsIgnoreCase(requirementSubmission.getSubmissionStatus().toString())
+										|| ApplicantSubmissionStatus.CLIENT_OFFERREJECTED.toString().equalsIgnoreCase(requirementSubmission.getSubmissionStatus().toString())
+										|| ApplicantSubmissionStatus.CLIENT_OFFERHIRED.toString().equalsIgnoreCase(requirementSubmission.getSubmissionStatus().toString()))) {
+							
+							Set<RequirementOfferHistory> offersList = requirementSubmission.getRequirementOfferHistoryList();
+							
+							if(offersList != null){
+								for (RequirementOfferHistory requirementOfferHistory : offersList) {
+									RequirementOffers requirementOffershis = requirementOfferHistory.getOfferId();
+									requirementSubmission.setOfferId(requirementOffershis.getId());
+									if (requirementOffershis.getDateOfJoining() != null) {
+										requirementSubmission.setOfferJoinDate(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),requirementOffershis.getDateOfJoining()));
+									}
+									if (requirementOffershis.getPositionType() != null) {
+										requirementSubmission.setPositionType(requirementOffershis.getPositionType());
+									}
+									if (requirementOffershis.getAmount() != null) {
+										requirementSubmission.setOfferRate(requirementOffershis.getAmount());
+									}
+									if (requirementOffershis.getFileName() != null) {
+										requirementSubmission.setAttachment(requirementOffershis.getFileName());
+									}
+
+								}
+							}
+						}
+						
+						if (requirementOffersList != null && requirementOffersList.size() > 0) {
+							RequirementOffers requirementOffers = null;
+							for(RequirementOffers offers : requirementOffersList){
+								requirementOffers = offers;
+							}
+							requirementSubmission.setOfferId(requirementOffers.getId());
+							if (requirementOffers.getDateOfJoining() != null) {
+								requirementSubmission.setOfferJoinDate(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),requirementOffers.getDateOfJoining()));
+							}
+							if (requirementOffers.getPositionType() != null) {
+								requirementSubmission.setPositionType(requirementOffers.getPositionType());
+							}
+							if (requirementOffers.getAmount() != null) {
+								requirementSubmission.setOfferRate(requirementOffers.getAmount());
+							}
+							if (requirementOffers.getFileName() != null) {
+								requirementSubmission.setAttachment(requirementOffers.getFileName());
+							}
+						}
+					}
+					String candidateName = "";
+					if (requirementSubmissionTemplateFields != null) {
+						if (!isNullOrEmpty(requirementSubmissionTemplateFields.getLastName())) {
+							StringBuilder candidateNameSB = new StringBuilder();
+							candidateName = candidateNameSB.append(requirementSubmissionTemplateFields.getFirstName()).append(" ").append(requirementSubmissionTemplateFields.getLastName()).toString();
+						}
+						else {
+							candidateName = requirementSubmissionTemplateFields.getFirstName();
+						}
+						requirementSubmission.setCandidateName(candidateName);
+						requirementSubmission.setCandidateEmail(requirementSubmissionTemplateFields.getEmailId());
+						requirementSubmission.setExpectedCTC(requirementSubmissionTemplateFields.getExpectedCTC());
+						requirementSubmission.setWorkExperience(requirementSubmissionTemplateFields.getWorkExperience());
+						requirementSubmission.setPhoneNumber(requirementSubmissionTemplateFields.getPhoneNumber());
+					}
+					requirementSubmission.setCandidateId(requirementSubmission.getCandidate().getId().toString());
+					requirementSubmission.setResumeId(requirementSubmission.getCandidateResumes().getId());
+					requirementSubmission.setResumeUUID(requirementSubmission.getCandidateResumes().getResumeUUID());
+					if (requirementSubmission.getVendorLocationId() != null) {
+						requirementSubmission.setOrgName(requirementSubmission.getVendorLocationId().getOrgLocationName());
+					}
+					else {
+						if (requirementSubmission.getRecruiterUserId() == null
+								&& requirementSubmission.getCandidate().getCandidateType().equalsIgnoreCase("Professional")) {
+							requirementSubmission.setCandidateSource(requirementSubmission.getCandidate().getCandidateType());
+						}
+						if (requirementSubmission.getRecruiterUserId() != null) {
+							requirementSubmission.setCandidateSource("Individual Recruiter");
+						}
+					}
+					if (requirementSubmission.getCandidateResumes() != null
+							&& requirementSubmission.getCandidateResumes().getFileName() != null) {
+						requirementSubmission.setFilename(requirementSubmission.getCandidateResumes().getFileName());
+					}
+					
+					RequirementRateSubmissionNegotiation pastRequirementRateSubmissionNegotiation = null;
+					if (null != requirementSubmissionsDTO.getSubmissionType()
+							&& requirementSubmissionsDTO.getSubmissionType().equalsIgnoreCase("SUBMIT_TO_CLIENT")) {
+						RequirementSubmission clientSubmission = requirementSubmissionService.getClientSubmissionsBySubmissionIdAndOrgLocationId(requirementSubmission.getId(), requirementSubmission.getOrgLocations().getId());
+						if (clientSubmission != null) {
+							requirementSubmission.setClientSubmissionId(clientSubmission.getId().toString());
+							pastRequirementRateSubmissionNegotiation = requirementRateSubmissionNegotiationService.getLatestRequirementRateSubmissionNegotiationBySubmissionId(clientSubmission.getId());
+							if (pastRequirementRateSubmissionNegotiation != null) {
+								requirementSubmission.setProposedSubmissionRate(pastRequirementRateSubmissionNegotiation.getExpectedRate());
+								requirementSubmission.setSubmitToClientRate(pastRequirementRateSubmissionNegotiation.getRequirementsubmissionId().getFinalizedRate());
+							}
+						}
+					}else{
+						pastRequirementRateSubmissionNegotiation = requirementRateSubmissionNegotiationService.getLatestRequirementRateSubmissionNegotiationBySubmissionId(requirementSubmission.getId());
+					}
+					
+					if (pastRequirementRateSubmissionNegotiation != null) {
+						if (pastRequirementRateSubmissionNegotiation.getRateInitiatorType().equals(SubmissionRateStatus.VENDOR)
+								|| pastRequirementRateSubmissionNegotiation.getRateInitiatorType().equals(SubmissionRateStatus.CLIENT)) {
+							requirementSubmission.setProposedSubmissionRate(pastRequirementRateSubmissionNegotiation.getExpectedRate());
+						}
+						else {
+							requirementSubmission.setExpectedRate(pastRequirementRateSubmissionNegotiation.getExpectedRate());
+						}
+						requirementSubmission.setLastRateIniLocId(pastRequirementRateSubmissionNegotiation.getInitiatorOrgLocationId().getId().toString());
+						requirementSubmission.setLastRateIniType(pastRequirementRateSubmissionNegotiation.getRateInitiatorType().getValue());
+						requirementSubmission.setLastRateIniUserCode(pastRequirementRateSubmissionNegotiation.getCreatedBy());
+						requirementSubmission.setLastRateStage(pastRequirementRateSubmissionNegotiation.getRateStage().getValue());
+					}
+					if (requirementSubmission.getCreatedDate() != null) {
+						String currentTimeStr = Constants.TZ_DF.format(requirementSubmission.getCreatedDate());
+						if (null != timezone && null != timezone.getTimeZoneId()) {
+							String currentDateInTimezone = CommonUtil.convertTimeZones("UTC", timezone.getTimeZoneId(), currentTimeStr);
+							DateFormat TZ_DF_TS = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+							Date converteDate = TZ_DF_TS.parse(currentDateInTimezone);
+							currentDateInTimezone = commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),converteDate);
+							requirementSubmission.setCreatedDateStr(currentDateInTimezone);
+							SimpleDateFormat localDateFormat = new SimpleDateFormat("HH:mm:ss");
+							String time = localDateFormat.format(converteDate);
+							requirementSubmission.setCreatedTimeStr(time);
+						}
+					}
+					if (requirementSubmission.getUpdatedDate() != null) {
+						String currentTimeStr = Constants.TZ_DF.format(requirementSubmission.getUpdatedDate());
+						if (null != timezone && null != timezone.getTimeZoneId()) {
+							String currentDateInTimezone = CommonUtil.convertTimeZones("UTC", timezone.getTimeZoneId(), currentTimeStr);
+							DateFormat TZ_DF_TS = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+							Date converteDate = TZ_DF_TS.parse(currentDateInTimezone);
+							currentDateInTimezone = commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),converteDate);
+							requirementSubmission.setUpDatedStr(currentDateInTimezone);
+						}
+					}
+					//submissionList.add(requirementSubmission);
+				}
+				requirementSubmission.setRequirementCurrentStatus(requirementSubmission.getRequirement().getRequirementSubmissionStatus());
+			}
+		}
+		
+		return list;
+		
+	}
+	
+	
+	
+	
 	@RequestMapping(value = "/saveChangedStatus", method = RequestMethod.POST)
 	@ResponseBody
 	String saveChangedStatus(@RequestParam(value = "requirementId", required = false) Long requirementId, @RequestParam(value = "status", required = false) String status, HttpServletRequest request) throws Exception
@@ -1025,7 +1256,7 @@ public class RequirementListRestController {
 		 * numOfSubmitToClient = 0; int numOfOffers = 0; int numOfRejected = 0;
 		 * int numofrequestsent = 0;
 		 */
-		if (requirementId != null && !requirementId.isEmpty()) {
+		if (requirementId != null && !requirementId.isEmpty() && !requirementId.equalsIgnoreCase("undefined")) {
 			Integer applicantsCount = requirementSubmissionService.getAllPipeLineCountsByRequirementIdAndSubmissionStage(Long.valueOf(requirementId), user, loginOrgLocation, submissionType);
 			/*
 			 * List<RequirementSubmission> requirementSubmissions =
