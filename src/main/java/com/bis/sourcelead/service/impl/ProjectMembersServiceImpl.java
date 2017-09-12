@@ -904,11 +904,11 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 					
 					if(projects.getOrgLocationsId().getId().equals(orgLocations.getId())){
 						ProjectClients projectClients = projectClientService.getProjectClientsByProjectIdAndOrgLocationId(projects.getId(), orgLocations.getId());
-						saveProjectMembersHistory(projectMembers,user,orgLocations,projectClients);
+						saveProjectMembersHistory(projectMembers,user,projectClients);
 					}else{
 						
 						ProjectClients projectClients = projectClientService.getProjectClientsByProjectIdAndOrgLocationId(projects.getId(), orgLocations.getId());
-						saveProjectMembersHistory(projectMembers,user,orgLocations,projectClients);
+						saveProjectMembersHistory(projectMembers,user,projectClients);
 						
 						ProjectClients clientProjectClients = null;
 						OrgRelations orgRelations = null;
@@ -939,7 +939,7 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 						}
 							
 						    clientProjectClients = projectClientService.getProjectClientsByProjectIdAndOrgLocationId(projects.getId(), projects.getOrgLocationsId().getId());
-							saveProjectMembersHistory(projectMembers,user,projects.getOrgLocationsId(),clientProjectClients);
+							saveProjectMembersHistory(projectMembers,user,clientProjectClients);
 						
 						if(clientProjectClients != null && clientProjectClients.getOrgLocationsId().equals(projects.getOrgLocationsId().getId())){
 							projectClients.setOrgRelationId(orgRelations);
@@ -981,7 +981,7 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 									
 									projectClientService.storeProjectClients(projectClients);
 								}
-								saveProjectMembersHistory(projectMembers,user,orgLocations,projectClients);
+								saveProjectMembersHistory(projectMembers,user,projectClients);
 								if(cand.getParentCandidateId() != null){
 									parentCandidatId = cand.getParentCandidateId().getId();
 								}else{
@@ -1012,7 +1012,7 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 		
 	}
 	
-	private void saveProjectMembersHistory(ProjectMembers projectMembers,User user,OrgLocations orgLocations,ProjectClients projectClients) throws Exception{
+	private void saveProjectMembersHistory(ProjectMembers projectMembers,User user,ProjectClients projectClients) throws Exception{
 		
 		ProjectMembersHistory projectMembersHistory = null;
 		if(projectMembers.getId() != null){
@@ -1093,14 +1093,19 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
     		
     		
     		if(isInternalOrgProject.equalsIgnoreCase(Constants.YES)){
-    			
+    			ProjectClients projectClients = projectClientService.getProjectClientsByProjectIdAndOrgLocationId(projects.getId(), projects.getOrgLocationsId().getId());
+				saveProjectMembersHistory(pm,user,projectClients);
+				Candidate candidate = candidateService.findByCandidateEmail(pm.getProjectMemberCandidteId().getEmail(), orgLocations.getId());
+				if(candidate.getParentCandidateId() != null){
+					saveVendorProjectClientDetails(candidate,projects,user,projectClients,pm,orgLocations);
+				}
     		}else{
     			OrgRelations orgRelations = orgRelationsService.getVendorOrgRelationByResponderLocationIdAndLocationId(orgLocations.getId(), projects.getOrgLocationsId().getId());
     			ProjectClients projectClients = projectClientService.getProjectClientsByProjectIdAndOrgLocationIdAndOrgRelationId(projects.getId(), orgLocations.getId(), orgRelations.getId());
-    			saveProjectMembersHistory(pm,user,orgLocations,projectClients);
+    			saveProjectMembersHistory(pm,user,projectClients);
     			
     			ProjectClients clientPC = projectClientService.getProjectClientsByProjectIdAndOrgLocationId(projects.getId(), projects.getOrgLocationsId().getId());
-    			saveProjectMembersHistory(pm,user,orgLocations,clientPC);
+    			saveProjectMembersHistory(pm,user,clientPC);
     			
     			Candidate candidate = candidateService.findByCandidateEmail(pm.getProjectMemberCandidteId().getEmail(), orgLocations.getId());
     			Candidate clientCandidate = candidateService.findByCandidateEmail(pm.getProjectMemberCandidteId().getEmail(), projects.getOrgLocationsId().getId());
@@ -1131,46 +1136,7 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 				
 				
 				if(candidate.getParentCandidateId() != null){
-					Long parentCandidatId = candidate.getParentCandidateId().getId();
-					while(parentCandidatId != null){
-						Candidate cand = candidateService.getCandidateByCandidateId(parentCandidatId);
-						if(cand != null){
-							ProjectClients pc = null;
-							pc = projectClientService.getProjectClientsByProjectIdAndOrgLocationId(projects.getId(), cand.getOrgLocationId().getId());
-							if(pc == null){
-								Candidate clildCandidate = candidateService.getCandidateByParentCandidateId(parentCandidatId);
-								pc = new ProjectClients();
-								pc.setProjectId(projects);
-								pc.setOrgRelationId(clildCandidate.getOrgRelationId());
-								pc.setOrgLocationsId(cand.getOrgLocationId());
-								pc.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
-								pc.setStatus(1);
-								pc.setCreatedDate(new Date());
-								pc.setCreatedBy(user);
-								pc.setUpdatedDate(new Date());
-								pc.setUpdatedBy(user);
-								
-								//prepare ProjectApproverHierarchy
-								Set<ProjectApproverHierarchy> projectApproverHierarchyList = new HashSet<ProjectApproverHierarchy>();
-								ProjectApproverHierarchy pah = new ProjectApproverHierarchy();
-								pah.setProjectId(projects);
-								pah.setProjectClientsId(projectClients);
-								pah.setApproverUserId(cand.getOrgLocationId().getUser());
-								pah.setLevel(1);
-								pah.setStatus("1");
-								projectApproverHierarchyList.add(pah);
-								projectClients.setProjectApproverHierarchyList(projectApproverHierarchyList);
-								
-								projectClientService.storeProjectClients(projectClients);
-							}
-							saveProjectMembersHistory(pm,user,orgLocations,pc);
-							if(cand.getParentCandidateId() != null){
-								parentCandidatId = cand.getParentCandidateId().getId();
-							}else{
-								parentCandidatId = null;
-							}
-						}
-					}
+					saveVendorProjectClientDetails(candidate,projects,user,projectClients,pm,orgLocations);
 				}
 				
     		}
@@ -1178,6 +1144,52 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 		
     	result = "success";
 		return result;
+	}
+	
+	
+	
+	public void saveVendorProjectClientDetails(Candidate candidate,Projects projects,User user,ProjectClients projectClients,ProjectMembers pm,OrgLocations orgLocations) throws Exception{
+		
+		Long parentCandidatId = candidate.getParentCandidateId().getId();
+		while(parentCandidatId != null){
+			Candidate cand = candidateService.getCandidateByCandidateId(parentCandidatId);
+			if(cand != null){
+				ProjectClients pc = null;
+				pc = projectClientService.getProjectClientsByProjectIdAndOrgLocationId(projects.getId(), cand.getOrgLocationId().getId());
+				if(pc == null){
+					Candidate clildCandidate = candidateService.getCandidateByParentCandidateId(parentCandidatId);
+					pc = new ProjectClients();
+					pc.setProjectId(projects);
+					pc.setOrgRelationId(clildCandidate.getOrgRelationId());
+					pc.setOrgLocationsId(cand.getOrgLocationId());
+					pc.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
+					pc.setStatus(1);
+					pc.setCreatedDate(new Date());
+					pc.setCreatedBy(user);
+					pc.setUpdatedDate(new Date());
+					pc.setUpdatedBy(user);
+					
+					//prepare ProjectApproverHierarchy
+					Set<ProjectApproverHierarchy> projectApproverHierarchyList = new HashSet<ProjectApproverHierarchy>();
+					ProjectApproverHierarchy pah = new ProjectApproverHierarchy();
+					pah.setProjectId(projects);
+					pah.setProjectClientsId(pc);
+					pah.setApproverUserId(cand.getOrgLocationId().getUser());
+					pah.setLevel(1);
+					pah.setStatus("1");
+					projectApproverHierarchyList.add(pah);
+					pc.setProjectApproverHierarchyList(projectApproverHierarchyList);
+					
+					projectClientService.storeProjectClients(pc);
+				}
+				saveProjectMembersHistory(pm,user,pc);
+				if(cand.getParentCandidateId() != null){
+					parentCandidatId = cand.getParentCandidateId().getId();
+				}else{
+					parentCandidatId = null;
+				}
+			}
+		}
 	}
 
 }

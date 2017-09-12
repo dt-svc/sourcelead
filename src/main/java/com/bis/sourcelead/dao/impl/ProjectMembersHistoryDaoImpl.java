@@ -278,7 +278,7 @@ public class ProjectMembersHistoryDaoImpl implements ProjectMembersHistoryDao {
 		logger.debug("In ProjectMembersHistory getProjectMembersOpenHistoryByProjectClientsId method");
         Session session = this.sessionFactory.getCurrentSession();
         Query projectMembersHistoryListQuery= session.createQuery("from ProjectMembersHistory pmh left join fetch pmh.projectMemberId pm left join fetch pmh.projectClientsId "
-        		+ " where pmh.projectClientsId.id = :projectClientsId and pmh.projectMemberId.id = :projectMemberId");
+        		+ " where pmh.projectClientsId.id = :projectClientsId and pmh.projectMemberId.id = :projectMemberId and pmh.status = 'OPEN' ");
 		List<ProjectMembersHistory> projectMembersHistoryList= projectMembersHistoryListQuery.setLong("projectClientsId", projectClientsId).setLong("projectMemberId", projectMemberId).setCacheable(true).list();
 		ProjectMembersHistory pmh = null;
 		if(projectMembersHistoryList != null && !projectMembersHistoryList.isEmpty()){
