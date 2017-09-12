@@ -462,9 +462,9 @@ $(".addUser-org").click(function(){
  $(".addUser-org, .assign-org, .collapse-div-adduser, .collapse-div, .edit-details").click(function(e){
 	 e.stopPropagation();
  });
- $('html').click(function(){
+/*  $('html').click(function(){
 	$(".edit-details").removeClass("edit-details-active");
-   });	
+   });	 */
    $("#endDate").click(function(){
 	   $(".endDate").toggle(200);
    });

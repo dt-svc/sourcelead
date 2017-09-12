@@ -145,7 +145,9 @@ function candDocumentsList(candidateId){
 	    	             	 }
 	                    	 
 	                    	 if(opt.fileName != null && opt.fileName != '' && opt.fileName != 'undefined'){
-	                    	 result  = result + ' <td><div class="tbldata-dotdot-me" title='+opt.fileName+'><a class="fa fa-eye ml10" onClick="viewFile(\'${sourceleadUrl}\',\''+opt.fileURL+'\',\''+opt.fileName+'\',\''+opt.fileContentType+'\'  title='+opt.fileName+');"></a><a class="glyphicon glyphicon-download-alt" href=\"'+opt.fileURL+'\" title="'+opt.fileName+'"></a>'+opt.fileName+'</div></td>';
+	                    	 //result  = result + ' <td><div class="tbldata-dotdot-me" title='+opt.fileName+'><a class="fa fa-eye ml10" onClick="viewFile(\'${sourceleadUrl}\',\''+opt.fileURL+'\',\''+opt.fileName+'\',\''+opt.fileContentType+'\'  title='+opt.fileName+');"></a><a class="glyphicon glyphicon-download-alt" href=\"'+opt.fileURL+'\" title="'+opt.fileName+'"></a>'+opt.fileName+'</div></td>';
+				           	 result = result+'<td><div><span title ="'+opt.fileName+'">'+opt.fileName+'</span><a class="fa fa-eye" onClick="viewFile(\'${sourceleadUrl}\',\''+opt.fileURL+'\',\''+opt.fileName+'\',\''+opt.fileContentType+'\');"></a><a class="glyphicon glyphicon-download-alt" href=\"'+opt.fileURL+'\" title="Download"></a></div></td>';
+
 	                    	 }else{
 	                    		 result  = result + ' <td><div><span>----</span></div></td>';
 	                    	 }
@@ -649,7 +651,7 @@ function getDocumentType(documentType){
 <script>
 function uploadFileDoc(){
 	var sourceleadUrl ='${sourceleadUrl}';
-	fileUpload(sourceleadUrl, "uploadBtn", "documents", "documentType_form");
+	fileUpload(sourceleadUrl, "uploadBtn", "candidateDocuments", "documentType_form");
 }
 </script>
 
