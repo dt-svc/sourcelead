@@ -23,6 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.bis.sourcelead.SecurityConfig;
 import com.bis.sourcelead.WebAppConfig;
+import com.bis.sourcelead.dto.RequirementDTO;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -86,37 +87,30 @@ public class RequirementServiceTest {
 			
 			
 			requirement.setManagerUserId(user);
-			JSONObject jsonObject = new JSONObject();
-			jsonObject.put("jobTitle","exp");
-			jsonObject.put("jobType", "FullTime");
-			jsonObject.put("jobId","1");
-			jsonObject.put("positions", "1");
-			jsonObject.put("country","India");
-			jsonObject.put("state", "Telangana");
-			jsonObject.put("city","Warangal");
-			jsonObject.put("maxExp", "5");
-			jsonObject.put("minExp","1");
-			jsonObject.put("rate","12");
-			jsonObject.put("rateType", "1hr");
-			jsonObject.put("description","hello test");
-			jsonObject.put("currencyCode","INR");
-			jsonObject.put("isTemplate", "N");
-			jsonObject.put("skills","Java");
-			jsonObject.put("education","ssc");
-			jsonObject.put("parallelApprover",1);
-			jsonObject.put("assignedToMaxCount",1);
-			jsonObject.put("assignUserId1",1);
-			jsonObject.put("manager",1);
-			jsonObject.put("isClient","Y");
-			jsonObject.put("selectClient",1l);
-			jsonObject.put("selectContact",1l);
-			jsonObject.put("clientCurrencyCode","INR");
-			jsonObject.put("clientRate","200000");
-			jsonObject.put("clientSubmissionForm","1");
-			jsonObject.put("applicationFrom","1");
+			RequirementDTO dto = new RequirementDTO();
+			dto.setJobTitle("exp");
+			dto.setJobType("FullTime");
+			dto.setJobId("1");
+			dto.setPositions("1");
+			dto.setCountry("India");
+			dto.setState("Telangana");
+			dto.setCity("Warangal");
+			dto.setMaxExp("5");
+			dto.setMinExp("1");
+			dto.setRate("12");
+			dto.setRateType("1hr");
+			dto.setDescription("hello test");
+			dto.setCurrencyCode("INR");
+			dto.setIsTemplate("N");
+			dto.setSkills("Java");
+			dto.setEducation("ssc");
+			dto.setAssignedToMaxCount("1");
+			dto.setManager("1");
+			dto.setIsClient("N");
+			dto.setClientCurrencyCode("INR");
+			dto.setApplicationFrom("1");
 
-			MultipartFile multipartFile = getMultiPartFile();
-			requirement = requirementService.storeRequirement(jsonObject, orglocations, user, multipartFile);
+			requirement = requirementService.storeRequirement(dto, orglocations, user);
 			logger.info("storeRequirement successfully " + requirement.getCity());
 			
 		}
@@ -545,34 +539,28 @@ public class RequirementServiceTest {
 		//@Test
 		public void storeRequirementTemplate() throws Exception{
 			
-			JSONObject jsonObject = new JSONObject();
-			jsonObject.put("jobTitle","exp");
-			jsonObject.put("jobType", "FullTime");
-			jsonObject.put("jobId","1");
-			jsonObject.put("positions", "1");
-			jsonObject.put("country","India");
-			jsonObject.put("state", "Telangana");
-			jsonObject.put("city","Warangal");
-			jsonObject.put("maxExp", "5");
-			jsonObject.put("minExp","1");
-			jsonObject.put("rate","12");
-			jsonObject.put("rateType", "1hr");
-			jsonObject.put("description","hello test");
-			jsonObject.put("currencyCode","INR");
-			jsonObject.put("isTemplate", "Y");
-			jsonObject.put("skills","Java");
-			jsonObject.put("education","ssc");
-			jsonObject.put("parallelApprover",1);
-			jsonObject.put("assignedToMaxCount",1);
-			jsonObject.put("assignUserId1",1);
-			jsonObject.put("manager",1);
-			jsonObject.put("isClient","Y");
-			jsonObject.put("selectClient",1l);
-			jsonObject.put("selectContact",1l);
-			jsonObject.put("clientCurrencyCode","INR");
-			jsonObject.put("clientRate","200000");
-			jsonObject.put("clientSubmissionForm","1");
-			jsonObject.put("applicationFrom","1");
+			RequirementDTO dto = new RequirementDTO();
+			dto.setJobTitle("exp");
+			dto.setJobType("FullTime");
+			dto.setJobId("1");
+			dto.setPositions("1");
+			dto.setCountry("India");
+			dto.setState("Telangana");
+			dto.setCity("Warangal");
+			dto.setMaxExp("5");
+			dto.setMinExp("1");
+			dto.setRate("12");
+			dto.setRateType("1hr");
+			dto.setDescription("hello test");
+			dto.setCurrencyCode("INR");
+			dto.setIsTemplate("N");
+			dto.setSkills("Java");
+			dto.setEducation("ssc");
+			dto.setAssignedToMaxCount("1");
+			dto.setManager("1");
+			dto.setIsClient("N");
+			dto.setClientCurrencyCode("INR");
+			dto.setApplicationFrom("1");
 			Requirement reqtemplate = new Requirement();
 			reqtemplate.setId(3l);
 			OrgLocations orgLocations=new OrgLocations();
@@ -580,7 +568,7 @@ public class RequirementServiceTest {
 			User user = new User();
 			user.setId(1l);
 			
-			requirementService.storeRequirementTemplate(jsonObject, orgLocations, user );
+			requirementService.storeRequirementTemplate(dto, orgLocations, user );
 		}
 
 		@Test

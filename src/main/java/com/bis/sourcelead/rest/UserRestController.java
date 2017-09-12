@@ -278,7 +278,6 @@ public class UserRestController {
 	 	 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 	 	 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 	 	
-	 	 //For Saving of User Details
 	 	 userService.storeUser(addUserDTO,candidateDTO,user,orgLocations,"CREATEUSER","",new Org());
 	 	
 	 	
