@@ -194,8 +194,10 @@ public class ProjectsRestController {
       
        
        @RequestMapping(value = "/getProjectAssignedMembesListByProjectId", method = RequestMethod.GET)
-		public  List<ProjectMembers> getProjectAssignedMembesListByProjectId(@RequestParam(value="projectId", required=true) Long projectId) throws Exception {
-    	   List<ProjectMembers> projectMembersList = projectMembersService.getAllProjectMembersByProjectId(projectId);
+		public  List<ProjectMembers> getProjectAssignedMembesListByProjectId(@RequestParam(value="projectId", required=true) Long projectId,HttpServletRequest request) throws Exception {
+    	   
+    	   OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+    	   List<ProjectMembers> projectMembersList = projectMembersService.getAllProjectMembersByProjectIdAndStatus(projectId,"Active",orgLocations);
 		   return projectMembersList;
 	    }
        
