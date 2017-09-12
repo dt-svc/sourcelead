@@ -183,7 +183,7 @@ public class RequirementServiceImpl implements RequirementService {
 	        	 companyShortCode = orgLocations.getGeneratedUserId();
 	        }
 			return sb.append(companyShortCode).append(Constants.JOB_ENTITY).append(convetredRequirementsId).toString();
-		}
+	}
 	
 	/**
 	 * @author prasad k
@@ -3202,13 +3202,4 @@ public class RequirementServiceImpl implements RequirementService {
 	}
 		return data;
    }
-	
-	private RequirementDTO getRequirementDTO(Requirement requirement)
-	{
-		RequirementDTO  requirementDTO = new RequirementDTO();
-		requirementDTO.setJobId(requirement.getJobId());
-		requirementDTO.setJobTitle(requirement.getJobTitle());
-		
-		return requirementDTO;
-	}
 }
