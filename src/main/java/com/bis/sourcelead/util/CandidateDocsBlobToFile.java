@@ -1,5 +1,6 @@
 package com.bis.sourcelead.util;
 
+import java.beans.PropertyVetoException;
 import java.io.File;
 import java.io.InputStream;
 import java.nio.file.Files;
@@ -10,11 +11,23 @@ import java.sql.ResultSetMetaData;
 import java.sql.Statement;
 import java.util.Date;
 
+import javax.sql.DataSource;
+
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+
+import com.bis.sourcelead.db.DatabaseConnectionConfig;
+import com.bis.sourcelead.db.PropertyPathConfiguration;
+import com.mchange.v2.c3p0.ComboPooledDataSource;
+
 public class CandidateDocsBlobToFile {
+	
+	private ComboPooledDataSource comboPooledDataSource;
 	
 	private void convertBlobToFile(String table, String idColumn, String blobColumn, String fileNameColumn, String urlColumn, String bucketName, String environment)
 	{
-		try (Connection con = getDBConnection()) {
+		DataSource dataSource = comboPooledDataSource();
+	try (Connection con = dataSource.getConnection()) {
 			Statement stmt = con.createStatement();
 			Statement stmt1 = con.createStatement();
 			
@@ -56,10 +69,21 @@ public class CandidateDocsBlobToFile {
 		}
 	}
 	
-	private Connection getDBConnection() throws Exception
-	{
-		Class.forName("com.mysql.jdbc.Driver");
-		return DriverManager.getConnection("jdbc:mysql://localhost:3306/sourcelead?useSSL=false", "root", "");
+	private DataSource comboPooledDataSource() {
+		@SuppressWarnings("resource")
+		ApplicationContext ctx = new AnnotationConfigApplicationContext(PropertyPathConfiguration.class);
+		DatabaseConnectionConfig dbconfig = ctx.getBean(DatabaseConnectionConfig.class);
+
+		this.comboPooledDataSource = new ComboPooledDataSource();
+		try {
+			comboPooledDataSource.setDriverClass(dbconfig.getDriverClass());
+		} catch (PropertyVetoException e) {
+			throw new RuntimeException(e);
+		}
+		comboPooledDataSource.setJdbcUrl(dbconfig.getJdbcUrl());
+		comboPooledDataSource.setUser(dbconfig.getUser());
+		comboPooledDataSource.setPassword(dbconfig.getPassword());
+		return comboPooledDataSource;
 	}
 	
 	public static void main(String... args)
