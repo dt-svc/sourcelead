@@ -2055,7 +2055,7 @@ function getCities(){
 				  <a href="javascript:void(0)" class="close-popdiv" onClick="closeCandidate()"><i class="fa fa-close"></i></a>
                           <div class="col-md-6 mt">
                         <div class="small-widget bg-purple">
-                            <a href="<c:url value='/candidate'/>"  title="Parse Resume">
+                            <a href="<c:url value='/candidate'/>"  title="Import Candidate">
                                 <div class="clearfix mb10">
                                 <i class="fa fa-file-text-o fa-4x"></i>
                                     <span class="fa fa-arrow-right"></span>

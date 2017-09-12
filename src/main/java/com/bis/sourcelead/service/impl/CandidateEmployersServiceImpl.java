@@ -84,17 +84,22 @@ public class CandidateEmployersServiceImpl implements CandidateEmployersService 
         	candidateEmployers.setName(candidateEmployerDTO.getName());
         	can.setId(candidateId);
         	candidateEmployers.setCandidateId(can);
-        	
-        	if(candidateEmployers != null && candidateEmployers.getAddress() != null && candidateEmployers.getAddress() != "" && !candidateEmployers.getAddress().equalsIgnoreCase(candidateEmployerDTO.getAddress())){
+        	if(StringUtils.isNotBlank(candidateEmployerDTO.getAddress())){
+        	if(candidateEmployers != null && candidateEmployers.getAddress() != null){
 				activitySummary.append("Address").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidateEmployers.getAddress()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateEmployerDTO.getAddress()).append(Constants.NEW_VALUE_TAG_END).append(" ");
 			}
         	candidateEmployers.setAddress(candidateEmployerDTO.getAddress());
-        	
-        	if(candidateEmployers != null && candidateEmployers.getDesignation() != null && candidateEmployers.getDesignation() != "" && !candidateEmployers.getDesignation().equalsIgnoreCase(candidateEmployerDTO.getDesignation())){
+        	}else{
+        	candidateEmployers.setAddress("");
+        	}
+        	if(StringUtils.isNotBlank(candidateEmployerDTO.getDesignation())){
+        	if(candidateEmployers != null && candidateEmployers.getDesignation() != null ){
 				activitySummary.append("Designation").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidateEmployers.getDesignation()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateEmployerDTO.getDesignation()).append(Constants.NEW_VALUE_TAG_END).append(" ");
 			}
         	candidateEmployers.setDesignation(candidateEmployerDTO.getDesignation());
-
+        	}else{
+        	candidateEmployers.setDesignation("");
+        	}
         	if(StringUtils.isNotBlank(candidateEmployerDTO.getIsCurrentPosition())){
 	        	
         		currentEmployer = candidateEmployersDao.getCandidateCurrentEmployer(candidateId, orgLocationId.getId());
@@ -121,6 +126,8 @@ public class CandidateEmployersServiceImpl implements CandidateEmployersService 
     			}
  				   candidateEmployers.setStartYear(candidateEmployerDTO.getStartYear());
  				  // candidateEmployers.setStartMonth(jsonObject.getString("startMonth").split("&")[1]);
+        	}else{
+        		 candidateEmployers.setStartYear("");
         	}
         	if(StringUtils.isNotBlank(candidateEmployerDTO.getEndYear()) && !"Y".equals(candidateEmployers.getIsCurrentPosition())){
         		if(candidateEmployers != null && candidateEmployers.getEndYear() != null && candidateEmployers.getEndYear() != "" && !candidateEmployers.getEndYear().equalsIgnoreCase(candidateEmployerDTO.getEndYear())){
@@ -128,6 +135,8 @@ public class CandidateEmployersServiceImpl implements CandidateEmployersService 
     			}   
         		candidateEmployers.setEndYear(candidateEmployerDTO.getEndYear());
   				   //candidateEmployers.setEndMonth(jsonObject.getString("endMonth").split("&")[1]);
+        	}else{
+       		 candidateEmployers.setEndYear("");
         	}
         	candidateEmployers.setStatus(Constants.CANDIDATE_ACTIVE);
         	candidateEmployers.setCreatedBy(user.getUserCode());

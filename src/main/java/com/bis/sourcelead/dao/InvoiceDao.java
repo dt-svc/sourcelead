@@ -3,6 +3,8 @@ package com.bis.sourcelead.dao;
 import java.util.Date;
 import java.util.List;
 
+import com.bis.sourcelead.dto.InvoiceDTO;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.Invoice;
 import com.bis.sourcelead.entity.InvoicePayment;
@@ -12,7 +14,7 @@ public interface InvoiceDao{
 
 	Invoice saveInvoce(Invoice invoice)throws Exception;
 	
-	List<Invoice> invoiceListByOrgLocationId(Long orgLocationId, String invoiceStatus, String paymentStatus,Date startDateUTC,Date endDateUTC,String invoiceType);
+	ResponseList<Invoice> invoiceListByOrgLocationId(Long orgLocationId,Date startDateUTC,Date endDateUTC,InvoiceDTO invoiceDTO);
 	
 	Invoice getInvoicetById(Long invoiceId) throws Exception;
 
