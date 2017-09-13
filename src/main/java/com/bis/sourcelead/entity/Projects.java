@@ -154,7 +154,9 @@ public class Projects implements Serializable{
     @Column(name = "UPDATED_BY")
     private String updatedBy;
     
-
+    @Column(name = "PROJECT_SHORT_CODE")
+    private String projectShortCode;
+    
     @Column(name = "PROJECT_MODE")
     private String projectMode;
     
@@ -471,6 +473,14 @@ public class Projects implements Serializable{
 		this.updatedBy = updatedBy;
 	}
 	
+	public String getProjectShortCode() {
+		return projectShortCode;
+	}
+
+	public void setProjectShortCode(String projectShortCode) {
+		this.projectShortCode = projectShortCode;
+	}
+
 	@JsonIgnore
 	public Set<ProjectMembers> getProjectMembers() {
 		return projectMembers;
