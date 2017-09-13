@@ -562,7 +562,7 @@ function validate_fileupload(fileName)
 	       
 	       
 	        //Adding Customized Skills to the list
-	        var select, chosen;
+	         var select, chosen;
 		    select = $("#candidateSkills");
 		    select.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add New Skill:' });
 		    chosen = select.data('chosen');
@@ -570,6 +570,8 @@ function validate_fileupload(fileName)
 		    $("#candidateSkills").chosen().change(function(event) {
 		    	 var sourceleadUrl ='${sourceleadUrl}';
 		    	var allSkills = $(event.target).val();
+		   
+		    	
 		    	$.ajax({
 			    	type: "POST",
 			        url: sourceleadUrl+"/profileBySkillSet?${_csrf.parameterName}=${_csrf.token}&allSkills="+allSkills, 
@@ -582,62 +584,56 @@ function validate_fileupload(fileName)
 		    	
 		    });
 		    
-	    
-	    chosen.search_field.on('keydown keyup', function(e)
-			    {
-	    	            var skillsArray = this.value.split(",");
-				    	 if(skillsArray.length > 1){
-			        		 for (var i=0; i < skillsArray.length; i++) {
-			        			 var option = $("<option>").val(skillsArray[i].replace(",","")).text(skillsArray[i].replace(",",""));
-			        			 select.append(option);
-			 		             select.find(option).prop('selected', true);
-			 		             select.find(option).siblings("[value='"+ skillsArray[i].replace(",","")+"']").remove();
-			 	        		 $("#candidateSkills").trigger("chosen:updated");
-			                 }
-				    	 }else{
-			    			var newSkill = this.value.replace(","," ");
-			    			 if (tagItBykeyForSkills(e) && (newSkill != null  && newSkill != '' && newSkill != 'undefined'))
-			                {
-			    				 preventTabkey(e);
-			    				 
-			    				 // due to below code manually enter skills are not taken
-			    				 /* var isNewSkill = true;
-			    				 
-			                     $("#candidateSkills option:selected").each(function(){
-									 if(this.value.toUpperCase() === newSkill.toUpperCase() && this.value.toLowerCase() === newSkill.toLowerCase()){
-										 alert("isNewSkill"+isNewSkill);
-											isNewSkill = false;
-											return false;
-									 }
-			                   });
-							   if(isNewSkill){
-								   alert("isNewSkill"+isNewSkill);
-									select.append(option);
-							   }
-			                   $("#candidateSkills").trigger("chosen:updated");  */
-			                   
-			                  
-			                   // below code manually enter skills are taken
-			    				  var isNewSkill = true;
-								 $("#candidateSkills option:selected").each(function(){
-									 if(this.value.toUpperCase() === newSkill.toUpperCase() && this.value.toLowerCase() === newSkill.toLowerCase()){
-										 //alert(newSkill);
-										 isNewSkill = false;
-										 return false;
-									 }
-			                    
-			                   });
-								if(isNewSkill){
-			    				 var option = $("<option>").val(newSkill).text(newSkill);
-								 select.append(option);
-			                     select.find(option).prop('selected', true);
-								}
-				               $("#candidateSkills").trigger("chosen:updated"); 
-			              
-			                }
-					       
-		    	         }
-			    });
+		   // chosen.search_field.on('keyup keydown', function(e)
+		    		chosen.search_field.on('keydown keyup', function(e)
+				    {
+				    	   var skillsArray = this.value.split(",");
+					    	 if(skillsArray.length > 1){
+				        		 for (var i=0; i < skillsArray.length; i++) {
+				        			 var option = $("<option>").val(skillsArray[i].replace(",","")).text(skillsArray[i].replace(",",""));
+				        			 select.append(option);
+				 		             select.find(option).prop('selected', true);
+				 		             select.find(option).siblings("[value='"+ skillsArray[i].replace(",","")+"']").remove();
+				 	        		 $("#candidateSkills").trigger("chosen:updated");
+				                 }
+					    	 }else{
+					    		var focussedSkills = $("ul.chosen-results").find("li.active-result.highlighted");
+				    			var newSkill = this.value.replace(","," ");
+				    			 if (tagItBykeyForSkills(e) && (newSkill != null  && newSkill != '' && newSkill != 'undefined'))
+				                 {
+				    				 preventTabkey(e);
+				                   // below code manually enter skills are taken
+				    				  
+				                   var isNewSkill = true;
+									 $("#candidateSkills option:selected").each(function(){
+										 if(this.value.toUpperCase() === newSkill.toUpperCase() && this.value.toLowerCase() === newSkill.toLowerCase()){
+											 isNewSkill = false;
+											 return false;
+										 }
+				                    
+				                   });
+									
+										if(focussedSkills.length > 0){
+											var skillOption  = $("<option>").val(focussedSkills.first().text()).text(focussedSkills.first().text());
+											select.append(skillOption);
+											select.find(skillOption).prop('selected',true);
+											select.find(skillOption).siblings("[value='"+ focussedSkills.first().text()+"']").remove();
+											$("#candidateSkills").trigger("chosen:updated");
+									   }
+									   else{
+										   if(isNewSkill){
+											var option = $("<option>").val(newSkill).text(newSkill);
+											select.append(option);
+											select.find(option).prop('selected', true);
+										   }
+									   }
+									
+					               $("#candidateSkills").trigger("chosen:updated"); 
+				                   
+				                }
+						       
+			    	         }
+		    	});
 		    
 		    
 		    //Adding Customized Skills to the list
