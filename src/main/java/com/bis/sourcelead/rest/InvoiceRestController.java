@@ -356,7 +356,8 @@ public class InvoiceRestController {
 		
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		
-		/*String[] tableColumns = {"invoiceId", "clientName", "clientContact", "projectName", "invoiceDate", "inoviceTotal","inoviceDue","dueDate","inoviceStatus","paymentStatus","action"};
+		// TODO do not delete until sorting  work @Rajashekar
+	/*	String[] tableColumns = {"invoiceId", "clientName", "clientContact", "projectName", "invoiceDate", "inoviceTotal","inoviceDue","dueDate","inoviceStatus","paymentStatus","action"};
 	     int sortColumnIndex = 1; //by default sorting using updated date
 		String sortColumnOrder = "desc"; //by default descending order
 		if(invoiceDTO.getOrder() != null && !invoiceDTO.getOrder().isEmpty()) {
@@ -1161,76 +1162,6 @@ public class InvoiceRestController {
 		return "success";
 	} 	
 	
-	/**
-	 * @author Laxman
-	 * @param invoiceId
-	 * @param request
-	 * @param response
-	 * @throws Exception
-	 */
-	/*@RequestMapping(value = "/getPrint/{id}", method = RequestMethod.GET)
-	public @ResponseBody  void getPrint(@PathVariable("id") String invoiceId,HttpServletRequest request, HttpServletResponse response) throws Exception
-	{
-		Long Id = null;
-     	Invoice parentInvoice  = invoiceService.getInvoicetByParentInvoiceId(Long.parseLong(invoiceId));
-     	if(parentInvoice.getParentInvoiceId() != null){
-     		Id = parentInvoice.getParentInvoiceId().getId();
-     	}else{
-     		Id = Long.parseLong(invoiceId); 
-     	}
-		Invoice invoice = invoiceService.getInvoicetById(Id);
-  	    byte[] pdfBytes = invoice.getDocFile();
-  	    response.setHeader("Content-disposition","inline; filename=contractPdf.pdf");
-  	    response.setContentType("application/pdf");
-  	    response.setContentLength(pdfBytes.length);
-        ServletOutputStream sos = response.getOutputStream();
-        sos.write(pdfBytes);
-        sos.flush();
-        sos.close();
-	}*/
-	
-	
-	/**
-	 * @author Laxman
-	 * @param invoiceId
-	 * @param request
-	 * @param response
-	 * @throws Exception
-	 */
-	
-	/*@RequestMapping(value = "/downloadInvoice", method = RequestMethod.GET)
-	public void downloadInvoice(@RequestParam(value="invoiceId", required=false) String invoiceId,HttpServletRequest request, HttpServletResponse response) throws Exception
-	{
-		Long Id = null;
-     	Invoice parentInvoice  = invoiceService.getInvoicetByParentInvoiceId(Long.parseLong(invoiceId));
-     	if(parentInvoice.getParentInvoiceId() != null){
-     		Id = parentInvoice.getParentInvoiceId().getId();
-     	}else{
-     		Id = Long.parseLong(invoiceId); 
-     	}
-		Invoice invoice = invoiceService.getInvoicetById(Id);
-		response.setContentType("application/octet-stream");
-		StringBuilder fileName = new StringBuilder();
-	    response.setHeader("Content-Disposition", fileName.append("attachment; filename=\"").append(invoice.getFileName()).append("\"").toString());
-		InputStream inputStream = new ByteArrayInputStream(invoice.getFileUrl());
-			try {
-				OutputStream outStream = response.getOutputStream();
-	
-				byte[] buffer = new byte[4096];
-				int bytesRead = -1;
-	
-				while ((bytesRead = inputStream.read(buffer)) != -1) {
-					outStream.write(buffer, 0, bytesRead);
-				}
-	
-				inputStream.close();
-				outStream.close();
-	
-			} catch (FileNotFoundException e) {
-				logger.error(ExceptionUtils.getFullStackTrace(e));
-			} 
-	
-	}*/
 
 	@RequestMapping(value = "/getDueDateByFrequency", method = RequestMethod.GET)
 	public @ResponseBody String getDueDateByFrequency(@RequestParam(value = "paymentFrequency", required = false) String paymentFrequency,
