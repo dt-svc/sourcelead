@@ -199,6 +199,7 @@ public class CommonUtil {
 		if(tasksList != null && !tasksList.isEmpty()){
 			for(ProjectTasks task :tasksList){
 				task.setProjectId(projects);
+				task.setProjectTasksUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 				task.setCreatedBy(user.getCreatedBy());
 				task.setCreatedDate(new Date());
 				task.setUpdatedDate(new Date());
