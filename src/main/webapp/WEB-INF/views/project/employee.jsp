@@ -1693,7 +1693,7 @@ function alertProjectMembersMessage(){
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 	result = result +"		<p>Select atleast one project member</p>";
 	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
-	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='cancel();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='popupClose();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
 	result = result +"	</div>";
 	$("#membersChoicepopUp").append(result);
 	$("#remove_user_pop").slideDown(200);
@@ -1705,6 +1705,15 @@ function alertProjectMembersMessage(){
 function cancel(){
 	$("#membersChoicepopUp").empty();
 	$(".project_inn_mask").fadeOut(200);
+}
+</script>
+
+<script>
+function popupClose(){
+	$(".clients_side_wrap").removeClass("clients_side_wrap_active");
+	$(".side_mask").fadeOut(200);
+	$("body").css('overflow-y', 'auto');
+    $('.addcandidate-popup').fadeOut(200);
 }
 </script>
 	
