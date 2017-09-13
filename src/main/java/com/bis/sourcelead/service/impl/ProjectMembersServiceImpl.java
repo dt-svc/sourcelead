@@ -48,6 +48,7 @@ import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Primary;
 import com.bis.sourcelead.service.CandidateService;
+import com.bis.sourcelead.service.ClientService;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.ExpensesReportService;
@@ -130,6 +131,9 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 	 
 	 @Autowired
 	 RegistrationController registrationController;
+	 
+	 @Autowired
+	 ClientService clientService;
 	 
 	private static final Logger logger = LoggerFactory.getLogger(ProjectsDaoImpl.class);
 	
@@ -1113,13 +1117,12 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
     			if(!orgLoc.getId().equals(orgLocations.getId()) && orgLoc.getOrg().getId().equals(orgLocations.getOrg().getId())){
     				if(candidate.getOrgRelationId() != null){
     					if(candidate.getOrgRelationId().getResponderLocationId().getId().equals(orgLocations.getId())){
-    						orgRelations = orgRelationsService.getVendorOrgRelationByResponderLocationIdAndLocationId(orgLoc.getId(), candidate.getOrgRelationId().getLocationId().getId());
     						vendorOrgLocations = candidate.getOrgRelationId().getLocationId();
     					}else{
-    						orgRelations = orgRelationsService.getVendorOrgRelationByResponderLocationIdAndLocationId(orgLoc.getId(), candidate.getOrgRelationId().getResponderLocationId().getId());
     						vendorOrgLocations = candidate.getOrgRelationId().getResponderLocationId();
     					}
     					
+    					orgRelations = orgRelationsService.getVendorOrgRelationByResponderLocationIdAndLocationId(vendorOrgLocations.getId(),orgLoc.getId());
     					if(orgRelations == null){
     						orgRelations = saveOrgRelations(vendorOrgLocations,orgLoc,user);
 			 				orgRelations = orgRelationsService.addOrgRelations(orgRelations);
@@ -1138,6 +1141,14 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 							 }
 							 orgLoc.setModulesId(modules);
 							 orgLocationService.updateOrgLocations(orgLoc);
+							 
+							 Set<OrgSpoc> orgSpocList = orgRelations.getOrgSpocList();
+							 OrgSpoc orgSpoc = null;
+							 for(OrgSpoc spoc : orgSpocList){
+								 orgSpoc =  spoc;
+							 }
+							 
+							 clientService.saveOrUpdateClientVendorElkDocument(null, orgLoc, "Client", orgSpoc, orgRelations,null, user, vendorOrgLocations);
     					}
     				}
     				
@@ -1218,6 +1229,7 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 			orgSpoc.setCreatedBy(user.getUserCode());
 			orgSpoc.setUpdatedDate(new Date());
 			orgSpoc.setUpdatedBy(user.getUserCode());
+			orgSpocSet.add(orgSpoc);
 			orgRelations.setOrgSpocList(orgSpocSet);
 			return orgRelations;
 	}
