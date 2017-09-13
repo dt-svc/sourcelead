@@ -107,5 +107,7 @@ public interface CandidateDao {
 
 	public List<Candidate> getAssociatesListForSow(Long locationId, String sowType);
 
+	Long getCandidateGeneratedIdByOrgLocationId(Long orgLocationId, Integer generatedIdcount);
+
 
 }
