@@ -36,6 +36,12 @@
       <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
 <jsp:include page="masterJs.jsp" />
+
+<!-- This requirement.css for only requirement.jsp  -->
+<c:if test='${viewPage == "requirement/requirement"}'>
+	<link href="resources/css/requirement.css" type="text/css" rel="stylesheet"/>
+</c:if>
+
 </head>
 
 
@@ -81,7 +87,9 @@
 <script src="resources/js/tag-it.min.js" type="text/javascript" charset="utf-8"></script>
 <!-- end files for autocomplete with tagit -->
 
-
+<c:if test='${viewPage == "requirement"}'>
+	<link href="resources/css/requirement.css"  rel="stylesheet"/>
+</c:if>
 
 <style>
 .dashboard-widget.dashboard-widget-icons{

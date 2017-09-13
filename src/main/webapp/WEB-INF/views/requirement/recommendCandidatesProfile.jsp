@@ -33,7 +33,8 @@ position: relative; top:7px;
 
 <script>
 function editCandidate(candidateId){
-	  var sourceleadUrl ='${sourceleadUrl}';
+	  
+	var sourceleadUrl ='${sourceleadUrl}';
 	  var loginCountryName = '${loginCountryName}';
 		var validationSettings = {
 		        errorMessagePosition : 'element',
@@ -639,9 +640,9 @@ function candidateProfile(candidateId){
 							}
 							result = result+'<div id="removeCandidateAlert" ></div>  ';
 							if(json.status == 0){
-								result = result + '<div class="project_tabs_inn_head"><a href="#" class="positionRelative showInfo"><i class="glyphicon glyphicon-info-sign"></i>Terminated<span class="infoContent col-xs-12 col-md-5"> '+json.terminateReason+' </span></a><a href="javascript:void(0)" onClick="reActivateCandidateAlertMessage('+candidateId+');"><i class="glyphicon glyphicon-trash"></i>ReActivate</a> ';
+								result = result + '<div class="project_tabs_inn_head"><a href="javascript:void(0)" class="positionRelative showInfo"><i class="glyphicon glyphicon-info-sign"></i>Terminated<span class="infoContent col-xs-12 col-md-5"> '+json.terminateReason+' </span></a><a href="javascript:void(0)" onClick="reActivateCandidateAlertMessage('+candidateId+');"><i class="glyphicon glyphicon-trash"></i>ReActivate</a> ';
 							}else{
-								result = result + '<div class="project_tabs_inn_head "> <a href="#" onClick="editCandidate('+candidateId+');" class="mr addUser-org iconpostion"><i class="glyphicon glyphicon-pencil"></i>Edit</a> <a href="javascript:void(0)" onClick="removeCandidateAlertMessage('+candidateId+');"><i class="glyphicon glyphicon-trash"></i>Remove</a> ';
+								result = result + '<div class="project_tabs_inn_head "> <a href="javascript:void(0)" onClick="editCandidate('+candidateId+');" class="mr addUser-org iconpostion"><i class="glyphicon glyphicon-pencil"></i>Edit</a> <a href="javascript:void(0)" onClick="removeCandidateAlertMessage('+candidateId+');"><i class="glyphicon glyphicon-trash"></i>Remove</a> ';
 
 							}
 							result = result + '<div id="profileEditPopup"></div>';
@@ -1016,14 +1017,13 @@ function removeSkillPopUp(candidateId){
 				dateFormat : 'yyyy/mm/dd' 
 	         }; 
 		 if ($('#candidateProfileEdit_form').validate(false, validationSettings)){ 
-			var frm = $('#candidateProfileEdit_form').serializeFormJSON();
-			 var con = JSON.stringify(frm);
-				 con = con.replace(/[{}]/g, "");
-				var jsonData = encodeURIComponent(con);
+			
 			var sourceleadUrl = '${sourceleadUrl}';
+			var formData = getFormData('candidateProfileEdit_form');
 			$.ajax({
 						type : "POST",
-						url : sourceleadUrl+"/updateCandidate?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
+						data : formData,
+						url : sourceleadUrl+"/updateCandidate?${_csrf.parameterName}=${_csrf.token}",
 						success : function(result) {
 							clientSideBar(candidateId);
 						},

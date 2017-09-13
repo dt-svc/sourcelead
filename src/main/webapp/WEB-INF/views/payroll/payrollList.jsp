@@ -30,8 +30,8 @@
 				id=generateReportId title="Generate Report">Generate Report</a>
 		</div>
 	</section>
-	<a href="<c:url value='/addChecks'/>" class="ml10 mt5"
-		id=generateReportId title="Generate Report">Add Checks</a>
+	<%-- <a href="<c:url value='/addChecks'/>" class="ml10 mt5"
+		id=generateReportId title="Generate Report">Add Checks</a> --%>
 	<form:form id="payroll_list_form" name="payroll_list_form"
 		method="post">
 		<section class="contrHead">
@@ -235,107 +235,6 @@
 		$("#uploadBulkBtn").val("");
 	}
 </script>
-
-<!-- <script>
-function loadEmployeePayrollCost(){
-	$("#addPayrollDiv").hide();
-	$("#loading").attr('style','position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-		  var sourceleadUrl ='${sourceleadUrl}';
-				  $.ajax({
-				    	type: "GET",
-				        url: sourceleadUrl+"/loadEmployerPayrollCostByOrgLocationId?${_csrf.parameterName}=${_csrf.token}",
-				        success: function(data) {
-						var result = "";				        	
-						result = result + '<table id="EmployeePayrollCostTable" class="display" cellspacing="0" width="100%" >';
-						result = result + '<thead>';
-						result = result + '<tr>';
-						//Employee	Emp ID	SSN	Total Hrs	Gross Wages	FICA	FUTA	SUI	ER Locals	WC Cost	Admin Fee	Total ER Cost	
-						result = result + '<th>From Date</th>';
-						result = result + '<th>To Date</th>';
-						result = result + '<th>Employee Id</th>';
-						result = result + '<th>Employee Name</th>';
-						result = result + '<th>SSN</th>';
-						result = result + '<th>Total Hrs</th>';
-						result = result + '<th>Gross Wages</th>';
-						result = result + '<th>FICA</th>';
-						result = result + '<th>FUTA</th>';
-						result = result + '<th>SUI</th>';
-						result = result + '<th>ER Locals</th>';
-						result = result + '<th>WC Cost</th>';
-						result = result + '<th>Admin Fee</th>';
-						result = result + '<th>Total ER Cost</th>';
-						result = result + '</tr>';
-						result = result + '</thead>	';
-						result = result + '<tbody>';
-						 var json = JSON.parse(data);
-			        	 for (var i=0; i<json.length; i++)
-						{
-			        		 var opt = json[i];
-			        		    result = result + ' <tr>';
-								result = result + '<td><div class="tblminwidth-75">'+opt.fromDateStr+'</div></td>';
-								result = result + ' <td><div class="tblminwidth-75">'+opt.toDateStr+'</div></td>';
-								result = result + '<td class="tblminwidth-75"><div>'+opt.employeeId+'</div></td>';
-								result = result + '<td><div class="tbldata-dotdot-vsm" title="'+opt.employeeName+'">'+opt.employeeName+'</div></td>';
-								if(opt.ssn !=null && opt.ssn !='' && opt.ssn !='undefined'){
-									result = result + ' <td><div class="tbldata-dotdot-sm">'+opt.ssn+'</div></td>';
-								}else{
-									result = result + ' <td><div>--</div></td>';
-								}
-								if(opt.totalHrs !=null && opt.totalHrs !='' && opt.totalHrs !='undefined'){
-									result = result + '<td><div class="tblminwidth-50">'+opt.totalHrs+'</div></td>';
-								}else{
-									result = result + ' <td><div>--</div></td>';
-								}
-								result = result + ' <td><div class="tblminwidth-125 text-right"><i class="fa fa-dollar"style="color:#454545;"></i> '+opt.grossWages.toFixed(2)+'</div></td>';
-								result = result + '<td><div class="tblminwidth-75"><i class="fa fa-dollar"style="color:#454545;"></i> '+opt.fica+'</div></td>';
-								result = result + '<td><div class="tblminwidth-75"><i class="fa fa-dollar"style="color:#454545;"></i> '+opt.futa+'</div></td>';
-								result = result + ' <td><div class="tblminwidth-75"><i class="fa fa-dollar"style="color:#454545;"></i> '+opt.sui+'</div></td>';
-								result = result + '<td><div class="tblminwidth-75">'+opt.erLocals+'</div></td>';
-								result = result + ' <td><div class="tblminwidth-75">'+opt.wcCost+'</div></td>';
-								result = result + '<td><div class="tblminwidth-100">'+opt.adminFee+'</div></td>';
-								result = result + '<td><div class="tblminwidth-150 text-right"><i class="fa fa-dollar"style="color:#454545;"></i> '+opt.totalErCost+'</div></td>';
-								result = result + ' </tr>';
-						}
-						result = result + '  </table>';
-						result = result + ' </tbody>';
-						$("#employerCostDiv").empty();
-						$("#wagesAndTaxListDiv").empty();
-						$("#accountDeductionsListDiv").empty();
-						$("#hrDeductionsListDiv").empty();
-						$("#wagesAndTaxListDiv").empty();
-						$("#checksListDiv").empty();
-						$("#finalPayrollReportDiv").empty();
-						$("#employeeListDiv").empty();
-						$("#invoiceDataDiv").empty();
-						$("#employerCostDiv").append(result);
-						$("#loading").removeAttr("style");
-						$('#payScale').css('display','none');
-						employeePayrollCostPagination();
-				        	
-				        },
-				        
-				    });
-		 
-}
-</script>
-
-<script>
-function employeePayrollCostPagination(){ 
-    $('#EmployeePayrollCostTable').DataTable( { 
-    	"scrollCollapse": false,
-    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
-    	"bLengthChange": true,
-    	"bDestroy": true,
-    	"ordering": true,
-    	"oLanguage": {
-            "sSearch": "",
-            "sZeroRecords": "", "sEmptyTable": ""
-       }
-    });
-    $("#EmployeePayrollCostTable").wrap("<div class='overflow_Auto width100percnt'></div>")
-}
-</script> -->
-
 
 
 
@@ -599,6 +498,7 @@ function employeePayrollCostPagination(){
 
 <script>
 	function prepareEmployeePayrollList(url) {
+	 	$("#addPayrollDiv").hide(); 
 		$("#checksListDiv").empty();
 		$("#accountDeductionsListDiv").empty();
 		$("#hrDeductionsListDiv").empty();

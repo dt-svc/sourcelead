@@ -215,18 +215,22 @@ public class Invoice {
 	private Set<InvoiceDocument> invoiceDocumentSet;
 	
 	@Transient
+	@JsonProperty
 	private String clientName;
 	
 	@Transient
+	@JsonProperty
 	private String clientContactName;
 	
 	@Transient
 	private String clientContactEmail;
 	
 	@Transient
+	@JsonProperty
 	private String invoiceDateStr;
 	
 	@Transient
+	@JsonProperty
 	private String dueDateStr;
 
 	@Transient
@@ -248,34 +252,44 @@ public class Invoice {
 	List<InvoiceTax> invoiceTaxList;
 
 	@Transient
+	@JsonProperty
 	private String projectId;
 	
 	@Transient
+	@JsonProperty
 	private String projectName;
 	
 	
 	@Transient
+	@JsonProperty
 	private Integer draftInvoiceCount;
 	
 	@Transient
+	@JsonProperty
 	private Integer paidInvoiceCount;
 	
 	@Transient
+	@JsonProperty
 	private String draftInvoiceAmount;
 	
 	@Transient
+	@JsonProperty
 	private String paidInvoiceAmount;
 	
 	@Transient
+	@JsonProperty
 	private String dueAfterInvoiceAmount;
 	
 	@Transient
+	@JsonProperty
 	private String dueBeforeInvoiceAmount;
 	
 	@Transient
+	@JsonProperty
 	private Integer dueAfterInvoiceCount;
 	
 	@Transient
+	@JsonProperty
 	private Integer dueBeforeInvoiceCount;
 	
 	@Transient

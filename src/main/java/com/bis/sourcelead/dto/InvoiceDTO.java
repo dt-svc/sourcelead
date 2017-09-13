@@ -3,7 +3,7 @@ package com.bis.sourcelead.dto;
 import java.util.List;
 import java.util.Map;
 
-public class InvoiceDTO {
+public class InvoiceDTO extends SearchDTO {
 
 	private String clientOrgRelationId;
 	private String savedInvoiceId;
@@ -37,6 +37,21 @@ public class InvoiceDTO {
     private String expensesId;
     private List<InvoiceExpensesDTO> expenseInvoice;
     private String staticPath;
+    private String clientName;
+    private String projectName;
+    private String inoviceDue;
+    private String invoiceStatus;
+    private String paymentStatus;
+    private String action;
+    private String dayWisetype;
+    private String startDate;
+    private String endDate;
+    private String invoiceType;
+    private String exportType;
+    private String durationType;
+    private String exportStartDate;
+    private String exportEndDate;
+    
 	public List<InvoiceExpensesDTO> getExpenseInvoice() {
 		return expenseInvoice;
 	}
@@ -295,6 +310,117 @@ public class InvoiceDTO {
 	public void setStaticPath(String staticPath) {
 		this.staticPath = staticPath;
 	}
-	
 
+	public String getClientName() {
+		return clientName;
+	}
+
+	public void setClientName(String clientName) {
+		this.clientName = clientName;
+	}
+
+	public String getProjectName() {
+		return projectName;
+	}
+
+	public void setProjectName(String projectName) {
+		this.projectName = projectName;
+	}
+
+	public String getInoviceDue() {
+		return inoviceDue;
+	}
+
+	public void setInoviceDue(String inoviceDue) {
+		this.inoviceDue = inoviceDue;
+	}
+
+	public String getInvoiceStatus() {
+		return invoiceStatus;
+	}
+
+	public void setInvoiceStatus(String invoiceStatus) {
+		this.invoiceStatus = invoiceStatus;
+	}
+
+	public String getPaymentStatus() {
+		return paymentStatus;
+	}
+
+	public void setPaymentStatus(String paymentStatus) {
+		this.paymentStatus = paymentStatus;
+	}
+
+	public String getAction() {
+		return action;
+	}
+
+	public void setAction(String action) {
+		this.action = action;
+	}
+
+	public String getDayWisetype() {
+		return dayWisetype;
+	}
+
+	public void setDayWisetype(String dayWisetype) {
+		this.dayWisetype = dayWisetype;
+	}
+
+	public String getStartDate() {
+		return startDate;
+	}
+
+	public void setStartDate(String startDate) {
+		this.startDate = startDate;
+	}
+
+	public String getEndDate() {
+		return endDate;
+	}
+
+	public void setEndDate(String endDate) {
+		this.endDate = endDate;
+	}
+
+	public String getInvoiceType() {
+		return invoiceType;
+	}
+
+	public void setInvoiceType(String invoiceType) {
+		this.invoiceType = invoiceType;
+	}
+
+	public String getExportType() {
+		return exportType;
+	}
+
+	public void setExportType(String exportType) {
+		this.exportType = exportType;
+	}
+
+	public String getDurationType() {
+		return durationType;
+	}
+
+	public void setDurationType(String durationType) {
+		this.durationType = durationType;
+	}
+
+	public String getExportStartDate() {
+		return exportStartDate;
+	}
+
+	public void setExportStartDate(String exportStartDate) {
+		this.exportStartDate = exportStartDate;
+	}
+
+	public String getExportEndDate() {
+		return exportEndDate;
+	}
+
+	public void setExportEndDate(String exportEndDate) {
+		this.exportEndDate = exportEndDate;
+	}
+	
 }

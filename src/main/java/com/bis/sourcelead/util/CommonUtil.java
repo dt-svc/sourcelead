@@ -1,5 +1,8 @@
 package com.bis.sourcelead.util;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.Writer;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -36,12 +39,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import com.bis.sourcelead.constants.Constants;
-import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.RequirementDTO;
 import com.bis.sourcelead.elk.index.ClientVendorIndex;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
-import com.bis.sourcelead.entity.Candidate;
-import com.bis.sourcelead.entity.MasterCandidate;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
@@ -57,9 +57,6 @@ import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Primary;
 import com.bis.sourcelead.enums.Project_Status;
-import com.bis.sourcelead.rest.UserProfileRestController;
-import com.bis.sourcelead.service.CandidateService;
-import com.bis.sourcelead.service.MasterCandidateService;
 import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
 import com.bis.sourcelead.service.ProjectMembersHistoryService;
@@ -126,12 +123,6 @@ public class CommonUtil {
 	
 	@Autowired
     private SourceleadELKBaseIndexer<ClientVendorIndex> sourceleadELKBaseIndexer;
-	
-	@Autowired
-	CandidateService candidateService;
-	
-	@Autowired
-	MasterCandidateService masterCandidateService;
 	
 	
 	/**
@@ -927,125 +918,9 @@ public class CommonUtil {
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
+			  
+			
 		}
-		
-	 
-		public Candidate getVendorCandidate(JSONObject jsonObj,OrgRelations orgRelation,OrgLocations orgLocations,User loginUser) throws Exception{
-		  Candidate candidate = null;
-		  OrgLocations vendorOrgLocation = null;
-		  if(orgRelation.getInitiatorType().equalsIgnoreCase("Client") && orgRelation.getLocationId().getId().equals(orgLocations.getId())){
-			  vendorOrgLocation = orgRelation.getResponderLocationId();
-		  }else if(orgRelation.getInitiatorType().equalsIgnoreCase("Vendor") && orgRelation.getResponderLocationId().getId().equals(orgLocations.getId())){
-			  vendorOrgLocation = orgRelation.getLocationId();
-		  }
-		  
-		  if(jsonObj.has("email") && jsonObj.getString("email") != null){
-			  candidate = candidateService.findByCandidateEmail(jsonObj.getString("email").trim(),vendorOrgLocation.getId());
-		  }else if(jsonObj.has("EmailId") && jsonObj.getString("EmailId") != null){
-			  candidate = candidateService.findByCandidateEmail(jsonObj.getString("EmailId").trim(),vendorOrgLocation.getId());
-		  }
-		  
-		  if(candidate == null){
-			  candidate = new Candidate();
-			  
-			  MasterCandidate masterCandidate = null;
-				masterCandidate = masterCandidateService.getMasterCandidateByInteligence(jsonObj);
-				if(null == masterCandidate){
-					masterCandidate = masterCandidateService.storeMasterCandidateByJsonObject(jsonObj, loginUser);
-				}
-				candidate.setMasterCandidateId(masterCandidate);
-			  
-				candidate.setOrgLocationId(vendorOrgLocation);
-				candidate.setCandidateType("Candidate");
-				candidate.setCandidateUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
-				
-				if(jsonObj.has("firstName") && jsonObj.getString("firstName") !=null){
-					candidate.setFirstName(jsonObj.getString("firstName"));
-				}else if(jsonObj.has("FirstName") && jsonObj.getString("FirstName") !=null){
-					candidate.setFirstName(jsonObj.getString("FirstName"));
-				}
-			
-				if(jsonObj.has("lastName") && jsonObj.getString("lastName") !=null){
-					candidate.setLastName(jsonObj.getString("lastName"));
-				}else if(jsonObj.has("LastName") && jsonObj.getString("LastName") !=null){
-					candidate.setLastName(jsonObj.getString("LastName"));
-				}
-				
-				if(jsonObj.has("email") && jsonObj.getString("email") !=null){
-					candidate.setEmail(jsonObj.getString("email"));
-				}else if(jsonObj.has("EmailId") && jsonObj.getString("EmailId") !=null){
-					candidate.setEmail(jsonObj.getString("EmailId"));
-				}
-				
-				if(jsonObj.has("country") && jsonObj.getString("country") !=null){
-					candidate.setCountry(jsonObj.getString("country"));
-				}
-			
-			candidate.setIsAssociate(Constants.NO);
-			candidate.setStatus(1);
-  			candidateService.saveOrUpdateCandidate(candidate);
-  			candidateService.saveOrUpdateCandidateElkDocument(candidate);
-		  }
-		  
-		  return candidate;
-	  }
-		
-		
-		public Candidate getVendorCandidateForCandidateCreation(CandidateDTO candidateDTO,OrgRelations orgRelation,OrgLocations orgLocations,User loginUser) throws Exception{
-			  Candidate candidate = null;
-			  OrgLocations vendorOrgLocation = null;
-			  if(orgRelation.getInitiatorType().equalsIgnoreCase("Client") && orgRelation.getLocationId().getId().equals(orgLocations.getId())){
-				  vendorOrgLocation = orgRelation.getResponderLocationId();
-			  }else if(orgRelation.getInitiatorType().equalsIgnoreCase("Vendor") && orgRelation.getResponderLocationId().getId().equals(orgLocations.getId())){
-				  vendorOrgLocation = orgRelation.getLocationId();
-			  }
-			  
-			  if(StringUtils.isNotBlank(candidateDTO.getEmail())){
-				  candidate = candidateService.findByCandidateEmail(candidateDTO.getEmail().trim(),vendorOrgLocation.getId());
-			  }else if(StringUtils.isNotBlank(candidateDTO.getEmailId())){
-				  candidate = candidateService.findByCandidateEmail(candidateDTO.getEmailId().trim(),vendorOrgLocation.getId());
-			  }
-			  
-			  if(candidate == null){
-				  candidate = new Candidate();
-				  
-				  MasterCandidate masterCandidate = null;
-					masterCandidate = masterCandidateService.getMasterCandidateByInteligenceCandidateDTO(candidateDTO);
-					if(null == masterCandidate){
-						masterCandidate = masterCandidateService.storeMasterCandidateByCandidateDTO(candidateDTO, loginUser);
-					}
-					candidate.setMasterCandidateId(masterCandidate);
-				  
-					candidate.setOrgLocationId(vendorOrgLocation);
-					candidate.setCandidateType("Candidate");
-					candidate.setCandidateUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
-					
-					if(StringUtils.isNotBlank(candidateDTO.getFirstName())){
-						candidate.setFirstName(candidateDTO.getFirstName());
-					}
-				
-					if(StringUtils.isNotBlank(candidateDTO.getLastName())){
-						candidate.setLastName(candidateDTO.getLastName());
-					}
-					
-					if(StringUtils.isNotBlank(candidateDTO.getEmail())){
-						candidate.setEmail(candidateDTO.getEmail());
-					}
-					
-					if(StringUtils.isNotBlank(candidateDTO.getCountry())){
-						candidate.setCountry(candidateDTO.getCountry());
-					}
-				
-				candidate.setIsAssociate(Constants.NO);
-				candidate.setStatus(1);
-	  			candidateService.saveOrUpdateCandidate(candidate);
-	  			candidateService.saveOrUpdateCandidateElkDocument(candidate);
-			  }
-			  
-			  return candidate;
-		  }
-		
-
 		
 		//common method for saveElkRequirement
 		
@@ -1250,5 +1125,29 @@ public class CommonUtil {
 			}
 			return requirementDTO;
 		}
-
+		
+		public static byte[] readBytesFromFile(String filePath)
+		{
+			FileInputStream fileInputStream = null;
+			byte[] bytesArray = null;
+			try {
+				File file = new File(filePath);
+				bytesArray = new byte[(int) file.length()];
+				// read file into bytes[]
+				fileInputStream = new FileInputStream(file);
+				fileInputStream.read(bytesArray);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			finally {
+				if (fileInputStream != null) {
+					try {
+						fileInputStream.close();
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				}
+			}
+			return bytesArray;
+		}
 }

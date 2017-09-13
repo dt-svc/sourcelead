@@ -11,7 +11,7 @@
 	
 	<script src="resources/js/editor.js"></script>
 	<link href="resources/css/editor.css" type="text/css" rel="stylesheet"/>
-	<link href="resources/css/requirement.css" type="text/css" rel="stylesheet"/>
+	
 	<script>
 		$(document).ready(function() {
 			$("#txtEditor").Editor();
@@ -466,6 +466,7 @@ $(document).ready(function () {
                 <div class="input-group-btn selp-custom-min payrate_p">
                   <select class="selectpicker ratetype" id="rateType" name="rateType" field-name="Rate Per">
                     <c:if test="${SourceLeadWeb_currencyCode == 'INR'}">
+                        <option value="">Rate Per</option>
                         <option ${requirement.rateType  == 'Monthly' ? 'selected' : ''}>Monthly</option>
 	                    <option ${requirement.rateType  == 'Hourly' ? 'selected' : ''}>Hourly</option>
 	                    <option ${requirement.rateType  == 'Weekly' ? 'selected' : ''}>Weekly</option>
@@ -476,6 +477,7 @@ $(document).ready(function () {
                     </c:if>
                   
                   <c:if test="${SourceLeadWeb_currencyCode == 'USD'}">
+                        <option value="">Rate Per</option>
                         <option ${requirement.rateType  == 'Hourly' ? 'selected' : ''}>Hourly</option>
                         <option ${requirement.rateType  == 'Monthly' ? 'selected' : ''}>Monthly</option>
 	                    <option ${requirement.rateType  == 'Weekly' ? 'selected' : ''}>Weekly</option>
@@ -1394,7 +1396,6 @@ function validate_fileupload(fileName)
 
 <script type="text/javascript">
 	function storeRequirement(saveType) {
-		
 		var validationSettings = {
 		        errorMessagePosition : 'element',
 		       borderColorOnError : '',
@@ -1872,6 +1873,7 @@ function setTemplateValues(){
 			    	$("#jobType").val(json.jobType);
 			    	
 			    	$("#coolingOff").val(json.reqCoolingOffPeriod);
+			    	$('#coolingOff').trigger('chosen:updated');
 			    	$("#industryName").val(json.industryName);
 			    	$("#industryName").trigger("chosen:updated");
 			    	
@@ -1977,7 +1979,7 @@ function setTemplateValues(){
 					$("#existingCountry").val('');
 					$("#existingState").val('');
 					$("#existingCity").val('');
-					
+					$("#coolingOff").val('');
 		            $("#skills").val('');
 		            $("#education").val('');
 		            $(".Editor-editor").text('');
@@ -1989,8 +1991,8 @@ function setTemplateValues(){
 			    	$(".")
 			    	
 			    	existedFile = json.fileName;
-			    	 $("#fileName").val(existedFile);
-			    	 $('#fileName').trigger("chosen:updated");
+			    	$("#fileName").val(existedFile);
+			    	$('#fileName').trigger("chosen:updated");
 		    	}
 		    }
      });
@@ -3046,7 +3048,7 @@ $(document).ready(function(){
 var sourceleadUrl = '${sourceleadUrl}';
 $(function() {
 	$("#uploadBtn").change(function() {
-		fileUpload(sourceleadUrl, "uploadBtn", "resumes", "requirement_form");
+		fileUpload(sourceleadUrl, "uploadBtn", "requirementDocuments", "requirement_form");
 	});
  }); 
 </script>
