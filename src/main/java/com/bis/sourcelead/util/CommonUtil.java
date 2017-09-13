@@ -1151,4 +1151,6 @@ public class CommonUtil {
 			}
 			return bytesArray;
 		}
+
 }
+

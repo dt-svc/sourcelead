@@ -101,7 +101,7 @@
 			
 			<div class="col-md-6 col-lg-6">
 				<div class="form-group mb10">
-					<label class="col-md-3" >Client Project <span class="text-danger">*&nbsp;</span></label>
+					<label class="col-md-3 paddingRight">Client Project <span class="text-danger">*&nbsp;</span></label>
 					<div class="col-md-9">
 						<div class="form-icon-min" id="clientProjectDiv">
 							<select class="form-control chosen-select"

@@ -54,7 +54,6 @@ public class CandidateEmployersServiceTest {
 		long candidateid = 1l;
 		CandidateEmployers candidateEmp = candidateEmployersService.storeCandidateEmployers(candemp, user,orglocationId,candidateid);
 		logger.info("CandidateEmployer added successfully"+candidateEmp.getId());
-
 	}
 
 	@SuppressWarnings("unused")
@@ -78,6 +77,12 @@ public class CandidateEmployersServiceTest {
 		Candidate candidate = new Candidate();
 		candidate.setId(1l);
 		String userCode ="AOO2";
+ 
+		Set<CandidateEmployers> canEmp = candidateEmployersService.getCandidateEmployersDetails(dto, orgLocations, candidate, userCode);
+		for(CandidateEmployers candidateEmp:canEmp){
+			logger.info("getCandidateEmployersDetails added successfully"+canEmp.size());
+		}
+
 	}
 	
 	@Test

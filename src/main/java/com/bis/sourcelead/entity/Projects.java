@@ -273,6 +273,7 @@ public class Projects implements Serializable{
     Collection<OrgRelations> clientList;
     
     @Transient
+    @JsonProperty
     Collection<User> managersList;
     
     

@@ -278,7 +278,7 @@ public class ProjectMembersHistoryDaoImpl implements ProjectMembersHistoryDao {
 		logger.debug("In ProjectMembersHistory getProjectMembersOpenHistoryByProjectClientsId method");
         Session session = this.sessionFactory.getCurrentSession();
         Query projectMembersHistoryListQuery= session.createQuery("from ProjectMembersHistory pmh left join fetch pmh.projectMemberId pm left join fetch pmh.projectClientsId "
-        		+ " where pmh.projectClientsId.id = :projectClientsId and pmh.projectMemberId.id = :projectMemberId");
+        		+ " where pmh.projectClientsId.id = :projectClientsId and pmh.projectMemberId.id = :projectMemberId and pmh.status = 'OPEN' ");
 		List<ProjectMembersHistory> projectMembersHistoryList= projectMembersHistoryListQuery.setLong("projectClientsId", projectClientsId).setLong("projectMemberId", projectMemberId).setCacheable(true).list();
 		ProjectMembersHistory pmh = null;
 		if(projectMembersHistoryList != null && !projectMembersHistoryList.isEmpty()){
@@ -301,6 +301,25 @@ public class ProjectMembersHistoryDaoImpl implements ProjectMembersHistoryDao {
 		pmhList = pmhListQuery.setLong("projectMemberId", projectMemberId).setCacheable(true).list();
 		return pmhList;
 		
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public ProjectMembersHistory getProjectMembersHistoryByProjectMemberIdAndOrgLoctionId(Long projectMemberId,
+			Long orgLocationId) throws Exception {
+		
+		
+		logger.debug("In ProjectMembersHistory getProjectMembersHistoryByProjectMemberIdAndOrgLoctionId method");
+        Session session = this.sessionFactory.getCurrentSession();
+        Query projectMembersHistoryListQuery= session.createQuery("from ProjectMembersHistory pmh left join fetch pmh.projectMemberId pm left join fetch pmh.projectClientsId pc "
+        		+ " left join fetch pc.orgLocationsId where pc.orgLocationsId.id = :orgLocationsId and pmh.projectMemberId.id = :projectMemberId");
+		List<ProjectMembersHistory> projectMembersHistoryList= projectMembersHistoryListQuery.setLong("orgLocationsId", orgLocationId).setLong("projectMemberId", projectMemberId).setCacheable(true).list();
+		ProjectMembersHistory pmh = null;
+		if(projectMembersHistoryList != null && !projectMembersHistoryList.isEmpty()){
+			pmh = projectMembersHistoryList.iterator().next();
+		}
+		
+		return pmh;
 	}
 
 }

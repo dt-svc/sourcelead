@@ -824,8 +824,6 @@ public class ProjectsServiceImpl implements ProjectsService{
 	    }
 	    StringBuilder projectApprover = new StringBuilder();
 	  
-	    //  projects.setCreatedBy(projectApprover.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
-	    
 	    ProjectClients projectClients = projectClientService.getProjectClientsByProjectIdAndOrgLocationId(projects.getId(), loginOrgLocations.getId());
 	    Set<ProjectApproverHierarchy> projectApproverHierarchies = projectClients.getProjectApproverHierarchyList();
 	    /**
@@ -875,38 +873,6 @@ public class ProjectsServiceImpl implements ProjectsService{
 				}
  	  }
 	    
-	    
-	    
-	/*    Collection<OrgRelations> orgClientList = orgRelationsService.getAllClientsByOrgLocationId(loginOrgLocations.getId()); 
-	    String[] clientList = new String[orgClientList.size()];
-	    int j = 0;
-		for(OrgRelations ocl :orgClientList){
-			if(null != projects.getOrgRelationId()){
-				if(projects.getOrgRelationId().getId().equals(ocl.getId()) && ocl.getLocationId().getId().longValue() == loginOrgLocations.getId().longValue()){
-					projects.setRelationId(ocl.getId());
-					projects.setClient(ocl.getResponderLocationId().getOrgLocationName());
-				}if(projects.getOrgRelationId().getId().equals(ocl.getId()) && ocl.getResponderLocationId().getId().longValue() == loginOrgLocations.getId().longValue()){
-					projects.setRelationId(ocl.getId());
-					projects.setClient(ocl.getLocationId().getOrgLocationName());
-				}
-			}
-			
-			if(null != ocl.getLocationId() && null != ocl.getLocationId().getId() && ocl.getLocationId().getId().longValue() == loginOrgLocations.getId().longValue()){
-				if(null != ocl.getResponderLocationId()){
-					StringBuilder approverHierarchiesSB=new StringBuilder();
-					clientList[j] = approverHierarchiesSB.append(ocl.getResponderLocationId().getOrgLocationName()).append(",").append(ocl.getId()).toString();
-				}
-			}
-			if(null != ocl.getResponderLocationId() && null != ocl.getResponderLocationId().getId() && ocl.getResponderLocationId().getId().longValue() == loginOrgLocations.getId().longValue()){
-				if(null != ocl.getLocationId()){
-					StringBuilder approverHierarchiesSB=new StringBuilder();
-					clientList[j] = approverHierarchiesSB.append(ocl.getLocationId().getOrgLocationName()).append(",").append(ocl.getId()).toString();
-				}
-			}
-			j++;
-		 }
-		projects.setClientName(clientList);*/
-		
 		
 		Integer projectMembersCount  = projectMembersService.getAllProjectMembersCountByProjectId(projectId);
 		projects.setProjectMembersCount(projectMembersCount.toString());

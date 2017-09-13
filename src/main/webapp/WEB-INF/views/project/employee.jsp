@@ -158,6 +158,8 @@ function filterStatus() {
 	 
 	 var projectUUID = '${projectUUID}';
 	 var sourceleadUrl = '${sourceleadUrl}';
+	 var postedOrgLocationId = '${postedOrgLocationId}';
+	 var loginOrgLocationId = '${SourceLeadWeb_orgLocations.id}'
 	 	 
 	   $("#employeesLoadingImg").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;'); 
  	 
@@ -206,8 +208,11 @@ result = result + '<div class="project_tabs mb">';
 			if(status != 'COMPLETED' &&  status != '' &&  status != 'undefined' ){
 			result = result +'<li>';
 	 		'<sec:authorize access="hasAnyRole(\'ROLE_ASSIGN_EMPLOYEE_TO_PROJECT\')">';
-	 		  result = result + '<a href="javascript:void(0)" onclick="getAssociates();" id="addDiv">';
-	 		    result = result + '<i class="fa fa-exchange"></i>&nbsp;Transfer</a>&nbsp;&nbsp;&nbsp;&nbsp;';
+	 		 
+	 		if(postedOrgLocationId == loginOrgLocationId){
+	 			  result = result + '<a href="javascript:void(0)" onclick="getAssociates();" id="addDiv">';
+		 		  result = result + '<i class="fa fa-exchange"></i>&nbsp;Transfer Emp</a>&nbsp;&nbsp;&nbsp;&nbsp;'; 
+	 		 }
 	 		    result = result + '<a href="'+sourceleadUrl+'/addNewProjectMembers?projectUUID='+projectUUID+'">';
 	 		    result = result + '<i class="glyphicon glyphicon-plus"></i>Assign Emp</a></li>';
 	 		'</sec:authorize>';
@@ -1414,7 +1419,7 @@ function getAssociates(){
 
 <script type="text/javascript">
 function getOrgLocationProjects(){
-	
+	emptyRecords();
 	var orgLocations = [];
 	$('input:radio[name=orgLocations]:checked').each(function() 
 		    {
@@ -1450,13 +1455,18 @@ function getOrgLocationProjects(){
 <script>
 function getProjectDetails(){
 	var orgLocationProjects = document.getElementById("orgLocationProjects").value;
+	var orgLocations = [];
+	$('input:radio[name=orgLocations]:checked').each(function() 
+		    {
+		orgLocations.push($(this).val());
+	    });
 	
 	if(orgLocationProjects){
 		$("#projectDetailsLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		var sourceleadUrl = '${sourceleadUrl}';
 				$.ajax({
 					type : "POST",
-					url : sourceleadUrl	+ "/getProjectById?${_csrf.parameterName}=${_csrf.token}&ProjectId="+ orgLocationProjects,
+					url : sourceleadUrl	+ "/getProjectDetailsForResouceTransfer?${_csrf.parameterName}=${_csrf.token}&projectId="+ orgLocationProjects+"&orgLocationId="+orgLocations,
 					success : function(data) {
 						var json = JSON.parse(data);
 						var endDateStr = "";
@@ -1597,7 +1607,7 @@ function getProjectDetails(){
 						result = result + '<div class="form-footer clearfix miniFoot">';
 						result = result + '<div class="col-lg-12">';
 						result = result + '<div class="pull-right">';
-						result = result + '<input type="button" value="Transfer" onClick="transferToProject()" class="btn btn-primary ml10">';
+						result = result + '<input type="button" value="Transfer" onClick="transferToProject()" class="btn btn-success ml10">';
 						result = result + '</div>';
 						result = result + '</div>';
 						result = result + '</div>';
@@ -1613,18 +1623,24 @@ function getProjectDetails(){
 					}
 				});
 	}else{
-		 var result = '';
-		 result = result+"   <div class='row'>"; 
-		 result = result+"	<div class='col-lg-12'>"; 
-		 result = result+"		<div class='dataTables_empty'>"; 
-		 result = result+"		</div>"; 
-		 result = result+"	</div>"; 
-		 result = result+"  </div> ";
-		 
-		 $("#projectDetailsDiv").empty();
-	     $("#projectDetailsDiv").append(result);
+		emptyRecords();
 	}
 	
+}
+</script>
+
+<script>
+function emptyRecords(){
+	var result = '';
+	 result = result+"   <div class='row'>"; 
+	 result = result+"	<div class='col-lg-12'>"; 
+	 result = result+"		<div class='dataTables_empty'>"; 
+	 result = result+"		</div>"; 
+	 result = result+"	</div>"; 
+	 result = result+"  </div> ";
+	 
+	 $("#projectDetailsDiv").empty();
+    $("#projectDetailsDiv").append(result);
 }
 </script>
 
@@ -1636,8 +1652,34 @@ function transferToProject(){
 		 projectMembers.push($(this).val());
 	});
 	 
-	 var orgLocationProjects = document.getElementById("orgLocationProjects").value;
-	 if(projectMembers != null || projectMembers != ''){
+	var orgLocations = [];
+	$('input:radio[name=orgLocations]:checked').each(function() 
+		    {
+		orgLocations.push($(this).val());
+	    });
+	 
+	 var projectUUID = '${projectUUID}';
+	 var projectOrgLocationId = document.getElementById("orgLocationProjects").value;
+	 var projectId = document.getElementById("orgLocationProjects").value;
+	 if(projectMembers.length > 0){
+		 
+		 $("#projectDetailsLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		 var projectUUID = '${projectUUID}';
+		 var sourceleadUrl = '${sourceleadUrl}';
+		 
+		 $.ajax({
+		    	type: "POST",
+		        url: sourceleadUrl+"/transferProjectMembers?${_csrf.parameterName}=${_csrf.token}&projectUUID="+projectUUID+"&projectId="+projectId+"&projectOrgLocationId="+orgLocations+"&projectMembers="+projectMembers, 
+		        success: function() {
+		        
+		        	location.replace(sourceleadUrl+"/projectSummary?projectUUID="+projectUUID+"&tabType=projectMembers");
+			        $("#projectDetailsLoading").removeAttr("style"); 
+		        }
+		   
+	     });
+			 
+		 
+	 }else{
 		 alertProjectMembersMessage();
 	 }
 	
@@ -1649,7 +1691,7 @@ function alertProjectMembersMessage(){
 	var result = "";
 	result = result +"	<div class='project_inn_mask'></div>";
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
-	result = result +"		<p>Add atleast one project member</p>";
+	result = result +"		<p>Select atleast one project member</p>";
 	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
 	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='cancel();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
 	result = result +"	</div>";

@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.json.JSONObject;
 
 import com.bis.sourcelead.dto.ProjectAssignedMembersDTO;
+import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.Projects;
@@ -105,5 +106,5 @@ public interface ProjectMembersService {
 	
 	public List<ProjectMembers> getAllProjectMembersByProjectClientIdAndStatus(Long projectClientsId,String status) throws Exception;
 
-	
+	public String transferMembers(OrgLocations orgLocations,Org org,Projects projects,String projectMembers,User user,Long projectOrgLocationId) throws Exception;
 }
