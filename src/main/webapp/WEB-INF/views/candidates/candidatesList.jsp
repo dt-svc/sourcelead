@@ -88,6 +88,14 @@
      3.ajax url implementation in CandidateListRestController.
 --%>
 
+
+<script>
+function imageUpload(){
+	var sourceleadUrl ='${sourceleadUrl}';
+	fileUpload(sourceleadUrl, "uploadedImage", "profile", "candidate_form");
+}
+</script>
+
 <script>
 var candidateStatusGlobal ="";
 function candidateSideBar(candidateId){
@@ -231,8 +239,8 @@ function candidateSideBar(candidateId){
 						 result = result+'  <div class="btn-group uploadfile uploadfile-candidate">';
 						 //result = result+'  <button type="button" class="btn btn-sm btn-primary">';
 						 //result = result+'  <i class="fa fa-upload"></i></button>';
-						 result = result+'  <label class="btn btn-sm btn-primary">';
-					     result = result+'   <i class="fa fa-upload paddingRight"></i> Upload / Change<input type="file" name="file" id="uploadedImage"  onchange="loadFile(event,\''+candidateId+'\')" style="display: none;">';
+						 result = result+'  <label class="btn btn-sm btn-primary" ">';
+					     result = result+'   <i class="fa fa-upload paddingRight"></i> Upload / Change<input type="file" id="uploadedImage" onchange="imageUpload();loadFile(event,\''+candidateId+'\')" style="display: none;">';
 					     result = result+'  </label>';
 					     if(json.fileContentType != null && json.fileContentType != '' && json.fileContentType != 'undefined'){
 						     result = result+'  <button type="button" class="btn btn-sm btn-danger" onclick="deleteImage('+candidateId+')">';
@@ -539,32 +547,25 @@ function candidateSideBar(candidateId){
 <script>
 function saveCandidateImage(candidateId){
 	            		
-          		var frm = $('#candidate_form').serializeFormJSON();
-              	var con = JSON.stringify(frm);
-  			    con = con.replace(/[{}]/g, ""); 
-  			    
-  		        var jsonData = encodeURIComponent(con);
-          		
+	if ($('#candidate_form').validate(false, validationSettings)){
           		var sourceleadUrl ='${sourceleadUrl}';
           		var loginUserId = '${SourceLeadWeb_userId}';
           		var orgLocationId = '${SourceLeadWeb_orgLocationId}';
-          		var form = $('#candidate_form')[0];
-           		var formData = new FormData(form);
+          		//var form = $('#candidate_form')[0];
+           		var formData = getFormData('candidate_form');
 	            		
 	            $.ajax({
 	                	      type: "POST",
 	                	      data: formData,
-	                	      contentType : 'application/json; charset=utf-8',
-	                	      enctype: 'multipart/form-data',
-	            	          processData: false,
-	            	          contentType:false,
-	                	      dataType : 'json',
-	                	      
 	                      	  url: sourceleadUrl+"/saveCandidateProfile?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId,
 	                          success: function(result) {
 	                        	  cancel(candidateId);
 	    			          },  
 	            });
+	            return true;         
+	}else{ 
+		return false;
+	 } 
 }
 </script> 
 

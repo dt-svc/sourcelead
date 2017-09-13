@@ -26,16 +26,23 @@ public class FileUploadUtil {
 		if (orgId > 0) {
 			url = "/slead-static/" + orgId + "/" + locationId + "/" + fileType + "/" + fileName + time + extenstion;
 			fileName = "/slead-static/" + orgId + "/" + locationId + "/temp/" + fileName + time + extenstion;
+			File folderFile = new File(staticPath, "/slead-static/" + orgId + "/" + locationId + "/" + fileType);
+			if (!folderFile.exists())
+				folderFile.mkdirs();
+			folderFile = new File(staticPath, "/slead-static/" + orgId + "/" + locationId + "/temp");
+			if (!folderFile.exists())
+				folderFile.mkdirs();
 		} else {
 			url = "/slead-static/" + fileType + "/" + fileName + time + extenstion;
 			fileName = "/slead-static/temp/" + fileName + time + extenstion;
+			File folderFile = new File(staticPath, "/slead-static/" + fileType);
+			if (!folderFile.exists())
+				folderFile.mkdirs();
+			folderFile = new File(staticPath, "/slead-static/temp");
+			if (!folderFile.exists())
+				folderFile.mkdirs();
 		}
-		File folderFile = new File(staticPath, "/slead-static/" + orgId + "/" + locationId + "/" + fileType);
-		if (!folderFile.exists())
-			folderFile.mkdirs();
-		folderFile = new File(staticPath, "/slead-static/" + orgId + "/" + locationId + "/temp");
-		if (!folderFile.exists())
-			folderFile.mkdirs();
+		
 		File file = new File(staticPath, fileName);
 		try {
 

@@ -2,8 +2,6 @@ package com.bis.sourcelead.web;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -44,10 +42,10 @@ public class FileController {
 			@RequestParam (defaultValue = "0") long orgId, @RequestParam (defaultValue = "0") long orgLocationId) {
 		List<FileInfo> fileInfoList = new ArrayList<>();
 		Iterator<String> itrator = request.getFileNames();
-		while (itrator.hasNext()) {
+		while (itrator.hasNext()) {	
 			FileInfo fileInfo = new FileInfo();
 			MultipartFile multiFile = request.getFile(itrator.next());
-			if(orgId == 0 || orgLocationId == 0) {
+			if(!type.equalsIgnoreCase("profile") && (orgId == 0 || orgLocationId == 0)) {
 				Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 				OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 				orgId = org.getId();
@@ -59,8 +57,10 @@ public class FileController {
 			fileInfo.setContentType(multiFile.getContentType());
 			fileInfoList.add(fileInfo);
 		}
+		
 		return fileInfoList;
 	}
+		
 	@RequestMapping(value = "/viewFile")
 	public void viewFile(HttpServletResponse response, String documentPath, String contentType) {
 		File file = new File(staticPath, documentPath);

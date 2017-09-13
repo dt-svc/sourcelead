@@ -58,6 +58,7 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.CandidateSearchDTO;
+import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.elk.index.CandidateIndex;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
@@ -83,6 +84,7 @@ import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CandidateActivityCommonUtil;
 import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.util.FileUploadUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 /**
  * Handles requests for the Candidate List Service.
@@ -98,8 +100,10 @@ public class CandidateListRestController {
 	
 	 @Value("${sourceleadUrl}")
 	 private String sourceleadUrl;
+	 
+	 @Value("${static.path}")
+	 private String staticPath;
 		
-	
 	 @Autowired
 	 CommonUtil commonUtil;
 	 
@@ -917,21 +921,20 @@ public class CandidateListRestController {
 	 * @throws NullPointerException
 	 */
 	@RequestMapping(value = "/saveCandidateProfile", method = RequestMethod.POST)
-	public String saveCandidateProfile(@RequestParam(value = "candidateId", required = false) String candidateId,
+	public String saveCandidateProfile(CandidateDTO candidateDTO,@RequestParam(value = "candidateId", required = false) String candidateId,
 			@RequestParam(value = "loginUserId", required = false) Long loginUserId,
 			@RequestParam(value = "orgLocationId", required = false) Long orgLocationId,
-			MultipartHttpServletRequest request) throws Exception {
+			HttpServletRequest request) throws Exception {
 
-		Iterator<String> itrator = request.getFileNames();
-		MultipartFile multiFile = request.getFile(itrator.next());
+		/*Iterator<String> itrator = request.getFileNames();
+		MultipartFile multiFile = request.getFile(itrator.next());*/
 		StringBuffer activitySummary = new StringBuffer();
 		//OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 		OrgLocations loginOrgLocation = orgLocationService.getOrgLocations(orgLocationId);
 		User user = userService.getUserById(loginUserId);
-		Candidate candidate = candidateService.getCandidateByCandidateIdAndOrgLocationId(Long.parseLong(candidateId),
-				loginOrgLocation.getId());
-		if (null != multiFile.getContentType()
-				&& !multiFile.getContentType().equalsIgnoreCase("application/octet-stream")) {
+		candidateDTO.setStaticPath(staticPath);
+		Candidate candidate = candidateService.getCandidateByCandidateIdAndOrgLocationId(Long.parseLong(candidateId),loginOrgLocation.getId());
+		/*if (null != multiFile.getContentType() && !multiFile.getContentType().equalsIgnoreCase("application/octet-stream")) {
 			try {
 				if(candidate.getFileName() != null && candidate.getFileName() != "" && !candidate.getFileName().equalsIgnoreCase(multiFile.getOriginalFilename())){
 					activitySummary.append("File").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidate.getFileName()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(multiFile.getOriginalFilename()).append(Constants.NEW_VALUE_TAG_END).append(" ");
@@ -941,6 +944,23 @@ public class CandidateListRestController {
 				candidate.setFileContentType(multiFile.getContentType());
 				candidate.setDocFile(multiFile.getBytes());
 				candidate.setFileName(multiFile.getOriginalFilename());
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}*/
+		if(candidateDTO.getFileInfo() != null){
+			FileInfo info = candidateDTO.getFileInfo().get(0);
+			try {
+				if(info.getFileName() != null && info.getFileName() != ""){
+					activitySummary.append("File").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidate.getFileName()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(info.getFileName()).append(Constants.NEW_VALUE_TAG_END).append(" ");
+				}else{
+					activitySummary.append("File").append(" : ").append(Constants.NEW_VALUE_TAG_INITIATION).append(info.getFileName()).append(Constants.NEW_VALUE_TAG_END).append(" ");
+				}
+				candidate.setFileContentType(info.getContentType());
+				//candidate.setDocFile(multiFile.getBytes());
+				candidate.setFileUrl(info.getFileURL());
+				candidate.setFileName(info.getFileName());
+				FileUploadUtil.moveFile(candidateDTO.getStaticPath(), info, "profile");
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
