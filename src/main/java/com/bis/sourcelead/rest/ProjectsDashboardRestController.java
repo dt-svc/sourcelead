@@ -256,6 +256,17 @@ public class ProjectsDashboardRestController {
 			 return projects;
 	  }
 	 
+	 
+	 
+	 @RequestMapping(value = "/getProjectDetailsForResouceTransfer", method = RequestMethod.POST)
+	 public @ResponseBody String getProjectDetailsForResouceTransfer(@RequestParam(value="projectId", required=false) Long projectId,
+			 @RequestParam(value="orgLocationId", required=false) Long orgLocationId,HttpServletRequest request) throws Exception{ 
+		     User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		     OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
+		     String projectDetails=projectsService.getProjectDetailsByProjectIdAndLoginOrgId(projectId, user, orgLocations.getLocationCode());
+			 return projectDetails;
+	  }
+	 
 	 /**
 	  * update the project by project ID
 	  * @author Laxman

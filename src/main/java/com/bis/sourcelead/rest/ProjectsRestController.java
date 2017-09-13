@@ -417,7 +417,7 @@ public class ProjectsRestController {
 	    	User user = (User) SourceLeadSessionManager.getSessionAttribute(request,"user");
 	    	Projects projects = projectsService.getProjectById(projectId);
 	    	
-	        projectMembersService.transferMembers(orgLocations, org, projects, projectMembers,user);
+	       projectMembersService.transferMembers(orgLocations, org, projects, projectMembers,user,projectOrgLocationId);
 	    	
 	    	
 	       return "success";

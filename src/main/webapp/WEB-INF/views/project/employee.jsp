@@ -1419,7 +1419,7 @@ function getAssociates(){
 
 <script type="text/javascript">
 function getOrgLocationProjects(){
-	
+	emptyRecords();
 	var orgLocations = [];
 	$('input:radio[name=orgLocations]:checked').each(function() 
 		    {
@@ -1455,13 +1455,18 @@ function getOrgLocationProjects(){
 <script>
 function getProjectDetails(){
 	var orgLocationProjects = document.getElementById("orgLocationProjects").value;
+	var orgLocations = [];
+	$('input:radio[name=orgLocations]:checked').each(function() 
+		    {
+		orgLocations.push($(this).val());
+	    });
 	
 	if(orgLocationProjects){
 		$("#projectDetailsLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		var sourceleadUrl = '${sourceleadUrl}';
 				$.ajax({
 					type : "POST",
-					url : sourceleadUrl	+ "/getProjectById?${_csrf.parameterName}=${_csrf.token}&ProjectId="+ orgLocationProjects,
+					url : sourceleadUrl	+ "/getProjectDetailsForResouceTransfer?${_csrf.parameterName}=${_csrf.token}&projectId="+ orgLocationProjects+"&orgLocationId="+orgLocations,
 					success : function(data) {
 						var json = JSON.parse(data);
 						var endDateStr = "";
@@ -1618,18 +1623,24 @@ function getProjectDetails(){
 					}
 				});
 	}else{
-		 var result = '';
-		 result = result+"   <div class='row'>"; 
-		 result = result+"	<div class='col-lg-12'>"; 
-		 result = result+"		<div class='dataTables_empty'>"; 
-		 result = result+"		</div>"; 
-		 result = result+"	</div>"; 
-		 result = result+"  </div> ";
-		 
-		 $("#projectDetailsDiv").empty();
-	     $("#projectDetailsDiv").append(result);
+		emptyRecords();
 	}
 	
+}
+</script>
+
+<script>
+function emptyRecords(){
+	var result = '';
+	 result = result+"   <div class='row'>"; 
+	 result = result+"	<div class='col-lg-12'>"; 
+	 result = result+"		<div class='dataTables_empty'>"; 
+	 result = result+"		</div>"; 
+	 result = result+"	</div>"; 
+	 result = result+"  </div> ";
+	 
+	 $("#projectDetailsDiv").empty();
+    $("#projectDetailsDiv").append(result);
 }
 </script>
 
@@ -1640,6 +1651,12 @@ function transferToProject(){
 	 $("input[name='projectMembers[]']:checked").each( function (i) {
 		 projectMembers.push($(this).val());
 	});
+	 
+	var orgLocations = [];
+	$('input:radio[name=orgLocations]:checked').each(function() 
+		    {
+		orgLocations.push($(this).val());
+	    });
 	 
 	 var projectUUID = '${projectUUID}';
 	 var projectOrgLocationId = document.getElementById("orgLocationProjects").value;
@@ -1652,7 +1669,7 @@ function transferToProject(){
 		 
 		 $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/transferProjectMembers?${_csrf.parameterName}=${_csrf.token}&projectUUID="+projectUUID+"&projectId="+projectId+"&projectOrgLocationId="+projectOrgLocationId+"&projectMembers="+projectMembers, 
+		        url: sourceleadUrl+"/transferProjectMembers?${_csrf.parameterName}=${_csrf.token}&projectUUID="+projectUUID+"&projectId="+projectId+"&projectOrgLocationId="+orgLocations+"&projectMembers="+projectMembers, 
 		        success: function() {
 		        
 		        	location.replace(sourceleadUrl+"/projectSummary?projectUUID="+projectUUID+"&tabType=projectMembers");
