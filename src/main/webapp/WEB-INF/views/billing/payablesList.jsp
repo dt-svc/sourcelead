@@ -812,7 +812,7 @@ function payablePagination(url){
             				result = result +'     <div class="tblminwidth-90">';
             				 result = result +'  <div class="pull-right positionRelative menuWidget" >';
             				if(report.invoiceStatus == "SENT" || report.invoiceStatus == "Received" || report.invoiceStatus == "Accepted"){
-            					 result = result +' <i class="fa fa-ellipsis-v" onClick="showPopUp('+report.id+',\''+report.invoiceStatus+'\',\''+report.invoiceParentId+'\',\''+report.total+'\');" ></i>  ';
+            					 result = result +' <i class="fa fa-ellipsis-v" onClick="showPopUp('+report.id+',\''+report.invoiceStatus+'\',\''+report.invoiceParentId+'\',\''+report.total+'\',\''+report.fileUrl+'\');" ></i>  ';
             						result = result +'  <div id="popupDiv'+report.id+'"></div>';
             				} 
             				result = result +'  </div> ';  
@@ -900,320 +900,8 @@ function payablePagination(url){
 </script>
 
 
-
-
-
-<!-- <script>
-function getPayableInvoiceList(){
-	var sourceleadUrl ='${sourceleadUrl}';
-	var invoice = [];
-	var payment = [];
-	var dayWisetype = $("#dayWiseTypeId").val();
-	
-	var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
-	  if(locationList.match("yyyy-MM-dd")){
-		  orgLocationDate = 'YYYY-MM-DD';
-	  }if(locationList.match("dd-MM-yyyy")){
-		  orgLocationDate = 'DD-MM-YYYY'; 
-	  }if(locationList.match("MM-dd-yyyy")){
-		  orgLocationDate = 'MM-DD-YYYY'; 
-	  }if(locationList.match("yyyy-dd-MM")){
-		  orgLocationDate = 'YYYY-DD-MM'; 
-	  } 
-	
-	if(dayWisetype=="custom"){
-		dayWisetype = "";
-	}
-	
-	var startDate = $("#billingStartDate").val();
-	var endDate = $("#billingEndDate").val();
-	
-	if(startDate == null || startDate == '' || startDate == 'undefined'){
-		$("#invoiceStartDate").empty().append("Start Date is Required") ; 
-	}
-	if(endDate == null || endDate == '' || endDate == 'undefined'){
-		$("#invoiceEndDate").empty().append("End Date is Required") ; 
-	} 
-	
-	
-	$('input:checkbox[name=invoiceStatus]:checked').each(function() 
-    {
-		invoice.push($(this).val());
-    });
-	
-	$('input:checkbox[name=paymentStatus]:checked').each(function() 
-	 {
-		payment.push($(this).val());
-	 });
-	
-	
-	$.ajax({
-    	type: "GET",
-        url: sourceleadUrl+"/getInvoiceList?${_csrf.parameterName}=${_csrf.token}&invoiceType=payables&invoiceStatus="+invoice+"&paymentStatus="+payment+"&dayWisetype="+dayWisetype+"&startDate="+startDate+"&endDate="+endDate,
-        success: function(data) {
-        	var json = JSON.parse(data);
-        	var result = "";
-        	
-        	var draftCount = 0;
-        	var draftTotalAmount = 0;
-        	
-        	var paidCount = 0;
-        	var paidTotalAmount = 0;
-        	
-        	var dueAfterInvoiceCount = 0;
-        	var dueAfterInvoiceAmount = 0;
-        	
-        	var dueBeforeInvoiceCount = 0;
-        	var dueBeforeInvoiceAmount = 0;
-        	
-			result = result +'	<table id="invoiceListPagination">                                                                                                         ';
-			result = result +'     <thead>                            ';
-			result = result +'       <tr>                             ';
-			result = result +'         <th>ID</th>                    ';
-			result = result +'         <th>Vendor Name</th>           ';
-			result = result +'         <th>Contact</th>               ';
-			result = result +'         <th>Project Name</th>          ';
-			result = result +'         <th>Bill Date<br>(<small class="custom-small">'+orgLocationDate+'</small>)</th>             ';
-			result = result +'         <th>Total</th>                 ';
-			result = result +'         <th>Due</th>                   ';
-			result = result +'         <th>Due Date<br>(<small class="custom-small">'+orgLocationDate+'</small>)</th>              ';
-			result = result +'         <th>Status</th>                ';
-			result = result +'         <th>Payment Status</th>        ';
-			result = result +'         <th>Action</th>                ';
-			result = result +'       </tr>                            ';
-			result = result +'     </thead>                           ';
-			result = result +'     <tbody>                            ';
-			
-        	for (var i=0; i<json.length; i++)
-    		{  
-        		var report = json[i];
-        		
-        		
-        		
-        		draftCount = parseInt(draftCount) + parseInt(report.draftInvoiceCount);
-       			if(report.draftInvoiceAmount != null && report.draftInvoiceAmount != '' && report.draftInvoiceAmount != 'undefined'){
-       				draftTotalAmount = parseFloat(draftTotalAmount) + parseFloat(report.draftInvoiceAmount);
-       			}
-       			
-       			
-				paidCount = parseInt(paidCount) + parseInt(report.paidInvoiceCount);
-       			if(report.paidInvoiceAmount != null && report.paidInvoiceAmount != '' && report.paidInvoiceAmount != 'undefined'){
-       				paidTotalAmount = parseFloat(paidTotalAmount) + parseFloat(report.paidInvoiceAmount);
-       			}
-       			
-       			dueAfterInvoiceCount = parseInt(dueAfterInvoiceCount) + parseInt(report.dueAfterInvoiceCount);
-       			if(report.dueAfterInvoiceAmount != null && report.dueAfterInvoiceAmount != '' && report.dueAfterInvoiceAmount != 'undefined'){
-       				dueAfterInvoiceAmount = parseFloat(dueAfterInvoiceAmount) + parseFloat(report.dueAfterInvoiceAmount);
-       			}
-       			
-       			dueBeforeInvoiceCount = parseInt(dueBeforeInvoiceCount) + parseInt(report.dueBeforeInvoiceCount);
-       			if(report.dueBeforeInvoiceAmount != null && report.dueBeforeInvoiceAmount != '' && report.dueBeforeInvoiceAmount != 'undefined'){
-       				dueBeforeInvoiceAmount = parseFloat(dueBeforeInvoiceAmount) + parseFloat(report.dueBeforeInvoiceAmount);
-       			}
-       			var invoiceStatus = null;
-       			if(report.invoiceStatus == "SENT"){
-       				invoiceStatus = "Sent"
-       			}else if(report.invoiceStatus == "DRAFT"){
-       				invoiceStatus = "Draft"
-       			}else{
-       				invoiceStatus = report.invoiceStatus
-       			}
-        		
-        		if(report.dueDateStr != null && report.dueDateStr != '' && report.dueDateStr !='undefined'){
-        			dueDateStr = report.dueDateStr;
-        		}else{
-        			dueDateStr = "";
-        		}
-        		
-        		if(report.invoiceDateStr != null && report.invoiceDateStr != '' && report.invoiceDateStr != 'undefined'){
-        			invoiceDateStr = report.invoiceDateStr;
-        		}else{
-        			invoiceDateStr = "";
-        		}
-        		var projectName = "";
-       			if(report.projectName != null && report.projectName != '' && report.projectName != 'undefined'){
-       				projectName = report.projectName;
-        		}else{
-        			projectName = "--";
-        		}	
-        		result = result +'       <tr> ';
-				result = result +'         <td>';
-				if(report.invoiceStatus == "DRAFT" || report.invoiceStatus == "Rejected"){
-					if(report.projectId != null && report.projectId != '' && report.projectId != 'undefined'){
-						'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_BILL\')">';
-						result = result +'           <div class="tbldata-dotdot_80 invoiceId_Anchor"><a href="'+sourceleadUrl+'/getInvoiceByUUID?invoiceUUID='+report.invoiceUUID+'&projectId='+report.projectId+'" title = "'+report.invoiceId+'">'+report.invoiceId+'</a></div>   ';
-						'</sec:authorize>';
-					}else{
-						result = result +'           <div class="tbldata-dotdot_80 invoiceId_Anchor"><a href="'+sourceleadUrl+'/getInvoiceByUUID?invoiceUUID='+report.invoiceUUID+'" title = "'+report.invoiceId+'">'+report.invoiceId+'</a></div>   ';
-					}
-					
-
-				}
-				if(report.invoiceStatus == "SENT" || report.invoiceStatus == "Received" || report.invoiceStatus == "Accepted" || report.invoiceStatus == "Linked"){
-					'<sec:authorize access="hasAnyRole(\'ROLE_BILL_PAYMENT_HISTORY\')">';
-					result = result +'           <div class="tbldata-dotdot_80 invoiceId_Anchor"><a href="<c:url value="/viewInvoice?invoiceUUID='+report.invoiceUUID+'&invoiceType=Payables"/>" title = "'+report.invoiceId+'">'+report.invoiceId+'</a></div>   ';				
-					'</sec:authorize>';
-				}
-				
-				result = result +'         </td>  ';
-				result = result +'         <td>   ';
-				result = result +'           <div class="tbldata-dotdot-vsm" title="'+report.clientName+'">'+report.clientName+'</div>';
-				result = result +'         </td> ';
-				result = result +'         <td>';
-				if(report.clientContactName !='' && report.clientContactName != null && report.clientContactName != 'undefined'){
-					result = result +'<div class="tbldata-dotdot-vsm" title="'+report.clientContactName+'">'+report.clientContactName+'</div>  ';	
-				}else{
-					result = result +'<div class="tbldata-dotdot-vsm" title="">--</div>  ';
-				}
-				result = result +'         </td>';
-				result = result +'         <td> ';
-					result = result +'<div class="tblminwidth-100">'+projectName+'</div>';
-				result = result +'         </td>';
-				result = result +'         <td> ';
-				if(invoiceDateStr !=null && invoiceDateStr !='' && invoiceDateStr !='undefined'){
-				result = result +'           <div class="tblminwidth-100">'+invoiceDateStr+'</div>';
-				}else{
-					result = result +'<div class="tblminwidth-100">--</div>';
-				}
-				result = result +'         </td>';
-				result = result +'         <td> ';
-				result = result +'           <div class="tbldata-dotdot_80" title="'+report.total+'">'+report.total+'</div>';
-				result = result +'         </td>';
-				result = result +'         <td> ';
-				result = result +'           <div class="tbldata-dotdot_80" title="'+report.dueAmount+'">'+report.dueAmount+'</div>';
-				result = result +'         </td>';
-				result = result +'         <td> ';
-				if(dueDateStr !=null && dueDateStr !='' && dueDateStr !='undefined'){
-				result = result +'           <div class="tblminwidth-100">'+dueDateStr+'</div>';
-				}else{
-					result = result +'<div class="tblminwidth-100">--</div>';
-				}
-				result = result +'         </td>';
-				result = result +'         <td> ';
-				result = result +'           <div class="tbldata-dotdot_100">'+invoiceStatus+'</div>';
-				if(report.invoiceStatus == "Rejected"){
-			 		result = result + '    <i class="glyphicon glyphicon-comment ml10 edit-reason"><div class="edit-status"><p>'+report.rejectReason+'</p></div></i>';
-					}
-				result = result +'         </td>';
-				
-				result = result +'         <td> ';
-				result = result +'           <div class="tbldata-dotdot_100">'+report.paymentStatus+'</div> ';
-				result = result +'         </td>';
-				
-				result = result +'         <td> ';
-				result = result +'     <div class="tblminwidth-90">';
-				 result = result +'  <div class="pull-right positionRelative menuWidget" >';
-				if(report.invoiceStatus == "SENT" || report.invoiceStatus == "Received" || report.invoiceStatus == "Accepted"){
-					 result = result +' <i class="fa fa-ellipsis-v" onClick="showPopUp('+report.id+',\''+report.invoiceStatus+'\',\''+report.invoiceParentId+'\',\''+report.total+'\');" ></i>  ';
-						result = result +'  <div id="popupDiv'+report.id+'"></div>';
-				} 
-				result = result +'  </div> ';  
-				if(report.invoiceType=="Payables" && report.invoiceParentId != null && report.invoiceParentId != '' && report.invoiceParentId != "undefined"){
-					if(report.paymentStatus == "Paid" || report.invoiceStatus == "DRAFT" || report.invoiceStatus == "Rejected"){
-						if(report.paymentStatus == "Paid"){
-							result = result +'           <span class="text-primary successBtn primary pull-left" title="Paid" >Paid</span> </td>          ';
-						}else if(report.invoiceStatus == "DRAFT"){
-							result = result +'           <span class="text-primary successBtn primary pull-left" title="Paid">Send</span><i class="fa fa-trash text-danger pull-right cursorPointer" title="Remove Bill" onClick="deleteBill('+report.id+');";></i></td>          ';
-						}else if(report.invoiceStatus == "Rejected"){
-							result = result +'           <span class="text-primary successBtn primary pull-left" title="Paid" >Send</span> </td>          ';
-						}
-							
-					}else{
-						if(report.invoiceStatus == "Accepted"){
-							result = result +'           <span class="text-primary receiveBtn receive_Btn pull-left" onclick="receivePaymentPop1('+report.id+','+report.dueAmount+');" title="Pay">Pay</span> </td>';
-						}else{
-							if(report.invoiceStatus == "Rejected"){
-								result = result +'           <span class="text-danger successBtn primary pull-left" >Rejected</span> </td>          ';	
-							}else if(report.invoiceStatus == "Linked"){
-								result = result +' <a class="text-primary successBtn primary pull-left cursorPointer" onClick="unLinkBill('+report.id+')">UnLink</a>  ';
-							}else{
-								result = result +'           <span class="clearfix" ><a onclick="acceptedInvoice('+report.id+');" title="Accept"><i class="fa fa-check text-success paddingRight"></i></a><a onclick="rejectInvoice('+report.id+');" title="Reject"><i class="paddingLeft fa fa-times text-danger"></i></a></span> </td>';
-							}
-							
-						}
-					}
-					
-				}else{
-					if((report.paymentStatus == "Paid" && report.invoiceStatus != "Linked") || report.invoiceStatus == "DRAFT" || report.invoiceStatus == "Rejected"){
-						if(report.paymentStatus == "Paid"){
-							result = result +'           <span class="text-primary successBtn primary pull-left" title="Paid" >Paid</span> </td>          ';	
-						}else if(report.invoiceStatus == "DRAFT"){
-							result = result +'           <span class="text-primary successBtn primary pull-left" title="Paid">Send</span><i class="fa fa-trash text-danger pull-right cursorPointer" title="Remove Bill" onClick="deleteBill('+report.id+');";></i></td>          ';
-						}else{
-							result = result +'           <span class="text-primary successBtn primary pull-left" title="Paid" >Send</span> </td>          ';
-						}
-							
-					}else{
-						if(report.invoiceStatus == "Linked"){
-							result = result +' <a class="text-primary successBtn primary pull-left" onClick="unLinkBill('+report.id+')">UnLink</a>  ';
-						}else{
-							result = result +'           <span class="text-primary receiveBtn receive_Btn pull-left" onclick="receivePaymentPop1('+report.id+','+report.dueAmount+');" title="Pay">Pay</span> </td>          ';
-						}
-					}
-					
-					
-				}
-				
-				/* if(report.invoiceType=="Receivable"){
-					if(report.paymentStatus == "Paid" || report.invoiceStatus == "DRAFT"){
-						result = result +'           <span class="text-primary successBtn primary pull-left" >Receive</span> </td>          ';	
-					}else{
-						result = result +'           <span class="text-primary receiveBtn receive_Btn pull-left" onclick="receivePaymentPop1('+report.id+','+report.dueAmount+');">Receive</span> </td>          ';
-					}
-				} */
-				 
-				 result = result +'</div>';
-				
-				result = result +'       </tr>                                                                                                           ';
-
-    		}
-        	result = result +'     </tbody>                                                                                                          ';
-			result = result +'   </table>                                                                                                            ';
-			$("#invoiceList").empty();  
-		    $("#invoiceList").append(result);
-		    
-		    $("#emptyPayableInvoiceId").val(json.length);
-		    
-		    $("#draftInvoiceCount").html(draftCount);
-		    $("#unbilledAmoumt").html(draftTotalAmount.toFixed(2));
-		    		    
-		    $("#paidInvoiceCount").html(paidCount);
-		    $("#paidInvoiceAmount").html(paidTotalAmount.toFixed(2));
-		    
-		    $("#dueAfterInvoiceCount").html(dueAfterInvoiceCount);
-		    $("#dueAfterInvoiceAmount").html(dueAfterInvoiceAmount.toFixed(2));
-		    
-		    $("#dueBeforeInvoiceCount").html(dueBeforeInvoiceCount);
-		    $("#dueBeforeInvoiceAmount").html(dueBeforeInvoiceAmount.toFixed(2));
-		    
-		    invoicePagination()
-        },
-        
-    });
-	
-	
-}
-</script>
 <script>
-function invoicePagination(){ 
-
-    $('#invoiceListPagination').DataTable( { 
-    	"scrollCollapse": false,
-    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
-    	"bLengthChange": true,
-    	"bDestroy": true,
-    	"aaSorting": [[3,'asc']],
-    	"ordering": true,
-    	"oLanguage": {
-     		"sSearch": "",
-     		 "sZeroRecords": "", "sEmptyTable": ""
-     	}
-    });
-    $('#invoiceListPagination').wrap("<div class='overflow_Auto'></div>");
-}
-</script> -->
-<script>
-function showPopUp(id,invoiceStatus,invoiceParentId,totalAmount){
+function showPopUp(id,invoiceStatus,invoiceParentId,totalAmount,fileUrl){
 		 removePopup();
 	     result = "";
 	     if(invoiceParentId == 'undefined'){
@@ -1229,11 +917,13 @@ function showPopUp(id,invoiceStatus,invoiceParentId,totalAmount){
 			 '</sec:authorize>'
 		 }
 		 '<sec:authorize access="hasAnyRole(\'ROLE_PRINT_BILL\')">';
-	     result = result +'      <li onclick="getPrint('+id+');"><i class="fa fa-print paddingLeft paddingRight" title="Print"></i>Print</li>';
+// 	     result = result +'      <li onclick="getPrint('+id+');"><i class="fa fa-print paddingLeft paddingRight" title="Print"></i>Print</li>';
+		result = result+' <a class="fa fa-print paddingLeft paddingRight" href="'+fileUrl+'" title="Print">Print</a>';
 	     '</sec:authorize>'
 	     
 	     '<sec:authorize access="hasAnyRole(\'ROLE_DOWNLOAD_BILL\')">';
-	     result = result +'      <li onclick="downloadInvoice('+id+');"><i class="fa fa-download paddingLeft paddingRight" title="Download"></i>Download</li>';
+// 	     result = result +'      <li onclick="downloadInvoice('+id+');"><i class="fa fa-download paddingLeft paddingRight" title="Download"></i>Download</li>';
+ 		 result = result+' <a class="fa fa-download paddingLeft paddingRight" href="'+fileUrl+'" title="Download">Download</a>';
 	     '</sec:authorize>'
 	     result = result +'      <li onclick="linkPayableInvoice('+id+',\''+totalAmount+'\');"><i class="fa fa-download paddingLeft paddingRight" title="Link Bill"></i>Link Bill</li>';
 	     result = result +'    </ul>';
@@ -1275,7 +965,7 @@ function sendReminder(id){
 
 </script>
 
-<script type="text/javascript">
+<!-- <script type="text/javascript">
 function getPrint(id) {
 	var sourceleadUrl ='${sourceleadUrl}';
 	window.open(sourceleadUrl+'/getPrint/'+id+'','_newtab');
@@ -1286,7 +976,7 @@ function downloadInvoice(id){
 	var sourceleadUrl ='${sourceleadUrl}';
 	window.location.href = sourceleadUrl+"/downloadInvoice?${_csrf.parameterName}=${_csrf.token}&invoiceId="+id;
 }
-</script>
+</script> -->
 
 <script>
 function acceptedInvoice(id){

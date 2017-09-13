@@ -1168,7 +1168,7 @@ public class InvoiceRestController {
 	 * @param response
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "/getPrint/{id}", method = RequestMethod.GET)
+	/*@RequestMapping(value = "/getPrint/{id}", method = RequestMethod.GET)
 	public @ResponseBody  void getPrint(@PathVariable("id") String invoiceId,HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
 		Long Id = null;
@@ -1187,7 +1187,7 @@ public class InvoiceRestController {
         sos.write(pdfBytes);
         sos.flush();
         sos.close();
-	}
+	}*/
 	
 	
 	/**
@@ -1198,7 +1198,7 @@ public class InvoiceRestController {
 	 * @throws Exception
 	 */
 	
-	@RequestMapping(value = "/downloadInvoice", method = RequestMethod.GET)
+	/*@RequestMapping(value = "/downloadInvoice", method = RequestMethod.GET)
 	public void downloadInvoice(@RequestParam(value="invoiceId", required=false) String invoiceId,HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
 		Long Id = null;
@@ -1212,7 +1212,7 @@ public class InvoiceRestController {
 		response.setContentType("application/octet-stream");
 		StringBuilder fileName = new StringBuilder();
 	    response.setHeader("Content-Disposition", fileName.append("attachment; filename=\"").append(invoice.getFileName()).append("\"").toString());
-		InputStream inputStream = new ByteArrayInputStream(invoice.getDocFile());
+		InputStream inputStream = new ByteArrayInputStream(invoice.getFileUrl());
 			try {
 				OutputStream outStream = response.getOutputStream();
 	
@@ -1230,7 +1230,7 @@ public class InvoiceRestController {
 				logger.error(ExceptionUtils.getFullStackTrace(e));
 			} 
 	
-	}
+	}*/
 
 	@RequestMapping(value = "/getDueDateByFrequency", method = RequestMethod.GET)
 	public @ResponseBody String getDueDateByFrequency(@RequestParam(value = "paymentFrequency", required = false) String paymentFrequency,
