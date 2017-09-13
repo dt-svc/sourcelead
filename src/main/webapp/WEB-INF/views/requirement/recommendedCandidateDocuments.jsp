@@ -43,18 +43,6 @@ function candidateDocuments(candidateId){
 		result  = result + '   </div>';
 	    result = result+'	    </div>';
 	  
-
-	/* $("#tab-1").empty();
-	$("#tab-2").empty();
-	$("#tab-3").empty();
-	$("#tab-4").empty();
-	$("#tab-5").empty();
-	$("#tab-6").empty();
-	$("#tab-7").empty();
-	$("#tab-8").empty();
-    $("#tab-9").empty();
-    $("#tab-9").append(result);  */
-    
     $("#tab-11").empty();
     $("#tab-12").empty(); 
     $("#tab-13").empty();  
@@ -231,8 +219,8 @@ function addDocument(candidateId, documentUUID) {
 	result = result+'<div class="clearfix mb10" id="uploadDocDiv">';
 	result = result+'<div class="col-md-12">';
 	result = result+'<div class="input-group positionRelative" id="uploadFileGroup">';
-	result = result+'<label class="input-group-btn"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File';
-	result = result+'<input type="file" name="uploadBtn" id="uploadBtn" style="display: none;"  multiple="" class="upload">';
+	result = result+'<label class="input-group-btn" onChange="uploadFileDoc();"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File';
+	result = result+'<input type="file"  id="uploadBtn" style="display: none;"  multiple="" class="upload">';
 	result = result+'</span> </label>';
 	result = result+'<input type="text" class="form-control" readonly id="uploadFile" name="docFile" placeholder="Upload Document..." field-name="Document Type" data-validation="validate_Space validatedoc">';
 	result = result+'</div>';
@@ -364,28 +352,21 @@ function getDocumentType(documentType){
 					dateFormat : 'yyyy/mm/dd' 
 		         }; 
 			 if ($('#documentType_form').validate(false, validationSettings)){
-				var frm = $('#documentType_form').serializeFormJSON();
-				var con = JSON.stringify(frm);
-				con = con.replace(/[{}]/g, "");
-				var form = $('#documentType_form')[0];
-	      		var formData = new FormData(form); 
-				var sourceleadUrl = '${sourceleadUrl}';
-				$("#save_doc").attr("disabled", "disabled");
-         		$("#save_doc" ).addClass('button').val('Processing..');
-				//It will escape all the special characters
-		        var jsonData = encodeURIComponent(con);
-				$.ajax({
+				 
+				    var sourceleadUrl = '${sourceleadUrl}';
+			        var frm = $('#documentType_form')[0];
+					var formData = new FormData(frm);
+					$("#save_doc").attr("disabled", "disabled");
+	         		$("#save_doc" ).addClass('button').val('Processing..');
+	         		
+	         		$.ajax({
 						type : "POST",
 		        	    data: formData,
-		        	    contentType : 'application/json; charset=utf-8',
-		        	    enctype: 'multipart/form-data',
 		    	        processData: false,
 		    	        contentType:false,
-		        	    dataType : 'json',
-						url : sourceleadUrl+"/saveCandidateDocument?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&candidateId="+candidateId+"&documentUUID="+documentUUID,
+		        	   	url : sourceleadUrl+"/saveCandidateDocument?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&documentUUID="+documentUUID,
 						success : function(result) {
 								closePopup();
-								
 								$('#perVal').attr('aria-valuenow', result).css('width',result+'%');
 			          			 if(result<50){
 			          			   $("#perVal").removeClass('progress-bar-success');
@@ -411,11 +392,17 @@ function getDocumentType(documentType){
 
 		            			$("#quickDisVal").empty();
 		            			$("#quickDisVal").append(result+'%');
+			          			
+								$("#popUpDiv").removeClass("edit-details-active");
+		            			$("#selector9").removeAttr("style");
+		            			$("#selector9").css({ display: "block" });
+	            				$("#docMsgDiv").html("Success!! New Candidate Document added");
 		             			candDocumentsList(candidateId);
-						 		resMsgFadein();
+		             			resMsgFadein();
 		            		 
 						},
-					});
+					}); 
+				
 					return true;
 			 }else{ 
 					return false;
@@ -443,34 +430,35 @@ function getDocument(candidateId, documentId){
 		   	type: "POST",
 		    url: sourceleadUrl+"/getDocument?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&documentId="+documentId, 	   
    		    success: function(data) {
-   		    	var json = JSON.parse(data);
         			 $("#uploadDocDiv").hide();
         			 $("#docAddButton").hide();
         			 $("#uploadFile").removeAttr("data-validation");
         			 $("#docNameDiv").show();
-        			 $("#docName").append(json.fileName);
+        			 $("#docName").append(data.fileName);
         			 $("#docUpdateButton").show();
-        			 if(json.documentType != null && json.documentType != "undefined" && json.documentType != ""){
-        				 
-        				 $("select#name").val(json.documentType);
-	                     $("#name").trigger("chosen:updated");
-	                     
-	                     //here documentType is Other then documentOtherType  also display in Edit.
-	                     
-	                     if(json.documentType == 'Other'){
-		        				 if(json.documentOtherType !=null && json.documentOtherType !='' && json.documentOtherType !="undefined"){
-		        					 document.getElementById("documentTypeDiv").style.display="block";
-		        					 $("#documentOtherType").val(json.documentOtherType);
-			    	             }
-	        			 }
+        			if(data !=null){
+        				 if(data.documentType != null && data.documentType != "undefined" && data.documentType != ""){
+        					 
+            				 $("select#name").val(data.documentType);
+            				 $("select#name").trigger("chosen:updated");
+    	                     //here documentType is Other then documentOtherType  also display in Edit.
+    	                     
+    	                     if(data.documentType == 'Other'){
+    		        				 if(data.documentOtherType !=null && data.documentOtherType !='' && data.documentOtherType !="undefined"){
+    		        					 document.getElementById("documentTypeDiv").style.display="block";
+    		        					 $("#documentOtherType").val(data.documentOtherType);
+    			    	             }
+    	        			 }
 
-         			 }
-        			 
-        			 $("#update_doc").attr("onclick", "storeCandidateDocument("+json.candidateId.id+", \""+json.documentUUID+"\");");
-        			 
-        			 if(json.description != null && json.description != "undefined" && json.description != ""){
-        				 $("textarea#description").val(json.description);
-        			 }
+             			 }
+            			 
+            			 $("#update_doc").attr("onclick", "storeCandidateDocument("+data.candidateId.id+", \""+data.documentUUID+"\");");
+            			 
+            			 if(data.description != null && data.description != "undefined" && data.description != ""){
+            				 $("textarea#description").val(data.description);
+            			 }	
+        			}
+        		
         			 
    		    }
 	     });
@@ -571,3 +559,9 @@ function refreshDocList(candidateId){
 }
 </script>
 
+<script>
+function uploadFileDoc(){
+	var sourceleadUrl ='${sourceleadUrl}';
+	fileUpload(sourceleadUrl, "uploadBtn", "candidateDocuments", "documentType_form");
+}
+</script>

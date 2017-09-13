@@ -602,7 +602,7 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 		List<CandidateIndex> CandidateListcopy = new ArrayList<>(); 
 		String reqSkills = "";
 		if(null != recommendedCustomizeScore.getCustomizeSkills() && !"".equalsIgnoreCase(recommendedCustomizeScore.getCustomizeSkills())){
-			Long maxResults = candidateService.getCandidatesCountByOrgLocationID(orgLocationId,null);
+//			Long maxResults = candidateService.getCandidatesCountByOrgLocationID(orgLocationId,null);
 			BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
 			 boolQueryBuilder.must(QueryBuilders.matchQuery("orgLocationId", orgLocationId));
 			 boolQueryBuilder.must(QueryBuilders.matchQuery("status",1));
@@ -701,13 +701,13 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 					
 					//List<RequirementSubmission> reqList = requirementSubmissionService.getRequirementPerCandidate(candidateIndex.getCandidateId());
 					Integer reqListCount = requirementSubmissionService.getRequirementPerCandidateCount(candidateIndex.getCandidateId(),candidateIndex.getOrgLocationId());
-					
-					boolean isSumbitted = requirementSubmissionService.isCandidateSubmittedForRequirementByCandidateIdAndRequirementId(candidateIndex.getCandidateId(), requirementId);
-					if(isSumbitted == true){
-						candidateIndex.setIsCandidateSubmitted(Constants.YES);
-					}else{
-						candidateIndex.setIsCandidateSubmitted(Constants.NO);
-					}
+					 // TODO Don't delete until regression testing done Rajashekar
+//					boolean isSumbitted = requirementSubmissionService.isCandidateSubmittedForRequirementByCandidateIdAndRequirementId(candidateIndex.getCandidateId(), requirementId);
+//					if(isSumbitted == true){
+//						candidateIndex.setIsCandidateSubmitted(Constants.YES);
+//					}else{
+//						candidateIndex.setIsCandidateSubmitted(Constants.NO);
+//					}
 					
 					//get the skillPercentage method
 					 				 
@@ -821,7 +821,7 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 		        });
 			 }
 		 }
-		logger.info("....getRecommendationsWithScoreByUsingElk Method Ended...");
+		logger.info("....RecommendationsWithScoreByUsingElk Method Ended...");
 		return CandidateListcopy;
 	}
 	

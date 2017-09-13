@@ -30,6 +30,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.AccountDeductionsDTO;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.payroll.dao.AccountDeductionsDao;
@@ -358,21 +360,9 @@ public class AccountDeductionsServiceImpl implements AccountDeductionsService{
 		return cellValue;
 	}
 	@Override
-	public List<AccountDeductions> getAccountDeductionsListByOrgLocationId(OrgLocations orgLocation) throws Exception
-	{
-		List<AccountDeductions> accountDeductionsList =  accountDeductionsDao.getAccountDeductionsListByOrgLocationId(orgLocation);
+	public ResponseList<AccountDeductions> getAccountDeductionsListByOrgLocationId(OrgLocations orgLocation, AccountDeductionsDTO accountDeductionsDTO) throws Exception{
+		return accountDeductionsDao.getAccountDeductionsListByOrgLocationId(orgLocation, accountDeductionsDTO); 
 		
-		if(accountDeductionsList != null){
-			for(AccountDeductions ad : accountDeductionsList){
-				if(null !=  ad.getFromDate()){
-					ad.setFromDateStr(conversionUtil.getDateAsString(ad.getFromDate()));
-				}
-				if(null != ad.getToDate()){
-					ad.setToDateStr(conversionUtil.getDateAsString(ad.getToDate()));
-				}
-			}
-		}
-		return accountDeductionsList;
 	}
 
 	@Override

@@ -44,6 +44,9 @@ import org.springframework.web.multipart.MultipartFile;
 import com.bis.sourcelead.beans.ClientImportObject;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.UserDao;
+import com.bis.sourcelead.dto.AddUserDTO;
+import com.bis.sourcelead.dto.CandidateDTO;
+import com.bis.sourcelead.dto.ClientDTO;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
@@ -178,9 +181,9 @@ public class VendorImportServiceImpl implements VendorImportService {
 					}
 					isClientFound = validateVendor(client.getClientName(), client, orgLocation, responderType);
 					if (!isClientFound) {
-						JSONObject jsonObj = populateJsonObject(client, isMailSent, vandorsListByOrgLocationId, orgLocation, client.getClientName(), "org");
+						ClientDTO clientDTO = populateJsonObject(client, isMailSent, vandorsListByOrgLocationId, orgLocation, client.getClientName(), "org");
 						try {
-							clientService.storeClient(jsonObj, user, orgLocation, responderType, org);
+							clientService.storeClient(clientDTO,clientDTO.getAddUserDTO(),clientDTO.getCandidateDTO(), user, orgLocation, responderType, org);
 						} catch (Exception e) {
 							logger.error(ExceptionUtils.getFullStackTrace(e));
 						}
@@ -197,11 +200,11 @@ public class VendorImportServiceImpl implements VendorImportService {
 							if (orgSpoc == null) {
 								if (ownerUser.getId() != null) {
 									client.setOwnerUserId(ownerUser.getUser().getId());
-									JSONObject jsonObj1 = populateJsonObject(client, isMailSent, vandorsListByOrgLocationId, orgLocation, client.getClientName(), "contact");
+									ClientDTO clientDTO = populateJsonObject(client, isMailSent, vandorsListByOrgLocationId, orgLocation, client.getClientName(), "contact");
 									try {
 										// clientService.storeClient(jsonObj,
 										// user, orgLocation,responderType,org);
-										orgSpocService.addVendorContacts(jsonObj1, user, orgLocation, orgRelationId.toString(), "", responderType, org);
+										orgSpocService.addVendorContacts(clientDTO,clientDTO.getAddUserDTO(),clientDTO.getCandidateDTO(), user, orgLocation, orgRelationId.toString(), "", responderType, org);
 										vandorsListByOrgLocationId.clear();
 									} catch (Exception e) {
 										logger.error(ExceptionUtils.getFullStackTrace(e));
@@ -494,12 +497,14 @@ public class VendorImportServiceImpl implements VendorImportService {
 	 * @return
 	 * @throws JSONException
 	 */
-	private JSONObject populateJsonObject(ClientImportObject clientObject, String isMailSent, List<OrgRelations> orgList, OrgLocations orgLocation, String orgName, String type) throws JSONException
+	private ClientDTO populateJsonObject(ClientImportObject clientObject, String isMailSent, List<OrgRelations> orgList, OrgLocations orgLocation, String orgName, String type) throws JSONException
 	{
 		String roleTypeId = "";
-		JSONObject jsonObj = new JSONObject();
+		ClientDTO clientDTO = new ClientDTO();
+		AddUserDTO addUserDTO = new AddUserDTO();
+		CandidateDTO candidateDTO = new CandidateDTO();		
 		if (orgList != null && orgList.size() > 0) {
-			jsonObj.put("roleTypeId", roleTypeId);
+			clientDTO.setRoleTypeId(roleTypeId);
 			OrgRelations orgRelation = null;
 			for (OrgRelations org : orgList) {
 				if (orgName.equalsIgnoreCase(org.getResponderLocationId().getOrgLocationName())) {
@@ -511,88 +516,109 @@ public class VendorImportServiceImpl implements VendorImportService {
 			}
 			StringBuilder vendorName = new StringBuilder();
 			if (orgLocation.getId().longValue() == orgRelation.getLocationId().getId().longValue()) {
-				jsonObj.put("vendorName", vendorName.append(orgRelation.getId()).append(",").append(orgRelation.getResponderLocationId().getId()));
+				clientDTO.setVendorName(vendorName.append(orgRelation.getId()).append(",").append(orgRelation.getResponderLocationId().getId()).toString());
 			}
 			else {
-				jsonObj.put("vendorName", vendorName.append(orgRelation.getId()).append(",").append(orgRelation.getLocationId().getId()));
+				clientDTO.setVendorName(vendorName.append(orgRelation.getId()).append(",").append(orgRelation.getLocationId().getId()).toString());
 			}
 		}
 		else {
-			jsonObj.put("orgName", clientObject.getClientName());
+			clientDTO.setOrgName(clientObject.getClientName());
 		}
 		if (clientObject.getWebSite() != null) {
-			jsonObj.put("webSite", clientObject.getWebSite());
+			clientDTO.setWebSite(clientObject.getWebSite());
 		}
 		if (clientObject.getCountry() != null) {
-			jsonObj.put("country", clientObject.getCountry());
+			clientDTO.setCountry(clientObject.getCountry());
+			addUserDTO.setCountry(clientObject.getCountry());
+			candidateDTO.setCountry(clientObject.getCountry());
 		}
 		else {
 			if ("India".equals(orgLocation.getCountry())) {
 				
-				jsonObj.put("country", "India");
+				clientDTO.setCountry("India");
+				addUserDTO.setCountry("India");
+				candidateDTO.setCountry("India");
 			}
 			else if ("Australia".equals(orgLocation.getCountry())) {
 				
-				jsonObj.put("country", "Australia");
+				clientDTO.setCountry("Australia");
+				addUserDTO.setCountry("Australia");
+				candidateDTO.setCountry("Australia");
 			}
 			else if ("United States".equals(orgLocation.getCountry())) {
 				
-				jsonObj.put("country", "United States");
+				clientDTO.setCountry("United States");
+				addUserDTO.setCountry("United States");
+				candidateDTO.setCountry("United States");
 			}
 			else if ("Singapore".equals(orgLocation.getCountry())) {
 				
-				jsonObj.put("country", "Singapore");
+				clientDTO.setCountry("Singapore");
+				addUserDTO.setCountry("Singapore");
+				candidateDTO.setCountry("Singapore");
 			}
 			else if ("United Kingdom".equals(orgLocation.getCountry())) {
 				
-				jsonObj.put("country", "United Kingdom");
+				clientDTO.setCountry("United Kingdom");
+				addUserDTO.setCountry("United Kingdom");
+				candidateDTO.setCountry("United Kingdom");
 			}
 			else if ("France".equals(orgLocation.getCountry())) {
 				
-				jsonObj.put("country", "France");
+				clientDTO.setCountry("France");
+				addUserDTO.setCountry("France");
+				candidateDTO.setCountry("France");
 			}
 		}
 		if (clientObject.getState() != null) {
-			jsonObj.put("state", clientObject.getState());
+			clientDTO.setState(clientObject.getState());
 		}
 		if (clientObject.getCity() != null) {
-			jsonObj.put("city", clientObject.getCity());
+			clientDTO.setCity(clientObject.getCity());
 		}
 		if (clientObject.getFirstName() != null) {
-			jsonObj.put("firstName", clientObject.getFirstName());
+			clientDTO.setFirstName(clientObject.getFirstName());
+			addUserDTO.setFirstName(clientObject.getFirstName());
+			candidateDTO.setFileName(clientObject.getFirstName());
 		}
-		if (clientObject.getLastName() != null && !"".equalsIgnoreCase(clientObject.getLastName())) {
-			jsonObj.put("lastName", clientObject.getLastName());
+		if (clientObject.getLastName() != null) {
+			clientDTO.setLastName(clientObject.getLastName());
 		}
 		if (clientObject.getPhone() != null) {
-			jsonObj.put("phoneNumber", clientObject.getPhone());
+			clientDTO.setPhoneNumber(clientObject.getPhone());
 		}
 		if (clientObject.getStatus() != null) {
-			jsonObj.put("spocStatus", clientObject.getStatus());
+			clientDTO.setSpocStatus(clientObject.getStatus());
 		}
 		if (clientObject.getOwnerUserId() != null) {
-			jsonObj.put("owner", clientObject.getOwnerUserId());
+			clientDTO.setOwnerUserId(clientObject.getOwnerUserId().toString());
 		}
 		if (!"org".equals(type)) {
 			if (clientObject.getEmailid() != null) {
-				jsonObj.put("email", clientObject.getEmailid());
+				clientDTO.setEmail(clientObject.getEmailid());
+				addUserDTO.setEmail(clientObject.getEmailid());
+				candidateDTO.setEmail(clientObject.getEmailid());
 			}
 		}
 		if (clientObject.getRole() != null) {
 			try {
 				Roles role = rolesService.getRolesByDisplayName(clientObject.getRole());
-				jsonObj.put("roleType", role.getId());
+				clientDTO.setRoleTypeId(role.getId().toString());
+				addUserDTO.setRoleTypeId(role.getId().toString());
 			} catch (Exception e) {
 				logger.error(ExceptionUtils.getFullStackTrace(e));
 			}
 		}
 		if (isMailSent != null) {
-			jsonObj.put("isMailSent", isMailSent);
+			clientDTO.setIsMailSent(isMailSent);
 		}
 		if (clientObject.getLevel() != null) {
-			jsonObj.put("level", clientObject.getLevel());
+			clientDTO.setLevel(clientObject.getLevel());
 		}
-		return jsonObj;
+		clientDTO.setAddUserDTO(addUserDTO);
+		clientDTO.setCandidateDTO(candidateDTO);
+		return clientDTO;
 	}
 	
 	/**

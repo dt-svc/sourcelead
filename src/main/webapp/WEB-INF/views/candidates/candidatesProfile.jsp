@@ -695,7 +695,7 @@ function candidateProfile(candidateId,candidateType){
 								   
 								   if(candidateType == "Candidates"){
 									   '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_CANDIDATE\',\'ROLE_CROWDSOURCING_CANDIDATES\')">';
-									   result = result + ' <a href="#" onClick="editCandidate('+candidateId+');" class="mr addUser-org"><i class="glyphicon glyphicon-pencil"></i>Edit</a>';
+									   result = result + ' <a href="javascript:void(0)" onClick="editCandidate('+candidateId+');" class="mr addUser-org"><i class="glyphicon glyphicon-pencil"></i>Edit</a>';
 									   '</sec:authorize>'; 
 									   
 									   '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_DELETE_CANDIDATE\',\'ROLE_CROWDSOURCING_CANDIDATES\')">';
@@ -703,7 +703,7 @@ function candidateProfile(candidateId,candidateType){
 									   '</sec:authorize>';
 								   }else{
 									   '<sec:authorize access="hasRole(\'ROLE_VIEW_EDIT_ASSOCIATE\')">';
-									   result = result + ' <a href="#" onClick="editCandidate('+candidateId+');" class="mr addUser-org"><i class="glyphicon glyphicon-pencil"></i>Edit</a>';
+									   result = result + ' <a href="javascript:void(0)" onClick="editCandidate('+candidateId+');" class="mr addUser-org"><i class="glyphicon glyphicon-pencil"></i>Edit</a>';
 									   '</sec:authorize>'; 
 									   
 									   '<sec:authorize access="hasRole(\'ROLE_VIEW_DELETE_ASSOCIATE\')">';
@@ -1169,7 +1169,7 @@ function candidateProfile(candidateId,candidateType){
 		
 		 $('#emailDiv').find('p.jquery_form_error_message').remove();
 		 if ($('#candidateProfileEdit_form').validate(false, validationSettings)){ 
-			var sourceleadUrl = '${sourceleadUrl}';
+			/* var sourceleadUrl = '${sourceleadUrl}';
 			var frm = $('#candidateProfileEdit_form').serializeFormJSON();
 			
 			 var con = JSON.stringify(frm);
@@ -1178,19 +1178,19 @@ function candidateProfile(candidateId,candidateType){
 			var jsonData = encodeURIComponent(con);
 			
 			var form = $('#candidateProfileEdit_form')[0];
-      		var formData = new FormData(form); 
-			
+      		var formData = new FormData(form);  */
+      		var formData = getFormData("candidateProfileEdit_form");
+			var sourceleadUrl = '${sourceleadUrl}';
 			$("#update_candidate").attr("disabled", "disabled");
 			$("#update_candidate").addClass('button').val('Processing..');
-			$.ajax({
-						type : "POST",
-						url : sourceleadUrl+"/updateCandidate?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
-						success : function(result) {
-							/* location.replace(sourceleadUrl+"/candidatesList");  */
-							candidateSideBar(candidateId);
-							candidateQuickViewProfile(candidateId);
-						},
-					});
+				//var form = $('#candidateResume_form')[0];
+				
+		        $.post(sourceleadUrl+"/updateCandidate?${_csrf.parameterName}=${_csrf.token}", formData, function(data) {
+		        	location.replace(sourceleadUrl+"/candidatesList"); 
+		        	candidateSideBar(candidateId);
+					candidateQuickViewProfile(candidateId);
+		        });
+			 
 			return true;
 		 }else{ 
 				return false;

@@ -15,6 +15,9 @@ import org.springframework.test.context.web.WebAppConfiguration;
 
 import com.bis.sourcelead.SecurityConfig;
 import com.bis.sourcelead.WebAppConfig;
+import com.bis.sourcelead.dto.AddUserDTO;
+import com.bis.sourcelead.dto.CandidateDTO;
+import com.bis.sourcelead.dto.ClientDTO;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
@@ -54,66 +57,63 @@ public class ClientServiceTest {
 	} 
 	
 	@Test
-	public void storeClient() throws Exception{
-		 JSONObject jsonObj = new JSONObject();
-		 jsonObj.put("firstName", "Demo_final13");
-		 jsonObj.put("lastName", "User");
-		 jsonObj.put("email", "demomail123@gmail.com");
-		 jsonObj.put("phoneNumber", "890876590");
-		 jsonObj.put("roleType", "Admin");
-		 jsonObj.put("isMailSent", "Y");
-		 jsonObj.put("employeeId", "123");
-		 jsonObj.put("rate", "15000");
-		 jsonObj.put("invoiceFrequency", "Monthly");
-		 jsonObj.put("dateofJoin", "2016-08-17");
-		 jsonObj.put("dayHours", "8");
-		 jsonObj.put("projectId", "1");
-		 
-		 jsonObj.put("orgName", "tcs");
-		 jsonObj.put("companyWebsite", "www.tcsh.com");
-		 jsonObj.put("webSite", "www.tcsh.com");
-		 jsonObj.put("email", "demomail123@gmail.com");
-		 jsonObj.put("phone", "890876590");
-		 jsonObj.put("country", "India");
-		 jsonObj.put("state", "Telangana");
-		 jsonObj.put("city", "Hyderabad");
-		 jsonObj.put("owner", "3");
-		 jsonObj.put("spocStatus", "Active");
-		 
-		 User users = new User();
-		 users.setUserCode("sdf21d");
-		 users.setFirstName("Raj");
-		 users.setLastName("Tarun");
-		 
-		 OrgLocations orgLocations = new OrgLocations();
-		 orgLocations.setId(3L);
-		 orgLocations.setLocationCode("gBLoIN");
-		 
-		 String responderType = "Client";
-		 
-		 Org loginOrg = new Org();
-		 loginOrg.setOrgName("Hangonn");
-		 
-		 clientService.storeClient(jsonObj, users, orgLocations, responderType, loginOrg);
+	public void storeClient() throws Exception
+	{
+		AddUserDTO addUserDto = new AddUserDTO();
+		addUserDto.setFirstName("Demo_final13");
+		addUserDto.setLastName("User");
+		addUserDto.setEmail("demomail123@gmail.com");
+		addUserDto.setPhoneNumber("890876590");
+		addUserDto.setRoleType("Admin");
+		addUserDto.setIsMailSent("Y");
+		addUserDto.setEmployeeId("123");
+		addUserDto.setRate("15000");
+		addUserDto.setDateofJoin("2016-08-17");
+		addUserDto.setDayHours("8");
+		CandidateDTO candidto = new CandidateDTO();
+		candidto.setFirstName("Demo_final13");
+		candidto.setLastName("User");
+		candidto.setEmail("demomail123@gmail.com");
+		candidto.setPhoneNumber("890876590");
+		
+		
+		ClientDTO dto = new ClientDTO();
+		 dto.setVendorName("ibm");
+		 dto.setCountry("India");
+		 dto.setState("Telangana");
+		 dto.setCity("Hyderabad");
+		 dto.setCompanyWebsite("www.ibm.com");
+		 dto.setLevel("2");
+		User users = new User();
+		users.setUserCode("sdf21d");
+		users.setFirstName("Raj");
+		users.setLastName("Tarun");
+		OrgLocations orgLocations = new OrgLocations();
+		orgLocations.setId(3L);
+		orgLocations.setLocationCode("gBLoIN");
+		String responderType = "Client";
+		Org loginOrg = new Org();
+		loginOrg.setOrgName("Hangonn");
+		clientService.storeClient(dto,addUserDto,candidto, users, orgLocations, responderType, loginOrg);
 		logger.info("Client details Stored Successfully....");
 	}
 	
 	@Test
 	public void updateVendorDetails() throws Exception {
 		
-		 JSONObject jsonObj = new JSONObject();
-		 jsonObj.put("vendorName", "ibm");
-		 jsonObj.put("vendorCountry", "India");
-		 jsonObj.put("vendorState", "Telangana");
-		 jsonObj.put("vendorCity", "Hyderabad");
-		 jsonObj.put("companyWebsite", "www.ibm.com");
-		 jsonObj.put("level", "2");
+		ClientDTO dto = new ClientDTO();
+		 dto.setVendorName("ibm");
+		 dto.setCountry("India");
+		 dto.setState("Telangana");
+		 dto.setCity("Hyderabad");
+		 dto.setCompanyWebsite("www.ibm.com");
+		 dto.setLevel("2");
 		 
 		 Long orgRelationId = 5l;
 		 Long vendorLocationId = 8l;
 		 Long loginOrgLocationId = 3l;
 		 
-		 clientService.updateVendorDetails(jsonObj, orgRelationId, vendorLocationId, loginOrgLocationId,new User());
+		 clientService.updateVendorDetails(dto, orgRelationId, vendorLocationId, loginOrgLocationId,new User());
 		 logger.info("Vendor details updated sucessfully sucessfully...");
 	}
 	
