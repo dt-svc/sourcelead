@@ -246,7 +246,6 @@ function addResume(candidateId) {
 					dateFormat : 'yyyy/mm/dd' 
 		         }; 
 			 if ($('#candidateResume_form').validate(false, validationSettings)){
-				 var sourceleadUrl = '${sourceleadUrl}';
 				var form = $('#candidateResume_form')[0];
 				//var formData = getFormData("candidateResume_form");
 				var formData = new FormData(form); 
@@ -327,7 +326,6 @@ function addResume(candidateId) {
 --%>
 <script>
   function candidateResumesList(candidateId){ 	
-	  var sourceleadUrl ='${sourceleadUrl}';
 	  var candidateId = candidateId;
 	  var candidateType = '${candidateType}';
 	  var result = "";
@@ -470,7 +468,6 @@ function addResume(candidateId) {
 --%>
 <script type="text/javascript">
 function getCandiResume(fileURL,title){
-	var sourceleadUrl ='${sourceleadUrl}';
 	if(fileURL != null && fileURL != ""){
 		window.open(sourceleadUrl+'/viewDocumentsForCan/'+title+'?docFile='+encodeURI(fileURL),title,"height=600,width=600");
 	}  
@@ -519,7 +516,6 @@ function removeresumePopUp(candidateId, resumeId){
 </script>
 <script>
 function deleteResume(candidateId, resumeId){
-	var sourceleadUrl ='${sourceleadUrl}';
 	var loginUserId = '${SourceLeadWeb_userId}';
 	 var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 		$.ajax({
@@ -583,7 +579,6 @@ function deleteResume(candidateId, resumeId){
      3.ajax url implementation in CandidateResumeRestController.
 --%>
 <script>
-var sourceleadUrl ='${sourceleadUrl}';
 function getResume(candidateId, resumeId){
 	
 		$.ajax({
@@ -625,7 +620,6 @@ function removeResumeNameDiv(){
 </script>
 <script>
 function uploadFile(){
-	var sourceleadUrl ='${sourceleadUrl}';
 	fileUpload(sourceleadUrl, "uploadBtn", "resumes", "candidateResume_form");
 }
 </script>

@@ -1649,6 +1649,7 @@ function refreshGoogleApiLocation(locationId,countryId,stateId,cityId,zipCodeId)
 	 $("#"+zipCodeId).attr("readonly", true);
 }
 </script>
+
 <script>
 function zipcodeMask(country,zipCodeId){
 	if(country == "India" || country == "Singapore"){
@@ -1665,5 +1666,10 @@ function zipcodeMask(country,zipCodeId){
 		     
 }
 </script>
+
+<script>
+ var sourceleadUrl ='${sourceleadUrl}';
+</script>
+
 <script src="resources/js/zipcodeMaskedinput-1.3.min.js"></script>
 

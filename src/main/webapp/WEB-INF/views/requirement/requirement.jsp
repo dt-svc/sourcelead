@@ -1402,9 +1402,7 @@ function validate_fileupload(fileName)
 				scrollToTopOnError : true,
 				dateFormat : 'yyyy/mm/dd' 
 	         }; 
-		
-		
-		
+		 
 		var ee = $("#txtEditor").val($('.Editor-editor').html()); 
 		
 		checkTemplateforDouplicate();
@@ -1492,7 +1490,7 @@ function validate_fileupload(fileName)
 		
 		   if ($('#requirement_form').validate(false, validationSettings)){   
 			
-			var sourceleadUrl = '${sourceleadUrl}';
+			
       		
       		var formData = getFormData1("requirement_form");
 			$( "#submitForApproval" ).addClass('button').val('Processing..');
@@ -1541,7 +1539,7 @@ function storeTeam(){
 		   
 		   var formData = getFormData("team_form");
 			alert(formData);
-			var sourceleadUrl = '${sourceleadUrl}';
+			
 			$("#add_team").attr("disabled", "disabled"); 
 	       
 			$.post(sourceleadUrl+"/storeTeam?${_csrf.parameterName}=${_csrf.token}", formData, function(data) {
@@ -1835,7 +1833,7 @@ function getTemplateVal(){
 </script>
 <script>
 function getRequirementAndLookUpSkills(requirementid){
-	var sourceleadUrl ='${sourceleadUrl}';
+	
 	$.ajax({
    	type: "POST",
     url: sourceleadUrl+"/getRequirementAndLookUpSkills?${_csrf.parameterName}=${_csrf.token}&requirementid="+requirementid, 	   
@@ -1859,7 +1857,7 @@ function getRequirementAndLookUpSkills(requirementid){
 </script>
 <script>
 function setTemplateValues(){
-	var sourceleadUrl ='${sourceleadUrl}';
+	
 	var requirementId = document.getElementById('template').value;
 	getEditRequirementDetails(requirementId);
 	if(requirementId != null && requirementId !='' && requirementId != 'undefined'){
@@ -2218,7 +2216,7 @@ function approvalType(type){
 
 <script>
 function popupWindow(reqId){ 
-	  var sourceleadUrl ='${sourceleadUrl}';
+	  
 	  $("#popupWindow").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	  $("#popupWindow").removeAttr("style");
 	  var result = '';
@@ -2265,7 +2263,7 @@ function popupWindow(reqId){
 
 <script>
 function getUserList(teamType){  
-	   var sourceleadUrl ='${sourceleadUrl}';
+	   
 	  
 	   var selectedUsersForAssign = [];
 	   $('input[name^="assignUserId"]').each(function() {
@@ -2453,7 +2451,7 @@ function getTeamsList(reqId){
 	if(reqId == '' || reqId == 'undefined' || reqId == null){
 		reqId = '';
 	}
-	  var sourceleadUrl ='${sourceleadUrl}';
+	  
 	  $.ajax({
            type : "POST",
            url: sourceleadUrl+"/getTeamsList?${_csrf.parameterName}=${_csrf.token}&reqId="+reqId,    
@@ -2611,7 +2609,7 @@ function assignMembers() {
 
 <script type="text/javascript">
 function getTeamOwners(){ 
-	 var sourceleadUrl ='${sourceleadUrl}';
+	 
 	 var teamMemberUserId = document.getElementById("memberUserId").value;
      $.ajax({
 		    	type: "POST",
@@ -2640,7 +2638,7 @@ function getTeamOwners(){
 
 <script type="text/javascript">
 function getTeamMembers(){ 
-	 var sourceleadUrl ='${sourceleadUrl}';
+	 
 	 var teamOwnerUserId = document.getElementById("ownerUserId").value;
 		 $.ajax({
 		    	type: "POST",
@@ -2777,7 +2775,7 @@ var existingValue = document.getElementById('isClientJob').value;
 <script type="text/javascript">
 function getLevel2Approvers(currentApproverId){
 	var currentApproverId = document.getElementById("sequentialApprover1").value;
-	 var sourceleadUrl ='${sourceleadUrl}';
+	 
 	 if(currentApproverId != null && currentApproverId != ''  && currentApproverId != 'undefined'){
 		 $.ajax({
 		    	type: "POST",
@@ -2820,7 +2818,7 @@ function getLevel2Approvers(currentApproverId){
 		 }
 		 var specialCharacter = jobId.match(/^[A-Za-z0-9][A-Z a-z 0-9]*$/);
 		 $('#jobIdDiv').find('p.jquery_form_error_message').remove();
-		 var sourceleadUrl ='${sourceleadUrl}';
+		 
 		 if(jobId != null && jobId != "" && specialCharacter != null){
 			 $("#draft").attr("disabled", "disabled");
 			 $("#save").attr("disabled", "disabled");
@@ -2917,7 +2915,7 @@ function checkTemplateforDouplicate(){
          var jsonData = encodeURIComponent(templateName);	  
        
 		$('#jobTitleDiv').find('p.jquery_form_error_message').remove();
-		var sourceleadUrl ='${sourceleadUrl}';
+		
 			 $.ajax({
 			    	type: "POST",
 			        url: sourceleadUrl+"/validatetemplateName?${_csrf.parameterName}=${_csrf.token}&templateName="+jsonData, 
@@ -3002,7 +3000,7 @@ $('.chosen-select').each(function() {
 
 <script>
 function getEditRequirementDetails(requirementId){
-	var sourceleadUrl = '${sourceleadUrl}';
+	
 	if(templateId !=''){
 		$.ajax({
 			type : "GET",
@@ -3020,7 +3018,7 @@ function getEditRequirementDetails(requirementId){
  function validateTeamName() {
 	 var name = $('#name').val(); 
 	 $('#teamNameDiv').find('p.jquery_form_error_message').remove();
-	 var sourceleadUrl ='${sourceleadUrl}';
+	 
 	 if(name != null && name != ""){
 		 $.ajax({
 		    	type: "POST",
@@ -3054,7 +3052,7 @@ $(document).ready(function(){
 </script>
 
 <script type="text/javascript">
-var sourceleadUrl = '${sourceleadUrl}';
+
 $(function() {
 	$("#uploadBtn").change(function() {
 		fileUpload(sourceleadUrl, "uploadBtn", "requirementDocuments", "requirement_form");

@@ -6,7 +6,6 @@
 
 <script>  
  function getActivityDiv(candidateId){
-	 var sourceleadUrl ='${sourceleadUrl}';
 	 var locationId = '${SourceLeadWeb_orgLocationId}';
 	 $("#candidateTimelineDiv").empty();
 	 var result = "";
