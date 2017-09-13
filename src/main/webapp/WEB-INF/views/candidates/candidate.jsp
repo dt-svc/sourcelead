@@ -453,7 +453,6 @@
 	function storeCandidate() {
 		
 		rateValidations();
-		alert("urls="+sourceleadUrl);
 		var validationSettings = {
 				errorMessagePosition : 'element',
 				borderColorOnError : '',

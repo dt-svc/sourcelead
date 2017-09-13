@@ -1538,7 +1538,6 @@ function storeTeam(){
 	   if ($('#team_form').validate(false, validationSettings)){ 
 		   
 		   var formData = getFormData("team_form");
-			alert(formData);
 			
 			$("#add_team").attr("disabled", "disabled"); 
 	       
