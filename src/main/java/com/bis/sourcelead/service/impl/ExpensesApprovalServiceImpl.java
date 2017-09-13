@@ -50,6 +50,7 @@ import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.web.LoginSessionController;
+import com.ibm.icu.math.BigDecimal;
 import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
@@ -370,8 +371,10 @@ private List<String[]> prepareExpenseApprovalListStringArray(List<ExpensesApprov
 				expenseArray[10] = "--";
 			}
 			if(expenseId.getTotalAmount() != 0){
-                StringBuilder str = new StringBuilder();
-				expenseArray[11] = str.append(expenseId.getTotalAmount()).toString();
+				StringBuilder str = new StringBuilder();
+				BigDecimal bd = new BigDecimal(Double.toString(expenseId.getTotalAmount()));
+				bd = bd.setScale(2,BigDecimal.ROUND_HALF_UP );
+				expenseArray[11] = str.append(bd).toString();
 			}else{
 				expenseArray[11] = "--";
 			}
@@ -532,8 +535,10 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, ExpensesAppro
 				createExcelsheet.autoSizeColumn(10);
 			}
 			if(expenseId.getTotalAmount() != 0){
-                StringBuilder str = new StringBuilder();
-                writeRow.createCell(11).setCellValue(str.append(expenseId.getTotalAmount()).toString());
+				StringBuilder str = new StringBuilder();
+				BigDecimal bd = new BigDecimal(Double.toString(expenseId.getTotalAmount()));
+				bd = bd.setScale(2,BigDecimal.ROUND_HALF_UP );                
+                writeRow.createCell(11).setCellValue(str.append(bd).toString());
                 createExcelsheet.autoSizeColumn(11);
 			}
 			if(null != expenseId.getExpenseStatus()){

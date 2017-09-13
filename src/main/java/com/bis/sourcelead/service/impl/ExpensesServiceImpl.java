@@ -45,6 +45,7 @@ import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.ConversionUtil;
 import com.bis.sourcelead.web.LoginSessionController;
+import com.ibm.icu.math.BigDecimal;
 import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
@@ -139,7 +140,6 @@ public class ExpensesServiceImpl implements ExpensesService{
 		return expensesEntriesList;
 
 	}
-	
 	@Override
 	public Expenses getExpenseById(long id) {
 		return expensesDao.getExpenseById(id);
@@ -387,8 +387,10 @@ public class ExpensesServiceImpl implements ExpensesService{
 				   userArray[4] = "--";
 			 }
 			if(expEntries.getAmount() != 0){
-				StringBuilder amount = new StringBuilder();
-				   userArray[5] = amount.append(expEntries.getAmount()).toString();
+				StringBuilder str = new StringBuilder();
+				BigDecimal bd = new BigDecimal(Double.toString(expEntries.getExpensesId().getTotalAmount()));
+				bd = bd.setScale(2,BigDecimal.ROUND_HALF_UP );				
+				   userArray[5] = str.append(bd).toString();
 			   }else{
 				   userArray[5] = "--";
 			 }
@@ -479,8 +481,10 @@ public class ExpensesServiceImpl implements ExpensesService{
 		createExcelsheet.autoSizeColumn(4);
 	   }
 	if(expEntries.getAmount() != 0){
-		StringBuilder amount = new StringBuilder();
-		writeRow.createCell(5).setCellValue(amount.append(expEntries.getAmount()).toString());
+		StringBuilder str = new StringBuilder();
+		BigDecimal bd = new BigDecimal(Double.toString(expEntries.getExpensesId().getTotalAmount()));
+		bd = bd.setScale(2,BigDecimal.ROUND_HALF_UP );			
+		writeRow.createCell(5).setCellValue(str.append(bd).toString());
 		createExcelsheet.autoSizeColumn(5);
 	   }
 	 if(expEntries.getDescription() != null && !"".equalsIgnoreCase(expEntries.getDescription())){	
@@ -943,8 +947,11 @@ public class ExpensesServiceImpl implements ExpensesService{
 							
 
 							if(expenseId.getTotalAmount() != 0){
-				                StringBuilder str = new StringBuilder();
-								expenseArray[7] = str.append(expenseId.getTotalAmount()).toString();
+								StringBuilder str = new StringBuilder();
+								BigDecimal bd = new BigDecimal(Double.toString(expenseId.getTotalAmount()));
+								bd = bd.setScale(2,BigDecimal.ROUND_HALF_UP );
+								expenseArray[7] = str.append(bd).toString();
+								
 							}else{
 								expenseArray[7] = "--";
 							}
@@ -1045,7 +1052,9 @@ public class ExpensesServiceImpl implements ExpensesService{
 						}
 						if(expenseId.getTotalAmount() != 0){
 			                StringBuilder str = new StringBuilder();
-			                writeRow.createCell(7).setCellValue(str.append(expenseId.getTotalAmount()).toString());
+			                BigDecimal bd = new BigDecimal(Double.toString(expenseId.getTotalAmount()));
+							bd = bd.setScale(2,BigDecimal.ROUND_HALF_UP );
+			                writeRow.createCell(7).setCellValue(str.append(bd).toString());
 			                createExcelsheet.autoSizeColumn(7);
 						}
 						if(null != expenseId.getExpenseStatus()){
