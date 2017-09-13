@@ -32,7 +32,7 @@ public class ContractReqDocsBlobToFile {
 		try (Connection con = dataSource.getConnection()) {
 			Statement stmt = con.createStatement();
 			Statement stmt1 = con.createStatement();
-			ResultSet rs = stmt.executeQuery("SELECT c.*, o.ID as ORG_ID FROM "+table+" c, ORG o, ORG_LOCATIONS ol where o.ID = ol.ORG_ID and ol.id = c.ORG_LOCATION_ID");
+			ResultSet rs = stmt.executeQuery("SELECT * FROM "+table+" conreq INNER JOIN CONTRACTS con INNER JOIN ORG o INNER JOIN ORG_LOCATIONS ol ON conreq.CONTRACT_ID = con.ID where con.ORG_LOCATION_ID = ol.id and o.ID = ol.ORG_ID;");
 			int i = 0;
 			ResultSetMetaData rsmd = rs.getMetaData();
 			boolean flag = false;
