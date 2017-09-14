@@ -917,7 +917,6 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 					}else{
 						
 						ProjectClients projectClients = projectClientService.getProjectClientsByProjectIdAndOrgLocationId(projects.getId(), orgLocations.getId());
-						saveProjectMembersHistory(projectMembers,user,projectClients);
 						
 						ProjectClients clientProjectClients = null;
 						OrgRelations orgRelations = null;
@@ -946,9 +945,9 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 							Candidate savedCandidate = candidateService.addCandidate(clientCandidate);
 							candidateService.saveOrUpdateCandidateElkDocument(savedCandidate);
 						}
-							
-						    clientProjectClients = projectClientService.getProjectClientsByProjectIdAndOrgLocationId(projects.getId(), projects.getOrgLocationsId().getId());
-							saveProjectMembersHistory(projectMembers,user,clientProjectClients);
+						saveProjectMembersHistory(projectMembers,user,projectClients);
+						clientProjectClients = projectClientService.getProjectClientsByProjectIdAndOrgLocationId(projects.getId(), projects.getOrgLocationsId().getId());
+					    saveProjectMembersHistory(projectMembers,user,clientProjectClients);
 						
 						if(clientProjectClients != null && clientProjectClients.getOrgLocationsId().equals(projects.getOrgLocationsId().getId())){
 							projectClients.setOrgRelationId(orgRelations);
@@ -1047,6 +1046,10 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 			projectMembersHistory.setProjectTerminationDate(null);
 		}
 		
+		Candidate candidate =  candidateService.findByCandidateEmail(projectMembers.getProjectMemberCandidteId().getEmail(), projectClients.getOrgLocationsId().getId());
+		if(candidate != null){
+			projectMembersHistory.setCandidateId(candidate);
+		}
 		projectMembersHistory.setStatus("OPEN");
 		projectMembersHistory.setCreatedBy(user.getUserCode());
 		projectMembersHistory.setUpdatedBy(user.getUserCode());
@@ -1153,7 +1156,6 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
     				}
     				
     				ProjectClients clientPC = projectClientService.getProjectClientsByProjectIdAndOrgLocationId(projects.getId(), orgLoc.getId());
-        			saveProjectMembersHistory(pm,user,clientPC);
     				
         			Candidate orgLocCandidate = candidateService.findByCandidateEmail(pm.getProjectMemberCandidteId().getEmail(), orgLoc.getId());
     				if(orgLocCandidate == null){
@@ -1161,7 +1163,7 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
     					if(candidate.getParentCandidateId() != null){
     						orgLocCandidate.setParentCandidateId(candidate.getParentCandidateId());
     					}
-                                   					orgLocCandidate.setOrgLocationId(orgLoc);
+       					orgLocCandidate.setOrgLocationId(orgLoc);
     					orgLocCandidate.setOrgRelationId(orgRelations);
     					Candidate savedCandidate = candidateService.addCandidate(orgLocCandidate);
     					candidateService.saveOrUpdateCandidateElkDocument(savedCandidate);
@@ -1169,6 +1171,7 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
     				if(orgLocCandidate.getParentCandidateId() != null){
     					saveVendorProjectClientDetails(orgLocCandidate,projects,user,projectClients,pm);
     				}
+    				saveProjectMembersHistory(pm,user,clientPC);
     				
     			}else{
     				orgRelations = orgRelationsService.getVendorOrgRelationByResponderLocationIdAndLocationId(orgLocations.getId(), projects.getOrgLocationsId().getId());
@@ -1176,8 +1179,6 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
         			saveProjectMembersHistory(pm,user,projectClients);
         			
         			ProjectClients clientPC = projectClientService.getProjectClientsByProjectIdAndOrgLocationId(projects.getId(), projects.getOrgLocationsId().getId());
-        			saveProjectMembersHistory(pm,user,clientPC);
-        			
         			Candidate clientCandidate = candidateService.findByCandidateEmail(pm.getProjectMemberCandidteId().getEmail(), projects.getOrgLocationsId().getId());
     				if(clientCandidate == null){
     					clientCandidate = getCandidateDetails(candidate, user, projects, orgLocations);
@@ -1187,6 +1188,7 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
     					Candidate savedCandidate = candidateService.addCandidate(clientCandidate);
     					candidateService.saveOrUpdateCandidateElkDocument(savedCandidate);
     				}
+    				saveProjectMembersHistory(pm,user,clientPC);
     				if(candidate.getParentCandidateId() != null){
     					saveVendorProjectClientDetails(candidate,projects,user,projectClients,pm);
     				}

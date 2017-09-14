@@ -954,7 +954,7 @@ public class CommonUtil {
 			  MasterCandidate masterCandidate = null;
 				masterCandidate = masterCandidateService.getMasterCandidateByInteligence(jsonObj);
 				if(null == masterCandidate){
-					masterCandidate = masterCandidateService.storeMasterCandidateByJsonObject(jsonObj, loginUser);
+					masterCandidate = masterCandidateService.storeMasterCandidateByJsonObject(jsonObj, loginUser,orgLocations);
 				}
 				candidate.setMasterCandidateId(masterCandidate);
 			  
