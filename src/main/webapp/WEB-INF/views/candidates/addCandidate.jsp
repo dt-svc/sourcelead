@@ -571,9 +571,7 @@
 <script type="text/javascript">
 	function storeCandidate() {
 		
-		alert("deeer="+sourceleadUrl);
 		rateValidations();
-		
 		var validationSettings = {
 				errorMessagePosition : 'element',
 				borderColorOnError : '',
@@ -1041,7 +1039,6 @@ function  removeValiationVendorContact() {
 </script>
 
 <script>
-
  function getVendorContactList(){
 	var orgRelationID = $('#vendors').val();
 		 $.ajax({
@@ -1062,7 +1059,7 @@ function  removeValiationVendorContact() {
  
  $(function() {
 	$("#uploadBtn").change(function() {
-		fileUpload(sourceleadUrl, "uploadBtn", "resumes", "addcandidate_form");
+		fileUpload("uploadBtn", "resumes", "addcandidate_form");
 	});
  });
  </script>

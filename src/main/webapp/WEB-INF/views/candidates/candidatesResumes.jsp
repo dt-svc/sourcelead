@@ -620,7 +620,7 @@ function removeResumeNameDiv(){
 </script>
 <script>
 function uploadFile(){
-	fileUpload(sourceleadUrl, "uploadBtn", "resumes", "candidateResume_form");
+	fileUpload("uploadBtn", "resumes", "candidateResume_form");
 }
 </script>
 <script type="text/javascript">
