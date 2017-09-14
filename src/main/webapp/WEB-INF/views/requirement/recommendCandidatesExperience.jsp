@@ -64,7 +64,6 @@ function closeCertificatePopup(){
 			
 			//It will escape all the special characters
 			var formData = getFormData('employers_form');
-			var sourceleadUrl = '${sourceleadUrl}';
 			$.ajax({
 						type : "POST",
 						data : formData,
@@ -239,10 +238,7 @@ function closeCertificatePopup(){
 
 	function editEmployer(candidateEmpId, candidateId) {
 
-		
-		var sourceleadUrl = '${sourceleadUrl}';
-		$
-				.ajax({
+		$.ajax({
 					type : "POST",
 					url : sourceleadUrl
 							+ "/getCandidateEmployerByCandidateIdAndCandidateEmpoyerId?${_csrf.parameterName}=${_csrf.token}&candidateId="
@@ -520,7 +516,6 @@ function closeCertificatePopup(){
 --%>
 <script>
 	function candidateEmployersList(candidateId) {
-		var sourceleadUrl = '${sourceleadUrl}';
 		
 				$.ajax({
 					type : "POST",
@@ -650,7 +645,6 @@ function employeePagination(){
 <script>
 	function removeEmployer(candidateemployerId, candidateId) {
 
-		var sourceleadUrl = '${sourceleadUrl}';
 		var loginUserId = '${SourceLeadWeb_userId}';
 		var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 				$.ajax({
@@ -720,7 +714,6 @@ function employeePagination(){
 		};
 		if ($('#candidateExperianceEdit_form').validate(false,validationSettings)) {
 
-			var sourceleadUrl = '${sourceleadUrl}';
 			var formData = getFormData('candidateExperianceEdit_form');
 
 			$.ajax({
