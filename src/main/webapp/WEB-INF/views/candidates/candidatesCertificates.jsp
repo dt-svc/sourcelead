@@ -132,7 +132,6 @@ function storeCertificate(candidateId){
 			$("#Candidate_certification_form").attr("disabled", "disabled");
 			 $("#addCandidate").attr("disabled", "disabled"); */
 			 var formData = getFormData("Candidate_certification_form");
-				var sourceleadUrl = '${sourceleadUrl}';
 				$("#Candidate_certification_form").attr("disabled", "disabled");
 				 $("#addCandidate").attr("disabled", "disabled");
 		        $.post(sourceleadUrl+"/storeCandidateCertifications?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId, formData, function(data) {
@@ -213,7 +212,6 @@ function storeCertificate(candidateId){
 <script>
 function candidateCertificateList(candidateId){
 	var candidateType = '${candidateType}';
-	var sourceleadUrl ='${sourceleadUrl}';
 	var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
 	  if(locationList.match("yyyy-MM-dd")){
 		  canCerDatePattern = 'YYYY-MM-DD';
@@ -532,10 +530,7 @@ function addCertification(candidateId) {
      3.ajax url implementation in CandidateCertificationsRestController.
 --%>
 <script>
-
 	function editCertification(candidateCertificationId, candidateId) {
-
-		var sourceleadUrl = '${sourceleadUrl}';
 		$.ajax({
 					type : "POST",
 					url : sourceleadUrl
@@ -790,7 +785,6 @@ function addCertification(candidateId) {
 
 			 var formData = getFormData("candidateCertificationEdit_form");
 			//It will escape all the special characters
-			var sourceleadUrl = '${sourceleadUrl}';
 			
 			 $.post(sourceleadUrl+"/updateCandidateCertificationsBycandidateIdandcandidateCertificateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&candidateCertificationId"+ candidateCertificationId, formData, function(data) {
 				 closeCertificatePopup();
@@ -852,7 +846,6 @@ function removeCertification(candidateCertificationId, candidateId){
 <script>
 function  deleteSelectedCertification(candidateCertificationId,candidateId){
 	
-	 var sourceleadUrl ='${sourceleadUrl}';
 	 var loginUserId = '${SourceLeadWeb_userId}';
 	 var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	 $.ajax({  

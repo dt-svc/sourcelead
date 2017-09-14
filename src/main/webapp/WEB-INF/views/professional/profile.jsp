@@ -41,12 +41,11 @@ $(document).ready(function(){
 
 <script>
 function getProfessionalInfo(){ 
-	var sourceleadUrl ='${sourceleadUrl}';
+	var sourceleadUrlqqq ='${sourceleadUrl}';
 	var candidateType= "Professional";
 	var userId = '${SourceLeadWeb_userId}';
 	var candidateId = '${SourceLeadWeb_candidateId}';
 	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
-
 	$.ajax({
 	   	type: "GET",
 	    url: sourceleadUrl+"/getProfessionalInfo?candidateId="+candidateId+"&orgLocationId="+orgLocationId, 	   

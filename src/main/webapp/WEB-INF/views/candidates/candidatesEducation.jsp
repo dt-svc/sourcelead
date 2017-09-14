@@ -103,7 +103,6 @@ function candidateEducation(candidateId){
 <script>
 function candidateEducationList(candidateId){
 	var candidateType = '${candidateType}';
-	 var sourceleadUrl ='${sourceleadUrl}';
 	 var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
 	  if(locationList.match("yyyy-MM-dd")){
 		  canEduDatePattern = 'YYYY-MM-DD';
@@ -453,7 +452,6 @@ function addEducation(candidateId) {
 
 <script>
 function EditEducation(candidateId,candidateEducationId) {
-	var sourceleadUrl = '${sourceleadUrl}';
 	$.ajax({	type : "POST",
 				url : sourceleadUrl+ "/getCandidateEducationBycandidateIdandEducationId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&candidateEducationId="+candidateEducationId,
 				success : function(data) {
@@ -748,7 +746,6 @@ var validationSettings = {
 </script>
 <script>
 function candidateEducationStore(candidateId){
-		
 	var scoreType = document.getElementById("scoreEducationType").value; 
 	 if(scoreType != null && scoreType != ""){
 		 $('#candidateEducationScore').removeAttr('data-validation-optional');
@@ -766,10 +763,9 @@ function candidateEducationStore(candidateId){
 			 con = con.replace(/[{}]/g, "");
 		     var jsonData = encodeURIComponent(con);  */
 		     var formData = getFormData("education_form");
-			 var sourceleadUrl = '${sourceleadUrl}';
 			 $("#education_form").attr("disabled", "disabled");
 			 $("#save_button").attr("disabled", "disabled");
-			 
+			
 			 $.post(sourceleadUrl+"/storeCandidateEducation?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId, formData, function(data) {
 				 closePopup();
 				 $('#perVal').attr('aria-valuenow', data).css('width',data+'%');
@@ -928,7 +924,6 @@ function removeEducation(candidateEducationId, candidateId){
       
 <script>
 function deleteSelectedEducation(candidateEducationId,candidateId){
- var sourceleadUrl ='${sourceleadUrl}';
  var loginUserId = '${SourceLeadWeb_userId}';
  var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	 $.ajax({  
@@ -1105,7 +1100,6 @@ function clearSearchKeyEducation() {
 			var frm = $('#education_form')[0];
 
 			var formData = new FormData(frm);
-			 var sourceleadUrl = '${sourceleadUrl}';
 			 $("#education_form").attr("disabled", "disabled");
 			 $("#save_button").attr("disabled", "disabled");
 			 
@@ -1144,7 +1138,6 @@ function clearSearchKeyEducation() {
  function validateEduname(candidateId) {
 	  var name = document.getElementById("candEdu").value; 
  	  $('#nameIdDiv').find('p.jquery_form_error_message').remove();
-	  var sourceleadUrl ='${sourceleadUrl}';
 		 $.ajax({
 		    	type: "POST",
 		        url: sourceleadUrl+"/validateEduname?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&name="+name, 
