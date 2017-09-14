@@ -99,7 +99,6 @@ function candidateDocuments(candidateId){
 <script>
 function candDocumentsList(candidateId){
 	var candidateType = '${candidateType}';
-	var sourceleadUrl ='${sourceleadUrl}';
 	 $.ajax({  
           type : "POST",
           url: sourceleadUrl+"/getCandidateDocumentsListByCandidateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,        
@@ -207,7 +206,6 @@ function candDocumentsList(candidateId){
 
 <script>
 function candidateDocumentView(documentUUID,title){
-	 var sourceleadUrl ='${sourceleadUrl}';
 		if(documentUUID != null && documentUUID != ""){
 			window.open(sourceleadUrl+'/viewProfessionalCandidateDocument/'+title+'?documentUUID='+documentUUID,title,"height=600,width=600");
 		}
@@ -290,7 +288,6 @@ function deleteRequestedDoc(){
  
  <script>
  function acceptRequestedDocs(candidateId){
-	 var sourceleadUrl ='${sourceleadUrl}';
 	 var documentsIds = [];
  	 $("input[name='documents[]']:checked").each( function (i) {
  		 documentsIds[i] = $(this).val();
@@ -585,7 +582,6 @@ function getDocumentType(documentType){
 		         }; 
 			 if ($('#documentType_form').validate(false, validationSettings)){
 				
-				 var sourceleadUrl = '${sourceleadUrl}';
 		        var frm = $('#documentType_form')[0];
 				var formData = new FormData(frm);
 				$("#save_doc").attr("disabled", "disabled");
@@ -650,8 +646,7 @@ function getDocumentType(documentType){
 
 <script>
 function uploadFileDoc(){
-	var sourceleadUrl ='${sourceleadUrl}';
-	fileUpload(sourceleadUrl, "uploadBtn", "candidateDocuments", "documentType_form");
+	fileUpload("uploadBtn", "candidateDocuments", "documentType_form");
 }
 </script>
 
@@ -670,7 +665,6 @@ function refreshDocList(candidateId){
 --%>
 <script>
 function getDocument(candidateId, documentId){
-	var sourceleadUrl ='${sourceleadUrl}';
 	 $("#docsName").attr("data-validation-optional", "true");
 	  $("#documentOtherType").attr("data-validation-optional", "true");
 		$.ajax({
@@ -750,7 +744,6 @@ function removeDocument(candidateId, documentId){
 <script>
 function deleteDocument(candidateId, documentId){
 	
-	var sourceleadUrl ='${sourceleadUrl}';
 	var loginUserId = '${SourceLeadWeb_userId}';
 	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	//var message = confirm("You are choosing to delete the document");
@@ -961,7 +954,6 @@ $('body').on('submit', '#requestForDocuments_form', function(e){
 	if ($('#requestForDocuments_form').validate(false, validationSettings)){
       e.preventDefault();
      
-      var sourceleadUrl ='${sourceleadUrl}';
       var requestedCandidateId = document.getElementById("requestedCandidateId").value;
      /*  var form = $('#requestForDocuments_form')[0];
       var formData = new FormData(form); */
@@ -1049,7 +1041,6 @@ $('body').on('submit', '#docrejectedReason_form', function(e){
       
       //It will escape all the special characters
       var jsonData = encodeURIComponent(con);
-      var sourceleadUrl ='${sourceleadUrl}';
       var rejectedDocsCandidateId = document.getElementById("rejectedDocsCandidateId").value;
       
       var documentsIds = [];

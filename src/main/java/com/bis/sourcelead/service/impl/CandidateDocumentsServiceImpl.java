@@ -180,7 +180,7 @@ public class CandidateDocumentsServiceImpl implements CandidateDocumentsService 
 					candidateDocuments.setFileURL(fileInfo.getFileURL());;
 					if(fileInfo != null){
 						//candidate.setFileName(fileInfo.getFileName());
-						FileUploadUtil.moveFile(candidateDocumentsDTO.getStaticPath(), fileInfo, "documents");
+						FileUploadUtil.moveFile(candidateDocumentsDTO.getStaticPath(), fileInfo, "candidateDocuments");
 					}
 				
 				}

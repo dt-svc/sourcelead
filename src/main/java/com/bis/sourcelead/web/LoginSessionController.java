@@ -99,6 +99,9 @@ public class LoginSessionController {
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
 	
+	@Value("${GoogleMaps_Location_API_KEY}")
+	private String googleMapsLocationApiKey;
+	
 	@Autowired
 	CommonUtil commonUtil;
 	
@@ -202,6 +205,7 @@ public class LoginSessionController {
 			}
 
 			SourceLeadSessionManager.setSessionAttribute(request, "sourceleadUrl", sourceleadUrl);
+			SourceLeadSessionManager.setSessionAttribute(request, "googleMapsLocationApiKey", googleMapsLocationApiKey);
 			
 			if(isNullOrEmpty(orgLocations.getDateFormat()) || isNullOrEmpty(orgLocations.getGeneratedUserId())){
 				SourceLeadSessionManager.setSessionAttribute(request, "settingsConfigured", "N");

@@ -9,6 +9,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -57,6 +58,17 @@ public class MasterCandidate implements Serializable{
 	
 	@Column(name = "UPDATED_BY")
 	private String updatedBy;
+
+	@Transient
+	private String generatedId;
+	
+	public String getGeneratedId() {
+		return generatedId;
+	}
+
+	public void setGeneratedId(String generatedId) {
+		this.generatedId = generatedId;
+	}
 
 	public Long getId()
 	{
