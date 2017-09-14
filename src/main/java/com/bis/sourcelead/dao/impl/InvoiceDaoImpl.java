@@ -1,5 +1,10 @@
 package com.bis.sourcelead.dao.impl;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -26,6 +31,7 @@ import com.bis.sourcelead.entity.CandidateOnBoarding;
 import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.Invoice;
 import com.bis.sourcelead.entity.InvoicePayment;
+import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.payroll.entity.Checks;
 
@@ -54,7 +60,7 @@ public class InvoiceDaoImpl implements InvoiceDao {
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })	
-	public ResponseList<Invoice> invoiceListByOrgLocationId(Long orgLocationId,Date startDateUTC,Date endDateUTC,InvoiceDTO invoiceDTO) {
+	public ResponseList<Invoice> invoiceListByOrgLocationId(OrgLocations orgLocations,Date startDateUTC,Date endDateUTC,InvoiceDTO invoiceDTO) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 		
 			
@@ -127,15 +133,28 @@ public class InvoiceDaoImpl implements InvoiceDao {
 		    countQuery = "from Invoice invoice  where invoice.orgLocation.id =:orgLocationId and invoice.invoiceType='payables'";
 		}
 		
-		if(invoiceDTO.getSearchValue().contains("/")){
-			invoiceDTO.getSearchValue().replaceAll("/", "-");
-		}
+		if(invoiceDTO.getSearchValue().contains("/") || invoiceDTO.getSearchValue().contains("-")){
+			String convertedDate=invoiceDTO.getSearchValue();
+			if(invoiceDTO.getSearchValue().contains("/")){
+				convertedDate = invoiceDTO.getSearchValue().replaceAll("/", "-");
+			}
+			DateTimeFormatter orgFormat = new DateTimeFormatterBuilder().appendPattern(orgLocations.getDateFormat()).toFormatter();
+            LocalDate parsedDate = LocalDate.parse(convertedDate, orgFormat);
+            DateTimeFormatter f2 = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+            String newDate = parsedDate.format(f2);
+            Date searchDate = new SimpleDateFormat("yyyy-MM-dd").parse(newDate);
+            java.sql.Date sqlDate = new java.sql.Date(searchDate.getTime());
+            String queryDate = "from Invoice invoice where invoice.orgLocation.id =:orgLocationId and ( invoice.invoiceDate =:sqlDate or invoice.dueDate =:sqlDate )";
+            Query queryObjDate = session.createQuery(queryDate.toString()).setDate("sqlDate", sqlDate).setLong("orgLocationId", orgLocations.getId());
+            response.setData(queryObjDate.list());
+
+		}else{
 		StringBuilder query1 = new StringBuilder("");
 			if(invoiceDTO.getSearchValue() !=null && !"".equalsIgnoreCase(invoiceDTO.getSearchValue())) {
 				query1.append(" and (invoice.invoiceId like '%" + invoiceDTO.getSearchValue() + "%' ")
 				.append("OR invoice.responderLocationId.orgLocationName like '%" + invoiceDTO.getSearchValue() + "%' ")
 				.append("OR invoice.orgLocation.orgLocationName like '%" + invoiceDTO.getSearchValue() + "%' ")
-				.append("OR invoice.contactUser.firstName like '%" + invoiceDTO.getSearchValue() + "%' ")
+				.append("OR invoice.contactUser.firstName like '%" + invoiceDTO  .getSearchValue() + "%' ")
 				.append("OR invoice.contactUser.lastName like '%" + invoiceDTO.getSearchValue() + "%' ")
 				.append("OR invoice.projectID.projectName like '%" + invoiceDTO.getSearchValue() + "%' ")
 				.append("OR invoice.invoiceDate like '%" + invoiceDTO.getSearchValue() + "%' ")
@@ -152,16 +171,16 @@ public class InvoiceDaoImpl implements InvoiceDao {
 			queryObj.setMaxResults(invoiceDTO.getLength());
 //			queryObj.setLong("orgLocationId", orgLocationId).setParameter("startDateUTC", startDateUTC).setParameter("endDateUTC", endDateUTC).setCacheable(true).list();
 		}
-		invoiceList = queryObj.setLong("orgLocationId", orgLocationId).setParameter("startDateUTC", startDateUTC).setParameter("endDateUTC", endDateUTC).setCacheable(true).list();
+		invoiceList = queryObj.setLong("orgLocationId", orgLocations.getId()).setParameter("startDateUTC", startDateUTC).setParameter("endDateUTC", endDateUTC).setCacheable(true).list();
 		int count = 0;
 		int filteredCount = 0;
-		List<Long> countlist = session.createQuery("select count(*) " + countQuery).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+		List<Long> countlist = session.createQuery("select count(*) " + countQuery).setLong("orgLocationId", orgLocations.getId()).setCacheable(true).list();
 		if(countlist != null && !countlist.isEmpty()) {
 			count = countlist.iterator().next().intValue();
 		}
 		response.setRecordsTotal(count);
 		if (invoiceDTO != null) {
-			List<Long> filteredCountlist  = session.createQuery("select count(*) " + countQuery + query1.toString()).setLong("orgLocationId", orgLocationId).list();
+			List<Long> filteredCountlist  = session.createQuery("select count(*) " + countQuery + query1.toString()).setLong("orgLocationId", orgLocations.getId()).list();
 			if(filteredCountlist != null && !filteredCountlist.isEmpty()) {
 				filteredCount = filteredCountlist.iterator().next().intValue();
 			}
@@ -171,6 +190,7 @@ public class InvoiceDaoImpl implements InvoiceDao {
 		}
 
 			response.setData(invoiceList);
+		}
 			return response;
 		
 		

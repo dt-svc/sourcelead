@@ -418,7 +418,7 @@ public class InvoiceRestController {
 			}
 		}
 		
-		ResponseList<Invoice>  invoiceList = invoiceService.invoiceListByOrgLocationId(orgLocations.getId(),startDateUTC,endDateUTC,invoiceDTO);
+		ResponseList<Invoice>  invoiceList = invoiceService.invoiceListByOrgLocationId(orgLocations,startDateUTC,endDateUTC,invoiceDTO);
 		Date todayDate = new Date();
 		SimpleDateFormat dateFormat = orgLocations.getLocFullFormDateFormatter();
 		List<Invoice> invoiceFilterList = invoiceList.getData();
@@ -1271,7 +1271,7 @@ public class InvoiceRestController {
 				}
 			
 			
-			ResponseList<Invoice>  invoiceList = invoiceService.invoiceListByOrgLocationId(orgLocations.getId(),startDateUTC,endDateUTC,invoiceDTO);
+			ResponseList<Invoice>  invoiceList = invoiceService.invoiceListByOrgLocationId(orgLocations,startDateUTC,endDateUTC,invoiceDTO);
 			
 			InvoiceAmount totalStagesAmount = getTotalAmountInBilling(invoiceList);
 			
