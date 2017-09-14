@@ -60,7 +60,6 @@ function candidateDocuments(candidateId){
 
 <script>
 function candDocumentsList(candidateId){
-	  var sourceleadUrl ='${sourceleadUrl}';
 	 $.ajax({  
           type : "POST",
           url: sourceleadUrl+"/getCandidateDocumentsListByCandidateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,        
@@ -353,7 +352,6 @@ function getDocumentType(documentType){
 		         }; 
 			 if ($('#documentType_form').validate(false, validationSettings)){
 				 
-				    var sourceleadUrl = '${sourceleadUrl}';
 			        var frm = $('#documentType_form')[0];
 					var formData = new FormData(frm);
 					$("#save_doc").attr("disabled", "disabled");
@@ -425,7 +423,6 @@ function getDocumentType(documentType){
 --%>
 <script>
 function getDocument(candidateId, documentId){
-	var sourceleadUrl ='${sourceleadUrl}';
 		$.ajax({
 		   	type: "POST",
 		    url: sourceleadUrl+"/getDocument?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&documentId="+documentId, 	   
@@ -476,7 +473,6 @@ function getDocument(candidateId, documentId){
 <script>
 function deleteDocument(candidateId, documentId){
 	
-	var sourceleadUrl ='${sourceleadUrl}';
 	var loginUserId = '${SourceLeadWeb_userId}';
 	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	var message = confirm("You are choosing to delete the resume");
@@ -561,7 +557,6 @@ function refreshDocList(candidateId){
 
 <script>
 function uploadFileDoc(){
-	var sourceleadUrl ='${sourceleadUrl}';
-	fileUpload(sourceleadUrl, "uploadBtn", "candidateDocuments", "documentType_form");
+	fileUpload("uploadBtn", "candidateDocuments", "documentType_form");
 }
 </script>
