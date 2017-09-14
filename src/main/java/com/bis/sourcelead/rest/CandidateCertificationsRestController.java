@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.bis.sourcelead.dto.CandidateCertificationDTO;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateCertifications;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -61,16 +62,15 @@ public class CandidateCertificationsRestController {
 	 */
 	 //@PreAuthorize("hasAnyRole('ROLE_ADD_CANDIDATE_CERTIFICATION','ROLE_CROWDSOURCING_PROFILE','ROLE_CROWDSOURCING_CANDIDATES','ROLE_ADD_ASSOCIATE_CERTIFICATION_DETAILS')")
 	 @RequestMapping(value = "/storeCandidateCertifications", method = RequestMethod.POST)
-     public @ResponseBody String storeCandidateCertifications(@RequestParam(value = "json", required = false) String json,@RequestParam(value="candidateId", required=false) Long candidateId ,HttpServletRequest request) throws Exception {
+     public @ResponseBody String storeCandidateCertifications(CandidateCertificationDTO candidateCertificationDTO,@RequestParam(value="candidateId", required=false) Long candidateId ,HttpServletRequest request) throws Exception {
 		
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		User users = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		
-		String json1 = "{"+json+"}";
-		JSONObject jsonObject = new JSONObject(json1);
-		candidateCertificationsService.storeCandidateCertifications(jsonObject,users,loginOrgLocation,candidateId);
+		/*String json1 = "{"+json+"}";
+		JSONObject jsonObject = new JSONObject(json1);*/
+		candidateCertificationsService.storeCandidateCertifications(candidateCertificationDTO,users,loginOrgLocation,candidateId);
 		Candidate candidate = candidateService.getCandidateByCandidateId(candidateId);
-		return json;
+		return "success";
 	 }
 	
 	
@@ -190,17 +190,13 @@ public class CandidateCertificationsRestController {
 		 * @throws Exception
 		 */
 		 @RequestMapping(value = "/updateCandidateCertificationsBycandidateIdandcandidateCertificateId", method = RequestMethod.POST)
-	     public @ResponseBody String updateCandidateCertificationsBycandidateIdandcandidateCertificateId(@RequestParam(value = "json", required = false) String json,@RequestParam(value="candidateId", required=false) Long candidateId ,HttpServletRequest request) throws Exception {
+	     public @ResponseBody String updateCandidateCertificationsBycandidateIdandcandidateCertificateId(CandidateCertificationDTO candidateCertificationDTO,@RequestParam(value="candidateId", required=false) Long candidateId ,HttpServletRequest request) throws Exception {
 
 			OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			User users = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-			
-			String json1 = "{"+json+"}";
-			JSONObject jsonObject = new JSONObject(json1);
-			candidateCertificationsService.storeCandidateCertifications(jsonObject,users,loginOrgLocation,candidateId);
+			candidateCertificationsService.storeCandidateCertifications(candidateCertificationDTO,users,loginOrgLocation,candidateId);
 			//SourceLeadSessionManager.setSessionAttribute(request, "editCertification", "Certification details updated ");
-
-			return json;
+			return "success";
 		 }
 
 }

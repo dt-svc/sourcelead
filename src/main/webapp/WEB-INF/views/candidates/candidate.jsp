@@ -485,7 +485,7 @@
 		    	        processData: false,
 		    	        contentType:false,
 		        	    dataType : 'json',
-						url : sourceleadUrl+"/storeCandidate?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
+						url : sourceleadUrl+"/storeCandidate?${_csrf.parameterName}=${_csrf.token}&"+$($('#candidate_form')[0]).serialize(),
 						success : function(result) {
 								location.replace(sourceleadUrl+"/candidatesList");
 						},

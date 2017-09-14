@@ -39,6 +39,9 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.UserRoleDao;
+import com.bis.sourcelead.dto.AddUserDTO;
+import com.bis.sourcelead.dto.CandidateDTO;
+import com.bis.sourcelead.dto.ClientDTO;
 import com.bis.sourcelead.elk.index.ClientVendorContactsIndex;
 import com.bis.sourcelead.elk.index.ClientVendorIndex;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
@@ -124,34 +127,29 @@ public class VendorRestController {
 	@PreAuthorize("hasAnyRole('ROLE_CREATE_CLIENT_CONTACT','ROLE_CREATE_VENDOR_CONTACT')")
 	@RequestMapping(value = "/saveClinentAndVendorContact", method = RequestMethod.POST)
 	@ResponseBody
-	public String saveVenodrContact(@RequestParam(value = "json", required = false) String json, @RequestParam(value="orgRelationId", required=false) String orgRelationId,
+	public String saveVenodrContact(ClientDTO clientDTO,AddUserDTO addUserDTO,CandidateDTO candidateDTO, @RequestParam(value="orgRelationId", required=false) String orgRelationId,
 			                        @RequestParam(value="clientLocationId", required=false) String clientLocationId ,
 			                        @RequestParam(value="responderType", required=false) String responderType,
 			                        HttpServletRequest request) throws Exception {
 
-		String json1 = "{" + json + "}";
-		JSONObject jsonObj = new JSONObject(json1);
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 		
-		if(jsonObj.has("owner")){
-			String ownersId = jsonObj.getString("owner");
-			ownersId = ownersId.replaceAll("\\[", "").replaceAll("\\]","");
-			String[] owners = ownersId.split(",");
-			/*for(int i=0 ;i<owners.length;i++ ){
-				User ownerUser = userService.getUserById(Long.parseLong(owners[i].replace("\"", "")));
-				OrgSpoc orgSpoc = orgSpocService.validateSpacEmailIdByOwnerUserIdAndOrgRelationId(jsonObj.getString("email"), Long.parseLong(orgRelationId), ownerUser.getId());
-			     if(orgSpoc == null){*/
-			    	orgSpocService.addVendorContacts(jsonObj, user, orgLocations, orgRelationId, clientLocationId,responderType,org);
+		if(clientDTO.getOwner() != null && !clientDTO.getOwner().isEmpty()){
+			for(String owners :clientDTO.getOwner()){
+				User ownerUser = userService.getUserById(Long.parseLong(owners));
+				OrgSpoc orgSpoc = orgSpocService.validateSpacEmailIdByOwnerUserIdAndOrgRelationId(clientDTO.getEmail(), Long.parseLong(orgRelationId), ownerUser.getId(),1);	
+		     if(orgSpoc == null){
+			    	orgSpocService.addVendorContacts(clientDTO,addUserDTO,candidateDTO, user, orgLocations, orgRelationId, clientLocationId,responderType,org);
 			    	if(responderType.equalsIgnoreCase("Vendor")){
 			    		SourceLeadSessionManager.setSessionAttribute(request, "vendorContactCreateMsg","Success !! New contact added.");
 				 	}else if(responderType.equalsIgnoreCase("Client")){
 				 		SourceLeadSessionManager.setSessionAttribute(request, "clientContactCreateMsg","Success !! New contact added.");
 				 	}
 					
-			    /*}
-			} */
+			    }
+			} 
 		}
 		
 			return "vendorsList";
