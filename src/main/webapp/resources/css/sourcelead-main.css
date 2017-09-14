@@ -6523,6 +6523,14 @@ ul.leavelist li{
 ul.leavelist li label {
     width: 65%; margin-bottom: 0;
 }
+.inlineField {
+	width: 100% !important; border: 1px solid #ccc !important;
+    padding:2px 5px; font-size:13px; overflow: hidden; background-color:transparent;
+    font-weight:500; color:#454545;
+}
+.anchorTag-black a {
+	color:#333 !important;
+}
 /* media 320px */
 @media (max-width: 320px) {
 	.uasrch-selectpicker {
