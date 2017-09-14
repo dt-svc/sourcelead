@@ -10,8 +10,8 @@
 
 <script>
 function candidateCommentsList(candidateId,submissionId){
-	$('#tab-7').show();
 	
+	$('#tab-7').show();
 	$('.' + "current").removeClass("current");
 	$("#candidateCommentTab").addClass("current");
 	var urlForm = "";
@@ -20,8 +20,6 @@ function candidateCommentsList(candidateId,submissionId){
     }else{
     	urlForm = "/getAllCommentsOnCandidateByCandidateIdAndOrgLocation?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId;
     }
-	
-	var sourceleadUrl ='${sourceleadUrl}';
 	  $.ajax({
         type : "POST",
          url: sourceleadUrl+urlForm,        
