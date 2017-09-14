@@ -497,7 +497,6 @@ function isclientChckbox(){
 						<h5>Description</h5>
 						<textarea id="txtEditor" name="ProjectDescription" value="" class="form-control newContrtextarea" data-validation="validate_length length2-5000" data-validation-optional="true"></textarea>
 <!-- 						<textarea maxlength="5000" cols="80" rows="10" id="ProjectDescription" name="ProjectDescription"></textarea> -->
-                          <span class="hidden">Description</span> <span class="hidden" >Enter Project Id</span>
 					</div>
 
 					<!--  Documents Section -->
