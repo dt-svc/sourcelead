@@ -174,4 +174,6 @@ public interface CandidateService {
 
 	public List<Candidate> getAssociatesListForSow(Long locationId, String sowType);
 
+	String getCandidateId(OrgLocations orgLocations);
+
 }

@@ -45,11 +45,13 @@ function getProfessionalInfo(){
 	var candidateType= "Professional";
 	var userId = '${SourceLeadWeb_userId}';
 	var candidateId = '${SourceLeadWeb_candidateId}';
+	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
+
 	$.ajax({
 	   	type: "GET",
-	    url: sourceleadUrl+"/getProfessionalInfo?candidateStatus="+candidateType, 	   
-		    success: function(data) {
-		    	 var json = JSON.parse(data);
+	    url: sourceleadUrl+"/getProfessionalInfo?candidateId="+candidateId+"&orgLocationId="+orgLocationId, 	   
+		    success: function(json) {
+		    	/*  var json = JSON.parse(data); */
 		    	 if(json.firstName != null && json.firstName != '' && json.firstName !='undefined'){
 		    		 firstName = json.firstName;
 		    	 }else{

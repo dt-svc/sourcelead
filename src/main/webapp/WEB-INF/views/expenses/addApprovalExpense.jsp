@@ -66,6 +66,7 @@
 					<label class="col-md-3">Select Project <span class="text-danger">&nbsp;*</span></label>
 					<div class="col-md-9" id="errProject">
 						<select class="chosen-select form-control" autocomplete="off" onchange="getClientBasedOnSelectedProject(); getMembersForSelectedProject();removeErrProject();flushOnchange();" id="projectId" name="projectId" field-name="Project" data-validation="required">
+
 							 <c:if test="${fn:length(projectsList) gt 0}">
 								<option value="">Select Project</option>
 							</c:if>
@@ -417,7 +418,7 @@ function getMembersForSelectedProject(){
 				        var opt = json[i];
 				        result = result + '<option  value="'+opt.id+'">'+opt.empName+'</option>';
 			       	}
-				$("#projectMemberId").empty();
+				//$("#projectMemberId").empty();
 				$("#projectMemberId").append(result);
 				$("#projectMemberId").trigger("chosen:updated");
 	    	   }
@@ -552,6 +553,12 @@ function getClientBasedOnSelectedProject(){
 					  var projectEndDate = json.endDateStr;
 					  expensesDatePickerStartDate(projectStartDate,projectEndDate);
 		    	  }	
+
+		    	  $('#expensePurpose').val('');
+		    	  //$('#projectStartDateExpensesId').val('');
+		    	 // $('#projectEndDateExpensesId').val('');
+		    	    
+
 	    	   }
 	       },
 	});

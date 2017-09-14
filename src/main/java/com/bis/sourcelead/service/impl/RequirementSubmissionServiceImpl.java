@@ -377,7 +377,7 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 					}else{
 						candidate.setOrgRelationId(null);
 						candidate.setParentCandidateId(null);
-					}
+					} 
 					
 					if(jsonObj.has("vendorContact") && !"".equalsIgnoreCase(jsonObj.getString("vendorContact"))){
 						OrgSpoc orgspoc = orgSpocService.getOrgSpocById(Long.parseLong(jsonObj.getString("vendorContact")));
@@ -395,6 +395,7 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 					masterCandidate = masterCandidateService.getMasterCandidateByInteligence(jsonObj);
 					if(null == masterCandidate){
 						masterCandidate = masterCandidateService.storeMasterCandidateByJsonObject(jsonObj, user);
+						masterCandidate = masterCandidateService.storeMasterCandidateByJsonObject(jsonObj, user,orgLocations);
 					}
 					candidate.setMasterCandidateId(masterCandidate);
 					 
@@ -436,7 +437,11 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 //				    		  candidateSkillsService.storeCandidateSkills(candSkill);
 //						 }
 					 }
+<<<<<<< HEAD
 					
+=======
+					 candidate.setGeneratedId(candidateService.getCandidateId(orgLocations)); 
+>>>>>>> 1392e9513e224b2787ca8d3f7e2dc3b063ee6a7b
 					 candidate = candidateDao.storeCandidate(candidate);
 					CandidateIndex candidateIndex = candidateIndexHelper.getCandidateIndexFromCandidate(candidate);
 					
@@ -3496,7 +3501,11 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 			    MasterCandidate masterCandidate = null;
 				masterCandidate = masterCandidateService.getMasterCandidateByInteligence(jsonObj);
 				if(null == masterCandidate){
+<<<<<<< HEAD
 					masterCandidate = masterCandidateService.storeMasterCandidateByJsonObject(jsonObj, user);
+=======
+					masterCandidate = masterCandidateService.storeMasterCandidateByJsonObject(jsonObj, user,orgLocations);
+>>>>>>> 1392e9513e224b2787ca8d3f7e2dc3b063ee6a7b
 				}
 				candidate.setMasterCandidateId(masterCandidate);
 			    
