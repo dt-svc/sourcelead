@@ -34,7 +34,6 @@ position: relative; top:7px;
 <script>
 function editCandidate(candidateId){
 	  
-	var sourceleadUrl ='${sourceleadUrl}';
 	  var loginCountryName = '${loginCountryName}';
 		var validationSettings = {
 		        errorMessagePosition : 'element',
@@ -506,7 +505,6 @@ function editCandidate(candidateId){
 
 <script>
 function deleteCandidate(candidateId){
-	  var sourceleadUrl ='${sourceleadUrl}';
 	  var reason = document.getElementById("rejectReason").value;
 	  $.ajax({
         type : "POST",
@@ -575,7 +573,6 @@ function removeCandidateAlertMessage(candidateId){
 <script type="text/javascript">
 function reActivateCandidateAlertMessage(candidateId){
 	var result = "";
-	var sourceleadUrl ='${sourceleadUrl}';
 	var loginUserId = '${SourceLeadWeb_userId}';
 	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	var message = confirm("You are choosing to ReActivate the Candidate");
@@ -615,7 +612,6 @@ function reActivateCandidateAlertMessage(candidateId){
 --%>
 <script>
 function candidateProfile(candidateId){
-	  var sourceleadUrl = '${sourceleadUrl}';
 	  var skillsList = '${skillsList}'; 
 	  
 	  $.ajax({
@@ -894,7 +890,6 @@ function candidateProfile(candidateId){
  function saveSkils(candidateId){
 	 var skillName = $("#skillName").val();
 	 var jsonData = encodeURIComponent(skillName);
-	 var sourceleadUrl ='${sourceleadUrl}';
 	 var loginUserId = '${SourceLeadWeb_userId}';
 	 var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	 if(skillName != null && skillName != '' && skillName !='undefined'){
@@ -1018,7 +1013,6 @@ function removeSkillPopUp(candidateId){
 	         }; 
 		 if ($('#candidateProfileEdit_form').validate(false, validationSettings)){ 
 			
-			var sourceleadUrl = '${sourceleadUrl}';
 			var formData = getFormData('candidateProfileEdit_form');
 			$.ajax({
 						type : "POST",
@@ -1056,7 +1050,6 @@ function cancelEdit(){
 --%>  
 <script>
 function candidateSkillsList(candidateId){  
-	 var sourceleadUrl ='${sourceleadUrl}';
 	// getCandidatesSkillsBycandidateID
 	 $.ajax({  
           type : "POST",
@@ -1224,7 +1217,6 @@ function candidateSkillsList(candidateId){
 
 <script>
 function removeSkillById(candidateId, skillId){
-	  var sourceleadUrl ='${sourceleadUrl}';
 	  $.ajax({
         type : "POST",
          url: sourceleadUrl+"/removeSkillBySkillId?${_csrf.parameterName}=${_csrf.token}&skillId="+skillId,        
@@ -1287,7 +1279,6 @@ function removeSkillById(candidateId, skillId){
 --%>         
 <script type="text/javascript">
 	function fieldUpdateCandidate(candidateSkillId,local) {
-			var sourceleadUrl = '${sourceleadUrl}'; 
 			var value = local.value;
 			var name = local.id;
 			$.ajax({
@@ -1410,7 +1401,6 @@ function updateDesignationType(){
 	 var email = $('#email').val(); 
 	 var candidateType = $('#candidateType').val();
 	 $('#emailDiv').find('p.jquery_form_error_message').remove();
-	 var sourceleadUrl ='${sourceleadUrl}';
 	 if(email != null && email != ""){
 		 $.ajax({
 		    	type: "POST",
@@ -1441,7 +1431,6 @@ function updateDesignationType(){
  
  <script>
 	function employeeSubmissionProfile(candidateId) {
-		var sourceleadUrl = '${sourceleadUrl}';
 				$.ajax({
 					type : "POST",
 					url : sourceleadUrl	+ "/getCandidatesEmployersListByCandidateIdAndOrgLocationID?${_csrf.parameterName}=${_csrf.token}&candidateId=" + candidateId,
@@ -1515,7 +1504,6 @@ function updateDesignationType(){
 
 <script>
 function educationSubmissionProfile(candidateId){
-	 var sourceleadUrl ='${sourceleadUrl}';
 	 $.ajax({  
           type : "POST",
           url: sourceleadUrl+"/getCandidateEducationListByCandidateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,        
@@ -1598,7 +1586,6 @@ function educationSubmissionProfile(candidateId){
 
 <script>
 function certificationSubmissionProfile(candidateId){
-	 var sourceleadUrl ='${sourceleadUrl}';
 	 $.ajax({  
           type : "POST",
           url: sourceleadUrl+"/getCandidateCertificationListByCandidateIdAndOrgLocationID?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,        
@@ -1743,7 +1730,6 @@ function employementType(){
  function getVendorsByOrgLocation(){
 	 var vendorName = $("#updateVendorName").val();
 	 var vendorOrgRelationId = $("#updateVendorOrgRelationId").val();
-	 var sourceleadUrl ='${sourceleadUrl}';
 		 $.ajax({
 		    	type: "GET",
 		        url: sourceleadUrl+"/getVendorsByOrgLocation?", 
@@ -1784,7 +1770,6 @@ function employementType(){
 		 if(orgRelationID != null && orgRelationID != '' && orgRelationID != 'undefined'){
 			 var vendorContactName = $("#updateVendorContactName").val();
 			 var vendorSpocId = $("#updateSpocId").val();
-		     var sourceleadUrl ='${sourceleadUrl}';
 			 $.ajax({
 				    type: "POST",
 			        url: sourceleadUrl+"/getOrgSpocsList?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+orgRelationID+"&type=Vendor",  
@@ -1845,7 +1830,6 @@ function employementType(){
  function saveVisas(candidateId){
 	 var visaName = $("#visaName").val();
 	 var jsonData = encodeURIComponent(visaName);
-	 var sourceleadUrl ='${sourceleadUrl}';
 	 var loginUserId = '${SourceLeadWeb_userId}';
 	 var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	 if(visaName != null && visaName != '' && visaName !='undefined'){

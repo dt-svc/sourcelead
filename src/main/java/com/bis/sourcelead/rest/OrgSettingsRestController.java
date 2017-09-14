@@ -505,11 +505,12 @@ public class OrgSettingsRestController {
 	
 	
 	@RequestMapping(value = "/saveOrgShortCodeform",method = RequestMethod.POST)
-	public String saveOrgShortCodeform(@RequestParam(value = "json", required = false) String json,@RequestParam(value = "locationCode", required = false) String locationCode) throws Exception
+	public String saveOrgShortCodeform(@RequestParam(value = "json", required = false) String json,@RequestParam(value = "locationCode", required = false) String locationCode,HttpServletRequest request) throws Exception
 	{
 		JSONObject jsonObj = new JSONObject(json);
 		OrgLocations orgLocations = orgLocationService.getOrgLocationsByLocationCode(locationCode);
-		orgLocationService.saveOrgLocationsOrgShortCode(orgLocations,jsonObj);
+		OrgLocations orgLocationsSession = orgLocationService.saveOrgLocationsOrgShortCode(orgLocations,jsonObj);
+		SourceLeadSessionManager.setSessionAttribute(request, "orgLocations", orgLocationsSession);
 		return "success";
 	}
 	

@@ -240,7 +240,7 @@ border:none; background-color: none !important; padding:0 5px !important;
             </div>
             <div class="row form-footer custom_formfooter">
               <div class="pull-right mr"> 
-                <input type="button" value="Search" id="search_vendor" onclick="searchVendor();" class="btn btn-sm btn-success"/>
+                <input type="button" value="Search" id="search_vendor" onclick="getVendorList();" class="btn btn-sm btn-success"/>
                  <input type="button" value="Clear" id="clear_search" onclick="clearSearch();" class="btn btn-sm btn-primary"/>
               <!--   <input type="button" value="Cancel" onClick="closePop();" class="bbtn btn-sm btn-danger"/> -->
               
@@ -428,7 +428,7 @@ function clearSearch(){
 
 
 
-<script type="text/javascript">
+<!-- <script type="text/javascript">
 	function searchVendor() {
 		var validationSettings = {
 				errorMessagePosition : 'element',
@@ -506,7 +506,7 @@ function clearSearch(){
 		$("#vendorList_form").showHelpOnFocus();
 		$("#vendorList_form").validateOnBlur(false, validationSettings);
 	});
-</script>
+</script> -->
 
 
 <script type="text/javascript">

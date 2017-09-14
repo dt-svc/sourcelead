@@ -25,8 +25,6 @@ function educationSubmissionDetails(candidateId){
 
 <script>
 function educationSubmissionDetailsList(candidateId){
-	 var sourceleadUrl ='${sourceleadUrl}';
-	 
 	 
 	 var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
 	  if(locationList.match("yyyy-MM-dd")){

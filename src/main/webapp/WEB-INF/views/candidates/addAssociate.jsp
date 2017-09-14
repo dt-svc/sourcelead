@@ -485,7 +485,7 @@
  $(function() {
 		$("#uploadBtn").change(function() {
 			var sourceleadUrl = '${sourceleadUrl}';
-			fileUpload(sourceleadUrl, "uploadBtn", "resumes", "addcandidate_form");
+			fileUpload("uploadBtn", "resumes", "addcandidate_form");
 		});
 	 });
  </script>

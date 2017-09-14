@@ -10,7 +10,6 @@
 --%>
 <script>
 function applicantQuickViewProfile(submissionId,candidateId){
-	var sourceleadUrl = '${sourceleadUrl}';
 	  var skillsList = '${skillsList}'; 
 	  
 	  $("#quickLoading").attr('style','position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
@@ -245,7 +244,6 @@ function applicantQuickViewProfile(submissionId,candidateId){
 
 <script>
 	function reqQvemployeeSubmission(candidateId) {
-		var sourceleadUrl = '${sourceleadUrl}';
 				$.ajax({
 					type : "POST",
 					url : sourceleadUrl	+ "/getCandidatesEmployersListByCandidateIdAndOrgLocationID?${_csrf.parameterName}=${_csrf.token}&candidateId=" + candidateId,
@@ -324,7 +322,6 @@ function applicantQuickViewProfile(submissionId,candidateId){
 
 <script>
 function reqQveducationSubmission(candidateId){
-	var sourceleadUrl ='${sourceleadUrl}';
 	 $.ajax({  
           type : "POST",
           url: sourceleadUrl+"/getCandidateEducationListByCandidateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,        
@@ -397,7 +394,6 @@ function reqQveducationSubmission(candidateId){
 
 <script>
 function reqQwikCertificates(candidateId){
-	var sourceleadUrl ='${sourceleadUrl}';
 	 $.ajax({  
           type : "POST",
           url: sourceleadUrl+"/getCandidateCertificationListByCandidateIdAndOrgLocationID?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,        
