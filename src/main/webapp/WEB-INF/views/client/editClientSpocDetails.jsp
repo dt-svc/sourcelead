@@ -337,7 +337,7 @@
              var formData = getFormData("editVendorContact_form");
              var sourceleadUrl ='${sourceleadUrl}';
              var sourceleadUrl ='${sourceleadUrl}';
-		 $.post(sourceleadUrl+"/vendorContactDetailsUpdateUsingId?${_csrf.parameterName}=${_csrf.token}&spocId="+spocId+"&ownerId="+ownerId+"&spocUserId="+spocUserId+"&type=Vendor", formData, function(data) {
+		 $.post(sourceleadUrl+"/vendorContactDetailsUpdateUsingId?${_csrf.parameterName}=${_csrf.token}&spocId="+spocId+"&ownerId="+ownerId+"&spocUserId="+spocUserId+"&type=Client", formData, function(data) {
 			 var ownerId = data;
 		    	
 		    	$("#spocDetailsId").removeAttr("onClick")
