@@ -92,19 +92,13 @@ height: 25px;
 	color:#fff;
 }
 .tooltip_div table tr th, .tooltip_div table tr td{
-	padding:5px 10px;
-	height: auto !important;
-	font-size: 13px !important;
+	padding:5px 10px; height: auto !important;
+font-size: 13px !important;
     border-bottom: none !important;
 }
 .tooltip_div table tr td span{
-	text-overflow:ellipsis;
-	overflow:hidden;
-	white-space:nowrap;
-	display:block;
-	width:175px;
-	padding-right:5px;
-	margin-bottom:0;
+	text-overflow:ellipsis; overflow:hidden; white-space:nowrap;
+	display:block; width:175px; padding-right:5px; margin-bottom:0;
 }
 .project_tabs_inn_table table tr td div i {
 color:#333 !important;
@@ -120,18 +114,22 @@ overflow-y:inherit !important;
 }
 .require_wrap_table {
 overflow-y:inherit !important;
-
-.require_wrap_details_cta.require_uploadfile span{
-width:auto !important;
+}
+.require_wrap_details_cta.require_uploadfile span {
+ width:auto !important;
 }
 .require_wrap_details_cta.require_uploadfile a {
-margin-left:10px;
-float: left !important;
+margin-left:10px; float: left !important;
 }
 .require_wrap_details_cta.require_uploadfile .glyphicon-download-alt {
 color:blue;
 }
-
+.skills-chosen .chosen-container-multi .chosen-choices {
+    max-height: 85px !important; overflow: auto;
+}
+  .project_inn_mask.projectMask-zindex {
+    z-index: 9999;
+   }
 </style>
  
 <script>
@@ -464,9 +462,9 @@ $(".addUser-org").click(function(){
  $(".addUser-org, .assign-org, .collapse-div-adduser, .collapse-div, .edit-details").click(function(e){
 	 e.stopPropagation();
  });
- $('html').click(function(){
+/*  $('html').click(function(){
 	$(".edit-details").removeClass("edit-details-active");
-   });	
+   });	 */
    $("#endDate").click(function(){
 	   $(".endDate").toggle(200);
    });
@@ -4592,12 +4590,13 @@ function requirementRecommendations(requirementId){
 		    result = result +'<div class="rec_head">';
 
 		    result = result +'		   <div class="pull-left cand-advsrch">																							';
-		    result = result +'		    <a href="javascript:void(0)" class="btn btn-primary btn-sm" title="Customize score" onClick="openPop('+requirementId+')">Customize Score </a>            ';
+		    result = result +'		    <a href="javascript:void(0)" class="btn btn-primary btn-sm" title="" onClick="openPop('+requirementId+')">Customize Score </a>            ';
 		    if(json.length>0){
 		    	result = result +'			<a class="comTextLi" title="Compare" onclick="compareRecommendedUsers('+requirementId+');" >Compare</a>            ';
 		    }
-		    result = result +'                   <div id="customizeScoreDiv"></div>';
 		    result = result +'		        </div>';
+		    result = result +'                   <div id="customizeScoreDiv"></div>';
+		    
 
 		    
 		    
@@ -5748,12 +5747,17 @@ function customizeScore(requirementId){
 		    	
 		    	
 		    	var result = "";
-		    	result = result +'		          <div class="cand-advsrch-popup customizescore-pop customscorePop">  ';
+		    	//result = result +'		          <div class="cand-advsrch-popup customizescore-pop customscorePop">  ';
+		    	
+		    	result = result +'		          <div class="sideMask" style="display:block;"></div>';
+		    	result = result +'		          <div class="modal" style="display:block; z-index:9999">  ';
+		    	result = result +'		          <div class="modal-dialog modal-lg">  ';
+		    	result = result +'		          <div class="modal-content">  ';
 		    	result = result	+ ' <form id="updateCustomize_form"  name="updateCustomize_form" method="post">';
-		    	result = result +'		            <div class="row clearfix minDiv"> ';
+		    	result = result +'		            <div class="row clearfix modal-body"> ';
 		        result = result +'		                <div class="clearfix mt">  ';
 		        
-		        result = result +'		                <div class="col-md-10 lblup paddingRight">    ';
+		        result = result +'		                <div class="col-md-10 lblup paddingRight skills-chosen">    ';
 		        result = result +'		                   <label>Skills</label>';
 		        result = result +'		                    <select class="chosen-select" data-placeholder="Skills" multiple id="customizeSkills" name="customizeSkills"> ';
 		        
@@ -5790,7 +5794,8 @@ function customizeScore(requirementId){
 		        result = result +'		                      <option '+ (json.customizeSkillScore == "100" ? "selected" : '') +' value="100">100%</option>';
 		        result = result +'		                    </select>              ';
 		        result = result +'		                  </div>                   ';
-		        result = result +'		                </div> ';
+		        result = result +'		           <div class="clearfix"></div>';
+		        //result = result +'		                </div> ';
 		        
 		        result = result +'		                <div class="clearfix mt">   ';
 		        result = result +'		                  <div class="col-md-3 paddingRight lblup">    ';
@@ -5830,8 +5835,8 @@ function customizeScore(requirementId){
 		        result = result +'		                      <option '+ (json.customizeLocationScore == "100" ? "selected" : '') +' value="100">100%</option>';
 		        result = result +'		                    </select>                 ';
 		        result = result +'		                  </div>                      ';
-		        
-		        result = result +'		                </div>                        ';
+		        result = result +'		           <div class="clearfix"></div>';
+// 		        result = result +'		                </div>                        ';
 		        
 		        result = result +'				        <div class="clearfix mt"> ';
 		        result = result +'		                  <div class="col-md-10 lblup paddingRight">    ';
@@ -5914,81 +5919,6 @@ function customizeScore(requirementId){
 		        result = result +'</div>';		        
 		        result = result +'		                </div>                     ';
 		        
-		        result = result +'		           <div class="clearfix mt">     ';
-		        
-		        
-		        result = result +'		                  <div class="col-md-5 lblup">   ';
-		        result = result +'		                   <label>Rate</label>';
-		        result = result +'		                    <input type="text" placeholder="Rate" class="form-control input-sm" value="'+customizeRate+'" id="customizeRate" name="customizeRate" data-validation="validate_Space validate_float validate_length length1-8" data-validation-optional="true">  ';
-		        result = result +'		                    </div>   ';
-		        
-		        result = result +' <div class="col-md-5 paddingRight">   ';
-		        result = result + '<select  class="input-sm form-control" name="currentRateType"  id="currentRateType" field-name="Rate Type">';
-				result = result + '<option value="">Rate Per</option>';
-				result = result + ' <option '+(json.customizeRatetype == "Hourly" ? "selected" : '') +'>Hourly</option>';
-				result = result + '<option  '+ (json.customizeRatetype == "Weekly" ? "selected" : '') +'>Weekly</option>';
-				result = result + '<option  '+(json.customizeRatetype == "Bi-weekly" ? "selected" : '') +'>Bi-weekly</option>';
-				result = result + '<option  '+(json.customizeRatetype == "Semi-Monthly" ? "selected" : '') +'>Semi-Monthly</option>';
-				result = result + '<option  '+(json.customizeRatetype == "Monthly" ? "selected" : '') +'>Monthly</option>';
-				result = result + '<option  '+(json.customizeRatetype == "Bi-Monthly" ? "selected" : '') +'>Bi-Monthly</option>';
-				result = result + '<option '+(json.customizeRatetype == "Yearly" ? "selected" : '') +'>Yearly</option>';
-				result = result + ' </select>';
-		        result = result +'	  </div>   ';
-		        
-		        result = result +'		                    <div class="col-md-2">      ';
-		        result = result +'		                    <select class="chosen-select" data-placeholder="Rate" id="rateScore" name="rateScore"> ';
-		        result = result +'		                      <option '+ (json.customizeRateScore == "0" ? "selected" : '') +' value="0">0%</option> ';
-		        result = result +'		                      <option '+ (json.customizeRateScore == "10" ? "selected" : '') +' value="10">10%</option> ';
-		        result = result +'		                      <option '+ (json.customizeRateScore == "20" ? "selected" : '') +' value="20">20%</option> ';
-		        result = result +'		                      <option '+ (json.customizeRateScore == "30" ? "selected" : '') +' value="30">30%</option> ';
-		        result = result +'		                      <option '+ (json.customizeRateScore == "40" ? "selected" : '') +' value="40">40%</option> ';
-		        result = result +'		                      <option '+ (json.customizeRateScore == "50" ? "selected" : '') +' value="50">50%</option> ';
-		        result = result +'		                      <option '+ (json.customizeRateScore == "60" ? "selected" : '') +' value="60">60%</option> ';
-		        result = result +'		                      <option '+ (json.customizeRateScore == "70" ? "selected" : '') +' value="70">70%</option> ';
-		        result = result +'		                      <option '+ (json.customizeRateScore == "80" ? "selected" : '') +' value="80">80%</option> ';
-		        result = result +'		                      <option '+ (json.customizeRateScore == "90" ? "selected" : '') +' value="90">90%</option> ';
-		        result = result +'		                      <option '+ (json.customizeRateScore == "100" ? "selected" : '') +' value="100">100%</option>';
-		        result = result +'		                    </select>               ';
-		        result = result +'		                  </div>                    ';
-		        result = result +'		                </div>                      ';
-		       
-		        result = result +'		                  <div class="clearfix mt"> ';
-		        result = result +'		                  <div class="col-md-10 lblup paddingRight">   ';
-		        result = result +'		                   <label>Keywords</label>';
-		        result = result +'		                     <select class="chosen-select" data-placeholder="Keywords" multiple id="anyKeyWord" name="anyKeyWord">';
-		      //Split the keyWords
-		    	if(json.customizeKeywords != null && json.customizeKeywords != '' && json.customizeKeywords != 'undefined'){
-		    		var customizeKeywords = json.customizeKeywords;
-			    	var Keywords = new Array();
-			    	Keywords =  customizeKeywords.split(",");
-			        for (var i = 0; i < Keywords.length; i++) { 
-			        	 var customKeywords = Keywords[i];
-			        	 result = result +'	<option selected value='+customKeywords+'>'+customKeywords+'</option> ';
-			        }
-		    	}
-		        result = result +'		                    </select> ';
-		        result = result +'		                    </div>  ';
-		        result = result +'		                    <div class="col-md-2">  ';
-		        result = result +'		                    <select class="chosen-select" data-placeholder="KeyWords" id="keywordScore" name="keywordScore" > ';
-		        result = result +'		                      <option '+ (json.customizeKeywordsScore == "0" ? "selected" : '') +' value="0">0%</option> ';
-		        result = result +'		                      <option '+ (json.customizeKeywordsScore == "10" ? "selected" : '') +' value="10">10%</option> ';
-		        result = result +'		                      <option '+ (json.customizeKeywordsScore == "20" ? "selected" : '') +' value="20">20%</option> ';
-		        result = result +'		                      <option '+ (json.customizeKeywordsScore == "30" ? "selected" : '') +' value="30">30%</option> ';
-		        result = result +'		                      <option '+ (json.customizeKeywordsScore == "40" ? "selected" : '') +' value="40">40%</option> ';
-		        result = result +'		                      <option '+ (json.customizeKeywordsScore == "50" ? "selected" : '') +' value="50">50%</option> ';
-		        result = result +'		                      <option '+ (json.customizeKeywordsScore == "60" ? "selected" : '') +' value="60">60%</option> ';
-		        result = result +'		                      <option '+ (json.customizeKeywordsScore == "70" ? "selected" : '') +' value="70">70%</option> ';
-		        result = result +'		                      <option '+ (json.customizeKeywordsScore == "80" ? "selected" : '') +' value="80">80%</option> ';
-		        result = result +'		                      <option '+ (json.customizeKeywordsScore == "90" ? "selected" : '') +' value="90">90%</option> ';
-		        result = result +'		                      <option '+ (json.customizeKeywordsScore == "100" ? "selected" : '') +' value="100">100%</option>';
-		        result = result +'		                    </select> ';
-		        result = result +'		                  </div>  ';
-		        result = result +'		                </div>  ';
-		      
-		        
-		        
-		        
-// 		        =========================================================================================================================
 		        
 		        result = result +'		                  <div class="clearfix mt"> ';
 		        result = result +'		                  <div class="col-md-10 lblup paddingRight">   ';
@@ -6076,9 +6006,89 @@ function customizeScore(requirementId){
 		        result = result +'		                  </div>  ';
 		        result = result +'		                </div>  ';
 		      
+		        
+		        result = result +'		           <div class="clearfix mt">     ';
+		        
+		        
+		        result = result +'		                  <div class="col-md-5 lblup">   ';
+		        result = result +'		                   <label>Rate</label>';
+		        result = result +'		                    <input type="text" placeholder="Rate" class="form-control input-sm" value="'+customizeRate+'" id="customizeRate" name="customizeRate" data-validation="validate_Space validate_float validate_length length1-8" data-validation-optional="true">  ';
+		        result = result +'		                    </div>   ';
+		        
+		        result = result +' <div class="col-md-5 paddingRight">   ';
+		        result = result + '<select  class="input-sm form-control" name="currentRateType"  id="currentRateType" field-name="Rate Type">';
+				result = result + '<option value="">Rate Per</option>';
+				result = result + ' <option '+(json.customizeRatetype == "Hourly" ? "selected" : '') +'>Hourly</option>';
+				result = result + '<option  '+ (json.customizeRatetype == "Weekly" ? "selected" : '') +'>Weekly</option>';
+				result = result + '<option  '+(json.customizeRatetype == "Bi-weekly" ? "selected" : '') +'>Bi-weekly</option>';
+				result = result + '<option  '+(json.customizeRatetype == "Semi-Monthly" ? "selected" : '') +'>Semi-Monthly</option>';
+				result = result + '<option  '+(json.customizeRatetype == "Monthly" ? "selected" : '') +'>Monthly</option>';
+				result = result + '<option  '+(json.customizeRatetype == "Bi-Monthly" ? "selected" : '') +'>Bi-Monthly</option>';
+				result = result + '<option '+(json.customizeRatetype == "Yearly" ? "selected" : '') +'>Yearly</option>';
+				result = result + ' </select>';
+		        result = result +'	  </div>   ';
+		        
+		        result = result +'		                    <div class="col-md-2">      ';
+		        result = result +'		                    <select class="chosen-select" data-placeholder="Rate" id="rateScore" name="rateScore"> ';
+		        result = result +'		                      <option '+ (json.customizeRateScore == "0" ? "selected" : '') +' value="0">0%</option> ';
+		        result = result +'		                      <option '+ (json.customizeRateScore == "10" ? "selected" : '') +' value="10">10%</option> ';
+		        result = result +'		                      <option '+ (json.customizeRateScore == "20" ? "selected" : '') +' value="20">20%</option> ';
+		        result = result +'		                      <option '+ (json.customizeRateScore == "30" ? "selected" : '') +' value="30">30%</option> ';
+		        result = result +'		                      <option '+ (json.customizeRateScore == "40" ? "selected" : '') +' value="40">40%</option> ';
+		        result = result +'		                      <option '+ (json.customizeRateScore == "50" ? "selected" : '') +' value="50">50%</option> ';
+		        result = result +'		                      <option '+ (json.customizeRateScore == "60" ? "selected" : '') +' value="60">60%</option> ';
+		        result = result +'		                      <option '+ (json.customizeRateScore == "70" ? "selected" : '') +' value="70">70%</option> ';
+		        result = result +'		                      <option '+ (json.customizeRateScore == "80" ? "selected" : '') +' value="80">80%</option> ';
+		        result = result +'		                      <option '+ (json.customizeRateScore == "90" ? "selected" : '') +' value="90">90%</option> ';
+		        result = result +'		                      <option '+ (json.customizeRateScore == "100" ? "selected" : '') +' value="100">100%</option>';
+		        result = result +'		                    </select>               ';
+		        result = result +'		                  </div>                    ';
+		        result = result +'		                </div>                      ';
+		       
+		        result = result +'		                  <div class="clearfix mt"> ';
+		        result = result +'		                  <div class="col-md-10 lblup paddingRight">   ';
+		        result = result +'		                   <label>Keywords</label>';
+		        result = result +'		                     <select class="chosen-select" data-placeholder="Keywords" multiple id="anyKeyWord" name="anyKeyWord">';
+		      //Split the keyWords
+		    	if(json.customizeKeywords != null && json.customizeKeywords != '' && json.customizeKeywords != 'undefined'){
+		    		var customizeKeywords = json.customizeKeywords;
+			    	var Keywords = new Array();
+			    	Keywords =  customizeKeywords.split(",");
+			        for (var i = 0; i < Keywords.length; i++) { 
+			        	 var customKeywords = Keywords[i];
+			        	 result = result +'	<option selected value='+customKeywords+'>'+customKeywords+'</option> ';
+			        }
+		    	}
+		        result = result +'		                    </select> ';
+		        result = result +'		                    </div>  ';
+		        result = result +'		                    <div class="col-md-2">  ';
+		        result = result +'		                    <select class="chosen-select" data-placeholder="KeyWords" id="keywordScore" name="keywordScore" > ';
+		        result = result +'		                      <option '+ (json.customizeKeywordsScore == "0" ? "selected" : '') +' value="0">0%</option> ';
+		        result = result +'		                      <option '+ (json.customizeKeywordsScore == "10" ? "selected" : '') +' value="10">10%</option> ';
+		        result = result +'		                      <option '+ (json.customizeKeywordsScore == "20" ? "selected" : '') +' value="20">20%</option> ';
+		        result = result +'		                      <option '+ (json.customizeKeywordsScore == "30" ? "selected" : '') +' value="30">30%</option> ';
+		        result = result +'		                      <option '+ (json.customizeKeywordsScore == "40" ? "selected" : '') +' value="40">40%</option> ';
+		        result = result +'		                      <option '+ (json.customizeKeywordsScore == "50" ? "selected" : '') +' value="50">50%</option> ';
+		        result = result +'		                      <option '+ (json.customizeKeywordsScore == "60" ? "selected" : '') +' value="60">60%</option> ';
+		        result = result +'		                      <option '+ (json.customizeKeywordsScore == "70" ? "selected" : '') +' value="70">70%</option> ';
+		        result = result +'		                      <option '+ (json.customizeKeywordsScore == "80" ? "selected" : '') +' value="80">80%</option> ';
+		        result = result +'		                      <option '+ (json.customizeKeywordsScore == "90" ? "selected" : '') +' value="90">90%</option> ';
+		        result = result +'		                      <option '+ (json.customizeKeywordsScore == "100" ? "selected" : '') +' value="100">100%</option>';
+		        result = result +'		                    </select> ';
+		        result = result +'		                  </div>  ';
+		        result = result +'		                </div>  ';
+		        result = result +'		                </div>  ';
+		        result = result +'		                </div>  ';
+		      
+		        
+		        
+		        
+// 		        =========================================================================================================================
+		        
+		        
 		        result = result +'		              </div>                          ';
 		        
-		        result = result +'		            <div class="row form-footer mt10">                                              ';
+		        result = result +'		            <div class="form-footer clearfix">                                              ';
 		        result = result +'		              <div class="pull-right mr"> <a href="javascript:void(0)" title="Submit" class="btn btn-sm btn-primary" onclick="updateCutomize('+requirementId+');">Customize</a> <a href="javascript:void(0)" title="Cancel" class="btn btn-sm btn-default ml10" onclick="closePop();">Cancel</a> </div>';
 		        result = result +'		            </div>'; 
 		        result = result	+ '               <form>';

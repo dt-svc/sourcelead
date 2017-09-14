@@ -59,11 +59,13 @@ import com.bis.sourcelead.dao.AddExpensesDao;
 import com.bis.sourcelead.dao.InvoiceDao;
 import com.bis.sourcelead.dao.InvoiceLineItemDao;
 import com.bis.sourcelead.dao.InvoiceTaxDao;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.dto.InvoiceDTO;
 import com.bis.sourcelead.dto.InvoiceExpensesDTO;
 import com.bis.sourcelead.dto.InvoiceLineItemsDTO;
 import com.bis.sourcelead.dto.InvoiceTaxDTO;
+
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.EmailAttachment;
@@ -205,8 +207,8 @@ public class InvoiceServiceImpl implements InvoiceService{
 	private ExpensesInvoicePdfHelper expensesInvoicePdfHelper;
 	
 	@Override
-	public List<Invoice> invoiceListByOrgLocationId(Long orgLocationId,String invoiceStatus, String paymentStatus,Date startDateUTC,Date endDateUTC,String invoiceType) throws Exception {
-		return invoiceDao.invoiceListByOrgLocationId(orgLocationId,invoiceStatus,paymentStatus,startDateUTC,endDateUTC,invoiceType);
+	public ResponseList<Invoice> invoiceListByOrgLocationId(Long orgLocationId,Date startDateUTC,Date endDateUTC,InvoiceDTO invoiceDTO) throws Exception {
+		return invoiceDao.invoiceListByOrgLocationId(orgLocationId,startDateUTC,endDateUTC,invoiceDTO);
 
 	}
 	public List<Contracts> getSowcontractListByAssociateId(Long candidateId, Long orgLocationId, Long orgRelationId,String contractType) throws Exception
@@ -1152,7 +1154,7 @@ public class InvoiceServiceImpl implements InvoiceService{
 	
 	
 	@Override
-	public File getExportBillingFile(List<Invoice> invoiceList,String orgName, String exportType,InvoiceAmount totalStagesAmount,String exportStartDate,String exportEndDate,String invoiceType,OrgLocations orgLocations) throws Exception {
+	public File getExportBillingFile(ResponseList<Invoice> invoiceList,String orgName, String exportType,InvoiceAmount totalStagesAmount,String exportStartDate,String exportEndDate,String invoiceType,OrgLocations orgLocations) throws Exception {
 		
 		File file = null;
 		if (!"pdf".equalsIgnoreCase(exportType)) {
@@ -1162,7 +1164,7 @@ public class InvoiceServiceImpl implements InvoiceService{
 			Row writeRow = null;
 			createExcelsheet = getExcelSheetWithHeader(createExcelsheet, writeRow, createExcelworkbook,totalStagesAmount,orgName,exportStartDate,exportEndDate,invoiceType);
 			int column = 0;
-			for (Invoice invoice : invoiceList) {
+			for (Invoice invoice : invoiceList.getData()) {
 				writeRow = createExcelsheet.createRow(column + 10);
 				createExcelsheet = createXlsSheet(createExcelsheet, writeRow, invoice);
 				column++;

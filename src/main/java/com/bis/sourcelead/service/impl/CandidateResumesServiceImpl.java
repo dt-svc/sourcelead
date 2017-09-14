@@ -92,6 +92,8 @@ public class CandidateResumesServiceImpl implements CandidateResumesService {
 					activitySummary.append("Description").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidateResume.getDescription()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateResumeDTO.getDescription()).append(Constants.NEW_VALUE_TAG_END).append(" ");
 				}
 				candidateResume.setDescription(candidateResumeDTO.getDescription());
+			}else{
+				candidateResume.setDescription("");
 			}
 			candidateResume.setUpdatedBy(user.getUserCode());
 			candidateResume.setUpdatedDate(CommonUtil.currentDate());
