@@ -48,23 +48,27 @@ function fileUpload(sourceleadUrl, id, type, formId, name, orgId, orgLocationId)
 		contentType: false, 
 		success: function (data) {
 			if(data && data.length > 0) {
-				if($("#"+formId+" input[name*="+name+"][data-id="+id+"]").length > 0) {
-					$("#"+formId+" input[name*="+name+"][data-id="+id+"]").remove();
-				}
-				var i = $("#"+formId+" input[type=hidden][name*="+name+"]").length / 3;
-				for(var e in data) {
-					var html = "<input type='hidden' name='"+name+"["+i+"].fileURL' data-id="+id+" value='"+data[e].fileURL+"'/>";
-					html += "<input type='hidden' name='"+name+"["+i+"].fileName' data-id="+id+" value='"+data[e].fileName+"'/>";
-					html += "<input type='hidden' name='"+name+"["+i+"].contentType' data-id="+id+" value='"+data[e].contentType+"'/>";
-					$("#"+formId).append(html);
-					i ++;
-				}
+				applyData(data, formId, name);
 			}
 		}, 
 		error: function (err) { 
 			 showError(err); 
 		} 
 	});
+}
+
+function applyData(data, formId, name) {
+	if($("#"+formId+" input[name*="+name+"][data-id="+id+"]").length > 0) {
+		$("#"+formId+" input[name*="+name+"][data-id="+id+"]").remove();
+	}
+	var i = $("#"+formId+" input[type=hidden][name*="+name+"]").length / 3;
+	for(var e in data) {
+		var html = "<input type='hidden' name='"+name+"["+i+"].fileURL' data-id="+id+" value='"+data[e].fileURL+"'/>";
+		html += "<input type='hidden' name='"+name+"["+i+"].fileName' data-id="+id+" value='"+data[e].fileName+"'/>";
+		html += "<input type='hidden' name='"+name+"["+i+"].contentType' data-id="+id+" value='"+data[e].contentType+"'/>";
+		$("#"+formId).append(html);
+		i ++;
+	}
 }
 
 function showError(error) {
@@ -102,3 +106,21 @@ $(function() {
         hideMessage(parseInt($(this).data('type')));
     });
 });
+
+function saveCandidateImage(candidateId, formId){
+	if ($('#'+formId).validate(false, validationSettings)){
+          		var formData = getFormData(formId);
+	            		
+	            $.ajax({
+	                	      type: "POST",
+	                	      data: formData,
+	                      	  url: sourceleadUrl+"/saveCandidateProfile?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,
+	                          success: function(result) {
+	                        	  cancel(candidateId);
+	    			          },  
+	            });
+	            return true;         
+	}else{ 
+		return false;
+	 } 
+}

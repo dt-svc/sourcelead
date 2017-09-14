@@ -514,7 +514,6 @@ public class CandidateServiceImpl implements CandidateService {
 			if(fileInfo != null){
 			HashSet<CandidateResumes> candidateResumesList = candidateResumesService.getCandidateResumesDetails(orgLocations,user.getUserCode(),candidate, fileInfo);
 			candidate.setCandidateResumes(candidateResumesList);
-			candidate.setFileName(fileInfo.getFileName());
 			FileUploadUtil.moveFile(candidateDto.getStaticPath(), fileInfo, "resumes");
 				}
 			}

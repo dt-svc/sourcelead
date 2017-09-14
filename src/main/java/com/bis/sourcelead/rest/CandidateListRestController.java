@@ -922,32 +922,16 @@ public class CandidateListRestController {
 	 */
 	@RequestMapping(value = "/saveCandidateProfile", method = RequestMethod.POST)
 	public String saveCandidateProfile(CandidateDTO candidateDTO,@RequestParam(value = "candidateId", required = false) String candidateId,
-			@RequestParam(value = "loginUserId", required = false) Long loginUserId,
-			@RequestParam(value = "orgLocationId", required = false) Long orgLocationId,
 			HttpServletRequest request) throws Exception {
 
-		/*Iterator<String> itrator = request.getFileNames();
-		MultipartFile multiFile = request.getFile(itrator.next());*/
 		StringBuffer activitySummary = new StringBuffer();
-		//OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
-		OrgLocations loginOrgLocation = orgLocationService.getOrgLocations(orgLocationId);
-		User user = userService.getUserById(loginUserId);
+	 	OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+	 	User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		/*OrgLocations loginOrgLocation = orgLocationService.getOrgLocations(orgLocationId);
+		User user = userService.getUserById(loginUserId);*/
 		candidateDTO.setStaticPath(staticPath);
 		Candidate candidate = candidateService.getCandidateByCandidateIdAndOrgLocationId(Long.parseLong(candidateId),loginOrgLocation.getId());
-		/*if (null != multiFile.getContentType() && !multiFile.getContentType().equalsIgnoreCase("application/octet-stream")) {
-			try {
-				if(candidate.getFileName() != null && candidate.getFileName() != "" && !candidate.getFileName().equalsIgnoreCase(multiFile.getOriginalFilename())){
-					activitySummary.append("File").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidate.getFileName()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(multiFile.getOriginalFilename()).append(Constants.NEW_VALUE_TAG_END).append(" ");
-				}else{
-					activitySummary.append("File").append(" : ").append(Constants.NEW_VALUE_TAG_INITIATION).append(multiFile.getOriginalFilename()).append(Constants.NEW_VALUE_TAG_END).append(" ");
-				}
-				candidate.setFileContentType(multiFile.getContentType());
-				candidate.setDocFile(multiFile.getBytes());
-				candidate.setFileName(multiFile.getOriginalFilename());
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}*/
+		
 		if(candidateDTO.getFileInfo() != null){
 			FileInfo info = candidateDTO.getFileInfo().get(0);
 			try {
@@ -957,7 +941,6 @@ public class CandidateListRestController {
 					activitySummary.append("File").append(" : ").append(Constants.NEW_VALUE_TAG_INITIATION).append(info.getFileName()).append(Constants.NEW_VALUE_TAG_END).append(" ");
 				}
 				candidate.setFileContentType(info.getContentType());
-				//candidate.setDocFile(multiFile.getBytes());
 				candidate.setFileUrl(info.getFileURL());
 				candidate.setFileName(info.getFileName());
 				FileUploadUtil.moveFile(candidateDTO.getStaticPath(), info, "profile");

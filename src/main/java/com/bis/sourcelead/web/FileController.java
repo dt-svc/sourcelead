@@ -39,7 +39,12 @@ public class FileController {
 	@RequestMapping(value = "/upload/{type}", method = RequestMethod.POST)
 	@ResponseBody
 	public List<FileInfo> uploadFile(MultipartHttpServletRequest request, @PathVariable String type,
-			@RequestParam (defaultValue = "0") long orgId, @RequestParam (defaultValue = "0") long orgLocationId) {
+			@RequestParam (defaultValue = "0") long orgId, 
+			@RequestParam (defaultValue = "0") long orgLocationId,
+			@RequestParam (defaultValue = "0") int x,
+			@RequestParam (defaultValue = "0") int y,
+			@RequestParam (defaultValue = "0") int w,
+			@RequestParam (defaultValue = "0") int h) {
 		List<FileInfo> fileInfoList = new ArrayList<>();
 		Iterator<String> itrator = request.getFileNames();
 		while (itrator.hasNext()) {	
@@ -51,11 +56,19 @@ public class FileController {
 				orgId = org.getId();
 				orgLocationId = loginOrgLocation.getId();
 			}
-			String fileURL = new FileUploadUtil().uploadFile(staticPath, orgId, orgLocationId, type, multiFile);
-			fileInfo.setFileName(multiFile.getOriginalFilename());
-			fileInfo.setFileURL(fileURL);
-			fileInfo.setContentType(multiFile.getContentType());
-			fileInfoList.add(fileInfo);
+			FileUploadUtil fileUploadUtil = new FileUploadUtil();
+			if(x > 0 || y > 0 || w > 0 || h > 0) {
+				fileInfo.setFileURL(fileUploadUtil.cropImage(staticPath, multiFile, x, y, w, h));
+				fileInfo.setFileName(multiFile.getOriginalFilename());
+				fileInfo.setContentType(multiFile.getContentType());
+				fileInfoList.add(fileInfo);
+			} else {
+				String fileURL = fileUploadUtil.uploadFile(staticPath, orgId, orgLocationId, type, multiFile);
+				fileInfo.setFileName(multiFile.getOriginalFilename());
+				fileInfo.setFileURL(fileURL);
+				fileInfo.setContentType(multiFile.getContentType());
+				fileInfoList.add(fileInfo);
+			}
 		}
 		
 		return fileInfoList;
