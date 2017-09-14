@@ -334,7 +334,10 @@ result = result + '<div class="project_tabs mb">';
 	    	    result = result + '	<table id="projectEmployeePagination" class="display" cellspacing="0" width="100%">';
 	    		result = result + '	<thead>';
 	    		result = result + '		<tr>';
-	    		result = result + ' <th><input type="checkbox" onclick="selectAllMembers();"  id="selectAllMembers" ></th>';
+	    		  if('${postedOrgLocationId}' == '${SourceLeadWeb_orgLocations.id}'){
+	    			  result = result + ' <th><input type="checkbox" onclick="selectAllMembers();"  id="selectAllMembers" ></th>';
+	    		  }
+	    		
 	            result = result + '	 	<th>Emp Name</th>';
 	            result = result + '	 	<th>Emp Email</th>';
 	            result = result + '	 	<th>Emp Role</th>';
@@ -365,7 +368,10 @@ result = result + '<div class="project_tabs mb">';
 		        			projectEndDateStr = "--"
 		        		}
 		        		result = result + '	 <tr>';
-		        		result = result + '<td><input type="checkbox" onclick="selectedMember();"  class="projectMembersChecks" value='+opt.id+' name="projectMembers[]" ></td>';
+		        		 if('${postedOrgLocationId}' == '${SourceLeadWeb_orgLocations.id}'){
+		        			 result = result + '<td><input type="checkbox" onclick="selectedMember();"  class="projectMembersChecks" value='+opt.id+' name="projectMembers[]" ></td>';
+		        		 }
+		        		
 		                result = result + '	 	<td><div class="tbldata-dotdot" title="'+opt.candidateName+'"><span title="'+opt.candidateName+'">'+opt.candidateName+'</span></div></td>';
 		                result = result + '	 	<td><div class="tbldata-dotdot" title="'+opt.empEmail+'"><span title="'+opt.empEmail+'">'+opt.empEmail+'</span></div></td>';
 		                result = result + '	 	<td><div class="tbldata-dotdot_80" title="'+role+'"><span title="'+role+'">'+role+'</span></div></td>';
@@ -1419,7 +1425,7 @@ function getAssociates(){
 
 <script type="text/javascript">
 function getOrgLocationProjects(){
-	
+	emptyRecords();
 	var orgLocations = [];
 	$('input:radio[name=orgLocations]:checked').each(function() 
 		    {
@@ -1455,13 +1461,18 @@ function getOrgLocationProjects(){
 <script>
 function getProjectDetails(){
 	var orgLocationProjects = document.getElementById("orgLocationProjects").value;
+	var orgLocations = [];
+	$('input:radio[name=orgLocations]:checked').each(function() 
+		    {
+		orgLocations.push($(this).val());
+	    });
 	
 	if(orgLocationProjects){
 		$("#projectDetailsLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		var sourceleadUrl = '${sourceleadUrl}';
 				$.ajax({
 					type : "POST",
-					url : sourceleadUrl	+ "/getProjectById?${_csrf.parameterName}=${_csrf.token}&ProjectId="+ orgLocationProjects,
+					url : sourceleadUrl	+ "/getProjectDetailsForResouceTransfer?${_csrf.parameterName}=${_csrf.token}&projectId="+ orgLocationProjects+"&orgLocationId="+orgLocations,
 					success : function(data) {
 						var json = JSON.parse(data);
 						var endDateStr = "";
@@ -1618,18 +1629,24 @@ function getProjectDetails(){
 					}
 				});
 	}else{
-		 var result = '';
-		 result = result+"   <div class='row'>"; 
-		 result = result+"	<div class='col-lg-12'>"; 
-		 result = result+"		<div class='dataTables_empty'>"; 
-		 result = result+"		</div>"; 
-		 result = result+"	</div>"; 
-		 result = result+"  </div> ";
-		 
-		 $("#projectDetailsDiv").empty();
-	     $("#projectDetailsDiv").append(result);
+		emptyRecords();
 	}
 	
+}
+</script>
+
+<script>
+function emptyRecords(){
+	var result = '';
+	 result = result+"   <div class='row'>"; 
+	 result = result+"	<div class='col-lg-12'>"; 
+	 result = result+"		<div class='dataTables_empty'>"; 
+	 result = result+"		</div>"; 
+	 result = result+"	</div>"; 
+	 result = result+"  </div> ";
+	 
+	 $("#projectDetailsDiv").empty();
+    $("#projectDetailsDiv").append(result);
 }
 </script>
 
@@ -1640,6 +1657,12 @@ function transferToProject(){
 	 $("input[name='projectMembers[]']:checked").each( function (i) {
 		 projectMembers.push($(this).val());
 	});
+	 
+	var orgLocations = [];
+	$('input:radio[name=orgLocations]:checked').each(function() 
+		    {
+		orgLocations.push($(this).val());
+	    });
 	 
 	 var projectUUID = '${projectUUID}';
 	 var projectOrgLocationId = document.getElementById("orgLocationProjects").value;
@@ -1652,7 +1675,7 @@ function transferToProject(){
 		 
 		 $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/transferProjectMembers?${_csrf.parameterName}=${_csrf.token}&projectUUID="+projectUUID+"&projectId="+projectId+"&projectOrgLocationId="+projectOrgLocationId+"&projectMembers="+projectMembers, 
+		        url: sourceleadUrl+"/transferProjectMembers?${_csrf.parameterName}=${_csrf.token}&projectUUID="+projectUUID+"&projectId="+projectId+"&projectOrgLocationId="+orgLocations+"&projectMembers="+projectMembers, 
 		        success: function() {
 		        
 		        	location.replace(sourceleadUrl+"/projectSummary?projectUUID="+projectUUID+"&tabType=projectMembers");
@@ -1676,7 +1699,7 @@ function alertProjectMembersMessage(){
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 	result = result +"		<p>Select atleast one project member</p>";
 	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
-	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='cancel();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='popupClose();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
 	result = result +"	</div>";
 	$("#membersChoicepopUp").append(result);
 	$("#remove_user_pop").slideDown(200);
@@ -1688,6 +1711,15 @@ function alertProjectMembersMessage(){
 function cancel(){
 	$("#membersChoicepopUp").empty();
 	$(".project_inn_mask").fadeOut(200);
+}
+</script>
+
+<script>
+function popupClose(){
+	$(".clients_side_wrap").removeClass("clients_side_wrap_active");
+	$(".side_mask").fadeOut(200);
+	$("body").css('overflow-y', 'auto');
+    $('.addcandidate-popup').fadeOut(200);
 }
 </script>
 	

@@ -834,7 +834,7 @@ function getAssignedMembers(){
 	 $("#searchAssociatesList").empty();
      $("#searchAssociatesList").append(result);
      
-     if(projectId != null){
+     if(projectId != null && projectId != '' && projectId != 'undefined'){
     	 loadProjectAssignedMembers(projectId);
      }
      

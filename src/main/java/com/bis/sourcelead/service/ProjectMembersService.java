@@ -106,5 +106,5 @@ public interface ProjectMembersService {
 	
 	public List<ProjectMembers> getAllProjectMembersByProjectClientIdAndStatus(Long projectClientsId,String status) throws Exception;
 
-	public String transferMembers(OrgLocations orgLocations,Org org,Projects projects,String projectMembers,User user) throws Exception;
+	public String transferMembers(OrgLocations orgLocations,Org org,Projects projects,String projectMembers,User user,Long projectOrgLocationId) throws Exception;
 }

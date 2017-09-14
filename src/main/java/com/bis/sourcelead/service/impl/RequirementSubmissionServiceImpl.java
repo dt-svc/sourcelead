@@ -377,7 +377,7 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 					}else{
 						candidate.setOrgRelationId(null);
 						candidate.setParentCandidateId(null);
-					}
+					} 
 					
 					if(jsonObj.has("vendorContact") && !"".equalsIgnoreCase(jsonObj.getString("vendorContact"))){
 						OrgSpoc orgspoc = orgSpocService.getOrgSpocById(Long.parseLong(jsonObj.getString("vendorContact")));
@@ -394,7 +394,7 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 					MasterCandidate masterCandidate = null;
 					masterCandidate = masterCandidateService.getMasterCandidateByInteligence(jsonObj);
 					if(null == masterCandidate){
-						masterCandidate = masterCandidateService.storeMasterCandidateByJsonObject(jsonObj, user);
+						masterCandidate = masterCandidateService.storeMasterCandidateByJsonObject(jsonObj, user,orgLocations);
 					}
 					candidate.setMasterCandidateId(masterCandidate);
 					 
@@ -425,19 +425,12 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 							
 						 
 						 candidate.setSkillsName(candidateSkills);
-						 
-						 
-//						 for(int i=0; i<skillsList.length; i++){
-//							  CandidateSkills candSkill = new  CandidateSkills();
-//				    		  candSkill.setName(skillsList[i]);
-//				    		  candSkill.setCandidateId(candidate);
-//				    		  candSkill.setStatus(Constants.CANDIDATE_SKILL_ACTIVE);
-//				    		  candSkill.setOrgLocationID(orgLocations);
-//				    		  candidateSkillsService.storeCandidateSkills(candSkill);
-//						 }
+
 					 }
 					
-					 candidate = candidateDao.storeCandidate(candidate);
+
+					candidate.setGeneratedId(candidateService.getCandidateId(orgLocations)); 
+					candidate = candidateDao.storeCandidate(candidate);
 					CandidateIndex candidateIndex = candidateIndexHelper.getCandidateIndexFromCandidate(candidate);
 					
 					sourceleadELKBaseIndexer.saveOrUpdateElkDocument(candidateIndex, Constants.ELK_CANDIDATE_INDEX, Constants.ELK_CANDIDATE_TYPE,candidate.getId().toString());
@@ -3496,7 +3489,9 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 			    MasterCandidate masterCandidate = null;
 				masterCandidate = masterCandidateService.getMasterCandidateByInteligence(jsonObj);
 				if(null == masterCandidate){
-					masterCandidate = masterCandidateService.storeMasterCandidateByJsonObject(jsonObj, user);
+
+					masterCandidate = masterCandidateService.storeMasterCandidateByJsonObject(jsonObj, user,orgLocations);
+
 				}
 				candidate.setMasterCandidateId(masterCandidate);
 			    

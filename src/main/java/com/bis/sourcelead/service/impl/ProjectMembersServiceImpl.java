@@ -39,6 +39,7 @@ import com.bis.sourcelead.entity.MasterCandidate;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
+import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.ProjectApproverHierarchy;
 import com.bis.sourcelead.entity.ProjectClients;
 import com.bis.sourcelead.entity.ProjectMembers;
@@ -47,6 +48,7 @@ import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Primary;
 import com.bis.sourcelead.service.CandidateService;
+import com.bis.sourcelead.service.ClientService;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.ExpensesReportService;
@@ -65,6 +67,7 @@ import com.bis.sourcelead.util.ConversionUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
+import com.bis.sourcelead.web.RegistrationController;
 
 @Service
 public class ProjectMembersServiceImpl implements ProjectMembersService{
@@ -125,6 +128,12 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 	 
 	 @Autowired
 	 OrgRelationsService orgRelationsService;
+	 
+	 @Autowired
+	 RegistrationController registrationController;
+	 
+	 @Autowired
+	 ClientService clientService;
 	 
 	private static final Logger logger = LoggerFactory.getLogger(ProjectsDaoImpl.class);
 	
@@ -908,7 +917,6 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 					}else{
 						
 						ProjectClients projectClients = projectClientService.getProjectClientsByProjectIdAndOrgLocationId(projects.getId(), orgLocations.getId());
-						saveProjectMembersHistory(projectMembers,user,projectClients);
 						
 						ProjectClients clientProjectClients = null;
 						OrgRelations orgRelations = null;
@@ -937,9 +945,9 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 							Candidate savedCandidate = candidateService.addCandidate(clientCandidate);
 							candidateService.saveOrUpdateCandidateElkDocument(savedCandidate);
 						}
-							
-						    clientProjectClients = projectClientService.getProjectClientsByProjectIdAndOrgLocationId(projects.getId(), projects.getOrgLocationsId().getId());
-							saveProjectMembersHistory(projectMembers,user,clientProjectClients);
+						saveProjectMembersHistory(projectMembers,user,projectClients);
+						clientProjectClients = projectClientService.getProjectClientsByProjectIdAndOrgLocationId(projects.getId(), projects.getOrgLocationsId().getId());
+					    saveProjectMembersHistory(projectMembers,user,clientProjectClients);
 						
 						if(clientProjectClients != null && clientProjectClients.getOrgLocationsId().equals(projects.getOrgLocationsId().getId())){
 							projectClients.setOrgRelationId(orgRelations);
@@ -1038,6 +1046,10 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 			projectMembersHistory.setProjectTerminationDate(null);
 		}
 		
+		Candidate candidate =  candidateService.findByCandidateEmail(projectMembers.getProjectMemberCandidteId().getEmail(), projectClients.getOrgLocationsId().getId());
+		if(candidate != null){
+			projectMembersHistory.setCandidateId(candidate);
+		}
 		projectMembersHistory.setStatus("OPEN");
 		projectMembersHistory.setCreatedBy(user.getUserCode());
 		projectMembersHistory.setUpdatedBy(user.getUserCode());
@@ -1065,11 +1077,11 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 	}
 
 	@Override
-	public String transferMembers(OrgLocations orgLocations, Org org, Projects projects,String projectMembers,User user) throws Exception {
+	public String transferMembers(OrgLocations orgLocations, Org org, Projects projects,String projectMembers,User user,Long projectOrgLocationId) throws Exception {
 		
 		String result = "failure";
 		String isInternalOrgProject = null;
-    	if(projects.getOrgLocationsId().getOrg().getId().equals(org.getId())){
+    	if(projects.getOrgLocationsId().getId().equals(orgLocations.getId())){
     		isInternalOrgProject = Constants.YES;
 		}else{
 			isInternalOrgProject = Constants.NO;
@@ -1097,47 +1109,90 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 				saveProjectMembersHistory(pm,user,projectClients);
 				Candidate candidate = candidateService.findByCandidateEmail(pm.getProjectMemberCandidteId().getEmail(), orgLocations.getId());
 				if(candidate.getParentCandidateId() != null){
-					saveVendorProjectClientDetails(candidate,projects,user,projectClients,pm,orgLocations);
+					saveVendorProjectClientDetails(candidate,projects,user,projectClients,pm);
 				}
     		}else{
-    			OrgRelations orgRelations = orgRelationsService.getVendorOrgRelationByResponderLocationIdAndLocationId(orgLocations.getId(), projects.getOrgLocationsId().getId());
-    			ProjectClients projectClients = projectClientService.getProjectClientsByProjectIdAndOrgLocationIdAndOrgRelationId(projects.getId(), orgLocations.getId(), orgRelations.getId());
-    			saveProjectMembersHistory(pm,user,projectClients);
-    			
-    			ProjectClients clientPC = projectClientService.getProjectClientsByProjectIdAndOrgLocationId(projects.getId(), projects.getOrgLocationsId().getId());
-    			saveProjectMembersHistory(pm,user,clientPC);
-    			
+    			OrgRelations orgRelations = null;
+    			ProjectClients projectClients = null;
     			Candidate candidate = candidateService.findByCandidateEmail(pm.getProjectMemberCandidteId().getEmail(), orgLocations.getId());
-    			Candidate clientCandidate = candidateService.findByCandidateEmail(pm.getProjectMemberCandidteId().getEmail(), projects.getOrgLocationsId().getId());
-				if(clientCandidate == null){
-					clientCandidate = new Candidate();
-					MasterCandidate masterCandidate = new MasterCandidate();
-					masterCandidate.setId(candidate.getMasterCandidateId().getId());
-					clientCandidate.setMasterCandidateId(masterCandidate);
-					clientCandidate.setParentCandidateId(candidate);
-					clientCandidate.setOrgLocationId(projects.getOrgLocationsId());
-					clientCandidate.setCandidateType("Candidate");
-					clientCandidate.setFirstName(candidate.getFirstName());
-					clientCandidate.setLastName(candidate.getLastName());
-					clientCandidate.setEmail(candidate.getEmail());
-					clientCandidate.setCountry(candidate.getCountry());
-					clientCandidate.setStatus(1);
-					clientCandidate.setIsAssociate(Constants.YES);
-					clientCandidate.setCandidateUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
-					
-					orgRelations = orgRelationsService.getVendorOrgRelationByResponderLocationIdAndLocationId(orgLocations.getId(), projects.getOrgLocationsId().getId());
-					clientCandidate.setOrgRelationId(orgRelations);
-					clientCandidate.setCreatedBy(user.getUserCode());
-					clientCandidate.setCreatedDate(new Date());
-					clientCandidate.setUpdatedDate(new Date());
-					Candidate savedCandidate = candidateService.addCandidate(clientCandidate);
-					candidateService.saveOrUpdateCandidateElkDocument(savedCandidate);
-				}
-				
-				
-				if(candidate.getParentCandidateId() != null){
-					saveVendorProjectClientDetails(candidate,projects,user,projectClients,pm,orgLocations);
-				}
+    			OrgLocations orgLoc = orgLocationService.getOrgLocations(projectOrgLocationId);
+    			OrgLocations vendorOrgLocations = null;
+    			if(!orgLoc.getId().equals(orgLocations.getId()) && orgLoc.getOrg().getId().equals(orgLocations.getOrg().getId())){
+    				if(candidate.getOrgRelationId() != null){
+    					if(candidate.getOrgRelationId().getResponderLocationId().getId().equals(orgLocations.getId())){
+    						vendorOrgLocations = candidate.getOrgRelationId().getLocationId();
+    					}else{
+    						vendorOrgLocations = candidate.getOrgRelationId().getResponderLocationId();
+    					}
+    					
+    					orgRelations = orgRelationsService.getVendorOrgRelationByResponderLocationIdAndLocationId(vendorOrgLocations.getId(),orgLoc.getId());
+    					if(orgRelations == null){
+    						orgRelations = saveOrgRelations(vendorOrgLocations,orgLoc,user);
+			 				orgRelations = orgRelationsService.addOrgRelations(orgRelations);
+			 			
+							String modules = orgLoc.getModulesId();
+							List<Integer> moduleIds = new ArrayList<Integer>();
+							 for (String s : orgLoc.getModulesId().split(",")){
+								 moduleIds.add(Integer.parseInt(s));
+							 }
+							 boolean flag = moduleIds.contains(Constants.MODULE_VMS);
+							 if(flag == false){
+								 Long tabId = (long) Constants.TAB_CLIENT;
+								 Long moduleId = (long) Constants.MODULE_ATS;
+							     modules = modules+","+Constants.MODULE_VMS;
+							     registrationController.saveUserRoleActions(moduleId,tabId,orgLoc);
+							 }
+							 orgLoc.setModulesId(modules);
+							 orgLocationService.updateOrgLocations(orgLoc);
+							 
+							 Set<OrgSpoc> orgSpocList = orgRelations.getOrgSpocList();
+							 OrgSpoc orgSpoc = null;
+							 for(OrgSpoc spoc : orgSpocList){
+								 orgSpoc =  spoc;
+							 }
+							 
+							 clientService.saveOrUpdateClientVendorElkDocument(null, orgLoc, "Client", orgSpoc, orgRelations,null, user, vendorOrgLocations);
+    					}
+    				}
+    				
+    				ProjectClients clientPC = projectClientService.getProjectClientsByProjectIdAndOrgLocationId(projects.getId(), orgLoc.getId());
+    				
+        			Candidate orgLocCandidate = candidateService.findByCandidateEmail(pm.getProjectMemberCandidteId().getEmail(), orgLoc.getId());
+    				if(orgLocCandidate == null){
+    					orgLocCandidate = getCandidateDetails(candidate, user, projects, orgLoc);
+    					if(candidate.getParentCandidateId() != null){
+    						orgLocCandidate.setParentCandidateId(candidate.getParentCandidateId());
+    					}
+       					orgLocCandidate.setOrgLocationId(orgLoc);
+    					orgLocCandidate.setOrgRelationId(orgRelations);
+    					Candidate savedCandidate = candidateService.addCandidate(orgLocCandidate);
+    					candidateService.saveOrUpdateCandidateElkDocument(savedCandidate);
+    				}
+    				if(orgLocCandidate.getParentCandidateId() != null){
+    					saveVendorProjectClientDetails(orgLocCandidate,projects,user,projectClients,pm);
+    				}
+    				saveProjectMembersHistory(pm,user,clientPC);
+    				
+    			}else{
+    				orgRelations = orgRelationsService.getVendorOrgRelationByResponderLocationIdAndLocationId(orgLocations.getId(), projects.getOrgLocationsId().getId());
+        			projectClients = projectClientService.getProjectClientsByProjectIdAndOrgLocationIdAndOrgRelationId(projects.getId(), orgLocations.getId(), orgRelations.getId());
+        			saveProjectMembersHistory(pm,user,projectClients);
+        			
+        			ProjectClients clientPC = projectClientService.getProjectClientsByProjectIdAndOrgLocationId(projects.getId(), projects.getOrgLocationsId().getId());
+        			Candidate clientCandidate = candidateService.findByCandidateEmail(pm.getProjectMemberCandidteId().getEmail(), projects.getOrgLocationsId().getId());
+    				if(clientCandidate == null){
+    					clientCandidate = getCandidateDetails(candidate, user, projects, orgLocations);
+    					clientCandidate.setParentCandidateId(candidate);
+    					clientCandidate.setOrgRelationId(orgRelations);
+    					clientCandidate.setOrgLocationId(projects.getOrgLocationsId());
+    					Candidate savedCandidate = candidateService.addCandidate(clientCandidate);
+    					candidateService.saveOrUpdateCandidateElkDocument(savedCandidate);
+    				}
+    				saveProjectMembersHistory(pm,user,clientPC);
+    				if(candidate.getParentCandidateId() != null){
+    					saveVendorProjectClientDetails(candidate,projects,user,projectClients,pm);
+    				}
+    			}
 				
     		}
     	}
@@ -1147,8 +1202,63 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 	}
 	
 	
+	public OrgRelations saveOrgRelations(OrgLocations vendorOrgLocations,OrgLocations clientOrgLocation,User user){
+		
+		OrgRelations orgRelations = new OrgRelations();
+			orgRelations.setLocationId(vendorOrgLocations);
+			orgRelations.setResponderLocationId(clientOrgLocation);
+			orgRelations.setInitiatorType("Vendor");
+			orgRelations.setResponderType("Client");
+			orgRelations.setInitiatorLevel("Tier-5");
+			orgRelations.setResponderLevel("Tier-5");
+			orgRelations.setStatus("ACTIVE");
+			orgRelations.setCreatedBy(user.getUserCode());
+			orgRelations.setCreatedDate(new Date());
+			orgRelations.setUpdatedBy(user.getUserCode());
+			orgRelations.setUpdatedDate(new Date());
+			
+			Set<OrgSpoc> orgSpocSet = new HashSet<>();
+			OrgSpoc orgSpoc = new OrgSpoc();
+			orgSpoc.setOrgRelations(orgRelations);
+			orgSpoc.setClientUser(clientOrgLocation.getUser());
+			orgSpoc.setVendorUser(user);
+			orgSpoc.setInvitationStatus(Constants.MAIL_NEW);
+			orgSpoc.setClientLocationId(clientOrgLocation);
+			orgSpoc.setVendorLocationId(vendorOrgLocations);
+			orgSpoc.setUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+			orgSpoc.setStatus(Constants.MEMBER_ACTIVE);
+			orgSpoc.setCreatedDate(new Date());
+			orgSpoc.setCreatedBy(user.getUserCode());
+			orgSpoc.setUpdatedDate(new Date());
+			orgSpoc.setUpdatedBy(user.getUserCode());
+			orgSpocSet.add(orgSpoc);
+			orgRelations.setOrgSpocList(orgSpocSet);
+			return orgRelations;
+	}
 	
-	public void saveVendorProjectClientDetails(Candidate candidate,Projects projects,User user,ProjectClients projectClients,ProjectMembers pm,OrgLocations orgLocations) throws Exception{
+	
+	public Candidate getCandidateDetails(Candidate candidate,User user,Projects projects,OrgLocations orgLocations) throws Exception{
+		Candidate cand = new Candidate();
+		MasterCandidate masterCandidate = new MasterCandidate();
+		masterCandidate.setId(candidate.getMasterCandidateId().getId());
+		cand.setMasterCandidateId(masterCandidate);
+		cand.setCandidateType("Candidate");
+		cand.setFirstName(candidate.getFirstName());
+		cand.setLastName(candidate.getLastName());
+		cand.setEmail(candidate.getEmail());
+		cand.setCountry(candidate.getCountry());
+		cand.setStatus(1);
+		cand.setIsAssociate(Constants.YES);
+		cand.setCandidateUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+		cand.setCreatedBy(user.getUserCode());
+		cand.setCreatedDate(new Date());
+		cand.setUpdatedDate(new Date());
+		return cand;
+	}
+	
+	
+	
+	public void saveVendorProjectClientDetails(Candidate candidate,Projects projects,User user,ProjectClients projectClients,ProjectMembers pm) throws Exception{
 		
 		Long parentCandidatId = candidate.getParentCandidateId().getId();
 		while(parentCandidatId != null){

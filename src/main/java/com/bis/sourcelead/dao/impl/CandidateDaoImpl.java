@@ -1,5 +1,6 @@
 package com.bis.sourcelead.dao.impl;
 
+import java.math.BigInteger;
 import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -339,7 +340,7 @@ public class CandidateDaoImpl implements CandidateDao {
 		List<Candidate> candidate = new ArrayList<Candidate>();
 		logger.debug("findByCandidateEmail start");
 		try{
-			candidate = session.createQuery("from Candidate can left join fetch can.parentCandidateId left join fetch can.masterCandidateId where can.email=:email and can.orgLocationId.id = :orgLocationId ORDER BY can.id DESC" )
+			candidate = session.createQuery("from Candidate can left join fetch can.orgRelationId left join fetch can.parentCandidateId left join fetch can.masterCandidateId where can.email=:email and can.orgLocationId.id = :orgLocationId ORDER BY can.id DESC" )
 					.setString( "email", email ).setLong("orgLocationId", orgLocationId ).setCacheable(true).list();
 			
 			logger.debug("findByCandidateEmail end");
@@ -1112,6 +1113,23 @@ public class CandidateDaoImpl implements CandidateDao {
 		}
 		return candidate.iterator().next();	
 	}
+	
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Long getCandidateGeneratedIdByOrgLocationId(Long orgLocationId,Integer generatedIdcount) {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "SELECT MAX(CAST(SUBSTR(TRIM(GENERATED_ID),'"+generatedIdcount+"') AS UNSIGNED)) FROM sourcelead.CANDIDATE WHERE ORG_LOCATION_ID = '"+ orgLocationId + "'";
+		List<BigInteger> maxCountList = session.createSQLQuery(query).list();
+		Long count = 0L;
+		if (maxCountList != null && !maxCountList.isEmpty() && !maxCountList.contains(null)) {
+			count = (Long) maxCountList.iterator().next().longValue();
+		}
+		return count;
+		
+	}
+	
 	
 	@Override
 	@Transactional

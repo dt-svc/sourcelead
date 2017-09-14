@@ -37,10 +37,16 @@ public class ProjectMembersHistory implements Serializable{
 	@JoinColumn(name="PROJECT_MEMBERS_ID", nullable=false )	
 	private ProjectMembers projectMemberId;
 	
+	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne
 	@JoinColumn(name = "PROJECT_CLIENTS_ID")
 	@JsonBackReference
     private ProjectClients projectClientsId;
+	
+	@NotFound(action=NotFoundAction.IGNORE)
+	@ManyToOne(fetch=FetchType.EAGER)
+	@JoinColumn(name="CANDIDATE_ID", nullable=false )	
+	private Candidate candidateId;
 	
 	
 	@Column(name = "PROJECT_ASSIGNED_DATE")
@@ -142,6 +148,14 @@ public class ProjectMembersHistory implements Serializable{
 
 	public void setProjectClientsId(ProjectClients projectClientsId) {
 		this.projectClientsId = projectClientsId;
+	}
+
+	public Candidate getCandidateId() {
+		return candidateId;
+	}
+
+	public void setCandidateId(Candidate candidateId) {
+		this.candidateId = candidateId;
 	}
 
 
