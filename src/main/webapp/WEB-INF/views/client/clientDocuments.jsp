@@ -178,8 +178,8 @@ function clientDocumentsList(clientLocationId,orgRelationId){
 	                    	 }
 	                    	    result = result+'	 <td><div class="tblicons tblminwidth-75">';
 	                    	 '<sec:authorize access="hasAnyRole(\'ROLE_DOWNLOAD_CLIENT_DOCS\')">'; 
-	                    	    result = result+'<a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadOrgDocument?docId='+opt.id+'\"></a>';
-	                    	    result = result+'<a class="fa fa-eye" onclick="viewClientDocument(\''+opt.id+'\',\''+opt.fileName+'\');"></a>';
+	                    	    result = result+'<a class="glyphicon glyphicon-download-alt" href=\"'+opt.fileUrl+'\"></a>';
+	                    	    result = result+'<a class="fa fa-eye" onClick="viewFile(\'${sourceleadUrl}\',\''+opt.fileUrl+'\',\''+opt.fileName+'\',\''+opt.fileType+'\');"></a>';
 	                    	 '</sec:authorize>';
 	                    	 if(opt.id != null && opt.id != '' && opt.id != 'undefined'){
 	                    		 '<sec:authorize access="hasAnyRole(\'ROLE_EDIT_CLIENT_DOCUMENT\')">'; 
@@ -267,8 +267,8 @@ function addDocument(clientLocationId,orgRelationId) {
 	result = result+'	                  <div class="clearfix mb" id="uploadDocumentDiv">';
 	result = result+'	                    <div class="col-md-12">';
 	result = result+'							<div class="input-group positionRelative" id="uploadFileGroup">';
-	result = result+'	                          <label class="input-group-btn"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File';
-	result = result+'	                            <input type="file" name="uploadBtn" id="uploadBtn" style="display: none;"  multiple="" class="upload">';
+	result = result+'	                          <label class="input-group-btn"> <span class="btn btn-primary" onChange="clientDocumentFileSaving();"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File';
+	result = result+'	                            <input type="file" id="uploadBtn" style="display: none;"  class="upload">';
 	result = result+'	                            </span> </label>';
 	result = result+'	                          <input type="text" class="form-control" readonly id="uploadFile" name="docFile" placeholder="Upload File." field-name="Document" data-validation="required validate_Space validatedoc">';
 	result = result+'	                        </div>';
@@ -424,27 +424,18 @@ function closeDocPopup(){
 					dateFormat : 'yyyy/mm/dd' 
 		         }; 
 			 if ($('#document_form').validate(false, validationSettings)){
-				var frm = $('#document_form').serializeFormJSON();
-				var con = JSON.stringify(frm);
-				$("#save_button").attr("disabled", "disabled");
-				 $( "#save_button" ).addClass('button').val('Processing..');
-				con = con.replace(/[{}]/g, "");
-				var form = $('#document_form')[0];
-	      		var formData = new FormData(form); 
+				 var form = $('#document_form')[0];
+		      		var formData = new FormData(form); 
 				var sourceleadUrl = '${sourceleadUrl}';
 				$("#document_form").attr("disabled", "disabled");
 				
 				//It will escape all the special characters
-		        var jsonData = encodeURIComponent(con);
 				$.ajax({
 						type : "POST",
 		        	    data: formData,
-		        	    contentType : 'application/json; charset=utf-8',
-		        	    enctype: 'multipart/form-data',
 		    	        processData: false,
 		    	        contentType:false,
-		        	    dataType : 'json',
-						url : sourceleadUrl+"/saveDocuments?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&responderLocationId="+clientLocationId+"&docId="+docId+"&sourceType=Client",
+						url : sourceleadUrl+"/saveDocuments?${_csrf.parameterName}=${_csrf.token}&responderLocationId="+clientLocationId+"&docId="+docId+"&sourceType=Client",
 						success : function(result) {
 							 if( result.indexOf('Sign In') >= 0){
 					    		location.replace(sourceleadUrl);
@@ -704,6 +695,13 @@ function saveReasonForDoc(clientLocationId,orgRelationId,docId,docName){
 function toDate(selector) {
     var from = $(selector).val().split("-");
     return new Date(from[2], from[1] - 1, from[0]);
+}
+</script>
+<script>
+function clientDocumentFileSaving()
+{
+	var sourceleadUrl ='${sourceleadUrl}';
+	fileUpload(sourceleadUrl, "uploadBtn", "clientDocuments", "document_form");
 }
 </script>
 <!-- script for dateformat in datepicker End -->

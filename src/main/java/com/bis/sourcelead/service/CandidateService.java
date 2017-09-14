@@ -4,9 +4,8 @@ import java.io.File;
 import java.util.Date;
 import java.util.List;
 
-import org.json.JSONObject;
-import org.springframework.web.multipart.MultipartFile;
-
+import com.bis.sourcelead.dto.AddUserDTO;
+import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.MasterCandidate;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -26,7 +25,7 @@ public interface CandidateService {
 	 * @return
 	 * @throws Exception
 	 */
-	public Candidate storeCandidate(JSONObject jsonObj,OrgLocations orgLocations,User user,MultipartFile multiFile) throws Exception;
+	public Candidate storeCandidate(CandidateDTO candidateDto,OrgLocations orgLocations,User user) throws Exception;
 	
 	/**
 	 * @param candidate
@@ -116,7 +115,7 @@ public interface CandidateService {
 	
 	public List<Candidate> getCandidatesByOrgLocationIDAndSearchText(Long orgLocationId,Long requirementId, String candidateType,String searchApplicant) throws Exception;
 	
-	public Candidate storeProfessionalParseCandidate(JSONObject jsonObj,OrgLocations orgLocations,User user,MultipartFile multiFile,Long candidateId) throws Exception;
+	public Candidate storeProfessionalParseCandidate(CandidateDTO candidateDTO,OrgLocations orgLocations,User user,Long candidateId) throws Exception;
 
 	/*
 	 * This Method is to  get the consolidated reports which candidates are created on current Date for individual  user 
@@ -165,12 +164,14 @@ public interface CandidateService {
 	
 	public List<Candidate> getCandidatesListByOrgLocationIdAndOrgRelationId(Long orgLocationId,Long orgRelationId) throws Exception;
 	
-	public Candidate storeCandidateForUsers(JSONObject jsonObj,User user,OrgLocations orgLocations,MasterCandidate masterCandidate) throws Exception;
+	public Candidate storeCandidateForUsers(CandidateDTO candidateDTO,User user,OrgLocations orgLocations,MasterCandidate masterCandidate) throws Exception;
 	
 	public List<Candidate> getRequestedCandidatesList(Long orgLocationsId,List<Long> roleIds,String resourceType,List<Long> associatesIds,Long projectId)throws Exception ;
 
 	public int getCandidatePercentage(Candidate can, OrgLocations loginOrgLocation) throws Exception;
 
 	public List<Candidate> getAssociatesListForSow(Long locationId, String sowType);
+
+	String getCandidateId(OrgLocations orgLocations);
 
 }

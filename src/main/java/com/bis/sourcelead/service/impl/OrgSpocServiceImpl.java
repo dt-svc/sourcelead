@@ -3,7 +3,7 @@ package com.bis.sourcelead.service.impl;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.json.JSONObject;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,8 +11,10 @@ import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.OrgSpocDao;
+import com.bis.sourcelead.dto.AddUserDTO;
+import com.bis.sourcelead.dto.CandidateDTO;
+import com.bis.sourcelead.dto.ClientDTO;
 import com.bis.sourcelead.elk.index.ClientVendorContactsIndex;
-import com.bis.sourcelead.elk.index.ClientVendorIndex;
 import com.bis.sourcelead.elk.index.helper.ClientVendorContactsIndexHelper;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Org;
@@ -28,6 +30,7 @@ import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
+
 /**
  * Handles OrgSpoce activities
  * @author root
@@ -85,7 +88,7 @@ public class OrgSpocServiceImpl implements OrgSpocService{
 	 * Add Vendor contact
 	 */
 	@Override
-	public void addVendorContacts(JSONObject jsonObj, User user, OrgLocations orgLocations, String orgRelationId, String clientLocationId,String responderType,Org loginOrg) throws Exception {
+	public void addVendorContacts(ClientDTO clientDTO,AddUserDTO addUserDTO,CandidateDTO candidateDTO, User user, OrgLocations orgLocations, String orgRelationId, String clientLocationId,String responderType,Org loginOrg) throws Exception {
 		
 		
 		OrgRelations orgRelation = null;
@@ -94,21 +97,18 @@ public class OrgSpocServiceImpl implements OrgSpocService{
 			 orgRelation = orgRelationsService.getOrRelationsById(Long.parseLong(orgRelationId));
 			 respondingOrgLocation = orgLocationService.getOrgLocations(Long.parseLong(clientLocationId));
 		}else{
-			String OrRelationId = jsonObj.getString("vendorName");
+			String OrRelationId = clientDTO.getVendorName();
 			String [] realtionId = OrRelationId.split(",");
 			orgRelation = orgRelationsService.getOrRelationsById(Long.parseLong(realtionId[0]));
 			respondingOrgLocation = orgLocationService.getOrgLocations(Long.parseLong(realtionId[1]));
 		}
 		
-		User spocUser = userService.storeUser(jsonObj,user,respondingOrgLocation,"CREATEUSER",responderType,loginOrg);
+		User spocUser = userService.storeUser(addUserDTO,candidateDTO,user,respondingOrgLocation,"CREATEUSER",responderType,loginOrg);
 		
-		if(jsonObj.has("owner")){
-			String ownersId = jsonObj.getString("owner");
-			ownersId = ownersId.replaceAll("\\[", "").replaceAll("\\]","");
-			String[] owners = ownersId.split(",");
-			for(int i=0 ;i<owners.length;i++ ){
-				User ownerUser = userService.getUserById(Long.parseLong(owners[i].replace("\"", "")));
-				OrgSpoc orgSpoc = orgSpocDao.validateSpacEmailIdByOwnerUserIdAndOrgRelationId(jsonObj.getString("email"), Long.parseLong(orgRelationId), ownerUser.getId(),Constants.RECORD_INACTIVE);
+		if(clientDTO.getOwner() != null && !clientDTO.getOwner().isEmpty()){
+			for(String owners :clientDTO.getOwner()){
+				User ownerUser = userService.getUserById(Long.parseLong(owners));
+				OrgSpoc orgSpoc = orgSpocDao.validateSpacEmailIdByOwnerUserIdAndOrgRelationId(clientDTO.getEmail(), Long.parseLong(orgRelationId), ownerUser.getId(),Constants.RECORD_INACTIVE);
 			     if(orgSpoc == null){
 			    	 orgSpoc = new OrgSpoc();
 			    	 orgSpoc.setCreatedDate(CommonUtil.currentDate());
@@ -138,14 +138,14 @@ public class OrgSpocServiceImpl implements OrgSpocService{
 					orgSpoc.setOwnerUser(ownerUser);
 				}
 			
-				if(jsonObj.has("isMailSent")){
+				if(StringUtils.isNotBlank(clientDTO.getIsMailSent())){
 					orgSpoc.setInvitationStatus(Constants.MAIL_SENT);
 				}else{
 					orgSpoc.setInvitationStatus(Constants.MAIL_NEW);
 				}
 				orgSpoc.setStatus(Constants.MEMBER_ACTIVE);
-				if(jsonObj.has("spocStatus")){
-					orgSpoc.setSpocStatus(jsonObj.getString("spocStatus"));
+				if(StringUtils.isNotBlank(clientDTO.getSpocStatus())){
+					orgSpoc.setSpocStatus(clientDTO.getSpocStatus());
 				}else{
 					orgSpoc.setSpocStatus(Constants.ACTIVE);
 				}
@@ -161,8 +161,8 @@ public class OrgSpocServiceImpl implements OrgSpocService{
 				  sourceleadELKBaseIndexer.saveOrUpdateElkDocument(clientVendorContactsIndex, Constants.ELK_CLIENTVENDOR_CONTACT_INDEX, Constants.ELK_CLIENTVENDOR_CONTACT_TYPE,orgs.getId().toString());
 				
 				  if((("Client".equals(responderType) || "Vendor".equals(responderType)) 
-							&& jsonObj.has("isMailSent") && null != jsonObj.getString("isMailSent") ) 
-							&& ("Y".equals(jsonObj.getString("isMailSent")))){
+							&& StringUtils.isNotBlank(clientDTO.getIsMailSent()) ) 
+							&& ("Y".equals(clientDTO.getIsMailSent()))){
 						userService.sendEmailToClientOrVendor(orgSpoc.getUUID(),spocUser,ownerUser,user,spocUser.getTempPwd(),responderType,loginOrg,respondingOrgLocation.getOrg(),respondingOrgLocation,orgLocations);
 					}
 				  

@@ -31,6 +31,7 @@ import com.bis.sourcelead.service.InvoiceService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.impl.InvoiceDocumentsService;
 import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.util.ConversionUtil;
 import com.bis.sourcelead.util.PdfConversionUtil;
 import com.bis.sourcelead.util.SessionMaintainanceData;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
@@ -61,6 +62,9 @@ public class InvoiceController {
 	 
 	@Autowired
 	private InvoiceDocumentsService invoiceDocumentsService;
+	
+	@Autowired
+	private ConversionUtil conversionUtil;
 	
 /**
  * @author Laxman
@@ -216,8 +220,10 @@ public class InvoiceController {
 				String orgName = "";
 				if(orgRelations.getResponderLocationId().getId().longValue() == orgLocations.getId().longValue()){
 					orgName = orgRelations.getLocationId().getOrgLocationName();
+					orgRelations.setClientCurrency(conversionUtil.getVendorOrgCurrencyCode(orgRelations.getLocationId().getCountry()));
 				}if(orgRelations.getLocationId().getId().longValue() == orgLocations.getId().longValue()){
 					orgName = orgRelations.getResponderLocationId().getOrgLocationName();
+					orgRelations.setClientCurrency(conversionUtil.getVendorOrgCurrencyCode(orgRelations.getResponderLocationId().getCountry()));
 				}
 				orgRelations.setOrgName(orgName);
 			}

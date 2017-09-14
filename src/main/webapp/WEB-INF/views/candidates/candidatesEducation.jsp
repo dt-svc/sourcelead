@@ -229,22 +229,7 @@ function candidateEducationList(candidateId){
 	                     result = result +"</table>";
 	                     $("#candidateEducationList").append(result); 
 	                     educationPagination(); 
-			    	/* } 
-               }else{
-	    	         var result ="";
-		    	     result = result+"   <div class='row'>"; 
-					 result = result+"	<div class='col-lg-12'>"; 
-					 result = result+"		<div class='content-area clearfix'>"; 
-					 result = result+"			<div class='blank-pages'>";
-					 result = result+"			        <p><i class='fa fa-5x fa-bar-chart'></i></p>";
-					 result = result+"			        <p>No Candidate Educations Found</p>";
-					 result = result+"			 </div>";
-					 result = result+"		</div>"; 
-					 result = result+"	</div>"; 
-					 result = result+"  </div> "; 
-					$("#candidateEducationList").empty();
-				    $("#candidateEducationList").append(result); 
-               } */
+			    	
         },
           
      }); 
@@ -330,23 +315,6 @@ function addEducation(candidateId) {
 	result = result  +'                    </div>                                                                                                                             ';
 	result = result  +'                  </div>                                                                                                                               ';
 	result = result  +'                                                                                                                                                       ';
-	
-	/* result  = result + '                 <div class="clearfix mb10">';
-	result = result  +'	                     <div class="col-md-5" positionRelative>';
-	result = result  +'	                     <select class="chosen-select"  name="gradeType" id="scoreType" onchange="educationSelectScoreType();clearSearchKey();">';
-	result = result  +' 					   <option value="" selected="selected">Score Type</option>';
-	result = result  +'	                       <option value="Percentage">Percentage</option>';
-	result = result  +'	                       <option value="CGPA">CGPA</option>';
-	result = result  +'	                       <option value="GRADE">GRADE</option>';
-	result = result  +'	                      </select>';
-	result = result  +'	                   </div>';
-	result  = result + '                   <div class="col-md-7" positionRelative id="candidateScoreDiv">';
-	result  = result + '                     <input type="text" class="form-control" value="" name="grade" placeholder="Score" id="candidateScore" onkeyup="educationSelectScoreType();educationscoreAndScoreType();"';
-	result  = result + '                     data-validation-optional="true" data-validation="required validate_length length1-5" field-name="score">';
-	result  = result + '                 	 </div>';
-	result = result  +'	                   </div>'; */
-	
-	
 	result  = result + '                 <div class="clearfix mb10">';
 	result = result  +'	                     <div class="col-md-6 dropdown-select positionRelative paddingRight">';
 	result = result  +'	                     <select class=""  name="scoreType" id="scoreEducationType" onchange="educationSelectScoreType();clearSearchKeyEducation();">';
@@ -585,7 +553,7 @@ function EditEducation(candidateId,candidateEducationId) {
 	
 	result  = result + '                 <div class="clearfix mb10">';
 	result = result  +'	                     <div class="col-md-4" positionRelative>';
-	result = result  +'	                     <select class="chosen-select" value="'+ json.gradeType +'" name="gradeType" id="scoreEducationType" onchange="educationSelectScoreType();clearSearchKeyEducation();">';
+	result = result  +'	                     <select class="chosen-select" value="'+ json.gradeType +'" name="scoreType" id="scoreEducationType" onchange="educationSelectScoreType();clearSearchKeyEducation();">';
 	result = result  +' 					   <option value="" selected="selected">Score Type</option>';
 												if (json.gradeType == "Percentage") {
 													result = result + '<option selected>Percentage</option>';
@@ -605,7 +573,7 @@ function EditEducation(candidateId,candidateEducationId) {
 	result = result  +'	                      </select>';
 	result = result  +'	                   </div>';
 	result  = result + '                   <div class="col-md-8" positionRelative id="candidateScoreDiv">';
-	result  = result + '                     <input type="text" class="form-control input-sm" value="'+grade+'" name="grade" placeholder="Score" id="candidateEducationScore" onkeyup="educationSelectScoreType();educationscoreAndScoreType();"';
+	result  = result + '                     <input type="text" class="form-control input-sm" value="'+grade+'" name="score" placeholder="Score" id="candidateEducationScore" onkeyup="educationSelectScoreType();educationscoreAndScoreType();"';
 	result  = result + '                     data-validation-optional="true" data-validation="required validate_length length1-5" field-name="score">';
 	result  = result + '                 	 </div>';
 	result = result  +'	                   </div>';
@@ -792,17 +760,57 @@ function candidateEducationStore(candidateId){
 	  
 	  if ($('#education_form').validate(false, validationSettings)) {
 		  
-			 var frm = $('#education_form').serializeFormJSON();
+		  /*var frm = $('#education_form').serializeFormJSON();
 			 var con = JSON.stringify(frm);
+			 alert(con);
 			 con = con.replace(/[{}]/g, "");
-		     var jsonData = encodeURIComponent(con);
+		     var jsonData = encodeURIComponent(con);  */
+		     var formData = getFormData("education_form");
 			 var sourceleadUrl = '${sourceleadUrl}';
 			 $("#education_form").attr("disabled", "disabled");
 			 $("#save_button").attr("disabled", "disabled");
+			 
+			 $.post(sourceleadUrl+"/storeCandidateEducation?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId, formData, function(data) {
+				 closePopup();
+				 $('#perVal').attr('aria-valuenow', data).css('width',data+'%');
+    			 if(data<50){
+    			   $("#perVal").removeClass('progress-bar-success');
+    			   $("#perVal").addClass("progress-bar-danger");
+    			 }
+    			 if(data>=50){
+    				 $("#perVal").removeClass("progress-bar-danger");
+    				 $("#perVal").addClass("progress-bar-success");
+    			 }
+    			 $("#disVal").empty();
+    			$("#disVal").append(data+'%');
+    			// for quick view bar update
+    			$('#quickPerVal').attr('aria-valuenow', data).css('width',data+'%');
+      			 if(data<50){
+          			   $("#quickPerVal").removeClass('progress-bar-success');
+          			   $("#quickPerVal").addClass("progress-bar-danger");
+          			 }
+          			 if(data>=50){
+          				 $("#quickPerVal").removeClass('progress-bar-danger');
+          				 $("#quickPerVal").addClass("progress-bar-success");
+          			 }
 
-			$.ajax({
+    			$("#quickDisVal").empty();
+    			$("#quickDisVal").append(data+'%');
+    			
+       		    $("#popUpDiv").removeClass("edit-details-active");
+    			$("#selector4").removeAttr("style");
+    			$("#selector4").css({ display: "block" });
+				$("#eduMsgDiv").html("Success!! New Education added");
+       			candidateEducationList(candidateId);
+       			eduMsgFadeinFunction();
+       			qveducationSubmission(candidateId);
+		        });
+			/* $.ajax({
 					type : "POST",
-					url : sourceleadUrl+"/storeCandidateEducation?${_csrf.parameterName}=${_csrf.token}&json="+con+"&candidateId="+candidateId,
+					data : con,
+					processData: false,
+	    	        contentType: true,
+					url : sourceleadUrl+"/storeCandidateEducation?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,
 					success :function(data) {  
 				                 if(data != null && data != 'undefined' && data != ""){
 				               		if( data.indexOf('Sign In') >= 0){
@@ -847,7 +855,7 @@ function candidateEducationStore(candidateId){
 							    	}
 				                 }   
 				      }, 
-		    });
+		    }); */
 			return true; 
 		} else {
 			return false;
@@ -977,57 +985,7 @@ function deleteSelectedEducation(candidateEducationId,candidateId){
 }
 </script> 
 
- <!-- this script is for removing the Education  Ends -->       
  
- <%-- 
-     @author : shivayogi , Ajith.
-     this script is to display candidate score validation based on scoreType.
---%>
-<!-- <script type="text/javascript">
-function selectScoreType(){
-	
-	 var selectedText = document.getElementById("scoreType").value;
-	 var canScore = document.getElementById("candidateScore").value;
-	 $('#candidateScoreDiv').parent().find('p.jquery_form_error_message').remove(); 
-	 if(selectedText =='Percentage'){
-		  var floatNum = /^(\d{0,2}(\.\d{0,2})?|100)$/
-		  if(canScore.match(floatNum)){
-			  $("#addCandidate").removeAttr("disabled");
-			   return true;
-		  }		  
-		 else{
-				$("input#candidateScore").parent().after("<p class='jquery_form_error_message'><span>Enter your Percentage</span>");
-				 $("#addCandidate").attr("disabled", "disabled");
-				return false; 
-		 	 }
-	  }
-	 else if(selectedText =='CGPA'){
-		  var cgpanum = /^(([\d][\.])?([\d])|10)?$/
-			  if(canScore.match(cgpanum)){
-				  $("#addCandidate").removeAttr("disabled");
-				   return true;
-			  }		  
-			 else{
-				 $("input#candidateScore").parent().after("<p class='jquery_form_error_message'><span>Enter your CGPA value</span>");
-				 $("#addCandidate").attr("disabled", "disabled");
-			return false; 
-			 }
-	  } 
-	 else if(selectedText =='GRADE'){
-		 var grades = /^([A-E][-+]{0,2})?$/
-			 if (canScore.match(grades)) {
-				 $("#addCandidate").removeAttr("disabled");
-				 return true;
-			}else{
-				$("input#candidateScore").parent().after("<p class='jquery_form_error_message'> Enter  a Valid Grade </p>");
-				 $("#addCandidate").attr("disabled", "disabled");
-	    		return false;
-	    		
-			}
-   		}
-		 }
-	  
-</script> -->
 
 
 <script type="text/javascript">
@@ -1144,18 +1102,19 @@ function clearSearchKeyEducation() {
 		if ($('#education_form').validate(false,
 				validationSettings)) {
 
-			var frm = $('#education_form').serializeFormJSON();
+			var frm = $('#education_form')[0];
 
-			var con = JSON.stringify(frm);
-			con = con.replace(/[{}]/g, "");
-			var jsonData = encodeURIComponent(con);
-			//It will escape all the special characters
-			var sourceleadUrl = '${sourceleadUrl}';
-
-			$.ajax({
+			var formData = new FormData(frm);
+			 var sourceleadUrl = '${sourceleadUrl}';
+			 $("#education_form").attr("disabled", "disabled");
+			 $("#save_button").attr("disabled", "disabled");
+			 
+			 $.ajax({
 						type : "POST",
-						url : sourceleadUrl
-								+ "/upDateCandidateEducationByCandidateIdAndCandidateEducationId?${_csrf.parameterName}=${_csrf.token}&json="+ jsonData + "&candidateId=" + candidateId ,
+						data :formData,
+						processData: false,
+		    	        contentType:false,
+						url : sourceleadUrl+"/upDateCandidateEducationByCandidateIdAndCandidateEducationId?${_csrf.parameterName}=${_csrf.token}&candidateId=" + candidateId ,
 						success : function(result) {
 							closePopup();
 		            			$("#selector4").removeAttr("style");
@@ -1165,7 +1124,7 @@ function clearSearchKeyEducation() {
 							eduMsgFadeinFunction();
 							qveducationSubmission(candidateId);
 						},
-					});
+					}); 
 			return true;
 		} else {
 			return false;

@@ -2,6 +2,7 @@ package com.bis.sourcelead.service.impl;
 
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.TeamMemberDao;
+import com.bis.sourcelead.dto.TeamDTO;
 import com.bis.sourcelead.entity.Team;
 import com.bis.sourcelead.entity.TeamMembers;
 import com.bis.sourcelead.entity.User;
@@ -73,11 +75,11 @@ public class TeamMemberServiceImpl implements TeamMembersService {
 	}
 
 	@Override
-	public void saveTeamMembersByJsonData(JSONObject jSONObject,Long teamId) throws Exception {
+	public void saveTeamMembersByJsonData(TeamDTO teamDTO,Long teamId) throws Exception {
 		
 		
 		String  userList = null;
-		if(jSONObject.has("teamMemberUserId")){
+		/*if(jSONObject.has("teamMemberUserId")){
 				try{
 		  		  JSONArray jsonArray = jSONObject.getJSONArray("teamMemberUserId");
 		  		  userList = jsonArray.toString();
@@ -85,8 +87,13 @@ public class TeamMemberServiceImpl implements TeamMembersService {
 		  	     catch(JSONException e){
 		  		     userList= jSONObject.getString("teamMemberUserId");
 		  	     }
-		}
-		if(jSONObject.has("memberUserId")){
+		}*/
+		
+		if(StringUtils.isNotBlank(teamDTO.getTeamMemberUserId())){
+			userList=teamDTO.getTeamMemberUserId();
+	     }
+		
+		/*if(jSONObject.has("memberUserId")){
 			 try{
 		  		  JSONArray jsonArray = jSONObject.getJSONArray("memberUserId");
 		  		  userList = jsonArray.toString();
@@ -94,6 +101,10 @@ public class TeamMemberServiceImpl implements TeamMembersService {
 		  	     catch(JSONException e){
 		  		     userList= jSONObject.getString("memberUserId");
 		  	     }
+		}*/
+		
+		if(StringUtils.isNotBlank(teamDTO.getMemberUserId())){
+			 userList=teamDTO.getMemberUserId();
 		}
 		
 		if(null != userList){
@@ -101,8 +112,6 @@ public class TeamMemberServiceImpl implements TeamMembersService {
 		userList = userList.replaceAll("\\[", "").replaceAll("\\]","");
 		userList = userList.replaceAll("\"", "");
 		String[] usersIds = userList.split(",");
-		
-		
 		
 		for(int i=0; i < usersIds.length  ;i++){
 			User user = new User();

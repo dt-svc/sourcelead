@@ -5,7 +5,22 @@
     <div class="copyright">@ Copyright : Source Lead, All right reserved </div>
     <div class="powered-by"> Powered by: businessintelli.com </div>
   </footer>
+  <div class="alert alert-danger" role="alert" style='display:none;'>
+	<div>
+		<strong>Alert</strong>
+		<div class="close" data-type="2"></div>
+	</div>
+	<span></span>
+  </div>
+  <div class="alert alert-success" role="alert" style='display:none;'>
+	<div>
+		<strong>Message</strong>
+		<div class="close" data-type="1"></div>
+	</div>
+	<span></span>
+  </div>
   <!-- Footer Area --> 
+  <script type="text/javascript" src='resources/js/slead-common.js'></script>
   <script type="text/javascript">
        //window.scroll for Side Nav
                $(function() {
@@ -36,7 +51,7 @@
 				$this.next().css({'width': '100%'});
 				});
 </script>
-<script>
+<!-- <script>
 $(document).tooltip({
 position: {
 my: "center bottom",
@@ -48,7 +63,7 @@ $( this ).addClass( feedback.vertical )
 }
 }
 });
-</script>
+</script> -->
 <c:if test='${viewPage == "orgChart"}'>
 	<script src="resources/js/jquery.orgchart.js"></script>
 	<link href="resources/css/jquery.orgchart.css" type='text/css' rel='stylesheet'/>

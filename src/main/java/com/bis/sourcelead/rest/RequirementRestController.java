@@ -27,7 +27,9 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
+import com.bis.sourcelead.annotations.Validator;
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.RequirementDTO;
 import com.bis.sourcelead.elk.index.CandidateIndex;
 import com.bis.sourcelead.elk.index.RequirementIndex;
 import com.bis.sourcelead.elk.index.helper.RequirementHelper;
@@ -63,6 +65,7 @@ import com.bis.sourcelead.service.TeamService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.util.FileUploadUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
@@ -84,6 +87,9 @@ public class RequirementRestController {
 
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
+	
+	@Value("${static.path}")
+	private String staticPath;
 
 	@Autowired
 	private RequirementService requirementService;
@@ -157,78 +163,76 @@ public class RequirementRestController {
 	 * 
 	 * @throws NullPointer
 	 */
-
 	@RequestMapping(value = "/storeRequirement", method = RequestMethod.POST)
-	public @ResponseBody String storeRequirement(
-			MultipartHttpServletRequest request, @RequestParam(value = "saveType", required = false) String saveType)
-			throws Exception {
-
-		MultipartFile multiFile = null;
-		Iterator<String> itrator = request.getFileNames();
-		if (itrator.hasNext()) {
-			multiFile = request.getFile(itrator.next());
+	public @ResponseBody String storeRequirement(RequirementDTO requirementDTO, HttpServletRequest request, @RequestParam(value = "saveType", required = false) String saveType) throws Exception
+	{
+		if (Validator.validate(requirementDTO)) {
+			requirementDTO.setStaticPath(staticPath);
+		//	FileUploadUtil.fillUploadedFileInfo(requirementDTO, requirementDTO.getFileInfo());
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			Requirement requirement = requirementService.storeRequirement(requirementDTO, orgLocation, user);
+			if (requirementDTO.getSaveType().equalsIgnoreCase("saveType")
+					&& (null == (requirementDTO.getRequirementId())
+							|| "".equalsIgnoreCase(requirementDTO.getRequirementId().toString()))) {
+				StringBuilder reqUpdateMsg = new StringBuilder();
+				SourceLeadSessionManager.setSessionAttribute(request, "reqCreateMsg", reqUpdateMsg.append("Success!! New ").append(requirement.getJobTitle()).append(" requirement  saved to Draft").toString());
+			}
+			else if (requirementDTO.getSaveType().equalsIgnoreCase("save")
+					&& (null == (requirementDTO.getRequirementId())
+							|| "".equalsIgnoreCase(requirementDTO.getRequirementId().toString()))) {
+				StringBuilder reqUpdateMsg1 = new StringBuilder();
+				SourceLeadSessionManager.setSessionAttribute(request, "reqCreateMsg", reqUpdateMsg1.append("Success!! New ").append(requirement.getJobTitle()).append(" requirement  saved").toString());
+			}
+			else if (requirementDTO.getSaveType().equalsIgnoreCase("submitForApproval")
+					&& (null == (requirementDTO.getRequirementId())
+							|| "".equalsIgnoreCase(requirementDTO.getRequirementId().toString()))) {
+				StringBuilder reqUpdateMsg2 = new StringBuilder();
+				SourceLeadSessionManager.setSessionAttribute(request, "reqCreateMsg", reqUpdateMsg2.append("Success!! New ").append(requirement.getJobTitle()).append(" requirement  submitted for approval").toString());
+			}
+			else if ((requirementDTO.getRequirementId() != null)
+					&& !(requirementDTO.getRequirementId().isEmpty())
+					&& (requirementDTO.getSaveType().equalsIgnoreCase("save"))) {
+				StringBuilder reqUpdateMs3 = new StringBuilder();
+				SourceLeadSessionManager.setSessionAttribute(request, "reqCreateMsg", reqUpdateMs3.append("Success!! ").append(requirement.getJobTitle()).append(" details updated").toString());
+			}
+			else if ((requirementDTO.getRequirementId() != null)
+					&& !(requirementDTO.getRequirementId().isEmpty())
+					&& (requirementDTO.getSaveType().equalsIgnoreCase("submitForApproval"))) {
+				StringBuilder reqUpdateMsg4 = new StringBuilder();
+				SourceLeadSessionManager.setSessionAttribute(request, "reqCreateMsg", reqUpdateMsg4.append("Success!! ").append(requirement.getJobTitle()).append(" Updated and Submitted ").toString());
+			}
+			else if ((requirementDTO.getRequirementId() != null)
+					&& !(requirementDTO.getRequirementId().isEmpty())
+					&& (requirementDTO.getSaveType().equalsIgnoreCase("draft"))) {
+				StringBuilder reqUpdateMs5 = new StringBuilder();
+				SourceLeadSessionManager.setSessionAttribute(request, "reqCreateMsg", reqUpdateMs5.append("Success!!  ").append(requirement.getJobTitle()).append(" Updated in Draft Stage").toString());
+			}
+			return "success";
 		}
-		String json = request.getParameter("json");
-		//String jsonc = "{" + json + "}";
-		JSONObject jsonObj = new JSONObject(json);
-		jsonObj.put("saveType", saveType);
-
-		
-		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-
-		Requirement requirement = requirementService.storeRequirement(jsonObj, orgLocation, user, multiFile);
-		
-		if(jsonObj.getString("saveType").equalsIgnoreCase("draft") &&  (null == (jsonObj.get("requirementId")) || "".equalsIgnoreCase(jsonObj.get("requirementId").toString()))){
-			StringBuilder reqUpdateMsg = new StringBuilder();
-			SourceLeadSessionManager.setSessionAttribute(request, "reqCreateMsg", reqUpdateMsg.append("Success!! New ").append(requirement.getJobTitle()).append(" requirement  saved to Draft").toString());
-		}else if(jsonObj.getString("saveType").equalsIgnoreCase("save") &&  (null == (jsonObj.get("requirementId")) || "".equalsIgnoreCase(jsonObj.get("requirementId").toString()))){
-			StringBuilder reqUpdateMsg1 = new StringBuilder();
-			SourceLeadSessionManager.setSessionAttribute(request, "reqCreateMsg", reqUpdateMsg1.append("Success!! New ").append(requirement.getJobTitle()).append(" requirement  saved").toString());
-		}else if(jsonObj.getString("saveType").equalsIgnoreCase("submitForApproval") && (null == (jsonObj.get("requirementId")) || "".equalsIgnoreCase(jsonObj.get("requirementId").toString()))){
-			StringBuilder reqUpdateMsg2 = new StringBuilder();
-			SourceLeadSessionManager.setSessionAttribute(request, "reqCreateMsg", reqUpdateMsg2.append("Success!! New ").append(requirement.getJobTitle()).append(" requirement  submitted for approval").toString());
-		}else if ((jsonObj.has("requirementId") && !(jsonObj.getString("requirementId").isEmpty())) && (jsonObj.getString("saveType").equalsIgnoreCase("save"))){
-			StringBuilder reqUpdateMs3 = new StringBuilder();
-			SourceLeadSessionManager.setSessionAttribute(request, "reqCreateMsg",  reqUpdateMs3.append("Success!! ").append(requirement.getJobTitle()).append(" details updated").toString());
-		} else if ((jsonObj.has("requirementId") && !(jsonObj.getString("requirementId").isEmpty())) && (jsonObj.getString("saveType").equalsIgnoreCase("submitForApproval"))){
-			StringBuilder reqUpdateMsg4 = new StringBuilder();
-			SourceLeadSessionManager.setSessionAttribute(request, "reqCreateMsg", reqUpdateMsg4.append("Success!! ").append(requirement.getJobTitle()).append(" Updated and Submitted ").toString());
-		} else if ((jsonObj.has("requirementId") && !(jsonObj.getString("requirementId").isEmpty())) && (jsonObj.getString("saveType").equalsIgnoreCase("draft"))){
-			StringBuilder reqUpdateMs5 = new StringBuilder();
-			SourceLeadSessionManager.setSessionAttribute(request, "reqCreateMsg", reqUpdateMs5.append("Success!!  ").append(requirement.getJobTitle()).append(" Updated in Draft Stage").toString());
-		}
-		
-		return "success";
-
+		else
+			return "MissingData";
 	}
-
+	
 	/**
-	 * This method is used for to create template and stored in Requirement table
+	 * This method is used for to create template and stored in Requirement
+	 * table
+	 * 
 	 * @param json
 	 * @param request
 	 * @return success msg
 	 * @throws NullPointer
 	 */
-	
 	@PreAuthorize("hasAnyRole('ROLE_CREATE_REQUIREMENT_TEMPLATE','ROLE_VIEW_EDIT_REQUIREMENT_TEMPLATE')")
 	@RequestMapping(value = "/storeRequirementTemplate", method = RequestMethod.POST)
-	public @ResponseBody String storeRequirementTemplate(HttpServletRequest request) throws Exception {
-		
-		/*String jsonc = "{" + json + "}";*/
-	//	JSONObject jsonObj = new JSONObject(jsonc);
-		JSONObject jsonObj = new JSONObject(request.getParameter("json"));
+	public @ResponseBody String storeRequirementTemplate(RequirementDTO requirementDTO, HttpServletRequest request) throws Exception
+	{
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		Requirement requirement = requirementService.storeRequirementTemplate(jsonObj,orgLocation,user);
-		
-		
-		 SourceLeadSessionManager.setSessionAttribute(request, "userCreateMsgTemplate", "Successfully created a template");
-		
+		Requirement requirement = requirementService.storeRequirementTemplate(requirementDTO, orgLocation, user);
+		SourceLeadSessionManager.setSessionAttribute(request, "userCreateMsgTemplate", "Successfully created a template");
 		return "success";
-		
 	}
-	
 	
 	
 	/**
@@ -425,7 +429,8 @@ public class RequirementRestController {
 						}
 						
 					}
-					requirementElkUtil.saveElkRequirement(requirement,new JSONObject());
+					RequirementDTO requirementDTO = commonUtil.getRequirementDTO(requirement);
+					requirementElkUtil.saveElkRequirement(requirement,requirementDTO);
 			
 					return "success";
 	}
@@ -644,7 +649,8 @@ public class RequirementRestController {
 	 * @return Json
 	 * @throws Exception
 	 */
-	@PreAuthorize("hasRole('ROLE_CREATE_CLIENT_CONTACT')")
+	//TODO Dont delete
+	/*@PreAuthorize("hasRole('ROLE_CREATE_CLIENT_CONTACT')")
 	@RequestMapping(value = "/saveClientContact", method = RequestMethod.POST)
 	@ResponseBody
 	public String saveClientContact(@RequestParam(value = "json", required = false) String json,
@@ -679,7 +685,7 @@ public class RequirementRestController {
 			orgSpoc.setSpocUserId(orgSpoc.getClientUser().getId());
 		}
 		return commonUtil.toJSON(orgSpocsList);
-	}
+	}*/
 
 	/**
 	 * @author Venkat Kesav

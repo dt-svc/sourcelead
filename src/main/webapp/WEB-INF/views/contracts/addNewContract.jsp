@@ -725,14 +725,14 @@ function removeDocument(id){
 	<div class="select-field tblminwidth-75">
 		<div class="tblminwidth-50">
 			<input type="text" class="form-control input-sm" value=""
-				placeholder="Document Name" name='REPLACEROWIDdocumentName'
+				placeholder="Document Name" name='document[REPLACEROWID].documentName'
 				id='REPLACEROWIDdocumentName' field-name="Document Name" data-validation="required"> 
 		</div>
 	</div>
 </div>
 
 <div id="divTaxTd2" style="display: none; float: left;">
-   	 <select class="form-control input-sm sel"  id="REPLACEROWIDcandiDoc" name="REPLACEROWIDcandiDoc" >
+   	 <select class="form-control input-sm sel"  id="REPLACEROWIDcandiDoc" name="document[REPLACEROWID].candiDoc" >
 		<option value="">--Select Type--</option>
 		<c:forEach var="doctype" items="${documentsList}">
 		<option value="${doctype.name}">${doctype.name}</option>
@@ -742,7 +742,7 @@ function removeDocument(id){
 <div id="divTaxTd3" style="display: none; float: left;">
 	<div class="tblminwidth-75">
 			<textarea class="form-control miDHei" rows="3" placeholder="Description" id="REPLACEROWIDdescription"
-			 name="REPLACEROWIDdescription"></textarea>
+			 name="document[REPLACEROWID].description"></textarea>
 	</div>
 </div>
 
@@ -999,7 +999,7 @@ function getContractTemplates(){
 		document.getElementById("workLocationDiv").style.display="none";
 	}
  	if(contractType == "Client MSA"){
- 		document.getElementById("billingDiv").style.display="block";
+ 		document.getElementById("billingDiv").style.display="none";
 		document.getElementById("clientDiv").style.display="block";
 		document.getElementById("clientContactDiv").style.display="block";
 		document.getElementById("vendorDiv").style.display="none";
@@ -1011,7 +1011,7 @@ function getContractTemplates(){
 		document.getElementById("offerRateDiv").style.display="none";
  	}
 	if(contractType == "Vendor MSA"){
-		document.getElementById("billingDiv").style.display="block";
+		document.getElementById("billingDiv").style.display="none";
 		document.getElementById("clientDiv").style.display="none";
 		document.getElementById("clientContactDiv").style.display="none";
 		document.getElementById("vendorDiv").style.display="block";
@@ -1124,7 +1124,25 @@ function contractTypeLabels(){
 		$('#clientContact').removeAttr('data-validation-optional');
 		$('#clientContact').attr("data-validation","required");
 		
-		$('#flatReward').removeAttr('data-validation-optional');
+		//added by Pavan Jampana for change request #5851(taiga Id)
+		$("#billingDiv").hide();
+		$('#billingRateType').removeAttr('data-validation');
+		$('#billingRateType').attr('data-validation-optional',"true");
+		
+		$('#flatReward').removeAttr('data-validation');
+		$('#flatReward').attr('data-validation-optional',"true");
+		
+		$('#billingRatePer').removeAttr('data-validation');
+		$('#billingRatePer').attr('data-validation-optional',"true");
+		
+		$('#invoiceFrequency').removeAttr('data-validation');
+		$('#invoiceFrequency').attr('data-validation-optional',"true");
+		
+		$('#paymentFrequency').removeAttr('data-validation');
+		$('#paymentFrequency').attr('data-validation-optional',"true");
+		
+		//commented by Pavan Jampana for change request #5851(taiga Id)
+		/* $('#flatReward').removeAttr('data-validation-optional');
 		$('#flatReward').attr('data-validation',"required validate_int validate_length length1-8");
 		
 		$('#billingRateType').removeAttr('data-validation-optional');
@@ -1137,7 +1155,7 @@ function contractTypeLabels(){
 		$('#invoiceFrequency').attr('data-validation',"required");
 		
 		$('#paymentFrequency').removeAttr('data-validation-optional');
-		$('#paymentFrequency').attr('data-validation',"required");
+		$('#paymentFrequency').attr('data-validation',"required"); */
 		
 		$('#candiFlatReward').removeAttr('data-validation');
 		$('#candiFlatReward').attr('data-validation-optional',"true");
@@ -1162,7 +1180,25 @@ function contractTypeLabels(){
 		$('#vendorContact').removeAttr('data-validation-optional');
 		$('#vendorContact').attr("data-validation","required");
 		
-		$('#flatReward').removeAttr('data-validation-optional');
+		//added by Pavan Jampana for change request #5851(taiga Id)
+		$("#billingDiv").hide();
+		$('#billingRateType').removeAttr('data-validation');
+		$('#billingRateType').attr('data-validation-optional',"true");
+		
+		$('#flatReward').removeAttr('data-validation');
+		$('#flatReward').attr('data-validation-optional',"true");
+		
+		$('#billingRatePer').removeAttr('data-validation');
+		$('#billingRatePer').attr('data-validation-optional',"true");
+		
+		$('#invoiceFrequency').removeAttr('data-validation');
+		$('#invoiceFrequency').attr('data-validation-optional',"true");
+		
+		$('#paymentFrequency').removeAttr('data-validation');
+		$('#paymentFrequency').attr('data-validation-optional',"true");
+		
+		//commented by Pavan Jampana for change request #5851(taiga Id)
+		/* $('#flatReward').removeAttr('data-validation-optional');
 		$('#flatReward').attr('data-validation',"required validate_int validate_length length1-8");
 		
 		$('#billingRateType').removeAttr('data-validation-optional');
@@ -1175,7 +1211,7 @@ function contractTypeLabels(){
 		$('#invoiceFrequency').attr('data-validation',"required");
 		
 		$('#paymentFrequency').removeAttr('data-validation-optional');
-		$('#paymentFrequency').attr('data-validation',"required");
+		$('#paymentFrequency').attr('data-validation',"required"); */
 		
 		$('#candiFlatReward').removeAttr('data-validation');
 		$('#candiFlatReward').attr('data-validation-optional',"true");
@@ -1489,15 +1525,16 @@ function hideCommonSOWFields(){
 <script type="text/javascript">
 	function saveNewContract(saveType) {
 		if ($('#newcontract_form').validate(false, validationSettings)) {
-			var frm = $('#newcontract_form').serializeFormJSON();
-			var con = JSON.stringify(frm);
-			con = con.replace(/[{}]/g, "");
-	        var jsonData = encodeURIComponent(con);
-	        var form = $('#newcontract_form')[0];
- 	 	    var formData = new FormData(form); 
+			  var formData = getFormData("newcontract_form");
 			var sourceleadUrl = '${sourceleadUrl}';
-			$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-	 		$.ajax({
+			$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:999;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+            $.post( sourceleadUrl+ "/saveNewContract?${_csrf.parameterName}=${_csrf.token}&saveType="+saveType, formData, function(data) {
+                       if(data == true){
+                    	   location.replace(sourceleadUrl+"/contractListbyStatus");
+                       }
+                    });
+            
+			/* 	$.ajax({
 	 			 type: "POST",
 		    	 data: formData,
 			     contentType : 'application/json; charset=utf-8',
@@ -1509,7 +1546,7 @@ function hideCommonSOWFields(){
 						success : function(result) {
 							location.replace(sourceleadUrl+"/contractListbyStatus");
 						},
-					}); 
+					}); */ 
 			return true;
 		} else {
 			$('#submissionOffersListDiv').find('p.text-primary').remove();

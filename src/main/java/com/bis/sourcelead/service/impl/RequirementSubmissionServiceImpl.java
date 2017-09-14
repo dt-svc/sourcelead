@@ -49,6 +49,7 @@ import com.bis.sourcelead.dao.RequirementReferDao;
 import com.bis.sourcelead.dao.RequirementSubmissionDao;
 import com.bis.sourcelead.dao.RequirementSubmissionTemplateFieldsDao;
 import com.bis.sourcelead.dao.UserDao;
+import com.bis.sourcelead.dto.RequirementDTO;
 import com.bis.sourcelead.elk.index.CandidateIndex;
 import com.bis.sourcelead.elk.index.helper.CandidateIndexHelper;
 import com.bis.sourcelead.elk.setup.RequirementElkUtil;
@@ -390,7 +391,7 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 					MasterCandidate masterCandidate = null;
 					masterCandidate = masterCandidateService.getMasterCandidateByInteligence(jsonObj);
 					if(null == masterCandidate){
-						masterCandidate = masterCandidateService.storeMasterCandidateByJsonObject(jsonObj, user);
+						masterCandidate = masterCandidateService.storeMasterCandidateByJsonObject(jsonObj, user,orgLocations);
 					}
 					candidate.setMasterCandidateId(masterCandidate);
 					 
@@ -432,7 +433,7 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 //				    		  candidateSkillsService.storeCandidateSkills(candSkill);
 //						 }
 					 }
-					
+					 candidate.setGeneratedId(candidateService.getCandidateId(orgLocations)); 
 					 candidate = candidateDao.storeCandidate(candidate);
 					CandidateIndex candidateIndex = candidateIndexHelper.getCandidateIndexFromCandidate(candidate);
 					
@@ -490,7 +491,7 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 			 if(multiFile != null && multiFile.getOriginalFilename() != null && !multiFile.getOriginalFilename().isEmpty()){
 				 candidateResumes = new CandidateResumes();
 				 candidateResumes.setCandidateId(candidate);
-				 candidateResumes.setDocFile(multiFile.getBytes());
+				 //candidateResumes.setDocFile(multiFile.getBytes());
 				 candidateResumes.setFileName(multiFile.getOriginalFilename());
 				 candidateResumes.setTitle(multiFile.getOriginalFilename());
 				 candidateResumes.setFileContentType(multiFile.getContentType());
@@ -3492,7 +3493,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 			    MasterCandidate masterCandidate = null;
 				masterCandidate = masterCandidateService.getMasterCandidateByInteligence(jsonObj);
 				if(null == masterCandidate){
-					masterCandidate = masterCandidateService.storeMasterCandidateByJsonObject(jsonObj, user);
+					masterCandidate = masterCandidateService.storeMasterCandidateByJsonObject(jsonObj, user,orgLocations);
 				}
 				candidate.setMasterCandidateId(masterCandidate);
 			    
@@ -3534,7 +3535,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 			 if(multiFile != null && multiFile.getOriginalFilename() != null && !multiFile.getOriginalFilename().isEmpty()){
 				 candidateResumes = new CandidateResumes();
 				 candidateResumes.setCandidateId(candidate);
-				 candidateResumes.setDocFile(multiFile.getBytes());
+				 //candidateResumes.setDocFile(multiFile.getBytes());
 				 candidateResumes.setFileName(multiFile.getOriginalFilename());
 				 candidateResumes.setTitle(multiFile.getOriginalFilename());
 				 candidateResumes.setFileContentType(multiFile.getContentType());
@@ -3716,7 +3717,9 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 				
 				requirement.setUpdatedDate(new Date());
 				requirementService.updateRequirement(requirement);
-				requirementElkUtil.saveElkRequirement(requirement,new JSONObject());	
+				
+				RequirementDTO requirementDTO =commonUtil.getRequirementDTO(requirement);
+				requirementElkUtil.saveElkRequirement(requirement,requirementDTO);	
 			}
 			
 			

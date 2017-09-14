@@ -972,14 +972,6 @@ function removeSkillPopUp(candidateId){
 		
 		 if ($('#candidateProfileEdit_form').validate(false, validationSettings)){ 
 			var sourceleadUrl = '${sourceleadUrl}';
-			var frm = $('#candidateProfileEdit_form').serializeFormJSON();
-			
-			 var con = JSON.stringify(frm);
-			 con = con.replace(/[{}]/g, "");
-				
-			  //It will escape all the special characters
-			var jsonData = encodeURIComponent(con);
-			
 			var form = $('#candidateProfileEdit_form')[0];
       		var formData = new FormData(form); 
 			
@@ -987,7 +979,10 @@ function removeSkillPopUp(candidateId){
 			$("#update_candidate").addClass('button').val('Processing..');
 			$.ajax({
 						type : "POST",
-						url : sourceleadUrl+"/updateCandidate?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
+						data : formData,
+						processData: false,
+		    	        contentType:false,
+						url : sourceleadUrl+"/updateCandidate?${_csrf.parameterName}=${_csrf.token}",
 						success : function(result) {
 							$("#profileEditPopup").hide();
 							getProfessionalInfo();

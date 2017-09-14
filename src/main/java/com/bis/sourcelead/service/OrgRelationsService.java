@@ -4,8 +4,7 @@ package com.bis.sourcelead.service;
 import java.util.List;
 import java.util.Set;
 
-import org.json.JSONObject;
-
+import com.bis.sourcelead.dto.ClientDTO;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
@@ -30,7 +29,7 @@ public interface OrgRelationsService {
 	
 	public Long getProjectsCountByOrgRelationIdAndOrgLocationId(Long orgRelationId, Long orgLocationId)throws Exception;
 	
-	Set<OrgRelations> orgRelationsListByJson(JSONObject jsonObj, OrgLocations clientOrgLocation, OrgLocations orgLocations, String loginUserCode,String responderType) throws Exception;
+	Set<OrgRelations> orgRelationsListByJson(ClientDTO clientDTO, OrgLocations clientOrgLocation, OrgLocations orgLocations, String loginUserCode,String responderType) throws Exception;
 	
 	List<OrgRelations> getAllVendorsListByOrgLocationId(Long id);
 	
