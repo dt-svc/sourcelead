@@ -344,7 +344,10 @@ result = result + '<div class="project_tabs mb">';
 	    	    result = result + '	<table id="projectEmployeePagination" class="display" cellspacing="0" width="100%">';
 	    		result = result + '	<thead>';
 	    		result = result + '		<tr>';
-	    		result = result + ' <th><input type="checkbox" onclick="selectAllMembers();"  id="selectAllMembers" ></th>';
+	    		  if('${postedOrgLocationId}' == '${SourceLeadWeb_orgLocations.id}'){
+	    			  result = result + ' <th><input type="checkbox" onclick="selectAllMembers();"  id="selectAllMembers" ></th>';
+	    		  }
+	    		
 	            result = result + '	 	<th>Emp Name</th>';
 	            result = result + '	 	<th>Emp Email</th>';
 	            result = result + '	 	<th>Emp Role</th>';
@@ -375,7 +378,10 @@ result = result + '<div class="project_tabs mb">';
 		        			projectEndDateStr = "--"
 		        		}
 		        		result = result + '	 <tr>';
-		        		result = result + '<td><input type="checkbox" onclick="selectedMember();"  class="projectMembersChecks" value='+opt.id+' name="projectMembers[]" ></td>';
+		        		 if('${postedOrgLocationId}' == '${SourceLeadWeb_orgLocations.id}'){
+		        			 result = result + '<td><input type="checkbox" onclick="selectedMember();"  class="projectMembersChecks" value='+opt.id+' name="projectMembers[]" ></td>';
+		        		 }
+		        		
 		                result = result + '	 	<td><div class="tbldata-dotdot" title="'+opt.candidateName+'"><span title="'+opt.candidateName+'">'+opt.candidateName+'</span></div></td>';
 		                result = result + '	 	<td><div class="tbldata-dotdot" title="'+opt.empEmail+'"><span title="'+opt.empEmail+'">'+opt.empEmail+'</span></div></td>';
 		                result = result + '	 	<td><div class="tbldata-dotdot_80" title="'+role+'"><span title="'+role+'">'+role+'</span></div></td>';
@@ -1703,7 +1709,7 @@ function alertProjectMembersMessage(){
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 	result = result +"		<p>Select atleast one project member</p>";
 	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
-	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='cancel();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='popupClose();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
 	result = result +"	</div>";
 	$("#membersChoicepopUp").append(result);
 	$("#remove_user_pop").slideDown(200);
@@ -1715,6 +1721,15 @@ function alertProjectMembersMessage(){
 function cancel(){
 	$("#membersChoicepopUp").empty();
 	$(".project_inn_mask").fadeOut(200);
+}
+</script>
+
+<script>
+function popupClose(){
+	$(".clients_side_wrap").removeClass("clients_side_wrap_active");
+	$(".side_mask").fadeOut(200);
+	$("body").css('overflow-y', 'auto');
+    $('.addcandidate-popup').fadeOut(200);
 }
 </script>
 	

@@ -236,8 +236,8 @@ public class RegistrationServiceImpl implements RegistrationService{
 		
 		//For saving of orgLocation Details which location has choose in the registration
 		OrgLocations orgLocations = getOrgLocationsDetails(registration, org, user,subModules,modules);
-		Timezone timeZone = timeZoneService.getTimezone(Long.parseLong(registration.getTimeZone()));
-		orgLocations.setTimezone(timeZone);
+		/*Timezone timeZone = timeZoneService.getTimezone(Long.parseLong(registration.getTimeZone()));
+		orgLocations.setTimezone(timeZone);*/
 		try {
 			orgLocationService.addOrgLocations(orgLocations);
 		} catch (Exception e) {
