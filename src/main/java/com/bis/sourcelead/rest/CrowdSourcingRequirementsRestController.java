@@ -1427,7 +1427,7 @@ public class CrowdSourcingRequirementsRestController {
 			
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			Long candidateId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "candidateId");
-			
+			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			RequirementRefer refer = new RequirementRefer();
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 			Date jobSummaryStartDate = null;
@@ -1436,8 +1436,8 @@ public class CrowdSourcingRequirementsRestController {
 			if(!isNullOrEmpty(startDate) && !isNullOrEmpty(endDate)){
 				//Custom StartDate and EndDate
 				
-				jobSummaryStartDate =  sdf.parse(startDate);
-				jobSummaryEndDate =  sdf.parse(endDate);
+				jobSummaryStartDate =  commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), startDate);
+				jobSummaryEndDate =  commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), endDate);
 			
 			}else{
 				
@@ -1551,7 +1551,7 @@ public class CrowdSourcingRequirementsRestController {
 			
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			Long candidateId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "candidateId");
-			
+			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			List<RequirementRefer> referList = new ArrayList<RequirementRefer>();
 			
 			
@@ -1561,9 +1561,8 @@ public class CrowdSourcingRequirementsRestController {
 			if(!isNullOrEmpty(startDate) && !isNullOrEmpty(endDate)){
 				//Custom StartDate and EndDate
 				
-				DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-				jobSummaryStartDate = df.parse(startDate);
-				jobSummaryEndDate =  df.parse(endDate);
+				jobSummaryStartDate =  commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), startDate);
+				jobSummaryEndDate =  commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), endDate);
 			
 			}else{
 				
@@ -1701,7 +1700,7 @@ public class CrowdSourcingRequirementsRestController {
 			
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			Long candidateId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "candidateId");
-			
+			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			RequirementRefer refer = new RequirementRefer();
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 			Date jobPortletsStartDate = null;
@@ -1710,8 +1709,8 @@ public class CrowdSourcingRequirementsRestController {
 			if(!isNullOrEmpty(startDate) && !isNullOrEmpty(endDate)){
 				//Custom StartDate and EndDate
 				
-				jobPortletsStartDate =  sdf.parse(startDate);
-				jobPortletsEndDate =  sdf.parse(endDate);
+				jobPortletsStartDate =  commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), startDate);
+				jobPortletsEndDate =  commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), endDate);
 			
 			}else{
 				
@@ -1770,7 +1769,7 @@ public class CrowdSourcingRequirementsRestController {
 			String resultJson = null;
 			
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-			
+			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			RequirementRefer refer = new RequirementRefer();
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 			Date jobPortletsStartDate = null;
@@ -1779,8 +1778,8 @@ public class CrowdSourcingRequirementsRestController {
 			if(!isNullOrEmpty(startDate) && !isNullOrEmpty(endDate)){
 				//Custom StartDate and EndDate
 				
-				jobPortletsStartDate =  sdf.parse(startDate);
-				jobPortletsEndDate =  sdf.parse(endDate);
+				jobPortletsStartDate =  commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), startDate);
+				jobPortletsEndDate =  commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), endDate);
 			
 			}else{
 				
@@ -1837,7 +1836,7 @@ public class CrowdSourcingRequirementsRestController {
 			
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			Long candidateId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "candidateId");
-			
+			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			RequirementRefer refer = new RequirementRefer();
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 			Date jobPortletsStartDate = null;
@@ -1846,8 +1845,8 @@ public class CrowdSourcingRequirementsRestController {
 			if(!isNullOrEmpty(startDate) && !isNullOrEmpty(endDate)){
 				//Custom StartDate and EndDate
 				
-				jobPortletsStartDate =  sdf.parse(startDate);
-				jobPortletsEndDate =  sdf.parse(endDate);
+				jobPortletsStartDate =  commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), startDate);
+				jobPortletsEndDate =  commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), endDate);
 			
 			}else{
 				

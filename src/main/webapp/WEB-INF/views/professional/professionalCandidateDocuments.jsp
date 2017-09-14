@@ -442,7 +442,7 @@ function getDocumentType(documentType){
 <script>
 function uploadFileDoc(){
 	var sourceleadUrl ='${sourceleadUrl}';
-	fileUpload(sourceleadUrl, "uploadBtn", "candidateDocuments", "documentType_form");
+	fileUpload("uploadBtn", "candidateDocuments", "documentType_form");
 }
 </script>
 

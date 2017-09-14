@@ -2394,7 +2394,6 @@ function validate_fileupload(fileName)
  function validateSubmissionCandidateEmail() {
 	 var email =   $("input[name=EmailId]").val();
 	$('#emailDiv').find('p.jquery_form_error_message').remove();
-	 var sourceleadUrl ='${sourceleadUrl}';
 	 var requirementId = $("#requirementId").val();
 	 var validation = true;
 	 if(document.getElementById("candidateSubmissionType")){
@@ -2432,7 +2431,6 @@ function validate_fileupload(fileName)
  <script type="text/javascript">
  function getUserByUserEmail() {
 	 var emailId =   $("input[name=EmailId]").val();
-	 var sourceleadUrl ='${sourceleadUrl}';
 	 if(emailId != null && emailId != ""){
 		 $.ajax({
 		    	type: "POST",
@@ -2671,8 +2669,6 @@ function validate_fileupload(fileName)
  
  <script>
  function getVendorsByOrgLocationForAddApplicant(){
-	 
-	 var sourceleadUrl ='${sourceleadUrl}';
 	 $.ajax({
 	    	type: "GET",
 	        url: sourceleadUrl+"/getVendorsByOrgLocation?${_csrf.parameterName}=${_csrf.token}", 
@@ -2699,7 +2695,6 @@ function validate_fileupload(fileName)
  <script>
  function getAddApplicantVendorContactList(){
 	 var orgRelationID = $('#vendors').val();
-	 var sourceleadUrl ='${sourceleadUrl}';
 		 $.ajax({
 			    type: "POST",
 		        url: sourceleadUrl+"/getOrgSpocsList?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+orgRelationID+"&type=Vendor",  

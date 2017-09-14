@@ -1,4 +1,4 @@
-function viewFile(sourceleadUrl, fileURL, title, contentType){
+function viewFile(fileURL, title, contentType){
 	if(fileURL != null && fileURL != ""){
 		window.open(sourceleadUrl+'/viewFile?documentPath='+encodeURI(fileURL)+"&contentType="+contentType,title,"height=600,width=600");
 	}  
@@ -25,7 +25,7 @@ function getFormData1(formId) {
 }
 
 
-function fileUpload(sourceleadUrl, id, type, formId, name, orgId, orgLocationId) {
+function fileUpload(id, type, formId, name, orgId, orgLocationId) {
 	if(name == null || name == 'undefined' || name == ''){
 		name = 'fileInfo';
 	}
