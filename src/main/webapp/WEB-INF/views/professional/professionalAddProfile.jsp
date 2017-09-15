@@ -727,7 +727,7 @@ var currentRate = document.getElementById("currentRate").value;
 
 $(function() {
 	$("#uploadBtn").change(function() {
-		fileUpload(sourceleadUrl, "uploadBtn", "resumes", "addcandidate_form");
+		fileUpload("uploadBtn", "resumes", "addcandidate_form");
 	});
  });
 </script>

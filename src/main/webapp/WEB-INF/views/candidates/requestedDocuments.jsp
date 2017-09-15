@@ -187,7 +187,7 @@ $('body').on('submit', '#requestForDocs_form', function(e){
 <script>
 function uploadFileReqDoc(id){
 	var sourceleadUrl ='${sourceleadUrl}';
-	fileUpload(sourceleadUrl, "uploadDocFile"+id+"", "requestedDocuments", "requestForDocs_form", '', '${orgId}', '${orgLocationId}');
+	fileUpload("uploadDocFile"+id+"", "requestedDocuments", "requestForDocs_form", '', '${orgId}', '${orgLocationId}');
 }
 </script> 
   
