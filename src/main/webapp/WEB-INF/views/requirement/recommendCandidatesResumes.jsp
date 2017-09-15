@@ -98,8 +98,7 @@ function refreshResumeList(candidateId){
 --%>
 <script type="text/javascript">
 function uploadCanResume(){
-	var sourceleadUrl ='${sourceleadUrl}';
-	fileUpload(sourceleadUrl, "uploadBtn", "resumes", "candidateResume_form");
+	fileUpload("uploadBtn", "resumes", "candidateResume_form");
 }
 </script>
 <script>
@@ -203,7 +202,6 @@ function addResume(candidateId) {
 			 if ($('#candidateResume_form').validate(false, validationSettings)){
 				var form = $('#candidateResume_form')[0];
 	      		var formData = new FormData(form); 
-				var sourceleadUrl = '${sourceleadUrl}';
 				$("#add_resume").attr("disabled", "disabled");
          		$("#add_resume" ).addClass('button').val('Processing..');
 				$.ajax({
@@ -271,7 +269,6 @@ function addResume(candidateId) {
 --%>
 <script>
   function candidateResumesList(candidateId){ 	 
-	  var sourceleadUrl ='${sourceleadUrl}';
 	  var candidateId = candidateId;
 	  var result = "";
 	  var resumesCount = 0;
@@ -380,7 +377,6 @@ function addResume(candidateId) {
 --%>
 <script>
 function deleteResume(candidateId, resumeId){
-	var sourceleadUrl ='${sourceleadUrl}';
 	var loginUserId = '${SourceLeadWeb_userId}';
 	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	var message = confirm("You are choosing to delete the resume");
@@ -443,7 +439,6 @@ function deleteResume(candidateId, resumeId){
 --%>
 <script>
 function getResume(candidateId, resumeId){
-	var sourceleadUrl ='${sourceleadUrl}';
 		$.ajax({
 		   	type: "POST",
 		    url: sourceleadUrl+"/getResume?${_csrf.parameterName}=${_csrf.token}&resumeId="+resumeId, 	   

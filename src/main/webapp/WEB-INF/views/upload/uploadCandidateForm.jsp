@@ -110,7 +110,7 @@ margin:10px 220px 0;
 		  <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
 		  <div class="errInfo clearfix">
 		  <div id="errorFileDiv"  style="display: none;">
-		  <p class="text-danger"><strong>Error File Dowload</strong></p>
+		  <p class="text-danger"><strong>Error File Download</strong></p>
 		      <c:if test="${!empty errorMessage}">
 				   <div class="file-upload"> 
 				  <a href="<c:url value='/downloadCandidaeErrorFile/${fileName}'/>" onclick="errorMsgAppend();"> 

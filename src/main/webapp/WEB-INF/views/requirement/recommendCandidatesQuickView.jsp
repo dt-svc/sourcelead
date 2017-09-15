@@ -11,7 +11,6 @@
 
 <script>
 function recomendcandidateQuickViewProfile(candidateId,recScore){
-	var sourceleadUrl = '${sourceleadUrl}';
 	  var skillsList = '${skillsList}'; 
 	  $.ajax({
         type : "POST",
@@ -219,7 +218,6 @@ function recomendcandidateQuickViewProfile(candidateId,recScore){
 
 <script>
 	function recQvemployeeSubmission(candidateId) {
-		var sourceleadUrl = '${sourceleadUrl}';
 				$.ajax({
 					type : "POST",
 					url : sourceleadUrl	+ "/getCandidatesEmployersListByCandidateIdAndOrgLocationID?${_csrf.parameterName}=${_csrf.token}&candidateId=" + candidateId,
@@ -293,7 +291,6 @@ function recomendcandidateQuickViewProfile(candidateId,recScore){
 
 <script>
 function recQveducationSubmission(candidateId){
-	var sourceleadUrl ='${sourceleadUrl}';
 	 $.ajax({  
           type : "POST",
           url: sourceleadUrl+"/getCandidateEducationListByCandidateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,        
@@ -366,7 +363,6 @@ function recQveducationSubmission(candidateId){
 
 <script>
 function recQwikCertificates(candidateId){
-	var sourceleadUrl ='${sourceleadUrl}';
 	 $.ajax({  
           type : "POST",
           url: sourceleadUrl+"/getCandidateCertificationListByCandidateIdAndOrgLocationID?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,        

@@ -12,8 +12,6 @@
 <!-- For add New Recomended Applicant -->
 <script>
 function getAddRecomendedApplicant(requirementId){
-	alert("hi");
-	var sourceleadUrl ='${sourceleadUrl}';
 	generateOrgSubmissionForm(sourceleadUrl,requirementId)
 	var result = "";
 	result = result + '<form id="addRecomApplicant_form" name="addRecomApplicant_form" enctype="multipart/form-data" method="post">';
@@ -394,7 +392,6 @@ function validate_fileupload(fileName)
  function validateCandidateEmail() {
 	 var email =   $("input[name=EmailId]").val();
 	$('#emailDiv').find('p.jquery_form_error_message').remove();
-	 var sourceleadUrl ='${sourceleadUrl}';
 	 if(email != null && email != ""){
 		
 		 $.ajax({

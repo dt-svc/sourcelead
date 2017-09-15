@@ -31,7 +31,6 @@ function getCandidateResume(candidateId){
 
 <script>
 function candidateResumeById(candidateId){
-	 var sourceleadUrl ='${sourceleadUrl}';
 	  var candidateId = candidateId;
 	  var result = "";
 	  var resumesCount = 0;
