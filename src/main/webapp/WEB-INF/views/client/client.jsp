@@ -342,9 +342,6 @@ function getOrgName(){
 	document.getElementById("orgZipCodeDiv").style.display="none";
 	
 	
-	/* $("#role" ).val('');
-	$("#role").attr("data-validation", "required");
-	document.getElementById("roleDiv").style.display="";*/
 	document.getElementById("userRoleDiv").style.display="none"; 
 	
 	$.ajax({                           
@@ -585,7 +582,6 @@ function getSpocUserDetails(){
 		        		    $("#lastName").val(json[1]);
 	        		 }else{
 	        			    $("#lastName").attr("disabled", false);
-	        			    //$("#lastName").val('');
 	        		 }
 		        		
 	        		 if(json[2] != null && json[2] != ''){
@@ -593,21 +589,15 @@ function getSpocUserDetails(){
 		        		    $("#phoneNumber").val(json[2]);
 	        		 }else{
 	        			    $("#phoneNumber").attr("disabled", false);
-	        			    //$("#phoneNumber").val('');
 	        		 }
 	        		 
 	        		 
 	        		 if(json[3] != null && json[3] != ''){
-	        			 /* $("#role").removeAttr("data-validation");
-		        			$("#role" ).val('');
-	        			    document.getElementById("roleDiv").style.display="none"; */
 	   	        			document.getElementById("userRoleDiv").style.display="";
 	   	        			$("#userRole").val(json[3]);
 	   	        			$("#userRoleText").val(json[4]);
 		        		 }else{
-		        			 /* $("#role").attr("data-validation", "required"); */
 		        			 $("#userRole" ).val('');
-		        			 /* document.getElementById("roleDiv").style.display=""; */
 		        			 document.getElementById("userRoleDiv").style.display="none";
 		        		 }
 	        	}
@@ -625,9 +615,7 @@ function getSpocUserDetails(){
 	    $("#phoneNumber").attr("disabled", false);
 	    $("#phoneNumber").val('');
 	    
-	    /* $("#role").attr("data-validation", "required"); */
 	    $("#userRole" ).val('');
-	    /* document.getElementById("roleDiv").style.display=""; */
 		document.getElementById("userRoleDiv").style.display="none";
 	   
 	}
@@ -724,8 +712,6 @@ function validateClientName(){
 		
 		if (website != null && website != '') {
 
-			//$("#save_client").attr("disabled", "disabled");
-			// $( "#save_client" ).addClass('button').val('Processing..');
 			$.ajax({
 				type : "GET",
 				url : sourceleadUrl + "/ws/validateClientWebsite?website="+ website + "&sourceleadBLockedwebsites="+ sourceleadBLockedwebsites,
@@ -745,10 +731,6 @@ function validateClientName(){
 						$('input#webSite').attr('class','valid form-control');
 						$('#companyWebsiteDiv').find('p.jquery_form_error_message').remove();
 				
-						/* $("#save_client").click(function() {
-							if ($(this).validate(false, validationSettings)) {
-							}
-						}); */
 					}
 				},
 

@@ -757,11 +757,6 @@ function candidateEducationStore(candidateId){
 	  
 	  if ($('#education_form').validate(false, validationSettings)) {
 		  
-		  /*var frm = $('#education_form').serializeFormJSON();
-			 var con = JSON.stringify(frm);
-			 alert(con);
-			 con = con.replace(/[{}]/g, "");
-		     var jsonData = encodeURIComponent(con);  */
 		     var formData = getFormData("education_form");
 			 $("#education_form").attr("disabled", "disabled");
 			 $("#save_button").attr("disabled", "disabled");
