@@ -180,7 +180,7 @@ function addDocumentForSpoc(clientLocationId,orgRelationId,spocName,userId) {
 	var result = "";
 	result = result  +'<!-- Popup Div -->';
 	result = result  +'          <form role="form"  id="document_form_spoc" name="document_form_spoc" method="post" > ';
-	result = result  +'          <i class="fa fa-close close-div"  onClick="closePopup();"></i> ';
+	result = result  +'          <i class="fa fa-close close-div"  onClick="closeSpocDocPopup();"></i> ';
 	result = result  +'                <div class="form-horizontal clearfix"> ';
 	result = result  +'   ';
 	
@@ -352,7 +352,7 @@ function addDocumentForSpoc(clientLocationId,orgRelationId,spocName,userId) {
 </script>
 
 <script>
-function closePopup(){
+function closeSpocDocPopup(){
 	 $("#popUpDiv").removeClass("edit-details-active");
 }
 </script>
