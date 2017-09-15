@@ -605,8 +605,8 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, ExpensesAppro
 				 
 				 Map<String, String> globalVarsMap = new HashMap<String, String>();
 				 globalVarsMap.put("employeeUser",expenses.getProjectMembers().getEmployee().getUser().getFirstName());
-				 globalVarsMap.put("approverUser",orgLoc.getUser().getFirstName());
-				 globalVarsMap.put("reopenUser",reopenedUser.getFirstName());
+				 globalVarsMap.put("approverUser",reopenedUser.getFirstName());
+				 globalVarsMap.put("reopenUser",orgLoc.getUser().getFirstName());
 				 globalVarsMap.put("projectName", projectName);
 				 globalVarsMap.put("clientName",expenses.getClientName());
 				 
