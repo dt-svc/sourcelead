@@ -295,7 +295,6 @@ if(type == 'C2C' || type == 'C2C-1099'){
 
 <script>
  function getVendorsByOrgLocationId(){
-	 var sourceleadUrl ='${sourceleadUrl}';
 		 $.ajax({
 		    	type: "GET",
 		        url: sourceleadUrl+"/getVendorsByOrgLocationId?", 
@@ -317,7 +316,6 @@ if(type == 'C2C' || type == 'C2C-1099'){
  <script>
  function getVendorContactList(){
 	 var orgRelationID = $('#vendors').val();
-	 var sourceleadUrl ='${sourceleadUrl}';
 		 $.ajax({
 			    type: "POST",
 		        url: sourceleadUrl+"/getOrgSpocsList?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+orgRelationID+"&type=Vendor",  
@@ -473,7 +471,6 @@ function getEmployeementType(designationType){
 	   if ($('#createUser_form').validate(false, validationSettings)){ 
 		
 		    var formData = getFormData("createUser_form");
-			var sourceleadUrl = '${sourceleadUrl}';
 			$("#createUser_form").attr("disabled", "disabled");
             $( "#create_user" ).addClass('button').val('Processing..');
 			$.post(sourceleadUrl+"/createUser?${_csrf.parameterName}=${_csrf.token}", formData, function(data) {
@@ -510,7 +507,6 @@ function getEmployeementType(designationType){
 <script type="text/javascript">
  function validateEmployeeId() {
      var EmpId = document.getElementById("EmployeeId").value;
-     var sourceleadUrl ='${sourceleadUrl}';
      $('#EmployeeIdDiv').find('p.jquery_form_error_message').remove();
      var con = document.getElementById("EmployeeId").value;
      var EmployeeId = encodeURIComponent(con);
@@ -543,7 +539,6 @@ function getEmployeementType(designationType){
  function validateUserEmail() {
 	 var EmailId = document.getElementById("EmailId").value; 
 	 $('#EmailIdDiv').find('p.jquery_form_error_message').remove();
-	 var sourceleadUrl ='${sourceleadUrl}';
 	 if(EmailId != null && EmailId != ""){
 		 $("#create_user").attr("disabled", "disabled");
          //$("#create_user" ).addClass('button').val('Processing..');
@@ -572,7 +567,6 @@ function getEmployeementType(designationType){
  <script type="text/javascript">
  function getUserByUserEmail() {
 	 var EmailId = document.getElementById("EmailId").value; 
-	 var sourceleadUrl ='${sourceleadUrl}';
 	 if(EmailId != null && EmailId != ""){
 		 $.ajax({
 		    	type: "POST",
@@ -639,7 +633,6 @@ function getEmployeementType(designationType){
 function getAssociateUserDetails(){
 	var role = document.getElementById("role").value;
 	 var reportingManager = document.getElementById("reportingManager").value;  
-	var sourceleadUrl ='${sourceleadUrl}';
 	var employeementType = document.getElementById("employeementType").value;
 	
 	if(employeementType == null || employeementType == ''){
@@ -724,7 +717,6 @@ function getAssociateUserDetails(){
  </script>
  <script>
  function getVendors(vendorName,vendorOrgRelationId){
-	 var sourceleadUrl ='${sourceleadUrl}';
 		 $.ajax({
 		    	type: "GET",
 		        url: sourceleadUrl+"/getVendorsByOrgLocation?", 
@@ -748,7 +740,6 @@ function getAssociateUserDetails(){
  </script>
  <script>
  function vendorContactList(vendorContactName,vendorOrgRelationId,vendorSpocId){
-	 var sourceleadUrl ='${sourceleadUrl}';
 		 $.ajax({
 			    type: "POST",
 		        url: sourceleadUrl+"/getOrgSpocsList?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+vendorOrgRelationId+"&type=Vendor",  
@@ -773,7 +764,6 @@ function getAssociateUserDetails(){
  
  <script>
  function getAssociateList(){
-	 var sourceleadUrl ='${sourceleadUrl}';
 	 var employeementType = document.getElementById("employeementType").value;
 	 $.ajax({
 	    	type: "POST",
@@ -806,7 +796,6 @@ function getAssociateUserDetails(){
  
  <script>
  function getDepartmentsList(){
-	 var sourceleadUrl ='${sourceleadUrl}';
 	 $.ajax({
 	    	type: "POST",
 	    	url: sourceleadUrl+"/getDepartmentsList?${_csrf.parameterName}=${_csrf.token}",
@@ -833,7 +822,6 @@ function getAssociateUserDetails(){
  <script>
  function getDesignationType(){
 	 var employmentDesignationType = $("#employmentDesignationType").val();
-	 var sourceleadUrl ='${sourceleadUrl}';
 	 $.ajax({
 	    	type: "POST",
 	    	url: sourceleadUrl+"/getActiveAssociateList?${_csrf.parameterName}=${_csrf.token}&employeementType="+employmentDesignationType,
@@ -895,7 +883,6 @@ function getAssociateUserDetails(){
  function getReportingManager() {
 	 $('#chosen-role').find('p.jquery_form_error_message').remove();
 	 var role = document.getElementById("role").value; 
-	 var sourceleadUrl ='${sourceleadUrl}';
 	 if(role != null && role != "" && role != 'undefined'){
 		 $.ajax({
 		    	type: "POST",

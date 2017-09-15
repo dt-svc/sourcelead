@@ -7,7 +7,6 @@
 --%>
 <script>
 function userAssignedProjects(userId){  
-	var sourceleadUrl ='${sourceleadUrl}';
 	var orgLocationId ='${SourceLeadWeb_orgLocationId}';
 	  $.ajax({
            type : "GET",
@@ -27,7 +26,6 @@ function userAssignedProjects(userId){
 
 <script>
 function prepareAssignedProjectsData(data){
-	var sourceleadUrl ='${sourceleadUrl}';
 
 	 var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
 	  if(locationList.match("yyyy-MM-dd")){
@@ -244,7 +242,6 @@ function prepareAssignedProjectsData(data){
 </script>
 <script> 
 function inlineEditForEndDate(id,projectMemberId){
-	var sourceleadUrl = '${sourceleadUrl}';
 	 var endDate = document.getElementById(id).value;
 	  $.ajax({
 		   	type: "POST",
@@ -273,7 +270,6 @@ function pagination(){
     $('#assignedProjectsListPagination').wrap("<div class='overflow_Auto width100percnt'></div>")
 }
 function projectSummaryRedirection(){
-	var sourceleadUrl ='${sourceleadUrl}'; 
 	window.location.href = sourceleadUrl+"/projectDashboard";
 }
 </script>
