@@ -41,7 +41,6 @@ $(document).ready(function(){
 
 <script>
 function getProfessionalInfo(){ 
-	var sourceleadUrlqqq ='${sourceleadUrl}';
 	var candidateType= "Professional";
 	var userId = '${SourceLeadWeb_userId}';
 	var candidateId = '${SourceLeadWeb_candidateId}';

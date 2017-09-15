@@ -204,7 +204,6 @@ function addResume(candidateId) {
 	
 	<script>
 function uploadProfileResume(){
-	var sourceleadUrl ='${sourceleadUrl}';
 	fileUpload("uploadBtn", "resumes", "candidateResume_form");
 }
 </script> 
@@ -227,7 +226,6 @@ function uploadProfileResume(){
 			 if ($('#candidateResume_form').validate(false, validationSettings)){
 				
 		        var formData = getFormData("candidateResume_form");
-				var sourceleadUrl = '${sourceleadUrl}';
 				$("#add_resume").attr("disabled", "disabled");
          		$("#add_resume" ).addClass('button').val('Processing..');
 		        $.post(sourceleadUrl+"/saveCandidateResume?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&resumeId="+resumeId, formData, function(data) {
@@ -290,7 +288,6 @@ function uploadProfileResume(){
 --%>
 <script>
   function candidateResumesList(candidateId){ 	
-	  var sourceleadUrl ='${sourceleadUrl}';
 	  var candidateId = candidateId;
 	  var result = "";
 	  var resumesCount = 0;
@@ -402,7 +399,6 @@ function uploadProfileResume(){
 
 <script>
 function viewProfessionalCandidateResume(resumeUUID,title){
-	var sourceleadUrl ='${sourceleadUrl}';
 	if(resumeUUID != null && resumeUUID !=""){
 	window.open(sourceleadUrl+'/viewProfessionalCandidateResume/'+title+'?resumeUUID='+resumeUUID,title,"height=600,width=600");
 	}
@@ -450,7 +446,6 @@ function deleteResumePopUp(){
 
 <script>
 function deleteSelectedResume(candidateId, resumeId){
-	var sourceleadUrl ='${sourceleadUrl}';
 	var loginUserId = '${SourceLeadWeb_userId}';
 	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	$.ajax({
@@ -496,7 +491,6 @@ function deleteSelectedResume(candidateId, resumeId){
 --%>
 <script>
 function getResume(candidateId, resumeId){
-	var sourceleadUrl ='${sourceleadUrl}';
 		$.ajax({
 		   	type: "POST",
 		    url: sourceleadUrl+"/getResume?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&resumeId="+resumeId, 	   
