@@ -387,8 +387,10 @@ function validateOrgShortCode(){
 		        success: function(data) {
 		        	if(data == true){
 		        		$("input#generatedUserId").parent().after("<p class='jquery_form_error_message'><span>Org Short Code Already Exists !!!</span>");
+		        		$("#saveOrgConfiguration").attr("disabled","disabled");
 		        	}else{
-		        		 $('#generatedUserIdDiv').parent().find('p.jquery_form_error_message').remove(); 
+		        		 $('#generatedUserIdDiv').parent().find('p.jquery_form_error_message').remove();
+		        		 $("#saveOrgConfiguration").removeAttr("disabled","disabled");
 		        	}
 		        }
 		 }); 

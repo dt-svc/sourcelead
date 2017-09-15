@@ -9,7 +9,6 @@
  
 <script>
 function getCandidateProfile(candidateId){
-	var sourceleadUrl = '${sourceleadUrl}';
 	  var skillsList = '${skillsList}'; 
 	  
 	  $.ajax({
@@ -176,7 +175,6 @@ function getCandidateProfile(candidateId){
 
 <script>
 function candidateSkillsList(candidateId){  
-	 var sourceleadUrl ='${sourceleadUrl}';
 	 $.ajax({  
           type : "POST",
           url: sourceleadUrl+"/getCandidatesSkillsBycandidateID?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,        
@@ -305,7 +303,6 @@ function candidateSkillsList(candidateId){
 
 <script>
 	function reqEmployeeSubmissionProfile(candidateId) {
-		 var sourceleadUrl = '${sourceleadUrl}';
 				$.ajax({
 					type : "POST",
 					url : sourceleadUrl	+ "/getCandidatesEmployersListByCandidateIdAndOrgLocationID?${_csrf.parameterName}=${_csrf.token}&candidateId=" + candidateId,
@@ -379,7 +376,6 @@ function candidateSkillsList(candidateId){
 
 <script>
 function reqEducationSubmissionProfile(candidateId){
-	 var sourceleadUrl ='${sourceleadUrl}';
 	 $.ajax({  
           type : "POST",
           url: sourceleadUrl+"/getCandidateEducationListByCandidateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,        
@@ -469,7 +465,6 @@ function reqEducationSubmissionProfile(candidateId){
 
 <script>
 function reqCertificationSubmissionProfile(candidateId){
-	var sourceleadUrl ='${sourceleadUrl}';
 	 $.ajax({  
           type : "POST",
           url: sourceleadUrl+"/getCandidateCertificationListByCandidateIdAndOrgLocationID?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,        

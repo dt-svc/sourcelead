@@ -16,7 +16,6 @@
 <script>
 function getAddApplicant(requirementId,reqCoolingOffPeriod){
 	$('.action-pop').slideUp();
-	var sourceleadUrl ='${sourceleadUrl}';
 	var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
 	  var finalDateFormatScript = '';
 	  if(locationDate.match("yyyy-MM-dd")){
@@ -199,20 +198,14 @@ function getAddApplicant(requirementId,reqCoolingOffPeriod){
 				  '.chosen-select-width'     : {width:"95%"}
 				}
 	   
-	   
 	 //Adding Customized Skills to the list
        var select, chosen;
 	    select = $("#candidateSkills");
 	    select.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add New Skill:' });
 	    chosen = select.data('chosen');
 	    
-	    
-	    
 	    $("#candidateSkills").chosen().change(function(event) {
-	    	 var sourceleadUrl ='${sourceleadUrl}';
 	    	var allSkills = $(event.target).val();
-	   
-	    	
 	    	$.ajax({
 		    	type: "POST",
 		        url: sourceleadUrl+"/profileBySkillSet?${_csrf.parameterName}=${_csrf.token}&allSkills="+allSkills, 
@@ -224,7 +217,6 @@ function getAddApplicant(requirementId,reqCoolingOffPeriod){
 		    });
 	    	
 	    });
-	    
 	    
 	    chosen.search_field.on('keydown keyup', function(e)
 			    {
@@ -380,7 +372,6 @@ function discordApplicant(){
 <script type="text/javascript">
  function isCoolingOff(requirementId){
 	var candidateEmail =   $("input[name=EmailId]").val();
-	var sourceleadUrl ='${sourceleadUrl}';
 	var reqCoolingOffPeriod = document.getElementById("reqCoolingOffPeriod").value;
 	$.ajax({
 		type: "POST",
@@ -416,7 +407,6 @@ function discordApplicant(){
 	 $('#candidateId').removeAttr('data-validation-optional');
 	 $("#candidateId").attr("data-validation", "required");
 	 
-	 var sourceleadUrl ='${sourceleadUrl}';
 	 if(candidateType != null && candidateType != "" && candidateType != 'undefined' && candidateType != 'New' && candidateType != 'parseCandidate'){
 		 $("#selectCandidateDiv").css("display","block");
 		
@@ -572,8 +562,6 @@ $('body').on('submit', '#addApplicant_form', function(e){
 	  if ($(this).validate(false, validationSettings)){
       e.preventDefault();
       var frm = $('#addApplicant_form').serializeFormJSON();
-      var sourceleadUrl ='${sourceleadUrl}';
-      
       var frm = $('#addApplicant_form').serializeFormJSON();
       var con1 = JSON.stringify(frm);
       con1= con1.replace(/[{}]/g, "");
@@ -771,7 +759,6 @@ function getCandidateSelectionType(){
 	 $("#save_button").removeAttr("disabled");
 	 $('.jquery_form_error_message').remove();
 	 var candidateId = document.getElementById("candidateId").value
-	 var sourceleadUrl ='${sourceleadUrl}';
 	 if(candidateId != null && candidateId != "" && candidateId != 'undefined'){
 		
 		 document.getElementById("resumesDiv").style.display="";
@@ -872,7 +859,6 @@ function getCandidateSelectionType(){
  function getRecomendedCandidateResumes(candidateId) {
 	 $("#save_button").removeAttr("disabled");
 	 $('.jquery_form_error_message').remove();
-	 var sourceleadUrl ='${sourceleadUrl}';
 	 if(candidateId != null && candidateId != "" && candidateId != 'undefined'){
 		
 		 $("#uploadFile").removeAttr("data-validation");
@@ -950,7 +936,6 @@ function getCandidateSelectionType(){
 <script type="text/javascript">
 function getCandidateDetails(){
 	var candidateId = document.getElementById("candidateId").value
-	var sourceleadUrl ='${sourceleadUrl}';
 	if(candidateId != null && candidateId != "" && candidateId != 'undefined'){
 		 $.ajax({
 		    	type: "POST",
@@ -1299,7 +1284,6 @@ function setRateTypesByLocation(){
  		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		var form = $('#addApplicant_form')[0];
   		var formData = new FormData(form); 
-		var sourceleadUrl = '${sourceleadUrl}';
 		   $.ajax({
 				    type: "POST",
 			    	data: formData,
@@ -1381,7 +1365,6 @@ function validate_fileupload(fileName)
  function validateSubmissionCandidateEmail() {
 	 var email =   $("input[name=EmailId]").val();
 	$('#emailDiv').find('p.jquery_form_error_message').remove();
-	 var sourceleadUrl ='${sourceleadUrl}';
 	 var requirementId = $("#requirementId").val();
 	 if(email != null && email != ""){
 		 $("#save_button").attr("disabled", "disabled");
@@ -1413,7 +1396,6 @@ function validate_fileupload(fileName)
  <script type="text/javascript">
  function getUserByUserEmail() {
 	 var emailId =   $("input[name=EmailId]").val();
-	 var sourceleadUrl ='${sourceleadUrl}';
 	 if(emailId != null && emailId != ""){
 		 $.ajax({
 		    	type: "POST",
@@ -1652,8 +1634,6 @@ function validate_fileupload(fileName)
  
  <script>
  function getVendorsByOrgLocationForAddApplicant(){
-	 
-	 var sourceleadUrl ='${sourceleadUrl}';
 	 $.ajax({
 	    	type: "GET",
 	        url: sourceleadUrl+"/getVendorsByOrgLocation?${_csrf.parameterName}=${_csrf.token}", 
@@ -1680,7 +1660,6 @@ function validate_fileupload(fileName)
  <script>
  function getAddApplicantVendorContactList(){
 	 var orgRelationID = $('#vendors').val();
-	 var sourceleadUrl ='${sourceleadUrl}';
 		 $.ajax({
 			    type: "POST",
 		        url: sourceleadUrl+"/getOrgSpocsList?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+orgRelationID+"&type=Vendor",  

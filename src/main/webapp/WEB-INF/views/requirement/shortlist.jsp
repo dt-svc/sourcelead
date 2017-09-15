@@ -16,7 +16,6 @@ width:auto !important;
 <script>
 function candidateShortList(requirementId){
 	$('.action-pop').slideUp();
-	var sourceleadUrl ='${sourceleadUrl}';
 	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	var result = "";
 	var status = "SUBMISSION";
@@ -159,7 +158,6 @@ function candidateShortList(requirementId){
 
 <script>
 function viewResumeRequirementSummary(resumeUUID,title){
-	var sourceleadUrl ='${sourceleadUrl}';
 	if(resumeUUID != null && resumeUUID != ""){
 		window.open(sourceleadUrl+'/viewProfessionalCandidateResume/'+title+'?resumeUUID='+resumeUUID,title,"height=600,width=600");
 	}  
@@ -241,7 +239,6 @@ function getCheckedCandidatesCount(){
 
 <script>
 function shortlist(requirementId){
-	 var sourceleadUrl ='${sourceleadUrl}';
 	 var selectedsubmissionslists = [];
 	 $("input[name='submissionList[]']:checked").each( function (i) {
 		 selectedsubmissionslists[i] = $(this).val();
