@@ -68,7 +68,6 @@ function getQuaters(){
 </script>
 <script>
  function getYearsAndQuartersComboList(){
-		var sourceleadUrl = '${sourceleadUrl}';
 		var dateFormat ='${SourceLeadWeb_orgLocations.dateFormat}';
 		$.ajax({
    	        type : "POST",
@@ -168,7 +167,6 @@ function getQuaters(){
  
  <script>
 function expensesReportList(){
-var sourceleadUrl = '${sourceleadUrl}';
 var datequarterly = $("#selectedQuarter").val();
 $.ajax({
     type : "POST",
@@ -590,7 +588,6 @@ $.ajax({
  
  <script>
  function exportExpensesReports(type){
-	var sourceleadUrl = '${sourceleadUrl}';
 	var frequencyMonth =document.getElementById("selectedQuarter").value;
  window.location.href = sourceleadUrl+"/expensesReportExportList?${_csrf.parameterName}=${_csrf.token}&frequencyMonth="+frequencyMonth+"&exportType="+type;
  }

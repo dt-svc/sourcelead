@@ -28,7 +28,6 @@ z-index: 9 !important;
 function addInterview(requirementId){
 	$('.action-pop').slideUp();
 	interviewTemplate();
-	var sourceleadUrl ='${sourceleadUrl}';
 	var parentRequirement = '${parentRequirement}';
 	var clientSubmissions = '${clientSubmissions}';
 	var result = "";
@@ -610,7 +609,6 @@ function getNotifyToOtersVal(){
         var con = JSON.stringify(frm);
         con = con.replace(/[{}]/g, "");
         var jsonData = encodeURIComponent(con);
-        var sourceleadUrl ='${sourceleadUrl}';
         var requirementId = '${requirementId}';
         
         var selectedInterviewApplicants =  $('#1applicant_chosen  span').size();
@@ -698,7 +696,6 @@ function cancelInterviewPopup(){
 			 existingApplicantsIds.push(applicant);
 		 }
 	 }
-	 var sourceleadUrl ='${sourceleadUrl}';
 	 var requirementId = $("#reqId").val();
      
 		 $.ajax({
@@ -749,7 +746,6 @@ function cancelInterviewPopup(){
 			 existingApplicantsIds.push(applicant);
 		 }
 	 }
-	 var sourceleadUrl ='${sourceleadUrl}';
 	 var requirementId = $("#reqId").val();
 	 var clientSubmissions = '${clientSubmissions}';
 	 var isClientInterview = "";
@@ -796,7 +792,6 @@ function cancelInterviewPopup(){
   
 <script type="text/javascript">
  function getInterviewers(rowId) {
-	 var sourceleadUrl ='${sourceleadUrl}';
 	  $.ajax({
 		    	type: "POST",
 		        url: sourceleadUrl+"/getAllInterviewers?${_csrf.parameterName}=${_csrf.token}", 
@@ -870,7 +865,7 @@ $(function(){
 
 <script>
 function interviewTemplate(){
-	 var sourceleadUrl ='${sourceleadUrl}';
+
 	 $.ajax({
 	    	type: "POST",
 	    	url : sourceleadUrl+"/getInterviewFeedbackTemplatesList?${_csrf.parameterName}=${_csrf.token}", 
@@ -902,7 +897,6 @@ function interviewTemplate(){
 
 <script>
 function getTimezonesList(rowId){
-	var sourceleadUrl ='${sourceleadUrl}';
 	var timezone = '${timezone}';
 	 $.ajax({
 	    	type: "POST",
@@ -995,7 +989,6 @@ function checkAvailability(){
 		$('.particalCount').hide();
 	var timezone = '${timezone}';
 	var date = $("#scheduleCalendar").val();
-	var sourceleadUrl ='${sourceleadUrl}';
 	var bid = document.getElementById("button_id").value;
 	var checkMaxTsRowNum1 = $("#maxTsRowNum").val();
 	bid = bid.replace("Avail", "");
@@ -1171,7 +1164,6 @@ function interviewPagination(){
 <script>
 function setDate(){
 	var date = $("#scheduleCalendar").val();
-	var sourceleadUrl ='${sourceleadUrl}';
 	var bid = document.getElementById("button_id").value;
 	var checkMaxTsRowNum1 = $("#maxTsRowNum").val();
 	var clicked_button = bid;

@@ -76,7 +76,6 @@ function candidateReferences(candidateId){
 <script>
 function candReferencesList(candidateId){
 	var candidateType = '${candidateType}';
-	var sourceleadUrl ='${sourceleadUrl}';
 	var locationCode ='${SourceLeadWeb_locationCode}';
 	
 	 $.ajax({  
@@ -330,7 +329,6 @@ function addReference(candidateId) {
 			  	formData.append("candidateId",candidateId);
 			  	formData.append("userId",'${SourceLeadWeb_user.id}');
 			  	formData.append("locationCode",'${SourceLeadWeb_locationCode}');
-				var sourceleadUrl = '${sourceleadUrl}';
 				$("#save_ref").attr("disabled", "disabled");
          		$("#save_ref" ).addClass('button').val('Processing..');
 				//It will escape all the special characters
@@ -417,7 +415,6 @@ function removeReference(candidateId, refId){
 --%>
 <script>
 function deleteReference(candidateId,refId){
-	var sourceleadUrl ='${sourceleadUrl}';
 	var loginUserId = '${SourceLeadWeb_userId}';
 	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	//var message = confirm("You are choosing to delete the reference");
@@ -465,7 +462,6 @@ function deleteReference(candidateId,refId){
       		formData.append("userId",'${SourceLeadWeb_user.id}');
 		  	formData.append("locationCode",'${SourceLeadWeb_locationCode}');
 			//It will escape all the special characters
-			var sourceleadUrl = '${sourceleadUrl}';
 			$.ajax({
 						type : "POST",
 					     data: formData,
@@ -499,9 +495,7 @@ function deleteReference(candidateId,refId){
 <script>
 	function editCandidateReference(candidateId, refId) {
 
-		var sourceleadUrl = '${sourceleadUrl}';
-		$
-				.ajax(
+		$.ajax(
 						{
 							type : "POST",
 							url : sourceleadUrl

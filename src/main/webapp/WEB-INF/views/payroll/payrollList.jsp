@@ -512,9 +512,11 @@
 		$("#employerCostDiv").removeAttr("style");
 		$("#employerCostDiv").empty();
 		var result = "";
+		result = result +" <div class='modal-header'>";
 		result = result + " <div class='remove_search'>";
 		result = result
 				+ " <input type='text' placeholder='Search' id='employeeDataTableSearch'/>";
+		result = result + "</div>";
 		result = result + "</div>";
 		result = result
 				+ '<table id="employeePayrollTable" class="display" cellspacing="0" width="100%" >';

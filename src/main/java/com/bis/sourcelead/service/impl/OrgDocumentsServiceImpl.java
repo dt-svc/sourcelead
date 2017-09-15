@@ -97,17 +97,17 @@ public class OrgDocumentsServiceImpl implements OrgDocumentsService{
 		}else{
 			orgDocuments.setOwnerUser(null);
 		}
-		/*String userId="userId";
-		if(jsonObj.has("userId") && jsonObj.getString(userId)!=null){
-			if(jsonObj.has(userId) && StringUtils.isNotBlank(jsonObj.getString(userId)) && StringUtils.isNotEmpty(jsonObj.getString(userId))){
+//		String userId="userId";
+		if(clientDocumentsDTO.getUserId() != null){
+			if(StringUtils.isNotBlank(clientDocumentsDTO.getUserId())){
 				User spocUser = new User();
-				spocUser.setId(Long.parseLong(jsonObj.getString(userId)));
+				spocUser.setId(Long.parseLong(clientDocumentsDTO.getUserId()));
 				orgDocuments.setSpocUser(spocUser);
 			}else{
 				orgDocuments.setSpocUser(null);
 			}
 		}
-		else{TODO-pradeep*/
+		else{
 			if(StringUtils.isNotBlank(clientDocumentsDTO.getSpoc())){
 				User spocUser = new User();
 				spocUser.setId(Long.parseLong(clientDocumentsDTO.getSpoc()));
@@ -115,7 +115,7 @@ public class OrgDocumentsServiceImpl implements OrgDocumentsService{
 			}else{
 				orgDocuments.setSpocUser(null);
 			}
-		//}
+		}
 		if(StringUtils.isNotBlank(clientDocumentsDTO.getStartDate())){
 			Date startDate = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(),clientDocumentsDTO.getStartDate());
 			orgDocuments.setStartDate(startDate);
