@@ -927,8 +927,6 @@ public class CandidateListRestController {
 		StringBuffer activitySummary = new StringBuffer();
 	 	OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 	 	User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		/*OrgLocations loginOrgLocation = orgLocationService.getOrgLocations(orgLocationId);
-		User user = userService.getUserById(loginUserId);*/
 		candidateDTO.setStaticPath(staticPath);
 		Candidate candidate = candidateService.getCandidateByCandidateIdAndOrgLocationId(Long.parseLong(candidateId),loginOrgLocation.getId());
 		

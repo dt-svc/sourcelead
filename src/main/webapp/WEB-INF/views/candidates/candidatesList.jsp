@@ -535,39 +535,6 @@ function candidateSideBar(candidateId){
      3.ajax url implementation in CandidateListRestController.
 --%>
 
-<script>
-function saveCandidateImage(candidateId){
-	            		
-          		var frm = $('#candidate_form').serializeFormJSON();
-              	var con = JSON.stringify(frm);
-  			    con = con.replace(/[{}]/g, ""); 
-  			    
-  		        var jsonData = encodeURIComponent(con);
-          		
-          		var loginUserId = '${SourceLeadWeb_userId}';
-          		var orgLocationId = '${SourceLeadWeb_orgLocationId}';
-          		var form = $('#candidate_form')[0];
-           		var formData = new FormData(form);
-	            		
-	            $.ajax({
-	                	      type: "POST",
-	                	      data: formData,
-	                	      contentType : 'application/json; charset=utf-8',
-	                	      enctype: 'multipart/form-data',
-	            	          processData: false,
-	            	          contentType:false,
-	                	      dataType : 'json',
-	                	      
-	                      	  url: sourceleadUrl+"/saveCandidateProfile?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId,
-	                          success: function(result) {
-	                        	  cancel(candidateId);
-	    			          },  
-	            });
-}
-</script> 
-
-
-
 
 <script> 
 $(document).ready(function() {

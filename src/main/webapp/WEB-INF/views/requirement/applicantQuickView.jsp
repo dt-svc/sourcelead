@@ -134,7 +134,7 @@ function applicantQuickViewProfile(submissionId,candidateId){
 					result = result+'      </div>';
 					result = result+'                </div>                                                                                                                                        ';
 					result = result+'                <div class="media-right positionRelative">                                                                                                                     ';
-					result = result+'<img  id="userImage" onerror="predefineProfileImage(this);" src="<c:url value="/displayCandidateImage/'+candidateId+'"/>" alt="Profile Image" class="media-object" style="width:65px">';
+					result = result+'<img  data-id="profileImage" id="userImage" onerror="predefineProfileImage(this);" src="'+json.fileUrl+'" alt="Profile Image" class="media-object" style="width:65px">';
 					  if(json.candidateScore != null && json.candidateScore != '' && json.candidateScore != 'undefined'){
 						  if(json.candidateScore >=50){ 
 						 	 result = result +'                    <i class="valid-profile fa fa-check-square text-success ProImgPosit"></i>';        
