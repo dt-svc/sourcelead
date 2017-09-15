@@ -98,6 +98,10 @@ public class FileController {
 		}
 	}
 	
+	@RequestMapping("/crop.html")
+	public String crop() {
+		return "crop";
+	}
 	
 }
 

@@ -198,6 +198,8 @@ document.onkeydown=function(e){
 -->
  
 <script type="text/javascript">
+var tokenParamName = "${_csrf.parameterName}";
+var tokenValue = "${_csrf.token}";
 function tagItBykeyForEmails(e){
 	if(e.which == 0 || e.which == 13 || e.which == 9 || e.which == 32 || e.which == 188){
 		 $(document).click();

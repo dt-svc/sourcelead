@@ -48,7 +48,7 @@ function fileUpload(id, type, formId, name, orgId, orgLocationId) {
 		contentType: false, 
 		success: function (data) {
 			if(data && data.length > 0) {
-				applyData(data, formId, name);
+				applyData(data, formId, name, id);
 			}
 		}, 
 		error: function (err) { 
@@ -57,7 +57,7 @@ function fileUpload(id, type, formId, name, orgId, orgLocationId) {
 	});
 }
 
-function applyData(data, formId, name) {
+function applyData(data, formId, name, id) {
 	if($("#"+formId+" input[name*="+name+"][data-id="+id+"]").length > 0) {
 		$("#"+formId+" input[name*="+name+"][data-id="+id+"]").remove();
 	}
@@ -107,16 +107,19 @@ $(function() {
     });
 });
 
-function saveCandidateImage(candidateId, formId){
+function saveCandidateImage(candidateId, formId, data){
 	if ($('#'+formId).validate(false, validationSettings)){
           		var formData = getFormData(formId);
 	            		
 	            $.ajax({
 	                	      type: "POST",
 	                	      data: formData,
-	                      	  url: sourceleadUrl+"/saveCandidateProfile?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,
+	                      	  url: sourceleadUrl+"/saveCandidateProfile?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,
 	                          success: function(result) {
-	                        	  cancel(candidateId);
+	                        	  if(data)
+	                        		  $("img[data-id=profileImage]").each(function(i) { $(this).attr('src', data[0].fileURL); });
+	                        	  else
+	                        		  cancel(candidateId);
 	    			          },  
 	            });
 	            return true;         

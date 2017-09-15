@@ -23,9 +23,10 @@ public class FileUploadUtil {
 
 	public String cropImage(String staticPath, MultipartFile multiFile, int x, int y, int w, int h) {
 		try {
-			BufferedImage bufferedImage = Thumbnails.of(multiFile.getInputStream()).useExifOrientation(true).scale(1).asBufferedImage();
+			BufferedImage bufferedImage = Thumbnails.of(multiFile.getInputStream()).useExifOrientation(true).scale(1)
+					.asBufferedImage();
 			bufferedImage = bufferedImage.getSubimage(x, y, w, h);
-			if(bufferedImage == null) {
+			if (bufferedImage == null) {
 				return "failed";
 			}
 			bufferedImage = Thumbnails.of(bufferedImage).size(250, 250).asBufferedImage();
@@ -33,17 +34,17 @@ public class FileUploadUtil {
 			String extenstion = fileName.substring(fileName.lastIndexOf("."));
 			fileName = fileName.substring(0, fileName.lastIndexOf("."));
 			long time = new Date().getTime();
-			String url = "/slead-static/profile/" + fileName + time + extenstion;
-			fileName = "/slead-static/temp/" + fileName + time + extenstion;
-			File folderFile = new File(staticPath, "/slead-static/profile");
+			String url = staticPath.substring(staticPath.lastIndexOf("/")) + "/profile/" + fileName + time + extenstion;
+			fileName = "/temp/" + fileName + time + extenstion;
+			File folderFile = new File(staticPath, "/profile");
 			if (!folderFile.exists())
 				folderFile.mkdirs();
-			folderFile = new File(staticPath, "/slead-static/temp");
+			folderFile = new File(staticPath, "/temp");
 			if (!folderFile.exists())
 				folderFile.mkdirs();
 			File file = new File(staticPath, fileName);
-			ImageIO.write(bufferedImage, extenstion, file);
-			return "";
+			ImageIO.write(bufferedImage, extenstion.substring(1), file);
+			return url;
 		} catch (Exception e) {
 			e.printStackTrace();
 			return "failed";
@@ -55,27 +56,16 @@ public class FileUploadUtil {
 		String fileName = multipartFile.getOriginalFilename();
 		String extenstion = fileName.substring(fileName.lastIndexOf("."));
 		fileName = fileName.substring(0, fileName.lastIndexOf("."));
-		String url = "";
 		long time = new Date().getTime();
-		if (orgId > 0) {
-			url = "/slead-static/" + orgId + "/" + locationId + "/" + fileType + "/" + fileName + time + extenstion;
-			fileName = "/slead-static/" + orgId + "/" + locationId + "/temp/" + fileName + time + extenstion;
-			File folderFile = new File(staticPath, "/slead-static/" + orgId + "/" + locationId + "/" + fileType);
-			if (!folderFile.exists())
-				folderFile.mkdirs();
-			folderFile = new File(staticPath, "/slead-static/" + orgId + "/" + locationId + "/temp");
-			if (!folderFile.exists())
-				folderFile.mkdirs();
-		} else {
-			url = "/slead-static/" + fileType + "/" + fileName + time + extenstion;
-			fileName = "/slead-static/temp/" + fileName + time + extenstion;
-			File folderFile = new File(staticPath, "/slead-static/" + fileType);
-			if (!folderFile.exists())
-				folderFile.mkdirs();
-			folderFile = new File(staticPath, "/slead-static/temp");
-			if (!folderFile.exists())
-				folderFile.mkdirs();
-		}
+		String url = staticPath.substring(staticPath.lastIndexOf("/")) + "/" + orgId + "/" + locationId + "/" + fileType
+				+ "/" + fileName + time + extenstion;
+		fileName = "/" + orgId + "/" + locationId + "/temp/" + fileName + time + extenstion;
+		File folderFile = new File(staticPath, "/" + orgId + "/" + locationId + "/" + fileType);
+		if (!folderFile.exists())
+			folderFile.mkdirs();
+		folderFile = new File(staticPath, "/" + orgId + "/" + locationId + "/temp");
+		if (!folderFile.exists())
+			folderFile.mkdirs();
 
 		File file = new File(staticPath, fileName);
 		try {
@@ -95,15 +85,17 @@ public class FileUploadUtil {
 	}
 
 	public static void moveFile(String staticPath, FileInfo fileInfo, String type) throws IOException {
-		File file = new File(staticPath, fileInfo.getFileURL());
-		File fromFile = new File(staticPath, fileInfo.getFileURL().replaceFirst(type, "temp"));
+		File folder = new File(staticPath);
+		folder = folder.getParentFile();
+		File file = new File(folder, fileInfo.getFileURL());
+		File fromFile = new File(folder, fileInfo.getFileURL().replaceFirst(type, "temp"));
 		Files.move(fromFile.toPath(), file.toPath());
 	}
 
 	public static String moveFile(String staticPath, long orgId, long orgLocationId, String type, File file)
 			throws IOException {
-		String url = "/slead-static/" + orgId + "/" + orgLocationId + "/" + type + "/" + file.getPath();
-		File saveFileFolder = new File(staticPath, "/slead-static/" + orgId + "/" + orgLocationId + "/" + type);
+		String url = staticPath.substring(staticPath.lastIndexOf("/")) + "/" + orgId + "/" + orgLocationId + "/" + type + "/" + file.getPath();
+		File saveFileFolder = new File(staticPath, "/" + orgId + "/" + orgLocationId + "/" + type);
 		if (!saveFileFolder.exists())
 			saveFileFolder.mkdirs();
 		try {
