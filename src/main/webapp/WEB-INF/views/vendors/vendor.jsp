@@ -78,7 +78,7 @@ window.onload = function () {
 									<input class="form-control positionRelative"
 										id="clientLocation" name="location"
 										placeholder="Enter your Location" type="text"
-										field-name="Locatin" data-validation=""></input> <i
+										field-name="Location" data-validation=""></input> <i
 										class="fa fa-refresh btn btn-primary refresh-icon"
 										title="Refresh"
 										onClick="refreshGoogleApiLocation('clientLocation','clientCountry','clientState','clientCity','clientZipCode');"></i>
@@ -91,7 +91,7 @@ window.onload = function () {
 								<div class="positionRelative">
 									<input class="form-control positionRelative" id="orgLocation"
 										name="orgLocation" placeholder="Enter your Location"
-										type="text" field-name="Locatin" readonly></input>
+										type="text" field-name="Location" readonly></input>
 								</div>
 							</div>
 						</div>

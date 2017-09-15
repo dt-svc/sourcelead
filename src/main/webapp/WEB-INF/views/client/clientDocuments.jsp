@@ -99,17 +99,6 @@ function clientDocumentsList(clientLocationId,orgRelationId){
           url: sourceleadUrl+"/getclientDocumentsListByResponderLocationId?${_csrf.parameterName}=${_csrf.token}&responderLocationId="+clientLocationId+"&sourceType=Client",        
           success :function(data) {
              			var json = JSON.parse(data);
-             			/* for (var i = 0; i < 1; i++) { 
-             				var val= json[i];
-             				var opt = "";
-             					if(val.msg != null && val.msg != '' && val.msg != 'undefined'){
-	             					opt  = opt + '<div class="success_pop" id="selector1" style="display: block;">';
-	             					opt  = opt + '<i class="fa fa-check-circle"></i><span>'+val.msg+'</span>';
-	             					opt  = opt + '</div>';
-             						}
-             					$("#msgDiv").empty();
-             					$("#msgDiv").append(opt);
-             				} */
 	                	 $("#clientDocumentsList").empty();
 	                	 var result = "";
 	                	 result = result +"<table id='clientDocumentsPagination' class='display' cellspacing='0' width='100%' >"; 

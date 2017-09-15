@@ -1,7 +1,12 @@
 package com.bis.sourcelead.payroll.dao.impl;
 
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
@@ -24,6 +29,7 @@ import com.bis.sourcelead.payroll.entity.AccountDeductions;
 import com.bis.sourcelead.payroll.entity.AccountDeductionsDetails;
 import com.bis.sourcelead.payroll.entity.HrDeductions;
 import com.bis.sourcelead.payroll.entity.WageTaxSummary;
+import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.ConversionUtil;
 
 @Repository
@@ -36,6 +42,9 @@ public class AccountDeductionsDaoImpl implements AccountDeductionsDao{
 	
 	@Autowired
 	ConversionUtil conversionUtil;
+	
+	@Autowired
+	CommonUtil commonUtil;
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
@@ -61,6 +70,29 @@ public class AccountDeductionsDaoImpl implements AccountDeductionsDao{
 		String query = "from AccountDeductions acd  left join fetch acd.orgLocationId where acd.orgLocationId.id =:orgLocationId";
 		String countQuery = "from AccountDeductions acd  where acd.orgLocationId.id =:orgLocationId";
 		
+		
+		if(accountDeductionsDTO.getSearchValue().contains("/") || accountDeductionsDTO.getSearchValue().contains("-")){
+			String convertedDate=accountDeductionsDTO.getSearchValue();
+			if(accountDeductionsDTO.getSearchValue().contains("/")){
+				convertedDate = accountDeductionsDTO.getSearchValue().replaceAll("/", "-");
+			}
+			DateTimeFormatter orgFormat = new DateTimeFormatterBuilder().appendPattern(orgLocation.getDateFormat()).toFormatter();
+            LocalDate parsedDate = LocalDate.parse(convertedDate, orgFormat);
+            DateTimeFormatter f2 = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+            String newDate = parsedDate.format(f2);
+            Date searchDate = new SimpleDateFormat("yyyy-MM-dd").parse(newDate);
+            java.sql.Date sqlDate = new java.sql.Date(searchDate.getTime());
+            String queryDate = "from AccountDeductions acd where acd.orgLocationId.id =:orgLocationId and ( acd.fromDate =:sqlDate or acd.toDate =:sqlDate)";
+            Query queryObjDate = session.createQuery(queryDate.toString()).setDate("sqlDate", sqlDate).setLong("orgLocationId", orgLocation.getId());
+            List<AccountDeductions> temp = queryObjDate.list();
+            for(AccountDeductions accountDeductions : temp)
+            {
+            	accountDeductions.setFromDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), accountDeductions.getFromDate()));
+            	accountDeductions.setToDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), accountDeductions.getFromDate()));
+            }
+            response.setData(queryObjDate.list());
+
+		}else{
 		StringBuilder query1 = new StringBuilder("");
 			if(accountDeductionsDTO.getSearchValue() !=null && !"".equalsIgnoreCase(accountDeductionsDTO.getSearchValue())) {
 			query1.append(" and acd.employeeId like '%" + accountDeductionsDTO.getSearchValue() + "%' ")
@@ -98,8 +130,7 @@ public class AccountDeductionsDaoImpl implements AccountDeductionsDao{
 			response.setRecordsFiltered(filteredCount);
 		}
 
-		if (accountDeductionsList != null) {
-			response.setData(getAccountDeductionsListSorting(accountDeductionsList));
+		response.setData(getAccountDeductionsListSorting(accountDeductionsList));
 		}
 		return response;
 	}
