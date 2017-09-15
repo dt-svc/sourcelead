@@ -52,6 +52,7 @@ public void dumpProjectRoleActions() throws IOException, SQLException {
 				
 				 
 			 	if (rs2.next()) {
+			 		if(rs2.getString("MODULES_ID") != null){
 			 		String  registerModules = rs2.getString("MODULES_ID");
 			 		List<Integer> moduleIds = new ArrayList<Integer>();
 					 for (String s : registerModules.split(",")){
@@ -99,10 +100,9 @@ public void dumpProjectRoleActions() throws IOException, SQLException {
 				    	}
 				    	
 					}
-			    
 		    	} 
-				
-			}
+		 	}
+		}
 			System.out.println("----Adding Project Action Roles ends-----");
 		
 	}catch(Exception e){
