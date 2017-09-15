@@ -55,10 +55,22 @@ function requirementList(searchType,sourceleadUrl){
 	    			closePop();
 	    			clearAlldata();
 	    }
+	    $('#dataTableSearch').removeAttr('disabled');
+	    $('#dataTableSearch').attr('disabled','disabled');
 	    prepareRequirementData(url,sourceleadUrl);
  } 
 
 function prepareRequirementData(url,sourceleadUrl){
+	 var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
+	  if(locationList.match("yyyy-MM-dd")){
+		  var canEduDatePattern = 'YYYY-MM-DD';
+	  }if(locationList.match("dd-MM-yyyy")){
+		  var canEduDatePattern = 'DD-MM-YYYY'; 
+	  }if(locationList.match("MM-dd-yyyy")){
+		  var canEduDatePattern = 'MM-DD-YYYY'; 
+	  }if(locationList.match("yyyy-dd-MM")){
+		  var canEduDatePattern = 'YYYY-DD-MM'; 
+	  }
 	var orgATS = '${SourceLeadWeb_ats}';
 	var orgVMS = '${SourceLeadWeb_vms}';
 	 $("#requirementList").removeAttr("style");
@@ -75,7 +87,7 @@ function prepareRequirementData(url,sourceleadUrl){
    result = result +"    <th>Location</th>"; 
    result = result +"    <th>Applicants</th>"; 
    result = result +"    <th>Owner</th>"; 
-   result = result +"    <th>Posted On</th>";
+   result = result +"    <th>Posted On<br>(<small class='custom-small'>"+canEduDatePattern+"</small>)</th>";
    result = result +"    <th>Status</th>"; 
    result = result +"<th>Actions</th>";
    result = result +"  </tr>"; 
@@ -128,7 +140,7 @@ function clearSearch(){
 }
 function jpagination(url,sourceleadUrl){ 
 	var colIndex = 0;
-   $('#requirementPagination').DataTable( { 
+    $('#requirementPagination').DataTable( { 
    		"processing": true,
        "serverSide": true,
        "searching": false,
@@ -159,7 +171,7 @@ function jpagination(url,sourceleadUrl){
 		  		 result = result +"<td>";
 		  	  	 if(opt.generatedId != '' && opt.generatedId != null){
 		  	  		
-		  		   	 result = result +"<div class='tbldata-dotdot_50' title='"+opt.generatedId+"'>"+opt.generatedId+"</span></div>";
+		  		   	 result = result +"<div class='tbldata-dotdot_50 tblminwidth-75' title='"+opt.generatedId+"'>"+opt.generatedId+"</span></div>";
 		  	    	}else{
 		  	  		 result = result +"<div>-----</div>";
 		  	  	 }
@@ -286,9 +298,9 @@ function jpagination(url,sourceleadUrl){
 			         "render": function (data, type, opt, meta ) {
 		         		   var result = "";
 		         		   if(opt.postedOnStr!=null && opt.postedOnStr !='' && opt.postedOnStr !='undefined'){
-		                  	 result = result +"<td><div class='tblminwidth-75'>"+opt.postedOnStr+"</div></td>";
+		                  	 result = result +"<td><div class='tblminwidth-125'>"+opt.postedOnStr+"</div></td>";
 		                   }else{
-		                  	 result = result +"<td><div class='tblminwidth-75'>----</div></td>";
+		                  	 result = result +"<td><div class='tblminwidth-125'>----</div></td>";
 		                   }
 			               return result;
 			          }
@@ -483,6 +495,7 @@ function jpagination(url,sourceleadUrl){
 				              return result;
 			          }
 			 }
+			 
            ],
 	    	"scrollCollapse": false,
 	    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
@@ -490,14 +503,21 @@ function jpagination(url,sourceleadUrl){
 	    	"bLengthChange": true,
 	    	"bDestroy": true,
 	    	"ordering": true,
+	    	"initComplete": function( settings, json ) {
+	    		 $('#dataTableSearch').removeAttr('disabled');
+	    	  },
 	    	"oLanguage": {
 	     		"sSearch": "",
 	     		 "sZeroRecords": "", "sEmptyTable": "", 
 	     		 "sProcessing": "<img src='resources/images/loading.gif' style='width: 75px; height: 75px;'/>"
 	     }
+  
    } );
+   
+  
    $("#requirementPagination").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>"); 
    $("input[type=search]").hide();
+  
    $("#dataTableSearch").keyup(function(e) {
    	   if(e.which === 13) {
    		 requirementList('list',sourceleadUrl);

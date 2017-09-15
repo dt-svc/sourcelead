@@ -636,7 +636,7 @@ public class RequirementReleaseRestController {
 		requirement.setClientRateType(parentRequirement.getRateType());
 		requirement.setTotalApplicants(0);
 		requirement.setRequirementUUID(SourceLeadRandomCodeHelper.generateRandomUserCode());
-		
+		requirement.setGeneratedId(requirementService.getRequirementId(orgSpoc.getOrgRelations().getResponderLocationId()));
 		if(parentRequirement.getClientSubmissionTemplateId()!=null){
 			requirement.setClientSubmissionTemplateId(parentRequirement.getClientSubmissionTemplateId());
 		}

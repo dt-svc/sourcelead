@@ -1179,10 +1179,10 @@ public class ClientRestController {
 		 */
 		String[] tableColumns1 = null;
 		if(Constants.CLIENT.equalsIgnoreCase(clientVendorDTO.getResponderType())){
-			String[] tableColumns = {"orgName", "", "", "", "createdBy", "noContacts"};
+			String[] tableColumns = {"responderOrgName", "", "location", "responderLevel", "createdBy", "noContacts"};
 			tableColumns1 = tableColumns;
 		}else if(Constants.VENDOR.equalsIgnoreCase(clientVendorDTO.getResponderType())){
-			String[] tableColumns = {"orgName", "", "", "","createdBy","releasedJobsCount", "noContacts"};
+			String[] tableColumns = {"responderOrgName", "", "", "","createdBy","releasedJobsCount", "noContacts"};
 			tableColumns1 = tableColumns;
 		}
 		
@@ -1469,7 +1469,7 @@ public class ClientRestController {
 			/*
 			 * This array is used to enable the sorting feature in data tables. And, these names should match the ELK Candidate index field names.
 			 */
-			String[] tableColumns = {"orgName", "spocName", "spocEmail", "", "", "","",""};
+			String[] tableColumns = {"clientLocationId", "clientUserFirstName", "clientUserEmail", "", "ownerUserId", "spocStatus","invitationStatus",""};
 		     int sortColumnIndex = 0; //by default sorting using updated date
 			boolean sortColumnOrder = false; //by default descending order
 			if(clientVendorDTO.getOrder() != null && !clientVendorDTO.getOrder().isEmpty()) {

@@ -391,7 +391,7 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 					MasterCandidate masterCandidate = null;
 					masterCandidate = masterCandidateService.getMasterCandidateByInteligence(jsonObj);
 					if(null == masterCandidate){
-						masterCandidate = masterCandidateService.storeMasterCandidateByJsonObject(jsonObj, user);
+						masterCandidate = masterCandidateService.storeMasterCandidateByJsonObject(jsonObj, user,orgLocations);
 					}
 					candidate.setMasterCandidateId(masterCandidate);
 					 
@@ -433,7 +433,7 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 //				    		  candidateSkillsService.storeCandidateSkills(candSkill);
 //						 }
 					 }
-					
+					 candidate.setGeneratedId(candidateService.getCandidateId(orgLocations)); 
 					 candidate = candidateDao.storeCandidate(candidate);
 					CandidateIndex candidateIndex = candidateIndexHelper.getCandidateIndexFromCandidate(candidate);
 					
@@ -3493,7 +3493,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 			    MasterCandidate masterCandidate = null;
 				masterCandidate = masterCandidateService.getMasterCandidateByInteligence(jsonObj);
 				if(null == masterCandidate){
-					masterCandidate = masterCandidateService.storeMasterCandidateByJsonObject(jsonObj, user);
+					masterCandidate = masterCandidateService.storeMasterCandidateByJsonObject(jsonObj, user,orgLocations);
 				}
 				candidate.setMasterCandidateId(masterCandidate);
 			    

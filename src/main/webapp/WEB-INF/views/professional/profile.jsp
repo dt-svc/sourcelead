@@ -41,15 +41,15 @@ $(document).ready(function(){
 
 <script>
 function getProfessionalInfo(){ 
-	var sourceleadUrl ='${sourceleadUrl}';
 	var candidateType= "Professional";
 	var userId = '${SourceLeadWeb_userId}';
 	var candidateId = '${SourceLeadWeb_candidateId}';
+	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	$.ajax({
 	   	type: "GET",
-	    url: sourceleadUrl+"/getProfessionalInfo?candidateStatus="+candidateType, 	   
-		    success: function(data) {
-		    	 var json = JSON.parse(data);
+	    url: sourceleadUrl+"/getProfessionalInfo?candidateId="+candidateId+"&orgLocationId="+orgLocationId, 	   
+		    success: function(json) {
+		    	/*  var json = JSON.parse(data); */
 		    	 if(json.firstName != null && json.firstName != '' && json.firstName !='undefined'){
 		    		 firstName = json.firstName;
 		    	 }else{
@@ -273,18 +273,16 @@ function getProfessionalInfo(){
 				 
 				 result = result +'	</section>';
 				 result = result +'	</div>';
-				 
-				 
 				 result = result +' <section class="clearfix mt25 margin-down">';
 				 result = result +'<div class="project_side_wrap_inn_tabs">';
 			     result = result +'   <ul class="project-tabs-menu">';
-			     result = result +'     <li class="current"><a href="#tab-1" onclick="professionalProfile('+json.id+');">Profile</a></li>';
-			     result = result +'     <li><a href="#tab-2" onclick="candidateResumesList('+json.id+'); candidateResume('+json.id+');">Resume</a></li>';
-			     result = result +'     <li><a href="#tab-3" onclick="professionalCandidateEmployers('+json.id+');">Employers</a></li>';
-			     result = result +'     <li><a href="#tab-4" onclick="professionalCandidateEducation('+json.id+');">Education</a></li>';
-			     result = result +'     <li><a href="#tab-5" onclick="professionalCandidateCertificate('+json.id+');">Certifications</a></li>';
-			     result = result+'<li><a href="#tab-6" onclick="professionalCandidateDocuments('+json.id+');">Documents</a></li>';
-			     result = result+'<li><a href="#tab-7" onclick="professionalCandidateReferences('+json.id+');">References</a></li>';
+			     result = result +'     <li class="current"><a href="#tab-1" onclick="professionalProfile('+candidateId+');">Profile</a></li>';
+			     result = result +'     <li><a href="#tab-2" onclick="candidateResumesList('+candidateId+'); candidateResume('+candidateId+');">Resume</a></li>';
+			     result = result +'     <li><a href="#tab-3" onclick="professionalCandidateEmployers('+candidateId+');">Employers</a></li>';
+			     result = result +'     <li><a href="#tab-4" onclick="professionalCandidateEducation('+candidateId+');">Education</a></li>';
+			     result = result +'     <li><a href="#tab-5" onclick="professionalCandidateCertificate('+candidateId+');">Certifications</a></li>';
+			     result = result+'<li><a href="#tab-6" onclick="professionalCandidateDocuments('+candidateId+');">Documents</a></li>';
+			     result = result+'<li><a href="#tab-7" onclick="professionalCandidateReferences('+candidateId+');">References</a></li>';
 			     
 			     result = result +'     <div class="clearfix"></div>';
 			     result = result +'   </ul>';
@@ -322,7 +320,7 @@ function getProfessionalInfo(){
 				 
 				 $("#professionalInfoDiv").empty();
 				 $("#professionalInfoDiv").append(result); 
-				 professionalProfile(json.id);
+				 professionalProfile(candidateId);
 		    },
 	});
             

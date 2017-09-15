@@ -59,10 +59,10 @@
 	
 
 <c:if test="${!empty msg}">
-	        <div class="success_pop" id="selector"  style="display: block;">
-		         <i class="fa fa-check-circle"></i><span>${msg}</span>
-			</div>
-	     </c:if>
+       <div class="success_pop" id="selector"  style="display: block;">
+         <i class="fa fa-check-circle"></i><span>${msg}</span>
+	 </div>
+</c:if>
 
 <style type="text/css">
 .require_wrap_details{
@@ -74,17 +74,7 @@ function editCandidate(candidateId){
 	
 	  $("#profileEditPopup").show();
 	  var loginCountryName = '${loginCountryName}';
-	  var sourceleadUrl ='${sourceleadUrl}';
-	  
-	  
-	/* 	var validationSettings = {
-		        errorMessagePosition : 'element',
-		       borderColorOnError : '',
-				scrollToTopOnError : true,
-				dateFormat : 'yyyy/mm/dd' 
-	         };  */
-		
- if ($('#candidateProfileEdit_form').validate(false, validationSettings)){ 
+      if ($('#candidateProfileEdit_form').validate(false, validationSettings)){ 
 	  $.ajax({
         type : "POST",
          url: sourceleadUrl+"/getCandidateById?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,        
@@ -546,7 +536,6 @@ function editCandidate(candidateId){
 
 <script>
 function deleteCandidate(candidateId,candidateType){
-	  var sourceleadUrl ='${sourceleadUrl}';
 	 // var reason = document.getElementById("rejectReason").value;
 	  var reason = document.getElementById("rejectReason").value;
 	  reason = reason.replace(/\s/g, "") 
@@ -641,7 +630,6 @@ function removeCandidateAlertMessage(candidateId,candidateType){
 <script type="text/javascript">
 function reActivateCandidateAlertMessage(candidateId){
 	var result = "";
-	var sourceleadUrl ='${sourceleadUrl}';
 	var loginUserId = '${SourceLeadWeb_userId}';
 	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	/* var message = confirm("You are choosing to ReActivate the Candidate");
@@ -674,7 +662,6 @@ function reActivateCandidateAlertMessage(candidateId){
 --%>
 <script>
 function candidateProfile(candidateId,candidateType){
-	  var sourceleadUrl = '${sourceleadUrl}';
 	  var skillsList = '${skillsList}'; 
 	  $.ajax({
         type : "POST",
@@ -1113,7 +1100,6 @@ function candidateProfile(candidateId,candidateType){
  function saveSkils(candidateId){
 	 var skillName = $("#skillName").val();
 	 var jsonData = encodeURIComponent(skillName);
-	 var sourceleadUrl ='${sourceleadUrl}';
 	 var loginUserId = '${SourceLeadWeb_userId}';
 	 var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	 if(skillName != null && skillName != '' && skillName !='undefined'){
@@ -1180,7 +1166,6 @@ function candidateProfile(candidateId,candidateType){
 			var form = $('#candidateProfileEdit_form')[0];
       		var formData = new FormData(form);  */
       		var formData = getFormData("candidateProfileEdit_form");
-			var sourceleadUrl = '${sourceleadUrl}';
 			$("#update_candidate").attr("disabled", "disabled");
 			$("#update_candidate").addClass('button').val('Processing..');
 				//var form = $('#candidateResume_form')[0];
@@ -1233,7 +1218,6 @@ function cancelEdit(){
 
 <script>
 function removeSkillById(candidateId, skillId){
-	  var sourceleadUrl ='${sourceleadUrl}';
 	  $.ajax({
         type : "POST",
          url: sourceleadUrl+"/removeSkillBySkillId?${_csrf.parameterName}=${_csrf.token}&skillId="+skillId,        
@@ -1288,7 +1272,6 @@ function removeSkillById(candidateId, skillId){
 --%>         
 <script type="text/javascript">
 	function fieldUpdateCandidate(candidateSkillId,local) {
-			var sourceleadUrl = '${sourceleadUrl}'; 
 			var value = local.value;
 			var name = local.id;
 			$.ajax({
@@ -1306,7 +1289,6 @@ function removeSkillById(candidateId, skillId){
 
 <script>
 	function employeeSubmissionProfile(candidateId) {
-		var sourceleadUrl = '${sourceleadUrl}';
 				$.ajax({
 					type : "POST",
 					url : sourceleadUrl	+ "/getCandidatesEmployersListByCandidateIdAndOrgLocationID?${_csrf.parameterName}=${_csrf.token}&candidateId=" + candidateId,
@@ -1387,7 +1369,6 @@ function removeSkillById(candidateId, skillId){
 
 <script>
 function educationSubmissionProfile(candidateId){
-	 var sourceleadUrl ='${sourceleadUrl}';
 	 $.ajax({  
           type : "POST",
           url: sourceleadUrl+"/getCandidateEducationListByCandidateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,        
@@ -1478,7 +1459,6 @@ function educationSubmissionProfile(candidateId){
 
 <script>
 function certificationSubmissionProfile(candidateId){
-	 var sourceleadUrl ='${sourceleadUrl}';
 	 $.ajax({  
           type : "POST",
           url: sourceleadUrl+"/getCandidateCertificationListByCandidateIdAndOrgLocationID?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,        
@@ -1591,7 +1571,6 @@ function updateDesignationOtherType(){
 	 var candidateType = $('#candidateType').val(); 
 	 $('#emailDiv').find('p.jquery_form_error_message').remove();
 	 $("#update_candidate").removeAttr("disabled");
-	 var sourceleadUrl ='${sourceleadUrl}';
 	 if(email != null && email != ""){
 		 $.ajax({
 		    	type: "POST",
@@ -1711,7 +1690,6 @@ function employementType(){
  function getVendorsByOrgLocation(){
 	 var vendorName = $("#updateVendorName").val();
 	 var vendorOrgRelationId = $("#updateVendorOrgRelationId").val();
-	 var sourceleadUrl ='${sourceleadUrl}';
 		 $.ajax({
 		    	type: "GET",
 		        url: sourceleadUrl+"/getVendorsByOrgLocation?", 
@@ -1753,7 +1731,6 @@ function  removeValiationVendorContact() {
 		 if(orgRelationID != null && orgRelationID != '' && orgRelationID != 'undefined'){
 			 var vendorContactName = $("#updateVendorContactName").val();
 			 var vendorSpocId = $("#updateSpocId").val();
-		     var sourceleadUrl ='${sourceleadUrl}';
 			 $.ajax({
 				    type: "POST",
 			        url: sourceleadUrl+"/getOrgSpocsList?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+orgRelationID+"&type=Vendor",  
@@ -1816,7 +1793,6 @@ function  removeValiationVendorContact() {
  function saveVisas(candidateId){
 	 var visaName = $("#visaName").val();
 	 var jsonData = encodeURIComponent(visaName);
-	 var sourceleadUrl ='${sourceleadUrl}';
 	 var loginUserId = '${SourceLeadWeb_userId}';
 	 var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	 if(visaName != null && visaName != '' && visaName !='undefined'){

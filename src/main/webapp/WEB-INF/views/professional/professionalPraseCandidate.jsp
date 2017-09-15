@@ -460,7 +460,6 @@
 		
 		 if ($('#candidate_form').validate(false, validationSettings)){ 
 			
-			var sourceleadUrl = '${sourceleadUrl}';
 			var frm = $('#candidate_form').serializeFormJSON();
 			var con = JSON.stringify(frm);
 			con = con.replace(/[{}]/g, ""); 
@@ -558,7 +557,6 @@ function validate_fileupload(fileName)
 		    
 		    
 		    $("#candidateSkills").chosen().change(function(event) {
-		    	 var sourceleadUrl ='${sourceleadUrl}';
 		    	var allSkills = $(event.target).val();
 		   
 		    	
@@ -652,7 +650,6 @@ function validate_fileupload(fileName)
  function validateCandidateEmail() {
 	 var email = document.getElementById("email").value; 
 	 $('#emailDiv').find('p.jquery_form_error_message').remove();
-	 var sourceleadUrl ='${sourceleadUrl}';
 	 if(email != null && email != ""){
 		
 		 $.ajax({
@@ -716,7 +713,6 @@ function validate_fileupload(fileName)
 	        		 $('#uploadFileGroup').find('p.jquery_form_error_message').remove(); 
 	     		var form = $('#candidate_form')[0];
 	       		var formData = new FormData(form); 
-	     		var sourceleadUrl = '${sourceleadUrl}';
 	     		   $.ajax({
 	     					type : "POST",
 	     	        	    data: formData,

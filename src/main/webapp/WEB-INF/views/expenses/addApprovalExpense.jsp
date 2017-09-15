@@ -66,6 +66,7 @@
 					<label class="col-md-3">Select Project <span class="text-danger">&nbsp;*</span></label>
 					<div class="col-md-9" id="errProject">
 						<select class="chosen-select form-control" autocomplete="off" onchange="getClientBasedOnSelectedProject(); getMembersForSelectedProject();removeErrProject();flushOnchange();" id="projectId" name="projectId" field-name="Project" data-validation="required">
+
 							 <c:if test="${fn:length(projectsList) gt 0}">
 								<option value="">Select Project</option>
 							</c:if>
@@ -266,7 +267,6 @@
 
 <script>
 function deleteAttchment(documentId){
-var sourceleadUrl = '${sourceleadUrl}';
 $.ajax({
 	type : "POST",
 	url : sourceleadUrl+"/deleteDocumentByDocumentId?${_csrf.parameterName}=${_csrf.token}&documentId="+documentId,
@@ -290,7 +290,6 @@ $(".allownumericwithdecimal").on("keypress keyup blur",function (event) {
 function acceptReopenExpenseBySuperUser(expenseId,reOpenedUserId){
 	$("#acceptReopenExpenseBySuperUserDiv").empty();
 	$("#acceptReopenExpenseBySuperUserDiv").prepend('<i class="fa fa-cog fa-spin"></i>');
-	var sourceleadUrl = '${sourceleadUrl}';
 	var userId = '${SourceLeadWeb_user.id}';
 	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	var accept = 'accept';
@@ -326,7 +325,6 @@ function cancelReOpenRejected(){
 </script>
 <script>
 function storeReopenRejectedReason(expenseId,reOpenedUserId){
-	var sourceleadUrl = '${sourceleadUrl}';
 	var superUserId = '${SourceLeadWeb_superUserId}';
 	var userId = '${SourceLeadWeb_user.id}';
 	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
@@ -371,7 +369,6 @@ function reOpenMyExpense(expenseId){
 
 <script>
 function notifyReopenExpense(expenseId){
-	var sourceleadUrl = '${sourceleadUrl}';
 	var reason = document.getElementById("reOpenReason").value;
 	if(reason.match(/^[^\s-](.*)*$/) != null){
 		$("#reOpenReasonDiv").empty();
@@ -402,7 +399,6 @@ $(".project_inn_mask").fadeOut(200);
 
 <script>
 function getMembersForSelectedProject(){
-	var sourceleadUrl ='${sourceleadUrl}';
 	var projectId = document.getElementById("projectId").value;
 	
 	$.ajax({
@@ -417,7 +413,7 @@ function getMembersForSelectedProject(){
 				        var opt = json[i];
 				        result = result + '<option  value="'+opt.id+'">'+opt.empName+'</option>';
 			       	}
-				$("#projectMemberId").empty();
+				//$("#projectMemberId").empty();
 				$("#projectMemberId").append(result);
 				$("#projectMemberId").trigger("chosen:updated");
 	    	   }
@@ -462,7 +458,6 @@ function removeWhiteSpaces(rowCount){
       		var formData = new FormData(form); 
       		formData.append("json",jsonData);
 			var sourceleadUrl = '${sourceleadUrl}'; */
-			var sourceleadUrl = '${sourceleadUrl}';
 			/* var form = $('#add_expenses_form')[0];
       		var formData = new FormData(form);  */
       		 var formData = getFormData("add_expenses_form");
@@ -529,7 +524,6 @@ function removeWhiteSpaces(rowCount){
 
 <script>
 function getClientBasedOnSelectedProject(){
-	var sourceleadUrl ='${sourceleadUrl}';
 	 var locationCode ='${SourceLeadWeb_locationCode}'; 
 	var projectId = document.getElementById("projectId").value;
 	$.ajax({
@@ -552,6 +546,12 @@ function getClientBasedOnSelectedProject(){
 					  var projectEndDate = json.endDateStr;
 					  expensesDatePickerStartDate(projectStartDate,projectEndDate);
 		    	  }	
+
+		    	  $('#expensePurpose').val('');
+		    	  //$('#projectStartDateExpensesId').val('');
+		    	 // $('#projectEndDateExpensesId').val('');
+		    	    
+
 	    	   }
 	       },
 	});

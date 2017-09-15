@@ -101,7 +101,6 @@ function storeCertificate(candidateId){
 			
 		if ($('#Candidate_certification_form').validate(false,validationSettings)) {
 			 var formData = getFormData("Candidate_certification_form");
-			 var sourceleadUrl = '${sourceleadUrl}';
 			 $("#Candidate_certification_form").attr("disabled", "disabled");
 			 $("#addCandidate").attr("disabled", "disabled");
 			 
@@ -183,7 +182,6 @@ function storeCertificate(candidateId){
 <script>
 function candidateCertificateList(candidateId){
 	var candidateType = '${candidateType}';
-	var sourceleadUrl ='${sourceleadUrl}';
 	
 	 var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
 	  if(locationList.match("yyyy-MM-dd")){
@@ -469,7 +467,6 @@ function addCertification(candidateId) {
 
 	function editCertification(candidateCertificationId, candidateId) {
 
-		var sourceleadUrl = '${sourceleadUrl}';
 		$.ajax({
 					type : "POST",
 					url : sourceleadUrl
@@ -729,7 +726,6 @@ function addCertification(candidateId) {
 				validationSettings)) {
 
 			 var formData = getFormData("candidateCertificationEdit_form");
-			 var sourceleadUrl = '${sourceleadUrl}';
 			 
 			 $.post(sourceleadUrl+"/updateCandidateCertificationsBycandidateIdandcandidateCertificateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId, formData, function(data) {
 				 closeCertificatePopup();
@@ -802,7 +798,6 @@ function removeCertification(candidateCertificationId, candidateId){
 <script>
 function  deleteSelectedCertification(candidateCertificationId,candidateId){
 	
-	 var sourceleadUrl ='${sourceleadUrl}';
 	 var loginUserId = '${SourceLeadWeb_userId}';
 	 var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	 $.ajax({  

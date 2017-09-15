@@ -79,29 +79,9 @@ public class TeamMemberServiceImpl implements TeamMembersService {
 		
 		
 		String  userList = null;
-		/*if(jSONObject.has("teamMemberUserId")){
-				try{
-		  		  JSONArray jsonArray = jSONObject.getJSONArray("teamMemberUserId");
-		  		  userList = jsonArray.toString();
-		  	     }
-		  	     catch(JSONException e){
-		  		     userList= jSONObject.getString("teamMemberUserId");
-		  	     }
-		}*/
-		
 		if(StringUtils.isNotBlank(teamDTO.getTeamMemberUserId())){
 			userList=teamDTO.getTeamMemberUserId();
 	     }
-		
-		/*if(jSONObject.has("memberUserId")){
-			 try{
-		  		  JSONArray jsonArray = jSONObject.getJSONArray("memberUserId");
-		  		  userList = jsonArray.toString();
-		  	     }
-		  	     catch(JSONException e){
-		  		     userList= jSONObject.getString("memberUserId");
-		  	     }
-		}*/
 		
 		if(StringUtils.isNotBlank(teamDTO.getMemberUserId())){
 			 userList=teamDTO.getMemberUserId();
