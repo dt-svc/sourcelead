@@ -2088,8 +2088,14 @@ function validationHours(rowId){
 
 <script type="text/javascript">
  function attachFile(id){
+<<<<<<< HEAD
+	var sourceleadUrl ='${sourceleadUrl}';
+	fileUpload(sourceleadUrl, ""+id+"invoicedocFile", "invoiceDocuments", "invoice_form","fileInfo");
+}
+=======
 	fileUpload(""+id+"invoicedocFile", "invoiceDocuments", "invoice_form","fileInfo");
 }
+>>>>>>> 3a3a5cb3d81a007344c7a51396b2b9ee3fb2d860
 </script>
 
 <jsp:include page="../masterFooter.jsp" />
