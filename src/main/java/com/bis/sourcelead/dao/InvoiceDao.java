@@ -8,13 +8,14 @@ import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.Invoice;
 import com.bis.sourcelead.entity.InvoicePayment;
+import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 
 public interface InvoiceDao{
 
 	Invoice saveInvoce(Invoice invoice)throws Exception;
 	
-	ResponseList<Invoice> invoiceListByOrgLocationId(Long orgLocationId,Date startDateUTC,Date endDateUTC,InvoiceDTO invoiceDTO);
+	ResponseList<Invoice> invoiceListByOrgLocationId(OrgLocations orgLocations,Date startDateUTC,Date endDateUTC,InvoiceDTO invoiceDTO) throws Exception;
 	
 	Invoice getInvoicetById(Long invoiceId) throws Exception;
 
