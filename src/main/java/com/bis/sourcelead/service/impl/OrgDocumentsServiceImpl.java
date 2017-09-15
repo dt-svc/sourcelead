@@ -97,7 +97,6 @@ public class OrgDocumentsServiceImpl implements OrgDocumentsService{
 		}else{
 			orgDocuments.setOwnerUser(null);
 		}
-//		String userId="userId";
 		if(clientDocumentsDTO.getUserId() != null){
 			if(StringUtils.isNotBlank(clientDocumentsDTO.getUserId())){
 				User spocUser = new User();
@@ -236,7 +235,6 @@ public class OrgDocumentsServiceImpl implements OrgDocumentsService{
 		logger.debug("In OrgDocumentsServiceImpl class getOrgDocumentsById method...");
         OrgDocuments documents = orgDocumentsDao.getOrgDocumentsByIdAndSpocId(docId,userId);
         
-        //SimpleDateFormat formatter = orgLocations.getLocFullFormDateFormatter();
         if(documents.getStartDate() != null){
             documents.setStartDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),documents.getStartDate()));
         }
@@ -267,7 +265,6 @@ public class OrgDocumentsServiceImpl implements OrgDocumentsService{
 		 logger.debug("In OrgDocumentsServiceImpl class getOrgDocumentsById method...");
 	        OrgDocuments documents = orgDocumentsDao.getOrgDocumentsByDocIdAndLocationId(Id, locationId);
 	        OrgLocations orglo = orgLocationService.getOrgLocations(locationId);
-	        //SimpleDateFormat formatter = orglo.getLocFullFormDateFormatter();
 	        if(documents.getStartDate() != null){
 	            documents.setStartDateStr(commonUtil.dateStrFromOrgDateFormatter(orglo.getDateFormat(),documents.getStartDate()));
 	        }

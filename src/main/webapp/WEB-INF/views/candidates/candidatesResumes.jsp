@@ -247,7 +247,8 @@ function addResume(candidateId) {
 		         }; 
 			 if ($('#candidateResume_form').validate(false, validationSettings)){
 				var form = $('#candidateResume_form')[0];
-				//var formData = getFormData("candidateResume_form");
+				$("#candidateResume_form").attr("disabled", "disabled");
+			    $("#add_resume").attr("disabled", "disabled");
 				var formData = new FormData(form); 
 				$.ajax({
 					type : "POST",

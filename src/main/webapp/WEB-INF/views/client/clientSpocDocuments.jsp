@@ -137,21 +137,6 @@ function spocDocumentsList(clientLocationId,orgRelationId,userId,spocName){
 	                     result = result +"</table>";
 	                     $("#spocDocumentsList").append(result); 
 	                     spocDocumentpagination(); 
-              /*  }else{
-	    	         var result ="";
-		    	     result = result+"   <div class='row'>"; 
-					 result = result+"	<div class='col-lg-12'>"; 
-					 result = result+"		<div class='content-area clearfix'>"; 
-					 result = result+"			<div class='blank-pages'>";
-					 result = result+"			        <p><i class='fa fa-5x fa-bar-chart'></i></p>";
-					 result = result+"			        <p>No Documents Found</p>";
-					 result = result+"			 </div>";
-					 result = result+"		</div>"; 
-					 result = result+"	</div>"; 
-					 result = result+"  </div> "; 
-					$("#spocDocumentsList").empty();
-				    $("#spocDocumentsList").append(result); 
-               } */
         },
           
      }); 
@@ -330,9 +315,6 @@ function addDocumentForSpoc(clientLocationId,orgRelationId,spocName,userId) {
 	 $(".addUser-org, .assign-org, .collapse-div-adduser, .collapse-div, .edit-details").click(function(e){
 		 e.stopPropagation();
 	 });
-	/*  $('html').click(function(){
-		$(".edit-details").removeClass("edit-details-active");
-	   });	 */
 	 
 	 var config = {
 			  '.chosen-select'           : {},
