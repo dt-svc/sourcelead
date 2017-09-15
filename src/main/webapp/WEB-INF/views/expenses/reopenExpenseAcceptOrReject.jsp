@@ -36,6 +36,10 @@
 		});
 </script>
 
+<script>
+  var sourceleadUrl = '${sourceleadUrl}';
+</script>
+
 <script type="text/javascript">
 		window.onload = function () {
 			//getExpensesList();
@@ -149,7 +153,7 @@ width: auto;
 <script type="text/javascript">
 	function saveRejectedReason() {
 		if ($('#reject_form').validate(false, validationSettings)){
-			var sourceleadUrl = '${sourceleadUrl}';
+			
 			var expenseId = '${expenseId}';
 			var reOpenedUserId = '${reOpenedUserId}';
 			var type = 'reject';
