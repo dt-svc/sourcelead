@@ -247,7 +247,8 @@ function addResume(candidateId) {
 		         }; 
 			 if ($('#candidateResume_form').validate(false, validationSettings)){
 				var form = $('#candidateResume_form')[0];
-				//var formData = getFormData("candidateResume_form");
+				$("#candidateResume_form").attr("disabled", "disabled");
+			    $("#add_resume").attr("disabled", "disabled");
 				var formData = new FormData(form); 
 				$.ajax({
 					type : "POST",
@@ -408,7 +409,7 @@ function addResume(candidateId) {
 
 									result = result+'<td><div><span>'+candidateResumeUpdateDateToString+'</span></div></td>';
 					           		result = result+'<td><div class="tblicons_4"> <a class="glyphicon glyphicon-download-alt" href=\"'+opt.fileURL+'\" title="Download"></a>';
-					           		result = result+' <a class="fa fa-eye" href="javascript:void(0)" onClick="viewFile(\'${sourceleadUrl}\',\''+opt.fileURL+'\',\''+opt.fileName+'\',\''+opt.fileContentType+'\');"title="preview"></a>';		           						          
+					           		result = result+' <a class="fa fa-eye" href="javascript:void(0)" onClick="viewFile(\''+opt.fileURL+'\',\''+opt.fileName+'\',\''+opt.fileContentType+'\');"title="preview"></a>';		           						          
 					           		if(window.candidateStatusGlobal == 0){
 					           			result = result+'<a class="glyphicon glyphicon-pencil" href="javascript:void(0)"></a>';
 						           		result = result+'<i class="glyphicon glyphicon-trash" href="javascript:void(0)"></i>';
