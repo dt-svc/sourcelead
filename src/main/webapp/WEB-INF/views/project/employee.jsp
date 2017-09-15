@@ -160,6 +160,7 @@ function filterStatus() {
 	 var sourceleadUrl = '${sourceleadUrl}';
 	 var postedOrgLocationId = '${postedOrgLocationId}';
 	 var loginOrgLocationId = '${SourceLeadWeb_orgLocations.id}'
+	 var projectClientUUID = '${projectClientUUID}';
 	 	 
 	   $("#employeesLoadingImg").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;'); 
  	 
@@ -213,9 +214,14 @@ result = result + '<div class="project_tabs mb">';
 	 			  result = result + '<a href="javascript:void(0)" onclick="getAssociates();" id="addDiv">';
 		 		  result = result + '<i class="fa fa-exchange"></i>&nbsp;Transfer Emp</a>&nbsp;&nbsp;&nbsp;&nbsp;'; 
 	 		 }
-	 		    result = result + '<a href="'+sourceleadUrl+'/addNewProjectMembers?projectUUID='+projectUUID+'">';
-	 		    result = result + '<i class="glyphicon glyphicon-plus"></i>Assign Emp</a></li>';
-	 		'</sec:authorize>';
+	 		
+	 		if('${isClientOrgActive}' == "N" || postedOrgLocationId == loginOrgLocationId){
+	 			 result = result + '<a href="'+sourceleadUrl+'/addNewProjectMembers?projectUUID='+projectUUID+'&projectClientUUID='+projectClientUUID+'">';
+	 		     result = result + '<i class="glyphicon glyphicon-plus"></i>Assign Emp</a></li>';
+	 		}
+	 		   
+	 		
+ 		    '</sec:authorize>';
 	 		result = result +'</li>';
 			} 
 		    result = result + '	<li><a onClick="filterStatus()" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-filter"></i><span>Status</span><i class="glyphicon glyphicon-play"></i></a>';
@@ -1270,6 +1276,7 @@ function toDate(selector) {
 function resourceRequestsTab(){
 	 var sourceleadUrl ='${sourceleadUrl}';
 	 var projectUUID = '${projectUUID}';
+	 var projectClientUUID = '${projectClientUUID}';
 	 
 	 var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
 	  if(locationList.match("yyyy-MM-dd")){
@@ -1291,9 +1298,9 @@ function resourceRequestsTab(){
 	        	
 	    		result = result + '	<div class="project_tabs_inn_head timesheet_head">';
 	    		result = result + '	<ul>';
-	    		result = result + '	      <li><a href="'+sourceleadUrl+'/requestAssociates?projectUUID='+projectUUID+'">';
+	    		result = result + '	      <li><a href="'+sourceleadUrl+'/requestAssociates?projectUUID='+projectUUID+'&projectClientUUID='+projectClientUUID+'">';
 	    		result = result + '	       <i class="glyphicon glyphicon-plus"></i>Request Associates</a></li>';
-	    		result = result + '	      <li><a href="'+sourceleadUrl+'/newResourceRequest?projectUUID='+projectUUID+'">';
+	    		result = result + '	      <li><a href="'+sourceleadUrl+'/newResourceRequest?projectUUID='+projectUUID+'&projectClientUUID='+projectClientUUID+'">';
 	    		result = result + '	       <i class="glyphicon glyphicon-plus"></i>New Resource Request</a>&nbsp; &nbsp;</li>';
 	    		result = result + '	</ul>';
 	    		result = result + '	       </div>';
@@ -1319,15 +1326,15 @@ function resourceRequestsTab(){
 	    			result = result + '<tr>';
 	    			if(report.requestType == 'Associate Request'){
 						if(report.requestStatus == 'Draft' || report.requestStatus == 'Rejected'){
-							result = result + '<td><div><a href="'+sourceleadUrl+'/editResourceRequest?requestUUID='+report.requestUUID+'&projectUUID='+projectUUID+'">'+report.requestId+'</a></div></td>';
+							result = result + '<td><div><a href="'+sourceleadUrl+'/editResourceRequest?requestUUID='+report.requestUUID+'&projectUUID='+projectUUID+'&projectClientUUID='+projectClientUUID+'">'+report.requestId+'</a></div></td>';
 						}else{
-							result = result + '<td><div><a href="'+sourceleadUrl+'/viewResourceRequest?requestUUID='+report.requestUUID+'&projectUUID='+projectUUID+'">'+report.requestId+'</a></div></td>';
+							result = result + '<td><div><a href="'+sourceleadUrl+'/viewResourceRequest?requestUUID='+report.requestUUID+'&projectUUID='+projectUUID+'&projectClientUUID='+projectClientUUID+'">'+report.requestId+'</a></div></td>';
 						}
 	    			}else{
 	    				if(report.requestStatus == 'Draft' || report.requestStatus == 'Rejected'){
-	    					result = result + '<td><div><a href="'+sourceleadUrl+'/editNewResourceRequest?requestUUID='+report.requestUUID+'&projectUUID='+projectUUID+'">'+report.requestId+'</a></div></td>';
+	    					result = result + '<td><div><a href="'+sourceleadUrl+'/editNewResourceRequest?requestUUID='+report.requestUUID+'&projectUUID='+projectUUID+'&projectClientUUID='+projectClientUUID+'">'+report.requestId+'</a></div></td>';
 						}else{
-							result = result + '<td><div><a href="'+sourceleadUrl+'/viewNewResourceRequest?requestUUID='+report.requestUUID+'&projectUUID='+projectUUID+'">'+report.requestId+'</a></div></td>';
+							result = result + '<td><div><a href="'+sourceleadUrl+'/viewNewResourceRequest?requestUUID='+report.requestUUID+'&projectUUID='+projectUUID+'&projectClientUUID='+projectClientUUID+'">'+report.requestId+'</a></div></td>';
 						}
 	    				
 	    			}
