@@ -24,7 +24,7 @@ public class AddProjectRoleActionsToRecruitingModule {
 	
 /**
  * @author Venkat I
- * this method is using for update the userCode to userId	
+ * this method is adding project role actions for ATS and VMS	
  * @throws IOException
  * @throws SQLException
  */
