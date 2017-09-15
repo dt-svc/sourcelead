@@ -572,7 +572,6 @@
 	function storeCandidate() {
 		
 		rateValidations();
-		
 		var validationSettings = {
 				errorMessagePosition : 'element',
 				borderColorOnError : '',
@@ -582,7 +581,6 @@
 		
 		 if ($('#addcandidate_form').validate(false, validationSettings)){ 
 			
-			var sourceleadUrl = '${sourceleadUrl}';
 			var form = $('#addcandidate_form')[0];
       		var formData = new FormData(form); 
 			//It will escape all the special characters
@@ -686,7 +684,6 @@ function validate_fileupload(fileName)
 		    chosen = select.data('chosen');
 		    
 		    $("#candidateSkills").chosen().change(function(event) {
-		    	 var sourceleadUrl ='${sourceleadUrl}';
 		    	var allSkills = $(event.target).val();
 		   
 		    	
@@ -829,7 +826,7 @@ function validate_fileupload(fileName)
  function validateCandidateEmail() {
 	 var email = document.getElementById("email").value; 
 	 $('#emailDiv').find('p.jquery_form_error_message').remove();
-	 var sourceleadUrl ='${sourceleadUrl}';
+	 
 	 if(email != null && email != ""){
 		
 		 $.ajax({
@@ -1011,7 +1008,7 @@ var currentRate = document.getElementById("currentRate").value;
 
 <script>
  function getVendorsByOrgLocation(){
-	 var sourceleadUrl ='${sourceleadUrl}';
+	 
 		 $.ajax({
 		    	type: "GET",
 		        url: sourceleadUrl+"/getVendorsByOrgLocation?", 
@@ -1042,7 +1039,6 @@ function  removeValiationVendorContact() {
 </script>
 
 <script>
-var sourceleadUrl ='${sourceleadUrl}';
  function getVendorContactList(){
 	var orgRelationID = $('#vendors').val();
 		 $.ajax({
@@ -1063,7 +1059,7 @@ var sourceleadUrl ='${sourceleadUrl}';
  
  $(function() {
 	$("#uploadBtn").change(function() {
-		fileUpload(sourceleadUrl, "uploadBtn", "resumes", "addcandidate_form");
+		fileUpload("uploadBtn", "resumes", "addcandidate_form");
 	});
  });
  </script>

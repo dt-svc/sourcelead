@@ -24,6 +24,10 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 
+<script>
+  var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
+</script>
+
 <style type="text/css">
 .viewTemplate .sjfb-field{
 margin: 0;
@@ -146,7 +150,7 @@ window.onload = function () {
 <script>
 function publicRequirementProfile(requirementUUID){
 	
-	var sourceleadUrl ='${sourceleadUrl}';
+	
 	var contactUUID = '${contactUUID}';
 	var requirementUUID = '${requirementUUID}';
 	var referUUID = '${referUUID}';

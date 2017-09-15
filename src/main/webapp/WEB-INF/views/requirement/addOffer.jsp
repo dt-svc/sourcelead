@@ -20,7 +20,6 @@
 <script>
 function addOffer(requirementId){
 	$('.action-pop').slideUp();
-	var sourceleadUrl ='${sourceleadUrl}';
 	var clientSubmissions = '${clientSubmissions}';
 	
 	 $.ajax({
@@ -392,7 +391,6 @@ function validateRateAndRateType(){
         var con = JSON.stringify(frm);
         con = con.replace(/[{}]/g, "");
         var jsonData = encodeURIComponent(con);
-        var sourceleadUrl ='${sourceleadUrl}'; 
         var requirementId = '${requirementId}';
         
  		var form = $('#addOffer_form')[0];
@@ -533,7 +531,6 @@ function cancelOfferPopup(){
 		 }
 	 }
 	
-	 var sourceleadUrl ='${sourceleadUrl}';
 	 var requirementId = $("#reqId").val();
      
 		 $.ajax({
@@ -578,7 +575,6 @@ function cancelOfferPopup(){
 			 existingApplicantsIds.push(applicant);
 		 }
 	 }
-	 var sourceleadUrl ='${sourceleadUrl}';
 	 var requirementId = $("#reqId").val();
 	 
 	 var clientSubmissions = '${clientSubmissions}';

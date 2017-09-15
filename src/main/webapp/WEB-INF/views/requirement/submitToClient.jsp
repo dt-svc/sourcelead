@@ -16,7 +16,6 @@
 <script>
 function submitToClient(requirementId){
 	$('.action-pop').slideUp();
-	var sourceleadUrl ='${sourceleadUrl}';
 	var result = "";
 	'<sec:authorize access="hasAnyRole(\'ROLE_SUBMIT_TO_CLIENT\')">';
 	result = result + '<div class="add_inter_head"> <span>Submissions</span> <span class="text-success col-md-offset-1">No Of Candidates Selected: <b id="checkedSubmitToClientCount">0</b></span> <a href="javascript:void(0)" onclick="addEmailtemplate('+requirementId+');" class="sub-btn1">Submit to client</a>';
@@ -272,7 +271,6 @@ function getSubmitToClientCheckedCandidatesCount(){
 
 <script>
 function clientSubmissions(requirementId){
-	 var sourceleadUrl ='${sourceleadUrl}';
 	 var selectedShortlists = [];
 	 var selectedShortlistsRate = [];
 	 $("input[name='shortlist[]']:checked").each( function (i) {
@@ -336,7 +334,6 @@ function cancelSumitToClient(){
 <script>
 function addEmailtemplate(requirementId){
 	var result ="";
-	 var sourceleadUrl ='${sourceleadUrl}';
 		 var selectedShortlists = [];
 		 var selectedShortlistsRate = [];
 		 var selectedShortlistsRatePer = [];
@@ -644,7 +641,6 @@ function submitToClientMail(selectedIds,requirementId,selectedShortlistsRate,sel
 			var jsonData = encodeURIComponent(con);
 			var form = $('#submitToClientMailTemplate')[0];
     		var formData = new FormData(form); 
-			var sourceleadUrl = '${sourceleadUrl}';
 			$("#sendMail").addClass('button').val('Processing..');
      		$("#loadingDiv").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 				$.ajax({

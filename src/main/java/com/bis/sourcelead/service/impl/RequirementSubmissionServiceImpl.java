@@ -4520,6 +4520,12 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 	}
 
 	@Override
+	public ResponseList<RequirementSubmission> loadSubmissionsListByRequirementId(RequirementSubmissionsDTO requirementSubmissionsDTO) throws Exception
+	{
+		return requirementSubmissionDao.loadSubmissionsListByRequirementId(requirementSubmissionsDTO);
+	}
+	
+	@Override
 	public RequirementSubmission editRequirementSubmission(JSONObject jsonObj, User user, OrgLocations orgLocations,
 			String jsonStringvalues) throws Exception {
 	//	SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
@@ -4662,11 +4668,4 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 			Long vendorLocationId) throws Exception {
 		return requirementSubmissionDao.getClientSubmissionsBySourceSubmissionIdAndVendorLocationId(sourceSubmissionId, vendorLocationId);
 	}
-	
-	@Override
-	public ResponseList<RequirementSubmission> loadSubmissionsListByRequirementId(RequirementSubmissionsDTO requirementSubmissionsDTO) throws Exception
-	{
-		return requirementSubmissionDao.loadSubmissionsListByRequirementId(requirementSubmissionsDTO);
-	}
-
 }

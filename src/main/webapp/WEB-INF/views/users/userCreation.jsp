@@ -434,21 +434,6 @@ function getEmployeementType(designationType){
 
 <script type="text/javascript">
  function createUser() {
-	/*  var Rate = document.getElementById("Rate").value; 
-	 var RatePer = document.getElementById("RatePer").value; 
-	 if(Rate != null && Rate != ""){
-		 $('#RatePer').removeAttr('data-validation-optional');
-		 $('#RatePer').attr("data-validation","required"); 
-	 }else{
-		 $('#RatePer').removeAttr('data-validation');
-		 $('#RatePer').attr("data-validation-optional","true"); 
-	 } if(RatePer != null && RatePer != ""){
-		 $('#Rate').removeAttr('data-validation-optional');
-		 $('#Rate').attr("data-validation","required"); 
-	 }else{
-		 $('#Rate').removeAttr('data-validation');
-		 $('#Rate').attr("data-validation-optional","true"); 
-	 } */
 	 
 	 	var RatePer = document.getElementById("RatePer").value; 
 		if(RatePer != null && RatePer != ""){

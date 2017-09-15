@@ -153,37 +153,36 @@ public class RequirementServiceImpl implements RequirementService {
 	@Autowired
 	private ProjectsDao projectsDao;
 	
-	public String getRequirementId(OrgLocations orgLocations)
-	{
-		String companyShortCode = null;
-		Long number = 1L;
-		String requirementId = null;
-		Requirement checkNumber = requirementDao.checkRequirementIdNumberInDatebase(orgLocations.getId());
-		if (checkNumber == null || checkNumber.getGeneratedId() == null
-				|| checkNumber.getGeneratedId().isEmpty()) {
-			requirementId = number.toString();
-		}
-		else {
-			String reqIdNumber = checkNumber.getGeneratedId();
-			int count = 0;
-			for (int i = 0; i < reqIdNumber.length(); i++) {
-				char ch = reqIdNumber.charAt(i);
-				if (Character.isAlphabetic(ch)) {
-					count++;
+	@Override
+	 public String getRequirementId(OrgLocations orgLocations) {
+	    	String companyShortCode = null;
+	    	Long number = 1L;
+			String requirementId = null;
+			Integer generatedIdcount =0;
+			StringBuilder sbuilder = new StringBuilder();
+			sbuilder.append(orgLocations.getGeneratedUserId()).append(Constants.JOB_ENTITY);
+			String generatedUsreId = sbuilder.toString();
+			for(int i=0;i< generatedUsreId.length();i++){
+				char ch = generatedUsreId.charAt(i);
+				if(Character.isAlphabetic(ch)){
+					generatedIdcount++;
 				}
 			}
-			String reqIdNum = reqIdNumber.substring(count, reqIdNumber.length());
-			Long reqId = Long.parseLong(reqIdNum) + 1;
+			generatedIdcount = generatedIdcount+1;
+			Long checkNumber = requirementDao.getRequirementGeneratedIdByOrgLocationId(orgLocations.getId(),generatedIdcount);
+			if(checkNumber == null){
+				requirementId = number.toString();
+			}else{
+			Long reqId = checkNumber+1;
 			requirementId = reqId.toString();
-		}
-		final DecimalFormat decimalFormat = new DecimalFormat("0");
-		String convetredRequirementsId = decimalFormat.format(Long.parseLong(requirementId));
-		StringBuffer sb = new StringBuffer();
-		if (orgLocations.getGeneratedUserId() != null
-				&& !"".equalsIgnoreCase(orgLocations.getGeneratedUserId())) {
-			companyShortCode = orgLocations.getGeneratedUserId();
-		}
-		return sb.append(companyShortCode).append(Constants.JOB_ENTITY).append(convetredRequirementsId).toString();
+			}
+			final DecimalFormat decimalFormat = new DecimalFormat("0");                
+	        String convetredRequirementsId = decimalFormat.format(Long.parseLong(requirementId));
+	        StringBuffer sb = new StringBuffer();
+	        if(orgLocations.getGeneratedUserId() != null && !"".equalsIgnoreCase(orgLocations.getGeneratedUserId())){
+	        	 companyShortCode = orgLocations.getGeneratedUserId();
+	        }
+			return sb.append(companyShortCode).append(Constants.JOB_ENTITY).append(convetredRequirementsId).toString();
 	}
 	
 	/**
@@ -382,7 +381,7 @@ public class RequirementServiceImpl implements RequirementService {
 			requirement.setFileName(fileInfo.getFileName());
 			requirement.setFileContentType(fileInfo.getContentType());
 			requirement.setFileURL(fileInfo.getFileURL());;
-			FileUploadUtil.moveFile(requirementDTO.getStaticPath(), fileInfo, "resumes");
+			FileUploadUtil.moveFile(requirementDTO.getStaticPath(), fileInfo, "requirementDocuments");
 		}
 		else {
 			if (StringUtils.isNotBlank(requirementDTO.getTemplateId())) {
@@ -3129,21 +3128,19 @@ public class RequirementServiceImpl implements RequirementService {
 	}
 	
 	@Override
-	public boolean checkForOldrecordsUsingOrgLocationid(Long orglocationId) throws Exception
-	{
-		boolean flag = requirementDao.checkForOldrecordsUsingOrgLocationid(orglocationId, "");
-		if (flag) {
-			flag = addGeneratedIdRecordsToJobsForOldRecords(orglocationId);
-		}
-		return flag;
+	public boolean checkForOldrecordsUsingOrgLocationid(Long orglocationId) throws Exception {
+		  boolean flag = requirementDao.checkForOldrecordsUsingOrgLocationid(orglocationId,"");
+		  if(!flag){
+			 flag = addGeneratedIdRecordsToJobsForOldRecords(orglocationId);
+		  }
+		  return flag;
 	}
-	
-	public boolean addGeneratedIdRecordsToJobsForOldRecords(Long orglocationId) throws Exception
-	{
-		List<Requirement> requirementList = requirementDao.addGeneratedIdRecordsToJobsForOldRecords(orglocationId);
-		List<Candidate> candidateList = requirementDao.addGeneratedIdRecordsToCandidatesForOldRecords(orglocationId);
-		List<Projects> projectList = requirementDao.addGeneratedIdRecordsToProjectsForOldRecords(orglocationId);
-		boolean data = false;
+
+	public boolean addGeneratedIdRecordsToJobsForOldRecords(Long orglocationId) throws Exception {
+		List<Requirement> requirementList =  requirementDao.addGeneratedIdRecordsToJobsForOldRecords(orglocationId);
+		List<Candidate> candidateList =  requirementDao.addGeneratedIdRecordsToCandidatesForOldRecords(orglocationId);
+		List<Projects> projectList =  requirementDao.addGeneratedIdRecordsToProjectsForOldRecords(orglocationId);
+		boolean data = false ;
 		int jobsGeneratedId = 0;
 		int candidateGeneratedId = 0;
 		int projectsGeneratedId = 0;
@@ -3152,72 +3149,57 @@ public class RequirementServiceImpl implements RequirementService {
 		String finalProjectsGeneratedId = null;
 		// for jobs
 		OrgLocations orgLocation = orgLocationService.getOrgLocations(orglocationId);
-		if (!requirementList.isEmpty() && requirementList != null) {
-			for (Requirement req : requirementList) {
-				if (req.getGeneratedId() == null) {
-					if (orgLocation.getGeneratedUserId() != null
-							&& !orgLocation.getGeneratedUserId().equalsIgnoreCase("")) {
-						jobsGeneratedId = jobsGeneratedId + 1;
-						final DecimalFormat decimalFormat = new DecimalFormat("0");
-						String ConvetredjobsId = decimalFormat.format(jobsGeneratedId);
-						StringBuffer sb = new StringBuffer();
-						finalJobsGeneratedId = sb.append(orgLocation.getGeneratedUserId().toUpperCase()).append(Constants.JOB_ENTITY).append(ConvetredjobsId).toString();
-						req.setGeneratedId(finalJobsGeneratedId);
-						Requirement savedRequirement = requirementDao.storeRequirement(req);
-						RequirementDTO requirementDTO = commonUtil.getRequirementDTO(savedRequirement);
-						requirementElkUtil.saveElkRequirement(savedRequirement, null);
-						data = true;
-					}
-				}
-			}
-			System.out.println("Requirement data successfully");
-		}
-		if (!candidateList.isEmpty() && candidateList != null) {
-			for (Candidate candidate : candidateList) {
-				if (candidate.getGeneratedId() == null) {
-					if (orgLocation.getGeneratedUserId() != null
-							&& !orgLocation.getGeneratedUserId().equalsIgnoreCase("")) {
-						candidateGeneratedId = candidateGeneratedId + 1;
-						final DecimalFormat decimalFormat = new DecimalFormat("0");
-						String ConvetredjobsId = decimalFormat.format(candidateGeneratedId);
-						StringBuffer sb = new StringBuffer();
-						finalCandidatesGeneratedId = sb.append(orgLocation.getGeneratedUserId().toUpperCase()).append(Constants.CANDIDATE_ENTITY).append(ConvetredjobsId).toString();
-						candidate.setGeneratedId(finalCandidatesGeneratedId);
-						Candidate savedCanddidate = candidateDao.storeCandidate(candidate);
-						candidateService.saveOrUpdateCandidateElkDocument(savedCanddidate);
-						data = true;
-					}
-				}
-			}
-			System.out.println("candidate data successfully");
-		}
-		if (!projectList.isEmpty() && projectList != null) {
-			for (Projects projects : projectList) {
-				if (projects.getGeneratedId() == null) {
-					if (orgLocation.getGeneratedUserId() != null
-							&& !orgLocation.getGeneratedUserId().equalsIgnoreCase("")) {
-						projectsGeneratedId = projectsGeneratedId + 1;
-						final DecimalFormat decimalFormat = new DecimalFormat("0");
-						String ConvetredjobsId = decimalFormat.format(projectsGeneratedId);
-						StringBuffer sb = new StringBuffer();
-						finalProjectsGeneratedId = sb.append(orgLocation.getGeneratedUserId().toUpperCase()).append(Constants.PROJECT_ENTITY).append(ConvetredjobsId).toString();
-						projects.setGeneratedId(finalProjectsGeneratedId);
-						Projects savedProjects = projectsDao.updateProject(projects);
-						projectsService.saveOrUpdateProjectElkDocument(savedProjects);
-						data = true;
-					}
+		if( requirementList!= null && !requirementList.isEmpty()){
+		 for(Requirement req:requirementList){
+			if(req.getGeneratedId() == null ||(req.getGeneratedId() != null && req.getGeneratedId().substring(0,4).equalsIgnoreCase("null"))){
+				if(orgLocation.getGeneratedUserId()!= null && !orgLocation.getGeneratedUserId().equalsIgnoreCase("")){
+					jobsGeneratedId = jobsGeneratedId + 1;
+					final DecimalFormat decimalFormat = new DecimalFormat("0");                
+			        String ConvetredjobsId = decimalFormat.format(jobsGeneratedId);
+			        StringBuffer sb = new StringBuffer();
+			        finalJobsGeneratedId = sb.append(orgLocation.getGeneratedUserId().toUpperCase()).append(Constants.JOB_ENTITY).append(ConvetredjobsId).toString();
+			        req.setGeneratedId(finalJobsGeneratedId);
+			         Requirement savedRequirement = requirementDao.storeRequirement(req);
+			        requirementElkUtil.saveElkRequirement(savedRequirement, null);
+			        data =  true;
 				}
 			}
 		}
+		 System.out.println("Requirement data successfully");
+	 }if(candidateList!= null && !candidateList.isEmpty()){
+		for(Candidate candidate:candidateList){
+			if(candidate.getGeneratedId() == null||(candidate.getGeneratedId() != null && candidate.getGeneratedId().substring(0,4).equalsIgnoreCase("null"))){
+				if(orgLocation.getGeneratedUserId()!= null && !orgLocation.getGeneratedUserId().equalsIgnoreCase("")){
+					candidateGeneratedId = candidateGeneratedId + 1;
+					final DecimalFormat decimalFormat = new DecimalFormat("0");                
+			        String ConvetredjobsId = decimalFormat.format(candidateGeneratedId);
+			        StringBuffer sb = new StringBuffer();
+			        finalCandidatesGeneratedId = sb.append(orgLocation.getGeneratedUserId().toUpperCase()).append(Constants.CANDIDATE_ENTITY).append(ConvetredjobsId).toString();
+			        candidate.setGeneratedId(finalCandidatesGeneratedId);
+			        Candidate savedCanddidate =  candidateDao.storeCandidate(candidate);
+			        candidateService.saveOrUpdateCandidateElkDocument(savedCanddidate);
+			        data =  true;
+				}
+			}
+		}
+		System.out.println("candidate data successfully");
+	}if(projectList!= null && !projectList.isEmpty()){
+		for(Projects projects:projectList){
+			if(projects.getGeneratedId() == null||(projects.getGeneratedId() != null && projects.getGeneratedId().substring(0,4).equalsIgnoreCase("null"))){
+				if(orgLocation.getGeneratedUserId()!= null && !orgLocation.getGeneratedUserId().equalsIgnoreCase("")){
+					projectsGeneratedId = projectsGeneratedId + 1;
+					final DecimalFormat decimalFormat = new DecimalFormat("0");                
+			        String ConvetredjobsId = decimalFormat.format(projectsGeneratedId);
+			        StringBuffer sb = new StringBuffer();
+			        finalProjectsGeneratedId = sb.append(orgLocation.getGeneratedUserId().toUpperCase()).append(Constants.PROJECT_ENTITY).append(ConvetredjobsId).toString();
+			        projects.setGeneratedId(finalProjectsGeneratedId);
+			        Projects savedProjects = projectsDao.updateProject(projects);
+			        projectsService.saveOrUpdateProjectElkDocument(savedProjects);
+			        data =  true;
+				}
+			}
+		} 
+	}
 		return data;
-	}
-	
-	private RequirementDTO getRequirementDTO(Requirement requirement)
-	{
-		RequirementDTO  requirementDTO = new RequirementDTO();
-		requirementDTO.setJobId(requirement.getJobId());
-		requirementDTO.setJobTitle(requirement.getJobTitle());
-		
-		return requirementDTO;
-	}
+   }
 }

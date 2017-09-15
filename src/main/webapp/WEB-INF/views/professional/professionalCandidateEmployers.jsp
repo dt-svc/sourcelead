@@ -73,7 +73,6 @@ function closeCertificatePopup(){
 		if ($('#employers_form').validate(false, validationSettings)) {
 			
             var formData = getFormData("employers_form");
-			var sourceleadUrl = '${sourceleadUrl}';
 			
 			$("#candidateEmployersAdd").attr("disabled", "disabled");
 			$("#candidateEmployersAdd").addClass('button').val('Processing..'); 
@@ -296,7 +295,6 @@ function closeCertificatePopup(){
 
 	function editEmployer(candidateEmpId, candidateId) {
 		
-		var sourceleadUrl = '${sourceleadUrl}';
 		$.ajax({
 					type : "POST",
 					url : sourceleadUrl
@@ -474,8 +472,6 @@ function closeCertificatePopup(){
 --%>
 <script>
 	function candidateEmployersList(candidateId) {
-		var sourceleadUrl = '${sourceleadUrl}';
-		
 		
 		  var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
 		  if(locationList.match("yyyy-MM-dd")){
@@ -626,7 +622,6 @@ function alertMessageforEmp(candidateemployerId, candidateId){
 <script>
 	function deleteSelectedEmp(candidateemployerId, candidateId) {
 
-		var sourceleadUrl = '${sourceleadUrl}';
 		var loginUserId = '${SourceLeadWeb_userId}';
 		var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 				$.ajax({
@@ -687,7 +682,6 @@ function alertMessageforEmp(candidateemployerId, candidateId){
 		  if ($('#candidateExperianceEdit_form').validate(false,validationSettings)) {
 			
 			var formData = getFormData("candidateExperianceEdit_form");
-			var sourceleadUrl = '${sourceleadUrl}';
 			
 	        $.post(sourceleadUrl+"/upDateCandidateEmployerByCandidateIdAndCandidateExperianceId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&candidateExperianceId="+candidateExperianceId, formData, function(data) {
 	        	
