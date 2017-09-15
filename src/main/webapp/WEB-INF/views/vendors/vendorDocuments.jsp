@@ -108,7 +108,6 @@ function vendorDocumentsList(vendorLocationId,orgRelationId){
           type : "POST",
           url: sourceleadUrl+"/getclientDocumentsListByResponderLocationId?${_csrf.parameterName}=${_csrf.token}&responderLocationId="+vendorLocationId+"&sourceType=Vendor",        
           success :function(data) {
-               /* if(data != null && data != 'undefined' && data != "" && data != '[]'){ */
 	                	 $("#vendorDocumentsList").empty();
 	                	 var result = "";
 	                	 result = result +"<table id='clientDocumentsPagination' class='display' cellspacing='0' width='100%' >"; 

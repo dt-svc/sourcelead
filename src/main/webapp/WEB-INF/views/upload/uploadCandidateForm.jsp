@@ -87,7 +87,7 @@ margin:10px 220px 0;
 			 <span class="pull-left"><i class="fa fa-question" aria-hidden="true"></i></span>
 			  <span class="info-msg pull-left">
 			  <p>
-			  According this template, the Candidates need to <span class="text-danger"><strong>Import Required Fields</strong></span></p>
+			  According to this template, the Candidates need to <span class="text-danger"><strong>Import Required Fields</strong></span></p>
 			  </p>
 			  <p>
 			  <label><i class="fa fa-user"></i>&nbsp;&nbsp;First Name</label>
@@ -110,7 +110,7 @@ margin:10px 220px 0;
 		  <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
 		  <div class="errInfo clearfix">
 		  <div id="errorFileDiv"  style="display: none;">
-		  <p class="text-danger"><strong>Error File Dowload</strong></p>
+		  <p class="text-danger"><strong>Error File Download</strong></p>
 		      <c:if test="${!empty errorMessage}">
 				   <div class="file-upload"> 
 				  <a href="<c:url value='/downloadCandidaeErrorFile/${fileName}'/>" onclick="errorMsgAppend();"> 

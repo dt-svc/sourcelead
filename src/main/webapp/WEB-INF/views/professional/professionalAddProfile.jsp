@@ -408,11 +408,8 @@
 			$.ajax({
 						type : "POST",
 		        	    data: formData,
-		        	    contentType : 'application/json; charset=utf-8',
-		        	    enctype: 'multipart/form-data',
 		    	        processData: false,
 		    	        contentType:false,
-		        	    dataType : 'json',
 		        	    url : sourceleadUrl+"/storeProfessionalParseCandidate?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,
 						success : function(result) {
 								location.replace(sourceleadUrl+"/professionalProfile");
@@ -727,7 +724,7 @@ var currentRate = document.getElementById("currentRate").value;
 
 $(function() {
 	$("#uploadBtn").change(function() {
-		fileUpload(sourceleadUrl, "uploadBtn", "resumes", "addcandidate_form");
+		fileUpload("uploadBtn", "resumes", "addcandidate_form");
 	});
  });
 </script>

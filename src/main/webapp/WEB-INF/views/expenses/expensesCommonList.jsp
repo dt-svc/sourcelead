@@ -6,7 +6,6 @@
 
 <script type="text/javascript">
 function myExpensesListByStage(expenseStatus){
-	var sourceleadUrl = '${sourceleadUrl}';
 	$.ajax({
 	    type : "GET",
 	    url: sourceleadUrl+"/myExpensesListByStage?expenseStatus="+expenseStatus,      
@@ -103,7 +102,6 @@ function myExpensesListByStage(expenseStatus){
 
 function employeeExpensesListByStage(expenseStatus){
 	
-	var sourceleadUrl = '${sourceleadUrl}';
 	$.ajax({
 	    type : "GET",
 	    url: sourceleadUrl+"/employeeExpensesListByStage?expenseStatus="+expenseStatus,

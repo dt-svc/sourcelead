@@ -35,7 +35,7 @@ window.onload = function () {
 			<h2>Create Client</h2>
 		</div>
 		<div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo;<a href="<c:url value='/clientDashboard'/>"> Clients List</a>
-			&raquo; Create Client</div>
+			&raquo; Add Client</div>
 	</section>
 	
 	<div class="content-area content-new clearfix">
@@ -65,7 +65,7 @@ window.onload = function () {
 	          <label class="col-md-3">Location<span class="text-danger">&nbsp;*</span></label>
 	          <div class="col-md-9" id="locationField">
 	          <div class="positionRelative">
-	          <input class="form-control positionRelative" id="clientLocation" name="location" placeholder="Enter your Location"  type="text" field-name="Locatin" data-validation="required"></input>
+	          <input class="form-control positionRelative" id="clientLocation" name="location" placeholder="Enter your Location"  type="text" field-name="Location" data-validation="required"></input>
 	          <i class="fa fa-refresh btn btn-primary refresh-icon" title="Refresh" onClick="refreshGoogleApiLocation('clientLocation','clientCountry','clientState','clientCity','clientZipCode');"></i>
 	          </div>
 	          </div>
@@ -75,7 +75,7 @@ window.onload = function () {
 	          <label class="col-md-3">Location</label>
 	          <div class="col-md-9">
 	          <div class="positionRelative">
-	          <input class="form-control positionRelative" id="orgLocation" name="orgLocation" placeholder="Enter your address"  type="text" field-name="Locatin" readonly></input>
+	          <input class="form-control positionRelative" id="orgLocation" name="orgLocation" placeholder="Enter your address"  type="text" field-name="Location" readonly></input>
 	          </div>
 	          </div>
 	        </div>

@@ -9,7 +9,6 @@ public class TeamDTO extends TeamMemberDTO{
 	private String teamId;
 	//private String teamMemberUserId;
 	
-	
 	public String getName()
 	{
 		return name;
