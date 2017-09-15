@@ -316,7 +316,7 @@ public class HrDeductionsServiceImpl implements HrDeductionsService{
 	}
 
 	@Override
-	public ResponseList<HrDeductions> getHrDeductionsListByOrgLocationid(OrgLocations orgLocation, HrDeductionsDTO hrDeductionsDTO){
+	public ResponseList<HrDeductions> getHrDeductionsListByOrgLocationid(OrgLocations orgLocation, HrDeductionsDTO hrDeductionsDTO) throws Exception{
 		return hrDeductionsDao.getHrDeductionsListByOrgLocationid(orgLocation, hrDeductionsDTO);
 	
 	}
