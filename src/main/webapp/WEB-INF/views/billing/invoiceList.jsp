@@ -613,8 +613,9 @@ function invoicePagination(url){
 					}
 	    		     
 	    	  	    result = result +'         <td>';
-					if(report.invoiceStatus == "DRAFT" || report.invoiceStatus == "Rejected"){
+	    	  	    if(report.invoiceStatus == "DRAFT" || report.invoiceStatus == "Rejected"){
 						'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_INVOICE\')">';
+						var sourceleadUrl ='${sourceleadUrl}';
 						result = result +'           <div class="tbldata-dotdot_80 invoiceId_Anchor2"><a href="'+sourceleadUrl+'/getReceivableInvoiceByUUID?invoiceUUID='+report.invoiceUUID+'&projectId='+report.projectId+'">'+report.invoiceId+'</a></div>   ';
 						'</sec:authorize>' ;
 					}
@@ -723,7 +724,12 @@ function invoicePagination(url){
                			}else{
                				invoiceStatus = report.invoiceStatus
                			}
+               			result = result +'         <td> ';
                     	result = result +'           <div class="tbldata-dotdot-100">'+invoiceStatus+'</div>';
+                    	if(report.invoiceStatus == "Rejected"){
+        			 		result = result + '    <i class="glyphicon glyphicon-comment ml10 edit-reason"><div class="edit-status"><p>'+report.rejectReason+'</p></div></i>';
+        				}
+                    	result = result +'         </td> ';
                     	 return result;
                     }
                   },{
@@ -745,7 +751,7 @@ function invoicePagination(url){
             				result = result +'     <div class="tblminwidth-90">';
             				 result = result +'  <div class="pull-right positionRelative menuWidget" >';
             				 if(report.invoiceStatus == "SENT" || report.invoiceStatus == "Received" || report.invoiceStatus == "Accepted" ){
-            					 result = result +' <i class="fa fa-ellipsis-v" onClick="showPopUp('+report.id+',\''+report.invoiceStatus+'\',\''+report.invoiceParentId+'\',\''+report.total+'\');" ></i>  ';
+            					 result = result +' <i class="fa fa-ellipsis-v" onClick="showPopUp('+report.id+',\''+report.invoiceStatus+'\',\''+report.invoiceParentId+'\',\''+report.total+'\',\''+report.fileUrl+'\');" ></i>  ';
             						result = result +'  <div id="popupDiv'+report.id+'"></div>';
             				} 
             				result = result +'  </div> ';
@@ -834,8 +840,8 @@ $('#mypop').click(function(){
 </script>
 
 <script>
-function showPopUp(id,invoiceStatus,invoiceParentId,totalAmount){
-		 removePopup();
+function showPopUp(id,invoiceStatus,invoiceParentId,totalAmount,fileUrl){
+	removePopup();
 	     result = "";
 	     if(invoiceParentId == 'undefined'){
 	    	 result = result +'    <ul class="list-inline list-unstyled menupop menupop_2"> ';
@@ -850,11 +856,12 @@ function showPopUp(id,invoiceStatus,invoiceParentId,totalAmount){
 			'</sec:authorize>'
 		 }
 		 '<sec:authorize access="hasAnyRole(\'ROLE_PRINT_INVOICE\')">';
-	     result = result +'      <li onclick="getPrint('+id+');"><i class="fa fa-print paddingLeft paddingRight" title="Print"></i>Print</li>';
+// 	     result = result +'      <li onclick="getPrint('+id+');"><i class="fa fa-print paddingLeft paddingRight" title="Print"></i>Print</li>';
+		result = result+' <a class="fa fa-print paddingLeft paddingRight" href="'+fileUrl+'" title="Print">Print</a>';
 	 	'</sec:authorize>'
 	 	
 	 	'<sec:authorize access="hasAnyRole(\'ROLE_DOWNLOAD_INVOICE\')">';
-	     result = result +'      <li onclick="downloadInvoice('+id+');"><i class="fa fa-download paddingLeft paddingRight" title="Download"></i>Download</li>';
+	     result = result+' <a class="fa fa-download paddingLeft paddingRight" href="'+fileUrl+'" title="Download">Download</a>';
 	     '</sec:authorize>'
 	     result = result +'      <li onclick="linkInvoice('+id+',\''+totalAmount+'\');"><i class="fa fa-download paddingLeft paddingRight" title="Link Invoice"></i>Link Invoice</li>';
 	     result = result +'    </ul>';
@@ -926,19 +933,19 @@ function sendReminder(id){
 }
 </script>
 
-<script type="text/javascript">
+
+<!-- <script type="text/javascript">
 function getPrint(id) {
 	var sourceleadUrl ='${sourceleadUrl}';
 	window.open(sourceleadUrl+'/getPrint/'+id+'','_newtab');
 }</script>
-
-<script>
+ <script>
 function downloadInvoice(id){
 	var sourceleadUrl ='${sourceleadUrl}';
 	window.location.href = sourceleadUrl+"/downloadInvoice?${_csrf.parameterName}=${_csrf.token}&invoiceId="+id;
 }
 
-</script>
+</script> -->
 
 <script>
 function acceptedInvoice(id){
