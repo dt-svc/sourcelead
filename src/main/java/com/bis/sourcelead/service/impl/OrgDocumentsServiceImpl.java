@@ -55,29 +55,35 @@ public class OrgDocumentsServiceImpl implements OrgDocumentsService{
 		
 		if(!"null".equalsIgnoreCase(docId) && docId != null){
 			orgDocuments = orgDocumentsDao.getOrgDocumentsById(Long.parseLong(docId));
-			for(FileInfo fileinfo : clientDocumentsDTO.getFileInfo())
+			if(clientDocumentsDTO.getFileInfo() != null && !clientDocumentsDTO.getFileInfo().isEmpty())
 			{
-				orgDocuments.setFileName(fileinfo.getFileName());
-				orgDocuments.setFileType(fileinfo.getContentType());
-				orgDocuments.setFileUrl(fileinfo.getFileURL());
-				FileUploadUtil.moveFile(clientDocumentsDTO.getStaticPath(), fileinfo, "clientDocuments");
+				for(FileInfo fileinfo : clientDocumentsDTO.getFileInfo())
+				{
+					orgDocuments.setFileName(fileinfo.getFileName());
+					orgDocuments.setFileType(fileinfo.getContentType());
+					orgDocuments.setFileUrl(fileinfo.getFileURL());
+					FileUploadUtil.moveFile(clientDocumentsDTO.getStaticPath(), fileinfo, "clientDocuments");
+				}
 
 			}
-			
+
+
 		}else{
 			orgDocuments = new OrgDocuments();
 			orgDocuments.setStatus(Constants.MEMBER_ACTIVE);
 			orgDocuments.setCreatedBy(user.getUserCode());
 			orgDocuments.setCreatedDate(new Date());
-			
-			for(FileInfo fileinfo : clientDocumentsDTO.getFileInfo())
+			if(clientDocumentsDTO.getFileInfo() != null && !clientDocumentsDTO.getFileInfo().isEmpty())
 			{
-				orgDocuments.setFileName(fileinfo.getFileName());
-				orgDocuments.setFileType(fileinfo.getContentType());
-				orgDocuments.setFileUrl(fileinfo.getFileURL());
-				FileUploadUtil.moveFile(clientDocumentsDTO.getStaticPath(), fileinfo, "clientDocuments");
+				for(FileInfo fileinfo : clientDocumentsDTO.getFileInfo())
+				{
+					orgDocuments.setFileName(fileinfo.getFileName());
+					orgDocuments.setFileType(fileinfo.getContentType());
+					orgDocuments.setFileUrl(fileinfo.getFileURL());
+					FileUploadUtil.moveFile(clientDocumentsDTO.getStaticPath(), fileinfo, "clientDocuments");
+				}
 			}
-			
+
 		}
 		
         orgDocuments.setSourceType(sourceType);
@@ -97,7 +103,6 @@ public class OrgDocumentsServiceImpl implements OrgDocumentsService{
 		}else{
 			orgDocuments.setOwnerUser(null);
 		}
-//		String userId="userId";
 		if(clientDocumentsDTO.getUserId() != null){
 			if(StringUtils.isNotBlank(clientDocumentsDTO.getUserId())){
 				User spocUser = new User();
@@ -121,7 +126,7 @@ public class OrgDocumentsServiceImpl implements OrgDocumentsService{
 			orgDocuments.setStartDate(startDate);
 		}
 		if(StringUtils.isNotBlank(clientDocumentsDTO.getStartDate())){
-			Date endDate = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(),clientDocumentsDTO.getStartDate());
+			Date endDate = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(),clientDocumentsDTO.getEndDate());
 			orgDocuments.setEndDate(endDate);
 		}
 		
@@ -236,7 +241,6 @@ public class OrgDocumentsServiceImpl implements OrgDocumentsService{
 		logger.debug("In OrgDocumentsServiceImpl class getOrgDocumentsById method...");
         OrgDocuments documents = orgDocumentsDao.getOrgDocumentsByIdAndSpocId(docId,userId);
         
-        //SimpleDateFormat formatter = orgLocations.getLocFullFormDateFormatter();
         if(documents.getStartDate() != null){
             documents.setStartDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),documents.getStartDate()));
         }
@@ -267,7 +271,6 @@ public class OrgDocumentsServiceImpl implements OrgDocumentsService{
 		 logger.debug("In OrgDocumentsServiceImpl class getOrgDocumentsById method...");
 	        OrgDocuments documents = orgDocumentsDao.getOrgDocumentsByDocIdAndLocationId(Id, locationId);
 	        OrgLocations orglo = orgLocationService.getOrgLocations(locationId);
-	        //SimpleDateFormat formatter = orglo.getLocFullFormDateFormatter();
 	        if(documents.getStartDate() != null){
 	            documents.setStartDateStr(commonUtil.dateStrFromOrgDateFormatter(orglo.getDateFormat(),documents.getStartDate()));
 	        }
