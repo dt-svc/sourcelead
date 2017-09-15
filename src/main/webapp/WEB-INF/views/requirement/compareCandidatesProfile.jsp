@@ -360,7 +360,7 @@ function prepareCandidateGrid(data,requirementId){
 	    	    	opt = opt +'</ul>';
 	    	    	opt = opt +'<div class="comBtns mt10">';
 	    	    	if(report.currentResumeUUID != null && report.currentResumeUUID != '' && report.currentResumeUUID != 'undefined'){
-	    	    		opt = opt +'<button type="button" onClick="viewFile(\'${sourceleadUrl}\',\''+report.fileUrl+'\',\''+report.currentResumeName+'\',\''+report.fileContentType+'\');" class="btn btn-sm btn-primary">View Resume</button>';
+	    	    		opt = opt +'<button type="button" onClick="viewFile(\''+report.fileUrl+'\',\''+report.currentResumeName+'\',\''+report.fileContentType+'\');" class="btn btn-sm btn-primary">View Resume</button>';
 	    	    	}
 	    	    	opt = opt +'<button type="button" onClick="submitRecomendedApplicant('+requirementId+','+report.candidateId+',\'compare\');" class="btn btn-sm btn-success">Add</button>';
 	    	    	opt = opt +'</div>';
@@ -590,7 +590,7 @@ function candidateDiv(report,div,requirementId){
 	   opt = opt +'</ul>';
 	   opt = opt +'<div class="comBtns mt10">';
 	   if(report.resumeUUID != null && report.resumeUUID != '' && report.resumeUUID != 'undefined'){
-		   opt = opt +'<button type="button" onClick="viewFile(\'${sourceleadUrl}\',\''+report.fileUrl+'\',\''+report.candidateResumeName+'\',\''+report.fileContentType+'\');" class="btn btn-sm btn-primary">View Resume</button>';   
+		   opt = opt +'<button type="button" onClick="viewFile(\''+report.fileUrl+'\',\''+report.candidateResumeName+'\',\''+report.fileContentType+'\');" class="btn btn-sm btn-primary">View Resume</button>';   
 	   }
 	   opt = opt +'<button type="button" onClick="submitRecomendedApplicant('+requirementId+','+report.id+',\'compare\');" class="btn btn-sm btn-success">Add</button>';
 	   opt = opt +'</div>';
@@ -644,19 +644,6 @@ $(function(){
 });
 </script>
 
-<script type="text/javascript">
-function getCandiResume(fileURL,docFileName,fileType){
-    var sourceleadUrl ='${sourceleadUrl}';
-	if(uuid != null && uuid != ""){
-		aler("sourceleadUrl"+sourceleadUrl)
-		aler("fileURL"+fileURL)
-		aler("docFileName"+docFileName)
-		aler("fileType"+fileType)
-		viewFile(sourceleadUrl,fileURL,docFileName,fileType);
-// 		window.open(sourceleadUrl+'/viewResume/'+title+'?resumeUUID='+uuid,title,"height=600,width=600");
-	}  
-}
-</script>
 <div class="sideMask" style="z-index:99999 !important;">
   <div class="proj_close" onClick="removeCompareTab();"></div>
 </div>
