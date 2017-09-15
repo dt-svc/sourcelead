@@ -205,7 +205,7 @@ function addResume(candidateId) {
 	<script>
 function uploadProfileResume(){
 	var sourceleadUrl ='${sourceleadUrl}';
-	fileUpload(sourceleadUrl, "uploadBtn", "resumes", "candidateResume_form");
+	fileUpload("uploadBtn", "resumes", "candidateResume_form");
 }
 </script> 
   

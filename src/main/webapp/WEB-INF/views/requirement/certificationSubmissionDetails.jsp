@@ -26,7 +26,6 @@ function certificationSubmissionDetails(candidateId){
 
 <script>
 function certificationSubmissionDetailsList(candidateId){
-	 var sourceleadUrl ='${sourceleadUrl}';
 	 
 	 var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
 	  if(locationList.match("yyyy-MM-dd")){

@@ -611,6 +611,7 @@ private String getCellValueAsString(Cell cell, String fileName) {
 				candidate.setCandidateUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 				candidate.setCreatedDate(commonUtil.currentDate());
 				candidate.setMobilePhone(user.getMobilePhone());
+				candidate.setGeneratedId(candidateService.getCandidateId(orgLocations));
 		    }else{
 		    	candidate.setConsultantUser(user);
 				candidate.setMasterCandidateId(masterCandidate);

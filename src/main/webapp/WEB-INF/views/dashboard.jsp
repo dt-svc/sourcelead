@@ -320,7 +320,7 @@ $('#dasboardTaskDatpicker').datepicker({
 	result=result+'<div class="form-group mb10">';
 	result=result+'<label>Organization Short Code<span class="text-danger paddingLeft">*</span></label>';
 	result=result+'<div class="clearfix" id="generatedUserIdDiv">';
-	result=result+'<input type="text" class="form-control" id="generatedUserId" style="text-transform:uppercase" name="generatedUserId" data-validation="required validate_length length3-3" field-name="Organization Short Code" onkeyup="validateOrgShortCode();" maxlength="3">';
+	result=result+'<input type="text" class="form-control" id="generatedUserId" style="text-transform:uppercase" name="generatedUserId" data-validation="required validate_length length1-4" field-name="Organization Short Code" onkeyup="validateOrgShortCode();" maxlength="4">';
 	result=result+'</div>';
 	result=result+'</div>';
 	result=result+'<div class="clearfix">';
@@ -387,8 +387,10 @@ function validateOrgShortCode(){
 		        success: function(data) {
 		        	if(data == true){
 		        		$("input#generatedUserId").parent().after("<p class='jquery_form_error_message'><span>Org Short Code Already Exists !!!</span>");
+		        		$("#saveOrgConfiguration").attr("disabled","disabled");
 		        	}else{
-		        		 $('#generatedUserIdDiv').parent().find('p.jquery_form_error_message').remove(); 
+		        		 $('#generatedUserIdDiv').parent().find('p.jquery_form_error_message').remove();
+		        		 $("#saveOrgConfiguration").removeAttr("disabled","disabled");
 		        	}
 		        }
 		 }); 

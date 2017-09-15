@@ -96,7 +96,6 @@ function closeCertificatePopup(){
 			
 			var formData = getFormData("employers_form");
 			
-			var sourceleadUrl = '${sourceleadUrl}';
 			$("#candidateEmployersAdd").attr("disabled", "disabled");
 			$("#candidateEmployersAdd").addClass('button').val('Processing..'); 
 	        $.post(sourceleadUrl+"/storeCandidateEmployers?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId, formData, function(data) {
@@ -331,8 +330,6 @@ function closeCertificatePopup(){
 <script>
 
 	function editEmployer(candidateEmpId, candidateId) {
-		
-		var sourceleadUrl = '${sourceleadUrl}';
 		$.ajax({
 					type : "POST",
 					url : sourceleadUrl
@@ -512,9 +509,7 @@ function closeCertificatePopup(){
 <script>
 	function candidateEmployersList(candidateId) {
 		 var candidateType = '${candidateType}';
-		var sourceleadUrl = '${sourceleadUrl}';
-		
-		var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
+		 var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
 		  if(locationList.match("yyyy-MM-dd")){
 			  candExpListDate = 'YYYY-MM-DD';
 		  }if(locationList.match("dd-MM-yyyy")){
@@ -696,7 +691,6 @@ function removeEmployer(candidateemployerId, candidateId){
 <script>
 	function deleteSelectedEmployer(candidateemployerId, candidateId) {
 
-		var sourceleadUrl = '${sourceleadUrl}';
 		var loginUserId = '${SourceLeadWeb_userId}';
 		var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 				$.ajax({
@@ -774,8 +768,6 @@ function removeEmployer(candidateemployerId, candidateId){
 			var frm = $('#candidateExperianceEdit_form').serializeFormJSON();
 
 			var formData = getFormData("candidateExperianceEdit_form");
-			var sourceleadUrl = '${sourceleadUrl}';
-			
 	        $.post(sourceleadUrl+"/upDateCandidateEmployerByCandidateIdAndCandidateExperianceId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&candidateExperianceId="+candidateExperianceId, formData, function(data) {
 	        	
 	        	$(".edit-details").toggleClass("edit-details-active");
