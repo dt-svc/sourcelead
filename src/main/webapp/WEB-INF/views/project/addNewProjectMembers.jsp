@@ -905,6 +905,7 @@ function assignMembers(){
       		var projectUUID = '${projectUUID}';
       		var userId = '${SourceLeadWeb_user.id}';
       		var orgLocationId = '${SourceLeadWeb_orgLocations.id}';
+      		var projectClientUUID = '${projectClientUUID}';
       		
        		$("#associateRequestLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
       		$.ajax({
@@ -912,7 +913,7 @@ function assignMembers(){
 	  	    	    data : formData,
 					url : sourceleadUrl+"/assignProjectMembersToProject?${_csrf.parameterName}=${_csrf.token}&projectUUID="+projectUUID+"&userId="+userId+"&orgLocationId="+orgLocationId, 
 					success : function(result) {
-						location.replace(sourceleadUrl+"/projectSummary?projectUUID="+projectUUID+"&tabType=projectMembers");
+						location.replace(sourceleadUrl+"/projectSummary?projectUUID="+projectUUID+"&projectClientUUID="+projectClientUUID+"&tabType=projectMembers");
 					},
 				}); 
       		 return true;

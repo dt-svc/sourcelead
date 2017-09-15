@@ -285,7 +285,7 @@ function saveClientProject(){
   	    	    data : formData,
 				url : sourceleadUrl+"/storeClientProject?${_csrf.parameterName}=${_csrf.token}", 
 				success : function(project) {
-					 location.replace(sourceleadUrl+"/projectSummary?projectUUID="+project.projectUUID+"&tabType=projectMembers");
+					 location.replace(sourceleadUrl+"/projectSummary?projectUUID="+project.projectUUID+"&projectClientUUID="+project.projectClientUUID+"&tabType=projectMembers");
 					 $("#loading").removeAttr("style");
 				},
 			}); 
