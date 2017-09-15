@@ -13,7 +13,7 @@ public interface WageTaxSummaryDao {
 
 	WageTaxSummary saveWageTaxSummary(WageTaxSummary wageTaxSummary)throws Exception;
 
-	ResponseList<WageTaxSummary> getWagesAndTaxListByOrgLocationId(OrgLocations orgLocation, WagesTaxSummaryDTO wagesTaxSummaryDTO);
+	ResponseList<WageTaxSummary> getWagesAndTaxListByOrgLocationId(OrgLocations orgLocation, WagesTaxSummaryDTO wagesTaxSummaryDTO) throws Exception;
 
 	List<WageTaxSummary> getWagesAndTaxListByEmployeeId(OrgLocations orgLocations, Long empId)throws Exception;
 

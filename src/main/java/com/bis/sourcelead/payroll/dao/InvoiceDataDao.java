@@ -15,6 +15,6 @@ public interface InvoiceDataDao {
 
 	int getInvoiceDataVersionByOrgLocationId(Long orgLocationId);
 
-	ResponseList<InvoiceData> getInvoiceDetails(InvoiceDetailsDTO invoiceDetailsDTO, Long orgLocationId) throws Exception;
+	ResponseList<InvoiceData> getInvoiceDetails(InvoiceDetailsDTO invoiceDetailsDTO, OrgLocations orgLocation) throws Exception;
 
 }
