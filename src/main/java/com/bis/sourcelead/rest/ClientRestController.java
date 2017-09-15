@@ -1223,6 +1223,26 @@ public class ClientRestController {
 		 
 		 boolQueryBuilder.must(combinedQueryBuilder);
 		 
+		 //------
+		 BoolQueryBuilder boolQueryBuilderForCount = new BoolQueryBuilder();
+		 
+		 
+        BoolQueryBuilder combinedQueryBuilderCount = QueryBuilders.boolQuery();
+		 
+		 BoolQueryBuilder initiatorQueryBuilderCount = QueryBuilders.boolQuery();
+		 initiatorQueryBuilderCount.must(QueryBuilders.matchQuery("orgLocationId", loginOrgLocation.getId()));
+		 initiatorQueryBuilderCount.must(QueryBuilders.matchQuery("initiatorType", responderType));
+		 
+		 BoolQueryBuilder responderQueryBuilderCount = QueryBuilders.boolQuery();
+		 responderQueryBuilderCount.must(QueryBuilders.matchQuery("responderLocationId", loginOrgLocation.getId()));
+		 responderQueryBuilderCount.must(QueryBuilders.matchQuery("responderType", responderType));
+		 
+		 combinedQueryBuilderCount.should(initiatorQueryBuilderCount);
+		 combinedQueryBuilderCount.should(responderQueryBuilderCount);
+		 
+		 boolQueryBuilderForCount.must(combinedQueryBuilder);
+		 //---end
+		 
 		 // filter based on client level
 		 List<String> clientLevelArray = clientVendorDTO.getValues(); // 
 			if(clientLevelArray != null && !clientLevelArray.isEmpty()){
@@ -1422,7 +1442,7 @@ public class ClientRestController {
 			response.setRecordsFiltered(searchHits.length);
 			SearchResponse searchResponseForCount = sourceleadELKBaseIndexer
 					.searchDocumentWithMaxResults(Constants.ELK_CLIENTVENDOR_INDEX, Constants.ELK_CLIENTVENDOR_TYPE,
-							0, 10, "createdBy", SortOrder.DESC, boolQueryBuilder);
+							0, 10, "createdBy", SortOrder.DESC, boolQueryBuilderForCount);
 			
 			response.setRecordsTotal(searchResponseForCount == null ? response.getRecordsFiltered() : Long.valueOf(searchResponseForCount.getHits().getTotalHits()).intValue());
 		}
