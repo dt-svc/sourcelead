@@ -8,7 +8,6 @@
 
 <script>
 function assetDetails(assetId) {
-		var sourceleadUrl = '${sourceleadUrl}';
 		
 		$.ajax({
 			type : "POST",
@@ -171,9 +170,6 @@ function assetDetails(assetId) {
 
 <script>
 function editAssetManagement(assetId){
- var sourceleadUrl ='${sourceleadUrl}';
- 
- var sourceleadUrl = '${sourceleadUrl}';
 	
 	$.ajax({
 		type : "POST",
@@ -630,8 +626,6 @@ var validationSettings = {
         	        var jsonData = encodeURIComponent(con);
         	        var form = $('#updateAsset_form')[0];
 	           		var formData = new FormData(form);
-	          		var sourceleadUrl ='${sourceleadUrl}';
-	          		
 	          		
 	          		 $("#update_asset").attr("disabled", "disabled");
 	          		 $("#updateLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');

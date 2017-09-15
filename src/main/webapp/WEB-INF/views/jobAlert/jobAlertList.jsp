@@ -72,7 +72,6 @@ function alertClose(){
 <script src="resources/js/jobs/js/bootstrap-select.min.js"></script>
 <script>
 function createAlert(){
-	var sourceleadUrl = '${sourceleadUrl}';
 	var email = '${SourceLeadWeb_user.email}';
 	
 	$.ajax({
@@ -249,7 +248,6 @@ function createAlert(){
 					    chosen = select.data('chosen');
 					    
 					    $("#skills").chosen().change(function(event) {
-					    	 var sourceleadUrl ='${sourceleadUrl}';
 					    	var allSkills = $(event.target).val();
 					    	$.ajax({
 						    	type: "POST",
@@ -326,7 +324,6 @@ function createAlert(){
 function saveAlert(){
 	var jobAlertUUID = $("#jobAlertUUID").val();
 	if ($('#create_alert_form').validate(false, validationSettings)){ 
-		var sourceleadUrl = '${sourceleadUrl}';
 		var frm = $('#create_alert_form').serializeFormJSON();
 		var con = JSON.stringify(frm);
 		con = con.replace(/[{}]/g, ""); 
@@ -378,7 +375,6 @@ $(document).ready(function(){
  
 <script>
 function jobAlertList(){  
-	  var sourceleadUrl ='${sourceleadUrl}';
 	  $.ajax({
            type : "POST",
            url: sourceleadUrl+"/getJobAlertList?${_csrf.parameterName}=${_csrf.token}",    
@@ -461,8 +457,6 @@ function jobAlertList(){
 
 <script>
 function editAlert(jobAlertUUID){
-	
-	var sourceleadUrl ='${sourceleadUrl}';
 	
 	 $.ajax({
          type : "GET",
@@ -763,7 +757,6 @@ function editAlert(jobAlertUUID){
         		    chosen = select.data('chosen');
         		    
         		    $("#skills").chosen().change(function(event) {
-        		    	 var sourceleadUrl ='${sourceleadUrl}';
         		    	var allSkills = $(event.target).val();
         		    	$.ajax({
         			    	type: "POST",
@@ -854,8 +847,6 @@ function alertMessage(jobAlertUUID,alertTitle){
 
 <script>
 function deleteAlert(jobAlertUUID){
-	var sourceleadUrl ='${sourceleadUrl}';
-	
 	  $.ajax({
         type : "POST",
         url: sourceleadUrl+"/deleteJobAlert?${_csrf.parameterName}=${_csrf.token}&jobAlertUUID="+jobAlertUUID,    
