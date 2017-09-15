@@ -280,6 +280,8 @@ public class RequirementListRestController {
 							ar.add(approverSB.append(approverN.getApproverUserId().getFirstName()).toString());
 						}
 						requirement.setApprovalMechanismType(approverN.getHierarchyType().toString());
+						
+						
 						if (null != approverN.getRejectedReason()
 								&& !approverN.getRejectedReason().equalsIgnoreCase("")
 								&& Constants.REJECTED.equalsIgnoreCase(approverN.getRequirementApproverStatus().toString())) {
