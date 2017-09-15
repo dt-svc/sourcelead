@@ -167,14 +167,12 @@
 
 <script>
 function viewDocument(title,id){
-	var sourceleadUrl ='${sourceleadUrl}';
 		window.open(sourceleadUrl+'/viewExpensesEntryDocument/'+title+'?entryDocumentId='+id,title,"height=600,width=600");
 }
 </script>    
     
 <script>
 function exportMyExpenses(type,Expid,ApproverType){
-	var sourceleadUrl = '${sourceleadUrl}';
 	window.location.href = sourceleadUrl + "/exportMyExpensesList?&type="+type+"&Expid="+Expid+"&ApproverType="+ApproverType;
 }
 </script>
