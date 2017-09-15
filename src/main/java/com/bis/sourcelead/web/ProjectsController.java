@@ -6,6 +6,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
@@ -24,18 +25,20 @@ import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.ProjectAssignTask;
+import com.bis.sourcelead.entity.ProjectClients;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.ProjectTasks;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.enums.Status;
 import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.LookUpDataService;
-import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgService;
 import com.bis.sourcelead.service.ProjectAssignTasksService;
+import com.bis.sourcelead.service.ProjectClientService;
 import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.ProjectPlanningRequestService;
 import com.bis.sourcelead.service.ProjectTasksService;
@@ -94,6 +97,9 @@ public class ProjectsController {
 	
 	@Autowired
 	ProjectAssignTasksService projectAssignTasksService;
+	
+	@Autowired
+	ProjectClientService projectClientService;
 	
 
 	 
@@ -223,7 +229,8 @@ public class ProjectsController {
 	 
 	 
 	 @RequestMapping(value = "/projectSummary")
-		public ModelAndView projectSummary(@RequestParam(value="projectUUID", required=true) String projectUUID,@RequestParam(value="tabType", required=false) String tabType,
+		public ModelAndView projectSummary(@RequestParam(value="projectUUID", required=true) String projectUUID,
+				@RequestParam(value="projectClientUUID", required=true) String projectClientUUID,@RequestParam(value="tabType", required=false) String tabType,
 				HttpServletRequest request) throws Exception {
 				ModelAndView model = new ModelAndView();
 				
@@ -231,7 +238,8 @@ public class ProjectsController {
 				OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 				Projects projects = projectsService.getProjectByProjectUUID(projectUUID);
 				OrgLocations locations=orgLocationService.getOrgLocations(projects.getOrgLocationsId().getId());
-				//SimpleDateFormat dateFormat=locations.getLocFullFormDateFormatter();
+				OrgLocations clientOrgLocations = null;
+				String isClientOrgActive = Constants.YES;
 				if(projects != null){
 					model.addObject("projectId", projects.getId());
 					model.addObject("projectName", projects.getProjectName());
@@ -243,6 +251,23 @@ public class ProjectsController {
 					}
 					model.addObject("projectStatus", projects.getProjectStatus());
 				}
+				
+				if(StringUtils.isNotEmpty(projectClientUUID)){
+					ProjectClients projectClients = projectClientService.getProjectClientsByUUID(projectClientUUID);
+					if(projectClients != null && projectClients.getOrgRelationId() != null){
+						if(projectClients.getOrgRelationId().getResponderLocationId().getId().equals(orgLocations.getId())){
+							clientOrgLocations = projectClients.getOrgRelationId().getLocationId();
+						}else{
+							clientOrgLocations = projectClients.getOrgRelationId().getResponderLocationId();
+						}
+						
+						if(!clientOrgLocations.getStatus().equals(Status.ACTIVE)){
+							isClientOrgActive = Constants.NO;
+						}
+					}
+					model.addObject("isClientOrgActive", isClientOrgActive);
+				}
+				model.addObject("projectClientUUID", projectClientUUID);
 				
 				if(null != tabType && !tabType.isEmpty() && tabType != ""){
 					model.addObject("tabType", tabType);
@@ -338,7 +363,8 @@ public class ProjectsController {
 	 
 	 
 	 @RequestMapping(value = "/newResourceRequest")
-		public ModelAndView newResourceRequest(@RequestParam(value="projectUUID", required=true) String projectUUID,HttpServletRequest request) throws Exception {
+		public ModelAndView newResourceRequest(@RequestParam(value="projectUUID", required=true) String projectUUID,
+				@RequestParam(value="projectClientUUID", required=true) String projectClientUUID,HttpServletRequest request) throws Exception {
 				ModelAndView model = new ModelAndView();
 				OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 				Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
@@ -368,6 +394,7 @@ public class ProjectsController {
 			    List<User> approversList = userService.getTabAccessOwnersByOrgLocationIdAndTabId(orgLocations.getId(),Long.valueOf(Constants.TAB_PROJECTS));
 				model.addObject("approversList", approversList);
 			    
+				model.addObject("projectClientUUID", projectClientUUID);
 				model.addObject("projectUUID", projectUUID);
 				model.setViewName("project/newResourceRequest");
 				model.addObject("sourceleadUrl", sourceleadUrl);
@@ -376,7 +403,8 @@ public class ProjectsController {
 	 
 	 
     @RequestMapping(value = "/requestAssociates")
-	public ModelAndView requestAssociates(@RequestParam(value="projectUUID", required=true) String projectUUID,HttpServletRequest request) throws Exception {
+	public ModelAndView requestAssociates(@RequestParam(value="projectUUID", required=true) String projectUUID,
+			@RequestParam(value="projectClientUUID", required=true) String projectClientUUID,HttpServletRequest request) throws Exception {
 	    Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 	    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 	    
@@ -395,6 +423,7 @@ public class ProjectsController {
 			model.addObject("projectStatus", projects.getProjectStatus());
 		}
 		model.addObject("projectUUID", projectUUID);
+		model.addObject("projectClientUUID", projectClientUUID);
 		
 		List<OrgLocations> orgLocationsList = orgLocationService.getAllOrgLocationsByOrgId(org.getId());
 		model.addObject("orgLocationsList", orgLocationsList);
@@ -409,7 +438,8 @@ public class ProjectsController {
     
     
     @RequestMapping(value = "/addNewProjectMembers")
-	public ModelAndView addNewProjectMembers(@RequestParam(value="projectUUID", required=true) String projectUUID,HttpServletRequest request) throws Exception {
+	public ModelAndView addNewProjectMembers(@RequestParam(value="projectUUID", required=true) String projectUUID,
+			@RequestParam(value="projectClientUUID", required=true) String projectClientUUID,HttpServletRequest request) throws Exception {
 	    Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 	    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 	    
@@ -439,8 +469,7 @@ public class ProjectsController {
 			model.addObject("projectOrgLocationId", projects.getOrgLocationsId().getId());
 		}
 		model.addObject("projectUUID", projectUUID);
-		
-		
+		model.addObject("projectClientUUID",projectClientUUID);
 		model.setViewName("project/addNewProjectMembers");
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		return model;
@@ -450,7 +479,8 @@ public class ProjectsController {
     
     
     @RequestMapping(value = "/editResourceRequest")
-	public ModelAndView editResourceRequest(@RequestParam(value="requestUUID", required=true) String requestUUID,@RequestParam(value="projectUUID", required=true) String projectUUID,HttpServletRequest request) throws Exception {
+	public ModelAndView editResourceRequest(@RequestParam(value="requestUUID", required=true) String requestUUID,
+			@RequestParam(value="projectClientUUID", required=true) String projectClientUUID,@RequestParam(value="projectUUID", required=true) String projectUUID,HttpServletRequest request) throws Exception {
 	    Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 	    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 	  //  SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
@@ -469,6 +499,7 @@ public class ProjectsController {
 		}
 		model.addObject("projectUUID", projectUUID);
 		model.addObject("requestUUID",requestUUID);
+		model.addObject("projectClientUUID",projectClientUUID);
 		
 		List<OrgLocations> orgLocationsList = orgLocationService.getAllOrgLocationsByOrgId(org.getId());
 		model.addObject("orgLocationsList", orgLocationsList);
@@ -480,7 +511,8 @@ public class ProjectsController {
     
 
     @RequestMapping(value = "/editNewResourceRequest")
-	public ModelAndView editNewResourceRequest(@RequestParam(value="requestUUID", required=true) String requestUUID,@RequestParam(value="projectUUID", required=true) String projectUUID,HttpServletRequest request) throws Exception {
+	public ModelAndView editNewResourceRequest(@RequestParam(value="requestUUID", required=true) String requestUUID,
+			@RequestParam(value="projectClientUUID", required=true) String projectClientUUID,@RequestParam(value="projectUUID", required=true) String projectUUID,HttpServletRequest request) throws Exception {
 	    Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 	    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		 Long roleHierarchyId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "roleHierarchyId");
@@ -500,6 +532,7 @@ public class ProjectsController {
 		}
 		model.addObject("projectUUID", projectUUID);
 		model.addObject("requestUUID",requestUUID);
+		model.addObject("projectClientUUID",projectClientUUID);
 		Countries countries = countriesService.getCountriesByCountryName(orgLocations.getCountry());
 		if(null != countries){
         model.addObject("loginCountryName", countries.getName());
@@ -518,11 +551,14 @@ public class ProjectsController {
 
     
     @RequestMapping(value = "/viewNewResourceRequest")
-   	public ModelAndView viewNewResourceRequest(@RequestParam(value="requestUUID", required=true) String requestUUID,@RequestParam(value="projectUUID", required=true) String projectUUID) throws Exception {
+   	public ModelAndView viewNewResourceRequest(@RequestParam(value="requestUUID", required=true) String requestUUID,
+   			@RequestParam(value="projectUUID", required=true) String projectUUID,
+   			@RequestParam(value="projectClientUUID", required=true) String projectClientUUID) throws Exception {
    	    
    	    ModelAndView model = new ModelAndView();
    		model.addObject("projectUUID", projectUUID);
    		model.addObject("requestUUID",requestUUID);
+   		model.addObject("projectClientUUID",projectClientUUID);
    		
    		model.setViewName("project/viewNewResourceRequest");
    		model.addObject("sourceleadUrl", sourceleadUrl);
@@ -531,11 +567,14 @@ public class ProjectsController {
     
     
     @RequestMapping(value = "/viewResourceRequest")
-	public ModelAndView viewResourceRequest(@RequestParam(value="requestUUID", required=true) String requestUUID,@RequestParam(value="projectUUID", required=true) String projectUUID,HttpServletRequest request) throws Exception {
+	public ModelAndView viewResourceRequest(@RequestParam(value="requestUUID", required=true) String requestUUID,
+			@RequestParam(value="projectUUID", required=true) String projectUUID,
+			@RequestParam(value="projectClientUUID", required=true) String projectClientUUID,HttpServletRequest request) throws Exception {
 	    
 	    ModelAndView model = new ModelAndView();
 		model.addObject("projectUUID", projectUUID);
 		model.addObject("requestUUID",requestUUID);
+		model.addObject("projectClientUUID",projectClientUUID);
 		
 		model.setViewName("project/viewResourceRequest");
 		model.addObject("sourceleadUrl", sourceleadUrl);

@@ -322,4 +322,18 @@ public class ProjectMembersHistoryDaoImpl implements ProjectMembersHistoryDao {
 		return pmh;
 	}
 
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Integer getProjectMemberHistoryCountByProjectClientId(Long projectClientId) throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		String query ="select count(*) from ProjectMembersHistory pmh where pmh.projectClientsId.id = :projectClientId and pmh.status = 'OPEN' ";
+		List<Long> favouriteCount = session.createQuery(query.toString()).setLong("projectClientId", projectClientId).list();
+			Integer count = 0;
+			if(favouriteCount != null && !favouriteCount.isEmpty()){
+					count = favouriteCount.get(0).intValue();
+			}
+			return count;
+	}
+
 }

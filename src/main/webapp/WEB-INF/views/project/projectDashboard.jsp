@@ -290,7 +290,7 @@ function projectsPagination(url,sourceleadUrl){
  		    		if(opt.projectMode != null && opt.projectMode == 'Draft'){
  		    			result = result +'<td data-title="Name"><div class="proj_show tbldata-dotdot_140"><a href="'+sourceleadUrl+'/project?projectUUID='+opt.projectUUID+'" class="pull-left"><span title="'+opt.projectName+'">'+opt.projectName+'</span></a><i class="fa fa-binoculars pull-right"></i></div></td>';
  		    		}else{
- 		    			result = result +'<td data-title="Name"><div class="proj_show tbldata-dotdot_140"><a href="'+sourceleadUrl+'/projectSummary?projectUUID='+opt.projectUUID+'" class="pull-left"><span title="'+opt.projectName+'">'+opt.projectName+'</span></a><i class="fa fa-binoculars pull-right"></i></div></td>';
+ 		    			result = result +'<td data-title="Name"><div class="proj_show tbldata-dotdot_140"><a href="'+sourceleadUrl+'/projectSummary?projectUUID='+opt.projectUUID+'&projectClientUUID='+opt.projectClientUUID+'" class="pull-left"><span title="'+opt.projectName+'">'+opt.projectName+'</span></a><i class="fa fa-binoculars pull-right"></i></div></td>';
  		    		}
 	    		  '</sec:authorize>';
             	  

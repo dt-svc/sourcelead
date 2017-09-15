@@ -2020,6 +2020,8 @@ public void userEmailToAdmin(StringBuilder tempHTML, OrgLocations orgLocations,U
 	 			projects.setProjectClients(projectClientsList);
 			 	
 			 	Projects updatedProjects = saveProject(projects);
+			 	ProjectClients projectClients = projectClientService.getProjectClientsByProjectIdAndOrgLocationIdAndOrgRelationId(projects.getId(), loginOrgLocation.getId(), orgRelations.getId());
+			 	updatedProjects.setProjectClientUUID(projectClients.getUuid());
 				saveOrUpdateProjectElkDocument(updatedProjects);
 			    return updatedProjects;
 			}
