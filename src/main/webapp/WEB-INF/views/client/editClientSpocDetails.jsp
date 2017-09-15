@@ -34,7 +34,7 @@
 						'</sec:authorize>';
 							
 							result = result + '<div class="project_details_cta">';
-								result = result + '<strong>Spoc Name:</strong>';
+								result = result + '<strong>Name:</strong>';
 								if(json.spocName !=null && json.spocName !='' && json.spocName !='undefined'){
 									result = result + '<span title='+json.spocName+'>'+json.spocName+'</span>';
 								}
@@ -231,7 +231,7 @@
 						result = result + '<input type="hidden"  id="existingSpocUserId" name="existingSpocUserId" value="'+json.tempSpocId+'">';
 						
 						result = result + ' <div class="user_summary_edit_cta" >';
-						result = result + '<label>Spoc Status :</label>';
+						result = result + '<label>Status :</label>';
 						if(json.invitationStatus == 'Rejected'){
 		        			result = result + '<span>'+json.spocStatus+'</span>';
 		        		}else{
