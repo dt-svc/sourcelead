@@ -1,5 +1,11 @@
 package com.bis.sourcelead.payroll.dao.impl;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
@@ -46,7 +52,7 @@ public class EmployerPayrollCostDaoImpl implements EmployerPayrollCostDao{
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public ResponseList<EmployerPayrollCost> loadEmployerPayrollCostByOrgLocationId(OrgLocations orgLocation,EmployerPayrollCostDTO employerPayrollCostDTO) {
+	public ResponseList<EmployerPayrollCost> loadEmployerPayrollCostByOrgLocationId(OrgLocations orgLocation,EmployerPayrollCostDTO employerPayrollCostDTO) throws Exception {
 		/*Session session = this.sessionFactory.getCurrentSession();
 		List<EmployerPayrollCost> empCostList = null;
 		String query = "from EmployerPayrollCost empPayroll  left join fetch empPayroll.orgLocationId where empPayroll.orgLocationId.id =:orgLocationId";
@@ -63,6 +69,22 @@ public class EmployerPayrollCostDaoImpl implements EmployerPayrollCostDao{
 		String query = "from EmployerPayrollCost epc  left join fetch epc.orgLocationId where epc.orgLocationId.id =:orgLocationId";
 		String countQuery = "from EmployerPayrollCost epc  where epc.orgLocationId.id =:orgLocationId";
 		
+		if(employerPayrollCostDTO.getSearchValue().contains("/") || employerPayrollCostDTO.getSearchValue().contains("-")){
+			String convertedDate=employerPayrollCostDTO.getSearchValue();
+			if(employerPayrollCostDTO.getSearchValue().contains("/")){
+				convertedDate = employerPayrollCostDTO.getSearchValue().replaceAll("/", "-");
+			}
+			DateTimeFormatter orgFormat = new DateTimeFormatterBuilder().appendPattern(orgLocation.getDateFormat()).toFormatter();
+            LocalDate parsedDate = LocalDate.parse(convertedDate, orgFormat);
+            DateTimeFormatter f2 = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+            String newDate = parsedDate.format(f2);
+            Date searchDate = new SimpleDateFormat("yyyy-MM-dd").parse(newDate);
+            java.sql.Date sqlDate = new java.sql.Date(searchDate.getTime());
+            String queryDate = "from EmployerPayrollCost epc where epc.orgLocationId.id =:orgLocationId and ( epc.fromDate =:sqlDate or epc.toDate =:sqlDate )";
+            Query queryObjDate = session.createQuery(queryDate.toString()).setDate("sqlDate", sqlDate).setLong("orgLocationId", orgLocation.getId());
+            response.setData(queryObjDate.list());
+
+		}else{
 		StringBuilder query1 = new StringBuilder("");
 			if(employerPayrollCostDTO.getSearchValue() !=null && !"".equalsIgnoreCase(employerPayrollCostDTO.getSearchValue())) {
 			query1.append(" and epc.fromDate like '%" + employerPayrollCostDTO.getSearchValue() + "%' ")
@@ -105,6 +127,7 @@ public class EmployerPayrollCostDaoImpl implements EmployerPayrollCostDao{
 		}
 
 			response.setData(employerPayrollCostList);
+		}
 			return response;
 	}
 

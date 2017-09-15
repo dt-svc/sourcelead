@@ -165,7 +165,6 @@ function prepareAllCounts(requirementId){
 
 <script>
 function allApplicantsCount(requirementId){
-	var sourceleadUrl = '${sourceleadUrl}';
 	 $.ajax({
        type : "POST",
         url: sourceleadUrl+"/getSubmissionsCountBySubmissionStatus?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&submissionType=APPLICANTS",        
@@ -179,7 +178,6 @@ function allApplicantsCount(requirementId){
 
 <script>
 function duplicateCount(requirementId){
-	var sourceleadUrl = '${sourceleadUrl}';
 	  $.ajax({
       type : "POST",
        url: sourceleadUrl+"/getDuplicateSubmissionsCountByRequirementId?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId,        
@@ -193,7 +191,6 @@ function duplicateCount(requirementId){
 
 <script>
 function requestSentCount(requirementId){
-	var sourceleadUrl = '${sourceleadUrl}';
 	 $.ajax({
       type : "POST",
        url: sourceleadUrl+"/getSubmissionsCountBySubmissionStatus?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&submissionType=REQUESTSENT",        
@@ -207,7 +204,6 @@ function requestSentCount(requirementId){
 
 <script>
 function shortListCount(requirementId){
-	var sourceleadUrl = '${sourceleadUrl}';
 	 $.ajax({
      type : "POST",
       url: sourceleadUrl+"/getSubmissionsCountBySubmissionStatus?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&submissionType=SHORTLISTED",        
@@ -221,7 +217,6 @@ function shortListCount(requirementId){
 
 <script>
 function submitToClientCount(requirementId){
-	var sourceleadUrl = '${sourceleadUrl}';
 	$.ajax({
      type : "POST",
      url: sourceleadUrl+"/getSubmissionsCountBySubmissionStatus?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&submissionType=SUBMIT_TO_CLIENT",        
@@ -235,7 +230,6 @@ function submitToClientCount(requirementId){
 
 <script>
 function interviewsCount(requirementId){
-	var sourceleadUrl = '${sourceleadUrl}';
 	$.ajax({
       type : "POST",
       url: sourceleadUrl+"/getSubmissionsCountBySubmissionStatus?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&submissionType=INTERVIEWED",        
@@ -249,7 +243,6 @@ function interviewsCount(requirementId){
 
 <script>
 function offerMadeCount(requirementId){
-	var sourceleadUrl = '${sourceleadUrl}';
 	$.ajax({
       type : "POST",
       url: sourceleadUrl+"/getSubmissionsCountBySubmissionStatus?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&submissionType=OFFERED",        
@@ -263,7 +256,6 @@ function offerMadeCount(requirementId){
 
 <script>
 function rejectedCount(requirementId){
-	var sourceleadUrl = '${sourceleadUrl}';
 	$.ajax({
       type : "POST",
       url: sourceleadUrl+"/getSubmissionsCountBySubmissionStatus?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&submissionType=REJECTED",        
@@ -277,7 +269,6 @@ function rejectedCount(requirementId){
 
 <script>
 function backoutCount(requirementId){
-	var sourceleadUrl = '${sourceleadUrl}';
 	$.ajax({
       type : "POST",
       url: sourceleadUrl+"/getSubmissionsCountBySubmissionStatus?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&submissionType=BACKOUT",        
@@ -579,7 +570,6 @@ function openTopDiv(){
 
 <script>
 function sideBar(requirementId,type){
-	var sourceleadUrl ='${sourceleadUrl}';
 	  var clientSubmissions = '${clientSubmissions}';
 	  var isSpocActive = '${isSpocActive}';
 	  
@@ -1064,8 +1054,6 @@ function activeTab(){
 <script>  
 function requirementDetails(requirementId,data){ 
 	$("#actionsDiv" ).hide();
-	  var sourceleadUrl = '${sourceleadUrl}';
-	  
 	  var isLoginUserAsTeamMember = '${isTeamMember}';
 	  var isLoginUserAsManager = '${isManager}';
 	  var isLoginUserAsAdmin = '${isAdmin}';
@@ -1165,7 +1153,7 @@ function requirementDetails(requirementId,data){
 				            result = result +'       <div class="clearfix"></div>';
 				            result = result +'     </div>';
 			            if(json.fileName != null && json.fileName != '' && json.fileName != 'undefined'){
-				            	result = result +'<div class="require_wrap_details_cta require_wrap_details_view require_uploadfile "><b>Attachment:</b><span>'+json.fileName+'</span><a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadRequirementAttachment?requirementId='+json.id+'\"></a><a class="fa fa-eye ml10" onclick="viewJobSummaryDocument(\''+json.id+'\',\''+json.fileName+'\')"></a> ';
+				            	result = result +'<div class="require_wrap_details_cta require_wrap_details_view require_uploadfile "><b>Attachment:</b><span>'+json.fileName+'</span><a class="glyphicon glyphicon-download-alt" href=\"'+json.fileURL+'\"></a><a class="fa fa-eye ml10" onClick="viewFile(\''+json.fileURL+'\',\''+json.fileName+'\',\''+json.fileContentType+'\');"></a> ';
 				            }
 				            else{
 				            result = result +'<div class="require_wrap_details_cta"> <b>Attachment:</b> <span> -- </span>';	
@@ -1414,7 +1402,6 @@ function requirementDetails(requirementId,data){
 </script>
 <script>
 function viewJobSummaryDocument(jobId,title){
-	 var sourceleadUrl ='${sourceleadUrl}';
 		if(jobId != null && jobId != ""){
 			window.open(sourceleadUrl+'/viewJobSummaryDocumentDocView/'+title+'?jobId='+jobId,title,"height=600,width=600");
 		}  
@@ -1432,7 +1419,6 @@ function viewJobSummaryDocument(jobId,title){
 <script>
 function updateReuqirementStatus(status){
 	
-	var sourceleadUrl = '${sourceleadUrl}';
 	var requirementId = '${requirementId}';
 	 var isLoginUserAsAdmin = '${isAdmin}';
 	 
@@ -1510,7 +1496,6 @@ function rejectRequirementAlertMessage(status){
 <script>
 function updateReuqirementStatusReject(status){
 	
-	var sourceleadUrl = '${sourceleadUrl}';
 	var requirementId = '${requirementId}';
 	var isLoginUserAsAdmin = '${isAdmin}';
 	 
@@ -1575,7 +1560,6 @@ function updateReuqirementStatusReject(status){
 function requirementPipeline(requirementId,submissionType){
 	$("#actionsDiv" ).show();
 	
-	  var sourceleadUrl = '${sourceleadUrl}';
 	  var clientSubmissions = '${clientSubmissions}';
 	  var isSpocActive = '${isSpocActive}';
 	  var orgLocationId = '${SourceLeadWeb_orgLocationId}';
@@ -1905,7 +1889,6 @@ function requirementPipeline(requirementId,submissionType){
 
 <script>
 function viewResumeRequirementSummary(resumeUUID,title){
-	var sourceleadUrl ='${sourceleadUrl}';
 	if(resumeUUID != null && resumeUUID != ""){
 		window.open(sourceleadUrl+'/viewProfessionalCandidateResume/'+title+'?resumeUUID='+resumeUUID,title,"height=600,width=600");
 	}  
@@ -1934,7 +1917,6 @@ function documentpagination(){
 <!-- script for Duplicate Applicants --> 
 <script>  
 function requirementPipelineDA(requirementId,submissionType){
-	  var sourceleadUrl = '${sourceleadUrl}';
 	  var clientSubmissions = '${clientSubmissions}';
 	  var isSpocActive = '${isSpocActive}';
 	  var orgLocationId = '${SourceLeadWeb_orgLocationId}';
@@ -2222,7 +2204,6 @@ function documentpaginationDA(){
 <!-- Script for Request Sent List -->
 <script>  
 function requirementPipelineRS(requirementId,submissionType){
-	  var sourceleadUrl = '${sourceleadUrl}';
 	  var clientSubmissions = '${clientSubmissions}';
 	  var isSpocActive = '${isSpocActive}';
 	  var orgLocationId = '${SourceLeadWeb_orgLocationId}';
@@ -2502,7 +2483,6 @@ function documentpaginationRS(){
 <!-- Script for Short List -->
 <script>  
 function requirementPipelineSL(requirementId,submissionType){
-	var sourceleadUrl = '${sourceleadUrl}';
 	  var clientSubmissions = '${clientSubmissions}';
 	  var isSpocActive = '${isSpocActive}';
 	  var orgLocationId = '${SourceLeadWeb_orgLocationId}';
@@ -2793,7 +2773,6 @@ function documentpaginationSL(){
 <!-- script for Submit to client -->
 <script>  
 function requirementPipelineSC(requirementId,submissionType){
-	  var sourceleadUrl = '${sourceleadUrl}';
 	  var clientSubmissions = '${clientSubmissions}';
 	  var isSpocActive = '${isSpocActive}';
 	  var orgLocationId = '${SourceLeadWeb_orgLocationId}';
@@ -3061,7 +3040,6 @@ function documentpaginationSC(){
 <!-- script for Interviews List -->
 <script>  
 function requirementPipelineIN(requirementId,submissionType){
-	  var sourceleadUrl = '${sourceleadUrl}';
 	  var clientSubmissions = '${clientSubmissions}';
 	  var isSpocActive = '${isSpocActive}';
 	  
@@ -3242,7 +3220,6 @@ function documentpaginationIN(){
 <!-- script for offers List -->
 <script>  
 function requirementPipelineOffer(requirementId,submissionType){
-	  var sourceleadUrl = '${sourceleadUrl}';
 	  var clientSubmissions = '${clientSubmissions}';
 	  var isSpocActive = '${isSpocActive}';
 	  
@@ -3427,7 +3404,6 @@ function requirementPipelineOffer(requirementId,submissionType){
 
 <script>
 function viewOfferDocument(offerID,title){
-	var sourceleadUrl ='${sourceleadUrl}';
 	if(offerID != null && offerID != ""){
 		window.open(sourceleadUrl+'/viewOfferDocumentDocView/'+title+'?offerID='+offerID,title,"height=600,width=600");
 	}  
@@ -3455,7 +3431,6 @@ function documentpaginationOffer(){
 
 <script>  
 function requirementPipelineRejected(requirementId,submissionType){
-	  var sourceleadUrl = '${sourceleadUrl}';
 	  var clientSubmissions = '${clientSubmissions}';
 	  var isSpocActive = '${isSpocActive}';
 	  var orgLocationId = '${SourceLeadWeb_orgLocationId}';
@@ -3722,7 +3697,6 @@ function documentpaginationRejected(){
 
 <script>  
 function requirementPipelineBackout(requirementId,submissionType){
-	  var sourceleadUrl = '${sourceleadUrl}';
 	  var clientSubmissions = '${clientSubmissions}';
 	  var isSpocActive = '${isSpocActive}';
 	  var orgLocationId = '${SourceLeadWeb_orgLocationId}';
@@ -4103,7 +4077,6 @@ function cancelRejectApplicant(submissionId,requirementId,submissionType){
 <script>
 function saveRejectApplicantReason(submissionId,requirementId,submissionType){
 	if ($('#rejected_form').validate(false, validationSettings)) {
-		var sourceleadUrl = '${sourceleadUrl}';
 		var frm = $('#rejected_form').serializeFormJSON();
 		var con = JSON.stringify(frm);
 		con = con.replace(/[{}]/g, "");
@@ -4137,7 +4110,6 @@ $('body').on('blur', '#rejected_form', function() {
 </script>
 <script>
 function backOutApplicant(submissionId,requirementId,submissionType){
-	var sourceleadUrl = '${sourceleadUrl}';
 		$.ajax({
 		   	type: "POST",
 		    url: sourceleadUrl+"/backoutApplicant?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId,	    	   
@@ -4150,7 +4122,6 @@ function backOutApplicant(submissionId,requirementId,submissionType){
 
 <script>
 function requirementSubmissionCount(requirementId){  
-	var sourceleadUrl = '${sourceleadUrl}';
 	 $.ajax({
         type : "POST",
          url: sourceleadUrl+"/getSubmissionsCountBySubmissionStatus?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId,        
@@ -4235,7 +4206,6 @@ function filterReqBackout(requirementId,submissionType){
 --%>
 <script>  
 function assignedMemberList(requirementId){
-	  var sourceleadUrl = '${sourceleadUrl}';
 	  $.ajax({
         type : "POST",
          url: sourceleadUrl+"/getRequirementAssignedListByRequirementId?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId,        
@@ -4421,7 +4391,6 @@ function reqNotes(requirementId){
 	var urlForm = "";
 	    urlForm = "/getRequirementNotes?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId;
 		
-	var sourceleadUrl ='${sourceleadUrl}';
 	  $.ajax({
         type : "POST",
          url: sourceleadUrl+urlForm,        
@@ -4497,7 +4466,6 @@ function reqNotes(requirementId){
 	      	    var locationCode ='${SourceLeadWeb_locationCode}'; 
 	      	    formData.append("locationCode",locationCode);
 	      	    
-				var sourceleadUrl = '${sourceleadUrl}';
 				$("#save_note").attr("disabled", "disabled");
          		$("#save_note" ).addClass('button').val('Processing..');
 		        var jsonData = encodeURIComponent(con);
@@ -4532,7 +4500,6 @@ function reqNotes(requirementId){
 <script type="text/javascript">
 function requirementRecommendations(requirementId){
 	$("#actionsDiv" ).hide();
-	var sourceleadUrl = '${sourceleadUrl}';
 	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	$("#recommendationsLoading").attr('style','position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	
@@ -4829,7 +4796,6 @@ function requirementRecommendations(requirementId){
 
 <script>
 function viewAssociateCandidateResumeDocView(candidateId,title){
-	var sourceleadUrl ='${sourceleadUrl}';
 	if(candidateId != null && candidateId != ""){
 		window.open(sourceleadUrl+'/viewAssociateCandidateResumeDocView/'+title+'?candidateId='+candidateId,title,"height=600,width=600");
 	}  
@@ -4877,7 +4843,6 @@ function popClose(){
 <script>
 var candidateStatusGlobal ="";
 function clientSideBar(candidateId,recScore){
-	var sourceleadUrl ='${sourceleadUrl}';
 	  $.ajax({
           type : "POST",
            url: sourceleadUrl+"/getCandidateById?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,        
@@ -5310,7 +5275,6 @@ $('.edit-status').toggle();
 
 <script>
 function getRateListDiv(submissionId, candidateId){
-	  var sourceleadUrl ='${sourceleadUrl}';
 	  var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	  
 	  var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
@@ -5561,7 +5525,6 @@ function getRateListDiv(submissionId, candidateId){
 <script type="text/javascript">
 	function proposeNewRate(submissionId, candidateId) {
 		 if ($('#rate_form').validate(false, validationSettings)){
-			var sourceleadUrl ='${sourceleadUrl}';
 			var frm = $('#rate_form').serializeFormJSON();
 			var con = JSON.stringify(frm);
 			con = con.replace(/[{}]/g, "");
@@ -5590,7 +5553,6 @@ function getRateListDiv(submissionId, candidateId){
 	function acceptRejectRate(submissionId,status) {
 		$("#loading").empty();
 		$("#loading").prepend('<i class="fa fa-cog fa-spin"></i>');
-			var sourceleadUrl ='${sourceleadUrl}';
 			$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 			$.ajax({
 			type: "POST",
@@ -5634,7 +5596,6 @@ function closeratediv(){
 <script>
 function exportPipelineToExcel(requirementId,submissionType){
 	$('.export_pipline').hide();
-	  var sourceleadUrl = '${sourceleadUrl}';
 	  var clientSubmissions = '${clientSubmissions}';
 	  var emptypilpeline = $("#emptyPipelinelist").val();
       if(emptypilpeline > 0 ){
@@ -5660,7 +5621,6 @@ function exportPipelineToExcel(requirementId,submissionType){
  <script>
 function exportPipelineToPdf(requirementId,submissionType){
 	$('.export_pipline').hide();
-	  var sourceleadUrl = '${sourceleadUrl}';
 	  var clientSubmissions = '${clientSubmissions}';
 	  var emptypilpeline = $("#emptyPipelinelist").val();
 	  if(emptypilpeline > 0 ){
@@ -5705,7 +5665,6 @@ function cancel(){
 <script type="text/javascript">
 function customizeScore(requirementId){
 	$("#customizeScoreDiv").show();
-	var sourceleadUrl = '${sourceleadUrl}';
 	 $.ajax({
 		   	type: "GET",
 		    url: sourceleadUrl+"/getCustomizeScore?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId, 	   
@@ -6384,7 +6343,6 @@ function updateCutomize(requirementId){
     var educationScore = parseInt($("#educationScore").val());
     var visaTypwScore = parseInt($("#visaTypeScore").val());
     var totalscore = (skillPerc+expPerc+noticePerc+ratePerc+locationScore+kewordsPerc+educationScore+visaTypwScore);
-    var sourceleadUrl = '${sourceleadUrl}';
     
     if(totalscore>100){
         var result = "";
@@ -6497,7 +6455,6 @@ function recommendationAlertMessage(message,candidateId){
 
 <script>
 function refreshImageBlock(candidateId){   
-	var sourceleadUrl ='${sourceleadUrl}';
 	  $.ajax({
           type : "POST",
            url: sourceleadUrl+"/getCandidateById?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,        
@@ -6564,7 +6521,6 @@ function deleteImage(candidateId){
 
 <script type="text/javascript">
 function deleteProfileImage(candidateId){   
-	var sourceleadUrl ='${sourceleadUrl}';
 	var loginUserId = '${SourceLeadWeb_userId}';
 	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	 $.ajax({
@@ -6605,7 +6561,6 @@ function saveCandidateImage(candidateId){
   			    
   		        var jsonData = encodeURIComponent(con);
           		
-          		var sourceleadUrl ='${sourceleadUrl}';
           		var loginUserId = '${SourceLeadWeb_userId}';
           		var orgLocationId = '${SourceLeadWeb_orgLocationId}';
           		var form = $('#candidate_form')[0];

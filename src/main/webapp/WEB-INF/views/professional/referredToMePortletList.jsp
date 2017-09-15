@@ -109,7 +109,6 @@ function portletListFilter(requirementStatus){
    
 <script type="text/javascript">
   function professionalDashboardPortletListCounts(startDate,endDate,requirementStatus){
-	  var sourceleadUrl = '${sourceleadUrl}';
 	  $.ajax({ 
 		   	type: "GET",
 			url: sourceleadUrl+"/getJobSummaryPortlets?${_csrf.parameterName}=${_csrf.token}&startDate="+startDate+"&endDate="+endDate,
@@ -139,7 +138,6 @@ function portletListFilter(requirementStatus){
             
   <script type="text/javascript">
   function professionalDashboardPortletList(startDate,endDate,requirementStatus){
-	  var sourceleadUrl = '${sourceleadUrl}';
 	  $.ajax({ 
 		   	type: "GET",
 		   	url: sourceleadUrl+"/getJobSummaryPortletsList?${_csrf.parameterName}=${_csrf.token}&startDate="+startDate+"&endDate="+endDate+"&requirementStatus="+requirementStatus,

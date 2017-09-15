@@ -398,21 +398,16 @@
 		
 		 if ($('#addcandidate_form').validate(false, validationSettings)){ 
 			 var candidateId = '${candidateId}'
-			var sourceleadUrl = '${sourceleadUrl}';
 			var form = $('#addcandidate_form')[0];
       		var formData = new FormData(form);
 			//It will escape all the special characters
 			$("#store_candidate").attr("disabled", "disabled");
 			$("#store_candidate").addClass('button').val('Processing..');
-
 			$.ajax({
 						type : "POST",
 		        	    data: formData,
-		        	    contentType : 'application/json; charset=utf-8',
-		        	    enctype: 'multipart/form-data',
 		    	        processData: false,
 		    	        contentType:false,
-		        	    dataType : 'json',
 		        	    url : sourceleadUrl+"/storeProfessionalParseCandidate?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,
 						success : function(result) {
 								location.replace(sourceleadUrl+"/professionalProfile");
@@ -489,7 +484,6 @@ function validate_fileupload(fileName)
 		    chosen = select.data('chosen');
 		    
 		    $("#candidateSkills").chosen().change(function(event) {
-		    	 var sourceleadUrl ='${sourceleadUrl}';
 		    	var allSkills = $(event.target).val();
 		   
 		    	
@@ -578,7 +572,6 @@ function validate_fileupload(fileName)
  function validateCandidateEmail() {
 	 var email = document.getElementById("email").value; 
 	 $('#emailDiv').find('p.jquery_form_error_message').remove();
-	 var sourceleadUrl ='${sourceleadUrl}';
 	 if(email != null && email != ""){
 		
 		 $.ajax({
@@ -673,7 +666,6 @@ function getDesignationType(designationType){
 
 <!-- This script for Current Rate ,Rate Type,Expected Rate, Expected Rate Type validation checks -->
 <script>
-var sourceleadUrl ='${sourceleadUrl}';
 function rateValidations(){
 var rateType = document.getElementById("rateType").value; 
 if(rateType != null && rateType != ""){

@@ -106,7 +106,6 @@ function portletListFilter(requirementStatus){
    
 <script type="text/javascript">
   function recruiterDashboardPortletListCounts(startDate,endDate,requirementStatus){
-	  var sourceleadUrl = '${sourceleadUrl}';
 	  $.ajax({ 
 		   	type: "GET",
 			url: sourceleadUrl+"/getRecruiterSubmttedJobSummaryPortlets?${_csrf.parameterName}=${_csrf.token}&startDate="+startDate+"&endDate="+endDate,
@@ -135,7 +134,6 @@ function portletListFilter(requirementStatus){
             
   <script type="text/javascript">
   function recruiterDashboardPortletList(startDate,endDate,requirementStatus){
-	  var sourceleadUrl = '${sourceleadUrl}';
 	  var locationCode ='${SourceLeadWeb_locationCode}'; 
 	  $.ajax({ 
 		   	type: "GET",

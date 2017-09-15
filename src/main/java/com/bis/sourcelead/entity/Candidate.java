@@ -405,6 +405,7 @@ public class Candidate implements Serializable{
 	 private String generatedId;
 
 	 @Transient
+	 @JsonProperty
 	 private int profilePercentage;
 	 
 	 @Transient
