@@ -45,7 +45,6 @@
  
 <script>
 var isAssociate = 'Y';
-var sourceleadUrl = "${sourceleadUrl}";
 var _csrfParam = '${_csrf.parameterName}';
 var _csrfToken = '${_csrf.token}';
 var associateFlag = false;
@@ -85,7 +84,6 @@ name2Flag = true;
 <script>
 var candidateStatusGlobal ="";
 function candidateSideBar(candidateId){
-	  var sourceleadUrl ='${sourceleadUrl}';
 	  var loginUserId = '${SourceLeadWeb_userId}';
 	  var candidateType = "Associates";
 	  $.ajax({
@@ -518,10 +516,7 @@ function saveCandidateImage(candidateId){
           		var frm = $('#candidate_form').serializeFormJSON();
               	var con = JSON.stringify(frm);
   			    con = con.replace(/[{}]/g, ""); 
-  			    
   		        var jsonData = encodeURIComponent(con);
-          		
-          		var sourceleadUrl ='${sourceleadUrl}';
           		var loginUserId = '${SourceLeadWeb_userId}';
           		var orgLocationId = '${SourceLeadWeb_orgLocationId}';
           		var form = $('#candidate_form')[0];
@@ -606,7 +601,6 @@ function deleteImage(candidateId){
 --%>
 <script type="text/javascript">
 function deleteProfileImage(candidateId){   
-	var sourceleadUrl ='${sourceleadUrl}';
 	var loginUserId = '${SourceLeadWeb_userId}';
 	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	 $.ajax({
@@ -630,7 +624,6 @@ function deleteProfileImage(candidateId){
 --%>
 <script>
 function refreshImageBlock(candidateId){   
-	  var sourceleadUrl ='${sourceleadUrl}';
 	  $.ajax({
           type : "POST",
            url: sourceleadUrl+"/getCandidateById?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,        
@@ -686,8 +679,6 @@ function refreshImageBlock(candidateId){
 function addFavourite(candidateId){
 	
 	var checked = document.getElementById("fav"+candidateId).checked;
-	var sourceleadUrl = '${sourceleadUrl}';
-	
 	
 	 	$.ajax({
 			type : "POST",
@@ -1368,7 +1359,6 @@ $('input:checkbox:not(#checkAll)').click(function() {
 <script>
 function exportToPdf(){
 	var isCandidatesAvailable= $("#noCandidates").val();
-	 var sourceleadUrl ='${sourceleadUrl}';
 	  var candFilterRadio = $('input[name=candidateStatus]');
 	  var candidateStatus = candFilterRadio.filter(':checked').val();
 	  if(candidateStatus == 1){
@@ -1409,7 +1399,6 @@ function candidtaeCancel(){
 <script>
 function exportToExcel(){
 	var isCandidatesAvailable= $("#noCandidates").val();
-	 var sourceleadUrl ='${sourceleadUrl}';
 	  var candFilterRadio = $('input[name=candidateStatus]');
 	  var candidateStatus = candFilterRadio.filter(':checked').val();
 	  if(candidateStatus == 1){
@@ -1490,7 +1479,6 @@ function closeComment(){
 				con = con.replace(/[{}]/g, "");
 				var form = $('#candidateComments_form')[0];
 	      		var formData = new FormData(form); 
-				var sourceleadUrl = '${sourceleadUrl}';
 				$("#submit_comment").attr("disabled", "disabled");
          		$("#submit_comment" ).addClass('button').val('Processing..');
 				//It will escape all the special characters
@@ -1536,7 +1524,6 @@ function closeComment(){
 
 <script>
 function savedCommentAndCount(candidateId){
-	var sourceleadUrl ='${sourceleadUrl}';
 	  $.ajax({
         type : "POST",
          url: sourceleadUrl+"/getAllCommentsOnCandidateByCandidateIdAndOrgLocation?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,        
