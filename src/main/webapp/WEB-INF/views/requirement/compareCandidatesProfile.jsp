@@ -14,24 +14,37 @@ z-index:9999 !important;
 
 <script>
 function compareRecommendedUsers(requirementId){
+	
+	var candlist = JSON.parse($("#compareCandListMap").val());
 	var sourceleadUrl = '${sourceleadUrl}';
 	var locationId = '${SourceLeadWeb_orgLocationId}';
-	$("#loading").attr('style','position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-	 $.ajax({
-	    	type: "GET",
-	        url: sourceleadUrl+"/getCandidatesToCompare?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&orgLocationId="+locationId,
-	        success: function(data) {
-	        	compareRecommendedUsersdiv(data,requirementId);
-	        	$("#loading").removeAttr('style');
-	        }
+	
+	var complist = [];
+	 var oTable = $('#recommendationTable').dataTable();
+	 var rowcollection =  oTable.$("input[name='compareCandi']:checked", {"page": "all"});
+	 rowcollection.each(function(index,elem){
+		 complist[index] = $(elem).val();
 	 });
 	
+	if(complist.length == 4){
+		$("#loading").attr('style','position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		 $.ajax({
+		    	type: "GET",
+		        url: sourceleadUrl+"/getCandidatesToCompare?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&orgLocationId="+locationId+"&candidatesSelected="+complist,
+		        success: function(data) {
+		        	compareRecommendedUsersdiv(data,requirementId,candlist);
+		        	$("#loading").removeAttr('style');
+		        }
+		 });
+	}else{
+		alert("Please select atleast 4 Candidates to Compare")
+	}
 }
 </script>
 
 
 <script>
-function compareRecommendedUsersdiv(data,requirementId){
+function compareRecommendedUsersdiv(data,requirementId,candidateList){
 	var sourceleadUrl = '${sourceleadUrl}';
 	
 	var jobId = "";
@@ -57,21 +70,21 @@ function compareRecommendedUsersdiv(data,requirementId){
     if(data.jobLocation != null && data.jobLocation != '' && data.jobLocation != 'undefined'){
     	jobLocation = data.jobLocation;
     }else{
-    	jobLocation = "---";
+    	jobLocation = "NA";
     }
     
     var jobNoticePeriod = "";
     if(data.jobNoticePeriod != null && data.jobNoticePeriod != '' && data.jobNoticePeriod != 'undefined'){
     	jobNoticePeriod = data.jobNoticePeriod;
     }else{
-    	jobNoticePeriod = "---";
+    	jobNoticePeriod = "NA";
     }
 
     var jobEducation = "";
     if(data.jobEducation != null && data.jobEducation != '' && data.jobEducation != 'undefined'){
     	jobEducation = data.jobEducation;
     }else{
-    	jobEducation = "---";
+    	jobEducation = "NA";
     }
     
     var jobVisa = "";
@@ -178,7 +191,7 @@ function compareRecommendedUsersdiv(data,requirementId){
 	$("#candidateCompare").empty();
 	$("#candidateCompare").append(result);
 	prepareCandidateGrid(data,requirementId);
-	prepareCompareCandidateList(data.candidateList);
+	prepareCompareCandidateList(candidateList);
 	
 	$("#compareCandidateList1").chosen();
 	$("#compareCandidateList2").chosen();
@@ -195,31 +208,17 @@ function compareRecommendedUsersdiv(data,requirementId){
 function prepareCompareCandidateList(candidateList){
 	var output = "";
     output = output + "<option value=''>--Select Candidate--</option>"; 
-    	for (var i=0; i<candidateList.length; i++){
-    		var opt = candidateList[i];
-    		if(opt.isCandidateSubmitted == 'N'){
-    			var firstName ="";
-    	    	if(opt.firstName != null && opt.firstName != '' && opt.firstName != 'undefined'){
-    		    	 firstName = opt.firstName;
-    		    } 
-    	    	var lastName = "";
-    		    if(opt.lastName != null && opt.lastName != '' && opt.lastName != 'undefined'){
-    		    	lastName = opt.lastName;
-    		    }
-       			output = output + "<option value='" +opt.candidateId+ "'>"+firstName+" "+lastName+"</option>";
-    		}
-		}
-    	
-    	$("#compareCandidateList1").empty();
-    	$("#compareCandidateList2").empty();
-    	$("#compareCandidateList3").empty();
-    	$("#compareCandidateList4").empty();
-    	$("#compareCandidateList1").append(output);
-    	$("#compareCandidateList2").append(output);
-    	$("#compareCandidateList3").append(output);
-    	$("#compareCandidateList4").append(output);
-    	
-    	
+    $.each(candidateList, function(key, value) {
+    	output = output + "<option value='" +key+ "'>"+value+"</option>";
+    });
+   	$("#compareCandidateList1").empty();
+   	$("#compareCandidateList2").empty();
+   	$("#compareCandidateList3").empty();
+   	$("#compareCandidateList4").empty();
+   	$("#compareCandidateList1").append(output);
+   	$("#compareCandidateList2").append(output);
+   	$("#compareCandidateList3").append(output);
+   	$("#compareCandidateList4").append(output);
 }
 </script>
 
@@ -235,19 +234,19 @@ function prepareCandidateGrid(data,requirementId){
 			    	if(report.firstName != null && report.firstName != '' && report.firstName != 'undefined'){
 				    	 firstName = report.firstName;
 				    }else{
-				    	 firstName = "---";
+				    	 firstName = "";
 				    } 
 			    	var lastName = "";
 				    if(report.lastName != null && report.lastName != '' && report.lastName != 'undefined'){
 				    	lastName = report.lastName;
 				    }else{
-				    	lastName = "---";
+				    	lastName = "";
 				    } 
 			    	var primarySkill = "";
 				    if(report.primarySkill != null && report.primarySkill != '' && report.primarySkill != 'undefined'){
 				    	primarySkill = report.primarySkill;
 				    }else{
-				    	primarySkill = "---";
+				    	primarySkill = "NA";
 				    }
 			    	var rate ="";
 				    if((report.expectedRate != null && report.expectedRate != '' && report.expectedRate != 'undefined') && (report.rateType != null && report.rateType != '' && report.rateType != 'undefined')){
@@ -255,7 +254,7 @@ function prepareCandidateGrid(data,requirementId){
 				    }else if(report.expectedRate != null && report.expectedRate != '' && report.expectedRate != 'undefined'){
 				    	rate = report.expectedRate;
 				    }else{
-				    	rate = "---";
+				    	rate = "NA";
 				    }
 				    var totalExp = "";
 				    if((report.experienceYears != null && report.experienceYears != '' && report.experienceYears != 'undefined') && (report.experienceMonths != null && report.experienceMonths != '' && report.experienceMonths != 'undefined')){
@@ -263,19 +262,19 @@ function prepareCandidateGrid(data,requirementId){
 				    }else if(report.experienceYears != null && report.experienceYears != '' && report.experienceYears != 'undefined'){
 				    	totalExp = report.experienceYears + " Year(s)";
 				    }else{
-				    	totalExp = "---";
+				    	totalExp = "NA";
 				    }
 			    	var location ="";
 				    if(report.location != null && report.location != '' && report.location != 'undefined'){
 				    	location = report.location;
 				    }else{
-				    	location = "---";
+				    	location = "NA";
 				    } 
 			    	var noticePriod ="";
 				    if(report.noticePriod != null && report.noticePriod != '' && report.noticePriod != 'undefined'){
 				    	noticePriod = report.noticePriod;
 				    }else{
-				    	noticePriod = "---";
+				    	noticePriod = "NA";
 				    }
 			    	var candieducation = "---";
 				    if(report.education != null && report.education != '' && report.education != 'undefined'){
@@ -285,7 +284,7 @@ function prepareCandidateGrid(data,requirementId){
 			    	  	var minEdu = educ.slice(0,2);
 			    	  	candieducation = minEdu; 
 				    } 
-			    	var candivisaType = "---";
+			    	var candivisaType = "NA";
 				    if(report.visaType != null && report.visaType != '' && report.visaType != 'undefined'){
 				    	var visa = report.visaType;
 				    	var keyword = visa.toString();
@@ -361,7 +360,7 @@ function prepareCandidateGrid(data,requirementId){
 	    	    	opt = opt +'</ul>';
 	    	    	opt = opt +'<div class="comBtns mt10">';
 	    	    	if(report.currentResumeUUID != null && report.currentResumeUUID != '' && report.currentResumeUUID != 'undefined'){
-	    	    		opt = opt +'<button type="button" onClick="getCandiResume(\''+report.currentResumeUUID+'\',\''+report.currentResumeName+'\');" class="btn btn-sm btn-primary">View Resume</button>';
+	    	    		opt = opt +'<button type="button" onClick="viewFile(\'${sourceleadUrl}\',\''+report.fileUrl+'\',\''+report.currentResumeName+'\',\''+report.fileContentType+'\');" class="btn btn-sm btn-primary">View Resume</button>';
 	    	    	}
 	    	    	opt = opt +'<button type="button" onClick="submitRecomendedApplicant('+requirementId+','+report.candidateId+',\'compare\');" class="btn btn-sm btn-success">Add</button>';
 	    	    	opt = opt +'</div>';
@@ -440,14 +439,14 @@ function candidateDiv(report,div,requirementId){
 	   	if(report.firstName != null && report.firstName != '' && report.firstName != 'undefined'){
 	    	 firstName = report.firstName;
 	    }else{
-	    	 firstName = "NA";
+	    	 firstName = "";
 	    } 
 	   	
 	   	var lastName = "";
 	    if(report.lastName != null && report.lastName != '' && report.lastName != 'undefined'){
 	    	lastName = report.lastName;
 	    }else{
-	    	lastName = "NA";
+	    	lastName = "";
 	    } 
 	    
 	   	var primarySkill = "";
@@ -591,7 +590,7 @@ function candidateDiv(report,div,requirementId){
 	   opt = opt +'</ul>';
 	   opt = opt +'<div class="comBtns mt10">';
 	   if(report.resumeUUID != null && report.resumeUUID != '' && report.resumeUUID != 'undefined'){
-		   opt = opt +'<button type="button" onClick="getCandiResume(\''+report.resumeUUID+'\',\''+report.candidateResumeName+'\');" class="btn btn-sm btn-primary">View Resume</button>';   
+		   opt = opt +'<button type="button" onClick="viewFile(\'${sourceleadUrl}\',\''+report.fileUrl+'\',\''+report.candidateResumeName+'\',\''+report.fileContentType+'\');" class="btn btn-sm btn-primary">View Resume</button>';   
 	   }
 	   opt = opt +'<button type="button" onClick="submitRecomendedApplicant('+requirementId+','+report.id+',\'compare\');" class="btn btn-sm btn-success">Add</button>';
 	   opt = opt +'</div>';
@@ -646,10 +645,15 @@ $(function(){
 </script>
 
 <script type="text/javascript">
-function getCandiResume(uuid,title){
+function getCandiResume(fileURL,docFileName,fileType){
     var sourceleadUrl ='${sourceleadUrl}';
 	if(uuid != null && uuid != ""){
-		window.open(sourceleadUrl+'/viewResume/'+title+'?resumeUUID='+uuid,title,"height=600,width=600");
+		aler("sourceleadUrl"+sourceleadUrl)
+		aler("fileURL"+fileURL)
+		aler("docFileName"+docFileName)
+		aler("fileType"+fileType)
+		viewFile(sourceleadUrl,fileURL,docFileName,fileType);
+// 		window.open(sourceleadUrl+'/viewResume/'+title+'?resumeUUID='+uuid,title,"height=600,width=600");
 	}  
 }
 </script>

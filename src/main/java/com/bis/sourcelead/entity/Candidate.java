@@ -413,6 +413,10 @@ public class Candidate implements Serializable{
 	 
 	 @Transient
 	 private Long venSpocId;
+	 
+	 @Transient
+	 @JsonProperty
+	 private String fileUrl;
  
 		 
 	public int getProfilePercentage()
@@ -1570,6 +1574,16 @@ public class Candidate implements Serializable{
 	public void setVenSpocId(Long venSpocId)
 	{
 		this.venSpocId = venSpocId;
+	}
+
+	public String getFileUrl()
+	{
+		return fileUrl;
+	}
+
+	public void setFileUrl(String fileUrl)
+	{
+		this.fileUrl = fileUrl;
 	}
 
 }
