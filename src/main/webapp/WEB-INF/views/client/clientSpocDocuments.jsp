@@ -604,7 +604,6 @@ function toDate(selector) {
 <script>
 function clientSpocDocumentFileSaving()
 {
-	var sourceleadUrl ='${sourceleadUrl}';
-	fileUpload(sourceleadUrl, "uploadBtn", "clientDocuments", "document_form_spoc");
+	fileUpload("uploadBtn", "clientDocuments", "document_form_spoc");
 }
 </script>

@@ -55,29 +55,35 @@ public class OrgDocumentsServiceImpl implements OrgDocumentsService{
 		
 		if(!"null".equalsIgnoreCase(docId) && docId != null){
 			orgDocuments = orgDocumentsDao.getOrgDocumentsById(Long.parseLong(docId));
-			for(FileInfo fileinfo : clientDocumentsDTO.getFileInfo())
+			if(clientDocumentsDTO.getFileInfo() != null && !clientDocumentsDTO.getFileInfo().isEmpty())
 			{
-				orgDocuments.setFileName(fileinfo.getFileName());
-				orgDocuments.setFileType(fileinfo.getContentType());
-				orgDocuments.setFileUrl(fileinfo.getFileURL());
-				FileUploadUtil.moveFile(clientDocumentsDTO.getStaticPath(), fileinfo, "clientDocuments");
+				for(FileInfo fileinfo : clientDocumentsDTO.getFileInfo())
+				{
+					orgDocuments.setFileName(fileinfo.getFileName());
+					orgDocuments.setFileType(fileinfo.getContentType());
+					orgDocuments.setFileUrl(fileinfo.getFileURL());
+					FileUploadUtil.moveFile(clientDocumentsDTO.getStaticPath(), fileinfo, "clientDocuments");
+				}
 
 			}
-			
+
+
 		}else{
 			orgDocuments = new OrgDocuments();
 			orgDocuments.setStatus(Constants.MEMBER_ACTIVE);
 			orgDocuments.setCreatedBy(user.getUserCode());
 			orgDocuments.setCreatedDate(new Date());
-			
-			for(FileInfo fileinfo : clientDocumentsDTO.getFileInfo())
+			if(clientDocumentsDTO.getFileInfo() != null && !clientDocumentsDTO.getFileInfo().isEmpty())
 			{
-				orgDocuments.setFileName(fileinfo.getFileName());
-				orgDocuments.setFileType(fileinfo.getContentType());
-				orgDocuments.setFileUrl(fileinfo.getFileURL());
-				FileUploadUtil.moveFile(clientDocumentsDTO.getStaticPath(), fileinfo, "clientDocuments");
+				for(FileInfo fileinfo : clientDocumentsDTO.getFileInfo())
+				{
+					orgDocuments.setFileName(fileinfo.getFileName());
+					orgDocuments.setFileType(fileinfo.getContentType());
+					orgDocuments.setFileUrl(fileinfo.getFileURL());
+					FileUploadUtil.moveFile(clientDocumentsDTO.getStaticPath(), fileinfo, "clientDocuments");
+				}
 			}
-			
+
 		}
 		
         orgDocuments.setSourceType(sourceType);
@@ -120,7 +126,7 @@ public class OrgDocumentsServiceImpl implements OrgDocumentsService{
 			orgDocuments.setStartDate(startDate);
 		}
 		if(StringUtils.isNotBlank(clientDocumentsDTO.getStartDate())){
-			Date endDate = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(),clientDocumentsDTO.getStartDate());
+			Date endDate = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(),clientDocumentsDTO.getEndDate());
 			orgDocuments.setEndDate(endDate);
 		}
 		
