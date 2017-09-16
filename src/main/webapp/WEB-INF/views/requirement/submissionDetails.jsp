@@ -185,7 +185,7 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
                result = result + '<div class="col-md-6">';
                result = result + ' <div class="media">';
                result = result + '<div class="media-left image-parent positionRelative">';
-               result = result + '<div class="imageParent"><img onerror="predefineProfileImage(this);" src="<c:url value="/displayCandidateImage/'+json.candidate.id+'"/>" alt="candidate" title="Candidate"></div>';
+               result = result + '<div class="imageParent"><img onerror="predefineProfileImage(this);" src="'+json.candidate.fileUrl+'"  alt="candidate" title="Candidate"></div>';
                if(json.candidateScore != null && json.candidateScore != '' && json.candidateScore != 'undefined'){
 					  if(json.candidateScore >=50){ 
 					 	 result = result +'                    <i class="valid-profile fa fa-check-square text-success"></i>';        

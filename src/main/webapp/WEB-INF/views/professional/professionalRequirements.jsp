@@ -730,7 +730,6 @@ function getPostedOrgJobs(id){
 
 <script>
 function requirementsList(offset){
-	var sourceleadUrl = '${sourceleadUrl}';
 	var requirementType = document.getElementById('requirementType').value;
 	var postedOn = document.getElementById('postedOn').value;
 	var jobTitleSearch = document.getElementById('jobTitleSearch').value;
@@ -1077,7 +1076,6 @@ function searchRequirement(offset){
          }; 
 	
  if ($('#professional_requirement_search_form').validate(false, validationSettings)){  
-			var sourceleadUrl = '${sourceleadUrl}';
 			var frm = $('#professional_requirement_search_form').serializeFormJSON();
 			var con = JSON.stringify(frm);
 			con = con.replace(/[{}]/g, ""); 
@@ -1438,8 +1436,6 @@ function referToJob(requirementId,referId){
 
 <script>
 function getUserContats(requirementId){
-	 var sourceleadUrl ='${sourceleadUrl}';
-	 
 	 $.ajax({
 	    	type: "POST",
 	        url: sourceleadUrl+"/getCrowdSourcingUserContacts?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId,  
@@ -1631,8 +1627,6 @@ $('body').on('submit', '#referToJob_form', function(e){
       
       //It will escape all the special characters
       var jsonData = encodeURIComponent(con);
-      var sourceleadUrl ='${sourceleadUrl}';
-      
         $("#submit_refer").attr("disabled", "disabled");
 		$( "#submit_refer" ).addClass('button').val('Processing..');
 		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
@@ -1671,7 +1665,6 @@ $('body').on('submit', '#referToContacts', function(e){
       
       //It will escape all the special characters
       var jsonData = encodeURIComponent(con);
-      var sourceleadUrl ='${sourceleadUrl}';
       
         $("#submit_contacts").attr("disabled", "disabled");
 		$( "#submit_contacts" ).addClass('button').val('Processing..');
@@ -1701,7 +1694,6 @@ $('body').on('submit', '#referToContacts', function(e){
   <script>
   function validateProfessionalEmail(requirementId){
 	  
-	  var sourceleadUrl ='${sourceleadUrl}';
 	  var email = document.getElementById('email').value; 
 	  if(email != null && email != ''){
 		$.ajax({

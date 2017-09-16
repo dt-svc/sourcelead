@@ -44,7 +44,6 @@ function usersListCheck(searchValue,searchResult){
 
 <script>
 function getUsersSearchResult(searchValue){
-	var sourceleadUrl ='${sourceleadUrl}';
 	 $.ajax({
         type : "GET",
          url: sourceleadUrl+"/getUniversalSearchUsersList?${_csrf.parameterName}=${_csrf.token}&searchValue="+searchValue,       
@@ -300,7 +299,6 @@ function exportUserData(){
 	var userListEmpty = $("#noUsers").val();
 	var exportType = "xls";
 	var viewType = "LISTVIEW";
-	var sourceleadUrl = '${sourceleadUrl}';
 	var loginUserRole = '${SourceLeadWeb_loginUserRole}';
     var userRole = document.getElementById("userRole").value;
 	var searchByName = document.getElementById("searchByName").value;
@@ -353,7 +351,6 @@ function exportToPdf(){
 	var userListEmpty = $("#noUsers").val();
 	var exportType = "pdf";
 	var viewType = "LISTVIEW";
-	var sourceleadUrl = '${sourceleadUrl}';
 	var loginUserRole = '${SourceLeadWeb_loginUserRole}';
     var userRole = document.getElementById("userRole").value;
 	var searchByName = document.getElementById("searchByName").value;
@@ -462,7 +459,6 @@ function exportToPdf(){
   this script is not used -->    
 <script type="text/javascript">
 	function getUsersList(type){
-		var sourceleadUrl = '${sourceleadUrl}';
 		var loginUserRole = '${SourceLeadWeb_loginUserRole}';
 	    var userRole = document.getElementById("userRole").value;
 		
@@ -593,7 +589,6 @@ function exportToPdf(){
 
 <script type="text/javascript">
 function resendInvitation(userId){
-	var sourceleadUrl ='${sourceleadUrl}';
 	if(userId != null && userId != ""){
 		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 			 $.ajax({
@@ -663,7 +658,6 @@ var validationSettings = {
 		}
 		 if ($('#user_forms').validate(false, validationSettings)){
 			 
-      		var sourceleadUrl = '${sourceleadUrl}';
       		var frm = $('#user_forms').serializeFormJSON();
 			var con = JSON.stringify(frm);
 		 	con = con.replace(/[{}]/g, ""); 
@@ -699,7 +693,6 @@ var validationSettings = {
 
 <script type="text/javascript">
 function getUserSummary(userId){
-	var sourceleadUrl ='${sourceleadUrl}';
 	if(userId != null && userId != ""){
 			 $.ajax({
 			    	type: "POST",
@@ -714,7 +707,6 @@ function getUserSummary(userId){
 </script>
 <script>
   function prepareUsersList(data,type){
-	  var sourceleadUrl = '${sourceleadUrl}';
 	  if(data != null && data != 'undefined' && data != "" && data != '[]'){
 		  var result = "";
 		  var json = JSON.parse(data);
@@ -1042,7 +1034,6 @@ function showList(viewType){
 
 <script type="text/javascript">
 	function getUsersListView(type,viewType){
-		var sourceleadUrl = '${sourceleadUrl}';
 		var loginUserRole = '${SourceLeadWeb_loginUserRole}';
 	    var userRole = document.getElementById("userRole").value;
 		
