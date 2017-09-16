@@ -806,7 +806,6 @@ function requirementsList(offset){
 			 					experience = requirements.maxExperience+" Years";
 			 				}
 			 				else if(requirements.minExperience != '' && requirements.maxExperience != ''  && requirements.minExperience != 'undefined'  && requirements.maxExperience != 'undefined' && requirements.minExperience != null  && requirements.maxExperience != null){
-			 					alert("if");
 			 					experience = requirements.minExperience+" to "+requirements.maxExperience+" Years";
 			 				}else{
 			 					experience = '--';
