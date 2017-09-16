@@ -996,9 +996,7 @@ function ApplicantPermitProRecruter(){
 
 <script type="text/javascript">
 function ApplicantNotifyRequiremnentProRecruter(){
-	alert("hi");
 	 if($("#notifyToApplicantId").is(':checked')){
-		 alert("hello");
 		  $("#notifyToApplicantId").val("Y");
 	 }else{
 		 alert("hello else");
