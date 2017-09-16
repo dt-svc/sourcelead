@@ -195,6 +195,8 @@ public class SubmissionsRestController {
 		if(candidateResume != null){
 			candidate.setResumeUUID(candidateResume.getResumeUUID());
 			candidate.setCandidateResumeName(candidateResume.getFileName());
+			candidate.setFileUrl(candidateResume.getFileURL());
+			candidate.setFileContentType(candidateResume.getFileContentType());
 		}
 		
 		CandidateEmployers currentEmployer = candidateEmployersService.getCandidateCurrentEmployer(candidateId, orgLocation.getId());
