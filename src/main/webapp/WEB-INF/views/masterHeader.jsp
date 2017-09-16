@@ -1672,5 +1672,8 @@ function zipcodeMask(country,zipCodeId){
 		     
 }
 </script>
+<script>
+  var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
+</script>
 <script src="resources/js/zipcodeMaskedinput-1.3.min.js"></script>
 
