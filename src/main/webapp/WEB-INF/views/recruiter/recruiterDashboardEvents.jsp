@@ -35,7 +35,6 @@ window.onload = function() {
 
 <script type="text/javascript">
 	function getRecruiterInterviewsand() {
-		var sourceleadUrl ='${sourceleadUrl}';
 		var date = $("#eventCalendar").val();
 		var userId ='${SourceLeadWeb_user.id}'; 
 		var timezone ='${SourceLeadWeb_orgLocations.timezone}'; 

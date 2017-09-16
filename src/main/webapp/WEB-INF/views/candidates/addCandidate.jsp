@@ -570,7 +570,6 @@
 </script>
 <script type="text/javascript">
 	function storeCandidate() {
-		
 		rateValidations();
 		var validationSettings = {
 				errorMessagePosition : 'element',

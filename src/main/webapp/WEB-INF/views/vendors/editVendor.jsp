@@ -116,28 +116,28 @@
 							
 							result = result + '<div class="user_summary_edit_cta">';
 							result = result + '<label>Location<span class="text-danger">&nbsp; *</span></label>';
-							result = result + ' <input type="text" class="form-control" name="vendorLocation" id="existingLocation" value="'+location+'" field-name="Location" placeholde="Location" data-validation="required">';
+							result = result + ' <input type="text" class="form-control" name="location" id="existingLocation" value="'+location+'" field-name="Location" placeholde="Location" data-validation="required">';
 							result = result + '<i class="fa fa-refresh btn btn-primary profilerefresh-icon" title="Refresh" onclick="refreshGoogleApiLocation(\'existingLocation\',\'existingCountry\',\'existingState\',\'existingCity\',\'existingZipCode\');"></i>';
 							result = result + '</div>';
 							
 							result = result + '<div class="user_summary_edit_cta">';
 							result = result + '<label>Country</label>';
-							result = result + '<input type="text" name="vendorCountry" id="existingCountry" value="'+country+'" placeholder="Country" readonly="readonly" >';
+							result = result + '<input type="text" name="country" id="existingCountry" value="'+country+'" placeholder="Country" readonly="readonly" >';
 							result = result + '</div>  ';
 							
 							result = result + '<div class="user_summary_edit_cta" id="stateDiv">';
 							result = result + '<label>State</label>';
-							result = result + '<input type="text" name="vendorState" id="existingState" value="'+state+'" placeholder="State" readonly="readonly" >';
+							result = result + '<input type="text" name="state" id="existingState" value="'+state+'" placeholder="State" readonly="readonly" >';
 							result = result + '</div> ';
 							
 							result = result + '<div class="user_summary_edit_cta">';
 							result = result + '<label>City</label>';
-							result = result + '<input type="text" name="vendorCity" id="existingCity" value="'+city+'" placeholder="City" readonly="readonly" >';
+							result = result + '<input type="text" name="city" id="existingCity" value="'+city+'" placeholder="City" readonly="readonly" >';
 							result = result + '</div> ';
 							
 							result = result + '<div class="user_summary_edit_cta">';
 							result = result + '<label>Zip Code</label>';
-							result = result + '<input type="text"  class="chosen-select form-control" name="vendorZipCode" id="existingZipCode" value="'+zipCode+'" field-name="Zip Code"  > ';
+							result = result + '<input type="text"  class="chosen-select form-control" name="zipcode" id="existingZipCode" value="'+zipCode+'" field-name="Zip Code"  > ';
 							result = result + '</div> ';
 						}else{
 							result = result + '<div class="user_summary_edit_cta" id="vendorNameDiv">';
@@ -153,29 +153,29 @@
 							
 							result = result + '<div class="user_summary_edit_cta">';
 							result = result + '<label>Location<span class="text-danger">&nbsp; *</span></label>';
-							result = result + ' <input type="text" class="form-control" name="clientLocation" id="clientLocation" value="'+location+'" field-name="Location" placeholde="Location" data-validation="required">';
+							result = result + ' <input type="text" class="form-control" name="location" id="clientLocation" value="'+location+'" field-name="Location" placeholde="Location" data-validation="required">';
 							result = result + '<i class="fa fa-refresh btn btn-primary profilerefresh-icon" title="Refresh" onclick="refreshGoogleApiLocation(\'clientLocation\',\'clientCountry\',\'clientState\',\'clientCity\',\'clientZipCode\');"></i>';
 							result = result + '</div>';
 							
 							
 							result = result + '<div class="user_summary_edit_cta">';
 							result = result + '<label>Country</label>';
-							result = result + ' <input type="text" class="form-control" name="clientCountry" value="'+country+'"  id="clientCountry" field-name="Country" readonly >';
+							result = result + ' <input type="text" class="form-control" name="country" value="'+country+'"  id="clientCountry" field-name="Country" readonly >';
 							result = result + '</div>  ';
 							
 							result = result + '<div class="user_summary_edit_cta" id="stateDiv">';
 							result = result + '<label>State</label>';
-							result = result + '<input type="text"  class="form-control" name="clientState" value="'+state+'" id="clientState" field-name="State"  readonly> ';
+							result = result + '<input type="text"  class="form-control" name="state" value="'+state+'" id="clientState" field-name="State"  readonly> ';
 							result = result + '</div> ';
 							
 							result = result + '<div class="user_summary_edit_cta">';
 							result = result + '<label>City</label>';
-							result = result + '<input type="text"  class="form-control" name="clientCity" id="clientCity" value="'+city+'" field-name="City" readonly > ';
+							result = result + '<input type="text"  class="form-control" name="city" id="clientCity" value="'+city+'" field-name="City" readonly > ';
 							result = result + '</div> ';
 							
 							result = result + '<div class="user_summary_edit_cta">';
 							result = result + '<label>Zip Code</label>';
-							result = result + '<input type="text"  class="chosen-select form-control" name="clientZipCode" id="clientZipCode" value="'+zipCode+'" field-name="Zip Code"  > ';
+							result = result + '<input type="text"  class="chosen-select form-control" name="zipcode" id="clientZipCode" value="'+zipCode+'" field-name="Zip Code"  > ';
 							result = result + '</div> ';
 							
 						}
