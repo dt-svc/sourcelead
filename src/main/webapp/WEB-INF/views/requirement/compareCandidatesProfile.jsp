@@ -30,7 +30,7 @@ function compareRecommendedUsers(requirementId){
 		$("#loading").attr('style','position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		 $.ajax({
 		    	type: "GET",
-		        url: sourceleadUrl+"/getCandidatesToCompare?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&orgLocationId="+locationId+"&candidatesSelected="+complist,
+		        url: sourceleadUrl+"/getCandidatesToCompare?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&orgLocationId="+locationId+"&candidatesSelected="+complist,
 		        success: function(data) {
 		        	compareRecommendedUsersdiv(data,requirementId,candlist);
 		        	$("#loading").removeAttr('style');
@@ -418,7 +418,7 @@ function getCandidatetoCompare(div,requirementId){
 		var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 		 $.ajax({
 		    	type: "GET",
-		        url: sourceleadUrl+"/getCandidateDetails?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&orgLocationId="+orgLocationId+"&requirementId="+requirementId, 
+		        url: sourceleadUrl+"/getCandidateDetails?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&orgLocationId="+orgLocationId+"&requirementId="+requirementId, 
 		        success: function(data) {
 		        	var json = JSON.parse(data);
 		        	candidateDiv(json,div,requirementId);

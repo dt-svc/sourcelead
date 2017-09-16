@@ -5,7 +5,6 @@
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 <meta name="format-detection" content="telephone=no">
-
 <%-- 
      @author : p.sarath kumar
      this script is for candidate Activation
@@ -94,7 +93,7 @@ function candidateSideBar(candidateId){
 	  var candidateType = "Candidates";
 	  $.ajax({
           type : "POST",
-           url: sourceleadUrl+"/getCandidateById?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,        
+           url: sourceleadUrl+"/getCandidateById?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
            success :function(data) {  
                 if(data != null && data != 'undefined' && data != ""){  
                 	 var json = JSON.parse(data);

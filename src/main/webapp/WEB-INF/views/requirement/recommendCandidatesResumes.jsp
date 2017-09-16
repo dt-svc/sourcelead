@@ -209,7 +209,7 @@ function addResume(candidateId) {
 		        	    data: formData,
 		    	        processData: false,
 		    	        contentType:false,
-						url : sourceleadUrl+"/saveCandidateResume?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&resumeId="+resumeId,
+						url : sourceleadUrl+"/saveCandidateResume?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&resumeId="+resumeId,
 						success : function(result) {
 							 if( result.indexOf('Sign In') >= 0){
 					    		location.replace(sourceleadUrl);
@@ -274,7 +274,7 @@ function addResume(candidateId) {
 	  var resumesCount = 0;
 	  $.ajax({
 			type : "POST",
-			url : sourceleadUrl+"/candidateResumesListByCandidateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,
+			url : sourceleadUrl+"/candidateResumesListByCandidateId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,
 			success : function(data) {
 				var json = JSON.parse(data);
 				if( data.indexOf('Sign In') >= 0){
@@ -383,7 +383,7 @@ function deleteResume(candidateId, resumeId){
 	if (message == true) {
 		$.ajax({
 		   	type: "POST",
-		    url: sourceleadUrl+"/terminateResume?${_csrf.parameterName}=${_csrf.token}&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&resumeId="+resumeId, 	   
+		    url: sourceleadUrl+"/terminateResume?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&resumeId="+resumeId, 	   
    		    success: function(data) {
    		    	if( data.indexOf('Sign In') >= 0){
 		    		location.replace(sourceleadUrl);
@@ -441,7 +441,7 @@ function deleteResume(candidateId, resumeId){
 function getResume(candidateId, resumeId){
 		$.ajax({
 		   	type: "POST",
-		    url: sourceleadUrl+"/getResume?${_csrf.parameterName}=${_csrf.token}&resumeId="+resumeId, 	   
+		    url: sourceleadUrl+"/getResume?"+tokenParamName+"="+tokenValue+"&resumeId="+resumeId, 	   
    		    success: function(data) {
    		    	var json = JSON.parse(data);
    		    	if( data.indexOf('Sign In') >= 0){
