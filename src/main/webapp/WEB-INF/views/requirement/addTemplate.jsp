@@ -260,7 +260,7 @@ width: 100% !important;
 					 data: formData,
 	  		         processData: false,
 	  		         contentType:false, 
-					  url : sourceleadUrl+"/storeRequirementTemplate?${_csrf.parameterName}=${_csrf.token}",
+					  url : sourceleadUrl+"/storeRequirementTemplate?"+tokenParamName+"="+tokenValue+"",
 					  	success : function(data) {
 					  		location.replace(sourceleadUrl+"/template");
 
@@ -454,7 +454,7 @@ function getEditRequirementDetails(requirementId){
 	if(requirementId !=''){
 		$.ajax({
 			type : "GET",
-			url : sourceleadUrl + "/getEditRequirementDetails?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId,
+			url : sourceleadUrl + "/getEditRequirementDetails?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId,
 			success : function(data) {
 				var json = JSON.parse(data);
 				$(".Editor-container").find('.Editor-editor').html(json['description']);

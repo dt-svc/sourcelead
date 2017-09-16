@@ -24,7 +24,7 @@ function addOffer(requirementId){
 	
 	 $.ajax({
 	    	type: "POST",
-	        url: sourceleadUrl+"/getRequirementWhichIsReleasedOrNot?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId, 
+	        url: sourceleadUrl+"/getRequirementWhichIsReleasedOrNot?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId, 
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	
@@ -419,7 +419,7 @@ function validateRateAndRateType(){
 	        processData: false,
 	        contentType:false,
  	    	dataType : 'json',
-	        url: sourceleadUrl+"/saveOffer?${_csrf.parameterName}=${_csrf.token}&jsonData="+jsonData,
+	        url: sourceleadUrl+"/saveOffer?"+tokenParamName+"="+tokenValue+"&jsonData="+jsonData,
 	        success: function(result) {
 	        	$(".add_offer_wrap").removeClass("add_offer_wrap_active");
      		$(".side_mask").fadeOut(200);
@@ -488,7 +488,7 @@ function cancelOfferPopup(){
      
 		 $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/getAllSubmittedAndShortListAndInterviewededCandidates?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&existingApplicantsIds="+existingApplicantsIds, 
+		        url: sourceleadUrl+"/getAllSubmittedAndShortListAndInterviewededCandidates?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&existingApplicantsIds="+existingApplicantsIds, 
 		        success: function(data) {
 		        	var json = JSON.parse(data);
 		        	var output = "";
@@ -535,7 +535,7 @@ function cancelOfferPopup(){
      
 		 $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/getAllSubmittedAndShortListAndInterviewededCandidates?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&existingApplicantsIds="+existingApplicantsIds+"&isClientOffer="+isClientOffer, 
+		        url: sourceleadUrl+"/getAllSubmittedAndShortListAndInterviewededCandidates?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&existingApplicantsIds="+existingApplicantsIds+"&isClientOffer="+isClientOffer, 
 		        success: function(data) {
 		        	var json = JSON.parse(data);
 		        	var output = "";
@@ -589,7 +589,7 @@ function cancelOfferPopup(){
      
 		 $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/getAllSubmittedAndShortListAndInterviewededCandidates?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&existingApplicantsIds="+existingApplicantsIds+"&isClientOffer="+isClientOffer, 
+		        url: sourceleadUrl+"/getAllSubmittedAndShortListAndInterviewededCandidates?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&existingApplicantsIds="+existingApplicantsIds+"&isClientOffer="+isClientOffer, 
 		        success: function(data) {
 		        	var json = JSON.parse(data);
 		        	var output = "";

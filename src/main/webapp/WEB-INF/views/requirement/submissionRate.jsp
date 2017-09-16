@@ -227,7 +227,7 @@ width: auto;
 			
 			$.ajax({
 						type : "POST",
-						url : sourceleadUrl+"/storeReject?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId+"&rejectreason="+rejectreason+"&type="+type,
+						url : sourceleadUrl+"/storeReject?"+tokenParamName+"="+tokenValue+"&submissionId="+submissionId+"&rejectreason="+rejectreason+"&type="+type,
 						success : function(data) {
 							if(data == "success"){
 								$('#rejectIdDiv').empty();
@@ -253,7 +253,7 @@ width: auto;
 			con = con.replace(/[{}]/g, "");
 			$.ajax({
 						type : "POST",
-						url : sourceleadUrl+"/storeApplicantRejectReason?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId+"&rejectreason="+rejectreason,
+						url : sourceleadUrl+"/storeApplicantRejectReason?"+tokenParamName+"="+tokenValue+"&submissionId="+submissionId+"&rejectreason="+rejectreason,
 						success : function(data) {
 							if(data == "success"){
 								$('#rejectApplicantIdDiv').empty();
@@ -291,7 +291,7 @@ width: auto;
 		    var jsonData = encodeURIComponent(con);
 			$.ajax({
 						type : "POST",
-						url : sourceleadUrl+'/storeNegotiation?${_csrf.parameterName}=${_csrf.token}&json='+jsonData+'&submissionId='+submissionId+'&type='+type,
+						url : sourceleadUrl+'/storeNegotiation?"+tokenParamName+"="+tokenValue+"&json='+jsonData+'&submissionId='+submissionId+'&type='+type,
 						success : function(result) {
 							$('#rateProposal').val('');
 							$('#rateType').val('');
@@ -319,7 +319,7 @@ width: auto;
 			var candidateId = '${candidateId}';
 			$.ajax({
 						type : "POST",
-						url : sourceleadUrl+"/getRateHistoryBySubmissionId?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId+"&candidateId="+candidateId,
+						url : sourceleadUrl+"/getRateHistoryBySubmissionId?"+tokenParamName+"="+tokenValue+"&submissionId="+submissionId+"&candidateId="+candidateId,
 						success : function(data) {
 							if("success"){
 								var json = JSON.parse(data);

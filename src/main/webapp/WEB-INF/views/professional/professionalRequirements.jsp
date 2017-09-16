@@ -799,13 +799,13 @@ function requirementsList(offset){
 			 				}
 			 				
 			 				
-			 				if(requirements.minExperience != '' && requirements.maxExperience == ''){
+			 				if(requirements.minExperience != '' && requirements.maxExperience == '' ){
 			 					experience = requirements.minExperience+" Years";
 			 				}
 			 				else if(requirements.minExperience == '' && requirements.maxExperience != ''){
 			 					experience = requirements.maxExperience+" Years";
 			 				}
-			 				else if(requirements.minExperience != '' && requirements.maxExperience != ''){
+			 				else if(requirements.minExperience != '' && requirements.maxExperience != ''  && requirements.minExperience != 'undefined'  && requirements.maxExperience != 'undefined' && requirements.minExperience != null  && requirements.maxExperience != null){
 			 					experience = requirements.minExperience+" to "+requirements.maxExperience+" Years";
 			 				}else{
 			 					experience = '--';

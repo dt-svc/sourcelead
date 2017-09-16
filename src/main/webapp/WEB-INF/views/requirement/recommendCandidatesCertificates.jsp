@@ -89,7 +89,7 @@ function storeCertificate(candidateId){
 				$.ajax({
 						type : "POST",
 						data : formData,
-						url : sourceleadUrl+ "/storeCandidateCertifications?${_csrf.parameterName}=${_csrf.token}&candidateId=" + candidateId,
+						url : sourceleadUrl+ "/storeCandidateCertifications?"+tokenParamName+"="+tokenValue+"&candidateId=" + candidateId,
 						success : function(data) {
 							if (data != null && data != 'undefined'
 									&& data != "") {
@@ -165,7 +165,7 @@ function candidateCertificateList(candidateId){
 	 
 	 $.ajax({  
           type : "POST",
-          url: sourceleadUrl+"/getCandidateCertificationListByCandidateIdAndOrgLocationID?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,        
+          url: sourceleadUrl+"/getCandidateCertificationListByCandidateIdAndOrgLocationID?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
           success :function(data) {
               /*  if(data != null && data != 'undefined' && data != "" && data != '[]'){ */
              		 if( data.indexOf('Sign In') >= 0){
@@ -436,7 +436,7 @@ function addCertification(candidateId) {
 		$.ajax({
 					type : "POST",
 					url : sourceleadUrl
-							+ "/getCandidateCertificateBycandidateIdandCertificateId?${_csrf.parameterName}=${_csrf.token}&candidateId="
+							+ "/getCandidateCertificateBycandidateIdandCertificateId?"+tokenParamName+"="+tokenValue+"&candidateId="
 							+ candidateId + "&candidateCertificationId=" + candidateCertificationId,
 					success : function(data) {
 
@@ -639,7 +639,7 @@ function addCertification(candidateId) {
 			$.ajax({
 						type : "POST",
 						data : formData,
-						url : sourceleadUrl+ "/updateCandidateCertificationsBycandidateIdandcandidateCertificateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&candidateCertificationId"+ candidateCertificationId,
+						url : sourceleadUrl+ "/updateCandidateCertificationsBycandidateIdandcandidateCertificateId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&candidateCertificationId"+ candidateCertificationId,
 						success : function(data) {
 							closeCertificatePopup();
 							candidateCertificateList(candidateId);
@@ -672,7 +672,7 @@ function removeCertification(candidateCertificationId,candidateId){
 	 var orgLocationId = '${SourceLeadWeb_orgLocationId}';	
 	 $.ajax({  
           type : "POST",
-          url: sourceleadUrl+"/removeCandidateCertificateBycandidateIdandcandidateCertificateId?${_csrf.parameterName}=${_csrf.token}&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&candidateCertificationId="+candidateCertificationId,        
+          url: sourceleadUrl+"/removeCandidateCertificateBycandidateIdandcandidateCertificateId?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&candidateCertificationId="+candidateCertificationId,        
           success :function(data) {
 
 				if(data != null && data != 'undefined' && data != ""){

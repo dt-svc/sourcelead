@@ -67,7 +67,7 @@ function closeCertificatePopup(){
 			$.ajax({
 						type : "POST",
 						data : formData,
-						url : sourceleadUrl+ "/storeCandidateEmployers?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,
+						url : sourceleadUrl+ "/storeCandidateEmployers?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,
 						success : function(data) {
 
 							if (data != null && data != 'undefined'
@@ -241,7 +241,7 @@ function closeCertificatePopup(){
 		$.ajax({
 					type : "POST",
 					url : sourceleadUrl
-							+ "/getCandidateEmployerByCandidateIdAndCandidateEmpoyerId?${_csrf.parameterName}=${_csrf.token}&candidateId="
+							+ "/getCandidateEmployerByCandidateIdAndCandidateEmpoyerId?"+tokenParamName+"="+tokenValue+"&candidateId="
 							+ candidateId + "&candidateEmpId=" + candidateEmpId,
 					success : function(data) {
 
@@ -519,7 +519,7 @@ function closeCertificatePopup(){
 		
 				$.ajax({
 					type : "POST",
-					url : sourceleadUrl	+ "/getCandidatesEmployersListByCandidateIdAndOrgLocationID?${_csrf.parameterName}=${_csrf.token}&candidateId="
+					url : sourceleadUrl	+ "/getCandidatesEmployersListByCandidateIdAndOrgLocationID?"+tokenParamName+"="+tokenValue+"&candidateId="
 							+ candidateId,
 					success : function(data) {
 						/* if (data != null && data != 'undefined' && data != "" && data != '[]') { */
@@ -649,7 +649,7 @@ function employeePagination(){
 		var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 				$.ajax({
 					type : "POST",
-					url : sourceleadUrl	+ "/removeCandidateEmployerBycandidateIdandCandidateEmployerID?${_csrf.parameterName}=${_csrf.token}&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+ candidateId + "&candidateemployerId="+candidateemployerId,
+					url : sourceleadUrl	+ "/removeCandidateEmployerBycandidateIdandCandidateEmployerID?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+ candidateId + "&candidateemployerId="+candidateemployerId,
 					success : function(data) {
 
 						if (data != null && data != 'undefined' && data != "") {
@@ -719,7 +719,7 @@ function employeePagination(){
 			$.ajax({
 						type : "POST",
 						data : formData, 
-						url : sourceleadUrl+ "/upDateCandidateEmployerByCandidateIdAndCandidateExperianceId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&candidateExperianceId"+ candidateExperianceId,
+						url : sourceleadUrl+ "/upDateCandidateEmployerByCandidateIdAndCandidateExperianceId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&candidateExperianceId"+ candidateExperianceId,
 						success : function(result) {
 							closeCertificatePopup();
 							candidateEmployersList(candidateId)
