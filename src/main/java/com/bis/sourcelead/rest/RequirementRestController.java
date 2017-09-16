@@ -176,19 +176,19 @@ public class RequirementRestController {
 					&& (null == (requirementDTO.getRequirementId())
 							|| "".equalsIgnoreCase(requirementDTO.getRequirementId().toString()))) {
 				StringBuilder reqUpdateMsg = new StringBuilder();
-				SourceLeadSessionManager.setSessionAttribute(request, "reqCreateMsg", reqUpdateMsg.append("Success!! New ").append(requirement.getJobTitle()).append(" requirement  saved to Draft").toString());
+				SourceLeadSessionManager.setSessionAttribute(request, "reqCreateMsg", reqUpdateMsg.append("Success!! New ").append(requirement.getJobTitle()).append(" job  saved to Draft").toString());
 			}
 			else if (requirementDTO.getSaveType().equalsIgnoreCase("save")
 					&& (null == (requirementDTO.getRequirementId())
 							|| "".equalsIgnoreCase(requirementDTO.getRequirementId().toString()))) {
 				StringBuilder reqUpdateMsg1 = new StringBuilder();
-				SourceLeadSessionManager.setSessionAttribute(request, "reqCreateMsg", reqUpdateMsg1.append("Success!! New ").append(requirement.getJobTitle()).append(" requirement  saved").toString());
+				SourceLeadSessionManager.setSessionAttribute(request, "reqCreateMsg", reqUpdateMsg1.append("Success!! New ").append(requirement.getJobTitle()).append(" job  saved").toString());
 			}
 			else if (requirementDTO.getSaveType().equalsIgnoreCase("submitForApproval")
 					&& (null == (requirementDTO.getRequirementId())
 							|| "".equalsIgnoreCase(requirementDTO.getRequirementId().toString()))) {
 				StringBuilder reqUpdateMsg2 = new StringBuilder();
-				SourceLeadSessionManager.setSessionAttribute(request, "reqCreateMsg", reqUpdateMsg2.append("Success!! New ").append(requirement.getJobTitle()).append(" requirement  submitted for approval").toString());
+				SourceLeadSessionManager.setSessionAttribute(request, "reqCreateMsg", reqUpdateMsg2.append("Success!! New ").append(requirement.getJobTitle()).append(" job  submitted for approval").toString());
 			}
 			else if ((requirementDTO.getRequirementId() != null)
 					&& !(requirementDTO.getRequirementId().isEmpty())
