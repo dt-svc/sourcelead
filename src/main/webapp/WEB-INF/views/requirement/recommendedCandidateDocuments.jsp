@@ -62,7 +62,7 @@ function candidateDocuments(candidateId){
 function candDocumentsList(candidateId){
 	 $.ajax({  
           type : "POST",
-          url: sourceleadUrl+"/getCandidateDocumentsListByCandidateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,        
+          url: sourceleadUrl+"/getCandidateDocumentsListByCandidateId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
           success :function(data) {
            
              			 var json = JSON.parse(data); 
@@ -362,7 +362,7 @@ function getDocumentType(documentType){
 		        	    data: formData,
 		    	        processData: false,
 		    	        contentType:false,
-		        	   	url : sourceleadUrl+"/saveCandidateDocument?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&documentUUID="+documentUUID,
+		        	   	url : sourceleadUrl+"/saveCandidateDocument?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&documentUUID="+documentUUID,
 						success : function(result) {
 								closePopup();
 								$('#perVal').attr('aria-valuenow', result).css('width',result+'%');
@@ -425,7 +425,7 @@ function getDocumentType(documentType){
 function getDocument(candidateId, documentId){
 		$.ajax({
 		   	type: "POST",
-		    url: sourceleadUrl+"/getDocument?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&documentId="+documentId, 	   
+		    url: sourceleadUrl+"/getDocument?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&documentId="+documentId, 	   
    		    success: function(data) {
         			 $("#uploadDocDiv").hide();
         			 $("#docAddButton").hide();
@@ -479,7 +479,7 @@ function deleteDocument(candidateId, documentId){
 	if (message == true) {
 		$.ajax({
 		   	type: "POST",
-		    url: sourceleadUrl+"/terminateDoc?${_csrf.parameterName}=${_csrf.token}&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&documentId="+documentId, 	   
+		    url: sourceleadUrl+"/terminateDoc?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&documentId="+documentId, 	   
    		    success: function(data) {
    		    	if(data != null && data != 'undefined' && data != ""){
    		    		$('#perVal').attr('aria-valuenow', data).css('width',data+'%');
