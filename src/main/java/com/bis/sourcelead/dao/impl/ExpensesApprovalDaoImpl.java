@@ -173,6 +173,8 @@ public class ExpensesApprovalDaoImpl implements ExpensesApprovalDao{
 		    		}else if(null != type && "reject".equalsIgnoreCase(type)){
 		    			eah.setReopenRejectedReason(reason);
 		    			eah.setReopenReason(null);
+		    			eah.setExpenseStatus(Submission_Status.REJECTED);
+		    			eah.setExpenseApprovalStatus(Submission_ApprovalStatus.REJECTED);
 		    		}else{
 		    			eah.setExpenseStatus(Submission_Status.SUBMITTED);
 		    			eah.setExpenseApprovalStatus(Submission_ApprovalStatus.SUBMITTEDFORAPPROVAL);

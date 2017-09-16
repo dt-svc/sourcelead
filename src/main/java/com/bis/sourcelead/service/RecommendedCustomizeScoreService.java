@@ -14,6 +14,6 @@ public interface RecommendedCustomizeScoreService {
 	
 	RecommendedCustomizeScore getRecommendedCustomizeScoreByRequirementId(Long requirementId) throws Exception;
 
-	CandidateCompareDTO getCandidateListToCompare(Long requirementId, Long orgLocationId) throws Exception;
+	CandidateCompareDTO getCandidateListToCompare(Long requirementId, Long orgLocationId, String candidatesSelected) throws Exception;
 	
 }
