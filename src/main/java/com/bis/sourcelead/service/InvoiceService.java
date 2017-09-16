@@ -23,7 +23,7 @@ import com.bis.sourcelead.entity.User;
 public interface InvoiceService {
 	
 
-	ResponseList<Invoice> invoiceListByOrgLocationId(Long orgLocationId,Date startDateUTC, Date endDateUTC,InvoiceDTO invoiceDTO) throws Exception;
+	ResponseList<Invoice> invoiceListByOrgLocationId(OrgLocations orgLocations,Date startDateUTC, Date endDateUTC,InvoiceDTO invoiceDTO) throws Exception;
 
 	Invoice getInvoicetById(Long invoiceId) throws Exception;
 	

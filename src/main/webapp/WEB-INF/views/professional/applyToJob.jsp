@@ -26,6 +26,7 @@ function applyToJob(jobTitle,requirementId,referId){
 	$(".side_mask").fadeIn(200);
 	$("body").css('overflow-y', 'hidden');
 	getRequirementSubmissionTemaplate(jobTitle,requirementId,referId);
+	ApplicantNotifyRequiremnentProRecruter();
 }
 </script>
 
@@ -1005,11 +1006,15 @@ function ApplicantPermitProRecruter(){
 }
 </script>
 
+
 <script type="text/javascript">
 function ApplicantNotifyRequiremnentProRecruter(){
+	alert("hi");
 	 if($("#notifyToApplicantId").is(':checked')){
+		 alert("hello");
 		  $("#notifyToApplicantId").val("Y");
 	 }else{
+		 alert("hello else");
 		 $("#notifyToApplicantId").val("N");
 	 }
 }

@@ -532,7 +532,6 @@ function validate_fileupload(fileName)
  <script type="text/javascript">
  function validateUploadFile(id,entityId)
 	{
-	 var sourceleadUrl ='${sourceleadUrl}';
 		fileUpload(""+id+"docFile"+entityId+"", "expsesDocuments", "add_expenses_form","categoryDTO["+parseInt(((entityId+1)/2)-1)+"].fileInfo");
 
 		var selectedFile = $('#'+id+'docFile'+entityId).val();
