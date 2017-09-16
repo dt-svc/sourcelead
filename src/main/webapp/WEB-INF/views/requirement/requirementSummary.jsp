@@ -1454,8 +1454,7 @@ function requirementRecommendations(requirementId){
     type : "POST",
      //url: sourceleadUrl+"/getRequirementRecommendationsByRequirementId?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&count="+count,        
      url: sourceleadUrl+"/getRequirementRecommendationsByRequirementId?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&orgLocationId="+orgLocationId,
-     success :function(data) {
-    	 var json = JSON.parse(data);
+     success :function(json) {
     	    var result = '';
     	    
     	     result = result +' <div class="clients_side_wrap">';
@@ -1484,13 +1483,17 @@ function requirementRecommendations(requirementId){
 
 			 result = result +'</div>';
 			 result = result +'</div>';
-    	    
+
+			 var map = new Object();
+    	    //--------------------------------
+    	    //result = result +'<div class="timesheet_head candidateHead recruitmentHead">';
     	    result = result +'<div class="clearfix timesheetHead">';
 		    result = result +'<div class="rec_head">';
 
 		    result = result +'		   <div class="pull-left cand-advsrch">																							';
 		    result = result +'		    <a href="javascript:void(0)" class="btn btn-primary btn-sm" title="" onClick="openPop('+requirementId+')">Customize Score </a>            ';
 		    if(json.length>0){
+		    	result = result + '<input type="hidden"  id="compareCandListMap" name="compareCandListMap"/>';
 		    	result = result +'			<a class="comTextLi" title="Compare" onclick="compareRecommendedUsers('+requirementId+');" >Compare</a>            ';
 		    }
 		    result = result +'		        </div>';
@@ -1502,6 +1505,7 @@ function requirementRecommendations(requirementId){
 		    result = result +'<table id="recommendationTable" class="display" cellspacing="0" width="100%"">';
 		    result = result +'<thead>';
 		    result = result +'<tr>';
+		    result = result +'<th></th>';
 		    result = result +'<th>Name</th>';
 		    result = result +'<th>Email</th>';
 		    result = result +'<th>City</th>';
@@ -1514,6 +1518,7 @@ function requirementRecommendations(requirementId){
 		    result = result +'</tr>';
 		    result = result +'</thead>';
 		    result = result +'<tbody>';
+		    
     	 for (var i=0; i<json.length; i++)
 			{
 		    var report = json[i];
@@ -1527,7 +1532,10 @@ function requirementRecommendations(requirementId){
 		    }else{
 		    	lastName = "";
 		    } 
+		    map[report.candidateId] = firstName + lastName;
+		    
 		    result = result +'<tr>';
+		    result = result + '<td><input type="checkbox" value='+report.candidateId+' onclick="checkMaxCount(this);" name="compareCandi" id="compareCandiId" ></td>';
 		    result = result + '<td><div onclick="recomendcandidateQuickViewProfile('+report.candidateId+','+report.finalScore+'); clientSideBar('+report.candidateId+','+report.finalScore+');" class="proj_show tbldata-dotdot"><span title="'+firstName+" "+lastName+'">'+firstName+" "+lastName+'</span><i class="fa fa-binoculars"></i>';
 		    if(report.finalScore != null && report.finalScore != '' && report.finalScore != 'undefined'){
 				  if(report.finalScore >=50){ 
@@ -1679,11 +1687,16 @@ function requirementRecommendations(requirementId){
 			$("#tab-2").empty(); 
 		    $("#tab-3").empty();
 		    $("#tab-4").empty();
+		    
 		    $("#recommendationsLoading").removeAttr("style");
 		    $("#status-div").empty();
 		    $("#status-data").empty();
 			$("#tab-3").append(result);
 			recommendationpagination();
+			 $("input[name='compareCandListMap']").val(JSON.stringify(map));
+// 			prepareCompareCandidateList(map);
+			
+			
 			$("#tab-3").show();
 			$(".project-tabs-menu a").click(function(event) {
 			     event.preventDefault();
@@ -1697,8 +1710,22 @@ function requirementRecommendations(requirementId){
              
         }); 
 }
-</script>
 
+
+function checkMaxCount(id){
+	var compareCandidates = [];
+	$("input[name='compareCandi']").change(function(e){
+		if ($("input[name='compareCandi']:checked").length < 5) {
+	        $("input[name='compareCandi']:checked").each( function (i) {
+				  compareCandidates[i] = $(this).val();
+			});
+	    }else{
+		   $(this).prop('checked', false)
+		   alert("Allowed only 4");
+	    }
+	})
+}
+</script>
 <script>
 function viewAssociateCandidateResumeDocView(candidateId,title){
 	var sourceleadUrl ='${sourceleadUrl}';
@@ -1717,12 +1744,25 @@ function recommendationpagination(){
     	"bLengthChange": true,
     	"bDestroy": true,
     	"ordering": true,
+    	'columnDefs': [
+            {
+               'targets': 0,
+               'checkboxes': {
+                  'selectRow': true
+               }
+            }
+         ],
+         
+    	"aoColumnDefs": [{
+	           'bSortable': false,
+	           'aTargets': 0
+			}],
     	"oLanguage": {
      		"sSearch": "",
      		 "sZeroRecords": "", "sEmptyTable": ""
      	}
     });
-    //	$("#recommendationTable").wrap("<div class='overflow_Auto' style='width:100%;'></div>"); 
+    	$("#recommendationTable").wrap("<div class='overflow_Auto' style='width:100%;'></div>"); 
 }
 </script>
 

@@ -184,6 +184,10 @@ public class CandidateIndex implements Serializable {
 	
 	private String generatedId;
 	
+	private String fileUrl;
+	
+	private String fileContentType;
+	
 	
 	public String getSearchType() {
 		return searchType;
@@ -913,8 +917,25 @@ public class CandidateIndex implements Serializable {
 	{
 		this.generatedId = generatedId;
 	}
-	
-	
-	
+
+	public String getFileUrl()
+	{
+		return fileUrl;
+	}
+
+	public void setFileUrl(String fileUrl)
+	{
+		this.fileUrl = fileUrl;
+	}
+
+	public String getFileContentType()
+	{
+		return fileContentType;
+	}
+
+	public void setFileContentType(String fileContentType)
+	{
+		this.fileContentType = fileContentType;
+	}
 }
 
