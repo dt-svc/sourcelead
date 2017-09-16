@@ -17,6 +17,7 @@
 			getAssociateList();
 			getDepartmentsList();
 			maskme();
+			editMe(this);
 		 };
 	</script>
 <script>
@@ -241,7 +242,7 @@
             <div class="form-group " id = "DayHoursDiv">
                   <label class="col-md-3">Day hours</label>
                   <div class="col-md-9">
-                    <input type="text" class="form-control" id="DayHours" placeholder="HH:MM" name="DayHours" data-validation="validate_Space validate_dayHours validate_length length1-9" data-validation-optional="true" value="" onblur="editMe(this);validateDayHours();">
+                    <input type="text" class="form-control" id="DayHours" placeholder="HH:MM" value="${averageWorkingHours}" name="DayHours" data-validation="validate_Space validate_length length1-9" data-validation-optional="true" onblur="editMe(this);validateDayHours();">
                   </div>
                 </div>
             
@@ -963,6 +964,11 @@ function editMe(local){
 	
  var id = local.id;
 	 var inputValue =  $("#"+id).val();
+	 if(inputValue =='undefined'|| inputValue =='' || inputValue==null){
+		var inputValue1 = '${averageWorkingHours}';
+		inputValue = inputValue1+":00";
+		id ='DayHours';
+	 }
 	 var split = inputValue.split(':');
 	 var hours = split[0];
 	 var minutes = split[1];
@@ -970,7 +976,6 @@ function editMe(local){
 	 var hours2 = hours.charAt(1);
 	 var min1 = minutes.charAt(0);
 	 var min2 = minutes.charAt(1);
-	
 	 if(!isNaN(hours1) && isNaN(hours2) && isNaN(min1) && isNaN(min2)){
 		 $("#"+id).val("0"+hours1+":00");
 	 }
