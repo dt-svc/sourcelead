@@ -228,9 +228,9 @@ function cancelOrgImg(){
 							</div>
 								
 							<div class="form-group">
-								<label class="col-md-3">Zip</label>
+								<label class="col-md-3">ZipCode</label>
 								<div class="col-md-9">
-								<input type="text"  class="form-control" name="zipcode" id="orgEditZipCode" field-name="Zip" data-validation="validate_int validate_Space validate_length length5-10" data-validation-optional="true" value="${SourceLeadWeb_orgLocations.zipCode}" />
+								<input type="text"  class="form-control" name="zipcode" id="orgEditZipCode" field-name="Zip" data-validation="validate_int validate_Space" data-validation-optional="true" value="${SourceLeadWeb_orgLocations.zipCode}" />
 								</div>
 							</div>
 							

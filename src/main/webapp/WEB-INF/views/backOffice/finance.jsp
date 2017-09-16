@@ -103,7 +103,6 @@ $(document).ready(function(){
 <script>
 	function getAccountsList(advSearch){
 		
-		var sourceleadUrl ='${sourceleadUrl}';
 		var debitAmount = 0;
 		var creditAmount = 0;
 		var balanceAmount = 0;

@@ -24,7 +24,7 @@ window.onload = function() {
 <input type="hidden" id="noCandidates" name="noCandidates"/>
 <script>
   function getCandidateList(){ 	 
-	  var sourceleadUrl ='${sourceleadUrl}';
+	 
 	  var candidateType = 'Candidate';
 	  $.ajax({
            type : "POST",
@@ -375,11 +375,8 @@ function toDate(selector) {
 </script> 
 <script type="text/javascript">
 function getCandidatesByOwners(){
-
-	    var sourceleadUrl = '${sourceleadUrl}';
 		var ownersList = $("#user").val();
 		var reportType = "Candidate";
- 		 
  		$.ajax({
  	         type : "POST",
 				url: sourceleadUrl+"/getOwnersByCandidates?${_csrf.parameterName}=${_csrf.token}&ownersList="+ownersList+"&reportType="+reportType,
@@ -422,7 +419,6 @@ function getDayWiseReports(){
 	 var reportType = $("#reportTypeId").val(); 
 	var startDate = $("#ExportStartDate").val();
 	var endDate = $("#ExportEndDate").val();
-	var sourceleadUrl ='${sourceleadUrl}';
 	if(reportType != "custom"){
 	$.ajax({
          type : "POST",
@@ -460,7 +456,6 @@ function getCustomReports(){
 	var reportType = $("#reportTypeId").val();
 	var startDate = $("#ExportStartDate").val();
 	var endDate = $("#ExportEndDate").val();
-	var sourceleadUrl ='${sourceleadUrl}';
 	if(startDate == null || startDate == '' || startDate == 'undefined'){
 		$("#reportStartDate").empty().append("Start Date is Required") ; 
 	}

@@ -232,7 +232,6 @@ function checkDates(){
 	var fromDate = document.getElementById("startDate").value
 	var toDate = document.getElementById("endDate").value
 	var financialInstituteName = document.getElementById("financialInstituteName").value
-	var sourceleadUrl = '${sourceleadUrl}';
 	
 	 $.ajax({
 		   	type: "POST",
