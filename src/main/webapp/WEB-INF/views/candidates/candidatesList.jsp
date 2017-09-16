@@ -225,12 +225,12 @@ function candidateSideBar(candidateId){
 			             result = result+'<div id="candidateImageId">';
 			             result = result+'<div class="well well-sm text-center clearfix nomr">';
 						 result = result+' <div class="profile-img-container profile-image text-center" style="position:relative;">';
-						 result = result+'   <img  id="userImage" onerror="predefineProfileImage(this);" src="<c:url value="/displayCandidateImage/'+candidateId+'"/>" alt="Profile Image" class=" img-responsive center-block img-circle">';
+						 result = result+'   <img  id="userImage" data-id="profileImage" onerror="predefineProfileImage(this);" src="'+json.fileUrl+'" alt="Profile Image" class=" img-responsive center-block img-circle">';
 						 result = result+'  <div class="btn-group uploadfile uploadfile-candidate">';
 						 //result = result+'  <button type="button" class="btn btn-sm btn-primary">';
 						 //result = result+'  <i class="fa fa-upload"></i></button>';
-						 result = result+'  <label class="btn btn-sm btn-primary">';
-					     result = result+'   <i class="fa fa-upload paddingRight"></i> Upload / Change<input type="file" name="file" id="uploadedImage"  onchange="loadFile(event,\''+candidateId+'\')" style="display: none;">';
+						 result = result+'  <label class="btn btn-sm btn-primary" ">';
+					     result = result+'   <i class="fa fa-upload paddingRight"></i> Upload / Change<input type="file" id="uploadedImage" accept="image/*" onchange="cropImage(this,\'candidate_form\','+candidateId+');" style="display: none;">';
 					     result = result+'  </label>';
 					     if(json.fileContentType != null && json.fileContentType != '' && json.fileContentType != 'undefined'){
 						     result = result+'  <button type="button" class="btn btn-sm btn-danger" onclick="deleteImage('+candidateId+')">';
@@ -528,48 +528,13 @@ function candidateSideBar(candidateId){
 
 <%-- 
      @author : sarath kumar.
+
      this script is for show side bar when you click on the candidate name.
      1.usage     : called at saveOrCancel() function. line number 595.
      2.parameter : csrf token , candidateId .
      3.ajax url implementation in CandidateListRestController.
 --%>
 
-<script>
-function saveCandidateImage(candidateId){
-	            		
-          		var frm = $('#candidate_form').serializeFormJSON();
-              	var con = JSON.stringify(frm);
-  			    con = con.replace(/[{}]/g, ""); 
-  			    
-  		        var jsonData = encodeURIComponent(con);
-          		
-          		var loginUserId = '${SourceLeadWeb_userId}';
-          		var orgLocationId = '${SourceLeadWeb_orgLocationId}';
-          		var form = $('#candidate_form')[0];
-           		var formData = new FormData(form);
-	            		
-	            $.ajax({
-	                	      type: "POST",
-	                	      data: formData,
-	                	      contentType : 'application/json; charset=utf-8',
-	                	      enctype: 'multipart/form-data',
-	            	          processData: false,
-	            	          contentType:false,
-	                	      dataType : 'json',
-	                	      
-	                      	  url: sourceleadUrl+"/saveCandidateProfile?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId,
-	                          success: function(result) {
-	                        	  cancel(candidateId);
-	    			          },  
-	            });
-}
-</script> 
-
-
-<%-- 
-     @author : sarath kumar.
-     this script is for hide side bar when you click on the cross button on popup.
---%>
 
 <script> 
 $(document).ready(function() {
@@ -660,12 +625,12 @@ function refreshImageBlock(candidateId){
 	                	 var result = '';
 			             result = result+'<div class="well well-sm text-center clearfix">';
 						 result = result+' <div class="profile-img-container profile-image text-center" style="position:relative;">';
-						 result = result+'   <img  id="userImage" onerror="predefineProfileImage(this);" src="<c:url value="/displayCandidateImage/'+candidateId+'"/>" alt="Profile Image" class=" img-responsive center-block img-circle">';
+						 result = result+'   <img  id="userImage" data-id="profileImage" onerror="predefineProfileImage(this);" src="'+json.fileUrl+'" alt="Profile Image" class=" img-responsive center-block img-circle">';
 						 result = result+'  <div class="btn-group uploadfile uploadfile-candidate">';
 						 //result = result+'  <button type="button" class="btn btn-sm btn-primary">';
 						 //result = result+'  <i class="fa fa-upload"></i></button>';
 						 result = result+'  <label class="btn btn-sm btn-primary">';
-					     result = result+'  <i class="fa fa-upload paddingRight"></i>Upload / Change<input type="file" name="file" id="uploadedImage"  onchange="loadFile(event,\''+candidateId+'\')" style="display: none;">';
+					     result = result+'  <i class="fa fa-upload paddingRight"></i>Upload / Change<input type="file" name="file" id="uploadedImage" accept="image/*"  onchange="cropImage(this,\'candidate_form\','+candidateId+',false);" style="display: none;">';
 					     result = result+'  </label>';
 					     if(json.fileName != null && json.fileName != '' && json.fileName != 'undefined'){
 						     result = result+'  <button type="button" class="btn btn-sm btn-danger" onclick="deleteImage('+candidateId+')">';
@@ -742,7 +707,6 @@ function loadFile(event,candidateId){
 	    var extension = uploadedImage.substring(uploadedImage.lastIndexOf(".")+1).toLowerCase();
 	    
 	    if(extension != 'jpg'){
-	    	output.src = URL.createObjectURL(event.target.files[0]);
 	    	
 	    	var extensionName = uploadedImage.substring(uploadedImage.lastIndexOf(".")+1);
 	 		var msg = "."+extensionName+" extension not supported";

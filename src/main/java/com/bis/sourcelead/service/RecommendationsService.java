@@ -19,6 +19,6 @@ public interface RecommendationsService {
 
     String getCandidateScore(Candidate candidate,Requirement requirement, RecommendedCustomizeScore recommendedCustomizeScore) throws Exception;
     
-    List<CandidateIndex> getRecommendationsUpdateWithScoreByUsingElk(Long orgLocationId,RecommendedCustomizeScore recommendedCustomizeScore,Long requirementId) throws Exception;
+    List<CandidateIndex> getRecommendationsUpdateWithScoreByUsingElk(Long orgLocationId,RecommendedCustomizeScore recommendedCustomizeScore,Long requirementId, String candidatesSelected) throws Exception;
     
 }

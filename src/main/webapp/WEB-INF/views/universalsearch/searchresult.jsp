@@ -45,7 +45,7 @@ $(document).ready(function(){
 
 <script type="text/javascript">
 function getSearchResults(searchType,searchValue,isAssociate){
-	var sourceleadUrl = '${sourceleadUrl}';
+	
 	  $.ajax({
 	   	type: "GET",
 	    url: sourceleadUrl+"/universalSearch?${_csrf.parameterName}=${_csrf.token}&searchType="+searchType+"&searchValue="+searchValue+"&isAssociate="+isAssociate,	    	   
@@ -426,7 +426,6 @@ function getSearchResults(searchType,searchValue,isAssociate){
 function getSearchResultsForAll(searchType,searchValue){
 	$("#loading").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	
-	var sourceleadUrl = '${sourceleadUrl}';
 	  $.ajax({
 	   	type: "GET",
 	    url: sourceleadUrl+"/universalSearchForAll?${_csrf.parameterName}=${_csrf.token}&searchType="+searchType+"&searchValue="+searchValue,	    	   
@@ -800,9 +799,9 @@ function getSearchResultsForAll(searchType,searchValue){
 <!-- /candidateList -->
 <script type="text/javascript">
 function loadCandidate(){
+	
 	var searchResult = "universalCanddateList";
 	var searchValue = "${searchValue}";
-	var sourceleadUrl = '${sourceleadUrl}';
 	window.location.href = sourceleadUrl + "/candidatesList?&searchResult="+searchResult+"&searchValue="+searchValue;
 }
 </script>
@@ -812,7 +811,6 @@ function loadCandidate(){
 function loadRequirement(){
 	var searchResult = "universalRequirementList";
 	var serachValue = "${searchValue}";
-	var sourceleadUrl = '${sourceleadUrl}';
 	window.location.href = sourceleadUrl + "/requirementList?&searchResult="+searchResult+"&serachValue="+serachValue;
 }
 </script>
@@ -822,7 +820,6 @@ function loadRequirement(){
 function loadUsers(){
 	var searchResult = "searchresult";
 	var searchValue = "${searchValue}";
-	var sourceleadUrl = '${sourceleadUrl}';
 	window.location.href = sourceleadUrl + "/usersList?&searchResult="+searchResult+"&searchValue="+searchValue;
 }
 </script>
@@ -832,7 +829,6 @@ function loadVendor(){
 	var searchResult = "universalVendorList";
 	var searchValue = "${searchValue}";
 	var searchType = "${searchType}";
-	var sourceleadUrl = '${sourceleadUrl}';
 	window.location.href = sourceleadUrl + "/vendorsList?&searchResult="+searchResult+"&searchValue="+searchValue+"&searchType="+searchType;
 
 }
@@ -843,7 +839,6 @@ function loadVendor(){
 function loadClient(){
 	var searchResult = "clientSearchResult";
 	var searchValue = "${searchValue}";
-	var sourceleadUrl = '${sourceleadUrl}';
 	var searchType = "${searchType}";
 	window.location.href = sourceleadUrl + "/clientDashboard?&searchResult="+searchResult+"&searchValue="+searchValue+"&searchType="+searchType;
 }
@@ -853,7 +848,6 @@ function loadClient(){
 function loadProjects(){
 	var searchResult = "universalProjectsList";
 	var searchValue = "${searchValue}";
-	var sourceleadUrl = '${sourceleadUrl}';
 	window.location.href = sourceleadUrl + "/projectDashboard?&searchResult="+searchResult+"&searchValue="+searchValue;
 }
 </script>
@@ -861,7 +855,6 @@ function loadProjects(){
 <script>
 function vendorSearchSideBar(responderLocationId,orgRelationId,orgName){
 	var vendorKeyword = "vendorSearch";
-	var sourceleadUrl = '${sourceleadUrl}';
 	var org = encodeURIComponent(orgName);
 	window.location.href = sourceleadUrl + "/vendorsList?&responderLocationId="+responderLocationId+"&orgRelationId="+orgRelationId+"&orgName="+org+"&vendorKeyword="+vendorKeyword;
 
@@ -872,7 +865,6 @@ function vendorSearchSideBar(responderLocationId,orgRelationId,orgName){
 <script>
 function clientSearchSideBar(responderLocationId,orgRelationId,orgName){
 	var clientKeyword = "clientSearch";
-	var sourceleadUrl = '${sourceleadUrl}';
 	var org = encodeURIComponent(orgName);
 	window.location.href = sourceleadUrl + "/clientDashboard?&responderLocationId="+responderLocationId+"&orgRelationId="+orgRelationId+"&orgName="+org+"&clientKeyword="+clientKeyword;
 }
@@ -881,7 +873,6 @@ function clientSearchSideBar(responderLocationId,orgRelationId,orgName){
 <script>
 function candidateSearchSideBar(candidateIdSearchId,isAssociate){
 	var candidateKeyword = "candidateSearch";
-	var sourceleadUrl = '${sourceleadUrl}';
 	if(isAssociate == "Y"){
 		//Highlighting associate tab when search for associates through universal search
 		window.location.href = sourceleadUrl + "/associatesList?&candidateKeyword="+candidateKeyword+"&candidateIdSearchId="+candidateIdSearchId;
@@ -893,7 +884,6 @@ function candidateSearchSideBar(candidateIdSearchId,isAssociate){
 
 <script>
 function userSummaryRedirect(userId){
-	var sourceleadUrl = '${sourceleadUrl}';
 	window.location.href = sourceleadUrl +"/userSummary/"+userId;
 }
 </script>
@@ -901,7 +891,6 @@ function userSummaryRedirect(userId){
 <script>
 function projectSearchSideBar(projectId,projectName,startDate,endDate, status,projectUUID){
 	var projectKeyword = "projectSearch";
-	var sourceleadUrl = '${sourceleadUrl}';
 	window.location.href = sourceleadUrl + "/projectSummary?projectUUID="+projectUUID;
 // 	window.location.href = sourceleadUrl + "/projectDashboard?&projectId="+projectId+"&projectName="+projectName+"&startDate="+startDate+"&endDate="+endDate+"&status="+status+"&projectKeyword="+projectKeyword;
 }
@@ -913,11 +902,3 @@ $(".uasrch-selectpicker .dropdown-menu ul li").attr('id','srinu');
 </script> -->
 
 <jsp:include page="../masterFooter.jsp" />
-
-
-
-
-
-
-
-

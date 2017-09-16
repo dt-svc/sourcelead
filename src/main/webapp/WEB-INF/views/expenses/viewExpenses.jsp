@@ -144,7 +144,7 @@
 										             <input type='button' class='padLeft' value='${entryDoc.fileName}'/>
 										        </a>
 										        <%-- <a class="fa fa-eye expAttView" onclick="viewDocument('${entryDoc.fileName}','${entryDoc.id}');"></a> --%>
-										        <a class="fa fa-eye expAttView" onclick="viewFile('${sourceleadUrl}','${entryDoc.fileURL}','${entryDoc.fileName}','${entryDoc.fileContentType}');"></a>
+										        <a class="fa fa-eye expAttView" onclick="viewFile('${entryDoc.fileURL}','${entryDoc.fileName}','${entryDoc.fileContentType}');"></a>
 					                         </strong>
 					                         </c:if>
 					                       </c:forEach>
