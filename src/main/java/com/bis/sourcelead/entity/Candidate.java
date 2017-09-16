@@ -170,6 +170,9 @@ public class Candidate implements Serializable{
 	@Column(name="STATUS")
 	private Integer status;
 	
+	@Column(name="FILE_URL")
+	private String fileUrl;
+	
 	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="TEAM_ID")        
@@ -1571,6 +1574,14 @@ public class Candidate implements Serializable{
 	public void setVenSpocId(Long venSpocId)
 	{
 		this.venSpocId = venSpocId;
+	}
+
+	public String getFileUrl() {
+		return fileUrl;
+	}
+
+	public void setFileUrl(String fileUrl) {
+		this.fileUrl = fileUrl;
 	}
 
 }
