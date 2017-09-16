@@ -58,9 +58,6 @@ $(document).ready(function(){
   
   <script>
 	function getAssetCategoryList(){
-		
-		var sourceleadUrl ='${sourceleadUrl}';
-		
 		  $.ajax({
 			   	type: "POST",
 			    url: sourceleadUrl+"/getAssetCategoryList?${_csrf.parameterName}=${_csrf.token}", 	   
@@ -195,7 +192,6 @@ $(".addcon-pop").click(function(){
 		        var jsonData = encodeURIComponent(con);
 				$("#save_button").attr("disabled", "disabled");
 				$( "#save_button" ).addClass('button').val('Processing..');
-				var sourceleadUrl = '${sourceleadUrl}';
 				$("#addCategory_form").attr("disabled", "disabled");
 				//It will escape all the special characters
 				$.ajax({
@@ -238,7 +234,6 @@ function closePopupDemo(){
 
 <script>
 function editCategory(catLocationId,categoryId){
-	 var sourceleadUrl ='${sourceleadUrl}';
 	$.ajax({
 	   	type: "POST",
 	    url: sourceleadUrl+"/getCategoryById?${_csrf.parameterName}=${_csrf.token}&categoryId="+categoryId+"&catLocationId="+catLocationId, 	   
@@ -315,7 +310,6 @@ function validateCategoryName(){
 	$('input#categoryName').removeAttr("class record-exist record-exist-errormsg");
 	$('input#categoryName').attr('class','valid form-control');
 	$('#categoryNameDiv').find('p.jquery_form_error_message').remove();
-	var sourceleadUrl = '${sourceleadUrl}';
 	if (categoryName != null && categoryName != '') {
 		//$("#save_client").attr("disabled", "disabled");
 		// $( "#save_client" ).addClass('button').val('Processing..');
@@ -370,7 +364,6 @@ function deleteCategory(categoryId){
  
 <script type="text/javascript">
 function terminateCategory(categoryId){
-	var sourceleadUrl = '${sourceleadUrl}';
 	if (categoryId != null && categoryId != '') {
 		$("#category"+categoryId).html("<td colspan='5'  id='loading"+categoryId+"'></td>");
 		$("#loading"+categoryId).attr('style',' height:40px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/linear-loader.gif"); background-position:center; background-repeat:no-repeat;');

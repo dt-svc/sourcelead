@@ -756,7 +756,7 @@ public class RequirementRestController {
 	@PreAuthorize("hasAnyRole('ROLE_RECOMMENDATIONS')")
 	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "/getRequirementRecommendationsByRequirementId", method = RequestMethod.POST)
-	public @ResponseBody String getRequirementRecommendationsByRequirementId(
+	public @ResponseBody List<CandidateIndex> getRequirementRecommendationsByRequirementId(
 			@RequestParam(value = "requirementId", required = false) Long requirementId, @RequestParam(value = "orgLocationId", required = false) Long orgLocationId, @RequestParam(value = "count", required = false) Long offset)
 			throws Exception {
 		String resultJson;
@@ -765,10 +765,9 @@ public class RequirementRestController {
 		RecommendedCustomizeScore  recommendedCustomizeScore = recommendedCustomizeScoreService.getRecommendedCustomizeScoreByRequirementId(requirementId);
 	    if(null != recommendedCustomizeScore){ 
 		//candidateListCopy = recommendationsService.getRecommendationsUpdateWithScoreByUsingElk(orgLocation.getId(), recommendedCustomizeScore,offset);
-	    	candidateListCopy = recommendationsService.getRecommendationsUpdateWithScoreByUsingElk(orgLocationId, recommendedCustomizeScore, requirementId);
+	    	candidateListCopy = recommendationsService.getRecommendationsUpdateWithScoreByUsingElk(orgLocationId, recommendedCustomizeScore, requirementId,null);
 	    }
-		resultJson = commonUtil.toJSON(candidateListCopy);
-		return resultJson;
+		return candidateListCopy;
 
 	}
 

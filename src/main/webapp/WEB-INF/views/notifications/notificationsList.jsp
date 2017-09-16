@@ -226,7 +226,6 @@ function notificationPagination(){
 <!-- Delete Notification start  -->  
 <script>
 function deleteNotification(notificationId){   
-	var sourceleadUrl = '${sourceleadUrl}';
 	var  orgCode ='${orgCode}';
 	var locationCode = '${locationCode}';
 	  $.ajax({
@@ -293,7 +292,6 @@ function deleleteAll() {
 	 $("input[name='check[]']:checked").each( function (i) {
 		 notificationIds[i] = $(this).val();
 	});
-	 var sourceleadUrl = '${sourceleadUrl}';
 	 var  orgCode ='${orgCode}';
 	 var locationCode = '${locationCode}';
 		 $.ajax({

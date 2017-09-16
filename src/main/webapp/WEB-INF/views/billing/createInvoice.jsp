@@ -419,7 +419,6 @@ function validateDiscount() {
 
 <script>
 	function loadInvoiceDetails(invoiceUUID){
-		 var sourceleadUrl ='${sourceleadUrl}';
 		 
 		 $.ajax({
 		    	type: "POST",
@@ -485,7 +484,6 @@ function validateDiscount() {
 <script>
 	function getSavedAttachments(invoiceDocumentsList){
 		var result = '';
-		var sourceleadUrl = '${sourceleadUrl}';
 		if(invoiceDocumentsList.length > 0){
 			
 			 for (var i = 0; i < invoiceDocumentsList.length; i++) { 
@@ -524,7 +522,6 @@ function validateDiscount() {
 	function deleteInvoiceDocument(documentId){
 		
 		if(documentId){
-			var sourceleadUrl = '${sourceleadUrl}';
 			$.ajax({
 		    	type: "POST",
 		    	 url: sourceleadUrl+"/deleteInvoiceDocumentBydocumentId?${_csrf.parameterName}=${_csrf.token}&documentId="+documentId, 
@@ -948,7 +945,6 @@ function cancel(){
 	  }
 	  
 	  $('.action-pop').slideUp();
-	  var sourceleadUrl ='${sourceleadUrl}';
 	   $.ajax({
 	    	type: "GET",
 	        url: sourceleadUrl+"/getInvoiceAssociatesList?${_csrf.parameterName}=${_csrf.token}&selectedAssociates="+selectedAssociates+"&orgRelationId="+orgRelationId+"&contractType=clientSow",
@@ -1113,7 +1109,6 @@ function pagination(){
   <script>
   function getSow(candidateId,id,contractId){
 	  var orgRelationId = $("#clientOrgRelationId").val();
-	  var sourceleadUrl ='${sourceleadUrl}';
 			  $.ajax({
 			    	type: "GET",
 			        url: sourceleadUrl+"/getSowcontractListByAssociateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&orgRelationId="+orgRelationId+"&contractType=clientSow",
@@ -1293,7 +1288,6 @@ function pagination(){
 	   var orgRelationId = $("#clientOrgRelationId").val();
 	   var currencyCode = '${SourceLeadWeb_currencyCode}';
 	   var grandTotal = $("#grandTotal").val();
-	   var sourceleadUrl ='${sourceleadUrl}';
 	   if(grandTotal != '' && grandTotal != 'undefined'){
 		   $.ajax({
 				type : "GET",
@@ -1701,7 +1695,6 @@ function errDueDate(){
 <script>
 function getSowRate(id){
 	var contractId = $("#"+id+'sow').val();
-	var sourceleadUrl ='${sourceleadUrl}';
 	if(contractId !='' && contractId != 'undefined' && contractId != null){
 	$.ajax({
     	type: "GET",
@@ -1792,7 +1785,6 @@ function getSowRate(id){
 
 <script>
 function getClients(){
-	var sourceleadUrl ='${sourceleadUrl}';
 	var orgRelationId ='${orgRelationId}';
 	
 	$.ajax({
@@ -1833,7 +1825,6 @@ function getClients(){
 <script>
 function getClientContacts(clientContactId){
 	var orgRelationId = $("#clientOrgRelationId").val();
-	var sourceleadUrl ='${sourceleadUrl}';
 	$.ajax({
 	type : "GET",
 	url: sourceleadUrl+"/getClientContactsByOrgRelationId?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+orgRelationId,
@@ -1867,7 +1858,6 @@ function getClientContacts(clientContactId){
 <script> 
 function getPaymentTerms(){
 	var orgRelationId = $("#clientOrgRelationId").val();
-	var sourceleadUrl ='${sourceleadUrl}';
 	$.ajax({
 		type : "GET",
 		url: sourceleadUrl+"/getPaymentTermsAndBillindAddress?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+orgRelationId,
@@ -1902,7 +1892,6 @@ function getDueDateByFrequency(){
 	 var paymentFrequency = document.getElementById("paymentFrequency").value;
 	 var locationCode ='${SourceLeadWeb_locationCode}';
 	 if(paymentFrequency && invoiceDate){
-	    var sourceleadUrl ='${sourceleadUrl}';
 	    $("#invoiceLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	    
 	    $.ajax({
@@ -1939,7 +1928,6 @@ function saveInvoice(saveType){
 			  }
 		  }
 		  if ($('#invoice_form').validate(false, validationSettings)){  
- 	 	    var sourceleadUrl ='${sourceleadUrl}';
  	 	    var formData = getFormData("invoice_form");
          
  	 	    if(selectedAssociates == null || selectedAssociates == '' || selectedAssociates == 'undefined'){
@@ -2034,7 +2022,6 @@ function getEstimatedHours(rowId){
 	var endDate = document.getElementById(rowId+"edate-input").value;
 	var locationId = '${SourceLeadWeb_orgLocationId}';
 	if(startDate && endDate){
-		 var sourceleadUrl ='${sourceleadUrl}';
 		 var averageWorkingHours = '${SourceLeadWeb_orgLocations.averageWorkingHours}';
 		 $("#resourceListLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		 $.ajax({
@@ -2053,7 +2040,6 @@ function getEstimatedHours(rowId){
 }
 function editHoursValidations(startDate,endDate,rowId){
 	if(startDate && endDate){
-		 var sourceleadUrl ='${sourceleadUrl}';
 		 var locationId = '${SourceLeadWeb_orgLocationId}';
 		 var averageWorkingHours = '${SourceLeadWeb_orgLocations.averageWorkingHours}';
 		 $("#resourceListLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
@@ -2098,8 +2084,7 @@ function validationHours(rowId){
 }
 
 function attachFile(id){
-	var sourceleadUrl ='${sourceleadUrl}';
-	fileUpload(sourceleadUrl, ""+id+"invoicedocFile", "invoiceDocuments", "invoice_form","fileInfo");
+	fileUpload(""+id+"invoicedocFile", "invoiceDocuments", "invoice_form","fileInfo");
 }
  
 </script>

@@ -113,7 +113,7 @@ margin:10px 220px 0;
 			 <span class="pull-left"><i class="fa fa-question" aria-hidden="true"></i></span>
 			  <span class="info-msg pull-left">
 			  <p>
-			  According this template, the Users need to <span class="text-danger"><strong>Import Required Fields</strong></span></p>
+			  According to this template, the Users need to <span class="text-danger"><strong>Import Required Fields</strong></span></p>
 			  </p>
 			  <p>
 			  <label><i class="fa fa-user"></i>&nbsp;&nbsp;Client Name</label>
@@ -131,7 +131,7 @@ margin:10px 220px 0;
 			 <span><i class="fa fa-question" aria-hidden="true"></i></span>
 			  <span class="info-msg clearfix mt">
 			  <p class="clearfix mt">
-			  According this template, the Users need to <span class="text-danger"><strong>Import Required Fields</strong></span></p>
+			  According to this template, the Users need to <span class="text-danger"><strong>Import Required Fields</strong></span></p>
 			  </p>
 			  <p>
 			  <label><i class="fa fa-user"></i>&nbsp;&nbsp;Client Name</label>

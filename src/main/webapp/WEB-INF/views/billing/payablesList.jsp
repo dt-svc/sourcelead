@@ -500,7 +500,6 @@ function saveReceivePayment(invoiceId){
 	        
 	        var form = $('#receivePayment-form')[0];
 	 	   var formData = new FormData(form); 
-	        var sourceleadUrl ='${sourceleadUrl}';
 	        $("#save_payment").attr("disabled", "disabled");
      		$("#save_payment" ).addClass('button').val('Processing..');
 	        $.ajax({
@@ -532,7 +531,6 @@ $('body').on('blur', '#receivePayment-form', function() {
 
 <script>
 function getPayableInvoiceList(){
-	var sourceleadUrl ='${sourceleadUrl}';
 	var invoice = [];
 	var payment = [];
 	var dayWisetype = $("#dayWiseTypeId").val();
@@ -667,7 +665,6 @@ function payablePagination(url){
 	    		     
 			    	result = result +'         <td>';
 					if(report.invoiceStatus == "DRAFT" || report.invoiceStatus == "Rejected"){
-						var sourceleadUrl ='${sourceleadUrl}';
 						if(report.projectId != null && report.projectId != '' && report.projectId != 'undefined'){
 							'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_BILL\')">';
 							result = result +'           <div class="tbldata-dotdot_80 invoiceId_Anchor"><a href="'+sourceleadUrl+'/getInvoiceByUUID?invoiceUUID='+report.invoiceUUID+'&projectId='+report.projectId+'" title = "'+report.invoiceId+'">'+report.invoiceId+'</a></div>   ';
@@ -952,7 +949,6 @@ $('html').click(function(){
 
 <script>
 function sendReminder(id){
-	 var sourceleadUrl ='${sourceleadUrl}';
 	 $.ajax({
     	 type: "POST",
 	     dataType : 'json',
@@ -980,7 +976,6 @@ function downloadInvoice(id){
 
 <script>
 function acceptedInvoice(id){
-	 var sourceleadUrl ='${sourceleadUrl}';
 	 $.ajax({
     	 type: "POST",
 	     dataType : 'json',
@@ -1013,7 +1008,6 @@ function rejectInvoice(id){
 
 <script>
 function saveReasonforPayable(id){
-	var sourceleadUrl = '${sourceleadUrl}';
 	var reason = document.getElementById("reasonForDelete").value;
 	if(reason == null || reason == '' || reason == 'undefined'){
 	      
@@ -1277,7 +1271,6 @@ $('#mypop').click(function(){
 <script>
 function exportToPayablePdf(){
 	
-	 var sourceleadUrl ='${sourceleadUrl}';
 	 var invoiceStatus = [];
 	 var paymentStatus = [];
 	 
@@ -1317,7 +1310,6 @@ function exportToPayablePdf(){
 <script>
 function exportToPayableExcel(){
 	
-	 var sourceleadUrl ='${sourceleadUrl}';
 	 var invoiceStatus = [];
 	 var paymentStatus = [];
 	 
@@ -1356,7 +1348,6 @@ function exportToPayableExcel(){
 
 <script type="text/javascript">
 function linkPayableInvoice(invoiceId,totalAmount){
-	var sourceleadUrl ='${sourceleadUrl}';
 	 $.ajax({
     	 type: "POST",
 	     dataType : 'json',
@@ -1512,7 +1503,6 @@ function mergeInvoice(parentTotalAmount){
 	var currencyCode = '${SourceLeadWeb_currencyCode}';
 	var linkRadio = $('input[name=linkedInvoice]');
 	var checkVal = linkRadio.filter(':checked').val();
-	var sourceleadUrl ='${sourceleadUrl}';
 	var total = $('#linkedPayableTotalId'+checkVal+'').text();
 	var calculatedAmount = 	parentTotalAmount - total;
 	if(checkVal != '' && checkVal != 'undefined' && checkVal != null){
@@ -1543,7 +1533,6 @@ function showDiffAmountPopup(calculatedAmount,currencyCode,checkVal,masterInvoic
 
 <script>
 function proceedToMergeBill(checkVal,masterInvoiceId){
-	var sourceleadUrl ='${sourceleadUrl}';
 	$.ajax({
 	   	 type: "POST",
 		     dataType : 'json',
@@ -1561,7 +1550,6 @@ function proceedToMergeBill(checkVal,masterInvoiceId){
 function cancel(){
 	$("#popUp").empty();
 	$(".project_inn_mask").fadeOut(200);
-	var sourceleadUrl ='${sourceleadUrl}';
 	location.replace(sourceleadUrl+"/payablesList");	
 }
 </script>
@@ -1575,7 +1563,6 @@ function cancelExport(){
 
 <script type="text/javascript">
 function generateAutomaticInvoice(){
-	 var sourceleadUrl ='${sourceleadUrl}';
 	 $("#invoiceLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	 $.ajax({
     	 type: "POST",
@@ -1595,7 +1582,6 @@ function generateAutomaticInvoice(){
 
 <script>
 function unLinkBill(invoiceId){
-	var sourceleadUrl ='${sourceleadUrl}';
 	$.ajax({
 	   	 type: "POST",
 		     dataType : 'json',
@@ -1629,7 +1615,6 @@ function cancelTermination(){
 }
 
 function saveBillRejectedReason(billId){
-	var sourceleadUrl = '${sourceleadUrl}';
 	var reason = $("#reasonForBill").val();
 	if(reason != null && reason != ''){
 		 $("#reasonForBillDiv").empty();

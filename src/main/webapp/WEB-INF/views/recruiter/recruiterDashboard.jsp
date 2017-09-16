@@ -170,8 +170,6 @@ $(document).ready(function(){
 
 <script>
   function getJobSummarySerialChart(){
-	  var sourceleadUrl = '${sourceleadUrl}';
-		
 		
 		var startDate = document.getElementById("serialfromdate").value; 
 		var endDate = document.getElementById("serialtodate").value; 
@@ -276,7 +274,6 @@ $(document).ready(function(){
   
   <script>
   function getJobSummaryDoNutChart(){
-	var sourceleadUrl = '${sourceleadUrl}';
 	
 	var startDate = document.getElementById("dpfromdate").value; 
 	var endDate = document.getElementById("dptodate").value; 
@@ -347,8 +344,6 @@ function loadJobSummaryDoNutChart(appliedJobs,submittedByMeJobs,referByMeJobs){
 <script>
   function getSubmittedByMeJobPortlets(){
 	  
-    var sourceleadUrl = '${sourceleadUrl}';
-	
 	var startDate = document.getElementById("portletfromdate").value; 
 	var endDate = document.getElementById("portlettodate").value; 
 	  
@@ -451,15 +446,12 @@ function loadJobSummaryDoNutChart(appliedJobs,submittedByMeJobs,referByMeJobs){
 
 <script>
 	function recruiterSubmttedJobList(startDate,endDate,status){
-			var sourceleadUrl = '${sourceleadUrl}';
 			window.location.href = sourceleadUrl + '/recruiterSubmttedJobList?${_csrf.parameterName}=${_csrf.token}&startDate='+startDate+'&endDate='+endDate+'&requirementStatus='+status;
 	}
 </script>
 
 <script>
   function getReferByMeJobPortlets(){
-	  
-    var sourceleadUrl = '${sourceleadUrl}';
 	
 	var startDate = document.getElementById("portletreferByMefromdate").value; 
 	var endDate = document.getElementById("portletreferByMetodate").value; 
@@ -572,7 +564,6 @@ function loadJobSummaryDoNutChart(appliedJobs,submittedByMeJobs,referByMeJobs){
   </script>
   <script>
 	function getReferredByMeProtletList(startDate,endDate,status){
-			var sourceleadUrl = '${sourceleadUrl}';
 			window.location.href = sourceleadUrl + '/referredByMePortletList?${_csrf.parameterName}=${_csrf.token}&startDate='+startDate+'&endDate='+endDate+'&requirementStatus='+status;
 	}
 </script>

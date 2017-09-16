@@ -248,7 +248,6 @@ border:none; background: none; font-size:14px; font-weight:600; box-shadow: none
 <script>
 function getProjectsList(projectName){
 	var orgRelationId = $("#vendorOrgRelationId").val();
-	var sourceleadUrl ='${sourceleadUrl}';
 	$.ajax({
 	type : "GET",
 	url: sourceleadUrl+"/getAllProjectsByOrgRelationId?${_csrf.parameterName}=${_csrf.token}",
@@ -283,7 +282,6 @@ function getProjectFrequency(invoiceFrequency){
 	 if(projectId == null){
 	projectId = '${projectId}';
 	} 
-	var sourceleadUrl ='${sourceleadUrl}';
 	
 	if(projectId != null && projectId != '' && projectId != 'undefined'){
 			$.ajax({
@@ -328,7 +326,6 @@ function getProjectAssignedMem(){
 	var frequency = $("#frequency").val();
 	var projectId = $("#projectId").val();
 	var orgRelationId = $("#vendorOrgRelationId").val();
-	var sourceleadUrl ='${sourceleadUrl}';
 	$.ajax({
 	type : "GET",
 	url: sourceleadUrl+"/getAllProjectVendorAssignedMembers?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId+"&frequency="+frequency+"&orgRelationId="+orgRelationId+"&contractType=vendorSow",
@@ -603,7 +600,6 @@ function populateInlineItemsGrid1(data){
 <script>
   function getSow(contractId){
 	  var orgRelationId = $("#vendorOrgRelationId").val();
-	  var sourceleadUrl ='${sourceleadUrl}';
 	  var maxRowNum = $("#maxTsRowNum").val();
 		  for(var id=0;id < maxRowNum;id++){
 			     var result = "";
@@ -641,7 +637,6 @@ function populateInlineItemsGrid1(data){
 <script>
 function getSowRate(id){
 	var contractId = $("#"+id+'sow').val();
-	var sourceleadUrl ='${sourceleadUrl}';
 	if(contractId !='' && contractId != 'undefined' && contractId != null){
 	$.ajax({
     	type: "GET",
@@ -813,7 +808,6 @@ function getSowRate(id){
 	   var orgRelationId = $("#vendorOrgRelationId").val();
 	   var currencyCode = '${SourceLeadWeb_currencyCode}';
 	   var grandTotal = $("#grandTotal").val();
-	   var sourceleadUrl ='${sourceleadUrl}';
 	   if(grandTotal != '' && grandTotal != 'undefined'){
 		   $.ajax({
 				type : "GET",
@@ -1148,7 +1142,6 @@ function calculateTaxDiscount(){
 function saveInvoice(saveType){
          
          if ($('#project_payable_invoice_form').validate(false, validationSettings)){  
- 	 	    var sourceleadUrl ='${sourceleadUrl}';
  	 	     var formData = getFormData("project_payable_invoice_form");
 		        	  $("#invoiceLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		    	     
@@ -1239,7 +1232,6 @@ function toDate(selector) {
 <!-- To Get the Existed invoice details to Edit -->
 <script>
 	function loadInvoiceDetails(invoiceUUID){
-		 var sourceleadUrl ='${sourceleadUrl}';
 		 
 		 $.ajax({
 		    	type: "POST",
@@ -1319,7 +1311,6 @@ $(document).ready(function(){
 <!-- Get alla clients when editing -->
 <script>
 function getVendors(){
-	var sourceleadUrl ='${sourceleadUrl}';
 	var orgRelationId ='${orgRelationId}';
 	$.ajax({
 		type : "GET",
@@ -1407,7 +1398,6 @@ function getVendors(){
 <script>
 	function getSavedAttachments(invoiceDocumentsList){
 		var result = '';
-		var sourceleadUrl = '${sourceleadUrl}';
 		if(invoiceDocumentsList.length > 0){
 			
 			 for (var i = 0; i < invoiceDocumentsList.length; i++) { 
@@ -1445,7 +1435,6 @@ function getVendors(){
 	function deleteInvoiceDocument(documentId){
 		
 		if(documentId){
-			var sourceleadUrl = '${sourceleadUrl}';
 			$.ajax({
 		    	type: "POST",
 		    	 url: sourceleadUrl+"/deleteInvoiceDocumentBydocumentId?${_csrf.parameterName}=${_csrf.token}&documentId="+documentId, 
@@ -1498,7 +1487,6 @@ function addTaxDivs(){
 <script> 
 function getPaymentTerms(){
 	var orgRelationId = $("#vendorOrgRelationId").val();
-	var sourceleadUrl ='${sourceleadUrl}';
 	$.ajax({
 		type : "GET",
 		url: sourceleadUrl+"/getPaymentTermsAndBillindAddress?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+orgRelationId,
@@ -1533,7 +1521,6 @@ function getDueDateByFrequency(){
 	 var paymentFrequency = document.getElementById("paymentFrequency").value;
 	 var locationCode ='${SourceLeadWeb_locationCode}';
 	 if(paymentFrequency && invoiceDate){
-	    var sourceleadUrl ='${sourceleadUrl}';
 	    $("#invoiceLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	    
 	    $.ajax({
@@ -1583,7 +1570,6 @@ function errInvoiceDate(){
 <script>
 function getVendorContacts(vendorContactId){
 	var orgRelationId = $("#vendorOrgRelationId").val();
-	var sourceleadUrl ='${sourceleadUrl}';
 	$.ajax({
 		type : "GET",
 		url: sourceleadUrl+"/getPayableVendorContactsByOrgRelationId?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+orgRelationId,
@@ -1642,8 +1628,7 @@ function maskme(){
 
 <script type="text/javascript">
 function attachFile(id){
-	var sourceleadUrl ='${sourceleadUrl}';
-	fileUpload(sourceleadUrl, ""+id+"invoicedocFile", "invoiceDocuments", "project_payable_invoice_form","fileInfo");
+	fileUpload(""+id+"invoicedocFile", "invoiceDocuments", "project_payable_invoice_form","fileInfo");
 }
 </script>
  <jsp:include page="../masterFooter.jsp" />	

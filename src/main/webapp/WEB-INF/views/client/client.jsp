@@ -35,7 +35,7 @@ window.onload = function () {
 			<h2>Create Client</h2>
 		</div>
 		<div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo;<a href="<c:url value='/clientDashboard'/>"> Clients List</a>
-			&raquo; Create Client</div>
+			&raquo; Add Client</div>
 	</section>
 	
 	<div class="content-area content-new clearfix">
@@ -65,7 +65,7 @@ window.onload = function () {
 	          <label class="col-md-3">Location<span class="text-danger">&nbsp;*</span></label>
 	          <div class="col-md-9" id="locationField">
 	          <div class="positionRelative">
-	          <input class="form-control positionRelative" id="clientLocation" name="location" placeholder="Enter your Location"  type="text" field-name="Locatin" data-validation="required"></input>
+	          <input class="form-control positionRelative" id="clientLocation" name="location" placeholder="Enter your Location"  type="text" field-name="Location" data-validation="required"></input>
 	          <i class="fa fa-refresh btn btn-primary refresh-icon" title="Refresh" onClick="refreshGoogleApiLocation('clientLocation','clientCountry','clientState','clientCity','clientZipCode');"></i>
 	          </div>
 	          </div>
@@ -75,7 +75,7 @@ window.onload = function () {
 	          <label class="col-md-3">Location</label>
 	          <div class="col-md-9">
 	          <div class="positionRelative">
-	          <input class="form-control positionRelative" id="orgLocation" name="orgLocation" placeholder="Enter your address"  type="text" field-name="Locatin" readonly></input>
+	          <input class="form-control positionRelative" id="orgLocation" name="orgLocation" placeholder="Enter your address"  type="text" field-name="Location" readonly></input>
 	          </div>
 	          </div>
 	        </div>
@@ -342,9 +342,6 @@ function getOrgName(){
 	document.getElementById("orgZipCodeDiv").style.display="none";
 	
 	
-	/* $("#role" ).val('');
-	$("#role").attr("data-validation", "required");
-	document.getElementById("roleDiv").style.display="";*/
 	document.getElementById("userRoleDiv").style.display="none"; 
 	
 	$.ajax({                           
@@ -585,7 +582,6 @@ function getSpocUserDetails(){
 		        		    $("#lastName").val(json[1]);
 	        		 }else{
 	        			    $("#lastName").attr("disabled", false);
-	        			    //$("#lastName").val('');
 	        		 }
 		        		
 	        		 if(json[2] != null && json[2] != ''){
@@ -593,21 +589,15 @@ function getSpocUserDetails(){
 		        		    $("#phoneNumber").val(json[2]);
 	        		 }else{
 	        			    $("#phoneNumber").attr("disabled", false);
-	        			    //$("#phoneNumber").val('');
 	        		 }
 	        		 
 	        		 
 	        		 if(json[3] != null && json[3] != ''){
-	        			 /* $("#role").removeAttr("data-validation");
-		        			$("#role" ).val('');
-	        			    document.getElementById("roleDiv").style.display="none"; */
 	   	        			document.getElementById("userRoleDiv").style.display="";
 	   	        			$("#userRole").val(json[3]);
 	   	        			$("#userRoleText").val(json[4]);
 		        		 }else{
-		        			 /* $("#role").attr("data-validation", "required"); */
 		        			 $("#userRole" ).val('');
-		        			 /* document.getElementById("roleDiv").style.display=""; */
 		        			 document.getElementById("userRoleDiv").style.display="none";
 		        		 }
 	        	}
@@ -625,9 +615,7 @@ function getSpocUserDetails(){
 	    $("#phoneNumber").attr("disabled", false);
 	    $("#phoneNumber").val('');
 	    
-	    /* $("#role").attr("data-validation", "required"); */
 	    $("#userRole" ).val('');
-	    /* document.getElementById("roleDiv").style.display=""; */
 		document.getElementById("userRoleDiv").style.display="none";
 	   
 	}
@@ -724,8 +712,6 @@ function validateClientName(){
 		
 		if (website != null && website != '') {
 
-			//$("#save_client").attr("disabled", "disabled");
-			// $( "#save_client" ).addClass('button').val('Processing..');
 			$.ajax({
 				type : "GET",
 				url : sourceleadUrl + "/ws/validateClientWebsite?website="+ website + "&sourceleadBLockedwebsites="+ sourceleadBLockedwebsites,
@@ -745,10 +731,6 @@ function validateClientName(){
 						$('input#webSite').attr('class','valid form-control');
 						$('#companyWebsiteDiv').find('p.jquery_form_error_message').remove();
 				
-						/* $("#save_client").click(function() {
-							if ($(this).validate(false, validationSettings)) {
-							}
-						}); */
 					}
 				},
 

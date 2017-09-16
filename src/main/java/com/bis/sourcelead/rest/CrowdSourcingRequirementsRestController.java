@@ -1352,14 +1352,6 @@ public class CrowdSourcingRequirementsRestController {
 		public @ResponseBody String storeCandidate(CandidateDTO candidateDTO,
 				@RequestParam(value = "candidateId", required = false) Long candidateId,HttpServletRequest request) throws Exception {
 			
-			/*MultipartFile multiFile = null;
-			Iterator<String> itrator = request.getFileNames();
-			if(itrator.hasNext()){
-		        multiFile = request.getFile(itrator.next());
-			}
-			String jsonc = "{" + json + "}";
-			JSONObject jsonObj = new JSONObject(jsonc);*/
-		 
 		 if(Validator.validate(candidateDTO)) {
 			 candidateDTO.setStaticPath(staticPath);
 				//FileUploadUtil.fillUploadedFileInfo(candidateDTO, candidateDTO.getFileInfo());
