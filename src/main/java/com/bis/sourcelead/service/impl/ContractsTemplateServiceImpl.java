@@ -2057,6 +2057,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 			vendorContracts.setContractUUID(contracts.getContractUUID());
 			Contracts savedChildContracts = contractsTemplateDao.saveNewContract(vendorContracts);
 			
+			if(contractsDTO.getDocument() != null){
 			for (ContractDocumentsDTO doc : contractsDTO.getDocument()) {
 				for(FileInfo file : contractsDTO.getReqDocs()){
 					if(doc.getDocFileName() != null && doc.getDocFileName().equalsIgnoreCase(file.getFileName())){
@@ -2078,6 +2079,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 						contractRequestDocumentsService.saveContractRequestDocuments(contractRequestDocuments);
 					}
 				}
+			}
 			}
 		return savedContracts;
 	}

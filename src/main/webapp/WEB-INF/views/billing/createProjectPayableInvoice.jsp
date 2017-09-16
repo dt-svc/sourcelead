@@ -1148,7 +1148,7 @@ function saveInvoice(saveType){
 		        	  $.post(sourceleadUrl+"/saveInvoice?${_csrf.parameterName}=${_csrf.token}&saveType="+saveType+"&invoiceType=payable", formData, function(data) {
 			  				if(data == "success"){
 			  					$("#invoiceLoading").removeAttr("style");
-	    		     			location.replace(sourceleadUrl+"/invoiceList");
+	    		     			location.replace(sourceleadUrl+"/payablesList");
 			  				}
 			  			   }); 
 		        	 

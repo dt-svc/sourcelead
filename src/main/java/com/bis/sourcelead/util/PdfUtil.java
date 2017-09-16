@@ -703,8 +703,8 @@ public class PdfUtil {
                 }
                 table.completeRow();
             }
-	        
-	        document.addTitle("Client List Table");
+//	        StringBuilder nameSb = new StringBuilder();
+//	        document.addTitle(nameSb.append(vendorType).append("List Table").toString());
 	        table.setSpacingBefore(15f);
 	        document.add(table);
 	        logger.info("Pdf table created !!");
@@ -726,7 +726,8 @@ public class PdfUtil {
 			clientArray[0] = "--";
 		}
 		if (orgRelations.getWebSite() != null && !"".equalsIgnoreCase(orgRelations.getWebSite())) {
-			clientArray[1] = orgRelations.getWebSite();
+			StringBuilder sb = new StringBuilder();
+			clientArray[1] = sb.append("www.").append(orgRelations.getWebSite()).toString();
 		}else{
 			clientArray[1] = "--";
 		}

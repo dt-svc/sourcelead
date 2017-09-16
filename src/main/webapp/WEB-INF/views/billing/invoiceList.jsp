@@ -590,6 +590,7 @@ function invoicePagination(url){
 	    	  		if(report.dueBeforeInvoiceCount != null && report.dueBeforeInvoiceCount != '' && report.dueBeforeInvoiceCount != 'undefined'){
 	    	  			$("#dueBeforeInvoiceCount").html(report.dueBeforeInvoiceCount);
 					}
+	    	  		alert(report.dueAfterInvoiceAmount)
 	    	  		if(report.dueAfterInvoiceAmount != null && report.dueAfterInvoiceAmount != '' && report.dueAfterInvoiceAmount != 'undefined'){
 	 					$("#dueAfterInvoiceAmount").html(report.dueAfterInvoiceAmount);
 					}
