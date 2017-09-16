@@ -1,4 +1,4 @@
-package com.bis.sourcelead.orgShortCodeIdForOldOrgs.forOtherOrgs;
+package com.bis.sourcelead.elk.install;
 
 import java.beans.PropertyVetoException;
 import java.io.IOException;
@@ -18,7 +18,7 @@ import com.bis.sourcelead.db.DatabaseConnectionConfig;
 import com.bis.sourcelead.db.PropertyPathConfiguration;
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 
-public class JobsGeneratedIdpdatedFile{
+public class SourceleadJobsGeneratedIdpdatedFile{
 
 	private ComboPooledDataSource comboPooledDataSource;
 	
@@ -94,7 +94,7 @@ public class JobsGeneratedIdpdatedFile{
 		}
 	 
 	public static void main(String[] args) throws IOException, SQLException {
-		JobsGeneratedIdpdatedFile dump = new JobsGeneratedIdpdatedFile();
+		SourceleadJobsGeneratedIdpdatedFile dump = new SourceleadJobsGeneratedIdpdatedFile();
 		dump.addCandidateGeneratedId();
 	}
 }
