@@ -514,7 +514,6 @@ public class CandidateServiceImpl implements CandidateService {
 			if(fileInfo != null){
 			HashSet<CandidateResumes> candidateResumesList = candidateResumesService.getCandidateResumesDetails(orgLocations,user.getUserCode(),candidate, fileInfo);
 			candidate.setCandidateResumes(candidateResumesList);
-			candidate.setFileName(fileInfo.getFileName());
 			FileUploadUtil.moveFile(candidateDto.getStaticPath(), fileInfo, "resumes");
 				}
 			}
@@ -1467,6 +1466,20 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 			{
 				candidate.setDesignationOtherType(null);
 			}
+			
+			if(StringUtils.isNotBlank(candidateDTO.getVendors())){
+				OrgRelations orgRelation = orgRelationsService.getOrRelationsById(Long.parseLong(candidateDTO.getVendors()));
+				candidate.setOrgRelationId(orgRelation);
+				}else{
+				candidate.setOrgRelationId(null);
+				}
+
+				if(StringUtils.isNotBlank(candidateDTO.getVendorcontact())){
+				OrgSpoc orgspoc = orgSpocService.getOrgSpocById(Long.parseLong(candidateDTO.getVendorcontact()));
+				candidate.setSpocId(orgspoc);
+				}else{
+				candidate.setSpocId(null);
+				}
 			
 			candidate.setCandidateUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 			candidate.setGeneratedId(getCandidateId(orgLocations));

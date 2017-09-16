@@ -248,9 +248,7 @@ var validationSettings = {
         	        var jsonData = encodeURIComponent(con);
         	        var form = $('#addAsset_form')[0];
 	           		var formData = new FormData(form);
-	          		var sourceleadUrl ='${sourceleadUrl}';
-	          		
-	          		
+	           		
 	          		 $("#add_asset").attr("disabled", "disabled");
 	          		 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	          		
@@ -345,9 +343,6 @@ var validationSettings = {
   
   <script>
 	function getAssetList(){
-		
-		var sourceleadUrl ='${sourceleadUrl}';
-		
 		var categoryIds = [];
 		$('input:checkbox[name=categoryId]:checked').each(function() 
 	    {
@@ -464,7 +459,6 @@ function pagination1(){
 <script>
 function updateWorkingStatus(assetId){
     var workingStatus = $('#workingStatus'+assetId).val();
-	var sourceleadUrl = '${sourceleadUrl}';
 	var rowHtmlContent =  $("#asset"+assetId).html();
 	
 	 $("#asset"+assetId).empty();
@@ -509,8 +503,6 @@ function cancel(){
 
 <script>
 function removeAssetManagement(assetId){
-	 var sourceleadUrl = '${sourceleadUrl}';
-	
 	 $("#popUp").empty();
 	 $(".project_inn_mask").fadeOut(200);
 	
