@@ -246,15 +246,17 @@ function addResume(candidateId) {
 					dateFormat : 'yyyy/mm/dd' 
 		         }; 
 			 if ($('#candidateResume_form').validate(false, validationSettings)){
-				var form = $('#candidateResume_form')[0];
+
+				 var sourceleadUrl = '${sourceleadUrl}';
+				 	
+				var formData =  getFormData('candidateResume_form'); 
+
 				$("#candidateResume_form").attr("disabled", "disabled");
 			    $("#add_resume").attr("disabled", "disabled");
-				var formData = new FormData(form); 
+
 				$.ajax({
 					type : "POST",
 	        	    data: formData,
-	    	        processData: false,
-	    	        contentType:false,
 					url : sourceleadUrl+"/saveCandidateResume?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&resumeId="+resumeId,
 					success : function(result) {
 						 if( result.indexOf('Sign In') >= 0){
