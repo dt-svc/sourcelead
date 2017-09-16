@@ -25,7 +25,7 @@ function candidateShortList(requirementId){
 	
 	 $.ajax({ 
 	    	type: "POST",
-	    	url: sourceleadUrl+"/getSubmissionCandidates?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&status="+status,
+	    	url: sourceleadUrl+"/getSubmissionCandidates?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&status="+status,
 	    			
 	    	success: function(data) {
 	    		
@@ -250,7 +250,7 @@ function shortlist(requirementId){
 				 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 				 $.ajax({ 
 				    	type: "POST",
-				    	url: sourceleadUrl+"/candidateShortList?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&submissionsList="+selectedsubmissionslists,
+				    	url: sourceleadUrl+"/candidateShortList?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&submissionsList="+selectedsubmissionslists,
 				        success: function(result) {
 				        	$(".shortlist-wrap").removeClass("shortlist-wrap_active");
 			        		$(".side_mask").fadeOut(200);

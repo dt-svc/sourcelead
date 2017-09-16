@@ -394,7 +394,7 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 					MasterCandidate masterCandidate = null;
 					masterCandidate = masterCandidateService.getMasterCandidateByInteligence(jsonObj);
 					if(null == masterCandidate){
-						masterCandidate = masterCandidateService.storeMasterCandidateByJsonObject(jsonObj, user);
+						masterCandidate = masterCandidateService.storeMasterCandidateByJsonObject(jsonObj, user,orgLocations);
 					}
 					candidate.setMasterCandidateId(masterCandidate);
 					 
@@ -3496,7 +3496,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 			    MasterCandidate masterCandidate = null;
 				masterCandidate = masterCandidateService.getMasterCandidateByInteligence(jsonObj);
 				if(null == masterCandidate){
-					masterCandidate = masterCandidateService.storeMasterCandidateByJsonObject(jsonObj, user);
+					masterCandidate = masterCandidateService.storeMasterCandidateByJsonObject(jsonObj, user,orgLocations);
 				}
 				candidate.setMasterCandidateId(masterCandidate);
 			    
