@@ -18,7 +18,7 @@ import com.bis.sourcelead.db.DatabaseConnectionConfig;
 import com.bis.sourcelead.db.PropertyPathConfiguration;
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 
-public class JobsGeneratedIdpdatedFile {
+public class JobsGeneratedIdpdatedFile{
 
 	private ComboPooledDataSource comboPooledDataSource;
 	
@@ -26,30 +26,26 @@ public class JobsGeneratedIdpdatedFile {
 	public void addCandidateGeneratedId() throws IOException, SQLException {
 		Connection conn = null ;
 		java.sql.PreparedStatement pstmt = null;
-		Statement stmt1 = null;
 		Statement stmt2 = null;
 		Statement stmt3 = null;
 		
 		try {
 			DataSource dataSource = comboPooledDataSource();
 			conn = dataSource.getConnection();
-			// String candGeneratedId = null;
 			 String finalJobsGeneratedId = null;
-				 String sql1 = "SELECT DISTINCT requirement.ORG_LOCATION_ID FROM sourcelead.REQUIREMENT requirement GROUP BY requirement.ORG_LOCATION_ID,requirement.ID";
-				 stmt1 = conn.createStatement();
 				 stmt2 = conn.createStatement();
 				 stmt3 = conn.createStatement();
-				 ResultSet rs1 = stmt1.executeQuery(sql1);
-				 while(rs1.next()){
-					 Long  jobsOrgLocId = rs1.getLong("ORG_LOCATION_ID");
-					 String organisationShortCode = "SELECT * FROM sourcelead.ORG_LOCATIONS orglocations where orglocations.id = "+jobsOrgLocId+"";
+				 
+				 
+					 String organisationShortCode = "SELECT * FROM sourcelead.ORG_LOCATIONS orglocations";
+					 
 					 ResultSet rSetorgShortCode = stmt3.executeQuery(organisationShortCode);
 					 while(rSetorgShortCode.next()){
-						 //Long orgId = rSetorgShortCode.getLong("id");
+						 Long  jobsOrgLocIds = rSetorgShortCode.getLong("ID");
 						 String  orgShortCode = rSetorgShortCode.getString("GENERATED_USER_ID");
 						 System.out.println("orgShortCode :"+orgShortCode);
 						 if(orgShortCode != null && orgShortCode != ""){
-							 String queryOrg = "SELECT * FROM sourcelead.REQUIREMENT requirement where requirement.ORG_LOCATION_ID= "+jobsOrgLocId+"";
+							 String queryOrg = "SELECT * FROM sourcelead.REQUIREMENT requirement where requirement.ORG_LOCATION_ID= "+jobsOrgLocIds+"";
 							 ResultSet rs2 = stmt2.executeQuery(queryOrg);
 							 Long JobsGeneratedId = 0L;
 							 while(rs2.next()){
@@ -70,7 +66,6 @@ public class JobsGeneratedIdpdatedFile {
 						}
 					}
 				}
-			}
 		}catch(Exception e){
 			e.printStackTrace();
 		}
