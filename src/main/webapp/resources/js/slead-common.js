@@ -116,8 +116,10 @@ function saveCandidateImage(candidateId, formId, data){
 	                	      data: formData,
 	                      	  url: sourceleadUrl+"/saveCandidateProfile?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,
 	                          success: function(result) {
-	                        	  if(data)
+	                        	  if(result){
 	                        		  $("img[data-id=profileImage]").each(function(i) { $(this).attr('src', data[0].fileURL); });
+	                        		  cancel(candidateId);
+	                        	  }
 	                        	  else
 	                        		  cancel(candidateId);
 	    			          },  
@@ -126,4 +128,26 @@ function saveCandidateImage(candidateId, formId, data){
 	}else{ 
 		return false;
 	 } 
+}
+
+
+function saveUserProfileImage(formId){
+	
+	if ($('#'+formId).validate(false, validationSettings)){
+  		var formData = getFormData(formId);
+        		
+        $.ajax({
+            	      type: "POST",
+            	      data: formData,
+            	      url: sourceleadUrl+"/saveUserProfileImage?"+tokenParamName+"="+tokenValue,
+                      success: function(result) {
+                    	  if(result)
+                    		  $("img[data-id=userProfileImage]").each(function(i) { $(this).attr('src', data[0].fileURL); });
+                   		  location.replace(sourceleadUrl+"/userProfile");  
+			          },  
+        });
+        return true;         
+}else{ 
+return false;
+} 
 }
