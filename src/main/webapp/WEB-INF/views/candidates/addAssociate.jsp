@@ -1037,3 +1037,11 @@ if(type == 'C2C' || type == 'C2C-1099'){
  }
  </script>
  
+ 
+ <script>
+ $(function() {
+		$("#uploadBtn").change(function() {
+			fileUpload("uploadBtn", "resumes", "addcandidate_form");
+		});
+	 });
+ </script>

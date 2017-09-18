@@ -989,4 +989,9 @@ function  removeValiationVendorContact() {
 		        }
 		 }); 
  }
+ $(function() {
+		$("#uploadBtn").change(function() {
+			fileUpload("uploadBtn", "resumes", "candidate_form");
+		});
+	 });
  </script>

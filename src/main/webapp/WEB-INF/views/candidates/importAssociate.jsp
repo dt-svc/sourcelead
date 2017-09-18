@@ -28,7 +28,7 @@
   </section>
   <div class="content-area content-new clearfix">
   <div id="loading"></div> 
-  <form:form id="candidate_form" name="candidate_form"  enctype='multipart/form-data' >
+  <form:form id="candidate_form" name="candidate_form">
     <div class="row form-horizontal mt myForm">
       <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12"> 
         
@@ -37,7 +37,7 @@
         <div class="well">
           <div class="input-group col-md-6" id="uploadFileGroup" style="margin:0 auto; position:relative;">
             <label class="input-group-btn"> <span class="btn btn-danger"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File<span class="text-danger">&nbsp;*</span>
-              <input type="file" name="uploadBtn" id="uploadBtn" class="hidden upload">
+              <input type="file"  id="uploadBtn" class="hidden upload">
               </span> 
            </label>
 
@@ -1015,4 +1015,12 @@ function  removeValiationVendorContact() {
 		        }
 		 }); 
  }
+ </script>
+ 
+ <script>
+ $(function() {
+		$("#uploadBtn").change(function() {
+			fileUpload("uploadBtn", "resumes", "candidate_form");
+		});
+	 });
  </script>
