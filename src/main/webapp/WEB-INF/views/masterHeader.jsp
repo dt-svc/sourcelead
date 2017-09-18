@@ -28,7 +28,7 @@
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <c:set scope="request" var="viewPage" value='${pageContext.request.servletPath.toString().replaceFirst("/WEB-INF/views/","").replaceFirst(".jsp","")}'></c:set>
- <script src="https://maps.google.com/maps/api/js?libraries=places&v=3&key=AIzaSyDzIM1uth14u-kSIN_jZ75pRelInyGnYWU" type="text/javascript"></script>
+ <script src="https://maps.google.com/maps/api/js?libraries=places&v=3&key=AIzaSyCIbxD8-aZ7Wgp6N-JeEJKVRIHGRpNMdRE" type="text/javascript"></script>
 <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
 <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
 <!--[if lt IE 9]>
@@ -36,6 +36,12 @@
       <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
 <jsp:include page="masterJs.jsp" />
+
+<!-- This requirement.css for only requirement.jsp  -->
+<c:if test='${viewPage == "requirement/requirement"}'>
+	<link href="resources/css/requirement.css" type="text/css" rel="stylesheet"/>
+</c:if>
+
 </head>
 
 
@@ -80,7 +86,6 @@
 <script src="resources/js/tag-it.js" type="text/javascript" charset="utf-8"></script>
 <script src="resources/js/tag-it.min.js" type="text/javascript" charset="utf-8"></script>
 <!-- end files for autocomplete with tagit -->
-
 
 
 <style>
@@ -194,6 +199,9 @@ document.onkeydown=function(e){
 -->
  
 <script type="text/javascript">
+var tokenParamName = "${_csrf.parameterName}";
+var tokenValue = "${_csrf.token}";
+
 function tagItBykeyForEmails(e){
 	if(e.which == 0 || e.which == 13 || e.which == 9 || e.which == 32 || e.which == 188){
 		 $(document).click();
@@ -1660,6 +1668,9 @@ function zipcodeMask(country,zipCodeId){
 	}
 		     
 }
+</script>
+<script>
+  var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 </script>
 <script src="resources/js/zipcodeMaskedinput-1.3.min.js"></script>
 

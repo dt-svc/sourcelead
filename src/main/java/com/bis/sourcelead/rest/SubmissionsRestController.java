@@ -29,6 +29,7 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.RequirementDTO;
 import com.bis.sourcelead.elk.index.RequirementIndex;
 import com.bis.sourcelead.elk.setup.RequirementElkUtil;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
@@ -194,6 +195,8 @@ public class SubmissionsRestController {
 		if(candidateResume != null){
 			candidate.setResumeUUID(candidateResume.getResumeUUID());
 			candidate.setCandidateResumeName(candidateResume.getFileName());
+			candidate.setFileUrl(candidateResume.getFileURL());
+			candidate.setFileContentType(candidateResume.getFileContentType());
 		}
 		
 		CandidateEmployers currentEmployer = candidateEmployersService.getCandidateCurrentEmployer(candidateId, orgLocation.getId());
@@ -277,30 +280,15 @@ public class SubmissionsRestController {
 		String json1 = "{" + json + "}";
 		JSONObject jsonObj = new JSONObject(json1);
 
-		MultipartFile multiFile = null;
-		//to get parse resume
-		if(locationMapFileData != null && locationMapFileData.getSize() > 0 ){
-			Iterator<String> itrator = request.getFileNames();
-			if (itrator.hasNext()) {
-				multiFile = request.getFile(itrator.next());
-			}
-		}
-		//to get the manually uploaded resume
-		else{
-			final Map files = request.getFileMap();
-		    multiFile = (MultipartFile)files.get("newUploadBtn");
-		}
-		
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 
 		String loginUserRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
-		RequirementSubmission requirementSubmission = requirementSubmissionService.saveRequirementSubmission(jsonObj,user, orgLocations, con, multiFile,loginUserRole);
+		RequirementSubmission requirementSubmission = requirementSubmissionService.saveRequirementSubmission(jsonObj,user, orgLocations, con, loginUserRole);
 
 		RequirementSubmissionHistory requirementSubmissionHistory = new RequirementSubmissionHistory();
 		requirementSubmissionHistory.setToStage(requirementSubmission.getSubmissionStatus().toString());
 		requirementSubmissionHistory.setFromStage("NEW");
-//		requirementSubmission.get
 		requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user,requirementSubmissionHistory);
 		Requirement requirement = requirementSubmission.getRequirement();
 		
@@ -315,7 +303,10 @@ public class SubmissionsRestController {
 			}else{
 				requirement.setTotalApplicants(0); 
 			}
-			requirementElkUtil.saveElkRequirement(requirement,new JSONObject());	
+			
+			// pass dto as parameter
+			RequirementDTO requirementDTO = commonUtil.getRequirementDTO(requirement);
+			requirementElkUtil.saveElkRequirement(requirement,requirementDTO);	
 		}
 		return "success";
 

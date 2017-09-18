@@ -78,8 +78,7 @@ public class UserProfileRestController {
 		MultipartFile multiFile = request.getFile(itrator.next());
 
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
-				"orgLocations");
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 
 		json = "{" + json + "}";
 		JSONObject jsonObj = new JSONObject(json);

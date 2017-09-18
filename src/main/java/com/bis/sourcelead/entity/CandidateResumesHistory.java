@@ -61,6 +61,9 @@ public class CandidateResumesHistory implements Serializable {
 	@JoinColumn(name = "CREATED_USER")
 	private User createdUser;
 	
+	@Column(name = "FILE_URL")
+	private String fileURL;
+	
 	public Long getId()
 	{
 		return id;
@@ -189,5 +192,15 @@ public class CandidateResumesHistory implements Serializable {
 	public void setResumeUUID(String resumeUUID)
 	{
 		this.resumeUUID = resumeUUID;
+	}
+
+	public String getFileURL()
+	{
+		return fileURL;
+	}
+
+	public void setFileURL(String fileURL)
+	{
+		this.fileURL = fileURL;
 	}
 }

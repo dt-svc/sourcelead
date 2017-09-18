@@ -16,7 +16,6 @@
 <script>
 function submitToClient(requirementId){
 	$('.action-pop').slideUp();
-	var sourceleadUrl ='${sourceleadUrl}';
 	var result = "";
 	'<sec:authorize access="hasAnyRole(\'ROLE_SUBMIT_TO_CLIENT\')">';
 	result = result + '<div class="add_inter_head"> <span>Submissions</span> <span class="text-success col-md-offset-1">No Of Candidates Selected: <b id="checkedSubmitToClientCount">0</b></span> <a href="javascript:void(0)" onclick="addEmailtemplate('+requirementId+');" class="sub-btn1">Submit to client</a>';
@@ -26,7 +25,7 @@ function submitToClient(requirementId){
 	
 	 $.ajax({ 
 	    	type: "POST",
-	    	url: sourceleadUrl+"/getShortListedCandidates?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId,
+	    	url: sourceleadUrl+"/getShortListedCandidates?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId,
 	    			
 	    	success: function(data) {
 	    		
@@ -272,7 +271,6 @@ function getSubmitToClientCheckedCandidatesCount(){
 
 <script>
 function clientSubmissions(requirementId){
-	 var sourceleadUrl ='${sourceleadUrl}';
 	 var selectedShortlists = [];
 	 var selectedShortlistsRate = [];
 	 $("input[name='shortlist[]']:checked").each( function (i) {
@@ -287,7 +285,7 @@ function clientSubmissions(requirementId){
 			 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 			 $.ajax({ 
 			    	type: "POST",
-			    	url: sourceleadUrl+"/submitShortlistedToClient?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&submissionsList="+selectedShortlists+"&selectedShortlistsRate="+selectedShortlistsRate,
+			    	url: sourceleadUrl+"/submitShortlistedToClient?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&submissionsList="+selectedShortlists+"&selectedShortlistsRate="+selectedShortlistsRate,
 			        success: function(result) {
 			        	$(".submitnew-wrap").removeClass("submitnew-wrap_active");
 			    		$(".side_mask").fadeOut(200);
@@ -336,7 +334,6 @@ function cancelSumitToClient(){
 <script>
 function addEmailtemplate(requirementId){
 	var result ="";
-	 var sourceleadUrl ='${sourceleadUrl}';
 		 var selectedShortlists = [];
 		 var selectedShortlistsRate = [];
 		 var selectedShortlistsRatePer = [];
@@ -361,7 +358,7 @@ function addEmailtemplate(requirementId){
 		 if(selectedShortlists.length >0){
 		 $.ajax({ 
 		    	type: "GET",
-		    	url: sourceleadUrl+"/addEmailtemplate?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&selectedShortlistsCount="+selectedShortlists,
+		    	url: sourceleadUrl+"/addEmailtemplate?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&selectedShortlistsCount="+selectedShortlists,
 		        success: function(data) {
 		        	 var json = JSON.parse(data);
 		        	result = result +'<section class="clearfix">';
@@ -644,7 +641,6 @@ function submitToClientMail(selectedIds,requirementId,selectedShortlistsRate,sel
 			var jsonData = encodeURIComponent(con);
 			var form = $('#submitToClientMailTemplate')[0];
     		var formData = new FormData(form); 
-			var sourceleadUrl = '${sourceleadUrl}';
 			$("#sendMail").addClass('button').val('Processing..');
      		$("#loadingDiv").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 				$.ajax({
@@ -655,7 +651,7 @@ function submitToClientMail(selectedIds,requirementId,selectedShortlistsRate,sel
 	      	         processData: false,
 	      	         contentType:false,
 	          	     dataType : 'json',
-					url : sourceleadUrl+"/submitToClient?${_csrf.parameterName}=${_csrf.token}&jsonData="+jsonData+"&selectedIds="+selectedIds+"&requirementId="+requirementId+"&selectedShortlistsRate="+selectedShortlistsRate+"&selectedShortlistsRatePer="+selectedShortlistsRatePer,
+					url : sourceleadUrl+"/submitToClient?"+tokenParamName+"="+tokenValue+"&jsonData="+jsonData+"&selectedIds="+selectedIds+"&requirementId="+requirementId+"&selectedShortlistsRate="+selectedShortlistsRate+"&selectedShortlistsRatePer="+selectedShortlistsRatePer,
 					success : function(result) {
 						cancelSubmit();
 						var allApplicants = 'all';

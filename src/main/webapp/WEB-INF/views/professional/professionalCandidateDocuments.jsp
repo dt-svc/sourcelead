@@ -82,7 +82,6 @@ function professionalCandidateDocuments(candidateId){
 <script>
 function candDocumentsList(candidateId){
 	var candidateType = '${candidateType}';
-	var sourceleadUrl ='${sourceleadUrl}';
 	 $.ajax({  
           type : "POST",
           url: sourceleadUrl+"/getCandidateDocumentsListByCandidateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,        
@@ -121,7 +120,7 @@ function candDocumentsList(candidateId){
 	    	             	 }
 	                    	 
 	                    	 if(opt.fileName != null && opt.fileName != '' && opt.fileName != 'undefined'){
-	                    	 result  = result + ' <td><div class="tbldata-dotdot-me widAu" title="'+opt.fileName+'"><a class="fa fa-eye" onclick="viewProfessionalCandidateDocument(\''+opt.documentUUID+'\',\''+opt.fileName+'\');"></a><a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadDoc?documentUUID='+opt.documentUUID+'\">&nbsp;&nbsp;&nbsp;'+opt.fileName+'</a></div></td>';
+	                    	 result  = result + ' <td><div class="tbldata-dotdot-me widAu" title="'+opt.fileName+'"><a class="fa fa-eye" onClick="viewFile(\''+opt.fileURL+'\',\''+opt.fileName+'\',\''+opt.fileContentType+'\');"></a><a class="glyphicon glyphicon-download-alt" href=\"'+opt.fileURL+'\" title="'+opt.fileName+'">&nbsp;&nbsp;&nbsp;'+opt.fileName+'</a></div></td>';
 	                    	 }else{
 	                    		 result  = result + ' <td><div><span>----</span></div></td>';
 	                    	 }
@@ -162,7 +161,6 @@ function candDocumentsList(candidateId){
 
 <script>
 function viewProfessionalCandidateDocument(documentUUID,title){
-	var sourceleadUrl ='${sourceleadUrl}';
 	window.open(sourceleadUrl+'/viewProfessionalCandidateDocument/'+title+'?documentUUID='+documentUUID,title,"height=600,width=600");
 }
 </script>
@@ -254,7 +252,7 @@ function addDocument(candidateId, documentUUID) {
 	result = result+'<div class="clearfix mb10" id="uploadDocDiv">';
 	result = result+'<div class="col-md-12 validation_p">';
 	result = result+'<div class="input-group positionRelative" id="uploadFileGroup">';
-	result = result+'<label class="input-group-btn"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File';
+	result = result+'<label class="input-group-btn"   onchange="uploadFileDoc();"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File';
 	result = result+'<input type="file" name="uploadBtn" id="uploadBtn" style="display: none;"  multiple="" class="upload">';
 	result = result+'</span> </label>';
 	result = result+'<input type="text" class="form-control" readonly id="uploadFile" name="docFile" placeholder="Upload Document..." field-name="Document" data-validation="required validate_Space validate_docimgpdf">';
@@ -391,47 +389,41 @@ function getDocumentType(documentType){
 					dateFormat : 'yyyy/mm/dd' 
 		         }; 
 			 if ($('#documentType_form').validate(false, validationSettings)){
-				var frm = $('#documentType_form').serializeFormJSON();
-				var con = JSON.stringify(frm);
-				con = con.replace(/[{}]/g, "");
-				var form = $('#documentType_form')[0];
-	      		var formData = new FormData(form); 
-				var sourceleadUrl = '${sourceleadUrl}';
+				
+				 var form = $('#documentType_form')[0];
+				var formData = new FormData(form);
 				$("#save_doc").attr("disabled", "disabled");
          		$("#save_doc" ).addClass('button').val('Processing..');
-				//It will escape all the special characters
-		        var jsonData = encodeURIComponent(con);
-				$.ajax({
-						type : "POST",
-		        	    data: formData,
-		        	    contentType : 'application/json; charset=utf-8',
-		        	    enctype: 'multipart/form-data',
-		    	        processData: false,
-		    	        contentType:false,
-		        	    dataType : 'json',
-						url : sourceleadUrl+"/saveCandidateDocument?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&candidateId="+candidateId+"&documentUUID="+documentUUID,
-						success : function(result) {
-								closePopup();
-								$('#perVal').attr('aria-valuenow', result).css('width',result+'%');
-			          			 if(result<50){
-			          			   $("#perVal").removeClass('progress-bar-success');
-			          			   $("#perVal").addClass("progress-bar-danger");
-			          			 }
-			          			 if(result>=50){
-			          				 $("#perVal").removeClass('progress-bar-danger');
-			          				 $("#perVal").addClass("progress-bar-success");
-			          			 }
-			          			 $("#disVal").empty();
-			          			$("#disVal").append(result+'%');
-								$("#popUpDiv").removeClass("edit-details-active");
-		            			$("#selector6").removeAttr("style");
-		            			$("#selector6").css({ display: "block" });
-	            				$("#docMsgDiv").html("Success!! New Candidate Document added");
-		             			candDocumentsList(candidateId);
-						 		docMsgFadein();
-		            		 
-						},
-					});
+         		
+         		$.ajax({
+					type : "POST",
+	        	    data: formData,
+	    	        processData: false,
+	    	        contentType:false,
+					url : sourceleadUrl+"/saveCandidateDocument?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&documentUUID="+documentUUID,
+					success : function(result) {
+							closePopup();
+							$('#perVal').attr('aria-valuenow', result).css('width',result+'%');
+		          			 if(result<50){
+		          			   $("#perVal").removeClass('progress-bar-success');
+		          			   $("#perVal").addClass("progress-bar-danger");
+		          			 }
+		          			 if(result>=50){
+		          				 $("#perVal").removeClass('progress-bar-danger');
+		          				 $("#perVal").addClass("progress-bar-success");
+		          			 }
+		          			 $("#disVal").empty();
+		          			$("#disVal").append(result+'%');
+							$("#popUpDiv").removeClass("edit-details-active");
+	            			$("#selector6").removeAttr("style");
+	            			$("#selector6").css({ display: "block" });
+            				$("#docMsgDiv").html("Success!! New Candidate Document added");
+	             			candDocumentsList(candidateId);
+					 		docMsgFadein();
+	            		 
+					},
+				});
+				
 					return true;
 			 }else{ 
 					return false;
@@ -442,6 +434,12 @@ function getDocumentType(documentType){
 		$("#documentType_form").validateOnBlur(false, validationSettings);
 	});
 		
+</script>
+
+<script>
+function uploadFileDoc(){
+	fileUpload("uploadBtn", "candidateDocuments", "documentType_form");
+}
 </script>
 
 <%-- 
@@ -455,42 +453,40 @@ function getDocumentType(documentType){
 function getDocument(candidateId, documentId){
 	  $("#docsName").attr("data-validation-optional", "true");
 	  $("#documentOtherType").attr("data-validation-optional", "true");
-	var sourceleadUrl ='${sourceleadUrl}';
 		$.ajax({
 		   	type: "POST",
 		    url: sourceleadUrl+"/getDocument?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&documentId="+documentId, 	   
    		    success: function(data) {
-   		    	var json = JSON.parse(data);
         			 $("#uploadDocDiv").hide();
         			 $("#docAddButton").hide();
         			 $("#uploadFile").removeAttr("data-validation");
         			 $("#docNameDiv").show();
-        			 $("#docsName").append(json.fileName);
-        			 $("#docsName").prop('title', json.fileName);
+        			 $("#docsName").append(data.fileName);
+        			 $("#docsName").prop('title', data.fileName);
         			 $("#docsUpdateButton").show();
-        			 if(json.documentType != null && json.documentType != "undefined" && json.documentType != ""){
-	                     $("select#docuName").val(json.documentType);
+        			 if(data.documentType != null && data.documentType != "undefined" && data.documentType != ""){
+	                     $("select#docuName").val(data.documentType);
 	                    
-	                     $("#docuName").trigger('chosen:updated');
+	                     $("select#docuName").trigger('chosen:updated');
 	                    
 	                    //here documentType is Other then documentOtherType  also display in Edit.
 	                   
-	                     if(json.documentType == 'Other'){
-		        				 if(json.documentOtherType !=null && json.documentOtherType !='' && json.documentOtherType !="undefined"){
+	                     if(data.documentType == 'Other'){
+		        				 if(data.documentOtherType !=null && data.documentOtherType !='' && data.documentOtherType !="undefined"){
 		        					 document.getElementById("documentTypeDiv").style.display="block";
-		        					 $("#documentOtherType").val(json.documentOtherType);
+		        					 $("#documentOtherType").val(data.documentOtherType);
 			    	             }
 	        			 }
 
         			 }
         			 
-        			 $("#updates_doc").attr("onclick", "storeCandidateDocument("+json.candidateId.id+", \""+json.documentUUID+"\");");
+        			 $("#updates_doc").attr("onclick", "storeCandidateDocument("+data.candidateId.id+", \""+data.documentUUID+"\");");
         			 
-        			 if(json.description != null && json.description != "undefined" && json.description != ""){
-        				 $("textarea#description").val(json.description);
+        			 if(data.description != null && data.description != "undefined" && data.description != ""){
+        				 $("textarea#description").val(data.description);
         			 }
         			 
-        			 if(json.isConfidential == "Y"){
+        			 if(data.isConfidential == "Y"){
         			 $("#isConfidential").attr('checked', true)
         			 }
         			 
@@ -533,7 +529,6 @@ function removeDocument(candidateId, documentId){
 --%>
 <script>
 function deleteDocument(candidateId, documentId){
-	var sourceleadUrl ='${sourceleadUrl}';
 	var loginUserId = '${SourceLeadWeb_userId}';
 	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	//var message = confirm("You are choosing to delete the document");
@@ -596,7 +591,6 @@ function refreshDocList(candidateId){
  function validateDocName(candidateId) {
 	  var name = document.getElementById("docuName").value; 
  	  $('#nameDocIdDiv').find('p.jquery_form_error_message').remove();
-	  var sourceleadUrl ='${sourceleadUrl}';
 		 $.ajax({
 		    	type: "POST",
 		        url: sourceleadUrl+"/validateDocName?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&name="+name, 

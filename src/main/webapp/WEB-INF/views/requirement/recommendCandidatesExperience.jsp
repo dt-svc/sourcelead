@@ -61,21 +61,13 @@ function closeCertificatePopup(){
 			dateFormat : 'yyyy/mm/dd'
 		};
 		if ($('#employers_form').validate(false, validationSettings)) {
-			//To disable addButton 
-			$("#candidateEmployersAdd").attr("disabled", "disabled");
-			var frm = $('#employers_form').serializeFormJSON();
-			var con = JSON.stringify(frm);
-			con = con.replace(/[{}]/g, "");
+			
 			//It will escape all the special characters
-			var jsonData = encodeURIComponent(con);
-			var sourceleadUrl = '${sourceleadUrl}';
-
-			$
-					.ajax({
+			var formData = getFormData('employers_form');
+			$.ajax({
 						type : "POST",
-						url : sourceleadUrl
-								+ "/storeCandidateEmployers?${_csrf.parameterName}=${_csrf.token}&json="
-								+ jsonData + "&candidateId=" + candidateId,
+						data : formData,
+						url : sourceleadUrl+ "/storeCandidateEmployers?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,
 						success : function(data) {
 
 							if (data != null && data != 'undefined'
@@ -246,13 +238,10 @@ function closeCertificatePopup(){
 
 	function editEmployer(candidateEmpId, candidateId) {
 
-		
-		var sourceleadUrl = '${sourceleadUrl}';
-		$
-				.ajax({
+		$.ajax({
 					type : "POST",
 					url : sourceleadUrl
-							+ "/getCandidateEmployerByCandidateIdAndCandidateEmpoyerId?${_csrf.parameterName}=${_csrf.token}&candidateId="
+							+ "/getCandidateEmployerByCandidateIdAndCandidateEmpoyerId?"+tokenParamName+"="+tokenValue+"&candidateId="
 							+ candidateId + "&candidateEmpId=" + candidateEmpId,
 					success : function(data) {
 
@@ -527,11 +516,10 @@ function closeCertificatePopup(){
 --%>
 <script>
 	function candidateEmployersList(candidateId) {
-		var sourceleadUrl = '${sourceleadUrl}';
 		
 				$.ajax({
 					type : "POST",
-					url : sourceleadUrl	+ "/getCandidatesEmployersListByCandidateIdAndOrgLocationID?${_csrf.parameterName}=${_csrf.token}&candidateId="
+					url : sourceleadUrl	+ "/getCandidatesEmployersListByCandidateIdAndOrgLocationID?"+tokenParamName+"="+tokenValue+"&candidateId="
 							+ candidateId,
 					success : function(data) {
 						/* if (data != null && data != 'undefined' && data != "" && data != '[]') { */
@@ -657,12 +645,11 @@ function employeePagination(){
 <script>
 	function removeEmployer(candidateemployerId, candidateId) {
 
-		var sourceleadUrl = '${sourceleadUrl}';
 		var loginUserId = '${SourceLeadWeb_userId}';
 		var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 				$.ajax({
 					type : "POST",
-					url : sourceleadUrl	+ "/removeCandidateEmployerBycandidateIdandCandidateEmployerID?${_csrf.parameterName}=${_csrf.token}&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+ candidateId + "&candidateemployerId="+candidateemployerId,
+					url : sourceleadUrl	+ "/removeCandidateEmployerBycandidateIdandCandidateEmployerID?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+ candidateId + "&candidateemployerId="+candidateemployerId,
 					success : function(data) {
 
 						if (data != null && data != 'undefined' && data != "") {
@@ -725,22 +712,16 @@ function employeePagination(){
 			scrollToTopOnError : true,
 			dateFormat : 'yyyy/mm/dd'
 		};
-		if ($('#candidateExperianceEdit_form').validate(false,
-				validationSettings)) {
+		if ($('#candidateExperianceEdit_form').validate(false,validationSettings)) {
 
-			var frm = $('#candidateExperianceEdit_form').serializeFormJSON();
-
-			var con = JSON.stringify(frm);
-			con = con.replace(/[{}]/g, "");
-			var jsonData = encodeURIComponent(con);
-			//It will escape all the special characters
-			var sourceleadUrl = '${sourceleadUrl}';
+			var formData = getFormData('candidateExperianceEdit_form');
 
 			$.ajax({
 						type : "POST",
-						url : sourceleadUrl
-								+ "/upDateCandidateEmployerByCandidateIdAndCandidateExperianceId?${_csrf.parameterName}=${_csrf.token}&json="+ jsonData + "&candidateId=" + candidateId	+ "&candidateExperianceId"+ candidateExperianceId,
+						data : formData, 
+						url : sourceleadUrl+ "/upDateCandidateEmployerByCandidateIdAndCandidateExperianceId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&candidateExperianceId"+ candidateExperianceId,
 						success : function(result) {
+							closeCertificatePopup();
 							candidateEmployersList(candidateId)
 						},
 					});

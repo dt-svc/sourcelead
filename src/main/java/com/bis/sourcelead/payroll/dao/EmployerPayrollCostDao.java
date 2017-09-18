@@ -9,7 +9,7 @@ public interface EmployerPayrollCostDao {
 
 	EmployerPayrollCost saveEmployerPayrollCost(EmployerPayrollCost employerPayrollCost)throws Exception;
 
-	ResponseList<EmployerPayrollCost> loadEmployerPayrollCostByOrgLocationId(OrgLocations orgLocation, EmployerPayrollCostDTO employerPayrollCostDTO);
+	ResponseList<EmployerPayrollCost> loadEmployerPayrollCostByOrgLocationId(OrgLocations orgLocation, EmployerPayrollCostDTO employerPayrollCostDTO) throws Exception;
 	
 	EmployerPayrollCost getEmployeePayrollCostById(String EmpId);
 

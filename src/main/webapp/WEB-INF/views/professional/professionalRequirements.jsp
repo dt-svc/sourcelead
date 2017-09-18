@@ -730,7 +730,6 @@ function getPostedOrgJobs(id){
 
 <script>
 function requirementsList(offset){
-	var sourceleadUrl = '${sourceleadUrl}';
 	var requirementType = document.getElementById('requirementType').value;
 	var postedOn = document.getElementById('postedOn').value;
 	var jobTitleSearch = document.getElementById('jobTitleSearch').value;
@@ -800,13 +799,13 @@ function requirementsList(offset){
 			 				}
 			 				
 			 				
-			 				if(requirements.minExperience != '' && requirements.maxExperience == ''){
+			 				if(requirements.minExperience != '' && requirements.maxExperience == '' ){
 			 					experience = requirements.minExperience+" Years";
 			 				}
 			 				else if(requirements.minExperience == '' && requirements.maxExperience != ''){
 			 					experience = requirements.maxExperience+" Years";
 			 				}
-			 				else if(requirements.minExperience != '' && requirements.maxExperience != ''){
+			 				else if(requirements.minExperience != '' && requirements.maxExperience != ''  && requirements.minExperience != 'undefined'  && requirements.maxExperience != 'undefined' && requirements.minExperience != null  && requirements.maxExperience != null){
 			 					experience = requirements.minExperience+" to "+requirements.maxExperience+" Years";
 			 				}else{
 			 					experience = '--';
@@ -915,9 +914,9 @@ function requirementsList(offset){
 			 					result = result +'<div class="openCtaRight">';
 				 			    result = result +'<p>Share Job</p>';
 				 				result = result +'<span>';
-			 				    result = result +'	<a href="javascript:setPostValues(\''+title+'\',\''+link+'\',\''+picture+'\',\''+description+'\',\''+comment+'\');socialinviter.socialpost.auth(\'linkedin\');"><i class="fa fa-linkedin-square"></i></a>';
-								result = result +'  <a href="javascript:setPostValues(\''+title+'\',\''+link+'\',\''+picture+'\',\''+description+'\',\''+comment+'\');socialinviter.socialpost.auth(\'twitter\');"><i class="fa fa-twitter-square"></i></a>';				  
-								result = result +'  <a href="javascript:setPostValues(\''+title+'\',\''+link+'\',\''+picture+'\',\''+description+'\',\''+comment+'\');socialinviter.socialpost.auth(\'facebook\');"><i class="fa fa-facebook-square"></i></a>';
+			 				    result = result +'	<a href="javascript:setPostValues(\''+title+'\',\''+link+'\',\''+picture+'\',\''+description+'\',\''+comment+'\');socialinviter.socialpost.auth(\'linkedin\');" title="LinkedIn"><i class="fa fa-linkedin-square"></i></a>';
+								result = result +'  <a href="javascript:setPostValues(\''+title+'\',\''+link+'\',\''+picture+'\',\''+description+'\',\''+comment+'\');socialinviter.socialpost.auth(\'twitter\');" title="Twitter"><i class="fa fa-twitter-square"></i></a>';				  
+								result = result +'  <a href="javascript:setPostValues(\''+title+'\',\''+link+'\',\''+picture+'\',\''+description+'\',\''+comment+'\');socialinviter.socialpost.auth(\'facebook\');" title="Facebook"><i class="fa fa-facebook-square"></i></a>';
 				 				result = result +'</span>'; 
 				 				result = result +'<div class="openPostBtns clearfix">';
 				 				
@@ -925,7 +924,7 @@ function requirementsList(offset){
 				 					result = result +'  <a href="#" title="Save Job" href="javascript:void(0)" id="saveJob'+requirements.requirementUUID+'" class="alertBtn" onclick="saveJob(\''+requirements.jobTitle+'\',\''+requirements.requirementUUID+'\','+requirements.referId+')" ><i class="fa fa-floppy-o"></i></a>';
 				 				}else{
 				 					if(requirementType == "SavedJobs"){
-				 						result = result +'  <a href="#" title="Delete Job" href="javascript:void(0)" class="alertBtn bg-red" onclick="deleteSavedJob(\''+requirements.jobTitle+'\',\''+requirements.savedJobUUID+'\',\''+requirements.requirementUUID+'\')" ><i class="fa fa-floppy-o"></i></a>';
+				 						result = result +'  <a href="#" title="Delete Job" href="javascript:void(0)" class="alertBtn bg-red" onclick="deleteSavedJob(\''+requirements.jobTitle+'\',\''+requirements.savedJobUUID+'\',\''+requirements.requirementUUID+'\')" ><i class="fa fa-trash"></i></a>';
 				 					}else{
 				 						result = result +'  <a href="#" title="Saved Job" href="javascript:void(0)" class="alertBtn bg-green"  ><i class="fa fa-floppy-o"></i></a>';
 				 					}
@@ -1076,7 +1075,6 @@ function searchRequirement(offset){
          }; 
 	
  if ($('#professional_requirement_search_form').validate(false, validationSettings)){  
-			var sourceleadUrl = '${sourceleadUrl}';
 			var frm = $('#professional_requirement_search_form').serializeFormJSON();
 			var con = JSON.stringify(frm);
 			con = con.replace(/[{}]/g, ""); 
@@ -1437,8 +1435,6 @@ function referToJob(requirementId,referId){
 
 <script>
 function getUserContats(requirementId){
-	 var sourceleadUrl ='${sourceleadUrl}';
-	 
 	 $.ajax({
 	    	type: "POST",
 	        url: sourceleadUrl+"/getCrowdSourcingUserContacts?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId,  
@@ -1630,8 +1626,6 @@ $('body').on('submit', '#referToJob_form', function(e){
       
       //It will escape all the special characters
       var jsonData = encodeURIComponent(con);
-      var sourceleadUrl ='${sourceleadUrl}';
-      
         $("#submit_refer").attr("disabled", "disabled");
 		$( "#submit_refer" ).addClass('button').val('Processing..');
 		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
@@ -1670,7 +1664,6 @@ $('body').on('submit', '#referToContacts', function(e){
       
       //It will escape all the special characters
       var jsonData = encodeURIComponent(con);
-      var sourceleadUrl ='${sourceleadUrl}';
       
         $("#submit_contacts").attr("disabled", "disabled");
 		$( "#submit_contacts" ).addClass('button').val('Processing..');
@@ -1700,7 +1693,6 @@ $('body').on('submit', '#referToContacts', function(e){
   <script>
   function validateProfessionalEmail(requirementId){
 	  
-	  var sourceleadUrl ='${sourceleadUrl}';
 	  var email = document.getElementById('email').value; 
 	  if(email != null && email != ''){
 		$.ajax({

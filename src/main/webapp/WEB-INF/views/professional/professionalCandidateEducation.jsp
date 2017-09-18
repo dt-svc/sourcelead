@@ -77,7 +77,6 @@ function professionalCandidateEducation(candidateId){
 <script>
 function candidateEducationList(candidateId){
 	var candidateType = '${candidateType}';
-	 var sourceleadUrl ='${sourceleadUrl}';
 	 
 	 var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
 	  if(locationList.match("yyyy-MM-dd")){
@@ -309,8 +308,8 @@ function addEducation(candidateId) {
 	result = result  +'                                                                                                                                                       ';
 	
 	result  = result + '                 <div class="clearfix mb10">';
-	result = result  +'	                     <div class="col-md-5" positionRelative>';
-	result = result  +'	                     <select class="chosen-select"  name="gradeType" id="scoreType" onchange="selectScoreType();clearSearchKey();">';
+	result = result  +'	                     <div class="col-md-5 dropdown-select positionRelative paddingRight">';
+	result = result  +'	                     <select class="form-control"  name="scoreType" id="scoreType" onchange="eduSelectScoreType();clearSearchKey();">';
 	result = result  +' 					   <option value="" selected="selected">Score Type</option>';
 	result = result  +'	                       <option value="Percentage">Percentage</option>';
 	result = result  +'	                       <option value="CGPA">CGPA</option>';
@@ -318,7 +317,7 @@ function addEducation(candidateId) {
 	result = result  +'	                      </select>';
 	result = result  +'	                   </div>';
 	result  = result + '                   <div class="col-md-7" positionRelative id="candidateScoreDiv">';
-	result  = result + '                     <input type="text" class="form-control" value="" name="grade" placeholder="Score" id="candidateScore" onkeyup="selectScoreType();"';
+	result  = result + '                     <input type="text" class="form-control" value="" name="score" placeholder="Score" id="candidateScore" onkeyup="eduSelectScoreType();eduScoreAndScoreType();"';
 	result  = result + '                     data-validation-optional="true" data-validation="required validate_length length1-5" field-name="score">';
 	result  = result + '                 	 </div>';
 	result = result  +'	                   </div>';
@@ -444,7 +443,6 @@ function addEducation(candidateId) {
 
 <script>
 function EditEducation(candidateId,candidateEducationId) {
-	var sourceleadUrl = '${sourceleadUrl}';
 	$.ajax({	type : "POST",
 				url : sourceleadUrl+ "/getCandidateEducationBycandidateIdandEducationId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&candidateEducationId="+candidateEducationId,
 				success : function(data) {
@@ -544,7 +542,7 @@ function EditEducation(candidateId,candidateEducationId) {
 	
 	result  = result + '                 <div class="clearfix mb10">';
 	result = result  +'	                     <div class="col-md-4" positionRelative>';
-	result = result  +'	                     <select class="chosen-select" value="'+ json.gradeType +'" name="gradeType" id="scoreType" onchange="selectScoreType();clearSearchKey();">';
+	result = result  +'	                     <select class="chosen-select" value="'+ json.gradeType +'" name="scoreType" id="scoreType" onchange="eduSelectScoreType();clearSearchKey();">';
 	result = result  +' 					   <option value="" selected="selected">Score Type</option>';
 												if (json.gradeType == "Percentage") {
 													result = result + '<option selected>Percentage</option>';
@@ -564,7 +562,7 @@ function EditEducation(candidateId,candidateEducationId) {
 	result = result  +'	                      </select>';
 	result = result  +'	                   </div>';
 	result  = result + '                   <div class="col-md-8" positionRelative id="candidateScoreDiv">';
-	result  = result + '                     <input type="text" class="form-control input-sm" value="'+grade+'" name="grade" placeholder="Score" id="candidateScore" onkeyup="selectScoreType();"';
+	result  = result + '                     <input type="text" class="form-control input-sm" value="'+grade+'" name="score" placeholder="Score" id="candidateScore" onkeyup="eduSelectScoreType();eduScoreAndScoreType();"';
 	result  = result + '                     data-validation-optional="true" data-validation="required validate_length length1-5" field-name="score">';
 	result  = result + '                 	 </div>';
 	result = result  +'	                   </div>';
@@ -733,7 +731,6 @@ var validationSettings = {
 </script>
 <script>
 function candidateEducationStore(candidateId){
-		
 	var scoreType = document.getElementById("scoreType").value; 
 	 if(scoreType != null && scoreType != ""){
 		 $('#candidateScore').removeAttr('data-validation-optional');
@@ -745,15 +742,32 @@ function candidateEducationStore(candidateId){
 	  
 	  if ($('#education_form').validate(false, validationSettings)) {
 		  
-			 var frm = $('#education_form').serializeFormJSON();
-			 var con = JSON.stringify(frm);
-			 con = con.replace(/[{}]/g, "");
-		     var jsonData = encodeURIComponent(con);
-			 var sourceleadUrl = '${sourceleadUrl}';
+		  var formData = getFormData("education_form");
 			 $("#education_form").attr("disabled", "disabled");
 			 $("#save_button").attr("disabled", "disabled");
+			 $.post(sourceleadUrl+"/storeCandidateEducation?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId, formData, function(data) {
+				 closePopup();
+				 $('#perVal').attr('aria-valuenow', data).css('width',data+'%');
+    			 if(data<50){
+    			   $("#perVal").removeClass('progress-bar-success');
+    			   $("#perVal").addClass("progress-bar-danger");
+    			 }
+    			 if(data>=50){
+    				 $("#perVal").removeClass("progress-bar-danger");
+    				 $("#perVal").addClass("progress-bar-success");
+    			 }
+    			 $("#disVal").empty();
+    			$("#disVal").append(data+'%');
+       		    $("#popUpDiv").removeClass("edit-details-active");
+    			$("#selector4").removeAttr("style");
+    			$("#selector4").css({ display: "block" });
+				$("#eduMsgDiv").html("Success!! New Education added");
+       			candidateEducationList(candidateId);
+       			eduMsgFadeinFunction();
+       			qveducationSubmission(candidateId);
+		        });
 
-			$.ajax({
+			/* $.ajax({
 					type : "POST",
 					url : sourceleadUrl+"/storeCandidateEducation?${_csrf.parameterName}=${_csrf.token}&json="+con+"&candidateId="+candidateId,
 					success :function(data) {  
@@ -786,7 +800,7 @@ function candidateEducationStore(candidateId){
 							    	}
 				                 }   
 				      }, 
-		    });
+		    }); */
 			return true; 
 		} else {
 			return false;
@@ -859,9 +873,9 @@ function removeEducation(candidateEducationId, candidateId){
       
 <script>
 function deleteSelectedEducation(candidateEducationId,candidateId){
- var sourceleadUrl ='${sourceleadUrl}';
- var loginUserId = '${SourceLeadWeb_userId}';
- var orgLocationId = '${SourceLeadWeb_orgLocationId}';
+
+	var loginUserId = '${SourceLeadWeb_userId}';
+    var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	 $.ajax({  
           type : "POST",
           url: sourceleadUrl+"/removeCandidateEducationBycandidateIdandcandidateEducationId?${_csrf.parameterName}=${_csrf.token}&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&candidateEducationId="+candidateEducationId,        
@@ -908,43 +922,47 @@ function deleteSelectedEducation(candidateEducationId,candidateId){
      this script is to display candidate score validation based on scoreType.
 --%>
 <script type="text/javascript">
-function selectScoreType(){
-	
+function eduSelectScoreType(){
+	var str = document.getElementById("candidateScore").value;
+	if (str == 'a' || str == 'b' || str == 'c' || str == 'd' || str == 'e') {
+		var strToUpper = str.toUpperCase();
+		$('#candidateScore').val(strToUpper);
+	}
 	 var selectedText = document.getElementById("scoreType").value;
 	 var canScore = document.getElementById("candidateScore").value;
 	 $('#candidateScoreDiv').parent().find('p.jquery_form_error_message').remove(); 
 	 if(selectedText =='Percentage'){
 		  var floatNum = /^(\d{0,2}(\.\d{0,2})?|100)$/
 		  if(canScore.match(floatNum)){
-			  $("#addCandidate").removeAttr("disabled");
+			  $("#save_button").removeAttr("disabled");
 			   return true;
 		  }		  
 		 else{
 				$("input#candidateScore").parent().after("<p class='jquery_form_error_message'><span>Enter your Percentage</span>");
-				 $("#addCandidate").attr("disabled", "disabled");
+				 $("#save_button").attr("disabled", "disabled");
 				return false; 
 		 	 }
 	  }
 	 else if(selectedText =='CGPA'){
 		  var cgpanum = /^(([\d][\.])?([\d])|10)?$/
 			  if(canScore.match(cgpanum)){
-				  $("#addCandidate").removeAttr("disabled");
+				  $("#save_button").removeAttr("disabled");
 				   return true;
 			  }		  
 			 else{
 				 $("input#candidateScore").parent().after("<p class='jquery_form_error_message'><span>Enter your CGPA value</span>");
-				 $("#addCandidate").attr("disabled", "disabled");
+				 $("#save_button").attr("disabled", "disabled");
 			return false; 
 			 }
 	  } 
 	 else if(selectedText =='GRADE'){
 		 var grades = /^([A-E][-+]{0,2})?$/
 			 if (canScore.match(grades)) {
-				 $("#addCandidate").removeAttr("disabled");
+				 $("#save_button").removeAttr("disabled");
 				 return true;
 			}else{
 				$("input#candidateScore").parent().after("<p class='jquery_form_error_message'> Enter  a Valid Grade </p>");
-				 $("#addCandidate").attr("disabled", "disabled");
+				 $("#save_button").attr("disabled", "disabled");
 	    		return false;
 	    		
 			}
@@ -953,6 +971,35 @@ function selectScoreType(){
 	  
 </script>
 
+<script type="text/javascript">
+function eduScoreAndScoreType(){
+	 var candidateScore = document.getElementById("candidateScore").value;
+	 var selectedText = document.getElementById("scoreType").value;
+	 var floatNum = /^(\d{0,2}(\.\d{0,2})?|100)$/
+	 var cgpanum = /^(([\d][\.])?([\d])|10)?$/
+	 var grades = /^([A-E][-+]{0,2})?$/
+	 if(candidateScore.match(floatNum)){
+		 $("#scoreType").val('Percentage'); 
+		 $('#candidateScoreDiv').parent().find('p.jquery_form_error_message').remove();
+		 $("#save_button").removeAttr("disabled");
+	 }
+	 if(candidateScore.match(grades)){
+		 $("#scoreType").val('GRADE'); 
+	 }
+	 if(candidateScore.match(cgpanum)){
+		 $("#scoreType").val('CGPA'); 
+	 }
+	 if((selectedText == '') && (!candidateScore.match(floatNum)) && (!candidateScore.match( cgpanum)) && (!candidateScore.match(grades))){
+		 $("input#candidateScore").parent().after("<p class='jquery_form_error_message'> Enter your Valid Score </p>");
+	 }
+	 if(selectedText == '' && candidateScore == ''){
+		 $('#candidateScoreDiv').parent().find('p.jquery_form_error_message').remove(); 
+	 }
+	 if(candidateScore == ''){
+		 $("#scoreType").val('');
+	 }
+}
+</script>
 
 <%-- 
      @author : shivayogi , Ajith.
@@ -979,15 +1026,16 @@ function clearSearchKey() {
 		if ($('#education_form').validate(false,
 				validationSettings)) {
 
-			var frm = $('#education_form').serializeFormJSON();
+			var formData = getFormData("education_form");
+			 $("#education_form").attr("disabled", "disabled");
+			 $("#save_button").attr("disabled", "disabled");
+			 
+			 $.post(sourceleadUrl+"/upDateCandidateEducationByCandidateIdAndCandidateEducationId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId, formData, function(data) {
+				 closePopup();
+				 candidateEducationList(candidateId);
+		        });
 
-			var con = JSON.stringify(frm);
-			con = con.replace(/[{}]/g, "");
-			var jsonData = encodeURIComponent(con);
-			//It will escape all the special characters
-			var sourceleadUrl = '${sourceleadUrl}';
-
-			$.ajax({
+			/* $.ajax({
 						type : "POST",
 						url : sourceleadUrl
 								+ "/upDateCandidateEducationByCandidateIdAndCandidateEducationId?${_csrf.parameterName}=${_csrf.token}&json="+ jsonData + "&candidateId=" + candidateId ,
@@ -1000,7 +1048,7 @@ function clearSearchKey() {
 							eduMsgFadeinFunction();
 							qveducationSubmission(candidateId);
 						},
-					});
+					}); */
 			return true;
 		} else {
 			return false;
@@ -1020,7 +1068,6 @@ function clearSearchKey() {
  function validateEduname(candidateId) {
 	  var name = document.getElementById("candEdu").value; 
  	  $('#nameIdDiv').find('p.jquery_form_error_message').remove();
-	  var sourceleadUrl ='${sourceleadUrl}';
 		 $.ajax({
 		    	type: "POST",
 		        url: sourceleadUrl+"/validateEduname?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&name="+name, 

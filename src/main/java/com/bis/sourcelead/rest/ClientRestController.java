@@ -40,10 +40,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.UserRoleDao;
-import com.bis.sourcelead.dto.CandidateSearchDTO;
+import com.bis.sourcelead.dto.AddUserDTO;
+import com.bis.sourcelead.dto.CandidateDTO;
+import com.bis.sourcelead.dto.ClientDTO;
 import com.bis.sourcelead.dto.ClientVendorDTO;
 import com.bis.sourcelead.dto.ResponseList;
-import com.bis.sourcelead.elk.index.CandidateIndex;
 import com.bis.sourcelead.elk.index.ClientVendorContactsIndex;
 import com.bis.sourcelead.elk.index.ClientVendorIndex;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
@@ -248,21 +249,20 @@ public class ClientRestController {
 	@PreAuthorize("hasAnyRole('ROLE_CREATE_CLIENT','ROLE_CREATE_VENDOR')")
 	@RequestMapping(value = "/saveClient", method = RequestMethod.POST)
 	@ResponseBody
-	public String saveClient(@RequestParam(value = "json", required = false) String json,
+	public String saveClient(ClientDTO clientDTO,AddUserDTO addUserDTO,CandidateDTO candidateDTO,
 			@RequestParam(value = "responderType", required = false) String responderType,
 			@RequestParam(value = "orgLocationId", required = false) Long orgLocationId, HttpServletRequest request)
 			throws Exception {
 
-		JSONObject jsonObj = new JSONObject(json);
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 
 		if (null != orgLocationId) {
-			jsonObj.put("orgLocationId", orgLocationId);
+			clientDTO.setOrgLocationId(orgLocationId.toString());
 		}
 
-		clientService.storeClient(jsonObj, user, orgLocation, responderType, org);
+		clientService.storeClient(clientDTO,addUserDTO,candidateDTO, user, orgLocation, responderType, org);
 		if (responderType.equalsIgnoreCase("Vendor")) {
 			SourceLeadSessionManager.setSessionAttribute(request, "vendorCreateMsg", "Success!! New Vendor created");
 		} else if (responderType.equalsIgnoreCase("Client")) {
@@ -622,19 +622,17 @@ public class ClientRestController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/clientDetailsUpdateUsingId", method = RequestMethod.POST)
-	public String clientDetailsUpdateUsingId(@RequestParam(value = "json", required = false) String json,
+	public String clientDetailsUpdateUsingId(ClientDTO clientDTO,
 				@RequestParam(value = "vendorLocationId", required = false) Long clientLocationId,
 				@RequestParam(value = "orgRelationId", required = false) Long orgRelationId) throws Exception {
 		
 		    OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		    User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		    
-	       String json1 = "{" + json + "}";
-	       JSONObject jsonObj = new JSONObject(json1);
-	       clientService.updateClientDetails(jsonObj, orgRelationId,clientLocationId, orgLocation.getId(),user);
+	       clientService.updateClientDetails(clientDTO, orgRelationId,clientLocationId, orgLocation.getId(),user);
 	       
 	       StringBuilder editClientMsg = new StringBuilder();
-		   SourceLeadSessionManager.setSessionAttribute(request, "editClient", editClientMsg.append("Success !! ").append(jsonObj.getString("clientName")).append(" details updated.").toString());
+		   SourceLeadSessionManager.setSessionAttribute(request, "editClient", editClientMsg.append("Success !! ").append(clientDTO.getOrgName()).append(" details updated.").toString());
 
 		return "success";
 	}
@@ -850,19 +848,18 @@ public class ClientRestController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/vendorDetailsUpdateUsingId", method = RequestMethod.POST)
-	public String vendorDetailsUpdateUsingId(@RequestParam(value = "json", required = false) String json,
+	public String vendorDetailsUpdateUsingId(ClientDTO clientDTO,
 			@RequestParam(value = "vendorLocationId", required = false) Long vendorLocationId,
 			@RequestParam(value = "orgRelationId", required = false) Long orgRelationId) throws Exception {
 
-		JSONObject jsonObj = new JSONObject(json);
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 
-		clientService.updateVendorDetails(jsonObj, orgRelationId, vendorLocationId, orgLocation.getId(), user);
+		clientService.updateVendorDetails(clientDTO, orgRelationId, vendorLocationId, orgLocation.getId(), user);
 
 		StringBuilder editVendorMsg = new StringBuilder();
 		SourceLeadSessionManager.setSessionAttribute(request, "editVendor", editVendorMsg.append("Success !! ")
-				.append(jsonObj.getString("vendorName")).append(" details updated.").toString());
+				.append(clientDTO.getVendorName()).append(" details updated.").toString());
 
 		return "success";
 	}
@@ -876,21 +873,19 @@ public class ClientRestController {
 	 */
 	
 	@RequestMapping(value = "/vendorContactDetailsUpdateUsingId", method = RequestMethod.POST)
-	 String vendorContactDetailsUpdateUsingId(@RequestParam(value = "json", required = false) String json,
+	 String vendorContactDetailsUpdateUsingId(ClientDTO clientDTO,
 			@RequestParam(value = "spocId", required = false) Long spocId,
 			@RequestParam(value = "ownerId", required = false) Long ownerId,@RequestParam(value = "spocUserId", required = false) Long spocUserId,
 			@RequestParam(value = "type", required = false) String type) throws Exception {
 		
-	       String jsonVal = "{" + json + "}";
-	       JSONObject jsonObj = new JSONObject(jsonVal);
 	       User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 	       OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-	       OrgSpoc orgSpoc = clientService.updateVendorContactDetails(jsonObj, spocId, orgLocation.getId(),loginUser,ownerId,spocUserId,orgLocation,type);
+	       OrgSpoc orgSpoc = clientService.updateVendorContactDetails(clientDTO, spocId, orgLocation.getId(),loginUser,ownerId,spocUserId,orgLocation,type);
 	       
 	       StringBuilder editSpocMsg = new StringBuilder();
 		   //SourceLeadSessionManager.setSessionAttribute(request, "editSpocMsg", editSpocMsg.append("Success !! ").append(orgSpoc.getSpocUser().getFirstName()).append(" details updated.").toString());
 
-		return jsonObj.getString("owner");
+		return orgSpoc.getOwnerUser().getId().toString();
 	}
 	
 	
@@ -1184,10 +1179,10 @@ public class ClientRestController {
 		 */
 		String[] tableColumns1 = null;
 		if(Constants.CLIENT.equalsIgnoreCase(clientVendorDTO.getResponderType())){
-			String[] tableColumns = {"orgName", "", "", "", "createdBy", "noContacts"};
+			String[] tableColumns = {"responderOrgName", "", "location", "responderLevel", "createdBy", "noContacts"};
 			tableColumns1 = tableColumns;
 		}else if(Constants.VENDOR.equalsIgnoreCase(clientVendorDTO.getResponderType())){
-			String[] tableColumns = {"orgName", "", "", "","createdBy","releasedJobsCount", "noContacts"};
+			String[] tableColumns = {"responderOrgName", "", "", "","createdBy","releasedJobsCount", "noContacts"};
 			tableColumns1 = tableColumns;
 		}
 		
@@ -1227,6 +1222,26 @@ public class ClientRestController {
 		 combinedQueryBuilder.should(responderQueryBuilder);
 		 
 		 boolQueryBuilder.must(combinedQueryBuilder);
+		 
+		 //------
+		 BoolQueryBuilder boolQueryBuilderForCount = new BoolQueryBuilder();
+		 
+		 
+        BoolQueryBuilder combinedQueryBuilderCount = QueryBuilders.boolQuery();
+		 
+		 BoolQueryBuilder initiatorQueryBuilderCount = QueryBuilders.boolQuery();
+		 initiatorQueryBuilderCount.must(QueryBuilders.matchQuery("orgLocationId", loginOrgLocation.getId()));
+		 initiatorQueryBuilderCount.must(QueryBuilders.matchQuery("initiatorType", responderType));
+		 
+		 BoolQueryBuilder responderQueryBuilderCount = QueryBuilders.boolQuery();
+		 responderQueryBuilderCount.must(QueryBuilders.matchQuery("responderLocationId", loginOrgLocation.getId()));
+		 responderQueryBuilderCount.must(QueryBuilders.matchQuery("responderType", responderType));
+		 
+		 combinedQueryBuilderCount.should(initiatorQueryBuilderCount);
+		 combinedQueryBuilderCount.should(responderQueryBuilderCount);
+		 
+		 boolQueryBuilderForCount.must(combinedQueryBuilder);
+		 //---end
 		 
 		 // filter based on client level
 		 List<String> clientLevelArray = clientVendorDTO.getValues(); // 
@@ -1427,7 +1442,7 @@ public class ClientRestController {
 			response.setRecordsFiltered(searchHits.length);
 			SearchResponse searchResponseForCount = sourceleadELKBaseIndexer
 					.searchDocumentWithMaxResults(Constants.ELK_CLIENTVENDOR_INDEX, Constants.ELK_CLIENTVENDOR_TYPE,
-							0, 10, "createdBy", SortOrder.DESC, boolQueryBuilder);
+							0, 10, "createdBy", SortOrder.DESC, boolQueryBuilderForCount);
 			
 			response.setRecordsTotal(searchResponseForCount == null ? response.getRecordsFiltered() : Long.valueOf(searchResponseForCount.getHits().getTotalHits()).intValue());
 		}
@@ -1474,7 +1489,7 @@ public class ClientRestController {
 			/*
 			 * This array is used to enable the sorting feature in data tables. And, these names should match the ELK Candidate index field names.
 			 */
-			String[] tableColumns = {"orgName", "spocName", "spocEmail", "", "", "","",""};
+			String[] tableColumns = {"clientLocationId", "clientUserFirstName", "clientUserEmail", "", "ownerUserId", "spocStatus","invitationStatus",""};
 		     int sortColumnIndex = 0; //by default sorting using updated date
 			boolean sortColumnOrder = false; //by default descending order
 			if(clientVendorDTO.getOrder() != null && !clientVendorDTO.getOrder().isEmpty()) {
@@ -1499,6 +1514,15 @@ public class ClientRestController {
 			 }else if("Client".equalsIgnoreCase(clientVendorDTO.getResponderType())){
 				 responderQueryBuilder.must(QueryBuilders.matchQuery("vendorLocationId", loginOrgLocation.getId()));
 			 }
+			 
+				BoolQueryBuilder boolQueryBuilderForCount = new BoolQueryBuilder();
+				 if("Vendor".equalsIgnoreCase(clientVendorDTO.getResponderType())){
+					 boolQueryBuilderForCount.must(QueryBuilders.matchQuery("clientLocationId", loginOrgLocation.getId()));
+				 }else if("Client".equalsIgnoreCase(clientVendorDTO.getResponderType())){
+					 boolQueryBuilderForCount.must(QueryBuilders.matchQuery("vendorLocationId", loginOrgLocation.getId()));
+				 }
+				 
+				
 			 
 			 BoolQueryBuilder statusQueryBuilder = QueryBuilders.boolQuery();
 			 statusQueryBuilder.must(QueryBuilders.matchQuery("status", "1"));
@@ -1547,30 +1571,6 @@ public class ClientRestController {
 					}
 					boolQueryBuilder.must(invitationAdvancedBoolQueryBuilder);
 				}
-				
-				
-				/* List<String> anyKeyWordArray = clientVendorDTO.getAnyOfKeyword();
-					if(anyKeyWordArray == null)
-						anyKeyWordArray = new ArrayList<>();
-					if(StringUtils.isNotEmpty(clientVendorDTO.getSearchValue())) {
-						anyKeyWordArray.add(clientVendorDTO.getSearchValue());
-					}
-					 // getSearchKeywordsFromChosenSelectField(jsonObj, "anyOfKeyword");
-					if(anyKeyWordArray != null && !anyKeyWordArray.isEmpty()){
-						 BoolQueryBuilder anyBoolQueryBuilder = QueryBuilders.boolQuery();
-						 for(String keywd : anyKeyWordArray){
-							 BoolQueryBuilder anyBoolSubQueryBuilder = QueryBuilders.boolQuery();
-							ArrayList<MatchQueryBuilder> matchQueryBuilderList =getMatchQueryBuilderList(keywd);
-							if(matchQueryBuilderList != null && !matchQueryBuilderList.isEmpty()){
-								for(MatchQueryBuilder matchQueryBuilder :matchQueryBuilderList){
-									anyBoolSubQueryBuilder.should(matchQueryBuilder);
-								}
-								anyBoolQueryBuilder.should(anyBoolSubQueryBuilder);
-							}
-						}
-						 boolQueryBuilder.must(anyBoolQueryBuilder);
-					}*/
-					
 					
 					//Any Keyword
 				List<String> anyKeyWordArray = clientVendorDTO.getAnyOfKeyword();
@@ -1594,13 +1594,11 @@ public class ClientRestController {
 						 boolQueryBuilder.must(anyBoolQueryBuilder);
 					}
 				
-// Advance search end
 				
 				SearchResponse searchResponse = sourceleadELKBaseIndexer
 						.searchDocumentWithMaxResults(Constants.ELK_CLIENTVENDOR_CONTACT_INDEX, Constants.ELK_CLIENTVENDOR_CONTACT_TYPE,
 								clientVendorDTO.getStart(), clientVendorDTO.getLength(), tableColumns[sortColumnIndex], sortColumnOrder ? SortOrder.ASC : SortOrder.DESC, boolQueryBuilder);
 				
-//				SearchHit[] searchHits = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_CLIENTVENDOR_CONTACT_INDEX, Constants.ELK_CLIENTVENDOR_CONTACT_TYPE,0,maxResults.intValue(),boolQueryBuilder).getHits();
 
 				SearchHit searchHits[] = searchResponse.getHits().getHits();
 				
@@ -1683,12 +1681,12 @@ public class ClientRestController {
 					}	
 					
 				}
-				response.setRecordsFiltered(searchHits.length);
+				response.setRecordsFiltered(Long.valueOf(searchResponse.getHits().getTotalHits()).intValue());
 				SearchResponse searchResponseForCount = sourceleadELKBaseIndexer
-						.searchDocumentWithMaxResults(Constants.ELK_CLIENTVENDOR_INDEX, Constants.ELK_CLIENTVENDOR_TYPE,
-								0, 10, "createdBy", SortOrder.DESC, boolQueryBuilder);
+						.searchDocumentWithMaxResults(Constants.ELK_CLIENTVENDOR_CONTACT_INDEX, Constants.ELK_CLIENTVENDOR_CONTACT_TYPE,
+								0, 10, "invitationStatus", SortOrder.DESC, boolQueryBuilderForCount);
 				
-				response.setRecordsTotal(searchResponseForCount == null ? response.getRecordsFiltered() : Long.valueOf(searchResponseForCount.getHits().getTotalHits()).intValue());
+			response.setRecordsTotal(searchResponseForCount == null ? response.getRecordsFiltered() : Long.valueOf(searchResponseForCount.getHits().getTotalHits()).intValue());
 			response.setData(clientVendorContactsList);
 			 return response;
 		}
