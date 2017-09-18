@@ -158,7 +158,7 @@ $(document).ready(function () {
 		    		if(currentApproverId != null && currentApproverId != ''  && currentApproverId != 'undefined'){
 		    			 $.ajax({
 		    			    	type: "POST",
-		    			        url: sourceleadUrl+"/getApproverTwoByUserId?${_csrf.parameterName}=${_csrf.token}&currentApproverId="+currentApproverId,  
+		    			        url: sourceleadUrl+"/getApproverTwoByUserId?"+tokenParamName+"="+tokenValue+"&currentApproverId="+currentApproverId,  
 		    			        success: function(data) {
 		    			        	var json = JSON.parse(data);
 		    			        	var output = "";
@@ -1500,7 +1500,7 @@ function validate_fileupload(fileName)
 					 data: formData,
 	  		         processData: false,
 	  		         contentType:false, 
-					  url : sourceleadUrl+"/storeRequirement?${_csrf.parameterName}=${_csrf.token}&saveType="+saveType,
+					  url : sourceleadUrl+"/storeRequirement?"+tokenParamName+"="+tokenValue+"&saveType="+saveType,
 					  	success : function(data) {
 						location.replace(sourceleadUrl+"/requirementList");
 
@@ -1541,7 +1541,7 @@ function storeTeam(){
 			
 			$("#add_team").attr("disabled", "disabled"); 
 	       
-			$.post(sourceleadUrl+"/storeTeam?${_csrf.parameterName}=${_csrf.token}", formData, function(data) {
+			$.post(sourceleadUrl+"/storeTeam?"+tokenParamName+"="+tokenValue+"", formData, function(data) {
 	        	$('#addTeam').hide();
 				$('.modal-backdrop').hide();
 	        });
@@ -1601,7 +1601,7 @@ function getAllCountries(){
 	$.ajax({
     	type: "POST",
     	dataType: "json",
-    	 url: '${sourceleadUrl}'+"/countryAutoComplete?${_csrf.parameterName}=${_csrf.token}",
+    	 url: '${sourceleadUrl}'+"/countryAutoComplete?"+tokenParamName+"="+tokenValue+"",
         success: function(data) {
         	var json = JSON.parse(data);
         	$('#countryReq').empty();
@@ -1646,7 +1646,7 @@ function getStates(){
 		$.ajax({
 	    	type: "POST",
 	    	dataType: "json",
-	    	 url: '${sourceleadUrl}'+"/getStatesByCountry?${_csrf.parameterName}=${_csrf.token}&countryName="+countryName, 
+	    	 url: '${sourceleadUrl}'+"/getStatesByCountry?"+tokenParamName+"="+tokenValue+"&countryName="+countryName, 
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	$('#state').empty();
@@ -1694,7 +1694,7 @@ function getCities(){
 		$.ajax({
 	    	type: "POST",
 	    	dataType: "json",
-	    	 url: '${sourceleadUrl}'+"/getCitiesByStateAndCountry?${_csrf.parameterName}=${_csrf.token}&countryName="+countryName+"&stateName="+stateName, 
+	    	 url: '${sourceleadUrl}'+"/getCitiesByStateAndCountry?"+tokenParamName+"="+tokenValue+"&countryName="+countryName+"&stateName="+stateName, 
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	$('#city').empty();
@@ -1835,7 +1835,7 @@ function getRequirementAndLookUpSkills(requirementid){
 	
 	$.ajax({
    	type: "POST",
-    url: sourceleadUrl+"/getRequirementAndLookUpSkills?${_csrf.parameterName}=${_csrf.token}&requirementid="+requirementid, 	   
+    url: sourceleadUrl+"/getRequirementAndLookUpSkills?"+tokenParamName+"="+tokenValue+"&requirementid="+requirementid, 	   
 	    success: function(data) {
 	    	if(data != null && data != 'undefined' && data !='' ){ 
 	    		var json = JSON.parse(data);
@@ -1865,7 +1865,7 @@ function setTemplateValues(){
 	$.ajax({
 	   	type: "POST",
 	   	
-	    url: sourceleadUrl+"/getRequirementById?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId, 	   
+	    url: sourceleadUrl+"/getRequirementById?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId, 	   
 		    success: function(data) {
 		    	
 		    	if(data != null && data != 'undefined' && data !='' ){ 
@@ -2271,7 +2271,7 @@ function getUserList(teamType){
  	   $("#usersGrid").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
  	   $.ajax({
            type : "POST",
-           url: sourceleadUrl+"/getUserList?${_csrf.parameterName}=${_csrf.token}&teamType="+teamType,    
+           url: sourceleadUrl+"/getUserList?"+tokenParamName+"="+tokenValue+"&teamType="+teamType,    
             success :function(data) {
                  if(data != null && data != 'undefined' && data != "" && data != '[]'){
                		 if( data.indexOf('Sign In') >= 0){
@@ -2453,7 +2453,7 @@ function getTeamsList(reqId){
 	  
 	  $.ajax({
            type : "POST",
-           url: sourceleadUrl+"/getTeamsList?${_csrf.parameterName}=${_csrf.token}&reqId="+reqId,    
+           url: sourceleadUrl+"/getTeamsList?"+tokenParamName+"="+tokenValue+"&reqId="+reqId,    
             success :function(data) {
             	var json = JSON.parse(data);
 				var output = "";
@@ -2612,7 +2612,7 @@ function getTeamOwners(){
 	 var teamMemberUserId = document.getElementById("memberUserId").value;
      $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/getAllUsersByOrgLocationCodeExceptTeamOwner?${_csrf.parameterName}=${_csrf.token}&teamOwnerUserId="+teamMemberUserId,
+		        url: sourceleadUrl+"/getAllUsersByOrgLocationCodeExceptTeamOwner?"+tokenParamName+"="+tokenValue+"&teamOwnerUserId="+teamMemberUserId,
 		        success: function(data) {
 		        	var json = JSON.parse(data);
 		        	var output = "";
@@ -2641,7 +2641,7 @@ function getTeamMembers(){
 	 var teamOwnerUserId = document.getElementById("ownerUserId").value;
 		 $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/getAllUsersByOrgLocationCodeExceptTeamOwner?${_csrf.parameterName}=${_csrf.token}&teamOwnerUserId="+teamOwnerUserId,
+		        url: sourceleadUrl+"/getAllUsersByOrgLocationCodeExceptTeamOwner?"+tokenParamName+"="+tokenValue+"&teamOwnerUserId="+teamOwnerUserId,
 		        success: function(data) {
 		        	var json = JSON.parse(data);
 		        	var output = "";
@@ -2778,7 +2778,7 @@ function getLevel2Approvers(currentApproverId){
 	 if(currentApproverId != null && currentApproverId != ''  && currentApproverId != 'undefined'){
 		 $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/getApproverTwoByUserId?${_csrf.parameterName}=${_csrf.token}&currentApproverId="+currentApproverId,  
+		        url: sourceleadUrl+"/getApproverTwoByUserId?"+tokenParamName+"="+tokenValue+"&currentApproverId="+currentApproverId,  
 		        success: function(data) {
 		        	var json = JSON.parse(data);
 		        	var output = "";
@@ -2824,7 +2824,7 @@ function getLevel2Approvers(currentApproverId){
 			 $("#submitForApproval").attr("disabled", "disabled");
 			 $.ajax({
 			    	type: "POST",
-			        url: sourceleadUrl+"/validateJobId?${_csrf.parameterName}=${_csrf.token}&jobId="+jobId+"&requirementid="+requirementid, 
+			        url: sourceleadUrl+"/validateJobId?"+tokenParamName+"="+tokenValue+"&jobId="+jobId+"&requirementid="+requirementid, 
 			        success: function(data) {
 			        	if(data == true){
 							  $("input#jobId").after("<p class='jquery_form_error_message'>"+jobId+" is Already Existed</span>");
@@ -2917,7 +2917,7 @@ function checkTemplateforDouplicate(){
 		
 			 $.ajax({
 			    	type: "POST",
-			        url: sourceleadUrl+"/validatetemplateName?${_csrf.parameterName}=${_csrf.token}&templateName="+jsonData, 
+			        url: sourceleadUrl+"/validatetemplateName?"+tokenParamName+"="+tokenValue+"&templateName="+jsonData, 
 			        success: function(data) {
 			        	if(data == "true"){
 			        		  $('#jobTitleDiv').find('p.jquery_form_error_message').remove();
@@ -3003,7 +3003,7 @@ function getEditRequirementDetails(requirementId){
 	if(templateId !=''){
 		$.ajax({
 			type : "GET",
-			url : sourceleadUrl + "/getEditRequirementDetails?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId,
+			url : sourceleadUrl + "/getEditRequirementDetails?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId,
 			success : function(data) {
 				var json = JSON.parse(data);
 				$(".Editor-container").find('.Editor-editor').html(json['description']);
@@ -3021,7 +3021,7 @@ function getEditRequirementDetails(requirementId){
 	 if(name != null && name != ""){
 		 $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/validateTeamName?${_csrf.parameterName}=${_csrf.token}&name="+name, 
+		        url: sourceleadUrl+"/validateTeamName?"+tokenParamName+"="+tokenValue+"&name="+name, 
 		        success: function(data) {
 		        	if(data == 'true'){
 						  

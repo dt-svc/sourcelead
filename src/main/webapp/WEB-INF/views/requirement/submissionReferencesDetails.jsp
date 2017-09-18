@@ -38,7 +38,7 @@ function submissionReferencesList(candidateId){
 	
 	 $.ajax({  
           type : "POST",
-          url: sourceleadUrl+"/getCandidateReferencesListByCandidateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&locationCode="+locationCode,        
+          url: sourceleadUrl+"/getCandidateReferencesListByCandidateId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&locationCode="+locationCode,        
           success :function(json) {
            
 	                	 $("#submissionReferencesList").empty();

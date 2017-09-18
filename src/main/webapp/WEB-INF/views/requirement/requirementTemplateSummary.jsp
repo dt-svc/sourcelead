@@ -38,7 +38,7 @@
 	 var requirementId= '${requirementId}';
 	 $.ajax({
 	    	type: "POST",
-	        url: sourceleadUrl+"/getRequirementTemplateByRequirementId?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId, 
+	        url: sourceleadUrl+"/getRequirementTemplateByRequirementId?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId, 
 	        success: function(data) {
 	        	 
 			    var json = JSON.parse(data);
@@ -170,7 +170,7 @@ function deleteRequirementTemplate(requirementId, status){
 	if (message == true) {
 		$.ajax({
 		   	type: "POST",
-		    url: sourceleadUrl+"/terminateRequirementTemplate?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&status="+status, 	   
+		    url: sourceleadUrl+"/terminateRequirementTemplate?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&status="+status, 	   
    		    success: function(data) {
    		    	if( data.indexOf('Sign In') >= 0){
 		    		location.replace(sourceleadUrl);
