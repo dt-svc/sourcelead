@@ -309,7 +309,7 @@ function storeExpensesCategory(){
 
 			$.ajax({
 					type : "POST",
-					url : sourceleadUrl+"/storeExpensesCategory?${_csrf.parameterName}=${_csrf.token}&json="+con,
+					url : sourceleadUrl+"/storeExpensesCategory?"+tokenParamName+"="+tokenValue+"&json="+con,
 					success :function(data) {  
 				                 if(data != null && data != 'undefined' && data != ""){
 				               		if( data.indexOf('Sign In') >= 0){
@@ -440,7 +440,7 @@ function getTaxPercentageValue(){
 function deleteExpenseCategory(categoryId){
 	  $.ajax({  
           type : "POST",
-          url: sourceleadUrl+"/removeExpensesCategoryByCategoryId?${_csrf.parameterName}=${_csrf.token}&categoryId="+categoryId,        
+          url: sourceleadUrl+"/removeExpensesCategoryByCategoryId?"+tokenParamName+"="+tokenValue+"&categoryId="+categoryId,        
           success :function(data) {
 
 				if(data != null && data != 'undefined' && data != ""){
@@ -463,7 +463,7 @@ function deleteExpenseCategory(categoryId){
 function reActiveExpenseCategory(categoryId){
 	  $.ajax({  
           type : "POST",
-          url: sourceleadUrl+"/reActiveExpenseCategoryByCategoryId?${_csrf.parameterName}=${_csrf.token}&categoryId="+categoryId,        
+          url: sourceleadUrl+"/reActiveExpenseCategoryByCategoryId?"+tokenParamName+"="+tokenValue+"&categoryId="+categoryId,        
           success :function(data) {
         	  expenseCategoryList()
         },
@@ -476,7 +476,7 @@ function reActiveExpenseCategory(categoryId){
  <script type="text/javascript">
  function editExpenseCategory(categoryId) {
 		$.ajax({	type : "POST",
-					url : sourceleadUrl+ "/getExpensesCategoryByCategoryId?${_csrf.parameterName}=${_csrf.token}&categoryId="+categoryId,
+					url : sourceleadUrl+ "/getExpensesCategoryByCategoryId?"+tokenParamName+"="+tokenValue+"&categoryId="+categoryId,
 					success : function(data) {
 						var json = JSON.parse(data);
 						var expensesName = "";
@@ -668,7 +668,7 @@ function reActiveExpenseCategory(categoryId){
 			$.ajax({
 						type : "POST",
 						url : sourceleadUrl
-								+ "/upDateExpensesCategoryByCategoryId?${_csrf.parameterName}=${_csrf.token}&json="+ jsonData + "&categoryId="+categoryId,
+								+ "/upDateExpensesCategoryByCategoryId?"+tokenParamName+"="+tokenValue+"&json="+ jsonData + "&categoryId="+categoryId,
 						success : function(result) {
 							closePopup();
 							expenseCategoryList();

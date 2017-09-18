@@ -164,7 +164,7 @@ width: auto;
 			con = con.replace(/[{}]/g, "");
 			$.ajax({
 						type : "POST",
-						url : sourceleadUrl+"/acceptOrRejectReopenExpense?${_csrf.parameterName}=${_csrf.token}&type="+type+"&expenseId="+expenseId+"&reOpenedUserId="+reOpenedUserId+"&reason="+reason+"&orgLocId="+orgLocation,
+						url : sourceleadUrl+"/acceptOrRejectReopenExpense?"+tokenParamName+"="+tokenValue+"&type="+type+"&expenseId="+expenseId+"&reOpenedUserId="+reOpenedUserId+"&reason="+reason+"&orgLocId="+orgLocation,
 						success : function(data) {
 							if("success"){
 								$('#rejectIdDiv').empty();
