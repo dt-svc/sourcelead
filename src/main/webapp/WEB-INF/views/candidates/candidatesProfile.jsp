@@ -11,7 +11,7 @@
      2.parameter : csrf token .
      3.ajax url implementation in CandidateListRestController.
 --%>
-<style>upDateCandidate(
+<style>
  /*   .pac-container {
    z-index: 1000000000 !important;
    } */
