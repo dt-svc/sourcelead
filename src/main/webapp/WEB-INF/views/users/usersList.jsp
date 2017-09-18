@@ -46,7 +46,7 @@ function usersListCheck(searchValue,searchResult){
 function getUsersSearchResult(searchValue){
 	 $.ajax({
         type : "GET",
-         url: sourceleadUrl+"/getUniversalSearchUsersList?${_csrf.parameterName}=${_csrf.token}&searchValue="+searchValue,       
+         url: sourceleadUrl+"/getUniversalSearchUsersList?"+tokenParamName+"="+tokenValue+"&searchValue="+searchValue,       
          success :function(data) {
         	 prepareUsersList(data);
         },
@@ -484,7 +484,7 @@ function exportToPdf(){
 		
 		 $.ajax({ 
 	    	type: "POST",
-	    	url: sourceleadUrl+"/getUsersList?${_csrf.parameterName}=${_csrf.token}&userRole="+userRole+"&searchByName="+searchByName+"&userState="+userState+"&loginUserRole="+loginUserRole+"&offset="+offset,
+	    	url: sourceleadUrl+"/getUsersList?"+tokenParamName+"="+tokenValue+"&userRole="+userRole+"&searchByName="+searchByName+"&userState="+userState+"&loginUserRole="+loginUserRole+"&offset="+offset,
 	    			 
             success: function(data) {
             	 var json = JSON.parse(data);
@@ -593,7 +593,7 @@ function resendInvitation(userId){
 		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 			 $.ajax({
 			    	type: "POST",
-			        url: sourceleadUrl+"/resendInvitationEmail?${_csrf.parameterName}=${_csrf.token}&userId="+userId, 
+			        url: sourceleadUrl+"/resendInvitationEmail?"+tokenParamName+"="+tokenValue+"&userId="+userId, 
 			        success: function(result) {
 			        	$("#user"+userId).html("<i class='fa fa-envelope' aria-hidden='true'></i><a href='javascript:void(0)'  onClick='resendInvitation("+userId+");'>&nbsp;Resend</a>");
 			        	$("#loading").removeAttr("style"); 
@@ -671,7 +671,7 @@ var validationSettings = {
 		        	     processData: false,
 		    	         contentType:false,
 		        	     dataType : 'json',
-						 url : sourceleadUrl+"/searchUser?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&offset="+offset+"&userRole="+userRole+"&searchByName="+searchByName+"&userState="+userState+"&loginUserRole="+loginUserRole,
+						 url : sourceleadUrl+"/searchUser?"+tokenParamName+"="+tokenValue+"&json="+jsonData+"&offset="+offset+"&userRole="+userRole+"&searchByName="+searchByName+"&userState="+userState+"&loginUserRole="+loginUserRole,
 						 success : function(data) {
 							$("#search_user").addClass('button').val('Search');
 							$("#search_user").removeAttr("disabled");
@@ -696,7 +696,7 @@ function getUserSummary(userId){
 	if(userId != null && userId != ""){
 			 $.ajax({
 			    	type: "POST",
-			        url: sourceleadUrl+"/userSummary?${_csrf.parameterName}=${_csrf.token}&userId="+userId, 
+			        url: sourceleadUrl+"/userSummary?"+tokenParamName+"="+tokenValue+"&userId="+userId, 
 			        success: function(result) {
 			        	 
 			        },
@@ -1055,7 +1055,7 @@ function showList(viewType){
     	}
 		 $.ajax({ 
 	    	type: "POST",
-	    	url: sourceleadUrl+"/getUsersList?${_csrf.parameterName}=${_csrf.token}&userRole="+userRole+"&searchByName="+searchByName+"&userState="+userState+"&loginUserRole="+loginUserRole+"&offset="+offset+"&viewType="+viewType,
+	    	url: sourceleadUrl+"/getUsersList?"+tokenParamName+"="+tokenValue+"&userRole="+userRole+"&searchByName="+searchByName+"&userState="+userState+"&loginUserRole="+loginUserRole+"&offset="+offset+"&viewType="+viewType,
 	    			 
             success: function(data) {
             	 var json = JSON.parse(data);

@@ -20,7 +20,7 @@ function getAllInvoice(){
 	  $("#requirementList").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	  $.ajax({
            type : "POST",
-           url: sourceleadUrl+"/getAllInvoice?${_csrf.parameterName}=${_csrf.token}",    
+           url: sourceleadUrl+"/getAllInvoice?"+tokenParamName+"="+tokenValue+"",    
             success :function(data) {
 			    	     $("#requirementList").removeAttr("style");
 	                	 $("#requirementList").empty();
@@ -101,7 +101,7 @@ function getAllCustomers(){
 	  $("#requirementList").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	  $.ajax({
            type : "POST",
-           url: sourceleadUrl+"/getAllCustomers?${_csrf.parameterName}=${_csrf.token}",    
+           url: sourceleadUrl+"/getAllCustomers?"+tokenParamName+"="+tokenValue+"",    
             success :function(data) {
 			    	     $("#requirementList").removeAttr("style");
 	                	 $("#requirementList").empty();
@@ -174,7 +174,7 @@ function getAllVendors(){
 	  $("#requirementList").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	  $.ajax({
            type : "POST",
-           url: sourceleadUrl+"/getAllvendors?${_csrf.parameterName}=${_csrf.token}",    
+           url: sourceleadUrl+"/getAllvendors?"+tokenParamName+"="+tokenValue+"",    
             success :function(data) {
 			    	     $("#requirementList").removeAttr("style");
 	                	 $("#requirementList").empty();
@@ -242,7 +242,7 @@ function getAllEmployees(){
 	  $("#requirementList").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	  $.ajax({
            type : "POST",
-           url: sourceleadUrl+"/getAllEmoloyees?${_csrf.parameterName}=${_csrf.token}",    
+           url: sourceleadUrl+"/getAllEmoloyees?"+tokenParamName+"="+tokenValue+"",    
             success :function(data) {
 			    	     $("#requirementList").removeAttr("style");
 	                	 $("#requirementList").empty();
@@ -422,7 +422,7 @@ function check(){
 	    	        processData: false,
 	    	        contentType:false,
 	        	    dataType : 'json',
-					url : sourceleadUrl+"/storeImport?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
+					url : sourceleadUrl+"/storeImport?"+tokenParamName+"="+tokenValue+"&json="+jsonData,
 						success :function(data) {  
 			                
 			      }, 
