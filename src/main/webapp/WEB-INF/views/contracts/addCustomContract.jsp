@@ -1723,7 +1723,7 @@ function validateContractTitle(){
 
 $(function() {
 	$("#uploadBtn").change(function() {
-		fileUpload(sourceleadUrl, "uploadBtn", "ContractDocs", "newcontract_form");
+		fileUpload("uploadBtn", "ContractDocs", "newcontract_form");
 	});
  });
 </script>
