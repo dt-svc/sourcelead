@@ -503,7 +503,7 @@ document.getElementById("uploadBtn"+id).onchange = function () {
 
 function fileStore(id){
 	 $("#uploadBtn"+id).change(function() {
-		fileUpload(sourceleadUrl, "uploadBtn"+id, "RequestDocuments", "newcontract_form","reqDocs");
+		fileUpload("uploadBtn"+id, "RequestDocuments", "newcontract_form","reqDocs");
 	});
 }
 </script>
