@@ -115,7 +115,7 @@ function candidateEducationList(candidateId){
 	  }
 	 $.ajax({  
           type : "POST",
-          url: sourceleadUrl+"/getCandidateEducationListByCandidateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,        
+          url: sourceleadUrl+"/getCandidateEducationListByCandidateId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
           success :function(data) {
             /*    if(data != null && data != 'undefined' && data != "" && data != '[]'){
              		 if( data.indexOf('Sign In') >= 0){
@@ -453,7 +453,7 @@ function addEducation(candidateId) {
 <script>
 function EditEducation(candidateId,candidateEducationId) {
 	$.ajax({	type : "POST",
-				url : sourceleadUrl+ "/getCandidateEducationBycandidateIdandEducationId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&candidateEducationId="+candidateEducationId,
+				url : sourceleadUrl+ "/getCandidateEducationBycandidateIdandEducationId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&candidateEducationId="+candidateEducationId,
 				success : function(data) {
 					var json = JSON.parse(data);
 					var specialization = "";
@@ -761,7 +761,7 @@ function candidateEducationStore(candidateId){
 			 $("#education_form").attr("disabled", "disabled");
 			 $("#save_button").attr("disabled", "disabled");
 			
-			 $.post(sourceleadUrl+"/storeCandidateEducation?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId, formData, function(data) {
+			 $.post(sourceleadUrl+"/storeCandidateEducation?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId, formData, function(data) {
 				 closePopup();
 				 $('#perVal').attr('aria-valuenow', data).css('width',data+'%');
     			 if(data<50){
@@ -801,7 +801,7 @@ function candidateEducationStore(candidateId){
 					data : con,
 					processData: false,
 	    	        contentType: true,
-					url : sourceleadUrl+"/storeCandidateEducation?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,
+					url : sourceleadUrl+"/storeCandidateEducation?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,
 					success :function(data) {  
 				                 if(data != null && data != 'undefined' && data != ""){
 				               		if( data.indexOf('Sign In') >= 0){
@@ -923,7 +923,7 @@ function deleteSelectedEducation(candidateEducationId,candidateId){
  var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	 $.ajax({  
           type : "POST",
-          url: sourceleadUrl+"/removeCandidateEducationBycandidateIdandcandidateEducationId?${_csrf.parameterName}=${_csrf.token}&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&candidateEducationId="+candidateEducationId,        
+          url: sourceleadUrl+"/removeCandidateEducationBycandidateIdandcandidateEducationId?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&candidateEducationId="+candidateEducationId,        
           success :function(data) {
 
 				if(data != null && data != 'undefined' && data != ""){
@@ -1103,7 +1103,7 @@ function clearSearchKeyEducation() {
 						data :formData,
 						processData: false,
 		    	        contentType:false,
-						url : sourceleadUrl+"/upDateCandidateEducationByCandidateIdAndCandidateEducationId?${_csrf.parameterName}=${_csrf.token}&candidateId=" + candidateId ,
+						url : sourceleadUrl+"/upDateCandidateEducationByCandidateIdAndCandidateEducationId?"+tokenParamName+"="+tokenValue+"&candidateId=" + candidateId ,
 						success : function(result) {
 							closePopup();
 		            			$("#selector4").removeAttr("style");
@@ -1135,7 +1135,7 @@ function clearSearchKeyEducation() {
  	  $('#nameIdDiv').find('p.jquery_form_error_message').remove();
 		 $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/validateEduname?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&name="+name, 
+		        url: sourceleadUrl+"/validateEduname?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&name="+name, 
 		        success: function(data) {
 		        	if(data == true){
 		        		  $('#nameIdDiv').find('p.jquery_form_error_message').remove();

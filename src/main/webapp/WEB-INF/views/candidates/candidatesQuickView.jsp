@@ -14,7 +14,7 @@ function candidateQuickViewProfile(candidateId){
 	  var skillsList = '${skillsList}'; 
 	  $.ajax({
         type : "POST",
-         url: sourceleadUrl+"/getCandidateById?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,        
+         url: sourceleadUrl+"/getCandidateById?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
          success :function(data) {  
               if(data != null && data != 'undefined' && data != ""){  
               	var json = JSON.parse(data);
@@ -213,7 +213,7 @@ function candidateQuickViewProfile(candidateId){
 	function qvemployeeSubmission(candidateId) {
 				$.ajax({
 					type : "POST",
-					url : sourceleadUrl	+ "/getCandidatesEmployersListByCandidateIdAndOrgLocationID?${_csrf.parameterName}=${_csrf.token}&candidateId=" + candidateId,
+					url : sourceleadUrl	+ "/getCandidatesEmployersListByCandidateIdAndOrgLocationID?"+tokenParamName+"="+tokenValue+"&candidateId=" + candidateId,
 					success : function(data) {
 						if (data != null && data != 'undefined' && data != "" && data != '[]') {
 								$("#qvemployeeSubmission").empty();
@@ -294,7 +294,7 @@ function candidateQuickViewProfile(candidateId){
 function qveducationSubmission(candidateId){
 	 $.ajax({  
           type : "POST",
-          url: sourceleadUrl+"/getCandidateEducationListByCandidateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,        
+          url: sourceleadUrl+"/getCandidateEducationListByCandidateId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
           success :function(data) {
         	  if (data != null && data != 'undefined' && data != "" && data != '[]') {
 	                	 $("#qveducationSubmission").empty();
@@ -375,7 +375,7 @@ function qveducationSubmission(candidateId){
 function qwikCertificates(candidateId){
 	 $.ajax({  
           type : "POST",
-          url: sourceleadUrl+"/getCandidateCertificationListByCandidateIdAndOrgLocationID?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,        
+          url: sourceleadUrl+"/getCandidateCertificationListByCandidateIdAndOrgLocationID?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
           success :function(data) {
         	  if (data != null && data != 'undefined' && data != "" && data != '[]') {
 	                	 $("#qvcertificationSubmission").empty();
