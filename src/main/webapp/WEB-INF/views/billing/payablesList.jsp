@@ -510,7 +510,7 @@ function saveReceivePayment(invoiceId){
 		        processData: false,
 		        contentType:false,
 			      dataType : 'json',
-		    	 url: sourceleadUrl+"/saveInvoicePayment?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&invoiceId="+invoiceId, 
+		    	 url: sourceleadUrl+"/saveInvoicePayment?"+tokenParamName+"="+tokenValue+"&json="+jsonData+"&invoiceId="+invoiceId, 
 		        success: function(result) {
 		     		location.replace(sourceleadUrl+"/payablesList");
 		     		
@@ -952,7 +952,7 @@ function sendReminder(id){
 	 $.ajax({
     	 type: "POST",
 	     dataType : 'json',
-	    	 url: sourceleadUrl+"/sendReminder?${_csrf.parameterName}=${_csrf.token}&invoiceId="+id, 
+	    	 url: sourceleadUrl+"/sendReminder?"+tokenParamName+"="+tokenValue+"&invoiceId="+id, 
              success: function(result) {
             	 removePopup();
         },
@@ -970,7 +970,7 @@ function getPrint(id) {
 <script>
 function downloadInvoice(id){
 	var sourceleadUrl ='${sourceleadUrl}';
-	window.location.href = sourceleadUrl+"/downloadInvoice?${_csrf.parameterName}=${_csrf.token}&invoiceId="+id;
+	window.location.href = sourceleadUrl+"/downloadInvoice?"+tokenParamName+"="+tokenValue+"&invoiceId="+id;
 }
 </script> -->
 
@@ -979,7 +979,7 @@ function acceptedInvoice(id){
 	 $.ajax({
     	 type: "POST",
 	     dataType : 'json',
-	    	 url: sourceleadUrl+"/acceptedInvoice?${_csrf.parameterName}=${_csrf.token}&invoiceId="+id, 
+	    	 url: sourceleadUrl+"/acceptedInvoice?"+tokenParamName+"="+tokenValue+"&invoiceId="+id, 
              success: function(result) {
         	location.replace(sourceleadUrl+"/payablesList");
      		
@@ -1018,7 +1018,7 @@ function saveReasonforPayable(id){
 		  $("#reasonForRejectDiv").find('p.jquery_form_error_message').remove();
 		$.ajax({
 		   	type: "POST",
-		   	url: sourceleadUrl+"/rejectInvoice?${_csrf.parameterName}=${_csrf.token}&invoiceId="+id+"&reason="+reason,	    	   
+		   	url: sourceleadUrl+"/rejectInvoice?"+tokenParamName+"="+tokenValue+"&invoiceId="+id+"&reason="+reason,	    	   
 		    success: function(data) {
 		    	$("#popUp").empty();
 	 			 $(".project_inn_mask").fadeOut(200);
@@ -1036,7 +1036,7 @@ function rejectInvoice(id){
 	 $.ajax({
     	 type: "POST",
 	     dataType : 'json',
-	    	 url: sourceleadUrl+"/rejectInvoice?${_csrf.parameterName}=${_csrf.token}&invoiceId="+id, 
+	    	 url: sourceleadUrl+"/rejectInvoice?"+tokenParamName+"="+tokenValue+"&invoiceId="+id, 
              success: function(result) {
         	location.replace(sourceleadUrl+"/payablesList");
      		
@@ -1291,7 +1291,7 @@ function exportToPayablePdf(){
 		var exportEndDate = $("#billingEndDate").val();
 		
 		if(emptyExport > 0){
-		window.location.href = sourceleadUrl+"/getBillingExportList?${_csrf.parameterName}=${_csrf.token}&invoiceStatus="+invoiceStatus+"&paymentStatus="+paymentStatus+"&durationType="+durationType+"&exportStartDate="+exportStartDate+"&exportEndDate="+exportEndDate+"&exportType=pdf&invoiceType=Payables";
+		window.location.href = sourceleadUrl+"/getBillingExportList?"+tokenParamName+"="+tokenValue+"&invoiceStatus="+invoiceStatus+"&paymentStatus="+paymentStatus+"&durationType="+durationType+"&exportStartDate="+exportStartDate+"&exportEndDate="+exportEndDate+"&exportType=pdf&invoiceType=Payables";
 		}else{
 				var result = "";
 				result = result +"	<div class='project_inn_mask'></div>";
@@ -1330,7 +1330,7 @@ function exportToPayableExcel(){
 		var exportEndDate = $("#billingEndDate").val();
 		
 		if(emptyExport > 0){
-		window.location.href = sourceleadUrl+"/getBillingExportList?${_csrf.parameterName}=${_csrf.token}&invoiceStatus="+invoiceStatus+"&paymentStatus="+paymentStatus+"&durationType="+durationType+"&exportStartDate="+exportStartDate+"&exportEndDate="+exportEndDate+"&exportType=xls&invoiceType=Payables";
+		window.location.href = sourceleadUrl+"/getBillingExportList?"+tokenParamName+"="+tokenValue+"&invoiceStatus="+invoiceStatus+"&paymentStatus="+paymentStatus+"&durationType="+durationType+"&exportStartDate="+exportStartDate+"&exportEndDate="+exportEndDate+"&exportType=xls&invoiceType=Payables";
 		}else{	
 				var result = "";
 				result = result +"	<div class='project_inn_mask'></div>";
@@ -1351,7 +1351,7 @@ function linkPayableInvoice(invoiceId,totalAmount){
 	 $.ajax({
     	 type: "POST",
 	     dataType : 'json',
-	     url : sourceleadUrl+"/getClientBasedInvoiceList?${_csrf.parameterName}=${_csrf.token}&invoiceId="+invoiceId+"&invoiceType=payables",
+	     url : sourceleadUrl+"/getClientBasedInvoiceList?"+tokenParamName+"="+tokenValue+"&invoiceId="+invoiceId+"&invoiceType=payables",
 			success: function(data) {
 			var result = "";
 			result = result +'  <div class="modal-dialog modal-lg">                                                                                         ';
@@ -1536,7 +1536,7 @@ function proceedToMergeBill(checkVal,masterInvoiceId){
 	$.ajax({
 	   	 type: "POST",
 		     dataType : 'json',
-		    	 url: sourceleadUrl+"/linkInvoice?${_csrf.parameterName}=${_csrf.token}&checkVal="+checkVal+"&invoiceType=payables&masterInvoiceId="+masterInvoiceId, 
+		    	 url: sourceleadUrl+"/linkInvoice?"+tokenParamName+"="+tokenValue+"&checkVal="+checkVal+"&invoiceType=payables&masterInvoiceId="+masterInvoiceId, 
 	            success: function(data) {
 	            	$("#popUp").empty();
 	            	$(".project_inn_mask").fadeOut(200);
@@ -1567,7 +1567,7 @@ function generateAutomaticInvoice(){
 	 $.ajax({
     	 type: "POST",
 	     dataType : 'json',
-	    	 url: sourceleadUrl+"/generateAutomaticInvoice?${_csrf.parameterName}=${_csrf.token}&invoiceType=payables&contractType=vendorSow", 
+	    	 url: sourceleadUrl+"/generateAutomaticInvoice?"+tokenParamName+"="+tokenValue+"&invoiceType=payables&contractType=vendorSow", 
              success: function(data) {
             	 $("#invoiceLoading").removeAttr("style");
             	    $("#selector1").removeAttr("style");
@@ -1585,7 +1585,7 @@ function unLinkBill(invoiceId){
 	$.ajax({
 	   	 type: "POST",
 		     dataType : 'json',
-		    	 url: sourceleadUrl+"/unLinkInvoice?${_csrf.parameterName}=${_csrf.token}&invoiceId="+invoiceId, 
+		    	 url: sourceleadUrl+"/unLinkInvoice?"+tokenParamName+"="+tokenValue+"&invoiceId="+invoiceId, 
 	            success: function(data) {
 	            	location.replace(sourceleadUrl+"/payablesList");	
 	       },
@@ -1623,7 +1623,7 @@ function saveBillRejectedReason(billId){
 		}else{
 			 $.ajax({
 				   	type: "POST",
-				    url: sourceleadUrl+"/deleteInvoice?${_csrf.parameterName}=${_csrf.token}&invoiceType=payables&invoiceId="+billId+"&reason="+reason,
+				    url: sourceleadUrl+"/deleteInvoice?"+tokenParamName+"="+tokenValue+"&invoiceType=payables&invoiceId="+billId+"&reason="+reason,
 		   		    success: function(data) {
 		   		    	$("#popUp").empty();
 		   			 	$(".project_inn_mask").fadeOut(200);
