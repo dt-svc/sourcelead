@@ -110,6 +110,7 @@ public class RequirementHelper {
 				requirementIndex.setManager(sbilder.toString());
 			}
 			// to store approver of the req in elk
+		if(requirementDTO != null) {
 			if (null != requirementDTO.getParallelApprover()) {
 				String[] reqApproverUserId = requirementDTO.getParallelApprover().toArray(new String[requirementDTO.getParallelApprover().size()]);
 				requirementIndex.setReqLevel1ApproverUserId(reqApproverUserId);
@@ -131,6 +132,7 @@ public class RequirementHelper {
 					requirementIndex.setTeamAssignUserId(teamAssignUserId);
 				}
 			}
+		}
 			// requirementIndex.setRequirementSubmissionStatus(requirement.getRequirementSubmissionStatus().toString());
 			requirementIndex.setIsTemplate(requirement.getIsTemplate());
 			// education
