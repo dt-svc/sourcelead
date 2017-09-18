@@ -39,7 +39,7 @@
   </section>
   <div class="content-area content-new clearfix">
   <div id="loading"></div> 
-  <form:form id="candidate_form" name="candidate_form"  enctype='multipart/form-data' >
+  <form:form id="candidate_form" name="candidate_form">
     <div class="row form-horizontal mt myForm">
       <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12"> 
         
@@ -1865,5 +1865,13 @@ if(type == 'C2C-1099'){
 		        }
 		 }); 
  }
+ </script>
+ 
+<script>
+ $(function() {
+		$("#uploadBtn").change(function() {
+			fileUpload("uploadBtn", "resumes", "candidate_form");
+		});
+	 });
  </script>
  

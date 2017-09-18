@@ -396,8 +396,8 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 					if(null == masterCandidate){
 						masterCandidate = masterCandidateService.storeMasterCandidateByJsonObject(jsonObj, user,orgLocations);
 					}
+					candidate.setGeneratedId(candidateService.getCandidateId(orgLocations));
 					candidate.setMasterCandidateId(masterCandidate);
-					 
 					candidate.setCandidateType("Candidate");
 					candidate.setIsAssociate(Constants.NO);
 					candidate.setCandidateUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
