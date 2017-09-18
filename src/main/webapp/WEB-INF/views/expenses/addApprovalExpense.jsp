@@ -269,7 +269,7 @@
 function deleteAttchment(documentId){
 $.ajax({
 	type : "POST",
-	url : sourceleadUrl+"/deleteDocumentByDocumentId?${_csrf.parameterName}=${_csrf.token}&documentId="+documentId,
+	url : sourceleadUrl+"/deleteDocumentByDocumentId?"+tokenParamName+"="+tokenValue+"&documentId="+documentId,
 	success : function(data) {
 		return true;
 	},
@@ -295,7 +295,7 @@ function acceptReopenExpenseBySuperUser(expenseId,reOpenedUserId){
 	var accept = 'accept';
 	$.ajax({
 		type : "POST",
-		url : sourceleadUrl+"/acceptOrRejectReopenExpenseBySuperUser?${_csrf.parameterName}=${_csrf.token}&expenseId="+expenseId+"&reOpenedUserId="+reOpenedUserId+"&type="+accept+"&userId="+userId+"&orgLocationId="+orgLocationId,
+		url : sourceleadUrl+"/acceptOrRejectReopenExpenseBySuperUser?"+tokenParamName+"="+tokenValue+"&expenseId="+expenseId+"&reOpenedUserId="+reOpenedUserId+"&type="+accept+"&userId="+userId+"&orgLocationId="+orgLocationId,
 		success : function(data) {
 			 location.replace(sourceleadUrl+"/addApprovalExpense?expenseId="+'${expenses.expenseId}'+"&type=view"); 
 		},
@@ -333,7 +333,7 @@ function storeReopenRejectedReason(expenseId,reOpenedUserId){
 		$("#reOpenRejectedReasonDiv").empty();
 		$.ajax({
 		   	type: "POST",
-		   	url : sourceleadUrl+"/acceptOrRejectReopenExpenseBySuperUser?${_csrf.parameterName}=${_csrf.token}&expenseId="+expenseId+"&reOpenedUserId="+reOpenedUserId+"&type=reject&reason="+reason+"&userId="+userId+"&orgLocationId="+orgLocationId,	    	   
+		   	url : sourceleadUrl+"/acceptOrRejectReopenExpenseBySuperUser?"+tokenParamName+"="+tokenValue+"&expenseId="+expenseId+"&reOpenedUserId="+reOpenedUserId+"&type=reject&reason="+reason+"&userId="+userId+"&orgLocationId="+orgLocationId,	    	   
 		    success: function(data) {
 		    	 location.replace(sourceleadUrl+"/addApprovalExpense?expenseId="+'${expenses.expenseId}'+"&type=view"); 
 		    }
@@ -374,7 +374,7 @@ function notifyReopenExpense(expenseId){
 		$("#reOpenReasonDiv").empty();
 		$.ajax({
 		   	type: "POST",
-		    url: sourceleadUrl+"/notifyReopenExpense?${_csrf.parameterName}=${_csrf.token}&expenseId="+expenseId+"&reason="+reason,	    	   
+		    url: sourceleadUrl+"/notifyReopenExpense?"+tokenParamName+"="+tokenValue+"&expenseId="+expenseId+"&reason="+reason,	    	   
 		    success: function(data) {
 		    	 location.replace(sourceleadUrl+"/addApprovalExpense?expenseId="+'${expenses.expenseId}'+"&type=view"); 
 		    }
@@ -465,7 +465,7 @@ function removeWhiteSpaces(rowCount){
 			$.ajax({
        	        type : "POST",
         	    data: formData,
-				url : sourceleadUrl+"/storeAddExpensesData?${_csrf.parameterName}=${_csrf.token}&status="+status,
+				url : sourceleadUrl+"/storeAddExpensesData?"+tokenParamName+"="+tokenValue+"&status="+status,
 				success : function(data) {
 					$( "#submitForApprovalExpensesId" ).addClass('button').val('Sub for Approval');
 					window.location.replace(sourceleadUrl+'/expensesApprovalList');

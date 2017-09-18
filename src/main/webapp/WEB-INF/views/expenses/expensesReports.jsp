@@ -74,7 +74,7 @@ function getQuaters(){
     	    contentType : 'application/json; charset=utf-8',
     	    enctype: 'multipart/form-data',
     	    dataType : 'json',
-			url : sourceleadUrl+"/getYearsAndQuartersComboList?${_csrf.parameterName}=${_csrf.token}&dateFormat="+dateFormat,
+			url : sourceleadUrl+"/getYearsAndQuartersComboList?"+tokenParamName+"="+tokenValue+"&dateFormat="+dateFormat,
 			success : function(data) {
 				var result = "";
 				var json = JSON.parse(data[0]);
@@ -170,7 +170,7 @@ function expensesReportList(){
 var datequarterly = $("#selectedQuarter").val();
 $.ajax({
     type : "POST",
-     url: sourceleadUrl+"/getExpensesReportList?${_csrf.parameterName}=${_csrf.token}&datequarterly="+datequarterly,       
+     url: sourceleadUrl+"/getExpensesReportList?"+tokenParamName+"="+tokenValue+"&datequarterly="+datequarterly,       
      success :function(data) {
     	 	var json = JSON.parse(data);
     	 if(json != null && json != '' && json != 'undefined'){
@@ -589,7 +589,7 @@ $.ajax({
  <script>
  function exportExpensesReports(type){
 	var frequencyMonth =document.getElementById("selectedQuarter").value;
- window.location.href = sourceleadUrl+"/expensesReportExportList?${_csrf.parameterName}=${_csrf.token}&frequencyMonth="+frequencyMonth+"&exportType="+type;
+ window.location.href = sourceleadUrl+"/expensesReportExportList?"+tokenParamName+"="+tokenValue+"&frequencyMonth="+frequencyMonth+"&exportType="+type;
  }
  </script>
  
