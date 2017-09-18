@@ -131,7 +131,7 @@ function saveCandidateImage(candidateId, formId, data){
 }
 
 
-function saveUserProfileImage(formId){
+function saveUserProfileImage(formId,data){
 	
 	if ($('#'+formId).validate(false, validationSettings)){
   		var formData = getFormData(formId);
@@ -143,7 +143,7 @@ function saveUserProfileImage(formId){
                       success: function(result) {
                     	  if(result)
                     		  $("img[data-id=userProfileImage]").each(function(i) { $(this).attr('src', data[0].fileURL); });
-                   		  location.replace(sourceleadUrl+"/userProfile");  
+//                   		  location.replace(sourceleadUrl+"/userProfile");  
 			          },  
         });
         return true;         
