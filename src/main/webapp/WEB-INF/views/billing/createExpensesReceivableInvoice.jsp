@@ -276,7 +276,7 @@ function getClientContacts(){
 	var orgRelationId = $("#clientOrgRelationId").val();
 	$.ajax({
 	type : "GET",
-	url: sourceleadUrl+"/getClientContactsByOrgRelationId?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+orgRelationId,
+	url: sourceleadUrl+"/getClientContactsByOrgRelationId?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId,
 	success :function(data) {
 	var json = JSON.parse(data);
 	var output = "";
@@ -303,7 +303,7 @@ function getProjectsList(projectName){
 	var orgRelationId = $("#clientOrgRelationId").val();
 	$.ajax({
 	type : "GET",
-	url: sourceleadUrl+"/getClientProjectsByOrgRelationId?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+orgRelationId,
+	url: sourceleadUrl+"/getClientProjectsByOrgRelationId?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId,
 	success :function(data) {
 	var json = JSON.parse(data);
 	var output = "";
@@ -334,7 +334,7 @@ function getExpensesDetails(expId){
 	}
 	$.ajax({
 		type : "GET",
-		url: sourceleadUrl+"/getExpensesEntries?${_csrf.parameterName}=${_csrf.token}&expensesId="+expensesId,
+		url: sourceleadUrl+"/getExpensesEntries?"+tokenParamName+"="+tokenValue+"&expensesId="+expensesId,
 		success :function(data) {
 			populateExpensesDetailsGrid(data);
 		},
@@ -525,7 +525,7 @@ function getExpenses(projectMemberId,expensesFrequency){
 	}
 	$.ajax({
 		type : "GET",
-		url: sourceleadUrl+"/getExpensesByProjectMemberId?${_csrf.parameterName}=${_csrf.token}&memberId="+memberId+"&invoiceType=Receivable",
+		url: sourceleadUrl+"/getExpensesByProjectMemberId?"+tokenParamName+"="+tokenValue+"&memberId="+memberId+"&invoiceType=Receivable",
 		success :function(data) {
 			var output = "";
 			output = output + "<option value=''>--Select Expenses--</option>";
@@ -556,7 +556,7 @@ function getProjectAssignMembers(pid,projectMemberName){
 	
 	$.ajax({
 		type : "GET",
-		url: sourceleadUrl+"/getProjectAssignMembers?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId,
+		url: sourceleadUrl+"/getProjectAssignMembers?"+tokenParamName+"="+tokenValue+"&projectId="+projectId,
 		success :function(data) {
 			var output = "";
 			output = output + "<option value=''>--Select Associate--</option>";
@@ -587,7 +587,7 @@ function getProjectFrequency(invoiceFrequency){
 	}
 	$.ajax({
 	type : "GET",
-	url: sourceleadUrl+"/getProjectFrequency?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId,
+	url: sourceleadUrl+"/getProjectFrequency?"+tokenParamName+"="+tokenValue+"&projectId="+projectId,
 	success :function(data) {
 		var json = JSON.parse(data);
 		var output = "";
@@ -854,7 +854,7 @@ function cancelReceivableAlert(){
 	   if(grandTotal != '' && grandTotal != 'undefined'){
 		   $.ajax({
 				type : "GET",
-				url: sourceleadUrl+"/getConversionExchangeRate?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+orgRelationId+"&grandTotal="+grandTotal,
+				url: sourceleadUrl+"/getConversionExchangeRate?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId+"&grandTotal="+grandTotal,
 				success :function(data) {
 					if(data !='' && data != 'undefined' && data != null){
 						var json = JSON.parse(data);
@@ -1158,7 +1158,7 @@ function saveInvoice(saveType){
          if ($('#project_invoice_form').validate(false, validationSettings)){  
  	 	    var formData = getFormData("project_invoice_form");
 		        	  $("#invoiceLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-		        	  $.post(sourceleadUrl+"/saveExpensesInvoice?${_csrf.parameterName}=${_csrf.token}&userId="+userId+"&orgLocationId="+orgLocationId+"&saveType="+saveType+"&currencyCode="+currencyCode+"&invoiceType=Receivable&type=expenses", formData, function(data) {
+		        	  $.post(sourceleadUrl+"/saveExpensesInvoice?"+tokenParamName+"="+tokenValue+"&userId="+userId+"&orgLocationId="+orgLocationId+"&saveType="+saveType+"&currencyCode="+currencyCode+"&invoiceType=Receivable&type=expenses", formData, function(data) {
 			  				if(data == "success"){
 			  					$("#invoiceLoading").removeAttr("style");
 	    		     			location.replace(sourceleadUrl+"/invoiceList");
@@ -1228,7 +1228,7 @@ function toDate(selector) {
 		 
 		 $.ajax({
 		    	type: "POST",
-		    	 url: sourceleadUrl+"/getInvoiceDetailsByInvoiceUUID?${_csrf.parameterName}=${_csrf.token}&invoiceUUID="+invoiceUUID, 
+		    	 url: sourceleadUrl+"/getInvoiceDetailsByInvoiceUUID?"+tokenParamName+"="+tokenValue+"&invoiceUUID="+invoiceUUID, 
 		         success: function(data) {
 		        	 var json = JSON.parse(data);
 		        	 var result = '';
@@ -1312,7 +1312,7 @@ function getClientContactsExisted(clientContactId){
 	var orgRelationId = $("#clientOrgRelationId").val();
 	$.ajax({
 	type : "GET",
-	url: sourceleadUrl+"/getClientContactsByOrgRelationId?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+orgRelationId,
+	url: sourceleadUrl+"/getClientContactsByOrgRelationId?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId,
 	success :function(data) {
 	var json = JSON.parse(data);
 	var output = "";
@@ -1342,7 +1342,7 @@ function getClients(){
 	var orgRelationId ='${orgRelationId}';
 	$.ajax({
 		type : "GET",
-		url: sourceleadUrl+"/getClientList?${_csrf.parameterName}=${_csrf.token}",
+		url: sourceleadUrl+"/getClientList?"+tokenParamName+"="+tokenValue+"",
 		success :function(data) {
 		var json = JSON.parse(data);
 		var output = "";
@@ -1565,7 +1565,7 @@ function editExpensesInlineItems(invoiceLineItemsList){
 		if(documentId){
 			$.ajax({
 		    	type: "POST",
-		    	 url: sourceleadUrl+"/deleteInvoiceDocumentBydocumentId?${_csrf.parameterName}=${_csrf.token}&documentId="+documentId, 
+		    	 url: sourceleadUrl+"/deleteInvoiceDocumentBydocumentId?"+tokenParamName+"="+tokenValue+"&documentId="+documentId, 
 		         success: function(data) {
 		        	 document.getElementById("invoiceDocument"+documentId).remove();
 		        	 $("#lineItemPopUp").empty();
@@ -1654,7 +1654,7 @@ function getPaymentTerms(){
 	var orgRelationId = $("#clientOrgRelationId").val();
 	$.ajax({
 		type : "GET",
-		url: sourceleadUrl+"/getPaymentTermsAndBillindAddress?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+orgRelationId,
+		url: sourceleadUrl+"/getPaymentTermsAndBillindAddress?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId,
 		success :function(data) {
 			 var json = JSON.parse(data);
 			 for (var i=0; i<json.length; i++)
@@ -1690,7 +1690,7 @@ function getDueDateByFrequency(){
 	    
 	    $.ajax({
 			type : "GET",
-			url: sourceleadUrl+"/getDueDateByFrequency?${_csrf.parameterName}=${_csrf.token}&paymentFrequency="+paymentFrequency+"&invoiceDate="+invoiceDate+"&locationCode="+locationCode,
+			url: sourceleadUrl+"/getDueDateByFrequency?"+tokenParamName+"="+tokenValue+"&paymentFrequency="+paymentFrequency+"&invoiceDate="+invoiceDate+"&locationCode="+locationCode,
 			success :function(dueDateStr) {
 				
 				$("#dueDate").val(dueDateStr);

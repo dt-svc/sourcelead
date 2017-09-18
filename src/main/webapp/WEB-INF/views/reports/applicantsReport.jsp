@@ -562,14 +562,13 @@ function getDayWiseReports(){
 	var reportType = $("#reportTypeId").val();
 	var startDate = $("#ApplicantStartDate").val();
 	var endDate = $("#ApplicantEndDate").val();
-	var sourceleadUrl ='${sourceleadUrl}';
 	/* if(reportType=="custom"){
 		getCustomReports();
 	} */
 	if(reportType!="custom"){
 	$.ajax({
          type : "POST",
-         url: sourceleadUrl+"/getApplicantsReport?${_csrf.parameterName}=${_csrf.token}&reportType="+reportType+"&startDate="+startDate+"&endDate="+endDate,     
+         url: sourceleadUrl+"/getApplicantsReport?"+tokenParamName+"="+tokenValue+"&reportType="+reportType+"&startDate="+startDate+"&endDate="+endDate,     
           success :function(data) {
         	  prepareReportDataDiv(data);
         	 getAllCounts(reportType,startDate,endDate);
@@ -591,10 +590,9 @@ function getAllCounts(reportType,startDate,endDate){
 
 <script>
 function allApplicantsCount(reportType,startDate,endDate){
-	var sourceleadUrl = '${sourceleadUrl}';
 	 $.ajax({
        type : "POST",
-        url: sourceleadUrl+"/getApplicantsTotalCounts?${_csrf.parameterName}=${_csrf.token}&reportType="+reportType+"&startDate="+startDate+"&endDate="+endDate,        
+        url: sourceleadUrl+"/getApplicantsTotalCounts?"+tokenParamName+"="+tokenValue+"&reportType="+reportType+"&startDate="+startDate+"&endDate="+endDate,        
         success :function(data) { 
        	 var json = JSON.parse(data);
        	if($(".oneA" ).hasClass( "actRE" )){
@@ -635,7 +633,6 @@ function getCustomReports(){
 	var reportType = $("#reportTypeId").val();
 	var startDate = $("#ApplicantStartDate").val();
 	var endDate = $("#ApplicantEndDate").val();
-	var sourceleadUrl ='${sourceleadUrl}';
 	if(startDate == null || startDate == '' || startDate == 'undefined'){
 		$("#ApplicantReportStartDate").empty().append("Start Date is Required") ; 
 	}
@@ -646,7 +643,7 @@ function getCustomReports(){
 		$.ajax({
 	         type : "POST",
 	         /*  url: sourceleadUrl+"/getRequirementReports?${_csrf.parameterName}=${_csrf.token}&reportType="+reportType+"&startDate="+startDate+"&endDate="+endDate, */  
-	          url: sourceleadUrl+"/getApplicantsReport?${_csrf.parameterName}=${_csrf.token}&reportType="+reportType+"&startDate="+startDate+"&endDate="+endDate,
+	          url: sourceleadUrl+"/getApplicantsReport?"+tokenParamName+"="+tokenValue+"&reportType="+reportType+"&startDate="+startDate+"&endDate="+endDate,
 	          success :function(data) {
 	        	 prepareReportDataDiv(data);
 	        	 getAllCounts(reportType,startDate,endDate);
