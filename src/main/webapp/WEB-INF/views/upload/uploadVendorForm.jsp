@@ -208,7 +208,6 @@ function saveBulkImport(){
 	var jsonData = encodeURIComponent(con);
 	var form = $('#upload_form')[0];
 	var formData = new FormData(form); 
-	var sourceleadUrl = '${sourceleadUrl}';
 	
 	$("#loadinggif").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	 $.ajax({
@@ -219,7 +218,7 @@ function saveBulkImport(){
 	        processData: false,
 	        contentType:false,
     	    dataType : 'json',
-		    url : sourceleadUrl+"/clientExcelFileUpload?${_csrf.parameterName}=${_csrf.token}&responderType=Vendor", 	   
+		    url : sourceleadUrl+"/clientExcelFileUpload?"+tokenParamName+"="+tokenValue+"&responderType=Vendor", 	   
  		    success : function(data) {
  		    	$("#loadinggif").removeAttr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
  		    	if(data == "failure"){
@@ -359,10 +358,9 @@ function prepareExcelDataDiv(data){
 <script>
 function removeRecord(recordId){
 	var rowHtmlContent =  $("#row"+recordId).html();
-	var sourceleadUrl ='${sourceleadUrl}';
 	 $.ajax({
        type : "POST",
-        url: sourceleadUrl+"/deleteRecordFromBulk?${_csrf.parameterName}=${_csrf.token}&recordId="+recordId+"&responderType=Vendor",       
+        url: sourceleadUrl+"/deleteRecordFromBulk?"+tokenParamName+"="+tokenValue+"&recordId="+recordId+"&responderType=Vendor",       
         success :function(data) {
         	$("#row"+recordId).empty();
 	    	$("#row"+recordId).html(rowHtmlContent);
@@ -377,10 +375,9 @@ function removeRecord(recordId){
 <script>
 function terminateRecord(recordId){
 	var rowHtmlContent =  $("#row"+recordId).html();
-	var sourceleadUrl ='${sourceleadUrl}';
 	 $.ajax({
        type : "POST",
-        url: sourceleadUrl+"/deleteRecordFromBulk?${_csrf.parameterName}=${_csrf.token}&recordId="+recordId+"&responderType=Vendor",       
+        url: sourceleadUrl+"/deleteRecordFromBulk?"+tokenParamName+"="+tokenValue+"&recordId="+recordId+"&responderType=Vendor",       
         success :function(data) {
         	$("#row"+recordId).empty();
 	    	$("#row"+recordId).html(rowHtmlContent);
@@ -393,10 +390,9 @@ function terminateRecord(recordId){
 <script>
 function addRecord(recordId){
 	var rowHtmlContent =  $("#row"+recordId).html();
-	var sourceleadUrl ='${sourceleadUrl}';
 	 $.ajax({
        type : "POST",
-        url: sourceleadUrl+"/addRecordFromBulk?${_csrf.parameterName}=${_csrf.token}&recordId="+recordId+"&responderType=Vendor",       
+        url: sourceleadUrl+"/addRecordFromBulk?"+tokenParamName+"="+tokenValue+"&recordId="+recordId+"&responderType=Vendor",       
         success :function(data) {
         	$("#row"+recordId).empty();
 	    	$("#row"+recordId).html(rowHtmlContent);
@@ -419,10 +415,9 @@ function mergeWithRecord(){
 	$("#clientError").empty();
 	var recordIdVal = recordId.split(',');
 	var rowHtmlContent =  $("#row"+recordIdVal[1]).html();
-	var sourceleadUrl ='${sourceleadUrl}';
 	 $.ajax({
 	   type : "POST",
-	    url: sourceleadUrl+"/mergeRecordFromBulk?${_csrf.parameterName}=${_csrf.token}&recordId="+recordId+"&responderType=Vendor",       
+	    url: sourceleadUrl+"/mergeRecordFromBulk?"+tokenParamName+"="+tokenValue+"&recordId="+recordId+"&responderType=Vendor",       
 	    success :function(data) {
 	    	$("#row"+recordIdVal[1]).empty();
 	    	$("#row"+recordIdVal[1]).html(rowHtmlContent);
@@ -445,11 +440,10 @@ function mergeWithRecord(){
 function mergeRecord(recordId){
 	flush();
 	 var rowHtmlContent =  $("#row"+recordId).html();
-	var sourceleadUrl ='${sourceleadUrl}';
 	$('#vendorListIds').empty();
 	 $.ajax({
        type : "POST",
-        url: sourceleadUrl+"/getMatchedClientList?${_csrf.parameterName}=${_csrf.token}&recordId="+recordId+"&responderType=Vendor",       
+        url: sourceleadUrl+"/getMatchedClientList?"+tokenParamName+"="+tokenValue+"&recordId="+recordId+"&responderType=Vendor",       
         success :function(data) {
         	var json = JSON.parse(data);
         	var result = "";

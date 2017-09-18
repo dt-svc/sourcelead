@@ -48,7 +48,7 @@ function getSearchResults(searchType,searchValue,isAssociate){
 	
 	  $.ajax({
 	   	type: "GET",
-	    url: sourceleadUrl+"/universalSearch?${_csrf.parameterName}=${_csrf.token}&searchType="+searchType+"&searchValue="+searchValue+"&isAssociate="+isAssociate,	    	   
+	    url: sourceleadUrl+"/universalSearch?"+tokenParamName+"="+tokenValue+"&searchType="+searchType+"&searchValue="+searchValue+"&isAssociate="+isAssociate,	    	   
 	    success: function(data) {
 	    	var result='';
 	    	var json = JSON.parse(data);
@@ -428,7 +428,7 @@ function getSearchResultsForAll(searchType,searchValue){
 	
 	  $.ajax({
 	   	type: "GET",
-	    url: sourceleadUrl+"/universalSearchForAll?${_csrf.parameterName}=${_csrf.token}&searchType="+searchType+"&searchValue="+searchValue,	    	   
+	    url: sourceleadUrl+"/universalSearchForAll?"+tokenParamName+"="+tokenValue+"&searchType="+searchType+"&searchValue="+searchValue,	    	   
 	    success: function(data) {
 	    	var result='';
 	    	var count=0;

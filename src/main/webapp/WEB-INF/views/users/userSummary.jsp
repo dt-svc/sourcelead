@@ -149,7 +149,7 @@ $(document).ready(function(){
 	 
 	 $.ajax({
 	    	type: "POST",
-	        url: sourceleadUrl+"/getUserDetailsById?${_csrf.parameterName}=${_csrf.token}&userId="+userId, 
+	        url: sourceleadUrl+"/getUserDetailsById?"+tokenParamName+"="+tokenValue+"&userId="+userId, 
 	        success: function(data) {
 			    var json = JSON.parse(data);
 			    var result = "";
@@ -449,7 +449,7 @@ function getRoles(roleId){
 	 if(roleId != null && roleId != "" && roleId != 'undefined'){
 		 $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/getRolesExpectSelectedRole?${_csrf.parameterName}=${_csrf.token}&roleId="+roleId, 
+		        url: sourceleadUrl+"/getRolesExpectSelectedRole?"+tokenParamName+"="+tokenValue+"&roleId="+roleId, 
 		        success: function(data) {
 		        	var json = JSON.parse(data);
 		        	var output = "";
@@ -476,7 +476,7 @@ function getChangeRole(userId,userRoleId){
 	if(changeRoleId){
 	 $.ajax({
 	    	type: "POST",
-	        url: sourceleadUrl+"/getUserPermissionByRole?${_csrf.parameterName}=${_csrf.token}&userId="+userId+"&userRoleId="+userRoleId+"&changeRoleId="+changeRoleId, 
+	        url: sourceleadUrl+"/getUserPermissionByRole?"+tokenParamName+"="+tokenValue+"&userId="+userId+"&userRoleId="+userRoleId+"&changeRoleId="+changeRoleId, 
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	var reportingManagers = "";
@@ -764,7 +764,7 @@ function getChangeRole(userId,userRoleId){
 	 var updateDepartmentOrgRelationId = $("#updateDepartmentOrgRelationId").val();
 	 $.ajax({
 	    	type: "POST",
-	    	url: sourceleadUrl+"/getDepartmentsList?${_csrf.parameterName}=${_csrf.token}",
+	    	url: sourceleadUrl+"/getDepartmentsList?"+tokenParamName+"="+tokenValue+"",
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	$('#department').append('<option value="">--select Department --</option>');
@@ -951,7 +951,7 @@ function getChangeRole(userId,userRoleId){
             $( "#update_user" ).addClass('button').val('Processing..');
 		 $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/validateExistingEmployeeId?${_csrf.parameterName}=${_csrf.token}&id="+id+"&userId="+userId+"&EmployeeId="+EmployeeId, 
+		        url: sourceleadUrl+"/validateExistingEmployeeId?"+tokenParamName+"="+tokenValue+"&id="+id+"&userId="+userId+"&EmployeeId="+EmployeeId, 
 		        success: function(data) {
 		        	if(data == true){
 						  $("input#EmployeeId").after("<p class='jquery_form_error_message'>"+EmpId+" is Already Existed</span>");
@@ -1001,7 +1001,7 @@ function getChangeRole(userId,userRoleId){
     	  if(EmployeeId!=null&&EmployeeId!="" && empId != EmployeeId){
           $.ajax({
                 type: "POST",
-                url: sourceleadUrl+"/validateExistingEmployeeId?${_csrf.parameterName}=${_csrf.token}&id="+id+"&userId="+userId+"&EmployeeId="+EmployeeId,
+                url: sourceleadUrl+"/validateExistingEmployeeId?"+tokenParamName+"="+tokenValue+"&id="+id+"&userId="+userId+"&EmployeeId="+EmployeeId,
                 success: function(data) {
                     if(data == true){
                           $("input#EmployeeId").after("<p class='jquery_form_error_message'>"+EmployeeId+" is Already Existed</span>");
@@ -1019,7 +1019,7 @@ function getChangeRole(userId,userRoleId){
                         $( "#update_user" ).addClass('button').val('Processing..');
                         $.ajax({
                             type: "POST",
-                            url: sourceleadUrl+"/updateUser?${_csrf.parameterName}=${_csrf.token}&"+$($('#editUser_form')[0]).serialize()+"&userId="+userId+"&emailId="+emailId,
+                            url: sourceleadUrl+"/updateUser?"+tokenParamName+"="+tokenValue+"&"+$($('#editUser_form')[0]).serialize()+"&userId="+userId+"&emailId="+emailId,
                             success: function(result) {
                             	 $("#selectoruser").removeAttr("style");
 	                       		  $("#selectoruser").css({ display: "block" });
@@ -1038,7 +1038,7 @@ function getChangeRole(userId,userRoleId){
     		  if(emailId != EmailId){
     			  $.ajax({
                       type: "POST",
-                      url: sourceleadUrl+"/validateExistingEmployeeEmailId?${_csrf.parameterName}=${_csrf.token}&id="+id+"&userId="+userId+"&EmailId="+EmailId,
+                      url: sourceleadUrl+"/validateExistingEmployeeEmailId?"+tokenParamName+"="+tokenValue+"&id="+id+"&userId="+userId+"&EmailId="+EmailId,
                       success: function(data) {
                           if(data == true){
                                 $("input#EmailId").after("<p class='jquery_form_error_message'>"+EmailId+" is Already Existed</span>");
@@ -1055,7 +1055,7 @@ function getChangeRole(userId,userRoleId){
                               $( "#update_user" ).addClass('button').val('Processing..');
                               $.ajax({
                                   type: "POST",
-                                  url: sourceleadUrl+"/updateUser?${_csrf.parameterName}=${_csrf.token}&"+$($('#editUser_form')[0]).serialize()+"&userId="+userId+"&emailId="+emailId,
+                                  url: sourceleadUrl+"/updateUser?"+tokenParamName+"="+tokenValue+"&"+$($('#editUser_form')[0]).serialize()+"&userId="+userId+"&emailId="+emailId,
                                   success: function(result) {
                                 	  $("#selectoruser").removeAttr("style");
                             		  $("#selectoruser").css({ display: "block" });
@@ -1080,7 +1080,7 @@ function getChangeRole(userId,userRoleId){
                   $( "#update_user" ).addClass('button').val('Processing..');
                   $.ajax({
                       type: "POST",
-                      url: sourceleadUrl+"/updateUser?${_csrf.parameterName}=${_csrf.token}&"+$($('#editUser_form')[0]).serialize()+"&userId="+userId+"&emailId="+emailId,
+                      url: sourceleadUrl+"/updateUser?"+tokenParamName+"="+tokenValue+"&"+$($('#editUser_form')[0]).serialize()+"&userId="+userId+"&emailId="+emailId,
                       success: function(result) {
                     	  $("#selectoruser").removeAttr("style");
                 		  $("#selectoruser").css({ display: "block" });
@@ -1126,7 +1126,7 @@ function getChangeRole(userId,userRoleId){
          var jsonData = encodeURIComponent(con); */
          var formData = getFormData("deleteUser_form");
          $("#deleteLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-         $.post(sourceleadUrl+"/terminateUser?${_csrf.parameterName}=${_csrf.token}&userId="+userId, formData, function(data) {
+         $.post(sourceleadUrl+"/terminateUser?"+tokenParamName+"="+tokenValue+"&userId="+userId, formData, function(data) {
         	 location.replace(sourceleadUrl+"/usersList");
 		});
          /* $.ajax({
@@ -1178,7 +1178,7 @@ function getChangeRole(userId,userRoleId){
          var formData = getFormData("editRole_form");
          
         $("#editRoleLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-        $.post(sourceleadUrl+"/editUserRole?${_csrf.parameterName}=${_csrf.token}&userId="+userId, formData, function(data) {
+        $.post(sourceleadUrl+"/editUserRole?"+tokenParamName+"="+tokenValue+"&userId="+userId, formData, function(data) {
         	 location.replace(sourceleadUrl+"/usersList");
 		});
          /* $.ajax({
@@ -1226,7 +1226,7 @@ $("#editRoleDetailsList").empty();
 	 
 	 $.ajax({
 	    	type: "POST",
-	        url: sourceleadUrl+"/getUserDetailsById?${_csrf.parameterName}=${_csrf.token}&userId="+userId, 
+	        url: sourceleadUrl+"/getUserDetailsById?"+tokenParamName+"="+tokenValue+"&userId="+userId, 
 	        success: function(data) {
 	        	
 			    var json = JSON.parse(data);
@@ -1571,7 +1571,7 @@ function updateUserDesignationOtherType(){
 		 var vendorSpocId = $("#updateSpocId").val();
 		 $.ajax({
 			    type: "POST",
-		        url: sourceleadUrl+"/getOrgSpocsList?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+orgRelationID+"&type=Vendor",  
+		        url: sourceleadUrl+"/getOrgSpocsList?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationID+"&type=Vendor",  
 		        success: function(data) {
 		        	var json = JSON.parse(data);
 		        	$('#vendorcontact').empty();
@@ -1657,7 +1657,7 @@ function removeUser(userId){
 	
 	 $.ajax({
 	    	type: "POST",
-	        url: sourceleadUrl+"/getUserDetailsByIdForTermination?${_csrf.parameterName}=${_csrf.token}&userId="+userId, 
+	        url: sourceleadUrl+"/getUserDetailsByIdForTermination?"+tokenParamName+"="+tokenValue+"&userId="+userId, 
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	 var reportingManagers = "";
@@ -2067,7 +2067,7 @@ function getStartandEndDate(){
 	if(projectId != null && projectId != ""){
     $.ajax({
     	type: "POST",
-        url: sourceleadUrl+"/getStartAndEndOfProject?${_csrf.parameterName}=${_csrf.token}&&projectId="+projectId, 
+        url: sourceleadUrl+"/getStartAndEndOfProject?"+tokenParamName+"="+tokenValue+"&projectId="+projectId, 
         success: function(data) {
         	var json = JSON.parse(data);
         	$("#StartDate").val(json.startDateStr);
@@ -2097,7 +2097,7 @@ function getStartandEndDate(){
 	        
 	        $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/saveAssignProject?${_csrf.parameterName}=${_csrf.token}&json="+con+"&userId="+userId, 
+		        url: sourceleadUrl+"/saveAssignProject?"+tokenParamName+"="+tokenValue+"&json="+con+"&userId="+userId, 
 		        success: function(data) {
 		        	if(data="success"){
 		        	 	$("#assignProject").modal('hide');
@@ -2130,7 +2130,7 @@ function getStartandEndDate(){
 	        
 	        $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/getUnassignedProjects?${_csrf.parameterName}=${_csrf.token}&userId="+userId, 
+		        url: sourceleadUrl+"/getUnassignedProjects?"+tokenParamName+"="+tokenValue+"&userId="+userId, 
 		        success: function(data) {
 		        	var json = JSON.parse(data);
 		        	var output = "";
@@ -2265,7 +2265,7 @@ function saveReason(projectMemberId,userId){
 	
 	 $.ajax({
 		   	type: "POST",
-		    url: sourceleadUrl+"/saveReason?${_csrf.parameterName}=${_csrf.token}&projectMemberId="+projectMemberId+"&reason="+reason, 	   
+		    url: sourceleadUrl+"/saveReason?"+tokenParamName+"="+tokenValue+"&projectMemberId="+projectMemberId+"&reason="+reason, 	   
    		    success: function(data) {
    		    	$("#popUp").empty();
    			 	$(".project_inn_mask").fadeOut(200);
@@ -2284,7 +2284,7 @@ function inlineEditForEndDate(id,projectMemberId){
 	 var endDate = document.getElementById(id).value;
 	  $.ajax({
 		   	type: "POST",
-		    url: sourceleadUrl+"/updateEndDateByProjectMemberId?${_csrf.parameterName}=${_csrf.token}&endDate="+endDate+"&projectMemberId="+projectMemberId, 	   
+		    url: sourceleadUrl+"/updateEndDateByProjectMemberId?"+tokenParamName+"="+tokenValue+"&endDate="+endDate+"&projectMemberId="+projectMemberId, 	   
    		    success: function(data) {
    			         
    		    }
@@ -2326,7 +2326,7 @@ function userStatusFilter() {
 function reActiveUser(userId){   
          $.ajax({
                type: "POST",
-            url: sourceleadUrl+"/reActiveUser?${_csrf.parameterName}=${_csrf.token}&userId="+userId,        
+            url: sourceleadUrl+"/reActiveUser?"+tokenParamName+"="+tokenValue+"&userId="+userId,        
                success: function(data) {
             	   $("#selectoruser").removeAttr("style");
         		   $("#selectoruser").css({ display: "block" });
@@ -2482,7 +2482,7 @@ function reActiveProject(projectMemberId,ProjectName,startDate,endDate,projectEn
 	        con = con.replace(/[{}]/g, "");
 	        $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/saveReAssignProject?${_csrf.parameterName}=${_csrf.token}&json="+con+"&projectMemberId="+projectMemberId, 
+		        url: sourceleadUrl+"/saveReAssignProject?"+tokenParamName+"="+tokenValue+"&json="+con+"&projectMemberId="+projectMemberId, 
 		        success: function(data) {
 		        	if(data="success"){
 		        	 	$("#Re-AssignProject").modal('hide');

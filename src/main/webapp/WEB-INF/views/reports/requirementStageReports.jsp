@@ -28,12 +28,11 @@ window.onload = function() {
 
 <script>
 function getRequirementList(){
-		var sourceleadUrl ='${sourceleadUrl}';
 	    var status = "";
 	    var clients = "";
 		$.ajax({
 	         type : "POST",
-	          url: sourceleadUrl+"/getRequirementReports?${_csrf.parameterName}=${_csrf.token}&status="+status+"&clients="+clients,    
+	          url: sourceleadUrl+"/getRequirementReports?"+tokenParamName+"="+tokenValue+"&status="+status+"&clients="+clients,    
 	          success :function(data) {
 	        	 prepareReportDataDiv(data);
 	         },
@@ -152,10 +151,9 @@ function requirementReportPagination(SourceLeadWeb_loginOrg){
 
 <script>
 function getRequirementStageCounts(){
-		var sourceleadUrl ='${sourceleadUrl}';
 		$.ajax({
 	         type : "POST",
-	          url: sourceleadUrl+"/getRequirementCountBasedOnStatus?${_csrf.parameterName}=${_csrf.token}",    
+	          url: sourceleadUrl+"/getRequirementCountBasedOnStatus?"+tokenParamName+"="+tokenValue+"",    
 	          success :function(data) {
 	          
 	        	  var json = JSON.parse(data);
@@ -227,15 +225,14 @@ function getRequirementStageCounts(){
 
 <script>
 function getRequirementStageList(){
-	var status = [];
-	$('input:checkbox[name=requirementStatus]:checked').each(function() 
-    {
-		status.push($(this).val());
-    });
-		var sourceleadUrl ='${sourceleadUrl}';
+		var status = [];
+		$('input:checkbox[name=requirementStatus]:checked').each(function() 
+	    {
+			status.push($(this).val());
+	    });
 		$.ajax({
 	         type : "POST",
-	          url: sourceleadUrl+"/getRequirementListBasedOnStatus?${_csrf.parameterName}=${_csrf.token}&status="+status,    
+	          url: sourceleadUrl+"/getRequirementListBasedOnStatus?"+tokenParamName+"="+tokenValue+"&status="+status,    
 	          success :function(data) {
 	        	  prepareReportDataDiv(data);
 	          },
@@ -621,11 +618,10 @@ function getDayWiseReports(){
 	var reportType = $("#reportTypeId").val();
 	var startDate = $("#ExportStartDate").val();
 	var endDate = $("#ExportEndDate").val();
-	var sourceleadUrl ='${sourceleadUrl}';
 	if(reportType!="custom"){
 	$.ajax({
          type : "POST",
-         url: sourceleadUrl+"/getRequirementReports?${_csrf.parameterName}=${_csrf.token}&reportType="+reportType+"&startDate="+startDate+"&endDate="+endDate,     
+         url: sourceleadUrl+"/getRequirementReports?"+tokenParamName+"="+tokenValue+"&reportType="+reportType+"&startDate="+startDate+"&endDate="+endDate,     
           success :function(data) {
         	 prepareReportDataDiv(data);
          },
@@ -653,7 +649,6 @@ function getCustomReports(){
 	var reportType = $("#reportTypeId").val();
 	var startDate = $("#ExportStartDate").val();
 	var endDate = $("#ExportEndDate").val();
-	var sourceleadUrl ='${sourceleadUrl}';
 	if(startDate == null || startDate == '' || startDate == 'undefined'){
 		$("#reportStartDate").empty().append("Start Date is Required") ; 
 	}
@@ -663,7 +658,7 @@ function getCustomReports(){
 	else{
 		$.ajax({
 	         type : "POST",
-	          url: sourceleadUrl+"/getRequirementReports?${_csrf.parameterName}=${_csrf.token}&reportType="+reportType+"&startDate="+startDate+"&endDate="+endDate,    
+	          url: sourceleadUrl+"/getRequirementReports?"+tokenParamName+"="+tokenValue+"&reportType="+reportType+"&startDate="+startDate+"&endDate="+endDate,    
 	          success :function(data) {
 	        	 prepareReportDataDiv(data);
 	         },
