@@ -162,9 +162,7 @@ public class ContractsTemplateDaoImpl implements ContractsTemplateDao{
 			response.setRecordsFiltered(filteredCount);
 		}
 
-		if (templateList != null && templateList.size() > 0) {
 			response.setData(getTemplateListSorting(templateList));
-		}
 	
 			return response;
 }

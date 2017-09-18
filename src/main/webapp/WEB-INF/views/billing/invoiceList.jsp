@@ -399,8 +399,7 @@ function receivePaymentPop1(invoiceId,total){
 }
 
 function getfileUrl(){
-	var sourceleadUrl ='${sourceleadUrl}';
-	fileUpload(sourceleadUrl, "paymentAttachment", "incoiceDocuments", "receivePayment-form");
+	fileUpload("paymentAttachment", "incoiceDocuments", "receivePayment-form");
 }
 
 </script> 
@@ -441,7 +440,6 @@ function saveReceivePayment(invoiceId){
 	        
 // 	        var form = $('#receivePayment-form')[0];
 // 	 	   var formData = new FormData(form); 
-	        var sourceleadUrl ='${sourceleadUrl}';
 	        $("#save_payment").attr("disabled", "disabled");
      		$("#save_payment" ).addClass('button').val('Processing..');
      		
@@ -479,7 +477,6 @@ $('body').on('blur', '#receivePayment-form', function() {
 
 <script>
 function getInvoiceList(){
-	var sourceleadUrl ='${sourceleadUrl}';
 	var invoice = [];
 	var payment = [];
 	var dayWisetype = $("#dayWiseTypeId").val();
@@ -615,7 +612,6 @@ function invoicePagination(url){
 	    	  	    result = result +'         <td>';
 	    	  	    if(report.invoiceStatus == "DRAFT" || report.invoiceStatus == "Rejected"){
 						'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_INVOICE\')">';
-						var sourceleadUrl ='${sourceleadUrl}';
 						result = result +'           <div class="tbldata-dotdot_80 invoiceId_Anchor2"><a href="'+sourceleadUrl+'/getReceivableInvoiceByUUID?invoiceUUID='+report.invoiceUUID+'&projectId='+report.projectId+'">'+report.invoiceId+'</a></div>   ';
 						'</sec:authorize>' ;
 					}
@@ -873,7 +869,6 @@ function showPopUp(id,invoiceStatus,invoiceParentId,totalAmount,fileUrl){
 <div id="popUp"></div>
 <script>
 function saveReasonforReceivable(id){
-	var sourceleadUrl = '${sourceleadUrl}';
 	var reason = document.getElementById("reasonForDelete").value;
 	if(reason == null || reason == '' || reason == 'undefined'){
 	      
@@ -921,7 +916,6 @@ $('html').click(function(){
 
 <script>
 function sendReminder(id){
-	 var sourceleadUrl ='${sourceleadUrl}';
 	 $.ajax({
     	 type: "POST",
 	     dataType : 'json',
@@ -949,7 +943,6 @@ function downloadInvoice(id){
 
 <script>
 function acceptedInvoice(id){
-	 var sourceleadUrl ='${sourceleadUrl}';
 	 $.ajax({
     	 type: "POST",
 	     dataType : 'json',
@@ -1232,7 +1225,6 @@ function searchResults(){
 <script>
 function exportToReceivablePdf(){
 	
-	 var sourceleadUrl ='${sourceleadUrl}';
 	 var invoiceStatus = [];
 	 var paymentStatus = [];
 	 
@@ -1273,7 +1265,6 @@ function exportToReceivablePdf(){
 <script>
 function exportToReceivableExcel(){
 	
-	 var sourceleadUrl ='${sourceleadUrl}';
 	 var invoiceStatus = [];
 	 var paymentStatus = [];
 	 
@@ -1312,7 +1303,6 @@ function exportToReceivableExcel(){
 
 <script type="text/javascript">
 function linkInvoice(invoiceId,totalAmount){
-	 var sourceleadUrl ='${sourceleadUrl}';
 	 $.ajax({
     	 type: "POST",
 	     dataType : 'json',
@@ -1460,7 +1450,6 @@ function LinkInvoicePagination(){
 
 <script type="text/javascript">
 function generateAutomaticInvoice(){
-	 var sourceleadUrl ='${sourceleadUrl}';
 	 $("#invoiceLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	 $.ajax({
     	 type: "POST",
@@ -1518,7 +1507,6 @@ function showDiffAmountPopup(calculatedAmount,currencyCode,checkVal,masterInvoic
 
 <script>
 function proceedToMerge(checkVal,masterInvoiceId){
-	var sourceleadUrl ='${sourceleadUrl}';
 	$.ajax({
 	   	 type: "POST",
 		     dataType : 'json',
@@ -1534,7 +1522,6 @@ function proceedToMerge(checkVal,masterInvoiceId){
 
 <script>
 function unLinkInvoice(invoiceId){
-	var sourceleadUrl ='${sourceleadUrl}';
 	$.ajax({
 	   	 type: "POST",
 		     dataType : 'json',
@@ -1568,7 +1555,6 @@ function cancelTermination(){
 }
 
 function saveInvoiceRejectedReason(invoiceId){
-	var sourceleadUrl = '${sourceleadUrl}';
 	var reason = $("#reasonForInvoice").val();
 	if(reason != null && reason != ''){
 		 $("#reasonForInvoiceDiv").empty();
@@ -1598,7 +1584,6 @@ function saveInvoiceRejectedReason(invoiceId){
 function cancel(){
 	$("#popUp").empty();
 	$(".project_inn_mask").fadeOut(200);
-	var sourceleadUrl ='${sourceleadUrl}';
 	location.replace(sourceleadUrl+"/invoiceList");	
 }
 </script>

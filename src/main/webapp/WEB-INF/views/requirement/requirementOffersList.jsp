@@ -130,7 +130,6 @@
   
 <script>
 function viewInterviewListResumes(resumeUUID,title){
-	var sourceleadUrl ='${sourceleadUrl}';
 	if(resumeUUID != null && resumeUUID != ""){
 		window.open(sourceleadUrl+'/viewInterviewListResumes/'+title+'?resumeUUID='+resumeUUID,title,"height=600,width=600");
 	}  
@@ -139,7 +138,6 @@ function viewInterviewListResumes(resumeUUID,title){
 
 <script>
 function viewOffersListAttachment(offerId,title){
-	var sourceleadUrl ='${sourceleadUrl}';
 	if(offerId != null && offerId != ""){
 		window.open(sourceleadUrl+'/viewOffersListAttachment/'+title+'?offerId='+offerId,title,"height=600,width=600");
 	}  
