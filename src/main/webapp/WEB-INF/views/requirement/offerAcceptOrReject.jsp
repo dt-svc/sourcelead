@@ -137,7 +137,7 @@ width: auto;
 			
 			$.ajax({
 						type : "POST",
-						url : sourceleadUrl+"/acceptOrRejectOffer?${_csrf.parameterName}=${_csrf.token}&offerStatus="+offerStatus+"&offerId="+offerId+"&rejectedReason="+rejectedReason,
+						url : sourceleadUrl+"/acceptOrRejectOffer?"+tokenParamName+"="+tokenValue+"&offerStatus="+offerStatus+"&offerId="+offerId+"&rejectedReason="+rejectedReason,
 						success : function(data) {
 							if("success"){
 								$('#rejectIdDiv').empty();
