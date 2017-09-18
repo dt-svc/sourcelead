@@ -399,10 +399,10 @@
 							      </c:if>
 							</sec:authorize>
 							<sec:authorize access="hasAnyRole('ROLE_ADD_INTERVIEW')">
-							       <a href="javascript:void(0)" title="" onclick="addInterview('+requirementId+');" class="add-interview"><i class="fa fa-plus"></i>&nbsp;Schedule Interview</a>
+							       <a href="javascript:void(0)" title="" onclick="addInterview('${requirement.id}');" class="add-interview"><i class="fa fa-plus"></i>&nbsp;Schedule Interview</a>
 							</sec:authorize>
 							<sec:authorize access="hasAnyRole('ROLE_CREAE_OFFER')">
-							       <a href="javascript:void(0)" title=""  onclick="addOffer('+requirementId+');" class="add-offer"><i class="fa fa-plus"></i>&nbsp;Generate Offer</a>
+							       <a href="javascript:void(0)" title=""  onclick="addOffer('${requirement.id}');" class="add-offer"><i class="fa fa-plus"></i>&nbsp;Generate Offer</a>
 							</sec:authorize>
 				  </span>
               </div>
