@@ -11,7 +11,7 @@
      2.parameter : csrf token .
      3.ajax url implementation in CandidateListRestController.
 --%>
-<style>
+<style>upDateCandidate(
  /*   .pac-container {
    z-index: 1000000000 !important;
    } */
@@ -56,7 +56,12 @@
 	}
 	</style>
 	
-	
+	<script>
+	function candUpdateMsgFadeinFunction() {
+		$("#selector1").fadeIn(200);
+        $('#selector1').delay(2000).fadeOut('slow');
+	}
+</script> 
 
 <c:if test="${!empty msg}">
        <div class="success_pop" id="selector"  style="display: block;">
@@ -168,7 +173,10 @@ function editCandidate(candidateId){
             			 	
             			 	
 							var result ='';
-							result = result + '		    <div class="edit-details col-md-8 edit-candaite canprofile-popright"> <i class="fa fa-close close-div" onclick="cancelEdit();"></i>';
+							result  = result + '<div class="success_pop" id="selector1" style="display: none;">';
+						    result  = result + '<i class="fa fa-check-circle"></i><span id="candMsgDiv"></span>';
+						    result  = result + '</div>';
+							result = result + '		    <div class="edit-details col-md-8 edit-candaite canprofile-popright" > <i class="fa fa-close close-div" onclick="cancelEdit();"></i>';
 							result  = result + '         <form id="candidateProfileEdit_form" name="candidateProfileEdit_form" method="post">';
 							result  = result + '<input type="hidden" id="orgloationId" name="orgloationId" value="${SourceLeadWeb_orgLocations.id}" />';
 							result  = result + '<input type="hidden" id="loginUserId" name="loginUserId" value="${SourceLeadWeb_user.id}" />';
@@ -1155,26 +1163,20 @@ function candidateProfile(candidateId,candidateType){
 		
 		 $('#emailDiv').find('p.jquery_form_error_message').remove();
 		 if ($('#candidateProfileEdit_form').validate(false, validationSettings)){ 
-			/* var sourceleadUrl = '${sourceleadUrl}';
-			var frm = $('#candidateProfileEdit_form').serializeFormJSON();
 			
-			 var con = JSON.stringify(frm);
-			 con = con.replace(/[{}]/g, "");
-			  //It will escape all the special characters
-			var jsonData = encodeURIComponent(con);
-			
-			var form = $('#candidateProfileEdit_form')[0];
-      		var formData = new FormData(form);  */
       		var formData = getFormData("candidateProfileEdit_form");
 			$("#update_candidate").attr("disabled", "disabled");
 			$("#update_candidate").addClass('button').val('Processing..');
-				//var form = $('#candidateResume_form')[0];
 				
 
 		        $.post(sourceleadUrl+"/updateCandidate?"+tokenParamName+"="+tokenValue+"", formData, function(data) {
 		        	//location.replace(sourceleadUrl+"/candidatesList"); 
 
 		        	candidateSideBar(candidateId);
+		        	 $("#selector1").removeAttr("style");
+         			 $("#selector1").css({ display: "block" });
+		        	 $("#candMsgDiv").html("Success!!  Candidate Updated");
+		        	candUpdateMsgFadeinFunction();
 					candidateQuickViewProfile(candidateId);
 		        });
 			 
