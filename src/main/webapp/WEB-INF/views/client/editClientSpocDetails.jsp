@@ -7,7 +7,6 @@
 
 <script type="text/javascript">
 	function clientDetailsbySpocId(spocId,ownerId,spocUserId,tempOwnerId) {
-		var sourceleadUrl = '${sourceleadUrl}';
 		$.ajax({
 					type : "POST",
 					url : sourceleadUrl+"/getSpocAndOwnerDetailsById?${_csrf.parameterName}=${_csrf.token}&spocId="+spocId+"&ownerId="+ownerId+"&spocUserId="+spocUserId+"&tempOwnerId="+tempOwnerId+"&type=Client",
@@ -127,7 +126,6 @@
 </script> 
 <script type="text/javascript">
 	function editVendorContactDetails(spocId,ownerId,spocUserId,tempOwnerId) {
-		var sourceleadUrl = '${sourceleadUrl}';
 		      $.ajax({
 						type : "POST",
 						url : sourceleadUrl+"/getSpocAndOwnerDetailsById?${_csrf.parameterName}=${_csrf.token}&spocId="+spocId+"&ownerId="+ownerId+"&spocUserId="+spocUserId+"&tempOwnerId="+tempOwnerId+"&type=Client",
@@ -298,7 +296,6 @@
  function validateClientEmail(spocId) {
 	 var EmailId = document.getElementById("EmailId").value; 
 	 $('#EmailIdDiv').find('p.jquery_form_error_message').remove();
-	 var sourceleadUrl ='${sourceleadUrl}';
 	 if(EmailId != null && EmailId != ""){
 		/*$("#save_client").attr("disabled", "disabled");
          $("#save_client" ).addClass('button').val('Processing..'); */
@@ -335,8 +332,6 @@
 	function storeClientContactDetails(spocId,ownerId,spocUserId,tempOwnerId) {
          if ($('#editVendorContact_form').validate(false, validationSettings)){
              var formData = getFormData("editVendorContact_form");
-             var sourceleadUrl ='${sourceleadUrl}';
-             var sourceleadUrl ='${sourceleadUrl}';
 		 $.post(sourceleadUrl+"/vendorContactDetailsUpdateUsingId?${_csrf.parameterName}=${_csrf.token}&spocId="+spocId+"&ownerId="+ownerId+"&spocUserId="+spocUserId+"&type=Client", formData, function(data) {
 			 var ownerId = data;
 		    	

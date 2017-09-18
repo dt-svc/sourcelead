@@ -93,7 +93,6 @@ function vendorDocuments(orgRelationId,vendorLocationId){
 
 <script>
 function vendorDocumentsList(vendorLocationId,orgRelationId){
-	 var sourceleadUrl ='${sourceleadUrl}';
 	 var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
 	  if(locationList.match("yyyy-MM-dd")){
 		  docListVendorSpocDate = 'YYYY-MM-DD';
@@ -221,7 +220,6 @@ function vendorDocumentsList(vendorLocationId,orgRelationId){
 
 <script>
 function viewVendorDocument(docId,title){
-	var sourceleadUrl ='${sourceleadUrl}';
 	window.open(sourceleadUrl+'/viewClientDocViewerDocument/'+title+'?docId='+docId,title,"height=600,width=600");
 }
 </script>
@@ -437,9 +435,7 @@ function closeDocPopup(){
 				$("#save_button" ).addClass('button').val('Processing..');
 				var form = $('#document_form')[0];
 	      		var formData = new FormData(form); 
-				var sourceleadUrl = '${sourceleadUrl}';
 				$("#document_form").attr("disabled", "disabled");
-				
 				//It will escape all the special characters
 				$.ajax({
 						type : "POST",
@@ -481,7 +477,6 @@ function closeDocPopup(){
 
 <script>
 function getSpocsList(orgRelationId){
-	 var sourceleadUrl ='${sourceleadUrl}';
 	$.ajax({
     	type: "POST",
         url: sourceleadUrl+"/getOrgSpocsList?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+orgRelationId+"&type=Vendor",  
@@ -497,7 +492,6 @@ function getSpocsList(orgRelationId){
         	$("#spoc").empty();
 	        $("#spoc").append(output);
 	        $('#spoc').trigger("chosen:updated");
-	        //$('.selectpicker').selectpicker('refresh'); 
         },
     });
 }
@@ -507,7 +501,6 @@ function getSpocsList(orgRelationId){
 
 <script>
 function getClientDocument(vendorLocationId,orgRelationId,docId){
-	var sourceleadUrl ='${sourceleadUrl}';
 	var sourceLeadUserId = '${SourceLeadWeb_userId}';
 	$.ajax({
 	   	type: "POST",
@@ -665,7 +658,6 @@ $(".project_inn_mask").fadeOut(200);
 
 <script>
 function saveReasonForVendorDoc(vendorLocationId,orgRelationId,docId,docName){
-	var sourceleadUrl ='${sourceleadUrl}';
 	var terminateReason = document.getElementById("terminateReason").value;
 	if(terminateReason.match(/^[^\s-](.*)*$/) != null){
 		$("#terminateReasonDiv").empty();
