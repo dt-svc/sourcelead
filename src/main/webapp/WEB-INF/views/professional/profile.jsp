@@ -206,7 +206,7 @@ function getProfessionalInfo(){
 				 result = result +'	    <div class="col-md-5">';
 				 result = result +'	        <h5>Professional Info</h5>';
 				 result = result +'	        <div class="chip">';
-				 result = result +'	        <img onerror="predefineProfileImage(this);"  src="<c:url value="'+sourceleadUrl+'/displayUserImage/'+userId+'"/>" alt="Profile Image" width="96" height="96">';
+				 result = result +'	        <img data-id="userProfileImage" onerror="predefineProfileImage(this);"  src="${SourceLeadWeb_user.fileUrl}" alt="Profile Image" width="96" height="96">';
 				 
 				 result = result +'	        <span>';
 				  result = result +'	        <strong>'+firstName+' '+lastName+'</strong> <br>'; 
