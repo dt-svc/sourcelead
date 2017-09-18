@@ -280,30 +280,15 @@ public class SubmissionsRestController {
 		String json1 = "{" + json + "}";
 		JSONObject jsonObj = new JSONObject(json1);
 
-		MultipartFile multiFile = null;
-		//to get parse resume
-		if(locationMapFileData != null && locationMapFileData.getSize() > 0 ){
-			Iterator<String> itrator = request.getFileNames();
-			if (itrator.hasNext()) {
-				multiFile = request.getFile(itrator.next());
-			}
-		}
-		//to get the manually uploaded resume
-		else{
-			final Map files = request.getFileMap();
-		    multiFile = (MultipartFile)files.get("newUploadBtn");
-		}
-		
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 
 		String loginUserRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
-		RequirementSubmission requirementSubmission = requirementSubmissionService.saveRequirementSubmission(jsonObj,user, orgLocations, con, multiFile,loginUserRole);
+		RequirementSubmission requirementSubmission = requirementSubmissionService.saveRequirementSubmission(jsonObj,user, orgLocations, con, loginUserRole);
 
 		RequirementSubmissionHistory requirementSubmissionHistory = new RequirementSubmissionHistory();
 		requirementSubmissionHistory.setToStage(requirementSubmission.getSubmissionStatus().toString());
 		requirementSubmissionHistory.setFromStage("NEW");
-//		requirementSubmission.get
 		requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user,requirementSubmissionHistory);
 		Requirement requirement = requirementSubmission.getRequirement();
 		
