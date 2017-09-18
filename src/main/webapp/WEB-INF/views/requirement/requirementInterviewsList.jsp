@@ -107,7 +107,6 @@
   
 <script>
 function viewInterviewListResumes(resumeUUID,title){
-	var sourceleadUrl ='${sourceleadUrl}';
 	if(resumeUUID != null && resumeUUID != ""){
 		window.open(sourceleadUrl+'/viewInterviewListResumes/'+title+'?resumeUUID='+resumeUUID,title,"height=600,width=600");
 	}  
