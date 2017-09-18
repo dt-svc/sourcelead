@@ -21,7 +21,7 @@ public class AddCandidateToProjectMembers {
 	
 /**
  * @author Venkat I
- * this method is using for update the userCode to userId	
+ * this method is using for update candidate id to project members
  * @throws IOException
  * @throws SQLException
  */
