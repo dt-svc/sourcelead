@@ -87,9 +87,6 @@
 <script src="resources/js/tag-it.min.js" type="text/javascript" charset="utf-8"></script>
 <!-- end files for autocomplete with tagit -->
 
-<c:if test='${viewPage == "requirement"}'>
-	<link href="resources/css/requirement.css"  rel="stylesheet"/>
-</c:if>
 
 <style>
 .dashboard-widget.dashboard-widget-icons{

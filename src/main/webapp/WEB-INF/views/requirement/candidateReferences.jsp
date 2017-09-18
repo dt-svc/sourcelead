@@ -80,7 +80,7 @@ function candReferencesList(candidateId){
 	
 	 $.ajax({  
           type : "POST",
-          url: sourceleadUrl+"/getCandidateReferencesListByCandidateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&locationCode="+locationCode,        
+          url: sourceleadUrl+"/getCandidateReferencesListByCandidateId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&locationCode="+locationCode,        
           success :function(json) {
            
              			/*  var json = JSON.parse(data);  */
@@ -340,7 +340,7 @@ function addReference(candidateId) {
 		    	        processData: false,
 		    	        contentType:false,
 		        	    dataType : 'json',
-						url : sourceleadUrl+"/saveCandidateReferences?${_csrf.parameterName}=${_csrf.token}",
+						url : sourceleadUrl+"/saveCandidateReferences?"+tokenParamName+"="+tokenValue+"",
 						success : function(result) {
 								closePopup();
 								$("#popUpDiv").removeClass("edit-details-active");
@@ -421,7 +421,7 @@ function deleteReference(candidateId,refId){
 	 var userCode = '${SourceLeadWeb_userCode}';
 		$.ajax({
 		   	type: "POST",
-		    url: sourceleadUrl+"/terminateReference?${_csrf.parameterName}=${_csrf.token}&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&refId="+refId+"&userCode="+userCode, 	   
+		    url: sourceleadUrl+"/terminateReference?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&refId="+refId+"&userCode="+userCode, 	   
    		    success: function(data) {
    		    	if(data != null && data != 'undefined' && data != ""){
         			 $("#selector10").removeAttr("style");
@@ -469,7 +469,7 @@ function deleteReference(candidateId,refId){
 		    	        processData: false,
 		    	        contentType:false,
 		        	    dataType : 'json',
-						url : sourceleadUrl+ "/updateCandidateReferenceBycandidateIdAndReferenceId?${_csrf.parameterName}=${_csrf.token}",
+						url : sourceleadUrl+ "/updateCandidateReferenceBycandidateIdAndReferenceId?"+tokenParamName+"="+tokenValue+"",
 						success : function(data) {
 	            			$("#selector10").removeAttr("style");
 	            			$("#selector10").css({ display: "block" });
@@ -499,7 +499,7 @@ function deleteReference(candidateId,refId){
 						{
 							type : "POST",
 							url : sourceleadUrl
-									+ "/getCandidateReferencesByCandidateIdAndReferenceId?${_csrf.parameterName}=${_csrf.token}&candidateId="
+									+ "/getCandidateReferencesByCandidateIdAndReferenceId?"+tokenParamName+"="+tokenValue+"&candidateId="
 									+ candidateId + "&refId=" + refId,
 							success : function(data) {
 

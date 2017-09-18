@@ -174,7 +174,7 @@ function allApplicantsCount(requirementId){
 	var sourceleadUrl = '${sourceleadUrl}';
 	 $.ajax({
        type : "POST",
-        url: sourceleadUrl+"/getSubmissionsCountBySubmissionStatus?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&submissionType=APPLICANTS",        
+        url: sourceleadUrl+"/getSubmissionsCountBySubmissionStatus?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&submissionType=APPLICANTS",        
         success :function(data) { 
        	 var json = JSON.parse(data);
        	 $("#applicantsCount").html(json);
@@ -188,7 +188,7 @@ function duplicateCount(requirementId){
 	var sourceleadUrl = '${sourceleadUrl}';
 	  $.ajax({
       type : "POST",
-       url: sourceleadUrl+"/getDuplicateSubmissionsCountByRequirementId?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId,        
+       url: sourceleadUrl+"/getDuplicateSubmissionsCountByRequirementId?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId,        
        success :function(data) { 
       	 var json = JSON.parse(data);
       	 $("#duplicateApplicantsCount").html(json);
@@ -202,7 +202,7 @@ function requestSentCount(requirementId){
 	var sourceleadUrl = '${sourceleadUrl}';
 	 $.ajax({
       type : "POST",
-       url: sourceleadUrl+"/getSubmissionsCountBySubmissionStatus?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&submissionType=REQUESTSENT",        
+       url: sourceleadUrl+"/getSubmissionsCountBySubmissionStatus?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&submissionType=REQUESTSENT",        
        success :function(data) { 
       	    var json = JSON.parse(data);
       	    $("#requestSent").html(json);
@@ -216,7 +216,7 @@ function shortListCount(requirementId){
 	var sourceleadUrl = '${sourceleadUrl}';
 	 $.ajax({
      type : "POST",
-      url: sourceleadUrl+"/getSubmissionsCountBySubmissionStatus?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&submissionType=SHORTLISTED",        
+      url: sourceleadUrl+"/getSubmissionsCountBySubmissionStatus?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&submissionType=SHORTLISTED",        
       success :function(data) { 
      	    var json = JSON.parse(data);
      	    $("#shortlistCount").html(json);
@@ -230,7 +230,7 @@ function submitToClientCount(requirementId){
 	var sourceleadUrl = '${sourceleadUrl}';
 	$.ajax({
      type : "POST",
-     url: sourceleadUrl+"/getSubmissionsCountBySubmissionStatus?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&submissionType=SUBMIT_TO_CLIENT",        
+     url: sourceleadUrl+"/getSubmissionsCountBySubmissionStatus?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&submissionType=SUBMIT_TO_CLIENT",        
      success :function(data) { 
     	    var json = JSON.parse(data);
     	    $("#submitToClientCount").html(json);
@@ -244,7 +244,7 @@ function interviewsCount(requirementId){
 	var sourceleadUrl = '${sourceleadUrl}';
 	$.ajax({
       type : "POST",
-      url: sourceleadUrl+"/getSubmissionsCountBySubmissionStatus?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&submissionType=INTERVIEWED",        
+      url: sourceleadUrl+"/getSubmissionsCountBySubmissionStatus?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&submissionType=INTERVIEWED",        
       success :function(data) { 
     	    var json = JSON.parse(data);
     	    $("#interviewCount").html(json);
@@ -258,7 +258,7 @@ function offerMadeCount(requirementId){
 	var sourceleadUrl = '${sourceleadUrl}';
 	$.ajax({
       type : "POST",
-      url: sourceleadUrl+"/getSubmissionsCountBySubmissionStatus?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&submissionType=OFFERED",        
+      url: sourceleadUrl+"/getSubmissionsCountBySubmissionStatus?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&submissionType=OFFERED",        
       success :function(data) { 
     	    var json = JSON.parse(data);
     	    $("#offersCount").html(json);
@@ -272,7 +272,7 @@ function rejectedCount(requirementId){
 	var sourceleadUrl = '${sourceleadUrl}';
 	$.ajax({
       type : "POST",
-      url: sourceleadUrl+"/getSubmissionsCountBySubmissionStatus?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&submissionType=REJECTED",        
+      url: sourceleadUrl+"/getSubmissionsCountBySubmissionStatus?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&submissionType=REJECTED",        
       success :function(data) { 
     	    var json = JSON.parse(data);
     	    $("#rejectedCount").html(json);
@@ -286,7 +286,7 @@ function backoutCount(requirementId){
 	var sourceleadUrl = '${sourceleadUrl}';
 	$.ajax({
       type : "POST",
-      url: sourceleadUrl+"/getSubmissionsCountBySubmissionStatus?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&submissionType=BACKOUT",        
+      url: sourceleadUrl+"/getSubmissionsCountBySubmissionStatus?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&submissionType=BACKOUT",        
       success :function(data) { 
     	    var json = JSON.parse(data);
     	    $("#backoutCount").html(json);
@@ -698,7 +698,7 @@ function updateReuqirementStatus(status){
 	$('#reasonDiv').empty();
  	$.ajax({
       type : "POST",
-      url: sourceleadUrl+"/requirementAcceptOrReject?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&status="+status+"&reason="+reason+"&isLoginUserAsAdmin="+isLoginUserAsAdmin, 
+      url: sourceleadUrl+"/requirementAcceptOrReject?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&status="+status+"&reason="+reason+"&isLoginUserAsAdmin="+isLoginUserAsAdmin, 
     		  success :function(data) {  
             if(data != null && data != 'undefined' && data != ""){  
           		 if( data.indexOf('Sign In') >= 0){
@@ -767,7 +767,7 @@ function updateReuqirementStatusReject(status){
 	$('#reasonDiv').empty();
  	$.ajax({
       type : "POST",
-      url: sourceleadUrl+"/requirementAcceptOrReject?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&status="+status+"&reason="+reason+"&isLoginUserAsAdmin="+isLoginUserAsAdmin, 
+      url: sourceleadUrl+"/requirementAcceptOrReject?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&status="+status+"&reason="+reason+"&isLoginUserAsAdmin="+isLoginUserAsAdmin, 
     		  success :function(data) {  
             if(data != null && data != 'undefined' && data != ""){  
           		 if( data.indexOf('Sign In') >= 0){
@@ -1111,7 +1111,7 @@ function saveRejectApplicantReason(submissionId,requirementId,submissionType){
 	        processData: false,
 	        contentType:false,
     	    dataType : 'json',
-		    url: sourceleadUrl+"/rejectApplicant?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&submissionId="+submissionId,	    	   
+		    url: sourceleadUrl+"/rejectApplicant?"+tokenParamName+"="+tokenValue+"&json="+jsonData+"&submissionId="+submissionId,	    	   
 		    success: function(data) {
 		    	$("#popUp").empty();
    			 	$(".project_inn_mask").fadeOut(200);
@@ -1133,7 +1133,7 @@ function backOutApplicant(submissionId,requirementId,submissionType){
 	var sourceleadUrl = '${sourceleadUrl}';
 		$.ajax({
 		   	type: "POST",
-		    url: sourceleadUrl+"/backoutApplicant?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId,	    	   
+		    url: sourceleadUrl+"/backoutApplicant?"+tokenParamName+"="+tokenValue+"&submissionId="+submissionId,	    	   
 		    success: function(data) {
    			    requirementPipeline(requirementId,submissionType);
 		    }
@@ -1146,7 +1146,7 @@ function requirementSubmissionCount(requirementId){
 	var sourceleadUrl = '${sourceleadUrl}';
 	 $.ajax({
         type : "POST",
-         url: sourceleadUrl+"/getSubmissionsCountBySubmissionStatus?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId,        
+         url: sourceleadUrl+"/getSubmissionsCountBySubmissionStatus?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId,        
          success :function(data) { 
         	 var json = JSON.parse(data);
         	 var report1 = json[0];
@@ -1176,7 +1176,7 @@ function assignedMemberList(requirementId){
 	  var sourceleadUrl = '${sourceleadUrl}';
 	  $.ajax({
         type : "POST",
-         url: sourceleadUrl+"/getRequirementAssignedListByRequirementId?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId,        
+         url: sourceleadUrl+"/getRequirementAssignedListByRequirementId?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId,        
          success :function(data) {  
         	 if(data != null && data != 'undefined' && data != "" && data != '[]'){
            				   	var json = JSON.parse(data);
@@ -1323,7 +1323,7 @@ function closeDocPopup(){
 <script>
 function reqNotes(requirementId){
 	var urlForm = "";
-	    urlForm = "/getRequirementNotes?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId;
+	    urlForm = "/getRequirementNotes?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId;
 		
 	var sourceleadUrl ='${sourceleadUrl}';
 	  $.ajax({
@@ -1412,7 +1412,7 @@ function reqNotes(requirementId){
 		    	        processData: false,
 		    	        contentType:false,
 		        	    dataType : 'json',
-						url : sourceleadUrl+"/storeNotes?${_csrf.parameterName}=${_csrf.token}",
+						url : sourceleadUrl+"/storeNotes?"+tokenParamName+"="+tokenValue+"",
 						success : function(result) {
 							closeDocPopup();
 							reqNotes(requirementId);
@@ -1452,8 +1452,8 @@ function requirementRecommendations(requirementId){
 	
 	$.ajax({
     type : "POST",
-     //url: sourceleadUrl+"/getRequirementRecommendationsByRequirementId?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&count="+count,        
-     url: sourceleadUrl+"/getRequirementRecommendationsByRequirementId?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&orgLocationId="+orgLocationId,
+     //url: sourceleadUrl+"/getRequirementRecommendationsByRequirementId?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&count="+count,        
+     url: sourceleadUrl+"/getRequirementRecommendationsByRequirementId?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&orgLocationId="+orgLocationId,
      success :function(json) {
     	    var result = '';
     	    
@@ -1785,7 +1785,7 @@ function clientSideBar(candidateId,recScore){
 	var sourceleadUrl ='${sourceleadUrl}';
 	  $.ajax({
           type : "POST",
-           url: sourceleadUrl+"/getCandidateById?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,        
+           url: sourceleadUrl+"/getCandidateById?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
            success :function(data) { 
                 if(data != null && data != 'undefined' && data != ""){  
                 	 var json = JSON.parse(data);
@@ -2180,7 +2180,7 @@ function getRateListDiv(submissionId, candidateId){
 	  
 	  $.ajax({
         type : "POST",
-         url: sourceleadUrl+"/getRateHistoryBySubmissionId?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId+"&candidateId="+candidateId+"&orgLocationId="+orgLocationId,        
+         url: sourceleadUrl+"/getRateHistoryBySubmissionId?"+tokenParamName+"="+tokenValue+"&submissionId="+submissionId+"&candidateId="+candidateId+"&orgLocationId="+orgLocationId,        
          success :function(data) {
         	 if(data != null && data != 'undefined' && data != "" && data != '[]'){
             	 var json = JSON.parse(data);
@@ -2424,7 +2424,7 @@ function getRateListDiv(submissionId, candidateId){
 		    $("#add_rate").attr("disabled", "disabled");
 			$.ajax({
 			type: "POST",
-			url: sourceleadUrl+"/proposeRate?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&submissionId="+submissionId+"&candidateId="+candidateId,
+			url: sourceleadUrl+"/proposeRate?"+tokenParamName+"="+tokenValue+"&json="+jsonData+"&submissionId="+submissionId+"&candidateId="+candidateId,
 				success: function(data) {
 					 $("#ratepop").fadeOut();
 				},
@@ -2448,7 +2448,7 @@ function getRateListDiv(submissionId, candidateId){
 			$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 			$.ajax({
 			type: "POST",
-			url: sourceleadUrl+"/acceptRejectRate?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId+"&status="+status,
+			url: sourceleadUrl+"/acceptRejectRate?"+tokenParamName+"="+tokenValue+"&submissionId="+submissionId+"&status="+status,
 				success: function(data) {
 					 $("#ratepop").fadeOut();
 				},
@@ -2492,7 +2492,7 @@ function exportPipelineToExcel(requirementId,submissionType){
 	  var clientSubmissions = '${clientSubmissions}';
 	  var emptypilpeline = $("#emptyPipelinelist").val();
       if(emptypilpeline > 0 ){
-          window.location.href = sourceleadUrl+"/getSubmissionsExportByRequirementId?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&submissionType="+submissionType+"&exportType=xls";
+          window.location.href = sourceleadUrl+"/getSubmissionsExportByRequirementId?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&submissionType="+submissionType+"&exportType=xls";
 	  }else{
 		  var result = "";
 			result = result +"	<div class='project_inn_mask'></div>";
@@ -2518,7 +2518,7 @@ function exportPipelineToPdf(requirementId,submissionType){
 	  var clientSubmissions = '${clientSubmissions}';
 	  var emptypilpeline = $("#emptyPipelinelist").val();
 	  if(emptypilpeline > 0 ){
-		  window.location.href = sourceleadUrl+"/getSubmissionsExportByRequirementId?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&submissionType="+submissionType+"&exportType=pdf";
+		  window.location.href = sourceleadUrl+"/getSubmissionsExportByRequirementId?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&submissionType="+submissionType+"&exportType=pdf";
 	  }else{
 		  var result = "";
 			result = result +"	<div class='project_inn_mask'></div>";
@@ -2562,7 +2562,7 @@ function customizeScore(requirementId){
 	var sourceleadUrl = '${sourceleadUrl}';
 	 $.ajax({
 		   	type: "GET",
-		    url: sourceleadUrl+"/getCustomizeScore?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId, 	   
+		    url: sourceleadUrl+"/getCustomizeScore?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId, 	   
 		    success: function(data) {
 		    	var json = JSON.parse(data);
 		    	if(json.customizeMinExperience != null && json.customizeMinExperience != '' && json.customizeMinExperience != 'undefiend'){
@@ -3111,7 +3111,7 @@ function getAllCountries(){
 		$.ajax({
 	    	type: "POST",
 	    	dataType: "json",
-	    	 url: '${sourceleadUrl}'+"/sourceLeadCountryAutoComplete?${_csrf.parameterName}=${_csrf.token}",
+	    	 url: '${sourceleadUrl}'+"/sourceLeadCountryAutoComplete?"+tokenParamName+"="+tokenValue+"",
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	$('#country').empty();
@@ -3153,7 +3153,7 @@ function getStates(){
 		$.ajax({
 	    	type: "POST",
 	    	dataType: "json",
-	    	 url: '${sourceleadUrl}'+"/getStatesByCountry?${_csrf.parameterName}=${_csrf.token}&countryName="+countryName, 
+	    	 url: '${sourceleadUrl}'+"/getStatesByCountry?"+tokenParamName+"="+tokenValue+"&countryName="+countryName, 
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	$('#state').empty();
@@ -3200,7 +3200,7 @@ function getCities(){
 		$.ajax({
 	    	type: "POST",
 	    	dataType: "json",
-	    	 url: '${sourceleadUrl}'+"/getCitiesByStateAndCountry?${_csrf.parameterName}=${_csrf.token}&countryName="+countryName+"&stateName="+stateName, 
+	    	 url: '${sourceleadUrl}'+"/getCitiesByStateAndCountry?"+tokenParamName+"="+tokenValue+"&countryName="+countryName+"&stateName="+stateName, 
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	$('#city').empty();
@@ -3276,7 +3276,7 @@ function updateCutomize(requirementId){
     		var jsonData = encodeURIComponent(con);
     		 $.ajax({
     					type : "POST",
-    					url : sourceleadUrl + "/updateCustomizeScore?${_csrf.parameterName}=${_csrf.token}&json="+ jsonData + "&requirementId=" + requirementId,
+    					url : sourceleadUrl + "/updateCustomizeScore?"+tokenParamName+"="+tokenValue+"&json="+ jsonData + "&requirementId=" + requirementId,
     					success : function(data) {
     						if(data == "success"){
     							$("div.cand-advsrch-popup").hide();
@@ -3354,7 +3354,7 @@ function refreshImageBlock(candidateId){
 	var sourceleadUrl ='${sourceleadUrl}';
 	  $.ajax({
           type : "POST",
-           url: sourceleadUrl+"/getCandidateById?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,        
+           url: sourceleadUrl+"/getCandidateById?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
            success :function(data) {   
                 if(data != null && data != 'undefined' && data != ""){  
                 	 var json = JSON.parse(data);
@@ -3474,7 +3474,7 @@ function saveCandidateImage(candidateId){
 	            	          contentType:false,
 	                	      dataType : 'json',
 	                	      
-	                      	  url: sourceleadUrl+"/saveCandidateProfile?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId,
+	                      	  url: sourceleadUrl+"/saveCandidateProfile?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId,
 	                          success: function(result) {
 	                        	  recommendationAlertCancel(candidateId);
 	    			          },  
