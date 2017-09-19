@@ -83,7 +83,6 @@ function clientDocuments(orgRelationId,clientLocationId){
 
 <script>
 function clientDocumentsList(clientLocationId,orgRelationId){
-	 var sourceleadUrl ='${sourceleadUrl}';
 	 var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
 	  if(locationList.match("yyyy-MM-dd")){
 		  docListClientDate = 'YYYY-MM-DD';
@@ -201,7 +200,6 @@ function clientDocumentsList(clientLocationId,orgRelationId){
 
 <script>
 function viewClientDocument(docId,title){
-	var sourceleadUrl ='${sourceleadUrl}';
 	window.open(sourceleadUrl+'/viewClientDocViewerDocument/'+title+'?docId='+docId,title,"height=600,width=600");
 }
 </script>
@@ -415,7 +413,6 @@ function closeDocPopup(){
 			 if ($('#document_form').validate(false, validationSettings)){
 				 var form = $('#document_form')[0];
 		      		var formData = new FormData(form); 
-				var sourceleadUrl = '${sourceleadUrl}';
 				$("#document_form").attr("disabled", "disabled");
 				
 				//It will escape all the special characters
@@ -459,7 +456,6 @@ function closeDocPopup(){
 
 <script>
 function getSpocsList(orgRelationId){
-	 var sourceleadUrl ='${sourceleadUrl}';
 	$.ajax({
     	type: "POST",
         url: sourceleadUrl+"/getOrgSpocsList?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+orgRelationId+"&type=Client", 
@@ -485,7 +481,6 @@ function getSpocsList(orgRelationId){
 
 <script>
 function getClientDocument(clientLocationId,orgRelationId,docId){
-	var sourceleadUrl ='${sourceleadUrl}';
 	var sourceLeadUserId = '${SourceLeadWeb_userId}';
 	$.ajax({
 	   	type: "POST",
@@ -643,7 +638,6 @@ $(".project_inn_mask").fadeOut(200);
 
 <script>
 function saveReasonForDoc(clientLocationId,orgRelationId,docId,docName){
-	var sourceleadUrl ='${sourceleadUrl}';
 	var terminateReason = document.getElementById("terminateReason").value;
 	if(terminateReason.match(/^[^\s-](.*)*$/) != null){
 		$("#terminateReasonDiv").empty();

@@ -3,7 +3,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 
-<link href="resources/css/candidate-common.css" rel="stylesheet">
+<link href="resources/css/candidate-common.css?staticTime=${staticTime}" rel="stylesheet">
 
 	<script type="text/javascript">
 		window.onload = function () {
@@ -28,7 +28,7 @@
   </section>
   <div class="content-area content-new clearfix">
   <div id="loading"></div> 
-  <form:form id="candidate_form" name="candidate_form"  enctype='multipart/form-data' >
+  <form:form id="candidate_form" name="candidate_form">
     <div class="row form-horizontal mt myForm">
       <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12"> 
         
@@ -37,7 +37,7 @@
         <div class="well">
           <div class="input-group col-md-6" id="uploadFileGroup" style="margin:0 auto; position:relative;">
             <label class="input-group-btn"> <span class="btn btn-danger"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File<span class="text-danger">&nbsp;*</span>
-              <input type="file" name="uploadBtn" id="uploadBtn" class="hidden upload">
+              <input type="file"  id="uploadBtn" class="hidden upload">
               </span> 
            </label>
 
@@ -475,7 +475,7 @@
 		    	        processData: false,
 		    	        contentType:false,
 		        	    dataType : 'json',
-						url : sourceleadUrl+"/storeCandidate?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
+						url : sourceleadUrl+"/storeCandidate?"+tokenParamName+"="+tokenValue+"&json="+jsonData,
 						success : function(result) {
 								location.replace(sourceleadUrl+"/associatesList");
 						},
@@ -560,7 +560,7 @@ function validate_fileupload(fileName)
 		    	var allSkills = $(event.target).val();
 		    	$.ajax({
 			    	type: "POST",
-			        url: sourceleadUrl+"/profileBySkillSet?${_csrf.parameterName}=${_csrf.token}&allSkills="+allSkills, 
+			        url: sourceleadUrl+"/profileBySkillSet?"+tokenParamName+"="+tokenValue+"&allSkills="+allSkills, 
 			        success: function(data) {
 			        	var primarySkill = data;
 			        	      $("#primarySkill").val(primarySkill);
@@ -714,7 +714,7 @@ function validate_fileupload(fileName)
 		
 		 $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/validateCandidateEmail?${_csrf.parameterName}=${_csrf.token}&email="+email+"&candidateType=Candidate", 
+		        url: sourceleadUrl+"/validateCandidateEmail?"+tokenParamName+"="+tokenValue+"&email="+email+"&candidateType=Candidate", 
 		        success: function(data) {
 		        	if(data == 'true'){
 		        		  $('#emailDiv').find('p.jquery_form_error_message').remove();
@@ -784,7 +784,7 @@ function validate_fileupload(fileName)
 	     	    	        processData: false,
 	     	    	        contentType:false,
 	     	        	    dataType : 'json',
-	     				 	url : sourceleadUrl+"/parseResume?${_csrf.parameterName}=${_csrf.token}", 
+	     				 	url : sourceleadUrl+"/parseResume?"+tokenParamName+"="+tokenValue+"", 
 	     					success : function(data) {
 	     						var json = JSON.parse(data);
 	     						var name = json.name;
@@ -1002,7 +1002,7 @@ function  removeValiationVendorContact() {
 	 var sourceleadUrl ='${sourceleadUrl}';
 		 $.ajax({
 			    type: "POST",
-		        url: sourceleadUrl+"/getOrgSpocsList?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+orgRelationID+"&type=Vendor",  
+		        url: sourceleadUrl+"/getOrgSpocsList?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationID+"&type=Vendor",  
 		        success: function(data) {
 		        	var json = JSON.parse(data);
 		        	$('#vendorcontact').empty();
@@ -1015,4 +1015,12 @@ function  removeValiationVendorContact() {
 		        }
 		 }); 
  }
+ </script>
+ 
+ <script>
+ $(function() {
+		$("#uploadBtn").change(function() {
+			fileUpload("uploadBtn", "resumes", "candidate_form");
+		});
+	 });
  </script>

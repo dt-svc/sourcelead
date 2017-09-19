@@ -143,9 +143,9 @@ public class VendorRestController {
 		     if(orgSpoc == null){
 			    	orgSpocService.addVendorContacts(clientDTO,addUserDTO,candidateDTO, user, orgLocations, orgRelationId, clientLocationId,responderType,org);
 			    	if(responderType.equalsIgnoreCase("Vendor")){
-			    		SourceLeadSessionManager.setSessionAttribute(request, "vendorContactCreateMsg","Success !! New contact added.");
+			    		SourceLeadSessionManager.setSessionAttribute(request, "vendorContactCreateMsg","Success !! New vendor contact added.");
 				 	}else if(responderType.equalsIgnoreCase("Client")){
-				 		SourceLeadSessionManager.setSessionAttribute(request, "clientContactCreateMsg","Success !! New contact added.");
+				 		SourceLeadSessionManager.setSessionAttribute(request, "clientContactCreateMsg","Success !! New client contact added.");
 				 	}
 					
 			    }

@@ -269,6 +269,19 @@ public class CandidateListRestController {
 					for (MatchQueryBuilder matchQueryBuilder : matchQueryBuilderList) {
 						anyBoolSubQueryBuilder.should(matchQueryBuilder);
 					}
+					
+					DateFormat df = loginOrgLocation.getLocFullFormDateFormatter();
+					try{
+						if(keywd.contains("/")){
+							keywd = keywd.replaceAll("/", "-");
+						}
+						Date d = df.parse(keywd);
+						anyBoolSubQueryBuilder = QueryBuilders.boolQuery();
+						String dateStr = commonUtil.elkDateFormatter(d);
+						anyBoolSubQueryBuilder.should(QueryBuilders.termQuery("updatedDate", dateStr));
+					 }
+					 catch(Exception e){}
+					
 					anyBoolQueryBuilder.should(anyBoolSubQueryBuilder);
 				}
 			}
@@ -338,9 +351,9 @@ public class CandidateListRestController {
 		}
 
 		// minExpYears && maxExpYears
-		String minYears = search.getMinRate();
+		String minYears = search.getMinExpYears();
 		minYears = StringUtils.isNotEmpty(minYears) ? minYears.replaceAll("[^0-9\\.]+", "") : "";
-		String maxYears = search.getMaxRate();
+		String maxYears = search.getMaxExpYears();
 		maxYears = StringUtils.isNotEmpty(maxYears) ? maxYears.replaceAll("[^0-9\\.]+", "") : "";
 		if (StringUtils.isNotEmpty(minYears) && StringUtils.isNotEmpty(maxYears)) {
 			try {
@@ -768,6 +781,7 @@ public class CandidateListRestController {
 		Candidate candidate = candidateService.getCandidateByCandidateIdAndOrgLocationId(Long.parseLong(candidateId),
 				loginOrgLocation.getId());
 		candidate.setDocFile(null);
+		candidate.setFileUrl(null);
 		candidate.setFileContentType(null);
 		activitySummary.append("File").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidate.getFileName()).append(Constants.OLD_VALUE_TAG_END);
 		candidate.setFileName(null);
@@ -1048,13 +1062,10 @@ public class CandidateListRestController {
 	 */
 	@RequestMapping(value = "/updateCandidate")
 	public String updateCandidate(CandidateDTO CandidateDto,HttpServletRequest request) throws Exception {
-
-		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
-		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		Candidate candidate;
-
+		User user = userService.getUserById(Long.valueOf(CandidateDto.getLoginUserId()));
+		OrgLocations loginOrgLocation = orgLocationService.getOrgLocations(Long.valueOf(CandidateDto.getOrgloationId()));
 		StringBuilder candidateCreateMsg = new StringBuilder();
-		candidate = candidateService.storeCandidate(CandidateDto, loginOrgLocation, user);
+		Candidate candidate = candidateService.storeCandidate(CandidateDto, loginOrgLocation, user);
 
 		return "success";
 

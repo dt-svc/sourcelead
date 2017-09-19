@@ -9,6 +9,7 @@ import java.util.List;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -76,7 +77,9 @@ public class FileController {
 		
 	@RequestMapping(value = "/viewFile")
 	public void viewFile(HttpServletResponse response, String documentPath, String contentType) {
-		File file = new File(staticPath, documentPath);
+		//String ac= staticPath.Remove(staticPath.lastIndexOf('/'));
+		String ac =StringUtils.removeEnd(staticPath, staticPath.substring(staticPath.lastIndexOf("/")));
+		File file = new File(ac, documentPath);
 		try (FileInputStream fis = new FileInputStream(file);) {
 
 			byte[] pdfBytes = new byte[fis.available()];

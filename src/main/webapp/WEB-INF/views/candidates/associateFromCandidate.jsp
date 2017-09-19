@@ -3,7 +3,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 
-<link href="resources/css/candidate-common.css" rel="stylesheet">
+<link href="resources/css/candidate-common.css?staticTime=${staticTime}" rel="stylesheet">
 	
 	<script type="text/javascript">
 		window.onload = function () {
@@ -39,7 +39,7 @@
   </section>
   <div class="content-area content-new clearfix">
   <div id="loading"></div> 
-  <form:form id="candidate_form" name="candidate_form"  enctype='multipart/form-data' >
+  <form:form id="candidate_form" name="candidate_form">
     <div class="row form-horizontal mt myForm">
       <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12"> 
         
@@ -540,7 +540,7 @@
 		    	        processData: false,
 		    	        contentType:false,
 		        	    dataType : 'json',
-						url : sourceleadUrl+"/storeCandidate?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
+						url : sourceleadUrl+"/storeCandidate?"+tokenParamName+"="+tokenValue+"&json="+jsonData,
 						success : function(result) {
 								location.replace(sourceleadUrl+"/associatesList");
 						},
@@ -621,7 +621,7 @@ function validate_fileupload(fileName)
 		    	var allSkills = $(event.target).val();
 		    	$.ajax({
 			    	type: "POST",
-			        url: sourceleadUrl+"/profileBySkillSet?${_csrf.parameterName}=${_csrf.token}&allSkills="+allSkills, 
+			        url: sourceleadUrl+"/profileBySkillSet?"+tokenParamName+"="+tokenValue+"&allSkills="+allSkills, 
 			        success: function(data) {
 			        	var primarySkill = data;
 			        	      $("#primarySkill").val(primarySkill);
@@ -753,7 +753,7 @@ function validate_fileupload(fileName)
 		
 		 $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/validateCandidateEmail?${_csrf.parameterName}=${_csrf.token}&email="+email+"&candidateType=Y", 
+		        url: sourceleadUrl+"/validateCandidateEmail?"+tokenParamName+"="+tokenValue+"&email="+email+"&candidateType=Y", 
 		        success: function(data) {
 		        	if(data == 'true'){
 		        		  $('#emailDiv').find('p.jquery_form_error_message').remove();
@@ -807,7 +807,7 @@ function getUsersByRole(){
 		
 		 $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/getUserByRoleId?${_csrf.parameterName}=${_csrf.token}&roleId="+roleId, 
+		        url: sourceleadUrl+"/getUserByRoleId?"+tokenParamName+"="+tokenValue+"&roleId="+roleId, 
 		        success: function(data) {
 		        	var json = JSON.parse(data);
 		        	var output = "";
@@ -835,7 +835,7 @@ function getUsersByRole(){
 		
 		 $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/getAllRoleUsers?${_csrf.parameterName}=${_csrf.token}", 
+		        url: sourceleadUrl+"/getAllRoleUsers?"+tokenParamName+"="+tokenValue+"", 
 		        success: function(data) {
 		        	var json = JSON.parse(data);
 		        	var output = "";
@@ -1040,7 +1040,7 @@ function rateValidations(){
 		 }
 			 $.ajax({
 			    	type: "POST",
-			        url: sourceleadUrl+"/getAssociateList?${_csrf.parameterName}=${_csrf.token}&candidateType="+candidateType, 
+			        url: sourceleadUrl+"/getAssociateList?"+tokenParamName+"="+tokenValue+"&candidateType="+candidateType, 
 			        success: function(data) {
 			        	var json = JSON.parse(data);
 			        	var output = "";
@@ -1159,7 +1159,7 @@ function getCandidateDetails(){
 	if(candidateId != null && candidateId != "" && candidateId != 'undefined'){
 		 $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/getCandidateDetailsInAssociate?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId, 
+		        url: sourceleadUrl+"/getCandidateDetailsInAssociate?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId, 
 		        success: function(data) {
 		        	var json = JSON.parse(data);
 		        	 
@@ -1488,7 +1488,7 @@ function getCandidateDetails(){
  $('.jquery_form_error_message').remove();
 		 $.ajax({
 		    	type: "GET",
-		        url: sourceleadUrl+"/getAssociateResumes?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId, 
+		        url: sourceleadUrl+"/getAssociateResumes?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId, 
 		        success: function(data) {
 		        	var json = JSON.parse(data);
 		        	if( json.length > 0){
@@ -1644,7 +1644,7 @@ function getCandidateDetails(){
 	 var sourceleadUrl ='${sourceleadUrl}';
 		 $.ajax({
 			    type: "POST",
-		        url: sourceleadUrl+"/getOrgSpocsList?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+orgRelationID+"&type=Vendor",  
+		        url: sourceleadUrl+"/getOrgSpocsList?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationID+"&type=Vendor",  
 		        success: function(data) {
 		        	var json = JSON.parse(data);
 		        	$('#vendorcontact').empty();
@@ -1703,7 +1703,7 @@ function getCandidateDetails(){
    	    	        processData: false,
    	    	        contentType:false,
    	        	    dataType : 'json',
-   				 	url : sourceleadUrl+"/parseResume?${_csrf.parameterName}=${_csrf.token}", 
+   				 	url : sourceleadUrl+"/parseResume?"+tokenParamName+"="+tokenValue+"", 
    					success : function(data) {
    						var json = JSON.parse(data);
    						var name = json.name;
@@ -1847,7 +1847,7 @@ if(type == 'C2C-1099'){
 	 var sourceleadUrl ='${sourceleadUrl}';
 		 $.ajax({
 			    type: "POST",
-		        url: sourceleadUrl+"/getOrgSpocsList?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+vendorOrgRelationId+"&type=Vendor",  
+		        url: sourceleadUrl+"/getOrgSpocsList?"+tokenParamName+"="+tokenValue+"&orgRelationId="+vendorOrgRelationId+"&type=Vendor",  
 		        success: function(data) {
 		        	var json = JSON.parse(data);
 		        	$('#vendorcontact').empty();
@@ -1865,5 +1865,13 @@ if(type == 'C2C-1099'){
 		        }
 		 }); 
  }
+ </script>
+ 
+<script>
+ $(function() {
+		$("#uploadBtn").change(function() {
+			fileUpload("uploadBtn", "resumes", "candidate_form");
+		});
+	 });
  </script>
  

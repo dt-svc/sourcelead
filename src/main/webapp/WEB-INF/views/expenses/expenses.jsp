@@ -155,7 +155,7 @@ function getExpensesList(){
 		  data: jsonData,
   	      contentType : 'application/json; charset=utf-8',
   	      dataType : 'json',
-          url: sourceleadUrl+"/getExpensesList?${_csrf.parameterName}=${_csrf.token}",     
+          url: sourceleadUrl+"/getExpensesList?"+tokenParamName+"="+tokenValue+"",     
           success :function(json) {
         	  var result = "";
 					result = result +" <table id='expensesPagination'>";

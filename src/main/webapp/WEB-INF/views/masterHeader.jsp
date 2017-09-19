@@ -1,6 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+
+<%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+
+ <c:if test="${staticTime == null || staticTime == 0 }">
+    <c:set var='staticTime' value="<%=new java.util.Date().getTime() %>" scope="application"></c:set>
+ </c:if>
+ 
 <meta charset="utf-8">
 <meta http-equiv="Pragma" content="private">
 <meta http-equiv="Cache-Control" content="private">
@@ -10,23 +20,19 @@
 <link rel="icon" type="image/png" href="resources/images/fav.png" />
 <title>Welcome to Source Lead :: The Recruitment Application</title>
 <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Roboto:400,100,300,500">
-<%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
-<link rel="stylesheet" href="resources/css/export.css" type="text/css" media="all" />
-<link href="resources/css/bootstrap-colorpicker.min.css" rel="stylesheet">
-<link rel="stylesheet" href="resources/css/bootstrap-select.min.css">
-<link href="resources/css/bootstrap.min.css" rel="stylesheet" type="text/css">
-<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<link rel="stylesheet" href="resources/css/export.css?staticTime=${staticTime}" type="text/css" media="all" />
+<link href="resources/css/bootstrap-colorpicker.min.css?staticTime=${staticTime}" rel="stylesheet">
+<link rel="stylesheet" href="resources/css/bootstrap-select.min.css?staticTime=${staticTime}">
+<link href="resources/css/bootstrap.min.css?staticTime=${staticTime}" rel="stylesheet" type="text/css">
 <!-- <link href="resources/css/jquery.dataTables.min.css" rel="stylesheet" type="text/css"> -->
-<link href="resources/css/buttons.dataTables.min.css" rel="stylesheet">
-<link href="resources/css/dataTablePagination.css" rel="stylesheet" type="text/css">
-<link href="resources/css/jquery-ui.css" rel="stylesheet">
-<link rel="stylesheet" href="resources/css/font-awesome.min.css">
-<link rel="stylesheet" href="resources/css/chosen.min.css">
-<link rel="stylesheet" href="resources/css/jquery.timepicker.css">
-<link href="resources/css/sourcelead-main.css" rel="stylesheet">
-<link rel="stylesheet" href="resources/css/timesheet.css" type="text/css" >
-<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
-<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<link href="resources/css/buttons.dataTables.min.css?staticTime=${staticTime}" rel="stylesheet">
+<link href="resources/css/dataTablePagination.css?staticTime=${staticTime}" rel="stylesheet" type="text/css">
+<link href="resources/css/jquery-ui.css?staticTime=${staticTime}" rel="stylesheet">
+<link rel="stylesheet" href="resources/css/font-awesome.min.css?staticTime=${staticTime}">
+<link rel="stylesheet" href="resources/css/chosen.min.css?staticTime=${staticTime}">
+<link rel="stylesheet" href="resources/css/jquery.timepicker.css?staticTime=${staticTime}">
+<link href="resources/css/sourcelead-main.css?staticTime=${staticTime}" rel="stylesheet">
+<link rel="stylesheet" href="resources/css/timesheet.css?staticTime=${staticTime}" type="text/css" >
 <c:set scope="request" var="viewPage" value='${pageContext.request.servletPath.toString().replaceFirst("/WEB-INF/views/","").replaceFirst(".jsp","")}'></c:set>
  <script src="https://maps.google.com/maps/api/js?libraries=places&v=3&key=AIzaSyCIbxD8-aZ7Wgp6N-JeEJKVRIHGRpNMdRE" type="text/javascript"></script>
 <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
@@ -39,52 +45,52 @@
 
 <!-- This requirement.css for only requirement.jsp  -->
 <c:if test='${viewPage == "requirement/requirement"}'>
-	<link href="resources/css/requirement.css" type="text/css" rel="stylesheet"/>
+	<link href="resources/css/requirement.css?staticTime=${staticTime}" type="text/css" rel="stylesheet"/>
 </c:if>
 
 </head>
 
 
 <!--  Amcharts -->
-<script src="resources/js/pie.js"></script>
-<script src="resources/js/amcharts.js"></script>
-<script src="resources/js/serial.js"></script>
-<script src="resources/js/export.min.js"></script>
-<script src="resources/js/themes/light.js"></script>
+<script src="resources/js/pie.js?staticTime=${staticTime}"></script>
+<script src="resources/js/amcharts.js?staticTime=${staticTime}"></script>
+<script src="resources/js/serial.js?staticTime=${staticTime}"></script>
+<script src="resources/js/export.min.js?staticTime=${staticTime}"></script>
+<script src="resources/js/themes/light.js?staticTime=${staticTime}"></script>
 <!--  Amcharts -->
-<script src="resources/js/bootstrap-colorpicker.min.js"></script>
-<script src="resources/js/jquery-ui.js"></script>
-<script src="resources/js/jquery-fun.js"></script>
-<script src="resources/js/jquery.dataTables.min.js"></script>
-<script src="resources/js/jquery.timepicker.js"></script>
-<script src="resources/js/formvalidator.js"></script>
-<script src="resources/js/bootstrap-select.min.js"></script>
-<script src="resources/js/themeswitcher.js"></script>
-<script src="resources/js/moment.min.js"></script>
-<script src="resources/js/datetime-moment.js"></script>
+<script src="resources/js/bootstrap-colorpicker.min.js?staticTime=${staticTime}"></script>
+<script src="resources/js/jquery-ui.js?staticTime=${staticTime}"></script>
+<script src="resources/js/jquery-fun.js?staticTime=${staticTime}"></script>
+<script src="resources/js/jquery.dataTables.min.js?staticTime=${staticTime}"></script>
+<script src="resources/js/jquery.timepicker.js?staticTime=${staticTime}"></script>
+<script src="resources/js/formvalidator.js?staticTime=${staticTime}"></script>
+<script src="resources/js/bootstrap-select.min.js?staticTime=${staticTime}"></script>
+<script src="resources/js/themeswitcher.js?staticTime=${staticTime}"></script>
+<script src="resources/js/moment.min.js?staticTime=${staticTime}"></script>
+<script src="resources/js/datetime-moment.js?staticTime=${staticTime}"></script>
 
 <!--  Data tables script files -->
 <!-- <script src="resources/js/jquery-1.12.4.js" type="text/javascript" charset="utf-8"></script> -->
-<script src="resources/js/jquery.dataTables.min.js" type="text/javascript" charset="utf-8"></script>
-<script src="resources/js/dataTables.buttons.min.js" type="text/javascript" charset="utf-8"></script>
-<script src="resources/js/buttons.flash.min.js" type="text/javascript" charset="utf-8"></script>
-<script src="resources/js/jszip.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="resources/js/jquery.dataTables.min.js?staticTime=${staticTime}" type="text/javascript" charset="utf-8"></script>
+<script src="resources/js/dataTables.buttons.min.js?staticTime=${staticTime}" type="text/javascript" charset="utf-8"></script>
+<script src="resources/js/buttons.flash.min.js?staticTime=${staticTime}" type="text/javascript" charset="utf-8"></script>
+<script src="resources/js/jszip.min.js?staticTime=${staticTime}" type="text/javascript" charset="utf-8"></script>
 <!--  chosen jquery -->
-<script src="resources/js/chosen.jquery.min.js"></script>
+<script src="resources/js/chosen.jquery.min.js?staticTime=${staticTime}"></script>
 <!--  chosen jquery -->
-<script src="resources/js/pdfmake.min.js" type="text/javascript" charset="utf-8"></script>
-<script src="resources/js/vfs_fonts.js" type="text/javascript" charset="utf-8"></script>
-<script src="resources/js/buttons.html5.min.js" type="text/javascript" charset="utf-8"></script>
-<script src="resources/js/buttons.print.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="resources/js/pdfmake.min.js?staticTime=${staticTime}" type="text/javascript" charset="utf-8"></script>
+<script src="resources/js/vfs_fonts.js?staticTime=${staticTime}" type="text/javascript" charset="utf-8"></script>
+<script src="resources/js/buttons.html5.min.js?staticTime=${staticTime}" type="text/javascript" charset="utf-8"></script>
+<script src="resources/js/buttons.print.min.js?staticTime=${staticTime}" type="text/javascript" charset="utf-8"></script>
 <!--  Data tables script files ends -->
 
 
 
 <!-- these files for autocomplete with tagit -->
-<link href="resources/css/jquery-tagit.css" rel="stylesheet">
-<script src="resources/js/csc.js" type="text/javascript" charset="utf-8"></script>
-<script src="resources/js/tag-it.js" type="text/javascript" charset="utf-8"></script>
-<script src="resources/js/tag-it.min.js" type="text/javascript" charset="utf-8"></script>
+<link href="resources/css/jquery-tagit.css?staticTime=${staticTime}" rel="stylesheet">
+<script src="resources/js/csc.js?staticTime=${staticTime}" type="text/javascript" charset="utf-8"></script>
+<script src="resources/js/tag-it.js?staticTime=${staticTime}" type="text/javascript" charset="utf-8"></script>
+<script src="resources/js/tag-it.min.js?staticTime=${staticTime}" type="text/javascript" charset="utf-8"></script>
 <!-- end files for autocomplete with tagit -->
 
 
@@ -367,11 +373,11 @@ function preventTabkey(e){
         <!-- login User details -->
         <div class="login-user">
         <span class="image">
-        <img class="img-circle" alt="${SourceLeadWeb_userType}" title="${SourceLeadWeb_userName}" onerror="predefineProfileImage(this);"  src="<c:url value='/displayUserImage/${SourceLeadWeb_userId}'/>"> </span> <span class=" hidden pull-left login-user-xs tbldata-dotdot-vsm" title="${SourceLeadWeb_userName}"> ${SourceLeadWeb_userName} </span>
+        <img class="img-circle" data-id= "userProfileImage" alt="${SourceLeadWeb_userType}" title="${SourceLeadWeb_userName}" onerror="predefineProfileImage(this);"  src="${SourceLeadWeb_user.fileUrl}"> </span> <span class=" hidden pull-left login-user-xs tbldata-dotdot-vsm" title="${SourceLeadWeb_userName}"> ${SourceLeadWeb_userName} </span>
           <div class="user-details">
             <div class="user-media">
               <div class="logn-image">
-              <img class="img-circle" title="${SourceLeadWeb_userName}" alt="${SourceLeadWeb_userType}" onerror="predefineProfileImage(this);" src="<c:url value='/displayUserImage/${SourceLeadWeb_userId}'/>"> </div>
+              <img class="img-circle" data-id="userProfileImage" title="${SourceLeadWeb_userName}" alt="${SourceLeadWeb_userType}" onerror="predefineProfileImage(this);" src="${SourceLeadWeb_user.fileUrl}"> </div>
               <div class="user-media-body">
                 <p><span>${SourceLeadWeb_userName}</span></p>
                 <p>${SourceLeadWeb_displayName == 'Professional' ? 'Job Seeker' : SourceLeadWeb_displayName}</p>
@@ -1672,5 +1678,5 @@ function zipcodeMask(country,zipCodeId){
 <script>
   var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 </script>
-<script src="resources/js/zipcodeMaskedinput-1.3.min.js"></script>
+<script src="resources/js/zipcodeMaskedinput-1.3.min.js?staticTime=${staticTime}"></script>
 
