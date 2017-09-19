@@ -925,7 +925,9 @@ function pagination(){
 		result = result + '<li><a href="#tab-5" onclick="clientRequirementList('+orgRelationId+');">Jobs</a></li>';	
 		'</sec:authorize>';
 		
+		'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_BILL\',\'ROLE_VIEW_EDIT_INVOICE\')">';
 		result = result + '<li><a href="#tab-6" onclick="getClientInvoiceList('+orgRelationId+','+clientLocationId+');">Billing</a></li>';
+		'</sec:authorize>';
 		
 		'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CONTRACT\')">';
 		result = result + '<li><a href="#tab-7" onclick="clientContracts('+orgRelationId+');">Contracts</a></li>';	
