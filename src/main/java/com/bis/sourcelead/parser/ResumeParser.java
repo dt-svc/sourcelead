@@ -42,7 +42,9 @@ public class ResumeParser {
 		String lastLine = "";
 		HashMap<String, Object> parsedResume = new HashMap<String, Object>();
 		try {
-			HashMap<String, String[]> keywordTypes = Constants.KeywordTypes;
+			Constants idf = new Constants();
+			// idf.initHashMap();
+			HashMap<String, String[]> keywordTypes = idf.KeywordTypes;
 			int len = lines.length;
 			for (int i = 0; i < len; i++) {
 				if (!DotNetToJavaStringHelper.isNullOrEmpty(lines[i])
@@ -64,7 +66,7 @@ public class ResumeParser {
 						LastFoundIndex = details.Index;
 						LastFoundKeyWord = details.Keyword;
 						parsedResume.put(details.Keyword, details.Line);
-//						keywordTypes.remove(details.Keyword);
+						keywordTypes.remove(details.Keyword);
 					}
 					else {
 						if (LastFoundIndex < details.Index && LastFoundKeyWord != null
@@ -263,11 +265,12 @@ public class ResumeParser {
 	
 	private static String GetName(String[] lines)
 	{
+		String[] nameKeyWord = new String[] { "name:", "name :" };
 		for (String line : lines) {
 			String loweredLine = line.toLowerCase();
 			if (!DotNetToJavaStringHelper.isNullOrWhiteSpace(line)
 					&& !loweredLine.trim().equals("resume")) {
-				for (String keyword : Constants.KeywordTypes.get(Constants.NameKeyWord)) {
+				for (String keyword : nameKeyWord) {
 					if (loweredLine.contains(keyword)) {
 						String tempLine = line.substring(loweredLine.indexOf(keyword)
 								+ keyword.length()).trim();
@@ -283,12 +286,11 @@ public class ResumeParser {
 	private static String GetPhone(String[] lines, int checkIndex)
 	{
 		for (int i = 0; i < checkIndex; i++) {
-			for (String keyword : Constants.KeywordTypes.get(Constants.ContactKeyWord)) {
+			for (String keyword :Constants.KeywordTypes.get(Constants.ContactKeyWord)) {
 				if (lines[i].toLowerCase().replace(",", "").trim().contains(keyword.toLowerCase())) {
 					int startIndex = lines[i].toLowerCase().indexOf(keyword);
-					int last = lines[i].toLowerCase().indexOf("\t", startIndex+keyword.length());
 					return lines[i].substring(startIndex
-							+ keyword.length(), last).replace(":", "").trim();
+							+ keyword.length()).replace(":", "").trim();
 				}
 			}
 		}

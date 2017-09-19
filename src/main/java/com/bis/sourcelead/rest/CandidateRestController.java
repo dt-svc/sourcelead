@@ -193,7 +193,7 @@ public class CandidateRestController {
 		}
 		String resumeDetails = null;
 		if (null != multiFile) {
-			resumeDetails = sourceleadResumeParser.getCandidateDetailsFromResume(multiFile.getBytes(), request);
+			resumeDetails = sourceleadResumeParser.toJSON(sourceleadResumeParser.getCandidateDetailsFromResume(multiFile.getBytes(), request));
 		}
 		return resumeDetails;
 	}

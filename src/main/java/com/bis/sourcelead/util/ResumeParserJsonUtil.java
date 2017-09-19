@@ -2,6 +2,8 @@ package com.bis.sourcelead.util;
 
 import java.util.HashSet;
 
+import com.bis.sourcelead.dto.FileInfo;
+
 public class ResumeParserJsonUtil {
 	
 	String name;
@@ -9,6 +11,8 @@ public class ResumeParserJsonUtil {
 	String email;
 	
 	HashSet<String> phoneNumbers;
+	
+	private FileInfo fileInfo;
 	
 	String skills;
 
@@ -42,6 +46,16 @@ public class ResumeParserJsonUtil {
 
 	public void setSkills(String skills) {
 		this.skills = skills;
+	}
+
+	public FileInfo getFileInfo()
+	{
+		return fileInfo;
+	}
+
+	public void setFileInfo(FileInfo fileInfo)
+	{
+		this.fileInfo = fileInfo;
 	}
 
 }

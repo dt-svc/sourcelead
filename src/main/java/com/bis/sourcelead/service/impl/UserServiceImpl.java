@@ -1,5 +1,6 @@
 package com.bis.sourcelead.service.impl;
 
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -36,7 +37,9 @@ import com.bis.sourcelead.dao.OrgDao;
 import com.bis.sourcelead.dao.OrgLocationsDao;
 import com.bis.sourcelead.dao.UserDao;
 import com.bis.sourcelead.dto.AddUserDTO;
+import com.bis.sourcelead.dto.AddUserProfileDTO;
 import com.bis.sourcelead.dto.CandidateDTO;
+import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.elk.index.UserIndex;
 import com.bis.sourcelead.elk.index.helper.UserIndexHelper;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
@@ -74,6 +77,7 @@ import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
+import com.bis.sourcelead.util.FileUploadUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.UniversalSearchHelper;
 
@@ -436,11 +440,13 @@ public class UserServiceImpl implements UserService {
 			}*/
 			
 			if(StringUtils.isNotBlank(addUserDTO.getRoleTypeId())){
-				if(!isNullOrEmpty(addUserDTO.getRoleTypeId())){
-					roles = rolesService.getRolesById(Long.parseLong(addUserDTO.getRoleTypeId()));
-				}else{
-					roles = rolesService.getRolesByRoleNameAndOrgLocationId(Constants.ROLE_MANAGER,orgLocations.getId());
-				}
+			roles = rolesService.getRolesById(Long.parseLong(addUserDTO.getRoleTypeId()));
+			}else if(StringUtils.isNotBlank(addUserDTO.getRoleType())){
+			roles = rolesService.getRolesById(Long.parseLong(addUserDTO.getRoleType()));
+			userRole.setUserType(roles.getDisplayName()); 
+			}
+			else{
+			roles = rolesService.getRolesByRoleNameAndOrgLocationId(Constants.ROLE_MANAGER,orgLocations.getId());
 			}
 
 
@@ -687,28 +693,54 @@ public class UserServiceImpl implements UserService {
 		logger.debug("In UserService class...");
 		return userDao.getUserByIdAndOrgLocationsId(Id,orgLocationsId);
 	}
+	
+	@Override
+	public User saveUserProfileImage(AddUserProfileDTO addUserProfileDTO, User user) throws Exception {
+		
+		user = getUserProfileImage(addUserProfileDTO,user);
+		userDao.addUser(user);
+		return user;
+	}
+	
+	private User getUserProfileImage(AddUserProfileDTO addUserProfileDTO,User user){
+		
+		if(addUserProfileDTO.getFileInfo() != null){
+			FileInfo fileInfo = addUserProfileDTO.getFileInfo().get(0);
+			user.setFileContentType(fileInfo.getContentType());
+	   		user.setFileName(fileInfo.getFileName());
+	   		user.setFileUrl(fileInfo.getFileURL());
+	   		try {
+				FileUploadUtil.moveFile(addUserProfileDTO.getStaticPath(), fileInfo, "profile");
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+		return user; 
+	}
 
 	@Override
-	public User saveUserProfile(UserProfile userProfile, MultipartFile multiFile,User user) throws Exception {
+	public User saveUserProfile(AddUserProfileDTO addUserProfileDTO, User user) throws Exception {
 		
-		user = getUserProfileDetails(userProfile,multiFile,user);
+		user = getUserProfileDetails(addUserProfileDTO,user);
 		userDao.addUser(user);
 		return user;
 	}
 	
 	
-	private User getUserProfileDetails(UserProfile userProfile, MultipartFile multiFile,User user){
-		user.setFirstName(userProfile.getFirstName());
-		user.setLastName(userProfile.getLastName());
-		user.setMobilePhone(userProfile.getMobilePhone());
-		user.setJobTitle(userProfile.getJobTitle());
-		user.setLocation(userProfile.getLocation());
-		user.setLinkedIn(userProfile.getLinkedIn());
-		user.setFacebook(userProfile.getFacebook());
-		user.setTwitter(userProfile.getTwitter());
-		user.setGooglePlus(userProfile.getGooglePlus());
+	private User getUserProfileDetails(AddUserProfileDTO addUserProfileDTO,User user){
+		user.setFirstName(addUserProfileDTO.getFirstName());
+		user.setLastName(addUserProfileDTO.getLastName());
+		user.setMobilePhone(addUserProfileDTO.getMobilePhone());
+		user.setJobTitle(addUserProfileDTO.getJobTitle());
+		user.setLocation(addUserProfileDTO.getLocation());
+		user.setLinkedIn(addUserProfileDTO.getLinkedIn());
+		user.setFacebook(addUserProfileDTO.getFacebook());
+		user.setTwitter(addUserProfileDTO.getTwitter());
+		user.setGooglePlus(addUserProfileDTO.getGooglePlus());
 		
-        if(null != multiFile.getContentType() && !multiFile.getContentType().equalsIgnoreCase("application/octet-stream")){
+        /*if(null != multiFile.getContentType() && !multiFile.getContentType().equalsIgnoreCase("application/octet-stream")){
     	  try {
     	   		user.setFileContentType(multiFile.getContentType());
     	   		user.setDocFile(multiFile.getBytes());
@@ -716,7 +748,8 @@ public class UserServiceImpl implements UserService {
 	       }catch (Exception e) {
     	      	 e.printStackTrace();
 			    }
-        }
+        }*/
+		
 		
 		return user; 
 	}

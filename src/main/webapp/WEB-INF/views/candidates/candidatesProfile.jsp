@@ -56,13 +56,18 @@
 	}
 	</style>
 	
-	
+	<script>
+	function candUpdateMsgFadeinFunction() {
+		$("#selector1").fadeIn(200);
+        $('#selector1').delay(2000).fadeOut('slow');
+	}
+</script> 
 
 <c:if test="${!empty msg}">
-	        <div class="success_pop" id="selector"  style="display: block;">
-		         <i class="fa fa-check-circle"></i><span>${msg}</span>
-			</div>
-	     </c:if>
+       <div class="success_pop" id="selector"  style="display: block;">
+         <i class="fa fa-check-circle"></i><span>${msg}</span>
+	 </div>
+</c:if>
 
 <style type="text/css">
 .require_wrap_details{
@@ -74,20 +79,10 @@ function editCandidate(candidateId){
 	
 	  $("#profileEditPopup").show();
 	  var loginCountryName = '${loginCountryName}';
-	  var sourceleadUrl ='${sourceleadUrl}';
-	  
-	  
-	/* 	var validationSettings = {
-		        errorMessagePosition : 'element',
-		       borderColorOnError : '',
-				scrollToTopOnError : true,
-				dateFormat : 'yyyy/mm/dd' 
-	         };  */
-		
- if ($('#candidateProfileEdit_form').validate(false, validationSettings)){ 
+      if ($('#candidateProfileEdit_form').validate(false, validationSettings)){ 
 	  $.ajax({
         type : "POST",
-         url: sourceleadUrl+"/getCandidateById?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,        
+         url: sourceleadUrl+"/getCandidateById?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
          success :function(data) {  
               if(data != null && data != 'undefined' && data != ""){  
               	 var json = JSON.parse(data);
@@ -178,8 +173,13 @@ function editCandidate(candidateId){
             			 	
             			 	
 							var result ='';
-							result = result + '		    <div class="edit-details col-md-8 edit-candaite canprofile-popright"> <i class="fa fa-close close-div" onclick="cancelEdit();"></i>';
+							result  = result + '<div class="success_pop" id="selector1" style="display: none;">';
+						    result  = result + '<i class="fa fa-check-circle"></i><span id="candMsgDiv"></span>';
+						    result  = result + '</div>';
+							result = result + '		    <div class="edit-details col-md-8 edit-candaite canprofile-popright" > <i class="fa fa-close close-div" onclick="cancelEdit();"></i>';
 							result  = result + '         <form id="candidateProfileEdit_form" name="candidateProfileEdit_form" method="post">';
+							result  = result + '<input type="hidden" id="orgloationId" name="orgloationId" value="${SourceLeadWeb_orgLocations.id}" />';
+							result  = result + '<input type="hidden" id="loginUserId" name="loginUserId" value="${SourceLeadWeb_user.id}" />';
 							result = result + '		      <div class="form-horizontal clearfix">';
 							result = result + '<input type="hidden" class="form-control input-sm" name="candidateId"  value="'+candidateId+'">';
 							
@@ -546,7 +546,6 @@ function editCandidate(candidateId){
 
 <script>
 function deleteCandidate(candidateId,candidateType){
-	  var sourceleadUrl ='${sourceleadUrl}';
 	 // var reason = document.getElementById("rejectReason").value;
 	  var reason = document.getElementById("rejectReason").value;
 	  reason = reason.replace(/\s/g, "") 
@@ -565,7 +564,7 @@ function deleteCandidate(candidateId,candidateType){
 			  $(".rejectErrorMsgs").empty();
 	  $.ajax({
         type : "POST",
-         url: sourceleadUrl+"/deleteCandidateByCandidateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&reason="+reason+"&candidateType="+candidateType,        
+         url: sourceleadUrl+"/deleteCandidateByCandidateId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&reason="+reason+"&candidateType="+candidateType,        
          success :function(data) {
               if(data != null && data != 'undefined' && data != ""){
             	  var json = JSON.parse(data);
@@ -641,7 +640,6 @@ function removeCandidateAlertMessage(candidateId,candidateType){
 <script type="text/javascript">
 function reActivateCandidateAlertMessage(candidateId){
 	var result = "";
-	var sourceleadUrl ='${sourceleadUrl}';
 	var loginUserId = '${SourceLeadWeb_userId}';
 	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	/* var message = confirm("You are choosing to ReActivate the Candidate");
@@ -650,7 +648,7 @@ function reActivateCandidateAlertMessage(candidateId){
 		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		$.ajax({
 	        type : "POST",
-	         url: sourceleadUrl+"/reActivateCandidateByCandidateId?${_csrf.parameterName}=${_csrf.token}&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&reActivate="+reactivate,        
+	         url: sourceleadUrl+"/reActivateCandidateByCandidateId?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&reActivate="+reactivate,        
 	         success :function(data) {
 	               if(data != null && data != 'undefined' && data != ""){
 	            			 location.replace(sourceleadUrl+"/candidatesList");
@@ -674,11 +672,10 @@ function reActivateCandidateAlertMessage(candidateId){
 --%>
 <script>
 function candidateProfile(candidateId,candidateType){
-	  var sourceleadUrl = '${sourceleadUrl}';
 	  var skillsList = '${skillsList}'; 
 	  $.ajax({
         type : "POST",
-         url: sourceleadUrl+"/getCandidateById?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,        
+         url: sourceleadUrl+"/getCandidateById?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
          success :function(data) {  
               if(data != null && data != 'undefined' && data != ""){  
               	var json = JSON.parse(data);
@@ -1113,13 +1110,12 @@ function candidateProfile(candidateId,candidateType){
  function saveSkils(candidateId){
 	 var skillName = $("#skillName").val();
 	 var jsonData = encodeURIComponent(skillName);
-	 var sourceleadUrl ='${sourceleadUrl}';
 	 var loginUserId = '${SourceLeadWeb_userId}';
 	 var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	 if(skillName != null && skillName != '' && skillName !='undefined'){
-		 Urlcheck = sourceleadUrl+"/saveOrUpdateOnlySkillBycandidateId?${_csrf.parameterName}=${_csrf.token}&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&skillName="+jsonData
+		 Urlcheck = sourceleadUrl+"/saveOrUpdateOnlySkillBycandidateId?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&skillName="+jsonData
 	 }else{
-		 Urlcheck = sourceleadUrl+"/saveOrUpdateOnlySkillBycandidateId?${_csrf.parameterName}=${_csrf.token}&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&skillName="+""
+		 Urlcheck = sourceleadUrl+"/saveOrUpdateOnlySkillBycandidateId?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&skillName="+""
 	 }
 	 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	 $.ajax({  
@@ -1157,37 +1153,30 @@ function candidateProfile(candidateId,candidateType){
 --%>         
 <script type="text/javascript">
 	function upDateCandidate(candidateId) {
-		
 		var validationSettings = {
 		        errorMessagePosition : 'element',
 		       borderColorOnError : '',
 				scrollToTopOnError : true,
 				dateFormat : 'yyyy/mm/dd' 
 	         }; 
-		
 		rateValidations();
 		
 		 $('#emailDiv').find('p.jquery_form_error_message').remove();
 		 if ($('#candidateProfileEdit_form').validate(false, validationSettings)){ 
-			/* var sourceleadUrl = '${sourceleadUrl}';
-			var frm = $('#candidateProfileEdit_form').serializeFormJSON();
 			
-			 var con = JSON.stringify(frm);
-			 con = con.replace(/[{}]/g, "");
-			  //It will escape all the special characters
-			var jsonData = encodeURIComponent(con);
-			
-			var form = $('#candidateProfileEdit_form')[0];
-      		var formData = new FormData(form);  */
       		var formData = getFormData("candidateProfileEdit_form");
-			var sourceleadUrl = '${sourceleadUrl}';
 			$("#update_candidate").attr("disabled", "disabled");
 			$("#update_candidate").addClass('button').val('Processing..');
-				//var form = $('#candidateResume_form')[0];
 				
-		        $.post(sourceleadUrl+"/updateCandidate?${_csrf.parameterName}=${_csrf.token}", formData, function(data) {
-		        	location.replace(sourceleadUrl+"/candidatesList"); 
+
+		        $.post(sourceleadUrl+"/updateCandidate?"+tokenParamName+"="+tokenValue+"", formData, function(data) {
+		        	//location.replace(sourceleadUrl+"/candidatesList"); 
+
 		        	candidateSideBar(candidateId);
+		        	 $("#selector1").removeAttr("style");
+         			 $("#selector1").css({ display: "block" });
+		        	 $("#candMsgDiv").html("Success!!  Candidate Updated");
+		        	candUpdateMsgFadeinFunction();
 					candidateQuickViewProfile(candidateId);
 		        });
 			 
@@ -1233,10 +1222,9 @@ function cancelEdit(){
 
 <script>
 function removeSkillById(candidateId, skillId){
-	  var sourceleadUrl ='${sourceleadUrl}';
 	  $.ajax({
         type : "POST",
-         url: sourceleadUrl+"/removeSkillBySkillId?${_csrf.parameterName}=${_csrf.token}&skillId="+skillId,        
+         url: sourceleadUrl+"/removeSkillBySkillId?"+tokenParamName+"="+tokenValue+"&skillId="+skillId,        
          success :function(data) {
               if(data != null && data != 'undefined' && data != ""){
             			 candidateSkillsList(candidateId);
@@ -1288,12 +1276,11 @@ function removeSkillById(candidateId, skillId){
 --%>         
 <script type="text/javascript">
 	function fieldUpdateCandidate(candidateSkillId,local) {
-			var sourceleadUrl = '${sourceleadUrl}'; 
 			var value = local.value;
 			var name = local.id;
 			$.ajax({
 						type : "POST",
-						url : sourceleadUrl+"/fieldUpdateCandidate?${_csrf.parameterName}=${_csrf.token}&candidateSkillId="+candidateSkillId+"&name="+name+"&value="+value,
+						url : sourceleadUrl+"/fieldUpdateCandidate?"+tokenParamName+"="+tokenValue+"&candidateSkillId="+candidateSkillId+"&name="+name+"&value="+value,
 						success : function(result) {
 							 
 						},
@@ -1306,10 +1293,9 @@ function removeSkillById(candidateId, skillId){
 
 <script>
 	function employeeSubmissionProfile(candidateId) {
-		var sourceleadUrl = '${sourceleadUrl}';
 				$.ajax({
 					type : "POST",
-					url : sourceleadUrl	+ "/getCandidatesEmployersListByCandidateIdAndOrgLocationID?${_csrf.parameterName}=${_csrf.token}&candidateId=" + candidateId,
+					url : sourceleadUrl	+ "/getCandidatesEmployersListByCandidateIdAndOrgLocationID?"+tokenParamName+"="+tokenValue+"&candidateId=" + candidateId,
 					success : function(data) {
 						if (data != null && data != 'undefined' && data != "" && data != '[]') {
 								$("#employeeSubmissionDetailsList").empty();
@@ -1387,10 +1373,9 @@ function removeSkillById(candidateId, skillId){
 
 <script>
 function educationSubmissionProfile(candidateId){
-	 var sourceleadUrl ='${sourceleadUrl}';
 	 $.ajax({  
           type : "POST",
-          url: sourceleadUrl+"/getCandidateEducationListByCandidateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,        
+          url: sourceleadUrl+"/getCandidateEducationListByCandidateId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
           success :function(data) {
         	  if (data != null && data != 'undefined' && data != "" && data != '[]') {
 	                	 $("#educationSubmissionDetailsList").empty();
@@ -1478,10 +1463,9 @@ function educationSubmissionProfile(candidateId){
 
 <script>
 function certificationSubmissionProfile(candidateId){
-	 var sourceleadUrl ='${sourceleadUrl}';
 	 $.ajax({  
           type : "POST",
-          url: sourceleadUrl+"/getCandidateCertificationListByCandidateIdAndOrgLocationID?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,        
+          url: sourceleadUrl+"/getCandidateCertificationListByCandidateIdAndOrgLocationID?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
           success :function(data) {
         	  if (data != null && data != 'undefined' && data != "" && data != '[]') {
 	                	 $("#certificationSubmissionProfile").empty();
@@ -1591,11 +1575,10 @@ function updateDesignationOtherType(){
 	 var candidateType = $('#candidateType').val(); 
 	 $('#emailDiv').find('p.jquery_form_error_message').remove();
 	 $("#update_candidate").removeAttr("disabled");
-	 var sourceleadUrl ='${sourceleadUrl}';
 	 if(email != null && email != ""){
 		 $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/validateCandidateEmail?${_csrf.parameterName}=${_csrf.token}&email="+email+"&candidateType="+candidateType, 
+		        url: sourceleadUrl+"/validateCandidateEmail?"+tokenParamName+"="+tokenValue+"&email="+email+"&candidateType="+candidateType, 
 		        success: function(data) {
 		        	if(data == 'true'){
 		        		
@@ -1711,7 +1694,6 @@ function employementType(){
  function getVendorsByOrgLocation(){
 	 var vendorName = $("#updateVendorName").val();
 	 var vendorOrgRelationId = $("#updateVendorOrgRelationId").val();
-	 var sourceleadUrl ='${sourceleadUrl}';
 		 $.ajax({
 		    	type: "GET",
 		        url: sourceleadUrl+"/getVendorsByOrgLocation?", 
@@ -1753,10 +1735,9 @@ function  removeValiationVendorContact() {
 		 if(orgRelationID != null && orgRelationID != '' && orgRelationID != 'undefined'){
 			 var vendorContactName = $("#updateVendorContactName").val();
 			 var vendorSpocId = $("#updateSpocId").val();
-		     var sourceleadUrl ='${sourceleadUrl}';
 			 $.ajax({
 				    type: "POST",
-			        url: sourceleadUrl+"/getOrgSpocsList?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+orgRelationID+"&type=Vendor",  
+			        url: sourceleadUrl+"/getOrgSpocsList?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationID+"&type=Vendor",  
 			        success: function(data) {
 			        	var json = JSON.parse(data);
 			        	$('#vendorcontactName').empty();
@@ -1816,13 +1797,12 @@ function  removeValiationVendorContact() {
  function saveVisas(candidateId){
 	 var visaName = $("#visaName").val();
 	 var jsonData = encodeURIComponent(visaName);
-	 var sourceleadUrl ='${sourceleadUrl}';
 	 var loginUserId = '${SourceLeadWeb_userId}';
 	 var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	 if(visaName != null && visaName != '' && visaName !='undefined'){
-		 Urlcheck = sourceleadUrl+"/saveOrUpdateOnlyVisaBycandidateId?${_csrf.parameterName}=${_csrf.token}&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&visaName="+jsonData
+		 Urlcheck = sourceleadUrl+"/saveOrUpdateOnlyVisaBycandidateId?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&visaName="+jsonData
 	 }else{
-		 Urlcheck = sourceleadUrl+"/saveOrUpdateOnlyVisaBycandidateId?${_csrf.parameterName}=${_csrf.token}&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&visaName="+""
+		 Urlcheck = sourceleadUrl+"/saveOrUpdateOnlyVisaBycandidateId?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&visaName="+""
 	 }
 	 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	 $.ajax({  

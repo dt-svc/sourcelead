@@ -14,6 +14,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.tika.metadata.Metadata;
 import org.apache.tika.parser.AutoDetectParser;
 import org.apache.tika.sax.BodyContentHandler;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -39,7 +40,7 @@ public class SourceleadResumeParser {
 @Autowired
 LookUpDataService lookUpDataService;
  
-public  String getCandidateDetailsFromResume(byte[] source,HttpServletRequest request)
+public  ResumeParserJsonUtil getCandidateDetailsFromResume(byte[] source,HttpServletRequest request)
 				throws Exception {
 				
     	    BodyContentHandler htmlHandler = new BodyContentHandler();
@@ -68,7 +69,7 @@ public  String getCandidateDetailsFromResume(byte[] source,HttpServletRequest re
 				skills = skills.replaceAll("\"", "").replaceAll("\\[", "").replaceAll("\\]","");
 				jsonUtil.setSkills(skills);
 			}
-		    return toJSON(jsonUtil);
+		    return jsonUtil;
    }
 
    /**

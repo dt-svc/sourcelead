@@ -2,8 +2,6 @@ package com.bis.sourcelead.web;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -31,13 +29,18 @@ import com.bis.sourcelead.parser.Reader;
 import com.bis.sourcelead.parser.ResumeParser;
 import com.bis.sourcelead.util.FileUploadUtil;
 import com.bis.sourcelead.util.PdfConversionUtil;
+import com.bis.sourcelead.util.ResumeParserJsonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
+import com.bis.sourcelead.util.SourceleadResumeParser;
 
 @Controller
 public class FileController {
 
 	@Value("${static.path}")
 	private String staticPath;
+	
+	@Autowired
+	private SourceleadResumeParser sourceleadResumeParser;
 	
 	@Autowired
 	private PdfConversionUtil pdfConversionUtil;
@@ -66,9 +69,35 @@ public class FileController {
 		return fileInfoList;
 	}
 	
+	@RequestMapping(value = "/upload-resumes", method = RequestMethod.POST)
+	@ResponseBody
+	public void uploadResumeFiles(MultipartHttpServletRequest request) {
+		List<FileInfo> fileInfoList = uploadFile(request, "resumes", 0, 0);
+	}
+	
 	@RequestMapping(value = "/parse-resumes", method = RequestMethod.POST)
 	@ResponseBody
-	public List<Map<String, Object>> uploadResume(MultipartHttpServletRequest request) {
+	public List<ResumeParserJsonUtil> uploadResume(MultipartHttpServletRequest request) {
+		List<ResumeParserJsonUtil> resumeContent = new ArrayList<>();
+		List<FileInfo> fileInfoList = uploadFile(request, "resumes", 0, 0);
+		for(FileInfo fileInfo : fileInfoList) {
+			File file = new File(staticPath, fileInfo.getFileURL().replace("resumes", "temp"));
+			try(FileInputStream fis = new FileInputStream(file);) {
+				byte[] b = new byte[fis.available()];
+				fis.read(b);
+				ResumeParserJsonUtil resume = sourceleadResumeParser.getCandidateDetailsFromResume(b, request);
+				resume.setFileInfo(fileInfo);
+				resumeContent.add(resume);
+			} catch(Exception ex) {
+				ex.printStackTrace();
+			}
+		}
+		return resumeContent;
+	}
+	
+	@RequestMapping(value = "/parse-resumes-external", method = RequestMethod.POST)
+	@ResponseBody
+	public List<Map<String, Object>> uploadResumes(MultipartHttpServletRequest request) {
 		List<Map<String, Object>> resumeContent = new ArrayList<>();
 		List<FileInfo> fileInfoList = uploadFile(request, "resumes", 0, 0);
 		Reader reader = new Reader();
@@ -84,7 +113,6 @@ public class FileController {
 				}
 			}
 		}
-		
 		return resumeContent;
 	}
 	

@@ -168,7 +168,7 @@ public class CandidateServiceImpl implements CandidateService {
 	}
     
     
-	public String getCandidateId(OrgLocations orgLocations) {
+	/*public String getCandidateId(OrgLocations orgLocations) {
     	String companyShortCode = null;
     	Long number = 1L;
 		String candidateId = null;
@@ -197,8 +197,42 @@ public class CandidateServiceImpl implements CandidateService {
         }
 		return sb.append(companyShortCode).append(Constants.CANDIDATE_ENTITY).append(ConvetredCandidatesId).toString();
 		
-	}
-	
+	}*/
+    
+    @Override
+   	public String getCandidateId(OrgLocations orgLocations) {
+       	String companyShortCode = null;
+       	Long number = 1L;
+   		String candidateId = null;
+   		Integer generatedIdcount = 0;
+   		StringBuilder sbuilder = new StringBuilder();
+   		sbuilder.append(orgLocations.getGeneratedUserId()).append(Constants.CANDIDATE_ENTITY);
+   		String generatedUsreId = sbuilder.toString();
+   		for(int i=0;i< generatedUsreId.length();i++){
+   			char ch = generatedUsreId.charAt(i);
+   			if(Character.isAlphabetic(ch)){
+   				generatedIdcount++;
+   			}
+   		}
+   		// in dao to count from next character
+   		generatedIdcount = generatedIdcount+1;
+   		 Long checkNumber = candidateDao.getCandidateGeneratedIdByOrgLocationId(orgLocations.getId(),generatedIdcount);
+   		if(checkNumber == null){
+   			candidateId = number.toString();
+   		}else{
+   		Long canId = checkNumber+1;
+   		candidateId = canId.toString();
+   		}
+   		final DecimalFormat decimalFormat = new DecimalFormat("0");                
+           String convetredCandidateId = decimalFormat.format(Long.parseLong(candidateId));
+           StringBuffer sb = new StringBuffer();
+           if(orgLocations.getGeneratedUserId() != null && !"".equalsIgnoreCase(orgLocations.getGeneratedUserId())){
+           	 companyShortCode = orgLocations.getGeneratedUserId();
+           }
+   		return sb.append(companyShortCode).append(Constants.CANDIDATE_ENTITY).append(convetredCandidateId).toString();
+   	}
+    
+    
 	/**
 	 * @author prasad k
 	 * @since  aug 26 2016
@@ -480,7 +514,6 @@ public class CandidateServiceImpl implements CandidateService {
 			if(fileInfo != null){
 			HashSet<CandidateResumes> candidateResumesList = candidateResumesService.getCandidateResumesDetails(orgLocations,user.getUserCode(),candidate, fileInfo);
 			candidate.setCandidateResumes(candidateResumesList);
-			candidate.setFileName(fileInfo.getFileName());
 			FileUploadUtil.moveFile(candidateDto.getStaticPath(), fileInfo, "resumes");
 				}
 			}
@@ -1434,14 +1467,28 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 				candidate.setDesignationOtherType(null);
 			}
 			
+			if(StringUtils.isNotBlank(candidateDTO.getVendors())){
+				OrgRelations orgRelation = orgRelationsService.getOrRelationsById(Long.parseLong(candidateDTO.getVendors()));
+				candidate.setOrgRelationId(orgRelation);
+				}else{
+				candidate.setOrgRelationId(null);
+				}
+
+				if(StringUtils.isNotBlank(candidateDTO.getVendorcontact())){
+				OrgSpoc orgspoc = orgSpocService.getOrgSpocById(Long.parseLong(candidateDTO.getVendorcontact()));
+				candidate.setSpocId(orgspoc);
+				}else{
+				candidate.setSpocId(null);
+				}
+			
 			candidate.setCandidateUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+			candidate.setGeneratedId(getCandidateId(orgLocations));
 			candidate.setCreatedDate(commonUtil.currentDate());
 			candidate.setUpdatedDate(commonUtil.currentDate());
 		}else{
 			candidate.setConsultantUser(user);
 			candidate.setMasterCandidateId(masterCandidate);
 		}
-		
 		candidateDao.storeCandidate(candidate);
 		saveOrUpdateCandidateElkDocument(candidate);
 		return candidate;

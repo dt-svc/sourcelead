@@ -141,7 +141,7 @@ function clientContracts(orgRelationId){
 	result = result+'	    </div>';
 	result = result+'	    </div>';
 
-    $("#tab-1").empty();
+	$("#tab-1").empty();
     $("#tab-2").empty(); 
     $("#tab-3").empty();  
     $("#tab-4").empty(); 
@@ -166,7 +166,6 @@ function clientContractsList(orgRelationId){
     });
 	
 	 var sourceleadUrl ='${sourceleadUrl}';
-	 
 	 var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
 	  if(locationList.match("yyyy-MM-dd")){
 		  contractClientDate = 'YYYY-MM-DD';
@@ -183,7 +182,6 @@ function clientContractsList(orgRelationId){
           success :function(data) {
              			var json = JSON.parse(data);
 	                	 $("#clientContractsList").empty();
-	                	 
 	                	 var draftCount = 0;
 	                	 var waitingForApprovalCount = 0;
 	                	 var waitingToBeSignedCount = 0;
@@ -280,12 +278,11 @@ function clientContractsList(orgRelationId){
 		                		         }
 		                		         opt = opt + '</td>';
 		                		         
-		                		         
 		                		         opt = opt + '<td class="noPad">';
 		                		         opt = opt + '<div class="tblminwidth-75">';
 		                		     		  if(output.templateSubmissionStatus == "WAITING_FOR_APPROVER"){
 		                		     			 if('${SourceLeadWeb_loginUserRole}' == "ROLE_ADMIN" || '${SourceLeadWeb_user.id}' == output.approverUserId){
-			                	     	        	 opt = opt +'<div class="pull-left CurDiv mr10" id="removeStatus'+output.id+'"><i class="fa fa-check" title="Approve" alt="Approve" onclick="approveContract('+output.id+',\'WAITING_FOR_APPROVER\');"></i><i class="fa fa-times" title="Reject" alt="Rejected" onclick="approveContract('+output.id+',\'REJECTED\');"></i></div>';
+			                	     	        	 opt = opt +'<div class="pull-left CurDiv mr10" id="removeStatus'+output.id+'"><i class="fa fa-check" title="Approve" alt="Approve" onclick="approveContract('+output.id+',\'WAITING_FOR_APPROVER\','+orgRelationId+');"></i><i class="fa fa-times" title="Reject" alt="Rejected" onclick="approveContract('+output.id+',\'REJECTED\','+orgRelationId+');"></i></div>';
 			                	     	         }
 		                		     		  }
 		                		     		 
@@ -296,9 +293,9 @@ function clientContractsList(orgRelationId){
 		                	       			if(output.templateSubmissionStatus == "DRAFT" || output.templateSubmissionStatus == "WAITING_FOR_APPROVER" || output.templateSubmissionStatus == "REJECTED" ){
 		                	       				'<sec:authorize access="hasAnyRole(\'ROLE_EDIT_CONTRACT\')">';
 		                	     	     		if(output.typeOfContract == "New"){
-		                	     	     			opt = opt + '<div class="pull-left ml10" href="<c:url value="/addNewContract?contractUUID='+output.contractUUID+'" />" title="Edit"><i class="glyphicon glyphicon-pencil editAA text-danger"></i></div>';
+		                	     	     			opt = opt + '<div class="pull-left ml10"><a href="<c:url value="/addNewContract?contractUUID='+output.contractUUID+'" />" title="Edit"><i class="glyphicon glyphicon-pencil editAA text-danger"></i></a></div>';
 		                	     	     		}else if(output.typeOfContract == "Custom"){
-		                	     	     			opt = opt + '<div class="pull-left" href="<c:url value="/addCustomContract?contractUUID='+output.contractUUID+'" />" title="Edit"><i class="glyphicon glyphicon-pencil editAA text-danger"></i></div>';
+		                	     	     			opt = opt + '<div class="pull-left"><a href="<c:url value="/addCustomContract?contractUUID='+output.contractUUID+'" />" title="Edit"><i class="glyphicon glyphicon-pencil editAA text-danger"></i></a></div>';
 		                	     	     		}
 		                	       			'</sec:authorize>';
 		                	       			}
@@ -884,10 +881,10 @@ function editOne(startDate,endDate){
 	  var d2 = '';
 	  if(locationDate.match("yyyy-MM-dd")){
 		  finalDateeditOneSave = 'yy-mm-dd';
-		   d2 = new Date(ClientcontractEffectiveEndDate[0], parseInt(contractEffectiveEndDate[1])-parseInt(1), parseInt(ClientcontractEffectiveEndDate[2])+parseInt(1));
+		   d2 = new Date(ClientcontractEffectiveEndDate[0], parseInt(ClientcontractEffectiveEndDate[1])-parseInt(1), parseInt(ClientcontractEffectiveEndDate[2])+parseInt(1));
 	  }if(locationDate.match("dd-MM-yyyy")){
 		  finalDateeditOneSave = 'dd-mm-yy'; 
-		   d2 = new Date(ClientcontractEffectiveEndDate[2], parseInt(contractEffectiveEndDate[1])-parseInt(1), parseInt(ClientcontractEffectiveEndDate[0])+parseInt(1));
+		   d2 = new Date(ClientcontractEffectiveEndDate[2], parseInt(ClientcontractEffectiveEndDate[1])-parseInt(1), parseInt(ClientcontractEffectiveEndDate[0])+parseInt(1));
 	  }if(locationDate.match("MM-dd-yyyy")){
 		  finalDateeditOneSave = 'mm-dd-yy'; 
 		   d2 = new Date(ClientcontractEffectiveEndDate[2], parseInt(ClientcontractEffectiveEndDate[0])-parseInt(1), parseInt(ClientcontractEffectiveEndDate[1])+parseInt(1));
@@ -895,8 +892,6 @@ function editOne(startDate,endDate){
 		  finalDateeditOneSave = 'yy-dd-mm';
 		   d2 = new Date(ClientcontractEffectiveEndDate[0], parseInt(ClientcontractEffectiveEndDate[2])-parseInt(1), parseInt(ClientcontractEffectiveEndDate[1])+parseInt(1));
 	  }
-	
-	
 	
 	 var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
 	  var finalDateFormatEditEndDateSave = '';

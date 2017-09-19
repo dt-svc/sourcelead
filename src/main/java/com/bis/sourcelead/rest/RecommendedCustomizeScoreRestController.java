@@ -265,9 +265,9 @@ public class RecommendedCustomizeScoreRestController {
 	 */
 	@RequestMapping(value = {"/getCandidatesToCompare","/rest/getCandidatesToCompare" }, method = RequestMethod.GET)
 	@ResponseBody
-	public CandidateCompareDTO getCandidatesToCompare(@RequestParam(value = "requirementId", required = false) Long requirementId, @RequestParam(value = "orgLocationId", required = false) Long orgLocationId) throws Exception
+	public CandidateCompareDTO getCandidatesToCompare(@RequestParam(value = "requirementId", required = false) Long requirementId, @RequestParam(value = "orgLocationId", required = false) Long orgLocationId, @RequestParam(value = "candidatesSelected", required = false) String candidatesSelected) throws Exception
 	{
-		CandidateCompareDTO candidateCompare = recommendedCustomizeScoreService.getCandidateListToCompare(requirementId,orgLocationId);
+		CandidateCompareDTO candidateCompare = recommendedCustomizeScoreService.getCandidateListToCompare(requirementId,orgLocationId,candidatesSelected);
 		return candidateCompare;
 	}
 	

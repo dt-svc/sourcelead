@@ -11,11 +11,10 @@
 
 <script>
 function candidateQuickViewProfile(candidateId){
-	  var sourceleadUrl = '${sourceleadUrl}';
 	  var skillsList = '${skillsList}'; 
 	  $.ajax({
         type : "POST",
-         url: sourceleadUrl+"/getCandidateById?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,        
+         url: sourceleadUrl+"/getCandidateById?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
          success :function(data) {  
               if(data != null && data != 'undefined' && data != ""){  
               	var json = JSON.parse(data);
@@ -109,7 +108,7 @@ function candidateQuickViewProfile(candidateId){
 					
 					result = result+'                </div>                                                                                                                                        ';
 					result = result+'                <div class="media-right">                                                                                                                     ';
-					result = result+'<img  id="userImage" onerror="predefineProfileImage(this);" src="<c:url value="/displayCandidateImage/'+candidateId+'"/>" alt="Profile Image" class="media-object" style="width:65px">';
+					result = result+'<img data-id="profileImage" id="userImage" onerror="predefineProfileImage(this);" src="'+json.fileUrl+'" alt="Profile Image" class="media-object" style="width:65px">';
 					 result = result+'  <div class="mb mt5 UsProBar">';                                                                                                                                        
 						result = result+' <div class="progress nomr">  ';
 					if(json.profilePercentage>=50){ 
@@ -212,10 +211,9 @@ function candidateQuickViewProfile(candidateId){
 
 <script>
 	function qvemployeeSubmission(candidateId) {
-		var sourceleadUrl = '${sourceleadUrl}';
 				$.ajax({
 					type : "POST",
-					url : sourceleadUrl	+ "/getCandidatesEmployersListByCandidateIdAndOrgLocationID?${_csrf.parameterName}=${_csrf.token}&candidateId=" + candidateId,
+					url : sourceleadUrl	+ "/getCandidatesEmployersListByCandidateIdAndOrgLocationID?"+tokenParamName+"="+tokenValue+"&candidateId=" + candidateId,
 					success : function(data) {
 						if (data != null && data != 'undefined' && data != "" && data != '[]') {
 								$("#qvemployeeSubmission").empty();
@@ -294,10 +292,9 @@ function candidateQuickViewProfile(candidateId){
 
 <script>
 function qveducationSubmission(candidateId){
-	 var sourceleadUrl ='${sourceleadUrl}';
 	 $.ajax({  
           type : "POST",
-          url: sourceleadUrl+"/getCandidateEducationListByCandidateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,        
+          url: sourceleadUrl+"/getCandidateEducationListByCandidateId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
           success :function(data) {
         	  if (data != null && data != 'undefined' && data != "" && data != '[]') {
 	                	 $("#qveducationSubmission").empty();
@@ -376,10 +373,9 @@ function qveducationSubmission(candidateId){
 
 <script>
 function qwikCertificates(candidateId){
-	var sourceleadUrl ='${sourceleadUrl}';
 	 $.ajax({  
           type : "POST",
-          url: sourceleadUrl+"/getCandidateCertificationListByCandidateIdAndOrgLocationID?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,        
+          url: sourceleadUrl+"/getCandidateCertificationListByCandidateIdAndOrgLocationID?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
           success :function(data) {
         	  if (data != null && data != 'undefined' && data != "" && data != '[]') {
 	                	 $("#qvcertificationSubmission").empty();

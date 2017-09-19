@@ -136,7 +136,12 @@ function getNotificationtLists(){
 					result = result +'			<img class="img-responsive img-circle" title="'+report.notificationFirstName+' '+report.notificationLastName+'" alt="${report.notificationFrom.userType}" onerror="predefineProfileImage(this);"  src="'+sourceleadUrl+'/displayUserImage/'+report.notificationFormId+'" ">';
 					result = result +'		</div>';					
 					result = result +'		<div class="mailbox-name">';
+					if(report.notificationLastName != null && report.notificationLastName != '' && report.notificationLastName != 'undefined'){
 					result = result +'		'+report.notificationFirstName+' '+report.notificationLastName+' 					';
+					}
+					else{
+						result = result +'		'+report.notificationFirstName+' 					';
+					}					
 					result = result +'		</div>';					
 					result = result +'		</div></td>';
 				   result = result +'   <td>';
@@ -221,7 +226,6 @@ function notificationPagination(){
 <!-- Delete Notification start  -->  
 <script>
 function deleteNotification(notificationId){   
-	var sourceleadUrl = '${sourceleadUrl}';
 	var  orgCode ='${orgCode}';
 	var locationCode = '${locationCode}';
 	  $.ajax({
@@ -288,7 +292,6 @@ function deleleteAll() {
 	 $("input[name='check[]']:checked").each( function (i) {
 		 notificationIds[i] = $(this).val();
 	});
-	 var sourceleadUrl = '${sourceleadUrl}';
 	 var  orgCode ='${orgCode}';
 	 var locationCode = '${locationCode}';
 		 $.ajax({

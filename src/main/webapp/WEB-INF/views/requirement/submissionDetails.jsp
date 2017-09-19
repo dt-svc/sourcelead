@@ -56,7 +56,7 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
 	$("#detailViewLoading").attr('style','position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	$.ajax({ 
 	    	type: "POST",
-	    	url: sourceleadUrl+"/getSubmissionDetails?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId,
+	    	url: sourceleadUrl+"/getSubmissionDetails?"+tokenParamName+"="+tokenValue+"&submissionId="+submissionId,
 	    			
 	    	  success: function(data) {
 		       
@@ -185,7 +185,7 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
                result = result + '<div class="col-md-6">';
                result = result + ' <div class="media">';
                result = result + '<div class="media-left image-parent positionRelative">';
-               result = result + '<div class="imageParent"><img onerror="predefineProfileImage(this);" src="<c:url value="/displayCandidateImage/'+json.candidate.id+'"/>" alt="candidate" title="Candidate"></div>';
+               result = result + '<div class="imageParent"><img onerror="predefineProfileImage(this);" src="'+json.candidate.fileUrl+'"  alt="candidate" title="Candidate"></div>';
                if(json.candidateScore != null && json.candidateScore != '' && json.candidateScore != 'undefined'){
 					  if(json.candidateScore >=50){ 
 					 	 result = result +'                    <i class="valid-profile fa fa-check-square text-success"></i>';        
@@ -492,7 +492,7 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
 				        	  }
 				        	 }
 				          if(json.submissionRequestComment != null && json.submissionRequestComment != '' && json.submissionRequestComment != 'undefined'){
-					          result = result + ' <div class="clearfix mt10"><label class="col-md-2 text-right paddingRight">Attachment:</label><span class="col-md-9"><a href=\"'+sourceleadUrl+'/downloadRequestDocumentBySubmissionId?submissionId='+submissionId+'\" class="pull-left" style="color:#151B8D">'+json.submissionRequestFileName+'</a></span></div>';
+					          result = result + ' <div class="clearfix mt10"><label class="col-md-2 text-right paddingRight">Attachment:</label><span class="col-md-9"><a href=\"'+opt.fileURL+'/downloadRequestDocumentBySubmissionId?submissionId='+submissionId+'\" class="pull-left" style="color:#151B8D">'+json.submissionRequestFileName+'</a></span></div>';
 					          result = result + ' <div class="clearfix mt10"><label class="col-md-2 text-right paddingRight">Comment:</label><span class="col-md-9">'+json.submissionRequestComment+'</span></div>';
 					          }
 		          //}
@@ -598,7 +598,7 @@ function getInternalInterviewsList(submissionId){
     
 	 $.ajax({  
          type : "POST",
-         url: sourceleadUrl+"/getAllInternalInterviews?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId,        
+         url: sourceleadUrl+"/getAllInternalInterviews?"+tokenParamName+"="+tokenValue+"&submissionId="+submissionId,        
          success :function(data) {
               
         	 if(data != null && data != 'undefined' && data != "" && data != '[]'){
@@ -866,7 +866,7 @@ function changeInterviewStatus(submissionId,interviewId,interviewStatus){
 	var sourceleadUrl ='${sourceleadUrl}';
 	 $.ajax({
 		   	type: "POST",
-		    url: sourceleadUrl+"/acceptOrRejectInterview?${_csrf.parameterName}=${_csrf.token}&interviewStatus="+interviewStatus+"&requirementInterviewId="+interviewId,	    	   
+		    url: sourceleadUrl+"/acceptOrRejectInterview?"+tokenParamName+"="+tokenValue+"&interviewStatus="+interviewStatus+"&requirementInterviewId="+interviewId,	    	   
 		    success: function(data) {
 		    	 jQuery("#"+(interviewId)+"actionDiv").css("display","none");
 		    	 if(interviewStatus == "Attending"){
@@ -888,7 +888,7 @@ function sendMailToapplicant(submissionId,interviewId,interviewHistoryId){
 	var sourceleadUrl ='${sourceleadUrl}';
 	 $.ajax({
 		   	type: "POST",
-		    url: sourceleadUrl+"/sendMailToapplicant?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId+"&requirementInterviewId="+interviewId+"&interviewHistoryId="+interviewHistoryId,	    	   
+		    url: sourceleadUrl+"/sendMailToapplicant?"+tokenParamName+"="+tokenValue+"&submissionId="+submissionId+"&requirementInterviewId="+interviewId+"&interviewHistoryId="+interviewHistoryId,	    	   
 		    success: function(data) {
 		    	 jQuery("#"+(interviewHistoryId)+"applicantDiv").css("display","none");
            		 var existingVal = $("#"+(interviewHistoryId)+"notifiedDiv").text();
@@ -909,7 +909,7 @@ function sendMailToVendor(submissionId,interviewId,interviewHistoryId){
 	var sourceleadUrl ='${sourceleadUrl}';
 	 $.ajax({
 		   	type: "POST",
-		    url: sourceleadUrl+"/sendMailToVendor?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId+"&requirementInterviewId="+interviewId+"&interviewHistoryId="+interviewHistoryId,	    	   
+		    url: sourceleadUrl+"/sendMailToVendor?"+tokenParamName+"="+tokenValue+"&submissionId="+submissionId+"&requirementInterviewId="+interviewId+"&interviewHistoryId="+interviewHistoryId,	    	   
 		    success: function(data) {
 		    	jQuery("#"+(interviewHistoryId)+"vendorDiv").css("display","none");
 		    	var existingVal = $("#"+(interviewHistoryId)+"notifiedDiv").text();
@@ -930,7 +930,7 @@ function getCustomerInterviewsList(submissionId,requirementId){
 	var sourceleadUrl ='${sourceleadUrl}';
 	 $.ajax({  
          type : "POST",
-         url: sourceleadUrl+"/getAllCustomerInterviews?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId+"&requirementId="+requirementId,        
+         url: sourceleadUrl+"/getAllCustomerInterviews?"+tokenParamName+"="+tokenValue+"&submissionId="+submissionId+"&requirementId="+requirementId,        
          success :function(data) {
               if(data != null && data != 'undefined' && data != "" && data != '[]'){
             		
@@ -1073,7 +1073,7 @@ function getOfferDetails(submissionId){
 	var parentRequirement = '${parentRequirement}';
 	 $.ajax({  
          type : "POST",
-         url: sourceleadUrl+"/getOfferDetails?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId,        
+         url: sourceleadUrl+"/getOfferDetails?"+tokenParamName+"="+tokenValue+"&submissionId="+submissionId,        
          success :function(data) {
          if(data != null && data != 'undefined' && data != "" && data != '{}'){
             		
@@ -1321,7 +1321,7 @@ function acceptingOffer(offerStatus,submissionId,offerId){
 	 }
 	 $.ajax({  
          type : "POST",
-         url: sourceleadUrl+"/acceptingOffer?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId+"&offerStatus="+offerStatus+"&reason="+reason+"&OfferId="+offerId,        
+         url: sourceleadUrl+"/acceptingOffer?"+tokenParamName+"="+tokenValue+"&submissionId="+submissionId+"&offerStatus="+offerStatus+"&reason="+reason+"&OfferId="+offerId,        
          success :function(data) {
 
         	 $("#rejectOfferAlert").empty();
@@ -1354,7 +1354,7 @@ function notifyToApplicant(submissionId,offerId,offerHistoryId){
 	$("#offerLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	  $.ajax({  
         type : "POST",
-        url: sourceleadUrl+"/sendNotificationAboutRequirementOfferMade?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId+"&offerId="+offerId+"&notificationtype=Applicant&offerHistoryId="+offerHistoryId,        
+        url: sourceleadUrl+"/sendNotificationAboutRequirementOfferMade?"+tokenParamName+"="+tokenValue+"&submissionId="+submissionId+"&offerId="+offerId+"&notificationtype=Applicant&offerHistoryId="+offerHistoryId,        
         success :function(data) {
         	    jQuery("#"+(offerHistoryId)+"offerApplicantDiv").css("display","none");
         	    var existingVal = $("#"+(offerHistoryId)+"offerNotifiedDiv").text();
@@ -1376,7 +1376,7 @@ function notifyToVendor(submissionId,offerId,offerHistoryId){
 	var sourceleadUrl ='${sourceleadUrl}';
 	  $.ajax({  
         type : "POST",
-        url: sourceleadUrl+"/sendNotificationAboutRequirementOfferMade?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId+"&offerId="+offerId+"&notificationtype=Vendor&offerHistoryId="+offerHistoryId,        
+        url: sourceleadUrl+"/sendNotificationAboutRequirementOfferMade?"+tokenParamName+"="+tokenValue+"&submissionId="+submissionId+"&offerId="+offerId+"&notificationtype=Vendor&offerHistoryId="+offerHistoryId,        
         success :function(data) {
         	jQuery("#"+(offerHistoryId)+"offerVendorDiv").css("display","none");
 	    	var existingVal = $("#"+(offerHistoryId)+"offerNotifiedDiv").text();
@@ -1614,7 +1614,7 @@ function getApplicantOtherizationRejectedCategory(){
 		    	        processData: false,
 		    	        contentType:false,
 		        	    dataType : 'json',
-						url : sourceleadUrl+"/acceptRejectCandidate?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&submissionId="+submissionId+"&decision="+decision,
+						url : sourceleadUrl+"/acceptRejectCandidate?"+tokenParamName+"="+tokenValue+"&json="+jsonData+"&submissionId="+submissionId+"&decision="+decision,
 						success : function(result) {
 							 if( result.indexOf('Sign In') >= 0){
 					    		location.replace(sourceleadUrl);
@@ -1681,7 +1681,7 @@ function getApplicantOtherizationRejectedCategory(){
 		    	        processData: false,
 		    	        contentType:false,
 		        	    dataType : 'json',
-						url : sourceleadUrl+"/acceptRejectCandidate?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&submissionId="+submissionId+"&decision="+decision,
+						url : sourceleadUrl+"/acceptRejectCandidate?"+tokenParamName+"="+tokenValue+"&json="+jsonData+"&submissionId="+submissionId+"&decision="+decision,
 						success : function(result) {
 							 if( result.indexOf('Sign In') >= 0){
 					    		location.replace(sourceleadUrl);
@@ -1737,7 +1737,7 @@ function getApplicantOtherizationRejectedCategory(){
 		    	        processData: false,
 		    	        contentType:false,
 		        	    dataType : 'json',
-						url : sourceleadUrl+"/acceptRejectCandidate?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&submissionId="+submissionId+"&decision="+decision,
+						url : sourceleadUrl+"/acceptRejectCandidate?"+tokenParamName+"="+tokenValue+"&json="+jsonData+"&submissionId="+submissionId+"&decision="+decision,
 						success : function(result) {
 							 if( result.indexOf('Sign In') >= 0){
 					    		location.replace(sourceleadUrl);
@@ -1823,7 +1823,7 @@ function closeComment(){
 		    	        processData: false,
 		    	        contentType:false,
 		        	    dataType : 'json',
-						url : sourceleadUrl+"/saveCandidateComment?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&candidateId="+candidateId+"&submissionId="+submissionId,
+						url : sourceleadUrl+"/saveCandidateComment?"+tokenParamName+"="+tokenValue+"&json="+jsonData+"&candidateId="+candidateId+"&submissionId="+submissionId,
 						success : function(result) {
 							savedCommentAndCount(candidateId,submissionId);
 						},
@@ -1846,7 +1846,7 @@ function savedCommentAndCount(candidateId,submissionId){
 	var sourceleadUrl ='${sourceleadUrl}';
 	  $.ajax({
         type : "POST",
-         url: sourceleadUrl+"/getAllCommentsOnCandidateByCandidateIdAndOrgLocationAndSubmissionId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&submissionId="+submissionId,        
+         url: sourceleadUrl+"/getAllCommentsOnCandidateByCandidateIdAndOrgLocationAndSubmissionId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&submissionId="+submissionId,        
          success :function(data) {
         	 var result = "";
               if(data != null && data != 'undefined' && data != ""){
@@ -1914,7 +1914,7 @@ function interviewFeedback(interviewId,templateId,id){
 	var sourceleadUrl ='${sourceleadUrl}';
 	$.ajax({
 	type: "GET",
-	url: sourceleadUrl+"/getInterviewrsFeedbackList?${_csrf.parameterName}=${_csrf.token}&interviewId="+interviewId+"&locationId="+locationId,
+	url: sourceleadUrl+"/getInterviewrsFeedbackList?"+tokenParamName+"="+tokenValue+"&interviewId="+interviewId+"&locationId="+locationId,
 		success: function(data) {
 			var json = JSON.parse(data);
 			var result = "";
@@ -2230,7 +2230,7 @@ function rescheduleInterClose(){
 
 			$.ajax({
 						type : "POST",
-						url: sourceleadUrl+"/updateRescheduleInterview?${_csrf.parameterName}=${_csrf.token}&jsonData="+jsonData,
+						url: sourceleadUrl+"/updateRescheduleInterview?"+tokenParamName+"="+tokenValue+"&jsonData="+jsonData,
 						success : function(result) {
 							getInternalInterviewsList(submissionId);
 						},
@@ -2351,7 +2351,7 @@ function TimezonesRescheduleList(timezone){
 	var sourceleadUrl ='${sourceleadUrl}';
 	 $.ajax({
 	    	type: "POST",
-	    	url : sourceleadUrl+"/getTimezonesList?${_csrf.parameterName}=${_csrf.token}", 
+	    	url : sourceleadUrl+"/getTimezonesList?"+tokenParamName+"="+tokenValue+"", 
 	        success: function(data) {
 	        var json = JSON.parse(data);
 	        var output = "";
@@ -2427,7 +2427,7 @@ function reActivateApplicant(submissionId,candidateId,requirementId,type){
 		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		$.ajax({
 	        type : "POST",
-	         url: sourceleadUrl+"/reActivateRejectedApplicant?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId+"&type="+type,        
+	         url: sourceleadUrl+"/reActivateRejectedApplicant?"+tokenParamName+"="+tokenValue+"&submissionId="+submissionId+"&type="+type,        
 	         success :function(data) {
 	               if(data != null && data != 'undefined' && data != ""){
 	            	   getSubmissionDetailsSideBar(submissionId,candidateId,requirementId);
@@ -2649,7 +2649,7 @@ function saveProposeTime(submissionId){
 	    var jsonData = encodeURIComponent(con);
 		$.ajax({
 					type : "POST",
-					url : sourceleadUrl+"/saveProposeTime?${_csrf.parameterName}=${_csrf.token}&jsonData="+jsonData+"&submissionId"+submissionId,
+					url : sourceleadUrl+"/saveProposeTime?"+tokenParamName+"="+tokenValue+"&jsonData="+jsonData+"&submissionId"+submissionId,
 					success : function(result) {
 						getInternalInterviewsList(submissionId);
 					},
@@ -2673,7 +2673,7 @@ function viewProposeTime(interviewId,submissionId){
 	var locationId = '${SourceLeadWeb_orgLocationId}';
 	$.ajax({
 		type : "POST",
-		url : sourceleadUrl+"/getProposeTime?${_csrf.parameterName}=${_csrf.token}&interviewId="+interviewId+"&locationId="+locationId,
+		url : sourceleadUrl+"/getProposeTime?"+tokenParamName+"="+tokenValue+"&interviewId="+interviewId+"&locationId="+locationId,
 		success : function(data) {
 			var json = JSON.parse(data);
 	        var result = "";
@@ -2735,7 +2735,7 @@ function acceptProposeTime(id,proposeDate,proposeTime,submissionId){
 	    var jsonData = encodeURIComponent(con);
 		$.ajax({
 					type : "POST",
-					url : sourceleadUrl+"/acceptProposeTime?${_csrf.parameterName}=${_csrf.token}&jsonData="+jsonData+"&proposeTimeId="+id+"&proposeDate="+proposeDate+"&proposeTime="+proposeTime,
+					url : sourceleadUrl+"/acceptProposeTime?"+tokenParamName+"="+tokenValue+"&jsonData="+jsonData+"&proposeTimeId="+id+"&proposeDate="+proposeDate+"&proposeTime="+proposeTime,
 					success : function(result) {
 						getInternalInterviewsList(submissionId);
 					},
