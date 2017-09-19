@@ -9,8 +9,9 @@
 	<jsp:include page="requirementClientDetails.jsp"></jsp:include>
 	<jsp:include page="requirementInternalDetails.jsp"></jsp:include>
 	
-	<script src="resources/js/editor.js"></script>
-	<link href="resources/css/editor.css" type="text/css" rel="stylesheet"/>
+	<script src="resources/js/editor.js?staticTime=${staticTime}"></script>
+	<link href="resources/css/editor.css?staticTime=${staticTime}" type="text/css" rel="stylesheet"/>
+	
 	
 	<script>
 		$(document).ready(function() {
@@ -1494,7 +1495,7 @@ function validate_fileupload(fileName)
       		
       		var formData = getFormData1("requirement_form");
 			$( "#submitForApproval" ).addClass('button').val('Processing..');
-			$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+			$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:10000;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		         $.ajax({
 					 type : "POST",
 					 data: formData,
