@@ -78,6 +78,12 @@ public class User implements Serializable{
 	@Column(name = "STATUS")
 	private String status;
 	
+	@Column(name = "FILE_NAME")
+	private String fileName;
+	
+	@Column(name = "FILE_URL")
+	private String fileUrl;
+	
 	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "REPORTING_MANAGER_ID")
@@ -722,6 +728,22 @@ public class User implements Serializable{
 	public void setRecruiterRegisterCountry(String recruiterRegisterCountry)
 	{
 		this.recruiterRegisterCountry = recruiterRegisterCountry;
+	}
+
+	public String getFileName() {
+		return fileName;
+	}
+
+	public void setFileName(String fileName) {
+		this.fileName = fileName;
+	}
+
+	public String getFileUrl() {
+		return fileUrl;
+	}
+
+	public void setFileUrl(String fileUrl) {
+		this.fileUrl = fileUrl;
 	}
 
 	

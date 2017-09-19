@@ -3,7 +3,9 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
-<script src="resources/js/jquery.maskedinput-1.3.min.js"></script>
+
+<script src="resources/js/jquery.maskedinput-1.3.min.js?staticTime=${staticTime}"></script>
+
 <style>
 .user_summary_edit_cta p{
     margin: -5px 15px;
@@ -253,7 +255,7 @@ $(document).ready(function(){
 				
 				result = result + '	 <div class="user_details_cta_img">';
 				result = result + '		       <div class="user_change_img">';
-				result = result +                  "<img onerror='predefineProfileImage(this);' src='"+sourceleadUrl+"/displayUserImage/"+userId+"' alt='image'>";
+				result = result +                  "<img data-id= 'userProfileImage'onerror='predefineProfileImage(this);' src="+json.user.fileUrl+" alt='image'>";
 				result = result + ' 		  </div>';
 				result = result + '             <span>'+userName+'</span>';
 				result = result + ' <div class="user_badg" id="counts">';

@@ -1,6 +1,5 @@
  <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
  <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
- <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
  <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
  <%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
  <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
@@ -130,7 +129,7 @@
 					        
 					        <div class="require_wrap_details_cta require_wrap_details_view require_uploadfile"> <b>Attachment:</b><span>${!empty requirement.fileName ? requirement.fileName : ' -- '}</span>
 					            <c:if test="${!empty requirement.fileName}">
-					            	<a class="glyphicon glyphicon-download-alt" href="${sourceleadUrl}/downloadRequirementAttachment?requirementId=${requirement.id}"></a><a class="fa fa-eye ml10" onclick="viewJobSummaryDocument(${requirement.id},${requirement.fileName})"></a>
+					            	<a class="glyphicon glyphicon-download-alt" href="${requirement.fileURL}"></a><a class="fa fa-eye ml10" onClick="viewFile('${requirement.fileURL}','${requirement.fileName}','${requirement.fileContentType}');"></a>
 					            </c:if>
 					            <div class="clearfix"></div> 
 				            </div> 
@@ -291,34 +290,6 @@
 			            
 			                </div> 
 			              </div> 
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
       
       </div>
        <div id="detailsLoading"></div>

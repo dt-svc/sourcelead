@@ -2,7 +2,9 @@
 <jsp:include page="../masterSideNav.jsp" />
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
-<link href="resources/css/crowdsourcingstyles.css" rel="stylesheet">
+
+<link href="resources/css/crowdsourcingstyles.css?staticTime=${staticTime}" rel="stylesheet">
+
 <style>
 .margin-down{
     margin-bottom: 100px;
@@ -206,7 +208,7 @@ function getProfessionalInfo(){
 				 result = result +'	    <div class="col-md-5">';
 				 result = result +'	        <h5>Professional Info</h5>';
 				 result = result +'	        <div class="chip">';
-				 result = result +'	        <img onerror="predefineProfileImage(this);"  src="<c:url value="'+sourceleadUrl+'/displayUserImage/'+userId+'"/>" alt="Profile Image" width="96" height="96">';
+				 result = result +'	        <img data-id="userProfileImage" onerror="predefineProfileImage(this);"  src="${SourceLeadWeb_user.fileUrl}" alt="Profile Image" width="96" height="96">';
 				 
 				 result = result +'	        <span>';
 				  result = result +'	        <strong>'+firstName+' '+lastName+'</strong> <br>'; 
