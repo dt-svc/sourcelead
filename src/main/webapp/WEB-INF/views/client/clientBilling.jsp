@@ -6,7 +6,12 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
-<link rel="stylesheet" href="resources/css/style.css" />
+<c:if test="${staticTime == null || staticTime == 0 }">
+    <c:set var='staticTime' value="<%=new java.util.Date().getTime() %>" scope="application"></c:set>
+ </c:if>
+
+<link rel="stylesheet" href="resources/css/style.css?staticTime=${staticTime}"/>
+
 <style type="text/css">
 
 .timesheet_head ul.nav-tabs, .timesheet_head ul.invoiceHdr  {
