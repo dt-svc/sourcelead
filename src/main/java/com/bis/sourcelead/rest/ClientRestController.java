@@ -483,13 +483,22 @@ public class ClientRestController {
 
 	@PreAuthorize("hasAnyRole('ROLE_DELETE_CLIENT_CONTACT','ROLE_DELETE_VENDOR_CONTACT')")
 	 @RequestMapping(value = "/terminateSpoc", method = RequestMethod.POST)
-	 public @ResponseBody String terminateSpoc(@RequestParam(value = "spocId", required = false) Long spocId,@RequestParam(value="reason", required=false) String reason) throws Exception{
-		       OrgSpoc orgSpoc = orgSpocService.getOrgSpocById(spocId);
+	 public @ResponseBody String terminateSpoc(@RequestParam(value = "spocId", required = false) Long spocId,
+			 @RequestParam(value="reason", required=false) String reason,
+			 @RequestParam(value="userId", required=false) String userId,
+			 @RequestParam(value="orgLocationId", required=false) String orgLocationId,
+			 @RequestParam(value="responderType", required=false) String responderType) throws Exception{
+		
+		OrgSpoc orgSpoc = orgSpocService.getOrgSpocById(spocId);
 				if(orgSpoc != null){
 					orgSpoc.setStatus(Constants.MEMBER_IN_ACTIVE);
 					orgSpoc.setTerminateReason(reason);
 					orgSpocService.addOrgSpoc(orgSpoc);
 					logger.debug("Spoc was terminated");
+					List<OrgSpoc> orgSpocsList  = orgSpocService.getAllSpocsByOrgRelationId(orgSpoc.getOrgRelations().getId(), Long.parseLong(userId), Long.parseLong(orgLocationId), responderType);
+					ClientVendorIndex clientVendorIndex = new ClientVendorIndex();
+					clientVendorIndex.setNoContacts((long)orgSpocsList.size());
+					sourceleadELKBaseIndexer.saveOrUpdateElkDocument(clientVendorIndex, Constants.ELK_CLIENTVENDOR_INDEX, Constants.ELK_CLIENTVENDOR_TYPE,orgSpoc.getOrgRelations().getId().toString());
 				}
 			
 				return "success";
@@ -655,13 +664,15 @@ public class ClientRestController {
 		
 			List<OrgRelations> relationsList = orgRelationsService.getClientOrVendorListByOrgLocationId(orgLocation.getId(), responderType);
 			for(OrgRelations orgRelations : relationsList){
-				if(orgRelations.getLocationId().getId() == orgLocation.getId()){
-					if(clientName.trim().equalsIgnoreCase(orgRelations.getResponderLocationId().getOrgLocationName())){
+				if(orgRelations.getLocationId().getId().longValue() == orgLocation.getId().longValue()){
+					if(StringUtils.containsIgnoreCase(clientName.trim(), orgRelations.getResponderLocationId().getOrgLocationName())) {
+//					if(clientName.trim().equalsIgnoreCase(orgRelations.getResponderLocationId().getOrgLocationName())){
 						flag = true;
 					}
 				}	
-				else if(orgRelations.getResponderLocationId().getId() == orgLocation.getId()){
-					if(clientName.trim().equalsIgnoreCase(orgRelations.getLocationId().getOrgLocationName())){
+				else if(orgRelations.getResponderLocationId().getId().longValue() == orgLocation.getId().longValue()){
+					if(StringUtils.containsIgnoreCase(clientName.trim(), orgRelations.getLocationId().getOrgLocationName())){
+//					if(clientName.trim().equalsIgnoreCase(orgRelations.getLocationId().getOrgLocationName())){
 						flag = true;
 					}
 					
