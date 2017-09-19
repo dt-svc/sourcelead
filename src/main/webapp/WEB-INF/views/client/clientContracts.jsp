@@ -893,8 +893,6 @@ function editOne(startDate,endDate){
 		   d2 = new Date(ClientcontractEffectiveEndDate[0], parseInt(ClientcontractEffectiveEndDate[2])-parseInt(1), parseInt(ClientcontractEffectiveEndDate[1])+parseInt(1));
 	  }
 	
-	alert("hiii");
-	
 	 var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
 	  var finalDateFormatEditEndDateSave = '';
 	  if(locationDate.match("yyyy-MM-dd")){
