@@ -144,7 +144,7 @@ function candDocumentsList(candidateId){
 	    	             	 }
 	                    	 
 	                    	 if(opt.fileName != null && opt.fileName != '' && opt.fileName != 'undefined'){
-				           	 result = result+'<td><div><span title ="'+opt.fileName+'">'+opt.fileName+'</span><a class="fa fa-eye" onClick="viewFile(\''+opt.fileURL+'\',\''+opt.fileName+'\',\''+opt.fileContentType+'\');"></a><a class="glyphicon glyphicon-download-alt" href=\"'+opt.fileURL+'\" title="Download"></a></div></td>';
+				           	 result = result+'<td><div><span title ="'+opt.fileName+'">'+opt.fileName+'</span><a class="fa fa-eye" onClick="viewFile(\''+opt.fileURL+'\',\''+opt.fileName+'\',\''+opt.fileContentType+'\');"></a><a class="glyphicon glyphicon-download-alt" target="_blank" href=\"'+opt.fileURL+'\" title="Download"></a></div></td>';
 
 	                    	 }else{
 	                    		 result  = result + ' <td><div><span>----</span></div></td>';
