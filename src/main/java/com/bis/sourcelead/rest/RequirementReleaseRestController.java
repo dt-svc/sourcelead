@@ -557,6 +557,9 @@ public class RequirementReleaseRestController {
 			parentRequirement.setUpdatedDate(new Date());
 			requirementService.addRequirement(parentRequirement);
 			
+			StringBuilder reqReleaseMsg = new StringBuilder();
+			SourceLeadSessionManager.setSessionAttribute(request, "reqReleaseMessage", reqReleaseMsg.append("Success!! ").append(" job  released").toString());
+			
 			return "vendorsList";
 	}
 
