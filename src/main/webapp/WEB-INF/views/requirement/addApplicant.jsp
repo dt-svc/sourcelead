@@ -2259,13 +2259,11 @@ function uploadAddApplicantCandidateDoc(){
 </script>
 <script>
 function importAddApplicantDoc(){
-	alert("uploadFileDoc1");
 	fileUpload("uploadBtn", "addApplicants1", "addApplicant_form");
 }
 </script>
 <script>
 function SubmissionUploadFileDoc1(){
-	alert("SubmissionUploadFileDoc1");
 	fileUpload("newUploadBtn", "SubmissionUploadFileDoc", "submitRecomendedApplicant_form");
 }
 </script>

@@ -106,10 +106,7 @@ public class CandidateResumesServiceImpl implements CandidateResumesService {
 				candidateResume.setFileURL(fileInfo.getFileURL());
 				candidateResume.setFileName(fileInfo.getFileName());
 				candidateResume.setFileContentType(fileInfo.getContentType());
-				if(fileInfo != null){
-					candidate.setFileName(fileInfo.getFileName());
-					FileUploadUtil.moveFile(candidateResumeDTO.getStaticPath(), fileInfo, "resumes");
-				}
+				FileUploadUtil.moveFile(candidateResumeDTO.getStaticPath(), fileInfo, "resumes");
 			}
 		}
 		else {

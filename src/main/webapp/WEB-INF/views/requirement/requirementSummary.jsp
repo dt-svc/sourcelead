@@ -1342,7 +1342,7 @@ function reqNotes(requirementId){
    	    output = output+'    <div class="commentsimg">';
    	    output = output+'    <i class="fa fa-comments"></i>';
    	    output = output+'        <div class="commentsimg-inner">';
-   	    output = output+'        	<img onerror="predefineProfileImage(this);" src="'+sourceleadUrl+'/displayUserImage/'+report.commentAuthorUserId+'"/>';
+   	    output = output+'        	<img data-id= "userProfileImage" onerror="predefineProfileImage(this);" src="'+report.commentAuthorImage+'"/>';
    	    output = output+'        </div>';
    	    output = output+'    </div>';
    	    output = output+'     <div class="comments-content">';
@@ -1878,8 +1878,7 @@ function clientSideBar(candidateId,recScore){
 			             result = result+'<div id="candidateImageId">';
 			             result = result+'<div class="well well-sm text-center clearfix positionRelative">';
 						 result = result+' <div class="profile-img-container profile-image text-center">';
-						 result = result+'   <img  id="userImage" onerror="predefineProfileImage(this);" src="<c:url value="/displayCandidateImage/'+candidateId+'"/>" alt="Profile Image" class=" img-responsive center-block img-circle">';
-						 if(recScore != null && recScore != '' && recScore != 'undefined'){
+						 result = result+'   <img  id="userImage" data-id="profileImage" onerror="predefineProfileImage(this);" src="'+json.fileUrl+'" alt="Profile Image" class=" img-responsive center-block img-circle">';						 if(recScore != null && recScore != '' && recScore != 'undefined'){
 							  if(recScore >=50){ 
 							 	 result = result +'                    <i class="valid-profile fa fa-check-square text-success"></i>';        
 							  }
@@ -1888,8 +1887,7 @@ function clientSideBar(candidateId,recScore){
 						 result = result+'  <button type="button" class="btn btn-sm btn-primary">';
 						 result = result+'  <i class="fa fa-upload"></i></button>';
 						 result = result+'  <label class="btn btn-sm btn-primary">';
-					     result = result+'    Upload / Change<input type="file" name="file" id="uploadedImage"  onchange="loadFile(event,\''+candidateId+'\')" style="display: none;">';
-					     result = result+'  </label>';
+						 result = result+'    Upload / Change<input type="file" name="file" id="uploadedImage"  accept="image/*" onchange="cropImage(this,\'candidate_form\','+candidateId+');"  style="display: none;">';					     result = result+'  </label>';
 					     if(json.fileName != null && json.fileName != '' && json.fileName != 'undefined'){
 						     result = result+'  <button type="button" class="btn btn-sm btn-danger" onclick="deleteImage('+candidateId+')">';
 							 result = result+'  <i class="fa fa-trash"></i></button>';
@@ -3362,13 +3360,11 @@ function refreshImageBlock(candidateId){
 	                	 var result = '';
 			             result = result+'<div class="well text-center clearfix">';
 						 result = result+' <div class="profile-img-container profile-image text-center" style="position:relative;">';
-						 result = result+'   <img  id="userImage" onerror="predefineProfileImage(this);" src="<c:url value="/displayCandidateImage/'+candidateId+'"/>" alt="Profile Image" class=" img-responsive center-block img-circle">';
-						 result = result+'  <div class="btn-group uploadfile">';
+						 result = result+'   <img  id="userImage" data-id="profileImage" onerror="predefineProfileImage(this);" src="'+json.fileUrl+'" alt="Profile Image" class=" img-responsive center-block img-circle">';						 result = result+'  <div class="btn-group uploadfile">';
 						 result = result+'  <button type="button" class="btn btn-sm btn-primary">';
 						 result = result+'  <i class="fa fa-upload"></i></button>';
 						 result = result+'  <label class="btn btn-sm btn-primary">';
-					     result = result+'    Upload / Change<input type="file" name="file" id="uploadedImage"  onchange="loadFile(event,\''+candidateId+'\')" style="display: none;">';
-					     result = result+'  </label>';
+						 result = result+'    Upload / Change<input type="file" name="file" id="uploadedImage"  accept="image/*" onchange="cropImage(this,\'candidate_form\','+candidateId+');" style="display: none;">';					     result = result+'  </label>';
 					     if(json.fileName != null && json.fileName != '' && json.fileName != 'undefined'){
 						     result = result+'  <button type="button" class="btn btn-sm btn-danger" onclick="deleteImage('+candidateId+')">';
 							 result = result+'  <i class="fa fa-trash"></i></button>';

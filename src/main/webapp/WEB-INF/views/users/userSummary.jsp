@@ -253,7 +253,7 @@ $(document).ready(function(){
 				
 				result = result + '	 <div class="user_details_cta_img">';
 				result = result + '		       <div class="user_change_img">';
-				result = result +                  "<img onerror='predefineProfileImage(this);' src='"+sourceleadUrl+"/displayUserImage/"+userId+"' alt='image'>";
+				result = result +                  "<img data-id= 'userProfileImage'onerror='predefineProfileImage(this);' src="+json.user.fileUrl+" alt='image'>";
 				result = result + ' 		  </div>';
 				result = result + '             <span>'+userName+'</span>';
 				result = result + ' <div class="user_badg" id="counts">';

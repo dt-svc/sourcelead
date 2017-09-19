@@ -510,7 +510,7 @@ function exportToPdf(){
 			       	    	result = result +"<div class='col-xs-4 col-sm-4'>";
 			       	    	result = result +"<div class='text-center image-parent'>";
 			       	    	result = result +"<div class='imageParent'>";
-			       	    	result = result +"<img onerror='predefineProfileImage(this);' class='m-t-xs'  src='"+sourceleadUrl+"/displayUserImage/"+userRole.userId+"' alt='image'>";
+			       	    	result = result +"<img data-id= 'userProfileImage' onerror='predefineProfileImage(this);' class='m-t-xs'  src="+userRole.user.fileUrl+" alt='image'>";
 			       	    	result = result +"</div>";
 			       	    	
 			       	    	
@@ -733,7 +733,7 @@ function getUserSummary(userId){
 			       	    	result = result +"<div class='col-xs-4 col-sm-4'>";
 			       	    	result = result +"<div class='text-center image-parent'>";
 			       	    	result = result +"<div class='imageParent'>";
-			       	    	result = result +"<img onerror='predefineProfileImage(this);' class='m-t-xs'  src='"+sourceleadUrl+"/displayUserImage/"+userRole.userId+"' alt='image'>";
+			       	    	result = result +"<img data-id= 'userProfileImage' onerror='predefineProfileImage(this);' class='m-t-xs'  src="+userRole.user.fileUrl+" alt='image'>";
 			       	    	result = result +"</div>";
 			       	    	
 			       	    	
@@ -1092,7 +1092,7 @@ function showList(viewType){
 			        			   '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_USER\',\'ROLE_VIEW_EDIT_USER\',\'ROLE_VIEW_DELETE_USER\')">' 
 			        			   result = result +"<td>"    
 			        			    result = result +" <a href='<c:url value='/userSummary/"+userRole.userId+"'/>'' class='UserTextLeft'>";
-					       	    	result = result +"<img onerror='predefineProfileImage(this);' class='m-t-xs'  src='"+sourceleadUrl+"/displayUserImage/"+userRole.userId+"' alt='image'>";
+					       	    	result = result +"<img data-id= 'userProfileImage' onerror='predefineProfileImage(this);' class='m-t-xs'  src="+userRole.user.fileUrl+" alt='image'>";
 									result = result + ''+userRole.userName+'</a></td>';
 									'</sec:authorize>';
 								}else{
