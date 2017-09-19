@@ -166,6 +166,7 @@ public class SourceleadNotesServiceImpl implements SourceleadNotesService {
 				StringBuilder nameBuilder = new StringBuilder();
 				notes.setUserName(nameBuilder.append(user.getFirstName()).append(" ").append(authorLastName).toString());
 				notes.setCommentAuthorUserId(user.getId());
+				notes.setCommentAuthorImage(user.getFileUrl());
 			}
 			
 			if (notes.getRequirementId() != null) {
@@ -227,6 +228,7 @@ public class SourceleadNotesServiceImpl implements SourceleadNotesService {
 				StringBuilder nameBuilder = new StringBuilder();
 				notes.setUserName(nameBuilder.append(user.getFirstName()).append(" ").append(authorLastName).toString());
 				notes.setCommentAuthorUserId(user.getId());
+				notes.setCommentAuthorImage(user.getFileUrl());
 			}
 			if (notes.getRequirementId() != null) {
 				notes.setRequirementTitle(notes.getRequirementId().getJobTitle());
@@ -277,6 +279,7 @@ public class SourceleadNotesServiceImpl implements SourceleadNotesService {
 				StringBuilder nameBuilder = new StringBuilder();
 				notes.setUserName(nameBuilder.append(user.getFirstName()).append(" ").append(authorLastName).toString());
 				notes.setCommentAuthorUserId(user.getId());
+				notes.setCommentAuthorImage(user.getFileUrl());
 			}
 			if (notes.getInvoicdeId() != null) {
 				notes.setInvoiceId(notes.getInvoicdeId().getInvoiceId());
@@ -329,6 +332,7 @@ public class SourceleadNotesServiceImpl implements SourceleadNotesService {
 				StringBuilder nameBuilder = new StringBuilder();
 				notes.setUserName(nameBuilder.append(user.getFirstName()).append(" ").append(authorLastName).toString());
 				notes.setCommentAuthorUserId(user.getId());
+				notes.setCommentAuthorImage(user.getFileUrl());
 			}
 			if (notes.getContractId() != null) {
 				notes.setContract(notes.getContractId().getContractTitle());
