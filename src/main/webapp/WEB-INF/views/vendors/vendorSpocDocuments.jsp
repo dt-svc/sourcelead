@@ -48,7 +48,6 @@ function vendorSpocDocuments(orgRelationId,clientLocationId,spocName,userId){
 
 <script>
 function spocDocumentsList(clientLocationId,orgRelationId,userId,spocName){
-	 var sourceleadUrl ='${sourceleadUrl}';
 	 var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
 	  if(locationList.match("yyyy-MM-dd")){
 		  docListVendorDate = 'YYYY-MM-DD';
@@ -131,7 +130,7 @@ function spocDocumentsList(clientLocationId,orgRelationId,userId,spocName){
 	                    		 result  = result + ' <td><div><span>--</span></div></td>';
 	                    	 }
 	                    	 if(opt.id != null && opt.id != '' && opt.id != 'undefined'){
-	                    		 result = result+'	 <td><div class="tblicons tblminwidth-75"><a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadOrgDocument?docId='+opt.id+'\"></a>';
+	                    		 result = result+'	 <td><div class="tblicons tblminwidth-75"><a class="glyphicon glyphicon-download-alt" href=\"'+opt.fileUrl+'\"></a>';
 	                    		 
 	                    		 '<sec:authorize access="hasAnyRole(\"ROLE_EDIT_VENDOR_DOCUMENT\")">';
 	                    				 result = result+'	 <a class="glyphicon glyphicon-pencil" href="javascript:void(0)" onClick="addDocumentForSpoc('+clientLocationId+',\''+spocName+'\','+userId+');  getVendorSpocDocument('+clientLocationId+','+orgRelationId+',\''+spocName+'\','+userId+','+opt.id+');"></a>';
@@ -382,7 +381,6 @@ function closeVendorSpocDocPopup(){
 			$("#save_button" ).addClass('button').val('Processing..');
 			var form = $('#document_form_spoc')[0];
       		var formData = new FormData(form); 
-			var sourceleadUrl = '${sourceleadUrl}';
 			$("#document_form_spoc").attr("disabled", "disabled");
 			$.ajax({
 					type : "POST",
@@ -464,7 +462,6 @@ function deleteDocument(clientLocationId,orgRelationId,spocName,userId,docId,doc
 
 <script>
 function saveReason(clientLocationId,orgRelationId,spocName,userId,docId,docName){
-	var sourceleadUrl ='${sourceleadUrl}';
 	var terminateReason = document.getElementById("terminateReason").value;
 	if(terminateReason.match(/^[^\s-](.*)*$/) != null){
 		$("#terminateReasonDiv").empty();
@@ -499,7 +496,6 @@ function removeResumeNameDiv(){
 </script>
 <script>
 function getVendorSpocDocument(clientLocationId,orgRelationId,spocName,userId,docId){
-	var sourceleadUrl ='${sourceleadUrl}';
 	var sourceLeadUserId = '${SourceLeadWeb_userId}';
 	$.ajax({
 	   	type: "POST",

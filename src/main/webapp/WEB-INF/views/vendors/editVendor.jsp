@@ -13,7 +13,6 @@
 <!-- for Vendor edit -->
 <script type="text/javascript">
 	function editVendorDetails(vendorLocationId,orgRelationId) {
-		var sourceleadUrl = '${sourceleadUrl}';
 		      $.ajax({
 						type : "POST",
 						url : sourceleadUrl+"/getClientAndVendorOrgDeatilsById?${_csrf.parameterName}=${_csrf.token}&vendorLocationId="+vendorLocationId+"&orgRelationId="+orgRelationId,
@@ -284,7 +283,6 @@
 	function storeVendorDetails(orgRelationId,vendorLocationId) {
 		if ($('#editClient_form').validate(false, validationSettings)){
              var formData = getFormData("editClient_form");
-             var sourceleadUrl ='${sourceleadUrl}';
 		 $.post(sourceleadUrl+"/vendorDetailsUpdateUsingId?${_csrf.parameterName}=${_csrf.token}&vendorLocationId="+vendorLocationId+"&orgRelationId="+orgRelationId, formData, function(data) {
 			 vendorDetailsbyLocationId(vendorLocationId,orgRelationId);
 		    	getVendorListsElk();
@@ -324,7 +322,6 @@
 <script type="text/javascript">
 	function validateWebsite() {
 		var website = document.getElementById("companyWebsite").value;
-		var sourceleadUrl = '${sourceleadUrl}';
 		if(website.match(/^[^\s-](.*)*$/) != null){
 		var sourceleadBLockedwebsites = '${sourceLeadBlockedSocialDomains}';
 		$('#companyWebsiteDiv').find('p.jquery_form_error_message').remove();
@@ -372,7 +369,6 @@ function flushVendor(){
 <script type="text/javascript">
 function validateClientName(vName,orgRelationId){
 	var vendorName = document.getElementById("vendorName").value;
-	var sourceleadUrl = '${sourceleadUrl}';
 	var sourceleadBLockedwebsites = '${sourceLeadBlockedSocialDomains}';
 	$('#vendorNameDiv').find('p.jquery_form_error_message').remove();
 	if(vendorName != vName){
