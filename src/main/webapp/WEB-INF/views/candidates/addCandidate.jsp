@@ -4,7 +4,7 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 
 
-<link href="resources/css/candidate-common.css" rel="stylesheet">
+<link href="resources/css/candidate-common.css?staticTime=${staticTime}" rel="stylesheet">
 
 <script type="text/javascript">
 		window.onload = function () {

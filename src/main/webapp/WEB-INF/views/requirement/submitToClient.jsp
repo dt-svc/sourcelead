@@ -5,11 +5,16 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
-<link rel="stylesheet" href="resources/css/style.css" />
-<link href="resources/css/summernote.css" rel="stylesheet">
-<link rel="stylesheet" href="resources/css/bootstrap3-wysihtml5.min.css">
- <script src="resources/js/bootstrap3-wysihtml5.all.min.js"></script> 
- <script src="resources/js/summernote.js"></script>
+
+<c:if test="${staticTime == null || staticTime == 0 }">
+    <c:set var='staticTime' value="<%=new java.util.Date().getTime() %>" scope="application"></c:set>
+</c:if>
+
+<link rel="stylesheet" href="resources/css/style.css?staticTime=${staticTime}" />
+<link href="resources/css/summernote.css?staticTime=${staticTime}" rel="stylesheet">
+<link rel="stylesheet" href="resources/css/bootstrap3-wysihtml5.min.css?staticTime=${staticTime}">
+<script src="resources/js/bootstrap3-wysihtml5.all.min.js?staticTime=${staticTime}"></script> 
+<script src="resources/js/summernote.js?staticTime=${staticTime}"></script>
 
 <!-- newly added end -->
 

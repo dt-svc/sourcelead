@@ -3,6 +3,11 @@
 <html lang="en">
 
 <head>
+	<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+    <%@page session="true"%>
+    <c:if test="${staticTime == null || staticTime == 0 }">
+    	<c:set var='staticTime' value="<%=new java.util.Date().getTime() %>" scope="application"></c:set>
+    </c:if>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -10,11 +15,10 @@
     <link rel="icon" type="resources/image/png" href="resources/images/fav.png" />
 	<link href="https://fonts.googleapis.com/css?family=Roboto:400,300italic,300,400italic,500,700,900" rel="stylesheet" type="text/css">
     <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.min.css">
-     <link href="resources/css/bootstrap.min.css" rel="stylesheet">
-     <link href="resources/css/register-style.css" rel="stylesheet">
-     <link href="resources/css/jquery-ui.css" rel="stylesheet">
-	<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-    <%@page session="true"%>
+    <link href="resources/css/bootstrap.min.css?staticTime=${staticTime}" rel="stylesheet">
+    <link href="resources/css/register-style.css?staticTime=${staticTime}" rel="stylesheet">
+    <link href="resources/css/jquery-ui.css?staticTime=${staticTime}" rel="stylesheet">
+	
 </head>
 <body>
 <div class="regis_bg">
@@ -89,10 +93,10 @@
     </div>
 </div>  
   
-	<script src="resources/js/jquery.min.js"></script>
-    <script src="resources/js/jquery-ui.js"></script>
-    <script src="resources/js/bootstrap.min.js"></script>
-    <script src="resources/js/jquery-fun.js"></script> 
+	<script src="resources/js/jquery.min.js?staticTime=${staticTime}"></script>
+    <script src="resources/js/jquery-ui.js?staticTime=${staticTime}"></script>
+    <script src="resources/js/bootstrap.min.js?staticTime=${staticTime}"></script>
+    <script src="resources/js/jquery-fun.js?staticTime=${staticTime}"></script> 
     
 </body>
 
@@ -121,30 +125,3 @@ function applyInputSlide() {
 </script> 
 
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
