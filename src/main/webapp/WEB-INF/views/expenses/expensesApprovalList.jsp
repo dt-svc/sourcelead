@@ -181,7 +181,7 @@ if(locationList.match("yyyy-MM-dd")){
 
 $.ajax({
     type : "POST",
-     url: sourceleadUrl+"/getExpensesApprovalList?${_csrf.parameterName}=${_csrf.token}&expenseStatus="+expenseStatus+"&startDate="+startDate+"&endDate="+endDate,      
+     url: sourceleadUrl+"/getExpensesApprovalList?"+tokenParamName+"="+tokenValue+"&expenseStatus="+expenseStatus+"&startDate="+startDate+"&endDate="+endDate,      
      success :function(data) {
     var result = "";
     
@@ -327,7 +327,7 @@ function acceptOrRejectReopenExpenseBySuperUser(expenseId,tdSpanSize,from){
 		     $("#loading"+expenseId).attr('style',' height:40px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/linear-loader.gif"); background-position:center; background-repeat:no-repeat;'); 
 		    $.ajax({
 		    type: "POST",
-		    url: sourceleadUrl+"/saveExpenseApprovalStatusByExpenseId?${_csrf.parameterName}=${_csrf.token}&expenseId="+expenseId+"&approvalStatus=REJECTED"+"&rejectedReason="+encodeMsg,       
+		    url: sourceleadUrl+"/saveExpenseApprovalStatusByExpenseId?"+tokenParamName+"="+tokenValue+"&expenseId="+expenseId+"&approvalStatus=REJECTED"+"&rejectedReason="+encodeMsg,       
 		    success: function(data) {    
 		   	   // approvalList();
 		       if(from != null && from != '' && from != 'undefined' && from == 'dashboard'){
@@ -423,7 +423,7 @@ function acceptOrRejectReopenExpenseBySuperUser(expenseId,tdSpanSize,from){
 	    var rejectedReason = '' ;
 	     $.ajax({
 	    type: "POST",
-	    url: sourceleadUrl+"/saveExpenseApprovalStatusByExpenseId?${_csrf.parameterName}=${_csrf.token}&expenseId="+expenseId+"&approvalStatus=APPROVED&rejectedReason="+rejectedReason,        
+	    url: sourceleadUrl+"/saveExpenseApprovalStatusByExpenseId?"+tokenParamName+"="+tokenValue+"&expenseId="+expenseId+"&approvalStatus=APPROVED&rejectedReason="+rejectedReason,        
 		    success: function(data) {
 	        	 if(from != null && from != '' && from != 'undefined' && from == 'dashboard'){
 			    	 var table = $('#example').DataTable();
@@ -446,7 +446,7 @@ function prepareCategoryDivForApprovalPopUp(expenseId){
 	    var locationCode ='${SourceLeadWeb_locationCode}'; 
 	 $.ajax({
          type : "POST",
-         url: sourceleadUrl+"/getExpensesApprovalCategoryByExpenseId?${_csrf.parameterName}=${_csrf.token}&expenseId="+expenseId+"&locationCode="+locationCode,       
+         url: sourceleadUrl+"/getExpensesApprovalCategoryByExpenseId?"+tokenParamName+"="+tokenValue+"&expenseId="+expenseId+"&locationCode="+locationCode,       
          success :function(data) {
         		var jsonList = JSON.parse(data);
         		var result = '';

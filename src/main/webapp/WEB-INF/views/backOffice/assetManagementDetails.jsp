@@ -11,7 +11,7 @@ function assetDetails(assetId) {
 		
 		$.ajax({
 			type : "POST",
-			url : sourceleadUrl	+ "/getAssetById?${_csrf.parameterName}=${_csrf.token}&assetId="+ assetId,
+			url : sourceleadUrl	+ "/getAssetById?"+tokenParamName+"="+tokenValue+"&assetId="+ assetId,
 			success : function(data) {
 				var json = JSON.parse(data);
 				    
@@ -173,7 +173,7 @@ function editAssetManagement(assetId){
 	
 	$.ajax({
 		type : "POST",
-		url : sourceleadUrl	+ "/getAssetById?${_csrf.parameterName}=${_csrf.token}&assetId="+ assetId,
+		url : sourceleadUrl	+ "/getAssetById?"+tokenParamName+"="+tokenValue+"&assetId="+ assetId,
 		success : function(data) {
 			var json = JSON.parse(data);
 			
@@ -638,7 +638,7 @@ var validationSettings = {
           	            processData: false,
           	            contentType:false,
               	        dataType : 'json',
-	     		    	 url: sourceleadUrl+"/addCategoryAssets?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&assetId="+assetId, 
+	     		    	 url: sourceleadUrl+"/addCategoryAssets?"+tokenParamName+"="+tokenValue+"&json="+jsonData+"&assetId="+assetId, 
 	     		        success: function(result) {
 	     		        	if(result == 'home'){
 	     		        		assetDetails(assetId);

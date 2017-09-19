@@ -522,7 +522,7 @@
 		        	    data: formData,
 		    	        processData: false,
 		    	        contentType:false,
-						url : sourceleadUrl+"/storeCandidate?${_csrf.parameterName}=${_csrf.token}",
+						url : sourceleadUrl+"/storeCandidate?"+tokenParamName+"="+tokenValue+"",
 						success : function(result) {
 								location.replace(sourceleadUrl+"/associatesList");
 						},
@@ -609,7 +609,7 @@ function validate_fileupload(fileName)
 		    	
 		    	$.ajax({
 			    	type: "POST",
-			        url: sourceleadUrl+"/profileBySkillSet?${_csrf.parameterName}=${_csrf.token}&allSkills="+allSkills, 
+			        url: sourceleadUrl+"/profileBySkillSet?"+tokenParamName+"="+tokenValue+"&allSkills="+allSkills, 
 			        success: function(data) {
 			        	var primarySkill = data;
 			        	      $("#primarySkill").val(primarySkill);
@@ -744,7 +744,7 @@ function validate_fileupload(fileName)
 		
 		 $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/validateCandidateEmail?${_csrf.parameterName}=${_csrf.token}&email="+email+"&candidateType=N", 
+		        url: sourceleadUrl+"/validateCandidateEmail?"+tokenParamName+"="+tokenValue+"&email="+email+"&candidateType=N", 
 		        success: function(data) {
 		        	if(data == 'true'){
 		        		  $('#emailDiv').find('p.jquery_form_error_message').remove();
@@ -958,7 +958,7 @@ function  removeValiationVendorContact() {
 	 var sourceleadUrl ='${sourceleadUrl}';
 		 $.ajax({
 			    type: "POST",
-		        url: sourceleadUrl+"/getOrgSpocsList?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+orgRelationID+"&type=Vendor",  
+		        url: sourceleadUrl+"/getOrgSpocsList?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationID+"&type=Vendor",  
 		        success: function(data) {
 		        	var json = JSON.parse(data);
 		        	$('#vendorcontact').empty();
@@ -1017,7 +1017,7 @@ if(type == 'C2C' || type == 'C2C-1099'){
 	 var sourceleadUrl ='${sourceleadUrl}';
 		 $.ajax({
 			    type: "POST",
-		        url: sourceleadUrl+"/getOrgSpocsList?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+vendorOrgRelationId+"&type=Vendor",  
+		        url: sourceleadUrl+"/getOrgSpocsList?"+tokenParamName+"="+tokenValue+"&orgRelationId="+vendorOrgRelationId+"&type=Vendor",  
 		        success: function(data) {
 		        	var json = JSON.parse(data);
 		        	$('#vendorcontact').empty();
@@ -1037,3 +1037,11 @@ if(type == 'C2C' || type == 'C2C-1099'){
  }
  </script>
  
+ 
+ <script>
+ $(function() {
+		$("#uploadBtn").change(function() {
+			fileUpload("uploadBtn", "resumes", "addcandidate_form");
+		});
+	 });
+ </script>

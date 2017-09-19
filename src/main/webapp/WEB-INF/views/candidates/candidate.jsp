@@ -483,7 +483,7 @@
 		    	        processData: false,
 		    	        contentType:false,
 		        	    dataType : 'json',
-						url : sourceleadUrl+"/storeCandidate?${_csrf.parameterName}=${_csrf.token}&"+$($('#candidate_form')[0]).serialize(),
+						url : sourceleadUrl+"/storeCandidate?"+tokenParamName+"="+tokenValue+"&"+$($('#candidate_form')[0]).serialize(),
 						success : function(result) {
 								location.replace(sourceleadUrl+"/candidatesList");
 						},
@@ -571,7 +571,7 @@ function validate_fileupload(fileName)
 		    	
 		    	$.ajax({
 			    	type: "POST",
-			        url: sourceleadUrl+"/profileBySkillSet?${_csrf.parameterName}=${_csrf.token}&allSkills="+allSkills, 
+			        url: sourceleadUrl+"/profileBySkillSet?"+tokenParamName+"="+tokenValue+"&allSkills="+allSkills, 
 			        success: function(data) {
 			        	var primarySkill = data;
 			        	      $("#primarySkill").val(primarySkill);
@@ -686,7 +686,7 @@ function validate_fileupload(fileName)
 		
 		 $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/validateCandidateEmail?${_csrf.parameterName}=${_csrf.token}&email="+email+"&candidateType=Candidate", 
+		        url: sourceleadUrl+"/validateCandidateEmail?"+tokenParamName+"="+tokenValue+"&email="+email+"&candidateType=Candidate", 
 		        success: function(data) {
 		        	if(data == 'true'){
 		        		  $('#emailDiv').find('p.jquery_form_error_message').remove();
@@ -755,7 +755,7 @@ function validate_fileupload(fileName)
 	     	    	        processData: false,
 	     	    	        contentType:false,
 	     	        	    dataType : 'json',
-	     				 	url : sourceleadUrl+"/parseResume?${_csrf.parameterName}=${_csrf.token}", 
+	     				 	url : sourceleadUrl+"/parseResume?"+tokenParamName+"="+tokenValue+"", 
 	     					success : function(data) {
 	     						var json = JSON.parse(data);
 	     						var name = json.name;
@@ -976,7 +976,7 @@ function  removeValiationVendorContact() {
 	var orgRelationID = $('#vendors').val();
 		 $.ajax({
 			    type: "POST",
-		        url: sourceleadUrl+"/getOrgSpocsList?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+orgRelationID+"&type=Vendor",  
+		        url: sourceleadUrl+"/getOrgSpocsList?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationID+"&type=Vendor",  
 		        success: function(data) {
 		        	var json = JSON.parse(data);
 		        	$('#vendorcontact').empty();
@@ -989,4 +989,9 @@ function  removeValiationVendorContact() {
 		        }
 		 }); 
  }
+ $(function() {
+		$("#uploadBtn").change(function() {
+			fileUpload("uploadBtn", "resumes", "candidate_form");
+		});
+	 });
  </script>

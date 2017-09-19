@@ -914,9 +914,9 @@ function requirementsList(offset){
 			 					result = result +'<div class="openCtaRight">';
 				 			    result = result +'<p>Share Job</p>';
 				 				result = result +'<span>';
-			 				    result = result +'	<a href="javascript:setPostValues(\''+title+'\',\''+link+'\',\''+picture+'\',\''+description+'\',\''+comment+'\');socialinviter.socialpost.auth(\'linkedin\');"><i class="fa fa-linkedin-square"></i></a>';
-								result = result +'  <a href="javascript:setPostValues(\''+title+'\',\''+link+'\',\''+picture+'\',\''+description+'\',\''+comment+'\');socialinviter.socialpost.auth(\'twitter\');"><i class="fa fa-twitter-square"></i></a>';				  
-								result = result +'  <a href="javascript:setPostValues(\''+title+'\',\''+link+'\',\''+picture+'\',\''+description+'\',\''+comment+'\');socialinviter.socialpost.auth(\'facebook\');"><i class="fa fa-facebook-square"></i></a>';
+			 				    result = result +'	<a href="javascript:setPostValues(\''+title+'\',\''+link+'\',\''+picture+'\',\''+description+'\',\''+comment+'\');socialinviter.socialpost.auth(\'linkedin\');" title="LinkedIn"><i class="fa fa-linkedin-square"></i></a>';
+								result = result +'  <a href="javascript:setPostValues(\''+title+'\',\''+link+'\',\''+picture+'\',\''+description+'\',\''+comment+'\');socialinviter.socialpost.auth(\'twitter\');" title="Twitter"><i class="fa fa-twitter-square"></i></a>';				  
+								result = result +'  <a href="javascript:setPostValues(\''+title+'\',\''+link+'\',\''+picture+'\',\''+description+'\',\''+comment+'\');socialinviter.socialpost.auth(\'facebook\');" title="Facebook"><i class="fa fa-facebook-square"></i></a>';
 				 				result = result +'</span>'; 
 				 				result = result +'<div class="openPostBtns clearfix">';
 				 				
@@ -924,7 +924,7 @@ function requirementsList(offset){
 				 					result = result +'  <a href="#" title="Save Job" href="javascript:void(0)" id="saveJob'+requirements.requirementUUID+'" class="alertBtn" onclick="saveJob(\''+requirements.jobTitle+'\',\''+requirements.requirementUUID+'\','+requirements.referId+')" ><i class="fa fa-floppy-o"></i></a>';
 				 				}else{
 				 					if(requirementType == "SavedJobs"){
-				 						result = result +'  <a href="#" title="Delete Job" href="javascript:void(0)" class="alertBtn bg-red" onclick="deleteSavedJob(\''+requirements.jobTitle+'\',\''+requirements.savedJobUUID+'\',\''+requirements.requirementUUID+'\')" ><i class="fa fa-floppy-o"></i></a>';
+				 						result = result +'  <a href="#" title="Delete Job" href="javascript:void(0)" class="alertBtn bg-red" onclick="deleteSavedJob(\''+requirements.jobTitle+'\',\''+requirements.savedJobUUID+'\',\''+requirements.requirementUUID+'\')" ><i class="fa fa-trash"></i></a>';
 				 					}else{
 				 						result = result +'  <a href="#" title="Saved Job" href="javascript:void(0)" class="alertBtn bg-green"  ><i class="fa fa-floppy-o"></i></a>';
 				 					}

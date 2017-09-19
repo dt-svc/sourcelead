@@ -26,7 +26,7 @@ function compareRecommendedUsers(requirementId){
 		 complist[index] = $(elem).val();
 	 });
 	
-	if(complist.length == 4){
+	if(complist.length >= 2 && complist.length <= 4){
 		$("#loading").attr('style','position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		 $.ajax({
 		    	type: "GET",
@@ -37,7 +37,7 @@ function compareRecommendedUsers(requirementId){
 		        }
 		 });
 	}else{
-		alert("Please select atleast 4 Candidates to Compare")
+		alert("Please select Minimum 2 Candidates to Compare")
 	}
 }
 </script>
@@ -339,9 +339,9 @@ function prepareCandidateGrid(data,requirementId){
 					opt = opt+'   </div>  ';
 					opt = opt+' </div>                 ';                                                                                                                                                      
 		
-				    opt = opt +'<p title="'+primarySkill+'"><i class="fa fa-briefcase" ></i><span>'+primarySkill+'</span></p>';
-				    opt = opt +'<p title="'+email+'"><i class="fa fa-envelope"></i><span>'+email+'</span></p>';
-				    opt = opt +'<p title="'+mobile+'"><i class="fa fa-phone-square"></i><span>'+mobile+'</span></p>';
+				    opt = opt +'<p><i class="fa fa-briefcase" title="Primary Skill"></i><span title="'+primarySkill+'">'+primarySkill+'</span></p>';
+				    opt = opt +'<p><i class="fa fa-envelope" title="Email"></i><span title="'+email+'">'+email+'</span></p>';
+				    opt = opt +'<p><i class="fa fa-phone-square" title="Mobile"></i><span title="'+mobile+'">'+mobile+'</span></p>';
 				    opt = opt +'</div>';
 				    opt = opt +'</div>';
 				    
@@ -566,9 +566,9 @@ function candidateDiv(report,div,requirementId){
 		opt = opt+'   </div>  ';
 		opt = opt+' </div>                 ';                                                                                                                                                      
 		
-	   opt = opt +'<p title="'+primarySkill+'"><i class="fa fa-briefcase"></i><span>'+primarySkill+'</span></p>';
-	   opt = opt +'<p title="'+email+'"><i class="fa fa-envelope"></i><span>'+email+'</span></p>';
-	   opt = opt +'<p title="'+mobile+'"><i class="fa fa-phone-square"></i><span>'+mobile+'</span></p>';
+	   opt = opt +'<p><i class="fa fa-briefcase" title="Primary Skill"></i><span title="'+primarySkill+'">'+primarySkill+'</span></p>';
+	   opt = opt +'<p><i class="fa fa-envelope" title="Email"></i><span title="'+email+'">'+email+'</span></p>';
+	   opt = opt +'<p><i class="fa fa-phone-square" title="Mobile"></i><span title="'+mobile+'">'+mobile+'</span></p>';
 	   opt = opt +'</div>';
 	   opt = opt +'</div>';
 	   

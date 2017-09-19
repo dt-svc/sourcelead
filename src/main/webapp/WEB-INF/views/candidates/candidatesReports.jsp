@@ -28,7 +28,7 @@ window.onload = function() {
 	  var candidateType = 'Candidate';
 	  $.ajax({
            type : "POST",
-            url: sourceleadUrl+"/getCandidateReportsListByOrgLocationID?${_csrf.parameterName}=${_csrf.token}&candidateType="+candidateType,       
+            url: sourceleadUrl+"/getCandidateReportsListByOrgLocationID?"+tokenParamName+"="+tokenValue+"&candidateType="+candidateType,       
             success :function(data) {
             	prepareCandidateReportsDataDiv(data);
            },
@@ -379,7 +379,7 @@ function getCandidatesByOwners(){
 		var reportType = "Candidate";
  		$.ajax({
  	         type : "POST",
-				url: sourceleadUrl+"/getOwnersByCandidates?${_csrf.parameterName}=${_csrf.token}&ownersList="+ownersList+"&reportType="+reportType,
+				url: sourceleadUrl+"/getOwnersByCandidates?"+tokenParamName+"="+tokenValue+"&ownersList="+ownersList+"&reportType="+reportType,
  	         success :function(data) {
   		        	 prepareCandidateReportsDataDiv(data);
   	        },
@@ -422,7 +422,7 @@ function getDayWiseReports(){
 	if(reportType != "custom"){
 	$.ajax({
          type : "POST",
-         url: sourceleadUrl+"/getCandidateReports?${_csrf.parameterName}=${_csrf.token}&reportType="+reportType+"&startDate="+startDate+"&endDate="+endDate+"&ownersList="+userList,     
+         url: sourceleadUrl+"/getCandidateReports?"+tokenParamName+"="+tokenValue+"&reportType="+reportType+"&startDate="+startDate+"&endDate="+endDate+"&ownersList="+userList,     
          success :function(data) {
 	        	 prepareCandidateReportsDataDiv(data);
         },
@@ -464,7 +464,7 @@ function getCustomReports(){
 	}else{
 		$.ajax({
 	         type : "POST",
-	         url: sourceleadUrl+"/getCandidateReports?${_csrf.parameterName}=${_csrf.token}&reportType="+reportType+"&startDate="+startDate+"&endDate="+endDate+"&ownersList="+userList,     
+	         url: sourceleadUrl+"/getCandidateReports?"+tokenParamName+"="+tokenValue+"&reportType="+reportType+"&startDate="+startDate+"&endDate="+endDate+"&ownersList="+userList,     
 	         success :function(data) {
 		        	 prepareCandidateReportsDataDiv(data);
 	        },
