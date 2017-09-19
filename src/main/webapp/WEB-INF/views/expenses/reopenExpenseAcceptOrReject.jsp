@@ -36,6 +36,10 @@
 		});
 </script>
 
+<script>
+  var sourceleadUrl = '${sourceleadUrl}';
+</script>
+
 <script type="text/javascript">
 		window.onload = function () {
 			//getExpensesList();
@@ -74,7 +78,7 @@ width: auto;
 		<div class="row">
 		
 		<c:choose>
-		    <c:when test="${isSubmittedForApproval eq 'submitted for approval'}">
+		    <c:when test="${isSubmittedForApproval eq 'submitted for approval' || isSubmittedForApproval eq 'rejected'}">
 		        <div id="accept" style="display:none">
 				          <div class="col-md-8 col-md-offset-2 inner-widget success-user">
 					          <i class="fa fa-check-circle fa-3x"></i>
@@ -95,7 +99,7 @@ width: auto;
 		</c:choose>
 		
 		<c:choose>
-		    <c:when test="${isSubmittedForApproval eq 'submitted for approval'}">
+		    <c:when test="${isSubmittedForApproval eq 'submitted for approval' || isSubmittedForApproval eq 'rejected'}">
 		        <div id="reject" style="display:none">
 		  			<form id="reject_form" name="reject_form" method="post" >
 					          <div class="col-md-8 col-md-offset-2 inner-widget reject-user">
@@ -149,17 +153,18 @@ width: auto;
 <script type="text/javascript">
 	function saveRejectedReason() {
 		if ($('#reject_form').validate(false, validationSettings)){
-			var sourceleadUrl = '${sourceleadUrl}';
+			
 			var expenseId = '${expenseId}';
 			var reOpenedUserId = '${reOpenedUserId}';
 			var type = 'reject';
 			var reason = '${reason}';
+			var orgLocation = '${orgLocId}';
 			var frm = $('#reject_form').serializeFormJSON();
 			var con = JSON.stringify(frm);
 			con = con.replace(/[{}]/g, "");
 			$.ajax({
 						type : "POST",
-						url : sourceleadUrl+"/acceptOrRejectReopenExpense?${_csrf.parameterName}=${_csrf.token}&type="+type+"&expenseId="+expenseId+"&reOpenedUserId="+reOpenedUserId+"&reason="+reason,
+						url : sourceleadUrl+"/acceptOrRejectReopenExpense?"+tokenParamName+"="+tokenValue+"&type="+type+"&expenseId="+expenseId+"&reOpenedUserId="+reOpenedUserId+"&reason="+reason+"&orgLocId="+orgLocation,
 						success : function(data) {
 							if("success"){
 								$('#rejectIdDiv').empty();

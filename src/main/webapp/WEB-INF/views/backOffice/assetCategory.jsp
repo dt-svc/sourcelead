@@ -58,12 +58,9 @@ $(document).ready(function(){
   
   <script>
 	function getAssetCategoryList(){
-		
-		var sourceleadUrl ='${sourceleadUrl}';
-		
 		  $.ajax({
 			   	type: "POST",
-			    url: sourceleadUrl+"/getAssetCategoryList?${_csrf.parameterName}=${_csrf.token}", 	   
+			    url: sourceleadUrl+"/getAssetCategoryList?"+tokenParamName+"="+tokenValue+"", 	   
 	   		    success: function(data) {
 	   		    	
 	   		    	var json = JSON.parse(data);
@@ -195,12 +192,11 @@ $(".addcon-pop").click(function(){
 		        var jsonData = encodeURIComponent(con);
 				$("#save_button").attr("disabled", "disabled");
 				$( "#save_button" ).addClass('button').val('Processing..');
-				var sourceleadUrl = '${sourceleadUrl}';
 				$("#addCategory_form").attr("disabled", "disabled");
 				//It will escape all the special characters
 				$.ajax({
 						type : "POST",
-						url : sourceleadUrl+"/saveCategory?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&categoryId="+categoryId+"&catLocationId="+catLocationId,
+						url : sourceleadUrl+"/saveCategory?"+tokenParamName+"="+tokenValue+"&json="+jsonData+"&categoryId="+categoryId+"&catLocationId="+catLocationId,
 						success : function(result) {
 							 if(result.indexOf('Sign In') >= 0){
 					    		location.replace(sourceleadUrl);
@@ -238,10 +234,9 @@ function closePopupDemo(){
 
 <script>
 function editCategory(catLocationId,categoryId){
-	 var sourceleadUrl ='${sourceleadUrl}';
 	$.ajax({
 	   	type: "POST",
-	    url: sourceleadUrl+"/getCategoryById?${_csrf.parameterName}=${_csrf.token}&categoryId="+categoryId+"&catLocationId="+catLocationId, 	   
+	    url: sourceleadUrl+"/getCategoryById?"+tokenParamName+"="+tokenValue+"&categoryId="+categoryId+"&catLocationId="+catLocationId, 	   
 		    success: function(data) {
 		    	var json = JSON.parse(data);
 		    	if( data.indexOf('Sign In') >= 0){
@@ -315,13 +310,12 @@ function validateCategoryName(){
 	$('input#categoryName').removeAttr("class record-exist record-exist-errormsg");
 	$('input#categoryName').attr('class','valid form-control');
 	$('#categoryNameDiv').find('p.jquery_form_error_message').remove();
-	var sourceleadUrl = '${sourceleadUrl}';
 	if (categoryName != null && categoryName != '') {
 		//$("#save_client").attr("disabled", "disabled");
 		// $( "#save_client" ).addClass('button').val('Processing..');
 		$.ajax({
 			type : "GET",
-			url : sourceleadUrl + "/validateCategoryName?${_csrf.parameterName}=${_csrf.token}&categoryName="+categoryName,
+			url : sourceleadUrl + "/validateCategoryName?"+tokenParamName+"="+tokenValue+"&categoryName="+categoryName,
 			success : function(data) {
 				var result = data;
 				if (result == true) {
@@ -370,13 +364,12 @@ function deleteCategory(categoryId){
  
 <script type="text/javascript">
 function terminateCategory(categoryId){
-	var sourceleadUrl = '${sourceleadUrl}';
 	if (categoryId != null && categoryId != '') {
 		$("#category"+categoryId).html("<td colspan='5'  id='loading"+categoryId+"'></td>");
 		$("#loading"+categoryId).attr('style',' height:40px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/linear-loader.gif"); background-position:center; background-repeat:no-repeat;');
 		$.ajax({
 			type : "GET",
-			url : sourceleadUrl + "/terminateCategory?${_csrf.parameterName}=${_csrf.token}&categoryId="+categoryId,
+			url : sourceleadUrl + "/terminateCategory?"+tokenParamName+"="+tokenValue+"&categoryId="+categoryId,
 			success : function(data) {
 				$("#popUp").empty();
 				$(".project_inn_mask").fadeOut(200);

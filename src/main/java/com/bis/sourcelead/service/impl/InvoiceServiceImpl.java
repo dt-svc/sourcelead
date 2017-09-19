@@ -207,8 +207,8 @@ public class InvoiceServiceImpl implements InvoiceService{
 	private ExpensesInvoicePdfHelper expensesInvoicePdfHelper;
 	
 	@Override
-	public ResponseList<Invoice> invoiceListByOrgLocationId(Long orgLocationId,Date startDateUTC,Date endDateUTC,InvoiceDTO invoiceDTO) throws Exception {
-		return invoiceDao.invoiceListByOrgLocationId(orgLocationId,startDateUTC,endDateUTC,invoiceDTO);
+	public ResponseList<Invoice> invoiceListByOrgLocationId(OrgLocations orgLocations,Date startDateUTC,Date endDateUTC,InvoiceDTO invoiceDTO) throws Exception {
+		return invoiceDao.invoiceListByOrgLocationId(orgLocations,startDateUTC,endDateUTC,invoiceDTO);
 
 	}
 	public List<Contracts> getSowcontractListByAssociateId(Long candidateId, Long orgLocationId, Long orgRelationId,String contractType) throws Exception

@@ -176,19 +176,19 @@ public class RequirementRestController {
 					&& (null == (requirementDTO.getRequirementId())
 							|| "".equalsIgnoreCase(requirementDTO.getRequirementId().toString()))) {
 				StringBuilder reqUpdateMsg = new StringBuilder();
-				SourceLeadSessionManager.setSessionAttribute(request, "reqCreateMsg", reqUpdateMsg.append("Success!! New ").append(requirement.getJobTitle()).append(" requirement  saved to Draft").toString());
+				SourceLeadSessionManager.setSessionAttribute(request, "reqCreateMsg", reqUpdateMsg.append("Success!! New ").append(requirement.getJobTitle()).append(" job  saved to Draft").toString());
 			}
 			else if (requirementDTO.getSaveType().equalsIgnoreCase("save")
 					&& (null == (requirementDTO.getRequirementId())
 							|| "".equalsIgnoreCase(requirementDTO.getRequirementId().toString()))) {
 				StringBuilder reqUpdateMsg1 = new StringBuilder();
-				SourceLeadSessionManager.setSessionAttribute(request, "reqCreateMsg", reqUpdateMsg1.append("Success!! New ").append(requirement.getJobTitle()).append(" requirement  saved").toString());
+				SourceLeadSessionManager.setSessionAttribute(request, "reqCreateMsg", reqUpdateMsg1.append("Success!! New ").append(requirement.getJobTitle()).append(" job  saved").toString());
 			}
 			else if (requirementDTO.getSaveType().equalsIgnoreCase("submitForApproval")
 					&& (null == (requirementDTO.getRequirementId())
 							|| "".equalsIgnoreCase(requirementDTO.getRequirementId().toString()))) {
 				StringBuilder reqUpdateMsg2 = new StringBuilder();
-				SourceLeadSessionManager.setSessionAttribute(request, "reqCreateMsg", reqUpdateMsg2.append("Success!! New ").append(requirement.getJobTitle()).append(" requirement  submitted for approval").toString());
+				SourceLeadSessionManager.setSessionAttribute(request, "reqCreateMsg", reqUpdateMsg2.append("Success!! New ").append(requirement.getJobTitle()).append(" job  submitted for approval").toString());
 			}
 			else if ((requirementDTO.getRequirementId() != null)
 					&& !(requirementDTO.getRequirementId().isEmpty())
@@ -756,7 +756,7 @@ public class RequirementRestController {
 	@PreAuthorize("hasAnyRole('ROLE_RECOMMENDATIONS')")
 	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "/getRequirementRecommendationsByRequirementId", method = RequestMethod.POST)
-	public @ResponseBody String getRequirementRecommendationsByRequirementId(
+	public @ResponseBody List<CandidateIndex> getRequirementRecommendationsByRequirementId(
 			@RequestParam(value = "requirementId", required = false) Long requirementId, @RequestParam(value = "orgLocationId", required = false) Long orgLocationId, @RequestParam(value = "count", required = false) Long offset)
 			throws Exception {
 		String resultJson;
@@ -765,10 +765,9 @@ public class RequirementRestController {
 		RecommendedCustomizeScore  recommendedCustomizeScore = recommendedCustomizeScoreService.getRecommendedCustomizeScoreByRequirementId(requirementId);
 	    if(null != recommendedCustomizeScore){ 
 		//candidateListCopy = recommendationsService.getRecommendationsUpdateWithScoreByUsingElk(orgLocation.getId(), recommendedCustomizeScore,offset);
-	    	candidateListCopy = recommendationsService.getRecommendationsUpdateWithScoreByUsingElk(orgLocationId, recommendedCustomizeScore, requirementId);
+	    	candidateListCopy = recommendationsService.getRecommendationsUpdateWithScoreByUsingElk(orgLocationId, recommendedCustomizeScore, requirementId,null);
 	    }
-		resultJson = commonUtil.toJSON(candidateListCopy);
-		return resultJson;
+		return candidateListCopy;
 
 	}
 

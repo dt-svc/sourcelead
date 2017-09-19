@@ -64,11 +64,10 @@ function closeCertificatePopup(){
 			
 			//It will escape all the special characters
 			var formData = getFormData('employers_form');
-			var sourceleadUrl = '${sourceleadUrl}';
 			$.ajax({
 						type : "POST",
 						data : formData,
-						url : sourceleadUrl+ "/storeCandidateEmployers?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,
+						url : sourceleadUrl+ "/storeCandidateEmployers?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,
 						success : function(data) {
 
 							if (data != null && data != 'undefined'
@@ -239,13 +238,10 @@ function closeCertificatePopup(){
 
 	function editEmployer(candidateEmpId, candidateId) {
 
-		
-		var sourceleadUrl = '${sourceleadUrl}';
-		$
-				.ajax({
+		$.ajax({
 					type : "POST",
 					url : sourceleadUrl
-							+ "/getCandidateEmployerByCandidateIdAndCandidateEmpoyerId?${_csrf.parameterName}=${_csrf.token}&candidateId="
+							+ "/getCandidateEmployerByCandidateIdAndCandidateEmpoyerId?"+tokenParamName+"="+tokenValue+"&candidateId="
 							+ candidateId + "&candidateEmpId=" + candidateEmpId,
 					success : function(data) {
 
@@ -520,11 +516,10 @@ function closeCertificatePopup(){
 --%>
 <script>
 	function candidateEmployersList(candidateId) {
-		var sourceleadUrl = '${sourceleadUrl}';
 		
 				$.ajax({
 					type : "POST",
-					url : sourceleadUrl	+ "/getCandidatesEmployersListByCandidateIdAndOrgLocationID?${_csrf.parameterName}=${_csrf.token}&candidateId="
+					url : sourceleadUrl	+ "/getCandidatesEmployersListByCandidateIdAndOrgLocationID?"+tokenParamName+"="+tokenValue+"&candidateId="
 							+ candidateId,
 					success : function(data) {
 						/* if (data != null && data != 'undefined' && data != "" && data != '[]') { */
@@ -650,12 +645,11 @@ function employeePagination(){
 <script>
 	function removeEmployer(candidateemployerId, candidateId) {
 
-		var sourceleadUrl = '${sourceleadUrl}';
 		var loginUserId = '${SourceLeadWeb_userId}';
 		var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 				$.ajax({
 					type : "POST",
-					url : sourceleadUrl	+ "/removeCandidateEmployerBycandidateIdandCandidateEmployerID?${_csrf.parameterName}=${_csrf.token}&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+ candidateId + "&candidateemployerId="+candidateemployerId,
+					url : sourceleadUrl	+ "/removeCandidateEmployerBycandidateIdandCandidateEmployerID?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+ candidateId + "&candidateemployerId="+candidateemployerId,
 					success : function(data) {
 
 						if (data != null && data != 'undefined' && data != "") {
@@ -720,13 +714,12 @@ function employeePagination(){
 		};
 		if ($('#candidateExperianceEdit_form').validate(false,validationSettings)) {
 
-			var sourceleadUrl = '${sourceleadUrl}';
 			var formData = getFormData('candidateExperianceEdit_form');
 
 			$.ajax({
 						type : "POST",
 						data : formData, 
-						url : sourceleadUrl+ "/upDateCandidateEmployerByCandidateIdAndCandidateExperianceId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&candidateExperianceId"+ candidateExperianceId,
+						url : sourceleadUrl+ "/upDateCandidateEmployerByCandidateIdAndCandidateExperianceId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&candidateExperianceId"+ candidateExperianceId,
 						success : function(result) {
 							closeCertificatePopup();
 							candidateEmployersList(candidateId)

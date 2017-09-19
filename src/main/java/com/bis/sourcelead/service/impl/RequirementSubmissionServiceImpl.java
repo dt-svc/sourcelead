@@ -50,6 +50,9 @@ import com.bis.sourcelead.dao.RequirementSubmissionDao;
 import com.bis.sourcelead.dao.RequirementSubmissionTemplateFieldsDao;
 import com.bis.sourcelead.dao.UserDao;
 import com.bis.sourcelead.dto.RequirementDTO;
+import com.bis.sourcelead.dto.RequirementSubmissionsDTO;
+import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.elk.index.CandidateIndex;
 import com.bis.sourcelead.elk.index.helper.CandidateIndexHelper;
 import com.bis.sourcelead.elk.setup.RequirementElkUtil;
@@ -248,7 +251,7 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 
 
 	@Override
-	public RequirementSubmission saveRequirementSubmission(JSONObject jsonObj,User user,OrgLocations orgLocations,String jsonStringvalues,MultipartFile multiFile,String loginUserRole) throws Exception {
+	public RequirementSubmission saveRequirementSubmission(JSONObject jsonObj,User user,OrgLocations orgLocations,String jsonStringvalues,String loginUserRole) throws Exception {
 		
 		 Requirement requirement = null;;
 		 RequirementSubmission requirementSubmission = new RequirementSubmission();
@@ -393,8 +396,8 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 					if(null == masterCandidate){
 						masterCandidate = masterCandidateService.storeMasterCandidateByJsonObject(jsonObj, user,orgLocations);
 					}
+					candidate.setGeneratedId(candidateService.getCandidateId(orgLocations));
 					candidate.setMasterCandidateId(masterCandidate);
-					 
 					candidate.setCandidateType("Candidate");
 					candidate.setIsAssociate(Constants.NO);
 					candidate.setCandidateUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
@@ -433,7 +436,7 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 //				    		  candidateSkillsService.storeCandidateSkills(candSkill);
 //						 }
 					 }
-					 candidate.setGeneratedId(candidateService.getCandidateId(orgLocations)); 
+					
 					 candidate = candidateDao.storeCandidate(candidate);
 					CandidateIndex candidateIndex = candidateIndexHelper.getCandidateIndexFromCandidate(candidate);
 					
@@ -488,13 +491,25 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 			 
 		 }else{
 			 
-			 if(multiFile != null && multiFile.getOriginalFilename() != null && !multiFile.getOriginalFilename().isEmpty()){
+			 if((jsonObj.has("fileInfo[0].fileName") && !isNullOrEmpty(jsonObj.getString("fileInfo[0].fileName"))) && (jsonObj.has("fileInfo[0].fileURL") && !isNullOrEmpty(jsonObj.getString("fileInfo[0].fileURL"))) && (jsonObj.has("fileInfo[0].contentType") && !isNullOrEmpty(jsonObj.getString("fileInfo[0].contentType")))){
+ 				 candidateResumes = new CandidateResumes();
+ 				 candidateResumes.setCandidateId(candidate);
+ 				 //candidateResumes.setDocFile(multiFile.getBytes());
+				 candidateResumes.setFileName(jsonObj.get("fileInfo[0].fileName").toString());
+				 candidateResumes.setTitle(jsonObj.get("fileInfo[0].fileName").toString());
+				 candidateResumes.setFileContentType(jsonObj.get("fileInfo[0].contentType").toString());
+				 candidateResumes.setFileURL(jsonObj.get("fileInfo[0].fileURL").toString());
+ 				 candidateResumes.setStatus(Constants.CANDIDATE_ACTIVE);
+ 				 candidateResumes.setResumeUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+ 				 candidateResumes.setCreatedDate(new Date());
+
 				 candidateResumes = new CandidateResumes();
 				 candidateResumes.setCandidateId(candidate);
 				 //candidateResumes.setDocFile(multiFile.getBytes());
-				 candidateResumes.setFileName(multiFile.getOriginalFilename());
-				 candidateResumes.setTitle(multiFile.getOriginalFilename());
-				 candidateResumes.setFileContentType(multiFile.getContentType());
+				 candidateResumes.setFileName(jsonObj.get("fileInfo[0].fileName").toString());
+				 candidateResumes.setTitle(jsonObj.get("fileInfo[0].fileName").toString());
+				 candidateResumes.setFileContentType(jsonObj.get("fileInfo[0].contentType").toString());
+				 candidateResumes.setFileURL(jsonObj.get("fileInfo[0].fileURL").toString());
 				 candidateResumes.setStatus(Constants.CANDIDATE_ACTIVE);
 				 candidateResumes.setResumeUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 				 candidateResumes.setCreatedDate(new Date());
@@ -4517,6 +4532,12 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 	}
 
 	@Override
+	public ResponseList<RequirementSubmission> loadSubmissionsListByRequirementId(RequirementSubmissionsDTO requirementSubmissionsDTO) throws Exception
+	{
+		return requirementSubmissionDao.loadSubmissionsListByRequirementId(requirementSubmissionsDTO);
+	}
+	
+	@Override
 	public RequirementSubmission editRequirementSubmission(JSONObject jsonObj, User user, OrgLocations orgLocations,
 			String jsonStringvalues) throws Exception {
 	//	SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
@@ -4659,5 +4680,4 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 			Long vendorLocationId) throws Exception {
 		return requirementSubmissionDao.getClientSubmissionsBySourceSubmissionIdAndVendorLocationId(sourceSubmissionId, vendorLocationId);
 	}
-
 }

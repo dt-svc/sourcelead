@@ -132,10 +132,9 @@ function storeCertificate(candidateId){
 			$("#Candidate_certification_form").attr("disabled", "disabled");
 			 $("#addCandidate").attr("disabled", "disabled"); */
 			 var formData = getFormData("Candidate_certification_form");
-				var sourceleadUrl = '${sourceleadUrl}';
 				$("#Candidate_certification_form").attr("disabled", "disabled");
 				 $("#addCandidate").attr("disabled", "disabled");
-		        $.post(sourceleadUrl+"/storeCandidateCertifications?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId, formData, function(data) {
+		        $.post(sourceleadUrl+"/storeCandidateCertifications?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId, formData, function(data) {
 		        	closeCertificatePopup();
 		        	candidateCertificateList(candidateId);
                		cerMsgFadein();
@@ -144,7 +143,7 @@ function storeCertificate(candidateId){
 				/* $.ajax({
 						type : "POST",
 						url : sourceleadUrl
-								+ "/storeCandidateCertifications?${_csrf.parameterName}=${_csrf.token}&json="
+								+ "/storeCandidateCertifications?"+tokenParamName+"="+tokenValue+"&json="
 								+ jsonData + "&candidateId=" + candidateId,
 						success : function(data) {
 							if (data != null && data != 'undefined'
@@ -213,7 +212,6 @@ function storeCertificate(candidateId){
 <script>
 function candidateCertificateList(candidateId){
 	var candidateType = '${candidateType}';
-	var sourceleadUrl ='${sourceleadUrl}';
 	var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
 	  if(locationList.match("yyyy-MM-dd")){
 		  canCerDatePattern = 'YYYY-MM-DD';
@@ -226,7 +224,7 @@ function candidateCertificateList(candidateId){
 	  }
 	 $.ajax({  
           type : "POST",
-          url: sourceleadUrl+"/getCandidateCertificationListByCandidateIdAndOrgLocationID?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,        
+          url: sourceleadUrl+"/getCandidateCertificationListByCandidateIdAndOrgLocationID?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
           success :function(data) {
         	  var json = JSON.parse(data);
                /* if(data != null && data != 'undefined' && data != "" && data != '[]'){ */
@@ -532,14 +530,11 @@ function addCertification(candidateId) {
      3.ajax url implementation in CandidateCertificationsRestController.
 --%>
 <script>
-
 	function editCertification(candidateCertificationId, candidateId) {
-
-		var sourceleadUrl = '${sourceleadUrl}';
 		$.ajax({
 					type : "POST",
 					url : sourceleadUrl
-							+ "/getCandidateCertificateBycandidateIdandCertificateId?${_csrf.parameterName}=${_csrf.token}&candidateId="
+							+ "/getCandidateCertificateBycandidateIdandCertificateId?"+tokenParamName+"="+tokenValue+"&candidateId="
 							+ candidateId + "&candidateCertificationId=" + candidateCertificationId,
 					success : function(data) {
 
@@ -790,9 +785,8 @@ function addCertification(candidateId) {
 
 			 var formData = getFormData("candidateCertificationEdit_form");
 			//It will escape all the special characters
-			var sourceleadUrl = '${sourceleadUrl}';
 			
-			 $.post(sourceleadUrl+"/updateCandidateCertificationsBycandidateIdandcandidateCertificateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&candidateCertificationId"+ candidateCertificationId, formData, function(data) {
+			 $.post(sourceleadUrl+"/updateCandidateCertificationsBycandidateIdandcandidateCertificateId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&candidateCertificationId"+ candidateCertificationId, formData, function(data) {
 				 closeCertificatePopup();
      			$("#selector5").removeAttr("style");
      			$("#selector5").css({ display: "block" });
@@ -852,12 +846,11 @@ function removeCertification(candidateCertificationId, candidateId){
 <script>
 function  deleteSelectedCertification(candidateCertificationId,candidateId){
 	
-	 var sourceleadUrl ='${sourceleadUrl}';
 	 var loginUserId = '${SourceLeadWeb_userId}';
 	 var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	 $.ajax({  
           type : "POST",
-          url: sourceleadUrl+"/removeCandidateCertificateBycandidateIdandcandidateCertificateId?${_csrf.parameterName}=${_csrf.token}&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&candidateCertificationId="+candidateCertificationId,        
+          url: sourceleadUrl+"/removeCandidateCertificateBycandidateIdandcandidateCertificateId?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&candidateCertificationId="+candidateCertificationId,        
           success :function(data) {
 
 				if(data != null && data != 'undefined' && data != ""){

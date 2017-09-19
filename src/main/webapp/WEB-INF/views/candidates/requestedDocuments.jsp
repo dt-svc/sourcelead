@@ -159,7 +159,7 @@ $('body').on('submit', '#requestForDocs_form', function(e){
 				 data: formData,
 		         processData: false,
 		         contentType:false, 
-			url : sourceleadUrl+"/uploadRequestedDocuments?${_csrf.parameterName}=${_csrf.token}",
+			url : sourceleadUrl+"/uploadRequestedDocuments?"+tokenParamName+"="+tokenValue+"",
 			success : function(data) {
 				 location.replace(sourceleadUrl+"/requestedDocuments?requestDocUUID="+requestDocUUID); 
 
@@ -167,7 +167,7 @@ $('body').on('submit', '#requestForDocs_form', function(e){
 		});
 		
 	/* 	
-      $.post(sourceleadUrl+"/uploadRequestedDocuments?${_csrf.parameterName}=${_csrf.token}", formData,processData: false,contentType:false, function(data) {
+      $.post(sourceleadUrl+"/uploadRequestedDocuments?"+tokenParamName+"="+tokenValue+"", formData,processData: false,contentType:false, function(data) {
     	  location.replace(sourceleadUrl+"/requestedDocuments?requestDocUUID="+requestDocUUID); 
       }); */
      
@@ -187,7 +187,7 @@ $('body').on('submit', '#requestForDocs_form', function(e){
 <script>
 function uploadFileReqDoc(id){
 	var sourceleadUrl ='${sourceleadUrl}';
-	fileUpload(sourceleadUrl, "uploadDocFile"+id+"", "requestedDocuments", "requestForDocs_form", '', '${orgId}', '${orgLocationId}');
+	fileUpload("uploadDocFile"+id+"", "requestedDocuments", "requestForDocs_form", '', '${orgId}', '${orgLocationId}');
 }
 </script> 
   

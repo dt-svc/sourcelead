@@ -101,18 +101,18 @@ function getClientContactList(){
 	            pages: 10
 	        }),
 	        "columns": [
-	            { "data": "orgName" },
-	            { "data": "spocName"},
-	            { "data": "spocEmail" },
-	            { "data": "spocMobilePhone"},
-	            { "data": "ownerName" },
+	            { "data": "clientLocationId" },
+	            { "data": "clientUserFirstName"},
+	            { "data": "clientUserEmail" },
+	            { "data": "clientUserPhNo"},
+	            { "data": "ownerUserId" },
 	            { "data": "spocStatus" },
 	            { "data": "invitationStatus" },
 	            { "data": "action" }
 	        ],
 	        "columnDefs": [ {
 		    	  	"targets": colIndex++,
-		    	  	"data": "orgName",
+		    	  	"data": "clientLocationId",
 		    	  	"render": function(data, type, report, meta) {
 		    	  	   $("#clientContactLength").val(1);
 		    	  		 var result = "";
@@ -157,8 +157,7 @@ function getClientContactList(){
 	                }
 	          },{
 		    	  	"targets": colIndex++,
-		    	  	"data": "ownerName",
-		    	  	"sortable": false,
+		    	  	"data": "ownerUserId",
 		    	  	"render": function(data, type, report, meta) {
 		    	  	 	var result = "";
 		    	  	 	if(null != report.ownerNames  &&  '' != report.ownerNames  && 'undefined' != report.ownerNames){
@@ -169,7 +168,6 @@ function getClientContactList(){
 		    	  },{
 		    	  	"targets": colIndex++,
 		    	  	"data": "spocStatus",
-		    	  	"sortable": false,
 		    	  	"render": function(data, type, report, meta) {
 		    	  		 var result = "";
 		    	  		result = result + ' <td><div>';
@@ -189,7 +187,6 @@ function getClientContactList(){
 		    	  },{
 			    	  	"targets": colIndex++,
 			    	  	"data": "invitationStatus",
-			    	  	"sortable": false,
 			    	  	"render": function(data, type, report, meta) {
 			    	  		 var result = "";
 			    	  		result = result + ' <td><div id="invitationStatus'+report.id+'">';

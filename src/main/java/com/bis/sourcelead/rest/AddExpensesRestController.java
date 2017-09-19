@@ -237,7 +237,7 @@ public class AddExpensesRestController {
 	
 	
 	@RequestMapping(value = "/storeAddExpensesData",method = RequestMethod.POST)
-	public @ResponseBody String storeAddExpensesData(HttpServletRequest request,@RequestParam(value="status", required=false) String status,AddExpensesDTO addExpensesDTO,CategoryDTO categoryDTO) throws Exception {
+	public @ResponseBody String storeAddExpensesData(HttpServletRequest request,@RequestParam(value="status", required=false) String status,AddExpensesDTO addExpensesDTO) throws Exception {
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		 String currencyCode = (String) SourceLeadSessionManager.getSessionAttribute(request, "currencyCode");
@@ -410,8 +410,8 @@ public class AddExpensesRestController {
 //				 }
 				 StringBuilder acceptBuilder=new StringBuilder();
 			     StringBuilder rejectBuilder=new StringBuilder();
-			     globalVarsMap.put("accept",acceptBuilder.append("<a href='").append(sourceleadUrl).append("/acceptOrRejectReopenExpense?type=accept&expenseId=").append(expenseId).append("&reOpenedUserId=").append(loginUser.getId()).append("&reason=").append(reason).append("'style='text-decoration:none;float:left; margin-left:55px;'><div style=' width:220px; border-radius:30px; background-color:#5cb85c; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Accept</div></a>").toString());
-				 globalVarsMap.put("reject",rejectBuilder.append("<a href='").append(sourceleadUrl).append("/acceptOrRejectReopenExpense?type=rejecting&expenseId=").append(expenseId).append("&reOpenedUserId=").append(loginUser.getId()).append("&reason=").append(reason).append("'style='text-decoration:none;float:left;margin-left:55px;'><div style=' width:220px; border-radius:30px; background-color:#e74c51; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Reject</div></a>").toString());
+			     globalVarsMap.put("accept",acceptBuilder.append("<a href='").append(sourceleadUrl).append("/acceptOrRejectReopenExpense?type=accept&expenseId=").append(expenseId).append("&reOpenedUserId=").append(loginUser.getId()).append("&orgLocId=").append(orgLoc.getId()).append("&reason=").append(reason).append("'style='text-decoration:none;float:left; margin-left:55px;'><div style=' width:220px; border-radius:30px; background-color:#5cb85c; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Accept</div></a>").toString());
+				 globalVarsMap.put("reject",rejectBuilder.append("<a href='").append(sourceleadUrl).append("/acceptOrRejectReopenExpense?type=rejecting&expenseId=").append(expenseId).append("&reOpenedUserId=").append(loginUser.getId()).append("&orgLocId=").append(orgLoc.getId()).append("&reason=").append(reason).append("'style='text-decoration:none;float:left;margin-left:55px;'><div style=' width:220px; border-radius:30px; background-color:#e74c51; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Reject</div></a>").toString());
 			
 				 
 //				 StringBuilder loginURLSB = new StringBuilder();

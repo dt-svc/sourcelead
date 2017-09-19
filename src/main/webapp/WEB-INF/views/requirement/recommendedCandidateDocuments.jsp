@@ -60,10 +60,9 @@ function candidateDocuments(candidateId){
 
 <script>
 function candDocumentsList(candidateId){
-	  var sourceleadUrl ='${sourceleadUrl}';
 	 $.ajax({  
           type : "POST",
-          url: sourceleadUrl+"/getCandidateDocumentsListByCandidateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,        
+          url: sourceleadUrl+"/getCandidateDocumentsListByCandidateId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
           success :function(data) {
            
              			 var json = JSON.parse(data); 
@@ -353,7 +352,6 @@ function getDocumentType(documentType){
 		         }; 
 			 if ($('#documentType_form').validate(false, validationSettings)){
 				 
-				    var sourceleadUrl = '${sourceleadUrl}';
 			        var frm = $('#documentType_form')[0];
 					var formData = new FormData(frm);
 					$("#save_doc").attr("disabled", "disabled");
@@ -364,7 +362,7 @@ function getDocumentType(documentType){
 		        	    data: formData,
 		    	        processData: false,
 		    	        contentType:false,
-		        	   	url : sourceleadUrl+"/saveCandidateDocument?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&documentUUID="+documentUUID,
+		        	   	url : sourceleadUrl+"/saveCandidateDocument?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&documentUUID="+documentUUID,
 						success : function(result) {
 								closePopup();
 								$('#perVal').attr('aria-valuenow', result).css('width',result+'%');
@@ -425,10 +423,9 @@ function getDocumentType(documentType){
 --%>
 <script>
 function getDocument(candidateId, documentId){
-	var sourceleadUrl ='${sourceleadUrl}';
 		$.ajax({
 		   	type: "POST",
-		    url: sourceleadUrl+"/getDocument?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&documentId="+documentId, 	   
+		    url: sourceleadUrl+"/getDocument?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&documentId="+documentId, 	   
    		    success: function(data) {
         			 $("#uploadDocDiv").hide();
         			 $("#docAddButton").hide();
@@ -476,14 +473,13 @@ function getDocument(candidateId, documentId){
 <script>
 function deleteDocument(candidateId, documentId){
 	
-	var sourceleadUrl ='${sourceleadUrl}';
 	var loginUserId = '${SourceLeadWeb_userId}';
 	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	var message = confirm("You are choosing to delete the resume");
 	if (message == true) {
 		$.ajax({
 		   	type: "POST",
-		    url: sourceleadUrl+"/terminateDoc?${_csrf.parameterName}=${_csrf.token}&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&documentId="+documentId, 	   
+		    url: sourceleadUrl+"/terminateDoc?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&documentId="+documentId, 	   
    		    success: function(data) {
    		    	if(data != null && data != 'undefined' && data != ""){
    		    		$('#perVal').attr('aria-valuenow', data).css('width',data+'%');
@@ -561,7 +557,6 @@ function refreshDocList(candidateId){
 
 <script>
 function uploadFileDoc(){
-	var sourceleadUrl ='${sourceleadUrl}';
-	fileUpload(sourceleadUrl, "uploadBtn", "candidateDocuments", "documentType_form");
+	fileUpload("uploadBtn", "candidateDocuments", "documentType_form");
 }
 </script>

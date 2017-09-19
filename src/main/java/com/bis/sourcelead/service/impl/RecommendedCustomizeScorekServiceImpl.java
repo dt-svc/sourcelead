@@ -151,7 +151,7 @@ public class RecommendedCustomizeScorekServiceImpl implements RecommendedCustomi
 	}
 
 	@Override
-	public CandidateCompareDTO getCandidateListToCompare(Long requirementId, Long orgLocationId) throws Exception
+	public CandidateCompareDTO getCandidateListToCompare(Long requirementId, Long orgLocationId,String candidatesSelected) throws Exception
 	{
 		OrgLocations orglocation = orgLocationService.getOrgLocations(orgLocationId);
 		CandidateCompareDTO candidateCompare = new CandidateCompareDTO();
@@ -159,7 +159,7 @@ public class RecommendedCustomizeScorekServiceImpl implements RecommendedCustomi
 		List<CandidateIndex> candidateList = null;
 		RecommendedCustomizeScore recommendedCustomizeScore = getRecommendedCustomizeScoreByRequirementId(requirementId);
 		if (null != recommendedCustomizeScore) {
-			candidateList = recommendationsService.getRecommendationsUpdateWithScoreByUsingElk(orgLocationId, recommendedCustomizeScore, requirementId);
+			candidateList = recommendationsService.getRecommendationsUpdateWithScoreByUsingElk(orgLocationId, recommendedCustomizeScore, requirementId,candidatesSelected);
 		}
 		if (requirement != null) {
 			if (requirement.getJobId() != null && !"".equalsIgnoreCase(requirement.getJobId())) {
@@ -211,8 +211,10 @@ public class RecommendedCustomizeScorekServiceImpl implements RecommendedCustomi
 				CandidateResumes candidateResume =  candidateResumeSerivce.getCandidateLatesResumes(can.getId(), Constants.RECORD_ACTIVE);
 				if(candidateResume != null){
 					candidate.setCurrentResumeId(candidateResume.getId());
+					candidate.setFileUrl(candidateResume.getFileURL());
 					candidate.setCurrentResumeName(candidateResume.getFileName());
 					candidate.setCurrentResumeUUID(candidateResume.getResumeUUID());
+					candidate.setFileContentType(candidateResume.getFileContentType());
 				}
 				int percentage = candidateService.getCandidatePercentage(can,orglocation);
 				candidate.setProfilePercentage(percentage);

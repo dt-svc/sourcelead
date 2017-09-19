@@ -37,7 +37,6 @@ function clientSpocDocuments(orgRelationId,clientLocationId,spocName,userId){
 
 <script>
 function spocDocumentsList(clientLocationId,orgRelationId,userId,spocName){
-	 var sourceleadUrl ='${sourceleadUrl}';
 	 var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
 	  if(locationList.match("yyyy-MM-dd")){
 		  docListClientSpocDate = 'YYYY-MM-DD';
@@ -52,19 +51,7 @@ function spocDocumentsList(clientLocationId,orgRelationId,userId,spocName){
           type : "POST",
           url: sourceleadUrl+"/getclientDocumentsListByResponderLocationIdAndSpocUserId?${_csrf.parameterName}=${_csrf.token}&responderLocationId="+clientLocationId+"&userId="+userId,        
           success :function(data) {
-              /*  if(data != null && data != 'undefined' && data != "" && data != '[]'){ */
              			 var json = JSON.parse(data);
-             			/* for (var i = 0; i < 1; i++) { 
-             				var val= json[i];
-             				var opt = "";
-             					if(val.msg != null && val.msg != '' && val.msg != 'undefined'){
-	             					opt  = opt + '<div class="success_pop" id="selector1" style="display: block;">';
-	             					opt  = opt + '<i class="fa fa-check-circle"></i><span>'+val.msg+'</span>';
-	             					opt  = opt + '</div>';
-             						}
-             					$("#docMsgDiv").empty();
-             					$("#docMsgDiv").append(opt);
-             				} */
 	                	 $("#spocDocumentsList").empty();
 	                	 var result = "";
 	                	 result = result +"<table id='clientSpocDocumentsPagination' class='display' cellspacing='0' width='100%' >"; 
@@ -130,7 +117,7 @@ function spocDocumentsList(clientLocationId,orgRelationId,userId,spocName){
 	                    	 }else{
 	                    		 result  = result + ' <td><div><span>--</span></div></td>';
 	                    	 }
-	                    	 result = result+'	 <td><div class="tblicons tblminwidth-75"><a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadOrgDocument?docId='+opt.id+'\"></a>';
+	                    	 result = result+'	 <td><div class="tblicons tblminwidth-75"><a class="glyphicon glyphicon-download-alt" href=\"'+opt.fileURL+'\"></a>';
 	                    	 if(opt.id != null && opt.id != '' && opt.id != 'undefined'){
 	                    		 '<sec:authorize access="hasAnyRole(\'ROLE_EDIT_CLIENT_DOCUMENT\')">'; 
 	                    		 result = result+'	            <a class="glyphicon glyphicon-pencil" href="javascript:void(0)" onClick="addDocumentForSpoc('+clientLocationId+',\''+spocName+'\','+userId+');  getClientSpocDocument('+clientLocationId+','+orgRelationId+',\''+spocName+'\','+userId+','+opt.id+');"></a>';
@@ -149,21 +136,6 @@ function spocDocumentsList(clientLocationId,orgRelationId,userId,spocName){
 	                     result = result +"</table>";
 	                     $("#spocDocumentsList").append(result); 
 	                     spocDocumentpagination(); 
-              /*  }else{
-	    	         var result ="";
-		    	     result = result+"   <div class='row'>"; 
-					 result = result+"	<div class='col-lg-12'>"; 
-					 result = result+"		<div class='content-area clearfix'>"; 
-					 result = result+"			<div class='blank-pages'>";
-					 result = result+"			        <p><i class='fa fa-5x fa-bar-chart'></i></p>";
-					 result = result+"			        <p>No Documents Found</p>";
-					 result = result+"			 </div>";
-					 result = result+"		</div>"; 
-					 result = result+"	</div>"; 
-					 result = result+"  </div> "; 
-					$("#spocDocumentsList").empty();
-				    $("#spocDocumentsList").append(result); 
-               } */
         },
           
      }); 
@@ -192,7 +164,7 @@ function addDocumentForSpoc(clientLocationId,orgRelationId,spocName,userId) {
 	var result = "";
 	result = result  +'<!-- Popup Div -->';
 	result = result  +'          <form role="form"  id="document_form_spoc" name="document_form_spoc" method="post" > ';
-	result = result  +'          <i class="fa fa-close close-div"  onClick="closePopup();"></i> ';
+	result = result  +'          <i class="fa fa-close close-div"  onClick="closeSpocDocPopup();"></i> ';
 	result = result  +'                <div class="form-horizontal clearfix"> ';
 	result = result  +'   ';
 	
@@ -220,8 +192,8 @@ function addDocumentForSpoc(clientLocationId,orgRelationId,spocName,userId) {
 	result = result+'	                  <div class="clearfix mb" id="uploadDocumentDiv">';
 	result = result+'	                    <div class="col-md-12">';
 	result = result+'							<div class="input-group positionRelative" id="uploadFileGroup">';
-	result = result+'	                          <label class="input-group-btn"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File';
-	result = result+'	                            <input type="file" name="uploadBtn" id="uploadBtn" style="display: none;"  multiple="" class="upload">';
+	result = result+'	                          <label class="input-group-btn" onChange="clientSpocDocumentFileSaving();"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File';
+	result = result+'	                            <input type="file" id="uploadBtn" style="display: none;" class="upload">';
 	result = result+'	                            </span> </label>';
 	result = result+'	                          <input type="text" class="form-control" readonly id="uploadFile" name="docFile" placeholder="Upload File." field-name="Document" data-validation="required validate_Space validatedoc">';
 	result = result+'	                        </div>';
@@ -342,9 +314,6 @@ function addDocumentForSpoc(clientLocationId,orgRelationId,spocName,userId) {
 	 $(".addUser-org, .assign-org, .collapse-div-adduser, .collapse-div, .edit-details").click(function(e){
 		 e.stopPropagation();
 	 });
-	/*  $('html').click(function(){
-		$(".edit-details").removeClass("edit-details-active");
-	   });	 */
 	 
 	 var config = {
 			  '.chosen-select'           : {},
@@ -364,7 +333,7 @@ function addDocumentForSpoc(clientLocationId,orgRelationId,spocName,userId) {
 </script>
 
 <script>
-function closePopup(){
+function closeSpocDocPopup(){
 	 $("#popUpDiv").removeClass("edit-details-active");
 }
 </script>
@@ -378,27 +347,17 @@ function closePopup(){
 				dateFormat : 'yyyy/mm/dd' 
 	         }; 
 		 if ($('#document_form_spoc').validate(false, validationSettings)){
-			var frm = $('#document_form_spoc').serializeFormJSON();
-			var con = JSON.stringify(frm);
 			$("#save_button").attr("disabled", "disabled");
 			$("#save_button" ).addClass('button').val('Processing..');
-			con = con.replace(/[{}]/g, "");
 			var form = $('#document_form_spoc')[0];
       		var formData = new FormData(form); 
-			var sourceleadUrl = '${sourceleadUrl}';
 			$("#document_form_spoc").attr("disabled", "disabled");
-			
-			//It will escape all the special characters
-	        var jsonData = encodeURIComponent(con);
 			$.ajax({
 					type : "POST",
 	        	    data: formData,
-	        	    contentType : 'application/json; charset=utf-8',
-	        	    enctype: 'multipart/form-data',
 	    	        processData: false,
 	    	        contentType:false,
-	        	    dataType : 'json',
-					url : sourceleadUrl+"/saveDocuments?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&responderLocationId="+clientLocationId+"&docId="+docId+"&sourceType=Client",
+					url : sourceleadUrl+"/saveDocuments?${_csrf.parameterName}=${_csrf.token}&responderLocationId="+clientLocationId+"&docId="+docId+"&sourceType=Client",
 					success : function(result) {
 						 if( result.indexOf('Sign In') >= 0){
 				    		location.replace(sourceleadUrl);
@@ -473,7 +432,6 @@ function deleteDocument(clientLocationId,orgRelationId,spocName,userId,docId,doc
 
 <script>
 function saveReason(clientLocationId,orgRelationId,spocName,userId,docId,docName){
-	var sourceleadUrl ='${sourceleadUrl}';
 	var terminateReason = document.getElementById("terminateReason").value;
 	if(terminateReason.match(/^[^\s-](.*)*$/) != null){
 		$("#terminateReasonDiv").empty();
@@ -509,7 +467,6 @@ function removeResumeNameDiv(){
 </script>
 <script>
 function getClientSpocDocument(clientLocationId,orgRelationId,spocName,userId,docId){
-	var sourceleadUrl ='${sourceleadUrl}';
 	var sourceLeadUserId = '${SourceLeadWeb_userId}';
 	$.ajax({
 	   	type: "POST",
@@ -640,3 +597,9 @@ function toDate(selector) {
 }
 </script>
 <!-- script for dateformat in datepicker End -->
+<script>
+function clientSpocDocumentFileSaving()
+{
+	fileUpload("uploadBtn", "clientDocuments", "document_form_spoc");
+}
+</script>

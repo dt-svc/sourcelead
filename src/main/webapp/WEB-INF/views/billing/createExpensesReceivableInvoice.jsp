@@ -274,10 +274,9 @@ function remove(){
 <script>
 function getClientContacts(){
 	var orgRelationId = $("#clientOrgRelationId").val();
-	var sourceleadUrl ='${sourceleadUrl}';
 	$.ajax({
 	type : "GET",
-	url: sourceleadUrl+"/getClientContactsByOrgRelationId?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+orgRelationId,
+	url: sourceleadUrl+"/getClientContactsByOrgRelationId?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId,
 	success :function(data) {
 	var json = JSON.parse(data);
 	var output = "";
@@ -302,10 +301,9 @@ function getClientContacts(){
 <script>
 function getProjectsList(projectName){
 	var orgRelationId = $("#clientOrgRelationId").val();
-	var sourceleadUrl ='${sourceleadUrl}';
 	$.ajax({
 	type : "GET",
-	url: sourceleadUrl+"/getClientProjectsByOrgRelationId?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+orgRelationId,
+	url: sourceleadUrl+"/getClientProjectsByOrgRelationId?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId,
 	success :function(data) {
 	var json = JSON.parse(data);
 	var output = "";
@@ -334,10 +332,9 @@ function getExpensesDetails(expId){
 	if(expId !=null && expId !='undefined'){
 		expensesId = expId
 	}
-	var sourceleadUrl ='${sourceleadUrl}';
 	$.ajax({
 		type : "GET",
-		url: sourceleadUrl+"/getExpensesEntries?${_csrf.parameterName}=${_csrf.token}&expensesId="+expensesId,
+		url: sourceleadUrl+"/getExpensesEntries?"+tokenParamName+"="+tokenValue+"&expensesId="+expensesId,
 		success :function(data) {
 			populateExpensesDetailsGrid(data);
 		},
@@ -526,10 +523,9 @@ function getExpenses(projectMemberId,expensesFrequency){
 	if(projectMemberId !=null && projectMemberId !='undefined' && expensesFrequency !=null && expensesFrequency !='undefined'){
 		memberId = projectMemberId
 	}
-	var sourceleadUrl ='${sourceleadUrl}';
 	$.ajax({
 		type : "GET",
-		url: sourceleadUrl+"/getExpensesByProjectMemberId?${_csrf.parameterName}=${_csrf.token}&memberId="+memberId+"&invoiceType=Receivable",
+		url: sourceleadUrl+"/getExpensesByProjectMemberId?"+tokenParamName+"="+tokenValue+"&memberId="+memberId+"&invoiceType=Receivable",
 		success :function(data) {
 			var output = "";
 			output = output + "<option value=''>--Select Expenses--</option>";
@@ -558,10 +554,9 @@ function getProjectAssignMembers(pid,projectMemberName){
 		projectId =pid;
 	}
 	
-	var sourceleadUrl ='${sourceleadUrl}';
 	$.ajax({
 		type : "GET",
-		url: sourceleadUrl+"/getProjectAssignMembers?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId,
+		url: sourceleadUrl+"/getProjectAssignMembers?"+tokenParamName+"="+tokenValue+"&projectId="+projectId,
 		success :function(data) {
 			var output = "";
 			output = output + "<option value=''>--Select Associate--</option>";
@@ -590,10 +585,9 @@ function getProjectFrequency(invoiceFrequency){
 	if(projectId == null){
 	projectId = '${projectId}';
 	}
-	var sourceleadUrl ='${sourceleadUrl}';
 	$.ajax({
 	type : "GET",
-	url: sourceleadUrl+"/getProjectFrequency?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId,
+	url: sourceleadUrl+"/getProjectFrequency?"+tokenParamName+"="+tokenValue+"&projectId="+projectId,
 	success :function(data) {
 		var json = JSON.parse(data);
 		var output = "";
@@ -857,11 +851,10 @@ function cancelReceivableAlert(){
 	   var orgRelationId = $("#clientOrgRelationId").val();
 	   var currencyCode = '${SourceLeadWeb_currencyCode}';
 	   var grandTotal = $("#grandTotal").val();
-	   var sourceleadUrl ='${sourceleadUrl}';
 	   if(grandTotal != '' && grandTotal != 'undefined'){
 		   $.ajax({
 				type : "GET",
-				url: sourceleadUrl+"/getConversionExchangeRate?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+orgRelationId+"&grandTotal="+grandTotal,
+				url: sourceleadUrl+"/getConversionExchangeRate?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId+"&grandTotal="+grandTotal,
 				success :function(data) {
 					if(data !='' && data != 'undefined' && data != null){
 						var json = JSON.parse(data);
@@ -1163,10 +1156,9 @@ function saveInvoice(saveType){
 	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	var currencyCode = '${SourceLeadWeb_currencyCode}';
          if ($('#project_invoice_form').validate(false, validationSettings)){  
- 	 	    var sourceleadUrl ='${sourceleadUrl}';
  	 	    var formData = getFormData("project_invoice_form");
 		        	  $("#invoiceLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-		        	  $.post(sourceleadUrl+"/saveExpensesInvoice?${_csrf.parameterName}=${_csrf.token}&userId="+userId+"&orgLocationId="+orgLocationId+"&saveType="+saveType+"&currencyCode="+currencyCode+"&invoiceType=Receivable&type=expenses", formData, function(data) {
+		        	  $.post(sourceleadUrl+"/saveExpensesInvoice?"+tokenParamName+"="+tokenValue+"&userId="+userId+"&orgLocationId="+orgLocationId+"&saveType="+saveType+"&currencyCode="+currencyCode+"&invoiceType=Receivable&type=expenses", formData, function(data) {
 			  				if(data == "success"){
 			  					$("#invoiceLoading").removeAttr("style");
 	    		     			location.replace(sourceleadUrl+"/invoiceList");
@@ -1233,11 +1225,10 @@ function toDate(selector) {
 <!-- To Get the Existed invoice details to Edit -->
 <script>
 	function loadInvoiceDetails(invoiceUUID){
-		 var sourceleadUrl ='${sourceleadUrl}';
 		 
 		 $.ajax({
 		    	type: "POST",
-		    	 url: sourceleadUrl+"/getInvoiceDetailsByInvoiceUUID?${_csrf.parameterName}=${_csrf.token}&invoiceUUID="+invoiceUUID, 
+		    	 url: sourceleadUrl+"/getInvoiceDetailsByInvoiceUUID?"+tokenParamName+"="+tokenValue+"&invoiceUUID="+invoiceUUID, 
 		         success: function(data) {
 		        	 var json = JSON.parse(data);
 		        	 var result = '';
@@ -1319,10 +1310,9 @@ $(document).ready(function(){
 <script>
 function getClientContactsExisted(clientContactId){
 	var orgRelationId = $("#clientOrgRelationId").val();
-	var sourceleadUrl ='${sourceleadUrl}';
 	$.ajax({
 	type : "GET",
-	url: sourceleadUrl+"/getClientContactsByOrgRelationId?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+orgRelationId,
+	url: sourceleadUrl+"/getClientContactsByOrgRelationId?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId,
 	success :function(data) {
 	var json = JSON.parse(data);
 	var output = "";
@@ -1349,11 +1339,10 @@ function getClientContactsExisted(clientContactId){
 <!-- Get alla clients when editing -->
 <script>
 function getClients(){
-	var sourceleadUrl ='${sourceleadUrl}';
 	var orgRelationId ='${orgRelationId}';
 	$.ajax({
 		type : "GET",
-		url: sourceleadUrl+"/getClientList?${_csrf.parameterName}=${_csrf.token}",
+		url: sourceleadUrl+"/getClientList?"+tokenParamName+"="+tokenValue+"",
 		success :function(data) {
 		var json = JSON.parse(data);
 		var output = "";
@@ -1537,7 +1526,6 @@ function editExpensesInlineItems(invoiceLineItemsList){
 <script>
 	function getSavedAttachments(invoiceDocumentsList){
 		var result = '';
-		var sourceleadUrl = '${sourceleadUrl}';
 		if(invoiceDocumentsList.length > 0){
 			
 			 for (var i = 0; i < invoiceDocumentsList.length; i++) { 
@@ -1575,10 +1563,9 @@ function editExpensesInlineItems(invoiceLineItemsList){
 	function deleteInvoiceDocument(documentId){
 		
 		if(documentId){
-			var sourceleadUrl = '${sourceleadUrl}';
 			$.ajax({
 		    	type: "POST",
-		    	 url: sourceleadUrl+"/deleteInvoiceDocumentBydocumentId?${_csrf.parameterName}=${_csrf.token}&documentId="+documentId, 
+		    	 url: sourceleadUrl+"/deleteInvoiceDocumentBydocumentId?"+tokenParamName+"="+tokenValue+"&documentId="+documentId, 
 		         success: function(data) {
 		        	 document.getElementById("invoiceDocument"+documentId).remove();
 		        	 $("#lineItemPopUp").empty();
@@ -1665,10 +1652,9 @@ function addTaxDivs(){
 <script> 
 function getPaymentTerms(){
 	var orgRelationId = $("#clientOrgRelationId").val();
-	var sourceleadUrl ='${sourceleadUrl}';
 	$.ajax({
 		type : "GET",
-		url: sourceleadUrl+"/getPaymentTermsAndBillindAddress?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+orgRelationId,
+		url: sourceleadUrl+"/getPaymentTermsAndBillindAddress?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId,
 		success :function(data) {
 			 var json = JSON.parse(data);
 			 for (var i=0; i<json.length; i++)
@@ -1700,12 +1686,11 @@ function getDueDateByFrequency(){
 	 var paymentFrequency = document.getElementById("paymentFrequency").value;
 	 var locationCode ='${SourceLeadWeb_locationCode}';
 	 if(paymentFrequency && invoiceDate){
-	    var sourceleadUrl ='${sourceleadUrl}';
 	    $("#invoiceLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	    
 	    $.ajax({
 			type : "GET",
-			url: sourceleadUrl+"/getDueDateByFrequency?${_csrf.parameterName}=${_csrf.token}&paymentFrequency="+paymentFrequency+"&invoiceDate="+invoiceDate+"&locationCode="+locationCode,
+			url: sourceleadUrl+"/getDueDateByFrequency?"+tokenParamName+"="+tokenValue+"&paymentFrequency="+paymentFrequency+"&invoiceDate="+invoiceDate+"&locationCode="+locationCode,
 			success :function(dueDateStr) {
 				
 				$("#dueDate").val(dueDateStr);
@@ -1759,8 +1744,7 @@ function errInvoiceDate(){
 
 <script type="text/javascript">
 function attachFile(id){
-	var sourceleadUrl ='${sourceleadUrl}';
-	fileUpload(sourceleadUrl, ""+id+"invoicedocFile", "invoiceDocuments", "project_invoice_form","fileInfo");
+	fileUpload(""+id+"invoicedocFile", "invoiceDocuments", "project_invoice_form","fileInfo");
 }
 </script>
     

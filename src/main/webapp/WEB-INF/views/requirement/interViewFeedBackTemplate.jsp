@@ -66,7 +66,7 @@ left:0;
 		var sourceleadUrl = '${sourceleadUrl}';
 		$.ajax({
 	    	type: "POST",
-	    	url : sourceleadUrl+"/getInterviewFeedbackTemplatesList?${_csrf.parameterName}=${_csrf.token}", 
+	    	url : sourceleadUrl+"/getInterviewFeedbackTemplatesList?"+tokenParamName+"="+tokenValue+"", 
 	        success: function(data) {
 	        var json = JSON.parse(data);
 			var result = "";
@@ -383,7 +383,7 @@ function cancelPop(){
             	$( "#save_button" ).addClass('button').val('Processing..');
             	  $.ajax({
           	    	type: "POST",
-          	        url: sourceleadUrl+"/saveInterviewFeedBackTemplate?${_csrf.parameterName}=${_csrf.token}&templateId="+templateId+"&jsonData="+jsonData+"&jsonStringData="+jsonStringData, 
+          	        url: sourceleadUrl+"/saveInterviewFeedBackTemplate?"+tokenParamName+"="+tokenValue+"&templateId="+templateId+"&jsonData="+jsonData+"&jsonStringData="+jsonStringData, 
           	        success: function(result) {
           	        	if((result == 'interViewFeedBackTemplate')){
           	        		location.replace(sourceleadUrl+"/interViewFeedBackTemplate"); 
@@ -434,7 +434,7 @@ function validateTemplateName(){
 		var sourceleadUrl = '${sourceleadUrl}';
 		$.ajax({
 	    	type: "POST",
-	    	url : sourceleadUrl+"/validateTemplateNameByOrg?${_csrf.parameterName}=${_csrf.token}&templateName="+templateName+"&templateId="+templateId, 
+	    	url : sourceleadUrl+"/validateTemplateNameByOrg?"+tokenParamName+"="+tokenValue+"&templateName="+templateName+"&templateId="+templateId, 
 	        success: function(result) {
 	        	if (result == 'invalid') {
 	        		$("#save_button").attr("disabled", "disabled");

@@ -341,16 +341,18 @@ function terminateClientSpoc(spocId, orgRelationID,clientLocationId,spocName){
 <script>
 function saveSpocTerminateReason(spocId, orgRelationID,clientLocationId,spocName){
 	var sourceleadUrl = '${sourceleadUrl}';
+	var userId = '${SourceLeadWeb_userId}';
+	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	 var reason = document.getElementById("reasonForSpoc").value;
 	 reason = reason.replace(/\s/g, "") 
-		var reason1 = document.getElementById("reasonForSpoc").value;
-	//var reason = document.getElementById("reasonForSpoc").value;
+	var reason1 = document.getElementById("reasonForSpoc").value;
+	
 	if(reason.match(/^[^\s-](.*)*$/) != null){
 	      
 		  $("#reasonForSpocDiv").empty();
 		$.ajax({
 		   	type: "POST",
-		    url: sourceleadUrl+"/terminateSpoc?${_csrf.parameterName}=${_csrf.token}&spocId="+spocId+"&reason="+reason,	    	   
+		    url: sourceleadUrl+"/terminateSpoc?${_csrf.parameterName}=${_csrf.token}&spocId="+spocId+"&reason="+reason+"&userId="+userId+"&orgLocationId="+orgLocationId+"&responderType=Client",	    	   
 		    success: function(data) {
 		    	$("#popUp").empty();
    			 	$(".project_inn_mask").fadeOut(200);
@@ -556,19 +558,6 @@ function closePopupDiv(){
 			var sourceleadUrl = '${sourceleadUrl}';
 			$("#addClientContact").attr("disabled", "disabled");
 			$("#addClientContact").addClass('button').val('Processing..');
-			
-			/* $.ajax({
-						type : "POST",
-						url : sourceleadUrl+ "/saveClinentAndVendorContact?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+orgRelationId+"&clientLocationId="+clientLocationId+"&responderType=Client",
-						success : function(result) {
-							 $("#popUpDivContact").removeClass("edit-details-active");
-							 $("#clientTerminateMsgDiv").removeAttr("style");
-					 			$("#clientTerminateMsgDiv").css({ display: "block" });
-					 			$("#clientTerminateMsg").html("Success!! New Contact Added");
-							 clientContactList(orgRelationId,clientLocationId);
-							 clientTerminateMsgFadein();
-						},
-			}); */
 			
 			$.post(sourceleadUrl+"/saveClinentAndVendorContact?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+orgRelationId+"&clientLocationId="+clientLocationId+"&responderType=Client", formData, function(data) {
 				$("#popUpDivContact").removeClass("edit-details-active");
@@ -777,17 +766,6 @@ function rejectSpocInvitation(spocId,orgRelationId,clientLocationId){
 		        url: sourceleadUrl+"/getAllOwners?${_csrf.parameterName}=${_csrf.token}&email="+email+"&orgRelationId="+orgRelationId+"&type=client",  
 		        success: function(data) {
 		        	var json = JSON.parse(data);
-		        	/* var output = "";
-		        	for (var i=0; i<json.length; i++)
-					{
-			        		var opt = json[i];
-			        		if(i == 0){
-			        			output = output + "<option value='" +opt.id+ "' selected>"+opt.firstName+" "+opt.lastName+"</option>";
-			        		}else{
-			        			output = output + "<option value='" +opt.id+ "'>"+opt.firstName+" "+opt.lastName+"</option>";
-			        		}
-			        		
-					} */
 		        	var output = "";
 		        	var flag=false;
 		        	for (var i=0; i<json.length; i++)
