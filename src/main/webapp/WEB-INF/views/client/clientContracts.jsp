@@ -1,12 +1,16 @@
 <meta http-equiv="Pragma" content="private">
 <meta http-equiv="Cache-Control" content="private">
 <meta http-equiv="Expires" content="0">
-<link href="resources/css/jquery-tagit.css" rel="stylesheet">
+
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
-<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+
+<c:if test="${staticTime == null || staticTime == 0 }">
+    <c:set var='staticTime' value="<%=new java.util.Date().getTime() %>" scope="application"></c:set>
+ </c:if>
+ <link href="resources/css/jquery-tagit.css?staticTime=${staticTime}" rel="stylesheet">
+ 
 <style type="text/css">
 .edit-details {
 text-align:left;

@@ -75,10 +75,10 @@ function teamList(){
 		            	     result = result +' <td><div onclick="getCandidateListForTeam('+opt.id+',\''+opt.name+'\');" class="proj_show"><a>'+opt.candidateHotlistCount+'</a></div></td>';
 				             result = result +"<td><div class='tblicons'>";
 				             '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_TEAM\')">'; 
-				             	result = result +"<i class='glyphicon glyphicon-pencil paddingRight' onclick='sideBar("+opt.id+");'></i>";
+				             	result = result +"<i class='glyphicon glyphicon-pencil paddingRight' title='Edit' onclick='sideBar("+opt.id+");'></i>";
 				             '</sec:authorize>';
 				             '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_DELETE_TEAM\')">'; 
-				             	result = result +'<i class="glyphicon glyphicon-trash paddingLeft" onclick="deleteTeam('+opt.id+',\''+opt.name+'\');"></i>';
+				             	result = result +'<i class="glyphicon glyphicon-trash paddingLeft" title="Delete" onclick="deleteTeam('+opt.id+',\''+opt.name+'\');"></i>';
 				             '</sec:authorize>';
 				             result = result +"</div></td>";
 				             result = result +"</tr>";

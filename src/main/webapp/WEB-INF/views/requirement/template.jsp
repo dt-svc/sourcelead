@@ -132,7 +132,7 @@ function requirementTemplateList(){
 		                     }
 		                     result = result +"<td><div>";
 		                     '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_DELETE_REQUIREMENT_TEMPLATE\')">'; 
-		                     	result = result +"<a id='edit-user' href='#' onClick='deleteRequirementTemplate("+opt.id+");'><i class='glyphicon glyphicon-trash'></i></a>";
+		                     	result = result +"<a id='edit-user' href='#' title='Delete' onClick='deleteRequirementTemplate("+opt.id+");'><i class='glyphicon glyphicon-trash'></i></a>";
 		                     '</sec:authorize>';
 		                     result = result +"</div></td>";
 		                    result = result +"</tr>";
