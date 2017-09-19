@@ -72,7 +72,7 @@ function vendorAssociatesList(orgRelationId){
 	 	  }
 		$.ajax({
 	    	type: "POST",
-	    	   url: sourceleadUrl+"/getVendorAssociatesListForVendors?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+orgRelationId, 	
+	    	   url: sourceleadUrl+"/getVendorAssociatesListForVendors?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId, 	
 	    	success: function(data) {
 	        	
 	        	var json = JSON.parse(data);
