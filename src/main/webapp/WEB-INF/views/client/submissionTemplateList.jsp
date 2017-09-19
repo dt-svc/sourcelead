@@ -75,7 +75,7 @@ function clientSubmissionTemplate(clientLocationId){
 		var sourceleadUrl = '${sourceleadUrl}';
 		$.ajax({
 	    	type: "POST",
-	    	url : sourceleadUrl+"/getSubmissionTemplatesList?${_csrf.parameterName}=${_csrf.token}&clientLocationId="+clientLocationId, 
+	    	url : sourceleadUrl+"/getSubmissionTemplatesList?"+tokenParamName+"="+tokenValue+"&clientLocationId="+clientLocationId, 
 	        success: function(data) {
 	        	
 	        var json = JSON.parse(data);
@@ -299,7 +299,7 @@ function validateTemplateName(clientLocationId){
 		var sourceleadUrl = '${sourceleadUrl}';
 		$.ajax({
 	    	type: "POST",
-	    	url : sourceleadUrl+"/validateTemplateName?${_csrf.parameterName}=${_csrf.token}&clientLocationId="+clientLocationId+"&templateName="+templateName+"&templateId="+templateId, 
+	    	url : sourceleadUrl+"/validateTemplateName?"+tokenParamName+"="+tokenValue+"&clientLocationId="+clientLocationId+"&templateName="+templateName+"&templateId="+templateId, 
 	        success: function(result) {
 	        	if (result == 'invalid') {
 	        		$("#save_button").attr("disabled", "disabled");
@@ -447,7 +447,7 @@ function validateTemplateName(clientLocationId){
         	 $( "#save_button" ).addClass('button').val('Processing..');
         	    $.ajax({
      	    	type: "POST",
-     	        url: sourceleadUrl+"/saveClientSubmissionTemplate?${_csrf.parameterName}=${_csrf.token}&clientLocationId="+clientLocationId+"&templateId="+templateId+"&jsonData="+jsonData+"&jsonStringData="+jsonStringData, 
+     	        url: sourceleadUrl+"/saveClientSubmissionTemplate?"+tokenParamName+"="+tokenValue+"&clientLocationId="+clientLocationId+"&templateId="+templateId+"&jsonData="+jsonData+"&jsonStringData="+jsonStringData, 
      	        success: function(result) {
      	        	if((result == 'home')){
      	        		clientSubmissionTemplate(clientLocationId);  
