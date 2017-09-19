@@ -289,6 +289,8 @@ function terminateVendorSpoc(spocId, orgRelationID,vendorLocationId,spocName){
 <script>
 function saveReasonForVendorSpocTermination(spocId, orgRelationID,vendorLocationId,spocName){
 	var sourceleadUrl = '${sourceleadUrl}';
+	var userId = '${SourceLeadWeb_userId}';
+	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	var reason = document.getElementById("reasonForSpoc").value;
 	 reason = reason.replace(/\s/g, "") 
 	if(reason.match(/^[^\s-](.*)*$/) != null){
@@ -297,7 +299,7 @@ function saveReasonForVendorSpocTermination(spocId, orgRelationID,vendorLocation
 	  	  
 		$.ajax({
 		   	type: "POST",
-		    url: sourceleadUrl+"/terminateSpoc?${_csrf.parameterName}=${_csrf.token}&spocId="+spocId+"&reason="+reason,	    	   
+		   	url: sourceleadUrl+"/terminateSpoc?${_csrf.parameterName}=${_csrf.token}&spocId="+spocId+"&reason="+reason+"&userId="+userId+"&orgLocationId="+orgLocationId+"&responderType=Vendor",   	   
 		    success: function(data) {
 		    	$("#popUp").empty();
    			 	$(".project_inn_mask").fadeOut(200);
