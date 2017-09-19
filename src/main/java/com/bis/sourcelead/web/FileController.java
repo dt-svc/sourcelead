@@ -78,7 +78,7 @@ public class FileController {
 	@RequestMapping(value = "/viewFile")
 	public void viewFile(HttpServletResponse response, String documentPath, String contentType) {
 		//String ac= staticPath.Remove(staticPath.lastIndexOf('/'));
-		String ac =StringUtils.removeEnd(staticPath, "/slead-static");
+		String ac =StringUtils.removeEnd(staticPath, staticPath.substring(staticPath.lastIndexOf("/")));
 		File file = new File(ac, documentPath);
 		try (FileInputStream fis = new FileInputStream(file);) {
 
