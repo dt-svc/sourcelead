@@ -269,6 +269,19 @@ public class CandidateListRestController {
 					for (MatchQueryBuilder matchQueryBuilder : matchQueryBuilderList) {
 						anyBoolSubQueryBuilder.should(matchQueryBuilder);
 					}
+					
+					DateFormat df = loginOrgLocation.getLocFullFormDateFormatter();
+					try{
+						if(keywd.contains("/")){
+							keywd = keywd.replaceAll("/", "-");
+						}
+						Date d = df.parse(keywd);
+						anyBoolSubQueryBuilder = QueryBuilders.boolQuery();
+						String dateStr = commonUtil.elkDateFormatter(d);
+						anyBoolSubQueryBuilder.should(QueryBuilders.termQuery("updatedDate", dateStr));
+					 }
+					 catch(Exception e){}
+					
 					anyBoolQueryBuilder.should(anyBoolSubQueryBuilder);
 				}
 			}
