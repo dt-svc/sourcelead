@@ -44,10 +44,10 @@ function getProfessionalInfo(){
 	var candidateType= "Professional";
 	var userId = '${SourceLeadWeb_userId}';
 	var candidateId = '${SourceLeadWeb_candidateId}';
-	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
+	var locationCode = '${SourceLeadWeb_locationCode}';
 	$.ajax({
 	   	type: "GET",
-	    url: sourceleadUrl+"/getProfessionalInfo?candidateId="+candidateId+"&orgLocationId="+orgLocationId, 	   
+	    url: sourceleadUrl+"/getProfessionalInfo?candidateId="+candidateId+"&locationCode="+locationCode, 	   
 		    success: function(json) {
 		    	/*  var json = JSON.parse(data); */
 		    	 if(json.firstName != null && json.firstName != '' && json.firstName !='undefined'){
