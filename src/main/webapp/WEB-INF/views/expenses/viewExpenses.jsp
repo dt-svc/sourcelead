@@ -100,7 +100,7 @@
 				<th>Exp Category</th>
 				<th>Description</th>
 				<th>Amount</th>
-				<th>Currency</th>s
+				<th>Currency</th>
 				<th>Payment Mode</th>
 			</tr>
 		</thead>	
