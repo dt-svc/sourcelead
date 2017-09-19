@@ -9,8 +9,9 @@
 	<jsp:include page="requirementClientDetails.jsp"></jsp:include>
 	<jsp:include page="requirementInternalDetails.jsp"></jsp:include>
 	
-	<script src="resources/js/editor.js"></script>
-	<link href="resources/css/editor.css" type="text/css" rel="stylesheet"/>
+	<script src="resources/js/editor.js?staticTime=${staticTime}"></script>
+	<link href="resources/css/editor.css?staticTime=${staticTime}" type="text/css" rel="stylesheet"/>
+	
 	
 	<script>
 		$(document).ready(function() {

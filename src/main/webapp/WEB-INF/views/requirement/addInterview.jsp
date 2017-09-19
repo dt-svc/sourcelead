@@ -5,7 +5,12 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
-<link rel="stylesheet" href="resources/css/style.css" />
+
+ <c:if test="${staticTime == null || staticTime == 0 }">
+    <c:set var='staticTime' value="<%=new java.util.Date().getTime() %>" scope="application"></c:set>
+ </c:if>
+ 
+<link rel="stylesheet" href="resources/css/style.css?staticTime=${staticTime}" />
 <style type="text/css">
 .addinterTable .chosen-container{
 width:125px !important;

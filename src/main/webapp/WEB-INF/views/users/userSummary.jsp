@@ -3,7 +3,9 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
-<script src="resources/js/jquery.maskedinput-1.3.min.js"></script>
+
+<script src="resources/js/jquery.maskedinput-1.3.min.js?staticTime=${staticTime}"></script>
+
 <style>
 .user_summary_edit_cta p{
     margin: -5px 15px;
