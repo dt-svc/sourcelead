@@ -296,7 +296,7 @@ public class ProjectMembersHistoryDaoImpl implements ProjectMembersHistoryDao {
 		logger.debug("In getProjectMembersHistoryListByProjectMemberId method");
 		Session session = this.sessionFactory.getCurrentSession();
 		List<ProjectMembersHistory> pmhList = null;
-		Query pmhListQuery= session.createQuery("from ProjectMembersHistory pmh left join fetch pmh.projectMemberId pm left join fetch pmh.projectClientsId projectClients "
+		Query pmhListQuery= session.createQuery("from ProjectMembersHistory pmh left join fetch pmh.projectMemberId pm left join fetch pmh.projectMemberId.projectClientsId projectClients "
 				+ " left join fetch projectClients.orgLocationsId orgLoc left join fetch orgLoc.user where  pmh.projectMemberId.id = :projectMemberId ");
 		pmhList = pmhListQuery.setLong("projectMemberId", projectMemberId).setCacheable(true).list();
 		return pmhList;

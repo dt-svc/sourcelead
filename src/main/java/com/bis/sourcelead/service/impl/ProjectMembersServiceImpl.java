@@ -1035,7 +1035,7 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 		}
 		
 		projectMembersHistory.setProjectMemberId(projectMembers);
-		projectMembersHistory.setProjectClientsId(projectClients);
+		//projectMembersHistory.setProjectClientsId(projectClients);
 		
 		if(projectMembers.getProjectAssignedDate() != null){
 			projectMembersHistory.setProjectAssignedDate(projectMembers.getProjectAssignedDate());
@@ -1049,10 +1049,10 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 			projectMembersHistory.setProjectTerminationDate(null);
 		}
 		
-		Candidate candidate =  candidateService.findByCandidateEmail(projectMembers.getProjectMemberCandidteId().getEmail(), projectClients.getOrgLocationsId().getId());
+		/*Candidate candidate =  candidateService.findByCandidateEmail(projectMembers.getProjectMemberCandidteId().getEmail(), projectClients.getOrgLocationsId().getId());
 		if(candidate != null){
 			projectMembersHistory.setCandidateId(candidate);
-		}
+		}*/
 		projectMembersHistory.setStatus("OPEN");
 		projectMembersHistory.setCreatedBy(user.getUserCode());
 		projectMembersHistory.setUpdatedBy(user.getUserCode());
