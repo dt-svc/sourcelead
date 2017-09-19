@@ -869,6 +869,13 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 					 requirementSubmission.setUpdatedDate(commonUtil.currentDate());
 					 requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
 			  }
+	    	
+	    	
+	    	
+	    	
+	    	
+	    	
+	    	requirementOffers.setRejectedReason(reason);
 	    		if(requirementOffers.getSubmissionId().getOrgLocations().getId().longValue() != orgLocations.getId().longValue()){
 	    			sendOfferRejectedMail(requirementOffers,loginUser,orgLocations);
 			      }
@@ -1140,7 +1147,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 		 }
 		 globalVarsMap.put("RequirementName",requirementOffers.getSubmissionId().getRequirement().getJobTitle());
 		 globalVarsMap.put("Rate",requirementOffers.getAmount());
-	
+		 globalVarsMap.put("RejectReason",requirementOffers.getRejectedReason());
 		 
 		
 		 //setting the Recipient information
@@ -1342,8 +1349,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
     			candidate.setIsAssociate(Constants.NO);
     		}
     		
-    		
-    		
+    		candidate.setGeneratedId(candidateService.getCandidateId(orgLocations));
     		candidate.setCreatedDate(new Date());
     		candidate.setUpdatedDate(new Date());
     		candidateService.saveOrUpdateCandidate(candidate);

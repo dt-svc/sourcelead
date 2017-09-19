@@ -100,14 +100,13 @@
 <script>
 	function candReferencesList(candidateId) {
 		var candidateType = '${candidateType}';
-		var sourceleadUrl = '${sourceleadUrl}';
 		var locationCode = '${SourceLeadWeb_locationCode}';
 
 		$
 				.ajax({
 					type : "POST",
 					url : sourceleadUrl
-							+ "/getCandidateReferencesListByCandidateId?${_csrf.parameterName}=${_csrf.token}&candidateId="
+							+ "/getCandidateReferencesListByCandidateId?"+tokenParamName+"="+tokenValue+"&candidateId="
 							+ candidateId + "&locationCode=" + locationCode,
 					success : function(json) {
 
@@ -427,10 +426,9 @@
 			    var userId = '${SourceLeadWeb_user.id}';
 			    var locationCode = '${SourceLeadWeb_locationCode}';
 				
-				var sourceleadUrl = '${sourceleadUrl}';
 				 $("#save_ref").attr("disabled", "disabled");
 				$("#save_ref").addClass('button').val('Processing..'); 
-		        $.post(sourceleadUrl+"/saveCandidateReferences?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&userId="+userId+"&locationCode="+locationCode, formData, function(data) {
+		        $.post(sourceleadUrl+"/saveCandidateReferences?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&userId="+userId+"&locationCode="+locationCode, formData, function(data) {
 		        	closePopup();
 		        	 $("#popUpDiv").removeClass("edit-details-active");
 					$("#selector10").removeAttr("style");
@@ -511,7 +509,6 @@
 --%>
 <script>
 	function deleteReference(candidateId, refId) {
-		var sourceleadUrl = '${sourceleadUrl}';
 		var loginUserId = '${SourceLeadWeb_userId}';
 		var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 		//var message = confirm("You are choosing to delete the reference");
@@ -520,7 +517,7 @@
 				.ajax({
 					type : "POST",
 					url : sourceleadUrl
-							+ "/terminateReference?${_csrf.parameterName}=${_csrf.token}&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="
+							+ "/terminateReference?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="
 							+ candidateId + "&refId=" + refId + "&userCode="
 							+ userCode,
 					success : function(data) {
@@ -559,10 +556,9 @@
 		    var userId = '${SourceLeadWeb_user.id}';
 		    var locationCode = '${SourceLeadWeb_locationCode}';
 			
-			var sourceleadUrl = '${sourceleadUrl}';
 			 $("#save_ref").attr("disabled", "disabled");
 			$("#save_ref").addClass('button').val('Processing..'); 
-	        $.post(sourceleadUrl+"/updateCandidateReferenceBycandidateIdAndReferenceId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&userId="+userId+"&locationCode="+locationCode, formData, function(data) {
+	        $.post(sourceleadUrl+"/updateCandidateReferenceBycandidateIdAndReferenceId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&userId="+userId+"&locationCode="+locationCode, formData, function(data) {
 	        	
 	        	$("#selector10").removeAttr("style");
 				$("#selector10").css({
@@ -591,14 +587,11 @@
 
 <script>
 	function editCandidateReference(candidateId, refId) {
-
-		var sourceleadUrl = '${sourceleadUrl}';
-		$
-				.ajax(
+		$.ajax(
 						{
 							type : "POST",
 							url : sourceleadUrl
-									+ "/getCandidateReferencesByCandidateIdAndReferenceId?${_csrf.parameterName}=${_csrf.token}&candidateId="
+									+ "/getCandidateReferencesByCandidateIdAndReferenceId?"+tokenParamName+"="+tokenValue+"&candidateId="
 									+ candidateId + "&refId=" + refId,
 							success : function(data) {
 

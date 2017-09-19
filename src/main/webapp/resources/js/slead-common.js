@@ -1,4 +1,4 @@
-function viewFile(sourceleadUrl, fileURL, title, contentType){
+function viewFile(fileURL, title, contentType){
 	if(fileURL != null && fileURL != ""){
 		window.open(sourceleadUrl+'/viewFile?documentPath='+encodeURI(fileURL)+"&contentType="+contentType,title,"height=600,width=600");
 	}  
@@ -25,7 +25,7 @@ function getFormData1(formId) {
 }
 
 
-function fileUpload(sourceleadUrl, id, type, formId, name, orgId, orgLocationId) {
+function fileUpload(id, type, formId, name, orgId, orgLocationId) {
 	if(name == null || name == 'undefined' || name == ''){
 		name = 'fileInfo';
 	}
@@ -48,23 +48,27 @@ function fileUpload(sourceleadUrl, id, type, formId, name, orgId, orgLocationId)
 		contentType: false, 
 		success: function (data) {
 			if(data && data.length > 0) {
-				if($("#"+formId+" input[name*="+name+"][data-id="+id+"]").length > 0) {
-					$("#"+formId+" input[name*="+name+"][data-id="+id+"]").remove();
-				}
-				var i = $("#"+formId+" input[type=hidden][name*="+name+"]").length / 3;
-				for(var e in data) {
-					var html = "<input type='hidden' name='"+name+"["+i+"].fileURL' data-id="+id+" value='"+data[e].fileURL+"'/>";
-					html += "<input type='hidden' name='"+name+"["+i+"].fileName' data-id="+id+" value='"+data[e].fileName+"'/>";
-					html += "<input type='hidden' name='"+name+"["+i+"].contentType' data-id="+id+" value='"+data[e].contentType+"'/>";
-					$("#"+formId).append(html);
-					i ++;
-				}
+				applyData(data, formId, name, id);
 			}
 		}, 
 		error: function (err) { 
 			 showError(err); 
 		} 
 	});
+}
+
+function applyData(data, formId, name, id) {
+	if($("#"+formId+" input[name*="+name+"][data-id="+id+"]").length > 0) {
+		$("#"+formId+" input[name*="+name+"][data-id="+id+"]").remove();
+	}
+	var i = $("#"+formId+" input[type=hidden][name*="+name+"]").length / 3;
+	for(var e in data) {
+		var html = "<input type='hidden' name='"+name+"["+i+"].fileURL' data-id="+id+" value='"+data[e].fileURL+"'/>";
+		html += "<input type='hidden' name='"+name+"["+i+"].fileName' data-id="+id+" value='"+data[e].fileName+"'/>";
+		html += "<input type='hidden' name='"+name+"["+i+"].contentType' data-id="+id+" value='"+data[e].contentType+"'/>";
+		$("#"+formId).append(html);
+		i ++;
+	}
 }
 
 function showError(error) {
@@ -102,3 +106,24 @@ $(function() {
         hideMessage(parseInt($(this).data('type')));
     });
 });
+
+function saveCandidateImage(candidateId, formId, data){
+	if ($('#'+formId).validate(false, validationSettings)){
+          		var formData = getFormData(formId);
+	            		
+	            $.ajax({
+	                	      type: "POST",
+	                	      data: formData,
+	                      	  url: sourceleadUrl+"/saveCandidateProfile?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,
+	                          success: function(result) {
+	                        	  if(data)
+	                        		  $("img[data-id=profileImage]").each(function(i) { $(this).attr('src', data[0].fileURL); });
+	                        	  else
+	                        		  cancel(candidateId);
+	    			          },  
+	            });
+	            return true;         
+	}else{ 
+		return false;
+	 } 
+}

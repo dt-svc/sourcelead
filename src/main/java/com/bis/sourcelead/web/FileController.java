@@ -2,8 +2,6 @@ package com.bis.sourcelead.web;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -11,6 +9,7 @@ import java.util.List;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -41,29 +40,46 @@ public class FileController {
 	@RequestMapping(value = "/upload/{type}", method = RequestMethod.POST)
 	@ResponseBody
 	public List<FileInfo> uploadFile(MultipartHttpServletRequest request, @PathVariable String type,
-			@RequestParam (defaultValue = "0") long orgId, @RequestParam (defaultValue = "0") long orgLocationId) {
+			@RequestParam (defaultValue = "0") long orgId, 
+			@RequestParam (defaultValue = "0") long orgLocationId,
+			@RequestParam (defaultValue = "0") int x,
+			@RequestParam (defaultValue = "0") int y,
+			@RequestParam (defaultValue = "0") int w,
+			@RequestParam (defaultValue = "0") int h) {
 		List<FileInfo> fileInfoList = new ArrayList<>();
 		Iterator<String> itrator = request.getFileNames();
-		while (itrator.hasNext()) {
+		while (itrator.hasNext()) {	
 			FileInfo fileInfo = new FileInfo();
 			MultipartFile multiFile = request.getFile(itrator.next());
-			if(orgId == 0 || orgLocationId == 0) {
+			if(!type.equalsIgnoreCase("profile") && (orgId == 0 || orgLocationId == 0)) {
 				Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 				OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 				orgId = org.getId();
 				orgLocationId = loginOrgLocation.getId();
 			}
-			String fileURL = new FileUploadUtil().uploadFile(staticPath, orgId, orgLocationId, type, multiFile);
-			fileInfo.setFileName(multiFile.getOriginalFilename());
-			fileInfo.setFileURL(fileURL);
-			fileInfo.setContentType(multiFile.getContentType());
-			fileInfoList.add(fileInfo);
+			FileUploadUtil fileUploadUtil = new FileUploadUtil();
+			if(x > 0 || y > 0 || w > 0 || h > 0) {
+				fileInfo.setFileURL(fileUploadUtil.cropImage(staticPath, multiFile, x, y, w, h));
+				fileInfo.setFileName(multiFile.getOriginalFilename());
+				fileInfo.setContentType(multiFile.getContentType());
+				fileInfoList.add(fileInfo);
+			} else {
+				String fileURL = fileUploadUtil.uploadFile(staticPath, orgId, orgLocationId, type, multiFile);
+				fileInfo.setFileName(multiFile.getOriginalFilename());
+				fileInfo.setFileURL(fileURL);
+				fileInfo.setContentType(multiFile.getContentType());
+				fileInfoList.add(fileInfo);
+			}
 		}
+		
 		return fileInfoList;
 	}
+		
 	@RequestMapping(value = "/viewFile")
 	public void viewFile(HttpServletResponse response, String documentPath, String contentType) {
-		File file = new File(staticPath, documentPath);
+		//String ac= staticPath.Remove(staticPath.lastIndexOf('/'));
+		String ac =StringUtils.removeEnd(staticPath, "/slead-static");
+		File file = new File(ac, documentPath);
 		try (FileInputStream fis = new FileInputStream(file);) {
 
 			byte[] pdfBytes = new byte[fis.available()];
@@ -85,6 +101,10 @@ public class FileController {
 		}
 	}
 	
+	@RequestMapping("/crop.html")
+	public String crop() {
+		return "crop";
+	}
 	
 }
 

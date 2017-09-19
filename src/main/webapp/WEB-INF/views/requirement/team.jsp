@@ -38,11 +38,10 @@
 
 <script>
 function teamList(){  
-	  var sourceleadUrl ='${sourceleadUrl}';
 	  $("#teamList").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	  $.ajax({
 		  type : "POST",
-            url: sourceleadUrl+"/getTeamListByOrgLocationID?${_csrf.parameterName}=${_csrf.token}",       
+            url: sourceleadUrl+"/getTeamListByOrgLocationID?"+tokenParamName+"="+tokenValue+"",       
             success :function(data) {
                 /*  if(data != null && data != 'undefined' && data != "" && data != '[]'){ */
 			    	     $("#teamList").removeAttr("style");
@@ -128,7 +127,6 @@ function pagination(){
 <script>
 function sideBar(teamId){
 	
-	    var sourceleadUrl ='${sourceleadUrl}';
 	      
 	    var outPut = '';
 	    outPut = outPut+'<div id="removeCandidateAlert" ></div>  ';
@@ -169,10 +167,9 @@ function sideBar(teamId){
 --%>
 <script type="text/javascript">
 function teamEditDetails(teamId){
-	  var sourceleadUrl ='${sourceleadUrl}';
 	  $.ajax({
 	    	type: "POST",
-	        url: sourceleadUrl+"/getTeamByTeamID?${_csrf.parameterName}=${_csrf.token}&teamId="+teamId,
+	        url: sourceleadUrl+"/getTeamByTeamID?"+tokenParamName+"="+tokenValue+"&teamId="+teamId,
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	var outPut = '';
@@ -224,8 +221,6 @@ function teamEditDetails(teamId){
 --%>
 <script type="text/javascript">
 function getEditTeamOwners(teamOwnerUserId,teamOwnerName,teamId){ 
-	 var sourceleadUrl ='${sourceleadUrl}';
-	 
 	/*  var editOwnerUserId = document.getElementById("editOwnerUserId").value; */
 	 var existedTeamMembersIds = [];
 	 $('.existedTeamMember').each(function() {
@@ -235,7 +230,7 @@ function getEditTeamOwners(teamOwnerUserId,teamOwnerName,teamId){
       
      $.ajax({
 	    	type: "POST",
-	        url: sourceleadUrl+"/getTeamMembersListExceptExistedTeamMembersList?${_csrf.parameterName}=${_csrf.token}&existedTeamMembersIds="+existedTeamMembersIds+"&teamId="+teamId,
+	        url: sourceleadUrl+"/getTeamMembersListExceptExistedTeamMembersList?"+tokenParamName+"="+tokenValue+"&existedTeamMembersIds="+existedTeamMembersIds+"&teamId="+teamId,
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	var output = "";
@@ -273,10 +268,9 @@ function storeEditedTeam(teamId){
 	   if ($('#edit_team_form').validate(false, validationSettings)){ 
 		   
 		    var formData = getFormData("edit_team_form");
-			var sourceleadUrl = '${sourceleadUrl}';
 			$("#team_form").attr("disabled", "disabled");
 	       
-			$.post(sourceleadUrl+"/storeEditedTeam?${_csrf.parameterName}=${_csrf.token}", formData, function(data) {
+			$.post(sourceleadUrl+"/storeEditedTeam?"+tokenParamName+"="+tokenValue+"", formData, function(data) {
 				  sideBar(teamId);
 				  teamList();
 	        });
@@ -426,11 +420,10 @@ function addMember(teamId){
 
 <script>
 function projectMemberList(teamId){
-	    var sourceleadUrl ='${sourceleadUrl}';
 		  $("#projectMemberList").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		  $.ajax({
 	           type : "POST",
-	            url: sourceleadUrl+"/getTeamMembersListByTeamID?${_csrf.parameterName}=${_csrf.token}&teamId="+teamId,       
+	            url: sourceleadUrl+"/getTeamMembersListByTeamID?"+tokenParamName+"="+tokenValue+"&teamId="+teamId,       
 	            success :function(data) {
 	                 if(data != null && data != 'undefined' && data != "" && data != '[]'){
 				    	     $("#projectMemberList").removeAttr("style");
@@ -556,7 +549,6 @@ function cancelAlert(){
 
 <script>
 function deleteTeamMember(teamMemberId,teamId){
-	  var sourceleadUrl ='${sourceleadUrl}';
 	  var reason = document.getElementById("rejectReason").value;
 	  reason = reason.replace(/\s/g, ""); 
 	  //var reason1 = document.getElementById("rejectReason").value;
@@ -564,7 +556,7 @@ function deleteTeamMember(teamMemberId,teamId){
 		 $('#reasonDiv').empty();
 		 $.ajax({
         type : "POST",
-         url: sourceleadUrl+"/deleteTeamMemberByCandidateId?${_csrf.parameterName}=${_csrf.token}&teamMemberId="+teamMemberId+"&reason="+reason,        
+         url: sourceleadUrl+"/deleteTeamMemberByCandidateId?"+tokenParamName+"="+tokenValue+"&teamMemberId="+teamMemberId+"&reason="+reason,        
          success :function(data) {
               if(data != null && data != 'undefined' && data != ""){
             			 projectMemberList(teamId);
@@ -687,14 +679,21 @@ function storeTeam(){
          };
 	   if ($('#team_form').validate(false, validationSettings)){ 
 		   
-		   var formData = getFormData("team_form");
-			alert(formData);
-			var sourceleadUrl = '${sourceleadUrl}';
+		   var formData = getFormData1("team_form");
 			$("#add_team").attr("disabled", "disabled"); 
-	       
-			$.post(sourceleadUrl+"/storeTeam?${_csrf.parameterName}=${_csrf.token}", formData, function(data) {
-				location.replace(sourceleadUrl+"/team");
-	        });
+		         
+		         $.ajax({
+					 type : "POST",
+					 data: formData,
+	  	    	     contentType : 'application/json; charset=utf-8',
+	  		         processData: false,
+	  		         contentType:false, 
+					url : sourceleadUrl+ "/storeTeam?"+tokenParamName+"="+tokenValue+"",
+					success : function(result) {
+						location.replace(sourceleadUrl+"/team");
+
+					},
+				});
 			return true; 
 	   }else{ 
 			return false;
@@ -709,11 +708,10 @@ function storeTeam(){
 
 <script type="text/javascript">
 function getTeamOwners(){ 
-	 var sourceleadUrl ='${sourceleadUrl}';
 	 var teamMemberUserId = document.getElementById("memberUserId").value;
      $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/getAllUsersByOrgLocationCodeExceptTeamOwner?${_csrf.parameterName}=${_csrf.token}&teamOwnerUserId="+teamMemberUserId,
+		        url: sourceleadUrl+"/getAllUsersByOrgLocationCodeExceptTeamOwner?"+tokenParamName+"="+tokenValue+"&teamOwnerUserId="+teamMemberUserId,
 		        success: function(data) {
 		        	var json = JSON.parse(data);
 		        	var output = "";
@@ -742,11 +740,10 @@ function getTeamOwners(){
 
 <script type="text/javascript">
 function getTeamMembers(){  
-	 var sourceleadUrl ='${sourceleadUrl}';
 	 var teamOwnerUserId = document.getElementById("ownerUserId").value;
 		 $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/getAllUsersByOrgLocationCodeExceptTeamOwner?${_csrf.parameterName}=${_csrf.token}&teamOwnerUserId="+teamOwnerUserId,
+		        url: sourceleadUrl+"/getAllUsersByOrgLocationCodeExceptTeamOwner?"+tokenParamName+"="+tokenValue+"&teamOwnerUserId="+teamOwnerUserId,
 		        success: function(data) {
 		        	var json = JSON.parse(data);
 		        	var output = "";
@@ -793,7 +790,6 @@ function cancel(){
 
 <script>
 function deleteSelectedTeam(teamId){
-	var sourceleadUrl ='${sourceleadUrl}';
 	 if (teamId) {
 		 
 	     $("#deleteTeamPopUp").empty();
@@ -804,7 +800,7 @@ function deleteSelectedTeam(teamId){
 		 
 		 $.ajax({
 		   	type: "POST",
-		    url: sourceleadUrl+"/deleteTeamById?${_csrf.parameterName}=${_csrf.token}&teamId="+teamId, 
+		    url: sourceleadUrl+"/deleteTeamById?"+tokenParamName+"="+tokenValue+"&teamId="+teamId, 
    		    success: function(data) {
    		    	
    		    	if(data != null && data != 'undefined' && data != ""){
@@ -831,10 +827,9 @@ function storeTeamMembers(teamId){
 	   if ($('#teamMember_form').validate(false, validationSettings)){ 
 			
 		    var formData = getFormData("teamMember_form");
-			var sourceleadUrl = '${sourceleadUrl}';
 			$("#teamMember_form").attr("disabled", "disabled");
 			
-	        $.post(sourceleadUrl+"/storeTeamMembers?${_csrf.parameterName}=${_csrf.token}&teamId="+teamId, formData, function(data) {
+	        $.post(sourceleadUrl+"/storeTeamMembers?"+tokenParamName+"="+tokenValue+"&teamId="+teamId, formData, function(data) {
 	        	sideBar(teamId);
 				teamList();
 	        });
@@ -979,7 +974,6 @@ $(".add-skills").click(function(e){
   
  <script type="text/javascript">
 function getTeamMembersListExceptExistedTeamMembersList(teamId){  
-	 var sourceleadUrl ='${sourceleadUrl}';
 	 var existedTeamMembersIds = [];
 	 $('.existedTeamMember').each(function() {
 		 var localId = this.value;
@@ -988,7 +982,7 @@ function getTeamMembersListExceptExistedTeamMembersList(teamId){
 	 
 	 $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/getTeamMembersListExceptExistedTeamMembersList?${_csrf.parameterName}=${_csrf.token}&existedTeamMembersIds="+existedTeamMembersIds+"&teamId="+teamId,
+		        url: sourceleadUrl+"/getTeamMembersListExceptExistedTeamMembersList?"+tokenParamName+"="+tokenValue+"&existedTeamMembersIds="+existedTeamMembersIds+"&teamId="+teamId,
 		        success: function(data) {
 		        	var json = JSON.parse(data);
 		        	var output = "";
@@ -1011,11 +1005,10 @@ function getTeamMembersListExceptExistedTeamMembersList(teamId){
 
 <script>
 function getCandidateListForTeam(teamId,teamName){
-	var sourceleadUrl = '${sourceleadUrl}';
 	$("#teamSideDiv").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	$.ajax({ 
 	    	type: "POST",
-	    	url: sourceleadUrl+"/getHotCandidateListForTeamByTeamId?${_csrf.parameterName}=${_csrf.token}&teamId="+teamId,
+	    	url: sourceleadUrl+"/getHotCandidateListForTeamByTeamId?"+tokenParamName+"="+tokenValue+"&teamId="+teamId,
 	    	  success: function(data) {
 	    		/*   if(data != null && data != 'undefined' && data != "" && data != '[]'){ */
 	               			 $("#teamSideDiv").removeAttr("style");
@@ -1129,14 +1122,13 @@ function cpagination(){
 
 <script>
 function removeFromTeam(id){
-	var sourceleadUrl = '${sourceleadUrl}';
 	if(id){
 		 $("#removeCandidate"+id).html("<td colspan='8'  id='loading"+id+"'></td>");
 		 $("#loading"+id).attr('style',' height:40px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/linear-loader.gif"); background-position:center; background-repeat:no-repeat;');
 		 
 			 $.ajax({ 
 		    	type: "POST",
-		    	url: sourceleadUrl+"/removeFromTeam?${_csrf.parameterName}=${_csrf.token}&id="+id,
+		    	url: sourceleadUrl+"/removeFromTeam?"+tokenParamName+"="+tokenValue+"&id="+id,
 		    	  success: function(data) {
 		    		 var table = $('#candidatePagination').DataTable();
 		 			 table.row('#removeCandidate'+id).remove().draw( false );
@@ -1160,11 +1152,10 @@ function removeFromTeam(id){
  function validateTeamName() {
 	 var name = $('#name').val(); 
 	 $('#teamNameDiv').find('p.jquery_form_error_message').remove();
-	 var sourceleadUrl ='${sourceleadUrl}';
 	 if(name != null && name != ""){
 		 $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/validateTeamName?${_csrf.parameterName}=${_csrf.token}&name="+name, 
+		        url: sourceleadUrl+"/validateTeamName?"+tokenParamName+"="+tokenValue+"&name="+name, 
 		        success: function(data) {
 		        	if(data == 'true'){
 						  

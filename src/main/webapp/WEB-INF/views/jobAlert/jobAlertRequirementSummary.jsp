@@ -87,6 +87,10 @@ width: 950px;
 </style>
 
 <script type="text/javascript">
+ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
+</script>
+
+<script type="text/javascript">
 var postdatavalues = { title: "", link: "", picture: "", description: "", comment: "" };
 function setPostValues(title,link,picture,description,comment){
 	 if (title) {
@@ -146,7 +150,7 @@ window.onload = function () {
 <script>
 function publicRequirementProfile(requirementUUID){
 	
-	var sourceleadUrl ='${sourceleadUrl}';
+	
 	var requirementUUID = '${requirementUUID}';
 	
 	$.ajax({

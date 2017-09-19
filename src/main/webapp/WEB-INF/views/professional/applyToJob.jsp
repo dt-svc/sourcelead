@@ -26,6 +26,7 @@ function applyToJob(jobTitle,requirementId,referId){
 	$(".side_mask").fadeIn(200);
 	$("body").css('overflow-y', 'hidden');
 	getRequirementSubmissionTemaplate(jobTitle,requirementId,referId);
+	ApplicantNotifyRequiremnentProRecruter();
 }
 </script>
 
@@ -42,7 +43,6 @@ function getSubmissionDetailsSideBar(jobTitle,submissionId,candidateId,requireme
  function validateSubmissionCandidateEmail() {
 	 var email =   $("input[name=EmailId]").val();
 	$('#emailDiv').find('p.jquery_form_error_message').remove();
-	 var sourceleadUrl ='${sourceleadUrl}';
 	 var requirementId = $("#requirementId").val();
 	 if(email != null && email != ""){
 		 $("#save_button").attr("disabled", "disabled");
@@ -72,9 +72,7 @@ function getSubmissionDetailsSideBar(jobTitle,submissionId,candidateId,requireme
 
 <script>
 function getRequirementSubmissionDetails(jobTitle,submissionId,candidateId,requirementId){
-	var sourceleadUrl = '${sourceleadUrl}';
 	var loginUserId = '${SourceLeadWeb_userId}';
-	
 	$.ajax({ 
 	    	type: "POST",
 	    	url: sourceleadUrl+"/getProfessionalSubmissionDetails?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId,
@@ -145,7 +143,6 @@ function getRequirementSubmissionDetails(jobTitle,submissionId,candidateId,requi
 
 <script>
 function getInternalInterviewsList(submissionId){
-	var sourceleadUrl ='${sourceleadUrl}';
 	var parentRequirement = '${parentRequirement}';
 	var loginUserRole = '${SourceLeadWeb_loginUserRole}';
 	 $.ajax({  
@@ -356,7 +353,6 @@ function getInternalInterviewsList(submissionId){
 
 <script>
 function getOfferDetails(submissionId){
-	var sourceleadUrl ='${sourceleadUrl}';
 	var parentRequirement = '${parentRequirement}';
 	var loginUserRole = '${SourceLeadWeb_loginUserRole}';
 	var locationCode ='${SourceLeadWeb_locationCode}'; 
@@ -548,7 +544,6 @@ function getOfferDetails(submissionId){
 
 <script>
 function changeInterviewStatus(submissionId,interviewId,interviewStatus){
-	var sourceleadUrl ='${sourceleadUrl}';
 	 $.ajax({
 		   	type: "POST",
 		    url: sourceleadUrl+"/acceptOrRejectInterview?${_csrf.parameterName}=${_csrf.token}&interviewStatus="+interviewStatus+"&requirementInterviewId="+interviewId,	    	   
@@ -570,7 +565,6 @@ function changeInterviewStatus(submissionId,interviewId,interviewStatus){
 
 <script>
 function sendMailToapplicant(submissionId,interviewId,interviewHistoryId){
-	var sourceleadUrl ='${sourceleadUrl}';
 	 $.ajax({
 		   	type: "POST",
 		    url: sourceleadUrl+"/sendMailToapplicant?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId+"&requirementInterviewId="+interviewId+"&interviewHistoryId="+interviewHistoryId,	    	   
@@ -617,9 +611,6 @@ function rejectOffer(offerStatus,submissionId,offerId){
 
 <script>
 function acceptingOffer(offerStatus,submissionId,offerId){
-	
-	
-	var sourceleadUrl ='${sourceleadUrl}';
 	 var reason;
 	 if ($('#rejectReason').length)
 	 {
@@ -659,7 +650,6 @@ function acceptingOffer(offerStatus,submissionId,offerId){
 <script>
 function notifyToApplicant(submissionId,offerId,offerHistoryId){
 	
-	var sourceleadUrl ='${sourceleadUrl}';
 	  $.ajax({  
         type : "POST",
         url: sourceleadUrl+"/sendNotificationAboutRequirementOfferMade?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId+"&offerId="+offerId+"&notificationtype=Applicant&offerHistoryId="+offerHistoryId,        
@@ -680,7 +670,6 @@ function notifyToApplicant(submissionId,offerId,offerHistoryId){
 
 <script>
 function getRequirementSubmissionTemaplate(jobTitle,requirementId,referId){
-	 var sourceleadUrl ='${sourceleadUrl}';
 	 var candidateId = '${candidateId}';
 	 generateOrgSubmissionForm(sourceleadUrl,requirementId) 
 	 
@@ -917,7 +906,6 @@ function getRequirementSubmissionTemaplate(jobTitle,requirementId,referId){
 	    
 	    
 	    $("#candidateSkills").chosen().change(function(event) {
-	    	 var sourceleadUrl ='${sourceleadUrl}';
 	    	var allSkills = $(event.target).val();
 	   
 	    	
@@ -1005,11 +993,13 @@ function ApplicantPermitProRecruter(){
 }
 </script>
 
+
 <script type="text/javascript">
 function ApplicantNotifyRequiremnentProRecruter(){
 	 if($("#notifyToApplicantId").is(':checked')){
 		  $("#notifyToApplicantId").val("Y");
 	 }else{
+		 alert("hello else");
 		 $("#notifyToApplicantId").val("N");
 	 }
 }
@@ -1032,7 +1022,6 @@ function ApplicantNotifyRequiremnentProRecruter(){
 		 candidateTypeSelect = candidateType;
 	 }
 	 
-	 var sourceleadUrl ='${sourceleadUrl}';
 	 if(candidateType != null && candidateType != "" && candidateType != 'undefined' && candidateType != 'parseCandidate'){
 		 $("#selectCandidateDiv").css("display","block");
 		
@@ -1139,7 +1128,6 @@ function ApplicantNotifyRequiremnentProRecruter(){
 	 $("#save_button").removeAttr("disabled");
 	 $('.jquery_form_error_message').remove();
 	 var candidateId = document.getElementById("candidateId").value
-	 var sourceleadUrl ='${sourceleadUrl}';
 	 if(candidateId != null && candidateId != "" && candidateId != 'undefined'){
 		
 		 document.getElementById("resumesDiv").style.display="";
@@ -1222,7 +1210,6 @@ function ApplicantNotifyRequiremnentProRecruter(){
  		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		var form = $('#submitCandidateToJob_form')[0];
   		var formData = new FormData(form); 
-		var sourceleadUrl = '${sourceleadUrl}';
 		   $.ajax({
 				    type: "POST",
 			    	data: formData,
@@ -1286,7 +1273,6 @@ function ApplicantNotifyRequiremnentProRecruter(){
  function validateCandidateEmail() {
 	 var email =   $("input[name=EmailId]").val();
 	$('#emailDiv').find('p.jquery_form_error_message').remove();
-	 var sourceleadUrl ='${sourceleadUrl}';
 	 var requirementId = $("#requirementId").val();
 	 if(email != null && email != ""){
 		 $("#save_button").attr("disabled", "disabled");
@@ -1337,10 +1323,6 @@ function validate_fileupload(fileName)
 function getResumesList(){
 	
 	 var candidateId = '${candidateId}';
-	 var sourceleadUrl ='${sourceleadUrl}';
-	 
-	
-	 
 	 $.ajax({
 	    	type: "POST",
 	        url: sourceleadUrl+"/getCandidateResumes?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId, 
@@ -1376,7 +1358,6 @@ function getResumesList(){
 <script type="text/javascript">
 function getRecruiterCandidateDetails(){
 	var candidateId = document.getElementById("candidateId").value
-	var sourceleadUrl ='${sourceleadUrl}';
 	if(candidateId != null && candidateId != "" && candidateId != 'undefined'){
 		 $.ajax({
 		    	type: "POST",
@@ -1552,7 +1533,6 @@ function getRecruiterCandidateDetails(){
 <script>
 function getCandidateDetails(){
      var candidateId = '${SourceLeadWeb_candidateId}'; 
-     var sourceleadUrl ='${sourceleadUrl}';
      $.ajax({
 	    	type: "POST",
 	        url: sourceleadUrl+"/getCandidateDetails?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId, 
@@ -1904,7 +1884,6 @@ $('body').on('submit', '#applyToJob_form', function(e){
 	  if ($(this).validate(false, validationSettings)){
       e.preventDefault();
       var frm = $('#applyToJob_form').serializeFormJSON();
-      var sourceleadUrl ='${sourceleadUrl}';
       var requirementId = $("#requirementId").val();
       var frm = $('#applyToJob_form').serializeFormJSON();
       var con1 = JSON.stringify(frm);
@@ -2074,7 +2053,6 @@ $('body').on('submit', '#submitCandidateToJob_form', function(e){
 	  if ($(this).validate(false, validationSettings)){
       e.preventDefault();
       var frm = $('#submitCandidateToJob_form').serializeFormJSON();
-      var sourceleadUrl ='${sourceleadUrl}';
       var requirementId = $("#requirementId").val();
       var frm = $('#submitCandidateToJob_form').serializeFormJSON();
       var con1 = JSON.stringify(frm);
@@ -2275,7 +2253,6 @@ function setRateTypesByLocation(){
  		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		var form = $('#applyToJob_form')[0];
   		var formData = new FormData(form); 
-		var sourceleadUrl = '${sourceleadUrl}';
 		   $.ajax({
 				    type: "POST",
 			    	data: formData,
@@ -2541,7 +2518,6 @@ function timePopUp(){
    <script>
 function saveProposeTime(submissionId){
 	if ($('#proposeTime_form').validate(false, validationSettings)){ 
-		var sourceleadUrl = '${sourceleadUrl}';
 		var frm = $('#proposeTime_form').serializeFormJSON();
 		var con = JSON.stringify(frm);
 		con = con.replace(/[{}]/g, ""); 
@@ -2569,7 +2545,6 @@ $('body').on('blur', '#proposeTime_form', function() {
 function viewProposeTime(interviewId,submissionId){
 	$(".proposeTimePop").toggleClass("proposeTimePopActive");
 	$(".reSchPop").removeClass("reSchPopActive");
-	var sourceleadUrl = '${sourceleadUrl}';
 	var locationId = '${SourceLeadWeb_orgLocationId}';
 	$.ajax({
 		type : "POST",
@@ -2625,9 +2600,7 @@ function viewProposeTime(interviewId,submissionId){
 </script>
 <script>
 function acceptProposeTime(id,proposeDate,proposeTime,submissionId){
-	var sourceleadUrl = '${sourceleadUrl}';
 	if ($('#acceptProposeTime_form').validate(false, validationSettings)){ 
-		var sourceleadUrl = '${sourceleadUrl}';
 		var frm = $('#acceptProposeTime_form').serializeFormJSON();
 		var con = JSON.stringify(frm);
 		con = con.replace(/[{}]/g, ""); 

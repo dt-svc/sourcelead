@@ -570,9 +570,7 @@
 </script>
 <script type="text/javascript">
 	function storeCandidate() {
-		
 		rateValidations();
-		
 		var validationSettings = {
 				errorMessagePosition : 'element',
 				borderColorOnError : '',
@@ -582,7 +580,6 @@
 		
 		 if ($('#addcandidate_form').validate(false, validationSettings)){ 
 			
-			var sourceleadUrl = '${sourceleadUrl}';
 			var form = $('#addcandidate_form')[0];
       		var formData = new FormData(form); 
 			//It will escape all the special characters
@@ -595,7 +592,7 @@
 		    	        processData: false,
 		    	        contentType:false,
 		        	    dataType : 'json',
-						url : sourceleadUrl+"/storeCandidate?${_csrf.parameterName}=${_csrf.token}",
+						url : sourceleadUrl+"/storeCandidate?"+tokenParamName+"="+tokenValue+"",
 						success : function(result) {
 							if(result && result === "DataMissing") {
 								$("#store_candidate").removeAttr("disabled");
@@ -686,13 +683,12 @@ function validate_fileupload(fileName)
 		    chosen = select.data('chosen');
 		    
 		    $("#candidateSkills").chosen().change(function(event) {
-		    	 var sourceleadUrl ='${sourceleadUrl}';
 		    	var allSkills = $(event.target).val();
 		   
 		    	
 		    	$.ajax({
 			    	type: "POST",
-			        url: sourceleadUrl+"/profileBySkillSet?${_csrf.parameterName}=${_csrf.token}&allSkills="+allSkills, 
+			        url: sourceleadUrl+"/profileBySkillSet?"+tokenParamName+"="+tokenValue+"&allSkills="+allSkills, 
 			        success: function(data) {
 			        	var primarySkill = data;
 			        	      $("#primarySkill").val(primarySkill);
@@ -829,12 +825,12 @@ function validate_fileupload(fileName)
  function validateCandidateEmail() {
 	 var email = document.getElementById("email").value; 
 	 $('#emailDiv').find('p.jquery_form_error_message').remove();
-	 var sourceleadUrl ='${sourceleadUrl}';
+	 
 	 if(email != null && email != ""){
 		
 		 $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/validateCandidateEmail?${_csrf.parameterName}=${_csrf.token}&email="+email+"&candidateType=N", 
+		        url: sourceleadUrl+"/validateCandidateEmail?"+tokenParamName+"="+tokenValue+"&email="+email+"&candidateType=N", 
 		        success: function(data) {
 		        	if(data == 'true'){
 		        		  $('#emailDiv').find('p.jquery_form_error_message').remove();
@@ -1011,7 +1007,7 @@ var currentRate = document.getElementById("currentRate").value;
 
 <script>
  function getVendorsByOrgLocation(){
-	 var sourceleadUrl ='${sourceleadUrl}';
+	 
 		 $.ajax({
 		    	type: "GET",
 		        url: sourceleadUrl+"/getVendorsByOrgLocation?", 
@@ -1042,12 +1038,11 @@ function  removeValiationVendorContact() {
 </script>
 
 <script>
-var sourceleadUrl ='${sourceleadUrl}';
  function getVendorContactList(){
 	var orgRelationID = $('#vendors').val();
 		 $.ajax({
 			    type: "POST",
-		        url: sourceleadUrl+"/getOrgSpocsList?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+orgRelationID+"&type=Vendor",  
+		        url: sourceleadUrl+"/getOrgSpocsList?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationID+"&type=Vendor",  
 		        success: function(data) {
 		        	var json = JSON.parse(data);
 		        	$('#vendorcontact').empty();
@@ -1063,7 +1058,7 @@ var sourceleadUrl ='${sourceleadUrl}';
  
  $(function() {
 	$("#uploadBtn").change(function() {
-		fileUpload(sourceleadUrl, "uploadBtn", "resumes", "addcandidate_form");
+		fileUpload("uploadBtn", "resumes", "addcandidate_form");
 	});
  });
  </script>

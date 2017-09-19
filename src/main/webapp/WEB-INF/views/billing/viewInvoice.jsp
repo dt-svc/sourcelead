@@ -103,7 +103,6 @@ $(document).ready(function(){
   
 <script>
 function getViewInvoice(){
-	  var sourceleadUrl ='${sourceleadUrl}';
 	  var invoiceUUID ='${invoiceUUID}';
 	  var invoiceType = '${invoiceType}';
 	  var currencyCode = '${SourceLeadWeb_currencyCode}';
@@ -119,7 +118,7 @@ function getViewInvoice(){
 		  }
 	  $.ajax({
 	    	type: "GET",
-	        url: sourceleadUrl+"/getViewInvoice?${_csrf.parameterName}=${_csrf.token}&invoiceUUID="+invoiceUUID,
+	        url: sourceleadUrl+"/getViewInvoice?"+tokenParamName+"="+tokenValue+"&invoiceUUID="+invoiceUUID,
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	var result = "";
@@ -594,7 +593,6 @@ function getViewInvoice(){
 
 <script>
 function viewInvoiceDocView(documentId,title){
-	var sourceleadUrl ='${sourceleadUrl}';
 	if(documentId != null && documentId != ""){
 		window.open(sourceleadUrl+'/viewInvoiceDocView/'+title+'?documentId='+documentId,title,"height=600,width=600");
 	}  
@@ -633,9 +631,8 @@ function invoiceNotesList(){
 function invoiceNotes(){
 	var urlForm = "";
 	  var invoiceUUID ='${invoiceUUID}';
-    	urlForm = "/getNotesInvoice?${_csrf.parameterName}=${_csrf.token}&invoiceUUID="+invoiceUUID;
+    	urlForm = "/getNotesInvoice?"+tokenParamName+"="+tokenValue+"&invoiceUUID="+invoiceUUID;
 	
-	var sourceleadUrl ='${sourceleadUrl}';
 	  $.ajax({
         type : "POST",
          url: sourceleadUrl+urlForm,        
@@ -759,7 +756,6 @@ function addNotes() {
 	      	    var locationCode ='${SourceLeadWeb_locationCode}'; 
 	      	    formData.append("locationCode",locationCode);
 	      			
-				var sourceleadUrl = '${sourceleadUrl}';
 				$("#save_note").attr("disabled", "disabled");
          		$("#save_note" ).addClass('button').val('Processing..');
 				$.ajax({
@@ -767,7 +763,7 @@ function addNotes() {
 		        	    data: formData,
 		    	        processData: false,
 		    	        contentType:false,
-						url : sourceleadUrl+"/storeNotes?${_csrf.parameterName}=${_csrf.token}&userId="+userId+"locationCode="+locationCode,
+						url : sourceleadUrl+"/storeNotes?"+tokenParamName+"="+tokenValue+"&userId="+userId+"locationCode="+locationCode,
 						success : function(result) {
 							closeDocPopup();
 							invoiceNotes();
@@ -789,12 +785,11 @@ function addNotes() {
 </script>
 <script>
 function paymentHistroy(){
-	 var sourceleadUrl ='${sourceleadUrl}';
 	  var invoiceUUID ='${invoiceUUID}';
 	  var locationId = '${SourceLeadWeb_orgLocationId}';
 	  $.ajax({
 	    	type: "GET",
-	        url: sourceleadUrl+"/getViewPaymentHistory?${_csrf.parameterName}=${_csrf.token}&invoiceUUID="+invoiceUUID+"&locationId="+locationId,
+	        url: sourceleadUrl+"/getViewPaymentHistory?"+tokenParamName+"="+tokenValue+"&invoiceUUID="+invoiceUUID+"&locationId="+locationId,
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	var result = "";                                                                                                

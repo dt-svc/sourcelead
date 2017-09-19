@@ -17,6 +17,18 @@
 <link href="resources/css/jquery-tagit.css" rel="stylesheet">
 <!-- end files for autocomplete with tagit -->
 
+<script>
+ window.onload = function() {
+	 var conType = '${contract.contractType}';
+	 if(conType){
+		 contractTypeLabels();
+	 }
+};
+</script>
+
+
+
+
 <!-- Content Area -->
  <section class="content-wraper">
     <section class="content-header clearfix">
@@ -318,7 +330,7 @@
       
       
 	<div class="newContrBill col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">
-           <div id="billingDiv" style="display: ${contract.contractType == 'Vendor NSA' || contract.contractType == 'Vendor NDA' || contract.contractType == 'NDA' || contract.contractType == 'NSA' ||  contract.contractType == 'Full time offer' ? 'none' : 'block'};">
+           <div id="billingDiv" style="display: ${contract.contractType == 'Vendor MSA' || contract.contractType == 'Client MSA' || contract.contractType == 'Vendor NSA' || contract.contractType == 'Vendor NDA' || contract.contractType == 'NDA' || contract.contractType == 'NSA' ||  contract.contractType == 'Full time offer' ? 'none' : 'block'};">
            <h2>Billing Details</h2>
            
            <div class="form-group" id="hoursPerWeekDiv" style="display: ${contract.contractType == 'Client SOW' || contract.contractType == 'Vendor SOW' ? 'block' : 'none'};">
@@ -1711,7 +1723,7 @@ function validateContractTitle(){
 
 $(function() {
 	$("#uploadBtn").change(function() {
-		fileUpload(sourceleadUrl, "uploadBtn", "ContractDocs", "newcontract_form");
+		fileUpload("uploadBtn", "ContractDocs", "newcontract_form");
 	});
  });
 </script>

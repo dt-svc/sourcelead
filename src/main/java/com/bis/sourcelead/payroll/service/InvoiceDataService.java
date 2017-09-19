@@ -15,7 +15,7 @@ public interface InvoiceDataService {
 
 	Integer saveInvoiceData(MultipartFile multipartFile, OrgLocations orgLocation, User user, JSONObject jsonObj) throws Exception;
 
-	ResponseList<InvoiceData> getInvoiceDetails(InvoiceDetailsDTO invoiceDetailsDTO, Long orgLocationId)throws Exception;
+	ResponseList<InvoiceData> getInvoiceDetails(InvoiceDetailsDTO invoiceDetailsDTO, OrgLocations orgLocation)throws Exception;
 
 	List<InvoiceData> getInvoiceDetailsByEmpId(Long empId, OrgLocations orgLocations)throws Exception;
 	

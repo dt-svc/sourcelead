@@ -137,6 +137,8 @@ public interface RequirementDao {
 	
 	public boolean checkForOldrecordsUsingOrgLocationid(Long orglocationId,String tableName);
 
+	Long getRequirementGeneratedIdByOrgLocationId(Long orgLocationId, Integer generatedIdCount);
+
 	/*boolean checkForOldrecordsInCandidtesUsingOrgLocationid(Long orglocationId);
 
 	boolean checkForOldrecordsInProjectsUsingOrgLocationid(Long orglocationId);*/

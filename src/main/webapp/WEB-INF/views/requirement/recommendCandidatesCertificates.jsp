@@ -84,13 +84,12 @@ function storeCertificate(candidateId){
 			
 		if ($('#Candidate_certification_form').validate(false,validationSettings)) {
 			
-			var sourceleadUrl = '${sourceleadUrl}';
 			var formData = getFormData('Candidate_certification_form');
 			$("#Candidate_certification_form").attr("disabled", "disabled");
 				$.ajax({
 						type : "POST",
 						data : formData,
-						url : sourceleadUrl+ "/storeCandidateCertifications?${_csrf.parameterName}=${_csrf.token}&candidateId=" + candidateId,
+						url : sourceleadUrl+ "/storeCandidateCertifications?"+tokenParamName+"="+tokenValue+"&candidateId=" + candidateId,
 						success : function(data) {
 							if (data != null && data != 'undefined'
 									&& data != "") {
@@ -152,7 +151,6 @@ function storeCertificate(candidateId){
 --%>
 <script>
 function candidateCertificateList(candidateId){
-	 var sourceleadUrl ='${sourceleadUrl}';
 	 
 	 var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
 	  if(locationList.match("yyyy-MM-dd")){
@@ -167,7 +165,7 @@ function candidateCertificateList(candidateId){
 	 
 	 $.ajax({  
           type : "POST",
-          url: sourceleadUrl+"/getCandidateCertificationListByCandidateIdAndOrgLocationID?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,        
+          url: sourceleadUrl+"/getCandidateCertificationListByCandidateIdAndOrgLocationID?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
           success :function(data) {
               /*  if(data != null && data != 'undefined' && data != "" && data != '[]'){ */
              		 if( data.indexOf('Sign In') >= 0){
@@ -435,11 +433,10 @@ function addCertification(candidateId) {
 
 	function editCertification(candidateCertificationId, candidateId) {
 
-		var sourceleadUrl = '${sourceleadUrl}';
 		$.ajax({
 					type : "POST",
 					url : sourceleadUrl
-							+ "/getCandidateCertificateBycandidateIdandCertificateId?${_csrf.parameterName}=${_csrf.token}&candidateId="
+							+ "/getCandidateCertificateBycandidateIdandCertificateId?"+tokenParamName+"="+tokenValue+"&candidateId="
 							+ candidateId + "&candidateCertificationId=" + candidateCertificationId,
 					success : function(data) {
 
@@ -638,12 +635,11 @@ function addCertification(candidateId) {
 		if ($('#candidateCertificationEdit_form').validate(false,validationSettings)) {
 
 			var formData = getFormData('candidateCertificationEdit_form');
-			var sourceleadUrl = '${sourceleadUrl}';
 			$("#addCandidate").attr("disabled", "disabled");
 			$.ajax({
 						type : "POST",
 						data : formData,
-						url : sourceleadUrl+ "/updateCandidateCertificationsBycandidateIdandcandidateCertificateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&candidateCertificationId"+ candidateCertificationId,
+						url : sourceleadUrl+ "/updateCandidateCertificationsBycandidateIdandcandidateCertificateId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&candidateCertificationId"+ candidateCertificationId,
 						success : function(data) {
 							closeCertificatePopup();
 							candidateCertificateList(candidateId);
@@ -672,12 +668,11 @@ function addCertification(candidateId) {
 <script>
 function removeCertification(candidateCertificationId,candidateId){
 	
-	 var sourceleadUrl ='${sourceleadUrl}';
 	 var loginUserId = '${SourceLeadWeb_userId}';
 	 var orgLocationId = '${SourceLeadWeb_orgLocationId}';	
 	 $.ajax({  
           type : "POST",
-          url: sourceleadUrl+"/removeCandidateCertificateBycandidateIdandcandidateCertificateId?${_csrf.parameterName}=${_csrf.token}&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&candidateCertificationId="+candidateCertificationId,        
+          url: sourceleadUrl+"/removeCandidateCertificateBycandidateIdandcandidateCertificateId?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&candidateCertificationId="+candidateCertificationId,        
           success :function(data) {
 
 				if(data != null && data != 'undefined' && data != ""){
