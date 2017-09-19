@@ -31,6 +31,11 @@ border-radius:3px; cursor: pointer; padding:6px 0px 0px 0px;
 <!-- Content Area Starts -->
   <section class="content-wraper">
     <section class="content-header clearfix">
+    	<c:if test="${!empty msg}">
+			<div class="success_pop" id="selector2" style="display: block;">
+				<i class="fa fa-check-circle"></i><span>${msg}</span>
+			</div>
+		</c:if>
       <div class="pull-left">
         <h2>Release Job</h2>
       </div>
@@ -1116,6 +1121,13 @@ function getPostValueDetails(){
 	 return postdatavalues;
   }
 
+</script>
+
+<script>
+       function msgFadein1() {
+           setTimeout(function(){
+                   $('#selector2').fadeOut('slow'); }, 1000);
+       }
 </script>
 
 <script>

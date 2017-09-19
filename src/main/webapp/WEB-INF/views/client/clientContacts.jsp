@@ -58,7 +58,7 @@ function clientContacts(orgRelationID,clientLocationId){
 		var sourceleadUrl = '${sourceleadUrl}';
 		$.ajax({
 	    	type: "POST",
-	    	url : sourceleadUrl+"/getOrgSpocsList?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+orgRelationID+"&type=Client", 
+	    	url : sourceleadUrl+"/getOrgSpocsList?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationID+"&type=Client", 
 	        success: function(data) {
 	        	
 	        var json = JSON.parse(data);
@@ -352,7 +352,7 @@ function saveSpocTerminateReason(spocId, orgRelationID,clientLocationId,spocName
 		  $("#reasonForSpocDiv").empty();
 		$.ajax({
 		   	type: "POST",
-		    url: sourceleadUrl+"/terminateSpoc?${_csrf.parameterName}=${_csrf.token}&spocId="+spocId+"&reason="+reason+"&userId="+userId+"&orgLocationId="+orgLocationId+"&responderType=Client",	    	   
+		    url: sourceleadUrl+"/terminateSpoc?"+tokenParamName+"="+tokenValue+"&spocId="+spocId+"&reason="+reason+"&userId="+userId+"&orgLocationId="+orgLocationId+"&responderType=Client",	    	   
 		    success: function(data) {
 		    	$("#popUp").empty();
    			 	$(".project_inn_mask").fadeOut(200);
@@ -391,7 +391,7 @@ function changeSpocStatus(spocId,clientLocationId){
 	var sourceleadUrl = '${sourceleadUrl}';
 	$.ajax({
 	   	type: "POST",
-	    url: sourceleadUrl+"/changeSpocStatus?${_csrf.parameterName}=${_csrf.token}&spocId="+spocId+"&spocStatus="+spocStatus,	    	   
+	    url: sourceleadUrl+"/changeSpocStatus?"+tokenParamName+"="+tokenValue+"&spocId="+spocId+"&spocStatus="+spocStatus,	    	   
 	    success: function(data) {
 	    	clientContactList(orgRelationID,clientLocationId);
 	    }
@@ -407,7 +407,7 @@ function resendSpocInvitation(spocUserId,orgRelationID,clientLocationId,spocId){
 		//$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 			 $.ajax({
 			    	type: "POST",
-			        url: sourceleadUrl+"/resendSpocInvitationEmail?${_csrf.parameterName}=${_csrf.token}&spocUserId="+spocUserId+"&orgSpocId="+spocId+"&responderType=Client&orgRelationID="+orgRelationID, 
+			        url: sourceleadUrl+"/resendSpocInvitationEmail?"+tokenParamName+"="+tokenValue+"&spocUserId="+spocUserId+"&orgSpocId="+spocId+"&responderType=Client&orgRelationID="+orgRelationID, 
 			        success: function(result) {
 			        	clientContactList(orgRelationID,clientLocationId)
 			        },
@@ -559,7 +559,7 @@ function closePopupDiv(){
 			$("#addClientContact").attr("disabled", "disabled");
 			$("#addClientContact").addClass('button').val('Processing..');
 			
-			$.post(sourceleadUrl+"/saveClinentAndVendorContact?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+orgRelationId+"&clientLocationId="+clientLocationId+"&responderType=Client", formData, function(data) {
+			$.post(sourceleadUrl+"/saveClinentAndVendorContact?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId+"&clientLocationId="+clientLocationId+"&responderType=Client", formData, function(data) {
 				$("#popUpDivContact").removeClass("edit-details-active");
 				 $("#clientTerminateMsgDiv").removeAttr("style");
 		 			$("#clientTerminateMsgDiv").css({ display: "block" });
@@ -589,7 +589,7 @@ function closePopupDiv(){
          $("#addClientContact" ).addClass('button').val('Processing..');
 		 $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/validateSpocEmailId?${_csrf.parameterName}=${_csrf.token}&email="+EmailId+"&orgRelationId="+orgRelationId, 
+		        url: sourceleadUrl+"/validateSpocEmailId?"+tokenParamName+"="+tokenValue+"&email="+EmailId+"&orgRelationId="+orgRelationId, 
 		        success: function(data) {
 		        	if(data == 'true'){
 		        		  $('#EmailIdDiv').find('p.jquery_form_error_message').remove();
@@ -649,7 +649,7 @@ function getSpocUserDetails(orgLocationId,orgRelationID){
 	if(email){
 		$.ajax({
 	    	type: "POST",
-	    	url : sourceleadUrl+"/getSpocUserDetails?${_csrf.parameterName}=${_csrf.token}&email="+email+"&orgLocationId="+orgLocationId,
+	    	url : sourceleadUrl+"/getSpocUserDetails?"+tokenParamName+"="+tokenValue+"&email="+email+"&orgLocationId="+orgLocationId,
 	        contentType: "application/json; charset=utf-8",
 	        dataType: "json",
 	        success: function(data) {
@@ -724,7 +724,7 @@ function acceptSpocInvitation(spocId,orgRelationId,clientLocationId){
 	 var sourceleadUrl ='${sourceleadUrl}';
 	 $.ajax({
 		   	type: "POST",
-		    url: sourceleadUrl+"/saveInvitationStatus?${_csrf.parameterName}=${_csrf.token}&spocId="+spocId+"&invitationStaus=Accepted",	    	   
+		    url: sourceleadUrl+"/saveInvitationStatus?"+tokenParamName+"="+tokenValue+"&spocId="+spocId+"&invitationStaus=Accepted",	    	   
 		    success: function(data) {
 		    	$("#clientTerminateMsgDiv").removeAttr("style");
 	 			$("#clientTerminateMsgDiv").css({ display: "block" });
@@ -741,7 +741,7 @@ function rejectSpocInvitation(spocId,orgRelationId,clientLocationId){
 	 var sourceleadUrl ='${sourceleadUrl}';
 	 $.ajax({
 		   	type: "POST",
-		    url: sourceleadUrl+"/saveInvitationStatus?${_csrf.parameterName}=${_csrf.token}&spocId="+spocId+"&invitationStaus=Rejected",
+		    url: sourceleadUrl+"/saveInvitationStatus?"+tokenParamName+"="+tokenValue+"&spocId="+spocId+"&invitationStaus=Rejected",
 		    success: function(data) {
 		    	$("#clientTerminateMsgDiv").removeAttr("style");
 	 			$("#clientTerminateMsgDiv").css({ display: "block" });
@@ -763,7 +763,7 @@ function rejectSpocInvitation(spocId,orgRelationId,clientLocationId){
 	 if(email != null && email != "" && email != 'undefined'){
 		 $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/getAllOwners?${_csrf.parameterName}=${_csrf.token}&email="+email+"&orgRelationId="+orgRelationId+"&type=client",  
+		        url: sourceleadUrl+"/getAllOwners?"+tokenParamName+"="+tokenValue+"&email="+email+"&orgRelationId="+orgRelationId+"&type=client",  
 		        success: function(data) {
 		        	var json = JSON.parse(data);
 		        	var output = "";
@@ -813,7 +813,7 @@ function validateEmail(orgRelationID){
 	if(email != null){
 		$.ajax({
 			type : "POST",
-			url : sourceleadUrl + "/validateClientOrVendorEmail?${_csrf.parameterName}=${_csrf.token}&email="+email,
+			url : sourceleadUrl + "/validateClientOrVendorEmail?"+tokenParamName+"="+tokenValue+"&email="+email,
 			success : function(data) {
 				var result = data;
 				if(result == 'Invalid Email') {
