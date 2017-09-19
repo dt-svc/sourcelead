@@ -54,7 +54,7 @@ overflow-x: auto;
 			
 			<!-- Advanced Search -->
   <div class="timesheet_out">
-  <div class="cand-advsrch pull-left candAdvsrch">
+  <div class="cand-advsrch pull-left candAdvsrch" id="advanceSearchDiv">
             <a href="javascript:void(0)" class="btn btn-primary btn-sm" title="Advanced Search" onClick="openPop();loadChosenScripts();"> Advanced Search&nbsp;&nbsp; <i class="fa fa-search"></i> </a>
             <form:form id="clientlist_form" name="clientlist_form"  enctype='multipart/form-data' >
           <div class="cand-advsrch-popup"> <a href="javascript:void(0)" class="close-div" onClick="closePop()"><i class="fa fa-close"></i></a>
@@ -1545,6 +1545,7 @@ function listChange(sel){
 		 document.getElementById("filter4ApprovePop").style.display="none";
 		/*  getClientDetails(); */
 		 /* getClientDetailsELK(); */
+		 document.getElementById("advanceSearchDiv").style.display="block";
 		 $("#dataTableSearch").val("");
 		 getClientList();
 	 }
@@ -1567,7 +1568,7 @@ function listChange(sel){
 // 		document.getElementById("filter1ApprovePop").style.display="block";
 		 document.getElementById("filter3ApprovePop").style.display="block";
 		 document.getElementById("filter4ApprovePop").style.display="block";
-		 
+		 document.getElementById("advanceSearchDiv").style.display="none";
 		/*  getVendorContactLists(); */
 // 		 getVendorContactListsELK();
 		$("#dataTableSearch").val("");

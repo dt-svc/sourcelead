@@ -385,7 +385,7 @@ function candidateSideBar(candidateId){
 			            result = result+'    <i class="fa fa-comments"></i>';
 			            result = result+'        <div class="commentsimg-inner">';
 			            
-			            result = result+'        	<img onerror="predefineProfileImage(this);" src="'+sourceleadUrl+'/displayUserImage/'+loginUserId+'"/>';
+			            result = result+'        	<img data-id="userProfileImage" onerror="predefineProfileImage(this);" src="${SourceLeadWeb_user.fileUrl}"/>';
 			            result = result+'        </div>';
 			            result = result+'    </div>';
 			            result = result+'     <div class="comments-content">';

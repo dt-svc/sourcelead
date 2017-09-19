@@ -44,10 +44,10 @@ function getProfessionalInfo(){
 	var candidateType= "Professional";
 	var userId = '${SourceLeadWeb_userId}';
 	var candidateId = '${SourceLeadWeb_candidateId}';
-	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
+	var locationCode = '${SourceLeadWeb_locationCode}';
 	$.ajax({
 	   	type: "GET",
-	    url: sourceleadUrl+"/getProfessionalInfo?candidateId="+candidateId+"&orgLocationId="+orgLocationId, 	   
+	    url: sourceleadUrl+"/getProfessionalInfo?candidateId="+candidateId+"&locationCode="+locationCode, 	   
 		    success: function(json) {
 		    	/*  var json = JSON.parse(data); */
 		    	 if(json.firstName != null && json.firstName != '' && json.firstName !='undefined'){
@@ -206,7 +206,7 @@ function getProfessionalInfo(){
 				 result = result +'	    <div class="col-md-5">';
 				 result = result +'	        <h5>Professional Info</h5>';
 				 result = result +'	        <div class="chip">';
-				 result = result +'	        <img onerror="predefineProfileImage(this);"  src="<c:url value="'+sourceleadUrl+'/displayUserImage/'+userId+'"/>" alt="Profile Image" width="96" height="96">';
+				 result = result +'	        <img data-id="userProfileImage" onerror="predefineProfileImage(this);"  src="${SourceLeadWeb_user.fileUrl}" alt="Profile Image" width="96" height="96">';
 				 
 				 result = result +'	        <span>';
 				  result = result +'	        <strong>'+firstName+' '+lastName+'</strong> <br>'; 
