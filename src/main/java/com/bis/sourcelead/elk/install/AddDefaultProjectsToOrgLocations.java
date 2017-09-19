@@ -41,7 +41,7 @@ public void dumpDefaultProjects() throws IOException, SQLException {
 			 stmt1 = conn.createStatement();
 			 ResultSet rs1 = stmt1.executeQuery(sql1);
 			
-			 System.out.println("----Adding Project Action Roles Starts-----");
+			 System.out.println("----Adding default projects starts-----");
 			 while(rs1.next()){
 				 
 				 Long  orgLocId = rs1.getLong("ID");
@@ -139,7 +139,7 @@ public void dumpDefaultProjects() throws IOException, SQLException {
 					 
 				    	
 		}
-			System.out.println("----Adding Project Action Roles ends-----");
+			System.out.println("----Adding default projects ends-----");
 		
 	}catch(Exception e){
 		e.printStackTrace();

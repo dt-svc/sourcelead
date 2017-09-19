@@ -24,7 +24,7 @@ public class AddProjectClientsToProjects {
 	
 /**
  * @author Venkat I
- * this method is adding default projects for org locations
+ * this method is adding project clients to projects
  * @throws IOException
  * @throws SQLException
  */

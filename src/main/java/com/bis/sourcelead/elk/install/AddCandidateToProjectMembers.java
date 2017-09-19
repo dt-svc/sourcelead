@@ -21,7 +21,7 @@ public class AddCandidateToProjectMembers {
 	
 /**
  * @author Venkat I
- * this method is using for update candidate id to project members
+ * this method is using for update candidate id and master candidate id to project members
  * @throws IOException
  * @throws SQLException
  */
@@ -60,10 +60,14 @@ public void dumpCandidateIdToProjectMembers() throws IOException, SQLException {
 			    	
 			    	if (rs3.next()) {
 			    		Long  candidateId = rs3.getLong("ID");
-			    		String query2 = " update sourcelead.PROJECT_MEMBERS set CANDIDATE_ID = ? where ID = ? ";
+			    		Long  masterCandidateId = rs3.getLong("MASTER_CANDIDATE_ID");
+			    		if(candidateId == 0 || masterCandidateId ==0)
+			    			continue;
+			    		String query2 = " update sourcelead.PROJECT_MEMBERS set MASTER_CANDIDATE_ID = ?, CANDIDATE_ID = ? where ID = ? ";
 			    		java.sql.PreparedStatement pstmt3 = conn.prepareStatement(query2); 
-			    		pstmt3.setLong(1, candidateId);
-			    		pstmt3.setLong(2, projectMemberId);
+			    		pstmt3.setLong(1, masterCandidateId);
+			    		pstmt3.setLong(2, candidateId);
+			    		pstmt3.setLong(3, projectMemberId);
 			    		pstmt3.executeUpdate(); 
 			    	}
 		    	} 
