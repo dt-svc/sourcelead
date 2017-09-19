@@ -865,10 +865,11 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 					masterCandidate.setId(candidate.getMasterCandidateId().getId());
 					projectMembers.setMasterCandidateId(masterCandidate);
 					projectClients = projectClientService.getProjectClientsByProjectIdAndOrgLocationId(projects.getId(), orgLocations.getId());
-					Employees employees = employeesService.getEmployeeByUserIdAndOrgLocationsId(candidate.getConsultantUser().getId(), orgLocations.getId());
-					projectMembers.setEmployee(employees);
+					if(candidate.getConsultantUser() != null){
+						Employees employees = employeesService.getEmployeeByUserIdAndOrgLocationsId(candidate.getConsultantUser().getId(), orgLocations.getId());
+						projectMembers.setEmployee(employees);
+					}
 					projectMembers = saveProjectMembers(projectMembersDTO, user, projectClients, projectMembers, orgLocations, projects);
-					
 					
 					if(projects.getOrgLocationsId().getId().equals(orgLocations.getId())){
 						saveProjectMembersHistory(projectMembers,user,projectClients);

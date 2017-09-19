@@ -739,7 +739,7 @@ public class ProjectMembers implements Serializable {
 
 	public String getCandidateName() {
 		if(projectMemberCandidteId != null){
-			if(!StringUtils.isNotEmpty(projectMemberCandidteId.getLastName())){
+			if(projectMemberCandidteId.getLastName() != null){
 				candidateName = projectMemberCandidteId.getFirstName()+" "+projectMemberCandidteId.getLastName();
 			}else{
 				candidateName = projectMemberCandidteId.getFirstName();
