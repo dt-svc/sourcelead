@@ -260,7 +260,7 @@ var validationSettings = {
           	            processData: false,
           	            contentType:false,
               	        dataType : 'json',
-	     		    	 url: sourceleadUrl+"/addCategoryAssets?${_csrf.parameterName}=${_csrf.token}&json="+jsonData, 
+	     		    	 url: sourceleadUrl+"/addCategoryAssets?"+tokenParamName+"="+tokenValue+"&json="+jsonData, 
 	     		        success: function(result) {
 	     		        	if(result == 'home'){
 	     	   	        	    location.replace(sourceleadUrl+ "/assetManagement");
@@ -357,7 +357,7 @@ var validationSettings = {
 		
 		  $.ajax({
 			   	type: "POST",
-			    url: sourceleadUrl+"/getAssetList?${_csrf.parameterName}=${_csrf.token}&categoryIds="+categoryIds+"&workingStatus="+workingStatus, 	   
+			    url: sourceleadUrl+"/getAssetList?"+tokenParamName+"="+tokenValue+"&categoryIds="+categoryIds+"&workingStatus="+workingStatus, 	   
 	   		    success: function(data) {
 	   		    	
 	   		    	
@@ -466,7 +466,7 @@ function updateWorkingStatus(assetId){
 	 $("#loading"+assetId).attr('style',' height:40px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/linear-loader.gif"); background-position:center; background-repeat:no-repeat;');
 	$.ajax({
 	   	type: "POST",
-	    url: sourceleadUrl+"/updateAssetWorkingStatus?${_csrf.parameterName}=${_csrf.token}&assetId="+assetId+"&workingStatus="+workingStatus,	    	   
+	    url: sourceleadUrl+"/updateAssetWorkingStatus?"+tokenParamName+"="+tokenValue+"&assetId="+assetId+"&workingStatus="+workingStatus,	    	   
 	    success: function(data) {
 	    	$("#asset"+assetId).empty();
 	    	$("#asset"+assetId).html(rowHtmlContent);
@@ -512,7 +512,7 @@ function removeAssetManagement(assetId){
 	
 	 $.ajax({
 	   	type: "POST",
-	    url: sourceleadUrl+"/removeAssetManagement?${_csrf.parameterName}=${_csrf.token}&assetId="+assetId,	    	   
+	    url: sourceleadUrl+"/removeAssetManagement?"+tokenParamName+"="+tokenValue+"&assetId="+assetId,	    	   
 	    success: function(data) {
 	    	 var table = $('#assetManagementList').DataTable();
   		     table.row("#asset"+assetId).remove().draw( false );

@@ -26,7 +26,7 @@ line-height: 30px;
         <h2>Import Transactions</h2>
       </div>
     </section>
-    <form:form id="upload_form" name="upload_form" method="post" enctype="multipart/form-data" modelAttribute="amexUploadFile" action="saveImports?${_csrf.parameterName}=${_csrf.token}">
+    <form:form id="upload_form" name="upload_form" method="post" enctype="multipart/form-data" modelAttribute="amexUploadFile" action="saveImports?"+tokenParamName+"="+tokenValue+"">
     <div class="content-area clearfix">
     <div id="loading"></div> 
       <div class="clearfix form-area form-horizontal mt">
@@ -235,7 +235,7 @@ function checkDates(){
 	
 	 $.ajax({
 		   	type: "POST",
-		    url: sourceleadUrl+"/validateTransDates?${_csrf.parameterName}=${_csrf.token}&fromDate="+fromDate+"&toDate="+toDate+"&financialInstituteName="+financialInstituteName, 	   
+		    url: sourceleadUrl+"/validateTransDates?"+tokenParamName+"="+tokenValue+"&fromDate="+fromDate+"&toDate="+toDate+"&financialInstituteName="+financialInstituteName, 	   
 		    success: function(data) {
 		    	
 		    	if(data == 'Invalid'){

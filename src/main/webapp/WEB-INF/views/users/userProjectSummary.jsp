@@ -10,7 +10,7 @@ function userAssignedProjects(userId){
 	var orgLocationId ='${SourceLeadWeb_orgLocationId}';
 	  $.ajax({
            type : "GET",
-           url: sourceleadUrl+"/getAssignedProjectsListForUser?${_csrf.parameterName}=${_csrf.token}&userId="+userId+"&orgLocationId="+orgLocationId,    
+           url: sourceleadUrl+"/getAssignedProjectsListForUser?"+tokenParamName+"="+tokenValue+"&userId="+userId+"&orgLocationId="+orgLocationId,    
             success :function(data) {
                 	prepareAssignedProjectsData(data);
           },
@@ -245,7 +245,7 @@ function inlineEditForEndDate(id,projectMemberId){
 	 var endDate = document.getElementById(id).value;
 	  $.ajax({
 		   	type: "POST",
-		    url: sourceleadUrl+"/updateEndDateByProjectMemberId?${_csrf.parameterName}=${_csrf.token}&endDate="+endDate+"&projectMemberId="+projectMemberId, 	   
+		    url: sourceleadUrl+"/updateEndDateByProjectMemberId?"+tokenParamName+"="+tokenValue+"&endDate="+endDate+"&projectMemberId="+projectMemberId, 	   
    		    success: function(data) {
    			   
    		    }

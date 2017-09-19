@@ -12,10 +12,9 @@ function getVendorsReportList(){
 	var reportType = $("#vendorreportTypeId").val();
 	var startDate = $("#vendorStartDate").val();
 	var endDate = $("#vendorEndDate").val();
-	var sourceleadUrl ='${sourceleadUrl}';
 	$.ajax({
          type : "POST",
-          url: sourceleadUrl+"/getVendorRequirementReports?${_csrf.parameterName}=${_csrf.token}&reportType="+reportType+"&customStartDate="+startDate+"&customEndDate="+endDate,    
+          url: sourceleadUrl+"/getVendorRequirementReports?"+tokenParamName+"="+tokenValue+"&reportType="+reportType+"&customStartDate="+startDate+"&customEndDate="+endDate,    
           success :function(data) {
         	 prepareReportDataDiv(data);
          },
@@ -135,10 +134,9 @@ function getVendorSpocs(relationId){
 	var reportType = $("#vendorreportTypeId").val();
 	var startDate = $("#vendorStartDate").val();
 	var endDate = $("#vendorEndDate").val();
-	var sourceleadUrl ='${sourceleadUrl}';
 	$.ajax({
          type : "POST",
-          url: sourceleadUrl+"/getVendorSpocsReports?${_csrf.parameterName}=${_csrf.token}&reportType="+reportType+"&relationId="+relationId+"&customStartDate="+startDate+"&customEndDate="+endDate,    
+          url: sourceleadUrl+"/getVendorSpocsReports?"+tokenParamName+"="+tokenValue+"&reportType="+reportType+"&relationId="+relationId+"&customStartDate="+startDate+"&customEndDate="+endDate,    
           success :function(data) {
         	  prepareSpocReportDataDiv(data);
         	 /*  var result = "";
@@ -599,7 +597,6 @@ function getVendorCustomReports(){
 	var reportType = $("#vendorreportTypeId").val();
 	var startDate = $("#vendorStartDate").val();
 	var endDate = $("#vendorEndDate").val();
-	var sourceleadUrl ='${sourceleadUrl}';
 	if(startDate == null || startDate == '' || startDate == 'undefined'){
 		$("#vendorreportStartDate").empty().append("Start Date is Required") ; 
 	}
@@ -609,7 +606,7 @@ function getVendorCustomReports(){
 	else{
 		$.ajax({
 	         type : "POST",
-	          url: sourceleadUrl+"/getVendorRequirementReports?${_csrf.parameterName}=${_csrf.token}&reportType="+reportType+"&customStartDate="+startDate+"&customEndDate="+endDate,    
+	          url: sourceleadUrl+"/getVendorRequirementReports?"+tokenParamName+"="+tokenValue+"&reportType="+reportType+"&customStartDate="+startDate+"&customEndDate="+endDate,    
 	          success :function(data) {
 	        	  prepareReportDataDiv(data);
 	         },

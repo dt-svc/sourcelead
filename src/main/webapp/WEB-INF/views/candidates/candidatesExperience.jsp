@@ -98,7 +98,7 @@ function closeCertificatePopup(){
 			
 			$("#candidateEmployersAdd").attr("disabled", "disabled");
 			$("#candidateEmployersAdd").addClass('button').val('Processing..'); 
-	        $.post(sourceleadUrl+"/storeCandidateEmployers?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId, formData, function(data) {
+	        $.post(sourceleadUrl+"/storeCandidateEmployers?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId, formData, function(data) {
 	        	
 	        	if (data != null && data != 'undefined'
 					&& data != "") {
@@ -157,7 +157,7 @@ function closeCertificatePopup(){
 			$.ajax({
 						type : "POST",
 						url : sourceleadUrl
-								+ "/storeCandidateEmployers?${_csrf.parameterName}=${_csrf.token}&json="
+								+ "/storeCandidateEmployers?"+tokenParamName+"="+tokenValue+"&json="
 								+ jsonData + "&candidateId=" + candidateId,
 						success : function(data) {
 
@@ -333,7 +333,7 @@ function closeCertificatePopup(){
 		$.ajax({
 					type : "POST",
 					url : sourceleadUrl
-							+ "/getCandidateEmployerByCandidateIdAndCandidateEmpoyerId?${_csrf.parameterName}=${_csrf.token}&candidateId="
+							+ "/getCandidateEmployerByCandidateIdAndCandidateEmpoyerId?"+tokenParamName+"="+tokenValue+"&candidateId="
 							+ candidateId + "&candidateEmpId=" + candidateEmpId,
 					success : function(data) {
 
@@ -521,7 +521,7 @@ function closeCertificatePopup(){
 		  }
 				$.ajax({
 					type : "POST",
-					url : sourceleadUrl	+ "/getCandidatesEmployersListByCandidateIdAndOrgLocationID?${_csrf.parameterName}=${_csrf.token}&candidateId="
+					url : sourceleadUrl	+ "/getCandidatesEmployersListByCandidateIdAndOrgLocationID?"+tokenParamName+"="+tokenValue+"&candidateId="
 							+ candidateId,
 					success : function(data) {
 					/* 	if (data != null && data != 'undefined' && data != "" && data != '[]') {
@@ -695,7 +695,7 @@ function removeEmployer(candidateemployerId, candidateId){
 		var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 				$.ajax({
 					type : "POST",
-					url : sourceleadUrl	+ "/removeCandidateEmployerBycandidateIdandCandidateEmployerID?${_csrf.parameterName}=${_csrf.token}&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+ candidateId + "&candidateemployerId="+candidateemployerId,
+					url : sourceleadUrl	+ "/removeCandidateEmployerBycandidateIdandCandidateEmployerID?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+ candidateId + "&candidateemployerId="+candidateemployerId,
 					success : function(data) {
 
 						if (data != null && data != 'undefined' && data != "") {
@@ -768,7 +768,7 @@ function removeEmployer(candidateemployerId, candidateId){
 			var frm = $('#candidateExperianceEdit_form').serializeFormJSON();
 
 			var formData = getFormData("candidateExperianceEdit_form");
-	        $.post(sourceleadUrl+"/upDateCandidateEmployerByCandidateIdAndCandidateExperianceId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&candidateExperianceId="+candidateExperianceId, formData, function(data) {
+	        $.post(sourceleadUrl+"/upDateCandidateEmployerByCandidateIdAndCandidateExperianceId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&candidateExperianceId="+candidateExperianceId, formData, function(data) {
 	        	
 	        	$(".edit-details").toggleClass("edit-details-active");
 				$(".close-div")	.click(function() {
@@ -797,7 +797,7 @@ function removeEmployer(candidateemployerId, candidateId){
 			$.ajax({
 						type : "POST",
 						url : sourceleadUrl
-								+ "/upDateCandidateEmployerByCandidateIdAndCandidateExperianceId?${_csrf.parameterName}=${_csrf.token}&json="+ jsonData + "&candidateId=" + candidateId	+ "&candidateExperianceId"+ candidateExperianceId,
+								+ "/upDateCandidateEmployerByCandidateIdAndCandidateExperianceId?"+tokenParamName+"="+tokenValue+"&json="+ jsonData + "&candidateId=" + candidateId	+ "&candidateExperianceId"+ candidateExperianceId,
 						success : function(result) {
 							
 							$(".edit-details").toggleClass("edit-details-active");

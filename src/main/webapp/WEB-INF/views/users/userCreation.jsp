@@ -319,7 +319,7 @@ if(type == 'C2C' || type == 'C2C-1099'){
 	 var orgRelationID = $('#vendors').val();
 		 $.ajax({
 			    type: "POST",
-		        url: sourceleadUrl+"/getOrgSpocsList?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+orgRelationID+"&type=Vendor",  
+		        url: sourceleadUrl+"/getOrgSpocsList?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationID+"&type=Vendor",  
 		        success: function(data) {
 		        	var json = JSON.parse(data);
 		        	$('#vendorcontact').empty();
@@ -501,7 +501,7 @@ function getEmployeementType(designationType){
         // $("#create_user" ).addClass('button').val('Processing..');
          $.ajax({
                 type: "POST",
-                url: sourceleadUrl+"/validateEmployeeId?${_csrf.parameterName}=${_csrf.token}&EmployeeId="+EmployeeId,
+                url: sourceleadUrl+"/validateEmployeeId?"+tokenParamName+"="+tokenValue+"&EmployeeId="+EmployeeId,
                 success: function(data) {
                     if(data == true){
                           $('#EmployeeIdDiv').find('p.jquery_form_error_message').remove();
@@ -530,7 +530,7 @@ function getEmployeementType(designationType){
          //$("#create_user" ).addClass('button').val('Processing..');
 		 $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/validateUserEmail?${_csrf.parameterName}=${_csrf.token}&EmailId="+EmailId, 
+		        url: sourceleadUrl+"/validateUserEmail?"+tokenParamName+"="+tokenValue+"&EmailId="+EmailId, 
 		        success: function(data) {
 		        	if(data == 'true'){
 		        		  $('#EmailIdDiv').find('p.jquery_form_error_message').remove();
@@ -556,7 +556,7 @@ function getEmployeementType(designationType){
 	 if(EmailId != null && EmailId != ""){
 		 $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/getUserByUserEmail?${_csrf.parameterName}=${_csrf.token}&EmailId="+EmailId, 
+		        url: sourceleadUrl+"/getUserByUserEmail?"+tokenParamName+"="+tokenValue+"&EmailId="+EmailId, 
 		        success: function(data) {
 		        	if(data != null && data != ''){
 		        		var json = JSON.parse(data);
@@ -630,7 +630,7 @@ function getAssociateUserDetails(){
 	}
 		$.ajax({
 	    	type: "POST",
-	        url: sourceleadUrl+"/getActiveAssociateDetails?${_csrf.parameterName}=${_csrf.token}&candidateId="+employeementType, 
+	        url: sourceleadUrl+"/getActiveAssociateDetails?"+tokenParamName+"="+tokenValue+"&candidateId="+employeementType, 
 	        /* contentType: "application/json; charset=utf-8",
 	        dataType: "json", */
 	        
@@ -728,7 +728,7 @@ function getAssociateUserDetails(){
  function vendorContactList(vendorContactName,vendorOrgRelationId,vendorSpocId){
 		 $.ajax({
 			    type: "POST",
-		        url: sourceleadUrl+"/getOrgSpocsList?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+vendorOrgRelationId+"&type=Vendor",  
+		        url: sourceleadUrl+"/getOrgSpocsList?"+tokenParamName+"="+tokenValue+"&orgRelationId="+vendorOrgRelationId+"&type=Vendor",  
 		        success: function(data) {
 		        	var json = JSON.parse(data);
 		        	$('#vendorcontact').empty();
@@ -753,7 +753,7 @@ function getAssociateUserDetails(){
 	 var employeementType = document.getElementById("employeementType").value;
 	 $.ajax({
 	    	type: "POST",
-	    	url: sourceleadUrl+"/getActiveAssociateList?${_csrf.parameterName}=${_csrf.token}&employeementType="+employeementType,
+	    	url: sourceleadUrl+"/getActiveAssociateList?"+tokenParamName+"="+tokenValue+"&employeementType="+employeementType,
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	var output = "";
@@ -784,7 +784,7 @@ function getAssociateUserDetails(){
  function getDepartmentsList(){
 	 $.ajax({
 	    	type: "POST",
-	    	url: sourceleadUrl+"/getDepartmentsList?${_csrf.parameterName}=${_csrf.token}",
+	    	url: sourceleadUrl+"/getDepartmentsList?"+tokenParamName+"="+tokenValue+"",
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	var output = "";
@@ -810,7 +810,7 @@ function getAssociateUserDetails(){
 	 var employmentDesignationType = $("#employmentDesignationType").val();
 	 $.ajax({
 	    	type: "POST",
-	    	url: sourceleadUrl+"/getActiveAssociateList?${_csrf.parameterName}=${_csrf.token}&employeementType="+employmentDesignationType,
+	    	url: sourceleadUrl+"/getActiveAssociateList?"+tokenParamName+"="+tokenValue+"&employeementType="+employmentDesignationType,
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	var output = "";
@@ -872,7 +872,7 @@ function getAssociateUserDetails(){
 	 if(role != null && role != "" && role != 'undefined'){
 		 $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/getReportingManager?${_csrf.parameterName}=${_csrf.token}&role="+role, 
+		        url: sourceleadUrl+"/getReportingManager?"+tokenParamName+"="+tokenValue+"&role="+role, 
 		        success: function(data) {
 		        	var json = JSON.parse(data);
 		        	var output = "";
@@ -985,4 +985,3 @@ function editMe(local){
 	 }
 	 }
 	 </script>
-

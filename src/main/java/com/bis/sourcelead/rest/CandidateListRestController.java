@@ -1048,13 +1048,10 @@ public class CandidateListRestController {
 	 */
 	@RequestMapping(value = "/updateCandidate")
 	public String updateCandidate(CandidateDTO CandidateDto,HttpServletRequest request) throws Exception {
-
-		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
-		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		Candidate candidate;
-
+		User user = userService.getUserById(Long.valueOf(CandidateDto.getLoginUserId()));
+		OrgLocations loginOrgLocation = orgLocationService.getOrgLocations(Long.valueOf(CandidateDto.getOrgloationId()));
 		StringBuilder candidateCreateMsg = new StringBuilder();
-		candidate = candidateService.storeCandidate(CandidateDto, loginOrgLocation, user);
+		Candidate candidate = candidateService.storeCandidate(CandidateDto, loginOrgLocation, user);
 
 		return "success";
 
