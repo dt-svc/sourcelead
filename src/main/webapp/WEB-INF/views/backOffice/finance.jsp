@@ -117,7 +117,7 @@ $(document).ready(function(){
 		
 		  $.ajax({
 			   	type: "POST",
-			    url: sourceleadUrl+"/getAccountsList?${_csrf.parameterName}=${_csrf.token}&json="+jsonData, 	   
+			    url: sourceleadUrl+"/getAccountsList?"+tokenParamName+"="+tokenValue+"&json="+jsonData, 	   
 	   		    success: function(data) {
 	   		    	
 	   		    	

@@ -93,7 +93,6 @@ function vendorDocuments(orgRelationId,vendorLocationId){
 
 <script>
 function vendorDocumentsList(vendorLocationId,orgRelationId){
-	 var sourceleadUrl ='${sourceleadUrl}';
 	 var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
 	  if(locationList.match("yyyy-MM-dd")){
 		  docListVendorSpocDate = 'YYYY-MM-DD';
@@ -106,7 +105,7 @@ function vendorDocumentsList(vendorLocationId,orgRelationId){
 	  }
 	 $.ajax({  
           type : "POST",
-          url: sourceleadUrl+"/getclientDocumentsListByResponderLocationId?${_csrf.parameterName}=${_csrf.token}&responderLocationId="+vendorLocationId+"&sourceType=Vendor",        
+          url: sourceleadUrl+"/getclientDocumentsListByResponderLocationId?"+tokenParamName+"="+tokenValue+"&responderLocationId="+vendorLocationId+"&sourceType=Vendor",        
           success :function(data) {
 	                	 $("#vendorDocumentsList").empty();
 	                	 var result = "";
@@ -176,7 +175,7 @@ function vendorDocumentsList(vendorLocationId,orgRelationId){
 	                    	 }
 	                    	 result = result+'	 <td><div class="tblicons tblminwidth-75">';
 	                    	 '<sec:authorize access="hasAnyRole(\"ROLE_DOWNLOAD_VENODR_DOCS\")">';
-	                    	 result = result+'<a class="glyphicon glyphicon-download-alt" href=\"'+opt.fileUrl+'\"></a>';
+	                    	 result = result+'<a class="glyphicon glyphicon-download-alt" target="_blank" href=\"'+opt.fileUrl+'\"></a>';
 	                    	 result = result+'<a class="fa fa-eye" onClick="viewFile(\''+opt.fileUrl+'\',\''+opt.fileName+'\',\''+opt.fileType+'\');"></a>';
 	                    	 '</sec:authorize>'; 
 	                    	  
@@ -221,7 +220,6 @@ function vendorDocumentsList(vendorLocationId,orgRelationId){
 
 <script>
 function viewVendorDocument(docId,title){
-	var sourceleadUrl ='${sourceleadUrl}';
 	window.open(sourceleadUrl+'/viewClientDocViewerDocument/'+title+'?docId='+docId,title,"height=600,width=600");
 }
 </script>
@@ -437,16 +435,14 @@ function closeDocPopup(){
 				$("#save_button" ).addClass('button').val('Processing..');
 				var form = $('#document_form')[0];
 	      		var formData = new FormData(form); 
-				var sourceleadUrl = '${sourceleadUrl}';
 				$("#document_form").attr("disabled", "disabled");
-				
 				//It will escape all the special characters
 				$.ajax({
 						type : "POST",
 		        	    data: formData,
 		    	        processData: false,
 		    	        contentType:false,
-						url : sourceleadUrl+"/saveDocuments?${_csrf.parameterName}=${_csrf.token}&responderLocationId="+vendorLocationId+"&docId="+docId+"&sourceType=Vendor",
+						url : sourceleadUrl+"/saveDocuments?"+tokenParamName+"="+tokenValue+"&responderLocationId="+vendorLocationId+"&docId="+docId+"&sourceType=Vendor",
 						success : function(result) {
 							 if( result.indexOf('Sign In') >= 0){
 					    		location.replace(sourceleadUrl);
@@ -481,10 +477,9 @@ function closeDocPopup(){
 
 <script>
 function getSpocsList(orgRelationId){
-	 var sourceleadUrl ='${sourceleadUrl}';
 	$.ajax({
     	type: "POST",
-        url: sourceleadUrl+"/getOrgSpocsList?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+orgRelationId+"&type=Vendor",  
+        url: sourceleadUrl+"/getOrgSpocsList?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId+"&type=Vendor",  
         success: function(data) {
         	var json = JSON.parse(data);
         	var output = "";
@@ -497,7 +492,6 @@ function getSpocsList(orgRelationId){
         	$("#spoc").empty();
 	        $("#spoc").append(output);
 	        $('#spoc').trigger("chosen:updated");
-	        //$('.selectpicker').selectpicker('refresh'); 
         },
     });
 }
@@ -507,11 +501,10 @@ function getSpocsList(orgRelationId){
 
 <script>
 function getClientDocument(vendorLocationId,orgRelationId,docId){
-	var sourceleadUrl ='${sourceleadUrl}';
 	var sourceLeadUserId = '${SourceLeadWeb_userId}';
 	$.ajax({
 	   	type: "POST",
-	    url: sourceleadUrl+"/getOrgDocument?${_csrf.parameterName}=${_csrf.token}&docId="+docId+"&orgRelationId="+orgRelationId+"&type=Vendor", 	   
+	    url: sourceleadUrl+"/getOrgDocument?"+tokenParamName+"="+tokenValue+"&docId="+docId+"&orgRelationId="+orgRelationId+"&type=Vendor", 	   
 		    success: function(data) {
 		    	var json = JSON.parse(data);
 		    	var spoc = "";
@@ -665,13 +658,12 @@ $(".project_inn_mask").fadeOut(200);
 
 <script>
 function saveReasonForVendorDoc(vendorLocationId,orgRelationId,docId,docName){
-	var sourceleadUrl ='${sourceleadUrl}';
 	var terminateReason = document.getElementById("terminateReason").value;
 	if(terminateReason.match(/^[^\s-](.*)*$/) != null){
 		$("#terminateReasonDiv").empty();
 		$.ajax({
 		   	type: "POST",
-		    url: sourceleadUrl+"/terminateOrgDocumnet?${_csrf.parameterName}=${_csrf.token}&docId="+docId+"&terminateReason="+terminateReason, 	   
+		    url: sourceleadUrl+"/terminateOrgDocumnet?"+tokenParamName+"="+tokenValue+"&docId="+docId+"&terminateReason="+terminateReason, 	   
    		    success: function(data) {
         			 $("#deleteDocpopUp").empty();
         			 $(".project_inn_mask").fadeOut(200);

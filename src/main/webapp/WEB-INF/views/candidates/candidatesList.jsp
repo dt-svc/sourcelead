@@ -385,7 +385,7 @@ function candidateSideBar(candidateId){
 			            result = result+'    <i class="fa fa-comments"></i>';
 			            result = result+'        <div class="commentsimg-inner">';
 			            
-			            result = result+'        	<img onerror="predefineProfileImage(this);" src="'+sourceleadUrl+'/displayUserImage/'+loginUserId+'"/>';
+			            result = result+'        	<img data-id="userProfileImage" onerror="predefineProfileImage(this);" src="${SourceLeadWeb_user.fileUrl}"/>';
 			            result = result+'        </div>';
 			            result = result+'    </div>';
 			            result = result+'     <div class="comments-content">';
@@ -616,7 +616,7 @@ function deleteProfileImage(candidateId){
 function refreshImageBlock(candidateId){   
 	  $.ajax({
           type : "POST",
-           url: sourceleadUrl+"/getCandidateById?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,        
+           url: sourceleadUrl+"/getCandidateById?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
            success :function(data) {   
                 if(data != null && data != 'undefined' && data != ""){  
                 	 var json = JSON.parse(data);
@@ -672,7 +672,7 @@ function addFavourite(candidateId){
 	var checked = document.getElementById("fav"+candidateId).checked;
 	 	$.ajax({
 			type : "POST",
-			url : sourceleadUrl+"/saveCandidateAsFavourite?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,
+			url : sourceleadUrl+"/saveCandidateAsFavourite?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,
 			success : function(result) {
 				if(checked){
 					 document.getElementById("favourite"+candidateId).removeAttribute("class");
@@ -1491,7 +1491,7 @@ function closeComment(){
 		    	        processData: false,
 		    	        contentType:false,
 		        	    dataType : 'json',
-						url : sourceleadUrl+"/saveCandidateComment?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&candidateId="+candidateId,
+						url : sourceleadUrl+"/saveCandidateComment?"+tokenParamName+"="+tokenValue+"&json="+jsonData+"&candidateId="+candidateId,
 						success : function(result) {
 							savedCommentAndCount(candidateId);
 							 /* if( result.indexOf('Sign In') >= 0){
@@ -1526,7 +1526,7 @@ function closeComment(){
 function savedCommentAndCount(candidateId){
 	  $.ajax({
         type : "POST",
-         url: sourceleadUrl+"/getAllCommentsOnCandidateByCandidateIdAndOrgLocation?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,        
+         url: sourceleadUrl+"/getAllCommentsOnCandidateByCandidateIdAndOrgLocation?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
          success :function(data) {
         	 var result = "";
               if(data != null && data != 'undefined' && data != ""){
@@ -1591,7 +1591,7 @@ function getStates(){
 		$.ajax({
 	    	type: "POST",
 	    	dataType: "json",
-	    	 url: '${sourceleadUrl}'+"/getStatesByCountry?${_csrf.parameterName}=${_csrf.token}&countryName="+countryName, 
+	    	 url: '${sourceleadUrl}'+"/getStatesByCountry?"+tokenParamName+"="+tokenValue+"&countryName="+countryName, 
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	$('#state').empty();
@@ -1629,7 +1629,7 @@ function getCities(){
 		$.ajax({
 	    	type: "POST",
 	    	dataType: "json",
-	    	 url: '${sourceleadUrl}'+"/getCitiesByStateAndCountry?${_csrf.parameterName}=${_csrf.token}&countryName="+countryName+"&stateName="+stateName, 
+	    	 url: '${sourceleadUrl}'+"/getCitiesByStateAndCountry?"+tokenParamName+"="+tokenValue+"&countryName="+countryName+"&stateName="+stateName, 
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	$('#city').empty();

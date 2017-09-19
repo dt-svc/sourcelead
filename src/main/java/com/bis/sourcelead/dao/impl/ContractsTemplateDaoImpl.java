@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.ContractsTemplateDao;
 import com.bis.sourcelead.dto.AccountDeductionsDTO;
 import com.bis.sourcelead.dto.ContractTemplateDTO;
@@ -506,12 +507,18 @@ public class ContractsTemplateDaoImpl implements ContractsTemplateDao{
 	public Contracts findContractTitleByOrgLocationAndContractType(String contractTitle, String contractType,Long orgLocationId,Long contractId) {
 		Session session = this.sessionFactory.getCurrentSession();
 		List<Contracts> contracts = new ArrayList<Contracts>();
-		if(null != contractId){
-			contracts = session.createQuery("from Contracts contracts where contracts.contractTitle=:contractTitle and contracts.contractType = :contractType and contracts.orgLocationId.id = :orgLocationId and contracts.id <> :contractId " )
-			.setString( "contractTitle", contractTitle ).setString("contractType", contractType).setLong("orgLocationId", orgLocationId ).setLong("contractId", contractId ).setCacheable(true).list();
+		String subQuery = "";
+		if(Constants.NDA.equalsIgnoreCase(contractType) || Constants.NSA.equalsIgnoreCase(contractType)){
+			subQuery = " contracts.contractType like '%"+contractType+"%' ";
 		}else{
-			contracts = session.createQuery("from Contracts contracts where contracts.contractTitle=:contractTitle and contracts.contractType = :contractType and contracts.orgLocationId.id = :orgLocationId" )
-					.setString( "contractTitle", contractTitle ).setString("contractType", contractType).setLong("orgLocationId", orgLocationId ).setCacheable(true).list();
+			subQuery = " contracts.contractType='"+contractType+"'";
+		}
+		if(null != contractId){
+			contracts = session.createQuery("from Contracts contracts where contracts.contractTitle=:contractTitle and "+subQuery+" and contracts.orgLocationId.id = :orgLocationId and contracts.id <> :contractId " )
+			.setString( "contractTitle", contractTitle ).setLong("orgLocationId", orgLocationId ).setLong("contractId", contractId ).setCacheable(true).list();
+		}else{
+			contracts = session.createQuery("from Contracts contracts where contracts.contractTitle=:contractTitle and "+subQuery+" and contracts.orgLocationId.id = :orgLocationId" )
+					.setString( "contractTitle", contractTitle ).setLong("orgLocationId", orgLocationId ).setCacheable(true).list();
 		}
 			
 		if (contracts.size() > 0) {

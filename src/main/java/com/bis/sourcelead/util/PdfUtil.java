@@ -492,10 +492,10 @@ public class PdfUtil {
 
 	    /*File file = new File(orgName+"_Requirements_"+dateFormat.format(new Date())+".pdf");*/
 	    StringBuilder sbReq =new StringBuilder();
-	    sbReq.append(orgName).append("_Requirements_").append(dateFormat.format(new Date()));
+	    sbReq.append(orgName).append("_Jobs_").append(dateFormat.format(new Date()));
 
 	    StringBuilder fileSB = new StringBuilder();
-	    File file = File.createTempFile(fileSB.append(orgName).append("_Requirements_").append(dateFormat.format(new Date())).toString(),".pdf");
+	    File file = File.createTempFile(fileSB.append(orgName).append("_Jobs_").append(dateFormat.format(new Date())).toString(),".pdf");
 
 	    file.setReadable(true);
 	    try {
@@ -507,10 +507,10 @@ public class PdfUtil {
 	        BaseColor myBordColor = WebColors.getRGBColor("#000000");
 	        boldFont.setColor(myBordColor);
 	        StringBuilder sbReqStyle = new StringBuilder();
-	        sbReqStyle.append(orgName).append(" ").append("Requirements");
+	        sbReqStyle.append(orgName).append(" ").append("Jobs");
 
 	        StringBuilder orgNameSB = new StringBuilder();
-            Paragraph para = new Paragraph(orgNameSB.append(orgName).append(" Requirements.").toString(),boldFont);
+            Paragraph para = new Paragraph(orgNameSB.append(orgName).append(" Jobs.").toString(),boldFont);
 
             para.setAlignment(Element.ALIGN_CENTER);
             document.add(para);
@@ -556,7 +556,7 @@ public class PdfUtil {
                 table.completeRow();
             }
 	        
-	        document.addTitle("Requirement List Table");
+	        document.addTitle("Jobs List Table");
 	        table.setSpacingBefore(15f);
 	        document.add(table);
 	        logger.info("Pdf table created !!");

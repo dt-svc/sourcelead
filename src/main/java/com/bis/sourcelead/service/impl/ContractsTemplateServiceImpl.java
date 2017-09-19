@@ -2057,29 +2057,30 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 			vendorContracts.setContractUUID(contracts.getContractUUID());
 			Contracts savedChildContracts = contractsTemplateDao.saveNewContract(vendorContracts);
 			
-			if(contractsDTO.getDocument() != null){
-			for (ContractDocumentsDTO doc : contractsDTO.getDocument()) {
-				for(FileInfo file : contractsDTO.getReqDocs()){
-					if(doc.getDocFileName() != null && doc.getDocFileName().equalsIgnoreCase(file.getFileName())){
-						ContractRequestDocuments contractRequestDocuments = new ContractRequestDocuments();
-						contractRequestDocuments.setFileURL(file.getFileURL());
-						contractRequestDocuments.setDocFileName(file.getFileName());
-						contractRequestDocuments.setFileType(file.getContentType());
-						contractRequestDocuments.setFileName(doc.getDocumentName());
-						
-						FileUploadUtil.moveFile(contractsDTO.getStaticPath(), file, "RequestDocuments");
-						contractRequestDocuments.setContractId(savedContracts);
-						contractRequestDocuments.setStatus(Constants.MEMBER_ACTIVE);
-						contractRequestDocuments.setCreatedDate(new Date());
-						if (null != user) {
-							contractRequestDocuments.setCreatedBy(user.getUserCode());
-							contractRequestDocuments.setUpdatedBy(user.getUserCode());
+			if(contractsDTO.getDocument() !=null && contractsDTO.getDocument().size() >0) {
+				for (ContractDocumentsDTO doc : contractsDTO.getDocument()) {
+					for(FileInfo file : contractsDTO.getReqDocs()){
+						if(doc.getDocFileName() != null && doc.getDocFileName().equalsIgnoreCase(file.getFileName())){
+							ContractRequestDocuments contractRequestDocuments = new ContractRequestDocuments();
+							contractRequestDocuments.setFileURL(file.getFileURL());
+							contractRequestDocuments.setDocFileName(file.getFileName());
+							contractRequestDocuments.setFileType(file.getContentType());
+							contractRequestDocuments.setFileName(doc.getDocumentName());
+							
+							FileUploadUtil.moveFile(contractsDTO.getStaticPath(), file, "RequestDocuments");
+							contractRequestDocuments.setContractId(savedContracts);
+							contractRequestDocuments.setStatus(Constants.MEMBER_ACTIVE);
+							contractRequestDocuments.setCreatedDate(new Date());
+							if (null != user) {
+								contractRequestDocuments.setCreatedBy(user.getUserCode());
+								contractRequestDocuments.setUpdatedBy(user.getUserCode());
+							}
+							contractRequestDocuments.setUpdatedDate(new Date());
+							contractRequestDocumentsService.saveContractRequestDocuments(contractRequestDocuments);
 						}
-						contractRequestDocuments.setUpdatedDate(new Date());
-						contractRequestDocumentsService.saveContractRequestDocuments(contractRequestDocuments);
-					}
-				}
+					}	
 			}
+
 			}
 		return savedContracts;
 	}

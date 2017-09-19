@@ -257,7 +257,7 @@ function addResume(candidateId) {
 				$.ajax({
 					type : "POST",
 	        	    data: formData,
-					url : sourceleadUrl+"/saveCandidateResume?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&resumeId="+resumeId,
+					url : sourceleadUrl+"/saveCandidateResume?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&resumeId="+resumeId,
 					success : function(result) {
 						 if( result.indexOf('Sign In') >= 0){
 				    		location.replace(sourceleadUrl);
@@ -346,7 +346,7 @@ function addResume(candidateId) {
 	  }
 	  $.ajax({
 			type : "POST",
-			url : sourceleadUrl+"/candidateResumesListByCandidateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,
+			url : sourceleadUrl+"/candidateResumesListByCandidateId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,
 			success : function(data) {
 				if (data != null && data != 'undefined' && data != "" && data != '[]') {
 					var json = JSON.parse(data);
@@ -410,7 +410,7 @@ function addResume(candidateId) {
 					           		result = result+'<td><div><span>'+createdBy+'</span></div></td>';
 
 									result = result+'<td><div><span>'+candidateResumeUpdateDateToString+'</span></div></td>';
-					           		result = result+'<td><div class="tblicons_4"> <a class="glyphicon glyphicon-download-alt" href=\"'+opt.fileURL+'\" title="Download"></a>';
+					           		result = result+'<td><div class="tblicons_4"> <a class="glyphicon glyphicon-download-alt" target="_blank" href=\"'+opt.fileURL+'\" title="Download"></a>';
 					           		result = result+' <a class="fa fa-eye" href="javascript:void(0)" onClick="viewFile(\''+opt.fileURL+'\',\''+opt.fileName+'\',\''+opt.fileContentType+'\');"title="preview"></a>';		           						          
 					           		if(window.candidateStatusGlobal == 0){
 					           			result = result+'<a class="glyphicon glyphicon-pencil" href="javascript:void(0)"></a>';
@@ -523,7 +523,7 @@ function deleteResume(candidateId, resumeId){
 	 var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 		$.ajax({
 		   	type: "POST",
-		    url: sourceleadUrl+"/terminateResume?${_csrf.parameterName}=${_csrf.token}&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&resumeId="+resumeId, 	   
+		    url: sourceleadUrl+"/terminateResume?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&resumeId="+resumeId, 	   
    		    success: function(data) {
    		    	
    		    	if(data != null && data != 'undefined' && data != ""){
@@ -586,7 +586,7 @@ function getResume(candidateId, resumeId){
 	
 		$.ajax({
 		   	type: "POST",
-		    url: sourceleadUrl+"/getResume?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&resumeId="+resumeId, 	   
+		    url: sourceleadUrl+"/getResume?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&resumeId="+resumeId, 	   
    		    success: function(data) {
    		    	var json = JSON.parse(data);
         			 $("#uploadResumeDiv").hide();
