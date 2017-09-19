@@ -2421,7 +2421,7 @@ public class RequirementServiceImpl implements RequirementService {
 			 * file = new File(orgName + "_Requirements_" +
 			 * dateFormat.format(new Date()) + ".xls");
 			 */
-			file = File.createTempFile(orgName + "_Requirements_"
+			file = File.createTempFile(orgName + "_Jobs_"
 					+ dateFormat.format(new Date()), ".xls");
 			file.setReadable(true);
 			FileOutputStream fos = new FileOutputStream(file);
