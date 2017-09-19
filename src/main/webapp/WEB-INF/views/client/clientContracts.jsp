@@ -881,10 +881,10 @@ function editOne(startDate,endDate){
 	  var d2 = '';
 	  if(locationDate.match("yyyy-MM-dd")){
 		  finalDateeditOneSave = 'yy-mm-dd';
-		   d2 = new Date(ClientcontractEffectiveEndDate[0], parseInt(contractEffectiveEndDate[1])-parseInt(1), parseInt(ClientcontractEffectiveEndDate[2])+parseInt(1));
+		   d2 = new Date(ClientcontractEffectiveEndDate[0], parseInt(ClientcontractEffectiveEndDate[1])-parseInt(1), parseInt(ClientcontractEffectiveEndDate[2])+parseInt(1));
 	  }if(locationDate.match("dd-MM-yyyy")){
 		  finalDateeditOneSave = 'dd-mm-yy'; 
-		   d2 = new Date(ClientcontractEffectiveEndDate[2], parseInt(contractEffectiveEndDate[1])-parseInt(1), parseInt(ClientcontractEffectiveEndDate[0])+parseInt(1));
+		   d2 = new Date(ClientcontractEffectiveEndDate[2], parseInt(ClientcontractEffectiveEndDate[1])-parseInt(1), parseInt(ClientcontractEffectiveEndDate[0])+parseInt(1));
 	  }if(locationDate.match("MM-dd-yyyy")){
 		  finalDateeditOneSave = 'mm-dd-yy'; 
 		   d2 = new Date(ClientcontractEffectiveEndDate[2], parseInt(ClientcontractEffectiveEndDate[0])-parseInt(1), parseInt(ClientcontractEffectiveEndDate[1])+parseInt(1));
@@ -893,7 +893,7 @@ function editOne(startDate,endDate){
 		   d2 = new Date(ClientcontractEffectiveEndDate[0], parseInt(ClientcontractEffectiveEndDate[2])-parseInt(1), parseInt(ClientcontractEffectiveEndDate[1])+parseInt(1));
 	  }
 	
-	
+	alert("hiii");
 	
 	 var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
 	  var finalDateFormatEditEndDateSave = '';
