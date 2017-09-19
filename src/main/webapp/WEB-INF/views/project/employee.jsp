@@ -215,10 +215,10 @@ result = result + '<div class="project_tabs mb">';
 		 		  result = result + '<i class="fa fa-exchange"></i>&nbsp;Transfer Emp</a>&nbsp;&nbsp;&nbsp;&nbsp;'; 
 	 		 }
 	 		
-	 		if('${isClientOrgActive}' == "N" || postedOrgLocationId == loginOrgLocationId){
+	 		/* if('${isClientOrgActive}' == "N" || postedOrgLocationId == loginOrgLocationId){  */
 	 			 result = result + '<a href="'+sourceleadUrl+'/addNewProjectMembers?projectUUID='+projectUUID+'&projectClientUUID='+projectClientUUID+'">';
 	 		     result = result + '<i class="glyphicon glyphicon-plus"></i>Assign Emp</a></li>';
-	 		}
+	 		/*  }  */
 	 		   
 	 		
  		    '</sec:authorize>';
@@ -1679,13 +1679,14 @@ function transferToProject(){
 		 $("#projectDetailsLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		 var projectUUID = '${projectUUID}';
 		 var sourceleadUrl = '${sourceleadUrl}';
+		 var projectClientUUID = '${projectClientUUID}';
 		 
 		 $.ajax({
 		    	type: "POST",
 		        url: sourceleadUrl+"/transferProjectMembers?${_csrf.parameterName}=${_csrf.token}&projectUUID="+projectUUID+"&projectId="+projectId+"&projectOrgLocationId="+orgLocations+"&projectMembers="+projectMembers, 
 		        success: function() {
 		        
-		        	location.replace(sourceleadUrl+"/projectSummary?projectUUID="+projectUUID+"&tabType=projectMembers");
+		        	location.replace(sourceleadUrl+"/projectSummary?projectUUID="+projectUUID+"&projectClientUUID="+projectClientUUID+"&tabType=projectMembers");
 			        $("#projectDetailsLoading").removeAttr("style"); 
 		        }
 		   

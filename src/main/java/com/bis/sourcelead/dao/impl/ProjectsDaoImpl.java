@@ -39,6 +39,7 @@ import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.exception.SourceLeadObjectNotFoundException;
 import com.bis.sourcelead.payroll.entity.Checks;
 import com.bis.sourcelead.service.ProjectMembersHistoryService;
+import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.util.CommonUtil;
 
 @Repository
@@ -62,6 +63,9 @@ public class ProjectsDaoImpl implements ProjectsDao{
     
     @Autowired
     ProjectMembersHistoryService projectMembersHistoryService;
+    
+    @Autowired
+    ProjectMembersService projectMembersService;
     
     
     @Value("${SourceLead.100}")
@@ -637,7 +641,7 @@ public class ProjectsDaoImpl implements ProjectsDao{
 			for (Projects projects :projectsList ){
 				    	 ProjectClients projectClients = projectClientDao.getProjectClientsByProjectIdAndOrgLocationId(projects.getId(), orgLocationsId);
 				    	 if(projectClients != null){
-				    		 Integer pmhCount = projectMembersHistoryService.getProjectMemberHistoryCountByProjectClientId(projectClients.getId());
+				    		 Integer pmhCount = projectMembersService.getProjectMembersCountByProjectClientId(projectClients.getId());
 				    		 if(projects.getOrgLocationsId().getId().equals(orgLocationsId) || pmhCount > 0){
 				    			 projects.setProjectClientUUID(projectClients.getUuid());
 				    			 projects.setStartDateStr(commonUtil.dateStrFromOrgDateFormatter(orglo.getDateFormat(),projects.getStartDate()));

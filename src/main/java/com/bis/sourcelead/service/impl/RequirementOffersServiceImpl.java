@@ -1353,7 +1353,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
     		if(vendorCandidate == null){
     			vendorCandidate = new Candidate();
     			MasterCandidate vendorMasterCandidate = masterCandidateDao.getMasterCandidateByEmailOrPhoneNumber(requirementSubmission.getSourceSubmission().getCandidate().getEmail(), requirementSubmission.getSourceSubmission().getCandidate().getMobilePhone());
-        		if(masterCandidte != null){
+    			if(vendorMasterCandidate != null){
         			vendorCandidate.setMasterCandidateId(vendorMasterCandidate);
         		}
     			vendorCandidate.setOrgLocationId(requirementSubmission.getSourceSubmission().getOrgLocations());
