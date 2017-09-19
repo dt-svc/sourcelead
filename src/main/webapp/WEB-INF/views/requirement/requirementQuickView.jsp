@@ -1,5 +1,6 @@
  <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
  <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+ <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
  <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
  <%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
  <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
@@ -167,32 +168,32 @@
 						    <c:when test="${!empty requirement.parentRequirement}">
 						    	<c:choose>
 						    		<c:when test="${requirement.clientCurrencyCode == 'INR' && !empty requirement.clientRate && !empty requirement.clientRateType}">
-						            	<div class="require_wrap_details_cta"> <b>Bill rate/salary:</b> <span><i class="fa fa-inr"></i> ' +requirement.clientRate+'  '+requirement.clientRateType+'</span>
+						            	<div class="require_wrap_details_cta"> <b>Bill rate/salary:</b> <span><i class="fa fa-inr"></i> ${requirement.clientRate}  ${requirement.clientRateType}</span>
 							            	<div class="clearfix"></div> 
 					               		</div> 
 							    	</c:when>
 							    	<c:when test="${requirement.clientCurrencyCode == 'EUR' && !empty requirement.clientRate && !empty requirement.clientRateType}">
-						            	<div class="require_wrap_details_cta"> <b>Bill rate/salary:</b> <span><i class="fa fa-eur"></i> ' +requirement.clientRate+'  '+requirement.clientRateType+'</span>
+						            	<div class="require_wrap_details_cta"> <b>Bill rate/salary:</b> <span><i class="fa fa-eur"></i> ${requirement.clientRate}  ${requirement.clientRateType}</span>
 							            	<div class="clearfix"></div> 
 					               		</div> 
 							    	</c:when>
 							    	<c:when test="${requirement.clientCurrencyCode == 'GBP' && !empty requirement.clientRate && !empty requirement.clientRateType}">
-						            	<div class="require_wrap_details_cta"> <b>Bill rate/salary:</b> <span><i class="fa fa-gbp"></i> ' +requirement.clientRate+'  '+requirement.clientRateType+'</span>
+						            	<div class="require_wrap_details_cta"> <b>Bill rate/salary:</b> <span><i class="fa fa-gbp"></i> ${requirement.clientRate}  ${requirement.clientRateType}</span>
 							            	<div class="clearfix"></div> 
 					               		</div> 
 							    	</c:when>
 							    	<c:when test="${requirement.clientCurrencyCode == 'USD' && !empty requirement.clientRate && !empty requirement.clientRateType}">
-						            	<div class="require_wrap_details_cta"> <b>Bill rate/salary:</b> <span><i class="fa fa-dollar"></i> ' +requirement.clientRate+'  '+requirement.clientRateType+'</span>
+						            	<div class="require_wrap_details_cta"> <b>Bill rate/salary:</b> <span><i class="fa fa-dollar"></i> ${requirement.clientRate}  ${requirement.clientRateType}</span>
 							            	<div class="clearfix"></div> 
 					               		</div> 
 							    	</c:when>
 							    	<c:when test="${requirement.clientCurrencyCode == 'AUD' && !empty requirement.clientRate && !empty requirement.clientRateType}">
-						            	<div class="require_wrap_details_cta"> <b>Bill rate/salary:</b> <span><i class="fa fa-dollar"></i> ' +requirement.clientRate+'  '+requirement.clientRateType+'</span>
+						            	<div class="require_wrap_details_cta"> <b>Bill rate/salary:</b> <span><i class="fa fa-dollar"></i> ${requirement.clientRate}  ${requirement.clientRateType}</span>
 							            	<div class="clearfix"></div> 
 					               		</div> 
 							    	</c:when>
 							    	<c:when test="${requirement.clientCurrencyCode == 'SGD' && !empty requirement.clientRate && !empty requirement.clientRateType}">
-						            	<div class="require_wrap_details_cta"> <b>Bill rate/salary:</b> <span><i class="fa fa-dollar"></i> ' +requirement.clientRate+'  '+requirement.clientRateType+'</span>
+						            	<div class="require_wrap_details_cta"> <b>Bill rate/salary:</b> <span><i class="fa fa-dollar"></i> ${requirement.clientRate}  ${requirement.clientRateType}</span>
 							            	<div class="clearfix"></div> 
 					               		</div> 
 							    	</c:when>
@@ -246,6 +247,8 @@
 				          <div class="require_wrap_details_cta"> <b>Submission Form:</b><span>${!empty requirement.clientSubmissionTemplate ? requirement.clientSubmissionTemplate : ' -- '}</span>
 			            		<div class="clearfix"></div> 
 			              </div> 
+			              <div class="clearfix"></div>
+			              </div>
 			         </c:if>
 			         <div class="clearfix"></div> 
 			          
@@ -278,19 +281,18 @@
 						</c:choose>
 			            </c:if>  
 			            
-				                    <div class="clearfix"></div> 				            
-				                </div> 							            
-			            
-			                    <div class="clearfix"></div> 
-			                  </div> 
-			                  <div class="clearfix"></div> 
-			            
-			                  </div> 	
-			                </div> 
-			            
-			                </div> 
-			              </div> 
-      
+                    <div class="clearfix"></div> 				            
+                </div> 							            
+           
+                   <div class="clearfix"></div> 
+                 </div> 
+                 <div class="clearfix"></div> 
+           
+                 </div> 	
+               </div> 
+           
+               </div> 
+             </div> 
       </div>
        <div id="detailsLoading"></div>
        <div id="tab-2" class="project_tabs_inn"></div>
