@@ -215,10 +215,10 @@ result = result + '<div class="project_tabs mb">';
 		 		  result = result + '<i class="fa fa-exchange"></i>&nbsp;Transfer Emp</a>&nbsp;&nbsp;&nbsp;&nbsp;'; 
 	 		 }
 	 		
-	 		/* if('${isClientOrgActive}' == "N" || postedOrgLocationId == loginOrgLocationId){  */
+	 	    if('${isClientOrgActive}' == "N" || postedOrgLocationId == loginOrgLocationId){  
 	 			 result = result + '<a href="'+sourceleadUrl+'/addNewProjectMembers?projectUUID='+projectUUID+'&projectClientUUID='+projectClientUUID+'">';
 	 		     result = result + '<i class="glyphicon glyphicon-plus"></i>Assign Emp</a></li>';
-	 		/*  }  */
+	 		 }  
 	 		   
 	 		
  		    '</sec:authorize>';
