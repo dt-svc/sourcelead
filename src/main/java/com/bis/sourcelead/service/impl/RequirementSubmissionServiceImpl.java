@@ -251,7 +251,7 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 
 
 	@Override
-	public RequirementSubmission saveRequirementSubmission(JSONObject jsonObj,User user,OrgLocations orgLocations,String jsonStringvalues,MultipartFile multiFile,String loginUserRole) throws Exception {
+	public RequirementSubmission saveRequirementSubmission(JSONObject jsonObj,User user,OrgLocations orgLocations,String jsonStringvalues,String loginUserRole) throws Exception {
 		
 		 Requirement requirement = null;;
 		 RequirementSubmission requirementSubmission = new RequirementSubmission();
@@ -491,13 +491,25 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 			 
 		 }else{
 			 
-			 if(multiFile != null && multiFile.getOriginalFilename() != null && !multiFile.getOriginalFilename().isEmpty()){
+			 if((jsonObj.has("fileInfo[0].fileName") && !isNullOrEmpty(jsonObj.getString("fileInfo[0].fileName"))) && (jsonObj.has("fileInfo[0].fileURL") && !isNullOrEmpty(jsonObj.getString("fileInfo[0].fileURL"))) && (jsonObj.has("fileInfo[0].contentType") && !isNullOrEmpty(jsonObj.getString("fileInfo[0].contentType")))){
+ 				 candidateResumes = new CandidateResumes();
+ 				 candidateResumes.setCandidateId(candidate);
+ 				 //candidateResumes.setDocFile(multiFile.getBytes());
+				 candidateResumes.setFileName(jsonObj.get("fileInfo[0].fileName").toString());
+				 candidateResumes.setTitle(jsonObj.get("fileInfo[0].fileName").toString());
+				 candidateResumes.setFileContentType(jsonObj.get("fileInfo[0].contentType").toString());
+				 candidateResumes.setFileURL(jsonObj.get("fileInfo[0].fileURL").toString());
+ 				 candidateResumes.setStatus(Constants.CANDIDATE_ACTIVE);
+ 				 candidateResumes.setResumeUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+ 				 candidateResumes.setCreatedDate(new Date());
+
 				 candidateResumes = new CandidateResumes();
 				 candidateResumes.setCandidateId(candidate);
 				 //candidateResumes.setDocFile(multiFile.getBytes());
-				 candidateResumes.setFileName(multiFile.getOriginalFilename());
-				 candidateResumes.setTitle(multiFile.getOriginalFilename());
-				 candidateResumes.setFileContentType(multiFile.getContentType());
+				 candidateResumes.setFileName(jsonObj.get("fileInfo[0].fileName").toString());
+				 candidateResumes.setTitle(jsonObj.get("fileInfo[0].fileName").toString());
+				 candidateResumes.setFileContentType(jsonObj.get("fileInfo[0].contentType").toString());
+				 candidateResumes.setFileURL(jsonObj.get("fileInfo[0].fileURL").toString());
 				 candidateResumes.setStatus(Constants.CANDIDATE_ACTIVE);
 				 candidateResumes.setResumeUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 				 candidateResumes.setCreatedDate(new Date());

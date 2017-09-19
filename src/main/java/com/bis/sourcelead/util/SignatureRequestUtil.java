@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -232,7 +233,8 @@ public class SignatureRequestUtil {
 				}
 				
 				// create a byte array that will hold our document bytes
-				byte[] fileBytes = CommonUtil.readBytesFromFile(staticPath+contracts.getFileURL());
+				String path =StringUtils.removeEnd(staticPath, "/slead-static");
+				byte[] fileBytes = CommonUtil.readBytesFromFile(path+contracts.getFileURL());
 				
 				 PdfReader pdfReader = new PdfReader(fileBytes);
 			        Integer numberOfPages = pdfReader.getNumberOfPages();

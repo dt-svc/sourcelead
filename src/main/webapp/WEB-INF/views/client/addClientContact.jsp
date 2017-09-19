@@ -171,10 +171,10 @@ function getOrgDetails()
                   <option value="">Select Client</option>
                    <c:forEach var="report" items="${clientContactList}">
                      <c:if test="${report.locationId.id == loginOrgLocId}">  
-                    <option value="${report.id},${report.responderLocationId.id}">${report.responderLocationId.org.orgName}</option>
+                    <option value="${report.id},${report.responderLocationId.id}">${report.responderLocationId.orgLocationName}</option>
                    </c:if>  
                     <c:if test="${report.responderLocationId.id == loginOrgLocId}"> 
-                  	 	<option value="${report.id},${report.locationId.id}">${report.locationId.org.orgName}</option>
+                  	 	<option value="${report.id},${report.locationId.id}">${report.locationId.orgLocationName}</option>
                    </c:if>  
                  </c:forEach> 
                 </select>

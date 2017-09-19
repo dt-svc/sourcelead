@@ -312,7 +312,6 @@ window.onload = function () {
 <script type="text/javascript">
 function getOrgName(){
 	var orgCode = '${SourceLeadWeb_orgCode}';
-	var sourceleadUrl = '${sourceleadUrl}';
 	
 	/* $( "#orgName" ).val( '' ); */
 	$( "#orgLocationId" ).val( '' );
@@ -386,7 +385,6 @@ function getOrgDetails()
 	var orgName = document.getElementById("orgName").value;
 	orgName = encodeURIComponent(orgName);
  	var orgLocationId = document.getElementById("orgLocationId").value; 
-	var sourceleadUrl = '${sourceleadUrl}';
 	if(orgName){
    	 $.ajax({
    	    	type: "POST",
@@ -449,7 +447,6 @@ function getOrgDetails()
 function getRolesList(){
 	var orgName = document.getElementById("orgName").value;
 	var orgLocationId = document.getElementById("orgLocationId").value;
-	var sourceleadUrl ='${sourceleadUrl}';
 	
 	if(orgName){
 		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
@@ -508,7 +505,6 @@ function getRolesList(){
 		if ($('#client_form').validate(false, validationSettings)) {
 			var orgLocationId = document.getElementById("orgLocationId").value;
 		  	 var formData = getFormData("client_form");
-			var sourceleadUrl = '${sourceleadUrl}';
 			$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 			$.post(sourceleadUrl+"/saveClient?${_csrf.parameterName}=${_csrf.token}&orgLocationId="+orgLocationId+"&responderType=Client", formData, function(data) {
 				location.replace(sourceleadUrl+ "/clientDashboard");
@@ -527,7 +523,6 @@ function getRolesList(){
 <script type="text/javascript">
 function validateEmail(){
 	var email = document.getElementById("email").value;
-	var sourceleadUrl = '${sourceleadUrl}';
 	if(email != null){
 		$.ajax({
 			type : "POST",
@@ -557,7 +552,6 @@ function validateEmail(){
 <script type="text/javascript">
 function getSpocUserDetails(){
 	var email = document.getElementById("email").value;
-	var sourceleadUrl = '${sourceleadUrl}';
 	var orgLocationId = document.getElementById("orgLocationId").value;
 	if(email){
 		$.ajax({
@@ -628,7 +622,6 @@ function validateClientName(){
 	var clientName = (document.getElementById("orgName").value).replace(/[{}]/g, "");
 	var client = encodeURIComponent(clientName);
 	
-	var sourceleadUrl = '${sourceleadUrl}';
 	var sourceleadBLockedwebsites = '${sourceLeadBlockedSocialDomains}';
 	if(client.match(/^[^\s-](.*)*$/) != null){
 		$('#clientNameDiv').find('p.jquery_form_error_message').remove();
@@ -705,7 +698,6 @@ function validateClientName(){
  <script type="text/javascript">
 	function validateWebsite() {
 		var website = document.getElementById("webSite").value;
-		var sourceleadUrl = '${sourceleadUrl}';
 		if(website.match(/^[^\s-](.*)*$/) !== null){
 		var sourceleadBLockedwebsites = '${sourceLeadBlockedSocialDomains}';
 		$('#companyWebsiteDiv').find('p.jquery_form_error_message').remove();

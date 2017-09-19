@@ -11,7 +11,7 @@
 	 var result = "";
 	 $.ajax({
          type : "POST",
-          url: sourceleadUrl+"/getCandidateActivitiesByCandidateIdAndLocationCode?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&locationId="+locationId,        
+          url: sourceleadUrl+"/getCandidateActivitiesByCandidateIdAndLocationCode?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&locationId="+locationId,        
           success :function(data) {
         	  
         	  result = result + '<div class="content-area clearfix">';
