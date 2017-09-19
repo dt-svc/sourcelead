@@ -341,16 +341,18 @@ function terminateClientSpoc(spocId, orgRelationID,clientLocationId,spocName){
 <script>
 function saveSpocTerminateReason(spocId, orgRelationID,clientLocationId,spocName){
 	var sourceleadUrl = '${sourceleadUrl}';
+	var userId = '${SourceLeadWeb_userId}';
+	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	 var reason = document.getElementById("reasonForSpoc").value;
 	 reason = reason.replace(/\s/g, "") 
-		var reason1 = document.getElementById("reasonForSpoc").value;
-	//var reason = document.getElementById("reasonForSpoc").value;
+	var reason1 = document.getElementById("reasonForSpoc").value;
+	
 	if(reason.match(/^[^\s-](.*)*$/) != null){
 	      
 		  $("#reasonForSpocDiv").empty();
 		$.ajax({
 		   	type: "POST",
-		    url: sourceleadUrl+"/terminateSpoc?${_csrf.parameterName}=${_csrf.token}&spocId="+spocId+"&reason="+reason,	    	   
+		    url: sourceleadUrl+"/terminateSpoc?${_csrf.parameterName}=${_csrf.token}&spocId="+spocId+"&reason="+reason+"&userId="+userId+"&orgLocationId="+orgLocationId+"&responderType=Client",	    	   
 		    success: function(data) {
 		    	$("#popUp").empty();
    			 	$(".project_inn_mask").fadeOut(200);
