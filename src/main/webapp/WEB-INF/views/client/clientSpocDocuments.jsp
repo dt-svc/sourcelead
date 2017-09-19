@@ -117,8 +117,9 @@ function spocDocumentsList(clientLocationId,orgRelationId,userId,spocName){
 	                    	 }else{
 	                    		 result  = result + ' <td><div><span>--</span></div></td>';
 	                    	 }
-	                    	 result = result+'	 <td><div class="tblicons tblminwidth-75"><a class="glyphicon glyphicon-download-alt" href=\"'+opt.fileURL+'\"></a>';
+	                    	 alert(opt.fileUrl);
 	                    	 if(opt.id != null && opt.id != '' && opt.id != 'undefined'){
+	                    		 result = result+'	 <td><div class="tblicons tblminwidth-75"><a class="glyphicon glyphicon-download-alt" href=\"'+opt.fileUrl+'\"></a>';
 	                    		 '<sec:authorize access="hasAnyRole(\'ROLE_EDIT_CLIENT_DOCUMENT\')">'; 
 	                    		 result = result+'	            <a class="glyphicon glyphicon-pencil" href="javascript:void(0)" onClick="addDocumentForSpoc('+clientLocationId+',\''+spocName+'\','+userId+');  getClientSpocDocument('+clientLocationId+','+orgRelationId+',\''+spocName+'\','+userId+','+opt.id+');"></a>';
 	                    		 '</sec:authorize>';
