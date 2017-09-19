@@ -6,7 +6,7 @@
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 
-<script src="resources/js/formvalidator.js"></script>
+<script src="resources/js/formvalidator.js?staticTime=${staticTime}"></script>
 <style type="text/css">
 .cand-advsrch-popup .bs-caret {
 position: relative; top:8px;
