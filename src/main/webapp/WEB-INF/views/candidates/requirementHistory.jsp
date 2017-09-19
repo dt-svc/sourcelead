@@ -44,7 +44,6 @@ function requirementHistory(candidateId){
 <script>
 function requirementHistoryList(candidateId){
 	
-	var sourceleadUrl ='${sourceleadUrl}';
 	var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
 	  if(locationList.match("yyyy-MM-dd")){
 		  canHisDatePattern = 'YYYY-MM-DD';
@@ -57,7 +56,7 @@ function requirementHistoryList(candidateId){
 	  }
 	 $.ajax({  
          type : "POST",
-         url: sourceleadUrl+"/getRequirementHistoryListByCandidateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,        
+         url: sourceleadUrl+"/getRequirementHistoryListByCandidateId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
          success :function(data) {
         	 var json = JSON.parse(data);
         	 $("#requirementHistoryDiv").empty();
@@ -142,10 +141,9 @@ function requirementHistoryPagination(){
 <script>
 function requirementHistoryDetails(candidateId,positionType,requirementId,requirementUUID,submissionId){
 	var loginUserId = '${SourceLeadWeb_userId}';
-	 var sourceleadUrl ='${sourceleadUrl}';
 	 $.ajax({  
         type : "POST",
-        url: sourceleadUrl+"/getRequirementHistoryDetailsByCandidateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&requirementId="+requirementId+"&submissionId="+submissionId,        
+        url: sourceleadUrl+"/getRequirementHistoryDetailsByCandidateId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&requirementId="+requirementId+"&submissionId="+submissionId,        
         success :function(data) {
         	var json = JSON.parse(data);
         	
@@ -261,7 +259,6 @@ function requirementHistoryDetails(candidateId,positionType,requirementId,requir
 
 <script>
 function getHistoryCandiResume(uuid,title){
-	var sourceleadUrl = '${sourceleadUrl}';
 		if (uuid != null && uuid != "") {
 			window.open(sourceleadUrl + '/viewResume/' + title + '?resumeUUID='+ uuid, title, "height=600,width=600");
 		}
@@ -271,7 +268,6 @@ function getHistoryCandiResume(uuid,title){
           
           <script>
 function getRateListDiv(candidateId,submissionId){
-	  var sourceleadUrl ='${sourceleadUrl}';
 	  var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	  var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
 	  if(locationList.match("yyyy-MM-dd")){
@@ -285,7 +281,7 @@ function getRateListDiv(candidateId,submissionId){
 	  }  
 	  $.ajax({
         type : "POST",
-         url: sourceleadUrl+"/getRateHistoryBySubmissionId?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId+"&candidateId="+candidateId,        
+         url: sourceleadUrl+"/getRateHistoryBySubmissionId?"+tokenParamName+"="+tokenValue+"&submissionId="+submissionId+"&candidateId="+candidateId,        
          success :function(data) {
         	 if(data != null && data != 'undefined' && data != "" && data != '[]'){
             	 var json = JSON.parse(data);

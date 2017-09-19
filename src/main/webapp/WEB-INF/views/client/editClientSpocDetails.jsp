@@ -7,7 +7,6 @@
 
 <script type="text/javascript">
 	function clientDetailsbySpocId(spocId,ownerId,spocUserId,tempOwnerId) {
-		var sourceleadUrl = '${sourceleadUrl}';
 		$.ajax({
 					type : "POST",
 					url : sourceleadUrl+"/getSpocAndOwnerDetailsById?${_csrf.parameterName}=${_csrf.token}&spocId="+spocId+"&ownerId="+ownerId+"&spocUserId="+spocUserId+"&tempOwnerId="+tempOwnerId+"&type=Client",
@@ -34,7 +33,7 @@
 						'</sec:authorize>';
 							
 							result = result + '<div class="project_details_cta">';
-								result = result + '<strong>Spoc Name:</strong>';
+								result = result + '<strong>Name:</strong>';
 								if(json.spocName !=null && json.spocName !='' && json.spocName !='undefined'){
 									result = result + '<span title='+json.spocName+'>'+json.spocName+'</span>';
 								}
@@ -127,7 +126,6 @@
 </script> 
 <script type="text/javascript">
 	function editVendorContactDetails(spocId,ownerId,spocUserId,tempOwnerId) {
-		var sourceleadUrl = '${sourceleadUrl}';
 		      $.ajax({
 						type : "POST",
 						url : sourceleadUrl+"/getSpocAndOwnerDetailsById?${_csrf.parameterName}=${_csrf.token}&spocId="+spocId+"&ownerId="+ownerId+"&spocUserId="+spocUserId+"&tempOwnerId="+tempOwnerId+"&type=Client",
@@ -174,30 +172,30 @@
 				     		
 				     		result = result + '<div class="user_summary_edit_cta" id="vendorContactFirstNameDiv">';
 							result = result + '<label>First Name:<span class="text-danger">*</span></label>';
-							result = result + '<input type="text"  id="vendorContactFirstName" name="vendorContactFirstName" value="'+json.spocFirstName+'" placeholder="First name" field-name="First name" data-validation="required validate_Space validate_length length2-250" readonly="readonly">';
+							result = result + '<input type="text"  id="vendorContactFirstName" name="firstName" value="'+json.spocFirstName+'" placeholder="First name" field-name="First name" data-validation="required validate_Space validate_length length2-250" readonly="readonly">';
 							result = result + '</div>';
 							
 							result = result + '<div class="user_summary_edit_cta" id="vendorContactLastNameDiv">';
 							result = result + '<label>Last Name:</label>';
-							result = result + '<input type="text"  id="vendorContactLastName" name="vendorContactLastName" value="'+spocLastName+'" placeholder="Last name" field-name="Last name" readonly="readonly">';
+							result = result + '<input type="text"  id="vendorContactLastName" name="lastName" value="'+spocLastName+'" placeholder="Last name" field-name="Last name" readonly="readonly">';
 							result = result + '</div>';
 							
 							
 							
 							result = result + '<div class="user_summary_edit_cta" id="mobilePhone">';
 							result = result + '<label>Phone No:</label>';
-							result = result + '<input type="text"  id="mobilePhone" name="mobilePhone" value="'+spocMobilePhone+'" placeholder="Mobile Phone" field-name="Mobile Phone" data-validation-optional="true" readonly="readonly" >';
+							result = result + '<input type="text"  id="mobilePhone" name="phoneNumber" value="'+spocMobilePhone+'" placeholder="Mobile Phone" field-name="Mobile Phone" data-validation-optional="true" readonly="readonly" >';
 							result = result + '</div>';
 							
 					   }else{
 						   result = result + '<div class="user_summary_edit_cta" id="vendorContactFirstNameDiv">';
 							result = result + '<label>First Name:<span class="text-danger">*</span></label>';
-							result = result + '<input type="text"  id="vendorContactFirstName" name="vendorContactFirstName" value="'+json.spocFirstName+'" placeholder="First name" field-name="First name" data-validation="required validate_Space validate_length length2-250" >';
+							result = result + '<input type="text"  id="vendorContactFirstName" name="firstName" value="'+json.spocFirstName+'" placeholder="First name" field-name="First name" data-validation="required validate_Space validate_length length2-250" >';
 							result = result + '</div>';
 							
 							result = result + '<div class="user_summary_edit_cta" id="vendorContactLastNameDiv">';
 							result = result + '<label>Last Name:</label>';
-							result = result + '<input type="text"  id="vendorContactLastName" name="vendorContactLastName" value="'+spocLastName+'" placeholder="Last name" field-name="Last name">';
+							result = result + '<input type="text"  id="vendorContactLastName" name="lastName" value="'+spocLastName+'" placeholder="Last name" field-name="Last name">';
 							result = result + '</div>';
 							
 							/* result = result + '<div class="user_summary_edit_cta" id=" id="EmailIdDiv"">';
@@ -208,7 +206,7 @@
 							
 							result = result + '<div class="user_summary_edit_cta" id="mobilePhone">';
 							result = result + '<label>Phone No:</label>';
-							result = result + '<input type="text"  id="mobilePhone" name="mobilePhone" value="'+spocMobilePhone+'" placeholder="Mobile Phone" field-name="Mobile Phone" data-validation-optional="true" data-validation="validate_length length9-20 validate_phone" >';
+							result = result + '<input type="text"  id="mobilePhone" name="phoneNumber" value="'+spocMobilePhone+'" placeholder="Mobile Phone" field-name="Mobile Phone" data-validation-optional="true" data-validation="validate_length length9-20 validate_phone" >';
 							result = result + '</div>';
 					   }
 				     	result = result + '<div class="user_summary_edit_cta" id=" id="EmailIdDiv"">';
@@ -231,7 +229,7 @@
 						result = result + '<input type="hidden"  id="existingSpocUserId" name="existingSpocUserId" value="'+json.tempSpocId+'">';
 						
 						result = result + ' <div class="user_summary_edit_cta" >';
-						result = result + '<label>Spoc Status :</label>';
+						result = result + '<label>Status :</label>';
 						if(json.invitationStatus == 'Rejected'){
 		        			result = result + '<span>'+json.spocStatus+'</span>';
 		        		}else{
@@ -298,7 +296,6 @@
  function validateClientEmail(spocId) {
 	 var EmailId = document.getElementById("EmailId").value; 
 	 $('#EmailIdDiv').find('p.jquery_form_error_message').remove();
-	 var sourceleadUrl ='${sourceleadUrl}';
 	 if(EmailId != null && EmailId != ""){
 		/*$("#save_client").attr("disabled", "disabled");
          $("#save_client" ).addClass('button').val('Processing..'); */
@@ -334,30 +331,21 @@
  <script type="text/javascript">
 	function storeClientContactDetails(spocId,ownerId,spocUserId,tempOwnerId) {
          if ($('#editVendorContact_form').validate(false, validationSettings)){
-    		 var frm = $('#editVendorContact_form').serializeFormJSON();
-             var con = JSON.stringify(frm);
-             con = con.replace(/[{}]/g, "");
-             //It will escape all the special characters
-             var jsonData = encodeURIComponent(con);
-             var sourceleadUrl ='${sourceleadUrl}';
-	 	 $.ajax({
-			   	type: "POST",
-			    url: sourceleadUrl+"/vendorContactDetailsUpdateUsingId?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&spocId="+spocId+"&ownerId="+ownerId+"&spocUserId="+spocUserId+"&type=Client", 	   
-	   		    success: function(data) {
-	   		        var ownerId = data;
-	   		    	
-	   		    	$("#spocDetailsId").removeAttr("onClick")
-	   		    	$("#spocDetailsId").attr("onclick","clientDetailsbySpocId('"+spocId+"', '"+ownerId+"', '"+spocUserId+"', '"+ownerId+"')");
-	   		    	$("#clientEditMsgDiv").removeAttr("style");
-		 			$("#clientEditMsgDiv").css({ display: "block" });
-		 			$("#clientEditMsg").html("Contact Details Updated");
-	   		    	clientDetailsbySpocId(spocId,ownerId,spocUserId,ownerId);
-	   		    	clientEditMsgFadein();
-	   		    	/* getVendorContactLists();  */
-	   		    	getVendorContactListsELK();
-	   		    	
-	   		    }
-		 }); 
+             var formData = getFormData("editVendorContact_form");
+		 $.post(sourceleadUrl+"/vendorContactDetailsUpdateUsingId?${_csrf.parameterName}=${_csrf.token}&spocId="+spocId+"&ownerId="+ownerId+"&spocUserId="+spocUserId+"&type=Client", formData, function(data) {
+			 var ownerId = data;
+		    	
+		    	$("#spocDetailsId").removeAttr("onClick")
+		    	$("#spocDetailsId").attr("onclick","clientDetailsbySpocId('"+spocId+"', '"+ownerId+"', '"+spocUserId+"', '"+ownerId+"')");
+		    	$("#clientEditMsgDiv").removeAttr("style");
+	 			$("#clientEditMsgDiv").css({ display: "block" });
+	 			$("#clientEditMsg").html("Contact Details Updated");
+		    	clientDetailsbySpocId(spocId,ownerId,spocUserId,ownerId);
+		    	clientEditMsgFadein();
+		    	/* getVendorContactLists();  */
+		    	getVendorContactListsELK();
+			});
+		 
 	     	return true;
          }else{
              return false;

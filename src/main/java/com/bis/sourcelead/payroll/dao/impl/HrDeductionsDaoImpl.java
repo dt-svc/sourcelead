@@ -1,6 +1,11 @@
 package com.bis.sourcelead.payroll.dao.impl;
 
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -23,6 +28,7 @@ import com.bis.sourcelead.payroll.dao.HrDeductionsDao;
 import com.bis.sourcelead.payroll.entity.AccountDeductions;
 import com.bis.sourcelead.payroll.entity.HrDeductions;
 import com.bis.sourcelead.payroll.entity.HrDeductionsDetails;
+import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.ConversionUtil;
 
 @Repository
@@ -35,6 +41,9 @@ public class HrDeductionsDaoImpl implements HrDeductionsDao{
 	
 	@Autowired
 	ConversionUtil conversionUtil;
+	
+	@Autowired
+	CommonUtil commonUtil;
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
@@ -50,18 +59,8 @@ public class HrDeductionsDaoImpl implements HrDeductionsDao{
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public ResponseList<HrDeductions> getHrDeductionsListByOrgLocationid(OrgLocations orgLocation, HrDeductionsDTO hrDeductionsDTO)
+	public ResponseList<HrDeductions> getHrDeductionsListByOrgLocationid(OrgLocations orgLocation, HrDeductionsDTO hrDeductionsDTO) throws Exception
 	{
-		/*Session session = this.sessionFactory.getCurrentSession();
-		List<HrDeductions> hrdeductionlist = null;
-		String query = "from HrDeductions hrd  left join fetch hrd.orgLocationId where hrd.orgLocationId.id =:orgLocationId and hrd.version = (SELECT MAX(hr.version)  FROM HrDeductions hr where hr.orgLocationId.id =:orgLocationId)";
-		hrdeductionlist = session.createQuery(query).setLong("orgLocationId", orgLocation.getId()).setCacheable(true).list();
-		if(hrdeductionlist != null && hrdeductionlist.size() >0)
-		{
-			return hrdeductionlist;
-		}
-		return hrdeductionlist;
-*/	
 		
 		Session session = this.sessionFactory.getCurrentSession();
 		List<HrDeductions> hrDeductionsList = null;
@@ -69,6 +68,28 @@ public class HrDeductionsDaoImpl implements HrDeductionsDao{
 		String query = "from HrDeductions hrd  left join fetch hrd.orgLocationId where hrd.orgLocationId.id =:orgLocationId";
 		String countQuery = "from HrDeductions hrd  where hrd.orgLocationId.id =:orgLocationId";
 		
+		if(hrDeductionsDTO.getSearchValue().contains("/") || hrDeductionsDTO.getSearchValue().contains("-")){
+			String convertedDate=hrDeductionsDTO.getSearchValue();
+			if(hrDeductionsDTO.getSearchValue().contains("/")){
+				convertedDate = hrDeductionsDTO.getSearchValue().replaceAll("/", "-");
+			}
+			DateTimeFormatter orgFormat = new DateTimeFormatterBuilder().appendPattern(orgLocation.getDateFormat()).toFormatter();
+            LocalDate parsedDate = LocalDate.parse(convertedDate, orgFormat);
+            DateTimeFormatter f2 = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+            String newDate = parsedDate.format(f2);
+            Date searchDate = new SimpleDateFormat("yyyy-MM-dd").parse(newDate);
+            java.sql.Date sqlDate = new java.sql.Date(searchDate.getTime());
+            String queryDate = "from HrDeductions hrd where hrd.orgLocationId.id =:orgLocationId and ( hrd.fromDate =:sqlDate or hrd.toDate =:sqlDate)";
+            Query queryObjDate = session.createQuery(queryDate.toString()).setDate("sqlDate", sqlDate).setLong("orgLocationId", orgLocation.getId());
+            List<HrDeductions> temp = queryObjDate.list();
+            for(HrDeductions hrDeductions : temp)
+            {
+            	hrDeductions.setFromDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), hrDeductions.getFromDate()));
+            	hrDeductions.setToDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), hrDeductions.getToDate()));
+            }
+            response.setData(queryObjDate.list());
+
+		}else{
 		StringBuilder query1 = new StringBuilder("");
 			if(hrDeductionsDTO.getSearchValue() !=null && !"".equalsIgnoreCase(hrDeductionsDTO.getSearchValue())) {
 			query1.append(" and hrd.employeeId like '%" + hrDeductionsDTO.getSearchValue() + "%' ")
@@ -106,8 +127,9 @@ public class HrDeductionsDaoImpl implements HrDeductionsDao{
 			response.setRecordsFiltered(filteredCount);
 		}
 
-		if (hrDeductionsList != null && hrDeductionsList.size() > 0) {
+		if (hrDeductionsList != null) {
 			response.setData(getHrDeductionsListSorting(hrDeductionsList));
+		}
 		}
 		return response;
 	}

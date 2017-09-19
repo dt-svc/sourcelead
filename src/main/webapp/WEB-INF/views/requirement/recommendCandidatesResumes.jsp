@@ -96,10 +96,15 @@ function refreshResumeList(candidateId){
      1.usage     : onload
      2.parameter : candidateId.
 --%>
+<script type="text/javascript">
+function uploadCanResume(){
+	fileUpload("uploadBtn", "resumes", "candidateResume_form");
+}
+</script>
 <script>
 function addResume(candidateId) {	
 	var result = "";
-	result = result+'	           <form id="candidateResume_form" name="candidateResume_form" action="upload" enctype="multipart/form-data" method="post">';
+	result = result+'	           <form id="candidateResume_form" name="candidateResume_form" action="upload" method="post">';
 	result = result+'	           <i class="fa fa-close close-div" onClick="closeResumePopup();"></i>';
 	result = result+'	                <div class="form-horizontal clearfix" id="newResumeDiv">';
 	result = result+'	                  <div class="clearfix mb10">';
@@ -115,8 +120,8 @@ function addResume(candidateId) {
 	result = result+'	                  <div class="clearfix mb10" id="uploadResumeDiv">';
 	result = result+'	                    <div class="col-md-12">';
 	result = result+'							<div class="input-group positionRelative" id="uploadFileGroup">';
-	result = result+'	                          <label class="input-group-btn"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File';
-	result = result+'	                            <input type="file" name="uploadBtn" id="uploadBtn" style="display: none;"  multiple="" class="upload">';
+	result = result+'	                          <label class="input-group-btn" onChange="uploadCanResume();"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File';
+	result = result+'	                            <input type="file" id="uploadBtn" style="display: none;" class="upload">';
 	result = result+'	                            </span> </label>';
 	result = result+'	                          <input type="text" class="form-control" readonly id="uploadFile" name="docFile" placeholder="File not selected..." field-name="Resume" data-validation="required validate_Space validatedoc">';
 	result = result+'	                        </div>';
@@ -195,25 +200,16 @@ function addResume(candidateId) {
 					dateFormat : 'yyyy/mm/dd' 
 		         }; 
 			 if ($('#candidateResume_form').validate(false, validationSettings)){
-				var frm = $('#candidateResume_form').serializeFormJSON();
-				var con = JSON.stringify(frm);
-				con = con.replace(/[{}]/g, "");
 				var form = $('#candidateResume_form')[0];
 	      		var formData = new FormData(form); 
-				var sourceleadUrl = '${sourceleadUrl}';
 				$("#add_resume").attr("disabled", "disabled");
          		$("#add_resume" ).addClass('button').val('Processing..');
-				//It will escape all the special characters
-		        var jsonData = encodeURIComponent(con);
 				$.ajax({
 						type : "POST",
 		        	    data: formData,
-		        	    contentType : 'application/json; charset=utf-8',
-		        	    enctype: 'multipart/form-data',
 		    	        processData: false,
 		    	        contentType:false,
-		        	    dataType : 'json',
-						url : sourceleadUrl+"/saveCandidateResume?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&candidateId="+candidateId+"&resumeId="+resumeId,
+						url : sourceleadUrl+"/saveCandidateResume?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&resumeId="+resumeId,
 						success : function(result) {
 							 if( result.indexOf('Sign In') >= 0){
 					    		location.replace(sourceleadUrl);
@@ -273,13 +269,12 @@ function addResume(candidateId) {
 --%>
 <script>
   function candidateResumesList(candidateId){ 	 
-	  var sourceleadUrl ='${sourceleadUrl}';
 	  var candidateId = candidateId;
 	  var result = "";
 	  var resumesCount = 0;
 	  $.ajax({
 			type : "POST",
-			url : sourceleadUrl+"/candidateResumesListByCandidateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,
+			url : sourceleadUrl+"/candidateResumesListByCandidateId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,
 			success : function(data) {
 				var json = JSON.parse(data);
 				if( data.indexOf('Sign In') >= 0){
@@ -346,7 +341,7 @@ function addResume(candidateId) {
 					           		result = result+'	            <td><div><span title="'+description+'">'+description+'</span></div></td>';
 					           		result = result+'	            <td><div><span>'+createdBy+'</span></div></td>';
 					           		result = result+'	            <td><div><span>'+candidateResumeUpdateDateToString+'</span></div></td>';
-					           		result = result+'	            <td><div class="tblicons"><a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadResume?resumeUUID='+opt.resumeUUID+'\"></a>';
+					           		result = result+'	            <td><div class="tblicons"><a class="glyphicon glyphicon-download-alt" href=\"'+opt.fileURL+'\" title="Download"></a>';
 					           		if(window.candidateStatusGlobal == 0){
 					           			result = result+'	            <a class="glyphicon glyphicon-pencil" href="javascript:void(0)"></a>';
 						           		result = result+'	            <i class="glyphicon glyphicon-trash" href="javascript:void(0)"></i>';
@@ -382,14 +377,13 @@ function addResume(candidateId) {
 --%>
 <script>
 function deleteResume(candidateId, resumeId){
-	var sourceleadUrl ='${sourceleadUrl}';
 	var loginUserId = '${SourceLeadWeb_userId}';
 	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	var message = confirm("You are choosing to delete the resume");
 	if (message == true) {
 		$.ajax({
 		   	type: "POST",
-		    url: sourceleadUrl+"/terminateResume?${_csrf.parameterName}=${_csrf.token}&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&resumeId="+resumeId, 	   
+		    url: sourceleadUrl+"/terminateResume?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&resumeId="+resumeId, 	   
    		    success: function(data) {
    		    	if( data.indexOf('Sign In') >= 0){
 		    		location.replace(sourceleadUrl);
@@ -445,10 +439,9 @@ function deleteResume(candidateId, resumeId){
 --%>
 <script>
 function getResume(candidateId, resumeId){
-	var sourceleadUrl ='${sourceleadUrl}';
 		$.ajax({
 		   	type: "POST",
-		    url: sourceleadUrl+"/getResume?${_csrf.parameterName}=${_csrf.token}&resumeId="+resumeId, 	   
+		    url: sourceleadUrl+"/getResume?"+tokenParamName+"="+tokenValue+"&resumeId="+resumeId, 	   
    		    success: function(data) {
    		    	var json = JSON.parse(data);
    		    	if( data.indexOf('Sign In') >= 0){

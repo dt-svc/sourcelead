@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.bis.sourcelead.dao.AddExpensesDao;
 import com.bis.sourcelead.entity.CandidateCertifications;
 import com.bis.sourcelead.entity.Expenses;
+import com.bis.sourcelead.entity.ExpensesEntryDocuments;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.itextpdf.text.pdf.PdfStructTreeController.returnType;
 
@@ -66,6 +67,15 @@ public class AddExpensesDaoImpl implements AddExpensesDao {
 			return null;
 		}
 		return expenses.iterator().next();		
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public void deleteDocumentByDocumentId(Long documentId) {
+		Session session = this.sessionFactory.getCurrentSession();
+		ExpensesEntryDocuments expensesEntryDocuments = this.sessionFactory.getCurrentSession().get(ExpensesEntryDocuments.class, documentId);
+		expensesEntryDocuments.setStatus(0);
+		session.saveOrUpdate(expensesEntryDocuments);
 	}
 
 	

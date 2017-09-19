@@ -26,10 +26,9 @@ function getAllReports(){
 
 <script>
 function getAllAssignedRequirementsReports(){
-		var sourceleadUrl ='${sourceleadUrl}';
 		$.ajax({
 	         type : "POST",
-	          url: sourceleadUrl+"/getAllAssignedRequirementsReports?${_csrf.parameterName}=${_csrf.token}",    
+	          url: sourceleadUrl+"/getAllAssignedRequirementsReports?"+tokenParamName+"="+tokenValue+"",    
 	          success :function(data) {
 	        	 prepareReportDataDiv(data);
 	        	 getAllRequirementAssignToCounts();
@@ -360,11 +359,10 @@ function getAssignedRequirement(){
 		con = con.replace(/[{}]/g, "");
 		  //It will escape all the special characters
         var jsonData = encodeURIComponent(con);
-		var sourceleadUrl = '${sourceleadUrl}';
 		/* $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;'); */
  		 $.ajax({
 					type : "GET",
-					url: sourceleadUrl+"/getDayWiseAssignedReqReports?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
+					url: sourceleadUrl+"/getDayWiseAssignedReqReports?"+tokenParamName+"="+tokenValue+"&json="+jsonData,
 					success : function(result) {
 						prepareReportDataDiv(result);
 						getAllRequirementAssignToCounts(jsonData);
@@ -393,10 +391,9 @@ function reset(){
  		
 <script>
 function getAllRequirementAssignToCounts(jsonData){
-	var sourceleadUrl ='${sourceleadUrl}';
 	$.ajax({
         type : "GET",
-        url: sourceleadUrl+"/getAllRequirementAssignToCounts?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
+        url: sourceleadUrl+"/getAllRequirementAssignToCounts?"+tokenParamName+"="+tokenValue+"&json="+jsonData,
          success :function(data) {
         	 var json = JSON.parse(data);
         	 $("#applicantCount").html(json.applicantsCount); 

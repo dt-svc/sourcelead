@@ -44,11 +44,10 @@
 	
 	<script>
 	function candSubmissionDocumentsList(candidateId){
-		  var sourceleadUrl ='${sourceleadUrl}';
 		 
 		 $.ajax({  
 	          type : "POST",
-	          url: sourceleadUrl+"/getCandidateDocumentsListByCandidateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,        
+	          url: sourceleadUrl+"/getCandidateDocumentsListByCandidateId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
 	          success :function(data) {
 	           
 	             			 var json = JSON.parse(data); 

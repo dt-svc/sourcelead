@@ -51,7 +51,7 @@ $(document).ready(function(){
           
           <ul class="nav nav-tabs" id="tab_bar">
             <li class="active">
-              <a href="#bill" data-toggle="tab" title="Bill" aria-expanded="true">
+              <a href="#bill" data-toggle="tab" title="Details" aria-expanded="true">
                 <h5>Details</h5>
               </a>
             </li>
@@ -66,7 +66,7 @@ $(document).ready(function(){
             
               <li class="">
 <%--             <sec:authorize access="hasAnyRole(\'ROLE_BILL_PAYMENT_HISTORY\')"> --%>
-              <a href="#notesList" data-toggle="tab" title="Payment History" aria-expanded="false" onclick="invoiceNotesList();">
+              <a href="#notesList" data-toggle="tab" title="Notes" aria-expanded="false" onclick="invoiceNotesList();">
 <%--               </sec:authorize> --%>
                 <h5>Notes</h5>
               </a>
@@ -103,7 +103,6 @@ $(document).ready(function(){
   
 <script>
 function getViewInvoice(){
-	  var sourceleadUrl ='${sourceleadUrl}';
 	  var invoiceUUID ='${invoiceUUID}';
 	  var invoiceType = '${invoiceType}';
 	  var currencyCode = '${SourceLeadWeb_currencyCode}';
@@ -119,7 +118,7 @@ function getViewInvoice(){
 		  }
 	  $.ajax({
 	    	type: "GET",
-	        url: sourceleadUrl+"/getViewInvoice?${_csrf.parameterName}=${_csrf.token}&invoiceUUID="+invoiceUUID,
+	        url: sourceleadUrl+"/getViewInvoice?"+tokenParamName+"="+tokenValue+"&invoiceUUID="+invoiceUUID,
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	var result = "";
@@ -594,7 +593,6 @@ function getViewInvoice(){
 
 <script>
 function viewInvoiceDocView(documentId,title){
-	var sourceleadUrl ='${sourceleadUrl}';
 	if(documentId != null && documentId != ""){
 		window.open(sourceleadUrl+'/viewInvoiceDocView/'+title+'?documentId='+documentId,title,"height=600,width=600");
 	}  
@@ -633,9 +631,8 @@ function invoiceNotesList(){
 function invoiceNotes(){
 	var urlForm = "";
 	  var invoiceUUID ='${invoiceUUID}';
-    	urlForm = "/getNotesInvoice?${_csrf.parameterName}=${_csrf.token}&invoiceUUID="+invoiceUUID;
+    	urlForm = "/getNotesInvoice?"+tokenParamName+"="+tokenValue+"&invoiceUUID="+invoiceUUID;
 	
-	var sourceleadUrl ='${sourceleadUrl}';
 	  $.ajax({
         type : "POST",
          url: sourceleadUrl+urlForm,        
@@ -751,31 +748,22 @@ function addNotes() {
 <script type="text/javascript">
 	function storeInvoiceNotes(){
 		if ($('#invoiceNotes_form').validate(false, validationSettings)){ 
-				var frm = $('#invoiceNotes_form').serializeFormJSON();
-				var con = JSON.stringify(frm);
-				//con = con.replace(/[{}]/g, "");
+				
 				var form = $('#invoiceNotes_form')[0];
 	      		var formData = new FormData(form);
-	      		formData.append("json",con);
-	      		
 	      		var userId = '${SourceLeadWeb_user.id}';
 	      		formData.append("userId",userId);
 	      	    var locationCode ='${SourceLeadWeb_locationCode}'; 
 	      	    formData.append("locationCode",locationCode);
 	      			
-				var sourceleadUrl = '${sourceleadUrl}';
 				$("#save_note").attr("disabled", "disabled");
          		$("#save_note" ).addClass('button').val('Processing..');
-		        var jsonData = encodeURIComponent(con);
 				$.ajax({
 						type : "POST",
 		        	    data: formData,
-		        	    contentType : 'application/json; charset=utf-8',
-		        	    enctype: 'multipart/form-data',
 		    	        processData: false,
 		    	        contentType:false,
-		        	    dataType : 'json',
-						url : sourceleadUrl+"/storeNotes?${_csrf.parameterName}=${_csrf.token}",
+						url : sourceleadUrl+"/storeNotes?"+tokenParamName+"="+tokenValue+"&userId="+userId+"locationCode="+locationCode,
 						success : function(result) {
 							closeDocPopup();
 							invoiceNotes();
@@ -797,12 +785,11 @@ function addNotes() {
 </script>
 <script>
 function paymentHistroy(){
-	 var sourceleadUrl ='${sourceleadUrl}';
 	  var invoiceUUID ='${invoiceUUID}';
 	  var locationId = '${SourceLeadWeb_orgLocationId}';
 	  $.ajax({
 	    	type: "GET",
-	        url: sourceleadUrl+"/getViewPaymentHistory?${_csrf.parameterName}=${_csrf.token}&invoiceUUID="+invoiceUUID+"&locationId="+locationId,
+	        url: sourceleadUrl+"/getViewPaymentHistory?"+tokenParamName+"="+tokenValue+"&invoiceUUID="+invoiceUUID+"&locationId="+locationId,
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	var result = "";                                                                                                

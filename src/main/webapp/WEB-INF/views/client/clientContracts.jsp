@@ -141,7 +141,7 @@ function clientContracts(orgRelationId){
 	result = result+'	    </div>';
 	result = result+'	    </div>';
 
-    $("#tab-1").empty();
+	$("#tab-1").empty();
     $("#tab-2").empty(); 
     $("#tab-3").empty();  
     $("#tab-4").empty(); 
@@ -166,7 +166,6 @@ function clientContractsList(orgRelationId){
     });
 	
 	 var sourceleadUrl ='${sourceleadUrl}';
-	 
 	 var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
 	  if(locationList.match("yyyy-MM-dd")){
 		  contractClientDate = 'YYYY-MM-DD';
@@ -183,7 +182,6 @@ function clientContractsList(orgRelationId){
           success :function(data) {
              			var json = JSON.parse(data);
 	                	 $("#clientContractsList").empty();
-	                	 
 	                	 var draftCount = 0;
 	                	 var waitingForApprovalCount = 0;
 	                	 var waitingToBeSignedCount = 0;
@@ -280,12 +278,11 @@ function clientContractsList(orgRelationId){
 		                		         }
 		                		         opt = opt + '</td>';
 		                		         
-		                		         
 		                		         opt = opt + '<td class="noPad">';
 		                		         opt = opt + '<div class="tblminwidth-75">';
 		                		     		  if(output.templateSubmissionStatus == "WAITING_FOR_APPROVER"){
 		                		     			 if('${SourceLeadWeb_loginUserRole}' == "ROLE_ADMIN" || '${SourceLeadWeb_user.id}' == output.approverUserId){
-			                	     	        	 opt = opt +'<div class="pull-left CurDiv mr10" id="removeStatus'+output.id+'"><i class="fa fa-check" title="Approve" alt="Approve" onclick="approveContract('+output.id+',\'WAITING_FOR_APPROVER\');"></i><i class="fa fa-times" title="Reject" alt="Rejected" onclick="approveContract('+output.id+',\'REJECTED\');"></i></div>';
+			                	     	        	 opt = opt +'<div class="pull-left CurDiv mr10" id="removeStatus'+output.id+'"><i class="fa fa-check" title="Approve" alt="Approve" onclick="approveContract('+output.id+',\'WAITING_FOR_APPROVER\','+orgRelationId+');"></i><i class="fa fa-times" title="Reject" alt="Rejected" onclick="approveContract('+output.id+',\'REJECTED\','+orgRelationId+');"></i></div>';
 			                	     	         }
 		                		     		  }
 		                		     		 
@@ -296,9 +293,9 @@ function clientContractsList(orgRelationId){
 		                	       			if(output.templateSubmissionStatus == "DRAFT" || output.templateSubmissionStatus == "WAITING_FOR_APPROVER" || output.templateSubmissionStatus == "REJECTED" ){
 		                	       				'<sec:authorize access="hasAnyRole(\'ROLE_EDIT_CONTRACT\')">';
 		                	     	     		if(output.typeOfContract == "New"){
-		                	     	     			opt = opt + '<div class="pull-left ml10" href="<c:url value="/addNewContract?contractUUID='+output.contractUUID+'" />" title="Edit"><i class="glyphicon glyphicon-pencil editAA text-danger"></i></div>';
+		                	     	     			opt = opt + '<div class="pull-left ml10"><a href="<c:url value="/addNewContract?contractUUID='+output.contractUUID+'" />" title="Edit"><i class="glyphicon glyphicon-pencil editAA text-danger"></i></a></div>';
 		                	     	     		}else if(output.typeOfContract == "Custom"){
-		                	     	     			opt = opt + '<div class="pull-left" href="<c:url value="/addCustomContract?contractUUID='+output.contractUUID+'" />" title="Edit"><i class="glyphicon glyphicon-pencil editAA text-danger"></i></div>';
+		                	     	     			opt = opt + '<div class="pull-left"><a href="<c:url value="/addCustomContract?contractUUID='+output.contractUUID+'" />" title="Edit"><i class="glyphicon glyphicon-pencil editAA text-danger"></i></a></div>';
 		                	     	     		}
 		                	       			'</sec:authorize>';
 		                	       			}
@@ -428,57 +425,60 @@ function CountClick(contractUUID,parentId){
     	      var opt=json[i];
 			  result = result +'		    <div class="col-xs-12 col-sm-12 col-md-12 clearfix DocAccWrap">                                                            ';
 			  result = result +'	     <div class="form-group">                                                                                                             ';
-			  result = result +'	       <label class="col-md-4 text-center">'+opt.fileName+'</label>                                                 ';
-			  if(opt.docFile != null && opt.docFile !="" && parentId == "--"){
+			  result = result + ' <input type="hidden" id="documentName" name="docfiles['+i+'].documentName" value="'+opt.fileName+'" />';
+				  result = result +'	       <label class="col-md-4 text-center">'+opt.fileName+'</a></label>                                                 ';
+
+				  /* if(opt.docFile != null && opt.docFile !="" && parentId == "--"){
 				  result = result +'	       <div class="col-md-8 text-center">                                                                                                             ';
 				  result = result +'	       <label class="text-center">--</label>                                                 ';
 				  result = result +'	       </div>			                                                                                                                  ';
 				  $("#saveAction").empty(); 
 			  }
-			  else{
-				  if(parentId != "--"){
-						  if(opt.docFile != null && opt.docFile !=""){
+			  else{ 
+				   if(parentId != "--"){ */
+						  if(opt.fileURL != null && opt.fileURL !=""){
 							  result = result +'	       <div class="col-md-8 text-center" id="removeDiv'+opt.id+'">                                                                                                             ';
-							  result = result+'	                      &nbsp;&nbsp;<span id="delete_resume" onclick="removeDoc('+opt.id+');"><i class="fa fa-trash text-danger removeIcon"></i></span>';
+							  result = result+'	                      &nbsp;&nbsp;<span id="delete_resume" onclick="removeResumeNameDiv('+opt.id+');"><i class="fa fa-trash text-danger removeIcon"></i></span>';
+							  result = result+' <a class="glyphicon glyphicon-download-alt" href="'+opt.fileURL+'" title="Download"></a>';
+			         		  result = result+' <a class="fa fa-eye" href="javascript:void(0)" onClick="viewFile(\''+sourceleadUrl+'\', \''+opt.fileURL+'\', \''+opt.docFileName+'\', \''+opt.fileType+'\')"title="preview"></a>';
 							  result = result +'	       </div>			                                                                                                                  ';
 							  result = result +'	       <div class="col-md-8" id="uploadDocumentDiv'+opt.id+'" style="display: none;">                                                                                                             ';
 							  result = result +'				<div class="input-group positionRelative ratetype" id="uploadFileGroup'+opt.id+'" title="Document Type: .pdf format only">                  ';
-							  result = result +'					<label class="input-group-btn"> <span class="btn btn-primary padSm"><i class="fa fa-folder-open-o"></i>&nbsp;Browse           ';
-							  result = result +'	             <input name="uploadBtn'+opt.id+'" id="uploadBtn'+opt.id+'" style="display: none;" multiple="" class="upload" type="file" onclick="check('+opt.id+');">                            ';
+							  result = result +'					<label class="input-group-btn"> <span class="btn btn-primary padSm" onchange="uploadRequestedDocuments('+opt.id+');"><i class="fa fa-folder-open-o"></i>&nbsp;Browse           ';
+							  result = result +'	             <input name="uploadBtn'+opt.id+'" id="uploadBtn'+opt.id+'" style="display: none;" class="upload" type="file" onclick="check('+opt.id+');">                            ';
 							  result = result +'	             </span> </label>                                                                                                                 ';
-							  result = result +'					<input class="form-control padSm"  id="uploadFile'+opt.id+'" name="docFile'+opt.id+'"  placeholder="Upload File" readonly type="text">  ';
+							  result = result +'					<input class="form-control padSm"  id="uploadFile'+opt.id+'" name="docfiles['+i+'].docFileName"  placeholder="Upload File" readonly type="text">  ';
 							  result = result +'				</div>                                                                                                                            ';
 							  result = result +'	       </div>			                                                                                                                  ';
-						  }else{
+						  }
+						  else{
 							  result = result +'	       <div class="col-md-8" id="uploadDocumentDiv'+opt.id+'">                                                                                                             ';
 							  result = result +'				<div class="input-group positionRelative ratetype" id="uploadFileGroup'+opt.id+'" title="Document Type: .pdf format only">                  ';
-							  result = result +'					<label class="input-group-btn"> <span class="btn btn-primary padSm"><i class="fa fa-folder-open-o"></i>&nbsp;Browse           ';
-							  result = result +'	             <input name="uploadBtn'+opt.id+'" id="uploadBtn'+opt.id+'" style="display: none;" multiple="" class="upload" type="file" onclick="check('+opt.id+');">                            ';
+							  result = result +'					<label class="input-group-btn"> <span class="btn btn-primary padSm" onchange="uploadRequestedDocuments('+opt.id+');"><i class="fa fa-folder-open-o"></i>&nbsp;Browse           ';
+							  result = result +'	             <input id="uploadBtn'+opt.id+'" style="display: none;" class="upload" type="file" onclick="check('+opt.id+');">                            ';
 							  result = result +'	             </span> </label>                                                                                                                 ';
-							  result = result +'					<input class="form-control padSm"  id="uploadFile'+opt.id+'" name="docFile'+opt.id+'"  placeholder="Upload File" readonly type="text">  ';
+							  result = result +'					<input class="form-control padSm"  id="uploadFile'+opt.id+'" name="docfiles['+i+'].docFileName"  placeholder="Upload File" readonly type="text">  ';
 							  result = result +'				</div>                                                                                                                            ';
 							  result = result +'	       </div>			                                                                                                                  ';
 					  }
-				  }
+				/*   }
 				  else{
 					  $("#saveAction").empty(); 
 					  result = result +'	       <div class="col-md-8 text-center">                                                                                                             ';
 					  result = result +'	       <label class="text-center">--</label>                                                 ';
 					  result = result +'	       </div>			                                                                                                                  ';
 					  $("#saveAction").empty(); 
-				  }
-			  }
+				  } */
+			 /*  } */
 			  result = result +'			</div>                                                                                                                                ';
 			  result = result +'			<div class="clearfix"></div>                                                                                                          ';
-			  result = result +'	 </div>                                                                                                                                   ';
-			  result = result + ' <input type="hidden" id="docId'+(i+1)+'" name="docId'+(i+1)+'" value="'+opt.id+'" />';
+			  result = result +'	 </div>  ';     
+			  result = result + ' <input type="hidden" id="docId'+(i+1)+'" name="docfiles['+i+'].docId" value="'+opt.id+'" />';
     	    }
 			  $("#DocAccPopupDiv").empty();
 			  $("#DocAccPopupDiv").append(result);
        },
 	  }); 
-	
-	
 }
 
 function removeDoc(id){
@@ -516,6 +516,11 @@ document.getElementById("uploadBtn"+id).onchange = function () {
     	  $("#uploadFileGroup"+id).append("<p class='jquery_form_error_message'>Limit is exceeded than 2MB </p>");
       }
     });
+}
+
+function uploadRequestedDocuments(id){
+	var sourceleadUrl ='${sourceleadUrl}';
+	fileUpload(sourceleadUrl, "uploadBtn"+id+"", "Requested Documents", "contractDoc_form");
 }
 </script>
 
@@ -876,10 +881,10 @@ function editOne(startDate,endDate){
 	  var d2 = '';
 	  if(locationDate.match("yyyy-MM-dd")){
 		  finalDateeditOneSave = 'yy-mm-dd';
-		   d2 = new Date(ClientcontractEffectiveEndDate[0], parseInt(contractEffectiveEndDate[1])-parseInt(1), parseInt(ClientcontractEffectiveEndDate[2])+parseInt(1));
+		   d2 = new Date(ClientcontractEffectiveEndDate[0], parseInt(ClientcontractEffectiveEndDate[1])-parseInt(1), parseInt(ClientcontractEffectiveEndDate[2])+parseInt(1));
 	  }if(locationDate.match("dd-MM-yyyy")){
 		  finalDateeditOneSave = 'dd-mm-yy'; 
-		   d2 = new Date(ClientcontractEffectiveEndDate[2], parseInt(contractEffectiveEndDate[1])-parseInt(1), parseInt(ClientcontractEffectiveEndDate[0])+parseInt(1));
+		   d2 = new Date(ClientcontractEffectiveEndDate[2], parseInt(ClientcontractEffectiveEndDate[1])-parseInt(1), parseInt(ClientcontractEffectiveEndDate[0])+parseInt(1));
 	  }if(locationDate.match("MM-dd-yyyy")){
 		  finalDateeditOneSave = 'mm-dd-yy'; 
 		   d2 = new Date(ClientcontractEffectiveEndDate[2], parseInt(ClientcontractEffectiveEndDate[0])-parseInt(1), parseInt(ClientcontractEffectiveEndDate[1])+parseInt(1));
@@ -887,8 +892,6 @@ function editOne(startDate,endDate){
 		  finalDateeditOneSave = 'yy-dd-mm';
 		   d2 = new Date(ClientcontractEffectiveEndDate[0], parseInt(ClientcontractEffectiveEndDate[2])-parseInt(1), parseInt(ClientcontractEffectiveEndDate[1])+parseInt(1));
 	  }
-	
-	
 	
 	 var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
 	  var finalDateFormatEditEndDateSave = '';

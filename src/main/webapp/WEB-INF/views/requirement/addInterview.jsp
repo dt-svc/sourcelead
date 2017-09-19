@@ -28,7 +28,6 @@ z-index: 9 !important;
 function addInterview(requirementId){
 	$('.action-pop').slideUp();
 	interviewTemplate();
-	var sourceleadUrl ='${sourceleadUrl}';
 	var parentRequirement = '${parentRequirement}';
 	var clientSubmissions = '${clientSubmissions}';
 	var result = "";
@@ -610,7 +609,6 @@ function getNotifyToOtersVal(){
         var con = JSON.stringify(frm);
         con = con.replace(/[{}]/g, "");
         var jsonData = encodeURIComponent(con);
-        var sourceleadUrl ='${sourceleadUrl}';
         var requirementId = '${requirementId}';
         
         var selectedInterviewApplicants =  $('#1applicant_chosen  span').size();
@@ -622,7 +620,7 @@ function getNotifyToOtersVal(){
 	 		$("#interviewLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	   	     $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/saveInterview?${_csrf.parameterName}=${_csrf.token}&jsonData="+jsonData,
+		        url: sourceleadUrl+"/saveInterview?"+tokenParamName+"="+tokenValue+"&jsonData="+jsonData,
 		        success: function(result) {
 		        	    $(".add_inter_wrap").removeClass("add_inter_wrap_active");
 		        		$(".side_mask").fadeOut(200);
@@ -698,12 +696,11 @@ function cancelInterviewPopup(){
 			 existingApplicantsIds.push(applicant);
 		 }
 	 }
-	 var sourceleadUrl ='${sourceleadUrl}';
 	 var requirementId = $("#reqId").val();
      
 		 $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/getAllShortListCandidates?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&existingApplicantsIds="+existingApplicantsIds+"&isClientInterview="+isClientInterview,  
+		        url: sourceleadUrl+"/getAllShortListCandidates?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&existingApplicantsIds="+existingApplicantsIds+"&isClientInterview="+isClientInterview,  
 		        success: function(data) {
 		        	var json = JSON.parse(data);
 		        	var output = "";
@@ -749,7 +746,6 @@ function cancelInterviewPopup(){
 			 existingApplicantsIds.push(applicant);
 		 }
 	 }
-	 var sourceleadUrl ='${sourceleadUrl}';
 	 var requirementId = $("#reqId").val();
 	 var clientSubmissions = '${clientSubmissions}';
 	 var isClientInterview = "";
@@ -764,7 +760,7 @@ function cancelInterviewPopup(){
      
 		 $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/getAllShortListCandidates?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&existingApplicantsIds="+existingApplicantsIds+"&isClientInterview="+isClientInterview, 
+		        url: sourceleadUrl+"/getAllShortListCandidates?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&existingApplicantsIds="+existingApplicantsIds+"&isClientInterview="+isClientInterview, 
 		        success: function(data) {
 		        	var json = JSON.parse(data);
 		        	var output = "";
@@ -796,10 +792,9 @@ function cancelInterviewPopup(){
   
 <script type="text/javascript">
  function getInterviewers(rowId) {
-	 var sourceleadUrl ='${sourceleadUrl}';
 	  $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/getAllInterviewers?${_csrf.parameterName}=${_csrf.token}", 
+		        url: sourceleadUrl+"/getAllInterviewers?"+tokenParamName+"="+tokenValue+"", 
 		        success: function(data) {
 		        	var json = JSON.parse(data);
 		        	var output = "";
@@ -870,10 +865,10 @@ $(function(){
 
 <script>
 function interviewTemplate(){
-	 var sourceleadUrl ='${sourceleadUrl}';
+
 	 $.ajax({
 	    	type: "POST",
-	    	url : sourceleadUrl+"/getInterviewFeedbackTemplatesList?${_csrf.parameterName}=${_csrf.token}", 
+	    	url : sourceleadUrl+"/getInterviewFeedbackTemplatesList?"+tokenParamName+"="+tokenValue+"", 
 	        success: function(data) {
 	        var json = JSON.parse(data);
 	        var output = "";
@@ -902,11 +897,10 @@ function interviewTemplate(){
 
 <script>
 function getTimezonesList(rowId){
-	var sourceleadUrl ='${sourceleadUrl}';
 	var timezone = '${timezone}';
 	 $.ajax({
 	    	type: "POST",
-	    	url : sourceleadUrl+"/getTimezonesList?${_csrf.parameterName}=${_csrf.token}", 
+	    	url : sourceleadUrl+"/getTimezonesList?"+tokenParamName+"="+tokenValue+"", 
 	        success: function(data) {
 	        var json = JSON.parse(data);
 	        var output = "";
@@ -995,7 +989,6 @@ function checkAvailability(){
 		$('.particalCount').hide();
 	var timezone = '${timezone}';
 	var date = $("#scheduleCalendar").val();
-	var sourceleadUrl ='${sourceleadUrl}';
 	var bid = document.getElementById("button_id").value;
 	var checkMaxTsRowNum1 = $("#maxTsRowNum").val();
 	bid = bid.replace("Avail", "");
@@ -1010,7 +1003,7 @@ function checkAvailability(){
 	}
 			  $.ajax({
 			    	type: "POST",
-			    	url : sourceleadUrl+"/getInterviewerAndApplicantsDetails?${_csrf.parameterName}=${_csrf.token}&applicantSubId="+applicantSubId+"&interviewerIds="+interviewerIds+"&date="+date, 
+			    	url : sourceleadUrl+"/getInterviewerAndApplicantsDetails?"+tokenParamName+"="+tokenValue+"&applicantSubId="+applicantSubId+"&interviewerIds="+interviewerIds+"&date="+date, 
 			        success: function(data) {
 			        	 var json = JSON.parse(data);
 					     	$("#interviewer").empty();
@@ -1171,7 +1164,6 @@ function interviewPagination(){
 <script>
 function setDate(){
 	var date = $("#scheduleCalendar").val();
-	var sourceleadUrl ='${sourceleadUrl}';
 	var bid = document.getElementById("button_id").value;
 	var checkMaxTsRowNum1 = $("#maxTsRowNum").val();
 	var clicked_button = bid;

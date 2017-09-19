@@ -301,7 +301,7 @@ public class WageTaxSummaryServiceImpl implements WageTaxSummaryService{
 	
 	
 	@Override
-	public ResponseList<WageTaxSummary> getWagesAndTaxListByOrgLocationId(OrgLocations orgLocation,WagesTaxSummaryDTO wagesTaxSummaryDTO)
+	public ResponseList<WageTaxSummary> getWagesAndTaxListByOrgLocationId(OrgLocations orgLocation,WagesTaxSummaryDTO wagesTaxSummaryDTO) throws Exception
 	{
 		return wageTaxSummaryDao.getWagesAndTaxListByOrgLocationId(orgLocation,wagesTaxSummaryDTO);
 	//TODO 	please do not remove
@@ -567,6 +567,7 @@ public class WageTaxSummaryServiceImpl implements WageTaxSummaryService{
 		
 
 		List<WageTaxSummary> wagesAndTaxList = wageTaxSummaryDao.getWagesAndTaxListByEmployeeId(orgLocations,empId);
+		
 		if(wagesAndTaxList != null){
 			for(WageTaxSummary wts : wagesAndTaxList){
 				StringBuilder sb = new StringBuilder();

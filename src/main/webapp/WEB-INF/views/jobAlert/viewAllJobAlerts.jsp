@@ -38,6 +38,9 @@ min-height: 50px;
 
 </style>
 
+<script type="text/javascript">
+ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
+</script>
 
 
 <script type="text/javascript">
@@ -77,7 +80,6 @@ min-height: 50px;
 <script>
  function getAllJobAlertsList(){
 	 var jobAlertUUID = '${jobAlertUUID}'; 
-	 var sourceleadUrl = '${sourceleadUrl}';
 	
 	 $.ajax({
 	    	type: "POST",

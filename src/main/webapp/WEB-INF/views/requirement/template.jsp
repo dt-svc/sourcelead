@@ -57,7 +57,7 @@ function requirementTemplateList(){
 	  var sourceleadUrl ='${sourceleadUrl}';
 	  $.ajax({
            type : "POST",
-           url: sourceleadUrl+"/getRequirementTemplateListByOrgLocationsId?${_csrf.parameterName}=${_csrf.token}",    
+           url: sourceleadUrl+"/getRequirementTemplateListByOrgLocationsId?"+tokenParamName+"="+tokenValue+"",    
             success :function(data) {
                  /* if(data != null && data != 'undefined' && data != "" && data != '[]'){ */
                		
@@ -189,7 +189,7 @@ function deleteRequirementTemplate(requirementId){
 	if (message == true) {
 		$.ajax({
 		   	type: "POST",
-		    url: sourceleadUrl+"/terminateRequirementTemplate?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId, 	   
+		    url: sourceleadUrl+"/terminateRequirementTemplate?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId, 	   
    		    success: function(data) {
    		    	if( data.indexOf('Sign In') >= 0){
 		    		location.replace(sourceleadUrl);

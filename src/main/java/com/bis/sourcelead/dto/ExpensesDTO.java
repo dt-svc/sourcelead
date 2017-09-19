@@ -2,7 +2,9 @@ package com.bis.sourcelead.dto;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Map;
 
+import com.bis.sourcelead.entity.MasterCandidate;
 import com.bis.sourcelead.enums.Submission_Status;
 import com.ibm.icu.math.BigDecimal;
 
@@ -13,11 +15,13 @@ private static final long serialVersionUID = 1L;
 	
 	private String expenseId;
 	
-	private String purpose;
+	private String ExpenseAutoId;
+	
+	private String expensePurpose;
 	
 	private float totalAmount;
 	
-	private String clientName;
+	private String clientNameExpense;
 	
 	private String projectName;
 	
@@ -31,15 +35,21 @@ private static final long serialVersionUID = 1L;
 	
 	private Long projectMemberId;
 	
-	private String startDate;
+	private String startDateExpense;
 	
-	private String endDate;
+	private String endDateExpense;
 	
 	private boolean sahApproved;
 	
 	private String expCreatedBy;
 	
-	private BigDecimal totalAmontRoundOffValue;
+	private BigDecimal expenseAmountDivId;
+	
+	private String staticPath;
+
+	private List<Map<String, String>> fileInfo;
+	
+	private List<FileInfo> uploadedFileInfo;
 	
 	public Long getId() {
 		return id;
@@ -57,12 +67,12 @@ private static final long serialVersionUID = 1L;
 		this.expenseId = expenseId;
 	}
 
-	public String getPurpose() {
-		return purpose;
+	public String getExpensePurpose() {
+		return expensePurpose;
 	}
 
-	public void setPurpose(String purpose) {
-		this.purpose = purpose;
+	public void setExpensePurpose(String purpose) {
+		this.expensePurpose = purpose;
 	}
 
 	public float getTotalAmount() {
@@ -73,13 +83,13 @@ private static final long serialVersionUID = 1L;
 		this.totalAmount = totalAmount;
 	}
 
-	public String getClientName() {
+	/*public String getClientName() {
 		return clientName;
 	}
 
 	public void setClientName(String clientName) {
 		this.clientName = clientName;
-	}
+	}*/
 
 
 	public String getNoOfExpenses() {
@@ -114,7 +124,7 @@ private static final long serialVersionUID = 1L;
 		this.projectMemberId = projectMemberId;
 	}
 
-	public String getStartDate() {
+	/*public String getStartDate() {
 		return startDate;
 	}
 
@@ -128,7 +138,7 @@ private static final long serialVersionUID = 1L;
 
 	public void setEndDate(String endDate) {
 		this.endDate = endDate;
-	}
+	}*/
 
 	public Submission_Status getCombinedSubmissionStatus() {
 		return combinedSubmissionStatus;
@@ -162,7 +172,7 @@ private static final long serialVersionUID = 1L;
 		this.expCreatedBy = expCreatedBy;
 	}
 
-	public BigDecimal getTotalAmontRoundOffValue()
+	/*public BigDecimal getTotalAmontRoundOffValue()
 	{
 		return totalAmontRoundOffValue;
 	}
@@ -170,6 +180,74 @@ private static final long serialVersionUID = 1L;
 	public void setTotalAmontRoundOffValue(BigDecimal totalAmontRoundOffValue)
 	{
 		this.totalAmontRoundOffValue = totalAmontRoundOffValue;
+	}*/
+
+	public String getStaticPath() {
+		return staticPath;
 	}
+
+	public void setStaticPath(String staticPath) {
+		this.staticPath = staticPath;
+	}
+
+	public List<Map<String, String>> getFileInfo() {
+		return fileInfo;
+	}
+
+	public void setFileInfo(List<Map<String, String>> fileInfo) {
+		this.fileInfo = fileInfo;
+	}
+
+	public List<FileInfo> getUploadedFileInfo() {
+		return uploadedFileInfo;
+	}
+
+	public void setUploadedFileInfo(List<FileInfo> uploadedFileInfo) {
+		this.uploadedFileInfo = uploadedFileInfo;
+	}
+
+	public String getExpenseAutoId() {
+		return ExpenseAutoId;
+	}
+
+	public void setExpenseAutoId(String expenseAutoId) {
+		ExpenseAutoId = expenseAutoId;
+	}
+
+	public String getClientNameExpense() {
+		return clientNameExpense;
+	}
+
+	public void setClientNameExpense(String clientNameExpense) {
+		this.clientNameExpense = clientNameExpense;
+	}
+
+	public String getStartDateExpense() {
+		return startDateExpense;
+	}
+
+	public void setStartDateExpense(String startDateExpense) {
+		this.startDateExpense = startDateExpense;
+	}
+
+	public String getEndDateExpense() {
+		return endDateExpense;
+	}
+
+	public void setEndDateExpense(String endDateExpense) {
+		this.endDateExpense = endDateExpense;
+	}
+
+	public BigDecimal getExpenseAmountDivId() {
+		return expenseAmountDivId;
+	}
+
+	public void setExpenseAmountDivId(BigDecimal expenseAmountDivId) {
+		this.expenseAmountDivId = expenseAmountDivId;
+	}
+	
+	
+	
+	
 	
 }

@@ -8,4 +8,6 @@ public interface AddExpensesDao {
 
 	public Expenses checkExpensIdNumberInDatebase(Long orgLocId);
 
+	public void deleteDocumentByDocumentId(Long parseLong);
+
 }

@@ -17,7 +17,7 @@ public interface HrDeductionsService {
 
 	Integer saveHRDeductions(MultipartFile multipartFile, OrgLocations orgLocation, User user, JSONObject jsonObj)throws Exception;
 
-	ResponseList<HrDeductions> getHrDeductionsListByOrgLocationid(OrgLocations orgLocation, HrDeductionsDTO hrDeductionsDTO);
+	ResponseList<HrDeductions> getHrDeductionsListByOrgLocationid(OrgLocations orgLocation, HrDeductionsDTO hrDeductionsDTO) throws Exception;
 
 	List<HrDeductionsDetails> getHrDeductionsDetailsbyId(long hrDeductionId);
 

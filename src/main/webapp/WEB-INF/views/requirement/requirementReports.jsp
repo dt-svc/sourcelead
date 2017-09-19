@@ -21,7 +21,7 @@ function getRequirementList(){
 	    var clients = "";
 		$.ajax({
 	         type : "POST",
-	          url: sourceleadUrl+"/getRequirementReports?${_csrf.parameterName}=${_csrf.token}&status="+status+"&clients="+clients,    
+	          url: sourceleadUrl+"/getRequirementReports?"+tokenParamName+"="+tokenValue+"&status="+status+"&clients="+clients,    
 	          success :function(data) {
 	        	 prepareReportDataDiv(data);
 	         },
@@ -573,7 +573,7 @@ function getDayWiseReports(){
 	if(reportType!="custom"){
 	$.ajax({
          type : "POST",
-         url: sourceleadUrl+"/getRequirementReports?${_csrf.parameterName}=${_csrf.token}&reportType="+reportType+"&startDate="+startDate+"&endDate="+endDate,     
+         url: sourceleadUrl+"/getRequirementReports?"+tokenParamName+"="+tokenValue+"&reportType="+reportType+"&startDate="+startDate+"&endDate="+endDate,     
           success :function(data) {
         	 prepareReportDataDiv(data);
          },
@@ -611,7 +611,7 @@ function getCustomReports(){
 	else{
 		$.ajax({
 	         type : "POST",
-	          url: sourceleadUrl+"/getRequirementReports?${_csrf.parameterName}=${_csrf.token}&reportType="+reportType+"&startDate="+startDate+"&endDate="+endDate,    
+	          url: sourceleadUrl+"/getRequirementReports?"+tokenParamName+"="+tokenValue+"&reportType="+reportType+"&startDate="+startDate+"&endDate="+endDate,    
 	          success :function(data) {
 	        	 prepareReportDataDiv(data);
 	         },
