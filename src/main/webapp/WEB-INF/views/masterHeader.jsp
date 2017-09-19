@@ -10,6 +10,10 @@
  <c:if test="${staticTime == null || staticTime == 0 }">
     <c:set var='staticTime' value="<%=new java.util.Date().getTime() %>" scope="application"></c:set>
  </c:if>
+
+ <script type="text/javascript">
+    var staticTime='${staticTime}'
+ </script>
  
 <meta charset="utf-8">
 <meta http-equiv="Pragma" content="private">
