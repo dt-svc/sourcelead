@@ -106,7 +106,7 @@ function checksPagination(url){
               "render": function ( data, type, opt, meta ) {
             	  var result = "";
             	   if(opt.empName !=null && opt.empName !='' && opt.empName !='undefined'){
-			        		    	result = result + '<td><div>'+opt.empName+'</div></td>';
+			        		    	result = result + '<td><div class="tblminwidth-75" title="'+opt.empName+'">'+opt.empName+'</div></td>';
 			        		    }else{
 			        		    	result = result + '<td><div>---</div></td>';
 			        		    }
@@ -131,7 +131,7 @@ function checksPagination(url){
               "render": function ( data, type, opt, meta ) {
             	  var result = "";
             	  if(opt.typeOfExpense !=null && opt.typeOfExpense !='' && opt.typeOfExpense !='undefined'){
-									result = result + ' <td><div class="tblminwidth-75">'+opt.typeOfExpense+'</div></td>';
+									result = result + ' <td><div class="tblminwidth-75" title="'+opt.typeOfExpense+'">'+opt.typeOfExpense+'</div></td>';
 								}else{
 									result = result + ' <td><div class="tblminwidth-75">--</div></td>';
 								}
