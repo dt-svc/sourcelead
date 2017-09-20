@@ -807,7 +807,6 @@ public class ClientServiceImpl implements ClientService {
 
 				if (StringUtils.isNotBlank(clientDTO.getCompanyWebsite())) {
 					org.setWebSite(clientDTO.getCompanyWebsite());
-					orgLocations.setWebsite(clientDTO.getCompanyWebsite());
 				}
 				if (StringUtils.isNotBlank(clientDTO.getAddress())) {
 					org.setClientAddress(clientDTO.getAddress());
@@ -823,6 +822,11 @@ public class ClientServiceImpl implements ClientService {
 					org.setPaymentTerm(clientDTO.getPaymentTerm());
 				}
 				orgForElk = orgService.updateOrg(org);
+			}
+			if (StringUtils.isNotBlank(clientDTO.getCompanyWebsite())) {
+				orgLocations.setWebsite(clientDTO.getCompanyWebsite());
+			} else {
+				orgLocations.setWebsite("");
 			}
 			if (StringUtils.isNotBlank(clientDTO.getCity())) {
 				orgLocations.setCity(clientDTO.getCity());
