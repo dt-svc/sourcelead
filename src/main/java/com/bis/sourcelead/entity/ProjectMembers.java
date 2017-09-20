@@ -23,6 +23,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.apache.commons.lang.StringUtils;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Fetch;
@@ -48,7 +49,7 @@ public class ProjectMembers implements Serializable {
 	@Column(name = "ID", nullable = false)
 	private Long id;
 
-	@NotFound(action=NotFoundAction.IGNORE)
+	
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "PROJECT_ID", nullable = false)
 	private Projects projects;
@@ -58,10 +59,23 @@ public class ProjectMembers implements Serializable {
 	@JoinColumn(name = "EMPLOYEE_ID", nullable = false)
 	private Employees employee;
 
+	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne
 	@JoinColumn(name = "CANDIDATE_ID", nullable = false)
 	@JsonBackReference
 	private Candidate projectMemberCandidteId;
+	
+	@NotFound(action=NotFoundAction.IGNORE)
+	@ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="MASTER_CANDIDATE_ID", nullable=false )        
+    private MasterCandidate masterCandidateId;
+	
+	
+	@NotFound(action=NotFoundAction.IGNORE)
+	@ManyToOne
+	@JoinColumn(name = "PROJECT_CLIENTS_ID")
+	@JsonBackReference
+    private ProjectClients projectClientsId;
 
 	/*
 	 * @Column(name = "TIMESHEET_FREQUENCY") private String timesheetFrequency;
@@ -618,7 +632,7 @@ public class ProjectMembers implements Serializable {
 
 	public String getEmpEmail() {
 		if(projectMemberCandidteId != null){
-			empEmail = projectMemberCandidteId.getConsultantUser().getEmail();
+			empEmail = projectMemberCandidteId.getEmail();
 		}
 		return empEmail;
 	}
@@ -725,7 +739,11 @@ public class ProjectMembers implements Serializable {
 
 	public String getCandidateName() {
 		if(projectMemberCandidteId != null){
-			candidateName = projectMemberCandidteId.getConsultantUser().getFullName();
+			if(projectMemberCandidteId.getLastName() != null){
+				candidateName = projectMemberCandidteId.getFirstName()+" "+projectMemberCandidteId.getLastName();
+			}else{
+				candidateName = projectMemberCandidteId.getFirstName();
+			}
 		}
 		return candidateName;
 	}
@@ -1425,6 +1443,22 @@ public class ProjectMembers implements Serializable {
 
 	public void setBillRateStr(String billRateStr) {
 		this.billRateStr = billRateStr;
+	}
+
+	public ProjectClients getProjectClientsId() {
+		return projectClientsId;
+	}
+
+	public void setProjectClientsId(ProjectClients projectClientsId) {
+		this.projectClientsId = projectClientsId;
+	}
+
+	public MasterCandidate getMasterCandidateId() {
+		return masterCandidateId;
+	}
+
+	public void setMasterCandidateId(MasterCandidate masterCandidateId) {
+		this.masterCandidateId = masterCandidateId;
 	}
 
 	

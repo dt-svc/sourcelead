@@ -99,17 +99,16 @@ function getClientList(){
 	            pages: 10
 	        }),
 	        "columns": [
-	            { "data": "orgName" },
+	            { "data": "responderOrgName" },
 	            { "data": "initiatorWebSite"},
-	            { "data": "initiatorCountry" },
-	            { "data": "initiatorLevel"},
+	            { "data": "location" },
+	            { "data": "responderLevel"},
 	            { "data": "createdBy" },
 	            { "data": "noContacts" }
 	        ],
 	        "columnDefs": [ {
 		    	  	"targets": colIndex++,
-		    	  	/*"className": "tbldata-dotdot_50",*/
-		    	  	"data": "orgName",
+		    	  	"data": "responderOrgName",
 		    	  	"render": function(data, type, report, meta) {
 		    	  		$("#emptyClientList").val(1);
 		    	  		var result = "";
@@ -147,8 +146,7 @@ function getClientList(){
 	            }
 	          }, {
 	              "targets": colIndex++,
-	              "data": "initiatorCountry",
-	          	  "sortable": false,
+	              "data": "location",
 	              "render": function ( data, type, report, meta ) {
 	            	  var result = "";
 	              		var location = "";
@@ -173,8 +171,7 @@ function getClientList(){
 	              }
 	            }, {
 	                "targets": colIndex++,
-	                "data": "initiatorLevel",
-	            	"sortable": false,
+	                "data": "responderLevel",
 	                "render": function ( data, type, report, meta ) {
 	                	  var result = "";
 	                		result = result +' <td><div><span class="tbldata-dotdot-vsm" title="'+report.initiatorLevel+'">'+report.initiatorLevel+'</span>';

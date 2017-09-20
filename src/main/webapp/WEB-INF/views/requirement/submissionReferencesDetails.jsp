@@ -34,7 +34,6 @@
 
 <script>
 function submissionReferencesList(candidateId){
-	var sourceleadUrl ='${sourceleadUrl}';
 	var locationCode ='${SourceLeadWeb_locationCode}';
 	
 	 $.ajax({  

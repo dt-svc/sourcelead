@@ -842,8 +842,8 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 			User user, OrgLocations orgLocations) throws Exception {
 		
 		Projects projects = projectsService.getProjectByProjectUUID(projectUUID);
-		List<Long> savedProjectMemberIds = projectMembersDao.getAllProjectMembersIdsByProjectId(projects.getId());
-		
+		List<Long> savedProjectMemberIds = projectMembersDao.getAllProjectMembersIdsByProjectIdAndOrgLocationId(projects.getId(),orgLocations.getId());
+		ProjectClients projectClients = null;
 		List<Long> updatedProjectMembers = new ArrayList<Long>();
 		if(projectAssignedMembersDTO.getProjectMembers() != null && projectAssignedMembersDTO.getProjectMembers().size() > 0){
 			for(ProjectMembersDTO projectMembersDTO : projectAssignedMembersDTO.getProjectMembers()){
@@ -857,77 +857,42 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 						projectMembers = new ProjectMembers();
 						projectMembers.setProjects(projects);
 					}
+					
 					Candidate candidate = candidateService.getCandidateByCandidateId(projectMembersDTO.getCandidateId());
 					candidate.setId(projectMembersDTO.getCandidateId());
 					projectMembers.setProjectMemberCandidteId(candidate);
-					Employees employees = employeesService.getEmployeeByUserIdAndOrgLocationsId(candidate.getConsultantUser().getId(), orgLocations.getId());
-					projectMembers.setEmployee(employees);
-					
-					if(projectMembersDTO.getPayRate() != null){
-						projectMembers.setPayRate(projectMembersDTO.getPayRate());
-						projectMembers.setPayRateCurrency(projectMembersDTO.getPayRateCurrency());
-						projectMembers.setPayRateType(projectMembersDTO.getPayRateRateType());
+					MasterCandidate masterCandidate = new MasterCandidate();
+					masterCandidate.setId(candidate.getMasterCandidateId().getId());
+					projectMembers.setMasterCandidateId(masterCandidate);
+					projectClients = projectClientService.getProjectClientsByProjectIdAndOrgLocationId(projects.getId(), orgLocations.getId());
+					if(candidate.getConsultantUser() != null){
+						Employees employees = employeesService.getEmployeeByUserIdAndOrgLocationsId(candidate.getConsultantUser().getId(), orgLocations.getId());
+						projectMembers.setEmployee(employees);
 					}
-					
-					if(projectMembersDTO.getBillRate() != null){
-						projectMembers.setCurrentBillRate(projectMembersDTO.getBillRate());
-						projectMembers.setBillRateCurrency(projectMembersDTO.getBillRateCurrency());
-						projectMembers.setRateType(projectMembersDTO.getBillRateRateType());
-						
-					}else{
-						projectMembers.setCurrentBillRate(null);
-						projectMembers.setBillRateCurrency(null);
-						projectMembers.setRateType(null);
-					}
-					
-					if(projectMembersDTO.getMemberStartDate() != null && !projectMembersDTO.getMemberStartDate().isEmpty()){
-						Date projectAssignedStartDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),projectMembersDTO.getMemberStartDate());
-						projectMembers.setProjectAssignedDate(projectAssignedStartDate);
-					}
-					
-					if(projectMembersDTO.getMemberEndDate() != null && !projectMembersDTO.getMemberEndDate().isEmpty()){
-						Date projectAssignedEndDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),projectMembersDTO.getMemberEndDate());
-						projectMembers.setProjectEndDate(projectAssignedEndDate);
-					}else{
-						projectMembers.setProjectEndDate(null);
-					}
-					
-					if(projectMembersDTO.getEstHours() != null){
-						projectMembers.setEstimatedHours(projectMembersDTO.getEstHours());
-					}else{
-						projectMembers.setEstimatedHours(null);
-					}
-					
-					if(projectMembersDTO.getEstBudget() != null){
-						projectMembers.setEstimatedBudget(projectMembersDTO.getEstBudget());
-					}else{
-						projectMembers.setEstimatedBudget(null);
-					}
-					
-					projectMembers.setStatus("1");
-					projectMembers.setCreatedBy(user.getUserCode());
-					projectMembers.setUpdatedBy(user.getUserCode());
-					projectMembers.setCreatedDate(new Date());
-					projectMembers.setUpdatedDate(new Date());
-					projectMembersDao.saveProjectMember(projectMembers);
+					projectMembers = saveProjectMembers(projectMembersDTO, user, projectClients, projectMembers, orgLocations, projects);
 					
 					if(projects.getOrgLocationsId().getId().equals(orgLocations.getId())){
-						ProjectClients projectClients = projectClientService.getProjectClientsByProjectIdAndOrgLocationId(projects.getId(), orgLocations.getId());
 						saveProjectMembersHistory(projectMembers,user,projectClients);
 					}else{
 						
-						ProjectClients projectClients = projectClientService.getProjectClientsByProjectIdAndOrgLocationId(projects.getId(), orgLocations.getId());
-						
 						ProjectClients clientProjectClients = null;
 						OrgRelations orgRelations = null;
-						Candidate clientCandidate = candidateService.findByCandidateEmail(candidate.getEmail(), projects.getOrgLocationsId().getId());
+						OrgLocations clientOrgLocation = null;
+						if(projectClients.getOrgRelationId().getResponderLocationId().getId().equals(orgLocations.getId())){
+							clientOrgLocation = projectClients.getOrgRelationId().getLocationId();
+						}else{
+							clientOrgLocation = projectClients.getOrgRelationId().getResponderLocationId();
+						}
+						
+						Candidate clientCandidate = candidateService.findByCandidateEmail(candidate.getEmail(), clientOrgLocation.getId());
+						MasterCandidate clientMasterCandidate = null;
 						if(clientCandidate == null){
 							clientCandidate = new Candidate();
-							MasterCandidate masterCandidate = new MasterCandidate();
-							masterCandidate.setId(candidate.getMasterCandidateId().getId());
-							clientCandidate.setMasterCandidateId(masterCandidate);
+							clientMasterCandidate = new MasterCandidate();
+							clientMasterCandidate.setId(candidate.getMasterCandidateId().getId());
+							clientCandidate.setMasterCandidateId(clientMasterCandidate);
 							clientCandidate.setParentCandidateId(candidate);
-							clientCandidate.setOrgLocationId(projects.getOrgLocationsId());
+							clientCandidate.setOrgLocationId(clientOrgLocation);
 							clientCandidate.setCandidateType("Candidate");
 							clientCandidate.setFirstName(candidate.getFirstName());
 							clientCandidate.setLastName(candidate.getLastName());
@@ -937,19 +902,36 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 							clientCandidate.setIsAssociate(Constants.YES);
 							clientCandidate.setCandidateUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 							
-							orgRelations = orgRelationsService.getVendorOrgRelationByResponderLocationIdAndLocationId(orgLocations.getId(), projects.getOrgLocationsId().getId());
+							orgRelations = orgRelationsService.getVendorOrgRelationByResponderLocationIdAndLocationId(orgLocations.getId(), clientOrgLocation.getId());
 							clientCandidate.setOrgRelationId(orgRelations);
 							clientCandidate.setCreatedBy(user.getUserCode());
 							clientCandidate.setCreatedDate(new Date());
 							clientCandidate.setUpdatedDate(new Date());
 							Candidate savedCandidate = candidateService.addCandidate(clientCandidate);
 							candidateService.saveOrUpdateCandidateElkDocument(savedCandidate);
+						}else{
+							clientMasterCandidate = clientCandidate.getMasterCandidateId();
 						}
 						saveProjectMembersHistory(projectMembers,user,projectClients);
-						clientProjectClients = projectClientService.getProjectClientsByProjectIdAndOrgLocationId(projects.getId(), projects.getOrgLocationsId().getId());
-					    saveProjectMembersHistory(projectMembers,user,clientProjectClients);
+						clientProjectClients = projectClientService.getProjectClientsByProjectIdAndOrgLocationId(projects.getId(), clientOrgLocation.getId());
+					   
+						projectMembers = projectMembersDao.getProjectMemberByCandidateIdAndProjectIdAndOrgLocationId(clientCandidate.getId(), projects.getId(), clientOrgLocation.getId());
+						if(projectMembers == null){
+							projectMembers = new ProjectMembers();
+						}
 						
-						if(clientProjectClients != null && clientProjectClients.getOrgLocationsId().equals(projects.getOrgLocationsId().getId())){
+						projectMembers.setProjectMemberCandidteId(clientCandidate);
+						projectMembers.setMasterCandidateId(clientMasterCandidate);
+						
+						if(clientCandidate.getConsultantUser() != null){
+							Employees clientEmployee = employeesService.getEmployeeByUserIdAndOrgLocationsId(clientCandidate.getConsultantUser().getId(), clientOrgLocation.getId());
+							projectMembers.setEmployee(clientEmployee);
+						}
+						
+						projectMembers = saveProjectMembers(projectMembersDTO, user, clientProjectClients, projectMembers, orgLocations, projects);
+						saveProjectMembersHistory(projectMembers,user,clientProjectClients);
+						
+						if(clientProjectClients != null && clientProjectClients.getOrgLocationsId().equals(clientOrgLocation.getId())){
 							projectClients.setOrgRelationId(orgRelations);
 							projectClientService.storeProjectClients(projectClients);
 						}
@@ -959,9 +941,9 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 					if(candidate.getParentCandidateId() != null){
 						Long parentCandidatId = candidate.getParentCandidateId().getId();
 						while(parentCandidatId != null){
+							projectMembers = new ProjectMembers();
 							Candidate cand = candidateService.getCandidateByCandidateId(parentCandidatId);
 							if(cand != null){
-								ProjectClients projectClients = null;
 								projectClients = projectClientService.getProjectClientsByProjectIdAndOrgLocationId(projects.getId(), cand.getOrgLocationId().getId());
 								if(projectClients == null){
 									Candidate clildCandidate = candidateService.getCandidateByParentCandidateId(parentCandidatId);
@@ -989,6 +971,13 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 									
 									projectClientService.storeProjectClients(projectClients);
 								}
+								if(cand.getConsultantUser() != null){
+									Employees clientEmployee = employeesService.getEmployeeByUserIdAndOrgLocationsId(cand.getConsultantUser().getId(), cand.getOrgLocationId().getId());
+									projectMembers.setEmployee(clientEmployee);
+								}
+								projectMembers.setProjectMemberCandidteId(cand);
+								projectMembers.setMasterCandidateId(cand.getMasterCandidateId());
+								projectMembers = saveProjectMembers(projectMembersDTO, user, projectClients, projectMembers, orgLocations, projects);
 								saveProjectMembersHistory(projectMembers,user,projectClients);
 								if(cand.getParentCandidateId() != null){
 									parentCandidatId = cand.getParentCandidateId().getId();
@@ -1011,13 +1000,28 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 		
 		if(savedProjectMemberIds != null && savedProjectMemberIds.size() > 0){
 			for(Long memberId : savedProjectMemberIds){
-				ProjectMembersHistory memberHistory = projectMembersHistoryService.getProjectMembersOpenHistoryByProjectMemberId(memberId);
-				projectMembersHistoryService.deleteProjectMemberHistory(memberHistory);
-				ProjectMembers projectMembers = projectMembersDao.getProjectMemberById(memberId);
-				deleteProjectMember(projectMembers);
+				ProjectMembers pm = projectMembersDao.getProjectMemberById(memberId);
+	    		List<ProjectMembers> projectMembersList = projectMembersDao.getAllProjectMembersByMasterCandidateId(pm.getMasterCandidateId().getId(), pm.getProjects().getId());
+	    		if(projectMembersList != null && projectMembersList.size() > 0){
+	    			
+	    			for(ProjectMembers members : projectMembersList){
+	    				
+	    				members.setIsManuallyTerminated(Primary.Yes);
+	    				members.setStatus("0");
+	    				projectMembersDao.updateProjectMember(members);
+	    				
+	        			List<ProjectMembersHistory>  pmhList = projectMembersHistoryService.getProjectMembersHistoryListByProjectMemberId(members.getId());
+	            		if(pmhList != null && pmhList.size() > 0){
+	            			for(ProjectMembersHistory pmh : pmhList){
+	            				pmh.setProjectTerminationDate(new Date());
+	            				pmh.setStatus("CLOSED");
+	            	    		projectMembersHistoryService.updateProjectMembersHistory(pmh);
+	            			}
+	            		}
+	    			}
+	    		}
 			}
 		}
-		
 	}
 	
 	private void saveProjectMembersHistory(ProjectMembers projectMembers,User user,ProjectClients projectClients) throws Exception{
@@ -1032,7 +1036,7 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 		}
 		
 		projectMembersHistory.setProjectMemberId(projectMembers);
-		projectMembersHistory.setProjectClientsId(projectClients);
+		//projectMembersHistory.setProjectClientsId(projectClients);
 		
 		if(projectMembers.getProjectAssignedDate() != null){
 			projectMembersHistory.setProjectAssignedDate(projectMembers.getProjectAssignedDate());
@@ -1046,10 +1050,10 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 			projectMembersHistory.setProjectTerminationDate(null);
 		}
 		
-		Candidate candidate =  candidateService.findByCandidateEmail(projectMembers.getProjectMemberCandidteId().getEmail(), projectClients.getOrgLocationsId().getId());
+		/*Candidate candidate =  candidateService.findByCandidateEmail(projectMembers.getProjectMemberCandidteId().getEmail(), projectClients.getOrgLocationsId().getId());
 		if(candidate != null){
 			projectMembersHistory.setCandidateId(candidate);
-		}
+		}*/
 		projectMembersHistory.setStatus("OPEN");
 		projectMembersHistory.setCreatedBy(user.getUserCode());
 		projectMembersHistory.setUpdatedBy(user.getUserCode());
@@ -1057,6 +1061,123 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 		projectMembersHistory.setUpdatedDate(new Date());
 		projectMembersHistoryDao.updateProjectMembersHistory(projectMembersHistory);
 		
+	}
+	
+	
+	private ProjectMembers saveProjectMembers(ProjectMembersDTO projectMembersDTO,User user,ProjectClients projectClients,ProjectMembers projectMembers,OrgLocations orgLocations,Projects projects) throws Exception{
+		
+		if(projectMembersDTO.getPayRate() != null){
+			projectMembers.setPayRate(projectMembersDTO.getPayRate());
+			projectMembers.setPayRateCurrency(projectMembersDTO.getPayRateCurrency());
+			projectMembers.setPayRateType(projectMembersDTO.getPayRateRateType());
+		}
+		
+		if(projectMembersDTO.getBillRate() != null){
+			projectMembers.setCurrentBillRate(projectMembersDTO.getBillRate());
+			projectMembers.setBillRateCurrency(projectMembersDTO.getBillRateCurrency());
+			projectMembers.setRateType(projectMembersDTO.getBillRateRateType());
+			
+		}else{
+			projectMembers.setCurrentBillRate(null);
+			projectMembers.setBillRateCurrency(null);
+			projectMembers.setRateType(null);
+		}
+		
+		if(projectMembersDTO.getMemberStartDate() != null && !projectMembersDTO.getMemberStartDate().isEmpty()){
+			Date projectAssignedStartDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),projectMembersDTO.getMemberStartDate());
+			projectMembers.setProjectAssignedDate(projectAssignedStartDate);
+		}
+		
+		if(projectMembersDTO.getMemberEndDate() != null && !projectMembersDTO.getMemberEndDate().isEmpty()){
+			Date projectAssignedEndDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),projectMembersDTO.getMemberEndDate());
+			projectMembers.setProjectEndDate(projectAssignedEndDate);
+		}else{
+			projectMembers.setProjectEndDate(null);
+		}
+		
+		if(projectMembersDTO.getEstHours() != null){
+			projectMembers.setEstimatedHours(projectMembersDTO.getEstHours());
+		}else{
+			projectMembers.setEstimatedHours(null);
+		}
+		
+		if(projectMembersDTO.getEstBudget() != null){
+			projectMembers.setEstimatedBudget(projectMembersDTO.getEstBudget());
+		}else{
+			projectMembers.setEstimatedBudget(null);
+		}
+		projectMembers.setProjects(projects);
+		projectMembers.setStatus("1");
+		projectMembers.setCreatedBy(user.getUserCode());
+		projectMembers.setUpdatedBy(user.getUserCode());
+		projectMembers.setCreatedDate(new Date());
+		projectMembers.setUpdatedDate(new Date());
+		projectMembers.setProjectClientsId(projectClients);
+		projectMembersDao.saveProjectMember(projectMembers);
+		return projectMembers;
+	}
+	
+	
+	
+	private ProjectMembers saveTransferProjectMembers(ProjectMembers pm,User user,ProjectClients projectClients,Projects projects,Candidate candidate,OrgLocations orgLocations) throws Exception{
+		
+		ProjectMembers projectMembers = new ProjectMembers();
+		projectMembers.setProjects(projects);
+		projectMembers.setProjectMemberCandidteId(candidate);
+		projectMembers.setMasterCandidateId(candidate.getMasterCandidateId());
+		
+		if(candidate.getConsultantUser() != null){
+			Employees clientEmployee = employeesService.getEmployeeByUserIdAndOrgLocationsId(candidate.getConsultantUser().getId(), orgLocations.getId());
+			projectMembers.setEmployee(clientEmployee);
+		}
+		
+		if(pm.getPayRate() != null){
+			projectMembers.setPayRate(pm.getPayRate());
+			projectMembers.setPayRateCurrency(pm.getPayRateCurrency());
+			projectMembers.setPayRateType(pm.getPayRateType());
+		}
+		
+		if(pm.getCurrentBillRate() != null){
+			projectMembers.setCurrentBillRate(pm.getCurrentBillRate());
+			projectMembers.setBillRateCurrency(pm.getBillRateCurrency());
+			projectMembers.setRateType(pm.getRateType());
+			
+		}else{
+			pm.setCurrentBillRate(null);
+			projectMembers.setBillRateCurrency(null);
+			projectMembers.setRateType(null);
+		}
+		
+		if(pm.getProjectAssignedDate() != null){
+			projectMembers.setProjectAssignedDate(pm.getProjectAssignedDate());
+		}
+		
+		if(pm.getProjectEndDate() != null ){
+			projectMembers.setProjectEndDate(pm.getProjectEndDate());
+		}else{
+			projectMembers.setProjectEndDate(null);
+		}
+		
+		if(pm.getEstimatedHours() != null){
+			projectMembers.setEstimatedHours(pm.getEstimatedHours());
+		}else{
+			projectMembers.setEstimatedHours(null);
+		}
+		
+		if(pm.getEstimatedBudget() != null){
+			projectMembers.setEstimatedBudget(pm.getEstimatedBudget());
+		}else{
+			projectMembers.setEstimatedBudget(null);
+		}
+		projectMembers.setProjects(projects);
+		projectMembers.setStatus("1");
+		projectMembers.setCreatedBy(user.getUserCode());
+		projectMembers.setUpdatedBy(user.getUserCode());
+		projectMembers.setCreatedDate(new Date());
+		projectMembers.setUpdatedDate(new Date());
+		projectMembers.setProjectClientsId(projectClients);
+		projectMembersDao.saveProjectMember(projectMembers);
+		return projectMembers;
 	}
 
 	@Override
@@ -1089,28 +1210,39 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
     	
     	String[] transferedPMs = projectMembers.split(",");
     	for(int i=0; i <transferedPMs.length; i++){
-    		List<ProjectMembersHistory>  pmhList = projectMembersHistoryService.getProjectMembersHistoryListByProjectMemberId(Long.valueOf(transferedPMs[i]));
-    		if(pmhList != null && pmhList.size() > 0){
-    			for(ProjectMembersHistory pmh : pmhList){
-    				pmh.setProjectTerminationDate(new Date());
-    				pmh.setStatus("CLOSED");
-    	    		projectMembersHistoryService.updateProjectMembersHistory(pmh);
-    	    		
+    		
+    		ProjectMembers pm = projectMembersDao.getProjectMemberById(Long.valueOf(transferedPMs[i]));
+    		List<ProjectMembers> projectMembersList = projectMembersDao.getAllProjectMembersByMasterCandidateId(pm.getMasterCandidateId().getId(), pm.getProjects().getId());
+    		if(projectMembersList != null && projectMembersList.size() > 0){
+    			
+    			for(ProjectMembers members : projectMembersList){
+    				
+    				members.setIsManuallyTerminated(Primary.Yes);
+    				members.setStatus("0");
+    				projectMembersDao.updateProjectMember(members);
+    				
+        			List<ProjectMembersHistory>  pmhList = projectMembersHistoryService.getProjectMembersHistoryListByProjectMemberId(members.getId());
+            		if(pmhList != null && pmhList.size() > 0){
+            			for(ProjectMembersHistory pmh : pmhList){
+            				pmh.setProjectTerminationDate(new Date());
+            				pmh.setStatus("CLOSED");
+            	    		projectMembersHistoryService.updateProjectMembersHistory(pmh);
+            			}
+            		}
+    				
     			}
     		}
     		
-    		ProjectMembers pm = projectMembersDao.getProjectMemberById(Long.valueOf(transferedPMs[i]));
-    		pm.setProjects(projects);
-    		projectMembersDao.updateProjectMember(pm);
-    		
-    		
     		if(isInternalOrgProject.equalsIgnoreCase(Constants.YES)){
     			ProjectClients projectClients = projectClientService.getProjectClientsByProjectIdAndOrgLocationId(projects.getId(), projects.getOrgLocationsId().getId());
-				saveProjectMembersHistory(pm,user,projectClients);
-				Candidate candidate = candidateService.findByCandidateEmail(pm.getProjectMemberCandidteId().getEmail(), orgLocations.getId());
+    			Candidate candidate = candidateService.findByCandidateEmail(pm.getProjectMemberCandidteId().getEmail(), orgLocations.getId());
 				if(candidate.getParentCandidateId() != null){
 					saveVendorProjectClientDetails(candidate,projects,user,projectClients,pm);
 				}
+				
+    			ProjectMembers members = saveTransferProjectMembers(pm, user, projectClients, projects,candidate,orgLocations);
+    			saveProjectMembersHistory(members,user,projectClients);
+				
     		}else{
     			OrgRelations orgRelations = null;
     			ProjectClients projectClients = null;
@@ -1171,24 +1303,36 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
     				if(orgLocCandidate.getParentCandidateId() != null){
     					saveVendorProjectClientDetails(orgLocCandidate,projects,user,projectClients,pm);
     				}
-    				saveProjectMembersHistory(pm,user,clientPC);
+    				ProjectMembers members = saveTransferProjectMembers(pm, user, clientPC, projects,orgLocCandidate,orgLoc);
+    				saveProjectMembersHistory(members,user,clientPC);
     				
     			}else{
-    				orgRelations = orgRelationsService.getVendorOrgRelationByResponderLocationIdAndLocationId(orgLocations.getId(), projects.getOrgLocationsId().getId());
+    				ProjectMembers members = null;
+    				ProjectClients projClients = projectClientService.getProjectClientsByProjectIdAndOrgLocationId(projects.getId(), orgLocations.getId());
+					OrgLocations clientOrgLocation = null;
+					if(projClients.getOrgRelationId().getResponderLocationId().getId().equals(orgLocations.getId())){
+						clientOrgLocation = projClients.getOrgRelationId().getLocationId();
+					}else{
+						clientOrgLocation = projClients.getOrgRelationId().getResponderLocationId();
+					}
+    				
+    				orgRelations = orgRelationsService.getVendorOrgRelationByResponderLocationIdAndLocationId(orgLocations.getId(), clientOrgLocation.getId());
         			projectClients = projectClientService.getProjectClientsByProjectIdAndOrgLocationIdAndOrgRelationId(projects.getId(), orgLocations.getId(), orgRelations.getId());
-        			saveProjectMembersHistory(pm,user,projectClients);
+        			members = saveTransferProjectMembers(pm, user, projectClients, projects,pm.getProjectMemberCandidteId(),orgLocations);
+        			saveProjectMembersHistory(members,user,projectClients);
         			
-        			ProjectClients clientPC = projectClientService.getProjectClientsByProjectIdAndOrgLocationId(projects.getId(), projects.getOrgLocationsId().getId());
-        			Candidate clientCandidate = candidateService.findByCandidateEmail(pm.getProjectMemberCandidteId().getEmail(), projects.getOrgLocationsId().getId());
+        			ProjectClients clientPC = projectClientService.getProjectClientsByProjectIdAndOrgLocationId(projects.getId(), clientOrgLocation.getId());
+        			Candidate clientCandidate = candidateService.findByCandidateEmail(pm.getProjectMemberCandidteId().getEmail(), clientOrgLocation.getId());
     				if(clientCandidate == null){
     					clientCandidate = getCandidateDetails(candidate, user, projects, orgLocations);
     					clientCandidate.setParentCandidateId(candidate);
     					clientCandidate.setOrgRelationId(orgRelations);
-    					clientCandidate.setOrgLocationId(projects.getOrgLocationsId());
+    					clientCandidate.setOrgLocationId(clientOrgLocation);
     					Candidate savedCandidate = candidateService.addCandidate(clientCandidate);
     					candidateService.saveOrUpdateCandidateElkDocument(savedCandidate);
     				}
-    				saveProjectMembersHistory(pm,user,clientPC);
+    				members = saveTransferProjectMembers(pm, user, clientPC, projects,clientCandidate,clientOrgLocation);
+    				saveProjectMembersHistory(members,user,clientPC);
     				if(candidate.getParentCandidateId() != null){
     					saveVendorProjectClientDetails(candidate,projects,user,projectClients,pm);
     				}
@@ -1292,7 +1436,8 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 					
 					projectClientService.storeProjectClients(pc);
 				}
-				saveProjectMembersHistory(pm,user,pc);
+				ProjectMembers members = saveTransferProjectMembers(pm, user, pc, projects,cand,cand.getOrgLocationId());
+				saveProjectMembersHistory(members,user,pc);
 				if(cand.getParentCandidateId() != null){
 					parentCandidatId = cand.getParentCandidateId().getId();
 				}else{
@@ -1300,6 +1445,11 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 				}
 			}
 		}
+	}
+
+	@Override
+	public Integer getProjectMembersCountByProjectClientId(Long projectClientId) throws Exception {
+		return projectMembersDao.getProjectMembersCountByProjectClientId(projectClientId);
 	}
 
 }

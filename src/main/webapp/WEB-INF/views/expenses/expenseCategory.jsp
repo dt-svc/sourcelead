@@ -187,7 +187,6 @@ function closePopup(){
 <script>
 function expenseCategoryList(){  
 
-	  var sourceleadUrl ='${sourceleadUrl}';
 	  $("#expenseCategoryLoading").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	 
 	  $.ajax({
@@ -305,7 +304,6 @@ function storeExpensesCategory(){
 			 var con = JSON.stringify(frm);
 			 con = con.replace(/[{}]/g, "");
 		     var jsonData = encodeURIComponent(con);
-			 var sourceleadUrl = '${sourceleadUrl}';
 			 $("#expenseCategory_form").attr("disabled", "disabled");
 			 $("#save_button").attr("disabled", "disabled");
 
@@ -440,7 +438,6 @@ function getTaxPercentageValue(){
 
 <script>
 function deleteExpenseCategory(categoryId){
- var sourceleadUrl ='${sourceleadUrl}';
 	  $.ajax({  
           type : "POST",
           url: sourceleadUrl+"/removeExpensesCategoryByCategoryId?${_csrf.parameterName}=${_csrf.token}&categoryId="+categoryId,        
@@ -464,7 +461,6 @@ function deleteExpenseCategory(categoryId){
 
 <script>
 function reActiveExpenseCategory(categoryId){
- var sourceleadUrl ='${sourceleadUrl}';
 	  $.ajax({  
           type : "POST",
           url: sourceleadUrl+"/reActiveExpenseCategoryByCategoryId?${_csrf.parameterName}=${_csrf.token}&categoryId="+categoryId,        
@@ -479,7 +475,6 @@ function reActiveExpenseCategory(categoryId){
  
  <script type="text/javascript">
  function editExpenseCategory(categoryId) {
-	 var sourceleadUrl = '${sourceleadUrl}';
 		$.ajax({	type : "POST",
 					url : sourceleadUrl+ "/getExpensesCategoryByCategoryId?${_csrf.parameterName}=${_csrf.token}&categoryId="+categoryId,
 					success : function(data) {
@@ -670,9 +665,6 @@ function reActiveExpenseCategory(categoryId){
 			con = con.replace(/[{}]/g, "");
 			//It will escape all the special characters
 			var jsonData = encodeURIComponent(con);
-			
-			var sourceleadUrl = '${sourceleadUrl}';
-
 			$.ajax({
 						type : "POST",
 						url : sourceleadUrl
@@ -699,7 +691,6 @@ function reActiveExpenseCategory(categoryId){
  function validateExpenseCategoryType() {
 	  var name = document.getElementById("expensesName").value; 
  	  $('#nameIdDiv').find('p.jquery_form_error_message').remove();
-	  var sourceleadUrl ='${sourceleadUrl}';
 		 $.ajax({
 		    	type: "GET",
 		        url: sourceleadUrl+"/validateExpenseCategoryType?name="+name, 

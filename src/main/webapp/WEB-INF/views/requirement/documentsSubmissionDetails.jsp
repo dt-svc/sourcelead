@@ -44,7 +44,6 @@
 	
 	<script>
 	function candSubmissionDocumentsList(candidateId){
-		  var sourceleadUrl ='${sourceleadUrl}';
 		 
 		 $.ajax({  
 	          type : "POST",

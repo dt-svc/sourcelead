@@ -42,7 +42,7 @@ public class OrgLocations implements Serializable{
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
+    @Column(name = "ID", nullable = false)
     private Long id;
 	
 	@NotFound(action=NotFoundAction.IGNORE)

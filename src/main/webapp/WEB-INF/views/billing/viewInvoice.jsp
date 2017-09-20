@@ -103,7 +103,6 @@ $(document).ready(function(){
   
 <script>
 function getViewInvoice(){
-	  var sourceleadUrl ='${sourceleadUrl}';
 	  var invoiceUUID ='${invoiceUUID}';
 	  var invoiceType = '${invoiceType}';
 	  var currencyCode = '${SourceLeadWeb_currencyCode}';
@@ -594,7 +593,6 @@ function getViewInvoice(){
 
 <script>
 function viewInvoiceDocView(documentId,title){
-	var sourceleadUrl ='${sourceleadUrl}';
 	if(documentId != null && documentId != ""){
 		window.open(sourceleadUrl+'/viewInvoiceDocView/'+title+'?documentId='+documentId,title,"height=600,width=600");
 	}  
@@ -635,7 +633,6 @@ function invoiceNotes(){
 	  var invoiceUUID ='${invoiceUUID}';
     	urlForm = "/getNotesInvoice?${_csrf.parameterName}=${_csrf.token}&invoiceUUID="+invoiceUUID;
 	
-	var sourceleadUrl ='${sourceleadUrl}';
 	  $.ajax({
         type : "POST",
          url: sourceleadUrl+urlForm,        
@@ -759,7 +756,6 @@ function addNotes() {
 	      	    var locationCode ='${SourceLeadWeb_locationCode}'; 
 	      	    formData.append("locationCode",locationCode);
 	      			
-				var sourceleadUrl = '${sourceleadUrl}';
 				$("#save_note").attr("disabled", "disabled");
          		$("#save_note" ).addClass('button').val('Processing..');
 				$.ajax({
@@ -789,7 +785,6 @@ function addNotes() {
 </script>
 <script>
 function paymentHistroy(){
-	 var sourceleadUrl ='${sourceleadUrl}';
 	  var invoiceUUID ='${invoiceUUID}';
 	  var locationId = '${SourceLeadWeb_orgLocationId}';
 	  $.ajax({

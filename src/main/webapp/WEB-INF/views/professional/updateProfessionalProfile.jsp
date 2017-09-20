@@ -57,7 +57,6 @@ $(document).ready(function(){
     };
     
     function closeCandidate(){
-	  	  var sourceleadUrl ='${sourceleadUrl}';
 	      $('.addcandidate-popup').fadeOut(200);
 	      $('.pop_mask').fadeOut(200);
 	      

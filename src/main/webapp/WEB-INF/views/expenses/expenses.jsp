@@ -117,7 +117,6 @@
 <script>
 
 function getExpensesList(){
-	var sourceleadUrl = '${sourceleadUrl}';
 	var startDate = $("#filterStartDate").val();
 	var endDate = $("#filterEndDate").val();
 	/* if(startDate == null || startDate == '' || startDate == 'undefined'){
@@ -281,7 +280,6 @@ function expensesPagination(){
 <script>
 
 function expenseView(expenseId){
-var sourceleadUrl = '${sourceleadUrl}';
 	$(".project_side_wrap").addClass("project_side_wrap_active");
 	        $(".side_mask").fadeIn(200);
 	        $("body").css('overflow-y', 'hidden');
@@ -528,7 +526,6 @@ function getEditExpense(eId){
 function exportToPdf(type){                                                                        
 	var temp = $("#temp").val();
 	if(temp != null && temp != ''){
-		var sourceleadUrl = '${sourceleadUrl}';
 		var expenseStatus = [];
 		$('input:checkbox[name=expenseStatus]:checked').each(function() 
 		{
