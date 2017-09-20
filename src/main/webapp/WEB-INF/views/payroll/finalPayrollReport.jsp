@@ -31,7 +31,7 @@ function generatrPayroll(data,payrollCycle){
 						}
 	        		    
 	        		    if(opt.employeeName !=null && opt.employeeName !='' && opt.employeeName !='undefined'){
-							result = result + ' <td><div class="tblminwidth-75">'+opt.employeeName+'</div></td>';
+							result = result + ' <td><div class="tblminwidth-75" title="'+opt.employeeName+'">'+opt.employeeName+'</div></td>';
 						}else{
 							result = result + ' <td><div>--</div></td>';
 						}

@@ -2080,7 +2080,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 						}
 					}	
 			}
-		
+
 			}
 		return savedContracts;
 	}
