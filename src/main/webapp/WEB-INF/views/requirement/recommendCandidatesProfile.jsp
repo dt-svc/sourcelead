@@ -506,9 +506,10 @@ function editCandidate(candidateId){
 <script>
 function deleteCandidate(candidateId){
 	  var reason = document.getElementById("rejectReason").value;
+	  var requirementId = $("#requirementId").val();
 	  $.ajax({
         type : "POST",
-         url: sourceleadUrl+"/deleteCandidateByCandidateId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&reason="+reason,        
+         url: sourceleadUrl+"/deleteCandidateByCandidateId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&reason="+reason+"&candidateType=Candidate",        
          success :function(data) {
               if(data != null && data != 'undefined' && data != ""){
             		 if( data.indexOf('Sign In') >= 0){
@@ -518,7 +519,7 @@ function deleteCandidate(candidateId){
             			 location.replace(sourceleadUrl+"/errorPage");
             		 }
             		 else{
-            			 location.replace(sourceleadUrl+"/candidatesList");
+            			 requirementRecommendations(requirementId);
             		 }
                 }
                  },

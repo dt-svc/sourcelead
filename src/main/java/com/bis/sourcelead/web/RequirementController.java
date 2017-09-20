@@ -734,27 +734,47 @@ public class RequirementController {
 			 
 			}
 		
-		    List<LookUpData> educationsList = lookUpDataService.getLookUpDataByCategory(Constants.EDUCATIONS);
-			model.addObject("educationsList", educationsList);
+			if(requirement != null && requirement.getId() != null){
+				List<String> newlyAddededucationList = requirementService.getAllRequirementEducationByRequirementId(requirement.getId());
+			       List<String> educationsList = lookUpDataService.getLookUpDataByCategoryEducation();
+			       
+			       String education = newlyAddededucationList.get(0);
+					if(!"null".equalsIgnoreCase(education) && null != education){
+					String arr[] = education.split(",");
+					for(String editEducationName : arr){
+						if(!educationsList.contains(editEducationName)){
+							educationsList.add(editEducationName);
+						}
+					}
+				      model.addObject("educationsList", educationsList);
+					}else{
+					  model.addObject("educationsList", educationsList);
+					} 
+				}else{
+		         // List<LookUpData> educationsListData = lookUpDataService.getLookUpDataByCategory(Constants.EDUCATIONS);
+		          List<String> educationsList = lookUpDataService.getLookUpDataByCategoryEducation();
+				  model.addObject("educationsList", educationsList);
+				}
 			
 			/*List<LookUpData> skillsList = lookUpDataService.getLookUpDataByCategory(Constants.SKILLS);
 			model.addObject("skillsList", skillsList);*/
-			
-			
 			
 			if(requirement != null && requirement.getId() != null){
 
 				List<String> allReqSkills = requirementService.getAllRequirementSkillsByRequirementI(requirement.getId());
 					List<String> skillsList = lookUpDataService.getAllSkillsBySkillCategory();
-					List<String> totSkils = new ArrayList<String>();
-					if(!allReqSkills.contains(null)){
-						totSkils.addAll(skillsList);
-						totSkils.addAll(allReqSkills);
-						model.addObject("skillsList", totSkils);
-					}else{
-						model.addObject("skillsList", skillsList);
+					String skill = allReqSkills.get(0);
+					if(!"null".equalsIgnoreCase(skill) && null != skill){
+					String arr[] = skill.split(",");
+					for(String editSkillName : arr){
+						if(!skillsList.contains(editSkillName)){
+							skillsList.add(editSkillName);
+						}
 					}
-
+				      model.addObject("skillsList", skillsList);
+					}else{
+					  model.addObject("skillsList", skillsList);
+					} 
 			}else{
 				//List<LookUpData> skillsList = lookUpDataService.getLookUpDataByCategory(Constants.SKILLS);
 				List<String> skillsList = lookUpDataService.getAllSkillsBySkillCategory();
