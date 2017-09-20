@@ -1,142 +1,13 @@
 <jsp:include page="../masterHeader.jsp" />
 <jsp:include page="../masterSideNav.jsp" />
+
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
-<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
- <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
- <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 
- <style type="text/css">
- .overflow-data {
-  min-height: 250px;
- }
-.show-tooltip {
-	position:relative;
-	font-size:13px !important;
-}
-.show-tooltip .tooltip_div {
-	color:#333;
-	background: #e1e6fa;
-    border-radius: 3px;
-    display:none;
-    padding:5px;
-    position: absolute;
-    top: 25px;
-	left:-48px;
-    width: 450px;
-	box-sizing:border-box;
-	z-index:999;
-	transition: all 0.5s ease;
-}
-.show-tooltip .tooltipint_detilas {
-	color:#333;
-	background: #e1e6fa;
-    border-radius: 3px;
-     display:none;
-    padding:5px;
-    position: absolute;
-    top: 20px;
-	right:0;
-    width: auto;
-    min-height:50px;
-    max-height:150px;
-    overflow-y:scroll;
-	box-sizing:border-box;
-	z-index:999;
-	transition: all 0.5s ease;
-}
-.tooltipint_detilas table tr th, .tooltipint_detilas table tr td {
-height: 25px;
-}
-.show-tooltip .tooltip_div:after{
-	bottom: 100%;
-	left: 15%;
-	border: solid transparent;
-	content: " ";
-	height: 0;
-	width: 0;
-	position: absolute;
-	pointer-events: none;
-	border-color: rgba(136, 183, 213, 0);
-	border-bottom-color: #e1e6fa;
-	border-width: 10px;
-	margin-left: -20px;
-}
-.show-tooltip .tooltipint_detilas:after{
-	bottom: 100%;
-	right: 5%;
-	border: solid transparent;
-	content: " ";
-	height: 0;
-	width: 0;
-	position: absolute;
-	pointer-events: none;
-	border-color: rgba(136, 183, 213, 0);
-	border-bottom-color: #e1e6fa;
-	border-width: 10px;
-	margin-left: -20px;
-}
-.show-tooltip:hover .tooltip_div{
-	display:block;
-}
-.show-tooltip:hover .tooltipint_detilas{
-	display:block;
-}
-.tooltip_div table {
-	background:#fff;
-}
-.tooltip_div table thead {
-	background:#375d81;
-	color:#fff;
-}
-.tooltip_div table tr th, .tooltip_div table tr td{
-	padding:5px 10px;
-	height: auto !important;
-	font-size: 13px !important;
-    border-bottom: none !important;
-}
-.tooltip_div table tr td span{
-	text-overflow:ellipsis;
-	overflow:hidden;
-	white-space:nowrap;
-	display:block;
-	width:175px;
-	padding-right:5px;
-	margin-bottom:0;
-}
-.project_tabs_inn_table table tr td div i {
-color:#333 !important;
-}
-.remove_user_pop textarea {
-width: 100% !important; margin:10px 0 0 0;
-}
-#tab-2 {
-overflow-y:hidden;
-}
-.table-overflow-hide {
-overflow-y:inherit !important;
-}
-.require_wrap_table {
-overflow-y:inherit !important;
-}
-.require_wrap_details_cta.require_uploadfile span {
- width:auto !important;
-}
-.require_wrap_details_cta.require_uploadfile a {
-margin-left:10px; float: left !important;
-}
-.require_wrap_details_cta.require_uploadfile .glyphicon-download-alt {
-color:blue;
-}
-.skills-chosen .chosen-container-multi .chosen-choices {
-    max-height: 85px !important; overflow: auto;
-}
-  .project_inn_mask.projectMask-zindex {
-    z-index: 9999;
-   }
-</style>
+ <link href="resources/css/requirement-summary.css?staticTime=${staticTime}" type="text/css" rel="stylesheet"/>
  
 <script>
 $(document).ready(function() {
@@ -1342,7 +1213,7 @@ function reqNotes(requirementId){
    	    output = output+'    <div class="commentsimg">';
    	    output = output+'    <i class="fa fa-comments"></i>';
    	    output = output+'        <div class="commentsimg-inner">';
-   	    output = output+'        	<img onerror="predefineProfileImage(this);" src="'+sourceleadUrl+'/displayUserImage/'+report.commentAuthorUserId+'"/>';
+   	    output = output+'        	<img data-id= "userProfileImage" onerror="predefineProfileImage(this);" src="'+report.commentAuthorImage+'"/>';
    	    output = output+'        </div>';
    	    output = output+'    </div>';
    	    output = output+'     <div class="comments-content">';
