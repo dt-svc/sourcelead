@@ -1,6 +1,5 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
  <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
  <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
  <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
@@ -174,15 +173,19 @@
 					                 <input type='hidden' name='attcahmentMaxRowNumber${entryCount.count}'  id='attcahmentMaxRowNumber${entryCount.count}' value='1' />
 					                 <div id='timesheetDocumentsId' class=''>
 					                       <c:forEach var="entryDoc" items="${entry.expensesEntryDocuments}" varStatus="entryDocCount">
+					                       <c:if test = '${entryDoc.status == 1}'>
 					                         <strong class='proDown' id='${entryDocCount.index}document${entryCount.count}'>
 					                          <input type='hidden' name='${entryDocCount.index}DbdocFileId${entryCount.count}' id='${entryDocCount.index}DbdocFileId${entryCount.count}' value='${entryDoc.id}'/>
 					                          <input type='hidden' name='${entryDocCount.index}DbdocFileIsDeleted${entryCount.count}' id='${entryDocCount.index}DbdocFileIsDeleted${entryCount.count}' value='N'/>
-					                             <a class='downicon' href='<c:url value="/downloadExpensesEntryDocument?entryDocumentId=${entryDoc.id}"/>'>
+					                             <%-- <a class='downicon' href='<c:url value="/downloadExpensesEntryDocument?entryDocumentId=${entryDoc.id}"/>'> --%>
+					                             <a class='downicon' href='${entryDoc.fileURL}'>
 					                                 <i class='glyphicon glyphicon-save'></i>
 										             <input type='button' class='padLeft' value='${entryDoc.fileName}'/>
 										        </a>
-										        <a class="fa fa-eye expAttView" onclick="viewDocument('${entryDoc.fileName}','${entryDoc.id}');"></a>
+										        <%-- <a class="fa fa-eye expAttView" onclick="viewDocument('${entryDoc.fileName}','${entryDoc.id}');"></a> --%>
+										        <a class="fa fa-eye expAttView" onclick="viewFile('${entryDoc.fileURL}','${entryDoc.fileName}','${entryDoc.fileContentType}');"></a>
 					                         </strong>
+					                         </c:if>
 					                       </c:forEach>
 					                 </div> 
 					             </div>
@@ -203,14 +206,12 @@
     
 <script>
 function viewDocument(title,id){
-	var sourceleadUrl ='${sourceleadUrl}';
 		window.open(sourceleadUrl+'/viewExpensesEntryDocument/'+title+'?entryDocumentId='+id,title,"height=600,width=600");
 }
 </script>     
     
 <script>
 function exportMyExpenses(type,Expid,ApproverType){
-	var sourceleadUrl = '${sourceleadUrl}';
 	window.location.href = sourceleadUrl + "/exportMyExpensesList?&type="+type+"&Expid="+Expid+"&ApproverType="+ApproverType;
 }
 </script>

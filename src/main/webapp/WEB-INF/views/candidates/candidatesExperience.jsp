@@ -93,7 +93,59 @@ function closeCertificatePopup(){
 			dateFormat : 'yyyy/mm/dd'
 		};
 		if ($('#employers_form').validate(false, validationSettings)) {
-			//To disable addButton 
+			
+			var formData = getFormData("employers_form");
+			
+			$("#candidateEmployersAdd").attr("disabled", "disabled");
+			$("#candidateEmployersAdd").addClass('button').val('Processing..'); 
+	        $.post(sourceleadUrl+"/storeCandidateEmployers?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId, formData, function(data) {
+	        	
+	        	if (data != null && data != 'undefined'
+					&& data != "") {
+				if (data.indexOf('Sign In') >= 0) {
+					location.replace(sourceleadUrl);
+				} else if (data.indexOf('exception') >= 0) {
+					location.replace(sourceleadUrl  + "/errorPage");
+				} else {
+					$('#perVal').attr('aria-valuenow', data).css('width',data+'%');
+        			 if(data<50){
+        			   $("#perVal").removeClass('progress-bar-success');
+        			   $("#perVal").addClass("progress-bar-danger");
+        			 }
+        			 if(data>=50){
+        				 $("#perVal").removeClass("progress-bar-danger");
+        				 $("#perVal").addClass("progress-bar-success");
+        			 }
+        			 $("#disVal").empty();
+        			$("#disVal").append(data+'%');
+        			
+        			// for quick view bar update
+        			$('#quickPerVal').attr('aria-valuenow', data).css('width',data+'%');
+          			 if(data<50){
+	          			   $("#quickPerVal").removeClass('progress-bar-success');
+	          			   $("#quickPerVal").addClass("progress-bar-danger");
+	          			 }
+	          			 if(data>=50){
+	          				 $("#quickPerVal").removeClass('progress-bar-danger');
+	          				 $("#quickPerVal").addClass("progress-bar-success");
+	          			 }
+
+        			$("#quickDisVal").empty();
+        			$("#quickDisVal").append(data+'%');
+        			
+					$("#popUpDivEmp").removeClass("edit-details-active");
+        			$("#selector3").removeAttr("style");
+        			$("#selector3").css({ display: "block" });
+        			$("#empMsgDiv").html("Success!! New Employer added");
+					candidateEmployersList(candidateId);
+					empMsgFadein();
+					qvemployeeSubmission(candidateId);
+				}
+	        	}
+			
+	        });
+			
+			/* //To disable addButton 
 			$("#candidateEmployersAdd").attr("disabled", "disabled");
 			var frm = $('#employers_form').serializeFormJSON();
 			var con = JSON.stringify(frm);
@@ -102,11 +154,10 @@ function closeCertificatePopup(){
 			var jsonData = encodeURIComponent(con);
 			var sourceleadUrl = '${sourceleadUrl}';
 
-			$
-					.ajax({
+			$.ajax({
 						type : "POST",
 						url : sourceleadUrl
-								+ "/storeCandidateEmployers?${_csrf.parameterName}=${_csrf.token}&json="
+								+ "/storeCandidateEmployers?"+tokenParamName+"="+tokenValue+"&json="
 								+ jsonData + "&candidateId=" + candidateId,
 						success : function(data) {
 
@@ -154,7 +205,7 @@ function closeCertificatePopup(){
 							}
 
 						},
-					});
+					}); */
 			return true;
 		} else {
 			return false;
@@ -279,12 +330,10 @@ function closeCertificatePopup(){
 <script>
 
 	function editEmployer(candidateEmpId, candidateId) {
-		
-		var sourceleadUrl = '${sourceleadUrl}';
 		$.ajax({
 					type : "POST",
 					url : sourceleadUrl
-							+ "/getCandidateEmployerByCandidateIdAndCandidateEmpoyerId?${_csrf.parameterName}=${_csrf.token}&candidateId="
+							+ "/getCandidateEmployerByCandidateIdAndCandidateEmpoyerId?"+tokenParamName+"="+tokenValue+"&candidateId="
 							+ candidateId + "&candidateEmpId=" + candidateEmpId,
 					success : function(data) {
 
@@ -460,9 +509,7 @@ function closeCertificatePopup(){
 <script>
 	function candidateEmployersList(candidateId) {
 		 var candidateType = '${candidateType}';
-		var sourceleadUrl = '${sourceleadUrl}';
-		
-		var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
+		 var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
 		  if(locationList.match("yyyy-MM-dd")){
 			  candExpListDate = 'YYYY-MM-DD';
 		  }if(locationList.match("dd-MM-yyyy")){
@@ -474,7 +521,7 @@ function closeCertificatePopup(){
 		  }
 				$.ajax({
 					type : "POST",
-					url : sourceleadUrl	+ "/getCandidatesEmployersListByCandidateIdAndOrgLocationID?${_csrf.parameterName}=${_csrf.token}&candidateId="
+					url : sourceleadUrl	+ "/getCandidatesEmployersListByCandidateIdAndOrgLocationID?"+tokenParamName+"="+tokenValue+"&candidateId="
 							+ candidateId,
 					success : function(data) {
 					/* 	if (data != null && data != 'undefined' && data != "" && data != '[]') {
@@ -644,12 +691,11 @@ function removeEmployer(candidateemployerId, candidateId){
 <script>
 	function deleteSelectedEmployer(candidateemployerId, candidateId) {
 
-		var sourceleadUrl = '${sourceleadUrl}';
 		var loginUserId = '${SourceLeadWeb_userId}';
 		var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 				$.ajax({
 					type : "POST",
-					url : sourceleadUrl	+ "/removeCandidateEmployerBycandidateIdandCandidateEmployerID?${_csrf.parameterName}=${_csrf.token}&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+ candidateId + "&candidateemployerId="+candidateemployerId,
+					url : sourceleadUrl	+ "/removeCandidateEmployerBycandidateIdandCandidateEmployerID?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+ candidateId + "&candidateemployerId="+candidateemployerId,
 					success : function(data) {
 
 						if (data != null && data != 'undefined' && data != "") {
@@ -721,7 +767,28 @@ function removeEmployer(candidateemployerId, candidateId){
 
 			var frm = $('#candidateExperianceEdit_form').serializeFormJSON();
 
-			var con = JSON.stringify(frm);
+			var formData = getFormData("candidateExperianceEdit_form");
+	        $.post(sourceleadUrl+"/upDateCandidateEmployerByCandidateIdAndCandidateExperianceId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&candidateExperianceId="+candidateExperianceId, formData, function(data) {
+	        	
+	        	$(".edit-details").toggleClass("edit-details-active");
+				$(".close-div")	.click(function() {
+									$(this).parent("div.edit-details")
+											.removeClass("edit-details-active");
+								});
+				$(".addUser-org, .assign-org, .collapse-div-adduser, .collapse-div, .edit-details")
+						.click(function(e) {
+							e.stopPropagation();
+						});
+				$("#selector3").removeAttr("style");
+    			$("#selector3").css({ display: "block" });
+    			$("#empMsgDiv").html("Employer details updated");
+				candidateEmployersList(candidateId);
+				empMsgFadein();
+				qvemployeeSubmission(candidateId);
+	        });
+			
+			
+			/* var con = JSON.stringify(frm);
 			con = con.replace(/[{}]/g, "");
 			var jsonData = encodeURIComponent(con);
 			//It will escape all the special characters
@@ -730,7 +797,7 @@ function removeEmployer(candidateemployerId, candidateId){
 			$.ajax({
 						type : "POST",
 						url : sourceleadUrl
-								+ "/upDateCandidateEmployerByCandidateIdAndCandidateExperianceId?${_csrf.parameterName}=${_csrf.token}&json="+ jsonData + "&candidateId=" + candidateId	+ "&candidateExperianceId"+ candidateExperianceId,
+								+ "/upDateCandidateEmployerByCandidateIdAndCandidateExperianceId?"+tokenParamName+"="+tokenValue+"&json="+ jsonData + "&candidateId=" + candidateId	+ "&candidateExperianceId"+ candidateExperianceId,
 						success : function(result) {
 							
 							$(".edit-details").toggleClass("edit-details-active");
@@ -749,7 +816,7 @@ function removeEmployer(candidateemployerId, candidateId){
 							empMsgFadein();
 							qvemployeeSubmission(candidateId);
 						},
-					});
+					}); */
 			return true;
 		} else {
 			return false;

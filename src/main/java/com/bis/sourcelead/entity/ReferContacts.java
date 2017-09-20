@@ -18,6 +18,8 @@ import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
 
 import com.bis.sourcelead.enums.Contact_Source;
 
@@ -33,10 +35,12 @@ public class ReferContacts implements Serializable{
     @Column(name = "ID", nullable = false)
 	private Long id;
 	
+	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne
     @JoinColumn(name="REFER_FROM_USER_ID")        
     private User referFromUser;
 	
+	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne
     @JoinColumn(name="CONTACT_USER_ID")        
     private User contactUser;
@@ -48,6 +52,7 @@ public class ReferContacts implements Serializable{
 	@Column(name = "FILE_CONTENT_TYPE")
 	private String fileContentType;
 
+	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne
     @JoinColumn(name="ORGLOCATION_ID")        
     private OrgLocations orgLocationId;

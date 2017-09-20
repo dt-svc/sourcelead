@@ -14,6 +14,8 @@ import javax.persistence.Table;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
 
 /**
  * Entity for CONTRACT_REQUEST_DOCUMENTS
@@ -33,6 +35,7 @@ public class ContractRequestDocuments {
     @Column(name = "ID", nullable = false)
 	private Long id;
 	
+	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne 
     @JoinColumn(name="CONTRACT_ID", nullable=false )  
 	private Contracts contractId; 
@@ -68,6 +71,11 @@ public class ContractRequestDocuments {
 	@Column(name = "STATUS")
 	private String status;
 	
+	@Column(name = "FILE_URL")
+	private String fileURL;
+	
+	@Column(name = "DOC_FILE_NAME")
+	private String docFileName;
 	
 	public String getDocType()
 	{
@@ -189,6 +197,23 @@ public class ContractRequestDocuments {
 		this.fileType = fileType;
 	}
 
-	
-	
+	public String getFileURL()
+	{
+		return fileURL;
+	}
+
+	public void setFileURL(String fileURL)
+	{
+		this.fileURL = fileURL;
+	}
+
+	public String getDocFileName()
+	{
+		return docFileName;
+	}
+
+	public void setDocFileName(String docFileName)
+	{
+		this.docFileName = docFileName;
+	}
 }

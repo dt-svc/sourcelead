@@ -201,11 +201,12 @@ overflow-x: auto;
 		     </sec:authorize>
 		     
 	    </div>
-	 <sec:authorize access="hasAnyRole('ROLE_ADD_MY_EXPENSES','ROLE_VIEW_EDIT_MY_EXPENSES','ROLE_EXPORT_MY_EXPENSES','ROLE_ADD_EMPLOYEE_EXPENSES','ROLE_VIEW_EDIT_EMPLOYEE_EXPENSES','ROLE_EXPORT_EMPLOYEE_EXPENSES')">   
 	    <div class="clearfix row mb">
-		     <jsp:include page="expensesDashboardCounts.jsp"></jsp:include>
-	    </div>
-	 </sec:authorize>  	
+			 <sec:authorize access="hasAnyRole('ROLE_ADD_MY_EXPENSES','ROLE_VIEW_EDIT_MY_EXPENSES','ROLE_EXPORT_MY_EXPENSES','ROLE_ADD_EMPLOYEE_EXPENSES','ROLE_VIEW_EDIT_EMPLOYEE_EXPENSES','ROLE_EXPORT_EMPLOYEE_EXPENSES')">   
+				     <jsp:include page="expensesDashboardCounts.jsp"></jsp:include>
+			 </sec:authorize>  	
+			 <jsp:include page="leaveManagement.jsp"></jsp:include>
+		 </div>
 	    	<c:if test = "${SourceLeadWeb_ats == 'Y' || SourceLeadWeb_vms == 'Y'}">
 	    	
 	    			<sec:authorize access="hasAnyRole('ROLE_VIEW_REQUIREMENT')">
@@ -320,7 +321,7 @@ $('#dasboardTaskDatpicker').datepicker({
 	result=result+'<div class="form-group mb10">';
 	result=result+'<label>Organization Short Code<span class="text-danger paddingLeft">*</span></label>';
 	result=result+'<div class="clearfix" id="generatedUserIdDiv">';
-	result=result+'<input type="text" class="form-control" id="generatedUserId" style="text-transform:uppercase" name="generatedUserId" data-validation="required validate_length length3-3" field-name="Organization Short Code" onkeyup="validateOrgShortCode();" maxlength="3">';
+	result=result+'<input type="text" class="form-control" id="generatedUserId" style="text-transform:uppercase" name="generatedUserId" data-validation="required validate_length length1-4" field-name="Organization Short Code" onkeyup="validateOrgShortCode();" maxlength="4">';
 	result=result+'</div>';
 	result=result+'</div>';
 	result=result+'<div class="clearfix">';
@@ -387,8 +388,10 @@ function validateOrgShortCode(){
 		        success: function(data) {
 		        	if(data == true){
 		        		$("input#generatedUserId").parent().after("<p class='jquery_form_error_message'><span>Org Short Code Already Exists !!!</span>");
+		        		$("#saveOrgConfiguration").attr("disabled","disabled");
 		        	}else{
-		        		 $('#generatedUserIdDiv').parent().find('p.jquery_form_error_message').remove(); 
+		        		 $('#generatedUserIdDiv').parent().find('p.jquery_form_error_message').remove();
+		        		 $("#saveOrgConfiguration").removeAttr("disabled","disabled");
 		        	}
 		        }
 		 }); 

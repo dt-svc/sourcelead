@@ -6,7 +6,7 @@
 
  <style type="text/css">
  .require_wrap_details_cta b {
-    width: 110px;
+    width: 150px;
 }
 .require_wrap_details.require_textarea textarea {
 height: 225px;
@@ -54,7 +54,6 @@ $(document).ready(function() {
   </section>
 <script>
 function requirementProfile(requirementUUID){
-	var sourceleadUrl ='${sourceleadUrl}';
 	var candidateId = '${SourceLeadWeb_candidateId}'
     var loginUserRole = '${SourceLeadWeb_loginUserRole}';
     var referUUID = '${referUUID}';
@@ -288,7 +287,6 @@ function requirementProfile(requirementUUID){
 
 <script>
 function requirementDetails(requirementUUID){
-	var sourceleadUrl ='${sourceleadUrl}';
 	$.ajax({
 	   	type: "GET",
 	    url: sourceleadUrl+"/getRequirementProfessionalProfileDetails?requirementUUID="+requirementUUID, 	   
@@ -316,12 +314,26 @@ function requirementDetails(requirementUUID){
 
 				 if(json.fileName != null && json.fileName != '' && json.fileName != 'undefined'){
 		            	result = result +'<div class="require_wrap_details_cta require_wrap_details_view require_uploadfile"><b>Attachment:</b><span>'+json.fileName+'</span><a class="glyphicon glyphicon-download-alt ml10" href=\"'+sourceleadUrl+'/downloadRequirementAttachment?requirementId='+json.id+'\"></a><a class="fa fa-eye ml10" onclick="viewProfessionalRequirementProfile(\''+json.id+'\',\''+json.fileName+'\')"></a> ';
-		            }
+		            	result = result +'                  <div class="clearfix"></div>';
+						 result = result +'                </div>';   
+				 }
 		            else{
-		            result = result +'<div class="require_wrap_details_cta"> <b>Attachment:</b> <span> -- </span>';	
+		            result = result +'<div class="require_wrap_details_cta"> <b>Attachment:</b> <span> -- </span>';
+		            result = result +'                  <div class="clearfix"></div>';
+					 result = result +'                </div>';
 		            }
+				 if(json.visaType != null && json.visaType != '' && json.visaType != 'undefined')
+					{
+					 result = result +'                <div class="require_wrap_details_cta"> <b>Immigration Type:</b> <span title="'+json.visaType+'">'+json.visaType+'</span>';
+					 result = result +'                  <div class="clearfix"></div>';
+					 result = result +'                </div>';
+					}
+				 else{
+					 result = result +'                <div class="require_wrap_details_cta"> <b>Immigration Type:</b> <span title="--">--</span>';
+					 result = result +'                  <div class="clearfix"></div>';
+					 result = result +'                </div>';
+				 }
 				 
-				 result = result +'                <div class="require_wrap_details_cta"> <b>Immigration Type:</b> <span title="'+json.visaType+'">'+json.visaType+'</span>';
 				 result = result +'                  <div class="clearfix"></div>';
 				 result = result +'                </div>';
 				 result = result +'                  <div class="clearfix"></div>';
@@ -343,7 +355,6 @@ function requirementDetails(requirementUUID){
 
 <script>
 function viewProfessionalRequirementProfile(jobId,title){
-	 var sourceleadUrl ='${sourceleadUrl}';
 		if(jobId != null && jobId != ""){
 			window.open(sourceleadUrl+'/viewJobSummaryDocumentDocView/'+title+'?jobId='+jobId,title,"height=600,width=600");
 		}  
@@ -354,7 +365,6 @@ function viewProfessionalRequirementProfile(jobId,title){
 <script>
 function getReferalDetails(requirementUUID){
 	
-	var sourceleadUrl ='${sourceleadUrl}';
 	$.ajax({
 	   	type: "GET",
 	    url: sourceleadUrl+"/getReferalListByRequirementId?requirementUUID="+requirementUUID, 	   
@@ -438,7 +448,6 @@ function getReferalDetails(requirementUUID){
 <script>
 function getSubmissionDetails(requirementUUID){
 	
-	var sourceleadUrl ='${sourceleadUrl}';
 	$.ajax({
 	   	type: "GET",
 	    url: sourceleadUrl+"/getRecruiterRequirementSubmissionsList?requirementUUID="+requirementUUID, 	   
@@ -496,7 +505,6 @@ function getSubmissionDetails(requirementUUID){
 
 <script>
 function getRateNegotiationDetails(submissionId, candidateId){
-	var sourceleadUrl ='${sourceleadUrl}';
 	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	$.ajax({
 	   	type: "POST",
@@ -550,7 +558,7 @@ function getRateNegotiationDetails(submissionId, candidateId){
 	                    result = result + '  <div class="col-md-12 mt">';
 	                    result = result + '  <label class="col-md-12">Comment</label>';
 	                    result = result + '  <div class="col-md-12">';
-	                    result = result + '    <textarea rows="2" class="form-control" placeholder="Comment" id="comment" name="comment" field-name="Reason"></textarea>';
+	                    result = result + '    <textarea rows="2" class="form-control" placeholder="Comment" id="comment" name="comment" data-validation-optional="true" data-validation="validate_length length2-500" field-name="Reason"></textarea>';
 	                    result = result + '  </div>';
 	                    result = result + '  </div>';
 	                    
@@ -630,7 +638,7 @@ function getRateNegotiationDetails(submissionId, candidateId){
 		                     else{
 		                         result = result + '<td><div class="tblminwidth-75">----</div></td>'; 
 		                     }
-		                     result = result + '    <td><div class="tblminwidth-75">';
+		                     result = result + '    <td><div class="tblminwidth-75" id="rateActionDiv">';
 		                     
 		                     if(i == json.length-1 && report.rateStage == 'NEWRATE' && isLastNegotiator=="false"){
 		                    	 var Accepted = 'Accepted';
@@ -710,7 +718,6 @@ function clearRatediv(){
 
 function proposeNewRate(submissionId, candidateId) {
 	 if ($('#rate_form').validate(false, validationSettings)){
-			var sourceleadUrl ='${sourceleadUrl}';
 			var type = "Candidate";
 			var frm = $('#rate_form').serializeFormJSON();
 			var con = JSON.stringify(frm);
@@ -733,7 +740,8 @@ function proposeNewRate(submissionId, candidateId) {
 
 <script type="text/javascript">
 	function acceptRejectRate(submissionId, status, candidateId) {
-			var sourceleadUrl ='${sourceleadUrl}';
+		$("#rateActionDiv").empty();
+		$("#rateActionDiv").prepend('<i class="fa fa-cog fa-spin"></i>');
 			$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 			$.ajax({
 			type: "POST",
@@ -860,7 +868,6 @@ function referToJob(requirementId){
 
 <script>
 function getUserContats(requirementId){
-	 var sourceleadUrl ='${sourceleadUrl}';
 	 
 	 $.ajax({
 	    	type: "POST",
@@ -932,7 +939,6 @@ $('body').on('submit', '#referToContacts', function(e){
       
       //It will escape all the special characters
       var jsonData = encodeURIComponent(con);
-      var sourceleadUrl ='${sourceleadUrl}';
       
         $("#submit_contacts").attr("disabled", "disabled");
 		$( "#submit_contacts" ).addClass('button').val('Processing..');
@@ -971,7 +977,6 @@ $('body').on('submit', '#referToJob_form', function(e){
       
       //It will escape all the special characters
       var jsonData = encodeURIComponent(con);
-      var sourceleadUrl ='${sourceleadUrl}';
       
         $("#submit_refer").attr("disabled", "disabled");
 		$( "#submit_refer" ).addClass('button').val('Processing..');
@@ -1008,7 +1013,6 @@ function appendReferToJob(requirementId){
 <script>
   function validateProfessionalEmail(requirementId){
 	  
-	  var sourceleadUrl ='${sourceleadUrl}';
 	  var email = document.getElementById('email').value; 
 	  if(email != null && email != ''){
 		  $("#submit_refer").attr("disabled", "disabled");

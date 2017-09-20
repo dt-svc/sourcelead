@@ -206,6 +206,17 @@ width: 8%;
 		var maxRowNum = parseInt($("input[name = 'proposeTimeMaxRowNumber']").val());
 		var row = tbl.insertRow(maxRowNum);
 		row.setAttribute("id", "divProposeTimeRow" + maxRowNum);
+		  var locationDate ='${requirementInterview.submissionId.orgLocations.dateFormat}'; 
+		  var finalDateFormatInterviewDate = '';
+		  if(locationDate.match("yyyy-MM-dd")){
+			  finalDateFormatInterviewDate = 'yy-mm-dd';
+		  }if(locationDate.match("dd-MM-yyyy")){
+			  finalDateFormatInterviewDate = 'dd-mm-yy'; 
+		  }if(locationDate.match("MM-dd-yyyy")){
+			  finalDateFormatInterviewDate = 'mm-dd-yy'; 
+		  }if(locationDate.match("yyyy-dd-MM")){
+			  finalDateFormatInterviewDate = 'yy-dd-mm'; 
+		  }
 		
 		var rowNum = parseInt($("input[name = 'proposeNewTimeRowsNum"+requirementInterviewId+"']").val());
 		if(rowNum >= 5){
@@ -230,7 +241,7 @@ width: 8%;
 			cell0.innerHTML = text;
 			
 			$('#interviewDate'+maxRowNum+'').datepicker({
-				dateFormat : 'dd-mm-yy',
+				dateFormat : finalDateFormatInterviewDate,
 				changeMonth: true,
 				changeYear: true, 
 				minDate:0,
@@ -337,7 +348,7 @@ function saveProposeTime(){
 	    var jsonData = encodeURIComponent(con);
 		$.ajax({
 					type : "POST",
-					url : sourceleadUrl+"/saveProposeTime?${_csrf.parameterName}=${_csrf.token}&jsonData="+jsonData,
+					url : sourceleadUrl+"/saveProposeTime?"+tokenParamName+"="+tokenValue+"&jsonData="+jsonData,
 					success : function(result) {
 						location.reload();
 					},

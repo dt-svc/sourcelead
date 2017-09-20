@@ -16,6 +16,8 @@ import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
 
 import com.bis.sourcelead.enums.SubmissionRateStatus;
 
@@ -30,6 +32,7 @@ public class RequirementRateSubmissionNegotiation {
     @Column(name = "ID", nullable = false)
 	private Long id;
 	
+	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne
     @JoinColumn(name="REQUIREMENT_SUBMISSION_ID", nullable=false )        
     private RequirementSubmission requirementsubmissionId;
@@ -38,6 +41,7 @@ public class RequirementRateSubmissionNegotiation {
 	@Enumerated(EnumType.STRING)
 	private SubmissionRateStatus rateInitiatorType;
 	
+	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne
     @JoinColumn(name="INITIATOR_ORG_LOCATION_ID", nullable=false )        
     private OrgLocations initiatorOrgLocationId;

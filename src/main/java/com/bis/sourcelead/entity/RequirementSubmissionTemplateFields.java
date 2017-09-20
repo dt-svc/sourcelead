@@ -16,8 +16,11 @@ import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
 import org.hibernate.annotations.Type;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
@@ -36,6 +39,8 @@ public class RequirementSubmissionTemplateFields implements Serializable{
     @Column(name = "ID", nullable = false)
     private Long id;
  	
+	@JsonBackReference
+	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne
 	@JoinColumn(name = "REQUIREMENT_SUBMISSION_ID")
    	private RequirementSubmission requirementSubmission;

@@ -326,9 +326,9 @@ public class ExpensesRestController {
 	    		if(edDTO.getId() != null){
 	    			entries.setId(edDTO.getId());
 	    		}
-	    		if(StringUtils.isNotEmpty(edDTO.getCategoryType())){
+	    		if(edDTO.getCategoryTypeId() != null){
 					ExpensesCategory ec = new ExpensesCategory();
-					ec.setId(Long.parseLong(edDTO.getCategoryType()));
+					ec.setId(edDTO.getCategoryTypeId());
 					entries.setExpensesCategoryId(ec);
 				
 				if(StringUtils.isNotEmpty(edDTO.getExpenseDate())){
@@ -404,11 +404,11 @@ public class ExpensesRestController {
 	    return expensesEntriesList;
 	}
 	@RequestMapping(value = "/rest/getExpenseDetailsByExpenseId")
-	public ExpensesDTO getExpenseDetailsByExpenseId(@RequestParam(value = "userId", required = true) Long userId, @RequestParam(value = "locationCode", required = true) String locationCode, @RequestParam(value = "expenseId", required = true) String expenseId) throws Exception
+	public ExpensesDTO getExpenseDetailsByExpenseId(@RequestBody ExpensesListUtilDTO elDTO) throws Exception
 	{
 		ExpensesDTO expensesDTO = null;
-		OrgLocations orgLocations = orgLocationService.getOrgLocationsByLocationCode(locationCode);
-		Expenses expenses = expensesService.getExpenseByExpenseUniqueId(expenseId, orgLocations.getId());
+		OrgLocations orgLocations = orgLocationService.getOrgLocationsByLocationCode(elDTO.getLocationCode());
+		Expenses expenses = expensesService.getExpenseByExpenseUniqueId(elDTO.getExpenseId(), orgLocations.getId());
 		//loginSessionController.DATEFORMAT= new SimpleDateFormat(orgLocations.getDateFormat());
 		if (expenses != null) {
 			expensesDTO = ExpensesDTOConverter.getExpensesDTOFromExpenses(expenses, expensesDTO);

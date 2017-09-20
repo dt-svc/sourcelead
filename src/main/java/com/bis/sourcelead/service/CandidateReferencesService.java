@@ -5,6 +5,7 @@ import java.util.List;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.bis.sourcelead.dto.CandidateReferencesDTO;
 import com.bis.sourcelead.entity.CandidateReferences;
 import com.bis.sourcelead.entity.User;
 
@@ -20,7 +21,7 @@ public interface CandidateReferencesService {
 	 * @throws JSONException
 	 * @throws Exception
 	 */
-	public CandidateReferences storeCandidateReferences(JSONObject jsonObj,Long candidateId,Long orgLocationId,User user) throws JSONException,Exception;
+	public CandidateReferences storeCandidateReferences(CandidateReferencesDTO candidateReferencesDTO,Long candidateId,Long orgLocationId,User user) throws JSONException,Exception;
 	
     public List<CandidateReferences>  getCandidateReferencesListByCandidateIdAndOrgLocationID(Long candidateId, Long orgLocationId) throws Exception;
 	

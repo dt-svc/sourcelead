@@ -98,6 +98,9 @@ public class InvoiceData implements Serializable {
 	@Column(name = "UPDATED_BY")
 	private String updatedBy;
 	
+	@Column(name = "VERSION")
+	private int version;
+	
 	@Transient
 	@JsonProperty
 	private String dateStr;
@@ -321,7 +324,14 @@ public class InvoiceData implements Serializable {
 	public static long getSerialversionuid() {
 		return serialVersionUID;
 	}
-	
-	
-	
+
+	public int getVersion()
+	{
+		return version;
+	}
+
+	public void setVersion(int version)
+	{
+		this.version = version;
+	}
 }

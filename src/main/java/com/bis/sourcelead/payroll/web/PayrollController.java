@@ -171,31 +171,39 @@ public class PayrollController {
 			return model;
 
 		}
+	 
+	 
+		/**
+		 * Returns payroll documents upload jsp
+		 * @param request
+		 * @return ModelAndView
+		 * @throws Exception 
+		 */
+		 @RequestMapping(value = "/addChecks")
+			public ModelAndView addChecks(HttpServletRequest request) throws Exception {
+			 SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
+			 ModelAndView model = new ModelAndView();	
+			 if(sessionData == null)
+				{
+					sessionData = new SessionMaintainanceData();
+				}
+				sessionData.setNav(Constants.PAYROLL);
+				 OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+				List<WageTaxSummary> wageTaxSummaryList =  wageTaxSummaryService.getUniqueWagesAndTaxListByOrgLocationId(orgLocation);
 
-	
-	 private List<WageTaxSummary> getUniqueWageTaxSummary(List<WageTaxSummary> wageTaxSummaryList) {
-		 
-		 int s=0;
-		    List<WageTaxSummary> users=new ArrayList();
-		    for(WageTaxSummary us1 :wageTaxSummaryList){
-		        for(WageTaxSummary us2:users){
-		        if(us1.getEmployeeId().equals(us2.getEmployeeId())){
-		            s=1;
-		        }else{
-		            s=0;
-		        }
+//				List<WageTaxSummary> distinctList = getUniqueWageTaxSummary(wageTaxSummaryList);
+				
+				if(wageTaxSummaryList !=null){
+					model.addObject("wageTaxSummaryList", wageTaxSummaryList);
+				}
+				
+				request.getSession().setAttribute("sessionData",sessionData);
+				
+		model.setViewName("payroll/addChecks");
+				model.addObject("sourceleadUrl", sourceleadUrl);
+				return model;
 
-		        }   if(s==0){
-		            users.add(us1);
-		        }
-
-		    }
-		    return users;
-		 
-		
-		
-		    
-	}
+			}
 
 
 }

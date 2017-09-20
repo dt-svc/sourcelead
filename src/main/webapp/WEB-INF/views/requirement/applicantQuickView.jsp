@@ -10,13 +10,12 @@
 --%>
 <script>
 function applicantQuickViewProfile(submissionId,candidateId){
-	var sourceleadUrl = '${sourceleadUrl}';
 	  var skillsList = '${skillsList}'; 
 	  
 	  $("#quickLoading").attr('style','position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	  $.ajax({
         type : "POST",
-         url: sourceleadUrl+"/getSubmissionDetails?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId,        
+         url: sourceleadUrl+"/getSubmissionDetails?"+tokenParamName+"="+tokenValue+"&submissionId="+submissionId,        
          success :function(data) {  
         	 if(data != null && data != 'undefined' && data != ""){  
               	
@@ -135,7 +134,7 @@ function applicantQuickViewProfile(submissionId,candidateId){
 					result = result+'      </div>';
 					result = result+'                </div>                                                                                                                                        ';
 					result = result+'                <div class="media-right positionRelative">                                                                                                                     ';
-					result = result+'<img  id="userImage" onerror="predefineProfileImage(this);" src="<c:url value="/displayCandidateImage/'+candidateId+'"/>" alt="Profile Image" class="media-object" style="width:65px">';
+					result = result+'<img  data-id="profileImage" id="userImage" onerror="predefineProfileImage(this);" src="'+json.fileUrl+'" alt="Profile Image" class="media-object" style="width:65px">';
 					  if(json.candidateScore != null && json.candidateScore != '' && json.candidateScore != 'undefined'){
 						  if(json.candidateScore >=50){ 
 						 	 result = result +'                    <i class="valid-profile fa fa-check-square text-success ProImgPosit"></i>';        
@@ -245,10 +244,9 @@ function applicantQuickViewProfile(submissionId,candidateId){
 
 <script>
 	function reqQvemployeeSubmission(candidateId) {
-		var sourceleadUrl = '${sourceleadUrl}';
 				$.ajax({
 					type : "POST",
-					url : sourceleadUrl	+ "/getCandidatesEmployersListByCandidateIdAndOrgLocationID?${_csrf.parameterName}=${_csrf.token}&candidateId=" + candidateId,
+					url : sourceleadUrl	+ "/getCandidatesEmployersListByCandidateIdAndOrgLocationID?"+tokenParamName+"="+tokenValue+"&candidateId=" + candidateId,
 					success : function(data) {
 						if (data != null && data != 'undefined' && data != "" && data != '[]') {
 								$("#reqQvemployeeSubmission").empty();
@@ -324,10 +322,9 @@ function applicantQuickViewProfile(submissionId,candidateId){
 
 <script>
 function reqQveducationSubmission(candidateId){
-	var sourceleadUrl ='${sourceleadUrl}';
 	 $.ajax({  
           type : "POST",
-          url: sourceleadUrl+"/getCandidateEducationListByCandidateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,        
+          url: sourceleadUrl+"/getCandidateEducationListByCandidateId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
           success :function(data) {
         	  if (data != null && data != 'undefined' && data != "" && data != '[]') {
 	                	 $("#reqQveducationSubmission").empty();
@@ -397,10 +394,9 @@ function reqQveducationSubmission(candidateId){
 
 <script>
 function reqQwikCertificates(candidateId){
-	var sourceleadUrl ='${sourceleadUrl}';
 	 $.ajax({  
           type : "POST",
-          url: sourceleadUrl+"/getCandidateCertificationListByCandidateIdAndOrgLocationID?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,        
+          url: sourceleadUrl+"/getCandidateCertificationListByCandidateIdAndOrgLocationID?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
           success :function(data) {
         	  if (data != null && data != 'undefined' && data != "" && data != '[]') {
 	                	 $("#reqQvcertificationSubmission").empty();
