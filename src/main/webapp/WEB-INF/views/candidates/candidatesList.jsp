@@ -341,15 +341,21 @@ function candidateSideBar(candidateId){
 			             }
 			             
 			             result = result+'</ul>';
-			             
 			             result = result+'</div>';
 			             result = result+'<div class="socialnetwork-details">';
 			             result = result+'<ul class="list-inline list-unstyled">';
-			             result = result+'<li class="bg-facebook" title="Facebook"><a href="javascript:void(0)"> <i class="fa fa-facebook-square" ></i></a></li>';
-			             result = result+'<li class="bg-twitter" title="Twitter"><a href="javascript:void(0)"> <i class="fa fa-twitter-square" ></i></a></li>';
-			             result = result+'<li class="bg-google " title="Google-Plus"><a href="javascript:void(0)"> <i class="fa fa-google-plus-square" ></i></a></li>';
-			             result = result+'<li class="bg-linked" title="Linkedin"><a href="javascript:void(0)"> <i class="fa fa-linkedin-square" ></i></a></li>';
-			             result = result+'<li class="bg-web" title="Web"><a href="javascript:void(0)"> <i class="fa fa-globe" ></i></a></li>';
+			             if(json.consultantUser !=null && json.consultantUser.id != null && json.consultantUser.facebook != null){
+				             result = result+'<li class="bg-facebook" title="Facebook"><a target="_blank" href=\"'+json.consultantUser.facebook+'\" > <i class="fa fa-facebook-square" ></i></a></li>';
+				             }
+				             if(json.consultantUser !=null && json.consultantUser.id != null && json.consultantUser.twitter != null){
+				             result = result+'<li class="bg-twitter" title="Twitter"><a target="_blank" href=\"'+json.consultantUser.twitter+'\"> <i class="fa fa-twitter-square" ></i></a></li>';
+				             }
+				             if(json.consultantUser !=null && json.consultantUser.id != null && json.consultantUser.googlePlus != null){
+				             result = result+'<li class="bg-google " title="Google-Plus"><a target="_blank" href=\"'+json.consultantUser.googlePlus+'\"> <i class="fa fa-google-plus-square" ></i></a></li>';
+				             }
+				             if(json.consultantUser !=null && json.consultantUser.id != null && json.consultantUser.linkedIn != null){
+				             result = result+'<li class="bg-linked" title="Linkedin"><a target="_blank" href=\"'+json.consultantUser.linkedIn+'\"> <i class="fa fa-linkedin-square" ></i></a></li>';
+				             }
 			             result = result+'</ul>';
 			             result = result+'                 </div>';
 			             result = result+'                 </div>';
@@ -360,7 +366,6 @@ function candidateSideBar(candidateId){
 			             result = result+'                 <ul class="list-unstyled can-perdt">';
 			             result = result+'                   <li><i class="fa fa-envelope-o" title= "Email"></i><a href="#" title="'+json.email+'">'+json.email+'</a></li>';
 			             result = result+'<li><i class="fa fa-phone" title= "Mobile"></i>'+mobilePhone+''+alternateMobilePhone+'</li>';
-			                                                	  
 			             result = result+' <li><i class="fa fa-location-arrow" title= "Location"></i>'+city+''+state+''+country+'</li>';
 			             
 			             result = result+'<li><i class="fa fa-money" title= "Current Rate"></i><b>Current Rate:</b>';
