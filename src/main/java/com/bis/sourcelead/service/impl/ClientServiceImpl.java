@@ -807,6 +807,7 @@ public class ClientServiceImpl implements ClientService {
 
 				if (StringUtils.isNotBlank(clientDTO.getCompanyWebsite())) {
 					org.setWebSite(clientDTO.getCompanyWebsite());
+					orgLocations.setWebsite(clientDTO.getCompanyWebsite());
 				}
 				if (StringUtils.isNotBlank(clientDTO.getAddress())) {
 					org.setClientAddress(clientDTO.getAddress());
