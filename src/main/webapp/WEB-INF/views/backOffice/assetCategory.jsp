@@ -60,7 +60,7 @@ $(document).ready(function(){
 	function getAssetCategoryList(){
 		  $.ajax({
 			   	type: "POST",
-			    url: sourceleadUrl+"/getAssetCategoryList?${_csrf.parameterName}=${_csrf.token}", 	   
+			    url: sourceleadUrl+"/getAssetCategoryList?"+tokenParamName+"="+tokenValue+"", 	   
 	   		    success: function(data) {
 	   		    	
 	   		    	var json = JSON.parse(data);
@@ -196,7 +196,7 @@ $(".addcon-pop").click(function(){
 				//It will escape all the special characters
 				$.ajax({
 						type : "POST",
-						url : sourceleadUrl+"/saveCategory?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&categoryId="+categoryId+"&catLocationId="+catLocationId,
+						url : sourceleadUrl+"/saveCategory?"+tokenParamName+"="+tokenValue+"&json="+jsonData+"&categoryId="+categoryId+"&catLocationId="+catLocationId,
 						success : function(result) {
 							 if(result.indexOf('Sign In') >= 0){
 					    		location.replace(sourceleadUrl);
@@ -236,7 +236,7 @@ function closePopupDemo(){
 function editCategory(catLocationId,categoryId){
 	$.ajax({
 	   	type: "POST",
-	    url: sourceleadUrl+"/getCategoryById?${_csrf.parameterName}=${_csrf.token}&categoryId="+categoryId+"&catLocationId="+catLocationId, 	   
+	    url: sourceleadUrl+"/getCategoryById?"+tokenParamName+"="+tokenValue+"&categoryId="+categoryId+"&catLocationId="+catLocationId, 	   
 		    success: function(data) {
 		    	var json = JSON.parse(data);
 		    	if( data.indexOf('Sign In') >= 0){
@@ -315,7 +315,7 @@ function validateCategoryName(){
 		// $( "#save_client" ).addClass('button').val('Processing..');
 		$.ajax({
 			type : "GET",
-			url : sourceleadUrl + "/validateCategoryName?${_csrf.parameterName}=${_csrf.token}&categoryName="+categoryName,
+			url : sourceleadUrl + "/validateCategoryName?"+tokenParamName+"="+tokenValue+"&categoryName="+categoryName,
 			success : function(data) {
 				var result = data;
 				if (result == true) {
@@ -369,7 +369,7 @@ function terminateCategory(categoryId){
 		$("#loading"+categoryId).attr('style',' height:40px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/linear-loader.gif"); background-position:center; background-repeat:no-repeat;');
 		$.ajax({
 			type : "GET",
-			url : sourceleadUrl + "/terminateCategory?${_csrf.parameterName}=${_csrf.token}&categoryId="+categoryId,
+			url : sourceleadUrl + "/terminateCategory?"+tokenParamName+"="+tokenValue+"&categoryId="+categoryId,
 			success : function(data) {
 				$("#popUp").empty();
 				$(".project_inn_mask").fadeOut(200);

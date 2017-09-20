@@ -217,8 +217,8 @@ function getUsersSearchResult(searchValue){
        <ul class="pull-right list-unstyled list-inline">
         <input type="hidden" name="usersOffset" id="usersOffset" value="0"/>
          <li><div class="gridFil grid-fil">
-					<i class="fa fa-th-list" onclick="showList('LISTVIEW');" id="ShowGrid"></i>
-					<i class="fa fa-th-large" onclick="showGrid();" id="ShowList"></i>
+					<i class="fa fa-th-list"  title="List" onclick="showList('LISTVIEW');" id="ShowGrid"></i>
+					<i class="fa fa-th-large" title="Grid" onclick="showGrid();" id="ShowList"></i>
 			</div></li>	
           <li><i class="fa fa-filter"></i>&nbsp;
                <select id="userState" onchange="getUsersView('manual','LISTVIEW');">
@@ -244,7 +244,7 @@ function getUsersSearchResult(searchValue){
 			  <a href="javascript:void(0)">
 			  <i class="fa fa-user"></i></a>
 				<span class="action-search"><input type="text" placeholder="Email/Name" id="searchByName"></span>
-				<span class="action-search" onclick="getUsersList('manual');"><i class="fa fa-search"></i></span>
+				<span class="action-search" onclick="getUsersList('manual');" title="Search"><i class="fa fa-search"></i></span>
 		  </li> 
 		
 		   <sec:authorize access="hasAnyRole('ROLE_CREATE_USER')"> 
@@ -510,7 +510,7 @@ function exportToPdf(){
 			       	    	result = result +"<div class='col-xs-4 col-sm-4'>";
 			       	    	result = result +"<div class='text-center image-parent'>";
 			       	    	result = result +"<div class='imageParent'>";
-			       	    	result = result +"<img onerror='predefineProfileImage(this);' class='m-t-xs'  src='"+sourceleadUrl+"/displayUserImage/"+userRole.userId+"' alt='image'>";
+			       	    	result = result +"<img data-id= 'userProfileImage' onerror='predefineProfileImage(this);' class='m-t-xs'  src="+userRole.user.fileUrl+" alt='image'>";
 			       	    	result = result +"</div>";
 			       	    	
 			       	    	
@@ -733,7 +733,7 @@ function getUserSummary(userId){
 			       	    	result = result +"<div class='col-xs-4 col-sm-4'>";
 			       	    	result = result +"<div class='text-center image-parent'>";
 			       	    	result = result +"<div class='imageParent'>";
-			       	    	result = result +"<img onerror='predefineProfileImage(this);' class='m-t-xs'  src='"+sourceleadUrl+"/displayUserImage/"+userRole.userId+"' alt='image'>";
+			       	    	result = result +"<img data-id= 'userProfileImage' onerror='predefineProfileImage(this);' class='m-t-xs'  src="+userRole.user.fileUrl+" alt='image'>";
 			       	    	result = result +"</div>";
 			       	    	
 			       	    	
@@ -1092,7 +1092,7 @@ function showList(viewType){
 			        			   '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_USER\',\'ROLE_VIEW_EDIT_USER\',\'ROLE_VIEW_DELETE_USER\')">' 
 			        			   result = result +"<td>"    
 			        			    result = result +" <a href='<c:url value='/userSummary/"+userRole.userId+"'/>'' class='UserTextLeft'>";
-					       	    	result = result +"<img onerror='predefineProfileImage(this);' class='m-t-xs'  src='"+sourceleadUrl+"/displayUserImage/"+userRole.userId+"' alt='image'>";
+					       	    	result = result +"<img data-id= 'userProfileImage' onerror='predefineProfileImage(this);' class='m-t-xs'  src="+userRole.user.fileUrl+" alt='image'>";
 									result = result + ''+userRole.userName+'</a></td>';
 									'</sec:authorize>';
 								}else{
@@ -1121,14 +1121,14 @@ function showList(viewType){
 									result = result + ' <td><div>--</div></td>';
 								}
 			        		    if(userRole.isMailSent != null && userRole.isMailSent != "" && userRole.isMailSent == 'N'){
-					       	    	  result = result +"<td><p><label id='user"+userRole.userId+"' class='label label-info'><i class='fa fa-envelope' aria-hidden='true'></i><a href='javascript:void(0)' onClick='resendInvitation("+userRole.userId+");'>&nbsp;&nbsp;Invite</a></label></p></td>";
+					       	    	  result = result +"<td><p><label id='user"+userRole.userId+"' class='label label-info'><b class='fa fa-envelope' aria-hidden='true'></b><a class='color_white' href='javascript:void(0)' onClick='resendInvitation("+userRole.userId+");'>&nbsp;&nbsp;Invite</a></label></p></td>";
 					 			    }else if((userRole.isMailSent != null && userRole.isMailSent != "" && userRole.isMailSent == 'Y') &&
 					 			    		(userRole.userState != null && userRole.userState != "" && userRole.userState == 'NOT_LOGGEDIN') ){
-					 			    	 result = result +"<td><p><label id='user"+userRole.userId+"' class='label label-info'><i class='fa fa-envelope' aria-hidden='true'></i><a href='javascript:void(0)' onClick='resendInvitation("+userRole.userId+");'>&nbsp;&nbsp;Resend</a></label></p></td>";
+					 			    	 result = result +"<td><p><label id='user"+userRole.userId+"' class='label label-info'><b class='fa fa-envelope' aria-hidden='true'></b><a class='color_white' href='javascript:void(0)' onClick='resendInvitation("+userRole.userId+");'>&nbsp;&nbsp;Resend</a></label></p></td>";
 					 			    }else if(userRole.userState != null && userRole.userState != "" && userRole.userState == 'ACTIVE'){
-					 			    	result = result +"<td><p><label class='label label-success'><i class='fa fa-check'></i>&nbsp;&nbsp;Active</label></p></td>";
+					 			    	result = result +"<td><p><label class='label label-success'><b class='fa fa-check'></b>&nbsp;&nbsp;Active</label></p></td>";
 					 			    }else if(userRole.userState != null && userRole.userState != "" && userRole.userState == 'INACTIVE'){
-					 			    	result = result +"<td><p><label class='label label-danger'><i class='fa fa-ban'></i>&nbsp;&nbsp;In-active</label></p></td>";
+					 			    	result = result +"<td><p><label class='label label-danger'><b class='fa fa-ban'></b>&nbsp;&nbsp;In-active</label></p></td>";
 					 			    } 
 					       	    	
 			        		    /* result = result + ' <td><div class="tblminwidth-75">Remove</div></td>'; */

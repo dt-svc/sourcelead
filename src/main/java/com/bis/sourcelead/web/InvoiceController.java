@@ -35,6 +35,7 @@ import com.bis.sourcelead.util.ConversionUtil;
 import com.bis.sourcelead.util.PdfConversionUtil;
 import com.bis.sourcelead.util.SessionMaintainanceData;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
+import com.itextpdf.text.log.SysoCounter;
 
 @Controller
 public class InvoiceController {
@@ -128,12 +129,13 @@ public class InvoiceController {
 		{
 			sessionData = new SessionMaintainanceData();
 		}
+		
 		Invoice invoice = invoiceService.getInvoicetByInvoiceUUID(invoiceUUID);
 		if(invoice.getInvoiceCategory() !=null && Constants.EXPENSES.equalsIgnoreCase(invoice.getInvoiceCategory())) {
 			model.setViewName("billing/createExpensesReceivableInvoice");
 		}else if((invoice.getInvoiceCategory() !=null && Constants.EXPENSES.equalsIgnoreCase(invoice.getInvoiceCategory())) && invoice.getProjectID() !=null) {
 			model.setViewName("billing/createExpensesReceivableInvoice");
-		}else if(null != projectId && !"".equalsIgnoreCase(projectId) && !"undefined".equalsIgnoreCase(projectId) && invoice.getInvoiceCategory() ==null){
+		}else if(projectId !=null && !"".equalsIgnoreCase(projectId) && !"null".equalsIgnoreCase(projectId) && !"undefined".equalsIgnoreCase(projectId) && invoice.getInvoiceCategory() ==null){
 			model.setViewName("billing/createProjectReceivableInvoice");
 		}else{
 			model.setViewName("billing/createInvoice");

@@ -254,7 +254,7 @@ overflow: visible;
 	     $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		  $.ajax({
 			   	type: "POST",
-			    url: sourceleadUrl+"/getFinancialTransactionsList?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&financialInstitute="+financialInstitute, 	   
+			    url: sourceleadUrl+"/getFinancialTransactionsList?"+tokenParamName+"="+tokenValue+"&json="+jsonData+"&financialInstitute="+financialInstitute, 	   
 	   		    success: function(data) {
 	   		    	
 	   		    	
@@ -394,7 +394,7 @@ function getTransactionImports(){
 		var financialInstitute ='${financialInstitute}';
 		$.ajax({
 		   	type: "POST",
-		    url: sourceleadUrl+"/getTransactionImportsList?${_csrf.parameterName}=${_csrf.token}&financialInstitute="+financialInstitute, 	   
+		    url: sourceleadUrl+"/getTransactionImportsList?"+tokenParamName+"="+tokenValue+"&financialInstitute="+financialInstitute, 	   
    		    success: function(data) {
    		    	
    		    	var json = JSON.parse(data);
@@ -578,7 +578,7 @@ function editFun(){
 	 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		$.ajax({
 		   	type: "POST",
-		    url: sourceleadUrl+"/updatePaymentType?${_csrf.parameterName}=${_csrf.token}&id="+id+"&paymentType="+paymentType+"&financialInstitute="+financialInstitute,	    	   
+		    url: sourceleadUrl+"/updatePaymentType?"+tokenParamName+"="+tokenValue+"&id="+id+"&paymentType="+paymentType+"&financialInstitute="+financialInstitute,	    	   
 		    success: function(data) {
 		    	getFinancialTransactionsList();
 		    }

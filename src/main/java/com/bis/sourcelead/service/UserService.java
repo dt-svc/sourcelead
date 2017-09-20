@@ -6,9 +6,9 @@ import java.util.LinkedHashSet;
 import java.util.List;
 
 import org.json.JSONObject;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.bis.sourcelead.dto.AddUserDTO;
+import com.bis.sourcelead.dto.AddUserProfileDTO;
 import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.elk.index.UserIndex;
 import com.bis.sourcelead.entity.Employees;
@@ -16,7 +16,6 @@ import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
-import com.bis.sourcelead.form.UserProfile;
 public interface UserService  {
 
 	User findByUserName(String username);
@@ -44,7 +43,7 @@ public interface UserService  {
 	
 	public User findByEmailAndOrgLocationsId(String email, Long orgLocationsId)  throws Exception;
 	
-	public User saveUserProfile(UserProfile userProfile,MultipartFile multiFile,User user) throws Exception;
+	public User saveUserProfile(AddUserProfileDTO addUserProfileDTO,User user) throws Exception;
 	
 	public List<User> getReoprtingManagersByOrgLocationId(Long orgLocationsId) throws Exception;
 	
@@ -99,6 +98,8 @@ public interface UserService  {
 	 * @return
 	 */
 	User getUserDetailsByUserCode(String userCode);
+	
+	public User saveUserProfileImage(AddUserProfileDTO addUserProfileDTO, User user)throws Exception;
 
 
 	List<User> getOwnersByOrgLocationIdAndNotExistedOwnerId(Long id, Long ownerId, List<Long> ownerListOfSpoc);

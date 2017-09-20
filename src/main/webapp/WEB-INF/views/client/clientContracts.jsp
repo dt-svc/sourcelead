@@ -1,12 +1,16 @@
 <meta http-equiv="Pragma" content="private">
 <meta http-equiv="Cache-Control" content="private">
 <meta http-equiv="Expires" content="0">
-<link href="resources/css/jquery-tagit.css" rel="stylesheet">
+
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
-<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+
+<c:if test="${staticTime == null || staticTime == 0 }">
+    <c:set var='staticTime' value="<%=new java.util.Date().getTime() %>" scope="application"></c:set>
+ </c:if>
+ <link href="resources/css/jquery-tagit.css?staticTime=${staticTime}" rel="stylesheet">
+ 
 <style type="text/css">
 .edit-details {
 text-align:left;
@@ -178,7 +182,7 @@ function clientContractsList(orgRelationId){
 	  } 
 	 $.ajax({  
           type : "POST",
-          url: sourceleadUrl+"/getClientOrVendorContracts?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+orgRelationId+"&responderType=Client&contractStatus="+contractStatus,        
+          url: sourceleadUrl+"/getClientOrVendorContracts?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId+"&responderType=Client&contractStatus="+contractStatus,        
           success :function(data) {
              			var json = JSON.parse(data);
 	                	 $("#clientContractsList").empty();
@@ -361,7 +365,7 @@ function approveContract(recordId,status,orgRelationId){
 	$("#contractloading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	 $.ajax({
        type : "POST",
-        url: sourceleadUrl+"/approveContract?${_csrf.parameterName}=${_csrf.token}&recordId="+recordId+"&status="+status,       
+        url: sourceleadUrl+"/approveContract?"+tokenParamName+"="+tokenValue+"&recordId="+recordId+"&status="+status,       
         success :function(data) {
         	if(data == 'REJECTED'){
         		$("#row"+recordId).empty();
@@ -386,7 +390,7 @@ function finalizeContract(recordId,status){
 	$("#contractloading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	 $.ajax({
       type : "POST",
-       url: sourceleadUrl+"/updateContractStatus?${_csrf.parameterName}=${_csrf.token}&recordId="+recordId+"&status="+status,       
+       url: sourceleadUrl+"/updateContractStatus?"+tokenParamName+"="+tokenValue+"&recordId="+recordId+"&status="+status,       
        success :function(data) {
        	$("#row"+recordId).empty();
 	    	$("#row"+recordId).html(rowHtmlContent);
@@ -487,7 +491,7 @@ function removeDoc(id){
 		 var sourceleadUrl ='${sourceleadUrl}';
 		 $.ajax({
 	     type : "POST",
-	      url: sourceleadUrl+"/updateDocument?${_csrf.parameterName}=${_csrf.token}&docuId="+id,       
+	      url: sourceleadUrl+"/updateDocument?"+tokenParamName+"="+tokenValue+"&docuId="+id,       
 	      success :function(data) {
 	      	  //  $("#tr"+id).empty();
 	    	  $("#uploadDocumentDiv"+id).show();
@@ -546,7 +550,7 @@ function uploadRequestedDocuments(id){
 		         processData: false,
 		         contentType:false,
 			     dataType : 'json',
-						url : sourceleadUrl+ "/saveDocContracts?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
+						url : sourceleadUrl+ "/saveDocContracts?"+tokenParamName+"="+tokenValue+"&json="+jsonData,
 						success : function(result) {
 							clientContracts(orgRelationId);
 							contPopClose();
@@ -881,10 +885,10 @@ function editOne(startDate,endDate){
 	  var d2 = '';
 	  if(locationDate.match("yyyy-MM-dd")){
 		  finalDateeditOneSave = 'yy-mm-dd';
-		   d2 = new Date(ClientcontractEffectiveEndDate[0], parseInt(contractEffectiveEndDate[1])-parseInt(1), parseInt(ClientcontractEffectiveEndDate[2])+parseInt(1));
+		   d2 = new Date(ClientcontractEffectiveEndDate[0], parseInt(ClientcontractEffectiveEndDate[1])-parseInt(1), parseInt(ClientcontractEffectiveEndDate[2])+parseInt(1));
 	  }if(locationDate.match("dd-MM-yyyy")){
 		  finalDateeditOneSave = 'dd-mm-yy'; 
-		   d2 = new Date(ClientcontractEffectiveEndDate[2], parseInt(contractEffectiveEndDate[1])-parseInt(1), parseInt(ClientcontractEffectiveEndDate[0])+parseInt(1));
+		   d2 = new Date(ClientcontractEffectiveEndDate[2], parseInt(ClientcontractEffectiveEndDate[1])-parseInt(1), parseInt(ClientcontractEffectiveEndDate[0])+parseInt(1));
 	  }if(locationDate.match("MM-dd-yyyy")){
 		  finalDateeditOneSave = 'mm-dd-yy'; 
 		   d2 = new Date(ClientcontractEffectiveEndDate[2], parseInt(ClientcontractEffectiveEndDate[0])-parseInt(1), parseInt(ClientcontractEffectiveEndDate[1])+parseInt(1));
@@ -892,8 +896,6 @@ function editOne(startDate,endDate){
 		  finalDateeditOneSave = 'yy-dd-mm';
 		   d2 = new Date(ClientcontractEffectiveEndDate[0], parseInt(ClientcontractEffectiveEndDate[2])-parseInt(1), parseInt(ClientcontractEffectiveEndDate[1])+parseInt(1));
 	  }
-	
-	
 	
 	 var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
 	  var finalDateFormatEditEndDateSave = '';
@@ -932,7 +934,7 @@ function editClo(contractId){
 	var sourceleadUrl ='${sourceleadUrl}';
 	 $.ajax({
     type : "POST",
-     url: sourceleadUrl+"/updateContractEndDate?${_csrf.parameterName}=${_csrf.token}&contractId="+contractId+"&endDate="+endDate,       
+     url: sourceleadUrl+"/updateContractEndDate?"+tokenParamName+"="+tokenValue+"&contractId="+contractId+"&endDate="+endDate,       
      success :function(data) {
     	 $("#endVal").empty();
 		  $("#endVal").append(": "+endDate);

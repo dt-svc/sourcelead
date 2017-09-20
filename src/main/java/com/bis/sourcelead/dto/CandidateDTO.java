@@ -171,6 +171,10 @@ public class CandidateDTO {
 	private String candidateEducation;
 	
 	private String candidateEmployers;
+	
+	private String orgloationId;
+	
+	private String loginUserId;
 
 	public String getCandidateId() {
 		return candidateId;
@@ -757,6 +761,23 @@ public class CandidateDTO {
 		this.candidateEmployers = candidateEmployers;
 	}
 
-	
-	
+	public String getOrgloationId()
+	{
+		return orgloationId;
+	}
+
+	public void setOrgloationId(String orgloationId)
+	{
+		this.orgloationId = orgloationId;
+	}
+
+	public String getLoginUserId()
+	{
+		return loginUserId;
+	}
+
+	public void setLoginUserId(String loginUserId)
+	{
+		this.loginUserId = loginUserId;
+	}
 }
