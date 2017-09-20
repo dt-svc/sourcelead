@@ -11,7 +11,7 @@ window.onload = function () {
 <section class="content-wraper">
 <section class="content-header clearfix">
   <div class="pull-left">
-    <h2>Add Checks</h2>
+    <h2>Add Payment</h2>
   </div>
   <div class="success_pop" id="selector1" style="display: none;">
 		<i class="fa fa-check-circle"></i><span id="msgDiv"></span>
