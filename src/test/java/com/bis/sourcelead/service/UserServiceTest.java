@@ -243,6 +243,7 @@ public class UserServiceTest {
 		userProfile.setPassword("Bis@123");
 		
 		assertSame(user, userService.saveUserProfile(userProfile,user));
+
 	}
 
 	private MultipartFile getMultiPartFile() throws IOException {

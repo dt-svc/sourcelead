@@ -1,4 +1,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<c:if test="${staticTime == null || staticTime == 0 }">
+    <c:set var='staticTime' value="<%=new java.util.Date().getTime() %>" scope="application"></c:set>
+ </c:if>
 </div>
 <!-- Footer Area -->
   <footer class="footer-area clearfix">
@@ -20,7 +23,7 @@
 	<span></span>
   </div>
   <!-- Footer Area --> 
-  <script type="text/javascript" src='resources/js/slead-common.js'></script>
+  <script type="text/javascript" src='resources/js/slead-common.js?staticTime=${staticTime}'></script>
   <script type="text/javascript">
        //window.scroll for Side Nav
                $(function() {

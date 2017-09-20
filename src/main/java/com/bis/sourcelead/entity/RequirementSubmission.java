@@ -500,6 +500,18 @@ public class RequirementSubmission implements Serializable{
     
     @Transient
     @JsonProperty
+	private String fileContentType;
+    
+    @Transient
+    @JsonProperty
+	private String fileName;
+    
+    @Transient
+    @JsonProperty
+	private String fileURL;
+    
+    @Transient
+    @JsonProperty
 	private REQUIREMENT_SUBMISSION_STATUS requirementCurrentStatus;
     
     @NotFound(action=NotFoundAction.IGNORE)
@@ -1533,6 +1545,36 @@ public class RequirementSubmission implements Serializable{
 
 	public void setRequirementCurrentStatus(REQUIREMENT_SUBMISSION_STATUS requirementCurrentStatus) {
 		this.requirementCurrentStatus = requirementCurrentStatus;
+	}
+
+	public String getFileContentType()
+	{
+		return fileContentType;
+	}
+
+	public void setFileContentType(String fileContentType)
+	{
+		this.fileContentType = fileContentType;
+	}
+
+	public String getFileName()
+	{
+		return fileName;
+	}
+
+	public void setFileName(String fileName)
+	{
+		this.fileName = fileName;
+	}
+
+	public String getFileURL()
+	{
+		return fileURL;
+	}
+
+	public void setFileURL(String fileURL)
+	{
+		this.fileURL = fileURL;
 	}
 
 	
