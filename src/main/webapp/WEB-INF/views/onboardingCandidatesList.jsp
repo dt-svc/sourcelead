@@ -2,19 +2,16 @@
 <meta http-equiv="Cache-Control" content="private">
 <meta http-equiv="Expires" content="0">
 
-<%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
-<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
- <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
-
-
-
-<%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
-<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+ <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
+ <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
  <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
  <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
  <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
-<script src="resources/js/formvalidator.js"></script>
+	<c:if test="${staticTime == null || staticTime == 0 }">
+	    <c:set var='staticTime' value="<%=new java.util.Date().getTime() %>" scope="application"></c:set>
+	 </c:if>
+	<script src="resources/js/formvalidator.js?staticTime=${staticTime}"></script>
 
 <style>
 .settPop .form-control {
