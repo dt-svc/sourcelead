@@ -58,10 +58,10 @@ function fileUpload(id, type, formId, name, orgId, orgLocationId) {
 }
 
 function applyData(data, formId, name, id) {
-	if($("#"+formId+" input[name*="+name+"][data-id="+id+"]").length > 0) {
-		$("#"+formId+" input[name*="+name+"][data-id="+id+"]").remove();
+	if($("#"+formId+" input[name*='"+name+"'][data-id="+id+"]").length > 0) {
+		$("#"+formId+" input[name*='"+name+"'][data-id="+id+"]").remove();
 	}
-	var i = $("#"+formId+" input[type=hidden][name*="+name+"]").length / 3;
+	var i = $("#"+formId+" input[type=hidden][name*='"+name+"']").length / 3;
 	for(var e in data) {
 		var html = "<input type='hidden' name='"+name+"["+i+"].fileURL' data-id="+id+" value='"+data[e].fileURL+"'/>";
 		html += "<input type='hidden' name='"+name+"["+i+"].fileName' data-id="+id+" value='"+data[e].fileName+"'/>";
@@ -116,8 +116,10 @@ function saveCandidateImage(candidateId, formId, data){
 	                	      data: formData,
 	                      	  url: sourceleadUrl+"/saveCandidateProfile?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,
 	                          success: function(result) {
-	                        	  if(data)
+	                        	  if(result){
 	                        		  $("img[data-id=profileImage]").each(function(i) { $(this).attr('src', data[0].fileURL); });
+	                        		  cancel(candidateId);
+	                        	  }
 	                        	  else
 	                        		  cancel(candidateId);
 	    			          },  
@@ -126,4 +128,26 @@ function saveCandidateImage(candidateId, formId, data){
 	}else{ 
 		return false;
 	 } 
+}
+
+
+function saveUserProfileImage(formId,data){
+	
+	if ($('#'+formId).validate(false, validationSettings)){
+  		var formData = getFormData(formId);
+        		
+        $.ajax({
+            	      type: "POST",
+            	      data: formData,
+            	      url: sourceleadUrl+"/saveUserProfileImage?"+tokenParamName+"="+tokenValue,
+                      success: function(result) {
+                    	  if(result)
+                    		  $("img[data-id=userProfileImage]").each(function(i) { $(this).attr('src', data[0].fileURL); });
+//                   		  location.replace(sourceleadUrl+"/userProfile");  
+			          },  
+        });
+        return true;         
+}else{ 
+return false;
+} 
 }

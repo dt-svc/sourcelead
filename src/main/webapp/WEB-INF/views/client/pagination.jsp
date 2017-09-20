@@ -82,7 +82,7 @@ function pagination(){
 		  	result = result +'<tbody>';
    	    	$.ajax({
 				   	type: "POST",
-				    url: sourceleadUrl+"/getList?${_csrf.parameterName}=${_csrf.token}", 	   
+				    url: sourceleadUrl+"/getList?"+tokenParamName+"="+tokenValue+"", 	   
 		   		    success: function(data) {
 		   		    	var json = JSON.parse(data);
 		   		    	for (var i=0; i<json.length; i++)

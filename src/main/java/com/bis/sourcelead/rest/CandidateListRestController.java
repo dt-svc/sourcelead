@@ -351,9 +351,9 @@ public class CandidateListRestController {
 		}
 
 		// minExpYears && maxExpYears
-		String minYears = search.getMinRate();
+		String minYears = search.getMinExpYears();
 		minYears = StringUtils.isNotEmpty(minYears) ? minYears.replaceAll("[^0-9\\.]+", "") : "";
-		String maxYears = search.getMaxRate();
+		String maxYears = search.getMaxExpYears();
 		maxYears = StringUtils.isNotEmpty(maxYears) ? maxYears.replaceAll("[^0-9\\.]+", "") : "";
 		if (StringUtils.isNotEmpty(minYears) && StringUtils.isNotEmpty(maxYears)) {
 			try {
@@ -781,6 +781,7 @@ public class CandidateListRestController {
 		Candidate candidate = candidateService.getCandidateByCandidateIdAndOrgLocationId(Long.parseLong(candidateId),
 				loginOrgLocation.getId());
 		candidate.setDocFile(null);
+		candidate.setFileUrl(null);
 		candidate.setFileContentType(null);
 		activitySummary.append("File").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidate.getFileName()).append(Constants.OLD_VALUE_TAG_END);
 		candidate.setFileName(null);
