@@ -527,16 +527,56 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 		 requirementSubmission.setOrgLocations(orgLocations);
 		 requirementSubmission.setSubmissionTemplateJsonStringValue(jsonStringvalues);
 		 
-		 if(jsonObj.has("needApplicantPermit") && !isNullOrEmpty(jsonObj.getString("needApplicantPermit"))){
-			 if(jsonObj.getString("needApplicantPermit").equals("Y")){
-				 requirementSubmission.setNeedApplicantPermit("Y");
-				 requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.REQUEST_SENT);
-			 } 
-		 }else{
-			 requirementSubmission.setNeedApplicantPermit("N");
-			 requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.SUBMISSION);
-		 }
-		
+		 /* the functionality of this block is to verify the submitted candidate is in the Cooling-Off Period or not
+		 if the applicant is in cooling-off period, the candidate should be in rejected state(set previous state to Submission) at client side  [Venkat Kesav] START Code snippet*/
+		 RequirementSubmissionHistory requirementSubmissionHistoryForCoolingOff = null;
+			 String reqCoolingOffPeriod = requirement.getReqCoolingOffPeriod();
+			 String [] coolingOffArr = reqCoolingOffPeriod.split(" ");
+			 String reqCoolingOffPeriodDays;
+			 int Days;
+			 switch (coolingOffArr[1]) {
+				 case "Week" :
+					 reqCoolingOffPeriodDays = "7";
+				      break;
+				 case "Weeks" :
+					 Days  = (Integer.parseInt(coolingOffArr[0]) * 7);
+					 reqCoolingOffPeriodDays = Integer.toString(Days);
+				     break;
+				 case "Month" :
+					 reqCoolingOffPeriodDays = "30";
+				     break;
+				 case "Months" :
+					 Days  = (Integer.parseInt(coolingOffArr[0]) * 30);
+					 reqCoolingOffPeriodDays = Integer.toString(Days);
+				     break;
+				 case "Year" :
+					 reqCoolingOffPeriodDays = "365";
+				     break;
+				 default:
+					 reqCoolingOffPeriodDays = "0";
+			 }
+			 requirementSubmissionHistoryForCoolingOff = requirementSubmissionHistoryService.isInCoolingOffPeriodByEmailAndLocationsId(requirementSubmission.getCandidate().getEmail(), requirement.getOrgLocationId(), reqCoolingOffPeriodDays, requirement.getId());
+			 if(requirementSubmissionHistoryForCoolingOff != null){
+				 if(requirementSubmissionHistoryForCoolingOff.getIsInCoolingOffPeriod()){
+					 requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.REJECTED);
+					 requirementSubmission.setPreviousSubmissionStatus(ApplicantSubmissionStatus.SUBMISSION);
+					 requirementSubmission.setRejectedReason("Under cooling off period, completed by "+requirementSubmissionHistoryForCoolingOff.getCoolingOffPeriodEndDateStr()+".");
+					 requirementSubmission.setRejectedCategoryType("Other");
+					 requirementSubmission.setRejectedCategoryOther("Under cooling off period");
+				 }
+			 }else{
+				 if(jsonObj.has("needApplicantPermit") && !isNullOrEmpty(jsonObj.getString("needApplicantPermit"))){
+					 if(jsonObj.getString("needApplicantPermit").equals("Y")){
+						 requirementSubmission.setNeedApplicantPermit("Y");
+						 requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.REQUEST_SENT);
+					 } 
+				 }else{
+					 requirementSubmission.setNeedApplicantPermit("N");
+					 requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.SUBMISSION);
+				 }
+			 }
+			 /*END Code snippet*/
+		 
 		 requirementSubmission.setStatus(Constants.CANDIDATE_ACTIVE);
 		 requirementSubmission.setCreatedBy(user.getUserCode());
 		 requirementSubmission.setCreatedDate(new Date());
@@ -3568,7 +3608,48 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		 
 		 requirementSubmission.setOrgLocations(requirement.getOrgLocationId());
 		 requirementSubmission.setSubmissionTemplateJsonStringValue(jsonStringvalues);
-		 requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.SUBMISSION);
+		 
+		 /* the functionality of this block is to verify the submitted candidate is in the Cooling-Off Period or not
+		 if the applicant is in cooling-off period, the candidate should be in rejected state(set previous state to Submission) at client side  [Venkat Kesav] START Code snippet*/
+		 RequirementSubmissionHistory requirementSubmissionHistoryForCoolingOff = null;
+			 String reqCoolingOffPeriod = requirement.getReqCoolingOffPeriod();
+			 String [] coolingOffArr = reqCoolingOffPeriod.split(" ");
+			 String reqCoolingOffPeriodDays;
+			 int Days;
+			 switch (coolingOffArr[1]) {
+				 case "Week" :
+					 reqCoolingOffPeriodDays = "7";
+				      break;
+				 case "Weeks" :
+					 Days  = (Integer.parseInt(coolingOffArr[0]) * 7);
+					 reqCoolingOffPeriodDays = Integer.toString(Days);
+				     break;
+				 case "Month" :
+					 reqCoolingOffPeriodDays = "30";
+				     break;
+				 case "Months" :
+					 Days  = (Integer.parseInt(coolingOffArr[0]) * 30);
+					 reqCoolingOffPeriodDays = Integer.toString(Days);
+				     break;
+				 case "Year" :
+					 reqCoolingOffPeriodDays = "365";
+				     break;
+				 default:
+					 reqCoolingOffPeriodDays = "0";
+			 }
+			 requirementSubmissionHistoryForCoolingOff = requirementSubmissionHistoryService.isInCoolingOffPeriodByEmailAndLocationsId(requirementSubmission.getCandidate().getEmail(), requirement.getOrgLocationId(), reqCoolingOffPeriodDays, requirement.getId());
+			 if(requirementSubmissionHistoryForCoolingOff != null){
+				 if(requirementSubmissionHistoryForCoolingOff.getIsInCoolingOffPeriod()){
+					 requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.REJECTED);
+					 requirementSubmission.setPreviousSubmissionStatus(ApplicantSubmissionStatus.SUBMISSION);
+					 requirementSubmission.setRejectedReason("Under cooling off period, completed by "+requirementSubmissionHistoryForCoolingOff.getCoolingOffPeriodEndDateStr()+".");
+					 requirementSubmission.setRejectedCategoryType("Other");
+					 requirementSubmission.setRejectedCategoryOther("Under cooling off period");
+				 }
+			 }else{
+				 requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.SUBMISSION);
+			 }
+			 /*END Code snippet*/
 		 
 		 requirementSubmission.setStatus(Constants.CANDIDATE_ACTIVE);
 		 requirementSubmission.setCreatedBy(user.getUserCode());

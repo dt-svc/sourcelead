@@ -60,8 +60,8 @@ width: 100% !important;
 					<div class="col-lg-12">
 						<h3>Add Job Template Details</h3>
 					</div>
-<div class="clearfix"></div>
-					<div class="mt pras req-title">
+					<div class="clearfix"></div>
+					<div class="mt pras">
 					
 					<div class="col-md-6">
 					
