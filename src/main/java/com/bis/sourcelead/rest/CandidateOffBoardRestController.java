@@ -1296,6 +1296,7 @@ private static final Logger logger = LoggerFactory.getLogger(TimesheetRestContro
 					 candidateTask.setTaskNotification(offboardTasks.getTaskNotification());
 					 candidateTask.setTaskEmail(offboardTasks.getTaskEmail());
 					 candidateTask.setDescription(offboardTasks.getDescription());
+					 candidateTask.setIsTaskSumbitted(Constants.NO);
 					 candidateTask.setStatus(Constants.CANDIDATE_ACTIVE);
 					 candidateTask.setCreatedDate(CommonUtil.currentDate());
 					 candidateTask.setCreatedBy(user.getUserCode());
