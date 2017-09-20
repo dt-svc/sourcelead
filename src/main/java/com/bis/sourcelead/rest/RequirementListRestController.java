@@ -778,6 +778,11 @@ public class RequirementListRestController {
 					requirementSubmission.setCandidateId(requirementSubmission.getCandidate().getId().toString());
 					requirementSubmission.setResumeId(requirementSubmission.getCandidateResumes().getId());
 					requirementSubmission.setResumeUUID(requirementSubmission.getCandidateResumes().getResumeUUID());
+					
+					requirementSubmission.setFileContentType(requirementSubmission.getCandidateResumes().getFileContentType());
+					requirementSubmission.setFileName(requirementSubmission.getCandidateResumes().getFileName());
+					requirementSubmission.setFileURL(requirementSubmission.getCandidateResumes().getFileURL());
+					
 					if (requirementSubmission.getVendorLocationId() != null) {
 						requirementSubmission.setOrgName(requirementSubmission.getVendorLocationId().getOrgLocationName());
 					}

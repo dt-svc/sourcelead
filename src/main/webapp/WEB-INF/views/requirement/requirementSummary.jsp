@@ -458,7 +458,7 @@ function openTopDiv(){
 function sideBar(requirementId,type){
 		  var sourceleadUrl ='${sourceleadUrl}';
 	    if(type != null && type != '' && type != 'undefined'){
-	    	$("#actionsDiv" ).show();
+	    	$("#details-div" ).hide();
 			 if(type == 'SHORTLIST'){
 				 	requirementPipeline(requirementId,type);
 					requirementStatusBar(requirementId);
@@ -496,6 +496,7 @@ function sideBar(requirementId,type){
 		 
 	    }
 	    else{
+	    	$("#details-div" ).show();
 	    	$("#actionsDiv" ).hide();
 	    	$("#tab-2").empty();
 			$("#tab-3").empty();
@@ -687,6 +688,7 @@ function updateReuqirementStatusReject(status){
 
 <script>  
 function requirementPipeline(requirementId,submissionType){
+	$("#actionsDiv" ).show();
 	var sourceleadUrl = '${sourceleadUrl}';
 	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	var userId = '${SourceLeadWeb_user.id}';
@@ -702,7 +704,6 @@ function requirementPipeline(requirementId,submissionType){
 
 <script>
 function requirementPipelineList(url, requirementId, submissionType){
-	$("#actionsDiv" ).show();
 	  var sourceleadUrl = '${sourceleadUrl}';
 	  var clientSubmissions = '${clientSubmissions}';
 	  var isSpocActive = '${isSpocActive}';
@@ -1124,7 +1125,7 @@ function requirementNotes(requirementId){
 	    $("#tab-3").empty();  
 	    $("#tab-4").empty();
 	    $("#status-div").empty(); 
-	    $("#actionsDiv").empty(); 
+	    $("#actionsDiv").hide(); 
 	    $("#status-data").empty(); 
 	    $("#tab-4").append(result);  
 	    reqNotes(requirementId);    
@@ -1305,7 +1306,7 @@ function reqNotes(requirementId){
 
 <script type="text/javascript">
 function requirementRecommendations(requirementId){
-	$("#actionsDiv" ).empty();
+	$("#actionsDiv" ).hide();
 	var sourceleadUrl = '${sourceleadUrl}';
 	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	$("#recommendationsLoading").attr('style','position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
