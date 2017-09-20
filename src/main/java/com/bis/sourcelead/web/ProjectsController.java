@@ -273,13 +273,9 @@ public class ProjectsController {
 					model.addObject("tabType", tabType);
 				}
 				
-				List<ProjectMembers> projectMembersList =  projectMembersService.getAllProjectMembersByProjectIdAndStatus(projects.getId(), "Active", orgLocations);
-				if(projectMembersList != null){
-					model.addObject("projectMembersCount", projectMembersList.size());
-				}else{
-					model.addObject("projectMembersCount", 0);
-				}
-				
+				ProjectClients projectClients = projectClientService.getProjectClientsByProjectIdAndOrgLocationId(projects.getId(), orgLocations.getId());
+				Integer projectMembersCount = projectMembersService.getProjectMembersCountByProjectClientId(projectClients.getId());
+				model.addObject("projectMembersCount", projectMembersCount);
 				
 				Integer resourceRequestsCount = projectPlanningRequestService.getProjectPlanningRequestCountByProjectId(projects.getId());
 				model.addObject("resourceRequestsCount", resourceRequestsCount);
