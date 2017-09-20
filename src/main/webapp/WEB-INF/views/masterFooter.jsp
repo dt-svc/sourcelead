@@ -68,5 +68,10 @@ $( this ).addClass( feedback.vertical )
 	<script src="resources/js/jquery.orgchart.js"></script>
 	<link href="resources/css/jquery.orgchart.css" type='text/css' rel='stylesheet'/>
 </c:if>
+<script src="resources/js/cropper.min.js"></script>
+<link rel="stylesheet" href="resources/css/cropper.min.css" type="text/css" />
+<div id='imagecrop' class='post_popup'>
+	
+</div>
 </body>
 </html>

@@ -247,7 +247,12 @@ public class RequirementListController {
 	       
 
 	        model.addObject("jobTitle",requirement.getJobTitle());
-			
+	        
+			String msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "reqReleaseMessage");
+			if(!isNullOrEmpty(msg)){
+				model.addObject("msg", msg);
+				SourceLeadSessionManager.removeSessionAttribute(request, "reqReleaseMessage");
+			}
 			request.getSession().setAttribute("sessionData",sessionData);
 		}else{
 			model.setViewName("registration/persmissionDenied");

@@ -28,10 +28,9 @@ function candidateHistory(candidateId){
 </script>
 <script>
 function candidateHistoryList(candidateId){
-	 var sourceleadUrl ='${sourceleadUrl}';
 	 $.ajax({  
           type : "POST",
-          url: sourceleadUrl+"/getCandidateHistoryList?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,        
+          url: sourceleadUrl+"/getCandidateHistoryList?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
           success :function(data) {
              		 
 	                	 $("#candidateHistoryList").empty();

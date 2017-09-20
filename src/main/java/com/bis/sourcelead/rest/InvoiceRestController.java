@@ -354,10 +354,10 @@ public class InvoiceRestController {
     @RequestMapping(value = "/getInvoiceList",method = RequestMethod.POST)
 	public ResponseList<Invoice> getInvoiceList(InvoiceDTO invoiceDTO,HttpServletRequest request) throws Exception {
 		
-    	String resultJson;
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		
-		String[] tableColumns = {"invoiceId", "clientName", "clientContact", "projectName", "invoiceDate", "inoviceTotal","inoviceDue","dueDate","inoviceStatus","paymentStatus","action"};
+		// TODO do not delete until sorting  work @Rajashekar
+	/*	String[] tableColumns = {"invoiceId", "clientName", "clientContact", "projectName", "invoiceDate", "inoviceTotal","inoviceDue","dueDate","inoviceStatus","paymentStatus","action"};
 	     int sortColumnIndex = 1; //by default sorting using updated date
 		String sortColumnOrder = "desc"; //by default descending order
 		if(invoiceDTO.getOrder() != null && !invoiceDTO.getOrder().isEmpty()) {
@@ -365,10 +365,8 @@ public class InvoiceRestController {
 			sortColumnOrder = invoiceDTO.getOrder().get(0).get("dir");
 		}
 		invoiceDTO.setSortColumn(tableColumns[sortColumnIndex]);
-		invoiceDTO.setSortOrder(sortColumnOrder);
+		invoiceDTO.setSortOrder(sortColumnOrder);*/
 		
-		
-		List<Invoice> billingInvoiceList = new ArrayList<Invoice>();
 		
 		Timezone timezone = timeZoneService.getTimezone(orgLocations.getTimezone().getId());
 		DateTime zoned = new DateTime(DateTimeZone.forID(timezone.getTimeZoneId()));
@@ -420,7 +418,7 @@ public class InvoiceRestController {
 			}
 		}
 		
-		ResponseList<Invoice>  invoiceList = invoiceService.invoiceListByOrgLocationId(orgLocations.getId(),startDateUTC,endDateUTC,invoiceDTO);
+		ResponseList<Invoice>  invoiceList = invoiceService.invoiceListByOrgLocationId(orgLocations,startDateUTC,endDateUTC,invoiceDTO);
 		Date todayDate = new Date();
 		SimpleDateFormat dateFormat = orgLocations.getLocFullFormDateFormatter();
 		List<Invoice> invoiceFilterList = invoiceList.getData();
@@ -465,27 +463,26 @@ public class InvoiceRestController {
 			invoice.setInvoiceStatus(invoice.getInvoiceStatus());
 			invoice.setPaymentStatus(invoice.getPaymentStatus());
 			if(null != invoice.getProjectID()){
-				invoice.setProjectId(invoice.getProjectID().getId().toString());	
+				invoice.setProjectId(invoice.getProjectID().getId().toString());
 			}
 			
-			
 			if(!isNullOrEmpty(invoice.getInvoiceStatus())){
-				if(invoice.getInvoiceStatus().equalsIgnoreCase("DRAFT") || invoice.getInvoiceStatus().equalsIgnoreCase("Rejected")){
+				if(Constants.DRAFT.equalsIgnoreCase(invoice.getInvoiceStatus()) || Constants.REJECTED.equalsIgnoreCase(invoice.getInvoiceStatus())){
 					draftCount = draftCount+1;
 					draftTotalAmount = draftTotalAmount + Float.parseFloat(invoice.getDueAmount()) ;
 					invoice.setDraftInvoiceAmount(String.valueOf(draftTotalAmount));
 				}
 				
-				if(!invoice.getInvoiceStatus().equalsIgnoreCase("DRAFT") && !invoice.getInvoiceStatus().equalsIgnoreCase("Rejected") && (invoice.getPaymentStatus().equalsIgnoreCase("Paid") || invoice.getPaymentStatus().equalsIgnoreCase("Partial Paid")) && 
-						!invoice.getPaymentStatus().equalsIgnoreCase("Unpaid")){
+				if(!Constants.DRAFT.equalsIgnoreCase(invoice.getInvoiceStatus()) && !Constants.REJECTED.equalsIgnoreCase(invoice.getInvoiceStatus()) && (Constants.INVOICE_STATUS_PAID.equalsIgnoreCase(invoice.getPaymentStatus()) || Constants.INVOICE_STATUS_PARTIAL_PAID.equalsIgnoreCase(invoice.getPaymentStatus())) && 
+						!Constants.INVOICE_STATUS_UNPAID.equalsIgnoreCase(invoice.getPaymentStatus())){
 					paidCount = paidCount+1;
 					Float paidAmount = Float.parseFloat(invoice.getTotal()) - Float.parseFloat(invoice.getDueAmount());
 					paidTotalAmount = paidTotalAmount + paidAmount;
 					invoice.setPaidInvoiceAmount(String.valueOf(paidTotalAmount));
 				}
 				
-				if(!invoice.getInvoiceStatus().equalsIgnoreCase("DRAFT") && !invoice.getInvoiceStatus().equalsIgnoreCase("Rejected") &&
-						(invoice.getPaymentStatus().equalsIgnoreCase("Unpaid") || invoice.getPaymentStatus().equalsIgnoreCase("Partial Paid")) || invoice.getPaymentStatus().equalsIgnoreCase("Overdue")){
+				if(!Constants.DRAFT.equalsIgnoreCase(invoice.getInvoiceStatus()) && !Constants.REJECTED.equalsIgnoreCase(invoice.getInvoiceStatus()) &&
+						(Constants.INVOICE_STATUS_UNPAID.equalsIgnoreCase(invoice.getPaymentStatus()) || Constants.INVOICE_STATUS_PARTIAL_PAID.equalsIgnoreCase(invoice.getPaymentStatus()) || Constants.OVER_DUE.equalsIgnoreCase(invoice.getPaymentStatus()))){
 					
 					String dueDate = commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),invoice.getDueDate());
 					Date invoiceDueDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),dueDate);
@@ -1164,76 +1161,6 @@ public class InvoiceRestController {
 		return "success";
 	} 	
 	
-	/**
-	 * @author Laxman
-	 * @param invoiceId
-	 * @param request
-	 * @param response
-	 * @throws Exception
-	 */
-	@RequestMapping(value = "/getPrint/{id}", method = RequestMethod.GET)
-	public @ResponseBody  void getPrint(@PathVariable("id") String invoiceId,HttpServletRequest request, HttpServletResponse response) throws Exception
-	{
-		Long Id = null;
-     	Invoice parentInvoice  = invoiceService.getInvoicetByParentInvoiceId(Long.parseLong(invoiceId));
-     	if(parentInvoice.getParentInvoiceId() != null){
-     		Id = parentInvoice.getParentInvoiceId().getId();
-     	}else{
-     		Id = Long.parseLong(invoiceId); 
-     	}
-		Invoice invoice = invoiceService.getInvoicetById(Id);
-  	    byte[] pdfBytes = invoice.getDocFile();
-  	    response.setHeader("Content-disposition","inline; filename=contractPdf.pdf");
-  	    response.setContentType("application/pdf");
-  	    response.setContentLength(pdfBytes.length);
-        ServletOutputStream sos = response.getOutputStream();
-        sos.write(pdfBytes);
-        sos.flush();
-        sos.close();
-	}
-	
-	
-	/**
-	 * @author Laxman
-	 * @param invoiceId
-	 * @param request
-	 * @param response
-	 * @throws Exception
-	 */
-	
-	@RequestMapping(value = "/downloadInvoice", method = RequestMethod.GET)
-	public void downloadInvoice(@RequestParam(value="invoiceId", required=false) String invoiceId,HttpServletRequest request, HttpServletResponse response) throws Exception
-	{
-		Long Id = null;
-     	Invoice parentInvoice  = invoiceService.getInvoicetByParentInvoiceId(Long.parseLong(invoiceId));
-     	if(parentInvoice.getParentInvoiceId() != null){
-     		Id = parentInvoice.getParentInvoiceId().getId();
-     	}else{
-     		Id = Long.parseLong(invoiceId); 
-     	}
-		Invoice invoice = invoiceService.getInvoicetById(Id);
-		response.setContentType("application/octet-stream");
-		StringBuilder fileName = new StringBuilder();
-	    response.setHeader("Content-Disposition", fileName.append("attachment; filename=\"").append(invoice.getFileName()).append("\"").toString());
-		InputStream inputStream = new ByteArrayInputStream(invoice.getDocFile());
-			try {
-				OutputStream outStream = response.getOutputStream();
-	
-				byte[] buffer = new byte[4096];
-				int bytesRead = -1;
-	
-				while ((bytesRead = inputStream.read(buffer)) != -1) {
-					outStream.write(buffer, 0, bytesRead);
-				}
-	
-				inputStream.close();
-				outStream.close();
-	
-			} catch (FileNotFoundException e) {
-				logger.error(ExceptionUtils.getFullStackTrace(e));
-			} 
-	
-	}
 
 	@RequestMapping(value = "/getDueDateByFrequency", method = RequestMethod.GET)
 	public @ResponseBody String getDueDateByFrequency(@RequestParam(value = "paymentFrequency", required = false) String paymentFrequency,
@@ -1343,7 +1270,7 @@ public class InvoiceRestController {
 				}
 			
 			
-			ResponseList<Invoice>  invoiceList = invoiceService.invoiceListByOrgLocationId(orgLocations.getId(),startDateUTC,endDateUTC,invoiceDTO);
+			ResponseList<Invoice>  invoiceList = invoiceService.invoiceListByOrgLocationId(orgLocations,startDateUTC,endDateUTC,invoiceDTO);
 			
 			InvoiceAmount totalStagesAmount = getTotalAmountInBilling(invoiceList);
 			

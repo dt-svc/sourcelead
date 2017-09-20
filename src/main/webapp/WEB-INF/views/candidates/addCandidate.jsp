@@ -4,7 +4,7 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 
 
-<link href="resources/css/candidate-common.css" rel="stylesheet">
+<link href="resources/css/candidate-common.css?staticTime=${staticTime}" rel="stylesheet">
 
 <script type="text/javascript">
 		window.onload = function () {
@@ -570,7 +570,6 @@
 </script>
 <script type="text/javascript">
 	function storeCandidate() {
-		
 		rateValidations();
 		var validationSettings = {
 				errorMessagePosition : 'element',
@@ -593,7 +592,7 @@
 		    	        processData: false,
 		    	        contentType:false,
 		        	    dataType : 'json',
-						url : sourceleadUrl+"/storeCandidate?${_csrf.parameterName}=${_csrf.token}",
+						url : sourceleadUrl+"/storeCandidate?"+tokenParamName+"="+tokenValue+"",
 						success : function(result) {
 							if(result && result === "DataMissing") {
 								$("#store_candidate").removeAttr("disabled");
@@ -689,7 +688,7 @@ function validate_fileupload(fileName)
 		    	
 		    	$.ajax({
 			    	type: "POST",
-			        url: sourceleadUrl+"/profileBySkillSet?${_csrf.parameterName}=${_csrf.token}&allSkills="+allSkills, 
+			        url: sourceleadUrl+"/profileBySkillSet?"+tokenParamName+"="+tokenValue+"&allSkills="+allSkills, 
 			        success: function(data) {
 			        	var primarySkill = data;
 			        	      $("#primarySkill").val(primarySkill);
@@ -831,7 +830,7 @@ function validate_fileupload(fileName)
 		
 		 $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/validateCandidateEmail?${_csrf.parameterName}=${_csrf.token}&email="+email+"&candidateType=N", 
+		        url: sourceleadUrl+"/validateCandidateEmail?"+tokenParamName+"="+tokenValue+"&email="+email+"&candidateType=N", 
 		        success: function(data) {
 		        	if(data == 'true'){
 		        		  $('#emailDiv').find('p.jquery_form_error_message').remove();
@@ -1043,7 +1042,7 @@ function  removeValiationVendorContact() {
 	var orgRelationID = $('#vendors').val();
 		 $.ajax({
 			    type: "POST",
-		        url: sourceleadUrl+"/getOrgSpocsList?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+orgRelationID+"&type=Vendor",  
+		        url: sourceleadUrl+"/getOrgSpocsList?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationID+"&type=Vendor",  
 		        success: function(data) {
 		        	var json = JSON.parse(data);
 		        	$('#vendorcontact').empty();

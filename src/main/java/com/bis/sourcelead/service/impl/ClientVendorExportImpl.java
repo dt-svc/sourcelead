@@ -112,7 +112,8 @@ public class ClientVendorExportImpl implements ClientVendorExport {
 			writeRow.createCell(0).setCellValue(orgRelations.getOrgName());
 		}
 		if (orgRelations.getWebSite() != null && !"".equalsIgnoreCase(orgRelations.getWebSite())) {
-			writeRow.createCell(1).setCellValue(orgRelations.getWebSite());
+			StringBuilder sb = new StringBuilder();
+			writeRow.createCell(1).setCellValue(sb.append("www.").append(orgRelations.getWebSite()).toString());
 		}
 		if (orgRelations.getCountry() != null && !"".equalsIgnoreCase(orgRelations.getCountry())) {
 			writeRow.createCell(2).setCellValue(orgRelations.getCountry());

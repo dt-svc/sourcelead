@@ -172,7 +172,7 @@ function vendorContractsList(orgRelationId){
  	  }
 	 $.ajax({  
           type : "POST",
-          url: sourceleadUrl+"/getClientOrVendorContracts?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+orgRelationId+"&responderType=Vendor&contractStatus="+contractStatus,        
+          url: sourceleadUrl+"/getClientOrVendorContracts?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId+"&responderType=Vendor&contractStatus="+contractStatus,        
           success :function(data) {
              			var json = JSON.parse(data);
 	                	 $("#vendorContractsList").empty();
@@ -357,7 +357,7 @@ function approveContract(recordId,status){
 	$("#contractloading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	 $.ajax({
        type : "POST",
-        url: sourceleadUrl+"/approveContract?${_csrf.parameterName}=${_csrf.token}&recordId="+recordId+"&status="+status,       
+        url: sourceleadUrl+"/approveContract?"+tokenParamName+"="+tokenValue+"&recordId="+recordId+"&status="+status,       
         success :function(data) {
         	if(data == 'REJECTED'){
         		$("#row"+recordId).empty();
@@ -382,7 +382,7 @@ function finalizeContract(recordId,status){
 	$("#contractloading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	 $.ajax({
       type : "POST",
-       url: sourceleadUrl+"/updateContractStatus?${_csrf.parameterName}=${_csrf.token}&recordId="+recordId+"&status="+status,       
+       url: sourceleadUrl+"/updateContractStatus?"+tokenParamName+"="+tokenValue+"&recordId="+recordId+"&status="+status,       
        success :function(data) {
        	$("#row"+recordId).empty();
 	    	$("#row"+recordId).html(rowHtmlContent);
@@ -482,7 +482,7 @@ function removedoc(id){
 		 var sourceleadUrl ='${sourceleadUrl}';
 		 $.ajax({
 	     type : "POST",
-	      url: sourceleadUrl+"/updateDocument?${_csrf.parameterName}=${_csrf.token}&docuId="+id,       
+	      url: sourceleadUrl+"/updateDocument?"+tokenParamName+"="+tokenValue+"&docuId="+id,       
 	      success :function(data) {
 	      	  //  $("#tr"+id).empty();
 	    	  $("#uploadDocumentDiv"+id).show();
@@ -541,7 +541,7 @@ function uploadRequestedDocuments(id){
 		         processData: false,
 		         contentType:false,
 			     dataType : 'json',
-						url : sourceleadUrl+ "/saveDocContracts?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
+						url : sourceleadUrl+ "/saveDocContracts?"+tokenParamName+"="+tokenValue+"&json="+jsonData,
 						success : function(result) {
 							vendorContracts(orgRelationId);
 							contPopClose();
@@ -912,7 +912,7 @@ function editClo(contractId){
 	var sourceleadUrl ='${sourceleadUrl}';
 	 $.ajax({
     type : "POST",
-     url: sourceleadUrl+"/updateContractEndDate?${_csrf.parameterName}=${_csrf.token}&contractId="+contractId+"&endDate="+endDate,       
+     url: sourceleadUrl+"/updateContractEndDate?"+tokenParamName+"="+tokenValue+"&contractId="+contractId+"&endDate="+endDate,       
      success :function(data) {
     	 $("#endVal").empty();
 		  $("#endVal").append(": "+endDate);

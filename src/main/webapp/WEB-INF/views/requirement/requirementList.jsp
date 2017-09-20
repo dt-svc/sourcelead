@@ -456,7 +456,7 @@ function changeStatusAuthorisation(requirementId){
 	 var userId = '${SourceLeadWeb_userId}';
 	   $.ajax({
          type : "POST",
-          url: sourceleadUrl+"/changeStatusAuthorisation?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&status="+status+"&userId="+userId,        
+          url: sourceleadUrl+"/changeStatusAuthorisation?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&status="+status+"&userId="+userId,        
           success :function(data) {
         	  if(data == "true"){
         		  document.getElementById("changeStatusId" + requirementId).disabled=false;
@@ -482,7 +482,7 @@ function changeStatus(requirementId, requirementStatus){
      if(requirementStatus == "DRAFT"){
         	 $.ajax({
              type : "POST",
-        	 url: sourceleadUrl+"/saveChangedStatusFromDraft?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&status="+status+"&userId="+userId,
+        	 url: sourceleadUrl+"/saveChangedStatusFromDraft?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&status="+status+"&userId="+userId,
 	        	 success :function(data) {
 	       		  $("#changeStatusId" +requirementId).val(status);
 	           	  location.replace(sourceleadUrl+"/requirementList");
@@ -491,7 +491,7 @@ function changeStatus(requirementId, requirementStatus){
          }else{
         	 $.ajax({
              type : "POST",
-        	 url: sourceleadUrl+"/saveChangedStatus?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&status="+status,
+        	 url: sourceleadUrl+"/saveChangedStatus?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&status="+status,
 	        	 success :function(data) {
 	       		  $("#changeStatusId" +requirementId).val(status);
 	           	 location.replace(sourceleadUrl+"/requirementList");
@@ -539,7 +539,7 @@ function exportToPdf(){
 			clients.push($(this).val());
 	    });
 		if(requirementEmptyMessage > 0){
-		window.location.href = sourceleadUrl+"/getRequirementExportListByOrgLocationID?${_csrf.parameterName}=${_csrf.token}&status="+status+"&clients="+clients+"&exportType=pdf";
+		window.location.href = sourceleadUrl+"/getRequirementExportListByOrgLocationID?"+tokenParamName+"="+tokenValue+"&status="+status+"&clients="+clients+"&exportType=pdf";
 		}else{
 			 var result = "";
 				result = result +"	<div class='project_inn_mask'></div>";
@@ -570,7 +570,7 @@ function exportToExcel(){
 			clients.push($(this).val());
 	    });
 		if(requirementEmptyMessage > 0){
-			window.location.href = sourceleadUrl+"/getRequirementExportListByOrgLocationID?${_csrf.parameterName}=${_csrf.token}&status="+status+"&clients="+clients+"&exportType=xls";	
+			window.location.href = sourceleadUrl+"/getRequirementExportListByOrgLocationID?"+tokenParamName+"="+tokenValue+"&status="+status+"&clients="+clients+"&exportType=xls";	
 		}else{
 			 var result = "";
 				result = result +"	<div class='project_inn_mask'></div>";
@@ -730,7 +730,7 @@ function getStates(){
 		$.ajax({
 	    	type: "POST",
 	    	dataType: "json",
-	    	 url: '${sourceleadUrl}'+"/getStatesByCountry?${_csrf.parameterName}=${_csrf.token}&countryName="+countryName, 
+	    	 url: '${sourceleadUrl}'+"/getStatesByCountry?"+tokenParamName+"="+tokenValue+"&countryName="+countryName, 
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	$('#state').empty();
@@ -765,7 +765,7 @@ function getCities(){
 		$.ajax({
 	    	type: "POST",
 	    	dataType: "json",
-	    	 url: '${sourceleadUrl}'+"/getCitiesByStateAndCountry?${_csrf.parameterName}=${_csrf.token}&countryName="+countryName+"&stateName="+stateName, 
+	    	 url: '${sourceleadUrl}'+"/getCitiesByStateAndCountry?"+tokenParamName+"="+tokenValue+"&countryName="+countryName+"&stateName="+stateName, 
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	$('#city').empty();

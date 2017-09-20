@@ -2,10 +2,12 @@
 <jsp:include page="../masterSideNav.jsp" />
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<script src="resources/js/amcharts.js"></script>
-<script src="resources/js/serial.js"></script>
-<script src="resources/js/light.js"></script>
-<script src="resources/js/pie.js"></script>
+
+<script src="resources/js/amcharts.js?staticTime=${staticTime}"></script>
+<script src="resources/js/serial.js?staticTime=${staticTime}"></script>
+<script src="resources/js/light.js?staticTime=${staticTime}"></script>
+<script src="resources/js/pie.js?staticTime=${staticTime}"></script>
+
 <style>
 dataTables_empty {
     height: 285px !important;
@@ -241,8 +243,6 @@ function flushDate(){
   <script>
   function getReferToMeJobPortlets(){
 	  
-    var sourceleadUrl = '${sourceleadUrl}';
-	
 	var startDate = document.getElementById("portletfromdate").value; 
 	var endDate = document.getElementById("portlettodate").value; 
 	  
@@ -355,7 +355,6 @@ function flushDate(){
   </script>
 <script>
 function getReferredToMeProtletList(startDate,endDate,status){
-	var sourceleadUrl = '${sourceleadUrl}';
 	window.location.href = sourceleadUrl + '/referredToMePortletList?${_csrf.parameterName}=${_csrf.token}&startDate='+startDate+'&endDate='+endDate+'&requirementStatus='+status;
 }
 </script>
@@ -364,8 +363,6 @@ function getReferredToMeProtletList(startDate,endDate,status){
   <script>
   function getReferByMeJobPortlets(){
 	  
-    var sourceleadUrl = '${sourceleadUrl}';
-	
 	var startDate = document.getElementById("portletreferByMefromdate").value; 
 	var endDate = document.getElementById("portletreferByMetodate").value; 
 	  
@@ -479,7 +476,6 @@ function getReferredToMeProtletList(startDate,endDate,status){
   
 <script>
 	function getReferredByMeProtletList(startDate,endDate,status){
-			var sourceleadUrl = '${sourceleadUrl}';
 			window.location.href = sourceleadUrl + '/referredByMePortletList?${_csrf.parameterName}=${_csrf.token}&startDate='+startDate+'&endDate='+endDate+'&requirementStatus='+status;
 	}
 </script>
@@ -487,7 +483,6 @@ function getReferredToMeProtletList(startDate,endDate,status){
   
  <script>
   function getJobSummaryDoNutChart(){
-	var sourceleadUrl = '${sourceleadUrl}';
 	
 	var startDate = document.getElementById("dpfromdate").value; 
 	var endDate = document.getElementById("dptodate").value; 
@@ -508,8 +503,6 @@ function getReferredToMeProtletList(startDate,endDate,status){
   
   <script>
   function getJobSummarySerialChart(){
-	  var sourceleadUrl = '${sourceleadUrl}';
-		
 		
 		var startDate = document.getElementById("serialfromdate").value; 
 		var endDate = document.getElementById("serialtodate").value; 

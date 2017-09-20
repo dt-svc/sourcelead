@@ -207,8 +207,8 @@ public class InvoiceServiceImpl implements InvoiceService{
 	private ExpensesInvoicePdfHelper expensesInvoicePdfHelper;
 	
 	@Override
-	public ResponseList<Invoice> invoiceListByOrgLocationId(Long orgLocationId,Date startDateUTC,Date endDateUTC,InvoiceDTO invoiceDTO) throws Exception {
-		return invoiceDao.invoiceListByOrgLocationId(orgLocationId,startDateUTC,endDateUTC,invoiceDTO);
+	public ResponseList<Invoice> invoiceListByOrgLocationId(OrgLocations orgLocations,Date startDateUTC,Date endDateUTC,InvoiceDTO invoiceDTO) throws Exception {
+		return invoiceDao.invoiceListByOrgLocationId(orgLocations,startDateUTC,endDateUTC,invoiceDTO);
 
 	}
 	public List<Contracts> getSowcontractListByAssociateId(Long candidateId, Long orgLocationId, Long orgRelationId,String contractType) throws Exception
@@ -328,6 +328,7 @@ public class InvoiceServiceImpl implements InvoiceService{
 		if(StringUtils.isNotBlank(invoiceDTO.getAfterDiscountTotal())){
 			invoice.setAfterDiscountValue(invoiceDTO.getAfterDiscountTotal());
 		}
+		
 		invoice.setPaymentStatus(Constants.INVOICE_STATUS_UNPAID);
 		if(StringUtils.isNotBlank(invoiceDTO.getProjectId())){
 			Projects projects = projectsService.getProjectById(Long.parseLong(invoiceDTO.getProjectId()));
@@ -843,19 +844,21 @@ public class InvoiceServiceImpl implements InvoiceService{
 		 ArrayList<EmailAttachment> documentList = new ArrayList<EmailAttachment>();
 		 EmailAttachment emailAttachment = new EmailAttachment();
 		 emailAttachment.setUUID(UUID);
+		 String ac = StringUtils.removeEnd(staticPath, "/slead-static");
 		 EmailAttachment attachmentZip = zipFiles(docusList);
 		 if(null != invoice.getInvoiceDocumentSet() && invoice.getInvoiceDocumentSet().size() > 0 && !invoice.getInvoiceDocumentSet().isEmpty()){
 			 Set<InvoiceDocument> documenetSet = invoice.getInvoiceDocumentSet();
 			 for(InvoiceDocument doc:documenetSet){
 				 EmailAttachment docAttachment = new EmailAttachment();
 				 if(StringUtils.isNotBlank(doc.getFileUrl()))
-				 docAttachment.setDocFile(readBytesFromFile(staticPath+doc.getFileUrl()));
+				 
+				 docAttachment.setDocFile(commonUtil.readBytesFromFile(ac+doc.getFileUrl()));
 				 docAttachment.setName(doc.getFileName());
 				 documentList.add(docAttachment);
 			 }
 		 }
 		 if(StringUtils.isNotBlank(invoice.getFileUrl()))
-		 emailAttachment.setDocFile(readBytesFromFile(staticPath+invoice.getFileUrl()));
+		 emailAttachment.setDocFile(commonUtil.readBytesFromFile(ac+invoice.getFileUrl()));
 		 if(StringUtils.isNotBlank(invoice.getFileName()))
 		 emailAttachment.setName(invoice.getFileName());
 		 attachmentList.add(emailAttachment);
@@ -2667,29 +2670,4 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 		addExpensesDao.storeAddExpensesData(expenses);
 	}
 	
-	private static byte[] readBytesFromFile(String filePath)
-	{
-	FileInputStream fileInputStream = null;
-	byte[] bytesArray = null;
-	try {
-	File file = new File(filePath);
-	bytesArray = new byte[(int) file.length()];
-	// read file into bytes[]
-	fileInputStream = new FileInputStream(file);
-	fileInputStream.read(bytesArray);
-	} catch (IOException e) {
-	e.printStackTrace();
-	}
-	finally {
-	if (fileInputStream != null) {
-	try {
-	fileInputStream.close();
-	} catch (IOException e) {
-	e.printStackTrace();
-	}
-	}
-	}
-	return bytesArray;
-	}
-
 }

@@ -115,11 +115,9 @@ public class ProfessionalProfileController {
 	}
 	 
 	 @RequestMapping(value = {"/getProfessionalInfo", "/rest/getProfessionalInfo"}, method = RequestMethod.GET)
-		public Candidate getProfessionalInfo(@RequestParam(value="candidateId", required=false) Long  candidateId,@RequestParam(value="orgLocationId", required=false) Long  orgLocationId,HttpServletRequest request) throws Exception {
-//		        Candidate can = (Candidate) SourceLeadSessionManager.getSessionAttribute(request, "candidate");
+		public Candidate getProfessionalInfo(@RequestParam(value="candidateId", required=false) Long  candidateId,@RequestParam(value="locationCode", required=false) String  locationCode,HttpServletRequest request) throws Exception {
 		        Candidate candidate = candidateService.getCandidateByCandidateId(candidateId);
-		        OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
-		        //Candidate candidate =	candidateService.getProfessionalInfoByLoginUserIdAndCandidateType(loginUser.getId(), candidateStatus);
+		        OrgLocations orgLocations = orgLocationService.getOrgLocationsByLocationCode(locationCode);
 		        if(null != candidate.getConsultantUser()){
 		        	candidate.setFirstName(candidate.getConsultantUser().getFirstName());
 		        	if(null != candidate.getConsultantUser().getLastName()){

@@ -102,7 +102,7 @@ function invoiceDetailsPagination(url){
               "render": function ( data, type, opt, meta ) {
             	  var result = "";
 	            	  if(opt.productService !=null && opt.productService !='' && opt.productService !='undefined'){
-	      		    	    result = result + '<td><div>'+opt.productService+'</div></td>';
+	      		    	    result = result + '<td><div title="'+opt.productService+'">'+opt.productService+'</div></td>';
 	      		      }else{
 	      		    	    result = result + '<td><div>---</div></td>';
 	      		      }
@@ -115,7 +115,7 @@ function invoiceDetailsPagination(url){
             "render": function ( data, type, opt, meta ) {
             	var result = "";
 	            	if(opt.empName !=null && opt.empName !='' && opt.empName !='undefined'){
-							result = result + ' <td><div class="tblminwidth-75">'+opt.empName+'</div></td>';
+							result = result + ' <td><div class="tblminwidth-75" title="'+opt.empName+'">'+opt.empName+'</div></td>';
 					}else{
 							result = result + ' <td><div class="tblminwidth-75">--</div></td>';
 					}
@@ -139,7 +139,7 @@ function invoiceDetailsPagination(url){
                 "render": function ( data, type, opt, meta ) {
                 		var result = "";
 	                		if(opt.memoDescription !=null && opt.memoDescription !='' && opt.memoDescription !='undefined'){
-								  result = result + ' <td><div class="tblminwidth-75">'+opt.memoDescription+'</div></td>';
+								  result = result + ' <td><div class="tblminwidth-75" title="'+opt.memoDescription+'">'+opt.memoDescription+'</div></td>';
 							}else{
 								  result = result + ' <td><div class="tblminwidth-75">--</div></td>';
 							}
