@@ -11,7 +11,7 @@
 	
 	<script src="resources/js/editor.js"></script>
 	<link href="resources/css/editor.css" type="text/css" rel="stylesheet"/>
-	
+	<link href="resources/css/requirement.css" type="text/css" rel="stylesheet"/>
 	<script>
 		$(document).ready(function() {
 			$("#txtEditor").Editor();
@@ -181,7 +181,6 @@ $(document).ready(function () {
 		    			        }
 		    			    });
 		    		 }
-		    	    
 		    } 
 			if(approverMode == 'Parallel'){
 				$('#apprverReq').click();
@@ -465,8 +464,8 @@ $(document).ready(function () {
               </div> 
                 <div class="input-group-btn selp-custom-min payrate_p">
                   <select class="selectpicker ratetype" id="rateType" name="rateType" field-name="Rate Per">
-                    <c:if test="${SourceLeadWeb_currencyCode == 'INR'}">
-                        <option value="">Rate Per</option>
+                  <c:choose>
+                      <c:when test="${SourceLeadWeb_currencyCode == 'INR' }">
                         <option ${requirement.rateType  == 'Monthly' ? 'selected' : ''}>Monthly</option>
 	                    <option ${requirement.rateType  == 'Hourly' ? 'selected' : ''}>Hourly</option>
 	                    <option ${requirement.rateType  == 'Weekly' ? 'selected' : ''}>Weekly</option>
@@ -474,62 +473,21 @@ $(document).ready(function () {
 	                    <option ${requirement.rateType  == 'Semi-Monthly' ? 'selected' : ''}>Semi-Monthly</option>
 	                    <option ${requirement.rateType  == 'Bi-Monthly' ? 'selected' : ''}>Bi-Monthly</option>
 	                    <option ${requirement.rateType  == 'Yearly' ? 'selected' : ''}>Yearly</option>
-                    </c:if>
+                      </c:when>
+                      <c:otherwise>
+	                    <option ${requirement.rateType  == 'Hourly' ? 'selected' : ''}>Hourly</option>
+	                    <option ${requirement.rateType  == 'Monthly' ? 'selected' : ''}>Monthly</option>
+	                    <option ${requirement.rateType  == 'Weekly' ? 'selected' : ''}>Weekly</option>
+	                    <option ${requirement.rateType  == 'Bi-weekly' ? 'selected' : ''}>Bi-weekly</option>
+	                    <option ${requirement.rateType  == 'Semi-Monthly' ? 'selected' : ''}>Semi-Monthly</option>
+	                    <option ${requirement.rateType  == 'Bi-Monthly' ? 'selected' : ''}>Bi-Monthly</option>
+	                    <option ${requirement.rateType  == 'Yearly' ? 'selected' : ''}>Yearly</option>
+                      </c:otherwise>
                   
-                  <c:if test="${SourceLeadWeb_currencyCode == 'USD'}">
-                        <option value="">Rate Per</option>
-                        <option ${requirement.rateType  == 'Hourly' ? 'selected' : ''}>Hourly</option>
-                        <option ${requirement.rateType  == 'Monthly' ? 'selected' : ''}>Monthly</option>
-	                    <option ${requirement.rateType  == 'Weekly' ? 'selected' : ''}>Weekly</option>
-	                    <option ${requirement.rateType  == 'Bi-weekly' ? 'selected' : ''}>Bi-weekly</option>
-	                    <option ${requirement.rateType  == 'Semi-Monthly' ? 'selected' : ''}>Semi-Monthly</option>
-	                    <option ${requirement.rateType  == 'Bi-Monthly' ? 'selected' : ''}>Bi-Monthly</option>
-	                    <option ${requirement.rateType  == 'Yearly' ? 'selected' : ''}>Yearly</option>
-                    </c:if>
+                  
+                  
+                  </c:choose>
                     
-                  <c:if test="${SourceLeadWeb_currencyCode == 'AUD'}">
-                        <option value="">Rate Per</option>
-                        <option ${requirement.rateType  == 'Hourly' ? 'selected' : ''}>Hourly</option>
-                        <option ${requirement.rateType  == 'Monthly' ? 'selected' : ''}>Monthly</option>
-	                    <option ${requirement.rateType  == 'Weekly' ? 'selected' : ''}>Weekly</option>
-	                    <option ${requirement.rateType  == 'Bi-weekly' ? 'selected' : ''}>Bi-weekly</option>
-	                    <option ${requirement.rateType  == 'Semi-Monthly' ? 'selected' : ''}>Semi-Monthly</option>
-	                    <option ${requirement.rateType  == 'Bi-Monthly' ? 'selected' : ''}>Bi-Monthly</option>
-	                    <option ${requirement.rateType  == 'Yearly' ? 'selected' : ''}>Yearly</option>
-	                  </c:if>
-	                     
-	               <c:if test="${SourceLeadWeb_currencyCode == 'GBP'}">
-                        <option value="">Rate Per</option>
-                        <option ${requirement.rateType  == 'Hourly' ? 'selected' : ''}>Hourly</option>
-                        <option ${requirement.rateType  == 'Monthly' ? 'selected' : ''}>Monthly</option>
-	                    <option ${requirement.rateType  == 'Weekly' ? 'selected' : ''}>Weekly</option>
-	                    <option ${requirement.rateType  == 'Bi-weekly' ? 'selected' : ''}>Bi-weekly</option>
-	                    <option ${requirement.rateType  == 'Semi-Monthly' ? 'selected' : ''}>Semi-Monthly</option>
-	                    <option ${requirement.rateType  == 'Bi-Monthly' ? 'selected' : ''}>Bi-Monthly</option>
-	                    <option ${requirement.rateType  == 'Yearly' ? 'selected' : ''}>Yearly</option>
-	                  </c:if>
-	                     
-	               <c:if test="${SourceLeadWeb_currencyCode == 'SGD'}">
-                        <option value="">Rate Per</option>
-                        <option ${requirement.rateType  == 'Hourly' ? 'selected' : ''}>Hourly</option>
-                        <option ${requirement.rateType  == 'Monthly' ? 'selected' : ''}>Monthly</option>
-	                    <option ${requirement.rateType  == 'Weekly' ? 'selected' : ''}>Weekly</option>
-	                    <option ${requirement.rateType  == 'Bi-weekly' ? 'selected' : ''}>Bi-weekly</option>
-	                    <option ${requirement.rateType  == 'Semi-Monthly' ? 'selected' : ''}>Semi-Monthly</option>
-	                    <option ${requirement.rateType  == 'Bi-Monthly' ? 'selected' : ''}>Bi-Monthly</option>
-	                    <option ${requirement.rateType  == 'Yearly' ? 'selected' : ''}>Yearly</option>
-	                  </c:if>
-	                     
-	                        <c:if test="${SourceLeadWeb_currencyCode == 'EUR'}">
-                        <option value="">Rate Per</option>
-                        <option ${requirement.rateType  == 'Hourly' ? 'selected' : ''}>Hourly</option>
-                        <option ${requirement.rateType  == 'Monthly' ? 'selected' : ''}>Monthly</option>
-	                    <option ${requirement.rateType  == 'Weekly' ? 'selected' : ''}>Weekly</option>
-	                    <option ${requirement.rateType  == 'Bi-weekly' ? 'selected' : ''}>Bi-weekly</option>
-	                    <option ${requirement.rateType  == 'Semi-Monthly' ? 'selected' : ''}>Semi-Monthly</option>
-	                    <option ${requirement.rateType  == 'Bi-Monthly' ? 'selected' : ''}>Bi-Monthly</option>
-	                    <option ${requirement.rateType  == 'Yearly' ? 'selected' : ''}>Yearly</option>
-	                  </c:if>
                   </select>
                 </div>
               </div>
@@ -1396,6 +1354,7 @@ function validate_fileupload(fileName)
 
 <script type="text/javascript">
 	function storeRequirement(saveType) {
+		
 		var validationSettings = {
 		        errorMessagePosition : 'element',
 		       borderColorOnError : '',
@@ -1879,7 +1838,6 @@ function setTemplateValues(){
 			    	$("#jobType").val(json.jobType);
 			    	
 			    	$("#coolingOff").val(json.reqCoolingOffPeriod);
-			    	$('#coolingOff').trigger('chosen:updated');
 			    	$("#industryName").val(json.industryName);
 			    	$("#industryName").trigger("chosen:updated");
 			    	
@@ -1985,7 +1943,7 @@ function setTemplateValues(){
 					$("#existingCountry").val('');
 					$("#existingState").val('');
 					$("#existingCity").val('');
-					$("#coolingOff").val('');
+					
 		            $("#skills").val('');
 		            $("#education").val('');
 		            $(".Editor-editor").text('');
@@ -1997,8 +1955,8 @@ function setTemplateValues(){
 			    	$(".")
 			    	
 			    	existedFile = json.fileName;
-			    	$("#fileName").val(existedFile);
-			    	$('#fileName').trigger("chosen:updated");
+			    	 $("#fileName").val(existedFile);
+			    	 $('#fileName').trigger("chosen:updated");
 		    	}
 		    }
      });
