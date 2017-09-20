@@ -464,10 +464,7 @@ public class InvoiceRestController {
 			invoice.setPaymentStatus(invoice.getPaymentStatus());
 			if(null != invoice.getProjectID()){
 				invoice.setProjectId(invoice.getProjectID().getId().toString());
-			}else{
-				invoice.setProjectId(null);
 			}
-			
 			
 			if(!isNullOrEmpty(invoice.getInvoiceStatus())){
 				if(Constants.DRAFT.equalsIgnoreCase(invoice.getInvoiceStatus()) || Constants.REJECTED.equalsIgnoreCase(invoice.getInvoiceStatus())){
