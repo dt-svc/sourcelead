@@ -381,7 +381,7 @@ public class RequirementServiceImpl implements RequirementService {
 			requirement.setFileName(fileInfo.getFileName());
 			requirement.setFileContentType(fileInfo.getContentType());
 			requirement.setFileURL(fileInfo.getFileURL());;
-			FileUploadUtil.moveFile(requirementDTO.getStaticPath(), fileInfo, "resumes");
+			FileUploadUtil.moveFile(requirementDTO.getStaticPath(), fileInfo, "requirementDocuments");
 		}
 		else {
 			if (StringUtils.isNotBlank(requirementDTO.getTemplateId())) {
@@ -2421,7 +2421,7 @@ public class RequirementServiceImpl implements RequirementService {
 			 * file = new File(orgName + "_Requirements_" +
 			 * dateFormat.format(new Date()) + ".xls");
 			 */
-			file = File.createTempFile(orgName + "_Requirements_"
+			file = File.createTempFile(orgName + "_Jobs_"
 					+ dateFormat.format(new Date()), ".xls");
 			file.setReadable(true);
 			FileOutputStream fos = new FileOutputStream(file);

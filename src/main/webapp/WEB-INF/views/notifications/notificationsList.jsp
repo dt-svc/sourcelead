@@ -3,7 +3,6 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
-<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 <style type="text/css">
 .table-top{
@@ -226,7 +225,6 @@ function notificationPagination(){
 <!-- Delete Notification start  -->  
 <script>
 function deleteNotification(notificationId){   
-	var sourceleadUrl = '${sourceleadUrl}';
 	var  orgCode ='${orgCode}';
 	var locationCode = '${locationCode}';
 	  $.ajax({
@@ -293,7 +291,6 @@ function deleleteAll() {
 	 $("input[name='check[]']:checked").each( function (i) {
 		 notificationIds[i] = $(this).val();
 	});
-	 var sourceleadUrl = '${sourceleadUrl}';
 	 var  orgCode ='${orgCode}';
 	 var locationCode = '${locationCode}';
 		 $.ajax({

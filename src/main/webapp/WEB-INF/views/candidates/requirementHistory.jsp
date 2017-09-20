@@ -56,7 +56,7 @@ function requirementHistoryList(candidateId){
 	  }
 	 $.ajax({  
          type : "POST",
-         url: sourceleadUrl+"/getRequirementHistoryListByCandidateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,        
+         url: sourceleadUrl+"/getRequirementHistoryListByCandidateId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
          success :function(data) {
         	 var json = JSON.parse(data);
         	 $("#requirementHistoryDiv").empty();
@@ -143,7 +143,7 @@ function requirementHistoryDetails(candidateId,positionType,requirementId,requir
 	var loginUserId = '${SourceLeadWeb_userId}';
 	 $.ajax({  
         type : "POST",
-        url: sourceleadUrl+"/getRequirementHistoryDetailsByCandidateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&requirementId="+requirementId+"&submissionId="+submissionId,        
+        url: sourceleadUrl+"/getRequirementHistoryDetailsByCandidateId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&requirementId="+requirementId+"&submissionId="+submissionId,        
         success :function(data) {
         	var json = JSON.parse(data);
         	
@@ -281,7 +281,7 @@ function getRateListDiv(candidateId,submissionId){
 	  }  
 	  $.ajax({
         type : "POST",
-         url: sourceleadUrl+"/getRateHistoryBySubmissionId?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId+"&candidateId="+candidateId,        
+         url: sourceleadUrl+"/getRateHistoryBySubmissionId?"+tokenParamName+"="+tokenValue+"&submissionId="+submissionId+"&candidateId="+candidateId,        
          success :function(data) {
         	 if(data != null && data != 'undefined' && data != "" && data != '[]'){
             	 var json = JSON.parse(data);

@@ -83,7 +83,6 @@ function clientDocuments(orgRelationId,clientLocationId){
 
 <script>
 function clientDocumentsList(clientLocationId,orgRelationId){
-	 var sourceleadUrl ='${sourceleadUrl}';
 	 var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
 	  if(locationList.match("yyyy-MM-dd")){
 		  docListClientDate = 'YYYY-MM-DD';
@@ -96,7 +95,7 @@ function clientDocumentsList(clientLocationId,orgRelationId){
 	  }  
 	 $.ajax({  
           type : "POST",
-          url: sourceleadUrl+"/getclientDocumentsListByResponderLocationId?${_csrf.parameterName}=${_csrf.token}&responderLocationId="+clientLocationId+"&sourceType=Client",        
+          url: sourceleadUrl+"/getclientDocumentsListByResponderLocationId?"+tokenParamName+"="+tokenValue+"&responderLocationId="+clientLocationId+"&sourceType=Client",        
           success :function(data) {
              			var json = JSON.parse(data);
 	                	 $("#clientDocumentsList").empty();
@@ -167,8 +166,8 @@ function clientDocumentsList(clientLocationId,orgRelationId){
 	                    	 }
 	                    	    result = result+'	 <td><div class="tblicons tblminwidth-75">';
 	                    	 '<sec:authorize access="hasAnyRole(\'ROLE_DOWNLOAD_CLIENT_DOCS\')">'; 
-	                    	    result = result+'<a class="glyphicon glyphicon-download-alt" href=\"'+opt.fileUrl+'\"></a>';
-	                    	    result = result+'<a class="fa fa-eye" onClick="viewFile(\'${sourceleadUrl}\',\''+opt.fileUrl+'\',\''+opt.fileName+'\',\''+opt.fileType+'\');"></a>';
+	                    	    result = result+'<a class="glyphicon glyphicon-download-alt" target="_blank" href=\"'+opt.fileUrl+'\"></a>';
+	                    	    result = result+'<a class="fa fa-eye" onClick="viewFile(\''+opt.fileUrl+'\',\''+opt.fileName+'\',\''+opt.fileType+'\');"></a>';
 	                    	 '</sec:authorize>';
 	                    	 if(opt.id != null && opt.id != '' && opt.id != 'undefined'){
 	                    		 '<sec:authorize access="hasAnyRole(\'ROLE_EDIT_CLIENT_DOCUMENT\')">'; 
@@ -201,7 +200,6 @@ function clientDocumentsList(clientLocationId,orgRelationId){
 
 <script>
 function viewClientDocument(docId,title){
-	var sourceleadUrl ='${sourceleadUrl}';
 	window.open(sourceleadUrl+'/viewClientDocViewerDocument/'+title+'?docId='+docId,title,"height=600,width=600");
 }
 </script>
@@ -415,7 +413,6 @@ function closeDocPopup(){
 			 if ($('#document_form').validate(false, validationSettings)){
 				 var form = $('#document_form')[0];
 		      		var formData = new FormData(form); 
-				var sourceleadUrl = '${sourceleadUrl}';
 				$("#document_form").attr("disabled", "disabled");
 				
 				//It will escape all the special characters
@@ -424,7 +421,7 @@ function closeDocPopup(){
 		        	    data: formData,
 		    	        processData: false,
 		    	        contentType:false,
-						url : sourceleadUrl+"/saveDocuments?${_csrf.parameterName}=${_csrf.token}&responderLocationId="+clientLocationId+"&docId="+docId+"&sourceType=Client",
+						url : sourceleadUrl+"/saveDocuments?"+tokenParamName+"="+tokenValue+"&responderLocationId="+clientLocationId+"&docId="+docId+"&sourceType=Client",
 						success : function(result) {
 							 if( result.indexOf('Sign In') >= 0){
 					    		location.replace(sourceleadUrl);
@@ -459,10 +456,9 @@ function closeDocPopup(){
 
 <script>
 function getSpocsList(orgRelationId){
-	 var sourceleadUrl ='${sourceleadUrl}';
 	$.ajax({
     	type: "POST",
-        url: sourceleadUrl+"/getOrgSpocsList?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+orgRelationId+"&type=Client", 
+        url: sourceleadUrl+"/getOrgSpocsList?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId+"&type=Client", 
         success: function(data) {
         	var json = JSON.parse(data);
         	var output = "";
@@ -485,11 +481,10 @@ function getSpocsList(orgRelationId){
 
 <script>
 function getClientDocument(clientLocationId,orgRelationId,docId){
-	var sourceleadUrl ='${sourceleadUrl}';
 	var sourceLeadUserId = '${SourceLeadWeb_userId}';
 	$.ajax({
 	   	type: "POST",
-	    url: sourceleadUrl+"/getOrgDocument?${_csrf.parameterName}=${_csrf.token}&docId="+docId+"&orgRelationId="+orgRelationId+"&type=Client", 	   
+	    url: sourceleadUrl+"/getOrgDocument?"+tokenParamName+"="+tokenValue+"&docId="+docId+"&orgRelationId="+orgRelationId+"&type=Client", 	   
 		    success: function(data) {
 		    	var json = JSON.parse(data);
 		    	var spoc = "";
@@ -643,13 +638,12 @@ $(".project_inn_mask").fadeOut(200);
 
 <script>
 function saveReasonForDoc(clientLocationId,orgRelationId,docId,docName){
-	var sourceleadUrl ='${sourceleadUrl}';
 	var terminateReason = document.getElementById("terminateReason").value;
 	if(terminateReason.match(/^[^\s-](.*)*$/) != null){
 		$("#terminateReasonDiv").empty();
 		$.ajax({
 		   	type: "POST",
-		    url: sourceleadUrl+"/terminateOrgDocumnet?${_csrf.parameterName}=${_csrf.token}&docId="+docId+"&terminateReason="+terminateReason, 	   
+		    url: sourceleadUrl+"/terminateOrgDocumnet?"+tokenParamName+"="+tokenValue+"&docId="+docId+"&terminateReason="+terminateReason, 	   
    		    success: function(data) {
         			 $("#deleteDocpopUp").empty();
         			 $(".project_inn_mask").fadeOut(200);
@@ -689,8 +683,7 @@ function toDate(selector) {
 <script>
 function clientDocumentFileSaving()
 {
-	var sourceleadUrl ='${sourceleadUrl}';
-	fileUpload(sourceleadUrl, "uploadBtn", "clientDocuments", "document_form");
+	fileUpload("uploadBtn", "clientDocuments", "document_form");
 }
 </script>
 <!-- script for dateformat in datepicker End -->

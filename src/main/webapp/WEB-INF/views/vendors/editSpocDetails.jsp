@@ -14,10 +14,9 @@
 <script type="text/javascript">
 	function vendorDetailsbySpocId(spocId,ownerId,spocUserId,tempOwnerId)
 	{
-		var sourceleadUrl = '${sourceleadUrl}';
 		$.ajax({
 					type : "POST",
-					url : sourceleadUrl+"/getSpocAndOwnerDetailsById?${_csrf.parameterName}=${_csrf.token}&spocId="+spocId+"&ownerId="+ownerId+"&spocUserId="+spocUserId+"&tempOwnerId="+tempOwnerId+"&type=Vendor",
+					url : sourceleadUrl+"/getSpocAndOwnerDetailsById?"+tokenParamName+"="+tokenValue+"&spocId="+spocId+"&ownerId="+ownerId+"&spocUserId="+spocUserId+"&tempOwnerId="+tempOwnerId+"&type=Vendor",
 					success : function(data) {
 						var json = JSON.parse(data);
 						getVendorDashboardName(json.spocName);
@@ -128,10 +127,9 @@
 
 <script type="text/javascript">
 	function editVendorContactDetails(spocId,ownerId,spocUserId,tempOwnerId) {
-		var sourceleadUrl = '${sourceleadUrl}';
 		      $.ajax({
 						type : "POST",
-						url : sourceleadUrl+"/getSpocAndOwnerDetailsById?${_csrf.parameterName}=${_csrf.token}&spocId="+spocId+"&ownerId="+ownerId+"&spocUserId="+spocUserId+"&tempOwnerId="+tempOwnerId+"&type=Vendor",
+						url : sourceleadUrl+"/getSpocAndOwnerDetailsById?"+tokenParamName+"="+tokenValue+"&spocId="+spocId+"&ownerId="+ownerId+"&spocUserId="+spocUserId+"&tempOwnerId="+tempOwnerId+"&type=Vendor",
 						success : function(data) {
 						var json = JSON.parse(data);
 						var result = "";
@@ -301,13 +299,10 @@
  function validateClientEmail(spocId) {
 	 var EmailId = document.getElementById("EmailId").value; 
 	 $('#EmailIdDiv').find('p.jquery_form_error_message').remove();
-	 var sourceleadUrl ='${sourceleadUrl}';
 	 if(EmailId != null && EmailId != ""){
-		/*$("#save_client").attr("disabled", "disabled");
-         $("#save_client" ).addClass('button').val('Processing..'); */
 		 $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/getVendorClientEmailVerification?${_csrf.parameterName}=${_csrf.token}&EmailId="+EmailId+"&spocId="+spocId, 
+		        url: sourceleadUrl+"/getVendorClientEmailVerification?"+tokenParamName+"="+tokenValue+"&EmailId="+EmailId+"&spocId="+spocId, 
 		        success: function(data) {
 		        	if(data == 'true'){
 		        		  $('#EmailIdDiv').find('p.jquery_form_error_message').remove();
@@ -338,8 +333,7 @@
 	function storeVendorContactDetails(spocId,ownerId,spocUserId,tempOwnerId) {
          if ($('#editVendorContact_form').validate(false, validationSettings)){
 	      	 var formData = getFormData("editVendorContact_form");
-             var sourceleadUrl ='${sourceleadUrl}';
-		 $.post(sourceleadUrl+"/vendorContactDetailsUpdateUsingId?${_csrf.parameterName}=${_csrf.token}&spocId="+spocId+"&ownerId="+ownerId+"&spocUserId="+spocUserId+"&type=Vendor", formData, function(data) {
+		 $.post(sourceleadUrl+"/vendorContactDetailsUpdateUsingId?"+tokenParamName+"="+tokenValue+"&spocId="+spocId+"&ownerId="+ownerId+"&spocUserId="+spocUserId+"&type=Vendor", formData, function(data) {
 			 var newOwner = data;
 		    	$("#spocDetailsId").removeAttr("onClick")
 		    	$("#spocDetailsId").attr("onclick","vendorDetailsbySpocId('"+spocId+"', '"+newOwner+"', '"+spocUserId+"', '"+ownerId+"')");

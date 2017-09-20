@@ -78,7 +78,7 @@ window.onload = function () {
 									<input class="form-control positionRelative"
 										id="clientLocation" name="location"
 										placeholder="Enter your Location" type="text"
-										field-name="Location" data-validation=""></input> <i
+										field-name="Location" data-validation="required"></input> <i
 										class="fa fa-refresh btn btn-primary refresh-icon"
 										title="Refresh"
 										onClick="refreshGoogleApiLocation('clientLocation','clientCountry','clientState','clientCity','clientZipCode');"></i>
@@ -368,10 +368,6 @@ window.onload = function () {
 <script type="text/javascript">
 function getOrgName(){
 	var orgCode = '${SourceLeadWeb_orgCode}';
-	var sourceleadUrl = '${sourceleadUrl}';
-	
-	
-	/* $( "#orgName" ).val( '' ); */
 	$( "#orgLocationId" ).val( '' );
 	
 	$("#webSite").attr("disabled", false);
@@ -406,7 +402,7 @@ function getOrgName(){
 	
 	$.ajax({                           
     	type: "POST",
-    	url : sourceleadUrl+"/getOrgs?${_csrf.parameterName}=${_csrf.token}&orgCode="+orgCode,
+    	url : sourceleadUrl+"/getOrgs?"+tokenParamName+"="+tokenValue+"&orgCode="+orgCode,
         success: function(data) {
         	var json = JSON.parse(data);
         	var org = [];
@@ -446,11 +442,10 @@ function getOrgDetails()
 	var orgName = document.getElementById("orgName").value;
 	orgName = encodeURIComponent(orgName);
 	var orgLocationId = document.getElementById("orgLocationId").value;
-	var sourceleadUrl = '${sourceleadUrl}';
 	if(orgName){
    	 $.ajax({
    	    	type: "POST",
-   	    	url : sourceleadUrl+"/getOrgDetails?${_csrf.parameterName}=${_csrf.token}&orgLocationId="+orgLocationId+"&orgName="+orgName,
+   	    	url : sourceleadUrl+"/getOrgDetails?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&orgName="+orgName,
    	        contentType: "application/json; charset=utf-8",
    	        dataType: "json",
    	        success: function(data) {
@@ -510,11 +505,10 @@ function getOrgDetails()
 <script type="text/javascript">
 function validateEmail(){
 	var email = document.getElementById("email").value;
-	var sourceleadUrl = '${sourceleadUrl}';
 	if(email != null){
 		$.ajax({
 			type : "POST",
-			url : sourceleadUrl + "/validateClientOrVendorEmail?${_csrf.parameterName}=${_csrf.token}&email="+email,
+			url : sourceleadUrl + "/validateClientOrVendorEmail?"+tokenParamName+"="+tokenValue+"&email="+email,
 			success : function(data) {
 				var result = data;
 				if(result == 'Invalid Email') {
@@ -546,7 +540,7 @@ function getRolesList(){
 		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		$.ajax({
 	    	type: "POST",
-	        url: sourceleadUrl+"/getRolesList?${_csrf.parameterName}=${_csrf.token}&orgLocationId="+orgLocationId+"&moduleType=ATS", 
+	        url: sourceleadUrl+"/getRolesList?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&moduleType=ATS", 
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	var output = "";
@@ -598,9 +592,8 @@ function getRolesList(){
 		if ($('#client_form').validate(false, validationSettings)) {
 			var orgLocationId = document.getElementById("orgLocationId").value;
 		  	var formData = getFormData("client_form");
-			var sourceleadUrl = '${sourceleadUrl}';
 			$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-					$.post(sourceleadUrl+"/saveClient?${_csrf.parameterName}=${_csrf.token}&orgLocationId="+orgLocationId+"&responderType=Vendor", formData, function(data) {
+					$.post(sourceleadUrl+"/saveClient?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&responderType=Vendor", formData, function(data) {
 						location.replace(sourceleadUrl+ "/vendorsList");
 					});
 			return true;
@@ -618,12 +611,11 @@ function getRolesList(){
 <script type="text/javascript">
 function getSpocUserDetails(){
 	var email = document.getElementById("email").value;
-	var sourceleadUrl = '${sourceleadUrl}';
 	var orgLocationId = document.getElementById("orgLocationId").value;
 	if(email){
 		$.ajax({
 	    	type: "POST",
-	    	url : sourceleadUrl+"/getSpocUserDetails?${_csrf.parameterName}=${_csrf.token}&email="+email+"&orgLocationId="+orgLocationId,
+	    	url : sourceleadUrl+"/getSpocUserDetails?"+tokenParamName+"="+tokenValue+"&email="+email+"&orgLocationId="+orgLocationId,
 	        contentType: "application/json; charset=utf-8",
 	        dataType: "json",
 	        success: function(data) {
@@ -698,8 +690,6 @@ function validateClientName(){
 	
 	var clientName = (document.getElementById("orgName").value).replace(/[{}]/g, "");
 	var vendor = encodeURIComponent(clientName);
-	
-	var sourceleadUrl = '${sourceleadUrl}';
 	var sourceleadBLockedwebsites = '${sourceLeadBlockedSocialDomains}';
 	if(vendor.match(/^[^\s-](.*)*$/) != null){
 		$('#clientNameDiv').find('p.jquery_form_error_message').remove();
@@ -709,7 +699,7 @@ function validateClientName(){
 		
 		$.ajax({
 			type : "GET",
-			url : sourceleadUrl + "/ws/isClientNameValid?${_csrf.parameterName}=${_csrf.token}&clientName="+vendor+"&responderType=Vendor",
+			url : sourceleadUrl + "/ws/isClientNameValid?"+tokenParamName+"="+tokenValue+"&clientName="+vendor+"&responderType=Vendor",
 			success : function(data) {
 				var result = data;
 				if (result == true) {
@@ -748,15 +738,12 @@ function validateClientName(){
 <script type="text/javascript">
 	function validateWebsite() {
 		var website = document.getElementById("webSite").value;
-		var sourceleadUrl = '${sourceleadUrl}';
 		if(website.match(/^[^\s-](.*)*$/) !== null){
 		var sourceleadBLockedwebsites = '${sourceLeadBlockedSocialDomains}';
 		$('#companyWebsiteDiv').find('p.jquery_form_error_message').remove();
 		
 		if (website != null && website != '') {
 
-			//$("#save_client").attr("disabled", "disabled");
-			// $( "#save_client" ).addClass('button').val('Processing..');
 			$.ajax({
 				type : "GET",
 				url : sourceleadUrl + "/ws/validateClientWebsite?website="+ website + "&sourceleadBLockedwebsites="+ sourceleadBLockedwebsites,
@@ -776,10 +763,6 @@ function validateClientName(){
 						$('input#webSite').attr('class','valid form-control');
 						$('#companyWebsiteDiv').find('p.jquery_form_error_message').remove();
 				
-						/* $("#save_client").click(function() {
-							if ($(this).validate(false, validationSettings)) {
-							}
-						}); */
 					}
 				},
 
@@ -809,7 +792,7 @@ function getAllCountries(){
 	$.ajax({
     	type: "POST",
     	dataType: "json",
-    	 url: '${sourceleadUrl}'+"/sourceLeadCountryAutoComplete?${_csrf.parameterName}=${_csrf.token}",
+    	 url: '${sourceleadUrl}'+"/sourceLeadCountryAutoComplete?"+tokenParamName+"="+tokenValue+"",
         success: function(data) {
         	var json = JSON.parse(data);
         	$('#country').empty();
@@ -844,7 +827,7 @@ function getStates(){
 		$.ajax({
 	    	type: "POST",
 	    	dataType: "json",
-	    	 url: '${sourceleadUrl}'+"/getStatesByCountry?${_csrf.parameterName}=${_csrf.token}&countryName="+countryName, 
+	    	 url: '${sourceleadUrl}'+"/getStatesByCountry?"+tokenParamName+"="+tokenValue+"&countryName="+countryName, 
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	$('#state').empty();
@@ -889,7 +872,7 @@ function getCities(){
 		$.ajax({
 	    	type: "POST",
 	    	dataType: "json",
-	    	 url: '${sourceleadUrl}'+"/getCitiesByStateAndCountry?${_csrf.parameterName}=${_csrf.token}&countryName="+countryName+"&stateName="+stateName, 
+	    	 url: '${sourceleadUrl}'+"/getCitiesByStateAndCountry?"+tokenParamName+"="+tokenValue+"&countryName="+countryName+"&stateName="+stateName, 
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	$('#city').empty();

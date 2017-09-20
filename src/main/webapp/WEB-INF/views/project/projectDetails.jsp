@@ -280,7 +280,7 @@
 						
 						result = result + '<div class="project_details_cta">';
 						result = result	+ '<strong>Description:</strong>';
-						result = result + '<span>'+ description +'</span><div class="clearfix"></div>';
+						result = result + '<span title="'+description+'">'+ description +'</span><div class="clearfix"></div>';
 						result = result + '</div>';
 						
 						result = result + '<div class="clearfix"></div>';

@@ -69,7 +69,7 @@ function resetProfile(){
   <section class="content-wraper">
     <section class="content-header clearfix">
       <div class="pull-left">
-        <h2>Account Settings</h2>
+        <h2>Profile Settings</h2>
       </div>
     
      <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_PROFESSIONAL' && SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}">
@@ -99,18 +99,20 @@ function resetProfile(){
 
 		  <div class="tab-content panel-body">
 			<div id="profile" class="tab-pane fade in active">
-		<form:form class="login-form clearfix"  id="profileSettings_form"  name="profileSettings_form" method="post" >
+		
 			  
 			  <div class="col-xs-12 col-sm-3 col-md-3">
-			  <div class="well well-sm text-center">
+			  
+			  <form:form class="login-form clearfix"  id="profileImage_form"  name="profileImage_form" method="post" >
+		<div class="well well-sm text-center">
 			  <p><strong>${SourceLeadWeb_user.firstName} ${SourceLeadWeb_user.lastName}</strong></p>
 				  <div class="profile-img-container profile-image" style="position:relative;">
-				   <img  id="userImage" onerror="predefineProfileImage(this);" src="<c:url value='/displayUserImage/${SourceLeadWeb_userId}'/>" alt="Profile Image" class="img-circle img-responsive">
+				   <img  id="userImage" data-id="userProfileImage" onerror="predefineProfileImage(this);" src="${SourceLeadWeb_user.fileUrl}" alt="Profile Image" class="img-circle img-responsive">
 				  <div class="btn-group uploadfile">
 				  <button type="button" class="btn btn-sm btn-primary">
 				  <i class="fa fa-upload"></i></button>
 				  <label class="btn btn-sm btn-primary">
-                    Upload / Change<input type="file" name="file" id="uploadedImage"  onchange="loadFile(event)" style="visibility:hidden;height:0;width:10px;overflow:hidden" >
+                    Upload / Change<input type="file" name="file" id="uploadedImage"  accept="image/*" onchange="cropImage(this, 'profileSettings_form', '', true);" style="visibility:hidden;height:0;width:10px;overflow:hidden" >
                   </label>
                   <c:if test="${!empty SourceLeadWeb_user.fileContentType}">
                   <button type="button" class="btn btn-sm btn-danger" onclick="deleteImage()">
@@ -119,6 +121,9 @@ function resetProfile(){
 				  </div>
 				  </div>
 				 </div> 
+				 
+				 </form:form>	
+			  
 				  <p class="text-danger small" style="font-size: 11px; display: none;" id="errorImage" >Invalid Image/Size</p>
 				  <p class="text-muted small" style="font-size: 11px;"><i class="fa fa-info-circle"></i>&nbsp;png, svg and gif images are not supported</p>
 				  <p class="text-muted small" style="font-size: 11px;"><i class="fa fa-info-circle"></i>&nbsp;Image size should not more than 200 KB</p>
@@ -126,6 +131,7 @@ function resetProfile(){
 			 <div id="popUp" ></div>  
 			  
 		   <div class="col-xs-12 col-sm-9 col-md-9">
+		   <form:form class="login-form clearfix"  id="profileSettings_form"  name="profileSettings_form" method="post" >
 			   <div class="row mt">
 				<div class="col-md-6">
 					<div class="form-group" id="firstNameDiv">
@@ -216,9 +222,12 @@ function resetProfile(){
 							</div>
 					  </div>
 			 </div>
+			 </form:form>	
 			</div>
 			
-	</form:form>	
+	
+	
+	
 			</div>
 			<div id="password" class="tab-pane fade">
 			  <div class="col-xs-12 col-sm-3 col-md-3 text-center well">
@@ -450,7 +459,7 @@ function cancel(){
 
 
 
-<script type="text/javascript">
+<!-- <script type="text/javascript">
 var validationSettings = {
         errorMessagePosition : 'element',
        borderColorOnError : '',
@@ -458,34 +467,18 @@ var validationSettings = {
 		dateFormat : 'yyyy/mm/dd' 
    };  
          $('body').on('submit', '#profileSettings_form', function(e){
-        	  if ($(this).validate(false, validationSettings)){
+        	  if ($(profileSettings_form).validate(false, validationSettings)){
         		    e.preventDefault(); 
             		
-            		var frm = $('#profileSettings_form').serializeFormJSON();
-                	var con = JSON.stringify(frm);
-    			    con = con.replace(/[{}]/g, ""); 
-    			    
-    			    //It will escape all the special characters
-    		        var jsonData = encodeURIComponent(con);
-            		
-            		var sourceleadUrl ='${sourceleadUrl}';
-            		var form = $('#profileSettings_form')[0];
-             		var formData = new FormData(form);
-             		
+             		var formData = getFormData('profileSettings_form');
              		
              		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-             		
             		
                     $.ajax({
                 	      type: "POST",
                 	      data: formData,
-                	      contentType : 'application/json; charset=utf-8',
-                	      enctype: 'multipart/form-data',
-            	          processData: false,
-            	          contentType:false,
-                	      dataType : 'json',
                 	      
-                      	  url: sourceleadUrl+"/saveUserProfile?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
+                      	  url: sourceleadUrl+"/saveUserProfile?${_csrf.parameterName}=${_csrf.token}",
                         	success: function(result) {
     			        	 if(result == 'home'){
     			        		location.replace(sourceleadUrl+"/userProfile");  
@@ -502,7 +495,7 @@ var validationSettings = {
          $('#profileSettings_form').showHelpOnFocus();
          $('#profileSettings_form').validateOnBlur(false, validationSettings); 
      
-	</script> 
+	</script>  -->
 	
 	
 <script type="text/javascript">
@@ -558,7 +551,42 @@ var validationSettings = {
             
      
 	</script> 
-	
+<script type="text/javascript">
+var validationSettings = {
+        errorMessagePosition : 'element',
+       borderColorOnError : '',
+		scrollToTopOnError : true,
+		dateFormat : 'yyyy/mm/dd' 
+   };  
+         $('body').on('submit', '#profileSettings_form', function(e){
+        	  if ($('profileSettings_form').validate(false, validationSettings)){
+        		    e.preventDefault(); 
+            		
+             		var formData = getFormData('profileSettings_form');
+             		
+             		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+            		
+                    $.ajax({
+                	      type: "POST",
+                	      data: formData,
+                      	  url: sourceleadUrl+"/saveUserProfile?${_csrf.parameterName}=${_csrf.token}",
+                        	success: function(result) {
+    			        	 if(result == 'home'){
+    			        		location.replace(sourceleadUrl+"/userProfile");  
+    			        	}
+    			        },  
+                    });
+                
+            	    return true;
+            }
+            else{
+            	return false;	
+               }
+            });
+         $('#profileSettings_form').showHelpOnFocus();
+         $('#profileSettings_form').validateOnBlur(false, validationSettings); 
+     
+	</script> 	
 	
 	<script type="text/javascript">
 (function ($) {

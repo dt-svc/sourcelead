@@ -1,6 +1,5 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
  <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
  <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
  <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
@@ -144,7 +143,7 @@
 										             <input type='button' class='padLeft' value='${entryDoc.fileName}'/>
 										        </a>
 										        <%-- <a class="fa fa-eye expAttView" onclick="viewDocument('${entryDoc.fileName}','${entryDoc.id}');"></a> --%>
-										        <a class="fa fa-eye expAttView" onclick="viewFile('${sourceleadUrl}','${entryDoc.fileURL}','${entryDoc.fileName}','${entryDoc.fileContentType}');"></a>
+										        <a class="fa fa-eye expAttView" onclick="viewFile('${entryDoc.fileURL}','${entryDoc.fileName}','${entryDoc.fileContentType}');"></a>
 					                         </strong>
 					                         </c:if>
 					                       </c:forEach>
