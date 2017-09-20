@@ -345,11 +345,11 @@ function candidateSideBar(candidateId){
 			             result = result+'</div>';
 			             result = result+'<div class="socialnetwork-details">';
 			             result = result+'<ul class="list-inline list-unstyled">';
-			             result = result+'<li class="bg-facebook"><a href="javascript:void(0)"> <i class="fa fa-facebook-square"></i></a></li>';
-			             result = result+'<li class="bg-twitter"><a href="javascript:void(0)"> <i class="fa fa-twitter-square"></i></a></li>';
-			             result = result+'<li class="bg-google "><a href="javascript:void(0)"> <i class="fa fa-google-plus-square"></i></a></li>';
-			             result = result+'<li class="bg-linked"><a href="javascript:void(0)"> <i class="fa fa-linkedin-square"></i></a></li>';
-			             result = result+'<li class="bg-web"><a href="javascript:void(0)"> <i class="fa fa-globe"></i></a></li>';
+			             result = result+'<li class="bg-facebook" title="Facebook"><a href="javascript:void(0)"> <i class="fa fa-facebook-square" ></i></a></li>';
+			             result = result+'<li class="bg-twitter" title="Twitter"><a href="javascript:void(0)"> <i class="fa fa-twitter-square" ></i></a></li>';
+			             result = result+'<li class="bg-google " title="Google-Plus"><a href="javascript:void(0)"> <i class="fa fa-google-plus-square" ></i></a></li>';
+			             result = result+'<li class="bg-linked" title="Linkedin"><a href="javascript:void(0)"> <i class="fa fa-linkedin-square" ></i></a></li>';
+			             result = result+'<li class="bg-web" title="Web"><a href="javascript:void(0)"> <i class="fa fa-globe" ></i></a></li>';
 			             result = result+'</ul>';
 			             result = result+'                 </div>';
 			             result = result+'                 </div>';
@@ -358,18 +358,18 @@ function candidateSideBar(candidateId){
 			             result = result+'                 </div>';
 			             result = result+'               <div class="col-md-6">';
 			             result = result+'                 <ul class="list-unstyled can-perdt">';
-			             result = result+'                   <li><i class="fa fa-envelope-o"></i><a href="#" title="'+json.email+'">'+json.email+'</a></li>';
-			             result = result+'<li><i class="fa fa-phone"></i>'+mobilePhone+''+alternateMobilePhone+'</li>';
+			             result = result+'                   <li><i class="fa fa-envelope-o" title= "Email"></i><a href="#" title="'+json.email+'">'+json.email+'</a></li>';
+			             result = result+'<li><i class="fa fa-phone" title= "Mobile"></i>'+mobilePhone+''+alternateMobilePhone+'</li>';
 			                                                	  
-			             result = result+' <li><i class="fa fa-location-arrow"></i>'+city+''+state+''+country+'</li>';
+			             result = result+' <li><i class="fa fa-location-arrow" title= "Location"></i>'+city+''+state+''+country+'</li>';
 			             
-			             result = result+'<li><i class="fa fa-money"></i><b>Current Rate:</b>';
+			             result = result+'<li><i class="fa fa-money" title= "Current Rate"></i><b>Current Rate:</b>';
 			             
 			             result = result+''+currentRate+' '+currentRateType+''+currentRateCurrency+'';
 			             
 			             result = result+'</li>';
 			             
-			             result = result+'<li><i class="fa fa-money"></i><b>Expected Rate:</b>';
+			             result = result+'<li><i class="fa fa-money" title= "Expected Rate"></i><b>Expected Rate:</b>';
 			             
 			             result = result+''+expectedRate+' '+rateType+''+expectedRateCurrencey+'';
 			             
