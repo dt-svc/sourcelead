@@ -642,7 +642,6 @@ function refreshImageBlock(candidateId){
 					     } 
 						 result = result+'  </div>';
 						 result = result+'  </div>';
-						 alert("json.profilePercentage"+json.profilePercentage);
 						 
 						 result = result+'  </div>';
 						 
