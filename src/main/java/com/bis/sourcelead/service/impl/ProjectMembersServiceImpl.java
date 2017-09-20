@@ -941,8 +941,11 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 					if(candidate.getParentCandidateId() != null){
 						Long parentCandidatId = candidate.getParentCandidateId().getId();
 						while(parentCandidatId != null){
-							projectMembers = new ProjectMembers();
 							Candidate cand = candidateService.getCandidateByCandidateId(parentCandidatId);
+							projectMembers = projectMembersDao.getProjectMembersByCandidateIdAndProjectId(cand.getId(), projects.getId());
+							if(projectMembers == null){
+								projectMembers = new ProjectMembers();
+							}
 							if(cand != null){
 								projectClients = projectClientService.getProjectClientsByProjectIdAndOrgLocationId(projects.getId(), cand.getOrgLocationId().getId());
 								if(projectClients == null){
@@ -1450,6 +1453,12 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 	@Override
 	public Integer getProjectMembersCountByProjectClientId(Long projectClientId) throws Exception {
 		return projectMembersDao.getProjectMembersCountByProjectClientId(projectClientId);
+	}
+
+	@Override
+	public ProjectMembers getProjectMembersByCandidateIdAndProjectId(Long candidateId, Long projectId)
+			throws Exception {
+		return projectMembersDao.getProjectMembersByCandidateIdAndProjectId(candidateId, projectId);
 	}
 
 }
