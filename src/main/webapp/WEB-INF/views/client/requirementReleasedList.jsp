@@ -94,7 +94,7 @@ function clientRequirementList(orgRelationId){
 		
 		$.ajax({
 	    	type: "POST",
-	    	url : sourceleadUrl+"/getClientReleasedRequirementList?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+orgRelationId+"&status="+status, 
+	    	url : sourceleadUrl+"/getClientReleasedRequirementList?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId+"&status="+status, 
 	        success: function(data) {
 	        	
 	        var json = JSON.parse(data);
