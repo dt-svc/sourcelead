@@ -457,6 +457,7 @@ function inlineEditTaskStatus(taskId){
   		    success: function(data) {
   		    	$("#statusLabel").fadeIn("slow");
   		    	$("#statusSpin").fadeOut("slow");
+  		    	getTaskActivities();
   		    }
 	 });  
 }
@@ -472,6 +473,7 @@ function inlineEditTaskPriority(taskId){
   		    success: function(data) {
   		    	$("#priorityLabel").fadeIn("slow");
   		    	$("#prioritySpin").fadeOut("slow");
+  		    	getTaskActivities();
   		    }
 	 });  
 }
@@ -487,6 +489,7 @@ function inlineEditTaskSeverity(taskId){
   		    success: function(data) {
   		    	$("#severityLabel").fadeIn("slow");
   		    	$("#severitySpin").fadeOut("slow");
+  		    	getTaskActivities();
   		    }
 	 });  
 }
@@ -503,6 +506,7 @@ function inlineEditDescription(taskId){
     			$("#jobAlert2").css({ display: "block" });
 				$("#editJobAlertMsgDiv").html("Successfully Update Description");
 					editAlertMsgFadeinFunction();
+					getTaskActivities();
 		    }
 	 }); 
 }
@@ -518,6 +522,7 @@ function inlineEditTaskPercentage(taskId){
 		    success: function(data) {
 		    	$("#percentageLabel").fadeIn("slow");
   		    	$("#percentageSpin").fadeOut("slow");
+  		    	getTaskActivities();
 		    }
 	 }); 
 }

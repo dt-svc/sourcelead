@@ -672,6 +672,11 @@ public class Constants {
 	public static final String RESOURCE_REQUEST_ASSOCIATE_REQUEST = "Associate Request";
 	
 	
+	public static final String BUDGET_REQUEST_WAITING_FOR_APPROVAL = "Waiting For Approval"; 
+	public static final String BUDGET_REQUEST_APPROVED = "Approved"; 
+	public static final String BUDGET_REQUEST_REJECTED = "Rejected";
+	public static final String BUDGET_REQUEST_ON_HOLD = "On Hold";
+	
 	public static final int WORKING_HOURS = 8;
 	
 	

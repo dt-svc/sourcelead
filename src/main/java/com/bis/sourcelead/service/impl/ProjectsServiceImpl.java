@@ -1,6 +1,7 @@
 package com.bis.sourcelead.service.impl;
 
 import java.text.DateFormat;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -42,6 +43,7 @@ import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.elk.index.ProjectsIndex;
 import com.bis.sourcelead.elk.index.helper.ProjectsIndexHelper;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
+import com.bis.sourcelead.entity.CandidateEducation;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
@@ -60,6 +62,7 @@ import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.TimesheetSubmissions;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
+import com.bis.sourcelead.entity.ProjectBudget;
 import com.bis.sourcelead.enums.Primary;
 import com.bis.sourcelead.enums.Project_Status;
 import com.bis.sourcelead.enums.Status;
@@ -68,6 +71,7 @@ import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
+import com.bis.sourcelead.service.ProjectBudgetService;
 import com.bis.sourcelead.service.ProjectClientService;
 import com.bis.sourcelead.service.ProjectMembersHistoryService;
 import com.bis.sourcelead.service.ProjectMembersService;
@@ -173,6 +177,8 @@ public class ProjectsServiceImpl implements ProjectsService{
 	 @Autowired
 	 RegistrationController registrationController;
 	 
+     @Autowired
+     ProjectBudgetService projectBudgetService;
      
 	 
 	 
@@ -442,9 +448,20 @@ public class ProjectsServiceImpl implements ProjectsService{
 			}
 		}
 		
+		if(StringUtils.isNotBlank(projectsDTO.getEstimatedBudget()) || StringUtils.isNotBlank(projectsDTO.getEstimatedBudgetCurrency())
+			|| StringUtils.isNotBlank(projectsDTO.getEstimatedHours()) || StringUtils.isNotBlank(projectsDTO.getBudgetApproverUser())) {
+			Set<ProjectBudget> projectBudget = storeProjectBudget(projectsDTO,user,projects);
+			projects.setProjectBudget(projectBudget);
+		}
+		
+		
 		if(!isNullOrEmpty(projectsDTO.getStatus())){
     	projects.setProjectStatus(Project_Status.getNameByValue((projectsDTO.getStatus())));
     	}
+		if(StringUtils.isNotBlank(projectsDTO.getNotifyBudgetAt())) {
+			projects.setNotifyBudgetAt(projectsDTO.getNotifyBudgetAt());
+		}
+		projects.setProjectShortCode(projectsDTO.getProjectShortCode());
     	projects.setCreatedDate(commonUtil.currentDate());
     	projects.setUpdatedDate(commonUtil.currentDate());
     	if(user.getUserCode() != null){
@@ -479,6 +496,106 @@ public class ProjectsServiceImpl implements ProjectsService{
 		 
 		
 	}
+	
+	private Set<ProjectBudget> storeProjectBudget(ProjectsDTO projectsDTO ,User user,Projects projects) throws  Exception {
+		ProjectBudget projectBudget = null;
+		 HashSet<ProjectBudget> projectBudgetList = new HashSet<ProjectBudget>(); 
+		if(projects.getId() != null) {
+			 projectBudget = projectBudgetService.getProjectBudgetsById(projects.getId());
+			 projectBudget.setUpdatedDate(new Date());
+			 projectBudget.setUpdateUserId(user);
+		}else {
+			projectBudget = new ProjectBudget();
+			projectBudget.setCreateUserId(user);
+			projectBudget.setCreatedDate(new Date());
+			projectBudget.setBudgetRequestedId(generatebudgetRequestId(projects,projectsDTO));
+		}
+		projectBudget.setProjectId(projects);
+		projectBudget.setBudgetStatus("Waiting For Approval");
+		projectBudget.setEstimatedHours(projectsDTO.getEstimatedHours());
+		projectBudget.setEstimatedBudgetCurrency(projectsDTO.getEstimatedBudgetCurrency());
+		projectBudget.setEstimatedBudgetValue(projectsDTO.getEstimatedBudget());
+		projectBudget.setBudgetDescription(projectsDTO.getProjectName());
+		if(StringUtils.isNotBlank(projectsDTO.getBudgetApproverUser())) {
+			User use = userService.getUserById(Long.valueOf(projectsDTO.getBudgetApproverUser()));
+			projectBudget.setApproverUserId(use);
+		}else {
+			projectBudget.setApproverUserId(null);
+		}
+		projectBudgetList.add(projectBudget);
+		return projectBudgetList;
+	}
+
+	
+	private String generatebudgetRequestId(Projects projects, ProjectsDTO projectsDTO) {
+		String companyShortCode = null;
+       	Long number = 1L;
+   		String candidateId = null;
+   		Integer generatedIdcount = 0;
+   		StringBuilder sbuilder = new StringBuilder();
+   		sbuilder.append(projectsDTO.getProjectShortCode()).append("BR");
+   		String generatedUsreId = sbuilder.toString();
+   		for(int i=0;i< generatedUsreId.length();i++){
+   			char ch = generatedUsreId.charAt(i);
+   			if(Character.isAlphabetic(ch)){
+   				generatedIdcount++;
+   			}
+   		}
+   		// in dao to count from next character
+   		generatedIdcount = generatedIdcount+1;
+   		Long checkNumber = null;
+   		if(projects.getId() != null) {
+   			 checkNumber = projectBudgetService.getProjectBudgetReqestedIdByProjectId(projects.getId(),generatedIdcount);
+   		}
+   		 
+   		if(checkNumber == null){
+   			candidateId = number.toString();
+   		}else{
+   		Long canId = checkNumber+1;
+   		candidateId = canId.toString();
+   		}
+   		final DecimalFormat decimalFormat = new DecimalFormat("0");                
+           String convetredCandidateId = decimalFormat.format(Long.parseLong(candidateId));
+           StringBuffer sb = new StringBuffer();
+           if(projectsDTO.getProjectShortCode() != null && !"".equalsIgnoreCase(projectsDTO.getProjectShortCode())){
+           	 companyShortCode = projectsDTO.getProjectShortCode();
+           }
+   		return sb.append(companyShortCode).append("BR").append(convetredCandidateId).toString();
+	}
+
+	/*@Override
+   	public String getCandidateId(OrgLocations orgLocations) {
+       	String companyShortCode = null;
+       	Long number = 1L;
+   		String candidateId = null;
+   		Integer generatedIdcount = 0;
+   		StringBuilder sbuilder = new StringBuilder();
+   		sbuilder.append(orgLocations.getGeneratedUserId()).append(Constants.CANDIDATE_ENTITY);
+   		String generatedUsreId = sbuilder.toString();
+   		for(int i=0;i< generatedUsreId.length();i++){
+   			char ch = generatedUsreId.charAt(i);
+   			if(Character.isAlphabetic(ch)){
+   				generatedIdcount++;
+   			}
+   		}
+   		// in dao to count from next character
+   		generatedIdcount = generatedIdcount+1;
+   		 Long checkNumber = candidateDao.getCandidateGeneratedIdByOrgLocationId(orgLocations.getId(),generatedIdcount);
+   		if(checkNumber == null){
+   			candidateId = number.toString();
+   		}else{
+   		Long canId = checkNumber+1;
+   		candidateId = canId.toString();
+   		}
+   		final DecimalFormat decimalFormat = new DecimalFormat("0");                
+           String convetredCandidateId = decimalFormat.format(Long.parseLong(candidateId));
+           StringBuffer sb = new StringBuffer();
+           if(orgLocations.getGeneratedUserId() != null && !"".equalsIgnoreCase(orgLocations.getGeneratedUserId())){
+           	 companyShortCode = orgLocations.getGeneratedUserId();
+           }
+   		return sb.append(companyShortCode).append(Constants.CANDIDATE_ENTITY).append(convetredCandidateId).toString();
+   	}*/
+    
 	
 	/**
 	 * @author Laxman

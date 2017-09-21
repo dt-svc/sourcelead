@@ -24,6 +24,7 @@ import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.ProjectAssignTask;
+import com.bis.sourcelead.entity.ProjectBudget;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.ProjectTasks;
 import com.bis.sourcelead.entity.Projects;
@@ -36,6 +37,7 @@ import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgService;
 import com.bis.sourcelead.service.ProjectAssignTasksService;
+import com.bis.sourcelead.service.ProjectBudgetService;
 import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.ProjectPlanningRequestService;
 import com.bis.sourcelead.service.ProjectTasksService;
@@ -95,7 +97,8 @@ public class ProjectsController {
 	@Autowired
 	ProjectAssignTasksService projectAssignTasksService;
 	
-
+	@Autowired
+	ProjectBudgetService projectBudgetService;
 	 
 	 protected boolean isNullOrEmpty(String str)
 	 {
@@ -258,6 +261,13 @@ public class ProjectsController {
 				
 				Integer resourceRequestsCount = projectPlanningRequestService.getProjectPlanningRequestCountByProjectId(projects.getId());
 				model.addObject("resourceRequestsCount", resourceRequestsCount);
+				
+				List<ProjectBudget> projectBudgetList= projectBudgetService.getProjectBudgetByProjectTaskId(projects.getId());
+				if(projectBudgetList != null) {
+					model.addObject("projectBudgetCount", projectBudgetList.size());
+				}else {
+					model.addObject("projectBudgetCount", 0);
+				}
 				
 				model.addObject("projectUUID", projectUUID);
 				model.addObject("postedOrgLocationId", projects.getOrgLocationsId().getId());

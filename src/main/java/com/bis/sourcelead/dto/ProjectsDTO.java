@@ -70,12 +70,16 @@ public class ProjectsDTO extends SearchDTO implements Serializable{
 	
 	private String endDateStr;
 	
+	private String estimatedBudgetCurrency;
 	
+	private String budgetApproverUser;
 	
+	private String notifyBudgetAt;
 	
+	private String budgetStatus;
 	
+	private String projectShortCode;
 	
-
 	public String getProjectSequeneNumber() {
 		return projectSequeneNumber;
 	}
@@ -323,8 +327,44 @@ public class ProjectsDTO extends SearchDTO implements Serializable{
 	public void setEndDateStr(String endDateStr) {
 		this.endDateStr = endDateStr;
 	}
-	
-	
-	
-	
+
+	public String getEstimatedBudgetCurrency() {
+		return estimatedBudgetCurrency;
+	}
+
+	public String getBudgetApproverUser() {
+		return budgetApproverUser;
+	}
+
+	public void setEstimatedBudgetCurrency(String estimatedBudgetCurrency) {
+		this.estimatedBudgetCurrency = estimatedBudgetCurrency;
+	}
+
+	public void setBudgetApproverUser(String budgetApproverUser) {
+		this.budgetApproverUser = budgetApproverUser;
+	}
+
+	public String getNotifyBudgetAt() {
+		return notifyBudgetAt;
+	}
+
+	public void setNotifyBudgetAt(String notifyBudgetAt) {
+		this.notifyBudgetAt = notifyBudgetAt;
+	}
+
+	public String getBudgetStatus() {
+		return budgetStatus;
+	}
+
+	public void setBudgetStatus(String budgetStatus) {
+		this.budgetStatus = budgetStatus;
+	}
+
+	public String getProjectShortCode() {
+		return projectShortCode;
+	}
+
+	public void setProjectShortCode(String projectShortCode) {
+		this.projectShortCode = projectShortCode;
+	}
 }
