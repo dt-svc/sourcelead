@@ -113,7 +113,7 @@ margin:10px 220px 0;
 			 <span class="pull-left"><i class="fa fa-question" aria-hidden="true"></i></span>
 			  <span class="info-msg pull-left">
 			  <p>
-			  According this template, the Users need to <span class="text-danger"><strong>Import Required Fields</strong></span></p>
+			  According to this template, the Users need to <span class="text-danger"><strong>Import Required Fields</strong></span></p>
 			  </p>
 			  <p>
 			  <label><i class="fa fa-user"></i>&nbsp;&nbsp;Client Name</label>
@@ -131,7 +131,7 @@ margin:10px 220px 0;
 			 <span><i class="fa fa-question" aria-hidden="true"></i></span>
 			  <span class="info-msg clearfix mt">
 			  <p class="clearfix mt">
-			  According this template, the Users need to <span class="text-danger"><strong>Import Required Fields</strong></span></p>
+			  According to this template, the Users need to <span class="text-danger"><strong>Import Required Fields</strong></span></p>
 			  </p>
 			  <p>
 			  <label><i class="fa fa-user"></i>&nbsp;&nbsp;Client Name</label>
@@ -212,7 +212,6 @@ if ($('#upload_form').validate(false, validationSettings)){
 	var jsonData = encodeURIComponent(con);
 	var form = $('#upload_form')[0];
 	var formData = new FormData(form); 
-	var sourceleadUrl = '${sourceleadUrl}';
 	
 	$("#loadinggif").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	 $.ajax({
@@ -223,7 +222,7 @@ if ($('#upload_form').validate(false, validationSettings)){
 	        processData: false,
 	        contentType:false,
     	    dataType : 'json',
-		    url : sourceleadUrl+"/clientExcelFileUpload?${_csrf.parameterName}=${_csrf.token}&responderType=Client", 	   
+		    url : sourceleadUrl+"/clientExcelFileUpload?"+tokenParamName+"="+tokenValue+"&responderType=Client", 	   
  		    success : function(data) {
  		    	$("#loadinggif").removeAttr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
  		    	if(data == "empty"){
@@ -383,10 +382,9 @@ excelimportDataPagination();
 <script>
 function removeRecord(recordId){
 	var rowHtmlContent =  $("#row"+recordId).html();
-	var sourceleadUrl ='${sourceleadUrl}';
 	 $.ajax({
        type : "POST",
-        url: sourceleadUrl+"/deleteRecordFromBulk?${_csrf.parameterName}=${_csrf.token}&recordId="+recordId+"&responderType=Client", 	       
+        url: sourceleadUrl+"/deleteRecordFromBulk?"+tokenParamName+"="+tokenValue+"&recordId="+recordId+"&responderType=Client", 	       
         success :function(data) {
         	$("#row"+recordId).empty();
 	    	$("#row"+recordId).html(rowHtmlContent);
@@ -401,10 +399,9 @@ function removeRecord(recordId){
 <script>
 function terminateRecord(recordId){
 	var rowHtmlContent =  $("#row"+recordId).html();
-	var sourceleadUrl ='${sourceleadUrl}';
 	 $.ajax({
        type : "POST",
-        url: sourceleadUrl+"/deleteRecordFromBulk?${_csrf.parameterName}=${_csrf.token}&recordId="+recordId+"&responderType=Client",      
+        url: sourceleadUrl+"/deleteRecordFromBulk?"+tokenParamName+"="+tokenValue+"&recordId="+recordId+"&responderType=Client",      
         success :function(data) {
         	$("#row"+recordId).empty();
 	    	$("#row"+recordId).html(rowHtmlContent);
@@ -417,10 +414,9 @@ function terminateRecord(recordId){
 <script>
 function addRecord(recordId){
 	var rowHtmlContent =  $("#row"+recordId).html();
-	var sourceleadUrl ='${sourceleadUrl}';
 	 $.ajax({
        type : "POST",
-        url: sourceleadUrl+"/addRecordFromBulk?${_csrf.parameterName}=${_csrf.token}&recordId="+recordId+"&responderType=Client",        
+        url: sourceleadUrl+"/addRecordFromBulk?"+tokenParamName+"="+tokenValue+"&recordId="+recordId+"&responderType=Client",        
         success :function(data) {
         	$("#row"+recordId).empty();
 	    	$("#row"+recordId).html(rowHtmlContent);
@@ -443,10 +439,9 @@ function mergeWithRecord(){
 	$("#clientError").empty();
 	var recordIdVal = recordId.split(',');
 	var rowHtmlContent =  $("#row"+recordIdVal[1]).html();
-	var sourceleadUrl ='${sourceleadUrl}';
 	 $.ajax({
 	   type : "POST",
-	    url: sourceleadUrl+"/mergeRecordFromBulk?${_csrf.parameterName}=${_csrf.token}&recordId="+recordId+"&responderType=Client",       
+	    url: sourceleadUrl+"/mergeRecordFromBulk?"+tokenParamName+"="+tokenValue+"&recordId="+recordId+"&responderType=Client",       
 	    success :function(data) {
 	    	$("#row"+recordIdVal[1]).empty();
 	    	$("#row"+recordIdVal[1]).html(rowHtmlContent);
@@ -469,11 +464,10 @@ function mergeWithRecord(){
 function mergeRecord(recordId){
 	flush();
 	 var rowHtmlContent =  $("#row"+recordId).html();
-	var sourceleadUrl ='${sourceleadUrl}';
 	$('#clientListIds').empty();
 	 $.ajax({
        type : "POST",
-        url: sourceleadUrl+"/getMatchedClientList?${_csrf.parameterName}=${_csrf.token}&recordId="+recordId+"&responderType=Client",       
+        url: sourceleadUrl+"/getMatchedClientList?"+tokenParamName+"="+tokenValue+"&recordId="+recordId+"&responderType=Client",       
         success :function(data) {
         	var json = JSON.parse(data);
         	var result = "";

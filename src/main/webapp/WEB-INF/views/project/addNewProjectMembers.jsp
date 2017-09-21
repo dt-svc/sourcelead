@@ -25,7 +25,7 @@
       <div class="pull-left">
         <h2>Assign Project Members <span id="projectName"></span></h2>
       </div>
-		<div class="pull-right brud-crum"><a href="<c:url value='/projectDashboard'/>">Home</a> &raquo; <a href="<c:url value='/projectSummary?projectUUID=${projectUUID}&tabType=projectMembers'/>">Project Members</a> &raquo; Request Associates</div>
+		<div class="pull-right brud-crum"><a href="<c:url value='/projectDashboard'/>">Home</a> &raquo; <a href="<c:url value='/projectSummary?projectUUID=${projectUUID}&projectClientUUID=${projectClientUUID}&tabType=projectMembers'/>">Project Members</a> &raquo; Request Associates</div>
     </section>
     
     <div class="content-area content-new clearfix">
@@ -43,7 +43,7 @@
 				<div class="form-footer clearfix miniFoot">
 				  <div class="col-lg-12">
 					<div class="pull-right">
-					  <input type="button" value="Cancel"  onClick="javascript:window.location.href = '<c:url value='/projectSummary?projectUUID=${projectUUID}&tabType=projectMembers'/>'"  class="btn btn-danger">
+					  <input type="button" value="Cancel"  onClick="javascript:window.location.href = '<c:url value='/projectSummary?projectUUID=${projectUUID}&projectClientUUID=${projectClientUUID}&tabType=projectMembers'/>'"  class="btn btn-danger">
 					  <input type="button" value="Save" onClick="assignMembers()" class="btn btn-primary ml10">
 					</div>
 				  </div>
@@ -905,6 +905,7 @@ function assignMembers(){
       		var projectUUID = '${projectUUID}';
       		var userId = '${SourceLeadWeb_user.id}';
       		var orgLocationId = '${SourceLeadWeb_orgLocations.id}';
+      		var projectClientUUID = '${projectClientUUID}';
       		
        		$("#associateRequestLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
       		$.ajax({
@@ -912,7 +913,7 @@ function assignMembers(){
 	  	    	    data : formData,
 					url : sourceleadUrl+"/assignProjectMembersToProject?${_csrf.parameterName}=${_csrf.token}&projectUUID="+projectUUID+"&userId="+userId+"&orgLocationId="+orgLocationId, 
 					success : function(result) {
-						location.replace(sourceleadUrl+"/projectSummary?projectUUID="+projectUUID+"&tabType=projectMembers");
+						location.replace(sourceleadUrl+"/projectSummary?projectUUID="+projectUUID+"&projectClientUUID="+projectClientUUID+"&tabType=projectMembers");
 					},
 				}); 
       		 return true;

@@ -41,7 +41,7 @@ border:none; background-color: none !important; padding:0 5px !important;
 <div class="timesheet_out timesheet_background">
  <!-- Advanced Search -->
   <div class="clearfix">
-  <div class="cand-advsrch pull-left candAdvsrch">
+  <div class="cand-advsrch pull-left candAdvsrch" id="advanceSearchDiv">
             <a href="javascript:void(0)" class="btn btn-primary btn-sm" title="Advanced Search" onClick="openPop();loadChosenScripts();">Advanced Search&nbsp;&nbsp; <i class="fa fa-search"></i> </a>
           <div class="cand-advsrch-popup"> <a href="javascript:void(0)" class="close-div" onClick="closePop();"><i class="fa fa-close"></i></a>
           <form:form id="vendorList_form" name="vendorList_form"  enctype='multipart/form-data' >
@@ -240,7 +240,7 @@ border:none; background-color: none !important; padding:0 5px !important;
             </div>
             <div class="row form-footer custom_formfooter">
               <div class="pull-right mr"> 
-                <input type="button" value="Search" id="search_vendor" onclick="searchVendor();" class="btn btn-sm btn-success"/>
+                <input type="button" value="Search" id="search_vendor" onclick="getVendorList();" class="btn btn-sm btn-success"/>
                  <input type="button" value="Clear" id="clear_search" onclick="clearSearch();" class="btn btn-sm btn-primary"/>
               <!--   <input type="button" value="Cancel" onClick="closePop();" class="bbtn btn-sm btn-danger"/> -->
               
@@ -428,7 +428,7 @@ function clearSearch(){
 
 
 
-<script type="text/javascript">
+<!-- <script type="text/javascript">
 	function searchVendor() {
 		var validationSettings = {
 				errorMessagePosition : 'element',
@@ -463,7 +463,7 @@ function clearSearch(){
 	    	        processData: false,
 	    	        contentType:false,
 	        	    dataType : 'json',
-					url : sourceleadUrl+"/searchVendorThroughElasticSearch?${_csrf.parameterName}=${_csrf.token}&responderType="+responderType+"&json="+jsonData,
+					url : sourceleadUrl+"/searchVendorThroughElasticSearch?"+tokenParamName+"="+tokenValue+"&responderType="+responderType+"&json="+jsonData,
 					success : function(data) {
 						$("#search_vendor").addClass('button').val('Search');
 						$("#search_vendor").removeAttr("disabled");
@@ -484,7 +484,7 @@ function clearSearch(){
 	    	        processData: false,
 	    	        contentType:false,
 	        	    dataType : 'json',
-					url : sourceleadUrl+"/searchVendorContactsThroughElasticSearch?${_csrf.parameterName}=${_csrf.token}&responderType="+responderType+"&json="+jsonData,
+					url : sourceleadUrl+"/searchVendorContactsThroughElasticSearch?"+tokenParamName+"="+tokenValue+"&responderType="+responderType+"&json="+jsonData,
 					success : function(data) {
 						$("#search_vendor").addClass('button').val('Search');
 						$("#search_vendor").removeAttr("disabled");
@@ -506,7 +506,7 @@ function clearSearch(){
 		$("#vendorList_form").showHelpOnFocus();
 		$("#vendorList_form").validateOnBlur(false, validationSettings);
 	});
-</script>
+</script> -->
 
 
 <script type="text/javascript">
@@ -998,7 +998,7 @@ function getVendorLists(){
 	//var loginOrgLocId = '${loginOrgLocId}';
 	  $.ajax({
 		   	type: "POST",
-		    url: sourceleadUrl+"/getVendorFilterLists?${_csrf.parameterName}=${_csrf.token}&values="+values, 	   
+		    url: sourceleadUrl+"/getVendorFilterLists?"+tokenParamName+"="+tokenValue+"&values="+values, 	   
    		    success: function(data) {
    		    	//preparedVendorsLists(data);
    		    	preparedVendorsListFromElk(data);
@@ -1023,7 +1023,7 @@ function getVendorListsElk(){
 	//var loginOrgLocId = '${loginOrgLocId}';
 	  $.ajax({
 		   	type: "POST",
-		    url: sourceleadUrl+"/getVendorFilterListsElK?${_csrf.parameterName}=${_csrf.token}&responderType="+responderType+"&values="+values, 	   
+		    url: sourceleadUrl+"/getVendorFilterListsElK?"+tokenParamName+"="+tokenValue+"&responderType="+responderType+"&values="+values, 	   
    		    success: function(data) {
    		    	//preparedVendorsLists(data);
    		 	    preparedVendorsListFromElk(data);
@@ -1085,7 +1085,7 @@ function getVendorContactLists(){
 	var loginOrgLocId = '${loginOrgLocId}';
 	  $.ajax({
 		   	type: "POST",
-		    url: sourceleadUrl+"/getVendorContactLists?${_csrf.parameterName}=${_csrf.token}&vendorId="+vendorId+"&vendorStatus="+vendorStatus+"&invitationStatus="+invitationStatus, 	   
+		    url: sourceleadUrl+"/getVendorContactLists?"+tokenParamName+"="+tokenValue+"&vendorId="+vendorId+"&vendorStatus="+vendorStatus+"&invitationStatus="+invitationStatus, 	   
    		    success: function(data) {
    		    	preparedVendorContactList(data);
    		    	//preparedVendorContactListFromElk(data);
@@ -1125,7 +1125,7 @@ function getVendorContactListsELK(){
 	
 	  $.ajax({
 		   	type: "POST",
-		    url: sourceleadUrl+"/getVendorContactListsELK?${_csrf.parameterName}=${_csrf.token}&vendorId="+vendorId+"&vendorStatus="+vendorStatus+"&invitationStatus="+invitationStatus+"&responderType="+responderType, 	   
+		    url: sourceleadUrl+"/getVendorContactListsELK?"+tokenParamName+"="+tokenValue+"&vendorId="+vendorId+"&vendorStatus="+vendorStatus+"&invitationStatus="+invitationStatus+"&responderType="+responderType, 	   
    		    success: function(data) {
    		    	//preparedVendorContactList(data);
    		    	preparedVendorContactListFromElk(data);
@@ -1403,7 +1403,7 @@ function resendVendorSpocInvitation(spocUserId,orgSpocId,orgRelationId){
 		$("#loading"+orgSpocId).attr('style',' height:40px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/linear-loader.gif"); background-position:center; background-repeat:no-repeat;');
 			 $.ajax({
 			    	type: "POST",
-			        url: sourceleadUrl+"/resendSpocInvitationEmail?${_csrf.parameterName}=${_csrf.token}&spocUserId="+spocUserId+"&orgSpocId="+orgSpocId+"&responderType=Vendor&orgRelationID="+orgRelationId, 
+			        url: sourceleadUrl+"/resendSpocInvitationEmail?"+tokenParamName+"="+tokenValue+"&spocUserId="+spocUserId+"&orgSpocId="+orgSpocId+"&responderType=Vendor&orgRelationID="+orgRelationId, 
 			        success: function(result) {
 			        	 $("#row"+orgSpocId).empty();
 			    	     $("#row"+orgSpocId).html(rowHtmlContent);
@@ -1463,7 +1463,7 @@ function saveReason1(spocId, orgRelationID){
 		$("#reasonForVendorSpocDiv").empty();
 		$.ajax({
 		   	type: "POST",
-		    url: sourceleadUrl+"/terminateSpoc?${_csrf.parameterName}=${_csrf.token}&spocId="+spocId+"&reason="+reason,	    	   
+		    url: sourceleadUrl+"/terminateSpoc?"+tokenParamName+"="+tokenValue+"&spocId="+spocId+"&reason="+reason,	    	   
 		    success: function(data) {
 		    	getVendorContactList();
 		    	 $("#venselector").removeAttr("style");
@@ -1504,7 +1504,7 @@ function updateSpocStatus(spocId){
 	
 	$.ajax({
 	   	type: "POST",
-	    url: sourceleadUrl+"/changeSpocStatus?${_csrf.parameterName}=${_csrf.token}&spocId="+spocId+"&spocStatus="+spocStatus,	    	   
+	    url: sourceleadUrl+"/changeSpocStatus?"+tokenParamName+"="+tokenValue+"&spocId="+spocId+"&spocStatus="+spocStatus,	    	   
 	    success: function(data) {
 	    	$("#row"+spocId).empty();
 	    	$("#row"+spocId).html(rowHtmlContent);
@@ -1543,7 +1543,7 @@ function getClientDetails(){
 	var loginOrgLocId = '${loginOrgLocId}';
 	 $.ajax({
 		   	type: "POST",
-		    url: sourceleadUrl+"/getClientDetails?${_csrf.parameterName}=${_csrf.token}", 	   
+		    url: sourceleadUrl+"/getClientDetails?"+tokenParamName+"="+tokenValue+"", 	   
    		    success: function(data) {
    		    	var json = JSON.parse(data);
    	        	var result = "";
@@ -1813,7 +1813,7 @@ function getVendorOrgname(vendorOrgname){
 		var sourceleadUrl = '${sourceleadUrl}';
 		$.ajax({
 					type : "POST",
-					url : sourceleadUrl+"/getClientAndVendorOrgDeatilsById?${_csrf.parameterName}=${_csrf.token}&vendorLocationId="+vendorLocationId+"&orgRelationId="+orgRelationId,
+					url : sourceleadUrl+"/getClientAndVendorOrgDeatilsById?"+tokenParamName+"="+tokenValue+"&vendorLocationId="+vendorLocationId+"&orgRelationId="+orgRelationId,
 					success : function(data) {
 						
 						var json = JSON.parse(data);
@@ -2004,6 +2004,7 @@ function listChange(sel){
 		 document.getElementById("filter3ApprovePop").style.display="none";
 		 document.getElementById("filter4ApprovePop").style.display="none";
 		 //getVendorLists();
+		 document.getElementById("advanceSearchDiv").style.display="block";
 		 $("#dataTableSearch").val("");
 // 		 getVendorListsElk();
 		 getVendorList();
@@ -2029,6 +2030,7 @@ function listChange(sel){
 		 document.getElementById("filter4ApprovePop").style.display="block";
 		 //getVendorContactLists();
 // 		 getVendorContactListsELK();
+document.getElementById("advanceSearchDiv").style.display="none";
 		$("#dataTableSearch").val("");
 		loadVendorContactDataTable("${universalVendorList}");
 	 }
@@ -2205,7 +2207,7 @@ function acceptInvitation(spocId){
 	 $("#loading"+spocId).attr('style',' height:40px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/linear-loader.gif"); background-position:center; background-repeat:no-repeat;');
 	 $.ajax({
 		   	type: "POST",
-		    url: sourceleadUrl+"/saveInvitationStatus?${_csrf.parameterName}=${_csrf.token}&spocId="+spocId+"&invitationStaus=Accepted",	    	   
+		    url: sourceleadUrl+"/saveInvitationStatus?"+tokenParamName+"="+tokenValue+"&spocId="+spocId+"&invitationStaus=Accepted",	    	   
 		    success: function(data) {
 		    	$("#venselector").removeAttr("style");
     			$("#venselector").css({ display: "block" });
@@ -2229,7 +2231,7 @@ function rejectInvitation(spocId){
 	 $("#loading"+spocId).attr('style',' height:40px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/linear-loader.gif"); background-position:center; background-repeat:no-repeat;');
 	 $.ajax({
 		   	type: "POST",
-		    url: sourceleadUrl+"/saveInvitationStatus?${_csrf.parameterName}=${_csrf.token}&spocId="+spocId+"&invitationStaus=Rejected",
+		    url: sourceleadUrl+"/saveInvitationStatus?"+tokenParamName+"="+tokenValue+"&spocId="+spocId+"&invitationStaus=Rejected",
 		    success: function(data) {
 		    	$("#venselector").removeAttr("style");
     			$("#venselector").css({ display: "block" });
@@ -2290,7 +2292,7 @@ function exportVendorToPdf(){
 	var sourceleadUrl ='${sourceleadUrl}';
 	var emptyVendorList  = $("#emptyVendorList").val()
 	if(emptyVendorList > 0 ){
-		window.location.href = sourceleadUrl+"/exportVendorDetails?${_csrf.parameterName}=${_csrf.token}&values="+values+"&exportType=pdf";	
+		window.location.href = sourceleadUrl+"/exportVendorDetails?"+tokenParamName+"="+tokenValue+"&values="+values+"&exportType=pdf";	
 	}else{
 		var result = "";
 		result = result +"	<div class='project_inn_mask'></div>";
@@ -2317,7 +2319,7 @@ function exportVendorToExcel(){
 	var sourceleadUrl ='${sourceleadUrl}';
 	var emptyVendorList  = $("#emptyVendorList").val()
 	if(emptyVendorList > 0 ){
-	window.location.href = sourceleadUrl+"/exportVendorDetails?${_csrf.parameterName}=${_csrf.token}&values="+values+"&exportType=xls";
+	window.location.href = sourceleadUrl+"/exportVendorDetails?"+tokenParamName+"="+tokenValue+"&values="+values+"&exportType=xls";
 	}else{
 		var result = "";
 		result = result +"	<div class='project_inn_mask'></div>";
@@ -2355,7 +2357,7 @@ function exportVendorContactToPdf(){
 	var sourceleadUrl ='${sourceleadUrl}';
 	var emptyVendorcontactList = $("#emptyVendorcontactList").val();
 	if(emptyVendorcontactList  > 0 ){
-	window.location.href = sourceleadUrl+"/exportVendorContactLists?${_csrf.parameterName}=${_csrf.token}&vendorId="+vendorId+"&vendorStatus="+vendorStatus+"&invitationStatus="+invitationStatus+"&exportType=pdf";
+	window.location.href = sourceleadUrl+"/exportVendorContactLists?"+tokenParamName+"="+tokenValue+"&vendorId="+vendorId+"&vendorStatus="+vendorStatus+"&invitationStatus="+invitationStatus+"&exportType=pdf";
 	}else{
 		var result = "";
 		result = result +"	<div class='project_inn_mask'></div>";
@@ -2392,7 +2394,7 @@ function exportVendorContactToExcel(){
 	var emptyVendorcontactList = $("#emptyVendorcontactList").val();
 	var sourceleadUrl ='${sourceleadUrl}';
 	if(emptyVendorcontactList  > 0 ){
-		window.location.href = sourceleadUrl+"/exportVendorContactLists?${_csrf.parameterName}=${_csrf.token}&vendorId="+vendorId+"&vendorStatus="+vendorStatus+"&invitationStatus="+invitationStatus+"&exportType=xls";	
+		window.location.href = sourceleadUrl+"/exportVendorContactLists?"+tokenParamName+"="+tokenValue+"&vendorId="+vendorId+"&vendorStatus="+vendorStatus+"&invitationStatus="+invitationStatus+"&exportType=xls";	
 	}else{
 		var result = "";
 		result = result +"	<div class='project_inn_mask'></div>";
@@ -2454,7 +2456,7 @@ function getStates(){
 		$.ajax({
 	    	type: "POST",
 	    	dataType: "json",
-	    	 url: '${sourceleadUrl}'+"/getStatesByCountry?${_csrf.parameterName}=${_csrf.token}&countryName="+countryName, 
+	    	 url: '${sourceleadUrl}'+"/getStatesByCountry?"+tokenParamName+"="+tokenValue+"&countryName="+countryName, 
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	$('#state').empty();
@@ -2491,7 +2493,7 @@ function getCities(){
 		$.ajax({
 	    	type: "POST",
 	    	dataType: "json",
-	    	 url: '${sourceleadUrl}'+"/getCitiesByStateAndCountry?${_csrf.parameterName}=${_csrf.token}&countryName="+countryName+"&stateName="+stateName, 
+	    	 url: '${sourceleadUrl}'+"/getCitiesByStateAndCountry?"+tokenParamName+"="+tokenValue+"&countryName="+countryName+"&stateName="+stateName, 
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	$('#city').empty();
@@ -2518,7 +2520,7 @@ function releasedJobsCountByOrgRelationId(orgRelationId){
 	$.ajax({
     	type: "POST",
     	dataType: "json",
-    	 url: '${sourceleadUrl}'+"/getReleasedJobsCountByOrgRelationId?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+orgRelationId, 
+    	 url: '${sourceleadUrl}'+"/getReleasedJobsCountByOrgRelationId?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId, 
         success: function(data) {
         	var json = JSON.parse(data);
         	$('#releasedJobsCount'+orgRelationId).empty();
@@ -2569,7 +2571,7 @@ function vendorListCheck(searchValue,universalvendorSearchList,searchType,respon
 	var sourceleadUrl ='${sourceleadUrl}';
 	 $.ajax({
          type : "POST",
-          url: sourceleadUrl+"/getUniversalSearchVendorList?${_csrf.parameterName}=${_csrf.token}&searchValue="+searchValue+"&searchType="+searchType,   
+          url: sourceleadUrl+"/getUniversalSearchVendorList?"+tokenParamName+"="+tokenValue+"&searchValue="+searchValue+"&searchType="+searchType,   
           success :function(data) {
         	  preparedVendorsListFromElk(data);
          },

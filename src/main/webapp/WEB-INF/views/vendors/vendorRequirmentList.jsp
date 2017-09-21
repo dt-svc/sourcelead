@@ -112,7 +112,7 @@ function vendorRequirementListInclude(orgRelationID){
 		var sourceleadUrl = '${sourceleadUrl}';
 		$.ajax({
 	    	type: "POST",
-	    	   url: sourceleadUrl+"/getVendorJobs?${_csrf.parameterName}=${_csrf.token}&orgRelationID="+orgRelationID+"&status="+status, 	
+	    	   url: sourceleadUrl+"/getVendorJobs?"+tokenParamName+"="+tokenValue+"&orgRelationID="+orgRelationID+"&status="+status, 	
 	    	success: function(data) {
 	        	
 	        	var json = JSON.parse(data);

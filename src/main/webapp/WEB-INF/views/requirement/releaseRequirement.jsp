@@ -31,6 +31,11 @@ border-radius:3px; cursor: pointer; padding:6px 0px 0px 0px;
 <!-- Content Area Starts -->
   <section class="content-wraper">
     <section class="content-header clearfix">
+    	<c:if test="${!empty msg}">
+			<div class="success_pop" id="selector2" style="display: block;">
+				<i class="fa fa-check-circle"></i><span>${msg}</span>
+			</div>
+		</c:if>
       <div class="pull-left">
         <h2>Release Job</h2>
       </div>
@@ -396,7 +401,7 @@ function releaseTo(){
 	 		    var requirementId = '${requirementId}';
 	 			 $.ajax({
 	 		           type : "POST",
-	 		           url: sourceleadUrl+"/releaseJobsToClientsOrVendors?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&contactsIds="+contactsIds+"&vendorIds="+vendorIds,    
+	 		           url: sourceleadUrl+"/releaseJobsToClientsOrVendors?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&contactsIds="+contactsIds+"&vendorIds="+vendorIds,    
 	 		            success :function(data) {
 	 		            	location.replace(sourceleadUrl+"/releaseRequirementToClientOrVendors?requirementUUID="+requirementUUID);	 		            },
 	 		    });  
@@ -455,7 +460,7 @@ function releaseToOneVendor(vendorcheckboxId){
 	        if(isContinue){
 	       	     $.ajax({
 			    	type: "POST",
-			    	 url: sourceleadUrl+"/releaseToCrowdSourcingNetwork?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&requirementId="+requirementId, 
+			    	 url: sourceleadUrl+"/releaseToCrowdSourcingNetwork?"+tokenParamName+"="+tokenValue+"&json="+jsonData+"&requirementId="+requirementId, 
 			        success: function(result) {
 			        	location.replace(sourceleadUrl+"/releaseRequirementToClientOrVendors?requirementUUID="+requirementUUID);
 			        },
@@ -1116,6 +1121,13 @@ function getPostValueDetails(){
 	 return postdatavalues;
   }
 
+</script>
+
+<script>
+       function msgFadein1() {
+           setTimeout(function(){
+                   $('#selector2').fadeOut('slow'); }, 1000);
+       }
 </script>
 
 <script>

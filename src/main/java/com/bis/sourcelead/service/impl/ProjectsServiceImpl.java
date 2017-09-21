@@ -1779,11 +1779,15 @@ public class ProjectsServiceImpl implements ProjectsService{
 			 if(pm.getCandidateId() != null){
 				 StringBuilder membersListStringBuilder=new StringBuilder();
 				 pm.setEmpName(membersListStringBuilder.append(pm.getProjectMemberCandidteId().getFirstName()).append(" ").append(pm.getProjectMemberCandidteId().getLastName()).toString());	 
-				 pm.setEmpEmail(pm.getProjectMemberCandidteId().getConsultantUser().getEmail());	
-				 UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(pm.getProjectMemberCandidteId().getConsultantUser().getId(), pm.getProjects().getOrgLocationsId().getId());
-				 if(userRole != null){
-					 pm.setUserRoleType(userRole.getUserType());
+				 if(pm.getProjectMemberCandidteId().getConsultantUser() != null){
+					 UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(pm.getProjectMemberCandidteId().getConsultantUser().getId(), pm.getProjects().getOrgLocationsId().getId());
+					 if(userRole != null){
+						 pm.setUserRoleType(userRole.getUserType());
+					 } 
+				 }else{
+					 pm.setUserRoleType("Candidate");
 				 }
+				
 					
 			 }
 			 pm.setProjectStatus(pr.getProjectStatus().getValue());
@@ -1811,7 +1815,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 	       	 
 	       	 if(pm.getCandidateId() != null){
 	
-	                Float draftTimesheetsSubmissionsCountAsEmployee = submissionApproverHierarchyService.getTotalDraftAndSubmittedHoursByuserIdAndProjectIdForEmployee(pm.getProjectMemberCandidteId().getConsultantUser().getId(), projectId, "DRAFT");
+	                /*Float draftTimesheetsSubmissionsCountAsEmployee = submissionApproverHierarchyService.getTotalDraftAndSubmittedHoursByuserIdAndProjectIdForEmployee(pm.getProjectMemberCandidteId().getConsultantUser().getId(), projectId, "DRAFT");
 	    	        pm.setDraftHrs(draftTimesheetsSubmissionsCountAsEmployee.toString());
 	
 	    	        Float submittedTimesheetsSubmissionsCountAsEmployee = submissionApproverHierarchyService.getTotalDraftAndSubmittedHoursByuserIdAndProjectIdForEmployee(pm.getProjectMemberCandidteId().getConsultantUser().getId(), projectId, "SUBMITTED");
@@ -1821,7 +1825,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 	    	        pm.setApprovedHrs(approvalTimesheetsSubmissionsCountAsEmployee.toString());
 	    			
 	    			Float rejectedTimesheetsSubmissionsCountAsEmployee = submissionApproverHierarchyService.getTotalApprovedOrRejectedHoursByuserIdAndProjectIdForEmployee(pm.getProjectMemberCandidteId().getConsultantUser().getId(), projectId, "REJECTED");
-	    		    pm.setRejectedHrs(rejectedTimesheetsSubmissionsCountAsEmployee.toString());
+	    		    pm.setRejectedHrs(rejectedTimesheetsSubmissionsCountAsEmployee.toString());*/
 	                
 	                
 	       	 }	
@@ -2137,6 +2141,8 @@ public void userEmailToAdmin(StringBuilder tempHTML, OrgLocations orgLocations,U
 	 			projects.setProjectClients(projectClientsList);
 			 	
 			 	Projects updatedProjects = saveProject(projects);
+			 	ProjectClients projectClients = projectClientService.getProjectClientsByProjectIdAndOrgLocationIdAndOrgRelationId(projects.getId(), loginOrgLocation.getId(), orgRelations.getId());
+			 	updatedProjects.setProjectClientUUID(projectClients.getUuid());
 				saveOrUpdateProjectElkDocument(updatedProjects);
 			    return updatedProjects;
 			}

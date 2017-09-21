@@ -38,4 +38,9 @@ public class ProjectClientServiceImpl implements ProjectClientService {
 		return projectClientDao.getProjectClientsByProjectIdAndOrgLocationIdAndOrgRelationId(projectId, orgLocationsId, orgRelationId);
 	}
 
+	@Override
+	public ProjectClients getProjectClientsByUUID(String uuid) throws Exception {
+		return projectClientDao.getProjectClientsByUUID(uuid);
+	}
+
 }

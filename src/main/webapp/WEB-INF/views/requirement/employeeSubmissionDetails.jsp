@@ -28,7 +28,6 @@
 
 <script>
 	function employeeSubmissionDetailsList(candidateId) {
-		var sourceleadUrl = '${sourceleadUrl}';
 		
 		 var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
 		  if(locationList.match("yyyy-MM-dd")){
@@ -44,7 +43,7 @@
 		
 				$.ajax({
 					type : "POST",
-					url : sourceleadUrl	+ "/getCandidatesEmployersListByCandidateIdAndOrgLocationID?${_csrf.parameterName}=${_csrf.token}&candidateId="
+					url : sourceleadUrl	+ "/getCandidatesEmployersListByCandidateIdAndOrgLocationID?"+tokenParamName+"="+tokenValue+"&candidateId="
 							+ candidateId,
 					success : function(data) {
 						/* if (data != null && data != 'undefined' && data != "" && data != '[]') { */

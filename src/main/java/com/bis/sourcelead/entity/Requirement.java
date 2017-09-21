@@ -577,6 +577,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	}
 
 	public String getClientSubmissionTemplate() {
+		if(submissionTemplateId != null){
+			clientSubmissionTemplate = submissionTemplateId.getTemplateName();
+		}
 		return clientSubmissionTemplate;
 	}
 
@@ -1206,6 +1209,11 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	}
 
 	public String getCreatedByName() {
+		if(StringUtils.isNotEmpty(createdBy.getLastName())){
+			createdByName = createdBy.getFirstName()+" "+createdBy.getLastName();
+		}else{
+			createdByName = createdBy.getFirstName();
+		}
 		return createdByName;
 	}
 
@@ -1342,6 +1350,11 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	}
 
 	public String getApprovalMechanismType() {
+		
+		if(getRequirementApprover() != null && !getRequirementApprover().isEmpty()){
+			RequirementApproverHierarchy  rah =getRequirementApprover().iterator().next();
+			approvalMechanismType = rah.getHierarchyType().toString();
+		}
 		return approvalMechanismType;
 	}
 

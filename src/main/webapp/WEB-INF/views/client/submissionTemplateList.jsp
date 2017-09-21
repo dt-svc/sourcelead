@@ -7,10 +7,13 @@
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 
-<link rel="stylesheet" href="resources/css/style.css" />
+<c:if test="${staticTime == null || staticTime == 0 }">
+    <c:set var='staticTime' value="<%=new java.util.Date().getTime() %>" scope="application"></c:set>
+</c:if>
 
-<script src="resources/js/submissionFormBuilder.js" type="text/javascript" ></script> <!-- form builder -->
-<script src="resources/js/submissionForm-html-generator.js" type="text/javascript" ></script> <!-- form generator -->
+<link rel="stylesheet" href="resources/css/style.css?staticTime=${staticTime}" />
+<script src="resources/js/submissionFormBuilder.js?staticTime=${staticTime}" type="text/javascript" ></script> <!-- form builder -->
+<script src="resources/js/submissionForm-html-generator.js?staticTime=${staticTime}" type="text/javascript" ></script> <!-- form generator -->
 
 
 <style type="text/css">
@@ -72,7 +75,7 @@ function clientSubmissionTemplate(clientLocationId){
 		var sourceleadUrl = '${sourceleadUrl}';
 		$.ajax({
 	    	type: "POST",
-	    	url : sourceleadUrl+"/getSubmissionTemplatesList?${_csrf.parameterName}=${_csrf.token}&clientLocationId="+clientLocationId, 
+	    	url : sourceleadUrl+"/getSubmissionTemplatesList?"+tokenParamName+"="+tokenValue+"&clientLocationId="+clientLocationId, 
 	        success: function(data) {
 	        	
 	        var json = JSON.parse(data);
@@ -296,7 +299,7 @@ function validateTemplateName(clientLocationId){
 		var sourceleadUrl = '${sourceleadUrl}';
 		$.ajax({
 	    	type: "POST",
-	    	url : sourceleadUrl+"/validateTemplateName?${_csrf.parameterName}=${_csrf.token}&clientLocationId="+clientLocationId+"&templateName="+templateName+"&templateId="+templateId, 
+	    	url : sourceleadUrl+"/validateTemplateName?"+tokenParamName+"="+tokenValue+"&clientLocationId="+clientLocationId+"&templateName="+templateName+"&templateId="+templateId, 
 	        success: function(result) {
 	        	if (result == 'invalid') {
 	        		$("#save_button").attr("disabled", "disabled");
@@ -444,7 +447,7 @@ function validateTemplateName(clientLocationId){
         	 $( "#save_button" ).addClass('button').val('Processing..');
         	    $.ajax({
      	    	type: "POST",
-     	        url: sourceleadUrl+"/saveClientSubmissionTemplate?${_csrf.parameterName}=${_csrf.token}&clientLocationId="+clientLocationId+"&templateId="+templateId+"&jsonData="+jsonData+"&jsonStringData="+jsonStringData, 
+     	        url: sourceleadUrl+"/saveClientSubmissionTemplate?"+tokenParamName+"="+tokenValue+"&clientLocationId="+clientLocationId+"&templateId="+templateId+"&jsonData="+jsonData+"&jsonStringData="+jsonStringData, 
      	        success: function(result) {
      	        	if((result == 'home')){
      	        		clientSubmissionTemplate(clientLocationId);  

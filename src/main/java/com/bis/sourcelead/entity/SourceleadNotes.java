@@ -68,6 +68,9 @@ public class SourceleadNotes {
 	@Transient
 	private Long commentAuthorUserId;
 	
+	@Transient
+	private String commentAuthorImage;
+	
 	@Column(name = "COMMENT",columnDefinition = "TEXT default NULL")
 	private String comment;
 	
@@ -365,6 +368,14 @@ public class SourceleadNotes {
 	public void setCommentAuthorUserId(Long commentAuthorUserId)
 	{
 		this.commentAuthorUserId = commentAuthorUserId;
+	}
+
+	public String getCommentAuthorImage() {
+		return commentAuthorImage;
+	}
+
+	public void setCommentAuthorImage(String commentAuthorImage) {
+		this.commentAuthorImage = commentAuthorImage;
 	}
 	
 	

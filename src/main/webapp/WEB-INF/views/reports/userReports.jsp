@@ -281,10 +281,9 @@ width: 20%;
 <script>
 function usersList(){ 
 	var timePeriod = $('#reportTypeId').val(); 
-	  var sourceleadUrl ='${sourceleadUrl}';
 	  $.ajax({
            type : "POST",
-           url: sourceleadUrl+"/getAllUsersByOrgLocationsId?${_csrf.parameterName}=${_csrf.token}&timePeriod="+timePeriod,    
+           url: sourceleadUrl+"/getAllUsersByOrgLocationsId?"+tokenParamName+"="+tokenValue+"&timePeriod="+timePeriod,    
             success :function(data) {
                  if(data != null && data != 'undefined' && data != "" && data != '[]'){
 	                	
@@ -592,7 +591,6 @@ function getCustomReports(){
 	var startDate = $("#ReportStartDate").val();
 	var endDate = $("#ReportEndDate").val();
 	
-	var sourceleadUrl ='${sourceleadUrl}';
 	if(startDate == null || startDate == '' || startDate == 'undefined'){
 		$("#reportsStartDate").empty().append("Start Date is Required") ; 
 	}
@@ -601,7 +599,7 @@ function getCustomReports(){
 	}else{
 		$.ajax({
 	         type : "POST",
-	         url: sourceleadUrl+"/getAllUsersByOrgLocationsId?${_csrf.parameterName}=${_csrf.token}&timePeriod="+timePeriod+"&customStartDate="+startDate+"&customEndDate="+endDate,     
+	         url: sourceleadUrl+"/getAllUsersByOrgLocationsId?"+tokenParamName+"="+tokenValue+"&timePeriod="+timePeriod+"&customStartDate="+startDate+"&customEndDate="+endDate,     
 	         success :function(data) {
 	        	 if(data != null && data != 'undefined' && data != "" && data != '[]'){
 	                	
@@ -799,14 +797,13 @@ function getBillingReports(invoiceType){
 	 $("#payableAmount").html(0);
 	$('#billingErrorReportStartDate').empty();
 	$('#billingErrorReportEndDate').empty(); 
-		var sourceleadUrl = '${sourceleadUrl}';
 		var billingReportType = $("#billingReportType").val();
 		var startDate = null;
 		var endDate = null;
 		if(billingReportType!="CUSTOM"){
 			$.ajax({
 		    	type: "GET",
-		    	 url: sourceleadUrl+"/getBillingReportByFrequency?${_csrf.parameterName}=${_csrf.token}&billingReportType="+billingReportType+"&invoiceType="+invoiceType+"&startDate="+startDate+"&endDate="+endDate, 
+		    	 url: sourceleadUrl+"/getBillingReportByFrequency?"+tokenParamName+"="+tokenValue+"&billingReportType="+billingReportType+"&invoiceType="+invoiceType+"&startDate="+startDate+"&endDate="+endDate, 
 		         success: function(data) {
 		        	 /* alert(data); */
 		        	 var json = JSON.parse(data);
@@ -821,13 +818,12 @@ function getBillingReports(invoiceType){
 
 <script>
 function getPayableBillingReports(invoiceType){
-		var sourceleadUrl = '${sourceleadUrl}';
 		var billingReportType = $("#billingReportType").val();
 		var startDate = null;
 		var endDate = null;
 		$.ajax({
 	    	type: "GET",
-	    	 url: sourceleadUrl+"/getBillingReportByFrequency?${_csrf.parameterName}=${_csrf.token}&billingReportType="+billingReportType+"&invoiceType="+invoiceType+"&startDate="+startDate+"&endDate="+endDate, 
+	    	 url: sourceleadUrl+"/getBillingReportByFrequency?"+tokenParamName+"="+tokenValue+"&billingReportType="+billingReportType+"&invoiceType="+invoiceType+"&startDate="+startDate+"&endDate="+endDate, 
 	         success: function(data) {
 	        	 var json = JSON.parse(data);
 	        	 var result = "";
@@ -911,7 +907,6 @@ function getCustomBillingReports(invoiceType){
 	var billingReportType = $("#billingReportType").val();  
 	var startDate = $("#billingReportStartDate").val();
 	var endDate = $("#billingReportEndDate").val();
-	var sourceleadUrl ='${sourceleadUrl}'; 
 	if(startDate == null || startDate == '' || startDate == 'undefined'){
 		$("#billingErrorReportStartDate").empty().append("Start Date is Required") ; 
 	}
@@ -920,7 +915,7 @@ function getCustomBillingReports(invoiceType){
 	}else{
 		$.ajax({
 	         type : "GET",
-	         url: sourceleadUrl+"/getBillingReportByFrequency?${_csrf.parameterName}=${_csrf.token}&billingReportType="+billingReportType+"&invoiceType="+invoiceType+"&startDate="+startDate+"&endDate="+endDate,     
+	         url: sourceleadUrl+"/getBillingReportByFrequency?"+tokenParamName+"="+tokenValue+"&billingReportType="+billingReportType+"&invoiceType="+invoiceType+"&startDate="+startDate+"&endDate="+endDate,     
 	         success :function(data) {
 	        	 var json = JSON.parse(data);
 	        	 var result = "";
@@ -973,7 +968,6 @@ function getCustomPayableBillingReports(invoiceType){
 	var billingReportType = $("#billingReportType").val();  
 	var startDate = $("#billingReportStartDate").val();
 	var endDate = $("#billingReportEndDate").val();
-	var sourceleadUrl ='${sourceleadUrl}'; 
 	if(startDate == null || startDate == '' || startDate == 'undefined'){
 		$("#billingErrorReportStartDate").empty().append("Start Date is Required") ; 
 	}
@@ -982,7 +976,7 @@ function getCustomPayableBillingReports(invoiceType){
 	}else{
 		$.ajax({
 	         type : "GET",
-	         url: sourceleadUrl+"/getBillingReportByFrequency?${_csrf.parameterName}=${_csrf.token}&billingReportType="+billingReportType+"&invoiceType="+invoiceType+"&startDate="+startDate+"&endDate="+endDate,     
+	         url: sourceleadUrl+"/getBillingReportByFrequency?"+tokenParamName+"="+tokenValue+"&billingReportType="+billingReportType+"&invoiceType="+invoiceType+"&startDate="+startDate+"&endDate="+endDate,     
 	         success :function(data) {
 	        	 var json = JSON.parse(data);
 	        	 var result = "";

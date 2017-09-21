@@ -236,8 +236,8 @@ public class RegistrationServiceImpl implements RegistrationService{
 		
 		//For saving of orgLocation Details which location has choose in the registration
 		OrgLocations orgLocations = getOrgLocationsDetails(registration, org, user,subModules,modules);
-		/*Timezone timeZone = timeZoneService.getTimezone(Long.parseLong(registration.getTimeZone()));
-		orgLocations.setTimezone(timeZone);*/
+		Timezone timeZone = timeZoneService.getTimezone(Long.parseLong(registration.getTimeZone()));
+		orgLocations.setTimezone(timeZone);
 		try {
 			orgLocationService.addOrgLocations(orgLocations);
 		} catch (Exception e) {
@@ -424,6 +424,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 	    	projects.setDescription(defaultProjectNameDesc.append(registration.getCompanyName()).append(" ").append("Default Project").toString());
 	    	projects.setStartDate(new Date());
 	    	projects.setInvoiceFrequency(Constants.WEEKLY);
+	    	projects.setTimesheetFrequency(Constants.WEEKLY);
 	    	projects.setProjectStatus(Project_Status.INPROGRESS);
 	    	projects.setIsPrimary(1);
 	    	projects.setCreatedDate(new Date());
@@ -433,7 +434,6 @@ public class RegistrationServiceImpl implements RegistrationService{
 	    	Set<ProjectClients> projectClientsList = getProjectClientsForProject(projects,orgLocations,approverUser);
 	    	projects.setProjectClients(projectClientsList);
 			projects.setProjectUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
-			projects.setIsClientProject(Constants.NO);
 			projects.setProjectMode("Finished");
 			projects.setCreatedDate(new Date());
 			projects.setUpdatedDate(new Date());

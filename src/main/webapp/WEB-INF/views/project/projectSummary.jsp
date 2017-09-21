@@ -80,7 +80,7 @@ window.onload = function () {
 		  	  '</sec:authorize>';
 		  	
 		  	
-		  	  if(${postedOrgLocationId} == ${SourceLeadWeb_orgLocations.id}){
+		  	  if('${postedOrgLocationId}' == '${SourceLeadWeb_orgLocations.id}'){
 		  		 '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_PROJECT_TASKS\',\'ROLE_VIEW_EDIT_PROJECT_TASKS\')">' ; 
 				  	'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_PROJECT\',\'ROLE_VIEW_EDIT_PROJECT\',\'ROLE_VIEW_PROJECT_EMPLOYEES\',\'ROLE_VIEW_EDIT_PROJECT_EMPLOYEES\',\'ROLE_VIEW_DELETE_PROJECT_EMPLOYEES\')">' 
 				      	 result = result + '<li id="projectTaskTab"><a href="#tab-3" id="taskTab" onClick="projectTask('+projectId+',\''+status+'\');">Tasks</a></li>';

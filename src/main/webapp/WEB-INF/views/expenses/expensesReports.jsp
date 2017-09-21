@@ -2,7 +2,6 @@
 <jsp:include page="../masterSideNav.jsp" />
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
  <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
  <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
  <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
@@ -68,14 +67,13 @@ function getQuaters(){
 </script>
 <script>
  function getYearsAndQuartersComboList(){
-		var sourceleadUrl = '${sourceleadUrl}';
 		var dateFormat ='${SourceLeadWeb_orgLocations.dateFormat}';
 		$.ajax({
    	        type : "POST",
     	    contentType : 'application/json; charset=utf-8',
     	    enctype: 'multipart/form-data',
     	    dataType : 'json',
-			url : sourceleadUrl+"/getYearsAndQuartersComboList?${_csrf.parameterName}=${_csrf.token}&dateFormat="+dateFormat,
+			url : sourceleadUrl+"/getYearsAndQuartersComboList?"+tokenParamName+"="+tokenValue+"&dateFormat="+dateFormat,
 			success : function(data) {
 				var result = "";
 				var json = JSON.parse(data[0]);
@@ -168,11 +166,10 @@ function getQuaters(){
  
  <script>
 function expensesReportList(){
-var sourceleadUrl = '${sourceleadUrl}';
 var datequarterly = $("#selectedQuarter").val();
 $.ajax({
     type : "POST",
-     url: sourceleadUrl+"/getExpensesReportList?${_csrf.parameterName}=${_csrf.token}&datequarterly="+datequarterly,       
+     url: sourceleadUrl+"/getExpensesReportList?"+tokenParamName+"="+tokenValue+"&datequarterly="+datequarterly,       
      success :function(data) {
     	 	var json = JSON.parse(data);
     	 if(json != null && json != '' && json != 'undefined'){
@@ -590,9 +587,8 @@ $.ajax({
  
  <script>
  function exportExpensesReports(type){
-	var sourceleadUrl = '${sourceleadUrl}';
 	var frequencyMonth =document.getElementById("selectedQuarter").value;
- window.location.href = sourceleadUrl+"/expensesReportExportList?${_csrf.parameterName}=${_csrf.token}&frequencyMonth="+frequencyMonth+"&exportType="+type;
+ window.location.href = sourceleadUrl+"/expensesReportExportList?"+tokenParamName+"="+tokenValue+"&frequencyMonth="+frequencyMonth+"&exportType="+type;
  }
  </script>
  

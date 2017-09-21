@@ -559,7 +559,7 @@ public class EmployeePayrollRestController {
 	 @ResponseBody
 		public  ResponseList<InvoiceData> getInvoiceDetails (InvoiceDetailsDTO invoiceDetailsDTO ,HttpServletRequest request) throws Exception
 		{
-//		 OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		 OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		 
 		 String[] tableColumns = {"sku", "productService", "empName", "number", "memoDescription", "date","lastmodified","dueDate","rate","qty","amount","arPaid","oldNew"};
 	     int sortColumnIndex = 2; //by default sorting using updated date
@@ -571,7 +571,7 @@ public class EmployeePayrollRestController {
 		invoiceDetailsDTO.setSortColumn(tableColumns[sortColumnIndex]);
 		invoiceDetailsDTO.setSortOrder(sortColumnOrder);
 		
-		return invoiceDataService.getInvoiceDetails(invoiceDetailsDTO, Long.parseLong(invoiceDetailsDTO.getOrgLocationId()));
+		return invoiceDataService.getInvoiceDetails(invoiceDetailsDTO, orgLocation);
 		}
 		
 	 

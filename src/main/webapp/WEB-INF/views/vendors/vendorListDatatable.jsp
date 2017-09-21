@@ -11,7 +11,7 @@
 			var sourceleadUrl ='${sourceleadUrl}';
 				 $.ajax({
 			         type : "POST",
-			          url: sourceleadUrl+"/getUniversalSearchVendorList?${_csrf.parameterName}=${_csrf.token}&searchValue="+searchValue+"&searchType="+searchType,   
+			          url: sourceleadUrl+"/getUniversalSearchVendorList?"+tokenParamName+"="+tokenValue+"&searchValue="+searchValue+"&searchType="+searchType,   
 			          success :function(data) {
 			        	  getVendorList();
 			         },

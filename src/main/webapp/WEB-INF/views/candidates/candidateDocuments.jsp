@@ -99,10 +99,9 @@ function candidateDocuments(candidateId){
 <script>
 function candDocumentsList(candidateId){
 	var candidateType = '${candidateType}';
-	var sourceleadUrl ='${sourceleadUrl}';
 	 $.ajax({  
           type : "POST",
-          url: sourceleadUrl+"/getCandidateDocumentsListByCandidateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,        
+          url: sourceleadUrl+"/getCandidateDocumentsListByCandidateId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
           success :function(data) {
            
              			 var json = JSON.parse(data); 
@@ -145,8 +144,7 @@ function candDocumentsList(candidateId){
 	    	             	 }
 	                    	 
 	                    	 if(opt.fileName != null && opt.fileName != '' && opt.fileName != 'undefined'){
-	                    	 //result  = result + ' <td><div class="tbldata-dotdot-me" title='+opt.fileName+'><a class="fa fa-eye ml10" onClick="viewFile(\'${sourceleadUrl}\',\''+opt.fileURL+'\',\''+opt.fileName+'\',\''+opt.fileContentType+'\'  title='+opt.fileName+');"></a><a class="glyphicon glyphicon-download-alt" href=\"'+opt.fileURL+'\" title="'+opt.fileName+'"></a>'+opt.fileName+'</div></td>';
-				           	 result = result+'<td><div><span title ="'+opt.fileName+'">'+opt.fileName+'</span><a class="fa fa-eye" onClick="viewFile(\'${sourceleadUrl}\',\''+opt.fileURL+'\',\''+opt.fileName+'\',\''+opt.fileContentType+'\');"></a><a class="glyphicon glyphicon-download-alt" href=\"'+opt.fileURL+'\" title="Download"></a></div></td>';
+				           	 result = result+'<td><div><span title ="'+opt.fileName+'">'+opt.fileName+'</span><a class="fa fa-eye" onClick="viewFile(\''+opt.fileURL+'\',\''+opt.fileName+'\',\''+opt.fileContentType+'\');"></a><a class="glyphicon glyphicon-download-alt" target="_blank" href=\"'+opt.fileURL+'\" title="Download"></a></div></td>';
 
 	                    	 }else{
 	                    		 result  = result + ' <td><div><span>----</span></div></td>';
@@ -207,7 +205,6 @@ function candDocumentsList(candidateId){
 
 <script>
 function candidateDocumentView(documentUUID,title){
-	 var sourceleadUrl ='${sourceleadUrl}';
 		if(documentUUID != null && documentUUID != ""){
 			window.open(sourceleadUrl+'/viewProfessionalCandidateDocument/'+title+'?documentUUID='+documentUUID,title,"height=600,width=600");
 		}
@@ -290,7 +287,6 @@ function deleteRequestedDoc(){
  
  <script>
  function acceptRequestedDocs(candidateId){
-	 var sourceleadUrl ='${sourceleadUrl}';
 	 var documentsIds = [];
  	 $("input[name='documents[]']:checked").each( function (i) {
  		 documentsIds[i] = $(this).val();
@@ -299,7 +295,7 @@ function deleteRequestedDoc(){
 	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	   $.ajax({
 	    	type: "POST",
-	    	 url: sourceleadUrl+"/acceptRequestedDocuments?${_csrf.parameterName}=${_csrf.token}&documentsIds="+documentsIds+"&userId="+userId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId,
+	    	 url: sourceleadUrl+"/acceptRequestedDocuments?"+tokenParamName+"="+tokenValue+"&documentsIds="+documentsIds+"&userId="+userId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId,
 	        success: function(result) {
 	        	candidateDocuments(candidateId);
 	        },
@@ -585,7 +581,6 @@ function getDocumentType(documentType){
 		         }; 
 			 if ($('#documentType_form').validate(false, validationSettings)){
 				
-				 var sourceleadUrl = '${sourceleadUrl}';
 		        var frm = $('#documentType_form')[0];
 				var formData = new FormData(frm);
 				$("#save_doc").attr("disabled", "disabled");
@@ -596,7 +591,7 @@ function getDocumentType(documentType){
 	        	    data: formData,
 	    	        processData: false,
 	    	        contentType:false,
-	        	   	url : sourceleadUrl+"/saveCandidateDocument?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&documentUUID="+documentUUID,
+	        	   	url : sourceleadUrl+"/saveCandidateDocument?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&documentUUID="+documentUUID,
 					success : function(result) {
 							closePopup();
 							$('#perVal').attr('aria-valuenow', result).css('width',result+'%');
@@ -650,8 +645,7 @@ function getDocumentType(documentType){
 
 <script>
 function uploadFileDoc(){
-	var sourceleadUrl ='${sourceleadUrl}';
-	fileUpload(sourceleadUrl, "uploadBtn", "candidateDocuments", "documentType_form");
+	fileUpload("uploadBtn", "candidateDocuments", "documentType_form");
 }
 </script>
 
@@ -670,12 +664,11 @@ function refreshDocList(candidateId){
 --%>
 <script>
 function getDocument(candidateId, documentId){
-	var sourceleadUrl ='${sourceleadUrl}';
 	 $("#docsName").attr("data-validation-optional", "true");
 	  $("#documentOtherType").attr("data-validation-optional", "true");
 		$.ajax({
 		   	type: "POST",
-		    url: sourceleadUrl+"/getDocument?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&documentId="+documentId, 	   
+		    url: sourceleadUrl+"/getDocument?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&documentId="+documentId, 	   
    		    success: function(data) {
    		    	
         			 $("#uploadDocDiv").hide();
@@ -750,13 +743,12 @@ function removeDocument(candidateId, documentId){
 <script>
 function deleteDocument(candidateId, documentId){
 	
-	var sourceleadUrl ='${sourceleadUrl}';
 	var loginUserId = '${SourceLeadWeb_userId}';
 	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	//var message = confirm("You are choosing to delete the document");
 		$.ajax({
 		   	type: "POST",
-		    url: sourceleadUrl+"/terminateDoc?${_csrf.parameterName}=${_csrf.token}&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&documentId="+documentId, 	   
+		    url: sourceleadUrl+"/terminateDoc?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&documentId="+documentId, 	   
    		    success: function(data) {
    		    	if(data != null && data != 'undefined' && data != ""){
    		    		$('#perVal').attr('aria-valuenow', data).css('width',data+'%');
@@ -961,7 +953,6 @@ $('body').on('submit', '#requestForDocuments_form', function(e){
 	if ($('#requestForDocuments_form').validate(false, validationSettings)){
       e.preventDefault();
      
-      var sourceleadUrl ='${sourceleadUrl}';
       var requestedCandidateId = document.getElementById("requestedCandidateId").value;
      /*  var form = $('#requestForDocuments_form')[0];
       var formData = new FormData(form); */
@@ -974,7 +965,7 @@ $('body').on('submit', '#requestForDocuments_form', function(e){
 		    	data : formData,
 		    	 //processData: false,
 	    	   //  contentType:false,
-		    	 url: sourceleadUrl+"/requestCandidateForDocuments?${_csrf.parameterName}=${_csrf.token}", 
+		    	 url: sourceleadUrl+"/requestCandidateForDocuments?"+tokenParamName+"="+tokenValue+"", 
 		        success: function(result) {
 		        	$("#documentLoading").removeAttr("style"); 
 		        	closeRD();
@@ -1049,7 +1040,6 @@ $('body').on('submit', '#docrejectedReason_form', function(e){
       
       //It will escape all the special characters
       var jsonData = encodeURIComponent(con);
-      var sourceleadUrl ='${sourceleadUrl}';
       var rejectedDocsCandidateId = document.getElementById("rejectedDocsCandidateId").value;
       
       var documentsIds = [];
@@ -1061,7 +1051,7 @@ $('body').on('submit', '#docrejectedReason_form', function(e){
        $("#docsrejectedLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
   	   $.ajax({
 	    	type: "POST",
-	    	 url: sourceleadUrl+"/rejectRequestedDocuments?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&documentsIds="+documentsIds, 
+	    	 url: sourceleadUrl+"/rejectRequestedDocuments?"+tokenParamName+"="+tokenValue+"&json="+jsonData+"&documentsIds="+documentsIds, 
 	        success: function(result) {
 	        	cancelDocumentRejectedReason();
 	        	$("#docsrejectedLoading").removeAttr("style"); 

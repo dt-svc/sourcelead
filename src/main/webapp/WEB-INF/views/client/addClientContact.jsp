@@ -22,7 +22,7 @@ function getOrgName(){
 	
 	$.ajax({                           
     	type: "POST",
-    	url : sourceleadUrl+"/getOrgs?${_csrf.parameterName}=${_csrf.token}&orgCode="+orgCode,
+    	url : sourceleadUrl+"/getOrgs?"+tokenParamName+"="+tokenValue+"&orgCode="+orgCode,
         success: function(data) {
         	var json = JSON.parse(data);
         	var org = [];
@@ -76,7 +76,7 @@ function getOrgDetails()
 	if(orgName && orgLocationId){
    	 $.ajax({
    	    	type: "POST",
-   	    	url : sourceleadUrl+"/getOrgDetails?${_csrf.parameterName}=${_csrf.token}&orgLocationId="+orgLocationId,
+   	    	url : sourceleadUrl+"/getOrgDetails?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId,
    	        contentType: "application/json; charset=utf-8",
    	        dataType: "json",
    	        success: function(data) {
@@ -171,10 +171,10 @@ function getOrgDetails()
                   <option value="">Select Client</option>
                    <c:forEach var="report" items="${clientContactList}">
                      <c:if test="${report.locationId.id == loginOrgLocId}">  
-                    <option value="${report.id},${report.responderLocationId.id}">${report.responderLocationId.org.orgName}</option>
+                    <option value="${report.id},${report.responderLocationId.id}">${report.responderLocationId.orgLocationName}</option>
                    </c:if>  
                     <c:if test="${report.responderLocationId.id == loginOrgLocId}"> 
-                  	 	<option value="${report.id},${report.locationId.id}">${report.locationId.org.orgName}</option>
+                  	 	<option value="${report.id},${report.locationId.id}">${report.locationId.orgLocationName}</option>
                    </c:if>  
                  </c:forEach> 
                 </select>
@@ -316,7 +316,7 @@ function getOrgDetails()
 		        var formData = getFormData("client_contact_form");
 				var sourceleadUrl = '${sourceleadUrl}';
 				$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-				$.post(sourceleadUrl+"/saveClinentAndVendorContact?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+orgRelationId+"&responderType=Client", formData, function(data) {
+				$.post(sourceleadUrl+"/saveClinentAndVendorContact?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId+"&responderType=Client", formData, function(data) {
 					location.replace(sourceleadUrl+ "/clientDashboard");
 				});
 				return true;
@@ -341,7 +341,7 @@ function validateEmail(){
 	if(email != null){
 		$.ajax({
 			type : "POST",
-			url : sourceleadUrl + "/validateClientOrVendorEmail?${_csrf.parameterName}=${_csrf.token}&email="+email,
+			url : sourceleadUrl + "/validateClientOrVendorEmail?"+tokenParamName+"="+tokenValue+"&email="+email,
 			success : function(data) {
 				var result = data;
 				if(result == 'Invalid Email') {
@@ -374,7 +374,7 @@ function validateEmail(){
          $("#save_client" ).addClass('button').val('Processing..'); */
 		 $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/getClientEmailVerification?${_csrf.parameterName}=${_csrf.token}&EmailId="+EmailId, 
+		        url: sourceleadUrl+"/getClientEmailVerification?"+tokenParamName+"="+tokenValue+"&EmailId="+EmailId, 
 		        success: function(data) {
 		        	if(data == 'true'){
 		        		  $('#EmailIdDiv').find('p.jquery_form_error_message').remove();
@@ -417,7 +417,7 @@ function validateEmail(){
 			var orgLocationId = document.getElementById("orgLocationId").value;
 			var formData = getFormData("client_form");
 			var sourceleadUrl = '${sourceleadUrl}';
-					$.post(sourceleadUrl+"/saveClient?${_csrf.parameterName}=${_csrf.token}&orgLocationId="+orgLocationId+"&responderType=Client", formData, function(data) {
+					$.post(sourceleadUrl+"/saveClient?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&responderType=Client", formData, function(data) {
 						location.replace(sourceleadUrl+ "/addClientContact");
 					});
 			return true;
@@ -442,7 +442,7 @@ function validateClientName(){
 	/* 	$("#save_client").attr("disabled", "disabled"); */
 		$.ajax({
 			type : "GET",
-			url : sourceleadUrl + "/ws/isClientNameValid?${_csrf.parameterName}=${_csrf.token}&clientName="+clientName+"&responderType=Client",
+			url : sourceleadUrl + "/ws/isClientNameValid?"+tokenParamName+"="+tokenValue+"&clientName="+clientName+"&responderType=Client",
 			success : function(data) {
 				var result = data;
 				if (result == true) {
@@ -502,7 +502,7 @@ function getSpocUserDetails(){
 	if(email){
 		$.ajax({
 	    	type: "POST",
-	    	url : sourceleadUrl+"/getSpocUserDetails?${_csrf.parameterName}=${_csrf.token}&email="+email+"&orgLocationId="+orgLocationId[1],
+	    	url : sourceleadUrl+"/getSpocUserDetails?"+tokenParamName+"="+tokenValue+"&email="+email+"&orgLocationId="+orgLocationId[1],
 	        contentType: "application/json; charset=utf-8",
 	        dataType: "json",
 	        success: function(data) {
@@ -587,7 +587,7 @@ function getRolesList(){
 		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		$.ajax({
 	    	type: "POST",
-	        url: sourceleadUrl+"/getRolesList?${_csrf.parameterName}=${_csrf.token}&orgLocationId="+orgLocationId+"&moduleType=VMS", 
+	        url: sourceleadUrl+"/getRolesList?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&moduleType=VMS", 
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	var output = "";
@@ -626,7 +626,7 @@ function getRolesList(){
 	 if(email != null && email != "" && email != 'undefined'){
 		 $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/getAllOwners?${_csrf.parameterName}=${_csrf.token}&email="+email+"&orgRelationId="+orgRelationId+"&type=client",  
+		        url: sourceleadUrl+"/getAllOwners?"+tokenParamName+"="+tokenValue+"&email="+email+"&orgRelationId="+orgRelationId+"&type=client",  
 		        success: function(data) {
 		        	var json = JSON.parse(data);
 		        	var output = "";
@@ -680,7 +680,7 @@ function getRolesList(){
 	 if(email != null && email != "" && email != 'undefined'){
 		 $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/getOwnersList?${_csrf.parameterName}=${_csrf.token}&email="+email+"&type=Client", 
+		        url: sourceleadUrl+"/getOwnersList?"+tokenParamName+"="+tokenValue+"&email="+email+"&type=Client", 
 		        success: function(data) {
 		        	var json = JSON.parse(data);
 		        	var output = "";

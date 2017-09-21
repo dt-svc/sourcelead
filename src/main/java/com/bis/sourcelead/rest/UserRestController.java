@@ -276,7 +276,7 @@ public class UserRestController {
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 		userService.storeUser(addUserDTO, candidateDTO, user, orgLocations, "CREATEUSER", "", new Org());
 		// userService.createUser(jsonObj,user,orgLocations.getId());
-		SourceLeadSessionManager.setSessionAttribute(request, "userCreateMsg", "Successfully you have created a user");
+		SourceLeadSessionManager.setSessionAttribute(request, "userCreateMsg", "Success !!New user created");
 		return "usersList";
 	}
 	 
@@ -613,7 +613,7 @@ public class UserRestController {
 									  terminatedMailToEmployee(user,pmh,orgLocations);
 								  }
 								  
-								  if(pmh.getProjectClientsId().getOrgLocationsId().getId().equals(orgLocations.getId())){
+								  if(pmh.getProjectMemberId().getProjectClientsId().getOrgLocationsId().getId().equals(orgLocations.getId())){
 									   List<ProjectApproverHierarchy>  mangerList = projectApproverHierarchyService.getApproverUsersByProjectId(pmh.getProjectMemberId().getProjects().getId());
 									      for(ProjectApproverHierarchy pah : mangerList){
 									    	  if(user.getId() != pah.getApproverUserId().getId()){
@@ -621,7 +621,7 @@ public class UserRestController {
 									    	  }
 									      }
 								  }else{
-									  employeeTerminationMailToProjectManager(pmh.getProjectClientsId().getOrgLocationsId().getUser(),pmh,pmh.getProjectClientsId().getOrgLocationsId());
+									  employeeTerminationMailToProjectManager(pmh.getProjectMemberId().getProjectClientsId().getOrgLocationsId().getUser(),pmh,pmh.getProjectMemberId().getProjectClientsId().getOrgLocationsId());
 								  }
 								  
 								  sendEmailCount = sendEmailCount+1;

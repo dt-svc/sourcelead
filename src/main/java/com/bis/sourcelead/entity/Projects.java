@@ -313,6 +313,10 @@ public class Projects implements Serializable{
     private String expensesClientName;
     
     @Transient
+	@JsonProperty
+    private String projectClientUUID;
+    
+    @Transient
     @JsonProperty
     Set<ProjectDocuments>  projectDocumentsList;
     
@@ -920,6 +924,16 @@ public class Projects implements Serializable{
 		this.isDefaultProject = isDefaultProject;
 	}
 
+
+	public String getProjectClientUUID() {
+		return projectClientUUID;
+	}
+
+	public void setProjectClientUUID(String projectClientUUID) {
+		this.projectClientUUID = projectClientUUID;
+	}
+
+
 	public String getNotifyBudgetAt() {
 		return notifyBudgetAt;
 	}
@@ -943,4 +957,5 @@ public class Projects implements Serializable{
 	public void setProjectBudgetList(Set<ProjectBudget> projectBudgetList) {
 		this.projectBudgetList = projectBudgetList;
 	}
+
 }

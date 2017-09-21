@@ -41,6 +41,7 @@ public class Constants {
 	public static final String DAY_HOURS = "Day Hours";
 	public static final String FAILED_REASON = "Reason";
 	public static final String EMAIL = "Email*";
+	public static final String RESCHEDULED_EMAIL="entity_type_rescheduled_email";
 	public static final String CLIENT_NAME = "Client Name*";
 	public static final String PHONE = "Phone";
 	public static final String STATUS = "Status";
@@ -450,7 +451,7 @@ public class Constants {
 	public static final String[] CANDIDATE_EXCEL_HEADERS = { "Firstname", "Last name", "Email id",
 			"Phone Number", "Location", "Designation", "Education", "Experience", "Skills",
 			"Rate", "Vendor", "Vendor Contact", "Is Favourite"};
-	public static final String[] REQUIREMENT_EXCEL_HEADERS = { "Requirement id", "Requirement Title",
+	public static final String[] REQUIREMENT_EXCEL_HEADERS = { "Jobs id", "Jobs Title",
 			"Experience", "Rate", "Location", "Skills", "Manager", "Priority",
 			"Application Form Name", "Client Name", "Client Contact Name", "Client Contact Email",
 			"Status", "Posted On"};

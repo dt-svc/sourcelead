@@ -76,12 +76,11 @@ function candidateReferences(candidateId){
 <script>
 function candReferencesList(candidateId){
 	var candidateType = '${candidateType}';
-	var sourceleadUrl ='${sourceleadUrl}';
 	var locationCode ='${SourceLeadWeb_locationCode}';
 	
 	 $.ajax({  
           type : "POST",
-          url: sourceleadUrl+"/getCandidateReferencesListByCandidateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&locationCode="+locationCode,        
+          url: sourceleadUrl+"/getCandidateReferencesListByCandidateId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&locationCode="+locationCode,        
           success :function(json) {
            
              			/*  var json = JSON.parse(data);  */
@@ -330,7 +329,6 @@ function addReference(candidateId) {
 			  	formData.append("candidateId",candidateId);
 			  	formData.append("userId",'${SourceLeadWeb_user.id}');
 			  	formData.append("locationCode",'${SourceLeadWeb_locationCode}');
-				var sourceleadUrl = '${sourceleadUrl}';
 				$("#save_ref").attr("disabled", "disabled");
          		$("#save_ref" ).addClass('button').val('Processing..');
 				//It will escape all the special characters
@@ -342,7 +340,7 @@ function addReference(candidateId) {
 		    	        processData: false,
 		    	        contentType:false,
 		        	    dataType : 'json',
-						url : sourceleadUrl+"/saveCandidateReferences?${_csrf.parameterName}=${_csrf.token}",
+						url : sourceleadUrl+"/saveCandidateReferences?"+tokenParamName+"="+tokenValue+"",
 						success : function(result) {
 								closePopup();
 								$("#popUpDiv").removeClass("edit-details-active");
@@ -417,14 +415,13 @@ function removeReference(candidateId, refId){
 --%>
 <script>
 function deleteReference(candidateId,refId){
-	var sourceleadUrl ='${sourceleadUrl}';
 	var loginUserId = '${SourceLeadWeb_userId}';
 	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	//var message = confirm("You are choosing to delete the reference");
 	 var userCode = '${SourceLeadWeb_userCode}';
 		$.ajax({
 		   	type: "POST",
-		    url: sourceleadUrl+"/terminateReference?${_csrf.parameterName}=${_csrf.token}&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&refId="+refId+"&userCode="+userCode, 	   
+		    url: sourceleadUrl+"/terminateReference?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&refId="+refId+"&userCode="+userCode, 	   
    		    success: function(data) {
    		    	if(data != null && data != 'undefined' && data != ""){
         			 $("#selector10").removeAttr("style");
@@ -465,7 +462,6 @@ function deleteReference(candidateId,refId){
       		formData.append("userId",'${SourceLeadWeb_user.id}');
 		  	formData.append("locationCode",'${SourceLeadWeb_locationCode}');
 			//It will escape all the special characters
-			var sourceleadUrl = '${sourceleadUrl}';
 			$.ajax({
 						type : "POST",
 					     data: formData,
@@ -473,7 +469,7 @@ function deleteReference(candidateId,refId){
 		    	        processData: false,
 		    	        contentType:false,
 		        	    dataType : 'json',
-						url : sourceleadUrl+ "/updateCandidateReferenceBycandidateIdAndReferenceId?${_csrf.parameterName}=${_csrf.token}",
+						url : sourceleadUrl+ "/updateCandidateReferenceBycandidateIdAndReferenceId?"+tokenParamName+"="+tokenValue+"",
 						success : function(data) {
 	            			$("#selector10").removeAttr("style");
 	            			$("#selector10").css({ display: "block" });
@@ -499,13 +495,11 @@ function deleteReference(candidateId,refId){
 <script>
 	function editCandidateReference(candidateId, refId) {
 
-		var sourceleadUrl = '${sourceleadUrl}';
-		$
-				.ajax(
+		$.ajax(
 						{
 							type : "POST",
 							url : sourceleadUrl
-									+ "/getCandidateReferencesByCandidateIdAndReferenceId?${_csrf.parameterName}=${_csrf.token}&candidateId="
+									+ "/getCandidateReferencesByCandidateIdAndReferenceId?"+tokenParamName+"="+tokenValue+"&candidateId="
 									+ candidateId + "&refId=" + refId,
 							success : function(data) {
 
