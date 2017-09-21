@@ -1847,7 +1847,7 @@ function budgetRequests(){
 	    				budgetDescription = "--";
 	    			}
 	    			result = result + '	<tr>';
-	    			if(report.budgetStatus == "Rejected"){
+	    			if((report.approverUserIdlLong == '${SourceLeadWeb_user.id}') && (report.budgetStatus == "On Hold" || report.budgetStatus == "Rejected" || report.budgetStatus == "Waiting For Approval")){
 	    				result = result + ' 	<td><div class="tbldata-dotdot-sm"> <div class="tbldata-dotdot-100 pull-left">'+report.budgetRequestedId+'</div> <i class="fa fa-pencil ml10 pull-right" onclick="editBudgetrequest('+report.id+')"></i></div></td>';
 	    			}else{
 	    				result = result + '  <td><div class="tbldata-dotdot-sm"> <div class="tbldata-dotdot-100 pull-left">'+report.budgetRequestedId+'</div></div></td>';
@@ -1865,13 +1865,31 @@ function budgetRequests(){
 						result = result + '     <i class="fa fa-clock-o" alt="On hold" title="On hold" onclick="onholdBudgetRequaet('+report.id+');"></i></div></td>';
 					}
 					if(report.budgetStatus == "Rejected"){
-						result = result + '<td><div class="tblminwidth-90"><b class="Rejec">Rejected</b></div></td>';
+						result = result + '<td><div class="tblminwidth-90 paTp"><b class="Rejec">Rejected</b>';
+						 result = result+"  <i class='glyphicon glyphicon-comment colB' id='"+report.id+"' onclick='rejectedMessage(\""+report.rejectedReason+"\");'>";
+					 	 result = result+" <div class='app_error_mes' id='rejectedMessage"+report.id+"'>"+report.rejectedReason+"</div></i>";
+					 	 result = result+" <br><span class='rejNam' title='"+report.updatedUserName+"'>By : "+report.updatedUserName+"</span>";
+						result = result + '</div></td>';
 					}
 					if(report.budgetStatus == "Approved"){
-						result = result + '<td><div class="tblminwidth-90"><b>Approved</b></div></td>';
+						result = result + '<td><div class="tblminwidth-90 paTp"><b>Approved</b>';
+						 result = result+" <br><span class='rejNam' title='"+report.updatedUserName+"'>By : "+report.updatedUserName+"</span>";
+						 result = result + '</div></td>';
 					}
-					if(report.budgetStatus == "On Hold"){
-						result = result + '<td><div class="tblminwidth-90"><b class="processs-hold">On Hold</b></div></td>';
+					
+					if((report.approverUserIdlLong ==  '${SourceLeadWeb_user.id}') &&  report.budgetStatus == "On Hold"){
+						result = result + '     <td><div class="tblminwidth-75">';
+						result = result + '     <i class="fa fa-check" alt="Approve" title="Approved" onclick="acceptBudgetRequset('+report.id+')"></i>|';
+						result = result + '     <i class="fa fa-times" alt="Rejected" title="Rejected" onclick="deleteBudgetRequaet('+report.id+');"></i>';
+						result = result + '     </div></td>';
+						
+					}
+					if(report.budgetStatus == "On Hold" && (report.approverUserIdlLong !=  '${SourceLeadWeb_user.id}')){
+						result = result + '<td><div class="tblminwidth-90 paTp"><b class="processs-hold">On Hold</b>';
+						 result = result+"  <i class='glyphicon glyphicon-comment colB' id='"+report.id+"' onclick='rejectedMessage(\""+report.rejectedReason+"\");'>";
+					 	 result = result+" <div class='app_error_mes' id='rejectedMessage"+report.id+"'>"+report.rejectedReason+"</div></i>";
+					 	 result = result+" <br><span class='rejNam' title='"+report.updatedUserName+"'>By : "+report.updatedUserName+"</span>";
+						result = result + '</div></td>';
 					}
 					
 					result = result + ' </tr>';
@@ -1888,7 +1906,22 @@ function budgetRequests(){
 	   
      });
 }
-
+$(document).on("mouseover", ".glyphicon-comment", function() { 
+	var localId = $(this).attr('id');
+	$("#rejectedMessage"+localId).addClass('app_error_mes_active');
+	});	
+	$(document).on("mouseleave", ".glyphicon-comment", function() { 
+	var localId = $(this).attr('id');
+	$("#rejectedMessage"+localId).removeClass('app_error_mes_active');
+});	
+	
+function rejectedMessage(local){ 
+	   $("#"+local).slideToggle(200);
+	   $(".timesheet_appr_table .glyphicon strong, .timesheet_appr_table .glyphicon").click(function(e) {
+	       e.stopPropagation();
+	   });	
+	   
+	}
 </script>
 <script>
 function deleteBudgetRequaet(budgetRequestedId){

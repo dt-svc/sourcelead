@@ -747,7 +747,6 @@ function getOwnerList(){
 </script>
 <script>
 function tasksAssignList(projectId){
-	alert("hello");
 	var sourceleadUrl ='${sourceleadUrl}';
 	var values = "Active";
 	$.ajax({
