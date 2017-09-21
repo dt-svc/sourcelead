@@ -126,32 +126,12 @@ function getProfessionalInfo(){
 		    	 }else{
 		    		 primarySkill = " --- ";
 		    	 }
-		    	 
 		    	/*  if(json.skillsName != null  && json.skillsName != '' && json.skillsName != 'undefiend'){
 		    		 skillsName = json.skillsName;
 		    	 }else{
 		    		 skillsName = " --- ";
+		    		 
 		    	 } */
-		    	 if(json.facebook != null  && json.facebook != '' && json.facebook != 'undefiend'){
-		    		 facebook = json.facebook;
-		    	 }else{
-		    		 facebook = "";
-		    	 }
-		    	 if(json.linkedIn != null  && json.linkedIn != '' && json.linkedIn != 'undefiend'){
-		    		 linkedIn = json.linkedIn;
-		    	 }else{
-		    		 linkedIn = "";
-		    	 }
-		    	 if(json.twitter != null  && json.twitter != '' && json.twitter != 'undefiend'){
-		    		 twitter = json.twitter;
-		    	 }else{
-		    		 twitter = "";
-		    	 }
-		    	 if(json.googlePlus != null  && json.googlePlus != '' && json.googlePlus != 'undefiend'){
-		    		 googlePlus = json.googlePlus;
-		    	 }else{
-		    		 googlePlus = "";
-		    	 }
 		    	 
 		    	 if(json.experienceYears != null  && json.experienceYears != '' && json.experienceYears != 'undefiend'){
 		    		 experienceYears = json.experienceYears +' Years';
@@ -206,7 +186,7 @@ function getProfessionalInfo(){
 				 result = result +'	<div class="content-area clearfix panelBody"> ';
 				 result = result +'	<section class="row pro_info">';
 				 result = result +'	    <div class="col-md-5">';
-				 result = result +'	        <h5>Professional Info</h5>';
+				 result = result +'	        <h5>Profile Info</h5>';
 				 result = result +'	        <div class="chip">';
 				 result = result +'	        <img data-id="userProfileImage" onerror="predefineProfileImage(this);"  src="${SourceLeadWeb_user.fileUrl}" alt="Profile Image" width="96" height="96">';
 				 
