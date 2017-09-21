@@ -555,6 +555,8 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 				 default:
 					 reqCoolingOffPeriodDays = "0";
 			 }
+			 requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.SUBMISSION);
+			 
 			 requirementSubmissionHistoryForCoolingOff = requirementSubmissionHistoryService.isInCoolingOffPeriodByEmailAndLocationsId(requirementSubmission.getCandidate().getEmail(), requirement.getOrgLocationId(), reqCoolingOffPeriodDays, requirement.getId());
 			 if(requirementSubmissionHistoryForCoolingOff != null){
 				 if(requirementSubmissionHistoryForCoolingOff.getIsInCoolingOffPeriod()){
