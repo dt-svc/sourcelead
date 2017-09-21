@@ -406,7 +406,7 @@ function uploadButton(id){
 						<div class="form-group">
 							<label class="col-md-3">Budget Approver</label>
 							<div class="col-md-9" id="chosen-budgetapprover">
-								<select class="form-control" id="budgetApprover" name="budgetApproverUser" onchange="" field-name="Budget Approver" onclick="getBudgetApprover();">
+								<select class="form-control" id="budgetApprover" name="budgetApproverUser" onchange="" field-name="Budget Approver" onchange="getBudgetApprover();">
 								<option value="">-- Select Budget Approver --</option>
 								</select>
 							</div>
@@ -577,6 +577,7 @@ function getStatus(){
 				additionalDetails.className = "disabledLink";
 			}
 			getProjectLevel1Approvers();
+			getBudgetApprover();
 		}
 		
 		$("#tab-a").show()
