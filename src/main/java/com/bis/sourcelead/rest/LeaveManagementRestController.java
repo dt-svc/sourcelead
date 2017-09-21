@@ -1,22 +1,61 @@
 package com.bis.sourcelead.rest;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.bis.sourcelead.dao.OptionsDao;
+import com.bis.sourcelead.dto.AddUserDTO;
+import com.bis.sourcelead.dto.CandidateDTO;
+import com.bis.sourcelead.dto.ClientDTO;
+import com.bis.sourcelead.dto.OptionsDTO;
+import com.bis.sourcelead.entity.Countries;
+import com.bis.sourcelead.entity.Department;
+import com.bis.sourcelead.entity.Option;
+import com.bis.sourcelead.entity.Org;
+import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.Projects;
+import com.bis.sourcelead.entity.Roles;
+import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.payroll.entity.AccountDeductionsDetails;
+import com.bis.sourcelead.service.DepartmentService;
+import com.bis.sourcelead.service.OptionsService;
+import com.bis.sourcelead.service.RolesService;
+import com.bis.sourcelead.util.SourceLeadSessionManager;
+
 @RestController
-public class LeaveManagenebtRestController {
+public class LeaveManagementRestController {
 	
-	private static final Logger logger = LoggerFactory.getLogger(LeaveManagenebtRestController.class);
+	private static final Logger logger = LoggerFactory.getLogger(LeaveManagementRestController.class);
 	
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
+	
+	@Autowired
+	DepartmentService departmentService;
+	
+	@Autowired
+	RolesService rolesService;
+	
+	@Autowired
+	OptionsService optionsService;
+	
+	@Autowired
+	OptionsDao optionsDao;
+	
 	/**
 	 * returns Pending leaves jsp
 	 * @param request
@@ -230,18 +269,29 @@ public class LeaveManagenebtRestController {
 		   model.setViewName("leavemanagement/viewRestrictDay");
 	       return model;
 	}
+
 	/**
-	 * returns add RestrictDay  jsp
+	 * returns add RestrictDay jsp
+	 * 
 	 * @param request
 	 * @param response
 	 * @return ModelAndView
+	 * @throws Exception
 	 */
 	@RequestMapping(value = "/addOptions")
-	public ModelAndView addOptionsJsp(HttpServletRequest request,HttpServletResponse response) {
-		   ModelAndView model = new ModelAndView();
-		   model.addObject("sourceleadUrl", sourceleadUrl);
-		   model.setViewName("leavemanagement/addOptions");
-	       return model;
+	public ModelAndView addOptionsJsp(HttpServletRequest request, HttpServletResponse response) throws Exception {
+		ModelAndView model = new ModelAndView();
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+		Long roleHierarchyId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "roleHierarchyId");
+		List<Department> departmentList = departmentService.getDepartmentByOrgLocationId(orgLocations.getId());
+		List<Roles> rolesList = rolesService.getUserRolesListByModuleAndLoginUserRoleHierarchy(org,orgLocations.getId(),roleHierarchyId);
+		    
+		model.addObject("departmentList", departmentList);
+		model.addObject("rolesList", rolesList);
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		model.setViewName("leavemanagement/addOptions");
+		return model;
 	}
 	
 	/**
@@ -257,4 +307,71 @@ public class LeaveManagenebtRestController {
 		   model.setViewName("leavemanagement/viewOptions");
 	       return model;
 	}
+	
+	/**
+	 * saving leave optipons
+	 * 
+	 * @param optionsDTO
+	 * @param request
+	 * @return boolean
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/saveLeaveOption", method = RequestMethod.POST)
+	@ResponseBody
+	public boolean saveLeaveOption(OptionsDTO optionsDTO, HttpServletRequest request) throws Exception {
+
+		boolean isInserted = false;
+		Option options = optionsService.saveLeaveOptions(optionsDTO);
+		if (options != null) {
+			isInserted = true;
+		}
+		return isInserted;
+	}
+	
+
+	@RequestMapping(value = {"/viewLeaveOption", "/rest/viewLeaveOption"}, method = RequestMethod.GET)
+	@ResponseBody
+	public  List<OptionsDTO> getDeductionsDetailsbyId(@RequestParam(value = "orgLocationId", required = false) Long orgLocationId, @RequestParam(value = "userId", required = false) Long userId,HttpServletRequest request) throws Exception
+	{
+		List<OptionsDTO> optionsDTOList = null;
+		 optionsDTOList = optionsService.getOptionsListByLocationId(orgLocationId);
+		 if(optionsDTOList !=null) {
+			 return optionsDTOList;
+		 }
+		return optionsDTOList;
+	}
+//	/
+	
+	@RequestMapping(value = {"/deleteLeaveOption", "/rest/deleteLeaveOption"}, method = RequestMethod.POST)
+	@ResponseBody
+	public  boolean deleteLeaveOption(@RequestParam(value = "optionId", required = false) String optionId,@RequestParam(value = "reason", required = false) String reason,HttpServletRequest request) throws Exception
+	{
+		boolean isDeleted = false;
+		 Option options = optionsService.getOptionsById(optionId);
+		 if(options !=null) {
+			 options.setStatus("0");
+			 options.setDeleteReason(reason);
+			 optionsDao.saveLeaveOption(options);
+			 isDeleted = true;
+		 }
+		return isDeleted;
+	}
+	
+	/**
+	 * returns add RestrictDay  jsp
+	 * @param request
+	 * @param response
+	 * @return ModelAndView
+	 * @throws Exception 
+	 */
+	@RequestMapping(value = "/editOption")
+	public ModelAndView editOption(@RequestParam(value="optionId", required=false) String optionId,HttpServletRequest request,HttpServletResponse response) throws Exception {
+		   ModelAndView model = new ModelAndView();
+		   Option options = optionsService.getOptionsById(optionId);
+		   model.addObject("options", options);
+		   model.addObject("sourceleadUrl", sourceleadUrl);
+		   model.setViewName("leavemanagement/addOptions");
+	       return model;
+	}
+	
 }

@@ -13,78 +13,98 @@
       <div class="pull-right brud-crum">Home &raquo; Leave Management &raquo; Leave Options</div>
     </section>
     <div class="content-area content-new clearfix">
+    <div id="loading"></div> 
+    <form:form id="add_option_form" name="add_option_form" method="post">
       <div class="clearfix form-horizontal inner-content">
         <div class="row">
           <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">
             <div class="form-group">
               <label class="col-md-3">Select Department</label>
               <div class="col-md-9 dropdown-select">
-                <select class="form-control">
-                  <option selected>--Select Department--</option>
-                  <option>Department-1</option>
-                  <option>Department-2</option>
+               <select data-placeholder="select Department" class="chosen-select form-control" id="department" name="department" field-name="Department">
+                <option value="">--Select Department--</option>
+                <c:forEach var="dept" items="${departmentList}">
+	                     <option value="${dept.id}">${dept.departmentName}</option>
+                </c:forEach>
                 </select>
               </div>
             </div>
             <div class="form-group">
               <label class="col-md-3">Select Role</label>
               <div class="col-md-9 dropdown-select">
-                <select class="form-control">
-                  <option selected>--Select Role--</option>
-                  <option>Role-1</option>
-                  <option>Role-2</option>
-                </select>
+                <select multiple data-placeholder="select owner" class="chosen-select form-control"  id="roles" name="roles" field-name="Role">
+		                        <option value="">-Select Role-</option>
+		                        <c:forEach var="option" items="${rolesList}">
+									<option value="${option.id}">${option.displayName}</option>
+								</c:forEach>
+			    </select>
               </div>
             </div>
             <div class="form-group">
               <label class="col-md-3">Calendar Month</label>
               <div class="col-md-9 dropdown-select">
-                <select class="form-control">
-                  <option selected>--Select Month--</option>
-                  <option>Month-1</option>
-                  <option>Month-2</option>
+                <select class="form-control" id="calendarMonth" name="calendarMonth">
+                  <option selected value="JANUARY">January</option>
+                  <option value="FEBRUARY">February</option>
+                  <option value="MARCH">March</option>
+                  <option value="APRIL">April</option>
+                  <option value="MAY">May</option>
+                  <option value="JUNE">June</option>
+                  <option value="JULY">July</option>
+                  <option value="AUGUST">August</option>
+                  <option value="SEPTEMBER">September</option>
+                  <option value="OCTOBER">October</option>
+                  <option value="NOVEMBER">November</option>
+                  <option value="DECEMBER">December</option>
                 </select>
               </div>
             </div>
             <div class="form-group">
               <label class="col-md-3">Weekends</label>
               <div class="col-md-9 dropdown-select">
-                <select class="form-control">
-                  <option selected>--Select Day--</option>
-                  <option>Sunday</option>
-                  <option>Monday</option>
-                  <option>Tuesday</option>
-                  <option>Wednesday</option>
-                  <option>Thursday</option>
-                  <option>Friday</option>
-                  <option>Saturday</option>
+               <select multiple data-placeholder="select owner" class="chosen-select form-control"  id="weekends" name="weekends" field-name="Weekends">
+                  <option selected value="Sunday">Sunday</option>
+                  <option value="Monday">Monday</option>
+                  <option value="Tuesday">Tuesday</option>
+                  <option value="Wednesday">Wednesday</option>
+                  <option value="Thursday">Thursday</option>
+                  <option value="Friday">Friday</option>
+                  <option selected value="Saturday">Saturday</option>
                 </select>
               </div>
             </div>
             <div class="form-group">
               <label class="col-md-3">Halfday Request</label>
               <div class="col-md-9 dropdown-select">
-                <select class="form-control">
-                  <option selected>--Select Request--</option>
-                  <option>Yes</option>
-                  <option>No</option>
+                <select class="form-control" id="halfDayRequest" name="halfDayRequest">
+                  <option selected value="YES">Yes</option>
+                  <option value="NO">No</option>
                 </select>
               </div>
             </div>
             <div class="form-group">
               <label class="col-md-3">Leave Transfer</label>
               <div class="col-md-9 dropdown-select">
-                <select class="form-control">
-                  <option selected>--Select Transfer--</option>
-                  <option>Yes</option>
-                  <option>No</option>
+                <select class="form-control" id="leaveTransfer" name="leaveTransfer">
+                <c:if test="${ !empty options.leaveTransfer}">
+                <c:if test="${options.leaveTransfer == 'YES'}">
+                <option selected value="YES">Yes</option>
+                </c:if>
+                <c:if test="${options.leaveTransfer == 'NO'}">
+                 <option selected value="NO">No</option>
+                </c:if>
+                 </c:if>
+                  <c:if test="${empty options.leaveTransfer}">
+                   <option selected value="YES">Yes</option>
+                  <option value="NO">No</option>
+                  </c:if>
                 </select>
               </div>
             </div>
             <div class="form-group">
               <label class="col-md-3">Working Hours</label>
               <div class="col-md-9 dropdown-select">
-                <input type="text" class="form-control" placeholder="Working Hours">
+                <input type="text" class="form-control" value="${options.workingHours}" placeholder="Working Hours" id="workingHours" name="workingHours">
               </div>
             </div>
           </div>
@@ -93,11 +113,65 @@
     <div class="form-footer clearfix mt">
       <div class="col-lg-12">
         <div class="pull-right">
-          <input type="button" value="Save" class="btn btn-primary">
-          <input type="button" value="Cancel" class="btn btn-default ml10">
+          <input type="button" value="Save" id="save_leaveoption" onclick="saveLeaveOption();" class="btn btn-primary">
+          <input type="button" value="Cancel" onclick="cancel();" class="btn btn-default ml10">
         </div></div></div>
+        </form:form>
       </div>
   </section>
+  
+<script type="text/javascript">
+function saveLeaveOption(){
+		var orgLocationId = '${SourceLeadWeb_orgLocationId}';
+		var userId = '${SourceLeadWeb_userId}';
+	  	/* var formData = getFormData("add_option_form"); */
+	  	var formData = $($('#add_option_form')[0]).serialize();
+		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		$.post(sourceleadUrl+"/saveLeaveOption?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&userId="+userId+"", formData, function(data) {
+			if(data == true){
+				location.replace(sourceleadUrl+ "/viewOptions");
+			}
+		}); 
+}
+</script>
 
+<script>
+function cancel(){
+	location.replace(sourceleadUrl+ "/viewOptions");
+}
+</script>
 
+<script type="text/javascript">
+			var config = {
+			  '.chosen-select'           : {},
+			  '.chosen-select-deselect'  : {allow_single_deselect:true},
+			  '.chosen-select-no-single' : {disable_search_threshold:10},
+			  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
+			  '.chosen-select-width'     : {width:"95%"}
+			}
+			for (var selector in config) {
+			  $(selector).chosen(config[selector]);
+			}
+			$('.chosen-select').each(function() {
+
+				var $this = $(this);
+				$this.next().css({'width': '100%'});
+				})
+				$(document).ready(function(){
+					$("#cd").click(function(){
+						$(".clientDetails").toggleClass('hidden', 500);
+					});
+	
+	});
+ 		</script> 
+<script type="text/javascript">
+            function leavePolicy(){
+                 var ckbox = $('#leavePolicy');
+                if (ckbox.is(':checked')) {
+           $("#leavepolicy-div").show();
+        } else {
+            $("#leavepolicy-div").hide();
+        }
+            }
+        </script> 
 <jsp:include page="../masterFooter.jsp" />
