@@ -6,8 +6,7 @@
  <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
-<script src="resources/js/jquery.mask.min.js"></script>
-<script src="resources/js/jquery.maskedinput-1.3.min.js"></script>
+ 
 <style type="text/css">
 .side-bar-active .subMenu{
     display: none;
@@ -15,7 +14,9 @@
 .side-bar-active .fa-fw {
   position: absolute !important; right: 0 !important;
 }
-
+.countShow {
+display: none;  border: none; min-width: 10px; text-align: center; cursor: pointer; max-width: 12px; 
+}
 .remove_user_pop.remove_user_pop_a {
 top:20% !important;
 left: 115px !important;
@@ -171,6 +172,7 @@ function filterStatus() {
  	 
 	   var resourceRequestsCount = '${resourceRequestsCount}';
 	   var projectMembersCount = '${projectMembersCount}';
+	   var projectBudgetCount = '${projectBudgetCount}';
 	   
 	   var result = "";
  	 
@@ -198,10 +200,12 @@ result = result + '<div class="newPrTabs col-md-12">';
 result = result + '<ul class="newPrTabsMenu">';
 result = result + '<li class="current"><a href="#tab-a" id="projectMembersTab" >Resources ('+projectMembersCount+')</a></li>';
 
-/* Dont delete this commented code. Functionality is in progress */
+/* Dont delete this commented code. Functionality is in progress '+projectBudgetCount+' */
  result = result + '<li class=""><a href="#tab-b" id="resourceTab" onclick="resourceRequestsTab();">Resource Requests ('+resourceRequestsCount+')</a></li>'; 
 
-result = result + '<li class=""><a href="#tab-c" id="budgetRequestsTab" onclick="budgetRequests();">Budget Requests (10)</a></li>';
+result = result + '<li class=""><a href="#tab-c" id="budgetRequestsTab" onclick="budgetRequests();">Budget Requests ';
+result = result + '(<b class="countClose">'+projectBudgetCount+'</b><input class="countShow" type="text" id="projectBudgetCount" readonly/>)';
+result = result + '</a></li>';
 result = result + '<div class="clearfix"></div>';
 result = result + '</ul>';
 
@@ -1799,128 +1803,338 @@ function planningRequestsPagination(){
 
 
 <!-- ====================================Budget Requests Tab End=============================================== -->
+
+
+
 <script>
 function budgetRequests(){
+	$(".countClose").hide();
+	$(".countShow").show();
 	 var sourceleadUrl ='${sourceleadUrl}';
 	 var projectUUID = '${projectUUID}';
-	 
-	 var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
-	  if(locationList.match("yyyy-MM-dd")){
-		  resourceReqListDate = 'YYYY-MM-DD';
-	  }if(locationList.match("dd-MM-yyyy")){
-		  resourceReqListDate = 'DD-MM-YYYY'; 
-	  }if(locationList.match("MM-dd-yyyy")){
-		  resourceReqListDate = 'MM-DD-YYYY'; 
-	  }if(locationList.match("yyyy-dd-MM")){
-		  resourceReqListDate = 'YYYY-DD-MM'; 
-	  }
 	 $.ajax({
 	    	type: "GET",
-	        url: sourceleadUrl+"/getPlanningRequestListByProjectUUID?${_csrf.parameterName}=${_csrf.token}&projectUUID="+projectUUID, 
+	        url: sourceleadUrl+"/getBudgetRequestListByProjectUUID?${_csrf.parameterName}=${_csrf.token}&projectUUID="+projectUUID, 
 	        success: function(json) {
-	        	
-	        	
 	        	var result = "";
-	        	
 	    		result = result + '	<div class="timesheet_head anchorTag-black">';
 	    		result = result + '	<ul>';
 	    		result = result + '	<li><a href="javascript:void(0)" onclick="addBudgetRequestPopUp();getApproversList();"><i class="glyphicon glyphicon-plus paddingRight"></i>Budget Request</a></li>';
 	    		result = result + '	</ul>';
 	    		result = result + '	       </div>';
 	    		result = result + '	       <div id="budgetRequestPopUpid"></div>';
+	    		result = result + '	       <div id="editBudgetRequestPopUpid"></div>';
 	    		result = result + '		<div class="project_tabs_inn_table vendor_wrap_inn_table datatable_filter overflow_inherint">';
-	    		result = result + '		<table id="planningRequestsPaginationList" cellspacing="0" width="100%">';
+	    		result = result + '		<table id="projectBudgetRequestList" cellspacing="0" width="100%">';
 	    		result = result + '	    <thead>';
 	    		result = result + '	     	<tr>';
-		    		
 	            result = result + '	 	<th>Request Id</th>';
 	            result = result + '	   <th>Base Line</th>';
-	            result = result + '	   <th>Project</th>';
 	            result = result + '	   <th>Budget Total</th>';
 	            result = result + '	   <th>Estimated Hours</th>';
-	            result = result + '	   <th>Type</th>';
 	            result = result + '	   <th>Date</th>';
 	            result = result + '	   <th>Initiator</th>';
 	            result = result + '	   <th>Action</th>';
 	    		result = result + '	         </tr>';
 	    		result = result + '	    </thead>';
 	    		result = result + '	 	<tbody>';
-	    		
-				result = result + '	<tr>';
-				result = result + ' 	<td><div>BIS00001</div></td>';
-				result = result + '     <td><div>Budget Request</div></td>';
-				result = result + '     <td><div>Project 1</div></td>';
-				result = result + '     <td><div>250000</div></td>';
-				result = result + '     <td><div>200</div></td>';
-				result = result + '     <td><div>New</div></td>';
-				result = result + '     <td><div>06/08/2017</div></td>';
-				result = result + '     <td><div>Jhon</div></td>';
-				result = result + '     <td><div class="tblminwidth-75">';
-				result = result + '     <i class="fa fa-check" alt="Approve" title="Approved"></i>|';
-				result = result + '     <i class="fa fa-times" alt="Rejected" title="Rejected"></i></div></td>';
-				result = result + ' </tr>';
-				
-				result = result + '<tr>';
-	            result = result + '	<td><div>BIS00001</div></td>';
-	            result = result + '    <td><div>Budget Request</div></td>';
-	            result = result + '    <td><div>Project 1</div></td>';
-	            result = result + '    <td><div>250000</div></td>';
-	            result = result + '    <td><div>200</div></td>';
-	            result = result + '    <td><div>Extension</div></td>';
-	            result = result + '    <td><div>06/08/2017</div></td>';
-	            result = result + '    <td><div>Jhon</div></td>';
-	            result = result + '    <td><div class="tblminwidth-90"><b>Approved</b></div></td>';
-	            result = result + '</tr>';
-	    		
-	    		
+	    		for(i=0;i<json.length;i++){
+	    			var report = json[i];
+	    			if(report.estimatedBudgetValue != null  && report.estimatedBudgetValue != "" && report.estimatedBudgetValue != "undefined"){
+	    				estimatedBudgetValue = report.estimatedBudgetValue;
+	    			}else{
+	    				estimatedBudgetValue = "--";
+	    			}
+	    			
+	    			if(report.estimatedHours != null && report.estimatedHours != "" && report.estimatedHours !="undefined"){
+	    				estimatedHours = report.estimatedHours;
+	    			}else{
+	    				estimatedHours = "--";
+	    			}
+	    			if(report.budgetDescription != null && report.budgetDescription != "" && report.budgetDescription !="undefined"){
+	    				budgetDescription = report.budgetDescription;
+	    			}else{
+	    				budgetDescription = "--";
+	    			}
+	    			result = result + '	<tr>';
+	    			if(report.budgetStatus == "Rejected"){
+	    				result = result + ' 	<td><div class="tbldata-dotdot-sm"> <div class="tbldata-dotdot-100 pull-left">'+report.budgetRequestedId+'</div> <i class="fa fa-pencil ml10 pull-right" onclick="editBudgetrequest('+report.id+')"></i></div></td>';
+	    			}else{
+	    				result = result + '  <td><div class="tbldata-dotdot-sm"> <div class="tbldata-dotdot-100 pull-left">'+report.budgetRequestedId+'</div></div></td>';
+	    			}
+					
+					result = result + '     <td><div class="tbldata-dotdot-me" title="'+budgetDescription+'">'+budgetDescription+'</div></td>';
+					result = result + '     <td><div class="tbldata-dotdot_80" title="'+estimatedBudgetValue+'">'+estimatedBudgetValue+'</div></td>';
+					result = result + '     <td><div  class="tbldata-dotdot_80">'+estimatedHours+'</div></td>';
+					result = result + '     <td><div  class="tbldata-dotdot_80">'+report.createdStr+'</div></td>';
+					result = result + '     <td><div  class="tbldata-dotdot-vsm" title="'+report.createdUserName+'">'+report.createdUserName+'</div></td>';
+					if(report.budgetStatus == "Waiting For Approval"){
+						result = result + '     <td><div class="tblminwidth-75">';
+						result = result + '     <i class="fa fa-check" alt="Approve" title="Approved" onclick="acceptBudgetRequset('+report.id+')"></i>|';
+						result = result + '     <i class="fa fa-times" alt="Rejected" title="Rejected" onclick="deleteBudgetRequaet('+report.id+');"></i>';
+						result = result + '     <i class="fa fa-clock-o" alt="On hold" title="On hold" onclick="onholdBudgetRequaet('+report.id+');"></i></div></td>';
+					}
+					if(report.budgetStatus == "Rejected"){
+						result = result + '<td><div class="tblminwidth-90"><b class="Rejec">Rejected</b></div></td>';
+					}
+					if(report.budgetStatus == "Approved"){
+						result = result + '<td><div class="tblminwidth-90"><b>Approved</b></div></td>';
+					}
+					if(report.budgetStatus == "On Hold"){
+						result = result + '<td><div class="tblminwidth-90"><b class="processs-hold">On Hold</b></div></td>';
+					}
+					
+					result = result + ' </tr>';
+	    		}
 	    		result = result + '	     </tbody>';
 	    		result = result + '	 </table>';
 	    		result = result + '</div>';
 	    	    $("#budgetRequestsTabDiv").empty();
 	    	    $("#budgetRequestsTabDiv").append(result); 
-	    	    planningRequestsPagination();
+	    	    $("#projectBudgetCount").val(json.length); 
+	    	    
+	    	    budgetRequestPagination();
 	        }
 	   
      });
 }
 
-
 </script>
+<script>
+function deleteBudgetRequaet(budgetRequestedId){
+	var result = "";
+	result = result +"	<div class='project_inn_mask'></div>"; 
+	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+	result = result +"<form id='deleteBudget_form' name='deleteBudget_form' >";
+	result = result +"<input type='hidden' id='budgetRequestedId' name='budgetRequestedId' value='"+budgetRequestedId+"'>";
+	result = result +"<input type='hidden' id='loginUserid' name='loginUserid' value='${SourceLeadWeb_user.id}'>";
+	result = result +"		<p>Are you sure you want to delete ?</p>";
+	result = result +"		<textarea  id='reasonForProjectBudget' name='reasonForProjectBudget'  placeholder='Comments here' field-name='Reason' data-validation='validate_length length2-5000' data-validation-optional='true'></textarea>";
+	result = result +"</form>";
+	result = result +'		<b href="javascript:void(0)"><input id="delete_budget-id" type="button" value="Delete" onclick="saveBudgetReason('+budgetRequestedId+');"><input class="u_can_color" type="button"  value="Cancel" onClick="cancelTermination();"></b>';
+	result = result +"	</div>";
 
+	$("#popUp").append(result);
+	$("#remove_user_pop").slideDown(200);
+	$(".project_inn_mask").fadeIn(200);
+
+}
+function cancelTermination(){
+	$("#popUp").empty();
+	 $(".project_inn_mask").fadeOut(200);
+}
+function saveBudgetReason(budgetRequestedId){
+	var sourceleadUrl = '${sourceleadUrl}';
+     $("#delete_budget").attr("disabled", "disabled");
+	 $("#delete_budget").attr("disabled", "disabled");
+	 var formData = getFormData("deleteBudget_form");
+	 $.ajax({
+				type : "POST",
+				data :formData,
+				url : sourceleadUrl+"/saveBudgetRequestReason?${_csrf.parameterName}=${_csrf.token}",
+				success : function(result) {
+					$("#popUp").empty();
+	   			 	$(".project_inn_mask").fadeOut(200);
+	   			 	budgetRequests();
+				},
+			}); 
+}
+$('body').on('blur', '#deleteBudget_form', function() {
+	$("#deleteBudget_form").showHelpOnFocus();;
+	$("#deleteBudget_form").validateOnBlur(false, validationSettings);  
+}); 
+
+function acceptBudgetRequset(budgetRequestedId){
+	var sourceleadUrl = '${sourceleadUrl}';
+	var userId = '${SourceLeadWeb_user.id}';
+	 $.ajax({
+				type : "POST",
+				url : sourceleadUrl+"/acceptBudgetRequest?${_csrf.parameterName}=${_csrf.token}&budgetRequestedId="+budgetRequestedId+"&userId="+userId,
+				success : function(result) {
+					budgetRequests();
+				},
+			}); 
+}
+function onholdBudgetRequaet(budgetRequestedId){
+	var result = "";
+	result = result +"	<div class='project_inn_mask'></div>"; 
+	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+	result = result +"<form id='deleteBudget_form' name='deleteBudget_form' >";
+	result = result +"<input type='hidden' id='budgetRequestedId' name='budgetRequestedId' value='"+budgetRequestedId+"'>";
+	result = result +"<input type='hidden' id='loginUserid' name='loginUserid' value='${SourceLeadWeb_user.id}'>";
+	result = result +"		<p>Are you sure you want to reject ?</p>";
+	result = result +"		<textarea  id='reasonForProjectBudget' name='reasonForProjectBudget'  placeholder='Comments here' field-name='Reason' data-validation='validate_length length2-5000' data-validation-optional='true'></textarea>";
+	result = result +"</form>";
+	result = result +'		<b href="javascript:void(0)"><input id="delete_budget-id" type="button" value="Delete" onclick="saveBudgetReason('+budgetRequestedId+');"><input class="u_can_color" type="button"  value="Cancel" onClick="cancelTermination();"></b>';
+	result = result +"	</div>";
+
+	$("#popUp").append(result);
+	$("#remove_user_pop").slideDown(200);
+	$(".vendor_wrap_mask").fadeIn(200);
+	
+	var sourceleadUrl = '${sourceleadUrl}';
+	var userId = '${SourceLeadWeb_user.id}';
+	 $.ajax({
+				type : "POST",
+				url : sourceleadUrl+"/onHoldBudgetRequest?${_csrf.parameterName}=${_csrf.token}&budgetRequestedId="+budgetRequestedId+"&userId="+userId,
+				success : function(result) {
+					budgetRequests();
+				},
+			}); 
+}
+
+function editBudgetrequest(budgetRequestedId){
+	 $("#budgetRequestPopUpid").empty();
+	var sourceleadUrl = '${sourceleadUrl}';
+	 
+	 $.ajax({
+				type : "POST",
+				url : sourceleadUrl+"/getBudgetRequestDetailsById?${_csrf.parameterName}=${_csrf.token}&budgetRequestedId="+budgetRequestedId,
+				success : function(json) {
+					var result = "";
+					result = result + '	<div class="collapse-div-adduser prRight col-md-4 show-div prRight_new"> <i class="fa fa-close close-div" onClick="editCloseDiv();"></i>';
+					result = result + '		<div class="form-horizontal clearfix">';
+					result = result + '<form id="budgetRequest-form" name="budgetRequest-form">';
+					result = result + '	    <input type="hidden" id="projectUUID" name="projectUUID" value="${projectUUID}">';
+					result = result + '	    <input type="hidden" id="userId" name="loginUserid" value="${SourceLeadWeb_user.id}">';
+					result = result + '	    <input type="hidden" id="budgetRequestedId" name="budgetRequestedId" value="'+json.id+'">';
+					result = result + '	    <div class="clearfix mb10">';
+					result = result + '	    <div class="clearfix mb10">';
+					result = result + '	      <div class="col-md-12">';
+					result = result + '	        <input type="text" class="form-control" value="'+json.budgetDescription+'" id="baseLine" name="baseLine" placeholder="Base Line *" field-name="Base Line" data-validation="required validate_Space validate_length length1-250">';
+					result = result + '	      </div>';
+					result = result + '	    </div>    ';                        
+				 
+					result = result + '	    <div class="clearfix mb10">';
+					result = result + '	      <div class="col-md-12" id="bgApErrMsg">';
+					result = result + '	        <select class="chosen-select" field-name="Approver" id="budgetApprover" name="budgetApprover" data-validation="required" onchange="removeErrMsg();">';
+					result = result + '	        </select>';
+					result = result + '	        </div>';
+					result = result + '	      </div>'; 
+					 
+					result = result + '	    <div class="clearfix mb10">';
+					result = result + '	      <div class="col-md-12">';
+					result = result + '	        <input type="text" class="form-control inlineField" value="'+json.estimatedHours+'" id="estimatedHours" placeholder="Estimated Hours *" name="estimatedHours" field-name="Estimated Hours"  data-validation="required">';
+					result = result + '	      </div>';
+					result = result + '	    </div>';
+				  
+					result = result + '	    <div class="clearfix mb10">';
+					result = result + '	      <div class="col-md-12">';
+					result = result + ' <div class="input-group">';
+					result = result + ' <div class="input-group-btn selp-custom-min selp-customMin">';
+					result = result + '       <select class="selectpicker" id="estimatedBudgetCurrency" name="estimatedBudgetCurrency" >';
+					result = result + '          <option '+ (json.estimatedBudgetCurrency == "INR" ? "selected" : '') +' value="INR" >INR</option>';
+					result = result + '          <option '+ (json.estimatedBudgetCurrency == "AUD" ? "selected" : '') +' value="AUD" >AUD</option>';
+					result = result + '          <option '+ (json.estimatedBudgetCurrency == "USD" ? "selected" : '') +' value="USD" >USD</option>';
+					result = result + '          <option '+ (json.estimatedBudgetCurrency == "GBP" ? "selected" : '') +' value="GBP" >GBP</option>';
+					result = result + '          <option '+ (json.estimatedBudgetCurrency == "SGD" ? "selected" : '') +' value="SGD" >SGD</option>';
+					result = result + '          <option '+ (json.estimatedBudgetCurrency == "EUR" ? "selected" : '') +' value="EUR" >EUR</option>';
+					result = result + '     </select>';
+					result = result + '     </div>';
+					result = result + '	        <input type="text" class="form-control " value="'+json.estimatedBudgetValue+'" id="estimatedBudget" name="estimatedBudget" placeholder="Estimated Budget *" field-name="Estimated Budget" data-validation="required validate_Space validate_float validate_length length1-16">';
+					result = result + ' </div>';
+					result = result + ' </div>';
+					
+					result = result + '	    <div class="clearfix mt10 mb10"></div>';
+					 
+					result = result + '	    <div class="clearfix mr">';
+					result = result + '	      <button type="button" class="btn btn-sm btn-primary pull-right" id="save_budget" onclick="saveBudgetRequest();">Update</button>';
+					result = result + '	    </div>';
+					result = result + '	  </div>';
+					result = result + '</form>';
+					result = result + '	</div>';
+					 $("#editBudgetRequestPopUpid").empty();
+					 $("#editBudgetRequestPopUpid").append(result);
+					 $("#editBudgetRequestPopUpid").show();
+					 getApproversList(json.approverUserIdlLong);
+					 $('#estimatedBudgetCurrency').selectpicker('refresh');
+				    var config = {
+						  '.chosen-select'           : {},
+						  '.chosen-select-deselect'  : {allow_single_deselect:true},
+						  '.chosen-select-no-single' : {disable_search_threshold:10},
+						  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
+						  '.chosen-select-width'     : {width:"95%"}
+						}
+						for (var selector in config) {
+						  $(selector).chosen(config[selector]);
+						}
+						$('.chosen-select').each(function() {
+							var $this = $(this);
+							$this.next().css({'width': '100%'});
+							});
+				},
+			}); 
+	 
+	
+			
+}
+function editCloseDiv(){
+	$("#editBudgetRequestPopUpid").hide();
+}
+</script>
+<script>
+function budgetRequestPagination(){  
+    $('#projectBudgetRequestList').DataTable( { 
+    	"scrollCollapse": false,
+    	"lengthMenu": [[5, 15, 25, 30, -1], [5, 15, 25, 30, "All"]],
+		"aaSorting": [[4,'desc']],
+    	"bLengthChange": true,
+    	"bDestroy": true,
+    	"ordering": true,
+    	"oLanguage": {
+     		"sSearch": "",
+     		"sZeroRecords": "", "sEmptyTable": ""
+     	}
+    });
+    $('#planningRequestsList').wrap("<div class='overflow_Auto'></div>");
+}
+</script>
 <script>
 function addBudgetRequestPopUp(){
 	var result = "";
 	result = result + '	<div class="collapse-div-adduser prRight col-md-4 show-div prRight_new"> <i class="fa fa-close close-div" onClick="closeDiv();"></i>';
 	result = result + '		<div class="form-horizontal clearfix">';
 	result = result + '<form id="budgetRequest-form" name="budgetRequest-form">';
+	result = result + '	    <input type="hidden" id="projectUUID" name="projectUUID" value="${projectUUID}">';
+	result = result + '	    <input type="hidden" id="userId" name="loginUserid" value="${SourceLeadWeb_user.id}">';
+	result = result + '	    <div class="clearfix mb10">';
 	result = result + '	    <div class="clearfix mb10">';
 	result = result + '	      <div class="col-md-12">';
-	result = result + '	        <input type="text" class="form-control input-sm" value="" placeholder="Request Id">';
-	result = result + '	      </div>';
-	result = result + '	    </div>';
-	result = result + '	    <div class="clearfix mb10">';
-	result = result + '	      <div class="col-md-12">';
-	result = result + '	        <input type="text" class="form-control input-sm" value="" placeholder="Base Line *" field-name="Base Line" data-validation="required">';
+	result = result + '	        <input type="text" class="form-control input-sm" value="" id="baseLine" name="baseLine" placeholder="Base Line *" field-name="Base Line" data-validation="required validate_Space validate_length length1-250">';
 	result = result + '	      </div>';
 	result = result + '	    </div>    ';                        
  
 	result = result + '	    <div class="clearfix mb10">';
-	result = result + '	      <div class="col-md-12">';
-	result = result + '	        <select class="chosen-select" field-name="Approver" id="budgetApprover" name="budgetApprover" data-validation="required">';
+	result = result + '	      <div class="col-md-12" id="bgApErrMsg">';
+	result = result + '	        <select class="chosen-select" field-name="Approver" id="budgetApprover" name="budgetApprover" data-validation="required" onchange="removeErrMsg()">';
 	result = result + '	        </select>';
 	result = result + '	        </div>';
 	result = result + '	      </div>'; 
 	 
 	result = result + '	    <div class="clearfix mb10">';
 	result = result + '	      <div class="col-md-12">';
-	result = result + '	        <input type="text" class="form-control input-sm inlineField" value="" id="estimatedHours" name="estimatedHours" placeholder="MMMM:HH" field-name="Estimated Hours" onblur="calculateEstimatedHours();"  data-validation="required">';
+	result = result + '	        <input type="text" class="form-control input-sm inlineField" value="" id="estimatedHours"  placeholder="Estimated Hours *" name="estimatedHours"  field-name="Estimated Hours"  data-validation="required">';
 	result = result + '	      </div>';
 	result = result + '	    </div>';
  
 	result = result + '	    <div class="clearfix mb10">';
 	result = result + '	      <div class="col-md-12">';
-	result = result + '	        <input type="text" class="form-control input-sm" value="" placeholder="Estimated Budget *" field-name="Estimated Budget" data-validation="required">';
-	result = result + '	      </div>';
+	result = result + ' <div class="input-group">';
+	result = result + ' <div class="input-group-btn selp-custom-min selp-customMin">';
+	result = result + '       <select class="selectpicker" id="estimatedBudgetCurrency" name="estimatedBudgetCurrency" >';
+	result = result + '          <option ${SourceLeadWeb_currencyCode == "INR" ? "selected" : ''}>INR</option>';
+	result = result + '          <option ${SourceLeadWeb_currencyCode == "AUD" ? "selected" : ''}>AUD</option>';
+	result = result + '          <option ${SourceLeadWeb_currencyCode == "USD" ? "selected" : ''}>USD</option>';
+	result = result + '          <option ${SourceLeadWeb_currencyCode == "GBP" ? "selected" : ''}>GBP</option>';
+	result = result + '          <option ${SourceLeadWeb_currencyCode == "SGD" ? "selected" : ''}>SGD</option>';
+	result = result + '          <option ${SourceLeadWeb_currencyCode == "EUR" ? "selected" : ''}>EUR</option>';
+	result = result + '     </select>';
+	result = result + '     </div>';
+	result = result + ' 	<input type="text" value="" id="estimatedBudget" name="estimatedBudget" class="form-control" placeholder="Estimated Budget *"';
+	result = result + ' 		data-validation="required validate_Space validate_float validate_length length1-16" data-validation-optional="true" class="form-control" field-name="Estimated Budget" >';
+	result = result + ' </div>';
+	result = result + ' </div>';
+	
 	result = result + '	    </div>';                                                                                    
 	 
 	result = result + '	    <div class="clearfix mr">';
@@ -1932,7 +2146,9 @@ function addBudgetRequestPopUp(){
 	 $("#budgetRequestPopUpid").empty();
 	 $("#budgetRequestPopUpid").append(result);
 	 $("#budgetRequestPopUpid").show();
-	 maskme();
+	 $("#editBudgetRequestPopUpid").empty();
+	 document.getElementById("editBudgetRequestPopUpid").style.display="none";
+	 $('#estimatedBudgetCurrency').selectpicker('refresh');
 	 var config = {
 			  '.chosen-select'           : {},
 			  '.chosen-select-deselect'  : {allow_single_deselect:true},
@@ -1952,10 +2168,12 @@ function addBudgetRequestPopUp(){
 function closeDiv(){
 	$("#budgetRequestPopUpid").hide();
 }
-
+function removeErrMsg(){
+	$("#bgApErrMsg").find("p.jquery_form_error_message").remove(); 
+}
 </script>
 <script>
-function getApproversList(){
+function getApproversList(approverUserId){
 var sourceleadUrl ='${sourceleadUrl}';
 var orgLocationId = '${SourceLeadWeb_orgLocations.id}';
 	$.ajax({
@@ -1975,7 +2193,12 @@ var orgLocationId = '${SourceLeadWeb_orgLocations.id}';
 		     			fullname = opt.firstName;
 		     		}
 		     		 
-		     			output = output + "<option value='" +opt.id+ "'>"+fullname+" ("+opt.userType+")</option>";
+		     		 if(opt.id == approverUserId){
+		        			output = output + "<option value='"+opt.id+"' selected>"+opt.firstName+" "+opt.lastName+" ("+opt.userType+")</option>";
+		        		}else{
+		        			output = output + "<option value='"+opt.id+"'> "+opt.firstName+" "+opt.lastName+" ("+opt.userType+")</option>";
+		        		}
+		     		 
 	     		}
 	     		$("#budgetApprover").empty();
 	     		$("#budgetApprover").append(output);
@@ -1996,14 +2219,13 @@ function saveBudgetRequest(){
 			 var sourceleadUrl = '${sourceleadUrl}';
 			 $("#save_budget").attr("disabled", "disabled");
 			 $("#save_budget").attr("disabled", "disabled");
+			 var formData = getFormData("budgetRequest-form");
 			 $.ajax({
 						type : "POST",
 						data :formData,
-						processData: false,
-		    	        contentType:false,
-						url : sourceleadUrl+"/upDateCandidateEducationByCandidateIdAndCandidateEducationId?${_csrf.parameterName}=${_csrf.token}&candidateId=" + candidateId ,
+						url : sourceleadUrl+"/saveBudgetRequest?${_csrf.parameterName}=${_csrf.token}",
 						success : function(result) {
-							 
+							budgetRequests();
 						},
 					}); 
 			return true;
@@ -2016,195 +2238,6 @@ $('body').on('blur', '#budgetRequest-form', function() {
 	$("#budgetRequest-form").validateOnBlur(false, validationSettings);  
 }); 
 </script>
-<script>
-function maskme(){
-	$.mask.definitions['H'] = "[0-9]";
-    $.mask.definitions['h'] = "[0-9]";
-    $.mask.definitions['h'] = "[0-9]";
-    $.mask.definitions['M'] = "[0-9]";
-    $.mask.definitions['m'] = "[0-9]";
-    $.mask.definitions['P'] = "[AaPp]";
-    $.mask.definitions['p'] = "[Mm]";
-    $(".inlineField").mask("HHhh:Mm"); 
-    
-    $(".allownumericwithdecimal").on("keypress keyup blur",function (event) {
-    $(this).val($(this).val().replace(/[^0-9\.]/g,''));
-        if ((event.which != 46 || $(this).val().indexOf('.') != -1) && (event.which < 48 || event.which > 57)) {
-            event.preventDefault();
-        }
-    });
-}
-</script>
-<script>
-function calculateEstimatedHours(){
-	var totalHours = $("#estimatedHours").val();
-    var split = totalHours.split(':');
-    var hours = split[0];
-    var minute = split[1];
-     
-     var hours1 = hours.charAt(0);
-	 var hours2 = hours.charAt(1);
-	 var hours3 = hours.charAt(2);
-	 var hours4 = hours.charAt(3);
-	 var min1 = minute.charAt(0);
-	 var min2 = minute.charAt(1);
-	 
-	 alert("hours4"+hours4);
-	 if(!isNaN(hours1) && isNaN(hours2) && isNaN(hours3)){
-		 if(isNaN(min1) && isNaN(min2)){
-			 $("#estimatedHours").val("00"+hours1+":00");
-			 setHours("00"+hours1,"00"); 
-		 }
-		 else if(!isNaN(min1) && isNaN(min2)){
-			 $("#estimatedHours").val("00"+hours1+":0"+min1);
-			 setHours("00"+hours1,"0"+min1);
-		 }
-		 else if(isNaN(min1) && !isNaN(min2)){
-			 $("#estimatedHours").val("00"+hours1+":0"+min2);
-			 setHours("00"+hours1,"0"+min2);
-		 }
-		 else{
-			 $("#estimatedHours").val("00"+hours1+":"+minute);
-			 setHours("00"+hours1,minute);
-		 }
-	 }
-	 else if(isNaN(hours1) && !isNaN(hours2) && isNaN(hours3)){
-		 if(isNaN(min1) && isNaN(min2)){
-			 $("#estimatedHours").val("00"+hours2+":00");
-			 setHours("00"+hours2,"00");
-		 }
-		 else if(!isNaN(min1) && isNaN(min2)){
-			 $("#estimatedHours").val("00"+hours2+":0"+min1);
-			 setHours("00"+hours2,"0"+min1);
-		 }
-		 else if(isNaN(min1) && !isNaN(min2)){
-			 $("#estimatedHours").val("00"+hours2+":0"+min2);
-			 setHours("00"+hours2,"0"+min2);
-		 }
-		 else{
-			 $("#estimatedHours").val("00"+hours2+":"+minute);
-			 setHours("00"+hours2,minute);
-		 }
-	 }
-	 else if(isNaN(hours1) && isNaN(hours2) && !isNaN(hours3)){
-		if(isNaN(min1) && isNaN(min2)){
-			 $("#estimatedHours").val("00"+hours3+":00");
-			 setHours("00"+hours3,"00");
-		 }
-		 else if(!isNaN(min1) && isNaN(min2)){
-			 $("#estimatedHours").val("00"+hours3+":0"+min1);
-			 setHours("00"+hours3,"0"+min1);
-		 }
-		 else if(isNaN(min1) && !isNaN(min2)){
-			 $("#estimatedHours").val("00"+hours3+":0"+min2);
-			 setHours("00"+hours3,"0"+min2);
-		 }
-		 else{
-			 $("#estimatedHours").val("00"+hours3+":"+minute);
-			 setHours("00"+hours3,minute);
-		 }
-	 }
-	 else if(!isNaN(hours1) && !isNaN(hours2) && isNaN(hours3)){
-		if(isNaN(min1) && isNaN(min2)){
-			 $("#estimatedHours").val("0"+hours1+hours2+":00");
-			 setHours("0"+hours1+hours2,"00");
-		 }
-		 else if(!isNaN(min1) && isNaN(min2)){
-			 $("#estimatedHours").val("0"+hours1+hours2+":0"+min1);
-			 setHours("0"+hours1+hours2,"0"+min1);
-		 }
-		 else if(isNaN(min1) && !isNaN(min2)){
-			 $("#estimatedHours").val("0"+hours1+hours2+":0"+min2);
-			 setHours("0"+hours1+hours2,"0"+min2);
-		 }
-		 else{
-			 $("#estimatedHours").val("0"+hours1+hours2+":"+minute);
-			 setHours("0"+hours1+hours2,minute);
-		 }
-		
-	 }
-	 else if(isNaN(hours1) && !isNaN(hours2) && !isNaN(hours3)){
-		 if(isNaN(min1) && isNaN(min2)){
-			 $("#estimatedHours").val("0"+hours2+hours3+":00");
-			 setHours("0"+hours2+hours3,"00");
-		 }
-		 else if(!isNaN(min1) && isNaN(min2)){
-			 $("#estimatedHours").val("0"+hours2+hours3+":0"+min1);
-			 setHours("0"+hours2+hours3,"0"+min1);
-		 }
-		 else if(isNaN(min1) && !isNaN(min2)){
-			 $("#estimatedHours").val("0"+hours2+hours3+":0"+min2);
-			 setHours("0"+hours2+hours3,"0"+min2);
-		 }
-		 else{
-			 $("#estimatedHours").val("0"+hours2+hours3+":"+minute);
-			 setHours("0"+hours2+hours3,minute);
-		 }
-	 }
-	 else if(!isNaN(hours1) && isNaN(hours2) && !isNaN(hours3)){
-		 if(isNaN(min1) && isNaN(min2)){
-			 $("#estimatedHours").val("0"+hours1+hours3+":00");
-			 setHours("0"+hours1+hours3,"00");
-		 }
-		 else if(!isNaN(min1) && isNaN(min2)){
-			 $("#estimatedHours").val("0"+hours1+hours3+":0"+min1);
-			 setHours("0"+hours1+hours3,"0"+min1);
-		 }
-		 else if(isNaN(min1) && !isNaN(min2)){
-			 $("#estimatedHours").val("0"+hours1+hours3+":0"+min2);
-			 setHours("0"+hours1+hours3,"0"+min2);
-		 }
-		 else{
-			 $("#estimatedHours").val("0"+hours1+hours3+":"+minute);
-			 setHours("0"+hours1+hours3,minute);
-		 }
-	 }
-	 else if(!isNaN(hours1) && !isNaN(hours2) && !isNaN(hours3)){
-		 if(isNaN(min1) && isNaN(min2)){
-			 $("#estimatedHours").val(hours+":00");
-			 setHours(hours,"00");
-		 }
-		 else if(!isNaN(min1) && isNaN(min2)){
-			 $("#estimatedHours").val(hours+":0"+min1);
-			 setHours(hours,"0"+min1);
-		 }
-		 else if(isNaN(min1) && !isNaN(min2)){
-			 $("#estimatedHours").val(hours+":0"+min2);
-			 setHours(hours,"0"+min2);
-		 }
-		 else{
-			 $("#estimatedHours").val(hours+":"+minute);
-			 setHours(hours,minute);
-		 }
-	 }else{
-		 setHours("000","00");
-	 }
-	  
-}
-function setHours(hours,minute){
-	var split = hours.split(':');
-    var splitHours = split[0];
-	var hourminits = splitHours * 60;
-    var finalmin = parseInt(hourminits) + parseInt(minute);
-    
-    var actualHours = Math.floor(finalmin / 60); 
-    var actualMinutes = finalmin % 60;
-    var actualTotal = 0;
-    if (actualHours >= 10 && actualHours < 100) {
-			actualHours = '0' + actualHours;
-	  }
-    if (actualHours < 10) {
-			actualHours = '00' + actualHours;
-	  }
-	 if (actualMinutes < 10) {
-		actualMinutes = '0' + actualMinutes;
-	 }
-	 if(!isNaN(actualHours) && !isNaN(actualMinutes)){
-		 actualTotal = actualHours +":"+ actualMinutes;
-	 }else{
-		 actualTotal =  "000:00";
-	 }
-	 $('#estimatedHours').empty();
-    $('#estimatedHours').val(actualTotal);
-}
-</script>
+ 
+
+

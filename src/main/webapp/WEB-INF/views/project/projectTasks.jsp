@@ -747,13 +747,13 @@ function getOwnerList(){
 </script>
 <script>
 function tasksAssignList(projectId){
+	alert("hello");
 	var sourceleadUrl ='${sourceleadUrl}';
 	var values = "Active";
 	$.ajax({
     	type: "POST",
         url: sourceleadUrl+"/getProjectEmployeeListById?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId+"&status="+values, 
-        success: function(data) {
-        	var json = JSON.parse(data);
+        success: function(json) {
         	var output = "";
         	for (var i=0; i<json.projectMembersList.length; i++)
 			{
