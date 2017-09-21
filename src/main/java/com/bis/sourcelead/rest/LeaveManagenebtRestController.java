@@ -1,19 +1,33 @@
 package com.bis.sourcelead.rest;
 
+import java.util.List;
+
+import javax.measure.unit.Dimension.Model;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
+
+import com.bis.sourcelead.dto.ShiftDTO;
+import com.bis.sourcelead.entity.Shift;
+import com.bis.sourcelead.service.ShiftService;
 
 @RestController
 public class LeaveManagenebtRestController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(LeaveManagenebtRestController.class);
+	
+	@Autowired
+	ShiftService shiftService;
+	
 	
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
@@ -188,7 +202,6 @@ public class LeaveManagenebtRestController {
 		   model.setViewName("leavemanagement/addShift");
 	       return model;
 	}
-	
 	/**
 	 * returns view shift  jsp
 	 * @param request
@@ -256,5 +269,27 @@ public class LeaveManagenebtRestController {
 		   model.addObject("sourceleadUrl", sourceleadUrl);
 		   model.setViewName("leavemanagement/viewOptions");
 	       return model;
+	}
+	
+	@RequestMapping(value = "/saveShift")
+	public String saveShift(ShiftDTO shiftDTO) throws Exception {
+		shiftService.saveShift(shiftDTO);
+	       return "success";
+	}
+	
+	@RequestMapping(value = "/getShiftList")
+	public List<Shift> getShiftList(@RequestParam (value = "orgLocationId", required = true )Long orgLocationId) throws Exception{
+	List<Shift> shift = shiftService.getShiftList(orgLocationId);
+	return shift;
+	}
+	
+	@RequestMapping(value = "/editShift" ,method = RequestMethod.POST)
+	public ModelAndView editShift(@RequestParam (value = "shiftId", required = true )String shiftId,HttpServletRequest request,HttpServletResponse response) throws Exception{
+		ModelAndView model = new ModelAndView();
+		List<Shift> shift = shiftService.getShiftById(shiftId);
+		model.addObject("shifts", shift);
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		model.setViewName("leavemanagement/addShift");
+		return model;
 	}
 }
