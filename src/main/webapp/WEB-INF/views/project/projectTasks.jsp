@@ -183,15 +183,19 @@ function projectTask(projectId, status) {
 							}else{
 								taskAssignedUsers = "--"
 							}
-							
+							if(opt.generatedId != null && opt.generatedId != ""  && opt.generatedId != "undefined"){
+								generatedId = opt.generatedId + " - ";
+							}else{
+								generatedId = "";
+							}
 							 
 							result = result + '<tr>';
 							'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_PROJECT_TASKS\')">'; 
-							result = result+ '<td><div><a href="'+sourceleadUrl+'/projectTaskSummary?taskId='+opt.id+'" title="'+ opt.taskName+ '" >'+ opt.taskName+ '</a></div></td>';
-							result = result	+ '<td><div><span>'+opt.taskTypes+ '</span></div></td>';
-							result = result	+ '<td><div><span>'+taskPriotiry+ '</span></div></td>';
-							result = result	+ '<td><div><span >'+taskAssignedUsers+'</span></div></td>';
-							result = result	+ '<td><div><span>'+taskStaus+'</span></div></td>';
+							result = result+ '<td><div class="tbldata-dotdot"><a href="'+sourceleadUrl+'/projectTaskSummary?taskUUID='+opt.projectTasksUUID+'" title="'+generatedId+' '+ opt.taskName+ '" >'+generatedId+' '+ opt.taskName+ '</a></div></td>';
+							result = result	+ '<td><div class="tbldata-dotdot_50">'+opt.taskTypes+ '</div></td>';
+							result = result	+ '<td><div class="tbldata-dotdot_50">'+taskPriotiry+ '</div></td>';
+							result = result	+ '<td><div class="tbldata-dotdot-100"><span >'+taskAssignedUsers+'</span ></div></td>';
+							result = result	+ '<td><div class="tbldata-dotdot_50">'+taskStaus+'</div></td>';
 							'</sec:authorize>'; 
 							
 							'<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_EDIT_PROJECT_TASKS\')">';
@@ -367,7 +371,12 @@ function editCancel(){
 	    			for (var i=0; i<json.length; i++)
 		     		{
 			     		var opt = json[i];
-			     			output = output + "<option value='" +opt.id+ "'>"+opt.taskName+"</option>";
+			     		if(opt.generatedId != null && opt.generatedId != "" && opt.generatedId != "undefined"){
+			     			generatedId = opt.generatedId +" - ";
+			     		}else{
+			     			generatedId = "";
+			     		}
+			     			output = output + "<option value='" +opt.id+ "'>"+generatedId+"  "+opt.taskName+"</option>";
 		     		}
 	    			 
 	    			$("#epicId").empty();
@@ -390,7 +399,12 @@ function editCancel(){
 	    			for (var i=0; i<json.length; i++)
 		     		{
 			     		var opt = json[i];
-			     			output = output + "<option value='" +opt.id+ "'>"+opt.taskName+"</option>";
+			     		if(opt.generatedId != null && opt.generatedId != "" && opt.generatedId != "undefined"){
+			     			generatedId = opt.generatedId +" - ";
+			     		}else{
+			     			generatedId = "";
+			     		}
+			     			output = output + "<option value='" +opt.id+ "'>"+generatedId+" "+opt.taskName+"</option>";
 		     		}
 	    				$("#userStroyId").empty();
 			     		$("#userStroyId").append(output);
@@ -414,10 +428,15 @@ function editCancel(){
 	     		for (var i=0; i<json.length; i++)
 	     		{
 		     		var opt = json[i];
+		     		if(opt.generatedId != null && opt.generatedId != "" && opt.generatedId != "undefined"){
+		     			generatedId = opt.generatedId +" - ";
+		     		}else{
+		     			generatedId = "";
+		     		}
 		     		if(opt.id == projectTaskId){
-	        			output = output + "<option value='"+opt.id+"' selected>"+opt.taskName+"</option>";
+	        			output = output + "<option value='"+opt.id+"' selected>"+generatedId+"  "+opt.taskName+"</option>";
 	        		}else{
-	        			output = output + "<option value='"+opt.id+"'>"+opt.taskName+"</option>";
+	        			output = output + "<option value='"+opt.id+"'>"+generatedId+" "+opt.taskName+"</option>";
 	        		}
 		     		
 		     		
@@ -567,7 +586,7 @@ function editCancel(){
 			result = result	+ '						<option>EUR</option>';
 			result = result	+ '					</select>';
 			result = result	+ '					</div>';
-			result = result	+ '					<input type="text" class="form-control" id="businessValue" name="businessValue">';
+			result = result	+ '					<input type="text" class="form-control" id="businessValue" name="businessValue" data-validation="validate_Space validate_length length1-8 validate_int" data-validation-optional="true">';
 			result = result	+ '					</div>';
 			result = result	+ '					<div class="clearfix"></div>';
 			result = result	+ '					</div>';

@@ -1,5 +1,6 @@
 package com.bis.sourcelead.dao.impl;
 
+import java.math.BigInteger;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -261,6 +262,48 @@ public class ProjectTasksDaoImpl implements ProjectTasksDao {
 		String query  = "from ProjectTasks pt where pt.projectId.id = :projectId  and pt.parentTaskId =:parentTaskId" ;
 		List<ProjectTasks>  projectTasksList =session.createQuery(query.toString()).setLong("projectId", projectId).setLong("parentTaskId", parentTaskId).setCacheable(true).list(); 
 		 return projectTasksList;  
+	}
+	
+	
+	/*@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Long getRequirementGeneratedIdByOrgLocationId(Long orgLocationId,Integer generatedIdCount) {
+	Session session = this.sessionFactory.getCurrentSession();
+	String query = "SELECT MAX(CAST(SUBSTR(TRIM(GENERATED_ID),'"+generatedIdCount+"') AS UNSIGNED)) FROM sourcelead.requirement WHERE ORG_LOCATION_ID = '"+ orgLocationId + "'";
+	List<BigInteger> maxCountList = session.createSQLQuery(query).list();
+	Long count = 0L;
+	if (maxCountList != null && !maxCountList.isEmpty() && !maxCountList.contains(null)) {
+	count = (Long) maxCountList.iterator().next().longValue();
+	}
+	return count;
+	}
+*/
+	@SuppressWarnings("unchecked")
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Long getProjectTasksGeneratedIdByProjectId(Long projectId, Integer generatedIdCount) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "SELECT MAX(CAST(SUBSTR(TRIM(GENERATED_ID),'"+generatedIdCount+"') AS UNSIGNED)) FROM SOURCELEAD.PROJECT_TASKS WHERE PROJECT_ID = '"+ projectId + "'";
+		List<BigInteger> maxCountList = session.createSQLQuery(query).list();
+		Long count = 0L;
+		if (maxCountList != null && !maxCountList.isEmpty() && !maxCountList.contains(null)) {
+		count = (Long) maxCountList.iterator().next().longValue();
+		}
+		return count;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public ProjectTasks getProjectTasksByUUID(String taskUUD) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from ProjectTasks pt left join fetch pt.severity severity left join fetch pt.taskType taskType left join fetch pt.priority priority where pt.projectTasksUUID = :taskUUD " ;
+		List<ProjectTasks> projectTasksList =session.createQuery(query.toString()).setString("taskUUD", taskUUD).setCacheable(true) .list(); 
+		ProjectTasks projectTasks = null;
+		if(projectTasksList != null && !projectTasksList.isEmpty())
+		{
+			projectTasks = (ProjectTasks) projectTasksList.iterator().next();
+		}
+		return projectTasks;
 	}
 
 }

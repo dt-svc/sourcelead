@@ -164,4 +164,15 @@ public class OnBoardingTemplateDocumentsDaoImpl implements OnBoardingTemplateDoc
 			return count;
 	}
 
+	@Override
+	@Transactional
+	public List<Long> getOnBoardingTemplateDocumentIdsByCandidateOnBoardingId(Long candidateOnBoardingId,
+			String documentType) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+	    String query = "select documents.id from OnBoardingTemplateDocuments documents  where documents.candidateOnBoardingId.id = :candidateOnBoardingId "
+	    		+ " and documents.documentType = :documentType and documents.status = '1' ";
+	    List<Long> onboardCount  = session.createQuery(query.toString()).setLong("candidateOnBoardingId", candidateOnBoardingId).setString("documentType", documentType).setCacheable(true).list();
+        return onboardCount;
+	}
+
 }

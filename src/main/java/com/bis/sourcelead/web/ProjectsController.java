@@ -304,11 +304,11 @@ public class ProjectsController {
 	}
 	 
 	 @RequestMapping(value = "/projectTaskSummary")
-		public ModelAndView projectTaskSummary(@RequestParam(value="taskId", required=true) String taskId,HttpServletRequest request) throws Exception {
+		public ModelAndView projectTaskSummary(@RequestParam(value="taskUUID", required=true) String taskUUID,HttpServletRequest request) throws Exception {
 				ModelAndView model = new ModelAndView();
 				OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 				SimpleDateFormat dateFormat = orgLocations.getLocFullFormDateFormatter();
-				 ProjectTasks projectTask = projectTasksService.getTasksId(taskId);
+				 ProjectTasks projectTask = projectTasksService.getProjectTasksByUUID(taskUUID);
 				 if(projectTask.getProjectId() != null) {
 					 model.addObject("projectUUID", projectTask.getProjectId().getProjectUUID());
 					 model.addObject("projectId", projectTask.getProjectId().getId());
@@ -332,7 +332,7 @@ public class ProjectsController {
 					 model.addObject("createdBy", user.getFullName());
 				 }
 				 
-				 List<ProjectAssignTask> assignedUsers = projectAssignTasksService.getProjectAssignTaskListByProjectTaskId(Long.valueOf(taskId)); 
+				 List<ProjectAssignTask> assignedUsers = projectAssignTasksService.getProjectAssignTaskListByProjectTaskId(projectTask.getId()); 
 				 for(ProjectAssignTask pat:assignedUsers) {
 					 if(pat.getProjectMemberId() != null) {
 						 pat.setAssignedUserName(pat.getProjectMemberId().getEmployee().getUser().getFullName());

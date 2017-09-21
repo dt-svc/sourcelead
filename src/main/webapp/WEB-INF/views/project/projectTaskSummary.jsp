@@ -13,6 +13,7 @@
 	$(document).ready(function(){ 
 		var projectId = "${projectId}";
 		tasksAssignList(projectId);
+		getSubTaskList();
 	});
  </script>
  
@@ -35,12 +36,19 @@
 	          
 	          <div class="bg-success taskheaader-inlineedit mb10 clearfix">
 	          
-	          <div class="col-md-11 paddingRight paddingLeft edit-field edit-inputfield" id="taskedit-parent" onclick="editFun();">
-	          	<input readonly type="text" id="taskName" name="taskName" value="${projectTask.taskName}"  class="form-control formcontrol-edit"/>
-	          	<input readonly type="hidden" id="hiddenTaskName" name="hiddenTaskName" value="${projectTask.taskName}" />
-	          	<div class="editicon">
-	          	<i class="fa fa-pencil fa-2x"></i>
-	          	</div>
+	          <div class="col-md-11 paddingRight paddingLeft edit-field edit-inputfield">
+		          <div class="showTaskname" id="taskedit-parent" onclick="editFun();">
+		          <span class="taskgeneratedid text-muted paddingRight bg-green" title="Task Generated ID">${projectTask.generatedId}</span>
+		          <span class="paddingLeft">${projectTask.taskName}</span>
+		          <span class="editicon">
+		          	<i class="fa fa-pencil fa-2x"></i>
+		          	</span>
+		          	</div>
+		          	<div class="editTaskname" style="display:none;">
+		          	<input type="text" id="taskName" name="taskName" value="${projectTask.taskName}"  class="form-control formcontrol-edit"/>
+		          	<input readonly type="hidden" id="hiddenTaskName" name="hiddenTaskName" value="${projectTask.taskName}" />
+		          	<p class="inputError" style="display:none;">The values should be between 2-250 characters</p>
+		          	</div>
 	          </div>
 	          <div class="col-md-1 paddingLeft text-center" id="saveIcon" style="display:none;">
 	          	<i class="fa fa-save fa-2x" onclick="inlineditTaskName();"></i>
@@ -79,9 +87,9 @@
 	       <div class="clearfix">
 	         <div class="project_side_wrap_inn_tabs">
 	          <ul class="project-tabs-menu">
-	            <li class="current"><a href="#tab-task1">Time Entry</a></li>
+<!-- 	            <li class="current"><a href="#tab-task1">Time Entry</a></li> -->
 	            <c:if test="${projectTask.taskType.id != 1059}">
-	            <li><a href="#tab-task2" onclick="getSubTaskList();">Sub Tasks</a></li>
+	            <li class="current"><a href="#tab-task2" onclick="getSubTaskList();">Sub Tasks</a></li>
 	            </c:if>
 	            <li><a href="#tab-task3" onclick="closeTimeEntry();documentTableList();">Documents</a></li>
 	            <li><a href="#tab-task4" onclick="getTaskActivities();">Activities</a></li>
@@ -297,6 +305,28 @@
 						 	<i class="fa fa-spinner fa-spin faSpin " id="severitySpin" style="display:none;"></i>
 						 </span> 
 		            </div>
+		            
+		            <div class="clearfix  mb select-loader">
+		                <select class="pull-left" onchange="inlineEditTaskPercentage(${projectTask.id});" id="taskPercentageId">
+		                      <option value="0" ${projectTask.percentage  == 0 ? 'selected' : ''} >0 Percentage</option>  
+		                      <option value="10" ${projectTask.percentage  == 10 ? 'selected' : ''} >10 Percentage</option>  
+		                      <option value="20" ${projectTask.percentage  == 20 ? 'selected' : ''} >20 Percentage</option>  
+		                      <option value="30" ${projectTask.percentage  == 30 ? 'selected' : ''} >30 Percentage</option>  
+		                      <option value="40" ${projectTask.percentage  == 40 ? 'selected' : ''} >40 Percentage</option>  
+		                      <option value="50" ${projectTask.percentage  == 50 ? 'selected' : ''} >50 Percentage</option>  
+		                      <option value="60" ${projectTask.percentage  == 60 ? 'selected' : ''} >60 Percentage</option>  
+		                      <option value="70" ${projectTask.percentage  == 70 ? 'selected' : ''} >70 Percentage</option>  
+		                      <option value="80" ${projectTask.percentage  == 80 ? 'selected' : ''} >80 Percentage</option>  
+		                      <option value="90" ${projectTask.percentage  == 90 ? 'selected' : ''} >90 Percentage</option>  
+		                      <option value="100" ${projectTask.percentage  == 100 ? 'selected' : ''} >100 Percentage</option>  
+		                </select>
+		                <span class="pull-right">
+						 	<small class="status" id="percentageLabel" style="display:block;">Work Completed</small>
+						 	<i class="fa fa-spinner fa-spin faSpin " id="percentageSpin" style="display:none;"></i>
+						 </span> 
+		            </div>
+		            
+		            
 		              
 		               <div class="row mb">
 		                  <label class="col-md-12">Assign To </label>
@@ -379,30 +409,38 @@ function inlineditTaskName(){
 	var sourceleadUrl = '${sourceleadUrl}';
 	var userId = '${SourceLeadWeb_userId}';
 	var hiddenTaskName = $("#hiddenTaskName").val();
-	if(taskName.match(/^[^\s-](.*)*$/) !== null){
-		$.ajax({
-		   	type: "POST",
-		    url: sourceleadUrl+"/ProjectTasks/updateTaskName?${_csrf.parameterName}=${_csrf.token}&taskName="+taskName+"&taskId="+projectTaskId+"&userId="+userId, 	   
-		    success: function(data) {
-		    	$("#taskName").addClass("formcontrol-edit").attr("readonly");
-		    	$("#taskedit-parent").addClass("edit-inputfield");
-		    	document.getElementById("saveIcon").style.display="none";
-		    	$("#hiddenTaskName").val(data);
-		    }
-	 }); 
+	if(taskName.length > 250){
+		$(".inputError").show();
 	}else{
-		$("#taskName").addClass("formcontrol-edit").attr("readonly");
-    	$("#taskedit-parent").addClass("edit-inputfield");
-    	document.getElementById("saveIcon").style.display="none";
-		$("#taskName").val(hiddenTaskName);
+		if(taskName.match(/^[^\s-](.*)*$/) !== null){
+			$.ajax({
+			   	type: "POST",
+			    url: sourceleadUrl+"/ProjectTasks/updateTaskName?${_csrf.parameterName}=${_csrf.token}&taskName="+taskName+"&taskId="+projectTaskId+"&userId="+userId, 	   
+			    success: function(data) {
+			    	$(".showTaskname").show();
+			    	$(".editTaskname").hide();
+			    	document.getElementById("saveIcon").style.display="none";
+			    	$("#hiddenTaskName").val(data);
+			    	$(".inputError").hide();
+			    }
+		 }); 
+		}else{
+			$(".showTaskname").hide();
+	    	$(".editTaskname").show();
+	    	document.getElementById("saveIcon").style.display="none";
+			$("#taskName").val(hiddenTaskName);
+		}
 	}
+	
 	
 	
 	 
 }
 function editFun(){
-	$("#taskName").removeClass("formcontrol-edit").removeAttr("readonly");
-	$("#taskedit-parent").removeClass("edit-inputfield");
+	$(".showTaskname").hide();
+	$(".editTaskname").show();
+// 	$("#taskName").removeClass("formcontrol-edit").removeAttr("readonly");
+// 	$("#taskedit-parent").removeClass("edit-inputfield");
 	document.getElementById("saveIcon").style.display="block";
 }
 </script>
@@ -468,6 +506,21 @@ function inlineEditDescription(taskId){
 		    }
 	 }); 
 }
+function inlineEditTaskPercentage(taskId){
+	var percentageId = $("#taskPercentageId").val();
+	var sourceleadUrl = '${sourceleadUrl}';
+	var userId = '${SourceLeadWeb_userId}';
+	$("#percentageLabel").fadeOut("slow");
+    $("#percentageSpin").fadeIn("slow");
+	 $.ajax({
+		   	type: "POST",
+		    url: sourceleadUrl+"/ProjectTasks/updateTaskPercentage?${_csrf.parameterName}=${_csrf.token}&percentage="+percentageId+"&taskId="+taskId+"&userId="+userId,    
+		    success: function(data) {
+		    	$("#percentageLabel").fadeIn("slow");
+  		    	$("#percentageSpin").fadeOut("slow");
+		    }
+	 }); 
+}
 </script>
  <script>
 	function editAlertMsgFadeinFunction() {
@@ -505,7 +558,7 @@ function inlineEditDescription(taskId){
 <script> 
 //project side bar tabs
 $(document).ready(function() {
-$("#tab-task1").show();
+$("#tab-task2").show();
     $("#tab-1").show();
     $(".project-tabs-menu a").click(function(event) {
         event.preventDefault();
@@ -1010,8 +1063,8 @@ function addSubTasks(){
 			result = result	+ '           <label class="col-md-4">Task Type<span class="text-danger paddingLeft">*</span></label>';
 			result = result	+ '           <div class="col-md-8 dropdown-select">';
 		    result = result	+ '             <select class="form-control" onchange="showtasktype()" id="taskstype" name="taskstype" field-name="Task Type"  data-validation="required">'; 
-		    result = result	+ '         <c:forEach var="type" items="${taskTypeList}">  ';       
-		    result = result	+ '            <option value="${type.uniqueKey}" >${type.name}</option>'; 
+		    result = result	+ '         <c:forEach var="type" items="${taskTypeList}">  ';      
+		    result = result	+ '            <option value="${type.uniqueKey}" ${type.uniqueKey  == "SubTask" ? "selected" : ''} >${type.name}</option>'; 
 		    result = result	+ '  		</c:forEach>  ';                                           
 			result = result	+ '             </select>'; 
 			result = result	+ '           </div>';
@@ -1130,7 +1183,7 @@ function addSubTasks(){
 			result = result	+ '						<option>EUR</option>';
 			result = result	+ '					</select>';
 			result = result	+ '					</div>';
-			result = result	+ '					<input type="text" class="form-control" id="businessValue" name="businessValue">';
+			result = result	+ '					<input type="text" class="form-control" id="businessValue" name="businessValue" data-validation="validate_Space validate_length length1-8 validate_int" data-validation-optional="true">';
 			result = result	+ '					</div>';
 			result = result	+ '					<div class="clearfix"></div>';
 			result = result	+ '					</div>';
@@ -1332,7 +1385,7 @@ function subTasksAssignList(projectId){
 		 document.getElementById("userStory").style.display="none";
 		 document.getElementById("task").style.display="block";
 		 $('#taskId').attr("data-validation","required"); 
-		 getSubTasks(taskType);
+		 getSubTasks();
 	 } 
 	 
  }
@@ -1351,7 +1404,12 @@ function subTasksAssignList(projectId){
 	    			for (var i=0; i<json.length; i++)
 		     		{
 			     		var opt = json[i];
-			     			output = output + "<option value='" +opt.id+ "'>"+opt.taskName+"</option>";
+			     		if(opt.generatedId != null && opt.generatedId != "" && opt.generatedId != "undefined"){
+			     			generatedId = opt.generatedId +" - ";
+			     		}else{
+			     			generatedId = "";
+			     		}
+			     			output = output + "<option value='" +opt.id+ "'> "+generatedId+"   "+opt.taskName+"</option>";
 		     		}
 	    			 
 	    			$("#epicId").empty();
@@ -1374,7 +1432,12 @@ function subTasksAssignList(projectId){
 	    			for (var i=0; i<json.length; i++)
 		     		{
 			     		var opt = json[i];
-			     			output = output + "<option value='" +opt.id+ "'>"+opt.taskName+"</option>";
+			     		if(opt.generatedId != null && opt.generatedId != "" && opt.generatedId != "undefined"){
+			     			generatedId = opt.generatedId +" - ";
+			     		}else{
+			     			generatedId = "";
+			     		}
+			     			output = output + "<option value='" +opt.id+ "'>"+generatedId+"  "+opt.taskName+" </option>";
 		     		}
 	    				$("#userStroyId").empty();
 			     		$("#userStroyId").append(output);
@@ -1399,10 +1462,16 @@ function subTasksAssignList(projectId){
 	     		for (var i=0; i<json.length; i++)
 	     		{
 		     		var opt = json[i];
+		     		if(opt.generatedId != null && opt.generatedId != "" && opt.generatedId != "undefined"){
+		     			generatedId = opt.generatedId +" - ";
+		     		}else{
+		     			generatedId = "";
+		     		}
+		     		
 		     		if(opt.id == projectTaskId){
-	        			output = output + "<option value='"+opt.id+"' selected>"+opt.taskName+"</option>";
+	        			output = output + "<option value='"+opt.id+"' selected>"+generatedId+"  "+opt.taskName+"</option>";
 	        		}else{
-	        			output = output + "<option value='"+opt.id+"'>"+opt.taskName+"</option>";
+	        			output = output + "<option value='"+opt.id+"'>"+generatedId+"  "+opt.taskName+"</option>";
 	        		}
 		     		
 		     		

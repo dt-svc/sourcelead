@@ -147,14 +147,7 @@ function getOffboardCheckList(offboardingId){
 	         }; 
 	 
 	 if ($('#offboardCheckList_form').validate(false, validationSettings)){ 
-		    var frm = $('#offboardCheckList_form').serializeFormJSON();
-	        var con = JSON.stringify(frm);
-	        con = con.replace(/[{}]/g, "");
-	        
-	        var jsonData = encodeURIComponent(con);
-	        
 	        var sourceleadUrl ='${sourceleadUrl}';
-	        
 	        var offboardId = '${offboardingId}';
 	        
 	        var fields = [];

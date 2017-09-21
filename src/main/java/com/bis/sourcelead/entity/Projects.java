@@ -4,8 +4,6 @@ import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Date;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -32,10 +30,7 @@ import org.hibernate.annotations.NotFoundAction;
 
 import com.bis.sourcelead.enums.Project_Status;
 import com.bis.sourcelead.enums.Status;
-
-import com.bis.sourcelead.web.LoginSessionController;
 import com.fasterxml.jackson.annotation.JsonBackReference;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -158,6 +153,9 @@ public class Projects implements Serializable{
     
     @Column(name = "UPDATED_BY")
     private String updatedBy;
+    
+    @Column(name = "PROJECT_SHORT_CODE")
+    private String projectShortCode;
     
     @Column(name = "PROJECT_MODE")
     private String projectMode;
@@ -480,6 +478,14 @@ public class Projects implements Serializable{
 		this.updatedBy = updatedBy;
 	}
 	
+	public String getProjectShortCode() {
+		return projectShortCode;
+	}
+
+	public void setProjectShortCode(String projectShortCode) {
+		this.projectShortCode = projectShortCode;
+	}
+
 	@JsonIgnore
 	public Set<ProjectMembers> getProjectMembers() {
 		return projectMembers;
