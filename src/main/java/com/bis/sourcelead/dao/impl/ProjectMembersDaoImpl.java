@@ -1068,5 +1068,21 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 			}
 			return count;
 	}
+
+
+	@Override
+	@Transactional
+	public ProjectMembers getProjectMembersByCandidateIdAndProjectId(Long candidateId, Long projectId)
+			throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = " from ProjectMembers pm left join fetch pm.projectMemberCandidteId left join fetch pm.projects where  "
+				+ "pm.projects.id = :projectId and pm.projectMemberCandidteId.id = :candidateId and pm.status = '1' " ;
+		List<ProjectMembers> pmList =session.createQuery(query).setLong("projectId", projectId).setLong("candidateId", candidateId).setCacheable(true).list(); 
+		ProjectMembers pm = null;
+		if(pmList != null && !pmList.isEmpty())  {
+			pm  = pmList.iterator().next();
+		}
+		return pm;  
+	}
 }
 

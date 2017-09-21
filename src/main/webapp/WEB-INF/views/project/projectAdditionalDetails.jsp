@@ -516,7 +516,6 @@ function getAdditionalDetails(){
 						 type : "POST",
 						 data: formData,
 		  	    	     processData: false,
-		  	    	     dataType : 'json',
 						 url : sourceleadUrl+ "/storeProjectAdditionalDetails?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId+"&userId="+userId+"&orgLocationId="+orgLocationId+"&saveType="+saveType,
 						 success : function() {
 							 
