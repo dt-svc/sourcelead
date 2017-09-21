@@ -1,22 +1,48 @@
 package com.bis.sourcelead.rest;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.ExpensesListUtilDTO;
+import com.bis.sourcelead.dto.HolidayDTO;
+import com.bis.sourcelead.entity.Expenses;
+import com.bis.sourcelead.entity.Holiday;
+import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.service.HolidayService;
+import com.bis.sourcelead.service.OrgLocationService;
+import com.bis.sourcelead.util.SessionMaintainanceData;
+import com.bis.sourcelead.util.SourceLeadSessionManager;
+
 @RestController
-public class LeaveManagenebtRestController {
+public class LeaveManagementRestController {
 	
-	private static final Logger logger = LoggerFactory.getLogger(LeaveManagenebtRestController.class);
+	private static final Logger logger = LoggerFactory.getLogger(LeaveManagementRestController.class);
 	
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
+	
+	@Autowired
+	private HolidayService holidayService;
+	
+	@Autowired
+	private OrgLocationService orgLocationService;
+	
+
 	/**
 	 * returns Pending leaves jsp
 	 * @param request
@@ -257,4 +283,24 @@ public class LeaveManagenebtRestController {
 		   model.setViewName("leavemanagement/viewOptions");
 	       return model;
 	}
+	
+	@RequestMapping(value = "/saveHoliday", method = RequestMethod.POST)
+	public @ResponseBody String saveHoliday(HolidayDTO holidayDTO,HttpServletRequest request)
+			throws Exception {
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		if(orgLocations.getId() != null)
+			holidayDTO.setOrgLocationId(orgLocations.getId().intValue());
+		if(holidayDTO != null)
+		holidayService.storeHoliday(holidayDTO);
+		return "Success";
+	}
+	
+	@RequestMapping(value = "/getHolidaysList")
+	public List<Holiday> getHolidaysList( @RequestBody HolidayDTO holidayDTO) throws Exception
+	{
+		OrgLocations orgLoc = orgLocationService.getOrgLocationsByLocationCode(holidayDTO.getOrgLocationId().toString());
+		List<Holiday> holidaysList = holidayService.getAllHolidaysList(orgLoc);
+		return holidaysList;
+	}
+	
 }
