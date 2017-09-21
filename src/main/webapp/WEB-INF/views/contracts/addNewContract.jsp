@@ -15,10 +15,7 @@
  window.onload = function() {
 	 changeSaveButton();
 	 var relationId = '${orgRelationId}';
-	 var conType = '${contract.contractType}';
-	 if(conType){
-		 contractTypeLabels();
-	 }
+	 var type = '${contract.contractType}';
 	 if(relationId != null && relationId != ''){
 		 getVendorContacts();
 	 }
