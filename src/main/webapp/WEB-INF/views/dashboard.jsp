@@ -201,11 +201,12 @@ overflow-x: auto;
 		     </sec:authorize>
 		     
 	    </div>
-	 <sec:authorize access="hasAnyRole('ROLE_ADD_MY_EXPENSES','ROLE_VIEW_EDIT_MY_EXPENSES','ROLE_EXPORT_MY_EXPENSES','ROLE_ADD_EMPLOYEE_EXPENSES','ROLE_VIEW_EDIT_EMPLOYEE_EXPENSES','ROLE_EXPORT_EMPLOYEE_EXPENSES')">   
 	    <div class="clearfix row mb">
-		     <jsp:include page="expensesDashboardCounts.jsp"></jsp:include>
-	    </div>
-	 </sec:authorize>  	
+			 <sec:authorize access="hasAnyRole('ROLE_ADD_MY_EXPENSES','ROLE_VIEW_EDIT_MY_EXPENSES','ROLE_EXPORT_MY_EXPENSES','ROLE_ADD_EMPLOYEE_EXPENSES','ROLE_VIEW_EDIT_EMPLOYEE_EXPENSES','ROLE_EXPORT_EMPLOYEE_EXPENSES')">   
+				     <jsp:include page="expensesDashboardCounts.jsp"></jsp:include>
+			 </sec:authorize>  	
+			 <jsp:include page="leaveManagement.jsp"></jsp:include>
+		 </div>
 	    	<c:if test = "${SourceLeadWeb_ats == 'Y' || SourceLeadWeb_vms == 'Y'}">
 	    	
 	    			<sec:authorize access="hasAnyRole('ROLE_VIEW_REQUIREMENT')">
