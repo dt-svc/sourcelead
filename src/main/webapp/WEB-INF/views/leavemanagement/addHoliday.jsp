@@ -13,26 +13,27 @@
       <div class="pull-right brud-crum">Home &raquo; Leave Management &raquo; Holiday</div>
     </section>
     <div class="content-area content-new clearfix">
+    <form:form id="holiday_form" name="holiday_form" method="post">
       <div class="clearfix form-horizontal inner-content">
         <div class="row">
           <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">
             <div class="form-group">
               <label class="col-md-3">Holiday Name<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-9">
-                <input type="text" class="form-control" name="Name" value="">
+                <input type="text" class="form-control" field-name="Holiday Name" data-validation="required" name="holidayName" value="${holiday.holidayName}">
               </div>
             </div>
             <div class="form-group">
               <label class="col-md-3">Date</label>
               <div class="col-md-9">
                       <div class="width110px">
-                      <input type="text" class="form-control calendar" placeholder="From Date">
+                      <input type="text" class="form-control calendar" value="${holiday.fromDate}" field-name="From Date" data-validation="required" name="fromDate" id="fromDate" placeholder="From Date">
                       </div>
                       <div class="width110px">
-                      <input type="text" class="form-control calendar" placeholder="To Date">
+                      <input type="text" class="form-control calendar" value="${expenses.toDate}" field-name="To Date" data-validation="required" name="toDate" id="toDate" placeholder="To Date">
                       </div>
                       <div class="width90px checkBox">
-                      <input type="checkbox" name="halfday">Half Day
+                      <input type="checkbox" name="halfDayCheckBox">Half Day
                       </div>
                       <div class="width50px dropdown-select dropdown-select-custom">
                       <select>
@@ -48,7 +49,7 @@
               <div class="col-md-9">
                   <div class="row">
                       <div class="col-md-8 checkBox">
-                      <input type="checkbox" name="halfday">Half Day
+                      <input type="checkbox" name="halfDayAmPm">Half Day
                       </div>
                       <div class="col-md-4 dropdown-select">
                           <select class="form-control">
@@ -63,26 +64,21 @@
            <div class="form-group">
               <label class="col-md-3">Description</label>
               <div class="col-md-9">
-                  <textarea rows="2" class="form-control" placeholder="Description"></textarea>
+                  <textarea rows="2" class="form-control" name="description" placeholder="Description"></textarea>
               </div>
             </div>
               
-              <div class="form-group">
-              <label class="col-md-3">Holiday Group</label>
-              <div class="col-md-9">
-                  <div class="form-icon">
-                  <select class="form-control chosen-select" data-placeholder="Select Group">
-                      <option selected>--Select Holiday Group--</option>
-                      <option>Group1</option>
-                      <option>Group2</option>
-                      <option>Group3</option>
-                  </select>
-                  <span data-target="#addHolidaygroup" data-toggle="modal" title="Add Team">
-                      <i class="fa fa-plus btn btn-default formic1"></i>
-                  </span>
-                  </div>
+                  
+                  <div class="form-group">
+                                    <label class="paddingRight">Status
+                                      <input type="radio" value="Optional" name="status" checked="checked" onclick="">
+                                      Optional</label>
+                                    <label class="paddingLeft">
+                                      <input type="radio" value="Restricted" name="status"  onclick="">
+                                      Restricted </label>
+                                  </div>
+                                  
               </div>
-            </div>
               
               
           </div>
@@ -91,15 +87,77 @@
       <div class="form-footer clearfix mt">
         <div class="col-lg-12">
           <div class="pull-right">
-            <input type="button" value="Save" class="btn btn-primary">
+            <input type="button" value="Save" class="btn btn-primary" id="save_holiday" onclick="saveHoliday();">
             <input type="button" value="Cancel" class="btn btn-default ml10">
           </div>
         </div>
       </div>
       
       <!-- Content Area Ends--> 
+      </form:form>
     </div>
   </section>
+  
+  <script type="text/javascript">
+	function saveHoliday() {
+		if ($('#holiday_form').validate(false, validationSettings)) {
+		  	 var formData = getFormData("holiday_form");
+		  	$("#holiday_form").attr("disabled", "disabled");
+			$("#holiday_form").addClass('button').val('Processing..');
+			$.post(sourceleadUrl+"/saveHoliday?"+tokenParamName+"="+tokenValue+"", formData, function(data) {
+				alert("success");
+				location.replace(sourceleadUrl+ "/viewHoliday");
+			});
+			return true;
+		} else {
+			return false;
+		}
+	}
+	$('body').on('blur', '#holiday_form', function() {
+		$("#holiday_form").showHelpOnFocus();
+		$("#holiday_form").validateOnBlur(false, validationSettings);
+	});
+</script>
+<script type="text/javascript">
+        var validationSettings = {
+            errorMessagePosition : 'element',
+            borderColorOnError : '',
+			scrollToTopOnError : true,
+			dateFormat : 'yyyy/mm/dd' 
+            };
+</script> 
 
+<script>
+$( function() {
+var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+var finalDateFormat = '';
+if(locationDate.match("yyyy-MM-dd")){
+finalDateFormat = 'yy-mm-dd';
+}if(locationDate.match("dd-MM-yyyy")){
+finalDateFormat = 'dd-mm-yy'; 
+}if(locationDate.match("MM-dd-yyyy")){
+finalDateFormat = 'mm-dd-yy'; 
+}if(locationDate.match("yyyy-dd-MM")){
+finalDateFormat = 'yy-dd-mm'; 
+}
+$('#fromDate').datepicker({
+dateFormat: finalDateFormat,
+changeMonth: true,
+changeYear: true, 
+});
+
+$('#toDate').datepicker({
+dateFormat: finalDateFormat,
+changeMonth: true,
+changeYear: true, 
+});
+
+} );
+</script>
+<script type="text/javascript">
+function getHolidayGroup(){
+	
+}
+</script>
 
 <jsp:include page="../masterFooter.jsp" />

@@ -4,11 +4,18 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
  
 
+<script type="text/javascript">
+		window.onload = function () {
+				getHolidaysList();
+		 };
+</script>
+
  <!-- Content Area -->
   <section class="content-wraper" id="themeroller">
     <section class="content-header clearfix">
       <div class="pull-left">
         <h2>Holiday</h2>
+        <div id=holidayListDiv></div>
       </div>
 		<div class="pull-right brud-crum"><a href="dashboard_us.html">Home</a> &raquo; <a href="holiday.html">Leave Management </a> &raquo; Holiday</div>
     </section>
@@ -60,7 +67,6 @@
             <th>Name</th>
             <th>Date</th>
             <th>Group</th>
-            <th>Holiday Group</th>
             <th>Action</th>
           </tr>
         </thead>
@@ -80,11 +86,6 @@
             <td>
                 <div title="23/08/2017" class="tbldata-dotdot">
                     Group
-                </div>
-            </td>
-            <td>
-                <div title="23/08/2017" class="tbldata-dotdot">
-                    Holiday Group
                 </div>
             </td>
             <td>
@@ -115,5 +116,73 @@
   </section>
   <!-- Content Area Ends--> 
 
+<script>
 
+function getHolidaysList(){
+	alert("hello111");
+	$.ajax({
+        type : "GET",
+         url: sourceleadUrl+"/getHolidaysList?"+tokenParamName+"="+tokenValue+"",       
+         success :function(data) {
+        	 alert("hello222");
+        	 prepareHolidayList(data);
+        },
+         
+    }); 
+	}
+</script> 
+
+<script>
+  function prepareUsersList(data){
+	  var json = JSON.parse(data);
+  	var result = "";
+  	for (var i=0; i<json.length; i++)
+		{  
+  		var report = json[i];
+	        var result = "";
+			result = result +" <table id='holidaysPagination'>";
+			result = result +"<thead>";
+			result = result +"<tr>";
+			result = result +"<th>Holiday Name</th>";
+			result = result +"<th>Date</th>";
+			result = result +"<th>Status</th>";
+			result = result +"</tr>";
+			result = result +"</thead>";
+			result = result +"<tbody>";
+			
+			 if(json !=''){
+	        	  for (var i = 0; i < json.length; i++) { 
+	        		  var report = json[i]; 
+	        		  if(report.holidayName != null && report.holidayName != '' && report.holidayName != 'undefined'){
+	        			  holidayName = report.holidayName;
+	        		  }else{
+	        			  holidayName = "--";
+	        		  }
+	        		  if(report.fromDate != null && report.fromDate != '' && report.fromDate != 'undefined'){
+	        			  fromDate = report.fromDate;
+	        		  }else{
+	        			  fromDate = "--";
+	        		  }
+	        		  if(report.holidayStatus != null && report.holidayStatus != '' && report.holidayStatus != 'undefined'){
+	        			  holidayStatus = report.holidayStatus;
+	        		  }else{
+	        			  holidayStatus = "--";
+	        		  }
+						 result = result +"<tr>";
+						 result = result +"<td><div title="+holidayName+">"+holidayName+"</div></td>";
+						 result = result +"<td><div title="+fromDate+">"+fromDate+"</div></td>";
+						 result = result +"<td><div>"+holidayStatus+"</div></td>";
+						 result = result +"</tr>"; 
+	        	  }
+			 }
+ 	 
+	
+	  result = result +" </tbody>";
+	  result = result +" </table>";
+		}
+	  $("#holidayListDiv").empty();
+   $("#holidayListDiv").append(result);
+   holidaysPagination();}
+	</script>	  
+		  
 <jsp:include page="../masterFooter.jsp" />

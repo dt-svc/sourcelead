@@ -1,0 +1,93 @@
+package com.bis.sourcelead.dto;
+
+import java.io.Serializable;
+import java.util.UUID;
+
+import com.bis.sourcelead.annotations.Required;
+
+public class HolidayDTO implements Serializable {
+private static final long serialVersionUID = 1L;
+
+	private UUID id;
+	
+	private Integer orgLocationId;
+	
+	@Required(desc = "Holiday Name")
+	private String holidayName;  
+	
+	private String fromDate;
+	
+	private String toDate;
+	
+	private String halfDayCheckBox;
+	
+	private String description;
+	
+	private String holidayStatus;
+	
+	public UUID getId() {
+		return id;
+	}
+
+	public void setId(UUID id) {
+		this.id = id;
+	}
+
+	public Integer getOrgLocationId() {
+		return orgLocationId;
+	}
+
+	public void setOrgLocationId(Integer orgLocationId) {
+		this.orgLocationId = orgLocationId;
+	}
+
+	public String getHolidayName() {
+		return holidayName;
+	}
+
+	public void setHolidayName(String holidayName) {
+		this.holidayName = holidayName;
+	}
+
+	public String getFromDate() {
+		return fromDate;
+	}
+
+	public void setFromDate(String fromDate) {
+		this.fromDate = fromDate;
+	}
+
+	public String getToDate() {
+		return toDate;
+	}
+
+	public void setToDate(String toDate) {
+		this.toDate = toDate;
+	}
+
+	public String getHalfDayCheckBox() {
+		return halfDayCheckBox;
+	}
+
+	public void setHalfDayCheckBox(String halfDayCheckBox) {
+		this.halfDayCheckBox = halfDayCheckBox;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	public String getHolidayStatus() {
+		return holidayStatus;
+	}
+
+	public void setHolidayStatus(String holidayStatus) {
+		this.holidayStatus = holidayStatus;
+	}
+
+
+}
