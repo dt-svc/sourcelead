@@ -1,14 +1,27 @@
 package com.bis.sourcelead.rest;
 
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
+
+import com.bis.sourcelead.dto.RestrictDayDTO;
+import com.bis.sourcelead.entity.Org;
+import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.RestrictDay;
+import com.bis.sourcelead.entity.Roles;
+import com.bis.sourcelead.service.RestrictDayService;
+import com.bis.sourcelead.service.RolesService;
+import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @RestController
 public class LeaveManagenebtRestController {
@@ -17,6 +30,13 @@ public class LeaveManagenebtRestController {
 	
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
+	
+	@Autowired
+	private RestrictDayService restrictDayService;
+	
+	@Autowired
+	private RolesService rolesService;
+	
 	/**
 	 * returns Pending leaves jsp
 	 * @param request
@@ -212,6 +232,12 @@ public class LeaveManagenebtRestController {
 	@RequestMapping(value = "/addRestrictDay")
 	public ModelAndView addRestrictDayJsp(HttpServletRequest request,HttpServletResponse response) {
 		   ModelAndView model = new ModelAndView();
+		   
+		   OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		   Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+		   Long roleHierarchyId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "roleHierarchyId");
+		   List<Roles> rolesList = rolesService.getUserRolesListByModuleAndLoginUserRoleHierarchy(org,orgLocations.getId(),roleHierarchyId);
+		   model.addObject("rolesList", rolesList);
 		   model.addObject("sourceleadUrl", sourceleadUrl);
 		   model.setViewName("leavemanagement/addRestrictDay");
 	       return model;
@@ -256,5 +282,19 @@ public class LeaveManagenebtRestController {
 		   model.addObject("sourceleadUrl", sourceleadUrl);
 		   model.setViewName("leavemanagement/viewOptions");
 	       return model;
+	}
+	
+	@RequestMapping(value = "/storeRestrictedDay")
+	public String storeRestrictedDay(RestrictDayDTO restrictDayDTO) throws Exception {
+	      
+		restrictDayService.storeRestrictedDay(restrictDayDTO);
+		return "success";
+	}
+	
+	@RequestMapping(value = "/getRestrictDayList")
+	public List<RestrictDay> getRestrictDayList(@RequestParam(value = "orgLocationId", required = true) Long orgLocationId) throws Exception {
+	      
+		List<RestrictDay> restrictDayList = restrictDayService.getRestrictDayListByOrgLocationId(orgLocationId);
+		return restrictDayList;
 	}
 }
