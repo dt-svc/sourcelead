@@ -1,0 +1,10 @@
+package com.bis.sourcelead.dao;
+
+import java.util.List;
+
+import com.bis.sourcelead.entity.VendorOnboardingTemplateDocuments;
+
+public interface VendorOnboardTemplateDocumentsDao {
+
+	List<VendorOnboardingTemplateDocuments> getVendorOnBoardingTemplateDocumentsByTemplateId(Long templateId,String documentType) throws Exception;
+}

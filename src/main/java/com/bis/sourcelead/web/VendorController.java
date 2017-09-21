@@ -43,6 +43,7 @@ import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.StatesService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.service.VendorImportService;
+import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SessionMaintainanceData;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
@@ -68,6 +69,9 @@ public class VendorController {
 	
 	@Autowired
 	OrgSpocService orgSpocService;
+	
+	@Autowired
+	CommonUtil commonUtil;
 	
 //	@Autowired
 //	ClientImportsService clientImportsService;
@@ -340,6 +344,35 @@ public class VendorController {
 				response.getOutputStream().close();
 				response.getOutputStream().flush();	
 		}
+		
+		
+		
+		@RequestMapping(value = "/addNewVendorOnboardTemplate")
+	 	public ModelAndView addNewVendorOnboardTemplate(HttpServletRequest request) {
+			    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+			    ModelAndView model = new ModelAndView();
+	 			commonUtil.highLightMenu(Constants.OrgSettings, request);
+	 			
+	 			model.setViewName("vendors/addNewVendorOnboardTemplate");
+	 			model.addObject("sourceleadUrl", sourceleadUrl);
+	 			return model;
+	 	}
+		
+		@RequestMapping(value = "/vendorOnboardTemplateList")
+	 	public ModelAndView vendorOnboardTemplateList(HttpServletRequest request) {
+			    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+			    ModelAndView model = new ModelAndView();
+	 			commonUtil.highLightMenu(Constants.OrgSettings, request);
+	 			
+	 			model.setViewName("vendors/vendorOnboardTemplateList");
+	 			model.addObject("sourceleadUrl", sourceleadUrl);
+	 			return model;
+	 	}
+		
+		
+		
+		
+		
 	/**	
 	 * removing special charactes from file name
 	 * @param file
