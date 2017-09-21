@@ -20,20 +20,20 @@ import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 
 @Entity
-@Table(name = "LEAVES_ROLES", catalog = "sourcelead")
+@Table(name = "LEAVES_ROLE", catalog = "sourcelead")
 @Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "leavesRoles")
-public class LeaveRoles {
+public class LeaveRole {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY, generator = "uuid2")
 	@GenericGenerator(name = "uuid2", strategy = "uuid2")
-	@Column(columnDefinition = "BINARY(16)")
-	private UUID id;
+//	@Column(columnDefinition = "BINARY(16)")
+	private String id;
 
 	@NotFound(action = NotFoundAction.IGNORE)
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "LEAVES_OPTION_ID", nullable = false)
-	private Options leavesOptionId;
+	private Option leavesOptionId;
 
 	@NotFound(action = NotFoundAction.IGNORE)
 	@ManyToOne(fetch = FetchType.LAZY)
@@ -63,19 +63,19 @@ public class LeaveRoles {
 	@Column(name = "UPDATED_BY")
 	private String updatedBy;
 
-	public UUID getId() {
+	public String getId() {
 		return id;
 	}
 
-	public void setId(UUID id) {
+	public void setId(String id) {
 		this.id = id;
 	}
 
-	public Options getLeavesOptionId() {
+	public Option getLeavesOptionId() {
 		return leavesOptionId;
 	}
 
-	public void setLeavesOptionId(Options leavesOptionId) {
+	public void setLeavesOptionId(Option leavesOptionId) {
 		this.leavesOptionId = leavesOptionId;
 	}
 

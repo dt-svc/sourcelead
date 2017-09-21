@@ -29,8 +29,8 @@ public class LeaveType {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY, generator = "uuid2")
 	@GenericGenerator(name = "uuid2", strategy = "uuid2")
-	@Column(columnDefinition = "BINARY(16)")
-	private UUID id;
+//	@Column(columnDefinition = "BINARY(16)")
+	private String id;
 	
 	@NotFound(action = NotFoundAction.IGNORE)
 	@ManyToOne
@@ -86,13 +86,13 @@ public class LeaveType {
 	
 	@NotFound(action=NotFoundAction.IGNORE)
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "leaveTypeid")
-	private Set<LeaveRoles> leaveTypeSet;
+	private Set<LeaveRole> leaveTypeSet;
 
-	public UUID getId() {
+	public String getId() {
 		return id;
 	}
 
-	public void setId(UUID id) {
+	public void setId(String id) {
 		this.id = id;
 	}
 
@@ -224,11 +224,11 @@ public class LeaveType {
 		this.updatedBy = updatedBy;
 	}
 
-	public Set<LeaveRoles> getLeaveTypeSet() {
+	public Set<LeaveRole> getLeaveTypeSet() {
 		return leaveTypeSet;
 	}
 
-	public void setLeaveTypeSet(Set<LeaveRoles> leaveTypeSet) {
+	public void setLeaveTypeSet(Set<LeaveRole> leaveTypeSet) {
 		this.leaveTypeSet = leaveTypeSet;
 	}
 
