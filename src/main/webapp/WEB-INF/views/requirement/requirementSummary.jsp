@@ -6,8 +6,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
-
- <link href="resources/css/requirement-summary.css?staticTime=${staticTime}" type="text/css" rel="stylesheet"/>
+<link href="resources/css/requirement-summary.css?staticTime=${staticTime}" type="text/css" rel="stylesheet"/>
  
 <script>
 $(document).ready(function() {
@@ -37,8 +36,6 @@ function prepareAllCounts(requirementId){
     $('#backoutli').load(backoutCount(requirementId)); 
 }
 </script>
-
-
 
 <script>
 function allApplicantsCount(requirementId){
