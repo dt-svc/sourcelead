@@ -61,7 +61,7 @@ function getAddApplicant(requirementId){
 	result = result + '<label class="input-group-btn" onchange="importAddApplicantDoc();"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File';
 	result = result + '<input type="file" style="display: none;" name = "uploadBtn" id="uploadBtn"  class="upload">';
 	result = result + '</span> </label>';
-	result = result + '<input type="text" class="form-control" data-validation="validatedoc validate_length length1-100" data-validation-optional="true" field-name="Resume" readonly id="uploadFile" placeholder="Upload Resume">';
+	result = result + '<input type="text" class="form-control" data-validation="validatedoc" data-validation-optional="true" field-name="Resume" readonly id="uploadFile" placeholder="Upload Resume">';
 	result = result + '</div>';
 	result = result + '</div>';	
 	result = result + '</div>';
@@ -173,7 +173,7 @@ function getAddApplicant(requirementId){
 	result = result + '			        <label class="input-group-btn" onchange="uploadAddApplicantCandidateDoc();"> <span class="btn btn-danger"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File';
 	result = result + '                   <input type="file" style="display: none;"  id="newUploadBtn"  class="upload">';
 	result = result + '			          </span> </label>';
-	result = result + '			          <input type="text" class="form-control" readonly id="newUploadFile" placeholder="Upload Resume ..." field-name="Upload Resume" data-validation="required validatedoc validate_length length1-100"  >';
+	result = result + '			          <input type="text" class="form-control" readonly id="newUploadFile" placeholder="Upload Resume ..." field-name="Upload Resume" data-validation="required validatedoc "  >';
 	result = result + '			    </div>';
 	result = result + '		 </div>';
 	result = result + '	 </div>';
@@ -383,7 +383,7 @@ function submitRecomendedApplicant(requirementId,candidateId,type){
 	result = result + '			        <label class="input-group-btn" onchange="SubmissionUploadFileDoc1();"> <span class="btn btn-danger"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File';
 	result = result + '                   <input type="file" style="display: none;" id="newUploadBtn"  class="upload">';
 	result = result + '			          </span> </label>';
-	result = result + '			          <input type="text" class="form-control" readonly id="newUploadFile" placeholder="Upload Resume ..." field-name="Upload Resume" data-validation="required validatedoc validate_length length1-100"  >';
+	result = result + '			          <input type="text" class="form-control" readonly id="newUploadFile" placeholder="Upload Resume ..." field-name="Upload Resume" data-validation="required validatedoc "  >';
 	result = result + '			    </div>';
 	result = result + '		 </div>';
 	result = result + '	 </div>';
@@ -867,7 +867,7 @@ function discordApplicant(){
 	     if(candidateType != null && candidateType != "" && candidateType != 'undefined' && candidateType == 'parseCandidate'){
 	    	 document.getElementById("browseDiv").style.display="";
 	    	 $('#uploadFile').removeAttr('data-validation-optional');
-			 $('#uploadFile').attr("data-validation","required validatedoc validate_length length1-100"); 
+			 $('#uploadFile').attr("data-validation","required validatedoc "); 
 			 
 			 document.getElementById("newResumeDiv").style.display="none";
 			 document.getElementById("skillsDiv").style.display="";
@@ -897,7 +897,7 @@ function discordApplicant(){
 	    	
 		     $("#candidateSkills").val('').trigger("chosen:updated");
 			 $('#newUploadFile').removeAttr('data-validation-optional');
-			 $("#newUploadFile").attr("data-validation", "required validatedoc validate_length length1-100");
+			 $("#newUploadFile").attr("data-validation", "required validatedoc");
 			 $("#primarySkill").val('');
 			 
 			
@@ -1394,7 +1394,7 @@ function getCandidateSelectionType(){
 		        		 
 		        		 
 		        		 $('#newUploadFile').removeAttr('data-validation-optional');
-		        		 $("#newUploadFile").attr("data-validation", "required validatedoc validate_length length1-100");
+		        		 $("#newUploadFile").attr("data-validation", "required validatedoc");
 		        		 
 		        		 $('#uploadFile').removeAttr('data-validation');
 		        		 $('#uploadFile').attr("data-validation-optional","true"); 
@@ -1482,7 +1482,7 @@ function getCandidateSelectionType(){
 		        		
 		        		 
 		        		 $('#newUploadFile').removeAttr('data-validation-optional');
-		        		 $("#newUploadFile").attr("data-validation", "required validatedoc validate_length length1-100");
+		        		 $("#newUploadFile").attr("data-validation", "required validatedoc");
 		        		 
 		        	}
 		        	
