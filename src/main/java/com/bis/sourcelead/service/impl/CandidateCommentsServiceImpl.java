@@ -120,6 +120,7 @@ public class CandidateCommentsServiceImpl implements CandidateCommentsService {
 				StringBuilder nameBuilder = new StringBuilder();
 				 candidateComments.setCommentAuthor(nameBuilder.append(user.getFirstName()).append(" ").append(authorLastName).toString());
 				candidateComments.setCommentAuthorUserId(user.getId());
+				candidateComments.setCommentAuthorUserImage(user.getFileUrl());
 			}
 			
 			long diff = commonUtil.currentDate().getTime() - candidateComments.getUpdatedDate().getTime();
@@ -164,6 +165,7 @@ public class CandidateCommentsServiceImpl implements CandidateCommentsService {
 				StringBuilder commentBuilder = new StringBuilder();
 				candidateComments.setCommentAuthor(commentBuilder.append(user.getFirstName()).append(" ").append(authorLastName).toString());
 				candidateComments.setCommentAuthorUserId(user.getId());
+				candidateComments.setCommentAuthorUserImage(user.getFileUrl());
 			}
 			
 			long diff = commonUtil.currentDate().getTime() - candidateComments.getUpdatedDate().getTime();

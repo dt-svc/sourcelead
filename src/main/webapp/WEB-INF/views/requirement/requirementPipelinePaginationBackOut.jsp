@@ -23,7 +23,7 @@
 							"ajax" : $.fn.dataTable.pipeline({
 								url : url,
 								method : 'POST',
-								pages : 10
+								pages : 2
 							}),
 							"columns" : [ {
 								"data" : "name"
@@ -109,15 +109,7 @@
 													&& opt.resumeId != ''
 													&& opt.resumeId != 'undefined') {
 												result = result
-														+ '         <td><div><span><a class="glyphicon glyphicon-download-alt" href=\"'
-														+ sourceleadUrl
-														+ '/downloadResume?resumeUUID='
-														+ opt.resumeUUID
-														+ '\"></a><a class="fa fa-eye ml10" onclick="viewResumeRequirementSummary(\''
-														+ opt.resumeUUID
-														+ '\',\''
-														+ opt.filename
-														+ '\')"></a></span></div></td>';
+														+ '         <td><div><span><a class="glyphicon glyphicon-download-alt" href=\"'+opt.fileURL+'\"></a><a class="fa fa-eye ml10" onclick="viewFile(\''+opt.fileURL+'\',\''+opt.fileName+'\',\''+opt.fileContentType+'\');"></a></span></div></td>';
 											} else {
 												result = result
 														+ '         <td><div>--</div></td>';
