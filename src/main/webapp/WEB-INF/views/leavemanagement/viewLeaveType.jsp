@@ -108,7 +108,7 @@ $(document).ready(function(){
 		         result += '    </td>';
 		         result += '    <td>';
 		         result += '        <div class="tblminwidth-50">';
-		         result += '            <span title="Edit" class="paddingRight"><a href="'+sourceleadUrl+'/addLeaveType?leaveTypeId='+report.id+'"><i class="fa fa-pencil text-primary cursorPointer"></i></a></span> ';
+		         result += '            <span title="Edit" class="paddingRight"><a href="'+sourceleadUrl+'/editLeaveType?leaveTypeId='+report.id+'"><i class="fa fa-pencil text-primary cursorPointer"></i></a></span> ';
 		         result += '            <span title="Delete" class="paddingLeft"><i class="fa fa-trash text-danger cursorPointer"></i></span>';
 		         result += '        </div>';
 		         result += '    </td>';

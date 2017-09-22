@@ -73,12 +73,6 @@ public class LeaveManagementRestController {
 	RolesService rolesService;
 
 	@Autowired
-	DepartmentService departmentService;
-	
-	@Autowired
-	RolesService rolesService;
-	
-	@Autowired
 	OptionsService optionsService;
 	
 	@Autowired
@@ -195,7 +189,7 @@ public class LeaveManagementRestController {
 	 * @throws Exception 
 	 */
 	@RequestMapping(value = "/addLeaveType")
-	public ModelAndView addLeaveJsp(LeaveTypeDTO leaveTypeDTO, HttpServletRequest request, HttpServletResponse response) throws Exception
+	public ModelAndView addLeaveJsp(HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
 		ModelAndView model = new ModelAndView();
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
@@ -203,14 +197,6 @@ public class LeaveManagementRestController {
 		Long roleHierarchyId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "roleHierarchyId");
 		List<Department> departmentList = departmentService.getDepartmentByOrgLocationIdAndStatus(orgLocations.getId(),Constants.RECORD_ACTIVE.toString());
 		List<Roles> rolesList = rolesService.getUserRolesListByModuleAndLoginUserRoleHierarchy(org, orgLocations.getId(), roleHierarchyId);
-		
-		if(leaveTypeDTO != null && leaveTypeDTO.getLeaveTypeId() != null){
-			LeaveType leaveType = leaveTypeService.getLeaveTypeById(leaveTypeDTO.getLeaveTypeId());
-			if(leaveType != null){
-				model.addObject("leaveType", leaveType);
-			}
-		}
-		
 		model.addObject("departmentList", departmentList);
 		model.addObject("rolesList", rolesList);
 		model.addObject("sourceleadUrl", sourceleadUrl);
@@ -490,6 +476,40 @@ public class LeaveManagementRestController {
 		   model.addObject("sourceleadUrl", sourceleadUrl);
 		   model.setViewName("leavemanagement/addOptions");
 	       return model;
+	}
+	
+	@RequestMapping(value = "/editLeaveType")
+	public ModelAndView editLeaveType(LeaveTypeDTO leaveTypeDTO, HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		ModelAndView model = new ModelAndView();
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+		Long roleHierarchyId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "roleHierarchyId");
+		List<Roles> rolesList = rolesService.getUserRolesListByModuleAndLoginUserRoleHierarchy(org, orgLocations.getId(), roleHierarchyId);
+		List<Department> departmentList = departmentService.getDepartmentByOrgLocationId(orgLocations.getId());
+		LeaveType leaveType = leaveTypeService.getLeaveTypeById(leaveTypeDTO.getLeaveTypeId());
+		if (leaveType.getDepartmentId() != null) {
+			Long departmentId = leaveType.getDepartmentId().getId();
+			model.addObject("departmentId", departmentId);
+		}
+		Set<LeaveRole> leaveRoles = leaveType.getLeaveTypeRolesSet();
+		List<Roles> existedRolesList = new ArrayList<Roles>();
+		leaveRoles.forEach(role -> {
+			try {
+				Roles existedRole;
+				existedRole = rolesService.getRolesById(role.getRoleId().getId());
+				existedRolesList.add(existedRole);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		});
+		model.addObject("existedRoles", existedRolesList);
+		model.addObject("rolesList", rolesList);
+		model.addObject("departmentList", departmentList);
+		model.addObject("leaveType", leaveType);
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		model.setViewName("leavemanagement/addLeaveType");
+		return model;
 	}
 	
 }

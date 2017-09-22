@@ -11,6 +11,10 @@
 	 if(policy == 'Y'){
 		 leavePolicy();
 	 }
+	 var applicable = '${leaveType.applicableToUsers}';
+	 if(applicable == 'N'){
+		 noUsers();
+	 }
 };
 </script>
 

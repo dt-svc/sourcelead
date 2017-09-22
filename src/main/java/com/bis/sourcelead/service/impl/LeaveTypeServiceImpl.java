@@ -15,7 +15,7 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.LeaveTypeDao;
 import com.bis.sourcelead.dto.LeaveTypeDTO;
 import com.bis.sourcelead.entity.Department;
-import com.bis.sourcelead.entity.LeaveRoles;
+import com.bis.sourcelead.entity.LeaveRole;
 import com.bis.sourcelead.entity.LeaveType;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Roles;
@@ -63,7 +63,7 @@ public class LeaveTypeServiceImpl implements LeaveTypeService {
 			leaveType.setDepartmentId(dep);
 		}
 		if (leaveTypeDTO.getRoles() != null && !leaveTypeDTO.getRoles().isEmpty() && leaveTypeDTO.getRoles().size() > 0) {
-			Set<LeaveRoles> leaveRolesSet = getLeaveRoles(leaveTypeDTO.getRoles(), leaveType, user);
+			Set<LeaveRole> leaveRolesSet = getLeaveRoles(leaveTypeDTO.getRoles(), leaveType, user);
 			leaveType.setLeaveTypeRolesSet(leaveRolesSet);
 		}
 		if (StringUtils.isNotBlank(leaveTypeDTO.getApplicableToUsers()))
@@ -93,11 +93,11 @@ public class LeaveTypeServiceImpl implements LeaveTypeService {
 		return leaveType;
 	}
 	
-	private Set<LeaveRoles> getLeaveRoles(List<String> roles, LeaveType leaveType, User user) throws Exception
+	private Set<LeaveRole> getLeaveRoles(List<String> roles, LeaveType leaveType, User user) throws Exception
 	{
-		Set<LeaveRoles> leaveRolesSet = new HashSet<>();
+		Set<LeaveRole> leaveRolesSet = new HashSet<>();
 		roles.forEach(role -> {
-			LeaveRoles leaveRoles = new LeaveRoles();
+			LeaveRole leaveRoles = new LeaveRole();
 			leaveRoles.setLeaveTypeid(leaveType);
 			leaveRoles.setType(Constants.LEAVE_TYPE);
 			try {

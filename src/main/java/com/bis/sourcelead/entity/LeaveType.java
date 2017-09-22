@@ -89,7 +89,7 @@ public class LeaveType {
 	
 	@NotFound(action=NotFoundAction.IGNORE)
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "leaveTypeid")
-	private Set<LeaveRoles> leaveTypeRolesSet;
+	private Set<LeaveRole> leaveTypeRolesSet;
 	
 	@Column(name = "DELETE_REASON",columnDefinition = "TEXT default NULL")
 	private String deleteReason;
@@ -253,12 +253,12 @@ public class LeaveType {
 		this.updatedBy = updatedBy;
 	}
 
-	public Set<LeaveRoles> getLeaveTypeRolesSet()
+	public Set<LeaveRole> getLeaveTypeRolesSet()
 	{
 		return leaveTypeRolesSet;
 	}
 
-	public void setLeaveTypeRolesSet(Set<LeaveRoles> leaveTypeRolesSet)
+	public void setLeaveTypeRolesSet(Set<LeaveRole> leaveTypeRolesSet)
 	{
 		this.leaveTypeRolesSet = leaveTypeRolesSet;
 	}
