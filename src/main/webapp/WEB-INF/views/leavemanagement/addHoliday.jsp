@@ -30,7 +30,7 @@
                       <input type="text" class="form-control calendar" value="${holiday.fromDate}" field-name="From Date" data-validation="required" name="fromDate" id="fromDate" placeholder="From Date">
                       </div>
                       <div class="width110px">
-                      <input type="text" class="form-control calendar" value="${expenses.toDate}" field-name="To Date" data-validation="required" name="toDate" id="toDate" placeholder="To Date">
+                      <input type="text" class="form-control calendar" value="${holiday.toDate}" field-name="To Date" data-validation="required" name="toDate" id="toDate" placeholder="To Date">
                       </div>
                       <div class="width90px checkBox">
                       <input type="checkbox" name="halfDayCheckBox">Half Day
@@ -88,7 +88,7 @@
         <div class="col-lg-12">
           <div class="pull-right">
             <input type="button" value="Save" class="btn btn-primary" id="save_holiday" onclick="saveHoliday();">
-            <input type="button" value="Cancel" class="btn btn-default ml10">
+            <input type="button" value="Cancel" onclick="cancel();" class="btn btn-default ml10">
           </div>
         </div>
       </div>
@@ -100,23 +100,17 @@
   
   <script type="text/javascript">
 	function saveHoliday() {
-		if ($('#holiday_form').validate(false, validationSettings)) {
-		  	 var formData = getFormData("holiday_form");
+		var orgLocationId = '${SourceLeadWeb_orgLocationId}';
+		var userId = '${SourceLeadWeb_userId}';
+		  	var formData = $($('#holiday_form')[0]).serialize();
 		  	$("#holiday_form").attr("disabled", "disabled");
 			$("#holiday_form").addClass('button').val('Processing..');
-			$.post(sourceleadUrl+"/saveHoliday?"+tokenParamName+"="+tokenValue+"", formData, function(data) {
-				alert("success");
-				location.replace(sourceleadUrl+ "/viewHoliday");
+			$.post(sourceleadUrl+"/saveHoliday?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&userId="+userId+"", formData, function(data) {
+				if(data == true){
+					location.replace(sourceleadUrl+ "/viewHoliday");
+				}
 			});
-			return true;
-		} else {
-			return false;
-		}
 	}
-	$('body').on('blur', '#holiday_form', function() {
-		$("#holiday_form").showHelpOnFocus();
-		$("#holiday_form").validateOnBlur(false, validationSettings);
-	});
 </script>
 <script type="text/javascript">
         var validationSettings = {
@@ -126,7 +120,11 @@
 			dateFormat : 'yyyy/mm/dd' 
             };
 </script> 
-
+<script>
+function cancel(){
+	location.replace(sourceleadUrl+ "/viewHoliday");
+}
+</script>
 <script>
 $( function() {
 var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 

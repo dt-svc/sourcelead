@@ -1,9 +1,7 @@
 package com.bis.sourcelead.rest;
 
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.ArrayList;
-import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -19,31 +17,20 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.bis.sourcelead.constants.Constants;
-import com.bis.sourcelead.dto.ExpensesListUtilDTO;
-import com.bis.sourcelead.dto.HolidayDTO;
-import com.bis.sourcelead.entity.Expenses;
-import com.bis.sourcelead.entity.Holiday;
-import com.bis.sourcelead.entity.OrgLocations;
-import com.bis.sourcelead.service.HolidayService;
-import com.bis.sourcelead.service.OrgLocationService;
-import com.bis.sourcelead.util.SessionMaintainanceData;
+import com.bis.sourcelead.dao.HolidayDAO;
 import com.bis.sourcelead.dao.OptionsDao;
-import com.bis.sourcelead.dto.AddUserDTO;
-import com.bis.sourcelead.dto.CandidateDTO;
-import com.bis.sourcelead.dto.ClientDTO;
+import com.bis.sourcelead.dto.HolidayDTO;
 import com.bis.sourcelead.dto.OptionsDTO;
-import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.Department;
+import com.bis.sourcelead.entity.Holiday;
 import com.bis.sourcelead.entity.Option;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
-import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.Roles;
-import com.bis.sourcelead.entity.User;
-import com.bis.sourcelead.payroll.entity.AccountDeductionsDetails;
 import com.bis.sourcelead.service.DepartmentService;
+import com.bis.sourcelead.service.HolidayService;
 import com.bis.sourcelead.service.OptionsService;
+import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
@@ -71,6 +58,9 @@ public class LeaveManagementRestController {
 	
 	@Autowired
 	OptionsDao optionsDao;
+	
+	@Autowired
+	HolidayDAO holidayDAO;
 	
 	/**
 	 * returns Pending leaves jsp
@@ -329,19 +319,20 @@ public class LeaveManagementRestController {
 			throws Exception {
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		if(orgLocations.getId() != null)
-			holidayDTO.setOrgLocationId(orgLocations.getId().intValue());
+			holidayDTO.setOrgLocationId(orgLocations.getId().toString());
 		if(holidayDTO != null)
 		holidayService.storeHoliday(holidayDTO);
 		return "Success";
 	}
 	
-	@RequestMapping(value = "/getHolidaysList")
-	public List<Holiday> getHolidaysList( @RequestBody HolidayDTO holidayDTO) throws Exception
+	@RequestMapping(value = "/getHolidaysList", method = RequestMethod.GET)
+	public @ResponseBody String getHolidaysList(@RequestParam(value = "orgLocationId", required = false) Long orgLocationId, @RequestParam(value = "userId", required = false) Long userId,HttpServletRequest request) throws Exception
 	{
-		OrgLocations orgLoc = orgLocationService.getOrgLocationsByLocationCode(holidayDTO.getOrgLocationId().toString());
-		List<Holiday> holidaysList = holidayService.getAllHolidaysList(orgLoc);
-		return holidaysList;
+		List<Holiday> holiodaysList = null;
+		holiodaysList = holidayService.getAllHolidaysList(orgLocationId);
+		return "success";
 	}
+	
 	/**
 	 * saving leave optipons
 	 * 
@@ -406,6 +397,31 @@ public class LeaveManagementRestController {
 		   model.addObject("sourceleadUrl", sourceleadUrl);
 		   model.setViewName("leavemanagement/addOptions");
 	       return model;
+	}
+	
+	@RequestMapping(value = "/editHoliday")
+	public ModelAndView editHoliday(@RequestParam(value="holidayId", required=false) String holidayId,HttpServletRequest request,HttpServletResponse response) throws Exception {
+		   ModelAndView model = new ModelAndView();
+		   Holiday holidays = holidayService.getHolidaysById(holidayId);
+		   model.addObject("options", holidays);
+		   model.addObject("sourceleadUrl", sourceleadUrl);
+		   model.setViewName("leavemanagement/addHoliday");
+	       return model;
+	}
+	
+	@RequestMapping(value = {"/deleteHoliday", "/rest/deleteHoliday"}, method = RequestMethod.POST)
+	@ResponseBody
+	public  boolean deleteHoliday(@RequestParam(value = "holidayId", required = false) String holidayId,@RequestParam(value = "reason", required = false) String reason,HttpServletRequest request) throws Exception
+	{
+		boolean isDeleted = false;
+		 Holiday holidays = holidayService.getHolidaysById(holidayId);
+		 if(holidays !=null) {
+			 holidays.setHolidayStatus("0");
+			 holidays.setDeleteReason(reason);
+			 holidayDAO.saveDeleteHoliday(holidays);
+			 isDeleted = true;
+		 }
+		return isDeleted;
 	}
 	
 }

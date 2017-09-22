@@ -5,10 +5,11 @@
  
 
 <script type="text/javascript">
-		window.onload = function () {
-				getHolidaysList();
-		 };
+		 $(document).ready(function(){
+			 getHolidaysList();
+			});
 </script>
+
 
  <!-- Content Area -->
   <section class="content-wraper" id="themeroller">
@@ -120,18 +121,134 @@
 
 function getHolidaysList(){
 	alert("hello111");
-	$.ajax({
-        type : "GET",
-         url: sourceleadUrl+"/getHolidaysList?"+tokenParamName+"="+tokenValue+"",       
-         success :function(data) {
-        	 alert("hello222");
-        	 prepareHolidayList(data);
-        },
-         
-    }); 
-	}
+	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
+	var userId = '${SourceLeadWeb_userId}';
+	$.get(sourceleadUrl+"/getHolidaysList?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&userId="+userId+"", function(data) {
+		if(data !=null){
+       	 var result = "";				        	
+				result = result + '<table id="viewHolidaysTable" class="display" cellspacing="0" width="100%" >';
+				result = result + '<thead>';
+				result = result + '<tr>';
+				result = result +'<th>Holiday Name</th>';
+				result = result +'<th>From Date</th>';
+				result = result +'<th>To Date</th>';
+				result = result + '<th>Description</th>';
+				result = result + '<th>Action</th>';
+				result = result + '</tr>';
+				result = result + '</thead>	';
+				result = result + '<tbody>';
+				
+				if(data !=null && data !=''){
+					 for (var i=0; i<data.length; i++)
+						{
+			        		 var opt = data[i];
+			        		 result = result + ' <tr>';
+			        		 result = result + ' <td>';
+			        		 result = result + ' <div class="proj_show tbldata-dotdot-big">';
+			        		 if(opt.holidayName !=null && opt.holidayName !='' && opt.holidayName !='undefined'){
+			        			 result = result + '     <div class="pull-left tbldata-dotdot-me" title="">'+opt.holidayName+'</div>'; 
+			        		 }else{
+			        			 result = result + '     <div class="pull-left tbldata-dotdot-me" title="">--</div>';
+			        		 }
+			        		 result = result + '  </div>';
+			        		 result = result + ' </td>';
+			        		 result = result + ' <td>';
+			        		 result = result + '   <div title="From Date" class="tblminwidth-75">'+opt.fromDate+'</div>';
+			        		 result = result + ' </td>';
+			        		 result = result + ' <td>';
+			        		 result = result + '   <div title="To Date" class="tbldata-dotdot-100">'+opt.toDate+'</div>';
+			        		 result = result + '</td>';
+			        		 result = result + ' <td>';
+			        		 if(opt.description !=null && opt.description != 'undefined' && opt.description != ''){
+			        			 result = result + '     <div title="2" class="tblminwidth-75">'+opt.description+'</div>';	 
+			        		 }else{
+			        			 result = result + '     <div title="2" class="tblminwidth-75">--</div>';	
+			        		 }
+			        		 
+			        		 result = result + '  </td>';
+			        		 result = result + ' <td>';
+			        		 result = result + ' <div class="tblminwidth-50">';
+			        		 result = result + '      <span title="Edit" class="paddingRight"><a href="'+sourceleadUrl+'""/editHoliday?optionId=\''+opt.id+'\"><i class="fa fa-pencil text-primary cursorPointer"></i></a></span>';
+			        		 result = result + '     <span title="Delete" class="paddingLeft"><i class="fa fa-trash text-danger cursorPointer" onclick="deleteholiday(\''+opt.id+'\')"></i></span>';
+			        		 result = result + '  </div>';
+			        		 result = result + ' </td>';
+			        		 result = result + '  </tr>';
+						}
+				}
+	        	
+				result = result + '  </tbody>';
+				result = result + ' </table>';
+				$("#viewOptinsDiv").empty();
+				$("#viewOptinsDiv").append(result);
+				$("#loading").removeAttr("style");
+				viewHolidaysTable();
+        }
+		}); 
+ }
 </script> 
+<script>
+function deleteHoliday(holidayId){
+	var reason = document.getElementById("reason").value;
+	var reason1 = document.getElementById("reason").value;
+	 reason = reason.replace(/\s/g, "")
+	if(reason.match(/^[^\s-](.*)*$/) != null){
+		$("#deleteLeaveHolidayDiv").empty(); 
+		$.ajax({
+		   	type: "POST",
+		   	url: sourceleadUrl+"/deleteHoliday?"+tokenParamName+"="+tokenValue+"&holidayId="+holidayId+"&reason="+reason,	    	   
+		    success: function(data) {
+	   			 $("#selector1").removeAttr("style");
+	  			 $("#selector1").css({ display: "block" });
+	  			 $("#msgDiv").html("Holiday removed");
+	  			 $("#popUp").empty();
+	 			 $(".project_inn_mask").fadeOut(200);
+	             msgFadein();
+	             if(data == true){
+	 				location.replace(sourceleadUrl+ "/viewHoliday");
+	 			}
+		    }
+	   });
+	}else{
+		if(reason.length == 0 && reason1){
+			$("#deleteLeaveHolidayDiv").empty().append("<font color='red' style='padding: 5px 10px; '>Must not Start With Space</font>") ;
+		}else{
+			$("#deleteLeaveHolidayDiv").empty().append("<font color='red' style='padding: 5px 10px; '>Reason is required</font>") ; 
+		}
+	}
+}
+</script>
+<script>
+function deleteholiday(holidayId){
+	 $(".project_inn_mask").remove();
+	var result = "";
+	result = result +"	<div class='project_inn_mask'></div>";
+	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+	result = result +"		<textarea id='reason' class='form-control' field-name='Reject Reason'  data-validation='required validate_Space validate_Description validate_length length2-250' name='reason' value='' placeholder='Reason' rows='2' onkeypress='clientDashboardRemoveSpacesForRejectReason();'></textarea>";
+	result = result + ' <div id="deleteLeaveHolidayDiv"/>';
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Delete' onclick='deleteHoliday(\""+holidayId+"\");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelRejectPopupClient();'></b>";
+	result = result +"	</div>";
+	$("#popUp").append(result);
+	$("#remove_user_pop").slideDown(200);
+	$(".project_inn_mask").fadeIn(200); 
+}
+</script>
 
+<script>
+function viewHolidaysTable(){ 
+    $('#viewHolidaysTable').DataTable( { 
+    	"scrollCollapse": false,
+    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+    	"bLengthChange": true,
+    	"bDestroy": true,
+    	"ordering": true,
+    	"oLanguage": {
+            "sSearch": "",
+            "sZeroRecords": "", "sEmptyTable": ""
+       }
+    });
+    $("#viewHolidaysTable").wrap("<div class='overflow_Auto width100percnt'></div>")
+}
+</script>
 <script>
   function prepareUsersList(data){
 	  var json = JSON.parse(data);
@@ -183,6 +300,16 @@ function getHolidaysList(){
 	  $("#holidayListDiv").empty();
    $("#holidayListDiv").append(result);
    holidaysPagination();}
-	</script>	  
+	</script>
+	
+<script>
+   function clientDashboardRemoveSpacesForRejectReason() {
+	    var output = document.getElementById("reason").value;
+	    output = output.replace(/\s/g, "") 
+	    if(output.length != 0){
+	    $("#reasonForSpoc").removeAttr("data-validation");
+	    }
+	}
+</script>		  
 		  
 <jsp:include page="../masterFooter.jsp" />

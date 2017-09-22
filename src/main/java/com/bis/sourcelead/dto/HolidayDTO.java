@@ -10,7 +10,9 @@ private static final long serialVersionUID = 1L;
 
 	private UUID id;
 	
-	private Integer orgLocationId;
+	private String orgLocationId;
+	
+	private String userId;
 	
 	@Required(desc = "Holiday Name")
 	private String holidayName;  
@@ -33,12 +35,20 @@ private static final long serialVersionUID = 1L;
 		this.id = id;
 	}
 
-	public Integer getOrgLocationId() {
+	public String getOrgLocationId() {
 		return orgLocationId;
 	}
 
-	public void setOrgLocationId(Integer orgLocationId) {
+	public void setOrgLocationId(String orgLocationId) {
 		this.orgLocationId = orgLocationId;
+	}
+
+	public String getUserId() {
+		return userId;
+	}
+
+	public void setUserId(String userId) {
+		this.userId = userId;
 	}
 
 	public String getHolidayName() {

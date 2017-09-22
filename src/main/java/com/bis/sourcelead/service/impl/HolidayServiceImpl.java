@@ -1,7 +1,6 @@
 package com.bis.sourcelead.service.impl;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -9,17 +8,15 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.HolidayDAO;
 import com.bis.sourcelead.dto.HolidayDTO;
-import com.bis.sourcelead.entity.Expenses;
 import com.bis.sourcelead.entity.Holiday;
 import com.bis.sourcelead.entity.OrgLocations;
-import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.HolidayService;
+import com.bis.sourcelead.service.OrgLocationService;
+import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
-import com.bis.sourcelead.util.ConversionUtil;
 
 @Service
 public class HolidayServiceImpl implements HolidayService{
@@ -29,17 +26,25 @@ public class HolidayServiceImpl implements HolidayService{
 	
 	@Autowired
 	CommonUtil commonUtil;
+	
+	@Autowired
+	private OrgLocationService orgLocationService;
+	
+	@Autowired
+	UserService userService;
 
 
 	@Override
-	public void storeHoliday(HolidayDTO holidayDTO) throws Exception {
+	public Holiday storeHoliday(HolidayDTO holidayDTO) throws Exception {
 
 		Holiday holiday = new Holiday();
+		OrgLocations orgLocations = orgLocationService.getOrgLocations(Long.parseLong(holidayDTO.getOrgLocationId()));
+		User user = userService.getUserById(Long.parseLong(holidayDTO.getUserId()));
 		if(holidayDTO != null)
 		{
 			if(holidayDTO.getOrgLocationId() != null)
 			{
-				holiday.setOrgLocationId(holidayDTO.getOrgLocationId().longValue());
+				holiday.setOrgLocations(orgLocations);
 			}else{
 				holiday.setHolidayName("--");
 			}
@@ -80,15 +85,25 @@ public class HolidayServiceImpl implements HolidayService{
 				holiday.setHolidayStatus("--");
 			}
 			
+			holiday.setHolidayStatus("1");
+			holiday.setCreatedDate(new Date());
+			holiday.setUpdatedDate(new Date());
+			holiday.setCreatedBy(user.getUserCode());
+			holiday.setUpdatedBy(user.getUserCode());
+			
 		}
-		holidayDAO.addHoliday(holiday);
+		return holidayDAO.storeHoliday(holiday);
 	}
 
 	@Override
-	public List<Holiday> getAllHolidaysList(OrgLocations orgLoc) {
-
-		List<Holiday> holidaysList =  holidayDAO.getAllHolidaysList(orgLoc.getId());
+	public List<Holiday> getAllHolidaysList(Long orgLocationId) {
+		List<Holiday> holidaysList =  holidayDAO.getAllHolidaysList(orgLocationId);
 		return holidaysList;
+	}
+	
+	@Override
+	public Holiday getHolidaysById(String holidayId) throws Exception {
+		return holidayDAO.getHolidaysById(holidayId);
 	}
 	
 	

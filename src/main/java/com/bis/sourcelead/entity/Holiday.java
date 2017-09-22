@@ -9,11 +9,15 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
 
 /**
  * @author BIS_SL2
@@ -26,12 +30,14 @@ public class Holiday implements Serializable {
 private static final long serialVersionUID = 1L;
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "ID", nullable = false)
+	@GeneratedValue(generator = "uuid2" ,strategy = GenerationType.IDENTITY)
+	@GenericGenerator(name = "uuid2" ,strategy = "uuid2")
 	private String id;
 	
-    @Column(name = "ORGLOCATION_ID")
-    private Long orgLocationId;
+	@NotFound(action = NotFoundAction.IGNORE)
+	@ManyToOne
+	@JoinColumn(name = "ORGLOCATION_ID", nullable = false)
+	private OrgLocations orgLocations;
 	
 	@Column(name = "HOLIDAY_NAME")
 	private String holidayName;
@@ -50,6 +56,9 @@ private static final long serialVersionUID = 1L;
 	
 	@Column(name = "HOLIDAY_STATUS")
 	private String holidayStatus;
+	
+	@Column(name = "DELETE_REASON",columnDefinition = "TEXT default NULL")
+	private String deleteReason;
 	
 	@Column(name = "CREATED_DATE")
 	private Date createdDate;
@@ -71,12 +80,12 @@ private static final long serialVersionUID = 1L;
 	@Column(name = "UPDATED_BY")
 	private String updatedBy;
 
-	public Long getOrgLocationId() {
-		return orgLocationId;
+	public OrgLocations getOrgLocations() {
+		return orgLocations;
 	}
 
-	public void setOrgLocationId(Long orgLocationId) {
-		this.orgLocationId = orgLocationId;
+	public void setOrgLocations(OrgLocations orgLocations) {
+		this.orgLocations = orgLocations;
 	}
 
 	public String getHolidayName() {
@@ -125,6 +134,14 @@ private static final long serialVersionUID = 1L;
 
 	public void setHolidayStatus(String holidayStatus) {
 		this.holidayStatus = holidayStatus;
+	}
+	
+	public String getDeleteReason() {
+		return deleteReason;
+	}
+
+	public void setDeleteReason(String deleteReason) {
+		this.deleteReason = deleteReason;
 	}
 
 	public Date getCreatedDate() {
