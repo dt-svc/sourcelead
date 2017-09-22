@@ -1237,3 +1237,18 @@ $('#nexttab').on('click', function() {
     </script>
 
   <jsp:include page="../masterFooter.jsp" />
+  <div class="backtotop" style="display: none;"><img src="resources/images/backtotop.png"></div>  
+  <script>
+// Back To Top 
+    $(window).scroll(function() {
+        if ($(this).scrollTop() > 200) {
+            $('.backtotop').fadeIn('slow');
+        } else {
+            $('.backtotop').fadeOut('slow');
+        }
+    });
+    $('.backtotop').click(function() {
+        $("html, body").animate({scrollTop: 0}, 500);
+        return false;
+    });
+</script>
