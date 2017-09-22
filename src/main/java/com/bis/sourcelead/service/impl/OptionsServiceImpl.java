@@ -54,11 +54,11 @@ public class OptionsServiceImpl implements OptionsService{
 		}
 		options.setOrgLocations(orgLocations);
 		options.setCalendarMonth(optionsDTO.getCalendarMonth());
-		options.setWeekends(optionsDTO.getCalendarMonth());
+		options.setWeekends(optionsDTO.getWeekends());
 		options.setHalfdayRequest(optionsDTO.getHalfDayRequest());
 		options.setLeaveTransfer(optionsDTO.getLeaveTransfer());
 		if (StringUtils.isNotBlank(optionsDTO.getWorkingHours())) {
-			options.setWeekends(optionsDTO.getWorkingHours());
+			options.setWorkingHours(optionsDTO.getWorkingHours());
 		}
 		if (optionsDTO.getRoles() != null && !optionsDTO.getRoles().isEmpty()) {
 			Set<LeaveRole> leaveRolesSet = getLeaveRoles(optionsDTO.getRoles(), options, user);

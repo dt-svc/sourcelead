@@ -24,7 +24,7 @@
                <select data-placeholder="select Department" class="chosen-select form-control" id="department" name="department" field-name="Department">
                 <option value="">--Select Department--</option>
                 <c:forEach var="dept" items="${departmentList}">
-	                     <option value="${dept.id}">${dept.departmentName}</option>
+	                     <option value="${dept.id}" ${dept.id  == departmentId ? 'selected' : ''}>${dept.departmentName}</option>
                 </c:forEach>
                 </select>
               </div>
@@ -33,9 +33,17 @@
               <label class="col-md-3">Select Role</label>
               <div class="col-md-9 dropdown-select">
                 <select multiple data-placeholder="select owner" class="chosen-select form-control"  id="roles" name="roles" field-name="Role">
-		                        <option value="">-Select Role-</option>
-		                        <c:forEach var="option" items="${rolesList}">
-									<option value="${option.id}">${option.displayName}</option>
+		                        <c:forEach var="role" items="${rolesList}">
+		                           <c:set var = "NUM" value = "${0}"/>
+			                        <c:forEach var="existedRoles" items="${existedRoles}">
+										     <c:if test="${existedRoles.id eq role.id}">
+										    	<c:set var = "NUM" value = "${1}"/>
+										       <option  selected value="${role.id}">${existedRoles.displayName}</option>
+ 										    </c:if> 
+										</c:forEach>
+										<c:if test="${NUM == 0}">
+											<option value="${role.id}">${role.displayName}</option>
+										</c:if>
 								</c:forEach>
 			    </select>
               </div>
@@ -44,18 +52,19 @@
               <label class="col-md-3">Calendar Month</label>
               <div class="col-md-9 dropdown-select">
                 <select class="form-control" id="calendarMonth" name="calendarMonth">
-                  <option selected value="JANUARY">January</option>
-                  <option value="FEBRUARY">February</option>
-                  <option value="MARCH">March</option>
-                  <option value="APRIL">April</option>
-                  <option value="MAY">May</option>
-                  <option value="JUNE">June</option>
-                  <option value="JULY">July</option>
-                  <option value="AUGUST">August</option>
-                  <option value="SEPTEMBER">September</option>
-                  <option value="OCTOBER">October</option>
-                  <option value="NOVEMBER">November</option>
-                  <option value="DECEMBER">December</option>
+                <c:forEach var="months" items="${calendarList}">
+               	   <c:set var = "NUM" value = "${0}"/>
+                     <c:forEach var="existedMonths" items="${existCalendarList}">
+					     <c:if test="${existedMonths eq months}">
+					    	<c:set var = "NUM" value = "${1}"/>
+					       <option  selected value="${months}">${existedMonths}</option>
+						 </c:if> 
+				     </c:forEach>
+					<c:if test="${NUM == 0}">
+						<option value="${months}">${months}</option>
+					</c:if>
+                
+                </c:forEach>
                 </select>
               </div>
             </div>
@@ -63,13 +72,26 @@
               <label class="col-md-3">Weekends</label>
               <div class="col-md-9 dropdown-select">
                <select multiple data-placeholder="select owner" class="chosen-select form-control"  id="weekends" name="weekends" field-name="Weekends">
-                  <option selected value="Sunday">Sunday</option>
-                  <option value="Monday">Monday</option>
-                  <option value="Tuesday">Tuesday</option>
-                  <option value="Wednesday">Wednesday</option>
-                  <option value="Thursday">Thursday</option>
-                  <option value="Friday">Friday</option>
-                  <option selected value="Saturday">Saturday</option>
+	               <c:forEach var="weeks" items="${weekends}">
+	               <c:set var = "NUM" value = "${0}"/>
+	               <c:forEach var="existedWeeks" items="${existWeekends}">
+					     <c:if test="${existedWeeks eq weeks}">
+					    	<c:set var = "NUM" value = "${1}"/>
+					       <option  selected value="${weeks}">${existedWeeks}</option>
+						 </c:if> 
+				     </c:forEach>
+				     <c:if test="${NUM == 0}">
+						<c:if test="${weeks == 'Sunday'}">
+				                <option selected value="${weeks}">${weeks}</option>
+				            </c:if>
+				            <c:if test="${weeks == 'Saturday'}">
+				                <option selected value="${weeks}">${weeks}</option>
+				            </c:if>
+				            <c:if test="${weeks != 'Saturday' && weeks != 'Sunday' }">
+				             <option  value="${weeks}">${weeks}</option>
+				            </c:if>
+					</c:if>
+	               </c:forEach>
                 </select>
               </div>
             </div>
@@ -77,8 +99,20 @@
               <label class="col-md-3">Halfday Request</label>
               <div class="col-md-9 dropdown-select">
                 <select class="form-control" id="halfDayRequest" name="halfDayRequest">
-                  <option selected value="YES">Yes</option>
-                  <option value="NO">No</option>
+                <c:if test="${!empty options.halfdayRequest}">
+	                <c:if test="${options.halfdayRequest == 'YES'}">
+	                	<option selected value="YES">Yes</option>
+	                	<option value="NO">NO</option>
+	                </c:if>
+	                 <c:if test="${options.halfdayRequest == 'NO'}">
+	                 	<option value="YES">Yes</option>
+	                	<option selected value="NO">NO</option>
+	                </c:if>
+                </c:if>
+                <c:if test="${empty options.halfdayRequest}">
+                	<option selected value="YES">Yes</option>
+                 	<option value="NO">No</option>
+                </c:if>
                 </select>
               </div>
             </div>

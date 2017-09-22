@@ -81,6 +81,7 @@ public class Option {
 	@NotFound(action=NotFoundAction.IGNORE)
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "leavesOptionId")
 	private Set<LeaveRole> leaverolesSet;
+	
 
 	public String getId() {
 		return id;

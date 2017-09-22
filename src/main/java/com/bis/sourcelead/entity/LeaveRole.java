@@ -41,7 +41,7 @@ public class LeaveRole {
 	private LeaveType leaveTypeid;
 
 	@NotFound(action = NotFoundAction.IGNORE)
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne
 	@JoinColumn(name = "ROLE_ID", nullable = false)
 	private Roles roleId;
 
