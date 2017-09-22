@@ -10,4 +10,6 @@ public interface RestrictDayService {
 	public RestrictDay storeRestrictedDay(RestrictDayDTO restrictDayDTO) throws Exception;
 
 	public List<RestrictDay> getRestrictDayListByOrgLocationId(Long orgLocationId) throws Exception;
+
+	public RestrictDay getRestrictDayByUUID(String restrictUUID);
 }

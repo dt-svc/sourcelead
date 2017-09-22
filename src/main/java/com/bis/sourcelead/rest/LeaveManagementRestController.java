@@ -1,26 +1,16 @@
 package com.bis.sourcelead.rest;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.ModelAndView;
-
-import com.bis.sourcelead.dto.RestrictDayDTO;
-import com.bis.sourcelead.entity.Org;
-import com.bis.sourcelead.entity.OrgLocations;
-import com.bis.sourcelead.entity.RestrictDay;
-import com.bis.sourcelead.entity.Roles;
-import com.bis.sourcelead.service.RestrictDayService;
-
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -28,21 +18,18 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.dao.OptionsDao;
-import com.bis.sourcelead.dto.AddUserDTO;
-import com.bis.sourcelead.dto.CandidateDTO;
-import com.bis.sourcelead.dto.ClientDTO;
+import com.bis.sourcelead.dao.RestrictDayDao;
 import com.bis.sourcelead.dto.OptionsDTO;
-import com.bis.sourcelead.entity.Countries;
+import com.bis.sourcelead.dto.RestrictDayDTO;
 import com.bis.sourcelead.entity.Department;
 import com.bis.sourcelead.entity.Option;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
-import com.bis.sourcelead.entity.Projects;
+import com.bis.sourcelead.entity.RestrictDay;
 import com.bis.sourcelead.entity.Roles;
-import com.bis.sourcelead.entity.User;
-import com.bis.sourcelead.payroll.entity.AccountDeductionsDetails;
 import com.bis.sourcelead.service.DepartmentService;
 import com.bis.sourcelead.service.OptionsService;
+import com.bis.sourcelead.service.RestrictDayService;
 import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
@@ -60,16 +47,17 @@ public class LeaveManagementRestController {
 	@Autowired
 	private RolesService rolesService;
 
-	DepartmentService departmentService;
+	@Autowired
+	private DepartmentService departmentService;
 	
 	@Autowired
-	RolesService rolesService;
+	private OptionsService optionsService;
 	
 	@Autowired
-	OptionsService optionsService;
+	private OptionsDao optionsDao;
 	
 	@Autowired
-	OptionsDao optionsDao;
+	private RestrictDayDao restrictDayDao;
 
 	
 	/**
@@ -265,14 +253,17 @@ public class LeaveManagementRestController {
 	 * @return ModelAndView
 	 */
 	@RequestMapping(value = "/addRestrictDay")
-	public ModelAndView addRestrictDayJsp(HttpServletRequest request,HttpServletResponse response) {
+	public ModelAndView addRestrictDayJsp(HttpServletRequest request,HttpServletResponse response,@RequestParam(value = "restrictUUID", required = false) String restrictUUID) {
 		   ModelAndView model = new ModelAndView();
-		   
 		   OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		   Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 		   Long roleHierarchyId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "roleHierarchyId");
 		   List<Roles> rolesList = rolesService.getUserRolesListByModuleAndLoginUserRoleHierarchy(org,orgLocations.getId(),roleHierarchyId);
 		   model.addObject("rolesList", rolesList);
+		   if(StringUtils.isNotBlank(restrictUUID)) {
+			   RestrictDay restrictDay = restrictDayService.getRestrictDayByUUID(restrictUUID);
+			   model.addObject("restrictDay", restrictDay);
+		   }
 		   model.addObject("sourceleadUrl", sourceleadUrl);
 		   model.setViewName("leavemanagement/addRestrictDay");
 	       return model;
@@ -411,5 +402,18 @@ public class LeaveManagementRestController {
 	       return model;
 	}
 	
-
+	@RequestMapping(value = {"/deleteRestrictedDay"})
+	@ResponseBody
+	public  boolean deleteRestrictedDay(@RequestParam(value = "id", required = false) String id,@RequestParam(value = "reason", required = false) String reason) throws Exception
+	{
+		boolean isDeleted = false;
+		 RestrictDay restrictDay = restrictDayService.getRestrictDayByUUID(id);
+		 if(restrictDay !=null) {
+			 restrictDay.setStatus("0");
+			 restrictDay.setDeleteReason(reason);
+			 restrictDayDao.storeRestrictedDay(restrictDay);
+			 isDeleted = true;
+		 }
+		return isDeleted;
+	}
 }

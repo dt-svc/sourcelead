@@ -9,4 +9,7 @@ public interface RestrictDayDao {
 	public RestrictDay storeRestrictedDay(RestrictDay restrictDay) throws Exception;
 
 	public List<RestrictDay> getRestrictDayListByOrgLocationId(Long orgLocationId);
+	
+	public RestrictDay getRestrictDayByUUID(String restrictUUID);
+	
 }

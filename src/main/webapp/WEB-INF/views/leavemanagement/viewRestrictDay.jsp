@@ -16,10 +16,11 @@ $(document).ready(function(){
       <div class="pull-left">
         <h2>Restrict Day</h2>
       </div>
-		<div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="restrictday.html">Leave Management</a> &raquo; Restrict Day</div>
+		<div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='/leaveConfiguration'/>">Leave Configure</a> &raquo; Restrict Day</div>
     </section>
     
 <div class="content-area content-new clearfix">
+<div id="popUp"></div>
 
 <div class="timesheet_out">
   <div class="clearfix">
@@ -31,7 +32,7 @@ $(document).ready(function(){
               </a>
           </li>
         
-          <li class="dropdown">
+<!--           <li class="dropdown">
             <span class="dropdown-toggle" id="menu1" data-toggle="dropdown">
                 <i class="fa fa-filter"></i><span>Type</span><i class="glyphicon glyphicon-play"></i></span>|
           
@@ -51,11 +52,11 @@ $(document).ready(function(){
               </li>
             </ul>
           </div>
-        </li>
+        </li> -->
       </ul>
       <div class="clearfix"></div>
     </div>
-    <div class="require_wrap_table datatable_filter">
+    <div class="candidate_wrap_table datatable_filter">
        <div id="restricDayList"></div>
     </div>
   </div>
@@ -98,15 +99,19 @@ function populateRestrictDayList(json){
     	result = result +'    </div>                                                                                                                   ';
     	result = result +'  </td>                                                                                                                      ';
     	result = result +'  <td>                                                                                                                       ';
-    	result = result +'      <div class="tbldata-dotdot-100" title="'+report.startDateStr+' - '+report.endDateStr+'">'+report.startDateStr+' - '+report.endDateStr+'</div>                                                           ';
+    	result = result +'      <div class="tbldata-dotdot-big" title="'+report.startDateStr+' - '+report.endDateStr+'">'+report.startDateStr+' - '+report.endDateStr+'</div>                                                           ';
     	result = result +'  </td>                                                                                                                      ';
     	result = result +'  <td>                                                                                                                       ';
-    	result = result +'    <div title="Reason" class="tbldata-dotdot-verybig">'+report.reason+'</div>                                                                      ';
+    	if(report.reason != null && report.reason != 'undefined' && report.reason != ''){
+    		result = result +'    <div title="Reason" class="tbldata-dotdot-verybig">'+report.reason+'</div> ';
+    	}else{
+    		result = result +'    <div title="Reason" class="tbldata-dotdot-verybig">--</div> ';
+    	}
     	result = result +'  </td>                                                                                                                      ';
     	result = result +'  <td>                                                                                                                       ';
     	result = result +'     <div class="tblminwidth-50">                                                                                            ';
-    	result = result +'          <span title="Edit" class="paddingRight"><i class="fa fa-pencil text-primary cursorPointer"></i></span>             ';
-    	result = result +'          <span title="Delete" class="paddingLeft"><i class="fa fa-trash text-danger cursorPointer"></i></span>              ';
+    	result = result +'          <span title="Edit" class="paddingRight"><a href="<c:url value="/addRestrictDay?restrictUUID='+report.id+'"/>"><i class="fa fa-pencil text-primary cursorPointer"></i></a></span>             ';
+    	result = result +'          <span title="Delete" class="paddingLeft"><i class="fa fa-trash text-danger cursorPointer" onclick="deleteRestrictDay(\''+report.id+'\');"></i></span>              ';
     	result = result +'      </div>                                                                                                                 ';
     	result = result +'  </td>                                                                                                                      ';
     	result = result +'</tr>       																													';
@@ -135,6 +140,54 @@ function restrictDayPagination(){
 	    });
 	    $("#restrictDayTableId").wrap("<div class='overflow_Auto'></div>")
 }
+
+</script>
+
+<script>
+function deleteRestrictDay(id){
+	var result = "";
+	result = result +"	<div class='project_inn_mask'></div>"; 
+	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+
+	result = result +"		<p>Are you sure you want to delete ?</p>";
+	result = result +"		<textarea  id='reasonForRestrict' name='reasonForRestrict'  placeholder='Comments here' ></textarea>";
+	result = result + ' <div id="reasonForRestrictDiv"/>';
+	result = result +'		<b href="javascript:void(0)"><input id="confirm-id" type="button" value="Delete" onclick="saveDeletedReason(\''+id+'\');"><input class="u_can_color" type="button"  value="Cancel" onClick="cancelTermination();"></b>';
+	result = result +"	</div>";
+	$("#popUp").append(result);
+	$("#remove_user_pop").slideDown(200);
+	$(".project_inn_mask").fadeIn(200);
+}
+
+function cancelTermination(){
+	$("#popUp").empty();
+	 $(".project_inn_mask").fadeOut(200);
+}
+
+function saveDeletedReason(id){
+	var reason = $("#reasonForRestrict").val();
+	if(reason != null && reason != ''){
+		 $("#reasonForRestrictDiv").empty();
+		if(reason.length > 250){
+		$("#reasonForRestrictDiv").empty().append("<font color='red' style='padding: 5px 10px; '>The Entered values should not be more than 250 characters</font>") ; 
+		}else{
+			 $.ajax({
+				   	type: "POST",
+				    url: sourceleadUrl+"/deleteRestrictedDay?"+tokenParamName+"="+tokenValue+"&id="+id+"&reason="+reason,
+		   		    success: function(data) {
+		   		    	$("#popUp").empty();
+		   			 	$(".project_inn_mask").fadeOut(200);
+		   			 	location.replace(sourceleadUrl+"/viewRestrictDay");	
+		   		    }
+			     });
+		}
+	}
+	else{
+			$("#reasonForRestrictDiv").empty().append("<font color='red' style='padding: 5px 10px; '>Reason is required</font>") ; 
+	}
+	
+}
+
 </script>
 
 <jsp:include page="../masterFooter.jsp" />

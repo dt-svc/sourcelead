@@ -1,5 +1,7 @@
 package com.bis.sourcelead.dto;
 
+import java.util.List;
+
 public class RestrictDayDTO extends SearchDTO {
 
 	private String restrictName;
@@ -10,6 +12,7 @@ public class RestrictDayDTO extends SearchDTO {
 	private String orgLocationId;
 	private String userId;
 	private String isApllicable;
+	private List<String> rolesList;
 	
 	public String getRestrictName() {
 		return restrictName;
@@ -58,6 +61,12 @@ public class RestrictDayDTO extends SearchDTO {
 	}
 	public void setIsApllicable(String isApllicable) {
 		this.isApllicable = isApllicable;
+	}
+	public List<String> getRolesList() {
+		return rolesList;
+	}
+	public void setRolesList(List<String> rolesList) {
+		this.rolesList = rolesList;
 	}
 	
 }

@@ -826,5 +826,6 @@ public class Constants {
 	public static final String DEFAULT_COOLINGOFF_PERIOD = "3 Months";
 	
 	public static final String LEAVE_OPTION = "LEAVE_OPTION";
+	public static final String RESTRICTDAY = "RESTRICT_DAY";
 
 }

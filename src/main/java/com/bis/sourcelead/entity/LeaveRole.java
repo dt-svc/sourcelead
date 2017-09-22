@@ -39,6 +39,11 @@ public class LeaveRole {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "LEAVE_TYPE_ID", nullable = false)
 	private LeaveType leaveTypeid;
+	
+	@NotFound(action = NotFoundAction.IGNORE)
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "RESTRICT_DAY_ID", nullable = false)
+	private RestrictDay restrictDay;
 
 	@NotFound(action = NotFoundAction.IGNORE)
 	@ManyToOne(fetch = FetchType.LAZY)
@@ -143,4 +148,13 @@ public class LeaveRole {
 		this.updatedBy = updatedBy;
 	}
 
+	public RestrictDay getRestrictDay() {
+		return restrictDay;
+	}
+
+	public void setRestrictDay(RestrictDay restrictDay) {
+		this.restrictDay = restrictDay;
+	}
+
+	
 }

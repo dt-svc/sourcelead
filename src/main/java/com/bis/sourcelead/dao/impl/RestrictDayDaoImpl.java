@@ -1,6 +1,5 @@
 package com.bis.sourcelead.dao.impl;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
@@ -14,7 +13,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.RestrictDayDao;
 import com.bis.sourcelead.entity.RestrictDay;
-import com.bis.sourcelead.entity.Roles;
 
 @Repository
 public class RestrictDayDaoImpl implements RestrictDayDao{
@@ -42,10 +40,23 @@ public class RestrictDayDaoImpl implements RestrictDayDao{
 	@Transactional(rollbackFor = { Exception.class })
 	public List<RestrictDay> getRestrictDayListByOrgLocationId(Long orgLocationId) {
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from RestrictDay resDay  where resDay.orgLocationId = :orgLocationId ";
+		String query = "from RestrictDay resDay  where resDay.orgLocationId = :orgLocationId and resDay.status = '1' ";
 		List<RestrictDay> restrictDayList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
 		return restrictDayList;
 	}
-	
-	
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public RestrictDay getRestrictDayByUUID(String restrictUUID) {
+		List<RestrictDay> restrictDayList = null;
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from RestrictDay resDay  where resDay.id = :restrictUUID";
+		restrictDayList = session.createQuery(query).setString("restrictUUID", restrictUUID).setCacheable(true).list();
+		if(restrictDayList != null) {
+			return restrictDayList.get(0);
+		}else {
+			return null;
+		}
+	}
+
 }
