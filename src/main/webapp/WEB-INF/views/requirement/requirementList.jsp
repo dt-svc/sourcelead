@@ -1,8 +1,8 @@
 <jsp:include page="../masterHeader.jsp" />
 <jsp:include page="../masterSideNav.jsp" />
+
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags"%>
@@ -355,7 +355,7 @@ function statusvalidating(id){
 									</label></li>
 									<li><input id="c10" type="checkbox"
 										name="requirementStatus" type="checkbox" value="ONHOLD"
-										onclick="requirementList('list','${sourceleadUrl}');"><label for="10">On
+										onclick="requirementList('list','${sourceleadUrl}');"><label for="c10">On
 											Hold <span id="onHoldRequirementCount"></span>
 									</label></li>
 									<li><input id="c11" type="checkbox"
@@ -363,23 +363,23 @@ function statusvalidating(id){
 										onclick="requirementList('list','${sourceleadUrl}');"><label for="c11">Cancel
 											<span id="cancelRequirementCount"></span>
 									</label></li>
-									<li><input id="c11" type="checkbox"
+									<li><input id="c12" type="checkbox"
 										name="requirementStatus" type="checkbox" value="FILLEDCLOSED"
-										onclick="requirementList('list','${sourceleadUrl}');"><label for="c11">Filled
+										onclick="requirementList('list','${sourceleadUrl}');"><label for="c12">Filled
 											Closed<span id="filledClosedRequirementCount"></span>
 									</label></li>
-									<li><input id="c11" type="checkbox"
+									<li><input id="c13" type="checkbox"
 										name="requirementStatus" type="checkbox"
 										value="UNFILLEDCLOSED" onclick="requirementList('list','${sourceleadUrl}');"><label
-										for="c11">UnFilled Closed<span
+										for="c13">UnFilled Closed<span
 											id="unFilledClosedRequirementCount"></span></label></li>
-									<li><input id="c11" type="checkbox"
+									<li><input id="c14" type="checkbox"
 										name="requirementStatus" type="checkbox" value="REJECTED"
-										onclick="requirementList('list','${sourceleadUrl}');"><label for="c11">Rejected<span
+										onclick="requirementList('list','${sourceleadUrl}');"><label for="c14">Rejected<span
 											id="rejectedRequirementCount"></span></label></li>
-									<li><input id="c12" type="checkbox"
+									<li><input id="c15" type="checkbox"
 										name="requirementStatus" type="checkbox" value="CLOSED"
-										onclick="requirementList('list','${sourceleadUrl}');"><label for="c12">Closed<span
+										onclick="requirementList('list','${sourceleadUrl}');"><label for="c15">Closed<span
 											id="closedRequirementCount"></span></label></li>
 								</ul>
 							</div></li>
