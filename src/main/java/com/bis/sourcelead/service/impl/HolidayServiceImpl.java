@@ -17,6 +17,7 @@ import com.bis.sourcelead.service.HolidayService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.util.ConversionUtil;
 
 @Service
 public class HolidayServiceImpl implements HolidayService{
@@ -96,9 +97,24 @@ public class HolidayServiceImpl implements HolidayService{
 	}
 
 	@Override
-	public List<Holiday> getAllHolidaysList(Long orgLocationId) {
+	public List<HolidayDTO> getAllHolidaysList(Long orgLocationId) {
+		List<HolidayDTO> holidayDTOList = new ArrayList<HolidayDTO>();
 		List<Holiday> holidaysList =  holidayDAO.getAllHolidaysList(orgLocationId);
-		return holidaysList;
+		for(Holiday hlist : holidaysList)
+		{
+			HolidayDTO hDTO = new HolidayDTO();
+		    hDTO.setId(hlist.getId());
+			if(StringUtils.isNotBlank(hlist.getHolidayName()))
+			hDTO.setHolidayName(hlist.getHolidayName());
+			if(hlist.getFromDate() != null)
+			hDTO.setFromDate(ConversionUtil.getDateAsString(hlist.getFromDate()));
+			if(hlist.getToDate() != null)
+			hDTO.setToDate(ConversionUtil.getDateAsString(hlist.getToDate()));
+			if(StringUtils.isNotBlank(hlist.getDescription()))
+			hDTO.setDescription(hlist.getDescription());
+			holidayDTOList.add(hDTO);
+		}
+		return holidayDTOList;
 	}
 	
 	@Override

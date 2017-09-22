@@ -16,7 +16,6 @@
     <section class="content-header clearfix">
       <div class="pull-left">
         <h2>Holiday</h2>
-        <div id=holidayListDiv></div>
       </div>
 		<div class="pull-right brud-crum"><a href="dashboard_us.html">Home</a> &raquo; <a href="holiday.html">Leave Management </a> &raquo; Holiday</div>
     </section>
@@ -28,32 +27,8 @@
     <div class="timesheet_head">
       <ul>
           <li>
-              <a href="holiday.html" title="Add Holiday">
-                <i class="fa fa-plus paddingRight"></i>Add Holiday
-              </a>
+              <a href="<c:url value='/addHoliday'/>" title="Add Holiday"><i class="fa fa-plus paddingRight"></i>Add Holiday</a>
           </li>
-        
-          <li class="dropdown">
-            <span class="dropdown-toggle" id="menu1" data-toggle="dropdown">
-                <i class="fa fa-filter"></i><span>Type</span><i class="glyphicon glyphicon-play"></i></span>|
-          
-            <div class="dropdown-menu bootstrap_dropdownMenu dropdownPadding" role="menu" aria-labelledby="menu1">
-            <ul>
-              <li>
-                <input value="" name="resourcerequest" id="all" type="checkbox">
-                <label for="all">Full Day</label>
-              </li>
-              <li>
-                <input id="hotlist" name="resourcerequest" type="checkbox">
-                <label for="hotlist">Half Day</label>
-              </li>
-              <li>
-                <input id="Assigned" name="resourcerequest" type="checkbox">
-                <label for="Assigned">SickLeave</label>
-              </li>
-            </ul>
-          </div>
-        </li>
         <div class="clearfix"></div>
       </ul>
       <div class="clearfix"></div>
@@ -61,71 +36,26 @@
         <input placeholder="Search" type="text">
       </div>
     </div>
-    <div class="require_wrap_table">
-      <table>
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Date</th>
-            <th>Group</th>
-            <th>Action</th>
-          </tr>
-        </thead>
-        <tbody>
-        <tr>
-            <td>
-                <div class="proj_show tbldata-dotdot-big">
-                  <div class="pull-left tbldata-dotdot-me" title="Holiday Name">Holiday Name</div>
-                  <i class="fa fa-binoculars pull-right"></i>
-              </div>
-            </td>
-            <td>
-                <div title="23/08/2017" class="tblminwidth-75">
-                    23/08/2017
-                </div>
-            </td>
-            <td>
-                <div title="23/08/2017" class="tbldata-dotdot">
-                    Group
-                </div>
-            </td>
-            <td>
-               <div class="tblminwidth-50">
-                    <span title="Edit" class="paddingRight"><i class="fa fa-pencil text-primary cursorPointer"></i></span>
-                    <span title="Delete" class="paddingLeft"><i class="fa fa-trash text-danger cursorPointer"></i></span>
-                </div>
-            </td>
-          </tr>
-          </tbody>
-      </table>
+        <div id="loading"></div> 
+    <div class="require_wrap_table datatable_filter">
+    <div id="viewHolidaysDiv"></div>
     </div>
-    <nav class="clearfix">
-      <ul id="paging" class="pagination pull-right mr">
-        <li><a href="#">Previous</a></li>
-        <li><a href="#">2</a></li>
-        <li><a href="#">3</a></li>
-        <li class="disabled"><a href="#">6</a></li>
-        <li data-page="last"><a href="#">Next</a></li>
-      </ul>
-      <div class="clearfix"></div>
-    </nav>
   </div>
 </div>
 
     </div>
     <!-- Content Area Ends--> 
   </section>
-  <!-- Content Area Ends--> 
+  <!-- Content Area Ends-->  
 
 <script>
 
 function getHolidaysList(){
-	alert("hello111");
 	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	var userId = '${SourceLeadWeb_userId}';
 	$.get(sourceleadUrl+"/getHolidaysList?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&userId="+userId+"", function(data) {
-		if(data !=null){
-       	 var result = "";				        	
+
+		var result = "";				        	
 				result = result + '<table id="viewHolidaysTable" class="display" cellspacing="0" width="100%" >';
 				result = result + '<thead>';
 				result = result + '<tr>';
@@ -137,7 +67,6 @@ function getHolidaysList(){
 				result = result + '</tr>';
 				result = result + '</thead>	';
 				result = result + '<tbody>';
-				
 				if(data !=null && data !=''){
 					 for (var i=0; i<data.length; i++)
 						{
@@ -168,7 +97,7 @@ function getHolidaysList(){
 			        		 result = result + '  </td>';
 			        		 result = result + ' <td>';
 			        		 result = result + ' <div class="tblminwidth-50">';
-			        		 result = result + '      <span title="Edit" class="paddingRight"><a href="'+sourceleadUrl+'""/editHoliday?optionId=\''+opt.id+'\"><i class="fa fa-pencil text-primary cursorPointer"></i></a></span>';
+			        		 //result = result + '     <span title="Edit" class="paddingRight"><a href="'+sourceleadUrl+'""/editHoliday?holidayId=\''+opt.id+'\"><i class="fa fa-pencil text-primary cursorPointer"></i></a></span>';
 			        		 result = result + '     <span title="Delete" class="paddingLeft"><i class="fa fa-trash text-danger cursorPointer" onclick="deleteholiday(\''+opt.id+'\')"></i></span>';
 			        		 result = result + '  </div>';
 			        		 result = result + ' </td>';
@@ -178,16 +107,16 @@ function getHolidaysList(){
 	        	
 				result = result + '  </tbody>';
 				result = result + ' </table>';
-				$("#viewOptinsDiv").empty();
-				$("#viewOptinsDiv").append(result);
+				$("#viewHolidaysDiv").empty();
+				$("#viewHolidaysDiv").append(result);
 				$("#loading").removeAttr("style");
 				viewHolidaysTable();
-        }
 		}); 
  }
 </script> 
 <script>
 function deleteHoliday(holidayId){
+	alert("hello");
 	var reason = document.getElementById("reason").value;
 	var reason1 = document.getElementById("reason").value;
 	 reason = reason.replace(/\s/g, "")

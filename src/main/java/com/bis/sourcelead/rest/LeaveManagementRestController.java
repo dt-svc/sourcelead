@@ -322,15 +322,15 @@ public class LeaveManagementRestController {
 			holidayDTO.setOrgLocationId(orgLocations.getId().toString());
 		if(holidayDTO != null)
 		holidayService.storeHoliday(holidayDTO);
-		return "Success";
+		return "success";
 	}
 	
 	@RequestMapping(value = "/getHolidaysList", method = RequestMethod.GET)
-	public @ResponseBody String getHolidaysList(@RequestParam(value = "orgLocationId", required = false) Long orgLocationId, @RequestParam(value = "userId", required = false) Long userId,HttpServletRequest request) throws Exception
+	public @ResponseBody List<HolidayDTO> getHolidaysList(@RequestParam(value = "orgLocationId", required = false) Long orgLocationId, @RequestParam(value = "userId", required = false) Long userId,HttpServletRequest request) throws Exception
 	{
-		List<Holiday> holiodaysList = null;
-		holiodaysList = holidayService.getAllHolidaysList(orgLocationId);
-		return "success";
+		List<HolidayDTO> holiodaysDTOList = null;
+		holiodaysDTOList = holidayService.getAllHolidaysList(orgLocationId);
+		return holiodaysDTOList;
 	}
 	
 	/**

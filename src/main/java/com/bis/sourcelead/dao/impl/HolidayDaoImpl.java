@@ -39,11 +39,11 @@ public class HolidayDaoImpl  implements HolidayDAO{
 	
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
+	@Transactional(rollbackFor = { Exception.class })
 	public List<Holiday> getAllHolidaysList(Long id) {
 		Session session = this.sessionFactory.getCurrentSession();
-		String from = "from Holiday holiday where holiday.orgLocationId =:id  ";
+		String from = "from Holiday holiday where holiday.orgLocations.id =:id  ";
 		List<Holiday> holidayList = session.createQuery(from).setLong("id", id).setCacheable(true).list();
 		return holidayList;
 	}

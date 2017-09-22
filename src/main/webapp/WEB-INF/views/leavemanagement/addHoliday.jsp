@@ -106,9 +106,7 @@
 		  	$("#holiday_form").attr("disabled", "disabled");
 			$("#holiday_form").addClass('button').val('Processing..');
 			$.post(sourceleadUrl+"/saveHoliday?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&userId="+userId+"", formData, function(data) {
-				if(data == true){
 					location.replace(sourceleadUrl+ "/viewHoliday");
-				}
 			});
 	}
 </script>
