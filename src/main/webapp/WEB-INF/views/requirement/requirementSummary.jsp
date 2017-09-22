@@ -39,7 +39,7 @@ function prepareAllCounts(requirementId){
 
 <script>
 function allApplicantsCount(requirementId){
-	var sourceleadUrl = '${sourceleadUrl}';
+	
 	 $.ajax({
        type : "POST",
         url: sourceleadUrl+"/getSubmissionsCountBySubmissionStatus?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&submissionType=APPLICANTS",        
@@ -53,7 +53,7 @@ function allApplicantsCount(requirementId){
 
 <script>
 function duplicateCount(requirementId){
-	var sourceleadUrl = '${sourceleadUrl}';
+	
 	  $.ajax({
       type : "POST",
        url: sourceleadUrl+"/getDuplicateSubmissionsCountByRequirementId?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId,        
@@ -67,7 +67,7 @@ function duplicateCount(requirementId){
 
 <script>
 function requestSentCount(requirementId){
-	var sourceleadUrl = '${sourceleadUrl}';
+	
 	 $.ajax({
       type : "POST",
        url: sourceleadUrl+"/getSubmissionsCountBySubmissionStatus?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&submissionType=REQUESTSENT",        
@@ -81,7 +81,7 @@ function requestSentCount(requirementId){
 
 <script>
 function shortListCount(requirementId){
-	var sourceleadUrl = '${sourceleadUrl}';
+	
 	 $.ajax({
      type : "POST",
       url: sourceleadUrl+"/getSubmissionsCountBySubmissionStatus?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&submissionType=SHORTLISTED",        
@@ -95,7 +95,7 @@ function shortListCount(requirementId){
 
 <script>
 function submitToClientCount(requirementId){
-	var sourceleadUrl = '${sourceleadUrl}';
+	
 	$.ajax({
      type : "POST",
      url: sourceleadUrl+"/getSubmissionsCountBySubmissionStatus?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&submissionType=SUBMIT_TO_CLIENT",        
@@ -109,7 +109,7 @@ function submitToClientCount(requirementId){
 
 <script>
 function interviewsCount(requirementId){
-	var sourceleadUrl = '${sourceleadUrl}';
+	
 	$.ajax({
       type : "POST",
       url: sourceleadUrl+"/getSubmissionsCountBySubmissionStatus?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&submissionType=INTERVIEWED",        
@@ -123,7 +123,7 @@ function interviewsCount(requirementId){
 
 <script>
 function offerMadeCount(requirementId){
-	var sourceleadUrl = '${sourceleadUrl}';
+	
 	$.ajax({
       type : "POST",
       url: sourceleadUrl+"/getSubmissionsCountBySubmissionStatus?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&submissionType=OFFERED",        
@@ -137,7 +137,7 @@ function offerMadeCount(requirementId){
 
 <script>
 function rejectedCount(requirementId){
-	var sourceleadUrl = '${sourceleadUrl}';
+	
 	$.ajax({
       type : "POST",
       url: sourceleadUrl+"/getSubmissionsCountBySubmissionStatus?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&submissionType=REJECTED",        
@@ -151,7 +151,7 @@ function rejectedCount(requirementId){
 
 <script>
 function backoutCount(requirementId){
-	var sourceleadUrl = '${sourceleadUrl}';
+	
 	$.ajax({
       type : "POST",
       url: sourceleadUrl+"/getSubmissionsCountBySubmissionStatus?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&submissionType=BACKOUT",        
@@ -549,7 +549,7 @@ function viewJobSummaryDocument(jobId,title){
 <script>
 function updateReuqirementStatus(status){
 	
-	var sourceleadUrl = '${sourceleadUrl}';
+	
 	var requirementId = '${requirementId}';
 	 var isLoginUserAsAdmin = '${isAdmin}';
 	 
@@ -627,7 +627,7 @@ function rejectRequirementAlertMessage(status){
 <script>
 function updateReuqirementStatusReject(status){
 	
-	var sourceleadUrl = '${sourceleadUrl}';
+	
 	var requirementId = '${requirementId}';
 	var isLoginUserAsAdmin = '${isAdmin}';
 	 
@@ -686,7 +686,7 @@ function updateReuqirementStatusReject(status){
 <script>  
 function requirementPipeline(requirementId,submissionType){
 	$("#actionsDiv" ).show();
-	var sourceleadUrl = '${sourceleadUrl}';
+	
 	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	var userId = '${SourceLeadWeb_user.id}';
 	var loginUserRole = '${SourceLeadWeb_loginUserRole}';
@@ -701,7 +701,7 @@ function requirementPipeline(requirementId,submissionType){
 
 <script>
 function requirementPipelineList(url, requirementId, submissionType){
-	  var sourceleadUrl = '${sourceleadUrl}';
+	  
 	  var clientSubmissions = '${clientSubmissions}';
 	  var isSpocActive = '${isSpocActive}';
 	  var orgLocationId = '${SourceLeadWeb_orgLocationId}';
@@ -956,7 +956,7 @@ function cancelRejectApplicant(submissionId,requirementId,submissionType){
 <script>
 function saveRejectApplicantReason(submissionId,requirementId,submissionType){
 	if ($('#rejected_form').validate(false, validationSettings)) {
-		var sourceleadUrl = '${sourceleadUrl}';
+		
 		var frm = $('#rejected_form').serializeFormJSON();
 		var con = JSON.stringify(frm);
 		con = con.replace(/[{}]/g, "");
@@ -990,7 +990,7 @@ $('body').on('blur', '#rejected_form', function() {
 </script>
 <script>
 function backOutApplicant(submissionId,requirementId,submissionType){
-	var sourceleadUrl = '${sourceleadUrl}';
+	
 		$.ajax({
 		   	type: "POST",
 		    url: sourceleadUrl+"/backoutApplicant?"+tokenParamName+"="+tokenValue+"&submissionId="+submissionId,	    	   
@@ -1003,7 +1003,7 @@ function backOutApplicant(submissionId,requirementId,submissionType){
 
 <script>
 function requirementSubmissionCount(requirementId){  
-	var sourceleadUrl = '${sourceleadUrl}';
+	
 	 $.ajax({
         type : "POST",
          url: sourceleadUrl+"/getSubmissionsCountBySubmissionStatus?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId,        
@@ -1033,7 +1033,7 @@ function requirementSubmissionCount(requirementId){
 --%>
 <script>  
 function assignedMemberList(requirementId){
-	  var sourceleadUrl = '${sourceleadUrl}';
+	  
 	  $.ajax({
         type : "POST",
          url: sourceleadUrl+"/getRequirementAssignedListByRequirementId?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId,        
@@ -1260,7 +1260,7 @@ function reqNotes(requirementId){
 	      	    var locationCode ='${SourceLeadWeb_locationCode}'; 
 	      	    formData.append("locationCode",locationCode);
 	      	    
-				var sourceleadUrl = '${sourceleadUrl}';
+				
 				$("#save_note").attr("disabled", "disabled");
          		$("#save_note" ).addClass('button').val('Processing..');
 		        var jsonData = encodeURIComponent(con);
@@ -1295,7 +1295,7 @@ function reqNotes(requirementId){
 <script type="text/javascript">
 function requirementRecommendations(requirementId){
 	$("#actionsDiv" ).hide();
-	var sourceleadUrl = '${sourceleadUrl}';
+	
 	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	$("#recommendationsLoading").attr('style','position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	
@@ -2347,7 +2347,7 @@ function closeratediv(){
 <script>
 function exportPipelineToExcel(requirementId,submissionType){
 	$('.export_pipline').hide();
-	  var sourceleadUrl = '${sourceleadUrl}';
+	  
 	  var clientSubmissions = '${clientSubmissions}';
 	  var emptypilpeline = $("#emptyPipelinelist").val();
       if(emptypilpeline > 0 ){
@@ -2373,7 +2373,7 @@ function exportPipelineToExcel(requirementId,submissionType){
  <script>
 function exportPipelineToPdf(requirementId,submissionType){
 	$('.export_pipline').hide();
-	  var sourceleadUrl = '${sourceleadUrl}';
+	  
 	  var clientSubmissions = '${clientSubmissions}';
 	  var emptypilpeline = $("#emptyPipelinelist").val();
 	  if(emptypilpeline > 0 ){
@@ -2418,7 +2418,7 @@ function cancel(){
 <script type="text/javascript">
 function customizeScore(requirementId){
 	$("#customizeScoreDiv").show();
-	var sourceleadUrl = '${sourceleadUrl}';
+	
 	 $.ajax({
 		   	type: "GET",
 		    url: sourceleadUrl+"/getCustomizeScore?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId, 	   
@@ -3097,7 +3097,7 @@ function updateCutomize(requirementId){
     var educationScore = parseInt($("#educationScore").val());
     var visaTypwScore = parseInt($("#visaTypeScore").val());
     var totalscore = (skillPerc+expPerc+noticePerc+ratePerc+locationScore+kewordsPerc+educationScore+visaTypwScore);
-    var sourceleadUrl = '${sourceleadUrl}';
+    
     
     if(totalscore>100){
         var result = "";
