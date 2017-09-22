@@ -37,10 +37,18 @@ public class HolidayServiceImpl implements HolidayService{
 
 	@Override
 	public Holiday storeHoliday(HolidayDTO holidayDTO) throws Exception {
-
-		Holiday holiday = new Holiday();
+		Holiday holiday = null;
 		OrgLocations orgLocations = orgLocationService.getOrgLocations(Long.parseLong(holidayDTO.getOrgLocationId()));
 		User user = userService.getUserById(Long.parseLong(holidayDTO.getUserId()));
+		if(holidayDTO.getHolidayId() != null){
+			holiday = holidayDAO.getHolidaysById(holidayDTO.getHolidayId());
+			holiday.setUpdatedBy(user.getUserCode());
+			holiday.setUpdatedDate(new Date());
+		}else{
+			holiday = new Holiday();
+			holiday.setCreatedDate(new Date());
+			holiday.setCreatedBy(user.getUserCode());
+		}
 		if(holidayDTO != null)
 		{
 			if(holidayDTO.getOrgLocationId() != null)
@@ -69,9 +77,15 @@ public class HolidayServiceImpl implements HolidayService{
 			}
 			if(StringUtils.isNotBlank(holidayDTO.getHalfDayCheckBox()))
 			{
-				holiday.setHalfDay(holidayDTO.getHalfDayCheckBox());
+				holiday.setHalfDayCheckBox(holidayDTO.getHalfDayCheckBox());
 			}else{
-				holiday.setHalfDay("--");
+				holiday.setHalfDayCheckBox("--");
+			}
+			if(StringUtils.isNotBlank(holidayDTO.getHalfDayAmPm()))
+			{
+				holiday.setHalfDayAmPm(holidayDTO.getHalfDayAmPm());
+			}else{
+				holiday.setHalfDayAmPm("--");
 			}
 			if(StringUtils.isNotBlank(holidayDTO.getDescription()))
 			{
@@ -86,11 +100,7 @@ public class HolidayServiceImpl implements HolidayService{
 				holiday.setHolidayStatus("--");
 			}
 			
-			holiday.setHolidayStatus("1");
-			holiday.setCreatedDate(new Date());
-			holiday.setUpdatedDate(new Date());
-			holiday.setCreatedBy(user.getUserCode());
-			holiday.setUpdatedBy(user.getUserCode());
+			holiday.setStatus("1");
 			
 		}
 		return holidayDAO.storeHoliday(holiday);
@@ -110,8 +120,12 @@ public class HolidayServiceImpl implements HolidayService{
 			hDTO.setFromDate(ConversionUtil.getDateAsString(hlist.getFromDate()));
 			if(hlist.getToDate() != null)
 			hDTO.setToDate(ConversionUtil.getDateAsString(hlist.getToDate()));
+			if(StringUtils.isNotBlank(hlist.getHalfDayCheckBox()))
+			hDTO.setHalfDayCheckBox(hlist.getHalfDayCheckBox());
+			if(StringUtils.isNotBlank(hlist.getHalfDayAmPm()))
+			hDTO.setHalfDayAmPm(hlist.getHalfDayAmPm());
 			if(StringUtils.isNotBlank(hlist.getDescription()))
-			hDTO.setDescription(hlist.getDescription());
+		    hDTO.setDescription(hlist.getDescription());
 			holidayDTOList.add(hDTO);
 		}
 		return holidayDTOList;

@@ -49,10 +49,16 @@ private static final long serialVersionUID = 1L;
 	private Date toDate;
 	
 	@Column(name = "HALF_DAY")
-	private String halfDay;
+	private String halfDayCheckBox;
+	
+	@Column(name = "HALF_DAY_AM_PM")
+	private String halfDayAmPm;
 	
 	@Column(name = "DESCRIPTION", columnDefinition = "TEXT default NULL")
 	private String description;
+	
+	@Column(name = "STATUS")
+	private String status;
 	
 	@Column(name = "HOLIDAY_STATUS")
 	private String holidayStatus;
@@ -112,12 +118,20 @@ private static final long serialVersionUID = 1L;
 		this.toDate = toDate;
 	}
 
-	public String getHalfDay() {
-		return halfDay;
+	public String getHalfDayCheckBox() {
+		return halfDayCheckBox;
 	}
 
-	public void setHalfDay(String halfDay) {
-		this.halfDay = halfDay;
+	public void setHalfDayCheckBox(String halfDayCheckBox) {
+		this.halfDayCheckBox = halfDayCheckBox;
+	}
+
+	public String getHalfDayAmPm() {
+		return halfDayAmPm;
+	}
+
+	public void setHalfDayAmPm(String halfDayAmPm) {
+		this.halfDayAmPm = halfDayAmPm;
 	}
 
 	public String getDescription() {
@@ -175,5 +189,14 @@ private static final long serialVersionUID = 1L;
 	public void setUpdatedBy(String updatedBy) {
 		this.updatedBy = updatedBy;
 	}
+
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+	
 	
 }

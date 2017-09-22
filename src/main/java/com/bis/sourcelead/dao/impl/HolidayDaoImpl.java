@@ -42,9 +42,10 @@ public class HolidayDaoImpl  implements HolidayDAO{
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public List<Holiday> getAllHolidaysList(Long id) {
+		String status = "1";
 		Session session = this.sessionFactory.getCurrentSession();
-		String from = "from Holiday holiday where holiday.orgLocations.id =:id  ";
-		List<Holiday> holidayList = session.createQuery(from).setLong("id", id).setCacheable(true).list();
+		String from = "from Holiday holiday where holiday.orgLocations.id =:id  and holiday.status =:status";
+		List<Holiday> holidayList = session.createQuery(from).setLong("id", id).setString("status", status).setCacheable(true).list();
 		return holidayList;
 	}
 	
@@ -53,7 +54,7 @@ public class HolidayDaoImpl  implements HolidayDAO{
 	public Holiday getHolidaysById(String holidayId) throws Exception {
 		Holiday holiday = null;
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from Option option where option.id= :optionId";
+		String query = "from Holiday holiday where holiday.id= :holidayId";
 		List<Holiday> holidayList = session.createQuery(query).setString("holidayId", holidayId).setCacheable(true).list();
 		if (holidayList != null && holidayList.size() > 0) {
 			holiday = holidayList.get(0);

@@ -23,9 +23,15 @@ private static final long serialVersionUID = 1L;
 	
 	private String halfDayCheckBox;
 	
+	private String halfDayAmPm;
+	
 	private String description;
 	
 	private String holidayStatus;
+	
+	private String status;
+	
+	private String holidayId;
 	
 	public String getId() {
 		return id;
@@ -83,6 +89,14 @@ private static final long serialVersionUID = 1L;
 		this.halfDayCheckBox = halfDayCheckBox;
 	}
 
+	public String getHalfDayAmPm() {
+		return halfDayAmPm;
+	}
+
+	public void setHalfDayAmPm(String halfDayAmPm) {
+		this.halfDayAmPm = halfDayAmPm;
+	}
+
 	public String getDescription() {
 		return description;
 	}
@@ -99,5 +113,20 @@ private static final long serialVersionUID = 1L;
 		this.holidayStatus = holidayStatus;
 	}
 
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
+	public String getHolidayId() {
+		return holidayId;
+	}
+
+	public void setHolidayId(String holidayId) {
+		this.holidayId = holidayId;
+	}
 
 }

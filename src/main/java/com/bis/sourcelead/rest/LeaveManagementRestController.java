@@ -452,22 +452,20 @@ public class LeaveManagementRestController {
 	public ModelAndView editHoliday(@RequestParam(value="holidayId", required=false) String holidayId,HttpServletRequest request,HttpServletResponse response) throws Exception {
 		   ModelAndView model = new ModelAndView();
 		   Holiday holidays = holidayService.getHolidaysById(holidayId);
-		   model.addObject("options", holidays);
+		   model.addObject("holidays", holidays);
 		   model.addObject("sourceleadUrl", sourceleadUrl);
 		   model.setViewName("leavemanagement/addHoliday");
 	       return model;
 	}
 	
-	@RequestMapping(value = {"/deleteHoliday", "/rest/deleteHoliday"}, method = RequestMethod.POST)
-	@ResponseBody
-	public  boolean deleteHoliday(@RequestParam(value = "holidayId", required = false) String holidayId,@RequestParam(value = "reason", required = false) String reason,HttpServletRequest request) throws Exception
+	@RequestMapping(value = "/deleteHoliday", method = RequestMethod.GET)
+	public  @ResponseBody boolean deleteHoliday(@RequestParam(value = "holidayId", required = false) String holidayId,HttpServletRequest request) throws Exception
 	{
 		boolean isDeleted = false;
-		 Holiday holidays = holidayService.getHolidaysById(holidayId);
-		 if(holidays !=null) {
-			 holidays.setHolidayStatus("0");
-			 holidays.setDeleteReason(reason);
-			 holidayDAO.saveDeleteHoliday(holidays);
+		 Holiday deleteHoliday = holidayService.getHolidaysById(holidayId);
+		 if(deleteHoliday !=null) {
+			 deleteHoliday.setHolidayStatus("0");
+			 holidayDAO.saveDeleteHoliday(deleteHoliday);
 			 isDeleted = true;
 		 }
 		return isDeleted;
