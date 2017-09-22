@@ -824,6 +824,9 @@ public class Constants {
 	public static final String PAYROLL_CHKS = "PAYROLL_CHKS";
 	
 	public static final String DEFAULT_COOLINGOFF_PERIOD = "3 Months";
+	public static final String[] WEEKENDS = {"Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"};
+	
+	public static final String[] MONTHS = {"January","February","March","April","May","June","July","August","September","October","November","December"};
 	
 	public static final String LEAVE_OPTION = "LEAVE_OPTION";
 
