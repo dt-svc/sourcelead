@@ -1,6 +1,11 @@
 package com.bis.sourcelead.rest;
 
+
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -10,6 +15,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.RequestMapping;
+
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -25,13 +32,30 @@ import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.service.DepartmentService;
 import com.bis.sourcelead.service.LeaveTypeService;
 import com.bis.sourcelead.service.OrgLocationService;
+import com.bis.sourcelead.dao.OptionsDao;
+import com.bis.sourcelead.dto.AddUserDTO;
+import com.bis.sourcelead.dto.CandidateDTO;
+import com.bis.sourcelead.dto.ClientDTO;
+import com.bis.sourcelead.dto.OptionsDTO;
+import com.bis.sourcelead.entity.Countries;
+import com.bis.sourcelead.entity.Department;
+import com.bis.sourcelead.entity.LeaveRole;
+import com.bis.sourcelead.entity.Option;
+import com.bis.sourcelead.entity.Org;
+import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.Projects;
+import com.bis.sourcelead.entity.Roles;
+import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.payroll.entity.AccountDeductionsDetails;
+import com.bis.sourcelead.service.DepartmentService;
+import com.bis.sourcelead.service.OptionsService;
 import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @RestController
-public class LeaveManagenebtRestController {
+public class LeaveManagementRestController {
 	
-	private static final Logger logger = LoggerFactory.getLogger(LeaveManagenebtRestController.class);
+	private static final Logger logger = LoggerFactory.getLogger(LeaveManagementRestController.class);
 	
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
@@ -47,6 +71,19 @@ public class LeaveManagenebtRestController {
 	
 	@Autowired
 	RolesService rolesService;
+
+	@Autowired
+	DepartmentService departmentService;
+	
+	@Autowired
+	RolesService rolesService;
+	
+	@Autowired
+	OptionsService optionsService;
+	
+	@Autowired
+	OptionsDao optionsDao;
+
 	
 	/**
 	 * returns Pending leaves jsp
@@ -278,18 +315,32 @@ public class LeaveManagenebtRestController {
 		   model.setViewName("leavemanagement/viewRestrictDay");
 	       return model;
 	}
+
 	/**
-	 * returns add RestrictDay  jsp
+	 * returns add RestrictDay jsp
+	 * 
 	 * @param request
 	 * @param response
 	 * @return ModelAndView
+	 * @throws Exception
 	 */
 	@RequestMapping(value = "/addOptions")
-	public ModelAndView addOptionsJsp(HttpServletRequest request,HttpServletResponse response) {
-		   ModelAndView model = new ModelAndView();
-		   model.addObject("sourceleadUrl", sourceleadUrl);
-		   model.setViewName("leavemanagement/addOptions");
-	       return model;
+	public ModelAndView addOptionsJsp(HttpServletRequest request, HttpServletResponse response) throws Exception {
+		ModelAndView model = new ModelAndView();
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+		Long roleHierarchyId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "roleHierarchyId");
+		List<Department> departmentList = departmentService.getDepartmentByOrgLocationId(orgLocations.getId());
+		List<Roles> rolesList = rolesService.getUserRolesListByModuleAndLoginUserRoleHierarchy(org,orgLocations.getId(),roleHierarchyId);
+		List<String> calendarList = new ArrayList<String>(Arrays.asList(Constants.MONTHS));
+		List<String> weekends = new ArrayList<String>(Arrays.asList(Constants.WEEKENDS));
+		model.addObject("calendarList", calendarList);
+		model.addObject("weekends", weekends);
+		model.addObject("departmentList", departmentList);
+		model.addObject("rolesList", rolesList);
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		model.setViewName("leavemanagement/addOptions");
+		return model;
 	}
 	
 	/**
@@ -335,4 +386,110 @@ public class LeaveManagenebtRestController {
 		List<LeaveType> leaveTypeList = leaveTypeService.getLeaveTypeListByLocationId(leaveTypeDTO.getOrgLocationId());
 		return leaveTypeList;
 	}
+
+	/**
+	 * saving leave optipons
+	 * 
+	 * @param optionsDTO
+	 * @param request
+	 * @return boolean
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/saveLeaveOption", method = RequestMethod.POST)
+	@ResponseBody
+	public boolean saveLeaveOption(OptionsDTO optionsDTO, HttpServletRequest request) throws Exception {
+
+		boolean isInserted = false;
+		Option options = optionsService.saveLeaveOptions(optionsDTO);
+		if (options != null) {
+			isInserted = true;
+		}
+		return isInserted;
+	}
+	
+
+	@RequestMapping(value = {"/viewLeaveOption", "/rest/viewLeaveOption"}, method = RequestMethod.GET)
+	@ResponseBody
+	public  List<OptionsDTO> getDeductionsDetailsbyId(@RequestParam(value = "orgLocationId", required = false) Long orgLocationId, @RequestParam(value = "userId", required = false) Long userId,HttpServletRequest request) throws Exception
+	{
+		List<OptionsDTO> optionsDTOList = null;
+		 optionsDTOList = optionsService.getOptionsListByLocationId(orgLocationId);
+		 if(optionsDTOList !=null) {
+			 return optionsDTOList;
+		 }
+		return optionsDTOList;
+	}
+//	/
+	
+	@RequestMapping(value = {"/deleteLeaveOption", "/rest/deleteLeaveOption"}, method = RequestMethod.POST)
+	@ResponseBody
+	public  boolean deleteLeaveOption(@RequestParam(value = "optionId", required = false) String optionId,@RequestParam(value = "reason", required = false) String reason,HttpServletRequest request) throws Exception
+	{
+		boolean isDeleted = false;
+		 Option options = optionsService.getOptionsById(optionId);
+		 if(options !=null) {
+			 options.setStatus("0");
+			 options.setDeleteReason(reason);
+			 optionsDao.saveLeaveOption(options);
+			 isDeleted = true;
+		 }
+		return isDeleted;
+	}
+	
+	/**
+	 * returns add RestrictDay  jsp
+	 * @param request
+	 * @param response
+	 * @return ModelAndView
+	 * @throws Exception 
+	 */
+	@RequestMapping(value = "/editOption")
+	public ModelAndView editOption(@RequestParam(value="optionId", required=false) String optionId,HttpServletRequest request,HttpServletResponse response) throws Exception {
+		   ModelAndView model = new ModelAndView();
+		   OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+			Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+			Long roleHierarchyId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "roleHierarchyId");
+			List<Roles> rolesList = rolesService.getUserRolesListByModuleAndLoginUserRoleHierarchy(org,orgLocations.getId(),roleHierarchyId);
+			List<Department> departmentList = departmentService.getDepartmentByOrgLocationId(orgLocations.getId());
+		    Option options = optionsService.getOptionsById(optionId);
+		   if(options.getDepartmentId() !=null) {
+			   Long departmentId = options.getDepartmentId().getId();
+			   model.addObject("departmentId", departmentId);
+		   }
+		   if(options.getWeekends() !=null) {
+			   String weekends = options.getWeekends();
+			   model.addObject("weekends", weekends);
+		   }
+		   Set<LeaveRole> leaveRoles = options.getLeaverolesSet();
+		  List<Roles> existedRolesList = new ArrayList<Roles>();
+		   leaveRoles.forEach(role->{
+			try {
+				 Roles existedRole;
+				existedRole = rolesService.getRolesById(role.getRoleId().getId());
+				existedRolesList.add(existedRole);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		   });
+		   
+			List<String> calendarList = new ArrayList<String>(Arrays.asList(Constants.MONTHS));
+			List<String> weekends = new ArrayList<String>(Arrays.asList(Constants.WEEKENDS));
+			model.addObject("calendarList", calendarList);
+			model.addObject("weekends", weekends);
+			
+		   if(options.getWeekends() != null) {
+			   model.addObject("existWeekends", options.getWeekends());
+		   }
+			if(options.getCalendarMonth() != null) {
+				model.addObject("existCalendarList", options.getCalendarMonth());
+			}
+		   model.addObject("existedRoles", existedRolesList);
+		   model.addObject("rolesList", rolesList);
+		   model.addObject("departmentList", departmentList);
+		   model.addObject("options", options);
+		   model.addObject("sourceleadUrl", sourceleadUrl);
+		   model.setViewName("leavemanagement/addOptions");
+	       return model;
+	}
+	
 }

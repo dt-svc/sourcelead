@@ -22,15 +22,15 @@ import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 
 @Entity
-@Table(name = "LEAVE_OPTIONS", catalog = "sourcelead")
+@Table(name = "LEAVE_OPTION", catalog = "sourcelead")
 @Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "leaveoptions")
-public class Options {
+public class Option {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY, generator = "uuid2")
 	@GenericGenerator(name = "uuid2", strategy = "uuid2")
-	@Column(columnDefinition = "BINARY(16)")
-	private UUID id;
+//	@Column(columnDefinition = "BINARY(16)")
+	private String id;
 
 	@NotFound(action = NotFoundAction.IGNORE)
 	@ManyToOne
@@ -42,6 +42,11 @@ public class Options {
 	@JoinColumn(name = "DEPARTMENT_ID", nullable = false)
 	private Department departmentId;
 
+	
+	@Column(name = "CALENDAR_MONTH")
+	private String calendarMonth;
+	
+	
 	@Column(name = "WEEKENDS")
 	private String weekends;
 
@@ -50,7 +55,14 @@ public class Options {
 
 	@Column(name = "LEAVE_TRANSFER")
 	private String leaveTransfer;
+	
 
+	@Column(name = "WORKING_HOURS")
+	private String workingHours;
+	
+	@Column(name = "DELETE_REASON",columnDefinition = "TEXT default NULL")
+	private String deleteReason;
+	
 	@Column(name = "STATUS")
 	private String status;
 
@@ -68,13 +80,14 @@ public class Options {
 	
 	@NotFound(action=NotFoundAction.IGNORE)
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "leavesOptionId")
-	private Set<LeaveRoles> leaverolesSet;
+	private Set<LeaveRole> leaverolesSet;
+	
 
-	public UUID getId() {
+	public String getId() {
 		return id;
 	}
 
-	public void setId(UUID id) {
+	public void setId(String id) {
 		this.id = id;
 	}
 
@@ -160,12 +173,36 @@ public class Options {
 		this.updatedBy = updatedBy;
 	}
 
-	public Set<LeaveRoles> getLeaverolesSet() {
+	public Set<LeaveRole> getLeaverolesSet() {
 		return leaverolesSet;
 	}
 
-	public void setLeaverolesSet(Set<LeaveRoles> leaverolesSet) {
+	public void setLeaverolesSet(Set<LeaveRole> leaverolesSet) {
 		this.leaverolesSet = leaverolesSet;
+	}
+
+	public String getCalendarMonth() {
+		return calendarMonth;
+	}
+
+	public void setCalendarMonth(String calendarMonth) {
+		this.calendarMonth = calendarMonth;
+	}
+
+	public String getWorkingHours() {
+		return workingHours;
+	}
+
+	public void setWorkingHours(String workingHours) {
+		this.workingHours = workingHours;
+	}
+
+	public String getDeleteReason() {
+		return deleteReason;
+	}
+
+	public void setDeleteReason(String deleteReason) {
+		this.deleteReason = deleteReason;
 	}
 
 	

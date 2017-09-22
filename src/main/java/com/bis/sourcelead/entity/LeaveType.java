@@ -106,6 +106,7 @@ public class LeaveType {
 	@Column(name = "VISIBILITY_TO_ALL_USERS")
 	private String visibilityToAllUsers;
 	
+
 	public String getId() {
 		return id;
 	}
