@@ -825,5 +825,9 @@ public class Constants {
 	public static final String PAYROLL_CHKS = "PAYROLL_CHKS";
 	
 	public static final String DEFAULT_COOLINGOFF_PERIOD = "3 Months";
+	
+	public static final String CLINT_VENDOR_DOES_NOT_EXIST = "false";
+	public static final String CLINT_VENDOR_IF_EXIST = "true";
+	public static final String CLINT_VENDOR_IF_EXIST_AS_SAMEORG = "sameorg";
 
 }

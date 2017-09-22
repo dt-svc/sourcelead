@@ -1282,7 +1282,7 @@ function viewOfferDocument(offerId,title){
 
 <script type="text/javascript">
 function canceloffer(){ 
-	$("#remove_user_pop, .sideMask").fadeOut(200);
+	$("#remove_user_pop, .comMask").fadeOut(200);
 };
 </script>
 
@@ -1290,7 +1290,7 @@ function canceloffer(){
 function rejectOffer(offerStatus,submissionId,offerId){
 	
 	var result = "";
-	result = result +"	<div class='sideMask'></div>";
+	result = result +"	<div class='comMask'></div>";
 	result = result +"	    <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 	result = result +"		<textarea id='rejectReason' class='form-control' field-name='Reject Reason' data-validation-optional='true' data-validation='validate_Space validate_Description validate_length length2-250' name='rejectReason' value='' placeholder='Terminate Reason' rows='2'></textarea>";
 	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
@@ -1298,7 +1298,7 @@ function rejectOffer(offerStatus,submissionId,offerId){
 	result = result +"	</div>";
 	$("#rejectOfferAlert").append(result);
 	$("#remove_user_pop").slideDown(200);
-	$(".sideMask").fadeIn(200);
+	$(".comMask").fadeIn(200);
 }
 </script>
 
@@ -2714,6 +2714,10 @@ function viewProposeTime(interviewId,submissionId){
         	}
         	result = result + '			</tbody>';
     		result = result + '			</table>';
+    		result = result + '			<div class="clearfix mt"> ';
+    		result = result + '				<div class="pull-right"> ';
+    		result = result + '				  <button type="button" class="btn btn-sm btn-danger" onclick="timePopUp();">Cancel</button> ';
+    		result = result + '				</div> ';
     		result = result + '				  </div>   ';
     		result = result + '			  </div> ';
     		result = result	+ ' </form>';
