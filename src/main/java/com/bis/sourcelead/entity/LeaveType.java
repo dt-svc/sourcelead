@@ -29,8 +29,8 @@ public class LeaveType {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY, generator = "uuid2")
 	@GenericGenerator(name = "uuid2", strategy = "uuid2")
-	@Column(columnDefinition = "BINARY(16)")
-	private UUID id;
+//	@Column(columnDefinition = "BINARY(16)")
+	private String id;
 	
 	@NotFound(action = NotFoundAction.IGNORE)
 	@ManyToOne
@@ -66,6 +66,9 @@ public class LeaveType {
 	@Column(name = "NUMBEFR_OF_LEAVES_PERYEAR")
 	private String numbefrOfLeavesPeryear;
 	
+	@Column(name = "NUMBEFR_OF_LEAVES_PERMONTH")
+	private String numbefrOfLeavesPerMonth;
+	
 	@Column(name = "DESCRIPTION",columnDefinition = "TEXT default NULL")
 	private String description;
 	
@@ -86,13 +89,28 @@ public class LeaveType {
 	
 	@NotFound(action=NotFoundAction.IGNORE)
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "leaveTypeid")
-	private Set<LeaveRoles> leaveTypeSet;
-
-	public UUID getId() {
+	private Set<LeaveRoles> leaveTypeRolesSet;
+	
+	@Column(name = "DELETE_REASON",columnDefinition = "TEXT default NULL")
+	private String deleteReason;
+	
+	@Column(name = "LEAVE_POLICY")
+	private String leavePolicy;
+	
+	@Column(name = "POLICY_DESCRIPTION",columnDefinition = "TEXT default NULL")
+	private String policyDescription;
+	
+	@Column(name = "POLICY_NAME")
+	private String policyName;
+	
+	@Column(name = "VISIBILITY_TO_ALL_USERS")
+	private String visibilityToAllUsers;
+	
+	public String getId() {
 		return id;
 	}
 
-	public void setId(UUID id) {
+	public void setId(String id) {
 		this.id = id;
 	}
 
@@ -175,6 +193,16 @@ public class LeaveType {
 	public void setNumbefrOfLeavesPeryear(String numbefrOfLeavesPeryear) {
 		this.numbefrOfLeavesPeryear = numbefrOfLeavesPeryear;
 	}
+	
+	public String getNumbefrOfLeavesPerMonth()
+	{
+		return numbefrOfLeavesPerMonth;
+	}
+
+	public void setNumbefrOfLeavesPerMonth(String numbefrOfLeavesPerMonth)
+	{
+		this.numbefrOfLeavesPerMonth = numbefrOfLeavesPerMonth;
+	}
 
 	public String getDescription() {
 		return description;
@@ -224,15 +252,64 @@ public class LeaveType {
 		this.updatedBy = updatedBy;
 	}
 
-	public Set<LeaveRoles> getLeaveTypeSet() {
-		return leaveTypeSet;
+	public Set<LeaveRoles> getLeaveTypeRolesSet()
+	{
+		return leaveTypeRolesSet;
 	}
 
-	public void setLeaveTypeSet(Set<LeaveRoles> leaveTypeSet) {
-		this.leaveTypeSet = leaveTypeSet;
+	public void setLeaveTypeRolesSet(Set<LeaveRoles> leaveTypeRolesSet)
+	{
+		this.leaveTypeRolesSet = leaveTypeRolesSet;
 	}
 
-	
-	
+	public String getDeleteReason()
+	{
+		return deleteReason;
+	}
 
+	public void setDeleteReason(String deleteReason)
+	{
+		this.deleteReason = deleteReason;
+	}
+
+	public String getLeavePolicy()
+	{
+		return leavePolicy;
+	}
+
+	public void setLeavePolicy(String leavePolicy)
+	{
+		this.leavePolicy = leavePolicy;
+	}
+
+	public String getPolicyDescription()
+	{
+		return policyDescription;
+	}
+
+	public void setPolicyDescription(String policyDescription)
+	{
+		this.policyDescription = policyDescription;
+	}
+
+	public String getPolicyName()
+	{
+		return policyName;
+	}
+
+	public void setPolicyName(String policyName)
+	{
+		this.policyName = policyName;
+	}
+
+	public String getVisibilityToAllUsers()
+	{
+		return visibilityToAllUsers;
+	}
+
+	public void setVisibilityToAllUsers(String visibilityToAllUsers)
+	{
+		this.visibilityToAllUsers = visibilityToAllUsers;
+	}
+	
 }

@@ -35,6 +35,7 @@
 <link rel="stylesheet" href="resources/css/font-awesome.min.css?staticTime=${staticTime}">
 <link rel="stylesheet" href="resources/css/chosen.min.css?staticTime=${staticTime}">
 <link rel="stylesheet" href="resources/css/jquery.timepicker.css?staticTime=${staticTime}">
+<link href="resources/css/editor.css?staticTime=${staticTime}" rel="stylesheet">
 <link href="resources/css/sourcelead-main.css?staticTime=${staticTime}" rel="stylesheet">
 <link rel="stylesheet" href="resources/css/timesheet.css?staticTime=${staticTime}" type="text/css" >
 <c:set scope="request" var="viewPage" value='${pageContext.request.servletPath.toString().replaceFirst("/WEB-INF/views/","").replaceFirst(".jsp","")}'></c:set>

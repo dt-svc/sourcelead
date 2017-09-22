@@ -1,14 +1,32 @@
 package com.bis.sourcelead.rest;
 
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
+
+import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.LeaveTypeDTO;
+import com.bis.sourcelead.entity.Department;
+import com.bis.sourcelead.entity.LeaveType;
+import com.bis.sourcelead.entity.Org;
+import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.Roles;
+import com.bis.sourcelead.service.DepartmentService;
+import com.bis.sourcelead.service.LeaveTypeService;
+import com.bis.sourcelead.service.OrgLocationService;
+import com.bis.sourcelead.service.RolesService;
+import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @RestController
 public class LeaveManagenebtRestController {
@@ -17,6 +35,19 @@ public class LeaveManagenebtRestController {
 	
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
+	
+	@Autowired
+	OrgLocationService orgLocationService;
+	
+	@Autowired
+	LeaveTypeService leaveTypeService;
+	
+	@Autowired
+	DepartmentService departmentService;
+	
+	@Autowired
+	RolesService rolesService;
+	
 	/**
 	 * returns Pending leaves jsp
 	 * @param request
@@ -124,13 +155,30 @@ public class LeaveManagenebtRestController {
 	 * @param request
 	 * @param response
 	 * @return ModelAndView
+	 * @throws Exception 
 	 */
-	@RequestMapping(value = "/addLeave")
-	public ModelAndView addLeaveJsp(HttpServletRequest request,HttpServletResponse response) {
-		   ModelAndView model = new ModelAndView();
-		   model.addObject("sourceleadUrl", sourceleadUrl);
-		   model.setViewName("leavemanagement/addLeave");
-	       return model;
+	@RequestMapping(value = "/addLeaveType")
+	public ModelAndView addLeaveJsp(LeaveTypeDTO leaveTypeDTO, HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		ModelAndView model = new ModelAndView();
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+		Long roleHierarchyId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "roleHierarchyId");
+		List<Department> departmentList = departmentService.getDepartmentByOrgLocationIdAndStatus(orgLocations.getId(),Constants.RECORD_ACTIVE.toString());
+		List<Roles> rolesList = rolesService.getUserRolesListByModuleAndLoginUserRoleHierarchy(org, orgLocations.getId(), roleHierarchyId);
+		
+		if(leaveTypeDTO != null && leaveTypeDTO.getLeaveTypeId() != null){
+			LeaveType leaveType = leaveTypeService.getLeaveTypeById(leaveTypeDTO.getLeaveTypeId());
+			if(leaveType != null){
+				model.addObject("leaveType", leaveType);
+			}
+		}
+		
+		model.addObject("departmentList", departmentList);
+		model.addObject("rolesList", rolesList);
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		model.setViewName("leavemanagement/addLeaveType");
+		return model;
 	}
 	
 	/**
@@ -139,11 +187,11 @@ public class LeaveManagenebtRestController {
 	 * @param response
 	 * @return ModelAndView
 	 */
-	@RequestMapping(value = "/viewLeaves")
+	@RequestMapping(value = "/viewLeaveTypes")
 	public ModelAndView viewLeavesJsp(HttpServletRequest request,HttpServletResponse response) {
 		   ModelAndView model = new ModelAndView();
 		   model.addObject("sourceleadUrl", sourceleadUrl);
-		   model.setViewName("leavemanagement/viewLeave");
+		   model.setViewName("leavemanagement/viewLeaveType");
 	       return model;
 	}
 	
@@ -256,5 +304,35 @@ public class LeaveManagenebtRestController {
 		   model.addObject("sourceleadUrl", sourceleadUrl);
 		   model.setViewName("leavemanagement/viewOptions");
 	       return model;
+	}
+	
+	/**
+	 * saving new leave type
+	 * 
+	 * @throws Exception
+	 * @throws Exception
+	 * 
+	 */
+	@RequestMapping(value = "/saveNewLeaveType")
+	public @ResponseBody String saveNewLeaveType(LeaveTypeDTO leaveTypeDTO, HttpServletRequest request) throws Exception
+	{
+		LeaveType leaveType = leaveTypeService.addLeaveType(leaveTypeDTO);
+		return "success";
+	}
+	
+
+	/**
+	 * @author Pavan Jampana
+	 * 
+	 * @param leaveTypeDTO
+	 * @param request
+	 * @return leave type list
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/getLeaveTypesByLocationid")
+	public @ResponseBody List<LeaveType> getLeaveTypesByLocationid(LeaveTypeDTO leaveTypeDTO, HttpServletRequest request) throws Exception
+	{
+		List<LeaveType> leaveTypeList = leaveTypeService.getLeaveTypeListByLocationId(leaveTypeDTO.getOrgLocationId());
+		return leaveTypeList;
 	}
 }
