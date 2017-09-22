@@ -524,18 +524,17 @@ function addContractsAttachment(){
 			
 			
 }	
-var sourceleadUrl = '${sourceleadUrl}';
 function uploadContractDocument(id){
-	fileUpload(sourceleadUrl, ""+id+"contractsdocFile", "Candidate-Onboard-Contracts", "templateDocuments_form","contractsFileInfo");
+	fileUpload(""+id+"contractsdocFile", "Candidate-Onboard-Contracts", "templateDocuments_form","contractsFileInfo");
 }
 function uploadFormsDocument(id){
-	fileUpload(sourceleadUrl, ""+id+"formsdocFile", "Candidate-Onboard-Forms", "templateDocuments_form","formsFileInfo");
+	fileUpload(""+id+"formsdocFile", "Candidate-Onboard-Forms", "templateDocuments_form","formsFileInfo");
 }
 function uploadPoliciesDocument(id){
-	fileUpload(sourceleadUrl, ""+id+"docFile", "Candidate-Onboard-Policies", "templateDocuments_form","polaciesFileInfo");
+	fileUpload(""+id+"docFile", "Candidate-Onboard-Policies", "templateDocuments_form","polaciesFileInfo");
 }
 function uploadSupportingDocument(id){
-	fileUpload(sourceleadUrl, ""+id+"supportingdocFile", "Candidate-Onboard-Supporting", "templateDocuments_form","supportingFileInfo");
+	fileUpload(""+id+"supportingdocFile", "Candidate-Onboard-Supporting", "templateDocuments_form","supportingFileInfo");
 }
  
 </script>

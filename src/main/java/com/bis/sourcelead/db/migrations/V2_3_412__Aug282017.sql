@@ -132,6 +132,8 @@ CREATE TABLE `sourcelead`.`PROJECT_TASK_COMMENTS` (
 
 CALL sourcelead.AlterTableAddColumn ('sourcelead','ON_BOARDING_TEMPLATE_DOCUMENTS','FILE_URL','TEXT NULL  AFTER `DOCUMENT_UUID`');
 
+CALL sourcelead.AlterTableAddColumn ('sourcelead','ON_BOARDING_TEMPLATE_DOCUMENTS','UPLOAD_FILE_URL','TEXT NULL  AFTER `FILE_URL`');
+
 CALL sourcelead.AlterTableAddColumn ('sourcelead','OFF_BOARDING_DOCUMENTS','FILE_URL','TEXT NULL  AFTER `DOCUMENT_UUID`');
 
 

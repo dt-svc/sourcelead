@@ -28,7 +28,9 @@
     </style>
 </head>
 
-
+<script>
+var sourceleadUrl ='${sourceleadUrl}';
+</script>
 <div class="wraper"> 
 
   
@@ -98,7 +100,12 @@
 				<c:if test="${contractDocsListSize > 0}">
 				<c:forEach var="contractDocs" items="${contractDocsList}">
 				<div class="step3">
-					<span><a href="${contractDocs.fileURL}"  class="fa fa-file-text"></a></span>
+				<c:if test="${!empty contractDocs.uploadFileURL && !empty contractDocs.fileURL}">
+				<span><a href="${contractDocs.uploadFileURL}"  class="fa fa-file-text"></a></span>
+				</c:if>
+				<c:if test="${!empty contractDocs.fileURL && empty contractDocs.uploadFileURL}">
+				<span><a href="${contractDocs.fileURL}"  class="fa fa-file-text"></a></span>
+				</c:if>
 					<strong>
 						
 						<c:if test="${contractDocs.documentStatus != 'ACCEPTED'}">
@@ -136,7 +143,12 @@
 				<c:if test="${formsDocsListSize > 0}">
 				<c:forEach var="formsDocs" items="${formsDocsList}">
 				<div class="step3">
-					<span><a href="${formsDocs.fileURL}"  class="fa fa-file-text"></a></span>
+					<c:if test="${!empty formsDocs.uploadFileURL && !empty formsDocs.fileURL}">
+						<span><a href="${formsDocs.uploadFileURL}"  class="fa fa-file-text"></a></span>
+					</c:if>
+					<c:if test="${!empty formsDocs.fileURL && empty formsDocs.uploadFileURL}">
+						<span><a href="${formsDocs.fileURL}"  class="fa fa-file-text"></a></span>
+					</c:if>
 					<strong>
 						<c:if test="${formsDocs.documentStatus != 'ACCEPTED'}">
 						   <p>${formsDocs.fileName}</p>
@@ -340,12 +352,12 @@ function saveOnboardingCandidateDocs(saveType){
 
 <script>
 
-var sourceleadUrl ='${sourceleadUrl}';
+
 function uploadContract(id){ 
-	fileUpload(sourceleadUrl, "uploadContractsFile"+id+"", "Welcome-Onboarding-Contract-Documents", "onboardCandidateDocs_form","uploadContractsFile");
+	fileUpload("uploadContractsFile"+id+"", "Welcome-Onboarding-Contract-Documents", "onboardCandidateDocs_form","uploadContractsFile");
 }
 function uploadForms(id){
-	fileUpload(sourceleadUrl, "uploadFormsFile"+id+"", "Welcome-Onboarding-Forms-Documents", "onboardCandidateDocs_form","uploadFormsFile");
+	fileUpload("uploadFormsFile"+id+"", "Welcome-Onboarding-Forms-Documents", "onboardCandidateDocs_form","uploadFormsFile");
 }
  
 function uploadFormFile(id){

@@ -2034,7 +2034,7 @@ function editBudgetrequest(budgetRequestedId){
 					result = result + '	    <div class="clearfix mb10">';
 					result = result + '	    <div class="clearfix mb10">';
 					result = result + '	      <div class="col-md-12">';
-					result = result + '	        <input type="text" class="form-control" value="'+json.budgetDescription+'" id="baseLine" name="baseLine" placeholder="Base Line *" field-name="Base Line" data-validation="required validate_Space validate_length length1-250">';
+					result = result + '	        <input type="text" class="form-control" value="'+json.budgetDescription+'" id="baseLine" name="baseLine" placeholder="Descrption *" field-name="Description" data-validation="required validate_Space validate_length length1-250">';
 					result = result + '	      </div>';
 					result = result + '	    </div>    ';                        
 				 
@@ -2133,7 +2133,7 @@ function addBudgetRequestPopUp(){
 	result = result + '	    <div class="clearfix mb10">';
 	result = result + '	    <div class="clearfix mb10">';
 	result = result + '	      <div class="col-md-12">';
-	result = result + '	        <input type="text" class="form-control input-sm" value="" id="baseLine" name="baseLine" placeholder="Base Line *" field-name="Base Line" data-validation="required validate_Space validate_length length1-250">';
+	result = result + '	        <input type="text" class="form-control input-sm" value="" id="baseLine" name="baseLine" placeholder="Description *" field-name="Description" data-validation="required validate_Space validate_length length1-250">';
 	result = result + '	      </div>';
 	result = result + '	    </div>    ';                        
  

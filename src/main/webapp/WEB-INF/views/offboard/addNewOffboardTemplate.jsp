@@ -471,12 +471,11 @@ function addResignationAttachment(){
 			
 			
 }		
-var sourceleadUrl = '${sourceleadUrl}';
 function uploadResignationTerminationDoc(id){
-	fileUpload(sourceleadUrl, ""+id+"resignationdocFile", "Offboard-Template-Resignation-Documents", "templateDocuments_form","resignationFileInfo");
+	fileUpload(""+id+"resignationdocFile", "Offboard-Template-Resignation-Documents", "templateDocuments_form","resignationFileInfo");
 }
 function uploadOffboardPackDoc(id){
-	fileUpload(sourceleadUrl, ""+id+"offboardPackdocFile", "Offboard-Template-OffboardPack-Documents", "templateDocuments_form","offboardPackFileInfo");
+	fileUpload(""+id+"offboardPackdocFile", "Offboard-Template-OffboardPack-Documents", "templateDocuments_form","offboardPackFileInfo");
 }
 </script>
 

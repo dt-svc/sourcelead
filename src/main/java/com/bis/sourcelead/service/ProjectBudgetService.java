@@ -23,4 +23,6 @@ public interface ProjectBudgetService {
 	Long getProjectBudgetReqestedIdByProjectId(Long projectId, Integer generatedIdcount);
 	
 	void saveProjectBudgetRequset(ProjectBudgetRequestDTO projectBudgetRequestDTO,User user)throws Exception;
+	
+	void sendEmailForBugetRequestApproversByAcceptAndRejectAndOnHold(User user, ProjectBudget projectBudget)throws Exception;
 }
