@@ -830,15 +830,6 @@ function requirementPipelineList(url, requirementId, submissionType){
 </script>
 
 <script>
-function viewResumeRequirementSummary(resumeUUID,title){
-	var sourceleadUrl ='${sourceleadUrl}';
-	if(resumeUUID != null && resumeUUID != ""){
-		window.open(sourceleadUrl+'/viewProfessionalCandidateResume/'+title+'?resumeUUID='+resumeUUID,title,"height=600,width=600");
-	}  
-}
-</script>
-
-<script>
 function viewOfferDocument(offerID,title){
 	var sourceleadUrl ='${sourceleadUrl}';
 	if(offerID != null && offerID != ""){
