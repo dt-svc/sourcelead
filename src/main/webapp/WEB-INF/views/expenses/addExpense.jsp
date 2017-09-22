@@ -165,7 +165,7 @@
 						</select>
 					</div>
 							<div class="col-md-4 mb10">
-								<label>Date<span class="text-danger">&nbsp;*</span></label>
+								<label>Date Occurred<span class="text-danger">&nbsp;*</span></label>
 								<input type="text" id="categoryDate${entryCount.count}" name="categoryDTO[${entryCount.index}].categoryDate" readonly="readonly" onclick="displayCalendar('${entryCount.count}')" class="form-control calendar" value="${entry.expenseDate}" placeholder="Date" field-name="Date" data-validation="required"> 
 							</div>
 							<div class="col-md-4 mb10">
