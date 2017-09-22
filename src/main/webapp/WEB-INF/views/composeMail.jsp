@@ -416,7 +416,13 @@ function getUserList(teamType){
 		                    	 var opt = json[i]; 
 		                    	 result = result +'<tr>';
 		                    	 result = result +'             <td>&nbsp;&nbsp;<input id="'+opt.id+'" value="'+opt.email+'"  type="checkbox" name="emails[]" class="myCheckbox" ></td>';
+		                    	   if(opt.lastName != null && opt.lastName != 'undefined' && opt.lastName != ""){
 		                    	 result = result +'             <td>'+opt.firstName+' '+opt.lastName+'</td>';
+		                    	   }
+		                    	   else{
+		                    		   
+		                    		   result = result +'             <td>'+opt.firstName+' </td>';
+		                    	   }
 		                    	 result = result +'             <td>'+opt.email+'</td>';
 		                    	 result = result +'             <td>'+opt.userType+'</td>';
 		                    	 result = result +'           </tr>';
