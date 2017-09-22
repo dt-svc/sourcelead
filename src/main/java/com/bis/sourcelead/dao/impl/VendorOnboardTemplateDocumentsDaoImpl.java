@@ -1,5 +1,6 @@
 package com.bis.sourcelead.dao.impl;
 
+import java.text.MessageFormat;
 import java.util.List;
 
 import org.hibernate.Session;
@@ -12,7 +13,9 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.VendorOnboardTemplateDocumentsDao;
+import com.bis.sourcelead.entity.OnBoardingTemplateDocuments;
 import com.bis.sourcelead.entity.VendorOnboardingTemplateDocuments;
+import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 
 @Repository
 public class VendorOnboardTemplateDocumentsDaoImpl implements VendorOnboardTemplateDocumentsDao{
@@ -45,6 +48,39 @@ public class VendorOnboardTemplateDocumentsDaoImpl implements VendorOnboardTempl
 	    		+ " and documents.documentType = :documentType and documents.status = '1' ";
 	    List<VendorOnboardingTemplateDocuments> documentsList = session.createQuery(query.toString()).setLong("templateId", templateId).setString("documentType", documentType).setCacheable(true).list();
         return documentsList;
+	}
+
+
+	@Override
+	@Transactional
+	public VendorOnboardingTemplateDocuments saveVendorOnBoardingTemplateDocuments(
+			VendorOnboardingTemplateDocuments vendorOnboardingTemplateDocuments) throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		try {
+			if (vendorOnboardingTemplateDocuments != null) {
+				session.saveOrUpdate(vendorOnboardingTemplateDocuments);
+			}
+			logger.debug("vendorOnBoardingTemplateDocuments Added Successfully");
+		} catch (Exception exception) {
+			 StringBuilder message= new StringBuilder(MessageFormat.format(duplicateValue,"VENDOR_ON_BOARDING_TEMPLATE_DOCUMENTS"));
+				throw new SourceLeadConstraintViolationException(message.toString() +exception.getCause().toString());
+		}
+		return vendorOnboardingTemplateDocuments;
+	}
+
+
+	@Override
+	@Transactional
+	public VendorOnboardingTemplateDocuments getVendorOnBoardingTemplateDocumentsBydocumentUUID(String documentUUID)
+			throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		List<VendorOnboardingTemplateDocuments> documents = session.createQuery("from VendorOnboardingTemplateDocuments documents where documents.documentUUID =:documentUUID" ).setString( "documentUUID", documentUUID ).setCacheable(true).list();
+		if (documents.size() > 0) {
+			return documents.get(0);
+		} else {
+			return null;
+		}
 	}
 
 }

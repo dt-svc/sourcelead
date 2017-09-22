@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.bis.sourcelead.annotations.Validator;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.OnBoardingTemplateDTO;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -46,7 +47,8 @@ public class VendorOnboardRestController {
 	@Autowired
 	VendorOnboardTemplateDocumentsService vendorOnboardTemplateDocumentsService;
 	
-	
+	@Value("${static.path}")
+	private String staticPath;
 	
 	@RequestMapping(value = "/getVendorOnboardingTemplatesList")
 	public List<VendorOnboardingTemplate> getVendorOnboardingTemplatesList(HttpServletRequest request) throws Exception {
@@ -132,5 +134,49 @@ public class VendorOnboardRestController {
  			model.addObject("templateId", template.getId());
  			return model;
  	}
+	
+	@RequestMapping(value = "/saveVendorOnboardingTemplateDocuments", method = RequestMethod.POST)
+	public @ResponseBody String saveVendorOnboardingTemplateDocuments(OnBoardingTemplateDTO onBoardingTemplateDTO, HttpServletRequest request) throws Exception {
+		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		if(Validator.validate(onBoardingTemplateDTO)) {
+			onBoardingTemplateDTO.setStaticPath(staticPath);
+			vendorOnboardTemplateDocumentsService.storeVendorOnBoardTemplateDocuments(onBoardingTemplateDTO, loginUser);
+		 }else
+			 return "DataMissing";
+		
+		
+		return "success";
+			
+	}
+	
+	@RequestMapping(value = "/deleteVendorTemplateDocumentByDocumentUUID" , method = RequestMethod.POST)
+	 public @ResponseBody  String deleteVendorTemplateDocumentByDocumentUUID(@RequestParam(value="documentUUID", required=false) String documentUUID,
+			 HttpServletRequest request) throws Exception {
+		
+		VendorOnboardingTemplateDocuments	templateDocuments =	vendorOnboardTemplateDocumentsService.getVendorOnBoardingTemplateDocumentsBydocumentUUID(documentUUID);
+	 	 if(templateDocuments != null){
+	 		templateDocuments.setStatus(Constants.CANDIDATE_IN_ACTIVE);
+	 		vendorOnboardTemplateDocumentsService.saveVendorOnBoardingTemplateDocuments(templateDocuments);
+	 	 }
+		return "success";
+	   
+	}
+	
+	@RequestMapping(value = "/requiredOrNotTemplateDocumentByDocumentUUID" , method = RequestMethod.POST)
+	 public @ResponseBody  String requiredOrNotTemplateDocumentByDocumentUUID(@RequestParam(value="documentUUID", required=false) String documentUUID,
+			 HttpServletRequest request) throws Exception {
+		
+		VendorOnboardingTemplateDocuments templateDocuments = vendorOnboardTemplateDocumentsService.getVendorOnBoardingTemplateDocumentsBydocumentUUID(documentUUID);
+	 	 if(templateDocuments != null){
+	 		if(templateDocuments.getIsRequired().equalsIgnoreCase(Constants.YES)){
+	 			templateDocuments.setIsRequired(Constants.NO);
+	 		}else{
+	 			templateDocuments.setIsRequired(Constants.YES);
+	 		}
+	 		vendorOnboardTemplateDocumentsService.saveVendorOnBoardingTemplateDocuments(templateDocuments);
+	 	 }
+		return "success";
+	   
+	}
 	
 }

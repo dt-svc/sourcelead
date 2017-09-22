@@ -7,4 +7,8 @@ import com.bis.sourcelead.entity.VendorOnboardingTemplateDocuments;
 public interface VendorOnboardTemplateDocumentsDao {
 
 	List<VendorOnboardingTemplateDocuments> getVendorOnBoardingTemplateDocumentsByTemplateId(Long templateId,String documentType) throws Exception;
+	
+	VendorOnboardingTemplateDocuments saveVendorOnBoardingTemplateDocuments(VendorOnboardingTemplateDocuments vendorOnboardingTemplateDocuments)throws Exception;
+	
+	VendorOnboardingTemplateDocuments getVendorOnBoardingTemplateDocumentsBydocumentUUID(String documentUUID) throws Exception;
 }

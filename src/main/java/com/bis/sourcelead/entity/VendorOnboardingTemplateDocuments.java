@@ -41,6 +41,9 @@ public class VendorOnboardingTemplateDocuments implements Serializable{
  	 @JoinColumn(name = "VENDOR_ON_BOARDING_ID", nullable = false)
  	 private VendorOnboarding vendorOnboardingId;
      
+     @Column(name = "DOCUMENT_NAME")
+ 	 private String documentName;
+     
      @Column(name = "DOCUMENT_TYPE")
  	 private String documentType;
      
@@ -68,6 +71,9 @@ public class VendorOnboardingTemplateDocuments implements Serializable{
      
      @Column(name = "DOCUMENT_UUID")
  	 private String documentUUID;
+     
+     @Column(name = "IS_REQUIRED")
+ 	 private String isRequired;
      
      @Column(name = "STATUS")
  	 private Integer status;
@@ -214,5 +220,21 @@ public class VendorOnboardingTemplateDocuments implements Serializable{
 
 	public void setUpdatedBy(User updatedBy) {
 		this.updatedBy = updatedBy;
+	}
+
+	public String getDocumentName() {
+		return documentName;
+	}
+
+	public void setDocumentName(String documentName) {
+		this.documentName = documentName;
+	}
+
+	public String getIsRequired() {
+		return isRequired;
+	}
+
+	public void setIsRequired(String isRequired) {
+		this.isRequired = isRequired;
 	}
 }

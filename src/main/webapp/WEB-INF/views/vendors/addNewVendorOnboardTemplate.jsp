@@ -10,12 +10,48 @@
 
 <style>
 .timesheet_week_comm strong input.dele  {
-width : 6% !important;
+width : 10px !important;
+}
+.timesheetDocs.timesheetDocs-custom .timesheet_week_comm strong input.dele {
+width : 20px !important;
+}
+.timesheetDocs.timesheetDocs-custom {
+width: 65%;
+}
+.timesheetDocs.timesheetDocs-custom .timesheetAttachment {
+width: auto !important;
+}
+.timesheetDocs.timesheetDocs-custom .timesheet_week_comm span input {
+width: 275px !important; padding-left: 15px !important; text-indent:0; text-align: left;
+}
+.timesheetDocs.timesheetDocs-custom .timesheet_week_comm label input[type="checkbox"] {
+width: auto !important;
+}
+.timesheetDocs.timesheetDocs-custom .timesheet_week_comm input.vendorinput {
+	background-color: #fff; color: #333; border: 1px solid #ddd; width: 250px !important;
+	margin-right: 15px;
+}
+.timesheetDocs.timesheetDocs-custom .timesheetAttachment td {
+width: auto !important;
+}
+.timesheetDocs.timesheetDocs-custom .timesheet_week_comm label.switch {
+position: relative; background-color: transparent; width: 35px; overflow: inherit; padding: 5px 10px;
+}
+.ml-mr {
+margin-left: 15px !important; margin-right: 15px !important; margin-top: 5px !important;
+}
+.switch.switchvendor-custom input[type="checkbox"]{
+background: #f60; position: relative;top:0; top: -15px; opacity: 0;
+filter: alpha(opacity=0);  -moz-opacity: 0; -khtml-opacity: 0;
+}
+.timesheetDocs.timesheetDocs-custom .timesheet_week_comm span .inputpadding input[type="button"] {
+	padding-left: 35px !important;
 }
 </style>
 
 <section class="content-wraper">
     <div id="loading"></div>
+    <div id="choicepopUp"></div>
     <section class="content-header clearfix">
           <div class="pull-left">
             <h2>Vendor Onboard Template</h2>
@@ -70,16 +106,16 @@ width : 6% !important;
               <div class="form-horizontal">
                 <form id='templateDocuments_form' name='templateDocuments_form' >
                  <input type="hidden" name="templateId" id="documentstemplateId" value=""/>
-                <p><strong>Acceptance Documents</strong> <br>
-                  <small class="text-muted">These documents need to be accepted by the new hire as part of acceptance step  - Learn more</small> </p>
+                <p><strong>Vendor Acceptance Documents</strong> <br>
+                  <small class="text-muted">These documents need to be upload by the new vendor as part of acceptance step  - Learn more</small> </p>
                
                
                 <div class="form-group">
-                  <label class="col-md-12"> <strong>Contracts</strong> <br>
+                  <label class="col-md-12"> <strong>Documents</strong> <br>
                   </label>
-                  <label class="col-md-4 control-label mt10">These contracts will be added to this offer:</label>
-                     <div id="timesheetDocumentsId" class="timesheetDocs">
-                      <div class="col-md-7 commentFile timesheet_week_comm onboardDocs">
+                  <label class="col-md-12 mt10">These documents will be added for vendor on-boarding:</label>
+                     <div id="timesheetDocumentsId" class="timesheetDocs timesheetDocs-custom">
+                      <div class="col-md-8 commentFile timesheet_week_comm onboardDocs">
 				        <span class="uploadAttachments"> 
 			              <div id="savedContractsAttachments"></div>
 				        </span>
@@ -371,14 +407,40 @@ width : 6% !important;
 	});
 </script>
 
+<div id="divContractsNameTd1" style="display: none; float: left;">
+	  			<input type="text"  placeholder='Document Name' class='form-control input-sm vendorinput' id='REPLACEROWIDcontractsdocFileName' name="vendorDocumentsFileInfo[REPLACEROWID].docFileName"  data-validation="required" field-name="Document" > 
+</div>
 
 <div id="divContractsAttachmentTd1" style="display: none; float: left;">
 			<div id='REPLACEROWIDContractsdocFileuploadFileGroup'>
-	  			<input type='file' id='REPLACEROWIDcontractsdocFile' class="timesheetAttachmentValidation" data-validation="required validatedoc" field-name="Contracts Document" onchange='uploadContractDocument(REPLACEROWID)'> 
-	  			<i class="fa fa-times" onclick="removeContractsAttachmentRow(REPLACEROWID);"></i>
+	  			<input type='file' id='REPLACEROWIDcontractsdocFile' class="timesheetAttachmentValidation" data-validation="validatedoc" data-validation-optional="true" field-name="Contracts Document" onchange='uploadContractDocument(REPLACEROWID)'> 
 	  		</div>
 </div>
 
+
+
+<div id="divDocsTd3" style="display: none; float: left;">
+<label class="switch pull-left ml-mr switchvendor-custom">
+       <input type="checkbox" checked id="REPLACEROWIDchecked" name="vendorDocumentsFileInfo[REPLACEROWID].checked" onclick="checkDocument(REPLACEROWID)" value="Y">
+       <div class="slider round"></div>
+       </label>
+</div>   
+
+<div id="divDocsTd4" style="display: none; float: left;">
+   <i class="fa fa-times" onclick="removeContractsAttachmentRow(REPLACEROWID);"></i> 
+</div> 
+
+
+<script>
+function checkDocument(id){
+	var checked = document.getElementById(id+"checked").checked
+	if(checked == true){
+		$("#"+id+"checked").val("Y");
+	}else{
+		$("#"+id+"checked").val("N");
+	}
+}
+</script>
 
 <script>
 function addContractsAttachment(){  
@@ -393,16 +455,33 @@ function addContractsAttachment(){
 			
 			
 			var cell0 = row.insertCell(0);
+			var divDocTypeTdStr = document.getElementById("divContractsNameTd1").innerHTML;
+			divDocTypeTdStr = divDocTypeTdStr.replace(/REPLACEROWID/g, (maxRowNum));
+			cell0.innerHTML = divDocTypeTdStr;
+			
+			var cell1 = row.insertCell(1);
 			var divAttachmentTdStr = document.getElementById("divContractsAttachmentTd1").innerHTML;
 			divAttachmentTdStr = divAttachmentTdStr.replace(/REPLACEROWID/g, (maxRowNum));
-			cell0.innerHTML = divAttachmentTdStr;
+			cell1.innerHTML = divAttachmentTdStr;
+			
+			var cell2 = row.insertCell(2);
+			var divDocCheckTdStr = document.getElementById("divDocsTd3").innerHTML;
+			divDocCheckTdStr = divDocCheckTdStr.replace(/REPLACEROWID/g, (maxRowNum));
+			cell2.innerHTML = divDocCheckTdStr;
+			
+			var cell3 = row.insertCell(3);
+			var divDocRemoveTdStr = document.getElementById("divDocsTd4").innerHTML;
+			divDocRemoveTdStr = divDocRemoveTdStr.replace(/REPLACEROWID/g, (maxRowNum));
+			cell3.innerHTML = divDocRemoveTdStr;
+			
+			
 			
 			
 }	
 
 var sourceleadUrl = '${sourceleadUrl}';
 function uploadContractDocument(id){
-	fileUpload(sourceleadUrl, ""+id+"contractsdocFile", "Onboard-Template-Contracts-Documents", "templateDocuments_form","vendorDocumentsFileInfo");
+	fileUpload(""+id+"contractsdocFile", "Vendor-Onboard-Template-Documents", "templateDocuments_form","vendorDocumentsFileInfo");
 }
 
 </script>
@@ -536,7 +615,7 @@ function createTemplateDocs(saveType){
 		$.ajax({
 		      type : "POST",
     	      data: formData,
-	    	  url: sourceleadUrl+"/saveOnboardingTemplateDocuments?${_csrf.parameterName}=${_csrf.token}",		
+	    	  url: sourceleadUrl+"/saveVendorOnboardingTemplateDocuments?${_csrf.parameterName}=${_csrf.token}",		
 		      success :function(result) {
 		    	  
 		    	  if(saveType == 'saveAndContinue'){
@@ -698,18 +777,46 @@ function getTemplateVendorDocumentsDetails(templateId){
 		        	 
                 	 for (var i = 0; i < json.length; i++) { 
                 		 var opt = json[i]; 
+                		 var checked = '';
+                		 if(opt.isRequired == 'Y'){
+                			 checked = "checked";
+                		 }
                 		 result = result +"<strong id='contractsdocument"+opt.id+"'>";
-                		 result = result +"<i class=''><a class='glyphicon glyphicon-save' href=\""+opt.fileURL+"\"></a></i>";
-           				 result = result +"<input type='button' value='"+opt.fileName+"'>";
-           				 result = result +"</a>";
+                		 result = result +"<input type='text' value='"+opt.documentName+"' readonly class='form-control input-sm vendorinput'></input>";
+                		 
+                		 result = result +"<div class='positionRelative inputpadding'>";
+                		 if(opt.fileUrl != null){
+                			 result = result +"<i class=''><a class='glyphicon glyphicon-save' href=\""+opt.fileUrl+"\"></a></i>";
+               				 result = result +"<input type='button' value='"+opt.fileName+"'>";
+               				 result = result +"</a>";
+                		 }else{
+                			 result = result +"<i class=''></i>";
+               				 result = result +"<input type='button' value='No document uploaded'>";
+                		 }
+                		 
+           				 result = result +"</div>";
+           				 
+           				 result = result +"<label class='switch switchvendor-custom pull-left ml-mr'>";
+                   	     result = result +"<input type='checkbox' "+checked+" id='"+opt.id+"docChecked' onclick='alertRequiredMessage(\""+opt.documentUUID+"\"\,"+opt.id+")'>"
+                   	     result = result +'<div class="slider round"></div>';
+                  		 result = result +'</label>';
+           				
            				 result = result +"<input class='dele' type='button' onClick='deleteTemplateDocument(\""+opt.documentUUID+"\","+opt.id+",\""+documentType+"\");' >";
            				 result = result +"</strong>";
                 	 }
                 	 
                 	 result = result +"<input type='hidden' name='contractsAttcahmentMaxRowNumber'  id='contractsAttcahmentMaxRowNumber' value='1' />";
-                	 result = result +"<table class='timesheetAttachment' id='contractsAttachmentTable' cellpadding='0' cellspacing='0'>";
+                	 result = result +"<table class='timesheetAttachment'  id='contractsAttachmentTable' cellpadding='0' cellspacing='0'>";
                 	 result = result +"<tr id='divAttachmentTsRow0'>";
-                	 result = result +"<td><div id='0ContractsdocFileuploadFileGroup'><input type='file' id='0contractsdocFile' field-name='Attachment' data-validation='validatedoc' data-validation-optional='true' onchange='uploadContractDocument(0)'  class='timesheetAttachmentValidation'><i class='fa fa-plus' onClick='addContractsAttachment()'></i></div></td>";
+                	 result = result +"<td><input type='text' placeholder='Document Name' class='form-control input-sm vendorinput'  data-validation='required' field-name='Document' name='vendorDocumentsFileInfo[0].docFileName' id='0contractsdocFileName'></td>";
+                	 result = result +"<td><div id='0ContractsdocFileuploadFileGroup'><input type='file' id='0contractsdocFile' field-name='Attachment' data-validation='validatedoc' data-validation-optional='true' onchange='uploadContractDocument(0)'  class='timesheetAttachmentValidation'></div></td>";
+                	 result = result +"<td>";
+                	 result = result +"<label class='switch pull-left ml-mr switchvendor-custom'>";
+                	 result = result +"<input type='checkbox' checked id='0checked' name='vendorDocumentsFileInfo[0].checked' onclick='checkDocument(0)' value='Y'>"
+                	 result = result +'<div class="slider round"></div>';
+               		 result = result +'</label>';
+                	 result = result +"</td>";
+                	 result = result +"<td><i class='fa fa-plus' onClick='addContractsAttachment()'></i></td>";
                 	 result = result +"</tr>";
                 	 result = result +"</table>";
                 	 $("#savedContractsAttachments").empty();
@@ -730,7 +837,7 @@ function deleteTemplateDocument(documentUUID,documentId,documentType){
 	var sourceleadUrl ='${sourceleadUrl}';
 	   $.ajax({
 	    	type: "POST",
-	    	 url: sourceleadUrl+"/deleteTemplateDocumentByDocumentUUID?${_csrf.parameterName}=${_csrf.token}&documentUUID="+documentUUID, 
+	    	 url: sourceleadUrl+"/deleteVendorTemplateDocumentByDocumentUUID?${_csrf.parameterName}=${_csrf.token}&documentUUID="+documentUUID, 
 	        success: function(data) {
 	        	if(data == 'success'){
 	        		if(documentType == 'Documents'){
@@ -741,6 +848,64 @@ function deleteTemplateDocument(documentUUID,documentId,documentType){
 	        },
 	    });
 	 
+}
+</script>
+
+
+<script type="text/javascript">
+function alertRequiredMessage(documentUUID,id){
+	var checked = document.getElementById(id+"docChecked").checked
+	var message = '';
+	if(checked == true){
+		message = "Are you sure to make required?";
+	}else{
+		message = "Are you sure to make not required?";
+	}
+	var result = "";
+	result = result +"	<div class='project_inn_mask'></div>";
+	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+	result = result +"		<p>"+message+"</p>";
+	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='docIsRequiredOrNot(\""+documentUUID+"\");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel(\""+id+"\");'></b>";
+	result = result +"	</div>";
+	$("#choicepopUp").append(result);
+	$("#remove_user_pop").slideDown(200);
+	$(".project_inn_mask").fadeIn(200);
+
+}
+</script>
+
+<script>
+function docIsRequiredOrNot(documentUUID){
+	
+	var sourceleadUrl ='${sourceleadUrl}';
+	$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	   $.ajax({
+	    	type: "POST",
+	    	 url: sourceleadUrl+"/requiredOrNotTemplateDocumentByDocumentUUID?${_csrf.parameterName}=${_csrf.token}&documentUUID="+documentUUID, 
+	        success: function(data) {
+	        	if(data == 'success'){
+        			$("#loading").removeAttr("style");
+	        	}
+	        },
+	    });
+	   
+	   $("#choicepopUp").empty();
+	   $(".project_inn_mask").fadeOut(200);
+}
+</script>
+
+<script type="text/javascript">
+function cancel(id){
+	$("#choicepopUp").empty();
+	$(".project_inn_mask").fadeOut(200);
+	var checked = document.getElementById(id+"docChecked").checked
+	if(checked == false){
+		document.getElementById(id+"docChecked").checked = true;
+	}else{
+		document.getElementById(id+"docChecked").checked = false;
+	}
+	
 }
 </script>
 

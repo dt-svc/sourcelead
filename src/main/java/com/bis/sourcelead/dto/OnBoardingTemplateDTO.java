@@ -2,7 +2,6 @@ package com.bis.sourcelead.dto;
 
 import java.io.Serializable;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author Laxman
@@ -36,6 +35,8 @@ public class OnBoardingTemplateDTO implements Serializable {
 	 private List<FileInfo> supportingFileInfo;
 	 
 	 private List<FileInfo> vendorDocumentsFileInfo;
+	 
+	 private List<FileInfo> requestDocumentList;
 	 
 	public String getTemplateId() {
 		return templateId;
@@ -140,6 +141,16 @@ public class OnBoardingTemplateDTO implements Serializable {
 	public void setVendorDocumentsFileInfo(List<FileInfo> vendorDocumentsFileInfo) {
 		this.vendorDocumentsFileInfo = vendorDocumentsFileInfo;
 	}
+
+	public List<FileInfo> getRequestDocumentList() {
+		return requestDocumentList;
+	}
+
+	public void setRequestDocumentList(List<FileInfo> requestDocumentList) {
+		this.requestDocumentList = requestDocumentList;
+	}
+
+	
 
 	
 }
