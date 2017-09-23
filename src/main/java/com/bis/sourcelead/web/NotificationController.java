@@ -104,6 +104,7 @@ public class NotificationController {
 				nl.setNotificationFirstName(nl.getNotificationFrom().getFirstName());
 				nl.setNotificationLastName(nl.getNotificationFrom().getLastName());
 				nl.setNotificationFormId(nl.getNotificationFrom().getId().toString());
+				nl.setNotificationImage(nl.getNotificationFrom().getFileUrl());
 			}
 		}
 		resultJson = commonUtil.toJSON(notificationsList);

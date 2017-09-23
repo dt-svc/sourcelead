@@ -13,9 +13,9 @@ public class CandidateEmployerDTO {
 	
 	private String startMonth;
 	
-	private String startDate;
-	
 	private String endMonth;
+	
+	private String startDate;
 	
 	private String startYear;
 	

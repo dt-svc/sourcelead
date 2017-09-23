@@ -2714,6 +2714,10 @@ function viewProposeTime(interviewId,submissionId){
         	}
         	result = result + '			</tbody>';
     		result = result + '			</table>';
+    		result = result + '			<div class="clearfix mt"> ';
+    		result = result + '				<div class="pull-right"> ';
+    		result = result + '				  <button type="button" class="btn btn-sm btn-danger" onclick="timePopUp();">Cancel</button> ';
+    		result = result + '				</div> ';
     		result = result + '				  </div>   ';
     		result = result + '			  </div> ';
     		result = result	+ ' </form>';

@@ -4,31 +4,39 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="icon" type="image/png" href="resources/images/fav.png" />
-<title>Welcome to Source Lead :: Account List</title>
-<!-- Bootstrap -->
-<link rel="stylesheet" href="resources/css/jquery.timepicker.css">
-<link href="resources/css/jquery-ui.css" rel="stylesheet">
-<link href="resources/css/bootstrap.min.css" rel="stylesheet">
-<link href="resources/css/font-awesome.min.css" rel="stylesheet">
-<link href="resources/css/sourcelead-main.css" rel="stylesheet">
-<link href="resources/css/timesheet.css" rel="stylesheet">
-</head>
+
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
- <script src="resources/js/jquery.dataTables.min.js"></script>
+
+<c:if test="${staticTime == null || staticTime == 0 }">
+    <c:set var='staticTime' value="<%=new java.util.Date().getTime() %>" scope="application"></c:set>
+</c:if>
  
-<script src="resources/js/jquery-1.11.1.min.js"></script>
-<script src="resources/js/bootstrap.min.js"></script>  
-<script src="resources/js/chosen.jquery.min.js"></script>
-<script src="resources/js/jquery-ui.js"></script>
-<script src="resources/js/jquery-fun.js"></script>
-<script src="resources/js/jquery.timepicker.js"></script>
-<script src="resources/js/bootstrap-select.min.js"></script>
-<script src="resources/js/themeswitcher.js"></script>
-<script src="resources/js/moment.min.js"></script>
-<script src="resources/js/datetime-moment.js"></script>
+<link rel="icon" type="image/png" href="resources/images/fav.png" />
+<title>Welcome to Source Lead :: Account List</title>
+<!-- Bootstrap -->
+<link rel="stylesheet" href="resources/css/jquery.timepicker.css?staticTime=${staticTime}">
+<link href="resources/css/jquery-ui.css?staticTime=${staticTime}" rel="stylesheet">
+<link href="resources/css/bootstrap.min.css?staticTime=${staticTime}" rel="stylesheet">
+<link href="resources/css/font-awesome.min.css?staticTime=${staticTime}" rel="stylesheet">
+<link href="resources/css/sourcelead-main.css?staticTime=${staticTime}" rel="stylesheet">
+<link href="resources/css/timesheet.css?staticTime=${staticTime}" rel="stylesheet">
+</head>
+
+ <script src="resources/js/jquery.dataTables.min.js?staticTime=${staticTime}"></script>
+ 
+<script src="resources/js/jquery-1.11.1.min.js?staticTime=${staticTime}"></script>
+<script src="resources/js/bootstrap.min.js?staticTime=${staticTime}"></script>  
+<script src="resources/js/chosen.jquery.min.js?staticTime=${staticTime}"></script>
+<script src="resources/js/jquery-ui.js?staticTime=${staticTime}"></script>
+<script src="resources/js/jquery-fun.js?staticTime=${staticTime}"></script>
+<script src="resources/js/jquery.timepicker.js?staticTime=${staticTime}"></script>
+<script src="resources/js/bootstrap-select.min.js?staticTime=${staticTime}"></script>
+<script src="resources/js/themeswitcher.js?staticTime=${staticTime}"></script>
+<script src="resources/js/moment.min.js?staticTime=${staticTime}"></script>
+<script src="resources/js/datetime-moment.js?staticTime=${staticTime}"></script>
+
 <script>
 		$(document).ready(function() { 
 			var interviewStatus  = '${interviewStatus}';

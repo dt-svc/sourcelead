@@ -9,6 +9,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
@@ -482,6 +483,45 @@ public class RequirementController {
 		
 		Timezone timezone = timeZoneService.getTimezone(orgLocations.getTimezone().getId());
 		Requirement requirement = requirementService.getRequirementByRequirementUUID(requirementUUID);
+		
+		 Set<RequirementApproverHierarchy> approverList = requirement.getRequirementApprover();
+		 Integer maxLevel =  requirementApproverHierarchyService.getRequirementApproverHierarachyWithHighestLevel(requirement.getId());
+			if(null != maxLevel && maxLevel >1){
+				if(null != approverList && !approverList.isEmpty()){
+					for(RequirementApproverHierarchy reApprover :approverList){
+						if(reApprover.getLevel() == 1){
+							 requirement.setRequirementApproverHierarchyStatus(reApprover.getRequirementApproverStatus().toString());
+						}
+						if(reApprover.getLevel() == 2){
+							 requirement.setRequirementApproverHierarchyStatus(reApprover.getRequirementApproverStatus().toString());
+						}
+					}
+				}
+			}else if(null != maxLevel && maxLevel ==1){
+				int i = 0;
+				if(null != approverList && !approverList.isEmpty()){
+					for(RequirementApproverHierarchy reApprover :approverList){
+						if(null != reApprover.getRequirementApproverStatus().toString() && "" != reApprover.getRequirementApproverStatus().toString()){
+							 requirement.setRequirementApproverHierarchyStatus(reApprover.getRequirementApproverStatus().toString());
+						}
+						i++;
+					}
+				}
+			}
+			
+		Boolean isLoginUserAsApprover = false;
+		RequirementApproverHierarchy requirementApproverHierarchy = requirementApproverHierarchyService.getRequirementApproverHierarchyByRequirementId(requirement.getId(), loginUser.getId());
+		if (requirementApproverHierarchy != null) {
+			isLoginUserAsApprover = true;
+		}
+		requirement.setIsLoginUserAsApprover(isLoginUserAsApprover.toString());
+		
+		if (requirement.getCreatedBy().getId().equals(loginUser.getId())) {
+			requirement.setIsLoginUserAsInitiator("true");
+		}else {
+			requirement.setIsLoginUserAsInitiator("false");
+		}
+		
 		if(null != requirement && requirement.getOrgLocationId().getId().equals(orgLocations.getId())){
 			Long requirementId = requirement.getId();
 			
