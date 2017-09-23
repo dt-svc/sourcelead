@@ -35,7 +35,7 @@ function candidateCommentsList(candidateId,submissionId){
             	        	    result = result+'    <div class="commentsimg">';
             	        	    result = result+'    <i class="fa fa-comments"></i>';
             	        	    result = result+'        <div class="commentsimg-inner">';
-            	        	    result = result+'        	<img onerror="predefineProfileImage(this);" src="'+sourceleadUrl+'/displayUserImage/'+report.commentAuthorUserId+'"/>';
+            	        	    result = result+'        	<img onerror="predefineProfileImage(this);" src="'+report.commentAuthorUserImage+'"/>';
             	        	    result = result+'        </div>';
             	        	    result = result+'    </div>';
             	        	    result = result+'     <div class="comments-content">';

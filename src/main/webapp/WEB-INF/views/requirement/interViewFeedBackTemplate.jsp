@@ -6,13 +6,16 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
-<script src="resources/js/InterViewFormBuilder.js" type="text/javascript" ></script>
-<script src="resources/js/interViewForm-html-generator.js" type="text/javWascript" ></script> 
 
-<link rel="stylesheet" href="resources/css/style.css" />
+<c:if test="${staticTime == null || staticTime == 0 }">
+    <c:set var='staticTime' value="<%=new java.util.Date().getTime() %>" scope="application"></c:set>
+ </c:if>
+
+<script src="resources/js/InterViewFormBuilder.js?staticTime=${staticTime}" type="text/javascript" ></script>
+<script src="resources/js/interViewForm-html-generator.js?staticTime=${staticTime}" type="text/javWascript" ></script> 
+<link rel="stylesheet" href="resources/css/style.css?staticTime=${staticTime}" />
+
 <script type="text/javascript">
-
-
 //On document ready
 $(function(){
 	interViewTemplateList();

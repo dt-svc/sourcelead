@@ -964,8 +964,8 @@ public class CandidateListRestController {
 		
 		candidateActivityCommonUtil.storeCandidateHistory(candidate, user);
 		candidateActivityCommonUtil.storeCandidateActivity(user, loginOrgLocation, candidate, "", Constants.CANDIDATE_UPLOAD_NEW_PROFILE_IMAGE, activitySummary.toString(), "CANDIDATE");
-		
-		return "success";
+		Integer percentage = candidateService.getCandidatePercentage(candidate,loginOrgLocation);
+		return percentage.toString();
 	}
 
 	/**
