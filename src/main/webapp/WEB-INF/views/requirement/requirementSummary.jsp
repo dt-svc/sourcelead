@@ -1747,7 +1747,7 @@ function clientSideBar(candidateId,recScore){
 							 	 result = result +'                    <i class="valid-profile fa fa-check-square text-success"></i>';        
 							  }
 						  }
-						 result = result+'  <div class="btn-group uploadfile">';
+						 result = result+'  <div class="btn-group uploadfile uploadbtn-custom">';
 						 result = result+'  <button type="button" class="btn btn-sm btn-primary">';
 						 result = result+'  <i class="fa fa-upload"></i></button>';
 						 result = result+'  <label class="btn btn-sm btn-primary">';
@@ -1788,19 +1788,29 @@ function clientSideBar(candidateId,recScore){
 			            
 			             result = result+'<ul class="list-unstyled">';
 			             result = result+'<li>Type - '+json.candidateType+'</li>';
-			             
-			                                                       if(json.experienceYears != null && json.experienceYears != '' && json.experienceYears != 'undefined'){
+			             if(json.designation != null && json.designation != '' && json.designation != 'undefined'){
+				         result = result+'<li>Designation - '+json.designation+'</li>';
+	              		 }else{
+	              		 result = result+'<li>Designation - ----</li>';  
+	              		 }
+			             if(json.designationType != null && json.designationType != '' && json.designationType != 'undefined'){
+				         result = result+'<li>Employment Type - '+json.designationType+'</li>';
+	              		 }else{
+	              		 result = result+'<li>Employment Type - ----</li>';  
+	              		 }
+			             if(json.experienceYears != null && json.experienceYears != '' && json.experienceYears != 'undefined'){
 			             result = result+'<li>Experience - '+json.experienceYears+' years '+json.experienceMonths+' months </li>';
-              		                                                  }else{
-              		                                                	  
+              		     }else{
               		     result = result+'<li>Experience - ----</li>';  
-              		                                                  }
-                                                                   if(json.primarySkill != null && json.primarySkill != '' && json.primarySkill != 'undefined'){
+              		     }if(json.noticePeriod != null && json.noticePeriod != '' && json.noticePeriod != 'undefined'){
+                	     result = result+'  <li>Notice Period - '+json.noticePeriod+'</li>';
+                         }else{
+                         result = result+'<li>Notice Period - ----</li>';  
+                         }if(json.primarySkill != null && json.primarySkill != '' && json.primarySkill != 'undefined'){
                 	     result = result+'  <li>Primary Skill - '+json.primarySkill+'</li>';
-                              		                                   }else{
-                              		                                                	  
+                         }else{
                          result = result+'<li>Primary Skill - ----</li>';  
-                              		                                    }
+                         }
 			             result = result+'                       </ul>';
 			             result = result+'                 <div class="clearfix">';
 			             result = result+'                 <div class="socialnetwork-details">';
@@ -1815,7 +1825,7 @@ function clientSideBar(candidateId,recScore){
 			            	 result = result+'<li class="bg-twitter"><a href="'+json.twitterUrl+'"target="_blank"> <i class="fa fa-twitter-square"></i></a></li>';
 			            	 }
 			             
-			             result = result+'                               </ul>';
+			             result = result+'   </ul>';
 			             result = result+'                 </div>';
 			             result = result+'                 </div>';
 			             result = result+'               </div>';
@@ -1828,9 +1838,9 @@ function clientSideBar(candidateId,recScore){
 			                                                  
 			             result = result+'                   <li title="'+city+''+state+''+country+'"><i class="fa fa-location-arrow" title="Location"></i>'+city+''+state+''+country+'</li>';
 			             
-			             result = result+'                   <li><i class="fa fa-money" title="Current Rate"></i>'+currentRate+'  '+currentRateType+' / '+currentRateCurrency+'</li>';
+			             result = result+'                   <li><i class="fa fa-money" title="Current Rate"></i><b>Current Rate:</b>' +currentRate+'  '+currentRateType+' / '+currentRateCurrency+'</li>';
 			             
-			             result = result+'                   <li><i class="fa fa-money" title="Expected rate"></i>'+expectedRate+'  '+rateType+' / '+expectedRateCurrencey+'</li>';
+			             result = result+'                   <li><i class="fa fa-money" title="Expected rate"></i><b>Expected Rate:</b>'+expectedRate+'  '+rateType+' / '+expectedRateCurrencey+'</li>';
 			             result = result+'                 </ul>';
 			             result = result+'               </div>';
 			             result = result+'			</div>';
