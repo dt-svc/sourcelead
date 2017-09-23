@@ -72,7 +72,7 @@ function onboardingCandidatesList(){
 	                     result = result +"    <th>Rate</th>"; 
 	                     result = result +"    <th>Position Type</th>";
 	                     result = result +"    <th>Onboard Status</th>";
-	                     '<sec:authorize access="hasRole(\'ROLE_VIEW_EDIT_ON_BOARD_USER\')">'
+	                     '<sec:authorize access="hasRole(\'ROLE_CREATE_ON_BOARD_USER\')">'
 	                    	 result = result +"<th>Actions</th>";
 	                     '</sec:authorize>';
 	                     result = result +"  </tr>"; 
@@ -116,7 +116,7 @@ function onboardingCandidatesList(){
 				                     result = result +"<td><div><span>Ready to onboard</span></div></td>";
 			                     }
 			                     
-			                     '<sec:authorize access="hasRole(\'ROLE_VIEW_EDIT_ON_BOARD_USER\')">'
+			                     '<sec:authorize access="hasRole(\'ROLE_CREATE_ON_BOARD_USER\')">'
 				                     if(opt.onboardUUId != null && opt.onboardUUId != '' && opt.onboardUUId != 'undefined'){
 				                    	 if(opt.onboardStatus == 'Draft'){
 				                    		 result = result +"<td><div class='tbldata-dotdot-sm'> <a href='"+sourceleadUrl+"/viewOnboardCandidateDetails?onboardUUID="+opt.onboardUUId+"'><span class='text-success'>View Onboard</span></a></div></td>";

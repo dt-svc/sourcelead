@@ -170,7 +170,7 @@ public class CandidateEducationRestController {
 	}
 
 	
-	@PreAuthorize("hasAnyRole('ROLE_VIEW_EDIT_CANDIDATE_EDUCATION','ROLE_CROWDSOURCING_PROFILE','ROLE_CROWDSOURCING_CANDIDATES','ROLE_VIEW_EDIT_ASSOCIATE_EDUCATION_DETAILS')")
+//	@PreAuthorize("hasAnyRole('ROLE_VIEW_EDIT_CANDIDATE_EDUCATION','ROLE_CROWDSOURCING_PROFILE','ROLE_CROWDSOURCING_CANDIDATES','ROLE_VIEW_EDIT_ASSOCIATE_EDUCATION_DETAILS')")
 	@RequestMapping(value = "/getCandidateEducationBycandidateIdandEducationId")
 	public String getCandidateEducationBycandidateIdandEducationId(@RequestParam(value = "candidateId", required = false) Long candidateId,@RequestParam(value = "candidateEducationId", required = false) Long candidateEducationId,HttpServletRequest request) throws Exception {
 		String resultJson;
