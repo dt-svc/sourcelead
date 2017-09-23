@@ -33,7 +33,7 @@
 
 
 <script>
-  var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
+var sourceleadUrl = '${sourceleadUrl}';
 </script>
 
 <style type="text/css">
@@ -165,7 +165,7 @@ function publicRequirementProfile(requirementUUID){
 	
 	$.ajax({
 	   	type: "GET",
-	    url: sourceleadUrl+"/getRequirementProfessionalProfileDetails?requirementUUID="+requirementUUID, 	   
+	    url: sourceleadUrl+"/getRequirementProfessionalProfileDetails?requirementUUID="+requirementUUID+"&contactUUID="+contactUUID, 	   
 		    success: function(data) {
 		    	var json = JSON.parse(data);
 		    	var result = "";

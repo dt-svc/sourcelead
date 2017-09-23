@@ -169,6 +169,8 @@ function editCandidate(candidateId){
 							var result ='';
 							result = result + '		    <div class="edit-details col-md-8 edit-candaite"> <i class="fa fa-close close-div" onclick="cancelEdit();"></i>';
 							result  = result + '         <form id="candidateProfileEdit_form" name="candidateProfileEdit_form" method="post">';
+							result  = result + '<input type="hidden" id="orgloationId" name="orgloationId" value="${SourceLeadWeb_orgLocations.id}" />';
+							result  = result + '<input type="hidden" id="loginUserId" name="loginUserId" value="${SourceLeadWeb_user.id}" />';
 							result = result + '		      <div class="form-horizontal clearfix">';
 							result = result + '<input type="hidden" class="form-control input-sm" name="candidateId"  value="'+candidateId+'">';
 							
@@ -393,7 +395,7 @@ function editCandidate(candidateId){
 							
 							result = result + '</div>';
 							 
-							result = result + '<div class="col-md-6 designationTypeDiv" id="designationTypeDiv" style="display:none">';
+							result = result + '<div class="col-md-6 designationTypeDiv mt10" id="designationTypeDiv" style="display:none">';
 							result = result + '<input type="text" class="form-control input-sm" name="designationOtherType"  id="designationOtherType" value="'+designationOtherType+'" placeholder="Employement Other Type" field-name="Designation Other Type" data-validation="validate_Space validate_length length2-50" data-validation-optional="true">';
 							result = result + '</div>';
 						
