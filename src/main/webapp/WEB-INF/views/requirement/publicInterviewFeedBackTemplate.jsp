@@ -313,7 +313,6 @@ function interviewTemplateForm(){
 function saveInterviewTemplate(){
 	if ($('#interviewTemplate_form').validate(false, validationSettings)){ 
 	      var frm = $('#interviewTemplate_form').serializeFormJSON();
-	      alert("kkkk")
 	      var templateId = '${templateId}';
 	  	  var requirementInterviewid = '${requirementInterviewid}';
 	      var sourceleadUrl ='${sourceleadUrl}';
