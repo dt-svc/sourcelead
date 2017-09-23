@@ -1,12 +1,13 @@
 <jsp:include page="../masterHeader.jsp" />
 <jsp:include page="../masterSideNav.jsp" />
+
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
- <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
-<script src="resources/js/editor.js"></script>
-<link href="resources/css/editor.css" type="text/css" rel="stylesheet"/>
+<script src="resources/js/editor.js?staticTime=${staticTime}"></script>
+<link href="resources/css/editor.css?staticTime=${staticTime}" type="text/css" rel="stylesheet"/>
 
 <script>
 //description script
@@ -349,7 +350,7 @@ $('.chosen-select').chosen().on('change', function() {
 	}else{
 		assignValue = "";
 	}
-	var sourceleadUrl ='${sourceleadUrl}';
+	
 	var taskId = '${projectTask.id}';
 	var userId = '${SourceLeadWeb_userId}';
 	  $.ajax({
@@ -363,7 +364,7 @@ $('.chosen-select').chosen().on('change', function() {
 
 <script>
 function tasksAssignList(projectId){
-	var sourceleadUrl ='${sourceleadUrl}';
+	
 	var values = "Active";
 	  var map = new Object(); // or var map = {};
       <c:forEach var="assign" items="${assignedUsers}">
@@ -764,8 +765,7 @@ function addDocumentEntry(){
 	
 }
 function taskUploadFile(){
-	var sourceleadUrl = '${sourceleadUrl}';
-	fileUpload(sourceleadUrl, "uploadBtn", "tasks", "addDocument_form");
+	fileUpload("uploadBtn", "tasks", "addDocument_form");
 }
 
 function documentTableList(){
@@ -825,7 +825,7 @@ function documentTableList(){
 </script>
 <script>
 function getEditTaskDocument(projectTaskDocId){
-	var sourceleadUrl ='${sourceleadUrl}';
+	
 	 $.ajax({
 		   	type: "POST",
 		    url: sourceleadUrl+"/ProjectTasks/getProjectTaskDocument?${_csrf.parameterName}=${_csrf.token}&projectTaskDocId="+projectTaskDocId, 	   
@@ -923,7 +923,7 @@ function getEditTaskDocument(projectTaskDocId){
 </script>
 <script>
 function editUploadFile(){
-	var sourceleadUrl ='${sourceleadUrl}';
+	
 	fileUpload(sourceleadUrl, "uploadBtn", "tasks", "updateDocument_form");
 }
 </script>
@@ -1006,7 +1006,7 @@ function updateDocument(documentId){
 </script>
 <script>
 function projectTaskDocumentView(documentId,title){
-	 var sourceleadUrl ='${sourceleadUrl}';
+	 
 		if(documentId != null && documentId != ""){
 			window.open(sourceleadUrl+'/ProjectTasks/viewProjectTaskDocument/'+title+'?documentId='+documentId,title,"height=600,width=600");
 		}
@@ -1014,7 +1014,7 @@ function projectTaskDocumentView(documentId,title){
 </script>
 <script>
 function removeProjectTaskDocuments(documentId){
-	var sourceleadUrl ='${sourceleadUrl}';
+	
 	var userId = '${SourceLeadWeb_userId}';
 	$.ajax({
 	   	type: "POST",
@@ -1304,13 +1304,12 @@ function cancelTask(){
 </script>
 <script>
 function uploadButton(id){
-	var sourceleadUrl ='${sourceleadUrl}';
-	fileUpload(sourceleadUrl, "file"+id+"", "tasks", "projectTask_form");
+	fileUpload("file"+id+"", "tasks", "projectTask_form");
 }
 </script>
 <script>
 function getOwnerList(){
-	var sourceleadUrl ='${sourceleadUrl}';
+	
 	var orgLocationId = '${SourceLeadWeb_orgLocations.id}';
 	$.ajax({
 	    	type: "GET",
@@ -1340,7 +1339,7 @@ function getOwnerList(){
 </script>
 <script>
 function subTasksAssignList(projectId){
-	var sourceleadUrl ='${sourceleadUrl}';
+	
 	var values = "Active";
 	$.ajax({
     	type: "POST",
@@ -1398,7 +1397,7 @@ function subTasksAssignList(projectId){
  <script>
  function getSubEpicsByUserStory(type){
 	 var projectId =  "${projectId}";
-	 var sourceleadUrl ='${sourceleadUrl}';
+	 
 	 var taskType = "Epic";
 	 $.ajax({
 	    	type: "POST",
@@ -1425,7 +1424,7 @@ function subTasksAssignList(projectId){
  }
  function getUserStoryByBug(){
 	 var projectId =  "${projectId}";
-	 var sourceleadUrl ='${sourceleadUrl}';
+	 
 	 var taskType = "UserStory";
 	 $.ajax({
 	    	type: "POST",
@@ -1455,7 +1454,7 @@ function subTasksAssignList(projectId){
  <script>
  function getSubTasks(){
 	 var projectId =  "${projectId}";
-	var sourceleadUrl ='${sourceleadUrl}';
+	
 	var projectTaskId = "${projectTask.id}";
 	taskType = "SubTask";
 	$.ajax({

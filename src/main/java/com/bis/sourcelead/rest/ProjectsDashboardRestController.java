@@ -250,7 +250,9 @@ public class ProjectsDashboardRestController {
 			    	 pl.setEstimatedBudgetCurrency(pl.getEstimatedBudgetCurrency());
 			    	 pl.setEstimatedHours(pl.getEstimatedHours());
 			    	 pl.setEstimatedBudgetValue(pl.getEstimatedBudgetValue());
-			    	 pl.setUserId(pl.getApproverUserId().getId());
+			    	 if(pl.getApproverUserId() != null) {
+			    		 pl.setUserId(pl.getApproverUserId().getId());
+			    	 }
 			    	 ProjectBudgetList.add(pl);
 			     }
 		    	 projects.setProjectBudgetList(ProjectBudgetList);
@@ -259,7 +261,7 @@ public class ProjectsDashboardRestController {
 		    
 		     
 		     Set<ProjectDocuments> projectDocumentsList = projects.getProjectDocuments();
-		     if(projectDocumentsList != null){
+		     if(projectDocumentsList != null && projectDocumentsList.size() > 0){
 		    	 Set<ProjectDocuments> documentsList =  new LinkedHashSet<ProjectDocuments>();
 		    	 for(ProjectDocuments projectDocuments : projectDocumentsList){
 		    		 if(projectDocuments.getStatus().equals(1)){

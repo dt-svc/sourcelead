@@ -72,11 +72,11 @@ CREATE TABLE `sourcelead`.`PROJECT_TASK_DOCUMENTS` (
 ); 
 
 
-INSERT INTO `sourcelead`.`LOOKUP_DATA` ( `NAME`, `DESCRIPTION`, `CATEGORY`) VALUES ( 'Epic', 'Epic', 'TaskType');
-INSERT INTO `sourcelead`.`LOOKUP_DATA` ( `NAME`, `DESCRIPTION`, `CATEGORY`) VALUES ( 'UserStory', 'UserStory', 'TaskType');
-INSERT INTO `sourcelead`.`LOOKUP_DATA` ( `NAME`, `DESCRIPTION`, `CATEGORY`) VALUES ( 'Bug', 'Bug', 'TaskType');
-INSERT INTO `sourcelead`.`LOOKUP_DATA` ( `NAME`, `DESCRIPTION`, `CATEGORY`) VALUES ( 'SubTask', 'SubTask', 'TaskType');
-INSERT INTO `sourcelead`.`LOOKUP_DATA` ( `NAME`, `DESCRIPTION`, `CATEGORY`) VALUES ( 'General', 'General', 'TaskType');
+INSERT INTO `sourcelead`.`LOOKUP_DATA` ( `NAME`, `DESCRIPTION`, `CATEGORY`, `UNIQUE_KEY`) VALUES ( 'Epic', 'Epic', 'TaskType', 'Epic');
+INSERT INTO `sourcelead`.`LOOKUP_DATA` ( `NAME`, `DESCRIPTION`, `CATEGORY`, `UNIQUE_KEY`) VALUES ( 'UserStory', 'UserStory', 'TaskType', 'UserStory');
+INSERT INTO `sourcelead`.`LOOKUP_DATA` ( `NAME`, `DESCRIPTION`, `CATEGORY`, `UNIQUE_KEY`) VALUES ( 'Bug', 'Bug', 'TaskType', 'Bug');
+INSERT INTO `sourcelead`.`LOOKUP_DATA` ( `NAME`, `DESCRIPTION`, `CATEGORY`, `UNIQUE_KEY`) VALUES ( 'SubTask', 'SubTask', 'TaskType','SubTask');
+INSERT INTO `sourcelead`.`LOOKUP_DATA` ( `NAME`, `DESCRIPTION`, `CATEGORY`, `UNIQUE_KEY`) VALUES ( 'General', 'General', 'TaskType', 'General');
 
 
 INSERT INTO `sourcelead`.`LOOKUP_DATA` ( `NAME`, `DESCRIPTION`, `CATEGORY`) VALUES ( 'Critical', 'Critical', 'TaskSeverity');

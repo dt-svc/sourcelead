@@ -1,22 +1,29 @@
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+
+<c:if test="${staticTime == null || staticTime == 0 }">
+    <c:set var='staticTime' value="<%=new java.util.Date().getTime() %>" scope="application"></c:set>
+ </c:if>
+
 <link rel="icon" type="image/png" href="resources/images/fav.png" />
 <title>Welcome to Source Lead :: The Recruitment Application</title>
 <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Roboto:400,100,300,500">
 <!-- Bootstrap -->
 
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<link href="resources/css/bootstrap.min.css" rel="stylesheet">
-<link href="resources/css/bootstrap-select.css" rel="stylesheet">
-<link href="resources/css/jquery.dataTables.min.css" rel="stylesheet">
-<link rel="stylesheet" href="resources/css/jquery-ui.css">
-<link rel="stylesheet" href="resources/css/chosen.min.css">
-<link href="resources/css/font-awesome.min.css" rel="stylesheet">
-<link href="resources/css/sourcelead-main.css" rel="stylesheet" id="myStyleSheet">
-<link href="resources/css/timesheet.css" rel="stylesheet">
 
-<link rel="stylesheet" href="resources/css/bootstrap-select.min.css">
-<link href="resources/css/bootstrap.min.css" rel="stylesheet" type="text/css">
+<link href="resources/css/bootstrap.min.css?staticTime=${staticTime}" rel="stylesheet">
+<link href="resources/css/bootstrap-select.css?staticTime=${staticTime}" rel="stylesheet">
+<link href="resources/css/jquery.dataTables.min.css?staticTime=${staticTime}" rel="stylesheet">
+<link rel="stylesheet" href="resources/css/jquery-ui.css?staticTime=${staticTime}">
+<link rel="stylesheet" href="resources/css/chosen.min.css?staticTime=${staticTime}">
+<link href="resources/css/font-awesome.min.css?staticTime=${staticTime}" rel="stylesheet">
+<link href="resources/css/sourcelead-main.css?staticTime=${staticTime}" rel="stylesheet" id="myStyleSheet">
+<link href="resources/css/timesheet.css?staticTime=${staticTime}" rel="stylesheet">
+<link rel="stylesheet" href="resources/css/bootstrap-select.min.css?staticTime=${staticTime}">
+<link href="resources/css/bootstrap.min.css?staticTime=${staticTime}" rel="stylesheet" type="text/css">
 
-
+<script type="text/javascript">
+ var sourceleadUrl ='${sourceleadUrl}';
+</script>
 
 <script>
 	function predefineProfileImage(imageId){
@@ -235,8 +242,8 @@ $(function(){
 </div>
 
  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script> 
- <script type="text/javascript" src="resources/js/jquery-1.11.0.min.js"></script>
- <script type="text/javascript" src="resources/js/jquery.liquidcarousel.pack.js"></script>	
+ <script type="text/javascript" src="resources/js/jquery-1.11.0.min.js?staticTime=${staticTime}"></script>
+ <script type="text/javascript" src="resources/js/jquery.liquidcarousel.pack.js?staticTime=${staticTime}"></script>	
 <script>
 	$(document).ready(function() {
 		$('#liquid1').liquidcarousel({height:129, duration:100, hidearrows:false});

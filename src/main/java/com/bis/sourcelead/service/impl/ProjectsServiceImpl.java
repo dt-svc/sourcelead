@@ -318,6 +318,10 @@ public class ProjectsServiceImpl implements ProjectsService{
 		return projectsDao.getProjectByProjectSequenceNumber(projectSequeneNumber);
 	}
 	
+	@Override
+	public Boolean validateProjectShortCode(String shortCode, Long orgLocationsId) throws Exception {
+		return projectsDao.validateProjectShortCode(shortCode, orgLocationsId);
+	}
 	 /**
 	 * @author sarath kumar
 	 * @since  aug 19 2016
@@ -2224,6 +2228,7 @@ public void userEmailToAdmin(StringBuilder tempHTML, OrgLocations orgLocations,U
 					Long clientOrgLocationId) throws Exception {
 				return projectsDao.getEndClientProjectByOrgLocationsIdAndClientOrgLocationId(orgLocationsId, clientOrgLocationId);
 			}
+
 
 
 }

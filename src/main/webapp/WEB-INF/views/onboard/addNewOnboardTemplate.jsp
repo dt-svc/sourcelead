@@ -606,7 +606,7 @@ function getAssignToUsersList(){
 	var templateId = document.getElementById("taskstemplateId").value;
     $("#taskstemplateId").val(templateId);
     
-	var sourceleadUrl = '${sourceleadUrl}';
+	
 	$.ajax({
 	   	type: "POST",
 	    url: sourceleadUrl+"/getOnboardTasksAssignToUsersList?${_csrf.parameterName}=${_csrf.token}",	    	   
@@ -1074,7 +1074,7 @@ function validateTemplateName(){
 	var templateName = document.getElementById("templateName").value;
 	
 	if(templateName){
-		var sourceleadUrl = '${sourceleadUrl}';
+		
 		$.ajax({
 	    	type: "POST",
 	    	url : sourceleadUrl+"/validateOnboardingTemplateName?${_csrf.parameterName}=${_csrf.token}&templateName="+templateName+"&templateId="+templateId, 
@@ -1107,7 +1107,7 @@ function getOnboardingTasksList(){
 	var templateId = document.getElementById("documentstemplateId").value;
 	var onboardTaskDiv = document.getElementById("onboardTaskDiv").value;
 	if(onboardTaskDiv == 'Y'){
-	var sourceleadUrl = '${sourceleadUrl}';
+	
 	var locationId = '${SourceLeadWeb_orgLocationId}';
 	
 	 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
@@ -1207,7 +1207,7 @@ function deleteTask(taskId){
 <script>
 function saveAndFinishOnboardTemplate(templateId){
 	
-	var sourceleadUrl = '${sourceleadUrl}';
+	
 	$("#finish_task").attr("disabled", "disabled");
 	 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	$.ajax({

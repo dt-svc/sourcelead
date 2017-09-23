@@ -3,25 +3,29 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="icon" type="image/png" href="resources/images/fav.png" />
-<title>Welcome to Source Lead :: The Recruitment Application</title>
-<link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Roboto:400,100,300,500">
-<!-- Bootstrap -->
-<link href="resources/css/bootstrap.min.css" rel="stylesheet">
-<link href="resources/css/bootstrap-select.css" rel="stylesheet">
-<link href="resources/css/jquery.dataTables.min.css" rel="stylesheet">
-<link rel="stylesheet" href="resources/css/jquery-ui.css">
-<link rel="stylesheet" href="resources/css/chosen.min.css">
-<link href="resources/css/font-awesome.min.css" rel="stylesheet">
-<link href="resources/css/sourcelead-main.css" rel="stylesheet" id="myStyleSheet">
-<link href="resources/css/timesheet.css" rel="stylesheet">
 
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
-<script src="resources/js/jquery-1.11.1.min.js"></script>
-<script src="resources/js/formvalidator.js"></script>
+<c:if test="${staticTime == null || staticTime == 0 }">
+    <c:set var='staticTime' value="<%=new java.util.Date().getTime() %>" scope="application"></c:set>
+</c:if>
+ 
+<link rel="icon" type="image/png" href="resources/images/fav.png" />
+<title>Welcome to Source Lead :: The Recruitment Application</title>
+<link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Roboto:400,100,300,500">
+<!-- Bootstrap -->
+<link href="resources/css/bootstrap.min.css?staticTime=${staticTime}" rel="stylesheet">
+<link href="resources/css/bootstrap-select.css?staticTime=${staticTime}" rel="stylesheet">
+<link href="resources/css/jquery.dataTables.min.css?staticTime=${staticTime}" rel="stylesheet">
+<link rel="stylesheet" href="resources/css/jquery-ui.css?staticTime=${staticTime}">
+<link rel="stylesheet" href="resources/css/chosen.min.css?staticTime=${staticTime}">
+<link href="resources/css/font-awesome.min.css?staticTime=${staticTime}" rel="stylesheet">
+<link href="resources/css/sourcelead-main.css?staticTime=${staticTime}" rel="stylesheet" id="myStyleSheet">
+<link href="resources/css/timesheet.css?staticTime=${staticTime}" rel="stylesheet">
+<script src="resources/js/jquery-1.11.1.min.js?staticTime=${staticTime}"></script>
+<script src="resources/js/formvalidator.js?staticTime=${staticTime}"></script>
 
 <style type="text/css">
     .require_wrap_table.overflowVisible{
@@ -30,6 +34,9 @@
     </style>
 </head>
 
+<script type="text/javascript">
+ var sourceleadUrl ='${sourceleadUrl}';
+</script>
 
 	<div class="wraper"> 
 	
@@ -154,9 +161,9 @@
 	</div>
 	
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script> 
-  <script src="resources/js/jquery-ui.min.js"></script> 
-  <script src="resources/js/chosen.jquery.min.js"></script> 
-  <script src="resources/js/formvalidator.js"></script> 
+  <script src="resources/js/jquery-ui.min.js?staticTime=${staticTime}"></script> 
+  <script src="resources/js/chosen.jquery.min.js?staticTime=${staticTime}"></script> 
+  <script src="resources/js/formvalidator.js?staticTime=${staticTime}"></script> 
   
   
 	<script>
@@ -174,7 +181,6 @@
  <script>
 function goToDashboard(){
 	$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-	var sourceleadUrl ='${sourceleadUrl}';
 	 $.ajax({
 	    	type: "POST",
 	    	 url: sourceleadUrl+"/sendOffboardCandidateToDashboard?${_csrf.parameterName}=${_csrf.token}", 

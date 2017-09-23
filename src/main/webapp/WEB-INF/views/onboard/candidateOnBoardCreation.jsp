@@ -1,13 +1,15 @@
 <jsp:include page="../masterHeader.jsp" />
 <jsp:include page="../masterSideNav.jsp" />
+
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
-<link rel="stylesheet" href="resources/css/chosen.min.css">
-<script src="resources/js/chosen.jquery.min.js"></script> 
-<script src="resources/js/jquery-fun.js"></script> 
-<script src="resources/js/formvalidator.js"></script>
-<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+
+<link rel="stylesheet" href="resources/css/chosen.min.css?staticTime=${staticTime}">
+<script src="resources/js/chosen.jquery.min.js?staticTime=${staticTime}"></script> 
+<script src="resources/js/jquery-fun.js?staticTime=${staticTime}"></script> 
+<script src="resources/js/formvalidator.js?staticTime=${staticTime}"></script>
+
 
 
 <script> 
@@ -708,7 +710,7 @@ function validateUploadFile(id)
   
   <script>
   function loadOfferAcceptedCandidates(candidateId){
-		var sourceleadUrl = '${sourceleadUrl}';
+		
 		$.ajax({
 		   	type: "POST",
 		    url: sourceleadUrl+"/getOfferAcceptedCandidatesForOnBoard?${_csrf.parameterName}=${_csrf.token}",	    	   
@@ -745,7 +747,7 @@ function validateUploadFile(id)
 	  var candidate = onboardCandiate.split(",");
 	  var candidateId = candidate[0];
 	  
-	  var sourceleadUrl = '${sourceleadUrl}';
+	  
 	  
 	  if(candidateId != null && candidateId != "" && candidateId != 'undefined'){
 		  
@@ -789,7 +791,7 @@ function validateUploadFile(id)
 	  var candidate = onboardCandiate.split(",");
 	  var candidateId = candidate[0];
 	  
-	  var sourceleadUrl = '${sourceleadUrl}';
+	  
 	  
 	  if(candidateId != null && candidateId != "" && candidateId != 'undefined'){
 		  
@@ -822,7 +824,7 @@ function validateUploadFile(id)
 	  var offer = onboardCandiate.split(",");
 	  var offerId = offer[1];
 	  
-	  var sourceleadUrl = '${sourceleadUrl}';
+	  
 	  
 	  var locationCode ='${SourceLeadWeb_locationCode}';
 	  
@@ -989,7 +991,7 @@ function getOnBoardCandidateCities(country,state,city){
 <script>
 function loadCandidateRoles(onBoardRoleId){
 	
-	var sourceleadUrl = '${sourceleadUrl}';
+	
 	$.ajax({
 	   	type: "POST",
 	    url: sourceleadUrl+"/getRolesListForCandidateOnBoarding?${_csrf.parameterName}=${_csrf.token}",	    	   
@@ -1019,7 +1021,7 @@ function loadCandidateRoles(onBoardRoleId){
 <script>
 function loadTeams(onboardTeamId){
 	
-	var sourceleadUrl = '${sourceleadUrl}';
+	
 	$.ajax({
 	   	type: "POST",
 	    url: sourceleadUrl+"/getTeamsListForCandidateOnBoarding?${_csrf.parameterName}=${_csrf.token}",	    	   
@@ -1050,7 +1052,7 @@ function loadTeams(onboardTeamId){
 <script>
 function loadOnBoardingTemplates(onboardTemplateId){
 	
-	var sourceleadUrl = '${sourceleadUrl}';
+	
 	$.ajax({
 	   	type: "POST",
 	    url: sourceleadUrl+"/getOnboardingTemplatesForCandidateOnBoarding?${_csrf.parameterName}=${_csrf.token}",	    	   
@@ -1811,7 +1813,7 @@ function getAssignToUsersList(){
 	var candidateOnBoardId = document.getElementById("candidateOnBoardId").value;
     $("#candidateOnboardTaskId").val(candidateOnBoardId);
     
-	var sourceleadUrl = '${sourceleadUrl}';
+	
 	$.ajax({
 	   	type: "POST",
 	    url: sourceleadUrl+"/getOnboardTasksAssignToUsersList?${_csrf.parameterName}=${_csrf.token}",	    	   
@@ -1890,7 +1892,7 @@ $('body').on('blur', '#addonboardTask_form', function() {
 <script>
 function getOnboardingTasksList(){
 	var onboardId = document.getElementById("candidateOnBoardId").value;
-	var sourceleadUrl = '${sourceleadUrl}';
+	
 	var locationId = '${SourceLeadWeb_orgLocationId}';
 	
 	if(onboardId != null && onboardId != '' && onboardId!= 'undefined'){
@@ -2015,7 +2017,7 @@ function saveAndFinishOnboardTemplate(onboardId){
 	
 	tasks = tasks.substring(0, tasks.length - 1);
 	
-	var sourceleadUrl = '${sourceleadUrl}';
+	
 	 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	$.ajax({
 	   	type: "POST",

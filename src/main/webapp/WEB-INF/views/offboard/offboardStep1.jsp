@@ -1,24 +1,28 @@
-<link rel="icon" type="image/png" href="resources/images/fav.png" />
-<link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Roboto:400,100,300,500">
-<!-- Bootstrap -->
-
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<link href="resources/css/bootstrap.min.css" rel="stylesheet">
-<link href="resources/css/bootstrap-select.css" rel="stylesheet">
-<link href="resources/css/jquery.dataTables.min.css" rel="stylesheet">
-<link rel="stylesheet" href="resources/css/jquery-ui.css">
-<link rel="stylesheet" href="resources/css/chosen.min.css">
-<link href="resources/css/font-awesome.min.css" rel="stylesheet">
-<link href="resources/css/timesheet.css" rel="stylesheet">
-<link href="resources/css/sourcelead-main.css" rel="stylesheet" id="myStyleSheet">
-
-<link rel="stylesheet" href="resources/css/bootstrap-select.min.css">
-<link href="resources/css/bootstrap.min.css" rel="stylesheet" type="text/css">
-
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
+<c:if test="${staticTime == null || staticTime == 0 }">
+    <c:set var='staticTime' value="<%=new java.util.Date().getTime() %>" scope="application"></c:set>
+ </c:if>
+ 
+<link rel="icon" type="image/png" href="resources/images/fav.png" />
+<link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Roboto:400,100,300,500">
+<!-- Bootstrap -->
+<link href="resources/css/bootstrap.min.css?staticTime=${staticTime}" rel="stylesheet">
+<link href="resources/css/bootstrap-select.css?staticTime=${staticTime}" rel="stylesheet">
+<link href="resources/css/jquery.dataTables.min.css?staticTime=${staticTime}" rel="stylesheet">
+<link rel="stylesheet" href="resources/css/jquery-ui.css?staticTime=${staticTime}">
+<link rel="stylesheet" href="resources/css/chosen.min.css?staticTime=${staticTime}">
+<link href="resources/css/font-awesome.min.css?staticTime=${staticTime}" rel="stylesheet">
+<link href="resources/css/timesheet.css?staticTime=${staticTime}" rel="stylesheet">
+<link href="resources/css/sourcelead-main.css?staticTime=${staticTime}" rel="stylesheet" id="myStyleSheet">
+<link rel="stylesheet" href="resources/css/bootstrap-select.min.css?staticTime=${staticTime}">
+<link href="resources/css/bootstrap.min.css?staticTime=${staticTime}" rel="stylesheet" type="text/css">
 
+<script type="text/javascript">
+  var sourceleadUrl ='${sourceleadUrl}';
+</script>
 
 <div class="wraper"> 
 
@@ -275,16 +279,16 @@
 
 
  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script> 
- <script type="text/javascript" src="resources/js/jquery-1.11.0.min.js"></script>
- <script type="text/javascript" src="resources/js/responsiveCarousel.min.js"></script>
+ <script type="text/javascript" src="resources/js/jquery-1.11.0.min.js?staticTime=${staticTime}"></script>
+ <script type="text/javascript" src="resources/js/responsiveCarousel.min.js?staticTime=${staticTime}"></script>
  
-  <script src="resources/js/jquery.dataTables.min.js"></script> 
-  <script src="resources/js/moment.min.js"></script> 
-  <script src="resources/js/jquery-ui.min.js"></script> 
-  <script src="resources/js/bootstrap-select.min.js"></script> 
-  <script src="resources/js/bootstrap.min.js"></script> 
-  <script src="resources/js/masterHeaderAction.js"></script> 
-  <script src="resources/js/chosen.jquery.min.js"></script> 
+  <script src="resources/js/jquery.dataTables.min.js?staticTime=${staticTime}"></script> 
+  <script src="resources/js/moment.min.js?staticTime=${staticTime}"></script> 
+  <script src="resources/js/jquery-ui.min.js?staticTime=${staticTime}"></script> 
+  <script src="resources/js/bootstrap-select.min.js?staticTime=${staticTime}"></script> 
+  <script src="resources/js/bootstrap.min.js?staticTime=${staticTime}"></script> 
+  <script src="resources/js/masterHeaderAction.js?staticTime=${staticTime}"></script> 
+  <script src="resources/js/chosen.jquery.min.js?staticTime=${staticTime}"></script> 
   <script type="text/javascript">
 			var config = {
 			  '.chosen-select'           : {},
@@ -303,7 +307,7 @@
 });
 </script> 
 
-<script src="resources/js/formvalidator.js"></script>
+<script src="resources/js/formvalidator.js?staticTime=${staticTime}"></script>
 
 
 <script>
@@ -316,7 +320,7 @@
 	         }; 
 	 
 	 if ($('#offCandidate_form').validate(false, validationSettings)){ 
-	        var sourceleadUrl ='${sourceleadUrl}';
+	        
 	        var formData = getFormData1("offCandidate_form");
 	       $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	          $.ajax({

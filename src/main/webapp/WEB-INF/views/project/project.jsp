@@ -1,17 +1,17 @@
 <jsp:include page="../masterHeader.jsp" />
 <jsp:include page="../masterSideNav.jsp" />
+
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
-<link href="resources/css/register-style.css" rel="stylesheet">
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<link href="resources/css/register-style.css" rel="stylesheet">
-<script src="resources/js/summernote.js"></script>
-<link href="resources/css/summernote.css" rel="stylesheet" />
-<%@taglib prefix="sec"
-	uri="http://www.springframework.org/security/tags"%>
+<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags"%>
 
-<script src="resources/js/editor.js"></script>
-<link href="resources/css/editor.css" type="text/css" rel="stylesheet"/>
+<link href="resources/css/register-style.css?staticTime=${staticTime}" rel="stylesheet">
+<link href="resources/css/register-style.css?staticTime=${staticTime}" rel="stylesheet">
+<script src="resources/js/summernote.js?staticTime=${staticTime}"></script>
+<link href="resources/css/summernote.css?staticTime=${staticTime}" rel="stylesheet" />
+<script src="resources/js/editor.js?staticTime=${staticTime}"></script>
+<link href="resources/css/editor.css?staticTime=${staticTime}" type="text/css" rel="stylesheet"/>
 
 
 <style>
@@ -36,7 +36,7 @@
 		var ProjectSequeneNumber = document.getElementById("projectSequeneNumber").value.trim();
 		 //space value  consider this condition 
 		if(ProjectSequeneNumber.match(/^[^\s-](.*)*$/) !== null){
-		var sourceleadUrl = '${sourceleadUrl}';
+		
 		var orgLocId = '${SourceLeadWeb_orgLocations.id}';
 		$('#ProjectIdDiv').find('p.jquery_form_error_message').remove();
 		if (ProjectSequeneNumber != null && ProjectSequeneNumber != "") {
@@ -77,6 +77,28 @@
 function uploadButton(id){
 	var sourceleadUrl ='${sourceleadUrl}';
 	fileUpload(sourceleadUrl, "file"+id+"", "projects", "project_form");
+}
+function toUpperCase(){
+	var toupper = $('#projectShortCode').val().toUpperCase().trim();
+	$('#projectShortCode').val(toupper);
+}
+function validateShortCode(){
+	var projectShortCode = $('#projectShortCode').val();
+	var orgLocId = '${SourceLeadWeb_orgLocations.id}';
+	$.ajax({
+		type : "POST",
+		url : sourceleadUrl+ "/validateProjectShortCodeByOrgLocationId?${_csrf.parameterName}=${_csrf.token}&projectShortCode="+projectShortCode+"&orgLocId="+orgLocId,
+		success : function(data) {
+			if (data == true) {
+				$("input#projectShortCode").after("<p class='jquery_form_error_message'>"+ projectShortCode+ " is Already Existed</span>");
+				document.getElementById("projectShortCode").setAttribute('record-exist', 'yes');
+				document.getElementById("projectShortCode").setAttribute('record-exist-errorMsg',projectShortCode+ ' is Already Existed');
+				$('input#projectShortCode').removeAttr( "record-exist record-exist-errorMsg");
+			} else {
+				$('input#projectShortCode').removeAttr("record-exist record-exist-errormsg");
+			}
+		},
+	});
 }
 </script>
 
@@ -287,13 +309,13 @@ function uploadButton(id){
 							</div>
 						</div>
 
-						<div class="form-group">
+						<div class="form-group" id="shortCodeDivId">
 							<label class="col-md-3"> Project Short Code <span
 								class="text-danger">*</span>
 							</label>
 							<div class="col-md-9">
-								<input type="text" class="form-control" name="projectShortCode" id="projectShortCode" placeholder="Project Short Code" data-validation="required validate_length length1-3"
-									field-name="Project Short Code" value="">  
+								<input type="text" class="form-control" name="projectShortCode" id="projectShortCode" placeholder="Project Short Code" data-validation="required validate_length length3-3"
+									field-name="Project Short Code" value="" onkeyUp="toUpperCase();" onblur="validateShortCode();"   maxlength="3">  
 
 							</div>
 						</div>
@@ -498,11 +520,11 @@ function getStatus(){
 	$('#endDateDiv').find('p.jquery_form_error_message').remove(); 
 	var status = $("#Satatus").val();
 	if(status != null && status != "" && status != "undefined" && status == "Completed"){
-		 $('#EndDate').removeAttr('data-validation-optional');
-		 $('#EndDate').attr("data-validation","required"); 
+		 $('#endDate').removeAttr('data-validation-optional');
+		 $('#endDate').attr("data-validation","required"); 
 	 }else{
-		 $('#EndDate').removeAttr('data-validation');
-		 $('#EndDate').attr("data-validation-optional","true"); 
+		 $('#endDate').removeAttr('data-validation');
+		 $('#endDate').attr("data-validation-optional","true"); 
 	 }
 }
 
@@ -616,10 +638,7 @@ function getStatus(){
 		    var form = $('#project_form')[0];
 		    var formData = new FormData(form);
 			
-			var sourceleadUrl = '${sourceleadUrl}';
      		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
- 
-
 			$.ajax({
 						type : "POST",
 						data: formData,
@@ -802,7 +821,6 @@ function getProjectDetails(){
 
 <script>
 function removeProjectDocuments(documentId,projectId){
-	var sourceleadUrl ='${sourceleadUrl}';
 	$.ajax({
 	   	type: "POST",
 	    url: sourceleadUrl+"/terminateProjectDoc?${_csrf.parameterName}=${_csrf.token}&porjectDocumentId="+documentId, 	   
@@ -902,15 +920,15 @@ function assignEmployeeCancel(){
       		    }
                 
 				if(d1 > d2){
-					$("#Satatus").empty();
-					$('#Satatus').append('<option >Completed</option>');
+					$("#status").empty();
+					$('#status').append('<option >Completed</option>');
 				}else{
-					$("#Satatus").empty();
-					$('#Satatus').append('<option >In-Progress</option>');
-					$('#Satatus').append('<option >Not Started</option>');
-					$('#Satatus').append('<option >Completed</option>');
-					$('#Satatus').append('<option >On-Hold</option>');
-					$('#Satatus').append('<option >Dropped</option>');
+					$("#status").empty();
+					$('#status').append('<option >In-Progress</option>');
+					$('#status').append('<option >Not Started</option>');
+					$('#status').append('<option >Completed</option>');
+					$('#status').append('<option >On-Hold</option>');
+					$('#status').append('<option >Dropped</option>');
 				}
 			}
 		});
@@ -989,7 +1007,6 @@ function getLevel2Approvers(level1ApproverUser){
 
 <script type="text/javascript">
 function getChildLevel1Approvers(currentApproverId,level2ApproverUserId){
-	 var sourceleadUrl ='${sourceleadUrl}';
 	 if(currentApproverId != null && currentApproverId != ''  && currentApproverId != 'undefined'){
 		 $.ajax({
 		    	type: "POST",
@@ -1025,7 +1042,6 @@ function getChildLevel1Approvers(currentApproverId,level2ApproverUserId){
 
 <script type="text/javascript">
 function getProjectLevel1Approvers(approverUserId){
-	 var sourceleadUrl ='${sourceleadUrl}';
 	 $("#level1Manager").empty();
 		 $.ajax({
 		    	type: "GET",
@@ -1051,7 +1067,6 @@ function getProjectLevel1Approvers(approverUserId){
 </script>
 <script>
 function getBudgetApprover(approverUserId){
-	 var sourceleadUrl ='${sourceleadUrl}';
 	 $.ajax({
 	    	type: "GET",
 	        url: sourceleadUrl+"/getProjectLevel1Approvers?${_csrf.parameterName}=${_csrf.token}",
