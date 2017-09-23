@@ -55,7 +55,7 @@ public class CandidateResumes implements Serializable{
 	private Long candidateJsonId;
 		
 	
-	@Column(name = "TITLE")
+	@Column(name = "TITLE", columnDefinition = "TEXT default NULL")
 	private String title ;
 	
 	@Column(name = "DESCRIPTION ")
