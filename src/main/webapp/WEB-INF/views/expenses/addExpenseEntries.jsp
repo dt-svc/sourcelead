@@ -223,7 +223,7 @@ function addAttachment(entityRowId,from){
 							</select>
 						</div>
 						<div class="col-md-4 mb10 minHe">
-							<label>Date<span class="text-danger">&nbsp;*</span></label>
+							<label>Date Occurred<span class="text-danger">&nbsp;*</span></label>
 							<input type="text" id="categoryDateREPLACEROWID" name="categoryDTO[REPLACENAMEROWID].categoryDate" readonly="readonly"  class="form-control calendar"  value="" placeholder="Date" field-name="Date" data-validation="required"> 
 						</div>
 						<div class="col-md-4 mb10 minHe">
@@ -532,7 +532,7 @@ function validate_fileupload(fileName)
  <script type="text/javascript">
  function validateUploadFile(id,entityId)
 	{
-		fileUpload(""+id+"docFile"+entityId+"", "expsesDocuments", "add_expenses_form","categoryDTO["+parseInt(((entityId+1)/2)-1)+"].fileInfo");
+		fileUpload(""+id+"docFile"+entityId+"", "expsesDocuments", "add_expenses_form","categoryDTO["+parseInt(((entityId+1)/2)-1)+"].fileInfo","","");
 
 		var selectedFile = $('#'+id+'docFile'+entityId).val();
 		  if(validate_fileupload(selectedFile)){

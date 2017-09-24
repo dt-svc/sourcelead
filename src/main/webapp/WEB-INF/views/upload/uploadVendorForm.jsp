@@ -3,7 +3,6 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
-<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 <style type="text/css">
 .center-div{
@@ -221,12 +220,30 @@ function saveBulkImport(){
 		    url : sourceleadUrl+"/clientExcelFileUpload?"+tokenParamName+"="+tokenValue+"&responderType=Vendor", 	   
  		    success : function(data) {
  		    	$("#loadinggif").removeAttr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
- 		    	if(data == "failure"){
+ 		    	if(data == "empty"){
  		    		$("#selector").removeAttr("style");
  	    			$("#selector").css({ display: "block" });
  		    		$("#msgDiv").html("Mandatory fields are required");
  		    		msgFadein();
+ 		    	}else if(data == "invalid"){
+ 		    		$("#selector").removeAttr("style");
+ 	    			$("#selector").css({ display: "block" });
+ 		    		$("#msgDiv").html("Please import valid Template");
+ 		    		msgFadein();
+ 		    	}else if(data == "success"){
+ 		    		$("#selector").removeClass("remove_pop");
+ 		    		$("#selector").addClass("success_pop");
+ 		    		$("#selector").removeAttr("style");
+ 	    			$("#selector").css({ display: "block" });
+ 		    		$("#msgDiv").html("Inserted successfully");
+ 		    		msgFadein();
  		    	}else{
+ 		    		$("#selector").removeClass("remove_pop");
+ 		    		$("#selector").addClass("success_pop");
+ 		    		$("#selector").removeAttr("style");
+ 	    			$("#selector").css({ display: "block" });
+ 		    		$("#msgDiv").html("Processed successfully");
+ 		    		msgFadein();
  		    		prepareExcelDataDiv(data);
  		    	}
  		    },

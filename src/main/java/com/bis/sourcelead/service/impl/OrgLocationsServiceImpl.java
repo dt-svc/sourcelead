@@ -304,4 +304,10 @@ public class OrgLocationsServiceImpl implements OrgLocationService {
 			return false;
 		}
 	}
+
+	@Override
+	public List<OrgLocations> userList(Long orgId) throws Exception
+	{
+		return orgLocationsDao.userList(orgId);
+	}
 }

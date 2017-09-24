@@ -1,14 +1,20 @@
 <meta http-equiv="Pragma" content="private">
 <meta http-equiv="Cache-Control" content="private">
 <meta http-equiv="Expires" content="0">
+
+
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
- <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
-<link rel="stylesheet" href="resources/css/style.css" />
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
-<script src="resources/js/submissionFormBuilder.js" type="text/javascript" ></script> <!-- form builder -->
-<script src="resources/js/submissionForm-html-generator.js" type="text/javascript" ></script> <!-- form generator -->
+
+<c:if test="${staticTime == null || staticTime == 0 }">
+    <c:set var='staticTime' value="<%=new java.util.Date().getTime() %>" scope="application"></c:set>
+ </c:if>
+ 
+ <link rel="stylesheet" href="resources/css/style.css?staticTime=${staticTime}" />
+<script src="resources/js/submissionFormBuilder.js?staticTime=${staticTime}" type="text/javascript" ></script> <!-- form builder -->
+<script src="resources/js/submissionForm-html-generator.js?staticTime=${staticTime}" type="text/javascript" ></script> <!-- form generator -->
 
 <style type="text/css">
 .mt10 {
@@ -2259,14 +2265,12 @@ function uploadAddApplicantCandidateDoc(){
 </script>
 <script>
 function importAddApplicantDoc(){
-	alert("uploadFileDoc1");
-	fileUpload("uploadBtn", "addApplicants1", "addApplicant_form");
+	fileUpload("uploadBtn", "addApplicants", "addApplicant_form");
 }
 </script>
 <script>
 function SubmissionUploadFileDoc1(){
-	alert("SubmissionUploadFileDoc1");
-	fileUpload("newUploadBtn", "SubmissionUploadFileDoc", "submitRecomendedApplicant_form");
+	fileUpload("newUploadBtn", "addApplicants", "submitRecomendedApplicant_form");
 }
 </script>
 

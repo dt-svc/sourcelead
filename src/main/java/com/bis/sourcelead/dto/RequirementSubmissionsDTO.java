@@ -36,6 +36,9 @@ public class RequirementSubmissionsDTO extends SearchDTO implements Serializable
 	private String exp;
 	private String status;
 	private String clientSubmissions;
+	private String fileContentType;
+	private String fileName;
+	private String fileURL;
 		
 	public long getRequirementId()
 	{
@@ -164,5 +167,29 @@ public class RequirementSubmissionsDTO extends SearchDTO implements Serializable
 	public void setClientSubmissions(String clientSubmissions)
 	{
 		this.clientSubmissions = clientSubmissions;
+	}
+	public String getFileContentType()
+	{
+		return fileContentType;
+	}
+	public void setFileContentType(String fileContentType)
+	{
+		this.fileContentType = fileContentType;
+	}
+	public String getFileName()
+	{
+		return fileName;
+	}
+	public void setFileName(String fileName)
+	{
+		this.fileName = fileName;
+	}
+	public String getFileURL()
+	{
+		return fileURL;
+	}
+	public void setFileURL(String fileURL)
+	{
+		this.fileURL = fileURL;
 	}
 }

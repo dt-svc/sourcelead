@@ -139,7 +139,8 @@ function editCandidate(candidateId){
 								result  = result + '         <form id="candidateProfileEdit_form" name="candidateProfileEdit_form" method="post">';
 								result = result + '		      <div class="form-horizontal clearfix">';
 								result = result + '<input type="hidden" class="form-control input-sm" name="candidateId"  value="'+candidateId+'">';
-								
+								result  = result + '<input type="hidden" id="orgloationId" name="orgloationId" value="${SourceLeadWeb_orgLocations.id}" />';
+								result  = result + '<input type="hidden" id="loginUserId" name="loginUserId" value="${SourceLeadWeb_user.id}" />';
 								result = result + '		        <div class="clearfix mb10">';
 								result = result + '		          <div class="col-md-6">';
 								result = result + '		            <input type="text" class="form-control input-sm" name="firstName" value="'+json.firstName+'" placeholder="First Name *" field-name="First Name"  data-validation="required validate_AlphaNumber validate_Space validate_length length1-100">';
@@ -368,7 +369,8 @@ function editCandidate(candidateId){
 								
 								result = result + '</div>';
 								
-								
+								result = result + '<input type="hidden" value="'+json.designationType+'" id="hiddenId" >';
+
 								result = result + '<div class="clearfix mb10">';
 								
 	                            result = result + '<div class="col-md-6 custom-fields">';
@@ -386,19 +388,10 @@ function editCandidate(candidateId){
 								result = result + '<option  '+(json.designationType == "Other" ? "selected" : '') +'>Other</option>';
 								result = result + ' </select>';
 								result = result + '</div>';
-								
 								result = result + '</div>';
-								 
-								
-								if(json.designationType == "Other"){
-								result = result + '<div class="col-md-6 designationTypeDiv" id="designationTypeDiv">';
+								result = result + '<div class="col-md-6 designationTypeDiv" id="designationTypeDiv" style="display:none">';
 								result = result + '<input type="text" class="form-control input-sm" name="designationOtherType"  id="designationOtherType1" value="'+designationOtherType+'" placeholder="Employment Other Type" field-name="Employment Other Type" data-validation="validate_Space validate_length length2-50" data-validation-optional="true">';
 								result = result + '</div>';
-								  }
-								
-								
-								
-								
 							    result = result + '<span class="" id="hideVendor" style="display:none">'; 
 								result = result + '<div class="col-md-6 custom-fields select-arrow" id="errorvendor">';
 								result = result + '<select  class="form-control" name="vendors"  id="vendorName" value="'+vendorName+'" placeholder="select Vendor" field-name="Vendor" onchange="getVendorContactList();removeValiationVendor();">';
@@ -406,7 +399,6 @@ function editCandidate(candidateId){
 								result = result + '<input type="hidden" name="updateVendorName" id="updateVendorName" value="'+vendorName+'" />';
 								result = result + '<input type="hidden" name="updateVendorOrgRelationId" id="updateVendorOrgRelationId" value="'+json.vendorOrgRelationId+'" />';
 								result = result + '</div>';
-								
 								result = result + '<div class="col-md-6 custom-fields select-arrow mt10" id="errorvendorContact">';
 								result = result + '<select  class="form-control" name="vendorcontact"  value="'+json.vendorContactName+'" id="vendorcontactName" field-name="Vendor Contact"  placeholder="select Vendor Contact" onchange="removeValiationVendorContact();">';
 								result = result + '</select>';
@@ -506,9 +498,10 @@ function editCandidate(candidateId){
 <script>
 function deleteCandidate(candidateId){
 	  var reason = document.getElementById("rejectReason").value;
+	  var requirementId = $("#requirementId").val();
 	  $.ajax({
         type : "POST",
-         url: sourceleadUrl+"/deleteCandidateByCandidateId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&reason="+reason,        
+         url: sourceleadUrl+"/deleteCandidateByCandidateId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&reason="+reason+"&candidateType=Candidate",        
          success :function(data) {
               if(data != null && data != 'undefined' && data != ""){
             		 if( data.indexOf('Sign In') >= 0){
@@ -518,7 +511,7 @@ function deleteCandidate(candidateId){
             			 location.replace(sourceleadUrl+"/errorPage");
             		 }
             		 else{
-            			 location.replace(sourceleadUrl+"/candidatesList");
+            			 requirementRecommendations(requirementId);
             		 }
                 }
                  },
@@ -1645,54 +1638,45 @@ function certificationSubmissionProfile(candidateId){
 </script>
 <script>
 function updateDesignationOtherType(){
-	var employementType = $('#designationType1').val(); 
-	
-	if(employementType == 'C2C'){
-		document.getElementById("hideVendor").style.display="block";
-		 $('#vendorName').attr("data-validation","required"); 
-		 $('#vendorcontactName').attr("data-validation","required"); 
+	 var candidateType = $('#designationType1').val(); 
+	if(candidateType == 'Other' &&  candidateType != '' && candidateType !='undefined'){
+		  document.getElementById("designationTypeDiv").style.display="block";
+		  $("#designationOtherType").attr("data-validation-optional", "true");
+		  $("#designationOtherType").attr("data-validation", "validate_Space validate_length length2-250");
 	}else{
-		 document.getElementById("hideVendor").style.display="none";
-		 $('#vendorName').removeAttr("data-validation","required"); 
-		 $('#vendorcontactName').removeAttr("data-validation","required"); 
-		 
-		 $('#vendorName').val(''); 
-		 $('#vendorcontactName').val(''); 
-		 
-	}
-	
-	if(employementType == 'C2C-1099'){
-		 document.getElementById("hideVendor").style.display="block";
-		 $('#vendorName').attr("data-validation-optional", "true"); 
-		 $('#vendorcontactName').attr("data-validation-optional", "true");  
-		 
-		 $("#errorvendor").find("p.jquery_form_error_message").remove();
-		 $("#errorvendorContact").find("p.jquery_form_error_message").remove();
-	}else{
-		 $('#vendorName').removeAttr("data-validation-optional", "true"); 
-		 $('#vendorcontactName').removeAttr("data-validation-optional", "true");  
-		 
-		 $('#vendorName').val(''); 
-		 $('#vendorcontactName').val(''); 
+		   document.getElementById("designationTypeDiv").style.display="none";
+		  $("#designationOtherType").attr("data-validation-optional", "true");
+		  $("#designationTypeDiv").find('p.jquery_form_error_message').remove();
 	} 
-	
-	 
-	$('#designationType1 + p').remove();
-	
 }
-
-
-
-
-
 </script>
+
 <script>
 function employementType(){
 	 var employementType = $('#designationType1').val(); 
+	 var preval = document.getElementById("hiddenId").value;
 		if(employementType == 'C2C'){
-			document.getElementById("hideVendor").style.display="block";
+			/* document.getElementById("hideVendor").style.display="block";
 			 $('#vendorName').attr("data-validation","required"); 
 			 $('#vendorcontactName').attr("data-validation","required"); 
+			 getVendorsByOrgLocation(); */
+			 if(employementType == preval){
+					document.getElementById("hideVendor").style.display="block";
+					 $('#vendorName').attr("data-validation","required"); 
+					 $('#vendorcontactName').attr("data-validation","required");
+					 getVendorsByOrgLocation();
+				}else{
+					document.getElementById("hideVendor").style.display="block";
+				 $('#vendorName').attr("data-validation","required"); 
+				 $('#vendorcontactName').attr("data-validation","required"); 
+				  $('#vendorName').val(''); 
+				 
+		            $('#vendorName').trigger("chosen:updated");
+		            $('#vendorcontactName').empty();
+			//	 $('#vendorcontact').val(''); 
+		           $('#vendorcontactName').trigger("chosen:updated");
+				} 
+			 
 		}else{
 			 document.getElementById("hideVendor").style.display="none";
 			 $('#vendorName').removeAttr("data-validation","required"); 
@@ -1700,28 +1684,44 @@ function employementType(){
 			 
 			 $('#vendorName').val(''); 
 			 $('#vendorcontactName').val(''); 
+			 $('#vendorName').trigger("chosen:updated");
+	            $('#vendorcontactName').empty();
+		//	 $('#vendorcontact').val(''); 
+	           $('#vendorcontactName').trigger("chosen:updated");
 			 
 		}
 		
 		if(employementType == 'C2C-1099'){
-			 document.getElementById("hideVendor").style.display="block";
-			 $('#vendorName').attr("data-validation-optional", "true"); 
-			 $('#vendorcontactName').attr("data-validation-optional", "true");  
+			if(employementType == preval){
+				document.getElementById("hideVendor").style.display="block";
+				 $('#vendorName').attr("data-validation","required"); 
+				 $('#vendorcontactName').attr("data-validation","required");
+				 getVendorsByOrgLocation();
+			}else{
+				document.getElementById("hideVendor").style.display="block";
+			 $('#vendorName').attr("data-validation","required"); 
+			 $('#vendorcontactName').attr("data-validation","required"); 
+			  $('#vendorName').val(''); 
 			 
-			 $("#errorvendor").find("p.jquery_form_error_message").remove();
-			 $("#errorvendorContact").find("p.jquery_form_error_message").remove();
+	            $('#vendorName').trigger("chosen:updated");
+	            $('#vendorcontactName').empty();
+		//	 $('#vendorcontact').val(''); 
+	           $('#vendorcontactName').trigger("chosen:updated");
+			} 
 		}else{
 			 $('#vendorName').removeAttr("data-validation-optional", "true"); 
 			 $('#vendorcontactName').removeAttr("data-validation-optional", "true");  
 			 
 			 $('#vendorName').val(''); 
 			 $('#vendorcontactName').val(''); 
+			 
+			 $('#vendorName').trigger("chosen:updated");
+	            $('#vendorcontactName').empty();
+		//	 $('#vendorcontact').val(''); 
+	           $('#vendorcontactName').trigger("chosen:updated");
+			 
 		} 
-		
-		 
 		$('#designationType1 + p').remove();
-		
-	 
 }
 </script>
 

@@ -88,7 +88,7 @@ function clientNotesList(orgRelationId,clientLocationId){
 function clientNotes(orgRelationId){
 	var urlForm = "";
 		
-	    urlForm = "/getNotes?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+orgRelationId;
+	    urlForm = "/getNotes?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId;
 		
 	var sourceleadUrl ='${sourceleadUrl}';
 	  $.ajax({
@@ -107,7 +107,7 @@ function clientNotes(orgRelationId){
    	    output = output+'    <div class="commentsimg">';
    	    output = output+'    <i class="fa fa-comments"></i>';
    	    output = output+'        <div class="commentsimg-inner">';
-   	    output = output+'        	<img onerror="predefineProfileImage(this);" src="'+sourceleadUrl+'/displayUserImage/'+report.commentAuthorUserId+'"/>';
+   	    output = output+'        	<img data-id= "userProfileImage" onerror="predefineProfileImage(this);" src="'+report.commentAuthorImage+'"/>';
    	    output = output+'        </div>';
    	    output = output+'    </div>';
    	    output = output+'     <div class="comments-content">';
@@ -310,7 +310,7 @@ var validationSettings = {
 		        	    data: formData,
 		    	        processData: false,
 		    	        contentType:false,
-						url : sourceleadUrl+"/storeNotes?${_csrf.parameterName}=${_csrf.token}&userId="+userId+"&locationCode="+locationCode,
+						url : sourceleadUrl+"/storeNotes?"+tokenParamName+"="+tokenValue+"&userId="+userId+"&locationCode="+locationCode,
 						success : function(result) {
 							closeDocPopup();
 							clientNotes(orgRelationId);
@@ -361,7 +361,7 @@ function selectCategory(){
 			var status = "";
 			$.ajax({
 		    	type: "POST",
-		    	url : sourceleadUrl+"/getClientReleasedRequirementList?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+orgRelationId+"&status="+status, 
+		    	url : sourceleadUrl+"/getClientReleasedRequirementList?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId+"&status="+status, 
 		        success: function(data) {
 		        	 var json = JSON.parse(data);
 		        	 var result ="";
@@ -382,7 +382,7 @@ function selectCategory(){
 		if(categoryType == "Contacts"){
 			$.ajax({
 		    	type: "POST",
-		    	url : sourceleadUrl+"/getOrgSpocsList?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+orgRelationId+"&type=Client", 
+		    	url : sourceleadUrl+"/getOrgSpocsList?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId+"&type=Client", 
 		        success: function(data) {
 		        	 var json = JSON.parse(data);
 		        	 var result ="";
@@ -404,7 +404,7 @@ function selectCategory(){
 			var contractStatus = " ";
 			 $.ajax({  
 		          type : "POST",
-		          url: sourceleadUrl+"/getClientOrVendorContracts?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+orgRelationId+"&responderType=Client&contractStatus="+contractStatus,        
+		          url: sourceleadUrl+"/getClientOrVendorContracts?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId+"&responderType=Client&contractStatus="+contractStatus,        
 		          success :function(data) {
 		        	  var json = JSON.parse(data);
 		        	  var result ="";
@@ -432,7 +432,7 @@ function selectCategory(){
 			var payment ="";
 				$.ajax({
 			    	type: "POST",
-			    	url : sourceleadUrl+"/getInvoiceListBasedOnOrgrelationId?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+orgRelationId+"&clientLocationId="+clientLocationId+"&dayWisetype="+dayWisetype+"&startDate="+startDate+"&endDate="+endDate+"&invoiceStatus="+invoice+"&paymentStatus="+payment+"&invoiceType=receivable", 
+			    	url : sourceleadUrl+"/getInvoiceListBasedOnOrgrelationId?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId+"&clientLocationId="+clientLocationId+"&dayWisetype="+dayWisetype+"&startDate="+startDate+"&endDate="+endDate+"&invoiceStatus="+invoice+"&paymentStatus="+payment+"&invoiceType=receivable", 
 			        success: function(data) {
 		        	  var json = JSON.parse(data);
 		        	  var result ="";

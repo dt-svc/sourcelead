@@ -6,7 +6,7 @@
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 
-<script src="resources/js/formvalidator.js"></script>
+<script src="resources/js/formvalidator.js?staticTime=${staticTime}"></script>
 <style type="text/css">
 .cand-advsrch-popup .bs-caret {
 position: relative; top:8px;
@@ -1150,7 +1150,7 @@ function searchRequirement(offset){
 									 				else if(requirements.minExperience == 'undefined' && requirements.maxExperience != 'undefined'){
 									 					experience = requirements.maxExperience+" Years";
 									 				}
-									 				else if(requirements.minExperience != '' && requirements.maxExperience != ''){
+									 				else if(requirements.minExperience != '' && requirements.maxExperience != ''  && requirements.minExperience != 'undefined'  && requirements.maxExperience != 'undefined' && requirements.minExperience != null  && requirements.maxExperience != null){
 									 					experience = requirements.minExperience+" to "+requirements.maxExperience+" Years";
 									 				}else{
 									 					experience = '--';

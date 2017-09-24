@@ -49,6 +49,7 @@ import com.bis.sourcelead.dao.RequirementReferDao;
 import com.bis.sourcelead.dao.RequirementSubmissionDao;
 import com.bis.sourcelead.dao.RequirementSubmissionTemplateFieldsDao;
 import com.bis.sourcelead.dao.UserDao;
+import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.dto.RequirementDTO;
 import com.bis.sourcelead.dto.RequirementSubmissionsDTO;
 import com.bis.sourcelead.dto.ResponseList;
@@ -102,6 +103,7 @@ import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CandidateActivityCommonUtil;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
+import com.bis.sourcelead.util.FileUploadUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 
 /**
@@ -133,6 +135,9 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 	
 	@Value("${sourceleadUrl}")
     private String sourceleadUrl;
+	
+	@Value("${static.path}")
+	private String staticPath;
 	
 	@Autowired
 	private CandidateDao candidateDao;
@@ -492,9 +497,12 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 		 }else{
 			 
 			 if((jsonObj.has("fileInfo[0].fileName") && !isNullOrEmpty(jsonObj.getString("fileInfo[0].fileName"))) && (jsonObj.has("fileInfo[0].fileURL") && !isNullOrEmpty(jsonObj.getString("fileInfo[0].fileURL"))) && (jsonObj.has("fileInfo[0].contentType") && !isNullOrEmpty(jsonObj.getString("fileInfo[0].contentType")))){
- 				 candidateResumes = new CandidateResumes();
+				 FileInfo fileInfo = new FileInfo();
+				 fileInfo.setFileName(jsonObj.get("fileInfo[0].fileName").toString());
+				 fileInfo.setFileURL(jsonObj.get("fileInfo[0].fileURL").toString());
+				 fileInfo.setContentType(jsonObj.get("fileInfo[0].contentType").toString());
+				 candidateResumes = new CandidateResumes();
  				 candidateResumes.setCandidateId(candidate);
- 				 //candidateResumes.setDocFile(multiFile.getBytes());
 				 candidateResumes.setFileName(jsonObj.get("fileInfo[0].fileName").toString());
 				 candidateResumes.setTitle(jsonObj.get("fileInfo[0].fileName").toString());
 				 candidateResumes.setFileContentType(jsonObj.get("fileInfo[0].contentType").toString());
@@ -502,20 +510,10 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
  				 candidateResumes.setStatus(Constants.CANDIDATE_ACTIVE);
  				 candidateResumes.setResumeUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
  				 candidateResumes.setCreatedDate(new Date());
-
-				 candidateResumes = new CandidateResumes();
-				 candidateResumes.setCandidateId(candidate);
-				 //candidateResumes.setDocFile(multiFile.getBytes());
-				 candidateResumes.setFileName(jsonObj.get("fileInfo[0].fileName").toString());
-				 candidateResumes.setTitle(jsonObj.get("fileInfo[0].fileName").toString());
-				 candidateResumes.setFileContentType(jsonObj.get("fileInfo[0].contentType").toString());
-				 candidateResumes.setFileURL(jsonObj.get("fileInfo[0].fileURL").toString());
-				 candidateResumes.setStatus(Constants.CANDIDATE_ACTIVE);
-				 candidateResumes.setResumeUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
-				 candidateResumes.setCreatedDate(new Date());
 				 candidateResumes.setCreatedBy(user.getUserCode());
 				 candidateResumes.setUpdatedDate(new Date());
 				 candidateResumes.setOrgLocationId(orgLocations);
+				 FileUploadUtil.moveFile(staticPath, fileInfo, "addApplicants");
 				 candidateResumesDao.storeCandidateResumes(candidateResumes);
 				 candidateActivityCommonUtil.storeCandidateResumesHistory(candidateResumes, user);
 				 requirementSubmission.setCandidateResumes(candidateResumes);
@@ -527,16 +525,58 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 		 requirementSubmission.setOrgLocations(orgLocations);
 		 requirementSubmission.setSubmissionTemplateJsonStringValue(jsonStringvalues);
 		 
-		 if(jsonObj.has("needApplicantPermit") && !isNullOrEmpty(jsonObj.getString("needApplicantPermit"))){
-			 if(jsonObj.getString("needApplicantPermit").equals("Y")){
-				 requirementSubmission.setNeedApplicantPermit("Y");
-				 requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.REQUEST_SENT);
-			 } 
-		 }else{
-			 requirementSubmission.setNeedApplicantPermit("N");
+		 /* the functionality of this block is to verify the submitted candidate is in the Cooling-Off Period or not
+		 if the applicant is in cooling-off period, the candidate should be in rejected state(set previous state to Submission) at client side  [Venkat Kesav] START Code snippet*/
+		 RequirementSubmissionHistory requirementSubmissionHistoryForCoolingOff = null;
+			 String reqCoolingOffPeriod = requirement.getReqCoolingOffPeriod();
+			 String [] coolingOffArr = reqCoolingOffPeriod.split(" ");
+			 String reqCoolingOffPeriodDays;
+			 int Days;
+			 switch (coolingOffArr[1]) {
+				 case "Week" :
+					 reqCoolingOffPeriodDays = "7";
+				      break;
+				 case "Weeks" :
+					 Days  = (Integer.parseInt(coolingOffArr[0]) * 7);
+					 reqCoolingOffPeriodDays = Integer.toString(Days);
+				     break;
+				 case "Month" :
+					 reqCoolingOffPeriodDays = "30";
+				     break;
+				 case "Months" :
+					 Days  = (Integer.parseInt(coolingOffArr[0]) * 30);
+					 reqCoolingOffPeriodDays = Integer.toString(Days);
+				     break;
+				 case "Year" :
+					 reqCoolingOffPeriodDays = "365";
+				     break;
+				 default:
+					 reqCoolingOffPeriodDays = "0";
+			 }
 			 requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.SUBMISSION);
-		 }
-		
+			 
+			 requirementSubmissionHistoryForCoolingOff = requirementSubmissionHistoryService.isInCoolingOffPeriodByEmailAndLocationsId(requirementSubmission.getCandidate().getEmail(), requirement.getOrgLocationId(), reqCoolingOffPeriodDays, requirement.getId());
+			 if(requirementSubmissionHistoryForCoolingOff != null){
+				 if(requirementSubmissionHistoryForCoolingOff.getIsInCoolingOffPeriod()){
+					 requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.REJECTED);
+					 requirementSubmission.setPreviousSubmissionStatus(ApplicantSubmissionStatus.SUBMISSION);
+					 requirementSubmission.setRejectedReason("Under cooling off period, completed by "+requirementSubmissionHistoryForCoolingOff.getCoolingOffPeriodEndDateStr()+".");
+					 requirementSubmission.setRejectedCategoryType("Other");
+					 requirementSubmission.setRejectedCategoryOther("Under cooling off period");
+				 }
+			 }else{
+				 if(jsonObj.has("needApplicantPermit") && !isNullOrEmpty(jsonObj.getString("needApplicantPermit"))){
+					 if(jsonObj.getString("needApplicantPermit").equals("Y")){
+						 requirementSubmission.setNeedApplicantPermit("Y");
+						 requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.REQUEST_SENT);
+					 } 
+				 }else{
+					 requirementSubmission.setNeedApplicantPermit("N");
+					 requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.SUBMISSION);
+				 }
+			 }
+			 /*END Code snippet*/
+		 
 		 requirementSubmission.setStatus(Constants.CANDIDATE_ACTIVE);
 		 requirementSubmission.setCreatedBy(user.getUserCode());
 		 requirementSubmission.setCreatedDate(new Date());
@@ -3568,7 +3608,48 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		 
 		 requirementSubmission.setOrgLocations(requirement.getOrgLocationId());
 		 requirementSubmission.setSubmissionTemplateJsonStringValue(jsonStringvalues);
-		 requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.SUBMISSION);
+		 
+		 /* the functionality of this block is to verify the submitted candidate is in the Cooling-Off Period or not
+		 if the applicant is in cooling-off period, the candidate should be in rejected state(set previous state to Submission) at client side  [Venkat Kesav] START Code snippet*/
+		 RequirementSubmissionHistory requirementSubmissionHistoryForCoolingOff = null;
+			 String reqCoolingOffPeriod = requirement.getReqCoolingOffPeriod();
+			 String [] coolingOffArr = reqCoolingOffPeriod.split(" ");
+			 String reqCoolingOffPeriodDays;
+			 int Days;
+			 switch (coolingOffArr[1]) {
+				 case "Week" :
+					 reqCoolingOffPeriodDays = "7";
+				      break;
+				 case "Weeks" :
+					 Days  = (Integer.parseInt(coolingOffArr[0]) * 7);
+					 reqCoolingOffPeriodDays = Integer.toString(Days);
+				     break;
+				 case "Month" :
+					 reqCoolingOffPeriodDays = "30";
+				     break;
+				 case "Months" :
+					 Days  = (Integer.parseInt(coolingOffArr[0]) * 30);
+					 reqCoolingOffPeriodDays = Integer.toString(Days);
+				     break;
+				 case "Year" :
+					 reqCoolingOffPeriodDays = "365";
+				     break;
+				 default:
+					 reqCoolingOffPeriodDays = "0";
+			 }
+			 requirementSubmissionHistoryForCoolingOff = requirementSubmissionHistoryService.isInCoolingOffPeriodByEmailAndLocationsId(requirementSubmission.getCandidate().getEmail(), requirement.getOrgLocationId(), reqCoolingOffPeriodDays, requirement.getId());
+			 if(requirementSubmissionHistoryForCoolingOff != null){
+				 if(requirementSubmissionHistoryForCoolingOff.getIsInCoolingOffPeriod()){
+					 requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.REJECTED);
+					 requirementSubmission.setPreviousSubmissionStatus(ApplicantSubmissionStatus.SUBMISSION);
+					 requirementSubmission.setRejectedReason("Under cooling off period, completed by "+requirementSubmissionHistoryForCoolingOff.getCoolingOffPeriodEndDateStr()+".");
+					 requirementSubmission.setRejectedCategoryType("Other");
+					 requirementSubmission.setRejectedCategoryOther("Under cooling off period");
+				 }
+			 }else{
+				 requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.SUBMISSION);
+			 }
+			 /*END Code snippet*/
 		 
 		 requirementSubmission.setStatus(Constants.CANDIDATE_ACTIVE);
 		 requirementSubmission.setCreatedBy(user.getUserCode());

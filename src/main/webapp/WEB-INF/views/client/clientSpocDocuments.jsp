@@ -49,7 +49,7 @@ function spocDocumentsList(clientLocationId,orgRelationId,userId,spocName){
 	  }
 	 $.ajax({  
           type : "POST",
-          url: sourceleadUrl+"/getclientDocumentsListByResponderLocationIdAndSpocUserId?${_csrf.parameterName}=${_csrf.token}&responderLocationId="+clientLocationId+"&userId="+userId,        
+          url: sourceleadUrl+"/getclientDocumentsListByResponderLocationIdAndSpocUserId?"+tokenParamName+"="+tokenValue+"&responderLocationId="+clientLocationId+"&userId="+userId,        
           success :function(data) {
              			 var json = JSON.parse(data);
 	                	 $("#spocDocumentsList").empty();
@@ -117,8 +117,8 @@ function spocDocumentsList(clientLocationId,orgRelationId,userId,spocName){
 	                    	 }else{
 	                    		 result  = result + ' <td><div><span>--</span></div></td>';
 	                    	 }
-	                    	 result = result+'	 <td><div class="tblicons tblminwidth-75"><a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadOrgDocument?docId='+opt.id+'\"></a>';
 	                    	 if(opt.id != null && opt.id != '' && opt.id != 'undefined'){
+	                    		 result = result+'	 <td><div class="tblicons tblminwidth-75"><a class="glyphicon glyphicon-download-alt" target="_blank" href=\"'+opt.fileUrl+'\"></a>';
 	                    		 '<sec:authorize access="hasAnyRole(\'ROLE_EDIT_CLIENT_DOCUMENT\')">'; 
 	                    		 result = result+'	            <a class="glyphicon glyphicon-pencil" href="javascript:void(0)" onClick="addDocumentForSpoc('+clientLocationId+',\''+spocName+'\','+userId+');  getClientSpocDocument('+clientLocationId+','+orgRelationId+',\''+spocName+'\','+userId+','+opt.id+');"></a>';
 	                    		 '</sec:authorize>';
@@ -357,7 +357,7 @@ function closeSpocDocPopup(){
 	        	    data: formData,
 	    	        processData: false,
 	    	        contentType:false,
-					url : sourceleadUrl+"/saveDocuments?${_csrf.parameterName}=${_csrf.token}&responderLocationId="+clientLocationId+"&docId="+docId+"&sourceType=Client",
+					url : sourceleadUrl+"/saveDocuments?"+tokenParamName+"="+tokenValue+"&responderLocationId="+clientLocationId+"&docId="+docId+"&sourceType=Client",
 					success : function(result) {
 						 if( result.indexOf('Sign In') >= 0){
 				    		location.replace(sourceleadUrl);
@@ -395,7 +395,7 @@ function getSpocsList(orgRelationId){
 	 var sourceleadUrl ='${sourceleadUrl}';
 	$.ajax({
     	type: "POST",
-        url: sourceleadUrl+"/getOrgSpocsList?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+orgRelationId, 
+        url: sourceleadUrl+"/getOrgSpocsList?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId, 
         success: function(data) {
         	var json = JSON.parse(data);
         	var output = "";
@@ -437,7 +437,7 @@ function saveReason(clientLocationId,orgRelationId,spocName,userId,docId,docName
 		$("#terminateReasonDiv").empty();
 		$.ajax({
 		   	type: "POST",
-		    url: sourceleadUrl+"/terminateOrgDocumnet?${_csrf.parameterName}=${_csrf.token}&docId="+docId+"&terminateReason="+terminateReason, 	   
+		    url: sourceleadUrl+"/terminateOrgDocumnet?"+tokenParamName+"="+tokenValue+"&docId="+docId+"&terminateReason="+terminateReason, 	   
    		    success: function(data) {
         			 $("#deleteDocpopUp").empty();
         			 $(".project_inn_mask").fadeOut(200);
@@ -470,7 +470,7 @@ function getClientSpocDocument(clientLocationId,orgRelationId,spocName,userId,do
 	var sourceLeadUserId = '${SourceLeadWeb_userId}';
 	$.ajax({
 	   	type: "POST",
-	    url: sourceleadUrl+"/getOrgDocumentbySpocId?${_csrf.parameterName}=${_csrf.token}&docId="+docId+"&orgRelationId="+orgRelationId+"&userId="+userId, 	   
+	    url: sourceleadUrl+"/getOrgDocumentbySpocId?"+tokenParamName+"="+tokenValue+"&docId="+docId+"&orgRelationId="+orgRelationId+"&userId="+userId, 	   
 		    success: function(data) {
 		    	var json = JSON.parse(data);
 		    	var spoc = "";
