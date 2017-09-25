@@ -6695,6 +6695,9 @@ hr {
 .usage-parent:hover .usage-child{
     display: block;
 }
+.terms-conditions.modal .modal-body {
+	min-height: 150px; max-height: 500px; overflow:auto; z-index: 9999999;
+}
 /* media 320px */
 @media (max-width: 320px) {
 	.uasrch-selectpicker {
