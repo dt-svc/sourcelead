@@ -5,6 +5,28 @@ public class FileInfo {
 	private String fileURL;
 	private String fileName;
 	private String contentType;
+	private String tempFolderName;
+	private String date;
+
+	public String getDate()
+	{
+		return date;
+	}
+
+	public void setDate(String date)
+	{
+		this.date = date;
+	}
+
+	public String getTempFolderName()
+	{
+		return tempFolderName;
+	}
+
+	public void setTempFolderName(String tempFolderName)
+	{
+		this.tempFolderName = tempFolderName;
+	}
 
 	public String getFileURL() {
 		return fileURL;

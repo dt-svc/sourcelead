@@ -87,7 +87,8 @@ public class WebAppConfig extends WebMvcConfigurationSupport {
 	    CommonsMultipartResolver resolver=new CommonsMultipartResolver();
 	    resolver.setDefaultEncoding("utf-8");
 	// max upload size in bytes 
-	    resolver.setMaxUploadSize(20971520); // 20 MB
+//	    resolver.setMaxUploadSize(20971520); // 20 MB
+	    resolver.setMaxUploadSize(1367841348);
 	    // max size of file in memory (in bytes)
 	    resolver.setMaxInMemorySize(1048576); // 1 MB
 	    return resolver;

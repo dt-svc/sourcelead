@@ -27,15 +27,14 @@ public class Constants
 
 	public static String[] ExperienceIdentifiers = {"over", "around", "having", "more than", "nearly"};
 
-	public static String[] ContactKeywords = {"ph:", "contact:", "mob:", "mobile:", "mobile no", "phone", "contact number", "contact no", "phone no", "cell no", "cell"};
+	public static String[] ContactKeywords = {"ph:", "contact:", "mob:", "mobile:", "mobile no", "phone", "contact number", "contact no", "phone no", "cell no"};
 
-	public static HashMap<String, String[]> KeywordTypes = new HashMap<String, String[]>()
+	public HashMap<String, String[]> KeywordTypes = new HashMap<String, String[]>()
 	{
 	};
 	
-	static {
-		KeywordTypes.put(NameKeyWord, new String[] {"name:","name :"});
-		KeywordTypes.put(ContactKeyWord, new String[]{"ph:","contact:","mob:","mobile:","mobile no","phone","contact number","contact no", "phone no", "cell no", "cell"});
+	public Constants(){
+		KeywordTypes.put(ContactKeyWord, new String[]{"ph:","contact:","mob:","mobile:","mobile no","phone","contact number","contact no", "phone no", "cell no"});
 		KeywordTypes.put(SummaryKeyWord, new String[]{"professional summary","career summary","experience summary","executive summary","summary","professional overview","profile snapshot","qualification highlight"});
 		KeywordTypes.put(ObjectiveKeyWord, new String[]{"objective","career objective"});
 		KeywordTypes.put(EducationKeyWord, new String[]{"education qualifications","education qualification","educational qualifications","educational qualification","academic education","academic qualification","scholastics","educational qualifications","educational qualification","educations","education & training","academic summary","qualifications","qualification","education","academics"});

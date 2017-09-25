@@ -1,6 +1,8 @@
 package com.bis.sourcelead.util;
 
 import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.Writer;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -71,6 +73,42 @@ public  ResumeParserJsonUtil getCandidateDetailsFromResume(byte[] source,HttpSer
 			}
 		    return jsonUtil;
    }
+
+public  ResumeParserJsonUtil getCandidateDetailsFromResume1(File file,HttpServletRequest request)
+		throws Exception {
+	ResumeParserJsonUtil jsonUtil = new ResumeParserJsonUtil();
+	try (FileInputStream fis = new FileInputStream(file);) {
+    BodyContentHandler htmlHandler = new BodyContentHandler();
+//    ByteArrayInputStream stream = new ByteArrayInputStream(source);
+	AutoDetectParser parser = new AutoDetectParser();
+	Metadata metadata = new Metadata();
+	parser.parse(fis, htmlHandler, metadata);
+	String parsedString = htmlHandler.toString();
+	//System.out.println(parsedString);
+	
+	String name = nameFinderFromParsedTextFile(parsedString);
+	if(StringUtils.isNotEmpty(name) && name.lastIndexOf(" ") > 0){
+		String firstName = name.substring(0,name.lastIndexOf(" "));
+		String lastName = name.substring(name.lastIndexOf(" ")+1);
+		jsonUtil.setName(firstName+"."+lastName);
+	}
+	else{
+		jsonUtil.setName(name);
+	}
+	jsonUtil.setEmail(emailFinderFromParsedTextFile(parsedString));
+	jsonUtil.setPhoneNumbers(phoneNumberFinderFromParsedTextFile(parsedString,request));
+	
+	HashSet<String> skillsList = skillFinderFromParsedTextFile(parsedString,request);
+	if(skillsList != null && !skillsList.isEmpty()){
+		String skills = String.join(", ", skillsList);
+		skills = skills.replaceAll("\"", "").replaceAll("\\[", "").replaceAll("\\]","");
+		jsonUtil.setSkills(skills);
+	}
+	} catch(Exception ex) {
+		throw ex;
+	}
+	return jsonUtil;
+}
 
    /**
 	 * Skill finder from parsed text file
