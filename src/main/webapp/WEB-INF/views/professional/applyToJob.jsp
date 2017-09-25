@@ -8,10 +8,17 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 
-<link rel="stylesheet" href="resources/css/style.css" />
-<script src="resources/js/submissionFormBuilder.js" type="text/javascript" ></script> <!-- form builder -->
-<script src="resources/js/submissionForm-html-generator.js" type="text/javascript" ></script> <!-- form generator -->
+ <c:if test="${staticTime == null || staticTime == 0 }">
+    <c:set var='staticTime' value="<%=new java.util.Date().getTime() %>" scope="application"></c:set>
+ </c:if>
+  
+<link rel="stylesheet" href="resources/css/style.css?staticTime=${staticTime}" />
+<script src="resources/js/submissionFormBuilder.js?staticTime=${staticTime}" type="text/javascript" ></script> <!-- form builder -->
+<script src="resources/js/submissionForm-html-generator.js?staticTime=${staticTime}" type="text/javascript" ></script> <!-- form generator -->
 
+<script type="text/javascript">
+   var sourceleadUrl ='${sourceleadUrl}';
+</script>
 
 <style>
 .viewTemplate {
@@ -667,6 +674,17 @@ function notifyToApplicant(submissionId,offerId,offerHistoryId){
    });  
 }
 </script>
+<script>
+function uploadAddApplicantProfissionalDoc() {
+	fileUpload("professionaluploadBtn", "addApplicants", "applyToJob_form");
+}
+</script>
+
+<script>
+function uploadAddApplicantRecrutierDoc() {
+	fileUpload("uploadBtn", "addApplicants", "applyToJob_form");
+}
+</script>
 
 <script>
 function getRequirementSubmissionTemaplate(jobTitle,requirementId,referId){
@@ -704,8 +722,8 @@ function getRequirementSubmissionTemaplate(jobTitle,requirementId,referId){
 			result = result + '<div class="col-md-5 pull-right">';
 			result = result + '<div class="col-md-12" id="browseDiv"  style="display: none;">';
 			result = result + '<div class="input-group" id="uploadFileGroup">';
-			result = result + '<label class="input-group-btn"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File';
-			result = result + '<input type="file" style="display: none;" name="locationMapFile" multiple id="professionaluploadBtn"  class="upload">';
+			result = result + '<label class="input-group-btn" onchange="uploadAddApplicantProfissionalDoc();"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File';
+			result = result + '<input type="file" style="display: none;" name="locationMapFile" id="professionaluploadBtn"  class="upload">';
 			result = result + '</span> </label>';
 			result = result + '<input type="text" class="form-control" data-validation="validatedoc" data-validation-optional="true" field-name="Resume" readonly id="uploadFile" placeholder="Upload Resume">';
 			result = result + '</div>';
@@ -770,8 +788,8 @@ function getRequirementSubmissionTemaplate(jobTitle,requirementId,referId){
 		result = result + '<div class="col-md-5 pull-right">';
 		result = result + '<div class="col-md-12" id="browseDiv"  style="display: none;">';
 		result = result + '<div class="input-group" id="uploadFileGroup">';
-		result = result + '<label class="input-group-btn"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File';
-		result = result + '<input type="file" style="display: none;" name="locationMapFile" multiple id="uploadBtn"  class="upload">';
+		result = result + '<label class="input-group-btn" onchange="uploadAddApplicantRecrutierDoc();"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File';
+		result = result + '<input type="file" style="display: none;" name="locationMapFile" id="uploadBtn"  class="upload">';
 		result = result + '</span> </label>';
 		result = result + '<input type="text" class="form-control" data-validation="validatedoc" data-validation-optional="true" field-name="Resume" readonly id="uploadFile" placeholder="Upload Resume">';
 		result = result + '</div>';

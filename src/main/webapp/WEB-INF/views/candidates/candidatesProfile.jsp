@@ -56,7 +56,12 @@
 	}
 	</style>
 	
-	
+	<script>
+	function candUpdateMsgFadeinFunction() {
+		$("#selector1").fadeIn(200);
+        $('#selector1').delay(2000).fadeOut('slow');
+	}
+</script> 
 
 <c:if test="${!empty msg}">
        <div class="success_pop" id="selector"  style="display: block;">
@@ -168,7 +173,10 @@ function editCandidate(candidateId){
             			 	
             			 	
 							var result ='';
-							result = result + '		    <div class="edit-details col-md-8 edit-candaite canprofile-popright"> <i class="fa fa-close close-div" onclick="cancelEdit();"></i>';
+							result  = result + '<div class="success_pop" id="selector1" style="display: none;">';
+						    result  = result + '<i class="fa fa-check-circle"></i><span id="candMsgDiv"></span>';
+						    result  = result + '</div>';
+							result = result + '		    <div class="edit-details col-md-8 edit-candaite canprofile-popright" > <i class="fa fa-close close-div" onclick="cancelEdit();"></i>';
 							result  = result + '         <form id="candidateProfileEdit_form" name="candidateProfileEdit_form" method="post">';
 							result  = result + '<input type="hidden" id="orgloationId" name="orgloationId" value="${SourceLeadWeb_orgLocations.id}" />';
 							result  = result + '<input type="hidden" id="loginUserId" name="loginUserId" value="${SourceLeadWeb_user.id}" />';
@@ -404,7 +412,8 @@ function editCandidate(candidateId){
 							
 							
 							result = result + '</div>';
-							
+							result = result + '<input type="hidden" value="'+json.designationType+'" id="hiddenId" >';
+
 							
 							result = result + '<div class="clearfix mb10">';
                             result = result + '<div class="col-md-6 custom-fields">';
@@ -432,7 +441,7 @@ function editCandidate(candidateId){
 							
 							
 						    result = result + '<span class="" id="hideVendor" style="display:none">'; 
-							result = result + '<div class="col-md-6 custom-fields select-arrow mt" id="errorvendor">';
+							result = result + '<div class="col-md-6 custom-fields select-arrow" id="errorvendor">';
 							result = result + '<select  class="chosen-select form-control select-bg" name="vendors"  id="vendorName" value="'+vendorName+'" placeholder="select Vendor" field-name="Vendor" onchange="getVendorContactList();removeValiationVendor();">';
 							result = result + '</select>';
 							result = result + '<input type="hidden" name="updateVendorName" id="updateVendorName" value="'+vendorName+'" />';
@@ -478,8 +487,8 @@ function editCandidate(candidateId){
 							if(json.designationType == "Other"){
 								$("#designationTypeDiv").show();
 						      }
-							getVendorsByOrgLocation();
 							employementType();
+							getVendorsByOrgLocation();
 							$(".edit-details").toggleClass("edit-details-active");
 							$(".collapse-div").removeClass("edit-details-active");
 							
@@ -1152,29 +1161,23 @@ function candidateProfile(candidateId,candidateType){
 				dateFormat : 'yyyy/mm/dd' 
 	         }; 
 		rateValidations();
-		
 		 $('#emailDiv').find('p.jquery_form_error_message').remove();
+		
 		 if ($('#candidateProfileEdit_form').validate(false, validationSettings)){ 
-			/* var sourceleadUrl = '${sourceleadUrl}';
-			var frm = $('#candidateProfileEdit_form').serializeFormJSON();
 			
-			 var con = JSON.stringify(frm);
-			 con = con.replace(/[{}]/g, "");
-			  //It will escape all the special characters
-			var jsonData = encodeURIComponent(con);
-			
-			var form = $('#candidateProfileEdit_form')[0];
-      		var formData = new FormData(form);  */
       		var formData = getFormData("candidateProfileEdit_form");
 			$("#update_candidate").attr("disabled", "disabled");
 			$("#update_candidate").addClass('button').val('Processing..');
-				//var form = $('#candidateResume_form')[0];
 				
 
 		        $.post(sourceleadUrl+"/updateCandidate?"+tokenParamName+"="+tokenValue+"", formData, function(data) {
 		        	//location.replace(sourceleadUrl+"/candidatesList"); 
 
 		        	candidateSideBar(candidateId);
+		        	 $("#selector1").removeAttr("style");
+         			 $("#selector1").css({ display: "block" });
+		        	 $("#candMsgDiv").html("Success!!  Candidate Updated");
+		        	candUpdateMsgFadeinFunction();
 					candidateQuickViewProfile(candidateId);
 		        });
 			 
@@ -1579,14 +1582,12 @@ function updateDesignationOtherType(){
 		        url: sourceleadUrl+"/validateCandidateEmail?"+tokenParamName+"="+tokenValue+"&email="+email+"&candidateType="+candidateType, 
 		        success: function(data) {
 		        	if(data == 'true'){
-		        		
 		        		  $('#candidateType').val(); 
 						  $("input#email").after("<p class='jquery_form_error_message'>"+email+" is Already Existed</span>");
 						  $("#update_candidate").attr("disabled", "disabled");
 						  $("#update_candidate").addClass('button').val('Processing..');
 		        	}
 		        	else{
-		        		
 		        		 $('input#email').removeAttr( "record-exist record-exist-errormsg");
 		        		 $('#emailDiv').find('p.jquery_form_error_message').remove(); 
 		        		 $("#update_candidate" ).addClass('button').val('Save');
@@ -1595,6 +1596,8 @@ function updateDesignationOtherType(){
 		        },
 		    });
 	 }
+	 }else{
+		 $('#update_candidate').removeAttr('disabled');
 	 }
  }
  </script>     
@@ -1655,10 +1658,29 @@ var currentRate = document.getElementById("currentRate").value;
 <script>
 function employementType(){
 	 var employementType = $('#designationType1').val(); 
+	 var preval = document.getElementById("hiddenId").value;
 		if(employementType == 'C2C'){
-			document.getElementById("hideVendor").style.display="block";
+			/* document.getElementById("hideVendor").style.display="block";
 			 $('#vendorName').attr("data-validation","required"); 
 			 $('#vendorcontactName').attr("data-validation","required"); 
+			 getVendorsByOrgLocation(); */
+			 if(employementType == preval){
+					document.getElementById("hideVendor").style.display="block";
+					 $('#vendorName').attr("data-validation","required"); 
+					 $('#vendorcontactName').attr("data-validation","required");
+					 getVendorsByOrgLocation();
+				}else{
+					document.getElementById("hideVendor").style.display="block";
+				 $('#vendorName').attr("data-validation","required"); 
+				 $('#vendorcontactName').attr("data-validation","required"); 
+				  $('#vendorName').val(''); 
+				 
+		            $('#vendorName').trigger("chosen:updated");
+		            $('#vendorcontactName').empty();
+			//	 $('#vendorcontact').val(''); 
+		           $('#vendorcontactName').trigger("chosen:updated");
+				} 
+			 
 		}else{
 			 document.getElementById("hideVendor").style.display="none";
 			 $('#vendorName').removeAttr("data-validation","required"); 
@@ -1666,22 +1688,42 @@ function employementType(){
 			 
 			 $('#vendorName').val(''); 
 			 $('#vendorcontactName').val(''); 
+			 $('#vendorName').trigger("chosen:updated");
+	            $('#vendorcontactName').empty();
+		//	 $('#vendorcontact').val(''); 
+	           $('#vendorcontactName').trigger("chosen:updated");
 			 
 		}
 		
 		if(employementType == 'C2C-1099'){
-			 document.getElementById("hideVendor").style.display="block";
-			 $('#vendorName').attr("data-validation-optional", "true"); 
-			 $('#vendorcontactName').attr("data-validation-optional", "true");  
+			if(employementType == preval){
+				document.getElementById("hideVendor").style.display="block";
+				 $('#vendorName').attr("data-validation","required"); 
+				 $('#vendorcontactName').attr("data-validation","required");
+				 getVendorsByOrgLocation();
+			}else{
+				document.getElementById("hideVendor").style.display="block";
+			 $('#vendorName').attr("data-validation","required"); 
+			 $('#vendorcontactName').attr("data-validation","required"); 
+			  $('#vendorName').val(''); 
 			 
-			 $("#errorvendor").find("p.jquery_form_error_message").remove();
-			 $("#errorvendorContact").find("p.jquery_form_error_message").remove();
+	            $('#vendorName').trigger("chosen:updated");
+	            $('#vendorcontactName').empty();
+		//	 $('#vendorcontact').val(''); 
+	           $('#vendorcontactName').trigger("chosen:updated");
+			} 
 		}else{
 			 $('#vendorName').removeAttr("data-validation-optional", "true"); 
 			 $('#vendorcontactName').removeAttr("data-validation-optional", "true");  
 			 
 			 $('#vendorName').val(''); 
 			 $('#vendorcontactName').val(''); 
+			 
+			 $('#vendorName').trigger("chosen:updated");
+	            $('#vendorcontactName').empty();
+		//	 $('#vendorcontact').val(''); 
+	           $('#vendorcontactName').trigger("chosen:updated");
+			 
 		} 
 		$('#designationType1 + p').remove();
 }

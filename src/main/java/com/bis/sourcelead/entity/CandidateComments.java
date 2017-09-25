@@ -80,6 +80,9 @@ public class CandidateComments implements Serializable{
 	private Long commentAuthorUserId;
 	
 	@Transient
+	private String commentAuthorUserImage;
+	
+	@Transient
 	private String candidateName;
 
 	public Long getId() {
@@ -192,6 +195,14 @@ public class CandidateComments implements Serializable{
 
 	public void setCommentAuthorUserId(Long commentAuthorUserId) {
 		this.commentAuthorUserId = commentAuthorUserId;
+	}
+
+	public String getCommentAuthorUserImage() {
+		return commentAuthorUserImage;
+	}
+
+	public void setCommentAuthorUserImage(String commentAuthorUserImage) {
+		this.commentAuthorUserImage = commentAuthorUserImage;
 	}
 	
 

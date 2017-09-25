@@ -237,7 +237,7 @@ public class AddExpensesRestController {
 	
 	
 	@RequestMapping(value = "/storeAddExpensesData",method = RequestMethod.POST)
-	public @ResponseBody String storeAddExpensesData(HttpServletRequest request,@RequestParam(value="status", required=false) String status,AddExpensesDTO addExpensesDTO,CategoryDTO categoryDTO) throws Exception {
+	public @ResponseBody String storeAddExpensesData(HttpServletRequest request,@RequestParam(value="status", required=false) String status,AddExpensesDTO addExpensesDTO) throws Exception {
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		 String currencyCode = (String) SourceLeadSessionManager.getSessionAttribute(request, "currencyCode");

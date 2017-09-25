@@ -1,31 +1,39 @@
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="icon" type="image/png" href="resources/images/fav.png" />
-<title>Welcome to Source Lead :: Job Summary</title>
-<!-- Bootstrap -->
-<link href="resources/css/bootstrap.min.css" rel="stylesheet">
-<link href="resources/css/font-awesome.min.css" rel="stylesheet">
-<link href="resources/css/sourcelead-main.css" rel="stylesheet">
-<link href="resources/css/timesheet.css" rel="stylesheet">
-<script src="resources/js/InterViewFormBuilder.js" type="text/javascript" ></script>
-<script src="resources/js/interViewForm-html-generator.js" type="text/javWascript" ></script> 
-<script src="resources/js/jquery-1.11.1.min.js"></script>
-<script src="resources/js/bootstrap.min.js"></script> 
-</head>
- 
-<script src="resources/js/formvalidator.js"></script>
-<link rel="stylesheet" href="resources/css/style.css" />
-<script src="resources/js/jquery-ui.js"></script>
-<link rel="stylesheet" href="resources/css/jquery-ui.css" type="text/css" >
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 
+<c:if test="${staticTime == null || staticTime == 0 }">
+    <c:set var='staticTime' value="<%=new java.util.Date().getTime() %>" scope="application"></c:set>
+ </c:if>
+ 
+<link rel="icon" type="image/png" href="resources/images/fav.png" />
+<title>Welcome to Source Lead :: Job Summary</title>
+<!-- Bootstrap -->
+<link href="resources/css/bootstrap.min.css?staticTime=${staticTime}" rel="stylesheet">
+<link href="resources/css/font-awesome.min.css?staticTime=${staticTime}" rel="stylesheet">
+<link href="resources/css/sourcelead-main.css?staticTime=${staticTime}" rel="stylesheet">
+<link href="resources/css/timesheet.css?staticTime=${staticTime}" rel="stylesheet">
+<script src="resources/js/InterViewFormBuilder.js?staticTime=${staticTime}" type="text/javascript" ></script>
+<script src="resources/js/interViewForm-html-generator.js?staticTime=${staticTime}" type="text/javWascript" ></script> 
+<script src="resources/js/jquery-1.11.1.min.js?staticTime=${staticTime}"></script>
+<script src="resources/js/bootstrap.min.js?staticTime=${staticTime}"></script> 
+</head>
+ 
+<script src="resources/js/formvalidator.js?staticTime=${staticTime}"></script>
+<link rel="stylesheet" href="resources/css/style.css?staticTime=${staticTime}" />
+<script src="resources/js/jquery-ui.js?staticTime=${staticTime}"></script>
+<link rel="stylesheet" href="resources/css/jquery-ui.css?staticTime=${staticTime}" type="text/css" >
+
+
 <script>
-  var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
+var sourceleadUrl = '${sourceleadUrl}';
 </script>
 
 <style type="text/css">
@@ -157,7 +165,7 @@ function publicRequirementProfile(requirementUUID){
 	
 	$.ajax({
 	   	type: "GET",
-	    url: sourceleadUrl+"/getRequirementProfessionalProfileDetails?requirementUUID="+requirementUUID, 	   
+	    url: sourceleadUrl+"/getRequirementProfessionalProfileDetails?requirementUUID="+requirementUUID+"&contactUUID="+contactUUID, 	   
 		    success: function(data) {
 		    	var json = JSON.parse(data);
 		    	var result = "";
@@ -263,9 +271,7 @@ function publicRequirementProfile(requirementUUID){
 				 result = result +'         <div class="openPostBtns">';
 				 
 				 result = result +'<a href="'+sourceleadUrl+'/logout" class="refer">Refer</a>';
-				 /* result = result +'<a href="'+sourceleadUrl+"/register?contactUUID="+contactUUID+'&requirementUUID='+requirementUUID+'&referUUID='+referUUID+'" class="jobApply">Apply</a>'; */
-				 result = result +'<a href="'+sourceleadUrl+'/logout" class="jobApply">Apply</a>';
-				 
+			     result = result +'<a href="'+sourceleadUrl+"/register?contactUUID="+contactUUID+'&requirementUUID='+requirementUUID+'&referUUID='+referUUID+'" class="jobApply">Apply</a>'; 
 				
 				 result = result +'          </div>';
 				 result = result +'          </div>';
