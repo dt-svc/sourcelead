@@ -3,9 +3,9 @@ package com.bis.sourcelead.rest;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -15,7 +15,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.RequestMapping;
-
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -23,33 +22,24 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
-import com.bis.sourcelead.dto.LeaveTypeDTO;
-import com.bis.sourcelead.entity.Department;
-import com.bis.sourcelead.entity.LeaveType;
-import com.bis.sourcelead.entity.Org;
-import com.bis.sourcelead.entity.OrgLocations;
-import com.bis.sourcelead.entity.Roles;
-import com.bis.sourcelead.service.DepartmentService;
-import com.bis.sourcelead.service.LeaveTypeService;
-import com.bis.sourcelead.service.OrgLocationService;
+import com.bis.sourcelead.dao.LeaveTypeDao;
 import com.bis.sourcelead.dao.OptionsDao;
-import com.bis.sourcelead.dto.AddUserDTO;
-import com.bis.sourcelead.dto.CandidateDTO;
-import com.bis.sourcelead.dto.ClientDTO;
+import com.bis.sourcelead.dto.LeaveTypeDTO;
 import com.bis.sourcelead.dto.OptionsDTO;
-import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.Department;
 import com.bis.sourcelead.entity.LeaveRole;
+import com.bis.sourcelead.entity.LeaveType;
 import com.bis.sourcelead.entity.Option;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
-import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.User;
-import com.bis.sourcelead.payroll.entity.AccountDeductionsDetails;
 import com.bis.sourcelead.service.DepartmentService;
+import com.bis.sourcelead.service.LeaveTypeService;
 import com.bis.sourcelead.service.OptionsService;
+import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.RolesService;
+import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @RestController
@@ -77,6 +67,12 @@ public class LeaveManagementRestController {
 	
 	@Autowired
 	OptionsDao optionsDao;
+	
+	@Autowired
+	LeaveTypeDao leaveTypeDao;
+	
+	@Autowired
+	UserService userService;
 
 	
 	/**
@@ -510,6 +506,34 @@ public class LeaveManagementRestController {
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.setViewName("leavemanagement/addLeaveType");
 		return model;
+	}
+	
+	@RequestMapping(value = {"/deleteLeaveType", "/rest/deleteLeaveType"}, method = RequestMethod.POST)
+	@ResponseBody
+	public boolean deleteLeaveType(LeaveTypeDTO leaveTypeDTO, HttpServletRequest request) throws Exception
+	{
+		boolean isDeleted = false;
+		LeaveType leaveType = leaveTypeService.getLeaveTypeById(leaveTypeDTO.getLeaveTypeId());
+		 if(leaveType !=null) {
+			 leaveType.setStatus(Constants.RECORD_INACTIVE.toString());
+			 leaveType.setDeleteReason(leaveTypeDTO.getDeleteReason());
+			 if(leaveTypeDTO.getLoginUserId() != null){
+				 User user = userService.getUserById(Long.parseLong(leaveTypeDTO.getLoginUserId()));
+				 leaveType.setUpdatedBy(user.getUserCode());
+			 }
+			 leaveType.setUpdatedDate(new Date());
+			 leaveTypeDao.addLeaveType(leaveType);
+			 isDeleted = true;
+		 }
+		return isDeleted;
+	}
+	
+	@RequestMapping(value = {"/leaveTypeSummary", "/rest/leaveTypeSummary"}, method = RequestMethod.POST)
+	@ResponseBody
+	public LeaveType leaveTypeSummary(LeaveTypeDTO leaveTypeDTO, HttpServletRequest request) throws Exception
+	{
+		LeaveType leaveType = leaveTypeService.getLeaveTypeById(leaveTypeDTO.getLeaveTypeId());
+		return leaveType;
 	}
 	
 }

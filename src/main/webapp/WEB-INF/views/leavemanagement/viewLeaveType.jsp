@@ -23,6 +23,9 @@ $(document).ready(function(){
 
 <div class="timesheet_out">
   <div class="clearfix">
+  	<div class="success_pop" id="selector1" style="display: none;">
+ 			<i class="fa fa-check-circle"></i><span id="msgDiv"></span>
+     </div>
     <div class="timesheet_head">
       <ul>
           <li>
@@ -34,10 +37,13 @@ $(document).ready(function(){
       </ul>
       <div class="clearfix"></div>
     </div>
-    
-    <div class="clients_wrap_table">
-    <div id="loading"></div>
-      <div id="leaveTypeListTableDiv"></div>
+    <div class="side_mask" style="display:none;">
+		<div class="proj_close"></div>
+	</div>
+    <div id="typeSummaryDiv"></div>
+    <div class="clients_wrap_table datatable_filter">
+    	<div id="loading"></div>
+        <div id="leaveTypeListTableDiv"></div>
     </div>
     
   </div>
@@ -45,6 +51,7 @@ $(document).ready(function(){
 
     </div>
     <!-- Content Area Ends--> 
+    <div id="popUp"></div>
   </section>
   <!-- Content Area Ends--> 
   
@@ -74,12 +81,12 @@ $(document).ready(function(){
 	    		 var report = data[i];
 	    		 result += '<tr>';
 		         result += '    <td>';
-		         result += '      <div class="proj_show tbldata-dotdot-big">';
 		         if(report.name != null && report.name != '' && report.name != 'undefined'){
-		        	 result += '          <div class="pull-left tbldata-dotdot-me" title="'+report.name+'">'+report.name+'</div>';
+		        	 result += '      <div class="proj_show tbldata-dotdot-big" onclick="openLeaveTypeSummary(\''+report.id+'\');">';
+		        	 result += '          <div class="pull-left tbldata-dotdot-me" title="'+report.name+'" onclick="openLeaveTypeSummary(\''+report.id+'\');">'+report.name+'</div>';
+		        	 result += '          <i class="fa fa-binoculars pull-right"></i>';
+			         result += '      </div>';
 		         } 
-		         result += '          <i class="fa fa-binoculars pull-right"></i>';
-		         result += '      </div>';
 		         result += '    </td>';
 		         result += '    <td>';
 		         if(report.duration != null && report.duration != '' && report.duration != 'undefined'){
@@ -109,7 +116,7 @@ $(document).ready(function(){
 		         result += '    <td>';
 		         result += '        <div class="tblminwidth-50">';
 		         result += '            <span title="Edit" class="paddingRight"><a href="'+sourceleadUrl+'/editLeaveType?leaveTypeId='+report.id+'"><i class="fa fa-pencil text-primary cursorPointer"></i></a></span> ';
-		         result += '            <span title="Delete" class="paddingLeft"><i class="fa fa-trash text-danger cursorPointer"></i></span>';
+		         result += '            <span title="Delete" class="paddingLeft"><i class="fa fa-trash text-danger cursorPointer" onclick="deleteLeaveType(\''+report.id+'\')"></i></span>';
 		         result += '        </div>';
 		         result += '    </td>';
 		         result += '  </tr>';
@@ -121,18 +128,24 @@ $(document).ready(function(){
        		 $("#leaveTypeListTableDiv").append(result);
        		 $("#loading").removeAttr('style');
        		 listTypePagination();
+       		 
+       		$(".proj_show").click(function(){
+       			$(".new_side_wrap").addClass("new_side_wrap_active");
+       			$(".side_mask").fadeIn(200);
+       			$("body").css('overflow-y', 'hidden');
+       		});
 	    	 
 	     }
      });
  }
  </script>
-  
+ 
  <script>
  function listTypePagination(){
 		$('#leaveTypeListTable').DataTable({ 
 			"scrollCollapse": false,
 	    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
-	    	"bLengthChange": false,
+	    	"bLengthChange": true,
 	    	"bDestroy": true,
 	    	"ordering": true,
 	    	"oLanguage": {
@@ -144,5 +157,221 @@ $(document).ready(function(){
 
 	}
  </script>
+ 
+ <script>
+function deleteLeaveType(typeId){
+	 $(".project_inn_mask").remove();
+	var result = "";
+	result = result +"	<div class='project_inn_mask'></div>";
+	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+	result = result +"		<textarea id='reason' class='form-control' field-name='Reject Reason'  data-validation='required validate_Space validate_Description validate_length length2-250' name='reason' value='' placeholder='Reason' rows='2' onclick='validateReason();'></textarea>";
+	result = result + ' <div id="deleteLeaveTypeDiv"/>';
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Delete' onclick='deleteType(\""+typeId+"\");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelRejectPopup();'></b>";
+	result = result +"	</div>";
+	$("#popUp").append(result);
+	$("#remove_user_pop").slideDown(200);
+	$(".project_inn_mask").fadeIn(200); 
+}
+
+function deleteType(typeId){
+	var loginUserId = '${SourceLeadWeb_user.id}'
+	var reason = document.getElementById("reason").value;
+	 reason = reason.replace(/\s/g, "")
+	if(reason.match(/^[^\s-](.*)*$/) != null){
+		$("#deleteLeaveTypeDiv").empty(); 
+		$.ajax({
+		   	type: "POST",
+		   	url: sourceleadUrl+"/deleteLeaveType?"+tokenParamName+"="+tokenValue+"&leaveTypeId="+typeId+"&deleteReason="+reason+"&loginUserId="+loginUserId,	    	   
+		    success: function(data) {
+	             if(data == true){
+	 				location.replace(sourceleadUrl+ "/viewLeaveTypes");
+	 			 }
+	             $("#selector1").removeAttr("style");
+	  			 $("#selector1").css({ display: "block" });
+	  			 $("#msgDiv").html("Leave Type removed");
+	  			 $("#popUp").empty();
+	 			 $(".project_inn_mask").fadeOut(200);
+	             msgFadein();
+		    }
+	   });
+	}else{
+		if(reason.length == 0){
+			$("#deleteLeaveTypeDiv").empty().append("<font color='red' style='padding: 5px 10px; '>Must not Start With Space</font>") ;
+		}else{
+			$("#deleteLeaveTypeDiv").empty().append("<font color='red' style='padding: 5px 10px; '>Reason is required</font>") ; 
+		}
+	}
+}
+
+
+function validateReason() {
+    var output = document.getElementById("reason").value;
+    output = output.replace(/\s/g, "") 
+    if(output.length != 0){
+    }
+}
+
+function cancelRejectPopup(){
+	$("#remove_user_pop, .project_inn_mask").fadeOut();
+	$("#reason").val('');
+	$("#reason").find("p.jquery_form_error_message").remove();
+	$("#reason").empty(); 
+
+}
+
+function msgFadein() {
+	$("#selector1").fadeIn(200);
+    $('#selector1').delay(2000).fadeOut('slow');
+}
+</script>
+
+<script>
+function openLeaveTypeSummary(typeId){
+	$.ajax({
+	   	type: "POST",
+	   	url: sourceleadUrl+"/leaveTypeSummary?&leaveTypeId="+typeId,	    	   
+	    success: function(report) {
+	    	var result = "";
+			result +='<div class="new_side_wrap">';
+			result +='  <div class="clients_side_wrap_inn">';
+			result +='      <div class="clerfix showDetails">';
+			result +='      <div class="project_tabs minHeight_225 form-horizontal modal-body">';
+			
+			result +='          <div class="viewgrid-header pull-right zIndex">';
+			result +='            <a href="javascript:void(0)" class= "btn btn-primary btn-sm mr10" title="Active">Active</a>';
+	 		result +='              <a href="'+sourceleadUrl+'/editLeaveType?leaveTypeId='+typeId+'" class="btn btn-default btn-sm" title="Edit"><i class="fa fa-pencil paddingRight"></i>Edit</a> ';
+			result +='          </div> ';
+			
+			
+			result +='          <div class="row">';
+			result +='              <div class="col-md-12">';
+			result +='                <h4>Details</h4>';
+			result +='              </div>';
+			result +='              <div class="clearfix">';
+			result +='              <div class="col-md-12 mb">';
+			result +='                  <label class="col-md-2 control-label"><b>Name:</b></label>';
+	 		if(report.name != null && report.name != '' && report.name != 'undefined'){
+	 			result +='                  <div class="col-md-8">';
+	 			result +='                      <span>'+report.name+'</span>';
+	 			result +='                  </div>';
+	 		}
+			
+			result +='              </div>';
+			result +='              <div class="col-md-12 mb">';
+			result +='                  <label class="col-md-2 control-label"><b>Duration:</b></label>';
+			result +='                  <div class="col-md-8">';
+			if(report.duration != null && report.duration != '' && report.duration != 'undefined'){
+				result +='                      <span>'+report.duration+'</span>';
+			}else{
+				result +='                      <span>---</span>';
+			}
+			result +='                  </div>';
+			result +='              </div>';
+			result +='              <div class="col-md-12 mb">';
+			result +='                  <label class="col-md-2 control-label"><b>Type:</b></label>';
+			result +='                  <div class="col-md-8">';
+			if(report.leaveType != null && report.leaveType != '' && report.leaveType != 'undefined'){
+				result +='                      <span>'+report.leaveType+'</span>';
+			}else{
+				result +='                      <span>---</span>';
+			}
+			result +='                  </div>';
+			result +='              </div>';
+			result +='              <div class="col-md-12 mb">';
+			result +='                  <label class="col-md-2 control-label"><b>No. of Leaves Per Year:</b></label>';
+			result +='                  <div class="col-md-8">';
+			if(report.numbefrOfLeavesPeryear != null && report.numbefrOfLeavesPeryear != '' && report.numbefrOfLeavesPeryear != 'undefined'){
+				result +='                      <span>'+report.numbefrOfLeavesPeryear+'</span>';
+			}else{
+				result +='                      <span>---</span>';
+			}
+			result +='                  </div>';
+			result +='              </div>';
+			result +='              <div class="col-md-12 mb">';
+			result +='                  <label class="col-md-2 control-label"><b>Description:</b></label>';
+			result +='                  <div class="col-md-8">';
+			if(report.description != null && report.description != '' && report.description != 'undefined'){
+				result +='                      <span>'+report.description+'</span>';
+			}else{
+				result +='                      <span>---</span>';
+			}
+			result +='                  </div>';
+			result +='              </div>';
+			result +='              <div class="clearfix"></div>';
+			result +='             <div class="col-md-12 mb">';
+			result +='                  <h4>Leave Policies</h4>';
+			result +='              </div>';
+			result +='                            <div class="clearfix"></div>';
+			result +='             <div class="col-md-12 mb">';
+			result +='                  <label class="col-md-2 control-label"><b>Policy Name:</b></label>';
+			result +='                  <div class="col-md-8">';
+			if(report.policyName != null && report.policyName != '' && report.policyName != 'undefined'){
+				result +='                      <span>'+report.policyName+'</span>';
+			}else{
+				result +='                      <span>---</span>';
+			}
+			result +='                  </div>';
+			result +='              </div>';
+			result +='              <div class="col-md-12 mb">';
+			result +='                  <label class="col-md-2 control-label"><b>Description:</b></label>';
+			result +='                  <div class="col-md-8">';
+			if(report.policyDescription != null && report.policyDescription != '' && report.policyDescription != 'undefined'){
+				result +='                      <span>'+report.policyDescription+'</span>';
+			}else{
+				result +='                      <span>---</span>';
+			}
+			result +='                  </div>';
+			result +='              </div>';
+			result +='              <div class="col-md-12 mb">';
+			result +='                 <label class="col-md-2 control-label">&nbsp;&nbsp;</label>';
+			result +='                 <div class="checkBox col-md-8">';
+			if(report.visibilityToAllUsers != null && report.visibilityToAllUsers != '' && report.visibilityToAllUsers != 'undefined' && report.visibilityToAllUsers == 'Y'){
+				result +='                  <input type="checkbox" Checked disabled="true" value="" name="visible">Visible to all users';
+			}else{
+				result +='                  <input type="checkbox" disabled="true" value="" name="visible">Visible to all users';
+			}
+			result +='                 </div>';
+			result +='              </div>';
+			result +='              <div class="col-md-12 mb mt40">';
+			result +='                  <label class="col-md-2 control-label"><b>Crated By:</b></label>';
+			result +='                  <div class="col-md-8">';
+			if(report.createdUser != null && report.createdUser != '' && report.createdUser != 'undefined'){
+				result +='                      <span>'+report.createdUser+'</span>';
+			}else{
+				result +='                      <span>---</span>';
+			}
+			result +='                  </div>';
+			result +='              </div>';
+			result +='              <div class="col-md-12 mb">';
+			result +='                  <label class="col-md-2 control-label"><b>Updated By:</b></label>';
+			result +='                  <div class="col-md-8">';
+			if(report.updatedUser != null && report.updatedUser != '' && report.updatedUser != 'undefined'){
+				result +='                      <span>'+report.updatedUser+'</span>';
+			}else{
+				result +='                      <span>---</span>';
+			}
+			result +='                  </div>';
+			result +='              </div>';
+			result +='          </div>';
+			result +='              </div>';
+			
+			
+			result +='  </div>';
+			result +='  </div>';
+			result +='  </div>';
+			result +='</div>';
+			
+			$("#typeSummaryDiv").empty();
+			$("#typeSummaryDiv").append(result);
+			$(".new_side_wrap").addClass("new_side_wrap_active");
+			$(".proj_close, .side_mask").click(function(){
+				$(".new_side_wrap").removeClass("new_side_wrap_active");
+				$(".side_mask").fadeOut(200);
+				$("body").css('overflow-y', 'auto');
+			});	
+	    }
+	   });
+}
+</script>
   
 <jsp:include page="../masterFooter.jsp" />

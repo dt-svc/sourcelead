@@ -14,12 +14,15 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "LEAVE_TYPE", catalog = "sourcelead")
@@ -105,6 +108,14 @@ public class LeaveType {
 	
 	@Column(name = "VISIBILITY_TO_ALL_USERS")
 	private String visibilityToAllUsers;
+	
+	@Transient
+	@JsonProperty
+	private String createdUser;
+	
+	@Transient
+	@JsonProperty
+	private String updatedUser;
 	
 
 	public String getId() {
@@ -312,5 +323,24 @@ public class LeaveType {
 	{
 		this.visibilityToAllUsers = visibilityToAllUsers;
 	}
-	
+
+	public String getCreatedUser()
+	{
+		return createdUser;
+	}
+
+	public void setCreatedUser(String createdUser)
+	{
+		this.createdUser = createdUser;
+	}
+
+	public String getUpdatedUser()
+	{
+		return updatedUser;
+	}
+
+	public void setUpdatedUser(String updatedUser)
+	{
+		this.updatedUser = updatedUser;
+	}
 }

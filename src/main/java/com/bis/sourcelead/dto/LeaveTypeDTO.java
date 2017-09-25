@@ -22,6 +22,7 @@ public class LeaveTypeDTO {
 	private String noOfLeavesPerMonth;
 	private String loginUserId;
 	private String leaveTypeId;
+	private String deleteReason;
 	
 	public String getName()
 	{
@@ -211,5 +212,15 @@ public class LeaveTypeDTO {
 	public void setLeaveTypeId(String leaveTypeId)
 	{
 		this.leaveTypeId = leaveTypeId;
+	}
+
+	public String getDeleteReason()
+	{
+		return deleteReason;
+	}
+
+	public void setDeleteReason(String deleteReason)
+	{
+		this.deleteReason = deleteReason;
 	}
 }
