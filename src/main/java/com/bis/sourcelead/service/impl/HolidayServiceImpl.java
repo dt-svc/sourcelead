@@ -40,7 +40,7 @@ public class HolidayServiceImpl implements HolidayService{
 		Holiday holiday = null;
 		OrgLocations orgLocations = orgLocationService.getOrgLocations(Long.parseLong(holidayDTO.getOrgLocationId()));
 		User user = userService.getUserById(Long.parseLong(holidayDTO.getUserId()));
-		if(holidayDTO.getHolidayId() != null){
+		if(StringUtils.isNotBlank(holidayDTO.getHolidayId())){
 			holiday = holidayDAO.getHolidaysById(holidayDTO.getHolidayId());
 			holiday.setUpdatedBy(user.getUserCode());
 			holiday.setUpdatedDate(new Date());
@@ -78,13 +78,9 @@ public class HolidayServiceImpl implements HolidayService{
 			if(StringUtils.isNotBlank(holidayDTO.getHalfDayCheckBox()))
 			{
 				holiday.setHalfDayCheckBox(holidayDTO.getHalfDayCheckBox());
-			}else{
-				holiday.setHalfDayCheckBox("--");
-			}
-			if(StringUtils.isNotBlank(holidayDTO.getHalfDayAmPm()))
-			{
 				holiday.setHalfDayAmPm(holidayDTO.getHalfDayAmPm());
 			}else{
+				holiday.setHalfDayCheckBox("--");
 				holiday.setHalfDayAmPm("--");
 			}
 			if(StringUtils.isNotBlank(holidayDTO.getDescription()))

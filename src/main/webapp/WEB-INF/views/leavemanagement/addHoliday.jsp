@@ -42,7 +42,7 @@ $(document).ready(function() {
             <div class="form-group">
               <label class="col-md-3">Holiday Name<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-9">
-                <input type="text" class="form-control" field-name="Holiday Name" data-validation="required" id="holidayName" name="holidayName" value="${holidays.holidayName}">
+                <input type="text" class="form-control" field-name="Holiday Name" data-validation="required validate_Space validate_length length1-250" id="holidayName" name="holidayName" value="${holidays.holidayName}">
               </div>
             </div>
             <div class="form-group">
@@ -102,11 +102,7 @@ $(document).ready(function() {
           </div>
         </div>
       </div>
-
-
       </div>
-
-      
       <!-- Content Area Ends--> 
       </form:form>
     </div>
@@ -166,6 +162,9 @@ function cancel(){
 			changeMonth : true,
 			changeYear : true,
 			onSelect : function(selected) {
+				var dt = $(this).datepicker('getDate', '+1d');
+				dt.setDate(dt.getDate() + 1);
+				$("#toDate").datepicker("option", "minDate", dt);
 				removeFromDate();
 			}
 		});

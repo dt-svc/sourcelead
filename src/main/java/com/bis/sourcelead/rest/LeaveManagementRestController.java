@@ -464,7 +464,7 @@ public class LeaveManagementRestController {
 		boolean isDeleted = false;
 		 Holiday deleteHoliday = holidayService.getHolidaysById(holidayId);
 		 if(deleteHoliday !=null) {
-			 deleteHoliday.setHolidayStatus("0");
+			 deleteHoliday.setStatus("0");
 			 holidayDAO.saveDeleteHoliday(deleteHoliday);
 			 isDeleted = true;
 		 }

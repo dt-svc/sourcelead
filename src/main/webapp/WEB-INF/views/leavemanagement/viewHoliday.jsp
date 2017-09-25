@@ -115,7 +115,6 @@ function getHolidaysList(){
 </script> 
 <script>
 function deleteHoliday(holidayId){
-	alert("holidayId"+holidayId);
 			 $.get(sourceleadUrl+"/deleteHoliday?"+tokenParamName+"="+tokenValue+"&holidayId="+holidayId, function(data) {
 				 location.replace(sourceleadUrl+ "/viewHoliday");
 			 }); 
