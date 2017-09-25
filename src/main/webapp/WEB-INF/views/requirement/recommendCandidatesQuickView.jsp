@@ -110,9 +110,7 @@ function recomendcandidateQuickViewProfile(candidateId,recScore){
 					}else{
 						result = result+'<p>---</p>';
 					}
-					
 					result = result+'                </div>                                                                                                                                        ';
-				
 					result = result+'                <div class="media-right positionRelative">                                                                                                                     ';
 					if(json.fileUrl != null && json.fileUrl != '' && json.fileUrl !='undefined'){ 
 					result = result+'<img  data-id="profileImage" id="userImage" onerror="predefineProfileImage(this);" src="'+json.fileUrl+'" alt="Profile Image" class="media-object" style="width:65px">';
