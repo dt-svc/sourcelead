@@ -853,11 +853,11 @@ function showPopUp(id,invoiceStatus,invoiceParentId,totalAmount,fileUrl){
 		 }
 		 '<sec:authorize access="hasAnyRole(\'ROLE_PRINT_INVOICE\')">';
 // 	     result = result +'      <li onclick="getPrint('+id+');"><i class="fa fa-print paddingLeft paddingRight" title="Print"></i>Print</li>';
-		result = result+' <a class="fa fa-print paddingLeft paddingRight" href="'+fileUrl+'" title="Print">Print</a>';
+		result = result+' <a class="fa fa-print paddingLeft paddingRight" target="_blank" href="'+fileUrl+'" title="Print">Print</a>';
 	 	'</sec:authorize>'
 	 	
 	 	'<sec:authorize access="hasAnyRole(\'ROLE_DOWNLOAD_INVOICE\')">';
-	     result = result+' <a class="fa fa-download paddingLeft paddingRight" href="'+fileUrl+'" title="Download">Download</a>';
+	     result = result+' <a class="fa fa-download paddingLeft paddingRight" target="_blank" href="'+fileUrl+'" title="Download">Download</a>';
 	     '</sec:authorize>'
 	     result = result +'      <li onclick="linkInvoice('+id+',\''+totalAmount+'\');"><i class="fa fa-download paddingLeft paddingRight" title="Link Invoice"></i>Link Invoice</li>';
 	     result = result +'    </ul>';

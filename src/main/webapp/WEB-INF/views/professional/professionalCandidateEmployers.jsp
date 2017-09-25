@@ -122,54 +122,7 @@ function closeCertificatePopup(){
 	        	}
 			
 	        });
-	        
-			/* //To disable addButton 
-			$("#candidateEmployersAdd").attr("disabled", "disabled");
-			var frm = $('#employers_form').serializeFormJSON();
-			var con = JSON.stringify(frm);
-			con = con.replace(/[{}]/g, "");
-			//It will escape all the special characters
-			var jsonData = encodeURIComponent(con);
-			var sourceleadUrl = '${sourceleadUrl}';
-
-			$
-					.ajax({
-						type : "POST",
-						url : sourceleadUrl
-								+ "/storeCandidateEmployers?${_csrf.parameterName}=${_csrf.token}&json="
-								+ jsonData + "&candidateId=" + candidateId,
-						success : function(data) {
-
-							if (data != null && data != 'undefined'
-									&& data != "") {
-								if (data.indexOf('Sign In') >= 0) {
-									location.replace(sourceleadUrl);
-								} else if (data.indexOf('exception') >= 0) {
-									location.replace(sourceleadUrl  + "/errorPage");
-								} else {
-									$('#perVal').attr('aria-valuenow', data).css('width',data+'%');
-			            			 if(data<50){
-			            			   $("#perVal").removeClass('progress-bar-success');
-			            			   $("#perVal").addClass("progress-bar-danger");
-			            			 }
-			            			 if(data>=50){
-			            				 $("#perVal").removeClass("progress-bar-danger");
-			            				 $("#perVal").addClass("progress-bar-success");
-			            			 }
-			            			 $("#disVal").empty();
-			            			$("#disVal").append(data+'%');
-			            			
-									$("#popUpDivEmp").removeClass("edit-details-active");
-			            			$("#selector3").removeAttr("style");
-			            			$("#selector3").css({ display: "block" });
-			            			$("#empMsgDiv").html("Success!! New Employer added");
-									candidateEmployersList(candidateId);
-									empMsgFadein();
-								}
-							}
-
-						},
-					}); */
+			
 			return true;
 		} else {
 			return false;
@@ -499,8 +452,8 @@ function closeCertificatePopup(){
 								result = result	+ '           <th>Employer</th>';
 								result = result	+ '           <th>Designation</th>';
 								result = result + '           <th>Address</th>';
-								result = result	+ '           <th>Start Date<br>(<small class="custom-small">'+candidateEmployersListDate+'</small>)</th>';
-								result = result	+ '           <th>End Date<br>(<small class="custom-small">'+candidateEmployersListDate+'</small>)</th>';
+								result = result	+ '           <th>Start Date</th>';
+								result = result	+ '           <th>End Date</th>';
 								result = result + '           <th>Action</th>';
 								result = result + "  </tr>";
 								result = result + "</thead>";
