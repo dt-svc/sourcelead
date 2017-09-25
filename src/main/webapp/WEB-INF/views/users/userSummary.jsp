@@ -255,7 +255,12 @@ $(document).ready(function(){
 				
 				result = result + '	 <div class="user_details_cta_img">';
 				result = result + '		       <div class="user_change_img">';
-				result = result +                  "<img data-id= 'userProfileImage'onerror='predefineProfileImage(this);' src="+json.user.fileUrl+" alt='image'>";
+				if(json.user.fileUrl != null && json.user.fileUrl != "" && json.user.fileUrl !="undefiend"){
+					result = result +                  "<img data-id= 'userProfileImage' src="+json.user.fileUrl+" alt='image'>";
+				}else{
+					result = result +                  "<img data-id= 'userProfileImage'  src='resources/images/userprofile-img.png' alt='image'>";
+				}
+				
 				result = result + ' 		  </div>';
 				result = result + '             <span>'+userName+'</span>';
 				result = result + ' <div class="user_badg" id="counts">';

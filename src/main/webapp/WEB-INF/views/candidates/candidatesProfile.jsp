@@ -1161,8 +1161,8 @@ function candidateProfile(candidateId,candidateType){
 				dateFormat : 'yyyy/mm/dd' 
 	         }; 
 		rateValidations();
-		
 		 $('#emailDiv').find('p.jquery_form_error_message').remove();
+		
 		 if ($('#candidateProfileEdit_form').validate(false, validationSettings)){ 
 			
       		var formData = getFormData("candidateProfileEdit_form");
@@ -1582,14 +1582,12 @@ function updateDesignationOtherType(){
 		        url: sourceleadUrl+"/validateCandidateEmail?"+tokenParamName+"="+tokenValue+"&email="+email+"&candidateType="+candidateType, 
 		        success: function(data) {
 		        	if(data == 'true'){
-		        		
 		        		  $('#candidateType').val(); 
 						  $("input#email").after("<p class='jquery_form_error_message'>"+email+" is Already Existed</span>");
 						  $("#update_candidate").attr("disabled", "disabled");
 						  $("#update_candidate").addClass('button').val('Processing..');
 		        	}
 		        	else{
-		        		
 		        		 $('input#email').removeAttr( "record-exist record-exist-errormsg");
 		        		 $('#emailDiv').find('p.jquery_form_error_message').remove(); 
 		        		 $("#update_candidate" ).addClass('button').val('Save');
@@ -1598,6 +1596,8 @@ function updateDesignationOtherType(){
 		        },
 		    });
 	 }
+	 }else{
+		 $('#update_candidate').removeAttr('disabled');
 	 }
  }
  </script>     
