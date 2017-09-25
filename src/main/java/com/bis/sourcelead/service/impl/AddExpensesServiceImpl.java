@@ -2,6 +2,7 @@ package com.bis.sourcelead.service.impl;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -9,15 +10,16 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.mail.internet.InternetAddress;
+import javax.servlet.http.HttpServletRequest;
 
-import org.json.JSONObject;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.AddExpensesDao;
+import com.bis.sourcelead.dto.AddExpensesDTO;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
@@ -40,6 +42,7 @@ import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
+import com.ibm.icu.math.BigDecimal;
 
 @Service
 public class AddExpensesServiceImpl implements AddExpensesService{
@@ -112,36 +115,37 @@ public Expenses storeAddExpensesData(Expenses expenses) throws Exception{
 }
 
 @Override
-public void storeAddExpensesData(JSONObject jsonObj, User loginUser, OrgLocations orgLoc,MultipartHttpServletRequest request,String status,String currencyCode) throws NumberFormatException, Exception {
+public void storeAddExpensesData(AddExpensesDTO addExpensesDTO, User loginUser, OrgLocations orgLoc,HttpServletRequest request,String status,String currencyCode) throws NumberFormatException, Exception {
 	Expenses expenses = null;
 	ProjectMembers projMembers = null;
 	
 	//SimpleDateFormat dateFormat=orgLoc.getLocFullFormDateFormatter();
 	
-	if (jsonObj.has("expenseId") && !(jsonObj.getString("expenseId").isEmpty())){
-		expenses = expensesService.getExpenseById(Long.parseLong(jsonObj.getString("expenseId")));
-	 }else{
-		 expenses = new Expenses();
-	 }
-	
-	if (jsonObj.has("ExpenseAutoId") && !(jsonObj.getString("ExpenseAutoId").isEmpty())){
-		expenses.setExpenseId(jsonObj.getString("ExpenseAutoId"));	
-	 }
-	if (jsonObj.has("expensePurpose") && !(jsonObj.getString("expensePurpose").isEmpty())){
-		expenses.setPurpose(jsonObj.getString("expensePurpose"));
-	 }
-	if (jsonObj.has("projectMemberId") && !(jsonObj.getString("projectMemberId").isEmpty())){
-	    projMembers = projectMembersService.getProjectMemberById(Long.parseLong(jsonObj.getString("projectMemberId")));
-		expenses.setProjectMembers(projMembers);
+	if(StringUtils.isNotBlank(addExpensesDTO.getExpenseId())){
+		expenses = expensesService.getExpenseById(Long.parseLong(addExpensesDTO.getExpenseId()));
+	}else {
+		expenses = new Expenses();
 	}
-	if (jsonObj.has("clientNameExpense") && !(jsonObj.getString("clientNameExpense").isEmpty())){
-		expenses.setClientName(jsonObj.getString("clientNameExpense")); 
-	}
-	if (jsonObj.has("startDateExpense") && !(jsonObj.getString("startDateExpense").isEmpty())){
-		expenses.setStartDate(commonUtil.orgLocationDateFormat(orgLoc.getDateFormat(),jsonObj.getString("startDateExpense")));
-	}
-	if (jsonObj.has("endDateExpense") && !(jsonObj.getString("endDateExpense").isEmpty())){
-		expenses.setEndDate(commonUtil.orgLocationDateFormat(orgLoc.getDateFormat(),jsonObj.getString("endDateExpense")));
+	if (StringUtils.isNotBlank(addExpensesDTO.getExpenseAutoId())){
+		expenses.setExpenseId(addExpensesDTO.getExpenseAutoId());	
+	 }
+	if (StringUtils.isNotBlank(addExpensesDTO.getExpensePurpose())){
+		expenses.setPurpose(addExpensesDTO.getExpensePurpose());	
+	 }
+	if (StringUtils.isNotBlank(addExpensesDTO.getProjectMemberId())){
+		projMembers = projectMembersService.getProjectMemberById(Long.parseLong(addExpensesDTO.getProjectMemberId()));
+		expenses.setProjectMembers(projMembers);	
+	 }
+	if (StringUtils.isNotBlank(addExpensesDTO.getClientNameExpense())){
+		expenses.setClientName(addExpensesDTO.getClientNameExpense());	
+	 }
+	if (StringUtils.isNotBlank(addExpensesDTO.getStartDateExpense())){
+		 Date startdate = commonUtil.orgLocationDateFormat(orgLoc.getDateFormat(), addExpensesDTO.getStartDateExpense());
+		expenses.setStartDate(startdate);	
+	 }
+	if (StringUtils.isNotBlank(addExpensesDTO.getEndDateExpense())){
+		Date enddate = commonUtil.orgLocationDateFormat(orgLoc.getDateFormat(), addExpensesDTO.getEndDateExpense());
+		expenses.setEndDate(enddate);	
 	 }
 	if(null != orgLoc){
 		expenses.setOrgLocationId(orgLoc);
@@ -170,7 +174,7 @@ public void storeAddExpensesData(JSONObject jsonObj, User loginUser, OrgLocation
 		
 	}*/
 	expenses.setStatus(Constants.EXPENSES_STATUS);
-	Set<ExpensesEntries>  expensesEntriesList = expensesEntriesService.prepareExpensesEntriesListByJson(jsonObj, request, expenses);
+	Set<ExpensesEntries>  expensesEntriesList = expensesEntriesService.prepareExpensesEntriesListByJson(addExpensesDTO, request, expenses);
 	expenses.setExpensesEntries(expensesEntriesList);
 	
 	expenses.setNoOfExpenses(String.valueOf(expensesEntriesList.size()));
@@ -183,8 +187,8 @@ public void storeAddExpensesData(JSONObject jsonObj, User loginUser, OrgLocation
 	if(projMembers != null){
 		ArrayList<User> managers = new ArrayList<User>() ;
 		HashSet<ExpensesApproverHierarchy> eaHierarchyList = new HashSet<ExpensesApproverHierarchy>();
-		if (jsonObj.has("expenseId") && !(jsonObj.getString("expenseId").isEmpty())){
-		   List<ExpensesApproverHierarchy>eaSubHierarchyList  = expensesApprovalService.getExpensesApproverHierarchyListByExpenseId(Long.parseLong(jsonObj.getString("expenseId")));
+		if (StringUtils.isNotBlank(addExpensesDTO.getExpenseId())){
+		   List<ExpensesApproverHierarchy>eaSubHierarchyList  = expensesApprovalService.getExpensesApproverHierarchyListByExpenseId(Long.parseLong(addExpensesDTO.getExpenseId()));
 		   if(eaSubHierarchyList != null && !eaSubHierarchyList.isEmpty()){
 			   for(ExpensesApproverHierarchy eaHierarchy : eaSubHierarchyList){
 					if(status.equalsIgnoreCase(Submission_Status.SUBMITTED.getValue()) || status.equalsIgnoreCase(Submission_Status.APPROVED.getValue())){
@@ -303,8 +307,11 @@ public void sendExpensesEmailToManager(User loginUser, Expenses expenses, OrgLoc
 		 globalVarsMap.put("expenseTypes",expenses.getNoOfExpenses());
 		 }
 		 
-		 StringBuilder currencyType = new StringBuilder();
-		 globalVarsMap.put("totalAmount",currencyType.append(Float.toString(expenses.getTotalAmount())).append(" ").append(currencyCode).toString());
+		 StringBuilder str = new StringBuilder();
+			BigDecimal cg = new BigDecimal(Double.toString(expenses.getTotalAmount()));
+			cg = cg.setScale(2,BigDecimal.ROUND_HALF_UP );		
+			
+		 globalVarsMap.put("totalAmount",str.append(cg).append(" ").append(currencyCode).toString());
 		 
 		 
 
@@ -338,8 +345,11 @@ public void sendExpensesEmailToManager(User loginUser, Expenses expenses, OrgLoc
 			emailScenerioUtil.sendNotification(actionLink, loginUser, managerUser, orgLoc, notificationScenario);
 	}
 }
-	 
-	 
-	 
+}
+
+@Override
+public void deleteDocumentByDocumentId(String documentId) {
+	addExpensesDao.deleteDocumentByDocumentId(Long.parseLong(documentId));
+	
 }
 }

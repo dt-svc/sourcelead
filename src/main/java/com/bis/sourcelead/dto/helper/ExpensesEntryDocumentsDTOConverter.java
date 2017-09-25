@@ -13,6 +13,8 @@ public class ExpensesEntryDocumentsDTOConverter {
 		expensesEntryDocumentsDTO.setDocFile(eed.getDocFile());
 		expensesEntryDocumentsDTO.setFileContentType(eed.getFileContentType());
 		expensesEntryDocumentsDTO.setFileName(eed.getFileName());
+		expensesEntryDocumentsDTO.setStatus(eed.getStatus());
+		expensesEntryDocumentsDTO.setFileURL(eed.getFileURL());
 		return expensesEntryDocumentsDTO;
 	}
 }

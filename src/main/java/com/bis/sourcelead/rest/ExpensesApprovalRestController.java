@@ -45,6 +45,7 @@ import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.bis.sourcelead.web.LoginSessionController;
+import com.ibm.icu.math.BigDecimal;
 
 @RestController
 public class ExpensesApprovalRestController {
@@ -92,9 +93,9 @@ public class ExpensesApprovalRestController {
 		File file=null;
 		List<ExpensesApproverHierarchy> expApperoverHierarchy = expensesApprovalService.getExpensesApproverHierarchyByApproverUserIdAndOrgLocationId(loginUser, orgLoc, expenseStatus, startDate, endDate);
 		if(type.equalsIgnoreCase("pdf"))
-			file = expensesApprovalService.getExpensesApproverHierarchyListForPdf(expApperoverHierarchy,orgLoc);
+			file = expensesApprovalService.getExpensesApproverHierarchyListForPdf(expApperoverHierarchy,orgLoc,loginUser);
 		else
-			file = expensesApprovalService.getExpensesApproverHierarchyListForExcel(expApperoverHierarchy,orgLoc);
+			file = expensesApprovalService.getExpensesApproverHierarchyListForExcel(expApperoverHierarchy,orgLoc,loginUser);
 		String mimeType = URLConnection.guessContentTypeFromName(file.getName());
 		if (mimeType == null) {
 			mimeType = "application/octet-stream";
@@ -249,9 +250,14 @@ public class ExpensesApprovalRestController {
 			 globalVarsMap.put("endDate", commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),sah.getExpenseId().getEndDate()));
 				 }
 			 }
+			 
 			 StringBuilder amountCurrencyType = new StringBuilder();
-			 amountCurrencyType.append(Float.toString(sah.getExpenseId().getTotalAmount())).append(" ").append(currencyCode);
-			 globalVarsMap.put("amount",amountCurrencyType.toString());
+			 BigDecimal amountCurrencyType1 = new BigDecimal(Double.toString(sah.getExpenseId().getTotalAmount()));
+			 amountCurrencyType1 = amountCurrencyType1.setScale(2,BigDecimal.ROUND_HALF_UP );
+			 
+			 
+			 amountCurrencyType.append(amountCurrencyType1).append(" ").append(currencyCode);
+			 globalVarsMap.put("amount",amountCurrencyType1.toString());
 	
 			 
 			Date todayDate = new Date();

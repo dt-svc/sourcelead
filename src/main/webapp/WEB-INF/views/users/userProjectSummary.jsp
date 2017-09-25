@@ -7,11 +7,10 @@
 --%>
 <script>
 function userAssignedProjects(userId){  
-	var sourceleadUrl ='${sourceleadUrl}';
 	var orgLocationId ='${SourceLeadWeb_orgLocationId}';
 	  $.ajax({
            type : "GET",
-           url: sourceleadUrl+"/getAssignedProjectsListForUser?${_csrf.parameterName}=${_csrf.token}&userId="+userId+"&orgLocationId="+orgLocationId,    
+           url: sourceleadUrl+"/getAssignedProjectsListForUser?"+tokenParamName+"="+tokenValue+"&userId="+userId+"&orgLocationId="+orgLocationId,    
             success :function(data) {
                 	prepareAssignedProjectsData(data);
           },
@@ -27,7 +26,6 @@ function userAssignedProjects(userId){
 
 <script>
 function prepareAssignedProjectsData(data){
-	var sourceleadUrl ='${sourceleadUrl}';
 
 	 var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
 	  if(locationList.match("yyyy-MM-dd")){
@@ -244,11 +242,10 @@ function prepareAssignedProjectsData(data){
 </script>
 <script> 
 function inlineEditForEndDate(id,projectMemberId){
-	var sourceleadUrl = '${sourceleadUrl}';
 	 var endDate = document.getElementById(id).value;
 	  $.ajax({
 		   	type: "POST",
-		    url: sourceleadUrl+"/updateEndDateByProjectMemberId?${_csrf.parameterName}=${_csrf.token}&endDate="+endDate+"&projectMemberId="+projectMemberId, 	   
+		    url: sourceleadUrl+"/updateEndDateByProjectMemberId?"+tokenParamName+"="+tokenValue+"&endDate="+endDate+"&projectMemberId="+projectMemberId, 	   
    		    success: function(data) {
    			   
    		    }
@@ -273,7 +270,6 @@ function pagination(){
     $('#assignedProjectsListPagination').wrap("<div class='overflow_Auto width100percnt'></div>")
 }
 function projectSummaryRedirection(){
-	var sourceleadUrl ='${sourceleadUrl}'; 
 	window.location.href = sourceleadUrl+"/projectDashboard";
 }
 </script>

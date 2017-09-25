@@ -1,7 +1,6 @@
 package com.bis.sourcelead.entity;
 
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -39,22 +38,27 @@ public class Invoice {
     @Column(name = "ID", nullable = false)
 	private Long id;
 	
+	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne
     @JoinColumn(name="ORG_RELATION_ID", nullable=false )     
 	private OrgRelations orgRelationID;
 	
+	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "CONTACT_USER_ID")
 	private User contactUser;
 	
+	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne
     @JoinColumn(name="ORG_LOCATION_ID", nullable=false )     
 	private OrgLocations orgLocation;
 	
+	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne
     @JoinColumn(name="OWNER_USER_ID", nullable=false )     
 	private User ownerUserId;
 	
+	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne
     @JoinColumn(name="RESPONDER_LOCATION_ID", nullable=false )     
 	private OrgLocations responderLocationId;
@@ -62,6 +66,7 @@ public class Invoice {
 	@Column(name = "INVOICE_ID")
 	private String invoiceId;
 	
+	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne
     @JoinColumn(name="PROJECT_ID", nullable=true) 
 	private Projects projectID;
@@ -69,6 +74,7 @@ public class Invoice {
 	@Column(name = "INVOICE_TYPE")
 	private String invoiceType;
 	
+	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne
     @JoinColumn(name="PARENT_INVOICE_ID")        
 	private Invoice parentInvoiceId;
@@ -139,6 +145,9 @@ public class Invoice {
 	@Column(name = "CREATED_DATE")
 	private Date createdDate;
 	
+	@Column(name = "FILE_URL")
+	private String fileUrl;
+	
 	@Column(name = "CREATED_BY")
 	private String createdBy;
 	
@@ -180,6 +189,7 @@ public class Invoice {
 	@Column(name = "EXPENSES_INVOICES")
 	private String expensesInvoices;
 	
+	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne
     @JoinColumn(name="EXPENSES_ID", nullable=true) 
 	private Expenses expensesId;
@@ -192,28 +202,35 @@ public class Invoice {
 	@Column(name = "IS_GENERATE_AUTOMATIC_INVOICE")
 	private String isAutomaticGenerateInvoice;
 	
+	@NotFound(action=NotFoundAction.IGNORE)
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "invoice")
 	private Set<InvoiceLineItems> invoiceLineItems;
 	
+	@NotFound(action=NotFoundAction.IGNORE)
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "invoice")
 	private Set<InvoiceTax> invoiceTax;
 	
+	@NotFound(action=NotFoundAction.IGNORE)
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "invoice")
 	private Set<InvoiceDocument> invoiceDocumentSet;
 	
 	@Transient
+	@JsonProperty
 	private String clientName;
 	
 	@Transient
+	@JsonProperty
 	private String clientContactName;
 	
 	@Transient
 	private String clientContactEmail;
 	
 	@Transient
+	@JsonProperty
 	private String invoiceDateStr;
 	
 	@Transient
+	@JsonProperty
 	private String dueDateStr;
 
 	@Transient
@@ -235,34 +252,44 @@ public class Invoice {
 	List<InvoiceTax> invoiceTaxList;
 
 	@Transient
+	@JsonProperty
 	private String projectId;
 	
 	@Transient
+	@JsonProperty
 	private String projectName;
 	
 	
 	@Transient
+	@JsonProperty
 	private Integer draftInvoiceCount;
 	
 	@Transient
+	@JsonProperty
 	private Integer paidInvoiceCount;
 	
 	@Transient
+	@JsonProperty
 	private String draftInvoiceAmount;
 	
 	@Transient
+	@JsonProperty
 	private String paidInvoiceAmount;
 	
 	@Transient
+	@JsonProperty
 	private String dueAfterInvoiceAmount;
 	
 	@Transient
+	@JsonProperty
 	private String dueBeforeInvoiceAmount;
 	
 	@Transient
+	@JsonProperty
 	private Integer dueAfterInvoiceCount;
 	
 	@Transient
+	@JsonProperty
 	private Integer dueBeforeInvoiceCount;
 	
 	@Transient
@@ -1052,6 +1079,14 @@ public class Invoice {
 
 	public void setIsAutomaticGenerateInvoice(String isAutomaticGenerateInvoice) {
 		this.isAutomaticGenerateInvoice = isAutomaticGenerateInvoice;
+	}
+
+	public String getFileUrl() {
+		return fileUrl;
+	}
+
+	public void setFileUrl(String fileUrl) {
+		this.fileUrl = fileUrl;
 	}
 
 	

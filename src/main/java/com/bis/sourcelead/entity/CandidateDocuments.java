@@ -17,6 +17,8 @@ import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
 import org.hibernate.annotations.Type;
 
 /**
@@ -38,11 +40,12 @@ public class CandidateDocuments implements Serializable{
     @Column(name = "ID", nullable = false)
 	private Long id;
 	
-	
+	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne
     @JoinColumn(name="ORG_LOCATION_ID", nullable=false )        
     private OrgLocations orgLocationId;
 	
+	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="REQUESTED_DOC_ID")        
     private RequestedDocuments requestedDocumentsId;
@@ -60,6 +63,7 @@ public class CandidateDocuments implements Serializable{
 	@Type(type="text")
 	private String requestedDocRejectedReason;
 	
+	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne
 	@JoinColumn(name = "CANDIDATE_ID", nullable=false)
 	private Candidate candidateId;
@@ -104,6 +108,9 @@ public class CandidateDocuments implements Serializable{
 	
 	@Column(name="IS_CONFIDENTIAL")
 	private String isConfidential;
+	
+	@Column(name = "FILE_URL")
+	private String fileURL;
 	
 	@Transient
 	private Long userIdStr;
@@ -293,5 +300,17 @@ public class CandidateDocuments implements Serializable{
 	public void setUserIdStr(Long userIdStr) {
 		this.userIdStr = userIdStr;
 	}
+
+	public String getFileURL()
+	{
+		return fileURL;
+	}
+
+	public void setFileURL(String fileURL)
+	{
+		this.fileURL = fileURL;
+	}
+	
+	
 	
 }

@@ -70,6 +70,9 @@ public class ContractController {
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
 	
+	@Value("${static.path}")
+	private String staticPath;
+	
 	@Autowired
 	ContractRequestDocumentsService contractRequestDocumentsService;
 	
@@ -161,6 +164,7 @@ public class ContractController {
 		
 		ModelAndView model = new ModelAndView();
 		model.addObject("sourceleadUrl", sourceleadUrl);
+		model.addObject("staticPath", staticPath);
 		model.addObject("contractsCount", contractsCount);
 		model.setViewName("contracts/contractList");
 		return model;

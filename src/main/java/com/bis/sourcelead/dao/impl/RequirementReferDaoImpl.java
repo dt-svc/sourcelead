@@ -248,10 +248,12 @@ public class RequirementReferDaoImpl implements RequirementReferDao {
 
 	@Override
 	@Transactional
-	public Integer getReferJobsByReferType(Long userId, String referType, Date startDate, Date endDate)throws Exception {
+	public Integer getReferJobsByReferType(Long userId, String referType, Date startDateFormat, Date endDateFormat)throws Exception {
 		
 		 Session session = this.sessionFactory.getCurrentSession();
 		 String subQuery = "";
+		 java.sql.Timestamp startDate = new java.sql.Timestamp(startDateFormat.getTime());
+		 java.sql.Timestamp endDate = new java.sql.Timestamp(endDateFormat.getTime());
 		 
 		 if(referType.equalsIgnoreCase("referToMe")){
 			 subQuery = "refer.referToUser.id = :userId ";
@@ -341,11 +343,12 @@ public class RequirementReferDaoImpl implements RequirementReferDao {
 	
 	@Override
 	@Transactional
-	public Integer getReferredByMeCountByStartDateAndEndDate(Long userId, Date startDate, Date endDate)
+	public Integer getReferredByMeCountByStartDateAndEndDate(Long userId, Date startDateFormat, Date endDateFormat)
 			throws Exception {
 		
 		 Session session = this.sessionFactory.getCurrentSession();
-		 	     
+		 java.sql.Timestamp startDate = new java.sql.Timestamp(startDateFormat.getTime());
+		 java.sql.Timestamp endDate = new java.sql.Timestamp(endDateFormat.getTime());    
 		 String query = "select  count(*) from RequirementRefer refer where refer.referFromUser.id = :userId  and (refer.createdDate BETWEEN :startDate and :endDate))";
 	     
 	     List<Long> referCount = session.createQuery(query).setLong("userId", userId)
@@ -362,8 +365,11 @@ public class RequirementReferDaoImpl implements RequirementReferDao {
 	
 	@Override
 	@Transactional
-	public List<RequirementRefer> getReferredByMeCountListByStartDateAndEndDate(Long userId, Date startDate, Date endDate) throws Exception {
+	public List<RequirementRefer> getReferredByMeCountListByStartDateAndEndDate(Long userId, Date startDateFormat, Date endDateFormat) throws Exception {
 		 Session session = this.sessionFactory.getCurrentSession();
+		 
+		 java.sql.Timestamp startDate = new java.sql.Timestamp(startDateFormat.getTime());
+		 java.sql.Timestamp endDate = new java.sql.Timestamp(endDateFormat.getTime());
 		 String query = "from RequirementRefer refer left join fetch refer.requirementId left join fetch refer.referToUser left join fetch refer.referFromUser  where refer.referFromUser.id = :userId  and (refer.createdDate BETWEEN :startDate and :endDate))";
 		 List<RequirementRefer> referCountList = session.createQuery(query).setLong("userId", userId).setDate("startDate", startDate).setDate("endDate", endDate).setCacheable(true).list();
 		

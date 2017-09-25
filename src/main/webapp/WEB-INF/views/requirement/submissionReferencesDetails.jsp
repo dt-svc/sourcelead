@@ -34,12 +34,11 @@
 
 <script>
 function submissionReferencesList(candidateId){
-	var sourceleadUrl ='${sourceleadUrl}';
 	var locationCode ='${SourceLeadWeb_locationCode}';
 	
 	 $.ajax({  
           type : "POST",
-          url: sourceleadUrl+"/getCandidateReferencesListByCandidateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&locationCode="+locationCode,        
+          url: sourceleadUrl+"/getCandidateReferencesListByCandidateId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&locationCode="+locationCode,        
           success :function(json) {
            
 	                	 $("#submissionReferencesList").empty();

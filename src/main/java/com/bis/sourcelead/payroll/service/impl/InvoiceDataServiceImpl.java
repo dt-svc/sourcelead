@@ -30,6 +30,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.bis.sourcelead.dto.InvoiceDetailsDTO;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.payroll.dao.InvoiceDataDao;
@@ -69,9 +71,13 @@ public class InvoiceDataServiceImpl implements InvoiceDataService{
 			int numberOfSheets = workbook.getNumberOfSheets();
 			int isValid = 0;
 			List<InvoiceData>  invoicedatalist = new ArrayList<>();
+			int version;
+			version = getInvoiceDataVersionByOrgLocationId(orgLocation.getId());
+			version += 1;
 			for (int i = 0; i < numberOfSheets; i++) {
 				Sheet sheet = workbook.getSheetAt(i);
 				Iterator<Row> rowIterator = sheet.iterator();
+				
 				while (rowIterator.hasNext()) {
 					Row row = rowIterator.next();
 					if (row.getRowNum() > 0) { // Excluding column names
@@ -80,6 +86,7 @@ public class InvoiceDataServiceImpl implements InvoiceDataService{
 						if (row.getCell(0) != null && !"".equalsIgnoreCase(row.getCell(0).toString())) {
 							String sku = getCellValueAsString(row.getCell(0), fileName);
 							invoiceData.setSku(sku.split("\\.")[0]);
+							invoiceData.setVersion(version);
 						}
 						if (row.getCell(1) != null && !"".equalsIgnoreCase(row.getCell(1).toString())) {
 							String productService = getCellValueAsString(row.getCell(1), fileName);
@@ -246,9 +253,11 @@ public class InvoiceDataServiceImpl implements InvoiceDataService{
 	}
 
 	@Override
-	public List<InvoiceData> getInvoiceDetails(Long userId, Long orgLocationId) throws Exception {
+	public ResponseList<InvoiceData> getInvoiceDetails(InvoiceDetailsDTO invoiceDetailsDTO, OrgLocations orgLocation) throws Exception {
+		return invoiceDataDao.getInvoiceDetails(invoiceDetailsDTO, orgLocation);
 
-		List<InvoiceData> invoiceDataList = invoiceDataDao.getInvoiceDetails(userId, orgLocationId);
+		// TODO do not delete @Rajashekar
+		/*List<InvoiceData> invoiceDataList = invoiceDataDao.getInvoiceDetails(userId, orgLocationId);
 		
 		for (InvoiceData invoiceData : invoiceDataList) {
 			if (invoiceData.getDate() != null) {
@@ -269,10 +278,16 @@ public class InvoiceDataServiceImpl implements InvoiceDataService{
             	return invoiceData1.getEmpName().compareToIgnoreCase(invoiceData2.getEmpName());  
             }  
         });
-		return invoiceDataList;
+		return invoiceDataList;*/
 	}
 	@Override
 	public List<InvoiceData> getInvoiceDetailsByEmpId(Long empId, OrgLocations orgLocations) throws Exception {
 		return invoiceDataDao.getInvoiceDetailsByEmpId(empId,orgLocations);
+	}
+	
+	@Override
+	public int getInvoiceDataVersionByOrgLocationId(Long orgLocationId)
+	{
+		return invoiceDataDao.getInvoiceDataVersionByOrgLocationId(orgLocationId);
 	}
 }

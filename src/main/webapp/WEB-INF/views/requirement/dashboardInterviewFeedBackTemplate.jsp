@@ -23,48 +23,44 @@ position: relative;
 	margin-top: 25px;
 }
 .container-wraper h3 {
-margin: 0;
-margin-bottom: 10px;
-font-size: 20px;
+	margin: 0; margin-bottom: 10px; font-size: 20px;
 }
 .container-wraper .viewTemplate .sjfb-field{
-display: inline-flex;
-margin-bottom: 20px;
+	display: inline-flex; margin-bottom: 15px; padding: 0 15px;
 }
 .container-wraper .viewTemplate .sjfb-field label {
-font-size:14px !important;
-font-weight: 600;
+	font-size:14px !important; font-weight: 600; max-width: inherit; padding-right: 15px; width: 25%;
 }
-.container-wraper viewTemplate .sjfb-field{
-width: 48.5%;
-}
+.choices, .form-control {
+ width: 75%;
+ }
+/* .container-wraper viewTemplate .sjfb-field{
+	width: 48.5%;
+} */
 .ml{
 margin-left: 15px;
 }
 .choices label {
-width: auto !important;
-padding-right: 15px;
+width: auto !important; padding-right: 15px;
 }
 .choices input[type="checkbox"], .choices input[type="radio"]{
- margin-right: 10px;
- position: relative;
- top: 1px;
+ margin-right: 10px; position: relative; top: 1px;
 }
 .stickyfooter {
-	position: absolute;
-	bottom: 0;
-	width: 100%;
-	height: 40px;
-	line-height: 40px;
-	background-color: #f5f5f5;
-	padding:0;
+	position: absolute; bottom: 0; width: 100%; height: 40px; line-height: 40px; background-color: #f5f5f5; padding:0;
 }
-.viewTemplate .sjfb-field {
-    width: 49%;
+.viewTemplate .sjfb-field, choices choices-radio {
+    width: 50%;
  }
- .viewTemplate textarea + p{
+ /* .viewTemplate textarea + p.jquery_form_error_message{
 top:70px !important;
-} 
+} */
+.required-field {
+position: relative;
+}
+p.jquery_form_error_message {
+	width: 100%; position: absolute; bottom: -15px; left: 24%;
+    }
 </style>
 
 <script type="text/javascript">
@@ -225,7 +221,7 @@ $('body').on('blur', '#cancelFunction_form', function() {
 		        	}
 		        	
 		    	     var result = "";
-		    	     result = result + '<div class="col-md-8 col-md-offset-2">';
+		    	     result = result + '<div class="row clearfix">';
 		  			 result = result + '<div class="release-jobs submissionDetails">';
 				     result = result + '<div class="clearfix sub-details">';
 				     result = result + ' <h2 class="active">Interview Feedback Details</h2>';
@@ -381,7 +377,7 @@ function saveInterviewTemplate(){
 		        processData: false,
 		        contentType:false,
 	 	        dataType : 'json',
-	 	    	url : sourceleadUrl+"/savePublicInterviewFeddbackTemlate?${_csrf.parameterName}=${_csrf.token}&templateId="+templateId+"&requirementInterviewid="+requirementInterviewid+"&jsonStringData="+con+"&jsonData="+jsonData,
+	 	    	url : sourceleadUrl+"/savePublicInterviewFeddbackTemlate?"+tokenParamName+"="+tokenValue+"&templateId="+templateId+"&requirementInterviewid="+requirementInterviewid+"&jsonStringData="+con+"&jsonData="+jsonData,
 		        success: function(result) {
 		        	$("#interviewTemplateFormDiv").hide();
 		        	viewTemplate(sourceleadUrl,templateId)
@@ -460,12 +456,12 @@ function generateInterviewFeedbackForm1(sourceleadUrl,templateId) {
                      
                      var reqSymbol = '';
                 	 if(v['req'] == '1'){
-                		reqSymbol = " *";
+                		reqSymbol = "<span class='text-danger paddingLeft'> *</span>";
                 	 }
                      
                      //Add the label
                      if(v['label'] != 'location' ){
-                    	 $currentField.find('label').text(v['label']+reqSymbol);
+                    	 $currentField.find('label').html(v['label']+reqSymbol);
                      }
                      
                      //Any choices?
@@ -499,11 +495,11 @@ function generateInterviewFeedbackForm1(sourceleadUrl,templateId) {
 
                      //Is it required?
                      if (v['req']) {
-                         if (fieldType == 'text') { $currentField.find("input").addClass('required-choice') }
+                         if (fieldType == 'text') { $currentField.find("input").addClass('form-control required-choice') }
                          else if (fieldType == 'calendar') { $currentField.find("calandar").addClass('required-choice') }
-                         else if (fieldType == 'autocomplete') { $currentField.find("autocomplete").addClass('required-choice') }
-                         else if (fieldType == 'textarea') { $currentField.find("textarea").addClass('required-choice') }
-                         else if (fieldType == 'select') { $currentField.find("select").addClass('required-choice') }
+                         else if (fieldType == 'autocomplete') { $currentField.find("autocomplete").addClass('form-control required-choice') }
+                         else if (fieldType == 'textarea') { $currentField.find("textarea").addClass('required-choice form-control') }
+                         else if (fieldType == 'select') { $currentField.find("select").addClass('required-choice form-control') }
                          else if (fieldType == 'radio') { $currentField.find("input").addClass('required-choice') }
                          $currentField.addClass('required-field');
                      }
@@ -628,14 +624,14 @@ function generateInterviewFeedbackForm1(sourceleadUrl,templateId) {
 		    	   }); 
 		    	   
 		    	     var result = "";
-		    	     result = result + '<div class="">';
+		    	     result = result + '<div class="clearfix row">';
 		  			 result = result + '<div class="release-jobs submissionDetails">';
 				     result = result + '<div class="clearfix sub-details">';
 				     result = result + ' <h2 class="active clearfix intfd_dashbord"><span class="col-md-3">Interview Feedback Details</span> <span class="col-md-4">Req. Name:<lable class="paddingLeft" title="'+requirementName+'">'+requirementName+'</label></span><span class="col-md-4">Appli. Name:<lable class="paddingLeft" title="'+applicantName+'">'+applicantName+'</label></span></h2>';
 				     result = result + ' <div class="content clearfix">'; 
 				     result = result + submissionDetails;
 				     result = result + ' </div>';
-	       	         result = result +"<h4><a href='<c:url value='/dashboard/"+orgLocations+"'/>''> <span title='Back'> Back</span> </a> </h4>";
+	       	         result = result +"<h5><a class='btn btn-primary btn-sm' href='<c:url value='/dashboard/"+orgLocations+"'/>''> <span title='Back'><i class='fa fa-angle-double-left paddingRight'></i>Back</span> </a> </h5>";
 				     result = result + ' </div>';
 	                 result = result + ' </div>';
                      result = result + ' </div>'; 

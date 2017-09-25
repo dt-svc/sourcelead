@@ -33,7 +33,7 @@ position: relative; top:7px;
 
 <script>
 function editCandidate(candidateId){
-	  var sourceleadUrl ='${sourceleadUrl}';
+	  
 	  var loginCountryName = '${loginCountryName}';
 		var validationSettings = {
 		        errorMessagePosition : 'element',
@@ -45,7 +45,7 @@ function editCandidate(candidateId){
 	  
 	  $.ajax({
 	        type : "POST",
-	         url: sourceleadUrl+"/getCandidateById?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,        
+	         url: sourceleadUrl+"/getCandidateById?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
 	         success :function(data) {  
 	              if(data != null && data != 'undefined' && data != ""){  
 	              	 var json = JSON.parse(data);
@@ -139,7 +139,8 @@ function editCandidate(candidateId){
 								result  = result + '         <form id="candidateProfileEdit_form" name="candidateProfileEdit_form" method="post">';
 								result = result + '		      <div class="form-horizontal clearfix">';
 								result = result + '<input type="hidden" class="form-control input-sm" name="candidateId"  value="'+candidateId+'">';
-								
+								result  = result + '<input type="hidden" id="orgloationId" name="orgloationId" value="${SourceLeadWeb_orgLocations.id}" />';
+								result  = result + '<input type="hidden" id="loginUserId" name="loginUserId" value="${SourceLeadWeb_user.id}" />';
 								result = result + '		        <div class="clearfix mb10">';
 								result = result + '		          <div class="col-md-6">';
 								result = result + '		            <input type="text" class="form-control input-sm" name="firstName" value="'+json.firstName+'" placeholder="First Name *" field-name="First Name"  data-validation="required validate_AlphaNumber validate_Space validate_length length1-100">';
@@ -368,7 +369,8 @@ function editCandidate(candidateId){
 								
 								result = result + '</div>';
 								
-								
+								result = result + '<input type="hidden" value="'+json.designationType+'" id="hiddenId" >';
+
 								result = result + '<div class="clearfix mb10">';
 								
 	                            result = result + '<div class="col-md-6 custom-fields">';
@@ -386,19 +388,10 @@ function editCandidate(candidateId){
 								result = result + '<option  '+(json.designationType == "Other" ? "selected" : '') +'>Other</option>';
 								result = result + ' </select>';
 								result = result + '</div>';
-								
 								result = result + '</div>';
-								 
-								
-								if(json.designationType == "Other"){
-								result = result + '<div class="col-md-6 designationTypeDiv" id="designationTypeDiv">';
+								result = result + '<div class="col-md-6 designationTypeDiv" id="designationTypeDiv" style="display:none">';
 								result = result + '<input type="text" class="form-control input-sm" name="designationOtherType"  id="designationOtherType1" value="'+designationOtherType+'" placeholder="Employment Other Type" field-name="Employment Other Type" data-validation="validate_Space validate_length length2-50" data-validation-optional="true">';
 								result = result + '</div>';
-								  }
-								
-								
-								
-								
 							    result = result + '<span class="" id="hideVendor" style="display:none">'; 
 								result = result + '<div class="col-md-6 custom-fields select-arrow" id="errorvendor">';
 								result = result + '<select  class="form-control" name="vendors"  id="vendorName" value="'+vendorName+'" placeholder="select Vendor" field-name="Vendor" onchange="getVendorContactList();removeValiationVendor();">';
@@ -406,7 +399,6 @@ function editCandidate(candidateId){
 								result = result + '<input type="hidden" name="updateVendorName" id="updateVendorName" value="'+vendorName+'" />';
 								result = result + '<input type="hidden" name="updateVendorOrgRelationId" id="updateVendorOrgRelationId" value="'+json.vendorOrgRelationId+'" />';
 								result = result + '</div>';
-								
 								result = result + '<div class="col-md-6 custom-fields select-arrow mt10" id="errorvendorContact">';
 								result = result + '<select  class="form-control" name="vendorcontact"  value="'+json.vendorContactName+'" id="vendorcontactName" field-name="Vendor Contact"  placeholder="select Vendor Contact" onchange="removeValiationVendorContact();">';
 								result = result + '</select>';
@@ -505,11 +497,11 @@ function editCandidate(candidateId){
 
 <script>
 function deleteCandidate(candidateId){
-	  var sourceleadUrl ='${sourceleadUrl}';
 	  var reason = document.getElementById("rejectReason").value;
+	  var requirementId = $("#requirementId").val();
 	  $.ajax({
         type : "POST",
-         url: sourceleadUrl+"/deleteCandidateByCandidateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&reason="+reason,        
+         url: sourceleadUrl+"/deleteCandidateByCandidateId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&reason="+reason+"&candidateType=Candidate",        
          success :function(data) {
               if(data != null && data != 'undefined' && data != ""){
             		 if( data.indexOf('Sign In') >= 0){
@@ -519,7 +511,7 @@ function deleteCandidate(candidateId){
             			 location.replace(sourceleadUrl+"/errorPage");
             		 }
             		 else{
-            			 location.replace(sourceleadUrl+"/candidatesList");
+            			 requirementRecommendations(requirementId);
             		 }
                 }
                  },
@@ -574,7 +566,6 @@ function removeCandidateAlertMessage(candidateId){
 <script type="text/javascript">
 function reActivateCandidateAlertMessage(candidateId){
 	var result = "";
-	var sourceleadUrl ='${sourceleadUrl}';
 	var loginUserId = '${SourceLeadWeb_userId}';
 	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	var message = confirm("You are choosing to ReActivate the Candidate");
@@ -582,7 +573,7 @@ function reActivateCandidateAlertMessage(candidateId){
 		var reactivate = '1';
 		$.ajax({
 	        type : "POST",
-	         url: sourceleadUrl+"/reActivateCandidateByCandidateId?${_csrf.parameterName}=${_csrf.token}&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&reActivate="+reactivate,        
+	         url: sourceleadUrl+"/reActivateCandidateByCandidateId?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&reActivate="+reactivate,        
 	         success :function(data) {
 	               if(data != null && data != 'undefined' && data != ""){
 	            		 if( data.indexOf('Sign In') >= 0){
@@ -614,12 +605,11 @@ function reActivateCandidateAlertMessage(candidateId){
 --%>
 <script>
 function candidateProfile(candidateId){
-	  var sourceleadUrl = '${sourceleadUrl}';
 	  var skillsList = '${skillsList}'; 
 	  
 	  $.ajax({
         type : "POST",
-         url: sourceleadUrl+"/getCandidateById?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,        
+         url: sourceleadUrl+"/getCandidateById?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
          success :function(data) {  
               if(data != null && data != 'undefined' && data != ""){  
               	var json = JSON.parse(data);
@@ -639,9 +629,9 @@ function candidateProfile(candidateId){
 							}
 							result = result+'<div id="removeCandidateAlert" ></div>  ';
 							if(json.status == 0){
-								result = result + '<div class="project_tabs_inn_head"><a href="#" class="positionRelative showInfo"><i class="glyphicon glyphicon-info-sign"></i>Terminated<span class="infoContent col-xs-12 col-md-5"> '+json.terminateReason+' </span></a><a href="javascript:void(0)" onClick="reActivateCandidateAlertMessage('+candidateId+');"><i class="glyphicon glyphicon-trash"></i>ReActivate</a> ';
+								result = result + '<div class="project_tabs_inn_head"><a href="javascript:void(0)" class="positionRelative showInfo"><i class="glyphicon glyphicon-info-sign"></i>Terminated<span class="infoContent col-xs-12 col-md-5"> '+json.terminateReason+' </span></a><a href="javascript:void(0)" onClick="reActivateCandidateAlertMessage('+candidateId+');"><i class="glyphicon glyphicon-trash"></i>ReActivate</a> ';
 							}else{
-								result = result + '<div class="project_tabs_inn_head "> <a href="#" onClick="editCandidate('+candidateId+');" class="mr addUser-org iconpostion"><i class="glyphicon glyphicon-pencil"></i>Edit</a> <a href="javascript:void(0)" onClick="removeCandidateAlertMessage('+candidateId+');"><i class="glyphicon glyphicon-trash"></i>Remove</a> ';
+								result = result + '<div class="project_tabs_inn_head "> <a href="javascript:void(0)" onClick="editCandidate('+candidateId+');" class="mr addUser-org iconpostion"><i class="glyphicon glyphicon-pencil"></i>Edit</a> <a href="javascript:void(0)" onClick="removeCandidateAlertMessage('+candidateId+');"><i class="glyphicon glyphicon-trash"></i>Remove</a> ';
 
 							}
 							result = result + '<div id="profileEditPopup"></div>';
@@ -893,13 +883,12 @@ function candidateProfile(candidateId){
  function saveSkils(candidateId){
 	 var skillName = $("#skillName").val();
 	 var jsonData = encodeURIComponent(skillName);
-	 var sourceleadUrl ='${sourceleadUrl}';
 	 var loginUserId = '${SourceLeadWeb_userId}';
 	 var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	 if(skillName != null && skillName != '' && skillName !='undefined'){
-		 Urlcheck = sourceleadUrl+"/saveOrUpdateOnlySkillBycandidateId?${_csrf.parameterName}=${_csrf.token}&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&skillName="+jsonData
+		 Urlcheck = sourceleadUrl+"/saveOrUpdateOnlySkillBycandidateId?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&skillName="+jsonData
 	 }else{
-		 Urlcheck = sourceleadUrl+"/saveOrUpdateOnlySkillBycandidateId?${_csrf.parameterName}=${_csrf.token}&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&skillName="+""
+		 Urlcheck = sourceleadUrl+"/saveOrUpdateOnlySkillBycandidateId?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&skillName="+""
 	 }
 	 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	 $.ajax({  
@@ -922,7 +911,7 @@ function candidateProfile(candidateId){
 		 var sourceleadUrl ='${sourceleadUrl}';
 		 $.ajax({  
 	          type : "POST",
-	          url: sourceleadUrl+"/saveSkilsBycandidateID?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&skillName="+skillName,        
+	          url: sourceleadUrl+"/saveSkilsBycandidateID?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&skillName="+skillName,        
 	          success :function(data) {
 	               if(data != null && data != 'undefined' && data != ""){
 	            	   candidateSkillsList(candidateId);
@@ -1016,14 +1005,12 @@ function removeSkillPopUp(candidateId){
 				dateFormat : 'yyyy/mm/dd' 
 	         }; 
 		 if ($('#candidateProfileEdit_form').validate(false, validationSettings)){ 
-			var frm = $('#candidateProfileEdit_form').serializeFormJSON();
-			 var con = JSON.stringify(frm);
-				 con = con.replace(/[{}]/g, "");
-				var jsonData = encodeURIComponent(con);
-			var sourceleadUrl = '${sourceleadUrl}';
+			
+			var formData = getFormData('candidateProfileEdit_form');
 			$.ajax({
 						type : "POST",
-						url : sourceleadUrl+"/updateCandidate?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
+						data : formData,
+						url : sourceleadUrl+"/updateCandidate?"+tokenParamName+"="+tokenValue+"",
 						success : function(result) {
 							clientSideBar(candidateId);
 						},
@@ -1056,11 +1043,10 @@ function cancelEdit(){
 --%>  
 <script>
 function candidateSkillsList(candidateId){  
-	 var sourceleadUrl ='${sourceleadUrl}';
 	// getCandidatesSkillsBycandidateID
 	 $.ajax({  
           type : "POST",
-          url: sourceleadUrl+"/getCandidateById?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,        
+          url: sourceleadUrl+"/getCandidateById?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
           success :function(data) {
                if(data != null && data != 'undefined' && data != "" && data != '[]'){
              		 if( data.indexOf('Sign In') >= 0){
@@ -1224,10 +1210,9 @@ function candidateSkillsList(candidateId){
 
 <script>
 function removeSkillById(candidateId, skillId){
-	  var sourceleadUrl ='${sourceleadUrl}';
 	  $.ajax({
         type : "POST",
-         url: sourceleadUrl+"/removeSkillBySkillId?${_csrf.parameterName}=${_csrf.token}&skillId="+skillId,        
+         url: sourceleadUrl+"/removeSkillBySkillId?"+tokenParamName+"="+tokenValue+"&skillId="+skillId,        
          success :function(data) {
               if(data != null && data != 'undefined' && data != ""){
             		 if( data.indexOf('Sign In') >= 0){
@@ -1287,12 +1272,11 @@ function removeSkillById(candidateId, skillId){
 --%>         
 <script type="text/javascript">
 	function fieldUpdateCandidate(candidateSkillId,local) {
-			var sourceleadUrl = '${sourceleadUrl}'; 
 			var value = local.value;
 			var name = local.id;
 			$.ajax({
 						type : "POST",
-						url : sourceleadUrl+"/fieldUpdateCandidate?${_csrf.parameterName}=${_csrf.token}&candidateSkillId="+candidateSkillId+"&name="+name+"&value="+value,
+						url : sourceleadUrl+"/fieldUpdateCandidate?"+tokenParamName+"="+tokenValue+"&candidateSkillId="+candidateSkillId+"&name="+name+"&value="+value,
 						success : function(result) {
 							 
 						},
@@ -1410,11 +1394,10 @@ function updateDesignationType(){
 	 var email = $('#email').val(); 
 	 var candidateType = $('#candidateType').val();
 	 $('#emailDiv').find('p.jquery_form_error_message').remove();
-	 var sourceleadUrl ='${sourceleadUrl}';
 	 if(email != null && email != ""){
 		 $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/validateCandidateEmail?${_csrf.parameterName}=${_csrf.token}&email="+email+"&candidateType="+candidateType, 
+		        url: sourceleadUrl+"/validateCandidateEmail?"+tokenParamName+"="+tokenValue+"&email="+email+"&candidateType="+candidateType, 
 		        success: function(data) {
 		        	if(data == 'true'){
 		        		 
@@ -1441,10 +1424,9 @@ function updateDesignationType(){
  
  <script>
 	function employeeSubmissionProfile(candidateId) {
-		var sourceleadUrl = '${sourceleadUrl}';
 				$.ajax({
 					type : "POST",
-					url : sourceleadUrl	+ "/getCandidatesEmployersListByCandidateIdAndOrgLocationID?${_csrf.parameterName}=${_csrf.token}&candidateId=" + candidateId,
+					url : sourceleadUrl	+ "/getCandidatesEmployersListByCandidateIdAndOrgLocationID?"+tokenParamName+"="+tokenValue+"&candidateId=" + candidateId,
 					success : function(data) {
 						if (data != null && data != 'undefined' && data != "" && data != '[]') {
 								$("#employeeSubmissionDetailsList").empty();
@@ -1515,10 +1497,9 @@ function updateDesignationType(){
 
 <script>
 function educationSubmissionProfile(candidateId){
-	 var sourceleadUrl ='${sourceleadUrl}';
 	 $.ajax({  
           type : "POST",
-          url: sourceleadUrl+"/getCandidateEducationListByCandidateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,        
+          url: sourceleadUrl+"/getCandidateEducationListByCandidateId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
           success :function(data) {
         	  if (data != null && data != 'undefined' && data != "" && data != '[]') {
 	                	 $("#educationSubmissionDetailsList").empty();
@@ -1598,10 +1579,9 @@ function educationSubmissionProfile(candidateId){
 
 <script>
 function certificationSubmissionProfile(candidateId){
-	 var sourceleadUrl ='${sourceleadUrl}';
 	 $.ajax({  
           type : "POST",
-          url: sourceleadUrl+"/getCandidateCertificationListByCandidateIdAndOrgLocationID?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,        
+          url: sourceleadUrl+"/getCandidateCertificationListByCandidateIdAndOrgLocationID?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
           success :function(data) {
         	  if (data != null && data != 'undefined' && data != "" && data != '[]') {
 	                	 $("#certificationSubmissionProfile").empty();
@@ -1658,54 +1638,45 @@ function certificationSubmissionProfile(candidateId){
 </script>
 <script>
 function updateDesignationOtherType(){
-	var employementType = $('#designationType1').val(); 
-	
-	if(employementType == 'C2C'){
-		document.getElementById("hideVendor").style.display="block";
-		 $('#vendorName').attr("data-validation","required"); 
-		 $('#vendorcontactName').attr("data-validation","required"); 
+	 var candidateType = $('#designationType1').val(); 
+	if(candidateType == 'Other' &&  candidateType != '' && candidateType !='undefined'){
+		  document.getElementById("designationTypeDiv").style.display="block";
+		  $("#designationOtherType").attr("data-validation-optional", "true");
+		  $("#designationOtherType").attr("data-validation", "validate_Space validate_length length2-250");
 	}else{
-		 document.getElementById("hideVendor").style.display="none";
-		 $('#vendorName').removeAttr("data-validation","required"); 
-		 $('#vendorcontactName').removeAttr("data-validation","required"); 
-		 
-		 $('#vendorName').val(''); 
-		 $('#vendorcontactName').val(''); 
-		 
-	}
-	
-	if(employementType == 'C2C-1099'){
-		 document.getElementById("hideVendor").style.display="block";
-		 $('#vendorName').attr("data-validation-optional", "true"); 
-		 $('#vendorcontactName').attr("data-validation-optional", "true");  
-		 
-		 $("#errorvendor").find("p.jquery_form_error_message").remove();
-		 $("#errorvendorContact").find("p.jquery_form_error_message").remove();
-	}else{
-		 $('#vendorName').removeAttr("data-validation-optional", "true"); 
-		 $('#vendorcontactName').removeAttr("data-validation-optional", "true");  
-		 
-		 $('#vendorName').val(''); 
-		 $('#vendorcontactName').val(''); 
+		   document.getElementById("designationTypeDiv").style.display="none";
+		  $("#designationOtherType").attr("data-validation-optional", "true");
+		  $("#designationTypeDiv").find('p.jquery_form_error_message').remove();
 	} 
-	
-	 
-	$('#designationType1 + p').remove();
-	
 }
-
-
-
-
-
 </script>
+
 <script>
 function employementType(){
 	 var employementType = $('#designationType1').val(); 
+	 var preval = document.getElementById("hiddenId").value;
 		if(employementType == 'C2C'){
-			document.getElementById("hideVendor").style.display="block";
+			/* document.getElementById("hideVendor").style.display="block";
 			 $('#vendorName').attr("data-validation","required"); 
 			 $('#vendorcontactName').attr("data-validation","required"); 
+			 getVendorsByOrgLocation(); */
+			 if(employementType == preval){
+					document.getElementById("hideVendor").style.display="block";
+					 $('#vendorName').attr("data-validation","required"); 
+					 $('#vendorcontactName').attr("data-validation","required");
+					 getVendorsByOrgLocation();
+				}else{
+					document.getElementById("hideVendor").style.display="block";
+				 $('#vendorName').attr("data-validation","required"); 
+				 $('#vendorcontactName').attr("data-validation","required"); 
+				  $('#vendorName').val(''); 
+				 
+		            $('#vendorName').trigger("chosen:updated");
+		            $('#vendorcontactName').empty();
+			//	 $('#vendorcontact').val(''); 
+		           $('#vendorcontactName').trigger("chosen:updated");
+				} 
+			 
 		}else{
 			 document.getElementById("hideVendor").style.display="none";
 			 $('#vendorName').removeAttr("data-validation","required"); 
@@ -1713,28 +1684,44 @@ function employementType(){
 			 
 			 $('#vendorName').val(''); 
 			 $('#vendorcontactName').val(''); 
+			 $('#vendorName').trigger("chosen:updated");
+	            $('#vendorcontactName').empty();
+		//	 $('#vendorcontact').val(''); 
+	           $('#vendorcontactName').trigger("chosen:updated");
 			 
 		}
 		
 		if(employementType == 'C2C-1099'){
-			 document.getElementById("hideVendor").style.display="block";
-			 $('#vendorName').attr("data-validation-optional", "true"); 
-			 $('#vendorcontactName').attr("data-validation-optional", "true");  
+			if(employementType == preval){
+				document.getElementById("hideVendor").style.display="block";
+				 $('#vendorName').attr("data-validation","required"); 
+				 $('#vendorcontactName').attr("data-validation","required");
+				 getVendorsByOrgLocation();
+			}else{
+				document.getElementById("hideVendor").style.display="block";
+			 $('#vendorName').attr("data-validation","required"); 
+			 $('#vendorcontactName').attr("data-validation","required"); 
+			  $('#vendorName').val(''); 
 			 
-			 $("#errorvendor").find("p.jquery_form_error_message").remove();
-			 $("#errorvendorContact").find("p.jquery_form_error_message").remove();
+	            $('#vendorName').trigger("chosen:updated");
+	            $('#vendorcontactName').empty();
+		//	 $('#vendorcontact').val(''); 
+	           $('#vendorcontactName').trigger("chosen:updated");
+			} 
 		}else{
 			 $('#vendorName').removeAttr("data-validation-optional", "true"); 
 			 $('#vendorcontactName').removeAttr("data-validation-optional", "true");  
 			 
 			 $('#vendorName').val(''); 
 			 $('#vendorcontactName').val(''); 
+			 
+			 $('#vendorName').trigger("chosen:updated");
+	            $('#vendorcontactName').empty();
+		//	 $('#vendorcontact').val(''); 
+	           $('#vendorcontactName').trigger("chosen:updated");
+			 
 		} 
-		
-		 
 		$('#designationType1 + p').remove();
-		
-	 
 }
 </script>
 
@@ -1743,7 +1730,6 @@ function employementType(){
  function getVendorsByOrgLocation(){
 	 var vendorName = $("#updateVendorName").val();
 	 var vendorOrgRelationId = $("#updateVendorOrgRelationId").val();
-	 var sourceleadUrl ='${sourceleadUrl}';
 		 $.ajax({
 		    	type: "GET",
 		        url: sourceleadUrl+"/getVendorsByOrgLocation?", 
@@ -1784,10 +1770,9 @@ function employementType(){
 		 if(orgRelationID != null && orgRelationID != '' && orgRelationID != 'undefined'){
 			 var vendorContactName = $("#updateVendorContactName").val();
 			 var vendorSpocId = $("#updateSpocId").val();
-		     var sourceleadUrl ='${sourceleadUrl}';
 			 $.ajax({
 				    type: "POST",
-			        url: sourceleadUrl+"/getOrgSpocsList?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+orgRelationID+"&type=Vendor",  
+			        url: sourceleadUrl+"/getOrgSpocsList?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationID+"&type=Vendor",  
 			        success: function(data) {
 			        	var json = JSON.parse(data);
 			        	$('#vendorcontactName').empty();
@@ -1845,13 +1830,12 @@ function employementType(){
  function saveVisas(candidateId){
 	 var visaName = $("#visaName").val();
 	 var jsonData = encodeURIComponent(visaName);
-	 var sourceleadUrl ='${sourceleadUrl}';
 	 var loginUserId = '${SourceLeadWeb_userId}';
 	 var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	 if(visaName != null && visaName != '' && visaName !='undefined'){
-		 Urlcheck = sourceleadUrl+"/saveOrUpdateOnlyVisaBycandidateId?${_csrf.parameterName}=${_csrf.token}&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&visaName="+jsonData
+		 Urlcheck = sourceleadUrl+"/saveOrUpdateOnlyVisaBycandidateId?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&visaName="+jsonData
 	 }else{
-		 Urlcheck = sourceleadUrl+"/saveOrUpdateOnlyVisaBycandidateId?${_csrf.parameterName}=${_csrf.token}&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&visaName="+""
+		 Urlcheck = sourceleadUrl+"/saveOrUpdateOnlyVisaBycandidateId?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&visaName="+""
 	 }
 	 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	 $.ajax({  

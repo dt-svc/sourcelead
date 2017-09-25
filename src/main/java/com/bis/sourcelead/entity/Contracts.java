@@ -1,6 +1,5 @@
 package com.bis.sourcelead.entity;
 
-import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
@@ -18,6 +17,8 @@ import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
 
 /**
  * Entity for CONTRACTS_TEMPLATE
@@ -46,10 +47,12 @@ public class Contracts {
 	@Column(name = "TYPE_OF_CONTRACT")
 	private String typeOfContract;
 	
+	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne 
     @JoinColumn(name="TEMPLATE_ID", nullable=false )  
 	private ContractsTemplate contractsTemplate; 
 	 
+	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "OWNER_USER_ID")
 	private User ownerUserId;
@@ -69,23 +72,27 @@ public class Contracts {
 	@Column(name = "INITIATOR_TYPE")
 	private String initiatorType;
 	
+	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne
     @JoinColumn(name="ORG_LOCATION_ID", nullable=false )     
 	private OrgLocations orgLocationId;
 	
+	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne
     @JoinColumn(name="PARENT_CONTRACT_ID")     
 	private Contracts parentContractId;
 	
+	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne
     @JoinColumn(name="CONTRACT_ORG_LOCATION_ID", nullable=false )     
 	private OrgLocations contractOrgLocationId;
 	
-	
+	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "CONTACT_USER_ID")
 	private User contactUser;
 	
+	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "ORG_RELATION_ID")
 	private OrgRelations orgRelations;
@@ -93,6 +100,7 @@ public class Contracts {
 	/*@Column(name = "STATE_OF_JURISDICTION")
 	private String stateOfJurisdiction;*/
 	
+	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "APPROVER_USER_ID") 
 	private User approverUser;
@@ -133,10 +141,12 @@ public class Contracts {
 	@Column(name = "TAX_TYPE")
 	private String taxType;
 	
+	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="REQUIREMENT_SUBMISSION_ID")     
 	private RequirementSubmission requirementSubmission;
 	
+	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="CANDIDATE_ID")     
 	private Candidate candidate;
@@ -189,6 +199,9 @@ public class Contracts {
 	
 	@Column(name = "FILE_TYPE")
 	private String fileType;
+	
+	@Column(name = "FILE_URL")
+	private String fileURL;
 	
 	@Column(name = "REJECTED_REASON" , columnDefinition = "TEXT default NULL")
 	private String rejectedReason;
@@ -1043,6 +1056,16 @@ public class Contracts {
 	public void setRejectedReason(String rejectedReason)
 	{
 		this.rejectedReason = rejectedReason;
+	}
+
+	public String getFileURL()
+	{
+		return fileURL;
+	}
+
+	public void setFileURL(String fileURL)
+	{
+		this.fileURL = fileURL;
 	}
 
 }

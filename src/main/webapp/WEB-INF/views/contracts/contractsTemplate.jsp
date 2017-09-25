@@ -62,6 +62,10 @@ $(document).ready(function(){
 						<li><input id="c4" type="checkbox" name="templateType" value="Vendor SOW" onclick="getTemplateList();"><label for="c4">Vendor SOW</label></li>
 						<li><input id="c5" type="checkbox" name="templateType" value="NDA" onclick="getTemplateList();"><label for="c5">NDA</label></li>
 						<li><input id="c6" type="checkbox" name="templateType" value="NSA" onclick="getTemplateList();"><label for="c6">NSA</label></li>
+	                	<li><input id="c7" type="checkbox" name="templateType" value="W-4 Form" onclick="getTemplateList();"><label for="c7">W-4 Form</label></li>               
+                        <li><input id="c8" type="checkbox" name="templateType" value="I-9 Form" onclick="getTemplateList();"><label for="c8">I-9 Form</label></li> 
+                        <li><input id="c9" type="checkbox" name="templateType" value="Full Time Offer" onclick="getTemplateList();"><label for="c9">Full Time Offer</label></li> 
+ 
 					</ul>
 				</div>	                	
 			</li>
@@ -81,107 +85,144 @@ $(document).ready(function(){
     
 </div>
       
-<script type="text/javascript">
+ <script type="text/javascript">
 function getTemplateList(){
-	
-	var templateType = [];
-	$('input:checkbox[name=templateType]:checked').each(function() 
-    {
-		templateType.push($(this).val());
-    });
-	
+		var templateType = [];
+		$('input:checkbox[name=templateType]:checked').each(function() 
+	    {
+			templateType.push($(this).val());
+	    });
 		var sourceleadUrl ='${sourceleadUrl}';
-		 $.ajax({
-	       type : "GET",
-	        url: sourceleadUrl+"/getAllTemplatesByOrgLocationId?${_csrf.parameterName}=${_csrf.token}&templateType="+templateType,       
-	        success :function(data) {
-	       	 preparedTemplateList(data);
-	       },
-	   }); 
+		var searchValue = $("#contractTemplateTableSearch").val();
+		var orgLocationId = '${SourceLeadWeb_orgLocationId}';
+		searchValue = searchValue ? searchValue : "";
+		var url = sourceleadUrl+"/getAllTemplatesByOrgLocationId?${_csrf.parameterName}=${_csrf.token}&templateType="+templateType+"&orgLocationId="+orgLocationId+"&searchValue="+searchValue;
+		/* url += "&"+$($('#payroll_list_form')[0]).serialize(); */
+	    prepareTemplateList(url,sourceleadUrl);
 }
-</script>
-<!-- Content Area Ends-->
-
+</script>      
 
 <script>
-function preparedTemplateList(data){
-	var sourceleadUrl ='${sourceleadUrl}';
-	var result = '';
-	result = result +  '<table id="contractTemplateTable" class="display" cellspacing="0" width="100%" >';
-	result = result + '	<thead>';
+function prepareTemplateList(url,sourceleadUrl){
+	 $("#templateList").removeAttr("style");
+ 	 $("#templateList").empty();
+ 	 var result = "";
+ 	result = result +" <div class='clearfix'>";
+ 	result = result +" <div class='remove_search'>";
+ 	result = result +" <input type='text' placeholder='Search' id='contractTemplateTableSearch'/>";
+ 	result = result +"</div>";
+ 	result = result +"</div>";
+ 	result = result +"<table id='contractTemplatePagination' class='display' cellspacing='0' width='100%' >"; 
+    result = result + '	<thead>';
 	result = result + '   <tr>';
 	result = result + '     <th>Template Title</th>';
 	result = result + '    <th>Template Type</th>';
 	result = result + '    <th>Description</th>';
-	result = result + '    <th>Actions</th>';
-// 	result = result + '    <th>Document</th>';
-	result = result + '   </tr>';
-	result = result + '	</thead>';
-	result = result + '	<tbody>';
-	var json = JSON.parse(data);
-    for (var i = 0; i < json.length; i++) {
-    	var report= json[i];
-    	result = result + '<tr id="row'+report.id+'">';
-        result = result + '<td>';
-        if(report.templateName != null && report.templateName != '' && report.templateName !='undefined'){
-           	result = result + '<div><span>'+report.templateName+'</span></div>';
-     		} else{
-    		result = result + '<div><span>---</span></div>';
-    		    }
-        result = result + '</td>';
-    	result = result + '<td>';
-        if(report.templateType != null && report.templateType != '' && report.templateType !='undefined'){
-       	result = result + '<div><span>'+report.templateType+'</span></div>';
- 		} else{
-		result = result + '<div><span>---</span></div>';
-		    }
-        result = result + '</td>';
-        result = result + '<td>';
-        if(report.description != null && report.description != '' && report.description !='undefined'){
-         result = result + '<div><span>'+report.description+'</span></div>';
-        }
-        else{
-		 result = result + '<div><span>---</span></div>';
-		    }
-         result = result + '</td>';
-         result = result + '<td>';
-        /*  result = result + '<div><span onclick="previewPDF('+report.id+')">previews/edit</span></div>'; */
-         '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_CONTRACT_TEMPLATE\')">';
-         result = result + '<div class="tbldata-dotdot-vsm"><a href="#" title="Preview" class="mr"><i class="fa fa-eye" onclick="previewPDF(\''+report.templateUUID+'\',\''+report.templateName+'\')"></i></a> <a href=\"'+sourceleadUrl+'/editTemplate?templateId='+report.id+'\" title="Edit"><i class="fa fa-edit"></i></a></div>';
-         '</sec:authorize>';
-         result = result + '</td>';
-         /* result = result + '<td>';
-         result = result + '<div><a class="glyphicon glyphicon-paperclip pinCo" href="" onclick="downloadPdfTemplate('+report.id+')"></a></div>';
-         result = result + '</td>'; */
-        result = result + '</tr>';
-    }
-	result = result + '	</tbody>';
-	result = result + '</table>';
-	$("#templateList").empty();
-    $("#templateList").append(result);
-    listTemplatePagination();	
-	
+ 	result = result + '    <th>Actions</th>';
+//  result = result + '    <th>Document</th>';
+ 	result = result + '   </tr>';
+ 	result = result + '	</thead>';
+        result = result +"</table>";
+      $("#templateList").append(result);
+      contractTemplatePagination(url,sourceleadUrl); 
 }
-
 </script>
-
 
 <script>
-function listTemplatePagination(){
-	$('#contractTemplateTable').DataTable({ 
-    	"scrollCollapse": false,
-    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
-    	"bLengthChange": true,
-    	"bDestroy": true,
-    	"ordering": false,
-    	"oLanguage": {
-     		"sSearch": "",
-     		 "sZeroRecords": "", "sEmptyTable": ""
-     	}
+function contractTemplatePagination(url,sourceleadUrl){
+	
+	var colIndex = 0;
+	/*$.fn.dataTable.moment( 'DD-MM-YYYY' );*/
+    $('#contractTemplatePagination').DataTable( { 
+    		"processing": true,
+        "serverSide": true,
+        "searching": false,
+        "ajax": $.fn.dataTable.pipeline( {
+            url: url,
+            method: 'POST',
+            pages: 10
+        }),
+        "columns": [
+            { "data": "templateName" },
+            { "data": "templateType"},
+            { "data": "description"},
+            { "data": "action"}
+            
+        ],
+        "columnDefs": [ {
+	    	  	"targets": colIndex++,
+	    	  	"data": "templateName",
+	    	  	"render": function(data, type, report, meta) {
+	    	  		  var result = "";
+	    	  		if(report.templateName != null && report.templateName != '' && report.templateName !='undefined'){
+	    	                   result = result + '<div><span title="'+report.templateName+'">'+report.templateName+'</span></div>';
+	    	     		} else{
+	    	    		       result = result + '<div><span>---</span></div>';
+	    	    		    }
+		             return result;
+	    	  	}
+	      },{
+	    	  "targets": colIndex++,
+              "data": "templateType",
+              "render": function ( data, type, report, meta ) {
+            	  var result = "";
+            	  if(report.templateType != null && report.templateType != '' && report.templateType !='undefined'){
+            	       	       result = result + '<div><span title="'+report.templateType+'">'+report.templateType+'</span></div>';
+            	 		} else{
+            			       result = result + '<div><span>---</span></div>';
+            			    }
+	              return result;
+              		
+              }
+	          },{
+             "targets": colIndex++,
+             "data": "description",
+             "render": function ( data, type, report, meta ) {
+             	var result = "";
+             	if(report.description != null && report.description != '' && report.description !='undefined'){
+                         result = result + '<div><span title="'+report.description+'">'+report.description+'</span></div>';
+                    }else{
+            		        result = result + '<div><span>---</span></div>';
+            		    }
+             	
+             	
+             	return result;
+             }
+ 	          
+          },   {
+             "targets": colIndex++,
+             "data": "action",
+             "render": function ( data, type, report, meta ) {
+             	var result = "";
+             	'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_CONTRACT_TEMPLATE\')">';
+             	result = result + '<div class="tbldata-dotdot-vsm"><a href="#" title="Preview" class="mr"><i class="fa fa-eye" onclick="previewPDF(\''+report.templateUUID+'\',\''+report.templateName+'\');" ></i></a> <a href="'+sourceleadUrl+'/editTemplate?templateId='+report.id+'" title="Edit"><i class="fa fa-edit"></i></a></div>';
+             	'</sec:authorize>';
+             	return result;
+                }
+             	
+             }], 
+          
+	    	"scrollCollapse": false,
+	    	"lengthMenu": [[10, 15, 20,], [10, 15, 20,]],
+	    	"aaSorting": [[0,'desc']],
+	    	"bLengthChange": true,
+	    	"bDestroy": true,
+	    	"ordering": true,
+	    	"oLanguage": {
+	     		"sSearch": "",
+	     		 "sZeroRecords": "", "sEmptyTable": "", 
+	     		 "sProcessing": "<img src='resources/images/loading.gif' style='width: 75px; height: 75px;'/>" 
+ 	     }
     } );
+    $("#contractTemplatePagination").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>"); 
+    $("input[type=search]").hide();
+    $("#contractTemplateTableSearch").keyup(function(e) {
+    	   if(e.which === 13) {
+    		   getTemplateList();
+    	   }
+    	});
 }
 </script>
-
 
 <script>
 $("#filterContractTypePop").click(function(){
@@ -211,10 +252,3 @@ function downloadPdfTemplate(templateId){
 }
 
 </script> 
-<!-- Footer Area -->
-<%-- <jsp:include page="../masterFooter.jsp" /> --%>
-<!-- Footer Area -->
-
-
-
-

@@ -100,15 +100,17 @@ function storeCertificate(candidateId){
 		 
 			
 		if ($('#Candidate_certification_form').validate(false,validationSettings)) {
-			var frm = $('#Candidate_certification_form').serializeFormJSON();
-			var con = JSON.stringify(frm);
-			con = con.replace(/[{}]/g, "");
-			var jsonData = encodeURIComponent(con);
-			var sourceleadUrl = '${sourceleadUrl}';
-			 
-			$("#Candidate_certification_form").attr("disabled", "disabled");
+			 var formData = getFormData("Candidate_certification_form");
+			 $("#Candidate_certification_form").attr("disabled", "disabled");
 			 $("#addCandidate").attr("disabled", "disabled");
-				$.ajax({
+			 
+			 $.post(sourceleadUrl+"/storeCandidateCertifications?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId, formData, function(data) {
+				 closeCertificatePopup();
+				 candidateCertificateList(candidateId);
+            		//cerMsgFadein();
+            		qwikCertificates(candidateId);
+			 });
+				/* $.ajax({
 						type : "POST",
 						url : sourceleadUrl
 								+ "/storeCandidateCertifications?${_csrf.parameterName}=${_csrf.token}&json="
@@ -132,7 +134,7 @@ function storeCertificate(candidateId){
 							    	}
 							   }
 						},
-					});
+					}); */
 			return true;
 		} else {
 			return false;
@@ -180,7 +182,6 @@ function storeCertificate(candidateId){
 <script>
 function candidateCertificateList(candidateId){
 	var candidateType = '${candidateType}';
-	var sourceleadUrl ='${sourceleadUrl}';
 	
 	 var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
 	  if(locationList.match("yyyy-MM-dd")){
@@ -466,7 +467,6 @@ function addCertification(candidateId) {
 
 	function editCertification(candidateCertificationId, candidateId) {
 
-		var sourceleadUrl = '${sourceleadUrl}';
 		$.ajax({
 					type : "POST",
 					url : sourceleadUrl
@@ -725,15 +725,16 @@ function addCertification(candidateId) {
 		if ($('#candidateCertificationEdit_form').validate(false,
 				validationSettings)) {
 
-			var frm = $('#candidateCertificationEdit_form').serializeFormJSON();
+			 var formData = getFormData("candidateCertificationEdit_form");
+			 
+			 $.post(sourceleadUrl+"/updateCandidateCertificationsBycandidateIdandcandidateCertificateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId, formData, function(data) {
+				 closeCertificatePopup();
+				 candidateCertificateList(candidateId);
+            		//cerMsgFadein();
+            		qwikCertificates(candidateId);
+			 });
 
-			var con = JSON.stringify(frm);
-			con = con.replace(/[{}]/g, "");
-			var jsonData = encodeURIComponent(con);
-			//It will escape all the special characters
-			var sourceleadUrl = '${sourceleadUrl}';
-
-			$.ajax({
+			/* $.ajax({
 						type : "POST",
 						url : sourceleadUrl
 								+ "/updateCandidateCertificationsBycandidateIdandcandidateCertificateId?${_csrf.parameterName}=${_csrf.token}&json="+ jsonData + "&candidateId=" + candidateId	+ "&candidateCertificationId"+ candidateCertificationId,
@@ -746,7 +747,7 @@ function addCertification(candidateId) {
 							cerMsgFadein();
 							qwikCertificates(candidateId);
 						},
-					});
+					}); */
 			return true;
 		} else {
 			return false;
@@ -797,7 +798,6 @@ function removeCertification(candidateCertificationId, candidateId){
 <script>
 function  deleteSelectedCertification(candidateCertificationId,candidateId){
 	
-	 var sourceleadUrl ='${sourceleadUrl}';
 	 var loginUserId = '${SourceLeadWeb_userId}';
 	 var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	 $.ajax({  

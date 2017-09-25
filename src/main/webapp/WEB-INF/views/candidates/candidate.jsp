@@ -3,7 +3,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 
-<link href="resources/css/candidate-common.css" rel="stylesheet">
+<link href="resources/css/candidate-common.css?staticTime=${staticTime}" rel="stylesheet">
 
 	<script type="text/javascript">
 		window.onload = function () {
@@ -453,7 +453,6 @@
 	function storeCandidate() {
 		
 		rateValidations();
-		
 		var validationSettings = {
 				errorMessagePosition : 'element',
 				borderColorOnError : '',
@@ -463,7 +462,6 @@
 		
 		 if ($('#candidate_form').validate(false, validationSettings)){ 
 			
-			var sourceleadUrl = '${sourceleadUrl}';
 			var frm = $('#candidate_form').serializeFormJSON();
 			var con = JSON.stringify(frm);
 			con = con.replace(/[{}]/g, ""); 
@@ -485,7 +483,7 @@
 		    	        processData: false,
 		    	        contentType:false,
 		        	    dataType : 'json',
-						url : sourceleadUrl+"/storeCandidate?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
+						url : sourceleadUrl+"/storeCandidate?"+tokenParamName+"="+tokenValue+"&"+$($('#candidate_form')[0]).serialize(),
 						success : function(result) {
 								location.replace(sourceleadUrl+"/candidatesList");
 						},
@@ -562,17 +560,18 @@ function validate_fileupload(fileName)
 	       
 	       
 	        //Adding Customized Skills to the list
-	        var select, chosen;
+	         var select, chosen;
 		    select = $("#candidateSkills");
 		    select.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add New Skill:' });
 		    chosen = select.data('chosen');
 		    
 		    $("#candidateSkills").chosen().change(function(event) {
-		    	 var sourceleadUrl ='${sourceleadUrl}';
 		    	var allSkills = $(event.target).val();
+		   
+		    	
 		    	$.ajax({
 			    	type: "POST",
-			        url: sourceleadUrl+"/profileBySkillSet?${_csrf.parameterName}=${_csrf.token}&allSkills="+allSkills, 
+			        url: sourceleadUrl+"/profileBySkillSet?"+tokenParamName+"="+tokenValue+"&allSkills="+allSkills, 
 			        success: function(data) {
 			        	var primarySkill = data;
 			        	      $("#primarySkill").val(primarySkill);
@@ -582,62 +581,56 @@ function validate_fileupload(fileName)
 		    	
 		    });
 		    
-	    
-	    chosen.search_field.on('keydown keyup', function(e)
-			    {
-	    	            var skillsArray = this.value.split(",");
-				    	 if(skillsArray.length > 1){
-			        		 for (var i=0; i < skillsArray.length; i++) {
-			        			 var option = $("<option>").val(skillsArray[i].replace(",","")).text(skillsArray[i].replace(",",""));
-			        			 select.append(option);
-			 		             select.find(option).prop('selected', true);
-			 		             select.find(option).siblings("[value='"+ skillsArray[i].replace(",","")+"']").remove();
-			 	        		 $("#candidateSkills").trigger("chosen:updated");
-			                 }
-				    	 }else{
-			    			var newSkill = this.value.replace(","," ");
-			    			 if (tagItBykeyForSkills(e) && (newSkill != null  && newSkill != '' && newSkill != 'undefined'))
-			                {
-			    				 preventTabkey(e);
-			    				 
-			    				 // due to below code manually enter skills are not taken
-			    				 /* var isNewSkill = true;
-			    				 
-			                     $("#candidateSkills option:selected").each(function(){
-									 if(this.value.toUpperCase() === newSkill.toUpperCase() && this.value.toLowerCase() === newSkill.toLowerCase()){
-										 alert("isNewSkill"+isNewSkill);
-											isNewSkill = false;
-											return false;
-									 }
-			                   });
-							   if(isNewSkill){
-								   alert("isNewSkill"+isNewSkill);
-									select.append(option);
-							   }
-			                   $("#candidateSkills").trigger("chosen:updated");  */
-			                   
-			                  
-			                   // below code manually enter skills are taken
-			    				  var isNewSkill = true;
-								 $("#candidateSkills option:selected").each(function(){
-									 if(this.value.toUpperCase() === newSkill.toUpperCase() && this.value.toLowerCase() === newSkill.toLowerCase()){
-										 //alert(newSkill);
-										 isNewSkill = false;
-										 return false;
-									 }
-			                    
-			                   });
-								if(isNewSkill){
-			    				 var option = $("<option>").val(newSkill).text(newSkill);
-								 select.append(option);
-			                     select.find(option).prop('selected', true);
-								}
-				               $("#candidateSkills").trigger("chosen:updated"); 
-			              
-			                }
-					       
-		    	         }
-			    });
+		   // chosen.search_field.on('keyup keydown', function(e)
+		    		chosen.search_field.on('keydown keyup', function(e)
+				    {
+				    	   var skillsArray = this.value.split(",");
+					    	 if(skillsArray.length > 1){
+				        		 for (var i=0; i < skillsArray.length; i++) {
+				        			 var option = $("<option>").val(skillsArray[i].replace(",","")).text(skillsArray[i].replace(",",""));
+				        			 select.append(option);
+				 		             select.find(option).prop('selected', true);
+				 		             select.find(option).siblings("[value='"+ skillsArray[i].replace(",","")+"']").remove();
+				 	        		 $("#candidateSkills").trigger("chosen:updated");
+				                 }
+					    	 }else{
+					    		var focussedSkills = $("ul.chosen-results").find("li.active-result.highlighted");
+				    			var newSkill = this.value.replace(","," ");
+				    			 if (tagItBykeyForSkills(e) && (newSkill != null  && newSkill != '' && newSkill != 'undefined'))
+				                 {
+				    				 preventTabkey(e);
+				                   // below code manually enter skills are taken
+				    				  
+				                   var isNewSkill = true;
+									 $("#candidateSkills option:selected").each(function(){
+										 if(this.value.toUpperCase() === newSkill.toUpperCase() && this.value.toLowerCase() === newSkill.toLowerCase()){
+											 isNewSkill = false;
+											 return false;
+										 }
+				                    
+				                   });
+									
+										if(focussedSkills.length > 0){
+											var skillOption  = $("<option>").val(focussedSkills.first().text()).text(focussedSkills.first().text());
+											select.append(skillOption);
+											select.find(skillOption).prop('selected',true);
+											select.find(skillOption).siblings("[value='"+ focussedSkills.first().text()+"']").remove();
+											$("#candidateSkills").trigger("chosen:updated");
+									   }
+									   else{
+										   if(isNewSkill){
+											var option = $("<option>").val(newSkill).text(newSkill);
+											select.append(option);
+											select.find(option).prop('selected', true);
+										   }
+									   }
+									
+					               $("#candidateSkills").trigger("chosen:updated"); 
+				                   
+				                }
+						       
+			    	         }
+		    	});
 		    
 		    
 		    //Adding Customized Skills to the list
@@ -689,12 +682,11 @@ function validate_fileupload(fileName)
  function validateCandidateEmail() {
 	 var email = document.getElementById("email").value; 
 	 $('#emailDiv').find('p.jquery_form_error_message').remove();
-	 var sourceleadUrl ='${sourceleadUrl}';
 	 if(email != null && email != ""){
 		
 		 $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/validateCandidateEmail?${_csrf.parameterName}=${_csrf.token}&email="+email+"&candidateType=Candidate", 
+		        url: sourceleadUrl+"/validateCandidateEmail?"+tokenParamName+"="+tokenValue+"&email="+email+"&candidateType=Candidate", 
 		        success: function(data) {
 		        	if(data == 'true'){
 		        		  $('#emailDiv').find('p.jquery_form_error_message').remove();
@@ -755,7 +747,6 @@ function validate_fileupload(fileName)
 	        		 $('#uploadFileGroup').find('p.jquery_form_error_message').remove(); 
 	     		var form = $('#candidate_form')[0];
 	       		var formData = new FormData(form); 
-	     		var sourceleadUrl = '${sourceleadUrl}';
 	     		   $.ajax({
 	     					type : "POST",
 	     	        	    data: formData,
@@ -764,7 +755,7 @@ function validate_fileupload(fileName)
 	     	    	        processData: false,
 	     	    	        contentType:false,
 	     	        	    dataType : 'json',
-	     				 	url : sourceleadUrl+"/parseResume?${_csrf.parameterName}=${_csrf.token}", 
+	     				 	url : sourceleadUrl+"/parseResume?"+tokenParamName+"="+tokenValue+"", 
 	     					success : function(data) {
 	     						var json = JSON.parse(data);
 	     						var name = json.name;
@@ -950,7 +941,6 @@ var currentRate = document.getElementById("currentRate").value;
 
 <script>
  function getVendorsByOrgLocation(){
-	 var sourceleadUrl ='${sourceleadUrl}';
 		 $.ajax({
 		    	type: "GET",
 		        url: sourceleadUrl+"/getVendorsByOrgLocation?", 
@@ -984,10 +974,9 @@ function  removeValiationVendorContact() {
 <script>
  function getVendorContactList(){
 	var orgRelationID = $('#vendors').val();
-	 var sourceleadUrl ='${sourceleadUrl}';
 		 $.ajax({
 			    type: "POST",
-		        url: sourceleadUrl+"/getOrgSpocsList?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+orgRelationID+"&type=Vendor",  
+		        url: sourceleadUrl+"/getOrgSpocsList?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationID+"&type=Vendor",  
 		        success: function(data) {
 		        	var json = JSON.parse(data);
 		        	$('#vendorcontact').empty();
@@ -1000,4 +989,9 @@ function  removeValiationVendorContact() {
 		        }
 		 }); 
  }
+ $(function() {
+		$("#uploadBtn").change(function() {
+			fileUpload("uploadBtn", "resumes", "candidate_form");
+		});
+	 });
  </script>

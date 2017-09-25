@@ -31,6 +31,7 @@ import com.bis.sourcelead.dao.MasterCandidateDao;
 import com.bis.sourcelead.dao.OrgRelationsDao;
 import com.bis.sourcelead.dao.OrgSpocDao;
 import com.bis.sourcelead.dao.RequirementOffersDao;
+import com.bis.sourcelead.dto.ContractsDTO;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.EmailAttachment;
@@ -851,8 +852,8 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 		      	  if((null != requirementOffers.getSubmissionId().getVendorLocationId() && null != requirementOffers.getSubmissionId().getSourceSubmission()) &&
 		      	  ("C2C".equalsIgnoreCase(requirementOffers.getSubmissionId().getRequirement().getJobType()) || "C2H".equalsIgnoreCase(requirementOffers.getSubmissionId().getRequirement().getJobType()) || "Contract".equalsIgnoreCase(requirementOffers.getSubmissionId().getRequirement().getJobType())) ){
 		      		
-		      		JSONObject jsonObj = populateJsonObject(requirementOffers,loginUser,orgLocations);
-		      		contractsTemplateService.saveNewContract(jsonObj, orgLocations, "DRAFT", loginUser, orgLocations.getOrg(), "NEW", null);
+		      		ContractsDTO contractsDTO = populateContractsDTO(requirementOffers,loginUser,orgLocations);
+		      		contractsTemplateService.saveNewContract(contractsDTO, orgLocations, "DRAFT", loginUser, orgLocations.getOrg(), "NEW");
 			      }
 			      
 			      
@@ -868,6 +869,13 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 					 requirementSubmission.setUpdatedDate(commonUtil.currentDate());
 					 requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
 			  }
+	    	
+	    	
+	    	
+	    	
+	    	
+	    	
+	    	requirementOffers.setRejectedReason(reason);
 	    		if(requirementOffers.getSubmissionId().getOrgLocations().getId().longValue() != orgLocations.getId().longValue()){
 	    			sendOfferRejectedMail(requirementOffers,loginUser,orgLocations);
 			      }
@@ -982,46 +990,38 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 	}*/
 
 
-	private JSONObject populateJsonObject(RequirementOffers requirementOffers, User loginUser, OrgLocations orgLocations) throws Exception
+	private ContractsDTO populateContractsDTO(RequirementOffers requirementOffers, User loginUser, OrgLocations orgLocations) throws Exception
 	{
-		JSONObject jsonObj = new JSONObject(); 
-	//	SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
+		ContractsDTO contractsDTO = new ContractsDTO();
+		// SimpleDateFormat simpleDateFormat =
+		// orgLocations.getLocFullFormDateFormatter();
 		RequirementSubmissionTemplateFields candidate = requirementSubmissionTemplateFieldsService.getSubmissionsTemplateFieldsByRequirementSubmissionsId(requirementOffers.getSubmissionId().getId());
-		if(null != candidate){
-		jsonObj.put("contractType", "Vendor SOW");
-		
-		if(null != candidate.getFirstName() && null != candidate.getLastName()){
-			StringBuilder candisb = new StringBuilder();
-			jsonObj.put("contractTitle", candisb.append(candidate.getFirstName()).append(" ").append(candidate.getLastName()).append(" SOW").toString());
-		}else{
-			StringBuilder candisb = new StringBuilder();
-			jsonObj.put("contractTitle", candisb.append(candidate.getFirstName()).append(" ").append(" SOW").toString());
+		if (candidate != null) {
+			contractsDTO.setContractType("Vendor SOW");
+			if (null != candidate.getFirstName() && null != candidate.getLastName()) {
+				StringBuilder candisb = new StringBuilder();
+				contractsDTO.setContractTitle(candisb.append(candidate.getFirstName()).append(" ").append(candidate.getLastName()).append(" SOW").toString());
+			}
+			else {
+				StringBuilder candisb = new StringBuilder();
+				contractsDTO.setContractTitle(candisb.append(candidate.getFirstName()).append(" ").append(" SOW").toString());
+			}
+			contractsDTO.setSubmissionOffersList(requirementOffers.getSubmissionId().getId().toString());
+			/*
+			 * to allow default owner un-comment the below line --Pavan jampana
+			 */
+			// jsonObj.put("owner", loginUser.getId());
+			contractsDTO.setOrgRelationId(requirementOffers.getSubmissionId().getSourceSubmission().getRequirement().getClientId().getId().toString());
+			contractsDTO.setVendorContact(requirementOffers.getSubmissionId().getSourceSubmission().getRequirement().getSpocId().getVendorUser().getId().toString());
+			contractsDTO.setFlatReward(requirementOffers.getAmount());
+			contractsDTO.setBillingRatePer(requirementOffers.getPaymentMode());
+			contractsDTO.setBillingRateType(requirementOffers.getPaymentType());
+			// Date startTime =
+			// commonUtil.getDateFormat(jsonObj.getString("startDate"));
+			String currentTimeStr = commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), requirementOffers.getDateOfJoining());
+			contractsDTO.setStartDate(currentTimeStr);
 		}
-		
-		jsonObj.put("submissionOffersList", requirementOffers.getSubmissionId().getId());
-		
-		/*
-		 * to allow default owner un-comment the below line --Pavan jampana
-		 */
-//		jsonObj.put("owner", loginUser.getId());
-		
-		jsonObj.put("orgRelationId", requirementOffers.getSubmissionId().getSourceSubmission().getRequirement().getClientId().getId());
-		
-		jsonObj.put("vendorContact", requirementOffers.getSubmissionId().getSourceSubmission().getRequirement().getSpocId().getVendorUser().getId());
-		
-		jsonObj.put("flatReward", requirementOffers.getAmount());
-		
-		jsonObj.put("billingRatePer", requirementOffers.getPaymentMode());
-		
-		jsonObj.put("billingRateType", requirementOffers.getPaymentType());
-		
-		
-		//Date startTime =  commonUtil.getDateFormat(jsonObj.getString("startDate"));
-		String currentTimeStr = commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),requirementOffers.getDateOfJoining());  
-		
-		jsonObj.put("startDate", currentTimeStr);
-		}
-		return jsonObj;
+		return contractsDTO;
 	}
 
 
@@ -1147,7 +1147,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 		 }
 		 globalVarsMap.put("RequirementName",requirementOffers.getSubmissionId().getRequirement().getJobTitle());
 		 globalVarsMap.put("Rate",requirementOffers.getAmount());
-	
+		 globalVarsMap.put("RejectReason",requirementOffers.getRejectedReason());
 		 
 		
 		 //setting the Recipient information
@@ -1349,8 +1349,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
     			candidate.setIsAssociate(Constants.NO);
     		}
     		
-    		
-    		
+    		candidate.setGeneratedId(candidateService.getCandidateId(orgLocations));
     		candidate.setCreatedDate(new Date());
     		candidate.setUpdatedDate(new Date());
     		candidateService.saveOrUpdateCandidate(candidate);

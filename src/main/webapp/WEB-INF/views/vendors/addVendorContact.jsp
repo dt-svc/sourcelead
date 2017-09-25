@@ -85,10 +85,10 @@
                   <option value="">Select Vendor</option>
                    <c:forEach var="report" items="${vendorList}">
                      <c:if test="${report.locationId.id == loginOrgLocId}">  
-                    <option value="${report.id},${report.responderLocationId.id}">${report.responderLocationId.org.orgName}</option>
+                    <option value="${report.id},${report.responderLocationId.id}">${report.responderLocationId.orgLocationName}</option>
                    </c:if>  
                     <c:if test="${report.responderLocationId.id == loginOrgLocId}"> 
-                  	 	<option value="${report.id},${report.locationId.id}">${report.locationId.org.orgName}</option>
+                  	 	<option value="${report.id},${report.locationId.id}">${report.locationId.orgLocationName}</option>
                    </c:if>  
                  </c:forEach> 
                 </select>
@@ -239,7 +239,7 @@ function getOrgName(){
 	
 	$.ajax({                           
     	type: "POST",
-    	url : sourceleadUrl+"/getOrgs?${_csrf.parameterName}=${_csrf.token}&orgCode="+orgCode,
+    	url : sourceleadUrl+"/getOrgs?"+tokenParamName+"="+tokenValue+"&orgCode="+orgCode,
         success: function(data) {
         	var json = JSON.parse(data);
         	var org = [];
@@ -282,7 +282,7 @@ function getOrgDetails()
 	if(orgName && orgLocationId){
    	 $.ajax({
    	    	type: "POST",
-   	    	url : sourceleadUrl+"/getOrgDetails?${_csrf.parameterName}=${_csrf.token}&orgLocationId="+orgLocationId,
+   	    	url : sourceleadUrl+"/getOrgDetails?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId,
    	        contentType: "application/json; charset=utf-8",
    	        dataType: "json",
    	        success: function(data) {
@@ -345,22 +345,11 @@ function getOrgDetails()
 			dateFormat : 'yyyy/mm/dd'
 		};
 		if ($('#vendor_contact_form').validate(false, validationSettings)) {
-			var frm = $('#vendor_contact_form').serializeFormJSON();
-			var con = JSON.stringify(frm);
-			con = con.replace(/[{}]/g, "");
-	        var jsonData = encodeURIComponent(con);
+	        var formData = getFormData("vendor_contact_form");
 			var sourceleadUrl = '${sourceleadUrl}';
 			$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-			$.ajax({
-						type : "POST",
-						url : sourceleadUrl+ "/saveClinentAndVendorContact?${_csrf.parameterName}=${_csrf.token}&json="+ jsonData+"&orgRelationId="+orgRelationId+"&responderType=Vendor",
-						success : function(result) {
-							$("#loading").removeAttr("style");
-							if (result == 'vendorsList') {
-								location.replace(sourceleadUrl+"/vendorsList");
-							}
-
-						},
+					$.post(sourceleadUrl+"/saveClinentAndVendorContact?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId+"&responderType=Vendor", formData, function(data) {
+					location.replace(sourceleadUrl+"/vendorsList");
 					});
 			return true;
 		} else {
@@ -384,7 +373,7 @@ function getOrgDetails()
          $("#save_client" ).addClass('button').val('Processing..'); */
 		 $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/getClientEmailVerification?${_csrf.parameterName}=${_csrf.token}&EmailId="+EmailId, 
+		        url: sourceleadUrl+"/getClientEmailVerification?"+tokenParamName+"="+tokenValue+"&EmailId="+EmailId, 
 		        success: function(data) {
 		        	if(data == 'true'){
 		        		  $('#EmailIdDiv').find('p.jquery_form_error_message').remove();
@@ -439,25 +428,12 @@ function getOrgDetails()
 			dateFormat : 'yyyy/mm/dd'
 		};
 		if ($('#client_form').validate(false, validationSettings)) {
-			var frm = $('#client_form').serializeFormJSON();
-			var con = JSON.stringify(frm);
-			con = con.replace(/[{}]/g, "");
-			  //It will escape all the special characters
-	        var jsonData = encodeURIComponent(con);
+	        var formData = getFormData("client_form");
 			var sourceleadUrl = '${sourceleadUrl}';
 			$("#save_client").attr("disabled", "disabled");
 			$("#save_client").addClass('button').val('Processing..');
-			$
-					.ajax({
-						type : "POST",
-						url : sourceleadUrl + "/saveClient?${_csrf.parameterName}=${_csrf.token}&json="+ jsonData+"&responderType=Client",
-						success : function(result) {
-							if (result == 'clientDashboard') {
-								location.replace(sourceleadUrl
-										+ "/clientDashboard");
-							}
-
-						},
+					$.post(sourceleadUrl+"/saveClient?"+tokenParamName+"="+tokenValue+"&responderType=Client", formData, function(data) {
+						location.replace(sourceleadUrl+ "/addVendorContact");
 					});
 			return true;
 		} else {
@@ -480,7 +456,7 @@ function validateClientName(){
 	if (clientName != null && clientName != '') {
 		$.ajax({
 			type : "GET",
-			url : sourceleadUrl + "/ws/isClientNameValid?${_csrf.parameterName}=${_csrf.token}&clientName="+clientName+"&responderType=Vendor",
+			url : sourceleadUrl + "/ws/isClientNameValid?"+tokenParamName+"="+tokenValue+"&clientName="+clientName+"&responderType=Vendor",
 			success : function(data) {
 				var result = data;
 				if (result == true) {
@@ -512,30 +488,12 @@ function validateClientName(){
 		};
 		if ($('#vendor_form').validate(false, validationSettings)) {
 			var orgLocationId = document.getElementById("orgLocationId").value;
-			/* var con = JSON.stringify(frm); */
-			var frm = $('#vendor_form').serializeFormJSON();
-		    var jsonData = JSON.stringify(frm);
-		     /* jsonData = jsonData.replace(/[{}]/g, "");  */
-		    var form = $('#vendor_form')[0];
-		    var formData = new FormData(form);
-		  	formData.append("json",jsonData);
-			/* con = con.replace(/[{}]/g, "");
-			  //It will escape all the special characters
-	        var jsonData = encodeURIComponent(con); */
+			var formData = getFormData("vendor_form");
 			var sourceleadUrl = '${sourceleadUrl}';
 			$("#vendor_form").attr("disabled", "disabled");
 			$("#vendor_form").addClass('button').val('Processing..');
-			$.ajax({
-						type : "POST",
-						data: formData,
-		  	    	     contentType : 'application/json; charset=utf-8',
-		  		         processData: false,
-		  		         contentType:false, 
-		  	    	     dataType : 'json',
-						url : sourceleadUrl + "/saveClient?${_csrf.parameterName}=${_csrf.token}&orgLocationId="+orgLocationId+"&responderType=Vendor",
-						success : function(result) {
-							location.replace(sourceleadUrl+ "/addVendorContact");
-						},
+					$.post(sourceleadUrl+"/saveClient?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&responderType=Vendor", formData, function(data) {
+						location.replace(sourceleadUrl+ "/addVendorContact");
 					});
 			return true;
 		} else {
@@ -558,7 +516,7 @@ function validateEmail(){
 	if(email != null){
 		$.ajax({
 			type : "POST",
-			url : sourceleadUrl + "/validateClientOrVendorEmail?${_csrf.parameterName}=${_csrf.token}&email="+email,
+			url : sourceleadUrl + "/validateClientOrVendorEmail?"+tokenParamName+"="+tokenValue+"&email="+email,
 			success : function(data) {
 				var result = data;
 				if(result == 'Invalid Email') {
@@ -592,7 +550,7 @@ function validateEmail(){
 	 if(email != null && email != "" && email != 'undefined'){
 		 $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/getAllOwners?${_csrf.parameterName}=${_csrf.token}&email="+email+"&orgRelationId="+orgRelationId+"&type=vendor", 
+		        url: sourceleadUrl+"/getAllOwners?"+tokenParamName+"="+tokenValue+"&email="+email+"&orgRelationId="+orgRelationId+"&type=vendor", 
 		        success: function(data) {
 		        	var json = JSON.parse(data);
 		        	var output = "";
@@ -647,7 +605,7 @@ function getSpocUserDetails(){
 	if(email){
 		$.ajax({
 	    	type: "POST",
-	    	url : sourceleadUrl+"/getSpocUserDetails?${_csrf.parameterName}=${_csrf.token}&email="+email+"&orgLocationId="+orgLocationId[1],
+	    	url : sourceleadUrl+"/getSpocUserDetails?"+tokenParamName+"="+tokenValue+"&email="+email+"&orgLocationId="+orgLocationId[1],
 	        contentType: "application/json; charset=utf-8",
 	        dataType: "json",
 	        success: function(data) {
@@ -731,7 +689,7 @@ function getRolesList(){
 		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		$.ajax({
 	    	type: "POST",
-	        url: sourceleadUrl+"/getRolesList?${_csrf.parameterName}=${_csrf.token}&orgLocationId="+orgLocationId+"&moduleType=ATS", 
+	        url: sourceleadUrl+"/getRolesList?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&moduleType=ATS", 
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	var output = "";
@@ -764,7 +722,7 @@ function getRolesList(){
 	 if(email != null && email != "" && email != 'undefined'){
 		 $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/getOwnersList?${_csrf.parameterName}=${_csrf.token}&email="+email+"&type=Vendor", 
+		        url: sourceleadUrl+"/getOwnersList?"+tokenParamName+"="+tokenValue+"&email="+email+"&type=Vendor", 
 		        success: function(data) {
 		        	var json = JSON.parse(data);
 		        	var output = "";

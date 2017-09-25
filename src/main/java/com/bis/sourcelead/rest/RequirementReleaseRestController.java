@@ -557,6 +557,9 @@ public class RequirementReleaseRestController {
 			parentRequirement.setUpdatedDate(new Date());
 			requirementService.addRequirement(parentRequirement);
 			
+			StringBuilder reqReleaseMsg = new StringBuilder();
+			SourceLeadSessionManager.setSessionAttribute(request, "reqReleaseMessage", reqReleaseMsg.append("Success!! ").append(" job  released").toString());
+			
 			return "vendorsList";
 	}
 
@@ -636,7 +639,7 @@ public class RequirementReleaseRestController {
 		requirement.setClientRateType(parentRequirement.getRateType());
 		requirement.setTotalApplicants(0);
 		requirement.setRequirementUUID(SourceLeadRandomCodeHelper.generateRandomUserCode());
-		
+		requirement.setGeneratedId(requirementService.getRequirementId(orgSpoc.getOrgRelations().getResponderLocationId()));
 		if(parentRequirement.getClientSubmissionTemplateId()!=null){
 			requirement.setClientSubmissionTemplateId(parentRequirement.getClientSubmissionTemplateId());
 		}
