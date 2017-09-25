@@ -187,7 +187,7 @@ window.onload = function () {
               <label class="col-md-3">Payment Term</label>
               <div class="col-md-9">
                   <select class="form-control selectpicker" id="PaymentTermId" name="PaymentTerm">
-                  <option selected="selected" disabled value="">Select Payment Term</option>
+                  <option value="">Select Payment Term</option>
                     <option value="10 days">10 days</option>
                     <option value="15 days">15 days</option>
                     <option value="30 days">30 days</option>
@@ -504,7 +504,7 @@ function getRolesList(){
 	function saveClient() {
 		if ($('#client_form').validate(false, validationSettings)) {
 			var orgLocationId = document.getElementById("orgLocationId").value;
-		  	 var formData = getFormData("client_form");
+		  	var formData = $($('#client_form')[0]).serialize();
 			$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 			$.post(sourceleadUrl+"/saveClient?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&responderType=Client", formData, function(data) {
 				location.replace(sourceleadUrl+ "/clientDashboard");

@@ -1,14 +1,21 @@
 package com.bis.sourcelead.dao.impl;
 
 import java.text.MessageFormat;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang.StringUtils;
+import org.elasticsearch.common.regex.Regex;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -27,10 +34,8 @@ import com.bis.sourcelead.dao.TeamDao;
 import com.bis.sourcelead.dao.TeamMemberDao;
 import com.bis.sourcelead.dao.UserDao;
 import com.bis.sourcelead.dao.UserRoleDao;
-import com.bis.sourcelead.dto.EmployerPayrollCostDTO;
 import com.bis.sourcelead.dto.RequirementSubmissionsDTO;
 import com.bis.sourcelead.dto.ResponseList;
-import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateEducation;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
@@ -39,7 +44,6 @@ import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.RequirementSubmissionHistory;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
-import com.bis.sourcelead.payroll.entity.EmployerPayrollCost;
 import com.bis.sourcelead.service.RequirementAssignToService;
 import com.bis.sourcelead.util.CommonUtil;
 
@@ -2623,17 +2627,36 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 			
 			StringBuilder searchQuery = new StringBuilder("");
 			if(requirementSubmissionsDTO.getSearchValue() !=null && !"".equalsIgnoreCase(requirementSubmissionsDTO.getSearchValue())) {
-				searchQuery.append(" and reqSub.name like '%" + requirementSubmissionsDTO.getSearchValue() + "%' ")
-					.append("OR reqSub.email like '%" + requirementSubmissionsDTO.getSearchValue() + "%' ")
-					.append("OR reqSub.phNo like '%" + requirementSubmissionsDTO.getSearchValue() + "%' ")
-					.append("OR reqSub.resume like '%" + requirementSubmissionsDTO.getSearchValue() + "%' ")
-					.append("OR reqSub.appliedOn like '%" + requirementSubmissionsDTO.getSearchValue() + "%' ")
-					.append("OR reqSub.rate like '%" + requirementSubmissionsDTO.getSearchValue() + "%' ")
-					.append("OR reqSub.source like '%" + requirementSubmissionsDTO.getSearchValue() + "%' ")
-					.append("OR reqSub.score like '%" + requirementSubmissionsDTO.getSearchValue() + "%' ")
-					.append("OR reqSub.exp like '%" + requirementSubmissionsDTO.getSearchValue() + "%' ")
-					.append("OR reqSub.status like '%" + requirementSubmissionsDTO.getSearchValue() + "%' ");
-			}
+				
+				java.sql.Date sqlDate = null;
+				 OrgLocations orgLocations = orgLocationsDao.getOrgLocations(requirementSubmissionsDTO.getOrgLocationId());
+				 
+				 
+				 
+				 Pattern pattern = Pattern.compile("^(([0-9]{0,4})[-{1}]([0-9]{0,4})[-{1}]([0-9]{0,4}))$");
+				 Matcher matcher = pattern.matcher(requirementSubmissionsDTO.getSearchValue());
+				 if (matcher.find()) {
+						String searchValue = requirementSubmissionsDTO.getSearchValue();
+						DateTimeFormatter f = new DateTimeFormatterBuilder().appendPattern(orgLocations.getDateFormat()).toFormatter();
+						LocalDate parsedDate = LocalDate.parse(searchValue, f);
+						DateTimeFormatter f2 = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+						String newDate = parsedDate.format(f2);
+						Date searchDate = new SimpleDateFormat("yyyy-MM-dd").parse(newDate);
+						sqlDate = new java.sql.Date(searchDate.getTime()); 
+						searchQuery.append("and (reqSub.createdDate like '" + sqlDate + "%' )");
+				}else {
+				searchQuery.append(" and (reqSubCandidate.firstName like '%" + requirementSubmissionsDTO.getSearchValue() + "%' ")
+					.append("OR reqSubCandidate.lastName like '%" + requirementSubmissionsDTO.getSearchValue() + "%' ")
+					.append("OR reqSubCandidate.email like '%" + requirementSubmissionsDTO.getSearchValue() + "%' ")
+					.append("OR reqSubCandidate.mobilePhone like '%" + requirementSubmissionsDTO.getSearchValue() + "%' ")
+					.append("OR reqSubCandidate.expectedRate like '%" + requirementSubmissionsDTO.getSearchValue() + "%' ")
+					.append("OR reqSub.createdUser like '%" + requirementSubmissionsDTO.getSearchValue() + "%' ")
+					.append("OR reqSub.candidateScore like '%" + requirementSubmissionsDTO.getSearchValue() + "%' ")
+					.append("OR reqSubCandidate.experienceYears like '%" + requirementSubmissionsDTO.getSearchValue() + "%' ")
+					.append("OR reqSub.submissionStatus like '%" + requirementSubmissionsDTO.getSearchValue() + "%' ")
+				    .append(" )");
+					}
+				}
 			
 			if(Constants.All_APPLICANTS.equalsIgnoreCase(requirementSubmissionsDTO.getSubmissionType())){
 				Requirement requirement  = requirementDao.getRequirementByRequirementId(requirementSubmissionsDTO.getRequirementId());
@@ -2645,7 +2668,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 					releasedBy = requirement.getReleasedBy().split(",");
 				}
 		        Map<String, Object> params = new HashMap<String,Object>();
-				String from = "from RequirementSubmission reqSub left join fetch reqSub.requirement req   left join fetch reqSub.candidate left join fetch reqSub.sourceSubmission left join fetch reqSub.candidateResumes "; 
+				String from = "from RequirementSubmission reqSub left join fetch reqSub.requirement req left join fetch reqSub.candidate reqSubCandidate left join fetch reqSub.sourceSubmission left join fetch reqSub.candidateResumes "; 
 				String subQuery = "";
 				// These conditions are to check  for vendors  Submitted Applicants  and Requirement who Released
 					if(null != releasedBy && releasedBy.length > 0){
