@@ -41,8 +41,8 @@ $(document).ready(function() {
           <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">
             <div class="form-group">
               <label class="col-md-3">Holiday Name<span class="text-danger">&nbsp;*</span></label>
-              <div class="col-md-9">
-                <input type="text" class="form-control" field-name="Holiday Name" data-validation="required validate_Space validate_length length1-250" id="holidayName" name="holidayName" value="${holidays.holidayName}">
+              <div class="col-md-9" id="holidayNameDiv">
+                <input type="text" class="form-control" field-name="Holiday Name"  onblur="validateHolidayName();"  data-validation="required validate_Space validate_length length1-250" id="holidayName" name="holidayName" value="${holidays.holidayName}">
               </div>
             </div>
             <div class="form-group">
@@ -188,9 +188,45 @@ function cancel(){
 	}
 </script>
 <script type="text/javascript">
-function getHolidayGroup(){
-	
+function validateHolidayName(){
+	var holidayName = (document.getElementById("holidayName").value).replace(/[{}]/g, "");
+	var holiday = encodeURIComponent(holidayName);
+	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
+	if(holiday.match(/^[^\s-](.*)*$/) != null){
+		$('#holidayNameDiv').find('p.jquery_form_error_message').remove();
+	if (holiday != null && holiday != '') {
+		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		$.ajax({
+			type : "GET",
+			url : sourceleadUrl + "/validateHolidayName?"+tokenParamName+"="+tokenValue+"&holidayName="+holidayName+"&orgLocationId="+orgLocationId,
+			success : function(data) {
+				var result = data;
+				if (result == 'true') {
+					//duplicate holiday
+					$("#save_holiday").removeAttr("disabled");
+			        $("#save_holiday").attr("disabled", "disabled");
+					$("input#holidayName").after( "<p class='jquery_form_error_message'>" + holidayName + " is already existed as holiday</span>");
+					document.getElementById("holidayName").setAttribute( 'record-exist', 'yes');
+					document.getElementById("holidayName").setAttribute( 'record-exist-errorMsg', holidayName +"  already existed as holiday");
+					$('input#holidayName').removeAttr( "record-exist record-exist-errorMsg");
+					
+				}else {
+					$("#save_holiday").removeAttr("disabled");
+					$('input#holidayName').removeAttr("class record-exist record-exist-errormsg");
+					$('input#holidayName').attr('class','valid form-control');
+					$('#holidayNameDiv').find('p.jquery_form_error_message').remove();
+					$("#save_holiday").click(function() {
+						
+					});
+				}
+				
+				$("#loading").removeAttr("style");
+			},
+
+		});
+	}
+  }
 }
-</script>
+</script> 
 
 <jsp:include page="../masterFooter.jsp" />

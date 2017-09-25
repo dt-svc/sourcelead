@@ -471,4 +471,18 @@ public class LeaveManagementRestController {
 		return isDeleted;
 	}
 	
+	@RequestMapping(value = "/validateHolidayName", method = RequestMethod.GET)
+	public  @ResponseBody boolean validateHolidayName(@RequestParam(value = "holidayId", required = false) String holidayName,@RequestParam(value = "orgLocationId", required = false) Long orgLocationId,HttpServletRequest request) throws Exception
+	{
+		boolean isDeleted = false;
+		 Holiday deleteHoliday = holidayService.getHolidaysById(holidayName);
+		 if(deleteHoliday !=null) {
+			 deleteHoliday.setStatus("0");
+			 holidayDAO.saveDeleteHoliday(deleteHoliday);
+			 isDeleted = true;
+		 }
+		return isDeleted;
+		
+	}
+	
 }
