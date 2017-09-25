@@ -60,8 +60,8 @@ width: 100% !important;
 					<div class="col-lg-12">
 						<h3>Add Job Template Details</h3>
 					</div>
-<div class="clearfix"></div>
-					<div class="mt pras req-title">
+					<div class="clearfix"></div>
+					<div class="mt pras">
 					
 					<div class="col-md-6">
 					
@@ -138,12 +138,12 @@ width: 100% !important;
 								<select multiple class="chosen-select form-control" name="education" data-placeholder="Select Education Options" id="education" data-validation-optional="true">
 									<c:forEach var="edu" items="${educationsList}">
 										<c:if
-											test="${fn:contains(requirement.reqEducationListString, edu.name)}">
-											<option selected value="${edu.name}">${edu.name}</option>
+											test="${fn:contains(requirement.reqEducationListString, edu)}">
+											<option selected value="${edu}">${edu}</option>
 										</c:if>
 										<c:if
-											test="${!fn:contains(requirement.reqEducationListString, edu.name)}">
-											<option value="${edu.name}">${edu.name}</option>
+											test="${!fn:contains(requirement.reqEducationListString, edu)}">
+											<option value="${edu}">${edu}</option>
 										</c:if>
 									</c:forEach>
 								</select>

@@ -72,13 +72,15 @@
 	 isApplicantsTabActive -->
 	<ul class="project-tabs-menu">
 		<li class="${empty type ? 'current' : ''}" id="detailsTab"><a href="#tab-1" onclick="sideBar('${requirement.id}');">Details</a></li>
-		<sec:authorize access="hasAnyRole('ROLE_ADD_APPLICANT','ROLE_VIEW_APPLICANT','ROLE_ADD_INTERVIEW','ROLE_VIEW_INTERVIEW','ROLE_VIEW_CANCEL_INTERVIEW','ROLE_RATE_NEGOTIATION','ROLE_SHORTLIST','ROLE_SUBMIT_TO_CLIENT','ROLE_CREAE_OFFER','ROLE_VIEW_OFFER','ROLE_VIEW_ACCEPT_OFFER','ROLE_VIEW_REJECT_OFFER')">
-		    <li class="${!empty type ? 'current' : ''}" id="${requirement.requirementSubmissionStatus == 'CLOSED' && requirement.isreceivingApplicants == 'Y' ? 'applicantsTab':''}"><a href="#tab-2" onclick="requirementPipeline('${requirement.id}','all');requirementStatusBar('${requirement.id}');">Applicants</a></li>
-		</sec:authorize>
-		<sec:authorize access="hasAnyRole('ROLE_RECOMMENDATIONS')">
-		    <li id="${requirement.requirementSubmissionStatus == 'CLOSED' && requirement.isreceivingApplicants == 'Y' ? 'recommendationsTab':''}"><a href="#tab-3" onclick="requirementRecommendations('${requirement.id}');">Recommendations</a></li>
-		</sec:authorize>
-		<li><a href="#tab-4" onclick="requirementNotes('${requirement.id}');">Notes</a></li>
+		<c:if test="${requirement.requirementSubmissionStatus != 'DRAFT' && requirement.requirementSubmissionStatus != 'SUBMITTED' && requirement.requirementSubmissionStatus != 'REJECTED'}">
+			<sec:authorize access="hasAnyRole('ROLE_ADD_APPLICANT','ROLE_VIEW_APPLICANT','ROLE_ADD_INTERVIEW','ROLE_VIEW_INTERVIEW','ROLE_VIEW_CANCEL_INTERVIEW','ROLE_RATE_NEGOTIATION','ROLE_SHORTLIST','ROLE_SUBMIT_TO_CLIENT','ROLE_CREAE_OFFER','ROLE_VIEW_OFFER','ROLE_VIEW_ACCEPT_OFFER','ROLE_VIEW_REJECT_OFFER')">
+			    <li class="${!empty type ? 'current' : ''}" id="${requirement.requirementSubmissionStatus == 'CLOSED' && requirement.isreceivingApplicants == 'Y' ? 'applicantsTab':''}"><a href="#tab-2" onclick="requirementPipeline('${requirement.id}','all');requirementStatusBar('${requirement.id}');">Applicants</a></li>
+			</sec:authorize>
+			<sec:authorize access="hasAnyRole('ROLE_RECOMMENDATIONS')">
+			    <li id="${requirement.requirementSubmissionStatus == 'CLOSED' && requirement.isreceivingApplicants == 'Y' ? 'recommendationsTab':''}"><a href="#tab-3" onclick="requirementRecommendations('${requirement.id}');">Recommendations</a></li>
+			</sec:authorize>
+			<li><a href="#tab-4" onclick="requirementNotes('${requirement.id}');">Notes</a></li>
+		</c:if>
 	</ul>
 	<div class="clearfix"></div>
 	<div class="project_tabs">
@@ -104,8 +106,8 @@
 			            	</sec:authorize>
 			            </c:if>
 			            <c:if test="${(isAdmin == 'true' && requirement.requirementSubmissionStatus  != 'DRAFT' && requirement.requirementSubmissionStatus != 'ONHOLD'  && requirement.requirementSubmissionStatus != 'CANCEL' &&  requirement.requirementSubmissionStatus != 'APPROVED' &&  requirement.requirementSubmissionStatus != 'REJECTED'  &&  requirement.requirementSubmissionStatus != 'OPEN' && requirement.requirementSubmissionStatus  !='NEW' && requirement.requirementSubmissionStatus  != 'UNFILLEDCLOSED' && requirement.requirementSubmissionStatus  != 'FILLEDCLOSED' )  || (  !empty requirement.requirementApproverHierarchyStatus && requirement.requirementSubmissionStatus  !='DRAFT' && requirement.requirementSubmissionStatus != 'ONHOLD'  && requirement.requirementSubmissionStatus != 'CANCEL' &&  requirement.requirementApproverHierarchyStatus !='APPROVED' &&  requirement.requirementApproverHierarchyStatus != 'REJECTED'  &&  requirement.requirementApproverHierarchyStatus != 'OPEN') }">
-			            	  <button  class="btn btn-success mr ml btn-sm" type="button" id = "approverbut" onClick ="updateReuqirementStatus('APPROVED');"  >Approve</button> 
-         		              <button  class="btn btn-danger btn-sm" type="button" onClick ="rejectRequirementAlertMessage('REJECTED');">Reject</button>
+			            	  <button  class="btn btn-success mr ml btn-sm" type="button" id = "approverbut" onClick ="updateReuqirementStatus('APPROVED');hideButtonOnClick();"  >Approve</button> 
+         		              <button  class="btn btn-danger btn-sm" id = "rejectedbut" type="button" onClick ="rejectRequirementAlertMessage('REJECTED');hideButtonOnClick();">Reject</button>
 			            </c:if>
 					</div> 
 			     </div> 
@@ -129,7 +131,7 @@
 					        
 					        <div class="require_wrap_details_cta require_wrap_details_view require_uploadfile"> <b>Attachment:</b><span>${!empty requirement.fileName ? requirement.fileName : ' -- '}</span>
 					            <c:if test="${!empty requirement.fileName}">
-					            	<a class="glyphicon glyphicon-download-alt" href="${requirement.fileURL}"></a><a class="fa fa-eye ml10" onClick="viewFile('${requirement.fileURL}','${requirement.fileName}','${requirement.fileContentType}');"></a>
+					            	<a class="glyphicon glyphicon-download-alt" target = "_blank" href="${requirement.fileURL}"></a><a class="fa fa-eye ml10" onClick="viewFile('${requirement.fileURL}','${requirement.fileName}','${requirement.fileContentType}');"></a>
 					            </c:if>
 					            <div class="clearfix"></div> 
 				            </div> 
@@ -167,32 +169,32 @@
 						    <c:when test="${!empty requirement.parentRequirement}">
 						    	<c:choose>
 						    		<c:when test="${requirement.clientCurrencyCode == 'INR' && !empty requirement.clientRate && !empty requirement.clientRateType}">
-						            	<div class="require_wrap_details_cta"> <b>Bill rate/salary:</b> <span><i class="fa fa-inr"></i> ' +requirement.clientRate+'  '+requirement.clientRateType+'</span>
+						            	<div class="require_wrap_details_cta"> <b>Bill rate/salary:</b> <span><i class="fa fa-inr"></i> ${requirement.clientRate}  ${requirement.clientRateType}</span>
 							            	<div class="clearfix"></div> 
 					               		</div> 
 							    	</c:when>
 							    	<c:when test="${requirement.clientCurrencyCode == 'EUR' && !empty requirement.clientRate && !empty requirement.clientRateType}">
-						            	<div class="require_wrap_details_cta"> <b>Bill rate/salary:</b> <span><i class="fa fa-eur"></i> ' +requirement.clientRate+'  '+requirement.clientRateType+'</span>
+						            	<div class="require_wrap_details_cta"> <b>Bill rate/salary:</b> <span><i class="fa fa-eur"></i> ${requirement.clientRate}  ${requirement.clientRateType}</span>
 							            	<div class="clearfix"></div> 
 					               		</div> 
 							    	</c:when>
 							    	<c:when test="${requirement.clientCurrencyCode == 'GBP' && !empty requirement.clientRate && !empty requirement.clientRateType}">
-						            	<div class="require_wrap_details_cta"> <b>Bill rate/salary:</b> <span><i class="fa fa-gbp"></i> ' +requirement.clientRate+'  '+requirement.clientRateType+'</span>
+						            	<div class="require_wrap_details_cta"> <b>Bill rate/salary:</b> <span><i class="fa fa-gbp"></i> ${requirement.clientRate}  ${requirement.clientRateType}</span>
 							            	<div class="clearfix"></div> 
 					               		</div> 
 							    	</c:when>
 							    	<c:when test="${requirement.clientCurrencyCode == 'USD' && !empty requirement.clientRate && !empty requirement.clientRateType}">
-						            	<div class="require_wrap_details_cta"> <b>Bill rate/salary:</b> <span><i class="fa fa-dollar"></i> ' +requirement.clientRate+'  '+requirement.clientRateType+'</span>
+						            	<div class="require_wrap_details_cta"> <b>Bill rate/salary:</b> <span><i class="fa fa-dollar"></i> ${requirement.clientRate}  ${requirement.clientRateType}</span>
 							            	<div class="clearfix"></div> 
 					               		</div> 
 							    	</c:when>
 							    	<c:when test="${requirement.clientCurrencyCode == 'AUD' && !empty requirement.clientRate && !empty requirement.clientRateType}">
-						            	<div class="require_wrap_details_cta"> <b>Bill rate/salary:</b> <span><i class="fa fa-dollar"></i> ' +requirement.clientRate+'  '+requirement.clientRateType+'</span>
+						            	<div class="require_wrap_details_cta"> <b>Bill rate/salary:</b> <span><i class="fa fa-dollar"></i> ${requirement.clientRate}  ${requirement.clientRateType}</span>
 							            	<div class="clearfix"></div> 
 					               		</div> 
 							    	</c:when>
 							    	<c:when test="${requirement.clientCurrencyCode == 'SGD' && !empty requirement.clientRate && !empty requirement.clientRateType}">
-						            	<div class="require_wrap_details_cta"> <b>Bill rate/salary:</b> <span><i class="fa fa-dollar"></i> ' +requirement.clientRate+'  '+requirement.clientRateType+'</span>
+						            	<div class="require_wrap_details_cta"> <b>Bill rate/salary:</b> <span><i class="fa fa-dollar"></i> ${requirement.clientRate}  ${requirement.clientRateType}</span>
 							            	<div class="clearfix"></div> 
 					               		</div> 
 							    	</c:when>
@@ -206,32 +208,32 @@
 						    <c:otherwise>
 						    	<c:choose>
 						    		<c:when test="${requirement.clientCurrencyCode == 'INR' && !empty requirement.rate}">
-						    			<div class="require_wrap_details_cta"> <b>Bill rate/salary:</b> <span><i class="fa fa-inr"></i> ' +requirement.rate+'  '+requirement.rateType+'</span>
+						    			<div class="require_wrap_details_cta"> <b>Bill rate/salary:</b> <span><i class="fa fa-inr"></i> ${requirement.clientRate}  ${requirement.clientRateType}</span>
 							    			<div class="clearfix"></div> 
 							            </div>
 						    		</c:when>
 						    		<c:when test="${requirement.clientCurrencyCode == 'EUR' && !empty requirement.rate}">
-						    			<div class="require_wrap_details_cta"> <b>Bill rate/salary:</b> <span><i class="fa fa-eur"></i> ' +requirement.rate+'  '+requirement.rateType+'</span>
+						    			<div class="require_wrap_details_cta"> <b>Bill rate/salary:</b> <span><i class="fa fa-eur"></i> ${requirement.clientRate}  ${requirement.clientRateType}</span>
 							    			<div class="clearfix"></div> 
 							            </div>
 						    		</c:when>
 						    		<c:when test="${requirement.clientCurrencyCode == 'GBP' && !empty requirement.rate}">
-						    			<div class="require_wrap_details_cta"> <b>Bill rate/salary:</b> <span><i class="fa fa-gbp"></i> ' +requirement.rate+'  '+requirement.rateType+'</span>
+						    			<div class="require_wrap_details_cta"> <b>Bill rate/salary:</b> <span><i class="fa fa-gbp"></i> ${requirement.clientRate}  ${requirement.clientRateType}</span>
 							    			<div class="clearfix"></div> 
 							            </div>
 						    		</c:when>
 						    		<c:when test="${requirement.clientCurrencyCode == 'USD' && !empty requirement.rate}">
-						    			<div class="require_wrap_details_cta"> <b>Bill rate/salary:</b> <span><i class="fa fa-dollar"></i> ' +requirement.rate+'  '+requirement.rateType+'</span>
+						    			<div class="require_wrap_details_cta"> <b>Bill rate/salary:</b> <span><i class="fa fa-dollar"></i> ${requirement.clientRate}  ${requirement.clientRateType}</span>
 							    			<div class="clearfix"></div> 
 							            </div>
 						    		</c:when>
 						    		<c:when test="${requirement.clientCurrencyCode == 'AUD' && !empty requirement.rate}">
-						    			<div class="require_wrap_details_cta"> <b>Bill rate/salary:</b> <span><i class="fa fa-dollar"></i> ' +requirement.rate+'  '+requirement.rateType+'</span>
+						    			<div class="require_wrap_details_cta"> <b>Bill rate/salary:</b> <span><i class="fa fa-dollar"></i> ${requirement.clientRate}  ${requirement.clientRateType}</span>
 							    			<div class="clearfix"></div> 
 							            </div>
 						    		</c:when>
 						    		<c:when test="${requirement.clientCurrencyCode == 'SGD' && !empty requirement.rate}">
-						    			<div class="require_wrap_details_cta"> <b>Bill rate/salary:</b> <span><i class="fa fa-dollar"></i> ' +requirement.rate+'  '+requirement.rateType+'</span>
+						    			<div class="require_wrap_details_cta"> <b>Bill rate/salary:</b> <span><i class="fa fa-dollar"></i> ${requirement.clientRate}  ${requirement.clientRateType}</span>
 							    			<div class="clearfix"></div> 
 							            </div>
 						    		</c:when>
@@ -246,6 +248,8 @@
 				          <div class="require_wrap_details_cta"> <b>Submission Form:</b><span>${!empty requirement.clientSubmissionTemplate ? requirement.clientSubmissionTemplate : ' -- '}</span>
 			            		<div class="clearfix"></div> 
 			              </div> 
+			              <div class="clearfix"></div>
+			              </div>
 			         </c:if>
 			         <div class="clearfix"></div> 
 			          
@@ -278,19 +282,18 @@
 						</c:choose>
 			            </c:if>  
 			            
-				                    <div class="clearfix"></div> 				            
-				                </div> 							            
-			            
-			                    <div class="clearfix"></div> 
-			                  </div> 
-			                  <div class="clearfix"></div> 
-			            
-			                  </div> 	
-			                </div> 
-			            
-			                </div> 
-			              </div> 
-      
+                    <div class="clearfix"></div> 				            
+                </div> 							            
+           
+                   <div class="clearfix"></div> 
+                 </div> 
+                 <div class="clearfix"></div> 
+           
+                 </div> 	
+               </div> 
+           
+               </div> 
+             </div> 
       </div>
        <div id="detailsLoading"></div>
        <div id="tab-2" class="project_tabs_inn"></div>
@@ -386,3 +389,10 @@
 	<div id="recommendationsLoading"></div>
 	<div id="tab-4" class="project_tabs_inn overflow-data datatable_filter"></div>
 </div>
+
+<script>
+function hideButtonOnClick(){
+		$('#approverbut').hide();
+		$('#rejectedbut').hide();
+}
+</script>

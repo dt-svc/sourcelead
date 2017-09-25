@@ -10,6 +10,10 @@
  <c:if test="${staticTime == null || staticTime == 0 }">
     <c:set var='staticTime' value="<%=new java.util.Date().getTime() %>" scope="application"></c:set>
  </c:if>
+
+ <script type="text/javascript">
+    var staticTime='${staticTime}'
+ </script>
  
 <meta charset="utf-8">
 <meta http-equiv="Pragma" content="private">
@@ -520,7 +524,7 @@ function preventTabkey(e){
                 <li>
                   <div class="clearfix msg">
                     <div class="msg-img"> <span>
-                    <img class="img-circle" title="${report.notificationFrom.firstName} ${report.notificationFrom.lastName}" alt="${report.notificationFrom.userType}" onerror="predefineProfileImage(this);" src="<c:url value='/displayUserImage/${report.notificationFrom.id}'/>">
+                    <img class="img-circle" title="${report.notificationFrom.firstName} ${report.notificationFrom.lastName}" alt="${report.notificationFrom.userType}" onerror="predefineProfileImage(this);" src="${report.notificationFrom.fileUrl}">
                     </span> </div>
                     <div class="msg-content">
                      <a href="#"><p>${report.body}</p>
@@ -563,6 +567,7 @@ function preventTabkey(e){
 						  	<li><a href="<c:url value="/expenseCategory" />"><i class="fa fa-file-text" aria-hidden="true"></i>Expense Category</a></li>
 						  </sec:authorize>
 						  <li><a href="<c:url value="/bankAccountDetails" />"><i class="fa fa-university" aria-hidden="true"></i>Account</a></li>
+						   <%-- <li><a href="<c:url value="/leaveConfiguration" />"><i class="fa fa-key" aria-hidden="true"></i>Leave Configure</a></li> --%>
 	              </ul>
 	            </div>
 	          </li>

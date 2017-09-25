@@ -30,11 +30,8 @@
 							<label class="col-md-4">Template Title<span
 								class="text-danger">&nbsp;*</span></label>
 							<div class="col-md-8" id="templateDiv">
-								<input type="text" id="templateName" name="templateName"
-									value="${contractsTemplate.templateName}"
-									field-name="Template Name"
-									data-validation="required validate_Space" type="text"
-									class="form-control">
+								<input type="text" id="templateName" name="templateName" value="${contractsTemplate.templateName}" 
+								field-name="Template Name" data-validation="required validate_Space" onblur="validateContractTemplateName();" type="text" class="form-control">
 							</div>
 							<input type="hidden" name="templateId" id="templateId"
 								value="${contractsTemplate.id}" />
@@ -404,7 +401,7 @@
 	<div class="prevPopClose" onclick="previewclose();">
 		<i class="fa fa-times"></i>
 	</div>
-	<embed id="iFrame" src="<c:url value='/testController'/>"></embed>
+<%-- 	<embed id="iFrame" src="<c:url value='/testController'/>"></embed> --%>
 </div>
 
 

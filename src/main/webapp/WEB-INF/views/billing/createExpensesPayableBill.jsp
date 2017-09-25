@@ -745,7 +745,7 @@ function saveInvoice(saveType){
 		        	  $.post(sourceleadUrl+"/saveExpensesInvoice?"+tokenParamName+"="+tokenValue+"&userId="+userId+"&orgLocationId="+orgLocationId+"&saveType="+saveType+"&currencyCode="+currencyCode+"&invoiceType=payable&type=expenses", formData, function(data) {
 			  				if(data == "success"){
 			  					$("#invoiceLoading").removeAttr("style");
-	    		     			location.replace(sourceleadUrl+"/invoiceList");
+	    		     			location.replace(sourceleadUrl+"/payablesList");
 			  				}
 			  			   }); 
 		    	         return true; 

@@ -4,7 +4,7 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 
 
-<link rel="stylesheet" href="resources/css/jquery.tree-multiselect.css">
+<link rel="stylesheet" href="resources/css/jquery.tree-multiselect.css?staticTime=${staticTime}">
 
 <script type="text/javascript">
 window.onload = function () {
