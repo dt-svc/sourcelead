@@ -63,7 +63,7 @@ public class InterViewFeedBackController {
 	 */
 	
 	@RequestMapping(value = "/publicInterviewFeedBackTemplate")
-	public ModelAndView publicInterviewFeedBackTemplate(@RequestParam(value = "templateId", required = false) Long templateId,
+	public ModelAndView publicInterviewFeedBackTemplate(@RequestParam(value = "templateId", required = false) Long templateId,@RequestParam(value = "interviewerUserId", required = false) Long interviewerUserId,
 			@RequestParam(value = "requirementInterviewid", required = false) Long requirementInterviewerId,HttpServletRequest request) throws Exception {
 		ModelAndView model = new ModelAndView();
 		model.addObject("templateId", templateId);

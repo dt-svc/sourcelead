@@ -223,7 +223,7 @@ function addAttachment(entityRowId,from){
 							</select>
 						</div>
 						<div class="col-md-4 mb10 minHe">
-							<label>Date<span class="text-danger">&nbsp;*</span></label>
+							<label>Date Occurred<span class="text-danger">&nbsp;*</span></label>
 							<input type="text" id="categoryDateREPLACEROWID" name="categoryDTO[REPLACENAMEROWID].categoryDate" readonly="readonly"  class="form-control calendar"  value="" placeholder="Date" field-name="Date" data-validation="required"> 
 						</div>
 						<div class="col-md-4 mb10 minHe">
@@ -490,7 +490,7 @@ function addExpenseRow(){
 		}
 	}
 </script>
- <!-- <script>
+ <script>
 function displayCalendar(entityId){
 	$("#categoryDate"+entityId).datepicker("destroy");
 	var projectStartDate = $('#projectStartDateExpensesId').val();
@@ -510,7 +510,8 @@ function displayCalendar(entityId){
 	}
 	
 }
-</script> -->
+</script>
+
 <script type="text/javascript">
 function validate_fileupload(fileName)
 {

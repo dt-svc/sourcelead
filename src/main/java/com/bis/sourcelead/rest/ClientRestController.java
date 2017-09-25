@@ -654,33 +654,39 @@ public class ClientRestController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/ws/isClientNameValid", method = RequestMethod.GET)
-	@ResponseBody boolean isClientNameValidated(
+	@ResponseBody String isClientNameValidated(
 			@RequestParam(value = "clientName", required = false) String clientName,HttpServletRequest request,
 			@RequestParam(value = "orgRelationId", required = false) Long orgRelationId,
 			@RequestParam(value = "responderType", required = false) String responderType) throws Exception {
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		List<Org> org =orgService.getOrgs();
-	    boolean flag = false;
-		
+	    String flag = Constants.CLINT_VENDOR_DOES_NOT_EXIST;
 			List<OrgRelations> relationsList = orgRelationsService.getClientOrVendorListByOrgLocationId(orgLocation.getId(), responderType);
+			List<OrgLocations> orgLocationsList=orgLocationService.userList(orgLocation.getOrg().getId());
 			for(OrgRelations orgRelations : relationsList){
+				for(OrgLocations orgRelations123 : orgLocationsList){
 				if(orgRelations.getLocationId().getId().longValue() == orgLocation.getId().longValue()){
-					if(StringUtils.containsIgnoreCase(clientName.trim(), orgRelations.getResponderLocationId().getOrgLocationName())) {
+					if(StringUtils.containsIgnoreCase(clientName.trim(), orgRelations.getResponderLocationId().getOrgLocationName())||orgRelations123.getOrgLocationName().equalsIgnoreCase(clientName)) {
 //					if(clientName.trim().equalsIgnoreCase(orgRelations.getResponderLocationId().getOrgLocationName())){
-						flag = true;
+						flag = Constants.CLINT_VENDOR_IF_EXIST;
+						if(orgRelations123.getOrgLocationName().equalsIgnoreCase(clientName)){
+							flag = Constants.CLINT_VENDOR_IF_EXIST_AS_SAMEORG;
+						}
 					}
 				}	
 				else if(orgRelations.getResponderLocationId().getId().longValue() == orgLocation.getId().longValue()){
-					if(StringUtils.containsIgnoreCase(clientName.trim(), orgRelations.getLocationId().getOrgLocationName())){
+					if(StringUtils.containsIgnoreCase(clientName.trim(), orgRelations.getLocationId().getOrgLocationName())||orgRelations123.getOrgLocationName().equalsIgnoreCase(clientName)){
 //					if(clientName.trim().equalsIgnoreCase(orgRelations.getLocationId().getOrgLocationName())){
-						flag = true;
+						flag = Constants.CLINT_VENDOR_IF_EXIST;
+						if(orgRelations123.getOrgLocationName().equalsIgnoreCase(clientName)){
+							flag = Constants.CLINT_VENDOR_IF_EXIST_AS_SAMEORG;
+						}
 					}
 					
 				}
 				
 			}
-		
-		
+			}
 		return flag;
 	}
 /**

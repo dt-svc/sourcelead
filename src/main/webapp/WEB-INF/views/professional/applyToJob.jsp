@@ -16,6 +16,9 @@
 <script src="resources/js/submissionFormBuilder.js?staticTime=${staticTime}" type="text/javascript" ></script> <!-- form builder -->
 <script src="resources/js/submissionForm-html-generator.js?staticTime=${staticTime}" type="text/javascript" ></script> <!-- form generator -->
 
+<script type="text/javascript">
+   var sourceleadUrl ='${sourceleadUrl}';
+</script>
 
 <style>
 .viewTemplate {

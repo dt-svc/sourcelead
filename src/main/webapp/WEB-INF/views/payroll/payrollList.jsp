@@ -47,7 +47,7 @@
 					onclick="accountDeductionsList();">Account Deductions</a></li>
 				<li title="HR Deductions"><a id="HrdedLi"
 					onclick="hrDeductionsList();">HR Deductions</a></li>
-				<li title="Checks"><a id="BisChecks" onclick="bisChecksList();">Checks</a></li>
+				<li title="Checks"><a id="BisChecks" onclick="bisChecksList();">Payments</a></li>
 				<li title="InvoiceDetails"><a id="invoiceData"
 					onclick="getInvoiceDetails();">Invoice Details</a></li>
 				<li title="Paylist"><a id="paylistLi"
