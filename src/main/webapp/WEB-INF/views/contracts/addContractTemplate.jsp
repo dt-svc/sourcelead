@@ -401,7 +401,7 @@
 	<div class="prevPopClose" onclick="previewclose();">
 		<i class="fa fa-times"></i>
 	</div>
-	<embed id="iFrame" src="<c:url value='/testController'/>"></embed>
+<%-- 	<embed id="iFrame" src="<c:url value='/testController'/>"></embed> --%>
 </div>
 
 
