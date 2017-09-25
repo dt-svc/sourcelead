@@ -1322,7 +1322,7 @@ public class ClientRestController {
 				 BoolQueryBuilder allBoolQueryBuilder = QueryBuilders.boolQuery();
 				 for(String keywd : allKeyWordArray){
 					 BoolQueryBuilder allBoolSubQueryBuilder = QueryBuilders.boolQuery();
-					ArrayList<MatchQueryBuilder> matchQueryBuilderList =getMatchQueryBuilderList(keywd);
+					ArrayList<MatchQueryBuilder> matchQueryBuilderList = getMatchQueryBuilderList(keywd);
 					if(matchQueryBuilderList != null && !matchQueryBuilderList.isEmpty()){
 						for(MatchQueryBuilder matchQueryBuilder :matchQueryBuilderList){
 							allBoolSubQueryBuilder.should(matchQueryBuilder);
@@ -1543,6 +1543,7 @@ public class ClientRestController {
 			 
 			 BoolQueryBuilder statusQueryBuilder = QueryBuilders.boolQuery();
 			 statusQueryBuilder.must(QueryBuilders.matchQuery("status", "1"));
+			 boolQueryBuilderForCount.must(QueryBuilders.matchQuery("status", "1"));
 			 
 			 boolQueryBuilder.must(responderQueryBuilder);
 			 boolQueryBuilder.must(statusQueryBuilder);
@@ -1610,6 +1611,39 @@ public class ClientRestController {
 						}
 						 boolQueryBuilder.must(anyBoolQueryBuilder);
 					}
+					
+					//Exclude Keyword
+					 List<String> excludeKeyWordArray = clientVendorDTO.getExcludeKeyWord();// getSearchKeywordsFromChosenSelectField(jsonObj, "excludeKeyWord");
+					 if(excludeKeyWordArray != null && !excludeKeyWordArray.isEmpty()){
+					 	 BoolQueryBuilder excludeBoolQueryBuilder = QueryBuilders.boolQuery();
+						 for(String keywd : excludeKeyWordArray){
+							 BoolQueryBuilder excludeBoolSubQueryBuilder = QueryBuilders.boolQuery();
+							ArrayList<MatchQueryBuilder> matchQueryBuilderList = getMatchQueryBuilderListForContacts(keywd,clientVendorDTO.getResponderType());
+							if(matchQueryBuilderList != null && !matchQueryBuilderList.isEmpty()){
+								for(MatchQueryBuilder matchQueryBuilder :matchQueryBuilderList){
+									excludeBoolSubQueryBuilder.should(matchQueryBuilder);
+								}
+								excludeBoolQueryBuilder.should(excludeBoolSubQueryBuilder);
+							}
+						}
+						 boolQueryBuilder.mustNot(excludeBoolQueryBuilder);
+					  }
+					 
+						List<String> allKeyWordArray = clientVendorDTO.getAllKeywords();//getSearchKeywordsFromChosenSelectField(jsonObj, "allKeywords");
+						if(allKeyWordArray != null && !allKeyWordArray.isEmpty()){
+							 BoolQueryBuilder allBoolQueryBuilder = QueryBuilders.boolQuery();
+							 for(String keywd : allKeyWordArray){
+								 BoolQueryBuilder allBoolSubQueryBuilder = QueryBuilders.boolQuery();
+								ArrayList<MatchQueryBuilder> matchQueryBuilderList = getMatchQueryBuilderListForContacts(keywd,clientVendorDTO.getResponderType());
+								if(matchQueryBuilderList != null && !matchQueryBuilderList.isEmpty()){
+									for(MatchQueryBuilder matchQueryBuilder :matchQueryBuilderList){
+										allBoolSubQueryBuilder.should(matchQueryBuilder);
+									}
+									allBoolQueryBuilder.must(allBoolSubQueryBuilder);
+								}
+							}
+							 boolQueryBuilder.must(allBoolQueryBuilder);
+						}
 				
 				
 				SearchResponse searchResponse = sourceleadELKBaseIndexer
