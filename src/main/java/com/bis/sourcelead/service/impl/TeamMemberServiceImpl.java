@@ -89,29 +89,28 @@ public class TeamMemberServiceImpl implements TeamMembersService {
 		
 		if(null != userList){
 		
-		userList = userList.replaceAll("\\[", "").replaceAll("\\]","");
-		userList = userList.replaceAll("\"", "");
 		String[] usersIds = userList.split(",");
+		
 		
 		for(int i=0; i < usersIds.length  ;i++){
 			User user = new User();
-			
 			TeamMembers teamMembers = new TeamMembers();
-			
-			
 			user.setId(Long.parseLong(usersIds[i]));
 			teamMembers.setMemberUserId(user);
-			
-			Team team = new Team();
+			if(teamId != null){
+			Team team = teamService.getTeamByTeamId(teamId);
 			team.setId(teamId);
 			teamMembers.setTeamId(team);
+			}
+			
 			
 			teamMembers.setStatus(Constants.MEMBER_ACTIVE);
 			teamMembers.setCreatedDate(commonUtil.currentDate());
 			teamMembers.setUpdatedDate(commonUtil.currentDate());
-	        teamMemberDao.saveOrUpdateTeamMembers(teamMembers);
+			teamMemberDao.saveOrUpdateTeamMembers(teamMembers);
+	       
 		}
-	   
+		 
 		}
 }
 
