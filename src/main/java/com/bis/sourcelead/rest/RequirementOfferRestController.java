@@ -133,17 +133,24 @@ public class RequirementOfferRestController {
 		String loginUserRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
 		String resultJson = null;
 		List<RequirementSubmission> shortListCandidatesList = null;
+		String isClientRequirement = null;
+		
+		Requirement requirement = requirementService.getRequirementByRequirementId(requirementId);
+		if(requirement.getIsClientJob() != null && requirement.getIsClientJob().equalsIgnoreCase(Constants.YES)){
+			isClientRequirement = Constants.YES;
+		}else{
+			isClientRequirement = Constants.NO;
+		}
 		
 		if(isClientOffer.equalsIgnoreCase(Constants.YES)){
-			Requirement requirement = requirementService.getRequirementByRequirementId(requirementId);
 			if(requirement.getParentRequirement() != null){
 				shortListCandidatesList = requirementSubmissionService.getAllSubmittedAndShortListAndInterviewededCandidatesForClientOffer(requirement.getParentRequirement().getOrgLocationId(), requirement.getParentRequirement().getId(),existingApplicantsIds,isClientOffer);
 			}else{
-				shortListCandidatesList = requirementSubmissionService.getAllSubmittedAndShortListAndInterviewededCandidates(orgLocations, requirementId,existingApplicantsIds,isClientOffer,loginUser,loginUserRole);
+				shortListCandidatesList = requirementSubmissionService.getAllSubmittedAndShortListAndInterviewededCandidates(orgLocations, requirementId,existingApplicantsIds,isClientOffer,loginUser,loginUserRole,isClientRequirement);
 				
 			}
 		}else{
-			shortListCandidatesList = requirementSubmissionService.getAllSubmittedAndShortListAndInterviewededCandidates(orgLocations, requirementId,existingApplicantsIds,isClientOffer,loginUser,loginUserRole);
+			shortListCandidatesList = requirementSubmissionService.getAllSubmittedAndShortListAndInterviewededCandidates(orgLocations, requirementId,existingApplicantsIds,isClientOffer,loginUser,loginUserRole,isClientRequirement);
 			
 		}
 		
