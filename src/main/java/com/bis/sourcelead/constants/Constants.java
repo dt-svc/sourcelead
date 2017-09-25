@@ -830,5 +830,9 @@ public class Constants {
 	public static final String[] MONTHS = {"January","February","March","April","May","June","July","August","September","October","November","December"};
 	
 	public static final String LEAVE_OPTION = "LEAVE_OPTION";
+	
+	public static final String CLINT_VENDOR_DOES_NOT_EXIST = "false";
+	public static final String CLINT_VENDOR_IF_EXIST = "true";
+	public static final String CLINT_VENDOR_IF_EXIST_AS_SAMEORG = "sameorg";
 
 }
