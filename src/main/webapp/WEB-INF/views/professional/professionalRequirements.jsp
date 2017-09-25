@@ -2276,8 +2276,7 @@ var validationSettings = {
         					type : "POST",
         					url : sourceleadUrl+"/storeJobAlert?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
         					success : function(result) {
-        						alert("hello");
-	        					    $("#selector4").removeAttr("style");
+        							 $("#selector4").removeAttr("style");
 			            			$("#selector4").css({ display: "block" });
 			            			$("#eduMsgDiv").html("Job Alert updated successfully"); 
 			            			alertMsgFadeinFunction();
