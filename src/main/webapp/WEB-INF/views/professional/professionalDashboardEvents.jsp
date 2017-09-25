@@ -42,6 +42,7 @@ window.onload = function() {
 			timezoneId = '${SourceLeadWeb_orgLocations.timezone.id}';
 		}
 		var candidateId = '${SourceLeadWeb_candidateId}';
+		var sourceleadUrl ='${sourceleadUrl}';
 		$.ajax({
 	    	type: "POST",
 	        url: sourceleadUrl+"/getProfessionalInterviewsEventDashBoard?${_csrf.parameterName}=${_csrf.token}&dateRange="+date+"&candidateId="+candidateId+"&timezoneId="+timezoneId,

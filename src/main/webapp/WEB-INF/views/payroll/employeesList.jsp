@@ -134,7 +134,7 @@ function employeesPagination(url){
               "render": function ( data, type, opt, meta ) {
             	  var result = "";
             	  if(opt.candidateName !=null && opt.candidateName !='' && opt.candidateName !='undefined'){
-						result = result + ' <td><div class="tbldata-dotdot-vsm">'+opt.candidateName+'</div></td>';
+						result = result + ' <td><div class="tbldata-dotdot-vsm" title="'+opt.candidateName+'">'+opt.candidateName+'</div></td>';
 					}else{
 						result = result + ' <td><div class="tbldata-dotdot-vsm">--</div></td>';
 					}

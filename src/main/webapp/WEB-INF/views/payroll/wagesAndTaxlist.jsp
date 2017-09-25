@@ -130,7 +130,7 @@ function wagesTaxpagination(url){
               "targets": colIndex++,
               "data": "employeeName",
               "render": function ( data, type, opt, meta ) {
-            	  return '<td><div class="tbldata-dotdot-vsm">'+opt.employeeName+'</div></td>';
+            	  return '<td><div class="tbldata-dotdot-vsm" title="'+opt.employeeName+'">'+opt.employeeName+'</div></td>';
               }
             }, {
                 "targets": colIndex++,
