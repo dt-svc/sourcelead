@@ -2,6 +2,7 @@ package com.bis.sourcelead.entity;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -12,12 +13,15 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 import org.hibernate.annotations.Type;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "VENDOR_ON_BOARD_TASKS", catalog = "sourcelead")
@@ -94,6 +98,15 @@ public class VendorOnboardTasks implements Serializable{
 	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "UPDATED_BY")
   	private User updatedBy;
+	
+	@Transient
+	@JsonProperty
+	private String dueAfterString;
+	
+	
+   	@Transient
+   	@JsonProperty
+   	private List<String> usersList;
 	
 	
 
@@ -255,6 +268,43 @@ public class VendorOnboardTasks implements Serializable{
 
 	public void setUpdatedBy(User updatedBy) {
 		this.updatedBy = updatedBy;
+	}
+
+	public String getDueAfterString() {
+		
+		 StringBuilder dueAfter = new StringBuilder();
+		 
+		 if(dueAfterMonths != null){
+			 dueAfter = dueAfter.append(dueAfterMonths).append(" Month(s) ");
+		 }
+		 
+		 if(dueAfterDays != null){
+			 dueAfter = dueAfter.append(dueAfterDays).append(" Day(s) ");
+		 }
+		 
+		 if(dueAfterHours != null){
+			 dueAfter = dueAfter.append(dueAfterHours).append(" Hours ");
+		 }
+		 
+		 if(dueAfterMinutes != null){
+			 dueAfter = dueAfter.append(dueAfterMinutes).append(" Minutes");
+		 }
+		 
+		 dueAfterString = dueAfter.toString();
+		
+		return dueAfterString;
+	}
+
+	public void setDueAfterString(String dueAfterString) {
+		this.dueAfterString = dueAfterString;
+	}
+
+	public List<String> getUsersList() {
+		return usersList;
+	}
+
+	public void setUsersList(List<String> usersList) {
+		this.usersList = usersList;
 	}
    	
 }

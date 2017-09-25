@@ -67,7 +67,7 @@ filter: alpha(opacity=0);  -moz-opacity: 0; -khtml-opacity: 0;
               <small>Template details</small> </a> </li>
             <li onclick="getTemplateVendorDocumentsDetails();"><a href="#documents" data-toggle="tab" id="templateDocs"> <i class="fa fa-files-o paddingRight"></i> <span>Documents</span> <br>
               <small>Vendor Documents</small> </a> </li>
-            <li onclick="getOnboardingTasksList();"> <a href="#tasks" data-toggle="tab" id="templateTasks"> <i class="fa fa-check-square-o paddingRight"></i> <span>Tasks</span> <br>
+            <li onclick="getVendorOnboardingTasksList();"> <a href="#tasks" data-toggle="tab" id="templateTasks"> <i class="fa fa-check-square-o paddingRight"></i> <span>Tasks</span> <br>
               <small>List of tasks</small> </a></li>
           </ul>
           <input type="hidden" name="templateId" id="templateId" value=""/>
@@ -216,8 +216,8 @@ filter: alpha(opacity=0);  -moz-opacity: 0; -khtml-opacity: 0;
                                   
                                   <div class="">
                                     <label class="paddingRight">
-                                      <input type="radio"  name="assignedToType" checked="checked" onclick="validateAssignToType('assingToCandidate');">
-                                      Candidate </label>
+                                      <input type="radio"  name="assignedToType" checked="checked" onclick="validateAssignToType('assingToVendor');">
+                                      Vendor </label>
                                     <label class="paddingLeft">
                                       <input type="radio" name="assignedToType"  onclick="validateAssignToType('assingToUser');">
                                       User </label>
@@ -623,7 +623,7 @@ function createTemplateDocs(saveType){
 		     	        $tabs.filter('.active').next('li').find('a[data-toggle="tab"]').tab('show');
 		     	        document.getElementById("templateTasks").disabled = false;
 		     	        $("#onboardTaskDiv").val('Y');
-		     	        getOnboardingTasksList();
+		     	        getVendorOnboardingTasksList();
 		        	}else{
 		        		getTemplateVendorDocumentsDetails();
 		        		
@@ -673,14 +673,14 @@ function saveOnboardTask(){
   	    	    data: formData,
   	    	    processData: false,
 		        contentType:false,
-		    	 url: sourceleadUrl+"/saveOnBoardTasks?${_csrf.parameterName}=${_csrf.token}", 
+	    	    url: sourceleadUrl+"/saveVendorOnBoardTasks?${_csrf.parameterName}=${_csrf.token}", 
 		        success: function(result) {
 		        	
 		        	if(result == 'success'){
 		        		$("#onboardtasksLoading").removeAttr("style");
 			        	flushOnboardTask();
 			        	getAssignToUsersList();
-			        	getOnboardingTasksList();
+			        	getVendorOnboardingTasksList();
 			        	
 			        	document.getElementById("selector").style.display = 'block';
 			        	$("#selector").fadeIn(150);
@@ -945,7 +945,7 @@ function validateTemplateName(){
 
 
 <script>
-function getOnboardingTasksList(){
+function getVendorOnboardingTasksList(){
 	var templateId = document.getElementById("documentstemplateId").value;
 	var onboardTaskDiv = document.getElementById("onboardTaskDiv").value;
 	if(onboardTaskDiv == 'Y'){
@@ -954,10 +954,9 @@ function getOnboardingTasksList(){
 	
 	 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	$.ajax({
-	   	type: "POST",
-	    url: sourceleadUrl+"/getOnboardTasksListByTemplateId?${_csrf.parameterName}=${_csrf.token}&templateId="+templateId,	    	   
-	    success: function(data) {
-	    	 var json = JSON.parse(data);
+	   	type: "GET",
+	    url: sourceleadUrl+"/getVendorOnboardTasksListByTemplateId?${_csrf.parameterName}=${_csrf.token}&templateId="+templateId,	    	   
+	    success: function(json) {
         	 var result = "";
         	if(json.length > 0){ 
 	        	for (var i=0; i<json.length; i++)
@@ -994,7 +993,7 @@ function getOnboardingTasksList(){
 		 					result = result +'<label>'+report.usersList[j]+'</label>';
 		 				}
 	        		}else{
-	 					result = result +'Onboarding Candidate';
+	 					result = result +'Onboarding Vendor';
 	 				}
 	        		result = result +'</li>';
 	        		
@@ -1035,7 +1034,7 @@ function deleteTask(taskId){
 	var sourceleadUrl ='${sourceleadUrl}';
 	   $.ajax({
 	    	type: "POST",
-	    	 url: sourceleadUrl+"/deleteOnboardTaskByTaskId?${_csrf.parameterName}=${_csrf.token}&taskId="+taskId, 
+	    	 url: sourceleadUrl+"/deleteVendorOnboardTaskByTaskId?${_csrf.parameterName}=${_csrf.token}&taskId="+taskId, 
 	        success: function(data) {
 	        	if(data == 'success'){
 	        		document.getElementById("onboardTask"+taskId).remove();
@@ -1054,10 +1053,10 @@ function saveAndFinishOnboardTemplate(templateId){
 	 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	$.ajax({
 	   	type: "POST",
-	    url: sourceleadUrl+"/saveAndFinishOnboardTemplate?${_csrf.parameterName}=${_csrf.token}&templateId="+templateId,	    	   
+	    url: sourceleadUrl+"/saveAndFinishVendorOnboardTemplate?${_csrf.parameterName}=${_csrf.token}&templateId="+templateId,	    	   
 	    success: function(data) {
 	    	 $("#finish_task").removeAttr("disabled");
-	    	 location.replace(sourceleadUrl+"/onboardingTemplatesList"); 
+	    	 location.replace(sourceleadUrl+"/vendorOnboardTemplateList"); 
 	    }
   }); 
 	
