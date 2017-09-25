@@ -68,7 +68,7 @@ public class CandidateDTO {
 
 	private String location;
 
-	private String zipCode;
+	private String zipcode;
 
 	private String latitude;
 
@@ -345,12 +345,13 @@ public class CandidateDTO {
 		this.location = location;
 	}
 
-	public String getZipCode() {
-		return zipCode;
+
+	public String getZipcode() {
+		return zipcode;
 	}
 
-	public void setZipCode(String zipCode) {
-		this.zipCode = zipCode;
+	public void setZipcode(String zipcode) {
+		this.zipcode = zipcode;
 	}
 
 	public String getLatitude() {

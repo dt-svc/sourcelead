@@ -29,29 +29,7 @@
 <script src="resources/js/themeswitcher.js"></script>
 <script src="resources/js/moment.min.js"></script>
 <script src="resources/js/datetime-moment.js"></script>
-<script>
-		$(document).ready(function() { 
-			var interviewStatus  = '${interviewStatus}';
-			var intervewStartTime = '${interviewStartTime}';
-			var intervewEndTime = '${interviewEndTime}';
-			if(intervewStartTime != "interviewStartTime" && intervewEndTime != "interviewEndTime"){
-				$("#expire").removeAttr("style");
-			}else{
-				if(interviewStatus == 'Attending'){     
-					$("#accept").removeAttr("style");
-				}else if(interviewStatus == 'Not_Attending'){
-					$("#reject").removeAttr("style");
-				}else if(interviewStatus == 'Maybe'){
-					$("#tentative").removeAttr("style");
-				}
-			}
-			
-			
-			/* if(offerStatus == 'Rejected'){
-				$("#reject").removeAttr("style");		
-			} */
-		});
-</script>
+
 
 <style>
 body {
@@ -82,7 +60,7 @@ width: 8%;
   <header class="main-header">
    <span class="logo">
     <h1>Source Lead</h1>
-   	 	<a href="javascript:void(0)" title="Source Lead"> <i> <img src="resources/images/logo-sourceld.png" alt="Source Lead"> </i>
+   	 	<a href="javascript:void(0)" title="Source Lead"> <i> <img src="resources/images/logo-sourceld.png" alt="Source Lead"></i>
     </a>
     </span>
     <nav class="header-nav navbar">
@@ -92,7 +70,7 @@ width: 8%;
 
   <!-- Content Area -->
   <section class="container">
-		<div class="col-md-12">
+  	<div class="col-md-12">
 		  		<div id="accept" style="display:none">
 				          <div class="col-md-8 col-md-offset-2 inner-widget success-user">
 					          <i class="fa fa-check-circle fa-3x"></i>
@@ -348,7 +326,7 @@ function saveProposeTime(){
 	    var jsonData = encodeURIComponent(con);
 		$.ajax({
 					type : "POST",
-					url : sourceleadUrl+"/saveProposeTime?"+tokenParamName+"="+tokenValue+"&jsonData="+jsonData,
+					url : sourceleadUrl+"/saveProposeTime?${_csrf.parameterName}=${_csrf.token}&jsonData="+jsonData,
 					success : function(result) {
 						location.reload();
 					},
@@ -395,6 +373,24 @@ var validationSettings = {
 function clearProposeTime(){
 	location.reload();
 }
+</script>
+<script>
+window.onload = function() {
+	  var interviewStatus  = '${interviewStatus}';
+	  var intervewStartTime = '${interviewStartTime}';
+	  var intervewEndTime = '${interviewEndTime}';
+	  if(intervewStartTime != "interviewStartTime" && intervewEndTime != "interviewEndTime"){
+	  	$("#expire").removeAttr("style");
+	  }else{
+	  	if(interviewStatus == 'Attending'){     
+	  		$("#accept").removeAttr("style");
+	  	}else if(interviewStatus == 'Not_Attending'){
+	  		$("#reject").removeAttr("style");
+	  	}else if(interviewStatus == 'Maybe'){
+	  		$("#tentative").removeAttr("style");
+	  	}
+	  }
+	};
 </script>
 <script src="resources/js/formvalidator.js"></script>
   <!-- Footer Area -->

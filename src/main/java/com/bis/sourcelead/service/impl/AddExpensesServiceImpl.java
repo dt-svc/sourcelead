@@ -42,6 +42,7 @@ import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
+import com.ibm.icu.math.BigDecimal;
 
 @Service
 public class AddExpensesServiceImpl implements AddExpensesService{
@@ -306,8 +307,11 @@ public void sendExpensesEmailToManager(User loginUser, Expenses expenses, OrgLoc
 		 globalVarsMap.put("expenseTypes",expenses.getNoOfExpenses());
 		 }
 		 
-		 StringBuilder currencyType = new StringBuilder();
-		 globalVarsMap.put("totalAmount",currencyType.append(Float.toString(expenses.getTotalAmount())).append(" ").append(currencyCode).toString());
+		 StringBuilder str = new StringBuilder();
+			BigDecimal cg = new BigDecimal(Double.toString(expenses.getTotalAmount()));
+			cg = cg.setScale(2,BigDecimal.ROUND_HALF_UP );		
+			
+		 globalVarsMap.put("totalAmount",str.append(cg).append(" ").append(currencyCode).toString());
 		 
 		 
 
