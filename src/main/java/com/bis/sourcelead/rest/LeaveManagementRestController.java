@@ -25,17 +25,20 @@ import org.springframework.web.servlet.ModelAndView;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.LeaveTypeDTO;
 import com.bis.sourcelead.entity.Department;
+import com.bis.sourcelead.entity.Leave;
 import com.bis.sourcelead.entity.LeaveType;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.service.DepartmentService;
+import com.bis.sourcelead.service.LeaveService;
 import com.bis.sourcelead.service.LeaveTypeService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.dao.OptionsDao;
 import com.bis.sourcelead.dto.AddUserDTO;
 import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.ClientDTO;
+import com.bis.sourcelead.dto.LeaveDTO;
 import com.bis.sourcelead.dto.OptionsDTO;
 import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.Department;
@@ -46,10 +49,13 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.payroll.entity.AccountDeductionsDetails;
 import com.bis.sourcelead.service.DepartmentService;
 import com.bis.sourcelead.service.OptionsService;
 import com.bis.sourcelead.service.RolesService;
+import com.bis.sourcelead.service.UserRoleService;
+import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @RestController
@@ -59,6 +65,9 @@ public class LeaveManagementRestController {
 	
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
+	
+	@Value("${static.path}")
+    private String staticPath;
 	
 	@Autowired
 	OrgLocationService orgLocationService;
@@ -77,7 +86,16 @@ public class LeaveManagementRestController {
 	
 	@Autowired
 	OptionsDao optionsDao;
-
+	
+	@Autowired
+	private UserService userService;
+	
+	@Autowired
+	UserRoleService userRoleService;
+	
+	@Autowired
+	LeaveService leaveService;
+	
 	
 	/**
 	 * returns Pending leaves jsp
@@ -156,11 +174,30 @@ public class LeaveManagementRestController {
 	 * @param request
 	 * @param response
 	 * @return ModelAndView
+	 * @throws Exception 
 	 */
 	@RequestMapping(value = "/applyLeave")
-	public ModelAndView applyLeaveJsp(HttpServletRequest request,HttpServletResponse response) {
+	public ModelAndView applyLeaveJsp(HttpServletRequest request,HttpServletResponse response) throws Exception {
 		   ModelAndView model = new ModelAndView();
+		   OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		   Long roleId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRoleId");
+		   List<User> usersLis = userService.getAllUsersByOrgLocationCode(orgLocations.getId());
 		   model.addObject("sourceleadUrl", sourceleadUrl);
+		   model.addObject("usersLis", usersLis);
+		   List<LeaveType> leaveTypeList = leaveTypeService.getLeaveTypeListByLocationId(String.valueOf(orgLocations.getId()));
+		   if(leaveTypeList !=null && !leaveTypeList.isEmpty()) {
+			   model.addObject("leaveTypeList", leaveTypeList);
+		   }
+			List<User> approverList = userService.getManagersByUserRolesAndOrgLocationId(roleId, orgLocations.getId(),Long.valueOf(Constants.TAB_USER));
+			if(approverList !=null) {
+				for (User user : approverList) {
+					UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(), orgLocations.getId());
+					if(userRole != null){
+						user.setUserType(userRole.getUserType());
+					}
+				}
+				 model.addObject("approverList", approverList);
+			}
 		   model.setViewName("leavemanagement/applyLeave");
 	       return model;
 	}
@@ -477,6 +514,32 @@ public class LeaveManagementRestController {
 		   model.setViewName("leavemanagement/addOptions");
 	       return model;
 	}
+	
+	
+	
+		/**
+		 * saving leave optipons
+		 * 
+		 * @param optionsDTO
+		 * @param request
+		 * @return boolean
+		 * @throws Exception
+		 */
+		@RequestMapping(value = "/applyLeave", method = RequestMethod.POST)
+		@ResponseBody
+		public boolean applyLeave(LeaveDTO leaveDTO, HttpServletRequest request) throws Exception {
+	
+			boolean isInserted = false;
+			OrgLocations orgLocations = orgLocationService.getOrgLocations(Long.parseLong(leaveDTO.getOrgLocationId()));
+			User user = userService.getUserById(Long.parseLong(leaveDTO.getUserId()));
+			leaveDTO.setStaticPath(staticPath);
+			Leave leave = leaveService.saveLeave(leaveDTO,orgLocations,user);
+			if (leave != null) {
+				isInserted = true;
+			}
+			return isInserted;
+		}
+	
 	
 	@RequestMapping(value = "/editLeaveType")
 	public ModelAndView editLeaveType(LeaveTypeDTO leaveTypeDTO, HttpServletRequest request, HttpServletResponse response) throws Exception
