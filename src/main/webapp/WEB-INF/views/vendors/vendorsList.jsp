@@ -240,9 +240,16 @@ border:none; background-color: none !important; padding:0 5px !important;
             </div>
             <div class="row form-footer custom_formfooter">
               <div class="pull-right mr"> 
-                <input type="button" value="Search" id="search_vendor" onclick="getVendorList();" class="btn btn-sm btn-success"/>
-                 <input type="button" value="Clear" id="clear_search" onclick="clearSearch();" class="btn btn-sm btn-primary"/>
-              <!--   <input type="button" value="Cancel" onClick="closePop();" class="bbtn btn-sm btn-danger"/> -->
+               <!--  <input type="button" value="Search" id="search_vendor" onclick="getVendorList();" class="btn btn-sm btn-success"/>
+                 <input type="button" value="Clear" id="clear_search" onclick="clearSearch();" class="btn btn-sm btn-primary"/> -->
+              <div id="enableVendorAdvancedSearch"> 
+              	<input type="button" value="Search" id="search_client" onclick="getVendorList();" class="btn btn-sm btn-success"/>
+              	<input type="button" value="Clear" id="clear_search" onclick="closePop();" class="btn btn-sm btn-primary"/>
+              	</div>
+              	<div id="enableVendorContactAdvancedSearch"> 
+              	<input type="button" value="Search" id="search_client" onclick="getVendorContactList();" class="btn btn-sm btn-success"/>
+              	<input type="button" value="Clear" id="clear_search" onclick="closePop();" class="btn btn-sm btn-primary"/>
+              	</div>
               
             </div>
             </form:form>
@@ -2542,10 +2549,15 @@ function releasedJobsCountByOrgRelationId(orgRelationId){
 			 document.getElementById("vendorContactListAdvanced").style.display="block";
 			 document.getElementById("vendorListAdvanced").style.display="none";
 			 
+			 document.getElementById("enableVendorContactAdvancedSearch").style.display="block";
+			 document.getElementById("enableVendorAdvancedSearch").style.display="none";
+			 
 		}else if(selectedList == "listbyVendor" ){
 			
 			 document.getElementById("vendorListAdvanced").style.display="block";
 			 document.getElementById("vendorContactListAdvanced").style.display="none";
+			 document.getElementById("enableVendorAdvancedSearch").style.display="block";
+			 document.getElementById("enableVendorContactAdvancedSearch").style.display="none";
 		}
 		
 	    $('#country').val('${loginCountryName}'); 
