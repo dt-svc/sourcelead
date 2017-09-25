@@ -157,27 +157,31 @@ function addContractNotes(){
    	    output = output+'    <div class="commentsimg">';
    	    output = output+'    <i class="fa fa-comments"></i>';
    	    output = output+'        <div class="commentsimg-inner">';
+   	    if(report.commentAuthorImage != null && report.commentAuthorImage != '' && report.commentAuthorImage != 'undefined')
    	    output = output+'        	<img data-id= "userProfileImage" onerror="predefineProfileImage(this);" src="'+report.commentAuthorImage+'"/>';
    	    output = output+'        </div>';
    	    output = output+'    </div>';
    	    output = output+'     <div class="comments-content comments-notes">';
    	    output = output+'         <div class="commentsNotes_inner">';
    	    output = output+'         <p class="comment-by">';
+   		if(report.userName != null && report.userName != '' && report.userName != 'undefined')
    	    output = output+'            By <span class="text-danger" title = "'+report.userName+'">'+report.userName+'</span>';
+   	    if(report.createdDateString != null && report.createdDateString != '' && report.createdDateString != 'undefined')
    	    output = output+'            <span class="small pull-right">'+report.createdDateString+'</span></p>';
+   	    if(report.comment != null && report.comment != '' && report.comment != 'undefined')
    	    output = output+'         <p class="comment_text pull-left">'+report.comment+'</p>';
    	    output = output+'         </div>';
    	    output = output+'     </div>';
    	    output = output+'</div>';
     	}
      }
+     output  = output + '              </div>';
+     output  = output + '        </div>';
 }else{
      var output ="";
     output = output+"   <div class='dataTables_empty'>"; 
 	 output = output+"  </div> ";
 }
-output  = output + '              </div>';
-output  = output + '        </div>';
 
 	$("#viewNotesDiv").empty(); 
     $("#viewNotesDiv").append(output);
