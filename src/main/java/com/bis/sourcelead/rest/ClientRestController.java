@@ -488,7 +488,6 @@ public class ClientRestController {
 			 @RequestParam(value="userId", required=false) String userId,
 			 @RequestParam(value="orgLocationId", required=false) String orgLocationId,
 			 @RequestParam(value="responderType", required=false) String responderType) throws Exception{
-		
 		OrgSpoc orgSpoc = orgSpocService.getOrgSpocById(spocId);
 				if(orgSpoc != null){
 					orgSpoc.setStatus(Constants.MEMBER_IN_ACTIVE);
@@ -1257,7 +1256,7 @@ public class ClientRestController {
 		 combinedQueryBuilderCount.should(initiatorQueryBuilderCount);
 		 combinedQueryBuilderCount.should(responderQueryBuilderCount);
 		 
-		 boolQueryBuilderForCount.must(combinedQueryBuilder);
+		 boolQueryBuilderForCount.must(combinedQueryBuilderCount);
 		 //---end
 		 
 		 // filter based on client level
@@ -1347,6 +1346,8 @@ public class ClientRestController {
 			 //Country
 			if(clientVendorDTO.getCountry() !=null){
 				boolQueryBuilder.should(QueryBuilders.matchPhraseQuery("responderCountry", clientVendorDTO.getCountry()));
+		    }
+			if(clientVendorDTO.getCountry() !=null){
 				boolQueryBuilder.should(QueryBuilders.matchPhraseQuery("initiatorCountry", clientVendorDTO.getCountry()));
 		    }
 			
@@ -1389,10 +1390,6 @@ public class ClientRestController {
 				boolQueryBuilder.must(tierAdvancedBoolQueryBuilder);
 			}
 			
-		 // Rajashekar end
-			 // to   get the number of Vendor/Clients 
-		/*Long maxResults = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_CLIENTVENDOR_INDEX, Constants.ELK_CLIENTVENDOR_TYPE,
-				clientVendorDTO.getStart(), clientVendorDTO.getLength(), tableColumns[sortColumnIndex], sortColumnOrder ? SortOrder.ASC : SortOrder.DESC,boolQueryBuilder).getTotalHits();*/
 			SearchResponse searchResponse = sourceleadELKBaseIndexer
 					.searchDocumentWithMaxResults(Constants.ELK_CLIENTVENDOR_INDEX, Constants.ELK_CLIENTVENDOR_TYPE,
 							clientVendorDTO.getStart(), clientVendorDTO.getLength(), tableColumns1[sortColumnIndex], sortColumnOrder ? SortOrder.ASC : SortOrder.DESC, boolQueryBuilder);
