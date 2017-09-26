@@ -8,6 +8,7 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.HolidayDAO;
 import com.bis.sourcelead.dto.HolidayDTO;
 import com.bis.sourcelead.entity.Holiday;
@@ -112,8 +113,10 @@ public class HolidayServiceImpl implements HolidayService{
 		    hDTO.setId(hlist.getId());
 			if(StringUtils.isNotBlank(hlist.getHolidayName()))
 			hDTO.setHolidayName(hlist.getHolidayName());
-			if(hlist.getFromDate() != null)
-			hDTO.setFromDate(ConversionUtil.getDateAsString(hlist.getFromDate()));
+			if(hlist.getFromDate() != null){
+				hDTO.setFromDate(ConversionUtil.getDateAsString(hlist.getFromDate()));
+				hDTO.setDayOfTheWeek(Constants.WEEK_DAY.format(hlist.getFromDate()));
+			}
 			if(hlist.getToDate() != null)
 			hDTO.setToDate(ConversionUtil.getDateAsString(hlist.getToDate()));
 			if(StringUtils.isNotBlank(hlist.getHalfDayCheckBox()))

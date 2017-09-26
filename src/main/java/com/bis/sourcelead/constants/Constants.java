@@ -82,6 +82,9 @@ public class Constants {
 	public static final DateFormat SHORT_DF_MM_DD = new SimpleDateFormat("MMM-dd");
 	public static final DateFormat TZ_DF = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
 	
+	// Below line of code is used to print Week days like Sunday, Monday.... by passing Date.
+	public static final SimpleDateFormat WEEK_DAY =  new SimpleDateFormat("EEEE"); 
+	
 	public static final Long SOURCELEAD_ORG_LOCATION_ID = 1L;
 	/*
 	 * public static final DateFormat TZ_DF_TS = new SimpleDateFormat (
