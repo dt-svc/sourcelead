@@ -2265,12 +2265,12 @@ function uploadAddApplicantCandidateDoc(){
 </script>
 <script>
 function importAddApplicantDoc(){
-	fileUpload("uploadBtn", "addApplicants1", "addApplicant_form");
+	fileUpload("uploadBtn", "addApplicants", "addApplicant_form");
 }
 </script>
 <script>
 function SubmissionUploadFileDoc1(){
-	fileUpload("newUploadBtn", "SubmissionUploadFileDoc", "submitRecomendedApplicant_form");
+	fileUpload("newUploadBtn", "addApplicants", "submitRecomendedApplicant_form");
 }
 </script>
 

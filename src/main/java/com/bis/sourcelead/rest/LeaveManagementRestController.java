@@ -3,9 +3,9 @@ package com.bis.sourcelead.rest;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -14,15 +14,20 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
+
+import com.bis.sourcelead.dao.HolidayDAO;
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dao.LeaveTypeDao;
+import com.bis.sourcelead.dao.OptionsDao;
+import com.bis.sourcelead.dto.LeaveTypeDTO;
 import com.bis.sourcelead.dto.LeaveTypeDTO;
 import com.bis.sourcelead.entity.Department;
 import com.bis.sourcelead.entity.Leave;
@@ -39,20 +44,25 @@ import com.bis.sourcelead.dto.AddUserDTO;
 import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.ClientDTO;
 import com.bis.sourcelead.dto.LeaveDTO;
+import com.bis.sourcelead.dto.HolidayDTO;
 import com.bis.sourcelead.dto.OptionsDTO;
-import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.Department;
+import com.bis.sourcelead.entity.Holiday;
 import com.bis.sourcelead.entity.LeaveRole;
+import com.bis.sourcelead.entity.LeaveType;
 import com.bis.sourcelead.entity.Option;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
-import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.payroll.entity.AccountDeductionsDetails;
 import com.bis.sourcelead.service.DepartmentService;
+import com.bis.sourcelead.service.LeaveTypeService;
+import com.bis.sourcelead.service.DepartmentService;
+import com.bis.sourcelead.service.HolidayService;
 import com.bis.sourcelead.service.OptionsService;
+import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
@@ -76,6 +86,11 @@ public class LeaveManagementRestController {
 	LeaveTypeService leaveTypeService;
 	
 	@Autowired
+	private HolidayService holidayService;
+	
+	@Autowired
+	private OrgLocationService orgLocationService;
+
 	DepartmentService departmentService;
 	
 	@Autowired
@@ -88,14 +103,20 @@ public class LeaveManagementRestController {
 	OptionsDao optionsDao;
 	
 	@Autowired
-	private UserService userService;
+	LeaveTypeDao leaveTypeDao;
+	
+	@Autowired
+	UserService userService;
 	
 	@Autowired
 	UserRoleService userRoleService;
 	
 	@Autowired
 	LeaveService leaveService;
-	
+
+	@Autowired
+	HolidayDAO holidayDAO;
+
 	
 	/**
 	 * returns Pending leaves jsp
@@ -380,6 +401,25 @@ public class LeaveManagementRestController {
 	       return model;
 	}
 	
+	@RequestMapping(value = "/saveHoliday", method = RequestMethod.POST)
+	public @ResponseBody String saveHoliday(HolidayDTO holidayDTO,HttpServletRequest request)
+			throws Exception {
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		if(orgLocations.getId() != null)
+			holidayDTO.setOrgLocationId(orgLocations.getId().toString());
+		if(holidayDTO != null)
+		holidayService.storeHoliday(holidayDTO);
+		return "success";
+	}
+	
+	@RequestMapping(value = "/getHolidaysList", method = RequestMethod.GET)
+	public @ResponseBody List<HolidayDTO> getHolidaysList(@RequestParam(value = "orgLocationId", required = false) Long orgLocationId, @RequestParam(value = "userId", required = false) Long userId,HttpServletRequest request) throws Exception
+	{
+		List<HolidayDTO> holiodaysDTOList = null;
+		holiodaysDTOList = holidayService.getAllHolidaysList(orgLocationId);
+		return holiodaysDTOList;
+	}
+	
 	/**
 	 * saving new leave type
 	 * 
@@ -574,8 +614,7 @@ public class LeaveManagementRestController {
 		return model;
 	}
 	
-//	
-	
+
 	@RequestMapping(value = {"/getLeavePolicy", "/rest/getLeavePolicy"}, method = RequestMethod.GET)
 	@ResponseBody
 	public  String getleavePolicy(@RequestParam(value = "leaveTypeId", required = false) String leaveTypeId,HttpServletRequest request) throws Exception
@@ -588,4 +627,57 @@ public class LeaveManagementRestController {
 		return leavePolicy;
 	}
 	
+
+	@RequestMapping(value = {"/deleteLeaveType", "/rest/deleteLeaveType"}, method = RequestMethod.POST)
+	@ResponseBody
+	public boolean deleteLeaveType(LeaveTypeDTO leaveTypeDTO, HttpServletRequest request) throws Exception
+	{
+		boolean isDeleted = false;
+		LeaveType leaveType = leaveTypeService.getLeaveTypeById(leaveTypeDTO.getLeaveTypeId());
+		 if(leaveType !=null) {
+			 leaveType.setStatus(Constants.RECORD_INACTIVE.toString());
+			 leaveType.setDeleteReason(leaveTypeDTO.getDeleteReason());
+			 if(leaveTypeDTO.getLoginUserId() != null){
+				 User user = userService.getUserById(Long.parseLong(leaveTypeDTO.getLoginUserId()));
+				 leaveType.setUpdatedBy(user.getUserCode());
+			 }
+			 leaveType.setUpdatedDate(new Date());
+			 leaveTypeDao.addLeaveType(leaveType);
+			  isDeleted = true;
+		 }
+		return isDeleted;
+	}
+
+	@RequestMapping(value = "/editHoliday")
+	public ModelAndView editHoliday(@RequestParam(value="holidayId", required=false) String holidayId,HttpServletRequest request,HttpServletResponse response) throws Exception {
+		   ModelAndView model = new ModelAndView();
+		   Holiday holidays = holidayService.getHolidaysById(holidayId);
+		   model.addObject("holidays", holidays);
+		   model.addObject("sourceleadUrl", sourceleadUrl);
+		   model.setViewName("leavemanagement/addHoliday");
+	       return model;
+	}
+	
+	@RequestMapping(value = "/deleteHoliday", method = RequestMethod.GET)
+	public  @ResponseBody boolean deleteHoliday(@RequestParam(value = "holidayId", required = false) String holidayId,HttpServletRequest request) throws Exception
+	{
+		boolean isDeleted = false;
+		 Holiday deleteHoliday = holidayService.getHolidaysById(holidayId);
+		 if(deleteHoliday !=null) {
+			 deleteHoliday.setStatus("0");
+			 holidayDAO.saveDeleteHoliday(deleteHoliday);
+			 isDeleted = true;
+		 }
+		return isDeleted;
+	}
+	
+
+	@RequestMapping(value = {"/leaveTypeSummary", "/rest/leaveTypeSummary"}, method = RequestMethod.POST)
+	@ResponseBody
+	public LeaveType leaveTypeSummary(LeaveTypeDTO leaveTypeDTO, HttpServletRequest request) throws Exception
+	{
+		LeaveType leaveType = leaveTypeService.getLeaveTypeById(leaveTypeDTO.getLeaveTypeId());
+		return leaveType;
+	}
+
 }

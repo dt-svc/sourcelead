@@ -2,19 +2,16 @@
 <meta http-equiv="Cache-Control" content="private">
 <meta http-equiv="Expires" content="0">
 
-<%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
-<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
- <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
-
-
-
-<%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
-<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+ <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
+ <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
  <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
  <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
  <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
-<script src="resources/js/formvalidator.js"></script>
+	<c:if test="${staticTime == null || staticTime == 0 }">
+	    <c:set var='staticTime' value="<%=new java.util.Date().getTime() %>" scope="application"></c:set>
+	 </c:if>
+	<script src="resources/js/formvalidator.js?staticTime=${staticTime}"></script>
 
 <style>
 .settPop .form-control {
@@ -75,7 +72,7 @@ function onboardingCandidatesList(){
 	                     result = result +"    <th>Rate</th>"; 
 	                     result = result +"    <th>Position Type</th>";
 	                     result = result +"    <th>Onboard Status</th>";
-	                     '<sec:authorize access="hasRole(\'ROLE_VIEW_EDIT_ON_BOARD_USER\')">'
+	                     '<sec:authorize access="hasRole(\'ROLE_CREATE_ON_BOARD_USER\')">'
 	                    	 result = result +"<th>Actions</th>";
 	                     '</sec:authorize>';
 	                     result = result +"  </tr>"; 
@@ -119,7 +116,7 @@ function onboardingCandidatesList(){
 				                     result = result +"<td><div><span>Ready to onboard</span></div></td>";
 			                     }
 			                     
-			                     '<sec:authorize access="hasRole(\'ROLE_VIEW_EDIT_ON_BOARD_USER\')">'
+			                     '<sec:authorize access="hasRole(\'ROLE_CREATE_ON_BOARD_USER\')">'
 				                     if(opt.onboardUUId != null && opt.onboardUUId != '' && opt.onboardUUId != 'undefined'){
 				                    	 if(opt.onboardStatus == 'Draft'){
 				                    		 result = result +"<td><div class='tbldata-dotdot-sm'> <a href='"+sourceleadUrl+"/viewOnboardCandidateDetails?onboardUUID="+opt.onboardUUId+"'><span class='text-success'>View Onboard</span></a></div></td>";

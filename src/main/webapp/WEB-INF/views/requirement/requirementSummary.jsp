@@ -6,8 +6,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
-
- <link href="resources/css/requirement-summary.css?staticTime=${staticTime}" type="text/css" rel="stylesheet"/>
+<link href="resources/css/requirement-summary.css?staticTime=${staticTime}" type="text/css" rel="stylesheet"/>
  
 <script>
 $(document).ready(function() {
@@ -38,11 +37,9 @@ function prepareAllCounts(requirementId){
 }
 </script>
 
-
-
 <script>
 function allApplicantsCount(requirementId){
-	var sourceleadUrl = '${sourceleadUrl}';
+	
 	 $.ajax({
        type : "POST",
         url: sourceleadUrl+"/getSubmissionsCountBySubmissionStatus?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&submissionType=APPLICANTS",        
@@ -56,7 +53,7 @@ function allApplicantsCount(requirementId){
 
 <script>
 function duplicateCount(requirementId){
-	var sourceleadUrl = '${sourceleadUrl}';
+	
 	  $.ajax({
       type : "POST",
        url: sourceleadUrl+"/getDuplicateSubmissionsCountByRequirementId?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId,        
@@ -70,7 +67,7 @@ function duplicateCount(requirementId){
 
 <script>
 function requestSentCount(requirementId){
-	var sourceleadUrl = '${sourceleadUrl}';
+	
 	 $.ajax({
       type : "POST",
        url: sourceleadUrl+"/getSubmissionsCountBySubmissionStatus?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&submissionType=REQUESTSENT",        
@@ -84,7 +81,7 @@ function requestSentCount(requirementId){
 
 <script>
 function shortListCount(requirementId){
-	var sourceleadUrl = '${sourceleadUrl}';
+	
 	 $.ajax({
      type : "POST",
       url: sourceleadUrl+"/getSubmissionsCountBySubmissionStatus?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&submissionType=SHORTLISTED",        
@@ -98,7 +95,7 @@ function shortListCount(requirementId){
 
 <script>
 function submitToClientCount(requirementId){
-	var sourceleadUrl = '${sourceleadUrl}';
+	
 	$.ajax({
      type : "POST",
      url: sourceleadUrl+"/getSubmissionsCountBySubmissionStatus?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&submissionType=SUBMIT_TO_CLIENT",        
@@ -112,7 +109,7 @@ function submitToClientCount(requirementId){
 
 <script>
 function interviewsCount(requirementId){
-	var sourceleadUrl = '${sourceleadUrl}';
+	
 	$.ajax({
       type : "POST",
       url: sourceleadUrl+"/getSubmissionsCountBySubmissionStatus?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&submissionType=INTERVIEWED",        
@@ -126,7 +123,7 @@ function interviewsCount(requirementId){
 
 <script>
 function offerMadeCount(requirementId){
-	var sourceleadUrl = '${sourceleadUrl}';
+	
 	$.ajax({
       type : "POST",
       url: sourceleadUrl+"/getSubmissionsCountBySubmissionStatus?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&submissionType=OFFERED",        
@@ -140,7 +137,7 @@ function offerMadeCount(requirementId){
 
 <script>
 function rejectedCount(requirementId){
-	var sourceleadUrl = '${sourceleadUrl}';
+	
 	$.ajax({
       type : "POST",
       url: sourceleadUrl+"/getSubmissionsCountBySubmissionStatus?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&submissionType=REJECTED",        
@@ -154,7 +151,7 @@ function rejectedCount(requirementId){
 
 <script>
 function backoutCount(requirementId){
-	var sourceleadUrl = '${sourceleadUrl}';
+	
 	$.ajax({
       type : "POST",
       url: sourceleadUrl+"/getSubmissionsCountBySubmissionStatus?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&submissionType=BACKOUT",        
@@ -458,7 +455,7 @@ function openTopDiv(){
 function sideBar(requirementId,type){
 		  var sourceleadUrl ='${sourceleadUrl}';
 	    if(type != null && type != '' && type != 'undefined'){
-	    	$("#actionsDiv" ).show();
+	    	$("#details-div" ).hide();
 			 if(type == 'SHORTLIST'){
 				 	requirementPipeline(requirementId,type);
 					requirementStatusBar(requirementId);
@@ -496,6 +493,7 @@ function sideBar(requirementId,type){
 		 
 	    }
 	    else{
+	    	$("#details-div" ).show();
 	    	$("#actionsDiv" ).hide();
 	    	$("#tab-2").empty();
 			$("#tab-3").empty();
@@ -551,7 +549,7 @@ function viewJobSummaryDocument(jobId,title){
 <script>
 function updateReuqirementStatus(status){
 	
-	var sourceleadUrl = '${sourceleadUrl}';
+	
 	var requirementId = '${requirementId}';
 	 var isLoginUserAsAdmin = '${isAdmin}';
 	 
@@ -629,7 +627,7 @@ function rejectRequirementAlertMessage(status){
 <script>
 function updateReuqirementStatusReject(status){
 	
-	var sourceleadUrl = '${sourceleadUrl}';
+	
 	var requirementId = '${requirementId}';
 	var isLoginUserAsAdmin = '${isAdmin}';
 	 
@@ -687,7 +685,8 @@ function updateReuqirementStatusReject(status){
 
 <script>  
 function requirementPipeline(requirementId,submissionType){
-	var sourceleadUrl = '${sourceleadUrl}';
+	$("#actionsDiv" ).show();
+	
 	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	var userId = '${SourceLeadWeb_user.id}';
 	var loginUserRole = '${SourceLeadWeb_loginUserRole}';
@@ -702,8 +701,7 @@ function requirementPipeline(requirementId,submissionType){
 
 <script>
 function requirementPipelineList(url, requirementId, submissionType){
-	$("#actionsDiv" ).show();
-	  var sourceleadUrl = '${sourceleadUrl}';
+	  
 	  var clientSubmissions = '${clientSubmissions}';
 	  var isSpocActive = '${isSpocActive}';
 	  var orgLocationId = '${SourceLeadWeb_orgLocationId}';
@@ -826,15 +824,6 @@ function requirementPipelineList(url, requirementId, submissionType){
     prepareAllCounts(requirementId);
 }
 
-</script>
-
-<script>
-function viewResumeRequirementSummary(resumeUUID,title){
-	var sourceleadUrl ='${sourceleadUrl}';
-	if(resumeUUID != null && resumeUUID != ""){
-		window.open(sourceleadUrl+'/viewProfessionalCandidateResume/'+title+'?resumeUUID='+resumeUUID,title,"height=600,width=600");
-	}  
-}
 </script>
 
 <script>
@@ -967,7 +956,7 @@ function cancelRejectApplicant(submissionId,requirementId,submissionType){
 <script>
 function saveRejectApplicantReason(submissionId,requirementId,submissionType){
 	if ($('#rejected_form').validate(false, validationSettings)) {
-		var sourceleadUrl = '${sourceleadUrl}';
+		
 		var frm = $('#rejected_form').serializeFormJSON();
 		var con = JSON.stringify(frm);
 		con = con.replace(/[{}]/g, "");
@@ -1001,7 +990,7 @@ $('body').on('blur', '#rejected_form', function() {
 </script>
 <script>
 function backOutApplicant(submissionId,requirementId,submissionType){
-	var sourceleadUrl = '${sourceleadUrl}';
+	
 		$.ajax({
 		   	type: "POST",
 		    url: sourceleadUrl+"/backoutApplicant?"+tokenParamName+"="+tokenValue+"&submissionId="+submissionId,	    	   
@@ -1014,7 +1003,7 @@ function backOutApplicant(submissionId,requirementId,submissionType){
 
 <script>
 function requirementSubmissionCount(requirementId){  
-	var sourceleadUrl = '${sourceleadUrl}';
+	
 	 $.ajax({
         type : "POST",
          url: sourceleadUrl+"/getSubmissionsCountBySubmissionStatus?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId,        
@@ -1044,7 +1033,7 @@ function requirementSubmissionCount(requirementId){
 --%>
 <script>  
 function assignedMemberList(requirementId){
-	  var sourceleadUrl = '${sourceleadUrl}';
+	  
 	  $.ajax({
         type : "POST",
          url: sourceleadUrl+"/getRequirementAssignedListByRequirementId?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId,        
@@ -1124,7 +1113,7 @@ function requirementNotes(requirementId){
 	    $("#tab-3").empty();  
 	    $("#tab-4").empty();
 	    $("#status-div").empty(); 
-	    $("#actionsDiv").empty(); 
+	    $("#actionsDiv").hide(); 
 	    $("#status-data").empty(); 
 	    $("#tab-4").append(result);  
 	    reqNotes(requirementId);    
@@ -1271,7 +1260,7 @@ function reqNotes(requirementId){
 	      	    var locationCode ='${SourceLeadWeb_locationCode}'; 
 	      	    formData.append("locationCode",locationCode);
 	      	    
-				var sourceleadUrl = '${sourceleadUrl}';
+				
 				$("#save_note").attr("disabled", "disabled");
          		$("#save_note" ).addClass('button').val('Processing..');
 		        var jsonData = encodeURIComponent(con);
@@ -1305,8 +1294,8 @@ function reqNotes(requirementId){
 
 <script type="text/javascript">
 function requirementRecommendations(requirementId){
-	$("#actionsDiv" ).empty();
-	var sourceleadUrl = '${sourceleadUrl}';
+	$("#actionsDiv" ).hide();
+	
 	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	$("#recommendationsLoading").attr('style','position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	
@@ -1332,6 +1321,7 @@ function requirementRecommendations(requirementId){
 			 result = result +'<div class="clients_side_wrap_inn quickviewTabs">';
 			 result = result +'<div id="candidateCompare" ></div>';
 			 result = result + '<ul class="nav nav-tabs">';
+			 result = result + '<input type="hidden"  id="requirementId" name="requirementId" value="'+requirementId+'"/>';
 			 result = result +' <li id="quickviewTabsqv" class="active"><a data-toggle="tab" href="#quickresume_view">Quickview</a></li>';
 			 result = result +'<li id="quickviewTabsdetails"><a data-toggle="tab" href="#detailrecommondations">Detailed view</a></li>';
 			 result = result +'</ul>';
@@ -1754,7 +1744,7 @@ function clientSideBar(candidateId,recScore){
 							 	 result = result +'                    <i class="valid-profile fa fa-check-square text-success"></i>';        
 							  }
 						  }
-						 result = result+'  <div class="btn-group uploadfile">';
+						 result = result+'  <div class="btn-group uploadfile uploadbtn-custom">';
 						 result = result+'  <button type="button" class="btn btn-sm btn-primary">';
 						 result = result+'  <i class="fa fa-upload"></i></button>';
 						 result = result+'  <label class="btn btn-sm btn-primary">';
@@ -1795,19 +1785,29 @@ function clientSideBar(candidateId,recScore){
 			            
 			             result = result+'<ul class="list-unstyled">';
 			             result = result+'<li>Type - '+json.candidateType+'</li>';
-			             
-			                                                       if(json.experienceYears != null && json.experienceYears != '' && json.experienceYears != 'undefined'){
+			             if(json.designation != null && json.designation != '' && json.designation != 'undefined'){
+				         result = result+'<li>Designation - '+json.designation+'</li>';
+	              		 }else{
+	              		 result = result+'<li>Designation - ----</li>';  
+	              		 }
+			             if(json.designationType != null && json.designationType != '' && json.designationType != 'undefined'){
+				         result = result+'<li>Employment Type - '+json.designationType+'</li>';
+	              		 }else{
+	              		 result = result+'<li>Employment Type - ----</li>';  
+	              		 }
+			             if(json.experienceYears != null && json.experienceYears != '' && json.experienceYears != 'undefined'){
 			             result = result+'<li>Experience - '+json.experienceYears+' years '+json.experienceMonths+' months </li>';
-              		                                                  }else{
-              		                                                	  
+              		     }else{
               		     result = result+'<li>Experience - ----</li>';  
-              		                                                  }
-                                                                   if(json.primarySkill != null && json.primarySkill != '' && json.primarySkill != 'undefined'){
+              		     }if(json.noticePeriod != null && json.noticePeriod != '' && json.noticePeriod != 'undefined'){
+                	     result = result+'  <li>Notice Period - '+json.noticePeriod+'</li>';
+                         }else{
+                         result = result+'<li>Notice Period - ----</li>';  
+                         }if(json.primarySkill != null && json.primarySkill != '' && json.primarySkill != 'undefined'){
                 	     result = result+'  <li>Primary Skill - '+json.primarySkill+'</li>';
-                              		                                   }else{
-                              		                                                	  
+                         }else{
                          result = result+'<li>Primary Skill - ----</li>';  
-                              		                                    }
+                         }
 			             result = result+'                       </ul>';
 			             result = result+'                 <div class="clearfix">';
 			             result = result+'                 <div class="socialnetwork-details">';
@@ -1822,7 +1822,7 @@ function clientSideBar(candidateId,recScore){
 			            	 result = result+'<li class="bg-twitter"><a href="'+json.twitterUrl+'"target="_blank"> <i class="fa fa-twitter-square"></i></a></li>';
 			            	 }
 			             
-			             result = result+'                               </ul>';
+			             result = result+'   </ul>';
 			             result = result+'                 </div>';
 			             result = result+'                 </div>';
 			             result = result+'               </div>';
@@ -1835,9 +1835,9 @@ function clientSideBar(candidateId,recScore){
 			                                                  
 			             result = result+'                   <li title="'+city+''+state+''+country+'"><i class="fa fa-location-arrow" title="Location"></i>'+city+''+state+''+country+'</li>';
 			             
-			             result = result+'                   <li><i class="fa fa-money" title="Current Rate"></i>'+currentRate+'  '+currentRateType+' / '+currentRateCurrency+'</li>';
+			             result = result+'                   <li><i class="fa fa-money" title="Current Rate"></i><b>Current Rate:</b>' +currentRate+'  '+currentRateType+' / '+currentRateCurrency+'</li>';
 			             
-			             result = result+'                   <li><i class="fa fa-money" title="Expected rate"></i>'+expectedRate+'  '+rateType+' / '+expectedRateCurrencey+'</li>';
+			             result = result+'                   <li><i class="fa fa-money" title="Expected rate"></i><b>Expected Rate:</b>'+expectedRate+'  '+rateType+' / '+expectedRateCurrencey+'</li>';
 			             result = result+'                 </ul>';
 			             result = result+'               </div>';
 			             result = result+'			</div>';
@@ -2357,7 +2357,7 @@ function closeratediv(){
 <script>
 function exportPipelineToExcel(requirementId,submissionType){
 	$('.export_pipline').hide();
-	  var sourceleadUrl = '${sourceleadUrl}';
+	  
 	  var clientSubmissions = '${clientSubmissions}';
 	  var emptypilpeline = $("#emptyPipelinelist").val();
       if(emptypilpeline > 0 ){
@@ -2383,7 +2383,7 @@ function exportPipelineToExcel(requirementId,submissionType){
  <script>
 function exportPipelineToPdf(requirementId,submissionType){
 	$('.export_pipline').hide();
-	  var sourceleadUrl = '${sourceleadUrl}';
+	  
 	  var clientSubmissions = '${clientSubmissions}';
 	  var emptypilpeline = $("#emptyPipelinelist").val();
 	  if(emptypilpeline > 0 ){
@@ -2428,7 +2428,7 @@ function cancel(){
 <script type="text/javascript">
 function customizeScore(requirementId){
 	$("#customizeScoreDiv").show();
-	var sourceleadUrl = '${sourceleadUrl}';
+	
 	 $.ajax({
 		   	type: "GET",
 		    url: sourceleadUrl+"/getCustomizeScore?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId, 	   
@@ -3107,7 +3107,7 @@ function updateCutomize(requirementId){
     var educationScore = parseInt($("#educationScore").val());
     var visaTypwScore = parseInt($("#visaTypeScore").val());
     var totalscore = (skillPerc+expPerc+noticePerc+ratePerc+locationScore+kewordsPerc+educationScore+visaTypwScore);
-    var sourceleadUrl = '${sourceleadUrl}';
+    
     
     if(totalscore>100){
         var result = "";
