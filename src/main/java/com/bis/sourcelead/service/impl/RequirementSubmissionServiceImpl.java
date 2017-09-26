@@ -1772,8 +1772,8 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 				if(applicantAuthorizationDTO.getFileInfo() != null){
 					FileInfo info = applicantAuthorizationDTO.getFileInfo().get(0);
 					//requirementSubmission.setSubmissionRateDocFile(multiFile.getBytes());
-					requirementSubmission.setSubmissionRateFileContentType(info.getContentType());
-					requirementSubmission.setSubmissionRateFileName(info.getFileName());
+					requirementSubmission.setSubmissionRequestFileContentType(info.getContentType());
+					requirementSubmission.setSubmissionRequestFileName(info.getFileName());
 					requirementSubmission.setDocURL(info.getFileURL());
 					FileUploadUtil.moveFile(applicantAuthorizationDTO.getStaticPath(), info, "requestDocuments");
 				}
