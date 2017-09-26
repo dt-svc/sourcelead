@@ -1692,7 +1692,7 @@ public class ClientRestController {
 					}	
 					
 				}
-				response.setRecordsFiltered(Long.valueOf(searchResponse.getHits().getTotalHits()).intValue());
+				response.setRecordsFiltered(searchHits.length);
 				SearchResponse searchResponseForCount = sourceleadELKBaseIndexer
 						.searchDocumentWithMaxResults(Constants.ELK_CLIENTVENDOR_CONTACT_INDEX, Constants.ELK_CLIENTVENDOR_CONTACT_TYPE,
 								0, 10, "invitationStatus", SortOrder.DESC, boolQueryBuilderForCount);

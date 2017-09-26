@@ -442,7 +442,6 @@ public class LeaveManagementRestController {
 		 }
 		return optionsDTOList;
 	}
-//	/
 	
 	@RequestMapping(value = {"/deleteLeaveOption", "/rest/deleteLeaveOption"}, method = RequestMethod.POST)
 	@ResponseBody
@@ -573,6 +572,20 @@ public class LeaveManagementRestController {
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.setViewName("leavemanagement/addLeaveType");
 		return model;
+	}
+	
+//	
+	
+	@RequestMapping(value = {"/getLeavePolicy", "/rest/getLeavePolicy"}, method = RequestMethod.GET)
+	@ResponseBody
+	public  String getleavePolicy(@RequestParam(value = "leaveTypeId", required = false) String leaveTypeId,HttpServletRequest request) throws Exception
+	{
+		String leavePolicy = null;
+		 LeaveType options = leaveTypeService.getLeaveTypeById(leaveTypeId);
+		 if(options !=null) {
+			 leavePolicy = options.getLeavePolicy();
+		 }
+		return leavePolicy;
 	}
 	
 }

@@ -81,7 +81,7 @@
               <div class="form-group">
               <label class="col-md-3">Leave Type<span class="text-danger paddingLeft">*</span></label>
               <div class="col-md-9 dropdown-select">
-                <select class="form-control" id="leaveType" name="leaveType" field-name="Leave Type" data-validation="required" >
+                <select class="form-control" id="leaveType" name="leaveType" field-name="Leave Type" data-validation="required" onchange="getLeavePolicy();">
                   <option value="">--Select Leave Type--</option>
                 	<c:forEach var="leave" items="${leaveTypeList}">
                 	<%-- ${dept.id  == departmentId ? 'selected' : ''} --%>
@@ -347,10 +347,9 @@ function cancel(){
 </script>
 
  <!-- Modal -->
- <!--  <div class="terms-conditions modal" style="display:block;">
+  <div class="terms-conditions modal" style="display:none;">
     <div class="modal-dialog modal-lg">
-    
-      Modal content
+      <!-- Modal content-->
       <div class="modal-content">
         <div class="modal-header">
           <button type="button" class="close" data-dismiss="modal">&times;</button>
@@ -362,7 +361,7 @@ function cancel(){
       </div>
       
     </div>
-  </div> -->
+  </div>
   
  <script>
 $(function(){
@@ -371,4 +370,19 @@ $(".close").click(function(){
 });
   });
 </script>
+
+<script>
+function getLeavePolicy(){
+	var leaveTypeId = $("#leaveType").val();
+	alert("leaveTypeId"+leaveTypeId);
+	alert("sourceleadUrl"+sourceleadUrl);
+	$.get(sourceleadUrl+"/getLeavePolicy?"+tokenParamName+"="+tokenValue+"&leaveTypeId="+leaveTypeId, function(data) {
+		if(data == true){
+			// location.replace(sourceleadUrl+ "/getLeavePolicy");
+		}
+	}); 
+}
+</script>
+
+
 <jsp:include page="../masterFooter.jsp" />
