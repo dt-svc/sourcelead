@@ -1189,7 +1189,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 					  contractsTemplateDao.saveNewContract(upadatedContracts);
 			        	Contracts updateEnvContracts = contractsTemplateDao.saveNewContract(savedChildContracts);
 				contractApproveEmail(contracts,user,org,orgLocation);
-				//sendMailToOwner(contracts,user,org,orgLocation);
+				sendMailToOwner(contracts,user,org,orgLocation);
 		}else{
 
 			contracts.setRejectedReason(rejectReason);
