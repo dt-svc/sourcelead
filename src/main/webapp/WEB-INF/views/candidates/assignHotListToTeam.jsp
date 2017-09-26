@@ -54,7 +54,7 @@
 	 
 	  $.ajax({
            type : "POST",
-            url: sourceleadUrl+"/getHotListCandidates?${_csrf.parameterName}=${_csrf.token}",       
+            url: sourceleadUrl+"/getHotListCandidates?"+tokenParamName+"="+tokenValue+"",       
             success :function(data) {
 			    	     $("#candidateList").removeAttr("style");
 	                	 $("#candidateList").empty();
@@ -194,7 +194,7 @@ function selectedHotList(){
 			 var sourceleadUrl ='${sourceleadUrl}';
 				 $.ajax({
 				    	type: "POST",
-				        url: sourceleadUrl+"/getTeams?${_csrf.parameterName}=${_csrf.token}", 
+				        url: sourceleadUrl+"/getTeams?"+tokenParamName+"="+tokenValue+"", 
 				        success: function(data) {
 				        	var json = JSON.parse(data);
 				        	var output = "";
@@ -266,7 +266,7 @@ function assignHotListToTeam(){
 		
 		 	 $.ajax({
 				type : "POST",
-				url : sourceleadUrl+"/assignHotListCandiddatesToTeam?${_csrf.parameterName}=${_csrf.token}&teamId="+teamId+"&hotlist="+hotlist,
+				url : sourceleadUrl+"/assignHotListCandiddatesToTeam?"+tokenParamName+"="+tokenValue+"&teamId="+teamId+"&hotlist="+hotlist,
 				success : function(result) {
 					if(result == "success"){
 						

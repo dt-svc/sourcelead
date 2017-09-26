@@ -253,14 +253,23 @@ padding-left: 25px;
 					 result = result +'     </div>                                                                                                        ';
 				 }
 				
-				 
+				 if(json.paymentType != null && json.paymentType != '' && json.paymentType != 'undefined'){
 				 result = result +'     <div class="form-group">                                                                                      ';
 				 result = result +'       <label class="col-md-3 control-label">Rate / Salary </label>  ';
 				 result = result +'       <div class="col-md-6">                                                                                      ';
-				 result = result +'         <label>'+json.salaryRate+'</label>                                                                                  ';
+				 result = result +'         <label>'+json.paymentType+' '+json.salaryRate+'/'+json.paymentMode+'</label>                                                                                  ';
 				 result = result +'       </div>                                                                                                      ';
 				 result = result +'     </div>                                                                                                        ';
-				
+				 }
+				 
+				 else{
+					 result = result +'     <div class="form-group">                                                                                      ';
+					 result = result +'       <label class="col-md-3 control-label">Rate / Salary </label>  ';
+					 result = result +'       <div class="col-md-6">                                                                                      ';
+					 result = result +'         <label>'+json.salaryRate+'</label>                                                                                  ';
+					 result = result +'       </div>                                                                                                      ';
+					 result = result +'     </div>                                                                                                        ';
+					 }
 				 if(json.managerName != null && json.managerName != '' && json.managerName != 'undefined'){
 					 result = result +'     <div class="form-group">                                                                                      ';
 					 result = result +'       <label class="col-md-3 control-label">Manager</label>                                                       ';

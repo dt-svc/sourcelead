@@ -15,6 +15,8 @@ import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
 
 /**
  * @author Venkat Kesav
@@ -35,14 +37,17 @@ public class CandidateComments implements Serializable{
     @Column(name = "ID", nullable = false)
 	private Long id;
 	
+	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne
     @JoinColumn(name="ORG_LOCATION_ID", nullable=false )        
     private OrgLocations orgLocationId;
 	
+	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne
 	@JoinColumn(name = "CANDIDATE_ID", nullable=false)
 	private Candidate candidateId;
 	
+	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne
 	@JoinColumn(name = "SUBMISSION_ID", nullable=false)
 	private RequirementSubmission submissionId;
@@ -73,6 +78,9 @@ public class CandidateComments implements Serializable{
 	
 	@Transient
 	private Long commentAuthorUserId;
+	
+	@Transient
+	private String commentAuthorUserImage;
 	
 	@Transient
 	private String candidateName;
@@ -187,6 +195,14 @@ public class CandidateComments implements Serializable{
 
 	public void setCommentAuthorUserId(Long commentAuthorUserId) {
 		this.commentAuthorUserId = commentAuthorUserId;
+	}
+
+	public String getCommentAuthorUserImage() {
+		return commentAuthorUserImage;
+	}
+
+	public void setCommentAuthorUserImage(String commentAuthorUserImage) {
+		this.commentAuthorUserImage = commentAuthorUserImage;
 	}
 	
 

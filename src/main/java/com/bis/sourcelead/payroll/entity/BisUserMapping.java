@@ -85,6 +85,9 @@ public class BisUserMapping implements Serializable {
 	@Column(name = "BALANCE")
 	private double balance;
 	
+	@Column(name = "VERSION")
+	private int version;
+	
 	public double getBalance() {
 		return balance;
 	}
@@ -299,6 +302,14 @@ public class BisUserMapping implements Serializable {
 		return serialVersionUID;
 	}
 
-	
-	
+	public int getVersion()
+	{
+		return version;
+	}
+
+	public void setVersion(int version)
+	{
+		this.version = version;
+	}
+
 }

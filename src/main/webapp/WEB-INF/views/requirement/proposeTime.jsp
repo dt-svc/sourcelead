@@ -29,29 +29,7 @@
 <script src="resources/js/themeswitcher.js"></script>
 <script src="resources/js/moment.min.js"></script>
 <script src="resources/js/datetime-moment.js"></script>
-<script>
-		$(document).ready(function() { 
-			var interviewStatus  = '${interviewStatus}';
-			var intervewStartTime = '${interviewStartTime}';
-			var intervewEndTime = '${interviewEndTime}';
-			if(intervewStartTime != "interviewStartTime" && intervewEndTime != "interviewEndTime"){
-				$("#expire").removeAttr("style");
-			}else{
-				if(interviewStatus == 'Attending'){     
-					$("#accept").removeAttr("style");
-				}else if(interviewStatus == 'Not_Attending'){
-					$("#reject").removeAttr("style");
-				}else if(interviewStatus == 'Maybe'){
-					$("#tentative").removeAttr("style");
-				}
-			}
-			
-			
-			/* if(offerStatus == 'Rejected'){
-				$("#reject").removeAttr("style");		
-			} */
-		});
-</script>
+
 
 <style>
 body {
@@ -82,7 +60,7 @@ width: 8%;
   <header class="main-header">
    <span class="logo">
     <h1>Source Lead</h1>
-   	 	<a href="javascript:void(0)" title="Source Lead"> <i> <img src="resources/images/logo-sourceld.png" alt="Source Lead"> </i>
+   	 	<a href="javascript:void(0)" title="Source Lead"> <i> <img src="resources/images/logo-sourceld.png" alt="Source Lead"></i>
     </a>
     </span>
     <nav class="header-nav navbar">
@@ -92,7 +70,7 @@ width: 8%;
 
   <!-- Content Area -->
   <section class="container">
-		<div class="col-md-12">
+  	<div class="col-md-12">
 		  		<div id="accept" style="display:none">
 				          <div class="col-md-8 col-md-offset-2 inner-widget success-user">
 					          <i class="fa fa-check-circle fa-3x"></i>
@@ -206,6 +184,17 @@ width: 8%;
 		var maxRowNum = parseInt($("input[name = 'proposeTimeMaxRowNumber']").val());
 		var row = tbl.insertRow(maxRowNum);
 		row.setAttribute("id", "divProposeTimeRow" + maxRowNum);
+		  var locationDate ='${requirementInterview.submissionId.orgLocations.dateFormat}'; 
+		  var finalDateFormatInterviewDate = '';
+		  if(locationDate.match("yyyy-MM-dd")){
+			  finalDateFormatInterviewDate = 'yy-mm-dd';
+		  }if(locationDate.match("dd-MM-yyyy")){
+			  finalDateFormatInterviewDate = 'dd-mm-yy'; 
+		  }if(locationDate.match("MM-dd-yyyy")){
+			  finalDateFormatInterviewDate = 'mm-dd-yy'; 
+		  }if(locationDate.match("yyyy-dd-MM")){
+			  finalDateFormatInterviewDate = 'yy-dd-mm'; 
+		  }
 		
 		var rowNum = parseInt($("input[name = 'proposeNewTimeRowsNum"+requirementInterviewId+"']").val());
 		if(rowNum >= 5){
@@ -230,7 +219,7 @@ width: 8%;
 			cell0.innerHTML = text;
 			
 			$('#interviewDate'+maxRowNum+'').datepicker({
-				dateFormat : 'dd-mm-yy',
+				dateFormat : finalDateFormatInterviewDate,
 				changeMonth: true,
 				changeYear: true, 
 				minDate:0,
@@ -264,7 +253,7 @@ width: 8%;
   <script>
   function removeRow(rowId){
 	  document.getElementById('divProposeTimeRow' + rowId).style.display = 'none';
-	  
+	  var requirementInterviewId  = '${requirementInterviewId}';
 	  var rowNum = parseInt($("input[name = 'proposeNewTimeRowsNum"+requirementInterviewId+"']").val());
 	  $("input[name = 'proposeNewTimeRowsNum"+requirementInterviewId+"']").val(rowNum - 1);
 		
@@ -384,6 +373,24 @@ var validationSettings = {
 function clearProposeTime(){
 	location.reload();
 }
+</script>
+<script>
+window.onload = function() {
+	  var interviewStatus  = '${interviewStatus}';
+	  var intervewStartTime = '${interviewStartTime}';
+	  var intervewEndTime = '${interviewEndTime}';
+	  if(intervewStartTime != "interviewStartTime" && intervewEndTime != "interviewEndTime"){
+	  	$("#expire").removeAttr("style");
+	  }else{
+	  	if(interviewStatus == 'Attending'){     
+	  		$("#accept").removeAttr("style");
+	  	}else if(interviewStatus == 'Not_Attending'){
+	  		$("#reject").removeAttr("style");
+	  	}else if(interviewStatus == 'Maybe'){
+	  		$("#tentative").removeAttr("style");
+	  	}
+	  }
+	};
 </script>
 <script src="resources/js/formvalidator.js"></script>
   <!-- Footer Area -->

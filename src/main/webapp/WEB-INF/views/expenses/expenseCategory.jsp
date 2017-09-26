@@ -2,7 +2,6 @@
 <jsp:include page="../masterSideNav.jsp" />
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
  <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
  <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
  <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
@@ -187,7 +186,6 @@ function closePopup(){
 <script>
 function expenseCategoryList(){  
 
-	  var sourceleadUrl ='${sourceleadUrl}';
 	  $("#expenseCategoryLoading").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	 
 	  $.ajax({
@@ -305,13 +303,12 @@ function storeExpensesCategory(){
 			 var con = JSON.stringify(frm);
 			 con = con.replace(/[{}]/g, "");
 		     var jsonData = encodeURIComponent(con);
-			 var sourceleadUrl = '${sourceleadUrl}';
 			 $("#expenseCategory_form").attr("disabled", "disabled");
 			 $("#save_button").attr("disabled", "disabled");
 
 			$.ajax({
 					type : "POST",
-					url : sourceleadUrl+"/storeExpensesCategory?${_csrf.parameterName}=${_csrf.token}&json="+con,
+					url : sourceleadUrl+"/storeExpensesCategory?"+tokenParamName+"="+tokenValue+"&json="+con,
 					success :function(data) {  
 				                 if(data != null && data != 'undefined' && data != ""){
 				               		if( data.indexOf('Sign In') >= 0){
@@ -440,10 +437,9 @@ function getTaxPercentageValue(){
 
 <script>
 function deleteExpenseCategory(categoryId){
- var sourceleadUrl ='${sourceleadUrl}';
 	  $.ajax({  
           type : "POST",
-          url: sourceleadUrl+"/removeExpensesCategoryByCategoryId?${_csrf.parameterName}=${_csrf.token}&categoryId="+categoryId,        
+          url: sourceleadUrl+"/removeExpensesCategoryByCategoryId?"+tokenParamName+"="+tokenValue+"&categoryId="+categoryId,        
           success :function(data) {
 
 				if(data != null && data != 'undefined' && data != ""){
@@ -464,10 +460,9 @@ function deleteExpenseCategory(categoryId){
 
 <script>
 function reActiveExpenseCategory(categoryId){
- var sourceleadUrl ='${sourceleadUrl}';
 	  $.ajax({  
           type : "POST",
-          url: sourceleadUrl+"/reActiveExpenseCategoryByCategoryId?${_csrf.parameterName}=${_csrf.token}&categoryId="+categoryId,        
+          url: sourceleadUrl+"/reActiveExpenseCategoryByCategoryId?"+tokenParamName+"="+tokenValue+"&categoryId="+categoryId,        
           success :function(data) {
         	  expenseCategoryList()
         },
@@ -479,9 +474,8 @@ function reActiveExpenseCategory(categoryId){
  
  <script type="text/javascript">
  function editExpenseCategory(categoryId) {
-	 var sourceleadUrl = '${sourceleadUrl}';
 		$.ajax({	type : "POST",
-					url : sourceleadUrl+ "/getExpensesCategoryByCategoryId?${_csrf.parameterName}=${_csrf.token}&categoryId="+categoryId,
+					url : sourceleadUrl+ "/getExpensesCategoryByCategoryId?"+tokenParamName+"="+tokenValue+"&categoryId="+categoryId,
 					success : function(data) {
 						var json = JSON.parse(data);
 						var expensesName = "";
@@ -670,13 +664,10 @@ function reActiveExpenseCategory(categoryId){
 			con = con.replace(/[{}]/g, "");
 			//It will escape all the special characters
 			var jsonData = encodeURIComponent(con);
-			
-			var sourceleadUrl = '${sourceleadUrl}';
-
 			$.ajax({
 						type : "POST",
 						url : sourceleadUrl
-								+ "/upDateExpensesCategoryByCategoryId?${_csrf.parameterName}=${_csrf.token}&json="+ jsonData + "&categoryId="+categoryId,
+								+ "/upDateExpensesCategoryByCategoryId?"+tokenParamName+"="+tokenValue+"&json="+ jsonData + "&categoryId="+categoryId,
 						success : function(result) {
 							closePopup();
 							expenseCategoryList();
@@ -699,7 +690,6 @@ function reActiveExpenseCategory(categoryId){
  function validateExpenseCategoryType() {
 	  var name = document.getElementById("expensesName").value; 
  	  $('#nameIdDiv').find('p.jquery_form_error_message').remove();
-	  var sourceleadUrl ='${sourceleadUrl}';
 		 $.ajax({
 		    	type: "GET",
 		        url: sourceleadUrl+"/validateExpenseCategoryType?name="+name, 

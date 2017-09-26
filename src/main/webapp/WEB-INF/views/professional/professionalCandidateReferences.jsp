@@ -85,7 +85,6 @@
 <script>
 	function candReferencesList(candidateId) {
 		var candidateType = '${candidateType}';
-		var sourceleadUrl = '${sourceleadUrl}';
 		var locationCode = '${SourceLeadWeb_locationCode}';
 
 		$
@@ -402,44 +401,24 @@
 			dateFormat : 'yyyy/mm/dd'
 		};
 		if ($('#canReference_form').validate(false, validationSettings)) {
-			var frm = $('#canReference_form').serializeFormJSON();
-			var con = JSON.stringify(frm);
-
-			var form = $('#canReference_form')[0];
-			var formData = new FormData(form);
-			formData.append("json", con);
-			formData.append("candidateId", candidateId);
-			formData.append("userId", '${SourceLeadWeb_user.id}');
-			formData.append("locationCode", '${SourceLeadWeb_locationCode}');
-			var sourceleadUrl = '${sourceleadUrl}';
-			$("#save_ref").attr("disabled", "disabled");
-			$("#save_ref").addClass('button').val('Processing..');
-			//It will escape all the special characters
-			var jsonData = encodeURIComponent(con);
-			$
-					.ajax({
-						type : "POST",
-						data : formData,
-						contentType : 'application/json; charset=utf-8',
-						processData : false,
-						contentType : false,
-						dataType : 'json',
-						url : sourceleadUrl
-								+ "/saveCandidateReferences?${_csrf.parameterName}=${_csrf.token}",
-						success : function(result) {
-							closePopup();
-							$("#popUpDiv").removeClass("edit-details-active");
-							$("#selector10").removeAttr("style");
-							$("#selector10").css({
-								display : "block"
-							});
-							$("#refMsgDiv").html(
-									"Success!! New Candidate References added");
-							candReferencesList(candidateId);
-							refMsgFadein();
-
-						},
-					});
+			
+			var formData = getFormData("canReference_form");
+		    var userId = '${SourceLeadWeb_user.id}';
+		    var locationCode = '${SourceLeadWeb_locationCode}';
+			
+		    $("#save_ref").attr("disabled", "disabled");
+			$("#save_ref").addClass('button').val('Processing..'); 
+	        $.post(sourceleadUrl+"/saveCandidateReferences?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&userId="+userId+"&locationCode="+locationCode, formData, function(data) {
+	        	closePopup();
+	        	$("#popUpDiv").removeClass("edit-details-active");
+				$("#selector10").removeAttr("style");
+				$("#selector10").css({
+					display : "block"
+				});
+				$("#refMsgDiv").html("Success!! New Candidate References added");
+				candReferencesList(candidateId);
+				refMsgFadein();
+	        });
 			return true;
 		} else {
 			return false;
@@ -508,7 +487,6 @@
 --%>
 <script>
 	function deleteReference(candidateId, refId) {
-		var sourceleadUrl = '${sourceleadUrl}';
 		var loginUserId = '${SourceLeadWeb_userId}';
 		var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 		//var message = confirm("You are choosing to delete the reference");
@@ -551,40 +529,23 @@
 		
 		if ($('#canReferenceEdit_form').validate(false, validationSettings)) {
 
-			var frm = $('#canReferenceEdit_form').serializeFormJSON();
-
-			var con = JSON.stringify(frm);
-
-			var form = $('#canReference_form')[0];
-			var formData = new FormData(form);
-			formData.append("json", con);
-			formData.append("candidateId", candidateId);
-			formData.append("refId", refId);
-			formData.append("userId", '${SourceLeadWeb_user.id}');
-			formData.append("locationCode", '${SourceLeadWeb_locationCode}');
-			//It will escape all the special characters
-			var sourceleadUrl = '${sourceleadUrl}';
-			$
-					.ajax({
-						type : "POST",
-						data : formData,
-						contentType : 'application/json; charset=utf-8',
-						processData : false,
-						contentType : false,
-						dataType : 'json',
-						url : sourceleadUrl
-								+ "/updateCandidateReferenceBycandidateIdAndReferenceId?${_csrf.parameterName}=${_csrf.token}",
-						success : function(data) {
-							$("#selector10").removeAttr("style");
-							$("#selector10").css({
-								display : "block"
-							});
-							$("#refMsgDiv").html("Reference details updated");
-							closePopup();
-							candReferencesList(candidateId);
-							refMsgFadein();
-						},
-					});
+			var formData = getFormData("canReferenceEdit_form");
+		    var userId = '${SourceLeadWeb_user.id}';
+		    var locationCode = '${SourceLeadWeb_locationCode}';
+			
+			 $("#save_ref").attr("disabled", "disabled");
+			$("#save_ref").addClass('button').val('Processing..'); 
+	        $.post(sourceleadUrl+"/updateCandidateReferenceBycandidateIdAndReferenceId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&userId="+userId+"&locationCode="+locationCode, formData, function(data) {
+	        	
+	        	$("#selector10").removeAttr("style");
+				$("#selector10").css({
+					display : "block"
+				});
+				$("#refMsgDiv").html("Reference details updated");
+				closePopup();
+				candReferencesList(candidateId);
+				refMsgFadein();
+	        });
 			return true;
 		} else {
 			return false;
@@ -603,9 +564,7 @@
 <script>
 	function editCandidateReference(candidateId, refId) {
 
-		var sourceleadUrl = '${sourceleadUrl}';
-		$
-				.ajax(
+		$.ajax(
 						{
 							type : "POST",
 							url : sourceleadUrl

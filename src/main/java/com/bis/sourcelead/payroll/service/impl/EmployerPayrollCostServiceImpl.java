@@ -32,6 +32,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.bis.sourcelead.SourceleadPasswordEncoder;
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.EmployerPayrollCostDTO;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
@@ -40,6 +42,7 @@ import com.bis.sourcelead.payroll.dao.EmployerPayrollCostDao;
 import com.bis.sourcelead.payroll.entity.EmployerPayrollCost;
 import com.bis.sourcelead.payroll.entity.PayrollHelper;
 import com.bis.sourcelead.payroll.entity.UserPayroll;
+import com.bis.sourcelead.payroll.entity.WageTaxSummary;
 import com.bis.sourcelead.payroll.service.EmployerPayrollCostService;
 import com.bis.sourcelead.payroll.service.UserPayrollService;
 import com.bis.sourcelead.service.ProjectMembersService;
@@ -94,6 +97,9 @@ public class EmployerPayrollCostServiceImpl implements EmployerPayrollCostServic
 			workbook = WorkbookFactory.create(fis);
 			int numberOfSheets = workbook.getNumberOfSheets();
 			int isValid = 0;
+			int version = 0;
+			version = getEmployerPayrollCostVersionByLocationId(orgLocation.getId());
+			version += 1;
 			for (int i = 0; i < numberOfSheets; i++) {
 				Sheet sheet = workbook.getSheetAt(i);
 				Iterator<Row> rowIterator = sheet.iterator();
@@ -106,7 +112,7 @@ public class EmployerPayrollCostServiceImpl implements EmployerPayrollCostServic
 					
 				/*	if (true) {*/
 						if (row.getRowNum() > 0) { // Excluding column names
-							EmployerPayrollCost  employerPayrollCost = null;
+							EmployerPayrollCost  employerPayrollCost = new EmployerPayrollCost();
 							float grossWages =0f;
 							float fica =0f;
 							float futa =0f;
@@ -118,11 +124,8 @@ public class EmployerPayrollCostServiceImpl implements EmployerPayrollCostServic
 							String empId = null;
 							if (row.getCell(1) != null && !"".equalsIgnoreCase(row.getCell(1).toString())) {
 								empId = getCellValueAsString(row.getCell(1), fileName);
-								employerPayrollCost = employerPayrollCostDao.getEmployeePayrollCostById(empId.split("\\.")[0]);
-							}
-							if(employerPayrollCost == null){
-								employerPayrollCost = new EmployerPayrollCost();
 								employerPayrollCost.setEmployeeId(empId.split("\\.")[0]);
+								employerPayrollCost.setVersion(version);
 							}
 							
 							if (row.getCell(0) != null && !"".equalsIgnoreCase(row.getCell(0).toString())) {
@@ -257,8 +260,8 @@ public class EmployerPayrollCostServiceImpl implements EmployerPayrollCostServic
 	}
 
 	@Override
-	public List<EmployerPayrollCost> loadEmployerPayrollCostByOrgLocationId(OrgLocations orgLocation) throws Exception {
-		return employerPayrollCostDao.loadEmployerPayrollCostByOrgLocationId(orgLocation);
+	public ResponseList<EmployerPayrollCost> loadEmployerPayrollCostByOrgLocationId(OrgLocations orgLocation,EmployerPayrollCostDTO employerPayrollCostDTO) throws Exception {
+		return employerPayrollCostDao.loadEmployerPayrollCostByOrgLocationId(orgLocation,employerPayrollCostDTO);
 	}
 
 	@Override
@@ -369,6 +372,13 @@ public class EmployerPayrollCostServiceImpl implements EmployerPayrollCostServic
 		dates[1] = calendar.getTime();
 		return dates;
 			
+	}
+
+
+	@Override
+	public int getEmployerPayrollCostVersionByLocationId(Long locationId)
+	{
+		return employerPayrollCostDao.getEmployerPayrollCostVersionByLocationId(locationId);
 	}
 }
 

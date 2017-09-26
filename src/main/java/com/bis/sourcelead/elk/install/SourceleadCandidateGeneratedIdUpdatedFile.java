@@ -1,4 +1,4 @@
-package com.bis.sourcelead.orgShortCodeIdForOldOrgs.forOtherOrgs;
+package com.bis.sourcelead.elk.install;
 
 import java.beans.PropertyVetoException;
 import java.io.IOException;
@@ -18,7 +18,7 @@ import com.bis.sourcelead.db.DatabaseConnectionConfig;
 import com.bis.sourcelead.db.PropertyPathConfiguration;
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 
-public class JobsGeneratedIdpdatedFile {
+public class SourceleadCandidateGeneratedIdUpdatedFile{
 
 	private ComboPooledDataSource comboPooledDataSource;
 	
@@ -26,51 +26,46 @@ public class JobsGeneratedIdpdatedFile {
 	public void addCandidateGeneratedId() throws IOException, SQLException {
 		Connection conn = null ;
 		java.sql.PreparedStatement pstmt = null;
-		Statement stmt1 = null;
 		Statement stmt2 = null;
 		Statement stmt3 = null;
 		
 		try {
 			DataSource dataSource = comboPooledDataSource();
 			conn = dataSource.getConnection();
-			// String candGeneratedId = null;
-			 String finalJobsGeneratedId = null;
-				 String sql1 = "SELECT DISTINCT requirement.ORG_LOCATION_ID FROM sourcelead.REQUIREMENT requirement GROUP BY requirement.ORG_LOCATION_ID,requirement.ID";
-				 stmt1 = conn.createStatement();
+			 String finalCandidateGeneratedId = null;
 				 stmt2 = conn.createStatement();
 				 stmt3 = conn.createStatement();
-				 ResultSet rs1 = stmt1.executeQuery(sql1);
-				 while(rs1.next()){
-					 Long  jobsOrgLocId = rs1.getLong("ORG_LOCATION_ID");
-					 String organisationShortCode = "SELECT * FROM sourcelead.ORG_LOCATIONS orglocations where orglocations.id = "+jobsOrgLocId+"";
+				 
+				 
+					 String organisationShortCode = "SELECT * FROM sourcelead.ORG_LOCATIONS orglocations";
+					 
 					 ResultSet rSetorgShortCode = stmt3.executeQuery(organisationShortCode);
 					 while(rSetorgShortCode.next()){
-						 //Long orgId = rSetorgShortCode.getLong("id");
+						 Long  candidatesOrgLocIds = rSetorgShortCode.getLong("ID");
 						 String  orgShortCode = rSetorgShortCode.getString("GENERATED_USER_ID");
 						 System.out.println("orgShortCode :"+orgShortCode);
 						 if(orgShortCode != null && orgShortCode != ""){
-							 String queryOrg = "SELECT * FROM sourcelead.REQUIREMENT requirement where requirement.ORG_LOCATION_ID= "+jobsOrgLocId+"";
+							 String queryOrg = "SELECT * FROM sourcelead.CANDIDATE candidate where candidate.ORG_LOCATION_ID= "+candidatesOrgLocIds+"";
 							 ResultSet rs2 = stmt2.executeQuery(queryOrg);
-							 Long JobsGeneratedId = 0L;
+							 Long candidateGeneratedId = 0L;
 							 while(rs2.next()){
-								 Long  jobsId = rs2.getLong("ID");
-								 JobsGeneratedId = JobsGeneratedId + 1;
+								 Long  candidateId = rs2.getLong("ID");
+								 candidateGeneratedId = candidateGeneratedId + 1;
 								 final DecimalFormat decimalFormat = new DecimalFormat("0");                
-							        String ConvetredJobId = decimalFormat.format(JobsGeneratedId);
+							        String ConvetredCandidateId = decimalFormat.format(candidateGeneratedId);
 							        
 							        StringBuffer sb = new StringBuffer();
-							        finalJobsGeneratedId = sb.append(orgShortCode.toUpperCase()).append(Constants.JOB_ENTITY).append(ConvetredJobId).toString();
-						    
-									 String query = "update sourcelead.REQUIREMENT set GENERATED_ID = ? where ID = ? ";
+							        finalCandidateGeneratedId = sb.append(orgShortCode.toUpperCase()).append(Constants.CANDIDATE_ENTITY).append(ConvetredCandidateId).toString();
+							        
+									 String query = "update sourcelead.CANDIDATE set GENERATED_ID = ? where ID = ? ";
 									 pstmt = conn.prepareStatement(query); // create a statement
-								     pstmt.setString(1,finalJobsGeneratedId);
-								     pstmt.setLong(2, jobsId);
+								     pstmt.setString(1,finalCandidateGeneratedId);
+								     pstmt.setLong(2, candidateId);
 								     pstmt.executeUpdate();
 						   //  conn.commit();
 						}
 					}
 				}
-			}
 		}catch(Exception e){
 			e.printStackTrace();
 		}
@@ -99,7 +94,7 @@ public class JobsGeneratedIdpdatedFile {
 		}
 	 
 	public static void main(String[] args) throws IOException, SQLException {
-		JobsGeneratedIdpdatedFile dump = new JobsGeneratedIdpdatedFile();
+		SourceleadCandidateGeneratedIdUpdatedFile dump = new SourceleadCandidateGeneratedIdUpdatedFile();
 		dump.addCandidateGeneratedId();
 	}
 }

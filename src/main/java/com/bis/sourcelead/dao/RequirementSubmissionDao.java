@@ -3,6 +3,9 @@ package com.bis.sourcelead.dao;
 import java.util.Date;
 import java.util.List;
 
+import com.bis.sourcelead.dto.EmployerPayrollCostDTO;
+import com.bis.sourcelead.dto.RequirementSubmissionsDTO;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
@@ -10,6 +13,7 @@ import com.bis.sourcelead.entity.RequirementRateSubmissionNegotiation;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.RequirementSubmissionHistory;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.payroll.entity.EmployerPayrollCost;
 
 /**
  * 
@@ -25,7 +29,7 @@ public interface RequirementSubmissionDao {
 	
 	List<RequirementSubmission> getAllShortListCandidatesByOrgLocationsIdAndRequirementId(OrgLocations orgLocations, Long requirementId, List<Long> existingApplicantsIds, String isClientInterview,User user,String loginUserRole) throws Exception;
 	
-	List<RequirementSubmission>  getAllSubmittedAndShortListAndInterviewededCandidates(OrgLocations orgLocations, Long requirementId, List<Long> existingApplicantsIds, String isClientOffer,User user,String loginUserRole) throws Exception;
+	List<RequirementSubmission>  getAllSubmittedAndShortListAndInterviewededCandidates(OrgLocations orgLocations, Long requirementId, List<Long> existingApplicantsIds, String isClientOffer,User user,String loginUserRole,String isClientRequirement) throws Exception;
 	
 	RequirementSubmission storeRequirementSubmission(RequirementSubmission requirementSubmission)throws Exception;
 
@@ -202,5 +206,7 @@ public interface RequirementSubmissionDao {
 	List<RequirementSubmission> getAllSubmittedAndShortListAndInterviewededCandidatesForClientOffer(OrgLocations orgLocations, Long requirementId, List<Long> existingApplicantsIds, String isClientOffer) throws Exception;
 	
 	RequirementSubmission getClientSubmissionsBySourceSubmissionIdAndVendorLocationId(Long sourceSubmissionId, Long vendorLocationId) throws Exception;
+	
+	ResponseList<RequirementSubmission> loadSubmissionsListByRequirementId(RequirementSubmissionsDTO requirementSubmissionsDTO) throws Exception;
 
 }

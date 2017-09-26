@@ -3,7 +3,11 @@ package com.bis.sourcelead.payroll.service.impl;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -20,6 +24,9 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,15 +35,17 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.HrDeductionsDTO;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.payroll.dao.HrDeductionsDao;
-import com.bis.sourcelead.payroll.entity.AccountDeductions;
-import com.bis.sourcelead.payroll.entity.AccountDeductionsDetails;
 import com.bis.sourcelead.payroll.entity.HrDeductions;
 import com.bis.sourcelead.payroll.entity.HrDeductionsDetails;
 import com.bis.sourcelead.payroll.entity.PayrollHelper;
+import com.bis.sourcelead.payroll.entity.WageTaxSummary;
 import com.bis.sourcelead.payroll.service.HrDeductionsService;
+import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.ConversionUtil;
 
 @Service
@@ -71,9 +80,28 @@ public class HrDeductionsServiceImpl implements HrDeductionsService{
 			workbook = WorkbookFactory.create(fis);
 			int numberOfSheets = workbook.getNumberOfSheets();
 			int isValid = 0;
+			
+			DateTime zoned = new DateTime();
+			DateTimeFormatter outputFormatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'23:59:59");
+			DateTimeFormatter outputFormatter1 = DateTimeFormat.forPattern("yyyy-MM-dd'T'00:00:00");
+			DateFormat ts = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			
+			DateTime oneDay = zoned;
+			String oneDayStartDate = outputFormatter1.print(oneDay);
+			String oneDayStartDateString = CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE, Constants.UTC_TIMEZONE, oneDayStartDate);
+			Date startDate = ts.parse(oneDayStartDateString);
+			String oneDayEndDate = outputFormatter.print(oneDay);
+			String oneDayEndDateString = CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE, Constants.UTC_TIMEZONE, oneDayEndDate);
+			Date endDate = ts.parse(oneDayEndDateString);
+			
+			int version;
+			version = getHrDeductionsVersionByLocationId(orgLocation.getId());
+			version += 1;
+			
 			for (int i = 0; i < numberOfSheets; i++) {
 				Sheet sheet = workbook.getSheetAt(i);
 				Iterator<Row> rowIterator = sheet.iterator();
+				
 				if(i == 0){
 					isValid =  payrollHelper.isValidTemplateForHrDeductions(rowIterator);
 				}
@@ -92,6 +120,11 @@ public class HrDeductionsServiceImpl implements HrDeductionsService{
 								String empId = getCellValueAsString(row.getCell(0), fileName);
 								hrDeductions.setEmployeeId(empId.split("\\.")[0]);
 							} 
+							
+							if(hrDeductions.getEmployeeId() != null){
+								hrDeductions.setVersion(version);
+							}
+							
 							if (row.getCell(1) != null && !"".equalsIgnoreCase(row.getCell(1).toString())) {
 								String empName = getCellValueAsString(row.getCell(1), fileName);
 								hrDeductions.setEmployeeName(empName);
@@ -283,32 +316,49 @@ public class HrDeductionsServiceImpl implements HrDeductionsService{
 	}
 
 	@Override
-	public List<HrDeductions> getHrDeductionsListByOrgLocationid(OrgLocations orgLocation)
-	{
-		 List<HrDeductions> hrDeductionsList = hrDeductionsDao.getHrDeductionsListByOrgLocationid(orgLocation);
-		
-		if(hrDeductionsList != null){
-			for(HrDeductions hd : hrDeductionsList){
-				if(null !=  hd.getFromDate()){
-					hd.setFromDateStr(conversionUtil.getDateAsString(hd.getFromDate()));
-				}
-				if(null != hd.getToDate()){
-					hd.setToDateStr(conversionUtil.getDateAsString(hd.getToDate()));
-				}
-			}
-		}
-		return hrDeductionsList;
+	public ResponseList<HrDeductions> getHrDeductionsListByOrgLocationid(OrgLocations orgLocation, HrDeductionsDTO hrDeductionsDTO) throws Exception{
+		return hrDeductionsDao.getHrDeductionsListByOrgLocationid(orgLocation, hrDeductionsDTO);
+	
 	}
 
 	@Override
 	public List<HrDeductionsDetails> getHrDeductionsDetailsbyId(long hrDeductionId)
 	{
 		return hrDeductionsDao.getHrDeductionsDetailsbyId(hrDeductionId);
+	
 	}
-
 
 	@Override
 	public List<HrDeductions> getHrDeductionsByEmployeeId(OrgLocations orgLocations, Long empId) throws Exception {
 		return hrDeductionsDao.getHrDeductionsByEmployeeId(orgLocations,empId);
 	}
+
+
+	@Override
+
+	public HrDeductions getDeductionsbyId(Long deductionId)
+	{
+		return hrDeductionsDao.getDeductionsbyId(deductionId);
+	}
+	@Override
+	public HrDeductions getHrDeductionsByEmpIdandDuration(String EmpId, Long locationId, Date startDate, Date endDate)
+	{
+		return hrDeductionsDao.getHrDeductionsByEmpIdandDuration(EmpId, locationId, startDate, endDate);
+
+	}
+
+
+	@Override
+
+	public HrDeductions saveHrDeductions(HrDeductions hrDeductions) throws Exception
+	{
+		return hrDeductionsDao.saveAccountDeductions(hrDeductions);
+	}
+
+    @Override
+	public int getHrDeductionsVersionByLocationId(Long locationId)
+	{
+		return hrDeductionsDao.getHrDeductionsVersionByLocationId(locationId);
+	}
+
 }

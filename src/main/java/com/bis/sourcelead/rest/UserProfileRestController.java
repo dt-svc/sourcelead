@@ -9,7 +9,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Iterator;
-import java.util.List;
 
 import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
@@ -31,10 +30,8 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.bis.sourcelead.SourceleadPasswordEncoder;
-import com.bis.sourcelead.entity.Candidate;
-import com.bis.sourcelead.entity.Employees;
+import com.bis.sourcelead.dto.AddUserProfileDTO;
 import com.bis.sourcelead.entity.OrgLocations;
-import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.form.UserProfile;
@@ -54,6 +51,9 @@ public class UserProfileRestController {
 
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
+	
+	@Value("${static.path}")
+	private String staticPath;
 
 	@Autowired
 	UserService userService;
@@ -69,28 +69,29 @@ public class UserProfileRestController {
 	
 	@Autowired
 	CommonUtil commonUtil;
+	
+	@RequestMapping(value = "/saveUserProfileImage", method = RequestMethod.POST)
+	public String saveProfileImage(AddUserProfileDTO addUserProfileDTO,	HttpServletRequest request) throws Exception{
+		addUserProfileDTO.setStaticPath(staticPath);
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		user = userService.saveUserProfileImage(addUserProfileDTO, user);
+		return "home";
+	}
 
 	@RequestMapping(value = "/saveUserProfile", method = RequestMethod.POST)
-	public String saveUserProfile(@RequestParam(value = "json", required = false) String json,
-			MultipartHttpServletRequest request) throws Exception {
+	public String saveUserProfile(AddUserProfileDTO addUserProfileDTO,
+			HttpServletRequest request) throws Exception {
 
-		Iterator<String> itrator = request.getFileNames();
-		MultipartFile multiFile = request.getFile(itrator.next());
-
-		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
-				"orgLocations");
-
-		json = "{" + json + "}";
-		JSONObject jsonObj = new JSONObject(json);
-		UserRole userRoleElk = null;
 		
-		Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
-		UserProfile userProfile = gson.fromJson(json, UserProfile.class);
+		addUserProfileDTO.setStaticPath(staticPath);
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		UserRole userRoleElk = null;
 		try {
-			user = userService.saveUserProfile(userProfile, multiFile, user);
+			user = userService.saveUserProfile(addUserProfileDTO, user);
 			UserRole userRole = userRoleService.getUserDetailsByUserIdAndLocationId(user.getId(), orgLocations.getId());
-			userRole.setDesignation(userProfile.getDesignation());
+			userRole.setDesignation(addUserProfileDTO.getDesignation());
 			userRoleElk = userRoleService.addUserRole(userRole);
 			/*
 			 * update common user (single user different orgs) details in  ElasticSearch Documents (User)
@@ -168,6 +169,7 @@ public class UserProfileRestController {
 
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		user.setDocFile(null);
+		user.setFileUrl(null);
 		user.setFileContentType(null);
 		userService.addUser(user);
 		SourceLeadSessionManager.setSessionAttribute(request, "user", user);

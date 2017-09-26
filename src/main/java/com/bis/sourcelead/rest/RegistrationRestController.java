@@ -27,6 +27,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.bis.sourcelead.SourceleadAuthenticationProvider;
 import com.bis.sourcelead.SourceleadPasswordEncoder;
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.AddUserDTO;
+import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.PasswordResets;
@@ -172,14 +174,14 @@ public class RegistrationRestController {
 	
 	 @PreAuthorize("hasRole('ROLE_ENROLL_ORG')")
 	 @RequestMapping(value = "/createUesrBySourceleadAdmin" , method = RequestMethod.POST)
-	 public  String createUser(@RequestParam(value="json", required=false) String json, HttpServletRequest request) throws Exception {
+	 public  String createUser(AddUserDTO addUserDTO, CandidateDTO candidateDTO,HttpServletRequest request) throws Exception {
 		 	
-		 json = "{"+json+"}";
+		 /*json = "{"+json+"}";
 		 
-		 JSONObject jsonObj = new JSONObject(json);
+		 JSONObject jsonObj = new JSONObject(json);*/
 		 	
 	 	 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-	 	 registrationService.addUserBySourcelead(user, jsonObj);
+	 	 registrationService.addUserBySourcelead(user, addUserDTO,candidateDTO);
 	 	
 		 return "success";
 	   }

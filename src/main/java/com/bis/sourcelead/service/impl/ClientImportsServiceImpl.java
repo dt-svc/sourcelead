@@ -48,6 +48,9 @@ import com.bis.sourcelead.beans.ClientImportObject;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.ClientImportDao;
 import com.bis.sourcelead.dao.UserDao;
+import com.bis.sourcelead.dto.AddUserDTO;
+import com.bis.sourcelead.dto.CandidateDTO;
+import com.bis.sourcelead.dto.ClientDTO;
 import com.bis.sourcelead.entity.BulkClientDetails;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -189,9 +192,9 @@ public class ClientImportsServiceImpl implements ClientImportsService {
 					isClientFound = validateClient(client.getClientName(), client, orgLocation, responderType);
 					if (!isClientFound) {
 						OrgLocations mainOrgLocation = validateSourceleadOrg(client.getClientName(), org);
-						JSONObject jsonObj = populateJsonObject(client, isMailSent, vandorsListByOrgLocationId, orgLocation, client.getClientName(), "org", mainOrgLocation);
+						ClientDTO clientDTO = populateJsonObject(client, isMailSent, vandorsListByOrgLocationId, orgLocation, client.getClientName(), "org", mainOrgLocation);
 						try {
-							clientService.storeClient(jsonObj, user, orgLocation, responderType, org);
+							clientService.storeClient(clientDTO,clientDTO.getAddUserDTO(),clientDTO.getCandidateDTO(), user, orgLocation, responderType, org);
 						} catch (Exception e) {
 							logger.error(ExceptionUtils.getFullStackTrace(e));
 						}
@@ -209,11 +212,11 @@ public class ClientImportsServiceImpl implements ClientImportsService {
 								if (ownerUser.getId() != null) {
 									OrgLocations orgLocations = null;
 									client.setOwnerUserId(ownerUser.getUser().getId());
-									JSONObject jsonObj1 = populateJsonObject(client, isMailSent, vandorsListByOrgLocationId, orgLocation, client.getClientName(), "contact", orgLocations);
+									ClientDTO clientDTO = populateJsonObject(client, isMailSent, vandorsListByOrgLocationId, orgLocation, client.getClientName(), "contact", orgLocations);
 									try {
 										// clientService.storeClient(jsonObj,
 										// user, orgLocation,responderType,org);
-										orgSpocService.addVendorContacts(jsonObj1, user, orgLocation, orgRelationId.toString(), "", responderType, org);
+										orgSpocService.addVendorContacts(clientDTO,clientDTO.getAddUserDTO(),clientDTO.getCandidateDTO(), user, orgLocation, orgRelationId.toString(), "", responderType, org);
 										vandorsListByOrgLocationId.clear();
 									} catch (Exception e) {
 										logger.error(ExceptionUtils.getFullStackTrace(e));
@@ -381,12 +384,14 @@ public class ClientImportsServiceImpl implements ClientImportsService {
 	 * @return
 	 * @throws JSONException
 	 */
-	private JSONObject populateJsonObject(ClientImportObject clientObject, String isMailSent, List<OrgRelations> orgList, OrgLocations orgLocation, String orgName, String type, OrgLocations mainOrgLocation) throws JSONException
+	private ClientDTO populateJsonObject(ClientImportObject clientObject, String isMailSent, List<OrgRelations> orgList, OrgLocations orgLocation, String orgName, String type, OrgLocations mainOrgLocation) throws JSONException
 	{
 		String roleTypeId = "";
-		JSONObject jsonObj = new JSONObject();
+		ClientDTO clientDTO = new ClientDTO();
+		AddUserDTO addUserDTO = new AddUserDTO();
+		CandidateDTO candidateDTO = new CandidateDTO();
 		if (orgList != null && orgList.size() > 0) {
-			jsonObj.put("roleTypeId", roleTypeId);
+			clientDTO.setRoleTypeId(roleTypeId);
 			OrgRelations orgRelation = null;
 			for (OrgRelations org : orgList) {
 				if (orgName.equalsIgnoreCase(org.getResponderLocationId().getOrgLocationName())) {
@@ -398,91 +403,113 @@ public class ClientImportsServiceImpl implements ClientImportsService {
 			}
 			StringBuilder vendorName = new StringBuilder();
 			if (orgLocation.getId().longValue() == orgRelation.getLocationId().getId().longValue()) {
-				jsonObj.put("vendorName", vendorName.append(orgRelation.getId()).append(",").append(orgRelation.getResponderLocationId().getId()));
+				clientDTO.setVendorName(vendorName.append(orgRelation.getId()).append(",").append(orgRelation.getResponderLocationId().getId()).toString());
 			}
 			else {
-				jsonObj.put("vendorName", vendorName.append(orgRelation.getId()).append(",").append(orgRelation.getLocationId().getId()));
+				clientDTO.setVendorName(vendorName.append(orgRelation.getId()).append(",").append(orgRelation.getLocationId().getId()).toString());
 			}
 		}
 		else {
-			jsonObj.put("orgName", clientObject.getClientName());
+			clientDTO.setOrgName(clientObject.getClientName());
 		}
 		if (clientObject.getWebSite() != null) {
-			jsonObj.put("webSite", clientObject.getWebSite());
+			clientDTO.setWebSite(clientObject.getWebSite());
 		}
 		if (clientObject.getCountry() != null) {
-			jsonObj.put("country", clientObject.getCountry());
+			clientDTO.setCountry(clientObject.getCountry());
+			addUserDTO.setCountry(clientObject.getCountry());
+			candidateDTO.setCountry(clientObject.getCountry());
 		}
 		else {
 			if ("India".equals(orgLocation.getCountry())) {
 				
-				jsonObj.put("country", "India");
+				clientDTO.setCountry("India");
+				addUserDTO.setCountry("India");
+				candidateDTO.setCountry("India");
 			}
 			else if ("Australia".equals(orgLocation.getCountry())) {
 				
-				jsonObj.put("country", "Australia");
+				clientDTO.setCountry("Australia");
+				addUserDTO.setCountry("Australia");
+				candidateDTO.setCountry("Australia");
 			}
 			else if ("United States".equals(orgLocation.getCountry())) {
 				
-				jsonObj.put("country", "United States");
+				clientDTO.setCountry("United States");
+				addUserDTO.setCountry("United States");
+				candidateDTO.setCountry("United States");
 			}
 			else if ("Singapore".equals(orgLocation.getCountry())) {
 				
-				jsonObj.put("country", "Singapore");
+				clientDTO.setCountry("Singapore");
+				addUserDTO.setCountry("Singapore");
+				candidateDTO.setCountry("Singapore");
 			}
 			else if ("United Kingdom".equals(orgLocation.getCountry())) {
 				
-				jsonObj.put("country", "United Kingdom");
+				clientDTO.setCountry("United Kingdom");
+				addUserDTO.setCountry("United Kingdom");
+				candidateDTO.setCountry("United Kingdom");
 			}
 			else if ("France".equals(orgLocation.getCountry())) {
 				
-				jsonObj.put("country", "France");
+				clientDTO.setCountry("France");
+				addUserDTO.setCountry("France");
+				candidateDTO.setCountry("France");
 			}
 		}
 		if (clientObject.getState() != null) {
-			jsonObj.put("state", clientObject.getState());
+			clientDTO.setState(clientObject.getState());
 		}
 		if (clientObject.getCity() != null) {
-			jsonObj.put("city", clientObject.getCity());
+			clientDTO.setCity(clientObject.getCity());
 		}
 		if (clientObject.getFirstName() != null) {
-			jsonObj.put("firstName", clientObject.getFirstName());
+			clientDTO.setFirstName(clientObject.getFirstName());
+			addUserDTO.setFirstName(clientObject.getFirstName());
+			candidateDTO.setFileName(clientObject.getFirstName());
 		}
 		if (clientObject.getLastName() != null) {
-			jsonObj.put("lastName", clientObject.getLastName());
+			clientDTO.setLastName(clientObject.getLastName());
 		}
 		if (clientObject.getPhone() != null) {
-			jsonObj.put("phoneNumber", clientObject.getPhone());
+			clientDTO.setPhoneNumber(clientObject.getPhone());
 		}
 		if (clientObject.getStatus() != null) {
-			jsonObj.put("spocStatus", clientObject.getStatus());
+			clientDTO.setSpocStatus(clientObject.getStatus());
 		}
 		if (clientObject.getOwnerUserId() != null) {
-			jsonObj.put("owner", clientObject.getOwnerUserId());
+			clientDTO.setOwnerUserId(clientObject.getOwnerUserId().toString());
 		}
 		if (!"org".equals(type)) {
 			if (clientObject.getEmailid() != null) {
-				jsonObj.put("email", clientObject.getEmailid());
+				clientDTO.setEmail(clientObject.getEmailid());
+				addUserDTO.setEmail(clientObject.getEmailid());
+				candidateDTO.setEmail(clientObject.getEmailid());
 			}
 		}
 		if (clientObject.getRole() != null) {
 			try {
 				Roles role = rolesService.getRolesByDisplayName(clientObject.getRole());
-				jsonObj.put("roleType", role.getId());
+				clientDTO.setRoleTypeId(role.getId().toString());
+				addUserDTO.setRoleTypeId(role.getId().toString());
 			} catch (Exception e) {
 				logger.error(ExceptionUtils.getFullStackTrace(e));
 			}
 		}
 		if (isMailSent != null) {
-			jsonObj.put("isMailSent", isMailSent);
+			clientDTO.setIsMailSent(isMailSent);
 		}
 		if (clientObject.getLevel() != null) {
-			jsonObj.put("level", clientObject.getLevel());
+			clientDTO.setLevel(clientObject.getLevel());
 		}
 		if (null != mainOrgLocation) {
-			jsonObj.put("orgLocationId", mainOrgLocation.getId());
+			clientDTO.setOrgLocationId(mainOrgLocation.getId().toString());
 		}
-		return jsonObj;
+		
+		clientDTO.setAddUserDTO(addUserDTO);
+		clientDTO.setCandidateDTO(candidateDTO);
+		return clientDTO;
 	}
 	
 	/**
@@ -1400,9 +1427,9 @@ public class ClientImportsServiceImpl implements ClientImportsService {
 														vandorsListByOrgLocationId = orgRelationsService.getAllVendorsListByOrgName(clientOrVendor.getOrgName(), orgLocations.getId());
 													}
 													OrgLocations orgLocation = null;
-													JSONObject jsonObj1 = populateJsonObjectTemp(clientOrVendor, isMailSent, vandorsListByOrgLocationId, orgLocations, clientOrVendor.getOrgName(), "contact", orgLocation);
+													ClientDTO clientDTO = populateJsonObjectTemp(clientOrVendor, isMailSent, vandorsListByOrgLocationId, orgLocations, clientOrVendor.getOrgName(), "contact", orgLocation);
 													try {
-														orgSpocService.addVendorContacts(jsonObj1, user, orgLocations, orgRelations.getId().toString(), "", responderType, org);
+														orgSpocService.addVendorContacts(clientDTO,clientDTO.getAddUserDTO(),clientDTO.getCandidateDTO(), user, orgLocations, orgRelations.getId().toString(), "", responderType, org);
 														vandorsListByOrgLocationId.clear();
 														clientOrVendor.setRecordStatus("1");
 														clientImportDao.saveClientVendorExcelData(clientOrVendor);
@@ -1427,9 +1454,9 @@ public class ClientImportsServiceImpl implements ClientImportsService {
 													vandorsListByOrgLocationId = orgRelationsService.getAllVendorsListByOrgName(clientOrVendor.getOrgName(), orgLocations.getId());
 												}
 												OrgLocations orgLocation = null;
-												JSONObject jsonObj1 = populateJsonObjectTemp(clientOrVendor, isMailSent, vandorsListByOrgLocationId, orgLocations, clientOrVendor.getOrgName(), "contact", orgLocation);
+												ClientDTO clientDTO = populateJsonObjectTemp(clientOrVendor, isMailSent, vandorsListByOrgLocationId, orgLocations, clientOrVendor.getOrgName(), "contact", orgLocation);
 												try {
-													orgSpocService.addVendorContacts(jsonObj1, user, orgLocations, orgRelations.getId().toString(), "", responderType, org);
+													orgSpocService.addVendorContacts(clientDTO,clientDTO.getAddUserDTO(),clientDTO.getCandidateDTO(), user, orgLocations, orgRelations.getId().toString(), "", responderType, org);
 													vandorsListByOrgLocationId.clear();
 													clientOrVendor.setRecordStatus("1");
 													clientImportDao.saveClientVendorExcelData(clientOrVendor);
@@ -1482,9 +1509,9 @@ public class ClientImportsServiceImpl implements ClientImportsService {
 												}
 												else {
 													OrgLocations mainOrgLocation = validateSourceleadOrg(clientOrVendor.getOrgName(), org);
-													JSONObject jsonObj = populateJsonObjectTemp(clientOrVendor, isMailSent, null, orgLocations, clientOrVendor.getOrgName(), "org", mainOrgLocation);
+													ClientDTO clientDTO = populateJsonObjectTemp(clientOrVendor, isMailSent, null, orgLocations, clientOrVendor.getOrgName(), "org", mainOrgLocation);
 													try {
-														clientService.storeClient(jsonObj, user, orgLocations, responderType, org);
+														clientService.storeClient(clientDTO,clientDTO.getAddUserDTO(),clientDTO.getCandidateDTO(), user, orgLocations, responderType, org);
 														clientOrVendor.setRecordStatus("1");
 														clientImportDao.saveClientVendorExcelData(clientOrVendor);
 													} catch (Exception e) {
@@ -1509,9 +1536,9 @@ public class ClientImportsServiceImpl implements ClientImportsService {
 						else {
 							
 							OrgLocations mainOrgLocation = validateSourceleadOrg(clientOrVendor.getOrgName(), org);
-							JSONObject jsonObj = populateJsonObjectTemp(clientOrVendor, isMailSent, null, orgLocations, clientOrVendor.getOrgName(), "org", mainOrgLocation);
+							ClientDTO clientDTO = populateJsonObjectTemp(clientOrVendor, isMailSent, null, orgLocations, clientOrVendor.getOrgName(), "org", mainOrgLocation);
 							try {
-								clientService.storeClient(jsonObj, user, orgLocations, responderType, org);
+								clientService.storeClient(clientDTO,clientDTO.getAddUserDTO(),clientDTO.getCandidateDTO(), user, orgLocations, responderType, org);
 								clientOrVendor.setRecordStatus("1");
 								clientImportDao.saveClientVendorExcelData(clientOrVendor);
 							} catch (Exception e) {
@@ -1532,13 +1559,16 @@ public class ClientImportsServiceImpl implements ClientImportsService {
 		return duplicateClietDetails;
 	}
 	
-	private JSONObject populateJsonObjectTemp(BulkClientDetails client, String isMailSent, List<OrgRelations> orgList, OrgLocations orgLocation, String orgName, String type, OrgLocations mainOrgLocation) throws Exception
+	private ClientDTO populateJsonObjectTemp(BulkClientDetails client, String isMailSent, List<OrgRelations> orgList, OrgLocations orgLocation, String orgName, String type, OrgLocations mainOrgLocation) throws Exception
 	{
 		
 		String roleTypeId = "";
-		JSONObject jsonObj = new JSONObject();
+		ClientDTO clientDTO = new ClientDTO();
+		AddUserDTO addUserDTO = new AddUserDTO();
+		CandidateDTO candidateDTO = new CandidateDTO();
 		if (orgList != null && orgList.size() > 0) {
-			jsonObj.put("roleTypeId", roleTypeId);
+			clientDTO.setRoleTypeId(roleTypeId);
+			addUserDTO.setRoleTypeId(roleTypeId);
 			OrgRelations orgRelation = null;
 			for (OrgRelations org : orgList) {
 				if (orgName.equalsIgnoreCase(org.getResponderLocationId().getOrgLocationName())) {
@@ -1550,95 +1580,121 @@ public class ClientImportsServiceImpl implements ClientImportsService {
 			}
 			StringBuilder vendorName = new StringBuilder();
 			if (orgLocation.getId().longValue() == orgRelation.getLocationId().getId().longValue()) {
-				jsonObj.put("vendorName", vendorName.append(orgRelation.getId()).append(",").append(orgRelation.getResponderLocationId().getId()));
+				clientDTO.setVendorName(vendorName.append(orgRelation.getId()).append(",").append(orgRelation.getResponderLocationId().getId()).toString());
 			}
 			else {
-				jsonObj.put("vendorName", vendorName.append(orgRelation.getId()).append(",").append(orgRelation.getLocationId().getId()));
+				clientDTO.setVendorName(vendorName.append(orgRelation.getId()).append(",").append(orgRelation.getLocationId().getId()).toString());
 			}
 		}
 		else {
-			jsonObj.put("orgName", client.getOrgName());
+			clientDTO.setOrgName(client.getOrgName());
 		}
 		if (client.getWebsite() != null) {
-			jsonObj.put("webSite", client.getWebsite());
+			clientDTO.setWebSite(client.getWebsite());
 		}
 		if (client.getCountry() != null) {
-			jsonObj.put("country", client.getCountry());
+			clientDTO.setCountry(client.getCountry());
+			addUserDTO.setCountry(client.getCountry());
+			candidateDTO.setCountry(client.getCountry());
 		}
 		else {
 			if ("India".equals(orgLocation.getCountry())) {
 				
-				jsonObj.put("country", "India");
+				clientDTO.setCountry("India");
+				addUserDTO.setCountry("India");
+				candidateDTO.setCountry("India");
+				
 			}
 			else if ("Australia".equals(orgLocation.getCountry())) {
 				
-				jsonObj.put("country", "Australia");
+				clientDTO.setCountry("Australia");
+				addUserDTO.setCountry("Australia");
+				candidateDTO.setCountry("Australia");
 			}
 			else if ("United States".equals(orgLocation.getCountry())) {
 				
-				jsonObj.put("country", "United States");
+				clientDTO.setCountry("United States");
+				addUserDTO.setCountry("United States");
+				candidateDTO.setCountry("United States");
 			}
 			else if ("Singapore".equals(orgLocation.getCountry())) {
 				
-				jsonObj.put("country", "Singapore");
+				clientDTO.setCountry("Singapore");
+				addUserDTO.setCountry("Singapore");
+				candidateDTO.setCountry("Singapore");
 			}
 			else if ("United Kingdom".equals(orgLocation.getCountry())) {
 				
-				jsonObj.put("country", "United Kingdom");
+				clientDTO.setCountry("United Kingdom");
+				addUserDTO.setCountry("United Kingdom");
+				candidateDTO.setCountry("United Kingdom");
 			}
 			else if ("France".equals(orgLocation.getCountry())) {
 				
-				jsonObj.put("country", "France");
+				clientDTO.setCountry("France");
+				addUserDTO.setCountry("France");
+				candidateDTO.setCountry("France");
 			}
 		}
 		if (client.getState() != null) {
-			jsonObj.put("state", client.getState());
+			clientDTO.setState(client.getState());
 		}
 		if (client.getCity() != null) {
-			jsonObj.put("city", client.getCity());
+			clientDTO.setCity(client.getCity());
 		}
 		if (client.getFirstName() != null) {
-			jsonObj.put("firstName", client.getFirstName());
+			clientDTO.setFirstName(client.getFirstName());
+			addUserDTO.setFirstName(client.getFirstName());
+			candidateDTO.setFileName(client.getFirstName());
 		}
 		if (client.getLastName() != null) {
-			jsonObj.put("lastName", client.getLastName());
+			clientDTO.setLastName(client.getLastName());
+			addUserDTO.setLastName(client.getLastName());
+			candidateDTO.setLastName(client.getLastName());
 		}
 		if (client.getPhone() != null) {
-			jsonObj.put("phoneNumber", client.getPhone());
+			clientDTO.setPhoneNumber(client.getPhone());
+			addUserDTO.setPhoneNumber(client.getPhone());
+			candidateDTO.setPhoneNumber(client.getPhone());
 		}
 		if (client.getStatus() != null) {
-			jsonObj.put("spocStatus", client.getStatus());
+			clientDTO.setSpocStatus(client.getStatus());
 		}
-		if (client.getOwnerEmail() != null) {
+		/*if (client.getOwnerEmail() != null) {
 			UserRole ownerUser = userRoleService.getUserDetailsByEmailAndLocationId(client.getOwnerEmail(), orgLocation.getId());
-			jsonObj.put("owner", ownerUser.getUser().getId());
-		}
+			clientDTO.setOwner(ownerUser.getUser().getId());
+		}*/
 		// if(!"org".equals(type)){
 		if (client.getEmail() != null) {
-			jsonObj.put("email", client.getEmail());
+			clientDTO.setEmail(client.getEmail());
+			addUserDTO.setEmail(client.getEmail());
+			candidateDTO.setEmail(client.getEmail());
 			// }
 		}
-		jsonObj.put("roleTypeId", "");
+		clientDTO.setRoleTypeId("");
 		if (isMailSent != null) {
-			jsonObj.put("isMailSent", isMailSent);
+			clientDTO.setIsMailSent(isMailSent);
 		}
 		if (client.getTier() != null) {
-			jsonObj.put("level", client.getTier());
+			clientDTO.setLevel(client.getTier());
 		}
 		if (null != mainOrgLocation) {
-			jsonObj.put("orgLocationId", mainOrgLocation.getId());
+			clientDTO.setOrgLocationId(mainOrgLocation.getId().toString());
 		}
 		if (null != client.getClientAddress() && !"".equalsIgnoreCase(client.getClientAddress())) {
-			jsonObj.put("address", client.getClientAddress());
+			clientDTO.setAddress(client.getClientAddress());
 		}
 		if (null != client.getBillingAddress()
 				&& !"".equalsIgnoreCase(client.getBillingAddress())) {
-			jsonObj.put("billingAddress", client.getBillingAddress());
+			clientDTO.setBillingAddress(client.getBillingAddress());
 		}
 		if (null != client.getPaymentTerm() && !"".equalsIgnoreCase(client.getPaymentTerm())) {
-			jsonObj.put("PaymentTerm", client.getPaymentTerm());
+			clientDTO.setPaymentTerm(client.getPaymentTerm());
 		}
-		return jsonObj;
+		
+		clientDTO.setAddUserDTO(addUserDTO);
+		clientDTO.setCandidateDTO(candidateDTO);
+		return clientDTO;
 	}
 	
 	private boolean isSimilarOrgExist(List<OrgRelations> orgRelationsList2, Long orgLocationsId, BulkClientDetails client)
@@ -1736,9 +1792,9 @@ public class ClientImportsServiceImpl implements ClientImportsService {
 	{
 		BulkClientDetails bulkClientDetails = clientImportDao.getbulkClientByrecordIdAndOrgLocationId(Long.parseLong(recordId), orgLocation.getId(), responderType);
 		OrgLocations mainOrgLocation = validateSourceleadOrg(bulkClientDetails.getOrgName(), org);
-		JSONObject jsonObj = populateJsonObjectTemp(bulkClientDetails, "Y", null, orgLocation, bulkClientDetails.getOrgName(), "org", mainOrgLocation);
+		ClientDTO clientDTO = populateJsonObjectTemp(bulkClientDetails, "Y", null, orgLocation, bulkClientDetails.getOrgName(), "org", mainOrgLocation);
 		try {
-			clientService.storeClient(jsonObj, user, orgLocation, responderType, org);
+			clientService.storeClient(clientDTO , clientDTO.getAddUserDTO(), clientDTO.getCandidateDTO(), user, orgLocation, responderType, org);
 			bulkClientDetails.setRecordStatus("1");
 			clientImportDao.saveClientVendorExcelData(bulkClientDetails);
 		} catch (Exception e) {
@@ -1835,9 +1891,9 @@ public class ClientImportsServiceImpl implements ClientImportsService {
 			vandorsListByOrgLocationId = orgRelationsService.getAllVendorsListByOrgName(orgName, orgLocation.getId());
 		}
 		OrgLocations mainOrgLocations = null;
-		JSONObject jsonObj1 = populateJsonObjectTemp(bulkClientDetails, "Y", vandorsListByOrgLocationId, orgLocation, orgName, "org", mainOrgLocations);
+		ClientDTO clientDTO = populateJsonObjectTemp(bulkClientDetails, "Y", vandorsListByOrgLocationId, orgLocation, orgName, "org", mainOrgLocations);
 		try {
-			orgSpocService.addVendorContacts(jsonObj1, user, orgLocation, orgRelationId.toString(), "", responderType, org);
+			orgSpocService.addVendorContacts(clientDTO,clientDTO.getAddUserDTO(),clientDTO.getCandidateDTO(), user, orgLocation, orgRelationId.toString(), "", responderType, org);
 			vandorsListByOrgLocationId.clear();
 			bulkClientDetails.setRecordStatus("1");
 			clientImportDao.saveClientVendorExcelData(bulkClientDetails);

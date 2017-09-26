@@ -11,11 +11,10 @@
 
 <script>
 function candidateQuickViewProfile(candidateId){
-	  var sourceleadUrl = '${sourceleadUrl}';
 	  var skillsList = '${skillsList}'; 
 	  $.ajax({
         type : "POST",
-         url: sourceleadUrl+"/getCandidateById?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,        
+         url: sourceleadUrl+"/getCandidateById?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
          success :function(data) {  
               if(data != null && data != 'undefined' && data != ""){  
               	var json = JSON.parse(data);
@@ -43,6 +42,11 @@ function candidateQuickViewProfile(candidateId){
 	         			 		lastName =json.lastName;
 	             			 	}else{
 	             			 		lastName = '';
+	             			 	}
+	         			 	if(json.mobilePhone != null && json.mobilePhone != '' && json.mobilePhone != 'undefined'){
+	         			 		mobilePhone =json.mobilePhone;
+	             			 	}else{
+	             			 		mobilePhone = '';
 	             			 	}
 	         			 	if(json.designationType != null && json.designationType != '' && json.designationType != 'undefined'){
 	         			 		designationType =json.designationType+',';
@@ -109,8 +113,12 @@ function candidateQuickViewProfile(candidateId){
 					
 					result = result+'                </div>                                                                                                                                        ';
 					result = result+'                <div class="media-right">                                                                                                                     ';
-					result = result+'<img  id="userImage" onerror="predefineProfileImage(this);" src="<c:url value="/displayCandidateImage/'+candidateId+'"/>" alt="Profile Image" class="media-object" style="width:65px">';
-					 result = result+'  <div class="mb mt5 UsProBar">';                                                                                                                                        
+					if(json.fileUrl != null && json.fileUrl !='' && json.fileUrl !="undefined"){
+					result = result+'<img data-id="profileImage" id="userImage" src="'+json.fileUrl+'" alt="Profile Image" class="media-object" style="width:65px">';
+					}else{
+					result = result+'<img data-id="profileImage" id="userImage" src="resources/images/userprofileImg.jpg" alt="Profile Image" class="media-object" style="width:65px">';
+					} 
+					result = result+'  <div class="mb mt5 UsProBar">';                                                                                                                                        
 						result = result+' <div class="progress nomr">  ';
 					if(json.profilePercentage>=50){ 
 						result = result+'   <div class="progress-bar  progress-bar-success  ';
@@ -132,7 +140,7 @@ function candidateQuickViewProfile(candidateId){
 					result = result+'                  <ul class="list-unstyled">                                                                                                                  ';
 					result = result+'                      <li><i class="fa fa fa-envelope paddingRight text-warning" title="Email"></i>'+json.email+'';
 					result = result+'                      </li>                                                                                                                                   ';
-					result = result+'                      <li><i class="fa fa-phone paddingRight text-warning" title="Mobile"></i>'+json.mobilePhone+'</li>                                              ';
+					result = result+'                      <li><i class="fa fa-phone paddingRight text-warning" title="Mobile"></i>'+mobilePhone+'</li>                                              ';
 					result = result+'                      <li><i class="fa fa-map-marker paddingRight text-warning" title="Location"></i>'+city+''+state+''+country+'</li>';
 					result = result+'                    <li><i class="fa fa-usd paddingRight text-warning" title="Rate"></i>'+expectedRate+' '+rateType+''+expectedRateCurrencey+'</li>';
 					result = result+'                  </ul>                                                                                                                                       ';
@@ -212,10 +220,9 @@ function candidateQuickViewProfile(candidateId){
 
 <script>
 	function qvemployeeSubmission(candidateId) {
-		var sourceleadUrl = '${sourceleadUrl}';
 				$.ajax({
 					type : "POST",
-					url : sourceleadUrl	+ "/getCandidatesEmployersListByCandidateIdAndOrgLocationID?${_csrf.parameterName}=${_csrf.token}&candidateId=" + candidateId,
+					url : sourceleadUrl	+ "/getCandidatesEmployersListByCandidateIdAndOrgLocationID?"+tokenParamName+"="+tokenValue+"&candidateId=" + candidateId,
 					success : function(data) {
 						if (data != null && data != 'undefined' && data != "" && data != '[]') {
 								$("#qvemployeeSubmission").empty();
@@ -294,10 +301,9 @@ function candidateQuickViewProfile(candidateId){
 
 <script>
 function qveducationSubmission(candidateId){
-	 var sourceleadUrl ='${sourceleadUrl}';
 	 $.ajax({  
           type : "POST",
-          url: sourceleadUrl+"/getCandidateEducationListByCandidateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,        
+          url: sourceleadUrl+"/getCandidateEducationListByCandidateId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
           success :function(data) {
         	  if (data != null && data != 'undefined' && data != "" && data != '[]') {
 	                	 $("#qveducationSubmission").empty();
@@ -376,10 +382,9 @@ function qveducationSubmission(candidateId){
 
 <script>
 function qwikCertificates(candidateId){
-	var sourceleadUrl ='${sourceleadUrl}';
 	 $.ajax({  
           type : "POST",
-          url: sourceleadUrl+"/getCandidateCertificationListByCandidateIdAndOrgLocationID?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,        
+          url: sourceleadUrl+"/getCandidateCertificationListByCandidateIdAndOrgLocationID?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
           success :function(data) {
         	  if (data != null && data != 'undefined' && data != "" && data != '[]') {
 	                	 $("#qvcertificationSubmission").empty();
@@ -394,7 +399,7 @@ function qwikCertificates(candidateId){
 								result = result +'<div class="resume-widget resumewidget">';
 								
 								if(opt.candidatevalidFromDateToString != null && opt.candidatevalidFromDateToString != 'undefined' && opt.candidatevalidFromDateToString != "" && opt.candidatevalidToDateToString != null && opt.candidatevalidToDateToString != 'undefined' && opt.candidatevalidToDateToString != ""){
-									result = result +'  <p><small>'+opt.candidatevalidFromDateToString+' - '+opt.candidatevalidToDateToString+'</small></p>';
+									result = result +'  <p><small>'+opt.candidatevalidFromDateToString+' To '+opt.candidatevalidToDateToString+'</small></p>';
 								}else if(opt.candidatevalidFromDateToString != null && opt.candidatevalidFromDateToString != '' && opt.candidatevalidFromDateToString !='undefined'){
 									result = result +'  <p><small>'+opt.candidatevalidFromDateToString+'</small></p>';
 								}else if(opt.candidatevalidToDateToString != null && opt.candidatevalidToDateToString != '' && opt.candidatevalidToDateToString !='undefined'){

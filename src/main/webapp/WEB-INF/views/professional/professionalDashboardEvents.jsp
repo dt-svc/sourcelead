@@ -35,7 +35,6 @@ window.onload = function() {
 
 <script type="text/javascript">
 	function getInterviewsandTasks() {
-		var sourceleadUrl ='${sourceleadUrl}';
 		var date = $("#eventCalendar").val();
 		var timezone ='${SourceLeadWeb_orgLocations.timezone}'; 
 		var timezoneId = "";
@@ -43,6 +42,7 @@ window.onload = function() {
 			timezoneId = '${SourceLeadWeb_orgLocations.timezone.id}';
 		}
 		var candidateId = '${SourceLeadWeb_candidateId}';
+		var sourceleadUrl ='${sourceleadUrl}';
 		$.ajax({
 	    	type: "POST",
 	        url: sourceleadUrl+"/getProfessionalInterviewsEventDashBoard?${_csrf.parameterName}=${_csrf.token}&dateRange="+date+"&candidateId="+candidateId+"&timezoneId="+timezoneId,

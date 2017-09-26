@@ -17,10 +17,10 @@
       	  <div class="content-wraper">
 <section class="content-header clearfix">
 		<div class="pull-left">
-			<h2>Job Template Details</h2>
+			<h2>Job Template Details</h2> 
 		</div>
 		<div class="pull-right brud-crum">
-			<a href="/sourcelead/dashboard/1">Home</a>»<a href="/sourcelead/template">Job Template List </a>»
+			<a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>»<a href="<c:url value='/template'/>">Job Template List </a>»
 			View Job Template
 		</div>
 	</section>
@@ -38,7 +38,7 @@
 	 var requirementId= '${requirementId}';
 	 $.ajax({
 	    	type: "POST",
-	        url: sourceleadUrl+"/getRequirementTemplateByRequirementId?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId, 
+	        url: sourceleadUrl+"/getRequirementTemplateByRequirementId?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId, 
 	        success: function(data) {
 	        	 
 			    var json = JSON.parse(data);
@@ -170,7 +170,7 @@ function deleteRequirementTemplate(requirementId, status){
 	if (message == true) {
 		$.ajax({
 		   	type: "POST",
-		    url: sourceleadUrl+"/terminateRequirementTemplate?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&status="+status, 	   
+		    url: sourceleadUrl+"/terminateRequirementTemplate?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&status="+status, 	   
    		    success: function(data) {
    		    	if( data.indexOf('Sign In') >= 0){
 		    		location.replace(sourceleadUrl);

@@ -56,7 +56,9 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.CandidateSearchDTO;
+import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.elk.index.CandidateIndex;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
@@ -82,6 +84,7 @@ import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CandidateActivityCommonUtil;
 import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.util.FileUploadUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 /**
  * Handles requests for the Candidate List Service.
@@ -97,8 +100,10 @@ public class CandidateListRestController {
 	
 	 @Value("${sourceleadUrl}")
 	 private String sourceleadUrl;
+	 
+	 @Value("${static.path}")
+	 private String staticPath;
 		
-	
 	 @Autowired
 	 CommonUtil commonUtil;
 	 
@@ -264,6 +269,19 @@ public class CandidateListRestController {
 					for (MatchQueryBuilder matchQueryBuilder : matchQueryBuilderList) {
 						anyBoolSubQueryBuilder.should(matchQueryBuilder);
 					}
+					
+					DateFormat df = loginOrgLocation.getLocFullFormDateFormatter();
+					try{
+						if(keywd.contains("/")){
+							keywd = keywd.replaceAll("/", "-");
+						}
+						Date d = df.parse(keywd);
+						anyBoolSubQueryBuilder = QueryBuilders.boolQuery();
+						String dateStr = commonUtil.elkDateFormatter(d);
+						anyBoolSubQueryBuilder.should(QueryBuilders.termQuery("updatedDate", dateStr));
+					 }
+					 catch(Exception e){}
+					
 					anyBoolQueryBuilder.should(anyBoolSubQueryBuilder);
 				}
 			}
@@ -333,9 +351,9 @@ public class CandidateListRestController {
 		}
 
 		// minExpYears && maxExpYears
-		String minYears = search.getMinRate();
+		String minYears = search.getMinExpYears();
 		minYears = StringUtils.isNotEmpty(minYears) ? minYears.replaceAll("[^0-9\\.]+", "") : "";
-		String maxYears = search.getMaxRate();
+		String maxYears = search.getMaxExpYears();
 		maxYears = StringUtils.isNotEmpty(maxYears) ? maxYears.replaceAll("[^0-9\\.]+", "") : "";
 		if (StringUtils.isNotEmpty(minYears) && StringUtils.isNotEmpty(maxYears)) {
 			try {
@@ -763,6 +781,7 @@ public class CandidateListRestController {
 		Candidate candidate = candidateService.getCandidateByCandidateIdAndOrgLocationId(Long.parseLong(candidateId),
 				loginOrgLocation.getId());
 		candidate.setDocFile(null);
+		candidate.setFileUrl(null);
 		candidate.setFileContentType(null);
 		activitySummary.append("File").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidate.getFileName()).append(Constants.OLD_VALUE_TAG_END);
 		candidate.setFileName(null);
@@ -916,30 +935,27 @@ public class CandidateListRestController {
 	 * @throws NullPointerException
 	 */
 	@RequestMapping(value = "/saveCandidateProfile", method = RequestMethod.POST)
-	public String saveCandidateProfile(@RequestParam(value = "candidateId", required = false) String candidateId,
-			@RequestParam(value = "loginUserId", required = false) Long loginUserId,
-			@RequestParam(value = "orgLocationId", required = false) Long orgLocationId,
-			MultipartHttpServletRequest request) throws Exception {
+	public String saveCandidateProfile(CandidateDTO candidateDTO,@RequestParam(value = "candidateId", required = false) String candidateId,
+			HttpServletRequest request) throws Exception {
 
-		Iterator<String> itrator = request.getFileNames();
-		MultipartFile multiFile = request.getFile(itrator.next());
 		StringBuffer activitySummary = new StringBuffer();
-		//OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
-		OrgLocations loginOrgLocation = orgLocationService.getOrgLocations(orgLocationId);
-		User user = userService.getUserById(loginUserId);
-		Candidate candidate = candidateService.getCandidateByCandidateIdAndOrgLocationId(Long.parseLong(candidateId),
-				loginOrgLocation.getId());
-		if (null != multiFile.getContentType()
-				&& !multiFile.getContentType().equalsIgnoreCase("application/octet-stream")) {
+	 	OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+	 	User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		candidateDTO.setStaticPath(staticPath);
+		Candidate candidate = candidateService.getCandidateByCandidateIdAndOrgLocationId(Long.parseLong(candidateId),loginOrgLocation.getId());
+		
+		if(candidateDTO.getFileInfo() != null){
+			FileInfo info = candidateDTO.getFileInfo().get(0);
 			try {
-				if(candidate.getFileName() != null && candidate.getFileName() != "" && !candidate.getFileName().equalsIgnoreCase(multiFile.getOriginalFilename())){
-					activitySummary.append("File").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidate.getFileName()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(multiFile.getOriginalFilename()).append(Constants.NEW_VALUE_TAG_END).append(" ");
+				if(info.getFileName() != null && info.getFileName() != ""){
+					activitySummary.append("File").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidate.getFileName()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(info.getFileName()).append(Constants.NEW_VALUE_TAG_END).append(" ");
 				}else{
-					activitySummary.append("File").append(" : ").append(Constants.NEW_VALUE_TAG_INITIATION).append(multiFile.getOriginalFilename()).append(Constants.NEW_VALUE_TAG_END).append(" ");
+					activitySummary.append("File").append(" : ").append(Constants.NEW_VALUE_TAG_INITIATION).append(info.getFileName()).append(Constants.NEW_VALUE_TAG_END).append(" ");
 				}
-				candidate.setFileContentType(multiFile.getContentType());
-				candidate.setDocFile(multiFile.getBytes());
-				candidate.setFileName(multiFile.getOriginalFilename());
+				candidate.setFileContentType(info.getContentType());
+				candidate.setFileUrl(info.getFileURL());
+				candidate.setFileName(info.getFileName());
+				FileUploadUtil.moveFile(candidateDTO.getStaticPath(), info, "profile");
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -948,8 +964,8 @@ public class CandidateListRestController {
 		
 		candidateActivityCommonUtil.storeCandidateHistory(candidate, user);
 		candidateActivityCommonUtil.storeCandidateActivity(user, loginOrgLocation, candidate, "", Constants.CANDIDATE_UPLOAD_NEW_PROFILE_IMAGE, activitySummary.toString(), "CANDIDATE");
-		
-		return "success";
+		Integer percentage = candidateService.getCandidatePercentage(candidate,loginOrgLocation);
+		return percentage.toString();
 	}
 
 	/**
@@ -1045,29 +1061,11 @@ public class CandidateListRestController {
 	 * @throws NullPointerException
 	 */
 	@RequestMapping(value = "/updateCandidate")
-	public String updateCandidate(@RequestParam(value = "json", required = false) String json,
-			HttpServletRequest request) throws Exception {
-
-		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
-				"orgLocations");
-		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-
-		MultipartFile multiFile = null;
-		Candidate candidate;
-		String jsonc = "{" + json + "}";
-		JSONObject jsonObj = new JSONObject(jsonc);
-
+	public String updateCandidate(CandidateDTO CandidateDto,HttpServletRequest request) throws Exception {
+		User user = userService.getUserById(Long.valueOf(CandidateDto.getLoginUserId()));
+		OrgLocations loginOrgLocation = orgLocationService.getOrgLocations(Long.valueOf(CandidateDto.getOrgloationId()));
 		StringBuilder candidateCreateMsg = new StringBuilder();
-		candidate = candidateService.storeCandidate(jsonObj, loginOrgLocation, user, multiFile);
-		/*
-		 * if(jsonObj.has("candidateId") && jsonObj.getString("candidateId") != null &&
-		 * !"".equals(jsonObj.getString("candidateId"))){
-		 * SourceLeadSessionManager.setSessionAttribute(request, "candidateCreateMsg",
-		 * candidateCreateMsg.append("Success!!  ").append(candidate.getFirstName()).
-		 * append(" Details Updated").toString());
-		 * 
-		 * }
-		 */
+		Candidate candidate = candidateService.storeCandidate(CandidateDto, loginOrgLocation, user);
 
 		return "success";
 
@@ -1105,7 +1103,7 @@ public class CandidateListRestController {
 				candidate.setStatus(Constants.CANDIDATE_ACTIVE);
 			}
 
-			if (Constants.Candidates.equalsIgnoreCase(candidateType)) {
+			if (Constants.Candidate.equalsIgnoreCase(candidateType)) {
 				candidate.setIsAssociate(Constants.NO);
 				candidate.setStatus(Constants.CANDIDATE_IN_ACTIVE);
 			}

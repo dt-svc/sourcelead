@@ -8,11 +8,10 @@
 
 <script>
 function assetDetails(assetId) {
-		var sourceleadUrl = '${sourceleadUrl}';
 		
 		$.ajax({
 			type : "POST",
-			url : sourceleadUrl	+ "/getAssetById?${_csrf.parameterName}=${_csrf.token}&assetId="+ assetId,
+			url : sourceleadUrl	+ "/getAssetById?"+tokenParamName+"="+tokenValue+"&assetId="+ assetId,
 			success : function(data) {
 				var json = JSON.parse(data);
 				    
@@ -171,13 +170,10 @@ function assetDetails(assetId) {
 
 <script>
 function editAssetManagement(assetId){
- var sourceleadUrl ='${sourceleadUrl}';
- 
- var sourceleadUrl = '${sourceleadUrl}';
 	
 	$.ajax({
 		type : "POST",
-		url : sourceleadUrl	+ "/getAssetById?${_csrf.parameterName}=${_csrf.token}&assetId="+ assetId,
+		url : sourceleadUrl	+ "/getAssetById?"+tokenParamName+"="+tokenValue+"&assetId="+ assetId,
 		success : function(data) {
 			var json = JSON.parse(data);
 			
@@ -630,8 +626,6 @@ var validationSettings = {
         	        var jsonData = encodeURIComponent(con);
         	        var form = $('#updateAsset_form')[0];
 	           		var formData = new FormData(form);
-	          		var sourceleadUrl ='${sourceleadUrl}';
-	          		
 	          		
 	          		 $("#update_asset").attr("disabled", "disabled");
 	          		 $("#updateLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
@@ -644,7 +638,7 @@ var validationSettings = {
           	            processData: false,
           	            contentType:false,
               	        dataType : 'json',
-	     		    	 url: sourceleadUrl+"/addCategoryAssets?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&assetId="+assetId, 
+	     		    	 url: sourceleadUrl+"/addCategoryAssets?"+tokenParamName+"="+tokenValue+"&json="+jsonData+"&assetId="+assetId, 
 	     		        success: function(result) {
 	     		        	if(result == 'home'){
 	     		        		assetDetails(assetId);

@@ -4,14 +4,22 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>Insert title here</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<meta charset="utf-8">
+	
+ <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+ <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+ <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
+ 
+ <c:if test="${staticTime == null || staticTime == 0 }">
+    <c:set var='staticTime' value="<%=new java.util.Date().getTime() %>" scope="application"></c:set>
+ </c:if>
 
- <meta charset="utf-8">
+      <title>Insert title here</title>
       <title>jQuery UI Autocomplete functionality</title>
       <link href="http://code.jquery.com/ui/1.10.4/themes/ui-lightness/jquery-ui.css" rel="stylesheet">
-      <script src="http://code.jquery.com/jquery-1.10.2.js"></script>
-      <script src="http://code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
+      <script src="http://code.jquery.com/jquery-1.10.2.js?staticTime=${staticTime}"></script>
+      <script src="http://code.jquery.com/ui/1.10.4/jquery-ui.js?staticTime=${staticTime}"></script>
       <style>
          #project-label {
             display: block;

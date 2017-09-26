@@ -44,10 +44,9 @@ function usersListCheck(searchValue,searchResult){
 
 <script>
 function getUsersSearchResult(searchValue){
-	var sourceleadUrl ='${sourceleadUrl}';
 	 $.ajax({
         type : "GET",
-         url: sourceleadUrl+"/getUniversalSearchUsersList?${_csrf.parameterName}=${_csrf.token}&searchValue="+searchValue,       
+         url: sourceleadUrl+"/getUniversalSearchUsersList?"+tokenParamName+"="+tokenValue+"&searchValue="+searchValue,       
          success :function(data) {
         	 prepareUsersList(data);
         },
@@ -218,8 +217,8 @@ function getUsersSearchResult(searchValue){
        <ul class="pull-right list-unstyled list-inline">
         <input type="hidden" name="usersOffset" id="usersOffset" value="0"/>
          <li><div class="gridFil grid-fil">
-					<i class="fa fa-th-list" onclick="showList('LISTVIEW');" id="ShowGrid"></i>
-					<i class="fa fa-th-large" onclick="showGrid();" id="ShowList"></i>
+					<i class="fa fa-th-list"  title="List" onclick="showList('LISTVIEW');" id="ShowGrid"></i>
+					<i class="fa fa-th-large" title="Grid" onclick="showGrid();" id="ShowList"></i>
 			</div></li>	
           <li><i class="fa fa-filter"></i>&nbsp;
                <select id="userState" onchange="getUsersView('manual','LISTVIEW');">
@@ -245,7 +244,7 @@ function getUsersSearchResult(searchValue){
 			  <a href="javascript:void(0)">
 			  <i class="fa fa-user"></i></a>
 				<span class="action-search"><input type="text" placeholder="Email/Name" id="searchByName"></span>
-				<span class="action-search" onclick="getUsersList('manual');"><i class="fa fa-search"></i></span>
+				<span class="action-search" onclick="getUsersList('manual');" title="Search"><i class="fa fa-search"></i></span>
 		  </li> 
 		
 		   <sec:authorize access="hasAnyRole('ROLE_CREATE_USER')"> 
@@ -300,7 +299,6 @@ function exportUserData(){
 	var userListEmpty = $("#noUsers").val();
 	var exportType = "xls";
 	var viewType = "LISTVIEW";
-	var sourceleadUrl = '${sourceleadUrl}';
 	var loginUserRole = '${SourceLeadWeb_loginUserRole}';
     var userRole = document.getElementById("userRole").value;
 	var searchByName = document.getElementById("searchByName").value;
@@ -353,7 +351,6 @@ function exportToPdf(){
 	var userListEmpty = $("#noUsers").val();
 	var exportType = "pdf";
 	var viewType = "LISTVIEW";
-	var sourceleadUrl = '${sourceleadUrl}';
 	var loginUserRole = '${SourceLeadWeb_loginUserRole}';
     var userRole = document.getElementById("userRole").value;
 	var searchByName = document.getElementById("searchByName").value;
@@ -462,9 +459,9 @@ function exportToPdf(){
   this script is not used -->    
 <script type="text/javascript">
 	function getUsersList(type){
-		var sourceleadUrl = '${sourceleadUrl}';
 		var loginUserRole = '${SourceLeadWeb_loginUserRole}';
 	    var userRole = document.getElementById("userRole").value;
+	  
 		
 		var searchByName = document.getElementById("searchByName").value;
 		var userState = document.getElementById("userState").value;
@@ -488,11 +485,11 @@ function exportToPdf(){
 		
 		 $.ajax({ 
 	    	type: "POST",
-	    	url: sourceleadUrl+"/getUsersList?${_csrf.parameterName}=${_csrf.token}&userRole="+userRole+"&searchByName="+searchByName+"&userState="+userState+"&loginUserRole="+loginUserRole+"&offset="+offset,
+	    	url: sourceleadUrl+"/getUsersList?"+tokenParamName+"="+tokenValue+"&userRole="+userRole+"&searchByName="+searchByName+"&userState="+userState+"&loginUserRole="+loginUserRole+"&offset="+offset,
 	    			 
             success: function(data) {
             	 var json = JSON.parse(data);
-            	 var result = "";
+            	 var opt = "";
           if(data != null && data !='undefined' && data !=null &&  data != [] && json.length >0){ 	
 	       	
 	    	if(json.length > 0)	
@@ -508,58 +505,59 @@ function exportToPdf(){
 			 			    }else{
 			 			    	mobilePhone = "No Data"
 			 			    }
-			 				
-			       	    	result = "<div class='col-xs-12 col-sm-12 col-md-6 col-lg-4'>";
-			       	    	result = result +"<div class='user-profile'>";
-			       	    	result = result +"<div class='col-xs-4 col-sm-4'>";
-			       	    	result = result +"<div class='text-center image-parent'>";
-			       	    	result = result +"<div class='imageParent'>";
-			       	    	result = result +"<img onerror='predefineProfileImage(this);' class='m-t-xs'  src='"+sourceleadUrl+"/displayUserImage/"+userRole.userId+"' alt='image'>";
-			       	    	result = result +"</div>";
+			       	    	opt = "<div class='col-xs-12 col-sm-12 col-md-6 col-lg-4'>";
+			       	    	opt = opt +"<div class='user-profile'>";
+			       	    	opt = opt +"<div class='col-xs-4 col-sm-4'>";
+			       	    	opt = opt +"<div class='text-center image-parent'>";
+			       	    	opt = opt +"<div class='imageParent'>";
+			       	    	if(userRole.fileUrl != null && userRole.fileUrl != "" && userRole.fileUrl != "undefined"){
+			       	    		opt = opt +"<img data-id= 'userProfileImage'  class='m-t-xs'  src="+userRole.fileUrl+" alt='image'>";
+			       	    	}else{
+			       	    		opt = opt +"<img data-id= 'userProfileImage'  class='m-t-xs'  src='resources/images/userprofileImg.jpg' alt='image'>";
+			       	    	}
+			       	    	
+			       	    	opt = opt +"</div>";
 			       	    	
 			       	    	
-			       	    	result = result +"</div>";
-			       	    	result = result +"</div>";
-			       	    	result = result +"<div class='col-xs-8 col-sm-8'>";
+			       	    	opt = opt +"</div>";
+			       	    	opt = opt +"</div>";
+			       	    	opt = opt +"<div class='col-xs-8 col-sm-8'>";
 			       	    	
 			       	    	'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_USER\',\'ROLE_VIEW_EDIT_USER\',\'ROLE_VIEW_DELETE_USER\')">'
-			       	         	result = result +"<h4><a href='<c:url value='/userSummary/"+userRole.userId+"'/>''> <span title='"+userRole.userName+"'> "+userRole.userName+"</span> </a> </h4>";
+			       	         	opt = opt +"<h4><a href='<c:url value='/userSummary/"+userRole.userId+"'/>''> <span title='"+userRole.userName+"'> "+userRole.userName+"</span> </a> </h4>";
 			       	    	'</sec:authorize>';
 			       	    	
 			       	    	'<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_USER\',\'ROLE_VIEW_EDIT_USER\',\'ROLE_VIEW_DELETE_USER\')">'
-		       	         	   result = result +"<h4><a href='#'> "+userRole.userName+" </a> </h4>";
+		       	         	   opt = opt +"<h4><a href='#'> "+userRole.userName+" </a> </h4>";
 		       	    	    '</sec:authorize>';
 			       	    	
-			       	    	result = result +"<p><label><i class='fa fa-envelope-o' aria-hidden='true'></i>&nbsp;<span title='"+userRole.userEmail+"'> "+userRole.userEmail+"</span></lable></p>";
-			       	    	result = result +"<p><label><i class='fa fa-phone'  aria-hidden='true'></i>&nbsp;<span title='"+mobilePhone+"'> "+mobilePhone+"</span> </label></p>";
-			       	    	result = result +"<p><label><i class='fa fa-user'  aria-hidden='true'></i>&nbsp;<span title='"+userRole.userRoleName+"'> "+userRole.userRoleName+"</span></label></p>";
+			       	    	opt = opt +"<p><label><i class='fa fa-envelope-o' aria-hidden='true'></i>&nbsp;<span title='"+userRole.userEmail+"'> "+userRole.userEmail+"</span></lable></p>";
+			       	    	opt = opt +"<p><label><i class='fa fa-phone'  aria-hidden='true'></i>&nbsp;<span title='"+mobilePhone+"'> "+mobilePhone+"</span> </label></p>";
+			       	    	opt = opt +"<p><label><i class='fa fa-user'  aria-hidden='true'></i>&nbsp;<span title='"+userRole.userRoleName+"'> "+userRole.userRoleName+"</span></label></p>";
 			       	        
 			       	    	if(userRole.isMailSent != null && userRole.isMailSent != "" && userRole.isMailSent == 'N'){
-			       	    	  result = result +"<p><label id='user"+userRole.userId+"' class='label label-info'><i class='fa fa-envelope' aria-hidden='true'></i><a href='javascript:void(0)' onClick='resendInvitation("+userRole.userId+");'>&nbsp;&nbsp;Invite</a></label></p>";
+			       	    	  opt = opt +"<p><label id='user"+userRole.userId+"' class='label label-info'><i class='fa fa-envelope' aria-hidden='true'></i><a href='javascript:void(0)' onClick='resendInvitation("+userRole.userId+");'>&nbsp;&nbsp;Invite</a></label></p>";
 			 			    }else if((userRole.isMailSent != null && userRole.isMailSent != "" && userRole.isMailSent == 'Y') &&
 			 			    		(userRole.userState != null && userRole.userState != "" && userRole.userState == 'NOT_LOGGEDIN') ){
-			 			    	 result = result +"<p><label id='user"+userRole.userId+"' class='label label-info'><i class='fa fa-envelope' aria-hidden='true'></i><a href='javascript:void(0)' onClick='resendInvitation("+userRole.userId+");'>&nbsp;&nbsp;Resend</a></label></p>";
+			 			    	 opt = opt +"<p><label id='user"+userRole.userId+"' class='label label-info'><i class='fa fa-envelope' aria-hidden='true'></i><a href='javascript:void(0)' onClick='resendInvitation("+userRole.userId+");'>&nbsp;&nbsp;Resend</a></label></p>";
 			 			    }else if(userRole.userState != null && userRole.userState != "" && userRole.userState == 'ACTIVE'){
-			 			    	result = result +"<p><label class='label label-success'><i class='fa fa-check'></i>&nbsp;&nbsp;Active</label></p>";
+			 			    	opt = opt +"<p><label class='label label-success'><i class='fa fa-check'></i>&nbsp;&nbsp;Active</label></p>";
 			 			    }else if(userRole.userState != null && userRole.userState != "" && userRole.userState == 'INACTIVE'){
-			 			    	result = result +"<p><label class='label label-danger'><i class='fa fa-ban'></i>&nbsp;&nbsp;In-active</label></p>";
+			 			    	opt = opt +"<p><label class='label label-danger'><i class='fa fa-ban'></i>&nbsp;&nbsp;In-active</label></p>";
 			 			    } 
 			       	    	
-			       	    	result = result +"</div>";
-			       	    	result = result +"<div class='clearfix'></div>";
-			       	    	result = result +"</div>";
-			       	    	result = result +"</div>";
+			       	    	opt = opt +"</div>";
+			       	    	opt = opt +"<div class='clearfix'></div>";
+			       	    	opt = opt +"</div>";
+			       	    	opt = opt +"</div>";
 			       	    	$("#loading").removeAttr("style"); 
 			       	    	if(type == "manual"){
-			            		$('#usersListBody').append(result);
+			            		$('#usersListBody').append(opt);
 			            		 $("#searchByName").val("");
 			            	}else{
 			            		$('#usersListBody').append(result);
 			            		 $("#searchByName").val("");
 			            	}
-			
-	       	    	
-
 				   }
 	 			result = result + '<div class="clear"></div>';
 	 			$("#noUsers").val("")
@@ -593,12 +591,11 @@ function exportToPdf(){
 
 <script type="text/javascript">
 function resendInvitation(userId){
-	var sourceleadUrl ='${sourceleadUrl}';
 	if(userId != null && userId != ""){
 		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 			 $.ajax({
 			    	type: "POST",
-			        url: sourceleadUrl+"/resendInvitationEmail?${_csrf.parameterName}=${_csrf.token}&userId="+userId, 
+			        url: sourceleadUrl+"/resendInvitationEmail?"+tokenParamName+"="+tokenValue+"&userId="+userId, 
 			        success: function(result) {
 			        	$("#user"+userId).html("<i class='fa fa-envelope' aria-hidden='true'></i><a href='javascript:void(0)'  onClick='resendInvitation("+userId+");'>&nbsp;Resend</a>");
 			        	$("#loading").removeAttr("style"); 
@@ -663,7 +660,6 @@ var validationSettings = {
 		}
 		 if ($('#user_forms').validate(false, validationSettings)){
 			 
-      		var sourceleadUrl = '${sourceleadUrl}';
       		var frm = $('#user_forms').serializeFormJSON();
 			var con = JSON.stringify(frm);
 		 	con = con.replace(/[{}]/g, ""); 
@@ -677,7 +673,7 @@ var validationSettings = {
 		        	     processData: false,
 		    	         contentType:false,
 		        	     dataType : 'json',
-						 url : sourceleadUrl+"/searchUser?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&offset="+offset+"&userRole="+userRole+"&searchByName="+searchByName+"&userState="+userState+"&loginUserRole="+loginUserRole,
+						 url : sourceleadUrl+"/searchUser?"+tokenParamName+"="+tokenValue+"&json="+jsonData+"&offset="+offset+"&userRole="+userRole+"&searchByName="+searchByName+"&userState="+userState+"&loginUserRole="+loginUserRole,
 						 success : function(data) {
 							$("#search_user").addClass('button').val('Search');
 							$("#search_user").removeAttr("disabled");
@@ -699,11 +695,10 @@ var validationSettings = {
 
 <script type="text/javascript">
 function getUserSummary(userId){
-	var sourceleadUrl ='${sourceleadUrl}';
 	if(userId != null && userId != ""){
 			 $.ajax({
 			    	type: "POST",
-			        url: sourceleadUrl+"/userSummary?${_csrf.parameterName}=${_csrf.token}&userId="+userId, 
+			        url: sourceleadUrl+"/userSummary?"+tokenParamName+"="+tokenValue+"&userId="+userId, 
 			        success: function(result) {
 			        	 
 			        },
@@ -714,7 +709,6 @@ function getUserSummary(userId){
 </script>
 <script>
   function prepareUsersList(data,type){
-	  var sourceleadUrl = '${sourceleadUrl}';
 	  if(data != null && data != 'undefined' && data != "" && data != '[]'){
 		  var result = "";
 		  var json = JSON.parse(data);
@@ -741,7 +735,7 @@ function getUserSummary(userId){
 			       	    	result = result +"<div class='col-xs-4 col-sm-4'>";
 			       	    	result = result +"<div class='text-center image-parent'>";
 			       	    	result = result +"<div class='imageParent'>";
-			       	    	result = result +"<img onerror='predefineProfileImage(this);' class='m-t-xs'  src='"+sourceleadUrl+"/displayUserImage/"+userRole.userId+"' alt='image'>";
+			       	    	result = result +"<img data-id= 'userProfileImage' onerror='predefineProfileImage(this);' class='m-t-xs'  src="+userRole.user.fileUrl+" alt='image'>";
 			       	    	result = result +"</div>";
 			       	    	
 			       	    	
@@ -1042,7 +1036,6 @@ function showList(viewType){
 
 <script type="text/javascript">
 	function getUsersListView(type,viewType){
-		var sourceleadUrl = '${sourceleadUrl}';
 		var loginUserRole = '${SourceLeadWeb_loginUserRole}';
 	    var userRole = document.getElementById("userRole").value;
 		
@@ -1064,7 +1057,7 @@ function showList(viewType){
     	}
 		 $.ajax({ 
 	    	type: "POST",
-	    	url: sourceleadUrl+"/getUsersList?${_csrf.parameterName}=${_csrf.token}&userRole="+userRole+"&searchByName="+searchByName+"&userState="+userState+"&loginUserRole="+loginUserRole+"&offset="+offset+"&viewType="+viewType,
+	    	url: sourceleadUrl+"/getUsersList?"+tokenParamName+"="+tokenValue+"&userRole="+userRole+"&searchByName="+searchByName+"&userState="+userState+"&loginUserRole="+loginUserRole+"&offset="+offset+"&viewType="+viewType,
 	    			 
             success: function(data) {
             	 var json = JSON.parse(data);
@@ -1101,7 +1094,7 @@ function showList(viewType){
 			        			   '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_USER\',\'ROLE_VIEW_EDIT_USER\',\'ROLE_VIEW_DELETE_USER\')">' 
 			        			   result = result +"<td>"    
 			        			    result = result +" <a href='<c:url value='/userSummary/"+userRole.userId+"'/>'' class='UserTextLeft'>";
-					       	    	result = result +"<img onerror='predefineProfileImage(this);' class='m-t-xs'  src='"+sourceleadUrl+"/displayUserImage/"+userRole.userId+"' alt='image'>";
+					       	    	result = result +"<img data-id= 'userProfileImage' onerror='predefineProfileImage(this);' class='m-t-xs'  src="+userRole.user.fileUrl+" alt='image'>";
 									result = result + ''+userRole.userName+'</a></td>';
 									'</sec:authorize>';
 								}else{
@@ -1130,14 +1123,14 @@ function showList(viewType){
 									result = result + ' <td><div>--</div></td>';
 								}
 			        		    if(userRole.isMailSent != null && userRole.isMailSent != "" && userRole.isMailSent == 'N'){
-					       	    	  result = result +"<td><p><label id='user"+userRole.userId+"' class='label label-info'><i class='fa fa-envelope' aria-hidden='true'></i><a href='javascript:void(0)' onClick='resendInvitation("+userRole.userId+");'>&nbsp;&nbsp;Invite</a></label></p></td>";
+					       	    	  result = result +"<td><p><label id='user"+userRole.userId+"' class='label label-info'><b class='fa fa-envelope' aria-hidden='true'></b><a class='color_white' href='javascript:void(0)' onClick='resendInvitation("+userRole.userId+");'>&nbsp;&nbsp;Invite</a></label></p></td>";
 					 			    }else if((userRole.isMailSent != null && userRole.isMailSent != "" && userRole.isMailSent == 'Y') &&
 					 			    		(userRole.userState != null && userRole.userState != "" && userRole.userState == 'NOT_LOGGEDIN') ){
-					 			    	 result = result +"<td><p><label id='user"+userRole.userId+"' class='label label-info'><i class='fa fa-envelope' aria-hidden='true'></i><a href='javascript:void(0)' onClick='resendInvitation("+userRole.userId+");'>&nbsp;&nbsp;Resend</a></label></p></td>";
+					 			    	 result = result +"<td><p><label id='user"+userRole.userId+"' class='label label-info'><b class='fa fa-envelope' aria-hidden='true'></b><a class='color_white' href='javascript:void(0)' onClick='resendInvitation("+userRole.userId+");'>&nbsp;&nbsp;Resend</a></label></p></td>";
 					 			    }else if(userRole.userState != null && userRole.userState != "" && userRole.userState == 'ACTIVE'){
-					 			    	result = result +"<td><p><label class='label label-success'><i class='fa fa-check'></i>&nbsp;&nbsp;Active</label></p></td>";
+					 			    	result = result +"<td><p><label class='label label-success'><b class='fa fa-check'></b>&nbsp;&nbsp;Active</label></p></td>";
 					 			    }else if(userRole.userState != null && userRole.userState != "" && userRole.userState == 'INACTIVE'){
-					 			    	result = result +"<td><p><label class='label label-danger'><i class='fa fa-ban'></i>&nbsp;&nbsp;In-active</label></p></td>";
+					 			    	result = result +"<td><p><label class='label label-danger'><b class='fa fa-ban'></b>&nbsp;&nbsp;In-active</label></p></td>";
 					 			    } 
 					       	    	
 			        		    /* result = result + ' <td><div class="tblminwidth-75">Remove</div></td>'; */

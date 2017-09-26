@@ -6,13 +6,16 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
-<script src="resources/js/InterViewFormBuilder.js" type="text/javascript" ></script>
-<script src="resources/js/interViewForm-html-generator.js" type="text/javWascript" ></script> 
 
-<link rel="stylesheet" href="resources/css/style.css" />
+<c:if test="${staticTime == null || staticTime == 0 }">
+    <c:set var='staticTime' value="<%=new java.util.Date().getTime() %>" scope="application"></c:set>
+ </c:if>
+
+<script src="resources/js/InterViewFormBuilder.js?staticTime=${staticTime}" type="text/javascript" ></script>
+<script src="resources/js/interViewForm-html-generator.js?staticTime=${staticTime}" type="text/javWascript" ></script> 
+<link rel="stylesheet" href="resources/css/style.css?staticTime=${staticTime}" />
+
 <script type="text/javascript">
-
-
 //On document ready
 $(function(){
 	interViewTemplateList();
@@ -66,7 +69,7 @@ left:0;
 		var sourceleadUrl = '${sourceleadUrl}';
 		$.ajax({
 	    	type: "POST",
-	    	url : sourceleadUrl+"/getInterviewFeedbackTemplatesList?${_csrf.parameterName}=${_csrf.token}", 
+	    	url : sourceleadUrl+"/getInterviewFeedbackTemplatesList?"+tokenParamName+"="+tokenValue+"", 
 	        success: function(data) {
 	        var json = JSON.parse(data);
 			var result = "";
@@ -383,7 +386,7 @@ function cancelPop(){
             	$( "#save_button" ).addClass('button').val('Processing..');
             	  $.ajax({
           	    	type: "POST",
-          	        url: sourceleadUrl+"/saveInterviewFeedBackTemplate?${_csrf.parameterName}=${_csrf.token}&templateId="+templateId+"&jsonData="+jsonData+"&jsonStringData="+jsonStringData, 
+          	        url: sourceleadUrl+"/saveInterviewFeedBackTemplate?"+tokenParamName+"="+tokenValue+"&templateId="+templateId+"&jsonData="+jsonData+"&jsonStringData="+jsonStringData, 
           	        success: function(result) {
           	        	if((result == 'interViewFeedBackTemplate')){
           	        		location.replace(sourceleadUrl+"/interViewFeedBackTemplate"); 
@@ -434,7 +437,7 @@ function validateTemplateName(){
 		var sourceleadUrl = '${sourceleadUrl}';
 		$.ajax({
 	    	type: "POST",
-	    	url : sourceleadUrl+"/validateTemplateNameByOrg?${_csrf.parameterName}=${_csrf.token}&templateName="+templateName+"&templateId="+templateId, 
+	    	url : sourceleadUrl+"/validateTemplateNameByOrg?"+tokenParamName+"="+tokenValue+"&templateName="+templateName+"&templateId="+templateId, 
 	        success: function(result) {
 	        	if (result == 'invalid') {
 	        		$("#save_button").attr("disabled", "disabled");

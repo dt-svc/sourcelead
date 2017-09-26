@@ -4,6 +4,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,6 +15,8 @@ import org.springframework.web.multipart.MultipartFile;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.InvoiceDao;
 import com.bis.sourcelead.dao.InvoicePaymentDao;
+import com.bis.sourcelead.dto.FileInfo;
+import com.bis.sourcelead.dto.InvoicePaymentDTO;
 import com.bis.sourcelead.entity.Invoice;
 import com.bis.sourcelead.entity.InvoiceDocument;
 import com.bis.sourcelead.entity.InvoicePayment;
@@ -59,7 +62,7 @@ public class InvoicePaymentServiceImpl implements InvoicePaymentService {
 	ConversionUtil conversionUtil;
 
 	@Override
-	public InvoicePayment saveInvoicePayment(JSONObject jsonObj, User user, OrgLocations orgLocation,
+	public InvoicePayment saveInvoicePayment(InvoicePaymentDTO invoicePaymentDTO,JSONObject jsonObj, User user, OrgLocations orgLocation,
 			MultipartFile multiFile, Long invoiceId) throws Exception {
 
 		Invoice invoice = invoiceDao.getInvoicetById(invoiceId);
@@ -68,39 +71,42 @@ public class InvoicePaymentServiceImpl implements InvoicePaymentService {
 		/*String pattern = "dd-MM-yyyy";
 		SimpleDateFormat format = new SimpleDateFormat(pattern);*/
 
-		if (jsonObj.has("paymentDate") && !"".equalsIgnoreCase(jsonObj.getString("paymentDate"))) {
-			Date paymentDate = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(),jsonObj.getString("paymentDate"));
+		if (StringUtils.isNotBlank(invoicePaymentDTO.getPaymentDate())) {
+			Date paymentDate = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(),invoicePaymentDTO.getPaymentDate());
 			invoicePayment.setPaymentDate(paymentDate);
 		}
-		if (jsonObj.has("paymentMethod") && !"".equalsIgnoreCase(jsonObj.getString("paymentMethod"))) {
-			invoicePayment.setPaymentMethod(jsonObj.getString("paymentMethod"));
+		if (StringUtils.isNotBlank(invoicePaymentDTO.getPaymentMethod())) {
+			invoicePayment.setPaymentMethod(invoicePaymentDTO.getPaymentMethod());
 		}
-		if (jsonObj.has("referenceNumber") && !"".equalsIgnoreCase(jsonObj.getString("referenceNumber"))) {
-			invoicePayment.setPaymentReferenceNumber(jsonObj.getString("referenceNumber"));
+		if (StringUtils.isNotBlank(invoicePaymentDTO.getReferenceNumber())) {
+			invoicePayment.setPaymentReferenceNumber(invoicePaymentDTO.getReferenceNumber());
 
 		}
 
-		if (jsonObj.has("paymentAmount") && !"".equalsIgnoreCase(jsonObj.getString("paymentAmount"))) {
-			if (jsonObj.getString("paymentAmount").equalsIgnoreCase("total")) {
-				if (jsonObj.has("totalAmount") && !"".equalsIgnoreCase(jsonObj.getString("totalAmount"))) {
-					invoicePayment.setPaymentAmount(jsonObj.getString("totalAmount"));
+		if (StringUtils.isNotBlank(invoicePaymentDTO.getPaymentAmount())) {
+			if (invoicePaymentDTO.getPaymentAmount().equalsIgnoreCase("total")) {
+				if (StringUtils.isNotBlank(invoicePaymentDTO.getTotalAmount())) {
+					invoicePayment.setPaymentAmount(invoicePaymentDTO.getTotalAmount());
 					invoice.setPaymentStatus(Constants.INVOICE_STATUS_PAID);
 					invoice.setDueAmount("00.00");
 				}
 			}
-			if (jsonObj.getString("paymentAmount").equalsIgnoreCase("custom")) {
-				if (jsonObj.has("customeAmount") && !"".equalsIgnoreCase(jsonObj.getString("customeAmount"))) {
-					invoicePayment.setPaymentAmount(jsonObj.getString("customeAmount"));
-					BigDecimal totalAmount = new BigDecimal(Double.parseDouble(jsonObj.getString("totalAmount")));
-					BigDecimal customAmount = new BigDecimal(Double.parseDouble(jsonObj.getString("customeAmount")));
-					BigDecimal receivedAmount = totalAmount.subtract(customAmount);
-					int res = customAmount.compareTo(receivedAmount);
+			if (invoicePaymentDTO.getPaymentAmount().equalsIgnoreCase("custom")) {
+				if (StringUtils.isNotBlank(invoicePaymentDTO.getCustomeAmount())) {
+					invoicePayment.setPaymentAmount(invoicePaymentDTO.getCustomeAmount());
+					BigDecimal totalAmount = new BigDecimal(Double.parseDouble(invoicePaymentDTO.getTotalAmount()));
+					BigDecimal customAmount = new BigDecimal(Double.parseDouble(invoicePaymentDTO.getCustomeAmount()));
+					BigDecimal dueAmount = totalAmount.subtract(customAmount);
+					// -1, 0, or 1 as this BigDecimal is numerically less than, equal to, or greater than val.
+					int res = customAmount.compareTo(totalAmount);
 					if (totalAmount.equals(customAmount) || res == 1) {
 						invoice.setPaymentStatus(Constants.INVOICE_STATUS_PAID);
-					} else {
+					} else if(commonUtil.currentDate().after(invoice.getDueDate())) {
+						invoice.setPaymentStatus(Constants.OVER_DUE);
+					}else{
 						invoice.setPaymentStatus(Constants.INVOICE_STATUS_PARTIAL_PAID);
 					}
-					invoice.setDueAmount(String.valueOf(receivedAmount.setScale(2, BigDecimal.ROUND_HALF_EVEN)));
+					invoice.setDueAmount(String.valueOf(dueAmount.setScale(2, BigDecimal.ROUND_HALF_EVEN)));
 
 				}
 			}
@@ -122,16 +128,16 @@ public class InvoicePaymentServiceImpl implements InvoicePaymentService {
 					// float totalAmount = 0;
 					// float customAmount = 0;
 					BigDecimal receivedAmount = null;
-					if (jsonObj.getString("paymentAmount").equalsIgnoreCase("total")) {
-						if (jsonObj.has("totalAmount") && !"".equalsIgnoreCase(jsonObj.getString("totalAmount"))) {
-							invoicePayment.setPaymentAmount(jsonObj.getString("totalAmount"));
+					if (invoicePaymentDTO.getPaymentAmount().equalsIgnoreCase("total")) {
+						if (StringUtils.isNotBlank(invoicePaymentDTO.getTotalAmount())) {
+							invoicePayment.setPaymentAmount(invoicePaymentDTO.getTotalAmount());
 							parentInvoice.setPaymentStatus(Constants.INVOICE_STATUS_PAID);
 							parentInvoice.setDueAmount("00.00");
 						}
 					}
-					if (jsonObj.getString("paymentAmount").equalsIgnoreCase("custom")) {
-						if (jsonObj.has("customeAmount") && !"".equalsIgnoreCase(jsonObj.getString("customeAmount"))) {
-							invoicePayment.setPaymentAmount(jsonObj.getString("customeAmount"));
+					if (invoicePaymentDTO.getPaymentAmount().equalsIgnoreCase("custom")) {
+						if (StringUtils.isNotBlank(invoicePaymentDTO.getCustomeAmount())) {
+							invoicePayment.setPaymentAmount(invoicePaymentDTO.getCustomeAmount());
 							if (!paidCurrencyCode.equalsIgnoreCase(receiverCurrencyCode)) {
 								float conAmount = conversionUtil.convert(paidCurrencyCode, receiverCurrencyCode,
 										Float.parseFloat(paidAmount));
@@ -140,25 +146,29 @@ public class InvoicePaymentServiceImpl implements InvoicePaymentService {
 										Float.parseFloat(parentInvoice.getTotal()));
 								receivedAmount = receiverTotalAmount.subtract(conversionAmount);
 								BigDecimal totalAmount = new BigDecimal(
-										Double.parseDouble(jsonObj.getString("totalAmount")));
+										Double.parseDouble(invoicePaymentDTO.getTotalAmount()));
 								BigDecimal customAmount = new BigDecimal(
-										Double.parseDouble(jsonObj.getString("customeAmount")));
+										Double.parseDouble(invoicePaymentDTO.getCustomeAmount()));
 								int res = customAmount.compareTo(totalAmount);
 								if ((conversionAmount.equals(receiverTotalAmount)) || res == -1) {
 									parentInvoice.setPaymentStatus(Constants.INVOICE_STATUS_PAID);
-								} else {
+								}else if(commonUtil.currentDate().after(invoice.getDueDate())) {
+									invoice.setPaymentStatus(Constants.OVER_DUE);
+								}else{
 									parentInvoice.setPaymentStatus(Constants.INVOICE_STATUS_PARTIAL_PAID);
 								}
 							} else {
 								BigDecimal totalAmount = new BigDecimal(
-										Double.parseDouble(jsonObj.getString("totalAmount")));
+										Double.parseDouble(invoicePaymentDTO.getTotalAmount()));
 								BigDecimal customAmount = new BigDecimal(
-										Double.parseDouble(jsonObj.getString("customeAmount")));
+										Double.parseDouble(invoicePaymentDTO.getCustomeAmount()));
 								receivedAmount = totalAmount.subtract(customAmount);
 								int res = customAmount.compareTo(totalAmount);
 								if ((totalAmount.equals(customAmount)) || res == 1) {
 									parentInvoice.setPaymentStatus(Constants.INVOICE_STATUS_PAID);
-								} else {
+								}else if(commonUtil.currentDate().after(invoice.getDueDate())) {
+									invoice.setPaymentStatus(Constants.OVER_DUE);
+								}else {
 									parentInvoice.setPaymentStatus(Constants.INVOICE_STATUS_PARTIAL_PAID);
 								}
 							}
@@ -181,15 +191,24 @@ public class InvoicePaymentServiceImpl implements InvoicePaymentService {
 		}
 
 		invoicePayment.setCurrencyCode(invoice.getCurrencyCode());
-		if (jsonObj.has("paymentMemo") && !"".equalsIgnoreCase(jsonObj.getString("paymentMemo"))) {
-			invoicePayment.setPaymentComment(jsonObj.getString("paymentMemo"));
+		if (StringUtils.isNotBlank(invoicePaymentDTO.getPaymentMemo())) {
+			invoicePayment.setPaymentComment(invoicePaymentDTO.getPaymentMemo());
 		}
-		if (null != multiFile) {
+		
+		if(invoicePaymentDTO.getFileInfo() != null && invoicePaymentDTO.getFileInfo().size() > 0){
+			for(FileInfo file : invoicePaymentDTO.getFileInfo()){
+				invoicePayment.setFileContentType(file.getContentType());
+				invoicePayment.setFileName(file.getFileName());
+				invoicePayment.setFileURL(file.getFileURL());
+			}
+		}
+		
+		/*if (null != multiFile) {
 			invoicePayment.setFileContentType(multiFile.getContentType());
 			invoicePayment.setFileName(multiFile.getOriginalFilename());
 			invoicePayment.setDocFile(multiFile.getBytes());
 
-		}
+		}*/
 		invoicePayment.setOrgLocation(orgLocation);
 		if (invoice.getParentInvoiceId() != null) {
 			invoicePayment.setInvoiceId(invoice.getParentInvoiceId());

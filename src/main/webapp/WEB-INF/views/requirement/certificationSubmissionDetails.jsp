@@ -26,7 +26,6 @@ function certificationSubmissionDetails(candidateId){
 
 <script>
 function certificationSubmissionDetailsList(candidateId){
-	 var sourceleadUrl ='${sourceleadUrl}';
 	 
 	 var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
 	  if(locationList.match("yyyy-MM-dd")){
@@ -41,7 +40,7 @@ function certificationSubmissionDetailsList(candidateId){
 	 
 	 $.ajax({  
           type : "POST",
-          url: sourceleadUrl+"/getCandidateCertificationListByCandidateIdAndOrgLocationID?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,        
+          url: sourceleadUrl+"/getCandidateCertificationListByCandidateIdAndOrgLocationID?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
           success :function(data) {
                /* if(data != null && data != 'undefined' && data != "" && data != '[]'){ */
              		 if( data.indexOf('Sign In') >= 0){

@@ -14,7 +14,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
-import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,10 +23,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.OrgLocationsDao;
+import com.bis.sourcelead.dto.AddExpensesDTO;
+import com.bis.sourcelead.dto.CategoryDTO;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
@@ -191,6 +191,9 @@ public class AddExpensesRestController {
 			if(expenseId != null){
 			 	
 				expensesApprovalService.updateExpenseStatusByExpenseIdAndReOpenReason(expenseId,reason,loginUser,"notify",isSuperUser);
+				Expenses expenses = expensesService.getExpenseById(expenseId);
+				expenses.setExpenseStatus(Submission_Status.SUBMITTED);
+				addExpensesService.storeAddExpensesData(expenses);
 				sendEmailToSuperUserForReOpenExpenseApprovalStatus(expenseId,loginUser,orgLoc,reason,currencyCode);
 			    //send mail & notification logic
 			  	/*if(isSuperUser.equalsIgnoreCase(Constants.NO)){
@@ -234,14 +237,23 @@ public class AddExpensesRestController {
 	
 	
 	@RequestMapping(value = "/storeAddExpensesData",method = RequestMethod.POST)
-	public @ResponseBody String storeAddExpensesData(MultipartHttpServletRequest request,@RequestParam(value="status", required=false) String status) throws Exception {
+	public @ResponseBody String storeAddExpensesData(HttpServletRequest request,@RequestParam(value="status", required=false) String status,AddExpensesDTO addExpensesDTO) throws Exception {
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		 String currencyCode = (String) SourceLeadSessionManager.getSessionAttribute(request, "currencyCode");
-		JSONObject jsonObj = new JSONObject(request.getParameter("json"));
-		addExpensesService.storeAddExpensesData(jsonObj,loginUser,orgLoc,request,status,currencyCode);
+		//JSONObject jsonObj = new JSONObject(request.getParameter("json"));
+		addExpensesService.storeAddExpensesData(addExpensesDTO,loginUser,orgLoc,request,status,currencyCode);
 		return "DataSaved";
 }
+	
+	
+	@RequestMapping(value = "/deleteDocumentByDocumentId",method = RequestMethod.POST)
+	public @ResponseBody String deleteDocumentByDocumentId(@RequestParam(value="documentId", required=false) String documentId) throws Exception {
+		addExpensesService.deleteDocumentByDocumentId(documentId);
+		return "DataSaved";
+}
+	
+	
 	
 	 @RequestMapping(value = "/getMembersForSelectedProject",  method = RequestMethod.GET)
 	 public @ResponseBody  String getMembersForSelectedProject(
@@ -398,8 +410,8 @@ public class AddExpensesRestController {
 //				 }
 				 StringBuilder acceptBuilder=new StringBuilder();
 			     StringBuilder rejectBuilder=new StringBuilder();
-			     globalVarsMap.put("accept",acceptBuilder.append("<a href='").append(sourceleadUrl).append("/acceptOrRejectReopenExpense?type=accept&expenseId=").append(expenseId).append("&reOpenedUserId=").append(loginUser.getId()).append("&reason=").append(reason).append("'style='text-decoration:none;float:left; margin-left:55px;'><div style=' width:220px; border-radius:30px; background-color:#5cb85c; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Accept</div></a>").toString());
-				 globalVarsMap.put("reject",rejectBuilder.append("<a href='").append(sourceleadUrl).append("/acceptOrRejectReopenExpense?type=rejecting&expenseId=").append(expenseId).append("&reOpenedUserId=").append(loginUser.getId()).append("&reason=").append(reason).append("'style='text-decoration:none;float:left;margin-left:55px;'><div style=' width:220px; border-radius:30px; background-color:#e74c51; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Reject</div></a>").toString());
+			     globalVarsMap.put("accept",acceptBuilder.append("<a href='").append(sourceleadUrl).append("/acceptOrRejectReopenExpense?type=accept&expenseId=").append(expenseId).append("&reOpenedUserId=").append(loginUser.getId()).append("&orgLocId=").append(orgLoc.getId()).append("&reason=").append(reason).append("'style='text-decoration:none;float:left; margin-left:55px;'><div style=' width:220px; border-radius:30px; background-color:#5cb85c; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Accept</div></a>").toString());
+				 globalVarsMap.put("reject",rejectBuilder.append("<a href='").append(sourceleadUrl).append("/acceptOrRejectReopenExpense?type=rejecting&expenseId=").append(expenseId).append("&reOpenedUserId=").append(loginUser.getId()).append("&orgLocId=").append(orgLoc.getId()).append("&reason=").append(reason).append("'style='text-decoration:none;float:left;margin-left:55px;'><div style=' width:220px; border-radius:30px; background-color:#e74c51; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Reject</div></a>").toString());
 			
 				 
 //				 StringBuilder loginURLSB = new StringBuilder();

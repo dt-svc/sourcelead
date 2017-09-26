@@ -17,6 +17,8 @@ import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -32,6 +34,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
     @Column(name = "ID", nullable = false)
 	private Long id;
 	
+	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="SUBMISSION_ID", nullable=false )        
     private RequirementSubmission submissionId;

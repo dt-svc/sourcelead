@@ -1,9 +1,12 @@
 package com.bis.sourcelead.rest;
 
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang.StringUtils;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -15,6 +18,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.CandidateEmployerDTO;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateEmployers;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -84,17 +88,17 @@ public class CandidateEmployersRestController {
 	 * @throws NullPointer
 	 */
 	
-	@PreAuthorize("hasAnyRole('ROLE_ADD_EMPLOYEER','ROLE_CROWDSOURCING_PROFILE','ROLE_CROWDSOURCING_CANDIDATES','ROLE_ADD_ASSOCIATE_EMPLOYER')")
+	//@PreAuthorize("hasAnyRole('ROLE_ADD_EMPLOYEER','ROLE_CROWDSOURCING_PROFILE','ROLE_CROWDSOURCING_CANDIDATES','ROLE_ADD_ASSOCIATE_EMPLOYER')")
 	@RequestMapping(value = "/storeCandidateEmployers", method = RequestMethod.POST)
-	public @ResponseBody String storeCandidateEmployers(@RequestParam(value = "json", required = false) String json,@RequestParam(value="candidateId", required=false) Long candidateId ,HttpServletRequest request) throws Exception {
+	public @ResponseBody String storeCandidateEmployers(CandidateEmployerDTO candidateEmployerDTO,@RequestParam(value="candidateId", required=false) Long candidateId ,HttpServletRequest request) throws Exception {
 
 		
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		User users = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		
-		String json1 = "{"+json+"}";
-		JSONObject jsonObject = new JSONObject(json1);
-	    candidateEmployersService.storeCandidateEmployers(jsonObject,users,loginOrgLocation,candidateId);
+		/*String json1 = "{"+json+"}";
+		JSONObject jsonObject = new JSONObject(json1);*/
+	    candidateEmployersService.storeCandidateEmployers(candidateEmployerDTO,users,loginOrgLocation,candidateId);
 		Candidate candidate = candidateService.getCandidateByCandidateId(candidateId);
 		Integer percentage = candidateService.getCandidatePercentage(candidate,loginOrgLocation);
 		return percentage.toString();
@@ -114,9 +118,6 @@ public class CandidateEmployersRestController {
 	 */
 	@RequestMapping(value = "/getCandidatesEmployersListByCandidateIdAndOrgLocationID")
 	public String getCandidatesEmployersListByCandidateIdAndOrgLocationID(@RequestParam(value = "candidateId", required = false) String candidateId,HttpServletRequest request) throws Exception {
-
-		String msg = "";
-		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		
 		Candidate employers =candidateService.getCandidateById(Long.parseLong(candidateId));
 		Long loc = employers.getOrgLocationId().getId();
@@ -124,28 +125,36 @@ public class CandidateEmployersRestController {
 		String resultJson;
 		 List<CandidateEmployers>   candidatesEmployersList = candidateEmployersService.getCandidatesEmployersListByCandidateIdAndOrgLocationID(Long.valueOf(candidateId), loc);
 		 
-		 for(CandidateEmployers candidateEmployers : candidatesEmployersList){
+		 candidatesEmployersList.forEach(candidaet->{
 			 
-			/* msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "addExep");
-			 if(msg == null){
-					msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "editExep");
-				}
-				if(msg == null){
-					msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "deleteExep");
-				}
-				if(msg !=null && msg != ""){
-					candidateEmployers.setMsg(msg);
-				}
-				 	SourceLeadSessionManager.removeSessionAttribute(request, "addExep");
-				    SourceLeadSessionManager.removeSessionAttribute(request, "editExep");
-				    SourceLeadSessionManager.removeSessionAttribute(request, "deleteExep");*/
-		 }
-		 
+			 if(StringUtils.isNotBlank(candidaet.getStartMonth())){
+			 String smonth = getMonthAsString(candidaet.getStartMonth());
+			 candidaet.setStartMonth(smonth);
+			 }
+			 
+			 if(StringUtils.isNotBlank(candidaet.getEndMonth())){
+			 String emonth = getMonthAsString(candidaet.getEndMonth());
+			 candidaet.setEndMonth(emonth);
+			 }
+		 });
 		 resultJson = commonUtil.toJSON(candidatesEmployersList);
 		 return resultJson;
 	}
 	
 	
+	private String getMonthAsString(String month)
+	{
+		 Pattern pt = Pattern.compile("[^a-zA-Z0-9]");
+	     Matcher match= pt.matcher(month);
+	        while(match.find())
+	        {
+	            String s= match.group();
+	            month=month.replaceAll("[^a-zA-Z_]", "");
+	        }
+			return month;
+		
+	}
+
 	/**
 	 * This Method is to remove CandidateEmployer By candidateId and CandidateEmployerID 
 	 * 
@@ -160,7 +169,7 @@ public class CandidateEmployersRestController {
 	 * @throws Exception
 	 */
 	
-	@PreAuthorize("hasAnyRole('ROLE_VIEW_DELETE_EMPLOYEER','ROLE_CROWDSOURCING_PROFILE','ROLE_CROWDSOURCING_CANDIDATES','ROLE_VIEW_DELETE_ASSOCIATE_EMPLOYER')")
+//	@PreAuthorize("hasAnyRole('ROLE_VIEW_DELETE_EMPLOYEER','ROLE_CROWDSOURCING_PROFILE','ROLE_CROWDSOURCING_CANDIDATES','ROLE_VIEW_DELETE_ASSOCIATE_EMPLOYER')")
 	@RequestMapping(value = "/removeCandidateEmployerBycandidateIdandCandidateEmployerID")
 	public String removeCandidateEmployerBycandidateIdandCandidateEmployerID(@RequestParam(value = "loginUserId", required = false) Long loginUserId, @RequestParam(value = "orgLocationId", required = false) Long orgLocationId, @RequestParam(value = "candidateId", required = false) Long candidateId,@RequestParam(value = "candidateemployerId", required = false) Long candidateemployerId) throws Exception {
 
@@ -219,15 +228,15 @@ public class CandidateEmployersRestController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/upDateCandidateEmployerByCandidateIdAndCandidateExperianceId")
-	public String upDateCandidateEmployerByCandidateIdAndCandidateExperianceId(@RequestParam(value="json", required=false) String  json,@RequestParam(value = "candidateId", required = false) Long candidateId,@RequestParam(value = "candidateExperianceId", required = false) Long candidateExperianceId,HttpServletRequest request) throws Exception {
+	public String upDateCandidateEmployerByCandidateIdAndCandidateExperianceId(CandidateEmployerDTO candidateEmployerDTO,@RequestParam(value = "candidateId", required = false) Long candidateId,@RequestParam(value = "candidateExperianceId", required = false) Long candidateExperianceId,HttpServletRequest request) throws Exception {
 
 		    OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 		    User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			CandidateEmployers candidateEmp ;
-			String jsonc = "{" + json + "}";
-			JSONObject jsonObj = new JSONObject(jsonc);
+			/*String jsonc = "{" + json + "}";
+			JSONObject jsonObj = new JSONObject(jsonc);*/
 			
-			candidateEmp = candidateEmployersService.storeCandidateEmployers(jsonObj,user,loginOrgLocation,candidateId);
+			candidateEmp = candidateEmployersService.storeCandidateEmployers(candidateEmployerDTO,user,loginOrgLocation,candidateId);
 			//SourceLeadSessionManager.setSessionAttribute(request, "editExep", "Employers details updated");
 
 			return "success";

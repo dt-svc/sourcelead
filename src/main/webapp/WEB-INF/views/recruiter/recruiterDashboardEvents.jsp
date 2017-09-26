@@ -35,7 +35,6 @@ window.onload = function() {
 
 <script type="text/javascript">
 	function getRecruiterInterviewsand() {
-		var sourceleadUrl ='${sourceleadUrl}';
 		var date = $("#eventCalendar").val();
 		var userId ='${SourceLeadWeb_user.id}'; 
 		var timezone ='${SourceLeadWeb_orgLocations.timezone}'; 
@@ -122,10 +121,22 @@ window.onload = function() {
 	
   <script>
   $(function() {
+	  
+	  var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+	  var finalDateFormatRecEventCalendar = '';
+	  if(locationDate.match("yyyy-MM-dd")){
+		  finalDateFormatRecEventCalendar = 'yy-mm-dd';
+	  }if(locationDate.match("dd-MM-yyyy")){
+		  finalDateFormatRecEventCalendar = 'dd-mm-yy'; 
+	  }if(locationDate.match("MM-dd-yyyy")){
+		  finalDateFormatRecEventCalendar = 'mm-dd-yy'; 
+	  }if(locationDate.match("yyyy-dd-MM")){
+		  finalDateFormatRecEventCalendar = 'yy-dd-mm'; 
+	  }
     $("#eventCalendar" ).datepicker({
 	  changeMonth: true,
       changeYear: true,
-      dateFormat : 'dd-mm-yy',
+      dateFormat : finalDateFormatRecEventCalendar,
       onSelect : function(selected) {
     	  getRecruiterInterviewsand();
   		

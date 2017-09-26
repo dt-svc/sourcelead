@@ -42,6 +42,7 @@ import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.TimeSheetSubmissionCount;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.enums.Submission_Status;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.ExpensesApprovalService;
 import com.bis.sourcelead.service.ExpensesService;
@@ -50,6 +51,7 @@ import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.web.LoginSessionController;
+import com.ibm.icu.math.BigDecimal;
 import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
@@ -93,7 +95,6 @@ public class ExpensesApprovalServiceImpl implements ExpensesApprovalService{
 	
 	@Autowired
 	private EmailScenerioUtil emailScenerioUtil;
-
 
 	private static final Logger logger = LoggerFactory.getLogger(ExpensesApprovalServiceImpl.class);
 	
@@ -212,7 +213,7 @@ public class ExpensesApprovalServiceImpl implements ExpensesApprovalService{
 
 
 	@Override
-	public File getExpensesApproverHierarchyListForPdf(List<ExpensesApproverHierarchy> expApperoverHierarchy, OrgLocations orgLoc) throws IOException {
+	public File getExpensesApproverHierarchyListForPdf(List<ExpensesApproverHierarchy> expApperoverHierarchy, OrgLocations orgLoc,User loginUser) throws Exception {
 		String[] headers = Constants.EXPENSES_APPROVAL_lIST_HEADERS;
 	    Document document = new Document(PageSize.LETTER.rotate());
 	    DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
@@ -253,7 +254,7 @@ public class ExpensesApprovalServiceImpl implements ExpensesApprovalService{
 	            table.addCell(cell);
 	        }
 	        table.completeRow();
-	        java.util.List<String[]> expenseList = prepareExpenseApprovalListStringArray(expApperoverHierarchy,headers,orgLoc);
+	        java.util.List<String[]> expenseList = prepareExpenseApprovalListStringArray(expApperoverHierarchy,headers,orgLoc,loginUser);
 	        if(expenseList != null && expenseList.size() >0){
 	        	for (String[] expenseArray: expenseList) {
 	        		for (int i = 0; i < expenseArray.length; i++) {
@@ -278,7 +279,7 @@ public class ExpensesApprovalServiceImpl implements ExpensesApprovalService{
 	    }
 		return file;
 	}
-private List<String[]> prepareExpenseApprovalListStringArray(List<ExpensesApproverHierarchy> expApperoverHierarchy, String[] headers,OrgLocations orgLoc) {
+private List<String[]> prepareExpenseApprovalListStringArray(List<ExpensesApproverHierarchy> expApperoverHierarchy, String[] headers,OrgLocations orgLoc,User loginUser) throws Exception {
 	
 	List<String[]> arrayList = new ArrayList<>();
 	for(ExpensesApproverHierarchy ex:expApperoverHierarchy){
@@ -370,13 +371,18 @@ private List<String[]> prepareExpenseApprovalListStringArray(List<ExpensesApprov
 				expenseArray[10] = "--";
 			}
 			if(expenseId.getTotalAmount() != 0){
-                StringBuilder str = new StringBuilder();
-				expenseArray[11] = str.append(expenseId.getTotalAmount()).toString();
+				StringBuilder str = new StringBuilder();
+				BigDecimal bd = new BigDecimal(Double.toString(expenseId.getTotalAmount()));
+				bd = bd.setScale(2,BigDecimal.ROUND_HALF_UP );
+				expenseArray[11] = str.append(bd).toString();
 			}else{
 				expenseArray[11] = "--";
 			}
 			if(null != expenseId.getStatus()){
-				expenseArray[12] = expenseId.getExpenseStatus().getValue();
+				
+				ExpensesApproverHierarchy  eah = getExpensesApproverHierarchyByApproverUserIdAndExpenseId(loginUser.getId(), expenseId.getId());
+			    Submission_Status submissionStatus = eah.getExpenseStatus();
+				expenseArray[12] = submissionStatus.getValue();
 			}else{
 				expenseArray[12] = "--";
 			}
@@ -418,7 +424,7 @@ private List<String[]> prepareExpenseApprovalListStringArray(List<ExpensesApprov
 
 @Override
 public File getExpensesApproverHierarchyListForExcel(List<ExpensesApproverHierarchy> expApperoverHierarchy,
-		OrgLocations orgLoc) throws IOException {
+		OrgLocations orgLoc,User loginUser) throws Exception {
 	
 	File file = null;
 		Workbook createExcelworkbook = new XSSFWorkbook();
@@ -430,7 +436,7 @@ public File getExpensesApproverHierarchyListForExcel(List<ExpensesApproverHierar
 		int column = 0;
 		for (ExpensesApproverHierarchy expensesList : expApperoverHierarchy) {
 			writeRow = createExcelsheet.createRow(column+1);
-			createExcelsheet = createXlsSheet(createExcelsheet, writeRow, expensesList,orgLoc);
+			createExcelsheet = createXlsSheet(createExcelsheet, writeRow, expensesList,orgLoc,loginUser);
 			column++;
 		}
 		 try {
@@ -460,7 +466,7 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 	return createExcelsheet;
 }
 
-private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, ExpensesApproverHierarchy ex,OrgLocations orgLoc) {
+private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, ExpensesApproverHierarchy ex,OrgLocations orgLoc,User loginUser) throws Exception {
 		if(ex.getExpenseId() !=null){
 			Expenses expenseId =expensesService.getExpenseById(ex.getExpenseId().getId());
 			if(null != expenseId.getProjectMembers()){
@@ -532,12 +538,16 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, ExpensesAppro
 				createExcelsheet.autoSizeColumn(10);
 			}
 			if(expenseId.getTotalAmount() != 0){
-                StringBuilder str = new StringBuilder();
-                writeRow.createCell(11).setCellValue(str.append(expenseId.getTotalAmount()).toString());
+				StringBuilder str = new StringBuilder();
+				BigDecimal bd = new BigDecimal(Double.toString(expenseId.getTotalAmount()));
+				bd = bd.setScale(2,BigDecimal.ROUND_HALF_UP );                
+                writeRow.createCell(11).setCellValue(str.append(bd).toString());
                 createExcelsheet.autoSizeColumn(11);
 			}
 			if(null != expenseId.getExpenseStatus()){
-				writeRow.createCell(12).setCellValue(expenseId.getExpenseStatus().getValue());
+				ExpensesApproverHierarchy  eah = getExpensesApproverHierarchyByApproverUserIdAndExpenseId(loginUser.getId(), expenseId.getId());
+			    Submission_Status submissionStatus = eah.getExpenseStatus();
+				writeRow.createCell(12).setCellValue(submissionStatus.getValue());
 				createExcelsheet.autoSizeColumn(12);
 			}
 			if(null != ex.getActionPerformedBy()){
@@ -601,8 +611,8 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, ExpensesAppro
 				 
 				 Map<String, String> globalVarsMap = new HashMap<String, String>();
 				 globalVarsMap.put("employeeUser",expenses.getProjectMembers().getEmployee().getUser().getFirstName());
-				 globalVarsMap.put("approverUser",orgLoc.getUser().getFirstName());
-				 globalVarsMap.put("reopenUser",reopenedUser.getFirstName());
+				 globalVarsMap.put("approverUser",reopenedUser.getFirstName());
+				 globalVarsMap.put("reopenUser",orgLoc.getUser().getFirstName());
 				 globalVarsMap.put("projectName", projectName);
 				 globalVarsMap.put("clientName",expenses.getClientName());
 				 

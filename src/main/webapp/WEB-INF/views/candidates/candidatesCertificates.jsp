@@ -123,18 +123,27 @@ function storeCertificate(candidateId){
 		 
 			
 		if ($('#Candidate_certification_form').validate(false,validationSettings)) {
-			var frm = $('#Candidate_certification_form').serializeFormJSON();
+			/* var frm = $('#Candidate_certification_form').serializeFormJSON();
 			var con = JSON.stringify(frm);
 			con = con.replace(/[{}]/g, "");
 			var jsonData = encodeURIComponent(con);
 			var sourceleadUrl = '${sourceleadUrl}';
 			 
 			$("#Candidate_certification_form").attr("disabled", "disabled");
-			 $("#addCandidate").attr("disabled", "disabled");
-				$.ajax({
+			 $("#addCandidate").attr("disabled", "disabled"); */
+			 var formData = getFormData("Candidate_certification_form");
+				$("#Candidate_certification_form").attr("disabled", "disabled");
+				 $("#addCandidate").attr("disabled", "disabled");
+		        $.post(sourceleadUrl+"/storeCandidateCertifications?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId, formData, function(data) {
+		        	closeCertificatePopup();
+		        	candidateCertificateList(candidateId);
+               		cerMsgFadein();
+               		qwikCertificates(candidateId);
+		        });
+				/* $.ajax({
 						type : "POST",
 						url : sourceleadUrl
-								+ "/storeCandidateCertifications?${_csrf.parameterName}=${_csrf.token}&json="
+								+ "/storeCandidateCertifications?"+tokenParamName+"="+tokenValue+"&json="
 								+ jsonData + "&candidateId=" + candidateId,
 						success : function(data) {
 							if (data != null && data != 'undefined'
@@ -155,7 +164,7 @@ function storeCertificate(candidateId){
 							    	}
 							   }
 						},
-					});
+					}); */
 			return true;
 		} else {
 			return false;
@@ -203,7 +212,6 @@ function storeCertificate(candidateId){
 <script>
 function candidateCertificateList(candidateId){
 	var candidateType = '${candidateType}';
-	var sourceleadUrl ='${sourceleadUrl}';
 	var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
 	  if(locationList.match("yyyy-MM-dd")){
 		  canCerDatePattern = 'YYYY-MM-DD';
@@ -216,7 +224,7 @@ function candidateCertificateList(candidateId){
 	  }
 	 $.ajax({  
           type : "POST",
-          url: sourceleadUrl+"/getCandidateCertificationListByCandidateIdAndOrgLocationID?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,        
+          url: sourceleadUrl+"/getCandidateCertificationListByCandidateIdAndOrgLocationID?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
           success :function(data) {
         	  var json = JSON.parse(data);
                /* if(data != null && data != 'undefined' && data != "" && data != '[]'){ */
@@ -417,8 +425,8 @@ function addCertification(candidateId) {
 		result  = result + '                   </div>';
 		result  = result + '                 </div>';
 		
-		result  = result + '                 <div class="clearfix mb10">';
-		result = result  +'	                     <div class="col-md-4 dropdown-select positionRelative">';
+		result  = result + '                 <div class="clearfix mb10" id="candidateScoreDiv">';
+		result = result  +'	                     <div class="col-md-6 dropdown-select positionRelative PaddingRight">';
 		result = result  +'	                     <select class=""  name="scoreType" id="scoreType" onchange="selectScoreType();clearSearchKey();">';
 		result = result  +' 					   <option value="" selected="selected">Score Type</option>';
 		result = result  +'	                       <option value="Percentage">Percentage</option>';
@@ -426,7 +434,7 @@ function addCertification(candidateId) {
 		result = result  +'	                       <option value="GRADE">GRADE</option>';
 		result = result  +'	                      </select>';
 		result = result  +'	                   </div>';
-		result  = result + '                   <div class="col-md-8" positionRelative id="candidateScoreDiv">';
+		result  = result + '                   <div class="col-md-6 PaddingLeft" positionRelative >';
 		result  = result + '                     <input type="text" class="form-control input-sm" value="" name="score" placeholder="Score" id="candidateScore" onkeyup="selectScoreType();scoreAndScoreType();"';
 		result  = result + '                     data-validation-optional="true" data-validation="required validate_length length1-5" field-name="score">';
 		result  = result + '                 	 </div>';
@@ -522,14 +530,11 @@ function addCertification(candidateId) {
      3.ajax url implementation in CandidateCertificationsRestController.
 --%>
 <script>
-
 	function editCertification(candidateCertificationId, candidateId) {
-
-		var sourceleadUrl = '${sourceleadUrl}';
 		$.ajax({
 					type : "POST",
 					url : sourceleadUrl
-							+ "/getCandidateCertificateBycandidateIdandCertificateId?${_csrf.parameterName}=${_csrf.token}&candidateId="
+							+ "/getCandidateCertificateBycandidateIdandCertificateId?"+tokenParamName+"="+tokenValue+"&candidateId="
 							+ candidateId + "&candidateCertificationId=" + candidateCertificationId,
 					success : function(data) {
 
@@ -582,16 +587,27 @@ function addCertification(candidateId) {
 								result = result  +'	                      </select>';
 								result = result  +'	                   </div>';
 								result  = result + '                   <div class="col-md-8" positionRelative id="candidateScoreDiv">';
-								result  = result + '                     <input type="text" class="form-control input-sm" value="'+ json.score+ '" name="score" placeholder="Score" id="candidateScore" onkeyup="selectScoreType();scoreAndScoreType();"';
+								if(json.score !=null && json.score!='undefined'&& json.score !=''){
+								result  = result + '                     <input type="text" class="form-control input-sm" value="'+json.score+ '" name="score" placeholder="Score" id="candidateScore" onkeyup="selectScoreType();scoreAndScoreType();"';
 								result  = result + '                     data-validation-optional="true" data-validation="required validate_length length1-5" field-name="score">';
+								}else{
+								result  = result + '                     <input type="text" class="form-control input-sm" value="" name="score" placeholder="Score" id="candidateScore" onkeyup="selectScoreType();scoreAndScoreType();"';
+								result  = result + '                     data-validation-optional="true" data-validation="required validate_length length1-5" field-name="score">';
+								}
 								result  = result + '                 	 </div>';
 								result = result  +'	                   </div>';
-								
 								result  = result + '                 <div class="clearfix mb10">';
+								if(json.description !=null && json.description!='undefined'&& json.description !=''){
 								result  = result + '                   <div class="col-md-12">';
-								result  = result + '                     <input type="text" class="form-control" rows="1" name ="description" value="'+ json.description+ '"  placeholder="Description" id="candidateDescription"';
+								result  = result + '                     <input type="text" class="form-control" rows="1" name ="description" value="'+json.description+ '"  placeholder="Description" id="candidateDescription"';
 								result  = result + '                     data-validation-optional="true" data-validation="required">';
 								result  = result + '                   </div>';
+								}else{
+									result  = result + '                   <div class="col-md-12">';
+									result  = result + '                     <input type="text" class="form-control" rows="1" name ="description" value=""  placeholder="Description" id="candidateDescription"';
+									result  = result + '                     data-validation-optional="true" data-validation="required">';
+									result  = result + '                   </div>';	
+								}
 								result  = result + '                 </div>';
 								result  = result + '                 <div class="clearfix mb10">';
 								result  = result + '                   <div class="col-md-6 positionRelative">';
@@ -767,28 +783,19 @@ function addCertification(candidateId) {
 		if ($('#candidateCertificationEdit_form').validate(false,
 				validationSettings)) {
 
-			var frm = $('#candidateCertificationEdit_form').serializeFormJSON();
-
-			var con = JSON.stringify(frm);
-			con = con.replace(/[{}]/g, "");
-			var jsonData = encodeURIComponent(con);
+			 var formData = getFormData("candidateCertificationEdit_form");
 			//It will escape all the special characters
-			var sourceleadUrl = '${sourceleadUrl}';
+			
+			 $.post(sourceleadUrl+"/updateCandidateCertificationsBycandidateIdandcandidateCertificateId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&candidateCertificationId"+ candidateCertificationId, formData, function(data) {
+				 closeCertificatePopup();
+     			$("#selector5").removeAttr("style");
+     			$("#selector5").css({ display: "block" });
+     			$("#cerMsgDiv").html("Certification details updated");
+					candidateCertificateList(candidateId);
+					cerMsgFadein();
+					qwikCertificates(candidateId);
+		        });			
 
-			$.ajax({
-						type : "POST",
-						url : sourceleadUrl
-								+ "/updateCandidateCertificationsBycandidateIdandcandidateCertificateId?${_csrf.parameterName}=${_csrf.token}&json="+ jsonData + "&candidateId=" + candidateId	+ "&candidateCertificationId"+ candidateCertificationId,
-						success : function(data) {
-							closeCertificatePopup();
-	            			$("#selector5").removeAttr("style");
-	            			$("#selector5").css({ display: "block" });
-	            			$("#cerMsgDiv").html("Certification details updated");
-							candidateCertificateList(candidateId);
-							cerMsgFadein();
-							qwikCertificates(candidateId);
-						},
-					});
 			return true;
 		} else {
 			return false;
@@ -839,12 +846,11 @@ function removeCertification(candidateCertificationId, candidateId){
 <script>
 function  deleteSelectedCertification(candidateCertificationId,candidateId){
 	
-	 var sourceleadUrl ='${sourceleadUrl}';
 	 var loginUserId = '${SourceLeadWeb_userId}';
 	 var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	 $.ajax({  
           type : "POST",
-          url: sourceleadUrl+"/removeCandidateCertificateBycandidateIdandcandidateCertificateId?${_csrf.parameterName}=${_csrf.token}&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&candidateCertificationId="+candidateCertificationId,        
+          url: sourceleadUrl+"/removeCandidateCertificateBycandidateIdandcandidateCertificateId?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&candidateCertificationId="+candidateCertificationId,        
           success :function(data) {
 
 				if(data != null && data != 'undefined' && data != ""){
@@ -895,87 +901,98 @@ function  deleteSelectedCertification(candidateCertificationId,candidateId){
      this script is to display candidate score validation based on scoreType.
 --%>
 <script type="text/javascript">
-function selectScoreType(){
-	
-	 var selectedText = document.getElementById("scoreType").value;
-	/* if(selectedText != null && selectedText !='' && selectedText !='undefined'){
-		 $("#candidateScore").removeAttr("readonly");
-	}else{
-		 $("#candidateScore").attr("readonly", "readonly");
-	} */
-	 var canScore = document.getElementById("candidateScore").value;
-	 $('#candidateScoreDiv').parent().find('p.jquery_form_error_message').remove(); 
-	 if(selectedText =='Percentage'){
-		  var floatNum = /^(\d{0,2}(\.\d{0,2})?|100)$/
-		  if(canScore.match(floatNum)){
-			  $("#addCandidate").removeAttr("disabled");
-			   return true;
-		  }		  
-		 else{
-				$("input#candidateScore").parent().after("<p class='jquery_form_error_message'><span>Enter your Valid Percentage</span>");
-				 $("#addCandidate").attr("disabled", "disabled");
-				return false; 
-		 	 }
-	  }
-	 else if(selectedText =='CGPA'){
-		  var cgpanum = /^(([\d][\.])?([\d])|10)?$/
-			  if(canScore.match(cgpanum)){
-				  $("#addCandidate").removeAttr("disabled");
-				   return true;
-			  }		  
-			 else{
-				 $("input#candidateScore").parent().after("<p class='jquery_form_error_message'><span>Enter your Valid CGPA value</span>");
-				 $("#addCandidate").attr("disabled", "disabled");
-			return false; 
-			 }
-	  } 
-	 else if(selectedText =='GRADE'){
-		 var grades = /^([A-E][-+]{0,2})?$/
-			 if (canScore.match(grades)) {
-				 $("#addCandidate").removeAttr("disabled");
-				 return true;
-			}else{
-				$("input#candidateScore").parent().after("<p class='jquery_form_error_message'> Enter your Valid Grade </p>");
-				 $("#addCandidate").attr("disabled", "disabled");
-	    		return false;
-	    		
+	function selectScoreType() {
+		
+		var str = document.getElementById("candidateScore").value;
+		if (str == 'a' || str == 'b' || str == 'c' || str == 'd' || str == 'e') {
+			var strToUpper = str.toUpperCase();
+			$('#candidateScore').val(strToUpper);
+		}
+		var selectedText = document.getElementById("scoreType").value;
+		var canScore = document.getElementById("candidateScore").value;
+		$('#candidateScoreDiv').parent().find('p.jquery_form_error_message')
+				.remove();
+		if (selectedText == 'Percentage') {
+			var floatNum = /^(\d{0,2}(\.\d{0,2})?|100)$/
+			if (canScore.match(floatNum)) {
+				$("#addCandidate").removeAttr("disabled");
+				return true;
+			} else {
+				$("input#candidateScore")
+						.parent()
+						.after(
+								"<p class='jquery_form_error_message'><span>Enter your Valid Percentage</span>");
+				$("#addCandidate").attr("disabled", "disabled");
+				return false;
 			}
-   		}
-		 }
-	  
+		} else if (selectedText == 'CGPA') {
+			var cgpanum = /^(([\d][\.])?([\d])|10)?$/
+			if (canScore.match(cgpanum)) {
+				$("#addCandidate").removeAttr("disabled");
+				return true;
+			} else {
+				$("input#candidateScore")
+						.parent()
+						.after(
+								"<p class='jquery_form_error_message'><span>Enter your Valid CGPA value</span>");
+				$("#addCandidate").attr("disabled", "disabled");
+				return false;
+			}
+		} else if (selectedText == 'GRADE') {
+			var grades = /^([A-E][-+]{0,2})?$/
+			if (canScore.match(grades)) {
+				$("#addCandidate").removeAttr("disabled");
+				return true;
+			} else {
+				$("input#candidateScore")
+						.parent()
+						.after(
+								"<p class='jquery_form_error_message'> Enter your Valid Grade </p>");
+				$("#addCandidate").attr("disabled", "disabled");
+				return false;
+
+			}
+		}
+	}
 </script>
 
 
 <script type="text/javascript">
-function scoreAndScoreType(){
-	 var candidateScore = document.getElementById("candidateScore").value;
-	 var selectedText = document.getElementById("scoreType").value;
-	 var floatNum = /^(\d{0,2}(\.\d{0,2})?|100)$/
-	 var cgpanum = /^(([\d][\.])?([\d])|10)?$/
-	 var grades = /^([A-E][-+]{0,2})?$/
-	 if(candidateScore.match(floatNum)){
-		 $("#scoreType").val('Percentage'); 
-		 $('#candidateScoreDiv').parent().find('p.jquery_form_error_message').remove();
-		 $("#addCandidate").removeAttr("disabled");
-	 }
-	 if(candidateScore.match(grades)){
-		 $("#scoreType").val('GRADE'); 
-	 }
-	 if(candidateScore.match(cgpanum)){
-		 $("#scoreType").val('CGPA'); 
-	 }
-	 if((selectedText == '') && (!candidateScore.match(floatNum)) && (!candidateScore.match( cgpanum)) && (!candidateScore.match(grades))){
-		 $("input#candidateScore").parent().after("<p class='jquery_form_error_message'> Enter your Valid Score </p>");
-	 }
-	 if(selectedText == '' && candidateScore == ''){
-		 $('#candidateScoreDiv').parent().find('p.jquery_form_error_message').remove(); 
-	 }
-	 if(candidateScore == ''){
-		 $("#scoreType").val('');
-	 }
-}
+	function scoreAndScoreType() {
+		var candidateScore = document.getElementById("candidateScore").value;
+		var selectedText = document.getElementById("scoreType").value;
+		var floatNum = /^(\d{0,2}(\.\d{0,2})?|100)$/
+		var cgpanum = /^(([\d][\.])?([\d])|10)?$/
+		var grades = /^([A-E][-+]{0,2})?$/
+		if (candidateScore.match(floatNum)) {
+			$("#scoreType").val('Percentage');
+			$('#candidateScoreDiv').parent()
+					.find('p.jquery_form_error_message').remove();
+			$("#addCandidate").removeAttr("disabled");
+		}
+		if (candidateScore.match(grades)) {
+			$("#scoreType").val('GRADE');
+		}
+		if (candidateScore.match(cgpanum)) {
+			$("#scoreType").val('CGPA');
+		}
+		if ((selectedText == '') && (!candidateScore.match(floatNum))
+				&& (!candidateScore.match(cgpanum))
+				&& (!candidateScore.match(grades))) {
+			$("input#candidateScore")
+					.parent()
+					.after(
+							"<p class='jquery_form_error_message'> Enter your Valid Score </p>");
+		}
+		if (selectedText == '' && candidateScore == '') {
+			$('#candidateScoreDiv').parent()
+					.find('p.jquery_form_error_message').remove();
+		}
+		if (candidateScore == '') {
+			$("#scoreType").val('');
+		}
+	}
 </script>
-
 
 
 

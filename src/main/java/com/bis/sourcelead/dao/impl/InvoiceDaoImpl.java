@@ -1,6 +1,9 @@
 package com.bis.sourcelead.dao.impl;
 
-import java.util.ArrayList;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
@@ -17,12 +20,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.InvoiceDao;
-import com.bis.sourcelead.entity.CandidateOnBoarding;
+import com.bis.sourcelead.dto.InvoiceDTO;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.Invoice;
 import com.bis.sourcelead.entity.InvoicePayment;
-import com.bis.sourcelead.entity.OrgRelations;
+import com.bis.sourcelead.entity.OrgLocations;
 
 @Repository
 public class InvoiceDaoImpl implements InvoiceDao {
@@ -49,70 +54,140 @@ public class InvoiceDaoImpl implements InvoiceDao {
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })	
-	public List<Invoice> invoiceListByOrgLocationId(Long orgLocationId,String invoiceStatus, String paymentStatus,Date startDateUTC,Date endDateUTC,String invoiceType) {
+	public ResponseList<Invoice> invoiceListByOrgLocationId(OrgLocations orgLocations,Date startDateUTC,Date endDateUTC,InvoiceDTO invoiceDTO) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 		
-		String[] invoiceTokens = invoiceStatus.split(",");
-		String[] paymentTokens = paymentStatus.split(",");
-		
-		String subQuery = "";
-		String subQuery1 = "";
-		if (Arrays.asList(invoiceTokens).contains("DRAFT")) {
-			subQuery = subQuery + "invoice.invoiceStatus <> 'Linked' and invoice.invoiceStatus = 'DRAFT' or ";
-		}
-		if (Arrays.asList(invoiceTokens).contains("SENT")) {
-			subQuery = subQuery + "invoice.invoiceStatus <> 'Linked' and invoice.invoiceStatus = 'SENT' or ";
-		}
-		if (Arrays.asList(invoiceTokens).contains("RECEIVED")) {
-			subQuery = subQuery + "invoice.invoiceStatus <> 'Linked' and invoice.invoiceStatus = 'Received' or ";
-		}
-		if (Arrays.asList(invoiceTokens).contains("ACCEPTED")) {
-			subQuery = subQuery + "invoice.invoiceStatus <> 'Linked' and invoice.invoiceStatus = 'Accepted' or ";
-		}
-		if (Arrays.asList(invoiceTokens).contains("REJECTED")) {
-			subQuery = subQuery + "invoice.invoiceStatus <> 'Linked' and invoice.invoiceStatus = 'Rejected' or ";
-		}
-		if (Arrays.asList(invoiceTokens).contains("LINKED")) {
-			subQuery = subQuery + "invoice.invoiceStatus = 'Linked' or ";
-		} 
-		if ((invoiceTokens[0] != null && invoiceTokens[0].length() > 0)) {
-			subQuery = "and (" + subQuery.substring(0, subQuery.length() - 4) + ")";
-		} 
-		
-		if (Arrays.asList(paymentTokens).contains("Unpaid")) {
-			subQuery1 = subQuery1 + "invoice.paymentStatus = 'Unpaid' or ";
-		}
-		if (Arrays.asList(paymentTokens).contains("Partial Paid")) {
-			subQuery1 = subQuery1 + "invoice.paymentStatus = 'Partial Paid' or ";
-		}
-		if (Arrays.asList(paymentTokens).contains("Paid")) {
-			subQuery1 = subQuery1 + "invoice.paymentStatus = 'Paid' or ";
-		}
-		if (Arrays.asList(paymentTokens).contains("Overdue")) {
-			subQuery1 = subQuery1 + "invoice.paymentStatus = 'Overdue' or ";
-		}
-		if ((paymentTokens[0] != null && paymentTokens[0].length() > 0)) {
-			subQuery1 = "and (" + subQuery1.substring(0, subQuery1.length() - 4) + ")";
-		} 
+			
+			String[] invoiceTokens = invoiceDTO.getInvoiceStatus().split(",");
+			String[] paymentTokens = invoiceDTO.getPaymentStatus().split(",");
+			
+			String subQuery = "";
+			String subQuery1 = "";
+			
+			if (Arrays.asList(invoiceTokens).contains("DRAFT")) {
+				subQuery = subQuery + "invoice.invoiceStatus <> 'Linked' and invoice.invoiceStatus = 'DRAFT' or ";
+			}
+			if (Arrays.asList(invoiceTokens).contains("SENT")) {
+				subQuery = subQuery + "invoice.invoiceStatus <> 'Linked' and invoice.invoiceStatus = 'SENT' or ";
+			}
+			if (Arrays.asList(invoiceTokens).contains("RECEIVED")) {
+				subQuery = subQuery + "invoice.invoiceStatus <> 'Linked' and invoice.invoiceStatus = 'Received' or ";
+			}
+			if (Arrays.asList(invoiceTokens).contains("ACCEPTED")) {
+				subQuery = subQuery + "invoice.invoiceStatus <> 'Linked' and invoice.invoiceStatus = 'Accepted' or ";
+			}
+			if (Arrays.asList(invoiceTokens).contains("REJECTED")) {
+				subQuery = subQuery + "invoice.invoiceStatus <> 'Linked' and invoice.invoiceStatus = 'Rejected' or ";
+			}
+			if (Arrays.asList(invoiceTokens).contains("LINKED")) {
+				subQuery = subQuery + "invoice.invoiceStatus = 'Linked' or ";
+			} 
+			if ((invoiceTokens[0] != null && invoiceTokens[0].length() > 0)) {
+				subQuery = "and (" + subQuery.substring(0, subQuery.length() - 4) + ")";
+			} 
+			
+			if (Arrays.asList(paymentTokens).contains("Unpaid")) {
+				subQuery1 = subQuery1 + "invoice.paymentStatus = 'Unpaid' or ";
+			}
+			if (Arrays.asList(paymentTokens).contains("Partial Paid")) {
+				subQuery1 = subQuery1 + "invoice.paymentStatus = 'Partial Paid' or ";
+			}
+			if (Arrays.asList(paymentTokens).contains("Paid")) {
+				subQuery1 = subQuery1 + "invoice.paymentStatus = 'Paid' or ";
+			}
+			if (Arrays.asList(paymentTokens).contains("Overdue")) {
+				subQuery1 = subQuery1 + "invoice.paymentStatus = 'Overdue' or ";
+			}
+			if ((paymentTokens[0] != null && paymentTokens[0].length() > 0)) {
+				subQuery1 = "and (" + subQuery1.substring(0, subQuery1.length() - 4) + ")";
+			} 
+			
 		
 		String subQuery2 = "";
 		
-		if(invoiceType.equalsIgnoreCase("payables")){
+		if(invoiceDTO.getInvoiceType().equalsIgnoreCase("payables")){
 			subQuery2 = " and invoice.invoiceType = 'Payables' ";
 		}else{
 			subQuery2 = " and invoice.invoiceType = 'Receivable' ";
 		}
 		
 		String subQuery3 = "";
-		if("".equalsIgnoreCase(invoiceStatus) || invoiceStatus == null || invoiceStatus.equalsIgnoreCase("undefined")){
+		if("".equalsIgnoreCase(invoiceDTO.getInvoiceStatus()) || invoiceDTO.getInvoiceStatus() == null || invoiceDTO.getInvoiceStatus().equalsIgnoreCase("undefined")){
 			subQuery3 = " and invoice.invoiceStatus <> 'Linked' ";
 		}
 		
-		String query =null;
-		 query = "from Invoice invoice  left join fetch invoice.projectMemberId pm left join fetch pm.projects left join fetch pm.employee emp left join fetch emp.user "
-		 		+ "left join fetch invoice.expensesId where  invoice.orgLocation.id =:orgLocationId and invoice.status = '1' "+subQuery+" "+subQuery1+" "+subQuery2+" "+subQuery3+" and invoice.createdDate >= :startDateUTC and invoice.createdDate <= :endDateUTC ORDER BY invoice.id DESC"; 
-		 List<Invoice> invoiceList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setParameter("startDateUTC", startDateUTC).setParameter("endDateUTC", endDateUTC).setCacheable(true).list();
-		return invoiceList;
+		List<Invoice> invoiceList = null;
+		ResponseList<Invoice> response = new ResponseList<>();
+		String query = "from Invoice invoice  left join fetch invoice.projectMemberId pm left join fetch pm.projects left join fetch pm.employee emp left join fetch emp.user "
+		 		+ "left join fetch invoice.expensesId left join fetch invoice.projectID where  invoice.orgLocation.id =:orgLocationId and invoice.status = '1' "+subQuery+" "+subQuery1+" "+subQuery2+" "+subQuery3+" and invoice.createdDate >= :startDateUTC and invoice.createdDate <= :endDateUTC";
+		String countQuery = "";
+		if(invoiceDTO.getInvoiceType().equalsIgnoreCase(Constants.RECEIVABLE)){
+			countQuery = "from Invoice invoice  where invoice.orgLocation.id =:orgLocationId and invoice.invoiceType='Receivable' and invoice.status = '1'";
+		}else{
+		    countQuery = "from Invoice invoice  where invoice.orgLocation.id =:orgLocationId and invoice.invoiceType='payables' and invoice.status = '1'";
+		}
+		
+		if(invoiceDTO.getSearchValue().contains("/") || invoiceDTO.getSearchValue().contains("-")){
+			String convertedDate=invoiceDTO.getSearchValue();
+			if(invoiceDTO.getSearchValue().contains("/")){
+				convertedDate = invoiceDTO.getSearchValue().replaceAll("/", "-");
+			}
+			DateTimeFormatter orgFormat = new DateTimeFormatterBuilder().appendPattern(orgLocations.getDateFormat()).toFormatter();
+            LocalDate parsedDate = LocalDate.parse(convertedDate, orgFormat);
+            DateTimeFormatter f2 = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+            String newDate = parsedDate.format(f2);
+            Date searchDate = new SimpleDateFormat("yyyy-MM-dd").parse(newDate);
+            java.sql.Date sqlDate = new java.sql.Date(searchDate.getTime());
+            String queryDate = "from Invoice invoice where invoice.orgLocation.id =:orgLocationId and ( invoice.invoiceDate =:sqlDate or invoice.dueDate =:sqlDate )";
+            Query queryObjDate = session.createQuery(queryDate.toString()).setDate("sqlDate", sqlDate).setLong("orgLocationId", orgLocations.getId());
+            response.setData(queryObjDate.list());
+
+		}else{
+		StringBuilder query1 = new StringBuilder("");
+			if(invoiceDTO.getSearchValue() !=null && !"".equalsIgnoreCase(invoiceDTO.getSearchValue())) {
+				query1.append(" and (invoice.invoiceId like '%" + invoiceDTO.getSearchValue() + "%' ")
+				.append("OR invoice.responderLocationId.orgLocationName like '%" + invoiceDTO.getSearchValue() + "%' ")
+				.append("OR invoice.orgLocation.orgLocationName like '%" + invoiceDTO.getSearchValue() + "%' ")
+				.append("OR invoice.contactUser.firstName like '%" + invoiceDTO  .getSearchValue() + "%' ")
+				.append("OR invoice.contactUser.lastName like '%" + invoiceDTO.getSearchValue() + "%' ")
+				.append("OR invoice.projectID.projectName like '%" + invoiceDTO.getSearchValue() + "%' ")
+				.append("OR invoice.invoiceDate like '%" + invoiceDTO.getSearchValue() + "%' ")
+				.append("OR invoice.total like '%" + invoiceDTO.getSearchValue() + "%' ")
+				.append("OR invoice.dueAmount like '%" + invoiceDTO.getSearchValue() + "%' ")
+				.append("OR invoice.dueDate like '%" + invoiceDTO.getSearchValue() + "%' ")
+				.append("OR invoice.invoiceStatus like '%" + invoiceDTO.getSearchValue() + "%' ")
+				.append("OR invoice.paymentStatus like '%" + invoiceDTO.getSearchValue() + "%' )");
+						
+			}
+		Query queryObj = session.createQuery(query + query1.toString() + "  ORDER BY invoice.id DESC");
+		if (invoiceDTO != null && invoiceDTO.getLength() > 0) {
+			queryObj.setFirstResult(invoiceDTO.getStart());
+			queryObj.setMaxResults(invoiceDTO.getLength());
+//			queryObj.setLong("orgLocationId", orgLocationId).setParameter("startDateUTC", startDateUTC).setParameter("endDateUTC", endDateUTC).setCacheable(true).list();
+		}
+		invoiceList = queryObj.setLong("orgLocationId", orgLocations.getId()).setParameter("startDateUTC", startDateUTC).setParameter("endDateUTC", endDateUTC).setCacheable(true).list();
+		int count = 0;
+		int filteredCount = 0;
+		List<Long> countlist = session.createQuery("select count(*) " + countQuery).setLong("orgLocationId", orgLocations.getId()).setCacheable(true).list();
+		if(countlist != null && !countlist.isEmpty()) {
+			count = countlist.iterator().next().intValue();
+		}
+		response.setRecordsTotal(count);
+		if (invoiceDTO != null) {
+			List<Long> filteredCountlist  = session.createQuery("select count(*) " + countQuery + query1.toString()).setLong("orgLocationId", orgLocations.getId()).list();
+			if(filteredCountlist != null && !filteredCountlist.isEmpty()) {
+				filteredCount = filteredCountlist.iterator().next().intValue();
+			}
+			response.setRecordsFiltered(filteredCount);
+		} else {
+			response.setRecordsFiltered(filteredCount);
+		}
+
+			response.setData(invoiceList);
+		}
+			return response;
+		
+		
 	}
 	
 	
@@ -126,7 +201,7 @@ public class InvoiceDaoImpl implements InvoiceDao {
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
 			String query = "from Contracts contract left join fetch contract.requirementSubmission submission left join fetch submission.requirement where contract.orgLocationId.id = :orgLocationId and "
-					+ "contract.orgRelations.id = :orgRelationId and submission.candidate.id = :candidateId and contract.contractType = :contractType and contract.templateSubmissionStatus = 'FINALIZED'";
+					+ "contract.orgRelations.id = :orgRelationId and contract.candidate.id = :candidateId and contract.contractType = :contractType and contract.templateSubmissionStatus = 'FINALIZED'";
 		     contractsList = session.createQuery(query.toString()).setLong("candidateId", candidateId).setLong("orgLocationId", orgLocationId).setLong("orgRelationId", orgRelationId).setString("contractType", contractType).setCacheable(true).list();
 		  if(null != contractsList){
 			  return contractsList;

@@ -14,6 +14,8 @@ import javax.persistence.Table;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
 
 @Entity
 @Table(name = "INVOICE_DOCUMENTS", catalog = "sourcelead")
@@ -37,10 +39,12 @@ public class InvoiceDocument {
 	@Column(name = "FILE_NAME", columnDefinition = "TEXT default NULL")
 	private String fileName;
 	
+	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne
 	@JoinColumn(name = "INVOICE_ID", nullable = false)
 	private Invoice invoice;
 	
+	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne
 	@JoinColumn(name = "ORG_LOCATION_ID", nullable = false)
 	private OrgLocations orgLocation;
@@ -60,6 +64,10 @@ public class InvoiceDocument {
 	
 	@Column(name = "UPDATED_BY")
 	private String updatedBy;
+	
+	@Column(name = "FILE_URL")
+	private String fileUrl;
+	
 
 	public Long getId()
 	{
@@ -169,6 +177,18 @@ public class InvoiceDocument {
 	public void setUpdatedBy(String updatedBy)
 	{
 		this.updatedBy = updatedBy;
+	}
+
+	public String getFileUrl() {
+		return fileUrl;
+	}
+
+	public void setFileUrl(String fileUrl) {
+		this.fileUrl = fileUrl;
+	}
+
+	public static long getSerialversionuid() {
+		return serialVersionUID;
 	}
 	
 	

@@ -18,6 +18,8 @@ import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
 
 /**
  *  to handle the documents of the client and vendors
@@ -37,10 +39,12 @@ public class OrgDocuments implements Serializable{
     @Column(name = "ID", nullable = false)
 	private Long id;
 	
+	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne
     @JoinColumn(name="RESPONDER_LOCATION_ID", nullable=false )        
     private OrgLocations responderLocationId;
 	
+	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne
     @JoinColumn(name="ORG_LOCATION_ID", nullable=false )        
     private OrgLocations locationId;	
@@ -61,10 +65,15 @@ public class OrgDocuments implements Serializable{
 	@Column(name = "FILE_TYPE")
 	private String fileType;
 	
+	@Column(name = "FILE_URL")
+	private String fileUrl;
+	
+	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "SPOC_ID")
 	private User spocUser;
 	
+	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "OWNER_ID")
 	private User ownerUser;
@@ -358,4 +367,19 @@ public class OrgDocuments implements Serializable{
 	public void setMsg(String msg) {
 		this.msg = msg;
 	}
+
+	public String getFileUrl() {
+		return fileUrl;
+	}
+
+	public void setFileUrl(String fileUrl) {
+		this.fileUrl = fileUrl;
+	}
+
+	public static long getSerialversionuid() {
+		return serialVersionUID;
+	}
+	
+	
+	
 }
