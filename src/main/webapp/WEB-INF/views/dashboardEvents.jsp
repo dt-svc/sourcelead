@@ -91,7 +91,7 @@ window.onload = function() {
 					 result = result + ' 									<p><i class="fa fa-phone"></i><label>'+report.candidatePhoneNumber+'</label></p>                 ';
 					 result = result + ' 									</div>                                                                         ';
 					 result = result + ' 								</div>                                                                         ';
-					 result = result + '                          <p><label class="text-muted small col-md-2">Req.:</label> <a href="'+sourceleadUrl+"/requirementSummaryView?requirementUUID="+report.requirementUUID+"&interviewId="+report.interviewId.id+'">'+report.requirementTitle+'</a></p>';
+					 result = result + '                          <p><label class="text-muted small col-md-2">Job:</label> <a href="'+sourceleadUrl+"/requirementSummaryView?requirementUUID="+report.requirementUUID+"&interviewId="+report.interviewId.id+'">'+report.requirementTitle+'</a></p>';
 					 result = result + '                          <p><label class="text-muted small col-md-2">Client:</label> '+clientName+'</p>    ';
 					 result = result + '                          <div class="feedBack"> ';
 					

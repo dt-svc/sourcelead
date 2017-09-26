@@ -725,7 +725,7 @@ function isCoolingOffAlert(){
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a' style='z-index:350000'>";
 	result = result +"		<p>Applicant Cooling-Off period (${requirement.reqCoolingOffPeriod}) not completed</p>";
 	result = result + ' <div id="reasonForSpocDiv"/>';
-	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Proceed' onClick='proceedApplicant();'><input class='u_can_color' type='button' value='Discord' onClick='discordApplicant();'></b>";
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Proceed' onClick='proceedApplicant();'><input class='u_can_color' type='button' value='Discard' onClick='discordApplicant();'></b>";
 	result = result +"	</div>";
 	$("#popUp").append(result);
 	$("#remove_user_pop").slideDown(200);
