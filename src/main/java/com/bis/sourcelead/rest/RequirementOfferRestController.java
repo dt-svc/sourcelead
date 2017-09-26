@@ -469,15 +469,6 @@ public class RequirementOfferRestController {
 	@RequestMapping(value = "/acceptRejectCandidate", method = RequestMethod.POST)
 	public @ResponseBody String acceptRejectCandidate(ApplicantAuthorizationDTO  applicantAuthorizationDTO,String submissionId, String decision, HttpServletRequest request) throws Exception {
 
-		/*String json1 = "{" + json + "}";
-		JSONObject jsonObj = new JSONObject(json1);
-		
-		MultipartFile multiFile = null;
-		Iterator<String> itrator = request.getFileNames();
-		if(itrator.hasNext()){
-	        multiFile = request.getFile(itrator.next());
-		}*/
-
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		Org loginOrg = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
@@ -534,8 +525,7 @@ public class RequirementOfferRestController {
 	@RequestMapping(value = "/acceptRejectCandidateFromDashboard", method = RequestMethod.POST)
 	public @ResponseBody String acceptRejectCandidateFromDashboard(ApplicantAuthorizationDTO applicantAuthorizationDTO, Long submissionId, String status, HttpServletRequest request) throws Exception
 	{
-		/*String json1 = "{" + json + "}";
-		JSONObject jsonObj = new JSONObject(json1);*/
+		
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		Org loginOrg = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
