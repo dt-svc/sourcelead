@@ -580,9 +580,9 @@ function updateReuqirementStatus(status){
           			 $("#selector11").removeAttr("style");
            			 $("#selector11").css({ display: "block" });
           			 if(status == "APPROVED"){
-          				$("#msgDiv").html("Requirement approved Successfully");
+          				$("#msgDiv").html("Job approved Successfully");
           			 }else{
-          				$("#msgDiv").html("Requirement rejected Successfully");
+          				$("#msgDiv").html("Job rejected Successfully");
           			   }
           			sideBar(requirementId)
              			msgFadein();
@@ -686,7 +686,8 @@ function updateReuqirementStatusReject(status){
 <script>  
 function requirementPipeline(requirementId,submissionType){
 	$("#actionsDiv" ).show();
-	
+	$("#emptyPipelinelist").val('');
+	var sourceleadUrl = '${sourceleadUrl}';
 	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	var userId = '${SourceLeadWeb_user.id}';
 	var loginUserRole = '${SourceLeadWeb_loginUserRole}';
@@ -1202,7 +1203,11 @@ function reqNotes(requirementId){
    	    output = output+'    <div class="commentsimg">';
    	    output = output+'    <i class="fa fa-comments"></i>';
    	    output = output+'        <div class="commentsimg-inner">';
+   	    if(report.commentAuthorImage != null && report.commentAuthorImage !='' && report.commentAuthorImage !='undefined'){
    	    output = output+'        	<img data-id= "userProfileImage" onerror="predefineProfileImage(this);" src="'+report.commentAuthorImage+'"/>';
+   	    }else{
+   	   	output = output+'        	<img data-id= "userProfileImage" onerror="predefineProfileImage(this);" src="resources/images/userprofileImg.jpg"/>';
+   	    }
    	    output = output+'        </div>';
    	    output = output+'    </div>';
    	    output = output+'     <div class="comments-content">';
@@ -1739,7 +1744,13 @@ function clientSideBar(candidateId,recScore){
 			             result = result+'<div id="candidateImageId">';
 			             result = result+'<div class="well well-sm text-center clearfix positionRelative">';
 						 result = result+' <div class="profile-img-container profile-image text-center">';
-						 result = result+'   <img  id="userImage" data-id="profileImage" onerror="predefineProfileImage(this);" src="'+json.fileUrl+'" alt="Profile Image" class=" img-responsive center-block img-circle">';						 if(recScore != null && recScore != '' && recScore != 'undefined'){
+			               if(json.fileUrl != null && json.fileUrl !='' && json.fileUrl !="undefined"){
+						result = result+'   <img  id="userImage" data-id="profileImage" onerror="predefineProfileImage(this);" src="'+json.fileUrl+'" alt="Profile Image" class=" img-responsive center-block img-circle">';						 
+			               }else{
+						result = result+'   <img  id="userImage" data-id="profileImage" onerror="predefineProfileImage(this);" src="resources/images/userprofileImg.jpg" alt="Profile Image" class=" img-responsive center-block img-circle">';						 
+	   
+			               }
+						if(recScore != null && recScore != '' && recScore != 'undefined'){
 							  if(recScore >=50){ 
 							 	 result = result +'                    <i class="valid-profile fa fa-check-square text-success"></i>';        
 							  }
@@ -1950,18 +1961,18 @@ function requirementStatusBar(requirementId){
 		
        var offerMade = 'OFFERMADE';
        
-        result = result + '<div class="reportsCount reportsCountNew">';
+        result = result + '<div class="reportsCount reportsCountNew reportsCountCustom" id="customLi">';
 		result = result + '<ul>';
 		result = result + '<li title="Applicants" id="applicantli" onclick="requirementPipeline('+requirementId+',\''+all+'\');tabEnable(this);" class="reqAct">';
 		result = result + '	<span><i class="fa fa-users"></i></span><b id="applicantsCount">0</b>';
 		result = result + '</li>';
-		result = result + '<li title="Duplicate Applicants" class="colorTwo" id="duplicataplctli" onclick="requirementPipeline('+requirementId+',\''+duplicateApplicantCount+'\');tabEnable(this);">';
+		result = result + '<li title="Duplicate Applicants" class="" id="duplicataplctli" onclick="requirementPipeline('+requirementId+',\''+duplicateApplicantCount+'\');tabEnable(this);">';
 		result = result + '	<span><i class="fa fa-files-o"></i></span><b id="duplicateApplicantsCount">0</b>';
 		result = result + '</li>';
 		result = result + '<li title="Request Sent" id="requestSentli" onclick="requirementPipeline('+requirementId+',\''+requestSent+'\');tabEnable(this);">';
 		result = result + '	<span><i class="fa fa-check"></i></span><b id="requestSent">0</b>';
 		result = result + '</li>';
-		result = result + '<li title="Shortlisted" class="colorTwo" id="shortListli" onclick="requirementPipeline('+requirementId+',\''+shortList+'\');tabEnable(this);">';
+		result = result + '<li title="Shortlisted" class="" id="shortListli" onclick="requirementPipeline('+requirementId+',\''+shortList+'\');tabEnable(this);">';
 		result = result + '	<span><i class="fa fa-list-ul"></i></span><b id="shortlistCount">0</b>';
 		result = result + '</li>';
 		if(clientSubmissions == 'Y' && isSpocActive == 'Y'){
@@ -1969,13 +1980,13 @@ function requirementStatusBar(requirementId){
 		result = result + '	<span class="cliColor"><i class="fa fa-send"></i></span><b id="submitToClientCount">0</b>';
 		result = result + '</li>';
 		}
-		result = result + '<li title="Interviews" class="colorTwo" id="interviewli" onclick="requirementPipeline('+requirementId+',\''+interview+'\');tabEnable(this);">';
+		result = result + '<li title="Interviews" class="" id="interviewli" onclick="requirementPipeline('+requirementId+',\''+interview+'\');tabEnable(this);">';
 		result = result + '	<span><i class="fa fa-handshake-o"></i></span><b id="interviewCount">0</b>';
 		result = result + '</li>';
 		result = result + '<li title="Offers" id="offerMadeli" onclick="requirementPipeline('+requirementId+',\''+offerMade+'\');tabEnable(this);">';
 		result = result + '	<span><i class="fa fa-envelope-open-o"></i></span><b id="offersCount">0</b>';
 		result = result + '</li>';
-		result = result + '<li title="Rejected" class="colorTwo" id="rejectedli" onclick="requirementPipeline('+requirementId+',\''+rejected+'\');tabEnable(this);">';
+		result = result + '<li title="Rejected" class="" id="rejectedli" onclick="requirementPipeline('+requirementId+',\''+rejected+'\');tabEnable(this);">';
 		result = result + '	<span class="rejColor"><i class="fa fa-ban"></i></span><b id="rejectedCount">0</b>';
 		result = result + '</li>';
 		result = result + '<li title="Back-Out" id="backoutli" onclick="requirementPipeline('+requirementId+',\''+backout+'\');tabEnable(this);">';
@@ -1988,6 +1999,9 @@ function requirementStatusBar(requirementId){
          
       $("#status-div").empty();
       $("#status-div").prepend(result);
+      if(clientSubmissions == 'Y' && isSpocActive == 'Y'){
+  		$("#customLi").removeClass("reportsCountCustom");
+      }
      // $("#tab-2").prepend(status-div);
 }
 </script>
@@ -3231,11 +3245,18 @@ function refreshImageBlock(candidateId){
 	                	 var result = '';
 			             result = result+'<div class="well text-center clearfix">';
 						 result = result+' <div class="profile-img-container profile-image text-center" style="position:relative;">';
-						 result = result+'   <img  id="userImage" data-id="profileImage" onerror="predefineProfileImage(this);" src="'+json.fileUrl+'" alt="Profile Image" class=" img-responsive center-block img-circle">';						 result = result+'  <div class="btn-group uploadfile">';
+						 if(json.fileUrl != null && json.fileUrl !='' && json.fileUrl !="undefined"){
+						 result = result+'   <img  id="userImage" data-id="profileImage" onerror="predefineProfileImage(this);" src="'+json.fileUrl+'" alt="Profile Image" class=" img-responsive center-block img-circle">';						 
+						 }else{
+						 result = result+'   <img  id="userImage" data-id="profileImage" onerror="predefineProfileImage(this);" src="resources/images/userprofileImg.jpg" alt="Profile Image" class=" img-responsive center-block img-circle">';						 
+	 
+						 }
+						 result = result+'  <div class="btn-group uploadfile">';
 						 result = result+'  <button type="button" class="btn btn-sm btn-primary">';
 						 result = result+'  <i class="fa fa-upload"></i></button>';
 						 result = result+'  <label class="btn btn-sm btn-primary">';
-						 result = result+'    Upload / Change<input type="file" name="file" id="uploadedImage"  accept="image/*" onchange="cropImage(this,\'candidate_form\','+candidateId+');" style="display: none;">';					     result = result+'  </label>';
+						 result = result+'    Upload / Change<input type="file" name="file" id="uploadedImage"  accept="image/*" onchange="cropImage(this,\'candidate_form\','+candidateId+');" style="display: none;">';					     
+						 result = result+'  </label>';
 					     if(json.fileName != null && json.fileName != '' && json.fileName != 'undefined'){
 						     result = result+'  <button type="button" class="btn btn-sm btn-danger" onclick="deleteImage('+candidateId+')">';
 							 result = result+'  <i class="fa fa-trash"></i></button>';

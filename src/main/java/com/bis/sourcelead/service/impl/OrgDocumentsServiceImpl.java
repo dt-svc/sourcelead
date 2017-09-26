@@ -198,7 +198,12 @@ public class OrgDocumentsServiceImpl implements OrgDocumentsService{
 					}
 					if(documents.getSpocUser() != null){
 						StringBuilder spocNameSB=new StringBuilder();
-						documents.setSpocName(spocNameSB.append(documents.getSpocUser().getFirstName()).append(" ").append(documents.getSpocUser().getLastName()).toString());
+						if(StringUtils.isNotBlank(documents.getSpocUser().getFirstName()) && StringUtils.isNotBlank(documents.getSpocUser().getLastName()))
+							documents.setSpocName(spocNameSB.append(documents.getSpocUser().getFirstName()).append(" ").append(documents.getSpocUser().getLastName()).toString());
+						else
+							documents.setSpocName(spocNameSB.append(documents.getSpocUser().getFirstName()).append(" ").toString());
+						
+						
 					}
 					if(documents.getOwnerUser() != null){
 						StringBuilder ownerNameSB=new StringBuilder();

@@ -1860,7 +1860,6 @@ function preparedContractListWTV(data){
 		     		}
  	         }
 	         '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CONTRACT\')">';
-	         alert(output.contractUUID)
 	         if(output.typeOfContract == "New"){
 	        	 opt = opt + '<a href="#" title="Preview"><i class="fa fa-eye" onclick="previewNewContractPDF(\''+output.contractUUID+'\', \''+output.contractTitle+'\')"></i></a>';
 	         }else{
@@ -3264,15 +3263,11 @@ function applicantsContractsPaginationREJ(SourceLeadWeb_loginOrg){
 
 <script type="text/javascript">
 function previewContractPDF(fileURL, fileName, fileType) {
-	var sourceleadUrl ='${sourceleadUrl}';
-	alert(fileURL + "     "+fileName+ "     "+fileType)
-	viewFile(sourceleadUrl, fileURL, fileName, fileType);
+	viewFile(fileURL, fileName, fileType);
 // 	window.open(sourceleadUrl+'/viewContractPdf/'+uuid+'/'+templateName+'','_newtab');
 }
 
 function previewNewContractPDF(uuid, templateName) {
-	alert("hii")
-	var sourceleadUrl ='${sourceleadUrl}';
  	window.open(sourceleadUrl+'/viewContractPdf/'+uuid+'/'+templateName+'','_newtab');
 }
 </script>
