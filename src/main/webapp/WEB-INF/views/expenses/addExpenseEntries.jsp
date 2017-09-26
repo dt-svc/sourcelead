@@ -490,7 +490,7 @@ function addExpenseRow(){
 		}
 	}
 </script>
- <!-- <script>
+ <script>
 function displayCalendar(entityId){
 	$("#categoryDate"+entityId).datepicker("destroy");
 	var projectStartDate = $('#projectStartDateExpensesId').val();
@@ -510,7 +510,8 @@ function displayCalendar(entityId){
 	}
 	
 }
-</script> -->
+</script>
+
 <script type="text/javascript">
 function validate_fileupload(fileName)
 {
