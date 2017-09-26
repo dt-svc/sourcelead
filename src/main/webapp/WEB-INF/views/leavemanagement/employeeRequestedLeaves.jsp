@@ -131,7 +131,7 @@ $(document).ready(function(){
   function getRequestedEmployeesList(){
 	  var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	  var userId = '${SourceLeadWeb_userId}';
-	  $.get(sourceleadUrl+"/getRequestedLeaves?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&userId="+userId, function(data) {
+	  $.get(sourceleadUrl+"/getEmployeeRequestedLeaves?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&userId="+userId, function(data) {
 			if(data !=null){
 				$("#termsAndConditions").html(data);
 				document.getElementById("termsModel").style.display="block";

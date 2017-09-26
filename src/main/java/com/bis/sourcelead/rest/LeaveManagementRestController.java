@@ -734,6 +734,12 @@ public class LeaveManagementRestController {
 		return leaveType;
 	}
 	
+	@RequestMapping(value = "/getEmployeeRequestedLeaves", method = RequestMethod.GET)
+	public  @ResponseBody List<LeaveDTO> getEmployeeRequestedLeaves(@RequestParam(value = "orgLocationId", required = false) Long orgLocationId,@RequestParam(value = "userId", required = false) String userId,HttpServletRequest request) throws Exception
+	{
+		List<LeaveDTO> requestedLeavesList = leaveService.getEmployeeRequestedLeavesBylocationId(orgLocationId,userId);
+		return new ArrayList<LeaveDTO>();
+	}
 	
 
 }
