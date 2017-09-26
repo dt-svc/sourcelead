@@ -36,7 +36,7 @@ public interface RequirementSubmissionService {
 	
 	List<RequirementSubmission> getAllShortListCandidatesByOrgLocationsIdAndRequirementId(OrgLocations orgLocations, Long requirementId, List<Long> existingApplicantsIds, String isClientInterview,User user,String loginUserRole) throws Exception;
 	
-	List<RequirementSubmission> getAllSubmittedAndShortListAndInterviewededCandidates(OrgLocations orgLocations, Long requirementId, List<Long> existingApplicantsIds, String isClientOffer,User user,String loginUserRole) throws Exception;
+	List<RequirementSubmission> getAllSubmittedAndShortListAndInterviewededCandidates(OrgLocations orgLocations, Long requirementId, List<Long> existingApplicantsIds, String isClientOffer,User user,String loginUserRole,String isClientRequirement) throws Exception;
 	
 	RequirementSubmission storeRequirementSubmission(RequirementSubmission requirementSubmission)throws Exception;
 
@@ -174,7 +174,7 @@ public interface RequirementSubmissionService {
 	
 	Integer getRecruiterSubmissionsCountByRecruiterIdAndRequirementId(Long requirementId,Long userId) throws Exception;
 	
-	RequirementSubmission saveRequirementSubmissionFromCrowdSourcing(JSONObject jsonObj,User user,String jsonStringvalues,OrgLocations orgLocations,MultipartFile multiFile) throws Exception;
+	RequirementSubmission saveRequirementSubmissionFromCrowdSourcing(JSONObject jsonObj,User user,String jsonStringvalues,OrgLocations orgLocations) throws Exception;
 
 	void applicantAcceptMailAboutRateNegotiation(Requirement requirement, User initiatorUser, RequirementSubmission requirementSubmission,
 			OrgLocations orgLocations,StringBuilder tempHTML) throws Exception;

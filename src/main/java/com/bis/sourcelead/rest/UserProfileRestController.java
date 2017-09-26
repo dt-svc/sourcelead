@@ -169,6 +169,7 @@ public class UserProfileRestController {
 
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		user.setDocFile(null);
+		user.setFileUrl(null);
 		user.setFileContentType(null);
 		userService.addUser(user);
 		SourceLeadSessionManager.setSessionAttribute(request, "user", user);

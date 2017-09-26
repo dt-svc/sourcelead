@@ -773,7 +773,7 @@ function getProjectDetails(){
         	   }
         	   
         	   
-        	   if(json.projectDocumentsList.length > 0){
+        	   if(json.projectDocumentsList != null && json.projectDocumentsList.length > 0){
         		   var result = '';
         		   for(var i=0; i<json.projectDocumentsList.length; i++){
         			   var opt = json.projectDocumentsList[i];

@@ -1430,7 +1430,7 @@ function preparedContractListWTS(data){
 	         
 	         opt = opt + '<td>';//Waiting to be signed
 	         '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CONTRACT\')">';
-	         if(output.typeOfContract == ""){
+	         if(output.typeOfContract == "New"){
 	        	 opt = opt + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><i class="fa fa-eye" onclick="previewNewContractPDF(\''+output.contractUUID+'\', \''+output.contractTitle+'\')"></i></a></div>'; 
 	         }else{
 	        	 opt = opt + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+output.fileURL+'\', \''+output.fileName+'\', \''+output.fileType+'\')"></i></a></div>';
@@ -1861,7 +1861,7 @@ function preparedContractListWTV(data){
  	         }
 	         '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CONTRACT\')">';
 	         if(output.typeOfContract == "New"){
-	        	 opt = opt + '<a href="#" title="Preview"><i class="fa fa-eye" onclick="previewNewContractPDF(\''+output.ContractUUID+'\', \''+output.contractTitle+'\')"></i></a>';
+	        	 opt = opt + '<a href="#" title="Preview"><i class="fa fa-eye" onclick="previewNewContractPDF(\''+output.contractUUID+'\', \''+output.contractTitle+'\')"></i></a>';
 	         }else{
      		 opt = opt + '<a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+output.fileURL+'\', \''+output.fileName+'\', \''+output.fileType+'\')"></i></a>';
 	         }
@@ -3263,14 +3263,11 @@ function applicantsContractsPaginationREJ(SourceLeadWeb_loginOrg){
 
 <script type="text/javascript">
 function previewContractPDF(fileURL, fileName, fileType) {
-	var sourceleadUrl ='${sourceleadUrl}';
-	alert(fileURL + "     "+fileName+ "     "+fileType)
-	viewFile(sourceleadUrl, fileURL, fileName, fileType);
+	viewFile(fileURL, fileName, fileType);
 // 	window.open(sourceleadUrl+'/viewContractPdf/'+uuid+'/'+templateName+'','_newtab');
 }
 
 function previewNewContractPDF(uuid, templateName) {
-	var sourceleadUrl ='${sourceleadUrl}';
  	window.open(sourceleadUrl+'/viewContractPdf/'+uuid+'/'+templateName+'','_newtab');
 }
 </script>

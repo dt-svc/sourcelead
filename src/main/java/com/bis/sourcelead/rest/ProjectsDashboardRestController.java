@@ -244,7 +244,7 @@ public class ProjectsDashboardRestController {
 		     }
 		     
 		     Set<ProjectBudget> projectBudgetList = projects.getProjectBudget();
-		     if(projectBudgetList != null) {
+		     if(projectBudgetList != null && projectBudgetList.size() > 0) {
 		    	 Set<ProjectBudget> ProjectBudgetList =  new LinkedHashSet<ProjectBudget>();
 		    	 for(ProjectBudget pl:projectBudgetList ) {
 			    	 pl.setEstimatedBudgetCurrency(pl.getEstimatedBudgetCurrency());
@@ -253,6 +253,7 @@ public class ProjectsDashboardRestController {
 			    	 if(pl.getApproverUserId() != null) {
 			    		 pl.setUserId(pl.getApproverUserId().getId());
 			    	 }
+
 			    	 ProjectBudgetList.add(pl);
 			     }
 		    	 projects.setProjectBudgetList(ProjectBudgetList);

@@ -1255,6 +1255,30 @@
          replicatePuts=true, replicateUpdates=true, replicateUpdatesViaCopy=false, replicateRemovals=true" />
     </cache>
     
+    <cache name="vendorOnboardingTemplate"  maxEntriesLocalHeap="5000" eternal="false" timeToLiveSeconds="3600" timeToIdleSeconds="3600" memoryStoreEvictionPolicy="LRU">
+        <persistence strategy="localTempSwap" />
+        <cacheEventListenerFactory class="net.sf.ehcache.distribution.jgroups.JGroupsCacheReplicatorFactory" properties="replicateAsynchronously=true,
+         replicatePuts=true, replicateUpdates=true, replicateUpdatesViaCopy=false, replicateRemovals=true" />
+    </cache>
+    
+    <cache name="vendorOnboarding"  maxEntriesLocalHeap="5000" eternal="false" timeToLiveSeconds="3600" timeToIdleSeconds="3600" memoryStoreEvictionPolicy="LRU">
+        <persistence strategy="localTempSwap" />
+        <cacheEventListenerFactory class="net.sf.ehcache.distribution.jgroups.JGroupsCacheReplicatorFactory" properties="replicateAsynchronously=true,
+         replicatePuts=true, replicateUpdates=true, replicateUpdatesViaCopy=false, replicateRemovals=true" />
+    </cache>
+    
+    <cache name="vendorOnboardingTemplateDocuments"  maxEntriesLocalHeap="5000" eternal="false" timeToLiveSeconds="3600" timeToIdleSeconds="3600" memoryStoreEvictionPolicy="LRU">
+        <persistence strategy="localTempSwap" />
+        <cacheEventListenerFactory class="net.sf.ehcache.distribution.jgroups.JGroupsCacheReplicatorFactory" properties="replicateAsynchronously=true,
+         replicatePuts=true, replicateUpdates=true, replicateUpdatesViaCopy=false, replicateRemovals=true" />
+    </cache>
+    
+    <cache name="vendorOnboardTasks"  maxEntriesLocalHeap="5000" eternal="false" timeToLiveSeconds="3600" timeToIdleSeconds="3600" memoryStoreEvictionPolicy="LRU">
+        <persistence strategy="localTempSwap" />
+        <cacheEventListenerFactory class="net.sf.ehcache.distribution.jgroups.JGroupsCacheReplicatorFactory" properties="replicateAsynchronously=true,
+         replicatePuts=true, replicateUpdates=true, replicateUpdatesViaCopy=false, replicateRemovals=true" />
+    </cache>
+    
      <cache name="invoiceData"  maxEntriesLocalHeap="5000" eternal="false" timeToLiveSeconds="3600" timeToIdleSeconds="3600" memoryStoreEvictionPolicy="LRU">
         <persistence strategy="localTempSwap" />
         <cacheEventListenerFactory class="net.sf.ehcache.distribution.jgroups.JGroupsCacheReplicatorFactory" properties="replicateAsynchronously=true,

@@ -87,7 +87,7 @@ min-height: 50px;
 <script>
  function getAllJobAlertsList(){
 	 var jobAlertUUID = '${jobAlertUUID}'; 
-	
+	 var sourceleadUrl = '${sourceleadUrl}';
 	 $.ajax({
 	    	type: "POST",
 	    	url: sourceleadUrl+"/getAllJobsAlertList?${_csrf.parameterName}=${_csrf.token}&jobAlertUUID="+jobAlertUUID,

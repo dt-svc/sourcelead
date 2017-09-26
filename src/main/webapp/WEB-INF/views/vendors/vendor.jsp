@@ -7,11 +7,90 @@ window.onload = function () {
 	initLocationAuto('clientLocation','clientCountry','clientState','clientCity','clientZipCode','clientLatitude','clientLongitude','invite');
  };
 </script>
-<script>
+<!-- <script>
 	$(document).ready(function() {
 		document.getElementById("client_form").reset();
 	});
+</script> -->
+
+<style>
+.project_tabs {
+    border:none !important;
+    }
+    
+.disabledLink
+{
+	color: #333;
+	text-decoration : none;
+}
+</style>
+
+<script>
+	$(document).ready(function() {
+		document.getElementById("client_form").reset();
+		
+		var savedProjectId = '${savedProjectId}';
+		var projectUUID = '${projectUUID}';
+		if(savedProjectId != null && savedProjectId != '' && savedProjectId != 'undefined'){
+			$("#projectId").val(savedProjectId);
+			$("#projectUUID").val(projectUUID);
+			
+			getVendorDetails();
+			
+			var isProjectDetailsFilled = '${isProjectDetailsFilled}';
+			if(isProjectDetailsFilled == 'N'){
+				var vendorDocuments = document.getElementById("vendorDocuments");
+				if(vendorDocuments){
+					vendorDocuments.href = "#";
+					vendorDocuments.className = "disabledLink";
+				}
+			}
+			var isProjectMembersFilled = '${isProjectMembersFilled}';
+			if(isProjectMembersFilled == 'N'){
+				var vendorTasks = document.getElementById("vendorTasks");
+				if(vendorTasks){
+					vendorTasks.href = "#";
+					vendorTasks.className = "disabledLink";
+				}
+			}
+			
+		}else{
+			var vendorDocuments = document.getElementById("vendorDocuments");
+			if(vendorDocuments){
+				vendorDocuments.href = "#";
+				vendorDocuments.className = "disabledLink";
+			}
+			
+			var vendorTasks = document.getElementById("vendorTasks");
+			if(vendorTasks){
+				vendorTasks.href = "#";
+				vendorTasks.className = "disabledLink";
+			}
+			
+		}
+		
+		$("#tab-a").show()
+	    $(".newPrTabsMenu a").click(function(event) {
+	        event.preventDefault();
+	        $(this).parent().addClass("current");
+	        $(this).parent().siblings().removeClass("current");
+	        var tab = $(this).attr("href");
+	        $(".newPrTabs_inn").not(tab).css("display", "none");
+	        $(tab).fadeIn();
+	    });
+	});
 </script>
+
+
+<script>
+function getVendorDetails(){
+	var vendorOrgLocationId = document.getElementById("vendorOrgLocationId").value;
+	if(vendorOrgLocationId){
+		
+	}
+}
+</script>
+
 
 <style>
 .clsDatePicker {
@@ -38,14 +117,27 @@ window.onload = function () {
 			Vendor
 		</div>
 	</section>
-
-	<div class="content-area content-new clearfix">
-		<div id="loading"></div>
-		<form:form id="client_form" name="client_form" method="post">
+	
+	<div id="loading"></div>
+	<div class="newPrDetails newPrDetailsPMO"> 
+      		<div class="newPrTabs">
+   			  <ul class="newPrTabsMenu">
+				<li class="current" onclick="getVendorDetails();"><a href="#tab-a" data-toggle="tab">Vendor Details</a></li>
+				<li><a href="#tab-b" data-toggle="tab" id="vendorDocuments" onclick="getOnboardDocuments();">Documents</a></li>
+				<li><a href="#tab-c" data-toggle="tab" id="vendorTasks" onclick="getAdditionalDetails();">Tasks</a></li>
+				<div class="clearfix mb"></div>
+			  </ul>
+			  <div class="clearfix"></div>
+			  
+		 <div class="project_tabs">
+		 <div class="clearfix form-area form-horizontal toggle-div remove-div  newPrTabs_inn mt" id="tab-a">
+			 <form:form id="client_form" name="client_form" method="post">
 			<div class="clearfix form-horizontal inner-content">
 				<div class="row">
 					<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">
-						<h3>Vendor Details</h3>
+					
+					 <input type="hidden" name="vendorOrgLocationId" id="vendorOrgLocationId" value=""/>
+					 
 						<div class="form-group">
 							<label class="col-md-3" for="Project Id">Vendor Name<span
 								class="text-danger">&nbsp;*</span></label>
@@ -344,7 +436,7 @@ window.onload = function () {
 			<div class="form-footer clearfix">
 				<div class="col-lg-12">
 					<div class="pull-right">
-						<input type="button" value="Save" id="save_client"
+						<input type="button" value="Save & Continue" id="save_client"
 							onclick="saveVendor(); flushSaveClient()" class="btn btn-primary">
 						<input type="button" value="Cancel"
 							onClick="javascript:window.location.href = '<c:url value='/vendorsList'/>'"
@@ -353,7 +445,14 @@ window.onload = function () {
 				</div>
 			</div>
 		</form:form>
+			  </div>
+	   <jsp:include page="vendorOnboardDocuments.jsp" />
+	   <jsp:include page="vendorOnboardTasks.jsp" />
+		  </div>
+		</div>
 	</div>
+
+	
 
 
 </section>
@@ -591,10 +690,15 @@ function getRolesList(){
 	function saveVendor() {
 		if ($('#client_form').validate(false, validationSettings)) {
 			var orgLocationId = document.getElementById("orgLocationId").value;
-		  	var formData = getFormData("client_form");
+		  	var formData = $($('#client_form')[0]).serialize();
 			$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-					$.post(sourceleadUrl+"/saveClient?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&responderType=Vendor", formData, function(data) {
-						location.replace(sourceleadUrl+ "/vendorsList");
+					$.post(sourceleadUrl+"/saveVendor?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&responderType=Vendor", formData, function(data) {
+						$("#vendorOrgLocationId").val(data.id); 
+						 $("#loading").removeAttr("style");
+						 var vendorDocuments = document.getElementById("vendorDocuments");
+						 $("vendorDocuments").removeClass("disabledLink");
+						 vendorDocuments.href="#tab-b"; 
+						 vendorDocuments.click();
 					});
 			return true;
 		} else {
@@ -702,13 +806,22 @@ function validateClientName(){
 			url : sourceleadUrl + "/ws/isClientNameValid?"+tokenParamName+"="+tokenValue+"&clientName="+vendor+"&responderType=Vendor",
 			success : function(data) {
 				var result = data;
-				if (result == true) {
+				if (result == 'true') {
 					//duplicate client
 					$("#save_client").removeAttr("disabled");
 			        $("#save_client").attr("disabled", "disabled");
 					$("input#orgName").after( "<p class='jquery_form_error_message'>" + clientName + " is already existed as vendor</span>");
 					document.getElementById("orgName").setAttribute( 'record-exist', 'yes');
 					document.getElementById("orgName").setAttribute( 'record-exist-errorMsg', clientName +"  already existed as vendor");
+					$('input#orgName').removeAttr( "record-exist record-exist-errorMsg");
+					
+				}else if(result == 'sameorg') {
+					//duplicate client
+					$("#save_client").removeAttr("disabled");
+			        $("#save_client").attr("disabled", "disabled");
+					$("input#orgName").after( "<p class='jquery_form_error_message'>" + clientName + " is already existed as sameorg</span>");
+					document.getElementById("orgName").setAttribute( 'record-exist', 'yes');
+					document.getElementById("orgName").setAttribute( 'record-exist-errorMsg', clientName +"  already existed as sameorg");
 					$('input#orgName').removeAttr( "record-exist record-exist-errorMsg");
 					
 				}else {
