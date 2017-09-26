@@ -43,9 +43,19 @@ public class LeaveTypeServiceImpl implements LeaveTypeService {
 	@Override
 	public LeaveType addLeaveType(LeaveTypeDTO leaveTypeDTO) throws Exception
 	{
-		LeaveType leaveType = new LeaveType();
 		OrgLocations orgLocation = orgLocationService.getOrgLocations(Long.parseLong(leaveTypeDTO.getOrgLocationId()));
 		User user = userService.getUserById(Long.parseLong(leaveTypeDTO.getLoginUserId()));
+		LeaveType leaveType = null;
+		if(StringUtils.isNotBlank(leaveTypeDTO.getLeaveTypeId())){
+			leaveType = leaveTypeDao.getLeaveTypeById(leaveTypeDTO.getLeaveTypeId());
+			leaveType.setUpdatedBy(user.getUserCode());
+			leaveType.setUpdatedDate(new Date());
+		}else{
+			leaveType = new LeaveType();
+			leaveType.setCreatedBy(user.getUserCode());
+			leaveType.setCreatedDate(new Date());
+		}
+		
 		leaveType.setOrgLocations(orgLocation);
 		if (StringUtils.isNotBlank(leaveTypeDTO.getName())) {
 			leaveType.setName(leaveTypeDTO.getName());
@@ -85,10 +95,6 @@ public class LeaveTypeServiceImpl implements LeaveTypeService {
 		if (StringUtils.isNotBlank(leaveTypeDTO.getLeavePolicyDescription()))
 			leaveType.setPolicyDescription(leaveTypeDTO.getLeavePolicyDescription());
 		leaveType.setStatus(Constants.RECORD_ACTIVE.toString());
-		leaveType.setCreatedBy(user.getUserCode());
-		leaveType.setCreatedDate(new Date());
-		leaveType.setUpdatedBy(user.getUserCode());
-		leaveType.setUpdatedDate(new Date());
 		leaveType = leaveTypeDao.addLeaveType(leaveType);
 		return leaveType;
 	}
@@ -123,8 +129,26 @@ public class LeaveTypeServiceImpl implements LeaveTypeService {
 	}
 
 	@Override
-	public LeaveType getLeaveTypeById(String leaveTypeId)
+	public LeaveType getLeaveTypeById(String leaveTypeId) throws Exception
 	{
-		return leaveTypeDao.getLeaveTypeById(leaveTypeId);
+		LeaveType type = leaveTypeDao.getLeaveTypeById(leaveTypeId);
+		if(type.getCreatedBy() != null){
+			User createdUser = userService.getUserByUserCode(type.getCreatedBy());
+			StringBuilder sb = new StringBuilder();
+			if(StringUtils.isNotBlank(createdUser.getFirstName()) && StringUtils.isNotBlank(createdUser.getLastName()))
+				type.setCreatedUser(sb.append(createdUser.getFirstName()).append(" ").append(createdUser.getLastName()).toString());
+			else
+				type.setCreatedUser(createdUser.getFirstName());
+		}
+		
+		if(type.getUpdatedBy() != null){
+			User updatedUser = userService.getUserByUserCode(type.getUpdatedBy());
+			StringBuilder sb = new StringBuilder();
+			if(StringUtils.isNotBlank(updatedUser.getFirstName()) && StringUtils.isNotBlank(updatedUser.getLastName()))
+				type.setUpdatedUser(sb.append(updatedUser.getFirstName()).append(" ").append(updatedUser.getLastName()).toString());
+			else
+				type.setUpdatedUser(updatedUser.getFirstName());
+		}
+		return type;
 	}
 }

@@ -44,7 +44,7 @@ public class LeaveTypeDaoImpl implements LeaveTypeDao {
 		Session session = this.sessionFactory.getCurrentSession();
 		try {
 			if (leaveType != null) {
-				session.save(leaveType);
+				session.saveOrUpdate(leaveType);
 			}
 			logger.debug("LeaveType Added Successfully");
 		} catch (ConstraintViolationException exception) {

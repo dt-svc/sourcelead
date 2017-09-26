@@ -187,7 +187,7 @@ window.onload = function () {
               <label class="col-md-3">Payment Term</label>
               <div class="col-md-9">
                   <select class="form-control selectpicker" id="PaymentTermId" name="PaymentTerm">
-                  <option selected="selected" disabled value="">Select Payment Term</option>
+                  <option value="">Select Payment Term</option>
                     <option value="10 days">10 days</option>
                     <option value="15 days">15 days</option>
                     <option value="30 days">30 days</option>
@@ -632,13 +632,22 @@ function validateClientName(){
 			url : sourceleadUrl + "/ws/isClientNameValid?"+tokenParamName+"="+tokenValue+"&clientName="+client+"&responderType=Client",
 			success : function(data) {
 				var result = data;
-				if (result == true) {
+				if (result == 'true') {
 					//duplicate client
 					$("#save_client").removeAttr("disabled");
 			        $("#save_client").attr("disabled", "disabled");
 					$("input#orgName").after( "<p class='jquery_form_error_message'>" + clientName + " is already existed as client</span>");
 					document.getElementById("orgName").setAttribute( 'record-exist', 'yes');
 					document.getElementById("orgName").setAttribute( 'record-exist-errorMsg', clientName +"  already existed as client");
+					$('input#orgName').removeAttr( "record-exist record-exist-errorMsg");
+					
+				}else if(result == 'sameorg') {
+					//duplicate client
+					$("#save_client").removeAttr("disabled");
+			        $("#save_client").attr("disabled", "disabled");
+					$("input#orgName").after( "<p class='jquery_form_error_message'>" + clientName + " is already existed as sameorg</span>");
+					document.getElementById("orgName").setAttribute( 'record-exist', 'yes');
+					document.getElementById("orgName").setAttribute( 'record-exist-errorMsg', clientName +"  already existed as sameorg");
 					$('input#orgName').removeAttr( "record-exist record-exist-errorMsg");
 					
 				}else {

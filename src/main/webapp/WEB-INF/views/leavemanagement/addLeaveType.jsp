@@ -36,6 +36,7 @@
             <div class="form-group">
               <label class="col-md-3">Name<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-9">
+              	<input type="hidden" id="leaveTypeId" name="leaveTypeId" value="${leaveType.id}"/>
                 <input type="text" class="form-control" id="leaveTypeName" name="name" value="${leaveType.name}" field-name="Name" data-validation="required validate_Space validate_length length2-250">
               </div>
             </div>
@@ -132,25 +133,36 @@
               
               <div class="clearfix" id="noUsersDiv" style="display: none;">
                   <div class="clearfix"></div>
-			<div class="form-group">
+			<div class="form-group" id="departmentDiv">
               <label class="col-md-3">Select Department</label>
               <div class="col-md-9 dropdown-select">
-                  <select class="chosen-select form-control" name="department">
+                  <select class="chosen-select form-control" name="department" id="department" field-name="Department" data-validation-optional="true">
                   <option value="">Select Department</option>
                       <c:forEach var="report" items="${departmentList}">
-                    	<option value="${report.id}">${report.departmentName}</option>
+                    	<option value="${report.id}" ${report.id  == departmentId ? 'selected' : ''}>${report.departmentName}</option>
                       </c:forEach> 
                   </select>
               </div>
             </div>
-                  <div class="form-group">
+                  <div class="form-group" id="rolesDiv">
               <label class="col-md-3">Select Roles</label>
               <div class="col-md-9 dropdown-select">
-                  <select multiple class="chosen-select form-control" name="roles">
-                  <option value="">Select Role</option>
-                      <c:forEach var="report" items="${rolesList}">
+                  <select multiple data-placeholder="Select Roles" class="chosen-select form-control" id="roles" name="roles" field-name="Roles" data-validation-optional="true">
+                  		<c:forEach var="role" items="${rolesList}">
+	                       <c:set var = "NUM" value = "${0}"/>
+	                       <c:forEach var="existedRoles" items="${existedRoles}">
+							     <c:if test="${existedRoles.id eq role.id}">
+							    	<c:set var = "NUM" value = "${1}"/>
+							        <option  selected value="${role.id}">${existedRoles.displayName}</option>
+								 </c:if> 
+							</c:forEach>
+							<c:if test="${NUM == 0}">
+								<option value="${role.id}">${role.displayName}</option>
+							</c:if>
+						</c:forEach>
+                      <%-- <c:forEach var="report" items="${rolesList}">
                     	<option value="${report.id}">${report.displayName}</option>
-                      </c:forEach> 
+                      </c:forEach>  --%>
                   </select>
               </div>
             </div>
@@ -260,7 +272,7 @@
         <div class="col-lg-12">
           <div class="pull-right">
             <input type="button" value="Save" onclick="submitLeaveType();" class="btn btn-primary">
-            <input type="button" value="Cancel" class="btn btn-default ml10">
+            <input type="button" value="Cancel" onclick="redirect();" class="btn btn-default ml10">
           </div>
         </div>
       </div>
@@ -288,6 +300,13 @@ function submitLeaveType(){
 		} 
 }
 </script>
+
+<script>
+function redirect(){
+	window.location.href = sourceleadUrl + "/viewLeaveTypes";
+}
+</script>
+
 <script src="resources/js/summernote.js"></script>
 <script>
 	$('#txtEditor').summernote({
@@ -310,11 +329,6 @@ function submitLeaveType(){
 });
 </script>
 <script>
-$(function () {
-    $('#datetimepicker3').datetimepicker({
-        format: 'LT'
-    });
-});
 function leavePolicy(){
    var ckbox = $('#leavePolicy');
    if (ckbox.is(':checked')) {
@@ -326,12 +340,22 @@ function leavePolicy(){
 
 //Select All Users
 function yesUsers(){
+	$('#departmentDiv').find('p.jquery_form_error_message').remove();
+	$('#rolesDiv').find('p.jquery_form_error_message').remove();
+	$('#department').removeAttr('data-validation');
+	$('#department').attr('data-validation-optional',"true");
+	$('#roles').removeAttr('data-validation');
+	$('#roles').attr('data-validation-optional',"true");
 	$("#noUsersDiv").hide();
 }
 
 function noUsers(){
+	$('#department').removeAttr('data-validation-optional');
+	$('#department').attr('data-validation',"required");
+	$('#roles').removeAttr('data-validation-optional');
+	$('#roles').attr('data-validation',"required");
 	$("#noUsersDiv").show();
 }
-		</script>
+</script>
 
 <jsp:include page="../masterFooter.jsp" />

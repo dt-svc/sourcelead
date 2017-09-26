@@ -1570,7 +1570,7 @@ function listChange(sel){
 // 		document.getElementById("filter1ApprovePop").style.display="block";
 		 document.getElementById("filter3ApprovePop").style.display="block";
 		 document.getElementById("filter4ApprovePop").style.display="block";
-		 document.getElementById("advanceSearchDiv").style.display="none";
+		 document.getElementById("advanceSearchDiv").style.display="block";
 		/*  getVendorContactLists(); */
 // 		 getVendorContactListsELK();
 		$("#dataTableSearch").val("");
