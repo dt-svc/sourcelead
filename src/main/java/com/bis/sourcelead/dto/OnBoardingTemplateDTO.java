@@ -2,7 +2,6 @@ package com.bis.sourcelead.dto;
 
 import java.io.Serializable;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author Laxman
@@ -26,24 +25,18 @@ public class OnBoardingTemplateDTO implements Serializable {
 	 private String supportingAttcahmentMaxRowNumber;
 	 
 	 private String staticPath;
-		
-//    private List<Map<String, String>> fileInfo;
 	
-	private List<FileInfo> contractsFileInfo;
+	 private List<FileInfo> contractsFileInfo;
 	
-	private List<FileInfo> formsFileInfo;
+	 private List<FileInfo> formsFileInfo;
 	
-	private List<FileInfo> polaciesFileInfo;
+	 private List<FileInfo> polaciesFileInfo;
 	
-	private List<FileInfo> supportingFileInfo;
-	
-	/*private List<String> formFileName;
-
-	private List<String> contractFileName;
-	
-	private List<String> policiesFileName;
-
-	private List<String> supportingFileName;*/
+	 private List<FileInfo> supportingFileInfo;
+	 
+	 private List<FileInfo> vendorDocumentsFileInfo;
+	 
+	 private List<FileInfo> requestDocumentList;
 	 
 	public String getTemplateId() {
 		return templateId;
@@ -141,25 +134,22 @@ public class OnBoardingTemplateDTO implements Serializable {
 		this.supportingFileInfo = supportingFileInfo;
 	}
 
-	/*public List<Map<String, String>> getFileInfo() {
-		return fileInfo;
+	public List<FileInfo> getVendorDocumentsFileInfo() {
+		return vendorDocumentsFileInfo;
 	}
 
-	public List<FileInfo> getUploadedFileInfo() {
-		return uploadedFileInfo;
+	public void setVendorDocumentsFileInfo(List<FileInfo> vendorDocumentsFileInfo) {
+		this.vendorDocumentsFileInfo = vendorDocumentsFileInfo;
 	}
 
-	public void setStaticPath(String staticPath) {
-		this.staticPath = staticPath;
+	public List<FileInfo> getRequestDocumentList() {
+		return requestDocumentList;
 	}
 
-	public void setFileInfo(List<Map<String, String>> fileInfo) {
-		this.fileInfo = fileInfo;
+	public void setRequestDocumentList(List<FileInfo> requestDocumentList) {
+		this.requestDocumentList = requestDocumentList;
 	}
 
-	public void setUploadedFileInfo(List<FileInfo> uploadedFileInfo) {
-		this.uploadedFileInfo = uploadedFileInfo;
-	}*/
 	
 
 	
