@@ -82,6 +82,7 @@ import com.bis.sourcelead.entity.InvoiceTax;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
+import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
@@ -295,8 +296,9 @@ public class InvoiceServiceImpl implements InvoiceService{
 			Date invoiceDate = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(),invoiceDTO.getInvoiceDate());
 			invoice.setInvoiceDate(invoiceDate);
 		}
+		Date dueDate = null;
 		if(StringUtils.isNotBlank(invoiceDTO.getDueDate())){
-			Date dueDate = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(),invoiceDTO.getDueDate());
+			dueDate = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(),invoiceDTO.getDueDate());
 			invoice.setDueDate(dueDate);
 		}
 		
@@ -329,7 +331,11 @@ public class InvoiceServiceImpl implements InvoiceService{
 			invoice.setAfterDiscountValue(invoiceDTO.getAfterDiscountTotal());
 		}
 		
-		invoice.setPaymentStatus(Constants.INVOICE_STATUS_UNPAID);
+		if(commonUtil.currentDate().after(dueDate)){
+			invoice.setPaymentStatus(Constants.OVER_DUE);
+		}else {
+			invoice.setPaymentStatus(Constants.INVOICE_STATUS_UNPAID);
+		}
 		if(StringUtils.isNotBlank(invoiceDTO.getProjectId())){
 			Projects projects = projectsService.getProjectById(Long.parseLong(invoiceDTO.getProjectId()));
 			invoice.setProjectID(projects);
@@ -1365,13 +1371,31 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 		User contactUser = null;
 		for (OrgRelations client : clientVendorList) {
 			OrgRelations orgRelation = orgRelationsService.getOrRelationsById(client.getId());
+			
 			if (orgRelation.getResponderLocationId().getId().longValue() == orgLocation.getId().longValue()) {
+				List<OrgSpoc> orgSpocList = orgSpocService.getOrgSpocByOrgRelationId(orgRelation.getId());
 				vendorOrgLocation = orgRelation.getLocationId();
+				if(orgSpocList !=null && !orgSpocList.isEmpty()) {
+					if(Constants.VENDOR.equalsIgnoreCase(orgRelation.getResponderType())) {
+						contactUser = orgSpocList.get(0).getVendorUser();
+					}else{
+						contactUser = orgSpocList.get(0).getClientUser();
+					}
+					
+				}
 //				populateClientDetails(vendorOrgLocation,invoice);
 			}
 			if (orgRelation.getLocationId().getId().longValue() == orgLocation.getId().longValue()) {
+				List<OrgSpoc> orgSpocList = orgSpocService.getOrgSpocByOrgRelationId(orgRelation.getId());
 				vendorOrgLocation = orgRelation.getResponderLocationId();
-//				populateClientDetails(vendorOrgLocation,invoice);
+			 if(orgSpocList !=null && !orgSpocList.isEmpty()) {
+				if(Constants.VENDOR.equalsIgnoreCase(orgRelation.getResponderType())) {
+					contactUser = orgSpocList.get(0).getVendorUser();
+				}else{
+					contactUser = orgSpocList.get(0).getClientUser();
+				}
+				
+			}
 			}
 			List<Projects> projectsList = null;
 			if(Constants.RECEIVABLE.equalsIgnoreCase(invoiceType)){
@@ -1402,6 +1426,7 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
   	  						invoice.setInvoiceLineItems(invoiceLineItemSet);
   	  						invoice.setConvertCurrencyCode(vendorCurrencyCode);
   	  						invoice.setCurrencyCode(loginOrgCurrencyCode);
+  	  						invoice.setContactUser(contactUser);
   	  						invoice.setCreatedBy(user.getUserCode());
   	  						invoice.setStatus(Constants.RECORD_ACTIVE.toString());
   	  						invoice.setInvoiceStatus(Constants.DRAFT);

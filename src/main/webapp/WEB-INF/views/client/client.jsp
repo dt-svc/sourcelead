@@ -187,7 +187,7 @@ window.onload = function () {
               <label class="col-md-3">Payment Term</label>
               <div class="col-md-9">
                   <select class="form-control selectpicker" id="PaymentTermId" name="PaymentTerm">
-                  <option selected="selected" disabled value="">Select Payment Term</option>
+                  <option value="">Select Payment Term</option>
                     <option value="10 days">10 days</option>
                     <option value="15 days">15 days</option>
                     <option value="30 days">30 days</option>
