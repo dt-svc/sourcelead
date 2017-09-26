@@ -3,6 +3,7 @@ package com.bis.sourcelead.web;
 import java.io.File;
 import java.io.FileInputStream;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
@@ -92,7 +93,7 @@ public class FileController {
 			if (!"application/pdf".equalsIgnoreCase(contentType)) {
 				pdfBytes = pdfConversionUtil.convertDocToPdf(pdfBytes);
 			}
-			response.setHeader("Content-disposition", "inline; filename=contractPdf.pdf");
+			response.setHeader("Content-disposition", "inline; filename=document-"+(new Date().getTime())+".pdf");
 			response.setContentType("application/pdf");
 			ServletOutputStream sos = response.getOutputStream();
 			if (null != pdfBytes) {

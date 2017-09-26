@@ -126,4 +126,13 @@ color:blue;
   .project_inn_mask.projectMask-zindex {
     z-index: 9999;
    }
+   .reportsCount.reportsCountNew.reportsCountCustom ul li{
+   width: 12.5%;
+   }
+.reportsCount.reportsCountNew ul li:nth-child(even){
+	background-color: #f4f4f4;
+}
+.m-t {
+	margin-top: 15px !important;
+}
 </style>

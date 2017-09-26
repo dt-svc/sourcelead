@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-
+<jsp:include page="../masterHeader.jsp" />
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
@@ -160,7 +160,6 @@ width: auto;
 <script type="text/javascript">
 	function saveRejectedReason() {
 		if ($('#reject_form').validate(false, validationSettings)){
-			
 			var expenseId = '${expenseId}';
 			var reOpenedUserId = '${reOpenedUserId}';
 			var type = 'reject';
@@ -168,10 +167,12 @@ width: auto;
 			var orgLocation = '${orgLocId}';
 			var frm = $('#reject_form').serializeFormJSON();
 			var con = JSON.stringify(frm);
+			var rejectReason = $('#rejectId').val();
 			con = con.replace(/[{}]/g, "");
+			
 			$.ajax({
 						type : "POST",
-						url : sourceleadUrl+"/acceptOrRejectReopenExpense?"+tokenParamName+"="+tokenValue+"&type="+type+"&expenseId="+expenseId+"&reOpenedUserId="+reOpenedUserId+"&reason="+reason+"&orgLocId="+orgLocation,
+						url : sourceleadUrl+"/acceptOrRejectReopenExpense?"+tokenParamName+"="+tokenValue+"&type="+type+"&expenseId="+expenseId+"&reOpenedUserId="+reOpenedUserId+"&reason="+reason+"&orgLocId="+orgLocation+"&rejectReason="+rejectReason,
 						success : function(data) {
 							if("success"){
 								$('#rejectIdDiv').empty();

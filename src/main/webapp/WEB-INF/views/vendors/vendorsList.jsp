@@ -1466,11 +1466,13 @@ function saveReason1(spocId, orgRelationID){
 	var reason = document.getElementById("reasonForSpoc").value;
 	 reason = reason.replace(/\s/g, "")
 	 var reason1 = document.getElementById("reasonForSpoc").value;
+	 var userId = '${SourceLeadWeb_user.id}';
+	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	if(reason.match(/^[^\s-](.*)*$/) != null){
 		$("#reasonForVendorSpocDiv").empty();
 		$.ajax({
 		   	type: "POST",
-		    url: sourceleadUrl+"/terminateSpoc?"+tokenParamName+"="+tokenValue+"&spocId="+spocId+"&reason="+reason,	    	   
+		    url: sourceleadUrl+"/terminateSpoc?"+tokenParamName+"="+tokenValue+"&spocId="+spocId+"&reason="+reason+"&userId="+userId+"&orgLocationId="+orgLocationId+"&responderType=Vendor",	    	   
 		    success: function(data) {
 		    	getVendorContactList();
 		    	 $("#venselector").removeAttr("style");
