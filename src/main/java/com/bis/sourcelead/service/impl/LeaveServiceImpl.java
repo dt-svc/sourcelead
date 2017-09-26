@@ -11,6 +11,7 @@ import org.omg.CORBA.OMGVMCID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.LeaveDao;
 import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.dto.LeaveDTO;
@@ -68,7 +69,7 @@ public class LeaveServiceImpl implements LeaveService{
 			leave.setFileUrl(fileinfo.getFileURL());
 			FileUploadUtil.moveFile(leaveDTO.getStaticPath(), fileinfo, "leaveDocuments");
 		}
-		leave.setStatus("1");
+		leave.setStatus(Constants.LEAVE_PENDING);
 		leave.setCreatedBy(user.getUserCode());
 		leave.setUpdatedBy(user.getUserCode());
 		leave.setCreatedDate(new Date());
@@ -95,6 +96,13 @@ public class LeaveServiceImpl implements LeaveService{
 			}
 		});
 		return approverList;
+	}
+
+	@Override
+	public List<LeaveDTO> getEmployeeRequestedLeavesBylocationId(Long orgLocationId, String userId) throws Exception {
+		
+		List<LeaveApproveHierarchy> leaveApproveHierarchiesList = leaveDao.getEmployeeRequestedLeavesBylocationId(orgLocationId,userId);
+		return null;
 	}
 
 }
