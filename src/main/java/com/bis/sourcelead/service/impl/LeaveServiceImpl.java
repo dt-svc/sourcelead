@@ -46,9 +46,11 @@ public class LeaveServiceImpl implements LeaveService{
 		Leave leave = new Leave();
 		leave.setOrgLocations(orgLocations);
 		leave.setFromDate(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), leaveDTO.getFromDate()));
-		if(leaveDTO.getUser() !=null) {
+		if(StringUtils.isNotBlank(leaveDTO.getUser())) {
 			User usr = userService.getUserById(Long.parseLong(leaveDTO.getUser()));
 			leave.setUser(usr);
+		}else {
+			leave.setUser(user);
 		}
 		leave.setToDate(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), leaveDTO.getToDate()));
 		LeaveType leaveType =  leaveTypeService.getLeaveTypeById(leaveDTO.getLeaveType());

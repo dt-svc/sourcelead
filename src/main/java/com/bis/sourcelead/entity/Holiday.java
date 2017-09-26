@@ -54,6 +54,7 @@ private static final long serialVersionUID = 1L;
 	@Column(name = "HALF_DAY_AM_PM")
 	private String halfDayAmPm;
 	
+	
 	@Column(name = "DESCRIPTION", columnDefinition = "TEXT default NULL")
 	private String description;
 	

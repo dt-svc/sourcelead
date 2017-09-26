@@ -32,7 +32,7 @@
               <label class="col-md-3">Select Employee</label>
               <div class="col-md-9 dropdown-select">
                 <select class="form-control chosen-select" id="user" name="user">
-                   <option value="">--Select Employee--</option>
+                   <option value=" ">--Select Employee--</option>
                 	<c:forEach var="user" items="${usersLis}">
                 	<%-- ${dept.id  == departmentId ? 'selected' : ''} --%>
 	                     <option value="${user.id}">${user.firstName} ${user.lastName}</option>
@@ -347,7 +347,7 @@ function cancel(){
 </script>
 
  <!-- Modal -->
-  <div class="terms-conditions modal" style="display:none;">
+  <div class="terms-conditions modal" id="termsModel" style="display:none;">
     <div class="modal-dialog modal-lg">
       <!-- Modal content-->
       <div class="modal-content">
@@ -356,7 +356,7 @@ function cancel(){
           <h4 class="modal-title">Terms &amp; Conditions</h4>
         </div>
         <div class="modal-body">
-          <p>Some text in the modal.</p>
+          <p id="termsAndConditions"></p>
         </div>
       </div>
       
@@ -374,11 +374,10 @@ $(".close").click(function(){
 <script>
 function getLeavePolicy(){
 	var leaveTypeId = $("#leaveType").val();
-	alert("leaveTypeId"+leaveTypeId);
-	alert("sourceleadUrl"+sourceleadUrl);
 	$.get(sourceleadUrl+"/getLeavePolicy?"+tokenParamName+"="+tokenValue+"&leaveTypeId="+leaveTypeId, function(data) {
-		if(data == true){
-			// location.replace(sourceleadUrl+ "/getLeavePolicy");
+		if(data !=null){
+			$("#termsAndConditions").html(data);
+			document.getElementById("termsModel").style.display="block";
 		}
 	}); 
 }
