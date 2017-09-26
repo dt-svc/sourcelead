@@ -110,7 +110,7 @@ public class CandidateEducationServiceImpl implements CandidateEducationService 
 		}else{
 			candidateEducation.setSpecialization("");
 		}
-		if(candidateEducationDTO.getStartDate() != null){
+		if(candidateEducationDTO.getStartDate() != null && candidateEducationDTO.getStartDate() != ""){
 			try {
 				
 				//String pattern = "dd-MM-yyyy";
@@ -122,7 +122,7 @@ public class CandidateEducationServiceImpl implements CandidateEducationService 
 				e.printStackTrace();
 			}
 		}
-		if (candidateEducationDTO.getEndDate() != null) {
+		if (candidateEducationDTO.getEndDate() != null && candidateEducationDTO.getEndDate() != "") {
 			try {
 				//String pattern = "dd-MM-yyyy";
 				//DateFormat format = LoginSessionController.DATEFORMAT;

@@ -1,4 +1,3 @@
-
 #Leave Management
 
 #LEAVE_OPTION
@@ -234,3 +233,10 @@ CREATE TABLE `sourcelead`.`LEAVE_MANAGEMENT_HISTORY` (
   FOREIGN KEY(REJECTED_BY) REFERENCES `sourcelead`.`USER`(ID),
   FOREIGN KEY(CANCELLED_BY) REFERENCES `sourcelead`.`USER`(ID)
 ) ;
+
+SET SQL_SAFE_UPDATES = 0;
+
+UPDATE `sourcelead`.`EMAIL_SCENARIO` SET `BODY`='Dear {{MSAFinalizeEmail.receiverParty}},\n We are happy to inform you {{MSAFinalizeEmail.contractTitle}} Contract got finalised from {{MSAFinalizeEmail.duration}}' WHERE `UNIQUE_SCENARIO_NAME`='MSAFinalizeEmail';
+
+SET SQL_SAFE_UPDATES = 1;
+

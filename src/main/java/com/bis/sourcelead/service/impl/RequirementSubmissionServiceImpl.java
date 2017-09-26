@@ -238,8 +238,8 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 	}
 	
 	@Override
-	public List<RequirementSubmission> getAllSubmittedAndShortListAndInterviewededCandidates(OrgLocations orgLocations,Long requirementId, List<Long> existingApplicantsIds, String isClientOffer,User user,String loginUserRole) throws Exception {
-		return requirementSubmissionDao.getAllSubmittedAndShortListAndInterviewededCandidates(orgLocations,requirementId,existingApplicantsIds,isClientOffer,user,loginUserRole);
+	public List<RequirementSubmission> getAllSubmittedAndShortListAndInterviewededCandidates(OrgLocations orgLocations,Long requirementId, List<Long> existingApplicantsIds, String isClientOffer,User user,String loginUserRole,String isClientRequirement) throws Exception {
+		return requirementSubmissionDao.getAllSubmittedAndShortListAndInterviewededCandidates(orgLocations,requirementId,existingApplicantsIds,isClientOffer,user,loginUserRole,isClientRequirement);
 	}
 
 	
@@ -553,8 +553,14 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 				 default:
 					 reqCoolingOffPeriodDays = "0";
 			 }
-			 requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.SUBMISSION);
-			 
+			 if(jsonObj.has("needApplicantPermit") && !isNullOrEmpty(jsonObj.getString("needApplicantPermit"))){
+                 if(jsonObj.getString("needApplicantPermit").equals("Y")){
+                     requirementSubmission.setNeedApplicantPermit("Y");
+                     requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.REQUEST_SENT);
+                 }
+             }else{
+                 requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.SUBMISSION);
+             }
 			 requirementSubmissionHistoryForCoolingOff = requirementSubmissionHistoryService.isInCoolingOffPeriodByEmailAndLocationsId(requirementSubmission.getCandidate().getEmail(), requirement.getOrgLocationId(), reqCoolingOffPeriodDays, requirement.getId());
 			 if(requirementSubmissionHistoryForCoolingOff != null){
 				 if(requirementSubmissionHistoryForCoolingOff.getIsInCoolingOffPeriod()){
@@ -563,16 +569,6 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 					 requirementSubmission.setRejectedReason("Under cooling off period, completed by "+requirementSubmissionHistoryForCoolingOff.getCoolingOffPeriodEndDateStr()+".");
 					 requirementSubmission.setRejectedCategoryType("Other");
 					 requirementSubmission.setRejectedCategoryOther("Under cooling off period");
-				 }
-			 }else{
-				 if(jsonObj.has("needApplicantPermit") && !isNullOrEmpty(jsonObj.getString("needApplicantPermit"))){
-					 if(jsonObj.getString("needApplicantPermit").equals("Y")){
-						 requirementSubmission.setNeedApplicantPermit("Y");
-						 requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.REQUEST_SENT);
-					 } 
-				 }else{
-					 requirementSubmission.setNeedApplicantPermit("N");
-					 requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.SUBMISSION);
 				 }
 			 }
 			 /*END Code snippet*/
@@ -3418,8 +3414,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 	}
 
 	@Override
-	public RequirementSubmission saveRequirementSubmissionFromCrowdSourcing(JSONObject jsonObj, User user,
-			String jsonStringvalues,OrgLocations orgLocations,MultipartFile multiFile) throws Exception {
+	public RequirementSubmission saveRequirementSubmissionFromCrowdSourcing(JSONObject jsonObj, User user,String jsonStringvalues,OrgLocations orgLocations) throws Exception {
 		
 		 Requirement requirement = null;;
 		 RequirementSubmission requirementSubmission = new RequirementSubmission();
@@ -3587,7 +3582,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 				 
 			 }
 			 
-			 if(multiFile != null && multiFile.getOriginalFilename() != null && !multiFile.getOriginalFilename().isEmpty()){
+			 /*if(multiFile != null && multiFile.getOriginalFilename() != null && !multiFile.getOriginalFilename().isEmpty()){
 				 candidateResumes = new CandidateResumes();
 				 candidateResumes.setCandidateId(candidate);
 				 //candidateResumes.setDocFile(multiFile.getBytes());
@@ -3602,6 +3597,32 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 				 candidateResumes.setOrgLocationId(orgLocations);
 				 candidateResumesDao.storeCandidateResumes(candidateResumes);
 				 requirementSubmission.setCandidateResumes(candidateResumes);
+			 }*/
+			 
+			 
+			 if((jsonObj.has("fileInfo[0].fileName") && !isNullOrEmpty(jsonObj.getString("fileInfo[0].fileName"))) && (jsonObj.has("fileInfo[0].fileURL") && !isNullOrEmpty(jsonObj.getString("fileInfo[0].fileURL"))) && (jsonObj.has("fileInfo[0].contentType") && !isNullOrEmpty(jsonObj.getString("fileInfo[0].contentType")))){
+				 FileInfo fileInfo = new FileInfo();
+				 fileInfo.setFileName(jsonObj.get("fileInfo[0].fileName").toString());
+				 fileInfo.setFileURL(jsonObj.get("fileInfo[0].fileURL").toString());
+				 fileInfo.setContentType(jsonObj.get("fileInfo[0].contentType").toString());
+				 candidateResumes = new CandidateResumes();
+ 				 candidateResumes.setCandidateId(candidate);
+				 candidateResumes.setFileName(jsonObj.get("fileInfo[0].fileName").toString());
+				 candidateResumes.setTitle(jsonObj.get("fileInfo[0].fileName").toString());
+				 candidateResumes.setFileContentType(jsonObj.get("fileInfo[0].contentType").toString());
+				 candidateResumes.setFileURL(jsonObj.get("fileInfo[0].fileURL").toString());
+ 				 candidateResumes.setStatus(Constants.CANDIDATE_ACTIVE);
+ 				 candidateResumes.setResumeUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+ 				 candidateResumes.setCreatedDate(new Date());
+				 candidateResumes.setCreatedBy(user.getUserCode());
+				 candidateResumes.setUpdatedDate(new Date());
+				 candidateResumes.setOrgLocationId(orgLocations);
+				 FileUploadUtil.moveFile(staticPath, fileInfo, "addApplicants");
+				 candidateResumesDao.storeCandidateResumes(candidateResumes);
+//				 candidateActivityCommonUtil.storeCandidateResumesHistory(candidateResumes, user);
+				 requirementSubmission.setCandidateResumes(candidateResumes);
+				 //insert the currentResumeId in ELK				 
+//				 insertResumeIdInELK(candidate);
 			 }
 		 
 	 }
@@ -3637,6 +3658,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 				 default:
 					 reqCoolingOffPeriodDays = "0";
 			 }
+			 requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.SUBMISSION);
 			 requirementSubmissionHistoryForCoolingOff = requirementSubmissionHistoryService.isInCoolingOffPeriodByEmailAndLocationsId(requirementSubmission.getCandidate().getEmail(), requirement.getOrgLocationId(), reqCoolingOffPeriodDays, requirement.getId());
 			 if(requirementSubmissionHistoryForCoolingOff != null){
 				 if(requirementSubmissionHistoryForCoolingOff.getIsInCoolingOffPeriod()){
@@ -3650,7 +3672,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 				 requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.SUBMISSION);
 			 }
 			 /*END Code snippet*/
-		 
+			 
 		 requirementSubmission.setStatus(Constants.CANDIDATE_ACTIVE);
 		 requirementSubmission.setCreatedBy(user.getUserCode());
 		 requirementSubmission.setCreatedDate(new Date());
