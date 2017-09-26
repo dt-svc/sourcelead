@@ -927,18 +927,12 @@ function getContactsCount(){
 </script>
 
 
-
 <script type="text/javascript">
 $('body').on('submit', '#referToContacts', function(e){
 	  if ($(this).validate(false, validationSettings)){
       e.preventDefault();
+      var formData = $($('#referToContacts')[0]).serialize();
      
-      var frm = $('#referToContacts').serializeFormJSON();
-      var con = JSON.stringify(frm);
-      con = con.replace(/[{}]/g, "");
-      
-      //It will escape all the special characters
-      var jsonData = encodeURIComponent(con);
       
         $("#submit_contacts").attr("disabled", "disabled");
 		$( "#submit_contacts" ).addClass('button').val('Processing..');
@@ -946,7 +940,9 @@ $('body').on('submit', '#referToContacts', function(e){
 	 	
 	 	  $.ajax({
 		    	type: "POST",
-		    	 url: sourceleadUrl+"/submitUserContactsToRequirement?${_csrf.parameterName}=${_csrf.token}&json="+jsonData, 
+		    	data: formData,
+		    	processData :false,
+		    	 url: sourceleadUrl+"/submitUserContactsToRequirement?${_csrf.parameterName}=${_csrf.token}", 
 		        success: function(result) {
 		        	cancelReferPopUp();
 		        },
