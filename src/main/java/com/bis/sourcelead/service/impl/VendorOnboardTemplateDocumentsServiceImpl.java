@@ -47,11 +47,11 @@ public class VendorOnboardTemplateDocumentsServiceImpl implements VendorOnboardT
 		if(onBoardingTemplateDTO.getVendorDocumentsFileInfo() != null &&  onBoardingTemplateDTO.getVendorDocumentsFileInfo().size() > 0) {
 			for(FileInfo fileInfo : onBoardingTemplateDTO.getVendorDocumentsFileInfo()) {
 				VendorOnboardingTemplateDocuments documents = new VendorOnboardingTemplateDocuments();
-				if(fileInfo != null && fileInfo.getFileURL() != null) {
+			/*	if(fileInfo != null && fileInfo.getFileURL() != null) {
 					   documents.setFileName(fileInfo.getFileName());
 					   documents.setFileContentType(fileInfo.getContentType());
 					   documents.setFileUrl(fileInfo.getFileURL());
-				   }
+				   }*/
 				    documents.setVendorOnboardingTemplateId(template);
 				    documents.setDocumentType("Documents");
 				    documents.setDocumentName(fileInfo.getDocFileName());
@@ -67,7 +67,7 @@ public class VendorOnboardTemplateDocumentsServiceImpl implements VendorOnboardT
                     documents.setUpdatedDate(CommonUtil.currentDate());
                     documents.setUpdatedBy(loginUser);
                     saveVendorOnBoardingTemplateDocuments(documents);
-                    FileUploadUtil.moveFile(onBoardingTemplateDTO .getStaticPath(), fileInfo, "Vendor-Onboard-Template-Documents");
+                  //  FileUploadUtil.moveFile(onBoardingTemplateDTO .getStaticPath(), fileInfo, "Vendor-Onboard-Template-Documents");
 			}
 		}
 		

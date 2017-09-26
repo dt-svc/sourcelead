@@ -411,11 +411,11 @@ filter: alpha(opacity=0);  -moz-opacity: 0; -khtml-opacity: 0;
 	  			<input type="text"  placeholder='Document Name' class='form-control input-sm vendorinput' id='REPLACEROWIDcontractsdocFileName' name="vendorDocumentsFileInfo[REPLACEROWID].docFileName"  data-validation="required" field-name="Document" > 
 </div>
 
-<div id="divContractsAttachmentTd1" style="display: none; float: left;">
+<!-- <div id="divContractsAttachmentTd1" style="display: none; float: left;">
 			<div id='REPLACEROWIDContractsdocFileuploadFileGroup'>
 	  			<input type='file' id='REPLACEROWIDcontractsdocFile' class="timesheetAttachmentValidation" data-validation="validatedoc" data-validation-optional="true" field-name="Contracts Document" onchange='uploadContractDocument(REPLACEROWID)'> 
 	  		</div>
-</div>
+</div> -->
 
 
 
@@ -459,17 +459,17 @@ function addContractsAttachment(){
 			divDocTypeTdStr = divDocTypeTdStr.replace(/REPLACEROWID/g, (maxRowNum));
 			cell0.innerHTML = divDocTypeTdStr;
 			
-			var cell1 = row.insertCell(1);
+			/* var cell1 = row.insertCell(1);
 			var divAttachmentTdStr = document.getElementById("divContractsAttachmentTd1").innerHTML;
 			divAttachmentTdStr = divAttachmentTdStr.replace(/REPLACEROWID/g, (maxRowNum));
-			cell1.innerHTML = divAttachmentTdStr;
+			cell1.innerHTML = divAttachmentTdStr; */
 			
-			var cell2 = row.insertCell(2);
+			var cell2 = row.insertCell(1);
 			var divDocCheckTdStr = document.getElementById("divDocsTd3").innerHTML;
 			divDocCheckTdStr = divDocCheckTdStr.replace(/REPLACEROWID/g, (maxRowNum));
 			cell2.innerHTML = divDocCheckTdStr;
 			
-			var cell3 = row.insertCell(3);
+			var cell3 = row.insertCell(2);
 			var divDocRemoveTdStr = document.getElementById("divDocsTd4").innerHTML;
 			divDocRemoveTdStr = divDocRemoveTdStr.replace(/REPLACEROWID/g, (maxRowNum));
 			cell3.innerHTML = divDocRemoveTdStr;
@@ -784,7 +784,7 @@ function getTemplateVendorDocumentsDetails(templateId){
                 		 result = result +"<strong id='contractsdocument"+opt.id+"'>";
                 		 result = result +"<input type='text' value='"+opt.documentName+"' readonly class='form-control input-sm vendorinput'></input>";
                 		 
-                		 result = result +"<div class='positionRelative inputpadding'>";
+                	/* 	 result = result +"<div class='positionRelative inputpadding'>";
                 		 if(opt.fileUrl != null){
                 			 result = result +"<i class=''><a class='glyphicon glyphicon-save' href=\""+opt.fileUrl+"\"></a></i>";
                				 result = result +"<input type='button' value='"+opt.fileName+"'>";
@@ -794,7 +794,7 @@ function getTemplateVendorDocumentsDetails(templateId){
                				 result = result +"<input type='button' value='No document uploaded'>";
                 		 }
                 		 
-           				 result = result +"</div>";
+           				 result = result +"</div>"; */
            				 
            				 result = result +"<label class='switch switchvendor-custom pull-left ml-mr'>";
                    	     result = result +"<input type='checkbox' "+checked+" id='"+opt.id+"docChecked' onclick='alertRequiredMessage(\""+opt.documentUUID+"\"\,"+opt.id+")'>"
@@ -809,8 +809,8 @@ function getTemplateVendorDocumentsDetails(templateId){
                 	 result = result +"<table class='timesheetAttachment'  id='contractsAttachmentTable' cellpadding='0' cellspacing='0'>";
                 	 result = result +"<tr id='divAttachmentTsRow0'>";
                 	 result = result +"<td><input type='text' placeholder='Document Name' class='form-control input-sm vendorinput'  data-validation='required' field-name='Document' name='vendorDocumentsFileInfo[0].docFileName' id='0contractsdocFileName'></td>";
-                	 result = result +"<td><div id='0ContractsdocFileuploadFileGroup'><input type='file' id='0contractsdocFile' field-name='Attachment' data-validation='validatedoc' data-validation-optional='true' onchange='uploadContractDocument(0)'  class='timesheetAttachmentValidation'></div></td>";
-                	 result = result +"<td>";
+                	 //result = result +"<td><div id='0ContractsdocFileuploadFileGroup'><input type='file' id='0contractsdocFile' field-name='Attachment' data-validation='validatedoc' data-validation-optional='true' onchange='uploadContractDocument(0)'  class='timesheetAttachmentValidation'></div></td>";
+                	 result = result +"<td>"; 
                 	 result = result +"<label class='switch pull-left ml-mr switchvendor-custom'>";
                 	 result = result +"<input type='checkbox' checked id='0checked' name='vendorDocumentsFileInfo[0].checked' onclick='checkDocument(0)' value='Y'>"
                 	 result = result +'<div class="slider round"></div>';

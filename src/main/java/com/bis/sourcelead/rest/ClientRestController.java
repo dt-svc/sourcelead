@@ -246,7 +246,7 @@ public class ClientRestController {
 	 * @return String
 	 * @throws Exception
 	 */
-	@PreAuthorize("hasAnyRole('ROLE_CREATE_CLIENT','ROLE_CREATE_VENDOR')")
+	@PreAuthorize("hasRole('ROLE_CREATE_CLIENT')")
 	@RequestMapping(value = "/saveClient", method = RequestMethod.POST)
 	@ResponseBody
 	public String saveClient(ClientDTO clientDTO,AddUserDTO addUserDTO,CandidateDTO candidateDTO,
@@ -263,12 +263,32 @@ public class ClientRestController {
 		}
 
 		clientService.storeClient(clientDTO,addUserDTO,candidateDTO, user, orgLocation, responderType, org);
-		if (responderType.equalsIgnoreCase("Vendor")) {
-			SourceLeadSessionManager.setSessionAttribute(request, "vendorCreateMsg", "Success!! New Vendor created");
-		} else if (responderType.equalsIgnoreCase("Client")) {
-			SourceLeadSessionManager.setSessionAttribute(request, "clientCreateMsg", "Success!! New client created");
-		}
+		SourceLeadSessionManager.setSessionAttribute(request, "clientCreateMsg", "Success!! New client created");
 		return "clientDashboard";
+	}
+	
+	
+	
+	
+	@PreAuthorize("hasRole('ROLE_CREATE_VENDOR')")
+	@RequestMapping(value = "/saveVendor", method = RequestMethod.POST)
+	@ResponseBody
+	public OrgLocations saveVendor(ClientDTO clientDTO,AddUserDTO addUserDTO,CandidateDTO candidateDTO,
+			@RequestParam(value = "responderType", required = false) String responderType,
+			@RequestParam(value = "orgLocationId", required = false) Long orgLocationId, HttpServletRequest request)
+			throws Exception {
+
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+
+		if (null != orgLocationId) {
+			clientDTO.setOrgLocationId(orgLocationId.toString());
+		}
+
+		OrgLocations invitedOrgLocation = clientService.storeClient(clientDTO,addUserDTO,candidateDTO, user, orgLocation, responderType, org);
+		SourceLeadSessionManager.setSessionAttribute(request, "vendorCreateMsg", "Success!! New Vendor created");
+		return invitedOrgLocation;
 	}
 		
 		
