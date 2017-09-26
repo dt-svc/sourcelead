@@ -89,8 +89,6 @@ public class LeaveManagementRestController {
 	private HolidayService holidayService;
 	
 	@Autowired
-	private OrgLocationService orgLocationService;
-
 	DepartmentService departmentService;
 	
 	@Autowired
