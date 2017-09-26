@@ -345,7 +345,7 @@ function getOrgDetails()
 			dateFormat : 'yyyy/mm/dd'
 		};
 		if ($('#vendor_contact_form').validate(false, validationSettings)) {
-	        var formData = getFormData("vendor_contact_form");
+	        var formData = $($('#vendor_contact_form')[0]).serialize();
 			var sourceleadUrl = '${sourceleadUrl}';
 			$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 					$.post(sourceleadUrl+"/saveClinentAndVendorContact?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId+"&responderType=Vendor", formData, function(data) {
@@ -428,7 +428,7 @@ function getOrgDetails()
 			dateFormat : 'yyyy/mm/dd'
 		};
 		if ($('#client_form').validate(false, validationSettings)) {
-	        var formData = getFormData("client_form");
+	        var formData = $($('#client_form')[0]).serialize();
 			var sourceleadUrl = '${sourceleadUrl}';
 			$("#save_client").attr("disabled", "disabled");
 			$("#save_client").addClass('button').val('Processing..');
@@ -488,7 +488,7 @@ function validateClientName(){
 		};
 		if ($('#vendor_form').validate(false, validationSettings)) {
 			var orgLocationId = document.getElementById("orgLocationId").value;
-			var formData = getFormData("vendor_form");
+			var formData = $($('#vendor_form')[0]).serialize();
 			var sourceleadUrl = '${sourceleadUrl}';
 			$("#vendor_form").attr("disabled", "disabled");
 			$("#vendor_form").addClass('button').val('Processing..');

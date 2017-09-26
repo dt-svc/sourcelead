@@ -1,9 +1,12 @@
 package com.bis.sourcelead.rest;
 
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang.StringUtils;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -115,9 +118,6 @@ public class CandidateEmployersRestController {
 	 */
 	@RequestMapping(value = "/getCandidatesEmployersListByCandidateIdAndOrgLocationID")
 	public String getCandidatesEmployersListByCandidateIdAndOrgLocationID(@RequestParam(value = "candidateId", required = false) String candidateId,HttpServletRequest request) throws Exception {
-
-		String msg = "";
-		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		
 		Candidate employers =candidateService.getCandidateById(Long.parseLong(candidateId));
 		Long loc = employers.getOrgLocationId().getId();
@@ -125,28 +125,36 @@ public class CandidateEmployersRestController {
 		String resultJson;
 		 List<CandidateEmployers>   candidatesEmployersList = candidateEmployersService.getCandidatesEmployersListByCandidateIdAndOrgLocationID(Long.valueOf(candidateId), loc);
 		 
-		 for(CandidateEmployers candidateEmployers : candidatesEmployersList){
+		 candidatesEmployersList.forEach(candidaet->{
 			 
-			/* msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "addExep");
-			 if(msg == null){
-					msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "editExep");
-				}
-				if(msg == null){
-					msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "deleteExep");
-				}
-				if(msg !=null && msg != ""){
-					candidateEmployers.setMsg(msg);
-				}
-				 	SourceLeadSessionManager.removeSessionAttribute(request, "addExep");
-				    SourceLeadSessionManager.removeSessionAttribute(request, "editExep");
-				    SourceLeadSessionManager.removeSessionAttribute(request, "deleteExep");*/
-		 }
-		 
+			 if(StringUtils.isNotBlank(candidaet.getStartMonth())){
+			 String smonth = getMonthAsString(candidaet.getStartMonth());
+			 candidaet.setStartMonth(smonth);
+			 }
+			 
+			 if(StringUtils.isNotBlank(candidaet.getEndMonth())){
+			 String emonth = getMonthAsString(candidaet.getEndMonth());
+			 candidaet.setEndMonth(emonth);
+			 }
+		 });
 		 resultJson = commonUtil.toJSON(candidatesEmployersList);
 		 return resultJson;
 	}
 	
 	
+	private String getMonthAsString(String month)
+	{
+		 Pattern pt = Pattern.compile("[^a-zA-Z0-9]");
+	     Matcher match= pt.matcher(month);
+	        while(match.find())
+	        {
+	            String s= match.group();
+	            month=month.replaceAll("[^a-zA-Z_]", "");
+	        }
+			return month;
+		
+	}
+
 	/**
 	 * This Method is to remove CandidateEmployer By candidateId and CandidateEmployerID 
 	 * 

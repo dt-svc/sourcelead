@@ -49,8 +49,14 @@ textarea {
 .mr10{
 	margin-right: 10px;
 }
+.mr5 {
+	margin-right: 5px;
+}
 .mt {
 	margin-top: 15px;
+}
+.mt2 {
+	margin-top: 2px;
 }
 .mb {
 	margin-bottom: 15px;
@@ -4335,7 +4341,7 @@ min-height: 30px; max-height: 100px !important; overflow-y: scroll !important;
     float: left; padding-right: 10px; margin-right: 15px;
 }
 .scheduleAvailable li span{
-    width: 20px; height: 20px; border-radius: 50%; padding-left: 5px; display: inline-block; margin-left: 5px; top: 5px; position: relative;
+    width: 15px; height: 15px; border-radius: 20%; padding-left: 5px; display: inline-block; margin-right: 5px; top: 3px; position: relative;
 }
 .scheduleAvailable li span.bg-success{
     background-color: #66bb6a;
@@ -4672,6 +4678,9 @@ background: #0277BD;
 .showDetails .form-horizontal .control-label {
     padding-top: 0px;
 }
+.showDetails .form-horizontal b {
+    font-weight: 500;
+}
 .showDetails {
     border: 1px solid #d5d5d5; border-radius: 5px;
 }
@@ -4711,7 +4720,7 @@ margin-top:6px; margin-right:-5px;
     background:transparent;
 }
 .mt5{
-margin-top: 5px;
+margin-top: 5px !important;
 }
 .timesheet_head.minHeight {
 min-height: 45px;
@@ -6101,6 +6110,9 @@ box-shadow: 0px 0px 3px #707070;  padding: 10px 15px; position: relative; box-si
 	padding: 7.5px 5px;
 }
 /* Custom inr Values */
+.width50px{
+    width: 50px; display: inline-block;
+}
 .width90px{
     width: 90px; display: inline-block;
 }
@@ -6194,6 +6206,9 @@ background-position: center; background-size: 200px; position: relative;top:-8px
     position: absolute;
     right: 20px; bottom: 75px;
 }
+.timesheet-report {
+    position: absolute; width: 20%; right: 20px; top: 75px; font-size: 18px;
+}
 .backgroundWhite{
     background: #fff;
 }
@@ -6230,7 +6245,7 @@ background-position: center; background-size: 200px; position: relative;top:-8px
     background: #cecece url("../images/arrow-d-g.png") no-repeat 95% center;background-size: 10px; border:transparent; color:#101010;
 }
 .select-loader select {
-	width: 60%;
+	width: 65%;
 }
 .select-loader select option {
 	padding:2px 10px;
@@ -6267,7 +6282,7 @@ background-position: center; background-size: 200px; position: relative;top:-8px
   min-height: 100px; max-height: 550px; overflow-y:auto;
   }
   .taskheaader-inlineedit {
-  padding: 5px; min-height: 30px;
+  padding: 5px 15px; min-height: 30px;
   }
   .bg-success.taskheaader-inlineedit {
   border-radius:3px; background-color: #eee; border: 1px solid #ccc;
@@ -6275,16 +6290,13 @@ background-position: center; background-size: 200px; position: relative;top:-8px
   .taskheaader-inlineedit .fa {
     font-size: 1.2em; color: #606060;  position: relative; top: 0; cursor: pointer; padding-left: 10px;
   }
-  .taskheaader-inlineedit .fa-save {
-    font-size: 1.5em; color: #606060; position: relative; top: 5px; cursor: pointer; padding-left: 10px;
-}
-  .taskheaader-inlineedit input[type="text"] {
+.taskheaader-inlineedit input[type="text"] {
    height: 30px; padding: 6px 5px;
   }
   .taskheaader-inlineedit .formcontrol-edit {
   float:left; width:100%; background: #fff;
   }
-  .edit-field .editicon {
+ .edit-field .editicon {
    display: none;
   }
   .edit-field:hover .editicon{
@@ -6348,7 +6360,7 @@ background-position: center; background-size: 200px; position: relative;top:-8px
     margin: 0 auto;
 }
 .OverdueWorkItems table tr td .fa {
-  border: 1px solid #909090; padding: 0; border-radius: 3px; width: 25px; height: 25px; line-height: 22px; text-align: center;
+  border: 1px solid #909090; padding: 0; border-radius: 3px; width: 22px; height: 20px; line-height: 18px; text-align: center;
 }
 .payrollValue {
  margin-top: 10px; text-align: right; padding: 5px 15px 5px 5px;
@@ -6518,11 +6530,155 @@ ul.leavelist {
   position: relative;
 }
 ul.leavelist li{
-    padding: 5px 0; margin-bottom: 5px;
+    padding: 10px; margin-bottom: 0px; border-bottom: 1px dotted #ddd;
+    transition: all 0.3s ease-in-out;
+}
+ul.leavelist li:hover{
+    background: #f5f5f5;
 }
 ul.leavelist li label {
-    width: 65%; margin-bottom: 0;
+    width: 86%; margin-bottom: 0;
 }
+.well.well-custom {
+    background: #fff;
+}
+.checkboxCustom.checkbox-custom + .checkbox-custom-label::before, .checkboxCustom.radio-custom + .radio-custom-label::before {
+  background: #e3f2fd; border-color: #90caf9; width: 20px; height: 20px; border-radius: 3px;
+}
+/* Leave Configure styles*/
+.leaveConfigure h4 {
+    margin-top: 0; margin-bottom: 5px; font-size: 17px;
+}
+.leaveConfigure .btn-sm {
+    padding: 2px 15px;
+}
+.leaveConfigure .col-md-3{
+border: 1px solid #ededed; padding: 10px; border-radius: 5px; transition: all 0.3s ease-in-out;
+    }
+.leaveConfigure .col-md-3:nth {
+    background: #ededed;
+}
+.viewgrid-header {
+    position: absolute; right: 15px; top: 15px;
+}
+/* Dashboard */
+.leavescount a{
+    font-size: 1.5em; font-weight: 500; color: #808080; text-align: center;
+    bottom: 35px; width: 100%; text-align: center; left: 0; z-index: 9;
+    position: absolute; transition: all 0.3s ease-in-out;
+}
+.leavescount a:hover{
+    color: #333; bottom: 45px;
+}
+.project-tabs-menu.projecttabs-custom li a {
+    padding: 6px 25px;
+}
+.project-tabs-menu.projecttabs-custom li {
+    border-radius: 5px 5px 0 0;
+}
+.project_tabs.projecttabs-custom {
+    padding: 15px;
+}
+.mediaHeading {
+  margin-top: 0; margin-bottom: 15px; font-size: 15px; background: #f0f0f0; padding: 10px 15px;
+    border-radius: 5px 5px 0 0;
+}
+.heading {
+    font-size: 16px; padding: 10px 0px;
+    border-radius: 5px 5px 0 0; margin: 0;  color: #3f51b5;
+}
+.time-balance h4 {
+    margin-top: 0; margin-bottom: 5px; font-size: 15px;
+}
+.time-balance h2 {
+    margin-top: 0; font-size: 22px;
+}
+.time-balance label.small{
+    font-size:65%;
+}
+.empimg-parent {
+    width: 35px; height: 35px; border-radius: 10%; background: #ededed; text-align: center;
+}
+.empimg-parent img{
+    /*max-width: 100%; max-height: 100%; height: auto; width: auto; padding: 5px;*/
+    border-radius: 10%; max-height: 100%; height: auto; width: auto;
+}
+.media.media-custom:first-child {
+    margin-top: 0 !important;
+}
+.media.media-custom {
+    border-top: 1px solid #ffe0b2; border-right: 1px solid #ffe0b2; border-bottom: 1px solid #ffe0b2;
+    border-left: 3px solid #ffb74d; padding: 5px 10px 5px 5px; margin-top: 10px;
+    min-height: 75px;
+}
+.ptagmrng-none p {
+    margin-bottom: 0;
+}
+.countposition {
+    position: absolute; top: -5px; right: 0;
+}
+.leaves-heading {
+padding: 5px 0px; line-height: 32px; font-size: 16px; clear: both; display: inline-block;
+width: 100%; margin: 0; border-radius: 5px 5px 0 0; color: #3f51b5;
+}
+.leaves-heading select {
+    border: none; background-color:transparent; color: #375d81;
+}
+.empLeave-li li {
+    border: 1px solid #ccc; padding: 1px 3px; min-height: 18px; display: inline-block;
+    text-align: center; min-width: 22px; cursor: pointer; position: relative;
+}
+.empLeave-li li.fullday{
+    background-color: #ffcdd2; border: 1px solid #ef9a9a;
+}
+.empLeave-li li.halfday:after {
+    content: ""; position: absolute; border-style: solid; display: block;
+    border-color: #ffcdd2 transparent; border-width:5px;
+    border-width: 15px; border-bottom: 10px; left: 0; top: 0; border-left: 5px;
+}
+.customizeEmployee, .customLeaves, .showLeaveReport  {
+background: #fff; border: 1px solid #ededed; box-shadow: 1px 1px 1px #333; position: absolute; top: 50px;
+right: 15px; z-index: 9; width: 100%; padding: 10px; display: none;
+}
+.customizeEmployee:after, .customLeaves:after, .showLeaveReport:after {
+	bottom:100%; right: 10%; border: solid transparent; content: "";
+	height: 0; width: 0; position: absolute; border-color: transparent;
+	border-bottom-color: #C5C5C5; border-width: 15px;
+}
+.dropdown-select.dropdown-select-custom select{
+    padding: 0px 10px 0 2px; background: #fff url("../images/arrow-d-g.png") no-repeat 90% center;
+    background-size: 10px;
+}
+.remove_search.searchCustom {
+right: 10px; top: -28px; z-index: 99;
+}
+.remove_search.search-custom{
+  position: relative; float: right; margin:0px; top: 0; margin-bottom: 10px;
+}
+.listof-holidays {
+    position: relative;
+}
+.listof-holidays table thead{
+    background: #ededed;
+}
+.listof-holidays table tr td:nth-child(1n+2) {
+    text-align: left;
+}
+.listof-holidays table tr:nth-child(2n+2) {
+    background-color: #e8eaf6;
+}
+hr {
+    margin-top: 10px; margin-bottom: 10px;
+}
+.cancel-reason {
+    position: absolute; width: 300px; top: 40px; right: 0; border: 1px solid #ededed; background: #fff;
+    box-shadow: 1px 1px 1px #d5d5d5; padding: 10px; border-radius: 3px; display: none;
+}
+.cancel-reason:after{
+    content: ""; width: 0; height: 0; position: absolute; bottom:100%; right: 20px;
+    border-color: transparent; border: solid transparent; border-bottom-color: #ccc; border-width: 10px;
+}
+/* Leave Configure styles*/
 .inlineField {
 	width: 100% !important; border: 1px solid #ccc !important;
     padding:2px 5px; font-size:13px; overflow: hidden; background-color:transparent;
@@ -6530,6 +6686,30 @@ ul.leavelist li label {
 }
 .anchorTag-black a {
 	color:#333 !important;
+}
+.usage-parent .usage-child {
+    background-color: #fff; border: 1px solid #ccc; width: 280px; position: absolute; top: 0%; left: 50%;
+    padding:10px 5px 5px 10px; display: none; box-shadow: 1px 1px 2px #333;
+}
+.usage-parent .usage-child:after {
+    content:""; position: absolute; width: 0; height: 0; left: 100%; bottom: 10%;
+    border: solid transparent;  border-color:transparent; border-width:15px; border-left-color: #ccc;
+}
+.usage-parent:hover .usage-child{
+    display: block;
+}
+.widget-area {
+	background-color: #fff; padding: 10px; box-shadow: 0px 0px 3px rgba(0,0,0,0.3);
+	-webkit-border-radius: 3px; -moz-border-radius: 3px; -o-border-radius: 3px; border-radius: 3px;
+}
+.search-usericon {
+	position: absolute; left: 3px; top: 5px; font-size: 16px; z-index: 1;
+}
+.uploadbtn-custom .btn-sm {
+    padding: 5px !important;
+}
+#Re-AssignProject {
+z-index: 99999;
 }
 /* media 320px */
 @media (max-width: 320px) {
@@ -8514,6 +8694,4 @@ z-index: -800;
 .slideOutUp {
   animation-name: slideOutUp;
 }
-
-
 /* Animated Ends */

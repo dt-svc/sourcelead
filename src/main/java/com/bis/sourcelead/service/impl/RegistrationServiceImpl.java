@@ -1126,6 +1126,20 @@ public class RegistrationServiceImpl implements RegistrationService{
 		candidate.setUpdatedDate(new Date());
 		candidate.setCandidateUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 		
+		MasterCandidate masterCandidate = null; 
+		 masterCandidate = masterCandidateService.getMasterCandidateByInteligence(jsonObj);
+		 if(null == masterCandidate){
+			 masterCandidate = getMasterCandidateDetailsForProfessionalAndRecruiterLogins(candidate,user);
+		 }
+		
+		try {
+			masterCandidateService.saveMasterCandidate(masterCandidate);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		candidate.setMasterCandidateId(masterCandidate);
+		
+		
 		candidateService.addCandidate(candidate);
 		candidateService.saveOrUpdateCandidateElkDocument(candidate);
 		
@@ -1325,6 +1339,20 @@ public class RegistrationServiceImpl implements RegistrationService{
 		candidate.setCreatedDate(new Date());
 		candidate.setUpdatedDate(new Date());
 		candidate.setCandidateUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+		
+		MasterCandidate masterCandidate = null; 
+		 masterCandidate = masterCandidateService.getMasterCandidateByInteligence(jsonObj);
+		 if(null == masterCandidate){
+			 masterCandidate = getMasterCandidateDetailsForProfessionalAndRecruiterLogins(candidate,user);
+		 }
+		
+		try {
+			masterCandidateService.saveMasterCandidate(masterCandidate);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		candidate.setMasterCandidateId(masterCandidate);
+		
 		
 		candidateService.addCandidate(candidate);
 		candidateService.saveOrUpdateCandidateElkDocument(candidate);
@@ -1584,6 +1612,20 @@ public class RegistrationServiceImpl implements RegistrationService{
 				candidate.setUpdatedDate(new Date());
 				candidate.setCandidateUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 				
+				MasterCandidate masterCandidate = null; 
+				 masterCandidate = masterCandidateService.getMasterCandidateByInteligence(jsonObj);
+				 if(null == masterCandidate){
+					 masterCandidate = getMasterCandidateDetailsForProfessionalAndRecruiterLogins(candidate,user);
+				 }
+				
+				try {
+					masterCandidateService.saveMasterCandidate(masterCandidate);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				candidate.setMasterCandidateId(masterCandidate);
+				
+				
 				candidateService.addCandidate(candidate);
 				candidateService.saveOrUpdateCandidateElkDocument(candidate);
 		 }
@@ -1720,6 +1762,20 @@ public class RegistrationServiceImpl implements RegistrationService{
 			candidate.setUpdatedDate(new Date());
 			candidate.setCandidateUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 			
+			MasterCandidate masterCandidate = null; 
+			 masterCandidate = masterCandidateService.getMasterCandidateByInteligence(jsonObj);
+			 if(null == masterCandidate){
+				 masterCandidate = getMasterCandidateDetailsForProfessionalAndRecruiterLogins(candidate,user);
+			 }
+			
+			try {
+				masterCandidateService.saveMasterCandidate(masterCandidate);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			candidate.setMasterCandidateId(masterCandidate);
+			
+			
 			candidateService.addCandidate(candidate);
 			candidateService.saveOrUpdateCandidateElkDocument(candidate);
 		}
@@ -1778,5 +1834,20 @@ public class RegistrationServiceImpl implements RegistrationService{
     	List<GrantedAuthority> Result = new ArrayList<GrantedAuthority>(setAuths);
     	return Result;
     }
+	 
+	 
+	 
+	private MasterCandidate getMasterCandidateDetailsForProfessionalAndRecruiterLogins(Candidate candidate,User user) {
+		MasterCandidate masterCandidate = new MasterCandidate();
+		masterCandidate.setFirstName(candidate.getFirstName());
+		masterCandidate.setLastName(candidate.getLastName());
+		masterCandidate.setEmail(candidate.getEmail());
+		masterCandidate.setStatus(Constants.RECORD_ACTIVE);
+		masterCandidate.setCreatedBy(user.getUserCode());
+		masterCandidate.setCreatedDate(commonUtil.currentDate());
+		masterCandidate.setUpdatedBy(user.getUserCode());
+		masterCandidate.setUpdatedDate(commonUtil.currentDate());
+		return masterCandidate;
+	}
 
 }

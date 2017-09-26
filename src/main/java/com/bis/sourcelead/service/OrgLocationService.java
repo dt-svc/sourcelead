@@ -52,6 +52,8 @@ public interface OrgLocationService {
 	public String getDateFormatByOrgLocation(OrgLocations orgLocation);
 
 	public boolean validateOrgShortCode(String orgShortId);
+	
+	public List<OrgLocations> userList(Long orgId) throws Exception;
 
 
 }

@@ -24,11 +24,11 @@
 		$("#onboardCount").html('${onboardCount}');
 		$("#offboardCount").html('${offboardCount}');
 		
-		 '<sec:authorize access="hasRole(\'ROLE_CREATE_ON_BOARD_USER\') && !hasRole(\'ROLE_CREATE_OFF_BOARD_USER\')">'
+		 '<sec:authorize access="hasAnyRole(\'ROLE_CREATE_ON_BOARD_USER\',\'ROLE_VIEW_EDIT_ON_BOARD_USER\') && !hasRole(\'ROLE_CREATE_OFF_BOARD_USER\')">'
 		       getOnboardCandidatesList();
          '</sec:authorize>';
          
-         '<sec:authorize access="!hasRole(\'ROLE_CREATE_ON_BOARD_USER\') && hasRole(\'ROLE_CREATE_OFF_BOARD_USER\')">'
+         '<sec:authorize access="!hasRole(\'ROLE_CREATE_ON_BOARD_USER\') && hasAnyRole(\'ROLE_CREATE_OFF_BOARD_USER\',\'ROLE_VIEW_EDIT_OFF_BOARD_USER\')">'
 	       getOffboardCandidatesList();
 	       document.getElementById("offboard").className = 'active'
          '</sec:authorize>';
@@ -68,7 +68,7 @@
           </div>
           <ul class="nav nav-tabs" id="tab_bar">
             
-            <sec:authorize access="hasRole('ROLE_CREATE_ON_BOARD_USER')">
+            <sec:authorize access="hasAnyRole('ROLE_CREATE_ON_BOARD_USER','ROLE_VIEW_EDIT_ON_BOARD_USER')">
 	            <li class="active" id="onboard"> <a href="#" data-toggle="tab" class="onboardCount" onclick="getOnboardCandidatesList();" title="Current onboard count">
 	              <div class="count" id="onboardCount"></div>
 	              <h4>Current onboard</h4>
@@ -76,7 +76,7 @@
 	            </li>
             </sec:authorize>
             
-            <sec:authorize access="hasRole('ROLE_CREATE_OFF_BOARD_USER')">
+            <sec:authorize access="hasAnyRole(\'ROLE_CREATE_OFF_BOARD_USER\',\'ROLE_VIEW_EDIT_OFF_BOARD_USER\')">
 	            <li id="offboard"> <a href="#documents" data-toggle="tab" class="offboardCount" onclick="getOffboardCandidatesList();" title="Current offboard count">
 	              <div class="count" id="offboardCount"></div>
 	              <h4>Current offboard</h4>
@@ -138,7 +138,9 @@
 	                     result = result +"    <th>Date Of Join<br>(<small class='custom-small'>"+candOnBoardListDate+"</small>)</th>";
 	                     result = result +"    <th>Onboard<br/>Documents</th>";
 	                     result = result +"    <th>Onboard Status</th>"; 
+	                     '<sec:authorize access="hasRole(\'ROLE_CREATE_ON_BOARD_USER\')">'
 	                     result = result +"    <th>Actions</th>"; 
+	                     '</sec:authorize>';
 	                     result = result +"  </tr>"; 
 	                     result = result +"</thead>";
 	                     result = result +"<tbody>"; 
@@ -161,7 +163,7 @@
 	                    	 result = result +"<div class='width300px'>";
 	                    	 result = result +"<div class='tbldata-dotdot-big pull-left' title='"+opt.candidateName+"'>"+opt.candidateName+"</div>";
 	                    	 
-	                    	 '<sec:authorize access="hasRole(\'ROLE_VIEW_EDIT_ON_BOARD_USER\')">'
+	                    	 '<sec:authorize access="hasRole(\'ROLE_CREATE_ON_BOARD_USER\')">'
 		                    	 if(opt.candidateOnBoardStatus == 'Draft'){
 		                    		 result = result +"<b class='pull-right proj_show'> <a href='"+sourceleadUrl+"/viewOnboardCandidateDetails?onboardUUID="+opt.onboardCandidateUUID+"'> <i class='fa fa-binoculars'></i> </a> </b> </div>";
 		                    	 }else if(opt.candidateOnBoardStatus == 'Finished' || opt.candidateOnBoardStatus == 'Submitted' || opt.candidateOnBoardStatus == 'Rejected' || opt.candidateOnBoardStatus == 'Accepted'){
@@ -199,7 +201,7 @@
                     			
                     		 }
                     		 
-                    		 
+                    		  '<sec:authorize access="hasRole(\'ROLE_CREATE_ON_BOARD_USER\')">'
                     		 if(opt.candidateOnBoardStatus == 'Accepted'){
                     			 result = result +"<td><div><span class='text-success'>"+opt.candidateOnBoardStatus+"</span></div></td>";
                     		 }else  if(opt.candidateOnBoardStatus == 'Rejected'){
@@ -211,7 +213,7 @@
                         			 result = result	+ '<td><div>-----</div></td>';
                         		 }
                     		 }
-                    		
+                    		  '</sec:authorize>';  
                     
 		                     
 		                     result = result +"</tr>";
@@ -285,7 +287,7 @@
 	                    	 result = result +"<div class='width300px'>";
 	                    	 result = result +"<div class='tbldata-dotdot-big pull-left' title='"+opt.candidateName+"'>"+opt.candidateName+"</div>";
 	                    	 
-	                    	 '<sec:authorize access="hasRole(\'ROLE_VIEW_EDIT_OFF_BOARD_USER\')">'
+	                    	 '<sec:authorize access="hasRole(\'ROLE_CREATE_OFF_BOARD_USER\')">'
 		                    	 if(opt.offboardSubmitted == 'N'){
 		                    		 result = result +"<b class='pull-right proj_show'> <a href='"+sourceleadUrl+"/viewOffboardCandidateDetails?offboardUUID="+opt.offboardUUID+"'> <i class='fa fa-binoculars'></i> </a> </b> </div>";
 		                    	 }else if(opt.offboardSubmitted == 'Y'){

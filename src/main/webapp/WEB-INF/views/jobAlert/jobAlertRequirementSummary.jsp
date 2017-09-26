@@ -159,7 +159,7 @@ window.onload = function () {
 <script>
 function publicRequirementProfile(requirementUUID){
 	
-	
+	var sourceleadUrl = '${sourceleadUrl}';
 	var requirementUUID = '${requirementUUID}';
 	
 	$.ajax({
