@@ -471,6 +471,7 @@ public class RequirementController {
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		Org loginOrg= (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		Boolean isAdmin = (Boolean) SourceLeadSessionManager.getSessionAttribute(request,"isAdmin");
 		ModelAndView model = new ModelAndView();
 		
 		SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
@@ -489,10 +490,10 @@ public class RequirementController {
 			if(null != maxLevel && maxLevel >1){
 				if(null != approverList && !approverList.isEmpty()){
 					for(RequirementApproverHierarchy reApprover :approverList){
-						if(reApprover.getLevel() == 1){
+						if((loginUser.getId().equals(reApprover.getApproverUserId().getId())) && reApprover.getLevel() == 1){
 							 requirement.setRequirementApproverHierarchyStatus(reApprover.getRequirementApproverStatus().toString());
 						}
-						if(reApprover.getLevel() == 2){
+						else if((isAdmin || loginUser.getId().equals(reApprover.getApproverUserId().getId())) && reApprover.getLevel() == 2){
 							 requirement.setRequirementApproverHierarchyStatus(reApprover.getRequirementApproverStatus().toString());
 						}
 					}
@@ -538,7 +539,6 @@ public class RequirementController {
 			Boolean isManager = requirementService.checkLoginUserIsRequirementManagerByRequirementIdAndUserId(requirementId, loginUser.getId());
 			model.addObject("isManager",isManager);
 			
-			Boolean isAdmin = userRoleService.isUserAdminByOrgLocationId(loginUser.getId(),orgLocations.getId());
 			model.addObject("isAdmin",isAdmin);
 	
 			model.addObject("sourceleadUrl", sourceleadUrl);
