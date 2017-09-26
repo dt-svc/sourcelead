@@ -505,7 +505,7 @@ $('html').click(function(){
 <script type="text/javascript">
 	function checkVendorContactAdd(orgRelationId,vendorLocationId) {
 		if ($('#clinetContact_form').validate(false, validationSettings)) {
-			var formData = getFormData("clinetContact_form");
+			var formData = $($('#clinetContact_form')[0]).serialize();
 			var sourceleadUrl = '${sourceleadUrl}';
 			$("#addClientContact").attr("disabled", "disabled");
 			$("#addClientContact").addClass('button').val('Processing..');
