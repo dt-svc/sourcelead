@@ -580,9 +580,9 @@ function updateReuqirementStatus(status){
           			 $("#selector11").removeAttr("style");
            			 $("#selector11").css({ display: "block" });
           			 if(status == "APPROVED"){
-          				$("#msgDiv").html("Requirement approved Successfully");
+          				$("#msgDiv").html("Job approved Successfully");
           			 }else{
-          				$("#msgDiv").html("Requirement rejected Successfully");
+          				$("#msgDiv").html("Job rejected Successfully");
           			   }
           			sideBar(requirementId)
              			msgFadein();
@@ -686,7 +686,8 @@ function updateReuqirementStatusReject(status){
 <script>  
 function requirementPipeline(requirementId,submissionType){
 	$("#actionsDiv" ).show();
-	
+	$("#emptyPipelinelist").val('');
+	var sourceleadUrl = '${sourceleadUrl}';
 	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	var userId = '${SourceLeadWeb_user.id}';
 	var loginUserRole = '${SourceLeadWeb_loginUserRole}';
@@ -1979,18 +1980,42 @@ function requirementStatusBar(requirementId){
 		result = result + '	<span class="cliColor"><i class="fa fa-send"></i></span><b id="submitToClientCount">0</b>';
 		result = result + '</li>';
 		}
-		result = result + '<li title="Interviews" class="colorTwo" id="interviewli" onclick="requirementPipeline('+requirementId+',\''+interview+'\');tabEnable(this);">';
-		result = result + '	<span><i class="fa fa-handshake-o"></i></span><b id="interviewCount">0</b>';
-		result = result + '</li>';
-		result = result + '<li title="Offers" id="offerMadeli" onclick="requirementPipeline('+requirementId+',\''+offerMade+'\');tabEnable(this);">';
-		result = result + '	<span><i class="fa fa-envelope-open-o"></i></span><b id="offersCount">0</b>';
-		result = result + '</li>';
-		result = result + '<li title="Rejected" class="colorTwo" id="rejectedli" onclick="requirementPipeline('+requirementId+',\''+rejected+'\');tabEnable(this);">';
-		result = result + '	<span class="rejColor"><i class="fa fa-ban"></i></span><b id="rejectedCount">0</b>';
-		result = result + '</li>';
-		result = result + '<li title="Back-Out" id="backoutli" onclick="requirementPipeline('+requirementId+',\''+backout+'\');tabEnable(this);">';
-		result = result + '	<span class="outColor"><i class="fa fa-arrow-circle-left"></i></span><b id="backoutCount">0</b>';
-		result = result + '</li>';
+		if(clientSubmissions == 'Y' && isSpocActive == 'Y'){
+			result = result + '<li title="Interviews" class="colorTwo" id="interviewli" onclick="requirementPipeline('+requirementId+',\''+interview+'\');tabEnable(this);">';
+			result = result + '	<span><i class="fa fa-handshake-o"></i></span><b id="interviewCount">0</b>';
+			result = result + '</li>';
+		}else{
+			result = result + '<li title="Interviews" id="interviewli" onclick="requirementPipeline('+requirementId+',\''+interview+'\');tabEnable(this);">';
+			result = result + '	<span><i class="fa fa-handshake-o"></i></span><b id="interviewCount">0</b>';
+			result = result + '</li>';	
+		}
+		if(clientSubmissions == 'Y' && isSpocActive == 'Y'){
+			result = result + '<li title="Offers" id="offerMadeli" onclick="requirementPipeline('+requirementId+',\''+offerMade+'\');tabEnable(this);">';
+			result = result + '	<span><i class="fa fa-envelope-open-o"></i></span><b id="offersCount">0</b>';
+			result = result + '</li>';
+		}else{
+			result = result + '<li title="Offers" id="offerMadeli" class="colorTwo" onclick="requirementPipeline('+requirementId+',\''+offerMade+'\');tabEnable(this);">';
+			result = result + '	<span><i class="fa fa-envelope-open-o"></i></span><b id="offersCount">0</b>';
+			result = result + '</li>';
+		}
+		if(clientSubmissions == 'Y' && isSpocActive == 'Y'){
+			result = result + '<li title="Rejected" class="colorTwo" id="rejectedli" onclick="requirementPipeline('+requirementId+',\''+rejected+'\');tabEnable(this);">';
+			result = result + '	<span class="rejColor"><i class="fa fa-ban"></i></span><b id="rejectedCount">0</b>';
+			result = result + '</li>';
+		}else{
+			result = result + '<li title="Rejected" id="rejectedli" onclick="requirementPipeline('+requirementId+',\''+rejected+'\');tabEnable(this);">';
+			result = result + '	<span class="rejColor"><i class="fa fa-ban"></i></span><b id="rejectedCount">0</b>';
+			result = result + '</li>';
+		}
+		if(clientSubmissions == 'Y' && isSpocActive == 'Y'){
+			result = result + '<li title="Back-Out" id="backoutli" onclick="requirementPipeline('+requirementId+',\''+backout+'\');tabEnable(this);">';
+			result = result + '	<span class="outColor"><i class="fa fa-arrow-circle-left"></i></span><b id="backoutCount">0</b>';
+			result = result + '</li>';
+		}else{
+			result = result + '<li title="Back-Out" class="colorTwo" id="backoutli" onclick="requirementPipeline('+requirementId+',\''+backout+'\');tabEnable(this);">';
+			result = result + '	<span class="outColor"><i class="fa fa-arrow-circle-left"></i></span><b id="backoutCount">0</b>';
+			result = result + '</li>';
+		}
 		result = result + '<div class="clearfix"></div>';
 	    result = result + '</ul>';
         result = result + '</div>';
