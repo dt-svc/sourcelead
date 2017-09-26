@@ -580,9 +580,9 @@ function updateReuqirementStatus(status){
           			 $("#selector11").removeAttr("style");
            			 $("#selector11").css({ display: "block" });
           			 if(status == "APPROVED"){
-          				$("#msgDiv").html("Requirement approved Successfully");
+          				$("#msgDiv").html("Job approved Successfully");
           			 }else{
-          				$("#msgDiv").html("Requirement rejected Successfully");
+          				$("#msgDiv").html("Job rejected Successfully");
           			   }
           			sideBar(requirementId)
              			msgFadein();
