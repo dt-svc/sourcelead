@@ -480,7 +480,6 @@ public class LeaveManagementRestController {
 		 }
 		return optionsDTOList;
 	}
-//	/
 	
 	@RequestMapping(value = {"/deleteLeaveOption", "/rest/deleteLeaveOption"}, method = RequestMethod.POST)
 	@ResponseBody
@@ -613,6 +612,20 @@ public class LeaveManagementRestController {
 		return model;
 	}
 	
+
+	@RequestMapping(value = {"/getLeavePolicy", "/rest/getLeavePolicy"}, method = RequestMethod.GET)
+	@ResponseBody
+	public  String getleavePolicy(@RequestParam(value = "leaveTypeId", required = false) String leaveTypeId,HttpServletRequest request) throws Exception
+	{
+		String leavePolicy = null;
+		 LeaveType options = leaveTypeService.getLeaveTypeById(leaveTypeId);
+		 if(options !=null) {
+			 leavePolicy = options.getPolicyDescription();
+		 }
+		return leavePolicy;
+	}
+	
+
 	@RequestMapping(value = {"/deleteLeaveType", "/rest/deleteLeaveType"}, method = RequestMethod.POST)
 	@ResponseBody
 	public boolean deleteLeaveType(LeaveTypeDTO leaveTypeDTO, HttpServletRequest request) throws Exception
@@ -656,6 +669,62 @@ public class LeaveManagementRestController {
 		return isDeleted;
 	}
 	
+	
+	/**
+	 * returns add Employee Requested Leaves  jsp
+	 * @param request
+	 * @param response
+	 * @return ModelAndView
+	 */
+	@RequestMapping(value = "/employeeRequestedLeaves")
+	public ModelAndView employeeRequestedLeavesJsp(HttpServletRequest request,HttpServletResponse response) {
+		   ModelAndView model = new ModelAndView();
+		   model.addObject("sourceleadUrl", sourceleadUrl);
+		   model.setViewName("leavemanagement/employeeRequestedLeaves");
+	       return model;
+	}
+	
+	/**
+	 * returns add Employee Approved Leaves  jsp
+	 * @param request
+	 * @param response
+	 * @return ModelAndView
+	 */
+	@RequestMapping(value = "/employeeApprovedLeaves")
+	public ModelAndView employeeApprovedLeavesJsp(HttpServletRequest request,HttpServletResponse response) {
+		   ModelAndView model = new ModelAndView();
+		   model.addObject("sourceleadUrl", sourceleadUrl);
+		   model.setViewName("leavemanagement/employeeApprovedLeaves");
+	       return model;
+	}
+	
+	/**
+	 * returns add Employee Rejected Leaves  jsp
+	 * @param request
+	 * @param response
+	 * @return ModelAndView
+	 */
+	@RequestMapping(value = "/employeeRejectedLeaves")
+	public ModelAndView employeeRejectedLeaves(HttpServletRequest request,HttpServletResponse response) {
+		   ModelAndView model = new ModelAndView();
+		   model.addObject("sourceleadUrl", sourceleadUrl);
+		   model.setViewName("leavemanagement/employeeRejectedLeaves");
+	       return model;
+	}
+	
+	/**
+	 * returns add Employee Cancel Leaves  jsp
+	 * @param request
+	 * @param response
+	 * @return ModelAndView
+	 */
+	@RequestMapping(value = "/employeeCancelLeaves")
+	public ModelAndView employeeCancelLeavesLeaves(HttpServletRequest request,HttpServletResponse response) {
+		   ModelAndView model = new ModelAndView();
+		   model.addObject("sourceleadUrl", sourceleadUrl);
+		   model.setViewName("leavemanagement/employeeCancelLeaves");
+	       return model;
+	}
 
 	@RequestMapping(value = {"/leaveTypeSummary", "/rest/leaveTypeSummary"}, method = RequestMethod.POST)
 	@ResponseBody
@@ -664,5 +733,7 @@ public class LeaveManagementRestController {
 		LeaveType leaveType = leaveTypeService.getLeaveTypeById(leaveTypeDTO.getLeaveTypeId());
 		return leaveType;
 	}
+	
+	
 
 }
