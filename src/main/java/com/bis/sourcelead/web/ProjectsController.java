@@ -265,7 +265,7 @@ public class ProjectsController {
 							clientOrgLocations = projectClients.getOrgRelationId().getResponderLocationId();
 						}
 						
-						if(!clientOrgLocations.getStatus().equals(Status.ACTIVE)){
+						if(clientOrgLocations.getStatus() != null && !clientOrgLocations.getStatus().equals(Status.ACTIVE)){
 							isClientOrgActive = Constants.NO;
 						}
 					}
