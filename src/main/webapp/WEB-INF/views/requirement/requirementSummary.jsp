@@ -1961,18 +1961,18 @@ function requirementStatusBar(requirementId){
 		
        var offerMade = 'OFFERMADE';
        
-        result = result + '<div class="reportsCount reportsCountNew">';
+        result = result + '<div class="reportsCount reportsCountNew reportsCountCustom" id="customLi">';
 		result = result + '<ul>';
 		result = result + '<li title="Applicants" id="applicantli" onclick="requirementPipeline('+requirementId+',\''+all+'\');tabEnable(this);" class="reqAct">';
 		result = result + '	<span><i class="fa fa-users"></i></span><b id="applicantsCount">0</b>';
 		result = result + '</li>';
-		result = result + '<li title="Duplicate Applicants" class="colorTwo" id="duplicataplctli" onclick="requirementPipeline('+requirementId+',\''+duplicateApplicantCount+'\');tabEnable(this);">';
+		result = result + '<li title="Duplicate Applicants" class="" id="duplicataplctli" onclick="requirementPipeline('+requirementId+',\''+duplicateApplicantCount+'\');tabEnable(this);">';
 		result = result + '	<span><i class="fa fa-files-o"></i></span><b id="duplicateApplicantsCount">0</b>';
 		result = result + '</li>';
 		result = result + '<li title="Request Sent" id="requestSentli" onclick="requirementPipeline('+requirementId+',\''+requestSent+'\');tabEnable(this);">';
 		result = result + '	<span><i class="fa fa-check"></i></span><b id="requestSent">0</b>';
 		result = result + '</li>';
-		result = result + '<li title="Shortlisted" class="colorTwo" id="shortListli" onclick="requirementPipeline('+requirementId+',\''+shortList+'\');tabEnable(this);">';
+		result = result + '<li title="Shortlisted" class="" id="shortListli" onclick="requirementPipeline('+requirementId+',\''+shortList+'\');tabEnable(this);">';
 		result = result + '	<span><i class="fa fa-list-ul"></i></span><b id="shortlistCount">0</b>';
 		result = result + '</li>';
 		if(clientSubmissions == 'Y' && isSpocActive == 'Y'){
@@ -1980,42 +1980,18 @@ function requirementStatusBar(requirementId){
 		result = result + '	<span class="cliColor"><i class="fa fa-send"></i></span><b id="submitToClientCount">0</b>';
 		result = result + '</li>';
 		}
-		if(clientSubmissions == 'Y' && isSpocActive == 'Y'){
-			result = result + '<li title="Interviews" class="colorTwo" id="interviewli" onclick="requirementPipeline('+requirementId+',\''+interview+'\');tabEnable(this);">';
-			result = result + '	<span><i class="fa fa-handshake-o"></i></span><b id="interviewCount">0</b>';
-			result = result + '</li>';
-		}else{
-			result = result + '<li title="Interviews" id="interviewli" onclick="requirementPipeline('+requirementId+',\''+interview+'\');tabEnable(this);">';
-			result = result + '	<span><i class="fa fa-handshake-o"></i></span><b id="interviewCount">0</b>';
-			result = result + '</li>';	
-		}
-		if(clientSubmissions == 'Y' && isSpocActive == 'Y'){
-			result = result + '<li title="Offers" id="offerMadeli" onclick="requirementPipeline('+requirementId+',\''+offerMade+'\');tabEnable(this);">';
-			result = result + '	<span><i class="fa fa-envelope-open-o"></i></span><b id="offersCount">0</b>';
-			result = result + '</li>';
-		}else{
-			result = result + '<li title="Offers" id="offerMadeli" class="colorTwo" onclick="requirementPipeline('+requirementId+',\''+offerMade+'\');tabEnable(this);">';
-			result = result + '	<span><i class="fa fa-envelope-open-o"></i></span><b id="offersCount">0</b>';
-			result = result + '</li>';
-		}
-		if(clientSubmissions == 'Y' && isSpocActive == 'Y'){
-			result = result + '<li title="Rejected" class="colorTwo" id="rejectedli" onclick="requirementPipeline('+requirementId+',\''+rejected+'\');tabEnable(this);">';
-			result = result + '	<span class="rejColor"><i class="fa fa-ban"></i></span><b id="rejectedCount">0</b>';
-			result = result + '</li>';
-		}else{
-			result = result + '<li title="Rejected" id="rejectedli" onclick="requirementPipeline('+requirementId+',\''+rejected+'\');tabEnable(this);">';
-			result = result + '	<span class="rejColor"><i class="fa fa-ban"></i></span><b id="rejectedCount">0</b>';
-			result = result + '</li>';
-		}
-		if(clientSubmissions == 'Y' && isSpocActive == 'Y'){
-			result = result + '<li title="Back-Out" id="backoutli" onclick="requirementPipeline('+requirementId+',\''+backout+'\');tabEnable(this);">';
-			result = result + '	<span class="outColor"><i class="fa fa-arrow-circle-left"></i></span><b id="backoutCount">0</b>';
-			result = result + '</li>';
-		}else{
-			result = result + '<li title="Back-Out" class="colorTwo" id="backoutli" onclick="requirementPipeline('+requirementId+',\''+backout+'\');tabEnable(this);">';
-			result = result + '	<span class="outColor"><i class="fa fa-arrow-circle-left"></i></span><b id="backoutCount">0</b>';
-			result = result + '</li>';
-		}
+		result = result + '<li title="Interviews" class="" id="interviewli" onclick="requirementPipeline('+requirementId+',\''+interview+'\');tabEnable(this);">';
+		result = result + '	<span><i class="fa fa-handshake-o"></i></span><b id="interviewCount">0</b>';
+		result = result + '</li>';
+		result = result + '<li title="Offers" id="offerMadeli" onclick="requirementPipeline('+requirementId+',\''+offerMade+'\');tabEnable(this);">';
+		result = result + '	<span><i class="fa fa-envelope-open-o"></i></span><b id="offersCount">0</b>';
+		result = result + '</li>';
+		result = result + '<li title="Rejected" class="" id="rejectedli" onclick="requirementPipeline('+requirementId+',\''+rejected+'\');tabEnable(this);">';
+		result = result + '	<span class="rejColor"><i class="fa fa-ban"></i></span><b id="rejectedCount">0</b>';
+		result = result + '</li>';
+		result = result + '<li title="Back-Out" id="backoutli" onclick="requirementPipeline('+requirementId+',\''+backout+'\');tabEnable(this);">';
+		result = result + '	<span class="outColor"><i class="fa fa-arrow-circle-left"></i></span><b id="backoutCount">0</b>';
+		result = result + '</li>';
 		result = result + '<div class="clearfix"></div>';
 	    result = result + '</ul>';
         result = result + '</div>';
@@ -2023,6 +1999,9 @@ function requirementStatusBar(requirementId){
          
       $("#status-div").empty();
       $("#status-div").prepend(result);
+      if(clientSubmissions == 'Y' && isSpocActive == 'Y'){
+  		$("#customLi").removeClass("reportsCountCustom");
+      }
      // $("#tab-2").prepend(status-div);
 }
 </script>
