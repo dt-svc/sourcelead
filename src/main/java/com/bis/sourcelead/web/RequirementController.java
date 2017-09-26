@@ -386,7 +386,11 @@ public class RequirementController {
 				}else{
 				  model.addObject("industryList", industryList);
 				} 
+			}else
+			{
+				  model.addObject("industryList", industryList);
 			}
+				
 			}else{
 	         // List<LookUpData> educationsListData = lookUpDataService.getLookUpDataByCategory(Constants.EDUCATIONS);
 	          List<String> industryListWithoutId = lookUpDataService.getAllSkillsByIndustryCategory();
