@@ -16,6 +16,7 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,6 +29,7 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.ApplicantAuthorizationDTO;
 import com.bis.sourcelead.entity.Notifications;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -76,6 +78,9 @@ public class RequirementOfferRestController {
 	
 	@Autowired
 	CommonUtil commonUtil;
+	
+	@Value("${static.path}")
+	private String staticPath;
 	
 	@Autowired
 	RequirementOffersService requirementOffersService;
@@ -462,25 +467,25 @@ public class RequirementOfferRestController {
 	* @throws Exception
 	*/
 	@RequestMapping(value = "/acceptRejectCandidate", method = RequestMethod.POST)
-	public @ResponseBody String acceptRejectCandidate(@RequestParam(value = "json", required = false) String json, String submissionId, String decision, MultipartHttpServletRequest request) throws Exception {
+	public @ResponseBody String acceptRejectCandidate(ApplicantAuthorizationDTO  applicantAuthorizationDTO,String submissionId, String decision, HttpServletRequest request) throws Exception {
 
-		String json1 = "{" + json + "}";
+		/*String json1 = "{" + json + "}";
 		JSONObject jsonObj = new JSONObject(json1);
 		
 		MultipartFile multiFile = null;
 		Iterator<String> itrator = request.getFileNames();
 		if(itrator.hasNext()){
 	        multiFile = request.getFile(itrator.next());
-		}
+		}*/
 
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		Org loginOrg = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
-		
+		applicantAuthorizationDTO.setStaticPath(staticPath);
 		if(StringUtils.isNotEmpty(submissionId)){
 			RequirementSubmission requirementSubmission = requirementSubmissionService.getRequirementSubmissionById(Long.parseLong(submissionId));
 			
-			requirementSubmissionService.acceptRejectCandidate(jsonObj, user, requirementSubmission, decision, multiFile,loginOrg,orgLocation);
+			requirementSubmissionService.acceptRejectCandidate(applicantAuthorizationDTO, user, requirementSubmission, decision,loginOrg,orgLocation);
 
 			/*SourceLeadSessionManager.setSessionAttribute(request, "resumeAddMessage",
 					"Successfully you have added");*/
@@ -527,10 +532,10 @@ public class RequirementOfferRestController {
 	}
 	
 	@RequestMapping(value = "/acceptRejectCandidateFromDashboard", method = RequestMethod.POST)
-	public @ResponseBody String acceptRejectCandidateFromDashboard(@RequestParam(value = "json", required = false) String json, Long submissionId, String status, HttpServletRequest request) throws Exception
+	public @ResponseBody String acceptRejectCandidateFromDashboard(ApplicantAuthorizationDTO applicantAuthorizationDTO, Long submissionId, String status, HttpServletRequest request) throws Exception
 	{
-		String json1 = "{" + json + "}";
-		JSONObject jsonObj = new JSONObject(json1);
+		/*String json1 = "{" + json + "}";
+		JSONObject jsonObj = new JSONObject(json1);*/
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		Org loginOrg = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
@@ -539,8 +544,7 @@ public class RequirementOfferRestController {
 			if (StringUtils.equalsIgnoreCase(status, "accept")) {
 				requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.SUBMISSION);
 				requirementSubmission.setSubmissionRateStatus(SubmissionRateStatus.ACCEPTED);
-				requirementSubmission.setSubmissionRequestUser(user.getFirstName() + ""
-						+ user.getLastName());
+				requirementSubmission.setSubmissionRequestUser(user.getFirstName() + ""	+ user.getLastName());
 				requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
 				requirementSubmissionService.sendEmailtoApplicant(loginOrg, user, requirementSubmission, orgLocation);
 				
@@ -548,17 +552,16 @@ public class RequirementOfferRestController {
 			}
 			else if (StringUtils.equalsIgnoreCase(status, "rejected")) {
 				requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.REJECTED);
-				requirementSubmission.setSubmissionRequestUser(user.getFirstName() + ""
-						+ user.getLastName());
+				requirementSubmission.setSubmissionRequestUser(user.getFirstName() + ""	+ user.getLastName());
 				requirementSubmission.setSubmissionRateStatus(SubmissionRateStatus.REJECTED);
-				if (jsonObj.has("reasonForReject")) {
-					requirementSubmission.setRejectedReason(jsonObj.getString("reasonForReject"));
+				if (StringUtils.isNotBlank(applicantAuthorizationDTO.getComment())) {
+					requirementSubmission.setRejectedReason(applicantAuthorizationDTO.getComment());
 				}
-				if (jsonObj.has("rejectedCategory")) {
-					requirementSubmission.setRejectedCategoryType(jsonObj.getString("rejectedCategory"));
+				if (StringUtils.isNotBlank(applicantAuthorizationDTO.getRejectedCategory())) {
+					requirementSubmission.setRejectedCategoryType(applicantAuthorizationDTO.getRejectedCategory());
 				}
-				if (jsonObj.has("rejectedCategoryOther")) {
-					requirementSubmission.setRejectedCategoryOther(jsonObj.getString("rejectedCategoryOther"));
+				if (StringUtils.isNotBlank(applicantAuthorizationDTO.getRejectedCategoryOther())) {
+					requirementSubmission.setRejectedCategoryOther(applicantAuthorizationDTO.getRejectedCategoryOther());
 				}
 				requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
 			}
