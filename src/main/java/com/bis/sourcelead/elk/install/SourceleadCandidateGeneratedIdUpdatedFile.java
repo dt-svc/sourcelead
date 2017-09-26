@@ -56,8 +56,6 @@ public class SourceleadCandidateGeneratedIdUpdatedFile{
 							        
 							        StringBuffer sb = new StringBuffer();
 							        finalCandidateGeneratedId = sb.append(orgShortCode.toUpperCase()).append(Constants.CANDIDATE_ENTITY).append(ConvetredCandidateId).toString();
-							        System.out.println(finalCandidateGeneratedId);
-							        
 							        
 									 String query = "update sourcelead.CANDIDATE set GENERATED_ID = ? where ID = ? ";
 									 pstmt = conn.prepareStatement(query); // create a statement
