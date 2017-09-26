@@ -36,6 +36,7 @@ import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.States;
 import com.bis.sourcelead.entity.UploadedFile;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.VendorOnboardingTemplate;
 import com.bis.sourcelead.service.ClientImportsService;
 import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.OrgRelationsService;
@@ -43,6 +44,7 @@ import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.StatesService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.service.VendorImportService;
+import com.bis.sourcelead.service.VendorOnboardTemplateService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SessionMaintainanceData;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
@@ -73,11 +75,16 @@ public class VendorController {
 	@Autowired
 	CommonUtil commonUtil;
 	
+	@Autowired
+	VendorOnboardTemplateService vendorOnboardTemplateService;
+	
 //	@Autowired
 //	ClientImportsService clientImportsService;
 	
 	@Autowired
 	private VendorImportService vendorImportService;
+	
+	
 
 	/* This method is used for landing page of vendors tab. So, who has vendors tab access they can see vendors list. No preAuthorize for this method */
 	@RequestMapping(value = "/vendorsList")
@@ -202,6 +209,9 @@ public class VendorController {
 			}
 			sessionData.setNav(Constants.Vendors);
 			request.getSession().setAttribute("sessionData",sessionData);
+			
+			List<VendorOnboardingTemplate> templatesList = vendorOnboardTemplateService.getVendorOnBoardingFinishedTemplatesList(orgLocations.getId());
+			model.addObject("templatesList", templatesList);
 			
 			Countries countries = countriesService.getCountriesByCountryName(orgLocations.getCountry());
 			if(countries != null){

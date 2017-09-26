@@ -325,6 +325,19 @@ function getVendorDetails(){
 								</select>
 							</div>
 						</div>
+						
+						<div class="form-group">
+							<label class="col-md-3">Onboard Templates</label>
+							<div class="col-md-9 candAdvsrch">
+								<select data-placeholder="Select Templates" multiple
+									class="chosen-select form-control" name="templateId" id="templateId"
+									field-name="Template" data-validation-optional="true">
+									<c:forEach var="template" items="${templatesList}">
+										<option value="${template.id}">${template.templateName}</option>
+									</c:forEach>
+								</select>
+							</div>
+						</div>
 
 					</div>
 					<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">
@@ -397,6 +410,7 @@ function getVendorDetails(){
 								</select>
 							</div>
 						</div>
+						
 
 					</div>
 					<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">
