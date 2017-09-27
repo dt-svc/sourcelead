@@ -1,17 +1,19 @@
 package com.bis.sourcelead.service;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
-import static org.hamcrest.CoreMatchers.is;
+
 import org.apache.commons.io.IOUtils;
-import org.hamcrest.core.IsEqual;
 import org.json.JSONObject;
-import static org.junit.Assert.*;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -26,18 +28,17 @@ import org.springframework.test.context.web.AnnotationConfigWebContextLoader;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.bis.sourcelead.SecurityConfig;
 import com.bis.sourcelead.WebAppConfig;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.AddUserDTO;
+import com.bis.sourcelead.dto.AddUserProfileDTO;
 import com.bis.sourcelead.dto.CandidateDTO;
-import com.bis.sourcelead.dto.UserDTO;
-import com.bis.sourcelead.SecurityConfig;
+import com.bis.sourcelead.dto.UserProfileDTO;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
-import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.User;
-import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Status;
 import com.bis.sourcelead.form.UserProfile;
 import com.bis.sourcelead.service.impl.UserServiceImpl;
@@ -227,7 +228,8 @@ public class UserServiceTest {
 		user.setUserName("anusha");
 		user.setWorkPhone("334678903");
 		
-		UserProfile userProfile = new UserProfile();
+		//UserProfile userProfile = new UserProfile();
+		AddUserProfileDTO userProfile = new AddUserProfileDTO();
 		
 		userProfile.setCurrentPassword("bis@123");
 				MultipartFile multipartFile = getMultiPartFile();
@@ -240,7 +242,8 @@ public class UserServiceTest {
 		userProfile.setMobilePhone("54789562123");
 		userProfile.setPassword("Bis@123");
 		
-		assertSame(user, userService.saveUserProfile(userProfile,multipartFile,user));
+		assertSame(user, userService.saveUserProfile(userProfile,user));
+
 	}
 
 	private MultipartFile getMultiPartFile() throws IOException {

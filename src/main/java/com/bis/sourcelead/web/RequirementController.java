@@ -9,6 +9,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
@@ -470,6 +471,7 @@ public class RequirementController {
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		Org loginOrg= (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		Boolean isAdmin = (Boolean) SourceLeadSessionManager.getSessionAttribute(request,"isAdmin");
 		ModelAndView model = new ModelAndView();
 		
 		SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
@@ -482,6 +484,45 @@ public class RequirementController {
 		
 		Timezone timezone = timeZoneService.getTimezone(orgLocations.getTimezone().getId());
 		Requirement requirement = requirementService.getRequirementByRequirementUUID(requirementUUID);
+		
+		 Set<RequirementApproverHierarchy> approverList = requirement.getRequirementApprover();
+		 Integer maxLevel =  requirementApproverHierarchyService.getRequirementApproverHierarachyWithHighestLevel(requirement.getId());
+			if(null != maxLevel && maxLevel >1){
+				if(null != approverList && !approverList.isEmpty()){
+					for(RequirementApproverHierarchy reApprover :approverList){
+						if((loginUser.getId().equals(reApprover.getApproverUserId().getId())) && reApprover.getLevel() == 1){
+							 requirement.setRequirementApproverHierarchyStatus(reApprover.getRequirementApproverStatus().toString());
+						}
+						else if((isAdmin || loginUser.getId().equals(reApprover.getApproverUserId().getId())) && reApprover.getLevel() == 2){
+							 requirement.setRequirementApproverHierarchyStatus(reApprover.getRequirementApproverStatus().toString());
+						}
+					}
+				}
+			}else if(null != maxLevel && maxLevel ==1){
+				int i = 0;
+				if(null != approverList && !approverList.isEmpty()){
+					for(RequirementApproverHierarchy reApprover :approverList){
+						if(null != reApprover.getRequirementApproverStatus().toString() && "" != reApprover.getRequirementApproverStatus().toString()){
+							 requirement.setRequirementApproverHierarchyStatus(reApprover.getRequirementApproverStatus().toString());
+						}
+						i++;
+					}
+				}
+			}
+			
+		Boolean isLoginUserAsApprover = false;
+		RequirementApproverHierarchy requirementApproverHierarchy = requirementApproverHierarchyService.getRequirementApproverHierarchyByRequirementId(requirement.getId(), loginUser.getId());
+		if (requirementApproverHierarchy != null) {
+			isLoginUserAsApprover = true;
+		}
+		requirement.setIsLoginUserAsApprover(isLoginUserAsApprover.toString());
+		
+		if (requirement.getCreatedBy().getId().equals(loginUser.getId())) {
+			requirement.setIsLoginUserAsInitiator("true");
+		}else {
+			requirement.setIsLoginUserAsInitiator("false");
+		}
+		
 		if(null != requirement && requirement.getOrgLocationId().getId().equals(orgLocations.getId())){
 			Long requirementId = requirement.getId();
 			
@@ -498,7 +539,6 @@ public class RequirementController {
 			Boolean isManager = requirementService.checkLoginUserIsRequirementManagerByRequirementIdAndUserId(requirementId, loginUser.getId());
 			model.addObject("isManager",isManager);
 			
-			Boolean isAdmin = userRoleService.isUserAdminByOrgLocationId(loginUser.getId(),orgLocations.getId());
 			model.addObject("isAdmin",isAdmin);
 	
 			model.addObject("sourceleadUrl", sourceleadUrl);
@@ -734,27 +774,47 @@ public class RequirementController {
 			 
 			}
 		
-		    List<LookUpData> educationsList = lookUpDataService.getLookUpDataByCategory(Constants.EDUCATIONS);
-			model.addObject("educationsList", educationsList);
+			if(requirement != null && requirement.getId() != null){
+				List<String> newlyAddededucationList = requirementService.getAllRequirementEducationByRequirementId(requirement.getId());
+			       List<String> educationsList = lookUpDataService.getLookUpDataByCategoryEducation();
+			       
+			       String education = newlyAddededucationList.get(0);
+					if(!"null".equalsIgnoreCase(education) && null != education){
+					String arr[] = education.split(",");
+					for(String editEducationName : arr){
+						if(!educationsList.contains(editEducationName)){
+							educationsList.add(editEducationName);
+						}
+					}
+				      model.addObject("educationsList", educationsList);
+					}else{
+					  model.addObject("educationsList", educationsList);
+					} 
+				}else{
+		         // List<LookUpData> educationsListData = lookUpDataService.getLookUpDataByCategory(Constants.EDUCATIONS);
+		          List<String> educationsList = lookUpDataService.getLookUpDataByCategoryEducation();
+				  model.addObject("educationsList", educationsList);
+				}
 			
 			/*List<LookUpData> skillsList = lookUpDataService.getLookUpDataByCategory(Constants.SKILLS);
 			model.addObject("skillsList", skillsList);*/
-			
-			
 			
 			if(requirement != null && requirement.getId() != null){
 
 				List<String> allReqSkills = requirementService.getAllRequirementSkillsByRequirementI(requirement.getId());
 					List<String> skillsList = lookUpDataService.getAllSkillsBySkillCategory();
-					List<String> totSkils = new ArrayList<String>();
-					if(!allReqSkills.contains(null)){
-						totSkils.addAll(skillsList);
-						totSkils.addAll(allReqSkills);
-						model.addObject("skillsList", totSkils);
-					}else{
-						model.addObject("skillsList", skillsList);
+					String skill = allReqSkills.get(0);
+					if(!"null".equalsIgnoreCase(skill) && null != skill){
+					String arr[] = skill.split(",");
+					for(String editSkillName : arr){
+						if(!skillsList.contains(editSkillName)){
+							skillsList.add(editSkillName);
+						}
 					}
-
+				      model.addObject("skillsList", skillsList);
+					}else{
+					  model.addObject("skillsList", skillsList);
+					} 
 			}else{
 				//List<LookUpData> skillsList = lookUpDataService.getLookUpDataByCategory(Constants.SKILLS);
 				List<String> skillsList = lookUpDataService.getAllSkillsBySkillCategory();

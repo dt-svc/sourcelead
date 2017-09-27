@@ -327,11 +327,11 @@ public class CandidateServiceImpl implements CandidateService {
 		if(candidateDto.getLocation() != null){
 			candidate.setLocation(candidateDto.getLocation());
 		}
-		if(candidateDto.getZipCode() != null){
+		if(candidateDto.getZipcode()!= null){
 			if(candidate.getZipCode() != null){
-				activitySummary.append("Zip Code").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidate.getZipCode()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDto.getZipCode()).append(Constants.NEW_VALUE_TAG_END).append(" ");
+				activitySummary.append("Zip Code").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidate.getZipCode()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDto.getZipcode()).append(Constants.NEW_VALUE_TAG_END).append(" ");
 			}
-			candidate.setZipCode(candidateDto.getZipCode());
+			candidate.setZipCode(candidateDto.getZipcode());
 		}
 		
 		if(candidateDto.getLatitude() != null){
@@ -423,18 +423,16 @@ public class CandidateServiceImpl implements CandidateService {
 			}
 		candidate.setSummary(candidateDto.getSummary());
 		}
-		if(StringUtils.isNotBlank(candidateDto.getDesignationType())){
+		
 			if(candidate.getDesignationType() != null ){
 				activitySummary.append("Designation Type").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidate.getDesignationType()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDto.getDesignationType()).append(Constants.NEW_VALUE_TAG_END).append(" ");
 			}
 		candidate.setDesignationType(candidateDto.getDesignationType());
-		}
-		if(StringUtils.isNotBlank(candidateDto.getExperienceYears())){
+		
 			if(candidate.getExperienceYears() != null ){
 				activitySummary.append("Experience Years").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidate.getExperienceYears()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDto.getExperienceYears()).append(Constants.NEW_VALUE_TAG_END).append(" ");
 			}
 		candidate.setExperienceYears(candidateDto.getExperienceYears());
-		}
 		
 		
 		if(StringUtils.isNotBlank(candidateDto.getExperienceMonths())){
@@ -446,12 +444,10 @@ public class CandidateServiceImpl implements CandidateService {
 			candidate.setExperienceMonths(null);	
 		}
 		
-		if(StringUtils.isNotBlank(candidateDto.getNoticePeriod())){
 			if(candidate.getNoticePeriod() != null){
 				activitySummary.append("Notice Period").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidate.getNoticePeriod()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDto.getNoticePeriod()).append(Constants.NEW_VALUE_TAG_END).append(" ");
 			}
 			candidate.setNoticePeriod(candidateDto.getNoticePeriod());	
-		}
 		
 		if(StringUtils.isNotBlank(candidateDto.getAddress())){
 			if(candidate.getAddress() != null ){
@@ -482,12 +478,10 @@ public class CandidateServiceImpl implements CandidateService {
 	  	 
 		}
 		
-		if(StringUtils.isNotBlank(candidateDto.getPrimarySkill())){
 			if(candidate.getPrimarySkill() != null){
 				activitySummary.append("Primary Skills").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidate.getPrimarySkill()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDto.getPrimarySkill()).append(Constants.NEW_VALUE_TAG_END).append(" ");
 			}
 			candidate.setPrimarySkill(candidateDto.getPrimarySkill());
-		}
 
 		if(StringUtils.isNotBlank(candidateDto.getVendors())){
 			OrgRelations orgRelation = orgRelationsService.getOrRelationsById(Long.parseLong(candidateDto.getVendors()));
@@ -1044,8 +1038,8 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 			}else{
 				candidate.setLocation(null);
 			}
-			if(StringUtils.isNotBlank(candidateDTO.getZipCode())){
-				candidate.setZipCode(candidateDTO.getZipCode());
+			if(StringUtils.isNotBlank(candidateDTO.getZipcode())){
+				candidate.setZipCode(candidateDTO.getZipcode());
 			}else{
 				candidate.setZipCode(null);
 			}			
@@ -1555,9 +1549,9 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 				 }
 				 
 				//photo Details - 5 %
-				 if(can.getDocFile()!=null){
+				 if(can.getFileUrl()!=null){
 					 percentage = percentage + 5; 
-				 }else if(can.getConsultantUser() != null && can.getConsultantUser().getDocFile() != null){
+				 }else if(can.getConsultantUser() != null && can.getConsultantUser().getFileUrl() != null){
 					 percentage = percentage + 5; 
 				 }
 

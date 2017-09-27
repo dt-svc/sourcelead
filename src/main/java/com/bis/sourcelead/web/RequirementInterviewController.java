@@ -268,21 +268,21 @@ public class RequirementInterviewController {
 				Date dateTimeFormatstartDate =  DATE_TIME.parse(startDateFormatTimeStart);
 				
 				
-				java.sql.Date endDatesqlformat = new java.sql.Date(convertedDateEnd.getTime());
-		    	String stringDateFormatendDate =  Constants.DMY.format(endDatesqlformat);
-				Date dateFormatendDate =  Constants.DMY.parse(stringDateFormatendDate);
-				 
-				/*date-time format*/
-		    	java.sql.Timestamp endDateSql = new java.sql.Timestamp(convertedDateEnd.getTime());
-		    	String endDateFormatTimeStart =  DATE_TIME.format(endDateSql);
-				Date dateTimeFormatendDate =  DATE_TIME.parse(endDateFormatTimeStart);
-				
 				if(convertedDateStart != null){
 			    	 if((dateFormatCurrentDate.equals(dateFormatstartDate) && dateTimeFormatstartDate.after(dateTimeCurrentDate)) || dateTimeFormatstartDate.after(dateTimeCurrentDate)){
 			    		 requirementInterview.setStartTimeStr("interviewStartTime");
 			      }
 			     }
 			     if(convertedDateEnd != null){
+						java.sql.Date endDatesqlformat = new java.sql.Date(convertedDateEnd.getTime());
+				    	String stringDateFormatendDate =  Constants.DMY.format(endDatesqlformat);
+						Date dateFormatendDate =  Constants.DMY.parse(stringDateFormatendDate);
+						 
+						/*date-time format*/
+				    	java.sql.Timestamp endDateSql = new java.sql.Timestamp(convertedDateEnd.getTime());
+				    	String endDateFormatTimeStart =  DATE_TIME.format(endDateSql);
+						Date dateTimeFormatendDate =  DATE_TIME.parse(endDateFormatTimeStart);
+						
 			    	 if(dateFormatCurrentDate.equals(dateFormatendDate) && dateTimeCurrentDate.before(dateTimeFormatendDate) || dateTimeCurrentDate.before(dateTimeFormatendDate)){
 			    		 requirementInterview.setEndTimeStr("interviewEndTime");
 			    	 }

@@ -146,6 +146,9 @@ public class RequirementSubmission implements Serializable{
 	@Column(name = "STATUS")
     private Integer status;
 	
+	@Column(name = "FILE_URL")
+    private String docURL;
+	
 	@Column(name = "SCORE")
     private String candidateScore;
 	
@@ -497,6 +500,18 @@ public class RequirementSubmission implements Serializable{
     @Transient
     @JsonProperty
 	 private int profilePercentage;
+    
+    @Transient
+    @JsonProperty
+	private String fileContentType;
+    
+    @Transient
+    @JsonProperty
+	private String fileName;
+    
+    @Transient
+    @JsonProperty
+	private String fileURL;
     
     @Transient
     @JsonProperty
@@ -1533,6 +1548,44 @@ public class RequirementSubmission implements Serializable{
 
 	public void setRequirementCurrentStatus(REQUIREMENT_SUBMISSION_STATUS requirementCurrentStatus) {
 		this.requirementCurrentStatus = requirementCurrentStatus;
+	}
+
+	public String getFileContentType()
+	{
+		return fileContentType;
+	}
+
+	public void setFileContentType(String fileContentType)
+	{
+		this.fileContentType = fileContentType;
+	}
+
+	public String getFileName()
+	{
+		return fileName;
+	}
+
+	public void setFileName(String fileName)
+	{
+		this.fileName = fileName;
+	}
+
+	public String getFileURL()
+	{
+		return fileURL;
+	}
+
+	public void setFileURL(String fileURL)
+	{
+		this.fileURL = fileURL;
+	}
+
+	public String getDocURL() {
+		return docURL;
+	}
+
+	public void setDocURL(String docURL) {
+		this.docURL = docURL;
 	}
 
 	
