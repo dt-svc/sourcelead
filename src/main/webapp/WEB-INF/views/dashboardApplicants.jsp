@@ -195,7 +195,7 @@ function rejectApplicantAlertMessage(submissionId, status){
      
      //result = result +"        <p>Applicant reject message here</p>";
      result = result +"    <div class='clearfix'>";
-     result = result +"        <textarea  id='reasonForReject' class='form-control txtarea_action' name='reasonForReject'  placeholder='Comments here' onkeypress='dashboardReasonForRejectRemoveSpaces();' data-validation='required validate_Space validate_length length2-500' field-name='Reason'></textarea>";
+     result = result +"        <textarea  id='comment' class='form-control txtarea_action' name='comment'  placeholder='Comments here' onkeypress='dashboardReasonForRejectRemoveSpaces();' data-validation='required validate_Space validate_length length2-500' field-name='Reason'></textarea>";
      result = result +" </div>";
      result = result +" </div>";
      result = result + ' <div id="reasonForApplicantDiv"/>';
@@ -220,24 +220,12 @@ function rejectApplicantAlertMessage(submissionId, status){
 </script>
 <script type="text/javascript">
     function acceptCandidateFromDashboard(submissionId, status){
-		var sourceleadUrl = '${sourceleadUrl}';
 		if ($('#rejected_from_dashboard').validate(false, validationSettings)) {
-			
-			var frm = $('#rejected_from_dashboard').serializeFormJSON();
-			var con = JSON.stringify(frm);
-			con = con.replace(/[{}]/g, "");
-			var form = $('#rejected_from_dashboard')[0];
-	  		var formData = new FormData(form); 
-			var jsonData = encodeURIComponent(con);
+	  		var formData = getFormData('rejected_from_dashboard'); 
 			$.ajax({
 				type : "POST",
 	    	    data: formData,
-	    	    contentType : 'application/json; charset=utf-8',
-	    	    enctype: 'multipart/form-data',
-		        processData: false,
-		        contentType:false,
-	    	    dataType : 'json',
-			    url: sourceleadUrl+"/acceptRejectCandidateFromDashboard?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&submissionId="+submissionId+"&status="+status,	    	   
+			    url: sourceleadUrl+"/acceptRejectCandidateFromDashboard?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId+"&status="+status,	    	   
 			    success: function(data) {
                                 	 ApplicantAuthorization('requestSent');
                                 	 $("#selector4").removeAttr("style");
@@ -304,22 +292,12 @@ function cancelAlert(){
 	function acceptRejectCandidateFromDashboard(submissionId, status){
 		
 		if ($('#rejected_from_dashboard').validate(false, validationSettings)) {
-			var sourceleadUrl = '${sourceleadUrl}';
-			var frm = $('#rejected_from_dashboard').serializeFormJSON();
-			var con = JSON.stringify(frm);
-			con = con.replace(/[{}]/g, "");
-			var form = $('#rejected_from_dashboard')[0];
-	  		var formData = new FormData(form); 
-			var jsonData = encodeURIComponent(con);
+			
+	  		var formData = getFormData('rejected_from_dashboard'); 
 			$.ajax({
 				type : "POST",
 	    	    data: formData,
-	    	    contentType : 'application/json; charset=utf-8',
-	    	    enctype: 'multipart/form-data',
-		        processData: false,
-		        contentType:false,
-	    	    dataType : 'json',
-			    url: sourceleadUrl+"/acceptRejectCandidateFromDashboard?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&submissionId="+submissionId+"&status="+status,	    	   
+			    url: sourceleadUrl+"/acceptRejectCandidateFromDashboard?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId+"&status="+status,	    	   
 			    success: function(data) {
 			    	$("#popUp").empty();
 			    	$("#rejectApplicantAlert").empty();

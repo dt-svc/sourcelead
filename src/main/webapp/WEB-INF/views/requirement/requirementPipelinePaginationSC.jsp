@@ -53,6 +53,7 @@
 										"render" : function(data, type, opt,
 												meta) {
 											var result = "";
+											$("#emptyPipelinelist").val(1);
 											'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_APPLICANT\')">';
 											result = result
 													+ '         <td><div onclick="applicantQuickViewProfile('
