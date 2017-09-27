@@ -72,8 +72,6 @@ public interface ProjectsDao {
 	
 	Integer getProjectApproversCountByUserIdAndOrgLocationId(Long userId,Long orgLocationId)throws Exception;
 	
-	List<Projects> getProjectBasedClientsByOrgLocationsIdAndApproverUserId(Long orgLocationsId, Long userId) throws Exception;
-
 	List<Long> getProjectIdsByOrgLocationsId(Long orgLocationsId) throws Exception;
 	
 	Integer getProjectCountByOrgLocationId(Long orgLocationId)throws Exception;

@@ -722,25 +722,6 @@ public class ProjectsDaoImpl implements ProjectsDao{
 
 		
 		
-		@SuppressWarnings("unchecked")
-		@Override
-		@Transactional(rollbackFor = { Exception.class })
-		public List<Projects> getProjectBasedClientsByOrgLocationsIdAndApproverUserId(Long orgLocationsId, Long userId) {
-			logger.debug("In ProjectsDaoImpl class getProjectByOrgLocationsId method");
-			Session session = this.sessionFactory.getCurrentSession();   
-			String query= " from Projects projects left join fetch projects.orgRelationId orgRelation left join fetch orgRelation.responderLocationId responder left join fetch responder.org left join fetch orgRelation.locationId initiator left join fetch initiator.org  "
-					+ " where projects.orgRelationId IS NOT NULL and projects.orgLocationsId = :orgLocationsId and projects.id IN "
-					   +"("
-						 + " select hierarchy.projectId.id from ProjectApproverHierarchy hierarchy  where  "
-						 + "  hierarchy.approverUserId.id = :userId "
-						 + " OR "
-						 + Constants.loginUserAsAdminForProjects
-					  + " ) group by projects.orgRelationId";
-			List<Projects> projectsList =  session.createQuery(query).setLong("orgLocationsId", orgLocationsId).setLong("userId", userId).setCacheable(true).list();
-			return projectsList;
-		}
-		
-		
 		@Override
 		@Transactional(rollbackFor = { Exception.class })
 		public Projects getProjectByIdAndLoginOrgId(Long projectId, Long orgLocationId) throws Exception {

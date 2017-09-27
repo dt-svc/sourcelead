@@ -12,6 +12,8 @@ public interface ProjectClientService {
 	
 	List<ProjectClients> getProjectClientsListByProjectId(Long projectId) throws Exception;
 	
+	List<ProjectClients> getProjectClientsListByLoginUserAndOrgLocationId(Long orgLocationsId,Long userId) throws Exception;
+	
 	ProjectClients getProjectClientsByProjectIdAndOrgLocationIdAndOrgRelationId(Long projectId,Long orgLocationsId,Long orgRelationId) throws Exception;
 	
 	ProjectClients getProjectClientsByUUID(String uuid) throws Exception;
