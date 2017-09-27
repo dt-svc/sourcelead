@@ -30,7 +30,7 @@
               </a>
           </li>
         
-          <li class="dropdown">
+          <!-- <li class="dropdown">
             <span class="dropdown-toggle" id="menu1" data-toggle="dropdown">
                 <i class="fa fa-filter"></i><span>Type</span><i class="glyphicon glyphicon-play"></i></span>|
           
@@ -50,7 +50,7 @@
               </li>
             </ul>
           </div>
-        </li>
+        </li> -->
         <div class="clearfix"></div>
       </ul>
       <div class="clearfix"></div>
