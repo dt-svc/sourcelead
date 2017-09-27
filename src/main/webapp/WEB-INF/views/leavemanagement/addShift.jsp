@@ -26,29 +26,30 @@
        <label class="col-md-3">Shift Name<span
 							class="text-danger">&nbsp;*</span></label>
        <div class="col-md-9">
+       <input type="hidden" name="shiftId" id="shiftId" value="${shift.id}"/>
        <input type="text" class="form-control" id="shiftName"
-			name="shiftName"  field-name="Shift Name" data-validation = "required">
+			name="shiftName" value="${shift.shiftName}"  field-name="Shift Name" data-validation = "required">
        </div>
     </div>
     <div class="form-group">
        <label class="col-md-3">Time in</label>
         <div class="col-md-9">
        <input type="text" class="timepicker form-control" id="datetimepicker2"
-               name="timeIn" placeholder="HH:MM" field-name="Time in" onblur="checktime()" data-validation = "required">
+               name="timeIn" placeholder="HH:MM" value="${shift.timeIn}" field-name="Time in" onblur="checktime()" data-validation = "required">
        </div>
     </div>
     <div class="form-group">
        <label class="col-md-3">Time Out</label>
         <div class="col-md-9">
        <input type="text" class="timepicker form-control" id="datetimepicker3"
-               name="timeOut" placeholder="HH:MM" field-name="Time Out" onblur="checktime()" data-validation = "required">
+               name="timeOut" placeholder="HH:MM" value="${shift.timeOut}" field-name="Time Out" onblur="checktime()" data-validation = "required">
        </div>
     </div>
     <div class="form-group">
        <label class="col-md-3">Shift Description</label>
        <div class="col-md-9">
  			<textarea rows="2" class="form-control" id="shiftDescription"
-               name="shiftDescription" field-name="Shift Description" ></textarea>
+               name="shiftDescription"  field-name="Shift Description" >${shift.shiftDescription}</textarea>
        </div>
     </div>
           </div>

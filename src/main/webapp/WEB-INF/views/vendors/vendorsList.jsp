@@ -2032,7 +2032,7 @@ function listChange(sel){
 		 document.getElementById("filter4ApprovePop").style.display="block";
 		 //getVendorContactLists();
 // 		 getVendorContactListsELK();
-document.getElementById("advanceSearchDiv").style.display="none";
+document.getElementById("advanceSearchDiv").style.display="block";
 		$("#dataTableSearch").val("");
 		loadVendorContactDataTable("${universalVendorList}");
 	 }

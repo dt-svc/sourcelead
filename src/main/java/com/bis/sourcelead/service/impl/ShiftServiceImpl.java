@@ -3,6 +3,7 @@ package com.bis.sourcelead.service.impl;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -33,7 +34,16 @@ public class ShiftServiceImpl implements ShiftService {
 		User user = userService.getUserById(Long.valueOf(shiftDTO.getUserId()));
 		OrgLocations orgLocation = orgLocationService.getOrgLocations(Long.valueOf(shiftDTO.getOrgLocationId()));
 		
-		Shift shift = new Shift();
+		Shift shift = null;
+		if(StringUtils.isNotBlank(shiftDTO.getShiftId())){
+			shift = shiftDao.getShiftById(shiftDTO.getShiftId());
+			shift.setUpdatedBy(user.getUserCode());
+			shift.setUpdatedDate(new Date());
+		}else{
+			shift = new Shift();
+			shift.setCreatedBy(user.getUserCode());
+			shift.setCreatedDate(new Date());
+		}
 		shift.setOrgLocationId(orgLocation);
 		shift.setShiftName(shiftDTO.getShiftName());
 		if(shiftDTO.getTimeIn() != null && !"".equalsIgnoreCase(shiftDTO.getTimeIn())){
@@ -52,10 +62,6 @@ public class ShiftServiceImpl implements ShiftService {
 			shift.setShiftDescription("");
 		}
 		shift.setStatus(Constants.RECORD_ACTIVE.toString());
-		shift.setCreatedBy(user.getUserCode());
-		shift.setCreatedDate(new Date());
-		shift.setUpdatedBy(user.getUserCode());
-		shift.setUpdatedDate(new Date());
 		
 		return shiftDao.saveShift(shift);
 	}
@@ -68,7 +74,7 @@ public class ShiftServiceImpl implements ShiftService {
 	}
 
 	@Override
-	public List<Shift> getShiftById(String shiftId)
+	public Shift getShiftById(String shiftId)
 	{
 		return shiftDao.getShiftById(shiftId);
 	}

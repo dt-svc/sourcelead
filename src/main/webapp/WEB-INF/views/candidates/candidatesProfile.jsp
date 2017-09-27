@@ -412,7 +412,8 @@ function editCandidate(candidateId){
 							
 							
 							result = result + '</div>';
-							
+							result = result + '<input type="hidden" value="'+json.designationType+'" id="hiddenId" >';
+
 							
 							result = result + '<div class="clearfix mb10">';
                             result = result + '<div class="col-md-6 custom-fields">';
@@ -440,7 +441,7 @@ function editCandidate(candidateId){
 							
 							
 						    result = result + '<span class="" id="hideVendor" style="display:none">'; 
-							result = result + '<div class="col-md-6 custom-fields select-arrow mt" id="errorvendor">';
+							result = result + '<div class="col-md-6 custom-fields select-arrow" id="errorvendor">';
 							result = result + '<select  class="chosen-select form-control select-bg" name="vendors"  id="vendorName" value="'+vendorName+'" placeholder="select Vendor" field-name="Vendor" onchange="getVendorContactList();removeValiationVendor();">';
 							result = result + '</select>';
 							result = result + '<input type="hidden" name="updateVendorName" id="updateVendorName" value="'+vendorName+'" />';
@@ -486,8 +487,8 @@ function editCandidate(candidateId){
 							if(json.designationType == "Other"){
 								$("#designationTypeDiv").show();
 						      }
-							getVendorsByOrgLocation();
 							employementType();
+							getVendorsByOrgLocation();
 							$(".edit-details").toggleClass("edit-details-active");
 							$(".collapse-div").removeClass("edit-details-active");
 							
@@ -1657,10 +1658,29 @@ var currentRate = document.getElementById("currentRate").value;
 <script>
 function employementType(){
 	 var employementType = $('#designationType1').val(); 
+	 var preval = document.getElementById("hiddenId").value;
 		if(employementType == 'C2C'){
-			document.getElementById("hideVendor").style.display="block";
+			/* document.getElementById("hideVendor").style.display="block";
 			 $('#vendorName').attr("data-validation","required"); 
 			 $('#vendorcontactName').attr("data-validation","required"); 
+			 getVendorsByOrgLocation(); */
+			 if(employementType == preval){
+					document.getElementById("hideVendor").style.display="block";
+					 $('#vendorName').attr("data-validation","required"); 
+					 $('#vendorcontactName').attr("data-validation","required");
+					 getVendorsByOrgLocation();
+				}else{
+					document.getElementById("hideVendor").style.display="block";
+				 $('#vendorName').attr("data-validation","required"); 
+				 $('#vendorcontactName').attr("data-validation","required"); 
+				  $('#vendorName').val(''); 
+				 
+		            $('#vendorName').trigger("chosen:updated");
+		            $('#vendorcontactName').empty();
+			//	 $('#vendorcontact').val(''); 
+		           $('#vendorcontactName').trigger("chosen:updated");
+				} 
+			 
 		}else{
 			 document.getElementById("hideVendor").style.display="none";
 			 $('#vendorName').removeAttr("data-validation","required"); 
@@ -1668,22 +1688,42 @@ function employementType(){
 			 
 			 $('#vendorName').val(''); 
 			 $('#vendorcontactName').val(''); 
+			 $('#vendorName').trigger("chosen:updated");
+	            $('#vendorcontactName').empty();
+		//	 $('#vendorcontact').val(''); 
+	           $('#vendorcontactName').trigger("chosen:updated");
 			 
 		}
 		
 		if(employementType == 'C2C-1099'){
-			 document.getElementById("hideVendor").style.display="block";
-			 $('#vendorName').attr("data-validation-optional", "true"); 
-			 $('#vendorcontactName').attr("data-validation-optional", "true");  
+			if(employementType == preval){
+				document.getElementById("hideVendor").style.display="block";
+				 $('#vendorName').attr("data-validation","required"); 
+				 $('#vendorcontactName').attr("data-validation","required");
+				 getVendorsByOrgLocation();
+			}else{
+				document.getElementById("hideVendor").style.display="block";
+			 $('#vendorName').attr("data-validation","required"); 
+			 $('#vendorcontactName').attr("data-validation","required"); 
+			  $('#vendorName').val(''); 
 			 
-			 $("#errorvendor").find("p.jquery_form_error_message").remove();
-			 $("#errorvendorContact").find("p.jquery_form_error_message").remove();
+	            $('#vendorName').trigger("chosen:updated");
+	            $('#vendorcontactName').empty();
+		//	 $('#vendorcontact').val(''); 
+	           $('#vendorcontactName').trigger("chosen:updated");
+			} 
 		}else{
 			 $('#vendorName').removeAttr("data-validation-optional", "true"); 
 			 $('#vendorcontactName').removeAttr("data-validation-optional", "true");  
 			 
 			 $('#vendorName').val(''); 
 			 $('#vendorcontactName').val(''); 
+			 
+			 $('#vendorName').trigger("chosen:updated");
+	            $('#vendorcontactName').empty();
+		//	 $('#vendorcontact').val(''); 
+	           $('#vendorcontactName').trigger("chosen:updated");
+			 
 		} 
 		$('#designationType1 + p').remove();
 }

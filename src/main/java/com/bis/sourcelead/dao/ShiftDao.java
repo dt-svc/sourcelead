@@ -8,8 +8,8 @@ public interface ShiftDao {
 	
 	public Shift saveShift(Shift shift) throws Exception;
 	
-	public List getShiftList(Long orgLocationId);
+	public List<Shift> getShiftList(Long orgLocationId);
 	
-	public List<Shift> getShiftById(String shiftId);
+	public Shift getShiftById(String shiftId);
 	
 }

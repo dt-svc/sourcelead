@@ -120,6 +120,19 @@ public class CandidateEmployersServiceImpl implements CandidateEmployersService 
     			}
         		candidateEmployers.setIsCurrentPosition("N");
         	}
+        	
+        	
+        	if(StringUtils.isNotBlank(candidateEmployerDTO.getStartMonth())){
+        		
+        		if(candidateEmployers != null && candidateEmployers.getStartMonth() != null && candidateEmployers.getStartMonth() != "" && !candidateEmployers.getStartMonth().equalsIgnoreCase(candidateEmployerDTO.getStartMonth())){
+    				activitySummary.append("Start Month").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidateEmployers.getStartMonth()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateEmployerDTO.getStartMonth()).append(Constants.NEW_VALUE_TAG_END).append(" ");
+    			}
+ 				   candidateEmployers.setStartMonth(candidateEmployerDTO.getStartMonth());
+        		
+        	}else{
+        		candidateEmployers.setStartMonth("");
+        	  }
+        	
         	if(StringUtils.isNotBlank(candidateEmployerDTO.getStartYear())){
         		if(candidateEmployers != null && candidateEmployers.getStartYear() != null && candidateEmployers.getStartYear() != "" && !candidateEmployers.getStartYear().equalsIgnoreCase(candidateEmployerDTO.getStartYear())){
     				activitySummary.append("Start Year").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidateEmployers.getStartYear()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateEmployerDTO.getStartYear()).append(Constants.NEW_VALUE_TAG_END).append(" ");
@@ -129,6 +142,9 @@ public class CandidateEmployersServiceImpl implements CandidateEmployersService 
         	}else{
         		 candidateEmployers.setStartYear("");
         	}
+        	
+        	
+        	
         	if(StringUtils.isNotBlank(candidateEmployerDTO.getEndYear()) && !"Y".equals(candidateEmployers.getIsCurrentPosition())){
         		if(candidateEmployers != null && candidateEmployers.getEndYear() != null && candidateEmployers.getEndYear() != "" && !candidateEmployers.getEndYear().equalsIgnoreCase(candidateEmployerDTO.getEndYear())){
     				activitySummary.append("End Year").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidateEmployers.getEndYear()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateEmployerDTO.getEndYear()).append(Constants.NEW_VALUE_TAG_END).append(" ");
@@ -138,6 +154,18 @@ public class CandidateEmployersServiceImpl implements CandidateEmployersService 
         	}else{
        		 candidateEmployers.setEndYear("");
         	}
+        	
+            if(StringUtils.isNotBlank(candidateEmployerDTO.getEndMonth())){
+        		
+        		if(candidateEmployers != null && candidateEmployers.getEndMonth() != null && candidateEmployers.getEndMonth() != "" && !candidateEmployers.getEndMonth().equalsIgnoreCase(candidateEmployerDTO.getEndMonth())){
+    				activitySummary.append("End Month").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidateEmployers.getEndMonth()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateEmployerDTO.getEndMonth()).append(Constants.NEW_VALUE_TAG_END).append(" ");
+    			}
+ 				   candidateEmployers.setEndMonth(candidateEmployerDTO.getEndMonth());
+        		
+        	}else{
+        		candidateEmployers.setEndMonth("");
+        	  }
+        	
         	candidateEmployers.setStatus(Constants.CANDIDATE_ACTIVE);
         	candidateEmployers.setCreatedBy(user.getUserCode());
         	candidateEmployers.setOrgLocationId(orgLocationId);

@@ -359,6 +359,7 @@ public class Constants {
 	public static final String JOBS = "Jobs";
 	public static final String Vendors = "Vendors";
 	public static final String Candidates = "Candidates";
+	public static final String Candidate = "Candidate";
 	public static final String Associates = "Associates";
 	public static final String OnAndOffboard = "OnAndOffboard";
 	public static final String Receivable = "Receivable";
@@ -823,11 +824,23 @@ public class Constants {
 	public static final String ELECTRONIC_WITHDRAWLS = "ELECTRONIC_WITHDRAWLS";
 	public static final String PAYROLL_CHKS = "PAYROLL_CHKS";
 	
+	public static final String LEAVE_TYPE = "LEAVE_TYPE";
+	
 	public static final String DEFAULT_COOLINGOFF_PERIOD = "3 Months";
 	public static final String[] WEEKENDS = {"Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"};
 	
 	public static final String[] MONTHS = {"January","February","March","April","May","June","July","August","September","October","November","December"};
 	
 	public static final String LEAVE_OPTION = "LEAVE_OPTION";
+	
+	public static final String LEAVE_PENDING = "PENDING";
+	public static final String LEAVE_APPROVED = "APPROVED";
+	public static final String LEAVE_REJECTED = "REJECTED";
+	public static final String LEAVE_CANCELLED = "CANCELLED";
+
+	
+	public static final String CLINT_VENDOR_DOES_NOT_EXIST = "false";
+	public static final String CLINT_VENDOR_IF_EXIST = "true";
+	public static final String CLINT_VENDOR_IF_EXIST_AS_SAMEORG = "sameorg";
 
 }

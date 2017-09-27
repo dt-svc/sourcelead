@@ -218,7 +218,7 @@ function candidateSideBar(candidateId){
 						 //result = result+'  <button type="button" class="btn btn-sm btn-primary">';
 						 //result = result+'  <i class="fa fa-upload"></i></button>';
 						 result = result+'  <label class="btn btn-sm btn-primary">';
-					     result = result+'  <i class="fa fa-upload paddingRight"></i>Upload / Change<input type="file" name="file" id="uploadedImage"  accept="image/*" onchange="cropImage(this,\'candidate_form\','+candidateId+');"  style="display: none;">';
+					     result = result+'  <i class="fa fa-upload paddingRight"></i>Upload / Change<input type="file" name="file" id="uploadedImage"  accept="image/*" onchange="cropImage(this,\'candidate_form\','+candidateId+',false);"  style="display: none;">';
 					     result = result+'  </label>';
 					     if(json.fileContentType != null && json.fileContentType != '' && json.fileContentType != 'undefined'){
 						     result = result+'  <button type="button" class="btn btn-sm btn-danger" onclick="deleteImage('+candidateId+')">';
@@ -324,11 +324,18 @@ function candidateSideBar(candidateId){
 			             result = result+'</div>';
 			             result = result+'<div class="socialnetwork-details">';
 			             result = result+'<ul class="list-inline list-unstyled">';
-			             result = result+'<li class="bg-facebook"><a href="javascript:void(0)"> <i class="fa fa-facebook-square"></i></a></li>';
-			             result = result+'<li class="bg-twitter"><a href="javascript:void(0)"> <i class="fa fa-twitter-square"></i></a></li>';
-			             result = result+'<li class="bg-google "><a href="javascript:void(0)"> <i class="fa fa-google-plus-square"></i></a></li>';
-			             result = result+'<li class="bg-linked"><a href="javascript:void(0)"> <i class="fa fa-linkedin-square"></i></a></li>';
-			             result = result+'<li class="bg-web"><a href="javascript:void(0)"> <i class="fa fa-globe"></i></a></li>';
+			             if(json.consultantUser !=null && json.consultantUser.id != null && json.consultantUser.facebook != null && json.consultantUser.facebook !="undefined" && json.consultantUser.facebook != ""){
+				             result = result+'<li class="bg-facebook" title="Facebook"><a target="_blank" href=\"'+json.consultantUser.facebook+'\" > <i class="fa fa-facebook-square" ></i></a></li>';
+				             }
+				             if(json.consultantUser !=null && json.consultantUser.id != null && json.consultantUser.twitter != null && json.consultantUser.twitter !="undefined" && json.consultantUser.twitter != ""){
+				             result = result+'<li class="bg-twitter" title="Twitter"><a target="_blank" href=\"'+json.consultantUser.twitter+'\"> <i class="fa fa-twitter-square" ></i></a></li>';
+				             }
+				             if(json.consultantUser !=null && json.consultantUser.id != null && json.consultantUser.googlePlus != null && json.consultantUser.googlePlus !="undefined" && json.consultantUser.googlePlus != ""){
+				             result = result+'<li class="bg-google " title="Google-Plus"><a target="_blank" href=\"'+json.consultantUser.googlePlus+'\"> <i class="fa fa-google-plus-square" ></i></a></li>';
+				             }
+				             if(json.consultantUser !=null && json.consultantUser.id != null && json.consultantUser.linkedIn != null && json.consultantUser.linkedIn !="undefined" && json.consultantUser.linkedIn != ""){
+				             result = result+'<li class="bg-linked" title="Linkedin"><a target="_blank" href=\"'+json.consultantUser.linkedIn+'\"> <i class="fa fa-linkedin-square" ></i></a></li>';
+				             }
 			             result = result+'</ul>';
 			             result = result+'                 </div>';
 			             result = result+'                 </div>';
@@ -337,18 +344,18 @@ function candidateSideBar(candidateId){
 			             result = result+'                 </div>';
 			             result = result+'               <div class="col-md-6">';
 			             result = result+'                 <ul class="list-unstyled can-perdt">';
-			             result = result+'                   <li><i class="fa fa-envelope-o"></i><a href="#" title="'+json.email+'">'+json.email+'</a></li>';
-			             result = result+'<li><i class="fa fa-phone"></i>'+mobilePhone+''+alternateMobilePhone+'</li>';
+			             result = result+'                   <li><i class="fa fa-envelope-o" title= "Email"></i><a href="#" title="'+json.email+'">'+json.email+'</a></li>';
+			             result = result+'<li><i class="fa fa-phone" title= "Mobile"></i>'+mobilePhone+''+alternateMobilePhone+'</li>';
 			                                                	  
-			             result = result+' <li><i class="fa fa-location-arrow"></i>'+city+''+state+''+country+'</li>';
+			             result = result+' <li><i class="fa fa-location-arrow" title= "Location"></i>'+city+''+state+''+country+'</li>';
 			             
-			             result = result+'<li><i class="fa fa-money"></i><b>Current Rate:</b>';
+			             result = result+'<li><i class="fa fa-money" title= "Current Rate"></i><b>Current Rate:</b>';
 			             
 			             result = result+''+currentRate+' '+currentRateType+''+currentRateCurrency+'';
 			             
 			             result = result+'</li>';
 			             
-			             result = result+'<li><i class="fa fa-money"></i><b>Expected Rate:</b>';
+			             result = result+'<li><i class="fa fa-money" title= "Expected Rate"></i><b>Expected Rate:</b>';
 			             
 			             result = result+''+expectedRate+' '+rateType+''+expectedRateCurrencey+'';
 			             
@@ -364,7 +371,7 @@ function candidateSideBar(candidateId){
 			            result = result+'    <i class="fa fa-comments"></i>';
 			            result = result+'        <div class="commentsimg-inner">';
 			            
-			            result = result+'        	<img onerror="predefineProfileImage(this);" src="'+sourceleadUrl+'/displayUserImage/'+loginUserId+'"/>';
+			            result = result+'        	<img data-id="userProfileImage" onerror="predefineProfileImage(this);" src="${SourceLeadWeb_user.fileUrl}"/>';
 			            result = result+'        </div>';
 			            result = result+'    </div>';
 			            result = result+'     <div class="comments-content">';
@@ -603,7 +610,7 @@ function refreshImageBlock(candidateId){
 						 //result = result+'  <button type="button" class="btn btn-sm btn-primary">';
 						 //result = result+'  <i class="fa fa-upload"></i></button>';
 						 result = result+'  <label class="btn btn-sm btn-primary">';
-					     result = result+'  <i class="fa fa-upload paddingRight"></i>Upload / Change<input type="file" name="file" id="uploadedImage"  accept="image/*" onchange="cropImage(this,\'candidate_form\','+candidateId+');"  style="display: none;">';
+					     result = result+'  <i class="fa fa-upload paddingRight"></i>Upload / Change<input type="file" name="file" id="uploadedImage"  accept="image/*" onchange="cropImage(this,\'candidate_form\','+candidateId+',false);"  style="display: none;">';
 					     result = result+'  </label>';
 					     if(json.fileName != null && json.fileName != '' && json.fileName != 'undefined'){
 						     result = result+'  <button type="button" class="btn btn-sm btn-danger" onclick="deleteImage('+candidateId+')">';
@@ -1504,7 +1511,7 @@ function savedCommentAndCount(candidateId){
 				            result = result+'    <i class="fa fa-comments"></i>';
 				            result = result+'        <div class="commentsimg-inner">';
 				            
-				            result = result+'        	<img onerror="predefineProfileImage(this);" src="'+sourceleadUrl+'/displayUserImage/'+report.commentAuthorUserId+'"/>';
+				            result = result+'        	<img data-id="userProfileImage" onerror="predefineProfileImage(this);" src="'+report.commentAuthorUserImage+'"/>';
 				            result = result+'        </div>';
 				            result = result+'    </div>';
 				            result = result+'     <div class="comments-content">';

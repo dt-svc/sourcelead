@@ -96,14 +96,17 @@ public class InvoicePaymentServiceImpl implements InvoicePaymentService {
 					invoicePayment.setPaymentAmount(invoicePaymentDTO.getCustomeAmount());
 					BigDecimal totalAmount = new BigDecimal(Double.parseDouble(invoicePaymentDTO.getTotalAmount()));
 					BigDecimal customAmount = new BigDecimal(Double.parseDouble(invoicePaymentDTO.getCustomeAmount()));
-					BigDecimal receivedAmount = totalAmount.subtract(customAmount);
-					int res = customAmount.compareTo(receivedAmount);
+					BigDecimal dueAmount = totalAmount.subtract(customAmount);
+					// -1, 0, or 1 as this BigDecimal is numerically less than, equal to, or greater than val.
+					int res = customAmount.compareTo(totalAmount);
 					if (totalAmount.equals(customAmount) || res == 1) {
 						invoice.setPaymentStatus(Constants.INVOICE_STATUS_PAID);
-					} else {
+					} else if(commonUtil.currentDate().after(invoice.getDueDate())) {
+						invoice.setPaymentStatus(Constants.OVER_DUE);
+					}else{
 						invoice.setPaymentStatus(Constants.INVOICE_STATUS_PARTIAL_PAID);
 					}
-					invoice.setDueAmount(String.valueOf(receivedAmount.setScale(2, BigDecimal.ROUND_HALF_EVEN)));
+					invoice.setDueAmount(String.valueOf(dueAmount.setScale(2, BigDecimal.ROUND_HALF_EVEN)));
 
 				}
 			}
@@ -149,7 +152,9 @@ public class InvoicePaymentServiceImpl implements InvoicePaymentService {
 								int res = customAmount.compareTo(totalAmount);
 								if ((conversionAmount.equals(receiverTotalAmount)) || res == -1) {
 									parentInvoice.setPaymentStatus(Constants.INVOICE_STATUS_PAID);
-								} else {
+								}else if(commonUtil.currentDate().after(invoice.getDueDate())) {
+									invoice.setPaymentStatus(Constants.OVER_DUE);
+								}else{
 									parentInvoice.setPaymentStatus(Constants.INVOICE_STATUS_PARTIAL_PAID);
 								}
 							} else {
@@ -161,7 +166,9 @@ public class InvoicePaymentServiceImpl implements InvoicePaymentService {
 								int res = customAmount.compareTo(totalAmount);
 								if ((totalAmount.equals(customAmount)) || res == 1) {
 									parentInvoice.setPaymentStatus(Constants.INVOICE_STATUS_PAID);
-								} else {
+								}else if(commonUtil.currentDate().after(invoice.getDueDate())) {
+									invoice.setPaymentStatus(Constants.OVER_DUE);
+								}else {
 									parentInvoice.setPaymentStatus(Constants.INVOICE_STATUS_PARTIAL_PAID);
 								}
 							}

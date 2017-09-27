@@ -125,8 +125,8 @@ function populategShiftList(json){
            }
            result = result +'  </td>';
            result = result +'  <td>';
-           result = result +'     <div class="tblminwidth-50">'                                                                                       
-           result = result +'          <span title="Edit" class="paddingRight"><i onclick= "editShift(\''+report.id+'\');" class="fa fa-pencil text-primary cursorPointer" ></i></span>';       
+           result = result +'     <div class="tblminwidth-50">'                                                                                         
+           result = result +'          <span title="Edit" class="paddingRight" onclick="editShift(\''+report.id+'\');"><i class="fa fa-pencil text-primary cursorPointer"></i></span>';       
            result = result +'          <span title="Delete" class="paddingLeft"><i onclick= "deleteShift();" class="fa fa-trash text-danger cursorPointer"></i></span>';         
            result = result +'      </div>';                                                                                                            
            result = result +'  </td>';                                                                                                                 
@@ -162,29 +162,10 @@ function shiftPagination(){
 
 
 <script type="text/javascript">
-	function editShift(shiftId) {
-		alert("shiftId")
-		var userId = '${SourceLeadWeb_user.id}';
-			$.ajax({
-			   	type: "POST",
-			   	url: sourceleadUrl+"/editShift?${_csrf.parameterName}=${_csrf.token}&shiftId="+shiftId,	    	   
-			    success: function(data) {
-		   			 $("#selector1").removeAttr("style");
-		  			 $("#selector1").css({ display: "block" });
-		  			 $("#msgDiv").html("Client contact removed");
-		  			 $("#popUp").empty();
-		 			 $(".project_inn_mask").fadeOut(200);
-		             msgFadein();
-		             if(data == true){
-		 				location.replace(sourceleadUrl+ "/editShift");
-		 			}
-			    }
-		   }); 
-	}
-	$('body').on('blur', '#addshift_form', function() {
-		$("#addshift_form").showHelpOnFocus();
-		$("#addshift_form").validateOnBlur(false, validationSettings);
-	}); 
+function editShift(shiftId) {
+	alert("fsdf")
+	window.location.href = sourceleadUrl + "/editleaveshift?&shiftId="+shiftId;
+}
 </script>
 
 <script>

@@ -11,6 +11,6 @@ public interface ShiftService {
 
 	public List<Shift> getShiftList(Long orgLocationId);
 
-	public List<Shift> getShiftById(String shiftId);
+	public Shift getShiftById(String shiftId);
 	
 }

@@ -555,7 +555,6 @@ function closePopupDiv(){
 	function checkClientContactAdd(orgRelationId,clientLocationId) {
 		if ($('#clinetContact_form').validate(false, validationSettings)) {
 	        var formData = getFormData("clinetContact_form");
-			var sourceleadUrl = '${sourceleadUrl}';
 			$("#addClientContact").attr("disabled", "disabled");
 			$("#addClientContact").addClass('button').val('Processing..');
 			
