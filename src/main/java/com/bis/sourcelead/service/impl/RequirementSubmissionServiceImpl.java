@@ -49,6 +49,7 @@ import com.bis.sourcelead.dao.RequirementReferDao;
 import com.bis.sourcelead.dao.RequirementSubmissionDao;
 import com.bis.sourcelead.dao.RequirementSubmissionTemplateFieldsDao;
 import com.bis.sourcelead.dao.UserDao;
+import com.bis.sourcelead.dto.ApplicantAuthorizationDTO;
 import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.dto.RequirementDTO;
 import com.bis.sourcelead.dto.RequirementSubmissionsDTO;
@@ -380,25 +381,22 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 					if(jsonObj.has("vendors") && !"".equalsIgnoreCase(jsonObj.getString("vendors"))){
 						OrgRelations orgRelation = orgRelationsService.getOrRelationsById(Long.parseLong(jsonObj.getString("vendors")));
 						candidate.setOrgRelationId(orgRelation);
-						Candidate vendorCandidate =  commonUtil.getVendorCandidate(jsonObj, orgRelation, orgLocations, user);
+						Candidate vendorCandidate = commonUtil.getVendorCandidate(jsonObj, orgRelation, orgLocations, user);
 						candidate.setParentCandidateId(vendorCandidate);
 					}else{
 						candidate.setOrgRelationId(null);
 						candidate.setParentCandidateId(null);
 					}
-					
+
 					if(jsonObj.has("vendorContact") && !"".equalsIgnoreCase(jsonObj.getString("vendorContact"))){
-						OrgSpoc orgspoc = orgSpocService.getOrgSpocById(Long.parseLong(jsonObj.getString("vendorContact")));
-						candidate.setSpocId(orgspoc);
+					   OrgSpoc orgspoc = orgSpocService.getOrgSpocById(Long.parseLong(jsonObj.getString("vendorContact")));
+					  candidate.setSpocId(orgspoc);
 					}else{
-						candidate.setSpocId(null);
+					  candidate.setSpocId(null);
 					}
-					
 					if(jsonObj.has("primarySkill") && !isNullOrEmpty(jsonObj.getString("primarySkill"))){
 						 candidate.setPrimarySkill(jsonObj.getString("primarySkill"));
 					}
-					
-					
 					MasterCandidate masterCandidate = null;
 					masterCandidate = masterCandidateService.getMasterCandidateByInteligence(jsonObj);
 					if(null == masterCandidate){
@@ -1710,20 +1708,23 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 	}
 	
 	@Override
-	public RequirementSubmission acceptRejectCandidate(JSONObject jsonObj, User user,
-			RequirementSubmission requirementSubmission, String decision, MultipartFile multiFile,Org loginOrg,  OrgLocations loginOrgLocation) throws Exception {
+	public RequirementSubmission acceptRejectCandidate(ApplicantAuthorizationDTO  applicantAuthorizationDTO,User user,
+			RequirementSubmission requirementSubmission, String decision,Org loginOrg,  OrgLocations loginOrgLocation) throws Exception {
 		if(requirementSubmission != null){
 			
 			if(StringUtils.equalsIgnoreCase(decision, "accept")){
 				requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.SUBMISSION);
 				requirementSubmission.setSubmissionRateStatus(SubmissionRateStatus.ACCEPTED);
-				if(jsonObj.has("comment")){
-					requirementSubmission.setSubmissionRateComment(jsonObj.getString("comment"));
+				if(StringUtils.isNotBlank(applicantAuthorizationDTO.getComment())){
+					requirementSubmission.setSubmissionRateComment(applicantAuthorizationDTO.getComment());
 				}
-				if(multiFile != null){
-					requirementSubmission.setSubmissionRateDocFile(multiFile.getBytes());
-					requirementSubmission.setSubmissionRateFileContentType(multiFile.getOriginalFilename());
-					requirementSubmission.setSubmissionRateFileName(multiFile.getContentType());
+				if(applicantAuthorizationDTO.getFileInfo() != null){
+					FileInfo info = applicantAuthorizationDTO.getFileInfo().get(0);
+					//requirementSubmission.setSubmissionRateDocFile(multiFile.getBytes());
+					requirementSubmission.setSubmissionRateFileContentType(info.getContentType());
+					requirementSubmission.setSubmissionRateFileName(info.getFileName());
+					requirementSubmission.setDocURL(info.getFileURL());
+					FileUploadUtil.moveFile(applicantAuthorizationDTO.getStaticPath(), info, "requestDocuments");
 				}
 				StringBuilder name = new StringBuilder();
 				if(null !=user.getLastName() && !" ".equalsIgnoreCase(user.getLastName())){
@@ -1742,19 +1743,19 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 				requirementSubmission.setPreviousSubmissionStatus(previousStatus);
 				requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.REJECTED);
 				requirementSubmission.setSubmissionRateStatus(SubmissionRateStatus.REJECTED);
-				if(jsonObj.has("comment")){
-					requirementSubmission.setRejectedReason(jsonObj.getString("comment"));
+				if(StringUtils.isNotBlank(applicantAuthorizationDTO.getComment())){
+					requirementSubmission.setRejectedReason(applicantAuthorizationDTO.getComment());
 				}
 				
 				
 				
-				if(jsonObj.has("rejectedCategory")){
-					requirementSubmission.setRejectedCategoryType(jsonObj.getString("rejectedCategory"));
+				if(StringUtils.isNotBlank(applicantAuthorizationDTO.getRejectedCategory())){
+					requirementSubmission.setRejectedCategoryType(applicantAuthorizationDTO.getRejectedCategory());
 				}
 				
 				
-				if(jsonObj.has("rejectedCategoryOther")){
-					requirementSubmission.setRejectedCategoryOther(jsonObj.getString("rejectedCategoryOther"));
+				if(StringUtils.isNotBlank(applicantAuthorizationDTO.getRejectedCategoryOther())){
+					requirementSubmission.setRejectedCategoryOther(applicantAuthorizationDTO.getRejectedCategoryOther());
 
 				}
 				
@@ -1768,13 +1769,16 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 			}
 			else if(StringUtils.equalsIgnoreCase(decision, "request")){
 				requirementSubmission.setSubmissionRateStatus(SubmissionRateStatus.REQUEST);
-				if(multiFile != null){
-					requirementSubmission.setSubmissionRequestDocFile(multiFile.getBytes());
-					requirementSubmission.setSubmissionRequestFileContentType(multiFile.getContentType());
-					requirementSubmission.setSubmissionRequestFileName(multiFile.getOriginalFilename());
+				if(applicantAuthorizationDTO.getFileInfo() != null){
+					FileInfo info = applicantAuthorizationDTO.getFileInfo().get(0);
+					//requirementSubmission.setSubmissionRateDocFile(multiFile.getBytes());
+					requirementSubmission.setSubmissionRequestFileContentType(info.getContentType());
+					requirementSubmission.setSubmissionRequestFileName(info.getFileName());
+					requirementSubmission.setDocURL(info.getFileURL());
+					FileUploadUtil.moveFile(applicantAuthorizationDTO.getStaticPath(), info, "requestDocuments");
 				}
-				if(jsonObj.has("comment")){
-					requirementSubmission.setSubmissionRequestComment(jsonObj.getString("comment"));
+				if(StringUtils.isNotBlank(applicantAuthorizationDTO.getComment())){
+					requirementSubmission.setSubmissionRequestComment(applicantAuthorizationDTO.getComment());
 				}
 				StringBuilder name = new StringBuilder();
 				if(null !=user.getLastName() && !" ".equalsIgnoreCase(user.getLastName())){
