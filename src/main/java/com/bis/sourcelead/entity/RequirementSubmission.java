@@ -23,11 +23,14 @@ import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
 import org.hibernate.annotations.Type;
 
 import com.bis.sourcelead.enums.ApplicantSubmissionStatus;
 import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 import com.bis.sourcelead.enums.SubmissionRateStatus;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
@@ -42,30 +45,37 @@ public class RequirementSubmission implements Serializable{
     @Column(name = "ID", nullable = false)
     private Long id;
  	
+	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne
 	@JoinColumn(name = "REQUIREMENT_ID")
    	private Requirement requirement;
 	
+	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne
 	@JoinColumn(name = "CANDIDATE_ID")
    	private Candidate candidate;
 	
+	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne
 	@JoinColumn(name = "VENDOR_CANDIDATE_ID")
    	private Candidate vendorCandidateId;
 	
+	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne 
 	@JoinColumn(name = "SOURCE_SUBMISSION_ID") 
    	private RequirementSubmission sourceSubmission;
 	
+	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne
 	@JoinColumn(name = "CANDIDATE_RESUEME_ID")
    	private CandidateResumes candidateResumes;
 	
+	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne
 	@JoinColumn(name = "ORG_LOCATION_ID")
    	private OrgLocations orgLocations;
 	
+	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne
 	@JoinColumn(name = "VENDOR_LOCATION_ID")
    	private OrgLocations vendorLocationId;
@@ -136,6 +146,9 @@ public class RequirementSubmission implements Serializable{
 	@Column(name = "STATUS")
     private Integer status;
 	
+	@Column(name = "FILE_URL")
+    private String docURL;
+	
 	@Column(name = "SCORE")
     private String candidateScore;
 	
@@ -160,11 +173,13 @@ public class RequirementSubmission implements Serializable{
 	@Type(type="text")
 	private String updatedUser;
     
+    @NotFound(action=NotFoundAction.IGNORE)
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="RECRUITER_USER_ID")        
     private User recruiterUserId;
 	
     @Transient
+    @JsonProperty
 	private String userName;
     
     @Transient
@@ -172,36 +187,47 @@ public class RequirementSubmission implements Serializable{
 	private String candidateName;
 	
     @Transient
+    @JsonProperty
 	private String candidateEmail;
 	
     @Transient
+    @JsonProperty
 	private String phoneNumber;
     
     @Transient
+    @JsonProperty
 	private String expectedCTC;
     
     @Transient
+    @JsonProperty
 	private String workExperience;
     
     @Transient
+    @JsonProperty
    	private String createdDateStr;
     
     @Transient
+    @JsonProperty
    	private String upDatedStr;
     
     @Transient
+    @JsonProperty
    	private String createdTimeStr;
     
     @Transient
+    @JsonProperty
    	private String updatedTimeStr;
     
     @Transient
+    @JsonProperty
 	private String skillsList;
     
     @Transient
+    @JsonProperty
    	private String candidateId;
     
     @Transient
+    @JsonProperty
    	private String resumeName;
     
     @Transient
@@ -209,48 +235,62 @@ public class RequirementSubmission implements Serializable{
    	private String requirementName;
     
     @Transient
+    @JsonProperty
    	private Long resumeId;
     
     @Transient
    	private String candidateSummary;
     
     @Transient
+    @JsonProperty
    	private String designationType;
     
     @Transient
+    @JsonProperty
    	private String resumeUUID;
     
     @Transient
+    @JsonProperty
    	private String requirementJobType;
     
     @Transient
+    @JsonProperty
    	private ApplicantSubmissionStatus requirementStage;
     
 	@Transient
+	@JsonProperty
    	private String score;
 	
 	@Transient
+	@JsonProperty
 	private int numOfSubmissions;
 	
 	@Transient
+	@JsonProperty
 	private int numOfShortList;
 	
 	@Transient
+	@JsonProperty
 	private int numOfInterview;
 	
 	@Transient
+	@JsonProperty
 	private int numOfSubmitToClient;
 	
 	@Transient
+	@JsonProperty
 	private int numOfOffers;
 	
 	@Transient
+	@JsonProperty
 	private int numOfRejected;
 	
 	@Transient
+	@JsonProperty
 	private int totalNoOfInterviews;
 	
 	@Transient
+	@JsonProperty
 	private int numofrequestsent;
 	
 	@Transient
@@ -260,135 +300,177 @@ public class RequirementSubmission implements Serializable{
 	List<RequirementInterviewHistory> requirementInterviewHistoryList;
 	
 	@Transient
+	@JsonProperty
 	private String offerJoinDate;
 	
 	@Transient
+	@JsonProperty
 	private String positionType;
 	
 	@Transient
+	@JsonProperty
 	private String offerRate;
 	
 	@Transient
+	@JsonProperty
 	private String attachment;
 	
 	@Transient
+	@JsonProperty
 	private Long offerId;
 	
 	@Transient
+	@JsonProperty
 	private String submittedBy;
 	
 	@Transient
+	@JsonProperty
 	private String proposedSubmissionRate;
 	
 	@Transient
+	@JsonProperty
 	private String expectedRate;
 	
 	@Transient
+	@JsonProperty
 	private String clientSubmissionId;
 	
 	@Transient
+	@JsonProperty
 	private String submittedOn;
 	
 	@Transient
+	@JsonProperty
 	private String state;
 	
 	@Transient
+	@JsonProperty
 	private String city;
 	
 	@Transient
+	@JsonProperty
 	private String country;
 	
 	@Transient
+	@JsonProperty
 	private String ownerName;
 	
 	@Transient
+	@JsonProperty
 	private String clientName;
 	
 	@Transient
+	@JsonProperty
 	private String rate;
 	
 	@Transient
+	@JsonProperty
 	private String employeeType;
 	
 	@Transient
+	@JsonProperty
 	private String orgLocationId;
 	
 	@Transient
+	@JsonProperty
 	private String filename;
 
 	@Transient
+	@JsonProperty
 	private int duplicateCount;
 	
 	@Transient
+	@JsonProperty
 	private Long requirementId;
 	
 	@Transient
+	@JsonProperty
 	private String orgName;
 	
 	@Transient
+	@JsonProperty
 	private String submitToClientRate;
 	
 	@Transient
 	private RequirementSubmissionTemplateFields requirementSubmissionTemplateFields;
 	
 	@Transient
+	@JsonProperty
 	private String requirementUUID;
 	
 	@Transient
+	@JsonProperty
 	private String loginOrgLOcationName;
 	
 	@Transient
+	@JsonProperty
 	private String requirementSubmissionStatus;
 	
 	@Transient
+	@JsonProperty
 	private String requirementJobId;
 
 	@Transient
+	@JsonProperty
 	private String submitToClientRateType;
 	
 	@Transient
+	@JsonProperty
 	private String rateType;
 	
 	@Transient
+	@JsonProperty
 	private String referredBy;
 	
 	@Transient
+	@JsonProperty
 	private String referredOn;
 	
 	@Transient
 	private List<RequirementSubmission> requirementSubmissionList;
 	
 	@Transient
+	@JsonProperty
 	private String candidateSource;
 
     @Transient
+    @JsonProperty
 	private String candidateUUID;
     
     @Transient
+    @JsonProperty
 	private String paymentType;
     
     @Transient
+    @JsonProperty
 	private String isClientSubmission;
     
     @Transient
+    @JsonProperty
    	private String offerUUID;
     
     @Transient
+    @JsonProperty
    	private String onboardUUId;
     
     @Transient
+    @JsonProperty
    	private String onboardStatus;
     
     @Transient
+    @JsonProperty
 	private String lastRateStage;
     
     @Transient
+    @JsonProperty
 	private String lastRateIniUserCode;
     
     @Transient
+    @JsonProperty
 	private String lastRateIniLocId;
     
     @Transient
+    @JsonProperty
 	private String lastRateIniType;
     
     @Transient
@@ -401,36 +483,59 @@ public class RequirementSubmission implements Serializable{
 	private String twitterUrl;
     
     @Transient
+    @JsonProperty
   	private String ratePer;
     
     @Transient
+    @JsonProperty
 	private String vendorLocationCode;
     
     @Column(name = "REASON_OTHER_TYPE")
     private String rejectedCategoryOther;
     
     @Transient
+    @JsonProperty
    	private String referUUID;
     
     @Transient
+    @JsonProperty
 	 private int profilePercentage;
     
     @Transient
+    @JsonProperty
+	private String fileContentType;
+    
+    @Transient
+    @JsonProperty
+	private String fileName;
+    
+    @Transient
+    @JsonProperty
+	private String fileURL;
+    
+    @Transient
+    @JsonProperty
 	private REQUIREMENT_SUBMISSION_STATUS requirementCurrentStatus;
     
-	
+    @NotFound(action=NotFoundAction.IGNORE)
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "requirementSubmission")
 	private Set<RequirementSubmissionTemplateFields> requirementSubmissionTemplateFieldsList;
     
+    @NotFound(action=NotFoundAction.IGNORE)
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "submissionId")
    	private Set<RequirementSubmissionHistory> requirementSubmissionHistoryList;
     
+    @JsonBackReference
+    @NotFound(action=NotFoundAction.IGNORE)
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "submissionId")
    	private Set<RequirementInterviewHistory> requirementInterviewHistory;
     
+    @JsonBackReference
+    @NotFound(action=NotFoundAction.IGNORE)
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "submissionId")
    	private Set<RequirementOffers> requirementOffersList;
     
+    @NotFound(action=NotFoundAction.IGNORE)
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "submissionId")
    	private Set<RequirementOfferHistory> requirementOfferHistoryList;
     
@@ -1443,6 +1548,44 @@ public class RequirementSubmission implements Serializable{
 
 	public void setRequirementCurrentStatus(REQUIREMENT_SUBMISSION_STATUS requirementCurrentStatus) {
 		this.requirementCurrentStatus = requirementCurrentStatus;
+	}
+
+	public String getFileContentType()
+	{
+		return fileContentType;
+	}
+
+	public void setFileContentType(String fileContentType)
+	{
+		this.fileContentType = fileContentType;
+	}
+
+	public String getFileName()
+	{
+		return fileName;
+	}
+
+	public void setFileName(String fileName)
+	{
+		this.fileName = fileName;
+	}
+
+	public String getFileURL()
+	{
+		return fileURL;
+	}
+
+	public void setFileURL(String fileURL)
+	{
+		this.fileURL = fileURL;
+	}
+
+	public String getDocURL() {
+		return docURL;
+	}
+
+	public void setDocURL(String docURL) {
+		this.docURL = docURL;
 	}
 
 	

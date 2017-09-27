@@ -31,9 +31,11 @@ import com.bis.sourcelead.service.InvoiceService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.impl.InvoiceDocumentsService;
 import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.util.ConversionUtil;
 import com.bis.sourcelead.util.PdfConversionUtil;
 import com.bis.sourcelead.util.SessionMaintainanceData;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
+import com.itextpdf.text.log.SysoCounter;
 
 @Controller
 public class InvoiceController {
@@ -61,6 +63,9 @@ public class InvoiceController {
 	 
 	@Autowired
 	private InvoiceDocumentsService invoiceDocumentsService;
+	
+	@Autowired
+	private ConversionUtil conversionUtil;
 	
 /**
  * @author Laxman
@@ -124,12 +129,13 @@ public class InvoiceController {
 		{
 			sessionData = new SessionMaintainanceData();
 		}
+		
 		Invoice invoice = invoiceService.getInvoicetByInvoiceUUID(invoiceUUID);
 		if(invoice.getInvoiceCategory() !=null && Constants.EXPENSES.equalsIgnoreCase(invoice.getInvoiceCategory())) {
 			model.setViewName("billing/createExpensesReceivableInvoice");
 		}else if((invoice.getInvoiceCategory() !=null && Constants.EXPENSES.equalsIgnoreCase(invoice.getInvoiceCategory())) && invoice.getProjectID() !=null) {
 			model.setViewName("billing/createExpensesReceivableInvoice");
-		}else if(null != projectId && !"".equalsIgnoreCase(projectId) && !"undefined".equalsIgnoreCase(projectId) && invoice.getInvoiceCategory() ==null){
+		}else if(projectId !=null && !"".equalsIgnoreCase(projectId) && !"null".equalsIgnoreCase(projectId) && !"undefined".equalsIgnoreCase(projectId) && invoice.getInvoiceCategory() ==null){
 			model.setViewName("billing/createProjectReceivableInvoice");
 		}else{
 			model.setViewName("billing/createInvoice");
@@ -216,8 +222,10 @@ public class InvoiceController {
 				String orgName = "";
 				if(orgRelations.getResponderLocationId().getId().longValue() == orgLocations.getId().longValue()){
 					orgName = orgRelations.getLocationId().getOrgLocationName();
+					orgRelations.setClientCurrency(conversionUtil.getVendorOrgCurrencyCode(orgRelations.getLocationId().getCountry()));
 				}if(orgRelations.getLocationId().getId().longValue() == orgLocations.getId().longValue()){
 					orgName = orgRelations.getResponderLocationId().getOrgLocationName();
+					orgRelations.setClientCurrency(conversionUtil.getVendorOrgCurrencyCode(orgRelations.getResponderLocationId().getCountry()));
 				}
 				orgRelations.setOrgName(orgName);
 			}

@@ -14,6 +14,7 @@ import java.util.Map;
 
 import javax.mail.internet.InternetAddress;
 
+import org.apache.commons.lang.StringUtils;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -22,6 +23,12 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.ContractsTemplateDao;
+import com.bis.sourcelead.dto.ContractDocumentsDTO;
+import com.bis.sourcelead.dto.ContractReqDocsDTO;
+import com.bis.sourcelead.dto.ContractsDTO;
+import com.bis.sourcelead.dto.FileInfo;
+import com.bis.sourcelead.dto.ContractTemplateDTO;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.ContractRequestDocuments;
 import com.bis.sourcelead.entity.Contracts;
@@ -50,12 +57,14 @@ import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
+import com.bis.sourcelead.util.FileUploadUtil;
 import com.bis.sourcelead.util.SignatureRequestUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.web.LoginSessionController;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.html.simpleparser.HTMLWorker;
 import com.itextpdf.text.pdf.PdfWriter;
+
 
 @Service
 public class ContractsTemplateServiceImpl implements ContractsTemplateService{
@@ -108,13 +117,13 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 	ProjectMembersService projectMembersService;
 	
 	@Override
-	public ContractsTemplate saveContractTemplate(JSONObject jsonObj, User user, OrgLocations orgLocation) throws Exception {
+	public ContractsTemplate saveContractTemplate(ContractTemplateDTO contractTemplateDTO, JSONObject jsonObj, User user, OrgLocations orgLocation) throws Exception {
 		
 		
 		ContractsTemplate contractsTemplate = null;
-		if(jsonObj.has("templateId")&& null != jsonObj.getString("templateId") && !"".equalsIgnoreCase(jsonObj.getString("templateId"))){
+		if(StringUtils.isNotBlank(contractTemplateDTO.getTemplateId())){
 //			if(){
-				contractsTemplate = contractsTemplateDao.getContractTemplateById(Long.parseLong(jsonObj.getString("templateId")));
+				contractsTemplate = contractsTemplateDao.getContractTemplateById(Long.parseLong(contractTemplateDTO.getTemplateId()));
 //			}else{
 //				contractsTemplate = new ContractsTemplate();
 //			}
@@ -123,20 +132,22 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		}
 		contractsTemplate.setOrgLocationId(orgLocation);
 		
-		contractsTemplate.setTemplateName(jsonObj.getString("templateName"));
+		contractsTemplate.setTemplateName(contractTemplateDTO.getTemplateName());
 		
-		contractsTemplate.setTemplateType(jsonObj.getString("contractType"));
+		for(String templateType : contractTemplateDTO.getContractType())
+		contractsTemplate.setTemplateType(templateType);
 		
-		if(jsonObj.has("letterHead") && !isNullOrEmpty(jsonObj.getString("letterHead"))){
+		//This Is Not Using.
+		/*if(jsonObj.has("letterHead") && !isNullOrEmpty(jsonObj.getString("letterHead"))){
 			contractsTemplate.setLetterHead(jsonObj.getString("letterHead"));
+		}*/
+		
+		if(StringUtils.isNotBlank(contractTemplateDTO.getDescription())){
+			contractsTemplate.setDescription(contractTemplateDTO.getDescription().trim());
 		}
 		
-		if(jsonObj.has("description") && !isNullOrEmpty(jsonObj.getString("description"))){
-			contractsTemplate.setDescription(jsonObj.getString("description").trim());
-		}
-		
-		if(jsonObj.has("templateContent") && !isNullOrEmpty(jsonObj.getString("templateContent"))){
-			String content = jsonObj.getString("templateContent");
+		if(StringUtils.isNotBlank(contractTemplateDTO.getTemplateContent())){
+			String content = contractTemplateDTO.getTemplateContent();
 		//	String header = "<div style='text-align: center;'>"+jsonObj.getString("templateName")+"<br></div><br>";
 		//	String totalBody = header + content;
 			contractsTemplate.setTemplateContent(content);
@@ -176,9 +187,9 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 	}
 
 	@Override
-	public List<ContractsTemplate> getAllContractsTemplatesByOrgLocationid(OrgLocations orgLocation) throws Exception
+	public ResponseList<ContractsTemplate> getAllContractsTemplatesByOrgLocationid(OrgLocations orgLocation, ContractTemplateDTO contractTemplateDTO) throws Exception
 	{
-		return contractsTemplateDao.getAllContractsTemplatesByOrgLocationid(orgLocation);
+		return contractsTemplateDao.getAllContractsTemplatesByOrgLocationid(orgLocation, contractTemplateDTO);
 	}
 
 	@Override
@@ -188,16 +199,16 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 	}
 
 	@Override
-	public Contracts saveNewContract(JSONObject jsonObj, OrgLocations orgLocation, String saveType,User user,Org org,String contractType, MultipartFile multiFile) throws Exception
+	public Contracts saveNewContract(ContractsDTO contractsDTO, OrgLocations orgLocation, String saveType,User user,Org org,String contractType) throws Exception
 	{
 		Contracts contracts;
 		Contracts vendorContracts = null;
 		String contractId="";
 		// date format
 	//	SimpleDateFormat dateFormat = orgLocation.getLocFullFormDateFormatter();
-		if(jsonObj.has("contrId") && null != jsonObj.getString("contrId") && !"".equals(jsonObj.getString("contrId"))){
-			contractId = jsonObj.getString("contrId");
-			contracts = contractsTemplateDao.getContractById(Long.parseLong(jsonObj.getString("contrId")));
+		if(StringUtils.isNotBlank(contractsDTO.getContrId())){
+			contractId = contractsDTO.getContrId();
+			contracts = contractsTemplateDao.getContractById(Long.parseLong(contractId));
 			if(null != contracts && null != contracts.getParentContractId()){
 				vendorContracts = contractsTemplateDao.getChildContractById(contracts.getParentContractId().getId());
 			}else if(Constants.PENDING.equalsIgnoreCase(saveType)){
@@ -222,15 +233,15 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
         SimpleDateFormat format = new SimpleDateFormat(pattern);
         
         Timezone timezone = timeZoneService.getTimezone(orgLocation.getTimezone().getId());
-		if(Constants.NDA.equalsIgnoreCase(jsonObj.getString("contractType")) || Constants.NSA.equalsIgnoreCase(jsonObj.getString("contractType"))){
-			contracts.setContractType("Vendor "+jsonObj.getString("contractType"));
+		if(Constants.NDA.equalsIgnoreCase(contractsDTO.getContractType()) || Constants.NSA.equalsIgnoreCase(contractsDTO.getContractType())){
+			contracts.setContractType("Vendor "+contractsDTO.getContractType());
 		}
 		else{
-			contracts.setContractType(jsonObj.getString("contractType"));
+			contracts.setContractType(contractsDTO.getContractType());
         }
 		ContractsTemplate contractsTemplate = null;
-		if(jsonObj.has("template")){
-			contractsTemplate = contractsTemplateDao.getContractTemplateById(Long.parseLong(jsonObj.getString("template")));
+		if(StringUtils.isNotBlank(contractsDTO.getTemplate())){
+			contractsTemplate = contractsTemplateDao.getContractTemplateById(Long.parseLong(contractsDTO.getTemplate()));
 			if(null != contractsTemplate){
 				contracts.setContractsTemplate(contractsTemplate);
 				if(null != vendorContracts){
@@ -240,11 +251,21 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		}
 		
 		
-		if(multiFile != null && multiFile.getBytes() != null && !"".equalsIgnoreCase(multiFile.getOriginalFilename())){
+		if (contractsDTO.getFileInfo() != null && contractsDTO.getFileInfo().size()>0) {
+			FileInfo fileInfo = contractsDTO.getFileInfo().get(0);
+			contracts.setFileName(fileInfo.getFileName());
+			contracts.setFileType(fileInfo.getContentType());
+			contracts.setFileURL(fileInfo.getFileURL());
+			if(fileInfo != null){
+				FileUploadUtil.moveFile(contractsDTO.getStaticPath(), fileInfo, "ContractDocs");
+			}
+		}
+		
+		/*if(multiFile != null && multiFile.getBytes() != null && !"".equalsIgnoreCase(multiFile.getOriginalFilename())){
 			contracts.setDocFile(multiFile.getBytes());
 			contracts.setFileName(multiFile.getOriginalFilename());
 			contracts.setFileType(multiFile.getContentType());
-		 }
+		 }*/
 		
 		if(null != vendorContracts){
 			if(null != contractType && !"".equalsIgnoreCase(contractType) && "custom".equalsIgnoreCase(contractType)){
@@ -259,50 +280,50 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 			vendorContracts.setTypeOfContract(Constants.NEW_TYPE);
 		}*/
 		
-		if(jsonObj.has("submissionOffersList") && null != jsonObj.getString("submissionOffersList") && !"".equals(jsonObj.getString("submissionOffersList"))){
-			RequirementSubmission rs = requirementSubmissionService.getRequirementSubmissionById(Long.parseLong(jsonObj.getString("submissionOffersList")));
+		if(StringUtils.isNotBlank(contractsDTO.getSubmissionOffersList())){
+			RequirementSubmission rs = requirementSubmissionService.getRequirementSubmissionById(Long.parseLong(contractsDTO.getSubmissionOffersList()));
 			contracts.setRequirementSubmission(rs);
 			contracts.setCandidate(rs.getCandidate());			
 		}
 		
-		if(Constants.Client_SOW.equals(jsonObj.getString("contractType")) || Constants.Vendor_SOW.equals(jsonObj.getString("contractType"))){
-			if(jsonObj.has("hoursPerWeek") && null != jsonObj.getString("hoursPerWeek") && !"".equals(jsonObj.getString("hoursPerWeek"))){
-				contracts.setHoursPerWeek(jsonObj.getString("hoursPerWeek"));
+		if(Constants.Client_SOW.equals(contractsDTO.getContractType()) || Constants.Vendor_SOW.equals(contractsDTO.getContractType())){
+			if(StringUtils.isNotBlank(contractsDTO.getHoursPerWeek())){
+				contracts.setHoursPerWeek(contractsDTO.getHoursPerWeek());
 			}
 		}
 		
-		if(jsonObj.has("overTimeHours") && null != jsonObj.getString("overTimeHours") && !"".equals(jsonObj.getString("overTimeHours"))){
-			contracts.setOverTimeHours(jsonObj.getString("overTimeHours"));
+		if(StringUtils.isNotBlank(contractsDTO.getOverTimeHours())){
+			contracts.setOverTimeHours(contractsDTO.getOverTimeHours());
 		}
 		
-		if(jsonObj.has("totalHoursEstimated") && null != jsonObj.getString("totalHoursEstimated") && !"".equals(jsonObj.getString("totalHoursEstimated"))){
-			contracts.setTotalHours(jsonObj.getString("totalHoursEstimated"));
+		if(StringUtils.isNotBlank(contractsDTO.getTotalHoursEstimated())){
+			contracts.setTotalHours(contractsDTO.getTotalHoursEstimated());
 		}
 		
-		if(jsonObj.has("overtimeRate") && null != jsonObj.getString("overtimeRate") && !"".equals(jsonObj.getString("overtimeRate"))){
-			contracts.setOvertimeRate(jsonObj.getString("overtimeRate"));
+		if(StringUtils.isNotBlank(contractsDTO.getOvertimeRate())){
+			contracts.setOvertimeRate(contractsDTO.getOvertimeRate());
 		}
 		
-		if(jsonObj.has("overtimeRateType") && null != jsonObj.getString("overtimeRateType") && !"".equals(jsonObj.getString("overtimeRateType"))){
-			contracts.setOvertimeRateType(jsonObj.getString("overtimeRateType"));
+		if(StringUtils.isNotBlank(contractsDTO.getOvertimeRateType())){
+			contracts.setOvertimeRateType(contractsDTO.getOvertimeRateType());
 		}
 		
-		contracts.setContractTitle(jsonObj.getString("contractTitle").trim());
+		contracts.setContractTitle(contractsDTO.getContractTitle().trim());
 		
 		if(null != vendorContracts){
-			vendorContracts.setContractTitle(jsonObj.getString("contractTitle").trim());
+			vendorContracts.setContractTitle(contractsDTO.getContractTitle().trim());
 			vendorContracts.setContractsTemplate(contractsTemplate);
 		}
 		
 		User ownerUser = null;
-		if(jsonObj.has("owner") && null != jsonObj.getString("owner") && !"".equals(jsonObj.getString("owner"))){
-			ownerUser = userService.getUserById(Long.parseLong(jsonObj.getString("owner")));
+		if(StringUtils.isNotBlank(contractsDTO.getOwner())){
+			ownerUser = userService.getUserById(Long.parseLong(contractsDTO.getOwner()));
 			contracts.setOwnerUserId(ownerUser);
 		}
 		
 		DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
-		if(jsonObj.has("startDate") && null != jsonObj.getString("startDate") && !"".equals(jsonObj.getString("startDate"))){
-			Date startTime =  commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(),jsonObj.getString("startDate"));
+		if(StringUtils.isNotBlank(contractsDTO.getStartDate())){
+			Date startTime =  commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(),contractsDTO.getStartDate());
 			String currentTimeStr = Constants.TZ_DF.format(startTime);  
 			String startTimeUTC= CommonUtil.convertTimeZones(timezone.getTimeZoneId(), "UTC", currentTimeStr);
 			Date convertedDate = TZ_DF_TS.parse(startTimeUTC);
@@ -314,55 +335,52 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		
 		//String currentTimeStr = Constants.TZ_DF.format(jsonObj.getString("startDate"));  
 		
-		if(jsonObj.has("endDate")){
-			if(null != jsonObj.getString("endDate") && !"".equals(jsonObj.getString("endDate"))){
-				Date endTimeStr = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(),jsonObj.getString("endDate"));  
-				String endDateStr = Constants.TZ_DF.format(endTimeStr);  
-				String endTimeUTC= CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE, endDateStr);
-				Date convertedEndDate = TZ_DF_TS.parse(endTimeUTC);
-				contracts.setEndDate(convertedEndDate);
-				if(null != vendorContracts){
-					vendorContracts.setEndDate(convertedEndDate);
-				}
+		if(StringUtils.isNotBlank(contractsDTO.getEndDate())){
+			Date endTimeStr = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(),contractsDTO.getEndDate());  
+			String endDateStr = Constants.TZ_DF.format(endTimeStr);  
+			String endTimeUTC= CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE, endDateStr);
+			Date convertedEndDate = TZ_DF_TS.parse(endTimeUTC);
+			contracts.setEndDate(convertedEndDate);
+			if(null != vendorContracts){
+				vendorContracts.setEndDate(convertedEndDate);
 			}
-
 		}
 		User approverUser = null;
 		User vendorContactsUser = null;
-		if(jsonObj.has("approver") && null != jsonObj.getString("approver") && !"".equals(jsonObj.getString("approver"))){
-			 approverUser = userService.getUserById(Long.parseLong(jsonObj.getString("approver")));
+		if(StringUtils.isNotBlank(contractsDTO.getApprover())){
+			 approverUser = userService.getUserById(Long.parseLong(contractsDTO.getApprover()));
 			contracts.setApproverUser(approverUser);
 		}
 		contracts.setOrgLocationId(orgLocation);
-		if((Constants.VENDOR_MSA.equalsIgnoreCase(jsonObj.getString("contractType"))|| Constants.Vendor_SOW.equalsIgnoreCase(jsonObj.getString("contractType"))|| Constants.NDA.equalsIgnoreCase(jsonObj.getString("contractType")) || Constants.NSA.equalsIgnoreCase(jsonObj.getString("contractType")))){
+		if((Constants.VENDOR_MSA.equalsIgnoreCase(contractsDTO.getContractType())|| Constants.Vendor_SOW.equalsIgnoreCase(contractsDTO.getContractType())|| Constants.NDA.equalsIgnoreCase(contractsDTO.getContractType()) || Constants.NSA.equalsIgnoreCase(contractsDTO.getContractType()))){
 			contracts.setInitiatorType(Constants.CLIENT);
-			OrgRelations orgRelations = orgRelationsService.getOrRelationsById(Long.parseLong(jsonObj.getString("orgRelationId")));
+			OrgRelations orgRelations = orgRelationsService.getOrRelationsById(Long.parseLong(contractsDTO.getOrgRelationId()));
 			contracts.setOrgRelations(orgRelations);
 			if(orgRelations.getResponderLocationId().getId().longValue() == orgLocation.getId().longValue()){
 				contracts.setContractOrgLocationId(orgRelations.getLocationId());
 			}else if(orgRelations.getLocationId().getId().longValue() == orgLocation.getId().longValue()){
 				contracts.setContractOrgLocationId(orgRelations.getResponderLocationId());
 			}
-			vendorContactsUser = userService.getUserById(Long.parseLong(jsonObj.getString("vendorContact")));
+			vendorContactsUser = userService.getUserById(Long.parseLong(contractsDTO.getVendorContact()));
 			contracts.setContactUser(vendorContactsUser);
 		}
-		if(Constants.CLIENT_MSA.equalsIgnoreCase(jsonObj.getString("contractType")) ||  Constants.Client_SOW.equalsIgnoreCase(jsonObj.getString("contractType"))){
+		if(Constants.CLIENT_MSA.equalsIgnoreCase(contractsDTO.getContractType()) ||  Constants.Client_SOW.equalsIgnoreCase(contractsDTO.getContractType())){
 			contracts.setInitiatorType(Constants.VENDOR);
-			OrgRelations orgRelations = orgRelationsService.getOrRelationsById(Long.parseLong(jsonObj.getString("clientOrgRelationId")));
+			OrgRelations orgRelations = orgRelationsService.getOrRelationsById(Long.parseLong(contractsDTO.getClientOrgRelationId()));
 			contracts.setOrgRelations(orgRelations);
 			if(orgRelations.getResponderLocationId().getId().longValue() == orgLocation.getId().longValue()){
 				contracts.setContractOrgLocationId(orgRelations.getLocationId());
 			}else if(orgRelations.getLocationId().getId().longValue() == orgLocation.getId().longValue()){
 				contracts.setContractOrgLocationId(orgRelations.getResponderLocationId());
 			}
-			vendorContactsUser = userService.getUserById(Long.parseLong(jsonObj.getString("clientContact")));
+			vendorContactsUser = userService.getUserById(Long.parseLong(contractsDTO.getClientContact()));
 			contracts.setContactUser(vendorContactsUser);
 		}
 		
-		if(jsonObj.has("percentageReward") && null != jsonObj.getString("percentageReward") && !"".equals(jsonObj.getString("percentageReward")) ){
-			contracts.setBillingAmount(jsonObj.getString("percentageReward"));
+		if(StringUtils.isNotBlank(contractsDTO.getTaxPercentageReward())){
+			contracts.setBillingAmount(contractsDTO.getTaxPercentageReward());
 			if(null != vendorContracts){
-				vendorContracts.setBillingAmount(jsonObj.getString("percentageReward"));
+				vendorContracts.setBillingAmount(contractsDTO.getTaxPercentageReward());
 			}
 				contracts.setBillingPer("Percentage");
 				if(null != vendorContracts){
@@ -370,84 +388,84 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 				}
 		}
 		
-		if (Constants.FULL_TIME_OFFER.equalsIgnoreCase(jsonObj.getString("contractType"))){
-			if(jsonObj.has("candiFlatReward") && null != jsonObj.getString("candiFlatReward") && !"".equals(jsonObj.getString("candiFlatReward")) ){
-				contracts.setBillingAmount(jsonObj.getString("candiFlatReward"));
+		if (Constants.FULL_TIME_OFFER.equalsIgnoreCase(contractsDTO.getContractType())){
+			if(StringUtils.isNotBlank(contractsDTO.getCandiFlatReward())){
+				contracts.setBillingAmount(contractsDTO.getCandiFlatReward());
 				if(null != vendorContracts){
-					vendorContracts.setBillingAmount(jsonObj.getString("candiFlatReward"));
+					vendorContracts.setBillingAmount(contractsDTO.getCandiFlatReward());
 				}
-				
-				if(jsonObj.has("flatRateType") && null != jsonObj.getString("flatRateType") && !"".equals(jsonObj.getString("flatRateType")) ){
-					contracts.setBillingPer(jsonObj.getString("flatRateType"));
+				//jsonObj.getString("flatRateType")
+				if(StringUtils.isNotBlank(contractsDTO.getTaxFlatRateType()) ){
+					contracts.setBillingPer(contractsDTO.getTaxFlatRateType());
 					if(null != vendorContracts){
-						vendorContracts.setBillingPer(jsonObj.getString("flatRateType"));
+						vendorContracts.setBillingPer(contractsDTO.getTaxFlatRateType());
 					}
 				}
 			}
 			
-			if(jsonObj.has("candiRateType") && null != jsonObj.getString("candiRateType") && !"".equals(jsonObj.getString("candiRateType")) ){
-				contracts.setBillingRateType(jsonObj.getString("candiRateType"));
+			if(StringUtils.isNotBlank(contractsDTO.getCandiRateType()) ){
+				contracts.setBillingRateType(contractsDTO.getCandiRateType());
 				if(null != vendorContracts){
-					vendorContracts.setBillingRateType(jsonObj.getString("candiRateType"));
+					vendorContracts.setBillingRateType(contractsDTO.getCandiRateType());
 				}
 			}
 			
-			if(jsonObj.has("candiRatePer") && null != jsonObj.getString("candiRatePer") && !"".equals(jsonObj.getString("candiRatePer")) ){
-				contracts.setBillingRatePer(jsonObj.getString("candiRatePer"));
+			if(StringUtils.isNotBlank(contractsDTO.getCandiRatePer())){
+				contracts.setBillingRatePer(contractsDTO.getCandiRatePer());
 				if(null != vendorContracts){
-					vendorContracts.setBillingRatePer(jsonObj.getString("candiRatePer"));
+					vendorContracts.setBillingRatePer(contractsDTO.getCandiRatePer());
 				}
 			}
 		}
 		else{
-			if(jsonObj.has("flatReward") && null != jsonObj.getString("flatReward") && !"".equals(jsonObj.getString("flatReward")) ){
-				contracts.setBillingAmount(jsonObj.getString("flatReward"));
+			if(StringUtils.isNotBlank(contractsDTO.getFlatReward())){
+				contracts.setBillingAmount(contractsDTO.getFlatReward());
 				if(null != vendorContracts){
-					vendorContracts.setBillingAmount(jsonObj.getString("flatReward"));
+					vendorContracts.setBillingAmount(contractsDTO.getFlatReward());
 				}
-				
-				if(jsonObj.has("flatRateType") && null != jsonObj.getString("flatRateType") && !"".equals(jsonObj.getString("flatRateType")) ){
-					contracts.setBillingPer(jsonObj.getString("flatRateType"));
+				//jsonObj.getString("flatRateType")
+				if(StringUtils.isNotBlank(contractsDTO.getTaxFlatRateType()) ){
+					contracts.setBillingPer(contractsDTO.getTaxFlatRateType());
 					if(null != vendorContracts){
-						vendorContracts.setBillingPer(jsonObj.getString("flatRateType"));
+						vendorContracts.setBillingPer(contractsDTO.getTaxFlatRateType());
 					}
 				}
 			}
 			
 			
 			
-			if(jsonObj.has("billingRateType") && null != jsonObj.getString("billingRateType") && !"".equals(jsonObj.getString("billingRateType")) ){
-				contracts.setBillingRateType(jsonObj.getString("billingRateType"));
+			if(StringUtils.isNotBlank(contractsDTO.getBillingRateType())){
+				contracts.setBillingRateType(contractsDTO.getBillingRateType());
 				if(null != vendorContracts){
-					vendorContracts.setBillingRateType(jsonObj.getString("billingRateType"));
+					vendorContracts.setBillingRateType(contractsDTO.getBillingRateType());
 				}
 			}
 			
-			if(jsonObj.has("billingRatePer") && null != jsonObj.getString("billingRatePer") && !"".equals(jsonObj.getString("billingRatePer")) ){
-				contracts.setBillingRatePer(jsonObj.getString("billingRatePer"));
+			if(StringUtils.isNotBlank(contractsDTO.getBillingRatePer()) ){
+				contracts.setBillingRatePer(contractsDTO.getBillingRatePer());
 				if(null != vendorContracts){
-					vendorContracts.setBillingRatePer(jsonObj.getString("billingRatePer"));
+					vendorContracts.setBillingRatePer(contractsDTO.getBillingRatePer());
 				}
 			}
 		}
-		if(jsonObj.has("invoiceFrequency") && null != jsonObj.getString("invoiceFrequency") && !"".equals(jsonObj.getString("invoiceFrequency")) ){
-			contracts.setInvoiceFrequency(jsonObj.getString("invoiceFrequency"));
+		if(StringUtils.isNotBlank(contractsDTO.getInvoiceFrequency())){
+			contracts.setInvoiceFrequency(contractsDTO.getInvoiceFrequency());
 			if(null != vendorContracts){
-				vendorContracts.setInvoiceFrequency(jsonObj.getString("invoiceFrequency"));
+				vendorContracts.setInvoiceFrequency(contractsDTO.getInvoiceFrequency());
 			}
 		}
 		
-		if(jsonObj.has("paymentFrequency") && null != jsonObj.getString("paymentFrequency") && !"".equals(jsonObj.getString("paymentFrequency")) ){
-			contracts.setPaymentTerm(jsonObj.getString("paymentFrequency"));
+		if(StringUtils.isNotBlank(contractsDTO.getPaymentFrequency())){
+			contracts.setPaymentTerm(contractsDTO.getPaymentFrequency());
 			if(null != vendorContracts){
-				vendorContracts.setPaymentTerm(jsonObj.getString("paymentFrequency"));
+				vendorContracts.setPaymentTerm(contractsDTO.getPaymentFrequency());
 			}
 		}
 		
-		if(jsonObj.has("taxPercentageReward") && null != jsonObj.getString("taxPercentageReward") && !"".equals(jsonObj.getString("taxPercentageReward")) ){
-			contracts.setTax(jsonObj.getString("taxPercentageReward"));
+		if(StringUtils.isNotBlank(contractsDTO.getTaxPercentageReward())){
+			contracts.setTax(contractsDTO.getTaxPercentageReward());
 			if(null != vendorContracts){
-				vendorContracts.setTax(jsonObj.getString("taxPercentageReward"));
+				vendorContracts.setTax(contractsDTO.getTaxPercentageReward());
 			}
 			contracts.setTaxType("Percentage");
 			if(null != vendorContracts){
@@ -455,39 +473,37 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 			}
 		}
 		
-		if (jsonObj.has("workLocation") && null != jsonObj.getString("workLocation")
-				&& !"".equals(jsonObj.getString("workLocation"))) {
-			contracts.setWorkLocation(jsonObj.getString("workLocation"));
+		if (StringUtils.isNotBlank(contractsDTO.getWorkLocation())) {
+			contracts.setWorkLocation(contractsDTO.getWorkLocation());
 		}
 		
-		if (jsonObj.has("joinDate") && null != jsonObj.getString("joinDate")
-				&& !"".equals(jsonObj.getString("joinDate"))) {
-			Date joinTime = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(),jsonObj.getString("joinDate"));
+		if (StringUtils.isNotBlank(contractsDTO.getJoinDate())) {
+			Date joinTime = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(),contractsDTO.getJoinDate());
 			String currentTimeStr = Constants.TZ_DF.format(joinTime);
 			String startTimeUTC = CommonUtil.convertTimeZones(timezone.getTimeZoneId(), "UTC", currentTimeStr);
 			Date convertedDate = TZ_DF_TS.parse(startTimeUTC);
 			contracts.setJoinDate(convertedDate);
 		}
 		
-		if(jsonObj.has("taxFlatReward") && null != jsonObj.getString("taxFlatReward") && !"".equals(jsonObj.getString("taxFlatReward")) ){
-			contracts.setTax(jsonObj.getString("taxFlatReward"));
+		if(StringUtils.isNotBlank(contractsDTO.getTaxFlatReward()) ){
+			contracts.setTax(contractsDTO.getTaxFlatReward());
 			if(null != vendorContracts){
-				vendorContracts.setTax(jsonObj.getString("taxFlatReward"));
+				vendorContracts.setTax(contractsDTO.getTaxFlatReward());
 			}
-			contracts.setTaxType(jsonObj.getString("taxFlatRateType"));
+			contracts.setTaxType(contractsDTO.getTaxFlatRateType());
 			if(null != vendorContracts){
-				vendorContracts.setTaxType(jsonObj.getString("taxFlatRateType"));
+				vendorContracts.setTaxType(contractsDTO.getTaxFlatRateType());
 			}
 		}
 		
-		if(jsonObj.has("description") && null != jsonObj.getString("description") && !"".equals(jsonObj.getString("description"))){
-			contracts.setDescription(jsonObj.getString("description").trim());
+		if(StringUtils.isNotBlank(contractsDTO.getDescription())){
+			contracts.setDescription(contractsDTO.getDescription().trim());
 			if(null != vendorContracts){
-				vendorContracts.setDescription(jsonObj.getString("description").trim());
+				vendorContracts.setDescription(contractsDTO.getDescription().trim());
 			}
 		}
-		if(jsonObj.has("jurisdiction") && null != jsonObj.getString("jurisdiction") && !"".equals(jsonObj.getString("jurisdiction"))){
-			contracts.setStateJurisdiction(jsonObj.getString("jurisdiction"));
+		if(StringUtils.isNotBlank(contractsDTO.getJurisdiction())){
+			contracts.setStateJurisdiction(contractsDTO.getJurisdiction());
 		}
 		contracts.setStatus("0");
 		if(null != vendorContracts){
@@ -513,7 +529,32 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		}
 		Contracts savedContracts = contractsTemplateDao.saveNewContract(contracts);
 		
-		if(jsonObj.has("maxTaxRowNum") && null != jsonObj.getString("maxTaxRowNum") && !"".equals(jsonObj.getString("maxTaxRowNum"))){		
+		if (contractsDTO.getDocument() != null && contractsDTO.getDocument().size() > 0) {
+			for (ContractDocumentsDTO doc : contractsDTO.getDocument()) {
+				if (doc.getDocumentName() != null) {
+					ContractRequestDocuments contractRequestDocuments = new ContractRequestDocuments();
+					if (StringUtils.isNotBlank(doc.getDocumentName())) {
+						contractRequestDocuments.setFileName(doc.getDocumentName());
+					}
+					if (StringUtils.isNotBlank(doc.getDescription())) {
+						contractRequestDocuments.setDescription(doc.getDescription());
+					}
+					if (StringUtils.isNotBlank(doc.getCandiDoc())) {
+						contractRequestDocuments.setDocType(doc.getCandiDoc());
+					}
+					contractRequestDocuments.setContractId(savedContracts);
+					contractRequestDocuments.setStatus(Constants.MEMBER_ACTIVE);
+					contractRequestDocuments.setCreatedDate(new Date());
+					if (null != user) {
+						contractRequestDocuments.setCreatedBy(user.getUserCode());
+						contractRequestDocuments.setUpdatedBy(user.getUserCode());
+					}
+					contractRequestDocuments.setUpdatedDate(new Date());
+					contractRequestDocumentsService.saveContractRequestDocuments(contractRequestDocuments);
+				}
+			}
+		}
+		/*if(jsonObj.has("maxTaxRowNum") && null != jsonObj.getString("maxTaxRowNum") && !"".equals(jsonObj.getString("maxTaxRowNum"))){		
 		int maxCount = Integer.parseInt(jsonObj.getString("maxTaxRowNum"));
 		for (long c = 1; c < maxCount; c++) {
 				ContractRequestDocuments contractRequestDocuments = new ContractRequestDocuments();
@@ -539,7 +580,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 				contractRequestDocumentsService.saveContractRequestDocuments(contractRequestDocuments);
 				}
 			}
-		}
+		}*/
 		
 		ContractsHistory contractsHistory = contractsTemplateDao.getContractsHistoryByContractId(contracts.getId());
 		if(contractsHistory !=null){
@@ -572,7 +613,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		}
 		
 		if(null != user && null != approverUser &&! Constants.DRAFT.equalsIgnoreCase(saveType)){
-			if(!jsonObj.has("approver") && null != ownerUser && ownerUser.getId().longValue() != user.getId().longValue()){
+			if(!StringUtils.isNotBlank(contractsDTO.getApprover()) && null != ownerUser && ownerUser.getId().longValue() != user.getId().longValue()){
 				sendMailToOwner(savedContracts,user,org,orgLocation);
 			}
 		}
@@ -580,31 +621,31 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		if(null == approverUser && !Constants.DRAFT.equalsIgnoreCase(savedContracts.getTemplateSubmissionStatus())){
 			if(null != vendorContracts){
 				vendorContracts.setParentContractId(savedContracts);
-				if(Constants.FULL_TIME_OFFER.equalsIgnoreCase(jsonObj.getString("contractType"))){
+				if(Constants.FULL_TIME_OFFER.equalsIgnoreCase(contractsDTO.getContractType())){
 					if(null != vendorContracts){
-						vendorContracts.setContractType(jsonObj.getString("contractType"));	
+						vendorContracts.setContractType(contractsDTO.getContractType());	
 						vendorContracts.setContractOrgLocationId(orgLocation);
 						vendorContracts.setContactUser(savedContracts.getOwnerUserId());
 					}
 				}
 			}
 			
-			if(Constants.VENDOR_MSA.equalsIgnoreCase(jsonObj.getString("contractType")) || Constants.Vendor_SOW.equalsIgnoreCase(jsonObj.getString("contractType"))|| Constants.NDA.equalsIgnoreCase(jsonObj.getString("contractType")) || Constants.NSA.equalsIgnoreCase(jsonObj.getString("contractType"))){
-				if(Constants.VENDOR_MSA.equalsIgnoreCase(jsonObj.getString("contractType"))){
+			if(Constants.VENDOR_MSA.equalsIgnoreCase(contractsDTO.getContractType()) || Constants.Vendor_SOW.equalsIgnoreCase(contractsDTO.getContractType())|| Constants.NDA.equalsIgnoreCase(contractsDTO.getContractType()) || Constants.NSA.equalsIgnoreCase(contractsDTO.getContractType())){
+				if(Constants.VENDOR_MSA.equalsIgnoreCase(contractsDTO.getContractType())){
 					if(null != vendorContracts){
 						vendorContracts.setContractType(Constants.CLIENT_MSA);	
 					}
-				}else if(Constants.Vendor_SOW.equalsIgnoreCase(jsonObj.getString("contractType"))){
+				}else if(Constants.Vendor_SOW.equalsIgnoreCase(contractsDTO.getContractType())){
 					if(null != vendorContracts){
 						vendorContracts.setContractType(Constants.Client_SOW);
 					}
 				}
-				else if(Constants.NDA.equalsIgnoreCase(jsonObj.getString("contractType"))){
+				else if(Constants.NDA.equalsIgnoreCase(contractsDTO.getContractType())){
 					if(null != vendorContracts){
 						vendorContracts.setContractType(Constants.CLIENT_NDA);
 					}
 				}
-				else if(Constants.NSA.equalsIgnoreCase(jsonObj.getString("contractType"))){
+				else if(Constants.NSA.equalsIgnoreCase(contractsDTO.getContractType())){
 					if(null != vendorContracts){
 						vendorContracts.setContractType(Constants.CLIENT_NSA);
 					}
@@ -613,22 +654,22 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 					vendorContracts.setInitiatorType(Constants.CLIENT);
 					vendorContracts.setContractOrgLocationId(orgLocation);
 					vendorContracts.setParentContractId(savedContracts);
-					OrgRelations orgRelations = orgRelationsService.getOrRelationsById(Long.parseLong(jsonObj.getString("orgRelationId")));
+					OrgRelations orgRelations = orgRelationsService.getOrRelationsById(Long.parseLong(contractsDTO.getOrgRelationId()));
 					vendorContracts.setOrgRelations(orgRelations);
 					if(orgRelations.getResponderLocationId().getId().longValue() == orgLocation.getId().longValue()){
 						vendorContracts.setOrgLocationId(orgRelations.getLocationId());
 					}else if(orgRelations.getLocationId().getId().longValue() == orgLocation.getId().longValue()){
 						vendorContracts.setOrgLocationId(orgRelations.getResponderLocationId());
 					}
-					User vendorUser = userService.getUserById(Long.parseLong(jsonObj.getString("vendorContact")));
+					User vendorUser = userService.getUserById(Long.parseLong(contractsDTO.getVendorContact()));
 					vendorContracts.setOwnerUserId(vendorUser);
 					vendorContracts.setContactUser(ownerUser);
 				}
 			}
 			
-			if(Constants.CLIENT_MSA.equalsIgnoreCase(jsonObj.getString("contractType")) || Constants.Client_SOW.equalsIgnoreCase(jsonObj.getString("contractType"))){
+			if(Constants.CLIENT_MSA.equalsIgnoreCase(contractsDTO.getContractType()) || Constants.Client_SOW.equalsIgnoreCase(contractsDTO.getContractType())){
 				if(null != vendorContracts){
-					if(Constants.CLIENT_MSA.equalsIgnoreCase(jsonObj.getString("contractType"))){
+					if(Constants.CLIENT_MSA.equalsIgnoreCase(contractsDTO.getContractType())){
 						vendorContracts.setContractType(Constants.VENDOR_MSA);	
 					}else{
 						vendorContracts.setContractType(Constants.Vendor_SOW);
@@ -637,14 +678,14 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 					vendorContracts.setInitiatorType(Constants.VENDOR);
 					vendorContracts.setParentContractId(savedContracts);
 					vendorContracts.setContractOrgLocationId(orgLocation);
-					OrgRelations orgRelations = orgRelationsService.getOrRelationsById(Long.parseLong(jsonObj.getString("clientOrgRelationId")));
+					OrgRelations orgRelations = orgRelationsService.getOrRelationsById(Long.parseLong(contractsDTO.getClientOrgRelationId()));
 					vendorContracts.setOrgRelations(orgRelations);
 					if(orgRelations.getResponderLocationId().getId().longValue() == orgLocation.getId().longValue()){
 						vendorContracts.setOrgLocationId(orgRelations.getLocationId());
 					}if(orgRelations.getLocationId().getId().longValue() == orgLocation.getId().longValue()){
 						vendorContracts.setOrgLocationId(orgRelations.getResponderLocationId());
 					}
-					User vendorUser = userService.getUserById(Long.parseLong(jsonObj.getString("clientContact")));
+					User vendorUser = userService.getUserById(Long.parseLong(contractsDTO.getClientContact()));
 					vendorContracts.setOwnerUserId(vendorUser);
 					vendorContracts.setContactUser(ownerUser);
 				}
@@ -672,7 +713,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 			//  if(null != vendorContactsUser && null == approverUser && !Constants.DRAFT.equalsIgnoreCase(saveType)){
 			 if(null == approverUser && !Constants.DRAFT.equalsIgnoreCase(saveType)){
 				  Contracts con = null;
-				  if (Constants.FULL_TIME_OFFER.equalsIgnoreCase(jsonObj.getString("contractType"))){
+				  if (Constants.FULL_TIME_OFFER.equalsIgnoreCase(contractsDTO.getContractType())){
 					  if (null != contractType && !"".equalsIgnoreCase(contractType)
 								&& "custom".equalsIgnoreCase(contractType)) {
 							con = signatureRequestUtil.sendDocumentForSignatureRequestForCustom(new User(), contracts, orgLocation, user, savedContracts, org,contracts.getRequirementSubmission());
@@ -709,7 +750,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 	}
 
 	@Override
-	public Contracts getAllContractsByLocationIdAndStatus(OrgLocations orgLocation, String contractSubmissionType, String tabType, String contractsType, String contractStatus, User user, String userRoleName) throws Exception
+	public Contracts getAllContractsByLocationIdAndStatus(OrgLocations orgLocation,String contractSubmissionType, String tabType, String contractsType, String contractStatus, User user, String userRoleName) throws Exception
 	{
 		List<Contracts> vendorcontractsList = contractsTemplateDao.getAllContractsByLocationIdAndStatus(orgLocation,contractSubmissionType,Constants.VENDOR, contractsType, contractStatus, user, userRoleName);
 		List<Contracts> clientcontractsList = contractsTemplateDao.getAllContractsByLocationIdAndStatus(orgLocation,contractSubmissionType,Constants.CLIENT, contractsType, contractStatus, user, userRoleName);
@@ -1148,7 +1189,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 					  contractsTemplateDao.saveNewContract(upadatedContracts);
 			        	Contracts updateEnvContracts = contractsTemplateDao.saveNewContract(savedChildContracts);
 				contractApproveEmail(contracts,user,org,orgLocation);
-				//sendMailToOwner(contracts,user,org,orgLocation);
+				sendMailToOwner(contracts,user,org,orgLocation);
 		}else{
 
 			contracts.setRejectedReason(rejectReason);
@@ -1701,65 +1742,67 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 			}
 			
 	@Override
-	public Contracts saveExistigContract(JSONObject jsonObj,MultipartFile multiFile, OrgLocations orgLocation, User user, Org org) throws Exception {
+	public Contracts saveExistigContract(ContractsDTO contractsDTO, OrgLocations orgLocation, User user, Org org) throws Exception {
 		Contracts contracts = new Contracts();
 		Contracts vendorContracts = new Contracts();
-		String pattern = "dd-MM-yyyy";
-        SimpleDateFormat format = new SimpleDateFormat(pattern);
-
         
         Timezone timezone = timeZoneService.getTimezone(orgLocation.getTimezone().getId());
 		
-		if(Constants.NDA.equalsIgnoreCase(jsonObj.getString("contractType")) || Constants.NSA.equalsIgnoreCase(jsonObj.getString("contractType"))){
-			contracts.setContractType("Vendor "+jsonObj.getString("contractType"));
+		if(Constants.NDA.equalsIgnoreCase(contractsDTO.getContractType()) || Constants.NSA.equalsIgnoreCase(contractsDTO.getContractType())){
+			contracts.setContractType("Vendor "+contractsDTO.getContractType());
 		}
 		else{
-			contracts.setContractType(jsonObj.getString("contractType"));
+			contracts.setContractType(contractsDTO.getContractType());
         }
 		
-		if(jsonObj.has("submissionOffersList") && null != jsonObj.getString("submissionOffersList") && !"".equals(jsonObj.getString("submissionOffersList"))){
-			if(Constants.Vendor_SOW.equalsIgnoreCase(jsonObj.getString("contractType")) ||  Constants.Client_SOW.equalsIgnoreCase(jsonObj.getString("contractType"))){
-				Candidate can = candidateService.getCandidateByCandidateId(Long.parseLong(jsonObj.getString("submissionOffersList")));
+		if(StringUtils.isNotBlank(contractsDTO.getSubmissionOffersList())){
+			if(Constants.Vendor_SOW.equalsIgnoreCase(contractsDTO.getContractType()) ||  Constants.Client_SOW.equalsIgnoreCase(contractsDTO.getContractType())){
+				Candidate can = candidateService.getCandidateByCandidateId(Long.parseLong(contractsDTO.getSubmissionOffersList()));
 				contracts.setCandidate(can);
 			}else{
-				RequirementSubmission rs = requirementSubmissionService.getRequirementSubmissionById(Long.parseLong(jsonObj.getString("submissionOffersList")));
+				RequirementSubmission rs = requirementSubmissionService.getRequirementSubmissionById(Long.parseLong(contractsDTO.getSubmissionOffersList()));
 				contracts.setRequirementSubmission(rs);
 				contracts.setCandidate(rs.getCandidate());	
 			}
 		}
 		
-		if(jsonObj.has("hoursPerWeek") && null != jsonObj.getString("hoursPerWeek") && !"".equals(jsonObj.getString("hoursPerWeek"))){
-			contracts.setHoursPerWeek(jsonObj.getString("hoursPerWeek"));
+		if(StringUtils.isNotBlank(contractsDTO.getHoursPerWeek())){
+			contracts.setHoursPerWeek(contractsDTO.getHoursPerWeek());
 		}
 		
-		if(jsonObj.has("overTimeHours") && null != jsonObj.getString("overTimeHours") && !"".equals(jsonObj.getString("overTimeHours"))){
-			contracts.setOverTimeHours(jsonObj.getString("overTimeHours"));
+		if(StringUtils.isNotBlank(contractsDTO.getOverTimeHours())){
+			contracts.setOverTimeHours(contractsDTO.getOverTimeHours());
 		}
 		
-		if(jsonObj.has("totalHoursEstimated") && null != jsonObj.getString("totalHoursEstimated") && !"".equals(jsonObj.getString("totalHoursEstimated"))){
-			contracts.setTotalHours(jsonObj.getString("totalHoursEstimated"));
+		if(StringUtils.isNotBlank(contractsDTO.getTotalHoursEstimated())){
+			contracts.setTotalHours(contractsDTO.getTotalHoursEstimated());
 		}
 		
-		if(jsonObj.has("overtimeRate") && null != jsonObj.getString("overtimeRate") && !"".equals(jsonObj.getString("overtimeRate"))){
-			contracts.setOvertimeRate(jsonObj.getString("overtimeRate"));
+		if(StringUtils.isNotBlank(contractsDTO.getOvertimeRate())){
+			contracts.setOvertimeRate(contractsDTO.getOvertimeRate());
 		}
 		
-		if(jsonObj.has("overtimeRateType") && null != jsonObj.getString("overtimeRateType") && !"".equals(jsonObj.getString("overtimeRateType"))){
+		/*if(jsonObj.has("overtimeRateType") && null != jsonObj.getString("overtimeRateType") && !"".equals(jsonObj.getString("overtimeRateType"))){
 			contracts.setOvertimeRateType(jsonObj.getString("overtimeRateType"));
+		}*/
+		if(StringUtils.isNotBlank(contractsDTO.getOvertimeRateType())){
+			contracts.setOvertimeRateType(contractsDTO.getOvertimeRateType());
 		}
 		
 		contracts.setTypeOfContract(Constants.EXISTING_TYPE);
 		vendorContracts.setTypeOfContract(Constants.EXISTING_TYPE);
-		contracts.setContractTitle(jsonObj.getString("contractTitle").trim());
-		vendorContracts.setContractTitle(jsonObj.getString("contractTitle").trim());
-		User ownerUser = userService.getUserById(Long.parseLong(jsonObj.getString("owner")));
+//		contracts.setContractTitle(jsonObj.getString("contractTitle").trim());
+		contracts.setContractTitle(contractsDTO.getContractTitle());
+		vendorContracts.setContractTitle(contractsDTO.getContractTitle().trim());
+//		User ownerUser = userService.getUserById(Long.parseLong(jsonObj.getString("owner")));
+		User ownerUser = userService.getUserById(Long.parseLong(contractsDTO.getOwner()));
 		contracts.setOwnerUserId(ownerUser);
 		
 		
 		DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
 		//SimpleDateFormat formatter = orgLocation.getLocFullFormDateFormatter();
-		if(jsonObj.has("startDate") && null != jsonObj.getString("startDate") && !"".equals(jsonObj.getString("startDate"))){
-			Date startTime =  commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(),jsonObj.getString("startDate"));
+		if(StringUtils.isNotBlank(contractsDTO.getStartDate())){
+			Date startTime =  commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(),contractsDTO.getStartDate());
 			String currentTimeStr = Constants.TZ_DF.format(startTime);  
 			String startTimeUTC= CommonUtil.convertTimeZones(timezone.getTimeZoneId(), "UTC", currentTimeStr);
 			Date convertedDate = TZ_DF_TS.parse(startTimeUTC);
@@ -1768,17 +1811,15 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 				vendorContracts.setStartDate(convertedDate);
 			}
 		}
-		if (jsonObj.has("workLocation") && null != jsonObj.getString("workLocation")
-				&& !"".equals(jsonObj.getString("workLocation"))) {
-			contracts.setWorkLocation(jsonObj.getString("workLocation"));
+		if (StringUtils.isNotBlank(contractsDTO.getWorkLocation())) {
+			contracts.setWorkLocation(contractsDTO.getWorkLocation());
 			if(null != vendorContracts){
-				vendorContracts.setWorkLocation(jsonObj.getString("workLocation"));
+				vendorContracts.setWorkLocation(contractsDTO.getWorkLocation());
 			}
 		}
 		
-		if (jsonObj.has("joinDate") && null != jsonObj.getString("joinDate")
-				&& !"".equals(jsonObj.getString("joinDate"))) {
-			Date joinTime = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(),jsonObj.getString("joinDate"));
+		if (StringUtils.isNotBlank(contractsDTO.getJoinDate())) {
+			Date joinTime = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(),contractsDTO.getJoinDate());
 			String currentTimeStr = Constants.TZ_DF.format(joinTime);
 			String startTimeUTC = CommonUtil.convertTimeZones(timezone.getTimeZoneId(), "UTC", currentTimeStr);
 			Date convertedDate = TZ_DF_TS.parse(startTimeUTC);
@@ -1788,48 +1829,46 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 			}
 		}
 		
-		if(jsonObj.has("endDate")){
-			if(null != jsonObj.getString("endDate") && !"".equals(jsonObj.getString("endDate"))){
-				Date endTimeStr = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(),jsonObj.getString("endDate"));  
+		if(StringUtils.isNotBlank(contractsDTO.getEndDate())){
+				Date endTimeStr = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(),contractsDTO.getEndDate());  
 				String endDateStr = Constants.TZ_DF.format(endTimeStr);  
 				String endTimeUTC= CommonUtil.convertTimeZones(timezone.getTimeZoneId(), "UTC", endDateStr);
 				Date convertedEndDate = TZ_DF_TS.parse(endTimeUTC);
 				contracts.setEndDate(convertedEndDate);
 				vendorContracts.setEndDate(convertedEndDate);
-			}
 		}
 		User approverUser = null;
 		User vendorContactsUser = null;
-		if((Constants.VENDOR_MSA.equalsIgnoreCase(jsonObj.getString("contractType"))|| Constants.Vendor_SOW.equalsIgnoreCase(jsonObj.getString("contractType"))|| Constants.NDA.equalsIgnoreCase(jsonObj.getString("contractType")) || Constants.NSA.equalsIgnoreCase(jsonObj.getString("contractType")))){
+		if((Constants.VENDOR_MSA.equalsIgnoreCase(contractsDTO.getContractType())|| Constants.Vendor_SOW.equalsIgnoreCase(contractsDTO.getContractType())|| Constants.NDA.equalsIgnoreCase(contractsDTO.getContractType()) || Constants.NSA.equalsIgnoreCase(contractsDTO.getContractType()))){
 			contracts.setInitiatorType(Constants.CLIENT);
 			contracts.setOrgLocationId(orgLocation);
-			OrgRelations orgRelations = orgRelationsService.getOrRelationsById(Long.parseLong(jsonObj.getString("orgRelationId")));
+			OrgRelations orgRelations = orgRelationsService.getOrRelationsById(Long.parseLong(contractsDTO.getOrgRelationId()));
 			contracts.setOrgRelations(orgRelations);
 			if(orgRelations.getResponderLocationId().getId().longValue() == orgLocation.getId().longValue()){
 				contracts.setContractOrgLocationId(orgRelations.getLocationId());
 			}else if(orgRelations.getLocationId().getId().longValue() == orgLocation.getId().longValue()){
 				contracts.setContractOrgLocationId(orgRelations.getResponderLocationId());
 			}
-			vendorContactsUser = userService.getUserById(Long.parseLong(jsonObj.getString("vendorContact")));
+			vendorContactsUser = userService.getUserById(Long.parseLong(contractsDTO.getVendorContact()));
 			contracts.setContactUser(vendorContactsUser);
 		}
-		if(Constants.CLIENT_MSA.equalsIgnoreCase(jsonObj.getString("contractType"))||Constants.Client_SOW.equalsIgnoreCase(jsonObj.getString("contractType"))){
+		if(Constants.CLIENT_MSA.equalsIgnoreCase(contractsDTO.getContractType())||Constants.Client_SOW.equalsIgnoreCase(contractsDTO.getContractType())){
 			contracts.setInitiatorType(Constants.VENDOR);
 			contracts.setOrgLocationId(orgLocation);
-			OrgRelations orgRelations = orgRelationsService.getOrRelationsById(Long.parseLong(jsonObj.getString("clientOrgRelationId")));
+			OrgRelations orgRelations = orgRelationsService.getOrRelationsById(Long.parseLong(contractsDTO.getClientOrgRelationId()));
 			contracts.setOrgRelations(orgRelations);
 			if(orgRelations.getResponderLocationId().getId().longValue() == orgLocation.getId().longValue()){
 				contracts.setContractOrgLocationId(orgRelations.getLocationId());
 			}else if(orgRelations.getLocationId().getId().longValue() == orgLocation.getId().longValue()){
 				contracts.setContractOrgLocationId(orgRelations.getResponderLocationId());
 			}
-			vendorContactsUser = userService.getUserById(Long.parseLong(jsonObj.getString("clientContact")));
+			vendorContactsUser = userService.getUserById(Long.parseLong(contractsDTO.getClientContact()));
 			contracts.setContactUser(vendorContactsUser);
 		}
 		
-		if(jsonObj.has("percentageReward") && null != jsonObj.getString("percentageReward") && !"".equals(jsonObj.getString("percentageReward")) ){
-			contracts.setBillingAmount(jsonObj.getString("percentageReward"));
-			vendorContracts.setBillingAmount(jsonObj.getString("percentageReward"));
+		if(StringUtils.isNotBlank(contractsDTO.getPercentageReward())){
+			contracts.setBillingAmount(contractsDTO.getPercentageReward());
+			vendorContracts.setBillingAmount(contractsDTO.getPercentageReward());
 				contracts.setBillingPer("Percentage");
 				vendorContracts.setBillingPer("Percentage");
 		}
@@ -1863,69 +1902,87 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 			}
 		}
 		else{*/
-			if(jsonObj.has("flatReward") && null != jsonObj.getString("flatReward") && !"".equals(jsonObj.getString("flatReward")) ){
-				contracts.setBillingAmount(jsonObj.getString("flatReward"));
+			if(StringUtils.isNotBlank(contractsDTO.getFlatReward())){
+				contracts.setBillingAmount(contractsDTO.getFlatReward());
 				if(null != vendorContracts){
-					vendorContracts.setBillingAmount(jsonObj.getString("flatReward"));
+					vendorContracts.setBillingAmount(contractsDTO.getFlatReward());
 				}
 				
-				if(jsonObj.has("flatRateType") && null != jsonObj.getString("flatRateType") && !"".equals(jsonObj.getString("flatRateType")) ){
+				/*if(jsonObj.has("flatRateType") && null != jsonObj.getString("flatRateType") && !"".equals(jsonObj.getString("flatRateType")) ){
 					contracts.setBillingPer(jsonObj.getString("flatRateType"));
 					if(null != vendorContracts){
 						vendorContracts.setBillingPer(jsonObj.getString("flatRateType"));
 					}
+				}*/
+				if(StringUtils.isNotBlank(contractsDTO.getFlatRateType())){
+					contracts.setBillingPer(contractsDTO.getFlatRateType());
+					if(null != vendorContracts){
+						vendorContracts.setBillingPer(contractsDTO.getFlatRateType());
+					}
 				}
 			}
 			
-			if(jsonObj.has("billingRateType") && null != jsonObj.getString("billingRateType") && !"".equals(jsonObj.getString("billingRateType")) ){
-				contracts.setBillingRateType(jsonObj.getString("billingRateType"));
+			if(StringUtils.isNotBlank(contractsDTO.getBillingRateType())){
+				contracts.setBillingRateType(contractsDTO.getBillingRateType());
 				if(null != vendorContracts){
-					vendorContracts.setBillingRateType(jsonObj.getString("billingRateType"));
+					vendorContracts.setBillingRateType(contractsDTO.getBillingRateType());
 				}
 			}
 			
-			if(jsonObj.has("billingRatePer") && null != jsonObj.getString("billingRatePer") && !"".equals(jsonObj.getString("billingRatePer")) ){
-				contracts.setBillingRatePer(jsonObj.getString("billingRatePer"));
+			if(StringUtils.isNotBlank(contractsDTO.getBillingRatePer())){
+				contracts.setBillingRatePer(contractsDTO.getBillingRatePer());
 				if(null != vendorContracts){
-					vendorContracts.setBillingRatePer(jsonObj.getString("billingRatePer"));
+					vendorContracts.setBillingRatePer(contractsDTO.getBillingRatePer());
 				}
 			}
 //		}
 		
-		if(multiFile != null && multiFile.getBytes() != null && !"".equalsIgnoreCase(multiFile.getOriginalFilename())){
+		/*if(multiFile != null && multiFile.getBytes() != null && !"".equalsIgnoreCase(multiFile.getOriginalFilename())){
 			contracts.setDocFile(multiFile.getBytes());
 			contracts.setFileName(multiFile.getOriginalFilename());
 			contracts.setFileType(multiFile.getContentType());
-		 }
+		 }*/
+			FileInfo info = null;
+		if (contractsDTO.getFileInfo() != null) {
+				info = contractsDTO.getFileInfo().get(0);
+				if(info != null){
+				contracts.setFileURL(info.getFileURL());
+				contracts.setFileName(info.getFileName());
+				contracts.setFileType(info.getContentType());
+				contracts.setFileName(info.getFileName());
+				}
+				//move the document file temp to your(ContractDocs here) folder
+				FileUploadUtil.moveFile(contractsDTO.getStaticPath(), info, "ContractDocs");
+			}
 		
-		contracts.setInvoiceFrequency(jsonObj.getString("invoiceFrequency"));
-		vendorContracts.setInvoiceFrequency(jsonObj.getString("invoiceFrequency"));
+		contracts.setInvoiceFrequency(contractsDTO.getInvoiceFrequency());
+		vendorContracts.setInvoiceFrequency(contractsDTO.getInvoiceFrequency());
 		
-		if(jsonObj.has("paymentFrequency") && null != jsonObj.getString("paymentFrequency") && !"".equals(jsonObj.getString("paymentFrequency")) ){
-			contracts.setPaymentTerm(jsonObj.getString("paymentFrequency"));
-			vendorContracts.setPaymentTerm(jsonObj.getString("paymentFrequency"));
+		if(StringUtils.isNotBlank(contractsDTO.getPaymentFrequency())){
+			contracts.setPaymentTerm(contractsDTO.getPaymentFrequency());
+			vendorContracts.setPaymentTerm(contractsDTO.getPaymentFrequency());
 		}
 		
-		if(jsonObj.has("taxPercentageReward") && null != jsonObj.getString("taxPercentageReward") && !"".equals(jsonObj.getString("taxPercentageReward")) ){
-			contracts.setTax(jsonObj.getString("taxPercentageReward"));
-			vendorContracts.setTax(jsonObj.getString("taxPercentageReward"));
+		if(StringUtils.isNotBlank(contractsDTO.getTaxPercentageReward())){
+			contracts.setTax(contractsDTO.getTaxPercentageReward());
+			vendorContracts.setTax(contractsDTO.getTaxPercentageReward());
 			contracts.setTaxType("Percentage");
 			vendorContracts.setTaxType("Percentage");
 		}
-		if(jsonObj.has("taxFlatReward") && null != jsonObj.getString("taxFlatReward") && !"".equals(jsonObj.getString("taxFlatReward")) ){
-			contracts.setTax(jsonObj.getString("taxFlatReward"));
-			vendorContracts.setTax(jsonObj.getString("taxFlatReward"));
-			contracts.setTaxType(jsonObj.getString("taxFlatRateType"));
-			vendorContracts.setTaxType(jsonObj.getString("taxFlatRateType"));
+		if(StringUtils.isNotBlank(contractsDTO.getTaxFlatReward())){
+			contracts.setTax(contractsDTO.getTaxFlatReward());
+			vendorContracts.setTax(contractsDTO.getTaxFlatReward());
+			contracts.setTaxType(contractsDTO.getTaxFlatRateType());
+			vendorContracts.setTaxType(contractsDTO.getTaxFlatRateType());
 		}
 		
 		
-		if(jsonObj.has("description") && null != jsonObj.getString("description") && !"".equals(jsonObj.getString("description"))){
-			contracts.setDescription(jsonObj.getString("description").trim());
-			vendorContracts.setDescription(jsonObj.getString("description").trim());
+		if(StringUtils.isNotBlank(contractsDTO.getDescription())){
+			contracts.setDescription(contractsDTO.getDescription().trim());
+			vendorContracts.setDescription(contractsDTO.getDescription().trim());
 		}
-		if(jsonObj.has("jurisdiction") && null != jsonObj.getString("jurisdiction") && !"".equals(jsonObj.getString("jurisdiction"))){
-			contracts.setStateJurisdiction(jsonObj.getString("jurisdiction"));
+		if(StringUtils.isNotBlank(contractsDTO.getJurisdiction())){
+			contracts.setStateJurisdiction(contractsDTO.getJurisdiction());
 		}
 		contracts.setStatus("0");
 		contracts.setOrgLocationId(orgLocation);
@@ -1938,16 +1995,17 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		contracts.setUpdatedBy(user.getUserCode());
 		contracts.setContractUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 		Contracts savedContracts = contractsTemplateDao.saveNewContract(contracts);
-		if(Constants.FULL_TIME_OFFER.equalsIgnoreCase(jsonObj.getString("contractType"))){
+		
+		if(Constants.FULL_TIME_OFFER.equalsIgnoreCase(contractsDTO.getContractType())){
 			if(null != vendorContracts){
 				vendorContracts.setParentContractId(savedContracts);
-				vendorContracts.setContractType(jsonObj.getString("contractType"));	
+				vendorContracts.setContractType(contractsDTO.getContractType());	
 				vendorContracts.setContractOrgLocationId(orgLocation);
 				vendorContracts.setContactUser(savedContracts.getOwnerUserId());
 			}
 		}
 			//if(Constants.VENDOR_MSA.equalsIgnoreCase(jsonObj.getString("contractType")) || Constants.Vendor_SOW.equalsIgnoreCase(jsonObj.getString("contractType"))){
-		if(Constants.VENDOR_MSA.equalsIgnoreCase(jsonObj.getString("contractType")) || Constants.Vendor_SOW.equalsIgnoreCase(jsonObj.getString("contractType"))|| Constants.NDA.equalsIgnoreCase(jsonObj.getString("contractType")) || Constants.NSA.equalsIgnoreCase(jsonObj.getString("contractType"))){
+		if(Constants.VENDOR_MSA.equalsIgnoreCase(contractsDTO.getContractType()) || Constants.Vendor_SOW.equalsIgnoreCase(contractsDTO.getContractType())|| Constants.NDA.equalsIgnoreCase(contractsDTO.getContractType()) || Constants.NSA.equalsIgnoreCase(contractsDTO.getContractType())){
 			if(Constants.VENDOR_MSA.equalsIgnoreCase(contracts.getContractType())){
 				vendorContracts.setContractType(Constants.CLIENT_MSA);	
 			}else if(Constants.Vendor_SOW.equalsIgnoreCase(contracts.getContractType())){
@@ -1963,7 +2021,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 				vendorContracts.setInitiatorType(Constants.CLIENT);
 				vendorContracts.setContractOrgLocationId(orgLocation);
 				vendorContracts.setParentContractId(savedContracts);
-				OrgRelations orgRelations = orgRelationsService.getOrRelationsById(Long.parseLong(jsonObj.getString("orgRelationId")));
+				OrgRelations orgRelations = orgRelationsService.getOrRelationsById(Long.parseLong(contractsDTO.getOrgRelationId()));
 				vendorContracts.setOrgRelations(orgRelations);
 				if(orgRelations.getResponderLocationId().getId().longValue() == orgLocation.getId().longValue()){
 					vendorContracts.setOrgLocationId(orgRelations.getLocationId());
@@ -1971,12 +2029,12 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 					vendorContracts.setOrgLocationId(orgRelations.getResponderLocationId());
 				}
 				
-				User vendorUser = userService.getUserById(Long.parseLong(jsonObj.getString("vendorContact")));
+				User vendorUser = userService.getUserById(Long.parseLong(contractsDTO.getVendorContact()));
 				vendorContracts.setOwnerUserId(vendorUser);
 				vendorContracts.setContactUser(ownerUser);
 			}
-			if(Constants.CLIENT_MSA.equalsIgnoreCase(jsonObj.getString("contractType"))||Constants.Client_SOW.equalsIgnoreCase(jsonObj.getString("contractType"))){
-				if(Constants.VENDOR_MSA.equalsIgnoreCase(jsonObj.getString("contractType"))){
+			if(Constants.CLIENT_MSA.equalsIgnoreCase(contractsDTO.getContractType())||Constants.Client_SOW.equalsIgnoreCase(contractsDTO.getContractType())){
+				if(Constants.VENDOR_MSA.equalsIgnoreCase(contractsDTO.getContractType())){
 					vendorContracts.setContractType(Constants.VENDOR_MSA);
 				}
 				else{
@@ -1985,19 +2043,45 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 				vendorContracts.setInitiatorType(Constants.VENDOR);
 				vendorContracts.setParentContractId(savedContracts);
 				vendorContracts.setContractOrgLocationId(orgLocation);
-				OrgRelations orgRelations = orgRelationsService.getOrRelationsById(Long.parseLong(jsonObj.getString("clientOrgRelationId")));
+				OrgRelations orgRelations = orgRelationsService.getOrRelationsById(Long.parseLong(contractsDTO.getClientOrgRelationId()));
 				vendorContracts.setOrgRelations(orgRelations);
 				if(orgRelations.getResponderLocationId().getId().longValue() == orgLocation.getId().longValue()){
 					vendorContracts.setOrgLocationId(orgRelations.getLocationId());
 				}else if(orgRelations.getLocationId().getId().longValue() == orgLocation.getId().longValue()){
 					vendorContracts.setOrgLocationId(orgRelations.getResponderLocationId());
 				}
-				User vendorUser = userService.getUserById(Long.parseLong(jsonObj.getString("clientContact")));
+				User vendorUser = userService.getUserById(Long.parseLong(contractsDTO.getClientContact()));
 				vendorContracts.setOwnerUserId(vendorUser);
 				vendorContracts.setContactUser(ownerUser);
 			}
 			vendorContracts.setContractUUID(contracts.getContractUUID());
 			Contracts savedChildContracts = contractsTemplateDao.saveNewContract(vendorContracts);
+			
+			if(contractsDTO.getDocument() !=null && contractsDTO.getDocument().size() >0) {
+				for (ContractDocumentsDTO doc : contractsDTO.getDocument()) {
+					for(FileInfo file : contractsDTO.getReqDocs()){
+						if(doc.getDocFileName() != null && doc.getDocFileName().equalsIgnoreCase(file.getFileName())){
+							ContractRequestDocuments contractRequestDocuments = new ContractRequestDocuments();
+							contractRequestDocuments.setFileURL(file.getFileURL());
+							contractRequestDocuments.setDocFileName(file.getFileName());
+							contractRequestDocuments.setFileType(file.getContentType());
+							contractRequestDocuments.setFileName(doc.getDocumentName());
+							
+							FileUploadUtil.moveFile(contractsDTO.getStaticPath(), file, "RequestDocuments");
+							contractRequestDocuments.setContractId(savedContracts);
+							contractRequestDocuments.setStatus(Constants.MEMBER_ACTIVE);
+							contractRequestDocuments.setCreatedDate(new Date());
+							if (null != user) {
+								contractRequestDocuments.setCreatedBy(user.getUserCode());
+								contractRequestDocuments.setUpdatedBy(user.getUserCode());
+							}
+							contractRequestDocuments.setUpdatedDate(new Date());
+							contractRequestDocumentsService.saveContractRequestDocuments(contractRequestDocuments);
+						}
+					}	
+			}
+
+			}
 		return savedContracts;
 	}
 
@@ -2373,7 +2457,8 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		    }
 			globalVarsMap.put("duration",durationSb.toString());	
 			
-		if(!Constants.NDA.equalsIgnoreCase(contracts.getContractType()) && !Constants.NSA.equalsIgnoreCase(contracts.getContractType())){
+		if(!Constants.NDA.equalsIgnoreCase(contracts.getContractType()) && !Constants.NSA.equalsIgnoreCase(contracts.getContractType()) && !Constants.CLIENT_MSA.equalsIgnoreCase(contracts.getContractType())
+				&& !Constants.VENDOR_MSA.equalsIgnoreCase(contracts.getContractType())){
 			if(contracts.getInvoiceFrequency() != null && !"".equalsIgnoreCase(contracts.getInvoiceFrequency())){
 				globalVarsMap.put("billingCycle", contracts.getInvoiceFrequency());
 			 }else{

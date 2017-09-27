@@ -1,8 +1,8 @@
 <jsp:include page="../masterHeader.jsp" />
 <jsp:include page="../masterSideNav.jsp" />
+
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
-
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
   <!-- Header Area -->
@@ -107,7 +107,6 @@
   
 <script>
 function viewInterviewListResumes(resumeUUID,title){
-	var sourceleadUrl ='${sourceleadUrl}';
 	if(resumeUUID != null && resumeUUID != ""){
 		window.open(sourceleadUrl+'/viewInterviewListResumes/'+title+'?resumeUUID='+resumeUUID,title,"height=600,width=600");
 	}  

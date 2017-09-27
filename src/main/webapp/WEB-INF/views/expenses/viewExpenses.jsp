@@ -1,6 +1,5 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
  <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
  <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
  <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
@@ -64,27 +63,27 @@
 					<div class="project_details_cta">
 						<strong>ExpenseId:</strong><span>${expenses != null ? expenses.expenseId : ExpensesId}</span><div class="clearfix"></div>
 					</div>
-					<div class="project_details_cta">
-						<strong>Purpose:</strong><span>${expenses.purpose}</span><div class="clearfix"></div>
-					</div>
+					 <div class="project_details_cta">
+						<strong>Purpose:</strong><span>${expenses.expensePurpose}</span><div class="clearfix"></div>
+					</div> 
 					<div class="project_details_cta">
 						<strong>Project Name:</strong><span>${expenses.projectName}</span><div class="clearfix"></div>
 					</div>
+					 <div class="project_details_cta">
+						<strong>Client:</strong><span>${expenses.clientNameExpense}</span><div class="clearfix"></div>
+					</div> 
 					<div class="project_details_cta">
-						<strong>Client:</strong><span>${expenses.clientName}</span><div class="clearfix"></div>
+						<strong>Start date:</strong><span>${expenses.startDateExpense}</span><div class="clearfix"></div>
 					</div>
-					<div class="project_details_cta">
-						<strong>Start date:</strong><span>${expenses.startDate}</span><div class="clearfix"></div>
-					</div>
-					<div class="project_details_cta">
-						<strong>End date:</strong><span>${expenses.endDate}</span><div class="clearfix"></div>
-					</div>
+					 <div class="project_details_cta">
+						<strong>End date:</strong><span>${expenses.endDateExpense}</span><div class="clearfix"></div>
+					</div> 
 					<div class="project_details_cta">
 						<strong>No of Expenses:</strong><span>${expenses.noOfExpenses}</span><div class="clearfix"></div>
 					</div>
 					<div class="project_details_cta">
-						<strong>Amount:</strong><span>${expenses.totalAmontRoundOffValue}</span><div class="clearfix"></div>
-					</div>	 
+						<strong>Amount:</strong><span>${expenses.expenseAmountDivId}</span><div class="clearfix"></div>
+					</div> 
 					<div class="project_details_cta">
 						<strong>Exp Created By:</strong><span>${expenses.expCreatedBy}</span><div class="clearfix"></div>
 					</div>
@@ -134,15 +133,19 @@
 					                 <input type='hidden' name='attcahmentMaxRowNumber${entryCount.count}'  id='attcahmentMaxRowNumber${entryCount.count}' value='1' />
 					                 <div id='timesheetDocumentsId' class=''>
 					                       <c:forEach var="entryDoc" items="${entry.expensesEntryDocuments}" varStatus="entryDocCount">
+					                        <c:if test = '${entryDoc.status == 1}'>
 					                         <strong class='proDown' id='${entryDocCount.index}document${entryCount.count}'>
 					                          <input type='hidden' name='${entryDocCount.index}DbdocFileId${entryCount.count}' id='${entryDocCount.index}DbdocFileId${entryCount.count}' value='${entryDoc.id}'/>
 					                          <input type='hidden' name='${entryDocCount.index}DbdocFileIsDeleted${entryCount.count}' id='${entryDocCount.index}DbdocFileIsDeleted${entryCount.count}' value='N'/>
-					                             <a class='downicon' href='<c:url value="/downloadExpensesEntryDocument?entryDocumentId=${entryDoc.id}"/>'>
+					                             <%-- <a class='downicon' href='<c:url value="/downloadExpensesEntryDocument?entryDocumentId=${entryDoc.id}"/>'> --%>
+					                              <a class='downicon' href='${entryDoc.fileURL}'>
 					                                 <i class='glyphicon glyphicon-save'></i>
 										             <input type='button' class='padLeft' value='${entryDoc.fileName}'/>
 										        </a>
-										        <a class="fa fa-eye expAttView" onclick="viewDocument('${entryDoc.fileName}','${entryDoc.id}');"></a>
+										        <%-- <a class="fa fa-eye expAttView" onclick="viewDocument('${entryDoc.fileName}','${entryDoc.id}');"></a> --%>
+										        <a class="fa fa-eye expAttView" onclick="viewFile('${entryDoc.fileURL}','${entryDoc.fileName}','${entryDoc.fileContentType}');"></a>
 					                         </strong>
+					                         </c:if>
 					                       </c:forEach>
 					                 </div> 
 					             </div>
@@ -163,14 +166,12 @@
 
 <script>
 function viewDocument(title,id){
-	var sourceleadUrl ='${sourceleadUrl}';
 		window.open(sourceleadUrl+'/viewExpensesEntryDocument/'+title+'?entryDocumentId='+id,title,"height=600,width=600");
 }
 </script>    
     
 <script>
 function exportMyExpenses(type,Expid,ApproverType){
-	var sourceleadUrl = '${sourceleadUrl}';
 	window.location.href = sourceleadUrl + "/exportMyExpensesList?&type="+type+"&Expid="+Expid+"&ApproverType="+ApproverType;
 }
 </script>

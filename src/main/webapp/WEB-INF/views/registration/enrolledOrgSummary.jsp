@@ -263,7 +263,7 @@ z-index: 9999999999 !important;
                             
                             <div class="clearfix mb10">
 	                              <div class="col-md-12" id="userEmailDiv">
-	                                <input type="text" data-validation="required validate_Space validate_length length2-100 validate_email"  field-name="Email" onblur="getUserByUserEmail(); validateUserEmail();" onKeyUp="validateUserEmail();"  name="userEmail" id="userEmail" class="form-control input-sm"  placeholder="Email*">
+	                                <input type="text" data-validation="required validate_Space validate_length length2-100 validate_email"  field-name="Email" onblur="getUserByUserEmail(); validateUserEmail();" onKeyUp="validateUserEmail();"  name="email" id="email" class="form-control input-sm"  placeholder="Email*">
 	                              	<input type="hidden" name="registeredOrgLocationId" value="${registeredOrgLocationId}">
 	                              	<input type="hidden" name="registredOrgId" value="${orgId}">
 	                              </div>
@@ -284,7 +284,7 @@ z-index: 9999999999 !important;
                             
                             <div class="clearfix mb10">
                               <div class="col-md-12" id="userRoleDiv">
-                                <select class="form-control chosen-select" data-validation="required" field-name="Role" id="userRole" name="userRole">
+                                <select class="form-control chosen-select" data-validation="required" field-name="Role" id="roleTypeId" name="roleTypeId">
                                 	 <option value="">-Select Role-</option>
                                 </select>
                               </div>
@@ -375,7 +375,7 @@ function validatePrimaryUserEmail(){
 
 <script type="text/javascript">
  function getUserByUserEmail() {
-	 var EmailId = document.getElementById("userEmail").value; 
+	 var EmailId = document.getElementById("email").value; 
 	 var sourceleadUrl ='${sourceleadUrl}';
 	 if(EmailId != null && EmailId != ""){
 		 $.ajax({
@@ -424,7 +424,7 @@ function validatePrimaryUserEmail(){
  
  <script type="text/javascript">
  function validateUserEmail() {
-	 var emailId = document.getElementById("userEmail").value; 
+	 var emailId = document.getElementById("email").value; 
 	 var orgLocationId = '${registeredOrgLocationId}';
 	 var sourceleadUrl ='${sourceleadUrl}';
 	 if(emailId != null && emailId != ""){
@@ -435,12 +435,12 @@ function validatePrimaryUserEmail(){
 		        success: function(data) {
 		        	if(data == 'true'){
 		        		  $('#userEmailDiv').find('p.jquery_form_error_message').remove();
-						  $("input#userEmail").after("<p class='jquery_form_error_message'>"+emailId+" is Already Existed</span>");
+						  $("input#email").after("<p class='jquery_form_error_message'>"+emailId+" is Already Existed</span>");
 						  document.getElementById("EmailId").setAttribute('record-exist','yes');
 						  document.getElementById("EmailId").setAttribute('record-exist-errorMsg',emailId+' is Already Existed'); 
 		        	}
 		        	else{
-		        		 $('input#userEmail').removeAttr( "record-exist record-exist-errormsg");
+		        		 $('input#email').removeAttr( "record-exist record-exist-errormsg");
 		        		 $('#userEmailDiv').find('p.jquery_form_error_message').remove(); 
                          $("#add_user").removeAttr("disabled");
 		        	}
@@ -458,8 +458,8 @@ function validatePrimaryUserEmail(){
 		$("#add_user").removeAttr("disabled");
 		$('#firstName').val('');
 		$('#lastName').val('');
-		$('#userEmail').val('');
-		$('#userRole').val('');
+		$('#email').val('');
+		$('#roleTypeId').val('');
 		$(".error").removeClass("error");
 		$('#firstNameDiv').find('p.jquery_form_error_message').remove();
 		$('#lastNameDiv').find('p.jquery_form_error_message').remove();
@@ -533,16 +533,10 @@ var validationSettings = {
 		dateFormat : 'yyyy/mm/dd' 
    };  
          $('body').on('submit', '#adduser_form', function(e){
-        	  if ($(this).validate(false, validationSettings)){
+        	  if ($('#adduser_form').validate(false, validationSettings)){
         		    e.preventDefault(); 
 	          		
-        		    var frm = $('#adduser_form').serializeFormJSON();
-        	        var con = JSON.stringify(frm);
-        	        con = con.replace(/[{}]/g, "");
-        	        
-        	        //It will escape all the special characters
-        	        var jsonData = encodeURIComponent(con);
-				    
+        		    var formData = getFormData('adduser_form');
 	          		var sourceleadUrl ='${sourceleadUrl}';
 	          		
 	          		 $("#add_user").attr("disabled", "disabled");
@@ -550,7 +544,8 @@ var validationSettings = {
 	          		
 	          	      $.ajax({
 	     		    	type: "POST",
-	     		    	 url: sourceleadUrl+"/createUesrBySourceleadAdmin?${_csrf.parameterName}=${_csrf.token}&json="+jsonData, 
+	     		    	data : formData,
+	     		    	 url: sourceleadUrl+"/createUesrBySourceleadAdmin?${_csrf.parameterName}=${_csrf.token}", 
 	     		        success: function(data) {
 	     		        	if(data != null && data != '' && data == 'success'){
 	     		        		$("#userLoading").removeAttr("style");
@@ -832,9 +827,9 @@ function pagination(){
 			        		var opt = json[i];
 			        		output = output + "<option value='" +opt.id+ "'>"+opt.displayName+"</option>";
 					}
-		        	$("#userRole").empty();
-			        $("#userRole").append(output);
-			        $('#userRole').trigger("chosen:updated");
+		        	$("#roleTypeId").empty();
+			        $("#roleTypeId").append(output);
+			        $('#roleTypeId').trigger("chosen:updated");
 		        },
 		    });
 	

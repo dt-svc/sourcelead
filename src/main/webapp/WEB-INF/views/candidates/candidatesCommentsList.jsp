@@ -10,18 +10,16 @@
 
 <script>
 function candidateCommentsList(candidateId,submissionId){
-	$('#tab-7').show();
 	
+	$('#tab-7').show();
 	$('.' + "current").removeClass("current");
 	$("#candidateCommentTab").addClass("current");
 	var urlForm = "";
 	if(submissionId != null && submissionId != '' && submissionId != 'undefined'){
-		urlForm = "/getAllCommentsOnCandidateByCandidateIdAndOrgLocationAndSubmissionId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&submissionId="+submissionId;
+		urlForm = "/getAllCommentsOnCandidateByCandidateIdAndOrgLocationAndSubmissionId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&submissionId="+submissionId;
     }else{
-    	urlForm = "/getAllCommentsOnCandidateByCandidateIdAndOrgLocation?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId;
+    	urlForm = "/getAllCommentsOnCandidateByCandidateIdAndOrgLocation?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId;
     }
-	
-	var sourceleadUrl ='${sourceleadUrl}';
 	  $.ajax({
         type : "POST",
          url: sourceleadUrl+urlForm,        
@@ -37,7 +35,7 @@ function candidateCommentsList(candidateId,submissionId){
             	        	    result = result+'    <div class="commentsimg">';
             	        	    result = result+'    <i class="fa fa-comments"></i>';
             	        	    result = result+'        <div class="commentsimg-inner">';
-            	        	    result = result+'        	<img onerror="predefineProfileImage(this);" src="'+sourceleadUrl+'/displayUserImage/'+report.commentAuthorUserId+'"/>';
+            	        	    result = result+'        	<img onerror="predefineProfileImage(this);" src="'+report.commentAuthorUserImage+'"/>';
             	        	    result = result+'        </div>';
             	        	    result = result+'    </div>';
             	        	    result = result+'     <div class="comments-content">';

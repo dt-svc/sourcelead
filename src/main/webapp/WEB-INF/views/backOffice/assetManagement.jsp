@@ -248,9 +248,7 @@ var validationSettings = {
         	        var jsonData = encodeURIComponent(con);
         	        var form = $('#addAsset_form')[0];
 	           		var formData = new FormData(form);
-	          		var sourceleadUrl ='${sourceleadUrl}';
-	          		
-	          		
+	           		
 	          		 $("#add_asset").attr("disabled", "disabled");
 	          		 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	          		
@@ -262,7 +260,7 @@ var validationSettings = {
           	            processData: false,
           	            contentType:false,
               	        dataType : 'json',
-	     		    	 url: sourceleadUrl+"/addCategoryAssets?${_csrf.parameterName}=${_csrf.token}&json="+jsonData, 
+	     		    	 url: sourceleadUrl+"/addCategoryAssets?"+tokenParamName+"="+tokenValue+"&json="+jsonData, 
 	     		        success: function(result) {
 	     		        	if(result == 'home'){
 	     	   	        	    location.replace(sourceleadUrl+ "/assetManagement");
@@ -345,9 +343,6 @@ var validationSettings = {
   
   <script>
 	function getAssetList(){
-		
-		var sourceleadUrl ='${sourceleadUrl}';
-		
 		var categoryIds = [];
 		$('input:checkbox[name=categoryId]:checked').each(function() 
 	    {
@@ -362,7 +357,7 @@ var validationSettings = {
 		
 		  $.ajax({
 			   	type: "POST",
-			    url: sourceleadUrl+"/getAssetList?${_csrf.parameterName}=${_csrf.token}&categoryIds="+categoryIds+"&workingStatus="+workingStatus, 	   
+			    url: sourceleadUrl+"/getAssetList?"+tokenParamName+"="+tokenValue+"&categoryIds="+categoryIds+"&workingStatus="+workingStatus, 	   
 	   		    success: function(data) {
 	   		    	
 	   		    	
@@ -464,7 +459,6 @@ function pagination1(){
 <script>
 function updateWorkingStatus(assetId){
     var workingStatus = $('#workingStatus'+assetId).val();
-	var sourceleadUrl = '${sourceleadUrl}';
 	var rowHtmlContent =  $("#asset"+assetId).html();
 	
 	 $("#asset"+assetId).empty();
@@ -472,7 +466,7 @@ function updateWorkingStatus(assetId){
 	 $("#loading"+assetId).attr('style',' height:40px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/linear-loader.gif"); background-position:center; background-repeat:no-repeat;');
 	$.ajax({
 	   	type: "POST",
-	    url: sourceleadUrl+"/updateAssetWorkingStatus?${_csrf.parameterName}=${_csrf.token}&assetId="+assetId+"&workingStatus="+workingStatus,	    	   
+	    url: sourceleadUrl+"/updateAssetWorkingStatus?"+tokenParamName+"="+tokenValue+"&assetId="+assetId+"&workingStatus="+workingStatus,	    	   
 	    success: function(data) {
 	    	$("#asset"+assetId).empty();
 	    	$("#asset"+assetId).html(rowHtmlContent);
@@ -509,8 +503,6 @@ function cancel(){
 
 <script>
 function removeAssetManagement(assetId){
-	 var sourceleadUrl = '${sourceleadUrl}';
-	
 	 $("#popUp").empty();
 	 $(".project_inn_mask").fadeOut(200);
 	
@@ -520,7 +512,7 @@ function removeAssetManagement(assetId){
 	
 	 $.ajax({
 	   	type: "POST",
-	    url: sourceleadUrl+"/removeAssetManagement?${_csrf.parameterName}=${_csrf.token}&assetId="+assetId,	    	   
+	    url: sourceleadUrl+"/removeAssetManagement?"+tokenParamName+"="+tokenValue+"&assetId="+assetId,	    	   
 	    success: function(data) {
 	    	 var table = $('#assetManagementList').DataTable();
   		     table.row("#asset"+assetId).remove().draw( false );

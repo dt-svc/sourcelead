@@ -9,6 +9,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
@@ -30,6 +31,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.ContractsDTO;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.Countries;
@@ -469,6 +471,7 @@ public class RequirementController {
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		Org loginOrg= (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		Boolean isAdmin = (Boolean) SourceLeadSessionManager.getSessionAttribute(request,"isAdmin");
 		ModelAndView model = new ModelAndView();
 		
 		SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
@@ -481,6 +484,45 @@ public class RequirementController {
 		
 		Timezone timezone = timeZoneService.getTimezone(orgLocations.getTimezone().getId());
 		Requirement requirement = requirementService.getRequirementByRequirementUUID(requirementUUID);
+		
+		 Set<RequirementApproverHierarchy> approverList = requirement.getRequirementApprover();
+		 Integer maxLevel =  requirementApproverHierarchyService.getRequirementApproverHierarachyWithHighestLevel(requirement.getId());
+			if(null != maxLevel && maxLevel >1){
+				if(null != approverList && !approverList.isEmpty()){
+					for(RequirementApproverHierarchy reApprover :approverList){
+						if((loginUser.getId().equals(reApprover.getApproverUserId().getId())) && reApprover.getLevel() == 1){
+							 requirement.setRequirementApproverHierarchyStatus(reApprover.getRequirementApproverStatus().toString());
+						}
+						else if((isAdmin || loginUser.getId().equals(reApprover.getApproverUserId().getId())) && reApprover.getLevel() == 2){
+							 requirement.setRequirementApproverHierarchyStatus(reApprover.getRequirementApproverStatus().toString());
+						}
+					}
+				}
+			}else if(null != maxLevel && maxLevel ==1){
+				int i = 0;
+				if(null != approverList && !approverList.isEmpty()){
+					for(RequirementApproverHierarchy reApprover :approverList){
+						if(null != reApprover.getRequirementApproverStatus().toString() && "" != reApprover.getRequirementApproverStatus().toString()){
+							 requirement.setRequirementApproverHierarchyStatus(reApprover.getRequirementApproverStatus().toString());
+						}
+						i++;
+					}
+				}
+			}
+			
+		Boolean isLoginUserAsApprover = false;
+		RequirementApproverHierarchy requirementApproverHierarchy = requirementApproverHierarchyService.getRequirementApproverHierarchyByRequirementId(requirement.getId(), loginUser.getId());
+		if (requirementApproverHierarchy != null) {
+			isLoginUserAsApprover = true;
+		}
+		requirement.setIsLoginUserAsApprover(isLoginUserAsApprover.toString());
+		
+		if (requirement.getCreatedBy().getId().equals(loginUser.getId())) {
+			requirement.setIsLoginUserAsInitiator("true");
+		}else {
+			requirement.setIsLoginUserAsInitiator("false");
+		}
+		
 		if(null != requirement && requirement.getOrgLocationId().getId().equals(orgLocations.getId())){
 			Long requirementId = requirement.getId();
 			
@@ -497,7 +539,6 @@ public class RequirementController {
 			Boolean isManager = requirementService.checkLoginUserIsRequirementManagerByRequirementIdAndUserId(requirementId, loginUser.getId());
 			model.addObject("isManager",isManager);
 			
-			Boolean isAdmin = userRoleService.isUserAdminByOrgLocationId(loginUser.getId(),orgLocations.getId());
 			model.addObject("isAdmin",isAdmin);
 	
 			model.addObject("sourceleadUrl", sourceleadUrl);
@@ -733,27 +774,47 @@ public class RequirementController {
 			 
 			}
 		
-		    List<LookUpData> educationsList = lookUpDataService.getLookUpDataByCategory(Constants.EDUCATIONS);
-			model.addObject("educationsList", educationsList);
+			if(requirement != null && requirement.getId() != null){
+				List<String> newlyAddededucationList = requirementService.getAllRequirementEducationByRequirementId(requirement.getId());
+			       List<String> educationsList = lookUpDataService.getLookUpDataByCategoryEducation();
+			       
+			       String education = newlyAddededucationList.get(0);
+					if(!"null".equalsIgnoreCase(education) && null != education){
+					String arr[] = education.split(",");
+					for(String editEducationName : arr){
+						if(!educationsList.contains(editEducationName)){
+							educationsList.add(editEducationName);
+						}
+					}
+				      model.addObject("educationsList", educationsList);
+					}else{
+					  model.addObject("educationsList", educationsList);
+					} 
+				}else{
+		         // List<LookUpData> educationsListData = lookUpDataService.getLookUpDataByCategory(Constants.EDUCATIONS);
+		          List<String> educationsList = lookUpDataService.getLookUpDataByCategoryEducation();
+				  model.addObject("educationsList", educationsList);
+				}
 			
 			/*List<LookUpData> skillsList = lookUpDataService.getLookUpDataByCategory(Constants.SKILLS);
 			model.addObject("skillsList", skillsList);*/
-			
-			
 			
 			if(requirement != null && requirement.getId() != null){
 
 				List<String> allReqSkills = requirementService.getAllRequirementSkillsByRequirementI(requirement.getId());
 					List<String> skillsList = lookUpDataService.getAllSkillsBySkillCategory();
-					List<String> totSkils = new ArrayList<String>();
-					if(!allReqSkills.contains(null)){
-						totSkils.addAll(skillsList);
-						totSkils.addAll(allReqSkills);
-						model.addObject("skillsList", totSkils);
-					}else{
-						model.addObject("skillsList", skillsList);
+					String skill = allReqSkills.get(0);
+					if(!"null".equalsIgnoreCase(skill) && null != skill){
+					String arr[] = skill.split(",");
+					for(String editSkillName : arr){
+						if(!skillsList.contains(editSkillName)){
+							skillsList.add(editSkillName);
+						}
 					}
-
+				      model.addObject("skillsList", skillsList);
+					}else{
+					  model.addObject("skillsList", skillsList);
+					} 
 			}else{
 				//List<LookUpData> skillsList = lookUpDataService.getLookUpDataByCategory(Constants.SKILLS);
 				List<String> skillsList = lookUpDataService.getAllSkillsBySkillCategory();
@@ -829,6 +890,7 @@ public class RequirementController {
 							Candidate candidate = candidateService.getCandidateByCandidateIdAndOrgLocationId(requirementOffers.getSubmissionId().getCandidate().getId(),requirementOffers.getSubmissionId().getOrgLocations().getId());
 							if(candidate != null){
 								candidate.setIsAssociate(Constants.YES);
+								candidate.setGeneratedId(candidateService.getCandidateId(requirementOffers.getSubmissionId().getOrgLocations()));
 								candidateService.saveOrUpdateCandidate(candidate);
 						    	candidateService.saveOrUpdateCandidateElkDocument(candidate);
 							}else{
@@ -839,8 +901,9 @@ public class RequirementController {
 				      if((null != requirementOffers.getSubmissionId().getVendorLocationId() && null != requirementOffers.getSubmissionId().getSourceSubmission()) &&
 					      	  ("C2C".equalsIgnoreCase(requirementOffers.getSubmissionId().getRequirement().getJobType()) || "C2H".equalsIgnoreCase(requirementOffers.getSubmissionId().getRequirement().getJobType()) || "Contract".equalsIgnoreCase(requirementOffers.getSubmissionId().getRequirement().getJobType())) ){
 					      		
-					      		JSONObject jsonObj = populateJsonObject(requirementOffers,null);
-					      		contractsTemplateService.saveNewContract(jsonObj, requirementOffers.getSubmissionId().getOrgLocations(), "DRAFT", null, requirementOffers.getSubmissionId().getOrgLocations().getOrg(), "NEW", null);
+//					      		JSONObject jsonObj = populateJsonObject(requirementOffers,null);
+					      		ContractsDTO contractsDTO = populateContractsDTO(requirementOffers,null,requirementOffers.getSubmissionId().getOrgLocations());
+					      		contractsTemplateService.saveNewContract(contractsDTO, requirementOffers.getSubmissionId().getOrgLocations(), "DRAFT", null, requirementOffers.getSubmissionId().getOrgLocations().getOrg(), "NEW");
 						      }
 			    }
 		    }
@@ -848,42 +911,38 @@ public class RequirementController {
 		return model;
 	}
 	
-	private JSONObject populateJsonObject(RequirementOffers requirementOffers, User loginUser) throws JSONException
+	private ContractsDTO populateContractsDTO(RequirementOffers requirementOffers, User loginUser, OrgLocations orgLocations) throws Exception
 	{
-		JSONObject jsonObj = new JSONObject(); 
-		
+		ContractsDTO contractsDTO = new ContractsDTO();
+		// SimpleDateFormat simpleDateFormat =
+		// orgLocations.getLocFullFormDateFormatter();
 		RequirementSubmissionTemplateFields candidate = requirementSubmissionTemplateFieldsService.getSubmissionsTemplateFieldsByRequirementSubmissionsId(requirementOffers.getSubmissionId().getId());
-		if(null != candidate){
-		jsonObj.put("contractType", "Vendor SOW");
-		
-		if(null != candidate.getFirstName() && null != candidate.getLastName()){
-			StringBuilder candisb = new StringBuilder();
-			jsonObj.put("contractTitle", candisb.append(candidate.getFirstName()).append(" ").append(candidate.getLastName()).append(" SOW").toString());
-		}else{
-			StringBuilder candisb = new StringBuilder();
-			jsonObj.put("contractTitle", candisb.append(candidate.getFirstName()).append(" ").append(" SOW").toString());
+		if (candidate != null) {
+			contractsDTO.setContractType("Vendor SOW");
+			if (null != candidate.getFirstName() && null != candidate.getLastName()) {
+				StringBuilder candisb = new StringBuilder();
+				contractsDTO.setContractTitle(candisb.append(candidate.getFirstName()).append(" ").append(candidate.getLastName()).append(" SOW").toString());
+			}
+			else {
+				StringBuilder candisb = new StringBuilder();
+				contractsDTO.setContractTitle(candisb.append(candidate.getFirstName()).append(" ").append(" SOW").toString());
+			}
+			contractsDTO.setSubmissionOffersList(requirementOffers.getSubmissionId().getId().toString());
+			/*
+			 * to allow default owner un-comment the below line --Pavan jampana
+			 */
+			// jsonObj.put("owner", loginUser.getId());
+			contractsDTO.setOrgRelationId(requirementOffers.getSubmissionId().getSourceSubmission().getRequirement().getClientId().getId().toString());
+			contractsDTO.setVendorContact(requirementOffers.getSubmissionId().getSourceSubmission().getRequirement().getSpocId().getVendorUser().getId().toString());
+			contractsDTO.setFlatReward(requirementOffers.getAmount());
+			contractsDTO.setBillingRatePer(requirementOffers.getPaymentMode());
+			contractsDTO.setBillingRateType(requirementOffers.getPaymentType());
+			// Date startTime =
+			// commonUtil.getDateFormat(jsonObj.getString("startDate"));
+			String currentTimeStr = commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), requirementOffers.getDateOfJoining());
+			contractsDTO.setStartDate(currentTimeStr);
 		}
-		
-		jsonObj.put("submissionOffersList", requirementOffers.getSubmissionId().getId());
-		
-		/*
-		 * to allow default owner un-comment the below line --Pavan jampana
-		 */
-//		jsonObj.put("owner", loginUser.getId());
-		
-		jsonObj.put("orgRelationId", requirementOffers.getSubmissionId().getSourceSubmission().getRequirement().getClientId().getId());
-		
-		jsonObj.put("vendorContact", requirementOffers.getSubmissionId().getSourceSubmission().getRequirement().getSpocId().getVendorUser().getId());
-		
-		jsonObj.put("flatReward", requirementOffers.getAmount());
-		
-		jsonObj.put("billingRatePer", requirementOffers.getPaymentMode());
-		
-		jsonObj.put("billingRateType", requirementOffers.getPaymentType());
-		
-		jsonObj.put("startDate", requirementOffers.getDateOfJoining());
-		}
-		return jsonObj;
+		return contractsDTO;
 	}
 
 	

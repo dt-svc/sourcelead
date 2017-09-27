@@ -20,12 +20,11 @@
 <script>
 function addOffer(requirementId){
 	$('.action-pop').slideUp();
-	var sourceleadUrl ='${sourceleadUrl}';
 	var clientSubmissions = '${clientSubmissions}';
 	
 	 $.ajax({
 	    	type: "POST",
-	        url: sourceleadUrl+"/getRequirementWhichIsReleasedOrNot?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId, 
+	        url: sourceleadUrl+"/getRequirementWhichIsReleasedOrNot?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId, 
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	
@@ -143,7 +142,7 @@ function selectOfferApplicants(){
 </script>
 
 <div id="divOfferTd1" style="display: none; float: left;">
-       <select multiple class="blminwidth-50"  id="REPLACEROWIDapplicantId" onchange="selectOfferApplicants()" data-placeholder="select Apllicants" name="REPLACEROWIDapplicantId" field-name="Applicant" data-validation="required" >
+       <select multiple class="blminwidth-50"  id="REPLACEROWIDapplicantId" onchange="selectOfferApplicants()" data-placeholder="select Applicants" name="REPLACEROWIDapplicantId" field-name="Applicant" data-validation="required" >
 			
 	  </select>
 </div>
@@ -392,7 +391,6 @@ function validateRateAndRateType(){
         var con = JSON.stringify(frm);
         con = con.replace(/[{}]/g, "");
         var jsonData = encodeURIComponent(con);
-        var sourceleadUrl ='${sourceleadUrl}'; 
         var requirementId = '${requirementId}';
         
  		var form = $('#addOffer_form')[0];
@@ -421,7 +419,7 @@ function validateRateAndRateType(){
 	        processData: false,
 	        contentType:false,
  	    	dataType : 'json',
-	        url: sourceleadUrl+"/saveOffer?${_csrf.parameterName}=${_csrf.token}&jsonData="+jsonData,
+	        url: sourceleadUrl+"/saveOffer?"+tokenParamName+"="+tokenValue+"&jsonData="+jsonData,
 	        success: function(result) {
 	        	$(".add_offer_wrap").removeClass("add_offer_wrap_active");
      		$(".side_mask").fadeOut(200);
@@ -490,7 +488,7 @@ function cancelOfferPopup(){
      
 		 $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/getAllSubmittedAndShortListAndInterviewededCandidates?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&existingApplicantsIds="+existingApplicantsIds, 
+		        url: sourceleadUrl+"/getAllSubmittedAndShortListAndInterviewededCandidates?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&existingApplicantsIds="+existingApplicantsIds, 
 		        success: function(data) {
 		        	var json = JSON.parse(data);
 		        	var output = "";
@@ -533,12 +531,11 @@ function cancelOfferPopup(){
 		 }
 	 }
 	
-	 var sourceleadUrl ='${sourceleadUrl}';
 	 var requirementId = $("#reqId").val();
      
 		 $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/getAllSubmittedAndShortListAndInterviewededCandidates?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&existingApplicantsIds="+existingApplicantsIds+"&isClientOffer="+isClientOffer, 
+		        url: sourceleadUrl+"/getAllSubmittedAndShortListAndInterviewededCandidates?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&existingApplicantsIds="+existingApplicantsIds+"&isClientOffer="+isClientOffer, 
 		        success: function(data) {
 		        	var json = JSON.parse(data);
 		        	var output = "";
@@ -578,7 +575,6 @@ function cancelOfferPopup(){
 			 existingApplicantsIds.push(applicant);
 		 }
 	 }
-	 var sourceleadUrl ='${sourceleadUrl}';
 	 var requirementId = $("#reqId").val();
 	 
 	 var clientSubmissions = '${clientSubmissions}';
@@ -593,7 +589,7 @@ function cancelOfferPopup(){
      
 		 $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/getAllSubmittedAndShortListAndInterviewededCandidates?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&existingApplicantsIds="+existingApplicantsIds+"&isClientOffer="+isClientOffer, 
+		        url: sourceleadUrl+"/getAllSubmittedAndShortListAndInterviewededCandidates?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&existingApplicantsIds="+existingApplicantsIds+"&isClientOffer="+isClientOffer, 
 		        success: function(data) {
 		        	var json = JSON.parse(data);
 		        	var output = "";

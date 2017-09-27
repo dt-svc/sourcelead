@@ -587,7 +587,7 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<CandidateIndex> getRecommendationsUpdateWithScoreByUsingElk(Long orgLocationId, RecommendedCustomizeScore recommendedCustomizeScore,Long requirementId) throws Exception {
+	public List<CandidateIndex> getRecommendationsUpdateWithScoreByUsingElk(Long orgLocationId, RecommendedCustomizeScore recommendedCustomizeScore,Long requirementId,String candidatesSelected) throws Exception {
 		float locationPercentage = 0; // location 10%
 		float ratePercentage = 0;    // rate 10 %
 		float skillPercentage = 0; // skill = 20%
@@ -602,7 +602,7 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 		List<CandidateIndex> CandidateListcopy = new ArrayList<>(); 
 		String reqSkills = "";
 		if(null != recommendedCustomizeScore.getCustomizeSkills() && !"".equalsIgnoreCase(recommendedCustomizeScore.getCustomizeSkills())){
-			Long maxResults = candidateService.getCandidatesCountByOrgLocationID(orgLocationId,null);
+//			Long maxResults = candidateService.getCandidatesCountByOrgLocationID(orgLocationId,null);
 			BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
 			 boolQueryBuilder.must(QueryBuilders.matchQuery("orgLocationId", orgLocationId));
 			 boolQueryBuilder.must(QueryBuilders.matchQuery("status",1));
@@ -642,6 +642,20 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 				}
 			}
 			
+			String[] candidates = null;
+			if(null != candidatesSelected && !"".equals(candidatesSelected)){	
+				candidates = candidatesSelected.split(",");
+			}
+			
+			if(candidates != null){
+				BoolQueryBuilder candiListBuilder = QueryBuilders.boolQuery();
+		        for(int i=0 ; i< candidates.length; i++){
+		        	BoolQueryBuilder candidateCompareQueryBuilder = QueryBuilders.boolQuery();
+		        	candidateCompareQueryBuilder.should(QueryBuilders.matchQuery("candidateId", candidates[i]));
+		        	candiListBuilder.should(candidateCompareQueryBuilder);
+		        }
+		        boolQueryBuilder.must(candiListBuilder);
+			}
 			
 			String [] educationArr = null;
 			if(education != null){
@@ -701,7 +715,7 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 					
 					//List<RequirementSubmission> reqList = requirementSubmissionService.getRequirementPerCandidate(candidateIndex.getCandidateId());
 					Integer reqListCount = requirementSubmissionService.getRequirementPerCandidateCount(candidateIndex.getCandidateId(),candidateIndex.getOrgLocationId());
-					
+					 // TODO Don't delete until regression testing done Rajashekar
 					boolean isSumbitted = requirementSubmissionService.isCandidateSubmittedForRequirementByCandidateIdAndRequirementId(candidateIndex.getCandidateId(), requirementId);
 					if(isSumbitted == true){
 						candidateIndex.setIsCandidateSubmitted(Constants.YES);
@@ -821,7 +835,7 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 		        });
 			 }
 		 }
-		logger.info("....getRecommendationsWithScoreByUsingElk Method Ended...");
+		logger.info("....RecommendationsWithScoreByUsingElk Method Ended...");
 		return CandidateListcopy;
 	}
 	

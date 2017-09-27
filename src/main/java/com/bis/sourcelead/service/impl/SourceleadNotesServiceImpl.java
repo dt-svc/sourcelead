@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.SourceleadNotesDao;
+import com.bis.sourcelead.dto.SourceleadNotesDTO;
 import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.Invoice;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -65,69 +66,67 @@ public class SourceleadNotesServiceImpl implements SourceleadNotesService {
 	
 	
 	@Override
-	public SourceleadNotes storeComments(JSONObject jsonObj, User user, OrgLocations orgLocations) throws Exception
+	public SourceleadNotes storeComments(SourceleadNotesDTO sourceleadNotesDTO, User user, OrgLocations orgLocations) throws Exception
 	{
 		SourceleadNotes sourceleadNotes = new SourceleadNotes();
 		
 		
-		if (jsonObj.has("invoiceUUID") && jsonObj.getString("invoiceUUID") != null) {
-			Invoice invoice=invoiceService.getInvoicetByInvoiceUUID(jsonObj.getString("invoiceUUID"));
+		if (StringUtils.isNotBlank(sourceleadNotesDTO.getInvoiceUUID())) {
+			Invoice invoice=invoiceService.getInvoicetByInvoiceUUID(sourceleadNotesDTO.getInvoiceUUID());
 			sourceleadNotes.setInvoicdeId(invoice);
 		}
 		
-		if (jsonObj.has("requirementId") && jsonObj.getString("requirementId") != null) {
-			Requirement req=requirementService.getRequirementByRequirementId(jsonObj.getLong("requirementId"));
+		if (StringUtils.isNotBlank(sourceleadNotesDTO.getRequirementId())) {
+			Requirement req=requirementService.getRequirementByRequirementId(Long.parseLong(sourceleadNotesDTO.getRequirementId()));
 			sourceleadNotes.setRequirementId(req);
 		}
 		
-		if(jsonObj.has("contractUUID")&& jsonObj.getString("contractUUID") != null){
-			Contracts contracts = contractsTemplateService.getContractByContractUUID(jsonObj.getString("contractUUID"));
+		if(StringUtils.isNotBlank(sourceleadNotesDTO.getContractUUID())){
+			Contracts contracts = contractsTemplateService.getContractByContractUUID(sourceleadNotesDTO.getContractUUID());
 			sourceleadNotes.setContractId(contracts);
 		}
 		
-		if (jsonObj.has("noteDescription") && jsonObj.getString("noteDescription") != null) {
-			sourceleadNotes.setComment(jsonObj.getString("noteDescription"));
+		if (StringUtils.isNotBlank(sourceleadNotesDTO.getNoteDescription())) {
+			sourceleadNotes.setComment(sourceleadNotesDTO.getNoteDescription());
 		}
-		if (jsonObj.has("noteType") && jsonObj.getString("noteType") != null) {
-			sourceleadNotes.setNoteType(jsonObj.getString("noteType"));
+		if (StringUtils.isNotBlank(sourceleadNotesDTO.getNoteType())) {
+			sourceleadNotes.setNoteType(sourceleadNotesDTO.getNoteType());
 		}
 		if(orgLocations != null){
 			sourceleadNotes.setOrgLocationID(orgLocations);
 		}
-		if (jsonObj.has("orgRelationId")
-				&& !"".equalsIgnoreCase(jsonObj.getString("orgRelationId"))) {
-			OrgRelations orgRelation = orgRelationsService.getOrRelationsById(Long.parseLong(jsonObj.getString("orgRelationId")));
+		if (StringUtils.isNotBlank(sourceleadNotesDTO.getOrgRelationId())) {
+			OrgRelations orgRelation = orgRelationsService.getOrRelationsById(Long.parseLong(sourceleadNotesDTO.getOrgRelationId()));
 			sourceleadNotes.setOrgRelationID(orgRelation);
 		}
 		else {
 			sourceleadNotes.setOrgRelationID(null);
 		}
-		if (jsonObj.has("categoryType")
-				&& !"".equalsIgnoreCase(jsonObj.getString("categoryType"))) {
-			sourceleadNotes.setCategoryType(jsonObj.getString("categoryType"));
-			if (Constants.NOTES_JOBS.equalsIgnoreCase(jsonObj.getString("categoryType"))) {
-				Requirement requirement = requirementService.getRequirementByRequirementId(Long.parseLong(jsonObj.getString("vendorcontact")));
+		if (StringUtils.isNotBlank(sourceleadNotesDTO.getCategoryType())) {
+			sourceleadNotes.setCategoryType(sourceleadNotesDTO.getCategoryType());
+			if (Constants.NOTES_JOBS.equalsIgnoreCase(sourceleadNotesDTO.getCategoryType())) {
+				Requirement requirement = requirementService.getRequirementByRequirementId(Long.parseLong(sourceleadNotesDTO.getVendorcontact()));
 				sourceleadNotes.setRequirementId(requirement);
 			}
 			else {
 				sourceleadNotes.setRequirementId(null);
 			}
-			if (Constants.NOTES_CONTRACTS.equalsIgnoreCase(jsonObj.getString("categoryType"))) {
-				Contracts contracts = contractsTemplateService.getContractById(Long.parseLong(jsonObj.getString("vendorcontact")));
+			if (Constants.NOTES_CONTRACTS.equalsIgnoreCase(sourceleadNotesDTO.getCategoryType())) {
+				Contracts contracts = contractsTemplateService.getContractById(Long.parseLong(sourceleadNotesDTO.getVendorcontact()));
 				sourceleadNotes.setContractId(contracts);
 			}
 			else {
 				sourceleadNotes.setContractId(null);
 			}
-			if (Constants.NOTES_BILLING.equalsIgnoreCase(jsonObj.getString("categoryType"))) {
-				Invoice invoice = invoiceService.getInvoicetById(Long.parseLong(jsonObj.getString("vendorcontact")));
+			if (Constants.NOTES_BILLING.equalsIgnoreCase(sourceleadNotesDTO.getCategoryType())) {
+				Invoice invoice = invoiceService.getInvoicetById(Long.parseLong(sourceleadNotesDTO.getVendorcontact()));
 				sourceleadNotes.setInvoicdeId(invoice);
 			}
 			else {
 				sourceleadNotes.setInvoicdeId(null);
 			}
-			if (Constants.NOTES_CONTACTS.equalsIgnoreCase(jsonObj.getString("categoryType"))) {
-				OrgSpoc orgSpoc = orgSpocService.getOrgSpocById(Long.parseLong(jsonObj.getString("vendorcontact")));
+			if (Constants.NOTES_CONTACTS.equalsIgnoreCase(sourceleadNotesDTO.getCategoryType())) {
+				OrgSpoc orgSpoc = orgSpocService.getOrgSpocById(Long.parseLong(sourceleadNotesDTO.getVendorcontact()));
 				sourceleadNotes.setSpocId(orgSpoc);
 			}
 			else {
@@ -137,8 +136,8 @@ public class SourceleadNotesServiceImpl implements SourceleadNotesService {
 		else {
 			sourceleadNotes.setCategoryType(null);
 		}
-		if (jsonObj.has("allowAll")) {
-			sourceleadNotes.setCheckBox(jsonObj.getString("allowAll"));
+		if (StringUtils.isNotBlank(sourceleadNotesDTO.getAllowAll())) {
+			sourceleadNotes.setCheckBox(sourceleadNotesDTO.getAllowAll());
 		}
 		else {
 			sourceleadNotes.setCheckBox(Constants.NO);
@@ -167,6 +166,7 @@ public class SourceleadNotesServiceImpl implements SourceleadNotesService {
 				StringBuilder nameBuilder = new StringBuilder();
 				notes.setUserName(nameBuilder.append(user.getFirstName()).append(" ").append(authorLastName).toString());
 				notes.setCommentAuthorUserId(user.getId());
+				notes.setCommentAuthorImage(user.getFileUrl());
 			}
 			
 			if (notes.getRequirementId() != null) {
@@ -228,6 +228,7 @@ public class SourceleadNotesServiceImpl implements SourceleadNotesService {
 				StringBuilder nameBuilder = new StringBuilder();
 				notes.setUserName(nameBuilder.append(user.getFirstName()).append(" ").append(authorLastName).toString());
 				notes.setCommentAuthorUserId(user.getId());
+				notes.setCommentAuthorImage(user.getFileUrl());
 			}
 			if (notes.getRequirementId() != null) {
 				notes.setRequirementTitle(notes.getRequirementId().getJobTitle());
@@ -278,6 +279,7 @@ public class SourceleadNotesServiceImpl implements SourceleadNotesService {
 				StringBuilder nameBuilder = new StringBuilder();
 				notes.setUserName(nameBuilder.append(user.getFirstName()).append(" ").append(authorLastName).toString());
 				notes.setCommentAuthorUserId(user.getId());
+				notes.setCommentAuthorImage(user.getFileUrl());
 			}
 			if (notes.getInvoicdeId() != null) {
 				notes.setInvoiceId(notes.getInvoicdeId().getInvoiceId());
@@ -330,6 +332,7 @@ public class SourceleadNotesServiceImpl implements SourceleadNotesService {
 				StringBuilder nameBuilder = new StringBuilder();
 				notes.setUserName(nameBuilder.append(user.getFirstName()).append(" ").append(authorLastName).toString());
 				notes.setCommentAuthorUserId(user.getId());
+				notes.setCommentAuthorImage(user.getFileUrl());
 			}
 			if (notes.getContractId() != null) {
 				notes.setContract(notes.getContractId().getContractTitle());

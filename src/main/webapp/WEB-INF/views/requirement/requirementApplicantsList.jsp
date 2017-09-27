@@ -1,8 +1,8 @@
 <jsp:include page="../masterHeader.jsp" />
 <jsp:include page="../masterSideNav.jsp" />
+
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
-
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
   <!-- Header Area -->
@@ -63,6 +63,7 @@
               <td><div><span>
 	              <c:if test="${not empty reqSub.submissionId.candidateResumes.resumeUUID}">
 	               <a href='<c:url value='/downloadResume?resumeUUID=${reqSub.submissionId.candidateResumes.resumeUUID}'/>'><i class='fa fa-download'></i></a>
+	               <a href="javascript:void(0)" onclick="applicatDocumentListDocumentView('${reqSub.submissionId.candidateResumes.resumeUUID}','${reqSub.submissionId.candidateResumes.fileName}');" class="fa fa-eye ml10 paddingRight"></a>
 	               <%-- <a href="<c:url value='/downloadResumeCandidate/${reqSub.submissionId.candidateResumes.resumeUUID}'/>"><i class="fa fa-download"></i> </a> --%>
 	              </c:if>
 	              <c:if test="${empty reqSub.submissionId.candidateResumes.resumeUUID}">
@@ -120,6 +121,17 @@
       </div>
     </div>
   </section>
+  
+ <script>
+ function applicatDocumentListDocumentView(resumeUUID,title){
+	 var sourceleadUrl ='${sourceleadUrl}';
+		if(resumeUUID != null && resumeUUID != ""){
+			window.open(sourceleadUrl+'/viewInterviewListResumes/'+title+'?resumeUUID='+resumeUUID,title,"height=600,width=600");
+		}
+ }
+</script>
+  
+  
   <script>
 function pagination1(){ 
     $('#appTable').DataTable( { 

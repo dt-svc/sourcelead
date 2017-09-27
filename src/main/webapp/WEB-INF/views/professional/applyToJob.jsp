@@ -8,10 +8,17 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 
-<link rel="stylesheet" href="resources/css/style.css" />
-<script src="resources/js/submissionFormBuilder.js" type="text/javascript" ></script> <!-- form builder -->
-<script src="resources/js/submissionForm-html-generator.js" type="text/javascript" ></script> <!-- form generator -->
+ <c:if test="${staticTime == null || staticTime == 0 }">
+    <c:set var='staticTime' value="<%=new java.util.Date().getTime() %>" scope="application"></c:set>
+ </c:if>
+  
+<link rel="stylesheet" href="resources/css/style.css?staticTime=${staticTime}" />
+<script src="resources/js/submissionFormBuilder.js?staticTime=${staticTime}" type="text/javascript" ></script> <!-- form builder -->
+<script src="resources/js/submissionForm-html-generator.js?staticTime=${staticTime}" type="text/javascript" ></script> <!-- form generator -->
 
+<script type="text/javascript">
+   var sourceleadUrl ='${sourceleadUrl}';
+</script>
 
 <style>
 .viewTemplate {
@@ -26,6 +33,7 @@ function applyToJob(jobTitle,requirementId,referId){
 	$(".side_mask").fadeIn(200);
 	$("body").css('overflow-y', 'hidden');
 	getRequirementSubmissionTemaplate(jobTitle,requirementId,referId);
+	ApplicantNotifyRequiremnentProRecruter();
 }
 </script>
 
@@ -42,7 +50,6 @@ function getSubmissionDetailsSideBar(jobTitle,submissionId,candidateId,requireme
  function validateSubmissionCandidateEmail() {
 	 var email =   $("input[name=EmailId]").val();
 	$('#emailDiv').find('p.jquery_form_error_message').remove();
-	 var sourceleadUrl ='${sourceleadUrl}';
 	 var requirementId = $("#requirementId").val();
 	 if(email != null && email != ""){
 		 $("#save_button").attr("disabled", "disabled");
@@ -72,9 +79,7 @@ function getSubmissionDetailsSideBar(jobTitle,submissionId,candidateId,requireme
 
 <script>
 function getRequirementSubmissionDetails(jobTitle,submissionId,candidateId,requirementId){
-	var sourceleadUrl = '${sourceleadUrl}';
 	var loginUserId = '${SourceLeadWeb_userId}';
-	
 	$.ajax({ 
 	    	type: "POST",
 	    	url: sourceleadUrl+"/getProfessionalSubmissionDetails?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId,
@@ -145,7 +150,6 @@ function getRequirementSubmissionDetails(jobTitle,submissionId,candidateId,requi
 
 <script>
 function getInternalInterviewsList(submissionId){
-	var sourceleadUrl ='${sourceleadUrl}';
 	var parentRequirement = '${parentRequirement}';
 	var loginUserRole = '${SourceLeadWeb_loginUserRole}';
 	 $.ajax({  
@@ -356,7 +360,6 @@ function getInternalInterviewsList(submissionId){
 
 <script>
 function getOfferDetails(submissionId){
-	var sourceleadUrl ='${sourceleadUrl}';
 	var parentRequirement = '${parentRequirement}';
 	var loginUserRole = '${SourceLeadWeb_loginUserRole}';
 	var locationCode ='${SourceLeadWeb_locationCode}'; 
@@ -548,7 +551,6 @@ function getOfferDetails(submissionId){
 
 <script>
 function changeInterviewStatus(submissionId,interviewId,interviewStatus){
-	var sourceleadUrl ='${sourceleadUrl}';
 	 $.ajax({
 		   	type: "POST",
 		    url: sourceleadUrl+"/acceptOrRejectInterview?${_csrf.parameterName}=${_csrf.token}&interviewStatus="+interviewStatus+"&requirementInterviewId="+interviewId,	    	   
@@ -570,7 +572,6 @@ function changeInterviewStatus(submissionId,interviewId,interviewStatus){
 
 <script>
 function sendMailToapplicant(submissionId,interviewId,interviewHistoryId){
-	var sourceleadUrl ='${sourceleadUrl}';
 	 $.ajax({
 		   	type: "POST",
 		    url: sourceleadUrl+"/sendMailToapplicant?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId+"&requirementInterviewId="+interviewId+"&interviewHistoryId="+interviewHistoryId,	    	   
@@ -617,9 +618,6 @@ function rejectOffer(offerStatus,submissionId,offerId){
 
 <script>
 function acceptingOffer(offerStatus,submissionId,offerId){
-	
-	
-	var sourceleadUrl ='${sourceleadUrl}';
 	 var reason;
 	 if ($('#rejectReason').length)
 	 {
@@ -659,7 +657,6 @@ function acceptingOffer(offerStatus,submissionId,offerId){
 <script>
 function notifyToApplicant(submissionId,offerId,offerHistoryId){
 	
-	var sourceleadUrl ='${sourceleadUrl}';
 	  $.ajax({  
         type : "POST",
         url: sourceleadUrl+"/sendNotificationAboutRequirementOfferMade?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId+"&offerId="+offerId+"&notificationtype=Applicant&offerHistoryId="+offerHistoryId,        
@@ -677,10 +674,20 @@ function notifyToApplicant(submissionId,offerId,offerHistoryId){
    });  
 }
 </script>
+<script>
+function uploadAddApplicantProfissionalDoc() {
+	fileUpload("professionaluploadBtn", "addApplicants", "applyToJob_form");
+}
+</script>
+
+<script>
+function uploadAddApplicantRecrutierDoc() {
+	fileUpload("uploadBtn", "addApplicants", "submitCandidateToJob_form");
+}
+</script>
 
 <script>
 function getRequirementSubmissionTemaplate(jobTitle,requirementId,referId){
-	 var sourceleadUrl ='${sourceleadUrl}';
 	 var candidateId = '${candidateId}';
 	 generateOrgSubmissionForm(sourceleadUrl,requirementId) 
 	 
@@ -715,8 +722,8 @@ function getRequirementSubmissionTemaplate(jobTitle,requirementId,referId){
 			result = result + '<div class="col-md-5 pull-right">';
 			result = result + '<div class="col-md-12" id="browseDiv"  style="display: none;">';
 			result = result + '<div class="input-group" id="uploadFileGroup">';
-			result = result + '<label class="input-group-btn"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File';
-			result = result + '<input type="file" style="display: none;" name="locationMapFile" multiple id="professionaluploadBtn"  class="upload">';
+			result = result + '<label class="input-group-btn" onchange="uploadAddApplicantProfissionalDoc();"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File';
+			result = result + '<input type="file" style="display: none;" name="locationMapFile" id="professionaluploadBtn"  class="upload">';
 			result = result + '</span> </label>';
 			result = result + '<input type="text" class="form-control" data-validation="validatedoc" data-validation-optional="true" field-name="Resume" readonly id="uploadFile" placeholder="Upload Resume">';
 			result = result + '</div>';
@@ -781,8 +788,8 @@ function getRequirementSubmissionTemaplate(jobTitle,requirementId,referId){
 		result = result + '<div class="col-md-5 pull-right">';
 		result = result + '<div class="col-md-12" id="browseDiv"  style="display: none;">';
 		result = result + '<div class="input-group" id="uploadFileGroup">';
-		result = result + '<label class="input-group-btn"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File';
-		result = result + '<input type="file" style="display: none;" name="locationMapFile" multiple id="uploadBtn"  class="upload">';
+		result = result + '<label class="input-group-btn" onchange="uploadAddApplicantRecrutierDoc();"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File';
+		result = result + '<input type="file" style="display: none;" name="locationMapFile" id="uploadBtn"  class="upload">';
 		result = result + '</span> </label>';
 		result = result + '<input type="text" class="form-control" data-validation="validatedoc" data-validation-optional="true" field-name="Resume" readonly id="uploadFile" placeholder="Upload Resume">';
 		result = result + '</div>';
@@ -859,7 +866,12 @@ function getRequirementSubmissionTemaplate(jobTitle,requirementId,referId){
 		
 		result = result + '</div>';
 		
-		
+		result = result + '	<div class="col-md-6 upresume mb">';
+		result = result + '<label class="col-md-4">&nbsp;</label>';
+		result = result + '<input type="checkbox" name="needApplicantPermit" id="needApplicantPermit" onClick="ApplicantPermitProRecruter();" >&nbsp;&nbsp;<span><strong>Need applicant permission</strong></span><br>';
+		result = result + '<input type="checkbox" checked="checked" name="notifyToApplicant" id="notifyToApplicantId" onClick="ApplicantNotifyRequiremnentProRecruter();" >&nbsp;&nbsp;<span><strong>Notify to applicant</strong></span> ';
+		result = result + '</div>';
+		result = result + '</div>';
 		
 		
 		result = result + '<div class="form-footer clearfix mt">';
@@ -912,7 +924,6 @@ function getRequirementSubmissionTemaplate(jobTitle,requirementId,referId){
 	    
 	    
 	    $("#candidateSkills").chosen().change(function(event) {
-	    	 var sourceleadUrl ='${sourceleadUrl}';
 	    	var allSkills = $(event.target).val();
 	   
 	    	
@@ -989,6 +1000,30 @@ function getRequirementSubmissionTemaplate(jobTitle,requirementId,referId){
 </script>
 
 
+
+<script type="text/javascript">
+function ApplicantPermitProRecruter(){
+	 if($("#needApplicantPermit").is(':checked')){
+		  $("#needApplicantPermit").val("Y");
+	 }else{
+		 $("#needApplicantPermit").val("N");
+	 }
+}
+</script>
+
+
+<script type="text/javascript">
+function ApplicantNotifyRequiremnentProRecruter(){
+	 if($("#notifyToApplicantId").is(':checked')){
+		  $("#notifyToApplicantId").val("Y");
+	 }else{
+		 alert("hello else");
+		 $("#notifyToApplicantId").val("N");
+	 }
+}
+</script>
+
+
 <script type="text/javascript">
  function getCandidatesList(requirementId,candidateType) {
 	 $('#sjfb-fields').find('p.jquery_form_error_message').remove();
@@ -1005,7 +1040,6 @@ function getRequirementSubmissionTemaplate(jobTitle,requirementId,referId){
 		 candidateTypeSelect = candidateType;
 	 }
 	 
-	 var sourceleadUrl ='${sourceleadUrl}';
 	 if(candidateType != null && candidateType != "" && candidateType != 'undefined' && candidateType != 'parseCandidate'){
 		 $("#selectCandidateDiv").css("display","block");
 		
@@ -1112,7 +1146,6 @@ function getRequirementSubmissionTemaplate(jobTitle,requirementId,referId){
 	 $("#save_button").removeAttr("disabled");
 	 $('.jquery_form_error_message').remove();
 	 var candidateId = document.getElementById("candidateId").value
-	 var sourceleadUrl ='${sourceleadUrl}';
 	 if(candidateId != null && candidateId != "" && candidateId != 'undefined'){
 		
 		 document.getElementById("resumesDiv").style.display="";
@@ -1195,7 +1228,6 @@ function getRequirementSubmissionTemaplate(jobTitle,requirementId,referId){
  		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		var form = $('#submitCandidateToJob_form')[0];
   		var formData = new FormData(form); 
-		var sourceleadUrl = '${sourceleadUrl}';
 		   $.ajax({
 				    type: "POST",
 			    	data: formData,
@@ -1259,7 +1291,6 @@ function getRequirementSubmissionTemaplate(jobTitle,requirementId,referId){
  function validateCandidateEmail() {
 	 var email =   $("input[name=EmailId]").val();
 	$('#emailDiv').find('p.jquery_form_error_message').remove();
-	 var sourceleadUrl ='${sourceleadUrl}';
 	 var requirementId = $("#requirementId").val();
 	 if(email != null && email != ""){
 		 $("#save_button").attr("disabled", "disabled");
@@ -1310,10 +1341,6 @@ function validate_fileupload(fileName)
 function getResumesList(){
 	
 	 var candidateId = '${candidateId}';
-	 var sourceleadUrl ='${sourceleadUrl}';
-	 
-	
-	 
 	 $.ajax({
 	    	type: "POST",
 	        url: sourceleadUrl+"/getCandidateResumes?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId, 
@@ -1349,7 +1376,6 @@ function getResumesList(){
 <script type="text/javascript">
 function getRecruiterCandidateDetails(){
 	var candidateId = document.getElementById("candidateId").value
-	var sourceleadUrl ='${sourceleadUrl}';
 	if(candidateId != null && candidateId != "" && candidateId != 'undefined'){
 		 $.ajax({
 		    	type: "POST",
@@ -1525,7 +1551,6 @@ function getRecruiterCandidateDetails(){
 <script>
 function getCandidateDetails(){
      var candidateId = '${SourceLeadWeb_candidateId}'; 
-     var sourceleadUrl ='${sourceleadUrl}';
      $.ajax({
 	    	type: "POST",
 	        url: sourceleadUrl+"/getCandidateDetails?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId, 
@@ -1877,7 +1902,6 @@ $('body').on('submit', '#applyToJob_form', function(e){
 	  if ($(this).validate(false, validationSettings)){
       e.preventDefault();
       var frm = $('#applyToJob_form').serializeFormJSON();
-      var sourceleadUrl ='${sourceleadUrl}';
       var requirementId = $("#requirementId").val();
       var frm = $('#applyToJob_form').serializeFormJSON();
       var con1 = JSON.stringify(frm);
@@ -2047,7 +2071,6 @@ $('body').on('submit', '#submitCandidateToJob_form', function(e){
 	  if ($(this).validate(false, validationSettings)){
       e.preventDefault();
       var frm = $('#submitCandidateToJob_form').serializeFormJSON();
-      var sourceleadUrl ='${sourceleadUrl}';
       var requirementId = $("#requirementId").val();
       var frm = $('#submitCandidateToJob_form').serializeFormJSON();
       var con1 = JSON.stringify(frm);
@@ -2248,7 +2271,6 @@ function setRateTypesByLocation(){
  		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		var form = $('#applyToJob_form')[0];
   		var formData = new FormData(form); 
-		var sourceleadUrl = '${sourceleadUrl}';
 		   $.ajax({
 				    type: "POST",
 			    	data: formData,
@@ -2514,7 +2536,6 @@ function timePopUp(){
    <script>
 function saveProposeTime(submissionId){
 	if ($('#proposeTime_form').validate(false, validationSettings)){ 
-		var sourceleadUrl = '${sourceleadUrl}';
 		var frm = $('#proposeTime_form').serializeFormJSON();
 		var con = JSON.stringify(frm);
 		con = con.replace(/[{}]/g, ""); 
@@ -2542,7 +2563,6 @@ $('body').on('blur', '#proposeTime_form', function() {
 function viewProposeTime(interviewId,submissionId){
 	$(".proposeTimePop").toggleClass("proposeTimePopActive");
 	$(".reSchPop").removeClass("reSchPopActive");
-	var sourceleadUrl = '${sourceleadUrl}';
 	var locationId = '${SourceLeadWeb_orgLocationId}';
 	$.ajax({
 		type : "POST",
@@ -2598,9 +2618,7 @@ function viewProposeTime(interviewId,submissionId){
 </script>
 <script>
 function acceptProposeTime(id,proposeDate,proposeTime,submissionId){
-	var sourceleadUrl = '${sourceleadUrl}';
 	if ($('#acceptProposeTime_form').validate(false, validationSettings)){ 
-		var sourceleadUrl = '${sourceleadUrl}';
 		var frm = $('#acceptProposeTime_form').serializeFormJSON();
 		var con = JSON.stringify(frm);
 		con = con.replace(/[{}]/g, ""); 

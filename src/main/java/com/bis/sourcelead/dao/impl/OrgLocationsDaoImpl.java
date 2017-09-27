@@ -195,7 +195,7 @@ public class OrgLocationsDaoImpl implements OrgLocationsDao {
 			throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 
-		String query = "from OrgLocations orgLocations where orgLocations.org.orgCode <> :orgCode and orgLocations.org.orgCode != 'slead' and orgLocations.modulesId IN (2,3) and orgLocations.org.status <> 'INACTIVE' and orgLocations.status <> 'INACTIVE' ";
+		String query = "from OrgLocations orgLocations where orgLocations.org.orgCode <> :orgCode and orgLocations.org.orgCode != 'slead' and orgLocations.modulesId IN (2,3)";
 		
 		List orgList = session.createQuery(query).setString("orgCode", orgCode).setCacheable(true).list();
 		return orgList;}
@@ -297,4 +297,16 @@ public class OrgLocationsDaoImpl implements OrgLocationsDao {
 		return false;
 	}
 
+	
+	
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<OrgLocations> userList(Long orgId) throws Exception
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+			String query = "from OrgLocations orgLocations where orgLocations.org.id = :orgId";
+			List<OrgLocations> orgLocations = session.createQuery(query.toString()).setLong("orgId", orgId).list();
+		return orgLocations;
+	}
 }

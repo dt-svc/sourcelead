@@ -71,7 +71,6 @@ text-align:left;
 function editCandidate(candidateId){
 	  $("#profileEditPopup").show();
 	  var loginCountryName = '${loginCountryName}';
-	  var sourceleadUrl ='${sourceleadUrl}';
 		var validationSettings = {
 		        errorMessagePosition : 'element',
 		       borderColorOnError : '',
@@ -170,6 +169,8 @@ function editCandidate(candidateId){
 							var result ='';
 							result = result + '		    <div class="edit-details col-md-8 edit-candaite"> <i class="fa fa-close close-div" onclick="cancelEdit();"></i>';
 							result  = result + '         <form id="candidateProfileEdit_form" name="candidateProfileEdit_form" method="post">';
+							result  = result + '<input type="hidden" id="orgloationId" name="orgloationId" value="${SourceLeadWeb_orgLocations.id}" />';
+							result  = result + '<input type="hidden" id="loginUserId" name="loginUserId" value="${SourceLeadWeb_user.id}" />';
 							result = result + '		      <div class="form-horizontal clearfix">';
 							result = result + '<input type="hidden" class="form-control input-sm" name="candidateId"  value="'+candidateId+'">';
 							
@@ -394,7 +395,7 @@ function editCandidate(candidateId){
 							
 							result = result + '</div>';
 							 
-							result = result + '<div class="col-md-6 designationTypeDiv" id="designationTypeDiv" style="display:none">';
+							result = result + '<div class="col-md-6 designationTypeDiv mt10" id="designationTypeDiv" style="display:none">';
 							result = result + '<input type="text" class="form-control input-sm" name="designationOtherType"  id="designationOtherType" value="'+designationOtherType+'" placeholder="Employement Other Type" field-name="Designation Other Type" data-validation="validate_Space validate_length length2-50" data-validation-optional="true">';
 							result = result + '</div>';
 						
@@ -475,7 +476,6 @@ function editCandidate(candidateId){
 --%>
 <script>
 function professionalProfile(candidateId){
-	var sourceleadUrl = '${sourceleadUrl}';
 	  var skillsList = '${skillsList}'; 
 	  
 	  $.ajax({
@@ -865,7 +865,6 @@ function professionalProfile(candidateId){
  function saveSkils(candidateId){
 	 var skillName = $("#skillName").val();
 	 var jsonData = encodeURIComponent(skillName);
-	 var sourceleadUrl ='${sourceleadUrl}';
 	 var loginUserId = '${SourceLeadWeb_userId}';
 	 var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 		 if(skillName != null && skillName != '' && skillName !='undefined'){
@@ -971,15 +970,6 @@ function removeSkillPopUp(candidateId){
 		
 		
 		 if ($('#candidateProfileEdit_form').validate(false, validationSettings)){ 
-			var sourceleadUrl = '${sourceleadUrl}';
-			var frm = $('#candidateProfileEdit_form').serializeFormJSON();
-			
-			 var con = JSON.stringify(frm);
-			 con = con.replace(/[{}]/g, "");
-				
-			  //It will escape all the special characters
-			var jsonData = encodeURIComponent(con);
-			
 			var form = $('#candidateProfileEdit_form')[0];
       		var formData = new FormData(form); 
 			
@@ -987,7 +977,10 @@ function removeSkillPopUp(candidateId){
 			$("#update_candidate").addClass('button').val('Processing..');
 			$.ajax({
 						type : "POST",
-						url : sourceleadUrl+"/updateCandidate?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
+						data : formData,
+						processData: false,
+		    	        contentType:false,
+						url : sourceleadUrl+"/updateCandidate?${_csrf.parameterName}=${_csrf.token}",
 						success : function(result) {
 							$("#profileEditPopup").hide();
 							getProfessionalInfo();
@@ -1032,7 +1025,6 @@ function cancelEdit(){
 
 <script>
 function removeSkillById(candidateId, skillId){
-	  var sourceleadUrl ='${sourceleadUrl}';
 	  $.ajax({
         type : "POST",
          url: sourceleadUrl+"/removeSkillBySkillId?${_csrf.parameterName}=${_csrf.token}&skillId="+skillId,        
@@ -1087,7 +1079,6 @@ function removeSkillById(candidateId, skillId){
 --%>         
 <script type="text/javascript">
 	function fieldUpdateCandidate(candidateSkillId,local) {
-			var sourceleadUrl = '${sourceleadUrl}'; 
 			var value = local.value;
 			var name = local.id;
 			$.ajax({
@@ -1105,7 +1096,6 @@ function removeSkillById(candidateId, skillId){
 
 <script>
 	function employeeSubmissionProfile(candidateId) {
-		var sourceleadUrl = '${sourceleadUrl}';
 				$.ajax({
 					type : "POST",
 					url : sourceleadUrl	+ "/getCandidatesEmployersListByCandidateIdAndOrgLocationID?${_csrf.parameterName}=${_csrf.token}&candidateId=" + candidateId,
@@ -1179,7 +1169,6 @@ function removeSkillById(candidateId, skillId){
 
 <script>
 function educationSubmissionProfile(candidateId){
-	 var sourceleadUrl ='${sourceleadUrl}';
 	 $.ajax({  
           type : "POST",
           url: sourceleadUrl+"/getCandidateEducationListByCandidateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,        
@@ -1262,7 +1251,6 @@ function educationSubmissionProfile(candidateId){
 
 <script>
 function certificationSubmissionProfile(candidateId){
-	 var sourceleadUrl ='${sourceleadUrl}';
 	 $.ajax({  
           type : "POST",
           url: sourceleadUrl+"/getCandidateCertificationListByCandidateIdAndOrgLocationID?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,        
@@ -1420,7 +1408,6 @@ function cancelPublicVisibility(checked){
 <script type="text/javascript">
 function makeAsPublicVisibility(){
 	
-	 var sourceleadUrl ='${sourceleadUrl}';
 	 $("#choicepopUp").empty();
  	 $(".project_inn_mask").fadeOut(200);
  	
@@ -1449,40 +1436,6 @@ function makeAsPublicVisibility(){
 		$("#saveVisaBtnSpan").append(result);
 		$("#saveVisaBtnSpan").show();
 		
-		/* //Adding Customized Visa to the list
-        var select, chosen;
-	    select = $("#visaName");
-	    select.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add New Visa:' });
-	    chosen = select.data('chosen');
-	    
-	    
-	    chosen.search_field.on('keyup', function(e)
-			    {
-			    	   var visaArray = this.value.split(",");
-				    	 if(visaArray.length > 1){
-			        		 for (var i=0; i < visaArray.length; i++) {
-			        			 var option = $("<option>").val(visaArray[i].replace(",","")).text(visaArray[i].replace(",",""));
-			        			 select.append(option);
-			 		             select.find(option).prop('selected', true);
-			 		             select.find(option).siblings("[value='"+ visaArray[i].replace(",","")+"']").remove();
-			 	        		 $("#visaName").trigger("chosen:updated");
-			                 }
-				    	 }else{
-			    			var newVisa = this.value.replace(","," ");
-			    			 if ((e.which == 13 || e.which == 188) && (newVisa != null  && newVisa != '' && newVisa != 'undefined'))
-			                {
-			    				 var option = $("<option>").val(newVisa).text(newVisa);
-			                     select.append(option);
-			                     select.find(option).prop('selected', true);
-			                     $("#visaName option").each(function(){
-			                         $(this).siblings("[value='"+ this.value+"']").remove();
-			                   });
-			                   $("#visaName").trigger("chosen:updated");
-			                }
-					       
-		    	         }
-	    	}); */
-	    
 	    
 	    //Adding Customized Skills to the list
 	}
@@ -1510,7 +1463,6 @@ function makeAsPublicVisibility(){
  function saveVisas(candidateId){
 	 var visaName = $("#visaName").val();
 	 var jsonData = encodeURIComponent(visaName);
-	 var sourceleadUrl ='${sourceleadUrl}';
 	 var loginUserId = '${SourceLeadWeb_userId}';
 	 var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	 if(visaName != null && visaName != '' && visaName !='undefined'){

@@ -15,7 +15,7 @@ $(document).ready(function(){
   <div class="pull-left">
     <h2>User Mapping</h2>
   </div>
-  <div class="pull-right brud-crum">Home &raquo; payroll</div>
+  <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo; User Mapping</div>
 </section>
 	<div id="loading"></div>
 	<div id="popUp"></div>
@@ -40,7 +40,7 @@ $(document).ready(function(){
                </div>
              </div>
              <div class="col-md-5">
-             <label class="col-md-3">SL Org Users</label>
+             <label class="col-md-3">Org Users</label>
                <div class="col-md-9" id="errOrgUserIdDiv">
                <select class="chosen-select" data-placeholder="Select Org Users" id="slUserId" name="slUserId" field-name="Sl User" data-validation="required" onchange="removeOrgValidation();">
                 <option value="" selected>-Select Org Users-</option>
@@ -79,7 +79,6 @@ $(document).ready(function(){
 
 <script type="text/javascript">
 	function mergeUser() {
-		alert("Hi");
 		if ($('#userMapping_form').validate(false, validationSettings)) {
 			var importedUser = $('#importedUserId :selected').text().trim();
 			var orgUser = $('#slUserId :selected').text().trim();
@@ -102,9 +101,10 @@ $(document).ready(function(){
 <script>
 	function getMappedUserList() {
 		var sourceleadUrl = '${sourceleadUrl}';
+		var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 		$.ajax({
 					type : "GET",
-					url : sourceleadUrl+ "/getMappedUserList?${_csrf.parameterName}=${_csrf.token}",
+					url : sourceleadUrl+ "/getMappedUserList?${_csrf.parameterName}=${_csrf.token}&orgLocationId="+orgLocationId,
 					success : function(data) {
 						var result = "";				        	
 						result = result + '<table id="userMappingTable" class="display" cellspacing="0" width="100%" >';
@@ -120,8 +120,8 @@ $(document).ready(function(){
 						{ 
 			        		 var opt = data[i];
 			        		    result = result + ' <tr>';
-								result = result + ' <td><div class="tblminwidth-75">'+opt.employeeId+'</div></td>';
-								result = result + '<td><div class="tblminwidth-75">'+opt.employeeName+'</div></td>';
+								result = result + ' <td><div class="tblminwidth-75" title="'+opt.employeeId+'">'+opt.employeeId+'</div></td>';
+								result = result + '<td><div class="tblminwidth-75" title="'+opt.employeeName+'">'+opt.employeeName+'</div></td>';
 								result = result + '<td><div class="tblminwidth-75">Merged</div></td>';
 								result = result + ' </tr>';
 						}

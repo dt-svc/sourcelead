@@ -2,7 +2,9 @@
 <jsp:include page="../masterSideNav.jsp" />
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
-<link href="resources/css/crowdsourcingstyles.css" rel="stylesheet">
+
+<link href="resources/css/crowdsourcingstyles.css?staticTime=${staticTime}" rel="stylesheet">
+
 <style>
 .margin-down{
     margin-bottom: 100px;
@@ -41,15 +43,15 @@ $(document).ready(function(){
 
 <script>
 function getProfessionalInfo(){ 
-	var sourceleadUrl ='${sourceleadUrl}';
 	var candidateType= "Professional";
 	var userId = '${SourceLeadWeb_userId}';
 	var candidateId = '${SourceLeadWeb_candidateId}';
+	var locationCode = '${SourceLeadWeb_locationCode}';
 	$.ajax({
 	   	type: "GET",
-	    url: sourceleadUrl+"/getProfessionalInfo?candidateStatus="+candidateType, 	   
-		    success: function(data) {
-		    	 var json = JSON.parse(data);
+	    url: sourceleadUrl+"/getProfessionalInfo?candidateId="+candidateId+"&locationCode="+locationCode, 	   
+		    success: function(json) {
+		    	/*  var json = JSON.parse(data); */
 		    	 if(json.firstName != null && json.firstName != '' && json.firstName !='undefined'){
 		    		 firstName = json.firstName;
 		    	 }else{
@@ -124,32 +126,12 @@ function getProfessionalInfo(){
 		    	 }else{
 		    		 primarySkill = " --- ";
 		    	 }
-		    	 
 		    	/*  if(json.skillsName != null  && json.skillsName != '' && json.skillsName != 'undefiend'){
 		    		 skillsName = json.skillsName;
 		    	 }else{
 		    		 skillsName = " --- ";
+		    		 
 		    	 } */
-		    	 if(json.facebook != null  && json.facebook != '' && json.facebook != 'undefiend'){
-		    		 facebook = json.facebook;
-		    	 }else{
-		    		 facebook = "";
-		    	 }
-		    	 if(json.linkedIn != null  && json.linkedIn != '' && json.linkedIn != 'undefiend'){
-		    		 linkedIn = json.linkedIn;
-		    	 }else{
-		    		 linkedIn = "";
-		    	 }
-		    	 if(json.twitter != null  && json.twitter != '' && json.twitter != 'undefiend'){
-		    		 twitter = json.twitter;
-		    	 }else{
-		    		 twitter = "";
-		    	 }
-		    	 if(json.googlePlus != null  && json.googlePlus != '' && json.googlePlus != 'undefiend'){
-		    		 googlePlus = json.googlePlus;
-		    	 }else{
-		    		 googlePlus = "";
-		    	 }
 		    	 
 		    	 if(json.experienceYears != null  && json.experienceYears != '' && json.experienceYears != 'undefiend'){
 		    		 experienceYears = json.experienceYears +' Years';
@@ -204,9 +186,9 @@ function getProfessionalInfo(){
 				 result = result +'	<div class="content-area clearfix panelBody"> ';
 				 result = result +'	<section class="row pro_info">';
 				 result = result +'	    <div class="col-md-5">';
-				 result = result +'	        <h5>Professional Info</h5>';
+				 result = result +'	        <h5>Profile Info</h5>';
 				 result = result +'	        <div class="chip">';
-				 result = result +'	        <img onerror="predefineProfileImage(this);"  src="<c:url value="'+sourceleadUrl+'/displayUserImage/'+userId+'"/>" alt="Profile Image" width="96" height="96">';
+				 result = result +'	        <img data-id="userProfileImage" onerror="predefineProfileImage(this);"  src="${SourceLeadWeb_user.fileUrl}" alt="Profile Image" width="96" height="96">';
 				 
 				 result = result +'	        <span>';
 				  result = result +'	        <strong>'+firstName+' '+lastName+'</strong> <br>'; 
@@ -237,12 +219,22 @@ function getProfessionalInfo(){
 				 result = result +'	    </div>';
 				 result = result +'	    <div class="col-md-3">';
 				 result = result +'	        <h5>Can be Reached at</h5>';
-				 result = result +'	        <ul class="list-inline list-unstyled reachout-links mt10">';
-				 result = result +'	            <li><a href="'+facebook+'"  title="Facebook" class="btn-fb" target="_blank"><i class="fa fa-facebook-square fa-2x" target="_blank"></i></a></li>';
-				 result = result +'	            <li><a href="'+linkedIn+'" title="LinkedIn" class="btn-li" target="_blank"><i class="fa fa-linkedin-square fa-2x" target="_blank"></i></a></li>';
-				 result = result +'	            <li><a href="'+twitter+'" title="Twitter" class="btn-tw" target="_blank"><i class="fa fa-twitter-square fa-2x" target="_blank"></i></a></li>';
-				 result = result +'	            <li><a href="'+googlePlus+'" title="Google" class="btn-go" target="_blank"><i class="fa fa-google-plus-square fa-2x" target="_blank"></i></a></li>';
-				 result = result +'	        </ul>';
+				 result = result +'<div class="socialnetwork-details">';
+				 result = result +'<ul class="list-inline list-unstyled">';
+				 if(json.consultantUser !=null && json.consultantUser.id != null && json.consultantUser.facebook != null && json.consultantUser.facebook !="undefined" && json.consultantUser.facebook != ""){
+		             result = result+'<li class="bg-facebook" title="Facebook"><a target="_blank" href=\"'+json.consultantUser.facebook+'\" > <i class="fa fa-facebook-square" ></i></a></li>';
+		             }
+		             if(json.consultantUser !=null && json.consultantUser.id != null && json.consultantUser.twitter != null && json.consultantUser.twitter !="undefined" && json.consultantUser.twitter != ""){
+		             result = result+'<li class="bg-twitter" title="Twitter"><a target="_blank" href=\"'+json.consultantUser.twitter+'\"> <i class="fa fa-twitter-square" ></i></a></li>';
+		             }
+		             if(json.consultantUser !=null && json.consultantUser.id != null && json.consultantUser.googlePlus != null && json.consultantUser.googlePlus !="undefined" && json.consultantUser.googlePlus != ""){
+		             result = result+'<li class="bg-google " title="Google-Plus"><a target="_blank" href=\"'+json.consultantUser.googlePlus+'\"> <i class="fa fa-google-plus-square" ></i></a></li>';
+		             }
+		             if(json.consultantUser !=null && json.consultantUser.id != null && json.consultantUser.linkedIn != null && json.consultantUser.linkedIn !="undefined" && json.consultantUser.linkedIn != ""){
+		             result = result+'<li class="bg-linked" title="Linkedin"><a target="_blank" href=\"'+json.consultantUser.linkedIn+'\"> <i class="fa fa-linkedin-square" ></i></a></li>';
+		             } 
+		         result = result +'	        </ul>';
+		         result = result +'                 </div>';
 				 result = result +'	        <div class="reachout">';
 				 result = result +'	        <p><i class="fa fa-at" title="Mail me"></i>'+email+'</p>';
 				 result = result +'	        <p><i class="fa fa-phone" title="Call us"></i>'+mobilePhone+' '+alternateMobilePhone+'</p>';
@@ -273,18 +265,16 @@ function getProfessionalInfo(){
 				 
 				 result = result +'	</section>';
 				 result = result +'	</div>';
-				 
-				 
 				 result = result +' <section class="clearfix mt25 margin-down">';
 				 result = result +'<div class="project_side_wrap_inn_tabs">';
 			     result = result +'   <ul class="project-tabs-menu">';
-			     result = result +'     <li class="current"><a href="#tab-1" onclick="professionalProfile('+json.id+');">Profile</a></li>';
-			     result = result +'     <li><a href="#tab-2" onclick="candidateResumesList('+json.id+'); candidateResume('+json.id+');">Resume</a></li>';
-			     result = result +'     <li><a href="#tab-3" onclick="professionalCandidateEmployers('+json.id+');">Employers</a></li>';
-			     result = result +'     <li><a href="#tab-4" onclick="professionalCandidateEducation('+json.id+');">Education</a></li>';
-			     result = result +'     <li><a href="#tab-5" onclick="professionalCandidateCertificate('+json.id+');">Certifications</a></li>';
-			     result = result+'<li><a href="#tab-6" onclick="professionalCandidateDocuments('+json.id+');">Documents</a></li>';
-			     result = result+'<li><a href="#tab-7" onclick="professionalCandidateReferences('+json.id+');">References</a></li>';
+			     result = result +'     <li class="current"><a href="#tab-1" onclick="professionalProfile('+candidateId+');">Profile</a></li>';
+			     result = result +'     <li><a href="#tab-2" onclick="candidateResumesList('+candidateId+'); candidateResume('+candidateId+');">Resume</a></li>';
+			     result = result +'     <li><a href="#tab-3" onclick="professionalCandidateEmployers('+candidateId+');">Employers</a></li>';
+			     result = result +'     <li><a href="#tab-4" onclick="professionalCandidateEducation('+candidateId+');">Education</a></li>';
+			     result = result +'     <li><a href="#tab-5" onclick="professionalCandidateCertificate('+candidateId+');">Certifications</a></li>';
+			     result = result+'<li><a href="#tab-6" onclick="professionalCandidateDocuments('+candidateId+');">Documents</a></li>';
+			     result = result+'<li><a href="#tab-7" onclick="professionalCandidateReferences('+candidateId+');">References</a></li>';
 			     
 			     result = result +'     <div class="clearfix"></div>';
 			     result = result +'   </ul>';
@@ -322,7 +312,7 @@ function getProfessionalInfo(){
 				 
 				 $("#professionalInfoDiv").empty();
 				 $("#professionalInfoDiv").append(result); 
-				 professionalProfile(json.id);
+				 professionalProfile(candidateId);
 		    },
 	});
             

@@ -1,17 +1,19 @@
 package com.bis.sourcelead.service;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
-import static org.hamcrest.CoreMatchers.is;
+
 import org.apache.commons.io.IOUtils;
-import org.hamcrest.core.IsEqual;
 import org.json.JSONObject;
-import static org.junit.Assert.*;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -26,15 +28,17 @@ import org.springframework.test.context.web.AnnotationConfigWebContextLoader;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.bis.sourcelead.SecurityConfig;
 import com.bis.sourcelead.WebAppConfig;
 import com.bis.sourcelead.constants.Constants;
-import com.bis.sourcelead.SecurityConfig;
+import com.bis.sourcelead.dto.AddUserDTO;
+import com.bis.sourcelead.dto.AddUserProfileDTO;
+import com.bis.sourcelead.dto.CandidateDTO;
+import com.bis.sourcelead.dto.UserProfileDTO;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
-import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.User;
-import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Status;
 import com.bis.sourcelead.form.UserProfile;
 import com.bis.sourcelead.service.impl.UserServiceImpl;
@@ -224,7 +228,8 @@ public class UserServiceTest {
 		user.setUserName("anusha");
 		user.setWorkPhone("334678903");
 		
-		UserProfile userProfile = new UserProfile();
+		//UserProfile userProfile = new UserProfile();
+		AddUserProfileDTO userProfile = new AddUserProfileDTO();
 		
 		userProfile.setCurrentPassword("bis@123");
 				MultipartFile multipartFile = getMultiPartFile();
@@ -237,7 +242,8 @@ public class UserServiceTest {
 		userProfile.setMobilePhone("54789562123");
 		userProfile.setPassword("Bis@123");
 		
-		assertSame(user, userService.saveUserProfile(userProfile,multipartFile,user));
+		assertSame(user, userService.saveUserProfile(userProfile,user));
+
 	}
 
 	private MultipartFile getMultiPartFile() throws IOException {
@@ -301,19 +307,23 @@ public class UserServiceTest {
 	
 	@Test
 	public void storeUser() throws Exception{
-		 JSONObject jsonObj = new JSONObject();
-		 jsonObj.put("firstName", "Demo_final13");
-		 jsonObj.put("lastName", "User");
-		 jsonObj.put("email", "demomail123@gmail.com");
-		 jsonObj.put("phoneNumber", "890876590");
-		 jsonObj.put("roleType", "Admin");
-		 jsonObj.put("isMailSent", "Y");
-		 jsonObj.put("employeeId", "123");
-		 jsonObj.put("rate", "15000");
-		 jsonObj.put("invoiceFrequency", "Monthly");
-		 jsonObj.put("dateofJoin", "2016-08-17");
-		 jsonObj.put("dayHours", "8");
-		 jsonObj.put("projectId", "1");
+		AddUserDTO addUserDto = new AddUserDTO();
+		 addUserDto.setFirstName("Demo_final13");
+		 addUserDto.setLastName("User");
+		 addUserDto.setEmail("demomail123@gmail.com");
+		 addUserDto.setPhoneNumber("890876590");
+		 addUserDto.setRoleType("Admin");
+		 addUserDto.setIsMailSent("Y");
+		 addUserDto.setEmployeeId("123");
+		 addUserDto.setRate("15000");
+		 addUserDto.setDateofJoin("2016-08-17");
+		 addUserDto.setDayHours("8");
+		 
+		 CandidateDTO candidto = new CandidateDTO();
+		 candidto.setFirstName("Demo_final13");     
+		 candidto.setLastName("User");              
+		 candidto.setEmail("demomail123@gmail.com");
+		 candidto.setPhoneNumber("890876590");      
 		 
 		 User users = new User();
 		 users.setUserCode("sdf21d");
@@ -329,7 +339,7 @@ public class UserServiceTest {
 		 Org loginOrg = new Org();
 		 loginOrg.setOrgName("SourceLead");
 		 
-		 assertEquals(users.getId(), userService.storeUser(jsonObj, users, orgLocations, sourceType, responderType, loginOrg));
+		 assertEquals(users.getId(), userService.storeUser(addUserDto,candidto, users, orgLocations, sourceType, responderType, loginOrg));
 	}
 	
 	@Test

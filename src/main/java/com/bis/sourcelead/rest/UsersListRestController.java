@@ -43,6 +43,7 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.bis.sourcelead.SourceleadPasswordEncoder;
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.AddUserDTO;
 import com.bis.sourcelead.elk.index.ClientVendorContactsIndex;
 import com.bis.sourcelead.elk.index.UserIndex;
 import com.bis.sourcelead.elk.index.helper.ClientVendorContactsIndexHelper;
@@ -96,7 +97,6 @@ import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
-import com.bis.sourcelead.web.LoginSessionController;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
@@ -242,6 +242,11 @@ public class UsersListRestController {
 					role.setUserEmail(role.getUser().getEmail());
 					role.setUserId(role.getUser().getId());
 					role.setIsMailSent(role.getUser().getIsMailSent().toString());	
+					if(role.getUser() != null) {
+						if(role.getUser().getFileUrl() != null) {
+							role.setFileUrl(role.getUser().getFileUrl());
+						}
+					}
 					
 					if(role.getReportingManager() !=null){
 						StringBuilder reportingManagerName = new StringBuilder();
@@ -854,23 +859,23 @@ public class UsersListRestController {
 	 */
 	@PreAuthorize("hasRole('ROLE_VIEW_DELETE_USER')")
 	@RequestMapping(value = "/terminateUser", method = RequestMethod.POST)
-	public @ResponseBody String terminateUser(@RequestParam(value = "userId", required = false) Long userId,
-			@RequestParam(value = "json", required = false) String json, HttpServletRequest request) throws Exception {
+	public @ResponseBody String terminateUser(AddUserDTO addUserDTO,@RequestParam(value = "userId", required = false) Long userId,
+			 HttpServletRequest request) throws Exception {
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
 				"orgLocations");
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(userId, orgLocations.getId());
 
-		json = "{" + json + "}";
-		JSONObject jsonObj = new JSONObject(json);
+		/*json = "{" + json + "}";
+		JSONObject jsonObj = new JSONObject(json);*/
 
 		if (null != userRole) {
 
-			if (jsonObj.has("assignReportingManagers") && !isNullOrEmpty("assignReportingManagers")) {
+			if (StringUtils.isNotBlank(addUserDTO.getAssignReportingManagers())) {
 				List<UserRole> userRolesList = userRoleService.getAllAssignedUsersByReportingManagerId(userId,
 						orgLocations.getId());
 				User reportingManager = new User();
-				reportingManager.setId(Long.valueOf(jsonObj.getString("assignReportingManagers")));
+				reportingManager.setId(Long.valueOf(addUserDTO.getAssignReportingManagers()));
 				List<Long> userIds = userRoleService.getAllAssignedUsersIdsByReportingManagerId(userId, orgLocations.getId());
 				
 				Long count = (long) userIds.size();
@@ -887,9 +892,9 @@ public class UsersListRestController {
 
 			}
 
-			if (jsonObj.has("vendorUsers") && !isNullOrEmpty("vendorUsers")) {
+			if (StringUtils.isNotBlank(addUserDTO.getVendorUsers())) {
 				User clientOwnerOrUser = new User();
-				clientOwnerOrUser.setId(Long.valueOf(jsonObj.getString("vendorUsers")));
+				clientOwnerOrUser.setId(Long.valueOf(addUserDTO.getVendorUsers()));
 				List<OrgSpoc> orgSpocList = orgSpocService.getAssignedAsClientOrVendorSpocByUserId(userId,
 						orgLocations.getId(), "Client");
 				if (null != orgSpocList) {
@@ -917,9 +922,9 @@ public class UsersListRestController {
 
 			}
 
-			if (jsonObj.has("clientUsers") && !isNullOrEmpty("clientUsers")) {
+			if (StringUtils.isNotBlank(addUserDTO.getClientUsers())) {
 				User vendorOwnerOrUser = new User();
-				vendorOwnerOrUser.setId(Long.valueOf(jsonObj.getString("clientUsers")));
+				vendorOwnerOrUser.setId(Long.valueOf(addUserDTO.getClientUsers()));
 				List<OrgSpoc> orgSpocList = orgSpocService.getAssignedAsClientOrVendorSpocByUserId(userId,
 						orgLocations.getId(), "Vendor");
 				if (null != orgSpocList) {
@@ -948,9 +953,9 @@ public class UsersListRestController {
 
 			}
 
-			if (jsonObj.has("managerUsers") && !isNullOrEmpty("managerUsers")) {
+			if (StringUtils.isNotBlank(addUserDTO.getManagerUsers())) {
 				User requirementManagerUser = new User();
-				requirementManagerUser.setId(Long.valueOf(jsonObj.getString("managerUsers")));
+				requirementManagerUser.setId(Long.valueOf(addUserDTO.getManagerUsers()));
 				List<Requirement> requirementsList = requirementService.getManagerAssignedRequirementsList(userId,
 						orgLocations.getId());
 				Integer requirementsCountAsManager = requirementService.getManagerAssignedRequirementsCount(userId,	orgLocations.getId());
@@ -968,9 +973,9 @@ public class UsersListRestController {
 
 			}
 
-			if (jsonObj.has("approverUser") && !isNullOrEmpty("approverUser")) {
+			if (StringUtils.isNotBlank(addUserDTO.getApproverUser())) {
 				User requirementApproverUser = new User();
-				requirementApproverUser.setId(Long.valueOf(jsonObj.getString("approverUser")));
+				requirementApproverUser.setId(Long.valueOf(addUserDTO.getApproverUser()));
 				List<RequirementApproverHierarchy> approversList = requirementApproverHierarchyService
 						.getRequirementsAsApprover(userId, orgLocations.getId());
 				Integer requirementsCountAsApprover = requirementService.getRequirementsCountAsApprover(userId,	orgLocations.getId());
@@ -988,9 +993,9 @@ public class UsersListRestController {
 
 			}
 
-			if (jsonObj.has("teamOwnerUser") && !isNullOrEmpty("teamOwnerUser")) {
+			if (StringUtils.isNotBlank(addUserDTO.getTeamOwnerUser())) {
 				User teamOwnerUser = new User();
-				teamOwnerUser.setId(Long.valueOf(jsonObj.getString("teamOwnerUser")));
+				teamOwnerUser.setId(Long.valueOf(addUserDTO.getTeamOwnerUser()));
 				List<Team> teamsList = teamService.getTeamListByTeamOwner(userId, orgLocations.getId());
 				Integer teamsCountAsOwner = teamService.getTeamCountByTeamOwner(userId, orgLocations.getId());
 				Team assignedTeamOwner=null;
@@ -1018,10 +1023,10 @@ public class UsersListRestController {
 				}
 			}
 
-			if (jsonObj.has("projectApproverUser") && !isNullOrEmpty("projectApproverUser")) {
+			/*if (jsonObj.has("projectApproverUser") && !isNullOrEmpty("projectApproverUser")) {
 
 				projectsService.tereminateAsProjectApprover(jsonObj, user, userId, orgLocations);
-			} else {
+			} */else {
 
 				List<ProjectMembers> projectmembersList = projectMembersService
 						.getAllProjectsAssigendToUserByIdAndStatus(userId, Constants.MEMBER_ACTIVE);
@@ -1055,9 +1060,9 @@ public class UsersListRestController {
 			
 			
 			
-			if (jsonObj.has("clientDocsOwnerUser") && !isNullOrEmpty("clientDocsOwnerUser")) {
+			if (StringUtils.isNotBlank(addUserDTO.getClientDocsOwnerUser())) {
 				User clientDocsOwnerUser = new User();
-				clientDocsOwnerUser.setId(Long.valueOf(jsonObj.getString("clientDocsOwnerUser")));
+				clientDocsOwnerUser.setId(Long.valueOf(addUserDTO.getClientDocsOwnerUser()));
 				List<OrgDocuments> clientDocsList = orgDocumentsService.getOrgDocumentsListByUserIdAndOrgLocationIdAndSourceType(userId, orgLocations.getId(),"Client");
 				Integer clientDocsCountAsOwner = orgDocumentsService.getDocumentOwnerCountByUserIdAndOrgLocationIdAndSourceType(userId, orgLocations.getId(),"Client");
 				if (null != clientDocsList) {
@@ -1071,9 +1076,9 @@ public class UsersListRestController {
 			}
 			
 			
-			if (jsonObj.has("vendorDocsOwnerUser") && !isNullOrEmpty("vendorDocsOwnerUser")) {
+			if (StringUtils.isNotBlank(addUserDTO.getVendorDocsOwnerUser())) {
 				User vendorDocsOwnerUser = new User();
-				vendorDocsOwnerUser.setId(Long.valueOf(jsonObj.getString("vendorDocsOwnerUser")));
+				vendorDocsOwnerUser.setId(Long.valueOf(addUserDTO.getVendorDocsOwnerUser()));
 				List<OrgDocuments> vendorDocsList = orgDocumentsService.getOrgDocumentsListByUserIdAndOrgLocationIdAndSourceType(userId, orgLocations.getId(),"Vendor");
 				Integer vendorDocsCountAsOwner = orgDocumentsService.getDocumentOwnerCountByUserIdAndOrgLocationIdAndSourceType(userId, orgLocations.getId(),"Vendor");
 				if (null != vendorDocsList) {
@@ -1092,7 +1097,7 @@ public class UsersListRestController {
 			userRole.setIsPrimary(0);
 			userRole.setPreviousUserState(userRole.getUserState());
 			userRole.setUserState(Status.INACTIVE);
-			userRole.setTerminateReason(jsonObj.getString("reason"));
+			userRole.setTerminateReason(addUserDTO.getReason());
 			userRole.setUpdatedBy(user.getUserCode());
 			userRole.setUpdatedDate(commonUtil.currentDate());
 			
@@ -1354,8 +1359,8 @@ public class UsersListRestController {
 	
 	@PreAuthorize("hasRole('ROLE_VIEW_EDIT_USER')")
 	@RequestMapping(value = "/editUserRole", method = RequestMethod.POST)
-	public @ResponseBody String editUserRole(@RequestParam(value = "userId", required = false) Long userId,
-			@RequestParam(value = "json", required = false) String json, HttpServletRequest request) throws Exception {
+	public @ResponseBody String editUserRole(AddUserDTO addUserDTO, @RequestParam(value = "userId", required = false) Long userId,
+			 HttpServletRequest request) throws Exception {
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
 				"orgLocations");
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
@@ -1364,16 +1369,16 @@ public class UsersListRestController {
 		// this is used for user role changed mail scenario
 		String existingRole = userRole.getUserType();
 		
-		json = "{" + json + "}";
+		/*json = "{" + json + "}";
 		JSONObject jsonObj = new JSONObject(json);
-
+*/
 		if (userRole != null) {
 
-			if (jsonObj.has("assignReportingManagers") && !isNullOrEmpty("assignReportingManagers")) {
+			if (StringUtils.isNotBlank(addUserDTO.getAssignReportingManagers())) {
 				List<UserRole> userRolesList = userRoleService.getAllAssignedUsersByReportingManagerId(userId,
 						orgLocations.getId());
 				User reportingManager = new User();
-				reportingManager.setId(Long.valueOf(jsonObj.getString("assignReportingManagers")));
+				reportingManager.setId(Long.valueOf(addUserDTO.getAssignReportingManagers()));
 				if (null != userRolesList) {
 					for (UserRole roles : userRolesList) {
 						roles.setReportingManager(reportingManager);
@@ -1385,9 +1390,9 @@ public class UsersListRestController {
 
 			}
 
-			if (jsonObj.has("clientUsers") && !isNullOrEmpty("clientUsers")) {
+			if (StringUtils.isNotBlank(addUserDTO.getClientUsers())) {
 				User clientOwnerOrUser = new User();
-				clientOwnerOrUser.setId(Long.valueOf(jsonObj.getString("clientUsers")));
+				clientOwnerOrUser.setId(Long.valueOf(addUserDTO.getClientUsers()));
 				List<OrgSpoc> orgSpocList = orgSpocService.getAssignedAsClientOrVendorSpocByUserId(userId,
 						orgLocations.getId(), "Client");
 				if (null != orgSpocList) {
@@ -1405,9 +1410,9 @@ public class UsersListRestController {
 
 			}
 
-			if (jsonObj.has("vendorUsers") && !isNullOrEmpty("vendorUsers")) {
+			if (StringUtils.isNotBlank(addUserDTO.getVendorUsers())) {
 				User vendorOwnerOrUser = new User();
-				vendorOwnerOrUser.setId(Long.valueOf(jsonObj.getString("vendorUsers")));
+				vendorOwnerOrUser.setId(Long.valueOf(addUserDTO.getVendorUsers()));
 				List<OrgSpoc> orgSpocList = orgSpocService.getAssignedAsClientOrVendorSpocByUserId(userId,
 						orgLocations.getId(), "Vendor");
 				if (null != orgSpocList) {
@@ -1425,9 +1430,9 @@ public class UsersListRestController {
 
 			}
 
-			if (jsonObj.has("managerUsers") && !isNullOrEmpty("managerUsers")) {
+			if (StringUtils.isNotBlank(addUserDTO.getManagerUsers())) {
 				User requirementManagerUser = new User();
-				requirementManagerUser.setId(Long.valueOf(jsonObj.getString("managerUsers")));
+				requirementManagerUser.setId(Long.valueOf(addUserDTO.getManagerUsers()));
 				List<Requirement> requirementsList = requirementService.getManagerAssignedRequirementsList(userId,
 						orgLocations.getId());
 				if (null != requirementsList) {
@@ -1441,9 +1446,9 @@ public class UsersListRestController {
 
 			}
 
-			if (jsonObj.has("approverUser") && !isNullOrEmpty("approverUser")) {
+			if (StringUtils.isNotBlank(addUserDTO.getApproverUser())) {
 				User requirementApproverUser = new User();
-				requirementApproverUser.setId(Long.valueOf(jsonObj.getString("approverUser")));
+				requirementApproverUser.setId(Long.valueOf(addUserDTO.getApproverUser()));
 				List<RequirementApproverHierarchy> approversList = requirementApproverHierarchyService
 						.getRequirementsAsApprover(userId, orgLocations.getId());
 				if (null != approversList) {
@@ -1457,9 +1462,9 @@ public class UsersListRestController {
 
 			}
 
-			if (jsonObj.has("teamOwnerUser") && !isNullOrEmpty("teamOwnerUser")) {
+			if (StringUtils.isNotBlank(addUserDTO.getTeamOwnerUser())) {
 				User teamOwnerUser = new User();
-				teamOwnerUser.setId(Long.valueOf(jsonObj.getString("teamOwnerUser")));
+				teamOwnerUser.setId(Long.valueOf(addUserDTO.getTeamOwnerUser()));
 				List<Team> teamsList = teamService.getTeamListByTeamOwner(userId, orgLocations.getId());
 				if (null != teamsList) {
 					for (Team team : teamsList) {
@@ -1472,16 +1477,16 @@ public class UsersListRestController {
 
 			}
 
-			if (jsonObj.has("projectApproverUser") && !isNullOrEmpty("projectApproverUser")) {
+			/*if (StringUtils.isNotBlank(addUserDTO.getProjectApproverUser())) {
 
-				projectsService.tereminateAsProjectApprover(jsonObj, user, userId, orgLocations);
-			}
+				projectsService.tereminateAsProjectApprover(addUserDTO, user, userId, orgLocations);
+			}*/
 			
 			
 			
-			if (jsonObj.has("clientDocsOwnerUser") && !isNullOrEmpty("clientDocsOwnerUser")) {
+			if (StringUtils.isNotBlank(addUserDTO.getClientDocsOwnerUser())) {
 				User clientDocsOwnerUser = new User();
-				clientDocsOwnerUser.setId(Long.valueOf(jsonObj.getString("clientDocsOwnerUser")));
+				clientDocsOwnerUser.setId(Long.valueOf(addUserDTO.getClientDocsOwnerUser()));
 				List<OrgDocuments> clientDocsList = orgDocumentsService.getOrgDocumentsListByUserIdAndOrgLocationIdAndSourceType(userId, orgLocations.getId(),"Client");
 				if (null != clientDocsList) {
 					for (OrgDocuments orgDocuments : clientDocsList) {
@@ -1494,9 +1499,9 @@ public class UsersListRestController {
 			}
 			
 			
-			if (jsonObj.has("vendorDocsOwnerUser") && !isNullOrEmpty("vendorDocsOwnerUser")) {
+			if (StringUtils.isNotBlank(addUserDTO.getClientDocsOwnerUser())) {
 				User vendorDocsOwnerUser = new User();
-				vendorDocsOwnerUser.setId(Long.valueOf(jsonObj.getString("vendorDocsOwnerUser")));
+				vendorDocsOwnerUser.setId(Long.valueOf(addUserDTO.getClientDocsOwnerUser()));
 				List<OrgDocuments> vendorDocsList = orgDocumentsService.getOrgDocumentsListByUserIdAndOrgLocationIdAndSourceType(userId, orgLocations.getId(),"Vendor");
 				if (null != vendorDocsList) {
 					for (OrgDocuments orgDocuments : vendorDocsList) {
@@ -1510,13 +1515,13 @@ public class UsersListRestController {
 			
 			
 
-			if (jsonObj.has("userChangeRole") && !isNullOrEmpty("userChangeRole")) {
-				Roles roles = rolesService.getRolesById(Long.valueOf(jsonObj.getString("userChangeRole")));
+			if (StringUtils.isNotBlank(addUserDTO.getUserChangeRole())) {
+				Roles roles = rolesService.getRolesById(Long.valueOf(addUserDTO.getUserChangeRole()));
 				userRole.setRoles(roles);
 				userRole.setUserType(roles.getDisplayName());
 			}
 			
-			userRole.setRoleChangeReason(jsonObj.getString("reason"));
+			userRole.setRoleChangeReason(addUserDTO.getReason());
 			userRole.setUpdatedBy(user.getUserCode());
 			userRole.setUpdatedDate(commonUtil.currentDate());
 			userRoleService.addUserRole(userRole);
@@ -1604,7 +1609,7 @@ public class UsersListRestController {
 	@PreAuthorize("hasRole('ROLE_VIEW_EDIT_USER')")
 	@RequestMapping(value = "/updateUser", method = RequestMethod.POST)
 	@ResponseBody
-	String updateUser(@RequestParam(value = "json", required = false) String json,
+	String updateUser(AddUserDTO addUserDTO,
 			@RequestParam(value = "userId", required = false) Long userId,
 			@RequestParam(value = "emailId", required = false) String emailId, HttpServletRequest request)
 			throws Exception {
@@ -1616,29 +1621,29 @@ public class UsersListRestController {
 		User user = userService.getUserById(userId);
 		UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(), orgLocations.getId());
 
-		json = "{" + json + "}";
-		JSONObject jsonObj = new JSONObject(json);
+		/*json = "{" + json + "}";
+		JSONObject jsonObj = new JSONObject(json);*/
 		String password = "";
 		boolean isUserActive = false;
 		//SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
 		
 		if (user != null) {
-			user.setFirstName(jsonObj.getString("FirstName"));
-			user.setLastName(jsonObj.getString("LastName"));
-			user.setMobilePhone(jsonObj.getString("PhoneNumber"));
-			if (jsonObj.has("reportingManager") && !isNullOrEmpty(jsonObj.getString("reportingManager"))) {
+			user.setFirstName(addUserDTO.getFirstName());
+			user.setLastName(addUserDTO.getLastName());
+			user.setMobilePhone(addUserDTO.getPhoneNumber());
+			if (StringUtils.isNotBlank(addUserDTO.getReportingManager())) {
 				User reportingManager = new User();
-				reportingManager.setId(Long.parseLong(jsonObj.getString("reportingManager")));
+				reportingManager.setId(Long.parseLong(addUserDTO.getReportingManager()));
 				userRole.setReportingManager(reportingManager);
 			} else {
 				userRole.setReportingManager(null);
 			}
 
 			isUserActive = userRoleService.isUserActive(user.getId());
-			if (isUserActive == false && !emailId.equalsIgnoreCase(jsonObj.getString("EmailId"))) {
+			if (isUserActive == false && !emailId.equalsIgnoreCase(addUserDTO.getEmailId())) {
 				// generate random password
-				user.setEmail(jsonObj.getString("EmailId"));
-				user.setUserName(jsonObj.getString("EmailId"));
+				user.setEmail(addUserDTO.getEmailId());
+				user.setUserName(addUserDTO.getEmailId());
 				password = SourceLeadRandomCodeHelper.generateRandomPassword();
 				user.setPassword(sourceleadPasswordEncoder.encode(password));
 				user.setIsMailSent(Status.Y);
@@ -1650,42 +1655,42 @@ public class UsersListRestController {
 			userService.addUser(user);
 			userRoleService.addUserRole(userRole);
 
-			if (isUserActive == false && !emailId.equalsIgnoreCase(jsonObj.getString("EmailId"))) {
+			if (isUserActive == false && !emailId.equalsIgnoreCase(addUserDTO.getEmailId())) {
 				userService.sendEmail(user, loginUser, password, orgLocations.getId());
 			}
 		}
 		Employees employees = employeesService.getEmployeeByUserIdAndOrgLocationsId(userId, orgLocations.getId());
 
 		if (employees != null) {
-			employees.setEmployeeId(jsonObj.getString("EmployeeId"));
-			employees.setRate(jsonObj.getString("Rate"));
-			employees.setRatePer(jsonObj.getString("RatePer"));
-			employees.setDailyHours(jsonObj.getString("DayHours"));
-			employees.setCurrentCurrency(jsonObj.getString("currentCurrency"));
+			employees.setEmployeeId(addUserDTO.getEmployeeId());
+			employees.setRate(addUserDTO.getRate());
+			employees.setRatePer(addUserDTO.getRatePer());
+			employees.setDailyHours(addUserDTO.getDayHours());
+			employees.setCurrentCurrency(addUserDTO.getCurrentCurrency());
 			
-			if(jsonObj.has("designationType")){
-				employees.setUserEmploymentType(jsonObj.getString("designationType"));
+			if(StringUtils.isNotBlank(addUserDTO.getDesignationType())){
+				employees.setUserEmploymentType(addUserDTO.getDesignationType());
 			}
-			if(jsonObj.has("designationOtherType")){
-				employees.setDesignationOtherType(jsonObj.getString("designationOtherType"));
+			if(StringUtils.isNotBlank(addUserDTO.getDesignationOtherType())){
+				employees.setDesignationOtherType(addUserDTO.getDesignationOtherType());
 			}
 			
-			if(jsonObj.has("department") && !"".equalsIgnoreCase(jsonObj.getString("department"))){
-				Department department= departmentService.getDepartmentById(Long.parseLong(jsonObj.getString("department")));
+			if(StringUtils.isNotBlank(addUserDTO.getDepartment())){
+				Department department= departmentService.getDepartmentById(Long.parseLong(addUserDTO.getDepartment()));
 				employees.setDepartmentId(department);
 			}else{
 				employees.setDepartmentId(null);
 			}
 			
-			if(jsonObj.has("vendors") && !"".equalsIgnoreCase(jsonObj.getString("vendors"))){
-				OrgRelations orgRelation = orgRelationsService.getOrRelationsById(Long.parseLong(jsonObj.getString("vendors")));
+			if(StringUtils.isNotBlank(addUserDTO.getVendors())){
+				OrgRelations orgRelation = orgRelationsService.getOrRelationsById(Long.parseLong(addUserDTO.getVendors()));
 				employees.setOrgRelationId(orgRelation);
 			}else{
 				employees.setOrgRelationId(null);
 			}
 			
-			if(jsonObj.has("vendorcontact") && !"".equalsIgnoreCase(jsonObj.getString("vendorcontact"))){
-				OrgSpoc orgspoc = orgSpocService.getOrgSpocById(Long.parseLong(jsonObj.getString("vendorcontact")));
+			if(StringUtils.isNotBlank(addUserDTO.getVendorcontact())){
+				OrgSpoc orgspoc = orgSpocService.getOrgSpocById(Long.parseLong(addUserDTO.getVendorcontact()));
 				employees.setSpocId(orgspoc);
 			}else{
 				employees.setSpocId(null);
@@ -1694,10 +1699,10 @@ public class UsersListRestController {
 			 * employees.setInvoiceFrequency(jsonObj.getString(
 			 * "InvoiceFrequency"));
 			 */
-			if (jsonObj.has("DateofJoin") && !isNullOrEmpty(jsonObj.getString("DateofJoin"))) {
+			if (StringUtils.isNotBlank(addUserDTO.getDateofJoin())) {
 				try {
 					//DateFormat sdf = simpleDateFormat;
-					employees.setHireDate(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),jsonObj.getString("DateofJoin")));
+					employees.setHireDate(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),addUserDTO.getDateofJoin()));
 				} catch (Exception e) {
 					e.printStackTrace();
 				}

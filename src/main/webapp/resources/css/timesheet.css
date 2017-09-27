@@ -5333,3 +5333,20 @@ padding: 0px 10px 0px 25px !important;
 .widAu {
 width: auto !important;
 }
+
+
+
+.expenAdvanc {
+	
+}
+.expenAdvanc .collapse-div-adduser {
+	width: 300px;
+}
+.expenAdvanc .chosen-container span {
+	padding:0px;
+}
+.exadRadio {
+}
+.exadRadio label {
+	cursor: pointer;
+}

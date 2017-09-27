@@ -203,7 +203,7 @@ function checkBox(){
 	              <div class="timesheet_week_comm col-md-12 invoiceDocs invoiceDocs_add" >
 	                <div class="form-group" id='0invoicedocFileuploadFileGroup'> 
 	                <span>
-	                  <input type='file' name='0invoicedocFile' id='0invoicedocFile' field-name='Attachment'  class='timesheetAttachmentValidation'><i class='fa fa-times mt5' mouseOver="Clear" title="Clear" onClick='remove()'></i><i class='fa fa-plus' mouseOver="Add" title="Add" onClick='addInvoiceAttachment()'></i>
+	                  <input type='file' name='0invoicedocFile' id='0invoicedocFile' field-name='Attachment'  class='timesheetAttachmentValidation' onchange="attachFile(0);"><i class='fa fa-times mt5' mouseOver="Clear" title="Clear" onClick='remove()'></i><i class='fa fa-plus' mouseOver="Add" title="Add" onClick='addInvoiceAttachment()'></i>
 	                 </span> </div>
 	              </div>
             	</td>
@@ -286,10 +286,9 @@ function checkBox(){
 <script>
 function getProjectsList(projectName){
 	var orgRelationId = $("#vendorOrgRelationId").val();
-	var sourceleadUrl ='${sourceleadUrl}';
 	$.ajax({
 	type : "GET",
-	url: sourceleadUrl+"/getAllProjectsByOrgRelationId?${_csrf.parameterName}=${_csrf.token}",
+	url: sourceleadUrl+"/getAllProjectsByOrgRelationId?"+tokenParamName+"="+tokenValue+"",
 	success :function(data) {
 	var json = JSON.parse(data);
 	var output = "";
@@ -313,43 +312,6 @@ function getProjectsList(projectName){
 	}
 </script>
 
-<!-- Get Project Frequency Based on project id -->
-<!-- <script type="text/javascript">
-function getProjectFrequency(invoiceFrequency){
-	var projectId = null;
-	projectId = $("#projectId").val();
-	if(projectId == null){
-	projectId = '${projectId}';
-	}
-	
-	var sourceleadUrl ='${sourceleadUrl}';
-	$.ajax({
-	type : "GET",
-	url: sourceleadUrl+"/getProjectFrequency?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId,
-	success :function(data) {
-		var json = JSON.parse(data);
-		var output = "";
-		output = output + "<option value=''>Select Frequency</option>";
-		for (var i=0; i<json.length; i++)
-		{
-		var opt = json[i];
-		/* output = output + "<option value='" +opt+ "'>"+opt+"</option>"; */
-		var selected = "";
-		if(invoiceFrequency != null && invoiceFrequency != "" && invoiceFrequency !="undefined" && invoiceFrequency == opt){
-			selected = 'selected';
-			/* getProjectAssignedMem1();  */
-		}
-		output = output + "<option value='" +opt+ "' "+selected+">"+opt+"</option>";
-		}
-		$("#frequency").empty();
-		$("#frequency").append(output);
-		$('#frequency').trigger("chosen:updated");
-	},
-	});
-
-}
-</script> -->
-
 
 <!-- Get all assigned members for the project based on project id -->
  <script type="text/javascript">
@@ -361,10 +323,9 @@ function getProjectMemberByVendor(pid,projectMemberName){
 	if(pid != null && pid!='undefined'){
 		projectId =pid;
 	}
-	var sourceleadUrl ='${sourceleadUrl}';
 	$.ajax({
 	type : "GET",
-	url: sourceleadUrl+"/getVendorAssignedMembersForProjects?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId+"&orgRelationId="+orgRelationId+"&userId="+userId+"&orgLocationId="+orgLocationId,
+	url: sourceleadUrl+"/getVendorAssignedMembersForProjects?"+tokenParamName+"="+tokenValue+"&projectId="+projectId+"&orgRelationId="+orgRelationId+"&userId="+userId+"&orgLocationId="+orgLocationId,
 	success :function(data) {
 		var output = "";
 		output = output + "<option value=''>--Select Associate--</option>";
@@ -388,114 +349,6 @@ function getProjectMemberByVendor(pid,projectMemberName){
 }
 </script> 
 
-<!-- <script>
-function getProjectAssignedMem1(invoiceLineItemsList){
-	 populateInlineItemsGrid1(invoiceLineItemsList); 
-
-}
-
-</script> -->
-<!-- <script>
-function populateInlineItemsGrid(data){
-	var currencyCode = '${SourceLeadWeb_currencyCode}';
-    if(data != '' && data !=null){
-        var json = JSON.parse(data);
-        var result = '';
-            result = result +'    <table width="100%">';
-            result = result +' <thead>';
-            result = result +' <tr>';
-            result = result +' <th>Date</th>';
-            result = result +' <th>Associate</th>';
-            result = result +' <th>Description</th>;'
-            result = result +' <th>SOW / PO</th>';
-            result = result +' <th>Rate Hourly</th>';
-            result = result +' <th>Total Hours</th>';
-            result = result +' <th>Amount</th>';
-            result = result +' </tr>';
-            result = result +' </thead>';
-            result = result +' <tbody>';
-            result = result +' <input type="hidden" value='+json.length+' id="maxTsRowNum" name="maxTsRowNum">';
-        for (var i = 0; i < json.length; i++) { 
-             var opt = json[i]; 
-             result = result +'<tr>';
-             result = result +' <td>';
-             result = result +'<div class="inputCustom">';
-             result = result +' <input class="calendar paddingRight" id="'+i+'sdate-input" name="'+i+'invoiceStartDate" placeholder="Start Date" value='+opt.startDate+' type="text" readonly>';
-             result = result +'<input class="calendar paddingLeft" id="'+i+'edate-input" name="'+i+'invoiceEndDate" placeholder="End Date" value='+opt.endDate+' type="text" readonly>';
-             result = result +' <input type="hidden" value='+opt.submissionApproverHierarchyId+' id="'+i+'submissionApproverHierarchyId" name="'+i+'submissionApproverHierarchyId">';
-             result = result +' <input type="hidden" value='+opt.submissionInvoiceId+' id="'+i+'submissionInvoiceId" name="'+i+'submissionInvoiceId">';
-             result = result +'</div>';
-             result = result +' </td>';
-             result = result +'<td>';
-             result = result +' <div class="tbldata-dotdot-vsm select-field" id="'+i+'candidateName" name="'+i+'candidateName" data-validation="required" field-name="Candidate Name">'+opt.candidateName+'</div>';
-             result = result +' <input type="hidden" value='+opt.candidateId+' id="'+i+'candidate" name="'+i+'candidate">';
-             result = result +' <input type="hidden" value='+opt.userId+' id="'+i+'user" name="'+i+'user">';
-             result = result +' </td>';
-             result = result +'  <td class="tblminwidth-150">';
-             result = result +' <textarea type="text" class="form-control input-sm" placeholder="Description" id="'+i+'Description" name="'+i+'Description" data-validation="validate_length length1-100" field-name="Description"></textarea>';
-             result = result +'  </td>';
-             result = result +'  <td>';
-             result = result +' <div class="tbldata-dotdot-100 select-field">';
-             result = result +'<select class="form-control input-sm" id="'+i+'sow" name="'+i+'sow" onchange="getSowRate('+i+')">';
-             result = result +'<option value="">select Sow</option>';
-             if(opt.contractsList != '' && opt.contractsList != null && opt.contractsList != 'undefined'){
-                 for (var j = 0; j < opt.contractsList.length; j++) { 
-                     var opt1 = opt.contractsList[j]; 
-                     result = result +'<option value='+opt1.id+'>'+opt1.contractTitle+'</option>';
-                 } 
-             }
-             result = result +' </select>';
-             result = result +'</div>';
-             result = result +'</td>';
-             result = result +'<td>';
-             result = result +'<div class="tbldata-dotdot_80">';
-             if(opt.rate != null && opt.rate !='' && opt.rate !='undefined'){
-                 result = result +'<input class="form-control input-sm allownumericwithdecimal"  id="'+i+'rate" name="'+i+'rate" value='+opt.rate+' placeholder="Rate" type="text" data-validation="required" field-name="Rate" onblur="totalHoursCalculateAmount('+i+');">'; 
-             }else{
-                 result = result +'<input class="form-control input-sm allownumericwithdecimal" id="'+i+'rate" name="'+i+'rate"  data-validation="required" field-name="Rate" placeholder="Rate" type="text" onblur="totalHoursCalculateAmount('+i+');">';
-             }
-             result = result +'</div>';
-             result = result +'</td>';
-             result = result +' <td>';
-             result = result +'<div class="tbldata-dotdot-vsm">';
-             result = result +'  <input class="form-control input-sm inline_field" id="'+i+'totalHours" name="'+i+'totalHours" placeholder="HHH:MM" value='+opt.totalHours+' data-validation="required" field-name="Total Hours" type="text" onblur="totalHoursCalculateAmount('+i+');">';
-             result = result +'</div>';
-             result = result +'</td>';
-             result = result +'<td>';
-             result = result +'<input class="form-control formControl input-sm text-right" id="'+i+'amount" name="'+i+'amount" value="0.0" placeholder="Amount" type="text" readonly="readonly">';
-             result = result +'</td>';
-             result = result +'</tr>';
-             /* getSow(i,opt.candidateId); */
-        }
-        result = result +' <tfoot class="table_footer">';
-        result = result +' <tr>';
-        result = result +' <td colspan="5"></td>';
-        result = result +'<td><strong>Sub Total</strong></td>';
-        result = result +' <td><div class="tblminwidth-150"> <span class="pull-left paddingRight">'+currencyCode+'</span> <input type="text" value = "00:00" id="inoviceTotal" name="inoviceTotal" class="ReadTextFli"></div></td>';
-        result = result +' </tr>';
-        result = result +' </tfoot> ';
-        result = result +' </tbody>';
-        result = result +' </table>';
-        $("#tableBody").empty();
-        $("#tableBody").append(result)
-        maskme();
-        $("#currencyCode").html(currencyCode);
-        document.getElementById("bottomGrid").style.display="block";
-        document.getElementById("bottomGrid").style.display="block";
-        document.getElementById("lineItemAddRows").style.display="block";
-        document.getElementById("tableBody").style.display="block";
-        addTaxDivs();    
-        addConversionDiv();
-    }else{
-        document.getElementById("bottomGrid").style.display="none";
-        document.getElementById("lineItemAddRows").style.display="none";
-        document.getElementById("tableBody").style.display="none";
-//         alert("No MembersFound");
-		alertMessageInPayable()
-    }
-    
-}
-</script> -->
 
 <script type="text/javascript">
 function addConversionDiv(){
@@ -543,210 +396,6 @@ function cancelPayableAlert(){
 </script>
 
 
-
-<!-- <script>
-function populateInlineItemsGrid1(data){
-	var currencyCode = '${SourceLeadWeb_currencyCode}';
-	var result = '';
-		result = result +'	<table width="100%">';
-	    result = result +' <thead>';
-	    result = result +' <tr>';
-	    result = result +' <th>Date</th>';
-	    result = result +' <th>Associate</th>';
-	    result = result +' <th>Description</th>';
-	    result = result +' <th>SOW / PO</th>';
-	    result = result +' <th>Rate Hourly</th>';
-	    result = result +' <th>Total Hours</th>';
-	    result = result +' <th>Amount</th>';
-	    result = result +' </tr>';
-	    result = result +' </thead>';
-	    result = result +' <tbody>';
-	    result = result +' <input type="hidden" value='+data.length+' id="maxTsRowNum" name="maxTsRowNum">';
-    for (var i = 0; i < data.length; i++) { 
-    	 var opt = data[i]; 
-    	 result = result +'<tr>';
-    	 result = result +' <input type="hidden" value='+opt.id+' id="'+i+'lineItemId"   name="'+i+'lineItemId">';
-    	 result = result +' <td>';
-    	 result = result +'<div class="inputCustom">';
-    	 result = result +' <input class="calendar paddingRight" id="'+i+'sdate-input" name="'+i+'invoiceStartDate" placeholder="Start Date" value='+opt.startDateStr+' type="text" readonly>';
-    	 result = result +'<input class="calendar paddingLeft" id="'+i+'edate-input" name="'+i+'invoiceEndDate" placeholder="End Date" value='+opt.endDateStr+' type="text" readonly>';
-    	 result = result +' <input type="hidden" value='+opt.submissionApproverHierarchyId+' id="'+i+'submissionApproverHierarchyId" name="'+i+'submissionApproverHierarchyId">';
-    	 result = result +'</div>';
-    	 result = result +' </td>';
-    	 result = result +'<td>';
-    	 result = result +' <div class="tbldata-dotdot-vsm select-field" id="'+i+'candidateName" name="'+i+'candidateName"  data-validation="required" field-name="Candidate Name">'+opt.candidateName+'</div>';
-    	 result = result +' <input type="hidden" value='+opt.candidateId+' id="'+i+'candidate" name="'+i+'candidate">';
-    	 result = result +' <input type="hidden" value='+opt.userId+' id="'+i+'user" name="'+i+'user">';
-    	 result = result +' </td>';
-    	 result = result +'  <td>';
-    	 if(opt.inlineDescription !=null && opt.inlineDescription != '' && opt.inlineDescription !='undefined'){
-    		 result = result +' <textarea type="text" class="form-control input-sm tbldata-dotdot" placeholder="Description" id="'+i+'Description" name="'+i+'Description" data-validation="validate_length length1-100" field-name="Description">'+opt.inlineDescription+'</textarea>';
-    	 }else{
-    		 result = result +' <textarea type="text" class="form-control input-sm tbldata-dotdot-me" placeholder="Description" id="'+i+'Description" name="'+i+'Description" data-validation="validate_length length1-100" field-name="Description"></textarea>';
-    	 }
-         
-         result = result +'  </td>';
-    	 result = result +'  <td>';
-    	 result = result +' <div class="tbldata-dotdot-100 select-field">';
-    	 result = result +'<select class="form-control input-sm" id="'+i+'sow" name="'+i+'sow" onchange="getSowRate('+i+')">';
-    	 result = result +'<option value="">select Sow</option>';
-    	 if(opt.contractList != '' && opt.contractList != null && opt.contractList != 'undefined'){
-             for (var j = 0; j < opt.contractList.length; j++) { 
-                 var opt1 = opt.contractList[j]; 
-                 var selected = '';
-                 if(opt.sowContractName !='' && opt.sowContractName != null && opt.sowContractName != 'undefined'){
-                	 selected = 'selected';
-                 }
-                 result = result +'<option value=' +opt1.id+ ' '+selected+'>'+opt1.contractTitle+'</option>';
-             } 
-         }
-    	 result = result +' </select>';
-    	 result = result +'</div>';
-    	 result = result +'</td>';
-    	 result = result +'<td>';
-    	 result = result +'<div class="tbldata-dotdot_80">';
-    	 if(opt.rate != null && opt.rate !='' && opt.rate !='undefined'){
-    		 result = result +'<input class="form-control input-sm allownumericwithdecimal"  id="'+i+'rate" name="'+i+'rate" value='+opt.rate+' placeholder="Rate"  data-validation="required" field-name="Rate" type="text" onblur="totalHoursCalculateAmount('+i+');">'; 
-    	 }else{
-    		 result = result +'<input class="form-control input-sm allownumericwithdecimal" id="'+i+'rate" name="'+i+'rate"  placeholder="Rate" data-validation="required" field-name="Rate" type="text" onblur="totalHoursCalculateAmount('+i+');">';
-    	 }
-    	 /* result = result +'<input class="form-control input-sm" id="'+i+'rate" name="'+i+'rate" value='+opt.rate+' placeholder="Rate" type="text" onblur="calculateTotalAmount('+i+');">'; */
-    	 result = result +'</div>';
-    	 result = result +'</td>';
-    	 result = result +' <td>';
-    	 result = result +'<div class="tbldata-dotdot-100">';
-    	 result = result +'  <input class="form-control input-sm inline_field" id="'+i+'totalHours" name="'+i+'totalHours" value='+opt.totalHours+' placeholder="HHH:MM" value='+opt.totalHours+' data-validation="required" field-name="Total Hours" type="text" onblur="totalHoursCalculateAmount('+i+');">';
-    	 result = result +'</div>';
-    	 result = result +'</td>';
-    	 result = result +'<td>';
-    	 if(opt.amount !=null && opt.amount !='' && opt.amount !='undefined'){
-    		 result = result +'<input class="form-control formControl input-sm text-right" id="'+i+'amount" name="'+i+'amount" value='+opt.amount+' placeholder="Amount" type="text" readonly="readonly">';	 
-    	 }else{
-    		 result = result +'<input class="form-control formControl input-sm text-right" id="'+i+'amount" name="'+i+'amount"  placeholder="Amount" type="text" readonly="readonly">';
-    	 }
-    	
-    	 result = result +'</td>';
-    	 result = result +'</tr>';
-    	/* getSow(i,opt.candidateId,opt.contractId); */
-    }
-    result = result +' <tfoot class="table_footer">';
-    result = result +' <tr>';
-    result = result +' <td colspan="5"></td>';
-    result = result +'<td><strong>Total</strong></td>';
-    result = result +' <td><div class="tblminwidth-150"> <span class="pull-left paddingRight">'+currencyCode+'</span> <input type="text" value = "00.00" id="inoviceTotal" name="inoviceTotal" class="ReadTextFli"></div></td>';
-    result = result +' </tr>';
-    result = result +' </tfoot> ';
-    result = result +' </tbody>';
-    result = result +' </table>';
-    $("#tableBody").empty();
-    $("#tableBody").append(result)
-    maskme();
-
-    document.getElementById("bottomGrid").style.display="block";
-	document.getElementById("bottomGrid").style.display="block";
-	document.getElementById("lineItemAddRows").style.display="block";
-	document.getElementById("tableBody").style.display="block";
-    addTaxDivs();
-}
-</script> -->
-
-<!-- Get contract sow between client and the associate NOT USING AS OF NOW-->
-<!-- <script>
-  function getSow(contractId){
-	  var orgRelationId = $("#vendorOrgRelationId").val();
-	  var sourceleadUrl ='${sourceleadUrl}';
-	  var maxRowNum = $("#maxTsRowNum").val();
-		  for(var id=0;id < maxRowNum;id++){
-			     var result = "";
-	        	result = result + "<option value='' >select sow</option>"
-			  var candidateId = $("#"+id+'candidate').val();
-			  $.ajax({
-			    	type: "GET",
-			        url: sourceleadUrl+"/getSowcontractListByAssociateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&orgRelationId="+orgRelationId+"&contractType=vendorSow",
-			        success: function(data) {
-			        	
-			        	if(data != null && data != ''){
-			        		var json = JSON.parse(data);
-				        	 for (var i=0; i<json.length; i++)
-							{
-					        		var opt = json[i];
-					        		var selected = '';
-					        		 if(contractId != null && contractId != "" && contractId !="undefined" && contractId == opt.id){
-					        			selected = 'selected';
-					        		} 
-					        		 result = result +"<option value="+opt.id+" >"+opt.contractTitle+"</option>";
-							} 
-			        	}
-			        	 $('#'+id+'sow').empty();
-			        	 $('#'+id+'sow').append(result);
-			        },
-			        
-			    });
-		 } 
-	 
-	 
-  }
-  </script>  -->
- <!--  <script>
-  function getSow(id,candidateId,opt,contractId){
-	 /*  var candidateId = $('#'+id+'candidate').val(); */
-	  var orgRelationId = $("#vendorOrgRelationId").val();
-	  var sourceleadUrl ='${sourceleadUrl}';
-	  $.ajax({
-	    	type: "GET",
-	        url: sourceleadUrl+"/getSowcontractListByAssociateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&orgRelationId="+orgRelationId+"&contractType=vendorSow",
-	        success: function(data) {
-	        	var result = "";
-	        	result = result + "<option value='' >select sow</option>"
-	        	if(data != null && data != ''){
-	        		var json = JSON.parse(data);
-		        	 for (var i=0; i<json.length; i++)
-					{
-			        		var opt = json[i];
-			        		var selected = '';
-			        		
-			        		 if(contractId != null && contractId != "" && contractId !="undefined" && contractId == opt.id){
-			        			selected = 'selected';
-			        		} 
-			        		 result = result +"<option value="+opt.id+" >"+opt.contractTitle+"</option>";
-					} 
-		        	 $('#'+id+'sow').empty();
-		        	 $('#'+id+'sow').append(result);
-		        	 /*$ ('#'+id+'rate').val(opt.billingAmount);
-		        		calculateTotalAmount(id); */
-	        	}else{
-	        		
-	        	}
-	        },
-	        
-	    });
-  }
-  </script> -->
-  
-<!-- <script>
-function getSowRate(id){
-	var contractId = $("#"+id+'sow').val();
-	var sourceleadUrl ='${sourceleadUrl}';
-	if(contractId !='' && contractId != 'undefined' && contractId != null){
-	$.ajax({
-    	type: "GET",
-    	url: sourceleadUrl+"/getSowRateByContractId?${_csrf.parameterName}=${_csrf.token}&contractId="+contractId,
-        success: function(data) {
-        	 if(data != null && data != ''){
-        		var json = JSON.parse(data);
-	        	 $ ('#'+id+'rate').val(json.billingAmount);
-	        	 totalHoursCalculateAmount(id);
-        	} 
-        },
-        
-    });
-}else{
-	 $ ('#'+id+'rate').val(0);
-	 totalHoursCalculateAmount(id);
-}
-}
-</script> -->
-
   <!-- calculating total expenses with quantity and rate -->
   <script>
   function totalHoursCalculateAmount(rowId){
@@ -763,11 +412,10 @@ function getSowRate(id){
 	   var orgRelationId = $("#vendorOrgRelationId").val();
 	   var currencyCode = '${SourceLeadWeb_currencyCode}';
 	   var grandTotal = $("#grandTotal").val();
-	   var sourceleadUrl ='${sourceleadUrl}';
 	   if(grandTotal != '' && grandTotal != 'undefined'){
 		   $.ajax({
 				type : "GET",
-				url: sourceleadUrl+"/getConversionExchangeRate?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+orgRelationId+"&grandTotal="+grandTotal,
+				url: sourceleadUrl+"/getConversionExchangeRate?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId+"&grandTotal="+grandTotal,
 				success :function(data) {
 					if(data !='' && data != 'undefined' && data != null){
 						var json = JSON.parse(data);
@@ -877,7 +525,7 @@ function calculateDisCount(){
   <div id="divTaxTd1" style="display: none; float: left;">
 	<div class="select-field tblminwidth-75">
 		  <div class="tblminwidth-50">
-		        <input type="text" class="form-control input-sm" value="" placeholder="Tax type" name='REPLACEROWIDtaxType' id='REPLACEROWIDtaxType'>
+		        <input type="text" class="form-control input-sm" value="" placeholder="Tax type" name='invoiceTax[REPLACEROWID].taxType' id='REPLACEROWIDtaxType'>
 		        <input type="hidden" name="REPLACEROWIDinvoiceTaxId" id="REPLACEROWIDinvoiceTaxId">
 		  
 		  </div>
@@ -886,7 +534,7 @@ function calculateDisCount(){
 
   <div id="divTaxTd2" style="display: none; float: left;">
 	 <div class="btn-group tblminwidth-75">
-	 <select class="form-control input-sm" id="REPLACEROWIDtaxdiscountType" name="REPLACEROWIDtaxdiscountType" onchange="calculateTaxDiscount();">
+	 <select class="form-control input-sm" id="REPLACEROWIDtaxdiscountType" name="invoiceTax[REPLACEROWID].taxdiscountType" onchange="calculateTaxDiscount();">
 		 <option value="percentage">Percentage</option>
 		 <option value="flat">Flat</option>
  		  </select>
@@ -895,13 +543,13 @@ function calculateDisCount(){
   
   <div id="divTaxTd3" style="display: none; float: left;">
      <div class="tblminwidth-75">
-        <input type="text" class="form-control input-sm allownumericwithdecimal" value="" placeholder="Flat / Discount" name='REPLACEROWIDtaxdiscountvalue' id='REPLACEROWIDtaxdiscountvalue' onblur="calculateTaxDiscount();">
+        <input type="text" class="form-control input-sm allownumericwithdecimal" value="" placeholder="Flat / Discount" name='invoiceTax[REPLACEROWID].taxdiscountvalue' id='REPLACEROWIDtaxdiscountvalue' onblur="calculateTaxDiscount();">
     </div>
   </div>
   
   <div id="divTaxTd4" style="display: none; float: left;">
 	  <div class="tblminwidth-75">  
-	       <input type="text" class="form-control input-sm" value ="00.00" placeholder="Total Value" name='REPLACEROWIDtaxTotal' id='REPLACEROWIDtaxTotal' readonly="readonly">
+	       <input type="text" class="form-control input-sm" value ="00.00" placeholder="Total Value" name='invoiceTax[REPLACEROWID].taxTotal' id='REPLACEROWIDtaxTotal' readonly="readonly">
 	   </div>
   </div>
   <div id="divTaxTd5" style="display: none; float: left;">
@@ -914,7 +562,7 @@ function calculateDisCount(){
 				var maxRowNum = parseInt($("input[name = 'maxTaxRowNum']").val());
 				$("input[name = 'maxTaxRowNum']").val(maxRowNum + 1);
 				
-				var row = tbl.insertRow(maxRowNum);
+				var row = tbl.insertRow(maxRowNum+1);
 				row.setAttribute("id", "divTaxRow" + maxRowNum);
 				
 				var cell0 = row.insertCell(0);
@@ -958,7 +606,6 @@ function calculateDisCount(){
         total = (first-second);
         $("#grandTotal").val(total); 
         $("#conversionFrom").val(total);
-       //=======================================
         conversion();
 		document.getElementById('divTaxRow' + rowId).style.display = 'none';
 		var r = document.getElementById('addTaxTbl').rows[rowId];
@@ -1001,7 +648,7 @@ function calculateTaxDiscount(){
 	var maxTaxRowNum = $("#maxTaxRowNum").val();
 	var afterDiscountTotal = $("#afterDiscountTotal").val();
 	
-	for(var i=1; i<maxTaxRowNum; i++){
+	for(var i=0; i<maxTaxRowNum; i++){
 		if($("#"+i+"taxdiscountType").val() != '' && $("#"+i+"taxdiscountType").val() != null && $("#"+i+"taxdiscountType").val() != 'undefined'){
 			var taxType = $("#"+i+"taxdiscountType").val();
 		    var taxValue = $("#"+i+"taxdiscountvalue").val();
@@ -1023,7 +670,7 @@ function calculateTaxDiscount(){
 	}
 	
 	var taxGrandTotal = 0;
-	for(var i=1; i<maxTaxRowNum; i++){
+	for(var i=0; i<maxTaxRowNum; i++){
 		if($("#"+i+"taxTotal").val() != null && $("#"+i+"taxTotal").val() != '' && $("#"+i+"taxTotal").val() != 'undefined'){
 			taxGrandTotal = parseFloat(taxGrandTotal + parseFloat($("#"+i+"taxTotal").val()));			
 		}
@@ -1045,7 +692,7 @@ function calculateTaxDiscount(){
   			<div class="timesheet_week_comm col-md-12 invoiceDocs invoiceDocs_add">
                 <div class="form-group" id="REPLACEROWIDinvoicedocFileuploadFileGroup"> 
                		 <span> 
-               		 	<input type="file" name='REPLACEROWIDinvoicedocFile' id='REPLACEROWIDinvoicedocFile' onchange='validateContractsUploadFile(REPLACEROWID)'>
+               		 	<input type="file" name='REPLACEROWIDinvoicedocFile' id='REPLACEROWIDinvoicedocFile' onchange='attachFile(REPLACEROWID);validateContractsUploadFile(REPLACEROWID)'>
                		    <i class="fa fa-times mt5" mouseOver="Delete" title="Delete" onclick="removeInvoiceAttachmentRow(REPLACEROWID);"></i>
                		   </span>
                 </div>
@@ -1093,32 +740,14 @@ function saveInvoice(saveType){
 	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	var currencyCode = '${SourceLeadWeb_currencyCode}';
          if ($('#project_payable_invoice_form').validate(false, validationSettings)){  
- 		    var frm = $('#project_payable_invoice_form').serializeFormJSON();
- 	        var con = JSON.stringify(frm);
- 	        con = con.replace(/[{}]/g, "");
- 	        //It will escape all the special characters
- 	        var jsonData = encodeURIComponent(con);
- 	        
- 	        var form = $('#project_payable_invoice_form')[0];
- 	 	    var formData = new FormData(form); 
- 	 	    var sourceleadUrl ='${sourceleadUrl}';
-		    	        
+ 	 	    var formData = getFormData("project_payable_invoice_form");
 		        	  $("#invoiceLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-		    	        $.ajax({
-		    		    	 type: "POST",
-		    		    	 data: formData,
-		    			     contentType : 'application/json; charset=utf-8',
-		    			     enctype: 'multipart/form-data',
-		    		         processData: false,
-		    		         contentType:false,
-		    			     dataType : 'json',
-		     		    	url: sourceleadUrl+"/saveExpensesInvoice?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&userId="+userId+"&orgLocationId="+orgLocationId+"&saveType="+saveType+"&currencyCode="+currencyCode+"&invoiceType=payable&type=expenses",
-		    		        success: function(result) {
-		    		     		$("#invoiceLoading").removeAttr("style");
-		    		     			location.replace(sourceleadUrl+"/payablesList");
-		    		     		
-		    		        },
-		    		    }); 
+		        	  $.post(sourceleadUrl+"/saveExpensesInvoice?"+tokenParamName+"="+tokenValue+"&userId="+userId+"&orgLocationId="+orgLocationId+"&saveType="+saveType+"&currencyCode="+currencyCode+"&invoiceType=payable&type=expenses", formData, function(data) {
+			  				if(data == "success"){
+			  					$("#invoiceLoading").removeAttr("style");
+	    		     			location.replace(sourceleadUrl+"/payablesList");
+			  				}
+			  			   }); 
 		    	         return true; 
          }else{
 	    		return false;
@@ -1179,11 +808,10 @@ function toDate(selector) {
 <!-- To Get the Existed invoice details to Edit -->
 <script>
 	function loadInvoiceDetails(invoiceUUID){
-		 var sourceleadUrl ='${sourceleadUrl}';
 		 
 		 $.ajax({
 		    	type: "POST",
-		    	 url: sourceleadUrl+"/getInvoiceDetailsByInvoiceUUID?${_csrf.parameterName}=${_csrf.token}&invoiceUUID="+invoiceUUID, 
+		    	 url: sourceleadUrl+"/getInvoiceDetailsByInvoiceUUID?"+tokenParamName+"="+tokenValue+"&invoiceUUID="+invoiceUUID, 
 		         success: function(data) {
 		        	 var json = JSON.parse(data);
 		        	 var result = '';
@@ -1271,11 +899,10 @@ $(document).ready(function(){
 
 <script>
 function getVendors(){
-	var sourceleadUrl ='${sourceleadUrl}';
 	var orgRelationId ='${orgRelationId}';
 	$.ajax({
 		type : "GET",
-		url: sourceleadUrl+"/getPayableVendorsList?${_csrf.parameterName}=${_csrf.token}",
+		url: sourceleadUrl+"/getPayableVendorsList?"+tokenParamName+"="+tokenValue+"",
 		success :function(data) {
 		var json = JSON.parse(data);
 		var output = "";
@@ -1289,6 +916,7 @@ function getVendors(){
 		}else{
 			output = output + "<option value='" +opt.id+ "'>"+opt.orgName+"</option>";
 		}
+		$("#vendorCurrency").val(opt.clientCurrency);
 		}
 		$("#vendorOrgRelationId").empty();
 		$("#vendorOrgRelationId").append(output);
@@ -1296,7 +924,6 @@ function getVendors(){
 		
 		if(orgRelationId != null && orgRelationId != '' && orgRelationId != 'undefined'){
 			getVendorContacts();
-// 			flushValues();
 			getPaymentTerms();
 		}
 	},
@@ -1316,7 +943,7 @@ function getVendors(){
 					var maxRowNum = parseInt($("input[name = 'maxTaxRowNum']").val());
 					$("input[name = 'maxTaxRowNum']").val(maxRowNum + 1);
 					
-					var row = tbl.insertRow(maxRowNum);
+					var row = tbl.insertRow(maxRowNum+1);
 					row.setAttribute("id", "divTaxRow" + maxRowNum);
 					
 					var cell0 = row.insertCell(0);
@@ -1359,7 +986,6 @@ function getVendors(){
 <script>
 	function getSavedAttachments(invoiceDocumentsList){
 		var result = '';
-		var sourceleadUrl = '${sourceleadUrl}';
 		if(invoiceDocumentsList.length > 0){
 			
 			 for (var i = 0; i < invoiceDocumentsList.length; i++) { 
@@ -1397,10 +1023,9 @@ function getVendors(){
 	function deleteInvoiceDocument(documentId){
 		
 		if(documentId){
-			var sourceleadUrl = '${sourceleadUrl}';
 			$.ajax({
 		    	type: "POST",
-		    	 url: sourceleadUrl+"/deleteInvoiceDocumentBydocumentId?${_csrf.parameterName}=${_csrf.token}&documentId="+documentId, 
+		    	 url: sourceleadUrl+"/deleteInvoiceDocumentBydocumentId?"+tokenParamName+"="+tokenValue+"&documentId="+documentId, 
 		         success: function(data) {
 		        	 document.getElementById("invoiceDocument"+documentId).remove();
 		        	 $("#lineItemPopUp").empty();
@@ -1435,7 +1060,7 @@ function cancel(){
 function addTaxDivs(){
 	var result = "";
 	result = result +'  <div class="addtax_table">';
-    result = result +'  <input type="hidden" id="maxTaxRowNum" name="maxTaxRowNum" value="1" />';
+    result = result +'  <input type="hidden" id="maxTaxRowNum" name="maxTaxRowNum" value="0" />';
     result = result +'  <table width="100%" cellpadding="0" cellspacing="0" class="table-bordered table-striped table-responsive">';
     result = result +'  <thead id="addTaxTbl">';
     result = result +'  <tr>';
@@ -1460,10 +1085,9 @@ function addTaxDivs(){
 <script> 
 function getPaymentTerms(){
 	var orgRelationId = $("#vendorOrgRelationId").val();
-	var sourceleadUrl ='${sourceleadUrl}';
 	$.ajax({
 		type : "GET",
-		url: sourceleadUrl+"/getPaymentTermsAndBillindAddress?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+orgRelationId,
+		url: sourceleadUrl+"/getPaymentTermsAndBillindAddress?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId,
 		success :function(data) {
 			 var json = JSON.parse(data);
 			 for (var i=0; i<json.length; i++)
@@ -1495,12 +1119,11 @@ function getDueDateByFrequency(){
 	 var paymentFrequency = document.getElementById("paymentFrequency").value;
 	 var locationCode ='${SourceLeadWeb_locationCode}';
 	 if(paymentFrequency && invoiceDate){
-	    var sourceleadUrl ='${sourceleadUrl}';
 	    $("#invoiceLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	    
 	    $.ajax({
 			type : "GET",
-			url: sourceleadUrl+"/getDueDateByFrequency?${_csrf.parameterName}=${_csrf.token}&paymentFrequency="+paymentFrequency+"&invoiceDate="+invoiceDate+"&locationCode="+locationCode,
+			url: sourceleadUrl+"/getDueDateByFrequency?"+tokenParamName+"="+tokenValue+"&paymentFrequency="+paymentFrequency+"&invoiceDate="+invoiceDate+"&locationCode="+locationCode,
 			success :function(dueDateStr) {
 				
 				$("#dueDate").val(dueDateStr);
@@ -1545,10 +1168,9 @@ function errInvoiceDate(){
 <script>
 function getVendorContacts(vendorContactId){
 	var orgRelationId = $("#vendorOrgRelationId").val();
-	var sourceleadUrl ='${sourceleadUrl}';
 	$.ajax({
 		type : "GET",
-		url: sourceleadUrl+"/getPayableVendorContactsByOrgRelationId?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+orgRelationId,
+		url: sourceleadUrl+"/getPayableVendorContactsByOrgRelationId?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId,
 		success :function(data) {
 		var json = JSON.parse(data);
 		var output = "";
@@ -1569,6 +1191,7 @@ function getVendorContacts(vendorContactId){
 		$('#vendorContact').trigger("chosen:updated");
 	},
 	});
+	addConversionDiv();
 	getProjectsList();
 	}
 </script>
@@ -1577,25 +1200,25 @@ function getVendorContacts(vendorContactId){
 
 <div id="divInvoiceExpTd1" style="display: none; float: left;">
 	<div class="tbldata-dotdot-big">        
-	 <textarea placeholder="Description" class="form-control" rows="1" name="REPLACEROWIDdescription" id='REPLACEROWIDdescription'></textarea>     
+	 <textarea placeholder="Description" class="form-control" rows="1" name="expenseInvoice[REPLACEROWID].description" id='REPLACEROWIDdescription'></textarea>     
 	</div>
 </div>
 
 <div id="divInvoiceExpTd2" style="display: none; float: left;">
 	<div class="tbldata-dotdot-100">     
-	   <input type="text" class="form-control input-sm valid" placeholder="Quantity" name="REPLACEROWIDquantity" id='REPLACEROWIDquantity' onblur="totalHoursCalculateAmount(REPLACEROWID);">  
+	   <input type="text" class="form-control input-sm valid" placeholder="Quantity" name="expenseInvoice[REPLACEROWID].quantity" id='REPLACEROWIDquantity' onblur="totalHoursCalculateAmount(REPLACEROWID);">  
 	 </div>
 </div>
 
 <div id="divInvoiceExpTd3" style="display: none; float: left;">
 	<div class="tbldata-dotdot-100">     
-	   <input type="text" class="form-control input-sm valid" placeholder="Rate" name="REPLACEROWIDrate" id='REPLACEROWIDrate' onblur="totalHoursCalculateAmount(REPLACEROWID);">  
+	   <input type="text" class="form-control input-sm valid" placeholder="Rate" name="expenseInvoice[REPLACEROWID].rate" id='REPLACEROWIDrate' onblur="totalHoursCalculateAmount(REPLACEROWID);">  
 	 </div>
 </div>
 
 <div id="divInvoiceExpTd4" style="display: none; float: left;">
 	<div class="tbldata-dotdot-vsm">  
-	     <input type="text" class="form-control input-sm valid" placeholder="Total" name="REPLACEROWIDtotal" id='REPLACEROWIDtotal'>   
+	     <input type="text" class="form-control input-sm valid" placeholder="Total" name="expenseInvoice[REPLACEROWID].total" id='REPLACEROWIDtotal'>   
      </div>
 </div>
 
@@ -1616,7 +1239,7 @@ function getVendorContacts(vendorContactId){
 				var text = "";
 				var cell0 = row.insertCell(0);
 				text = text+"<div class='tbldata-dotdot-100'> ";
-				text = text+"<input type='text' class='calendar form-control input-sm valid' id='"+maxRowNum+"edate'  name='"+maxRowNum+"edate'  placeholder='Date'>";   
+				text = text+"<input type='text' class='calendar form-control input-sm valid' id='"+maxRowNum+"edate'  name='expenseInvoice["+maxRowNum+"].edate'  placeholder='Date'>";   
 				text = text+"</div>";
 				cell0.innerHTML = text;
 				
@@ -1790,21 +1413,21 @@ function populateExpensesDetailsGrid(data){
          		      result = result +'   <td>';
          		      result = result +'     <div class="tbldata-dotdot-100">';
          		      if(opt.date !=null && opt.date != ''){
-         		    	  result = result +'       <input type="text" class="form-control input-sm inpTextFil" value="'+opt.date+'" id="'+i+'edate" name="'+i+'edate" placeholder="S.No">';	  
+         		    	  result = result +'       <input type="text" class="form-control input-sm inpTextFil" value="'+opt.date+'" id="'+i+'edate" name="expenseInvoice['+i+'].edate" placeholder="S.No">';	  
          		      }
          		      result = result +'     </div>';
          		      result = result +'   </td>';
          		      result = result +'   <td>';
          		      result = result +'     <div class="tbldata-dotdot-100">';
          		      if(opt.category !=null && opt.category != ''){
-         		    	  result = result +'       <input type="text" class="form-control input-sm inpTextFil" value="'+opt.category+'" id="'+i+'category" name="'+i+'category" placeholder="S.No">';	  
+         		    	  result = result +'       <input type="text" class="form-control input-sm inpTextFil" value="'+opt.category+'" id="'+i+'category" name="expenseInvoice['+i+'].category" placeholder="S.No">';	  
          		      }
          		      result = result +'     </div>';
          		      result = result +'   </td>';
          		      result = result +'   <td>';
          		      result = result +'     <div class="tbldata-dotdot-100">';
          		      if(opt.description !=null && opt.description != ''){
-         		    	  result = result +'       <input type="text" class="form-control input-sm inpTextFil" value="'+opt.description+'" id="'+i+'description" name="'+i+'description" placeholder="S.No">';	  
+         		    	  result = result +'       <input type="text" class="form-control input-sm inpTextFil" value="'+opt.description+'" id="'+i+'description" name="expenseInvoice['+i+'].description" placeholder="S.No">';	  
          		      }
          		      result = result +'     </div>';
          		      result = result +'   </td>';
@@ -1812,7 +1435,7 @@ function populateExpensesDetailsGrid(data){
          		      result = result +'   <td>';
          		      result = result +'     <div class="tbldata-dotdot-100">';
          		      if(opt.amount !=null && opt.amount != ''){
-         		    	  result = result +'       <input type="text" class="form-control input-sm inpTextFil" value="'+opt.amount+'" id="'+i+'total" name="'+i+'total" placeholder="S.No">';	  
+         		    	  result = result +'       <input type="text" class="form-control input-sm inpTextFil" value="'+opt.amount+'" id="'+i+'total" name="expenseInvoice['+i+'].total" placeholder="S.No">';	  
          		      }
          		      result = result +'     </div>';
          		      result = result +'   </td>';
@@ -1851,10 +1474,9 @@ function getExpenses(projectMemberId,expensesFrequency){
 	if(projectMemberId !=null && projectMemberId !='undefined' && expensesFrequency !=null && expensesFrequency !='undefined'){
 		memberId = projectMemberId
 	}
-	var sourceleadUrl ='${sourceleadUrl}';
 	$.ajax({
 		type : "GET",
-		url: sourceleadUrl+"/getExpensesByProjectMemberId?${_csrf.parameterName}=${_csrf.token}&memberId="+memberId+"&invoiceType=payable",
+		url: sourceleadUrl+"/getExpensesByProjectMemberId?"+tokenParamName+"="+tokenValue+"&memberId="+memberId+"&invoiceType=payable",
 		success :function(data) {
 			var output = "";
 			output = output + "<option value=''>--Select Expenses--</option>";
@@ -1884,10 +1506,9 @@ function getExpensesDetails(expId){
 	if(expId !=null && expId !='undefined'){
 		expensesId = expId
 	}
-	var sourceleadUrl ='${sourceleadUrl}';
 	$.ajax({
 		type : "GET",
-		url: sourceleadUrl+"/getExpensesEntries?${_csrf.parameterName}=${_csrf.token}&expensesId="+expensesId,
+		url: sourceleadUrl+"/getExpensesEntries?"+tokenParamName+"="+tokenValue+"&expensesId="+expensesId,
 		success :function(data) {
 			populateExpensesEntriesGrid(data);
 		},
@@ -1916,7 +1537,6 @@ function populateExpensesEntriesGrid(data){
             result = result +' <tbody>';
             if(data !=null && data !=''){
             	 for(var i=0;i < data.length;i++){
-                 	/* S.no. Date, category, description , amount  */
                  	  var opt = data[i];
                  	  subTotal = opt.subTotal;
                  	  result = result +'   <tr>';
@@ -1927,21 +1547,21 @@ function populateExpensesEntriesGrid(data){
          		      result = result +'   <td>';
          		      result = result +'     <div class="tbldata-dotdot-100">';
          		      if(opt.date !=null && opt.date != ''){
-         		    	  result = result +'       <input type="text" class="form-control input-sm inpTextFil" value="'+opt.date+'" id="'+i+'edate" name="'+i+'edate" placeholder="S.No">';	  
+         		    	  result = result +'       <input type="text" class="form-control input-sm inpTextFil" value="'+opt.date+'" id="'+i+'edate" name="expenseInvoice['+i+'].edate" placeholder="S.No">';	  
          		      }
          		      result = result +'     </div>';
          		      result = result +'   </td>';
          		      result = result +'   <td>';
          		      result = result +'     <div class="tbldata-dotdot-100">';
          		      if(opt.category !=null && opt.category != ''){
-         		    	  result = result +'       <input type="text" class="form-control input-sm inpTextFil" value="'+opt.category+'" id="'+i+'category" name="'+i+'category" placeholder="S.No">';	  
+         		    	  result = result +'       <input type="text" class="form-control input-sm inpTextFil" value="'+opt.category+'" id="'+i+'category" name="expenseInvoice['+i+'].category" placeholder="S.No">';	  
          		      }
          		      result = result +'     </div>';
          		      result = result +'   </td>';
          		      result = result +'   <td>';
          		      result = result +'     <div class="tbldata-dotdot-100">';
          		      if(opt.description !=null && opt.description != ''){
-         		    	  result = result +'       <input type="text" class="form-control input-sm inpTextFil" value="'+opt.description+'" id="'+i+'description" name="'+i+'description" placeholder="S.No">';	  
+         		    	  result = result +'       <input type="text" class="form-control input-sm inpTextFil" value="'+opt.description+'" id="'+i+'description" name="expenseInvoice['+i+'].description" placeholder="S.No">';	  
          		      }
          		      result = result +'     </div>';
          		      result = result +'   </td>';
@@ -1949,7 +1569,7 @@ function populateExpensesEntriesGrid(data){
          		      result = result +'   <td>';
          		      result = result +'     <div class="tbldata-dotdot-100">';
          		      if(opt.amount !=null && opt.amount != ''){
-         		    	  result = result +'       <input type="text" class="form-control input-sm inpTextFil" value="'+opt.amount+'" id="'+i+'total" name="'+i+'total" placeholder="S.No">';	  
+         		    	  result = result +'       <input type="text" class="form-control input-sm inpTextFil" value="'+opt.amount+'" id="'+i+'total" name="expenseInvoice['+i+'].total" placeholder="S.No">';	  
          		      }
          		      result = result +'     </div>';
          		      result = result +'   </td>';
@@ -2012,7 +1632,7 @@ function editExpensesInlineItems(invoiceLineItemsList){
 			var text = "";
 			var cell0 = row.insertCell(0);
 			text = text+"<div  class='inputCustom'>";
-			text = text+"<input type='text' class='calendar form-control input-sm valid' id='"+maxRowNum+"edate'  name='"+maxRowNum+"edate'  placeholder='Date'>";   
+			text = text+"<input type='text' class='calendar form-control input-sm valid' id='"+maxRowNum+"edate'  name='expenseInvoice["+maxRowNum+"].edate'  placeholder='Date'>";   
 			text = text+'</div>';
 			cell0.innerHTML = text;
 			
@@ -2119,28 +1739,28 @@ function editExpensesDetailsEdit(data){
          		      result = result +'   <td>';
          		      result = result +'     <div class="tbldata-dotdot-100">';
          		      if(opt.startDateStr !=null && opt.startDateStr != ''){
-         		    	  result = result +'       <input type="text" class="form-control input-sm inpTextFil" value="'+opt.startDateStr+'" id="'+i+'edate" name="'+i+'edate" placeholder="S.No">';	  
+         		    	  result = result +'       <input type="text" class="form-control input-sm inpTextFil" value="'+opt.startDateStr+'" id="'+i+'edate" name="expenseInvoice['+i+'].edate" placeholder="S.No">';	  
          		      }
          		      result = result +'     </div>';
          		      result = result +'   </td>';
          		      result = result +'   <td>';
          		      result = result +'     <div class="tbldata-dotdot-100">';
          		      if(opt.expenseCategory !=null && opt.expenseCategory != ''){
-         		    	  result = result +'       <input type="text" class="form-control input-sm inpTextFil" value="'+opt.expenseCategory+'" id="'+i+'category" name="'+i+'category" placeholder="S.No">';	  
+         		    	  result = result +'       <input type="text" class="form-control input-sm inpTextFil" value="'+opt.expenseCategory+'" id="'+i+'category" name="expenseInvoice['+i+'].category" placeholder="S.No">';	  
          		      }
          		      result = result +'     </div>';
          		      result = result +'   </td>';
          		      result = result +'   <td>';
          		      result = result +'     <div class="tbldata-dotdot-100">';
          		      if(opt.inlineDescription !=null && opt.inlineDescription != ''){
-         		    	  result = result +'       <input type="text" class="form-control input-sm inpTextFil" value="'+opt.inlineDescription+'" id="'+i+'description" name="'+i+'description" placeholder="S.No">';	  
+         		    	  result = result +'       <input type="text" class="form-control input-sm inpTextFil" value="'+opt.inlineDescription+'" id="'+i+'description" name="expenseInvoice['+i+'].description" placeholder="S.No">';	  
          		      }
          		      result = result +'     </div>';
          		      result = result +'   </td>';
          		      result = result +'   <td>';
          		      result = result +'     <div class="tbldata-dotdot-100">';
          		      if(opt.amount !=null && opt.amount != ''){
-         		    	  result = result +'       <input type="text" class="form-control input-sm inpTextFil" value="'+opt.amount+'" id="'+i+'total" name="'+i+'total" placeholder="S.No">';	  
+         		    	  result = result +'       <input type="text" class="form-control input-sm inpTextFil" value="'+opt.amount+'" id="'+i+'total" name="expenseInvoice['+i+'].total" placeholder="S.No">';	  
          		      }
          		      result = result +'     </div>';
          		      result = result +'   </td>';
@@ -2169,6 +1789,12 @@ function editExpensesDetailsEdit(data){
         document.getElementById("tableBody").style.display="block";
         addTaxDivs();   
         addConversionDiv();
+}
+</script>
+
+<script type="text/javascript">
+function attachFile(id){
+	fileUpload(""+id+"invoicedocFile", "invoiceDocuments", "project_payable_invoice_form","fileInfo");
 }
 </script>
 

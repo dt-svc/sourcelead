@@ -34,7 +34,7 @@ padding-left: 25px;
       <div class="pull-left">
           <h2 id="candidateName"></h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>  &raquo; <a href="<c:url value='/candidateOnBoardingList'/>">Onboard & Offboard List</a> &raquo; Candidate Offboarding Summary </div>
+      <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>  &raquo; <a href="<c:url value='/candidateOnBoardingList'/>">Candidate Offboarding Summary</a> &raquo; Candidate Offboarding Summary </div>
     </section>
     <div class="content-area content-new clearfix">
       <div class="applicant_accept">
@@ -181,13 +181,14 @@ padding-left: 25px;
 				 result = result +'       </div>';
 				 result = result +'     </div>';
 				 
-				 
+				 if(json.employmentType != null && json.employmentType != '' && json.employmentType != 'undefined'){
 				 result = result +'     <div class="form-group">';
 				 result = result +'       <label class="col-md-3 control-label">Employment Type</label> ';
 				 result = result +'       <div class="col-md-6">';
 				 result = result +'           <label>'+json.employmentType+'</label>';
 				 result = result +'       </div>';
 				 result = result +'     </div>';
+				 }
 				 
 				 result = result +'     <div class="form-group">';
 				 result = result +'       <label class="col-md-3 control-label">End Date</label> ';

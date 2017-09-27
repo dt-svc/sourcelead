@@ -1,8 +1,7 @@
 <jsp:include page="../masterHeader.jsp" />
 <jsp:include page="../masterSideNav.jsp" />
-<%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
-<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+ <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
+ <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
  <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
  <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
  <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
@@ -562,11 +561,10 @@ function getDayWiseReports(){
 	var reportType = $("#reportTypeId").val();
 	var startDate = $("#ExportStartDate").val();
 	var endDate = $("#ExportEndDate").val();
-	var sourceleadUrl ='${sourceleadUrl}';
 	if(reportType!="custom"){
 	$.ajax({
          type : "POST",
-         url: sourceleadUrl+"/getAllSubmittedApplicantsForReports?${_csrf.parameterName}=${_csrf.token}&reportType="+reportType+"&startDate="+startDate+"&endDate="+endDate+"&jsonData="+jsonData,     
+         url: sourceleadUrl+"/getAllSubmittedApplicantsForReports?"+tokenParamName+"="+tokenValue+"&reportType="+reportType+"&startDate="+startDate+"&endDate="+endDate+"&jsonData="+jsonData,     
           success :function(data) {
         	 prepareReportDataDiv(data);
         	 var json = JSON.parse(data);
@@ -583,10 +581,9 @@ function getDayWiseReports(){
 <script>
 function getAllCounts(jsonData,reportType,startDate,endDate){
 	// $('#applicantsli').load(allReceivedApplicantsCount(applicantConts)); 
-	var sourceleadUrl = '${sourceleadUrl}';
 	 $.ajax({
       type : "POST",
-      url: sourceleadUrl+"/getSubmittedApplicantsCountForReports?${_csrf.parameterName}=${_csrf.token}&reportType="+reportType+"&startDate="+startDate+"&endDate="+endDate+"&jsonData="+jsonData,  
+      url: sourceleadUrl+"/getSubmittedApplicantsCountForReports?"+tokenParamName+"="+tokenValue+"&reportType="+reportType+"&startDate="+startDate+"&endDate="+endDate+"&jsonData="+jsonData,  
       //url: sourceleadUrl+"/getReceivedApplicantsCountForReports?${_csrf.parameterName}=${_csrf.token}",        
        success :function(data) { 
       	 var json = JSON.parse(data);
@@ -626,7 +623,6 @@ function getCustomReports(){
 	var reportType = $("#reportTypeId").val();
 	var startDate = $("#ExportStartDate").val();
 	var endDate = $("#ExportEndDate").val();
-	var sourceleadUrl ='${sourceleadUrl}';
 	if(startDate == null || startDate == '' || startDate == 'undefined'){
 		$("#reportStartDate").empty().append("Start Date is Required") ; 
 	}
@@ -637,7 +633,7 @@ function getCustomReports(){
 		$.ajax({
 	         type : "POST",
 	         /*  url: sourceleadUrl+"/getRequirementReports?${_csrf.parameterName}=${_csrf.token}&reportType="+reportType+"&startDate="+startDate+"&endDate="+endDate, */  
-	          url: sourceleadUrl+"/getAllSubmittedApplicantsForReports?${_csrf.parameterName}=${_csrf.token}&reportType="+reportType+"&startDate="+startDate+"&endDate="+endDate,
+	          url: sourceleadUrl+"/getAllSubmittedApplicantsForReports?"+tokenParamName+"="+tokenValue+"&reportType="+reportType+"&startDate="+startDate+"&endDate="+endDate,
 	          success :function(data) {
 	        	 prepareReportDataDiv(data);
 	        	 var json = JSON.parse(data);

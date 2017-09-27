@@ -155,7 +155,6 @@ margin-top: 3px;
 
 <script type="text/javascript">
 function getExpensesApprovalDataList(){
-var sourceleadUrl = '${sourceleadUrl}';
 var startDate = $("#filterStartDate").val();
 var endDate = $("#filterEndDate").val();
 var expenseStatus = [];
@@ -182,7 +181,7 @@ if(locationList.match("yyyy-MM-dd")){
 
 $.ajax({
     type : "POST",
-     url: sourceleadUrl+"/getExpensesApprovalList?${_csrf.parameterName}=${_csrf.token}&expenseStatus="+expenseStatus+"&startDate="+startDate+"&endDate="+endDate,      
+     url: sourceleadUrl+"/getExpensesApprovalList?"+tokenParamName+"="+tokenValue+"&expenseStatus="+expenseStatus+"&startDate="+startDate+"&endDate="+endDate,      
      success :function(data) {
     var result = "";
     
@@ -313,7 +312,6 @@ function acceptOrRejectReopenExpenseBySuperUser(expenseId,tdSpanSize,from){
 			 cancelRejectExpense(expenseId);
 			 var encodeMsg = encodeURIComponent(msg);
 			 $("#rejectReasonDiv").empty();
-			 var sourceleadUrl ='${sourceleadUrl}';
 		     var rowHtmlContent =  $("#row"+expenseId).html();
 		     
 		     var firstName =  '${SourceLeadWeb_user.firstName}';
@@ -329,7 +327,7 @@ function acceptOrRejectReopenExpenseBySuperUser(expenseId,tdSpanSize,from){
 		     $("#loading"+expenseId).attr('style',' height:40px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/linear-loader.gif"); background-position:center; background-repeat:no-repeat;'); 
 		    $.ajax({
 		    type: "POST",
-		    url: sourceleadUrl+"/saveExpenseApprovalStatusByExpenseId?${_csrf.parameterName}=${_csrf.token}&expenseId="+expenseId+"&approvalStatus=REJECTED"+"&rejectedReason="+encodeMsg,       
+		    url: sourceleadUrl+"/saveExpenseApprovalStatusByExpenseId?"+tokenParamName+"="+tokenValue+"&expenseId="+expenseId+"&approvalStatus=REJECTED"+"&rejectedReason="+encodeMsg,       
 		    success: function(data) {    
 		   	   // approvalList();
 		       if(from != null && from != '' && from != 'undefined' && from == 'dashboard'){
@@ -423,10 +421,9 @@ function acceptOrRejectReopenExpenseBySuperUser(expenseId,tdSpanSize,from){
 		$("#row"+expenseId).html("<td colspan='"+tdSpanSize+"'  id='loading"+expenseId+"'></td>");
 	    $("#loading"+expenseId).attr('style',' height:40px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/linear-loader.gif"); background-position:center; background-repeat:no-repeat; '); 
 	    var rejectedReason = '' ;
-        var sourceleadUrl ='${sourceleadUrl}';
 	     $.ajax({
 	    type: "POST",
-	    url: sourceleadUrl+"/saveExpenseApprovalStatusByExpenseId?${_csrf.parameterName}=${_csrf.token}&expenseId="+expenseId+"&approvalStatus=APPROVED&rejectedReason="+rejectedReason,        
+	    url: sourceleadUrl+"/saveExpenseApprovalStatusByExpenseId?"+tokenParamName+"="+tokenValue+"&expenseId="+expenseId+"&approvalStatus=APPROVED&rejectedReason="+rejectedReason,        
 		    success: function(data) {
 	        	 if(from != null && from != '' && from != 'undefined' && from == 'dashboard'){
 			    	 var table = $('#example').DataTable();
@@ -446,11 +443,10 @@ function acceptOrRejectReopenExpenseBySuperUser(expenseId,tdSpanSize,from){
     
 <script>
 function prepareCategoryDivForApprovalPopUp(expenseId){
-	 var sourceleadUrl = '${sourceleadUrl}';
 	    var locationCode ='${SourceLeadWeb_locationCode}'; 
 	 $.ajax({
          type : "POST",
-         url: sourceleadUrl+"/getExpensesApprovalCategoryByExpenseId?${_csrf.parameterName}=${_csrf.token}&expenseId="+expenseId+"&locationCode="+locationCode,       
+         url: sourceleadUrl+"/getExpensesApprovalCategoryByExpenseId?"+tokenParamName+"="+tokenValue+"&expenseId="+expenseId+"&locationCode="+locationCode,       
          success :function(data) {
         		var jsonList = JSON.parse(data);
         		var result = '';
@@ -592,7 +588,6 @@ function pagination(){
 function exportToPdf(type){
 	var temp = $("#temp").val();
 	if(temp != null && temp != ''){
-		var sourceleadUrl = '${sourceleadUrl}';
 		var expenseStatus = [];
 		$('input:checkbox[name=expenseStatus]:checked').each(function() 
 		{

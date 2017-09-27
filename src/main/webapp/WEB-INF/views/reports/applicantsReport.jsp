@@ -2,7 +2,6 @@
 <jsp:include page="../masterSideNav.jsp" />
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
  <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
  <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
  <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
@@ -562,14 +561,13 @@ function getDayWiseReports(){
 	var reportType = $("#reportTypeId").val();
 	var startDate = $("#ApplicantStartDate").val();
 	var endDate = $("#ApplicantEndDate").val();
-	var sourceleadUrl ='${sourceleadUrl}';
 	/* if(reportType=="custom"){
 		getCustomReports();
 	} */
 	if(reportType!="custom"){
 	$.ajax({
          type : "POST",
-         url: sourceleadUrl+"/getApplicantsReport?${_csrf.parameterName}=${_csrf.token}&reportType="+reportType+"&startDate="+startDate+"&endDate="+endDate,     
+         url: sourceleadUrl+"/getApplicantsReport?"+tokenParamName+"="+tokenValue+"&reportType="+reportType+"&startDate="+startDate+"&endDate="+endDate,     
           success :function(data) {
         	  prepareReportDataDiv(data);
         	 getAllCounts(reportType,startDate,endDate);
@@ -591,10 +589,9 @@ function getAllCounts(reportType,startDate,endDate){
 
 <script>
 function allApplicantsCount(reportType,startDate,endDate){
-	var sourceleadUrl = '${sourceleadUrl}';
 	 $.ajax({
        type : "POST",
-        url: sourceleadUrl+"/getApplicantsTotalCounts?${_csrf.parameterName}=${_csrf.token}&reportType="+reportType+"&startDate="+startDate+"&endDate="+endDate,        
+        url: sourceleadUrl+"/getApplicantsTotalCounts?"+tokenParamName+"="+tokenValue+"&reportType="+reportType+"&startDate="+startDate+"&endDate="+endDate,        
         success :function(data) { 
        	 var json = JSON.parse(data);
        	if($(".oneA" ).hasClass( "actRE" )){
@@ -635,7 +632,6 @@ function getCustomReports(){
 	var reportType = $("#reportTypeId").val();
 	var startDate = $("#ApplicantStartDate").val();
 	var endDate = $("#ApplicantEndDate").val();
-	var sourceleadUrl ='${sourceleadUrl}';
 	if(startDate == null || startDate == '' || startDate == 'undefined'){
 		$("#ApplicantReportStartDate").empty().append("Start Date is Required") ; 
 	}
@@ -646,7 +642,7 @@ function getCustomReports(){
 		$.ajax({
 	         type : "POST",
 	         /*  url: sourceleadUrl+"/getRequirementReports?${_csrf.parameterName}=${_csrf.token}&reportType="+reportType+"&startDate="+startDate+"&endDate="+endDate, */  
-	          url: sourceleadUrl+"/getApplicantsReport?${_csrf.parameterName}=${_csrf.token}&reportType="+reportType+"&startDate="+startDate+"&endDate="+endDate,
+	          url: sourceleadUrl+"/getApplicantsReport?"+tokenParamName+"="+tokenValue+"&reportType="+reportType+"&startDate="+startDate+"&endDate="+endDate,
 	          success :function(data) {
 	        	 prepareReportDataDiv(data);
 	        	 getAllCounts(reportType,startDate,endDate);
@@ -689,11 +685,11 @@ function getCustomReports(){
 	});		
 	</script>
 
-<script src="resources/reports/amcharts.js"></script>
-<script src="resources/reports/pie.js"></script>
-<script src="resources/reports/export.min.js"></script>
-<link rel="stylesheet" href="resources/reports/export.css" type="text/css" media="all" />
-<script src="resources/reports/light.js"></script>
+<script src="resources/reports/amcharts.js?staticTime=${staticTime}"></script>
+<script src="resources/reports/pie.js?staticTime=${staticTime}"></script>
+<script src="resources/reports/export.min.js?staticTime=${staticTime}"></script>
+<link rel="stylesheet" href="resources/reports/export.cs?staticTime=${staticTime}s" type="text/css" media="all" />
+<script src="resources/reports/light.js?staticTime=${staticTime}"></script>
   
      <script>
      function getApplicantBarChat(applicantsCount,shortlisted,interviewCount,submitToClientCount,offeredCount,rejectedCount,requestSentCount,backoutCount){

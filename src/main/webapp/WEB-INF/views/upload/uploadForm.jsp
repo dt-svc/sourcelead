@@ -3,7 +3,6 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
-<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 <style type="text/css">
 .center-div{
@@ -82,7 +81,7 @@ margin:10px 220px 0;
 			 <span class="pull-left"><i class="fa fa-question" aria-hidden="true"></i></span>
 			  <span class="info-msg pull-left">
 			  <p>
-			  According this template, the Users need to <span class="text-danger"><strong>Import Required Fields</strong></span></p>
+			  According to this template, the Users need to <span class="text-danger"><strong>Import Required Fields</strong></span></p>
 			  </p>
 			  <p>
 			  <label><i class="fa fa-user"></i>&nbsp;&nbsp;First Name</label>
@@ -91,7 +90,7 @@ margin:10px 220px 0;
 			  </p>
 			  </span>
             </div>
-            <div class="panel-body checkbox div-checkbox">
+            <div class="mb10 checkBox">
 				  <label><input type="checkbox" checked="checked" value="checked" name="email"></label><span>Send Emails</span>
 		    </div>
           </div>

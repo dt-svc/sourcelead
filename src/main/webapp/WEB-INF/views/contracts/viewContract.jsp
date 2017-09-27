@@ -157,27 +157,31 @@ function addContractNotes(){
    	    output = output+'    <div class="commentsimg">';
    	    output = output+'    <i class="fa fa-comments"></i>';
    	    output = output+'        <div class="commentsimg-inner">';
-   	    output = output+'        	<img onerror="predefineProfileImage(this);" src="'+sourceleadUrl+'/displayUserImage/'+report.commentAuthorUserId+'"/>';
+   	    if(report.commentAuthorImage != null && report.commentAuthorImage != '' && report.commentAuthorImage != 'undefined')
+   	    output = output+'        	<img data-id= "userProfileImage" onerror="predefineProfileImage(this);" src="'+report.commentAuthorImage+'"/>';
    	    output = output+'        </div>';
    	    output = output+'    </div>';
    	    output = output+'     <div class="comments-content comments-notes">';
    	    output = output+'         <div class="commentsNotes_inner">';
    	    output = output+'         <p class="comment-by">';
+   		if(report.userName != null && report.userName != '' && report.userName != 'undefined')
    	    output = output+'            By <span class="text-danger" title = "'+report.userName+'">'+report.userName+'</span>';
+   	    if(report.createdDateString != null && report.createdDateString != '' && report.createdDateString != 'undefined')
    	    output = output+'            <span class="small pull-right">'+report.createdDateString+'</span></p>';
+   	    if(report.comment != null && report.comment != '' && report.comment != 'undefined')
    	    output = output+'         <p class="comment_text pull-left">'+report.comment+'</p>';
    	    output = output+'         </div>';
    	    output = output+'     </div>';
    	    output = output+'</div>';
     	}
      }
+     output  = output + '              </div>';
+     output  = output + '        </div>';
 }else{
      var output ="";
     output = output+"   <div class='dataTables_empty'>"; 
 	 output = output+"  </div> ";
 }
-output  = output + '              </div>';
-output  = output + '        </div>';
 
 	$("#viewNotesDiv").empty(); 
     $("#viewNotesDiv").append(output);
@@ -190,32 +194,22 @@ output  = output + '        </div>';
 	function storeContractNotes(){
 		var contractUUID = getParameterByName('contractUUID');
 		if ($('#notes_Contracts').validate(false, validationSettings)){
-				var frm = $('#notes_Contracts').serializeFormJSON();
-				var conOne = JSON.stringify(frm);
-				var json_obj = JSON.parse(conOne);
-				json_obj['contractUUID'] = contractUUID;
-				var con = JSON.stringify(json_obj);
-				//con = con.replace(/[{}]/g, "");
+				//var frm = $('#notes_Contracts').serializeFormJSON();
 				var form = $('#notes_Contracts')[0];
 	      		var formData = new FormData(form);
-	      		formData.append("json",con);
-	      		
+	      		formData.append("contractUUID",contractUUID);
 	      		var userId = '${SourceLeadWeb_user.id}';
 	      		formData.append("userId",userId);
 	      	    var locationCode ='${SourceLeadWeb_locationCode}'; 
 	      	    formData.append("locationCode",locationCode);
 	      	    
 				var sourceleadUrl = '${sourceleadUrl}';
-		        var jsonData = encodeURIComponent(con);
 				$.ajax({
 						type : "POST",
 		        	    data: formData,
-		        	    contentType : 'application/json; charset=utf-8',
-		        	    enctype: 'multipart/form-data',
 		    	        processData: false,
 		    	        contentType:false,
-		        	    dataType : 'json',
-						url : sourceleadUrl+"/storeNotes?${_csrf.parameterName}=${_csrf.token}",
+						url : sourceleadUrl+"/storeNotes?${_csrf.parameterName}=${_csrf.token}&userId="+userId+"locationCode="+locationCode,
 						success : function(result) {
 							closeDocPopup();
 							addContractNotes();
@@ -355,18 +349,22 @@ function displyContract(stage){
 			}
 			
 			if(null != json.typeOfContract && (json.contractType.includes("SOW") || json.contractType =="Full time offer")){
+				if(null != json.requirementName && "" != json.requirementName && 'undefined' != json.requirementName){
 				result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
 				result = result +	'		<div class="col-md-4 col-sm-4">Requirement Title</div>';
 				result = result +	'		<div class="col-md-8 col-sm-8">: '+json.requirementName+'</div>';
 				result = result +	'	</div>';
 			}
+		}
 			
 			if(null != json.typeOfContract && (json.contractType.includes("SOW") || json.contractType =="Full time offer")){
+				if(null != json.applicantName && "" != json.applicantName && 'undefined' != json.applicantName){
 				result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
 				result = result +	'		<div class="col-md-4 col-sm-4">Applicant Name</div>';
 				result = result +	'		<div class="col-md-8 col-sm-8">: '+json.applicantName+'</div>';
 				result = result +	'	</div>';
 			}
+		}
 			
 			if(null != json.typeOfContract && json.contractType.includes("SOW")){
 				if(null != json.offerValue && "" != json.offerValue && 'undefined' != json.offerValue){
@@ -475,7 +473,7 @@ function displyContract(stage){
 			}
 					
 			
-		if(json.contractType != "Vendor NDA" && json.contractType != "Vendor NSA" && json.contractType!="Full time offer"){
+		if(json.contractType != "Vendor NDA" && json.contractType != "Client MSA" && json.contractType != "Vendor MSA" && json.contractType != "Vendor NSA" && json.contractType!="Full time offer"){
 			result = result +	'<h4>Billing Details</h4>';
 			
 			if(null != json.typeOfContract && json.contractType.includes("SOW")){

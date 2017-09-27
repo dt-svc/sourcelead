@@ -18,6 +18,9 @@ import org.springframework.test.context.web.WebAppConfiguration;
 
 import com.bis.sourcelead.SecurityConfig;
 import com.bis.sourcelead.WebAppConfig;
+import com.bis.sourcelead.dto.AddUserDTO;
+import com.bis.sourcelead.dto.CandidateDTO;
+import com.bis.sourcelead.dto.ClientDTO;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgSpoc;
@@ -101,6 +104,9 @@ public class OrgSpocServiceTest {
 	public void addVendorContacts() throws Exception{
 //		JSONObject jsonObj,User user,OrgLocations orgLocations, String orgRelationId, String clientLocationId
 		JSONObject jsonObj = new JSONObject();;
+		ClientDTO clientDTO = new ClientDTO();
+		AddUserDTO addUserDTO = new AddUserDTO();
+		CandidateDTO candidateDTO = new CandidateDTO(); 
 		User user = new User();;
 		OrgLocations orgLocations = new OrgLocations();
 		
@@ -109,7 +115,7 @@ public class OrgSpocServiceTest {
 		String responderType = "";
 		
 		
-		orgSpocService.addVendorContacts(jsonObj, user, orgLocations, orgRelationId, clientLocationId,responderType,new Org());
+		orgSpocService.addVendorContacts(clientDTO,addUserDTO,candidateDTO, user, orgLocations, orgRelationId, clientLocationId,responderType,new Org());
 	}
 	
 	@Test

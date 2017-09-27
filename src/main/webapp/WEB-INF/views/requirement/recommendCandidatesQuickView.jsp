@@ -11,11 +11,10 @@
 
 <script>
 function recomendcandidateQuickViewProfile(candidateId,recScore){
-	var sourceleadUrl = '${sourceleadUrl}';
 	  var skillsList = '${skillsList}'; 
 	  $.ajax({
         type : "POST",
-         url: sourceleadUrl+"/getCandidateById?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,        
+         url: sourceleadUrl+"/getCandidateById?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
          success :function(data) {  
         	 if(data != null && data != 'undefined' && data != ""){  
               	var json = JSON.parse(data);
@@ -38,6 +37,11 @@ function recomendcandidateQuickViewProfile(candidateId,recScore){
 	             			 	}else{
 	             			 		city = '';
 	             			 	}	
+	         			 	if(json.mobilePhone != null && json.mobilePhone != '' && json.mobilePhone != 'undefined'){
+	         			 		mobilePhone =json.mobilePhone;
+	             			 	}else{
+	             			 		mobilePhone = '';
+	             			 	}
 	         			 	
 	         			 	if(json.lastName != null && json.lastName != '' && json.lastName != 'undefined'){
 	         			 		lastName =json.lastName;
@@ -106,11 +110,14 @@ function recomendcandidateQuickViewProfile(candidateId,recScore){
 					}else{
 						result = result+'<p>---</p>';
 					}
-					
 					result = result+'                </div>                                                                                                                                        ';
-				
 					result = result+'                <div class="media-right positionRelative">                                                                                                                     ';
-					result = result+'<img  id="userImage" onerror="predefineProfileImage(this);" src="<c:url value="/displayCandidateImage/'+candidateId+'"/>" alt="Profile Image" class="media-object" style="width:65px">';
+					if(json.fileUrl != null && json.fileUrl != '' && json.fileUrl !='undefined'){ 
+					result = result+'<img  data-id="profileImage" id="userImage" onerror="predefineProfileImage(this);" src="'+json.fileUrl+'" alt="Profile Image" class="media-object" style="width:65px">';
+					}else{
+					result = result+'<img  data-id="profileImage" id="userImage" onerror="predefineProfileImage(this);" src="resources/images/userprofileImg.jpg" alt="Profile Image" class="media-object" style="width:65px">';
+	
+					}
 					if(recScore != null && recScore != '' && recScore != 'undefined'){
 						  if(recScore >=50){ 
 						 	 result = result +'                    <i class="valid-profile fa fa-check-square text-success ProImgPosit"></i>';        
@@ -139,7 +146,7 @@ function recomendcandidateQuickViewProfile(candidateId,recScore){
 					result = result+'                  <ul class="list-unstyled">                                                                                                                  ';
 					result = result+'                      <li><i class="fa fa fa-envelope paddingRight text-warning" title="Email"></i>'+json.email+'';
 					result = result+'                      </li>                                                                                                                                   ';
-					result = result+'                      <li><i class="fa fa-phone paddingRight text-warning" title="Mobile"></i>'+json.mobilePhone+'</li>                                              ';
+					result = result+'                      <li><i class="fa fa-phone paddingRight text-warning" title="Mobile"></i>'+mobilePhone+'</li>                                              ';
 					result = result+'                      <li><i class="fa fa-map-marker paddingRight text-warning" title="Location"></i>'+city+''+state+''+country+'</li>';
 					result = result+'                    <li><i class="fa fa-usd paddingRight text-warning" title="Rate"></i>'+expectedRate+' '+rateType+''+expectedRateCurrencey+'</li>';
 					result = result+'                  </ul>                                                                                                                                       ';
@@ -219,10 +226,9 @@ function recomendcandidateQuickViewProfile(candidateId,recScore){
 
 <script>
 	function recQvemployeeSubmission(candidateId) {
-		var sourceleadUrl = '${sourceleadUrl}';
 				$.ajax({
 					type : "POST",
-					url : sourceleadUrl	+ "/getCandidatesEmployersListByCandidateIdAndOrgLocationID?${_csrf.parameterName}=${_csrf.token}&candidateId=" + candidateId,
+					url : sourceleadUrl	+ "/getCandidatesEmployersListByCandidateIdAndOrgLocationID?"+tokenParamName+"="+tokenValue+"&candidateId=" + candidateId,
 					success : function(data) {
 						if (data != null && data != 'undefined' && data != "" && data != '[]') {
 								$("#qvemployeeSubmission").empty();
@@ -293,10 +299,9 @@ function recomendcandidateQuickViewProfile(candidateId,recScore){
 
 <script>
 function recQveducationSubmission(candidateId){
-	var sourceleadUrl ='${sourceleadUrl}';
 	 $.ajax({  
           type : "POST",
-          url: sourceleadUrl+"/getCandidateEducationListByCandidateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,        
+          url: sourceleadUrl+"/getCandidateEducationListByCandidateId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
           success :function(data) {
         	  if (data != null && data != 'undefined' && data != "" && data != '[]') {
 	                	 $("#qveducationSubmission").empty();
@@ -366,10 +371,9 @@ function recQveducationSubmission(candidateId){
 
 <script>
 function recQwikCertificates(candidateId){
-	var sourceleadUrl ='${sourceleadUrl}';
 	 $.ajax({  
           type : "POST",
-          url: sourceleadUrl+"/getCandidateCertificationListByCandidateIdAndOrgLocationID?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,        
+          url: sourceleadUrl+"/getCandidateCertificationListByCandidateIdAndOrgLocationID?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
           success :function(data) {
         	  if (data != null && data != 'undefined' && data != "" && data != '[]') {
 	                	 $("#qvcertificationSubmission").empty();

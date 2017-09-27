@@ -4,12 +4,21 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<jsp:include page="../masterHeader.jsp" />
+<%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+
+<c:if test="${staticTime == null || staticTime == 0 }">
+    <c:set var='staticTime' value="<%=new java.util.Date().getTime() %>" scope="application"></c:set>
+ </c:if>
+ 
 <title>Welcome to Source Lead :: Account List</title>
 <!-- Bootstrap -->
-<link href="resources/css/bootstrap.min.css" rel="stylesheet">
-<link href="resources/css/font-awesome.min.css" rel="stylesheet">
-<link href="resources/css/sourcelead-main.css" rel="stylesheet">
-<link href="resources/css/timesheet.css" rel="stylesheet">
+<link href="resources/css/bootstrap.min.css?staticTime=${staticTime}" rel="stylesheet">
+<link href="resources/css/font-awesome.min.css?staticTime=${staticTime}" rel="stylesheet">
+<link href="resources/css/sourcelead-main.css?staticTime=${staticTime}" rel="stylesheet">
+<link href="resources/css/timesheet.css?staticTime=${staticTime}" rel="stylesheet">
 <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
 <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
 <!--[if lt IE 9]>
@@ -20,10 +29,8 @@
 <script src="resources/js/jquery-1.11.1.min.js"></script>
 <script src="resources/js/bootstrap.min.js"></script> 
 </head>
-<%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
-<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
- <script src="resources/js/formvalidator.js"></script>
+
+ <script src="resources/js/formvalidator.js?staticTime=${staticTime}"></script>
  <script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
 <script>
 		$(document).ready(function() { 
@@ -34,6 +41,10 @@
 				$("#reject").removeAttr("style");
 			}
 		});
+</script>
+
+<script>
+  var sourceleadUrl = '${sourceleadUrl}';
 </script>
 
 <script type="text/javascript">
@@ -74,7 +85,7 @@ width: auto;
 		<div class="row">
 		
 		<c:choose>
-		    <c:when test="${isSubmittedForApproval eq 'submitted for approval'}">
+		    <c:when test="${isSubmittedForApproval eq 'submitted for approval' || isSubmittedForApproval eq 'rejected'}">
 		        <div id="accept" style="display:none">
 				          <div class="col-md-8 col-md-offset-2 inner-widget success-user">
 					          <i class="fa fa-check-circle fa-3x"></i>
@@ -95,7 +106,7 @@ width: auto;
 		</c:choose>
 		
 		<c:choose>
-		    <c:when test="${isSubmittedForApproval eq 'submitted for approval'}">
+		    <c:when test="${isSubmittedForApproval eq 'submitted for approval' || isSubmittedForApproval eq 'rejected'}">
 		        <div id="reject" style="display:none">
 		  			<form id="reject_form" name="reject_form" method="post" >
 					          <div class="col-md-8 col-md-offset-2 inner-widget reject-user">
@@ -149,17 +160,19 @@ width: auto;
 <script type="text/javascript">
 	function saveRejectedReason() {
 		if ($('#reject_form').validate(false, validationSettings)){
-			var sourceleadUrl = '${sourceleadUrl}';
 			var expenseId = '${expenseId}';
 			var reOpenedUserId = '${reOpenedUserId}';
 			var type = 'reject';
 			var reason = '${reason}';
+			var orgLocation = '${orgLocId}';
 			var frm = $('#reject_form').serializeFormJSON();
 			var con = JSON.stringify(frm);
+			var rejectReason = $('#rejectId').val();
 			con = con.replace(/[{}]/g, "");
+			
 			$.ajax({
 						type : "POST",
-						url : sourceleadUrl+"/acceptOrRejectReopenExpense?${_csrf.parameterName}=${_csrf.token}&type="+type+"&expenseId="+expenseId+"&reOpenedUserId="+reOpenedUserId+"&reason="+reason,
+						url : sourceleadUrl+"/acceptOrRejectReopenExpense?"+tokenParamName+"="+tokenValue+"&type="+type+"&expenseId="+expenseId+"&reOpenedUserId="+reOpenedUserId+"&reason="+reason+"&orgLocId="+orgLocation+"&rejectReason="+rejectReason,
 						success : function(data) {
 							if("success"){
 								$('#rejectIdDiv').empty();

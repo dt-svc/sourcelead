@@ -5,96 +5,19 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
-
-
-<jsp:include page="requirementDetails.jsp"></jsp:include>
-<jsp:include page="requirementClientDetails.jsp"></jsp:include>
-<jsp:include page="requirementInternalDetails.jsp"></jsp:include>
-
-<script src="resources/js/editor.js"></script>
-<link href="resources/css/editor.css" type="text/css" rel="stylesheet"/>
-		<script>
-			$(document).ready(function() {
-				$("#txtEditor").Editor();
-				    /* $("#closedDate").datepicker({
-			                minDate: 0
-			            });
-			        */
-			  
-			});
-       </script> 
-
-<style type="text/css">
-.modal-bodyCustom {
-margin-bottom: 15px;
-padding-bottom: 15px;
-min-height: 150px;
-}
-.popupFilter #example_filter {
-top:-55px !important;
-}
-.dataTable thead th {
-background: #375d81; color:#fff; height: 34px; padding-top: 5px; padding-bottom: 5px; text-align:center;
-}
-.dataTable thead tr th {
-vertical-align: middle;
-}
-.dataTable thead tr td {
-text-align: center;
-}
-table.dataTable.no-footer {
-border-bottom:0;
-}
-table.dataTable thead th, table.dataTable thead td {
-border-bottom:0;
-}
-table.dataTable thead th, table.dataTable thead td {
-padding: 10px;
-}
-.dataTables_wrapper .dataTables_paginate {
-padding: 0 !important;
-margin-top: 15px;
-}
-.dataTables_info {
-padding: 0 !important;
-margin-top: 10px;
-}
-dataTables_wrapper .dataTables_filter input {
-background-color:#fff;
-height: 34px;
-width:400px;
-border: 1px solid rgb(206, 204, 204);
-border-radius:3px;
-}
-.modal-footer {
-background-color: #ccc;
-}
-.ratetype p {
-bottom: -14px !important;
-left:-20px !important;
-}
-.pras.req-title p{
-bottom:-2px;
-}
-.payrate_p p.jquery_form_error_message{
- bottom: -13px;padding-left: 0 !important;
-}
-.form-control {
-padding: 6px 12px !important; height: 34px !important;
-}
-.bootstrap-select {
-width: 100% !important;
-}
-.icon-inside .form-control {
-    padding: 6px 12px 6px 30px !important;
-}
-.chosen-container-multi .chosen-choices li.search-field input[type="text"] { width: 100% !important;}
-.refresh-icon {
-right: 15px;
-}
-
-</style>
-
+	<jsp:include page="requirementDetails.jsp"></jsp:include>
+	<jsp:include page="requirementClientDetails.jsp"></jsp:include>
+	<jsp:include page="requirementInternalDetails.jsp"></jsp:include>
+	
+	<script src="resources/js/editor.js?staticTime=${staticTime}"></script>
+	<link href="resources/css/editor.css?staticTime=${staticTime}" type="text/css" rel="stylesheet"/>
+	
+	
+	<script>
+		$(document).ready(function() {
+			$("#txtEditor").Editor();
+		});
+    </script> 
 
 <script>
 $(document).ready(function() {
@@ -157,9 +80,6 @@ $(document).ready(function() {
 			getAllCountries();
 			removeEditButton();
 			disableMonths();
-			/*  $(".isClient").click(function(){  
-		        $(".clientDetails").toggleClass('hidden', 500);
-		    });  */
 			
 			$(".cd1").click(function(){  
 		        $(".col-md-12 clearfix").toggleClass('hidden', 500);
@@ -239,7 +159,7 @@ $(document).ready(function () {
 		    		if(currentApproverId != null && currentApproverId != ''  && currentApproverId != 'undefined'){
 		    			 $.ajax({
 		    			    	type: "POST",
-		    			        url: sourceleadUrl+"/getApproverTwoByUserId?${_csrf.parameterName}=${_csrf.token}&currentApproverId="+currentApproverId,  
+		    			        url: sourceleadUrl+"/getApproverTwoByUserId?"+tokenParamName+"="+tokenValue+"&currentApproverId="+currentApproverId,  
 		    			        success: function(data) {
 		    			        	var json = JSON.parse(data);
 		    			        	var output = "";
@@ -295,7 +215,7 @@ $(document).ready(function () {
   </section>
   <div class="content-area content-new clearfix">
   <div id="loading"></div>
-   <form:form id="requirement_form" name="requirement_form"  enctype='multipart/form-data'>
+   <form:form id="requirement_form" name="requirement_form">
     <div class="form-horizontal req-dtls myForm row">
       <div class="clearfix">
         <div class="col-lg-12">
@@ -435,17 +355,6 @@ $(document).ready(function () {
               </div>  -->
             </div>
           </div>
-          
-		          
-          
-            <!--  <div class="form-group">
-            <label class="col-md-3">Closed Date</label>
-            <div class="col-md-9">
-             <div class="col-lg-6 positionRelative" id="closedDateDiv">
-			<input type="text" class="form-control" value="" id="closedDate" name="closedDate" field-name="Closed Date"  readonly="readonly"> <span class="input-group-addon input-groupAddon"><i class="fa fa-calendar"></i></span>
-			</div>
-            </div>
-          </div> -->
             
           <div class="form-group">
             <label class="col-md-3">No. of Positions</label>
@@ -454,21 +363,6 @@ $(document).ready(function () {
             </div>
           </div>
           
-          <%-- <div class="form-group">
-              <label class="col-md-3">Education</label>
-              <div class="col-md-9">
-                <select multiple  class="chosen-select form-control" name="education" id="education" data-validation="validate_Space" data-validation-optional="true">
-                <c:forEach var="edu" items="${educationsList}">
-                		  <c:if test="${fn:contains(requirement.reqEducationListString, edu.name)}">
-                		  	 <option  selected value="${edu.name}">${edu.name}</option>
-                		  </c:if>
-                		  <c:if test="${!fn:contains(requirement.reqEducationListString, edu.name)}">
-                		  	 <option  value="${edu.name}">${edu.name}</option>
-                		  </c:if>
-                </c:forEach>
-                </select>
-              </div>
-            </div> --%>
             
               <div class="form-group">
               <label class="col-md-3">Education</label>
@@ -504,26 +398,7 @@ $(document).ready(function () {
               <div class="row" id="expId">
                   <input type="hidden" name="expValidation" id="expValidation">
               </div> 
-        <%--          <div class="row">
-             <div class="col-xs-6 col-md-6">
-             		<select class="form-control" id="minExp" name="minExp"  onchange="disableMonths();">
-             		  <option selected disabled>Year</option>
-             		  <c:forEach begin="0" end="24" varStatus="loop">
-						    <option  ${requirement.minExp == loop.index ? 'selected' : ''} >${loop.index}</option>
-						</c:forEach>
-             		     <option>25+</option>
-             		</select>
-             </div>
-             
-             <div class="col-xs-6 col-md-6">
-             		<select class="form-control" id="maxExp" value = "" name="maxExp">
-             		<option selected disabled>Month</option>
-             		 <c:forEach begin="0" end="11" varStatus="loop">
-						    <option  ${requirement.maxExp == loop.index ? 'selected' : ''}>${loop.index}</option>
-						</c:forEach>
-             		</select>
-             </div>
-            </div> --%>
+       
               
             </div>
           </div>
@@ -591,23 +466,76 @@ $(document).ready(function () {
               </div> 
                 <div class="input-group-btn selp-custom-min payrate_p">
                   <select class="selectpicker ratetype" id="rateType" name="rateType" field-name="Rate Per">
-                    <option value="">Rate Per</option>
-                    <option ${requirement.rateType  == 'Hourly' ? 'selected' : ''}>Hourly</option>
-                    <option ${requirement.rateType  == 'Weekly' ? 'selected' : ''}>Weekly</option>
-                    <option ${requirement.rateType  == 'Bi-weekly' ? 'selected' : ''}>Bi-weekly</option>
-                    <option ${requirement.rateType  == 'Semi-Monthly' ? 'selected' : ''}>Semi-Monthly</option>
-                    <option ${requirement.rateType  == 'Monthly' ? 'selected' : ''}>Monthly</option>
-                    <option ${requirement.rateType  == 'Bi-Monthly' ? 'selected' : ''}>Bi-Monthly</option>
-                    <option ${requirement.rateType  == 'Yearly' ? 'selected' : ''}>Yearly</option>
+                    <c:if test="${SourceLeadWeb_currencyCode == 'INR'}">
+                        <option value="">Rate Per</option>
+                        <option ${requirement.rateType  == 'Monthly' ? 'selected' : ''}>Monthly</option>
+	                    <option ${requirement.rateType  == 'Hourly' ? 'selected' : ''}>Hourly</option>
+	                    <option ${requirement.rateType  == 'Weekly' ? 'selected' : ''}>Weekly</option>
+	                    <option ${requirement.rateType  == 'Bi-weekly' ? 'selected' : ''}>Bi-weekly</option>
+	                    <option ${requirement.rateType  == 'Semi-Monthly' ? 'selected' : ''}>Semi-Monthly</option>
+	                    <option ${requirement.rateType  == 'Bi-Monthly' ? 'selected' : ''}>Bi-Monthly</option>
+	                    <option ${requirement.rateType  == 'Yearly' ? 'selected' : ''}>Yearly</option>
+                    </c:if>
+                  
+                  <c:if test="${SourceLeadWeb_currencyCode == 'USD'}">
+                        <option value="">Rate Per</option>
+                        <option ${requirement.rateType  == 'Hourly' ? 'selected' : ''}>Hourly</option>
+                        <option ${requirement.rateType  == 'Monthly' ? 'selected' : ''}>Monthly</option>
+	                    <option ${requirement.rateType  == 'Weekly' ? 'selected' : ''}>Weekly</option>
+	                    <option ${requirement.rateType  == 'Bi-weekly' ? 'selected' : ''}>Bi-weekly</option>
+	                    <option ${requirement.rateType  == 'Semi-Monthly' ? 'selected' : ''}>Semi-Monthly</option>
+	                    <option ${requirement.rateType  == 'Bi-Monthly' ? 'selected' : ''}>Bi-Monthly</option>
+	                    <option ${requirement.rateType  == 'Yearly' ? 'selected' : ''}>Yearly</option>
+                    </c:if>
+                    
+                  <c:if test="${SourceLeadWeb_currencyCode == 'AUD'}">
+                        <option value="">Rate Per</option>
+                        <option ${requirement.rateType  == 'Hourly' ? 'selected' : ''}>Hourly</option>
+                        <option ${requirement.rateType  == 'Monthly' ? 'selected' : ''}>Monthly</option>
+	                    <option ${requirement.rateType  == 'Weekly' ? 'selected' : ''}>Weekly</option>
+	                    <option ${requirement.rateType  == 'Bi-weekly' ? 'selected' : ''}>Bi-weekly</option>
+	                    <option ${requirement.rateType  == 'Semi-Monthly' ? 'selected' : ''}>Semi-Monthly</option>
+	                    <option ${requirement.rateType  == 'Bi-Monthly' ? 'selected' : ''}>Bi-Monthly</option>
+	                    <option ${requirement.rateType  == 'Yearly' ? 'selected' : ''}>Yearly</option>
+	                  </c:if>
+	                     
+	               <c:if test="${SourceLeadWeb_currencyCode == 'GBP'}">
+                        <option value="">Rate Per</option>
+                        <option ${requirement.rateType  == 'Hourly' ? 'selected' : ''}>Hourly</option>
+                        <option ${requirement.rateType  == 'Monthly' ? 'selected' : ''}>Monthly</option>
+	                    <option ${requirement.rateType  == 'Weekly' ? 'selected' : ''}>Weekly</option>
+	                    <option ${requirement.rateType  == 'Bi-weekly' ? 'selected' : ''}>Bi-weekly</option>
+	                    <option ${requirement.rateType  == 'Semi-Monthly' ? 'selected' : ''}>Semi-Monthly</option>
+	                    <option ${requirement.rateType  == 'Bi-Monthly' ? 'selected' : ''}>Bi-Monthly</option>
+	                    <option ${requirement.rateType  == 'Yearly' ? 'selected' : ''}>Yearly</option>
+	                  </c:if>
+	                     
+	               <c:if test="${SourceLeadWeb_currencyCode == 'SGD'}">
+                        <option value="">Rate Per</option>
+                        <option ${requirement.rateType  == 'Hourly' ? 'selected' : ''}>Hourly</option>
+                        <option ${requirement.rateType  == 'Monthly' ? 'selected' : ''}>Monthly</option>
+	                    <option ${requirement.rateType  == 'Weekly' ? 'selected' : ''}>Weekly</option>
+	                    <option ${requirement.rateType  == 'Bi-weekly' ? 'selected' : ''}>Bi-weekly</option>
+	                    <option ${requirement.rateType  == 'Semi-Monthly' ? 'selected' : ''}>Semi-Monthly</option>
+	                    <option ${requirement.rateType  == 'Bi-Monthly' ? 'selected' : ''}>Bi-Monthly</option>
+	                    <option ${requirement.rateType  == 'Yearly' ? 'selected' : ''}>Yearly</option>
+	                  </c:if>
+	                     
+	                        <c:if test="${SourceLeadWeb_currencyCode == 'EUR'}">
+                        <option value="">Rate Per</option>
+                        <option ${requirement.rateType  == 'Hourly' ? 'selected' : ''}>Hourly</option>
+                        <option ${requirement.rateType  == 'Monthly' ? 'selected' : ''}>Monthly</option>
+	                    <option ${requirement.rateType  == 'Weekly' ? 'selected' : ''}>Weekly</option>
+	                    <option ${requirement.rateType  == 'Bi-weekly' ? 'selected' : ''}>Bi-weekly</option>
+	                    <option ${requirement.rateType  == 'Semi-Monthly' ? 'selected' : ''}>Semi-Monthly</option>
+	                    <option ${requirement.rateType  == 'Bi-Monthly' ? 'selected' : ''}>Bi-Monthly</option>
+	                    <option ${requirement.rateType  == 'Yearly' ? 'selected' : ''}>Yearly</option>
+	                  </c:if>
                   </select>
                 </div>
               </div>
             </div>
           </div>
-         
-          
-      
-          
           
 		<div class="form-group">
 				<label class="col-md-3">Travel Allowance</label>
@@ -663,7 +591,7 @@ $(document).ready(function () {
           <div class="form-group">
 				<label class="col-md-3">Location<span class="text-danger paddingLeft">*</span></label>
 				<div class="col-md-9">
-				 <input class="form-control positionRelative" id="ReqLocation" name="location" placeholder="Enter your address"  value="${requirement.location}" type="text" field-name="Locatin" data-validation="required"></input>
+				 <input class="form-control positionRelative" id="ReqLocation" name="location" placeholder="Enter your address"  value="${requirement.location}" type="text" field-name="Location" data-validation="required"></input>
           			<i class="fa fa-refresh btn btn-primary refresh-icon" title="Refresh" onClick="refreshGoogleApiLocation('ReqLocation','ReqCountry','ReqState','ReqCity','ReqZipCode');"></i>
 				</div>
 		</div>
@@ -747,25 +675,18 @@ $(document).ready(function () {
               <div class="input-group attachfile" id= "uploadFileGroup">
                 <label class="input-group-btn">
                 <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
-                       <input type="file" name="uploadBtn" id="uploadBtn"  class="hidden upload">
+                       <input type="file"  id="uploadBtn"  class="hidden upload">
                   </span>
                 </label>
                 
-                <input type="text" class="form-control input-sm" readonly id="uploadFile" name="docFile"  value="${requirement.fileName}" type="file"   placeholder="Upload File ..." field-name="Upload Resume" data-validation="validate_docimgpdf" data-validation-optional="true">
+                <input type="text" class="form-control input-sm" readonly id="uploadFile" name="docFile"     placeholder="Upload File ..." field-name="Upload Resume" data-validation="validate_docimgpdf" data-validation-optional="true">
               <div class="clearfix"></div> <div class="clearfix"></div>
               </div>
             </div>
             <div class="clearfix"></div>
             <!-- upload file html need to add bottom JavaScript otherwise it will not work --> 
           </div>
-           <%-- <div class="form-group">
-            <label class="col-md-3">Description</label>
-            <div class="col-md-9 nicEditpanelContain">
-             <textarea rows="5" class="form-control" id="bodytext" name="description" value="${requirement.description}" field-name="Description"  data-validation-optional="true">${requirement.description}</textarea>
-             <textarea rows="5" class="form-control" id="bodytext" name="description" value="${requirement.description}" field-name="Description" data-validation=" validate_length length2-5000" data-validation-optional="true"></textarea>
            
-            </div>
-          </div> --%>
           <div class="clearfix"></div>
           <div class="clearfix mb">
           <label class="col-md-3">Description</label>
@@ -920,11 +841,6 @@ $(document).ready(function () {
 						  </c:otherwise>
 				</c:choose>
                 
-                
-                    <%-- <sec:authorize access="hasAnyRole('ROLE_CREATE_CLIENT')">
-                    <i data-target="#addClient" data-toggle="modal" class="fa fa-plus btn btn-default formic1-new" onClick="addClientPopUp();"></i>
-                    <div id="addClient" class="modal fade" role="dialog"></div>
-                    </sec:authorize> --%>
                   </div>
                   <div role="dialog" id="addLevel" class="modal fade">
                     <div class="modal-dialog">
@@ -990,9 +906,6 @@ $(document).ready(function () {
 				    </c:otherwise>
 				</c:choose>
                     
-                    <%-- <sec:authorize access="hasAnyRole('ROLE_CREATE_CLIENT_CONTACT')">
-                    <i data-target="#addContact" data-toggle="modal" class="fa fa-plus btn btn-default formic1-new" id="addContactPlus" style="display: none;" ></i>
-                    </sec:authorize>  --%>
                  </div>
                   
                 </div>
@@ -1018,7 +931,6 @@ $(document).ready(function () {
 	                <input type="text" disabled="disabled" class="form-control" id="clientRate" name="clientRate" field-name="Client Rate" value="${requirement.clientRate}" data-validation="validate_Space validate_float validate_length length1-8" data-validation-optional="true">
 	                <div class="input-group-btn selp-custom-min">
 	                 <select disabled="disabled" class="chosen-select ratetype"  id="clientRateType" field-name="Client Rate Per" value="${requirement.clientRateType}" name="clientRateType">
-	                    
 			                <option value="">Rate Per</option>
 		                    <option ${requirement.clientRateType  == 'Hourly' ? 'selected' : ''}>Hourly</option>
 		                    <option ${requirement.clientRateType  == 'Weekly' ? 'selected' : ''}>Weekly</option>
@@ -1148,20 +1060,6 @@ $(document).ready(function () {
                
                 </div>
         </div>
-       <!-- Approver Required Check box html ends -->  
-         
-         
-        <!--  <div class="form-group parallel" style="display:none;">
-                <label class="col-md-3">Approver<span class="text-danger">*</span></label>
-                <div class="col-md-9">
-                    <select multiple class="chosen-select form-control">
-                      <option disabled>Select Approver</option>
-                      <option>Approver-1</option>
-                      <option>Approver-2</option>
-                      <option>Approver-3</option>
-                    </select>
-                </div>
-         </div> -->
          
          <div class="form-group parallel" style="display:none;">
                 <label class="col-md-3">Approver<span class="text-danger paddingLeft">*</span></label>
@@ -1499,16 +1397,13 @@ function validate_fileupload(fileName)
 
 <script type="text/javascript">
 	function storeRequirement(saveType) {
-		
 		var validationSettings = {
 		        errorMessagePosition : 'element',
 		       borderColorOnError : '',
 				scrollToTopOnError : true,
 				dateFormat : 'yyyy/mm/dd' 
 	         }; 
-		
-		
-		
+		 
 		var ee = $("#txtEditor").val($('.Editor-editor').html()); 
 		
 		checkTemplateforDouplicate();
@@ -1596,37 +1491,22 @@ function validate_fileupload(fileName)
 		
 		   if ($('#requirement_form').validate(false, validationSettings)){   
 			
-			var frm = $('#requirement_form').serializeFormJSON();
-			var jsonData = JSON.stringify(frm);
 			
-			//con = con.replace(/[{}]/g, "");
-			//It will escape all the special characters
-			//var jsonData = encodeURIComponent(con);
-			
-			var form = $('#requirement_form')[0];
-      		var formData = new FormData(form); 
-      		formData.append("json",jsonData);
-			var sourceleadUrl = '${sourceleadUrl}';
-			//var text = $('textarea#bodytext').val();
-			
-			
+      		
+      		var formData = getFormData1("requirement_form");
 			$( "#submitForApproval" ).addClass('button').val('Processing..');
-     		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-     		
-			$.ajax({
-						type : "POST",
-		        	    data: formData,
-		        	    contentType : 'application/json; charset=utf-8',
-		        	    enctype: 'multipart/form-data',
-		    	        processData: false,
-		    	        contentType:false,
-		        	    dataType : 'json',
-						url : sourceleadUrl+"/storeRequirement?${_csrf.parameterName}=${_csrf.token}&saveType="+saveType,
-						success : function(result) {
-								location.replace(sourceleadUrl+"/requirementList");
-						},
-					});
-			
+			$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:10000;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		         $.ajax({
+					 type : "POST",
+					 data: formData,
+	  		         processData: false,
+	  		         contentType:false, 
+					  url : sourceleadUrl+"/storeRequirement?"+tokenParamName+"="+tokenValue+"&saveType="+saveType,
+					  	success : function(data) {
+						location.replace(sourceleadUrl+"/requirementList");
+
+					},
+				});
 			return true;
 		   }else{ 
 				return false;
@@ -1650,7 +1530,6 @@ function validate_fileupload(fileName)
 </script> 
  <script>
 function storeTeam(){
-	
 	   var validationSettings = {
 	        errorMessagePosition : 'element',
 	       borderColorOnError : '',
@@ -1658,23 +1537,16 @@ function storeTeam(){
 			dateFormat : 'yyyy/mm/dd' 
          };
 	   if ($('#team_form').validate(false, validationSettings)){ 
-			var frm = $('#team_form').serializeFormJSON();
-			var con = JSON.stringify(frm);
-			con = con.replace(/[{}]/g, "");
+		   
+		   var formData = getFormData("team_form");
 			
-		     var jsonData = encodeURIComponent(con);
-			 var sourceleadUrl = '${sourceleadUrl}';
-			
-			 $("#add_team").attr("disabled", "disabled");
-			
-			$.ajax({
-					type : "POST",
-					url : sourceleadUrl+"/storeTeam?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
-					success :function(data) { 
-						$('#addTeam').hide();
-						$('.modal-backdrop').hide();
-				      }, 
-		    });  
+			$("#add_team").attr("disabled", "disabled"); 
+	       
+			$.post(sourceleadUrl+"/storeTeam?"+tokenParamName+"="+tokenValue+"", formData, function(data) {
+	        	$('#addTeam').hide();
+				$('.modal-backdrop').hide();
+	        });
+	        
 			return true; 
 	   }else{ 
 			return false;
@@ -1730,7 +1602,7 @@ function getAllCountries(){
 	$.ajax({
     	type: "POST",
     	dataType: "json",
-    	 url: '${sourceleadUrl}'+"/countryAutoComplete?${_csrf.parameterName}=${_csrf.token}",
+    	 url: '${sourceleadUrl}'+"/countryAutoComplete?"+tokenParamName+"="+tokenValue+"",
         success: function(data) {
         	var json = JSON.parse(data);
         	$('#countryReq').empty();
@@ -1775,7 +1647,7 @@ function getStates(){
 		$.ajax({
 	    	type: "POST",
 	    	dataType: "json",
-	    	 url: '${sourceleadUrl}'+"/getStatesByCountry?${_csrf.parameterName}=${_csrf.token}&countryName="+countryName, 
+	    	 url: '${sourceleadUrl}'+"/getStatesByCountry?"+tokenParamName+"="+tokenValue+"&countryName="+countryName, 
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	$('#state').empty();
@@ -1823,7 +1695,7 @@ function getCities(){
 		$.ajax({
 	    	type: "POST",
 	    	dataType: "json",
-	    	 url: '${sourceleadUrl}'+"/getCitiesByStateAndCountry?${_csrf.parameterName}=${_csrf.token}&countryName="+countryName+"&stateName="+stateName, 
+	    	 url: '${sourceleadUrl}'+"/getCitiesByStateAndCountry?"+tokenParamName+"="+tokenValue+"&countryName="+countryName+"&stateName="+stateName, 
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	$('#city').empty();
@@ -1855,57 +1727,57 @@ function getCities(){
 
 <!-- Eductions and Skills Autocomplete Scripts Starts Here -->
 <script type="text/javascript">
-			/* var config = {
-			  '.chosen-select'           : {},
-			  '.chosen-select-deselect'  : {allow_single_deselect:true},
-			  '.chosen-select-no-single' : {disable_search_threshold:10},
-			  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
-			  '.chosen-select-width'     : {width:"95%"}
-			} */
 	       
 	     //Adding Customized Skills to the list
 	       var select, chosen;
 		    select = $("#skills");
 		    select.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) Or Tab To Add New Skills:' });
 		    chosen = select.data('chosen');
-		   /*  chosen.search_field.on('keyup', function(e) */
-		    chosen.search_field.on('keyup  keydown', function(e)
-		    {
-		    	   var skillsArray = this.value.split(",");
-			    	 if(skillsArray.length > 1){
-		        		 for (var i=0; i < skillsArray.length; i++) {
-		        			 var option = $("<option>").val(skillsArray[i].replace(",","")).text(skillsArray[i].replace(",",""));
-		        			 select.append(option);
-		 		             select.find(option).prop('selected', true);
-		 		             select.find(option).siblings("[value='"+ skillsArray[i].replace(",","")+"']").remove();
-		 	        		 $("#skills").trigger("chosen:updated");
-		                 }
-			    	 }else{
-		    			var newSkill = this.value.replace(","," ");
-		    			if ((e.which == 13 || e.which == 188) && (newSkill != null  && newSkill != '' && newSkill != 'undefined'))
-		                {
-		    				//skills duplicate check
-							 var isNewSkill = true;
-							 $("#skills option:selected").each(function(){
-								 if(this.value.toUpperCase() === newSkill.toUpperCase()){
-									 //alert(newSkill);
-									 isNewSkill = false;
-									 return false;
-								 }
-		                    
-		                   });
-							if(isNewSkill){
-		    				 var option = $("<option>").val(newSkill).text(newSkill);
-							 select.append(option);
-		                     select.find(option).prop('selected', true);
-							}
-			               $("#skills").trigger("chosen:updated");
-		                }
-				       
-	    	         }
-		    });
-		    
-		    
+				   chosen.search_field.on('keydown keyup', function(e)
+				    {
+				    	   var skillsArray = this.value.split(",");
+					    	 if(skillsArray.length > 1){
+				        		 for (var i=0; i < skillsArray.length; i++) {
+				        			 var option = $("<option>").val(skillsArray[i].replace(",","")).text(skillsArray[i].replace(",",""));
+				        			 select.append(option);
+				 		             select.find(option).prop('selected', true);
+				 		             select.find(option).siblings("[value='"+ skillsArray[i].replace(",","")+"']").remove();
+				 	        		 $("#skills").trigger("chosen:updated");
+				                 }
+					    	 }else{
+					    		var focussedSkills = $("ul.chosen-results").find("li.active-result.highlighted");
+				    			var newSkill = this.value.replace(","," ");
+				    			 if (tagItBykeyForSkills(e) && (newSkill != null  && newSkill != '' && newSkill != 'undefined'))
+				                 {
+				    				 preventTabkey(e);
+				                   // below code manually enter skills are taken
+				    				  
+				                   var isNewSkill = true;
+									 $("#skills option:selected").each(function(){
+										 if(this.value.toUpperCase() === newSkill.toUpperCase() && this.value.toLowerCase() === newSkill.toLowerCase()){
+											 isNewSkill = false;
+											 return false;
+										 }
+				                   });
+										if(focussedSkills.length > 0){
+											var skillOption  = $("<option>").val(focussedSkills.first().text()).text(focussedSkills.first().text());
+											select.append(skillOption);
+											select.find(skillOption).prop('selected',true);
+											select.find(skillOption).siblings("[value='"+ focussedSkills.first().text()+"']").remove();
+											$("#skills").trigger("chosen:updated");
+									   }
+									   else{
+										   if(isNewSkill){
+											var option = $("<option>").val(newSkill).text(newSkill);
+											select.append(option);
+											select.find(option).prop('selected', true);
+										   }
+									   }
+									
+					               $("#skills").trigger("chosen:updated"); 
+				                }
+			    	         }
+		    	});
 		    
 		    //Adding Customized Educations to the list 
 		    var selectone, chosenone;
@@ -1931,7 +1803,6 @@ function getCities(){
 			        }
 		    
 		    });
-		    
             
 			/* upload file script */
 			document.getElementById("uploadBtn").onchange = function () {
@@ -1939,10 +1810,8 @@ function getCities(){
 			$('#uploadFile').val($(this).val().replace(/C:\\fakepath\\/i, ''))
 			};
 				
-				
 </script> 
 <!-- Eductions and Skills Autocomplete Scripts End Here -->
-
 
 <script>
 function getTemplateVal(){
@@ -1961,14 +1830,13 @@ function getTemplateVal(){
 
     }
 }
-
 </script>
 <script>
 function getRequirementAndLookUpSkills(requirementid){
-	var sourceleadUrl ='${sourceleadUrl}';
+	
 	$.ajax({
    	type: "POST",
-    url: sourceleadUrl+"/getRequirementAndLookUpSkills?${_csrf.parameterName}=${_csrf.token}&requirementid="+requirementid, 	   
+    url: sourceleadUrl+"/getRequirementAndLookUpSkills?"+tokenParamName+"="+tokenValue+"&requirementid="+requirementid, 	   
 	    success: function(data) {
 	    	if(data != null && data != 'undefined' && data !='' ){ 
 	    		var json = JSON.parse(data);
@@ -1989,7 +1857,7 @@ function getRequirementAndLookUpSkills(requirementid){
 </script>
 <script>
 function setTemplateValues(){
-	var sourceleadUrl ='${sourceleadUrl}';
+	
 	var requirementId = document.getElementById('template').value;
 	getEditRequirementDetails(requirementId);
 	if(requirementId != null && requirementId !='' && requirementId != 'undefined'){
@@ -1998,7 +1866,7 @@ function setTemplateValues(){
 	$.ajax({
 	   	type: "POST",
 	   	
-	    url: sourceleadUrl+"/getRequirementById?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId, 	   
+	    url: sourceleadUrl+"/getRequirementById?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId, 	   
 		    success: function(data) {
 		    	
 		    	if(data != null && data != 'undefined' && data !='' ){ 
@@ -2012,6 +1880,7 @@ function setTemplateValues(){
 			    	$("#jobType").val(json.jobType);
 			    	
 			    	$("#coolingOff").val(json.reqCoolingOffPeriod);
+			    	$('#coolingOff').trigger('chosen:updated');
 			    	$("#industryName").val(json.industryName);
 			    	$("#industryName").trigger("chosen:updated");
 			    	
@@ -2117,7 +1986,7 @@ function setTemplateValues(){
 					$("#existingCountry").val('');
 					$("#existingState").val('');
 					$("#existingCity").val('');
-					
+					$("#coolingOff").val('');
 		            $("#skills").val('');
 		            $("#education").val('');
 		            $(".Editor-editor").text('');
@@ -2129,8 +1998,8 @@ function setTemplateValues(){
 			    	$(".")
 			    	
 			    	existedFile = json.fileName;
-			    	 $("#fileName").val(existedFile);
-			    	 $('#fileName').trigger("chosen:updated");
+			    	$("#fileName").val(existedFile);
+			    	$('#fileName').trigger("chosen:updated");
 		    	}
 		    }
      });
@@ -2228,9 +2097,7 @@ $("#parallel").click(function(){
 function addLvl(){
 	$(".lvlTow").toggle();
 }
-
 </script> 
-
 
 <!-- This Method used to remove the  selected Approvers values  when  the approval mechanism is unchecked-->
 
@@ -2254,14 +2121,9 @@ function removeApprovers(){
 
 else{
 	
-	
 	 $("#navbar").addClass("glyphicon glyphicon-info-sign text-info ml");
 	
-	
-}
-	
-	
-	
+    }
 }
 </script> 
 
@@ -2305,7 +2167,6 @@ function approvalType(type){
 				
 				$('#sequentialApprover1').val('').trigger('chosen:updated');
 				$('#sequentialApprover2').val('').trigger('chosen:updated');
-				  
 				
 		  }
 		  if(type == "Sequential"){
@@ -2344,8 +2205,6 @@ function approvalType(type){
 }
 </script>
 
-
-
 <%-- 
      @author : sarath kumar.
      this script is for get model dialog box.
@@ -2357,7 +2216,7 @@ function approvalType(type){
 
 <script>
 function popupWindow(reqId){ 
-	  var sourceleadUrl ='${sourceleadUrl}';
+	  
 	  $("#popupWindow").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	  $("#popupWindow").removeAttr("style");
 	  var result = '';
@@ -2399,9 +2258,12 @@ function popupWindow(reqId){
      3.ajax url implementation in requirementListRestController.
      append Users list to AssignedTo model dialog box
 --%>
+
+
+
 <script>
 function getUserList(teamType){  
-	   var sourceleadUrl ='${sourceleadUrl}';
+	   
 	  
 	   var selectedUsersForAssign = [];
 	   $('input[name^="assignUserId"]').each(function() {
@@ -2410,7 +2272,7 @@ function getUserList(teamType){
  	   $("#usersGrid").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
  	   $.ajax({
            type : "POST",
-           url: sourceleadUrl+"/getUserList?${_csrf.parameterName}=${_csrf.token}&teamType="+teamType,    
+           url: sourceleadUrl+"/getUserList?"+tokenParamName+"="+tokenValue+"&teamType="+teamType,    
             success :function(data) {
                  if(data != null && data != 'undefined' && data != "" && data != '[]'){
                		 if( data.indexOf('Sign In') >= 0){
@@ -2589,10 +2451,10 @@ function getTeamsList(reqId){
 	if(reqId == '' || reqId == 'undefined' || reqId == null){
 		reqId = '';
 	}
-	  var sourceleadUrl ='${sourceleadUrl}';
+	  
 	  $.ajax({
            type : "POST",
-           url: sourceleadUrl+"/getTeamsList?${_csrf.parameterName}=${_csrf.token}&reqId="+reqId,    
+           url: sourceleadUrl+"/getTeamsList?"+tokenParamName+"="+tokenValue+"&reqId="+reqId,    
             success :function(data) {
             	var json = JSON.parse(data);
 				var output = "";
@@ -2714,7 +2576,7 @@ function assignMembers() {
 		$('#assignbtnId').attr("data-dismiss","modal");
 		rowcollection.each(function(index,elem){
 		    var checkbox_value = $(elem).val();
-		    result = result+ "<input type='hidden' class='defaultCheckBox' name='assignUserId"+count+"' id='assignUserId"+count+"' value='"+checkbox_value+"' />";
+		    result = result+ "<input type='hidden' class='defaultCheckBox' name='assignUsers["+(count-1)+"]' id='assignUserId"+count+"' value='"+checkbox_value+"' />";
 		    count++;
 		});
 		result = result+"<input type='hidden' name='assignedToMaxCount' id='assignedToMaxCount' value='"+count+"'/>";
@@ -2747,11 +2609,11 @@ function assignMembers() {
 
 <script type="text/javascript">
 function getTeamOwners(){ 
-	 var sourceleadUrl ='${sourceleadUrl}';
+	 
 	 var teamMemberUserId = document.getElementById("memberUserId").value;
      $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/getAllUsersByOrgLocationCodeExceptTeamOwner?${_csrf.parameterName}=${_csrf.token}&teamOwnerUserId="+teamMemberUserId,
+		        url: sourceleadUrl+"/getAllUsersByOrgLocationCodeExceptTeamOwner?"+tokenParamName+"="+tokenValue+"&teamOwnerUserId="+teamMemberUserId,
 		        success: function(data) {
 		        	var json = JSON.parse(data);
 		        	var output = "";
@@ -2776,11 +2638,11 @@ function getTeamOwners(){
 
 <script type="text/javascript">
 function getTeamMembers(){ 
-	 var sourceleadUrl ='${sourceleadUrl}';
+	 
 	 var teamOwnerUserId = document.getElementById("ownerUserId").value;
 		 $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/getAllUsersByOrgLocationCodeExceptTeamOwner?${_csrf.parameterName}=${_csrf.token}&teamOwnerUserId="+teamOwnerUserId,
+		        url: sourceleadUrl+"/getAllUsersByOrgLocationCodeExceptTeamOwner?"+tokenParamName+"="+tokenValue+"&teamOwnerUserId="+teamOwnerUserId,
 		        success: function(data) {
 		        	var json = JSON.parse(data);
 		        	var output = "";
@@ -2821,7 +2683,7 @@ var existingValue = document.getElementById('isClientJob').value;
 		 
 		 var isEdit = '${val}'
 		 if(isEdit != 'Y'){
-			$("#clientRateType").val("").trigger('change');
+			//$("#clientRateType").val("").trigger('change');
 		 }
 		 $('#clientDetails').find('p.jquery_form_error_message').remove();
 
@@ -2913,11 +2775,11 @@ var existingValue = document.getElementById('isClientJob').value;
 <script type="text/javascript">
 function getLevel2Approvers(currentApproverId){
 	var currentApproverId = document.getElementById("sequentialApprover1").value;
-	 var sourceleadUrl ='${sourceleadUrl}';
+	 
 	 if(currentApproverId != null && currentApproverId != ''  && currentApproverId != 'undefined'){
 		 $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/getApproverTwoByUserId?${_csrf.parameterName}=${_csrf.token}&currentApproverId="+currentApproverId,  
+		        url: sourceleadUrl+"/getApproverTwoByUserId?"+tokenParamName+"="+tokenValue+"&currentApproverId="+currentApproverId,  
 		        success: function(data) {
 		        	var json = JSON.parse(data);
 		        	var output = "";
@@ -2956,14 +2818,14 @@ function getLevel2Approvers(currentApproverId){
 		 }
 		 var specialCharacter = jobId.match(/^[A-Za-z0-9][A-Z a-z 0-9]*$/);
 		 $('#jobIdDiv').find('p.jquery_form_error_message').remove();
-		 var sourceleadUrl ='${sourceleadUrl}';
+		 
 		 if(jobId != null && jobId != "" && specialCharacter != null){
 			 $("#draft").attr("disabled", "disabled");
 			 $("#save").attr("disabled", "disabled");
 			 $("#submitForApproval").attr("disabled", "disabled");
 			 $.ajax({
 			    	type: "POST",
-			        url: sourceleadUrl+"/validateJobId?${_csrf.parameterName}=${_csrf.token}&jobId="+jobId+"&requirementid="+requirementid, 
+			        url: sourceleadUrl+"/validateJobId?"+tokenParamName+"="+tokenValue+"&jobId="+jobId+"&requirementid="+requirementid, 
 			        success: function(data) {
 			        	if(data == true){
 							  $("input#jobId").after("<p class='jquery_form_error_message'>"+jobId+" is Already Existed</span>");
@@ -2991,6 +2853,7 @@ function toggle(source) {
             checkboxes[i].checked = source.checked;
     }
 $('input:checkbox:not(#checkAll)').click(function() {
+	
     if(!this.checked) {
         $('#checkAll').removeAttr('checked');
     }
@@ -3052,10 +2915,10 @@ function checkTemplateforDouplicate(){
          var jsonData = encodeURIComponent(templateName);	  
        
 		$('#jobTitleDiv').find('p.jquery_form_error_message').remove();
-		var sourceleadUrl ='${sourceleadUrl}';
+		
 			 $.ajax({
 			    	type: "POST",
-			        url: sourceleadUrl+"/validatetemplateName?${_csrf.parameterName}=${_csrf.token}&templateName="+jsonData, 
+			        url: sourceleadUrl+"/validatetemplateName?"+tokenParamName+"="+tokenValue+"&templateName="+jsonData, 
 			        success: function(data) {
 			        	if(data == "true"){
 			        		  $('#jobTitleDiv').find('p.jquery_form_error_message').remove();
@@ -3105,14 +2968,10 @@ function getJobType(jobType){
 			  $("#jobOtherType").val('');
 		  }
 		  
-		  
 		  if(jobType.value == 'C2C' || jobType.value == 'C2H' || jobType.value == 'Contract'){
-			 
 	
 				 document.getElementById("projectDurationYearsDiv").style.display="block";
 				 document.getElementById("projectDurationMonthsDiv").style.display="block";
-				 
-				 
 			  
 			}else{
 				document.getElementById("projectDurationYearsDiv").style.display="none";
@@ -3120,32 +2979,9 @@ function getJobType(jobType){
 				
 			}
 		  
-		  
-		  
-		  
-		  
-		  
 	}
 }
 </script>
-
-
-
-
-<!-- <script type="text/javascript">
-function checkcheckbox(){
-	var count = $("[type='checkbox']:checked").length;
-	alert(count);
-	if(count==0){
-		alert("please select checkbox");
-	}else{
-		alert("selected checkbox"+count);
-	}
-}
-</script> -->
-
-
-
 
 <script>
 function getNoticePeriodList(){
@@ -3164,18 +3000,17 @@ $('.chosen-select').each(function() {
 
 <script>
 function getEditRequirementDetails(requirementId){
-	var sourceleadUrl = '${sourceleadUrl}';
+	
 	if(templateId !=''){
 		$.ajax({
 			type : "GET",
-			url : sourceleadUrl + "/getEditRequirementDetails?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId,
+			url : sourceleadUrl + "/getEditRequirementDetails?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId,
 			success : function(data) {
 				var json = JSON.parse(data);
 				$(".Editor-container").find('.Editor-editor').html(json['description']);
 			},
 		}); 
 	}
-	
 }
 </script>
 
@@ -3183,11 +3018,11 @@ function getEditRequirementDetails(requirementId){
  function validateTeamName() {
 	 var name = $('#name').val(); 
 	 $('#teamNameDiv').find('p.jquery_form_error_message').remove();
-	 var sourceleadUrl ='${sourceleadUrl}';
+	 
 	 if(name != null && name != ""){
 		 $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/validateTeamName?${_csrf.parameterName}=${_csrf.token}&name="+name, 
+		        url: sourceleadUrl+"/validateTeamName?"+tokenParamName+"="+tokenValue+"&name="+name, 
 		        success: function(data) {
 		        	if(data == 'true'){
 						  
@@ -3214,6 +3049,15 @@ $(document).ready(function(){
 	getEditRequirementDetails(requirementId);
 	
 });
+</script>
+
+<script type="text/javascript">
+
+$(function() {
+	$("#uploadBtn").change(function() {
+		fileUpload("uploadBtn", "requirementDocuments", "requirement_form");
+	});
+ }); 
 </script>
  
 <jsp:include page="../masterFooter.jsp" />

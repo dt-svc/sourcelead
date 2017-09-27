@@ -1,27 +1,22 @@
 package com.bis.sourcelead.entity;
 
 import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
 
 @Entity
 @Table(name = "INVOICE_PAYMENT", catalog = "sourcelead")
@@ -36,11 +31,12 @@ public class InvoicePayment {
 	private Long id;
 	
 	
-	
+	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne
     @JoinColumn(name="INVOICE_ID", nullable=false )     
 	private Invoice invoiceId;
 	
+	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne
     @JoinColumn(name="ORG_LOCATION_ID", nullable=false )     
 	private OrgLocations orgLocation;
@@ -76,6 +72,8 @@ public class InvoicePayment {
 	@Column(name = "FILE_NAME", columnDefinition = "TEXT default NULL")
 	private String fileName;
 	
+	@Column(name = "FILE_URL")
+	private String fileURL;
 	
 	@Column(name = "CREATED_DATE")
 	private Date createdDate;
@@ -247,6 +245,16 @@ public class InvoicePayment {
 	public void setCurrencyCode(String currencyCode)
 	{
 		this.currencyCode = currencyCode;
+	}
+
+	public String getFileURL()
+	{
+		return fileURL;
+	}
+
+	public void setFileURL(String fileURL)
+	{
+		this.fileURL = fileURL;
 	}
 	
 }

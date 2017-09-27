@@ -57,7 +57,7 @@ function requirementTemplateList(){
 	  var sourceleadUrl ='${sourceleadUrl}';
 	  $.ajax({
            type : "POST",
-           url: sourceleadUrl+"/getRequirementTemplateListByOrgLocationsId?${_csrf.parameterName}=${_csrf.token}",    
+           url: sourceleadUrl+"/getRequirementTemplateListByOrgLocationsId?"+tokenParamName+"="+tokenValue+"",    
             success :function(data) {
                  /* if(data != null && data != 'undefined' && data != "" && data != '[]'){ */
                		
@@ -132,7 +132,7 @@ function requirementTemplateList(){
 		                     }
 		                     result = result +"<td><div>";
 		                     '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_DELETE_REQUIREMENT_TEMPLATE\')">'; 
-		                     	result = result +"<a id='edit-user' href='#' onClick='deleteRequirementTemplate("+opt.id+");'><i class='glyphicon glyphicon-trash'></i></a>";
+		                     	result = result +"<a id='edit-user' href='#' title='Delete' onClick='deleteRequirementTemplate("+opt.id+");'><i class='glyphicon glyphicon-trash'></i></a>";
 		                     '</sec:authorize>';
 		                     result = result +"</div></td>";
 		                    result = result +"</tr>";
@@ -189,7 +189,7 @@ function deleteRequirementTemplate(requirementId){
 	if (message == true) {
 		$.ajax({
 		   	type: "POST",
-		    url: sourceleadUrl+"/terminateRequirementTemplate?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId, 	   
+		    url: sourceleadUrl+"/terminateRequirementTemplate?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId, 	   
    		    success: function(data) {
    		    	if( data.indexOf('Sign In') >= 0){
 		    		location.replace(sourceleadUrl);

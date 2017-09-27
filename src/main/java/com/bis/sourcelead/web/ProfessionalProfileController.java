@@ -26,6 +26,7 @@ import com.bis.sourcelead.service.CandidateResumesService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.LookUpDataService;
+import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.StatesService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SessionMaintainanceData;
@@ -54,6 +55,9 @@ public class ProfessionalProfileController {
 	
 	@Autowired
 	CandidateResumesService candidateResumesService;
+	
+	@Autowired
+	OrgLocationService orgLocationService;
 	
 	protected static boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
@@ -110,14 +114,10 @@ public class ProfessionalProfileController {
 				return model;
 	}
 	 
-	 @RequestMapping(value = "/getProfessionalInfo" , method = RequestMethod.GET)
-		public String getProfessionalInfo(@RequestParam(value="candidateStatus", required=false) String  candidateStatus,HttpServletRequest request) throws Exception {
-		        String resultJson;
-		        User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		        Candidate can = (Candidate) SourceLeadSessionManager.getSessionAttribute(request, "candidate");
-		        Candidate candidate = candidateService.getCandidateByCandidateId(Long.valueOf(can.getId()));
-		        OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		        //Candidate candidate =	candidateService.getProfessionalInfoByLoginUserIdAndCandidateType(loginUser.getId(), candidateStatus);
+	 @RequestMapping(value = {"/getProfessionalInfo", "/rest/getProfessionalInfo"}, method = RequestMethod.GET)
+		public Candidate getProfessionalInfo(@RequestParam(value="candidateId", required=false) Long  candidateId,@RequestParam(value="locationCode", required=false) String  locationCode,HttpServletRequest request) throws Exception {
+		        Candidate candidate = candidateService.getCandidateByCandidateId(candidateId);
+		        OrgLocations orgLocations = orgLocationService.getOrgLocationsByLocationCode(locationCode);
 		        if(null != candidate.getConsultantUser()){
 		        	candidate.setFirstName(candidate.getConsultantUser().getFirstName());
 		        	if(null != candidate.getConsultantUser().getLastName()){
@@ -139,8 +139,7 @@ public class ProfessionalProfileController {
 		        }
 		        int percentage = candidateService.getCandidatePercentage(candidate,orgLocations);
 		        candidate.setProfilePercentage(percentage);
-		        resultJson = commonUtil.toJSON(candidate);
-				return resultJson;
+				return candidate;
 	}
 	 
 	 
