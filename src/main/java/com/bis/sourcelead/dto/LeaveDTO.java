@@ -19,6 +19,7 @@ public class LeaveDTO implements Serializable{
 	private String toDate;
 	private String toHalfDay;
 	private String leaveType;
+	private String leaveTypeId;
 	private String reason;
 	private List<String> approverUser;
 	private String approvedBy;
@@ -32,7 +33,29 @@ public class LeaveDTO implements Serializable{
 	private String updatedBy;
 	private List<FileInfo> fileInfo;
 	private String staticPath;
+	private String empName;
+	private String duration;
+	private String noOfDays;
+	private String balanceleaves;
+	private String fileUrl;
+	private String fileName;
+	private String empid;
+	private String empType;
+	private String empEmail;
 	
+	
+	public String getFileName() {
+		return fileName;
+	}
+	public void setFileName(String fileName) {
+		this.fileName = fileName;
+	}
+	public String getEmpName() {
+		return empName;
+	}
+	public void setEmpName(String empName) {
+		this.empName = empName;
+	}
 	public String getId() {
 		return id;
 	}
@@ -165,6 +188,55 @@ public class LeaveDTO implements Serializable{
 	public void setStaticPath(String staticPath) {
 		this.staticPath = staticPath;
 	}
+	public String getDuration() {
+		return duration;
+	}
+	public void setDuration(String duration) {
+		this.duration = duration;
+	}
+	public String getNoOfDays() {
+		return noOfDays;
+	}
+	public void setNoOfDays(String noOfDays) {
+		this.noOfDays = noOfDays;
+	}
+	public String getBalanceleaves() {
+		return balanceleaves;
+	}
+	public void setBalanceleaves(String balanceleaves) {
+		this.balanceleaves = balanceleaves;
+	}
+	public String getLeaveTypeId() {
+		return leaveTypeId;
+	}
+	public void setLeaveTypeId(String leaveTypeId) {
+		this.leaveTypeId = leaveTypeId;
+	}
+	public String getFileUrl() {
+		return fileUrl;
+	}
+	public void setFileUrl(String fileUrl) {
+		this.fileUrl = fileUrl;
+	}
+	public String getEmpid() {
+		return empid;
+	}
+	public void setEmpid(String empid) {
+		this.empid = empid;
+	}
+	public String getEmpType() {
+		return empType;
+	}
+	public void setEmpType(String empType) {
+		this.empType = empType;
+	}
+	public String getEmpEmail() {
+		return empEmail;
+	}
+	public void setEmpEmail(String empEmail) {
+		this.empEmail = empEmail;
+	}
+	
 	
 	
 }

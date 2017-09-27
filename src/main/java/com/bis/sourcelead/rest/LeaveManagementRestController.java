@@ -1,6 +1,9 @@
 package com.bis.sourcelead.rest;
 
 
+
+import java.text.ParseException;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -10,32 +13,33 @@ import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
-
-
-import com.bis.sourcelead.dao.HolidayDAO;
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dao.HolidayDAO;
 import com.bis.sourcelead.dao.LeaveTypeDao;
 import com.bis.sourcelead.dao.OptionsDao;
 import com.bis.sourcelead.dto.LeaveTypeDTO;
-import com.bis.sourcelead.dto.LeaveTypeDTO;
 import com.bis.sourcelead.entity.Department;
+import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.Leave;
+import com.bis.sourcelead.entity.LeaveApproveHierarchy;
+import com.bis.sourcelead.entity.LeaveManagementHistory;
 import com.bis.sourcelead.entity.LeaveType;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.service.DepartmentService;
+import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.LeaveService;
 import com.bis.sourcelead.service.LeaveTypeService;
 import com.bis.sourcelead.service.OrgLocationService;
@@ -44,34 +48,48 @@ import com.bis.sourcelead.dto.AddUserDTO;
 import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.ClientDTO;
 import com.bis.sourcelead.dto.LeaveDTO;
+
+import com.bis.sourcelead.dao.ShiftDao;
+
 import com.bis.sourcelead.dto.HolidayDTO;
+import com.bis.sourcelead.dto.LeaveDTO;
+import com.bis.sourcelead.dto.LeaveTypeDTO;
 import com.bis.sourcelead.dto.OptionsDTO;
+import com.bis.sourcelead.dto.ShiftDTO;
 import com.bis.sourcelead.entity.Department;
 import com.bis.sourcelead.entity.Holiday;
+import com.bis.sourcelead.entity.Leave;
 import com.bis.sourcelead.entity.LeaveRole;
 import com.bis.sourcelead.entity.LeaveType;
 import com.bis.sourcelead.entity.Option;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Roles;
+import com.bis.sourcelead.entity.Shift;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
-import com.bis.sourcelead.payroll.entity.AccountDeductionsDetails;
-import com.bis.sourcelead.service.DepartmentService;
-import com.bis.sourcelead.service.LeaveTypeService;
 import com.bis.sourcelead.service.DepartmentService;
 import com.bis.sourcelead.service.HolidayService;
+import com.bis.sourcelead.service.LeaveService;
+import com.bis.sourcelead.service.LeaveTypeService;
 import com.bis.sourcelead.service.OptionsService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.RolesService;
+import com.bis.sourcelead.service.ShiftService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
+import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
+
 
 @RestController
 public class LeaveManagementRestController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(LeaveManagementRestController.class);
+	
+	@Autowired
+	ShiftService shiftService;
+	
 	
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
@@ -114,6 +132,16 @@ public class LeaveManagementRestController {
 
 	@Autowired
 	HolidayDAO holidayDAO;
+	
+	@Autowired
+	CommonUtil commonUtil;
+	
+	@Autowired
+	EmployeesService employeesService;
+
+	@Autowired
+	ShiftDao shiftDao;
+
 
 	
 	/**
@@ -315,7 +343,6 @@ public class LeaveManagementRestController {
 		   model.setViewName("leavemanagement/addShift");
 	       return model;
 	}
-	
 	/**
 	 * returns view shift  jsp
 	 * @param request
@@ -399,6 +426,43 @@ public class LeaveManagementRestController {
 	       return model;
 	}
 	
+
+
+	@RequestMapping(value = "/saveShift", method = RequestMethod.POST)
+	public String saveShift(ShiftDTO shiftDTO) throws Exception {
+		shiftService.saveShift(shiftDTO);
+	       return "success";
+	}
+	
+	@RequestMapping(value = "/getShiftList", method = RequestMethod.GET)
+	public List<Shift> getShiftList(@RequestParam (value = "orgLocationId", required = true )Long orgLocationId) throws Exception{
+	List<Shift> shift = shiftService.getShiftList(orgLocationId);
+	return shift;
+	}
+	
+	@RequestMapping(value = "/editleaveshift")
+	public ModelAndView editShift(@RequestParam (value = "shiftId", required = false )String shiftId,HttpServletRequest request,HttpServletResponse response) throws Exception{
+		ModelAndView model = new ModelAndView();
+	    Shift shift = shiftService.getShiftById(shiftId);
+		model.addObject("shift", shift);
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		model.setViewName("leavemanagement/addShift");
+		return model;
+	}
+	
+	@RequestMapping(value = "/deleteShift")
+	public boolean deleteShift(@RequestParam(value = "shiftId", required = false) String shiftId,@RequestParam(value = "orgLocationId", required = false) String orgLocationId) throws Exception
+	{
+		boolean isDeleted = false;
+		 Shift deleteShift = shiftService.getShiftById(shiftId);
+		 if(deleteShift !=null) {
+			 deleteShift.setStatus(Constants.MEMBER_IN_ACTIVE);
+			 shiftDao.deleteShift(deleteShift);
+			 isDeleted = true;
+		 }
+		return isDeleted;
+	}
+
 	@RequestMapping(value = "/saveHoliday", method = RequestMethod.POST)
 	public @ResponseBody String saveHoliday(HolidayDTO holidayDTO,HttpServletRequest request)
 			throws Exception {
@@ -429,7 +493,10 @@ public class LeaveManagementRestController {
 	public @ResponseBody String saveNewLeaveType(LeaveTypeDTO leaveTypeDTO, HttpServletRequest request) throws Exception
 	{
 		LeaveType leaveType = leaveTypeService.addLeaveType(leaveTypeDTO);
-		return "success";
+		if(leaveType !=null) {
+			return "success";
+		}
+		return "failed";
 	}
 	
 
@@ -446,6 +513,7 @@ public class LeaveManagementRestController {
 	{
 		List<LeaveType> leaveTypeList = leaveTypeService.getLeaveTypeListByLocationId(leaveTypeDTO.getOrgLocationId());
 		return leaveTypeList;
+
 	}
 
 	/**
@@ -552,6 +620,7 @@ public class LeaveManagementRestController {
 	       return model;
 	}
 	
+
 	
 	
 		/**
@@ -734,18 +803,117 @@ public class LeaveManagementRestController {
 		return leaveType;
 	}
 	
-	@RequestMapping(value = "/getEmployeeRequestedLeaves", method = RequestMethod.GET)
+	/**
+	 * Get Employees those who are requested for the aprrove leave
+	 * @param orgLocationId
+	 * @param userId
+	 * @param request
+	 * @return List<LeaveDTO>
+	 * @throws Exception
+	 */
+	@RequestMapping(value = {"/getEmployeeRequestedLeaves","/rest/getEmployeeRequestedLeaves"}, method = RequestMethod.GET)
 	public  @ResponseBody List<LeaveDTO> getEmployeeRequestedLeaves(@RequestParam(value = "orgLocationId", required = false) Long orgLocationId,@RequestParam(value = "userId", required = false) String userId,HttpServletRequest request) throws Exception
 	{
-		List<LeaveDTO> requestedLeavesList = leaveService.getEmployeeRequestedLeavesBylocationId(orgLocationId,userId);
-		return new ArrayList<LeaveDTO>();
+		List<LeaveDTO> requestedLeavesList = null;
+		OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
+		requestedLeavesList = leaveService.getEmployeeRequestedLeavesBylocationId(orgLocations, userId);
+		if (requestedLeavesList != null && !requestedLeavesList.isEmpty()) {
+			return requestedLeavesList;
+		}
+		return requestedLeavesList;
 	}
 	
+
 	@RequestMapping(value = "/getLeavesListByLocationIdAndStatus")
 	public @ResponseBody List<Leave> getLeavesListByLocationIdAndStatus(@RequestParam(value = "orgLocationId", required = false) Long orgLocationId, @RequestParam(value = "status", required = false) String status,@RequestParam(value = "userId", required = false) Long userId, HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
 		List<Leave> leaveList = leaveService.getLeavesListByLocationIdAndStatus(orgLocationId,status,userId);
 		return leaveList;
+	}
+
+	/**
+	 * Approving the requested leave
+	 * @param orgLocationId
+	 * @param leaveId
+	 * @param leavTypeId
+	 * @param request
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = {"/approveRequestedLeave", "/rest/approveRequestedLeave"}, method = RequestMethod.GET)
+	@ResponseBody
+	public  boolean approveRequestedLeave(
+			@RequestParam(value = "orgLocationId", required = false) Long orgLocationId,
+			@RequestParam(value = "leaveId", required = false) String leaveId,
+			@RequestParam(value = "leaveTypeId", required = false) String leaveTypeId, 
+			@RequestParam(value = "approveStatus", required = false) String approveStatus,
+			@RequestParam(value = "userId", required = false) Long userId,
+			@RequestParam(value = "numberOfDays", required = false) String numberOfDays,HttpServletRequest request)
+			throws Exception {
+		
+		OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
+		User user = userService.getUserById(userId);
+		boolean isApproved = leaveService.approveRequestLeave(orgLocations,user,leaveId,leaveTypeId,approveStatus,numberOfDays);
+		return isApproved;
+		
+	}
+	
+	/**
+	 * Get Requested leaves Summary
+	 * 
+	 * @param orgLocationId
+	 * @param leaveId
+	 * @param leavTypeId
+	 * @param request
+	 * @return LeaveDTO
+	 * @throws Exception
+	 */
+	@RequestMapping(value = { "/getRequestedAproveSummary","/rest/getRequestedAproveSummary" }, method = RequestMethod.GET)
+	@ResponseBody
+	public LeaveDTO getRequestedAproveSummary(@RequestParam(value = "leaveId", required = false) String leaveId,
+			@RequestParam(value = "orgLocationId", required = false) Long orgLocationId, HttpServletRequest request)
+			throws Exception {
+		Leave leave = leaveService.getLeaveByLeavId(leaveId);
+		OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
+		LeaveDTO leaveDto = new LeaveDTO();
+		if (leave != null) {
+			StringBuilder sb = new StringBuilder();
+			StringBuilder durationSb = new StringBuilder();
+			leaveDto.setId(leave.getId());
+			if (leave.getUser() != null) {
+				if (StringUtils.isNotBlank(leave.getUser().getLastName())) {
+					sb.append(leave.getUser().getFirstName()).append(" ").append(leave.getUser().getLastName());
+				} else {
+					sb.append(leave.getUser().getFirstName());
+				}
+				leaveDto.setEmpName(sb.toString());
+				leaveDto.setEmpEmail(leave.getUser().getEmail());
+				Employees employees = employeesService.getEmployeeByUserIdAndOrgLocationsId(leave.getUser().getId(), orgLocations.getId());
+				if(employees !=null) {
+					leaveDto.setEmpid(employees.getEmployeeId());	
+				}
+			}
+			durationSb.append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), leave.getFromDate()))
+					.append(System.getProperty("line.separator"))
+					.append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), leave.getToDate()));
+
+			leaveDto.setDuration(durationSb.toString());
+			leaveDto.setLeaveType(leave.getLeaveType().getName());
+			leaveDto.setLeaveTypeId(leave.getLeaveType().getId());
+			leaveDto.setStatus(leave.getStatus());
+			try {
+				Long numberOfdays = commonUtil.getNumberOfDaysBetweenTwoDates(leave.getFromDate(), leave.getToDate());
+				leaveDto.setNoOfDays(String.valueOf(numberOfdays));
+			} catch (ParseException e) {
+				e.printStackTrace();
+			}
+			leaveDto.setBalanceleaves(leave.getLeaveType().getNumbefrOfLeavesPeryear());
+			leaveDto.setFileUrl(leave.getFileUrl());
+			leaveDto.setReason(leave.getReason());
+			leaveDto.setCreatedDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),leave.getCreatedDate()));
+			leaveDto.setFileName(leave.getFileName());
+		}
+		return leaveDto;
 	}
 
 }

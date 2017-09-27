@@ -13,4 +13,6 @@ public interface LeaveDao {
 
 	List<Leave> getLeavesListByLocationIdAndStatus(Long orgLocationId, String status, Long userId);
 
+	Leave getLeaveById(String leaveId) throws Exception;
+
 }
