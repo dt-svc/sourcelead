@@ -18,6 +18,8 @@ public interface ProjectTasksDao {
     
     public Boolean deleteTask(String id)throws Exception;
     
+    public ProjectTasks getProjectTasksByUUID(String taskUUD)throws Exception;
+    
     public List<ProjectTasks> getAllTasks()throws Exception;
     
     public List<ProjectTasks> getAllTasksByProjectIdAndTaskType(Long projectId,Long TaskType)throws Exception;
@@ -35,4 +37,6 @@ public interface ProjectTasksDao {
     public List<ProjectTasks> getAllTasksByProjectIdAndTaskTypeAndTaskStatus(Long projectId,String taskType,String taskStatus)throws Exception;
     
     public List<ProjectTasks> getAllTasksByProjectIdAndParentTaskId(Long projectId,Long parentTaskId)throws Exception;
+    
+    public Long getProjectTasksGeneratedIdByProjectId(Long projectId,Integer generatedIdCount) throws Exception;
 }

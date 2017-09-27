@@ -310,6 +310,8 @@ function addEducation(candidateId) {
 	
 	$('#startDate').datepicker({
 	      dateFormat: finalDateFormatRecoEduSave,
+	      changeMonth: true,
+	  	  changeYear: true, 
 	      onSelect: function (selected) {
 	    	  	var dt = $(this).datepicker('getDate', '+1d');
 	            dt.setDate(dt.getDate() + 1);
@@ -319,6 +321,8 @@ function addEducation(candidateId) {
 	  
 	  $('#endDate').datepicker({
 	      dateFormat: finalDateFormatRecoEduSave,
+	      changeMonth: true,
+	  	  changeYear: true, 
 	        onSelect: function (selected) {
 	        	var dt = $(this).datepicker('getDate', '-1d');
 	            dt.setDate(dt.getDate() - 1);
@@ -558,6 +562,8 @@ function EditEducation(candidateId,candidateEducationId) {
 	
 	$('#startDateEdit').datepicker({
 	      dateFormat: finalDateFormatRecoEduEdit,
+	      changeMonth: true,
+	  	  changeYear: true, 
 	      onSelect: function (selected) {
 	    	  var dt = $(this).datepicker('getDate', '+1d');
 	            dt.setDate(dt.getDate() + 1);
@@ -566,12 +572,14 @@ function EditEducation(candidateId,candidateEducationId) {
 	  });
 	  
 	  $('#endDateEdit').datepicker({
-	      dateFormat: finalDateFormatRecoEduEdit,
-	        onSelect: function (selected) {
+		      dateFormat: finalDateFormatRecoEduEdit,
+		      changeMonth: true,
+		  	  changeYear: true, 
+	          onSelect: function (selected) {
 	        	var dt = $(this).datepicker('getDate', '-1d');
 	            dt.setDate(dt.getDate() - 1);
 	            $("#startDateEdit").datepicker("option", "maxDate", dt);
-	        }
+	          }
 	  });
 	
 	/* $(".addUser-org").click(function(){

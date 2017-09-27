@@ -5,7 +5,6 @@
 <html>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
-
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 <style type="text/css">
@@ -230,7 +229,7 @@ function cancelOrgImg(){
 							<div class="form-group">
 								<label class="col-md-3">ZipCode</label>
 								<div class="col-md-9">
-								<input type="text"  class="form-control" name="zipcode" id="orgEditZipCode" field-name="Zip" data-validation="validate_int validate_Space" data-validation-optional="true" value="${SourceLeadWeb_orgLocations.zipCode}" />
+								<input type="text"  class="form-control" name="zipcode" id="orgEditZipCode" field-name="Zip" data-validation="validate_Space" data-validation-optional="true" value="${SourceLeadWeb_orgLocations.zipCode}" />
 								</div>
 							</div>
 							

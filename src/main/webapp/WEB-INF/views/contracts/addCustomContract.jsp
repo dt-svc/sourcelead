@@ -17,14 +17,6 @@
 <link href="resources/css/jquery-tagit.css" rel="stylesheet">
 <!-- end files for autocomplete with tagit -->
 
-<script>
- window.onload = function() {
-	 var conType = '${contract.contractType}';
-	 if(conType){
-		 contractTypeLabels();
-	 }
-};
-</script>
 
 
 

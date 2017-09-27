@@ -297,6 +297,7 @@ public class OrgLocationsDaoImpl implements OrgLocationsDao {
 		return false;
 	}
 
+
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public List<OrgLocations> getAllRegisteredOrgLocationsForClientProject(List<Long> orgLocationId) throws Exception {
@@ -304,6 +305,17 @@ public class OrgLocationsDaoImpl implements OrgLocationsDao {
 		String query = "from OrgLocations orgLocations left join fetch orgLocations.user where orgLocations.org.id <> '1' and orgLocations.id NOT IN (:orgLocationId) ";
 		List orgLocList = session.createQuery(query).setParameterList("orgLocationId", orgLocationId).setCacheable(true).list();
 		return orgLocList;
+	}
+	
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<OrgLocations> userList(Long orgId) throws Exception
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+			String query = "from OrgLocations orgLocations where orgLocations.org.id = :orgId";
+			List<OrgLocations> orgLocations = session.createQuery(query.toString()).setLong("orgId", orgId).list();
+		return orgLocations;
 	}
 
 }

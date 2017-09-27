@@ -26,6 +26,7 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.ProjectAssignTask;
 import com.bis.sourcelead.entity.ProjectClients;
+import com.bis.sourcelead.entity.ProjectBudget;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.ProjectTasks;
 import com.bis.sourcelead.entity.Projects;
@@ -39,6 +40,7 @@ import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgService;
 import com.bis.sourcelead.service.ProjectAssignTasksService;
 import com.bis.sourcelead.service.ProjectClientService;
+import com.bis.sourcelead.service.ProjectBudgetService;
 import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.ProjectPlanningRequestService;
 import com.bis.sourcelead.service.ProjectTasksService;
@@ -102,6 +104,8 @@ public class ProjectsController {
 	ProjectClientService projectClientService;
 	
 
+	@Autowired
+	ProjectBudgetService projectBudgetService;
 	 
 	 protected boolean isNullOrEmpty(String str)
 	 {
@@ -261,7 +265,7 @@ public class ProjectsController {
 							clientOrgLocations = projectClients.getOrgRelationId().getResponderLocationId();
 						}
 						
-						if(!clientOrgLocations.getStatus().equals(Status.ACTIVE)){
+						if(clientOrgLocations.getStatus() != null && !clientOrgLocations.getStatus().equals(Status.ACTIVE)){
 							isClientOrgActive = Constants.NO;
 						}
 					}
@@ -279,6 +283,13 @@ public class ProjectsController {
 				
 				Integer resourceRequestsCount = projectPlanningRequestService.getProjectPlanningRequestCountByProjectId(projects.getId());
 				model.addObject("resourceRequestsCount", resourceRequestsCount);
+				
+				List<ProjectBudget> projectBudgetList= projectBudgetService.getProjectBudgetByProjectTaskId(projects.getId());
+				if(projectBudgetList != null) {
+					model.addObject("projectBudgetCount", projectBudgetList.size());
+				}else {
+					model.addObject("projectBudgetCount", 0);
+				}
 				
 				model.addObject("projectUUID", projectUUID);
 				model.addObject("postedOrgLocationId", projects.getOrgLocationsId().getId());
@@ -304,11 +315,11 @@ public class ProjectsController {
 	}
 	 
 	 @RequestMapping(value = "/projectTaskSummary")
-		public ModelAndView projectTaskSummary(@RequestParam(value="taskId", required=true) String taskId,HttpServletRequest request) throws Exception {
+		public ModelAndView projectTaskSummary(@RequestParam(value="taskUUID", required=true) String taskUUID,HttpServletRequest request) throws Exception {
 				ModelAndView model = new ModelAndView();
 				OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 				SimpleDateFormat dateFormat = orgLocations.getLocFullFormDateFormatter();
-				 ProjectTasks projectTask = projectTasksService.getTasksId(taskId);
+				 ProjectTasks projectTask = projectTasksService.getProjectTasksByUUID(taskUUID);
 				 if(projectTask.getProjectId() != null) {
 					 model.addObject("projectUUID", projectTask.getProjectId().getProjectUUID());
 					 model.addObject("projectId", projectTask.getProjectId().getId());
@@ -332,7 +343,7 @@ public class ProjectsController {
 					 model.addObject("createdBy", user.getFullName());
 				 }
 				 
-				 List<ProjectAssignTask> assignedUsers = projectAssignTasksService.getProjectAssignTaskListByProjectTaskId(Long.valueOf(taskId)); 
+				 List<ProjectAssignTask> assignedUsers = projectAssignTasksService.getProjectAssignTaskListByProjectTaskId(projectTask.getId()); 
 				 for(ProjectAssignTask pat:assignedUsers) {
 					 if(pat.getProjectMemberId() != null) {
 						 pat.setAssignedUserName(pat.getProjectMemberId().getEmployee().getUser().getFullName());

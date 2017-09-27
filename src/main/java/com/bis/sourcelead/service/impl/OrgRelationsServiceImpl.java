@@ -115,10 +115,22 @@ public class OrgRelationsServiceImpl implements OrgRelationsService {
 			}else{
 				orgRelations.setInitiatorType("Client"); 
 				orgRelations.setResponderType("Vendor");
+				orgRelations.setVendorRelationStatus("Draft");
+				
+				 if(clientDTO.getTemplateId() != null && clientDTO.getTemplateId().size() > 0){
+				    	StringBuilder templateIds = new StringBuilder();
+				    	for(String templateId : clientDTO.getTemplateId()){
+				    		templateIds.append(templateId.trim()).append(",");
+				    	}
+				    	String templateIdsStr = templateIds.toString();
+				    	
+				    	orgRelations.setVendorOnboardTemplateId(templateIdsStr.substring(0, templateIdsStr.length()-1)); 
+				    }else{
+				    	orgRelations.setVendorOnboardTemplateId(null);
+				    }
 			}
 		  }
 		if(StringUtils.isNotBlank(clientDTO.getLevel())){
-			//orgRelations.setLevel(jsonObj.getString("level"));
 			orgRelations.setInitiatorLevel(clientDTO.getLevel());
 			orgRelations.setResponderLevel("Tier-5");
 		}else{

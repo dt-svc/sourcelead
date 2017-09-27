@@ -44,4 +44,5 @@ public interface OrgLocationsDao {
 
 	public boolean validateOrgShortCode(String orgShortId);
     
+	public List<OrgLocations> userList(Long orgId) throws Exception;
 }

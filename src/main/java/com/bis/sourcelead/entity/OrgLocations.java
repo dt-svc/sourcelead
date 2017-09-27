@@ -201,6 +201,9 @@ public class OrgLocations implements Serializable{
     @Transient
     private SimpleDateFormat locFullFormDateFormatter;
     
+    @Transient
+    private Long vendorOrgRelationId;
+    
    
 	public Timezone getTimezone() {
 		return timezone;
@@ -634,6 +637,14 @@ public class OrgLocations implements Serializable{
 
 	public void setAverageWorkingHours(Integer averageWorkingHours) {
 		this.averageWorkingHours = averageWorkingHours;
+	}
+
+	public Long getVendorOrgRelationId() {
+		return vendorOrgRelationId;
+	}
+
+	public void setVendorOrgRelationId(Long vendorOrgRelationId) {
+		this.vendorOrgRelationId = vendorOrgRelationId;
 	}
 	
 }

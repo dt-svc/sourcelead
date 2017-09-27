@@ -111,4 +111,6 @@ public interface ProjectMembersService {
 	public String transferMembers(OrgLocations orgLocations,Org org,Projects projects,String projectMembers,User user,Long projectOrgLocationId) throws Exception;
 	
 	Integer getProjectMembersCountByProjectClientId(Long projectClientId) throws Exception;
+	
+	ProjectMembers getProjectMembersByCandidateIdAndProjectId(Long candidateId,Long projectId) throws Exception;
 }

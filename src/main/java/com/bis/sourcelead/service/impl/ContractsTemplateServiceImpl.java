@@ -1189,7 +1189,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 					  contractsTemplateDao.saveNewContract(upadatedContracts);
 			        	Contracts updateEnvContracts = contractsTemplateDao.saveNewContract(savedChildContracts);
 				contractApproveEmail(contracts,user,org,orgLocation);
-				//sendMailToOwner(contracts,user,org,orgLocation);
+				sendMailToOwner(contracts,user,org,orgLocation);
 		}else{
 
 			contracts.setRejectedReason(rejectReason);
@@ -2457,7 +2457,8 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		    }
 			globalVarsMap.put("duration",durationSb.toString());	
 			
-		if(!Constants.NDA.equalsIgnoreCase(contracts.getContractType()) && !Constants.NSA.equalsIgnoreCase(contracts.getContractType())){
+		if(!Constants.NDA.equalsIgnoreCase(contracts.getContractType()) && !Constants.NSA.equalsIgnoreCase(contracts.getContractType()) && !Constants.CLIENT_MSA.equalsIgnoreCase(contracts.getContractType())
+				&& !Constants.VENDOR_MSA.equalsIgnoreCase(contracts.getContractType())){
 			if(contracts.getInvoiceFrequency() != null && !"".equalsIgnoreCase(contracts.getInvoiceFrequency())){
 				globalVarsMap.put("billingCycle", contracts.getInvoiceFrequency());
 			 }else{

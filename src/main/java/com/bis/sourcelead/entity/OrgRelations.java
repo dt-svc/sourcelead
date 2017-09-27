@@ -22,6 +22,7 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
+import org.hibernate.annotations.Type;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -70,6 +71,13 @@ public class OrgRelations implements Serializable{
 	
 	@Column(name="RESPONDER_LEVEL")
 	private String responderLevel;
+	
+	@Column(name="VENDOR_ONBOARD_TEMPLATE_ID")
+	@Type(type="text")
+	private String vendorOnboardTemplateId;
+	
+	@Column(name="VENDOR_RELATION_STATUS")
+	private String vendorRelationStatus;
 	
 	@Column(name="STATUS")
 	private String status;
@@ -712,6 +720,24 @@ public class OrgRelations implements Serializable{
 
 	public void setClientCurrency(String clientCurrency) {
 		this.clientCurrency = clientCurrency;
+	}
+
+	
+
+	public String getVendorOnboardTemplateId() {
+		return vendorOnboardTemplateId;
+	}
+
+	public void setVendorOnboardTemplateId(String vendorOnboardTemplateId) {
+		this.vendorOnboardTemplateId = vendorOnboardTemplateId;
+	}
+
+	public String getVendorRelationStatus() {
+		return vendorRelationStatus;
+	}
+
+	public void setVendorRelationStatus(String vendorRelationStatus) {
+		this.vendorRelationStatus = vendorRelationStatus;
 	}
 	
 }

@@ -89,7 +89,7 @@
 			  <div class="clearfix"></div>
 		  </div>
 	
-	<form:form class="login-form clearfix"  id="onboardCandidateDocs_form"  name="onboardCandidateDocs_form" enctype='multipart/form-data' >	  
+	<form:form class="login-form clearfix"  id="onboardCandidateDocs_form"  name="onboardCandidateDocs_form">	  
 		<div id="loading"></div>
 		<div class="welCo1">
         <input type="hidden" name="candidateOnboardId" id="candidateOnboardId" value="${candidateOnboardId}"/>
@@ -98,7 +98,7 @@
 				<c:if test="${contractDocsListSize > 0}">
 				<c:forEach var="contractDocs" items="${contractDocsList}">
 				<div class="step3">
-					<span><a href="${sourceleadUrl}/downloadTemplateDocument?documentUUID=${contractDocs.documentUUID}" class="fa fa-file-text"></a></span>
+					<span><a href="${contractDocs.fileURL}"  class="fa fa-file-text"></a></span>
 					<strong>
 						
 						<c:if test="${contractDocs.documentStatus != 'ACCEPTED'}">
@@ -110,7 +110,7 @@
 						</c:if>
 						
 						<c:if test="${contractDocs.documentStatus != 'ACCEPTED'}">
-						<input type="file"  class="form-control welFile" readonly id="uploadContractsFile${contractDocs.id}" name="docFile${contractDocs.id}"   placeholder="Upload Resume ..." field-name="Upload Resume" data-validation="validatedoc" data-validation-optional="true" >
+						<input type="file"  class="form-control welFile" readonly id="uploadContractsFile${contractDocs.id}" placeholder="Upload Resume ..." field-name="Upload Resume" data-validation="validatedoc"  onChange="uploadContract(${contractDocs.id});"   data-validation-optional="true" >
 						</c:if>
 						
 						<c:if test="${contractDocs.documentStatus == 'ACCEPTED'}">
@@ -136,7 +136,7 @@
 				<c:if test="${formsDocsListSize > 0}">
 				<c:forEach var="formsDocs" items="${formsDocsList}">
 				<div class="step3">
-					<span><a href="${sourceleadUrl}/downloadTemplateDocument?documentUUID=${formsDocs.documentUUID}" class="fa fa-file-text"></a></span>
+					<span><a href="${formsDocs.fileURL}"  class="fa fa-file-text"></a></span>
 					<strong>
 						<c:if test="${formsDocs.documentStatus != 'ACCEPTED'}">
 						   <p>${formsDocs.fileName}</p>
@@ -148,7 +148,7 @@
 						
 						
 						<c:if test="${formsDocs.documentStatus != 'ACCEPTED'}">
-						<input  type="file" class="form-control welFile" readonly id="uploadFormsFile${formsDocs.id}"  name="docFile${formsDocs.id}"  placeholder="Upload Resume ..." field-name="Upload Resume" data-validation="validatedoc" data-validation-optional="true" >
+						<input  type="file" class="form-control welFile" readonly id="uploadFormsFile${formsDocs.id}"   placeholder="Upload Resume ..." field-name="Upload Resume" onChange="uploadForms(${formsDocs.id})" data-validation="validatedoc" data-validation-optional="true" >
 						</c:if>
 						
 						<c:if test="${formsDocs.documentStatus == 'ACCEPTED'}">
@@ -177,7 +177,7 @@
 				<c:if test="${policiesDocsListSize > 0}">
 				<c:forEach var="policiesDocs" items="${policiesDocsList}">
 				<div class="step3">
-					<span><a href="${sourceleadUrl}/downloadTemplateDocument?documentUUID=${policiesDocs.documentUUID}" class="fa fa-file-text"></a></span>
+					<span><a href="${policiesDocs.fileURL}"  class="fa fa-file-text"></a></span>
 					<strong>
 						<p>${policiesDocs.fileName}</p>
 				
@@ -283,26 +283,14 @@ function saveOnboardingCandidateDocs(saveType){
 	
 	  var sourceleadUrl ='${sourceleadUrl}';
 	  if ($('#onboardCandidateDocs_form').validate(false, validationSettings)){ 
-		  var frm = $('#onboardCandidateDocs_form').serializeFormJSON();
-	      var con = JSON.stringify(frm);
-	      con = con.replace(/[{}]/g, "");
-	      
-	      //It will escape all the special characters
-	      var jsonData = encodeURIComponent(con);
-	      
-		   var form = $('#onboardCandidateDocs_form')[0];
-		   var formData = new FormData(form); 
-		
+		 var formData = getFormData1("onboardCandidateDocs_form");
 	   $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		$.ajax({
 	        type : "POST",
 		      data: formData,
-		      contentType : 'application/json; charset=utf-8',
-		      enctype: 'multipart/form-data',
 	          processData: false,
 	          contentType:false,
-		      dataType : 'json',
-	    	  url: sourceleadUrl+"/storeOnboardingCandidateDocsStep3?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,		
+	    	  url: sourceleadUrl+"/storeOnboardingCandidateDocsStep3?${_csrf.parameterName}=${_csrf.token}",		
 		      success :function(result) {
 		    	  location.replace(sourceleadUrl+"/onboardingCandidateSetp4");  
 	      }
@@ -351,8 +339,16 @@ function saveOnboardingCandidateDocs(saveType){
 
 
 <script>
+
+var sourceleadUrl ='${sourceleadUrl}';
+function uploadContract(id){ 
+	fileUpload(sourceleadUrl, "uploadContractsFile"+id+"", "Welcome-Onboarding-Contract-Documents", "onboardCandidateDocs_form","uploadContractsFile");
+}
+function uploadForms(id){
+	fileUpload(sourceleadUrl, "uploadFormsFile"+id+"", "Welcome-Onboarding-Forms-Documents", "onboardCandidateDocs_form","uploadFormsFile");
+}
+ 
 function uploadFormFile(id){
-	 
 	 $("#uploadFormsFile"+id+"").val($("#uploadFormsBtn"+id+"").val().replace(/C:\\fakepath\\/i, ''));
 }
 
@@ -367,7 +363,7 @@ function uploadPoliciesFile(id){
 }
 	 
 </script>
-
+<script src="resources/js/slead-common.js"></script>
 <script>
   function navtoggle(elementRef){
 	  

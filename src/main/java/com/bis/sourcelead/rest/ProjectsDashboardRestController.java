@@ -47,6 +47,7 @@ import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectApproverHierarchy;
+import com.bis.sourcelead.entity.ProjectBudget;
 import com.bis.sourcelead.entity.ProjectClients;
 import com.bis.sourcelead.entity.ProjectDocuments;
 import com.bis.sourcelead.entity.ProjectMembers;
@@ -242,8 +243,26 @@ public class ProjectsDashboardRestController {
 		    	 }
 		     }
 		     
+		     Set<ProjectBudget> projectBudgetList = projects.getProjectBudget();
+		     if(projectBudgetList != null && projectBudgetList.size() > 0) {
+		    	 Set<ProjectBudget> ProjectBudgetList =  new LinkedHashSet<ProjectBudget>();
+		    	 for(ProjectBudget pl:projectBudgetList ) {
+			    	 pl.setEstimatedBudgetCurrency(pl.getEstimatedBudgetCurrency());
+			    	 pl.setEstimatedHours(pl.getEstimatedHours());
+			    	 pl.setEstimatedBudgetValue(pl.getEstimatedBudgetValue());
+			    	 if(pl.getApproverUserId() != null){
+			    		 pl.setUserId(pl.getApproverUserId().getId());
+			    	 }
+			    	 
+			    	 ProjectBudgetList.add(pl);
+			     }
+		    	 projects.setProjectBudgetList(ProjectBudgetList);
+		     }
+		     
+		    
+		     
 		     Set<ProjectDocuments> projectDocumentsList = projects.getProjectDocuments();
-		     if(projectDocumentsList != null){
+		     if(projectDocumentsList != null && projectDocumentsList.size() > 0){
 		    	 Set<ProjectDocuments> documentsList =  new LinkedHashSet<ProjectDocuments>();
 		    	 for(ProjectDocuments projectDocuments : projectDocumentsList){
 		    		 if(projectDocuments.getStatus().equals(1)){

@@ -100,4 +100,6 @@ public interface ProjectMembersDao {
 	List<ProjectMembers> getAllProjectMembersByMasterCandidateId(Long masterCandidateId,Long projectId) throws Exception;
 	
 	Integer getProjectMembersCountByProjectClientId(Long projectClientId) throws Exception;
+	
+	ProjectMembers getProjectMembersByCandidateIdAndProjectId(Long candidateId,Long projectId) throws Exception;
 }

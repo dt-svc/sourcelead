@@ -99,7 +99,7 @@
 				<c:if test="${resignationDocumentsListSize > 0}">
 				<c:forEach var="teminationDocs" items="${resignationDocumentsList}">
 				<div class="step3">
-					<span><a href="${sourceleadUrl}/downloadOffboardDocument?documentUUID=${teminationDocs.documentUUID}"  class="fa fa-file-text"></a></span>
+					<span><a href="${teminationDocs.fileURL}"  class="fa fa-file-text"></a></span>
 					<strong>
 						<p>${teminationDocs.fileName}</p>
 					</strong>
@@ -118,7 +118,7 @@
 				<c:if test="${offboardPackDocumentsListSize > 0}">
 				<c:forEach var="offboardPackDocs" items="${offboardPackDocumentsList}">
 				<div class="step3">
-					<span><a href="${sourceleadUrl}/downloadOffboardDocument?documentUUID=${offboardPackDocs.documentUUID}"  class="fa fa-file-text"></a></span>
+					<span><a href="${offboardPackDocs.fileURL}"   class="fa fa-file-text"></a></span>
 					<strong>
 						<p>${offboardPackDocs.fileName}</p>
 					</strong>

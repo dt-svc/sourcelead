@@ -288,6 +288,16 @@ function uploadButton(id){
 						</div>
 
 						<div class="form-group">
+							<label class="col-md-3"> Project Short Code <span
+								class="text-danger">*</span>
+							</label>
+							<div class="col-md-9">
+								<input type="text" class="form-control" name="projectShortCode" id="projectShortCode" placeholder="Project Short Code" data-validation="required validate_length length1-3"
+									field-name="Project Short Code" value="">  
+
+							</div>
+						</div>
+						<div class="form-group">
 							<label class="col-md-3"></label>
 							<div class="col-md-9">
 								<div class="checkBox">
@@ -332,7 +342,7 @@ function uploadButton(id){
 				<!--  div row end -->
 <!-- dont remove the code because next implement code Laxman -->
 				<!--  div row start -->
-				<!-- <div class="row">
+			 <div class="row">
 					<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 						<h5>Budget Details</h5>
 						<div class="form-group" id="">
@@ -340,70 +350,73 @@ function uploadButton(id){
 							<div class="col-md-9"></div>
 						</div>
 					</div>
-				</div> -->
+				</div> 
 
 
           
 				<div class="row">
-					<%-- <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+					<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
 
 						<div class="form-group" id="EstimatedHoursDiv">
 							<label class="col-md-3">Estimated hours</label>
 							<div class="col-md-9">
-								<input type="number" value="" id="EstimatedHours" min="1"
-									max="99999" name="EstimatedHours" class="form-control"
+								<input type="text" value="" id="estimatedHours"  name="estimatedHours" class="form-control"
 									data-validation-optional="true" class="form-control" onblur="">
 							</div>
 						</div>
 
-						<div class="form-group">
-							<label class="col-md-3">Budget Approver</label>
-							<div class="col-md-9" id="chosen-budgetapprover">
-								<select class="form-control chosen-select" id="budgetApprover"
-									name="budgetApprover" onchange="" field-name="Budget Approver">
-
-									<option value="">-- Budget Approver --</option>
-									<c:forEach var="option" items="${user_List}">
-										<option value="${option.id},${option.userType}">${option.firstName}
-											${option.lastName}</option>
-									</c:forEach>
-
-								</select>
+						<div class="form-group" id="EstimatedBudgetDiv">
+							<label class="col-md-3">Notify Budget At</label>
+							<div class="col-md-9">
+								<div class="input-group">
+								<div class="input-group-btn tblminwidth-75" style="min-width: 65px !important;">
+								      <input type="text" class="pull-left btn btn-primary btn-block" value="%" readonly>
+					                </div>
+									<input type="text" value="" id="notifyBudgetAt" name="notifyBudgetAt" class="form-control"
+										data-validation="validate_Space validate_length length2-50" data-validation-optional="true" class="form-control" >
+								</div>
 							</div>
 						</div>
 
+					</div> 
 
-					</div> --%>
 
-
-					<!-- <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
-
+					 <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
 						<div class="form-group" id="EstimatedBudgetDiv">
 							<label class="col-md-3">Estimated Budget</label>
 							<div class="col-md-9">
 								<div class="input-group">
-									<div class="input-group-btn selp-custom-min"
-										id="estimatedBudgetId">
-										<select class="form-control chosen-select">
-											<option value="c2c">INR</option>
-											<option value="w2">USD</option>
-										</select>
-									</div>
-									<input type="number" value="" id="EstimatedBudget"
-										name="EstimatedBudget" class="form-control"
-										data-validation="validate_Space validate_length length2-50"
-										data-validation-optional="true" class="form-control" onblur="">
+								<div class="input-group-btn selp-custom-min selp-customMin">
+					                  <select class="selectpicker" id="estimatedBudgetCurrency" name="estimatedBudgetCurrency" >
+						                 <option ${SourceLeadWeb_currencyCode == 'INR' ? 'selected' : ''}>INR</option>
+						                 <option ${SourceLeadWeb_currencyCode == 'AUD' ? 'selected' : ''}>AUD</option>
+						                 <option ${SourceLeadWeb_currencyCode == 'USD' ? 'selected' : ''}>USD</option>
+						                 <option ${SourceLeadWeb_currencyCode == 'GBP' ? 'selected' : ''}>GBP</option>
+						                 <option ${SourceLeadWeb_currencyCode == 'SGD' ? 'selected' : ''}>SGD</option>
+						                 <option ${SourceLeadWeb_currencyCode == 'EUR' ? 'selected' : ''}>EUR</option>
+					                  
+					                </select>
+					                </div>
+									<input type="text" value="" id="estimatedBudget" name="estimatedBudget" class="form-control"
+										data-validation="validate_Space validate_length length2-50" data-validation-optional="true" class="form-control" >
 								</div>
 							</div>
 						</div>
-					</div> -->
+						
+						<div class="form-group">
+							<label class="col-md-3">Budget Approver</label>
+							<div class="col-md-9" id="chosen-budgetapprover">
+								<select class="form-control" id="budgetApprover" name="budgetApproverUser" onchange="" field-name="Budget Approver" onchange="getBudgetApprover();">
+								<option value="">-- Select Budget Approver --</option>
+								</select>
+							</div>
+						</div>
+					</div> 
 
 
 					<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12  txtEditor_p">
 						<h5>Description</h5>
 						<textarea id="txtEditor" name="projectDescription"   value="" class="form-control newContrtextarea" data-validation="validate_length length2-5000" data-validation-optional="true"></textarea>
-<!-- 						<textarea maxlength="5000" cols="80" rows="10" id="ProjectDescription" name="ProjectDescription"></textarea> -->
-
 					</div>
 					
 					<div id="timesheetDocumentsId">
@@ -564,6 +577,7 @@ function getStatus(){
 				additionalDetails.className = "disabledLink";
 			}
 			getProjectLevel1Approvers();
+			getBudgetApprover();
 		}
 		
 		$("#tab-a").show()
@@ -666,8 +680,8 @@ function getProjectDetails(){
 	        	 $("input[name=projectName]").val(json.projectName);
 	        	 $("input[name=startDate]").val(json.startDateStr);
 	        	 $("input[name=endDate]").val(json.endDateStr);
-	        	 
-	        	 
+	        	 $("#projectShortCode").val(json.projectShortCode);
+	        	 $("#notifyBudgetAt").val(json.notifyBudgetAt);
 	        	 
 	           var projectStatus = '';
 	           if(json.projectStatus == 'NOTSTARTED'){
@@ -727,7 +741,20 @@ function getProjectDetails(){
         	   $(".Editor-editor").html(json.description);
         	   
         	   
-        	   if(json.projectDocumentsList.length > 0){
+        	   //Project Budget details
+        	   if(json.projectBudget.length > 0){
+        		   for(var i=0; i<json.projectBudget.length; i++){
+        			   var report = json.projectBudget[i];
+        			   $("#estimatedBudgetCurrency").val(report.estimatedBudgetCurrency);
+        			   $("#estimatedHours").val(report.estimatedHours);
+        			   $("#estimatedBudget").val(report.estimatedBudgetValue);
+        			   getBudgetApprover(report.userId);
+        		   }
+        		   
+        	   }
+        	   
+        	   
+        	   if(json.projectDocumentsList != null && json.projectDocumentsList.length > 0){
         		   var result = '';
         		   for(var i=0; i<json.projectDocumentsList.length; i++){
         			   var opt = json.projectDocumentsList[i];
@@ -1022,7 +1049,32 @@ function getProjectLevel1Approvers(approverUserId){
 		    });
 	 }
 </script>
-
+<script>
+function getBudgetApprover(approverUserId){
+	 var sourceleadUrl ='${sourceleadUrl}';
+	 $.ajax({
+	    	type: "GET",
+	        url: sourceleadUrl+"/getProjectLevel1Approvers?${_csrf.parameterName}=${_csrf.token}",
+	        success: function(json) {
+	        	var output = "";
+// 	        	output = output + "<option value=''>-- Select Budget Approver --</option>";
+	        	for (var i=0; i<json.length; i++)
+				{
+	        		 var opt = json[i];
+	        		 if(opt.id == approverUserId){
+		        			output = output + "<option value='"+opt.id+"' selected>"+opt.firstName+" "+opt.lastName+"</option>";
+		        		}else{
+		        			output = output + "<option value='"+opt.id+"'> "+opt.firstName+" "+opt.lastName+"</option>";
+		        		}
+				}
+		        $("#budgetApprover").append(output);
+		        $('#budgetApprover').chosen();
+		        $('#budgetApprover').trigger("chosen:updated");
+	        }
+	    });
+}
+</script>
+									
 <script type="text/javascript">
         var validationSettings = {
             errorMessagePosition : 'element',

@@ -135,23 +135,12 @@ public class VendorRestController {
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
-		
-		if(clientDTO.getOwner() != null && !clientDTO.getOwner().isEmpty()){
-			for(String owners :clientDTO.getOwner()){
-				User ownerUser = userService.getUserById(Long.parseLong(owners));
-				OrgSpoc orgSpoc = orgSpocService.validateSpacEmailIdByOwnerUserIdAndOrgRelationId(clientDTO.getEmail(), Long.parseLong(orgRelationId), ownerUser.getId(),1);	
-		     if(orgSpoc == null){
 			    	orgSpocService.addVendorContacts(clientDTO,addUserDTO,candidateDTO, user, orgLocations, orgRelationId, clientLocationId,responderType,org);
 			    	if(responderType.equalsIgnoreCase("Vendor")){
 			    		SourceLeadSessionManager.setSessionAttribute(request, "vendorContactCreateMsg","Success !! New vendor contact added.");
 				 	}else if(responderType.equalsIgnoreCase("Client")){
 				 		SourceLeadSessionManager.setSessionAttribute(request, "clientContactCreateMsg","Success !! New client contact added.");
 				 	}
-					
-			    }
-			} 
-		}
-		
 			return "vendorsList";
 	}
 

@@ -16,6 +16,7 @@ import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.ProjectTasksDao;
 import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.dto.ProjectTasksDTO;
@@ -37,7 +38,9 @@ import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.FileUploadUtil;
+import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
+import com.ibm.icu.text.DecimalFormat;
 
 @Service
 public class ProjectTasksServiceImpl implements ProjectTasksService {
@@ -154,8 +157,75 @@ public class ProjectTasksServiceImpl implements ProjectTasksService {
 		List<ProjectTasks> allparentTaskList = tasksDao.getAllTasksByProjectIdAndParentTaskId(projectId,parentTaskId);
 		return allparentTaskList;
 	}
-
-	@Override
+	
+ 
+	
+	public String getProjectTaskGenaratedId(Projects projects) throws Exception {
+		String projectNmae = projects.getProjectName();
+		String companyShortCode = null;
+		Integer generatedIdcount = 0;
+		Long number = 1L;
+		String requirementId = null;
+		String[] splitName = projects.getProjectName().split(" ");
+		int count = 0;
+		StringBuilder sb = new StringBuilder();
+		String splitProjectName ="";
+		switch (splitName.length) {
+		  case 1:
+				  switch( projectNmae.length()) {
+	                    case 2:
+	            			for (int j = 0; j < projectNmae.length(); j++) {
+	            				projectNmae.charAt(j);
+	            				count++;
+	            			}
+	            			sb.append(projectNmae.substring(0, count));
+	            			splitProjectName = sb.toString().toUpperCase();
+	                        break;
+	                    default:
+	            			sb.append(projectNmae.substring(0, 2));
+	            			 splitProjectName = sb.toString().toUpperCase();
+		                }
+		        break;
+		  case 2: 
+				String first = splitName[0].substring(0, 1);
+				String second = splitName[1].substring(0, 1);
+				 splitProjectName = sb.append(first).append(second).toString().toUpperCase();
+		        break;
+		  default:
+				for (String s : projectNmae.split(" ")){
+					sb.append(s.charAt(0));
+				}
+				 splitProjectName = sb.toString().substring(0, 2).toUpperCase();
+		        break;
+		}
+		
+		
+		if(StringUtils.isNotBlank(projects.getOrgLocationsId().getGeneratedUserId())) {
+			companyShortCode = projects.getOrgLocationsId().getGeneratedUserId();
+		}
+		StringBuilder sbuilder = new StringBuilder();
+		sbuilder.append(companyShortCode).append(splitProjectName);
+		String generatedUsreId = sbuilder.toString();
+		for (int i = 0; i < generatedUsreId.length(); i++) {
+			char ch = generatedUsreId.charAt(i);
+			if (Character.isAlphabetic(ch)) {
+				generatedIdcount++;
+			}
+		}
+		generatedIdcount = generatedIdcount + 1;
+		Long checkNumber = tasksDao.getProjectTasksGeneratedIdByProjectId(projects.getId(), generatedIdcount); 
+		if (checkNumber == null) {
+			requirementId = number.toString();
+		} else {
+			Long reqId = checkNumber + 1;
+			requirementId = reqId.toString();
+		}
+		final DecimalFormat decimalFormat = new DecimalFormat("0");
+		String convetredRequirementsId = decimalFormat.format(Long.parseLong(requirementId));
+		
+		return sbuilder.append(convetredRequirementsId).toString();
+	}
+	
 	public String saveProjectTasksDTOByProjectId(Long projectId, ProjectTasksDTO projectTasksDTO, Long userId) throws Exception {
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		ProjectTasks  tasks  = new ProjectTasks();
@@ -225,11 +295,11 @@ public class ProjectTasksServiceImpl implements ProjectTasksService {
 				tasks.setOwnerUserId(user);
 			}
 		}
-		if(projectTasksDTO .getUploadedFileInfo() != null &&  !projectTasksDTO.getUploadedFileInfo().isEmpty()) {
-			List<ProjectTaskDocuments> projDocDBList = projectTasksDTO .getUploadedFileInfo().stream()
+		if(projectTasksDTO .getFileInfo() != null &&  !projectTasksDTO.getFileInfo().isEmpty()) {
+			List<ProjectTaskDocuments> projDocDBList = projectTasksDTO .getFileInfo().stream()
 					.map(bo -> new ProjectTaskDocuments(bo.getFileName(), bo.getFileURL(),bo.getContentType(),tasks)).collect(Collectors.toList());
 	        tasks.getProjectTaskDocuments().addAll(projDocDBList);
-	        for(FileInfo fileInfo : projectTasksDTO.getUploadedFileInfo()){
+	        for(FileInfo fileInfo : projectTasksDTO.getFileInfo()){
 				FileUploadUtil.moveFile(projectTasksDTO.getStaticPath(), fileInfo, "tasks");
 			}
 		}
@@ -237,6 +307,9 @@ public class ProjectTasksServiceImpl implements ProjectTasksService {
         tasks.setProjectAssignTask(assignProjetcTasks);
         User user = userService.getUserById(userId);
         tasks.setCreatedBy(user.getUserCode());
+        tasks.setPercentage(Constants.CANDIDATE_IN_ACTIVE);
+        tasks.setGeneratedId(getProjectTaskGenaratedId(projects));
+        tasks.setProjectTasksUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
         tasks.setCreatedDate(commonUtil.currentDate());
         tasksDao.addTasks(tasks);
         
@@ -406,6 +479,37 @@ public class ProjectTasksServiceImpl implements ProjectTasksService {
 			projectTaskActivityService.saveProjectTaskActivities(activity.toString(), activitySummary.toString(),projectTasks,user);
 		
 	}
+
+	@Override
+	public void updateTaskPercentage(Integer percentage, String taskId, Long userId) throws Exception {
+		User user = userService.getUserById(userId);
+		ProjectTasks projectTasks = tasksDao.getTasksId(taskId);
+		
+		 //Task Percentage activity	
+		 ProjectTasks  oldData = tasksDao.getTasksId(taskId);
+	     StringBuffer activity = new StringBuffer();
+	     StringBuffer activitySummary = new StringBuffer();
+	     activity.append("Task Percentage");
+	     projectTasks.setPercentage(percentage);
+	     projectTasks.setUpdatedDate(commonUtil.currentDate());
+	     tasksDao.updateTasks(projectTasks);
+	    
+	     activitySummary.append(oldData.getPercentage()).append(" to ").append(projectTasks.getPercentage());
+		 projectTaskActivityService.saveProjectTaskActivities(activity.toString(), activitySummary.toString(),projectTasks,user);
+		
+	}
+	
+	@Override
+	public Long getProjectTasksGeneratedIdByProjectId(Long projectId, Integer generatedIdCount) throws Exception {
+		return tasksDao.getProjectTasksGeneratedIdByProjectId(projectId, generatedIdCount);
+	}
+
+	@Override
+	public ProjectTasks getProjectTasksByUUID(String taskUUD) throws Exception {
+		return tasksDao.getProjectTasksByUUID(taskUUD);
+	}
+
+	
 
 	
 

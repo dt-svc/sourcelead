@@ -84,8 +84,8 @@ public class CandidateDocumentsDaoImpl implements CandidateDocumentsDao{
 	@Transactional(rollbackFor = { Exception.class })
 	public List<CandidateDocuments> getCandidateDocumentsListByCandidateIdAndOrgLocationID(Long candidateId, Long orgLocationId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from CandidateDocuments cd left join fetch cd.requestedDocumentsId where cd.candidateId.id =:candidateId and cd.orgLocationId.id =:orgLocationId and cd.status = 1 ORDER BY cd.id DESC";
-		List<CandidateDocuments> candidateDocumentsList = session.createQuery(query).setLong("candidateId", candidateId).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+		String query = "from CandidateDocuments cd left join fetch cd.requestedDocumentsId where cd.candidateId.id =:candidateId  and cd.status = 1 ORDER BY cd.id DESC";
+		List<CandidateDocuments> candidateDocumentsList = session.createQuery(query).setLong("candidateId", candidateId).setCacheable(true).list();
 		return candidateDocumentsList;
 	}
 

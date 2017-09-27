@@ -22,6 +22,10 @@ import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
 import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 import org.hibernate.annotations.Fetch;
@@ -44,9 +48,14 @@ public class ProjectTasks implements Serializable{
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long Id;
 	
-		 
 	@Column(name = "TASK_NAME")
 	private String taskName;
+	
+	@Column(name = "PROJECT_TASKS_UUID")
+	private String projectTasksUUID;
+		 
+	@Column(name = "GENERATED_ID")
+	private String generatedId;
 	  
 	@Column(name = "DESCRIPTION")
 	@Type(type="text")
@@ -99,6 +108,9 @@ public class ProjectTasks implements Serializable{
 	@Column(name = "OWNER_NAME")
 	private String ownerName;
 	
+	@Column(name = "PERCENTAGE")
+	private Integer percentage;
+	
 	@Column(name = "STATUS")
 	private String status;
 	
@@ -148,6 +160,22 @@ public class ProjectTasks implements Serializable{
 
 	public void setId(Long id) {
 		Id = id;
+	}
+	
+	public String getProjectTasksUUID() {
+		return projectTasksUUID;
+	}
+
+	public void setProjectTasksUUID(String projectTasksUUID) {
+		this.projectTasksUUID = projectTasksUUID;
+	}
+
+	public String getGeneratedId() {
+		return generatedId;
+	}
+
+	public void setGeneratedId(String generatedId) {
+		this.generatedId = generatedId;
 	}
 
 	public String getTaskName() {
@@ -270,6 +298,14 @@ public class ProjectTasks implements Serializable{
 
 	public void setOwnerName(String ownerName) {
 		this.ownerName = ownerName;
+	}
+
+	public Integer getPercentage() {
+		return percentage;
+	}
+
+	public void setPercentage(Integer percentage) {
+		this.percentage = percentage;
 	}
 
 	public String getStatus() {

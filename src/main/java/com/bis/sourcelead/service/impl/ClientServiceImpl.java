@@ -188,7 +188,7 @@ public class ClientServiceImpl implements ClientService {
 	 */
 	@SuppressWarnings("unused")
 	@Override
-	public void storeClient(ClientDTO clientDTO,AddUserDTO addUserDTO,CandidateDTO candidateDTO, User user, OrgLocations orgLocations, String responderType,
+	public OrgLocations storeClient(ClientDTO clientDTO,AddUserDTO addUserDTO,CandidateDTO candidateDTO, User user, OrgLocations orgLocations, String responderType,
 			Org loginOrg) throws Exception {
 		HashSet<OrgLocations> orgLocationsList = new HashSet<OrgLocations>();
 		OrgLocations clientOrgLocations = null;
@@ -207,36 +207,52 @@ public class ClientServiceImpl implements ClientService {
 				clientOrgLocations.setCountry(clientDTO.getOrgCountry());
 			} else if (StringUtils.isNotBlank(clientDTO.getCountry())) {
 				clientOrgLocations.setCountry(clientDTO.getCountry());
+			}else
+			{
+				clientOrgLocations.setCountry("--");
 			}
 			if (StringUtils.isNotBlank(clientDTO.getOrgState())) {
 				clientOrgLocations.setState(clientDTO.getOrgState());
-			} /*else if (StringUtils.isNotBlank(clientDTO.getUserState())) {
-				clientOrgLocations.setState(clientDTO.getUserState());
-			}*/
+			} else {
+				clientOrgLocations.setState("--");
+			}
 			if (StringUtils.isNotBlank(clientDTO.getOrgCity())) {
 				clientOrgLocations.setCity(clientDTO.getOrgCity());
 			} else if (StringUtils.isNotBlank(clientDTO.getCity())) {
 				clientOrgLocations.setCity(clientDTO.getCity());
+			}else
+			{
+				clientOrgLocations.setCity("--");
 			}
 
 			if (StringUtils.isNotBlank(clientDTO.getOrgZipcode())) {
 				clientOrgLocations.setZipCode(clientDTO.getOrgZipcode());
 			} else if (StringUtils.isNotBlank(clientDTO.getZipcode())) {
 				clientOrgLocations.setZipCode(clientDTO.getZipcode());
+			}else
+			{
+				clientOrgLocations.setZipCode("--");
 			}
 
 			if (StringUtils.isNotBlank(clientDTO.getOrgLocation())) {
 				clientOrgLocations.setLocation(clientDTO.getOrgLocation());
 			} else if (StringUtils.isNotBlank(clientDTO.getLocation())) {
 				clientOrgLocations.setLocation(clientDTO.getLocation());
+			}else{
+				clientOrgLocations.setLocation("--");
 			}
 
 			if (StringUtils.isNotBlank(clientDTO.getLatitude())) {
 				clientOrgLocations.setLatitude(clientDTO.getLatitude());
+			}else
+			{
+				clientOrgLocations.setLatitude("--");
 			}
 
 			if (StringUtils.isNotBlank(clientDTO.getLongitude())) {
 				clientOrgLocations.setLongitude(clientDTO.getLongitude());
+			}else{
+				clientOrgLocations.setLongitude("--");
 			}
 
 		}
@@ -252,6 +268,8 @@ public class ClientServiceImpl implements ClientService {
 
 			if (StringUtils.isNotBlank(clientDTO.getOrgName())) {
 				clientOrgLocations.setOrgLocationName(clientDTO.getOrgName());
+			}else{
+				clientOrgLocations.setOrgLocationName("--");
 			}
 			if (responderType.equalsIgnoreCase("Client")) {
 				clientOrgLocations.setModulesId(Integer.toString(Constants.MODULE_VMS));
@@ -286,12 +304,18 @@ public class ClientServiceImpl implements ClientService {
 			}
 			if (StringUtils.isNotBlank(clientDTO.getAddress())) {
 				org.setClientAddress(clientDTO.getAddress());
+			}else{
+				org.setClientAddress("--");
 			}
 			if (StringUtils.isNotBlank(clientDTO.getBillingAddress())) {
 				org.setClientBillingAddress(clientDTO.getBillingAddress());
+			}else{
+				org.setClientBillingAddress("--");
 			}
 			if (StringUtils.isNotBlank(clientDTO.getPaymentTerm())) {
 				org.setPaymentTerm(clientDTO.getPaymentTerm());
+			}else{
+				org.setPaymentTerm("--");
 			}
 			org.setId(org.getId());
 			org.setOrgLocationsList(orgLocationsList);
@@ -448,11 +472,12 @@ public class ClientServiceImpl implements ClientService {
 		}
 
 		for (OrgRelations orgRelation : orgRelationsList) {
-
 			saveOrUpdateClientVendorElkDocument(org, clientOrgLocations, responderType, orgSpoc, orgRelation,
 					submissionTemplate, user, orgLocations);
 
 		}
+		
+		return clientOrgLocations;
 	}
 	
 	
@@ -898,6 +923,11 @@ public class ClientServiceImpl implements ClientService {
 					org.setPaymentTerm(clientDTO.getPaymentTerm());
 				}
 				orgForElk = orgService.updateOrg(org);
+			}
+			if (StringUtils.isNotBlank(clientDTO.getCompanyWebsite())) {
+				orgLocations.setWebsite(clientDTO.getCompanyWebsite());
+			} else {
+				orgLocations.setWebsite("");
 			}
 			if (StringUtils.isNotBlank(clientDTO.getCity())) {
 				orgLocations.setCity(clientDTO.getCity());

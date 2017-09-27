@@ -4,28 +4,35 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+
+<%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+
+<c:if test="${staticTime == null || staticTime == 0 }">
+    <c:set var='staticTime' value="<%=new java.util.Date().getTime() %>" scope="application"></c:set>
+ </c:if>
+ 
 <link rel="icon" type="image/png" href="resources/images/fav.png" />
 <title>Welcome to Source Lead :: Interview Template</title>
 <!-- Bootstrap -->
-<link href="resources/css/bootstrap.min.css" rel="stylesheet">
-<link href="resources/css/font-awesome.min.css" rel="stylesheet">
-<link href="resources/css/sourcelead-main.css" rel="stylesheet">
-<link href="resources/css/timesheet.css" rel="stylesheet">
-<script src="resources/js/InterViewFormBuilder.js" type="text/javascript" ></script>
-<script src="resources/js/interViewForm-html-generator.js" type="text/javWascript" ></script> 
-<script src="resources/js/jquery-1.11.1.min.js"></script>
-<script src="resources/js/bootstrap.min.js"></script> 
+<link href="resources/css/bootstrap.min.css?staticTime=${staticTime}" rel="stylesheet">
+<link href="resources/css/font-awesome.min.css?staticTime=${staticTime}" rel="stylesheet">
+<link href="resources/css/sourcelead-main.css?staticTime=${staticTime}" rel="stylesheet">
+<link href="resources/css/timesheet.css?staticTime=${staticTime}" rel="stylesheet">
+<script src="resources/js/InterViewFormBuilder.js?staticTime=${staticTime}" type="text/javascript" ></script>
+<script src="resources/js/interViewForm-html-generator.js?staticTime=${staticTime}" type="text/javWascript" ></script> 
+<script src="resources/js/jquery-1.11.1.min.js?staticTime=${staticTime}"></script>
+<script src="resources/js/bootstrap.min.js?staticTime=${staticTime}"></script> 
 </head>
  
- <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
-<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
- <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
-<script src="resources/js/formvalidator.js"></script>
-<link rel="stylesheet" href="resources/css/style.css" />
-<script src="resources/js/jquery-ui.js"></script>
-<link rel="stylesheet" href="resources/css/jquery-ui.css" type="text/css" >
-<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+ 
+<script src="resources/js/formvalidator.js?staticTime=${staticTime}"></script>
+<link rel="stylesheet" href="resources/css/style.css?staticTime=${staticTime}" />
+<script src="resources/js/jquery-ui.js?staticTime=${staticTime}"></script>
+<link rel="stylesheet" href="resources/css/jquery-ui.css?staticTime=${staticTime}" type="text/css" >
+
 
 <style type="text/css">
 .paddingTop {
@@ -308,6 +315,7 @@ function saveInterviewTemplate(){
 	      var frm = $('#interviewTemplate_form').serializeFormJSON();
 	      var templateId = '${templateId}';
 	  	  var requirementInterviewid = '${requirementInterviewid}';
+	  	var requirementInterviewid = '${requirementInterviewid}';
 	      var sourceleadUrl ='${sourceleadUrl}';
 	      var frm = $('#interviewTemplate_form').serializeFormJSON();
 	      var con1 = JSON.stringify(frm);
@@ -376,7 +384,7 @@ function saveInterviewTemplate(){
 		        processData: false,
 		        contentType:false,
 	 	        dataType : 'json',
-	 	    	url : sourceleadUrl+"/savePublicInterviewFeddbackTemlate?"+tokenParamName+"="+tokenValue+"&templateId="+templateId+"&requirementInterviewid="+requirementInterviewid+"&jsonStringData="+con+"&jsonData="+jsonData,
+	 	    	url : sourceleadUrl+"/savePublicInterviewFeddbackTemlate?${_csrf.parameterName}=${_csrf.token}&templateId="+templateId+"&requirementInterviewid="+requirementInterviewid+"&jsonStringData="+con+"&jsonData="+jsonData,
 		        success: function(result) {
 		        	$("#interviewTemplateFormDiv").hide();
 		        	viewTemplate(sourceleadUrl,templateId)
@@ -796,7 +804,3 @@ function generateViewpublicpage(sourceleadUrl,templateId) {
 </script>
 </body>
 </html>
-
-
-
-

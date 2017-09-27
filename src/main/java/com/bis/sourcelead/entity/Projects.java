@@ -5,7 +5,6 @@ import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.LinkedHashSet;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -32,10 +31,7 @@ import org.hibernate.annotations.NotFoundAction;
 
 import com.bis.sourcelead.enums.Project_Status;
 import com.bis.sourcelead.enums.Status;
-
-import com.bis.sourcelead.web.LoginSessionController;
 import com.fasterxml.jackson.annotation.JsonBackReference;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -159,6 +155,9 @@ public class Projects implements Serializable{
     @Column(name = "UPDATED_BY")
     private String updatedBy;
     
+    @Column(name = "PROJECT_SHORT_CODE")
+    private String projectShortCode;
+    
     @Column(name = "PROJECT_MODE")
     private String projectMode;
     
@@ -171,7 +170,19 @@ public class Projects implements Serializable{
     @Column(name = "IS_PROJECT_ADDITIONAL_DETAILS_FILLED")
     private String isProjectAdditionalDetailsFilled;
     
-
+    @Column(name = "NOTIFY_BUDGET_AT")
+   	private String notifyBudgetAt;
+	
+     
+    @NotFound(action=NotFoundAction.IGNORE)
+	@OneToMany(mappedBy = "projectId",cascade = CascadeType.ALL)
+	@Fetch(FetchMode.SELECT)
+	private Set<ProjectBudget> projectBudget = new HashSet<ProjectBudget>(0);
+    
+    @Transient
+    @JsonProperty
+    Set<ProjectBudget>  projectBudgetList;
+    
     @NotFound(action=NotFoundAction.IGNORE)
     @OneToMany(mappedBy="projects",cascade = CascadeType.ALL)
     @Fetch(FetchMode.SELECT)
@@ -480,6 +491,14 @@ public class Projects implements Serializable{
 		this.updatedBy = updatedBy;
 	}
 	
+	public String getProjectShortCode() {
+		return projectShortCode;
+	}
+
+	public void setProjectShortCode(String projectShortCode) {
+		this.projectShortCode = projectShortCode;
+	}
+
 	@JsonIgnore
 	public Set<ProjectMembers> getProjectMembers() {
 		return projectMembers;
@@ -905,6 +924,7 @@ public class Projects implements Serializable{
 		this.isDefaultProject = isDefaultProject;
 	}
 
+
 	public String getProjectClientUUID() {
 		return projectClientUUID;
 	}
@@ -913,5 +933,29 @@ public class Projects implements Serializable{
 		this.projectClientUUID = projectClientUUID;
 	}
 
-	
+
+	public String getNotifyBudgetAt() {
+		return notifyBudgetAt;
+	}
+
+	public void setNotifyBudgetAt(String notifyBudgetAt) {
+		this.notifyBudgetAt = notifyBudgetAt;
+	}
+
+	public Set<ProjectBudget> getProjectBudget() {
+		return projectBudget;
+	}
+
+	public void setProjectBudget(Set<ProjectBudget> projectBudget) {
+		this.projectBudget = projectBudget;
+	}
+
+	public Set<ProjectBudget> getProjectBudgetList() {
+		return projectBudgetList;
+	}
+
+	public void setProjectBudgetList(Set<ProjectBudget> projectBudgetList) {
+		this.projectBudgetList = projectBudgetList;
+	}
+
 }
