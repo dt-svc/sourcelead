@@ -100,6 +100,8 @@ public class ClientDTO {
 	
 	private CandidateDTO candidateDTO;
 	
+	private String UUID;
+	
 	
 	public String getOrgName() {
 		return orgName;
@@ -365,6 +367,12 @@ public class ClientDTO {
 	}
 	public void setTemplateId(List<String> templateId) {
 		this.templateId = templateId;
+	}
+	public String getUUID() {
+		return UUID;
+	}
+	public void setUUID(String uUID) {
+		UUID = uUID;
 	}
 	
 }

@@ -57,9 +57,6 @@ public class OrgRelations implements Serializable{
 	@Transient
 	private Long locationJsonId;
     
-    /*@Column(name="RELATION_TYPE")
-	private String relationType;*/
-	
 	@Column(name="INITIATOR_TYPE")
 	private String initiatorType;
 	
@@ -79,6 +76,21 @@ public class OrgRelations implements Serializable{
 	@Column(name="VENDOR_RELATION_STATUS")
 	private String vendorRelationStatus;
 	
+	
+	@Column(name="IS_VENDOR_DETAILS_FILLED")
+	private String isVendorDetailsFilled;
+	
+	
+	@Column(name="IS_VENDOR_DOCUMENTS_FILLED")
+	private String isVendorDocumentsFilled;
+	
+	
+	@Column(name="IS_VENDOR_TASKS_FILLED")
+	private String isVendorTasksFilled;
+	
+	@Column(name="UUID")
+	private String UUID;
+	
 	@Column(name="STATUS")
 	private String status;
 	
@@ -95,7 +107,12 @@ public class OrgRelations implements Serializable{
 	private String updatedBy;
 	
 	@Transient
+	@JsonProperty
     private String orgName;
+	
+	@Transient
+	@JsonProperty
+    private String vendorOrgLocation;
 	
 	@Transient
     private String orgType;
@@ -104,34 +121,57 @@ public class OrgRelations implements Serializable{
     private Long orgid;
 	
 	@Transient
+	@JsonProperty
 	private String webSite;
 	
 	@Transient
+	@JsonProperty
 	private String country;
 	
 	@Transient
+	@JsonProperty
 	private String state;
 	
 	@Transient
+	@JsonProperty
 	private String city;
 	
 	@Transient
+	@JsonProperty
 	private String location;
 	
 	@Transient
+	@JsonProperty
 	private String zipCode;
 	
+	
 	@Transient
+	@JsonProperty
 	private String phone;
 	
 	@Transient
+	@JsonProperty
 	private String email;
+	
+	@Transient
+	@JsonProperty
+	private String vendorContactFirstName;
+	
+	
+	@Transient
+	@JsonProperty
+	private String vendorContactLastName;
+	
+	@Transient
+	@JsonProperty
+	private String spocStatus;
 	
 	@Transient
 	private Long projectsCont;
 	
 	
 	@Transient
+	@JsonProperty
 	private String vendorCreateduserName;
 	
 	@Transient
@@ -204,12 +244,15 @@ public class OrgRelations implements Serializable{
 	private String vendorName;
 	
 	@Transient
+	@JsonProperty
 	private String address;
 	
 	@Transient
+	@JsonProperty
 	private String billingAddress;
 	
 	@Transient
+	@JsonProperty
 	private String paymentTerms;
 	
 	@Transient
@@ -222,7 +265,13 @@ public class OrgRelations implements Serializable{
 	@JsonProperty
 	private String clientName;
 	
+
+	@Transient
+	@JsonProperty
+	private String clientContactIds;
+	
 	@NotFound(action=NotFoundAction.IGNORE)
+	@JsonBackReference
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "orgRelations")
 	private Set<OrgSpoc> orgSpocList;
 	
@@ -257,6 +306,7 @@ public class OrgRelations implements Serializable{
 	}
 
 	@Transient
+	@JsonProperty
 	private Long vendorlocationId;
 	
 	
@@ -739,5 +789,77 @@ public class OrgRelations implements Serializable{
 	public void setVendorRelationStatus(String vendorRelationStatus) {
 		this.vendorRelationStatus = vendorRelationStatus;
 	}
-	
+
+	public String getUUID() {
+		return UUID;
+	}
+
+	public void setUUID(String uUID) {
+		UUID = uUID;
+	}
+
+	public String getIsVendorDetailsFilled() {
+		return isVendorDetailsFilled;
+	}
+
+	public void setIsVendorDetailsFilled(String isVendorDetailsFilled) {
+		this.isVendorDetailsFilled = isVendorDetailsFilled;
+	}
+
+	public String getIsVendorDocumentsFilled() {
+		return isVendorDocumentsFilled;
+	}
+
+	public void setIsVendorDocumentsFilled(String isVendorDocumentsFilled) {
+		this.isVendorDocumentsFilled = isVendorDocumentsFilled;
+	}
+
+	public String getIsVendorTasksFilled() {
+		return isVendorTasksFilled;
+	}
+
+	public void setIsVendorTasksFilled(String isVendorTasksFilled) {
+		this.isVendorTasksFilled = isVendorTasksFilled;
+	}
+
+	public String getVendorOrgLocation() {
+		return vendorOrgLocation;
+	}
+
+	public void setVendorOrgLocation(String vendorOrgLocation) {
+		this.vendorOrgLocation = vendorOrgLocation;
+	}
+
+	public String getClientContactIds() {
+		return clientContactIds;
+	}
+
+	public void setClientContactIds(String clientContactIds) {
+		this.clientContactIds = clientContactIds;
+	}
+
+	public String getVendorContactFirstName() {
+		return vendorContactFirstName;
+	}
+
+	public void setVendorContactFirstName(String vendorContactFirstName) {
+		this.vendorContactFirstName = vendorContactFirstName;
+	}
+
+	public String getVendorContactLastName() {
+		return vendorContactLastName;
+	}
+
+	public void setVendorContactLastName(String vendorContactLastName) {
+		this.vendorContactLastName = vendorContactLastName;
+	}
+
+	public String getSpocStatus() {
+		return spocStatus;
+	}
+
+	public void setSpocStatus(String spocStatus) {
+		this.spocStatus = spocStatus;
+	}
+
 }

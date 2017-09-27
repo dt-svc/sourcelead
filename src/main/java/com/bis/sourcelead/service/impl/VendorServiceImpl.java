@@ -1,0 +1,197 @@
+package com.bis.sourcelead.service.impl;
+
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+
+import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dao.OrgLocationsDao;
+import com.bis.sourcelead.dao.OrgRelationsDao;
+import com.bis.sourcelead.dao.OrgSpocDao;
+import com.bis.sourcelead.dto.AddUserDTO;
+import com.bis.sourcelead.dto.CandidateDTO;
+import com.bis.sourcelead.dto.ClientDTO;
+import com.bis.sourcelead.entity.Org;
+import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.OrgRelations;
+import com.bis.sourcelead.entity.OrgSpoc;
+import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.service.UserService;
+import com.bis.sourcelead.service.VendorService;
+import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
+
+@Service
+public class VendorServiceImpl implements VendorService{
+	
+	@Autowired
+	OrgRelationsDao orgRelationsDao;
+	
+	@Autowired
+	OrgLocationsDao orgLocationsDao;
+
+	@Autowired
+	UserService userService;
+	
+	@Autowired
+	OrgSpocDao orgSpocDao;
+	
+	@Autowired
+	CommonUtil commonUtil;
+	
+	@Override
+	public OrgLocations updateVendor(ClientDTO clientDTO, AddUserDTO addUserDTO, CandidateDTO candidateDTO, User user,
+			OrgLocations orgLocations, Long orgRelationId, Org org) throws Exception {
+		
+		OrgRelations orgRelations = orgRelationsDao.getOrgRelationById(orgRelationId);
+		User spocUser = null;
+		List<Long> updatedSpocs = new ArrayList<Long>();
+		List<Long> savedSpocs = new ArrayList<Long>();
+		
+		orgRelations.setResponderLevel(clientDTO.getLevel());
+		 if(clientDTO.getTemplateId() != null && clientDTO.getTemplateId().size() > 0){
+		    	StringBuilder templateIds = new StringBuilder();
+		    	for(String templateId : clientDTO.getTemplateId()){
+		    		templateIds.append(templateId.trim()).append(",");
+		    	}
+		    	String templateIdsStr = templateIds.toString();
+		    	
+		    	orgRelations.setVendorOnboardTemplateId(templateIdsStr.substring(0, templateIdsStr.length()-1)); 
+		    }else{
+		    	orgRelations.setVendorOnboardTemplateId(null);
+		    }
+		 
+		 orgRelationsDao.addOrgRelations(orgRelations);
+		 
+		 OrgLocations vendorOrgLocations = null;
+		 if(orgRelations.getLocationId().getId().equals(orgLocations.getId())){
+			 vendorOrgLocations = orgRelations.getResponderLocationId();
+		 }else{
+			 vendorOrgLocations = orgRelations.getLocationId();
+		 }
+		 
+		 vendorOrgLocations.setLocation(clientDTO.getLocation());
+		 vendorOrgLocations.setCountry(clientDTO.getCountry());
+		 vendorOrgLocations.setState(clientDTO.getState());
+		 vendorOrgLocations.setCity(clientDTO.getCity());
+		
+		 if(StringUtils.isNotBlank(clientDTO.getWebSite())){
+			 if(StringUtils.isNotBlank(clientDTO.getWebSite())){
+				 vendorOrgLocations.setWebsite(convertWebsite(clientDTO.getWebSite()));
+				}
+		 }
+		
+		 if(StringUtils.isNotBlank(clientDTO.getAddress())){
+			 vendorOrgLocations.setClientAddress(clientDTO.getAddress());
+		 }
+		 
+		 if(StringUtils.isNotBlank(clientDTO.getBillingAddress())){
+			 vendorOrgLocations.setClientBillingAddress(clientDTO.getBillingAddress());
+		 }
+		 
+		 if(StringUtils.isNotBlank(clientDTO.getPaymentTerm())){
+			 vendorOrgLocations.setPaymentTerm(clientDTO.getPaymentTerm());
+		 }
+		 
+		 orgLocationsDao.updateOrgLocations(vendorOrgLocations);
+		 
+		 if (StringUtils.isNotBlank(clientDTO.getEmail())) {
+				spocUser = userService.storeUser(addUserDTO,candidateDTO, user, vendorOrgLocations, "CREATEUSER", "Vendor", org);
+
+			}
+		 
+		 
+			if(clientDTO.getOwner() != null && !clientDTO.getOwner().isEmpty()){
+				for(String owners :clientDTO.getOwner()){
+					OrgSpoc orgSpoc = orgSpocDao.getClientUserByOrgRelationIdAndOwnerUserId(orgRelations.getId(), Long.parseLong(owners));
+					if(orgSpoc != null){
+						orgSpoc.setVendorUser(spocUser);
+						User clientUser = new User();
+						clientUser.setId(Long.valueOf(owners));
+						orgSpoc.setOwnerUser(clientUser);
+						orgSpoc.setClientUser(clientUser);
+						orgSpoc.setSpocStatus(clientDTO.getSpocStatus());
+						orgSpocDao.addOrgSpoc(orgSpoc);
+						updatedSpocs.add(orgSpoc.getId());
+					}else{
+						orgSpoc = new OrgSpoc();
+						orgSpoc.setClientLocationId(orgLocations);
+						orgSpoc.setVendorLocationId(vendorOrgLocations);
+						User clientUser = new User();
+						clientUser.setId(Long.valueOf(owners));
+						orgSpoc.setClientUser(clientUser);
+						orgSpoc.setVendorUser(spocUser);
+						orgSpoc.setOwnerUser(clientUser);
+						orgSpoc.setOrgRelations(orgRelations);
+						
+						if (StringUtils.isNotBlank(clientDTO.getSpocStatus())) {
+							orgSpoc.setSpocStatus(clientDTO.getSpocStatus());
+						} else {
+							orgSpoc.setSpocStatus(Constants.ACTIVE);
+						}
+						if (StringUtils.isNotBlank(clientDTO.getIsMailSent())) {
+							orgSpoc.setInvitationStatus(Constants.MAIL_SENT);
+						} else {
+							orgSpoc.setInvitationStatus(Constants.MAIL_NEW);
+						}
+						String UUID = SourceLeadRandomCodeHelper.generateUUID();
+						orgSpoc.setUUID(UUID);
+						orgSpoc.setStatus(Constants.MEMBER_ACTIVE);
+						orgSpoc.setCreatedDate(commonUtil.currentDate());
+						orgSpoc.setCreatedBy(user.getUserCode());
+						orgSpoc.setUpdatedDate(commonUtil.currentDate());
+						orgSpoc.setUpdatedBy(user.getUserCode());
+						orgSpocDao.addOrgSpoc(orgSpoc);
+						updatedSpocs.add(orgSpoc.getId());
+					}
+				}
+			}
+			
+			
+			Set<OrgSpoc> spocsList = orgRelations.getOrgSpocList();
+			for(OrgSpoc spoc : spocsList){
+				if(spoc.getStatus().equalsIgnoreCase(Constants.MEMBER_ACTIVE)){
+					savedSpocs.add(spoc.getId());
+				}
+			}
+			
+			updatedSpocs.retainAll(savedSpocs);
+			savedSpocs.removeAll(updatedSpocs);
+			
+			if(savedSpocs != null && savedSpocs.size() > 0){
+				for(Long spocId : savedSpocs){
+					OrgSpoc spoc = orgSpocDao.getOrgSpocById(spocId);
+					spoc.setStatus(Constants.MEMBER_IN_ACTIVE);
+					orgSpocDao.addOrgSpoc(spoc);
+				}
+			}
+		 
+		return null;
+	}
+	
+	
+	private String convertWebsite(String website) {
+		if (!website.startsWith("http") && !website.startsWith("https")) {
+			website = "http://" + website;
+		}
+		URL netUrl = null;
+		try {
+			netUrl = new URL(website);
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		}
+
+		String host = netUrl.getHost();
+		if (host.startsWith("www")) {
+			host = host.substring("www".length() + 1);
+		}
+		return host;
+	}
+
+}

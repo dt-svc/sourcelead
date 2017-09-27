@@ -617,4 +617,19 @@ public class OrgSpocDaoImpl  implements OrgSpocDao{
 			return flag;
 		}
 
+		@Override
+		@Transactional(rollbackFor = { Exception.class })
+		public OrgSpoc getClientUserByOrgRelationIdAndOwnerUserId(Long orgRelationId, Long clientUserId)
+				throws Exception {
+			
+			Session session = this.sessionFactory.getCurrentSession();
+			Query query= session.createQuery("from OrgSpoc spoc  where  spoc.clientUser.id = :clientUserId and spoc.orgRelations.id = :orgRelationId and spoc.status = '1' ");
+			List<OrgSpoc> spocsList = query.setLong("clientUserId", clientUserId).setLong("orgRelationId", orgRelationId).setCacheable(true).list();
+			OrgSpoc orgSpoc = null;
+			if(spocsList != null && spocsList.size() > 0){
+				orgSpoc = spocsList.get(0);
+			}
+			return orgSpoc;
+		}
+
 }

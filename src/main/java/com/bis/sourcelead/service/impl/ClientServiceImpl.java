@@ -472,6 +472,7 @@ public class ClientServiceImpl implements ClientService {
 		}
 
 		for (OrgRelations orgRelation : orgRelationsList) {
+			clientOrgLocations.setVendorOrgRelationId(orgRelation.getId());
 			saveOrUpdateClientVendorElkDocument(org, clientOrgLocations, responderType, orgSpoc, orgRelation,
 					submissionTemplate, user, orgLocations);
 
@@ -553,15 +554,6 @@ public class ClientServiceImpl implements ClientService {
 
 		if (StringUtils.isNotBlank(clientDTO.getOrgName())) {
 			org.setOrgName(clientDTO.getOrgName());
-		}
-		if (StringUtils.isNotBlank(clientDTO.getAddress())) {
-			org.setClientAddress(clientDTO.getAddress());
-		}
-		if (StringUtils.isNotBlank(clientDTO.getBillingAddress())) {
-			org.setClientBillingAddress(clientDTO.getBillingAddress());
-		}
-		if (StringUtils.isNotBlank(clientDTO.getPaymentTerm())) {
-			org.setPaymentTerm(clientDTO.getPaymentTerm());
 		}
 		if (StringUtils.isNotBlank(clientDTO.getCompanyWebsite())) {
 			org.setWebSite(convertWebsite(clientDTO.getCompanyWebsite()));

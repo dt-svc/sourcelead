@@ -118,9 +118,15 @@ function getVendorList(){
 		    	  		var pattern = new RegExp(/["'"]/g);
 				   		var orgName = (report.orgName).replace(pattern, "\\'");
 		    	  		var result = "";
-		    	  		'<sec:authorize access="hasAnyRole(\"ROLE_VIEW_VENDOR\",\"ROLE_VIEW_EDIT_VENDOR\")">';
+		    	  		var sourceleadUrl = '${sourceleadUrl}';
+		    	  		
+	    	  		'<sec:authorize access="hasAnyRole(\"ROLE_VIEW_VENDOR\",\"ROLE_VIEW_EDIT_VENDOR\")">';
 			   			result = result +'<td>';
-			   			result = result +'<div class="proj_show" onclick="vendorSideBar(\''+report.responderLocationId+'\',\''+report.orgRelationId+'\',\''+orgName+'\');"><span class="tbldata-dotdot-me pull-left" title="'+report.orgName+'">'+report.orgName+'</span><i class="fa fa-binoculars pull-right"></i>';
+			   			if(report.vendorRelationStatus == 'Draft'){
+			   				result = result +'<div class="proj_show"><a href="'+sourceleadUrl+'/addVendor?orgRelationUUID='+report.orgRelationUUID+'" class="pull-left"><span  class="tbldata-dotdot-me pull-left" title="'+report.orgName+'">'+report.orgName+'</span></a><i class="fa fa-binoculars pull-right"></i>';
+			   			}else if(report.vendorRelationStatus == null || report.vendorRelationStatus == 'Finished' ){
+			   				result = result +'<div class="proj_show" onclick="vendorSideBar(\''+report.responderLocationId+'\',\''+report.orgRelationId+'\',\''+orgName+'\');"><span class="tbldata-dotdot-me pull-left" title="'+report.orgName+'">'+report.orgName+'</span><i class="fa fa-binoculars pull-right"></i>';
+			   			}
 			   			result = result +'</div>';
 			   			result = result +'</td>';
 			   		'</sec:authorize>';

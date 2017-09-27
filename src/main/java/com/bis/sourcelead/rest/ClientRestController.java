@@ -267,30 +267,6 @@ public class ClientRestController {
 		return "clientDashboard";
 	}
 	
-	
-	
-	
-	@PreAuthorize("hasRole('ROLE_CREATE_VENDOR')")
-	@RequestMapping(value = "/saveVendor", method = RequestMethod.POST)
-	@ResponseBody
-	public OrgLocations saveVendor(ClientDTO clientDTO,AddUserDTO addUserDTO,CandidateDTO candidateDTO,
-			@RequestParam(value = "responderType", required = false) String responderType,
-			@RequestParam(value = "orgLocationId", required = false) Long orgLocationId, HttpServletRequest request)
-			throws Exception {
-
-		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
-		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-
-		if (null != orgLocationId) {
-			clientDTO.setOrgLocationId(orgLocationId.toString());
-		}
-
-		OrgLocations invitedOrgLocation = clientService.storeClient(clientDTO,addUserDTO,candidateDTO, user, orgLocation, responderType, org);
-		SourceLeadSessionManager.setSessionAttribute(request, "vendorCreateMsg", "Success!! New Vendor created");
-		return invitedOrgLocation;
-	}
-		
 		
 		 @RequestMapping(value = "/validateClientOrVendorEmail",  method = RequestMethod.POST)
 		    public @ResponseBody String validateClientOrVendorEmail(@RequestParam(value="email", required=false) String email) throws Exception {

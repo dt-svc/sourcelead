@@ -42,6 +42,7 @@ public class ClientVendorDTO extends SearchDTO implements Serializable {
 	private List<String> clientIds;
 	private List<String> status;
 	private List<String> invitationStatus;
+	private String UUID;
 	
 	private AddUserDTO addUserDTO;
 	
@@ -323,6 +324,14 @@ public class ClientVendorDTO extends SearchDTO implements Serializable {
 
 	public void setCompanyWebSite(String companyWebSite) {
 		this.companyWebSite = companyWebSite;
+	}
+
+	public String getUUID() {
+		return UUID;
+	}
+
+	public void setUUID(String uUID) {
+		UUID = uUID;
 	}
 
 

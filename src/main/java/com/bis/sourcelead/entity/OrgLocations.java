@@ -32,6 +32,7 @@ import org.hibernate.annotations.Type;
 
 import com.bis.sourcelead.enums.Status;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "ORG_LOCATIONS")
@@ -159,6 +160,18 @@ public class OrgLocations implements Serializable{
     @Column(name = "SYSTEM_GENERATED_ID")
 	private String systemGeneratedId;
     
+    
+    @Column(name = "CLIENT_ADDRESS")
+    @Type(type="text")
+	private String clientAddress;
+    
+    @Column(name = "CLIENT_BILLING_ADDRESS")
+    @Type(type="text")
+	private String clientBillingAddress;
+    
+    @Column(name = "PAYMENT_TERM")
+	private String PaymentTerm;
+    
     @Transient
     private String orgName;
     
@@ -202,6 +215,7 @@ public class OrgLocations implements Serializable{
     private SimpleDateFormat locFullFormDateFormatter;
     
     @Transient
+    @JsonProperty
     private Long vendorOrgRelationId;
     
    
@@ -645,6 +659,30 @@ public class OrgLocations implements Serializable{
 
 	public void setVendorOrgRelationId(Long vendorOrgRelationId) {
 		this.vendorOrgRelationId = vendorOrgRelationId;
+	}
+
+	public String getClientAddress() {
+		return clientAddress;
+	}
+
+	public void setClientAddress(String clientAddress) {
+		this.clientAddress = clientAddress;
+	}
+
+	public String getClientBillingAddress() {
+		return clientBillingAddress;
+	}
+
+	public void setClientBillingAddress(String clientBillingAddress) {
+		this.clientBillingAddress = clientBillingAddress;
+	}
+
+	public String getPaymentTerm() {
+		return PaymentTerm;
+	}
+
+	public void setPaymentTerm(String paymentTerm) {
+		PaymentTerm = paymentTerm;
 	}
 	
 }

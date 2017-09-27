@@ -85,4 +85,10 @@ public class VendorOnboardTemplateDocumentsServiceImpl implements VendorOnboardT
 		return vendorOnboardTemplateDocumentsDao.getVendorOnBoardingTemplateDocumentsBydocumentUUID(documentUUID);
 	}
 
+	@Override
+	public List<VendorOnboardingTemplateDocuments> getVendorOnBoardingTemplateDocumentsByTemplateList(
+			List<Long> templateIdList, String documentType) throws Exception {
+		return vendorOnboardTemplateDocumentsDao.getVendorOnBoardingTemplateDocumentsByTemplateList(templateIdList, documentType);
+	}
+
 }

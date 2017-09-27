@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 import java.util.TimeZone;
 
 import javax.servlet.http.HttpServletRequest;
@@ -54,6 +55,7 @@ import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.RequirementSubmissionHistory;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.VendorOnboardingTemplateDocuments;
 import com.bis.sourcelead.enums.ApplicantSubmissionStatus;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.ClientService;
@@ -64,6 +66,8 @@ import com.bis.sourcelead.service.RequirementReportService;
 import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
 import com.bis.sourcelead.service.UserService;
+import com.bis.sourcelead.service.VendorOnboardTemplateDocumentsService;
+import com.bis.sourcelead.service.VendorService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -115,6 +119,75 @@ public class VendorRestController {
 	
 	@Autowired
 	ClientService clientService;
+	
+	@Autowired
+	VendorService vendorService;
+	
+	@Autowired
+	VendorOnboardTemplateDocumentsService vendorOnboardTemplateDocumentsService;
+	
+	
+	
+	
+	@PreAuthorize("hasRole('ROLE_CREATE_VENDOR')")
+	@RequestMapping(value = "/saveVendor", method = RequestMethod.POST)
+	@ResponseBody
+	public OrgLocations saveVendor(ClientDTO clientDTO,AddUserDTO addUserDTO,CandidateDTO candidateDTO,
+			@RequestParam(value = "responderType", required = false) String responderType,
+			@RequestParam(value = "orgLocationId", required = false) Long orgLocationId, HttpServletRequest request)
+			throws Exception {
+
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+
+		if (null != orgLocationId) {
+			clientDTO.setOrgLocationId(orgLocationId.toString());
+		}
+
+		OrgLocations invitedOrgLocation = clientService.storeClient(clientDTO,addUserDTO,candidateDTO, user, orgLocation, responderType, org);
+		SourceLeadSessionManager.setSessionAttribute(request, "vendorCreateMsg", "Success!! New Vendor created");
+		return invitedOrgLocation;
+	}
+	
+	
+	
+	
+	@PreAuthorize("hasRole('ROLE_CREATE_VENDOR')")
+	@RequestMapping(value = "/updateVendor", method = RequestMethod.POST)
+	@ResponseBody
+	public OrgLocations updateVendor(ClientDTO clientDTO,AddUserDTO addUserDTO,CandidateDTO candidateDTO,
+			@RequestParam(value="orgRelationId", required=false) Long orgRelationId,HttpServletRequest request)
+			throws Exception {
+
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+
+		OrgLocations invitedOrgLocation = vendorService.updateVendor(clientDTO, addUserDTO, candidateDTO, user, orgLocations, orgRelationId, org);
+		SourceLeadSessionManager.setSessionAttribute(request, "vendorCreateMsg", "Success!! New Vendor created");
+		return invitedOrgLocation;
+	}
+	
+	
+	
+	@RequestMapping(value = "/getVendorOnboardTemplateDocumentByOrgRelationId" , method = RequestMethod.POST)
+	 public @ResponseBody List<VendorOnboardingTemplateDocuments> getVendorOnboardTemplateDocumentByOrgRelationId(@RequestParam(value="orgRelationId", required=false) Long orgRelationId,
+			 @RequestParam(value="documentType", required=false) String documentType, HttpServletRequest request) throws Exception {
+		
+		OrgRelations orgRelations = orgRelationsService.getOrgRelationById(orgRelationId);
+		List<VendorOnboardingTemplateDocuments> documentsList = null;
+		if(orgRelations != null && StringUtils.isNotBlank(orgRelations.getVendorOnboardTemplateId())){
+			List<Long> templateIdsList = new ArrayList<>();
+			String[] templateIds = orgRelations.getVendorOnboardTemplateId().split(",");
+			for(String onboardTempalteId : templateIds){
+				templateIdsList.add(Long.valueOf(onboardTempalteId));
+			}
+			 documentsList = vendorOnboardTemplateDocumentsService.getVendorOnBoardingTemplateDocumentsByTemplateList(templateIdsList,documentType);
+		}
+		
+		return documentsList;
+	}
 	
 	
 	/**
@@ -298,6 +371,62 @@ public class VendorRestController {
 	
 	
 	
+	
+	@RequestMapping(value = "/getOrgRelationDetailsByOrgRelationId", method = RequestMethod.GET)
+	public @ResponseBody OrgRelations getOrgRelationDetailsByOrgRelationId(@RequestParam(value="orgRelationId", required=false) Long orgRelationId,HttpServletRequest request) throws Exception {
+
+	    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+	    OrgRelations orgRelations = orgRelationsService.getOrRelationsById(orgRelationId);
+		
+		if(orgRelations.getLocationId().getId().equals(orgLocations.getId())){
+			orgRelations.setWebSite(orgRelations.getResponderLocationId().getOrg().getWebSite());
+			orgRelations.setOrgName(orgRelations.getResponderLocationId().getOrgLocationName());
+			orgRelations.setCountry(orgRelations.getResponderLocationId().getCountry());
+			orgRelations.setState(orgRelations.getResponderLocationId().getState());
+			orgRelations.setCity(orgRelations.getResponderLocationId().getCity());
+			orgRelations.setZipCode(orgRelations.getResponderLocationId().getZipCode());
+			orgRelations.setPaymentTerms(orgRelations.getResponderLocationId().getPaymentTerm());
+			orgRelations.setBillingAddress(orgRelations.getResponderLocationId().getClientBillingAddress());
+			orgRelations.setAddress(orgRelations.getResponderLocationId().getClientAddress());
+			orgRelations.setVendorlocationId(orgRelations.getResponderLocationId().getId());
+			orgRelations.setVendorOrgLocation(orgRelations.getResponderLocationId().getLocation());
+		}else{
+			orgRelations.setWebSite(orgRelations.getLocationId().getOrg().getWebSite());
+			orgRelations.setOrgName(orgRelations.getLocationId().getOrgLocationName());
+			orgRelations.setCountry(orgRelations.getLocationId().getCountry());
+			orgRelations.setState(orgRelations.getLocationId().getState());
+			orgRelations.setCity(orgRelations.getLocationId().getCity());
+			orgRelations.setZipCode(orgRelations.getLocationId().getZipCode());
+			orgRelations.setBillingAddress(orgRelations.getLocationId().getClientBillingAddress());
+			orgRelations.setAddress(orgRelations.getLocationId().getClientAddress());
+			orgRelations.setPaymentTerms(orgRelations.getLocationId().getPaymentTerm());
+			orgRelations.setVendorlocationId(orgRelations.getLocationId().getId());
+			orgRelations.setVendorOrgLocation(orgRelations.getLocationId().getLocation());
+		}
+		
+		
+		 Set<OrgSpoc> contactsList = orgRelations.getOrgSpocList();
+		 StringBuilder contactIds = new StringBuilder();
+		 for(OrgSpoc orgSpoc : contactsList){
+			if(orgSpoc.getStatus().equalsIgnoreCase(Constants.MEMBER_ACTIVE)){
+				contactIds.append(orgSpoc.getClientUser().getId()).append(",");
+				 orgRelations.setVendorContactFirstName(orgSpoc.getVendorUser().getFirstName());
+				 if(StringUtils.isNotBlank(orgSpoc.getVendorUser().getLastName())){
+					 orgRelations.setVendorContactLastName(orgSpoc.getVendorUser().getLastName());
+				 }
+				 orgRelations.setEmail(orgSpoc.getVendorUser().getEmail());
+				 if(StringUtils.isNotBlank(orgSpoc.getVendorUser().getMobilePhone())){
+					 orgRelations.setPhone(orgSpoc.getVendorUser().getMobilePhone());
+				 }
+				 orgRelations.setSpocStatus(orgSpoc.getSpocStatus());
+			}
+		 }
+		 String contactIdsStr = contactIds.toString();
+		 orgRelations.setOrgSpocList(contactsList);
+		 orgRelations.setClientContactIds(contactIdsStr.substring(0, contactIdsStr.length()-1)); 
+		 return orgRelations;
+		
+		}
 	
 	
 	/**

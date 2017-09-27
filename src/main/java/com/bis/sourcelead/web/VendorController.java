@@ -193,7 +193,7 @@ public class VendorController {
 	
 	 @PreAuthorize("hasRole('ROLE_CREATE_VENDOR')")
 	@RequestMapping(value = "/addVendor")
-	public ModelAndView addVendor(HttpServletRequest request)  {
+	public ModelAndView addVendor(@RequestParam(value = "orgRelationUUID", required = false) String orgRelationUUID,HttpServletRequest request)  {
 		
 		ModelAndView model = new ModelAndView();      
 		try{
@@ -217,6 +217,22 @@ public class VendorController {
 			if(countries != null){
 			model.addObject("loginCountryName", countries.getName());
 			}
+			
+			if(StringUtils.isNotBlank(orgRelationUUID)){
+				OrgRelations orgRelations = orgRelationsService.getOrgRelationsByUUID(orgRelationUUID);
+				if(orgRelations != null){
+					model.addObject("orgRelationId", orgRelations.getId());
+					model.addObject("isDocumentsFilled", orgRelations.getIsVendorDocumentsFilled());
+					model.addObject("isTasksFilled", orgRelations.getIsVendorTasksFilled());
+					if(orgRelations.getLocationId().getId().equals(orgLocations.getId())){
+						model.addObject("vendorOrgLocationId", orgRelations.getResponderLocationId().getId());
+					}else{
+						model.addObject("vendorOrgLocationId", orgRelations.getLocationId().getId());
+					}
+				}
+				model.addObject("orgRelationUUID", orgRelationUUID);
+			}
+			
 		}catch(Exception e){
 			logger.error(ExceptionUtils.getFullStackTrace(e)); 
 		}

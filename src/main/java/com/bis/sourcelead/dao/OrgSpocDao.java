@@ -109,4 +109,6 @@ public interface OrgSpocDao {
 	
 	boolean getOwnerUserExistedByOrgRelationIdAndOwnerUserId(Long orgRelationId, Long ownerUserId) throws Exception;
 	
+	OrgSpoc getClientUserByOrgRelationIdAndOwnerUserId(Long orgRelationId,Long clientUserId) throws Exception;
+	
 }

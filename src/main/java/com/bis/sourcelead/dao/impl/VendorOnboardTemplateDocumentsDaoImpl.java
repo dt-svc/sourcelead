@@ -83,4 +83,16 @@ public class VendorOnboardTemplateDocumentsDaoImpl implements VendorOnboardTempl
 		}
 	}
 
+
+	@Override
+	@Transactional
+	public List<VendorOnboardingTemplateDocuments> getVendorOnBoardingTemplateDocumentsByTemplateList(
+			List<Long> templateIdList, String documentType) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+	    String query = "from VendorOnboardingTemplateDocuments documents left join fetch documents.vendorOnboardingTemplateId where documents.vendorOnboardingTemplateId.id IN (:templateIdList) "
+	    		+ " and documents.documentType = :documentType and documents.status = '1' ";
+	    List<VendorOnboardingTemplateDocuments> documentsList = session.createQuery(query.toString()).setParameterList("templateIdList", templateIdList).setString("documentType", documentType).setCacheable(true).list();
+        return documentsList;
+	}
+
 }
