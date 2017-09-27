@@ -28,7 +28,7 @@
   </section>
   <div class="content-area content-new clearfix">
   <div id="loading"></div> 
-  <form:form id="candidate_form" name="candidate_form">
+  <form:form id="candidate_form" name="candidate_form" enctype='multipart/form-data'>
     <div class="row form-horizontal mt myForm">
       <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12"> 
         
@@ -37,7 +37,7 @@
         <div class="well">
           <div class="input-group col-md-6" id="uploadFileGroup" style="margin:0 auto; position:relative;">
             <label class="input-group-btn"> <span class="btn btn-danger"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File<span class="text-danger">&nbsp;*</span>
-              <input type="file"  id="uploadBtn" class="hidden upload">
+              <input type="file"  name="uploadBtn" id="uploadBtn" class="hidden upload">
               </span> 
            </label>
 
@@ -80,7 +80,7 @@
         <div class="form-group" id="emailDiv">
           <label class="col-md-3">Email<span class="text-danger">&nbsp;*</span></label>
           <div class="col-md-9">
-            <input type="text" class="form-control" id="email" name="email" value="${email}"  field-name="Email" data-validation="required validate_Space validate_length length2-100 validate_email" onblur="validateCandidateEmail();"  value="">
+            <input type="text" class="form-control" id="email" name="email" value="${email}"  field-name="Email" data-validation="required validate_Space validate_length length2-100 validate_email" onblur="validateCandidateEmail();" onmouseout="validateCandidateEmail();" value="">
           <span class="hidden">Valid Email</span>
           </div>
         </div>
@@ -775,7 +775,6 @@ function validate_fileupload(fileName)
 	        		 $('#uploadFileGroup').find('p.jquery_form_error_message').remove(); 
 	     		var form = $('#candidate_form')[0];
 	       		var formData = new FormData(form); 
-	     		var sourceleadUrl = '${sourceleadUrl}';
 	     		   $.ajax({
 	     					type : "POST",
 	     	        	    data: formData,
