@@ -11,4 +11,6 @@ public interface LeaveDao {
 
 	List<LeaveApproveHierarchy> getEmployeeRequestedLeavesBylocationId(Long orgLocationId, String userId);
 
+	List<Leave> getLeavesListByLocationIdAndStatus(Long orgLocationId, String status, Long userId);
+
 }

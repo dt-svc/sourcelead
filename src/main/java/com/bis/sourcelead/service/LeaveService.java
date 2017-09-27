@@ -13,4 +13,6 @@ public interface LeaveService {
 
 	List<LeaveDTO> getEmployeeRequestedLeavesBylocationId(Long orgLocationId, String userId)throws Exception;
 
+	List<Leave> getLeavesListByLocationIdAndStatus(Long orgLocationId, String status, Long userId) throws Exception;
+
 }

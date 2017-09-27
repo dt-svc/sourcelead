@@ -20,8 +20,10 @@ import com.bis.sourcelead.entity.LeaveApproveHierarchy;
 import com.bis.sourcelead.entity.LeaveType;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.service.LeaveService;
 import com.bis.sourcelead.service.LeaveTypeService;
+import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.ConversionUtil;
@@ -41,6 +43,9 @@ public class LeaveServiceImpl implements LeaveService{
     
     @Autowired
     UserService userService;
+    
+    @Autowired
+    UserRoleService userRoleService;
     
 	@Override
 	public Leave saveLeave(LeaveDTO leaveDTO,OrgLocations orgLocations, User user) throws Exception {
@@ -103,6 +108,43 @@ public class LeaveServiceImpl implements LeaveService{
 		
 		List<LeaveApproveHierarchy> leaveApproveHierarchiesList = leaveDao.getEmployeeRequestedLeavesBylocationId(orgLocationId,userId);
 		return null;
+	}
+
+	@Override
+	public List<Leave> getLeavesListByLocationIdAndStatus(Long orgLocationId, String status,Long userId) throws Exception
+	{
+		List<Leave> leaveList = leaveDao.getLeavesListByLocationIdAndStatus(orgLocationId,status,userId);
+		for(Leave leave : leaveList){
+			leave.setLeaveTypeName(leave.getLeaveType().getName());
+			List<String> aphlist = new ArrayList<>();
+			for(LeaveApproveHierarchy laph : leave.getApproverHierarchyList()){
+				StringBuilder sb = new StringBuilder();
+				UserRole role = userRoleService.getUserRoleByUserIdAndLocationId(laph.getApproverUserId().getId(), orgLocationId);
+				if(role != null){
+					if(StringUtils.isNotBlank(laph.getApproverUserId().getLastName())){
+						aphlist.add(sb.append(role.getUserType()).append(" ( ").append(laph.getApproverUserId().getFirstName()).append(" ").append(laph.getApproverUserId().getLastName()).append(" )").toString());					
+					}else{
+						aphlist.add(sb.append(role.getUserType()).append(" ( ").append(laph.getApproverUserId().getFirstName()).append(" )").toString());
+					}
+				}
+			}
+			leave.setApproverUsers(String.join(",", aphlist));
+			leave.setFromDateStr(ConversionUtil.getDateAsString(leave.getFromDate()));
+			leave.setToDateStr(ConversionUtil.getDateAsString(leave.getToDate()));
+			leave.setCreatedDateStr(ConversionUtil.getDateAsString(leave.getCreatedDate()));
+			if(StringUtils.isNotBlank(leave.getUpdatedBy())){
+				User user = userService.getUserByUserCode(leave.getUpdatedBy());
+				StringBuilder sb = new StringBuilder();
+				if(StringUtils.isNotBlank(user.getFirstName()) && StringUtils.isNotBlank(user.getLastName())){
+					leave.setUpdatedBy(sb.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
+				}else{
+					leave.setUpdatedBy(sb.append(user.getFirstName()).toString());
+				}
+			}
+			
+			
+		}
+		return leaveList;
 	}
 
 }

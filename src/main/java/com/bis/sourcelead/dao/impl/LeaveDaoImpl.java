@@ -47,4 +47,16 @@ public class LeaveDaoImpl implements LeaveDao{
 		return session.createQuery(query).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
 	}
 
+
+	@Override
+	@Transactional
+	public List<Leave> getLeavesListByLocationIdAndStatus(Long orgLocationId, String status,Long userId)
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		List<Leave> leaveList = null;
+		String query = "from Leave leave left join fetch leave.leaveType where leave.orgLocations.id = :orgLocationId and leave.status = :status and leave.createdBy IN (select user.userCode from User user where user.id=:userId)";
+		leaveList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setLong("userId", userId).setString("status", status).setCacheable(true).list();
+		return leaveList;
+	}
+
 }
