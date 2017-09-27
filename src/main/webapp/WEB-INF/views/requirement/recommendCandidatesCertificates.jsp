@@ -250,24 +250,7 @@ function candidateCertificateList(candidateId){
 	                     $("#candidateCertificateList").append(result); 
 	                     certificationPagination(); 
 			    	} 
-               /* }else{
-	    	         var result ="";
-		    	     result = result+"   <div class='row'>"; 
-					 result = result+"	<div class='col-lg-12'>"; 
-					 result = result+"		<div class='content-area clearfix'>"; 
-					 result = result+"			<div class='blank-pages'>";
-					 result = result+"			        <p><i class='fa fa-5x fa-bar-chart'></i></p>";
-					 result = result+"			        <p>No CandidatesCertifications Found</p>";
-					 result = result+"			 </div>";
-					 result = result+"		</div>"; 
-					 result = result+"	</div>"; 
-					 result = result+"  </div> "; 
-					$("#candidateCertificateList").empty();
-				    $("#candidateCertificateList").append(result);
-				    
-				    $("#popUpDivEmp").empty();
-					$("#popUpDivEmp").append(result);
-               } */
+              
         },
           
      }); 
@@ -367,24 +350,6 @@ function addCertification(candidateId) {
 		 $(".addUser-org, .assign-org, .collapse-div-adduser, .collapse-div, .edit-details").click(function(e){
 			 e.stopPropagation();
 		 });
-		 
-		 
-		 /* $('html').click(function(){
-			$(".edit-details").removeClass("edit-details-active");
-		   });	 */
-		
-		
-		/*  $(".addUser-org").click(function(){
-			 $(".edit-details").toggleClass("edit-details-active");
-		 });  */
-		/* $(".edit-details").toggleClass("edit-details-active");
-		 $(".addUser-org, .assign-org, .collapse-div-adduser, .collapse-div, .edit-details").click(function(e){
-			 e.stopPropagation();
-		 }); */
-	 /* $('html').click(function(){
-		$(".edit-details").removeClass("edit-details-active");
-	   });	 */
-
 	   
 		 var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
 		  var finalDateFormatRecomondedCandCertSave = '';
@@ -397,11 +362,11 @@ function addCertification(candidateId) {
 		  }if(locationDate.match("yyyy-dd-MM")){
 			  finalDateFormatRecomondedCandCertSave = 'yy-dd-mm'; 
 		  }
-		  
-	   
 	   
 	  $('#StartDate').datepicker({
 	      dateFormat: finalDateFormatRecomondedCandCertSave,
+	      changeMonth: true,
+	  	  changeYear: true, 
 	      onSelect: function (selected) {
 	           // var dt = new Date(selected);
 	             var dt = $(this).datepicker('getDate', '+1d');
@@ -412,6 +377,8 @@ function addCertification(candidateId) {
 	  
 	  $('#EndDate').datepicker({
 	      dateFormat: finalDateFormatRecomondedCandCertSave,
+	      changeMonth: true,
+	  	  changeYear: true, 
 	        onSelect: function (selected) {
 	          //  var dt = new Date(selected);
 	            var dt = $(this).datepicker('getDate', '-1d');
@@ -551,24 +518,6 @@ function addCertification(candidateId) {
 								 $(".addUser-org, .assign-org, .collapse-div-adduser, .collapse-div, .edit-details").click(function(e){
 									 e.stopPropagation();
 								 });
-								 
-								 
-								 
-								/*  $('html').click(function(){
-									$(".edit-details").removeClass("edit-details-active");
-								   });	
-								 */
-								
-								/*  $(".addUser-org").click(function(){
-									 $(".edit-details").toggleClass("edit-details-active");
-								 });  */
-								/* $(".edit-details").toggleClass("edit-details-active");
-								 $(".addUser-org, .assign-org, .collapse-div-adduser, .collapse-div, .edit-details").click(function(e){
-									 e.stopPropagation();
-								 }); */
-							 /* $('html').click(function(){
-								$(".edit-details").removeClass("edit-details-active");
-							   });	 */
 
 								 var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
 								  var finalDateFormatRecCandCert = '';
@@ -584,6 +533,8 @@ function addCertification(candidateId) {
 							   
 							  $('#StartDateEdit').datepicker({
 							      dateFormat: finalDateFormatRecCandCert,
+							      changeMonth: true,
+							  	  changeYear: true, 
 							      onSelect: function (selected) {
 							            //var dt = new Date(selected);
 							             var dt = $(this).datepicker('getDate', '+1d');
@@ -594,6 +545,8 @@ function addCertification(candidateId) {
 							  
 							  $('#EndDateEdit').datepicker({
 							      dateFormat: finalDateFormatRecCandCert,
+							      changeMonth: true,
+							  	  changeYear: true, 
 							        onSelect: function (selected) {
 							           // var dt = new Date(selected);
 							            var dt = $(this).datepicker('getDate', '-1d');
