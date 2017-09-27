@@ -1150,7 +1150,7 @@ function searchRequirement(offset){
 									 				else if(requirements.minExperience == 'undefined' && requirements.maxExperience != 'undefined'){
 									 					experience = requirements.maxExperience+" Years";
 									 				}
-									 				else if(requirements.minExperience != '' && requirements.maxExperience != ''){
+									 				else if(requirements.minExperience != '' && requirements.maxExperience != ''  && requirements.minExperience != 'undefined'  && requirements.maxExperience != 'undefined' && requirements.minExperience != null  && requirements.maxExperience != null){
 									 					experience = requirements.minExperience+" to "+requirements.maxExperience+" Years";
 									 				}else{
 									 					experience = '--';
@@ -2276,8 +2276,7 @@ var validationSettings = {
         					type : "POST",
         					url : sourceleadUrl+"/storeJobAlert?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
         					success : function(result) {
-        						alert("hello");
-	        					    $("#selector4").removeAttr("style");
+        							 $("#selector4").removeAttr("style");
 			            			$("#selector4").css({ display: "block" });
 			            			$("#eduMsgDiv").html("Job Alert updated successfully"); 
 			            			alertMsgFadeinFunction();

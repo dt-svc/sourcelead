@@ -245,8 +245,14 @@ overflow-x: auto;
             </div>
             <div class="row form-footer mt">
               <div class="pull-right mr"> 
+               <div id="enableClientAdvancedSearch"> 
               	<input type="button" value="Search" id="search_client" onclick="getClientList();" class="btn btn-sm btn-success"/>
-              	   <input type="button" value="Clear" id="clear_search" onclick="clearSearch();" class="btn btn-sm btn-primary"/>
+              	<input type="button" value="Clear" id="clear_search" onclick="closePop();" class="btn btn-sm btn-primary"/>
+              	</div>
+              	<div id="enableClientContactAdvancedSearch"> 
+              	<input type="button" value="Search" id="search_client" onclick="getClientContactList();" class="btn btn-sm btn-success"/>
+              	<input type="button" value="Clear" id="clear_search" onclick="closePop();" class="btn btn-sm btn-primary"/>
+              	</div>
             </div>
           </div>
           </form:form>
@@ -701,11 +707,16 @@ function clearSearch(){
 			
 			 document.getElementById("vendorContactListAdvanced").style.display="block";
 			 document.getElementById("vendorListAdvanced").style.display="none";
+			 document.getElementById("enableClientContactAdvancedSearch").style.display="block";
+			 document.getElementById("enableClientAdvancedSearch").style.display="none";
+			 
 			 
 		}else if(selectedList == "listbyVendor" ){
 			
 			 document.getElementById("vendorListAdvanced").style.display="block";
 			 document.getElementById("vendorContactListAdvanced").style.display="none";
+			 document.getElementById("enableClientAdvancedSearch").style.display="block";
+			 document.getElementById("enableClientContactAdvancedSearch").style.display="none";
 		}
 	    
 	    
@@ -1570,7 +1581,7 @@ function listChange(sel){
 // 		document.getElementById("filter1ApprovePop").style.display="block";
 		 document.getElementById("filter3ApprovePop").style.display="block";
 		 document.getElementById("filter4ApprovePop").style.display="block";
-		 document.getElementById("advanceSearchDiv").style.display="none";
+		 document.getElementById("advanceSearchDiv").style.display="block";
 		/*  getVendorContactLists(); */
 // 		 getVendorContactListsELK();
 		$("#dataTableSearch").val("");
@@ -1937,13 +1948,15 @@ function saveReason1(spocId, orgRelationID){
 	var sourceleadUrl = '${sourceleadUrl}';
 	var reason = document.getElementById("reasonForSpoc").value;
 	var reason1 = document.getElementById("reasonForSpoc").value;
+	var userId = '${SourceLeadWeb_user.id}';
+	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	 reason = reason.replace(/\s/g, "")
 	if(reason.match(/^[^\s-](.*)*$/) != null){
 		$("#reasonForSpocDiv").empty(); 
 	
 		$.ajax({
 		   	type: "POST",
-		   url: sourceleadUrl+"/terminateSpoc?"+tokenParamName+"="+tokenValue+"&spocId="+spocId+"&reason="+reason,	    	   
+		   url: sourceleadUrl+"/terminateSpoc?"+tokenParamName+"="+tokenValue+"&spocId="+spocId+"&reason="+reason+"&userId="+userId+"&orgLocationId="+orgLocationId+"&responderType=Client",	    	   
 		    success: function(data) {
 		    	getClientContactList();
 	   			 $("#selector1").removeAttr("style");

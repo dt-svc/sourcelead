@@ -1,11 +1,13 @@
 <jsp:include page="masterHeader.jsp" />
 <jsp:include page="masterSideNav.jsp" />
 
-<link href="resources/css/summernote.css" rel="stylesheet">
-<link rel="stylesheet" href="resources/css/bootstrap-multiselect.css" type="text/css">
-<link rel="stylesheet" href="resources/css/bootstrap3-wysihtml5.min.css" type="text/css">
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
+
+<link href="resources/css/summernote.css?staticTime=${staticTime}" rel="stylesheet">
+<link rel="stylesheet" href="resources/css/bootstrap-multiselect.css?staticTime=${staticTime}" type="text/css">
+<link rel="stylesheet" href="resources/css/bootstrap3-wysihtml5.min.css?staticTime=${staticTime}" type="text/css">
+
 
 <style>
 .modal-backdrop{
@@ -414,7 +416,13 @@ function getUserList(teamType){
 		                    	 var opt = json[i]; 
 		                    	 result = result +'<tr>';
 		                    	 result = result +'             <td>&nbsp;&nbsp;<input id="'+opt.id+'" value="'+opt.email+'"  type="checkbox" name="emails[]" class="myCheckbox" ></td>';
+		                    	   if(opt.lastName != null && opt.lastName != 'undefined' && opt.lastName != ""){
 		                    	 result = result +'             <td>'+opt.firstName+' '+opt.lastName+'</td>';
+		                    	   }
+		                    	   else{
+		                    		   
+		                    		   result = result +'             <td>'+opt.firstName+' </td>';
+		                    	   }
 		                    	 result = result +'             <td>'+opt.email+'</td>';
 		                    	 result = result +'             <td>'+opt.userType+'</td>';
 		                    	 result = result +'           </tr>';

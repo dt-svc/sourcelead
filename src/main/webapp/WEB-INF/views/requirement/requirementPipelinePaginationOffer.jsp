@@ -1,7 +1,6 @@
 
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 <%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%@taglib prefix="sec"
@@ -25,7 +24,7 @@
 							"ajax" : $.fn.dataTable.pipeline({
 								url : url,
 								method : 'POST',
-								pages : 10
+								pages : 2
 							}),
 							"columns" : [ {
 								"data" : "name"
@@ -52,6 +51,12 @@
 										"data" : "name",
 										"render" : function(data, type, opt,
 												meta) {
+											if (opt.candidateId != null
+													&& opt.candidateId != ''
+													&& opt.candidateId != 'undefined') {
+												$("#emptyPipelinelist").val(1);
+											}
+											
 											var result = "";
 											'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_APPLICANT\')">';
 											result = result
@@ -129,15 +134,7 @@
 													&& opt.resumeId != ''
 													&& opt.resumeId != 'undefined') {
 												result = result
-														+ '         <td><div><span><a class="glyphicon glyphicon-download-alt" href=\"'
-														+ sourceleadUrl
-														+ '/downloadResume?resumeUUID='
-														+ opt.resumeUUID
-														+ '\"></a><a class="fa fa-eye ml10" onclick="viewResumeRequirementSummary(\''
-														+ opt.resumeUUID
-														+ '\',\''
-														+ opt.filename
-														+ '\')"></a></span></div></td>';
+												+ '         <td><div><span><a class="glyphicon glyphicon-download-alt" href=\"'+opt.fileURL+'\"></a><a class="fa fa-eye ml10" onclick="viewFile(\''+opt.fileURL+'\',\''+opt.fileName+'\',\''+opt.fileContentType+'\');"></a></span></div></td>';
 											} else {
 												result = result
 														+ '         <td><div>--</div></td>';
@@ -310,6 +307,7 @@
 								"sProcessing" : "<img src='resources/images/loading.gif' style='width: 75px; height: 75px;'/>"
 							}
 						});
+		
 		$("#requirementsPagination").wrap(
 				"<div style='overflow-x: auto; overflow-y: hidden;'></div>");
 		$("input[type=search]").hide();

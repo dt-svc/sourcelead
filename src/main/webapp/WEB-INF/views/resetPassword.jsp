@@ -2,22 +2,30 @@
 <html lang="en">
 
 <head>
-<meta http-equiv="Pragma" content="private">
-<meta http-equiv="Cache-Control" content="private">
-<meta http-equiv="Expires" content="0">
-<%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
-<meta charset="utf-8">
+
+	<meta http-equiv="Pragma" content="private">
+	<meta http-equiv="Cache-Control" content="private">
+	<meta http-equiv="Expires" content="0">
+	<meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+	<%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
+	<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+    <%@page session="true"%>
+   
+    <c:if test="${staticTime == null || staticTime == 0 }">
+     <c:set var='staticTime' value="<%=new java.util.Date().getTime() %>" scope="application"></c:set>
+    </c:if>
+   
     <title>::. Reset Password .::</title>
     <link rel="icon" type="resources/image/png" href="resources/images/fav.png" />
 	<link href="https://fonts.googleapis.com/css?family=Roboto:400,300italic,300,400italic,500,700,900" rel="stylesheet" type="text/css">
     <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.min.css">
-    <link href="resources/css/bootstrap.min.css" rel="stylesheet">
-    <link href="resources/css/register-style.css" rel="stylesheet">
-     <link href="resources/css/jquery-ui.css" rel="stylesheet">
-     <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-    <%@page session="true"%>
+    <link href="resources/css/bootstrap.min.css" rel="stylesheet?staticTime=${staticTime}">
+    <link href="resources/css/register-style.css?staticTime=${staticTime}" rel="stylesheet">
+     <link href="resources/css/jquery-ui.css?staticTime=${staticTime}" rel="stylesheet">
+     
 </head>
 
 <body>
@@ -61,11 +69,11 @@
 </div>  
 <input id="autocomplete"/>&nbsp;<input id="submit" type="submit"/>
   
-	  <script src="resources/js/jquery-1.11.1.min.js"></script>
-    <script src="resources/js/jquery-ui.js"></script>
-    <script src="resources/js/bootstrap.min.js"></script>
-    <script src="resources/js/jquery-fun.js"></script> 
-    <script src="resources/js/formvalidator.js"></script>
+	  <script src="resources/js/jquery-1.11.1.min.js?staticTime=${staticTime}"></script>
+    <script src="resources/js/jquery-ui.js?staticTime=${staticTime}"></script>
+    <script src="resources/js/bootstrap.min.js?staticTime=${staticTime}"></script>
+    <script src="resources/js/jquery-fun.js?staticTime=${staticTime}"></script> 
+    <script src="resources/js/formvalidator.js?staticTime=${staticTime}"></script>
     
     
     

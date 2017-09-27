@@ -132,7 +132,12 @@ function getNotificationtLists(){
 					
 					result = result +'		<td><div class="notificationUser clearfix">';
 					result = result +'		<div class="notifi-image">';
-					result = result +'			<img class="img-responsive img-circle" title="'+report.notificationFirstName+' '+report.notificationLastName+'" alt="${report.notificationFrom.userType}" onerror="predefineProfileImage(this);"  src="'+sourceleadUrl+'/displayUserImage/'+report.notificationFormId+'" ">';
+					if(report.notificationImage != null && report.notificationImage !='' && report.notificationImage !="undefined"){
+					result = result +'			<img data-id= "userProfileImage" class="img-responsive img-circle" title="'+report.notificationFirstName+' '+report.notificationLastName+'" alt="${report.notificationFrom.userType}" onerror="predefineProfileImage(this);"  src='+report.notificationImage+'>';
+					}else{
+					result = result +'			<img data-id= "userProfileImage" class="img-responsive img-circle" title="'+report.notificationFirstName+' '+report.notificationLastName+'" alt="${report.notificationFrom.userType}" onerror="predefineProfileImage(this);"  src="resources/images/userprofileImg.jpg">';
+	
+					}
 					result = result +'		</div>';					
 					result = result +'		<div class="mailbox-name">';
 					if(report.notificationLastName != null && report.notificationLastName != '' && report.notificationLastName != 'undefined'){

@@ -110,6 +110,9 @@ public class Notifications implements Serializable{
 	@Transient
 	private String notificationLastName;
 	
+	@Transient
+	private String notificationImage;
+	
 	
 	@Transient
 	private String notificationUserType;
@@ -310,4 +313,15 @@ public class Notifications implements Serializable{
 	public void setCalDays(String calDays) {
 		this.calDays = calDays;
 	}
+
+	public String getNotificationImage() {
+		return notificationImage;
+	}
+
+	public void setNotificationImage(String notificationImage) {
+		this.notificationImage = notificationImage;
+	}
+	
+	
+	
 }
