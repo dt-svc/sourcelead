@@ -1,5 +1,6 @@
+
 function viewFile(fileURL, title, contentType){
-	if(fileURL != null && fileURL != ""){
+	if(fileURL != null && fileURL != "" && fileURL != "undefined"){
 		window.open(sourceleadUrl+'/viewFile?documentPath='+encodeURI(fileURL)+"&contentType="+contentType,title,"height=600,width=600");
 	}  
 }
@@ -26,6 +27,7 @@ function getFormData1(formId) {
 
 
 function fileUpload(id, type, formId, name, orgId, orgLocationId) {
+	$(".file_mask").show();
 	if(name == null || name == 'undefined' || name == ''){
 		name = 'fileInfo';
 	}
@@ -49,10 +51,12 @@ function fileUpload(id, type, formId, name, orgId, orgLocationId) {
 		success: function (data) {
 			if(data && data.length > 0) {
 				applyData(data, formId, name, id);
+				$(".file_mask").hide();
 			}
 		}, 
 		error: function (err) { 
-			 showError(err); 
+			 alert(err); 
+			 $(".file_mask").hide();
 		} 
 	});
 }

@@ -8,7 +8,7 @@
 	function loadClientDatatable(clientSearchResult, clientKeyword,responderLocationId, orgRelationId, orgName) {
 		if (clientSearchResult == "clientSearchResult") {
 			getClientList();
-			$("#dataTableSearch").val(clientSearchResult);
+// 			$("#dataTableSearch").val(clientSearchResult);
 		} else {
 			if (clientKeyword == "clientSearch") {
 				clientSideBar(responderLocationId, orgRelationId, orgName);
