@@ -3,15 +3,11 @@ package com.bis.sourcelead.rest;
 
 
 
-import javax.measure.unit.Dimension.Model;
-
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
-
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -20,64 +16,43 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.ModelAndView;
-
-import com.bis.sourcelead.dto.ShiftDTO;
-import com.bis.sourcelead.entity.Shift;
-import com.bis.sourcelead.service.ShiftService;
-
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
-
-import com.bis.sourcelead.dao.HolidayDAO;
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dao.HolidayDAO;
 import com.bis.sourcelead.dao.LeaveTypeDao;
 import com.bis.sourcelead.dao.OptionsDao;
-import com.bis.sourcelead.dto.LeaveTypeDTO;
-import com.bis.sourcelead.dto.LeaveTypeDTO;
-import com.bis.sourcelead.entity.Department;
-import com.bis.sourcelead.entity.Leave;
-import com.bis.sourcelead.entity.LeaveType;
-import com.bis.sourcelead.entity.Org;
-import com.bis.sourcelead.entity.OrgLocations;
-import com.bis.sourcelead.entity.Roles;
-import com.bis.sourcelead.service.DepartmentService;
-import com.bis.sourcelead.service.LeaveService;
-import com.bis.sourcelead.service.LeaveTypeService;
-import com.bis.sourcelead.service.OrgLocationService;
-import com.bis.sourcelead.dao.OptionsDao;
-import com.bis.sourcelead.dto.AddUserDTO;
-import com.bis.sourcelead.dto.CandidateDTO;
-import com.bis.sourcelead.dto.ClientDTO;
-import com.bis.sourcelead.dto.LeaveDTO;
+import com.bis.sourcelead.dao.ShiftDao;
 import com.bis.sourcelead.dto.HolidayDTO;
+import com.bis.sourcelead.dto.LeaveDTO;
+import com.bis.sourcelead.dto.LeaveTypeDTO;
 import com.bis.sourcelead.dto.OptionsDTO;
+import com.bis.sourcelead.dto.ShiftDTO;
 import com.bis.sourcelead.entity.Department;
 import com.bis.sourcelead.entity.Holiday;
+import com.bis.sourcelead.entity.Leave;
 import com.bis.sourcelead.entity.LeaveRole;
 import com.bis.sourcelead.entity.LeaveType;
 import com.bis.sourcelead.entity.Option;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Roles;
+import com.bis.sourcelead.entity.Shift;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
-import com.bis.sourcelead.payroll.entity.AccountDeductionsDetails;
-import com.bis.sourcelead.service.DepartmentService;
-import com.bis.sourcelead.service.LeaveTypeService;
 import com.bis.sourcelead.service.DepartmentService;
 import com.bis.sourcelead.service.HolidayService;
+import com.bis.sourcelead.service.LeaveService;
+import com.bis.sourcelead.service.LeaveTypeService;
 import com.bis.sourcelead.service.OptionsService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.RolesService;
+import com.bis.sourcelead.service.ShiftService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
@@ -133,6 +108,9 @@ public class LeaveManagementRestController {
 
 	@Autowired
 	HolidayDAO holidayDAO;
+	
+	@Autowired
+	ShiftDao shiftDao;
 
 	
 	/**
@@ -419,26 +397,39 @@ public class LeaveManagementRestController {
 	
 
 
-	@RequestMapping(value = "/saveShift")
+	@RequestMapping(value = "/saveShift", method = RequestMethod.POST)
 	public String saveShift(ShiftDTO shiftDTO) throws Exception {
 		shiftService.saveShift(shiftDTO);
 	       return "success";
 	}
 	
-	@RequestMapping(value = "/getShiftList")
+	@RequestMapping(value = "/getShiftList", method = RequestMethod.GET)
 	public List<Shift> getShiftList(@RequestParam (value = "orgLocationId", required = true )Long orgLocationId) throws Exception{
 	List<Shift> shift = shiftService.getShiftList(orgLocationId);
 	return shift;
 	}
 	
-	@RequestMapping(value = "/editShift" ,method = RequestMethod.POST)
-	public ModelAndView editShift(@RequestParam (value = "shiftId", required = true )String shiftId,HttpServletRequest request,HttpServletResponse response) throws Exception{
+	@RequestMapping(value = "/editleaveshift")
+	public ModelAndView editShift(@RequestParam (value = "shiftId", required = false )String shiftId,HttpServletRequest request,HttpServletResponse response) throws Exception{
 		ModelAndView model = new ModelAndView();
-		List<Shift> shift = shiftService.getShiftById(shiftId);
-		model.addObject("shifts", shift);
+	    Shift shift = shiftService.getShiftById(shiftId);
+		model.addObject("shift", shift);
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.setViewName("leavemanagement/addShift");
 		return model;
+	}
+	
+	@RequestMapping(value = "/deleteShift")
+	public boolean deleteShift(@RequestParam(value = "shiftId", required = false) String shiftId,@RequestParam(value = "orgLocationId", required = false) String orgLocationId) throws Exception
+	{
+		boolean isDeleted = false;
+		 Shift deleteShift = shiftService.getShiftById(shiftId);
+		 if(deleteShift !=null) {
+			 deleteShift.setStatus(Constants.MEMBER_IN_ACTIVE);
+			 shiftDao.deleteShift(deleteShift);
+			 isDeleted = true;
+		 }
+		return isDeleted;
 	}
 
 	@RequestMapping(value = "/saveHoliday", method = RequestMethod.POST)

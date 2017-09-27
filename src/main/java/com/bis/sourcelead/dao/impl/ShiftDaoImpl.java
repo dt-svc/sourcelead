@@ -62,5 +62,21 @@ public class ShiftDaoImpl implements ShiftDao {
 		}
 		
 	}
+
+	@Override
+	@Transactional
+	public Shift deleteShift(Shift shift)
+	{
+		logger.debug("Deleting Shift");
+		Session session = this.sessionFactory.getCurrentSession();
+		try {
+			if (shift != null) {
+				session.saveOrUpdate(shift);
+			}
+			logger.debug("Shift Deleted Successfully");
+		} catch (Exception exception) {
+		}
+		return shift;
+	}
 	
 }

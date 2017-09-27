@@ -102,7 +102,7 @@ function populategShiftList(json){
            result = result +'  <td>';                                                                                                                  
            result = result +'    <div class="tbldata-dotdot-150">';                                                                          
            result = result +    '<div class="pull-left tbldata-dotdot" title="'+report.shiftName+'">'+report.shiftName+'</div>';
-           result = result +'        <i class="fa fa-binoculars pull-right"></i>';                                                                     
+//            result = result +'        <i class="fa fa-binoculars pull-right"></i>';                                                                     
            result = result +'    </div>';                                                                                                              
            result = result +'  </td>';                                                                                                                 
            result = result +'  <td>';                                                                                                                  
@@ -114,8 +114,12 @@ function populategShiftList(json){
            result = result +'  <td>';                                                                                                                  
            result = result +'    <div title="TimeOut" class="tbldata-dotdot-big">'+report.shiftDescription+'</div>';
            result = result +'  </td>';                                                                                                                
-           result = result +'  <td>';                                                                                                                  
+           result = result +'  <td>';
+           if(report.updatedBy != null && report.updatedBy !='undefined' && report.updatedBy != ""){
            result = result +    '<div class="pull-left tbldata-dotdot" title="'+report.updatedBy+'">'+report.updatedBy+'</div>';
+           }else{
+        	   result = result +    '<div class="pull-left tbldata-dotdot">--</div>';
+           }
            result = result +'  </td>';
            result = result +'  <td>';  
            if(report.status == 1){
@@ -125,9 +129,13 @@ function populategShiftList(json){
            }
            result = result +'  </td>';
            result = result +'  <td>';
-           result = result +'     <div class="tblminwidth-50">'                                                                                         
+           result = result +'     <div class="tblminwidth-50">'    
+           if(report.status == 1){
            result = result +'          <span title="Edit" class="paddingRight" onclick="editShift(\''+report.id+'\');"><i class="fa fa-pencil text-primary cursorPointer"></i></span>';       
-           result = result +'          <span title="Delete" class="paddingLeft"><i onclick= "deleteShift();" class="fa fa-trash text-danger cursorPointer"></i></span>';         
+           result = result +'          <span title="Delete" class="paddingLeft"><i onclick= "deleteShift(\''+report.id+'\');" class="fa fa-trash text-danger cursorPointer"></i></span>';         
+           }else{
+        	   result = result +'          <span class="paddingRight" >NA</span>'; 
+           }
            result = result +'      </div>';                                                                                                            
            result = result +'  </td>';                                                                                                                 
            result = result +'</tr>';                                                                                                                                                                                                                                        
@@ -163,14 +171,22 @@ function shiftPagination(){
 
 <script type="text/javascript">
 function editShift(shiftId) {
-	alert("fsdf")
 	window.location.href = sourceleadUrl + "/editleaveshift?&shiftId="+shiftId;
 }
 </script>
 
 <script>
-function deleteShift(){
-	alert("hai1");
+function deleteShift(shiftId){
+	  var orgLocationId = '${SourceLeadWeb_orgLocationId}';
+      $.ajax({
+      type : "GET",
+       url: sourceleadUrl+"/deleteShift?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&shiftId="+shiftId,       
+       success :function(data) {
+    	   location.replace(sourceleadUrl+ "/viewShift");
+      }
+       
+  }); 
+
 }
 </script>
 
