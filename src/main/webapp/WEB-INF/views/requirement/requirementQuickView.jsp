@@ -276,7 +276,7 @@
 						   </c:when>
 						   <c:otherwise>
 						   		<c:forEach var ="req" items="${requirement.requirementApprover}" varStatus="reqStatus">
-							        <div class="require_wrap_details_cta"> <b>Approvers ${reqStatus.count}:</b> <span> ${req.approverUserId.firstName} ${req.approverUserId.lastName}</span></div>
+							        <div class="require_wrap_details_cta"> <b>Approvers ${req.level}:</b> <span> ${req.approverUserId.firstName} ${req.approverUserId.lastName}</span></div>
 							     </c:forEach>
 						   </c:otherwise>
 						</c:choose>
@@ -354,7 +354,7 @@
 		</div>
 	</div>
 	<div id="actionsDiv" class="timesheet_head timesheetHead minHeight candidateHead recruitmentHead headersummary clearfix zindex" style="display: none;">
-		<ul>
+		<ul class="m-t">
 		  <li class="li-vendor">
 		   <c:if test="${requirement.requirementSubmissionStatus != 'SUBMITTED' && requirement.requirementSubmissionStatus != 'CLOSED' && requirement.requirementSubmissionStatus != 'REJECTED' &&  requirement.requirementSubmissionStatus != 'CANCEL' && requirement.requirementSubmissionStatus != 'DRAFT' && requirement.requirementSubmissionStatus != 'ONHOLD' && requirement.requirementSubmissionStatus != 'FILLEDCLOSED'  && requirement.requirementSubmissionStatus != 'UNFILLEDCLOSED' }">
 		        <a onclick="getActions();" href="javascript:void(0)" class="action"> Action <i  class="fa fa-caret-down" ></i></a>

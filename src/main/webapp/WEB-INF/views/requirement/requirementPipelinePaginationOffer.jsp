@@ -51,6 +51,12 @@
 										"data" : "name",
 										"render" : function(data, type, opt,
 												meta) {
+											if (opt.candidateId != null
+													&& opt.candidateId != ''
+													&& opt.candidateId != 'undefined') {
+												$("#emptyPipelinelist").val(1);
+											}
+											
 											var result = "";
 											'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_APPLICANT\')">';
 											result = result
@@ -301,6 +307,7 @@
 								"sProcessing" : "<img src='resources/images/loading.gif' style='width: 75px; height: 75px;'/>"
 							}
 						});
+		
 		$("#requirementsPagination").wrap(
 				"<div style='overflow-x: auto; overflow-y: hidden;'></div>");
 		$("input[type=search]").hide();
