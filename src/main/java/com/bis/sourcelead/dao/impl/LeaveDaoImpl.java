@@ -42,9 +42,19 @@ public class LeaveDaoImpl implements LeaveDao{
 	@Override
 	@Transactional
 	public List<LeaveApproveHierarchy> getEmployeeRequestedLeavesBylocationId(Long orgLocationId, String userId) {
+		Long usrId = Long.parseLong(userId);
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from LeaveApproveHierarchy laph left join fetch laph.leaveid leave where leave.orgLocations.id = :orgLocationId and ";
-		return session.createQuery(query).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+		String query = "from LeaveApproveHierarchy laph left join fetch laph.leaveid leave left join fetch leave.leaveType left join fetch leave.user ltype where leave.orgLocations.id = :orgLocationId and laph.approverUserId.id= :userId";
+		return session.createQuery(query).setLong("orgLocationId", orgLocationId).setLong("userId", usrId).setCacheable(true).list();
+	}
+
+
+	@Override
+	@Transactional
+	public Leave getLeaveById(String leaveId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		  Leave leave =  (Leave) session.get(Leave.class, leaveId);
+		return leave;
 	}
 
 }

@@ -30,9 +30,9 @@ $(document).ready(function(){
         <div class="clearfix"></div>
       </ul>
       <div class="clearfix"></div>
-      <div class="remove_search">
+      <!-- <div class="remove_search">
         <input placeholder="Search" type="text">
-      </div>
+      </div> -->
     </div>
         <div id="loading"></div> 
     <div class="require_wrap_table datatable_filter">

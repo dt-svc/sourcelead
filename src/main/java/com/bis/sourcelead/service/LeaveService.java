@@ -11,6 +11,10 @@ public interface LeaveService {
 
 	Leave saveLeave(LeaveDTO leaveDTO, OrgLocations orgLocations, User user) throws Exception;
 
-	List<LeaveDTO> getEmployeeRequestedLeavesBylocationId(Long orgLocationId, String userId)throws Exception;
+	List<LeaveDTO> getEmployeeRequestedLeavesBylocationId(OrgLocations orgLocationId, String userId)throws Exception;
+
+	Leave getLeaveByLeavId(String leaveId) throws Exception;
+
+	boolean approveRequestLeave(OrgLocations orgLocations, User user, String leaveId, String leaveTypeId,String approveStatus, String numberOfDays) throws Exception;
 
 }
