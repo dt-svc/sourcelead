@@ -196,7 +196,7 @@ function backoutCount(requirementId){
     
     
 <div class="side_mask">
-  <div class="proj_close" onClick="activeTab();"></div>
+  <div class="proj_close" onClick="activeTabs();"></div>
 </div>
    
 </section>
@@ -509,7 +509,8 @@ function sideBar(requirementId,type){
 </script>
 
 <script type="text/javascript">
-function activeTab(){
+function activeTabs(){
+	document.getElementById("tab-1").style.display="none";
 	$("#quickviewTabsdetails").removeClass("active");
 	$("#quickviewTabsqv").addClass("active");
 	$("#quickresume_view").addClass("active in");
@@ -1296,7 +1297,7 @@ function reqNotes(requirementId){
 	});
 </script>
 
-<script type="text/javascript">
+<!-- <script type="text/javascript">
 function requirementRecommendations(requirementId){
 	$("#actionsDiv" ).hide();
 	
@@ -1590,8 +1591,8 @@ function checkMaxCount(id){
 	    }
 	})
 }
-</script>
-<script>
+</script> -->
+<!-- <script>
 function viewAssociateCandidateResumeDocView(candidateId,title){
 	var sourceleadUrl ='${sourceleadUrl}';
 	if(candidateId != null && candidateId != ""){
@@ -1629,7 +1630,7 @@ function recommendationpagination(){
     });
     	$("#recommendationTable").wrap("<div class='overflow_Auto' style='width:100%;'></div>"); 
 }
-</script>
+</script> -->
 
 <script>
 function getActions(){
