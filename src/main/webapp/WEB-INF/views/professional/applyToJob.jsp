@@ -682,7 +682,7 @@ function uploadAddApplicantProfissionalDoc() {
 
 <script>
 function uploadAddApplicantRecrutierDoc() {
-	fileUpload("uploadBtn", "addApplicants", "applyToJob_form");
+	fileUpload("uploadBtn", "addApplicants", "submitCandidateToJob_form");
 }
 </script>
 
