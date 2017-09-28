@@ -808,6 +808,11 @@ function getDesignationType(designationType){
 		  }
 	}
 }
+$(function() {
+	$("#uploadBtn").change(function() {
+		fileUpload("uploadBtn", "resumes", "candidate_form");
+	});
+ });
 </script>
 
 <!-- This script for Current Rate ,Rate Type,Expected Rate, Expected Rate Type validation checks -->
