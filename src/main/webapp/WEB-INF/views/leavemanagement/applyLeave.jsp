@@ -114,7 +114,9 @@
               <div class="col-md-9 dropdown-select">
                   <select  multiple data-placeholder="Select Approver" class="chosen-select form-control" id="approverUser" name="approverUser" field-name="Approver" data-validation="required">
                 	<c:forEach var="user" items="${approverList}">
-	                     <option value="${user.id}">${user.firstName} ${user.lastName} (${user.userType})</option>
+	                	<c:if test="${user.id != SourceLeadWeb_userId}">
+	                		<option value="${user.id}">${user.firstName} ${user.lastName} (${user.userType})</option>
+	                	</c:if>
                 	</c:forEach>
                   </select>
               </div>
