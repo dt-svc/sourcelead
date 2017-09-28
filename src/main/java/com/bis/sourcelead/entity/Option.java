@@ -29,7 +29,6 @@ public class Option {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY, generator = "uuid2")
 	@GenericGenerator(name = "uuid2", strategy = "uuid2")
-//	@Column(columnDefinition = "BINARY(16)")
 	private String id;
 
 	@NotFound(action = NotFoundAction.IGNORE)
@@ -81,6 +80,7 @@ public class Option {
 	@NotFound(action=NotFoundAction.IGNORE)
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "leavesOptionId")
 	private Set<LeaveRole> leaverolesSet;
+	
 
 	public String getId() {
 		return id;

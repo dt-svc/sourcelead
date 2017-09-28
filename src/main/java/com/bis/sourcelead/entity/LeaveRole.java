@@ -46,7 +46,7 @@ public class LeaveRole {
 	private RestrictDay restrictDay;
 
 	@NotFound(action = NotFoundAction.IGNORE)
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne
 	@JoinColumn(name = "ROLE_ID", nullable = false)
 	private Roles roleId;
 

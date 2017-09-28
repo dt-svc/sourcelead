@@ -30,9 +30,9 @@ $(document).ready(function(){
         <div class="clearfix"></div>
       </ul>
       <div class="clearfix"></div>
-      <div class="remove_search">
+      <!-- <div class="remove_search">
         <input placeholder="Search" type="text">
-      </div>
+      </div> -->
     </div>
         <div id="loading"></div> 
     <div class="require_wrap_table datatable_filter">
@@ -96,7 +96,7 @@ $(document).ready(function(){
 			        		 result = result + '  </td>';
 			        		 result = result + ' <td>';
 			        		 result = result + ' <div class="tblminwidth-50">';
-			        		 result = result + '      <span title="Edit" class="paddingRight"><a href="'+sourceleadUrl+'""/editOption?optionId=\''+opt.id+'\"><i class="fa fa-pencil text-primary cursorPointer"></i></a></span>';
+			        		 result = result + '      <span title="Edit" class="paddingRight"><a href="'+sourceleadUrl+'/editOption?optionId='+opt.id+'"><i class="fa fa-pencil text-primary cursorPointer"></i></a></span>';
 			        		 result = result + '     <span title="Delete" class="paddingLeft"><i class="fa fa-trash text-danger cursorPointer" onclick="deleteoption(\''+opt.id+'\')"></i></span>';
 			        		 result = result + '  </div>';
 			        		 result = result + ' </td>';

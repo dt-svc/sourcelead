@@ -13,7 +13,9 @@
 <meta charset="utf-8">
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
- <script src="resources/js/formvalidator.js"></script>
+
+ 
+ <script src="resources/js/formvalidator.js?staticTime=${staticTime}"></script>
     <script type="text/javascript">
 		window.onload = function () {
 			initLocationAuto('userLocation','','','','','','');
@@ -194,7 +196,7 @@ function resetProfile(){
 				   <div class="form-group" id="fbDiv">
 					<label class="col-md-4">Facebook</label>
 					<div class="col-md-8">
-					  <input type="text" name="facebook" value="${SourceLeadWeb_user.facebook}" field-name="Facebook" class="form-control" data-validation="validate_url validate_Space" data-validation-optional="true" />
+					  <input type="text" name="facebook" value="${SourceLeadWeb_user.facebook}" field-name="Facebook" class="form-control" data-validation="validate_url validate_Space" data-validation-optional="true">
 					</div>
 				   </div>
 				</div>
@@ -209,7 +211,7 @@ function resetProfile(){
 				   <div class="form-group" id="gplusDiv">
 					<label class="col-md-4">Google+</label>
 					<div class="col-md-8">
-					  <input type="text" name="googlePlus" value="${SourceLeadWeb_user.googlePlus}" field-name="Google+" class="form-control" data-validation="validate_url validate_Space" data-validation-optional="true" />
+					  <input type="text" name="googlePlus" value="${SourceLeadWeb_user.googlePlus}" field-name="Google+" class="form-control" data-validation="validate_url validate_Space" data-validation-optional="true">
 					</div>
 				   </div>
 		
@@ -559,7 +561,7 @@ var validationSettings = {
 		dateFormat : 'yyyy/mm/dd' 
    };  
          $('body').on('submit', '#profileSettings_form', function(e){
-        	  if ($('profileSettings_form').validate(false, validationSettings)){
+        	  if ($('#profileSettings_form').validate(false, validationSettings)){
         		    e.preventDefault(); 
             		
              		var formData = getFormData('profileSettings_form');

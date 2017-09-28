@@ -6206,6 +6206,9 @@ background-position: center; background-size: 200px; position: relative;top:-8px
     position: absolute;
     right: 20px; bottom: 75px;
 }
+.timesheet-report {
+    position: absolute; width: 20%; right: 20px; top: 75px; font-size: 18px;
+}
 .backgroundWhite{
     background: #fff;
 }
@@ -6694,6 +6697,24 @@ hr {
 }
 .usage-parent:hover .usage-child{
     display: block;
+}
+
+.terms-conditions.modal .modal-body {
+	min-height: 150px; max-height: 500px; overflow:auto; z-index: 9999999;
+}
+
+.widget-area {
+	background-color: #fff; padding: 10px; box-shadow: 0px 0px 3px rgba(0,0,0,0.3);
+	-webkit-border-radius: 3px; -moz-border-radius: 3px; -o-border-radius: 3px; border-radius: 3px;
+}
+.search-usericon {
+	position: absolute; left: 3px; top: 5px; font-size: 16px; z-index: 1;
+}
+.uploadbtn-custom .btn-sm {
+    padding: 5px !important;
+}
+#Re-AssignProject {
+z-index: 99999;
 }
 /* media 320px */
 @media (max-width: 320px) {
@@ -8679,3 +8700,10 @@ z-index: -800;
   animation-name: slideOutUp;
 }
 /* Animated Ends */
+
+
+.listof-holidays table.dataTable thead th {
+	padding: 10px !important;
+}
+
+

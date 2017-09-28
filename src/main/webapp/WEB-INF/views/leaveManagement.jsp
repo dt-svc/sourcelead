@@ -70,19 +70,19 @@
                 <ul class="list-unstyled list-group clearfix">
                     <li class="clearfix">
                         <label class="pull-left">Requested Leaves</label>
-                        <span class="label label-primary pull-right"><a href="employee-requestcount.html" class="color_white" title="Pending Leaves">100</a></span>
+                        <span class="label label-primary pull-right"><a href="<c:url value='/employeeRequestedLeaves'/>" class="color_white" title="Pending Leaves">100</a></span>
                     </li>
                     <li class="clearfix mt10">
                         <label class="pull-left">Approved Leaves</label>
-                        <span class="label label-success pull-right"><a href="employee-approvedcount.html" class="color_white" title="Approved Leaves">100</a></span>
+                        <span class="label label-success pull-right"><a href="<c:url value='/employeeApprovedLeaves'/>" class="color_white" title="Approved Leaves">100</a></span>
                     </li>
                     <li class="clearfix mt10">
                         <label class="pull-left">Rejected Leaves</label>
-                        <span class="label label-danger pull-right"><a href="employee-rejectedcount.html" class="color_white" title="Rejected Leaves">100</a></span>
+                        <span class="label label-danger pull-right"><a href="<c:url value='/employeeRejectedLeaves'/>" class="color_white" title="Rejected Leaves">100</a></span>
                     </li>
                     <li class="clearfix mt10">
                         <label class="pull-left">Cancel Leaves</label>
-                        <span class="label label-warning pull-right"><a href="employee-cancelcount.html" class="color_white" title="Cancel Leaves">100</a></span>
+                        <span class="label label-warning pull-right"><a href="<c:url value='/employeeCancelLeaves'/>" class="color_white" title="Cancel Leaves">100</a></span>
                     </li>
                 </ul>
                       
