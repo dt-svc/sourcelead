@@ -558,7 +558,7 @@ function getClientBasedOnSelectedProject(){
 
 <script type="text/javascript">
 function flushOnchange(){
-	$('#projectId').val('');	
+	//$('#projectId').val('');	
 	
 $('#expensePurpose').val('');
 $('#projectStartDateExpensesId').val('');
