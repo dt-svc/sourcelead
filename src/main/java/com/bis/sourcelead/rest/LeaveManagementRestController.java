@@ -428,13 +428,13 @@ public class LeaveManagementRestController {
 	
 
 
-	@RequestMapping(value = "/saveShift", method = RequestMethod.POST)
+	@RequestMapping(value = {"/saveShift", "/rest/saveShift"}, method = RequestMethod.POST)
 	public String saveShift(ShiftDTO shiftDTO) throws Exception {
 		shiftService.saveShift(shiftDTO);
 	       return "success";
 	}
 	
-	@RequestMapping(value = "/getShiftList", method = RequestMethod.GET)
+	@RequestMapping(value = {"/getShiftList", "/rest/getShiftList"}, method = RequestMethod.GET)
 	public List<Shift> getShiftList(@RequestParam (value = "orgLocationId", required = true )Long orgLocationId) throws Exception{
 	List<Shift> shift = shiftService.getShiftList(orgLocationId);
 	return shift;
