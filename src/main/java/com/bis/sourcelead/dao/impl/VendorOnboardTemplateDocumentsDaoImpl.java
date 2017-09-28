@@ -95,4 +95,31 @@ public class VendorOnboardTemplateDocumentsDaoImpl implements VendorOnboardTempl
         return documentsList;
 	}
 
+
+	@Override
+	@Transactional
+	public List<VendorOnboardingTemplateDocuments> getVendorOnboaringTemplateDocumentsByVendorOnboardId(
+			Long vendorOnboardingId) throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+	    String query = "from VendorOnboardingTemplateDocuments documents left join fetch documents.vendorOnboardingId where documents.vendorOnboardingId.id = :vendorOnboardingId "
+	    		+ " and documents.status = '1' ";
+	    List<VendorOnboardingTemplateDocuments> documentsList = session.createQuery(query.toString()).setLong("vendorOnboardingId", vendorOnboardingId).setCacheable(true).list();
+        return documentsList;
+	}
+
+
+	@Override
+	@Transactional
+	public VendorOnboardingTemplateDocuments getVendorOnBoardingTemplateDocumentsById(Long id) throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		List<VendorOnboardingTemplateDocuments> documents = session.createQuery("from VendorOnboardingTemplateDocuments documents where documents.id = :id and documents.status = '1' " ).setLong( "id", id ).setCacheable(true).list();
+		if (documents.size() > 0) {
+			return documents.get(0);
+		} else {
+			return null;
+		}
+	}
+
 }

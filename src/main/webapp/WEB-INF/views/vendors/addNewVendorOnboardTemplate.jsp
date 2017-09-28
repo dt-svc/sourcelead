@@ -673,7 +673,7 @@ function saveOnboardTask(){
   	    	    data: formData,
   	    	    processData: false,
 		        contentType:false,
-	    	    url: sourceleadUrl+"/saveVendorOnBoardTasks?${_csrf.parameterName}=${_csrf.token}", 
+	    	    url: sourceleadUrl+"/saveVendorOnBoardTemplateTasks?${_csrf.parameterName}=${_csrf.token}", 
 		        success: function(result) {
 		        	
 		        	if(result == 'success'){
@@ -833,8 +833,6 @@ function getTemplateVendorDocumentsDetails(templateId){
 
 <script>
 function deleteTemplateDocument(documentUUID,documentId,documentType){
-	
-	var sourceleadUrl ='${sourceleadUrl}';
 	   $.ajax({
 	    	type: "POST",
 	    	 url: sourceleadUrl+"/deleteVendorTemplateDocumentByDocumentUUID?${_csrf.parameterName}=${_csrf.token}&documentUUID="+documentUUID, 
@@ -955,7 +953,7 @@ function getVendorOnboardingTasksList(){
 	 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	$.ajax({
 	   	type: "GET",
-	    url: sourceleadUrl+"/getVendorOnboardTasksListByTemplateId?${_csrf.parameterName}=${_csrf.token}&templateId="+templateId,	    	   
+	    url: sourceleadUrl+"/getVendorOnboardTemplateTasksListByTemplateId?${_csrf.parameterName}=${_csrf.token}&templateId="+templateId,	    	   
 	    success: function(json) {
         	 var result = "";
         	if(json.length > 0){ 

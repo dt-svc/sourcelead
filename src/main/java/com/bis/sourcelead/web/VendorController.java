@@ -36,6 +36,7 @@ import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.States;
 import com.bis.sourcelead.entity.UploadedFile;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.VendorOnboarding;
 import com.bis.sourcelead.entity.VendorOnboardingTemplate;
 import com.bis.sourcelead.service.ClientImportsService;
 import com.bis.sourcelead.service.CountriesService;
@@ -44,6 +45,7 @@ import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.StatesService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.service.VendorImportService;
+import com.bis.sourcelead.service.VendorOnboardService;
 import com.bis.sourcelead.service.VendorOnboardTemplateService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SessionMaintainanceData;
@@ -83,6 +85,9 @@ public class VendorController {
 	
 	@Autowired
 	private VendorImportService vendorImportService;
+	
+	@Autowired
+	VendorOnboardService vendorOnboardService;
 	
 	
 
@@ -228,6 +233,10 @@ public class VendorController {
 						model.addObject("vendorOrgLocationId", orgRelations.getResponderLocationId().getId());
 					}else{
 						model.addObject("vendorOrgLocationId", orgRelations.getLocationId().getId());
+					}
+					VendorOnboarding vendorOnboarding = vendorOnboardService.getVendorOnboardingByOrgRelationId(orgRelations.getId());
+					if(vendorOnboarding != null){
+						model.addObject("vendorOnboardId", vendorOnboarding.getId());
 					}
 				}
 				model.addObject("orgRelationUUID", orgRelationUUID);

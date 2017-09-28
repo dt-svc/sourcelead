@@ -30,28 +30,40 @@ window.onload = function () {
 		document.getElementById("client_form").reset();
 		
 		var orgRelationId = '${orgRelationId}';
-		var orgRelationUUID = '${orgRelationUUID}';
-		var vendorOrgLocationId = '${vendorOrgLocationId}';
+	
 		if(orgRelationId != null && orgRelationId != '' && orgRelationId != 'undefined'){
+			
+			var orgRelationUUID = '${orgRelationUUID}';
+			var vendorOrgLocationId = '${vendorOrgLocationId}';
+			var vendorOnboardId = '${vendorOnboardId}';
+			
 			$("#orgRelationId").val(orgRelationId);
 			$("#vendorOrgLocationId").val(vendorOrgLocationId);
+			$("#vendorOnboardId").val(vendorOnboardId);
 			getVendorDetails();
+			
+		
+			 var vendorDocuments = document.getElementById("vendorDocuments");
+			 $("#vendorDocuments").removeClass("disabledLink");
+			 vendorDocuments.href="#tab-b";
+			 vendorDocuments.addEventListener("click", function() {
+				 getOnboardDocuments();
+			  });
 			
 			var isDocumentsFilled = '${isDocumentsFilled}';
 			if(isDocumentsFilled == 'N'){
-				var vendorDocuments = document.getElementById("vendorDocuments");
-				if(vendorDocuments){
-					vendorDocuments.href = "#";
-					vendorDocuments.className = "disabledLink";
-				}
-			}
-			var isTasksFilled = '${isTasksFilled}';
-			if(isTasksFilled == 'N'){
 				var vendorTasks = document.getElementById("vendorTasks");
 				if(vendorTasks){
 					vendorTasks.href = "#";
 					vendorTasks.className = "disabledLink";
 				}
+			}else{
+				 var vendorTasks = document.getElementById("vendorTasks");
+				 $("#vendorTasks").removeClass("disabledLink");
+				 vendorTasks.href="#tab-c";
+				 vendorTasks.addEventListener("click", function() {
+					 getVendorOnboardTasksList();
+				  });
 			}
 			
 		}else{
@@ -248,6 +260,7 @@ function getVendorDetails(){
 					
 					 <input type="hidden" name="vendorOrgLocationId" id="vendorOrgLocationId" value=""/>
 				     <input type="hidden" name="orgRelationId" id="orgRelationId" value=""/>
+				     <input type="hidden" name="vendorOnboardId" id="vendorOnboardId" value=""/>
 					 
 						<div class="form-group">
 							<label class="col-md-3" for="Project Id">Vendor Name<span
@@ -810,7 +823,8 @@ function getRolesList(){
 					$.post(sourceleadUrl+"/saveVendor?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&responderType=Vendor", formData, function(data) {
 						$("#vendorOrgLocationId").val(data.id); 
 						$("#orgRelationId").val(data.vendorOrgRelationId);
-						 $("#loading").removeAttr("style");
+						$("#vendorOnboardId").val(data.vendorOnboardId);
+						$("#loading").removeAttr("style");
 						 var vendorDocuments = document.getElementById("vendorDocuments");
 						 $("#vendorDocuments").removeClass("disabledLink");
 						 vendorDocuments.href="#tab-b";

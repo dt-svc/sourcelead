@@ -53,7 +53,7 @@ public class ClientVendorIndexHelper {
 			
 			// this is to setting values for Initiator Details
 			OrgLocations initiatorLocation = orgLocationService.getOrgLocations(orgRelations.getLocationId().getId());
-			
+			clientVendorIndex.setId(initiatorLocation.getId());
 					if(!"".equalsIgnoreCase(initiatorLocation.getCountry())){
 						clientVendorIndex.setInitiatorCountry(initiatorLocation.getCountry());
 					}

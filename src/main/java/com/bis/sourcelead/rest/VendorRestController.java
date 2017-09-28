@@ -38,11 +38,14 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
+import com.bis.sourcelead.annotations.Validator;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.UserRoleDao;
 import com.bis.sourcelead.dto.AddUserDTO;
 import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.ClientDTO;
+import com.bis.sourcelead.dto.OnBoardingTemplateDTO;
+import com.bis.sourcelead.dto.OnboardTasksDTO;
 import com.bis.sourcelead.elk.index.ClientVendorContactsIndex;
 import com.bis.sourcelead.elk.index.ClientVendorIndex;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
@@ -55,6 +58,8 @@ import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.RequirementSubmissionHistory;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.VendorOnboardTasks;
+import com.bis.sourcelead.entity.VendorOnboarding;
 import com.bis.sourcelead.entity.VendorOnboardingTemplateDocuments;
 import com.bis.sourcelead.enums.ApplicantSubmissionStatus;
 import com.bis.sourcelead.service.CandidateService;
@@ -66,6 +71,8 @@ import com.bis.sourcelead.service.RequirementReportService;
 import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
 import com.bis.sourcelead.service.UserService;
+import com.bis.sourcelead.service.VendorOnboardService;
+import com.bis.sourcelead.service.VendorOnboardTasksService;
 import com.bis.sourcelead.service.VendorOnboardTemplateDocumentsService;
 import com.bis.sourcelead.service.VendorService;
 import com.bis.sourcelead.util.CommonUtil;
@@ -126,6 +133,12 @@ public class VendorRestController {
 	@Autowired
 	VendorOnboardTemplateDocumentsService vendorOnboardTemplateDocumentsService;
 	
+	@Autowired
+	VendorOnboardService vendorOnboardService;
+	
+	@Autowired
+	VendorOnboardTasksService vendorOnboardTasksService;
+	
 	
 	
 	
@@ -146,6 +159,9 @@ public class VendorRestController {
 		}
 
 		OrgLocations invitedOrgLocation = clientService.storeClient(clientDTO,addUserDTO,candidateDTO, user, orgLocation, responderType, org);
+		VendorOnboarding vendorOnboarding = vendorOnboardService.saveVendorOnboarding(invitedOrgLocation, orgLocation, user);
+		invitedOrgLocation.setVendorOnboardId(vendorOnboarding.getId());
+		
 		SourceLeadSessionManager.setSessionAttribute(request, "vendorCreateMsg", "Success!! New Vendor created");
 		return invitedOrgLocation;
 	}
@@ -172,18 +188,23 @@ public class VendorRestController {
 	
 	
 	@RequestMapping(value = "/getVendorOnboardTemplateDocumentByOrgRelationId" , method = RequestMethod.POST)
-	 public @ResponseBody List<VendorOnboardingTemplateDocuments> getVendorOnboardTemplateDocumentByOrgRelationId(@RequestParam(value="orgRelationId", required=false) Long orgRelationId,
-			 @RequestParam(value="documentType", required=false) String documentType, HttpServletRequest request) throws Exception {
+	 public @ResponseBody List<VendorOnboardingTemplateDocuments> getVendorOnboardTemplateDocumentByOrgRelationId(@RequestParam(value="orgRelationId", required = true) Long orgRelationId,
+			 @RequestParam(value="vendorOnboardId", required = true) Long vendorOnboardId,@RequestParam(value="documentType", required = false) String documentType, HttpServletRequest request) throws Exception {
 		
-		OrgRelations orgRelations = orgRelationsService.getOrgRelationById(orgRelationId);
+		
 		List<VendorOnboardingTemplateDocuments> documentsList = null;
-		if(orgRelations != null && StringUtils.isNotBlank(orgRelations.getVendorOnboardTemplateId())){
-			List<Long> templateIdsList = new ArrayList<>();
-			String[] templateIds = orgRelations.getVendorOnboardTemplateId().split(",");
-			for(String onboardTempalteId : templateIds){
-				templateIdsList.add(Long.valueOf(onboardTempalteId));
+		
+		documentsList = vendorOnboardTemplateDocumentsService.getVendorOnboaringTemplateDocumentsByVendorOnboardId(vendorOnboardId);
+		if(documentsList.size() == 0){
+			OrgRelations orgRelations = orgRelationsService.getOrgRelationById(orgRelationId);
+			if(orgRelations != null && StringUtils.isNotBlank(orgRelations.getVendorOnboardTemplateId())){
+				List<Long> templateIdsList = new ArrayList<>();
+				String[] templateIds = orgRelations.getVendorOnboardTemplateId().split(",");
+				for(String onboardTempalteId : templateIds){
+					templateIdsList.add(Long.valueOf(onboardTempalteId));
+				}
+				 documentsList = vendorOnboardTemplateDocumentsService.getVendorOnBoardingTemplateDocumentsByTemplateList(templateIdsList,documentType);
 			}
-			 documentsList = vendorOnboardTemplateDocumentsService.getVendorOnBoardingTemplateDocumentsByTemplateList(templateIdsList,documentType);
 		}
 		
 		return documentsList;
@@ -1652,4 +1673,90 @@ public class VendorRestController {
 		resultJson = commonUtil.toJSON(candidateList);
 		return resultJson;
 	}
+	
+	
+	@RequestMapping(value = "/saveVendorOnboardingDocuments", method = RequestMethod.POST)
+	public @ResponseBody String saveVendorOnboardingTemplateDocuments(OnBoardingTemplateDTO onBoardingTemplateDTO, HttpServletRequest request) throws Exception {
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		vendorOnboardTemplateDocumentsService.storeVendorOnboardDocuments(onBoardingTemplateDTO, user);
+		
+	return "success";
+			
+	}
+	
+	
+	@RequestMapping(value = "/getVendorOnboardTasksListByTemplateId", method = RequestMethod.GET)
+	 @ResponseBody List<VendorOnboardTasks> getVendorOnboardTasksListByTemplateId(@RequestParam(value="orgRelationId", required = true) Long orgRelationId,
+			 @RequestParam(value="vendorOnboardId", required = true) Long vendorOnboardId,HttpServletRequest request) throws Exception{
+		
+		List<VendorOnboardTasks> onboardTasksList = new ArrayList<VendorOnboardTasks>();
+		 List<VendorOnboardTasks> vendorOnboardtasksList = new ArrayList<VendorOnboardTasks>();
+		 List<VendorOnboardTasks> tasksList = null;
+		
+		 tasksList = vendorOnboardTasksService.getVendorOnboardTasksByVendorOnboardId(vendorOnboardId);
+		 if(tasksList != null && tasksList.size() > 0){
+			 vendorOnboardtasksList.addAll(tasksList);
+		 }
+		 
+		 
+		 OrgRelations orgRelations = orgRelationsService.getOrgRelationById(orgRelationId);
+		 List<Long> templateIdsList = new ArrayList<>();
+			String[] templateIds = orgRelations.getVendorOnboardTemplateId().split(",");
+			for(String onboardTempalteId : templateIds){
+				templateIdsList.add(Long.valueOf(onboardTempalteId));
+			}
+		List<VendorOnboardTasks> onboardTemplatetasksList  = vendorOnboardTasksService.getVendorOnboardTasksByTemplateIdsList(templateIdsList);
+		if(onboardTemplatetasksList != null && onboardTemplatetasksList.size() > 0){
+			vendorOnboardtasksList.addAll(onboardTemplatetasksList);
+		}
+		
+		
+		 if(vendorOnboardtasksList != null && vendorOnboardtasksList.size() > 0){
+			 for(VendorOnboardTasks tasks : vendorOnboardtasksList){
+				 
+				 List<String> usersList = new ArrayList<String>();
+					 
+					 if(StringUtils.isNotBlank(tasks.getAssignToUsers())){
+						 String[] userIds = tasks.getAssignToUsers().split(",");
+						 
+						 for(int i = 0 ; i < userIds.length; i++ ){
+							 StringBuilder userName = new StringBuilder();
+							 User user = userService.getUserById(Long.valueOf(userIds[i]));
+							 String assignedUser = null;
+							 if(null != user.getLastName()){
+								 assignedUser = userName.append(user.getFirstName()).append(" ").append(user.getLastName()).toString();
+								}else{
+									assignedUser = userName.append(user.getFirstName()).toString();
+								}
+							 usersList.add(assignedUser);
+						 }
+					 }
+					 
+					 tasks.setUsersList(usersList); 
+					 onboardTasksList.add(tasks);
+			 }
+		 }
+		 return onboardTasksList;
+		}
+	
+	
+	 @RequestMapping(value = "/saveVendorOnBoardTasks" , method = RequestMethod.POST)
+	 public @ResponseBody  String saveVendorOnBoardTasks(OnboardTasksDTO onboardTasksDTO, @RequestParam(value="vendorOnboardId", required = true) String vendorOnboardId,
+			 HttpServletRequest request) throws Exception {
+		 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		 onboardTasksDTO.setVendorOnboardId(vendorOnboardId);
+		 vendorOnboardTasksService.saveVendorOnboardTemplateTask(onboardTasksDTO, user);
+		 return "success";
+	   }
+	 
+	 
+	 @RequestMapping(value = "/saveAndFinishVendorOnboard" , method = RequestMethod.POST)
+	 public @ResponseBody  String saveAndFinishVendorOnboard(OnboardTasksDTO onboardTasksDTO, @RequestParam(value="vendorOnboardId", required = true) String vendorOnboardId,
+			 HttpServletRequest request) throws Exception {
+		 /*User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		 onboardTasksDTO.setVendorOnboardId(vendorOnboardId);
+		 vendorOnboardTasksService.saveVendorOnboardTemplateTask(onboardTasksDTO, user);*/
+		 return "success";
+	   } 
+	 
 }

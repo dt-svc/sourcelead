@@ -1,6 +1,7 @@
 package com.bis.sourcelead.dto;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * @author Laxman
@@ -34,6 +35,10 @@ public class OnboardTasksDTO implements Serializable {
 	  private String taskdescription;
 	  
 	  private String onboardTaskId;
+	  
+	  private String vendorOnboardId;
+	  
+	  private List<VendorOnboardTaskDTO> vendorOnboardTasksInfo;
 
 	public String getTaskName() {
 		return taskName;
@@ -137,6 +142,22 @@ public class OnboardTasksDTO implements Serializable {
 
 	public void setOnboardTaskId(String onboardTaskId) {
 		this.onboardTaskId = onboardTaskId;
+	}
+
+	public String getVendorOnboardId() {
+		return vendorOnboardId;
+	}
+
+	public void setVendorOnboardId(String vendorOnboardId) {
+		this.vendorOnboardId = vendorOnboardId;
+	}
+
+	public List<VendorOnboardTaskDTO> getVendorOnboardTasksInfo() {
+		return vendorOnboardTasksInfo;
+	}
+
+	public void setVendorOnboardTasksInfo(List<VendorOnboardTaskDTO> vendorOnboardTasksInfo) {
+		this.vendorOnboardTasksInfo = vendorOnboardTasksInfo;
 	}
 	
 }

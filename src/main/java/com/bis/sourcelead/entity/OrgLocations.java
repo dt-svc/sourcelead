@@ -218,6 +218,14 @@ public class OrgLocations implements Serializable{
     @JsonProperty
     private Long vendorOrgRelationId;
     
+    @Transient
+    @JsonProperty
+    private Long vendorSpocId;
+    
+    @Transient
+    @JsonProperty
+    private Long vendorOnboardId;
+   
    
 	public Timezone getTimezone() {
 		return timezone;
@@ -683,6 +691,22 @@ public class OrgLocations implements Serializable{
 
 	public void setPaymentTerm(String paymentTerm) {
 		PaymentTerm = paymentTerm;
+	}
+
+	public Long getVendorSpocId() {
+		return vendorSpocId;
+	}
+
+	public void setVendorSpocId(Long vendorSpocId) {
+		this.vendorSpocId = vendorSpocId;
+	}
+
+	public Long getVendorOnboardId() {
+		return vendorOnboardId;
+	}
+
+	public void setVendorOnboardId(Long vendorOnboardId) {
+		this.vendorOnboardId = vendorOnboardId;
 	}
 	
 }

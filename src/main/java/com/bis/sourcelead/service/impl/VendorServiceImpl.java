@@ -14,6 +14,7 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.OrgLocationsDao;
 import com.bis.sourcelead.dao.OrgRelationsDao;
 import com.bis.sourcelead.dao.OrgSpocDao;
+import com.bis.sourcelead.dao.VendorOnboardDao;
 import com.bis.sourcelead.dto.AddUserDTO;
 import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.ClientDTO;
@@ -21,7 +22,11 @@ import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
+import com.bis.sourcelead.entity.SubmissionTemplate;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.VendorOnboarding;
+import com.bis.sourcelead.service.ClientService;
+import com.bis.sourcelead.service.SubmissionTemplateService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.service.VendorService;
 import com.bis.sourcelead.util.CommonUtil;
@@ -44,6 +49,15 @@ public class VendorServiceImpl implements VendorService{
 	
 	@Autowired
 	CommonUtil commonUtil;
+	
+	@Autowired
+	VendorOnboardDao vendorOnboardDao;
+	
+	@Autowired
+	ClientService clientService;
+	
+	@Autowired
+	SubmissionTemplateService submissionTemplateService;
 	
 	@Override
 	public OrgLocations updateVendor(ClientDTO clientDTO, AddUserDTO addUserDTO, CandidateDTO candidateDTO, User user,
@@ -171,6 +185,18 @@ public class VendorServiceImpl implements VendorService{
 					orgSpocDao.addOrgSpoc(spoc);
 				}
 			}
+			
+			VendorOnboarding vendorOnboarding = vendorOnboardDao.getVendorOnboardingByOrgRelationId(orgRelations.getId());
+			if(vendorOnboarding != null){
+				vendorOnboarding.setSpocUserId(spocUser);
+				vendorOnboardDao.saveVendorOnboarding(vendorOnboarding);
+			}
+	
+			SubmissionTemplate submissionTemplate = submissionTemplateService.getDefaultSubmissionTemplateByClientLocationIdAndOrgLocationId(
+					vendorOrgLocations.getId(), orgLocations.getId());
+			
+			clientService.saveOrUpdateClientVendorElkDocument(org, vendorOrgLocations, "Vendor", null, orgRelations,
+					submissionTemplate, user, orgLocations);
 		 
 		return null;
 	}

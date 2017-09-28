@@ -477,6 +477,7 @@ public class ClientServiceImpl implements ClientService {
 					submissionTemplate, user, orgLocations);
 
 		}
+		clientOrgLocations.setVendorSpocId(spocUser.getId());
 		
 		return clientOrgLocations;
 	}
