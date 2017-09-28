@@ -203,11 +203,12 @@ function applyResumeData(json) {
 		 }
 	}
 	
-	$("#firstName").val(firstName);
-	$("#lastName").val(lastName);
-	$("#email").val(json.email);
-	$("#mobilePhone").val(json.phoneNumbers);
-	validateCandidateEmail();
+	$("#firstName").val($("#firstName").attr('readonly') ? $("#firstName").val() : firstName);
+	$("#lastName").val($("#lastName").attr('readonly') ? $("#lastName").val() : lastName);
+	$("#email").val($("#email").attr('readonly') ? $("#email").val() : json.email);
+	$("#mobilePhone").val($("#mobilePhone").attr('readonly') ? $("#mobilePhone").val() : json.phoneNumbers);
+	if(!$("#email").attr('readonly'))
+		validateCandidateEmail();
 	$("#candidateSkills").empty();
 	 var internalOutput = "";
 	 
