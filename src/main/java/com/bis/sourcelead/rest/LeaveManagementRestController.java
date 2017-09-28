@@ -1,65 +1,117 @@
 package com.bis.sourcelead.rest;
 
+
+
+import java.text.ParseException;
+
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
-
-
-import com.bis.sourcelead.dao.HolidayDAO;
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dao.HolidayDAO;
+import com.bis.sourcelead.dao.LeaveTypeDao;
 import com.bis.sourcelead.dao.OptionsDao;
-import com.bis.sourcelead.dto.HolidayDTO;
-import com.bis.sourcelead.dto.OptionsDTO;
+import com.bis.sourcelead.dto.LeaveTypeDTO;
 import com.bis.sourcelead.entity.Department;
-import com.bis.sourcelead.entity.Holiday;
-import com.bis.sourcelead.entity.LeaveRole;
-import com.bis.sourcelead.entity.Option;
+import com.bis.sourcelead.entity.Employees;
+import com.bis.sourcelead.entity.Leave;
+import com.bis.sourcelead.entity.LeaveApproveHierarchy;
+import com.bis.sourcelead.entity.LeaveManagementHistory;
+import com.bis.sourcelead.entity.LeaveType;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.service.DepartmentService;
+import com.bis.sourcelead.service.EmployeesService;
+import com.bis.sourcelead.service.LeaveService;
+import com.bis.sourcelead.service.LeaveTypeService;
+import com.bis.sourcelead.service.OrgLocationService;
+import com.bis.sourcelead.dao.OptionsDao;
+import com.bis.sourcelead.dto.AddUserDTO;
+import com.bis.sourcelead.dto.CandidateDTO;
+import com.bis.sourcelead.dto.ClientDTO;
+import com.bis.sourcelead.dto.LeaveDTO;
+
+import com.bis.sourcelead.dao.ShiftDao;
+
+import com.bis.sourcelead.dto.HolidayDTO;
+import com.bis.sourcelead.dto.LeaveDTO;
+import com.bis.sourcelead.dto.LeaveTypeDTO;
+import com.bis.sourcelead.dto.OptionsDTO;
+import com.bis.sourcelead.dto.ShiftDTO;
+import com.bis.sourcelead.entity.Department;
+import com.bis.sourcelead.entity.Holiday;
+import com.bis.sourcelead.entity.Leave;
+import com.bis.sourcelead.entity.LeaveRole;
+import com.bis.sourcelead.entity.LeaveType;
+import com.bis.sourcelead.entity.Option;
+import com.bis.sourcelead.entity.Org;
+import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.Roles;
+import com.bis.sourcelead.entity.Shift;
+import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.UserRole;
+import com.bis.sourcelead.service.DepartmentService;
 import com.bis.sourcelead.service.HolidayService;
+import com.bis.sourcelead.service.LeaveService;
+import com.bis.sourcelead.service.LeaveTypeService;
 import com.bis.sourcelead.service.OptionsService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.RolesService;
+import com.bis.sourcelead.service.ShiftService;
+import com.bis.sourcelead.service.UserRoleService;
+import com.bis.sourcelead.service.UserService;
+import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
+
 
 @RestController
 public class LeaveManagementRestController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(LeaveManagementRestController.class);
 	
+	@Autowired
+	ShiftService shiftService;
+	
+	
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
+	
+	@Value("${static.path}")
+    private String staticPath;
+	
+	@Autowired
+	OrgLocationService orgLocationService;
+	
+	@Autowired
+	LeaveTypeService leaveTypeService;
 	
 	@Autowired
 	private HolidayService holidayService;
 	
 	@Autowired
-	private OrgLocationService orgLocationService;
-
 	DepartmentService departmentService;
 	
 	@Autowired
 	RolesService rolesService;
-	
+
 	@Autowired
 	OptionsService optionsService;
 	
@@ -67,7 +119,30 @@ public class LeaveManagementRestController {
 	OptionsDao optionsDao;
 	
 	@Autowired
+	LeaveTypeDao leaveTypeDao;
+	
+	@Autowired
+	UserService userService;
+	
+	@Autowired
+	UserRoleService userRoleService;
+	
+	@Autowired
+	LeaveService leaveService;
+
+	@Autowired
 	HolidayDAO holidayDAO;
+	
+	@Autowired
+	CommonUtil commonUtil;
+	
+	@Autowired
+	EmployeesService employeesService;
+
+	@Autowired
+	ShiftDao shiftDao;
+
+
 	
 	/**
 	 * returns Pending leaves jsp
@@ -146,11 +221,30 @@ public class LeaveManagementRestController {
 	 * @param request
 	 * @param response
 	 * @return ModelAndView
+	 * @throws Exception 
 	 */
 	@RequestMapping(value = "/applyLeave")
-	public ModelAndView applyLeaveJsp(HttpServletRequest request,HttpServletResponse response) {
+	public ModelAndView applyLeaveJsp(HttpServletRequest request,HttpServletResponse response) throws Exception {
 		   ModelAndView model = new ModelAndView();
+		   OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		   Long roleId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRoleId");
+		   List<User> usersLis = userService.getAllUsersByOrgLocationCode(orgLocations.getId());
 		   model.addObject("sourceleadUrl", sourceleadUrl);
+		   model.addObject("usersLis", usersLis);
+		   List<LeaveType> leaveTypeList = leaveTypeService.getLeaveTypeListByLocationId(String.valueOf(orgLocations.getId()));
+		   if(leaveTypeList !=null && !leaveTypeList.isEmpty()) {
+			   model.addObject("leaveTypeList", leaveTypeList);
+		   }
+			List<User> approverList = userService.getManagersByUserRolesAndOrgLocationId(roleId, orgLocations.getId(),Long.valueOf(Constants.TAB_USER));
+			if(approverList !=null) {
+				for (User user : approverList) {
+					UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(), orgLocations.getId());
+					if(userRole != null){
+						user.setUserType(userRole.getUserType());
+					}
+				}
+				 model.addObject("approverList", approverList);
+			}
 		   model.setViewName("leavemanagement/applyLeave");
 	       return model;
 	}
@@ -176,13 +270,22 @@ public class LeaveManagementRestController {
 	 * @param request
 	 * @param response
 	 * @return ModelAndView
+	 * @throws Exception 
 	 */
-	@RequestMapping(value = "/addLeave")
-	public ModelAndView addLeaveJsp(HttpServletRequest request,HttpServletResponse response) {
-		   ModelAndView model = new ModelAndView();
-		   model.addObject("sourceleadUrl", sourceleadUrl);
-		   model.setViewName("leavemanagement/addLeave");
-	       return model;
+	@RequestMapping(value = "/addLeaveType")
+	public ModelAndView addLeaveJsp(HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		ModelAndView model = new ModelAndView();
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+		Long roleHierarchyId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "roleHierarchyId");
+		List<Department> departmentList = departmentService.getDepartmentByOrgLocationIdAndStatus(orgLocations.getId(),Constants.RECORD_ACTIVE.toString());
+		List<Roles> rolesList = rolesService.getUserRolesListByModuleAndLoginUserRoleHierarchy(org, orgLocations.getId(), roleHierarchyId);
+		model.addObject("departmentList", departmentList);
+		model.addObject("rolesList", rolesList);
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		model.setViewName("leavemanagement/addLeaveType");
+		return model;
 	}
 	
 	/**
@@ -191,11 +294,11 @@ public class LeaveManagementRestController {
 	 * @param response
 	 * @return ModelAndView
 	 */
-	@RequestMapping(value = "/viewLeaves")
+	@RequestMapping(value = "/viewLeaveTypes")
 	public ModelAndView viewLeavesJsp(HttpServletRequest request,HttpServletResponse response) {
 		   ModelAndView model = new ModelAndView();
 		   model.addObject("sourceleadUrl", sourceleadUrl);
-		   model.setViewName("leavemanagement/viewLeave");
+		   model.setViewName("leavemanagement/viewLeaveType");
 	       return model;
 	}
 	
@@ -240,7 +343,6 @@ public class LeaveManagementRestController {
 		   model.setViewName("leavemanagement/addShift");
 	       return model;
 	}
-	
 	/**
 	 * returns view shift  jsp
 	 * @param request
@@ -324,6 +426,43 @@ public class LeaveManagementRestController {
 	       return model;
 	}
 	
+
+
+	@RequestMapping(value = "/saveShift", method = RequestMethod.POST)
+	public String saveShift(ShiftDTO shiftDTO) throws Exception {
+		shiftService.saveShift(shiftDTO);
+	       return "success";
+	}
+	
+	@RequestMapping(value = "/getShiftList", method = RequestMethod.GET)
+	public List<Shift> getShiftList(@RequestParam (value = "orgLocationId", required = true )Long orgLocationId) throws Exception{
+	List<Shift> shift = shiftService.getShiftList(orgLocationId);
+	return shift;
+	}
+	
+	@RequestMapping(value = "/editleaveshift")
+	public ModelAndView editShift(@RequestParam (value = "shiftId", required = false )String shiftId,HttpServletRequest request,HttpServletResponse response) throws Exception{
+		ModelAndView model = new ModelAndView();
+	    Shift shift = shiftService.getShiftById(shiftId);
+		model.addObject("shift", shift);
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		model.setViewName("leavemanagement/addShift");
+		return model;
+	}
+	
+	@RequestMapping(value = "/deleteShift")
+	public boolean deleteShift(@RequestParam(value = "shiftId", required = false) String shiftId,@RequestParam(value = "orgLocationId", required = false) String orgLocationId) throws Exception
+	{
+		boolean isDeleted = false;
+		 Shift deleteShift = shiftService.getShiftById(shiftId);
+		 if(deleteShift !=null) {
+			 deleteShift.setStatus(Constants.MEMBER_IN_ACTIVE);
+			 shiftDao.deleteShift(deleteShift);
+			 isDeleted = true;
+		 }
+		return isDeleted;
+	}
+
 	@RequestMapping(value = "/saveHoliday", method = RequestMethod.POST)
 	public @ResponseBody String saveHoliday(HolidayDTO holidayDTO,HttpServletRequest request)
 			throws Exception {
@@ -343,6 +482,40 @@ public class LeaveManagementRestController {
 		return holiodaysDTOList;
 	}
 	
+	/**
+	 * saving new leave type
+	 * 
+	 * @throws Exception
+	 * @throws Exception
+	 * 
+	 */
+	@RequestMapping(value = "/saveNewLeaveType")
+	public @ResponseBody String saveNewLeaveType(LeaveTypeDTO leaveTypeDTO, HttpServletRequest request) throws Exception
+	{
+		LeaveType leaveType = leaveTypeService.addLeaveType(leaveTypeDTO);
+		if(leaveType !=null) {
+			return "success";
+		}
+		return "failed";
+	}
+	
+
+	/**
+	 * @author Pavan Jampana
+	 * 
+	 * @param leaveTypeDTO
+	 * @param request
+	 * @return leave type list
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/getLeaveTypesByLocationid")
+	public @ResponseBody List<LeaveType> getLeaveTypesByLocationid(LeaveTypeDTO leaveTypeDTO, HttpServletRequest request) throws Exception
+	{
+		List<LeaveType> leaveTypeList = leaveTypeService.getLeaveTypeListByLocationId(leaveTypeDTO.getOrgLocationId());
+		return leaveTypeList;
+
+	}
+
 	/**
 	 * saving leave optipons
 	 * 
@@ -375,7 +548,6 @@ public class LeaveManagementRestController {
 		 }
 		return optionsDTOList;
 	}
-//	/
 	
 	@RequestMapping(value = {"/deleteLeaveOption", "/rest/deleteLeaveOption"}, method = RequestMethod.POST)
 	@ResponseBody
@@ -448,6 +620,101 @@ public class LeaveManagementRestController {
 	       return model;
 	}
 	
+
+	
+	
+		/**
+		 * saving leave optipons
+		 * 
+		 * @param optionsDTO
+		 * @param request
+		 * @return boolean
+		 * @throws Exception
+		 */
+		@RequestMapping(value = "/applyLeave", method = RequestMethod.POST)
+		@ResponseBody
+		public boolean applyLeave(LeaveDTO leaveDTO, HttpServletRequest request) throws Exception {
+	
+			boolean isInserted = false;
+			OrgLocations orgLocations = orgLocationService.getOrgLocations(Long.parseLong(leaveDTO.getOrgLocationId()));
+			User user = userService.getUserById(Long.parseLong(leaveDTO.getUserId()));
+			leaveDTO.setStaticPath(staticPath);
+			Leave leave = leaveService.saveLeave(leaveDTO,orgLocations,user);
+			if (leave != null) {
+				isInserted = true;
+			}
+			return isInserted;
+		}
+	
+	
+	@RequestMapping(value = "/editLeaveType")
+	public ModelAndView editLeaveType(LeaveTypeDTO leaveTypeDTO, HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		ModelAndView model = new ModelAndView();
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+		Long roleHierarchyId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "roleHierarchyId");
+		List<Roles> rolesList = rolesService.getUserRolesListByModuleAndLoginUserRoleHierarchy(org, orgLocations.getId(), roleHierarchyId);
+		List<Department> departmentList = departmentService.getDepartmentByOrgLocationId(orgLocations.getId());
+		LeaveType leaveType = leaveTypeService.getLeaveTypeById(leaveTypeDTO.getLeaveTypeId());
+		if (leaveType.getDepartmentId() != null) {
+			Long departmentId = leaveType.getDepartmentId().getId();
+			model.addObject("departmentId", departmentId);
+		}
+		Set<LeaveRole> leaveRoles = leaveType.getLeaveTypeRolesSet();
+		List<Roles> existedRolesList = new ArrayList<Roles>();
+		leaveRoles.forEach(role -> {
+			try {
+				Roles existedRole;
+				existedRole = rolesService.getRolesById(role.getRoleId().getId());
+				existedRolesList.add(existedRole);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		});
+		model.addObject("existedRoles", existedRolesList);
+		model.addObject("rolesList", rolesList);
+		model.addObject("departmentList", departmentList);
+		model.addObject("leaveType", leaveType);
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		model.setViewName("leavemanagement/addLeaveType");
+		return model;
+	}
+	
+
+	@RequestMapping(value = {"/getLeavePolicy", "/rest/getLeavePolicy"}, method = RequestMethod.GET)
+	@ResponseBody
+	public  String getleavePolicy(@RequestParam(value = "leaveTypeId", required = false) String leaveTypeId,HttpServletRequest request) throws Exception
+	{
+		String leavePolicy = null;
+		 LeaveType options = leaveTypeService.getLeaveTypeById(leaveTypeId);
+		 if(options !=null) {
+			 leavePolicy = options.getPolicyDescription();
+		 }
+		return leavePolicy;
+	}
+	
+
+	@RequestMapping(value = {"/deleteLeaveType", "/rest/deleteLeaveType"}, method = RequestMethod.POST)
+	@ResponseBody
+	public boolean deleteLeaveType(LeaveTypeDTO leaveTypeDTO, HttpServletRequest request) throws Exception
+	{
+		boolean isDeleted = false;
+		LeaveType leaveType = leaveTypeService.getLeaveTypeById(leaveTypeDTO.getLeaveTypeId());
+		 if(leaveType !=null) {
+			 leaveType.setStatus(Constants.RECORD_INACTIVE.toString());
+			 leaveType.setDeleteReason(leaveTypeDTO.getDeleteReason());
+			 if(leaveTypeDTO.getLoginUserId() != null){
+				 User user = userService.getUserById(Long.parseLong(leaveTypeDTO.getLoginUserId()));
+				 leaveType.setUpdatedBy(user.getUserCode());
+			 }
+			 leaveType.setUpdatedDate(new Date());
+			 leaveTypeDao.addLeaveType(leaveType);
+			  isDeleted = true;
+		 }
+		return isDeleted;
+	}
+
 	@RequestMapping(value = "/editHoliday")
 	public ModelAndView editHoliday(@RequestParam(value="holidayId", required=false) String holidayId,HttpServletRequest request,HttpServletResponse response) throws Exception {
 		   ModelAndView model = new ModelAndView();
@@ -485,4 +752,182 @@ public class LeaveManagementRestController {
 		
 	}
 	
+	
+	/**
+	 * returns add Employee Requested Leaves  jsp
+	 * @param request
+	 * @param response
+	 * @return ModelAndView
+	 */
+	@RequestMapping(value = "/employeeRequestedLeaves")
+	public ModelAndView employeeRequestedLeavesJsp(HttpServletRequest request,HttpServletResponse response) {
+		   ModelAndView model = new ModelAndView();
+		   model.addObject("sourceleadUrl", sourceleadUrl);
+		   model.setViewName("leavemanagement/employeeRequestedLeaves");
+	       return model;
+	}
+	
+	/**
+	 * returns add Employee Approved Leaves  jsp
+	 * @param request
+	 * @param response
+	 * @return ModelAndView
+	 */
+	@RequestMapping(value = "/employeeApprovedLeaves")
+	public ModelAndView employeeApprovedLeavesJsp(HttpServletRequest request,HttpServletResponse response) {
+		   ModelAndView model = new ModelAndView();
+		   model.addObject("sourceleadUrl", sourceleadUrl);
+		   model.setViewName("leavemanagement/employeeApprovedLeaves");
+	       return model;
+	}
+	
+	/**
+	 * returns add Employee Rejected Leaves  jsp
+	 * @param request
+	 * @param response
+	 * @return ModelAndView
+	 */
+	@RequestMapping(value = "/employeeRejectedLeaves")
+	public ModelAndView employeeRejectedLeaves(HttpServletRequest request,HttpServletResponse response) {
+		   ModelAndView model = new ModelAndView();
+		   model.addObject("sourceleadUrl", sourceleadUrl);
+		   model.setViewName("leavemanagement/employeeRejectedLeaves");
+	       return model;
+	}
+	
+	/**
+	 * returns add Employee Cancel Leaves  jsp
+	 * @param request
+	 * @param response
+	 * @return ModelAndView
+	 */
+	@RequestMapping(value = "/employeeCancelLeaves")
+	public ModelAndView employeeCancelLeavesLeaves(HttpServletRequest request,HttpServletResponse response) {
+		   ModelAndView model = new ModelAndView();
+		   model.addObject("sourceleadUrl", sourceleadUrl);
+		   model.setViewName("leavemanagement/employeeCancelLeaves");
+	       return model;
+	}
+
+	@RequestMapping(value = {"/leaveTypeSummary", "/rest/leaveTypeSummary"}, method = RequestMethod.POST)
+	@ResponseBody
+	public LeaveType leaveTypeSummary(LeaveTypeDTO leaveTypeDTO, HttpServletRequest request) throws Exception
+	{
+		LeaveType leaveType = leaveTypeService.getLeaveTypeById(leaveTypeDTO.getLeaveTypeId());
+		return leaveType;
+	}
+	
+	/**
+	 * Get Employees those who are requested for the aprrove leave
+	 * @param orgLocationId
+	 * @param userId
+	 * @param request
+	 * @return List<LeaveDTO>
+	 * @throws Exception
+	 */
+	@RequestMapping(value = {"/getEmployeeRequestedLeaves","/rest/getEmployeeRequestedLeaves"}, method = RequestMethod.GET)
+	public  @ResponseBody List<LeaveDTO> getEmployeeRequestedLeaves(@RequestParam(value = "orgLocationId", required = false) Long orgLocationId,@RequestParam(value = "userId", required = false) String userId,HttpServletRequest request) throws Exception
+	{
+		List<LeaveDTO> requestedLeavesList = null;
+		OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
+		requestedLeavesList = leaveService.getEmployeeRequestedLeavesBylocationId(orgLocations, userId);
+		if (requestedLeavesList != null && !requestedLeavesList.isEmpty()) {
+			return requestedLeavesList;
+		}
+		return requestedLeavesList;
+	}
+	
+
+	@RequestMapping(value = "/getLeavesListByLocationIdAndStatus")
+	public @ResponseBody List<Leave> getLeavesListByLocationIdAndStatus(@RequestParam(value = "orgLocationId", required = false) Long orgLocationId, @RequestParam(value = "status", required = false) String status,@RequestParam(value = "userId", required = false) Long userId, HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		List<Leave> leaveList = leaveService.getLeavesListByLocationIdAndStatus(orgLocationId,status,userId);
+		return leaveList;
+	}
+
+	/**
+	 * Approving the requested leave
+	 * @param orgLocationId
+	 * @param leaveId
+	 * @param leavTypeId
+	 * @param request
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = {"/approveRequestedLeave", "/rest/approveRequestedLeave"}, method = RequestMethod.GET)
+	@ResponseBody
+	public  boolean approveRequestedLeave(
+			@RequestParam(value = "orgLocationId", required = false) Long orgLocationId,
+			@RequestParam(value = "leaveId", required = false) String leaveId,
+			@RequestParam(value = "leaveTypeId", required = false) String leaveTypeId, 
+			@RequestParam(value = "approveStatus", required = false) String approveStatus,
+			@RequestParam(value = "userId", required = false) Long userId,
+			@RequestParam(value = "numberOfDays", required = false) String numberOfDays,HttpServletRequest request)
+			throws Exception {
+		
+		OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
+		User user = userService.getUserById(userId);
+		boolean isApproved = leaveService.approveRequestLeave(orgLocations,user,leaveId,leaveTypeId,approveStatus,numberOfDays);
+		return isApproved;
+		
+	}
+	
+	/**
+	 * Get Requested leaves Summary
+	 * 
+	 * @param orgLocationId
+	 * @param leaveId
+	 * @param leavTypeId
+	 * @param request
+	 * @return LeaveDTO
+	 * @throws Exception
+	 */
+	@RequestMapping(value = { "/getRequestedAproveSummary","/rest/getRequestedAproveSummary" }, method = RequestMethod.GET)
+	@ResponseBody
+	public LeaveDTO getRequestedAproveSummary(@RequestParam(value = "leaveId", required = false) String leaveId,
+			@RequestParam(value = "orgLocationId", required = false) Long orgLocationId, HttpServletRequest request)
+			throws Exception {
+		Leave leave = leaveService.getLeaveByLeavId(leaveId);
+		OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
+		LeaveDTO leaveDto = new LeaveDTO();
+		if (leave != null) {
+			StringBuilder sb = new StringBuilder();
+			StringBuilder durationSb = new StringBuilder();
+			leaveDto.setId(leave.getId());
+			if (leave.getUser() != null) {
+				if (StringUtils.isNotBlank(leave.getUser().getLastName())) {
+					sb.append(leave.getUser().getFirstName()).append(" ").append(leave.getUser().getLastName());
+				} else {
+					sb.append(leave.getUser().getFirstName());
+				}
+				leaveDto.setEmpName(sb.toString());
+				leaveDto.setEmpEmail(leave.getUser().getEmail());
+				Employees employees = employeesService.getEmployeeByUserIdAndOrgLocationsId(leave.getUser().getId(), orgLocations.getId());
+				if(employees !=null) {
+					leaveDto.setEmpid(employees.getEmployeeId());	
+				}
+			}
+			durationSb.append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), leave.getFromDate()))
+					.append(System.getProperty("line.separator"))
+					.append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), leave.getToDate()));
+
+			leaveDto.setDuration(durationSb.toString());
+			leaveDto.setLeaveType(leave.getLeaveType().getName());
+			leaveDto.setLeaveTypeId(leave.getLeaveType().getId());
+			leaveDto.setStatus(leave.getStatus());
+			try {
+				Long numberOfdays = commonUtil.getNumberOfDaysBetweenTwoDates(leave.getFromDate(), leave.getToDate());
+				leaveDto.setNoOfDays(String.valueOf(numberOfdays));
+			} catch (ParseException e) {
+				e.printStackTrace();
+			}
+			leaveDto.setBalanceleaves(leave.getLeaveType().getNumbefrOfLeavesPeryear());
+			leaveDto.setFileUrl(leave.getFileUrl());
+			leaveDto.setReason(leave.getReason());
+			leaveDto.setCreatedDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),leave.getCreatedDate()));
+			leaveDto.setFileName(leave.getFileName());
+		}
+		return leaveDto;
+	}
+
 }

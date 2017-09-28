@@ -14,12 +14,15 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "LEAVE_TYPE", catalog = "sourcelead")
@@ -66,6 +69,9 @@ public class LeaveType {
 	@Column(name = "NUMBEFR_OF_LEAVES_PERYEAR")
 	private String numbefrOfLeavesPeryear;
 	
+	@Column(name = "NUMBEFR_OF_LEAVES_PERMONTH")
+	private String numbefrOfLeavesPerMonth;
+	
 	@Column(name = "DESCRIPTION",columnDefinition = "TEXT default NULL")
 	private String description;
 	
@@ -86,7 +92,31 @@ public class LeaveType {
 	
 	@NotFound(action=NotFoundAction.IGNORE)
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "leaveTypeid")
-	private Set<LeaveRole> leaveTypeSet;
+	private Set<LeaveRole> leaveTypeRolesSet;
+	
+	@Column(name = "DELETE_REASON",columnDefinition = "TEXT default NULL")
+	private String deleteReason;
+	
+	@Column(name = "LEAVE_POLICY")
+	private String leavePolicy;
+	
+	@Column(name = "POLICY_DESCRIPTION",columnDefinition = "TEXT default NULL")
+	private String policyDescription;
+	
+	@Column(name = "POLICY_NAME")
+	private String policyName;
+	
+	@Column(name = "VISIBILITY_TO_ALL_USERS")
+	private String visibilityToAllUsers;
+	
+	@Transient
+	@JsonProperty
+	private String createdUser;
+	
+	@Transient
+	@JsonProperty
+	private String updatedUser;
+	
 
 	public String getId() {
 		return id;
@@ -175,6 +205,16 @@ public class LeaveType {
 	public void setNumbefrOfLeavesPeryear(String numbefrOfLeavesPeryear) {
 		this.numbefrOfLeavesPeryear = numbefrOfLeavesPeryear;
 	}
+	
+	public String getNumbefrOfLeavesPerMonth()
+	{
+		return numbefrOfLeavesPerMonth;
+	}
+
+	public void setNumbefrOfLeavesPerMonth(String numbefrOfLeavesPerMonth)
+	{
+		this.numbefrOfLeavesPerMonth = numbefrOfLeavesPerMonth;
+	}
 
 	public String getDescription() {
 		return description;
@@ -224,15 +264,83 @@ public class LeaveType {
 		this.updatedBy = updatedBy;
 	}
 
-	public Set<LeaveRole> getLeaveTypeSet() {
-		return leaveTypeSet;
+	public Set<LeaveRole> getLeaveTypeRolesSet()
+	{
+		return leaveTypeRolesSet;
 	}
 
-	public void setLeaveTypeSet(Set<LeaveRole> leaveTypeSet) {
-		this.leaveTypeSet = leaveTypeSet;
+	public void setLeaveTypeRolesSet(Set<LeaveRole> leaveTypeRolesSet)
+	{
+		this.leaveTypeRolesSet = leaveTypeRolesSet;
 	}
 
-	
-	
+	public String getDeleteReason()
+	{
+		return deleteReason;
+	}
 
+	public void setDeleteReason(String deleteReason)
+	{
+		this.deleteReason = deleteReason;
+	}
+
+	public String getLeavePolicy()
+	{
+		return leavePolicy;
+	}
+
+	public void setLeavePolicy(String leavePolicy)
+	{
+		this.leavePolicy = leavePolicy;
+	}
+
+	public String getPolicyDescription()
+	{
+		return policyDescription;
+	}
+
+	public void setPolicyDescription(String policyDescription)
+	{
+		this.policyDescription = policyDescription;
+	}
+
+	public String getPolicyName()
+	{
+		return policyName;
+	}
+
+	public void setPolicyName(String policyName)
+	{
+		this.policyName = policyName;
+	}
+
+	public String getVisibilityToAllUsers()
+	{
+		return visibilityToAllUsers;
+	}
+
+	public void setVisibilityToAllUsers(String visibilityToAllUsers)
+	{
+		this.visibilityToAllUsers = visibilityToAllUsers;
+	}
+
+	public String getCreatedUser()
+	{
+		return createdUser;
+	}
+
+	public void setCreatedUser(String createdUser)
+	{
+		this.createdUser = createdUser;
+	}
+
+	public String getUpdatedUser()
+	{
+		return updatedUser;
+	}
+
+	public void setUpdatedUser(String updatedUser)
+	{
+		this.updatedUser = updatedUser;
+	}
 }

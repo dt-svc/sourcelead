@@ -35,6 +35,7 @@
 <link rel="stylesheet" href="resources/css/font-awesome.min.css?staticTime=${staticTime}">
 <link rel="stylesheet" href="resources/css/chosen.min.css?staticTime=${staticTime}">
 <link rel="stylesheet" href="resources/css/jquery.timepicker.css?staticTime=${staticTime}">
+<link href="resources/css/editor.css?staticTime=${staticTime}" rel="stylesheet">
 <link href="resources/css/sourcelead-main.css?staticTime=${staticTime}" rel="stylesheet">
 <link rel="stylesheet" href="resources/css/timesheet.css?staticTime=${staticTime}" type="text/css" >
 <c:set scope="request" var="viewPage" value='${pageContext.request.servletPath.toString().replaceFirst("/WEB-INF/views/","").replaceFirst(".jsp","")}'></c:set>
@@ -567,7 +568,7 @@ function preventTabkey(e){
 						  	<li><a href="<c:url value="/expenseCategory" />"><i class="fa fa-file-text" aria-hidden="true"></i>Expense Category</a></li>
 						  </sec:authorize>
 						  <li><a href="<c:url value="/bankAccountDetails" />"><i class="fa fa-university" aria-hidden="true"></i>Account</a></li>
-						   <li><a href="<c:url value="/leaveConfiguration" />"><i class="fa fa-key" aria-hidden="true"></i>Leave Configure</a></li> 
+						   <li><a href="<c:url value="/leaveConfiguration" />"><i class="fa fa-key" aria-hidden="true"></i>Leave Configure</a></li>
 	              </ul>
 	            </div>
 	          </li>

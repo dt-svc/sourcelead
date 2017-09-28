@@ -33,6 +33,8 @@ private static final long serialVersionUID = 1L;
 	
 	private String holidayId;
 	
+	private String dayOfTheWeek;
+	
 	public String getId() {
 		return id;
 	}
@@ -127,6 +129,16 @@ private static final long serialVersionUID = 1L;
 
 	public void setHolidayId(String holidayId) {
 		this.holidayId = holidayId;
+	}
+
+	public String getDayOfTheWeek()
+	{
+		return dayOfTheWeek;
+	}
+
+	public void setDayOfTheWeek(String dayOfTheWeek)
+	{
+		this.dayOfTheWeek = dayOfTheWeek;
 	}
 
 }

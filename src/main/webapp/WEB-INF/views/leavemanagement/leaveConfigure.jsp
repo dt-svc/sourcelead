@@ -24,8 +24,8 @@
                       <h4 class="text-info">Leave Type</h4>
                       <small class="text-muted">Loremipsum Loremipsum</small>
                       <div class="clearfix mt10">
-                          <a href="<c:url value='/addLeave'/>" class="btn btn-info btn-sm mr10" title="Add">Add</a>
-                          <a href="<c:url value='/viewLeaves'/>" class="btn btn-primary btn-sm" title="View">View</a>
+                          <a href="<c:url value='/addLeaveType'/>" class="btn btn-info btn-sm mr10" title="Add">Add</a>
+                          <a href="<c:url value='/viewLeaveTypes'/>" class="btn btn-primary btn-sm" title="View">View</a>
                       </div>
                   </div>
                   </div>

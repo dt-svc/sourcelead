@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.Writer;
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -13,6 +14,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -1150,4 +1152,17 @@ public class CommonUtil {
 			}
 			return bytesArray;
 		}
+		/**
+		 * Get Number of days Between two given dates
+		 * @param fromDate
+		 * @param toDate
+		 * @return
+		 * @throws ParseException
+		 */
+		public Long getNumberOfDaysBetweenTwoDates(Date fromDate, Date toDate) throws ParseException {
+			   Long nuberOfDays = 0l;
+				long diff = toDate.getTime() - fromDate.getTime();
+				 nuberOfDays = TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS);
+				return nuberOfDays;
+			}
 }
