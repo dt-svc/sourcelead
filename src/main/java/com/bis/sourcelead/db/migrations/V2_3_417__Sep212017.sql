@@ -116,3 +116,9 @@ CALL sourcelead.AlterTableAddColumn ('sourcelead','ORG_RELATIONS','IS_VENDOR_TAS
 CALL sourcelead.AlterTableAddColumn ('sourcelead','ORG_LOCATIONS','CLIENT_ADDRESS','TEXT NULL');
 CALL sourcelead.AlterTableAddColumn ('sourcelead','ORG_LOCATIONS','CLIENT_BILLING_ADDRESS','TEXT NULL AFTER `CLIENT_ADDRESS`');
 CALL sourcelead.AlterTableAddColumn ('sourcelead','ORG_LOCATIONS','PAYMENT_TERM','VARCHAR(20) NULL AFTER `CLIENT_BILLING_ADDRESS`');
+
+
+CALL sourcelead.AlterTableAddColumn ('sourcelead','TASKS','VENDOR_ON_BOARDING_ID','BIGINT NULL');
+ALTER TABLE `sourcelead`.`TASKS` ADD FOREIGN KEY FK1_VENDOR_ON_BOARDING_TASK (VENDOR_ON_BOARDING_ID) REFERENCES `sourcelead`.VENDOR_ON_BOARDING(ID);
+
+

@@ -1,5 +1,6 @@
 package com.bis.sourcelead.service;
 
+import com.bis.sourcelead.dto.OnboardTasksDTO;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.VendorOnboarding;
@@ -11,4 +12,6 @@ public interface VendorOnboardService {
 	VendorOnboarding getVendorOnboardingByOrgRelationId(Long orgRelationId) throws Exception;
 	
 	VendorOnboarding getVendorOnboardingById(Long id) throws Exception;
+	
+	void finishVendorOnboarding(OnboardTasksDTO onboardTasksDTO,User user) throws Exception;
 }

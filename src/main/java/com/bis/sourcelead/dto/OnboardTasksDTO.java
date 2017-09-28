@@ -39,6 +39,8 @@ public class OnboardTasksDTO implements Serializable {
 	  private String vendorOnboardId;
 	  
 	  private List<VendorOnboardTaskDTO> vendorOnboardTasksInfo;
+	  
+	  private String isMailSent;
 
 	public String getTaskName() {
 		return taskName;
@@ -158,6 +160,14 @@ public class OnboardTasksDTO implements Serializable {
 
 	public void setVendorOnboardTasksInfo(List<VendorOnboardTaskDTO> vendorOnboardTasksInfo) {
 		this.vendorOnboardTasksInfo = vendorOnboardTasksInfo;
+	}
+
+	public String getIsMailSent() {
+		return isMailSent;
+	}
+
+	public void setIsMailSent(String isMailSent) {
+		this.isMailSent = isMailSent;
 	}
 	
 }

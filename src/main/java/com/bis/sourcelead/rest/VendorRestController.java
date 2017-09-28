@@ -1753,9 +1753,9 @@ public class VendorRestController {
 	 @RequestMapping(value = "/saveAndFinishVendorOnboard" , method = RequestMethod.POST)
 	 public @ResponseBody  String saveAndFinishVendorOnboard(OnboardTasksDTO onboardTasksDTO, @RequestParam(value="vendorOnboardId", required = true) String vendorOnboardId,
 			 HttpServletRequest request) throws Exception {
-		 /*User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		 onboardTasksDTO.setVendorOnboardId(vendorOnboardId);
-		 vendorOnboardTasksService.saveVendorOnboardTemplateTask(onboardTasksDTO, user);*/
+		 vendorOnboardTasksService.saveVendorOnboardTemplateTask(onboardTasksDTO, user);
 		 return "success";
 	   } 
 	 

@@ -61,6 +61,12 @@ public class Tasks implements Serializable{
    	private CandidateOffBoarding offboardingId;
 	
 	
+	@NotFound(action=NotFoundAction.IGNORE)
+	@ManyToOne
+	@JoinColumn(name = "VENDOR_ON_BOARDING_ID")
+   	private VendorOnboarding vendorOnboardingId;
+	
+	
 	@Column(name = "PRIORITY")
 	private String priority;
 	
@@ -292,6 +298,14 @@ public class Tasks implements Serializable{
 
 	public void setOffboardingId(CandidateOffBoarding offboardingId) {
 		this.offboardingId = offboardingId;
+	}
+
+	public VendorOnboarding getVendorOnboardingId() {
+		return vendorOnboardingId;
+	}
+
+	public void setVendorOnboardingId(VendorOnboarding vendorOnboardingId) {
+		this.vendorOnboardingId = vendorOnboardingId;
 	}
 }
 
