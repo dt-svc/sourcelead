@@ -11,6 +11,9 @@ $(document).ready(function(){
  
 <!-- Content Area -->
   <section class="content-wraper" id="themeroller">
+  <div class="success_pop" id="selector1" style="display: none;">
+ 			<i class="fa fa-check-circle"></i><span id="msgDiv"></span>
+       </div>
     <section class="content-header clearfix">
       <div class="pull-left">
         <h2>Requested Count</h2>
@@ -116,7 +119,7 @@ $(document).ready(function(){
 				        			 result = result + ' <b title="Accept" class="paddingRight proj_closed">REJECTED</b>';
 				        		 }else{
 				        			 result = result + ' <span title="Accept" class="paddingRight"><i class="fa fa-check text-success cursorPointer" onclick="approveLeave(\''+opt.id+'\',\''+opt.leaveTypeId+'\',\'APPROVED\',\''+opt.noOfDays+'\');"></i></span>';
-					        		 result = result + '  <span title="Reject" class="paddingLeft"><i class="fa fa-times text-danger cursorPointer" onclick="approveLeave(\''+opt.id+'\',\''+opt.leaveTypeId+'\',\'REJECTED\',\''+opt.noOfDays+'\');"></i></span>'; 
+					        		 result = result + '  <span title="Reject" class="paddingLeft"><i class="fa fa-times text-danger cursorPointer" onclick="rejectLeave(\''+opt.id+'\',\''+opt.leaveTypeId+'\',\''+opt.noOfDays+'\',\'REJECTED\');"></i></span>'; 
 				        		 }
 				        		 result = result + ' </div>';
 				        		 result = result + '</td>';
@@ -131,9 +134,9 @@ $(document).ready(function(){
 					$("#loading").removeAttr("style");
 					requestedleavesTable();
 					 $(".proj_show").click(function(){
-						$(".new_side_wrap").addClass("new_side_wrap_active");
-						$(".side_mask").fadeIn(200);
-						$("body").css('overflow-y', 'hidden');
+// 						$(".new_side_wrap").addClass("new_side_wrap_active");
+// 						$(".side_mask").fadeIn(200);
+// 						$("body").css('overflow-y', 'hidden');
 					});
 					$(".proj_close, .side_mask").click(function(){
 						$(".new_side_wrap").removeClass("new_side_wrap_active");
@@ -168,11 +171,39 @@ function requestedleavesTable(){
 function approveLeave(leaveId,leaveTypeId,approveStatus,numberOfDays){
 	 var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	 var userId = '${SourceLeadWeb_userId}';
-	  $.get(sourceleadUrl+"/approveRequestedLeave?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&leaveId="+leaveId+"&leaveTypeId="+leaveTypeId+"&approveStatus="+approveStatus+"&userId="+userId+"&numberOfDays="+numberOfDays, function(data) {
+	
+	 if(approveStatus == "REJECTED"){
+		 var reason = document.getElementById("leaveReasonForDelete").value;
+		 if(reason == null || reason == '' || reason == 'undefined'){
+			 $("#rejectReasonDiv").find('p.jquery_form_error_message').remove();
+		  	 $("#rejectReasonDiv").append("<p class='jquery_form_error_message'>Reason Is Required</p>");
+		 }else{
+			 $("#rejectReasonDiv").find('p.jquery_form_error_message').remove();
+			  $.get(sourceleadUrl+"/approveRequestedLeave?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&leaveId="+leaveId+"&leaveTypeId="+leaveTypeId+"&approveStatus="+approveStatus+"&userId="+userId+"&numberOfDays="+numberOfDays+"&reason="+reason, function(data) {
+					if(data == true){
+						$("#popUp").empty();
+			 			$("#remove_user_pop, .sideMask").fadeOut();
+			 			$("#selector1").removeAttr("style");
+			    		 $("#selector1").css({ display: "block" });
+			    	     $("#msgDiv").html("Rejected Successfully..");
+			    	     msgFadein();
+						getRequestedEmployeesList();
+					}
+				});
+		 }
+	 }else{
+		  $.get(sourceleadUrl+"/approveRequestedLeave?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&leaveId="+leaveId+"&leaveTypeId="+leaveTypeId+"&approveStatus="+approveStatus+"&userId="+userId+"&numberOfDays="+numberOfDays, function(data) {
 				if(data == true){
+// 					$("#popUp").empty();
+// 		 			$("#remove_user_pop, .project_inn_mask").fadeOut();
+                         $("#selector1").removeAttr("style");
+			    		 $("#selector1").css({ display: "block" });
+			    	     $("#msgDiv").html("Approved Successfully..");
+			    	     msgFadein();
 					getRequestedEmployeesList();
 				}
-		}); 
+			});
+	 }
 }
 </script>
 
@@ -180,10 +211,13 @@ function approveLeave(leaveId,leaveTypeId,approveStatus,numberOfDays){
 function getRequestedAproveSummary(leaveId,orgLocationId){
 	   $.get(sourceleadUrl+"/getRequestedAproveSummary?"+tokenParamName+"="+tokenValue+"&leaveId="+leaveId+"&orgLocationId="+orgLocationId, function(data) {
 		if(data != null){
+			$(".new_side_wrap").addClass("new_side_wrap_active");
+			$(".side_mask").fadeIn(200);
+			$("body").css('overflow-y', 'hidden');
 			 var result = "";	
 			 result = result +' <div class="viewgrid-header pull-right zIndex positionRelative">';
 			 result = result +'<span class="btn btn-primary btn-sm mr10" onclick="approveLeave(\''+data.id+'\',\''+data.leaveTypeId+'\',\'APPROVED\',\''+data.noOfDays+'\');">Approve</span>';
-			 result = result +'<span class="btn btn-danger btn-sm mr10" onclick="approveLeave(\''+data.id+'\',\''+data.leaveTypeId+'\',\'REJECTED\',\''+data.noOfDays+'\');">Reject</span>';
+			 result = result +'<span class="btn btn-danger btn-sm mr10" onclick="rejectLeave(\''+data.id+'\',\''+data.leaveTypeId+'\',\''+data.noOfDays+'\',\'REJECTED\');">Reject</span>';
 			 result = result +'<div class="clearfix"></div>';
 			 result = result +'<div class="cancel-reason" id="cancelReason">';
 			 result = result +'<div class="clearfix">';
@@ -291,6 +325,38 @@ function getRequestedAproveSummary(leaveId,orgLocationId){
 	});  
 }
 </script>
+
+<script>
+function rejectLeave(id, leaveTypeId, noOfDays){
+	var result = "";
+	result = result +"	<div class='comMask'></div>";
+	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+	//result = result +"		<p>Do you want to delete this vendor contact?</p>";
+	result = result +"		<textarea id='leaveReasonForDelete' class='form-control' field-name='Reject Reason'  data-validation='required validate_Space validate_Description validate_length length2-250' name='reasonForSpoc' value='' placeholder='Terminate Reason' rows='2'></textarea>";
+	result = result + ' <div id="rejectReasonDiv"/>';
+	result = result +'		<b href="javascript:void(0)"><input id="confirm-id" type="button" value="Delete" onclick="approveLeave(\''+id+'\',\''+leaveTypeId+'\',\'REJECTED\',\''+noOfDays+'\');"><input class="u_can_color" type="button"  value="Cancel" onClick="cancelTermination();"></b>';
+	result = result +"	</div>";
+	$("#popUp").append(result);
+	$("#remove_user_pop").slideDown(200);
+	$(".comMask").fadeIn(200);
+}
+</script>
+
+<div id="popUp"></div>
+
+<script>
+function cancelTermination(){
+	$(".comMask").remove();
+	$("#remove_user_pop, .sideMask").remove();
+}
+</script>
+
+<script>
+	function msgFadein() {
+		$("#selector1").fadeIn(200);
+        $('#selector1').delay(2000).fadeOut('slow');
+	}
+</script> 
 
 <div class="side_mask">
     <div class="proj_close"></div>

@@ -840,12 +840,13 @@ public class LeaveManagementRestController {
 			@RequestParam(value = "leaveTypeId", required = false) String leaveTypeId, 
 			@RequestParam(value = "approveStatus", required = false) String approveStatus,
 			@RequestParam(value = "userId", required = false) Long userId,
-			@RequestParam(value = "numberOfDays", required = false) String numberOfDays,HttpServletRequest request)
+			@RequestParam(value = "numberOfDays", required = false) String numberOfDays,
+			@RequestParam(value = "reason", required = false) String reason,HttpServletRequest request)
 			throws Exception {
 		
 		OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
 		User user = userService.getUserById(userId);
-		boolean isApproved = leaveService.approveRequestLeave(orgLocations,user,leaveId,leaveTypeId,approveStatus,numberOfDays);
+		boolean isApproved = leaveService.approveRequestLeave(orgLocations,user,leaveId,leaveTypeId,approveStatus,numberOfDays,reason);
 		return isApproved;
 		
 	}

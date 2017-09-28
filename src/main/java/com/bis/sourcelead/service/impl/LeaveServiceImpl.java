@@ -169,7 +169,7 @@ public class LeaveServiceImpl implements LeaveService{
 
 	@Override
 	public boolean approveRequestLeave(OrgLocations orgLocations, User user, String leaveId, String leaveTypeId,
-			String approveStatus, String numberOfDays) throws Exception {
+			String approveStatus, String numberOfDays,String reason) throws Exception {
 
 		boolean isApproved = false;
 		LeaveManagementHistory leaveManagementHistory = new LeaveManagementHistory();
@@ -185,6 +185,7 @@ public class LeaveServiceImpl implements LeaveService{
 					leaveTypeDao.addLeaveType(leaveType);
 			} else {
 				leave.setStatus(Constants.LEAVE_REJECTED);
+				leave.setRejectedReason(reason);
 			}
 			leave.setUpdatedBy(user.getUserCode());
 			leave.setUpdatedDate(new Date());
