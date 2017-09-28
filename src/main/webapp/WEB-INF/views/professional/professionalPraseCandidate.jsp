@@ -460,13 +460,6 @@
 		
 		 if ($('#candidate_form').validate(false, validationSettings)){ 
 			
-			var frm = $('#candidate_form').serializeFormJSON();
-			var con = JSON.stringify(frm);
-			con = con.replace(/[{}]/g, ""); 
-			
-			//It will escape all the special characters
-		    var jsonData = encodeURIComponent(con);
-			
 			var form = $('#candidate_form')[0];
       		var formData = new FormData(form); 
 			
@@ -476,12 +469,9 @@
 			$.ajax({
 						type : "POST",
 		        	    data: formData,
-		        	    contentType : 'application/json; charset=utf-8',
-		        	    enctype: 'multipart/form-data',
-		    	        processData: false,
+		        	    processData: false,
 		    	        contentType:false,
-		        	    dataType : 'json',
-						url : sourceleadUrl+"/storeProfessionalParseCandidate?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&candidateId="+candidateId,
+						url : sourceleadUrl+"/storeProfessionalParseCandidate?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,
 						success : function(result) {
 								location.replace(sourceleadUrl+"/professionalProfile");
 						},
