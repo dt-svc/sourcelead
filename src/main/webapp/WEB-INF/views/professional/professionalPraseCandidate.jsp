@@ -864,3 +864,9 @@ var currentRate = document.getElementById("currentRate").value;
 	 
 }
 </script>
+
+<script>
+$("#uploadBtn").change(function() {
+    fileUpload("uploadBtn", "resumes", "candidate_form");
+});
+</script>
