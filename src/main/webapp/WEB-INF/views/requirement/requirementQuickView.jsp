@@ -105,7 +105,7 @@
 			            		  <a href="<c:url value="/requirement?requirementUUID=${requirementUUID}"/>"><button  class="btn btn-primary btn-sm" type="button">Edit</button></a> 
 			            	</sec:authorize>
 			            </c:if>
-			            <c:if test="${(isAdmin == 'true' && requirement.requirementSubmissionStatus  != 'DRAFT' && requirement.requirementSubmissionStatus != 'ONHOLD'  && requirement.requirementSubmissionStatus != 'CANCEL' &&  requirement.requirementSubmissionStatus != 'APPROVED' &&  requirement.requirementSubmissionStatus != 'REJECTED'  &&  requirement.requirementSubmissionStatus != 'OPEN' && requirement.requirementSubmissionStatus  !='NEW' && requirement.requirementSubmissionStatus  != 'UNFILLEDCLOSED' && requirement.requirementSubmissionStatus  != 'FILLEDCLOSED' )  || (  !empty requirement.requirementApproverHierarchyStatus && requirement.requirementSubmissionStatus  !='DRAFT' && requirement.requirementSubmissionStatus != 'ONHOLD'  && requirement.requirementSubmissionStatus != 'CANCEL' &&  requirement.requirementApproverHierarchyStatus !='APPROVED' &&  requirement.requirementApproverHierarchyStatus != 'REJECTED'  &&  requirement.requirementApproverHierarchyStatus != 'OPEN') }">
+			            <c:if test="${(isAdmin == 'true' && requirement.requirementSubmissionStatus  != 'DRAFT' && requirement.requirementSubmissionStatus != 'ONHOLD' && requirement.requirementSubmissionStatus != 'CLOSED'  && requirement.requirementSubmissionStatus != 'CANCEL' &&  requirement.requirementSubmissionStatus != 'APPROVED' &&  requirement.requirementSubmissionStatus != 'REJECTED'  &&  requirement.requirementSubmissionStatus != 'OPEN' && requirement.requirementSubmissionStatus  !='NEW' && requirement.requirementSubmissionStatus  != 'UNFILLEDCLOSED' && requirement.requirementSubmissionStatus  != 'FILLEDCLOSED' )  || (  !empty requirement.requirementApproverHierarchyStatus && requirement.requirementSubmissionStatus  !='DRAFT' && requirement.requirementSubmissionStatus != 'ONHOLD'  && requirement.requirementSubmissionStatus != 'CANCEL' &&  requirement.requirementApproverHierarchyStatus !='APPROVED' &&  requirement.requirementApproverHierarchyStatus != 'REJECTED'  &&  requirement.requirementApproverHierarchyStatus != 'OPEN') }">
 			            	  <button  class="btn btn-success mr ml btn-sm" type="button" id = "approverbut" onClick ="updateReuqirementStatus('APPROVED');hideButtonOnClick();"  >Approve</button> 
          		              <button  class="btn btn-danger btn-sm" id = "rejectedbut" type="button" onClick ="rejectRequirementAlertMessage('REJECTED');hideButtonOnClick();">Reject</button>
 			            </c:if>
@@ -276,7 +276,7 @@
 						   </c:when>
 						   <c:otherwise>
 						   		<c:forEach var ="req" items="${requirement.requirementApprover}" varStatus="reqStatus">
-							        <div class="require_wrap_details_cta"> <b>Approvers ${reqStatus.count}:</b> <span> ${req.approverUserId.firstName} ${req.approverUserId.lastName}</span></div>
+							        <div class="require_wrap_details_cta"> <b>Approvers ${req.level}:</b> <span> ${req.approverUserId.firstName} ${req.approverUserId.lastName}</span></div>
 							     </c:forEach>
 						   </c:otherwise>
 						</c:choose>
@@ -354,7 +354,7 @@
 		</div>
 	</div>
 	<div id="actionsDiv" class="timesheet_head timesheetHead minHeight candidateHead recruitmentHead headersummary clearfix zindex" style="display: none;">
-		<ul>
+		<ul class="m-t">
 		  <li class="li-vendor">
 		   <c:if test="${requirement.requirementSubmissionStatus != 'SUBMITTED' && requirement.requirementSubmissionStatus != 'CLOSED' && requirement.requirementSubmissionStatus != 'REJECTED' &&  requirement.requirementSubmissionStatus != 'CANCEL' && requirement.requirementSubmissionStatus != 'DRAFT' && requirement.requirementSubmissionStatus != 'ONHOLD' && requirement.requirementSubmissionStatus != 'FILLEDCLOSED'  && requirement.requirementSubmissionStatus != 'UNFILLEDCLOSED' }">
 		        <a onclick="getActions();" href="javascript:void(0)" class="action"> Action <i  class="fa fa-caret-down" ></i></a>
