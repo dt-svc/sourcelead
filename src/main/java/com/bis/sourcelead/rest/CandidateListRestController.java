@@ -409,9 +409,14 @@ public class CandidateListRestController {
 		}
 
 		String updatedDateRange = search.getUpdatedDateRange();
-		if (StringUtils.isNotEmpty(updatedDateRange) && !"null".equalsIgnoreCase(updatedDateRange)
-				&& !updatedDateRange.equalsIgnoreCase("all") && !updatedDateRange.equalsIgnoreCase("undefined")) {
-			DateTime zoned = new DateTime(DateTimeZone.forID(loginOrgLocation.getTimezone().getTimeZoneId()));
+		if (StringUtils.isNotEmpty(updatedDateRange) && !"null".equalsIgnoreCase(updatedDateRange)&& !updatedDateRange.equalsIgnoreCase("all") && !updatedDateRange.equalsIgnoreCase("undefined")) {
+			 Calendar c = Calendar.getInstance();
+			 SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			Integer dateRange = Integer.parseInt(updatedDateRange);
+	        c.add(Calendar.DATE, -dateRange); // Subtracting dateRange days
+	        String updatedDate     = dateFormat.format(c.getTime());
+	        Date newDate = dateFormat.parse(updatedDate);
+			DateTime zoned = new DateTime(newDate,DateTimeZone.forID(loginOrgLocation.getTimezone().getTimeZoneId()));
 			Date endDate = getPreviousDate(zoned, loginOrgLocation.getTimezone());
 			java.sql.Date endDate1 = new java.sql.Date(endDate.getTime());
 			boolQueryBuilder.must(QueryBuilders.rangeQuery("updatedDate").gte(endDate1));

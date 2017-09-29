@@ -5,6 +5,7 @@ public class FileInfo {
 	private String fileURL;
 	private String fileName;
 	private String contentType;
+	private String tempFolderName;
 
 	public String getFileURL() {
 		return fileURL;
@@ -28,6 +29,14 @@ public class FileInfo {
 
 	public void setContentType(String contentType) {
 		this.contentType = contentType;
+	}
+
+	public String getTempFolderName() {
+		return tempFolderName;
+	}
+
+	public void setTempFolderName(String tempFolderName) {
+		this.tempFolderName = tempFolderName;
 	}
 
 }
