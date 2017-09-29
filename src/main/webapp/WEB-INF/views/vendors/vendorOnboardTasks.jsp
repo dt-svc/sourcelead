@@ -338,19 +338,21 @@ function saveAndFinishVendorOnbord(){
 	
 	   var formData = getFormData("finishOnboardTask_form");
 	   var vendorOnboardId = document.getElementById("vendorOnboardId").value;
+	   $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
        
-    $.ajax({
+      $.ajax({
     	type : "POST",
   	    data: formData,
 	    url: sourceleadUrl+"/saveAndFinishVendorOnboard?${_csrf.parameterName}=${_csrf.token}&vendorOnboardId="+vendorOnboardId, 
         success: function(result) {
         	
         	location.replace(sourceleadUrl+"/vendorsList"); 
-        	
         },
-    });  
+    }); 
 }
 </script>
+
+
 
 <script>
 function getAssignToUsersList(){

@@ -73,7 +73,7 @@ public class VendorOnboardDaoImpl implements VendorOnboardDao{
 	@Transactional
 	public VendorOnboarding getVendorOnboardingById(Long id) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
-		List<VendorOnboarding> vendorOnboard = session.createQuery("from VendorOnboarding onboard left join fetch onboard.orgRelationId "
+		List<VendorOnboarding> vendorOnboard = session.createQuery("from VendorOnboarding onboard left join fetch onboard.orgRelationId left join fetch onboard.spocUserId "
 				+ " left join fetch onboard.vendorLocationId left join fetch onboard.orgLocationsId where onboard.id = :id" ).setLong( "id", id ).setCacheable(true).list();
 		if (vendorOnboard.size() > 0) {
 			return vendorOnboard.get(0);

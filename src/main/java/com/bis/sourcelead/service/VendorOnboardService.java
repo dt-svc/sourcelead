@@ -13,5 +13,5 @@ public interface VendorOnboardService {
 	
 	VendorOnboarding getVendorOnboardingById(Long id) throws Exception;
 	
-	void finishVendorOnboarding(OnboardTasksDTO onboardTasksDTO,User user) throws Exception;
+	void finishVendorOnboarding(OnboardTasksDTO onboardTasksDTO,User user,OrgLocations orgLocations) throws Exception;
 }
