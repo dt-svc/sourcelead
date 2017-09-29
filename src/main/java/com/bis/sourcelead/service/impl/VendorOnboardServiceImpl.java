@@ -176,12 +176,14 @@ public class VendorOnboardServiceImpl implements VendorOnboardService {
 							 Tasks tasks = null;
 							 User taskUser = userDao.getUserById(Long.valueOf(userIds[i]));
 							 tasks = getTaskDetails(onboardTasks, taskUser, user, orgLocations);
+							 tasks.setOwnerOrglocationId(orgLocations);
 							 tasks.setVendorOnboardingId(vendorOnboarding);
 							 taskDao.saveTasks(tasks);
 						 }
 					}else{
 						 Tasks tasks = null;
 						 tasks = getTaskDetails(onboardTasks, onboardingSpocUser, user, orgLocations);
+						 tasks.setOwnerOrglocationId(vendorOrgLocations);
 						 tasks.setVendorOnboardingId(vendorOnboarding);
 						 taskDao.saveTasks(tasks);
 					 }
@@ -212,10 +214,9 @@ public class VendorOnboardServiceImpl implements VendorOnboardService {
 	public Tasks getTaskDetails(VendorOnboardTasks onboardTasks,User user,User loginUser,OrgLocations orgLocations){
 		 
 		 Tasks tasks = new Tasks();
-		 tasks.setOwnerOrglocationId(orgLocations);
 		 tasks.setAssignedOrglocationId(orgLocations);
-		 tasks.setTaskOwnerId(loginUser);
-		 tasks.setAssignedUserId(user);
+		 tasks.setTaskOwnerId(user);
+		 tasks.setAssignedUserId(loginUser);
 		 if(StringUtils.isNotBlank(onboardTasks.getPriority())){
 			 tasks.setPriority(onboardTasks.getPriority());
 		 }
