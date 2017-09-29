@@ -24,6 +24,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.HolidayDAO;
+import com.bis.sourcelead.dao.LeaveDao;
+import com.bis.sourcelead.dao.LeaveManagementHistoryDao;
 import com.bis.sourcelead.dao.LeaveTypeDao;
 import com.bis.sourcelead.dao.OptionsDao;
 import com.bis.sourcelead.dto.LeaveTypeDTO;
@@ -94,6 +96,9 @@ public class LeaveManagementRestController {
 	@Autowired
 	ShiftService shiftService;
 	
+	@Autowired
+	LeaveDao leaveDao;
+	
 	
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
@@ -151,6 +156,9 @@ public class LeaveManagementRestController {
 
 	@Autowired
 	ShiftDao shiftDao;
+	
+	@Autowired
+	LeaveManagementHistoryDao leaveManagementHistoryDao;
 
 
 	
@@ -856,11 +864,11 @@ public class LeaveManagementRestController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = {"/getEmployeeRequestedLeaves","/rest/getEmployeeRequestedLeaves"}, method = RequestMethod.GET)
-	public  @ResponseBody List<LeaveDTO> getEmployeeRequestedLeaves(@RequestParam(value = "orgLocationId", required = false) Long orgLocationId,@RequestParam(value = "userId", required = false) String userId,HttpServletRequest request) throws Exception
+	public  @ResponseBody List<LeaveDTO> getEmployeeRequestedLeaves(@RequestParam(value = "orgLocationId", required = false) Long orgLocationId,@RequestParam(value = "userId", required = false) String userId,@RequestParam(value = "leaveStatus", required = false) String leaveStatus,HttpServletRequest request) throws Exception
 	{
 		List<LeaveDTO> requestedLeavesList = null;
 		OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
-		requestedLeavesList = leaveService.getEmployeeRequestedLeavesBylocationId(orgLocations, userId);
+		requestedLeavesList = leaveService.getEmployeeRequestedLeavesBylocationId(orgLocations, userId,leaveStatus);
 		if (requestedLeavesList != null && !requestedLeavesList.isEmpty()) {
 			return requestedLeavesList;
 		}
@@ -959,5 +967,33 @@ public class LeaveManagementRestController {
 		}
 		return leaveDto;
 	}
+	
+	@RequestMapping(value = {"/storeCancelReason"})
+	@ResponseBody
+	public  boolean storeCancelReason(@RequestParam(value = "id", required = false) String id,@RequestParam(value = "reason", required = false) String reason,@RequestParam(value = "userId", required = false) String userId) throws Exception
+	{
+		boolean isCancelled = false;
+		LeaveManagementHistory leaveManagementHistory = new LeaveManagementHistory();
+		Leave leave = leaveService.getLeaveByLeavId(id);
+		leaveManagementHistory.setFromStage(leave.getStatus());
+		User user = userService.getUserById(Long.valueOf(userId));
+		 if(leave !=null) {
+			 leave.setDeleteReason(reason);
+			 leave.setCancelledBy(user);
+			 leave.setStatus(Constants.LEAVE_CANCELLED);
+			 leaveDao.saveLeave(leave);
+			 isCancelled = true;
+		 }
+		 	leaveManagementHistory.setLeaveid(leave);
+			leaveManagementHistory.setType(Constants.LEAVE);
+//			leaveManagementHistory.setStatus(leave.getStatus());
+			leaveManagementHistory.setCreatedBy(user.getUserCode());
+			leaveManagementHistory.setCreatedDate(new Date());
+			leaveManagementHistory.setUpdatedBy(user.getUserCode());
+			leaveManagementHistory.setUpdatedDate(new Date());
+			leaveManagementHistory.setToStage(Constants.LEAVE_CANCELLED);
+			leaveManagementHistoryDao.saveLeaveManagementHistory(leaveManagementHistory);
+		return isCancelled;
+	}	
 
 }
