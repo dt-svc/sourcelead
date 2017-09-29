@@ -1894,8 +1894,7 @@ function interviewFeedback(interviewId,templateId,id){
 	$.ajax({
 	type: "GET",
 	url: sourceleadUrl+"/getInterviewrsFeedbackList?"+tokenParamName+"="+tokenValue+"&interviewId="+interviewId+"&locationId="+locationId,
-		success: function(data) {
-			var json = JSON.parse(data);
+		success: function(json) {
 			var result = "";
 			result = result +"<strong>Interview Feedback</strong>";
 			result = result +"<table id='requirementApproverPagination' cellspacing='0' width='100%' class='mt10'>"; 
