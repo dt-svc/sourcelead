@@ -200,6 +200,7 @@ public class LeaveServiceImpl implements LeaveService{
 					}
 				}
 			}
+			
 			if(leave.getCancelledBy() != null) {
 			  if (Constants.LEAVE_CANCELLED.equalsIgnoreCase(leaveStatus)){
 				  StringBuilder sbCancelApp = new StringBuilder();
