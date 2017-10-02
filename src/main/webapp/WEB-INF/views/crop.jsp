@@ -1,4 +1,3 @@
-
 <div class="post_popup_img">
     <div class="post_popup_img_main">
         <div class="img-container">
