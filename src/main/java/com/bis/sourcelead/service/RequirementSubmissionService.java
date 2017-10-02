@@ -7,6 +7,7 @@ import java.util.Map;
 import org.json.JSONObject;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.bis.sourcelead.dto.ApplicantAuthorizationDTO;
 import com.bis.sourcelead.dto.EmployerPayrollCostDTO;
 import com.bis.sourcelead.dto.RequirementSubmissionsDTO;
 import com.bis.sourcelead.dto.ResponseList;
@@ -36,7 +37,7 @@ public interface RequirementSubmissionService {
 	
 	List<RequirementSubmission> getAllShortListCandidatesByOrgLocationsIdAndRequirementId(OrgLocations orgLocations, Long requirementId, List<Long> existingApplicantsIds, String isClientInterview,User user,String loginUserRole) throws Exception;
 	
-	List<RequirementSubmission> getAllSubmittedAndShortListAndInterviewededCandidates(OrgLocations orgLocations, Long requirementId, List<Long> existingApplicantsIds, String isClientOffer,User user,String loginUserRole) throws Exception;
+	List<RequirementSubmission> getAllSubmittedAndShortListAndInterviewededCandidates(OrgLocations orgLocations, Long requirementId, List<Long> existingApplicantsIds, String isClientOffer,User user,String loginUserRole,String isClientRequirement) throws Exception;
 	
 	RequirementSubmission storeRequirementSubmission(RequirementSubmission requirementSubmission)throws Exception;
 
@@ -117,7 +118,7 @@ public interface RequirementSubmissionService {
 			OrgLocations orgLocations, String rejectreason, StringBuilder tempHTML, RequirementRateSubmissionNegotiation requirementRateSubmissionNegotiation, Long submissionId) throws Exception;
 	
 
-	RequirementSubmission acceptRejectCandidate(JSONObject jsonObj, User user, RequirementSubmission requirementSubmission, String decision, MultipartFile multiFile,Org loginOrg,OrgLocations loginOrgLocation) throws Exception;
+	RequirementSubmission acceptRejectCandidate(ApplicantAuthorizationDTO applicantAuthorizationDTO, User user, RequirementSubmission requirementSubmission, String decision,Org loginOrg,OrgLocations loginOrgLocation) throws Exception;
 
 
 	public void applicantNegotiateEmail(Requirement requirement, User initiatorUser, Candidate candidate,

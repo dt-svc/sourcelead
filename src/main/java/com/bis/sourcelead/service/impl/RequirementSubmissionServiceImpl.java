@@ -49,6 +49,7 @@ import com.bis.sourcelead.dao.RequirementReferDao;
 import com.bis.sourcelead.dao.RequirementSubmissionDao;
 import com.bis.sourcelead.dao.RequirementSubmissionTemplateFieldsDao;
 import com.bis.sourcelead.dao.UserDao;
+import com.bis.sourcelead.dto.ApplicantAuthorizationDTO;
 import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.dto.RequirementDTO;
 import com.bis.sourcelead.dto.RequirementSubmissionsDTO;
@@ -238,8 +239,8 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 	}
 	
 	@Override
-	public List<RequirementSubmission> getAllSubmittedAndShortListAndInterviewededCandidates(OrgLocations orgLocations,Long requirementId, List<Long> existingApplicantsIds, String isClientOffer,User user,String loginUserRole) throws Exception {
-		return requirementSubmissionDao.getAllSubmittedAndShortListAndInterviewededCandidates(orgLocations,requirementId,existingApplicantsIds,isClientOffer,user,loginUserRole);
+	public List<RequirementSubmission> getAllSubmittedAndShortListAndInterviewededCandidates(OrgLocations orgLocations,Long requirementId, List<Long> existingApplicantsIds, String isClientOffer,User user,String loginUserRole,String isClientRequirement) throws Exception {
+		return requirementSubmissionDao.getAllSubmittedAndShortListAndInterviewededCandidates(orgLocations,requirementId,existingApplicantsIds,isClientOffer,user,loginUserRole,isClientRequirement);
 	}
 
 	
@@ -553,8 +554,14 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 				 default:
 					 reqCoolingOffPeriodDays = "0";
 			 }
-			 requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.SUBMISSION);
-			 
+			 if(jsonObj.has("needApplicantPermit") && !isNullOrEmpty(jsonObj.getString("needApplicantPermit"))){
+                 if(jsonObj.getString("needApplicantPermit").equals("Y")){
+                     requirementSubmission.setNeedApplicantPermit("Y");
+                     requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.REQUEST_SENT);
+                 }
+             }else{
+                 requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.SUBMISSION);
+             }
 			 requirementSubmissionHistoryForCoolingOff = requirementSubmissionHistoryService.isInCoolingOffPeriodByEmailAndLocationsId(requirementSubmission.getCandidate().getEmail(), requirement.getOrgLocationId(), reqCoolingOffPeriodDays, requirement.getId());
 			 if(requirementSubmissionHistoryForCoolingOff != null){
 				 if(requirementSubmissionHistoryForCoolingOff.getIsInCoolingOffPeriod()){
@@ -563,16 +570,6 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 					 requirementSubmission.setRejectedReason("Under cooling off period, completed by "+requirementSubmissionHistoryForCoolingOff.getCoolingOffPeriodEndDateStr()+".");
 					 requirementSubmission.setRejectedCategoryType("Other");
 					 requirementSubmission.setRejectedCategoryOther("Under cooling off period");
-				 }
-			 }else{
-				 if(jsonObj.has("needApplicantPermit") && !isNullOrEmpty(jsonObj.getString("needApplicantPermit"))){
-					 if(jsonObj.getString("needApplicantPermit").equals("Y")){
-						 requirementSubmission.setNeedApplicantPermit("Y");
-						 requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.REQUEST_SENT);
-					 } 
-				 }else{
-					 requirementSubmission.setNeedApplicantPermit("N");
-					 requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.SUBMISSION);
 				 }
 			 }
 			 /*END Code snippet*/
@@ -1711,20 +1708,23 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 	}
 	
 	@Override
-	public RequirementSubmission acceptRejectCandidate(JSONObject jsonObj, User user,
-			RequirementSubmission requirementSubmission, String decision, MultipartFile multiFile,Org loginOrg,  OrgLocations loginOrgLocation) throws Exception {
+	public RequirementSubmission acceptRejectCandidate(ApplicantAuthorizationDTO  applicantAuthorizationDTO,User user,
+			RequirementSubmission requirementSubmission, String decision,Org loginOrg,  OrgLocations loginOrgLocation) throws Exception {
 		if(requirementSubmission != null){
 			
 			if(StringUtils.equalsIgnoreCase(decision, "accept")){
 				requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.SUBMISSION);
 				requirementSubmission.setSubmissionRateStatus(SubmissionRateStatus.ACCEPTED);
-				if(jsonObj.has("comment")){
-					requirementSubmission.setSubmissionRateComment(jsonObj.getString("comment"));
+				if(StringUtils.isNotBlank(applicantAuthorizationDTO.getComment())){
+					requirementSubmission.setSubmissionRateComment(applicantAuthorizationDTO.getComment());
 				}
-				if(multiFile != null){
-					requirementSubmission.setSubmissionRateDocFile(multiFile.getBytes());
-					requirementSubmission.setSubmissionRateFileContentType(multiFile.getOriginalFilename());
-					requirementSubmission.setSubmissionRateFileName(multiFile.getContentType());
+				if(applicantAuthorizationDTO.getFileInfo() != null){
+					FileInfo info = applicantAuthorizationDTO.getFileInfo().get(0);
+					//requirementSubmission.setSubmissionRateDocFile(multiFile.getBytes());
+					requirementSubmission.setSubmissionRateFileContentType(info.getContentType());
+					requirementSubmission.setSubmissionRateFileName(info.getFileName());
+					requirementSubmission.setDocURL(info.getFileURL());
+					FileUploadUtil.moveFile(applicantAuthorizationDTO.getStaticPath(), info, "requestDocuments");
 				}
 				StringBuilder name = new StringBuilder();
 				if(null !=user.getLastName() && !" ".equalsIgnoreCase(user.getLastName())){
@@ -1743,19 +1743,19 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 				requirementSubmission.setPreviousSubmissionStatus(previousStatus);
 				requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.REJECTED);
 				requirementSubmission.setSubmissionRateStatus(SubmissionRateStatus.REJECTED);
-				if(jsonObj.has("comment")){
-					requirementSubmission.setRejectedReason(jsonObj.getString("comment"));
+				if(StringUtils.isNotBlank(applicantAuthorizationDTO.getComment())){
+					requirementSubmission.setRejectedReason(applicantAuthorizationDTO.getComment());
 				}
 				
 				
 				
-				if(jsonObj.has("rejectedCategory")){
-					requirementSubmission.setRejectedCategoryType(jsonObj.getString("rejectedCategory"));
+				if(StringUtils.isNotBlank(applicantAuthorizationDTO.getRejectedCategory())){
+					requirementSubmission.setRejectedCategoryType(applicantAuthorizationDTO.getRejectedCategory());
 				}
 				
 				
-				if(jsonObj.has("rejectedCategoryOther")){
-					requirementSubmission.setRejectedCategoryOther(jsonObj.getString("rejectedCategoryOther"));
+				if(StringUtils.isNotBlank(applicantAuthorizationDTO.getRejectedCategoryOther())){
+					requirementSubmission.setRejectedCategoryOther(applicantAuthorizationDTO.getRejectedCategoryOther());
 
 				}
 				
@@ -1769,13 +1769,16 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 			}
 			else if(StringUtils.equalsIgnoreCase(decision, "request")){
 				requirementSubmission.setSubmissionRateStatus(SubmissionRateStatus.REQUEST);
-				if(multiFile != null){
-					requirementSubmission.setSubmissionRequestDocFile(multiFile.getBytes());
-					requirementSubmission.setSubmissionRequestFileContentType(multiFile.getContentType());
-					requirementSubmission.setSubmissionRequestFileName(multiFile.getOriginalFilename());
+				if(applicantAuthorizationDTO.getFileInfo() != null){
+					FileInfo info = applicantAuthorizationDTO.getFileInfo().get(0);
+					//requirementSubmission.setSubmissionRateDocFile(multiFile.getBytes());
+					requirementSubmission.setSubmissionRequestFileContentType(info.getContentType());
+					requirementSubmission.setSubmissionRequestFileName(info.getFileName());
+					requirementSubmission.setDocURL(info.getFileURL());
+					FileUploadUtil.moveFile(applicantAuthorizationDTO.getStaticPath(), info, "requestDocuments");
 				}
-				if(jsonObj.has("comment")){
-					requirementSubmission.setSubmissionRequestComment(jsonObj.getString("comment"));
+				if(StringUtils.isNotBlank(applicantAuthorizationDTO.getComment())){
+					requirementSubmission.setSubmissionRequestComment(applicantAuthorizationDTO.getComment());
 				}
 				StringBuilder name = new StringBuilder();
 				if(null !=user.getLastName() && !" ".equalsIgnoreCase(user.getLastName())){
