@@ -129,34 +129,34 @@ public class LeaveServiceImpl implements LeaveService{
 	}
 
 	@Override
-	public List<LeaveDTO> getEmployeeRequestedLeavesBylocationId(OrgLocations orgLocations, String userId) throws Exception {
-		List<LeaveApproveHierarchy> leaveApproveHierarchiesList = leaveDao.getEmployeeRequestedLeavesBylocationId(orgLocations.getId(),userId);
+	public List<LeaveDTO> getEmployeeRequestedLeavesBylocationId(OrgLocations orgLocations, String userId, String leaveStatus) throws Exception {
+		List<LeaveApproveHierarchy> leaveApproveHierarchiesList = leaveDao.getEmployeeRequestedLeavesBylocationId(orgLocations.getId(),userId,leaveStatus);
 		List<LeaveDTO> leaveDtoList = new ArrayList<>();
 		leaveApproveHierarchiesList.forEach(laph -> {
-			Leave laeav = laph.getLeaveid();
+			Leave leave = laph.getLeaveid();
 			LeaveDTO leaveDto = new LeaveDTO();
 			StringBuilder sb = new StringBuilder();
 			StringBuilder durationSb = new StringBuilder();
 			leaveDto.setId(laph.getLeaveid().getId());
-			if (laeav.getUser() != null) {
-				if (StringUtils.isNotBlank(laeav.getUser().getLastName())) {
-					sb.append(laeav.getUser().getFirstName()).append(" ").append(laeav.getUser().getLastName());
+			if (leave.getUser() != null) {
+				if (StringUtils.isNotBlank(leave.getUser().getLastName())) {
+					sb.append(leave.getUser().getFirstName()).append(" ").append(leave.getUser().getLastName());
 				} else {
-					sb.append(laeav.getUser().getFirstName());
+					sb.append(leave.getUser().getFirstName());
 				}
 
 				leaveDto.setEmpName(sb.toString());
 			}
-			durationSb.append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), laeav.getFromDate()))
+			durationSb.append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), leave.getFromDate()))
 					.append(System.getProperty("line.separator"))
-					.append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), laeav.getToDate()));
+					.append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), leave.getToDate()));
 
 			leaveDto.setDuration(durationSb.toString());
-			leaveDto.setLeaveType(laeav.getLeaveType().getName());
-			leaveDto.setLeaveTypeId(laeav.getLeaveType().getId());
-			leaveDto.setStatus(laeav.getStatus());
+			leaveDto.setLeaveType(leave.getLeaveType().getName());
+			leaveDto.setLeaveTypeId(leave.getLeaveType().getId());
+			leaveDto.setStatus(leave.getStatus());
 			try {
-				Long numberOfdays = commonUtil.getNumberOfDaysBetweenTwoDates(laeav.getFromDate(), laeav.getToDate());
+				Long numberOfdays = commonUtil.getNumberOfDaysBetweenTwoDates(leave.getFromDate(), leave.getToDate());
 				leaveDto.setNoOfDays(String.valueOf(numberOfdays));
 			} catch (ParseException e) {
 				e.printStackTrace();
