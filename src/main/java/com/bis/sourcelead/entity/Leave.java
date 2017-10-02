@@ -135,6 +135,10 @@ public class Leave {
 	@Transient
 	@JsonProperty
 	private String approverUsers;
+	
+	@Transient
+	@JsonProperty
+	private String approvedByUser;
 
 	public String getId() {
 		return id;
@@ -368,6 +372,16 @@ public class Leave {
 	public void setCreatedDateStr(String createdDateStr)
 	{
 		this.createdDateStr = createdDateStr;
+	}
+
+	public String getApprovedByUser()
+	{
+		return approvedByUser;
+	}
+
+	public void setApprovedByUser(String approvedByUser)
+	{
+		this.approvedByUser = approvedByUser;
 	}
 	
 }

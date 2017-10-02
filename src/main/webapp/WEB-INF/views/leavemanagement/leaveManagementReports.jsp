@@ -120,83 +120,7 @@
                             <div class="col-md-4 noPad">&nbsp</div>
                             </div>
                             <div id="holidayListDiv"></div>
-                        <!-- <table cellspacing="0" cellpadding="0" width="100%;" class="table table-bordered">
-    <thead>
-    <th>S.No</th><th>Name</th><th>Date</th><th>Day of the week</th>
-    </thead>
-  <tr class="text-danger">
-    <td>1</td>
-    <td>New year</td>
-    <td>1/1/2017</td>
-    <td>Sunday</td>
-  </tr>
-  <tr class="text-danger">
-    <td>2</td>
-    <td>Pongal</td>
-    <td>1/13/2017</td>
-    <td>Friday</td>
-  </tr>
-  <tr class="text-danger">
-    <td>3</td>
-    <td>Maha Sivratri</td>
-    <td>2/24/2017</td>
-    <td>Friday</td>
-  </tr>
-  <tr class="text-danger">
-    <td>4</td>
-    <td>Ugadi</td>
-    <td>3/29/2017</td>
-    <td>Wednesday</td>
-  </tr>
-  <tr class="text-danger">
-    <td>5</td>
-    <td>Good Friday</td>
-    <td>4/14/2017</td>
-    <td>Friday</td>
-  </tr>
-  <tr class="text-danger">
-    <td>6</td>
-    <td>May day</td>
-    <td>01.05.2017</td>
-    <td>Monday</td>
-  </tr>
-  <tr class="text-danger">
-    <td>7</td>
-    <td>*Eid    - ul - Fitar </td>
-    <td>26.06.2017</td>
-    <td>Monday</td>
-  </tr>
-  <tr class="text-danger">
-    <td>8</td>
-    <td>Independence Day</td>
-      <td>8/15/2017</td>
-    <td>Tuesday</td>
-  </tr>
-  <tr class="text-danger">
-    <td>9</td>
-    <td>Ganesh Chathurthi</td>
-      <td>8/25/2017</td>
-    <td>Friday</td>
-  </tr>
-  <tr>
-    <td>10</td>
-    <td>Dusherra</td>
-      <td>9/30/2017</td>
-    <td>Saturday</td>
-  </tr>
-  <tr>
-    <td>11</td>
-    <td>Diwali</td>
-    <td>10/18/2017</td>
-    <td>Wednesday</td>
-  </tr>
-  <tr>
-    <td>12</td>
-    <td>Christmas</td>
-      <td>12/25/2017</td>
-    <td>Monday</td>
-  </tr>
-</table> -->
+                        
                     </div>
                   <div class="col-md-12 hidden">
                     <div class="clearfix project_wrap_table">
@@ -241,17 +165,7 @@
                         </tbody>
                       </table>
                       <!-- Pagenation -->
-                      <nav class="clearfix">
-                        <ul id="paging" class="pagination pull-right">
-                          <li><a href="#">Previous</a></li>
-                          <li class="active"><a href="#">1</a></li>
-                          <li><a href="#">2</a></li>
-                          <li><a href="#">3</a></li>
-                          <li><a href="#">4</a></li>
-                          <li><a href="#">5</a></li>
-                          <li data-page="last"><a href="#">Next</a></li>
-                        </ul>
-                      </nav>
+                      
                     </div>
                   </div>
                 </div>
