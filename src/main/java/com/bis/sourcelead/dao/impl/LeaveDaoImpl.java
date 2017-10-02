@@ -2,6 +2,7 @@ package com.bis.sourcelead.dao.impl;
 
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -11,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.LeaveDao;
 import com.bis.sourcelead.entity.Leave;
 import com.bis.sourcelead.entity.LeaveApproveHierarchy;
@@ -41,11 +43,28 @@ public class LeaveDaoImpl implements LeaveDao{
 
 	@Override
 	@Transactional
-	public List<LeaveApproveHierarchy> getEmployeeRequestedLeavesBylocationId(Long orgLocationId, String userId) {
+	public List<LeaveApproveHierarchy> getEmployeeRequestedLeavesBylocationId(Long orgLocationId, String userId,String leaveStatus) {
+		
 		Long usrId = Long.parseLong(userId);
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from LeaveApproveHierarchy laph left join fetch laph.leaveid leave left join fetch leave.leaveType left join fetch leave.user ltype where leave.orgLocations.id = :orgLocationId and laph.approverUserId.id= :userId";
-		return session.createQuery(query).setLong("orgLocationId", orgLocationId).setLong("userId", usrId).setCacheable(true).list();
+		String subQuery = "";
+		
+		if(StringUtils.isNotBlank(leaveStatus)) {
+			if(Constants.APPROVED.equalsIgnoreCase(leaveStatus)) {
+				subQuery = "and leave.status = :leaveStatus";
+			}else if(Constants.PENDING.equalsIgnoreCase(leaveStatus)){
+				subQuery = "and leave.status = :leaveStatus";
+			}else if(Constants.REJECTED.equalsIgnoreCase(leaveStatus)) {
+				subQuery = "and leave.status = :leaveStatus";
+			}else{
+				subQuery = "and leave.status = :leaveStatus";
+			}
+			String query = "from LeaveApproveHierarchy laph left join fetch laph.leaveid leave left join fetch leave.leaveType left join fetch leave.user ltype where leave.orgLocations.id = :orgLocationId and laph.approverUserId.id= :userId "+subQuery+"";
+			return session.createQuery(query).setParameter("leaveStatus",leaveStatus).setLong("orgLocationId", orgLocationId).setLong("userId", usrId).setCacheable(true).list();
+		}else {
+			String query = "from LeaveApproveHierarchy laph left join fetch laph.leaveid leave left join fetch leave.leaveType left join fetch leave.user ltype where leave.orgLocations.id = :orgLocationId and laph.approverUserId.id= :userId";
+			return session.createQuery(query).setLong("orgLocationId", orgLocationId).setLong("userId", usrId).setCacheable(true).list();
+		}
 	}
 
 
