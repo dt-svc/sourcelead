@@ -17,4 +17,6 @@ public interface LeaveService {
 
 	boolean approveRequestLeave(OrgLocations orgLocations, User user, String leaveId, String leaveTypeId,String approveStatus, String numberOfDays) throws Exception;
 
+	List<Leave> getLeavesListByLocationIdAndStatus(Long orgLocationId, String status, Long userId) throws Exception;
+
 }

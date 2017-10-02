@@ -13,12 +13,16 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "LEAVE", catalog = "sourcelead")
@@ -108,8 +112,33 @@ public class Leave {
 	private String updatedBy;
 	
 	@NotFound(action=NotFoundAction.IGNORE)
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "approverUserId")
+	@JsonBackReference
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "leaveid")
 	private Set<LeaveApproveHierarchy> approverHierarchyList;
+	
+	@Transient
+	@JsonProperty
+	private String leaveTypeName;
+	
+	@Transient
+	@JsonProperty
+	private String fromDateStr;
+	
+	@Transient
+	@JsonProperty
+	private String toDateStr;
+	
+	@Transient
+	@JsonProperty
+	private String createdDateStr;
+	
+	@Transient
+	@JsonProperty
+	private String approverUsers;
+	
+	@Transient
+	@JsonProperty
+	private String approvedByUser;
 
 	public String getId() {
 		return id;
@@ -294,6 +323,65 @@ public class Leave {
 	public void setFileName(String fileName) {
 		this.fileName = fileName;
 	}
-	
+
+	public String getLeaveTypeName()
+	{
+		return leaveTypeName;
+	}
+
+	public void setLeaveTypeName(String leaveTypeName)
+	{
+		this.leaveTypeName = leaveTypeName;
+	}
+
+	public String getApproverUsers()
+	{
+		return approverUsers;
+	}
+
+	public void setApproverUsers(String approverUsers)
+	{
+		this.approverUsers = approverUsers;
+	}
+
+	public String getFromDateStr()
+	{
+		return fromDateStr;
+	}
+
+	public void setFromDateStr(String fromDateStr)
+	{
+		this.fromDateStr = fromDateStr;
+	}
+
+	public String getToDateStr()
+	{
+		return toDateStr;
+	}
+
+	public void setToDateStr(String toDateStr)
+	{
+		this.toDateStr = toDateStr;
+	}
+
+	public String getCreatedDateStr()
+	{
+		return createdDateStr;
+	}
+
+	public void setCreatedDateStr(String createdDateStr)
+	{
+		this.createdDateStr = createdDateStr;
+	}
+
+	public String getApprovedByUser()
+	{
+		return approvedByUser;
+	}
+
+	public void setApprovedByUser(String approvedByUser)
+	{
+		this.approvedByUser = approvedByUser;
+	}
 	
 }

@@ -5,6 +5,15 @@
 <script type="text/javascript" src="https://www.amcharts.com/lib/3/amcharts.js"></script>
 <script type="text/javascript" src="https://www.amcharts.com/lib/3/serial.js"></script>
 <script type="text/javascript" src="https://www.amcharts.com/lib/3/pie.js"></script> 
+
+
+<script type="text/javascript">
+		 $(document).ready(function(){
+			 getHolidaysList();
+			});
+</script>
+
+
  <!-- Content Area -->
   <section class="content-wraper">
     <section class="content-header clearfix">
@@ -89,10 +98,10 @@
                   </div>
                   <div class="clearfix"></div>
                     <div class="col-md-12 mt10"><hr></div>
-                  <div class="col-md-10 col-md-offset-1 listof-holidays">
-                        <div class="row mb5">
-                            <div class="col-md-8"><strong class="leaves-heading">List of Holidays</strong></div>
-                            <div class="col-md-4 dropdown-select">
+                  <div class="col-md-10 col-md-offset-1 listof-holidays datatable_filter">
+                        <div class="row">
+                            <div class="col-md-5"><strong class="leaves-heading">List of Holidays</strong></div>
+                            <div class="col-md-3 noPad dropdown-select">
                                 <select class="form-control">
                                     <option selected>--Select Year--</option>
                                     <option>2020</option>
@@ -108,84 +117,10 @@
                                     <option>2010</option>
                                 </select>
                             </div>
+                            <div class="col-md-4 noPad">&nbsp</div>
                             </div>
-                        <table cellspacing="0" cellpadding="0" width="100%;" class="table table-bordered">
-    <thead>
-    <th>S.No</th><th>Name</th><th>Date</th><th>Day of the week</th>
-    </thead>
-  <tr class="text-danger">
-    <td>1</td>
-    <td>New year</td>
-    <td>1/1/2017</td>
-    <td>Sunday</td>
-  </tr>
-  <tr class="text-danger">
-    <td>2</td>
-    <td>Pongal</td>
-    <td>1/13/2017</td>
-    <td>Friday</td>
-  </tr>
-  <tr class="text-danger">
-    <td>3</td>
-    <td>Maha Sivratri</td>
-    <td>2/24/2017</td>
-    <td>Friday</td>
-  </tr>
-  <tr class="text-danger">
-    <td>4</td>
-    <td>Ugadi</td>
-    <td>3/29/2017</td>
-    <td>Wednesday</td>
-  </tr>
-  <tr class="text-danger">
-    <td>5</td>
-    <td>Good Friday</td>
-    <td>4/14/2017</td>
-    <td>Friday</td>
-  </tr>
-  <tr class="text-danger">
-    <td>6</td>
-    <td>May day</td>
-    <td>01.05.2017</td>
-    <td>Monday</td>
-  </tr>
-  <tr class="text-danger">
-    <td>7</td>
-    <td>*Eid    - ul - Fitar </td>
-    <td>26.06.2017</td>
-    <td>Monday</td>
-  </tr>
-  <tr class="text-danger">
-    <td>8</td>
-    <td>Independence Day</td>
-      <td>8/15/2017</td>
-    <td>Tuesday</td>
-  </tr>
-  <tr class="text-danger">
-    <td>9</td>
-    <td>Ganesh Chathurthi</td>
-      <td>8/25/2017</td>
-    <td>Friday</td>
-  </tr>
-  <tr>
-    <td>10</td>
-    <td>Dusherra</td>
-      <td>9/30/2017</td>
-    <td>Saturday</td>
-  </tr>
-  <tr>
-    <td>11</td>
-    <td>Diwali</td>
-    <td>10/18/2017</td>
-    <td>Wednesday</td>
-  </tr>
-  <tr>
-    <td>12</td>
-    <td>Christmas</td>
-      <td>12/25/2017</td>
-    <td>Monday</td>
-  </tr>
-</table>
+                            <div id="holidayListDiv"></div>
+                        
                     </div>
                   <div class="col-md-12 hidden">
                     <div class="clearfix project_wrap_table">
@@ -230,17 +165,7 @@
                         </tbody>
                       </table>
                       <!-- Pagenation -->
-                      <nav class="clearfix">
-                        <ul id="paging" class="pagination pull-right">
-                          <li><a href="#">Previous</a></li>
-                          <li class="active"><a href="#">1</a></li>
-                          <li><a href="#">2</a></li>
-                          <li><a href="#">3</a></li>
-                          <li><a href="#">4</a></li>
-                          <li><a href="#">5</a></li>
-                          <li data-page="last"><a href="#">Next</a></li>
-                        </ul>
-                      </nav>
+                      
                     </div>
                   </div>
                 </div>
@@ -812,6 +737,68 @@ $("#tab-1").show();
     });
   });
 </script> 
+
+
+<script>
+function getHolidaysList(){
+	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
+	var userId = '${SourceLeadWeb_userId}';
+	$.get(sourceleadUrl+"/getHolidaysList?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&userId="+userId+"", function(data) {
+		var result = "";				        	
+				result = result + '<table id="viewHolidaysTable" class="display table table-bordered" cellspacing="0" width="100%" >';
+				result = result + '<thead>';
+				result = result + '<tr>';
+				result = result +'<th>S.No</th>';
+				result = result +'<th>Name</th>';
+				result = result +'<th>Date</th>';
+				result = result + '<th>Day of the Week</th>';
+				result = result + '</tr>';
+				result = result + '</thead>	';
+				result = result + '<tbody>';
+				if(data !=null && data !=''){
+					var j = 1;
+					 for (var i=0; i<data.length; i++)
+						{
+			        		 var opt = data[i];
+			        		 result = result + ' <tr class="text-danger">';
+			        		 result = result + ' <td>'+j+'</td>';
+			        		 if(opt.holidayName !=null && opt.holidayName !='' && opt.holidayName !='undefined'){
+			        			 result = result + '<td title="'+opt.holidayName+'">'+opt.holidayName+'</td>'; 
+			        		 }else{
+			        			 result = result + '<td>---</td>';
+			        		 }
+			        		 result = result + ' <td title="'+opt.fromDate+'">'+opt.fromDate+'</td>';
+			        		 result = result + ' <td title="'+opt.dayOfTheWeek+'">'+opt.dayOfTheWeek+'</td>';
+			        		 result = result + '  </tr>';
+			        		 j++;
+						}
+				}
+	        	
+				result = result + '  </tbody>';
+				result = result + ' </table>';
+				$("#holidayListDiv").empty();
+				$("#holidayListDiv").append(result);
+				viewHolidaysTable();
+		}); 
+}
+</script>
+
+<script>
+function viewHolidaysTable(){ 
+    $('#viewHolidaysTable').DataTable( { 
+    	"scrollCollapse": false,
+    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+    	"bLengthChange": true,
+    	"bDestroy": true,
+    	"ordering": true,
+    	"oLanguage": {
+            "sSearch": "",
+            "sZeroRecords": "", "sEmptyTable": ""
+       }
+    });
+}
+</script>
+
 
 <script>
     /*------My Timeoff Balance Piecharts------*/

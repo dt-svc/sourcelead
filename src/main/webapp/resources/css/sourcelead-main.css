@@ -8700,3 +8700,10 @@ z-index: -800;
   animation-name: slideOutUp;
 }
 /* Animated Ends */
+
+
+.listof-holidays table.dataTable thead th {
+	padding: 10px !important;
+}
+
+
