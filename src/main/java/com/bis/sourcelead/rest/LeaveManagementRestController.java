@@ -51,7 +51,7 @@ import com.bis.sourcelead.dto.AddUserDTO;
 import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.ClientDTO;
 import com.bis.sourcelead.dto.LeaveDTO;
-
+import com.bis.sourcelead.dto.LeaveReportsDTO;
 import com.bis.sourcelead.dao.ShiftDao;
 
 import com.bis.sourcelead.dto.HolidayDTO;
@@ -970,13 +970,13 @@ public class LeaveManagementRestController {
 	
 	@RequestMapping(value = {"/storeCancelReason"})
 	@ResponseBody
-	public  boolean storeCancelReason(@RequestParam(value = "id", required = false) String id,@RequestParam(value = "reason", required = false) String reason,@RequestParam(value = "userId", required = false) String userId) throws Exception
+	public  boolean storeCancelReason(@RequestParam(value = "id", required = false) String id,@RequestParam(value = "reason", required = false) String reason,@RequestParam(value = "userId", required = false) Long userId) throws Exception
 	{
 		boolean isCancelled = false;
 		LeaveManagementHistory leaveManagementHistory = new LeaveManagementHistory();
 		Leave leave = leaveService.getLeaveByLeavId(id);
 		leaveManagementHistory.setFromStage(leave.getStatus());
-		User user = userService.getUserById(Long.valueOf(userId));
+		User user = userService.getUserById(userId);
 		 if(leave !=null) {
 			 leave.setDeleteReason(reason);
 			 leave.setCancelledBy(user);
@@ -995,5 +995,15 @@ public class LeaveManagementRestController {
 			leaveManagementHistoryDao.saveLeaveManagementHistory(leaveManagementHistory);
 		return isCancelled;
 	}	
+	
+	@RequestMapping(value = {"/getEmployeeLeavesList"})
+	@ResponseBody
+	public List<LeaveDTO> getEmployeeLeavesList(@RequestParam(value = "orgLocationId", required = true) Long orgLocationId,@RequestParam(value = "userId", required = true) String userId) throws Exception
+	{
+		OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
+		List<LeaveDTO> leavesList = leaveService.getEmployeeRequestedLeavesBylocationId(orgLocations, userId, Constants.APPROVED);
+		return leavesList;
+		
+	}
 
 }

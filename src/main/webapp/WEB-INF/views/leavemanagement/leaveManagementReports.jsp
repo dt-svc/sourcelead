@@ -10,6 +10,7 @@
 <script type="text/javascript">
 		 $(document).ready(function(){
 			 getHolidaysList();
+			 getEmployeeLeavesList();
 			});
 </script>
 
@@ -212,137 +213,7 @@
                         </div>
                     </div>
                     <div class="clearfix ptagmrng-none">
-                        <div class="col-md-3">
-                      <div class="media media-custom mb">
-                          <div class="media-left">
-                              <div class="empimg-parent">
-                                <img src="images/24.jpg" class="">
-                              </div>
-                          </div>
-                          <div class="media-body text-left">
-                            <h5 class="media-heading tbldata-dotdot">Suresh Kumar Sahoo</h5>
-                            <p class="small text-muted">Java Developer</p>
-                              <ul class="list-unstyled list-inline mrng0 mt5 empLeave-li">
-                                  <li title="Date">S</li>
-                                  <li title="Date">M</li>
-                                  <li title="Date">T</li>
-                                  <li title="Date" class="halfday">W</li>
-                                  <li title="Date" class="fullday">T</li>
-                                  <li title="Date">F</li>
-                                  <li title="Date">S</li>
-                              </ul>
-                          </div>
-                      </div>
-                            </div>
-                        <div class="col-md-3">
-                        <div class="media media-custom mb">
-                          <div class="media-left">
-                              <div class="empimg-parent">
-                                <img src="images/23.jpg" class="">
-                              </div>
-                          </div>
-                          <div class="media-body text-left">
-                            <h5 class="media-heading tbldata-dotdot">Suresh Kumar Sahoo</h5>
-                            <p class="small text-muted">Java Developer</p>
-<ul class="list-unstyled list-inline mrng0 mt5 empLeave-li">
-                                  <li title="Date">S</li>
-                                  <li title="Date">M</li>
-                                  <li title="Date">T</li>
-                                  <li title="Date" class="halfday">W</li>
-                                  <li title="Date" class="fullday">T</li>
-                                  <li title="Date">F</li>
-                                  <li title="Date">S</li>
-                              </ul>
-                            </div>
-                      </div>
-                        </div>
-                        <div class="col-md-3">
-                        <div class="media media-custom mb">
-                          <div class="media-left">
-                              <div class="empimg-parent">
-                                <img src="images/24.jpg" class="">
-                              </div>
-                          </div>
-                          <div class="media-body text-left">
-                            <h5 class="media-heading tbldata-dotdot">Suresh Kumar Sahoo</h5>
-                            <p class="small text-muted">Java Developer</p>
-<ul class="list-unstyled list-inline mrng0 mt5 empLeave-li">
-                                  <li title="Date">S</li>
-                                  <li title="Date">M</li>
-                                  <li title="Date">T</li>
-                                  <li title="Date" class="halfday">W</li>
-                                  <li title="Date" class="fullday">T</li>
-                                  <li title="Date">F</li>
-                                  <li title="Date">S</li>
-                              </ul>                          </div>
-                      </div>
-                        </div>
-                        <div class="col-md-3">
-                         <div class="media media-custom mb">
-                          <div class="media-left">
-                              <div class="empimg-parent">
-                                <img src="images/23.jpg" class="">
-                              </div>
-                          </div>
-                          <div class="media-body text-left">
-                            <h5 class="media-heading tbldata-dotdot">Suresh Kumar Sahoo</h5>
-                            <p class="small text-muted">Java Developer</p>
-                             <ul class="list-unstyled list-inline mrng0 mt5 empLeave-li">
-                                  <li title="Date">S</li>
-                                  <li title="Date">M</li>
-                                  <li title="Date">T</li>
-                                  <li title="Date" class="halfday">W</li>
-                                  <li title="Date" class="fullday">T</li>
-                                  <li title="Date">F</li>
-                                  <li title="Date">S</li>
-                              </ul>
-                             </div>
-                      </div>
-                        </div>
-                        <div class="col-md-3">
-                         <div class="media media-custom mb">
-                          <div class="media-left">
-                              <div class="empimg-parent">
-                                <img src="images/23.jpg" class="">
-                              </div>
-                          </div>
-                          <div class="media-body text-left">
-                            <h5 class="media-heading tbldata-dotdot">Suresh Kumar Sahoo</h5>
-                            <p class="small text-muted">Java Developer</p>
-                              <ul class="list-unstyled list-inline mrng0 mt5 empLeave-li">
-                                  <li title="Date">S</li>
-                                  <li title="Date">M</li>
-                                  <li title="Date">T</li>
-                                  <li title="Date" class="halfday">W</li>
-                                  <li title="Date" class="fullday">T</li>
-                                  <li title="Date">F</li>
-                                  <li title="Date">S</li>
-                              </ul>
-                             </div>
-                      </div>
-                        </div>
-                        <div class="col-md-3">
-                         <div class="media media-custom mb">
-                          <div class="media-left">
-                              <div class="empimg-parent">
-                                <img src="images/23.jpg" class="">
-                              </div>
-                          </div>
-                          <div class="media-body text-left">
-                            <h5 class="media-heading tbldata-dotdot">Suresh Kumar Sahoo</h5>
-                            <p class="small text-muted">Java Developer</p>
-                              <ul class="list-unstyled list-inline mrng0 mt5 empLeave-li">
-                                  <li title="Date">S</li>
-                                  <li title="Date">M</li>
-                                  <li title="Date">T</li>
-                                  <li title="Date" class="halfday">W</li>
-                                  <li title="Date" class="fullday">T</li>
-                                  <li title="Date">F</li>
-                                  <li title="Date">S</li>
-                              </ul>
-                          </div>
-                      </div>
-                        </div>
+                    	<div id="employeelistDiv"></div>
                       </div>
                 </div>
                 <div class="clearfix"><hr></div>
@@ -796,6 +667,47 @@ function viewHolidaysTable(){
             "sZeroRecords": "", "sEmptyTable": ""
        }
     });
+}
+</script>
+
+<script>
+function getEmployeeLeavesList(){
+	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
+	var userId = '${SourceLeadWeb_userId}';
+	$.get(sourceleadUrl+"/getEmployeeLeavesList?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&userId="+userId+"", function(data) {
+		var result = "";	
+		
+		for (var i=0; i<data.length; i++){
+			var opt = data[i];
+			result += '<div class="col-md-3">';
+	        result += '<div class="media media-custom mb">';
+	        result += '    <div class="media-left">';
+	        result += '        <div class="empimg-parent">';
+	        result += '          <img src="images/24.jpg" class="">';
+	        result += '        </div>';
+	        result += '    </div>';
+	        result += '    <div class="media-body text-left">';
+	        if(opt.empName != null && opt.empName != '' && opt.empName != 'undefined'){
+	        	result += '      <h5 class="media-heading tbldata-dotdot">'+opt.empName+'</h5>';
+	        }
+	        result += '      <p class="small text-muted">Java Developer</p>';
+	        result += '        <ul class="list-unstyled list-inline mrng0 mt5 empLeave-li">';
+	        result += '            <li title="Date">S</li>';
+	        result += '            <li title="Date">M</li>';
+	        result += '            <li title="Date">T</li>';
+	        result += '            <li title="Date" class="halfday">W</li>';
+	        result += '            <li title="Date" class="fullday">T</li>';
+	        result += '            <li title="Date">F</li>';
+	        result += '            <li title="Date">S</li>';
+	        result += '        </ul>';
+	        result += '    </div>';
+	        result += '</div>';
+	        result += '</div>';
+	        $("#employeelistDiv").empty();
+	        $("#employeelistDiv").append(result);
+		}
+		
+	}); 
 }
 </script>
 
