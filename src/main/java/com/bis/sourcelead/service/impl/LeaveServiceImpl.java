@@ -184,6 +184,7 @@ public class LeaveServiceImpl implements LeaveService{
 		if (leave != null) {
 			if (Constants.LEAVE_APPROVED.equals(approveStatus)) {
 				leave.setStatus(Constants.LEAVE_APPROVED);
+				leave.setApprovedBy(user);
 					LeaveType leaveType = leaveTypeService.getLeaveTypeById(leaveTypeId);
 					int numberOfLeavesPerYear = Integer.parseInt(leaveType.getNumbefrOfLeavesPeryear())
 							- Integer.parseInt(numberOfDays);
@@ -192,6 +193,7 @@ public class LeaveServiceImpl implements LeaveService{
 			} else {
 				leave.setStatus(Constants.LEAVE_REJECTED);
 				leave.setRejectedReason(reason);
+				leave.setRejectedBy(user);
 			}
 			leave.setUpdatedBy(user.getUserCode());
 			leave.setUpdatedDate(new Date());

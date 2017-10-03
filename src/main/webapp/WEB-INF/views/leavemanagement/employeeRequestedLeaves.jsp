@@ -201,6 +201,12 @@ function approveLeave(leaveId,leaveTypeId,approveStatus,numberOfDays){
 			    	     $("#msgDiv").html("Approved Successfully..");
 			    	     msgFadein();
 					getRequestedEmployeesList();
+				}else{
+					$("#selector1").removeAttr("style");
+		    		 $("#selector1").css({ display: "block" });
+		    	     $("#msgDiv").html("Something Went Wrong");
+		    	     msgFadein();
+				getRequestedEmployeesList();
 				}
 			});
 	 }
