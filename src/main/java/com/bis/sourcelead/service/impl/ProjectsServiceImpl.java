@@ -632,6 +632,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 			projectClients.setProjectId(projects);
 			projectClients.setOrgLocationsId(orglocations);
 			projectClients.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
+			projectClients.setLevel(1);
 			projectClients.setStatus(1);
 			projectClients.setIsEndClient(Constants.YES);
 			projectClients.setCreatedDate(new Date());
@@ -2158,6 +2159,7 @@ public void userEmailToAdmin(StringBuilder tempHTML, OrgLocations orgLocations,U
 							projectClients.setOrgLocationsId(orglocations);
 							projectClients.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
 							projectClients.setStatus(1);
+							projectClients.setLevel(2);
 							projectClients.setOrgRelationId(orgRelations);
 							projectClients.setCreatedDate(new Date());
 							projectClients.setUpdatedDate(new Date());

@@ -1698,17 +1698,22 @@ public class VendorRestController {
 			 vendorOnboardtasksList.addAll(tasksList);
 		 }
 		 
+		
 		 
 		 OrgRelations orgRelations = orgRelationsService.getOrgRelationById(orgRelationId);
-		 List<Long> templateIdsList = new ArrayList<>();
-			String[] templateIds = orgRelations.getVendorOnboardTemplateId().split(",");
-			for(String onboardTempalteId : templateIds){
-				templateIdsList.add(Long.valueOf(onboardTempalteId));
+		 
+		 if(StringUtils.isNotBlank(orgRelations.getVendorOnboardTemplateId())){
+			 List<Long> templateIdsList = new ArrayList<>();
+				String[] templateIds = orgRelations.getVendorOnboardTemplateId().split(",");
+				for(String onboardTempalteId : templateIds){
+					templateIdsList.add(Long.valueOf(onboardTempalteId));
+				}
+			List<VendorOnboardTasks> onboardTemplatetasksList  = vendorOnboardTasksService.getVendorOnboardTasksByTemplateIdsList(templateIdsList);
+			if(onboardTemplatetasksList != null && onboardTemplatetasksList.size() > 0){
+				vendorOnboardtasksList.addAll(onboardTemplatetasksList);
 			}
-		List<VendorOnboardTasks> onboardTemplatetasksList  = vendorOnboardTasksService.getVendorOnboardTasksByTemplateIdsList(templateIdsList);
-		if(onboardTemplatetasksList != null && onboardTemplatetasksList.size() > 0){
-			vendorOnboardtasksList.addAll(onboardTemplatetasksList);
-		}
+		 }
+
 		
 		
 		 if(vendorOnboardtasksList != null && vendorOnboardtasksList.size() > 0){
