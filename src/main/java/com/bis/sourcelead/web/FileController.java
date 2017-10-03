@@ -22,12 +22,19 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
+import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.FileInfo;
+import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.util.FileUploadUtil;
 import com.bis.sourcelead.util.PdfConversionUtil;
+import com.bis.sourcelead.util.ResumeParserJsonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
+import com.bis.sourcelead.util.SourceleadResumeParser;
+
 
 @Controller
 public class FileController {
@@ -37,6 +44,12 @@ public class FileController {
 	
 	@Autowired
 	private PdfConversionUtil pdfConversionUtil;
+	
+	@Autowired
+	private SourceleadResumeParser sourceleadResumeParser;
+	
+	@Autowired
+	private CandidateService candidateService;
 
 	@RequestMapping(value = "/upload/{type}", method = RequestMethod.POST)
 	@ResponseBody
@@ -65,17 +78,87 @@ public class FileController {
 				fileInfo.setContentType(multiFile.getContentType());
 				fileInfoList.add(fileInfo);
 			} else {
-				String fileURL = fileUploadUtil.uploadFile(staticPath, orgId, orgLocationId, type, multiFile);
-				fileInfo.setFileName(multiFile.getOriginalFilename());
-				fileInfo.setFileURL(fileURL);
-				fileInfo.setContentType(multiFile.getContentType());
-				fileInfoList.add(fileInfo);
+				String fileName = multiFile.getOriginalFilename();
+				String extenstion = fileName.substring(fileName.lastIndexOf("."));
+				if (extenstion.equalsIgnoreCase(".zip")) {
+					fileInfoList.addAll(fileUploadUtil.uploadZipFile(staticPath, orgId, orgLocationId, type, multiFile));
+				}
+				else {
+					String fileURL = fileUploadUtil.uploadFile(staticPath, orgId, orgLocationId, type, multiFile);
+					fileInfo.setFileName(multiFile.getOriginalFilename());
+					fileInfo.setFileURL(fileURL);
+					fileInfo.setContentType(multiFile.getContentType());
+					fileInfoList.add(fileInfo);
+				}
 			}
 		}
 		
 		return fileInfoList;
 	}
 		
+	@RequestMapping(value = "/upload-resumes", method = RequestMethod.POST)
+	@ResponseBody
+	public List<ResumeParserJsonUtil> uploadResumeFiles(MultipartHttpServletRequest request) throws Exception
+	{
+		List<ResumeParserJsonUtil> parsedList = new ArrayList<>();
+		List<FileInfo> fileInfoList = uploadFile(request, "resumes", 0, 0, 0, 0, 0, 0);
+		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		for (FileInfo fileInfo : fileInfoList) {
+			File file = new File(staticPath.substring(0, staticPath.lastIndexOf("/")), fileInfo.getFileURL().replace("resumes", StringUtils.isNotBlank(fileInfo.getTempFolderName())
+					? fileInfo.getTempFolderName()
+					: "temp"));
+			ResumeParserJsonUtil resume = null;
+			try {
+				resume = sourceleadResumeParser.getCandidateDetailsFromResume1(file, request);
+				resume.setFileInfo(fileInfo);
+				Candidate c = candidateService.findByCandidateEmail(resume.getEmail(), loginOrgLocation.getId());
+				if (c == null || c.getId() == 0) {
+					continue;
+				}
+				else {
+					CandidateDTO candidateDto = new CandidateDTO();
+					candidateDto.setEmail(resume.getEmail());
+					candidateDto.setCandidateSkills(resume.getSkills());
+					Iterator<String> it = resume.getPhoneNumbers().iterator();
+					while (it.hasNext()) {
+						if (candidateDto.getPhoneNumber() == null)
+							candidateDto.setPhoneNumber(it.next());
+						else
+							candidateDto.setAlternateMobilePhone(it.next());
+					}
+					candidateService.storeCandidate(candidateDto, loginOrgLocation, user);
+					FileUploadUtil.moveFile(staticPath, fileInfo, "resumes");
+				}
+				parsedList.add(resume);
+			} catch (Exception ex) {
+				ex.printStackTrace();
+				// FileUploadUtil.moveFile(staticPath, fileInfo,
+				// "resumes-failed");
+			}
+		}
+		return parsedList;
+	}
+	
+	@RequestMapping(value = "/parse-resumes", method = RequestMethod.POST)
+	@ResponseBody
+	public List<ResumeParserJsonUtil> uploadResume(MultipartHttpServletRequest request)
+	{
+		List<ResumeParserJsonUtil> resumeContent = new ArrayList<>();
+		List<FileInfo> fileInfoList = uploadFile(request, "resumes", 0, 0, 0, 0, 0, 0);
+		for (FileInfo fileInfo : fileInfoList) {
+			File file = new File(staticPath.substring(0, staticPath.lastIndexOf("/")), fileInfo.getFileURL().replace("resumes", "temp"));
+			try {
+				ResumeParserJsonUtil resume = sourceleadResumeParser.getCandidateDetailsFromResume1(file, request);
+				resume.setFileInfo(fileInfo);
+				resumeContent.add(resume);
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
+		}
+		return resumeContent;
+	}
+	
 	@RequestMapping(value = "/viewFile")
 	public void viewFile(HttpServletResponse response, String documentPath, String contentType) {
 		//String ac= staticPath.Remove(staticPath.lastIndexOf('/'));

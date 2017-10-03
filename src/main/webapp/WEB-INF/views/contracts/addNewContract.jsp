@@ -16,24 +16,30 @@
 	 changeSaveButton();
 	 var relationId = '${orgRelationId}';
 	 var type = '${contract.contractType}';
-	 if(type == "Client MSA" || type == "Vendor MSA"){
-		 $('#billingRateType').removeAttr('data-validation');
-			$('#billingRateType').attr('data-validation-optional',"true");
-			
-			$('#flatReward').removeAttr('data-validation');
-			$('#flatReward').attr('data-validation-optional',"true");
-			
-			$('#billingRatePer').removeAttr('data-validation');
-			$('#billingRatePer').attr('data-validation-optional',"true");
-			
-			$('#invoiceFrequency').removeAttr('data-validation');
-			$('#invoiceFrequency').attr('data-validation-optional',"true");
-			
-			$('#paymentFrequency').removeAttr('data-validation');
-			$('#paymentFrequency').attr('data-validation-optional',"true");
-			
-			$('#candiFlatReward').removeAttr('data-validation');
-			$('#candiFlatReward').attr('data-validation-optional',"true");
+	 var contractType = '${contractType}';
+	 if(contractType != null && contractType != 'undefined' && contractType !=''){
+	 	 getContractTemplates();
+	 }
+	 if(type == "Client MSA" || type == "Vendor MSA" || contractType == "Vendor MSA"){
+	 	 $("#billingDiv").hide();
+	 	 $('#billingRateType').removeAttr('data-validation');
+	 		$('#billingRateType').attr('data-validation-optional',"true");
+	 		
+	 		$('#flatReward').removeAttr('data-validation');
+	 		$('#flatReward').attr('data-validation-optional',"true");
+	 		
+	 		$('#billingRatePer').removeAttr('data-validation');
+	 		$('#billingRatePer').attr('data-validation-optional',"true");
+	 		
+	 		$('#invoiceFrequency').removeAttr('data-validation');
+	 		$('#invoiceFrequency').attr('data-validation-optional',"true");
+	 		
+	 		$('#paymentFrequency').removeAttr('data-validation');
+	 		$('#paymentFrequency').attr('data-validation-optional',"true");
+	 		
+	 		$('#candiFlatReward').removeAttr('data-validation');
+	 		$('#candiFlatReward').attr('data-validation-optional',"true");
+
 	 }
 	 if(relationId != null && relationId != ''){
 		 getVendorContacts();
