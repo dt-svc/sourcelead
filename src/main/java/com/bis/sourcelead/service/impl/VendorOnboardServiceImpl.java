@@ -373,6 +373,11 @@ public class VendorOnboardServiceImpl implements VendorOnboardService {
 		 
 		 emailScenerioUtil.sendNotificationToClientOrVendor(actionLink,rejectActionLink, loginUser,loginUser, spocUser, vendorOrgLocation, noificationEmailScenario,null);
 	}
+
+	@Override
+	public VendorOnboarding getVendorOnboardingByUUID(String onboardUUID) throws Exception {
+		return vendorOnboardDao.getVendorOnboardingByUUID(onboardUUID);
+	}
 	
 	
 
