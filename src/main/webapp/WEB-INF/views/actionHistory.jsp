@@ -100,6 +100,7 @@ function actionHistoryList(userSessionId){
 	                	 result = result +"<table id='actionHistoryPagenation' class='display ' cellspacing='0' width='100%' >"; 
 	                     result = result +"<thead>"; 
 	                     result = result +"  <tr>"; 
+	                     result = result +"    <th class='textLeft'>Org Location</th>";
 	                     result = result +"    <th class='textLeft'>Action Time</th>";
 	                     result = result +"    <th class='textLeft'>Action Name</th>";
 	                     result = result +"    <th class='textLeft'>Action Performed</th>"; 
@@ -111,8 +112,13 @@ function actionHistoryList(userSessionId){
 	                    	for (var i = 0; i < json.length; i++) { 
 	                    	 var opt = json[i]; 
 	                    	 result = result +"<tr>";
+	                    	 	if(opt.orgLocations.orgLocationName != null && opt.orgLocations.orgLocationName !='' && opt.orgLocations.orgLocationName !='undefined'){
+	                    		 result = result +"<td><div class='textLeft' title='"+opt.orgLocations.orgLocationName+"'>"+opt.orgLocations.orgLocationName+"</div></td>"; 
+	                    	    }else{
+	                    	     result = result +"<td><div class='textLeft'>---</div></td>"; 
+	                    	    }
 	                    	 
-	                    	 	if(opt.actionTimeStr != null && opt.actionTimeStr !='' && opt.actionTimeStr !='undefined'){
+	                    	   	if(opt.actionTimeStr != null && opt.actionTimeStr !='' && opt.actionTimeStr !='undefined'){
 	                    		 result = result +"<td><div class='textLeft' title='"+opt.actionTimeStr+"'>"+opt.actionTimeStr+"</div></td>"; 
 	                    	    }else{
 	                    	     result = result +"<td><div class='textLeft'>---</div></td>"; 
@@ -129,9 +135,6 @@ function actionHistoryList(userSessionId){
 	                    	    }else{
 	                    	     result = result +"<td><div class='textLeft'>---</div></td>";
 	                    	    }
-	                    	    
-	                    	   
-	                    	    
 		                     result = result +"</tr>";
 	                     }
 	                     result = result +" </tbody>";

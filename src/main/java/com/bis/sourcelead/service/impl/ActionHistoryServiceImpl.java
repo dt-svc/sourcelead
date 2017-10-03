@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.dao.ActionHistoryDao;
 import com.bis.sourcelead.entity.ActionHistory;
+import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.UserLoginLogoutSession;
 import com.bis.sourcelead.service.ActionHistoryService;
 
@@ -22,9 +23,9 @@ public class ActionHistoryServiceImpl implements ActionHistoryService{
 	}
 
 	@Override
-	public void saveActionHistory(String methodName, UserLoginLogoutSession userLoginLogoutSession) {
+	public void saveActionHistory(String methodName, UserLoginLogoutSession userLoginLogoutSession,Long orgLocationId) {
 		try {
-			actionHistoryDao.saveActionHistory(methodName,userLoginLogoutSession);
+			actionHistoryDao.saveActionHistory(methodName,userLoginLogoutSession,orgLocationId);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

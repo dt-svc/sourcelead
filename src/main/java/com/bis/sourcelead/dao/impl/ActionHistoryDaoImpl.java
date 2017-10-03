@@ -15,11 +15,12 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.ActionHistoryDao;
-import com.bis.sourcelead.dao.ActionRolesDao;
 import com.bis.sourcelead.entity.ActionHistory;
 import com.bis.sourcelead.entity.ActionNames;
+import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.UserLoginLogoutSession;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
+import com.bis.sourcelead.service.OrgLocationService;
 
 @Repository
 public class ActionHistoryDaoImpl implements ActionHistoryDao {
@@ -29,7 +30,7 @@ public class ActionHistoryDaoImpl implements ActionHistoryDao {
 	private SessionFactory sessionFactory;
 
 	@Autowired
-	private ActionRolesDao actionRolesDao;
+	private OrgLocationService orgLocationService;
 
 	@Value("${SourceLead.100}")
 	private String notFound;
@@ -62,14 +63,14 @@ public class ActionHistoryDaoImpl implements ActionHistoryDao {
 	@Override
 	@Async
 	@Transactional(rollbackFor = { Exception.class })
-	public void saveActionHistory(String methodName,UserLoginLogoutSession userLoginLogoutSession) throws Exception {
+	public void saveActionHistory(String methodName,UserLoginLogoutSession userLoginLogoutSession,Long orgLocationId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
-		
+		OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
 		ActionNames actionNames = getActionNameUsingMethodName(methodName);
-
 		if(actionNames!=null)
 		{
 			ActionHistory actionHistory = new ActionHistory();
+			actionHistory.setOrgLocations(orgLocations);
 			actionHistory.setUserId(userLoginLogoutSession.getUserId().getId());
 			actionHistory.setUserLoginLogoutSessionId(userLoginLogoutSession);
 			actionHistory.setActionName(actionNames.getActionName());
