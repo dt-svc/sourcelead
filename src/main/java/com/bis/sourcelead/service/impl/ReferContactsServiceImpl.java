@@ -8,6 +8,7 @@ import java.util.Map;
 
 import javax.mail.internet.InternetAddress;
 
+import org.apache.commons.lang3.StringUtils;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Service;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.ReferContactsDao;
 import com.bis.sourcelead.dao.UserDao;
+import com.bis.sourcelead.dto.ReferContactsDTO;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
@@ -24,7 +26,6 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ReferContacts;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Contact_Source;
-import com.bis.sourcelead.enums.Submission_ApprovalStatus;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.ReferContactsService;
 import com.bis.sourcelead.util.EmailScenerioUtil;
@@ -74,27 +75,28 @@ public class ReferContactsServiceImpl implements ReferContactsService{
 	}
 
 	@Override
-	public void saveuserContacts(User user, OrgLocations orgLocations, JSONObject jsonObj) throws Exception {
+	public void saveuserContacts(User user, OrgLocations orgLocations, ReferContactsDTO referContactsDTO) throws Exception {
 		
 		ReferContacts referContacts = new ReferContacts();
-		if(jsonObj.has("firstName") && !isNullOrEmpty(jsonObj.getString("firstName"))){
-			referContacts.setFirstName(jsonObj.getString("firstName"));
+		
+		if(StringUtils.isNoneBlank(referContactsDTO.getFirstName())){
+			referContacts.setFirstName(referContactsDTO.getFirstName());
 		}
 		
-		if(jsonObj.has("lastName") && !isNullOrEmpty(jsonObj.getString("lastName"))){
-			referContacts.setLastName(jsonObj.getString("lastName"));
+		if(StringUtils.isNoneBlank(referContactsDTO.getLastName())){
+			referContacts.setLastName(referContactsDTO.getLastName());
 		}
 		
-		if(jsonObj.has("email") && !isNullOrEmpty(jsonObj.getString("email"))){
-			referContacts.setContactUserEmail(jsonObj.getString("email"));
-			User contactUser = userDao.getUserByEmailAndUserType(jsonObj.getString("email"), Constants.PROFESSIONAL);
+		if(StringUtils.isNoneBlank(referContactsDTO.getEmail())){
+			referContacts.setContactUserEmail(referContactsDTO.getEmail());
+			User contactUser = userDao.getUserByEmailAndUserType(referContactsDTO.getEmail(), Constants.PROFESSIONAL);
 			if(null != contactUser){
 				referContacts.setContactUser(contactUser);
 			}
 		}
 		
-		if(jsonObj.has("phone") && !isNullOrEmpty(jsonObj.getString("phone"))){
-			referContacts.setContactUserPhone(jsonObj.getString("phone"));
+		if(StringUtils.isNoneBlank(referContactsDTO.getPhone())){
+			referContacts.setContactUserPhone(referContactsDTO.getPhone());
 		}
 		
 		referContacts.setReferFromUser(user);
@@ -108,11 +110,11 @@ public class ReferContactsServiceImpl implements ReferContactsService{
 		referContacts.setContactSource(Contact_Source.SELF);
 		referContactsDao.addReferContacts(referContacts);
 		
-		sendEmailToReferedContact(user,jsonObj,contactUUID);
+		sendEmailToReferedContact(user,referContactsDTO,contactUUID);
 	}
 	
 	
-	public void sendEmailToReferedContact(User user,JSONObject jsonObj,String contactUUID) throws Exception {
+	public void sendEmailToReferedContact(User user,ReferContactsDTO referContactsDTO,String contactUUID) throws Exception {
 		
 		 
 		 StringBuilder sb = new StringBuilder();
@@ -127,13 +129,13 @@ public class ReferContactsServiceImpl implements ReferContactsService{
 			 userName = loginUserName.append(user.getFirstName()).toString();
 		 }
 		 
-		 if(jsonObj.has("lastName") && !isNullOrEmpty(jsonObj.getString("lastName"))){
-			 professionalName = sb.append(jsonObj.getString("firstName")).append(" ").append(jsonObj.getString("lastName")).toString();
+		 if(StringUtils.isNoneBlank(referContactsDTO.getFirstName())){
+			 professionalName = sb.append(referContactsDTO.getFirstName()).append(" ").append(referContactsDTO.getFirstName()).toString();
 		 }else{
-			 professionalName = sb.append(jsonObj.getString("firstName")).toString();
+			 professionalName = sb.append(referContactsDTO.getFirstName()).toString();
 		 }
 		 
-		 emailMessage.setToEmail(jsonObj.getString("email"));
+		 emailMessage.setToEmail(referContactsDTO.getEmail());
 		 emailMessage.setFromEmail(user.getEmail());
 		 emailMessage.setCreatedBy(user.getUserCode());
 		 
