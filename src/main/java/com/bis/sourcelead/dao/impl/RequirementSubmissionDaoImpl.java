@@ -1533,9 +1533,9 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 				params.put("userId",user.getId());
 				if(user.getLastName() != null && user.getLastName() !=""){
 				params.put("userCreatedBy",user.getFirstName() +" "+user.getLastName());
-				}
+				}else{
 				params.put("userCreatedBy",user.getFirstName());	
-				
+				}
 			}
 			String whereCondition = subQuery;
 			
