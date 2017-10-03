@@ -1,9 +1,6 @@
 package com.bis.sourcelead.rest;
 
-
-
 import java.text.ParseException;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -18,6 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -26,6 +24,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.HolidayDAO;
+import com.bis.sourcelead.dao.LeaveDao;
+import com.bis.sourcelead.dao.LeaveManagementHistoryDao;
 import com.bis.sourcelead.dao.LeaveTypeDao;
 import com.bis.sourcelead.dao.OptionsDao;
 import com.bis.sourcelead.dto.LeaveTypeDTO;
@@ -44,6 +44,9 @@ import com.bis.sourcelead.service.LeaveService;
 import com.bis.sourcelead.service.LeaveTypeService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.dao.OptionsDao;
+import com.bis.sourcelead.dao.RestrictDayDao;
+import com.bis.sourcelead.dto.OptionsDTO;
+import com.bis.sourcelead.dto.RestrictDayDTO;
 import com.bis.sourcelead.dto.AddUserDTO;
 import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.ClientDTO;
@@ -64,6 +67,8 @@ import com.bis.sourcelead.entity.LeaveType;
 import com.bis.sourcelead.entity.Option;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.RestrictDay;
+import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.Shift;
 import com.bis.sourcelead.entity.User;
@@ -73,6 +78,7 @@ import com.bis.sourcelead.service.HolidayService;
 import com.bis.sourcelead.service.LeaveService;
 import com.bis.sourcelead.service.LeaveTypeService;
 import com.bis.sourcelead.service.OptionsService;
+import com.bis.sourcelead.service.RestrictDayService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.ShiftService;
@@ -89,6 +95,9 @@ public class LeaveManagementRestController {
 	
 	@Autowired
 	ShiftService shiftService;
+	
+	@Autowired
+	LeaveDao leaveDao;
 	
 	
 	@Value("${sourceleadUrl}")
@@ -107,16 +116,22 @@ public class LeaveManagementRestController {
 	private HolidayService holidayService;
 	
 	@Autowired
-	DepartmentService departmentService;
+	private RestrictDayService restrictDayService;
 	
 	@Autowired
-	RolesService rolesService;
+	private RolesService rolesService;
 
 	@Autowired
-	OptionsService optionsService;
+	private DepartmentService departmentService;
+
+	@Autowired
+	private OptionsService optionsService;
 	
 	@Autowired
-	OptionsDao optionsDao;
+	private OptionsDao optionsDao;
+	
+	@Autowired
+	private RestrictDayDao restrictDayDao;
 	
 	@Autowired
 	LeaveTypeDao leaveTypeDao;
@@ -141,6 +156,9 @@ public class LeaveManagementRestController {
 
 	@Autowired
 	ShiftDao shiftDao;
+	
+	@Autowired
+	LeaveManagementHistoryDao leaveManagementHistoryDao;
 
 
 	
@@ -364,8 +382,17 @@ public class LeaveManagementRestController {
 	 * @return ModelAndView
 	 */
 	@RequestMapping(value = "/addRestrictDay")
-	public ModelAndView addRestrictDayJsp(HttpServletRequest request,HttpServletResponse response) {
+	public ModelAndView addRestrictDayJsp(HttpServletRequest request,HttpServletResponse response,@RequestParam(value = "restrictUUID", required = false) String restrictUUID) {
 		   ModelAndView model = new ModelAndView();
+		   OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		   Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+		   Long roleHierarchyId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "roleHierarchyId");
+		   List<Roles> rolesList = rolesService.getUserRolesListByModuleAndLoginUserRoleHierarchy(org,orgLocations.getId(),roleHierarchyId);
+		   model.addObject("rolesList", rolesList);
+		   if(StringUtils.isNotBlank(restrictUUID)) {
+			   RestrictDay restrictDay = restrictDayService.getRestrictDayByUUID(restrictUUID);
+			   model.addObject("restrictDay", restrictDay);
+		   }
 		   model.addObject("sourceleadUrl", sourceleadUrl);
 		   model.setViewName("leavemanagement/addRestrictDay");
 	       return model;
@@ -427,6 +454,19 @@ public class LeaveManagementRestController {
 	}
 	
 
+	@RequestMapping(value = "/storeRestrictedDay")
+	public String storeRestrictedDay(RestrictDayDTO restrictDayDTO) throws Exception {
+	      
+		restrictDayService.storeRestrictedDay(restrictDayDTO);
+		return "success";
+	}
+	
+	@RequestMapping(value = "/getRestrictDayList")
+	public List<RestrictDay> getRestrictDayList(@RequestParam(value = "orgLocationId", required = true) Long orgLocationId) throws Exception {
+	      
+		List<RestrictDay> restrictDayList = restrictDayService.getRestrictDayListByOrgLocationId(orgLocationId);
+		return restrictDayList;
+	}
 
 	@RequestMapping(value = {"/saveShift", "/rest/saveShift"}, method = RequestMethod.POST)
 	public String saveShift(ShiftDTO shiftDTO) throws Exception {
@@ -513,7 +553,6 @@ public class LeaveManagementRestController {
 	{
 		List<LeaveType> leaveTypeList = leaveTypeService.getLeaveTypeListByLocationId(leaveTypeDTO.getOrgLocationId());
 		return leaveTypeList;
-
 	}
 
 	/**
@@ -621,7 +660,20 @@ public class LeaveManagementRestController {
 	}
 	
 
-	
+	@RequestMapping(value = {"/deleteRestrictedDay"})
+	@ResponseBody
+	public  boolean deleteRestrictedDay(@RequestParam(value = "id", required = false) String id,@RequestParam(value = "reason", required = false) String reason) throws Exception
+	{
+		boolean isDeleted = false;
+		 RestrictDay restrictDay = restrictDayService.getRestrictDayByUUID(id);
+		 if(restrictDay !=null) {
+			 restrictDay.setStatus("0");
+			 restrictDay.setDeleteReason(reason);
+			 restrictDayDao.storeRestrictedDay(restrictDay);
+			  isDeleted = true;
+		 }
+		return isDeleted;
+	}	
 	
 		/**
 		 * saving leave optipons
@@ -812,11 +864,11 @@ public class LeaveManagementRestController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = {"/getEmployeeRequestedLeaves","/rest/getEmployeeRequestedLeaves"}, method = RequestMethod.GET)
-	public  @ResponseBody List<LeaveDTO> getEmployeeRequestedLeaves(@RequestParam(value = "orgLocationId", required = false) Long orgLocationId,@RequestParam(value = "userId", required = false) String userId,HttpServletRequest request) throws Exception
+	public  @ResponseBody List<LeaveDTO> getEmployeeRequestedLeaves(@RequestParam(value = "orgLocationId", required = false) Long orgLocationId,@RequestParam(value = "userId", required = false) String userId,@RequestParam(value = "leaveStatus", required = false) String leaveStatus,HttpServletRequest request) throws Exception
 	{
 		List<LeaveDTO> requestedLeavesList = null;
 		OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
-		requestedLeavesList = leaveService.getEmployeeRequestedLeavesBylocationId(orgLocations, userId);
+		requestedLeavesList = leaveService.getEmployeeRequestedLeavesBylocationId(orgLocations, userId,leaveStatus);
 		if (requestedLeavesList != null && !requestedLeavesList.isEmpty()) {
 			return requestedLeavesList;
 		}
@@ -916,5 +968,33 @@ public class LeaveManagementRestController {
 		}
 		return leaveDto;
 	}
+	
+	@RequestMapping(value = {"/storeCancelReason"})
+	@ResponseBody
+	public  boolean storeCancelReason(@RequestParam(value = "id", required = false) String id,@RequestParam(value = "reason", required = false) String reason,@RequestParam(value = "userId", required = false) String userId) throws Exception
+	{
+		boolean isCancelled = false;
+		LeaveManagementHistory leaveManagementHistory = new LeaveManagementHistory();
+		Leave leave = leaveService.getLeaveByLeavId(id);
+		leaveManagementHistory.setFromStage(leave.getStatus());
+		User user = userService.getUserById(Long.valueOf(userId));
+		 if(leave !=null) {
+			 leave.setDeleteReason(reason);
+			 leave.setCancelledBy(user);
+			 leave.setStatus(Constants.LEAVE_CANCELLED);
+			 leaveDao.saveLeave(leave);
+			 isCancelled = true;
+		 }
+		 	leaveManagementHistory.setLeaveid(leave);
+			leaveManagementHistory.setType(Constants.LEAVE);
+//			leaveManagementHistory.setStatus(leave.getStatus());
+			leaveManagementHistory.setCreatedBy(user.getUserCode());
+			leaveManagementHistory.setCreatedDate(new Date());
+			leaveManagementHistory.setUpdatedBy(user.getUserCode());
+			leaveManagementHistory.setUpdatedDate(new Date());
+			leaveManagementHistory.setToStage(Constants.LEAVE_CANCELLED);
+			leaveManagementHistoryDao.saveLeaveManagementHistory(leaveManagementHistory);
+		return isCancelled;
+	}	
 
 }

@@ -9,7 +9,7 @@ public interface LeaveDao {
 
 	Leave saveLeave(Leave leave) throws Exception;
 
-	List<LeaveApproveHierarchy> getEmployeeRequestedLeavesBylocationId(Long orgLocationId, String userId);
+	List<LeaveApproveHierarchy> getEmployeeRequestedLeavesBylocationId(Long orgLocationId, String userId, String leaveStatus);
 
 	List<Leave> getLeavesListByLocationIdAndStatus(Long orgLocationId, String status, Long userId);
 

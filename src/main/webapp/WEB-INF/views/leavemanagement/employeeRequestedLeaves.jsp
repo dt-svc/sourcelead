@@ -29,11 +29,11 @@ $(document).ready(function(){
       <ul>
           <li class="dropdown">
             <div class="pull-left select-fild">
-                    <select onchange="location = this.value;">
-                        <option value="employee-requestcount.html" selected>Requested Leaves</option>
-                        <option  value="employee-approvedcount.html">Approved Leaves</option>
-                        <option value="employee-rejectedcount.html">Rejected Leaves</option>
-                        <option value="employee-cancelcount.html">Cancel Leaves</option>
+                    <select onchange="redirectlocation(this.value);">
+                        <option value="/employeeRequestedLeaves" selected>Requested Leaves</option>
+                        <option  value="/employeeApprovedLeaves">Approved Leaves</option>
+                        <option value="/employeeRejectedLeaves">Rejected Leaves</option>
+                        <option value="/employeeCancelLeaves">Cancel Leaves</option>
                     </select>
             </div>
         </li>
@@ -52,12 +52,19 @@ $(document).ready(function(){
   </section>
   <!-- Content Area Ends--> 
   
+ <script>
+function redirectlocation(location){
+	window.location.href = sourceleadUrl + location;
+}
+</script>
+  
+  
   <script>
   function getRequestedEmployeesList(){
 	  var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	  var userId = '${SourceLeadWeb_userId}';
 	  $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-	  $.get(sourceleadUrl+"/getEmployeeRequestedLeaves?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&userId="+userId, function(data) {
+	  $.get(sourceleadUrl+"/getEmployeeRequestedLeaves?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&userId="+userId+"&leaveStatus=PENDING", function(data) {
 				 var result = "";				        	
 					result = result + '<table id="requestedleavesTable" class="display" cellspacing="0" width="100%" >';
 					result = result + '<thead>';
@@ -81,7 +88,7 @@ $(document).ready(function(){
 				        		 result = result + ' <tr>';
 				        		 result = result + ' <td>';
 				        		 result = result + ' <div class="proj_show tbldata-dotdot-big">';
-				        		 result = result + '     <div class="pull-left tbldata-dotdot-me" title="Sick Leave" onclick="getRequestedAproveSummary(\''+opt.id+'\','+orgLocationId+');">'+opt.empName+'</div><i class="fa fa-binoculars pull-right" ></i>'; 
+				        		 result = result + '     <div class="pull-left tbldata-dotdot-me" title="Sick Leave" onclick="getRequestedAproveSummary(\''+opt.id+'\','+orgLocationId+');">'+opt.empName+'('+opt.empType+')</div><i class="fa fa-binoculars pull-right" ></i>'; 
 				        		 result = result + '  </div>';
 				        		 result = result + ' </td>';
 				        		 

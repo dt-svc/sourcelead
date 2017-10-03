@@ -108,7 +108,11 @@ function getCancelledLeavesList(){
 			        		 }
 			        		 result = result + '  </td>';
 			        		 result = result + ' <td>';
-			        		 result = result + '   <div title="" class="tbldata-dotdot-100">Approved By</div>';
+			        		 if(opt.approvedByUser !=null && opt.approvedByUser != 'undefined' && opt.approvedByUser != ''){
+			        			 result = result + '   <div title="" class="tbldata-dotdot-100">'+opt.approvedByUser+'</div>';
+			        		 }else{
+			        			 result = result + '   <div title="" class="tbldata-dotdot-100">---</div>';
+			        		 }
 			        		 result = result + '</td>';
 			        		 result = result + ' <td>';
 			        		 if(opt.updatedBy !=null && opt.updatedBy != 'undefined' && opt.updatedBy != ''){

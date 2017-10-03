@@ -235,6 +235,14 @@ public class LeaveServiceImpl implements LeaveService{
 			leave.setFromDateStr(ConversionUtil.getDateAsString(leave.getFromDate()));
 			leave.setToDateStr(ConversionUtil.getDateAsString(leave.getToDate()));
 			leave.setCreatedDateStr(ConversionUtil.getDateAsString(leave.getCreatedDate()));
+			if(leave.getApprovedBy() != null){
+				StringBuilder sb = new StringBuilder();
+				if(StringUtils.isNotBlank(leave.getApprovedBy().getFirstName()) && StringUtils.isNotBlank(leave.getApprovedBy().getLastName())){
+					leave.setApprovedByUser(sb.append(leave.getApprovedBy().getFirstName()).append(" ").append(leave.getApprovedBy().getLastName()).toString());
+				}else{
+					leave.setApprovedByUser(sb.append(leave.getApprovedBy().getFirstName()).toString());
+				}
+			}
 			if(StringUtils.isNotBlank(leave.getUpdatedBy())){
 				User user = userService.getUserByUserCode(leave.getUpdatedBy());
 				StringBuilder sb = new StringBuilder();
@@ -244,8 +252,6 @@ public class LeaveServiceImpl implements LeaveService{
 					leave.setUpdatedBy(sb.append(user.getFirstName()).toString());
 				}
 			}
-			
-			
 		}
 		return leaveList;
 	}
