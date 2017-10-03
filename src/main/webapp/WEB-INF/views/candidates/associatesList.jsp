@@ -661,6 +661,21 @@ function addFavourite(candidateId){
 			type : "POST",
 			url : sourceleadUrl+"/saveAssociateAsFavourite?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,
 			success : function(result) {
+				
+				var td = cacheLastJson.data;
+				for(var e in td) {
+					if(td[e].candidateId === candidateId) {
+						td[e]
+						if(isAssociate == "N"){
+							td[e].isFavourite = checked ? 1 : 0;
+		            	} else if(isAssociate == "Y") {
+		            		td[e].isFavouriteAssociate = checked ? 1 : 0;
+		            	}
+						break;
+					}
+				}
+				cacheLastJson.data = td;
+				
 				if(checked){
 					 document.getElementById("favourite"+candidateId).removeAttribute("class")
 					 document.getElementById("favourite"+candidateId).className = 'star-rating activestar-rating' 
