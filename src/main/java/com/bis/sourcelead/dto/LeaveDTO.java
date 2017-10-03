@@ -42,7 +42,16 @@ public class LeaveDTO implements Serializable{
 	private String empid;
 	private String empType;
 	private String empEmail;
+	private String leavesTaken;
+	private String approverUsers;
+	private String thisMonthLeaves;
 	
+	public String getLeavesTaken() {
+		return leavesTaken;
+	}
+	public void setLeavesTaken(String leavesTaken) {
+		this.leavesTaken = leavesTaken;
+	}
 	
 	public String getFileName() {
 		return fileName;
@@ -235,6 +244,18 @@ public class LeaveDTO implements Serializable{
 	}
 	public void setEmpEmail(String empEmail) {
 		this.empEmail = empEmail;
+	}
+	public String getApproverUsers() {
+		return approverUsers;
+	}
+	public void setApproverUsers(String approverUsers) {
+		this.approverUsers = approverUsers;
+	}
+	public String getThisMonthLeaves() {
+		return thisMonthLeaves;
+	}
+	public void setThisMonthLeaves(String thisMonthLeaves) {
+		this.thisMonthLeaves = thisMonthLeaves;
 	}
 	
 	

@@ -139,6 +139,14 @@ public class LeaveServiceImpl implements LeaveService{
 			StringBuilder durationSb = new StringBuilder();
 			leaveDto.setId(laph.getLeaveid().getId());
 			if (leave.getUser() != null) {
+				try {
+					int nuberOfLeavestaken = leaveDao.getNumberOfLeavesTakenByUser(leave.getUser().getId());
+					int thisMonthLeaves = leaveDao.getThisMonthLeavesTakenByUser(leave.getUser().getId());
+					leaveDto.setLeavesTaken(String.valueOf(nuberOfLeavestaken));
+					leaveDto.setThisMonthLeaves(String.valueOf(thisMonthLeaves));
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 				if (StringUtils.isNotBlank(leave.getUser().getLastName())) {
 					sb.append(leave.getUser().getFirstName()).append(" ").append(leave.getUser().getLastName());
 				} else {
@@ -148,7 +156,7 @@ public class LeaveServiceImpl implements LeaveService{
 				leaveDto.setEmpName(sb.toString());
 			}
 			durationSb.append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), leave.getFromDate()))
-					.append(System.getProperty("line.separator"))
+					.append(System.getProperty("line.separator")).append(" to ")
 					.append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), leave.getToDate()));
 
 			leaveDto.setDuration(durationSb.toString());
@@ -207,6 +215,7 @@ public class LeaveServiceImpl implements LeaveService{
 			leaveDto.setUpdatedDate(ConversionUtil.getDateAsString(leave.getUpdatedDate()));
 			leaveDtoList.add(leaveDto);
 		});
+		
 		return leaveDtoList;
 	}
 

@@ -964,6 +964,28 @@ public class LeaveManagementRestController {
 			leaveDto.setReason(leave.getReason());
 			leaveDto.setCreatedDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),leave.getCreatedDate()));
 			leaveDto.setFileName(leave.getFileName());
+
+			List<String> aphlist = new ArrayList<>();
+			for(LeaveApproveHierarchy laph1 : leave.getApproverHierarchyList()){
+				StringBuilder sb1 = new StringBuilder();
+				try {
+					UserRole role = userRoleService.getUserRoleByUserIdAndLocationId(laph1.getApproverUserId().getId(), orgLocations.getId());
+					if(role != null){
+						if(StringUtils.isNotBlank(laph1.getApproverUserId().getLastName())){
+							aphlist.add(sb1.append(role.getUserType()).append(" ( ").append(laph1.getApproverUserId().getFirstName()).append(" ").append(laph1.getApproverUserId().getLastName()).append(" )").toString());					
+						}else{
+							aphlist.add(sb1.append(role.getUserType()).append(" ( ").append(laph1.getApproverUserId().getFirstName()).append(" )").toString());
+						}
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+			leaveDto.setApproverUsers(String.join(",", aphlist));
+			int nuberOfLeavestaken = leaveDao.getNumberOfLeavesTakenByUser(leave.getUser().getId());
+			leaveDto.setLeavesTaken(String.valueOf(nuberOfLeavestaken));
+			int thisMonthLeaves = leaveDao.getThisMonthLeavesTakenByUser(leave.getUser().getId());
+			leaveDto.setThisMonthLeaves(String.valueOf(thisMonthLeaves));
 		}
 		return leaveDto;
 	}
