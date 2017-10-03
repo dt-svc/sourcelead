@@ -72,7 +72,7 @@ function ApplicantAuthorization(status){
 	            				}
 	            				if(status == 'REJECTED'){
 	            					resultToday = resultToday+'	    <th>Rejected By</th>';
-		            				resultToday = resultToday+'	    <th>Rejected On<br>(<small class="custom-small">'+dashBoardDate+'</small>)</th>';
+		            				resultToday = resultToday+'	    <th><div class="tblminwidth-100">Rejected On<br>(<small class="custom-small">'+dashBoardDate+'</small>)</div></th>';
 	            				}
 	            				if(status == 'requestSent'){
 	            					resultToday = resultToday+'	    <th>Status</th>';
@@ -110,7 +110,7 @@ function ApplicantAuthorization(status){
 
                                     	  }
                                     		  
-                                    	  resultToday  = resultToday + '           <td><div><span title="'+report.submittedOn+'">'+report.submittedOn+'</span></div></td>';
+                                    	  resultToday  = resultToday + '           <td><div class="tblminwidth-100"><span title="'+report.submittedOn+'">'+report.submittedOn+'</span></div></td>';
                                       }
                                       if(status == 'REJECTED'){
                                     	  if(report.submissionRequestUser != null && report.submissionRequestUser != 'undefined'){
@@ -120,7 +120,7 @@ function ApplicantAuthorization(status){
 
                                     	  }
                                     		  
-                                    	  resultToday  = resultToday + '           <td><div><span title="'+report.submittedOn+'">'+report.submittedOn+'</span></div></td>';
+                                    	  resultToday  = resultToday + '           <td><div class="tblminwidth-100"><span title="'+report.submittedOn+'">'+report.submittedOn+'</span></div></td>';
                                       }
                                       if(status == 'requestSent'){ 
                                     	    resultToday  = resultToday + '<td><div>Received</div></td>';
