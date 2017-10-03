@@ -576,7 +576,7 @@ function getRequirements(){
               if(data != null && data != 'undefined' && data != "" && data != '[]'){
             	  var json = JSON.parse(data);
             	  var result = "";
-            	  result = result + '<option value="">--- Select Requirement ---</option>';
+            	  result = result + '<option value="">--- Select Job ---</option>';
                   for (var i = 0; i < json.length; i++) {
                  	 var opt = json[i]; 
                  	var jobId = "";
