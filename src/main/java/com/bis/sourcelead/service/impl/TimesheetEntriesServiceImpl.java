@@ -1390,6 +1390,7 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 			sb.append(" </div>");
 			sb.append(" </div>");
 			sb.append(" </div>");	
+			sb.append("<input type='hidden' name='_ignore'/>");
 			sb.append(" </form>");	
 			return sb.toString();
 	 
