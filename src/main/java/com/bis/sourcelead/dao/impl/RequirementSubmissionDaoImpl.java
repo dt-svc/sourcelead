@@ -1528,10 +1528,13 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 				else if("REJECTED".equalsIgnoreCase(status)){
 					statusQuery= "  reqSub.submissionRateStatus = 'REJECTED' and reqSub.needApplicantPermit <>'N' and reqSub.submissionRateStatus IS NOT NULL";
 				}
-				subQuery = " where reqSub.orgLocations.id =:loginOrgLocation  and  reqSub.requirement.managerUserId.id  =:userId and "   +statusQuery;
+				subQuery = " where reqSub.orgLocations.id =:loginOrgLocation  and  (reqSub.requirement.managerUserId.id  =:userId or reqSub.createdUser =:userCreatedBy) and "   +statusQuery;
 				params.put("loginOrgLocation",orgLocationsId);
 				params.put("userId",user.getId());
-					
+				if(user.getLastName() != null && user.getLastName() !=""){
+				params.put("userCreatedBy",user.getFirstName() +" "+user.getLastName());
+				}
+				params.put("userCreatedBy",user.getFirstName());	
 				
 			}
 			String whereCondition = subQuery;

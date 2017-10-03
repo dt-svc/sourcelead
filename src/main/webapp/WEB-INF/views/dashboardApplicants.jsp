@@ -34,6 +34,7 @@ $(document).ready(function(){
 <script>
 function ApplicantAuthorization(status){
 	var sourceleadUrl = '${sourceleadUrl}';
+	var loginUser = '${SourceLeadWeb_userName}';
 	//$("#accepted").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		
 	 var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
@@ -124,9 +125,11 @@ function ApplicantAuthorization(status){
                                       if(status == 'requestSent'){ 
                                     	    resultToday  = resultToday + '<td><div>Received</div></td>';
                                     	    resultToday = resultToday +"<td>";
-                                    	    if(report.submissionRateStatus == 'REQUEST'){
+                                    	    if(report.submissionRateStatus == 'REQUEST' && report.createdUser != loginUser){
                                     	    	resultToday = resultToday + '<a  class="paddingRight"  href="javascript:void(0)" title="Accept"  onClick="acceptCandidateFromDashboard(\''+report.id+'\', \'accept\');"><i class="fa fa-check text-success"></i></a>';
                                     	    	resultToday = resultToday + '<a class="paddingLeft" href="javascript:void(0)" title="Reject"   onClick="rejectApplicantAlertMessage(\''+report.id+'\', \'rejected\');"><i class="fa fa-close text-danger"></i></a>';
+                                    	    }else{
+                                    	    resultToday = resultToday + '---';
                                     	    }
                                     	    resultToday = resultToday +"</td>";
                                       }
