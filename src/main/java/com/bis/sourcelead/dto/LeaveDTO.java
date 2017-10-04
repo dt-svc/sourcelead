@@ -8,7 +8,7 @@ import com.bis.sourcelead.entity.LeaveType;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 
-public class LeaveDTO implements Serializable{
+public class LeaveDTO extends SearchDTO implements Serializable{
 
 	private String id;
 	private String orgLocationId;
@@ -45,6 +45,7 @@ public class LeaveDTO implements Serializable{
 	private String leavesTaken;
 	private String approverUsers;
 	private String thisMonthLeaves;
+	
 	
 	public String getLeavesTaken() {
 		return leavesTaken;

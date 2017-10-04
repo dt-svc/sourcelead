@@ -6,6 +6,7 @@
 <script type="text/javascript" src="https://www.amcharts.com/lib/3/serial.js"></script>
 <script type="text/javascript" src="https://www.amcharts.com/lib/3/pie.js"></script> 
 
+<%-- <jsp:include page="topLeaveTakers.jsp" /> --%>
 
 <script type="text/javascript">
 		 $(document).ready(function(){
@@ -31,7 +32,7 @@
                       </div>
           <ul class="project-tabs-menu projecttabs-custom">
             <li class="current"><a href="#tab-1">Self</a></li>
-            <li><a href="#tab-2">Employees</a></li>
+            <li><a href="#tab-2" onclick="getTopLeaveTakers();">Employees</a></li>
             <div class="clearfix"></div>
           </ul>
            
@@ -123,56 +124,10 @@
                             <div id="holidayListDiv"></div>
                         
                     </div>
-                  <div class="col-md-12 hidden">
-                    <div class="clearfix project_wrap_table">
-                      <table>
-                        <thead>
-                          <tr>
-                            <th>Employee Name</th>
-                            <th>Requirement</th>
-                            <th>Client</th>
-                            <th>Priority</th>
-                            <th>Applicants</th>
-                            <th>Action</th>
-                          </tr>
-                          <tr>
-                            <td>
-                              <div class="mt5 pull-left tbldata-dotdot-me">
-                                <div class="media">
-                                  <div class="media-left">
-                                      <img src="images/userprofile-img.png" class="media-object" style="width:30px">
-                                  </div>
-                                  <div class="media-body text-left">
-                                    <h5 class="media-heading tbldata-dotdot">Suresh Kumar Sahoo</h5>
-                                    <p class="small text-muted">Lorem ipsum dolor sit amet, consectetur adipiscing elit</p>
-                                  </div>
-                                </div>
-                              </div>
-                            </td>
-                            <td>
-                              <div><span><a href="requirement-list.html" title="Click here">Java Deloper</a></span></div>
-                            </td>
-                            <td>
-                              <div><span>ABC Infotech PVT. Ltd.</span></div>
-                            </td>
-                            <td>50%</td>
-                            <td>
-                              <div><span>Immediate</span></div>
-                            </td>
-                            <td>10</td>
-                          </tr>
-                        </thead>
-                        <tbody>
-                        </tbody>
-                      </table>
-                      <!-- Pagenation -->
-                      
-                    </div>
-                  </div>
                 </div>
               </div>
             </div>
-            <div id="tab-2" class="project_tabs_inn" style="display: none">
+            <div id="tab-2"  class="project_tabs_inn" style="display: none">
                 <div class="row clearfix">
                     <div class="clearfix mb5">
                         <div class="col-md-8">
@@ -275,7 +230,8 @@
                  </div>
                      
                       <div class="clearfix project_wrap_table mt5">
-                      <table>
+                       <div id="topLeaveTakersDiv"></div>
+                       <!-- <table>
                         <thead>
                           <tr>
                             <th>Employee Name</th>
@@ -396,7 +352,7 @@
                           </tr>
                         </tbody>
                       </table>
-                      <!-- Pagenation -->
+                      Pagenation
                       <nav class="clearfix">
                         <ul id="paging22" class="pagination pull-right">
                           <li><a href="#">Previous</a></li>
@@ -407,7 +363,7 @@
                           <li><a href="#">5</a></li>
                           <li data-page="last"><a href="#">Next</a></li>
                         </ul>
-                      </nav>
+                      </nav> -->
                     </div>
                   </div>
 
@@ -708,6 +664,7 @@ function getEmployeeLeavesList(){
 		}
 		
 	}); 
+	
 }
 </script>
 
@@ -957,6 +914,108 @@ function getEmployeeLeavesList(){
         $(".customizeEmployee").fadeToggle();
     }
     </script>
+    
+    
+    
+ <script>
+	function getTopLeaveTakers() {
+		alert("Hai******")
+		var orgLocationId = '${SourceLeadWeb_orgLocationId}';
+		var userId = '${SourceLeadWeb_userId}';
+		var searchValue = $("#dataTableSearch").val();
+  		searchValue = searchValue ? searchValue : "";
+  		var url = sourceleadUrl+"/getTopLeavetakers?orgLocationId="+orgLocationId+"&searchValue="+searchValue+"&userId="+userId;
+  		prepareTopLeaveTakersList(url); 
+	}
+	
+</script>	
+
+<script>	
+	function prepareTopLeaveTakersList(url) {
+		alert("url = "+url);
+		$("#topLeaveTakersDiv").empty();
+		var result = "";
+		result = result + "<table id='topLeaveTakersTable' class='display' cellspacing='0' width='100%' >";
+		result = result + "<thead>";
+		result = result + "  <tr>";
+		result = result + "    <th>Employee Name</th>";
+		result = result + "    <th>Website</th>";
+		result = result + "    <th>Status</th>";
+		result = result + "  </tr>";
+		result = result + "</thead>";
+		result = result + "<tbody>";
+		result = result + " </tbody>";
+		result = result + "</table>";
+		$("#topLeaveTakersDiv").append(result);
+		topLeaveTakersPagination(url);
+	}
+
+</script>
+
+
+<script>
+function topLeaveTakersPagination(url){
+	alert("url=============== "+url);	
+	var colIndex = 0;
+		 $('#topLeaveTakersTable').DataTable( { 
+	    	"processing": true,
+	        "serverSide": true,
+	        "searching": false,
+	        "ajax": $.fn.dataTable.pipeline( {
+	            url: url,
+	            method: 'POST',
+	            pages: 10
+	        }),
+	        "columns": [
+	            { "data": "empName" },
+	            { "data": "noOfDays"},
+	            { "data": "status" }
+	        ],
+	        "columnDefs": [ {
+		    	  	"targets": colIndex++,
+		    	  	"data": "empName",
+		    	  	"render": function(data, type, report, meta) {
+		    	  		/* var result = "";
+		    	  		return  result; */
+		    	  	}
+		      },{
+	            "targets": colIndex++,
+	            "data": "noOfDays",
+	            "render": function ( data, type, report, meta ) {
+	            	   /*  var result = "";
+	            		
+		              return result; */
+	            }
+	          }, {
+	              "targets": colIndex++,
+	              "data": "status",
+	              "render": function ( data, type, report, meta ) {
+	            	  /* var result = "";
+	              		
+	  	              return result; */
+	              }
+	            }],
+		    	"scrollCollapse": false,
+		    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
+		    	"aaSorting": [[0,'desc']],
+		    	"bLengthChange": true,
+		    	"bDestroy": true,
+		    	"ordering": true,
+		    	"oLanguage": {
+		     		"sSearch": "",
+		     		 "sZeroRecords": "", "sEmptyTable": ""
+		     		
+		     }
+	    } );
+	    $("#topLeaveTakersTable").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>"); 
+	    $("input[type=search]").hide();
+	    $("#dataTableSearch").keyup(function(e) {
+	    	   if(e.which === 13) {
+	    		   getClientList();
+	    	   }
+	    	});
+}
+</script>
 
 
 <jsp:include page="../masterFooter.jsp" />

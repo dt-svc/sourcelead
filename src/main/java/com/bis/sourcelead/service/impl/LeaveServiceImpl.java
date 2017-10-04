@@ -19,6 +19,7 @@ import com.bis.sourcelead.dao.LeaveManagementHistoryDao;
 import com.bis.sourcelead.dao.LeaveTypeDao;
 import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.dto.LeaveDTO;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Leave;
 import com.bis.sourcelead.entity.LeaveApproveHierarchy;
 import com.bis.sourcelead.entity.LeaveManagementHistory;
@@ -332,6 +333,11 @@ public class LeaveServiceImpl implements LeaveService{
 			}
 		}
 		return leaveDtoList;
+	}
+
+	@Override
+	public ResponseList<LeaveDTO> getTopLeavetakers(OrgLocations orgLocation, LeaveDTO leaveDTO) throws Exception {
+		return leaveDao,getTopLeavetakers(orgLocation,leaveDTO);
 	}
 
 }
