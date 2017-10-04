@@ -245,13 +245,8 @@ public class CandidateDocumentsRestController {
 	@RequestMapping(value = "/uploadRequestedDocuments", method = RequestMethod.POST)
 	public @ResponseBody String uploadRequestedDocuments(CandidateDocumentsDTO candidateDocumentsDTO, HttpServletRequest request) throws Exception
 	{
-		/*String json1 = "{" + json + "}";
-		JSONObject jsonObj = new JSONObject(json1);*/
 		
 		candidateDocumentsDTO.setStaticPath(staticPath);
-		//FileUploadUtil.fillUploadedFileInfo(candidateDocumentsDTO, candidateDocumentsDTO.getFileInfo());
-		
-		//RequestedDocuments requestedDocuments = requestedDocumentsService.getRequestedDocumentsByRequestDocUUID(jsonObj.getString("requestDocUUID"));
 		RequestedDocuments requestedDocuments = requestedDocumentsService.getRequestedDocumentsByRequestDocUUID(candidateDocumentsDTO.getRequestDocUUID());
 		if (null != requestedDocuments) {
 			List<CandidateDocuments> candidateDocumentsList = candidateDocumentsService.getCandidateDocumentsListByRequestedDocumentsId(requestedDocuments.getId());

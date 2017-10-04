@@ -4,7 +4,6 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
-<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 
@@ -674,6 +673,17 @@ function notifyToApplicant(submissionId,offerId,offerHistoryId){
    });  
 }
 </script>
+<script>
+function uploadAddApplicantProfissionalDoc() {
+	fileUpload("professionaluploadBtn", "addApplicants", "applyToJob_form");
+}
+</script>
+
+<script>
+function uploadAddApplicantRecrutierDoc() {
+	fileUpload("uploadBtn", "addApplicants", "submitCandidateToJob_form");
+}
+</script>
 
 <script>
 function getRequirementSubmissionTemaplate(jobTitle,requirementId,referId){
@@ -711,8 +721,8 @@ function getRequirementSubmissionTemaplate(jobTitle,requirementId,referId){
 			result = result + '<div class="col-md-5 pull-right">';
 			result = result + '<div class="col-md-12" id="browseDiv"  style="display: none;">';
 			result = result + '<div class="input-group" id="uploadFileGroup">';
-			result = result + '<label class="input-group-btn"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File';
-			result = result + '<input type="file" style="display: none;" name="locationMapFile" multiple id="professionaluploadBtn"  class="upload">';
+			result = result + '<label class="input-group-btn" onchange="uploadAddApplicantProfissionalDoc();"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File';
+			result = result + '<input type="file" style="display: none;" name="locationMapFile" id="professionaluploadBtn"  class="upload">';
 			result = result + '</span> </label>';
 			result = result + '<input type="text" class="form-control" data-validation="validatedoc" data-validation-optional="true" field-name="Resume" readonly id="uploadFile" placeholder="Upload Resume">';
 			result = result + '</div>';
@@ -777,8 +787,8 @@ function getRequirementSubmissionTemaplate(jobTitle,requirementId,referId){
 		result = result + '<div class="col-md-5 pull-right">';
 		result = result + '<div class="col-md-12" id="browseDiv"  style="display: none;">';
 		result = result + '<div class="input-group" id="uploadFileGroup">';
-		result = result + '<label class="input-group-btn"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File';
-		result = result + '<input type="file" style="display: none;" name="locationMapFile" multiple id="uploadBtn"  class="upload">';
+		result = result + '<label class="input-group-btn" onchange="uploadAddApplicantRecrutierDoc();"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File';
+		result = result + '<input type="file" style="display: none;" name="locationMapFile" id="uploadBtn"  class="upload">';
 		result = result + '</span> </label>';
 		result = result + '<input type="text" class="form-control" data-validation="validatedoc" data-validation-optional="true" field-name="Resume" readonly id="uploadFile" placeholder="Upload Resume">';
 		result = result + '</div>';

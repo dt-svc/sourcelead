@@ -5,7 +5,6 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
-s<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 <script>
 $(document).ready(function() {
@@ -50,19 +49,6 @@ $(document).ready(function() {
           <ul>
             <li class="hidden"><i class="glyphicon glyphicon-export"></i><span>Export</span><i class="glyphicon glyphicon-play" id="export-pop"></i>
             </li>
-            <!-- <li id="contactLevel">
-		                  <div id="contactsFilter"><i class="fa fa-filter"></i><span>Status</span><i class="glyphicon glyphicon-play" style="right:20px;"></i></div>
-		                	<div id="contactsFilterPop" class="approved_pop" style="display: none;">
-		                    	<ul>
-									<li><input id="c6" type="checkbox" name="clinetLevel" value="Tier-1" onclick="getClientDetails();"><label>Accepted</label></li>
-									<li><input id="c7" type="checkbox" name="clinetLevel" value="Tier-2" onclick="getClientDetails();"><label>Rejected</label></li>
-									<li><input id="c8" type="checkbox" name="clinetLevel" value="Tier-3" onclick="getClientDetails();"><label>Sent</label></li>
-		               				<li><input id="c8" type="checkbox" name="clinetLevel" value="Tier-4" onclick="getClientDetails();"><label>Received</label></li>
-		               				<li><input id="c9" type="checkbox" name="clinetLevel" value="Tier-5" onclick="getClientDetails();"><label>New</label></li>
-		                        </ul>
-		                    </div>                	
-		                </li>
-             -->
             
             
             <li><a href="javascript:void(0)" id="imCon"><i class="fa fa-plus"></i>Import Contacts</a></li>
@@ -237,33 +223,28 @@ function validateContactEmail(){
 
 
 <script type="text/javascript">
-var validationSettings = {
-        errorMessagePosition : 'element',
-       borderColorOnError : '',
-		scrollToTopOnError : true,
-		dateFormat : 'yyyy/mm/dd' 
-   };  
+	var validationSettings = {
+	        errorMessagePosition : 'element',
+	       borderColorOnError : '',
+			scrollToTopOnError : true,
+			dateFormat : 'yyyy/mm/dd' 
+	   };  
          $('body').on('submit', '#addcontact_form', function(e){
         	  if ($(this).validate(false, validationSettings)){
-        		    e.preventDefault(); 
 	          		
-        		    var frm = $('#addcontact_form').serializeFormJSON();
-        	        var con = JSON.stringify(frm);
-        	        con = con.replace(/[{}]/g, "");
-        	        
-        	        //It will escape all the special characters
-        	        var jsonData = encodeURIComponent(con);
-	          		
-	          		 $("#add_contact").attr("disabled", "disabled");
+	          		$("#add_contact").attr("disabled", "disabled");
 	          		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-	          		
-	          	     $.ajax({
-	     		    	type: "POST",
-	     		    	 url: sourceleadUrl+"/addCrowdSourcingUserContact?${_csrf.parameterName}=${_csrf.token}&json="+jsonData, 
-	     		        success: function(data) {
-	     		        	location.replace(sourceleadUrl+ "/referRequirementList");
-	     		        },
-	     		    }); 
+	        	     var formData = getFormData1("addcontact_form");
+	        		$.ajax({
+	        					type : "POST",
+	        					 data: formData,
+	        	  		         processData: false,
+	        	  		         contentType:false, 
+	        					url : sourceleadUrl+"/addCrowdSourcingUserContact?"+tokenParamName+"="+tokenValue+"",
+	        					success : function(result) {
+	        						location.replace(sourceleadUrl+ "/referRequirementList");
+	        					},
+	        				});
                 
             	    return true;
             }

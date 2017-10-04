@@ -1489,14 +1489,15 @@ $("#searchType").selectpicker('refresh');
 <script>
 function saveInviteCompany() {
 	if ($('#inviteCompany_form').validate(false, validationSettings)) {
-		var frm = $('#inviteCompany_form').serializeFormJSON();
-		var con = JSON.stringify(frm);
-		con = con.replace(/[{}]/g, "");
-		var jsonData = encodeURIComponent(con);
-		var sourceleadUrl = '${sourceleadUrl}';
-		$.ajax({
-					type : "POST",
-					url : sourceleadUrl+ "/storeInviteCompany?${_csrf.parameterName}=${_csrf.token}&json="+ jsonData,
+		
+			var formData = getFormData1("inviteCompany_form");
+			var sourceleadUrl = '${sourceleadUrl}';
+			$.ajax({
+					  type : "POST",
+					  data: formData,
+	 		          processData: false,
+	 		          contentType:false, 
+					url : sourceleadUrl+ "/storeInviteCompany?${_csrf.parameterName}=${_csrf.token}",
 					success : function(result) {
 						 $(".modalInvite").fadeOut();
 						  $(".sideMask").fadeOut(); 
