@@ -102,6 +102,16 @@ window.onload = function () {
 		$(".logPop").fadeOut(100);
 		$(".terms_conditions").fadeOut(100);
     }
+    
+    function getFormData(formId) {
+    	var $form = $("#"+formId);
+    	var unindexed_array = $($form).serializeArray();
+    	var indexed_array = {};
+    	$.map(unindexed_array, function (n, i) {
+    	indexed_array[n['name']] = n['value'];
+    	});
+    	return indexed_array;
+    }
 </script>
  <div  id="loadTime"></div> 
 <div class="logMask"></div>
@@ -777,12 +787,14 @@ var validationSettings = {
         	 
         	  if ($(this).validate(false, validationSettings)){
         		e.preventDefault();
-            	var frm = $('#professionalRegistration_form').serializeFormJSON();
+            	/* var frm = $('#professionalRegistration_form').serializeFormJSON();
 			    
 			    var con = JSON.stringify(frm);
-		        con = con.replace(/[{}]/g, "");
+		        con = con.replace(/[{}]/g, ""); 
 		        
-		        var jsonData = encodeURIComponent(con);
+		        var jsonData = encodeURIComponent(con);*/
+		        
+		        var formData = getFormData("professionalRegistration_form");
 			    
          		var sourceleadUrl ='${sourceleadUrl}';
          		var contactUUID = '${contactUUID}';
@@ -799,13 +811,11 @@ var validationSettings = {
 	       		});
          		
          	 	$("#register_button").attr("disabled", "disabled");
-         		
            	 
          		$.ajax({
           	      type: "POST",
-          	      contentType : 'application/json; charset=utf-8',
-          	      dataType : 'json',
-                	  url: sourceleadUrl+"/registerAsProfessional?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&contactUUID="+contactUUID,		  
+          	      data: formData,
+                	  url: sourceleadUrl+"/registerAsProfessional?${_csrf.parameterName}=${_csrf.token}&contactUUID="+contactUUID,		  
                   	success: function(result) {
 			        	if((result == 'success')){
 			        		if(requirementUUID != null && requirementUUID != '' && requirementUUID != 'undefined' &&
@@ -842,12 +852,14 @@ var validationSettings = {
 	
 	
 	<script type="text/javascript">
-var validationSettings = {
-        errorMessagePosition : 'element',
-       borderColorOnError : '',
-		scrollToTopOnError : true,
-		dateFormat : 'yyyy/mm/dd' 
-   };  
+		
+	  var validationSettings = {
+		        errorMessagePosition : 'element',
+		       borderColorOnError : '',
+				scrollToTopOnError : true,
+				dateFormat : 'yyyy/mm/dd' 
+		   };  
+		
          $('body').on('submit', '#recruiterRegistration_form', function(e){
         	 $("#recruiterRegistrationErrorMsg").val('');
        	  	if($("#termsCheckoxId").is(':checked')){
@@ -855,16 +867,9 @@ var validationSettings = {
        	  		}
         	  if ($(this).validate(false, validationSettings)){
         		e.preventDefault();
-            	var frm = $('#recruiterRegistration_form').serializeFormJSON();
-			    
-			    var con = JSON.stringify(frm);
-		        con = con.replace(/[{}]/g, "");
 		        
-		        var jsonData = encodeURIComponent(con);
-		        
+		        var formData = getFormData("recruiterRegistration_form");
 		        var requirementUUID = '${requirementUUID}';
-		        
-			    
          		var sourceleadUrl ='${sourceleadUrl}';
          	 	$("#recruiter_register").attr("disabled", "disabled");
          	 	
@@ -879,9 +884,8 @@ var validationSettings = {
            	 
          	 	$.ajax({
           	      type: "POST",
-          	      contentType : 'application/json; charset=utf-8',
-          	      dataType : 'json',
-                	  url: sourceleadUrl+"/registerAsIndividualRecruiter?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
+          	      data: formData,
+                	  url: sourceleadUrl+"/registerAsIndividualRecruiter?${_csrf.parameterName}=${_csrf.token}",
                 			  
                   	success: function(result) {
 			        	if((result == 'success')){

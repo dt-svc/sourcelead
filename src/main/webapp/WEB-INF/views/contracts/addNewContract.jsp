@@ -39,6 +39,7 @@
 	 		
 	 		$('#candiFlatReward').removeAttr('data-validation');
 	 		$('#candiFlatReward').attr('data-validation-optional',"true");
+
 	 }
 	 
 	 if(relationId != null && relationId != ''){
