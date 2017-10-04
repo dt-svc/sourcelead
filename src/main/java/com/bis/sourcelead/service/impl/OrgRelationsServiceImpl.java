@@ -109,6 +109,10 @@ public class OrgRelationsServiceImpl implements OrgRelationsService {
 		orgRelations.setCreatedDate(commonUtil.currentDate());
 		orgRelations.setUpdatedDate(commonUtil.currentDate());
 		
+		if (StringUtils.isNotBlank(clientDTO.getPaymentTerm())) {
+			orgRelations.setPaymentTerm(clientDTO.getPaymentTerm());
+		}
+		
 		if(null != responderType  && !responderType.isEmpty()){
 			if("Client".equalsIgnoreCase(responderType)){
 				orgRelations.setInitiatorType("Vendor"); 

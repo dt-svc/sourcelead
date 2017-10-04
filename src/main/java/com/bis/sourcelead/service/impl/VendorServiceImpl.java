@@ -20,6 +20,7 @@ import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.ClientDTO;
 import com.bis.sourcelead.dto.VendorOnboardDTO;
 import com.bis.sourcelead.entity.Org;
+import com.bis.sourcelead.entity.OrgBankDetails;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
@@ -27,6 +28,7 @@ import com.bis.sourcelead.entity.SubmissionTemplate;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.VendorOnboarding;
 import com.bis.sourcelead.service.ClientService;
+import com.bis.sourcelead.service.OrgBankDetailsService;
 import com.bis.sourcelead.service.SubmissionTemplateService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.service.VendorService;
@@ -60,6 +62,9 @@ public class VendorServiceImpl implements VendorService{
 	@Autowired
 	SubmissionTemplateService submissionTemplateService;
 	
+	@Autowired
+	OrgBankDetailsService orgBankDetailsService;
+	
 	@Override
 	public OrgLocations updateVendor(ClientDTO clientDTO, AddUserDTO addUserDTO, CandidateDTO candidateDTO, User user,
 			OrgLocations orgLocations, Long orgRelationId, Org org) throws Exception {
@@ -81,6 +86,10 @@ public class VendorServiceImpl implements VendorService{
 		    }else{
 		    	orgRelations.setVendorOnboardTemplateId(null);
 		    }
+		 
+		 if(StringUtils.isNotBlank(clientDTO.getPaymentTerm())){
+			 orgRelations.setPaymentTerm(clientDTO.getPaymentTerm());
+		 }
 		 
 		 orgRelationsDao.addOrgRelations(orgRelations);
 		 
@@ -108,10 +117,6 @@ public class VendorServiceImpl implements VendorService{
 		 
 		 if(StringUtils.isNotBlank(clientDTO.getBillingAddress())){
 			 vendorOrgLocations.setClientBillingAddress(clientDTO.getBillingAddress());
-		 }
-		 
-		 if(StringUtils.isNotBlank(clientDTO.getPaymentTerm())){
-			 vendorOrgLocations.setPaymentTerm(clientDTO.getPaymentTerm());
 		 }
 		 
 		 orgLocationsDao.updateOrgLocations(vendorOrgLocations);
@@ -248,6 +253,24 @@ public class VendorServiceImpl implements VendorService{
 				break;
 		}
 		
+		OrgRelations orgRelations = vendorOnboarding.getOrgRelationId();
+		onboardDTO.setPaymentTerm(orgRelations.getPaymentTerm());
+		onboardDTO.setTier(orgRelations.getInitiatorLevel());
+		onboardDTO.setSicCode(orgRelations.getSicCode());
+		onboardDTO.setIndustryName(orgRelations.getIndustryName());
+		onboardDTO.setCurrency(orgRelations.getCurrency());
+		onboardDTO.setTaxRegNumber(orgRelations.getTaxRegistrationNumber());
+		onboardDTO.setDunsNumber(orgRelations.getDunsNumber());
+		
+		if(orgRelations.getBankDetailsId() != null){
+			OrgBankDetails bankDetails = orgBankDetailsService.getOrgBankDetailsById(orgRelations.getBankDetailsId().getId());
+			onboardDTO.setAccountName(bankDetails.getAccountName());
+			onboardDTO.setAccountNumber(bankDetails.getAccountNumber());
+			onboardDTO.setBankName(bankDetails.getBankName());
+			onboardDTO.setBranchNumber(bankDetails.getBranchNumber());
+			onboardDTO.setBicNumber(bankDetails.getBankIdentifierCode());
+			onboardDTO.setBankAddress(bankDetails.getBankAddress());
+		}
 		
 		return onboardDTO;
 	}

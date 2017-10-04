@@ -69,6 +69,9 @@ public class OrgRelations implements Serializable{
 	@Column(name="RESPONDER_LEVEL")
 	private String responderLevel;
 	
+	@Column(name = "PAYMENT_TERM")
+	private String PaymentTerm;
+	
 	@Column(name="VENDOR_ONBOARD_TEMPLATE_ID")
 	@Type(type="text")
 	private String vendorOnboardTemplateId;
@@ -76,6 +79,8 @@ public class OrgRelations implements Serializable{
 	@Column(name="VENDOR_RELATION_STATUS")
 	private String vendorRelationStatus;
 	
+	@Column(name="INDUSTRY_NAME")
+	private String industryName;
 	
 	@Column(name="IS_VENDOR_DETAILS_FILLED")
 	private String isVendorDetailsFilled;
@@ -87,6 +92,23 @@ public class OrgRelations implements Serializable{
 	
 	@Column(name="IS_VENDOR_TASKS_FILLED")
 	private String isVendorTasksFilled;
+	
+	@Column(name="CURRENCY")
+	private String currency;
+	
+	@Column(name="SIC_CODE")
+	private String sicCode;
+	
+	@Column(name="TAX_REGISTRATION_NUMBER")
+	private String taxRegistrationNumber;
+	
+	@Column(name="DUNS_NUMBER")
+	private String dunsNumber;
+	
+	@NotFound(action=NotFoundAction.IGNORE)
+    @ManyToOne
+    @JoinColumn(name = "BANK_DETAILS_ID")
+    private OrgBankDetails bankDetailsId;
 	
 	@Column(name="UUID")
 	private String UUID;
@@ -861,5 +883,63 @@ public class OrgRelations implements Serializable{
 	public void setSpocStatus(String spocStatus) {
 		this.spocStatus = spocStatus;
 	}
+
+	public String getPaymentTerm() {
+		return PaymentTerm;
+	}
+
+	public void setPaymentTerm(String paymentTerm) {
+		PaymentTerm = paymentTerm;
+	}
+
+	public String getCurrency() {
+		return currency;
+	}
+
+	public void setCurrency(String currency) {
+		this.currency = currency;
+	}
+
+	public String getSicCode() {
+		return sicCode;
+	}
+
+	public void setSicCode(String sicCode) {
+		this.sicCode = sicCode;
+	}
+
+	public String getTaxRegistrationNumber() {
+		return taxRegistrationNumber;
+	}
+
+	public void setTaxRegistrationNumber(String taxRegistrationNumber) {
+		this.taxRegistrationNumber = taxRegistrationNumber;
+	}
+
+	public String getDunsNumber() {
+		return dunsNumber;
+	}
+
+	public void setDunsNumber(String dunsNumber) {
+		this.dunsNumber = dunsNumber;
+	}
+
+	public OrgBankDetails getBankDetailsId() {
+		return bankDetailsId;
+	}
+
+	public void setBankDetailsId(OrgBankDetails bankDetailsId) {
+		this.bankDetailsId = bankDetailsId;
+	}
+
+	public String getIndustryName() {
+		return industryName;
+	}
+
+	public void setIndustryName(String industryName) {
+		this.industryName = industryName;
+	}
+
+	
 
 }

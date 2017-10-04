@@ -169,9 +169,6 @@ public class OrgLocations implements Serializable{
     @Type(type="text")
 	private String clientBillingAddress;
     
-    @Column(name = "PAYMENT_TERM")
-	private String PaymentTerm;
-    
     @Transient
     private String orgName;
     
@@ -685,13 +682,7 @@ public class OrgLocations implements Serializable{
 		this.clientBillingAddress = clientBillingAddress;
 	}
 
-	public String getPaymentTerm() {
-		return PaymentTerm;
-	}
-
-	public void setPaymentTerm(String paymentTerm) {
-		PaymentTerm = paymentTerm;
-	}
+	
 
 	public Long getVendorSpocId() {
 		return vendorSpocId;

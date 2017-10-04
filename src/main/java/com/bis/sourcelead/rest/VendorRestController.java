@@ -406,7 +406,7 @@ public class VendorRestController {
 			orgRelations.setState(orgRelations.getResponderLocationId().getState());
 			orgRelations.setCity(orgRelations.getResponderLocationId().getCity());
 			orgRelations.setZipCode(orgRelations.getResponderLocationId().getZipCode());
-			orgRelations.setPaymentTerms(orgRelations.getResponderLocationId().getPaymentTerm());
+			orgRelations.setPaymentTerms(orgRelations.getPaymentTerm());
 			orgRelations.setBillingAddress(orgRelations.getResponderLocationId().getClientBillingAddress());
 			orgRelations.setAddress(orgRelations.getResponderLocationId().getClientAddress());
 			orgRelations.setVendorlocationId(orgRelations.getResponderLocationId().getId());
@@ -420,7 +420,7 @@ public class VendorRestController {
 			orgRelations.setZipCode(orgRelations.getLocationId().getZipCode());
 			orgRelations.setBillingAddress(orgRelations.getLocationId().getClientBillingAddress());
 			orgRelations.setAddress(orgRelations.getLocationId().getClientAddress());
-			orgRelations.setPaymentTerms(orgRelations.getLocationId().getPaymentTerm());
+			orgRelations.setPaymentTerms(orgRelations.getPaymentTerm());
 			orgRelations.setVendorlocationId(orgRelations.getLocationId().getId());
 			orgRelations.setVendorOrgLocation(orgRelations.getLocationId().getLocation());
 		}

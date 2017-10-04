@@ -29,6 +29,7 @@ import com.bis.sourcelead.entity.VendorOnboardTasks;
 import com.bis.sourcelead.entity.VendorOnboardingTemplate;
 import com.bis.sourcelead.entity.VendorOnboardingTemplateDocuments;
 import com.bis.sourcelead.service.UserService;
+import com.bis.sourcelead.service.VendorOnboardService;
 import com.bis.sourcelead.service.VendorOnboardTasksService;
 import com.bis.sourcelead.service.VendorOnboardTemplateDocumentsService;
 import com.bis.sourcelead.service.VendorOnboardTemplateService;
@@ -68,6 +69,9 @@ public class VendorOnboardRestController {
 	
 	@Autowired
 	VendorService vendorService;
+	
+	@Autowired
+	VendorOnboardService vendorOnboardService;
 	
 	@RequestMapping(value = "/getVendorOnboardingTemplatesList")
 	public List<VendorOnboardingTemplate> getVendorOnboardingTemplatesList(HttpServletRequest request) throws Exception {
@@ -280,6 +284,15 @@ public class VendorOnboardRestController {
 		
 	 }
 	 
+	 @RequestMapping(value = "/acceptAndSaveVendorOnboard", method = RequestMethod.POST)
+	 @ResponseBody String acceptAndSaveVendorOnboard(VendorOnboardDTO vendorOnboardDTO,@RequestParam(value="vendorOnboardId", required=false) Long vendorOnboardId,HttpServletRequest request) throws Exception{
+		 
+		 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		 vendorOnboardService.saveVendorOnboardDetails(vendorOnboardDTO, vendorOnboardId,user);
+		
+		 return "success";
+		
+	 }
 	 
 	
 }

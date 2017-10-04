@@ -1,6 +1,7 @@
 package com.bis.sourcelead.service;
 
 import com.bis.sourcelead.dto.OnboardTasksDTO;
+import com.bis.sourcelead.dto.VendorOnboardDTO;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.VendorOnboarding;
@@ -16,4 +17,6 @@ public interface VendorOnboardService {
 	void finishVendorOnboarding(OnboardTasksDTO onboardTasksDTO,User user,OrgLocations orgLocations) throws Exception;
 	
 	VendorOnboarding getVendorOnboardingByUUID(String onboardUUID) throws Exception;
+	
+	void saveVendorOnboardDetails(VendorOnboardDTO vendorOnboardDTO,Long vendorOnboardId,User user) throws Exception;
 }

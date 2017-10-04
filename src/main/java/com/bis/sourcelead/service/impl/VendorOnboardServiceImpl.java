@@ -22,11 +22,13 @@ import com.bis.sourcelead.dao.UserDao;
 import com.bis.sourcelead.dao.VendorOnboardDao;
 import com.bis.sourcelead.dao.VendorOnboardTasksDao;
 import com.bis.sourcelead.dto.OnboardTasksDTO;
+import com.bis.sourcelead.dto.VendorOnboardDTO;
 import com.bis.sourcelead.dto.VendorOnboardTaskDTO;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.OnboardTasks;
+import com.bis.sourcelead.entity.OrgBankDetails;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.SubmissionTemplate;
@@ -37,6 +39,7 @@ import com.bis.sourcelead.entity.VendorOnboarding;
 import com.bis.sourcelead.enums.Status;
 import com.bis.sourcelead.service.ClientService;
 import com.bis.sourcelead.service.EmailScenarioService;
+import com.bis.sourcelead.service.OrgBankDetailsService;
 import com.bis.sourcelead.service.SubmissionTemplateService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
@@ -91,6 +94,9 @@ public class VendorOnboardServiceImpl implements VendorOnboardService {
 	
 	@Autowired
 	ClientService clientService;
+	
+	@Autowired
+	OrgBankDetailsService orgBankDetailsService;
 	
 	@Override
 	public VendorOnboarding saveVendorOnboarding(OrgLocations vendorOrgLocations, OrgLocations orgLocations, User user)
@@ -377,6 +383,84 @@ public class VendorOnboardServiceImpl implements VendorOnboardService {
 	@Override
 	public VendorOnboarding getVendorOnboardingByUUID(String onboardUUID) throws Exception {
 		return vendorOnboardDao.getVendorOnboardingByUUID(onboardUUID);
+	}
+
+	@Override
+	public void saveVendorOnboardDetails(VendorOnboardDTO vendorOnboardDTO,Long vendorOnboardId,User user)
+			throws Exception {
+		
+		OrgBankDetails bankDetails = null;
+		
+		VendorOnboarding onboarding = vendorOnboardDao.getVendorOnboardingById(vendorOnboardId);
+		OrgRelations orgRelations = onboarding.getOrgRelationId();
+		if(StringUtils.isNotBlank(vendorOnboardDTO.getTier())){
+			orgRelations.setInitiatorLevel(vendorOnboardDTO.getTier());
+		}
+		
+		if(StringUtils.isNotBlank(vendorOnboardDTO.getIndustryName())){
+			orgRelations.setIndustryName(vendorOnboardDTO.getIndustryName());
+		}
+		
+		if(StringUtils.isNotBlank(vendorOnboardDTO.getPaymentTerm())){
+			orgRelations.setPaymentTerm(vendorOnboardDTO.getPaymentTerm());
+		}
+		
+		if(StringUtils.isNotBlank(vendorOnboardDTO.getSicCode())){
+			orgRelations.setSicCode(vendorOnboardDTO.getSicCode());
+		}
+		
+		if(StringUtils.isNotBlank(vendorOnboardDTO.getTaxRegNumber())){
+			orgRelations.setTaxRegistrationNumber(vendorOnboardDTO.getTaxRegNumber());
+		}
+		
+		if(StringUtils.isNotBlank(vendorOnboardDTO.getDunsNumber())){
+			orgRelations.setDunsNumber(vendorOnboardDTO.getDunsNumber());
+		}
+		
+		bankDetails = orgBankDetailsService.getOrgBankDetailsByOrgLocationId(onboarding.getVendorLocationId().getId());
+		if(bankDetails == null){
+			bankDetails = new OrgBankDetails();
+			bankDetails.setUid(SourceLeadRandomCodeHelper.generateRandomUUID());
+		}
+		
+		bankDetails.setOrgLocationsId(onboarding.getVendorLocationId());
+		
+		if(StringUtils.isNotBlank(vendorOnboardDTO.getAccountName())){
+			bankDetails.setAccountName(vendorOnboardDTO.getAccountName());
+		}
+	
+		if(StringUtils.isNotBlank(vendorOnboardDTO.getAccountName())){
+			bankDetails.setAccountName(vendorOnboardDTO.getAccountName());
+		}
+		
+		if(StringUtils.isNotBlank(vendorOnboardDTO.getAccountNumber())){
+			bankDetails.setAccountNumber(vendorOnboardDTO.getAccountNumber());
+		}
+		
+		if(StringUtils.isNotBlank(vendorOnboardDTO.getAccountNumber())){
+			bankDetails.setBankName(vendorOnboardDTO.getBankName());
+		}
+		
+		if(StringUtils.isNotBlank(vendorOnboardDTO.getBranchNumber())){
+			bankDetails.setBranchNumber(vendorOnboardDTO.getBranchNumber());
+		}
+		
+		if(StringUtils.isNotBlank(vendorOnboardDTO.getBicNumber())){
+			bankDetails.setBankIdentifierCode(vendorOnboardDTO.getBicNumber());
+		}
+		
+		if(StringUtils.isNotBlank(vendorOnboardDTO.getBankAddress())){
+			bankDetails.setBankAddress(vendorOnboardDTO.getBankAddress());
+		}
+		bankDetails.setCreatedBy(user);
+		bankDetails.setUpdatedBy(user);
+		bankDetails.setCreatedDate(commonUtil.currentDate());
+		bankDetails.setUpdatedDate(commonUtil.currentDate());
+		orgBankDetailsService.saveOrgBankDetails(bankDetails);
+		
+		orgRelations.setBankDetailsId(bankDetails);
+		orgRelationsDao.addOrgRelations(orgRelations);
+		
 	}
 	
 	

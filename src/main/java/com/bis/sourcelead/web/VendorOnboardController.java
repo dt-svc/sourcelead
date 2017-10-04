@@ -1,5 +1,7 @@
 package com.bis.sourcelead.web;
 
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,7 +11,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.VendorOnboarding;
+import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.service.VendorOnboardService;
 import com.bis.sourcelead.util.CommonUtil;
 
@@ -22,11 +26,18 @@ public class VendorOnboardController {
 	@Autowired
 	VendorOnboardService vendorOnboardService;
 	
+	@Autowired
+	LookUpDataService lookUpDataService;
+	
 	
 	@RequestMapping(value = "/acceptVendorOnboardInvitation")
  	public ModelAndView vendorOnboard(@RequestParam(value="onboardUUID", required = true)String onboardUUID,HttpServletRequest request) throws Exception {
 		    ModelAndView model = new ModelAndView();
  			commonUtil.highLightMenu(Constants.Vendors, request);
+ 			
+ 			List<LookUpData> industryList = lookUpDataService.getLookUpDataByCategory(Constants.INDUSTIRES);
+ 			model.addObject("industryList", industryList);
+ 			
  			model.addObject("onboardUUID",onboardUUID);
  			VendorOnboarding vendorOnboarding = vendorOnboardService.getVendorOnboardingByUUID(onboardUUID);
  			model.addObject("vendorOnboardId",vendorOnboarding.getId());
