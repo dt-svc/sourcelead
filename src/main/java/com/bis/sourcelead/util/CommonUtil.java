@@ -1159,10 +1159,9 @@ public class CommonUtil {
 		 * @return
 		 * @throws ParseException
 		 */
-		public Long getNumberOfDaysBetweenTwoDates(Date fromDate, Date toDate) throws ParseException {
-			   Long nuberOfDays = 0l;
+		public int getNumberOfDaysBetweenTwoDates(Date fromDate, Date toDate) throws ParseException {
 				long diff = toDate.getTime() - fromDate.getTime();
-				 nuberOfDays = TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS);
-				return nuberOfDays;
+				int  nuberOfDays = (int) TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS);
+				return nuberOfDays+1;
 			}
 }

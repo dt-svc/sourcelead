@@ -46,7 +46,7 @@
               <label class="col-md-3">From<span class="text-danger paddingLeft">*</span></label>
               <div class="col-md-9">
                 <div class="row">
-                  <div class="col-md-7 paddingRight">
+                  <div class="col-md-7 paddingRight" id="fromDateDiv">
                     <input type="text" class="form-control calendar" id="fromDate" name="fromDate" placeholder="From Date" field-name="From Date" data-validation="required">
                   </div>
                   <div class="col-md-5 paddingLeft">
@@ -64,7 +64,7 @@
               <label class="col-md-3">To<span class="text-danger paddingLeft">*</span></label>
               <div class="col-md-9">
                 <div class="row">
-                  <div class="col-md-7 paddingRight">
+                  <div class="col-md-7 paddingRight" id="toDateDiv">
                     <input type="text" class="form-control calendar" id="toDate" name="toDate" placeholder="To Date" field-name="To Date" data-validation="required">
                   </div>
                   <div class="col-md-5 paddingLeft">
@@ -128,15 +128,19 @@
           </div>
           <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
             <div class="well-sm well well-custom clearfix amchartAnchor-Hide">
-                 <h5>Leave Stats</h5>
+                 <h5>Leave Status</h5>
                 <div id="leavestatsu" style="width: 100%; height: 150px;"></div>
                 <div class="row">
                 <ul class="list-unstyled leavelist col-md-10 mt25 col-md-offset-1 list-group">
-                    <li>
-                        <label>Balance Leaves</label>
-                        <span class="label label-info">100</span>
-                    </li>
-                    <li>
+                        <c:forEach var="leaveType" items="${leaveTypeList}">
+                        	<li>
+									<label>${leaveType.name}</label>
+									<span class="label label-info">${leaveType.remainingTotalLeaveCounts}</span>
+							</li>
+						</c:forEach>
+                   
+                    
+                    <!-- <li>
                         <label>Sick Leaves</label>
                     <span class="label label-primary">100</span>
                     </li>
@@ -149,7 +153,7 @@
                     <li><label>Cancel Request</label>
                     <span class="label label-danger">100</span>
                     </li>
-                </ul>
+ -->                </ul>
                     </div>
                 
             </div>
@@ -200,26 +204,37 @@
 			changeYear: true, 
 			onSelect : function(selected) {
 			var dt = $(this).datepicker('getDate', '+1d');
-			dt.setDate(dt.getDate() + 1);
+			dt.setDate(dt.getDate());
 			$("#toDate").datepicker("option", "minDate", dt);
-					errInvoiceDate();
-					getDueDateByFrequency();
+			removeStartValid();
 			}
 		});
+		
 	  $('#toDate').datepicker({
 			dateFormat : finalDateFormatEndDate,
 			changeMonth: true,
 			changeYear: true, 
 			onSelect : function(selected) {
 			var dt = $(this).datepicker('getDate', '-1d');
-			dt.setDate(dt.getDate() - 1);
+			dt.setDate(dt.getDate());
 			$("#fromdate").datepicker("option", "maxDate", dt);
-				errDueDate();
+			removeEndValid();
+			validateDate();
 			}
 		});
 		
 	});
 </script>
+
+<script>
+function removeStartValid(){
+	$('#fromDateDiv').find('p.jquery_form_error_message').remove();
+}
+
+function removeEndValid(){
+	$('#toDateDiv').find('p.jquery_form_error_message').remove();
+}
+ </script>
 
 
 <script type="text/javascript">
@@ -385,5 +400,20 @@ function getLeavePolicy(){
 }
 </script>
 
+<script>
+function validateDate(){
+	$('.warMess').hide();
+	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
+	var fromDate = $("#fromDate").val();
+	var toDate = $("#toDate").val();
+	$.get(sourceleadUrl+"/validateRestrictDate?"+tokenParamName+"="+tokenValue+"&fromDate="+fromDate+"&toDate="+toDate+"&orgLocationId="+orgLocationId, function(data) {
+		if(data == true){
+			$("#toDate").after("<p class='warMess'>You cannot apply for leave on restricted day</span>");
+		}else{
+			$('.warMess').hide();
+		}
+	}); 
+}
+</script>
 
 <jsp:include page="../masterFooter.jsp" />

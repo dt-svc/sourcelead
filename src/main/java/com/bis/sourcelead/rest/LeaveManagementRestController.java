@@ -6,6 +6,8 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -228,13 +230,36 @@ public class LeaveManagementRestController {
 	public ModelAndView applyLeaveJsp(HttpServletRequest request,HttpServletResponse response) throws Exception {
 		   ModelAndView model = new ModelAndView();
 		   OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		   User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		   Long roleId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRoleId");
 		   List<User> usersLis = userService.getAllUsersByOrgLocationCode(orgLocations.getId());
 		   model.addObject("sourceleadUrl", sourceleadUrl);
 		   model.addObject("usersLis", usersLis);
 		   List<LeaveType> leaveTypeList = leaveTypeService.getLeaveTypeListByLocationId(String.valueOf(orgLocations.getId()));
+		   List<LeaveType> roleLeaveType = new ArrayList<>();
 		   if(leaveTypeList !=null && !leaveTypeList.isEmpty()) {
-			   model.addObject("leaveTypeList", leaveTypeList);
+			   for(LeaveType leaveType : leaveTypeList) {
+				   for(LeaveRole leaveRole : leaveType.getLeaveTypeRolesSet()) {
+					   if(leaveRole.getRoleId().getId().longValue() == roleId.longValue()) {
+						   roleLeaveType.add(leaveType);
+					   }
+				   }
+			   }
+			   
+			   int totalLeaves = 0;
+				for(LeaveType type : roleLeaveType) {
+				int balanceLeave = Integer.valueOf(type.getNumbefrOfLeavesPeryear());
+				totalLeaves = Integer.valueOf(type.getNumbefrOfLeavesPeryear());
+				List<Leave> totalleavesTaken = leaveService.getLeavesListByTypeIdAndLocationIdAndUserId(type.getId(),orgLocations.getId(), loginUser.getId());
+				for (Leave leave : totalleavesTaken) {
+					if(Constants.APPROVED.equalsIgnoreCase(leave.getStatus())) {
+						balanceLeave = totalLeaves - (Integer.valueOf(leave.getNumberOfDays()));
+					}
+				}
+				 type.setRemainingTotalLeaveCounts(balanceLeave);
+				}
+			   
+			 model.addObject("leaveTypeList", roleLeaveType);
 		   }
 			List<User> approverList = userService.getManagersByUserRolesAndOrgLocationId(roleId, orgLocations.getId(),Long.valueOf(Constants.TAB_USER));
 			if(approverList !=null) {
@@ -246,6 +271,9 @@ public class LeaveManagementRestController {
 				}
 				 model.addObject("approverList", approverList);
 			}
+			
+			
+			
 		   model.setViewName("leavemanagement/applyLeave");
 	       return model;
 	}
@@ -937,7 +965,7 @@ public class LeaveManagementRestController {
 			leaveDto.setLeaveTypeId(leave.getLeaveType().getId());
 			leaveDto.setStatus(leave.getStatus());
 			try {
-				Long numberOfdays = commonUtil.getNumberOfDaysBetweenTwoDates(leave.getFromDate(), leave.getToDate());
+				int numberOfdays = commonUtil.getNumberOfDaysBetweenTwoDates(leave.getFromDate(), leave.getToDate());
 				leaveDto.setNoOfDays(String.valueOf(numberOfdays));
 			} catch (ParseException e) {
 				e.printStackTrace();
@@ -1034,4 +1062,15 @@ public class LeaveManagementRestController {
 		return null;
 	}
 
+	@RequestMapping(value = "/validateRestrictDate")
+	@ResponseBody
+	public boolean validateRestrictDate(@RequestParam(value = "fromDate", required = false) String fromDate,@RequestParam(value = "toDate", required = false) String toDate,@RequestParam(value = "orgLocationId", required = false) Long orgLocationId) throws Exception {
+
+		boolean isValid = false;
+		List<RestrictDay> resDay = restrictDayService.validateRestrictDayDates(fromDate,toDate,orgLocationId);
+		if(resDay != null && resDay.size()>0) {
+			isValid = true;
+		}
+		return isValid;
+	}
 }

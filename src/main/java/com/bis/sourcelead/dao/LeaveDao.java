@@ -18,6 +18,8 @@ public interface LeaveDao {
 
 	Leave getLeaveById(String leaveId) throws Exception;
 
+	List<Leave> getLeavesListByTypeIdAndLocationIdAndUserId(String leaveTypeId, Long orgLocationId, Long userId);
+	
 	int getNumberOfLeavesTakenByUser(Long userId) throws Exception;
 
 	int getThisMonthLeavesTakenByUser(Long userId);
