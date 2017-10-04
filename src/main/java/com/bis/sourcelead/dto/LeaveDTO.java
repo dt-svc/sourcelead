@@ -45,7 +45,10 @@ public class LeaveDTO extends SearchDTO implements Serializable{
 	private String leavesTaken;
 	private String approverUsers;
 	private String thisMonthLeaves;
-	
+	private String reportYear;
+	private String reportMonth;
+	private String reportFromDate;
+	private String reportEndDate;
 	
 	public String getLeavesTaken() {
 		return leavesTaken;
@@ -257,6 +260,30 @@ public class LeaveDTO extends SearchDTO implements Serializable{
 	}
 	public void setThisMonthLeaves(String thisMonthLeaves) {
 		this.thisMonthLeaves = thisMonthLeaves;
+	}
+	public String getReportYear() {
+		return reportYear;
+	}
+	public void setReportYear(String reportYear) {
+		this.reportYear = reportYear;
+	}
+	public String getReportMonth() {
+		return reportMonth;
+	}
+	public void setReportMonth(String reportMonth) {
+		this.reportMonth = reportMonth;
+	}
+	public String getReportFromDate() {
+		return reportFromDate;
+	}
+	public void setReportFromDate(String reportFromDate) {
+		this.reportFromDate = reportFromDate;
+	}
+	public String getReportEndDate() {
+		return reportEndDate;
+	}
+	public void setReportEndDate(String reportEndDate) {
+		this.reportEndDate = reportEndDate;
 	}
 	
 	

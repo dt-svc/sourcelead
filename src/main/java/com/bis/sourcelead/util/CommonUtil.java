@@ -1164,4 +1164,47 @@ public class CommonUtil {
 				int  nuberOfDays = (int) TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS);
 				return nuberOfDays+1;
 			}
+		
+		
+		public  Date[] getStartDateEndDateByYear(int year){
+			Date[] dates = new Date[2];
+		    Calendar calendarStart=Calendar.getInstance();
+		    calendarStart.set(Calendar.YEAR,year);
+		    calendarStart.set(Calendar.MONTH,0);
+		    calendarStart.set(Calendar.DAY_OF_MONTH,1);
+		    // returning the first date
+		    dates[0] = calendarStart.getTime();
+		    Calendar calendarEnd=Calendar.getInstance();
+		    calendarEnd.set(Calendar.YEAR,year);
+		    calendarEnd.set(Calendar.MONTH,11);
+		    calendarEnd.set(Calendar.DAY_OF_MONTH,31);
+		    // returning the last date
+		    dates[1] = calendarEnd.getTime();
+			return dates;
+		}
+		
+		public  Date[] getMonthStartDateEndDateByMonth(int month) {
+			Date[] dates = new Date[2];
+			Calendar cal = Calendar.getInstance();
+			cal.set(Calendar.MONTH, month-1);
+			cal.set(Calendar.DATE, 1);
+			cal.set(Calendar.DATE, cal.get(Calendar.DAY_OF_MONTH));
+			dates[0] = cal.getTime();
+			cal.set(Calendar.DATE, cal.getActualMaximum(Calendar.DAY_OF_MONTH));
+			dates[1] = cal.getTime();
+			return dates;
+	}
+		public  Date[] getMonthStartDateEndDateByYearAndMonth(int year,int month) {
+			Date[] dates = new Date[2];
+			Calendar calendar = Calendar.getInstance();
+			int dateDay = 1;
+			calendar.set(year, month, dateDay);
+			int numOfDaysInMonth = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
+			System.out.println("First Day of month: " + calendar.getTime());
+			calendar.add(Calendar.DAY_OF_MONTH, numOfDaysInMonth-1);
+			System.out.println("Last Day of month: " + calendar.getTime());
+			return dates;
+	}
+		
+		
 }

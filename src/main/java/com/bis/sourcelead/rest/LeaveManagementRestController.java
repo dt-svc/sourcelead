@@ -77,6 +77,7 @@ import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
+import com.itextpdf.text.log.Level;
 
 
 @RestController
@@ -1036,9 +1037,9 @@ public class LeaveManagementRestController {
 				}
 			}
 			leaveDto.setApproverUsers(String.join(",", aphlist));
-			int nuberOfLeavestaken = leaveDao.getNumberOfLeavesTakenByUser(leave.getUser().getId());
+			int nuberOfLeavestaken = leaveDao.getNumberOfLeavesTakenByUser(leave.getUser().getId(),leave.getLeaveType().getId());
 			leaveDto.setLeavesTaken(String.valueOf(nuberOfLeavestaken));
-			int thisMonthLeaves = leaveDao.getThisMonthLeavesTakenByUser(leave.getUser().getId());
+			int thisMonthLeaves = leaveDao.getThisMonthLeavesTakenByUser(leave.getUser().getId(),leave.getLeaveType().getId());
 			leaveDto.setThisMonthLeaves(String.valueOf(thisMonthLeaves));
 
 		}
@@ -1085,13 +1086,12 @@ public class LeaveManagementRestController {
 	
 	
 	@RequestMapping(value = {"/getTopLeavetakers", "/rest/getTopLeavetakers"}, method = RequestMethod.POST)
-	public @ResponseBody  ResponseList<LeaveDTO> getTopLeavetakers(LeaveDTO leaveDTO,HttpServletRequest request, HttpServletResponse response) throws Exception
+	public @ResponseBody  ResponseList<LeaveDTO> getTopLeavetakers(LeaveDTO leaveDTO,HttpServletRequest req, HttpServletResponse res) throws Exception
 	{
-//		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		OrgLocations orgLocation = orgLocationService.getOrgLocations(Long.parseLong(leaveDTO.getOrgLocationId()));
-		System.out.println("****************************** "+leaveDTO.getOrgLocationId());
-		String[] tableColumns = {"empName", "noOfDays", "status"};
-	     int sortColumnIndex = 3; //by default sorting using updated date
+		ResponseList<LeaveDTO> leaveDtoResponse = new ResponseList<>(); 
+ 		String[] tableColumns = {"empName", "noOfDays", "status"};
+	     int sortColumnIndex = 0; //by default sorting using updated date
 		String sortColumnOrder = "desc"; //by default descending order
 		if(leaveDTO.getOrder() != null && !leaveDTO.getOrder().isEmpty()) {
 			sortColumnIndex = Integer.parseInt(leaveDTO.getOrder().get(0).get("column"));
@@ -1100,10 +1100,32 @@ public class LeaveManagementRestController {
 		leaveDTO.setSortColumn(tableColumns[sortColumnIndex]);
 		leaveDTO.setSortOrder(sortColumnOrder);
 		
-		ResponseList<LeaveDTO> list = leaveService.getTopLeavetakers(orgLocation,leaveDTO);
+		ResponseList<Leave> response = leaveService.getTopLeavetakers(orgLocation,leaveDTO);
+		List<Leave> leaveList = response.getData();
+		List<LeaveDTO> leaveDtoList = new ArrayList<>();
+		for(Leave leave : leaveList) {
+			LeaveDTO leaveDto = new LeaveDTO();
+			StringBuilder sb = new StringBuilder();
+			if(leave.getUser() !=null) {
+				if(leave.getUser().getLastName() !=null ) {
+					sb.append(leave.getUser().getFirstName()).append(" ").append(leave.getUser().getLastName());
+				}else {
+					sb.append(leave.getUser().getFirstName());
+				}
+			}
+			
+			leaveDto.setEmpName(sb.toString());
+			leaveDto.setStatus(leave.getStatus());
+			leaveDto.setNoOfDays(leave.getNumberOfDays());
+			leaveDtoList.add(leaveDto);
+		}
+		leaveDtoResponse.setData(leaveDtoList);
+		leaveDtoResponse.setRecordsFiltered(response.getRecordsFiltered());
+		leaveDtoResponse.setRecordsTotal(response.getRecordsTotal());
+		leaveDtoResponse.setError(response.getError());
 //		List<EmployerPayrollCost> data = getEmployerCostSortedList(list.getData());
 //		list.setData(data);
-		return null;
+		return leaveDtoResponse;
 	}
 
 	@RequestMapping(value = "/validateRestrictDate")

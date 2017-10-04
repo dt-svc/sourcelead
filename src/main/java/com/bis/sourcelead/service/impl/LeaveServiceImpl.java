@@ -148,8 +148,8 @@ public class LeaveServiceImpl implements LeaveService{
 			leaveDto.setId(laph.getLeaveid().getId());
 			if (leave.getUser() != null) {
 				try {
-					int nuberOfLeavestaken = leaveDao.getNumberOfLeavesTakenByUser(leave.getUser().getId());
-					int thisMonthLeaves = leaveDao.getThisMonthLeavesTakenByUser(leave.getUser().getId());
+					int nuberOfLeavestaken = leaveDao.getNumberOfLeavesTakenByUser(leave.getUser().getId(),leave.getLeaveType().getId());
+					int thisMonthLeaves = leaveDao.getThisMonthLeavesTakenByUser(leave.getUser().getId(),leave.getLeaveType().getId());
 					leaveDto.setLeavesTaken(String.valueOf(nuberOfLeavestaken));
 					leaveDto.setThisMonthLeaves(String.valueOf(thisMonthLeaves));
 				} catch (Exception e) {
@@ -342,7 +342,7 @@ public class LeaveServiceImpl implements LeaveService{
 	}
 
 	@Override
-	public ResponseList<LeaveDTO> getTopLeavetakers(OrgLocations orgLocation, LeaveDTO leaveDTO) throws Exception {
+	public ResponseList<Leave> getTopLeavetakers(OrgLocations orgLocation, LeaveDTO leaveDTO) throws Exception {
 		return leaveDao.getTopLeavetakers(orgLocation,leaveDTO);
 	}
 

@@ -20,10 +20,10 @@ public interface LeaveDao {
 
 	List<Leave> getLeavesListByTypeIdAndLocationIdAndUserId(String leaveTypeId, Long orgLocationId, Long userId);
 	
-	int getNumberOfLeavesTakenByUser(Long userId) throws Exception;
+	int getNumberOfLeavesTakenByUser(Long userId, String leaveTypeId) throws Exception;
 
-	int getThisMonthLeavesTakenByUser(Long userId);
+	int getThisMonthLeavesTakenByUser(Long userId, String leaveTypeId);
 
-	ResponseList<LeaveDTO> getTopLeavetakers(OrgLocations orgLocation, LeaveDTO leaveDTO) throws Exception;
+	ResponseList<Leave> getTopLeavetakers(OrgLocations orgLocation, LeaveDTO leaveDTO) throws Exception;
 
 }
