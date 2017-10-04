@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.json.JSONObject;
 
+import com.bis.sourcelead.dto.ReferContactsDTO;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.RequirementRefer;
 import com.bis.sourcelead.entity.User;
@@ -47,7 +48,7 @@ public interface RequirementReferService {
 	
 	List<RequirementRefer> getLoginUserReferToMeListByUserId(Long userId) throws Exception;
 	
-	public void submitUserContactsToRequirement(User user, OrgLocations orgLocations,JSONObject jsonObj) throws Exception;
+	public void submitUserContactsToRequirement(User user, OrgLocations orgLocations,ReferContactsDTO referContactsDTO) throws Exception;
 	
 	RequirementRefer getRequirementReferByReferUUID(String referUUID) throws Exception;
 }
