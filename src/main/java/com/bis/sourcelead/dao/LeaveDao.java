@@ -15,4 +15,6 @@ public interface LeaveDao {
 
 	Leave getLeaveById(String leaveId) throws Exception;
 
+	List<Leave> getLeavesListByTypeIdAndLocationIdAndUserId(String leaveTypeId, Long orgLocationId, Long userId);
+
 }

@@ -19,4 +19,6 @@ public interface LeaveService {
 
 	List<Leave> getLeavesListByLocationIdAndStatus(Long orgLocationId, String status, Long userId) throws Exception;
 
+	List<Leave> getLeavesListByTypeIdAndLocationIdAndUserId(String leaveTypeId, Long orgLocationId, Long userId);
+
 }

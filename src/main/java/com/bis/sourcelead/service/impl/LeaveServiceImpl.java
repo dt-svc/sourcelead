@@ -105,6 +105,8 @@ public class LeaveServiceImpl implements LeaveService{
 		leave.setUpdatedBy(user.getUserCode());
 		leave.setCreatedDate(new Date());
 		leave.setUpdatedDate(new Date());
+		int numberOfdays = commonUtil.getNumberOfDaysBetweenTwoDates(leave.getFromDate(), leave.getToDate());
+		leave.setNumberOfDays(String.valueOf(numberOfdays));
 		Leave savedLeave =  leaveDao.saveLeave(leave);
 		if(savedLeave !=null) {
 			LeaveManagementHistory leaveManagementHistory = leaveManagementHistoryService.saveLeaveManagementHistory(leave,user);
@@ -170,12 +172,7 @@ public class LeaveServiceImpl implements LeaveService{
 			leaveDto.setLeaveType(leave.getLeaveType().getName());
 			leaveDto.setLeaveTypeId(leave.getLeaveType().getId());
 			leaveDto.setStatus(leave.getStatus());
-			try {
-				Long numberOfdays = commonUtil.getNumberOfDaysBetweenTwoDates(leave.getFromDate(), leave.getToDate());
-				leaveDto.setNoOfDays(String.valueOf(numberOfdays));
-			} catch (ParseException e) {
-				e.printStackTrace();
-			}
+			leaveDto.setNoOfDays(leave.getNumberOfDays());
 			leaveDto.setBalanceleaves(leave.getLeaveType().getNumbefrOfLeavesPeryear());
 
 			if(leave.getApprovedBy() !=null) {
@@ -245,8 +242,7 @@ public class LeaveServiceImpl implements LeaveService{
 					LeaveType leaveType = leaveTypeService.getLeaveTypeById(leaveTypeId);
 					int numberOfLeavesPerYear = Integer.parseInt(leaveType.getNumbefrOfLeavesPeryear())
 							- Integer.parseInt(numberOfDays);
-					leaveType.setNumbefrOfLeavesPeryear(String.valueOf(numberOfLeavesPerYear));
-					leaveTypeDao.addLeaveType(leaveType);
+					leave.setBalanceLeavesCount(numberOfLeavesPerYear);
 			} else {
 				leave.setStatus(Constants.LEAVE_REJECTED);
 				leave.setRejectedBy(user);
@@ -305,6 +301,11 @@ public class LeaveServiceImpl implements LeaveService{
 			
 		}
 		return leaveList;
+	}
+
+	@Override
+	public List<Leave> getLeavesListByTypeIdAndLocationIdAndUserId(String leaveTypeId,Long orgLocationId, Long userId) {
+		return leaveDao.getLeavesListByTypeIdAndLocationIdAndUserId(leaveTypeId,orgLocationId,userId);
 	}
 
 }
