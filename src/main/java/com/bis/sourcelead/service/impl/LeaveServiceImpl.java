@@ -338,7 +338,7 @@ public class LeaveServiceImpl implements LeaveService{
 
 	@Override
 	public ResponseList<LeaveDTO> getTopLeavetakers(OrgLocations orgLocation, LeaveDTO leaveDTO) throws Exception {
-		return leaveDao,getTopLeavetakers(orgLocation,leaveDTO);
+		return leaveDao.getTopLeavetakers(orgLocation,leaveDTO);
 	}
 
 }
