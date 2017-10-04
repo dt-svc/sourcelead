@@ -18,6 +18,7 @@ import com.bis.sourcelead.dao.VendorOnboardDao;
 import com.bis.sourcelead.dto.AddUserDTO;
 import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.ClientDTO;
+import com.bis.sourcelead.dto.VendorOnboardDTO;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
@@ -218,6 +219,37 @@ public class VendorServiceImpl implements VendorService{
 			host = host.substring("www".length() + 1);
 		}
 		return host;
+	}
+
+
+	@Override
+	public VendorOnboardDTO getVendorOnboardDetails(Long vendorOnboardId) throws Exception {
+		
+		VendorOnboardDTO onboardDTO = new  VendorOnboardDTO();
+		VendorOnboarding vendorOnboarding = vendorOnboardDao.getVendorOnboardingById(vendorOnboardId);
+		OrgLocations clientOrgLocations = vendorOnboarding.getOrgLocationsId();
+		onboardDTO.setClientName(clientOrgLocations.getOrgLocationName());
+		onboardDTO.setClientWebsite(clientOrgLocations.getWebsite());
+		onboardDTO.setClientLocation(clientOrgLocations.getLocation());
+		onboardDTO.setClientAddress(clientOrgLocations.getOrgLocationAddress());
+		
+		OrgLocations vendorOrgLocations = vendorOnboarding.getVendorLocationId();
+		onboardDTO.setVendorName(vendorOrgLocations.getOrgLocationName());
+		onboardDTO.setVendorWebsite(vendorOrgLocations.getWebsite());
+		onboardDTO.setVendorLocation(vendorOrgLocations.getLocation());
+		onboardDTO.setVendorAddress(vendorOrgLocations.getOrgLocationAddress());
+		
+		Set<OrgSpoc> orgSpocList = vendorOnboarding.getOrgRelationId().getOrgSpocList();
+		for(OrgSpoc orgSpc : orgSpocList){
+				User vendorContact = orgSpc.getOwnerUser();
+				onboardDTO.setClientContactName(vendorContact.getFullName());
+				onboardDTO.setClientContactEmail(vendorContact.getEmail());
+				onboardDTO.setClientContactPhone(vendorContact.getMobilePhone());
+				break;
+		}
+		
+		
+		return onboardDTO;
 	}
 
 }

@@ -20,6 +20,7 @@ import com.bis.sourcelead.annotations.Validator;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.OnBoardingTemplateDTO;
 import com.bis.sourcelead.dto.OnboardTasksDTO;
+import com.bis.sourcelead.dto.VendorOnboardDTO;
 import com.bis.sourcelead.entity.OnBoardingTemplate;
 import com.bis.sourcelead.entity.OnboardTasks;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -31,6 +32,7 @@ import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.service.VendorOnboardTasksService;
 import com.bis.sourcelead.service.VendorOnboardTemplateDocumentsService;
 import com.bis.sourcelead.service.VendorOnboardTemplateService;
+import com.bis.sourcelead.service.VendorService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
@@ -63,6 +65,9 @@ public class VendorOnboardRestController {
 	
 	@Value("${static.path}")
 	private String staticPath;
+	
+	@Autowired
+	VendorService vendorService;
 	
 	@RequestMapping(value = "/getVendorOnboardingTemplatesList")
 	public List<VendorOnboardingTemplate> getVendorOnboardingTemplatesList(HttpServletRequest request) throws Exception {
@@ -264,5 +269,17 @@ public class VendorOnboardRestController {
 		return "success";
 		
 	 }
+	 
+	 
+	 
+	 @RequestMapping(value = "/getVendorOnboardDetailsByVendorOnboardId", method = RequestMethod.POST)
+	 @ResponseBody VendorOnboardDTO getVendorOnboardDetailsByVendorOnboardId(@RequestParam(value="vendorOnboardId", required=false) Long vendorOnboardId,HttpServletRequest request) throws Exception{
+		
+	     VendorOnboardDTO vendorOnboardDTO = vendorService.getVendorOnboardDetails(vendorOnboardId);
+		 return vendorOnboardDTO;
+		
+	 }
+	 
+	 
 	
 }

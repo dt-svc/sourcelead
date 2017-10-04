@@ -1761,7 +1761,7 @@ public class VendorRestController {
 		 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		 onboardTasksDTO.setVendorOnboardId(vendorOnboardId);
-		 vendorOnboardTasksService.saveVendorOnboardTemplateTask(onboardTasksDTO, user);
+		 //vendorOnboardTasksService.saveVendorOnboardTemplateTask(onboardTasksDTO, user);
 		 vendorOnboardService.finishVendorOnboarding(onboardTasksDTO, user,orgLocations);
 		 return "success";
 	   } 
