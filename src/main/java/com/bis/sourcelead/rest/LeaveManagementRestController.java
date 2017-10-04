@@ -30,16 +30,25 @@ import com.bis.sourcelead.dao.LeaveTypeDao;
 import com.bis.sourcelead.dao.OptionsDao;
 import com.bis.sourcelead.dao.RestrictDayDao;
 import com.bis.sourcelead.dao.ShiftDao;
+
+import com.bis.sourcelead.dto.EmployerPayrollCostDTO;
+
 import com.bis.sourcelead.dto.HolidayDTO;
 import com.bis.sourcelead.dto.LeaveDTO;
 import com.bis.sourcelead.dto.LeaveTypeDTO;
 import com.bis.sourcelead.dto.OptionsDTO;
+
+import com.bis.sourcelead.dto.ResponseList;
+
 import com.bis.sourcelead.dto.RestrictDayDTO;
 import com.bis.sourcelead.dto.ShiftDTO;
 import com.bis.sourcelead.entity.Department;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.Holiday;
 import com.bis.sourcelead.entity.Leave;
+
+import com.bis.sourcelead.entity.LeaveApproveHierarchy;
+
 import com.bis.sourcelead.entity.LeaveManagementHistory;
 import com.bis.sourcelead.entity.LeaveRole;
 import com.bis.sourcelead.entity.LeaveType;
@@ -51,6 +60,7 @@ import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.Shift;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
+import com.bis.sourcelead.payroll.entity.EmployerPayrollCost;
 import com.bis.sourcelead.service.DepartmentService;
 import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.HolidayService;
@@ -944,6 +954,7 @@ public class LeaveManagementRestController {
 			leaveDto.setReason(leave.getReason());
 			leaveDto.setCreatedDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),leave.getCreatedDate()));
 			leaveDto.setFileName(leave.getFileName());
+
 			
 			StringBuilder sbu = new StringBuilder();
 			if(leave.getUser() != null){
@@ -978,19 +989,43 @@ public class LeaveManagementRestController {
 					leaveDto.setCancelledBy(sbc.toString());
 				}
 			 }
+
+
+			List<String> aphlist = new ArrayList<>();
+			for(LeaveApproveHierarchy laph1 : leave.getApproverHierarchyList()){
+				StringBuilder sb1 = new StringBuilder();
+				try {
+					UserRole role = userRoleService.getUserRoleByUserIdAndLocationId(laph1.getApproverUserId().getId(), orgLocations.getId());
+					if(role != null){
+						if(StringUtils.isNotBlank(laph1.getApproverUserId().getLastName())){
+							aphlist.add(sb1.append(role.getUserType()).append(" ( ").append(laph1.getApproverUserId().getFirstName()).append(" ").append(laph1.getApproverUserId().getLastName()).append(" )").toString());					
+						}else{
+							aphlist.add(sb1.append(role.getUserType()).append(" ( ").append(laph1.getApproverUserId().getFirstName()).append(" )").toString());
+						}
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+			leaveDto.setApproverUsers(String.join(",", aphlist));
+			int nuberOfLeavestaken = leaveDao.getNumberOfLeavesTakenByUser(leave.getUser().getId());
+			leaveDto.setLeavesTaken(String.valueOf(nuberOfLeavestaken));
+			int thisMonthLeaves = leaveDao.getThisMonthLeavesTakenByUser(leave.getUser().getId());
+			leaveDto.setThisMonthLeaves(String.valueOf(thisMonthLeaves));
+
 		}
 		return leaveDto;
 	}
 	
 	@RequestMapping(value = {"/storeCancelReason"})
 	@ResponseBody
-	public  boolean storeCancelReason(@RequestParam(value = "id", required = false) String id,@RequestParam(value = "reason", required = false) String reason,@RequestParam(value = "userId", required = false) String userId) throws Exception
+	public  boolean storeCancelReason(@RequestParam(value = "id", required = false) String id,@RequestParam(value = "reason", required = false) String reason,@RequestParam(value = "userId", required = false) Long userId) throws Exception
 	{
 		boolean isCancelled = false;
 		LeaveManagementHistory leaveManagementHistory = new LeaveManagementHistory();
 		Leave leave = leaveService.getLeaveByLeavId(id);
 		leaveManagementHistory.setFromStage(leave.getStatus());
-		User user = userService.getUserById(Long.valueOf(userId));
+		User user = userService.getUserById(userId);
 		 if(leave !=null) {
 			 leave.setDeleteReason(reason);
 			 leave.setCancelledBy(user);
@@ -1009,5 +1044,38 @@ public class LeaveManagementRestController {
 			leaveManagementHistoryDao.saveLeaveManagementHistory(leaveManagementHistory);
 		return isCancelled;
 	}	
+	
+	@RequestMapping(value = {"/getEmployeeLeavesList"})
+	@ResponseBody
+	public List<LeaveDTO> getEmployeeLeavesList(@RequestParam(value = "orgLocationId", required = true) Long orgLocationId,@RequestParam(value = "userId", required = true) String userId) throws Exception
+	{
+		OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
+		List<LeaveDTO> leavesList = leaveService.getEmployeeRequestedLeavesBylocationId(orgLocations, userId, Constants.APPROVED);
+		return leavesList;
+		
+	}
+	
+	
+	@RequestMapping(value = {"/getTopLeavetakers", "/rest/getTopLeavetakers"}, method = RequestMethod.POST)
+	public @ResponseBody  ResponseList<LeaveDTO> getTopLeavetakers(LeaveDTO leaveDTO,HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+//		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		OrgLocations orgLocation = orgLocationService.getOrgLocations(Long.parseLong(leaveDTO.getOrgLocationId()));
+		System.out.println("****************************** "+leaveDTO.getOrgLocationId());
+		String[] tableColumns = {"empName", "noOfDays", "status"};
+	     int sortColumnIndex = 3; //by default sorting using updated date
+		String sortColumnOrder = "desc"; //by default descending order
+		if(leaveDTO.getOrder() != null && !leaveDTO.getOrder().isEmpty()) {
+			sortColumnIndex = Integer.parseInt(leaveDTO.getOrder().get(0).get("column"));
+			sortColumnOrder = leaveDTO.getOrder().get(0).get("dir");
+		}
+		leaveDTO.setSortColumn(tableColumns[sortColumnIndex]);
+		leaveDTO.setSortOrder(sortColumnOrder);
+		
+		ResponseList<LeaveDTO> list = leaveService.getTopLeavetakers(orgLocation,leaveDTO);
+//		List<EmployerPayrollCost> data = getEmployerCostSortedList(list.getData());
+//		list.setData(data);
+		return null;
+	}
 
 }

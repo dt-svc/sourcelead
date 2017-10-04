@@ -1,5 +1,7 @@
 package com.bis.sourcelead.dao.impl;
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
@@ -14,8 +16,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.LeaveDao;
+import com.bis.sourcelead.dto.LeaveDTO;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Leave;
 import com.bis.sourcelead.entity.LeaveApproveHierarchy;
+import com.bis.sourcelead.entity.OrgLocations;
 
 @Repository
 public class LeaveDaoImpl implements LeaveDao{
@@ -86,6 +91,44 @@ public class LeaveDaoImpl implements LeaveDao{
 		String query = "from Leave leave left join fetch leave.leaveType where leave.orgLocations.id = :orgLocationId and leave.status = :status and leave.createdBy IN (select user.userCode from User user where user.id=:userId)";
 		leaveList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setLong("userId", userId).setString("status", status).setCacheable(true).list();
 		return leaveList;
+	}
+
+
+	@Override
+	@Transactional
+	public int getNumberOfLeavesTakenByUser(Long userId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from Leave leave where leave.user.id = :userId  and leave.status = 'APPROVED'";
+		List<Leave> leavesList = session.createQuery(query).setLong("userId", userId).setCacheable(true).list();
+		return leavesList.size();
+	}
+
+
+	@Override
+	@Transactional
+	public int getThisMonthLeavesTakenByUser(Long userId) {
+		Calendar c = Calendar.getInstance();
+		int year = c.get(Calendar.YEAR);
+		int month = c.get(Calendar.MONTH);
+		int day = 1;
+		c.set(year, month, day);
+		int numOfDaysInMonth = c.getActualMaximum(Calendar.DAY_OF_MONTH);
+		Date startDate = c.getTime();
+		java.sql.Date currentMonthStartDate = new java.sql.Date(startDate.getTime());
+		c.add(Calendar.DAY_OF_MONTH, numOfDaysInMonth - 1);
+		Date endDate = c.getTime();
+		java.sql.Date currentMonthEndDate = new java.sql.Date(endDate.getTime());
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from Leave leave where leave.user.id = :userId  and leave.status = 'APPROVED' and leave.createdDate BETWEEN :currentMonthStartDate AND :currentMonthEndDate";
+		List<Leave> leavesList = session.createQuery(query).setLong("userId", userId).setParameter("currentMonthStartDate", currentMonthStartDate).setParameter("currentMonthEndDate", currentMonthEndDate).setCacheable(true)
+				.list();
+		return leavesList.size();
+	}
+
+
+	@Override
+	public ResponseList<LeaveDTO> getTopLeavetakers(OrgLocations orgLocation, LeaveDTO leaveDTO) throws Exception {
+		return null;
 	}
 
 }
