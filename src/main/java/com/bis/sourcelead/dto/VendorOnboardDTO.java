@@ -1,6 +1,7 @@
 package com.bis.sourcelead.dto;
 
 import java.io.Serializable;
+import java.util.List;
 
 public class VendorOnboardDTO implements Serializable{
 
@@ -54,6 +55,9 @@ public class VendorOnboardDTO implements Serializable{
 	
 	private String bicNumber;
 	
+	private String staticPath;
+	
+	private List<FileInfo> vendorDocumentsFileInfo;
 	
 	
 
@@ -248,6 +252,23 @@ public class VendorOnboardDTO implements Serializable{
 	public void setBicNumber(String bicNumber) {
 		this.bicNumber = bicNumber;
 	}
+
+	public String getStaticPath() {
+		return staticPath;
+	}
+
+	public void setStaticPath(String staticPath) {
+		this.staticPath = staticPath;
+	}
+
+	public List<FileInfo> getVendorDocumentsFileInfo() {
+		return vendorDocumentsFileInfo;
+	}
+
+	public void setVendorDocumentsFileInfo(List<FileInfo> vendorDocumentsFileInfo) {
+		this.vendorDocumentsFileInfo = vendorDocumentsFileInfo;
+	}
+
 
 	
 }

@@ -18,6 +18,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.annotations.Validator;
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.dto.OnBoardingTemplateDTO;
 import com.bis.sourcelead.dto.OnboardTasksDTO;
 import com.bis.sourcelead.dto.VendorOnboardDTO;
@@ -294,5 +295,31 @@ public class VendorOnboardRestController {
 		
 	 }
 	 
+	 
+	 @RequestMapping(value = "/getVendorOnboardDocumentByVendorOnboardId", method = RequestMethod.GET)
+	 @ResponseBody List<VendorOnboardingTemplateDocuments> getVendorOnboardDocumentByVendorOnboardId(@RequestParam(value="vendorOnboardId", required=false) Long vendorOnboardId,HttpServletRequest request) throws Exception{
+		 
+			List<VendorOnboardingTemplateDocuments> documentsList = vendorOnboardTemplateDocumentsService.getVendorOnboaringTemplateDocumentsByVendorOnboardId(vendorOnboardId);
+		    return documentsList;
+		
+	 }
+	 
+	 
+		@RequestMapping(value = "/saveVendorOnboardSubmittedDocuments", method = RequestMethod.POST)
+		public @ResponseBody String saveVendorOnboardSubmittedDocuments(VendorOnboardDTO vendorOnboardDTO, HttpServletRequest request) throws Exception {
+			User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			if(Validator.validate(vendorOnboardDTO)) {
+				vendorOnboardDTO.setStaticPath(staticPath);
+				for(FileInfo fileInfo : vendorOnboardDTO.getVendorDocumentsFileInfo()) {
+					if(fileInfo != null && fileInfo.getFileURL() != null) {
+						  System.out.println(fileInfo.getFileURL());
+					   }
+				}
+			 }else
+				 return "DataMissing";
+			
+			return "success";
+				
+		}
 	
 }

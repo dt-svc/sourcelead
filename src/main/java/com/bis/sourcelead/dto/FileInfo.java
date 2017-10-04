@@ -10,6 +10,7 @@ public class FileInfo {
     
 	private String docFileName;
 	private String checked;
+	private String docId;
 
 	public String getFileURL() {
 		return fileURL;
@@ -65,6 +66,14 @@ public class FileInfo {
 
 	public void setChecked(String checked) {
 		this.checked = checked;
+	}
+
+	public String getDocId() {
+		return docId;
+	}
+
+	public void setDocId(String docId) {
+		this.docId = docId;
 	}
 
 }
