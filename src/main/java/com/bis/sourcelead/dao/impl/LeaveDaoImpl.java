@@ -16,8 +16,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.LeaveDao;
+import com.bis.sourcelead.dto.LeaveDTO;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Leave;
 import com.bis.sourcelead.entity.LeaveApproveHierarchy;
+import com.bis.sourcelead.entity.OrgLocations;
 
 @Repository
 public class LeaveDaoImpl implements LeaveDao{
@@ -120,6 +123,12 @@ public class LeaveDaoImpl implements LeaveDao{
 		List<Leave> leavesList = session.createQuery(query).setLong("userId", userId).setParameter("currentMonthStartDate", currentMonthStartDate).setParameter("currentMonthEndDate", currentMonthEndDate).setCacheable(true)
 				.list();
 		return leavesList.size();
+	}
+
+
+	@Override
+	public ResponseList<LeaveDTO> getTopLeavetakers(OrgLocations orgLocation, LeaveDTO leaveDTO) throws Exception {
+		return null;
 	}
 
 }
