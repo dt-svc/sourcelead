@@ -996,12 +996,23 @@ function reActiveProject(projectMemberId,empName,startDate,endDate,projectEndDat
 	  
    var reStatertDate = $('#Re-StartDate').val();
    
-		  
+	
+   var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+	  var finalDateFormatRecomondedCandCertSave = '';
+	  if(locationDate.match("yyyy-MM-dd")){
+		  finalDateFormatRecomondedCandCertSave = 'yy-mm-dd';
+	  }if(locationDate.match("dd-MM-yyyy")){
+		  finalDateFormatRecomondedCandCertSave = 'dd-mm-yy'; 
+	  }if(locationDate.match("MM-dd-yyyy")){
+		  finalDateFormatRecomondedCandCertSave = 'mm-dd-yy'; 
+	  }if(locationDate.match("yyyy-dd-MM")){
+		  finalDateFormatRecomondedCandCertSave = 'yy-dd-mm'; 
+	  }
    
   var reStatertDate = $('#Re-StartDate').val()
   if(projectEndDateStr != null && projectEndDateStr != "" && projectEndDateStr != 'undefined'){
 	  $('#Re-StartDate').datepicker({
-	      dateFormat: 'dd-mm-yy',
+	      dateFormat: finalDateFormatRecomondedCandCertSave,
 	      changeMonth: true,
 	  	  changeYear: true, 
 		  minDate:endDate,
@@ -1024,7 +1035,7 @@ function reActiveProject(projectMemberId,empName,startDate,endDate,projectEndDat
 	  });
 	  
 	  $('#Re-EndDate').datepicker({
-	      dateFormat: 'dd-mm-yy',
+	      dateFormat: finalDateFormatRecomondedCandCertSave,
 	      changeMonth: true,
 	  	  changeYear: true, 
 	      minDate:endDate,
@@ -1046,7 +1057,7 @@ function reActiveProject(projectMemberId,empName,startDate,endDate,projectEndDat
   }
   else{
 	  $('#Re-StartDate').datepicker({
-	      dateFormat: 'dd-mm-yy',
+	      dateFormat: finalDateFormatRecomondedCandCertSave,
 	      changeMonth: true,
 	  	  changeYear: true, 
 		  minDate:endDate,
@@ -1069,7 +1080,7 @@ function reActiveProject(projectMemberId,empName,startDate,endDate,projectEndDat
 	  
 	
 	  $('#Re-EndDate').datepicker({
-	      dateFormat: 'dd-mm-yy',
+	      dateFormat: finalDateFormatRecomondedCandCertSave,
 	      changeMonth: true,
 	  	  changeYear: true, 
 	      minDate:endDate,
