@@ -12,8 +12,11 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
+import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserLoginLogoutSession;
 import com.bis.sourcelead.service.ActionHistoryService;
+import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.bis.sourcelead.web.DashboardController;
 /**
  *
@@ -122,10 +125,10 @@ public class LoggingAspect {
 				.getRequestAttributes()).getRequest();
 
 		UserLoginLogoutSession userLoginSession = (UserLoginLogoutSession) request.getSession().getAttribute("userLoginSession");
-	//	User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "userLoginSession");
+		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 		String methodName = joinPoint.getSignature().getName();
 		if(userLoginSession != null)
-			actionHistoryService.saveActionHistory(methodName,userLoginSession);
+			actionHistoryService.saveActionHistory(methodName,userLoginSession,loginOrgLocation);
 
 	}
 
