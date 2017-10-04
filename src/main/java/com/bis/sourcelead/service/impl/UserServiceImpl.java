@@ -454,11 +454,6 @@ public class UserServiceImpl implements UserService {
 			logger.error(ExceptionUtils.getFullStackTrace(e));
 		}
 		
-		if(StringUtils.isNotBlank(addUserDTO.getDepartment())){
-			
-			List<Department> departmentList = departmentService.getDepartmentByOrgLocationId(orgLocations.getId());
-		}
-		
 		userRole.setRoles(roles);
 		userRole.setUserType(roles.getDisplayName());
 		userRole.setCreatedDate(commonUtil.currentDate());
