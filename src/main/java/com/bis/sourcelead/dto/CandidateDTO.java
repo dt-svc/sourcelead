@@ -17,7 +17,7 @@ import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.Team;
 import com.bis.sourcelead.entity.User;
 
-public class CandidateDTO {
+public class CandidateDTO extends SearchDTO{
 
 	private String candidateId;
 	
