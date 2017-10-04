@@ -129,8 +129,8 @@ public class LeaveServiceImpl implements LeaveService{
 	}
 
 	@Override
-	public List<LeaveDTO> getEmployeeRequestedLeavesBylocationId(OrgLocations orgLocations, String userId) throws Exception {
-		List<LeaveApproveHierarchy> leaveApproveHierarchiesList = leaveDao.getEmployeeRequestedLeavesBylocationId(orgLocations.getId(),userId);
+	public List<LeaveDTO> getEmployeeRequestedLeavesBylocationId(OrgLocations orgLocations, String userId, String leaveStatus) throws Exception {
+		List<LeaveApproveHierarchy> leaveApproveHierarchiesList = leaveDao.getEmployeeRequestedLeavesBylocationId(orgLocations.getId(),userId, leaveStatus);
 		List<LeaveDTO> leaveDtoList = new ArrayList<>();
 		leaveApproveHierarchiesList.forEach(laph -> {
 			Leave laeav = laph.getLeaveid();

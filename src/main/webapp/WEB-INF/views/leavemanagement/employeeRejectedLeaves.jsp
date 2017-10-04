@@ -139,6 +139,145 @@ function redirectlocation(location){
   </script>
   
   <script>
+function getRequestedAproveSummary(leaveId,orgLocationId){
+	   $.get(sourceleadUrl+"/getRequestedAproveSummary?"+tokenParamName+"="+tokenValue+"&leaveId="+leaveId+"&orgLocationId="+orgLocationId, function(data) {
+		   if(data != null){
+			$(".new_side_wrap").addClass("new_side_wrap_active");
+			$(".side_mask").fadeIn(200);
+			$("body").css('overflow-y', 'hidden');
+			 var result = "";	
+			 result = result +' <div class="viewgrid-header pull-right zIndex positionRelative">';
+			 result = result +' <span class="btn btn-danger btn-sm mr10">Rejected</span>';
+// 			 result = result +' <span class="btn btn-default btn-sm" onClick="cancel()">Cancel</span>';
+			 result = result +'<div class="clearfix"></div>';
+			 result = result +'<div class="cancel-reason" id="cancelReason">';
+			 result = result +'<div class="clearfix">';
+			 result = result +' <textarea rows="1" class="form-control" placeholder="Cancel Reason..." id="textarea"></textarea>';
+			 result = result +'</div>';
+			 result = result +'<div class="clearfix mt5">';
+			 result = result +'</div>';
+			 result = result +'</div>';
+			 result = result +' </div> ';
+			 result = result +' <div class="row">';
+			 result = result +'<div class="col-md-12 mb">';
+			 result = result +' <label class="col-md-2 control-label"><b>Employee Name:</b></label>';
+			 result = result +' <div class="col-md-8">';
+			 result = result +' <span>'+data.empName+'</span>';
+			 result = result +' </div>';
+			 result = result +'</div>';
+			 result = result +'<div class="col-md-12 mb">';
+			 result = result +'<label class="col-md-2 control-label"><b>Employee ID:</b></label>';
+			 result = result +'<div class="col-md-8">';
+			 if(data.empid !=null){
+				 result = result +'  <span>'+data.empid+'</span>';	 
+			 }else{
+				 result = result +'  <span>--</span>';
+			 }
+			 result = result +'</div>';
+			 result = result +'</div>';
+			 result = result +'<div class="col-md-12 mb">';
+			 result = result +'<label class="col-md-2 control-label"><b>Employee Email:</b></label>';
+			 result = result +' <div class="col-md-8">';
+			 result = result +' <span>'+data.empEmail+'</span>';
+			 result = result +' </div>';
+			 result = result +'</div>';
+			 result = result +'<div class="col-md-12 mb">';
+			 result = result +'<label class="col-md-2 control-label"><b>Employee Type:</b></label>';
+			 result = result +' <div class="col-md-8">';
+			 result = result +'<span>Contract to Hire</span>';
+			 result = result +'</div>';
+			 result = result +'</div>';
+			 result = result +'<div class="col-md-12 mb">';
+			 result = result +'<label class="col-md-2 control-label"><b>Leave Type:</b></label>';
+			 result = result +'<div class="col-md-8">';
+			 result = result +'<span>'+data.leaveType+'</span>';
+			 result = result +'</div>';
+			 result = result +'</div>';
+			 result = result +'<div class="col-md-12 mb">';
+			 result = result +'<label class="col-md-2 control-label"><b>Duration:</b></label>';
+			 result = result +'<div class="col-md-8">';
+			 result = result +' <span>'+data.duration+'</span>';
+			 result = result +' </div>';
+			 result = result +'</div>';
+             result = result +' <div class="col-md-12 mb">';
+             result = result +'<label class="col-md-2 control-label"><b>Reason:</b></label>';
+             result = result +'<div class="col-md-8">';
+             result = result +'<span>'+data.reason+'</span>';
+             result = result +' </div>';
+             result = result +' </div>';
+             result = result +'<div class="col-md-12 mb">';
+             result = result +'<label class="col-md-2 control-label"><b>No of leaves taken:</b></label>';
+             result = result +' <div class="col-md-8">';
+             result = result +'<span>XXXXXXX</span>';
+             result = result +'</div>';
+             result = result +'</div>';
+             result = result +'<div class="col-md-12 mb">';
+             result = result +'<label class="col-md-2 control-label"><b>This month:</b></label>';
+             result = result +'<div class="col-md-8">';
+             result = result +' <span>XXXXX</span>';
+             result = result +'</div>';
+             result = result +'</div>';
+             result = result +'<div class="col-md-12 mb">';
+             result = result +'<label class="col-md-2 control-label"><b>Balance leaves:</b></label>';
+             result = result +'<div class="col-md-8">';
+             result = result +' <span>'+data.balanceleaves+'</span>';
+             result = result +'</div>';
+             result = result +'</div>';
+             result = result +'<div class="col-md-12 mb">';
+             result = result +'<label class="col-md-2 control-label"><b>Applied on:</b></label>';
+             result = result +'<div class="col-md-8">';
+             result = result +'<span>'+data.createdDate+'</span>';
+             result = result +' </div>';
+             result = result +'</div>';
+             result = result +'<div class="col-md-12 mb">';
+             result = result +'<label class="col-md-2 control-label"><b>Approvers:</b></label>';
+             result = result +'<div class="col-md-8">';
+             result = result +' <span>Srinivas Vemula</span>';
+             result = result +'</div>';
+             result = result +'</div>';
+             result = result +'<div class="col-md-12 mb">';
+             result = result +'<label class="col-md-2 control-label"><b>Attachment:</b></label>';
+             result = result +' <div class="col-md-8">';
+//              result = result +' <span><a href="javascript:void(o)">demo.pdf<i class="fa fa-download padddingLeft cursorPointer"></i></a></span>';
+             if(data.fileUrl != null && data.fileUrl != 'undefined' && data.fileUrl != ''){
+            	 result = result +'<span><a href="'+data.fileUrl+'">'+data.fileName+'<i class="fa fa-download padddingLeft cursorPointer"></i></a></span>';
+             }else{
+            	 result = result +'<span>--</span>'; 
+             }
+             result = result +'</div>';
+             result = result +' </div>';
+             result = result +'<div class="col-md-12 mb">';
+             result = result +'<label class="col-md-2 control-label"><b>Rejected by:</b></label>';
+             result = result +'<div class="col-md-8">';
+             result = result +' <span>'+data.rejectedBy+'</span>';
+             result = result +'</div>';
+             result = result +'</div>';
+             result = result +'<div class="col-md-12 mb">';
+             result = result +'<label class="col-md-2 control-label"><b>Rejected on:</b></label>';
+             result = result +'<div class="col-md-8">';
+             result = result +' <span>'+data.updatedDate+'</span>';
+             result = result +'</div>';
+             result = result +'</div>';
+             result = result +'<div class="col-md-12 mb">';
+             result = result +'<label class="col-md-2 control-label"><b>Rejected Reason:</b></label>';
+             result = result +'<div class="col-md-8">';
+             result = result +' <span>Srinivas Vemula</span>';
+             result = result +'</div>';
+             result = result +'</div>';
+             result = result +'<div class="clearfix"></div>';
+             result = result +'</div>';
+             
+             $("#leaveSummaryId").empty();
+             $("#leaveSummaryId").append(result);
+            
+		}	
+		 
+	});  
+}
+</script>
+  
+  
+  <script>
 function rejectedLeavesTable(){ 
     $('#rejectedLeavesTable').DataTable( { 
     	"scrollCollapse": false,
@@ -154,5 +293,19 @@ function rejectedLeavesTable(){
     $("#rejectedLeavesTable").wrap("<div class='overflow_Auto width100percnt'></div>")
 }
 </script>
+
+<div class="side_mask">
+    <div class="proj_close"></div>
+</div>
+
+<div class="new_side_wrap">
+<div class="clients_side_wrap_inn">
+      <div class="clerfix showDetails">
+      <div class="project_tabs minHeight_225 form-horizontal modal-body">
+      <div id="leaveSummaryId"></div>
+     </div>
+      </div>
+  </div>
+</div>
 
 <jsp:include page="../masterFooter.jsp" />
