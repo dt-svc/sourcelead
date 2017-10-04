@@ -38,6 +38,7 @@ $(document).ready(function(){
       <div class="clearfix"></div>
     </div>
     <div class="clients_wrap_table datatable_filter">
+    	<div id="loading"></div>
     	<div id="pendingListDiv"></div>
     </div>
   </div>
@@ -59,6 +60,7 @@ function redirectlocation(location){
 function getPendingLeavesList(){
 	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	var userId = '${SourceLeadWeb_user.id}';
+	$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:999;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	$.get(sourceleadUrl+"/getLeavesListByLocationIdAndStatus?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&status=PENDING&userId="+userId, function(data) {
 		var result = "";				        	
 				result = result + '<table id="pendingListTable" class="display" cellspacing="0" width="100%" >';

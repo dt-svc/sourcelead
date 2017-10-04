@@ -61,8 +61,6 @@ $(document).ready(function(){
 	 var locationId = '${SourceLeadWeb_orgLocationId}';
 	 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:999;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	 $.get( sourceleadUrl+ "/getLeaveTypesByLocationid?&orgLocationId="+locationId, function(data) {
-	     if(data != null && data != '' && data != 'undefined'){
-	    	 
 	    	 var result = "";
 	    	 result += '<table id="leaveTypeListTable" class="display" cellspacing="0" width="100%" >';
 	         result += '<thead>';
@@ -134,8 +132,6 @@ $(document).ready(function(){
        			$(".side_mask").fadeIn(200);
        			$("body").css('overflow-y', 'hidden');
        		});
-	    	 
-	     }
      });
  }
  </script>

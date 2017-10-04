@@ -6,10 +6,12 @@
 <script type="text/javascript" src="https://www.amcharts.com/lib/3/serial.js"></script>
 <script type="text/javascript" src="https://www.amcharts.com/lib/3/pie.js"></script> 
 
+<%-- <jsp:include page="topLeaveTakers.jsp" /> --%>
 
 <script type="text/javascript">
 		 $(document).ready(function(){
 			 getHolidaysList();
+			 getEmployeeLeavesList();
 			});
 </script>
 
@@ -30,7 +32,7 @@
                       </div>
           <ul class="project-tabs-menu projecttabs-custom">
             <li class="current"><a href="#tab-1">Self</a></li>
-            <li><a href="#tab-2">Employees</a></li>
+            <li><a href="#tab-2" onclick="getTopLeaveTakers();">Employees</a></li>
             <div class="clearfix"></div>
           </ul>
            
@@ -120,144 +122,12 @@
                             <div class="col-md-4 noPad">&nbsp</div>
                             </div>
                             <div id="holidayListDiv"></div>
-                        <!-- <table cellspacing="0" cellpadding="0" width="100%;" class="table table-bordered">
-    <thead>
-    <th>S.No</th><th>Name</th><th>Date</th><th>Day of the week</th>
-    </thead>
-  <tr class="text-danger">
-    <td>1</td>
-    <td>New year</td>
-    <td>1/1/2017</td>
-    <td>Sunday</td>
-  </tr>
-  <tr class="text-danger">
-    <td>2</td>
-    <td>Pongal</td>
-    <td>1/13/2017</td>
-    <td>Friday</td>
-  </tr>
-  <tr class="text-danger">
-    <td>3</td>
-    <td>Maha Sivratri</td>
-    <td>2/24/2017</td>
-    <td>Friday</td>
-  </tr>
-  <tr class="text-danger">
-    <td>4</td>
-    <td>Ugadi</td>
-    <td>3/29/2017</td>
-    <td>Wednesday</td>
-  </tr>
-  <tr class="text-danger">
-    <td>5</td>
-    <td>Good Friday</td>
-    <td>4/14/2017</td>
-    <td>Friday</td>
-  </tr>
-  <tr class="text-danger">
-    <td>6</td>
-    <td>May day</td>
-    <td>01.05.2017</td>
-    <td>Monday</td>
-  </tr>
-  <tr class="text-danger">
-    <td>7</td>
-    <td>*Eid    - ul - Fitar </td>
-    <td>26.06.2017</td>
-    <td>Monday</td>
-  </tr>
-  <tr class="text-danger">
-    <td>8</td>
-    <td>Independence Day</td>
-      <td>8/15/2017</td>
-    <td>Tuesday</td>
-  </tr>
-  <tr class="text-danger">
-    <td>9</td>
-    <td>Ganesh Chathurthi</td>
-      <td>8/25/2017</td>
-    <td>Friday</td>
-  </tr>
-  <tr>
-    <td>10</td>
-    <td>Dusherra</td>
-      <td>9/30/2017</td>
-    <td>Saturday</td>
-  </tr>
-  <tr>
-    <td>11</td>
-    <td>Diwali</td>
-    <td>10/18/2017</td>
-    <td>Wednesday</td>
-  </tr>
-  <tr>
-    <td>12</td>
-    <td>Christmas</td>
-      <td>12/25/2017</td>
-    <td>Monday</td>
-  </tr>
-</table> -->
+                        
                     </div>
-                  <div class="col-md-12 hidden">
-                    <div class="clearfix project_wrap_table">
-                      <table>
-                        <thead>
-                          <tr>
-                            <th>Employee Name</th>
-                            <th>Requirement</th>
-                            <th>Client</th>
-                            <th>Priority</th>
-                            <th>Applicants</th>
-                            <th>Action</th>
-                          </tr>
-                          <tr>
-                            <td>
-                              <div class="mt5 pull-left tbldata-dotdot-me">
-                                <div class="media">
-                                  <div class="media-left">
-                                      <img src="images/userprofile-img.png" class="media-object" style="width:30px">
-                                  </div>
-                                  <div class="media-body text-left">
-                                    <h5 class="media-heading tbldata-dotdot">Suresh Kumar Sahoo</h5>
-                                    <p class="small text-muted">Lorem ipsum dolor sit amet, consectetur adipiscing elit</p>
-                                  </div>
-                                </div>
-                              </div>
-                            </td>
-                            <td>
-                              <div><span><a href="requirement-list.html" title="Click here">Java Deloper</a></span></div>
-                            </td>
-                            <td>
-                              <div><span>ABC Infotech PVT. Ltd.</span></div>
-                            </td>
-                            <td>50%</td>
-                            <td>
-                              <div><span>Immediate</span></div>
-                            </td>
-                            <td>10</td>
-                          </tr>
-                        </thead>
-                        <tbody>
-                        </tbody>
-                      </table>
-                      <!-- Pagenation -->
-                      <nav class="clearfix">
-                        <ul id="paging" class="pagination pull-right">
-                          <li><a href="#">Previous</a></li>
-                          <li class="active"><a href="#">1</a></li>
-                          <li><a href="#">2</a></li>
-                          <li><a href="#">3</a></li>
-                          <li><a href="#">4</a></li>
-                          <li><a href="#">5</a></li>
-                          <li data-page="last"><a href="#">Next</a></li>
-                        </ul>
-                      </nav>
-                    </div>
-                  </div>
                 </div>
               </div>
             </div>
-            <div id="tab-2" class="project_tabs_inn" style="display: none">
+            <div id="tab-2"  class="project_tabs_inn" style="display: none">
                 <div class="row clearfix">
                     <div class="clearfix mb5">
                         <div class="col-md-8">
@@ -298,137 +168,7 @@
                         </div>
                     </div>
                     <div class="clearfix ptagmrng-none">
-                        <div class="col-md-3">
-                      <div class="media media-custom mb">
-                          <div class="media-left">
-                              <div class="empimg-parent">
-                                <img src="images/24.jpg" class="">
-                              </div>
-                          </div>
-                          <div class="media-body text-left">
-                            <h5 class="media-heading tbldata-dotdot">Suresh Kumar Sahoo</h5>
-                            <p class="small text-muted">Java Developer</p>
-                              <ul class="list-unstyled list-inline mrng0 mt5 empLeave-li">
-                                  <li title="Date">S</li>
-                                  <li title="Date">M</li>
-                                  <li title="Date">T</li>
-                                  <li title="Date" class="halfday">W</li>
-                                  <li title="Date" class="fullday">T</li>
-                                  <li title="Date">F</li>
-                                  <li title="Date">S</li>
-                              </ul>
-                          </div>
-                      </div>
-                            </div>
-                        <div class="col-md-3">
-                        <div class="media media-custom mb">
-                          <div class="media-left">
-                              <div class="empimg-parent">
-                                <img src="images/23.jpg" class="">
-                              </div>
-                          </div>
-                          <div class="media-body text-left">
-                            <h5 class="media-heading tbldata-dotdot">Suresh Kumar Sahoo</h5>
-                            <p class="small text-muted">Java Developer</p>
-<ul class="list-unstyled list-inline mrng0 mt5 empLeave-li">
-                                  <li title="Date">S</li>
-                                  <li title="Date">M</li>
-                                  <li title="Date">T</li>
-                                  <li title="Date" class="halfday">W</li>
-                                  <li title="Date" class="fullday">T</li>
-                                  <li title="Date">F</li>
-                                  <li title="Date">S</li>
-                              </ul>
-                            </div>
-                      </div>
-                        </div>
-                        <div class="col-md-3">
-                        <div class="media media-custom mb">
-                          <div class="media-left">
-                              <div class="empimg-parent">
-                                <img src="images/24.jpg" class="">
-                              </div>
-                          </div>
-                          <div class="media-body text-left">
-                            <h5 class="media-heading tbldata-dotdot">Suresh Kumar Sahoo</h5>
-                            <p class="small text-muted">Java Developer</p>
-<ul class="list-unstyled list-inline mrng0 mt5 empLeave-li">
-                                  <li title="Date">S</li>
-                                  <li title="Date">M</li>
-                                  <li title="Date">T</li>
-                                  <li title="Date" class="halfday">W</li>
-                                  <li title="Date" class="fullday">T</li>
-                                  <li title="Date">F</li>
-                                  <li title="Date">S</li>
-                              </ul>                          </div>
-                      </div>
-                        </div>
-                        <div class="col-md-3">
-                         <div class="media media-custom mb">
-                          <div class="media-left">
-                              <div class="empimg-parent">
-                                <img src="images/23.jpg" class="">
-                              </div>
-                          </div>
-                          <div class="media-body text-left">
-                            <h5 class="media-heading tbldata-dotdot">Suresh Kumar Sahoo</h5>
-                            <p class="small text-muted">Java Developer</p>
-                             <ul class="list-unstyled list-inline mrng0 mt5 empLeave-li">
-                                  <li title="Date">S</li>
-                                  <li title="Date">M</li>
-                                  <li title="Date">T</li>
-                                  <li title="Date" class="halfday">W</li>
-                                  <li title="Date" class="fullday">T</li>
-                                  <li title="Date">F</li>
-                                  <li title="Date">S</li>
-                              </ul>
-                             </div>
-                      </div>
-                        </div>
-                        <div class="col-md-3">
-                         <div class="media media-custom mb">
-                          <div class="media-left">
-                              <div class="empimg-parent">
-                                <img src="images/23.jpg" class="">
-                              </div>
-                          </div>
-                          <div class="media-body text-left">
-                            <h5 class="media-heading tbldata-dotdot">Suresh Kumar Sahoo</h5>
-                            <p class="small text-muted">Java Developer</p>
-                              <ul class="list-unstyled list-inline mrng0 mt5 empLeave-li">
-                                  <li title="Date">S</li>
-                                  <li title="Date">M</li>
-                                  <li title="Date">T</li>
-                                  <li title="Date" class="halfday">W</li>
-                                  <li title="Date" class="fullday">T</li>
-                                  <li title="Date">F</li>
-                                  <li title="Date">S</li>
-                              </ul>
-                             </div>
-                      </div>
-                        </div>
-                        <div class="col-md-3">
-                         <div class="media media-custom mb">
-                          <div class="media-left">
-                              <div class="empimg-parent">
-                                <img src="images/23.jpg" class="">
-                              </div>
-                          </div>
-                          <div class="media-body text-left">
-                            <h5 class="media-heading tbldata-dotdot">Suresh Kumar Sahoo</h5>
-                            <p class="small text-muted">Java Developer</p>
-                              <ul class="list-unstyled list-inline mrng0 mt5 empLeave-li">
-                                  <li title="Date">S</li>
-                                  <li title="Date">M</li>
-                                  <li title="Date">T</li>
-                                  <li title="Date" class="halfday">W</li>
-                                  <li title="Date" class="fullday">T</li>
-                                  <li title="Date">F</li>
-                                  <li title="Date">S</li>
-                              </ul>
-                          </div>
-                      </div>
-                        </div>
+                    	<div id="employeelistDiv"></div>
                       </div>
                 </div>
                 <div class="clearfix"><hr></div>
@@ -490,7 +230,8 @@
                  </div>
                      
                       <div class="clearfix project_wrap_table mt5">
-                      <table>
+                       <div id="topLeaveTakersDiv"></div>
+                       <!-- <table>
                         <thead>
                           <tr>
                             <th>Employee Name</th>
@@ -611,7 +352,7 @@
                           </tr>
                         </tbody>
                       </table>
-                      <!-- Pagenation -->
+                      Pagenation
                       <nav class="clearfix">
                         <ul id="paging22" class="pagination pull-right">
                           <li><a href="#">Previous</a></li>
@@ -622,7 +363,7 @@
                           <li><a href="#">5</a></li>
                           <li data-page="last"><a href="#">Next</a></li>
                         </ul>
-                      </nav>
+                      </nav> -->
                     </div>
                   </div>
 
@@ -885,6 +626,48 @@ function viewHolidaysTable(){
 }
 </script>
 
+<script>
+function getEmployeeLeavesList(){
+	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
+	var userId = '${SourceLeadWeb_userId}';
+	$.get(sourceleadUrl+"/getEmployeeLeavesList?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&userId="+userId+"", function(data) {
+		var result = "";	
+		
+		for (var i=0; i<data.length; i++){
+			var opt = data[i];
+			result += '<div class="col-md-3">';
+	        result += '<div class="media media-custom mb">';
+	        result += '    <div class="media-left">';
+	        result += '        <div class="empimg-parent">';
+	        result += '          <img src="images/24.jpg" class="">';
+	        result += '        </div>';
+	        result += '    </div>';
+	        result += '    <div class="media-body text-left">';
+	        if(opt.empName != null && opt.empName != '' && opt.empName != 'undefined'){
+	        	result += '      <h5 class="media-heading tbldata-dotdot">'+opt.empName+'</h5>';
+	        }
+	        result += '      <p class="small text-muted">Java Developer</p>';
+	        result += '        <ul class="list-unstyled list-inline mrng0 mt5 empLeave-li">';
+	        result += '            <li title="Date">S</li>';
+	        result += '            <li title="Date">M</li>';
+	        result += '            <li title="Date">T</li>';
+	        result += '            <li title="Date" class="halfday">W</li>';
+	        result += '            <li title="Date" class="fullday">T</li>';
+	        result += '            <li title="Date">F</li>';
+	        result += '            <li title="Date">S</li>';
+	        result += '        </ul>';
+	        result += '    </div>';
+	        result += '</div>';
+	        result += '</div>';
+	        $("#employeelistDiv").empty();
+	        $("#employeelistDiv").append(result);
+		}
+		
+	}); 
+	
+}
+</script>
+
 
 <script>
     /*------My Timeoff Balance Piecharts------*/
@@ -1131,6 +914,108 @@ function viewHolidaysTable(){
         $(".customizeEmployee").fadeToggle();
     }
     </script>
+    
+    
+    
+ <script>
+	function getTopLeaveTakers() {
+		alert("Hai******")
+		var orgLocationId = '${SourceLeadWeb_orgLocationId}';
+		var userId = '${SourceLeadWeb_userId}';
+		var searchValue = $("#dataTableSearch").val();
+  		searchValue = searchValue ? searchValue : "";
+  		var url = sourceleadUrl+"/getTopLeavetakers?orgLocationId="+orgLocationId+"&searchValue="+searchValue+"&userId="+userId;
+  		prepareTopLeaveTakersList(url); 
+	}
+	
+</script>	
+
+<script>	
+	function prepareTopLeaveTakersList(url) {
+		alert("url = "+url);
+		$("#topLeaveTakersDiv").empty();
+		var result = "";
+		result = result + "<table id='topLeaveTakersTable' class='display' cellspacing='0' width='100%' >";
+		result = result + "<thead>";
+		result = result + "  <tr>";
+		result = result + "    <th>Employee Name</th>";
+		result = result + "    <th>Website</th>";
+		result = result + "    <th>Status</th>";
+		result = result + "  </tr>";
+		result = result + "</thead>";
+		result = result + "<tbody>";
+		result = result + " </tbody>";
+		result = result + "</table>";
+		$("#topLeaveTakersDiv").append(result);
+		topLeaveTakersPagination(url);
+	}
+
+</script>
+
+
+<script>
+function topLeaveTakersPagination(url){
+	alert("url=============== "+url);	
+	var colIndex = 0;
+		 $('#topLeaveTakersTable').DataTable( { 
+	    	"processing": true,
+	        "serverSide": true,
+	        "searching": false,
+	        "ajax": $.fn.dataTable.pipeline( {
+	            url: url,
+	            method: 'POST',
+	            pages: 10
+	        }),
+	        "columns": [
+	            { "data": "empName" },
+	            { "data": "noOfDays"},
+	            { "data": "status" }
+	        ],
+	        "columnDefs": [ {
+		    	  	"targets": colIndex++,
+		    	  	"data": "empName",
+		    	  	"render": function(data, type, report, meta) {
+		    	  		/* var result = "";
+		    	  		return  result; */
+		    	  	}
+		      },{
+	            "targets": colIndex++,
+	            "data": "noOfDays",
+	            "render": function ( data, type, report, meta ) {
+	            	   /*  var result = "";
+	            		
+		              return result; */
+	            }
+	          }, {
+	              "targets": colIndex++,
+	              "data": "status",
+	              "render": function ( data, type, report, meta ) {
+	            	  /* var result = "";
+	              		
+	  	              return result; */
+	              }
+	            }],
+		    	"scrollCollapse": false,
+		    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
+		    	"aaSorting": [[0,'desc']],
+		    	"bLengthChange": true,
+		    	"bDestroy": true,
+		    	"ordering": true,
+		    	"oLanguage": {
+		     		"sSearch": "",
+		     		 "sZeroRecords": "", "sEmptyTable": ""
+		     		
+		     }
+	    } );
+	    $("#topLeaveTakersTable").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>"); 
+	    $("input[type=search]").hide();
+	    $("#dataTableSearch").keyup(function(e) {
+	    	   if(e.which === 13) {
+	    		   getClientList();
+	    	   }
+	    	});
+}
+</script>
 
 
 <jsp:include page="../masterFooter.jsp" />

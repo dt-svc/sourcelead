@@ -85,7 +85,11 @@ function redirectlocation(location){
 				        		 result = result + ' <tr>';
 				        		 result = result + ' <td>';
 				        		 result = result + ' <div class="proj_show tbldata-dotdot-big">';
-				        		 result = result + '     <div class="pull-left tbldata-dotdot-me" title="Sick Leave" onclick="getRequestedAproveSummary(\''+opt.id+'\','+orgLocationId+');">'+opt.empName+'('+opt.empType+')</div><i class="fa fa-binoculars pull-right" ></i>'; 
+				        		if(opt.empType !=null && opt.empType != '' && opt.empType !='undefined'){
+				        			result = result + '     <div class="pull-left tbldata-dotdot-me" title="Sick Leave" onclick="getRequestedAproveSummary(\''+opt.id+'\','+orgLocationId+');">'+opt.empName+'('+opt.empType+')</div><i class="fa fa-binoculars pull-right" ></i>';	
+				        		}else{
+				        			result = result + '     <div class="pull-left tbldata-dotdot-me" title="Sick Leave" onclick="getRequestedAproveSummary(\''+opt.id+'\','+orgLocationId+');">'+opt.empName+'</div><i class="fa fa-binoculars pull-right" ></i>';
+				        		}
 				        		 result = result + '  </div>';
 				        		 result = result + ' </td>';
 				        		 
@@ -94,7 +98,7 @@ function redirectlocation(location){
 				        		 result = result + ' </td>';
 				        		 
 				        		 result = result + ' <td>';
-				        		 result = result + '   <div title="Leave Transfer" class="tbldata-dotdot-100">'+opt.duration+'</div>';
+				        		 result = result + '   <div title="Duration" class="">'+opt.duration+'</div>';
 				        		 result = result + '</td>';
 				        		 
 				        		 result = result + ' <td>';
@@ -104,11 +108,11 @@ function redirectlocation(location){
 
 
 				        		 result = result + ' <td>';
-				        		 result = result + '     <div title="2" class="tblminwidth-75">Leaves taken NONE</div>';	 
+				        		 result = result + '     <div title="2" class="tblminwidth-75">'+opt.leavesTaken+'</div>';	 
 				        		 result = result + '  </td>';
 				        		 
 				        		 result = result + ' <td>';
-				        		 result = result + '     <div title="2" class="tblminwidth-75">This Month NONE</div>';	 
+				        		 result = result + '     <div title="2" class="tblminwidth-75">'+opt.thisMonthLeaves+'</div>';	 
 				        		 result = result + '  </td>';
 				        		 
 				        		 result = result + ' <td>';
@@ -251,13 +255,13 @@ function getRequestedAproveSummary(leaveId,orgLocationId){
              result = result +'<div class="col-md-12 mb">';
              result = result +'<label class="col-md-2 control-label"><b>No of leaves taken:</b></label>';
              result = result +' <div class="col-md-8">';
-             result = result +'<span>XXXXXXX</span>';
+             result = result +'<span>'+data.leavesTaken+'</span>';
              result = result +'</div>';
              result = result +'</div>';
              result = result +'<div class="col-md-12 mb">';
              result = result +'<label class="col-md-2 control-label"><b>This month:</b></label>';
              result = result +'<div class="col-md-8">';
-             result = result +' <span>XXXXX</span>';
+             result = result +' <span>'+data.thisMonthLeaves+'</span>';
              result = result +'</div>';
              result = result +'</div>';
              result = result +'<div class="col-md-12 mb">';
@@ -275,7 +279,7 @@ function getRequestedAproveSummary(leaveId,orgLocationId){
              result = result +'<div class="col-md-12 mb">';
              result = result +'<label class="col-md-2 control-label"><b>Approvers:</b></label>';
              result = result +'<div class="col-md-8">';
-             result = result +' <span>Srinivas Vemula</span>';
+             result = result +' <span>'+data.approverUsers+'</span>';
              result = result +'</div>';
              result = result +'</div>';
              result = result +'<div class="col-md-12 mb">';

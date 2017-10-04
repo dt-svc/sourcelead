@@ -37,75 +37,10 @@ $(document).ready(function(){
         <div class="clearfix"></div>
       </ul>
       <div class="clearfix"></div>
-      <div class="remove_search">
-        <input placeholder="Search" type="text">
-      </div>
     </div>
-    <div class="require_wrap_table">
-      <table>
-        <thead>
-          <tr>
-            <th>Leave Type</th>
-            <th>Duration</th>
-            <th>Applied On</th>
-            <th>Reason</th>
-            <th>Approvers</th>
-            <th>Approved By</th>
-            <th>Status</th>
-          </tr>
-        </thead>
-        <tbody>
-        <tr>
-            <td>
-              <div class="proj_show tbldata-dotdot-big">
-                  <div class="pull-left tbldata-dotdot-me" title="">Non Billable</div>
-                  <i class="fa fa-binoculars pull-right"></i>
-              </div>
-            </td>
-            <td>
-                <div title="Duration" class="tblminwidth-75">
-                   <div class="width100percnt">
-                        09/10/2017
-                    </div>
-                    <div class="width100percnt mt2">
-                        09/12/2017
-                    </div>
-                </div>
-            </td>
-            <td>
-              <div title="" class="tbldata-dotdot-100">
-                    08/20/2017
-                </div>
-            </td>
-            <td>
-                <div title="" class="tbldata-dotdot-100">
-                    Personal
-                </div>
-            </td>
-            <td>
-                <div title="" class="tbldata-dotdot-100">
-                    Approvers
-                </div>
-            </td>
-            <td>
-                <div title="" class="tbldata-dotdot-100">
-                   Admin
-                </div>
-            </td>
-            <td>
-                <div title="10" class="tblminwidth-75">
-                    <b class="proj_active">Approved</b>
-                </div>
-            </td>
-            <td class="hidden">
-                <div class="tblminwidth-50">
-                    <span title="Edit" class="paddingRight"><i class="fa fa-pencil text-primary cursorPointer"></i></span>
-                    <span title="Delete" class="paddingLeft"><i class="fa fa-trash text-danger cursorPointer"></i></span>
-                </div>
-            </td>
-          </tr>
-          </tbody>
-      </table>
+    <div class="clients_wrap_table datatable_filter">
+    <div id="loading"></div>
+    <div id="approvedListDiv"></div>
     </div>
   </div>
 </div>
@@ -126,7 +61,8 @@ function redirectlocation(location){
 function getApprovedLeavesList(){
 	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	var userId = '${SourceLeadWeb_user.id}';
-	$.get(sourceleadUrl+"/getLeavesListByLocationIdAndStatus?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&status=PENDING&userId="+userId, function(data) {
+	$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:999;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	$.get(sourceleadUrl+"/getLeavesListByLocationIdAndStatus?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&status=APPROVED&userId="+userId, function(data) {
 		var result = "";				        	
 				result = result + '<table id="approvedListTable" class="display" cellspacing="0" width="100%" >';
 				result = result + '<thead>';
@@ -180,16 +116,15 @@ function getApprovedLeavesList(){
 			        		 }
 			        		 result = result + '  </td>';
 			        		 result = result + ' <td>';
-			        		 if(opt.approverUsers !=null && opt.approverUsers != 'undefined' && opt.approverUsers != ''){
-			        			 
-			        			 result = result + '     <div title="'+opt.approverUsers+'" class="tbldata-dotdot">'+opt.approverUsers+'</div>';	 
+			        		 if(opt.updatedBy !=null && opt.updatedBy != 'undefined' && opt.updatedBy != ''){
+			        			 result = result + '     <div title="'+opt.updatedBy+'" class="tblminwidth-75">'+opt.updatedBy+'</div>';	 
 			        		 }else{
 			        			 result = result + '     <div title="" class="tblminwidth-75">--</div>';	
 			        		 }
 			        		 result = result + '  </td>';
 			        		 result = result + ' <td>';
 			        		 result = result + '  <div title="'+opt.status+'" class="tblminwidth-75">';
-			        		 result = result +' <b class="proj_process">'+opt.status+'</b> ';
+			        		 result = result +' <b class="proj_active">'+opt.status+'</b> ';
 			        		 result = result + '  </div>';
 			        		 result = result + ' </td>';
 			        		 result = result + '  </tr>';

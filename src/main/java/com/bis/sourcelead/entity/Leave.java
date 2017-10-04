@@ -142,6 +142,10 @@ public class Leave {
 	@JsonProperty
 	private Integer balanceLeavesCount;
 	
+	@Transient
+	@JsonProperty
+	private String approvedByUser;
+
 	public String getId() {
 		return id;
 	}
@@ -390,6 +394,16 @@ public class Leave {
 
 	public void setNumberOfDays(String numberOfDays) {
 		this.numberOfDays = numberOfDays;
+	}
+	
+	public String getApprovedByUser()
+	{
+		return approvedByUser;
+	}
+
+	public void setApprovedByUser(String approvedByUser)
+	{
+		this.approvedByUser = approvedByUser;
 	}
 	
 
