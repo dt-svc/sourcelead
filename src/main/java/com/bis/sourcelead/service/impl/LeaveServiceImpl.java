@@ -136,7 +136,9 @@ public class LeaveServiceImpl implements LeaveService{
 
 	@Override
 	public List<LeaveDTO> getEmployeeRequestedLeavesBylocationId(OrgLocations orgLocations, String userId, String leaveStatus) throws Exception {
+
 		List<LeaveApproveHierarchy> leaveApproveHierarchiesList = leaveDao.getEmployeeRequestedLeavesBylocationId(orgLocations.getId(),userId,leaveStatus);
+
 		List<LeaveDTO> leaveDtoList = new ArrayList<>();
 		leaveApproveHierarchiesList.forEach(laph -> {
 			Leave leave = laph.getLeaveid();
@@ -228,7 +230,7 @@ public class LeaveServiceImpl implements LeaveService{
 
 	@Override
 	public boolean approveRequestLeave(OrgLocations orgLocations, User user, String leaveId, String leaveTypeId,
-			String approveStatus, String numberOfDays) throws Exception {
+			String approveStatus, String numberOfDays,String reason) throws Exception {
 
 		boolean isApproved = false;
 		LeaveManagementHistory leaveManagementHistory = new LeaveManagementHistory();
@@ -237,12 +239,15 @@ public class LeaveServiceImpl implements LeaveService{
 		if (leave != null) {
 			if (Constants.LEAVE_APPROVED.equals(approveStatus)) {
 				leave.setStatus(Constants.LEAVE_APPROVED);
+				leave.setApprovedBy(user);
 					LeaveType leaveType = leaveTypeService.getLeaveTypeById(leaveTypeId);
 					int numberOfLeavesPerYear = Integer.parseInt(leaveType.getNumbefrOfLeavesPeryear())
 							- Integer.parseInt(numberOfDays);
 					leave.setBalanceLeavesCount(numberOfLeavesPerYear);
 			} else {
 				leave.setStatus(Constants.LEAVE_REJECTED);
+				leave.setRejectedReason(reason);
+				leave.setRejectedBy(user);
 			}
 			leave.setUpdatedBy(user.getUserCode());
 			leave.setUpdatedDate(new Date());
