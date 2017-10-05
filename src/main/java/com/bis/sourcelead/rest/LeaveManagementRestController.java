@@ -1001,8 +1001,10 @@ public class LeaveManagementRestController {
 			leaveDto.setReason(leave.getReason());
 			leaveDto.setCreatedDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),leave.getCreatedDate()));
 			leaveDto.setFileName(leave.getFileName());
-
-			
+            if(leave.getRejectedReason() !=null) {
+            	leaveDto.setRejectedReason(leave.getRejectedReason());
+            }
+           
 			StringBuilder sbu = new StringBuilder();
 			if(leave.getUser() != null){
 			if(StringUtils.isNotBlank(leave.getUser().getLastName())){
@@ -1054,7 +1056,7 @@ public class LeaveManagementRestController {
 					e.printStackTrace();
 				}
 			}
-			leaveDto.setApproverUsers(String.join(",", aphlist));
+			leaveDto.setApproverUsers(String.join(",", aphlist)); 
 			int nuberOfLeavestaken = leaveDao.getNumberOfLeavesTakenByUser(leave.getUser().getId(),leave.getLeaveType().getId());
 			leaveDto.setLeavesTaken(String.valueOf(nuberOfLeavestaken));
 			int thisMonthLeaves = leaveDao.getThisMonthLeavesTakenByUser(leave.getUser().getId(),leave.getLeaveType().getId());

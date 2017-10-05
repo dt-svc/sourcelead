@@ -57,6 +57,8 @@ public class LeaveDTO extends SearchDTO implements Serializable{
 	private String barChartToDate;
 	private String totalLeaves;
 	private String colorCode;
+	private String rejectedReason;
+	private String cancelReason;
 	
 	public String getLeavesTaken() {
 		return leavesTaken;
@@ -345,5 +347,18 @@ public class LeaveDTO extends SearchDTO implements Serializable{
 	public void setColorCode(String colorCode) {
 		this.colorCode = colorCode;
 	}
+	public String getRejectedReason() {
+		return rejectedReason;
+	}
+	public void setRejectedReason(String rejectedReason) {
+		this.rejectedReason = rejectedReason;
+	}
+	public String getCancelReason() {
+		return cancelReason;
+	}
+	public void setCancelReason(String cancelReason) {
+		this.cancelReason = cancelReason;
+	}
+	
 
 }
