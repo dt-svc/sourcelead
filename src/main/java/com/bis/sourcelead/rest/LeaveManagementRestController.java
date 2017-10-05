@@ -3,8 +3,12 @@ package com.bis.sourcelead.rest;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
@@ -32,19 +36,26 @@ import com.bis.sourcelead.dao.LeaveTypeDao;
 import com.bis.sourcelead.dao.OptionsDao;
 import com.bis.sourcelead.dao.RestrictDayDao;
 import com.bis.sourcelead.dao.ShiftDao;
+
 import com.bis.sourcelead.dto.EmployerPayrollCostDTO;
+
 import com.bis.sourcelead.dto.HolidayDTO;
 import com.bis.sourcelead.dto.LeaveDTO;
+import com.bis.sourcelead.dto.LeaveReportsDTO;
 import com.bis.sourcelead.dto.LeaveTypeDTO;
 import com.bis.sourcelead.dto.OptionsDTO;
+
 import com.bis.sourcelead.dto.ResponseList;
+
 import com.bis.sourcelead.dto.RestrictDayDTO;
 import com.bis.sourcelead.dto.ShiftDTO;
 import com.bis.sourcelead.entity.Department;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.Holiday;
 import com.bis.sourcelead.entity.Leave;
+
 import com.bis.sourcelead.entity.LeaveApproveHierarchy;
+
 import com.bis.sourcelead.entity.LeaveManagementHistory;
 import com.bis.sourcelead.entity.LeaveRole;
 import com.bis.sourcelead.entity.LeaveType;
@@ -71,6 +82,7 @@ import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
+import com.itextpdf.text.log.Level;
 
 
 @RestController
@@ -209,10 +221,14 @@ public class LeaveManagementRestController {
 	 * @param request
 	 * @param response
 	 * @return ModelAndView
+	 * @throws Exception 
 	 */
 	@RequestMapping(value = "/leaveManagementReports")
-	public ModelAndView leaveManagementReportsJsp(HttpServletRequest request,HttpServletResponse response) {
+	public ModelAndView leaveManagementReportsJsp(HttpServletRequest request,HttpServletResponse response) throws Exception {
 		   ModelAndView model = new ModelAndView();
+		   OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		   List<Department> departmentList = departmentService.getDepartmentByOrgLocationIdAndStatus(orgLocations.getId(),Constants.RECORD_ACTIVE.toString());
+		   model.addObject("departmentList",departmentList);
 		   model.addObject("sourceleadUrl", sourceleadUrl);
 		   model.setViewName("leavemanagement/leaveManagementReports");
 	       return model;
@@ -485,13 +501,13 @@ public class LeaveManagementRestController {
 		return restrictDayList;
 	}
 
-	@RequestMapping(value = "/saveShift", method = RequestMethod.POST)
+	@RequestMapping(value = {"/saveShift", "/rest/saveShift"}, method = RequestMethod.POST)
 	public String saveShift(ShiftDTO shiftDTO) throws Exception {
 		shiftService.saveShift(shiftDTO);
 	       return "success";
 	}
 	
-	@RequestMapping(value = "/getShiftList", method = RequestMethod.GET)
+	@RequestMapping(value = {"/getShiftList", "/rest/getShiftList"}, method = RequestMethod.GET)
 	public List<Shift> getShiftList(@RequestParam (value = "orgLocationId", required = true )Long orgLocationId) throws Exception{
 	List<Shift> shift = shiftService.getShiftList(orgLocationId);
 	return shift;
@@ -917,12 +933,13 @@ public class LeaveManagementRestController {
 			@RequestParam(value = "leaveTypeId", required = false) String leaveTypeId, 
 			@RequestParam(value = "approveStatus", required = false) String approveStatus,
 			@RequestParam(value = "userId", required = false) Long userId,
-			@RequestParam(value = "numberOfDays", required = false) String numberOfDays,HttpServletRequest request)
+			@RequestParam(value = "numberOfDays", required = false) String numberOfDays,
+			@RequestParam(value = "reason", required = false) String reason,HttpServletRequest request)
 			throws Exception {
 		
 		OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
 		User user = userService.getUserById(userId);
-		boolean isApproved = leaveService.approveRequestLeave(orgLocations,user,leaveId,leaveTypeId,approveStatus,numberOfDays);
+		boolean isApproved = leaveService.approveRequestLeave(orgLocations,user,leaveId,leaveTypeId,approveStatus,numberOfDays,reason);
 		return isApproved;
 		
 	}
@@ -982,6 +999,42 @@ public class LeaveManagementRestController {
 			leaveDto.setCreatedDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),leave.getCreatedDate()));
 			leaveDto.setFileName(leave.getFileName());
 
+			
+			StringBuilder sbu = new StringBuilder();
+			if(leave.getUser() != null){
+			if(StringUtils.isNotBlank(leave.getUser().getLastName())){
+				sbu.append(leave.getUser().getFirstName()).append(" ").append(leave.getUser().getLastName());
+				leaveDto.setApprovedBy(sbu.toString());
+			}else{
+				sbu.append(leave.getUser().getFirstName());
+				leaveDto.setApprovedBy(sbu.toString());
+			}
+		 }
+			
+			leaveDto.setUpdatedDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),leave.getUpdatedDate()));
+			
+			StringBuilder sbr = new StringBuilder();
+			if(leave.getUser() != null){
+				if(StringUtils.isNotBlank(leave.getUser().getLastName())){
+					sbr.append(leave.getUser().getFirstName()).append(" ").append(leave.getUser().getLastName());
+					leaveDto.setRejectedBy(sbr.toString());
+				}else{
+					sbr.append(leave.getUser().getFirstName());
+					leaveDto.setRejectedBy(sbr.toString());
+				}
+			}
+			StringBuilder sbc = new StringBuilder();
+			if(leave.getUser() != null){
+				if(StringUtils.isNotBlank(leave.getUser().getLastName())){
+					sbc.append(leave.getUser().getFirstName()).append(" ").append(leave.getUser().getLastName());
+					leaveDto.setCancelledBy(sbc.toString());
+				}else{
+					sbc.append(leave.getUser().getFirstName());
+					leaveDto.setCancelledBy(sbc.toString());
+				}
+			 }
+
+
 			List<String> aphlist = new ArrayList<>();
 			for(LeaveApproveHierarchy laph1 : leave.getApproverHierarchyList()){
 				StringBuilder sb1 = new StringBuilder();
@@ -999,10 +1052,11 @@ public class LeaveManagementRestController {
 				}
 			}
 			leaveDto.setApproverUsers(String.join(",", aphlist));
-			int nuberOfLeavestaken = leaveDao.getNumberOfLeavesTakenByUser(leave.getUser().getId());
+			int nuberOfLeavestaken = leaveDao.getNumberOfLeavesTakenByUser(leave.getUser().getId(),leave.getLeaveType().getId());
 			leaveDto.setLeavesTaken(String.valueOf(nuberOfLeavestaken));
-			int thisMonthLeaves = leaveDao.getThisMonthLeavesTakenByUser(leave.getUser().getId());
+			int thisMonthLeaves = leaveDao.getThisMonthLeavesTakenByUser(leave.getUser().getId(),leave.getLeaveType().getId());
 			leaveDto.setThisMonthLeaves(String.valueOf(thisMonthLeaves));
+
 		}
 		return leaveDto;
 	}
@@ -1037,35 +1091,66 @@ public class LeaveManagementRestController {
 	
 	@RequestMapping(value = {"/getEmployeeLeavesList"})
 	@ResponseBody
-	public List<LeaveDTO> getEmployeeLeavesList(@RequestParam(value = "orgLocationId", required = true) Long orgLocationId,@RequestParam(value = "userId", required = true) String userId) throws Exception
+	public List<LeaveReportsDTO> getEmployeeLeavesList(@RequestParam(value = "orgLocationId", required = true) Long orgLocationId,@RequestParam(value = "userId", required = true) String userId,@RequestParam(value = "department", required = true) String department) throws Exception
 	{
 		OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
-		List<LeaveDTO> leavesList = leaveService.getEmployeeRequestedLeavesBylocationId(orgLocations, userId, Constants.APPROVED);
+		List<LeaveReportsDTO> leavesList = leaveService.getEmployeeLeavesByApproverIdAndStatus(orgLocations, userId, Constants.APPROVED,department);
 		return leavesList;
 		
 	}
 	
-	
-	@RequestMapping(value = {"/getTopLeavetakers", "/rest/getTopLeavetakers"}, method = RequestMethod.POST)
-	public @ResponseBody  ResponseList<LeaveDTO> getTopLeavetakers(LeaveDTO leaveDTO,HttpServletRequest request, HttpServletResponse response) throws Exception
-	{
-//		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+	/**
+	 * Get top leave takers by location
+	 * @param leaveDTO
+	 * @param req
+	 * @param res
+	 * @return ResponseList<LeaveDTO>
+	 * @throws Exception
+	 */
+	@RequestMapping(value = { "/getTopLeavetakers", "/rest/getTopLeavetakers" }, method = RequestMethod.POST)
+	public @ResponseBody ResponseList<LeaveDTO> getTopLeavetakers(LeaveDTO leaveDTO, HttpServletRequest req,
+			HttpServletResponse res) throws Exception {
 		OrgLocations orgLocation = orgLocationService.getOrgLocations(Long.parseLong(leaveDTO.getOrgLocationId()));
-		System.out.println("****************************** "+leaveDTO.getOrgLocationId());
-		String[] tableColumns = {"empName", "noOfDays", "status"};
-	     int sortColumnIndex = 3; //by default sorting using updated date
-		String sortColumnOrder = "desc"; //by default descending order
-		if(leaveDTO.getOrder() != null && !leaveDTO.getOrder().isEmpty()) {
+		ResponseList<LeaveDTO> leaveDtoResponse = new ResponseList<>();
+		String[] tableColumns = { "empName", "noOfDays", "status" };
+		int sortColumnIndex = 0; // by default sorting using updated date
+		String sortColumnOrder = "desc"; // by default descending order
+		if (leaveDTO.getOrder() != null && !leaveDTO.getOrder().isEmpty()) {
 			sortColumnIndex = Integer.parseInt(leaveDTO.getOrder().get(0).get("column"));
 			sortColumnOrder = leaveDTO.getOrder().get(0).get("dir");
 		}
 		leaveDTO.setSortColumn(tableColumns[sortColumnIndex]);
 		leaveDTO.setSortOrder(sortColumnOrder);
-		
-		ResponseList<LeaveDTO> list = leaveService.getTopLeavetakers(orgLocation,leaveDTO);
-//		List<EmployerPayrollCost> data = getEmployerCostSortedList(list.getData());
-//		list.setData(data);
-		return null;
+
+		ResponseList<Leave> response = leaveService.getTopLeavetakers(orgLocation, leaveDTO);
+		List<Leave> leaveList = response.getData();
+		List<LeaveDTO> leaveDtoList = new ArrayList<>();
+		HashMap<Long, LeaveDTO> reportMap = new HashMap<>();
+		for (Leave leave : leaveList) {
+			LeaveDTO leaveDto = reportMap.get(leave.getUser().getId());
+			if (leaveDto == null) {
+				leaveDto = new LeaveDTO();
+			}
+			StringBuilder sb = new StringBuilder();
+			if (StringUtils.isNotBlank(leave.getUser().getLastName())) {
+				sb.append(leave.getUser().getFirstName()).append(" ").append(leave.getUser().getLastName());
+			} else {
+				sb.append(leave.getUser().getFirstName());
+			}
+			leaveDto.setEmpName(sb.toString());
+			leaveDto.setStatus(leave.getStatus());
+			leaveDto.setNoOfDays(leave.getNumberOfDays());
+			reportMap.put(leave.getUser().getId(), leaveDto);
+		}
+
+		for (Map.Entry<Long, LeaveDTO> entry : reportMap.entrySet()) {
+			leaveDtoList.add(entry.getValue());
+		}
+		leaveDtoResponse.setData(leaveDtoList);
+		leaveDtoResponse.setRecordsFiltered(response.getRecordsFiltered());
+		leaveDtoResponse.setRecordsTotal(response.getRecordsTotal());
+		leaveDtoResponse.setError(response.getError());
+		return leaveDtoResponse;
 	}
 
 	@RequestMapping(value = "/validateRestrictDate")
