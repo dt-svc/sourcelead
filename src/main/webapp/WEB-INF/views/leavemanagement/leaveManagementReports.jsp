@@ -32,7 +32,7 @@
                       </div>
           <ul class="project-tabs-menu projecttabs-custom">
             <li class="current"><a href="#tab-1">Self</a></li>
-            <li><a href="#tab-2" onclick="getTopLeaveTakers();">Employees</a></li>
+            <li><a href="#tab-2" onclick="getTopLeaveTakers();getLeaveTakersBarChat();">Employees</a></li>
             <div class="clearfix"></div>
           </ul>
            
@@ -246,33 +246,31 @@
                           <div class="dropdown-select">
                             <div class="form-inline pull-right">
                             <div class="form-group">
-                            <select class="form-control pull-right" name="year" id="year">
-                              <option selected>Year</option>
-                              <option>2010</option>
-                              <option>2011</option>
-                              <option>2012</option>
-                              <option>2013</option>
-                              <option>2014</option>
-                              <option>2015</option>
-                              <option>2016</option>
-                              <option>2017</option>
+                            <select class="form-control pull-right" name="barChartYear" id="barChartYear">
+                              <option value="">Year</option>
+                              <option value="2017">2010</option>
+                              <option value="2018">2011</option>
+                              <option value="2019">2012</option>
+                              <option value="2020">2013</option>
+                              <option value="2021">2014</option>
+                              <option value="2022">2015</option>
                             </select>
                             </div>
                             <div class="form-group">
-                            <select class="form-control pull-right" name="month" id="month">
-                              <option selected>Month</option>
-                              <option>January</option>
-                              <option>February</option>
-                              <option>March</option>
-                              <option>April</option>
-                              <option>May</option>
-                              <option>June</option>
-                              <option>July</option>
-                              <option>August</option>
-                              <option>September</option>
-                              <option>October</option>
-                              <option>November</option>
-                              <option>December</option>
+                            <select class="form-control pull-right" name="barCharMonth" id="barCharMonth">
+                              <option value="">Month</option>
+                              <option value="0">January</option>
+                              <option value="1">February</option>
+                              <option value="2">March</option>
+                              <option value="3">April</option>
+                              <option value="4">May</option>
+                              <option value="5">June</option>
+                              <option value="6">July</option>
+                              <option value="7">August</option>
+                              <option value="8">September</option>
+                              <option value="9">October</option>
+                              <option value="10">November</option>
+                              <option value="11">December</option>
                             </select>
     </div>
     <button type="submit" class="btn btn-primary btn-sm" id="showLeaveReport" onClick="showLeaveReport()">Custom</button>
@@ -281,10 +279,10 @@
     <div class="clearfix pull-lefet col-md-6 paddingRight showLeaveReport" style="display: none;">
     <div class="pull-left">
     <div class="pull-left mr5" style="width: 140px">
-    <input value=""  placeholder="From" class="form-control calendar input-sm" type="text" id="gfromDate" name="gfromDate">
+    <input value=""  placeholder="From" class="form-control calendar input-sm" type="text" id="barChartFromDate" name="barChartFromDate">
     </div>
     <div class="pull-left mr5" style="width: 140px">
-    <input value=""  placeholder="To" class="form-control calendar input-sm" type="text" id="gtoDate" name="gtoDate">
+    <input value=""  placeholder="To" class="form-control calendar input-sm" type="text" id="barChartToDate" name="barChartToDate">
     </div>
     <button type="button" class="btn btn-primary btn-sm"><i class="fa fa-search"></i></button>
     </div>
@@ -545,6 +543,37 @@ function getEmployeeLeavesList(){
 }
 </script>
 
+
+
+<script type="text/javascript">
+function getLeaveTakersBarChat(){
+	//empLeavereport
+	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
+	var userId = '${SourceLeadWeb_userId}';
+	var barChartYear ="";
+	var barCharMonth = "";
+	var barChartFromDate = "";
+	var barChartToDate "";
+	if($("#barChartYear").val() !=null && $("#barChartYear").val() != 'undefined' && $("#barChartYear").val() != ''){
+		barChartYear = $("#barChartYear").val();
+	}
+	if($("#barCharMonth").val() !=null && $("#barCharMonth").val() != 'undefined' && $("#barCharMonth").val() != ''){
+		barCharMonth = $("#barCharMonth").val();	
+	}
+	if($("#barChartFromDate").val() !=null && $("#barChartFromDate").val() != 'undefined' && $("#barChartFromDate").val() != ''){
+		var barChartFromDate = $("#barChartFromDate").val();	
+	}
+	if($("#barChartToDate").val() !=null && $("#barChartToDate").val() != 'undefined' && $("#barChartToDate").val() != ''){
+		var barChartToDate = $("#barChartToDate").val();	
+	}
+
+		$.ajax({
+		   	type: "POST",
+		   	var url = sourceleadUrl+"/getTopLeavetakers?orgLocationId="+orgLocationId+"&userId="+userId+"&barChartYear="+barChartYear+"&barCharMonth="+barCharMonth+"&barChartFromDate="+barChartFromDate+"&barChartToDate="+barChartToDate;	    	   
+		    success: function(data) {
+	   });
+}
+</script>
 
 <script>
     /*------My Timeoff Balance Piecharts------*/
@@ -955,6 +984,8 @@ function topLeaveTakersPagination(url){
 		
 	});
 </script>
+
+
 
 
 <jsp:include page="../masterFooter.jsp" />

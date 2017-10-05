@@ -51,6 +51,10 @@ public class LeaveDTO extends SearchDTO implements Serializable{
 	private String reportMonth;
 	private String reportFromDate;
 	private String reportEndDate;
+	private String barChartYear;
+	private String barCharMonth;
+	private String barChartFromDate;
+	private String barChartToDate;
 	
 	public String getLeavesTaken() {
 		return leavesTaken;
