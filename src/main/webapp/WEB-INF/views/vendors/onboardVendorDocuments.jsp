@@ -41,6 +41,9 @@ filter: alpha(opacity=0);  -moz-opacity: 0; -khtml-opacity: 0;
 .timesheetDocs.timesheetDocs-custom .timesheet_week_comm span .inputpadding input[type="button"] {
 	padding-left: 35px !important;
 }
+a.downloadbtn {
+	position: absolute;top: 12px; color: #fff; padding-left: 10px; font-size: 15px;
+}
 </style>
 
 <div id="tab-b" class="newPrTabs_inn">
@@ -140,8 +143,19 @@ function getOnboardDocuments(){
 	         		 }
                 	 result = result +"<tr>";
                 	 result = result +"<td><input type='text' readonly='readonly' class='form-control input-sm vendorinput' value='"+opt.documentName+"'></td>";
-                	 result = result +"<td><div><input type='file' id='"+i+"vendorDocFile' field-name='Attachment' "+datavalidation+"  onchange='uploadVendorDocument("+i+")'  class='timesheetAttachmentValidation'></div></td>";
-                	 result = result +"<td><input type='hidden' value="+opt.id+"  name='vendorDocumentsFileInfo["+i+"].docId'></td>";
+                	 
+                	 if(opt.uploadedFileUrl != null){
+                		 result = result +"<td class='inputpadding positionRelative'>";
+                		 result = result +"<i class=''><a class='downloadbtn glyphicon glyphicon-save' href=\""+opt.uploadedFileUrl+"\"></a></i>";
+           				 result = result +"<input type='button' value='"+opt.uploadedFileName+"' class='tbldata-dotdot'>";
+           				 result = result +"</td>";
+           				 result = result +"<td><i class='fa fa-times'  onClick='deleteVendorUploadedDocument("+opt.id+");'></i></td>";
+                	 }else{
+                		 result = result +"<td><div><input type='file' id='"+i+"vendorDocFile' field-name='Attachment' "+datavalidation+"  onchange='uploadVendorDocument("+i+")'  class='timesheetAttachmentValidation'></div></td>";
+                    	 result = result +"<td><input type='hidden' value="+opt.id+"  name='vendorDocumentsFileInfo["+i+"].docId'></td>";
+                    	 
+                	 }
+                	 
                 	 result = result +"</tr>";
 	         	 }
          	 result = result +"</table>";
@@ -157,5 +171,20 @@ function getOnboardDocuments(){
 <script>
 function uploadVendorDocument(id){
 	fileUpload(""+id+"vendorDocFile", "Vendor-Onboard-Submitted-Documents", "vendorOnboardUploadedDocuments_form","vendorDocumentsFileInfo@"+id+"");
+}
+</script>
+
+
+<script>
+function deleteVendorUploadedDocument(documentId){
+	 $.ajax({
+	    	type: "POST",
+	    	 url: sourceleadUrl+"/deleteVendorUploadedOnboardDocument?${_csrf.parameterName}=${_csrf.token}&documentId="+documentId, 
+	         success: function(result) {
+	        	 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	        	 getOnboardDocuments();
+	        	 $("#loading").removeAttr("style");
+	        }
+	 });
 }
 </script>

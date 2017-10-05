@@ -59,6 +59,8 @@ public class VendorOnboardDTO implements Serializable{
 	
 	private List<FileInfo> vendorDocumentsFileInfo;
 	
+	private String vendorBillingAddress;
+	
 	
 
 	public String getClientName() {
@@ -267,6 +269,14 @@ public class VendorOnboardDTO implements Serializable{
 
 	public void setVendorDocumentsFileInfo(List<FileInfo> vendorDocumentsFileInfo) {
 		this.vendorDocumentsFileInfo = vendorDocumentsFileInfo;
+	}
+
+	public String getVendorBillingAddress() {
+		return vendorBillingAddress;
+	}
+
+	public void setVendorBillingAddress(String vendorBillingAddress) {
+		this.vendorBillingAddress = vendorBillingAddress;
 	}
 
 

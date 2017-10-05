@@ -114,10 +114,10 @@
 										<p class="tbldata-dotdot-me" id="vendorLocation"></p>
 								    </div>
 								    
-								    <div class="form-group">
+								    <!-- <div class="form-group">
 										<label class="col-md-4">Address :</label>
 										<p class="tbldata-dotdot-me" id="vendorAddress"></p>
-								    </div>
+								    </div> -->
 								
 								</div>
 							</div>
@@ -206,18 +206,40 @@
 							       </div>
 							       
 							       <div class="form-group">
-							         <label class="col-md-3">DUNS Number</label>
-							        <div class="col-md-9 validLabel">
+										<label class="col-md-3">Address</label>
+										<div class="col-md-9">
+											<textarea id="vendorAddress" name="vendorAddress" rows="4"
+												field-name="Address" class="form-control"
+												data-validation="validate_Space"
+												data-validation-optional="true"></textarea>
+										</div>
+									</div>
+			
+									<div class="form-group">
+										<label class="col-md-3">Billing Address</label>
+										<div class="col-md-9">
+											<textarea id="vendorBillingAddress" rows="4" name="vendorBillingAddress"
+												field-name="Billing Address" class="form-control"
+												data-validation="validate_Space"
+												data-validation-optional="true"></textarea>
+										</div>
+									</div>
+									
+									<div class="clearfix"></div>
+									<div class="form-group">
+							         <label class="col-md-3 mt">DUNS Number</label>
+							        <div class="col-md-9 validLabel mt">
 							             <input type="text" id="dunsNumber" name="dunsNumber" field-name="DUNS Number"  data-validation-optional="true"  data-validation="validate_Space validate_length length1-100"  value="" class="form-control" >
 							         </div>
 							       </div>
+							       
 							</div>
 						</div>
 						
 						
 						
 						
-						<div class="row">
+						<div class="row clearfix mt">
 							<div class="col-lg-12">
 					          <h3>Bank Details</h3>
 					        </div>
@@ -258,7 +280,7 @@
 							         </div>
 							       </div>
 							       
-							       <div class="form-group ">
+							       <div class="form-group">
 										<label class="col-md-3">Building No/Name & Street</label>
 										<div class="col-md-9">
 											<textarea id="bankAddress" name="bankAddress" rows="4"
@@ -272,7 +294,7 @@
 							</div>
 						</div>
 					</div>
-				   <div class="clearfix"></div>
+				   <div class="clearfix mt"></div>
 				 	<div class="form-footer clearfix">
 						<div class="col-lg-12">
 							<div class="pull-right">
@@ -351,12 +373,8 @@ function getVendorOnboardDetails(){
 	        	}else{
 	        		$("#vendorWebsite").html("-------");
 	        	}
+	        	
 	        	$("#vendorLocation").html(json.vendorLocation);
-	        	if(json.vendorAddress != null){
-	        		$("#vendorAddress").html(json.vendorAddress);
-	        	}else{
-	        		$("#vendorAddress").html("-------");
-	        	}
 	        	
 
 	        	$("#clientContactName").html(json.clientContactName);
@@ -409,6 +427,14 @@ function getVendorOnboardDetails(){
 	        	
 	        	if(json.bankAddress != null && json.bankAddress != 'undefined' && json.bankAddress != ''){
 	        		 $("textarea[name=bankAddress]").val(json.bankAddress);
+	        	}
+	        	
+	        	if(json.vendorAddress != null && json.vendorAddress != 'undefined' && json.vendorAddress != ''){
+		        		 $("textarea[name=vendorAddress]").val(json.vendorAddress);
+	        	}
+	        	
+	        	if(json.vendorBillingAddress != null && json.vendorBillingAddress != 'undefined' && json.vendorBillingAddress != ''){
+	        		 $("textarea[name=vendorBillingAddress]").val(json.vendorBillingAddress);
 	        	}
 	        },
 	    }); 

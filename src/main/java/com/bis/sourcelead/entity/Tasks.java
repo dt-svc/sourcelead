@@ -1,6 +1,7 @@
 package com.bis.sourcelead.entity;
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -17,6 +18,8 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "TASKS")
@@ -114,6 +117,11 @@ public class Tasks implements Serializable{
     
     @Transient
     private String taskOwnerName;
+    
+    
+    @Transient
+    @JsonProperty
+    private String vendorTaskDateStr;
     
 
 	public Long getId() {
@@ -306,6 +314,20 @@ public class Tasks implements Serializable{
 
 	public void setVendorOnboardingId(VendorOnboarding vendorOnboardingId) {
 		this.vendorOnboardingId = vendorOnboardingId;
+	}
+
+	public String getVendorTaskDateStr() {
+		if(taskDate != null){
+			SimpleDateFormat dateFormat = ownerOrglocationId.getLocFullFormDateFormatter();
+			vendorTaskDateStr = dateFormat.format(taskDate);	
+		}else{
+			vendorTaskDateStr = "--";
+		}
+		return vendorTaskDateStr;
+	}
+
+	public void setVendorTaskDateStr(String vendorTaskDateStr) {
+		this.vendorTaskDateStr = vendorTaskDateStr;
 	}
 }
 

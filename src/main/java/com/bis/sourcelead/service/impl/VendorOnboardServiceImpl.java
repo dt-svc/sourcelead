@@ -16,18 +16,20 @@ import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.SourceleadPasswordEncoder;
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dao.OrgLocationsDao;
 import com.bis.sourcelead.dao.OrgRelationsDao;
 import com.bis.sourcelead.dao.TaskDao;
 import com.bis.sourcelead.dao.UserDao;
 import com.bis.sourcelead.dao.VendorOnboardDao;
 import com.bis.sourcelead.dao.VendorOnboardTasksDao;
+import com.bis.sourcelead.dao.VendorOnboardTemplateDocumentsDao;
+import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.dto.OnboardTasksDTO;
 import com.bis.sourcelead.dto.VendorOnboardDTO;
 import com.bis.sourcelead.dto.VendorOnboardTaskDTO;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
-import com.bis.sourcelead.entity.OnboardTasks;
 import com.bis.sourcelead.entity.OrgBankDetails;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
@@ -36,6 +38,7 @@ import com.bis.sourcelead.entity.Tasks;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.VendorOnboardTasks;
 import com.bis.sourcelead.entity.VendorOnboarding;
+import com.bis.sourcelead.entity.VendorOnboardingTemplateDocuments;
 import com.bis.sourcelead.enums.Status;
 import com.bis.sourcelead.service.ClientService;
 import com.bis.sourcelead.service.EmailScenarioService;
@@ -46,9 +49,8 @@ import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.service.VendorOnboardService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
+import com.bis.sourcelead.util.FileUploadUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
-
-import bsh.StringUtil;
 
 @Service
 public class VendorOnboardServiceImpl implements VendorOnboardService {
@@ -97,6 +99,12 @@ public class VendorOnboardServiceImpl implements VendorOnboardService {
 	
 	@Autowired
 	OrgBankDetailsService orgBankDetailsService;
+	
+	@Autowired
+	VendorOnboardTemplateDocumentsDao vendorOnboardTemplateDocumentsDao;
+	
+	@Autowired
+	OrgLocationsDao orgLocationsDao;
 	
 	@Override
 	public VendorOnboarding saveVendorOnboarding(OrgLocations vendorOrgLocations, OrgLocations orgLocations, User user)
@@ -172,8 +180,9 @@ public class VendorOnboardServiceImpl implements VendorOnboardService {
 				}
 			}
 			
+		}
 			
-			List<VendorOnboardTasks> vendorOnboardTasksList = vendorOnboardTasksDao.getVendorOnboardTasksByVendorOnboardId(vendorOnboarding.getId());
+		List<VendorOnboardTasks> vendorOnboardTasksList = vendorOnboardTasksDao.getVendorOnboardTasksByVendorOnboardId(vendorOnboarding.getId());
 			if(vendorOnboardTasksList != null && vendorOnboardTasksList.size() > 0){
 				for(VendorOnboardTasks onboardTasks : vendorOnboardTasksList){
 					if(StringUtils.isNotBlank(onboardTasks.getAssignToUsers())){
@@ -195,7 +204,7 @@ public class VendorOnboardServiceImpl implements VendorOnboardService {
 					 }
 				}
 			}
-		}
+		
 		
 		if(StringUtils.isNotBlank(onboardTasksDTO.getIsMailSent())){
 			setEmialAndNotificationToVendort(onboardingSpocUser, user, orgLocations, vendorOnboarding.getOnboardUUID(), vendorOrgLocations);
@@ -221,8 +230,8 @@ public class VendorOnboardServiceImpl implements VendorOnboardService {
 		 
 		 Tasks tasks = new Tasks();
 		 tasks.setAssignedOrglocationId(orgLocations);
-		 tasks.setTaskOwnerId(user);
-		 tasks.setAssignedUserId(loginUser);
+		 tasks.setTaskOwnerId(loginUser);
+		 tasks.setAssignedUserId(user);
 		 if(StringUtils.isNotBlank(onboardTasks.getPriority())){
 			 tasks.setPriority(onboardTasks.getPriority());
 		 }
@@ -267,6 +276,7 @@ public class VendorOnboardServiceImpl implements VendorOnboardService {
 		 tasks.setTaskTime("23:59:00");
 		 tasks.setDescription(onboardTasks.getDescription());
 		 tasks.setTaskStatus(Constants.TASK_STATUS_OPEN);
+		 tasks.setStatus(1);
 		 tasks.setCreatedBy(loginUser.getUserCode());
 		 tasks.setCreatedDate(commonUtil.currentDate());
 		 tasks.setUpdatedBy(loginUser.getUserCode());
@@ -393,6 +403,7 @@ public class VendorOnboardServiceImpl implements VendorOnboardService {
 		
 		VendorOnboarding onboarding = vendorOnboardDao.getVendorOnboardingById(vendorOnboardId);
 		OrgRelations orgRelations = onboarding.getOrgRelationId();
+		
 		if(StringUtils.isNotBlank(vendorOnboardDTO.getTier())){
 			orgRelations.setInitiatorLevel(vendorOnboardDTO.getTier());
 		}
@@ -458,11 +469,39 @@ public class VendorOnboardServiceImpl implements VendorOnboardService {
 		bankDetails.setUpdatedDate(commonUtil.currentDate());
 		orgBankDetailsService.saveOrgBankDetails(bankDetails);
 		
+		OrgLocations vendorOrgLocations = onboarding.getVendorLocationId();
+		if(StringUtils.isNotBlank(vendorOnboardDTO.getVendorAddress())){
+			vendorOrgLocations.setOrgLocationAddress(vendorOnboardDTO.getVendorAddress());
+		}
+		if(StringUtils.isNotBlank(vendorOnboardDTO.getVendorBillingAddress())){
+			vendorOrgLocations.setBillingAddress(vendorOnboardDTO.getVendorBillingAddress());
+		}
+		orgLocationsDao.updateOrgLocations(vendorOrgLocations);
+		
 		orgRelations.setBankDetailsId(bankDetails);
 		orgRelationsDao.addOrgRelations(orgRelations);
 		
 	}
-	
-	
+
+	@Override
+	public void saveVendorOnboardDocuments(VendorOnboardDTO vendorOnboardDTO) throws Exception {
+		
+		if(vendorOnboardDTO.getVendorDocumentsFileInfo() != null &&  vendorOnboardDTO.getVendorDocumentsFileInfo().size() > 0) {
+			for(FileInfo fileInfo : vendorOnboardDTO.getVendorDocumentsFileInfo()) {
+				if(fileInfo != null && fileInfo.getFileURL() != null) {
+					if(StringUtils.isNotBlank(fileInfo.getDocId())){
+						VendorOnboardingTemplateDocuments documents = vendorOnboardTemplateDocumentsDao.getVendorOnBoardingTemplateDocumentsById(Long.valueOf(fileInfo.getDocId()));
+						documents.setUploadedFileName(fileInfo.getFileName());
+					    documents.setUploadedFileContentType(fileInfo.getContentType());
+					    documents.setUploadedFileUrl(fileInfo.getFileURL());
+					    documents.setDocumentStatus("Submitted");
+					    vendorOnboardTemplateDocumentsDao.saveVendorOnBoardingTemplateDocuments(documents);
+					}
+					 FileUploadUtil.moveFile(vendorOnboardDTO .getStaticPath(), fileInfo, "Vendor-Onboard-Submitted-Documents");
+				   }
+			}
+		}
+		
+	}
 
 }

@@ -117,8 +117,7 @@ CALL sourcelead.AlterTableAddColumn ('sourcelead','ORG_RELATIONS','TAX_REGISTRAT
 CALL sourcelead.AlterTableAddColumn ('sourcelead','ORG_RELATIONS','DUNS_NUMBER','VARCHAR(100) NULL AFTER `TAX_REGISTRATION_NUMBER`');
 
 
-CALL sourcelead.AlterTableAddColumn ('sourcelead','ORG_LOCATIONS','CLIENT_ADDRESS','TEXT NULL');
-CALL sourcelead.AlterTableAddColumn ('sourcelead','ORG_LOCATIONS','CLIENT_BILLING_ADDRESS','TEXT NULL AFTER `CLIENT_ADDRESS`');
+CALL sourcelead.AlterTableAddColumn ('sourcelead','ORG_LOCATIONS','ORG_LOCATION_BILLING_ADDRESS','TEXT NULL');
 
 
 CALL sourcelead.AlterTableAddColumn ('sourcelead','TASKS','VENDOR_ON_BOARDING_ID','BIGINT NULL');

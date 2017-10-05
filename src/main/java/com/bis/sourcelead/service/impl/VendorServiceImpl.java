@@ -112,11 +112,11 @@ public class VendorServiceImpl implements VendorService{
 		 }
 		
 		 if(StringUtils.isNotBlank(clientDTO.getAddress())){
-			 vendorOrgLocations.setClientAddress(clientDTO.getAddress());
+			 vendorOrgLocations.setOrgLocationAddress(clientDTO.getAddress());
 		 }
 		 
 		 if(StringUtils.isNotBlank(clientDTO.getBillingAddress())){
-			 vendorOrgLocations.setClientBillingAddress(clientDTO.getBillingAddress());
+			 vendorOrgLocations.setBillingAddress(clientDTO.getBillingAddress());
 		 }
 		 
 		 orgLocationsDao.updateOrgLocations(vendorOrgLocations);
@@ -243,6 +243,7 @@ public class VendorServiceImpl implements VendorService{
 		onboardDTO.setVendorWebsite(vendorOrgLocations.getWebsite());
 		onboardDTO.setVendorLocation(vendorOrgLocations.getLocation());
 		onboardDTO.setVendorAddress(vendorOrgLocations.getOrgLocationAddress());
+		onboardDTO.setVendorBillingAddress(vendorOrgLocations.getBillingAddress());
 		
 		Set<OrgSpoc> orgSpocList = vendorOnboarding.getOrgRelationId().getOrgSpocList();
 		for(OrgSpoc orgSpc : orgSpocList){

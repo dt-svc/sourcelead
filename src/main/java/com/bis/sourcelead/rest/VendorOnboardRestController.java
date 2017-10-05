@@ -5,7 +5,6 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
@@ -18,17 +17,16 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.annotations.Validator;
 import com.bis.sourcelead.constants.Constants;
-import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.dto.OnBoardingTemplateDTO;
 import com.bis.sourcelead.dto.OnboardTasksDTO;
 import com.bis.sourcelead.dto.VendorOnboardDTO;
-import com.bis.sourcelead.entity.OnBoardingTemplate;
-import com.bis.sourcelead.entity.OnboardTasks;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.Tasks;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.VendorOnboardTasks;
 import com.bis.sourcelead.entity.VendorOnboardingTemplate;
 import com.bis.sourcelead.entity.VendorOnboardingTemplateDocuments;
+import com.bis.sourcelead.service.TaskService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.service.VendorOnboardService;
 import com.bis.sourcelead.service.VendorOnboardTasksService;
@@ -73,6 +71,9 @@ public class VendorOnboardRestController {
 	
 	@Autowired
 	VendorOnboardService vendorOnboardService;
+	
+	@Autowired
+	TaskService taskService;
 	
 	@RequestMapping(value = "/getVendorOnboardingTemplatesList")
 	public List<VendorOnboardingTemplate> getVendorOnboardingTemplatesList(HttpServletRequest request) throws Exception {
@@ -307,19 +308,56 @@ public class VendorOnboardRestController {
 	 
 		@RequestMapping(value = "/saveVendorOnboardSubmittedDocuments", method = RequestMethod.POST)
 		public @ResponseBody String saveVendorOnboardSubmittedDocuments(VendorOnboardDTO vendorOnboardDTO, HttpServletRequest request) throws Exception {
-			User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			if(Validator.validate(vendorOnboardDTO)) {
 				vendorOnboardDTO.setStaticPath(staticPath);
-				for(FileInfo fileInfo : vendorOnboardDTO.getVendorDocumentsFileInfo()) {
-					if(fileInfo != null && fileInfo.getFileURL() != null) {
-						  System.out.println(fileInfo.getFileURL());
-					   }
-				}
+				vendorOnboardService.saveVendorOnboardDocuments(vendorOnboardDTO);
 			 }else
-				 return "DataMissing";
+				 return "dataMissing";
 			
 			return "success";
 				
 		}
+		
+		
+		@RequestMapping(value = "/deleteVendorUploadedOnboardDocument", method = RequestMethod.POST)
+		public @ResponseBody String deleteVendorUploadedOnboardDocument(@RequestParam(value="documentId", required=false) Long documentId) throws Exception {
+			
+			VendorOnboardingTemplateDocuments documents = vendorOnboardTemplateDocumentsService.getVendorOnBoardingTemplateDocumentsById(documentId);
+			documents.setUploadedFileContentType(null);
+			documents.setUploadedFileContentType(null);
+			documents.setUploadedFileUrl(null);
+			documents.setDocumentStatus(null);
+			vendorOnboardTemplateDocumentsService.saveVendorOnBoardingTemplateDocuments(documents);
+			return "success";
+				
+		}
+		
+		@RequestMapping(value = "/getVendorOnboardTasksByVendorOnboardId", method = RequestMethod.GET)
+		public @ResponseBody List<Tasks> getVendorOnboardTasksByVendorOnboardId(@RequestParam(value="vendorOnboardId", required=false) Long vendorOnboardId,HttpServletRequest request) throws Exception {
+			
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+			List<Tasks> tasksList = taskService.getTaskByAssignedUserIdAndOrgLocationIdAndVendorOnboardingId(orgLocations.getId(), user.getId(), vendorOnboardId);
+			return tasksList;
+		}
+		
+		
+		@RequestMapping(value = "/changeVendorOnboardTaskStatus", method = RequestMethod.POST)
+		public @ResponseBody String changeVendorOnboardTaskStatus(@RequestParam(value="taskId", required=false) Long taskId) throws Exception {
+			
+			Tasks tasks = taskService.getTasksById(taskId);
+			if(tasks.getTaskStatus().equalsIgnoreCase(Constants.TASK_STATUS_OPEN)){
+				tasks.setTaskStatus(Constants.TASK_STATUS_CLOSE);
+			}else{
+				tasks.setTaskStatus(Constants.TASK_STATUS_OPEN);
+			}
+			
+			taskService.saveTasks(tasks);
+			
+			return "success";
+				
+		}
+		
+		
 	
 }

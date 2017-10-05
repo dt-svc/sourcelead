@@ -161,13 +161,9 @@ public class OrgLocations implements Serializable{
 	private String systemGeneratedId;
     
     
-    @Column(name = "CLIENT_ADDRESS")
+    @Column(name = "ORG_LOCATION_BILLING_ADDRESS")
     @Type(type="text")
-	private String clientAddress;
-    
-    @Column(name = "CLIENT_BILLING_ADDRESS")
-    @Type(type="text")
-	private String clientBillingAddress;
+	private String billingAddress;
     
     @Transient
     private String orgName;
@@ -666,23 +662,13 @@ public class OrgLocations implements Serializable{
 		this.vendorOrgRelationId = vendorOrgRelationId;
 	}
 
-	public String getClientAddress() {
-		return clientAddress;
+	public String getBillingAddress() {
+		return billingAddress;
 	}
 
-	public void setClientAddress(String clientAddress) {
-		this.clientAddress = clientAddress;
+	public void setBillingAddress(String billingAddress) {
+		this.billingAddress = billingAddress;
 	}
-
-	public String getClientBillingAddress() {
-		return clientBillingAddress;
-	}
-
-	public void setClientBillingAddress(String clientBillingAddress) {
-		this.clientBillingAddress = clientBillingAddress;
-	}
-
-	
 
 	public Long getVendorSpocId() {
 		return vendorSpocId;

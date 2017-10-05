@@ -19,4 +19,6 @@ public interface VendorOnboardService {
 	VendorOnboarding getVendorOnboardingByUUID(String onboardUUID) throws Exception;
 	
 	void saveVendorOnboardDetails(VendorOnboardDTO vendorOnboardDTO,Long vendorOnboardId,User user) throws Exception;
+	
+	void saveVendorOnboardDocuments(VendorOnboardDTO vendorOnboardDTO) throws Exception;
 }

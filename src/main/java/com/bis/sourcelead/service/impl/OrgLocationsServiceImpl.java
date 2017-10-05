@@ -159,10 +159,10 @@ public class OrgLocationsServiceImpl implements OrgLocationService {
 			}
 			
 			if (StringUtils.isNotBlank(clientDTO.getAddress())) {
-				clientOrgLocations.setClientAddress(clientDTO.getAddress());
+				clientOrgLocations.setOrgLocationAddress(clientDTO.getAddress());
 			}
 			if (StringUtils.isNotBlank(clientDTO.getBillingAddress())) {
-				clientOrgLocations.setClientBillingAddress(clientDTO.getBillingAddress());
+				clientOrgLocations.setBillingAddress(clientDTO.getBillingAddress());
 			}
 			
 			if(StringUtils.isNotBlank(clientDTO.getCountry())){

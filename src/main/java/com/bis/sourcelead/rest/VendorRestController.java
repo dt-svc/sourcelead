@@ -407,8 +407,8 @@ public class VendorRestController {
 			orgRelations.setCity(orgRelations.getResponderLocationId().getCity());
 			orgRelations.setZipCode(orgRelations.getResponderLocationId().getZipCode());
 			orgRelations.setPaymentTerms(orgRelations.getPaymentTerm());
-			orgRelations.setBillingAddress(orgRelations.getResponderLocationId().getClientBillingAddress());
-			orgRelations.setAddress(orgRelations.getResponderLocationId().getClientAddress());
+			orgRelations.setBillingAddress(orgRelations.getResponderLocationId().getBillingAddress());
+			orgRelations.setAddress(orgRelations.getResponderLocationId().getOrgLocationAddress());
 			orgRelations.setVendorlocationId(orgRelations.getResponderLocationId().getId());
 			orgRelations.setVendorOrgLocation(orgRelations.getResponderLocationId().getLocation());
 		}else{
@@ -418,8 +418,8 @@ public class VendorRestController {
 			orgRelations.setState(orgRelations.getLocationId().getState());
 			orgRelations.setCity(orgRelations.getLocationId().getCity());
 			orgRelations.setZipCode(orgRelations.getLocationId().getZipCode());
-			orgRelations.setBillingAddress(orgRelations.getLocationId().getClientBillingAddress());
-			orgRelations.setAddress(orgRelations.getLocationId().getClientAddress());
+			orgRelations.setBillingAddress(orgRelations.getLocationId().getBillingAddress());
+			orgRelations.setAddress(orgRelations.getLocationId().getOrgLocationAddress());
 			orgRelations.setPaymentTerms(orgRelations.getPaymentTerm());
 			orgRelations.setVendorlocationId(orgRelations.getLocationId().getId());
 			orgRelations.setVendorOrgLocation(orgRelations.getLocationId().getLocation());
