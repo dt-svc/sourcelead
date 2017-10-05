@@ -150,7 +150,7 @@ function getRequestedAproveSummary(leaveId,orgLocationId,status){
 			 var result = "";	
 			 result = result +' <div class="viewgrid-header pull-right zIndex positionRelative">';
 			 result = result +' <span class="btn btn-warning btn-sm mr10">'+status+'</span>';
-			 result = result +' <span class="btn btn-info btn-sm" onClick="cancel()">Withdraw</span>';
+			 result = result +' <span class="btn btn-info btn-sm" onClick="withDrawLeave(\''+leaveId+'\','+orgLocationId+');">Withdraw</span>';
 			 result = result +'<div class="clearfix"></div>';
 			 result = result +'<div class="cancel-reason" id="cancelReason">';
 			 result = result +'<div class="clearfix">';
@@ -255,5 +255,11 @@ function pendingListPagination(){
       </div>
   </div>
 </div>
+
+<script>
+function withDrawLeave(leaveId,orgLocationId){
+	
+}
+</script>
 
 <jsp:include page="../masterFooter.jsp" />
