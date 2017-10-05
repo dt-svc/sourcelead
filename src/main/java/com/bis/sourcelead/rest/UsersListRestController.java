@@ -1640,10 +1640,10 @@ public class UsersListRestController {
 			}
 
 			isUserActive = userRoleService.isUserActive(user.getId());
-			if (isUserActive == false && !emailId.equalsIgnoreCase(addUserDTO.getEmailId())) {
+			if (isUserActive == false && !emailId.equalsIgnoreCase(addUserDTO.getEmail())) {
 				// generate random password
-				user.setEmail(addUserDTO.getEmailId());
-				user.setUserName(addUserDTO.getEmailId());
+				user.setEmail(addUserDTO.getEmail());
+				user.setUserName(addUserDTO.getEmail());
 				password = SourceLeadRandomCodeHelper.generateRandomPassword();
 				user.setPassword(sourceleadPasswordEncoder.encode(password));
 				user.setIsMailSent(Status.Y);
