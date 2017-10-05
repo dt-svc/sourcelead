@@ -3,7 +3,6 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
-<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 
 <script src="resources/js/formvalidator.js?staticTime=${staticTime}"></script>
@@ -560,7 +559,6 @@ function minMaxExperienceOfProfessional(){
 								 var isNewSkill = true;
 								 $("#skills option:selected").each(function(){
 									 if(this.value.toUpperCase() === newSkill.toUpperCase()){
-										 //alert(newSkill);
 										 isNewSkill = false;
 										 return false;
 									 }
@@ -1658,12 +1656,7 @@ $('body').on('submit', '#referToContacts', function(e){
 	  if ($(this).validate(false, validationSettings)){
       e.preventDefault();
      
-      var frm = $('#referToContacts').serializeFormJSON();
-      var con = JSON.stringify(frm);
-      con = con.replace(/[{}]/g, "");
-      
-      //It will escape all the special characters
-      var jsonData = encodeURIComponent(con);
+      var formData = $($('#referToContacts')[0]).serialize();
       
         $("#submit_contacts").attr("disabled", "disabled");
 		$( "#submit_contacts" ).addClass('button').val('Processing..');
@@ -1671,7 +1664,9 @@ $('body').on('submit', '#referToContacts', function(e){
 	 	
 	 	  $.ajax({
 		    	type: "POST",
-		    	 url: sourceleadUrl+"/submitUserContactsToRequirement?${_csrf.parameterName}=${_csrf.token}&json="+jsonData, 
+		    	data: formData,
+		    	processData :false,
+		    	 url: sourceleadUrl+"/submitUserContactsToRequirement?${_csrf.parameterName}=${_csrf.token}", 
 		        success: function(result) {
 		        	removeReferPopUp();
 		        },
@@ -1893,6 +1888,7 @@ function createAlert(requirementUUID){
 					        	  var country = '';
 					        	  var city = '';
 					        	  var zipCode ='';
+					        	  var maxRate ='';
 					        	  if(json['location'] != null && json['location'] != '' && json['location'] != 'undefined'){
 					        		  location = json['location'];
 					        	  }
@@ -1907,6 +1903,10 @@ function createAlert(requirementUUID){
 					        	  }
 					        	  if(json['zipCode'] != null && json['zipCode'] != '' && json['zipCode'] != 'undefined'){
 					        		  zipCode = json['zipCode'];
+					        	  }
+					        	  
+					        	  if(json['maxRate'] != null && json['maxRate'] != "" && json['maxRate'] !="undefined"){
+					        		  maxRate = json['maxRate'];
 					        	  }
 					        	  
 					        	 result = "";
@@ -2033,7 +2033,7 @@ function createAlert(requirementUUID){
 					        	 result = result +'               </select>';
 					        	 result = result +'               </div>';
 					        	 
-					        	 result = result +'              <input type="text" id="currentRate" name="rate" field-name="rate" data-validation="validate_Space validate_float validate_length length2-8" onblur="getRate();" data-validation-optional="true" value="'+json['maxRate']+'" class="form-control" placeholder="Rate">';
+					        	 result = result +'              <input type="text" id="currentRate" name="rate" field-name="rate" data-validation="validate_Space validate_float validate_length length2-8" onblur="getRate();" data-validation-optional="true" value="'+maxRate+'" class="form-control" placeholder="Rate">';
 					        	 result = result +'               <div class="input-group-btn tblminwidth-75 ratetype">';
 					        	 result = result +'                 <select class="btn-primary select_picker form-control" id="rateType" name="rateType" field-name="Rate Type" data-validation-optional="true">';
 					        	 result = result +'                   <option value="">Rate Per</option>';
@@ -2260,28 +2260,23 @@ var validationSettings = {
 		dateFormat : 'yyyy/mm/dd' 
    };  
          $('body').on('submit', '#create_alert_form', function(e){
-        	  
         	 
         	  if ($(this).validate(false, validationSettings)){
         		
-        		e.preventDefault();
         		var sourceleadUrl = '${sourceleadUrl}';
-        		var frm = $('#create_alert_form').serializeFormJSON();
-        		var con = JSON.stringify(frm);
-        		con = con.replace(/[{}]/g, ""); 
-        		//It will escape all the special characters
-        	    var jsonData = encodeURIComponent(con);
-
+        	    var formData = getFormData1("create_alert_form");
         		$.ajax({
         					type : "POST",
-        					url : sourceleadUrl+"/storeJobAlert?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
+        					 data: formData,
+        	  		         processData: false,
+        	  		         contentType:false, 
+        					url : sourceleadUrl+"/storeJobAlert?${_csrf.parameterName}=${_csrf.token}",
         					success : function(result) {
-        							 $("#selector4").removeAttr("style");
+	        					    $("#selector4").removeAttr("style");
 			            			$("#selector4").css({ display: "block" });
 			            			$("#eduMsgDiv").html("Job Alert updated successfully"); 
 			            			alertMsgFadeinFunction();
         							location.replace(sourceleadUrl+"/professionalRequirements");
-        						 
         					},
         				});
                 

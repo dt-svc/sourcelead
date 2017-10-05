@@ -180,7 +180,7 @@ padding: 2px 300px 2px 0px;
         
 <div class="clearfix DocAccWrapFoot" id="saveAction">
 		<!-- <input type="button" value="Submit" class="btn btn-primary padSm"> -->
-		 <input type="button" value="Submit" id="save_Doc" onclick="saveDocContract();" class="btn btn-primary padSm">
+		 <input type="button" value="Save" id="save_Doc" onclick="saveDocContract();" class="btn btn-primary padSm">
 		<input type="button" value="Cancel" class="btn btn-default padSm" onclick="contPopClose();">
       </div>
 </form:form>
@@ -3591,7 +3591,7 @@ function CountClick(contractUUID,parentId){
 							  result = result +'	       <div class="col-md-8 text-center" id="removeDiv'+opt.id+'">                                                                                                             ';
 							  result = result+'	                      &nbsp;&nbsp;<span id="delete_resume" onclick="removeResumeNameDiv('+opt.id+');"><i class="fa fa-trash text-danger removeIcon"></i></span>';
 							  result = result+' <a class="glyphicon glyphicon-download-alt" href="'+opt.fileURL+'" title="Download"></a>';
-			         		  result = result+' <a class="fa fa-eye" href="javascript:void(0)" onClick="viewFile(\''+sourceleadUrl+'\', \''+opt.fileURL+'\', \''+opt.docFileName+'\', \''+opt.fileType+'\')"title="preview"></a>';
+			         		  result = result+' <a class="fa fa-eye" href="javascript:void(0)" onClick="viewFile(\''+opt.fileURL+'\', \''+opt.docFileName+'\', \''+opt.fileType+'\')"title="preview"></a>';
 							  result = result +'	       </div>			                                                                                                                  ';
 							  result = result +'	       <div class="col-md-8" id="uploadDocumentDiv'+opt.id+'" style="display: none;">                                                                                                             ';
 							  result = result +'				<div class="input-group positionRelative ratetype" id="uploadFileGroup'+opt.id+'" title="Document Type: .pdf format only">                  ';
@@ -3636,7 +3636,7 @@ function CountClick(contractUUID,parentId){
 
 function uploadRequestedDocuments(id){
 	var sourceleadUrl ='${sourceleadUrl}';
-	fileUpload(sourceleadUrl, "uploadBtn"+id+"", "Requested Documents", "contractDoc_form");
+	fileUpload("uploadBtn"+id+"", "Requested Documents", "contractDoc_form");
 }
 
 
