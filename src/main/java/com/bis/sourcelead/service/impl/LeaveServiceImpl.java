@@ -324,14 +324,24 @@ public class LeaveServiceImpl implements LeaveService{
 	}
 	
 	@Override
-	public List<LeaveReportsDTO> getEmployeeLeavesByApproverIdAndStatus(OrgLocations orgLocations, String userId, String status, String department) throws Exception
+	public List<LeaveReportsDTO> getEmployeeLeavesByApproverIdAndStatus(OrgLocations orgLocations, String userId, String status, String department, String leaveDate) throws Exception
 	{
+		
+		Date currentWeekStarDate = null, currentWeekEndDate = null;
 		Calendar cal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
 		cal.setLenient(false);
 		cal.setTime(new Date());
-		Date currentWeekStarDate = CalendarUtil.getPreviousWeekDayByCalendar(cal, "SUN", orgLocations.getDateFormat()).getTime();
-		Date currentWeekEndDate = CalendarUtil.getCurrentWeekDayByCalendar(cal, "SAT", orgLocations.getDateFormat()).getTime();
-		List<LeaveApproveHierarchy> leaveApproveHierarchiesList = leaveDao.getEmployeeRequestedLeavesBylocationIdAndDuration(orgLocations.getId(), userId, status, currentWeekStarDate, currentWeekEndDate,department);
+		Date leaveDates = null;
+		
+		if(!StringUtils.isNotBlank(leaveDate)){
+			currentWeekStarDate = CalendarUtil.getPreviousWeekDayByCalendar(cal, "SUN", orgLocations.getDateFormat()).getTime();
+			currentWeekEndDate = CalendarUtil.getCurrentWeekDayByCalendar(cal, "SAT", orgLocations.getDateFormat()).getTime();
+		}else{
+			leaveDates = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),leaveDate);
+		}
+		List<LeaveApproveHierarchy> leaveApproveHierarchiesList = leaveDao.getEmployeeRequestedLeavesBylocationIdAndDuration(orgLocations.getId(), userId, status, currentWeekStarDate, currentWeekEndDate,department,leaveDates);
+			currentWeekStarDate = CalendarUtil.getPreviousWeekDayByCalendar(cal, "SUN", orgLocations.getDateFormat()).getTime();
+			currentWeekEndDate = CalendarUtil.getCurrentWeekDayByCalendar(cal, "SAT", orgLocations.getDateFormat()).getTime();
 		HashMap<Long, LeaveReportsDTO> reportMap = new HashMap<>();
 		for (LeaveApproveHierarchy lh : leaveApproveHierarchiesList) {
 			Leave leave = lh.getLeaveid();
@@ -473,6 +483,13 @@ public class LeaveServiceImpl implements LeaveService{
 	@Override
 	public ResponseList<Leave> getTopLeavetakers(OrgLocations orgLocation, LeaveDTO leaveDTO) throws Exception {
 		return leaveDao.getTopLeavetakers(orgLocation,leaveDTO);
+	}
+
+	@Override
+	public List<LeaveDTO> getEmployeeLeavesByApproverIdAndStatus(OrgLocations orgLocations, String userId, String status) throws Exception
+	{
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

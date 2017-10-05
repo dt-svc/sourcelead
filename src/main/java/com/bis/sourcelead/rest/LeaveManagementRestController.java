@@ -38,6 +38,7 @@ import com.bis.sourcelead.dto.EmployerPayrollCostDTO;
 
 import com.bis.sourcelead.dto.HolidayDTO;
 import com.bis.sourcelead.dto.LeaveDTO;
+import com.bis.sourcelead.dto.LeaveReportsDTO;
 import com.bis.sourcelead.dto.LeaveTypeDTO;
 import com.bis.sourcelead.dto.OptionsDTO;
 
@@ -1079,14 +1080,13 @@ public class LeaveManagementRestController {
 		return isCancelled;
 	}	
 	
-	@RequestMapping(value = {"/getEmployeeLeavesList"})
+	@RequestMapping(value = { "/getEmployeeLeavesList" })
 	@ResponseBody
-	public List<LeaveReportsDTO> getEmployeeLeavesList(@RequestParam(value = "orgLocationId", required = true) Long orgLocationId,@RequestParam(value = "userId", required = true) String userId,@RequestParam(value = "department", required = true) String department) throws Exception
+	public List<LeaveReportsDTO> getEmployeeLeavesList(@RequestParam(value = "orgLocationId", required = true) Long orgLocationId, @RequestParam(value = "userId", required = true) String userId, @RequestParam(value = "department", required = false) String department, @RequestParam(value = "leaveDateStr", required = false) String leaveDate) throws Exception
 	{
 		OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
-		List<LeaveReportsDTO> leavesList = leaveService.getEmployeeLeavesByApproverIdAndStatus(orgLocations, userId, Constants.APPROVED,department);
+		List<LeaveReportsDTO> leavesList = leaveService.getEmployeeLeavesByApproverIdAndStatus(orgLocations, userId, Constants.APPROVED, department, leaveDate);
 		return leavesList;
-		
 	}
 	
 	
