@@ -48,6 +48,7 @@ public class CandidateIndexHelper {
 			candidateIndex.setLongitude(candidate.getLongitude());		
 			candidateIndex.setGeneratedId(candidate.getGeneratedId());
 			
+			
 		if(null != candidate.getConsultantUser()){
 				candidateIndex.setUserId(candidate.getConsultantUser().getId());
 			}
@@ -108,6 +109,8 @@ public class CandidateIndexHelper {
 			if(null != candidateResumes){
 				candidateIndex.setCurrentResumeId(candidateResumes.getId());
 				candidateIndex.setCurrentResumeName(candidateResumes.getFileName());
+				candidateIndex.setFileContentType(candidateResumes.getFileContentType());
+				candidateIndex.setRecommendationFileUrl(candidateResumes.getFileURL());
 				candidateIndex.setResumeContent("");
 			}
 			if(StringUtils.isNotEmpty(candidate.getExperienceYears())){
