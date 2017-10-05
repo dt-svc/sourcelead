@@ -4,6 +4,7 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
  
 <link href="resources/css/summernote.css" rel="stylesheet">
+<link href="resources/css/bootstrap-colorpicker.min.css" rel="stylesheet">
 
 <script>
  window.onload = function() {
@@ -222,6 +223,17 @@
                   <textarea class="form-control" rows="2" name="description">${leaveType.description}</textarea>
               </div>
             </div>
+            
+             <div class="form-group">
+              <label class="col-md-3">Color Picker<span class="text-danger">&nbsp;*</span></label>
+              <div class="col-md-6">
+					<div id="cp"  class="input-group colorpicker-component">
+						<input type="text" name="colorCode" readonly="readonly" value="${leaveType.colorCode}" class="form-control" data-validation="required">
+							<span class="input-group-addon"><i></i></span>
+					</div>
+              </div>
+            </div> 
+            
               <div class="clearfix"></div>
             <div class="form-group mt10">
               <div class="col-md-12 checkBox" onClick="leavePolicy();">
@@ -358,4 +370,13 @@ function noUsers(){
 }
 </script>
 
+<script src="resources/js/bootstrap-colorpicker.min.js"></script> 
+<script>
+    //Color Picker
+    $(function() {
+        $('#cp').colorpicker();
+    });
+</script>
+
 <jsp:include page="../masterFooter.jsp" />
+

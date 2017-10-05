@@ -58,6 +58,7 @@ public class Leave {
 
 	@NotFound(action = NotFoundAction.IGNORE)
 	@ManyToOne
+	@JsonBackReference
 	@JoinColumn(name = "LEAVE_TYPE_ID", nullable = false)
 	private LeaveType leaveType;
 	
