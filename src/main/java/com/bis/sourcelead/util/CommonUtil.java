@@ -455,7 +455,7 @@ public class CommonUtil {
 										Calendar terminateDateCal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
 										terminateDateCal.setLenient(false);
 										terminateDateCal.setTime(pmh.getProjectTerminationDate());
-										Calendar terminatedDateMonday = CalendarUtil.getPreviousWeekDayByCalendar(terminateDateCal, "MON");
+										Calendar terminatedDateMonday = CalendarUtil.getPreviousWeekDayByCalendar(terminateDateCal, "MON",projectMember.getProjects().getOrgLocationsId().getDateFormat());
 										terminatedDate = terminatedDateMonday.getTime();
 									 
 									  pmh.setStatus(Constants.PROJECT_MEMBER_HISTORY_CLOSED);
@@ -1159,10 +1159,54 @@ public class CommonUtil {
 		 * @return
 		 * @throws ParseException
 		 */
-		public Long getNumberOfDaysBetweenTwoDates(Date fromDate, Date toDate) throws ParseException {
-			   Long nuberOfDays = 0l;
+		public int getNumberOfDaysBetweenTwoDates(Date fromDate, Date toDate) throws ParseException {
 				long diff = toDate.getTime() - fromDate.getTime();
-				 nuberOfDays = TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS);
-				return nuberOfDays;
+				int  nuberOfDays = (int) TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS);
+				return nuberOfDays+1;
 			}
+		
+		
+		public  Date[] getStartDateEndDateByYear(int year){
+			Date[] dates = new Date[2];
+		    Calendar calendarStart=Calendar.getInstance();
+		    calendarStart.set(Calendar.YEAR,year);
+		    calendarStart.set(Calendar.MONTH,0);
+		    calendarStart.set(Calendar.DAY_OF_MONTH,1);
+		    // returning the first date
+		    dates[0] = calendarStart.getTime();
+		    Calendar calendarEnd=Calendar.getInstance();
+		    calendarEnd.set(Calendar.YEAR,year);
+		    calendarEnd.set(Calendar.MONTH,11);
+		    calendarEnd.set(Calendar.DAY_OF_MONTH,31);
+		    // returning the last date
+		    dates[1] = calendarEnd.getTime();
+			return dates;
+		}
+		
+		public  Date[] getMonthStartDateEndDateByMonth(int month) {
+			Date[] dates = new Date[2];
+			Calendar cal = Calendar.getInstance();
+			cal.set(Calendar.MONTH, month-1);
+			cal.set(Calendar.DATE, 1);
+			cal.set(Calendar.DATE, cal.get(Calendar.DAY_OF_MONTH));
+			dates[0] = cal.getTime();
+			cal.set(Calendar.DATE, cal.getActualMaximum(Calendar.DAY_OF_MONTH));
+			dates[1] = cal.getTime();
+			return dates;
+	}
+		public  Date[] getMonthStartDateEndDateByYearAndMonth(int year,int month) {
+			Calendar calendar = Calendar.getInstance();
+			Date[] dates = new Date[2];
+			int yearpart = 2017;
+			int monthPart = 9;
+			int dateDay = 1;
+			calendar.set(yearpart, monthPart, dateDay);
+			int numOfDaysInMonth = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
+			dates[0] = calendar.getTime();
+			calendar.add(Calendar.DAY_OF_MONTH, numOfDaysInMonth-1);
+			dates[1] = calendar.getTime();
+			return dates;
+	}
+		
+		
 }

@@ -19,6 +19,8 @@ import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 @Entity
 @Table(name = "LEAVES_ROLE", catalog = "sourcelead")
 @Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "leavesRoles")
@@ -32,16 +34,25 @@ public class LeaveRole {
 
 	@NotFound(action = NotFoundAction.IGNORE)
 	@ManyToOne(fetch = FetchType.LAZY)
+	@JsonBackReference
 	@JoinColumn(name = "LEAVES_OPTION_ID", nullable = false)
 	private Option leavesOptionId;
 
 	@NotFound(action = NotFoundAction.IGNORE)
 	@ManyToOne(fetch = FetchType.LAZY)
+	@JsonBackReference
 	@JoinColumn(name = "LEAVE_TYPE_ID", nullable = false)
 	private LeaveType leaveTypeid;
+	
+	@NotFound(action = NotFoundAction.IGNORE)
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JsonBackReference
+	@JoinColumn(name = "RESTRICT_DAY_ID", nullable = false)
+	private RestrictDay restrictDay;
 
 	@NotFound(action = NotFoundAction.IGNORE)
 	@ManyToOne
+	@JsonBackReference
 	@JoinColumn(name = "ROLE_ID", nullable = false)
 	private Roles roleId;
 
@@ -143,4 +154,13 @@ public class LeaveRole {
 		this.updatedBy = updatedBy;
 	}
 
+	public RestrictDay getRestrictDay() {
+		return restrictDay;
+	}
+
+	public void setRestrictDay(RestrictDay restrictDay) {
+		this.restrictDay = restrictDay;
+	}
+
+	
 }

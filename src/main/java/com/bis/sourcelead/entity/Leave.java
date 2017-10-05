@@ -58,6 +58,7 @@ public class Leave {
 
 	@NotFound(action = NotFoundAction.IGNORE)
 	@ManyToOne
+	@JsonBackReference
 	@JoinColumn(name = "LEAVE_TYPE_ID", nullable = false)
 	private LeaveType leaveType;
 	
@@ -73,6 +74,9 @@ public class Leave {
 	
 	@Column(name = "REASON",columnDefinition = "TEXT default NULL")
 	private String reason;
+	
+	@Column(name = "NUMBER_OF_DAYS")
+	private String numberOfDays;
 	
 	@Column(name = "REJECTED_REASON",columnDefinition = "TEXT default NULL")
 	private String rejectedReason;
@@ -97,7 +101,6 @@ public class Leave {
 	
 	@Column(name = "DELETE_REASON",columnDefinition = "TEXT default NULL")
 	private String deleteReason;
-	
 	
 	@Column(name = "CREATED_DATE")
 	private Date createdDate;
@@ -135,6 +138,14 @@ public class Leave {
 	@Transient
 	@JsonProperty
 	private String approverUsers;
+	
+	@Transient
+	@JsonProperty
+	private Integer balanceLeavesCount;
+	
+	@Transient
+	@JsonProperty
+	private String approvedByUser;
 
 	public String getId() {
 		return id;
@@ -369,5 +380,32 @@ public class Leave {
 	{
 		this.createdDateStr = createdDateStr;
 	}
+
+	public Integer getBalanceLeavesCount() {
+		return balanceLeavesCount;
+	}
+
+	public void setBalanceLeavesCount(Integer balanceLeavesCount) {
+		this.balanceLeavesCount = balanceLeavesCount;
+	}
+
+	public String getNumberOfDays() {
+		return numberOfDays;
+	}
+
+	public void setNumberOfDays(String numberOfDays) {
+		this.numberOfDays = numberOfDays;
+	}
 	
+	public String getApprovedByUser()
+	{
+		return approvedByUser;
+	}
+
+	public void setApprovedByUser(String approvedByUser)
+	{
+		this.approvedByUser = approvedByUser;
+	}
+	
+
 }

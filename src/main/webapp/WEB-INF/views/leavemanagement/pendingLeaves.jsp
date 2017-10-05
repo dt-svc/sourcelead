@@ -38,6 +38,7 @@ $(document).ready(function(){
       <div class="clearfix"></div>
     </div>
     <div class="clients_wrap_table datatable_filter">
+    	<div id="loading"></div>
     	<div id="pendingListDiv"></div>
     </div>
   </div>
@@ -59,6 +60,7 @@ function redirectlocation(location){
 function getPendingLeavesList(){
 	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	var userId = '${SourceLeadWeb_user.id}';
+	$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:999;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	$.get(sourceleadUrl+"/getLeavesListByLocationIdAndStatus?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&status=PENDING&userId="+userId, function(data) {
 		var result = "";				        	
 				result = result + '<table id="pendingListTable" class="display" cellspacing="0" width="100%" >';
@@ -80,11 +82,12 @@ function getPendingLeavesList(){
 			        		 result = result + ' <tr>';
 			        		 result = result + ' <td>';
 			        		 result = result + ' <div class="proj_show tbldata-dotdot-big">';
-			        		 if(opt.leaveTypeName !=null && opt.leaveTypeName !='' && opt.leaveTypeName !='undefined'){
-			        			 result = result + '     <div class="pull-left tbldata-dotdot-me" title="'+opt.leaveTypeName+'">'+opt.leaveTypeName+'</div>'; 
-			        		 }else{
-			        			 result = result + '     <div class="pull-left tbldata-dotdot-me" title="">--</div>';
-			        		 }
+// 			        		 if(opt.leaveTypeName !=null && opt.leaveTypeName !='' && opt.leaveTypeName !='undefined'){
+// 			        			 result = result + '     <div class="pull-left tbldata-dotdot-me" title="'+opt.leaveTypeName+'">'+opt.leaveTypeName+'</div>';
+			        			 result = result + '     <div class="pull-left tbldata-dotdot-me" title="Sick Leave" onclick="getRequestedAproveSummary(\''+opt.id+'\','+orgLocationId+');">'+opt.empName+'('+opt.empType+')</div><i class="fa fa-binoculars pull-right" ></i>'; 
+// 			        		 }else{
+// 			        			 result = result + '     <div class="pull-left tbldata-dotdot-me" title="">--</div>';
+// 			        		 }
 			        		 result = result + '  </div>';
 			        		 result = result + ' </td>';
 			        		 result = result + ' <td>';
@@ -126,8 +129,106 @@ function getPendingLeavesList(){
 				$("#pendingListDiv").append(result);
 				$("#loading").removeAttr("style");
 				pendingListPagination();
+				$(".proj_show").click(function(){
+					$(".new_side_wrap").addClass("new_side_wrap_active");
+					$(".side_mask").fadeIn(200);
+					$("body").css('overflow-y', 'hidden');
+				});
+				$(".proj_close, .side_mask").click(function(){
+					$(".new_side_wrap").removeClass("new_side_wrap_active");
+					$(".side_mask").fadeOut(200);
+					$("body").css('overflow-y', 'auto');
+				    $('.addcandidate-popup').fadeOut(200);
+				}); 
+				
 		}); 
  }
+</script>
+
+<script>
+function getRequestedAproveSummary(leaveId,orgLocationId){
+	   $.get(sourceleadUrl+"/getRequestedAproveSummary?"+tokenParamName+"="+tokenValue+"&leaveId="+leaveId+"&orgLocationId="+orgLocationId, function(data) {
+		   if(data != null){
+			$(".new_side_wrap").addClass("new_side_wrap_active");
+			$(".side_mask").fadeIn(200);
+			$("body").css('overflow-y', 'hidden');
+			 var result = "";	
+			 result = result +' <div class="viewgrid-header pull-right zIndex positionRelative">';
+			 result = result +' <span class="btn btn-primary btn-sm mr10">Approved</span>';
+			 result = result +' <span class="btn btn-default btn-sm" onClick="cancel()">Cancel</span>';
+			 result = result +'<div class="clearfix"></div>';
+			 result = result +'<div class="cancel-reason" id="cancelReason">';
+			 result = result +'<div class="clearfix">';
+			 result = result +' <textarea rows="1" class="form-control" placeholder="Cancel Reason..." id="textarea"></textarea>';
+			 result = result +'</div>';
+			 result = result +'<div class="clearfix mt5">';
+			 result = result +'</div>';
+			 result = result +'</div>';
+			 result = result +' </div> ';
+			 result = result +' <div class="row">';
+			 result = result +'<div class="col-md-12 mb">';
+			 result = result +'<label class="col-md-2 control-label"><b>Leave Type:</b></label>';
+			 result = result +'<div class="col-md-8">';
+			 result = result +'<span>'+data.leaveType+'</span>';
+			 result = result +'</div>';
+			 result = result +'</div>';
+			 result = result +'<div class="col-md-12 mb">';
+			 result = result +'<label class="col-md-2 control-label"><b>Duration:</b></label>';
+			 result = result +'<div class="col-md-8">';
+			 result = result +' <span>'+data.duration+'</span>';
+			 result = result +' </div>';
+			 result = result +'</div>';
+             result = result +' <div class="col-md-12 mb">';
+             result = result +'<label class="col-md-2 control-label"><b>Type:</b></label>';
+             result = result +'<div class="col-md-8">';
+             result = result +'<span>'+data.reason+'</span>';
+             result = result +' </div>';
+             result = result +' </div>';
+             result = result +'<div class="col-md-12 mb">';
+             result = result +'<label class="col-md-2 control-label"><b>No of leaves taken:</b></label>';
+             result = result +' <div class="col-md-8">';
+             result = result +'<span>XXXXXXX</span>';
+             result = result +'</div>';
+             result = result +'</div>';
+             result = result +'<div class="col-md-12 mb">';
+             result = result +'<label class="col-md-2 control-label"><b>Applied on:</b></label>';
+             result = result +'<div class="col-md-8">';
+             result = result +'<span>'+data.createdDate+'</span>';
+             result = result +' </div>';
+             result = result +'</div>';
+             result = result +'<div class="col-md-12 mb">';
+             result = result +'<label class="col-md-2 control-label"><b>Approvers:</b></label>';
+             result = result +'<div class="col-md-8">';
+             result = result +' <span>Srinivas Vemula</span>';
+             result = result +'</div>';
+             result = result +'</div>';
+             result = result +'<div class="col-md-12 mb">';
+             result = result +'<label class="col-md-2 control-label"><b>Reason:</b></label>';
+             result = result +'<div class="col-md-8">';
+             result = result +' <span>Srinivas Vemula</span>';
+             result = result +'</div>';
+             result = result +'</div>';
+             result = result +'<div class="col-md-12 mb">';
+             result = result +'<label class="col-md-2 control-label"><b>Attachment:</b></label>';
+             result = result +' <div class="col-md-8">';
+//              result = result +' <span><a href="javascript:void(o)">demo.pdf<i class="fa fa-download padddingLeft cursorPointer"></i></a></span>';
+             if(data.fileUrl != null && data.fileUrl != 'undefined' && data.fileUrl != ''){
+            	 result = result +'<span><a href="'+data.fileUrl+'">'+data.fileName+'<i class="fa fa-download padddingLeft cursorPointer"></i></a></span>';
+             }else{
+            	 result = result +'<span>--</span>'; 
+             }
+             result = result +'</div>';
+             result = result +' </div>';
+             result = result +'<div class="clearfix"></div>';
+             result = result +'</div>';
+             
+             $("#leaveSummaryId").empty();
+             $("#leaveSummaryId").append(result);
+            
+		}	
+		 
+	});  
+}
 </script>
 
 <script>
@@ -147,8 +248,18 @@ function pendingListPagination(){
 }
 </script>
 
+<div class="side_mask">
+    <div class="proj_close"></div>
+</div>
 
-
-
+<div class="new_side_wrap">
+<div class="clients_side_wrap_inn">
+      <div class="clerfix showDetails">
+      <div class="project_tabs minHeight_225 form-horizontal modal-body">
+      <div id="leaveSummaryId"></div>
+     </div>
+      </div>
+  </div>
+</div>
 
 <jsp:include page="../masterFooter.jsp" />

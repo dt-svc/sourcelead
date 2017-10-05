@@ -8,7 +8,7 @@ import com.bis.sourcelead.entity.LeaveType;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 
-public class LeaveDTO implements Serializable{
+public class LeaveDTO extends SearchDTO implements Serializable{
 
 	private String id;
 	private String orgLocationId;
@@ -42,7 +42,28 @@ public class LeaveDTO implements Serializable{
 	private String empid;
 	private String empType;
 	private String empEmail;
+	private String fromDateDay;
+	private String toDateDay;
+	private String leavesTaken;
+	private String approverUsers;
+	private String thisMonthLeaves;
+	private String reportYear;
+	private String reportMonth;
+	private String reportFromDate;
+	private String reportEndDate;
+	private String barChartYear;
+	private String barCharMonth;
+	private String barChartFromDate;
+	private String barChartToDate;
+	private String totalLeaves;
+	private String colorCode;
 	
+	public String getLeavesTaken() {
+		return leavesTaken;
+	}
+	public void setLeavesTaken(String leavesTaken) {
+		this.leavesTaken = leavesTaken;
+	}
 	
 	public String getFileName() {
 		return fileName;
@@ -236,7 +257,93 @@ public class LeaveDTO implements Serializable{
 	public void setEmpEmail(String empEmail) {
 		this.empEmail = empEmail;
 	}
-	
-	
-	
+	public String getFromDateDay()
+	{
+		return fromDateDay;
+	}
+	public void setFromDateDay(String fromDateDay)
+	{
+		this.fromDateDay = fromDateDay;
+	}
+	public String getToDateDay()
+	{
+		return toDateDay;
+	}
+	public void setToDateDay(String toDateDay)
+	{
+		this.toDateDay = toDateDay;
+	}
+	public String getApproverUsers() {
+		return approverUsers;
+	}
+	public void setApproverUsers(String approverUsers) {
+		this.approverUsers = approverUsers;
+	}
+	public String getThisMonthLeaves() {
+		return thisMonthLeaves;
+	}
+	public void setThisMonthLeaves(String thisMonthLeaves) {
+		this.thisMonthLeaves = thisMonthLeaves;
+	}
+	public String getReportYear() {
+		return reportYear;
+	}
+	public void setReportYear(String reportYear) {
+		this.reportYear = reportYear;
+	}
+	public String getReportMonth() {
+		return reportMonth;
+	}
+	public void setReportMonth(String reportMonth) {
+		this.reportMonth = reportMonth;
+	}
+	public String getReportFromDate() {
+		return reportFromDate;
+	}
+	public void setReportFromDate(String reportFromDate) {
+		this.reportFromDate = reportFromDate;
+	}
+	public String getReportEndDate() {
+		return reportEndDate;
+	}
+	public void setReportEndDate(String reportEndDate) {
+		this.reportEndDate = reportEndDate;
+	}
+	public String getBarChartYear() {
+		return barChartYear;
+	}
+	public void setBarChartYear(String barChartYear) {
+		this.barChartYear = barChartYear;
+	}
+	public String getBarCharMonth() {
+		return barCharMonth;
+	}
+	public void setBarCharMonth(String barCharMonth) {
+		this.barCharMonth = barCharMonth;
+	}
+	public String getBarChartFromDate() {
+		return barChartFromDate;
+	}
+	public void setBarChartFromDate(String barChartFromDate) {
+		this.barChartFromDate = barChartFromDate;
+	}
+	public String getBarChartToDate() {
+		return barChartToDate;
+	}
+	public void setBarChartToDate(String barChartToDate) {
+		this.barChartToDate = barChartToDate;
+	}
+	public String getTotalLeaves() {
+		return totalLeaves;
+	}
+	public void setTotalLeaves(String totalLeaves) {
+		this.totalLeaves = totalLeaves;
+	}
+	public String getColorCode() {
+		return colorCode;
+	}
+	public void setColorCode(String colorCode) {
+		this.colorCode = colorCode;
+	}
+
 }

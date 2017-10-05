@@ -835,7 +835,8 @@ public class Constants {
 	public static final String[] MONTHS = {"January","February","March","April","May","June","July","August","September","October","November","December"};
 	
 	public static final String LEAVE_OPTION = "LEAVE_OPTION";
-	
+	public static final String RESTRICTDAY = "RESTRICT_DAY";
+
 	public static final String LEAVE_PENDING = "PENDING";
 	public static final String LEAVE_APPROVED = "APPROVED";
 	public static final String LEAVE_REJECTED = "REJECTED";

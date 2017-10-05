@@ -17,6 +17,8 @@ import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 @Entity
 @Table(name = "LEAVE_APPROVER_HIERARCHY", catalog = "sourcelead")
 @Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "leaveApproverHierarchy")
@@ -29,11 +31,13 @@ public class LeaveApproveHierarchy {
 	
 	@NotFound(action = NotFoundAction.IGNORE)
 	@ManyToOne
+	@JsonBackReference
 	@JoinColumn(name = "LEAVE_ID", nullable = false)
 	private Leave leaveid;
 	
 	@NotFound(action = NotFoundAction.IGNORE)
 	@ManyToOne
+	@JsonBackReference
 	@JoinColumn(name = "APPROVER_USER_ID", nullable = false)
 	private User approverUserId;
 	

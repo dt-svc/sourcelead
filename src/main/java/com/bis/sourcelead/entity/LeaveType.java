@@ -22,6 +22,7 @@ import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
@@ -77,6 +78,9 @@ public class LeaveType {
 	
 	@Column(name = "STATUS")
 	private String status;
+	
+	@Column(name = "COLOR_CODE")
+	private String colorCode;
 
 	@Column(name = "CREATED_DATE")
 	private Date createdDate;
@@ -91,6 +95,7 @@ public class LeaveType {
 	private String updatedBy;
 	
 	@NotFound(action=NotFoundAction.IGNORE)
+	@JsonBackReference
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "leaveTypeid")
 	private Set<LeaveRole> leaveTypeRolesSet;
 	
@@ -116,6 +121,10 @@ public class LeaveType {
 	@Transient
 	@JsonProperty
 	private String updatedUser;
+	
+	@Transient
+	@JsonProperty
+	private int remainingTotalLeaveCounts;
 	
 
 	public String getId() {
@@ -343,4 +352,21 @@ public class LeaveType {
 	{
 		this.updatedUser = updatedUser;
 	}
+
+	public int getRemainingTotalLeaveCounts() {
+		return remainingTotalLeaveCounts;
+	}
+
+	public void setRemainingTotalLeaveCounts(int remainingTotalLeaveCounts) {
+		this.remainingTotalLeaveCounts = remainingTotalLeaveCounts;
+	}
+
+	public String getColorCode() {
+		return colorCode;
+	}
+
+	public void setColorCode(String colorCode) {
+		this.colorCode = colorCode;
+	}
+
 }

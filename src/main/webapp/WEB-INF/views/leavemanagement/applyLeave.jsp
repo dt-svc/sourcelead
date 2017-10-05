@@ -7,6 +7,12 @@
 <script type="text/javascript" src="https://www.amcharts.com/lib/3/pie.js"></script>
 
 
+<script type="text/javascript">
+window.onload = function() { 
+	getPieChartBasedOnUser();
+	}
+</script>
+
 <!-- Side Nav Bar --> 
     <!-- Content Area -->
   <section class="content-wraper">
@@ -46,7 +52,7 @@
               <label class="col-md-3">From<span class="text-danger paddingLeft">*</span></label>
               <div class="col-md-9">
                 <div class="row">
-                  <div class="col-md-7 paddingRight">
+                  <div class="col-md-7 paddingRight" id="fromDateDiv">
                     <input type="text" class="form-control calendar" id="fromDate" name="fromDate" placeholder="From Date" field-name="From Date" data-validation="required">
                   </div>
                   <div class="col-md-5 paddingLeft">
@@ -64,7 +70,7 @@
               <label class="col-md-3">To<span class="text-danger paddingLeft">*</span></label>
               <div class="col-md-9">
                 <div class="row">
-                  <div class="col-md-7 paddingRight">
+                  <div class="col-md-7 paddingRight" id="toDateDiv">
                     <input type="text" class="form-control calendar" id="toDate" name="toDate" placeholder="To Date" field-name="To Date" data-validation="required">
                   </div>
                   <div class="col-md-5 paddingLeft">
@@ -81,13 +87,14 @@
               <div class="form-group">
               <label class="col-md-3">Leave Type<span class="text-danger paddingLeft">*</span></label>
               <div class="col-md-9 dropdown-select">
-                <select class="form-control" id="leaveType" name="leaveType" field-name="Leave Type" data-validation="required" onchange="getLeavePolicy();">
+              <div id="leaveTypeIdDiv"></div>
+                <%-- <select class="form-control" id="leaveType" name="leaveType" field-name="Leave Type" data-validation="required" onchange="getLeavePolicy();">
                   <option value="">--Select Leave Type--</option>
                 	<c:forEach var="leave" items="${leaveTypeList}">
-                	<%-- ${dept.id  == departmentId ? 'selected' : ''} --%>
+                	${dept.id  == departmentId ? 'selected' : ''}
 	                     <option value="${leave.id}">${leave.name}</option>
                 	</c:forEach>
-                </select>
+                </select> --%>
               </div>
             </div>
             <div class="form-group">
@@ -128,29 +135,19 @@
           </div>
           <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
             <div class="well-sm well well-custom clearfix amchartAnchor-Hide">
-                 <h5>Leave Stats</h5>
+                 <h5>Leave Status</h5>
                 <div id="leavestatsu" style="width: 100%; height: 150px;"></div>
                 <div class="row">
-                <ul class="list-unstyled leavelist col-md-10 mt25 col-md-offset-1 list-group">
-                    <li>
-                        <label>Balance Leaves</label>
-                        <span class="label label-info">100</span>
-                    </li>
-                    <li>
-                        <label>Sick Leaves</label>
-                    <span class="label label-primary">100</span>
-                    </li>
-                    <li><label>Casual Leaves</label>
-                    <span class="label label-warning">100</span>
-                    </li>
-                    <li><label>Leave Request</label>
-                    <span class="label label-success">100</span>
-                    </li>
-                    <li><label>Cancel Request</label>
-                    <span class="label label-danger">100</span>
-                    </li>
-                </ul>
-                    </div>
+                <div id="leaveStatusIdDiv"></div>
+                <%-- <ul class="list-unstyled leavelist col-md-10 mt25 col-md-offset-1 list-group">
+                        <c:forEach var="leaveType" items="${leaveTypeList}">
+                        	<li>
+									<label>${leaveType.name}</label>
+									<span class="label label-info" style="background-color: ${leaveType.colorCode};">${leaveType.remainingTotalLeaveCounts}</span>
+							</li>
+						</c:forEach>
+              	</ul> --%>
+                </div>
                 
             </div>
           </div>
@@ -200,26 +197,37 @@
 			changeYear: true, 
 			onSelect : function(selected) {
 			var dt = $(this).datepicker('getDate', '+1d');
-			dt.setDate(dt.getDate() + 1);
+			dt.setDate(dt.getDate());
 			$("#toDate").datepicker("option", "minDate", dt);
-					errInvoiceDate();
-					getDueDateByFrequency();
+			removeStartValid();
 			}
 		});
+		
 	  $('#toDate').datepicker({
 			dateFormat : finalDateFormatEndDate,
 			changeMonth: true,
 			changeYear: true, 
 			onSelect : function(selected) {
 			var dt = $(this).datepicker('getDate', '-1d');
-			dt.setDate(dt.getDate() - 1);
+			dt.setDate(dt.getDate());
 			$("#fromdate").datepicker("option", "maxDate", dt);
-				errDueDate();
+			removeEndValid();
+			validateDate();
 			}
 		});
 		
 	});
 </script>
+
+<script>
+function removeStartValid(){
+	$('#fromDateDiv').find('p.jquery_form_error_message').remove();
+}
+
+function removeEndValid(){
+	$('#toDateDiv').find('p.jquery_form_error_message').remove();
+}
+ </script>
 
 
 <script type="text/javascript">
@@ -246,50 +254,92 @@
  		</script> 
  		
  		
- 		 <script type="text/javascript">
-        //ApplyLeves piechart
-			AmCharts.makeChart("leavestatsu",
-{
-					"type": "pie",
-					"balloonText": "[[title]]<br><span style='font-size:14px'><b>[[value]]</b></span>",
-					"innerRadius": "40%",
-					"minRadius": 0,
-					"pieX": "50%",
-					"pieY": "50%",
-					"pullOutRadius": "0%",
-					"startRadius": "0%",
-					"colors": [
-						"#81c784",
-						"#ffd54f",
-						"#26c6da"
-					],
-					"labelsEnabled": false,
-					"marginBottom": 0,
-					"marginLeft": 2,
-					"marginTop": 0,
-					"maxLabelWidth": 0,
-					"titleField": "category",
-					"valueField": "column-1",
-					"allLabels": [],
-					"balloon": {},
-					"titles": [],
-					"dataProvider": [
-						{
-							"category": "Approved",
-							"column-1": "8"
-						},
-						{
-							"category": "Pending",
-							"column-1": "2"
-						},
-						{
-							"category": "Balance",
-							"column-1": 2
-						}
-					]
-				}				
-			);
-		</script>
+ <script type="text/javascript">
+ function getPieChartBasedOnUser(){
+	 
+	 $.ajax({
+         type : "GET",
+          url: sourceleadUrl+"/getPieChartForLeaveStatus?"+tokenParamName+"="+tokenValue+"",    
+          success :function(json) {
+        	  
+        	  var output = "";
+        	  output = output +'<select class="form-control" id="leaveType" name="leaveType" field-name="Leave Type" data-validation="required" onchange="getLeavePolicy();">';
+        	  output = output +' <option value="">--Select Leave Type--</option>';
+        	  for (var i = 0; i < json.length; i++) { 
+        		  var leave = json[i];
+        		  output = output +'<option value='+leave.id+'>'+leave.name+'</option>';
+        	  }
+        	  output = output +'</select>';
+        	  $("#leaveTypeIdDiv").empty();
+        	  $("#leaveTypeIdDiv").append(output);
+        	  $('#leaveType').chosen();
+        	  $("#leaveType").trigger("chosen:updated");
+        	  
+        	  getpieChar(json);
+        	  
+        	  var result = "";
+	    	  result = result +' <ul class="list-unstyled leavelist col-md-10 mt25 col-md-offset-1 list-group">';
+	          for (var i = 0; i < json.length; i++) { 
+	        		  var leaveType = json[i];
+				        result = result +'	<li>';
+				  		result = result +'			<label>'+leaveType.name+'</label>';
+				  		result = result +'			<span class="label label-info" style="background-color: '+leaveType.colorCode+';" >'+leaveType.remainingTotalLeaveCounts+'</span>';
+				  		result = result +'	</li>'; 
+	        	  }
+	        	  result = result +'	</ul>'; 
+	        	  $("#leaveStatusIdDiv").empty();
+	        	  $("#leaveStatusIdDiv").append(result);
+
+	        	  
+	        	 
+         },
+          
+     }); 
+function getpieChar(json){
+	
+	 var chartData = [];
+
+	   for (var i = 0; i < json.length; i++) { 
+	 		 var opt = json[i]; 
+	         chartData.push({
+	        	 category: opt.name,
+	        	 counts: opt.totalLeaves,
+	         	 color: opt.colorCode
+	       });
+	   }
+	   
+	//ApplyLeves piechart
+	AmCharts.makeChart("leavestatsu",
+		{
+			"type": "pie",
+			"balloonText": "[[title]]<br><span style='font-size:14px'><b>[[value]]</b></span>",
+			"innerRadius": "40%",
+			"minRadius": 0,
+			"pieX": "50%",
+			"pieY": "50%",
+			"pullOutRadius": "0%",
+			"startRadius": "0%",
+			"colors": [],
+			"colorField": "color",
+			"labelsEnabled": false,
+			"marginBottom": 0,
+			"marginLeft": 2,
+			"marginTop": 0,
+			"maxLabelWidth": 0,
+			"titleField": "category",
+			"valueField": "counts",
+			"allLabels": [],
+			"balloon": {},
+			"titles": [],
+			"dataProvider": chartData
+		}				
+	);
+}
+     
+ }
+</script>
+		
+		
     <script>
     function approvedlevel(){
         $(".approvedlevel").toggle();
@@ -385,5 +435,20 @@ function getLeavePolicy(){
 }
 </script>
 
+<script>
+function validateDate(){
+	$('.warMess').hide();
+	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
+	var fromDate = $("#fromDate").val();
+	var toDate = $("#toDate").val();
+	$.get(sourceleadUrl+"/validateRestrictDate?"+tokenParamName+"="+tokenValue+"&fromDate="+fromDate+"&toDate="+toDate+"&orgLocationId="+orgLocationId, function(data) {
+		if(data == true){
+			$("#toDate").after("<p class='warMess'>You cannot apply for leave on restricted day</span>");
+		}else{
+			$('.warMess').hide();
+		}
+	}); 
+}
+</script>
 
 <jsp:include page="../masterFooter.jsp" />
