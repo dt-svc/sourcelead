@@ -224,7 +224,7 @@ public class OrgSpocDaoImpl  implements OrgSpocDao{
 		Session session = this.sessionFactory.getCurrentSession();
 		List<OrgSpoc> orgSpocs = new ArrayList<OrgSpoc>();
 		logger.debug("getSpocBySpocUUID start");
-		orgSpocs = session.createQuery("from OrgSpoc spoc left join fetch spoc.vendorUser left join fetch spoc.clientUser where spoc.UUID = :spocUUID " ).setCacheable(true).setString( "spocUUID", spocUUID ).setCacheable(true).list();
+		orgSpocs = session.createQuery("from OrgSpoc spoc left join fetch spoc.vendorUser left join fetch spoc.clientUser left join fetch spoc.ownerUser where spoc.UUID = :spocUUID " ).setCacheable(true).setString( "spocUUID", spocUUID ).setCacheable(true).list();
 		logger.debug("getSpocBySpocUUID end");
 		if (orgSpocs.size() > 0) {
 			return orgSpocs.get(0);
@@ -625,6 +625,20 @@ public class OrgSpocDaoImpl  implements OrgSpocDao{
 			Session session = this.sessionFactory.getCurrentSession();
 			Query query= session.createQuery("from OrgSpoc spoc  where  spoc.clientUser.id = :clientUserId and spoc.orgRelations.id = :orgRelationId and spoc.status = '1' ");
 			List<OrgSpoc> spocsList = query.setLong("clientUserId", clientUserId).setLong("orgRelationId", orgRelationId).setCacheable(true).list();
+			OrgSpoc orgSpoc = null;
+			if(spocsList != null && spocsList.size() > 0){
+				orgSpoc = spocsList.get(0);
+			}
+			return orgSpoc;
+		}
+
+		@Override
+		@Transactional(rollbackFor = { Exception.class })
+		public OrgSpoc getSpocByOrgRelationIdAndAssignedUserId(Long orgRelationId, Long assignUserId) throws Exception {
+			
+			Session session = this.sessionFactory.getCurrentSession();
+			Query query= session.createQuery("from OrgSpoc spoc  where spoc.vendorUser.id = :assignUserId and spoc.orgRelations.id = :orgRelationId and spoc.status = '1' ");
+			List<OrgSpoc> spocsList = query.setLong("assignUserId", assignUserId).setLong("orgRelationId", orgRelationId).setCacheable(true).list();
 			OrgSpoc orgSpoc = null;
 			if(spocsList != null && spocsList.size() > 0){
 				orgSpoc = spocsList.get(0);

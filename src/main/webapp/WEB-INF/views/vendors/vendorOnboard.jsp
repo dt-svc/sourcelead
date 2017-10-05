@@ -347,97 +347,106 @@
 
 <script>
 function getVendorOnboardDetails(){
-	var vendorOnboardId = '${vendorOnboardId}';
-	 $.ajax({
-	    	type: "POST",
-	    	 url: sourceleadUrl+"/getVendorOnboardDetailsByVendorOnboardId?${_csrf.parameterName}=${_csrf.token}&vendorOnboardId="+vendorOnboardId, 
-	        success: function(json) {
-	        	$("#clientName").html(json.clientName);
-	        	if(json.clientWebsite != null){
-	        		$("#website").html(json.clientWebsite);
-	        	}else{
-	        		$("#website").html("-------");
-	        	}
-	        	
-	        	$("#location").html(json.clientLocation);
-	        	
-	        	if(json.clientAddress != null){
-	        		$("#address").html(json.clientAddress);
-	        	}else{
-	        		$("#address").html("-------");
-	        	}
-	        	
-	        	$("#vendorName").html(json.vendorName);
-	        	if(json.vendorWebsite != null){
-	        		$("#vendorWebsite").html(json.vendorWebsite);
-	        	}else{
-	        		$("#vendorWebsite").html("-------");
-	        	}
-	        	
-	        	$("#vendorLocation").html(json.vendorLocation);
-	        	
+	
+	var onboardSubmittedStatus = '${onboardSubmittedStatus}';
+	
+	if(onboardSubmittedStatus == 'N'){
+		var vendorOnboardId = '${vendorOnboardId}';
+		var notificationUUID = '${notificationUUID}';
+		 $.ajax({
+		    	type: "POST",
+		    	 url: sourceleadUrl+"/getVendorOnboardDetailsByVendorOnboardId?${_csrf.parameterName}=${_csrf.token}&vendorOnboardId="+vendorOnboardId+"&notificationUUID="+notificationUUID, 
+		        success: function(json) {
+		        	$("#clientName").html(json.clientName);
+		        	if(json.clientWebsite != null){
+		        		$("#website").html(json.clientWebsite);
+		        	}else{
+		        		$("#website").html("-------");
+		        	}
+		        	
+		        	$("#location").html(json.clientLocation);
+		        	
+		        	if(json.clientAddress != null){
+		        		$("#address").html(json.clientAddress);
+		        	}else{
+		        		$("#address").html("-------");
+		        	}
+		        	
+		        	$("#vendorName").html(json.vendorName);
+		        	if(json.vendorWebsite != null){
+		        		$("#vendorWebsite").html(json.vendorWebsite);
+		        	}else{
+		        		$("#vendorWebsite").html("-------");
+		        	}
+		        	
+		        	$("#vendorLocation").html(json.vendorLocation);
+		        	
 
-	        	$("#clientContactName").html(json.clientContactName);
-	        	$("#clientContactEmail").html(json.clientContactEmail);
-	        	if(json.clientContactPhone != null){
-	        		$("#clientContactPhone").html(json.clientContactPhone);
-	        	}else{
-	        		$("#clientContactPhone").html("-------");
-	        	}
-	        	
-	        	if(json.paymentTerm != null && json.paymentTerm != 'undefined' && json.paymentTerm != ''){
-	      			   $("select[name=paymentTerm]").val(json.paymentTerm);
-	      		  }
-	        	
-	        	
-	        	$("select[name=tier]").val(json.tier);
-	        	
-	        	if(json.industryName != null && json.industryName != 'undefined' && json.industryName != ''){
-	        		$("select[name=industryName]").val(json.industryName);
-		        	$("#industryName").trigger("chosen:updated");
-	        	}
-	        	
-	        	if(json.sicCode != null && json.sicCode != 'undefined' && json.sicCode != ''){
-	        		$("input[name=sicCode]").val(json.sicCode);
-	        	}
-	        	
-	        	if(json.currency != null && json.currency != 'undefined' && json.currency != ''){
-	        		 $("select[name=currency]").val(json.currency);
-	        	}
-	        	
-	        	if(json.taxRegNumber != null && json.taxRegNumber != 'undefined' && json.taxRegNumber != ''){
-	        		 $("input[name=taxRegNumber]").val(json.taxRegNumber);
-	        	}
-	        	
-	        	if(json.dunsNumber != null && json.dunsNumber != 'undefined' && json.dunsNumber != ''){
-	        		 $("input[name=dunsNumber]").val(json.dunsNumber);
-	        	}
-	        	
-	        	$("input[name=accountName]").val(json.accountName);
-	        	$("input[name=accountNumber]").val(json.accountNumber);
-	        	$("input[name=bankName]").val(json.bankName);
-	        	
-	        	if(json.branchNumber != null && json.branchNumber != 'undefined' && json.branchNumber != ''){
-	        		$("input[name=branchNumber]").val(json.branchNumber);
-	        	}
-	        	
-	        	if(json.bicNumber != null && json.bicNumber != 'undefined' && json.bicNumber != ''){
-	        		$("input[name=bicNumber]").val(json.bicNumber);
-	        	}
-	        	
-	        	if(json.bankAddress != null && json.bankAddress != 'undefined' && json.bankAddress != ''){
-	        		 $("textarea[name=bankAddress]").val(json.bankAddress);
-	        	}
-	        	
-	        	if(json.vendorAddress != null && json.vendorAddress != 'undefined' && json.vendorAddress != ''){
-		        		 $("textarea[name=vendorAddress]").val(json.vendorAddress);
-	        	}
-	        	
-	        	if(json.vendorBillingAddress != null && json.vendorBillingAddress != 'undefined' && json.vendorBillingAddress != ''){
-	        		 $("textarea[name=vendorBillingAddress]").val(json.vendorBillingAddress);
-	        	}
-	        },
-	    }); 
+		        	$("#clientContactName").html(json.clientContactName);
+		        	$("#clientContactEmail").html(json.clientContactEmail);
+		        	if(json.clientContactPhone != null){
+		        		$("#clientContactPhone").html(json.clientContactPhone);
+		        	}else{
+		        		$("#clientContactPhone").html("-------");
+		        	}
+		        	
+		        	if(json.paymentTerm != null && json.paymentTerm != 'undefined' && json.paymentTerm != ''){
+		      			   $("select[name=paymentTerm]").val(json.paymentTerm);
+		      		  }
+		        	
+		        	
+		        	$("select[name=tier]").val(json.tier);
+		        	
+		        	if(json.industryName != null && json.industryName != 'undefined' && json.industryName != ''){
+		        		$("select[name=industryName]").val(json.industryName);
+			        	$("#industryName").trigger("chosen:updated");
+		        	}
+		        	
+		        	if(json.sicCode != null && json.sicCode != 'undefined' && json.sicCode != ''){
+		        		$("input[name=sicCode]").val(json.sicCode);
+		        	}
+		        	
+		        	if(json.currency != null && json.currency != 'undefined' && json.currency != ''){
+		        		 $("select[name=currency]").val(json.currency);
+		        	}
+		        	
+		        	if(json.taxRegNumber != null && json.taxRegNumber != 'undefined' && json.taxRegNumber != ''){
+		        		 $("input[name=taxRegNumber]").val(json.taxRegNumber);
+		        	}
+		        	
+		        	if(json.dunsNumber != null && json.dunsNumber != 'undefined' && json.dunsNumber != ''){
+		        		 $("input[name=dunsNumber]").val(json.dunsNumber);
+		        	}
+		        	
+		        	$("input[name=accountName]").val(json.accountName);
+		        	$("input[name=accountNumber]").val(json.accountNumber);
+		        	$("input[name=bankName]").val(json.bankName);
+		        	
+		        	if(json.branchNumber != null && json.branchNumber != 'undefined' && json.branchNumber != ''){
+		        		$("input[name=branchNumber]").val(json.branchNumber);
+		        	}
+		        	
+		        	if(json.bicNumber != null && json.bicNumber != 'undefined' && json.bicNumber != ''){
+		        		$("input[name=bicNumber]").val(json.bicNumber);
+		        	}
+		        	
+		        	if(json.bankAddress != null && json.bankAddress != 'undefined' && json.bankAddress != ''){
+		        		 $("textarea[name=bankAddress]").val(json.bankAddress);
+		        	}
+		        	
+		        	if(json.vendorAddress != null && json.vendorAddress != 'undefined' && json.vendorAddress != ''){
+			        		 $("textarea[name=vendorAddress]").val(json.vendorAddress);
+		        	}
+		        	
+		        	if(json.vendorBillingAddress != null && json.vendorBillingAddress != 'undefined' && json.vendorBillingAddress != ''){
+		        		 $("textarea[name=vendorBillingAddress]").val(json.vendorBillingAddress);
+		        	}
+		        },
+		    }); 
+	}else{
+		location.replace(sourceleadUrl+"/dashboard/${SourceLeadWeb_orgLocationId}");
+	}
+
   }
 </script>
 

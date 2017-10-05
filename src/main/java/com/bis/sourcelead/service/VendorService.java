@@ -12,5 +12,5 @@ public interface VendorService {
 
 	public OrgLocations updateVendor(ClientDTO clientDTO,AddUserDTO addUserDTO,CandidateDTO candidateDTO,User user,OrgLocations orgLocations,Long orgRelationId,Org org) throws Exception;
 	
-	VendorOnboardDTO getVendorOnboardDetails(Long vendorOnboardId) throws Exception;
+	VendorOnboardDTO getVendorOnboardDetails(Long vendorOnboardId,String notificationUUID) throws Exception;
 }

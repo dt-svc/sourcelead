@@ -4,8 +4,10 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.mail.internet.InternetAddress;
 
@@ -30,9 +32,13 @@ import com.bis.sourcelead.dto.VendorOnboardTaskDTO;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
+import com.bis.sourcelead.entity.Notifications;
+import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgBankDetails;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
+import com.bis.sourcelead.entity.OrgSpoc;
+import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.SubmissionTemplate;
 import com.bis.sourcelead.entity.Tasks;
 import com.bis.sourcelead.entity.User;
@@ -42,7 +48,13 @@ import com.bis.sourcelead.entity.VendorOnboardingTemplateDocuments;
 import com.bis.sourcelead.enums.Status;
 import com.bis.sourcelead.service.ClientService;
 import com.bis.sourcelead.service.EmailScenarioService;
+import com.bis.sourcelead.service.NotificationsService;
 import com.bis.sourcelead.service.OrgBankDetailsService;
+import com.bis.sourcelead.service.OrgLocationService;
+import com.bis.sourcelead.service.OrgService;
+import com.bis.sourcelead.service.OrgSpocService;
+import com.bis.sourcelead.service.RolesService;
+import com.bis.sourcelead.service.SourceleadActionsService;
 import com.bis.sourcelead.service.SubmissionTemplateService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
@@ -105,6 +117,27 @@ public class VendorOnboardServiceImpl implements VendorOnboardService {
 	
 	@Autowired
 	OrgLocationsDao orgLocationsDao;
+	
+	@Autowired
+	OrgService orgService;
+	
+	@Autowired
+	OrgLocationService orgLocationService;
+	
+	@Autowired
+	SourceleadActionsService sourceleadActionsService;
+	
+	@Autowired
+	RolesService rolesService;
+	
+	@Autowired
+	NotificationsService notificationsService;
+	
+	@Autowired
+	OrgSpocService orgSpocService;
+	 
+	 
+	 
 	
 	@Override
 	public VendorOnboarding saveVendorOnboarding(OrgLocations vendorOrgLocations, OrgLocations orgLocations, User user)
@@ -207,7 +240,14 @@ public class VendorOnboardServiceImpl implements VendorOnboardService {
 		
 		
 		if(StringUtils.isNotBlank(onboardTasksDTO.getIsMailSent())){
-			setEmialAndNotificationToVendort(onboardingSpocUser, user, orgLocations, vendorOnboarding.getOnboardUUID(), vendorOrgLocations);
+			setEmialAndNotificationToVendor(onboardingSpocUser, user, orgLocations, vendorOnboarding, vendorOrgLocations);
+			Set<OrgSpoc> orgSpocList = vendorOnboarding.getOrgRelationId().getOrgSpocList();
+			if(orgSpocList != null){
+				for(OrgSpoc orgSpc : orgSpocList){
+					orgSpc.setInvitationStatus("Sent");
+					orgSpocService.addOrgSpoc(orgSpc);
+				}
+			}
 		}
 		
 		vendorOnboarding.setVendorOnboardStatus("Sent");
@@ -293,7 +333,7 @@ public class VendorOnboardServiceImpl implements VendorOnboardService {
     }
 	
 	
-	public void setEmialAndNotificationToVendort(User spocUser, User loginUser, OrgLocations orgLocations,String onboardUUID,OrgLocations vendorOrgLocation) throws Exception{
+	public void setEmialAndNotificationToVendor(User spocUser, User loginUser, OrgLocations orgLocations,VendorOnboarding onboarding,OrgLocations vendorOrgLocation) throws Exception{
 		
 		 Map<String, String> globalVarsMap = new HashMap<String, String>();
 		 
@@ -350,13 +390,6 @@ public class VendorOnboardServiceImpl implements VendorOnboardService {
 			   
 		 }
 		 
-		StringBuilder actionLinkBuilder = new StringBuilder();
-		String actionLink = actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("acceptVendorOnboardInvitation?onboardUUID=").append(onboardUUID).append("").toString();
-		 
-		StringBuilder rejectActionBuilder = new StringBuilder();
-		String  rejectActionLink = rejectActionBuilder.append("").append(sourceleadUrl).append("/").append("rejectVendorOnboardInvitation?onboardUUID=").append(onboardUUID).append("").toString();
-	 
-		
 		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 			
 		 //getting the current EmailScenario by EmailScenario unique name and entity type
@@ -384,10 +417,24 @@ public class VendorOnboardServiceImpl implements VendorOnboardService {
 		 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
 		 emailScenerioUtil.sendEmail(emailMessage,vendorOrgLocation.getId(),iAdressArray,new ArrayList<EmailAttachment>());
 		 String notificationbody = emailScenerioUtil.buildTempBody(noificationEmailScenario.getBody(),globalVarsMap);
-		 noificationEmailScenario.setBody(notificationbody);
-		 noificationEmailScenario.setUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 		 
-		 emailScenerioUtil.sendNotificationToClientOrVendor(actionLink,rejectActionLink, loginUser,loginUser, spocUser, vendorOrgLocation, noificationEmailScenario,null);
+		 
+		Set<OrgSpoc> orgSpocList = onboarding.getOrgRelationId().getOrgSpocList();
+		for(OrgSpoc orgSpc : orgSpocList){
+			 String notificationUUID = SourceLeadRandomCodeHelper.generateRandomUUID();
+			 noificationEmailScenario.setBody(notificationbody);
+			 noificationEmailScenario.setUUID(notificationUUID);
+			 
+		     StringBuilder actionLinkBuilder = new StringBuilder();
+			 String actionLink = actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("acceptVendorOnboardInvitation?onboardUUID=").append(onboarding.getOnboardUUID()).append("&notificationUUID=").append(notificationUUID).append("").toString();
+			 
+			 StringBuilder rejectActionBuilder = new StringBuilder();
+			 String  rejectActionLink = rejectActionBuilder.append("").append(sourceleadUrl).append("/").append("rejectVendorOnboardInvitation?onboardUUID=").append(onboarding.getOnboardUUID()).append("&notificationUUID=").append(notificationUUID).append("").toString();
+			 
+			 emailScenerioUtil.sendNotificationToClientOrVendor(actionLink,rejectActionLink, loginUser,loginUser, spocUser, vendorOrgLocation, noificationEmailScenario,orgSpc.getUUID());
+		}
+		 
+		
 	}
 
 	@Override
@@ -503,5 +550,117 @@ public class VendorOnboardServiceImpl implements VendorOnboardService {
 		}
 		
 	}
+
+	@Override
+	public void finishVendorOnboardProcess(Long vendorOnboardId, String notificationUUID,User user,String actionType) throws Exception {
+		
+		VendorOnboarding onboard = vendorOnboardDao.getVendorOnboardingById(vendorOnboardId);
+		OrgRelations orgRelations = onboard.getOrgRelationId();
+		OrgLocations vendorOrgLocations = onboard.getVendorLocationId();
+		Org vendorOrg = vendorOrgLocations.getOrg();
+		
+		if(null != vendorOrg){
+			Long moduleId = null;
+			Long tabId = null;
+			boolean flag;
+			String modules = vendorOrgLocations.getModulesId();
+			
+			vendorOrg.setOrgType("Company");
+			
+			List<Integer> moduleIds = new ArrayList<Integer>();
+			 for (String s : vendorOrgLocations.getModulesId().split(",")){
+				 moduleIds.add(Integer.parseInt(s));
+			 }
+			
+			 
+			 flag = moduleIds.contains(Constants.MODULE_VMS);
+	    		tabId = (long) Constants.TAB_VENDOR;
+	    		moduleId = (long) Constants.MODULE_VMS;
+	    		if(flag == false){
+	    			modules = modules+","+Constants.MODULE_VMS;
+	    			saveUserRoleActions(moduleId,tabId,vendorOrgLocations);
+	    		}
+	    		
+	    		
+	    		vendorOrg.setStatus(Status.ACTIVE);
+				orgService.updateOrg(vendorOrg);
+				vendorOrgLocations.setUser(user);
+				orgLocationService.updateOrgLocations(vendorOrgLocations);
+				
+				 Notifications notifications = notificationsService.getNotificationsByUUID(notificationUUID);
+				 if(null != notifications){
+					 if(actionType.equalsIgnoreCase(Constants.MAIL_ACCEPTED)){
+						 notifications.setUserNotificationStatus(Constants.MAIL_ACCEPTED);
+						}else{
+							notifications.setUserNotificationStatus(Constants.MAIL_REJECTED);
+						}
+					
+					 notificationsService.saveNotification(notifications);
+				 }
+				 
+				 OrgSpoc orgSpoc = orgSpocService.getSpocByOrgRelationIdAndAssignedUserId(orgRelations.getId(), user.getId());
+				 if(null != orgSpoc ){
+					 if(actionType.equalsIgnoreCase(Constants.MAIL_ACCEPTED)){
+						 orgSpoc.setInvitationStatus(Constants.MAIL_ACCEPTED);
+					 }else{
+						 orgSpoc.setInvitationStatus(Constants.MAIL_REJECTED);
+						 orgSpoc.setSpocStatus("In-Active");
+					 }
+					
+					 orgSpocService.addOrgSpoc(orgSpoc);
+				 }
+				 
+				 if(actionType.equalsIgnoreCase(Constants.MAIL_ACCEPTED)){
+					 clientService.sendAcceptEmailToClientOrVendor(orgSpoc,orgSpoc.getClientUser(),vendorOrgLocations);
+					 onboard.setVendorOnboardStatus("Submitted");
+					 onboard.setOnboardSubmitted(Constants.YES);
+				 }else{
+					 clientService.sendRejectEmailToClientOrVendor(orgSpoc,orgSpoc.getClientUser(),vendorOrgLocations);
+					 onboard.setVendorOnboardStatus("Rejected");
+				 }
+				 
+				 vendorOnboardDao.saveVendorOnboarding(onboard);
+				 
+		}
+		
+	}
+	
+	
+	
+	public void saveUserRoleActions(Long moduleId,Long tabId,OrgLocations orgLocations) throws Exception{
+		 
+		List<Long> actionsList = sourceleadActionsService.getSourceLeadActionsByModuleId(moduleId);
+		
+		Roles adminrole = rolesService.getRolesByRoleNameAndOrgLocationId(Constants.ROLE_ADMIN, orgLocations.getId());
+		 List<Long> adminRoleActonList = new ArrayList<Long>();
+		 for (String s : adminrole.getActionId().split(",")){
+			 adminRoleActonList.add(Long.parseLong(s));
+		 }
+		 
+		 adminRoleActonList.retainAll(actionsList);
+		 actionsList.removeAll(adminRoleActonList);
+		
+		
+    	StringBuilder strbul  = new StringBuilder();
+	     Iterator<Long> iter = actionsList.iterator();
+	     while(iter.hasNext())
+	     {
+	         strbul.append(iter.next());
+	        if(iter.hasNext()){
+	         strbul.append(",");
+	        }
+	     }
+	     strbul.toString();
+		
+		
+        String adminids = adminrole.getActionId()+","+strbul;
+		adminrole.setActionId(adminids);
+		rolesService.storeRoles(adminrole);
+		
+		Roles managerrole = rolesService.getRolesByRoleNameAndOrgLocationId(Constants.ROLE_MANAGER, orgLocations.getId());
+		String managerids = managerrole.getActionId()+","+strbul;
+	    managerrole.setActionId(managerids);
+		rolesService.storeRoles(managerrole);
+ }
 
 }

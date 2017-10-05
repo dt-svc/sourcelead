@@ -551,5 +551,10 @@ public class OrgSpocServiceImpl implements OrgSpocService{
 			throws Exception {
 		return orgSpocDao.getOwnerUserExistedByOrgRelationIdAndOwnerUserId(orgRelationId, ownerUserId);
 	}
+
+	@Override
+	public OrgSpoc getSpocByOrgRelationIdAndAssignedUserId(Long orgRelationId, Long assignUserId) throws Exception {
+		return orgSpocDao.getSpocByOrgRelationIdAndAssignedUserId(orgRelationId, assignUserId);
+	}
 	
 }

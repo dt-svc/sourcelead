@@ -78,3 +78,18 @@ function changeTaskStatus(taskId){
 }
 </script>
 
+<script>
+function saveAndFinishVendorOnbord(){
+	var vendorOnboardId = '${vendorOnboardId}';
+	var notificationUUID = '${notificationUUID}';
+	
+	 $.ajax({
+	    	type: "POST",
+	    	 url: sourceleadUrl+"/finishVendorOnboardProcess?${_csrf.parameterName}=${_csrf.token}&vendorOnboardId="+vendorOnboardId+"&notificationUUID="+notificationUUID, 
+	         success: function(result) {
+	        	 location.replace(sourceleadUrl+"/dashboard/${SourceLeadWeb_orgLocationId}");
+	        }
+	 });
+}
+</script>
+

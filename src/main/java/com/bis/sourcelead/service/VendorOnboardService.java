@@ -21,4 +21,6 @@ public interface VendorOnboardService {
 	void saveVendorOnboardDetails(VendorOnboardDTO vendorOnboardDTO,Long vendorOnboardId,User user) throws Exception;
 	
 	void saveVendorOnboardDocuments(VendorOnboardDTO vendorOnboardDTO) throws Exception;
+	
+	void finishVendorOnboardProcess(Long vendorOnboardId,String notificationUUID,User user,String actionType) throws Exception;
 }

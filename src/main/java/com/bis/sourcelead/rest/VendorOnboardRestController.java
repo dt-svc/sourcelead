@@ -20,10 +20,12 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.OnBoardingTemplateDTO;
 import com.bis.sourcelead.dto.OnboardTasksDTO;
 import com.bis.sourcelead.dto.VendorOnboardDTO;
+import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Tasks;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.VendorOnboardTasks;
+import com.bis.sourcelead.entity.VendorOnboarding;
 import com.bis.sourcelead.entity.VendorOnboardingTemplate;
 import com.bis.sourcelead.entity.VendorOnboardingTemplateDocuments;
 import com.bis.sourcelead.service.TaskService;
@@ -279,9 +281,10 @@ public class VendorOnboardRestController {
 	 
 	 
 	 @RequestMapping(value = "/getVendorOnboardDetailsByVendorOnboardId", method = RequestMethod.POST)
-	 @ResponseBody VendorOnboardDTO getVendorOnboardDetailsByVendorOnboardId(@RequestParam(value="vendorOnboardId", required=false) Long vendorOnboardId,HttpServletRequest request) throws Exception{
+	 @ResponseBody VendorOnboardDTO getVendorOnboardDetailsByVendorOnboardId(@RequestParam(value="vendorOnboardId", required=true) Long vendorOnboardId,
+			 @RequestParam(value="notificationUUID", required=false) String notificationUUID,HttpServletRequest request) throws Exception{
 		
-	     VendorOnboardDTO vendorOnboardDTO = vendorService.getVendorOnboardDetails(vendorOnboardId);
+	     VendorOnboardDTO vendorOnboardDTO = vendorService.getVendorOnboardDetails(vendorOnboardId,notificationUUID);
 		 return vendorOnboardDTO;
 		
 	 }
@@ -353,6 +356,19 @@ public class VendorOnboardRestController {
 			}
 			
 			taskService.saveTasks(tasks);
+			
+			return "success";
+				
+		}
+		
+		
+		
+		@RequestMapping(value = "/finishVendorOnboardProcess", method = RequestMethod.POST)
+		public @ResponseBody String finishVendorOnboardProcess(@RequestParam(value="vendorOnboardId", required=true) Long vendorOnboardId,
+				@RequestParam(value="notificationUUID", required=true) String notificationUUID,HttpServletRequest request) throws Exception {
+			
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			vendorOnboardService.finishVendorOnboardProcess(vendorOnboardId, notificationUUID, user,Constants.MAIL_ACCEPTED);
 			
 			return "success";
 				

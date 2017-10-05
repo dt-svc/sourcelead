@@ -111,4 +111,6 @@ public interface OrgSpocDao {
 	
 	OrgSpoc getClientUserByOrgRelationIdAndOwnerUserId(Long orgRelationId,Long clientUserId) throws Exception;
 	
+	OrgSpoc getSpocByOrgRelationIdAndAssignedUserId(Long orgRelationId,Long assignUserId) throws Exception;
+	
 }

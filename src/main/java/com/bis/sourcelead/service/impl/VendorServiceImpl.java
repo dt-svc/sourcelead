@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dao.NotificationsDao;
 import com.bis.sourcelead.dao.OrgLocationsDao;
 import com.bis.sourcelead.dao.OrgRelationsDao;
 import com.bis.sourcelead.dao.OrgSpocDao;
@@ -19,6 +20,7 @@ import com.bis.sourcelead.dto.AddUserDTO;
 import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.ClientDTO;
 import com.bis.sourcelead.dto.VendorOnboardDTO;
+import com.bis.sourcelead.entity.Notifications;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgBankDetails;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -64,6 +66,9 @@ public class VendorServiceImpl implements VendorService{
 	
 	@Autowired
 	OrgBankDetailsService orgBankDetailsService;
+	
+	@Autowired
+	NotificationsDao notificationsDao;
 	
 	@Override
 	public OrgLocations updateVendor(ClientDTO clientDTO, AddUserDTO addUserDTO, CandidateDTO candidateDTO, User user,
@@ -228,7 +233,7 @@ public class VendorServiceImpl implements VendorService{
 
 
 	@Override
-	public VendorOnboardDTO getVendorOnboardDetails(Long vendorOnboardId) throws Exception {
+	public VendorOnboardDTO getVendorOnboardDetails(Long vendorOnboardId,String notificationUUID) throws Exception {
 		
 		VendorOnboardDTO onboardDTO = new  VendorOnboardDTO();
 		VendorOnboarding vendorOnboarding = vendorOnboardDao.getVendorOnboardingById(vendorOnboardId);
@@ -245,14 +250,13 @@ public class VendorServiceImpl implements VendorService{
 		onboardDTO.setVendorAddress(vendorOrgLocations.getOrgLocationAddress());
 		onboardDTO.setVendorBillingAddress(vendorOrgLocations.getBillingAddress());
 		
-		Set<OrgSpoc> orgSpocList = vendorOnboarding.getOrgRelationId().getOrgSpocList();
-		for(OrgSpoc orgSpc : orgSpocList){
-				User vendorContact = orgSpc.getOwnerUser();
-				onboardDTO.setClientContactName(vendorContact.getFullName());
-				onboardDTO.setClientContactEmail(vendorContact.getEmail());
-				onboardDTO.setClientContactPhone(vendorContact.getMobilePhone());
-				break;
-		}
+		
+		Notifications notifications = notificationsDao.getNotificationDetailsByUUID(notificationUUID);
+		OrgSpoc orgSpoc = orgSpocDao.getSpocBySpocUUID(notifications.getSpocUUID());
+		User vendorContact = orgSpoc.getOwnerUser();
+		onboardDTO.setClientContactName(vendorContact.getFullName());
+		onboardDTO.setClientContactEmail(vendorContact.getEmail());
+		onboardDTO.setClientContactPhone(vendorContact.getMobilePhone());
 		
 		OrgRelations orgRelations = vendorOnboarding.getOrgRelationId();
 		onboardDTO.setPaymentTerm(orgRelations.getPaymentTerm());
