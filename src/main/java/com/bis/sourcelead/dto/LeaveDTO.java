@@ -42,7 +42,8 @@ public class LeaveDTO implements Serializable{
 	private String empid;
 	private String empType;
 	private String empEmail;
-	
+	private String fromDateDay;
+	private String toDateDay;
 	
 	public String getFileName() {
 		return fileName;
@@ -236,7 +237,20 @@ public class LeaveDTO implements Serializable{
 	public void setEmpEmail(String empEmail) {
 		this.empEmail = empEmail;
 	}
-	
-	
-	
+	public String getFromDateDay()
+	{
+		return fromDateDay;
+	}
+	public void setFromDateDay(String fromDateDay)
+	{
+		this.fromDateDay = fromDateDay;
+	}
+	public String getToDateDay()
+	{
+		return toDateDay;
+	}
+	public void setToDateDay(String toDateDay)
+	{
+		this.toDateDay = toDateDay;
+	}
 }

@@ -1,5 +1,7 @@
 package com.bis.sourcelead.dao.impl;
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
@@ -86,6 +88,55 @@ public class LeaveDaoImpl implements LeaveDao{
 		String query = "from Leave leave left join fetch leave.leaveType where leave.orgLocations.id = :orgLocationId and leave.status = :status and leave.createdBy IN (select user.userCode from User user where user.id=:userId)";
 		leaveList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setLong("userId", userId).setString("status", status).setCacheable(true).list();
 		return leaveList;
+	}
+
+
+	@Override
+	@Transactional
+	public List<LeaveApproveHierarchy> getEmployeeRequestedLeavesBylocationIdAndDuration(Long locationId, String userId, String status, Date currentWeekStarDate, Date currentWeekEndDate,String department)
+	{
+		Long usrId = Long.parseLong(userId);
+		Session session = this.sessionFactory.getCurrentSession();
+		String subQuery = "";
+		String subQuery1 = "";
+		String subQuery2 = "";
+		
+		String[] departments = null;
+		if(null != department && !"".equals(department)){	
+			departments = department.split(",");
+		}
+		
+		List<String> deptList = new ArrayList<>();
+		if (departments != null) {
+			for (int i = 0; i < departments.length; i++) {
+				deptList.add(departments[i]);
+			}
+		}
+		
+		if(currentWeekStarDate != null && currentWeekEndDate != null){
+			subQuery1 = " and (leave.fromDate >= :weekStartDate and leave.fromDate <= :weekEnddate)";
+		}
+		
+		if(deptList.size()>0){
+			subQuery2 = "and (leave.user.id IN ()"; 
+		}
+		
+		if(StringUtils.isNotBlank(status)) {
+			if(Constants.APPROVED.equalsIgnoreCase(status)) {
+				subQuery = "and leave.status = :leaveStatus";
+			}else if(Constants.PENDING.equalsIgnoreCase(status)){
+				subQuery = "and leave.status = :leaveStatus";
+			}else if(Constants.REJECTED.equalsIgnoreCase(status)) {
+				subQuery = "and leave.status = :leaveStatus";
+			}else{
+				subQuery = "and leave.status = :leaveStatus";
+			}
+			String query = "from LeaveApproveHierarchy laph left join fetch laph.leaveid leave left join fetch leave.leaveType left join fetch leave.user ltype where leave.orgLocations.id = :orgLocationId and laph.approverUserId.id= :userId "+subQuery+" "+subQuery1+"";
+			return session.createQuery(query).setParameter("leaveStatus",status).setLong("orgLocationId", locationId).setLong("userId", usrId).setParameter("weekStartDate", currentWeekStarDate).setParameter("weekEnddate", currentWeekEndDate).setCacheable(true).list();
+		}else {
+			String query = "from LeaveApproveHierarchy laph left join fetch laph.leaveid leave left join fetch leave.leaveType left join fetch leave.user ltype where leave.orgLocations.id = :orgLocationId and laph.approverUserId.id= :userId "+subQuery1+"";
+			return session.createQuery(query).setLong("orgLocationId", locationId).setLong("userId", usrId).setParameter("weekStartDate", currentWeekStarDate).setParameter("weekEnddate", currentWeekEndDate).setCacheable(true).list();
+		}
 	}
 
 }
