@@ -3,9 +3,12 @@ package com.bis.sourcelead.rest;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
@@ -38,6 +41,7 @@ import com.bis.sourcelead.dto.EmployerPayrollCostDTO;
 
 import com.bis.sourcelead.dto.HolidayDTO;
 import com.bis.sourcelead.dto.LeaveDTO;
+import com.bis.sourcelead.dto.LeaveReportsDTO;
 import com.bis.sourcelead.dto.LeaveTypeDTO;
 import com.bis.sourcelead.dto.OptionsDTO;
 
@@ -1089,47 +1093,57 @@ public class LeaveManagementRestController {
 		
 	}
 	
-	
-	@RequestMapping(value = {"/getTopLeavetakers", "/rest/getTopLeavetakers"}, method = RequestMethod.POST)
-	public @ResponseBody  ResponseList<LeaveDTO> getTopLeavetakers(LeaveDTO leaveDTO,HttpServletRequest req, HttpServletResponse res) throws Exception
-	{
+	/**
+	 * Get top leave takers by location
+	 * @param leaveDTO
+	 * @param req
+	 * @param res
+	 * @return ResponseList<LeaveDTO>
+	 * @throws Exception
+	 */
+	@RequestMapping(value = { "/getTopLeavetakers", "/rest/getTopLeavetakers" }, method = RequestMethod.POST)
+	public @ResponseBody ResponseList<LeaveDTO> getTopLeavetakers(LeaveDTO leaveDTO, HttpServletRequest req,
+			HttpServletResponse res) throws Exception {
 		OrgLocations orgLocation = orgLocationService.getOrgLocations(Long.parseLong(leaveDTO.getOrgLocationId()));
-		ResponseList<LeaveDTO> leaveDtoResponse = new ResponseList<>(); 
- 		String[] tableColumns = {"empName", "noOfDays", "status"};
-	     int sortColumnIndex = 0; //by default sorting using updated date
-		String sortColumnOrder = "desc"; //by default descending order
-		if(leaveDTO.getOrder() != null && !leaveDTO.getOrder().isEmpty()) {
+		ResponseList<LeaveDTO> leaveDtoResponse = new ResponseList<>();
+		String[] tableColumns = { "empName", "noOfDays", "status" };
+		int sortColumnIndex = 0; // by default sorting using updated date
+		String sortColumnOrder = "desc"; // by default descending order
+		if (leaveDTO.getOrder() != null && !leaveDTO.getOrder().isEmpty()) {
 			sortColumnIndex = Integer.parseInt(leaveDTO.getOrder().get(0).get("column"));
 			sortColumnOrder = leaveDTO.getOrder().get(0).get("dir");
 		}
 		leaveDTO.setSortColumn(tableColumns[sortColumnIndex]);
 		leaveDTO.setSortOrder(sortColumnOrder);
-		
-		ResponseList<Leave> response = leaveService.getTopLeavetakers(orgLocation,leaveDTO);
+
+		ResponseList<Leave> response = leaveService.getTopLeavetakers(orgLocation, leaveDTO);
 		List<Leave> leaveList = response.getData();
 		List<LeaveDTO> leaveDtoList = new ArrayList<>();
-		for(Leave leave : leaveList) {
-			LeaveDTO leaveDto = new LeaveDTO();
-			StringBuilder sb = new StringBuilder();
-			if(leave.getUser() !=null) {
-				if(leave.getUser().getLastName() !=null ) {
-					sb.append(leave.getUser().getFirstName()).append(" ").append(leave.getUser().getLastName());
-				}else {
-					sb.append(leave.getUser().getFirstName());
-				}
+		HashMap<Long, LeaveDTO> reportMap = new HashMap<>();
+		for (Leave leave : leaveList) {
+			LeaveDTO leaveDto = reportMap.get(leave.getUser().getId());
+			if (leaveDto == null) {
+				leaveDto = new LeaveDTO();
 			}
-			
+			StringBuilder sb = new StringBuilder();
+			if (StringUtils.isNotBlank(leave.getUser().getLastName())) {
+				sb.append(leave.getUser().getFirstName()).append(" ").append(leave.getUser().getLastName());
+			} else {
+				sb.append(leave.getUser().getFirstName());
+			}
 			leaveDto.setEmpName(sb.toString());
 			leaveDto.setStatus(leave.getStatus());
 			leaveDto.setNoOfDays(leave.getNumberOfDays());
-			leaveDtoList.add(leaveDto);
+			reportMap.put(leave.getUser().getId(), leaveDto);
+		}
+
+		for (Map.Entry<Long, LeaveDTO> entry : reportMap.entrySet()) {
+			leaveDtoList.add(entry.getValue());
 		}
 		leaveDtoResponse.setData(leaveDtoList);
 		leaveDtoResponse.setRecordsFiltered(response.getRecordsFiltered());
 		leaveDtoResponse.setRecordsTotal(response.getRecordsTotal());
 		leaveDtoResponse.setError(response.getError());
-//		List<EmployerPayrollCost> data = getEmployerCostSortedList(list.getData());
-//		list.setData(data);
 		return leaveDtoResponse;
 	}
 
