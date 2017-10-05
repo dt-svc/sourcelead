@@ -246,11 +246,33 @@ public class LeaveManagementRestController {
 	public ModelAndView applyLeaveJsp(HttpServletRequest request,HttpServletResponse response) throws Exception {
 		   ModelAndView model = new ModelAndView();
 		   OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		   User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		   Long roleId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRoleId");
 		   List<User> usersLis = userService.getAllUsersByOrgLocationCode(orgLocations.getId());
 		   model.addObject("sourceleadUrl", sourceleadUrl);
 		   model.addObject("usersLis", usersLis);
+			List<User> approverList = userService.getManagersByUserRolesAndOrgLocationId(roleId, orgLocations.getId(),Long.valueOf(Constants.TAB_USER));
+			if(approverList !=null) {
+				for (User user : approverList) {
+					UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(), orgLocations.getId());
+					if(userRole != null){
+						user.setUserType(userRole.getUserType());
+					}
+				}
+				 model.addObject("approverList", approverList);
+			}
+			
+			
+			
+		   model.setViewName("leavemanagement/applyLeave");
+	       return model;
+	}
+	
+	
+	@RequestMapping(value = "/getPieChartForLeaveStatus")
+	public List<LeaveType> getPieChartForLeaveStatus(HttpServletRequest request,HttpServletResponse response) throws Exception {
+		   OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		   User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		   Long roleId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRoleId");
 		   List<LeaveType> leaveTypeList = leaveTypeService.getLeaveTypeListByLocationId(String.valueOf(orgLocations.getId()));
 		   List<LeaveType> roleLeaveType = new ArrayList<>();
 		   if(leaveTypeList !=null && !leaveTypeList.isEmpty()) {
@@ -274,24 +296,8 @@ public class LeaveManagementRestController {
 				}
 				 type.setRemainingTotalLeaveCounts(balanceLeave);
 				}
-			   
-			 model.addObject("leaveTypeList", roleLeaveType);
 		   }
-			List<User> approverList = userService.getManagersByUserRolesAndOrgLocationId(roleId, orgLocations.getId(),Long.valueOf(Constants.TAB_USER));
-			if(approverList !=null) {
-				for (User user : approverList) {
-					UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(), orgLocations.getId());
-					if(userRole != null){
-						user.setUserType(userRole.getUserType());
-					}
-				}
-				 model.addObject("approverList", approverList);
-			}
-			
-			
-			
-		   model.setViewName("leavemanagement/applyLeave");
-	       return model;
+		return roleLeaveType;
 	}
 	
 	/**
