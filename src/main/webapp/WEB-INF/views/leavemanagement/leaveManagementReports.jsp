@@ -550,25 +550,26 @@ function getLeaveTakersBarChat(){
 	//empLeavereport
 	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	var userId = '${SourceLeadWeb_userId}';
-	var reportYear = "";
-	var reportMonth = "";
-	var reportFromDate = "";
-	if($("#reportYear").val() !=null && $("#reportYear").val() != 'undefined' && $("#reportYear").val() != ''){
-		reportYear = $("#reportYear").val();
+	var barChartYear ="";
+	var barCharMonth = "";
+	var barChartFromDate = "";
+	var barChartToDate "";
+	if($("#barChartYear").val() !=null && $("#barChartYear").val() != 'undefined' && $("#barChartYear").val() != ''){
+		barChartYear = $("#barChartYear").val();
 	}
-	if($("#reportMonth").val() !=null && $("#reportMonth").val() != 'undefined' && $("#reportMonth").val() != ''){
-		reportMonth = $("#reportMonth").val();	
+	if($("#barCharMonth").val() !=null && $("#barCharMonth").val() != 'undefined' && $("#barCharMonth").val() != ''){
+		barCharMonth = $("#barCharMonth").val();	
 	}
-	if($("#reportFromDate").val() !=null && $("#reportFromDate").val() != 'undefined' && $("#reportFromDate").val() != ''){
-		var reportFromDate = $("#reportFromDate").val();	
+	if($("#barChartFromDate").val() !=null && $("#barChartFromDate").val() != 'undefined' && $("#barChartFromDate").val() != ''){
+		var barChartFromDate = $("#barChartFromDate").val();	
 	}
-	if($("#reportEndDate").val() !=null && $("#reportEndDate").val() != 'undefined' && $("#reportEndDate").val() != ''){
-		var reportEndDate = $("#reportEndDate").val();	
+	if($("#barChartToDate").val() !=null && $("#barChartToDate").val() != 'undefined' && $("#barChartToDate").val() != ''){
+		var barChartToDate = $("#barChartToDate").val();	
 	}
 
 		$.ajax({
 		   	type: "POST",
-		   	var url = sourceleadUrl+"/getTopLeavetakers?orgLocationId="+orgLocationId+"&searchValue="+searchValue+"&userId="+userId+"&reportYear="+reportYear+"&reportMonth="+reportMonth+"&reportFromDate="+reportFromDate+"&reportEndDate="+reportEndDate;	    	   
+		   	var url = sourceleadUrl+"/getTopLeavetakers?orgLocationId="+orgLocationId+"&userId="+userId+"&barChartYear="+barChartYear+"&barCharMonth="+barCharMonth+"&barChartFromDate="+barChartFromDate+"&barChartToDate="+barChartToDate;	    	   
 		    success: function(data) {
 	   });
 }
