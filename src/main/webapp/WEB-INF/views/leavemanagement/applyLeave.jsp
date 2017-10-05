@@ -7,6 +7,12 @@
 <script type="text/javascript" src="https://www.amcharts.com/lib/3/pie.js"></script>
 
 
+<script type="text/javascript">
+window.onload = function() { 
+	getPieChartBasedOnUser();
+	}
+</script>
+
 <!-- Side Nav Bar --> 
     <!-- Content Area -->
   <section class="content-wraper">
@@ -81,13 +87,14 @@
               <div class="form-group">
               <label class="col-md-3">Leave Type<span class="text-danger paddingLeft">*</span></label>
               <div class="col-md-9 dropdown-select">
-                <select class="form-control" id="leaveType" name="leaveType" field-name="Leave Type" data-validation="required" onchange="getLeavePolicy();">
+              <div id="leaveTypeIdDiv"></div>
+                <%-- <select class="form-control" id="leaveType" name="leaveType" field-name="Leave Type" data-validation="required" onchange="getLeavePolicy();">
                   <option value="">--Select Leave Type--</option>
                 	<c:forEach var="leave" items="${leaveTypeList}">
-                	<%-- ${dept.id  == departmentId ? 'selected' : ''} --%>
+                	${dept.id  == departmentId ? 'selected' : ''}
 	                     <option value="${leave.id}">${leave.name}</option>
                 	</c:forEach>
-                </select>
+                </select> --%>
               </div>
             </div>
             <div class="form-group">
@@ -131,30 +138,16 @@
                  <h5>Leave Status</h5>
                 <div id="leavestatsu" style="width: 100%; height: 150px;"></div>
                 <div class="row">
-                <ul class="list-unstyled leavelist col-md-10 mt25 col-md-offset-1 list-group">
+                <div id="leaveStatusIdDiv"></div>
+                <%-- <ul class="list-unstyled leavelist col-md-10 mt25 col-md-offset-1 list-group">
                         <c:forEach var="leaveType" items="${leaveTypeList}">
                         	<li>
 									<label>${leaveType.name}</label>
-									<span class="label label-info">${leaveType.remainingTotalLeaveCounts}</span>
+									<span class="label label-info" style="background-color: ${leaveType.colorCode};">${leaveType.remainingTotalLeaveCounts}</span>
 							</li>
 						</c:forEach>
-                   
-                    
-                    <!-- <li>
-                        <label>Sick Leaves</label>
-                    <span class="label label-primary">100</span>
-                    </li>
-                    <li><label>Casual Leaves</label>
-                    <span class="label label-warning">100</span>
-                    </li>
-                    <li><label>Leave Request</label>
-                    <span class="label label-success">100</span>
-                    </li>
-                    <li><label>Cancel Request</label>
-                    <span class="label label-danger">100</span>
-                    </li>
- -->                </ul>
-                    </div>
+              	</ul> --%>
+                </div>
                 
             </div>
           </div>
@@ -261,50 +254,92 @@ function removeEndValid(){
  		</script> 
  		
  		
- 		 <script type="text/javascript">
-        //ApplyLeves piechart
-			AmCharts.makeChart("leavestatsu",
-{
-					"type": "pie",
-					"balloonText": "[[title]]<br><span style='font-size:14px'><b>[[value]]</b></span>",
-					"innerRadius": "40%",
-					"minRadius": 0,
-					"pieX": "50%",
-					"pieY": "50%",
-					"pullOutRadius": "0%",
-					"startRadius": "0%",
-					"colors": [
-						"#81c784",
-						"#ffd54f",
-						"#26c6da"
-					],
-					"labelsEnabled": false,
-					"marginBottom": 0,
-					"marginLeft": 2,
-					"marginTop": 0,
-					"maxLabelWidth": 0,
-					"titleField": "category",
-					"valueField": "column-1",
-					"allLabels": [],
-					"balloon": {},
-					"titles": [],
-					"dataProvider": [
-						{
-							"category": "Approved",
-							"column-1": "8"
-						},
-						{
-							"category": "Pending",
-							"column-1": "2"
-						},
-						{
-							"category": "Balance",
-							"column-1": 2
-						}
-					]
-				}				
-			);
-		</script>
+ <script type="text/javascript">
+ function getPieChartBasedOnUser(){
+	 
+	 $.ajax({
+         type : "GET",
+          url: sourceleadUrl+"/getPieChartForLeaveStatus?"+tokenParamName+"="+tokenValue+"",    
+          success :function(json) {
+        	  
+        	  var output = "";
+        	  output = output +'<select class="form-control" id="leaveType" name="leaveType" field-name="Leave Type" data-validation="required" onchange="getLeavePolicy();">';
+        	  output = output +' <option value="">--Select Leave Type--</option>';
+        	  for (var i = 0; i < json.length; i++) { 
+        		  var leave = json[i];
+        		  output = output +'<option value='+leave.id+'>'+leave.name+'</option>';
+        	  }
+        	  output = output +'</select>';
+        	  $("#leaveTypeIdDiv").empty();
+        	  $("#leaveTypeIdDiv").append(output);
+        	  $('#leaveType').chosen();
+        	  $("#leaveType").trigger("chosen:updated");
+        	  
+        	  getpieChar(json);
+        	  
+        	  var result = "";
+	    	  result = result +' <ul class="list-unstyled leavelist col-md-10 mt25 col-md-offset-1 list-group">';
+	          for (var i = 0; i < json.length; i++) { 
+	        		  var leaveType = json[i];
+				        result = result +'	<li>';
+				  		result = result +'			<label>'+leaveType.name+'</label>';
+				  		result = result +'			<span class="label label-info" style="background-color: '+leaveType.colorCode+';" >'+leaveType.remainingTotalLeaveCounts+'</span>';
+				  		result = result +'	</li>'; 
+	        	  }
+	        	  result = result +'	</ul>'; 
+	        	  $("#leaveStatusIdDiv").empty();
+	        	  $("#leaveStatusIdDiv").append(result);
+
+	        	  
+	        	 
+         },
+          
+     }); 
+function getpieChar(json){
+	
+	 var chartData = [];
+
+	   for (var i = 0; i < json.length; i++) { 
+	 		 var opt = json[i]; 
+	         chartData.push({
+	        	 category: opt.name,
+	        	 counts: opt.totalLeaves,
+	         	 color: opt.colorCode
+	       });
+	   }
+	   
+	//ApplyLeves piechart
+	AmCharts.makeChart("leavestatsu",
+		{
+			"type": "pie",
+			"balloonText": "[[title]]<br><span style='font-size:14px'><b>[[value]]</b></span>",
+			"innerRadius": "40%",
+			"minRadius": 0,
+			"pieX": "50%",
+			"pieY": "50%",
+			"pullOutRadius": "0%",
+			"startRadius": "0%",
+			"colors": [],
+			"colorField": "color",
+			"labelsEnabled": false,
+			"marginBottom": 0,
+			"marginLeft": 2,
+			"marginTop": 0,
+			"maxLabelWidth": 0,
+			"titleField": "category",
+			"valueField": "counts",
+			"allLabels": [],
+			"balloon": {},
+			"titles": [],
+			"dataProvider": chartData
+		}				
+	);
+}
+     
+ }
+</script>
+		
+		
     <script>
     function approvedlevel(){
         $(".approvedlevel").toggle();

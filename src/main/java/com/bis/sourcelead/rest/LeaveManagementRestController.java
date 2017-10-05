@@ -3,8 +3,13 @@ package com.bis.sourcelead.rest;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
@@ -37,6 +42,7 @@ import com.bis.sourcelead.dto.EmployerPayrollCostDTO;
 
 import com.bis.sourcelead.dto.HolidayDTO;
 import com.bis.sourcelead.dto.LeaveDTO;
+import com.bis.sourcelead.dto.LeaveReportsDTO;
 import com.bis.sourcelead.dto.LeaveTypeDTO;
 import com.bis.sourcelead.dto.OptionsDTO;
 
@@ -77,6 +83,7 @@ import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
+import com.itextpdf.text.log.Level;
 
 
 @RestController
@@ -215,10 +222,14 @@ public class LeaveManagementRestController {
 	 * @param request
 	 * @param response
 	 * @return ModelAndView
+	 * @throws Exception 
 	 */
 	@RequestMapping(value = "/leaveManagementReports")
-	public ModelAndView leaveManagementReportsJsp(HttpServletRequest request,HttpServletResponse response) {
+	public ModelAndView leaveManagementReportsJsp(HttpServletRequest request,HttpServletResponse response) throws Exception {
 		   ModelAndView model = new ModelAndView();
+		   OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		   List<Department> departmentList = departmentService.getDepartmentByOrgLocationIdAndStatus(orgLocations.getId(),Constants.RECORD_ACTIVE.toString());
+		   model.addObject("departmentList",departmentList);
 		   model.addObject("sourceleadUrl", sourceleadUrl);
 		   model.setViewName("leavemanagement/leaveManagementReports");
 	       return model;
@@ -236,37 +247,10 @@ public class LeaveManagementRestController {
 	public ModelAndView applyLeaveJsp(HttpServletRequest request,HttpServletResponse response) throws Exception {
 		   ModelAndView model = new ModelAndView();
 		   OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		   User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		   Long roleId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRoleId");
 		   List<User> usersLis = userService.getAllUsersByOrgLocationCode(orgLocations.getId());
 		   model.addObject("sourceleadUrl", sourceleadUrl);
 		   model.addObject("usersLis", usersLis);
-		   List<LeaveType> leaveTypeList = leaveTypeService.getLeaveTypeListByLocationId(String.valueOf(orgLocations.getId()));
-		   List<LeaveType> roleLeaveType = new ArrayList<>();
-		   if(leaveTypeList !=null && !leaveTypeList.isEmpty()) {
-			   for(LeaveType leaveType : leaveTypeList) {
-				   for(LeaveRole leaveRole : leaveType.getLeaveTypeRolesSet()) {
-					   if(leaveRole.getRoleId().getId().longValue() == roleId.longValue()) {
-						   roleLeaveType.add(leaveType);
-					   }
-				   }
-			   }
-			   
-			   int totalLeaves = 0;
-				for(LeaveType type : roleLeaveType) {
-				int balanceLeave = Integer.valueOf(type.getNumbefrOfLeavesPeryear());
-				totalLeaves = Integer.valueOf(type.getNumbefrOfLeavesPeryear());
-				List<Leave> totalleavesTaken = leaveService.getLeavesListByTypeIdAndLocationIdAndUserId(type.getId(),orgLocations.getId(), loginUser.getId());
-				for (Leave leave : totalleavesTaken) {
-					if(Constants.APPROVED.equalsIgnoreCase(leave.getStatus())) {
-						balanceLeave = totalLeaves - (Integer.valueOf(leave.getNumberOfDays()));
-					}
-				}
-				 type.setRemainingTotalLeaveCounts(balanceLeave);
-				}
-			   
-			 model.addObject("leaveTypeList", roleLeaveType);
-		   }
 			List<User> approverList = userService.getManagersByUserRolesAndOrgLocationId(roleId, orgLocations.getId(),Long.valueOf(Constants.TAB_USER));
 			if(approverList !=null) {
 				for (User user : approverList) {
@@ -282,6 +266,41 @@ public class LeaveManagementRestController {
 			
 		   model.setViewName("leavemanagement/applyLeave");
 	       return model;
+	}
+	
+	
+	@RequestMapping(value = "/getPieChartForLeaveStatus")
+	public List<LeaveType> getPieChartForLeaveStatus(HttpServletRequest request,HttpServletResponse response) throws Exception {
+		   OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		   User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		   Long roleId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRoleId");
+		   List<LeaveType> leaveTypeList = leaveTypeService.getLeaveTypeListByLocationId(String.valueOf(orgLocations.getId()));
+		   List<LeaveType> roleLeaveType = new ArrayList<>();
+		   if(leaveTypeList !=null && !leaveTypeList.isEmpty()) {
+			   for(LeaveType leaveType : leaveTypeList) {
+				   Set<Long> roleIds = new HashSet<>();
+				   for(LeaveRole leaveRole : leaveType.getLeaveTypeRolesSet()) {
+					   roleIds.add(leaveRole.getRoleId().getId());
+				   }
+				   if(roleIds.contains(roleId)) {
+					   roleLeaveType.add(leaveType);
+				   }
+			   }
+			   
+			   int totalLeaves = 0;
+				for(LeaveType type : roleLeaveType) {
+				int balanceLeave = Integer.valueOf(type.getNumbefrOfLeavesPeryear());
+				totalLeaves = Integer.valueOf(type.getNumbefrOfLeavesPeryear());
+				List<Leave> totalleavesTaken = leaveService.getLeavesListByTypeIdAndLocationIdAndUserId(type.getId(),orgLocations.getId(), loginUser.getId());
+				for (Leave leave : totalleavesTaken) {
+					if(Constants.APPROVED.equalsIgnoreCase(leave.getStatus())) {
+						balanceLeave = totalLeaves - (Integer.valueOf(leave.getNumberOfDays()));
+					}
+				}
+				 type.setRemainingTotalLeaveCounts(balanceLeave);
+				}
+		   }
+		return roleLeaveType;
 	}
 	
 	/**
@@ -1036,9 +1055,9 @@ public class LeaveManagementRestController {
 				}
 			}
 			leaveDto.setApproverUsers(String.join(",", aphlist));
-			int nuberOfLeavestaken = leaveDao.getNumberOfLeavesTakenByUser(leave.getUser().getId());
+			int nuberOfLeavestaken = leaveDao.getNumberOfLeavesTakenByUser(leave.getUser().getId(),leave.getLeaveType().getId());
 			leaveDto.setLeavesTaken(String.valueOf(nuberOfLeavestaken));
-			int thisMonthLeaves = leaveDao.getThisMonthLeavesTakenByUser(leave.getUser().getId());
+			int thisMonthLeaves = leaveDao.getThisMonthLeavesTakenByUser(leave.getUser().getId(),leave.getLeaveType().getId());
 			leaveDto.setThisMonthLeaves(String.valueOf(thisMonthLeaves));
 
 		}
@@ -1075,35 +1094,69 @@ public class LeaveManagementRestController {
 	
 	@RequestMapping(value = {"/getEmployeeLeavesList"})
 	@ResponseBody
-	public List<LeaveDTO> getEmployeeLeavesList(@RequestParam(value = "orgLocationId", required = true) Long orgLocationId,@RequestParam(value = "userId", required = true) String userId) throws Exception
+	public List<LeaveReportsDTO> getEmployeeLeavesList(@RequestParam(value = "orgLocationId", required = true) Long orgLocationId,@RequestParam(value = "userId", required = true) String userId,@RequestParam(value = "department", required = true) String department) throws Exception
 	{
 		OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
-		List<LeaveDTO> leavesList = leaveService.getEmployeeLeavesByApproverIdAndStatus(orgLocations, userId, Constants.APPROVED);
+		List<LeaveReportsDTO> leavesList = leaveService.getEmployeeLeavesByApproverIdAndStatus(orgLocations, userId, Constants.APPROVED,department);
 		return leavesList;
 		
 	}
 	
-	
-	@RequestMapping(value = {"/getTopLeavetakers", "/rest/getTopLeavetakers"}, method = RequestMethod.POST)
-	public @ResponseBody  ResponseList<LeaveDTO> getTopLeavetakers(LeaveDTO leaveDTO,HttpServletRequest request, HttpServletResponse response) throws Exception
-	{
-//		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+	/**
+	 * Get top leave takers by location
+	 * @param leaveDTO
+	 * @param req
+	 * @param res
+	 * @return ResponseList<LeaveDTO>
+	 * @throws Exception
+	 */
+	@RequestMapping(value = { "/getTopLeavetakers", "/rest/getTopLeavetakers" }, method = RequestMethod.POST)
+	public @ResponseBody ResponseList<LeaveDTO> getTopLeavetakers(LeaveDTO leaveDTO, HttpServletRequest req,
+			HttpServletResponse res) throws Exception {
 		OrgLocations orgLocation = orgLocationService.getOrgLocations(Long.parseLong(leaveDTO.getOrgLocationId()));
-		System.out.println("****************************** "+leaveDTO.getOrgLocationId());
-		String[] tableColumns = {"empName", "noOfDays", "status"};
-	     int sortColumnIndex = 3; //by default sorting using updated date
-		String sortColumnOrder = "desc"; //by default descending order
-		if(leaveDTO.getOrder() != null && !leaveDTO.getOrder().isEmpty()) {
+		ResponseList<LeaveDTO> leaveDtoResponse = new ResponseList<>();
+		String[] tableColumns = { "empName", "noOfDays", "status" };
+		int sortColumnIndex = 0; // by default sorting using updated date
+		String sortColumnOrder = "desc"; // by default descending order
+		if (leaveDTO.getOrder() != null && !leaveDTO.getOrder().isEmpty()) {
 			sortColumnIndex = Integer.parseInt(leaveDTO.getOrder().get(0).get("column"));
 			sortColumnOrder = leaveDTO.getOrder().get(0).get("dir");
 		}
 		leaveDTO.setSortColumn(tableColumns[sortColumnIndex]);
 		leaveDTO.setSortOrder(sortColumnOrder);
-		
-		ResponseList<LeaveDTO> list = leaveService.getTopLeavetakers(orgLocation,leaveDTO);
-//		List<EmployerPayrollCost> data = getEmployerCostSortedList(list.getData());
-//		list.setData(data);
-		return null;
+
+		ResponseList<Leave> response = leaveService.getTopLeavetakers(orgLocation, leaveDTO);
+		List<Leave> leaveList = response.getData();
+		List<LeaveDTO> leaveDtoList = new ArrayList<>();
+		HashMap<Long, LeaveDTO> reportMap = new HashMap<>();
+		int totalLeaves = 0;
+		for (Leave leave : leaveList) {
+			LeaveDTO leaveDto = reportMap.get(leave.getUser().getId());
+			if (leaveDto == null) {
+				leaveDto = new LeaveDTO();
+				totalLeaves = 0;
+			}
+			StringBuilder sb = new StringBuilder();
+			if (StringUtils.isNotBlank(leave.getUser().getLastName())) {
+				sb.append(leave.getUser().getFirstName()).append(" ").append(leave.getUser().getLastName());
+			} else {
+				sb.append(leave.getUser().getFirstName());
+			}
+			leaveDto.setEmpName(sb.toString());
+			leaveDto.setStatus(leave.getStatus());
+			totalLeaves = totalLeaves + Integer.parseInt(leave.getNumberOfDays());
+			leaveDto.setNoOfDays(String.valueOf(totalLeaves));
+			reportMap.put(leave.getUser().getId(), leaveDto);
+		}
+
+		for (Map.Entry<Long, LeaveDTO> entry : reportMap.entrySet()) {
+			leaveDtoList.add(entry.getValue());
+		}
+		leaveDtoResponse.setData(leaveDtoList);
+		leaveDtoResponse.setRecordsFiltered(response.getRecordsFiltered());
+		leaveDtoResponse.setRecordsTotal(response.getRecordsTotal());
+		leaveDtoResponse.setError(response.getError());
+		return leaveDtoResponse;
 	}
 
 	@RequestMapping(value = "/validateRestrictDate")
@@ -1116,5 +1169,22 @@ public class LeaveManagementRestController {
 			isValid = true;
 		}
 		return isValid;
+	}
+	
+	/**
+	 * Get leave takers list for barchart
+	 * @param leaveDTO
+	 * @param request
+	 * @param response
+	 * @return List<LeaveDTO> 
+	 * @throws Exception
+	 */
+	@RequestMapping(value = { "/getLeaveTakersBarChat", "/rest/getLeaveTakersBarChat" },method=RequestMethod.GET)
+	@ResponseBody
+	public List<LeaveDTO>  getLeaveTakersBarChat(LeaveDTO leaveDTO,HttpServletRequest request,HttpServletResponse response) throws Exception {
+
+		OrgLocations orgLocation = orgLocationService.getOrgLocations(Long.parseLong(leaveDTO.getOrgLocationId()));
+		List<LeaveDTO> leavDtoList = leaveService.getLeaveTakersBarChat(orgLocation,leaveDTO);
+		return leavDtoList;
 	}
 }

@@ -1,6 +1,10 @@
 package com.bis.sourcelead.dao;
 
+
 import java.text.ParseException;
+
+import java.util.Date;
+
 import java.util.List;
 
 import com.bis.sourcelead.dto.LeaveDTO;
@@ -19,13 +23,17 @@ public interface LeaveDao {
 
 	Leave getLeaveById(String leaveId) throws Exception;
 
+	List<LeaveApproveHierarchy> getEmployeeRequestedLeavesBylocationIdAndDuration(Long locationId, String userId, String status, Date currentWeekStarDate, Date currentWeekEndDate, String department);
+
 	List<Leave> getLeavesListByTypeIdAndLocationIdAndUserId(String leaveTypeId, Long orgLocationId, Long userId);
 	
-	int getNumberOfLeavesTakenByUser(Long userId) throws Exception;
+	int getNumberOfLeavesTakenByUser(Long userId, String leaveTypeId) throws Exception;
 
-	int getThisMonthLeavesTakenByUser(Long userId);
+	int getThisMonthLeavesTakenByUser(Long userId, String leaveTypeId);
 
-	ResponseList<LeaveDTO> getTopLeavetakers(OrgLocations orgLocation, LeaveDTO leaveDTO) throws Exception;
+	ResponseList<Leave> getTopLeavetakers(OrgLocations orgLocation, LeaveDTO leaveDTO) throws Exception;
+
+	List<Leave> getLeaveTakersBarChat(OrgLocations orgLocation, LeaveDTO leaveDTO)throws Exception;
 
 	List<LeaveApproveHierarchy> getEmployeeRequestedLeavesBylocationIdAndUserIdAndStatus(Long locationId, String userId, String status);
 

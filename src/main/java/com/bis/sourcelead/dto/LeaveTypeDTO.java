@@ -23,6 +23,7 @@ public class LeaveTypeDTO {
 	private String loginUserId;
 	private String leaveTypeId;
 	private String deleteReason;
+	private String colorCode;
 	
 	public String getName()
 	{
@@ -223,4 +224,13 @@ public class LeaveTypeDTO {
 	{
 		this.deleteReason = deleteReason;
 	}
+
+	public String getColorCode() {
+		return colorCode;
+	}
+
+	public void setColorCode(String colorCode) {
+		this.colorCode = colorCode;
+	}
+	
 }

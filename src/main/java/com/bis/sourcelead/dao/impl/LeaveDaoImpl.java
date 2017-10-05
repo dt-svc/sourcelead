@@ -1,6 +1,10 @@
 package com.bis.sourcelead.dao.impl;
 
+
 import java.text.ParseException;
+
+import java.util.ArrayList;
+
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -29,6 +33,9 @@ import com.bis.sourcelead.entity.LeaveApproveHierarchy;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.payroll.entity.EmployerPayrollCost;
 
+import com.bis.sourcelead.util.CommonUtil;
+
+
 @Repository
 public class LeaveDaoImpl implements LeaveDao{
 
@@ -36,6 +43,9 @@ public class LeaveDaoImpl implements LeaveDao{
 	
 	@Autowired
 	private SessionFactory sessionFactory;
+	
+	@Autowired
+	CommonUtil commonUtil;
 
 	
 	@Override
@@ -252,6 +262,54 @@ public class LeaveDaoImpl implements LeaveDao{
 
 	@Override
 	@Transactional
+	public List<LeaveApproveHierarchy> getEmployeeRequestedLeavesBylocationIdAndDuration(Long locationId, String userId, String status, Date currentWeekStarDate, Date currentWeekEndDate,String department)
+	{
+		Long usrId = Long.parseLong(userId);
+		Session session = this.sessionFactory.getCurrentSession();
+		String subQuery = "";
+		String subQuery1 = "";
+		String subQuery2 = "";
+		
+		String[] departments = null;
+		if(null != department && !"".equals(department)){	
+			departments = department.split(",");
+		}
+		
+		List<String> deptList = new ArrayList<>();
+		if (departments != null) {
+			for (int i = 0; i < departments.length; i++) {
+				deptList.add(departments[i]);
+			}
+		}
+		
+		if(currentWeekStarDate != null && currentWeekEndDate != null){
+			subQuery1 = " and (leave.fromDate >= :weekStartDate and leave.fromDate <= :weekEnddate)";
+		}
+		
+		if(deptList.size()>0){
+			subQuery2 = "and (leave.user.id IN ()"; 
+		}
+		
+		if(StringUtils.isNotBlank(status)) {
+			if(Constants.APPROVED.equalsIgnoreCase(status)) {
+				subQuery = "and leave.status = :leaveStatus";
+			}else if(Constants.PENDING.equalsIgnoreCase(status)){
+				subQuery = "and leave.status = :leaveStatus";
+			}else if(Constants.REJECTED.equalsIgnoreCase(status)) {
+				subQuery = "and leave.status = :leaveStatus";
+			}else{
+				subQuery = "and leave.status = :leaveStatus";
+			}
+			String query = "from LeaveApproveHierarchy laph left join fetch laph.leaveid leave left join fetch leave.leaveType left join fetch leave.user ltype where leave.orgLocations.id = :orgLocationId and laph.approverUserId.id= :userId "+subQuery+" "+subQuery1+"";
+			return session.createQuery(query).setParameter("leaveStatus",status).setLong("orgLocationId", locationId).setLong("userId", usrId).setParameter("weekStartDate", currentWeekStarDate).setParameter("weekEnddate", currentWeekEndDate).setCacheable(true).list();
+		}else {
+			String query = "from LeaveApproveHierarchy laph left join fetch laph.leaveid leave left join fetch leave.leaveType left join fetch leave.user ltype where leave.orgLocations.id = :orgLocationId and laph.approverUserId.id= :userId "+subQuery1+"";
+			return session.createQuery(query).setLong("orgLocationId", locationId).setLong("userId", usrId).setParameter("weekStartDate", currentWeekStarDate).setParameter("weekEnddate", currentWeekEndDate).setCacheable(true).list();
+		}
+	}
+
+	@Override
+	@Transactional
 	public List<Leave> getLeavesListByTypeIdAndLocationIdAndUserId(String leaveTypeId,Long orgLocationId, Long userId) {
 		Session session = this.sessionFactory.getCurrentSession();
 		List<Leave> leaveList = null;
@@ -262,17 +320,18 @@ public class LeaveDaoImpl implements LeaveDao{
 	
 	@Override
 	@Transactional
-	public int getNumberOfLeavesTakenByUser(Long userId) throws Exception {
+	public int getNumberOfLeavesTakenByUser(Long userId,String leaveTypeId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from Leave leave where leave.user.id = :userId  and leave.status = 'APPROVED'";
-		List<Leave> leavesList = session.createQuery(query).setLong("userId", userId).setCacheable(true).list();
-		return leavesList.size();
+		String query = "from Leave leave where leave.user.id = :userId  and leave.leaveType.id = :leaveTypeId and leave.status = 'APPROVED'";
+		List<Leave> leavesList = session.createQuery(query).setLong("userId", userId).setString("leaveTypeId", leaveTypeId).setCacheable(true).list();
+		int numberOfLeavsTaken = leavesList.stream().filter(l->l.getNumberOfDays() != null).mapToInt(l->Integer.parseInt(l.getNumberOfDays())).sum();
+		return numberOfLeavsTaken;
 	}
 
 
 	@Override
 	@Transactional
-	public int getThisMonthLeavesTakenByUser(Long userId) {
+	public int getThisMonthLeavesTakenByUser(Long userId,String leaveTypeId) {
 		Calendar c = Calendar.getInstance();
 		int year = c.get(Calendar.YEAR);
 		int month = c.get(Calendar.MONTH);
@@ -285,16 +344,115 @@ public class LeaveDaoImpl implements LeaveDao{
 		Date endDate = c.getTime();
 		java.sql.Date currentMonthEndDate = new java.sql.Date(endDate.getTime());
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from Leave leave where leave.user.id = :userId  and leave.status = 'APPROVED' and leave.createdDate BETWEEN :currentMonthStartDate AND :currentMonthEndDate";
-		List<Leave> leavesList = session.createQuery(query).setLong("userId", userId).setParameter("currentMonthStartDate", currentMonthStartDate).setParameter("currentMonthEndDate", currentMonthEndDate).setCacheable(true)
+		String query = "from Leave leave where leave.user.id = :userId and leave.leaveType.id = :leaveTypeId and leave.status = 'APPROVED' and leave.createdDate BETWEEN :currentMonthStartDate AND :currentMonthEndDate";
+		List<Leave> leavesList = session.createQuery(query).setLong("userId", userId).setString("leaveTypeId", leaveTypeId).setParameter("currentMonthStartDate", currentMonthStartDate).setParameter("currentMonthEndDate", currentMonthEndDate).setCacheable(true)
 				.list();
-		return leavesList.size();
+		int numberOfLeavsTaken = leavesList.stream().filter(l->l.getNumberOfDays() != null).mapToInt(l->Integer.parseInt(l.getNumberOfDays())).sum();
+		return numberOfLeavsTaken;
 	}
 
 
 	@Override
-	public ResponseList<LeaveDTO> getTopLeavetakers(OrgLocations orgLocation, LeaveDTO leaveDTO) throws Exception {
-		return null;
+	@Transactional
+	public ResponseList<Leave> getTopLeavetakers(OrgLocations orgLocation, LeaveDTO leaveDTO) throws Exception {
+
+		Session session = this.sessionFactory.getCurrentSession();
+		String subQuery = "";
+		if(StringUtils.isNotBlank(leaveDTO.getReportYear())) {
+			Date[] dates = commonUtil.getStartDateEndDateByYear(Integer.parseInt(leaveDTO.getReportYear()));
+			java.sql.Date satrtDate = new java.sql.Date(dates[0].getTime());
+			java.sql.Date endDate = new java.sql.Date(dates[1].getTime());
+			subQuery = " and leave.createdDate >= '"+satrtDate+"' AND leave.createdDate <= '"+endDate+"'";
+		}
+		if(StringUtils.isNotBlank(leaveDTO.getReportMonth())) {
+			Date[] dates = commonUtil.getMonthStartDateEndDateByMonth(Integer.parseInt(leaveDTO.getReportMonth()));
+			java.sql.Date satrtDate = new java.sql.Date(dates[0].getTime());
+			java.sql.Date endDate = new java.sql.Date(dates[1].getTime());
+			subQuery = " and leave.createdDate >= '"+satrtDate+"' AND leave.createdDate <= '"+endDate+"'";
+		}
+		if(StringUtils.isNotBlank(leaveDTO.getReportFromDate()) && StringUtils.isNotBlank(leaveDTO.getReportEndDate())) {
+			Date startDate = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), leaveDTO.getReportFromDate());
+			Date eDate = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), leaveDTO.getReportEndDate());
+			java.sql.Date satrtDate = new java.sql.Date(startDate.getTime());
+			java.sql.Date endDate = new java.sql.Date(eDate.getTime());
+			subQuery = " and leave.createdDate >= '"+satrtDate+"' AND leave.createdDate <= '"+endDate+"'";
+		}
+		if(StringUtils.isNotBlank(leaveDTO.getReportYear()) && StringUtils.isNotBlank(leaveDTO.getReportMonth())) {
+			Date[] dates = commonUtil.getMonthStartDateEndDateByYearAndMonth(Integer.parseInt(leaveDTO.getReportYear()),Integer.parseInt(leaveDTO.getReportMonth()));
+			java.sql.Date satrtDate = new java.sql.Date(dates[0].getTime());
+			java.sql.Date endDate = new java.sql.Date(dates[1].getTime());
+			subQuery = " and leave.createdDate >= '"+satrtDate+"' AND leave.createdDate <= '"+endDate+"'";
+		}
+		List<Leave> leaveList = null;
+		ResponseList<Leave> response = new ResponseList<>();
+		String query = "from Leave leave where leave.orgLocations.id =:orgLocationId and leave.status = 'APPROVED'"+subQuery;
+		String countQuery = "from Leave leave  where leave.orgLocations.id =:orgLocationId and leave.status = 'APPROVED'"+subQuery;
+
+		Query queryObj = session.createQuery(query);
+		if (leaveDTO != null && leaveDTO.getLength() > 0) {
+			queryObj.setFirstResult(leaveDTO.getStart());
+			queryObj.setMaxResults(leaveDTO.getLength());
+			queryObj.setLong("orgLocationId", orgLocation.getId()).setCacheable(true).list();
+		}
+		leaveList = queryObj.list();
+		int count = 0;
+		int filteredCount = 0;
+		List<Long> countlist = session.createQuery("select count(*) " + countQuery).setLong("orgLocationId", orgLocation.getId()).setCacheable(true).list();
+		if (countlist != null && !countlist.isEmpty()) {
+			count = countlist.iterator().next().intValue();
+		}
+		response.setRecordsTotal(count);
+		if (leaveDTO != null) {
+			List<Long> filteredCountlist = session.createQuery("select count(*) " + countQuery)
+					.setLong("orgLocationId", orgLocation.getId()).list();
+			if (filteredCountlist != null && !filteredCountlist.isEmpty()) {
+				filteredCount = filteredCountlist.iterator().next().intValue();
+			}
+			response.setRecordsFiltered(filteredCount);
+		} else {
+			response.setRecordsFiltered(filteredCount);
+		}
+
+		response.setData(leaveList);
+		return response;
+	}
+
+
+	@Override
+	@Transactional
+	public List<Leave> getLeaveTakersBarChat(OrgLocations orgLocation, LeaveDTO leaveDTO) throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		String subQuery = "";
+		if(StringUtils.isNotBlank(leaveDTO.getBarChartYear())) {
+			Date[] dates = commonUtil.getStartDateEndDateByYear(Integer.parseInt(leaveDTO.getBarChartYear()));
+			java.sql.Date satrtDate = new java.sql.Date(dates[0].getTime());
+			java.sql.Date endDate = new java.sql.Date(dates[1].getTime());
+			subQuery = " and leave.createdDate >= '"+satrtDate+"' AND leave.createdDate <= '"+endDate+"'";
+		}
+		if(StringUtils.isNotBlank(leaveDTO.getBarCharMonth())) {
+			Date[] dates = commonUtil.getMonthStartDateEndDateByMonth(Integer.parseInt(leaveDTO.getBarCharMonth()));
+			java.sql.Date satrtDate = new java.sql.Date(dates[0].getTime());
+			java.sql.Date endDate = new java.sql.Date(dates[1].getTime());
+			subQuery = " and leave.createdDate >= '"+satrtDate+"' AND leave.createdDate <= '"+endDate+"'";
+		}
+		if(StringUtils.isNotBlank(leaveDTO.getBarChartFromDate()) && StringUtils.isNotBlank(leaveDTO.getBarChartToDate())) {
+			Date startDate = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), leaveDTO.getBarChartFromDate());
+			Date eDate = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), leaveDTO.getBarChartToDate());
+			java.sql.Date satrtDate = new java.sql.Date(startDate.getTime());
+			java.sql.Date endDate = new java.sql.Date(eDate.getTime());
+			subQuery = " and leave.createdDate >= '"+satrtDate+"' AND leave.createdDate <= '"+endDate+"'";
+		}
+		if(StringUtils.isNotBlank(leaveDTO.getBarChartYear()) && StringUtils.isNotBlank(leaveDTO.getBarCharMonth())) {
+			Date[] dates = commonUtil.getMonthStartDateEndDateByYearAndMonth(Integer.parseInt(leaveDTO.getBarChartYear()),Integer.parseInt(leaveDTO.getBarCharMonth()));
+			java.sql.Date satrtDate = new java.sql.Date(dates[0].getTime());
+			java.sql.Date endDate = new java.sql.Date(dates[1].getTime());
+			subQuery = " and leave.createdDate >= '"+satrtDate+"' AND leave.createdDate <= '"+endDate+"'";
+		}
+		String query = "from Leave leave where leave.orgLocations.id = :orgLocationId and leave.status = 'APPROVED'"+subQuery;
+		List<Leave> leavesList = session.createQuery(query).setLong("orgLocationId", orgLocation.getId())
+				.setCacheable(true).list();
+		return leavesList;
 	}
 
 

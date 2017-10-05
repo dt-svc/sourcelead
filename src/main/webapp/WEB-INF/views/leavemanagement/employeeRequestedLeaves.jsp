@@ -32,7 +32,7 @@ $(document).ready(function(){
                     <select onchange="redirectlocation(this.value);">
                         <option value="/employeeRequestedLeaves" selected>Requested Leaves</option>
                         <option  value="/employeeApprovedLeaves">Approved Leaves</option>
-                        <option value="/employeeRejectedLeaves">Rejected Leaves</option>
+                        <option value="/employeeRejectedLeaves" >Rejected Leaves</option>
                         <option value="/employeeCancelLeaves">Cancel Leaves</option>
                     </select>
             </div>
