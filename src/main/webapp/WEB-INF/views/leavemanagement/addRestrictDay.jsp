@@ -128,7 +128,7 @@ $('body').on('blur', '#restrictDay_form', function() {
 	  	  changeYear: true,
 	  	  onSelect: function (selected) {
         	var dt = $(this).datepicker('getDate', '+1d');
-              dt.setDate(dt.getDate() + 1);
+              dt.setDate(dt.getDate());
               $("#endDate").datepicker("option", "minDate", dt);
               removeStartValid();
           }
@@ -140,7 +140,7 @@ $('body').on('blur', '#restrictDay_form', function() {
 	  	  changeYear: true,
 	  	onSelect: function (selected) {
       	  var dt = $(this).datepicker('getDate', '-1d');
-            dt.setDate(dt.getDate() - 1);
+            dt.setDate(dt.getDate());
             $("#startDate").datepicker("option", "maxDate", dt);
             removeEndValid();
         }

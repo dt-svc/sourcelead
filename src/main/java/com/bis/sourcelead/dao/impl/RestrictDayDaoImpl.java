@@ -1,6 +1,10 @@
 package com.bis.sourcelead.dao.impl;
 
+import java.text.ParseException;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.hibernate.Session;
@@ -13,12 +17,16 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.RestrictDayDao;
 import com.bis.sourcelead.entity.RestrictDay;
+import com.bis.sourcelead.util.ConversionUtil;
 
 @Repository
 public class RestrictDayDaoImpl implements RestrictDayDao{
 
 	@Autowired
 	private SessionFactory sessionFactory;
+	
+	@Autowired
+	private ConversionUtil conversionUtil;
 	
 	private static final Logger logger = LoggerFactory.getLogger(UserDaoImpl.class);
 	
@@ -57,6 +65,20 @@ public class RestrictDayDaoImpl implements RestrictDayDao{
 		}else {
 			return null;
 		}
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<RestrictDay> validateRestrictDayDates(String fromDateStr, String toDateStr, Long orgLocationId) throws Exception {
+		
+		
+		Date fromDate = conversionUtil.getDateFromString(fromDateStr);
+		Date toDate = conversionUtil.getDateFromString(toDateStr);
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from RestrictDay resDay  where resDay.orgLocationId = :orgLocationId and ((resDay.startDate <= :fromDate and resDay.endDate >= :fromDate) or (resDay.startDate <= :toDate and resDay.endDate >= :toDate))";
+		List<RestrictDay> restrictDayList = session.createQuery(query).setParameter("fromDate", fromDate).setParameter("toDate", toDate).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+		return restrictDayList;
 	}
 
 }

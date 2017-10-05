@@ -117,6 +117,10 @@ public class LeaveType {
 	@JsonProperty
 	private String updatedUser;
 	
+	@Transient
+	@JsonProperty
+	private int remainingTotalLeaveCounts;
+	
 
 	public String getId() {
 		return id;
@@ -343,4 +347,15 @@ public class LeaveType {
 	{
 		this.updatedUser = updatedUser;
 	}
+
+	public int getRemainingTotalLeaveCounts() {
+		return remainingTotalLeaveCounts;
+	}
+
+	public void setRemainingTotalLeaveCounts(int remainingTotalLeaveCounts) {
+		this.remainingTotalLeaveCounts = remainingTotalLeaveCounts;
+	}
+
+	
+	
 }

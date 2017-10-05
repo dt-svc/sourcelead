@@ -166,28 +166,7 @@ public class EmployeePayrollRestController {
 		ResponseList<EmployerPayrollCost> list = employerPayrollCostService.loadEmployerPayrollCostByOrgLocationId(orgLocation,employerPayrollCostDTO);
 		List<EmployerPayrollCost> data = getEmployerCostSortedList(list.getData());
 		list.setData(data);
-//		return employerPayrollCostService.loadEmployerPayrollCostByOrgLocationId(orgLocation,employerPayrollCostDTO);
 		return list;
-		
-		/*String resultJson = "";
-		DecimalFormat df = new DecimalFormat("#.00");
-		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		List<EmployerPayrollCost>  employerPayrollCostList = employerPayrollCostService.loadEmployerPayrollCostByOrgLocationId(orgLocation);
-		if(employerPayrollCostList != null){
-			for(EmployerPayrollCost employerPayrollCost:employerPayrollCostList){
-				StringBuilder sb = new StringBuilder();
-				employerPayrollCost.setFromDateStr(conversionUtil.getDateAsString(employerPayrollCost.getFromDate()));
-				employerPayrollCost.setToDateStr(conversionUtil.getDateAsString(employerPayrollCost.getToDate()));
-				String ssn = employerPayrollCost.getSsn();
-				String[] arr = ssn.split("-");
-				sb.append("xxx").append("-").append("xx").append("-").append(arr[0]);
-				employerPayrollCost.setSsn(sb.toString());
-				double totHrs = Double.parseDouble(employerPayrollCost.getTotalHrs());
-				employerPayrollCost.setTotalHrs(String.valueOf(df.format(totHrs)));
-			}
-			resultJson = commonUtil.toJSON(employerPayrollCostList);
-		}
-		return resultJson;*/
 	}
 	
 	

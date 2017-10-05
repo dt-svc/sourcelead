@@ -5,7 +5,8 @@
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
-
+<script type="text/javascript" src="https://www.amcharts.com/lib/3/amcharts.js"></script> 
+<script type="text/javascript" src="https://www.amcharts.com/lib/3/pie.js"></script> 
 <%-- <section class="content-wraper"> --%>
   <!-- <section class="content-header clearfix">
     <div class="pull-left">
@@ -115,3 +116,419 @@
   </div>
   <!-- Tasks and Timesheets columns ends --> 
 <%-- </section> --%>
+
+<!-- amCharts javascript code --> 
+<script type="text/javascript">
+    //self Leaves
+			AmCharts.makeChart("empselfLeaves",
+				{
+					"type": "pie",
+					"balloonText": "[[title]]<br><span style='font-size:14px'><b>[[value]]</b> </span>",
+					"innerRadius": "50%",
+					"labelRadius": 0,
+					"minRadius": 0,
+					"pieX": "50%",
+					"pieY": "50%",
+					"pullOutRadius": 0,
+					"radius": "49%",
+					"startAngle": 0,
+					"colors": [
+						"#337ab7",
+						"#66bb6a",
+						"#ef5350",
+						"#ff5722",
+						"#ededed"
+					],
+					"labelsEnabled": false,
+					"marginBottom": 0,
+					"marginTop": 0,
+					"outlineThickness": 0,
+					"titleField": "category",
+					"valueField": "column-1",
+					"fontSize": 12,
+					"allLabels": [],
+					"balloon": {
+						"fixedPosition": false
+					},
+					"titles": [],
+					"dataProvider": [
+						{
+							"category": "Pending",
+							"column-1": "30"
+						},
+						{
+							"category": "Approved",
+							"column-1": "10"
+						},
+						{
+							"category": "Rejected",
+							"column-1": "12"
+						},
+						{
+							"category": "Canceled",
+							"column-1": "10"
+						},
+						{
+							"category": "Total Leaves",
+							"column-1": "10"
+						}
+					]
+				}
+			);
+    //employee Leaves
+    AmCharts.makeChart("employeeLeaves",
+				{
+					"type": "pie",
+					"balloonText": "[[title]]<br><span style='font-size:14px'><b>[[value]]</b> </span>",
+					"innerRadius": "50%",
+					"labelRadius": 0,
+					"minRadius": 0,
+					"pieX": "50%",
+					"pieY": "50%",
+					"pullOutRadius": 0,
+					"radius": "49%",
+					"startAngle": 0,
+					"colors": [
+						"#5c6bc0",
+						"#8bc34a",
+						"#ef5350",
+						"#ffc107",
+						"#ededed"
+					],
+					"labelsEnabled": false,
+					"marginBottom": 0,
+					"marginTop": 0,
+					"outlineThickness": 0,
+					"titleField": "category",
+					"valueField": "column-1",
+					"fontSize": 12,
+					"allLabels": [],
+					"balloon": {
+						"fixedPosition": false
+					},
+					"titles": [],
+					"dataProvider": [
+						{
+							"category": "Requested",
+							"column-1": "30"
+						},
+						{
+							"category": "Approved",
+							"column-1": "10"
+						},
+						{
+							"category": "Rejected",
+							"column-1": "12"
+						},
+						{
+							"category": "Canceled",
+							"column-1": "10"
+						},
+						{
+							"category": "Total Leaves",
+							"column-1": "10"
+						}
+					]
+				}
+			); 
+    
+    
+            //Pending Chart
+			AmCharts.makeChart("selfPending",
+				{
+					"type": "pie",
+					"adjustPrecision": true,
+					//"balloonText": "[[title]]<br><span style='font-size:14px'><b>[[value]]</b> </span>",
+                    "balloonText": "",
+					"innerRadius": "80%",
+					"labelRadius": 0,
+					"pieX": "50%",
+					"pieY": "50%",
+					"pullOutRadius": "5%",
+					"colors": [
+						"#42a5f5",
+						"#eeeeee"
+					],
+					"labelsEnabled": false,
+					"marginBottom": 0,
+					"marginTop": 0,
+					"titleField": "category",
+					"valueField": "column-1",
+					"creditsPosition": "bottom-left",
+					"allLabels": [
+						{
+							"align": "center",
+							"color": "#BBB9B9",
+							"id": "pending",
+							"size": 16,
+							"text": "Pending",
+							"x": 0,
+							"y": "40%"
+						}
+					],
+					"balloon": {
+                      "fixedPosition": false
+                    },
+					"titles": [],
+					"dataProvider": [
+						{
+							"category": "Pending",
+							"column-1": "80"
+						},
+						{
+							"category": "Total Leaves",
+							"column-1": "20"
+						}
+					]
+				}
+			);
+                        
+
+            //Approved Chart
+			AmCharts.makeChart("selfApproved",
+				{
+					"type": "pie",
+					"adjustPrecision": true,
+					//"balloonText": "[[title]]<br><span style='font-size:14px'><b>[[value]]</b> </span>",
+                    "balloonText": "",
+					"innerRadius": "80%",
+					"labelRadius": 0,
+					"pieX": "50%",
+					"pieY": "50%",
+					"pullOutRadius": "5%",
+					"colors": [
+						"#66bb6a",
+						"#eeeeee"
+					],
+					"labelsEnabled": false,
+					"marginBottom": 0,
+					"marginTop": 0,
+					"titleField": "category",
+					"valueField": "column-1",
+					"creditsPosition": "bottom-left",
+					"allLabels": [
+						{
+							"align": "center",
+							"color": "#BBB9B9",
+							"id": "approved",
+							"size": 16,
+							"text": "Approved",
+							"x": 0,
+							"y": "40%"
+						}
+					],
+					"balloon": {
+                      "fixedPosition": false
+                    },
+					"titles": [],
+					"dataProvider": [
+						{
+							"category": "Approved",
+							"column-1": "80"
+						},
+						{
+							"category": "Total Leaves",
+							"column-1": "20"
+						}
+					]
+				}
+			);
+                        //Pending Chart
+			AmCharts.makeChart("selfRejected",
+				{
+					"type": "pie",
+					"adjustPrecision": true,
+					//"balloonText": "[[title]]<br><span style='font-size:14px'><b>[[value]]</b> </span>",
+                    "balloonText": "",
+					"innerRadius": "80%",
+					"labelRadius": 0,
+					"pieX": "50%",
+					"pieY": "50%",
+					"pullOutRadius": "5%",
+					"colors": [
+						"#ef5350",
+						"#eeeeee"
+					],
+					"labelsEnabled": false,
+					"marginBottom": 0,
+					"marginTop": 0,
+					"titleField": "category",
+					"valueField": "column-1",
+					"creditsPosition": "bottom-left",
+					"allLabels": [
+						{
+							"align": "center",
+							"color": "#BBB9B9",
+							"id": "rejected",
+							"size": 16,
+							"text": "Rejected",
+							"x": 0,
+							"y": "40%"
+						}
+					],
+					"balloon": {
+                      "fixedPosition": false
+                    },
+					"titles": [],
+					"dataProvider": [
+						{
+							"category": "Rejected",
+							"column-1": "80"
+						},
+						{
+							"category": "Total Leaves",
+							"column-1": "20"
+						}
+					]
+				}
+			);
+    
+    //Employee Requested Chart
+			AmCharts.makeChart("empRequested",
+				{
+					"type": "pie",
+					"adjustPrecision": true,
+					//"balloonText": "[[title]]<br><span style='font-size:14px'><b>[[value]]</b> </span>",
+                    "balloonText": "",
+					"innerRadius": "80%",
+					"labelRadius": 0,
+					"pieX": "50%",
+					"pieY": "50%",
+					"pullOutRadius": "5%",
+					"colors": [
+						"#42a5f5",
+						"#eeeeee"
+					],
+					"labelsEnabled": false,
+					"marginBottom": 0,
+					"marginTop": 0,
+					"titleField": "category",
+					"valueField": "column-1",
+					"creditsPosition": "bottom-left",
+					"allLabels": [
+						{
+							"align": "center",
+							"color": "#BBB9B9",
+							"id": "requested",
+							"size": 16,
+							"text": "Requested",
+							"x": 0,
+							"y": "40%"
+						}
+					],
+					"balloon": {
+                      "fixedPosition": false
+                    },
+					"titles": [],
+					"dataProvider": [
+						{
+							"category": "Requested",
+							"column-1": "80"
+						},
+						{
+							"category": "Total Leaves",
+							"column-1": "20"
+						}
+					]
+				}
+			);
+    
+        //Employee Approved Chart
+			AmCharts.makeChart("empApproved",
+				{
+					"type": "pie",
+					"adjustPrecision": true,
+					//"balloonText": "[[title]]<br><span style='font-size:14px'><b>[[value]]</b> </span>",
+                    "balloonText": "",
+					"innerRadius": "80%",
+					"labelRadius": 0,
+					"pieX": "50%",
+					"pieY": "50%",
+					"pullOutRadius": "5%",
+					"colors": [
+						"#66bb6a",
+						"#eeeeee"
+					],
+					"labelsEnabled": false,
+					"marginBottom": 0,
+					"marginTop": 0,
+					"titleField": "category",
+					"valueField": "column-1",
+					"creditsPosition": "bottom-left",
+					"allLabels": [
+						{
+							"align": "center",
+							"color": "#BBB9B9",
+							"id": "approved",
+							"size": 16,
+							"text": "Approved",
+							"x": 0,
+							"y": "40%"
+						}
+					],
+					"balloon": {
+                      "fixedPosition": false
+                    },
+					"titles": [],
+					"dataProvider": [
+						{
+							"category": "Requested",
+							"column-1": "80"
+						},
+						{
+							"category": "Total Leaves",
+							"column-1": "20"
+						}
+					]
+				}
+			);
+            //Employee Rejected Chart
+			AmCharts.makeChart("empRejected",
+				{
+					"type": "pie",
+					"adjustPrecision": true,
+					//"balloonText": "[[title]]<br><span style='font-size:14px'><b>[[value]]</b> </span>",
+                    "balloonText": "",
+					"innerRadius": "80%",
+					"labelRadius": 0,
+					"pieX": "50%",
+					"pieY": "50%",
+					"pullOutRadius": "5%",
+					"colors": [
+						"#ef5350",
+						"#eeeeee"
+					],
+					"labelsEnabled": false,
+					"marginBottom": 0,
+					"marginTop": 0,
+					"titleField": "category",
+					"valueField": "column-1",
+					"creditsPosition": "bottom-left",
+					"allLabels": [
+						{
+							"align": "center",
+							"color": "#BBB9B9",
+							"id": "rejected",
+							"size": 16,
+							"text": "Rejected",
+							"x": 0,
+							"y": "40%"
+						}
+					],
+					"balloon": {
+                      "fixedPosition": false
+                    },
+					"titles": [],
+					"dataProvider": [
+						{
+							"category": "Rejected",
+							"column-1": "80"
+						},
+						{
+							"category": "Total Leaves",
+							"column-1": "20"
+						}
+					]
+				}
+			);
+		</script>

@@ -25,6 +25,7 @@ import com.bis.sourcelead.dao.LeaveTypeDao;
 import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.dto.LeaveDTO;
 import com.bis.sourcelead.dto.LeaveReportsDTO;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Leave;
 import com.bis.sourcelead.entity.LeaveApproveHierarchy;
 import com.bis.sourcelead.entity.LeaveManagementHistory;
@@ -109,6 +110,8 @@ public class LeaveServiceImpl implements LeaveService{
 		leave.setUpdatedBy(user.getUserCode());
 		leave.setCreatedDate(new Date());
 		leave.setUpdatedDate(new Date());
+		int numberOfdays = commonUtil.getNumberOfDaysBetweenTwoDates(leave.getFromDate(), leave.getToDate());
+		leave.setNumberOfDays(String.valueOf(numberOfdays));
 		Leave savedLeave =  leaveDao.saveLeave(leave);
 		if(savedLeave !=null) {
 			LeaveManagementHistory leaveManagementHistory = leaveManagementHistoryService.saveLeaveManagementHistory(leave,user);
@@ -139,7 +142,9 @@ public class LeaveServiceImpl implements LeaveService{
 
 	@Override
 	public List<LeaveDTO> getEmployeeRequestedLeavesBylocationId(OrgLocations orgLocations, String userId, String leaveStatus) throws Exception {
+
 		List<LeaveApproveHierarchy> leaveApproveHierarchiesList = leaveDao.getEmployeeRequestedLeavesBylocationId(orgLocations.getId(),userId,leaveStatus);
+
 		List<LeaveDTO> leaveDtoList = new ArrayList<>();
 		leaveApproveHierarchiesList.forEach(laph -> {
 			Leave leave = laph.getLeaveid();
@@ -148,6 +153,14 @@ public class LeaveServiceImpl implements LeaveService{
 			StringBuilder durationSb = new StringBuilder();
 			leaveDto.setId(laph.getLeaveid().getId());
 			if (leave.getUser() != null) {
+				try {
+					int nuberOfLeavestaken = leaveDao.getNumberOfLeavesTakenByUser(leave.getUser().getId(),leave.getLeaveType().getId());
+					int thisMonthLeaves = leaveDao.getThisMonthLeavesTakenByUser(leave.getUser().getId(),leave.getLeaveType().getId());
+					leaveDto.setLeavesTaken(String.valueOf(nuberOfLeavestaken));
+					leaveDto.setThisMonthLeaves(String.valueOf(thisMonthLeaves));
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 				if (StringUtils.isNotBlank(leave.getUser().getLastName())) {
 					sb.append(leave.getUser().getFirstName()).append(" ").append(leave.getUser().getLastName());
 				} else {
@@ -157,19 +170,14 @@ public class LeaveServiceImpl implements LeaveService{
 				leaveDto.setEmpName(sb.toString());
 			}
 			durationSb.append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), leave.getFromDate()))
-					.append(System.getProperty("line.separator"))
+					.append(System.getProperty("line.separator")).append(" to ")
 					.append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), leave.getToDate()));
 
 			leaveDto.setDuration(durationSb.toString());
 			leaveDto.setLeaveType(leave.getLeaveType().getName());
 			leaveDto.setLeaveTypeId(leave.getLeaveType().getId());
 			leaveDto.setStatus(leave.getStatus());
-			try {
-				Long numberOfdays = commonUtil.getNumberOfDaysBetweenTwoDates(leave.getFromDate(), leave.getToDate());
-				leaveDto.setNoOfDays(String.valueOf(numberOfdays));
-			} catch (ParseException e) {
-				e.printStackTrace();
-			}
+			leaveDto.setNoOfDays(leave.getNumberOfDays());
 			leaveDto.setBalanceleaves(leave.getLeaveType().getNumbefrOfLeavesPeryear());
 
 			if(leave.getApprovedBy() !=null) {
@@ -216,6 +224,7 @@ public class LeaveServiceImpl implements LeaveService{
 			leaveDto.setUpdatedDate(ConversionUtil.getDateAsString(leave.getUpdatedDate()));
 			leaveDtoList.add(leaveDto);
 		});
+		
 		return leaveDtoList;
 	}
 
@@ -227,7 +236,7 @@ public class LeaveServiceImpl implements LeaveService{
 
 	@Override
 	public boolean approveRequestLeave(OrgLocations orgLocations, User user, String leaveId, String leaveTypeId,
-			String approveStatus, String numberOfDays) throws Exception {
+			String approveStatus, String numberOfDays,String reason) throws Exception {
 
 		boolean isApproved = false;
 		LeaveManagementHistory leaveManagementHistory = new LeaveManagementHistory();
@@ -236,13 +245,15 @@ public class LeaveServiceImpl implements LeaveService{
 		if (leave != null) {
 			if (Constants.LEAVE_APPROVED.equals(approveStatus)) {
 				leave.setStatus(Constants.LEAVE_APPROVED);
+				leave.setApprovedBy(user);
 					LeaveType leaveType = leaveTypeService.getLeaveTypeById(leaveTypeId);
 					int numberOfLeavesPerYear = Integer.parseInt(leaveType.getNumbefrOfLeavesPeryear())
 							- Integer.parseInt(numberOfDays);
-					leaveType.setNumbefrOfLeavesPeryear(String.valueOf(numberOfLeavesPerYear));
-					leaveTypeDao.addLeaveType(leaveType);
+					leave.setBalanceLeavesCount(numberOfLeavesPerYear);
 			} else {
 				leave.setStatus(Constants.LEAVE_REJECTED);
+				leave.setRejectedReason(reason);
+				leave.setRejectedBy(user);
 			}
 			leave.setUpdatedBy(user.getUserCode());
 			leave.setUpdatedDate(new Date());
@@ -306,6 +317,12 @@ public class LeaveServiceImpl implements LeaveService{
 		return leaveList;
 	}
 
+
+	@Override
+	public List<Leave> getLeavesListByTypeIdAndLocationIdAndUserId(String leaveTypeId,Long orgLocationId, Long userId) {
+		return leaveDao.getLeavesListByTypeIdAndLocationIdAndUserId(leaveTypeId,orgLocationId,userId);
+	}
+	
 	@Override
 	public List<LeaveReportsDTO> getEmployeeLeavesByApproverIdAndStatus(OrgLocations orgLocations, String userId, String status, String department) throws Exception
 	{
@@ -451,6 +468,11 @@ public class LeaveServiceImpl implements LeaveService{
 			reportList.add(lrDto);
 		}
 		return reportList;
+	}
+
+	@Override
+	public ResponseList<Leave> getTopLeavetakers(OrgLocations orgLocation, LeaveDTO leaveDTO) throws Exception {
+		return leaveDao.getTopLeavetakers(orgLocation,leaveDTO);
 	}
 
 }

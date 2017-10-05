@@ -8,7 +8,7 @@ import com.bis.sourcelead.entity.LeaveType;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 
-public class LeaveDTO implements Serializable{
+public class LeaveDTO extends SearchDTO implements Serializable{
 
 	private String id;
 	private String orgLocationId;
@@ -44,6 +44,20 @@ public class LeaveDTO implements Serializable{
 	private String empEmail;
 	private String fromDateDay;
 	private String toDateDay;
+	private String leavesTaken;
+	private String approverUsers;
+	private String thisMonthLeaves;
+	private String reportYear;
+	private String reportMonth;
+	private String reportFromDate;
+	private String reportEndDate;
+	
+	public String getLeavesTaken() {
+		return leavesTaken;
+	}
+	public void setLeavesTaken(String leavesTaken) {
+		this.leavesTaken = leavesTaken;
+	}
 	
 	public String getFileName() {
 		return fileName;
@@ -253,4 +267,41 @@ public class LeaveDTO implements Serializable{
 	{
 		this.toDateDay = toDateDay;
 	}
+	public String getApproverUsers() {
+		return approverUsers;
+	}
+	public void setApproverUsers(String approverUsers) {
+		this.approverUsers = approverUsers;
+	}
+	public String getThisMonthLeaves() {
+		return thisMonthLeaves;
+	}
+	public void setThisMonthLeaves(String thisMonthLeaves) {
+		this.thisMonthLeaves = thisMonthLeaves;
+	}
+	public String getReportYear() {
+		return reportYear;
+	}
+	public void setReportYear(String reportYear) {
+		this.reportYear = reportYear;
+	}
+	public String getReportMonth() {
+		return reportMonth;
+	}
+	public void setReportMonth(String reportMonth) {
+		this.reportMonth = reportMonth;
+	}
+	public String getReportFromDate() {
+		return reportFromDate;
+	}
+	public void setReportFromDate(String reportFromDate) {
+		this.reportFromDate = reportFromDate;
+	}
+	public String getReportEndDate() {
+		return reportEndDate;
+	}
+	public void setReportEndDate(String reportEndDate) {
+		this.reportEndDate = reportEndDate;
+	}
+
 }
