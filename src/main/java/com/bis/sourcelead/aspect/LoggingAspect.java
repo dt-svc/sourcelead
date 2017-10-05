@@ -113,7 +113,7 @@ public class LoggingAspect {
 	}*/
 
 
-	@AfterReturning(pointcut = "@annotation(org.springframework.web.bind.annotation.RequestMapping) && execution(* com.bis.sourcelead.rest..*.*(..))", returning = "result")
+	@AfterReturning(pointcut = "execution(* com.bis.sourcelead.web..*.*(..)) || execution(* com.bis.sourcelead.rest..*.*(..))", returning = "result")
 	public void logAfterReturningRestService(JoinPoint joinPoint, Object result) throws Exception {
 		//logger.info("********** Rest Service Layer After Method Exectution ************");
 		//logger.info("Class name : " + joinPoint.getTarget().getClass().getSimpleName());

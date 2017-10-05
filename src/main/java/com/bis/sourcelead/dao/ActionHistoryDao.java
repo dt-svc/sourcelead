@@ -10,7 +10,9 @@ import com.bis.sourcelead.entity.UserLoginLogoutSession;
 
 public interface ActionHistoryDao {
 	
-	public List<ActionHistory> getAllActionHistoryList(Long userSessionId);
+	public List<ActionHistory> getAllActionHistoryList(Long userSessionId, Long orgLocation);
+	
+	public List<ActionHistory> getAllOrglocationsActionHistoryList(Long userSessionId);
 	
 	public void saveActionHistory(String methodName, UserLoginLogoutSession userLoginLogoutSession,Long orgLocationId) throws Exception;
 

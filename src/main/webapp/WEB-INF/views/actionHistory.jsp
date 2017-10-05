@@ -64,6 +64,7 @@ margin-top: 75px; padding:10px; border: 1px solid #ddd;
   <section class="container actionHistory">
   <h4>Actions Performed</h4>
   <div class="clients_wrap_table">
+  	<div id="actionHistoryOrgList" class="clearfix clients_wrap_table overflow_inherint"></div>
 	<div id="actionHistoryList" class="clearfix clients_wrap_table overflow_inherint"></div>
 <div class="clearfix text-center mb">
 <div class="welSiO" onclick="logoutFormSubmit();" title="Sign Out"><i class="fa fa-sign-out"></i></div>
@@ -85,22 +86,60 @@ actionHistoryList(userSessionId);
 <script>
 function actionHistoryList(userSessionId){  
 	  var sourceleadUrl ='${sourceleadUrl}';
-	  $("#actionHistoryLoading").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	  $.ajax({
            type : "GET",
-           url: sourceleadUrl+"/getRestActionHistoryList?userSessionId="+userSessionId,    
+           url: sourceleadUrl+"/getRestLocationActionHistoryList?userSessionId="+userSessionId,    
             success :function(json) {
             	     if(json.indexOf('Sign In') >= 0){
 			    		location.replace(sourceleadUrl);
 			    	 }
             	     else{
+            	    	 var outPut = ""; 
+            	    	 var orgLocation = "";
+            	    	 outPut = outPut + '<div class="project_wrap">';
+            	    	 outPut = outPut + '<div class="timesheet_head">';
+            	    	 outPut = outPut + '	<div class="ContrBut">';
+            	    	 
+            	    	 for (var i = 0; i < json.length; i++) { 
+	                    	 var opt = json[i]; 
+	                    	 var activeClass = "";
+	                    	 if(i==0){
+	                    		 activeClass = "class='active Activation'";
+	                    		 orgLocation = opt.orgLocations.id;
+	                    	 }
+	                    	 outPut = outPut +'<a href="#" id="shift'+opt.orgLocations.id+'" '+activeClass+' onclick="enableTabs('+opt.orgLocations.id+'); actionHistoryListByOrgLocation('+userSessionId+','+opt.orgLocations.id+');">'+opt.orgLocations.orgLocationName+'</a>';
+            	    	 }
+            	    	 
+            	    	outPut = outPut + '		</div>';
+	                    $("#actionHistoryOrgList").append(outPut);
+	                    actionHistoryListByOrgLocation(userSessionId, orgLocation);
+            	     }
+          		},
+            
+       });  
+  } 
+  
+</script>
+
+<script>
+function actionHistoryListByOrgLocation(userSessionId, orgLocation){  
+	  var sourceleadUrl ='${sourceleadUrl}';
+	  $("#actionHistoryLoading").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	  $.ajax({
+           type : "GET",
+           url: sourceleadUrl+"/getRestActionHistoryList?userSessionId="+userSessionId+"&orgLocation="+orgLocation,    
+            success :function(json) {
+            	     if(json.indexOf('Sign In') >= 0){
+			    		location.replace(sourceleadUrl);
+			    	 }
+            	     else{
+            	    	 
             	    	 $("#actionHistoryLoading").removeAttr("style");
 	                	 $("#actionHistoryList").empty();
 	                	 var result = "";
 	                	 result = result +"<table id='actionHistoryPagenation' class='display ' cellspacing='0' width='100%' >"; 
 	                     result = result +"<thead>"; 
 	                     result = result +"  <tr>"; 
-	                     result = result +"    <th class='textLeft'>Org Location</th>";
 	                     result = result +"    <th class='textLeft'>Action Time</th>";
 	                     result = result +"    <th class='textLeft'>Action Name</th>";
 	                     result = result +"    <th class='textLeft'>Action Performed</th>"; 
@@ -108,15 +147,9 @@ function actionHistoryList(userSessionId){
 	                     result = result +"</thead>";
 	                     result = result +"<tbody>"; 
 	                     
-	                     /* var json = JSON.parse(data); */
 	                    	for (var i = 0; i < json.length; i++) { 
 	                    	 var opt = json[i]; 
 	                    	 result = result +"<tr>";
-	                    	 	if(opt.orgLocations.orgLocationName != null && opt.orgLocations.orgLocationName !='' && opt.orgLocations.orgLocationName !='undefined'){
-	                    		 result = result +"<td><div class='textLeft' title='"+opt.orgLocations.orgLocationName+"'>"+opt.orgLocations.orgLocationName+"</div></td>"; 
-	                    	    }else{
-	                    	     result = result +"<td><div class='textLeft'>---</div></td>"; 
-	                    	    }
 	                    	 
 	                    	   	if(opt.actionTimeStr != null && opt.actionTimeStr !='' && opt.actionTimeStr !='undefined'){
 	                    		 result = result +"<td><div class='textLeft' title='"+opt.actionTimeStr+"'>"+opt.actionTimeStr+"</div></td>"; 
@@ -131,14 +164,16 @@ function actionHistoryList(userSessionId){
 	                    	    }
 	                    	    
 	                    	    if(opt.actionPerformed != null && opt.actionPerformed !='' && opt.actionPerformed !='undefined'){
-	                    		 result = result +"<td><div class='tbldata-dotdot-big textLeft' title='"+opt.actionPerformed+"'>"+opt.actionPerformed+"</div></td>";
+	                    		 result = result +"<td><div class='textLeft' title='"+opt.actionPerformed+"'>"+opt.actionPerformed+"</div></td>";
 	                    	    }else{
 	                    	     result = result +"<td><div class='textLeft'>---</div></td>";
 	                    	    }
 		                     result = result +"</tr>";
 	                     }
 	                     result = result +" </tbody>";
-	                     result = result +"</table>"; 
+	                     result = result +"</table>";
+	                     result = result + '</div>';
+	                     result = result + '</div>';
 	                     $("#actionHistoryLoading").removeAttr("style");
 	                     $("#actionHistoryList").append(result); 
 	                     actionHistoryPagenation(); 
@@ -149,6 +184,7 @@ function actionHistoryList(userSessionId){
        });  
   } 
 </script>   
+
 
  <script>
 function actionHistoryPagenation(){ 
@@ -209,7 +245,14 @@ var validationSettings = {
 			return o;
 		};
 	})(jQuery);
-</script>          
+</script> 
+
+<script>
+	function enableTabs(orgLocationsId){
+		document.getElementById('shift'+orgLocationsId+'').className = 'active';
+		};
+</script>
+         
 
 </body>
 </html>
