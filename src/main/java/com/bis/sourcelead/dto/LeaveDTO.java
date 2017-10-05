@@ -42,10 +42,15 @@ public class LeaveDTO extends SearchDTO implements Serializable{
 	private String empid;
 	private String empType;
 	private String empEmail;
+	private String fromDateDay;
+	private String toDateDay;
 	private String leavesTaken;
 	private String approverUsers;
 	private String thisMonthLeaves;
-	
+	private String reportYear;
+	private String reportMonth;
+	private String reportFromDate;
+	private String reportEndDate;
 	
 	public String getLeavesTaken() {
 		return leavesTaken;
@@ -246,6 +251,22 @@ public class LeaveDTO extends SearchDTO implements Serializable{
 	public void setEmpEmail(String empEmail) {
 		this.empEmail = empEmail;
 	}
+	public String getFromDateDay()
+	{
+		return fromDateDay;
+	}
+	public void setFromDateDay(String fromDateDay)
+	{
+		this.fromDateDay = fromDateDay;
+	}
+	public String getToDateDay()
+	{
+		return toDateDay;
+	}
+	public void setToDateDay(String toDateDay)
+	{
+		this.toDateDay = toDateDay;
+	}
 	public String getApproverUsers() {
 		return approverUsers;
 	}
@@ -258,7 +279,29 @@ public class LeaveDTO extends SearchDTO implements Serializable{
 	public void setThisMonthLeaves(String thisMonthLeaves) {
 		this.thisMonthLeaves = thisMonthLeaves;
 	}
-	
-	
-	
+	public String getReportYear() {
+		return reportYear;
+	}
+	public void setReportYear(String reportYear) {
+		this.reportYear = reportYear;
+	}
+	public String getReportMonth() {
+		return reportMonth;
+	}
+	public void setReportMonth(String reportMonth) {
+		this.reportMonth = reportMonth;
+	}
+	public String getReportFromDate() {
+		return reportFromDate;
+	}
+	public void setReportFromDate(String reportFromDate) {
+		this.reportFromDate = reportFromDate;
+	}
+	public String getReportEndDate() {
+		return reportEndDate;
+	}
+	public void setReportEndDate(String reportEndDate) {
+		this.reportEndDate = reportEndDate;
+	}
+
 }

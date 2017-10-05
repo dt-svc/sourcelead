@@ -130,20 +130,25 @@
             <div id="tab-2"  class="project_tabs_inn" style="display: none">
                 <div class="row clearfix">
                     <div class="clearfix mb5">
-                        <div class="col-md-8">
-                            <h4 class="leaves-heading"><span class="pull-left">Employee Leaves</span>
-                            <div class="pull-right dropdown-select">
-                                <select>
-                                    <option selected>Department</option>
-                                    <option>UI</option>
-                                    <option>Developers</option>
-                                    <option>HR Department</option>
-                                    <option>Accounts</option>
-                                </select>
-                            </div>
-                                </h4>
+                        <div class="col-md-6">
+                            <h4 class="leaves-heading"><span class="pull-left">Employee Leaves</span></h4>
+
                         </div>
-                        <div class="col-md-4">
+                        <div class="clearfix col-md-6 pull-right">
+                        
+							<ul class="col-md-5 empUlAli">
+	                            <li id="filterDepartmentPop"><i class="fa fa-filter"></i> <span>Department</span><i class="fa fa-caret-down"></i>
+	                            <div class="statusFiler-1">
+	                            <ul>
+		                            <c:forEach var="report" items="${departmentList}">
+		                            	<li><input type="checkbox" name="department" value="${report.id}" onclick="getEmployeeLeavesList();"><label>${report.departmentName}</label></li>
+		                            </c:forEach>
+	                            </ul>
+	                            </div>
+	                            </li>
+                            </ul> 
+                        	
+                        	<div class=" col-md-7 noPad"> 
                             <div class="form-inline leaves-heading">
                                 <div class="pull-right">
                                 <div class="form-group">
@@ -156,15 +161,18 @@
                                 </div>
                                 <div class="clearfix customizeEmployee" style="display: none;">
                                 <div class="clearfix">
-                                <div class="width150px mr2">
+                                <div class="col-md-5 noPad mR5">
                                 <input name="Date" placeholder="From" class="form-control calendar input-sm" type="text">
                                 </div>
-                                <div class="width150px mr2">
+                                <div class="col-md-5 noPad mR5">
                                 <input type="text" name="Date" placeholder="To" class="form-control calendar input-sm">
                                 </div>
                                 <button type="button" class="btn btn-primary btn-sm"><i class="fa fa-search"></i></button>
                                     </div>
                                 </div>
+                                
+                                </div>
+                                
                         </div>
                     </div>
                     <div class="clearfix ptagmrng-none">
@@ -181,33 +189,30 @@
                           <div class="dropdown-select">
                             <div class="form-inline pull-right">
                             <div class="form-group">
-                            <select class="form-control pull-right">
-                              <option selected>Year</option>
-                              <option>2010</option>
-                              <option>2011</option>
-                              <option>2012</option>
-                              <option>2013</option>
-                              <option>2014</option>
-                              <option>2015</option>
-                              <option>2016</option>
-                              <option>2017</option>
+                            <select class="form-control pull-right" name="reportYear" id="reportYear" onchange="getTopLeaveTakers();">
+                              <option value="">Year</option>
+                              <option value="2017">2017</option>
+                              <option value="2018">2018</option>
+                              <option value="2019">2019</option>
+                              <option value="2020">2020</option>
+                              <option value="2021">2021</option>
                             </select>
     </div>
     <div class="form-group">
-    <select class="form-control pull-right">
-                              <option selected>Month</option>
-                              <option>January</option>
-                              <option>February</option>
-                              <option>March</option>
-                              <option>April</option>
-                              <option>May</option>
-                              <option>June</option>
-                              <option>July</option>
-                              <option>August</option>
-                              <option>September</option>
-                              <option>October</option>
-                              <option>November</option>
-                              <option>December</option>
+    <select class="form-control pull-right" name="reportMonth" id="reportMonth" onchange="getTopLeaveTakers();">
+                              <option value="">Month</option>
+                              <option value="0">January</option>
+                              <option value="1">February</option>
+                              <option value="2">March</option>
+                              <option value="3">April</option>
+                              <option value="4">May</option>
+                              <option value="5">June</option>
+                              <option value="6">July</option>
+                              <option value="7">August</option>
+                              <option value="8">September</option>
+                              <option value="9">October</option>
+                              <option value="10">November</option>
+                              <option value="11">December</option>
                             </select>
     </div>
     <button type="submit" class="btn btn-primary btn-sm" id="customLeaves" onClick="showCustom()">Custom</button>
@@ -216,12 +221,12 @@
     <div class="clearfix pull-lefet col-md-6 paddingRight customLeaves" style="display: none;">
     <div class="pull-left">
     <div class="pull-left mr5" style="width: 140px">
-    <input value="" name="Date" id="datepicker4" placeholder="From" class="form-control calendar input-sm" type="text">
+    <input value="" name="reportFromDate" id="reportFromDate" placeholder="From" class="form-control calendar input-sm" type="text">
     </div>
     <div class="pull-left mr5" style="width: 140px">
-    <input value="" name="Date" id="datepicker2" placeholder="To" class="form-control calendar input-sm" type="text">
+    <input value="" name="reportEndDate" id="reportEndDate" placeholder="To" class="form-control calendar input-sm" type="text">
     </div>
-    <button type="button" class="btn btn-primary btn-sm"><i class="fa fa-search"></i></button>
+    <button type="button" class="btn btn-primary btn-sm" onclick="getTopLeaveTakers();"><i class="fa fa-search"></i></button>
     </div>
     </div>
 <!-- Top Leave Takers Custom Date -->    
@@ -229,141 +234,8 @@
                         </div>
                  </div>
                      
-                      <div class="clearfix project_wrap_table mt5">
+                      <div class="clearfix project_wrap_table mt5 datatable_filter">
                        <div id="topLeaveTakersDiv"></div>
-                       <!-- <table>
-                        <thead>
-                          <tr>
-                            <th>Employee Name</th>
-                            <th>Days</th>
-                            <th>Status</th>
-                          </tr>
-                          </thead>
-                        <tbody>
-                        <tr>
-                            <td>
-                              <div class="tbldata-dotdot-big" title="Santoshkumar AvaraDeloper">
-                                  <a href="javascript:void(0)">Santoshkumar AvaraDeloper</a>
-                              </div>
-                            </td>
-                            <td>
-                              <div class="tbldata-dotdot-100">2Weeks</div>
-                            </td>
-                              <td><div class="tblminwidth-75">Approved</div></td>
-                          </tr>
-                        <tr>
-                            <td>
-                              <div class="tbldata-dotdot-big" title="Santoshkumar AvaraDeloper">
-                                  <a href="javascript:void(0)">Santoshkumar AvaraDeloper</a>
-                              </div>
-                            </td>
-                            <td>
-                              <div class="tbldata-dotdot-100">2Weeks</div>
-                            </td>
-                              <td><div class="tblminwidth-75">Approved</div></td>
-                          </tr>
-                        <tr>
-                            <td>
-                              <div class="tbldata-dotdot-big" title="Santoshkumar AvaraDeloper">
-                                  <a href="javascript:void(0)">Santoshkumar AvaraDeloper</a>
-                              </div>
-                            </td>
-                            <td>
-                              <div class="tbldata-dotdot-100">2Weeks</div>
-                            </td>
-                              <td><div class="tblminwidth-75">Approved</div></td>
-                          </tr>
-                        <tr>
-                            <td>
-                              <div class="tbldata-dotdot-big" title="Santoshkumar AvaraDeloper">
-                                  <a href="javascript:void(0)">Santoshkumar AvaraDeloper</a>
-                              </div>
-                            </td>
-                            <td>
-                              <div class="tbldata-dotdot-100">2Weeks</div>
-                            </td>
-                              <td><div class="tblminwidth-75">Approved</div></td>
-                          </tr>
-                        <tr>
-                            <td>
-                              <div class="tbldata-dotdot-big" title="Santoshkumar AvaraDeloper">
-                                  <a href="javascript:void(0)">Santoshkumar AvaraDeloper</a>
-                              </div>
-                            </td>
-                            <td>
-                              <div class="tbldata-dotdot-100">2Weeks</div>
-                            </td>
-                              <td><div class="tblminwidth-75">Approved</div></td>
-                          </tr>
-                        <tr>
-                            <td>
-                              <div class="tbldata-dotdot-big" title="Santoshkumar AvaraDeloper">
-                                  <a href="javascript:void(0)">Santoshkumar AvaraDeloper</a>
-                              </div>
-                            </td>
-                            <td>
-                              <div class="tbldata-dotdot-100">2Weeks</div>
-                            </td>
-                              <td><div class="tblminwidth-75">Approved</div></td>
-                          </tr>
-                        <tr>
-                            <td>
-                              <div class="tbldata-dotdot-big" title="Santoshkumar AvaraDeloper">
-                                  <a href="javascript:void(0)">Santoshkumar AvaraDeloper</a>
-                              </div>
-                            </td>
-                            <td>
-                              <div class="tbldata-dotdot-100">2Weeks</div>
-                            </td>
-                              <td><div class="tblminwidth-75">Approved</div></td>
-                          </tr>
-                        <tr>
-                            <td>
-                              <div class="tbldata-dotdot-big" title="Santoshkumar AvaraDeloper">
-                                  <a href="javascript:void(0)">Santoshkumar AvaraDeloper</a>
-                              </div>
-                            </td>
-                            <td>
-                              <div class="tbldata-dotdot-100">2Weeks</div>
-                            </td>
-                              <td><div class="tblminwidth-75">Approved</div></td>
-                          </tr>
-                        <tr>
-                            <td>
-                              <div class="tbldata-dotdot-big" title="Santoshkumar AvaraDeloper">
-                                  <a href="javascript:void(0)">Santoshkumar AvaraDeloper</a>
-                              </div>
-                            </td>
-                            <td>
-                              <div class="tbldata-dotdot-100">2Weeks</div>
-                            </td>
-                              <td><div class="tblminwidth-75">Approved</div></td>
-                          </tr>
-                        <tr>
-                            <td>
-                              <div class="tbldata-dotdot-big" title="Santoshkumar AvaraDeloper">
-                                  <a href="javascript:void(0)">Santoshkumar AvaraDeloper</a>
-                              </div>
-                            </td>
-                            <td>
-                              <div class="tbldata-dotdot-100">2Weeks</div>
-                            </td>
-                              <td><div class="tblminwidth-75">Approved</div></td>
-                          </tr>
-                        </tbody>
-                      </table>
-                      Pagenation
-                      <nav class="clearfix">
-                        <ul id="paging22" class="pagination pull-right">
-                          <li><a href="#">Previous</a></li>
-                          <li class="active"><a href="#">1</a></li>
-                          <li><a href="#">2</a></li>
-                          <li><a href="#">3</a></li>
-                          <li><a href="#">4</a></li>
-                          <li><a href="#">5</a></li>
-                          <li data-page="last"><a href="#">Next</a></li>
-                        </ul>
-                      </nav> -->
                     </div>
                   </div>
 
@@ -374,7 +246,7 @@
                           <div class="dropdown-select">
                             <div class="form-inline pull-right">
                             <div class="form-group">
-                            <select class="form-control pull-right">
+                            <select class="form-control pull-right" name="year" id="year">
                               <option selected>Year</option>
                               <option>2010</option>
                               <option>2011</option>
@@ -387,7 +259,7 @@
                             </select>
                             </div>
                             <div class="form-group">
-                            <select class="form-control pull-right">
+                            <select class="form-control pull-right" name="month" id="month">
                               <option selected>Month</option>
                               <option>January</option>
                               <option>February</option>
@@ -409,10 +281,10 @@
     <div class="clearfix pull-lefet col-md-6 paddingRight showLeaveReport" style="display: none;">
     <div class="pull-left">
     <div class="pull-left mr5" style="width: 140px">
-    <input value="" name="Date" id="datepicker4" placeholder="From" class="form-control calendar input-sm" type="text">
+    <input value=""  placeholder="From" class="form-control calendar input-sm" type="text" id="gfromDate" name="gfromDate">
     </div>
     <div class="pull-left mr5" style="width: 140px">
-    <input value="" name="Date" id="datepicker2" placeholder="To" class="form-control calendar input-sm" type="text">
+    <input value=""  placeholder="To" class="form-control calendar input-sm" type="text" id="gtoDate" name="gtoDate">
     </div>
     <button type="button" class="btn btn-primary btn-sm"><i class="fa fa-search"></i></button>
     </div>
@@ -425,93 +297,7 @@
                   
                     </div>
                     </div>
-                <!-- Recent Request -->
-                
-                <div class="clearfix">
-                    <hr>
-                    <h4 class="leaves-heading">Recent Requestes</h4>
-                    <div class="clearfix project_wrap_table">
-                      <table>
-        <thead>
-          <tr>
-            <th>Employee Name</th>
-            <th>Leave Type</th>
-            <th>Duration</th>
-            <th>No of Days</th>
-            <th>Leaves Taken</th>
-            <th>This Month</th>
-            <th>Balance Leaves</th>
-            <th>Action </th>
-          </tr>
-        </thead>
-        <tbody>
-        <tr>
-            <td>
-              <div class="proj_show tbldata-dotdot-me">
-                  <div class="pull-left tbldata-dotdot" title="BIS10041">Anandkumar Joshimanohar</div>
-                  <i class="fa fa-binoculars pull-right"></i>
-              </div>
-            </td>
-            <td>
-                <div title="2days" class="tblminwidth-90">
-                    Sick Leave
-                </div>
-            </td>
-            
-            <td>
-                <div title="Duration" class="tblminwidth-75">
-                   <div class="width100percnt">
-                        09/10/2017
-                    </div>
-                    <div class="width100percnt mt2">
-                        09/12/2017
-                    </div>
-                </div>
-            </td>
-            <td>
-              <div title="2 days" class="tblminwidth-75">
-                    2 days
-                </div>
-            </td>
-            <td>
-              <div title="No" class="tblminwidth-100">
-                    20
-                </div>
-            </td>
-            <td>
-              <div title="No" class="tbldata-dotdot-100">
-                10
-                </div>
-            </td>
-            <td>
-              <div title="No" class="tbldata-dotdot-100">
-                    10
-                </div>
-            </td>
-            <td>
-                <div class="tblminwidth-75">
-                    <div title="Accept" class="fa fa-check text-success cursorPointer tblminwidth-30"></div>
-                    <div title="Reject" class="fa fa-times text-danger cursorPointer tblminwidth-30"></div>
-                </div>
-            </td>
-          </tr>
-          </tbody>
-      </table>
-                      <!-- Pagenation -->
-                      <nav class="clearfix">
-                        <ul id="paging" class="pagination pull-right">
-                          <li><a href="#">Previous</a></li>
-                          <li class="active"><a href="#">1</a></li>
-                          <li><a href="#">2</a></li>
-                          <li><a href="#">3</a></li>
-                          <li><a href="#">4</a></li>
-                          <li><a href="#">5</a></li>
-                          <li data-page="last"><a href="#">Next</a></li>
-                        </ul>
-                      </nav>
-                    </div>
-                  </div>
-                <!-- Recent Request -->
+              
               </div>
               
           </div>
@@ -627,34 +413,125 @@ function viewHolidaysTable(){
 </script>
 
 <script>
+$("#filterDepartmentPop").click(function(){
+	$(".statusFiler-1").toggle();
+	//$(".statusFiler-2, .statusFiler-3").hide();
+});
+
+$("html").click(function() {
+    $(".statusFiler-1").hide();
+});	
+$("#filterDepartmentPop, .statusFiler-1").click(function(e) {
+    e.stopPropagation();
+});	
+</script>
+
+<script>
 function getEmployeeLeavesList(){
 	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	var userId = '${SourceLeadWeb_userId}';
-	$.get(sourceleadUrl+"/getEmployeeLeavesList?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&userId="+userId+"", function(data) {
+	
+	var department = [];
+	$('input:checkbox[name=department]:checked').each(function() 
+    {
+		department.push($(this).val());
+    });
+	$.get(sourceleadUrl+"/getEmployeeLeavesList?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&userId="+userId+"&department="+department, function(data) {
 		var result = "";	
-		
 		for (var i=0; i<data.length; i++){
 			var opt = data[i];
 			result += '<div class="col-md-3">';
 	        result += '<div class="media media-custom mb">';
 	        result += '    <div class="media-left">';
 	        result += '        <div class="empimg-parent">';
-	        result += '          <img src="images/24.jpg" class="">';
+	        if(opt.empProfileImageURL != null && opt.empProfileImageURL != '' && opt.empProfileImageURL != 'undefined'){
+	        	result += '          <img onerror="predefineProfileImage(this);" src="'+opt.empProfileImageURL+'"  class="">';
+	        }else{
+	        	result += '          <img onerror="predefineProfileImage(this);" src=""  class="">';
+	        }
 	        result += '        </div>';
 	        result += '    </div>';
 	        result += '    <div class="media-body text-left">';
 	        if(opt.empName != null && opt.empName != '' && opt.empName != 'undefined'){
 	        	result += '      <h5 class="media-heading tbldata-dotdot">'+opt.empName+'</h5>';
 	        }
-	        result += '      <p class="small text-muted">Java Developer</p>';
+	        
+	        if(opt.empType != null && opt.empType != '' && opt.empType != 'undefined'){
+	        	result += '      <p class="small text-muted">'+opt.empType+'</p>';
+	        }else{
+	        	result += '      <p class="small text-muted">NA</p>';
+	        }
 	        result += '        <ul class="list-unstyled list-inline mrng0 mt5 empLeave-li">';
-	        result += '            <li title="Date">S</li>';
-	        result += '            <li title="Date">M</li>';
-	        result += '            <li title="Date">T</li>';
-	        result += '            <li title="Date" class="halfday">W</li>';
-	        result += '            <li title="Date" class="fullday">T</li>';
-	        result += '            <li title="Date">F</li>';
-	        result += '            <li title="Date">S</li>';
+	        if(opt.isSunday == "Y" && opt.isSunday != null && opt.isSunday != '' && opt.isSunday != 'undefined'){
+	        	if(opt.isSundayHalfDay == "Y" && opt.isSundayHalfDay != null && opt.isSundayHalfDay != '' && opt.isSundayHalfDay != 'undefined'){
+	        		result += '            <li title="Date" class="halfday">S</li>';
+	        	}else{
+	        		result += '            <li title="Date" class="fullday">S</li>';
+	        	}
+	        }else{
+	        	result += '            <li title="Date">S</li>';
+	        }
+	        
+	        if(opt.isMonday == "Y" && opt.isMonday != null && opt.isMonday != '' && opt.isMonday != 'undefined'){
+	        	if(opt.isMondayHalfDay == "Y" && opt.isMondayHalfDay != null && opt.isMondayHalfDay != '' && opt.isMondayHalfDay != 'undefined'){
+	        		result += '            <li title="Date" class="halfday">M</li>';
+	        	}else{
+	        		result += '            <li title="Date" class="fullday">M</li>';
+	        	}
+	        }else{
+	        	result += '            <li title="Date">M</li>';
+	        }
+	        
+	        if(opt.isTuesday == "Y" && opt.isTuesday != null && opt.isTuesday != '' && opt.isTuesday != 'undefined'){
+	        	if(opt.isTuesdayHalfDay == "Y" && opt.isTuesdayHalfDay != null && opt.isTuesdayHalfDay != '' && opt.isTuesdayHalfDay != 'undefined'){
+	        		result += '            <li title="Date" class="halfday">T</li>';
+	        	}else{
+	        		result += '            <li title="Date" class="fullday">T</li>';
+	        	}
+	        }else{
+	        	result += '            <li title="Date">T</li>';
+	        }
+	        
+	        if(opt.isWednesday == "Y" && opt.isWednesday != null && opt.isWednesday != '' && opt.isWednesday != 'undefined'){
+	        	if(opt.isWednesdayHalfDay == "Y" && opt.isWednesdayHalfDay != null && opt.isWednesdayHalfDay != '' && opt.isWednesdayHalfDay != 'undefined'){
+	        		result += '            <li title="Date" class="halfday">W</li>';
+	        	}else{
+	        		result += '            <li title="Date" class="fullday">W</li>';
+	        	}
+	        }else{
+	        	result += '            <li title="Date">W</li>';
+	        }
+	        
+	        if(opt.isThursday == "Y" && opt.isThursday != null && opt.isThursday != '' && opt.isThursday != 'undefined'){
+	        	if(opt.isThursdayHalfDay == "Y" && opt.isThursdayHalfDay != null && opt.isThursdayHalfDay != '' && opt.isThursdayHalfDay != 'undefined'){
+	        		result += '            <li title="Date" class="halfday">T</li>';
+	        	}else{
+	        		result += '            <li title="Date" class="fullday">T</li>';
+	        	}
+	        }else{
+	        	result += '            <li title="Date">T</li>';
+	        }
+	        
+	        if(opt.isFriday == "Y" && opt.isFriday != null && opt.isFriday != '' && opt.isFriday != 'undefined'){
+	        	if(opt.isFridayHalfDay == "Y" && opt.isFridayHalfDay != null && opt.isFridayHalfDay != '' && opt.isFridayHalfDay != 'undefined'){
+	        		result += '            <li title="Date" class="halfday">F</li>';
+	        	}else{
+	        		result += '            <li title="Date" class="fullday">F</li>';
+	        	}
+	        }else{
+	        	result += '            <li title="Date">F</li>';
+	        }
+	        
+	        if(opt.isSaturday == "Y" && opt.isSaturday != null && opt.isSaturday != '' && opt.isSaturday != 'undefined'){
+	        	if(opt.isSaturdayHalfDay == "Y" && opt.isSaturdayHalfDay != null && opt.isSaturdayHalfDay != '' && opt.isSaturdayHalfDay != 'undefined'){
+	        		result += '            <li title="Date" class="halfday">S</li>';
+	        	}else{
+	        		result += '            <li title="Date" class="fullday">S</li>';
+	        	}
+	        }else{
+	        	result += '            <li title="Date">S</li>';
+	        }
+	        
 	        result += '        </ul>';
 	        result += '    </div>';
 	        result += '</div>';
@@ -919,12 +796,27 @@ function getEmployeeLeavesList(){
     
  <script>
 	function getTopLeaveTakers() {
-		alert("Hai******")
 		var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 		var userId = '${SourceLeadWeb_userId}';
+		var reportYear = "";
+		var reportMonth = "";
+		var reportFromDate = "";
+		if($("#reportYear").val() !=null && $("#reportYear").val() != 'undefined' && $("#reportYear").val() != ''){
+			reportYear = $("#reportYear").val();
+		}
+		if($("#reportMonth").val() !=null && $("#reportMonth").val() != 'undefined' && $("#reportMonth").val() != ''){
+			reportMonth = $("#reportMonth").val();	
+		}
+		if($("#reportFromDate").val() !=null && $("#reportFromDate").val() != 'undefined' && $("#reportFromDate").val() != ''){
+			var reportFromDate = $("#reportFromDate").val();	
+		}
+		if($("#reportEndDate").val() !=null && $("#reportEndDate").val() != 'undefined' && $("#reportEndDate").val() != ''){
+			var reportEndDate = $("#reportEndDate").val();	
+		}
+
 		var searchValue = $("#dataTableSearch").val();
   		searchValue = searchValue ? searchValue : "";
-  		var url = sourceleadUrl+"/getTopLeavetakers?orgLocationId="+orgLocationId+"&searchValue="+searchValue+"&userId="+userId;
+  		var url = sourceleadUrl+"/getTopLeavetakers?orgLocationId="+orgLocationId+"&searchValue="+searchValue+"&userId="+userId+"&reportYear="+reportYear+"&reportMonth="+reportMonth+"&reportFromDate="+reportFromDate+"&reportEndDate="+reportEndDate;
   		prepareTopLeaveTakersList(url); 
 	}
 	
@@ -932,14 +824,13 @@ function getEmployeeLeavesList(){
 
 <script>	
 	function prepareTopLeaveTakersList(url) {
-		alert("url = "+url);
 		$("#topLeaveTakersDiv").empty();
 		var result = "";
 		result = result + "<table id='topLeaveTakersTable' class='display' cellspacing='0' width='100%' >";
 		result = result + "<thead>";
 		result = result + "  <tr>";
 		result = result + "    <th>Employee Name</th>";
-		result = result + "    <th>Website</th>";
+		result = result + "    <th>Number Of Days</th>";
 		result = result + "    <th>Status</th>";
 		result = result + "  </tr>";
 		result = result + "</thead>";
@@ -955,7 +846,6 @@ function getEmployeeLeavesList(){
 
 <script>
 function topLeaveTakersPagination(url){
-	alert("url=============== "+url);	
 	var colIndex = 0;
 		 $('#topLeaveTakersTable').DataTable( { 
 	    	"processing": true,
@@ -975,24 +865,31 @@ function topLeaveTakersPagination(url){
 		    	  	"targets": colIndex++,
 		    	  	"data": "empName",
 		    	  	"render": function(data, type, report, meta) {
-		    	  		/* var result = "";
-		    	  		return  result; */
+		    	  		var result = "";
+		    	  		result = result + '<td>';
+		    	  		result = result + '<div class="tbldata-dotdot-big" title="">';
+		    	  		result = result + '<a href="javascript:void(0)">'+report.empName+'</a>';
+		    	  		result = result + '</div>';
+		    	  		result = result + '</td>';
+		    	  		return  result; 
 		    	  	}
 		      },{
 	            "targets": colIndex++,
 	            "data": "noOfDays",
 	            "render": function ( data, type, report, meta ) {
-	            	   /*  var result = "";
-	            		
-		              return result; */
+	            	    var result = "";
+	            	    result = result + '<td>';
+	            	    result = result + '<div class="tbldata-dotdot-100">'+report.noOfDays+'</div>';
+	            	    result = result + '</td>';
+		              return result;
 	            }
 	          }, {
 	              "targets": colIndex++,
 	              "data": "status",
 	              "render": function ( data, type, report, meta ) {
-	            	  /* var result = "";
-	              		
-	  	              return result; */
+	            	   var result = "";
+	            	   result = result + '<td><div class="tblminwidth-75">'+report.status+'</div></td>';
+	  	              return result; 
 	              }
 	            }],
 		    	"scrollCollapse": false,
@@ -1009,12 +906,54 @@ function topLeaveTakersPagination(url){
 	    } );
 	    $("#topLeaveTakersTable").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>"); 
 	    $("input[type=search]").hide();
-	    $("#dataTableSearch").keyup(function(e) {
+	   /*  $("#dataTableSearch").keyup(function(e) {
 	    	   if(e.which === 13) {
 	    		   getClientList();
 	    	   }
-	    	});
+	    	}); */
 }
+</script>
+
+
+<script>
+	$(function() {
+		 var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+		  var finalDateFormatEndDate = '';
+		  if(locationDate.match("yyyy-MM-dd")){
+			  finalDateFormatEndDate = 'yy-mm-dd';
+		  }if(locationDate.match("dd-MM-yyyy")){
+			  finalDateFormatEndDate = 'dd-mm-yy'; 
+		  }if(locationDate.match("MM-dd-yyyy")){
+			  finalDateFormatEndDate = 'mm-dd-yy'; 
+		  }if(locationDate.match("yyyy-dd-MM")){
+			  finalDateFormatEndDate = 'yy-dd-mm'; 
+		  }
+		$('#reportFromDate').datepicker({
+			dateFormat : finalDateFormatEndDate,
+			changeMonth: true,
+			changeYear: true, 
+			onSelect : function(selected) {
+			var dt = $(this).datepicker('getDate', '+1d');
+			dt.setDate(dt.getDate());
+			$("#toDate").datepicker("option", "minDate", dt);
+			removeStartValid();
+			}
+		});
+		
+	  $('#reportEndDate').datepicker({
+			dateFormat : finalDateFormatEndDate,
+			changeMonth: true,
+			changeYear: true, 
+			onSelect : function(selected) {
+			var dt = $(this).datepicker('getDate', '-1d');
+			dt.setDate(dt.getDate());
+			$("#fromdate").datepicker("option", "maxDate", dt);
+			removeEndValid();
+			validateDate();
+			}
+		});
+		
+	});
 </script>
 
 
