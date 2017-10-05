@@ -455,7 +455,7 @@ public class CommonUtil {
 										Calendar terminateDateCal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
 										terminateDateCal.setLenient(false);
 										terminateDateCal.setTime(pmh.getProjectTerminationDate());
-										Calendar terminatedDateMonday = CalendarUtil.getPreviousWeekDayByCalendar(terminateDateCal, "MON");
+										Calendar terminatedDateMonday = CalendarUtil.getPreviousWeekDayByCalendar(terminateDateCal, "MON",projectMember.getProjects().getOrgLocationsId().getDateFormat());
 										terminatedDate = terminatedDateMonday.getTime();
 									 
 									  pmh.setStatus(Constants.PROJECT_MEMBER_HISTORY_CLOSED);

@@ -1,5 +1,6 @@
 package com.bis.sourcelead.dao;
 
+import java.util.Date;
 import java.util.List;
 
 import com.bis.sourcelead.dto.LeaveDTO;
@@ -17,6 +18,8 @@ public interface LeaveDao {
 	List<Leave> getLeavesListByLocationIdAndStatus(Long orgLocationId, String status, Long userId);
 
 	Leave getLeaveById(String leaveId) throws Exception;
+
+	List<LeaveApproveHierarchy> getEmployeeRequestedLeavesBylocationIdAndDuration(Long locationId, String userId, String status, Date currentWeekStarDate, Date currentWeekEndDate, String department);
 
 	List<Leave> getLeavesListByTypeIdAndLocationIdAndUserId(String leaveTypeId, Long orgLocationId, Long userId);
 	

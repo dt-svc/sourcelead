@@ -42,6 +42,8 @@ public class LeaveDTO extends SearchDTO implements Serializable{
 	private String empid;
 	private String empType;
 	private String empEmail;
+	private String fromDateDay;
+	private String toDateDay;
 	private String leavesTaken;
 	private String approverUsers;
 	private String thisMonthLeaves;
@@ -249,6 +251,22 @@ public class LeaveDTO extends SearchDTO implements Serializable{
 	public void setEmpEmail(String empEmail) {
 		this.empEmail = empEmail;
 	}
+	public String getFromDateDay()
+	{
+		return fromDateDay;
+	}
+	public void setFromDateDay(String fromDateDay)
+	{
+		this.fromDateDay = fromDateDay;
+	}
+	public String getToDateDay()
+	{
+		return toDateDay;
+	}
+	public void setToDateDay(String toDateDay)
+	{
+		this.toDateDay = toDateDay;
+	}
 	public String getApproverUsers() {
 		return approverUsers;
 	}
@@ -285,7 +303,5 @@ public class LeaveDTO extends SearchDTO implements Serializable{
 	public void setReportEndDate(String reportEndDate) {
 		this.reportEndDate = reportEndDate;
 	}
-	
-	
-	
+
 }

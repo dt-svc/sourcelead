@@ -4,6 +4,7 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collector;
@@ -216,10 +217,14 @@ public class LeaveManagementRestController {
 	 * @param request
 	 * @param response
 	 * @return ModelAndView
+	 * @throws Exception 
 	 */
 	@RequestMapping(value = "/leaveManagementReports")
-	public ModelAndView leaveManagementReportsJsp(HttpServletRequest request,HttpServletResponse response) {
+	public ModelAndView leaveManagementReportsJsp(HttpServletRequest request,HttpServletResponse response) throws Exception {
 		   ModelAndView model = new ModelAndView();
+		   OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		   List<Department> departmentList = departmentService.getDepartmentByOrgLocationIdAndStatus(orgLocations.getId(),Constants.RECORD_ACTIVE.toString());
+		   model.addObject("departmentList",departmentList);
 		   model.addObject("sourceleadUrl", sourceleadUrl);
 		   model.setViewName("leavemanagement/leaveManagementReports");
 	       return model;
@@ -1076,10 +1081,10 @@ public class LeaveManagementRestController {
 	
 	@RequestMapping(value = {"/getEmployeeLeavesList"})
 	@ResponseBody
-	public List<LeaveDTO> getEmployeeLeavesList(@RequestParam(value = "orgLocationId", required = true) Long orgLocationId,@RequestParam(value = "userId", required = true) String userId) throws Exception
+	public List<LeaveReportsDTO> getEmployeeLeavesList(@RequestParam(value = "orgLocationId", required = true) Long orgLocationId,@RequestParam(value = "userId", required = true) String userId,@RequestParam(value = "department", required = true) String department) throws Exception
 	{
 		OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
-		List<LeaveDTO> leavesList = leaveService.getEmployeeRequestedLeavesBylocationId(orgLocations, userId, Constants.APPROVED);
+		List<LeaveReportsDTO> leavesList = leaveService.getEmployeeLeavesByApproverIdAndStatus(orgLocations, userId, Constants.APPROVED,department);
 		return leavesList;
 		
 	}

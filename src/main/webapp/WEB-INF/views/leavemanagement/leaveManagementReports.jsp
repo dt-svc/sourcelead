@@ -130,20 +130,25 @@
             <div id="tab-2"  class="project_tabs_inn" style="display: none">
                 <div class="row clearfix">
                     <div class="clearfix mb5">
-                        <div class="col-md-8">
-                            <h4 class="leaves-heading"><span class="pull-left">Employee Leaves</span>
-                            <div class="pull-right dropdown-select">
-                                <select>
-                                    <option selected>Department</option>
-                                    <option>UI</option>
-                                    <option>Developers</option>
-                                    <option>HR Department</option>
-                                    <option>Accounts</option>
-                                </select>
-                            </div>
-                                </h4>
+                        <div class="col-md-6">
+                            <h4 class="leaves-heading"><span class="pull-left">Employee Leaves</span></h4>
+
                         </div>
-                        <div class="col-md-4">
+                        <div class="clearfix col-md-6 pull-right">
+                        
+							<ul class="col-md-5 empUlAli">
+	                            <li id="filterDepartmentPop"><i class="fa fa-filter"></i> <span>Department</span><i class="fa fa-caret-down"></i>
+	                            <div class="statusFiler-1">
+	                            <ul>
+		                            <c:forEach var="report" items="${departmentList}">
+		                            	<li><input type="checkbox" name="department" value="${report.id}" onclick="getEmployeeLeavesList();"><label>${report.departmentName}</label></li>
+		                            </c:forEach>
+	                            </ul>
+	                            </div>
+	                            </li>
+                            </ul> 
+                        	
+                        	<div class=" col-md-7 noPad"> 
                             <div class="form-inline leaves-heading">
                                 <div class="pull-right">
                                 <div class="form-group">
@@ -156,15 +161,18 @@
                                 </div>
                                 <div class="clearfix customizeEmployee" style="display: none;">
                                 <div class="clearfix">
-                                <div class="width150px mr2">
+                                <div class="col-md-5 noPad mR5">
                                 <input name="Date" placeholder="From" class="form-control calendar input-sm" type="text">
                                 </div>
-                                <div class="width150px mr2">
+                                <div class="col-md-5 noPad mR5">
                                 <input type="text" name="Date" placeholder="To" class="form-control calendar input-sm">
                                 </div>
                                 <button type="button" class="btn btn-primary btn-sm"><i class="fa fa-search"></i></button>
                                     </div>
                                 </div>
+                                
+                                </div>
+                                
                         </div>
                     </div>
                     <div class="clearfix ptagmrng-none">
@@ -405,34 +413,125 @@ function viewHolidaysTable(){
 </script>
 
 <script>
+$("#filterDepartmentPop").click(function(){
+	$(".statusFiler-1").toggle();
+	//$(".statusFiler-2, .statusFiler-3").hide();
+});
+
+$("html").click(function() {
+    $(".statusFiler-1").hide();
+});	
+$("#filterDepartmentPop, .statusFiler-1").click(function(e) {
+    e.stopPropagation();
+});	
+</script>
+
+<script>
 function getEmployeeLeavesList(){
 	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	var userId = '${SourceLeadWeb_userId}';
-	$.get(sourceleadUrl+"/getEmployeeLeavesList?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&userId="+userId+"", function(data) {
+	
+	var department = [];
+	$('input:checkbox[name=department]:checked').each(function() 
+    {
+		department.push($(this).val());
+    });
+	$.get(sourceleadUrl+"/getEmployeeLeavesList?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&userId="+userId+"&department="+department, function(data) {
 		var result = "";	
-		
 		for (var i=0; i<data.length; i++){
 			var opt = data[i];
 			result += '<div class="col-md-3">';
 	        result += '<div class="media media-custom mb">';
 	        result += '    <div class="media-left">';
 	        result += '        <div class="empimg-parent">';
-	        result += '          <img src="images/24.jpg" class="">';
+	        if(opt.empProfileImageURL != null && opt.empProfileImageURL != '' && opt.empProfileImageURL != 'undefined'){
+	        	result += '          <img onerror="predefineProfileImage(this);" src="'+opt.empProfileImageURL+'"  class="">';
+	        }else{
+	        	result += '          <img onerror="predefineProfileImage(this);" src=""  class="">';
+	        }
 	        result += '        </div>';
 	        result += '    </div>';
 	        result += '    <div class="media-body text-left">';
 	        if(opt.empName != null && opt.empName != '' && opt.empName != 'undefined'){
 	        	result += '      <h5 class="media-heading tbldata-dotdot">'+opt.empName+'</h5>';
 	        }
-	        result += '      <p class="small text-muted">Java Developer</p>';
+	        
+	        if(opt.empType != null && opt.empType != '' && opt.empType != 'undefined'){
+	        	result += '      <p class="small text-muted">'+opt.empType+'</p>';
+	        }else{
+	        	result += '      <p class="small text-muted">NA</p>';
+	        }
 	        result += '        <ul class="list-unstyled list-inline mrng0 mt5 empLeave-li">';
-	        result += '            <li title="Date">S</li>';
-	        result += '            <li title="Date">M</li>';
-	        result += '            <li title="Date">T</li>';
-	        result += '            <li title="Date" class="halfday">W</li>';
-	        result += '            <li title="Date" class="fullday">T</li>';
-	        result += '            <li title="Date">F</li>';
-	        result += '            <li title="Date">S</li>';
+	        if(opt.isSunday == "Y" && opt.isSunday != null && opt.isSunday != '' && opt.isSunday != 'undefined'){
+	        	if(opt.isSundayHalfDay == "Y" && opt.isSundayHalfDay != null && opt.isSundayHalfDay != '' && opt.isSundayHalfDay != 'undefined'){
+	        		result += '            <li title="Date" class="halfday">S</li>';
+	        	}else{
+	        		result += '            <li title="Date" class="fullday">S</li>';
+	        	}
+	        }else{
+	        	result += '            <li title="Date">S</li>';
+	        }
+	        
+	        if(opt.isMonday == "Y" && opt.isMonday != null && opt.isMonday != '' && opt.isMonday != 'undefined'){
+	        	if(opt.isMondayHalfDay == "Y" && opt.isMondayHalfDay != null && opt.isMondayHalfDay != '' && opt.isMondayHalfDay != 'undefined'){
+	        		result += '            <li title="Date" class="halfday">M</li>';
+	        	}else{
+	        		result += '            <li title="Date" class="fullday">M</li>';
+	        	}
+	        }else{
+	        	result += '            <li title="Date">M</li>';
+	        }
+	        
+	        if(opt.isTuesday == "Y" && opt.isTuesday != null && opt.isTuesday != '' && opt.isTuesday != 'undefined'){
+	        	if(opt.isTuesdayHalfDay == "Y" && opt.isTuesdayHalfDay != null && opt.isTuesdayHalfDay != '' && opt.isTuesdayHalfDay != 'undefined'){
+	        		result += '            <li title="Date" class="halfday">T</li>';
+	        	}else{
+	        		result += '            <li title="Date" class="fullday">T</li>';
+	        	}
+	        }else{
+	        	result += '            <li title="Date">T</li>';
+	        }
+	        
+	        if(opt.isWednesday == "Y" && opt.isWednesday != null && opt.isWednesday != '' && opt.isWednesday != 'undefined'){
+	        	if(opt.isWednesdayHalfDay == "Y" && opt.isWednesdayHalfDay != null && opt.isWednesdayHalfDay != '' && opt.isWednesdayHalfDay != 'undefined'){
+	        		result += '            <li title="Date" class="halfday">W</li>';
+	        	}else{
+	        		result += '            <li title="Date" class="fullday">W</li>';
+	        	}
+	        }else{
+	        	result += '            <li title="Date">W</li>';
+	        }
+	        
+	        if(opt.isThursday == "Y" && opt.isThursday != null && opt.isThursday != '' && opt.isThursday != 'undefined'){
+	        	if(opt.isThursdayHalfDay == "Y" && opt.isThursdayHalfDay != null && opt.isThursdayHalfDay != '' && opt.isThursdayHalfDay != 'undefined'){
+	        		result += '            <li title="Date" class="halfday">T</li>';
+	        	}else{
+	        		result += '            <li title="Date" class="fullday">T</li>';
+	        	}
+	        }else{
+	        	result += '            <li title="Date">T</li>';
+	        }
+	        
+	        if(opt.isFriday == "Y" && opt.isFriday != null && opt.isFriday != '' && opt.isFriday != 'undefined'){
+	        	if(opt.isFridayHalfDay == "Y" && opt.isFridayHalfDay != null && opt.isFridayHalfDay != '' && opt.isFridayHalfDay != 'undefined'){
+	        		result += '            <li title="Date" class="halfday">F</li>';
+	        	}else{
+	        		result += '            <li title="Date" class="fullday">F</li>';
+	        	}
+	        }else{
+	        	result += '            <li title="Date">F</li>';
+	        }
+	        
+	        if(opt.isSaturday == "Y" && opt.isSaturday != null && opt.isSaturday != '' && opt.isSaturday != 'undefined'){
+	        	if(opt.isSaturdayHalfDay == "Y" && opt.isSaturdayHalfDay != null && opt.isSaturdayHalfDay != '' && opt.isSaturdayHalfDay != 'undefined'){
+	        		result += '            <li title="Date" class="halfday">S</li>';
+	        	}else{
+	        		result += '            <li title="Date" class="fullday">S</li>';
+	        	}
+	        }else{
+	        	result += '            <li title="Date">S</li>';
+	        }
+	        
 	        result += '        </ul>';
 	        result += '    </div>';
 	        result += '</div>';

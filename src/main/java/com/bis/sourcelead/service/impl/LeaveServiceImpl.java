@@ -1,15 +1,20 @@
 package com.bis.sourcelead.service.impl;
 
 import java.text.ParseException;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.TimeUnit;
+import java.util.stream.Stream;
 
 import org.apache.commons.lang.StringUtils;
-import org.omg.CORBA.OMGVMCID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +24,7 @@ import com.bis.sourcelead.dao.LeaveManagementHistoryDao;
 import com.bis.sourcelead.dao.LeaveTypeDao;
 import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.dto.LeaveDTO;
+import com.bis.sourcelead.dto.LeaveReportsDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Leave;
 import com.bis.sourcelead.entity.LeaveApproveHierarchy;
@@ -27,17 +33,17 @@ import com.bis.sourcelead.entity.LeaveType;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
-import com.bis.sourcelead.service.LeaveService;
-import com.bis.sourcelead.service.LeaveTypeService;
-import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.LeaveManagementHistoryService;
 import com.bis.sourcelead.service.LeaveService;
 import com.bis.sourcelead.service.LeaveTypeService;
 import com.bis.sourcelead.service.OrgLocationService;
+import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
+import com.bis.sourcelead.util.CalendarUtil;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.ConversionUtil;
 import com.bis.sourcelead.util.FileUploadUtil;
+import com.itextpdf.text.log.SysoCounter;
 
 @Service
 public class LeaveServiceImpl implements LeaveService{
@@ -311,34 +317,157 @@ public class LeaveServiceImpl implements LeaveService{
 		return leaveList;
 	}
 
+
 	@Override
 	public List<Leave> getLeavesListByTypeIdAndLocationIdAndUserId(String leaveTypeId,Long orgLocationId, Long userId) {
 		return leaveDao.getLeavesListByTypeIdAndLocationIdAndUserId(leaveTypeId,orgLocationId,userId);
 	}
 	
 	@Override
-	public List<LeaveDTO> getEmployeeLeavesByApproverIdAndStatus(OrgLocations orgLocations, String userId, String status) throws Exception
+	public List<LeaveReportsDTO> getEmployeeLeavesByApproverIdAndStatus(OrgLocations orgLocations, String userId, String status, String department) throws Exception
 	{
-		List<LeaveApproveHierarchy> leaveApproveHierarchiesList = leaveDao.getEmployeeRequestedLeavesBylocationId(orgLocations.getId(),userId,status);
-		List<LeaveDTO> leaveDtoList = new ArrayList<>();
-		for(LeaveApproveHierarchy laph : leaveApproveHierarchiesList){
-			Leave leave = laph.getLeaveid();
-			LeaveDTO leaveDto = new LeaveDTO();
-			StringBuilder sb = new StringBuilder();
-			if (leave.getUser() != null) {
-				if (StringUtils.isNotBlank(leave.getUser().getLastName())) {
-					sb.append(leave.getUser().getFirstName()).append(" ").append(leave.getUser().getLastName());
-				} else {
-					sb.append(leave.getUser().getFirstName());
-				}
-
-				leaveDto.setEmpName(sb.toString());
-				
-				UserRole role = userRoleService.getUserRoleByUserIdAndLocationId(leave.getUser().getId(), orgLocations.getId());
-				leaveDto.setEmpType(role.getUserType());
+		Calendar cal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
+		cal.setLenient(false);
+		cal.setTime(new Date());
+		Date currentWeekStarDate = CalendarUtil.getPreviousWeekDayByCalendar(cal, "SUN", orgLocations.getDateFormat()).getTime();
+		Date currentWeekEndDate = CalendarUtil.getCurrentWeekDayByCalendar(cal, "SAT", orgLocations.getDateFormat()).getTime();
+		List<LeaveApproveHierarchy> leaveApproveHierarchiesList = leaveDao.getEmployeeRequestedLeavesBylocationIdAndDuration(orgLocations.getId(), userId, status, currentWeekStarDate, currentWeekEndDate,department);
+		HashMap<Long, LeaveReportsDTO> reportMap = new HashMap<>();
+		for (LeaveApproveHierarchy lh : leaveApproveHierarchiesList) {
+			Leave leave = lh.getLeaveid();
+			LeaveReportsDTO leaveReportsDTO = reportMap.get(lh.getLeaveid().getUser().getId());
+			if (leaveReportsDTO == null) {
+				leaveReportsDTO = new LeaveReportsDTO();
 			}
+			StringBuilder sb = new StringBuilder();
+			if (StringUtils.isNotBlank(lh.getLeaveid().getUser().getLastName())) {
+				sb.append(lh.getLeaveid().getUser().getFirstName()).append(" ").append(lh.getLeaveid().getUser().getLastName());
+			}
+			else {
+				sb.append(lh.getLeaveid().getUser().getFirstName());
+			}
+			leaveReportsDTO.setEmpName(sb.toString());
+			if(lh.getLeaveid().getUser().getFileUrl() != null){
+				leaveReportsDTO.setEmpProfileImageURL(lh.getLeaveid().getUser().getFileUrl());
+			}
+			UserRole role = userRoleService.getUserRoleByUserIdAndLocationId(lh.getLeaveid().getUser().getId(), orgLocations.getId());
+			leaveReportsDTO.setEmpType(role.getUserType());
+			Calendar calendar = new GregorianCalendar();
+			calendar.setTime(leave.getFromDate());
+			Calendar endCalendar = new GregorianCalendar();
+			endCalendar.setTime(leave.getToDate());
+			while (calendar.before(endCalendar)) {
+				Date date = calendar.getTime();
+				switch (Constants.WEEK_DAY.format(date)) {
+					case "Monday":
+						leaveReportsDTO.setIsMonday(Constants.YES);
+						break;
+					case "Tuesday":
+						leaveReportsDTO.setIsTuesday(Constants.YES);
+						break;
+					case "Wednesday":
+						leaveReportsDTO.setIsWednesday(Constants.YES);
+						break;
+					case "Thursday":
+						leaveReportsDTO.setIsThursday(Constants.YES);
+						break;
+					case "Friday":
+						leaveReportsDTO.setIsFriday(Constants.YES);
+						break;
+					case "Saturday":
+						leaveReportsDTO.setIsSaturday(Constants.YES);
+						break;
+					case "Sunday":
+						leaveReportsDTO.setIsSunday(Constants.YES);
+						break;
+				}
+				calendar.add(Calendar.DATE, 1);
+				if (date.equals(currentWeekEndDate)) {
+					break;
+				}
+			}
+			if (!leave.getToDate().after(currentWeekEndDate)) {
+				switch (Constants.WEEK_DAY.format(leave.getToDate())) {
+					case "Monday":
+						leaveReportsDTO.setIsMonday(Constants.YES);
+						break;
+					case "Tuesday":
+						leaveReportsDTO.setIsTuesday(Constants.YES);
+						break;
+					case "Wednesday":
+						leaveReportsDTO.setIsWednesday(Constants.YES);
+						break;
+					case "Thursday":
+						leaveReportsDTO.setIsThursday(Constants.YES);
+						break;
+					case "Friday":
+						leaveReportsDTO.setIsFriday(Constants.YES);
+						break;
+					case "Saturday":
+						leaveReportsDTO.setIsSaturday(Constants.YES);
+						break;
+					case "Sunday":
+						leaveReportsDTO.setIsSunday(Constants.YES);
+						break;
+				}
+			}
+			if (leave.getFromHalfDay() != null) {
+				switch (Constants.WEEK_DAY.format(leave.getFromDate())) {
+					case "Monday":
+						leaveReportsDTO.setIsMondayHalfDay(Constants.YES);
+						break;
+					case "Tuesday":
+						leaveReportsDTO.setIsTuesdayHalfDay(Constants.YES);
+						break;
+					case "Wednesday":
+						leaveReportsDTO.setIsWednesdayHalfDay(Constants.YES);
+						break;
+					case "Thursday":
+						leaveReportsDTO.setIsThursdayHalfDay(Constants.YES);
+						break;
+					case "Friday":
+						leaveReportsDTO.setIsFridayHalfDay(Constants.YES);
+						break;
+					case "Saturday":
+						leaveReportsDTO.setIsSaturdayHalfDay(Constants.YES);
+						break;
+					case "Sunday":
+						leaveReportsDTO.setIsSundayHalfDay(Constants.YES);
+						break;
+				}
+			}
+			if (!leave.getToDate().after(currentWeekEndDate) && leave.getToHalfDay() != null) {
+				switch (Constants.WEEK_DAY.format(leave.getToDate())) {
+					case "Monday":
+						leaveReportsDTO.setIsMondayHalfDay(Constants.YES);
+						break;
+					case "Tuesday":
+						leaveReportsDTO.setIsTuesdayHalfDay(Constants.YES);
+						break;
+					case "Wednesday":
+						leaveReportsDTO.setIsWednesdayHalfDay(Constants.YES);
+						break;
+					case "Thursday":
+						leaveReportsDTO.setIsThursdayHalfDay(Constants.YES);
+						break;
+					case "Friday":
+						leaveReportsDTO.setIsFridayHalfDay(Constants.YES);
+						break;
+					case "Saturday":
+						leaveReportsDTO.setIsSaturdayHalfDay(Constants.YES);
+						break;
+					case "Sunday":
+						leaveReportsDTO.setIsSundayHalfDay(Constants.YES);
+						break;
+				}
+			}
+			reportMap.put(lh.getLeaveid().getUser().getId(), leaveReportsDTO);
 		}
-		return leaveDtoList;
+		List<LeaveReportsDTO> reportList = new ArrayList<>();
+		for (LeaveReportsDTO lrDto : reportMap.values()) {
+			reportList.add(lrDto);
+		}
+		return reportList;
 	}
 
 	@Override
