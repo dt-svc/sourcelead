@@ -560,10 +560,11 @@ function getClientBasedOnSelectedProject(){
 function flushOnchange(){
 	//$('#projectId').val('');	
 	
+$("#projectMemberId").val('')	
 $('#expensePurpose').val('');
 $('#projectStartDateExpensesId').val('');
 $('#projectEndDateExpensesId').val('');
-$("#projectMemberId").val('')
+
 }
 </script>
 
