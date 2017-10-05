@@ -2820,7 +2820,7 @@ function getLevel2Approvers(currentApproverId){
 
 <script type="text/javascript">
  function validateJobId(jobId) {
-	 
+	 $('input#jobId').removeAttr( "record-exist record-exist-errormsg");
 	 var requirementid = document.getElementById("requirementId").value;
 	/*  if(requirementid != null && requirementid != '' && requirementid != 'undefined' ){ */
 		 if(jobId == null || jobId == "" || jobId == "undefined"){
