@@ -60,13 +60,13 @@ public class ProjectMembers implements Serializable {
 	private Employees employee;
 
 	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "CANDIDATE_ID", nullable = false)
 	@JsonBackReference
 	private Candidate projectMemberCandidteId;
 	
 	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="MASTER_CANDIDATE_ID", nullable=false )        
     private MasterCandidate masterCandidateId;
 	

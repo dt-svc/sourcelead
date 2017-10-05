@@ -15,7 +15,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.ExpenseEntryDetailsDTO;
-import com.bis.sourcelead.dto.ExpenseEntryDetailsUtilDTO;
+import com.bis.sourcelead.dto.TimesheetExpenseEntryDetailsUtilDTO;
 import com.bis.sourcelead.dto.ExpensesDTO;
 import com.bis.sourcelead.dto.ExpensesListUtilDTO;
 import com.bis.sourcelead.entity.Expenses;
@@ -155,7 +155,7 @@ public class ExpensesController {
 			}
 			model.addObject("expenseApproverHierarchy", rejectedReason.toString());
 		}
-		ExpenseEntryDetailsUtilDTO eedDTO = new ExpenseEntryDetailsUtilDTO();
+		TimesheetExpenseEntryDetailsUtilDTO eedDTO = new TimesheetExpenseEntryDetailsUtilDTO();
 		eedDTO.setUserId(loginUser.getId());
 		eedDTO.setLocationCode(orgLoc.getLocationCode());
 		ExpenseEntryDetailsDTO expEntryDTO =  expensesRestController.getExpenseEntryDetails(eedDTO);
@@ -288,7 +288,7 @@ public class ExpensesController {
 		List<ExpensesCategory>  expensesCategoryList = expensesCategoryService.getAllExpensesCategoryByLocationIdAndStatus(orgLoc.getId(), "1");
 	    model.addObject("expensesCategoryList", expensesCategoryList);*/
 		
-		ExpenseEntryDetailsUtilDTO eedDTO = new ExpenseEntryDetailsUtilDTO();
+		TimesheetExpenseEntryDetailsUtilDTO eedDTO = new TimesheetExpenseEntryDetailsUtilDTO();
 		eedDTO.setUserId(loginUser.getId());
 		eedDTO.setLocationCode(orgLoc.getLocationCode());
 		ExpenseEntryDetailsDTO expEntryDTO =  expensesRestController.getExpenseEntryDetails(eedDTO);

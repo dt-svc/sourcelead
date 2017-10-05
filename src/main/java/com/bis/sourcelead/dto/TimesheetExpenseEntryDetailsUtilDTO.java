@@ -2,7 +2,7 @@ package com.bis.sourcelead.dto;
 
 import java.io.Serializable;
 
-public class ExpenseEntryDetailsUtilDTO implements Serializable{
+public class TimesheetExpenseEntryDetailsUtilDTO implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
 	

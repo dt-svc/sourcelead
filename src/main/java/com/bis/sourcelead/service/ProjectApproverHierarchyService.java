@@ -24,6 +24,8 @@ public interface ProjectApproverHierarchyService {
 	
 	public ProjectApproverHierarchy getProjectApproverByProjectIdAndLevel(Long projectId,Integer level) throws Exception;
 	
+	public ProjectApproverHierarchy getApproverUsersByProjectIdAndProjectClientId(Long projectId, Long projectClientId) throws Exception;
+			
 	public List<ProjectApproverHierarchy> getAllApproverUsersByProjectIdList(List<Long> projectIds) throws Exception;
 
 	public List<ProjectApproverHierarchy> getApproverUsersByProjectId(long Id) throws Exception;

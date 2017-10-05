@@ -102,4 +102,6 @@ public interface ProjectMembersDao {
 	Integer getProjectMembersCountByProjectClientId(Long projectClientId) throws Exception;
 	
 	ProjectMembers getProjectMembersByCandidateIdAndProjectId(Long candidateId,Long projectId) throws Exception;
+	
+	public ProjectMembers getClientProjectMemberByProjectMemberId(Long projectMemberId) throws Exception;
 }

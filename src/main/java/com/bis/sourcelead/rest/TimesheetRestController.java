@@ -28,6 +28,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -38,6 +39,12 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.TimesheetEntriesDao;
+import com.bis.sourcelead.dto.ExpenseEntryDetailsDTO;
+import com.bis.sourcelead.dto.ProjectMembersDTO;
+import com.bis.sourcelead.dto.TimesheetEntryDetailsDTO;
+import com.bis.sourcelead.dto.TimesheetExpenseEntryDetailsUtilDTO;
+import com.bis.sourcelead.dto.TimesheetEntriesDTO;
+import com.bis.sourcelead.dto.helper.ProjectMemberDTOConverter;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
@@ -54,6 +61,7 @@ import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Submission_ApprovalStatus;
 import com.bis.sourcelead.enums.Submission_Status;
 import com.bis.sourcelead.form.TimesheetEntriesForm;
+import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.ExportTimesheetEntries;
 import com.bis.sourcelead.service.OrgLocationService;
@@ -154,6 +162,73 @@ public class TimesheetRestController {
 	@Autowired
 	private OrgLocationService orgLocationService;
 	
+	@Autowired
+	private CandidateService candidateService;
+	
+	@RequestMapping(value = "/rest/getTimesheetEntryDetails")
+	public TimesheetEntryDetailsDTO getTimesheetEntryDetails(@RequestBody TimesheetExpenseEntryDetailsUtilDTO eedDTO) throws Exception
+	{
+		TimesheetEntryDetailsDTO timesheetEntryDetailsDTO = new TimesheetEntryDetailsDTO();
+		OrgLocations orgLocations = orgLocationService.getOrgLocationsByLocationCode(eedDTO.getLocationCode());
+		Candidate candidate = candidateService.getCandidateByConsultantUserId(eedDTO.getUserId(), orgLocations.getId());
+		List<ProjectMembers> projectMembersList =  projectMembersService.getProjectMembersListByOrgLocationsIdAndCandidateId(orgLocations.getId(),candidate.getId());
+		if (projectMembersList != null && !projectMembersList.isEmpty()) {
+			ArrayList<ProjectMembersDTO> pmDTOList = new ArrayList<>();
+			long count = 1;
+			Long initialProjectMemberId = null;
+			Long initialProjectId = null;
+			Long masterCandidateId = null;
+			Map<String,String>  timesheetFrequencyMap  = null;
+			for (ProjectMembers pm : projectMembersList) {
+                if(count == 1){
+                    timesheetFrequencyMap = timesheetFrequencyGeneratorUtil.getTimesheetFrequencyListFromProjectInvoiceFrequency(pm,"view");
+                    if(timesheetFrequencyMap == null || timesheetFrequencyMap.isEmpty())
+                        continue;
+					
+                    initialProjectMemberId = pm.getId();
+					initialProjectId = pm.getProjects().getId();
+					masterCandidateId = pm.getMasterCandidateId().getId();
+					count++;
+				}
+				pmDTOList.add(ProjectMemberDTOConverter.getProjectMembersDTOFromProjectMembers(pm));
+			}
+			timesheetEntryDetailsDTO.setProjectMembersList(pmDTOList);
+			timesheetEntryDetailsDTO.setProjectMemberId(initialProjectMemberId);
+			StringBuilder selectedStartDate = new StringBuilder("");
+			StringBuilder selectedEndDate =  new StringBuilder("");
+			TimesheetEntriesDTO entriesDTO = new TimesheetEntriesDTO();
+			if(timesheetFrequencyMap != null && !timesheetFrequencyMap.isEmpty()){
+				long flag = 1;
+				for (Map.Entry<String, String> entry : timesheetFrequencyMap.entrySet()) {
+				    String key = entry.getKey();
+				    String value =entry.getValue();
+				    Date currentStartDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),key.replaceAll("/", "-"));
+				    Date currentEndDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),value.replaceAll("/", "-"));
+				    HashSet<Date> pmhDateList =  projectMembersHistoryService.getAllProjectMemberHistoryDatesByProjectMemberIdAndWeekStartDateEndDate(initialProjectMemberId, currentStartDate, currentEndDate);
+				    if(pmhDateList.isEmpty() || pmhDateList == null)
+				    continue;
+				    if(flag == 1){
+				    	selectedStartDate.append(key.replaceAll("/", "-"));
+				    	selectedEndDate.append(value.replaceAll("/", "-"));
+				    }
+				    if(CalendarUtil.isCurrentDateBetweenDateRange(key, value,orgLocations.getDateFormat())){
+				    	selectedStartDate.setLength(0);
+				    	selectedEndDate.setLength(0);
+				    	selectedStartDate.append(key.replaceAll("/", "-"));
+				    	selectedEndDate.append(value.replaceAll("/", "-"));
+				    }
+				  /*  timesheetEntriesDiv.append("		                  <option data-icon='fa fa-calendar' "+isSelected.toString()+" value='"+key.replaceAll("/", "-")+"To"+value.replaceAll("/", "-")+"'>");
+				    timesheetEntriesDiv.append(key).append(" To ").append(value);
+				    timesheetEntriesDiv.append("		                  </option>");*/
+				    flag++;
+			   }
+			}
+			
+		}
+		return null;
+		
+	}
+	
 	
 	@RequestMapping(value = "/timesheetEntriesDivByProjectMemberId", method = RequestMethod.POST ) 
 	public @ResponseBody String timesheetEntriesDivByProjectMemberId(HttpServletRequest request,
@@ -162,14 +237,27 @@ public class TimesheetRestController {
 			@RequestParam(value="locationCode") String locationCode) throws Exception {
 		
 		    Long superUserId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "superUserId");
-		    Boolean isSuperUser = (Boolean) SourceLeadSessionManager.getSessionAttribute(request, "isSuperUser");
 		    User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		    Candidate candidate = (Candidate) SourceLeadSessionManager.getSessionAttribute(request, "candidate");
 		    OrgLocations orgLocations = orgLocationService.getOrgLocationsByLocationCode(locationCode);
 	    	StringBuilder projectDiv = new StringBuilder("");
 		    if(StringUtils.isNotEmpty(projectMemberId)){
 		    	 ProjectMembers pm = projectMembersService.getProjectMemberById(Long.parseLong(projectMemberId));
-		    	 projectDiv = timesheetEntriesDivByProjectMemberId(loginUser,projectMemberId,from,superUserId,isSuperUser,orgLocations,pm.getId(),candidate.getMasterCandidateId().getId());
+		    	 ProjectMembers clientProjectMember = projectMembersService.getClientProjectMemberByProjectMemberId(Long.parseLong(projectMemberId));
+				    ProjectApproverHierarchy pah =  null;
+				    Boolean isSuperUser = false;
+				    if(null != clientProjectMember && null != clientProjectMember.getProjects() && null != clientProjectMember.getProjectClientsId())
+				    	pah =  projectApproverHierarchyService.getApproverUsersByProjectIdAndProjectClientId(clientProjectMember.getProjects().getId(), clientProjectMember.getProjectClientsId().getId());
+				    if(     
+				    		(null != clientProjectMember.getProjectClientsId() && null != clientProjectMember.getProjectClientsId().getOrgLocationsId() && null != clientProjectMember.getProjectClientsId().getOrgLocationsId().getUser()
+				    		 && null != clientProjectMember.getProjectClientsId().getOrgLocationsId().getUser().getId() && clientProjectMember.getProjectClientsId().getOrgLocationsId().getUser().getId().longValue() == loginUser.getId().longValue())
+				    		||
+				    		(null != pah && null != pah.getApproverUserId() && null != pah.getApproverUserId().getId()
+				    		  && pah.getApproverUserId().getId().longValue() == loginUser.getId().longValue())
+				    		
+				      ){
+				    	isSuperUser = true;
+				    }
+		    	 projectDiv = timesheetEntriesDivByProjectMemberId(loginUser,projectMemberId,from,superUserId,isSuperUser,orgLocations,pm.getId(),pm.getMasterCandidateId().getId());
 		    }
 		    return projectDiv.toString();
 	}
@@ -182,7 +270,7 @@ public class TimesheetRestController {
 			@RequestParam(value="locationCode") String locationCode) throws Exception {
 		
 		Long superUserId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "superUserId");
-		Boolean isSuperUser = (Boolean) SourceLeadSessionManager.getSessionAttribute(request, "isSuperUser");
+		
 	    User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 	    OrgLocations orgLocations = orgLocationService.getOrgLocationsByLocationCode(locationCode);
 		StringBuilder frequencyBasedDiv = new StringBuilder();
@@ -191,6 +279,23 @@ public class TimesheetRestController {
 		 	 String weekStartDate = frequency[0].trim();
 		  	 String weekEndDate = frequency[1].trim();
 		     ProjectMembers pm = projectMembersService.getProjectMemberById(projectMemberId);
+		     
+		     ProjectMembers clientProjectMember = projectMembersService.getClientProjectMemberByProjectMemberId(projectMemberId);
+			    ProjectApproverHierarchy pah =  null;
+			    Boolean isSuperUser = false;
+			    if(null != clientProjectMember && null != clientProjectMember.getProjects() && null != clientProjectMember.getProjectClientsId())
+			    	pah =  projectApproverHierarchyService.getApproverUsersByProjectIdAndProjectClientId(clientProjectMember.getProjects().getId(), clientProjectMember.getProjectClientsId().getId());
+			    if(     
+			    		(null != clientProjectMember.getProjectClientsId() && null != clientProjectMember.getProjectClientsId().getOrgLocationsId() && null != clientProjectMember.getProjectClientsId().getOrgLocationsId().getUser()
+			    		 && null != clientProjectMember.getProjectClientsId().getOrgLocationsId().getUser().getId() && clientProjectMember.getProjectClientsId().getOrgLocationsId().getUser().getId().longValue() == loginUser.getId().longValue())
+			    		||
+			    		(null != pah && null != pah.getApproverUserId() && null != pah.getApproverUserId().getId()
+			    		  && pah.getApproverUserId().getId().longValue() == loginUser.getId().longValue())
+			    		
+			      ){
+			    	isSuperUser = true;
+			  }
+			    
 			 frequencyBasedDiv = timesheetEntriesDivByFrequnecy(loginUser,weekStartDate,weekEndDate,projectMemberId,from,superUserId,isSuperUser,orgLocations,pm.getProjects().getId(),pm.getMasterCandidateId().getId());
 		}
 		
@@ -229,11 +334,28 @@ public class TimesheetRestController {
 			@RequestParam(value="locationCode") String locationCode) throws Exception {
 		
 		    Long superUserId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "superUserId");
-		    Boolean isSuperUser = (Boolean) SourceLeadSessionManager.getSessionAttribute(request, "isSuperUser");
+			User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		    OrgLocations orgLocations = orgLocationService.getOrgLocationsByLocationCode(locationCode);
+			  
+		    ProjectMembers clientProjectMember = projectMembersService.getClientProjectMemberByProjectMemberId(projectMemberId);
+		    ProjectApproverHierarchy pah =  null;
+		    Boolean isSuperUser = false;
+		    if(null != clientProjectMember && null != clientProjectMember.getProjects() && null != clientProjectMember.getProjectClientsId())
+		    	pah =  projectApproverHierarchyService.getApproverUsersByProjectIdAndProjectClientId(clientProjectMember.getProjects().getId(), clientProjectMember.getProjectClientsId().getId());
+		    if(     
+		    		(null != clientProjectMember.getProjectClientsId() && null != clientProjectMember.getProjectClientsId().getOrgLocationsId() && null != clientProjectMember.getProjectClientsId().getOrgLocationsId().getUser()
+		    		 && null != clientProjectMember.getProjectClientsId().getOrgLocationsId().getUser().getId() && clientProjectMember.getProjectClientsId().getOrgLocationsId().getUser().getId().longValue() == loginUser.getId().longValue())
+		    		||
+		    		(null != pah && null != pah.getApproverUserId() && null != pah.getApproverUserId().getId()
+		    		  && pah.getApproverUserId().getId().longValue() == loginUser.getId().longValue())
+		    		
+		      ){
+		    	isSuperUser = true;
+		    }
 		    StringBuilder tabDiv = new StringBuilder("");
 		    StringBuilder statusDiv = new StringBuilder("");
 		    Boolean isModifyMyTimeSheet = commonUtil.hasRole("ROLE_MODIFY_MY_TIMESHEETS");
-		    OrgLocations orgLocations = orgLocationService.getOrgLocationsByLocationCode(locationCode);
+		  
 		    HashMap<String,String> result = new HashMap<>();
 		     if(StringUtils.isNotEmpty(timesheetFrequency)){
 			 	 String[] frequency = timesheetFrequency.split("To");
@@ -303,8 +425,6 @@ public class TimesheetRestController {
 		Candidate candidate = (Candidate) SourceLeadSessionManager.getSessionAttribute(request, "candidate");
 		OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		Long superUserId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "superUserId");
-		Boolean isSuperUser = (Boolean) SourceLeadSessionManager.getSessionAttribute(request, "isSuperUser");
-		
 		List<ProjectMembers> projectMembersList =  projectMembersService.getProjectMembersListByOrgLocationsIdAndCandidateId(orgLoc.getId(),candidate.getId());
 		
 		if(projectMembersList != null && !projectMembersList.isEmpty()){
@@ -323,6 +443,7 @@ public class TimesheetRestController {
 			timesheetEntriesDiv.append("		                <select id='projectMemberId' name='projectMemberId' class='form-control chosen-select' onChange='timesheetEntriesDivByProjectMemberId()'>");
 			Long initialProjectMemberId = null;
 			Long initialProjectId = null;
+			Long masterCandidateId = null;
 			StringBuilder isSelected = new StringBuilder("");
 			if(projectMembersList != null && !projectMembersList.isEmpty()){
 				long count = 1;
@@ -335,6 +456,7 @@ public class TimesheetRestController {
 						isSelected.append("selected='selected'");
 						initialProjectMemberId = pm.getId();
 						initialProjectId = pm.getProjects().getId();
+						masterCandidateId = pm.getMasterCandidateId().getId();
 						
 					}
 					else{
@@ -351,7 +473,24 @@ public class TimesheetRestController {
 			
 				timesheetEntriesDiv.append("					<div id='timesheetEntriesDivByProjectMemberId'>");
 				if(initialProjectMemberId != null){
-					 StringBuilder projectDiv = timesheetEntriesDivByProjectMemberId(loginUser,initialProjectMemberId.toString(),from,superUserId,isSuperUser,orgLoc,initialProjectId,candidate.getMasterCandidateId().getId());
+					ProjectMembers clientProjectMember = projectMembersService.getClientProjectMemberByProjectMemberId(initialProjectMemberId);
+				    ProjectApproverHierarchy pah =  null;
+				    Boolean isSuperUser = false;
+				    if(null != clientProjectMember && null != clientProjectMember.getProjects() && null != clientProjectMember.getProjectClientsId())
+				    	pah =  projectApproverHierarchyService.getApproverUsersByProjectIdAndProjectClientId(clientProjectMember.getProjects().getId(), clientProjectMember.getProjectClientsId().getId());
+				    if(     
+				    		(null != clientProjectMember.getProjectClientsId() && null != clientProjectMember.getProjectClientsId().getOrgLocationsId() && null != clientProjectMember.getProjectClientsId().getOrgLocationsId().getUser()
+				    		 && null != clientProjectMember.getProjectClientsId().getOrgLocationsId().getUser().getId() && clientProjectMember.getProjectClientsId().getOrgLocationsId().getUser().getId().longValue() == loginUser.getId().longValue())
+				    		||
+				    		(null != pah && null != pah.getApproverUserId() && null != pah.getApproverUserId().getId()
+				    		  && pah.getApproverUserId().getId().longValue() == loginUser.getId().longValue())
+				    		
+				      ){
+				    	isSuperUser = true;
+				    }
+					
+				    
+					 StringBuilder projectDiv = timesheetEntriesDivByProjectMemberId(loginUser,initialProjectMemberId.toString(),from,superUserId,isSuperUser,orgLoc,initialProjectId,masterCandidateId);
 					 timesheetEntriesDiv.append(projectDiv);		 
 				}
 				timesheetEntriesDiv.append("		            </div>");	
@@ -438,7 +577,7 @@ public class TimesheetRestController {
 				 Date endDate = commonUtil.orgLocationDateFormat(dateFormat,weekEndDate.replaceAll("/", "-"));
 				 ProjectMembers pm = projectMembersService.getProjectMemberById(projectMemberId);
 				 Candidate candidate = (Candidate) SourceLeadSessionManager.getSessionAttribute(request, "candidate");
-			  	 submissionApproverHierarchyService.updateSubmissionStatusByProjectIdMasterCandidateIdStartDateAndEndDate(pm.getProjects().getId(),candidate.getMasterCandidateId().getId(), startDate, endDate, Submission_Status.DRAFT.getValue());;
+			  	 submissionApproverHierarchyService.updateSubmissionStatusByProjectIdMasterCandidateIdStartDateAndEndDate(pm.getProjects().getId(),pm.getMasterCandidateId().getId(), startDate, endDate, Submission_Status.DRAFT.getValue());;
 			}
 		
 	}
@@ -549,7 +688,7 @@ public class TimesheetRestController {
 			    	}
 			    	else{
 			    	  timesheetEntriesDiv.append("<input type='hidden' name='tabDates'  id='tabDates' value='"+key+"To"+value+"' >");	
-			    	  timesheetEntriesDiv.append("			        <li "+isActive.toString()+"><a href='#' onClick='timesheetDivByTab(\""+key+"\",\""+value+"\",\""+submissionStatusStr+"\")'>"+shortormat.format(startDate)+" To "+shortormat.format(endDate)+"</a></li> ");	
+			    	  timesheetEntriesDiv.append("			        <li "+isActive.toString()+"><a href='#' onClick='timesheetDivByTab(\""+key+"\",\""+value+"\",\""+submissionStatusStr+"\")'>"+shortormat.format(startDate)+" - "+shortormat.format(endDate)+"</a></li> ");	
 			    	}
 			    }
 			    else{
@@ -1486,7 +1625,7 @@ public class TimesheetRestController {
 		            	 }
 		            	 
 		            }else{
-		            	timesheetSubmissions = timesheetSubmissionsService.getAllCandidateTimesheetSubmissionsByProjectIdAndMasterCandidateId(startDate,endDate,projectMember.getProjects().getId(),candidate.getMasterCandidateId().getId());
+		            	timesheetSubmissions = timesheetSubmissionsService.getAllCandidateTimesheetSubmissionsByProjectIdAndMasterCandidateId(startDate,endDate,projectMember.getProjects().getId(),projectMember.getMasterCandidateId().getId());
 		            	if(timesheetSubmissions == null){
 		            		timesheetSubmissions = new TimesheetSubmissions();	
 		            		timesheetSubmissions.setStartDate(startDate);
@@ -1496,7 +1635,7 @@ public class TimesheetRestController {
 			     	    	timesheetSubmissions.setCreatedDate(CommonUtil.currentDate());
 			     	    	timesheetSubmissions.setCreatedBy(loginUser.getUserCode());
 			     	    	timesheetSubmissions.setProjects(projectMember.getProjects());
-			     	    	timesheetSubmissions.setMasterCandidateId(candidate.getMasterCandidateId());
+			     	    	timesheetSubmissions.setMasterCandidateId(projectMember.getMasterCandidateId());
 		            	}
 		            	
 		     	    	timesheetSubmissions.setUpdatedDate(CommonUtil.currentDate());
@@ -1858,7 +1997,7 @@ public class TimesheetRestController {
 							String[] words = tabDate.split("To");	
 							Date actualStartDate = commonUtil.orgLocationDateFormat(loginOrgLocation.getDateFormat(),words[0].replaceAll("/", "-"));
 							Date actualEndDate = commonUtil.orgLocationDateFormat(loginOrgLocation.getDateFormat(),words[1].replaceAll("/", "-"));
-							List<TimesheetSubmissions> timesheetSubmissionsList = timesheetSubmissionsService.getAllCandidateTimesheetSubmissionsByProjectIdAndMasterCandidateIdForUpdation(actualStartDate, actualEndDate, projectMember.getProjects().getId(),candidate.getMasterCandidateId().getId());
+							List<TimesheetSubmissions> timesheetSubmissionsList = timesheetSubmissionsService.getAllCandidateTimesheetSubmissionsByProjectIdAndMasterCandidateIdForUpdation(actualStartDate, actualEndDate, projectMember.getProjects().getId(),projectMember.getMasterCandidateId().getId());
 				            if(timesheetSubmissionsList != null && !timesheetSubmissionsList.isEmpty()){
 				            	for(TimesheetSubmissions timesheetSubmissions : timesheetSubmissionsList){
 				            		List<SubmissionApproverHierarchy>  sahList =submissionApproverHierarchyService.getSubmissionApproverHierarchyBySubmissionId(timesheetSubmissions.getId());
@@ -1983,7 +2122,7 @@ public class TimesheetRestController {
 	    @Async
 		public void insertNewTimesheetRecordByProjectMemberAndDates(ProjectMembers projectMember,Date actualStartDate,Date actualEndDate,Date frequencyStartDate,Date frequencyEndDate,User loginUser,Candidate cnadidate) throws Exception{
 				
-	    	TimesheetSubmissions timesheetSubmissions  = timesheetSubmissionsService.getAllCandidateTimesheetSubmissionsByProjectIdAndMasterCandidateId(actualStartDate,actualEndDate,projectMember.getProjects().getId(),cnadidate.getMasterCandidateId().getId());
+	    	TimesheetSubmissions timesheetSubmissions  = timesheetSubmissionsService.getAllCandidateTimesheetSubmissionsByProjectIdAndMasterCandidateId(actualStartDate,actualEndDate,projectMember.getProjects().getId(),projectMember.getMasterCandidateId().getId());
 	    	
 	    	if(timesheetSubmissions == null){
 	    		timesheetSubmissions =  new TimesheetSubmissions();
@@ -2099,9 +2238,19 @@ public class TimesheetRestController {
 				
 			    User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			    OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-			    
+			    ProjectMembers clientProjectMember = projectMembersService.getClientProjectMemberByProjectMemberId(projectMemberId);
+			    ProjectApproverHierarchy pah =  null;
 			    String isSuperUser = Constants.NO;
-			    if(null != orgLoc.getUser() && null != orgLoc.getUser().getId() && orgLoc.getUser().getId().longValue() == loginUser.getId().longValue()){
+			    if(null != clientProjectMember && null != clientProjectMember.getProjects() && null != clientProjectMember.getProjectClientsId())
+			    	pah =  projectApproverHierarchyService.getApproverUsersByProjectIdAndProjectClientId(clientProjectMember.getProjects().getId(), clientProjectMember.getProjectClientsId().getId());
+			    if(     
+			    		(null != clientProjectMember.getProjectClientsId() && null != clientProjectMember.getProjectClientsId().getOrgLocationsId() && null != clientProjectMember.getProjectClientsId().getOrgLocationsId().getUser()
+			    		 && null != clientProjectMember.getProjectClientsId().getOrgLocationsId().getUser().getId() && clientProjectMember.getProjectClientsId().getOrgLocationsId().getUser().getId().longValue() == loginUser.getId().longValue())
+			    		||
+			    		(null != pah && null != pah.getApproverUserId() && null != pah.getApproverUserId().getId()
+			    		  && pah.getApproverUserId().getId().longValue() == loginUser.getId().longValue())
+			    		
+			      ){
 			    	isSuperUser = Constants.YES;
 			    }
 			    

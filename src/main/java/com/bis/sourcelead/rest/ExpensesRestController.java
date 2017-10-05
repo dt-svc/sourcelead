@@ -40,7 +40,7 @@ import com.bis.sourcelead.dao.AddExpensesDao;
 import com.bis.sourcelead.dao.ExpensesEntriesDao;
 import com.bis.sourcelead.dao.ExpensesEntryDocumentsDao;
 import com.bis.sourcelead.dto.ExpenseEntryDetailsDTO;
-import com.bis.sourcelead.dto.ExpenseEntryDetailsUtilDTO;
+import com.bis.sourcelead.dto.TimesheetExpenseEntryDetailsUtilDTO;
 import com.bis.sourcelead.dto.ExpensesCategoryDTO;
 import com.bis.sourcelead.dto.ExpensesDTO;
 import com.bis.sourcelead.dto.ExpensesEntriesStoringDTO;
@@ -143,7 +143,7 @@ public class ExpensesRestController {
 	}
 	
 	@RequestMapping(value = "/rest/getExpenseEntryDetails")
-	public ExpenseEntryDetailsDTO getExpenseEntryDetails(@RequestBody ExpenseEntryDetailsUtilDTO eedDTO) throws Exception
+	public ExpenseEntryDetailsDTO getExpenseEntryDetails(@RequestBody TimesheetExpenseEntryDetailsUtilDTO eedDTO) throws Exception
 	{
 		
 		ExpenseEntryDetailsDTO expenseEntryDetailsDTO = new ExpenseEntryDetailsDTO();
