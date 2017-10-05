@@ -4,6 +4,8 @@
  <%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
  <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
  
+ <jsp:include page="recommendationListTable.jsp"></jsp:include>
+ 
 <div class="profile_details requirement_details clearfix reqrementsummary">
 	 <a href="#" onClick="openTopDiv();">
 	    <h4 id="id1">
@@ -105,7 +107,7 @@
 			            		  <a href="<c:url value="/requirement?requirementUUID=${requirementUUID}"/>"><button  class="btn btn-primary btn-sm" type="button">Edit</button></a> 
 			            	</sec:authorize>
 			            </c:if>
-			            <c:if test="${(isAdmin == 'true' && requirement.requirementSubmissionStatus  != 'DRAFT' && requirement.requirementSubmissionStatus != 'ONHOLD'  && requirement.requirementSubmissionStatus != 'CANCEL' &&  requirement.requirementSubmissionStatus != 'APPROVED' &&  requirement.requirementSubmissionStatus != 'REJECTED'  &&  requirement.requirementSubmissionStatus != 'OPEN' && requirement.requirementSubmissionStatus  !='NEW' && requirement.requirementSubmissionStatus  != 'UNFILLEDCLOSED' && requirement.requirementSubmissionStatus  != 'FILLEDCLOSED' )  || (  !empty requirement.requirementApproverHierarchyStatus && requirement.requirementSubmissionStatus  !='DRAFT' && requirement.requirementSubmissionStatus != 'ONHOLD'  && requirement.requirementSubmissionStatus != 'CANCEL' &&  requirement.requirementApproverHierarchyStatus !='APPROVED' &&  requirement.requirementApproverHierarchyStatus != 'REJECTED'  &&  requirement.requirementApproverHierarchyStatus != 'OPEN') }">
+			            <c:if test="${(isAdmin == 'true' && requirement.requirementSubmissionStatus  != 'DRAFT' && requirement.requirementSubmissionStatus != 'ONHOLD' && requirement.requirementSubmissionStatus != 'CLOSED'  && requirement.requirementSubmissionStatus != 'CANCEL' &&  requirement.requirementSubmissionStatus != 'APPROVED' &&  requirement.requirementSubmissionStatus != 'REJECTED'  &&  requirement.requirementSubmissionStatus != 'OPEN' && requirement.requirementSubmissionStatus  !='NEW' && requirement.requirementSubmissionStatus  != 'UNFILLEDCLOSED' && requirement.requirementSubmissionStatus  != 'FILLEDCLOSED' )  || (  !empty requirement.requirementApproverHierarchyStatus && requirement.requirementSubmissionStatus  !='DRAFT' && requirement.requirementSubmissionStatus != 'ONHOLD'  && requirement.requirementSubmissionStatus != 'CANCEL' &&  requirement.requirementApproverHierarchyStatus !='APPROVED' &&  requirement.requirementApproverHierarchyStatus != 'REJECTED'  &&  requirement.requirementApproverHierarchyStatus != 'OPEN') }">
 			            	  <button  class="btn btn-success mr ml btn-sm" type="button" id = "approverbut" onClick ="updateReuqirementStatus('APPROVED');hideButtonOnClick();"  >Approve</button> 
          		              <button  class="btn btn-danger btn-sm" id = "rejectedbut" type="button" onClick ="rejectRequirementAlertMessage('REJECTED');hideButtonOnClick();">Reject</button>
 			            </c:if>
