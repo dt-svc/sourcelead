@@ -614,7 +614,7 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 	    		}
 		    		
 	    		String queryForAllApprovers = " from SubmissionApproverHierarchy sah left join fetch "
-	    				+ " sah.hierarchyId hierarchy left join fetch hierarchy.approverUserId left join fetch sah.submissionId submission left join fetch submission.projectMembers pm  left join fetch pm.employee emp left join fetch emp.user where sah.id <> :id and sah.submissionId = :submissionId";
+	    				+ " sah.hierarchyId hierarchy left join fetch hierarchy.projectClientsId pc left join fetch pc.orgLocationsId loc left join fetch loc.org org  left join fetch hierarchy.approverUserId left join fetch sah.submissionId submission left join fetch submission.projectMembers pm  left join fetch pm.employee emp left join fetch emp.user where sah.id <> :id and sah.submissionId = :submissionId";
 	    		@SuppressWarnings("unchecked")
         		List<SubmissionApproverHierarchy> approversList = session.createQuery(queryForAllApprovers)
         																	  .setLong("submissionId", sah.getSubmissionId().getId())
@@ -624,24 +624,41 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
             	 if(approversList != null && !approversList.isEmpty()){
             		for(SubmissionApproverHierarchy approver  :  approversList){
             			 if(status!=null && status.equalsIgnoreCase("REJECTED")){
-            				approver.setSubmissionApprovalStatus(Submission_ApprovalStatus.REJECTED);
-            				approver.setSubmissionStatus(Submission_Status.REJECTED);
-            				approver.setActionPerformedBy(" "+loginUser.getFullName());
-            				approver.setRejectedReason(rejectedReason);
-            				approver.setReopenReason("");
-            				approver.setReopenedUser(null);
-            				approver.setReopenRejectedReason("");
+	            				approver.setSubmissionApprovalStatus(Submission_ApprovalStatus.REJECTED);
+	            				approver.setSubmissionStatus(Submission_Status.REJECTED);
+	            				approver.setActionPerformedBy(" "+loginUser.getFullName());
+	            				approver.setRejectedReason(rejectedReason);
+	            				approver.setReopenReason("");
+	            				approver.setReopenedUser(null);
+	            				approver.setReopenRejectedReason("");
                     	  	
         	              }
-            			 else if((approver.getHeirarchyId().getProjectClientsId().getLevel() >=  sah.getHeirarchyId().getProjectClientsId().getLevel())
-            					     || (approver.getHeirarchyId().getProjectClientsId().getLevel() ==  sah.getHeirarchyId().getProjectClientsId().getLevel() && sah.getHeirarchyId().getLevel()==(maxLevel) && (status!=null && status.equalsIgnoreCase("APPROVED")))){
+            			 else if(status!=null && status.equalsIgnoreCase("APPROVED")){
+            				 if(approver.getHeirarchyId().getProjectClientsId() != null && 
+            					approver.getHeirarchyId().getProjectClientsId().getOrgLocationsId() != null && 
+            				    approver.getHeirarchyId().getProjectClientsId().getOrgLocationsId().getOrg() != null && 
+            				    approver.getHeirarchyId().getProjectClientsId().getOrgLocationsId().getOrg().getOrgType().equals(Constants.GUEST)) {
+	            					 approver.setSubmissionApprovalStatus(Submission_ApprovalStatus.APPROVED);
+	            	            	 approver.setSubmissionStatus(Submission_Status.APPROVED);
+	            	            	 approver.setActionPerformedBy(" "+loginUser.getFullName());
+	            	            	 approver.setReopenReason("");
+	                 				 approver.setReopenedUser(null);
+	                 				 approver.setReopenRejectedReason("");
+            				 }
+            				 else if((approver.getHeirarchyId().getProjectClientsId().getLevel() >=  sah.getHeirarchyId().getProjectClientsId().getLevel())
+            					     || (approver.getHeirarchyId().getProjectClientsId().getLevel() ==  sah.getHeirarchyId().getProjectClientsId().getLevel() && sah.getHeirarchyId().getLevel()==(maxLevel))){
 	            	            	 approver.setSubmissionApprovalStatus(Submission_ApprovalStatus.APPROVED);
 	            	            	 approver.setSubmissionStatus(Submission_Status.APPROVED);
 	            	            	 approver.setActionPerformedBy(" "+loginUser.getFullName());
 	            	            	 approver.setReopenReason("");
 	                 				 approver.setReopenedUser(null);
 	                 				 approver.setReopenRejectedReason("");
-                		  }
+                		     }
+            			 }
+            			 
+            			 
+            			
+            			 
             	        try {
             	        	updateSubmissionApproverHierarchy(approver);
          				} catch (Exception e) {

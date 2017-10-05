@@ -242,21 +242,7 @@ public class TimesheetRestController {
 	    	StringBuilder projectDiv = new StringBuilder("");
 		    if(StringUtils.isNotEmpty(projectMemberId)){
 		    	 ProjectMembers pm = projectMembersService.getProjectMemberById(Long.parseLong(projectMemberId));
-		    	 ProjectMembers clientProjectMember = projectMembersService.getClientProjectMemberByProjectMemberId(Long.parseLong(projectMemberId));
-				    ProjectApproverHierarchy pah =  null;
-				    Boolean isSuperUser = false;
-				    if(null != clientProjectMember && null != clientProjectMember.getProjects() && null != clientProjectMember.getProjectClientsId())
-				    	pah =  projectApproverHierarchyService.getApproverUsersByProjectIdAndProjectClientId(clientProjectMember.getProjects().getId(), clientProjectMember.getProjectClientsId().getId());
-				    if(     
-				    		(null != clientProjectMember.getProjectClientsId() && null != clientProjectMember.getProjectClientsId().getOrgLocationsId() && null != clientProjectMember.getProjectClientsId().getOrgLocationsId().getUser()
-				    		 && null != clientProjectMember.getProjectClientsId().getOrgLocationsId().getUser().getId() && clientProjectMember.getProjectClientsId().getOrgLocationsId().getUser().getId().longValue() == loginUser.getId().longValue())
-				    		||
-				    		(null != pah && null != pah.getApproverUserId() && null != pah.getApproverUserId().getId()
-				    		  && pah.getApproverUserId().getId().longValue() == loginUser.getId().longValue())
-				    		
-				      ){
-				    	isSuperUser = true;
-				    }
+				 Boolean isSuperUser = commonUtil.isSuperAdminForProjectMemberToReopenTimeOrExpenseses(Long.parseLong(projectMemberId), loginUser);
 		    	 projectDiv = timesheetEntriesDivByProjectMemberId(loginUser,projectMemberId,from,superUserId,isSuperUser,orgLocations,pm.getId(),pm.getMasterCandidateId().getId());
 		    }
 		    return projectDiv.toString();
@@ -279,23 +265,7 @@ public class TimesheetRestController {
 		 	 String weekStartDate = frequency[0].trim();
 		  	 String weekEndDate = frequency[1].trim();
 		     ProjectMembers pm = projectMembersService.getProjectMemberById(projectMemberId);
-		     
-		     ProjectMembers clientProjectMember = projectMembersService.getClientProjectMemberByProjectMemberId(projectMemberId);
-			    ProjectApproverHierarchy pah =  null;
-			    Boolean isSuperUser = false;
-			    if(null != clientProjectMember && null != clientProjectMember.getProjects() && null != clientProjectMember.getProjectClientsId())
-			    	pah =  projectApproverHierarchyService.getApproverUsersByProjectIdAndProjectClientId(clientProjectMember.getProjects().getId(), clientProjectMember.getProjectClientsId().getId());
-			    if(     
-			    		(null != clientProjectMember.getProjectClientsId() && null != clientProjectMember.getProjectClientsId().getOrgLocationsId() && null != clientProjectMember.getProjectClientsId().getOrgLocationsId().getUser()
-			    		 && null != clientProjectMember.getProjectClientsId().getOrgLocationsId().getUser().getId() && clientProjectMember.getProjectClientsId().getOrgLocationsId().getUser().getId().longValue() == loginUser.getId().longValue())
-			    		||
-			    		(null != pah && null != pah.getApproverUserId() && null != pah.getApproverUserId().getId()
-			    		  && pah.getApproverUserId().getId().longValue() == loginUser.getId().longValue())
-			    		
-			      ){
-			    	isSuperUser = true;
-			  }
-			    
+		     Boolean isSuperUser = commonUtil.isSuperAdminForProjectMemberToReopenTimeOrExpenseses(projectMemberId, loginUser);
 			 frequencyBasedDiv = timesheetEntriesDivByFrequnecy(loginUser,weekStartDate,weekEndDate,projectMemberId,from,superUserId,isSuperUser,orgLocations,pm.getProjects().getId(),pm.getMasterCandidateId().getId());
 		}
 		
@@ -337,21 +307,7 @@ public class TimesheetRestController {
 			User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		    OrgLocations orgLocations = orgLocationService.getOrgLocationsByLocationCode(locationCode);
 			  
-		    ProjectMembers clientProjectMember = projectMembersService.getClientProjectMemberByProjectMemberId(projectMemberId);
-		    ProjectApproverHierarchy pah =  null;
-		    Boolean isSuperUser = false;
-		    if(null != clientProjectMember && null != clientProjectMember.getProjects() && null != clientProjectMember.getProjectClientsId())
-		    	pah =  projectApproverHierarchyService.getApproverUsersByProjectIdAndProjectClientId(clientProjectMember.getProjects().getId(), clientProjectMember.getProjectClientsId().getId());
-		    if(     
-		    		(null != clientProjectMember.getProjectClientsId() && null != clientProjectMember.getProjectClientsId().getOrgLocationsId() && null != clientProjectMember.getProjectClientsId().getOrgLocationsId().getUser()
-		    		 && null != clientProjectMember.getProjectClientsId().getOrgLocationsId().getUser().getId() && clientProjectMember.getProjectClientsId().getOrgLocationsId().getUser().getId().longValue() == loginUser.getId().longValue())
-		    		||
-		    		(null != pah && null != pah.getApproverUserId() && null != pah.getApproverUserId().getId()
-		    		  && pah.getApproverUserId().getId().longValue() == loginUser.getId().longValue())
-		    		
-		      ){
-		    	isSuperUser = true;
-		    }
+		    Boolean isSuperUser = commonUtil.isSuperAdminForProjectMemberToReopenTimeOrExpenseses(projectMemberId, loginUser);
 		    StringBuilder tabDiv = new StringBuilder("");
 		    StringBuilder statusDiv = new StringBuilder("");
 		    Boolean isModifyMyTimeSheet = commonUtil.hasRole("ROLE_MODIFY_MY_TIMESHEETS");
@@ -473,23 +429,7 @@ public class TimesheetRestController {
 			
 				timesheetEntriesDiv.append("					<div id='timesheetEntriesDivByProjectMemberId'>");
 				if(initialProjectMemberId != null){
-					ProjectMembers clientProjectMember = projectMembersService.getClientProjectMemberByProjectMemberId(initialProjectMemberId);
-				    ProjectApproverHierarchy pah =  null;
-				    Boolean isSuperUser = false;
-				    if(null != clientProjectMember && null != clientProjectMember.getProjects() && null != clientProjectMember.getProjectClientsId())
-				    	pah =  projectApproverHierarchyService.getApproverUsersByProjectIdAndProjectClientId(clientProjectMember.getProjects().getId(), clientProjectMember.getProjectClientsId().getId());
-				    if(     
-				    		(null != clientProjectMember.getProjectClientsId() && null != clientProjectMember.getProjectClientsId().getOrgLocationsId() && null != clientProjectMember.getProjectClientsId().getOrgLocationsId().getUser()
-				    		 && null != clientProjectMember.getProjectClientsId().getOrgLocationsId().getUser().getId() && clientProjectMember.getProjectClientsId().getOrgLocationsId().getUser().getId().longValue() == loginUser.getId().longValue())
-				    		||
-				    		(null != pah && null != pah.getApproverUserId() && null != pah.getApproverUserId().getId()
-				    		  && pah.getApproverUserId().getId().longValue() == loginUser.getId().longValue())
-				    		
-				      ){
-				    	isSuperUser = true;
-				    }
-					
-				    
+					 Boolean isSuperUser = commonUtil.isSuperAdminForProjectMemberToReopenTimeOrExpenseses(initialProjectMemberId, loginUser);
 					 StringBuilder projectDiv = timesheetEntriesDivByProjectMemberId(loginUser,initialProjectMemberId.toString(),from,superUserId,isSuperUser,orgLoc,initialProjectId,masterCandidateId);
 					 timesheetEntriesDiv.append(projectDiv);		 
 				}
@@ -2238,19 +2178,8 @@ public class TimesheetRestController {
 				
 			    User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			    OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-			    ProjectMembers clientProjectMember = projectMembersService.getClientProjectMemberByProjectMemberId(projectMemberId);
-			    ProjectApproverHierarchy pah =  null;
 			    String isSuperUser = Constants.NO;
-			    if(null != clientProjectMember && null != clientProjectMember.getProjects() && null != clientProjectMember.getProjectClientsId())
-			    	pah =  projectApproverHierarchyService.getApproverUsersByProjectIdAndProjectClientId(clientProjectMember.getProjects().getId(), clientProjectMember.getProjectClientsId().getId());
-			    if(     
-			    		(null != clientProjectMember.getProjectClientsId() && null != clientProjectMember.getProjectClientsId().getOrgLocationsId() && null != clientProjectMember.getProjectClientsId().getOrgLocationsId().getUser()
-			    		 && null != clientProjectMember.getProjectClientsId().getOrgLocationsId().getUser().getId() && clientProjectMember.getProjectClientsId().getOrgLocationsId().getUser().getId().longValue() == loginUser.getId().longValue())
-			    		||
-			    		(null != pah && null != pah.getApproverUserId() && null != pah.getApproverUserId().getId()
-			    		  && pah.getApproverUserId().getId().longValue() == loginUser.getId().longValue())
-			    		
-			      ){
+			    if(commonUtil.isSuperAdminForProjectMemberToReopenTimeOrExpenseses(projectMemberId, loginUser)){
 			    	isSuperUser = Constants.YES;
 			    }
 			    
