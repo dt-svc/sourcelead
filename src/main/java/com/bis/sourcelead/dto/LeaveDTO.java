@@ -55,6 +55,8 @@ public class LeaveDTO extends SearchDTO implements Serializable{
 	private String barCharMonth;
 	private String barChartFromDate;
 	private String barChartToDate;
+	private String totalLeaves;
+	private String colorCode;
 	
 	public String getLeavesTaken() {
 		return leavesTaken;
@@ -306,6 +308,42 @@ public class LeaveDTO extends SearchDTO implements Serializable{
 	}
 	public void setReportEndDate(String reportEndDate) {
 		this.reportEndDate = reportEndDate;
+	}
+	public String getBarChartYear() {
+		return barChartYear;
+	}
+	public void setBarChartYear(String barChartYear) {
+		this.barChartYear = barChartYear;
+	}
+	public String getBarCharMonth() {
+		return barCharMonth;
+	}
+	public void setBarCharMonth(String barCharMonth) {
+		this.barCharMonth = barCharMonth;
+	}
+	public String getBarChartFromDate() {
+		return barChartFromDate;
+	}
+	public void setBarChartFromDate(String barChartFromDate) {
+		this.barChartFromDate = barChartFromDate;
+	}
+	public String getBarChartToDate() {
+		return barChartToDate;
+	}
+	public void setBarChartToDate(String barChartToDate) {
+		this.barChartToDate = barChartToDate;
+	}
+	public String getTotalLeaves() {
+		return totalLeaves;
+	}
+	public void setTotalLeaves(String totalLeaves) {
+		this.totalLeaves = totalLeaves;
+	}
+	public String getColorCode() {
+		return colorCode;
+	}
+	public void setColorCode(String colorCode) {
+		this.colorCode = colorCode;
 	}
 
 }

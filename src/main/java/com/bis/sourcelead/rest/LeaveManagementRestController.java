@@ -7,6 +7,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -277,10 +278,12 @@ public class LeaveManagementRestController {
 		   List<LeaveType> roleLeaveType = new ArrayList<>();
 		   if(leaveTypeList !=null && !leaveTypeList.isEmpty()) {
 			   for(LeaveType leaveType : leaveTypeList) {
+				   Set<Long> roleIds = new HashSet<>();
 				   for(LeaveRole leaveRole : leaveType.getLeaveTypeRolesSet()) {
-					   if(leaveRole.getRoleId().getId().longValue() == roleId.longValue()) {
-						   roleLeaveType.add(leaveType);
-					   }
+					   roleIds.add(leaveRole.getRoleId().getId());
+				   }
+				   if(roleIds.contains(roleId)) {
+					   roleLeaveType.add(leaveType);
 				   }
 			   }
 			   
@@ -1126,10 +1129,12 @@ public class LeaveManagementRestController {
 		List<Leave> leaveList = response.getData();
 		List<LeaveDTO> leaveDtoList = new ArrayList<>();
 		HashMap<Long, LeaveDTO> reportMap = new HashMap<>();
+		int totalLeaves = 0;
 		for (Leave leave : leaveList) {
 			LeaveDTO leaveDto = reportMap.get(leave.getUser().getId());
 			if (leaveDto == null) {
 				leaveDto = new LeaveDTO();
+				totalLeaves = 0;
 			}
 			StringBuilder sb = new StringBuilder();
 			if (StringUtils.isNotBlank(leave.getUser().getLastName())) {
@@ -1139,7 +1144,8 @@ public class LeaveManagementRestController {
 			}
 			leaveDto.setEmpName(sb.toString());
 			leaveDto.setStatus(leave.getStatus());
-			leaveDto.setNoOfDays(leave.getNumberOfDays());
+			totalLeaves = totalLeaves + Integer.parseInt(leave.getNumberOfDays());
+			leaveDto.setNoOfDays(String.valueOf(totalLeaves));
 			reportMap.put(leave.getUser().getId(), leaveDto);
 		}
 
@@ -1163,5 +1169,22 @@ public class LeaveManagementRestController {
 			isValid = true;
 		}
 		return isValid;
+	}
+	
+	/**
+	 * Get leave takers list for barchart
+	 * @param leaveDTO
+	 * @param request
+	 * @param response
+	 * @return List<LeaveDTO> 
+	 * @throws Exception
+	 */
+	@RequestMapping(value = { "/getLeaveTakersBarChat", "/rest/getLeaveTakersBarChat" },method=RequestMethod.GET)
+	@ResponseBody
+	public List<LeaveDTO>  getLeaveTakersBarChat(LeaveDTO leaveDTO,HttpServletRequest request,HttpServletResponse response) throws Exception {
+
+		OrgLocations orgLocation = orgLocationService.getOrgLocations(Long.parseLong(leaveDTO.getOrgLocationId()));
+		List<LeaveDTO> leavDtoList = leaveService.getLeaveTakersBarChat(orgLocation,leaveDTO);
+		return leavDtoList;
 	}
 }

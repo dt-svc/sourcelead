@@ -303,7 +303,7 @@ function getpieChar(json){
 	 		 var opt = json[i]; 
 	         chartData.push({
 	        	 category: opt.name,
-	        	 counts: opt.remainingTotalLeaveCounts,
+	        	 counts: opt.totalLeaves,
 	         	 color: opt.colorCode
 	       });
 	   }

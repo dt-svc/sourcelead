@@ -11,6 +11,7 @@ import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Stream;
 
@@ -473,6 +474,32 @@ public class LeaveServiceImpl implements LeaveService{
 	@Override
 	public ResponseList<Leave> getTopLeavetakers(OrgLocations orgLocation, LeaveDTO leaveDTO) throws Exception {
 		return leaveDao.getTopLeavetakers(orgLocation,leaveDTO);
+	}
+
+	@Override
+	public List<LeaveDTO> getLeaveTakersBarChat(OrgLocations orgLocation, LeaveDTO leaveDTO) throws Exception {
+		List<Leave> leaveList = leaveDao.getLeaveTakersBarChat(orgLocation,leaveDTO);
+		HashMap<String, LeaveDTO> reportMap = new HashMap<>();
+		List<LeaveDTO> leaveDtoList = new ArrayList<>();
+		int totalLeaves = 0;
+		for (Leave leave : leaveList) {
+			LeaveDTO leaveDto = reportMap.get(leave.getLeaveType().getId());
+			if (leaveDto == null) {
+				leaveDto = new LeaveDTO();
+				totalLeaves = 0;
+			}
+			leaveDto.setLeaveType(leave.getLeaveType().getName());
+			totalLeaves = totalLeaves + Integer.parseInt(leave.getNumberOfDays());
+			leaveDto.setTotalLeaves(String.valueOf(leave.getNumberOfDays()));
+			leaveDto.setColorCode(leave.getLeaveType().getColorCode());
+			reportMap.put(leave.getLeaveType().getId(), leaveDto);
+		}
+
+		for (Map.Entry<String, LeaveDTO> entry : reportMap.entrySet()) {
+			leaveDtoList.add(entry.getValue());
+		}
+		
+		return leaveDtoList;
 	}
 
 	
