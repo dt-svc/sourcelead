@@ -135,12 +135,13 @@ public class LeaveServiceImpl implements LeaveService{
 	}
 
 	@Override
-	public List<LeaveDTO> getEmployeeRequestedLeavesBylocationId(OrgLocations orgLocations, String userId, String leaveStatus) throws Exception {
+	public ResponseList<LeaveDTO> getEmployeeRequestedLeavesBylocationId(LeaveDTO leaveDTO,OrgLocations orgLocations) throws Exception {
 
-		List<LeaveApproveHierarchy> leaveApproveHierarchiesList = leaveDao.getEmployeeRequestedLeavesBylocationId(orgLocations.getId(),userId,leaveStatus);
+		ResponseList<LeaveApproveHierarchy> leaveApproveHierarchiesList = leaveDao.getEmployeeRequestedLeavesBylocationId(leaveDTO,orgLocations);
 
-		List<LeaveDTO> leaveDtoList = new ArrayList<>();
-		leaveApproveHierarchiesList.forEach(laph -> {
+		ResponseList<LeaveDTO> leaveDtoList = new ResponseList<>();
+		List<LeaveDTO> leavelistr = new ArrayList<>();
+		leaveApproveHierarchiesList.getData().forEach(laph -> {
 			Leave leave = laph.getLeaveid();
 			LeaveDTO leaveDto = new LeaveDTO();
 			StringBuilder sb = new StringBuilder();
@@ -173,10 +174,19 @@ public class LeaveServiceImpl implements LeaveService{
 			leaveDto.setStatus(leave.getStatus());
 			leaveDto.setNoOfDays(leave.getNumberOfDays());
 			leaveDto.setBalanceleaves(leave.getLeaveType().getNumbefrOfLeavesPeryear());
-
+			leaveDto.setOrgLocationId(String.valueOf(leave.getOrgLocations().getId()));
+			if(leave.getUser().getId() != null){ 
+			 UserRole userrole;
+			try {
+				userrole = userRoleService.getUserRoleByUserId(leave.getUser().getId());
+				leaveDto.setEmpType(userrole.getUserType());
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			}
 			if(leave.getApprovedBy() !=null) {
 				StringBuilder sbApprover = new StringBuilder();
-				if (Constants.APPROVED.equalsIgnoreCase(leaveStatus)) {
+				if (Constants.APPROVED.equalsIgnoreCase(leaveDTO.getLeaveStatus())) {
 					if (StringUtils.isNotBlank(leave.getApprovedBy().getLastName())) {
 						leaveDto.setApprovedBy(sbApprover.append(leave.getApprovedBy().getFirstName()).append(" ")
 								.append(leave.getApprovedBy().getLastName()).toString());
@@ -187,7 +197,7 @@ public class LeaveServiceImpl implements LeaveService{
 			}
 			if(leave.getRejectedBy() != null) {
 				StringBuilder sbRej = new StringBuilder();
-				if (Constants.REJECTED.equalsIgnoreCase(leaveStatus)) {
+				if (Constants.REJECTED.equalsIgnoreCase(leaveDTO.getLeaveStatus())) {
 					if (StringUtils.isNotBlank(leave.getRejectedBy().getLastName())) {
 						leaveDto.setRejectedBy(sbRej.append(leave.getRejectedBy().getFirstName()).append(" ")
 								.append(leave.getRejectedBy().getLastName()).toString());
@@ -196,9 +206,10 @@ public class LeaveServiceImpl implements LeaveService{
 					}
 				}
 			}
+			     leaveDto.setReason(leave.getReason());
 			
 			if(leave.getCancelledBy() != null) {
-			  if (Constants.LEAVE_CANCELLED.equalsIgnoreCase(leaveStatus)){
+			  if (Constants.LEAVE_CANCELLED.equalsIgnoreCase(leaveDTO.getLeaveStatus())){
 				  StringBuilder sbCancelApp = new StringBuilder();
 				if (StringUtils.isNotBlank(leave.getApprovedBy().getLastName())) {
 					leaveDto.setApprovedBy(sbCancelApp.append(leave.getApprovedBy().getFirstName()).append(" ")
@@ -216,9 +227,12 @@ public class LeaveServiceImpl implements LeaveService{
 			}
 			}
 			leaveDto.setUpdatedDate(ConversionUtil.getDateAsString(leave.getUpdatedDate()));
-			leaveDtoList.add(leaveDto);
+			leavelistr.add(leaveDto);
 		});
-		
+		leaveDtoList.setData(leavelistr);
+		leaveDtoList.setRecordsFiltered(leaveApproveHierarchiesList.getRecordsFiltered());
+		leaveDtoList.setRecordsTotal(leaveApproveHierarchiesList.getRecordsTotal());
+		leaveDtoList.setError(leaveApproveHierarchiesList.getError());
 		return leaveDtoList;
 	}
 
@@ -319,7 +333,7 @@ public class LeaveServiceImpl implements LeaveService{
 	@Override
 	public List<LeaveDTO> getEmployeeLeavesByApproverIdAndStatus(OrgLocations orgLocations, String userId, String status) throws Exception
 	{
-		List<LeaveApproveHierarchy> leaveApproveHierarchiesList = leaveDao.getEmployeeRequestedLeavesBylocationId(orgLocations.getId(),userId,status);
+		List<LeaveApproveHierarchy> leaveApproveHierarchiesList = leaveDao.getEmployeeRequestedLeavesBylocationIdAndUserIdAndStatus(orgLocations.getId(),userId,status);
 		List<LeaveDTO> leaveDtoList = new ArrayList<>();
 		for(LeaveApproveHierarchy laph : leaveApproveHierarchiesList){
 			Leave leave = laph.getLeaveid();

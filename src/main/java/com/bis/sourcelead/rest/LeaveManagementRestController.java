@@ -881,12 +881,12 @@ public class LeaveManagementRestController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = {"/getEmployeeRequestedLeaves","/rest/getEmployeeRequestedLeaves"}, method = RequestMethod.GET)
-	public  @ResponseBody List<LeaveDTO> getEmployeeRequestedLeaves(@RequestParam(value = "orgLocationId", required = false) Long orgLocationId,@RequestParam(value = "userId", required = false) String userId,@RequestParam(value = "leaveStatus", required = false) String leaveStatus,HttpServletRequest request) throws Exception
+	public  @ResponseBody ResponseList<LeaveDTO> getEmployeeRequestedLeaves(LeaveDTO leaveDTO,HttpServletRequest request) throws Exception
 	{
-		List<LeaveDTO> requestedLeavesList = null;
-		OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
-		requestedLeavesList = leaveService.getEmployeeRequestedLeavesBylocationId(orgLocations, userId,leaveStatus);
-		if (requestedLeavesList != null && !requestedLeavesList.isEmpty()) {
+		ResponseList<LeaveDTO> requestedLeavesList = null;
+		OrgLocations orgLocations = orgLocationService.getOrgLocations(Long.valueOf(leaveDTO.getOrgLocationId()));
+		requestedLeavesList = leaveService.getEmployeeRequestedLeavesBylocationId(leaveDTO,orgLocations);
+		if (requestedLeavesList != null) {
 			return requestedLeavesList;
 		}
 		return requestedLeavesList;
@@ -1078,7 +1078,7 @@ public class LeaveManagementRestController {
 	public List<LeaveDTO> getEmployeeLeavesList(@RequestParam(value = "orgLocationId", required = true) Long orgLocationId,@RequestParam(value = "userId", required = true) String userId) throws Exception
 	{
 		OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
-		List<LeaveDTO> leavesList = leaveService.getEmployeeRequestedLeavesBylocationId(orgLocations, userId, Constants.APPROVED);
+		List<LeaveDTO> leavesList = leaveService.getEmployeeLeavesByApproverIdAndStatus(orgLocations, userId, Constants.APPROVED);
 		return leavesList;
 		
 	}

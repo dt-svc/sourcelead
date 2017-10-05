@@ -30,9 +30,9 @@ $(document).ready(function(){
           <li class="dropdown">
             <div class="pull-left select-fild">
                     <select onchange="redirectlocation(this.value);">
-                        <option value="/employeeRequestedLeaves">Requested Leaves</option>
+                        <option value="/employeeRequestedLeaves" selected>Requested Leaves</option>
                         <option  value="/employeeApprovedLeaves">Approved Leaves</option>
-                        <option value="/employeeRejectedLeaves" selected>Rejected Leaves</option>
+                        <option value="/employeeRejectedLeaves">Rejected Leaves</option>
                         <option value="/employeeCancelLeaves">Cancel Leaves</option>
                     </select>
             </div>
@@ -48,22 +48,194 @@ $(document).ready(function(){
 </div>
 
     </div>
-    <!-- Content Area Ends--> 
+    
+    
+    <div class="side_mask">
+    <div class="proj_close"></div>
+</div>
+<div class="new_side_wrap">
+<div class="clients_side_wrap_inn">
+      <div class="clerfix showDetails">
+      <div class="project_tabs minHeight_225 form-horizontal modal-body">
+      <div id="leaveSummaryId"></div>
+     </div>
+      </div>
+  </div>
+</div>
   </section>
   <!-- Content Area Ends--> 
   
-  <script>
+ <script>
 function redirectlocation(location){
 	window.location.href = sourceleadUrl + location;
 }
-</script>
+</script> 
+  <script>
+  function getRequestedEmployeesList(){
+		var orgLocationId = '${SourceLeadWeb_orgLocationId}';
+		var userId = '${SourceLeadWeb_userId}';
+		var searchValue = $("#requestedEmployeesTableSearch").val();
+		searchValue = searchValue ? searchValue : "";
+		var url = sourceleadUrl+"/getEmployeeRequestedLeaves?"+tokenParamName+"="+tokenValue+"&searchValue="+searchValue+"&orgLocationId="+orgLocationId+"&userId="+userId+"&leaveStatus=PENDING";
+	    prepareRequestedEmployeesList(url);
+}
+</script> 
   
   <script>
+function prepareRequestedEmployeesList(url){
+	 $("#requestedLeavesDiv").removeAttr("style");
+ 	 $("#requestedLeavesDiv").empty();
+ 	 var result = "";
+ 	result = result +" <div class='remove_search'>";
+ 	result = result +" <input type='text' placeholder='Search' id='requestedEmployeesTableSearch'/>";
+ 	result = result +"</div>";
+ 	result = result + '<table id="requestedleavesTable" class="display" cellspacing="0" width="100%" >';
+ 	result = result + '<thead>';
+		result = result + '<tr>';
+		result = result + '<th>Employee Name</th>';
+		result = result + '<th>Leave Type</th>';
+		result = result + '<th>Duration</th>';
+		result = result + '<th>No Of Days</th>';
+		result = result + '<th>Leaves Taken</th>';
+		result = result + '<th>This Month</th>';
+		result = result + '<th>Balance leaves</th>';
+		result = result + '<th>Action</th>';
+		result = result + '</tr>';
+		result = result + '</thead>	';
+        result = result +"</table>";
+      $("#requestedLeavesDiv").append(result);
+      requestedEmployeesPagination(url); 
+}
+</script>
+
+<script>
+function requestedEmployeesPagination(url){
+	var colIndex = 0;
+    $('#requestedleavesTable').DataTable( { 
+    	"processing": true,
+        "serverSide": true,
+        "searching": false,
+        "ajax": $.fn.dataTable.pipeline( {
+            url: url,
+            method: 'GET',
+            pages: 10
+        }),
+        "columns": [
+            { "data": "empName" },
+            { "data": "leaveType"},
+            { "data": "duration"},
+            { "data": "noOfDays" },
+            { "data": "leavesTaken"},
+            { "data": "thisMonthLeaves" },
+            { "data": "balanceleaves" },
+            { "data": "action"},
+            
+        ],
+        "columnDefs": [ {
+	    	  	"targets": colIndex++,
+	    	  	"data": "empName",
+	    	  	"render": function(data, type, opt, meta) {
+	    	  		    var result = "";
+		    	  		if(opt.empType !=null && opt.empType != '' && opt.empType !='undefined'){
+		    	  			result = result + '     <div class="pull-left tbldata-dotdot-me cursorPointer" title="Sick Leave" onclick="getRequestedAproveSummary(\''+opt.id+'\','+opt.orgLocationId+');">'+opt.empName+'('+opt.empType+')</div><i class="fa fa-binoculars pull-right"></i>';	
+		        		}else{
+		        			result = result + '     <div class="pull-left tbldata-dotdot-me cursorPointer" title="Sick Leave" onclick="getRequestedAproveSummary(\''+opt.id+'\','+opt.orgLocationId+');">'+opt.empName+'</div><i class="fa fa-binoculars pull-right"></i>';
+		        		}
+		              return result; 
+	    	  	}
+	      },{
+	    	  "targets": colIndex++,
+              "data": "leaveType",
+              "render": function ( data, type, opt, meta ) {
+            	   var result = "";
+            	  result = result + '   <div title="Calendaer month" class="tblminwidth-75">'+opt.leaveType+'</div>';
+	              return result; 
+              		
+              }
+	          },{
+            "targets": colIndex++,
+            "data": "duration",
+            "render": function ( data, type, opt, meta ) {
+            	 var result = "";
+            	result = result + '   <div title="Duration" class="">'+opt.duration+'</div>';
+            	return result; 
+            }
+          }, {
+              "targets": colIndex++,
+              "data": "noOfDays",
+              "render": function ( data, type, opt, meta ) {
+            	   var result = "";
+            	  result = result + '     <div title="2" class="tblminwidth-75">'+opt.noOfDays+'</div>';	 
+            	    return result; 
+              }
+            }, {
+                "targets": colIndex++,
+                "data": "leavesTaken",
+                "render": function ( data, type, opt, meta ) {
+                		 var result = "";
+                		result = result + '     <div title="2" class="tblminwidth-75">'+opt.leavesTaken+'</div>';
+    	                return result; 
+                }
+          },{
+	    	  	"targets": colIndex++,
+	    	  	"data": "thisMonthLeaves",
+	    	  	"render": function(data, type, opt, meta) {
+	    	  		 var result = "";
+	    	  		result = result + '     <div title="2" class="tblminwidth-75">'+opt.thisMonthLeaves+'</div>';
+  	                return result; 
+	    	  	}
+	    	  },{
+	    	  	"targets": colIndex++,
+	    	  	"data": "balanceleaves",
+	    	  	"render": function(data, type, opt, meta) {
+	    	  		 var result = "";
+	    	  		result = result + ' <div title="2" class="tblminwidth-75">'+opt.balanceleaves+'</div>';
+	    	  		return result; 
+	    	  	}
+	    	  }, {
+                  "targets": colIndex++,
+                  "data": "action",
+                  "render": function ( data, type, opt, meta ) {
+                	   var result = "";
+                	  if(opt.status == 'APPROVED'){
+		        			 result = result + ' <b title="Accept" class="paddingRight proj_active">APPROVED</b>';
+		        		 }else  if(opt.status == 'REJECTED'){
+		        			 result = result + ' <b title="Accept" class="paddingRight proj_closed">REJECTED</b>';
+		        		 }else{
+		        			 result = result + ' <span title="Accept" class="paddingRight"><i class="fa fa-check text-success cursorPointer" onclick="approveLeave(\''+opt.id+'\',\''+opt.leaveTypeId+'\',\'APPROVED\',\''+opt.noOfDays+'\');"></i></span>';
+			        		 result = result + '  <span title="Reject" class="paddingLeft"><i class="fa fa-times text-danger cursorPointer" onclick="rejectLeave(\''+opt.id+'\',\''+opt.leaveTypeId+'\',\''+opt.noOfDays+'\',\'REJECTED\');"></i></span>'; 
+		        		 }
+                	    return result; 
+                  }
+                }],
+                "scrollCollapse": false,
+    	    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
+    	    	"aaSorting": [[1,'desc']],
+    	    	"bLengthChange": true,
+    	    	"bDestroy": true,
+    	    	"ordering": true,
+    	    	"oLanguage": {
+    	     		"sSearch": "",
+    	     		 "sZeroRecords": "", "sEmptyTable": "", 
+    	     		 "sProcessing": "<img src='resources/images/loading.gif' style='width: 75px; height: 75px;'/>"
+    	     }
+                });
+       $("#requestedleavesTable").wrap("<div class='overflow_Auto width100percnt'></div>")
+       $("input[type=search]").hide();
+       $("#requestedEmployeesTableSearch").keyup(function(e) {
+       	   if(e.which === 13) {
+       		getRequestedEmployeesList();
+       	   }
+       	});
+}
+</script>
+
+  <!-- <script>
   function getRequestedEmployeesList(){
 	  var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	  var userId = '${SourceLeadWeb_userId}';
 	  $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-	  $.get(sourceleadUrl+"/getEmployeeRequestedLeaves?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&userId="+userId, function(data) {
+	  $.get(sourceleadUrl+"/getEmployeeRequestedLeaves?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&userId="+userId+"&leaveStatus=PENDING", function(data) {
 				 var result = "";				        	
 					result = result + '<table id="requestedleavesTable" class="display" cellspacing="0" width="100%" >';
 					result = result + '<thead>';
@@ -158,9 +330,9 @@ function redirectlocation(location){
 					}); 
 		}); 
   }
-  </script>
+  </script> -->
   
-  <script>
+  <!-- <script>
 function requestedleavesTable(){ 
     $('#requestedleavesTable').DataTable( { 
     	"scrollCollapse": false,
@@ -175,7 +347,7 @@ function requestedleavesTable(){
     });
     $("#requestedleavesTable").wrap("<div class='overflow_Auto width100percnt'></div>")
 }
-</script>
+</script> -->
 
 
 
@@ -194,7 +366,7 @@ function approveLeave(leaveId,leaveTypeId,approveStatus,numberOfDays){
 			  $.get(sourceleadUrl+"/approveRequestedLeave?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&leaveId="+leaveId+"&leaveTypeId="+leaveTypeId+"&approveStatus="+approveStatus+"&userId="+userId+"&numberOfDays="+numberOfDays+"&reason="+reason, function(data) {
 					if(data == true){
 						$("#popUp").empty();
-			 			$("#remove_user_pop, .sideMask").fadeOut();
+			 			$("#remove_user_pop, .side_mask").fadeOut();
 			 			$("#selector1").removeAttr("style");
 			    		 $("#selector1").css({ display: "block" });
 			    	     $("#msgDiv").html("Rejected Successfully..");
@@ -206,8 +378,8 @@ function approveLeave(leaveId,leaveTypeId,approveStatus,numberOfDays){
 	 }else{
 		  $.get(sourceleadUrl+"/approveRequestedLeave?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&leaveId="+leaveId+"&leaveTypeId="+leaveTypeId+"&approveStatus="+approveStatus+"&userId="+userId+"&numberOfDays="+numberOfDays, function(data) {
 				if(data == true){
-// 					$("#popUp").empty();
-// 		 			$("#remove_user_pop, .project_inn_mask").fadeOut();
+					$("#popUp").empty();
+		 			$("#remove_user_pop, .project_inn_mask").fadeOut();
                          $("#selector1").removeAttr("style");
 			    		 $("#selector1").css({ display: "block" });
 			    	     $("#msgDiv").html("Approved Successfully..");
@@ -376,18 +548,17 @@ function cancelTermination(){
 	}
 </script> 
 
-<div class="side_mask">
-    <div class="proj_close"></div>
-</div>
-<div class="new_side_wrap">
-<div class="clients_side_wrap_inn">
-      <div class="clerfix showDetails">
-      <div class="project_tabs minHeight_225 form-horizontal modal-body">
-      <div id="leaveSummaryId"></div>
-     </div>
-      </div>
-  </div>
-</div>
-
-
+<script>
+$(".proj_show").click(function(){
+		$(".new_side_wrap").addClass("new_side_wrap_active");
+		$(".side_mask").fadeIn(200);
+		$("body").css('overflow-y', 'hidden');
+});
+$(".proj_close, .side_mask").click(function(){
+	$(".new_side_wrap").removeClass("new_side_wrap_active");
+	$(".side_mask").fadeOut(200);
+	$("body").css('overflow-y', 'auto');
+    $('.addcandidate-popup').fadeOut(200);
+}); 
+</script>
 <jsp:include page="../masterFooter.jsp" />
