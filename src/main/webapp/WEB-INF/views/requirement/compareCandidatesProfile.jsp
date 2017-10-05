@@ -14,25 +14,23 @@ z-index:9999 !important;
 
 <script>
 function compareRecommendedUsers(requirementId){
-	
-	var candlist = JSON.parse($("#compareCandListMap").val());
 	var sourceleadUrl = '${sourceleadUrl}';
 	var locationId = '${SourceLeadWeb_orgLocationId}';
 	
-	var complist = [];
-	 var oTable = $('#recommendationTable').dataTable();
-	 var rowcollection =  oTable.$("input[name='compareCandi']:checked", {"page": "all"});
-	 rowcollection.each(function(index,elem){
-		 complist[index] = $(elem).val();
-	 });
 	
-	if(complist.length >= 2 && complist.length <= 4){
+	if(compareCandidates.length >= 2 && compareCandidates.length <= 4){
+		var s = "";
+		for(var e in compareCandidates) {
+			if(s !== "")
+				s += ",";
+			s += compareCandidates[e];	
+		}
 		$("#loading").attr('style','position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		 $.ajax({
 		    	type: "GET",
-		        url: sourceleadUrl+"/getCandidatesToCompare?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&orgLocationId="+locationId+"&candidatesSelected="+complist,
+		        url: sourceleadUrl+"/getCandidatesToCompare?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&orgLocationId="+locationId+"&candidatesSelected="+s,
 		        success: function(data) {
-		        	compareRecommendedUsersdiv(data,requirementId,candlist);
+		        	compareRecommendedUsersdiv(data,requirementId);
 		        	$("#loading").removeAttr('style');
 		        }
 		 });
@@ -44,7 +42,7 @@ function compareRecommendedUsers(requirementId){
 
 
 <script>
-function compareRecommendedUsersdiv(data,requirementId,candidateList){
+function compareRecommendedUsersdiv(data,requirementId){
 	var sourceleadUrl = '${sourceleadUrl}';
 	
 	var jobId = "";
@@ -120,7 +118,6 @@ function compareRecommendedUsersdiv(data,requirementId,candidateList){
  			}
  		}
     }
-	
 	var result = '';
     result = result +'<div class="comMask" style="display: block; z-index:9999;"></div>';
     result = result +'<div class="compare_resume">';
@@ -191,7 +188,7 @@ function compareRecommendedUsersdiv(data,requirementId,candidateList){
 	$("#candidateCompare").empty();
 	$("#candidateCompare").append(result);
 	prepareCandidateGrid(data,requirementId);
-	prepareCompareCandidateList(candidateList);
+	prepareCompareCandidateList();
 	
 	$("#compareCandidateList1").chosen();
 	$("#compareCandidateList2").chosen();
@@ -205,12 +202,26 @@ function compareRecommendedUsersdiv(data,requirementId,candidateList){
 </script>
 
 <script>
-function prepareCompareCandidateList(candidateList){
+function prepareCompareCandidateList(){
+	var candiList = JSON.parse($("input[name='compareCandListMap']").val());
 	var output = "";
     output = output + "<option value=''>--Select Candidate--</option>"; 
-    $.each(candidateList, function(key, value) {
-    	output = output + "<option value='" +key+ "'>"+value+"</option>";
-    });
+      for (var key in candiList) {
+		 var value=candiList[key];
+		output = output + "<option value='" +key+ "'>"+value+" </option>"; 
+	  } 
+    
+   /*  for(i=0;i<candiList.length;i++){
+    	opt = candiList[i];
+    	var firstName = "";
+    	if(opt.lastName !=null && opt.lastName != '' && opt.lastName != "undefined"){
+    		firstName = opt.firstName +""+ opt.lastName ;
+    	}else{
+    		firstName = opt.firstName;
+    	}
+    	output = output + "<option value='" +opt.candidateId+ "'>"+firstName+" </option>"; 
+    } */
+ 
    	$("#compareCandidateList1").empty();
    	$("#compareCandidateList2").empty();
    	$("#compareCandidateList3").empty();
@@ -218,7 +229,7 @@ function prepareCompareCandidateList(candidateList){
    	$("#compareCandidateList1").append(output);
    	$("#compareCandidateList2").append(output);
    	$("#compareCandidateList3").append(output);
-   	$("#compareCandidateList4").append(output);
+   	$("#compareCandidateList4").append(output); 
 }
 </script>
 
@@ -228,7 +239,6 @@ function prepareCandidateGrid(data,requirementId){
 	 for(i = 0; i<data.candidateList.length; i++){
 		 if(count < 4){
 			 report = data.candidateList[i];
-		    	if(report.isCandidateSubmitted == 'N'){
 		    		count++;
 		    		var firstName ="";
 			    	if(report.firstName != null && report.firstName != '' && report.firstName != 'undefined'){
@@ -312,7 +322,6 @@ function prepareCandidateGrid(data,requirementId){
 				    	mobile = report.mobilePhone;
 				    }
 				    
-				    
 				    var opt = "";
 				    
 				    opt = opt +'<div class="profilecompare-widget_hdr clearfix">';
@@ -365,7 +374,6 @@ function prepareCandidateGrid(data,requirementId){
 	    	    	opt = opt +'<button type="button" onClick="submitRecomendedApplicant('+requirementId+','+report.candidateId+',\'compare\');" class="btn btn-sm btn-success">Add</button>';
 	    	    	opt = opt +'</div>';
 		    	    opt = opt +'</div>';
-		    	    
 		    	    if(count==1){
 		    	    	$("#profileDiv1").empty();
 // 		    	    	$("#noRecords1").hide();
@@ -386,7 +394,6 @@ function prepareCandidateGrid(data,requirementId){
 // 		    	    	$("#noRecords4").hide();
 		    	    	$("#profileDiv4").append(opt);
 		    	    }
-		    	}
 		 }else{
 			 break;
 		 }

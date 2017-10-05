@@ -869,7 +869,6 @@ var validationSettings = {
         		e.preventDefault();
 		        
 		        var formData = getFormData("recruiterRegistration_form");
-		        alert("ddd=="+formData);
 		        var requirementUUID = '${requirementUUID}';
          		var sourceleadUrl ='${sourceleadUrl}';
          	 	$("#recruiter_register").attr("disabled", "disabled");
