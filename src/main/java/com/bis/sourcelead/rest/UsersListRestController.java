@@ -1655,7 +1655,7 @@ public class UsersListRestController {
 			userService.addUser(user);
 			userRoleService.addUserRole(userRole);
 
-			if (isUserActive == false && !emailId.equalsIgnoreCase(addUserDTO.getEmailId())) {
+			if (isUserActive == false && !emailId.equalsIgnoreCase(addUserDTO.getEmail())) {
 				userService.sendEmail(user, loginUser, password, orgLocations.getId());
 			}
 		}
