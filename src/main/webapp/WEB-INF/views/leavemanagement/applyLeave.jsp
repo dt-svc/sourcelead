@@ -296,14 +296,13 @@ function removeEndValid(){
           
      }); 
 function getpieChar(json){
-	
 	 var chartData = [];
 
 	   for (var i = 0; i < json.length; i++) { 
 	 		 var opt = json[i]; 
 	         chartData.push({
 	        	 category: opt.name,
-	        	 counts: opt.totalLeaves,
+	        	 counts: opt.remainingTotalLeaveCounts,
 	         	 color: opt.colorCode
 	       });
 	   }

@@ -1189,4 +1189,23 @@ public class LeaveManagementRestController {
 		List<LeaveDTO> leavDtoList = leaveService.getLeaveTakersBarChat(orgLocation,leaveDTO);
 		return leavDtoList;
 	}
+	
+	/**
+	 * Withdraw leave by employee
+	 * @param orgLocationId
+	 * @param leaveId
+	 * @param reason
+	 * @return boolean
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/withdrawLeave")
+	@ResponseBody
+	public boolean withdrawLeave(@RequestParam(value = "orgLocationId", required = false) Long orgLocationId,
+			@RequestParam(value = "leaveId", required = false) String leaveId,
+			@RequestParam(value = "reason", required = false) String reason) throws Exception {
+		boolean isValid = false;
+		isValid = leaveService.getWithdrawLeave(leaveId,reason,orgLocationId);
+		
+		return isValid;
+	}
 }

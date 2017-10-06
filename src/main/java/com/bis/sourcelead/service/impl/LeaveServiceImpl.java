@@ -265,6 +265,7 @@ public class LeaveServiceImpl implements LeaveService{
 		}
 		leaveManagementHistory.setLeaveid(leave);
 		leaveManagementHistory.setType(Constants.LEAVE);
+		leaveManagementHistory.setToStage(leave.getStatus());
 		leaveManagementHistory.setStatus(leave.getStatus());
 		leaveManagementHistory.setCreatedBy(user.getUserCode());
 		leaveManagementHistory.setCreatedDate(new Date());
@@ -500,6 +501,41 @@ public class LeaveServiceImpl implements LeaveService{
 		}
 		
 		return leaveDtoList;
+	}
+
+	@Override
+	public boolean getWithdrawLeave(String leaveId, String reason, Long orgLocationId) throws Exception {
+		boolean isLeaveWithdraw = false;
+		LeaveManagementHistory leaveManagementHistory = new LeaveManagementHistory();
+		User user = userService.getUserById(orgLocationId);
+		Leave leave = leaveDao.getLeaveById(leaveId);
+		leaveManagementHistory.setFromStage(leave.getStatus());
+		if (leave != null) {
+			if (Constants.LEAVE_PENDING.equals(leave.getStatus())) {
+				leave.setStatus(Constants.LEAVE_WITHDRAW);
+			}else {
+				leave.setStatus(Constants.LEAVE_WITHDRAW);
+				leave.setNumberOfDays("0");
+			}
+			leave.setWithdrawReason(reason);
+			leave.setUpdatedBy(user.getUserCode());
+			leave.setUpdatedDate(new Date());
+			Leave updatedLeave = leaveDao.saveLeave(leave);
+			if(updatedLeave !=null) {
+				isLeaveWithdraw = true;
+			}
+			leaveManagementHistory.setLeaveid(leave);
+			leaveManagementHistory.setType(Constants.LEAVE);
+			leaveManagementHistory.setToStage(leave.getStatus());
+			leaveManagementHistory.setStatus(leave.getStatus());
+			leaveManagementHistory.setCreatedBy(user.getUserCode());
+			leaveManagementHistory.setCreatedDate(new Date());
+			leaveManagementHistory.setUpdatedBy(user.getUserCode());
+			leaveManagementHistory.setUpdatedDate(new Date());
+			leaveManagementHistoryDao.saveLeaveManagementHistory(leaveManagementHistory);
+		}
+
+		return isLeaveWithdraw;
 	}
 
 	

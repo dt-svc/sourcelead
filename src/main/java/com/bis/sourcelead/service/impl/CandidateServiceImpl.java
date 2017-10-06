@@ -556,7 +556,7 @@ public class CandidateServiceImpl implements CandidateService {
 		 * Saving Candidate DB data as ElasticSearch Documents
 		 */
 		saveOrUpdateCandidateElkDocument(savedCandidate);
-		return null;
+		return savedCandidate;
 	}
 
 	private void inviteCandidateToSourceLead(User loginUser, Candidate candidate, OrgLocations orgLocations) throws Exception
