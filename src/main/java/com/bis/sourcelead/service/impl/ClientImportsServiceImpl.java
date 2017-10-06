@@ -1423,7 +1423,7 @@ public class ClientImportsServiceImpl implements ClientImportsService {
 												duplicateClietDetails.add(clientOrVendor);
 											}
 											else {
-												UserRole userRole = userRoleService.getUserDetailsByEmailAndLocationId(clientOrVendor.getEmail(), orgLocations.getId());
+												UserRole userRole = userRoleService.getUserDetailsByEmailAndLocationId(clientOrVendor.getEmail(), vendorLocations.getId());
 												if (userRole == null) {
 													List<OrgRelations> vandorsListByOrgLocationId;
 													if ("Client".equalsIgnoreCase(responderType)) {
