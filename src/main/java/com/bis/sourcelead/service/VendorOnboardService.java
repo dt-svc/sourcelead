@@ -28,4 +28,6 @@ public interface VendorOnboardService {
 	
 	void sendMailAndNotificationToVendorContact(VendorOnboarding vendorOnboarding,OrgLocations vendorOrgLocations, OrgLocations orgLocations,User user,User spocUser) throws Exception;
 	
+	void saveVendorOnboardForVendorBulkImports(Long vendorOnboardingId,User user,User spocUser,OrgLocations orgLocations) throws Exception;
+	
 }

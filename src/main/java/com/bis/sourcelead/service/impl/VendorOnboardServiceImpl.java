@@ -698,4 +698,107 @@ public class VendorOnboardServiceImpl implements VendorOnboardService {
 		setEmialAndNotificationToVendor(spocUser, user, orgLocations, vendorOnboarding, vendorOrgLocations,"Vendor Contact Invitation");
 	}
 
+	@Override
+	public void saveVendorOnboardForVendorBulkImports(Long vendorOnboardingId,User user,User spocUser,OrgLocations orgLocations) throws Exception {
+		
+		VendorOnboarding vendorOnboarding = vendorOnboardDao.getVendorOnboardingById(vendorOnboardingId);
+		OrgRelations orgRelations = vendorOnboarding.getOrgRelationId();
+		OrgLocations vendorOrgLocations = vendorOnboarding.getVendorLocationId();
+		
+		if(orgRelations != null && StringUtils.isNotBlank(orgRelations.getVendorOnboardTemplateId())){
+			List<Long> templateIdsList = new ArrayList<>();
+			String[] templateIds = orgRelations.getVendorOnboardTemplateId().split(",");
+			for(String onboardTempalteId : templateIds){
+				templateIdsList.add(Long.valueOf(onboardTempalteId));
+			}
+			
+		    List<VendorOnboardingTemplateDocuments> documentsList = vendorOnboardTemplateDocumentsDao.getVendorOnBoardingTemplateDocumentsByTemplateList(templateIdsList,"Documents");
+		    if(documentsList != null && documentsList.size() > 0){
+		    	
+		    	for(VendorOnboardingTemplateDocuments documents : documentsList){
+		    		
+		    		VendorOnboardingTemplateDocuments templateDocuments = null;
+		    		templateDocuments = new VendorOnboardingTemplateDocuments();
+					templateDocuments.setDocumentUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+					templateDocuments.setVendorOnboardingId(vendorOnboarding);
+					templateDocuments.setDocumentName(documents.getDocumentName());
+					templateDocuments.setIsRequired(documents.getIsRequired());
+					templateDocuments.setStatus(Constants.CANDIDATE_ACTIVE);
+					templateDocuments.setDocumentType("Vendor Documents");
+					templateDocuments.setCreatedBy(user);
+					templateDocuments.setUpdatedBy(user);
+					templateDocuments.setCreatedDate(CommonUtil.currentDate());
+					templateDocuments.setUpdatedDate(CommonUtil.currentDate());
+					vendorOnboardTemplateDocumentsDao.saveVendorOnBoardingTemplateDocuments(templateDocuments);
+		    	}
+		    }
+		    
+		    List<VendorOnboardTasks> tasksList = vendorOnboardTasksDao.getVendorOnboardTasksByTemplateIdsList(templateIdsList);
+	    	if(tasksList != null && tasksList.size() > 0){
+	    	
+	    		for(VendorOnboardTasks task : tasksList){
+	    			VendorOnboardTasks vendorTask = new VendorOnboardTasks();
+					vendorTask.setTaskName(task.getTaskName());
+					vendorTask.setVendorOnboardingId(vendorOnboarding);
+					vendorTask.setAssignToUsers(task.getAssignToUsers());
+					vendorTask.setAssignToVendor(task.getAssignToVendor());
+					vendorTask.setPriority(task.getPriority());
+					vendorTask.setDueAfterMonths(task.getDueAfterMonths());
+					vendorTask.setDueAfterHours(task.getDueAfterHours());
+					vendorTask.setDueAfterMinutes(task.getDueAfterMinutes());
+					vendorTask.setDueAfterDays(task.getDueAfterDays());
+					vendorTask.setTaskRepeat(task.getTaskRepeat());
+					vendorTask.setTaskEmail(task.getTaskEmail());
+					vendorTask.setTaskNotification(task.getTaskNotification());
+					vendorTask.setDescription(task.getDescription());
+					vendorTask.setTaskType("Vendor Task");
+					vendorTask.setStatus(Constants.CANDIDATE_ACTIVE);
+					vendorTask.setCreatedBy(user);
+					vendorTask.setUpdatedBy(user);
+					vendorTask.setCreatedDate(commonUtil.currentDate());
+					vendorTask.setUpdatedDate(commonUtil.currentDate());
+					vendorOnboardTasksDao.saveVendorOnboardTasks(vendorTask);
+	    		}
+	    		
+	    		List<VendorOnboardTasks> vendorOnboardTasksList = vendorOnboardTasksDao.getVendorOnboardTasksByVendorOnboardId(vendorOnboarding.getId());
+				if(vendorOnboardTasksList != null && vendorOnboardTasksList.size() > 0){
+					for(VendorOnboardTasks onboardTasks : vendorOnboardTasksList){
+						if(StringUtils.isNotBlank(onboardTasks.getAssignToUsers())){
+							 String[] userIds = onboardTasks.getAssignToUsers().split(",");
+							 for(int i=0; i<userIds.length; i++){
+								 Tasks tasks = null;
+								 User taskUser = userDao.getUserById(Long.valueOf(userIds[i]));
+								 tasks = getTaskDetails(onboardTasks, taskUser, user, orgLocations);
+								 tasks.setOwnerOrglocationId(orgLocations);
+								 tasks.setVendorOnboardingId(vendorOnboarding);
+								 taskDao.saveTasks(tasks);
+							 }
+						}else{
+							 Tasks tasks = null;
+							 tasks = getTaskDetails(onboardTasks, spocUser, user, orgLocations);
+							 tasks.setOwnerOrglocationId(vendorOrgLocations);
+							 tasks.setVendorOnboardingId(vendorOnboarding);
+							 taskDao.saveTasks(tasks);
+						 }
+					}
+				}
+				
+				vendorOnboarding.setVendorOnboardStatus("Sent");
+				vendorOnboardDao.saveVendorOnboarding(vendorOnboarding);
+				
+				orgRelations.setVendorRelationStatus("Sent");
+				orgRelationsDao.addOrgRelations(orgRelations);
+				
+				SubmissionTemplate submissionTemplate = submissionTemplateService.getDefaultSubmissionTemplateByClientLocationIdAndOrgLocationId(
+						vendorOrgLocations.getId(), orgLocations.getId());
+				
+				clientService.saveOrUpdateClientVendorElkDocument(orgLocations.getOrg(), vendorOrgLocations, "Vendor", null, orgRelations,
+						submissionTemplate, user, orgLocations);
+				
+				setEmialAndNotificationToVendor(spocUser, user, orgLocations, vendorOnboarding, vendorOrgLocations,"Vendor Contact Invitation");
+	    	}
+		}
+		
+	}
+
 }

@@ -372,7 +372,7 @@ public class ClientServiceImpl implements ClientService {
 				orgSpoc.setUpdatedBy(user.getUserCode());
 				orgSpocService.addOrgSpoc(orgSpoc);
 
-				if (("Client".equals(responderType) || "Vendor".equals(responderType))	&& (StringUtils.isNotBlank(clientDTO.getIsMailSent()) && ("Y".equals(clientDTO.getIsMailSent())))) {
+				if (("Client".equals(responderType)) && (StringUtils.isNotBlank(clientDTO.getIsMailSent()) && ("Y".equals(clientDTO.getIsMailSent())))) {
 					userService.sendEmailToClientOrVendor(orgSpoc.getUUID(), spocUser, ownerUser, user,
 							spocUser.getTempPwd(), responderType, loginOrg, clientOrgLocations.getOrg(),
 							clientOrgLocations, orgLocations);
