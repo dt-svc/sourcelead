@@ -82,12 +82,7 @@ function getRejectedLeavesList(){
 			        		 result = result + ' <tr>';
 			        		 result = result + ' <td>';
 			        		 result = result + ' <div class="proj_show tbldata-dotdot-big">';
-// 			        		 if(opt.leaveTypeName !=null && opt.leaveTypeName !='' && opt.leaveTypeName !='undefined'){
-// 			        			 result = result + '     <div class="pull-left tbldata-dotdot-me" title="'+opt.leaveTypeName+'">'+opt.leaveTypeName+'</div>'; 
-			        			 result = result + '     <div class="pull-left tbldata-dotdot-me" title="Sick Leave" onclick="getRequestedAproveSummary(\''+opt.id+'\','+orgLocationId+');">'+opt.empName+'('+opt.empType+')</div><i class="fa fa-binoculars pull-right" ></i>';
-// 			        		 }else{
-// 			        			 result = result + '     <div class="pull-left tbldata-dotdot-me" title="">--</div>';
-// 			        		 }
+			        			 result = result + '     <div class="pull-left tbldata-dotdot-me" title="Sick Leave" onclick="getRequestedAproveSummary(\''+opt.id+'\','+orgLocationId+');">'+opt.leaveTypeName+'</div><i class="fa fa-binoculars pull-right" ></i>';
 			        		 result = result + '  </div>';
 			        		 result = result + ' </td>';
 			        		 result = result + ' <td>';
@@ -184,8 +179,8 @@ function getRequestedAproveSummary(leaveId,orgLocationId){
              result = result +' </div>';
              result = result +'<div class="col-md-12 mb">';
              result = result +'<label class="col-md-2 control-label"><b>No of leaves taken:</b></label>';
-             result = result +' <div class="col-md-8">';
-             result = result +'<span>XXXXXXX</span>';
+             result = result +' <div class="col-md-8">'; 
+             result = result +'<span>'+data.leavesTaken+'</span>';
              result = result +'</div>';
              result = result +'</div>';
              result = result +'<div class="col-md-12 mb">';
@@ -197,31 +192,36 @@ function getRequestedAproveSummary(leaveId,orgLocationId){
              result = result +'<div class="col-md-12 mb">';
              result = result +'<label class="col-md-2 control-label"><b>Approvers:</b></label>';
              result = result +'<div class="col-md-8">';
-             result = result +' <span>Srinivas Vemula</span>';
+             result = result +' <span>'+data.approverUsers+'</span>';
              result = result +'</div>';
              result = result +'</div>';
              result = result +'<div class="col-md-12 mb">';
              result = result +'<label class="col-md-2 control-label"><b>Rejected By:</b></label>';
              result = result +'<div class="col-md-8">';
-             result = result +' <span>Srinivas Vemula</span>';
+             result = result +' <span>'+data.rejectedBy+'</span>';
              result = result +'</div>';
              result = result +'</div>';
              result = result +'<div class="col-md-12 mb">';
              result = result +'<label class="col-md-2 control-label"><b>Rejected On:</b></label>';
              result = result +'<div class="col-md-8">';
-             result = result +' <span>Srinivas Vemula</span>';
+             result = result +' <span>'+data.updatedDate+'</span>';
              result = result +'</div>';
              result = result +'</div>';
              result = result +'<div class="col-md-12 mb">';
              result = result +'<label class="col-md-2 control-label"><b>Rejected Reason:</b></label>';
              result = result +'<div class="col-md-8">';
-             result = result +' <span>Srinivas Vemula</span>';
+            if(data.rejectedReason !=null && data.rejectedReason != '' && data.rejectedReason != 'undefined'){
+            	result = result +' <span>'+data.rejectedReason+'</span>';
+            }else{
+            	result = result +' <span>--</span>';
+            }
+             
              result = result +'</div>';
              result = result +'</div>';
              result = result +'<div class="col-md-12 mb">';
              result = result +'<label class="col-md-2 control-label"><b>Reason:</b></label>';
              result = result +'<div class="col-md-8">';
-             result = result +' <span>Srinivas Vemula</span>';
+             result = result +' <span>'+data.reason+'</span>';
              result = result +'</div>';
              result = result +'</div>';
              result = result +'<div class="col-md-12 mb">';
