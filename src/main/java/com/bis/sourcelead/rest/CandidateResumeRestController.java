@@ -156,7 +156,7 @@ public class CandidateResumeRestController {
 	 * 
 	 * @throws Exception
 	 */
-	@PreAuthorize("hasAnyRole('ROLE_VIEW_DELETE_CANDIDATE_RESUMES','ROLE_CROWDSOURCING_PROFILE','ROLE_VIEW_DELETE_ASSOCIATE_RESUMES','ROLE_CROWDSOURCING_CANDIDATES')")
+//	@PreAuthorize("hasAnyRole('ROLE_VIEW_DELETE_CANDIDATE_RESUMES','ROLE_CROWDSOURCING_PROFILE','ROLE_VIEW_DELETE_ASSOCIATE_RESUMES','ROLE_CROWDSOURCING_CANDIDATES')")
 	@RequestMapping(value = "/terminateResume", method = RequestMethod.POST)
 	public @ResponseBody String terminateResume(@RequestParam(value = "loginUserId", required = false) Long loginUserId, @RequestParam(value = "orgLocationId", required = false) Long orgLocationId, @RequestParam(value = "candidateId", required = false) Long candidateId, @RequestParam(value = "resumeId", required = false) String resumeId) throws Exception
 	{
@@ -205,7 +205,7 @@ public class CandidateResumeRestController {
 	 * 
 	 * @throws Exception
 	 */
-	@PreAuthorize("hasAnyRole('ROLE_VIEW_EDIT_CANDIDATE_RESUMES','ROLE_CROWDSOURCING_PROFILE','ROLE_CROWDSOURCING_PROFILE','ROLE_VIEW_EDIT_ASSOCIATE_RESUMES')")
+//	@PreAuthorize("hasAnyRole('ROLE_VIEW_EDIT_CANDIDATE_RESUMES','ROLE_CROWDSOURCING_PROFILE','ROLE_CROWDSOURCING_PROFILE','ROLE_VIEW_EDIT_ASSOCIATE_RESUMES')")
 	@RequestMapping(value = "/getResume", method = RequestMethod.POST)
 	public @ResponseBody String getResume(@RequestParam(value = "candidateId", required = false) Long candidateId, @RequestParam(value = "resumeId", required = false) String resumeId, HttpServletRequest request) throws Exception
 	{

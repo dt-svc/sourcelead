@@ -37,6 +37,11 @@ function recomendcandidateQuickViewProfile(candidateId,recScore){
 	             			 	}else{
 	             			 		city = '';
 	             			 	}	
+	         			 	if(json.mobilePhone != null && json.mobilePhone != '' && json.mobilePhone != 'undefined'){
+	         			 		mobilePhone =json.mobilePhone;
+	             			 	}else{
+	             			 		mobilePhone = '';
+	             			 	}
 	         			 	
 	         			 	if(json.lastName != null && json.lastName != '' && json.lastName != 'undefined'){
 	         			 		lastName =json.lastName;
@@ -105,11 +110,14 @@ function recomendcandidateQuickViewProfile(candidateId,recScore){
 					}else{
 						result = result+'<p>---</p>';
 					}
-					
 					result = result+'                </div>                                                                                                                                        ';
-				
 					result = result+'                <div class="media-right positionRelative">                                                                                                                     ';
+					if(json.fileUrl != null && json.fileUrl != '' && json.fileUrl !='undefined'){ 
 					result = result+'<img  data-id="profileImage" id="userImage" onerror="predefineProfileImage(this);" src="'+json.fileUrl+'" alt="Profile Image" class="media-object" style="width:65px">';
+					}else{
+					result = result+'<img  data-id="profileImage" id="userImage" onerror="predefineProfileImage(this);" src="resources/images/userprofileImg.jpg" alt="Profile Image" class="media-object" style="width:65px">';
+	
+					}
 					if(recScore != null && recScore != '' && recScore != 'undefined'){
 						  if(recScore >=50){ 
 						 	 result = result +'                    <i class="valid-profile fa fa-check-square text-success ProImgPosit"></i>';        
@@ -138,7 +146,7 @@ function recomendcandidateQuickViewProfile(candidateId,recScore){
 					result = result+'                  <ul class="list-unstyled">                                                                                                                  ';
 					result = result+'                      <li><i class="fa fa fa-envelope paddingRight text-warning" title="Email"></i>'+json.email+'';
 					result = result+'                      </li>                                                                                                                                   ';
-					result = result+'                      <li><i class="fa fa-phone paddingRight text-warning" title="Mobile"></i>'+json.mobilePhone+'</li>                                              ';
+					result = result+'                      <li><i class="fa fa-phone paddingRight text-warning" title="Mobile"></i>'+mobilePhone+'</li>                                              ';
 					result = result+'                      <li><i class="fa fa-map-marker paddingRight text-warning" title="Location"></i>'+city+''+state+''+country+'</li>';
 					result = result+'                    <li><i class="fa fa-usd paddingRight text-warning" title="Rate"></i>'+expectedRate+' '+rateType+''+expectedRateCurrencey+'</li>';
 					result = result+'                  </ul>                                                                                                                                       ';

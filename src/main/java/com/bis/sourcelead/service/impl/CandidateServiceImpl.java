@@ -327,11 +327,11 @@ public class CandidateServiceImpl implements CandidateService {
 		if(candidateDto.getLocation() != null){
 			candidate.setLocation(candidateDto.getLocation());
 		}
-		if(candidateDto.getZipCode() != null){
+		if(candidateDto.getZipcode()!= null){
 			if(candidate.getZipCode() != null){
-				activitySummary.append("Zip Code").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidate.getZipCode()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDto.getZipCode()).append(Constants.NEW_VALUE_TAG_END).append(" ");
+				activitySummary.append("Zip Code").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidate.getZipCode()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDto.getZipcode()).append(Constants.NEW_VALUE_TAG_END).append(" ");
 			}
-			candidate.setZipCode(candidateDto.getZipCode());
+			candidate.setZipCode(candidateDto.getZipcode());
 		}
 		
 		if(candidateDto.getLatitude() != null){
@@ -492,8 +492,11 @@ public class CandidateServiceImpl implements CandidateService {
 		if(StringUtils.isNotBlank(candidateDto.getVendors())){
 			OrgRelations orgRelation = orgRelationsService.getOrRelationsById(Long.parseLong(candidateDto.getVendors()));
 			candidate.setOrgRelationId(orgRelation);
+			Candidate vendorCandidate =  commonUtil.getVendorCandidateForCandidateCreation(candidateDto, orgRelation, orgLocations, user);
+			candidate.setParentCandidateId(vendorCandidate);
 		}else{
 			candidate.setOrgRelationId(null);
+			candidate.setParentCandidateId(null);
 		}
 		
 		if(StringUtils.isNotBlank(candidateDto.getVendorcontact())){
@@ -1044,8 +1047,8 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 			}else{
 				candidate.setLocation(null);
 			}
-			if(StringUtils.isNotBlank(candidateDTO.getZipCode())){
-				candidate.setZipCode(candidateDTO.getZipCode());
+			if(StringUtils.isNotBlank(candidateDTO.getZipcode())){
+				candidate.setZipCode(candidateDTO.getZipcode());
 			}else{
 				candidate.setZipCode(null);
 			}			
@@ -1555,9 +1558,9 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 				 }
 				 
 				//photo Details - 5 %
-				 if(can.getDocFile()!=null){
+				 if(can.getFileUrl()!=null){
 					 percentage = percentage + 5; 
-				 }else if(can.getConsultantUser() != null && can.getConsultantUser().getDocFile() != null){
+				 }else if(can.getConsultantUser() != null && can.getConsultantUser().getFileUrl() != null){
 					 percentage = percentage + 5; 
 				 }
 
@@ -1589,6 +1592,12 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 				can.setCandidateName(can.getFirstName());
 		}
 		return associateList;
+	}
+
+
+	@Override
+	public Candidate getCandidateByParentCandidateId(Long parentCandidateId) throws Exception {
+		return candidateDao.getCandidateByParentCandidateId(parentCandidateId);
 	}
 
 }

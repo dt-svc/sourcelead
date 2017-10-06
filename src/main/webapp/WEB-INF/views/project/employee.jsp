@@ -6,12 +6,23 @@
  <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+ 
 <style type="text/css">
 .side-bar-active .subMenu{
     display: none;
 }
 .side-bar-active .fa-fw {
   position: absolute !important; right: 0 !important;
+}
+.countShow {
+display: none;  border: none; min-width: 10px; text-align: center; cursor: pointer; max-width: 12px; 
+}
+.remove_user_pop.remove_user_pop_a {
+top:20% !important;
+left: 115px !important;
+}
+.prRight.prRight_new {
+    right: 280px; top: 40px;
 }
 </style>
  <style type="text/css">
@@ -126,6 +137,14 @@
              </div>
            </div>
            <!-- Add Team modal popup ends --> 
+           
+           
+           
+           
+<div class="side_mask">
+    <div class="proj_close"></div>
+</div> 
+<div id="associatesList"></div>
  
  
  <script>
@@ -142,10 +161,18 @@ function filterStatus() {
  
  <script>
  function projectEmployee(projectId,startDateStr,endDateStr,status,projectName){
+	 
+	 var projectUUID = '${projectUUID}';
+	 var sourceleadUrl = '${sourceleadUrl}';
+	 var postedOrgLocationId = '${postedOrgLocationId}';
+	 var loginOrgLocationId = '${SourceLeadWeb_orgLocations.id}'
+	 var projectClientUUID = '${projectClientUUID}';
+	 	 
 	   $("#employeesLoadingImg").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;'); 
  	 
 	   var resourceRequestsCount = '${resourceRequestsCount}';
 	   var projectMembersCount = '${projectMembersCount}';
+	   var projectBudgetCount = '${projectBudgetCount}';
 	   
 	   var result = "";
  	 
@@ -171,12 +198,14 @@ function filterStatus() {
 	
 result = result + '<div class="newPrTabs col-md-12">';
 result = result + '<ul class="newPrTabsMenu">';
-result = result + '<li class="current"><a href="#tab-a">Resources ('+projectMembersCount+')</a></li>';
+result = result + '<li class="current"><a href="#tab-a" id="projectMembersTab" >Resources ('+projectMembersCount+')</a></li>';
 
-/* Dont delete this commented code. Functionality is in progress */
-/* result = result + '<li class=""><a href="#tab-b" id="resourceTab" onclick="resourceRequestsTab();">Resource Requests ('+resourceRequestsCount+')</a></li>'; */
+/* Dont delete this commented code. Functionality is in progress '+projectBudgetCount+' */
+ result = result + '<li class=""><a href="#tab-b" id="resourceTab" onclick="resourceRequestsTab();">Resource Requests ('+resourceRequestsCount+')</a></li>'; 
 
-result = result + '<li class=""><a href="#tab-c">Budget Requests (10)</a></li>';
+result = result + '<li class=""><a href="#tab-c" id="budgetRequestsTab" onclick="budgetRequests();">Budget Requests ';
+result = result + '(<b class="countClose">'+projectBudgetCount+'</b><input class="countShow" type="text" id="projectBudgetCount" readonly/>)';
+result = result + '</a></li>';
 result = result + '<div class="clearfix"></div>';
 result = result + '</ul>';
 
@@ -184,19 +213,31 @@ result = result + '<div class="project_tabs mb">';
 	
 	//Resources Tab
 	result = result + '<div id="tab-a" class="newPrTabs_inn" style="display: block;">';
-	result = result + '    	<div class="timesheet_head clearfix">';
+	result = result + '    	<div class="timesheet_head clearfix anchorTag-black">';
 		 result = result	+ '<ul>';
 			if(status != 'COMPLETED' &&  status != '' &&  status != 'undefined' ){
 			result = result +'<li>';
 	 		'<sec:authorize access="hasAnyRole(\'ROLE_ASSIGN_EMPLOYEE_TO_PROJECT\')">';
-	 			result = result + '<span data-target="#assignTeam" data-toggle="modal" onclick="getTeamMembers('+projectId+',\''+startDateStr+'\',\''+endDateStr+'\');"><i class="paddingRight glyphicon glyphicon-plus"></i>Assign Emp</span>';
-	 		'</sec:authorize>';
+	 		 
+	 		if(postedOrgLocationId == loginOrgLocationId){
+	 			  result = result + '<a href="javascript:void(0)" onclick="getAssociates();" id="addDiv">';
+		 		  result = result + '<i class="fa fa-exchange paddingRight"></i>&nbsp;Transfer Emp</a>&nbsp;&nbsp;&nbsp;&nbsp;'; 
+	 		 }
+	 		
+	 	     if('${isClientOrgActive}' == "N" || postedOrgLocationId == loginOrgLocationId){   
+	 			 result = result + '<a href="'+sourceleadUrl+'/addNewProjectMembers?projectUUID='+projectUUID+'&projectClientUUID='+projectClientUUID+'">';
+	 		     result = result + '<i class="glyphicon glyphicon-plus"></i>Assign Emp</a></li>';
+	 		}  
+	 		   
+	 		
+ 		    '</sec:authorize>';
+
 	 		result = result +'</li>';
 			} 
 		    result = result + '	<li><a onClick="filterStatus()" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-filter"></i><span>Status</span><i class="glyphicon glyphicon-play"></i></a>';
 		    result = result + '   	<div class="filterLi dropdown-menu bootstrap_dropdownMenu dropdownPadding">';
 			result = result + '       	<ul>';
-			result = result + '           	<li><input id="c5" type="checkbox" name="employeeStatus" value ="All" onclick="getFilterEmployeeDetails('+projectId+',\''+startDateStr+'\',\''+endDateStr+'\',\''+status+'\',\''+projectName+'\');"><label for="c5">All</label></li>';
+			/* result = result + '           	<li><input id="c5" type="checkbox" name="employeeStatus" value ="All" onclick="getFilterEmployeeDetails('+projectId+',\''+startDateStr+'\',\''+endDateStr+'\',\''+status+'\',\''+projectName+'\');"><label for="c5">All</label></li>'; */
 			result = result + '				<li><input id="c6" type="checkbox"  checked="true" name="employeeStatus" value ="Active" onclick="getFilterEmployeeDetails('+projectId+',\''+startDateStr+'\',\''+endDateStr+'\',\''+status+'\',\''+projectName+'\');"><label for="c6">Active</label></li>';
 			result = result + '				<li><input id="c7" name="employeeStatus" type="checkbox" value ="In-Active" onclick="getFilterEmployeeDetails('+projectId+',\''+startDateStr+'\',\''+endDateStr+'\',\''+status+'\',\''+projectName+'\');"><label for="c7">In-Active</label></li> ';
 			result = result + '           </ul>';
@@ -223,18 +264,23 @@ result = result + '<div class="project_tabs mb">';
 				'</sec:authorize>';
 			
 			result = result +'</ul>';
-		
+			result = result + '</div>';
 			getFilterEmployeeDetails(projectId,startDateStr,endDateStr,status,projectName);
 			result = result +'<div id="employeeDetailsDiv" class="datatable_filter"> </div>';
 			result = result +'</div>';
-		result = result + '</div>';
+		
 		
 	//	Resource Requests Tab
 		result = result + '<div id="tab-b" class="newPrTabs_inn">';
 		result = result + ' <div id="resourceRequestsTabDiv"></div>';
 		result = result + '</div>';
 		
-		result = result + '<div id="tab-c" class="newPrTabs_inn"><p>Tab3</p></div>';
+		result = result + '<div id="tab-c" class="newPrTabs_inn">';
+		result = result + ' <div id="budgetRequestsTabDiv"></div>';
+		result = result + '</div>';
+	
+	result = result + '</div>';
+	
 	result = result + '</div>';
 
 	result = result + '</div>';
@@ -297,8 +343,8 @@ result = result + '<div class="project_tabs mb">';
 	    $.ajax({
 	    	type: "POST",
 	        url: sourceleadUrl+"/getProjectEmployeeListById?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId+"&status="+values, 
-	        success: function(data) {
-	        	var json = JSON.parse(data);
+	        success: function(json) {
+	        	
 	        	var result = "";
 	        	result = result + '        <div class="project_tabs_inn_table overflow-data">';
 	    		result = result + ' <div class="success_pop" id="selector3" style="display: none;">';
@@ -309,6 +355,10 @@ result = result + '<div class="project_tabs mb">';
 	    	    result = result + '	<table id="projectEmployeePagination" class="display" cellspacing="0" width="100%">';
 	    		result = result + '	<thead>';
 	    		result = result + '		<tr>';
+	    		  if('${postedOrgLocationId}' == '${SourceLeadWeb_orgLocations.id}'){
+	    			  result = result + ' <th><input type="checkbox" onclick="selectAllMembers();"  id="selectAllMembers" ></th>';
+	    		  }
+	    		
 	            result = result + '	 	<th>Emp Name</th>';
 	            result = result + '	 	<th>Emp Email</th>';
 	            result = result + '	 	<th>Emp Role</th>';
@@ -339,8 +389,11 @@ result = result + '<div class="project_tabs mb">';
 		        			projectEndDateStr = "--"
 		        		}
 		        		result = result + '	 <tr>';
-		                
-		                result = result + '	 	<td><div class="tbldata-dotdot" title="'+opt.empName+'"><span title="'+opt.empName+'">'+opt.empName+'</span></div></td>';
+		        		 if('${postedOrgLocationId}' == '${SourceLeadWeb_orgLocations.id}'){
+		        			 result = result + '<td><input type="checkbox" onclick="selectedMember();"  class="projectMembersChecks" value='+opt.id+' name="projectMembers[]" ></td>';
+		        		 }
+		        		
+		                result = result + '	 	<td><div class="tbldata-dotdot" title="'+opt.candidateName+'"><span title="'+opt.candidateName+'">'+opt.candidateName+'</span></div></td>';
 		                result = result + '	 	<td><div class="tbldata-dotdot" title="'+opt.empEmail+'"><span title="'+opt.empEmail+'">'+opt.empEmail+'</span></div></td>';
 		                result = result + '	 	<td><div class="tbldata-dotdot_80" title="'+role+'"><span title="'+role+'">'+role+'</span></div></td>';
 		                result = result + '	     <td><div class="tbldata-dotdot_80"><span title="'+opt.projectAssignedDateStr+'">'+opt.projectAssignedDateStr+'</span></div></td>';
@@ -365,44 +418,52 @@ result = result + '<div class="project_tabs mb">';
 		                result = result + '	     <td><div class="tbldata-dotdot_80"><span title="'+opt.rejectedHrs+'">'+opt.rejectedHrs+'</span></div></td>';
 		                result = result + '	     <td><div class="tbldata-dotdot_80"><span title="'+opt.submittedHrs+'">'+opt.submittedHrs+'</span></div></td>';
 		                result = result + '	     <td><div class="tbldata-dotdot_80"><span title="'+opt.draftHrs+'">'+opt.draftHrs+'</span></div></td>';
-		                if(opt.status != null && opt.status != '' && opt.status !='undefined' && opt.status != 0){
-		                	result = result + '	<td><div>';
-		                	if(status != 'COMPLETED'){
-		                		'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_DELETE_PROJECT_EMPLOYEES\')">'; 
+		                
+		                
+		                if('${postedOrgLocationId}' == '${SourceLeadWeb_orgLocations.id}'){
+		                	
+		                	 if(opt.status != null && opt.status != '' && opt.status !='undefined' && opt.status != 0){
+				                	result = result + '	<td><div>';
+				                	if(status != 'COMPLETED'){
+				                		'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_DELETE_PROJECT_EMPLOYEES\')">'; 
 
-		                		result = result + '<span title="delete employee"><i class="glyphicon glyphicon-trash" onClick="deleteProject('+opt.id+'\,\''+projectId+'\',\''+startDateStr+'\',\''+endDateStr+'\')";></i></span>';
-		                		'</sec:authorize>';
-		                		
-		                		'<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_DELETE_PROJECT_EMPLOYEES\')">'; 
-		                		result = result + '---';
-		                		'</sec:authorize>';
-		                	}
-		                	result = result +'</div></td>';
-	                     }
-	                     else{
-	                    	 result = result + '<td><div class="tblminwidth-50">';
-	                    	 if(status != 'COMPLETED'){
-	                    		 '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_DELETE_PROJECT_EMPLOYEES\',\'ROLE_ASSIGN_EMPLOYEE_TO_PROJECT\')">'; 
-	                    		    result = result + '<a  onclick="reActiveProject(\''+opt.id+'\',\''+opt.empName+'\',\''+opt.projectAssignedDateStr+'\',\''+projectEndDateStr+'\',\''+opt.endDate+'\');flushReProject()" data-target="#Re-AssignProject" data-toggle="modal">Re-Assign &nbsp;</a><span class="show-reason">';
-		                    	if(opt.terminateReason != null && opt.terminateReason != '' && opt.terminateReason != 'undefined'){
-		                    		result = result + '<b class="glyphicon glyphicon-comment text-success"></b><b class="reason edit-status">'+opt.terminateReason+'</b>';
-				        	 		//  result = result + '<i class="glyphicon glyphicon-comment ml10 edit-reason"><div class="edit-status"><p>'+report.terminateReason+'</p></div></i></div></td>';
-
-		                    	}else{
-		                    		result = result + '';	
-		                    	}
-		                      '</sec:authorize>';
-		                      
-		                      '<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_DELETE_PROJECT_EMPLOYEES\',\'ROLE_ASSIGN_EMPLOYEE_TO_PROJECT\')">'; 
-		                        result = result + '---';
-		                      '</sec:authorize>';
-	                    	 
-	                    	 result = result + '</span>';
-	                    	 }else{
-	                    		 result = result + '<font color="red">&nbsp;Terminated</font>';	 
-	                    	 }
-	                    	 result = result +'</div></td>';
-	                     }
+				                		result = result + '<span title="delete employee"><i class="glyphicon glyphicon-trash" onClick="deleteProject('+opt.id+'\,\''+projectId+'\',\''+startDateStr+'\',\''+endDateStr+'\')";></i></span>';
+				                		'</sec:authorize>';
+				                		
+				                		'<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_DELETE_PROJECT_EMPLOYEES\')">'; 
+				                		result = result + '---';
+				                		'</sec:authorize>';
+				                	}
+				                	result = result +'</div></td>';
+			                     }
+			                     else{
+			                    	 result = result + '<td><div class="tblminwidth-50">';
+			                    	 if(status != 'COMPLETED'){
+			                    		 '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_DELETE_PROJECT_EMPLOYEES\',\'ROLE_ASSIGN_EMPLOYEE_TO_PROJECT\')">'; 
+			                    		    result = result + '<a  onclick="reActiveProject(\''+opt.id+'\',\''+opt.empName+'\',\''+opt.projectAssignedDateStr+'\',\''+projectEndDateStr+'\',\''+opt.endDate+'\');flushReProject()" data-target="#Re-AssignProject" data-toggle="modal">Re-Assign &nbsp;</a><span class="show-reason">';
+				                    	if(opt.terminateReason != null && opt.terminateReason != '' && opt.terminateReason != 'undefined'){
+				                    		result = result + '<b class="glyphicon glyphicon-comment text-success"></b><b class="reason edit-status">'+opt.terminateReason+'</b>';
+				                    	}else{
+				                    		result = result + '';	
+				                    	}
+				                      '</sec:authorize>';
+				                      
+				                      '<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_DELETE_PROJECT_EMPLOYEES\',\'ROLE_ASSIGN_EMPLOYEE_TO_PROJECT\')">'; 
+				                        result = result + '---';
+				                      '</sec:authorize>';
+			                    	 
+			                    	 result = result + '</span>';
+			                    	 }else{
+			                    		 result = result + '<font color="red">&nbsp;Terminated</font>';	 
+			                    	 }
+			                    	 result = result +'</div></td>';
+			                     }
+		                	
+		                }else{
+		                	result = result + '<td><div class="tblminwidth-50">---</div></td>';
+		                }
+		                
+		               
 	                    	 
 		                
 		                
@@ -493,6 +554,25 @@ function projectEmployeePagination(){
     } );
 }
 </script>
+
+<script>
+function selectAllMembers(){
+	
+	var checked = document.getElementById("selectAllMembers").checked  
+	
+        if(checked) {
+            $('.projectMembersChecks').each(function() {
+                this.checked = true;   
+            });
+        }else{
+            $('.projectMembersChecks').each(function() {
+                this.checked = false;      
+            });         
+        } 
+	
+}
+</script> 
+
 <!-- this script is for Employee EndDate Inline functionality at Projects screen -->
 <script> 
 function inlineEditForEndDate(id,projectMemberId){
@@ -567,7 +647,7 @@ function saveReason(projectMemberId,projectId,startDateStr,endDateStr){
 
 
 <!-- this script is for TeamMembers List functionality at Projects screen -->
-<script type="text/javascript">
+<!-- <script type="text/javascript">
 function getTeamMembers(projectId,startDateStr,endDateStr) {
 	if(projectId == null || projectId == '' || projectId == 'undefined'){
 		projectId  = document.getElementById("projectId").value;
@@ -774,8 +854,10 @@ function getTeamMembers(projectId,startDateStr,endDateStr) {
 	$('#lastName').val('');}
 	$('#employeeEmail').val('');
 </script>
-
-<script>
+ -->
+ 
+ 
+<!-- <script>
 function assignEmployeespagination(){  
     $('#assignEmployeePagination').DataTable( { 
     	"scrollCollapse": false,
@@ -795,11 +877,11 @@ function assignEmployeespagination(){
 		
     } );
 }
-</script>
+</script> -->
 
 
 <!-- this script is for Assign Employee functionality at Projects screen -->
-<script>
+<!-- <script>
 function assignEmployee(){
 	    $('#assignEmployeePagination').DataTable().search('').draw();
 	 	var projectId = $("#projectId").val();
@@ -840,9 +922,9 @@ function assignEmployee(){
 		})
 	    
 }
-</script>
+</script> -->
 
- <script>
+<!--  <script>
 function toggleCheck() {
 	var checked = document.getElementById("empChekId").checked  
 	
@@ -856,14 +938,11 @@ function toggleCheck() {
         });         
     } 
 
- /* var selectedsubmissionslists = [];
- $("input[name='submissionList[]']:checked").each( function (i) {
-	 selectedsubmissionslists[i] = $(this).val(); 
-});*/
-}
-</script>
 
-<script type="text/javascript">
+}
+</script> -->
+
+<!-- <script type="text/javascript">
 function flushEmployee(){
 	 $("#add_employee").removeAttr("disabled");
      $('#firstName').val('');
@@ -876,7 +955,7 @@ function flushEmployee(){
 </script>
 
 
-<!-- this script is for Add Employee functionality at Projects screen -->
+this script is for Add Employee functionality at Projects screen
 <script type="text/javascript">
 	function addEmployee() {
 		 if ($('#employee_form').validate(false, validationSettings)){
@@ -903,7 +982,7 @@ function flushEmployee(){
 		$("#employee_form").showHelpOnFocus();;
 		$("#employee_form").validateOnBlur(false, validationSettings);  
 	});
-</script>
+</script> -->
 
 
 <script>
@@ -920,14 +999,35 @@ function flushEmployee(){
 <script>
 function exportToPdf(projectId){
 	var sourceleadUrl ='${sourceleadUrl}';
-	window.location.href = sourceleadUrl+"/exportProjectEmployeeList?&projectId="+projectId+"&exportType=pdf";
+	
+	 var values = [];
+	 var chekbox = $('input:checkbox[name=employeeStatus]:checked').val();
+	 if(chekbox != 'undefined' && chekbox != '' && chekbox != null){
+			$('input:checkbox[name=employeeStatus]:checked').each(function() 
+				    {
+						values.push($(this).val());
+				    });
+	 }else{
+		 values = "Active";
+	 }
+	window.location.href = sourceleadUrl+"/exportProjectEmployeeList?&projectId="+projectId+"&status="+values+"&exportType=pdf";
 }
 </script>
 
 <script>
 function exportToExcel(projectId){
 	var sourceleadUrl ='${sourceleadUrl}';
-	window.location.href = sourceleadUrl+"/exportProjectEmployeeList?&projectId="+projectId+"&exportType=xls";
+	var values = [];
+	 var chekbox = $('input:checkbox[name=employeeStatus]:checked').val();
+	 if(chekbox != 'undefined' && chekbox != '' && chekbox != null){
+			$('input:checkbox[name=employeeStatus]:checked').each(function() 
+				    {
+						values.push($(this).val());
+				    });
+	 }else{
+		 values = "Active";
+	 }
+	window.location.href = sourceleadUrl+"/exportProjectEmployeeList?&projectId="+projectId+"&status="+values+"&exportType=xls";
 }
 </script>
 
@@ -1191,6 +1291,7 @@ function toDate(selector) {
 function resourceRequestsTab(){
 	 var sourceleadUrl ='${sourceleadUrl}';
 	 var projectUUID = '${projectUUID}';
+	 var projectClientUUID = '${projectClientUUID}';
 	 
 	 var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
 	  if(locationList.match("yyyy-MM-dd")){
@@ -1210,12 +1311,13 @@ function resourceRequestsTab(){
 	        	
 	        	var result = "";
 	        	
-	    		result = result + '	<div class="project_tabs_inn_head timesheet_head">';
+	    		result = result + '	<div class="timesheet_head anchorTag-black">';
 	    		result = result + '	<ul>';
-	    		result = result + '	      <li><a href="'+sourceleadUrl+'/requestAssociates?projectUUID='+projectUUID+'">';
+	    		result = result + '	      <li><a href="'+sourceleadUrl+'/requestAssociates?projectUUID='+projectUUID+'&projectClientUUID='+projectClientUUID+'">';
 	    		result = result + '	       <i class="glyphicon glyphicon-plus"></i>Request Associates</a></li>';
-	    		result = result + '	      <li><a href="'+sourceleadUrl+'/newResourceRequest?projectUUID='+projectUUID+'">';
+	    		result = result + '	      <li><a href="'+sourceleadUrl+'/newResourceRequest?projectUUID='+projectUUID+'&projectClientUUID='+projectClientUUID+'">';
 	    		result = result + '	       <i class="glyphicon glyphicon-plus"></i>New Resource Request</a>&nbsp; &nbsp;</li>';
+
 	    		result = result + '	</ul>';
 	    		result = result + '	       </div>';
 	    		result = result + '		<div class="project_tabs_inn_table vendor_wrap_inn_table datatable_filter overflow_inherint">';
@@ -1240,15 +1342,15 @@ function resourceRequestsTab(){
 	    			result = result + '<tr>';
 	    			if(report.requestType == 'Associate Request'){
 						if(report.requestStatus == 'Draft' || report.requestStatus == 'Rejected'){
-							result = result + '<td><div><a href="'+sourceleadUrl+'/editResourceRequest?requestUUID='+report.requestUUID+'&projectUUID='+projectUUID+'">'+report.requestId+'</a></div></td>';
+							result = result + '<td><div><a href="'+sourceleadUrl+'/editResourceRequest?requestUUID='+report.requestUUID+'&projectUUID='+projectUUID+'&projectClientUUID='+projectClientUUID+'">'+report.requestId+'</a></div></td>';
 						}else{
-							result = result + '<td><div><a href="'+sourceleadUrl+'/viewResourceRequest?requestUUID='+report.requestUUID+'&projectUUID='+projectUUID+'">'+report.requestId+'</a></div></td>';
+							result = result + '<td><div><a href="'+sourceleadUrl+'/viewResourceRequest?requestUUID='+report.requestUUID+'&projectUUID='+projectUUID+'&projectClientUUID='+projectClientUUID+'">'+report.requestId+'</a></div></td>';
 						}
 	    			}else{
 	    				if(report.requestStatus == 'Draft' || report.requestStatus == 'Rejected'){
-	    					result = result + '<td><div><a href="'+sourceleadUrl+'/editNewResourceRequest?requestUUID='+report.requestUUID+'&projectUUID='+projectUUID+'">'+report.requestId+'</a></div></td>';
+	    					result = result + '<td><div><a href="'+sourceleadUrl+'/editNewResourceRequest?requestUUID='+report.requestUUID+'&projectUUID='+projectUUID+'&projectClientUUID='+projectClientUUID+'">'+report.requestId+'</a></div></td>';
 						}else{
-							result = result + '<td><div><a href="'+sourceleadUrl+'/viewNewResourceRequest?requestUUID='+report.requestUUID+'&projectUUID='+projectUUID+'">'+report.requestId+'</a></div></td>';
+							result = result + '<td><div><a href="'+sourceleadUrl+'/viewNewResourceRequest?requestUUID='+report.requestUUID+'&projectUUID='+projectUUID+'&projectClientUUID='+projectClientUUID+'">'+report.requestId+'</a></div></td>';
 						}
 	    				
 	    			}
@@ -1281,6 +1383,403 @@ function resourceRequestsTab(){
 }
 </script>
 
+
+<script>
+function getAssociates(){
+	var result = '';
+	
+	result = result +'<div class="clients_side_wrap">';
+	result = result +'<div id="projectDetailsLoading"></div>';
+	result = result +'<div class="new_side_wrap_inn">';
+	result = result +'<div class="timesheet_head" style="border-bottom: 1px solid #ededed; background: #f5f5f5;">';
+	      
+	result = result +'<ul class="pull-right">';
+	
+
+	        
+	result = result +'<li class="dropdown pull-left">';
+	result = result +'<span class="dropdown-toggle mt5" id="menu1" data-toggle="dropdown">';
+	result = result +'<i class="fa fa-filter mt5"></i><span>Location</span><i class="glyphicon glyphicon-play mt10"></i></span>|';
+	result = result +'<div class="dropdown-menu bootstrap_dropdownMenu bootstrap_dropdownMenu-right" role="menu" aria-labelledby="menu1">';
+	result = result +'<ul class="location-filter">';
+	result = result +'<c:forEach var="locations" items="${orgLocationsList}">';
+	result = result +'<li>';
+	result = result +'<input class="ml10" value="${locations.id}" onclick="getOrgLocationProjects();"  name="orgLocations" ${SourceLeadWeb_orgLocations.id  == locations.id ? "checked" : ''} type="radio">';
+	result = result +'<label class="radioAlign"><img src="resources/images/${locations.country}.gif">${locations.orgLocationName}</label>';
+	result = result +'</li>';
+	result = result +'</c:forEach>';
+	result = result +'</ul>';
+	result = result +'</div>';
+	result = result +'</li>';
+	
+	result = result +'<li class="pull-left">';  
+	result = result +'<select class="form-control chosen-select" name="orgLocationProjects" id="orgLocationProjects" onchange="getProjectDetails();">';
+	result = result +'<option value="">-- Select Project --</option>';
+	result = result +'</select>';
+	result = result +'</li>';  
+	
+
+	
+	result = result +'<div class="clearfix"></div>';
+	result = result +'</ul>';
+	result = result +'<div class="clearfix"></div>';
+	result = result +'</div>';
+	
+	result = result +'<div id="projectDetailsDiv"></div>';
+	result = result +'<div id="membersChoicepopUp"></div>';
+	result = result +'</div>';
+	result = result +'</div>';
+	
+	
+	 $("#associatesList").empty();
+     $("#associatesList").append(result);
+     
+     $(".clients_side_wrap").addClass("clients_side_wrap_active");
+	 $(".side_mask").fadeIn(200);
+	 $("body").css('overflow-y', 'hidden');
+    
+	 prepareChosenScripts();
+     getOrgLocationProjects();
+     getProjectDetails();
+ 	
+}
+</script>
+
+
+<script type="text/javascript">
+function getOrgLocationProjects(){
+	emptyRecords();
+	var orgLocations = [];
+	$('input:radio[name=orgLocations]:checked').each(function() 
+		    {
+		orgLocations.push($(this).val());
+	    });
+	
+	 var sourceleadUrl = '${sourceleadUrl}';
+	 $("#projectDetailsLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	 $.ajax({
+	    	type: "GET",
+	        url: sourceleadUrl+"/getProjectsListByOrgLocationForTransfer?${_csrf.parameterName}=${_csrf.token}&orgLocationId="+orgLocations, 
+	        success: function(json) {
+	        
+	        	var output = "";
+	        	output = output + '<option value="">--Select Project--</option>';
+	        	for (var i=0; i<json.length; i++)
+				{
+		        		var opt = json[i];
+		        		output = output + '<option value="'+opt.id+'">'+opt.projectName+'</option>';
+				}
+	        	
+	        	$("#orgLocationProjects").empty();
+		        $("#orgLocationProjects").append(output);
+		        $('#orgLocationProjects').trigger("chosen:updated");
+		        $("#projectDetailsLoading").removeAttr("style"); 
+	        }
+	   
+     });
+		 
+}
+</script>
+
+<script>
+function getProjectDetails(){
+	var orgLocationProjects = document.getElementById("orgLocationProjects").value;
+	var orgLocations = [];
+	$('input:radio[name=orgLocations]:checked').each(function() 
+		    {
+		orgLocations.push($(this).val());
+	    });
+	
+	if(orgLocationProjects){
+		$("#projectDetailsLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		var sourceleadUrl = '${sourceleadUrl}';
+				$.ajax({
+					type : "POST",
+					url : sourceleadUrl	+ "/getProjectDetailsForResouceTransfer?${_csrf.parameterName}=${_csrf.token}&projectId="+ orgLocationProjects+"&orgLocationId="+orgLocations,
+					success : function(data) {
+						var json = JSON.parse(data);
+						var endDateStr = "";
+						var description = "";
+						var clientName = "";
+						var projectSequeneNumber = "";
+						var invoiceFrequency = "";
+						
+						
+					
+						if (json.endDateStr != null && json.endDateStr != ''
+								&& json.endDateStr != 'undefined') {
+							endDateStr = json.endDateStr;
+						} else {
+							endDateStr = "--";
+						}
+						if (json.description != null && json.description != ''
+								&& json.description != 'undefined') {
+							description = json.description;
+						} else {
+							description = "----";
+						}
+						
+						if (json.invoiceFrequency != null && json.invoiceFrequency != '' && json.invoiceFrequency != 'undefined') {
+							invoiceFrequency = json.invoiceFrequency;
+					     } else {
+					    	 invoiceFrequency = "----";
+					    }
+						
+						if (json.projectSequeneNumber != null
+								&& json.projectSequeneNumber != ''
+								&& json.projectSequeneNumber != 'undefiend') {
+							projectSequeneNumber = json.projectSequeneNumber;
+						} else {
+							projectSequeneNumber = "--";
+						}
+						if (json.client != null && json.client != ''
+								&& json.client != 'undefined') {
+							clientName = json.client
+						} else {
+							clientName = "--";
+						}
+						
+						if (json.overtimeRateType != null && json.overtimeRateType != '' && json.overtimeRateType != 'undefined') {
+							flatPercentageId = json.overtimeRateType
+						} else {
+							flatPercentageId = "";
+						}
+						
+						var proStatus ='';
+						if(json.projectStatus == 'NOTSTARTED'){
+							proStatus = 'Not Started';
+						}else if(json.projectStatus == 'INPROGRESS'){
+							proStatus = 'In-Progress';
+						}else if(json.projectStatus == 'ONHOLD'){
+							proStatus = 'On-Hold';
+						}else if(json.projectStatus == 'COMPLETED'){
+							proStatus = 'Completed';
+						}else if(json.projectStatus == 'DROPPED'){
+							proStatus = 'Dropped';
+						}
+						
+						
+						
+						var result = "";
+						result = result	+ '<div class="project_tabs_inn_table">';
+	   		    		
+						result = result	+ '<div class="project_details_cta">';
+						result = result + '<strong>Status:</strong><span>';
+						result = result +  proStatus;
+						result = result + '</span>';
+						result = result	+ '</div><div class="clearfix"></div>';
+						
+						result = result + '<input type="hidden" name="dbProjectStatus" id="dbProjectStatus" value="'+json.projectStatus+'" >';
+						result = result + '<div class="clearfix"></div>';
+
+						result = result	+ '<div class="project_details_cta" id="ProjectIdDiv">';
+						result = result + '<strong>Project Id:</strong>';
+						result = result + '<span>'+projectSequeneNumber+'</span>';
+						result = result + '<div class="clearfix"></div>';
+						result = result + '</div>';
+
+						result = result	+ '	<div class="project_details_cta" id="projectNameId">';
+						result = result + '	<strong>Project name:</strong>';
+						result = result + '	<span title="'+json.projectName+'">'+json.projectName+'</span><div class="clearfix"></div>';
+						result = result + '	</div>';
+
+						result = result + '<div class="project_details_cta">';
+						result = result + '<strong>Manager 1:</strong><span>';
+
+						for (var j = 0; j < json.managersList.length; j++) {
+							var manager = json.managersList[j];
+							if (json.manager1 == manager.id) {
+								result = result + manager.firstName + " "
+										+ manager.lastName;
+							}
+						}
+						result = result	+ '</span><div class="clearfix"></div>';
+						result = result + '	</div>';
+
+						if (json.manager2 != null && json.manager2 != "" && json.manager2 != "undefined") {
+							result = result	+ '<div class="project_details_cta">';
+							result = result	+ '	<strong>Manager 2:</strong><span>';
+
+							for (var j = 0; j < json.managersList.length; j++) {
+								var manager = json.managersList[j];
+								if (json.manager2 == manager.id) {
+									result = result + manager.firstName + " "
+											+ manager.lastName;
+								}
+							}
+							result = result	+ '</span><div class="clearfix"></div>';
+							result = result + '	</div>';
+						}
+						
+						
+						result = result + '<div class="project_details_cta">';
+						result = result + '<strong>Client:</strong>';
+						result = result + '<span title="'+clientName+'">'+clientName+'</span><div class="clearfix"></div>';
+						result = result + '<div class="clearfix"></div>';
+						result = result + '</div>';
+						
+						
+						
+						result = result + '<div class="clearfix"></div>';
+						result = result	+ '<div class="project_details_cta">';
+						result = result + '<strong>Start date:</strong>';
+						result = result + '<span title="'+json.startDateStr+'">'+json.startDateStr+'</span><div class="clearfix"></div>';
+						result = result + '</div>';
+						result = result	+ '<div class="project_details_cta">';
+						result = result + '<strong>End date:</strong>';
+						result = result + '<span title="'+endDateStr+'">'+endDateStr+'</span><div class="clearfix"></div>';
+						result = result + '</div>';
+						result = result + '<div class="clearfix"></div>';
+						
+						result = result + '<div class="clearfix"></div>';
+						
+						result = result + '<div class="form-footer clearfix miniFoot">';
+						result = result + '<div class="col-lg-12">';
+						result = result + '<div class="pull-right">';
+						result = result + '<input type="button" value="Transfer" onClick="transferToProject()" class="btn btn-success ml10">';
+						result = result + '</div>';
+						result = result + '</div>';
+						result = result + '</div>';
+						
+						result = result + '</div>';
+						result = result + ' </div>';
+						result = result + '</div>';
+
+						$("#projectDetailsDiv").empty();
+						$("#projectDetailsDiv").append(result);
+						$("#projectDetailsLoading").removeAttr("style"); 
+
+					}
+				});
+	}else{
+		emptyRecords();
+	}
+	
+}
+</script>
+
+<script>
+function emptyRecords(){
+	var result = '';
+	 result = result+"   <div class='row'>"; 
+	 result = result+"	<div class='col-lg-12'>"; 
+	 result = result+"		<div class='dataTables_empty'>"; 
+	 result = result+"		</div>"; 
+	 result = result+"	</div>"; 
+	 result = result+"  </div> ";
+	 
+	 $("#projectDetailsDiv").empty();
+    $("#projectDetailsDiv").append(result);
+}
+</script>
+
+
+<script>
+function transferToProject(){
+	var projectMembers = [];
+	 $("input[name='projectMembers[]']:checked").each( function (i) {
+		 projectMembers.push($(this).val());
+	});
+	 
+	var orgLocations = [];
+	$('input:radio[name=orgLocations]:checked').each(function() 
+		    {
+		orgLocations.push($(this).val());
+	    });
+	 
+	 var projectUUID = '${projectUUID}';
+	 var projectOrgLocationId = document.getElementById("orgLocationProjects").value;
+	 var projectId = document.getElementById("orgLocationProjects").value;
+	 if(projectMembers.length > 0){
+		 
+		 $("#projectDetailsLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		 var projectUUID = '${projectUUID}';
+		 var sourceleadUrl = '${sourceleadUrl}';
+		 var projectClientUUID = '${projectClientUUID}';
+		 
+		 $.ajax({
+		    	type: "POST",
+		        url: sourceleadUrl+"/transferProjectMembers?${_csrf.parameterName}=${_csrf.token}&projectUUID="+projectUUID+"&projectId="+projectId+"&projectOrgLocationId="+orgLocations+"&projectMembers="+projectMembers, 
+		        success: function() {
+		        
+		        	location.replace(sourceleadUrl+"/projectSummary?projectUUID="+projectUUID+"&projectClientUUID="+projectClientUUID+"&tabType=projectMembers");
+			        $("#projectDetailsLoading").removeAttr("style"); 
+		        }
+		   
+	     });
+			 
+		 
+	 }else{
+		 alertProjectMembersMessage();
+	 }
+	
+}
+</script>
+
+<script>
+function alertProjectMembersMessage(){
+	var result = "";
+	result = result +"	<div class='project_inn_mask'></div>";
+	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+	result = result +"		<p>Select atleast one project member</p>";
+	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='popupClose();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
+	result = result +"	</div>";
+	$("#membersChoicepopUp").append(result);
+	$("#remove_user_pop").slideDown(200);
+	$(".project_inn_mask").fadeIn(200);
+}
+</script>
+
+<script type="text/javascript">
+function cancel(){
+	$("#membersChoicepopUp").empty();
+	$(".project_inn_mask").fadeOut(200);
+}
+</script>
+
+<script>
+function popupClose(){
+	$(".clients_side_wrap").removeClass("clients_side_wrap_active");
+	$(".side_mask").fadeOut(200);
+	$("body").css('overflow-y', 'auto');
+    $('.addcandidate-popup').fadeOut(200);
+}
+</script>
+	
+
+
+<script type="text/javascript">
+ function prepareChosenScripts(){ 
+		var config = {
+				  '.chosen-select'           : {},
+				  '.chosen-select-deselect'  : {allow_single_deselect:true},
+				  '.chosen-select-no-single' : {disable_search_threshold:10},
+				  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
+				  '.chosen-select-width'     : {width:"95%"}
+				}
+				for (var selector in config) {
+				  $(selector).chosen(config[selector]);
+				}
+				$('.chosen-select').each(function() {
+					var $this = $(this);
+					$this.next().css({'width': '100%'});
+					});
+ }
+</script>
+
+
+  <script type="text/javascript">
+    $(document).ready(function() {
+    $(".proj_close, .side_mask").click(function(){
+		$(".clients_side_wrap").removeClass("clients_side_wrap_active");
+		$(".side_mask").fadeOut(200);
+		$("body").css('overflow-y', 'auto');
+        $('.addcandidate-popup').fadeOut(200);
+	});	
+});
+</script>
+
 <script>
 function planningRequestsPagination(){  
     $('#planningRequestsPaginationList').DataTable( { 
@@ -1299,3 +1798,479 @@ function planningRequestsPagination(){
 }
 </script>
 <!-- ====================================Resource RequestsTab End=============================================== -->
+
+
+
+
+<!-- ====================================Budget Requests Tab End=============================================== -->
+
+
+
+<script>
+function budgetRequests(){
+	$(".countClose").hide();
+	$(".countShow").show();
+	 var sourceleadUrl ='${sourceleadUrl}';
+	 var projectUUID = '${projectUUID}';
+	 $.ajax({
+	    	type: "GET",
+	        url: sourceleadUrl+"/getBudgetRequestListByProjectUUID?${_csrf.parameterName}=${_csrf.token}&projectUUID="+projectUUID, 
+	        success: function(json) {
+	        	var result = "";
+	    		result = result + '	<div class="timesheet_head anchorTag-black">';
+	    		result = result + '	<ul>';
+	    		result = result + '	<li><a href="javascript:void(0)" onclick="addBudgetRequestPopUp();getApproversList();"><i class="glyphicon glyphicon-plus paddingRight"></i>Budget Request</a></li>';
+	    		result = result + '	</ul>';
+	    		result = result + '	       </div>';
+	    		result = result + '	       <div id="budgetRequestPopUpid"></div>';
+	    		result = result + '	       <div id="editBudgetRequestPopUpid"></div>';
+	    		result = result + '		<div class="project_tabs_inn_table vendor_wrap_inn_table datatable_filter overflow_inherint">';
+	    		result = result + '		<table id="projectBudgetRequestList" cellspacing="0" width="100%">';
+	    		result = result + '	    <thead>';
+	    		result = result + '	     	<tr>';
+	            result = result + '	 	<th>Request Id</th>';
+	            result = result + '	   <th>Base Line</th>';
+	            result = result + '	   <th>Budget Total</th>';
+	            result = result + '	   <th>Estimated Hours</th>';
+	            result = result + '	   <th>Date</th>';
+	            result = result + '	   <th>Initiator</th>';
+	            result = result + '	   <th>Action</th>';
+	    		result = result + '	         </tr>';
+	    		result = result + '	    </thead>';
+	    		result = result + '	 	<tbody>';
+	    		for(i=0;i<json.length;i++){
+	    			var report = json[i];
+	    			if(report.estimatedBudgetValue != null  && report.estimatedBudgetValue != "" && report.estimatedBudgetValue != "undefined"){
+	    				estimatedBudgetValue = report.estimatedBudgetValue;
+	    			}else{
+	    				estimatedBudgetValue = "--";
+	    			}
+	    			
+	    			if(report.estimatedHours != null && report.estimatedHours != "" && report.estimatedHours !="undefined"){
+	    				estimatedHours = report.estimatedHours;
+	    			}else{
+	    				estimatedHours = "--";
+	    			}
+	    			if(report.budgetDescription != null && report.budgetDescription != "" && report.budgetDescription !="undefined"){
+	    				budgetDescription = report.budgetDescription;
+	    			}else{
+	    				budgetDescription = "--";
+	    			}
+	    			result = result + '	<tr>';
+	    			if((report.approverUserIdlLong == '${SourceLeadWeb_user.id}') && (report.budgetStatus == "On Hold" || report.budgetStatus == "Rejected" || report.budgetStatus == "Waiting For Approval")){
+	    				result = result + ' 	<td><div class="tbldata-dotdot-sm"> <div class="tbldata-dotdot-100 pull-left">'+report.budgetRequestedId+'</div> <i class="fa fa-pencil ml10 pull-right" onclick="editBudgetrequest('+report.id+')"></i></div></td>';
+	    			}else{
+	    				result = result + '  <td><div class="tbldata-dotdot-sm"> <div class="tbldata-dotdot-100 pull-left">'+report.budgetRequestedId+'</div></div></td>';
+	    			}
+					
+					result = result + '     <td><div class="tbldata-dotdot-me" title="'+budgetDescription+'">'+budgetDescription+'</div></td>';
+					result = result + '     <td><div class="tbldata-dotdot_80" title="'+estimatedBudgetValue+'">'+estimatedBudgetValue+'</div></td>';
+					result = result + '     <td><div  class="tbldata-dotdot_80">'+estimatedHours+'</div></td>';
+					result = result + '     <td><div  class="tbldata-dotdot_80">'+report.createdStr+'</div></td>';
+					result = result + '     <td><div  class="tbldata-dotdot-vsm" title="'+report.createdUserName+'">'+report.createdUserName+'</div></td>';
+					if(report.budgetStatus == "Waiting For Approval"){
+						result = result + '     <td><div class="tblminwidth-75">';
+						result = result + '     <i class="fa fa-check" alt="Approve" title="Approved" onclick="acceptBudgetRequset('+report.id+')"></i>|';
+						result = result + '     <i class="fa fa-times" alt="Rejected" title="Rejected" onclick="deleteBudgetRequaet('+report.id+');"></i>';
+						result = result + '     <i class="fa fa-clock-o" alt="On hold" title="On hold" onclick="onholdBudgetRequaet('+report.id+');"></i></div></td>';
+					}
+					if(report.budgetStatus == "Rejected"){
+						result = result + '<td><div class="tblminwidth-90 paTp"><b class="Rejec">Rejected</b>';
+						 result = result+"  <i class='glyphicon glyphicon-comment colB' id='"+report.id+"' onclick='rejectedMessage(\""+report.rejectedReason+"\");'>";
+					 	 result = result+" <div class='app_error_mes' id='rejectedMessage"+report.id+"'>"+report.rejectedReason+"</div></i>";
+					 	 result = result+" <br><span class='rejNam' title='"+report.updatedUserName+"'>By : "+report.updatedUserName+"</span>";
+						result = result + '</div></td>';
+					}
+					if(report.budgetStatus == "Approved"){
+						result = result + '<td><div class="tblminwidth-90 paTp"><b>Approved</b>';
+						 result = result+" <br><span class='rejNam' title='"+report.updatedUserName+"'>By : "+report.updatedUserName+"</span>";
+						 result = result + '</div></td>';
+					}
+					
+					if((report.approverUserIdlLong ==  '${SourceLeadWeb_user.id}') &&  report.budgetStatus == "On Hold"){
+						result = result + '     <td><div class="tblminwidth-75">';
+						result = result + '     <i class="fa fa-check" alt="Approve" title="Approved" onclick="acceptBudgetRequset('+report.id+')"></i>|';
+						result = result + '     <i class="fa fa-times" alt="Rejected" title="Rejected" onclick="deleteBudgetRequaet('+report.id+');"></i>';
+						result = result + '     </div></td>';
+						
+					}
+					if(report.budgetStatus == "On Hold" && (report.approverUserIdlLong !=  '${SourceLeadWeb_user.id}')){
+						result = result + '<td><div class="tblminwidth-90 paTp"><b class="processs-hold">On Hold</b>';
+						 result = result+"  <i class='glyphicon glyphicon-comment colB' id='"+report.id+"' onclick='rejectedMessage(\""+report.rejectedReason+"\");'>";
+					 	 result = result+" <div class='app_error_mes' id='rejectedMessage"+report.id+"'>"+report.rejectedReason+"</div></i>";
+					 	 result = result+" <br><span class='rejNam' title='"+report.updatedUserName+"'>By : "+report.updatedUserName+"</span>";
+						result = result + '</div></td>';
+					}
+					
+					result = result + ' </tr>';
+	    		}
+	    		result = result + '	     </tbody>';
+	    		result = result + '	 </table>';
+	    		result = result + '</div>';
+	    	    $("#budgetRequestsTabDiv").empty();
+	    	    $("#budgetRequestsTabDiv").append(result); 
+	    	    $("#projectBudgetCount").val(json.length); 
+	    	    
+	    	    budgetRequestPagination();
+	        }
+	   
+     });
+}
+$(document).on("mouseover", ".glyphicon-comment", function() { 
+	var localId = $(this).attr('id');
+	$("#rejectedMessage"+localId).addClass('app_error_mes_active');
+	});	
+	$(document).on("mouseleave", ".glyphicon-comment", function() { 
+	var localId = $(this).attr('id');
+	$("#rejectedMessage"+localId).removeClass('app_error_mes_active');
+});	
+	
+function rejectedMessage(local){ 
+	   $("#"+local).slideToggle(200);
+	   $(".timesheet_appr_table .glyphicon strong, .timesheet_appr_table .glyphicon").click(function(e) {
+	       e.stopPropagation();
+	   });	
+	   
+	}
+</script>
+<script>
+function deleteBudgetRequaet(budgetRequestedId){
+	var result = "";
+	result = result +"	<div class='project_inn_mask'></div>"; 
+	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+	result = result +"<form id='deleteBudget_form' name='deleteBudget_form' >";
+	result = result +"<input type='hidden' id='budgetRequestedId' name='budgetRequestedId' value='"+budgetRequestedId+"'>";
+	result = result +"<input type='hidden' id='loginUserid' name='loginUserid' value='${SourceLeadWeb_user.id}'>";
+	result = result +"		<p>Are you sure you want to delete ?</p>";
+	result = result +"		<textarea  id='reasonForProjectBudget' name='reasonForProjectBudget'  placeholder='Comments here' field-name='Reason' data-validation='validate_length length2-5000' data-validation-optional='true'></textarea>";
+	result = result +"</form>";
+	result = result +'		<b href="javascript:void(0)"><input id="delete_budget-id" type="button" value="Delete" onclick="saveBudgetReason('+budgetRequestedId+');"><input class="u_can_color" type="button"  value="Cancel" onClick="cancelTermination();"></b>';
+	result = result +"	</div>";
+
+	$("#popUp").append(result);
+	$("#remove_user_pop").slideDown(200);
+	$(".project_inn_mask").fadeIn(200);
+
+}
+function cancelTermination(){
+	$("#popUp").empty();
+	 $(".project_inn_mask").fadeOut(200);
+}
+function saveBudgetReason(budgetRequestedId){
+	var sourceleadUrl = '${sourceleadUrl}';
+     $("#delete_budget").attr("disabled", "disabled");
+	 $("#delete_budget").attr("disabled", "disabled");
+	 var formData = getFormData("deleteBudget_form");
+	 $.ajax({
+				type : "POST",
+				data :formData,
+				url : sourceleadUrl+"/saveBudgetRequestReason?${_csrf.parameterName}=${_csrf.token}",
+				success : function(result) {
+					$("#popUp").empty();
+	   			 	$(".project_inn_mask").fadeOut(200);
+	   			 	budgetRequests();
+				},
+			}); 
+}
+$('body').on('blur', '#deleteBudget_form', function() {
+	$("#deleteBudget_form").showHelpOnFocus();;
+	$("#deleteBudget_form").validateOnBlur(false, validationSettings);  
+}); 
+
+function acceptBudgetRequset(budgetRequestedId){
+	var sourceleadUrl = '${sourceleadUrl}';
+	var userId = '${SourceLeadWeb_user.id}';
+	 $.ajax({
+				type : "POST",
+				url : sourceleadUrl+"/acceptBudgetRequest?${_csrf.parameterName}=${_csrf.token}&budgetRequestedId="+budgetRequestedId+"&userId="+userId,
+				success : function(result) {
+					budgetRequests();
+				},
+			}); 
+}
+function onholdBudgetRequaet(budgetRequestedId){
+	var result = "";
+	result = result +"	<div class='project_inn_mask'></div>"; 
+	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+	result = result +"<form id='deleteBudget_form' name='deleteBudget_form' >";
+	result = result +"<input type='hidden' id='budgetRequestedId' name='budgetRequestedId' value='"+budgetRequestedId+"'>";
+	result = result +"<input type='hidden' id='loginUserid' name='loginUserid' value='${SourceLeadWeb_user.id}'>";
+	result = result +"		<p>Are you sure you want to reject ?</p>";
+	result = result +"		<textarea  id='reasonForProjectBudget' name='reasonForProjectBudget'  placeholder='Comments here' field-name='Reason' data-validation='validate_length length2-5000' data-validation-optional='true'></textarea>";
+	result = result +"</form>";
+	result = result +'		<b href="javascript:void(0)"><input id="delete_budget-id" type="button" value="Delete" onclick="saveBudgetReason('+budgetRequestedId+');"><input class="u_can_color" type="button"  value="Cancel" onClick="cancelTermination();"></b>';
+	result = result +"	</div>";
+
+	$("#popUp").append(result);
+	$("#remove_user_pop").slideDown(200);
+	$(".vendor_wrap_mask").fadeIn(200);
+	
+	var sourceleadUrl = '${sourceleadUrl}';
+	var userId = '${SourceLeadWeb_user.id}';
+	 $.ajax({
+				type : "POST",
+				url : sourceleadUrl+"/onHoldBudgetRequest?${_csrf.parameterName}=${_csrf.token}&budgetRequestedId="+budgetRequestedId+"&userId="+userId,
+				success : function(result) {
+					budgetRequests();
+				},
+			}); 
+}
+
+function editBudgetrequest(budgetRequestedId){
+	 $("#budgetRequestPopUpid").empty();
+	var sourceleadUrl = '${sourceleadUrl}';
+	 
+	 $.ajax({
+				type : "POST",
+				url : sourceleadUrl+"/getBudgetRequestDetailsById?${_csrf.parameterName}=${_csrf.token}&budgetRequestedId="+budgetRequestedId,
+				success : function(json) {
+					var result = "";
+					result = result + '	<div class="collapse-div-adduser prRight col-md-4 show-div prRight_new"> <i class="fa fa-close close-div" onClick="editCloseDiv();"></i>';
+					result = result + '		<div class="form-horizontal clearfix">';
+					result = result + '<form id="budgetRequest-form" name="budgetRequest-form">';
+					result = result + '	    <input type="hidden" id="projectUUID" name="projectUUID" value="${projectUUID}">';
+					result = result + '	    <input type="hidden" id="userId" name="loginUserid" value="${SourceLeadWeb_user.id}">';
+					result = result + '	    <input type="hidden" id="budgetRequestedId" name="budgetRequestedId" value="'+json.id+'">';
+					result = result + '	    <div class="clearfix mb10">';
+					result = result + '	    <div class="clearfix mb10">';
+					result = result + '	      <div class="col-md-12">';
+					result = result + '	        <input type="text" class="form-control" value="'+json.budgetDescription+'" id="baseLine" name="baseLine" placeholder="Descrption *" field-name="Description" data-validation="required validate_Space validate_length length1-250">';
+					result = result + '	      </div>';
+					result = result + '	    </div>    ';                        
+				 
+					result = result + '	    <div class="clearfix mb10">';
+					result = result + '	      <div class="col-md-12" id="bgApErrMsg">';
+					result = result + '	        <select class="chosen-select" field-name="Approver" id="budgetApprover" name="budgetApprover" data-validation="required" onchange="removeErrMsg();">';
+					result = result + '	        </select>';
+					result = result + '	        </div>';
+					result = result + '	      </div>'; 
+					 
+					result = result + '	    <div class="clearfix mb10">';
+					result = result + '	      <div class="col-md-12">';
+					result = result + '	        <input type="text" class="form-control inlineField" value="'+json.estimatedHours+'" id="estimatedHours" placeholder="Estimated Hours *" name="estimatedHours" field-name="Estimated Hours"  data-validation="required">';
+					result = result + '	      </div>';
+					result = result + '	    </div>';
+				  
+					result = result + '	    <div class="clearfix mb10">';
+					result = result + '	      <div class="col-md-12">';
+					result = result + ' <div class="input-group">';
+					result = result + ' <div class="input-group-btn selp-custom-min selp-customMin">';
+					result = result + '       <select class="selectpicker" id="estimatedBudgetCurrency" name="estimatedBudgetCurrency" >';
+					result = result + '          <option '+ (json.estimatedBudgetCurrency == "INR" ? "selected" : '') +' value="INR" >INR</option>';
+					result = result + '          <option '+ (json.estimatedBudgetCurrency == "AUD" ? "selected" : '') +' value="AUD" >AUD</option>';
+					result = result + '          <option '+ (json.estimatedBudgetCurrency == "USD" ? "selected" : '') +' value="USD" >USD</option>';
+					result = result + '          <option '+ (json.estimatedBudgetCurrency == "GBP" ? "selected" : '') +' value="GBP" >GBP</option>';
+					result = result + '          <option '+ (json.estimatedBudgetCurrency == "SGD" ? "selected" : '') +' value="SGD" >SGD</option>';
+					result = result + '          <option '+ (json.estimatedBudgetCurrency == "EUR" ? "selected" : '') +' value="EUR" >EUR</option>';
+					result = result + '     </select>';
+					result = result + '     </div>';
+					result = result + '	        <input type="text" class="form-control " value="'+json.estimatedBudgetValue+'" id="estimatedBudget" name="estimatedBudget" placeholder="Estimated Budget *" field-name="Estimated Budget" data-validation="required validate_Space validate_float validate_length length1-16">';
+					result = result + ' </div>';
+					result = result + ' </div>';
+					
+					result = result + '	    <div class="clearfix mt10 mb10"></div>';
+					 
+					result = result + '	    <div class="clearfix mr">';
+					result = result + '	      <button type="button" class="btn btn-sm btn-primary pull-right" id="save_budget" onclick="saveBudgetRequest();">Update</button>';
+					result = result + '	    </div>';
+					result = result + '	  </div>';
+					result = result + '</form>';
+					result = result + '	</div>';
+					 $("#editBudgetRequestPopUpid").empty();
+					 $("#editBudgetRequestPopUpid").append(result);
+					 $("#editBudgetRequestPopUpid").show();
+					 getApproversList(json.approverUserIdlLong);
+					 $('#estimatedBudgetCurrency').selectpicker('refresh');
+				    var config = {
+						  '.chosen-select'           : {},
+						  '.chosen-select-deselect'  : {allow_single_deselect:true},
+						  '.chosen-select-no-single' : {disable_search_threshold:10},
+						  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
+						  '.chosen-select-width'     : {width:"95%"}
+						}
+						for (var selector in config) {
+						  $(selector).chosen(config[selector]);
+						}
+						$('.chosen-select').each(function() {
+							var $this = $(this);
+							$this.next().css({'width': '100%'});
+							});
+				},
+			}); 
+	 
+	
+			
+}
+function editCloseDiv(){
+	$("#editBudgetRequestPopUpid").hide();
+}
+</script>
+<script>
+function budgetRequestPagination(){  
+    $('#projectBudgetRequestList').DataTable( { 
+    	"scrollCollapse": false,
+    	"lengthMenu": [[5, 15, 25, 30, -1], [5, 15, 25, 30, "All"]],
+		"aaSorting": [[4,'desc']],
+    	"bLengthChange": true,
+    	"bDestroy": true,
+    	"ordering": true,
+    	"oLanguage": {
+     		"sSearch": "",
+     		"sZeroRecords": "", "sEmptyTable": ""
+     	}
+    });
+    $('#planningRequestsList').wrap("<div class='overflow_Auto'></div>");
+}
+</script>
+<script>
+function addBudgetRequestPopUp(){
+	var result = "";
+	result = result + '	<div class="collapse-div-adduser prRight col-md-4 show-div prRight_new"> <i class="fa fa-close close-div" onClick="closeDiv();"></i>';
+	result = result + '		<div class="form-horizontal clearfix">';
+	result = result + '<form id="budgetRequest-form" name="budgetRequest-form">';
+	result = result + '	    <input type="hidden" id="projectUUID" name="projectUUID" value="${projectUUID}">';
+	result = result + '	    <input type="hidden" id="userId" name="loginUserid" value="${SourceLeadWeb_user.id}">';
+	result = result + '	    <div class="clearfix mb10">';
+	result = result + '	    <div class="clearfix mb10">';
+	result = result + '	      <div class="col-md-12">';
+	result = result + '	        <input type="text" class="form-control input-sm" value="" id="baseLine" name="baseLine" placeholder="Description *" field-name="Description" data-validation="required validate_Space validate_length length1-250">';
+	result = result + '	      </div>';
+	result = result + '	    </div>    ';                        
+ 
+	result = result + '	    <div class="clearfix mb10">';
+	result = result + '	      <div class="col-md-12" id="bgApErrMsg">';
+	result = result + '	        <select class="chosen-select" field-name="Approver" id="budgetApprover" name="budgetApprover" data-validation="required" onchange="removeErrMsg()">';
+	result = result + '	        </select>';
+	result = result + '	        </div>';
+	result = result + '	      </div>'; 
+	 
+	result = result + '	    <div class="clearfix mb10">';
+	result = result + '	      <div class="col-md-12">';
+	result = result + '	        <input type="text" class="form-control input-sm inlineField" value="" id="estimatedHours"  placeholder="Estimated Hours *" name="estimatedHours"  field-name="Estimated Hours"  data-validation="required">';
+	result = result + '	      </div>';
+	result = result + '	    </div>';
+ 
+	result = result + '	    <div class="clearfix mb10">';
+	result = result + '	      <div class="col-md-12">';
+	result = result + ' <div class="input-group">';
+	result = result + ' <div class="input-group-btn selp-custom-min selp-customMin">';
+	result = result + '       <select class="selectpicker" id="estimatedBudgetCurrency" name="estimatedBudgetCurrency" >';
+	result = result + '          <option ${SourceLeadWeb_currencyCode == "INR" ? "selected" : ''}>INR</option>';
+	result = result + '          <option ${SourceLeadWeb_currencyCode == "AUD" ? "selected" : ''}>AUD</option>';
+	result = result + '          <option ${SourceLeadWeb_currencyCode == "USD" ? "selected" : ''}>USD</option>';
+	result = result + '          <option ${SourceLeadWeb_currencyCode == "GBP" ? "selected" : ''}>GBP</option>';
+	result = result + '          <option ${SourceLeadWeb_currencyCode == "SGD" ? "selected" : ''}>SGD</option>';
+	result = result + '          <option ${SourceLeadWeb_currencyCode == "EUR" ? "selected" : ''}>EUR</option>';
+	result = result + '     </select>';
+	result = result + '     </div>';
+	result = result + ' 	<input type="text" value="" id="estimatedBudget" name="estimatedBudget" class="form-control" placeholder="Estimated Budget *"';
+	result = result + ' 		data-validation="required validate_Space validate_float validate_length length1-16" data-validation-optional="true" class="form-control" field-name="Estimated Budget" >';
+	result = result + ' </div>';
+	result = result + ' </div>';
+	
+	result = result + '	    </div>';                                                                                    
+	 
+	result = result + '	    <div class="clearfix mr">';
+	result = result + '	      <button type="button" class="btn btn-sm btn-primary pull-right" id="save_budget" onclick="saveBudgetRequest();">Add</button>';
+	result = result + '	    </div>';
+	result = result + '	  </div>';
+	result = result + '</form>';
+	result = result + '	</div>';
+	 $("#budgetRequestPopUpid").empty();
+	 $("#budgetRequestPopUpid").append(result);
+	 $("#budgetRequestPopUpid").show();
+	 $("#editBudgetRequestPopUpid").empty();
+	 document.getElementById("editBudgetRequestPopUpid").style.display="none";
+	 $('#estimatedBudgetCurrency').selectpicker('refresh');
+	 var config = {
+			  '.chosen-select'           : {},
+			  '.chosen-select-deselect'  : {allow_single_deselect:true},
+			  '.chosen-select-no-single' : {disable_search_threshold:10},
+			  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
+			  '.chosen-select-width'     : {width:"95%"}
+			}
+			for (var selector in config) {
+			  $(selector).chosen(config[selector]);
+			}
+			$('.chosen-select').each(function() {
+				var $this = $(this);
+				$this.next().css({'width': '100%'});
+				});
+			
+}
+function closeDiv(){
+	$("#budgetRequestPopUpid").hide();
+}
+function removeErrMsg(){
+	$("#bgApErrMsg").find("p.jquery_form_error_message").remove(); 
+}
+</script>
+<script>
+function getApproversList(approverUserId){
+var sourceleadUrl ='${sourceleadUrl}';
+var orgLocationId = '${SourceLeadWeb_orgLocations.id}';
+	$.ajax({
+	    	type: "GET",
+	    	 url: sourceleadUrl+"/getResourceRequestApproversList?${_csrf.parameterName}=${_csrf.token}&orgLocationId="+orgLocationId,
+	    		success: function(data) {
+	        	var json = JSON.parse(data);
+	     		var output = "";
+	     			output = output + "<option value=''>--Select Approver--</option>";
+	     		for (var i=0; i<json.length; i++)
+	     		{
+		     		var opt = json[i];
+		     		var fullname = '';
+		     		if(opt.lastName != null && opt.lastName != '' && opt.lastName != 'undefined'){
+		     			fullname = opt.firstName+" "+opt.lastName;
+		     		}else{
+		     			fullname = opt.firstName;
+		     		}
+		     		 
+		     		 if(opt.id == approverUserId){
+		        			output = output + "<option value='"+opt.id+"' selected>"+opt.firstName+" "+opt.lastName+" ("+opt.userType+")</option>";
+		        		}else{
+		        			output = output + "<option value='"+opt.id+"'> "+opt.firstName+" "+opt.lastName+" ("+opt.userType+")</option>";
+		        		}
+		     		 
+	     		}
+	     		$("#budgetApprover").empty();
+	     		$("#budgetApprover").append(output);
+	     		$('#budgetApprover').trigger("chosen:updated");
+	         }
+	 });
+}
+</script>
+<script>
+function saveBudgetRequest(){
+	 var validationSettings = {
+			errorMessagePosition : 'element',
+			borderColorOnError : '',
+			scrollToTopOnError : true,
+		}; 
+	
+	 if ($('#budgetRequest-form').validate(false, validationSettings)) {
+			 var sourceleadUrl = '${sourceleadUrl}';
+			 $("#save_budget").attr("disabled", "disabled");
+			 $("#save_budget").attr("disabled", "disabled");
+			 var formData = getFormData("budgetRequest-form");
+			 $.ajax({
+						type : "POST",
+						data :formData,
+						url : sourceleadUrl+"/saveBudgetRequest?${_csrf.parameterName}=${_csrf.token}",
+						success : function(result) {
+							budgetRequests();
+						},
+					}); 
+			return true;
+		} else {
+			return false;
+		}
+}
+$('body').on('blur', '#budgetRequest-form', function() {
+	$("#budgetRequest-form").showHelpOnFocus();;
+	$("#budgetRequest-form").validateOnBlur(false, validationSettings);  
+}); 
+</script>
+ 
+
+

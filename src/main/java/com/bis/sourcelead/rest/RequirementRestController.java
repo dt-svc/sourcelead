@@ -230,7 +230,8 @@ public class RequirementRestController {
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		Requirement requirement = requirementService.storeRequirementTemplate(requirementDTO, orgLocation, user);
-		SourceLeadSessionManager.setSessionAttribute(request, "userCreateMsgTemplate", "Successfully created a template");
+		StringBuilder reqTemplateSuccessMessage = new StringBuilder();
+		SourceLeadSessionManager.setSessionAttribute(request, "userCreateMsgTemplate", reqTemplateSuccessMessage.append("Success!! ").append(requirementDTO.getJobTitle()).append(" template  saved").toString());
 		return "success";
 	}
 	

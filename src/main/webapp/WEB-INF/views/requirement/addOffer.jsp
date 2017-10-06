@@ -142,7 +142,7 @@ function selectOfferApplicants(){
 </script>
 
 <div id="divOfferTd1" style="display: none; float: left;">
-       <select multiple class="blminwidth-50"  id="REPLACEROWIDapplicantId" onchange="selectOfferApplicants()" data-placeholder="select Apllicants" name="REPLACEROWIDapplicantId" field-name="Applicant" data-validation="required" >
+       <select multiple class="blminwidth-50"  id="REPLACEROWIDapplicantId" onchange="selectOfferApplicants()" data-placeholder="select Applicants" name="REPLACEROWIDapplicantId" field-name="Applicant" data-validation="required" >
 			
 	  </select>
 </div>

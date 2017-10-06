@@ -185,7 +185,12 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
                result = result + '<div class="col-md-6">';
                result = result + ' <div class="media">';
                result = result + '<div class="media-left image-parent positionRelative">';
-               result = result + '<div class="imageParent"><img onerror="predefineProfileImage(this);" src="'+json.candidate.fileUrl+'"  alt="candidate" title="Candidate"></div>';
+               if(json.candidate.fileUrl != null && json.candidate.fileUrl !='' && json.candidate.fileUrl !="undefined"){
+               result = result + '<div class="imageParent"><img data-id="profileImage" onerror="predefineProfileImage(this);" src="'+json.candidate.fileUrl+'"  alt="candidate" title="Candidate"></div>';
+               }else{
+               result = result + '<div class="imageParent"><img data-id="profileImage" onerror="predefineProfileImage(this);" src="resources/images/userprofileImg.jpg" alt="candidate" title="Candidate"></div>';
+   
+               }
                if(json.candidateScore != null && json.candidateScore != '' && json.candidateScore != 'undefined'){
 					  if(json.candidateScore >=50){ 
 					 	 result = result +'                    <i class="valid-profile fa fa-check-square text-success"></i>';        
@@ -335,7 +340,7 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
 	            result = result+'    <i class="fa fa-comments"></i>';
 	            result = result+'        <div class="commentsimg-inner">';
 	            
-	            result = result+'        	<img onerror="predefineProfileImage(this);" src="'+sourceleadUrl+'/displayUserImage/'+loginUserId+'"/>';
+	            result = result+'        	<img data-id= "userProfileImage" onerror="predefineProfileImage(this);" src="${SourceLeadWeb_user.fileUrl}"/>';
 	            result = result+'        </div>';
 	            result = result+'    </div>';
 	            result = result+'     <div class="comments-content">';
@@ -492,7 +497,7 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
 				        	  }
 				        	 }
 				          if(json.submissionRequestComment != null && json.submissionRequestComment != '' && json.submissionRequestComment != 'undefined'){
-					          result = result + ' <div class="clearfix mt10"><label class="col-md-2 text-right paddingRight">Attachment:</label><span class="col-md-9"><a href=\"'+sourceleadUrl+'/downloadRequestDocumentBySubmissionId?submissionId='+submissionId+'\" class="pull-left" style="color:#151B8D">'+json.submissionRequestFileName+'</a></span></div>';
+					          result = result + ' <div class="clearfix mt10"><label class="col-md-2 text-right paddingRight">Attachment:</label><span class="col-md-9"><a href=\"'+opt.fileURL+'/downloadRequestDocumentBySubmissionId?submissionId='+submissionId+'\" class="pull-left" style="color:#151B8D">'+json.submissionRequestFileName+'</a></span></div>';
 					          result = result + ' <div class="clearfix mt10"><label class="col-md-2 text-right paddingRight">Comment:</label><span class="col-md-9">'+json.submissionRequestComment+'</span></div>';
 					          }
 		          //}
@@ -1282,7 +1287,7 @@ function viewOfferDocument(offerId,title){
 
 <script type="text/javascript">
 function canceloffer(){ 
-	$("#remove_user_pop, .sideMask").fadeOut(200);
+	$("#remove_user_pop, .comMask").fadeOut(200);
 };
 </script>
 
@@ -1290,7 +1295,7 @@ function canceloffer(){
 function rejectOffer(offerStatus,submissionId,offerId){
 	
 	var result = "";
-	result = result +"	<div class='sideMask'></div>";
+	result = result +"	<div class='comMask'></div>";
 	result = result +"	    <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 	result = result +"		<textarea id='rejectReason' class='form-control' field-name='Reject Reason' data-validation-optional='true' data-validation='validate_Space validate_Description validate_length length2-250' name='rejectReason' value='' placeholder='Terminate Reason' rows='2'></textarea>";
 	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
@@ -1298,7 +1303,7 @@ function rejectOffer(offerStatus,submissionId,offerId){
 	result = result +"	</div>";
 	$("#rejectOfferAlert").append(result);
 	$("#remove_user_pop").slideDown(200);
-	$(".sideMask").fadeIn(200);
+	$(".comMask").fadeIn(200);
 }
 </script>
 
@@ -1470,7 +1475,7 @@ function notifyToVendor(submissionId,offerId,offerHistoryId){
 		$('#accpet-div').empty();
 		$('#request').empty();
 		var result = "";
-		result = result + '<form id="request_form" name="request_form" action="upload" enctype="multipart/form-data" method="post">';
+		result = result + '<form id="request_form" name="request_form" action="upload"  method="post">';
 		result = result + '			<div class="row">';
 		result = result + '				<div class="col-md-12">';
 		result = result + '					<textarea rows="2" class="form-control" placeholder="Comment *" id="comment" name="comment" onkeypress="submissionDetailsremoveSpaces();" data-validation="required validate_Space validate_length length2-250" field-name="Comment"></textarea>';
@@ -1486,8 +1491,8 @@ function notifyToVendor(submissionId,offerId,offerHistoryId){
 		result = result+'	                  <div class="clearfix mb10 row mt" id="docFileuploadFileGroup">';
 		result = result+'	                    <div class="col-md-12">';
 		result = result+'							<div class="input-group positionRelative" id="uploadFileGroup">';
-		result = result+'	                          <label class="input-group-btn"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File <span class="text-danger">&nbsp;*</span>';
-		result = result+'	                            <input type="file" name="docFile" id="docFile" style="display: none;"  multiple="" class="upload">';
+		result = result+'	                          <label class="input-group-btn" onchange = "submissionDocFile();"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File <span class="text-danger">&nbsp;*</span>';
+		result = result+'	                            <input type="file" name="docFile" id="docFile" style="display: none;" class="upload">';
 		result = result+'	                            </span> </label>';
 		result = result+'	                          <input type="text" class="form-control margnTop0" readonly id="subUploadFile" name="subUploadFile" placeholder="Attachment" field-name="Attachment" data-validation="required validate_Space validatedoc">';
 		result = result+'	                        </div>';
@@ -1531,7 +1536,11 @@ function notifyToVendor(submissionId,offerId,offerHistoryId){
 	
 	
 </script>
-
+<script type="text/javascript">
+function submissionDocFile() {
+	fileUpload("docFile", "requestDocuments", "request_form");
+}
+</script>
 <script>
    function submissionDetailsremoveSpaces() {
 	    var output = document.getElementById("comment").value;
@@ -1596,25 +1605,14 @@ function getApplicantOtherizationRejectedCategory(){
 					dateFormat : 'yyyy/mm/dd' 
 		         }; 
 			 if ($('#accept_form').validate(false, validationSettings)){
-				var frm = $('#accept_form').serializeFormJSON();
-				var con = JSON.stringify(frm);
-				con = con.replace(/[{}]/g, "");
-				var form = $('#accept_form')[0];
-	      		var formData = new FormData(form); 
-				var sourceleadUrl = '${sourceleadUrl}';
+	      		var formData = getFormData('accept_form'); 
 				$("#accept_candidate").attr("disabled", "disabled");
          		$("#accept_candidate" ).addClass('button').val('Processing..');
-				//It will escape all the special characters
-		        var jsonData = encodeURIComponent(con);
+				
 				$.ajax({
 						type : "POST",
 		        	    data: formData,
-		        	    contentType : 'application/json; charset=utf-8',
-		        	    enctype: 'multipart/form-data',
-		    	        processData: false,
-		    	        contentType:false,
-		        	    dataType : 'json',
-						url : sourceleadUrl+"/acceptRejectCandidate?"+tokenParamName+"="+tokenValue+"&json="+jsonData+"&submissionId="+submissionId+"&decision="+decision,
+						url : sourceleadUrl+"/acceptRejectCandidate?"+tokenParamName+"="+tokenValue+"&submissionId="+submissionId+"&decision="+decision,
 						success : function(result) {
 							 if( result.indexOf('Sign In') >= 0){
 					    		location.replace(sourceleadUrl);
@@ -1663,25 +1661,14 @@ function getApplicantOtherizationRejectedCategory(){
 					dateFormat : 'yyyy/mm/dd' 
 		         }; 
 			 if ($('#request_form').validate(false, validationSettings)){
-				var frm = $('#request_form').serializeFormJSON();
-				var con = JSON.stringify(frm);
-				con = con.replace(/[{}]/g, "");
-				var form = $('#request_form')[0];
-	      		var formData = new FormData(form); 
-				var sourceleadUrl = '${sourceleadUrl}';
+				 var formData = getFormData('request_form');
 				$("#request_candidate").attr("disabled", "disabled");
          		$("#request_candidate" ).addClass('button').val('Processing..');
 				//It will escape all the special characters
-		        var jsonData = encodeURIComponent(con);
 				$.ajax({
 						type : "POST",
 		        	    data: formData,
-		        	    contentType : 'application/json; charset=utf-8',
-		        	    enctype: 'multipart/form-data',
-		    	        processData: false,
-		    	        contentType:false,
-		        	    dataType : 'json',
-						url : sourceleadUrl+"/acceptRejectCandidate?"+tokenParamName+"="+tokenValue+"&json="+jsonData+"&submissionId="+submissionId+"&decision="+decision,
+						url : sourceleadUrl+"/acceptRejectCandidate?"+tokenParamName+"="+tokenValue+"&submissionId="+submissionId+"&decision="+decision,
 						success : function(result) {
 							 if( result.indexOf('Sign In') >= 0){
 					    		location.replace(sourceleadUrl);
@@ -1719,12 +1706,9 @@ function getApplicantOtherizationRejectedCategory(){
 					dateFormat : 'yyyy/mm/dd' 
 		         }; 
 			 if ($('#reject_form').validate(false, validationSettings)){
-				var frm = $('#reject_form').serializeFormJSON();
-				var con = JSON.stringify(frm);
-				con = con.replace(/[{}]/g, "");
-				var form = $('#reject_form')[0];
-	      		var formData = new FormData(form); 
-				var sourceleadUrl = '${sourceleadUrl}';
+				
+	      		var formData = getFormData('reject_form'); 
+				
 				$("#accept_candidate").attr("disabled", "disabled");
          		$("#accept_candidate" ).addClass('button').val('Processing..');
 				//It will escape all the special characters
@@ -1732,12 +1716,7 @@ function getApplicantOtherizationRejectedCategory(){
 				$.ajax({
 						type : "POST",
 		        	    data: formData,
-		        	    contentType : 'application/json; charset=utf-8',
-		        	    enctype: 'multipart/form-data',
-		    	        processData: false,
-		    	        contentType:false,
-		        	    dataType : 'json',
-						url : sourceleadUrl+"/acceptRejectCandidate?"+tokenParamName+"="+tokenValue+"&json="+jsonData+"&submissionId="+submissionId+"&decision="+decision,
+						url : sourceleadUrl+"/acceptRejectCandidate?"+tokenParamName+"="+tokenValue+"&submissionId="+submissionId+"&decision="+decision,
 						success : function(result) {
 							 if( result.indexOf('Sign In') >= 0){
 					    		location.replace(sourceleadUrl);
@@ -1867,7 +1846,7 @@ function savedCommentAndCount(candidateId,submissionId){
 				            result = result+'    <i class="fa fa-comments"></i>';
 				            result = result+'        <div class="commentsimg-inner">';
 				            
-				            result = result+'        	<img onerror="predefineProfileImage(this);" src="'+sourceleadUrl+'/displayUserImage/'+report.commentAuthorUserId+'"/>';
+				            result = result+'        	<img onerror="predefineProfileImage(this);" src="'+report.commentAuthorUserImage+'"/>';
 				            result = result+'        </div>';
 				            result = result+'    </div>';
 				            result = result+'     <div class="comments-content">';
@@ -2714,6 +2693,10 @@ function viewProposeTime(interviewId,submissionId){
         	}
         	result = result + '			</tbody>';
     		result = result + '			</table>';
+    		result = result + '			<div class="clearfix mt"> ';
+    		result = result + '				<div class="pull-right"> ';
+    		result = result + '				  <button type="button" class="btn btn-sm btn-danger" onclick="timePopUp();">Cancel</button> ';
+    		result = result + '				</div> ';
     		result = result + '				  </div>   ';
     		result = result + '			  </div> ';
     		result = result	+ ' </form>';

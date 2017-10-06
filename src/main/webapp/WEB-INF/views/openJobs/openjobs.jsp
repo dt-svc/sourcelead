@@ -1,43 +1,50 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
-<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
+
+<c:if test="${staticTime == null || staticTime == 0 }">
+    <c:set var='staticTime' value="<%=new java.util.Date().getTime() %>" scope="application"></c:set>
+ </c:if>
+
 <!-- <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,900" rel="stylesheet"> -->
-<link href="resources/css/font-awesome.min.css" rel="stylesheet" type="text/css">
-<link rel="stylesheet" href="resources/css/reset.css">
-<link href="resources/css/jobs/css/source-style.css" rel="stylesheet">
-<link href="resources/css/jobs/css/source-responsive.css" rel="stylesheet">
-<link rel="stylesheet" href="resources/css/jobs/css/chosen.min.css">
-<link rel="stylesheet" href="resources/css/jobs/css/bootstrap-select.min.css">
-<link rel="stylesheet" href="resources/css/jobs/css/sourcelead-main.css">
-<link href="resources/css/jobs/css/main-style.css" rel="stylesheet">
+<link href="resources/css/font-awesome.min.css?staticTime=${staticTime}" rel="stylesheet" type="text/css">
+<link rel="stylesheet" href="resources/css/reset.css?staticTime=${staticTime}">
+<link href="resources/css/jobs/css/source-style.css?staticTime=${staticTime}" rel="stylesheet">
+<link href="resources/css/jobs/css/source-responsive.css?staticTime=${staticTime}" rel="stylesheet">
+<link rel="stylesheet" href="resources/css/jobs/css/chosen.min.css?staticTime=${staticTime}">
+<link rel="stylesheet" href="resources/css/jobs/css/bootstrap-select.min.css?staticTime=${staticTime}">
+<link rel="stylesheet" href="resources/css/jobs/css/sourcelead-main.css?staticTime=${staticTime}">
+<link href="resources/css/jobs/css/main-style.css?staticTime=${staticTime}" rel="stylesheet">
 <link rel="icon" type="image/png" href="resources/images/fav.png" />
-<link href="resources/css/bootstrap.min.css" rel="stylesheet" type="text/css">
-<link href="resources/css/dataTablePagination.css" rel="stylesheet" type="text/css">
-<link href="resources/css/jquery-ui.css" rel="stylesheet">
-<link rel="stylesheet" href="resources/css/jquery.timepicker.css">
-<link rel="stylesheet" href="resources/css/timesheet.css" type="text/css" >
+<link href="resources/css/bootstrap.min.css?staticTime=${staticTime}" rel="stylesheet" type="text/css">
+<link href="resources/css/dataTablePagination.css?staticTime=${staticTime}" rel="stylesheet" type="text/css">
+<link href="resources/css/jquery-ui.css?staticTime=${staticTime}" rel="stylesheet">
+<link rel="stylesheet" href="resources/css/jquery.timepicker.css?staticTime=${staticTime}">
+<link rel="stylesheet" href="resources/css/timesheet.css?staticTime=${staticTime}" type="text/css" >
 
  <script src="https://maps.google.com/maps/api/js?libraries=places&v=3&key=AIzaSyDzIM1uth14u-kSIN_jZ75pRelInyGnYWU" type="text/javascript"></script>
-<script src="resources/js/jquery-1.11.1.min.js"></script>
-<script src="resources/js/masterHeaderAction.js"></script>
-<script src="resources/js/bootstrap.min.js"></script>
-<script src="resources/js/jquery-ui.js"></script>
-<script src="resources/js/jquery-fun.js"></script>
-<script src="resources/js/jquery.dataTables.min.js"></script>
-<script src="resources/js/jquery.timepicker.js"></script>
-<script src="resources/js/themeswitcher.js"></script>
-<script type="text/javascript" src="resources/js/modernizr.custom.86080.js"></script>
-<script src="resources/js/jobs/js/controls.js"></script>
-<script src="resources/js/jquery-1.12.4.min.js"></script>
-<script src="resources/js/jquery.sldr.js"></script>
-<script src="resources/js/masonry.pkgd.min.js"></script>
-<script src="resources/js/jobs/js/bootstrap.js"></script>
-<script src="resources/js/jobs/js/bootstrap-select.min.js"></script>
-<script src="resources/js/jobs/js/jquery-1.11.3.min.js"></script>
-<script src="resources/js/jobs/js/chosen.jquery.min.js"></script>
+<script src="resources/js/jquery-1.11.1.min.js?staticTime=${staticTime}"></script>
+<script src="resources/js/masterHeaderAction.js?staticTime=${staticTime}"></script>
+<script src="resources/js/bootstrap.min.js?staticTime=${staticTime}"></script>
+<script src="resources/js/jquery-ui.js?staticTime=${staticTime}"></script>
+<script src="resources/js/jquery-fun.js?staticTime=${staticTime}"></script>
+<script src="resources/js/jquery.dataTables.min.js?staticTime=${staticTime}"></script>
+<script src="resources/js/jquery.timepicker.js?staticTime=${staticTime}"></script>
+<script src="resources/js/themeswitcher.js?staticTime=${staticTime}"></script>
+<script type="text/javascript" src="resources/js/modernizr.custom.86080.js?staticTime=${staticTime}"></script>
+<script src="resources/js/jobs/js/controls.js?staticTime=${staticTime}"></script>
+<script src="resources/js/jquery-1.12.4.min.js?staticTime=${staticTime}"></script>
+<script src="resources/js/jquery.sldr.js?staticTime=${staticTime}"></script>
+<script src="resources/js/masonry.pkgd.min.js?staticTime=${staticTime}"></script>
+<script src="resources/js/jobs/js/bootstrap.js?staticTime=${staticTime}"></script>
+<script src="resources/js/jobs/js/bootstrap-select.min.js?staticTime=${staticTime}"></script>
+<script src="resources/js/jobs/js/jquery-1.11.3.min.js?staticTime=${staticTime}"></script>
+<script src="resources/js/jobs/js/chosen.jquery.min.js?staticTime=${staticTime}"></script>
 
+<script type="text/javascript">
+ var sourceleadUrl = '${sourceleadUrl}';
+</script>
 
 <script type="text/javascript">
 window.onload = function () {
@@ -801,7 +808,7 @@ function requirementsFilter(type){
     });
 	
 	
-	var sourceleadUrl = '${sourceleadUrl}';
+	
 	var offset = 0;
 	if(type == "more"){
 		offset = $("#openJobsOffset").val();
@@ -851,7 +858,7 @@ function getOpenJobsELKList(type){
 	var openJobsRequirementTitle = document.getElementById("openJobsRequirementTitleId").value;
 	var openJobsLocation = document.getElementById("openJobsLocationId").value;
 	var openJobsExperience = $("#openJobsExperienceId").val();
-	var sourceleadUrl = '${sourceleadUrl}';
+	
 	var offset = 0;
 	if(type == "more"){
 		offset = $("#openJobsOffset").val();
@@ -1060,7 +1067,7 @@ function getPostedOrgJobs(id){
 
 <script>
 function getOrgsList(alphabet,type){
-	var sourceleadUrl = '${sourceleadUrl}';
+	
 	var country = "";
 	$('input:radio[name=countryFilter]:checked').each(function() 
     {
@@ -1131,7 +1138,7 @@ function getOpenJobsRequirementSummary(requirementsUUID){
 	$("#openJobsRequirementsSummary").show();
 	$("#openJobsRequirementsList").hide(); 
 	$("#loadMoreDiv").hide(); 
-	 var sourceleadUrl = '${sourceleadUrl}';
+	 
 	 $.ajax({
 		 type: "POST",
 		   	url: sourceleadUrl+"/openRequirementsSummary?${_csrf.parameterName}=${_csrf.token}&requirementsUUID="+requirementsUUID,
@@ -1330,7 +1337,7 @@ function viewJobSummaryDocument(jobId,title){
 <script>
 function openJobSearchRequirement(){
  			/* if ($('#openJobsAdvancedForm').validate(false, validationSettings)){   */
-			var sourceleadUrl = '${sourceleadUrl}';
+			
 			var frm = $('#openJobsAdvancedForm').serializeFormJSON();
 			var con = JSON.stringify(frm);
 			con = con.replace(/[{}]/g, ""); 
@@ -1473,7 +1480,7 @@ function openJobSearchRequirement(){
 <script>
 function getStates(){
 	var countryName = $("#country").val();
-	var sourceleadUrl = '${sourceleadUrl}';
+	
 	if(countryName != null && countryName !='' && countryName !="undefined"){
 		$.ajax({
 	    	type: "POST",
@@ -2251,7 +2258,7 @@ var validationSettings = {
         	  if ($(this).validate(false, validationSettings)){
         		
         		e.preventDefault();
-        		var sourceleadUrl = '${sourceleadUrl}';
+        		
         		var frm = $('#create_alert_form').serializeFormJSON();
         		var con = JSON.stringify(frm);
         		con = con.replace(/[{}]/g, ""); 

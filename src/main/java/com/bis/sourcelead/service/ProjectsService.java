@@ -1,20 +1,18 @@
 package com.bis.sourcelead.service;
 
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.json.JSONObject;
 
+import com.bis.sourcelead.dto.ClientProjectDTO;
+import com.bis.sourcelead.dto.ProjectsDTO;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.Projects;
-import com.bis.sourcelead.entity.TimesheetSubmissions;
 import com.bis.sourcelead.entity.User;
-import com.bis.sourcelead.entity.UserRole;
-import com.bis.sourcelead.model.ProjectDocumentBO;
 
 public interface ProjectsService {
 
@@ -27,6 +25,8 @@ public interface ProjectsService {
 	    Projects getProjectById(Long id) throws Exception;
 		
 		List<Projects> getProjectByOrgLocationsId(Long orgLocationsId) throws Exception;
+		
+		List<Projects> getEndClientProjectByOrgLocationsIdAndClientOrgLocationId(Long orgLocationsId,Long clientOrgLocationId) throws Exception;
 	
 		List<Projects> getProjectByOrgLocationsIdAndEndDateGraterthanCurrentDate(Long orgLocationsId, Long loginUserId) throws Exception;
 		
@@ -37,6 +37,8 @@ public interface ProjectsService {
 		Boolean deleteProjectById(Long id) throws Exception;
 		
 		Boolean validateProjectSequeneNumber(String projectSequeneNumber, Long orgLocationsId) throws Exception;
+		
+		Boolean validateProjectShortCode(String shortCode, Long orgLocationsId) throws Exception;
 		
 		Integer projectIdValidation(Long id) throws Exception;
 		
@@ -83,9 +85,9 @@ public interface ProjectsService {
 		 
 		ProjectMembers getProjectEmployeeListByProjectId(Long projectId) throws Exception ;
 		
-		String saveProjectByUserOrgLocationsJson(User user,OrgLocations loginOrgLocation,String loginOrgCode,JSONObject jsonObj) throws Exception ;
-        
-		String  storeProject(JSONObject jsonObj,List<ProjectDocumentBO> projectDocuments) throws Exception;
+		Projects  storeProject(ProjectsDTO projectsDTO) throws Exception;
+		
+		Projects  storeClientProject(ClientProjectDTO clientProjectDTO) throws Exception;
 
 //		void userEmailNotificationForTimeSheetSubmissionToManagers(Map<UserRole, HashSet<TimesheetSubmissions>> timesheetSubmissionsMap, int level)throws Exception;
 //
@@ -108,13 +110,15 @@ public interface ProjectsService {
 		
 		Boolean validateTasksName(String taskname, Long projectId) throws Exception;
 		
-		ProjectMembers getProjectEmployeeListByProjectIdAndStatus(Long projectId,String status) throws Exception ;
+		ProjectMembers getProjectEmployeeListByProjectIdAndStatus(Long projectId,String status,OrgLocations loginOrgLocation) throws Exception ;
 
 		List<Projects> getClientProjectsByOrgRelationId(Long orgRelationId, Long orgLocationId)throws Exception ;
 
 		List<Projects> getAllProjectsByOrgLocationIdAndStatus(Long orgLocationId) throws Exception ;
 		
 		Projects getProjectByProjectUUID(String projectUUID) throws Exception;
+		
+		ResponseList<Projects> getProjectsListByClientsAndStatus(ProjectsDTO projectsDTO,Long userId,String clients,String status,Long orgLocationId,String userRole) throws Exception;
 		
 //		public String getProjectId(OrgLocations orgLocations);
 		

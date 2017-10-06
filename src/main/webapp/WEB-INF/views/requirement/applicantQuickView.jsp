@@ -85,7 +85,6 @@ function applicantQuickViewProfile(submissionId,candidateId){
 	    	   }else{
 	    		   phoneNumber = "";
 	    	   }
- 	    	 
  	    	if(json.skillsList != null && json.skillsList != 'undefined' && json.skillsList != ''){
 	                var skill = json.skillsList;
 	                var qvSkills = "";
@@ -128,14 +127,18 @@ function applicantQuickViewProfile(submissionId,candidateId){
 					result = result+'            <div class="media">                                                                                                                               ';
 					result = result+'                <div class="media-body">                                                                                                                      ';
 					result = result+'                    <h4 class="media-heading text-warning">'+firstName+' '+lastName+'<small> '+designationType+'</small></h4>';
-				
 					result = result+'      <div class="trimTxt">';
 					result = result+'<p title="'+candidateSummary+'"><i class="fa fa-quote-left text-muted"></i>'+candidateSummary+'</p>';
 					result = result+'      </div>';
 					result = result+'                </div>                                                                                                                                        ';
 					result = result+'                <div class="media-right positionRelative">                                                                                                                     ';
-					result = result+'<img  data-id="profileImage" id="userImage" onerror="predefineProfileImage(this);" src="'+json.fileUrl+'" alt="Profile Image" class="media-object" style="width:65px">';
-					  if(json.candidateScore != null && json.candidateScore != '' && json.candidateScore != 'undefined'){
+					  if(json.candidate.fileUrl != null && json.candidate.fileUrl !='' && json.candidate.fileUrl !="undefined"){
+					result = result+'<img  data-id="profileImage" id="userImage" onerror="predefineProfileImage(this);" src="'+json.candidate.fileUrl+'" alt="Profile Image" class="media-object" style="width:65px">';
+					  }else{
+					result = result+'<img  data-id="profileImage" id="userImage" onerror="predefineProfileImage(this);" src="resources/images/userprofileImg.jpg" alt="Profile Image" class="media-object" style="width:65px">';
+  
+					  } 
+					if(json.candidateScore != null && json.candidateScore != '' && json.candidateScore != 'undefined'){
 						  if(json.candidateScore >=50){ 
 						 	 result = result +'                    <i class="valid-profile fa fa-check-square text-success ProImgPosit"></i>';        
 						  }

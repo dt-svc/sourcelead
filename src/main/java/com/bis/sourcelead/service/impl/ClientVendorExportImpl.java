@@ -28,6 +28,7 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.ProjectApproverHierarchy;
+import com.bis.sourcelead.entity.ProjectClients;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.UserRole;
@@ -112,7 +113,8 @@ public class ClientVendorExportImpl implements ClientVendorExport {
 			writeRow.createCell(0).setCellValue(orgRelations.getOrgName());
 		}
 		if (orgRelations.getWebSite() != null && !"".equalsIgnoreCase(orgRelations.getWebSite())) {
-			writeRow.createCell(1).setCellValue(orgRelations.getWebSite());
+			StringBuilder sb = new StringBuilder();
+			writeRow.createCell(1).setCellValue(sb.append("www.").append(orgRelations.getWebSite()).toString());
 		}
 		if (orgRelations.getCountry() != null && !"".equalsIgnoreCase(orgRelations.getCountry())) {
 			writeRow.createCell(2).setCellValue(orgRelations.getCountry());
@@ -300,12 +302,12 @@ public class ClientVendorExportImpl implements ClientVendorExport {
 
 
 	@Override
-	public File getexportProjectEmployeeFile(List<ProjectMembers> employeeList,String exportType,Projects project)throws Exception {
+	public File getexportProjectEmployeeFile(List<ProjectMembers> employeeList,String exportType,Projects project,ProjectClients projectClients)throws Exception {
 		String headers[] = Constants.PROJECT_ASSIGNED_EMPLOYEES;
 
 		File file =null;
 		
-		Set<ProjectApproverHierarchy> projectApproverHierarchySet = project.getProjectApprovers();
+		Set<ProjectApproverHierarchy> projectApproverHierarchySet = projectClients.getProjectApproverHierarchyList();
 		 StringBuilder sb = new StringBuilder();
 		 for(ProjectApproverHierarchy ProjectApproverHierarchy:projectApproverHierarchySet ){
 			 sb.append(ProjectApproverHierarchy.getApproverUserId().getFirstName()).append(",");

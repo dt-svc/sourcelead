@@ -10,6 +10,8 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.json.JSONObject;
 
+import com.bis.sourcelead.dto.ProjectAssignedMembersDTO;
+import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.Projects;
@@ -22,6 +24,8 @@ public interface ProjectMembersService {
  	
 	public ProjectMembers updateProjectMember(ProjectMembers projectMembers) throws Exception;
 	
+	void deleteProjectMember(ProjectMembers projectMembers) throws Exception;
+	
 	public List<ProjectMembers> getAllTerminatedProjectMembersByProjectIdAndterminatedStatus(Long projectId,Primary isManuallyTerminated) throws Exception;
 	
 	public List<ProjectMembers> getAllProjectMembersAssignedOrTerminateDateisGreaterThanProjectEndDate(Long projectId);
@@ -32,7 +36,9 @@ public interface ProjectMembersService {
 	
 	public Collection<ProjectMembers> getAllProjectMembers() throws Exception;
 	
-	public Collection<ProjectMembers> getAllProjectMembersByProjectId(Long id) throws Exception;
+	public List<ProjectMembers> getAllProjectMembersByProjectId(Long id) throws Exception;
+	
+	public List<Long> getAllProjectMembersIdsByProjectId(Long projectId) throws Exception;
 	
 	public List<Long> getAllProjectMembersIdsByemployeeId(Long employeeId) throws Exception;
 	
@@ -81,7 +87,7 @@ public interface ProjectMembersService {
     
 	public List<ProjectMembers> getAllProjectMembersByProjectIdsList(List<Long> projectIds);
 	
-	public Collection<ProjectMembers> getAllProjectMembersByProjectIdAndStatus(Long projectId,String status) throws Exception;
+	public List<ProjectMembers> getAllProjectMembersByProjectIdAndStatus(Long projectId,String status,OrgLocations loginOrgLocation) throws Exception;
 	
 	List<ProjectMembers> getProjectMembersListByOrgLocationsIdAndProjectId(Date startDate,Date endDate,Long locationsId, Long projectId) throws Exception;
 
@@ -95,6 +101,14 @@ public interface ProjectMembersService {
 	public List<ProjectMembers> getProjectsAssignedMembersForExpenses(Long projectId)throws Exception;
 
 	public List<ProjectMembers> getVendorAssignedMembersForProjects(Long projectId, Long orgLocationId, Long orgRelationId)throws Exception;
-
 	
+	public void saveAssignedProjectMembers(ProjectAssignedMembersDTO projectAssignedMembersDTO,String projectUUID,User user,OrgLocations orgLocations) throws Exception;
+	
+	public List<ProjectMembers> getAllProjectMembersByProjectClientIdAndStatus(Long projectClientsId,String status) throws Exception;
+
+	public String transferMembers(OrgLocations orgLocations,Org org,Projects projects,String projectMembers,User user,Long projectOrgLocationId) throws Exception;
+	
+	Integer getProjectMembersCountByProjectClientId(Long projectClientId) throws Exception;
+	
+	ProjectMembers getProjectMembersByCandidateIdAndProjectId(Long candidateId,Long projectId) throws Exception;
 }

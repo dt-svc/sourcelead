@@ -5,7 +5,6 @@
 <html>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
-
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 <style type="text/css">
@@ -230,7 +229,7 @@ function cancelOrgImg(){
 							<div class="form-group">
 								<label class="col-md-3">ZipCode</label>
 								<div class="col-md-9">
-								<input type="text"  class="form-control" name="zipcode" id="orgEditZipCode" field-name="Zip" data-validation="validate_int validate_Space" data-validation-optional="true" value="${SourceLeadWeb_orgLocations.zipCode}" />
+								<input type="text"  class="form-control" name="zipcode" id="orgEditZipCode" field-name="Zip" data-validation="validate_Space" data-validation-optional="true" value="${SourceLeadWeb_orgLocations.zipCode}" />
 								</div>
 							</div>
 							
@@ -1703,38 +1702,6 @@ function createOrg(){
 				result = result +'         </div>';
 				result = result +'       </div>';
 						        
-				
-				/* 
-	            result = result +' <div class="form-group">';
-	            result = result +'<label class="col-md-3">Country<span class="text-danger">&nbsp;*</span></label>';
-	            result = result +'<div class="col-md-9 dropdown-select">';
-	            result = result +'<select class="chosen-select form-control select-bg" name="country" id="locationCountry" field-name="Country" data-validation="required" value="${country}">';
-	            result = result +'<option value="" >Select Location</option>';
-	            result = result +'<option value="Australia">Australia</option>';
-	            result = result +'<option value="France">France</option>';
-	            result = result +'<option value="India">India</option>';
-	            result = result +'<option value="Singapore">Singapore</option>';
-	            result = result +'<option value="United Kingdom">United Kingdom</option>';
-	            result = result +'<option value="United States">United States</option>';
-	            result = result +'</select>';
-	            result = result +'<span class="hidden">Country</span>';
-	            result = result +'</div>';
-	            result = result +'</div>';
-          
-	            result = result +'<div class="form-group">';
-	            result = result +'<label class="col-md-3">State<span class="text-danger">&nbsp;*</span></label>';
-	            result = result +'<div class="col-md-9">';
-	            result = result +'<select  class="chosen-select form-control" name="state" id="locationState" field-name="State" data-validation="required" > </select>';
-	            result = result +'</div>';
-	            result = result +'</div>';
-							
-	            result = result +'<div class="form-group">';
-	            result = result +'<label class="col-md-3">City<span class="text-danger">&nbsp;*</span></label>';
-	            result = result +'<div class="col-md-9">';
-	            result = result +'<select  class="chosen-select form-control" name="city" id="locationCity" field-name="City" data-validation="required" ></select>';
-	            result = result +'</div>';
-	            result = result +'</div>'; */
-			
 	            result = result +'<div class="form-group">';
 	            result = result +'<label class="col-md-3">Address</label>';
 	            result = result +'<div class="col-md-9">';

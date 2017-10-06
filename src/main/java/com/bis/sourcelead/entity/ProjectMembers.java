@@ -1,6 +1,7 @@
 package com.bis.sourcelead.entity;
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
@@ -22,6 +23,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.apache.commons.lang.StringUtils;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Fetch;
@@ -47,7 +49,7 @@ public class ProjectMembers implements Serializable {
 	@Column(name = "ID", nullable = false)
 	private Long id;
 
-	@NotFound(action=NotFoundAction.IGNORE)
+	
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "PROJECT_ID", nullable = false)
 	private Projects projects;
@@ -56,6 +58,24 @@ public class ProjectMembers implements Serializable {
 	@ManyToOne
 	@JoinColumn(name = "EMPLOYEE_ID", nullable = false)
 	private Employees employee;
+
+	@NotFound(action=NotFoundAction.IGNORE)
+	@ManyToOne
+	@JoinColumn(name = "CANDIDATE_ID", nullable = false)
+	@JsonBackReference
+	private Candidate projectMemberCandidteId;
+	
+	@NotFound(action=NotFoundAction.IGNORE)
+	@ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="MASTER_CANDIDATE_ID", nullable=false )        
+    private MasterCandidate masterCandidateId;
+	
+	
+	@NotFound(action=NotFoundAction.IGNORE)
+	@ManyToOne
+	@JoinColumn(name = "PROJECT_CLIENTS_ID")
+	@JsonBackReference
+    private ProjectClients projectClientsId;
 
 	/*
 	 * @Column(name = "TIMESHEET_FREQUENCY") private String timesheetFrequency;
@@ -71,10 +91,28 @@ public class ProjectMembers implements Serializable {
 	private String role;
 
 	@Column(name = "CURRENT_BILL_RATE")
-	private Float currentBillRate;
+	private Double currentBillRate;
 
 	@Column(name = "RATE_TYPE")
 	private String rateType;
+	
+	@Column(name = "BILL_RATE_CURRENCY")
+	private String billRateCurrency;
+	
+	@Column(name = "PAY_RATE")
+	private Double payRate;
+
+	@Column(name = "PAY_RATE_TYPE")
+	private String payRateType;
+	
+	@Column(name = "PAY_RATE_CURRENCY")
+	private String payRateCurrency;
+	
+	@Column(name = "ESTIMATED_HOURS")
+	private Double estimatedHours;
+	
+	@Column(name = "ESTIMATED_BUDGET")
+	private Double estimatedBudget;
 
 	@Column(name = "STATUS")
 	private String status;
@@ -100,9 +138,12 @@ public class ProjectMembers implements Serializable {
 	private String empName;
 	
 	@Transient
+	@JsonProperty
 	private String empEmail;
+	
 	@Transient
 	private String startDate;
+	
 	@Transient
 	private String endDate;
 	
@@ -340,9 +381,11 @@ public class ProjectMembers implements Serializable {
 	private String totalHours;
 
 	@Transient
+	@JsonProperty
 	private String candidateName;
 
 	@Transient
+	@JsonProperty
 	private Long candidateId;
 
 	@Transient
@@ -368,6 +411,24 @@ public class ProjectMembers implements Serializable {
 	@Transient
 	private String projectUUID;
 	
+	@Transient
+	@JsonProperty
+	private String startDateStr;
+	
+	@Transient
+	@JsonProperty
+	private String endDateStr;
+	
+	
+	@Transient
+	@JsonProperty
+	private String payRateStr;
+	
+	
+	@Transient
+	@JsonProperty
+	private String billRateStr;
+	
 	public Long getSubmissionInvoiceId() {
 		return submissionInvoiceId;
 	}
@@ -387,6 +448,7 @@ public class ProjectMembers implements Serializable {
 	private Set<ProjectMembersHistory> memberHistoryList = new HashSet<ProjectMembersHistory>(0);
 
 	@Transient
+	@JsonProperty
 	private List<ProjectMembers> projectMembersList;
 
 	public Date getProjectAssignedDate() {
@@ -478,6 +540,8 @@ public class ProjectMembers implements Serializable {
 	public void setEmployee(Employees employee) {
 		this.employee = employee;
 	}
+	
+	
 
 	/*
 	 * public String getTimesheetFrequency() { return timesheetFrequency; }
@@ -485,6 +549,14 @@ public class ProjectMembers implements Serializable {
 	 * public void setTimesheetFrequency(String timesheetFrequency) {
 	 * this.timesheetFrequency = timesheetFrequency; }
 	 */
+
+	public Candidate getProjectMemberCandidteId() {
+		return projectMemberCandidteId;
+	}
+
+	public void setProjectMemberCandidteId(Candidate projectMemberCandidteId) {
+		this.projectMemberCandidteId = projectMemberCandidteId;
+	}
 
 	public String getRole() {
 		return role;
@@ -494,11 +566,11 @@ public class ProjectMembers implements Serializable {
 		this.role = role;
 	}
 
-	public Float getCurrentBillRate() {
+	public Double getCurrentBillRate() {
 		return currentBillRate;
 	}
 
-	public void setCurrentBillRate(Float currentBillRate) {
+	public void setCurrentBillRate(Double currentBillRate) {
 		this.currentBillRate = currentBillRate;
 	}
 
@@ -559,6 +631,9 @@ public class ProjectMembers implements Serializable {
 	}
 
 	public String getEmpEmail() {
+		if(projectMemberCandidteId != null){
+			empEmail = projectMemberCandidteId.getEmail();
+		}
 		return empEmail;
 	}
 
@@ -663,6 +738,13 @@ public class ProjectMembers implements Serializable {
 	}
 
 	public String getCandidateName() {
+		if(projectMemberCandidteId != null){
+			if(projectMemberCandidteId.getLastName() != null){
+				candidateName = projectMemberCandidteId.getFirstName()+" "+projectMemberCandidteId.getLastName();
+			}else{
+				candidateName = projectMemberCandidteId.getFirstName();
+			}
+		}
 		return candidateName;
 	}
 
@@ -671,6 +753,9 @@ public class ProjectMembers implements Serializable {
 	}
 
 	public Long getCandidateId() {
+		if(projectMemberCandidteId != null){
+			candidateId = projectMemberCandidteId.getId();
+		}
 		return candidateId;
 	}
 
@@ -1255,5 +1340,127 @@ public class ProjectMembers implements Serializable {
 	{
 		this.memberEnddate = memberEnddate;
 	}
+
+	public String getBillRateCurrency() {
+		return billRateCurrency;
+	}
+
+	public void setBillRateCurrency(String billRateCurrency) {
+		this.billRateCurrency = billRateCurrency;
+	}
+
+	public Double getPayRate() {
+		return payRate;
+	}
+
+	public void setPayRate(Double payRate) {
+		this.payRate = payRate;
+	}
+
+	public String getPayRateType() {
+		return payRateType;
+	}
+
+	public void setPayRateType(String payRateType) {
+		this.payRateType = payRateType;
+	}
+
+	public String getPayRateCurrency() {
+		return payRateCurrency;
+	}
+
+	public void setPayRateCurrency(String payRateCurrency) {
+		this.payRateCurrency = payRateCurrency;
+	}
+
+	public Double getEstimatedHours() {
+		return estimatedHours;
+	}
+
+	public void setEstimatedHours(Double estimatedHours) {
+		this.estimatedHours = estimatedHours;
+	}
+
+	public Double getEstimatedBudget() {
+		return estimatedBudget;
+	}
+
+	public void setEstimatedBudget(Double estimatedBudget) {
+		this.estimatedBudget = estimatedBudget;
+	}
+
+	public String getStartDateStr() {
+		if(projectAssignedDate != null){
+			SimpleDateFormat dateFormat = projects.getOrgLocationsId().getLocFullFormDateFormatter();
+				startDateStr = dateFormat.format(projectAssignedDate);	
+		}else{
+			startDateStr = "";
+		}
+		return startDateStr;
+	}
+
+	public void setStartDateStr(String startDateStr) {
+		this.startDateStr = startDateStr;
+	}
+
+	public String getEndDateStr() {
+		if(projectEndDate != null){
+			SimpleDateFormat dateFormat = projects.getOrgLocationsId().getLocFullFormDateFormatter();
+			endDateStr = dateFormat.format(projectEndDate);	
+		}else{
+			endDateStr = "";
+		}
+		return endDateStr;
+	}
+
+	public void setEndDateStr(String endDateStr) {
+		this.endDateStr = endDateStr;
+	}
+
+	public String getPayRateStr() {
+		if(payRate != null){
+			StringBuilder payRateBuilder = new StringBuilder();
+			payRateStr = payRateBuilder.append(payRateCurrency).append(" ").append(payRate).append(" / ").append(payRateType).toString();
+		}else{
+			payRateStr = "-----";
+		}
+		return payRateStr;
+	}
+
+	public void setPayRateStr(String payRateStr) {
+		this.payRateStr = payRateStr;
+	}
+
+	public String getBillRateStr() {
+		if(currentBillRate != null){
+			StringBuilder billRateBuilder = new StringBuilder();
+			billRateStr = billRateBuilder.append(billRateCurrency).append(" ").append(currentBillRate).append(" / ").append(rateType).toString();
+		}else{
+			billRateStr = "-----";
+		}
+		return billRateStr;
+	}
+
+	public void setBillRateStr(String billRateStr) {
+		this.billRateStr = billRateStr;
+	}
+
+	public ProjectClients getProjectClientsId() {
+		return projectClientsId;
+	}
+
+	public void setProjectClientsId(ProjectClients projectClientsId) {
+		this.projectClientsId = projectClientsId;
+	}
+
+	public MasterCandidate getMasterCandidateId() {
+		return masterCandidateId;
+	}
+
+	public void setMasterCandidateId(MasterCandidate masterCandidateId) {
+		this.masterCandidateId = masterCandidateId;
+	}
+
+	
 	
 }

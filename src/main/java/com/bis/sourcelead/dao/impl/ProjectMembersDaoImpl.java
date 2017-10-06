@@ -152,13 +152,15 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 	@Override
 	@Transactional(rollbackFor = { Exception.class })	
 	public ProjectMembers getProjectMemberById(Long id) throws Exception {
-		logger.debug("In ProjectMember getProjectMember method");
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = " from ProjectMembers pm left join fetch pm.projects left join fetch pm.employee emp left join fetch emp.user where pm.id = :id" ;
+		java.sql.Date  currentDate = new java.sql.Date(new Date().getTime());
+		String query = " from ProjectMembers pm left join fetch pm.projects left join fetch pm.projectMemberCandidteId left join fetch pm.masterCandidateId "
+				+ " left join fetch pm.projectClientsId left join fetch pm.projectClientsId.orgLocationsId "
+				+ "where pm.id = :id" ;
 		List<ProjectMembers> pmList =session.createQuery(query).setLong("id", id).setCacheable(true).list(); 
 		ProjectMembers pm = null;
-		if(pmList != null && !pmList.isEmpty()){
-			pm = pmList.iterator().next();
+		if(pmList != null && !pmList.isEmpty())  {
+			pm  = pmList.iterator().next();
 		}
 		return pm;  
 	}
@@ -509,11 +511,11 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 	 */
 	@Override
 	@Transactional(rollbackFor = { Exception.class })	
-	public Collection<ProjectMembers> getAllProjectMembersByProjectId(Long id) throws Exception {
+	public List<ProjectMembers> getAllProjectMembersByProjectId(Long id) throws Exception {
 		logger.debug("In ProjectMember getAllProjectMembersByProjectId method");
         Session session = this.sessionFactory.getCurrentSession();
         List<ProjectMembers> projectsMembersList = null;
-		Query projectsMembersListQuery= session.createQuery("from ProjectMembers pm left join fetch pm.projects left join fetch pm.employee emp left join fetch emp.user where pm.projects.id = :id ");
+		Query projectsMembersListQuery= session.createQuery("from ProjectMembers pm left join fetch pm.projects left join fetch pm.projectMemberCandidteId left join fetch pm.employee emp left join fetch emp.user where pm.projects.id = :id ");
 		projectsMembersList=projectsMembersListQuery.setLong("id", id).setCacheable(true).list();
 		return projectsMembersList;
         
@@ -712,7 +714,7 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 				subQuery2 = " (" + subQuery2.substring(0, subQuery2.length() - 4) + ")";
 			}
 	        
-		Query projectsMembersListQuery= session.createQuery("from ProjectMembers pm left join fetch pm.projects left join fetch pm.employee emp left join fetch emp.user where pm.projects.id = :projectId  "+ subQuery2 + "");
+		Query projectsMembersListQuery= session.createQuery("from ProjectMembers pm left join fetch pm.projectMemberCandidteId left join fetch pm.projects left join fetch pm.employee emp left join fetch emp.user where pm.projects.id = :projectId  "+ subQuery2 + "");
 
 		projectsMembersList=projectsMembersListQuery.setLong("projectId", projectId).setCacheable(true).list();
 		return projectsMembersList;
@@ -935,6 +937,152 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 		String query = "from ProjectMembers pm left join fetch pm.employee emp where emp.id = :employeeId";
 		List<ProjectMembers> allProjectMembersList = session.createQuery(query).setLong("employeeId", employeeId).setCacheable(true).list();
 		return allProjectMembersList;
+	}
+
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<Long> getAllProjectMembersIdsByProjectId(Long projectId) throws Exception {
+		
+		// TODO Auto-generated method stub
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "select pm.id from ProjectMembers pm where pm.projects.id = :projectId" ;
+		List<Long> idsList =session.createQuery(query).setLong("projectId", projectId) 
+			    .setCacheable(true).list(); 
+		return idsList;  
+		
+	}
+
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public void deleteProjectMember(ProjectMembers projectMembers) throws Exception {
+		logger.debug("In ProjectMember Save method");
+		Session session = this.sessionFactory.getCurrentSession();
+		try{
+			if(projectMembers != null){
+				session.delete(projectMembers);
+				logger.debug("Project Member deleted successfully..");
+			}
+		}catch(ConstraintViolationException exception)
+		{
+			StringBuilder message= new StringBuilder(MessageFormat.format(duplicateValue,"ORG"));
+			throw new SourceLeadConstraintViolationException(message.toString() +exception.getCause().toString());
+		}
+		
+		
+	}
+
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<ProjectMembers> getAllProjectMembersByProjectClientIdAndStatus(Long projectClientsId, String status)
+			throws Exception {
+
+		 Session session = this.sessionFactory.getCurrentSession();
+	        List<ProjectMembers> projectsMembersList = null;
+	        String[] tokens = status.split(",");
+	        
+	        String subQuery2 = "";
+	     
+	        if (Arrays.asList(tokens).contains("Active")) {
+				subQuery2 = subQuery2 + "pm.status ='1' or ";
+			}
+	        
+	        if (Arrays.asList(tokens).contains("In-Active")) {
+				subQuery2 = subQuery2 + "pm.status ='0' or ";
+			}
+	        
+	        if ((tokens[0] != null && tokens[0].length() > 0) ) {
+				subQuery2 = "and (" + subQuery2.substring(0, subQuery2.length() - 4) + ")";
+			} else if (subQuery2 != null && !"".equals(subQuery2)) {
+				subQuery2 = " (" + subQuery2.substring(0, subQuery2.length() - 4) + ")";
+			}
+	        
+		Query projectsMembersListQuery= session.createQuery("from ProjectMembers pm left join fetch pm.projectMemberCandidteId cand "
+				+ "left join fetch pm.projects left join fetch pm.employee emp left join fetch cand.consultantUser "
+				+ "where pm.projectClientsId = :projectClientsId and pm.status = '1' "+ subQuery2 + "");
+
+		projectsMembersList = projectsMembersListQuery.setLong("projectClientsId", projectClientsId).setCacheable(true).list();
+		return projectsMembersList;
+	
+	}
+
+
+	@Override
+	@Transactional
+	public List<Long> getAllProjectMembersIdsByProjectIdAndOrgLocationId(Long projectId, Long orglocationId)
+			throws Exception {
+				Session session = this.sessionFactory.getCurrentSession();
+				String query = "select pm.id from ProjectMembers pm where pm.projects.id = :projectId and "
+						+ "pm.projectClientsId.orgLocationsId.id = :orglocationId and pm.status = '1' " ;
+				List<Long> idsList =session.createQuery(query).setLong("projectId", projectId).setLong("orglocationId", orglocationId)  
+					    .setCacheable(true).list(); 
+				return idsList;  
+        
+	}
+
+
+	@Override
+	@Transactional
+	public ProjectMembers getProjectMemberByCandidateIdAndProjectIdAndOrgLocationId(Long candidateId, Long projectId,
+			Long orgLocationId) throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		java.sql.Date  currentDate = new java.sql.Date(new Date().getTime());
+		String query = " from ProjectMembers pm left join fetch pm.projects left join fetch pm.projectMemberCandidteId left join fetch pm.masterCandidateId "
+				+ " left join fetch pm.projectClientsId left join fetch pm.projectClientsId.orgLocationsId "
+				+ "where pm.projects.id = :projectId and pm.projectMemberCandidteId = :candidateId and pm.projectClientsId.orgLocationsId.id = :orgLocationId and pm.status = '1' " ;
+		List<ProjectMembers> pmList =session.createQuery(query).setLong("candidateId", candidateId).setLong("projectId", projectId).setLong("orgLocationId", orgLocationId).setCacheable(true).list(); 
+		ProjectMembers pm = null;
+		if(pmList != null && !pmList.isEmpty())  {
+			pm  = pmList.iterator().next();
+		}
+		return pm;  
+	}
+
+
+	@Override
+	@Transactional
+	public List<ProjectMembers> getAllProjectMembersByMasterCandidateId(Long masterCandidateId, Long projectId)
+			throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from ProjectMembers pm left join fetch pm.projects left join fetch pm.masterCandidateId  where pm.projects.id = :projectId and "
+				+ " pm.masterCandidateId.id = :masterCandidateId and pm.status = '1'" ;
+		List<ProjectMembers> allProjectsList =session.createQuery(query).setLong("masterCandidateId", masterCandidateId).setLong("projectId",projectId).setCacheable(true).list(); 
+		return allProjectsList;
+	}
+
+
+	@Override
+	@Transactional
+	public Integer getProjectMembersCountByProjectClientId(Long projectClientId) throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		String query ="select count(*) from ProjectMembers pm where pm.projectClientsId.id = :projectClientId and pm.status = '1' ";
+		List<Long> favouriteCount = session.createQuery(query.toString()).setLong("projectClientId", projectClientId).list();
+			Integer count = 0;
+			if(favouriteCount != null && !favouriteCount.isEmpty()){
+					count = favouriteCount.get(0).intValue();
+			}
+			return count;
+	}
+
+
+	@Override
+	@Transactional
+	public ProjectMembers getProjectMembersByCandidateIdAndProjectId(Long candidateId, Long projectId)
+			throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = " from ProjectMembers pm left join fetch pm.projectMemberCandidteId left join fetch pm.projects where  "
+				+ "pm.projects.id = :projectId and pm.projectMemberCandidteId.id = :candidateId and pm.status = '1' " ;
+		List<ProjectMembers> pmList =session.createQuery(query).setLong("projectId", projectId).setLong("candidateId", candidateId).setCacheable(true).list(); 
+		ProjectMembers pm = null;
+		if(pmList != null && !pmList.isEmpty())  {
+			pm  = pmList.iterator().next();
+		}
+		return pm;  
 	}
 }
 

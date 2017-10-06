@@ -3,7 +3,8 @@ package com.bis.sourcelead.dao;
 import java.util.Date;
 import java.util.List;
 
-import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.dto.ProjectsDTO;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
 
@@ -17,6 +18,8 @@ public interface ProjectsDao {
 	
 	List<Projects> getProjectByOrgLocationsId(Long orgLocationsId) throws Exception;
 	
+	List<Projects> getEndClientProjectByOrgLocationsIdAndClientOrgLocationId(Long orgLocationsId,Long clientOrgLocationId) throws Exception;
+	
 	List<Projects> getProjectByOrgLocationsIdAndEndDateGraterthanCurrentDate(Long orgLocationsId, Long loginUserId) throws Exception;
 	
 	List<Projects> getAllProjectsEndDateGraterthanCurrentDate() throws Exception;
@@ -26,6 +29,8 @@ public interface ProjectsDao {
 	public Boolean deleteProjectById(Long id) throws Exception;
 	
 	public Boolean validateProjectSequeneNumber(String projectSequeneNumber, Long orgLocationsId) throws Exception;
+	
+	Boolean validateProjectShortCode(String shortCode, Long orgLocationsId) throws Exception;
 	
 	public Integer projectIdValidation(Long projectId) throws Exception;
 	
@@ -44,6 +49,8 @@ public interface ProjectsDao {
 	public Projects getProjectByProjectSequenceNumber(String projectSequeneNumber) throws Exception;
 
 	List<Projects> getProjectsBasedOnClientsAndStatusSelectionInFilters(Long userId,String clients,String status,Long orgLocationId) throws Exception;
+	
+	ResponseList<Projects> getProjectsListByClientsAndStatus(ProjectsDTO projectsDTO,Long userId,String clients,String status,Long orgLocationId,String userRole) throws Exception;
 	
 	public List<Projects> getProjectByOrgLocationsIdAndUserId(Long id, Long userId);
 	

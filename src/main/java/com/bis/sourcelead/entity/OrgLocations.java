@@ -42,7 +42,7 @@ public class OrgLocations implements Serializable{
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
+    @Column(name = "ID", nullable = false)
     private Long id;
 	
 	@NotFound(action=NotFoundAction.IGNORE)
@@ -200,6 +200,9 @@ public class OrgLocations implements Serializable{
     
     @Transient
     private SimpleDateFormat locFullFormDateFormatter;
+    
+    @Transient
+    private Long vendorOrgRelationId;
     
    
 	public Timezone getTimezone() {
@@ -634,6 +637,14 @@ public class OrgLocations implements Serializable{
 
 	public void setAverageWorkingHours(Integer averageWorkingHours) {
 		this.averageWorkingHours = averageWorkingHours;
+	}
+
+	public Long getVendorOrgRelationId() {
+		return vendorOrgRelationId;
+	}
+
+	public void setVendorOrgRelationId(Long vendorOrgRelationId) {
+		this.vendorOrgRelationId = vendorOrgRelationId;
 	}
 	
 }

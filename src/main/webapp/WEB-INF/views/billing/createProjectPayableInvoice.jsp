@@ -32,16 +32,9 @@ border:none; background: none; font-size:14px; font-weight:600; box-shadow: none
             <div class="form-group">
               <label class="col-md-3">Vendor<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-9 select-field">
-              <c:if test="${isGenerateAutomaticInvoice == 'Y'}">
-								<select class="chosen-select form-control" id="vendorOrgRelationId" name="vendorOrgRelationId" onchange="getVendorContacts();flushValues();getPaymentTerms();"
-									data-validation="required" field-name="Vendor" disabled>
-								</select>
-								</c:if>
-								<c:if test="${empty isGenerateAutomaticInvoice}">
-								<select class="chosen-select form-control" id="vendorOrgRelationId" name="vendorOrgRelationId" onchange="getVendorContacts();flushValues();getPaymentTerms();"
-									data-validation="required" field-name="Vendor">
-								</select>
-								</c:if>
+										<select class="chosen-select form-control" id="vendorOrgRelationId" name="vendorOrgRelationId" onchange="getVendorContacts();flushValues();getPaymentTerms();"
+											data-validation="required" field-name="Vendor">
+										</select>
 							</div>
                <input type="hidden" name="savedInvoiceId" id="savedInvoiceId">
                <input type="hidden" name="vendorCurrency" id="vendorCurrency">
@@ -91,31 +84,15 @@ border:none; background: none; font-size:14px; font-weight:600; box-shadow: none
               <div class="form-group">
               <label class="col-md-3">Project<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-9 select-field">
-               <c:if test="${isGenerateAutomaticInvoice == 'Y'}"> 
-                <select class="chosen-select form-control" id="projectId" name="projectId"  onchange="getProjectFrequency();" data-validation="required" field-name="Project Name" disabled> 
-                  <%--  <option value=''>--Select Clinet--</option>
-                   <c:forEach var="projects" items="${projectsList}">
-                         <option value="${projects.id}">${projects.projectName}</option>
-                  </c:forEach> --%>
-                  </select>
-                  </c:if>
-                   <c:if test="${empty isGenerateAutomaticInvoice}"> 
                 <select class="chosen-select form-control" id="projectId" name="projectId"  onchange="getProjectFrequency();" data-validation="required" field-name="Project Name">
               </select>
-                  </c:if>
               </div>
             </div>
            <div class="form-group">
               <label class="col-md-3">Frequency<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-9 select-field">
-              <c:if test="${isGenerateAutomaticInvoice == 'Y'}">
-                <select class="chosen-select  form-control" id="frequency" name="frequency" data-validation="required" field-name="Frequency" onchange="getProjectAssignedMem();" disabled>
-                  </select>
-                   </c:if>
-                   <c:if test="${empty isGenerateAutomaticInvoice}">
                 <select class="chosen-select  form-control" id="frequency" name="frequency" data-validation="required" field-name="Frequency" onchange="getProjectAssignedMem();">
               </select>
-                   </c:if>
               </div>
             </div>
               
@@ -1148,7 +1125,7 @@ function saveInvoice(saveType){
 		        	  $.post(sourceleadUrl+"/saveInvoice?"+tokenParamName+"="+tokenValue+"&saveType="+saveType+"&invoiceType=payable", formData, function(data) {
 			  				if(data == "success"){
 			  					$("#invoiceLoading").removeAttr("style");
-	    		     			location.replace(sourceleadUrl+"/invoiceList");
+	    		     			location.replace(sourceleadUrl+"/payablesList");
 			  				}
 			  			   }); 
 		        	 
@@ -1240,12 +1217,12 @@ function toDate(selector) {
 		        	 var json = JSON.parse(data);
 		        	 var result = '';
 		        	 var selected = 'selected';
-		        	 result = result +'<option disabled selected>--Select Client--</option>';
-		        	 result = result +'<option value='+json['vendorOrgRelationId']+' '+selected+' >'+json['orgName']+'</option>';
+		        	 result = result +'<option value='+json.vendorOrgRelationId+' '+selected+' >'+json.orgName+'</option>';
 		        	 $("#vendorOrgRelationId").empty();
 		           	 $("#vendorOrgRelationId").append(result); 
 		           	 $('#vendorOrgRelationId').trigger("chosen:updated");
-		           	$('#vendorCurrency').val(json['vendorCurrency']);
+		           	 
+		           	 $('#vendorCurrency').val(json['vendorCurrency']);
 		           	getVendorContacts(json['vendorContactId']);
 		           	getProjectsList(json['projectName']);
 		           	getProjectFrequency(json['invoiceFrequency'],json['id']);

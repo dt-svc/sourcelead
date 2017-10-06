@@ -42,6 +42,9 @@ import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
+import com.bis.sourcelead.entity.ProjectApproverHierarchy;
+import com.bis.sourcelead.entity.ProjectClients;
+import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RoleHierarchy;
 import com.bis.sourcelead.entity.Roles;
@@ -50,7 +53,9 @@ import com.bis.sourcelead.entity.SourceleadRoles;
 import com.bis.sourcelead.entity.SubmissionTemplate;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
+import com.bis.sourcelead.enums.Project_Status;
 import com.bis.sourcelead.exception.SourceLeadObjectNotFoundException;
+import com.bis.sourcelead.form.Registration;
 import com.bis.sourcelead.service.ClientService;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.EmployeesService;
@@ -60,6 +65,7 @@ import com.bis.sourcelead.service.OrgService;
 import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
 import com.bis.sourcelead.service.ProjectMembersService;
+import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.RoleHierarchyService;
 import com.bis.sourcelead.service.RolesService;
@@ -162,6 +168,9 @@ public class ClientServiceImpl implements ClientService {
 
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
+	
+	@Autowired
+	ProjectsService projectsService;
 
 	/**
 	 * @author VenkatKesav
@@ -179,7 +188,7 @@ public class ClientServiceImpl implements ClientService {
 	 */
 	@SuppressWarnings("unused")
 	@Override
-	public void storeClient(ClientDTO clientDTO,AddUserDTO addUserDTO,CandidateDTO candidateDTO, User user, OrgLocations orgLocations, String responderType,
+	public OrgLocations storeClient(ClientDTO clientDTO,AddUserDTO addUserDTO,CandidateDTO candidateDTO, User user, OrgLocations orgLocations, String responderType,
 			Org loginOrg) throws Exception {
 		HashSet<OrgLocations> orgLocationsList = new HashSet<OrgLocations>();
 		OrgLocations clientOrgLocations = null;
@@ -189,42 +198,61 @@ public class ClientServiceImpl implements ClientService {
 		OrgSpoc orgSpoc = null;
 		SubmissionTemplate submissionTemplate = null;
 		SubmissionTemplate sourceLeadDefaultTemplate = null;
+
+		String newlyRegistred = "N";
+	
 		if (StringUtils.isNotBlank(clientDTO.getOrgLocationId())) {
 			clientOrgLocations = orgLocationService.getOrgLocations(Long.parseLong(clientDTO.getOrgLocationId()));
 			if (StringUtils.isNotBlank(clientDTO.getOrgCountry())) {
 				clientOrgLocations.setCountry(clientDTO.getOrgCountry());
 			} else if (StringUtils.isNotBlank(clientDTO.getCountry())) {
 				clientOrgLocations.setCountry(clientDTO.getCountry());
+			}else
+			{
+				clientOrgLocations.setCountry("--");
 			}
 			if (StringUtils.isNotBlank(clientDTO.getOrgState())) {
 				clientOrgLocations.setState(clientDTO.getOrgState());
-			} /*else if (StringUtils.isNotBlank(clientDTO.getUserState())) {
-				clientOrgLocations.setState(clientDTO.getUserState());
-			}*/
+			} else {
+				clientOrgLocations.setState("--");
+			}
 			if (StringUtils.isNotBlank(clientDTO.getOrgCity())) {
 				clientOrgLocations.setCity(clientDTO.getOrgCity());
 			} else if (StringUtils.isNotBlank(clientDTO.getCity())) {
 				clientOrgLocations.setCity(clientDTO.getCity());
+			}else
+			{
+				clientOrgLocations.setCity("--");
 			}
 
 			if (StringUtils.isNotBlank(clientDTO.getOrgZipcode())) {
 				clientOrgLocations.setZipCode(clientDTO.getOrgZipcode());
 			} else if (StringUtils.isNotBlank(clientDTO.getZipcode())) {
 				clientOrgLocations.setZipCode(clientDTO.getZipcode());
+			}else
+			{
+				clientOrgLocations.setZipCode("--");
 			}
 
 			if (StringUtils.isNotBlank(clientDTO.getOrgLocation())) {
 				clientOrgLocations.setLocation(clientDTO.getOrgLocation());
 			} else if (StringUtils.isNotBlank(clientDTO.getLocation())) {
 				clientOrgLocations.setLocation(clientDTO.getLocation());
+			}else{
+				clientOrgLocations.setLocation("--");
 			}
 
 			if (StringUtils.isNotBlank(clientDTO.getLatitude())) {
 				clientOrgLocations.setLatitude(clientDTO.getLatitude());
+			}else
+			{
+				clientOrgLocations.setLatitude("--");
 			}
 
 			if (StringUtils.isNotBlank(clientDTO.getLongitude())) {
 				clientOrgLocations.setLongitude(clientDTO.getLongitude());
+			}else{
+				clientOrgLocations.setLongitude("--");
 			}
 
 		}
@@ -240,6 +268,8 @@ public class ClientServiceImpl implements ClientService {
 
 			if (StringUtils.isNotBlank(clientDTO.getOrgName())) {
 				clientOrgLocations.setOrgLocationName(clientDTO.getOrgName());
+			}else{
+				clientOrgLocations.setOrgLocationName("--");
 			}
 			if (responderType.equalsIgnoreCase("Client")) {
 				clientOrgLocations.setModulesId(Integer.toString(Constants.MODULE_VMS));
@@ -259,6 +289,7 @@ public class ClientServiceImpl implements ClientService {
 			orgService.addOrganization(org);
 			saveOrgRoleHierarchy(clientOrgLocations, user);
 			saveOrgBasedRoles(org, clientOrgLocations, user);
+			newlyRegistred = "Y";
 		} else {
 			orgRelationsList = orgRelationsService.orgRelationsListByJson(clientDTO, clientOrgLocations, orgLocations,
 					user.getUserCode(), responderType);
@@ -273,12 +304,18 @@ public class ClientServiceImpl implements ClientService {
 			}
 			if (StringUtils.isNotBlank(clientDTO.getAddress())) {
 				org.setClientAddress(clientDTO.getAddress());
+			}else{
+				org.setClientAddress("--");
 			}
 			if (StringUtils.isNotBlank(clientDTO.getBillingAddress())) {
 				org.setClientBillingAddress(clientDTO.getBillingAddress());
+			}else{
+				org.setClientBillingAddress("--");
 			}
 			if (StringUtils.isNotBlank(clientDTO.getPaymentTerm())) {
 				org.setPaymentTerm(clientDTO.getPaymentTerm());
+			}else{
+				org.setPaymentTerm("--");
 			}
 			org.setId(org.getId());
 			org.setOrgLocationsList(orgLocationsList);
@@ -429,14 +466,78 @@ public class ClientServiceImpl implements ClientService {
 			submissionTemplateService.addSubmissionTemplate(submissionTemplate);
 
 		}
+		
+		if(newlyRegistred.equalsIgnoreCase(Constants.YES)){
+			saveOrgLocationDefaultProject(clientOrgLocations, spocUser);
+		}
 
 		for (OrgRelations orgRelation : orgRelationsList) {
-
 			saveOrUpdateClientVendorElkDocument(org, clientOrgLocations, responderType, orgSpoc, orgRelation,
 					submissionTemplate, user, orgLocations);
 
 		}
+		
+		return clientOrgLocations;
 	}
+	
+	
+	
+	 public Projects  saveOrgLocationDefaultProject(OrgLocations orgLocations,User approverUser) throws Exception {
+		 	
+	    	Projects projects = new Projects();
+	    	StringBuilder defaultProjectName = new  StringBuilder();
+	    	projects.setProjectName(defaultProjectName.append(orgLocations.getOrgLocationName()).append(" ").append("Default Project").toString());
+	    	StringBuilder defaultProjectNameDesc = new  StringBuilder();
+	    	projects.setDescription(defaultProjectNameDesc.append(orgLocations.getOrgLocationName()).append(" ").append("Default Project").toString());
+	    	projects.setStartDate(new Date());
+	    	projects.setInvoiceFrequency(Constants.WEEKLY);
+	    	projects.setProjectStatus(Project_Status.INPROGRESS);
+	    	projects.setIsDefaultProject(Constants.YES);
+	    	projects.setIsPrimary(1);
+	    	projects.setCreatedDate(new Date());
+	    	projects.setUpdatedDate(new Date());
+	    	projects.setOrgLocationsId(orgLocations);
+	    	Set<ProjectClients> projectClientsList = getProjectClientsForProject(projects,orgLocations,approverUser);
+	    	projects.setProjectClients(projectClientsList);
+			projects.setProjectUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+			projects.setIsClientProject(Constants.NO);
+			projects.setProjectMode("Finished");
+			projects.setCreatedDate(new Date());
+			projects.setUpdatedDate(new Date());
+			Projects updatedProjects = projectsService.saveProject(projects);
+			projectsService.saveOrUpdateProjectElkDocument(updatedProjects);
+			commonUtil.storeSourceleadTasks(approverUser, updatedProjects);
+			return updatedProjects;
+	}
+	 
+	 
+		private Set<ProjectClients> getProjectClientsForProject(Projects projects,OrgLocations orglocations,User approverUser) throws Exception {
+			Set<ProjectClients> projectClientsSet = new HashSet<>();
+			
+			ProjectClients projectClients = new ProjectClients();
+			projectClients.setProjectId(projects);
+			projectClients.setOrgLocationsId(orglocations);
+			projectClients.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
+			projectClients.setStatus(1);
+			projectClients.setCreatedDate(new Date());
+			projectClients.setUpdatedDate(new Date());
+			projectClients.setCreatedBy(approverUser);
+			projectClients.setUpdatedBy(approverUser);
+			
+			//prepare ProjectApproverHierarchy
+			Set<ProjectApproverHierarchy> projectApproverHierarchyList = new HashSet<ProjectApproverHierarchy>();
+			ProjectApproverHierarchy pah = new ProjectApproverHierarchy();
+			pah.setProjectId(projects);
+			pah.setProjectClientsId(projectClients);
+			pah.setApproverUserId(approverUser);
+			pah.setLevel(1);
+			pah.setStatus("1");
+			projectApproverHierarchyList.add(pah);
+			
+			projectClients.setProjectApproverHierarchyList(projectApproverHierarchyList);
+	    	projectClientsSet.add(projectClients);
+			return projectClientsSet;
+		}
 
 
 	/**
@@ -822,6 +923,11 @@ public class ClientServiceImpl implements ClientService {
 					org.setPaymentTerm(clientDTO.getPaymentTerm());
 				}
 				orgForElk = orgService.updateOrg(org);
+			}
+			if (StringUtils.isNotBlank(clientDTO.getCompanyWebsite())) {
+				orgLocations.setWebsite(clientDTO.getCompanyWebsite());
+			} else {
+				orgLocations.setWebsite("");
 			}
 			if (StringUtils.isNotBlank(clientDTO.getCity())) {
 				orgLocations.setCity(clientDTO.getCity());

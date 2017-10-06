@@ -20,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.ProjectMembersHistoryDao;
+import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.ProjectMembersHistory;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 
@@ -250,5 +251,77 @@ public class ProjectMembersHistoryDaoImpl implements ProjectMembersHistoryDao {
 				return pmh;
 		
 	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public void deleteProjectMemberHistory(ProjectMembersHistory projectMembersHistory) throws Exception {
+		logger.debug("In ProjectMembersHistory Update method");
+		Session session = this.sessionFactory.getCurrentSession();
+		try{
+			if(projectMembersHistory != null){
+				session.delete(projectMembersHistory);
+				logger.info("Record deleted successfully..!");
+			}
+		}catch(ConstraintViolationException exception)
+		{
+			StringBuilder message= new StringBuilder(MessageFormat.format(duplicateValue,"PROJECT_MEMBERS_HISTORY"));
+			throw new SourceLeadConstraintViolationException(message.toString() +exception.getCause().toString());
+		}
+		
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public ProjectMembersHistory getProjectMembersOpenHistoryByProjectClientsId(Long projectClientsId,Long projectMemberId)
+			throws Exception {
+		
+		logger.debug("In ProjectMembersHistory getProjectMembersOpenHistoryByProjectClientsId method");
+        Session session = this.sessionFactory.getCurrentSession();
+        Query projectMembersHistoryListQuery= session.createQuery("from ProjectMembersHistory pmh left join fetch pmh.projectMemberId pm left join fetch pmh.projectMemberId.projectClientsId "
+        		+ " where pmh.projectMemberId.projectClientsId.id = :projectClientsId and pmh.projectMemberId.id = :projectMemberId and pmh.status = 'OPEN' ");
+		List<ProjectMembersHistory> projectMembersHistoryList= projectMembersHistoryListQuery.setLong("projectClientsId", projectClientsId).setLong("projectMemberId", projectMemberId).setCacheable(true).list();
+		ProjectMembersHistory pmh = null;
+		if(projectMembersHistoryList != null && !projectMembersHistoryList.isEmpty()){
+			pmh = projectMembersHistoryList.iterator().next();
+		}
+		
+		return pmh;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<ProjectMembersHistory> getProjectMembersHistoryListByProjectMemberId(Long projectMemberId)
+			throws Exception {
+		
+		logger.debug("In getProjectMembersHistoryListByProjectMemberId method");
+		Session session = this.sessionFactory.getCurrentSession();
+		List<ProjectMembersHistory> pmhList = null;
+		Query pmhListQuery= session.createQuery("from ProjectMembersHistory pmh left join fetch pmh.projectMemberId pm left join fetch pmh.projectMemberId.projectClientsId projectClients "
+				+ " left join fetch projectClients.orgLocationsId orgLoc left join fetch orgLoc.user where  pmh.projectMemberId.id = :projectMemberId ");
+		pmhList = pmhListQuery.setLong("projectMemberId", projectMemberId).setCacheable(true).list();
+		return pmhList;
+		
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public ProjectMembersHistory getProjectMembersHistoryByProjectMemberIdAndOrgLoctionId(Long projectMemberId,
+			Long orgLocationId) throws Exception {
+		
+		
+		logger.debug("In ProjectMembersHistory getProjectMembersHistoryByProjectMemberIdAndOrgLoctionId method");
+        Session session = this.sessionFactory.getCurrentSession();
+        Query projectMembersHistoryListQuery= session.createQuery("from ProjectMembersHistory pmh left join fetch pmh.projectMemberId pm left join fetch pmh.projectMemberId.projectClientsId pc "
+        		+ " left join fetch pc.orgLocationsId where pc.orgLocationsId.id = :orgLocationsId and pmh.projectMemberId.id = :projectMemberId");
+		List<ProjectMembersHistory> projectMembersHistoryList= projectMembersHistoryListQuery.setLong("orgLocationsId", orgLocationId).setLong("projectMemberId", projectMemberId).setCacheable(true).list();
+		ProjectMembersHistory pmh = null;
+		if(projectMembersHistoryList != null && !projectMembersHistoryList.isEmpty()){
+			pmh = projectMembersHistoryList.iterator().next();
+		}
+		
+		return pmh;
+	}
+
+
 
 }

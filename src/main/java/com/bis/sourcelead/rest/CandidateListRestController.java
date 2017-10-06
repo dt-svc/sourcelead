@@ -269,6 +269,19 @@ public class CandidateListRestController {
 					for (MatchQueryBuilder matchQueryBuilder : matchQueryBuilderList) {
 						anyBoolSubQueryBuilder.should(matchQueryBuilder);
 					}
+					
+					DateFormat df = loginOrgLocation.getLocFullFormDateFormatter();
+					try{
+						if(keywd.contains("/")){
+							keywd = keywd.replaceAll("/", "-");
+						}
+						Date d = df.parse(keywd);
+						anyBoolSubQueryBuilder = QueryBuilders.boolQuery();
+						String dateStr = commonUtil.elkDateFormatter(d);
+						anyBoolSubQueryBuilder.should(QueryBuilders.termQuery("updatedDate", dateStr));
+					 }
+					 catch(Exception e){}
+					
 					anyBoolQueryBuilder.should(anyBoolSubQueryBuilder);
 				}
 			}
@@ -951,8 +964,8 @@ public class CandidateListRestController {
 		
 		candidateActivityCommonUtil.storeCandidateHistory(candidate, user);
 		candidateActivityCommonUtil.storeCandidateActivity(user, loginOrgLocation, candidate, "", Constants.CANDIDATE_UPLOAD_NEW_PROFILE_IMAGE, activitySummary.toString(), "CANDIDATE");
-		
-		return "success";
+		Integer percentage = candidateService.getCandidatePercentage(candidate,loginOrgLocation);
+		return percentage.toString();
 	}
 
 	/**
@@ -1090,7 +1103,7 @@ public class CandidateListRestController {
 				candidate.setStatus(Constants.CANDIDATE_ACTIVE);
 			}
 
-			if (Constants.Candidates.equalsIgnoreCase(candidateType)) {
+			if (Constants.Candidate.equalsIgnoreCase(candidateType)) {
 				candidate.setIsAssociate(Constants.NO);
 				candidate.setStatus(Constants.CANDIDATE_IN_ACTIVE);
 			}

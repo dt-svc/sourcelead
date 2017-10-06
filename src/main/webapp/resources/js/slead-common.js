@@ -58,14 +58,23 @@ function fileUpload(id, type, formId, name, orgId, orgLocationId) {
 }
 
 function applyData(data, formId, name, id) {
-	if($("#"+formId+" input[name*="+name+"][data-id="+id+"]").length > 0) {
-		$("#"+formId+" input[name*="+name+"][data-id="+id+"]").remove();
+	if($("#"+formId+" input[name*='"+name+"'][data-id="+id+"]").length > 0) {
+		$("#"+formId+" input[name*='"+name+"'][data-id="+id+"]").remove();
 	}
-	var i = $("#"+formId+" input[type=hidden][name*="+name+"]").length / 3;
+	if(name == 'uploadContractsFile' || name == 'uploadFormsFile'){
+		var i = $("#"+formId+" input[type=hidden][name*="+name+"]").length / 4;
+	}
+	else{
+		var i = $("#"+formId+" input[type=hidden][name*="+name+"]").length / 3;
+	}
+	
 	for(var e in data) {
 		var html = "<input type='hidden' name='"+name+"["+i+"].fileURL' data-id="+id+" value='"+data[e].fileURL+"'/>";
 		html += "<input type='hidden' name='"+name+"["+i+"].fileName' data-id="+id+" value='"+data[e].fileName+"'/>";
 		html += "<input type='hidden' name='"+name+"["+i+"].contentType' data-id="+id+" value='"+data[e].contentType+"'/>";
+		if(name == 'uploadContractsFile' || name == 'uploadFormsFile'){
+			html += "<input type='hidden' name='"+name+"["+i+"].fileDbId' data-id="+id+" value='"+id.split(name)[1]+"'/>";
+		}
 		$("#"+formId).append(html);
 		i ++;
 	}

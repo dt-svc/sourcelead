@@ -1,142 +1,12 @@
 <jsp:include page="../masterHeader.jsp" />
 <jsp:include page="../masterSideNav.jsp" />
+
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
-<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
- <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
- <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
-
- <style type="text/css">
- .overflow-data {
-  min-height: 250px;
- }
-.show-tooltip {
-	position:relative;
-	font-size:13px !important;
-}
-.show-tooltip .tooltip_div {
-	color:#333;
-	background: #e1e6fa;
-    border-radius: 3px;
-    display:none;
-    padding:5px;
-    position: absolute;
-    top: 25px;
-	left:-48px;
-    width: 450px;
-	box-sizing:border-box;
-	z-index:999;
-	transition: all 0.5s ease;
-}
-.show-tooltip .tooltipint_detilas {
-	color:#333;
-	background: #e1e6fa;
-    border-radius: 3px;
-     display:none;
-    padding:5px;
-    position: absolute;
-    top: 20px;
-	right:0;
-    width: auto;
-    min-height:50px;
-    max-height:150px;
-    overflow-y:scroll;
-	box-sizing:border-box;
-	z-index:999;
-	transition: all 0.5s ease;
-}
-.tooltipint_detilas table tr th, .tooltipint_detilas table tr td {
-height: 25px;
-}
-.show-tooltip .tooltip_div:after{
-	bottom: 100%;
-	left: 15%;
-	border: solid transparent;
-	content: " ";
-	height: 0;
-	width: 0;
-	position: absolute;
-	pointer-events: none;
-	border-color: rgba(136, 183, 213, 0);
-	border-bottom-color: #e1e6fa;
-	border-width: 10px;
-	margin-left: -20px;
-}
-.show-tooltip .tooltipint_detilas:after{
-	bottom: 100%;
-	right: 5%;
-	border: solid transparent;
-	content: " ";
-	height: 0;
-	width: 0;
-	position: absolute;
-	pointer-events: none;
-	border-color: rgba(136, 183, 213, 0);
-	border-bottom-color: #e1e6fa;
-	border-width: 10px;
-	margin-left: -20px;
-}
-.show-tooltip:hover .tooltip_div{
-	display:block;
-}
-.show-tooltip:hover .tooltipint_detilas{
-	display:block;
-}
-.tooltip_div table {
-	background:#fff;
-}
-.tooltip_div table thead {
-	background:#375d81;
-	color:#fff;
-}
-.tooltip_div table tr th, .tooltip_div table tr td{
-	padding:5px 10px;
-	height: auto !important;
-	font-size: 13px !important;
-    border-bottom: none !important;
-}
-.tooltip_div table tr td span{
-	text-overflow:ellipsis;
-	overflow:hidden;
-	white-space:nowrap;
-	display:block;
-	width:175px;
-	padding-right:5px;
-	margin-bottom:0;
-}
-.project_tabs_inn_table table tr td div i {
-color:#333 !important;
-}
-.remove_user_pop textarea {
-width: 100% !important; margin:10px 0 0 0;
-}
-#tab-2 {
-overflow-y:hidden;
-}
-.table-overflow-hide {
-overflow-y:inherit !important;
-}
-.require_wrap_table {
-overflow-y:inherit !important;
-}
-.require_wrap_details_cta.require_uploadfile span {
- width:auto !important;
-}
-.require_wrap_details_cta.require_uploadfile a {
-margin-left:10px; float: left !important;
-}
-.require_wrap_details_cta.require_uploadfile .glyphicon-download-alt {
-color:blue;
-}
-.skills-chosen .chosen-container-multi .chosen-choices {
-    max-height: 85px !important; overflow: auto;
-}
-  .project_inn_mask.projectMask-zindex {
-    z-index: 9999;
-   }
-</style>
+<link href="resources/css/requirement-summary.css?staticTime=${staticTime}" type="text/css" rel="stylesheet"/>
  
 <script>
 $(document).ready(function() {
@@ -167,11 +37,9 @@ function prepareAllCounts(requirementId){
 }
 </script>
 
-
-
 <script>
 function allApplicantsCount(requirementId){
-	var sourceleadUrl = '${sourceleadUrl}';
+	
 	 $.ajax({
        type : "POST",
         url: sourceleadUrl+"/getSubmissionsCountBySubmissionStatus?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&submissionType=APPLICANTS",        
@@ -185,7 +53,7 @@ function allApplicantsCount(requirementId){
 
 <script>
 function duplicateCount(requirementId){
-	var sourceleadUrl = '${sourceleadUrl}';
+	
 	  $.ajax({
       type : "POST",
        url: sourceleadUrl+"/getDuplicateSubmissionsCountByRequirementId?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId,        
@@ -199,7 +67,7 @@ function duplicateCount(requirementId){
 
 <script>
 function requestSentCount(requirementId){
-	var sourceleadUrl = '${sourceleadUrl}';
+	
 	 $.ajax({
       type : "POST",
        url: sourceleadUrl+"/getSubmissionsCountBySubmissionStatus?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&submissionType=REQUESTSENT",        
@@ -213,7 +81,7 @@ function requestSentCount(requirementId){
 
 <script>
 function shortListCount(requirementId){
-	var sourceleadUrl = '${sourceleadUrl}';
+	
 	 $.ajax({
      type : "POST",
       url: sourceleadUrl+"/getSubmissionsCountBySubmissionStatus?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&submissionType=SHORTLISTED",        
@@ -227,7 +95,7 @@ function shortListCount(requirementId){
 
 <script>
 function submitToClientCount(requirementId){
-	var sourceleadUrl = '${sourceleadUrl}';
+	
 	$.ajax({
      type : "POST",
      url: sourceleadUrl+"/getSubmissionsCountBySubmissionStatus?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&submissionType=SUBMIT_TO_CLIENT",        
@@ -241,7 +109,7 @@ function submitToClientCount(requirementId){
 
 <script>
 function interviewsCount(requirementId){
-	var sourceleadUrl = '${sourceleadUrl}';
+	
 	$.ajax({
       type : "POST",
       url: sourceleadUrl+"/getSubmissionsCountBySubmissionStatus?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&submissionType=INTERVIEWED",        
@@ -255,7 +123,7 @@ function interviewsCount(requirementId){
 
 <script>
 function offerMadeCount(requirementId){
-	var sourceleadUrl = '${sourceleadUrl}';
+	
 	$.ajax({
       type : "POST",
       url: sourceleadUrl+"/getSubmissionsCountBySubmissionStatus?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&submissionType=OFFERED",        
@@ -269,7 +137,7 @@ function offerMadeCount(requirementId){
 
 <script>
 function rejectedCount(requirementId){
-	var sourceleadUrl = '${sourceleadUrl}';
+	
 	$.ajax({
       type : "POST",
       url: sourceleadUrl+"/getSubmissionsCountBySubmissionStatus?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&submissionType=REJECTED",        
@@ -283,7 +151,7 @@ function rejectedCount(requirementId){
 
 <script>
 function backoutCount(requirementId){
-	var sourceleadUrl = '${sourceleadUrl}';
+	
 	$.ajax({
       type : "POST",
       url: sourceleadUrl+"/getSubmissionsCountBySubmissionStatus?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&submissionType=BACKOUT",        
@@ -587,7 +455,7 @@ function openTopDiv(){
 function sideBar(requirementId,type){
 		  var sourceleadUrl ='${sourceleadUrl}';
 	    if(type != null && type != '' && type != 'undefined'){
-	    	$("#actionsDiv" ).show();
+	    	$("#details-div" ).hide();
 			 if(type == 'SHORTLIST'){
 				 	requirementPipeline(requirementId,type);
 					requirementStatusBar(requirementId);
@@ -625,6 +493,7 @@ function sideBar(requirementId,type){
 		 
 	    }
 	    else{
+	    	$("#details-div" ).show();
 	    	$("#actionsDiv" ).hide();
 	    	$("#tab-2").empty();
 			$("#tab-3").empty();
@@ -680,7 +549,7 @@ function viewJobSummaryDocument(jobId,title){
 <script>
 function updateReuqirementStatus(status){
 	
-	var sourceleadUrl = '${sourceleadUrl}';
+	
 	var requirementId = '${requirementId}';
 	 var isLoginUserAsAdmin = '${isAdmin}';
 	 
@@ -758,7 +627,7 @@ function rejectRequirementAlertMessage(status){
 <script>
 function updateReuqirementStatusReject(status){
 	
-	var sourceleadUrl = '${sourceleadUrl}';
+	
 	var requirementId = '${requirementId}';
 	var isLoginUserAsAdmin = '${isAdmin}';
 	 
@@ -816,7 +685,8 @@ function updateReuqirementStatusReject(status){
 
 <script>  
 function requirementPipeline(requirementId,submissionType){
-	var sourceleadUrl = '${sourceleadUrl}';
+	$("#actionsDiv" ).show();
+	
 	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	var userId = '${SourceLeadWeb_user.id}';
 	var loginUserRole = '${SourceLeadWeb_loginUserRole}';
@@ -831,8 +701,7 @@ function requirementPipeline(requirementId,submissionType){
 
 <script>
 function requirementPipelineList(url, requirementId, submissionType){
-	$("#actionsDiv" ).show();
-	  var sourceleadUrl = '${sourceleadUrl}';
+	  
 	  var clientSubmissions = '${clientSubmissions}';
 	  var isSpocActive = '${isSpocActive}';
 	  var orgLocationId = '${SourceLeadWeb_orgLocationId}';
@@ -955,15 +824,6 @@ function requirementPipelineList(url, requirementId, submissionType){
     prepareAllCounts(requirementId);
 }
 
-</script>
-
-<script>
-function viewResumeRequirementSummary(resumeUUID,title){
-	var sourceleadUrl ='${sourceleadUrl}';
-	if(resumeUUID != null && resumeUUID != ""){
-		window.open(sourceleadUrl+'/viewProfessionalCandidateResume/'+title+'?resumeUUID='+resumeUUID,title,"height=600,width=600");
-	}  
-}
 </script>
 
 <script>
@@ -1096,7 +956,7 @@ function cancelRejectApplicant(submissionId,requirementId,submissionType){
 <script>
 function saveRejectApplicantReason(submissionId,requirementId,submissionType){
 	if ($('#rejected_form').validate(false, validationSettings)) {
-		var sourceleadUrl = '${sourceleadUrl}';
+		
 		var frm = $('#rejected_form').serializeFormJSON();
 		var con = JSON.stringify(frm);
 		con = con.replace(/[{}]/g, "");
@@ -1130,7 +990,7 @@ $('body').on('blur', '#rejected_form', function() {
 </script>
 <script>
 function backOutApplicant(submissionId,requirementId,submissionType){
-	var sourceleadUrl = '${sourceleadUrl}';
+	
 		$.ajax({
 		   	type: "POST",
 		    url: sourceleadUrl+"/backoutApplicant?"+tokenParamName+"="+tokenValue+"&submissionId="+submissionId,	    	   
@@ -1143,7 +1003,7 @@ function backOutApplicant(submissionId,requirementId,submissionType){
 
 <script>
 function requirementSubmissionCount(requirementId){  
-	var sourceleadUrl = '${sourceleadUrl}';
+	
 	 $.ajax({
         type : "POST",
          url: sourceleadUrl+"/getSubmissionsCountBySubmissionStatus?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId,        
@@ -1173,7 +1033,7 @@ function requirementSubmissionCount(requirementId){
 --%>
 <script>  
 function assignedMemberList(requirementId){
-	  var sourceleadUrl = '${sourceleadUrl}';
+	  
 	  $.ajax({
         type : "POST",
          url: sourceleadUrl+"/getRequirementAssignedListByRequirementId?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId,        
@@ -1253,7 +1113,7 @@ function requirementNotes(requirementId){
 	    $("#tab-3").empty();  
 	    $("#tab-4").empty();
 	    $("#status-div").empty(); 
-	    $("#actionsDiv").empty(); 
+	    $("#actionsDiv").hide(); 
 	    $("#status-data").empty(); 
 	    $("#tab-4").append(result);  
 	    reqNotes(requirementId);    
@@ -1342,7 +1202,11 @@ function reqNotes(requirementId){
    	    output = output+'    <div class="commentsimg">';
    	    output = output+'    <i class="fa fa-comments"></i>';
    	    output = output+'        <div class="commentsimg-inner">';
-   	    output = output+'        	<img onerror="predefineProfileImage(this);" src="'+sourceleadUrl+'/displayUserImage/'+report.commentAuthorUserId+'"/>';
+   	    if(report.commentAuthorImage != null && report.commentAuthorImage !='' && report.commentAuthorImage !='undefined'){
+   	    output = output+'        	<img data-id= "userProfileImage" onerror="predefineProfileImage(this);" src="'+report.commentAuthorImage+'"/>';
+   	    }else{
+   	   	output = output+'        	<img data-id= "userProfileImage" onerror="predefineProfileImage(this);" src="resources/images/userprofileImg.jpg"/>';
+   	    }
    	    output = output+'        </div>';
    	    output = output+'    </div>';
    	    output = output+'     <div class="comments-content">';
@@ -1400,7 +1264,7 @@ function reqNotes(requirementId){
 	      	    var locationCode ='${SourceLeadWeb_locationCode}'; 
 	      	    formData.append("locationCode",locationCode);
 	      	    
-				var sourceleadUrl = '${sourceleadUrl}';
+				
 				$("#save_note").attr("disabled", "disabled");
          		$("#save_note" ).addClass('button').val('Processing..');
 		        var jsonData = encodeURIComponent(con);
@@ -1434,8 +1298,8 @@ function reqNotes(requirementId){
 
 <script type="text/javascript">
 function requirementRecommendations(requirementId){
-	$("#actionsDiv" ).empty();
-	var sourceleadUrl = '${sourceleadUrl}';
+	$("#actionsDiv" ).hide();
+	
 	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	$("#recommendationsLoading").attr('style','position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	
@@ -1461,6 +1325,7 @@ function requirementRecommendations(requirementId){
 			 result = result +'<div class="clients_side_wrap_inn quickviewTabs">';
 			 result = result +'<div id="candidateCompare" ></div>';
 			 result = result + '<ul class="nav nav-tabs">';
+			 result = result + '<input type="hidden"  id="requirementId" name="requirementId" value="'+requirementId+'"/>';
 			 result = result +' <li id="quickviewTabsqv" class="active"><a data-toggle="tab" href="#quickresume_view">Quickview</a></li>';
 			 result = result +'<li id="quickviewTabsdetails"><a data-toggle="tab" href="#detailrecommondations">Detailed view</a></li>';
 			 result = result +'</ul>';
@@ -1878,12 +1743,18 @@ function clientSideBar(candidateId,recScore){
 			             result = result+'<div id="candidateImageId">';
 			             result = result+'<div class="well well-sm text-center clearfix positionRelative">';
 						 result = result+' <div class="profile-img-container profile-image text-center">';
-						 result = result+'   <img  id="userImage" data-id="profileImage" onerror="predefineProfileImage(this);" src="'+json.fileUrl+'" alt="Profile Image" class=" img-responsive center-block img-circle">';						 if(recScore != null && recScore != '' && recScore != 'undefined'){
+			               if(json.fileUrl != null && json.fileUrl !='' && json.fileUrl !="undefined"){
+						result = result+'   <img  id="userImage" data-id="profileImage" onerror="predefineProfileImage(this);" src="'+json.fileUrl+'" alt="Profile Image" class=" img-responsive center-block img-circle">';						 
+			               }else{
+						result = result+'   <img  id="userImage" data-id="profileImage" onerror="predefineProfileImage(this);" src="resources/images/userprofileImg.jpg" alt="Profile Image" class=" img-responsive center-block img-circle">';						 
+	   
+			               }
+						if(recScore != null && recScore != '' && recScore != 'undefined'){
 							  if(recScore >=50){ 
 							 	 result = result +'                    <i class="valid-profile fa fa-check-square text-success"></i>';        
 							  }
 						  }
-						 result = result+'  <div class="btn-group uploadfile">';
+						 result = result+'  <div class="btn-group uploadfile uploadbtn-custom">';
 						 result = result+'  <button type="button" class="btn btn-sm btn-primary">';
 						 result = result+'  <i class="fa fa-upload"></i></button>';
 						 result = result+'  <label class="btn btn-sm btn-primary">';
@@ -1924,19 +1795,29 @@ function clientSideBar(candidateId,recScore){
 			            
 			             result = result+'<ul class="list-unstyled">';
 			             result = result+'<li>Type - '+json.candidateType+'</li>';
-			             
-			                                                       if(json.experienceYears != null && json.experienceYears != '' && json.experienceYears != 'undefined'){
+			             if(json.designation != null && json.designation != '' && json.designation != 'undefined'){
+				         result = result+'<li>Designation - '+json.designation+'</li>';
+	              		 }else{
+	              		 result = result+'<li>Designation - ----</li>';  
+	              		 }
+			             if(json.designationType != null && json.designationType != '' && json.designationType != 'undefined'){
+				         result = result+'<li>Employment Type - '+json.designationType+'</li>';
+	              		 }else{
+	              		 result = result+'<li>Employment Type - ----</li>';  
+	              		 }
+			             if(json.experienceYears != null && json.experienceYears != '' && json.experienceYears != 'undefined'){
 			             result = result+'<li>Experience - '+json.experienceYears+' years '+json.experienceMonths+' months </li>';
-              		                                                  }else{
-              		                                                	  
+              		     }else{
               		     result = result+'<li>Experience - ----</li>';  
-              		                                                  }
-                                                                   if(json.primarySkill != null && json.primarySkill != '' && json.primarySkill != 'undefined'){
+              		     }if(json.noticePeriod != null && json.noticePeriod != '' && json.noticePeriod != 'undefined'){
+                	     result = result+'  <li>Notice Period - '+json.noticePeriod+'</li>';
+                         }else{
+                         result = result+'<li>Notice Period - ----</li>';  
+                         }if(json.primarySkill != null && json.primarySkill != '' && json.primarySkill != 'undefined'){
                 	     result = result+'  <li>Primary Skill - '+json.primarySkill+'</li>';
-                              		                                   }else{
-                              		                                                	  
+                         }else{
                          result = result+'<li>Primary Skill - ----</li>';  
-                              		                                    }
+                         }
 			             result = result+'                       </ul>';
 			             result = result+'                 <div class="clearfix">';
 			             result = result+'                 <div class="socialnetwork-details">';
@@ -1951,7 +1832,7 @@ function clientSideBar(candidateId,recScore){
 			            	 result = result+'<li class="bg-twitter"><a href="'+json.twitterUrl+'"target="_blank"> <i class="fa fa-twitter-square"></i></a></li>';
 			            	 }
 			             
-			             result = result+'                               </ul>';
+			             result = result+'   </ul>';
 			             result = result+'                 </div>';
 			             result = result+'                 </div>';
 			             result = result+'               </div>';
@@ -1964,9 +1845,9 @@ function clientSideBar(candidateId,recScore){
 			                                                  
 			             result = result+'                   <li title="'+city+''+state+''+country+'"><i class="fa fa-location-arrow" title="Location"></i>'+city+''+state+''+country+'</li>';
 			             
-			             result = result+'                   <li><i class="fa fa-money" title="Current Rate"></i>'+currentRate+'  '+currentRateType+' / '+currentRateCurrency+'</li>';
+			             result = result+'                   <li><i class="fa fa-money" title="Current Rate"></i><b>Current Rate:</b>' +currentRate+'  '+currentRateType+' / '+currentRateCurrency+'</li>';
 			             
-			             result = result+'                   <li><i class="fa fa-money" title="Expected rate"></i>'+expectedRate+'  '+rateType+' / '+expectedRateCurrencey+'</li>';
+			             result = result+'                   <li><i class="fa fa-money" title="Expected rate"></i><b>Expected Rate:</b>'+expectedRate+'  '+rateType+' / '+expectedRateCurrencey+'</li>';
 			             result = result+'                 </ul>';
 			             result = result+'               </div>';
 			             result = result+'			</div>';
@@ -2486,7 +2367,7 @@ function closeratediv(){
 <script>
 function exportPipelineToExcel(requirementId,submissionType){
 	$('.export_pipline').hide();
-	  var sourceleadUrl = '${sourceleadUrl}';
+	  
 	  var clientSubmissions = '${clientSubmissions}';
 	  var emptypilpeline = $("#emptyPipelinelist").val();
       if(emptypilpeline > 0 ){
@@ -2512,7 +2393,7 @@ function exportPipelineToExcel(requirementId,submissionType){
  <script>
 function exportPipelineToPdf(requirementId,submissionType){
 	$('.export_pipline').hide();
-	  var sourceleadUrl = '${sourceleadUrl}';
+	  
 	  var clientSubmissions = '${clientSubmissions}';
 	  var emptypilpeline = $("#emptyPipelinelist").val();
 	  if(emptypilpeline > 0 ){
@@ -2557,7 +2438,7 @@ function cancel(){
 <script type="text/javascript">
 function customizeScore(requirementId){
 	$("#customizeScoreDiv").show();
-	var sourceleadUrl = '${sourceleadUrl}';
+	
 	 $.ajax({
 		   	type: "GET",
 		    url: sourceleadUrl+"/getCustomizeScore?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId, 	   
@@ -3236,7 +3117,7 @@ function updateCutomize(requirementId){
     var educationScore = parseInt($("#educationScore").val());
     var visaTypwScore = parseInt($("#visaTypeScore").val());
     var totalscore = (skillPerc+expPerc+noticePerc+ratePerc+locationScore+kewordsPerc+educationScore+visaTypwScore);
-    var sourceleadUrl = '${sourceleadUrl}';
+    
     
     if(totalscore>100){
         var result = "";
@@ -3360,11 +3241,18 @@ function refreshImageBlock(candidateId){
 	                	 var result = '';
 			             result = result+'<div class="well text-center clearfix">';
 						 result = result+' <div class="profile-img-container profile-image text-center" style="position:relative;">';
-						 result = result+'   <img  id="userImage" data-id="profileImage" onerror="predefineProfileImage(this);" src="'+json.fileUrl+'" alt="Profile Image" class=" img-responsive center-block img-circle">';						 result = result+'  <div class="btn-group uploadfile">';
+						 if(json.fileUrl != null && json.fileUrl !='' && json.fileUrl !="undefined"){
+						 result = result+'   <img  id="userImage" data-id="profileImage" onerror="predefineProfileImage(this);" src="'+json.fileUrl+'" alt="Profile Image" class=" img-responsive center-block img-circle">';						 
+						 }else{
+						 result = result+'   <img  id="userImage" data-id="profileImage" onerror="predefineProfileImage(this);" src="resources/images/userprofileImg.jpg" alt="Profile Image" class=" img-responsive center-block img-circle">';						 
+	 
+						 }
+						 result = result+'  <div class="btn-group uploadfile">';
 						 result = result+'  <button type="button" class="btn btn-sm btn-primary">';
 						 result = result+'  <i class="fa fa-upload"></i></button>';
 						 result = result+'  <label class="btn btn-sm btn-primary">';
-						 result = result+'    Upload / Change<input type="file" name="file" id="uploadedImage"  accept="image/*" onchange="cropImage(this,\'candidate_form\','+candidateId+');" style="display: none;">';					     result = result+'  </label>';
+						 result = result+'    Upload / Change<input type="file" name="file" id="uploadedImage"  accept="image/*" onchange="cropImage(this,\'candidate_form\','+candidateId+');" style="display: none;">';					     
+						 result = result+'  </label>';
 					     if(json.fileName != null && json.fileName != '' && json.fileName != 'undefined'){
 						     result = result+'  <button type="button" class="btn btn-sm btn-danger" onclick="deleteImage('+candidateId+')">';
 							 result = result+'  <i class="fa fa-trash"></i></button>';

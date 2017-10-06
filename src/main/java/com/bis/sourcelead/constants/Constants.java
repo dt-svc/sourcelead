@@ -252,6 +252,18 @@ public class Constants {
 	public static final String ACCEPT_SINGLE_RESOURCE_REQUEST = "Accept Single Resource Request";
 	public static final String ACCEPT_SINGLE_RESOURCE_REQUEST_NOTIFICATION = "AcceptSingleResourceRequestNotification";
 	
+	public static final String BUDGET_REQUEST = "Budget Request";
+	public static final String BUDGET_REQUEST_NOTIFICATION = "BudgetRequestNotification";
+	
+	public static final String BUDGET_REQUEST_ACCEPTED = "Budget Request Accepted";
+	public static final String BUDGET_REQUEST_ACCEPTED_NOTIFICATION = "BudgetRequestAcceptedNotification";
+	
+	public static final String BUDGET_REQUEST_REJECTED_EMAIL = "Budget Request Rejected";
+	public static final String BUDGET_REQUEST_REJECTED_NOTIFICATION = "BudgetRequestRejectedNotification";
+	
+	public static final String BUDGET_REQUEST_ONHOLD_EMAIL = "Budget Request OnHold";
+	public static final String BUDGET_REQUEST_ONHOLD_NOTIFICATION = "BudgetRequestOnHoldNotification";
+	
 	public static final String INVITE_COMPANY = "inviteCompany";
 	public static final String UPDATED_USER_ROLE_EMAIL = "UserRoleChanged";
 	public static final String INVOICE_ACCEPT_MAIL_VENDOR_EMAIL = "InvoiceAcceptMailtoVendor";
@@ -359,6 +371,7 @@ public class Constants {
 	public static final String JOBS = "Jobs";
 	public static final String Vendors = "Vendors";
 	public static final String Candidates = "Candidates";
+	public static final String Candidate = "Candidate";
 	public static final String Associates = "Associates";
 	public static final String OnAndOffboard = "OnAndOffboard";
 	public static final String Receivable = "Receivable";
@@ -407,6 +420,10 @@ public class Constants {
 	public static final String SKILLS = "Skills";
 	public static final String VISA = "VisaCategory";
 	
+	public static final String TASKTYPE = "TaskType";
+	public static final String TASKSEVERITY = "TaskSeverity";
+	public static final String TASKPRIORITY = "TaskPriority";
+	public static final String TASKSTATUS = "TaskStatus";
 	
 	public static final String EXPENSESCATEGORY = "Expense Category";
 	
@@ -447,7 +464,7 @@ public class Constants {
 	public static final String[] CANDIDATE_EXCEL_HEADERS = { "Firstname", "Last name", "Email id",
 			"Phone Number", "Location", "Designation", "Education", "Experience", "Skills",
 			"Rate", "Vendor", "Vendor Contact", "Is Favourite"};
-	public static final String[] REQUIREMENT_EXCEL_HEADERS = { "Requirement id", "Requirement Title",
+	public static final String[] REQUIREMENT_EXCEL_HEADERS = { "Jobs id", "Jobs Title",
 			"Experience", "Rate", "Location", "Skills", "Manager", "Priority",
 			"Application Form Name", "Client Name", "Client Contact Name", "Client Contact Email",
 			"Status", "Posted On"};
@@ -669,6 +686,11 @@ public class Constants {
 	public static final String RESOURCE_REQUEST_ASSOCIATE_REQUEST = "Associate Request";
 	
 	
+	public static final String BUDGET_REQUEST_WAITING_FOR_APPROVAL = "Waiting For Approval"; 
+	public static final String BUDGET_REQUEST_APPROVED = "Approved"; 
+	public static final String BUDGET_REQUEST_REJECTED = "Rejected";
+	public static final String BUDGET_REQUEST_ON_HOLD = "On Hold";
+	
 	public static final int WORKING_HOURS = 8;
 	
 	
@@ -824,5 +846,9 @@ public class Constants {
 	public static final String PAYROLL_CHKS = "PAYROLL_CHKS";
 	
 	public static final String DEFAULT_COOLINGOFF_PERIOD = "3 Months";
+	
+	public static final String CLINT_VENDOR_DOES_NOT_EXIST = "false";
+	public static final String CLINT_VENDOR_IF_EXIST = "true";
+	public static final String CLINT_VENDOR_IF_EXIST_AS_SAMEORG = "sameorg";
 
 }
