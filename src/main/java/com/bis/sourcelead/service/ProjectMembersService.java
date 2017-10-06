@@ -38,6 +38,8 @@ public interface ProjectMembersService {
 	
 	public List<ProjectMembers> getAllProjectMembersByProjectId(Long id) throws Exception;
 	
+	public List<ProjectMembers> getAllProjectMembersWithMasterCandidateIdByProjectIdAndLocationId(Long id,Long locationsId) throws Exception;
+	
 	public List<Long> getAllProjectMembersIdsByProjectId(Long projectId) throws Exception;
 	
 	public List<Long> getAllProjectMembersIdsByemployeeId(Long employeeId) throws Exception;

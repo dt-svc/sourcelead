@@ -9,6 +9,8 @@ public class TimesheetExpenseEntryDetailsUtilDTO implements Serializable{
 	private Long userId;
 	
 	private String locationCode;
+	
+	private String expenseFrom;
 
 	public Long getUserId() {
 		return userId;
@@ -25,9 +27,16 @@ public class TimesheetExpenseEntryDetailsUtilDTO implements Serializable{
 	public void setLocationCode(String locationCode) {
 		this.locationCode = locationCode;
 	}
-	
-	
 
+	public String getExpenseFrom()
+	{
+		return expenseFrom;
+	}
 
+	public void setExpenseFrom(String expenseFrom)
+	{
+		this.expenseFrom = expenseFrom;
+	}
+	
 	
 }

@@ -5,6 +5,7 @@ import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -319,6 +320,10 @@ public class Projects implements Serializable{
     @Transient
     @JsonProperty
     Set<ProjectDocuments>  projectDocumentsList;
+    
+    @Transient
+    @JsonProperty
+    List<ExpensesCategory> expensesCategoryList;
     
     @Column(name = "GENERATED_ID")
 	private String generatedId;
@@ -906,6 +911,16 @@ public class Projects implements Serializable{
 
 	public void setProjectDocumentsList(Set<ProjectDocuments> projectDocumentsList) {
 		this.projectDocumentsList = projectDocumentsList;
+	}
+
+	public List<ExpensesCategory> getExpensesCategoryList()
+	{
+		return expensesCategoryList;
+	}
+
+	public void setExpensesCategoryList(List<ExpensesCategory> expensesCategoryList)
+	{
+		this.expensesCategoryList = expensesCategoryList;
 	}
 
 	public String getProjStatus() {

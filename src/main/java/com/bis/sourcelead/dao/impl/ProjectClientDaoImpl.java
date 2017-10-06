@@ -147,5 +147,24 @@ public class ProjectClientDaoImpl implements ProjectClientDao{
 		projectClientsList = candidateListQuery.setLong("userId", userId).setLong("locationsId", locationsId).setCacheable(true).list();
 		return projectClientsList;
 	}
+
+	@Override
+	@Transactional
+	public List<ProjectClients> getAllProjectClientsByApproverUserAndOrgLocationId(Long userId, Long locationsId) throws Exception
+	{
+		logger.debug("In getProjectClientsListByProjectId method");
+		Session session = this.sessionFactory.getCurrentSession();
+		List<ProjectClients> projectClientsList = null; 
+		Query candidateListQuery= session.createQuery("from ProjectClients pc left join fetch pc.projectId left join fetch pc.orgRelationId rel left join fetch rel.locationId inloc left join fetch inloc.org  left join fetch rel.responderLocationId  resloc left join fetch resloc.org left join fetch pc.orgLocationsId "
+			  	 + " left join fetch pc.orgRelationId  where  pc.orgLocationsId.id = :locationsId and pc.status = '1' and pc.id IN "
+				 +"("
+				 + " select hierarchy.projectClientsId.id from ProjectApproverHierarchy hierarchy  where  "
+				 + " (hierarchy.projectClientsId.orgLocationsId.id = :locationsId and hierarchy.approverUserId.id = :userId "
+				 + " OR "
+				 + " (:userId IN (select userRole.user.id from UserRole userRole where userRole.roles.roleName = 'ROLE_ADMIN' and userRole.orgLocations.id = hierarchy.projectClientsId.orgLocationsId.id) )"
+			     + " ))");
+		projectClientsList = candidateListQuery.setLong("userId", userId).setLong("locationsId", locationsId).setCacheable(true).list();
+		return projectClientsList;
+	}
 	
 }

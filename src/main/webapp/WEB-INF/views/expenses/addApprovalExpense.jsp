@@ -64,7 +64,7 @@
 				<div class="form-group">
 					<label class="col-md-3">Select Project <span class="text-danger">&nbsp;*</span></label>
 					<div class="col-md-9" id="errProject">
-						<select class="chosen-select form-control" autocomplete="off" onchange="getClientBasedOnSelectedProject(); getMembersForSelectedProject();removeErrProject();flushOnchange();" id="projectId" name="projectId" field-name="Project" data-validation="required">
+						<select class="chosen-select form-control" autocomplete="off" onchange="getClientBasedOnSelectedProject(); getMembersForSelectedProject();removeErrProject();flushOnchange();" id="projectId" name="projectId" field-name="Project" >
 
 							 <c:if test="${fn:length(projectsList) gt 0}">
 								<option value="">Select Project</option>
@@ -402,9 +402,9 @@ function getMembersForSelectedProject(){
 	$.ajax({
 	      type : "GET",
 	       url: sourceleadUrl+"/getMembersForSelectedProject?projectId="+projectId,       
-	       success :function(data) {
-	    	   if(data != null && data !='undefined' && data !=''){
-	    	   var json = JSON.parse(data);
+	       success :function(json) {
+	    	   if(json != null && json !='undefined' && json !=''){
+	    	   /* var json = JSON.parse(data); */
 	    	   var result = "";
 	    	   result = result + '<option value="">Select Employee</option>';
 			       	for (var i=0; i<json.length; i++){
@@ -523,36 +523,20 @@ function removeWhiteSpaces(rowCount){
 <script>
 function getClientBasedOnSelectedProject(){
 	 var locationCode ='${SourceLeadWeb_locationCode}'; 
-	var projectId = document.getElementById("projectId").value;
-	$.ajax({
-	      type : "GET",
-	       url: sourceleadUrl+"/getClientByProjectId?projectId="+projectId+"&locationCode="+locationCode,       
-	       success :function(data) {
-	    	   if(data != null && data !='undefined' && data !=''){
-	    	   var json = JSON.parse(data);
-		    	  if(json.expensesClientName != null && json.expensesClientName !='undefined' && json.expensesClientName !=''){
-		    	   		$('#clientNameId').val(json.expensesClientName);
-		    	   }else{
-		    	   		$('#clientNameId').val('');   
-		    	   }
-		    	  if(json.startDateStr != null && json.startDateStr !='undefined' && json.startDateStr !='' && json.endDateStr != null && json.endDateStr !='undefined' && json.endDateStr !=''){
-		    		  	var projectStartDate = json.startDateStr;
-		    			var projectEndDate = json.endDateStr;
-		    			expensesDatePickerStartDate(projectStartDate,projectEndDate);
-		    	  }else{
-					  var projectStartDate = json.startDateStr;
-					  var projectEndDate = json.endDateStr;
-					  expensesDatePickerStartDate(projectStartDate,projectEndDate);
-		    	  }	
-
-		    	  $('#expensePurpose').val('');
-		    	  //$('#projectStartDateExpensesId').val('');
-		    	 // $('#projectEndDateExpensesId').val('');
-		    	    
-
-	    	   }
-	       },
-	});
+	 var projectId = document.getElementById("projectId").value;
+	 if(projectId != null && projectId !='undefined' && projectId !=''){
+		 var projectStartDate = '';
+		 var projectEndDate = '';
+		 $('#expensePurpose').val('');
+		 <c:forEach var="project" items="${projectsList}">
+		 if('${project.id}' == projectId){
+			 $('#clientNameId').val('${project.expensesClientName}');
+			   projectStartDate = '${project.startDateStr}';
+ 			   projectEndDate = '${project.endDateStr}';
+ 			  expensesDatePickerStartDate(projectStartDate,projectEndDate);
+		 }  
+ 	    </c:forEach>
+	 }
 }
 </script>
 

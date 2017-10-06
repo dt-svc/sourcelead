@@ -1193,6 +1193,12 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 	public List<Long> getAllProjectMembersIdsByProjectId(Long projectId) throws Exception {
 		return projectMembersDao.getAllProjectMembersIdsByProjectId(projectId);
 	}
+	
+	@Override
+	public List<ProjectMembers> getAllProjectMembersWithMasterCandidateIdByProjectIdAndLocationId(Long projectId,Long locationId) throws Exception {
+		return projectMembersDao.getAllProjectMembersWithMasterCandidateIdByProjectIdAndLocationId(projectId, locationId);
+	}
+	
 
 	@Override
 	public void deleteProjectMember(ProjectMembers projectMembers) throws Exception {

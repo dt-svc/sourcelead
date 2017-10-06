@@ -15,7 +15,7 @@ public class ExpenseEntryDetailsDTO implements Serializable{
 	
 	List<ProjectMembersDTO> projectMembersList;
 	
-	List<ExpensesCategoryDTO> expenseCategoryList;
+	List<ProjectsDTO> projectsList;
 	
 	List<String> paymentModes;
 	
@@ -38,12 +38,14 @@ public class ExpenseEntryDetailsDTO implements Serializable{
 		this.projectMembersList = projectMembersList;
 	}
 
-	public List<ExpensesCategoryDTO> getExpenseCategoryList() {
-		return expenseCategoryList;
+	public List<ProjectsDTO> getProjectsList()
+	{
+		return projectsList;
 	}
-	
-	public void setExpenseCategoryList(List<ExpensesCategoryDTO> expenseCategoryList) {
-		this.expenseCategoryList = expenseCategoryList;
+
+	public void setProjectsList(List<ProjectsDTO> projectsList)
+	{
+		this.projectsList = projectsList;
 	}
 
 	public String getCurrencyCode() {
