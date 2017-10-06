@@ -569,6 +569,30 @@ public class VendorRestController {
 		 	  return "success";
 		    }
 	   
+	   
+	   
+	   
+	   
+	   @RequestMapping(value = "/resendVendorSpocInvitationEmail" , method = RequestMethod.POST)
+		  public @ResponseBody  String resendVendorSpocInvitationEmail(@RequestParam(value="spocUserId", required=false) String spocUserId, @RequestParam(value="orgSpocId", required=false) String orgSpocId,HttpServletRequest request,String responderType, Long orgRelationID) throws Exception {
+			    
+			    User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			    OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			    User spocUser = userService.getUserById(Long.parseLong(spocUserId));
+			    
+		 		if(null != spocUser){
+		 			OrgSpoc spoc = orgSpocService.getOrgSpocById(Long.parseLong(orgSpocId));
+		 			spoc.setInvitationStatus(Constants.MAIL_SENT);
+		 			orgSpocService.addOrgSpoc(spoc);
+		 			
+		 			VendorOnboarding vendorOnboarding = vendorOnboardService.getVendorOnboardingByOrgRelationId(orgRelationID);
+		 			vendorOnboardService.sendMailAndNotificationToVendorContact(vendorOnboarding, vendorOnboarding.getVendorLocationId(), loginOrgLocation, loginUser, spocUser);
+		 			
+		 		}
+			
+		 	  return "success";
+		    }
+	   
 	   /**
 	    * @author Rajashekar
 	    * writes vendor to to excel and pdf

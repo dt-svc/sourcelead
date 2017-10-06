@@ -46,14 +46,25 @@ margin:10px 220px 0;
 			</div> --%>
 			<%-- </sec:authorize> --%>
 			<%-- <sec:authorize access="hasAnyRole('ROLE_CLIENT_CONTACT_BULK_IMPORTS')"> --%>
-			<div class="col-xs-8 col-md-8">
+			<div class="col-xs-3 col-md-3">
 			 <a href="<c:url value='/downloadVendorTemplate?name=Contact'/>">
 			 <button class="btn btn-success btn-block" type="button">
-					<i class="fa fa-download"></i>&nbsp;&nbsp;Download Vendor Template
+					<i class="fa fa-download"></i>&nbsp;&nbsp;Vendor Template
 			</button>
 			</a>
 			</div>
-			<div class="col-xs-4 col-md-4">
+			
+				<div class="col-md-6 candAdvsrch">
+					<select data-placeholder="Select Onboard Templates" multiple
+						class="chosen-select form-control" name="templateId" id="templateId"
+						field-name="Template" data-validation-optional="true">
+						<c:forEach var="template" items="${templatesList}">
+							<option value="${template.id}">${template.templateName}</option>
+						</c:forEach>
+					</select>
+			</div>
+						 
+			<div class="col-xs-3 col-md-3">
 			<div class="btn-group btn-group-justified">
 			  <div class="btn-group">
 			  <input type="button" class="btn btn-primary" id="upload_button" name="upload_button"  onclick = "saveBulkImport();" value="Import">
@@ -613,6 +624,27 @@ function uploadSave() {
 	   
     }
 </script>  -->
+
+
+<script type="text/javascript">
+$(function(){
+	       var config = {
+			  '.chosen-select'           : {},
+			  '.chosen-select-deselect'  : {allow_single_deselect:true},
+			  '.chosen-select-no-single' : {disable_search_threshold:10},
+			  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
+			  '.chosen-select-width'     : {width:"95%"}
+			}
+	       $("#templateId").chosen();
+	       $('#templateId').trigger("chosen:updated");
+	      
+	       $('.chosen-select').each(function() {
+				var $this = $(this);
+				$this.next().css({'width': '100%'});
+		  })
+		  
+});
+</script>
 
   <!-- Footer Area -->
   <footer class="footer-area clearfix">

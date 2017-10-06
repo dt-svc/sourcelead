@@ -95,4 +95,20 @@ public class VendorOnboardDaoImpl implements VendorOnboardDao{
 		}
 	}
 
+	@Override
+	@Transactional
+	public VendorOnboarding getVendorOnboardingByOrgLocationIdAndVendorLocationId(Long orgLocationId,
+			Long vendorLocationId) throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		List<VendorOnboarding> vendorOnboard = session.createQuery("from VendorOnboarding onboard left join fetch onboard.orgRelationId "
+				+ " left join fetch onboard.vendorLocationId left join fetch onboard.orgLocationsId where onboard.vendorLocationId.id = :vendorLocationId "
+				+ " and  onboard.orgLocationsId.id = :orgLocationId" ).setLong( "vendorLocationId", vendorLocationId ).setLong( "orgLocationId", orgLocationId ).setCacheable(true).list();
+		if (vendorOnboard.size() > 0) {
+			return vendorOnboard.get(0);
+		} else {
+			return null;
+		}
+	}
+
 }

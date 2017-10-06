@@ -283,7 +283,8 @@ public class VendorController {
 
 	@PreAuthorize("hasAnyRole('ROLE_VENDOR_BULK_IMPORTS','ROLE_VENDOR_CONTACT_BULK_IMPORTS')")
 	 @RequestMapping(value = "/uploadVendorForm")
-		public ModelAndView uploadVendorForm(HttpServletRequest request) {
+		public ModelAndView uploadVendorForm(HttpServletRequest request) throws Exception {
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		 SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
 			if(sessionData == null)
 			{
@@ -293,6 +294,8 @@ public class VendorController {
 			
 			request.getSession().setAttribute("sessionData",sessionData);
 			ModelAndView model = new ModelAndView();
+			List<VendorOnboardingTemplate> templatesList = vendorOnboardTemplateService.getVendorOnBoardingFinishedTemplatesList(orgLocations.getId());
+			model.addObject("templatesList", templatesList);
 			model.setViewName("upload/uploadVendorForm");
 			model.addObject("sourceleadUrl", sourceleadUrl);
 			sessionData.setNav(Constants.Vendors);

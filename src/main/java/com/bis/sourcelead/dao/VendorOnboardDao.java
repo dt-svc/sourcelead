@@ -11,4 +11,6 @@ public interface VendorOnboardDao {
 	VendorOnboarding getVendorOnboardingById(Long id) throws Exception;
 	
 	VendorOnboarding getVendorOnboardingByUUID(String onboardUUID) throws Exception;
+	
+	VendorOnboarding getVendorOnboardingByOrgLocationIdAndVendorLocationId(Long orgLocationId,Long vendorLocationId) throws Exception;
 }

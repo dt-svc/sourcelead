@@ -141,7 +141,7 @@
 	              <div class="col-md-9">
 	                <select multiple data-placeholder="select owner" class="chosen-select form-control" name="owner" id="owner" field-name="Owner"  data-validation="required">
 	                 <c:forEach var="user" items="${userList}">
-		                     <option value="${user.id}" ${user.id  == SourceLeadWeb_userId ? 'selected' : ''} >${user.firstName} ${user.lastName}</option>
+		                     <option value="${user.id}" ${user.id  == SourceLeadWeb_userId ? 'selected' : ''} >${user.fullName}</option>
 	                </c:forEach> 
 	                </select>
 	              </div>
@@ -492,7 +492,7 @@ function validateClientName(){
 			var sourceleadUrl = '${sourceleadUrl}';
 			$("#vendor_form").attr("disabled", "disabled");
 			$("#vendor_form").addClass('button').val('Processing..');
-					$.post(sourceleadUrl+"/saveClient?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&responderType=Vendor", formData, function(data) {
+					$.post(sourceleadUrl+"/saveVendor?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&responderType=Vendor", formData, function(data) {
 						location.replace(sourceleadUrl+ "/addVendorContact");
 					});
 			return true;
@@ -567,10 +567,10 @@ function validateEmail(){
 							{
 					        	    var opt = json[i];
 					        		if(opt.id == SourceLeadWeb_userId){
-					        			output = output + "<option value='" +opt.id+ "' selected>"+opt.firstName+" "+opt.lastName+"</option>";
+					        			output = output + "<option value='" +opt.id+ "' selected>"+opt.firstName+"</option>";
 					        		}
 					        		else{
-					        			output = output + "<option value='" +opt.id+ "'>"+opt.firstName+" "+opt.lastName+"</option>";
+					        			output = output + "<option value='" +opt.id+ "'>"+opt.firstName+"</option>";
 					        		}
 			                }
 		        	}
