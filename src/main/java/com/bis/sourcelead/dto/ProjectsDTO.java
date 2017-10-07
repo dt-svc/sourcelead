@@ -8,6 +8,8 @@ public class ProjectsDTO extends SearchDTO implements Serializable{
 
 	private static final long serialVersionUID = 1L;
 	
+	private long id;
+	
 	private String projectSequeneNumber;
 	
 	private String startDate;
@@ -80,6 +82,16 @@ public class ProjectsDTO extends SearchDTO implements Serializable{
 	
 	private String projectShortCode;
 	
+	public long getId()
+	{
+		return id;
+	}
+
+	public void setId(long id)
+	{
+		this.id = id;
+	}
+
 	public String getProjectSequeneNumber() {
 		return projectSequeneNumber;
 	}

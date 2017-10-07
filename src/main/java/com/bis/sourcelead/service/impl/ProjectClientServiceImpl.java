@@ -49,4 +49,10 @@ public class ProjectClientServiceImpl implements ProjectClientService {
 		return projectClientDao.getProjectClientsListByLoginUserAndOrgLocationId(locationsId, userId);
 	}
 
+	@Override
+	public List<ProjectClients> getAllProjectClientsByApproverUserAndOrgLocationId(Long userId, Long locationsId)
+			throws Exception {
+		return projectClientDao.getAllProjectClientsByApproverUserAndOrgLocationId(userId, locationsId);
+	}
+	
 }

@@ -40,15 +40,18 @@ import com.bis.sourcelead.dao.AddExpensesDao;
 import com.bis.sourcelead.dao.ExpensesEntriesDao;
 import com.bis.sourcelead.dao.ExpensesEntryDocumentsDao;
 import com.bis.sourcelead.dto.ExpenseEntryDetailsDTO;
-import com.bis.sourcelead.dto.TimesheetExpenseEntryDetailsUtilDTO;
 import com.bis.sourcelead.dto.ExpensesCategoryDTO;
 import com.bis.sourcelead.dto.ExpensesDTO;
 import com.bis.sourcelead.dto.ExpensesEntriesStoringDTO;
 import com.bis.sourcelead.dto.ExpensesListUtilDTO;
 import com.bis.sourcelead.dto.ProjectMembersDTO;
+import com.bis.sourcelead.dto.ProjectsDTO;
+import com.bis.sourcelead.dto.TimesheetExpenseEntryDetailsUtilDTO;
 import com.bis.sourcelead.dto.helper.ExpenseCategoryDTOConverter;
 import com.bis.sourcelead.dto.helper.ExpensesDTOConverter;
+import com.bis.sourcelead.dto.helper.ProjectDTOConverter;
 import com.bis.sourcelead.dto.helper.ProjectMemberDTOConverter;
+import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.Expenses;
 import com.bis.sourcelead.entity.ExpensesApproverHierarchy;
@@ -58,7 +61,9 @@ import com.bis.sourcelead.entity.ExpensesEntryDocuments;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.ProjectApproverHierarchy;
+import com.bis.sourcelead.entity.ProjectClients;
 import com.bis.sourcelead.entity.ProjectMembers;
+import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.CurrencyCodes;
@@ -66,6 +71,7 @@ import com.bis.sourcelead.enums.PaymentModes;
 import com.bis.sourcelead.enums.Submission_ApprovalStatus;
 import com.bis.sourcelead.enums.Submission_Status;
 import com.bis.sourcelead.service.AddExpensesService;
+import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.ExpensesApprovalService;
 import com.bis.sourcelead.service.ExpensesCategoryService;
@@ -73,6 +79,7 @@ import com.bis.sourcelead.service.ExpensesService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
+import com.bis.sourcelead.service.ProjectClientService;
 import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.service.UserService;
@@ -91,6 +98,10 @@ public class ExpensesRestController {
 	private String sourceleadUrl;
 	@Autowired
 	private ExpensesService expensesService;
+	
+	@Autowired
+	private ProjectClientService projectClientService;
+	
 	@Autowired
 	private AddExpensesService addExpensesService;
 	@Autowired
@@ -126,6 +137,9 @@ public class ExpensesRestController {
 	private AddExpensesDao addExpensesDao;
 	
 	@Autowired
+	private CandidateService candidateService;
+	
+	@Autowired
 	private LoginSessionController loginSessionController;
 	
 	@RequestMapping(value = {"/getExpensesList","/rest/getExpensesList"})
@@ -146,25 +160,53 @@ public class ExpensesRestController {
 	public ExpenseEntryDetailsDTO getExpenseEntryDetails(@RequestBody TimesheetExpenseEntryDetailsUtilDTO eedDTO) throws Exception
 	{
 		
+		
 		ExpenseEntryDetailsDTO expenseEntryDetailsDTO = new ExpenseEntryDetailsDTO();
 		OrgLocations orgLocations = orgLocationService.getOrgLocationsByLocationCode(eedDTO.getLocationCode());
-		//loginSessionController.DATEFORMAT= new SimpleDateFormat(orgLocations.getDateFormat());
-		List<ProjectMembers> projectMembersList = projectMembersService.getProjectMembersListByOrgLocationsIdAndEmpUserId(orgLocations.getId(), eedDTO.getUserId());
-		if (projectMembersList != null && !projectMembersList.isEmpty()) {
-			ArrayList<ProjectMembersDTO> pmDTOList = new ArrayList<>();
-			for (ProjectMembers pm : projectMembersList) {
-				pmDTOList.add(ProjectMemberDTOConverter.getProjectMembersDTOFromProjectMembers(pm));
+		User loginUser = userService.getUserById(eedDTO.getUserId());
+		if(StringUtils.isNotEmpty(eedDTO.getExpenseFrom()) && eedDTO.getExpenseFrom().equalsIgnoreCase("approver")){
+			List<ProjectClients> projectClientsList = projectClientService.getAllProjectClientsByApproverUserAndOrgLocationId(loginUser.getId(),orgLocations.getId());
+			ArrayList<ProjectsDTO> projectsList = new ArrayList<>();
+			for(ProjectClients pc : projectClientsList){
+				Projects projects = pc.getProjectId();
+				ProjectsDTO projectDTO =ProjectDTOConverter.getProjectsDTOFromProjects(projects);
+				List<ExpensesCategory>  expensesCategoryList = expensesCategoryService.getAllExpensesCategoryByLocationIdAndStatus(projects.getOrgLocationsId().getId(), Constants.MEMBER_ACTIVE);
+				projects.setExpensesCategoryList(expensesCategoryList);
+			    if(pc.getOrgRelationId() != null){
+			    	 if("Vendor".equalsIgnoreCase(pc.getOrgRelationId().getInitiatorType())){
+						 projects.setExpensesClientName(pc.getOrgRelationId().getResponderLocationId().getOrgLocationName());
+					 }else if("Client".equalsIgnoreCase(pc.getOrgRelationId().getInitiatorType())){
+						 projects.setExpensesClientName(pc.getOrgRelationId().getLocationId().getOrgLocationName());
+					 }
+			    }
+				projectsList.add(projectDTO);
 			}
-			expenseEntryDetailsDTO.setProjectMembersList(pmDTOList);
+			expenseEntryDetailsDTO.setProjectsList(projectsList);
 		}
-		List<ExpensesCategory> expensesCategoryList = expensesCategoryService.getAllExpensesCategoryByLocationIdAndStatus(orgLocations.getId(), "1");
-		if (expensesCategoryList != null && !expensesCategoryList.isEmpty()) {
-			ArrayList<ExpensesCategoryDTO> ecDTOList = new ArrayList<>();
-			for (ExpensesCategory ec : expensesCategoryList) {
-				ecDTOList.add(ExpenseCategoryDTOConverter.getExpensesCategoryDTOFromExpensesCategory(ec));
+		else{
+			Candidate candidate = candidateService.getCandidateByConsultantUserId(eedDTO.getUserId(), orgLocations.getId());
+			List<ProjectMembers> projectMembersList = projectMembersService.getProjectMembersListByOrgLocationsIdAndCandidateId(orgLocations.getId(), candidate.getId());
+			if (projectMembersList != null && !projectMembersList.isEmpty()) {
+				ArrayList<ProjectMembersDTO> pmDTOList = new ArrayList<>();
+				for (ProjectMembers pm : projectMembersList) {
+					ProjectMembersDTO pmDTO =ProjectMemberDTOConverter.getProjectMembersDTOFromProjectMembers(pm);
+					List<ExpensesCategory> expensesCategoryList = expensesCategoryService.getAllExpensesCategoryByLocationIdAndStatus(pm.getProjects().getOrgLocationsId().getId(), "1");
+					if (expensesCategoryList != null && !expensesCategoryList.isEmpty()) {
+						ArrayList<ExpensesCategoryDTO> ecDTOList = new ArrayList<>();
+						for (ExpensesCategory ec : expensesCategoryList) {
+							ecDTOList.add(ExpenseCategoryDTOConverter.getExpensesCategoryDTOFromExpensesCategory(ec));
+						}
+						pmDTO.setExpenseCategoryList(ecDTOList);
+					}
+					pmDTOList.add(pmDTO);
+				}
+				expenseEntryDetailsDTO.setProjectMembersList(pmDTOList);
 			}
-			expenseEntryDetailsDTO.setExpenseCategoryList(ecDTOList);;
 		}
+		
+		
+		
+		
 		String expenseId = addExpensesService.getExpenseId(orgLocations);
 		expenseEntryDetailsDTO.setExpenseId(expenseId);
 		Countries countries = countriesService.getCountriesByCountryName(orgLocations.getCountry());

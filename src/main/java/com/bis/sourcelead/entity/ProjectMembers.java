@@ -623,6 +623,14 @@ public class ProjectMembers implements Serializable {
 	}
 
 	public String getEmpName() {
+		if(projectMemberCandidteId != null && StringUtils.isNotEmpty(projectMemberCandidteId.getFirstName())&& StringUtils.isNotEmpty(projectMemberCandidteId.getLastName())){
+			empName = projectMemberCandidteId.getFirstName()+" "+projectMemberCandidteId.getLastName();
+		}else if(projectMemberCandidteId != null && StringUtils.isNotEmpty(projectMemberCandidteId.getFirstName())){
+			empName = projectMemberCandidteId.getFirstName();
+		}
+		else if(projectMemberCandidteId != null && StringUtils.isNotEmpty(projectMemberCandidteId.getLastName())){
+			empName = projectMemberCandidteId.getLastName();
+		}
 		return empName;
 	}
 

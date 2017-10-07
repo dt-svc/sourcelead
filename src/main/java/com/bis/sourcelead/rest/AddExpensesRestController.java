@@ -5,8 +5,8 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.mail.internet.InternetAddress;
@@ -27,7 +27,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.OrgLocationsDao;
 import com.bis.sourcelead.dto.AddExpensesDTO;
-import com.bis.sourcelead.dto.CategoryDTO;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
@@ -256,29 +255,15 @@ public class AddExpensesRestController {
 	
 	
 	 @RequestMapping(value = "/getMembersForSelectedProject",  method = RequestMethod.GET)
-	 public @ResponseBody  String getMembersForSelectedProject(
+	 public @ResponseBody  List<ProjectMembers> getMembersForSelectedProject(
 			@RequestParam(value="projectId", required=false) Long projectId, HttpServletRequest request) throws Exception {
 	 	
-		 	Collection<ProjectMembers> projectMembers = null;
+		 	List<ProjectMembers> projectMembers = null;
 		 	if(projectId != null){
-				projectMembers = projectMembersService.getAllProjectMembersByProjectId(projectId);
-				
-				if(null != projectMembers && projectMembers.size() > 0){
-					for(ProjectMembers pm : projectMembers){
-						if(null != pm.getEmployee().getUser()){
-							StringBuilder eName = new StringBuilder();
-							
-							if(null != pm.getEmployee().getUser() && (pm.getEmployee().getUser().getFirstName() != null && pm.getEmployee().getUser().getFirstName() != "" && pm.getEmployee().getUser().getLastName() != null && pm.getEmployee().getUser().getLastName() != "" )){
-								pm.setEmpName(eName.append(pm.getEmployee().getUser().getFirstName()).append(" ").append(pm.getEmployee().getUser().getLastName()).toString());
-							}else{
-								pm.setEmpName(eName.append(pm.getEmployee().getUser().getFirstName()).toString());
-							}
-							
-						}
-					}
-				}
+		 	    OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+				projectMembers = projectMembersService.getAllProjectMembersWithMasterCandidateIdByProjectIdAndLocationId(projectId,orgLoc.getId());
 		 	}
-		 	return commonUtil.toJSON(projectMembers);
+		 	return projectMembers;
 	}
 	 
 	 
