@@ -35,16 +35,24 @@ public class ActionHistoryRestController {
 	private UserLoginLogoutSessionService userLoginLogoutSessionService;
 	
 	@RequestMapping(value = "/getRestActionHistoryList", method = RequestMethod.GET)
-	public @ResponseBody List<ActionHistory> getActionHistoryList(@RequestParam(value = "userSessionId", required = true) Long userSessionId,HttpServletRequest request) throws Exception {
+	public @ResponseBody List<ActionHistory> getRestActionHistoryList(@RequestParam(value = "userSessionId", required = true) Long userSessionId,@RequestParam(value = "orgLocation", required = true) Long orgLocation,HttpServletRequest request) throws Exception {
 		UserLoginLogoutSession userLoginLogoutSession = userLoginLogoutSessionService.getUserLoginLogoutSessionById(userSessionId);
-		List<ActionHistory> actionHistoryList = actionHistoryService.getAllActionPerformedByUser(userLoginLogoutSession.getId());
+		List<ActionHistory> actionHistoryList = actionHistoryService.getAllActionPerformedByUser(userLoginLogoutSession.getId(), orgLocation);
+		
 		if(actionHistoryList != null){
 			for(ActionHistory actionHistory:actionHistoryList){
 				actionHistory.setActionTimeStr(conversionUtil.getDateAsddMMMYYYYHHMMSS(actionHistory.getActionTime()));
-				//actionHistory.setActionTimeStr(LoginSessionController.DATEFORMAT.format(actionHistory.getActionTime()));
 			}
 		}
 		return actionHistoryList;
+	}
+	
+	@RequestMapping(value = "/getRestLocationActionHistoryList", method = RequestMethod.GET)
+	public @ResponseBody List<ActionHistory> getRestLocationActionHistoryList(@RequestParam(value = "userSessionId", required = true) Long userSessionId,HttpServletRequest request) throws Exception {
+		UserLoginLogoutSession userLoginLogoutSession = userLoginLogoutSessionService.getUserLoginLogoutSessionById(userSessionId);
+		
+		List<ActionHistory> actionHistoryListOrgLocations = actionHistoryService.getAllOrglocationsActionHistoryList(userLoginLogoutSession.getId());
+		return actionHistoryListOrgLocations;
 	}
 	
 }
