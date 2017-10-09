@@ -105,7 +105,7 @@ function redirectlocation(location){
 
 
 				        		 result = result + ' <td>';
-				        		 result = result + '     <div title="2" class="tblminwidth-75">Leaves taken NONE</div>';	 
+				        		 result = result + '     <div title="2" class="tblminwidth-75">'+opt.leavesTaken+'</div>';	 
 				        		 result = result + '  </td>';
 				        		 
 				        		 result = result + ' <td>';
