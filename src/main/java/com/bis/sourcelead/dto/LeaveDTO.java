@@ -50,6 +50,8 @@ public class LeaveDTO extends SearchDTO implements Serializable{
 	private String reportMonth;
 	private String reportFromDate;
 	private String reportEndDate;
+	private String department;
+	private String leavesearchDate;
 	private String barChartYear;
 	private String barCharMonth;
 	private String barChartFromDate;
@@ -57,6 +59,11 @@ public class LeaveDTO extends SearchDTO implements Serializable{
 	private String totalLeaves;
 	private String colorCode;
 	private String rejectedReason;
+
+	private String cancelReason;
+	private String approvedByUser;
+	private String isWithdrawEnable;
+
 	
 	
 	public String getId()
@@ -398,6 +405,22 @@ public class LeaveDTO extends SearchDTO implements Serializable{
 	public void setReportEndDate(String reportEndDate) {
 		this.reportEndDate = reportEndDate;
 	}
+	public String getDepartment()
+	{
+		return department;
+	}
+	public void setDepartment(String department)
+	{
+		this.department = department;
+	}
+	public String getLeavesearchDate()
+	{
+		return leavesearchDate;
+	}
+	public void setLeavesearchDate(String leavesearchDate)
+	{
+		this.leavesearchDate = leavesearchDate;
+	}
 	public String getBarChartYear() {
 		return barChartYear;
 	}
@@ -434,13 +457,30 @@ public class LeaveDTO extends SearchDTO implements Serializable{
 	public void setColorCode(String colorCode) {
 		this.colorCode = colorCode;
 	}
-	public String getRejectedReason()
-	{
+	public String getRejectedReason() {
 		return rejectedReason;
 	}
-	public void setRejectedReason(String rejectedReason)
-	{
+	public void setRejectedReason(String rejectedReason) {
 		this.rejectedReason = rejectedReason;
 	}
+	public String getCancelReason() {
+		return cancelReason;
+	}
+	public void setCancelReason(String cancelReason) {
+		this.cancelReason = cancelReason;
+	}
+	public String getApprovedByUser() {
+		return approvedByUser;
+	}
+	public void setApprovedByUser(String approvedByUser) {
+		this.approvedByUser = approvedByUser;
+	}
+	public String getIsWithdrawEnable() {
+		return isWithdrawEnable;
+	}
+	public void setIsWithdrawEnable(String isWithdrawEnable) {
+		this.isWithdrawEnable = isWithdrawEnable;
+	}
+
 
 }

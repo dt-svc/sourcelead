@@ -62,7 +62,7 @@ function getCancelledLeavesList(){
 	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	var userId = '${SourceLeadWeb_user.id}';
 	$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:999;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-	$.get(sourceleadUrl+"/getLeavesListByLocationIdAndStatus?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&status=CANCELLED&userId="+userId, function(data) {
+	$.get(sourceleadUrl+"/getLeavesListByLocationIdAndStatus?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&status=CANCELLED&userId="+userId, function(json) {
 		var result = "";				        	
 				result = result + '<table id="cancelledListTable" class="display" cellspacing="0" width="100%" >';
 				result = result + '<thead>';
@@ -77,6 +77,7 @@ function getCancelledLeavesList(){
 				result = result + '</tr>';
 				result = result + '</thead>	';
 				result = result + '<tbody>';
+				var data = json.data;
 				if(data !=null && data !=''){
 					 for (var i=0; i<data.length; i++)
 						{
@@ -84,22 +85,17 @@ function getCancelledLeavesList(){
 			        		 result = result + ' <tr>';
 			        		 result = result + ' <td>';
 			        		 result = result + ' <div class="proj_show tbldata-dotdot-big">';
-// 			        		 if(opt.leaveTypeName !=null && opt.leaveTypeName !='' && opt.leaveTypeName !='undefined'){
-// 			        			 result = result + '     <div class="pull-left tbldata-dotdot-me" title="'+opt.leaveTypeName+'">'+opt.leaveTypeName+'</div>'; 
-			        			 result = result + '     <div class="pull-left tbldata-dotdot-me" title="Sick Leave" onclick="getRequestedAproveSummary(\''+opt.id+'\','+orgLocationId+');">'+opt.empName+'('+opt.empType+')</div><i class="fa fa-binoculars pull-right" ></i>';
-// 			        		 }else{
-// 			        			 result = result + '     <div class="pull-left tbldata-dotdot-me" title="">--</div>';
-// 			        		 }
+			        		 result = result + '     <div class="pull-left tbldata-dotdot-me" title="Sick Leave" onclick="getRequestedAproveSummary(\''+opt.id+'\','+orgLocationId+');">'+opt.leaveType+'</div><i class="fa fa-binoculars pull-right" ></i>';
 			        		 result = result + '  </div>';
 			        		 result = result + ' </td>';
 			        		 result = result + ' <td>';
-				        		 result = result + ' <div title="'+opt.fromDateStr+' - '+opt.toDateStr+'" class="tblminwidth-75 mt2">';
-					        		 result = result + ' <div class="width100percnt">'+opt.fromDateStr+'</div>';
-					        		 result = result + ' <div class="width100percnt mt2">'+opt.toDateStr+'</div>';
+				        		 result = result + ' <div title="'+opt.fromDate+' - '+opt.toDate+'" class="tblminwidth-75 mt2">';
+					        		 result = result + ' <div class="width100percnt">'+opt.fromDate+'</div>';
+					        		 result = result + ' <div class="width100percnt mt2">'+opt.toDate+'</div>';
 				        		 result = result + ' </div>';
 			        		 result = result + ' </td>';
 			        		 result = result + ' <td>';
-			        		 result = result + '   <div title="'+opt.createdDateStr+'" class="tbldata-dotdot-100">'+opt.createdDateStr+'</div>';
+			        		 result = result + '   <div title="'+opt.createdDate+'" class="tbldata-dotdot-100">'+opt.createdDate+'</div>';
 			        		 result = result + '</td>';
 			        		 result = result + ' <td>';
 			        		 if(opt.reason !=null && opt.reason != 'undefined' && opt.reason != ''){
@@ -193,8 +189,8 @@ function getRequestedAproveSummary(leaveId,orgLocationId){
              result = result +' </div>';
              result = result +'<div class="col-md-12 mb">';
              result = result +'<label class="col-md-2 control-label"><b>No of leaves taken:</b></label>';
-             result = result +' <div class="col-md-8">';
-             result = result +'<span>XXXXXXX</span>';
+             result = result +' <div class="col-md-8">';  
+             result = result +'<span>'+data.leavesTaken+'</span>';
              result = result +'</div>';
              result = result +'</div>';
              result = result +'<div class="col-md-12 mb">';
@@ -206,43 +202,43 @@ function getRequestedAproveSummary(leaveId,orgLocationId){
              result = result +'<div class="col-md-12 mb">';
              result = result +'<label class="col-md-2 control-label"><b>Approvers:</b></label>';
              result = result +'<div class="col-md-8">';
-             result = result +' <span>Srinivas Vemula</span>';
+             result = result +' <span>'+data.approverUsers+'</span>';
              result = result +'</div>';
              result = result +'</div>';
              result = result +'<div class="col-md-12 mb">';
              result = result +'<label class="col-md-2 control-label"><b>Approved By:</b></label>';
              result = result +'<div class="col-md-8">';
-             result = result +' <span>Srinivas Vemula</span>';
+             result = result +' <span>'+data.approvedBy+'</span>';
              result = result +'</div>';
              result = result +'</div>';
              result = result +'<div class="col-md-12 mb">';
              result = result +'<label class="col-md-2 control-label"><b>Approved On:</b></label>';
              result = result +'<div class="col-md-8">';
-             result = result +' <span>Srinivas Vemula</span>';
+             result = result +' <span>'+data.updatedDate+'</span>';
              result = result +'</div>';
              result = result +'</div>';
              result = result +'<div class="col-md-12 mb">';
              result = result +'<label class="col-md-2 control-label"><b>Cancelled By:</b></label>';
              result = result +'<div class="col-md-8">';
-             result = result +' <span>Srinivas Vemula</span>';
+             result = result +' <span>'+data.cancelledBy+'</span>';
              result = result +'</div>';
              result = result +'</div>';
              result = result +'<div class="col-md-12 mb">';
              result = result +'<label class="col-md-2 control-label"><b>Cancelled On:</b></label>';
              result = result +'<div class="col-md-8">';
-             result = result +' <span>Srinivas Vemula</span>';
+             result = result +' <span>'+data.updatedDate+'</span>';
              result = result +'</div>';
              result = result +'</div>';
              result = result +'<div class="col-md-12 mb">';
              result = result +'<label class="col-md-2 control-label"><b>Cancelled Reason:</b></label>';
              result = result +'<div class="col-md-8">';
-             result = result +' <span>Srinivas Vemula</span>';
+             result = result +' <span>'+data.deleteReason+'</span>';
              result = result +'</div>';
              result = result +'</div>';
              result = result +'<div class="col-md-12 mb">';
              result = result +'<label class="col-md-2 control-label"><b>Reason:</b></label>';
              result = result +'<div class="col-md-8">';
-             result = result +' <span>Srinivas Vemula</span>';
+             result = result +' <span>'+data.reason+'</span>';
              result = result +'</div>';
              result = result +'</div>';
              result = result +'<div class="col-md-12 mb">';

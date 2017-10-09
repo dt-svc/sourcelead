@@ -296,14 +296,13 @@ function removeEndValid(){
           
      }); 
 function getpieChar(json){
-	
 	 var chartData = [];
 
 	   for (var i = 0; i < json.length; i++) { 
 	 		 var opt = json[i]; 
 	         chartData.push({
 	        	 category: opt.name,
-	        	 counts: opt.totalLeaves,
+	        	 counts: opt.remainingTotalLeaveCounts,
 	         	 color: opt.colorCode
 	       });
 	   }
@@ -439,9 +438,10 @@ function getLeavePolicy(){
 function validateDate(){
 	$('.warMess').hide();
 	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
+	var roleId = '${SourceLeadWeb_loginUserRoleId}';
 	var fromDate = $("#fromDate").val();
 	var toDate = $("#toDate").val();
-	$.get(sourceleadUrl+"/validateRestrictDate?"+tokenParamName+"="+tokenValue+"&fromDate="+fromDate+"&toDate="+toDate+"&orgLocationId="+orgLocationId, function(data) {
+	$.get(sourceleadUrl+"/validateRestrictDate?"+tokenParamName+"="+tokenValue+"&fromDate="+fromDate+"&toDate="+toDate+"&orgLocationId="+orgLocationId+"&roleId="+roleId, function(data) {
 		if(data == true){
 			$("#toDate").after("<p class='warMess'>You cannot apply for leave on restricted day</span>");
 		}else{

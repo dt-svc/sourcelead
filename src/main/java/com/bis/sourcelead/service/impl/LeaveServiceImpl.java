@@ -288,6 +288,7 @@ public class LeaveServiceImpl implements LeaveService{
 		}
 		leaveManagementHistory.setLeaveid(leave);
 		leaveManagementHistory.setType(Constants.LEAVE);
+		leaveManagementHistory.setToStage(leave.getStatus());
 		leaveManagementHistory.setStatus(leave.getStatus());
 		leaveManagementHistory.setCreatedBy(user.getUserCode());
 		leaveManagementHistory.setCreatedDate(new Date());
@@ -385,12 +386,15 @@ public class LeaveServiceImpl implements LeaveService{
 	}
 
 	@Override
-	public List<Leave> getLeavesListByLocationIdAndStatus(Long orgLocationId, String status,Long userId) throws Exception
+	public ResponseList<LeaveDTO> getLeavesListByLocationIdAndStatus(Long orgLocationId, String status,Long userId) throws Exception
 	{
 		OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
 		List<Leave> leaveList = leaveDao.getLeavesListByLocationIdAndStatus(orgLocationId,status,userId);
+		ResponseList<LeaveDTO> responseList = new ResponseList<>();
+		List<LeaveDTO> leaveDtoList = new ArrayList<>();
 		for(Leave leave : leaveList){
-			leave.setLeaveTypeName(leave.getLeaveType().getName());
+			LeaveDTO leaveDto = new LeaveDTO();
+			leaveDto.setLeaveType(leave.getLeaveType().getName());
 			List<String> aphlist = new ArrayList<>();
 			for(LeaveApproveHierarchy laph : leave.getApproverHierarchyList()){
 				StringBuilder sb = new StringBuilder();
@@ -403,29 +407,36 @@ public class LeaveServiceImpl implements LeaveService{
 					}
 				}
 			}
-			leave.setApproverUsers(String.join(",", aphlist));
-			leave.setFromDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), leave.getFromDate()));
-			leave.setToDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), leave.getToDate()));
-			leave.setCreatedDateStr(ConversionUtil.getDateAsString(leave.getCreatedDate()));
+			leaveDto.setApproverUsers(String.join(",", aphlist));
+			leaveDto.setFromDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), leave.getFromDate()));
+			leaveDto.setToDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), leave.getToDate()));
+			leaveDto.setCreatedDate(ConversionUtil.getDateAsString(leave.getCreatedDate()));
 			if(leave.getApprovedBy() != null){
 				StringBuilder sb = new StringBuilder();
 				if(StringUtils.isNotBlank(leave.getApprovedBy().getFirstName()) && StringUtils.isNotBlank(leave.getApprovedBy().getLastName())){
-					leave.setApprovedByUser(sb.append(leave.getApprovedBy().getFirstName()).append(" ").append(leave.getApprovedBy().getLastName()).toString());
+					leaveDto.setApprovedByUser(sb.append(leave.getApprovedBy().getFirstName()).append(" ").append(leave.getApprovedBy().getLastName()).toString());
 				}else{
-					leave.setApprovedByUser(sb.append(leave.getApprovedBy().getFirstName()).toString());
+					leaveDto.setApprovedByUser(sb.append(leave.getApprovedBy().getFirstName()).toString());
 				}
 			}
 			if(StringUtils.isNotBlank(leave.getUpdatedBy())){
 				User user = userService.getUserByUserCode(leave.getUpdatedBy());
 				StringBuilder sb = new StringBuilder();
 				if(StringUtils.isNotBlank(user.getFirstName()) && StringUtils.isNotBlank(user.getLastName())){
-					leave.setUpdatedBy(sb.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
+					leaveDto.setUpdatedBy(sb.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
 				}else{
-					leave.setUpdatedBy(sb.append(user.getFirstName()).toString());
+					leaveDto.setUpdatedBy(sb.append(user.getFirstName()).toString());
 				}
 			}
+			leaveDto.setReason(leave.getReason());
+			leaveDto.setStatus(leave.getStatus());
+			if(new Date().before(leave.getFromDate()) || new Date().equals(leave.getFromDate())) {
+				leaveDto.setIsWithdrawEnable("Y");
+			}
+			leaveDtoList.add(leaveDto);
 		}
-		return leaveList;
+		responseList.setData(leaveDtoList);
+		return responseList;
 	}
 
 
@@ -435,15 +446,26 @@ public class LeaveServiceImpl implements LeaveService{
 	}
 	
 	@Override
-	public List<LeaveReportsDTO> getEmployeeLeavesByApproverIdAndStatus(OrgLocations orgLocations, String userId, String status, String department) throws Exception
+	public List<LeaveReportsDTO> getEmployeeLeavesByApproverIdAndStatus(OrgLocations orgLocations, String userId, String status, String department, String leaveDate) throws Exception
 	{
+
+		
+		Date currentWeekStarDate = null, currentWeekEndDate = null;
 
 		Calendar cal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
 		cal.setLenient(false);
 		cal.setTime(new Date());
-		Date currentWeekStarDate = CalendarUtil.getPreviousWeekDayByCalendar(cal, "SUN", orgLocations.getDateFormat()).getTime();
-		Date currentWeekEndDate = CalendarUtil.getCurrentWeekDayByCalendar(cal, "SAT", orgLocations.getDateFormat()).getTime();
-		List<LeaveApproveHierarchy> leaveApproveHierarchiesList = leaveDao.getEmployeeRequestedLeavesBylocationIdAndDuration(orgLocations.getId(), userId, status, currentWeekStarDate, currentWeekEndDate,department);
+		Date leaveDates = null;
+		
+		if(!StringUtils.isNotBlank(leaveDate)){
+			currentWeekStarDate = CalendarUtil.getPreviousWeekDayByCalendar(cal, "SUN", orgLocations.getDateFormat()).getTime();
+			currentWeekEndDate = CalendarUtil.getCurrentWeekDayByCalendar(cal, "SAT", orgLocations.getDateFormat()).getTime();
+		}else{
+			leaveDates = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),leaveDate);
+		}
+		List<LeaveApproveHierarchy> leaveApproveHierarchiesList = leaveDao.getEmployeeRequestedLeavesBylocationIdAndDuration(orgLocations.getId(), userId, status, currentWeekStarDate, currentWeekEndDate,department,leaveDates);
+			currentWeekStarDate = CalendarUtil.getPreviousWeekDayByCalendar(cal, "SUN", orgLocations.getDateFormat()).getTime();
+			currentWeekEndDate = CalendarUtil.getCurrentWeekDayByCalendar(cal, "SAT", orgLocations.getDateFormat()).getTime();
 		HashMap<Long, LeaveReportsDTO> reportMap = new HashMap<>();
 		for (LeaveApproveHierarchy lh : leaveApproveHierarchiesList) {
 			Leave leave = lh.getLeaveid();
@@ -613,6 +635,39 @@ public class LeaveServiceImpl implements LeaveService{
 		return leaveDtoList;
 	}
 
-	
+	@Override
+	public boolean getWithdrawLeave(String leaveId, String reason, Long orgLocationId) throws Exception {
+		boolean isLeaveWithdraw = false;
+		LeaveManagementHistory leaveManagementHistory = new LeaveManagementHistory();
+		User user = userService.getUserById(orgLocationId);
+		Leave leave = leaveDao.getLeaveById(leaveId);
+		leaveManagementHistory.setFromStage(leave.getStatus());
+		if (leave != null) {
+			if (Constants.LEAVE_PENDING.equals(leave.getStatus())) {
+				leave.setStatus(Constants.LEAVE_WITHDRAW);
+			}else {
+				leave.setStatus(Constants.LEAVE_WITHDRAW);
+				leave.setNumberOfDays("0");
+			}
+			leave.setWithdrawReason(reason);
+			leave.setUpdatedBy(user.getUserCode());
+			leave.setUpdatedDate(new Date());
+			Leave updatedLeave = leaveDao.saveLeave(leave);
+			if(updatedLeave !=null) {
+				isLeaveWithdraw = true;
+			}
+			leaveManagementHistory.setLeaveid(leave);
+			leaveManagementHistory.setType(Constants.LEAVE);
+			leaveManagementHistory.setToStage(leave.getStatus());
+			leaveManagementHistory.setStatus(leave.getStatus());
+			leaveManagementHistory.setCreatedBy(user.getUserCode());
+			leaveManagementHistory.setCreatedDate(new Date());
+			leaveManagementHistory.setUpdatedBy(user.getUserCode());
+			leaveManagementHistory.setUpdatedDate(new Date());
+			leaveManagementHistoryDao.saveLeaveManagementHistory(leaveManagementHistory);
+		}
+
+		return isLeaveWithdraw;
+	}
 
 }
