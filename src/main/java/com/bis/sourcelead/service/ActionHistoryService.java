@@ -13,7 +13,6 @@ public interface ActionHistoryService {
 	
 	public  List<ActionHistory> getAllOrglocationsActionHistoryList(Long userSessionId) ;
 
-	public void saveActionHistory(String methodName,UserLoginLogoutSession userLoginLogoutSession,Long orgLocationId) throws Exception;
-		
-
+	public void saveActionHistory(String methodName,UserLoginLogoutSession userLoginLogoutSession,OrgLocations loginOrgLocation) throws Exception;
+	
 }
