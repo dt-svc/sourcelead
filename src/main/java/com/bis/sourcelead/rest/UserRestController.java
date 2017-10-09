@@ -274,6 +274,8 @@ public class UserRestController {
 
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		addUserDTO.setDateFormat(orgLocations.getDateFormat());
+		candidateDTO.setDateFormat(orgLocations.getDateFormat());
 		userService.storeUser(addUserDTO, candidateDTO, user, orgLocations, "CREATEUSER", "", new Org());
 		// userService.createUser(jsonObj,user,orgLocations.getId());
 		SourceLeadSessionManager.setSessionAttribute(request, "userCreateMsg", "Success !!New user created");
