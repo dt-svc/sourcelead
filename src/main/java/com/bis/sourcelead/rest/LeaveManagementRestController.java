@@ -261,9 +261,6 @@ public class LeaveManagementRestController {
 				}
 				 model.addObject("approverList", approverList);
 			}
-			
-			
-			
 		   model.setViewName("leavemanagement/applyLeave");
 	       return model;
 	}

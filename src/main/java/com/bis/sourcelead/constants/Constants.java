@@ -847,5 +847,7 @@ public class Constants {
 	public static final String CLINT_VENDOR_DOES_NOT_EXIST = "false";
 	public static final String CLINT_VENDOR_IF_EXIST = "true";
 	public static final String CLINT_VENDOR_IF_EXIST_AS_SAMEORG = "sameorg";
+	public static final String LEAVE_EMAIL_TO_APPROVERS = "LeaveEmailToApprovers";
+	public static final String LEAVE_NOTIFICATION_TO_APPROVERS = "LeaveNotificationToApprovers";
 
 }

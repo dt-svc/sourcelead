@@ -46,7 +46,7 @@ $(document).ready(function() {
               </div>
             </div>
             <div class="form-group">
-              <label class="col-md-3">Date</label>
+              <label class="col-md-3">Date ${holidays.fromDate}</label>
               <div class="col-md-9">
                       <div class="width110px" id="errFromDate">
                       <input type="text" class="form-control calendar" value="${holidays.fromDate}" field-name="From Date" data-validation="required" name="fromDate" id="fromDate" placeholder="From Date">
@@ -82,9 +82,9 @@ $(document).ready(function() {
                   <label class="col-md-3">Status</label>
                   <div class="col-md-9">
                                     <label class="paddingRight col-md-4">
-                                      <input type="radio" value="Optional" name="holidayStatus" checked="checked"> Optional</label>
+                                      <input type="radio" value="${holidays.holidayStatus}" name="holidayStatus" checked="checked"> Optional</label>
                                     <label class="paddingLeft col-md-4">
-                                      <input type="radio" value="Restricted" name="holidayStatus"> Restricted </label>
+                                      <input type="radio" value="${holidays.holidayStatus}" name="holidayStatus"> Restricted </label>
                                       </div>
                                   </div>
                                   

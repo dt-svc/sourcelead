@@ -52,25 +52,25 @@ public class HolidayServiceImpl implements HolidayService{
 		}
 		if(holidayDTO != null)
 		{
-			if(holidayDTO.getOrgLocationId() != null)
+			if(StringUtils.isNotBlank(holidayDTO.getOrgLocationId()))
 			{
 				holiday.setOrgLocations(orgLocations);
 			}else{
-				holiday.setHolidayName("--");
+				holiday.setHolidayName(null);
 			}
 			if(StringUtils.isNotBlank(holidayDTO.getHolidayName()))
 			{
 				holiday.setHolidayName(holidayDTO.getHolidayName());
 			}else{
-				holiday.setHolidayName("--");
+				holiday.setHolidayName(null);
 			}
-			if(holidayDTO.getFromDate() != null)
+			if(StringUtils.isNotBlank(holidayDTO.getFromDate()))
 			{
 				holiday.setFromDate(commonUtil.getDateFormat(holidayDTO.getFromDate()));
 			}else{
 				holiday.setFromDate(null);
 			}
-			if(holidayDTO.getToDate() != null)
+			if(StringUtils.isNotBlank(holidayDTO.getToDate()))
 			{
 				holiday.setToDate(commonUtil.getDateFormat(holidayDTO.getToDate()));
 			}else{
@@ -81,20 +81,18 @@ public class HolidayServiceImpl implements HolidayService{
 				holiday.setHalfDayCheckBox(holidayDTO.getHalfDayCheckBox());
 				holiday.setHalfDayAmPm(holidayDTO.getHalfDayAmPm());
 			}else{
-				holiday.setHalfDayCheckBox("--");
-				holiday.setHalfDayAmPm("--");
+				holiday.setHalfDayCheckBox(null);
+				holiday.setHalfDayAmPm(null);
 			}
 			if(StringUtils.isNotBlank(holidayDTO.getDescription()))
 			{
 				holiday.setDescription(holidayDTO.getDescription());
 			}else{
-				holiday.setDescription("--");
+				holiday.setDescription(null);
 			}
 			if(StringUtils.isNotBlank(holidayDTO.getHolidayStatus()))
 			{
 				holiday.setHolidayStatus(holidayDTO.getHolidayStatus());
-			}else{
-				holiday.setHolidayStatus("--");
 			}
 			
 			holiday.setStatus("1");
