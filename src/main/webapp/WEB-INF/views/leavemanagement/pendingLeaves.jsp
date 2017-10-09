@@ -64,7 +64,7 @@ function getPendingLeavesList(){
 	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	var userId = '${SourceLeadWeb_user.id}';
 	$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:999;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-	$.get(sourceleadUrl+"/getLeavesListByLocationIdAndStatus?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&status=PENDING&userId="+userId, function(data) {
+	$.get(sourceleadUrl+"/getLeavesListByLocationIdAndStatus?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&status=PENDING&userId="+userId, function(json) {
 		var result = "";				        	
 				result = result + '<table id="pendingListTable" class="display" cellspacing="0" width="100%" >';
 				result = result + '<thead>';
@@ -78,6 +78,7 @@ function getPendingLeavesList(){
 				result = result + '</tr>';
 				result = result + '</thead>	';
 				result = result + '<tbody>';
+				var data = json.data;
 				if(data !=null && data !=''){
 					 for (var i=0; i<data.length; i++)
 						{
@@ -85,17 +86,17 @@ function getPendingLeavesList(){
 			        		 result = result + ' <tr>';
 			        		 result = result + ' <td>';
 			        		 result = result + ' <div class="proj_show tbldata-dotdot-big">';
-			        		 result = result + '     <div class="pull-left tbldata-dotdot-me" title="Sick Leave" onclick="getRequestedAproveSummary(\''+opt.id+'\','+orgLocationId+',\''+opt.status+'\');">'+opt.leaveTypeName+'</div><i class="fa fa-binoculars pull-right" ></i>'; 
+			        		 result = result + '     <div class="pull-left tbldata-dotdot-me" title="Sick Leave" onclick="getRequestedAproveSummary(\''+opt.id+'\','+orgLocationId+',\''+opt.status+'\');">'+opt.leaveType+'</div><i class="fa fa-binoculars pull-right" ></i>'; 
 			        		 result = result + '  </div>';
 			        		 result = result + ' </td>';
 			        		 result = result + ' <td>';
-				        		 result = result + ' <div title="'+opt.fromDateStr+' - '+opt.toDateStr+'" class="tblminwidth-75 mt2">';
-					        		 result = result + ' <div class="width100percnt">'+opt.fromDateStr+'</div>';
-					        		 result = result + ' <div class="width100percnt mt2">'+opt.toDateStr+'</div>';
+				        		 result = result + ' <div title="'+opt.fromDate+' - '+opt.toDate+'" class="tblminwidth-75 mt2">';
+					        		 result = result + ' <div class="width100percnt">'+opt.fromDate+'</div>';
+					        		 result = result + ' <div class="width100percnt mt2">'+opt.toDate+'</div>';
 				        		 result = result + ' </div>';
 			        		 result = result + ' </td>';
 			        		 result = result + ' <td>';
-			        		 result = result + '   <div title="'+opt.createdDateStr+'" class="tbldata-dotdot-100">'+opt.createdDateStr+'</div>';
+			        		 result = result + '   <div title="'+opt.createdDateStr+'" class="tbldata-dotdot-100">'+opt.createdDate+'</div>';
 			        		 result = result + '</td>';
 			        		 result = result + ' <td>';
 			        		 if(opt.reason !=null && opt.reason != 'undefined' && opt.reason != ''){
@@ -115,7 +116,9 @@ function getPendingLeavesList(){
 			        		 result = result + ' <td>';
 			        		 result = result + '  <div title="" class="tblminwidth-75">';
 			        		 result = result +' <b class="proj_process">'+opt.status+'</b> ';
-			        		 result = result +' <span class="btn btn-info btn-sm" onClick="withDrawLeave(\''+opt.id+'\','+orgLocationId+');">Withdraw</span>';
+			        		 if(opt.isWithdrawEnable !=null && opt.isWithdrawEnable !='' && opt.isWithdrawEnable == 'Y' ){
+			        			 result = result +' <span class="btn btn-info btn-sm" onClick="withDrawLeave(\''+opt.id+'\','+orgLocationId+');">Withdraw</span>';	 
+			        		 }
 			        		 result = result + '  </div>';
 			        		 result = result + ' </td>';
 			        		 result = result + '  </tr>';

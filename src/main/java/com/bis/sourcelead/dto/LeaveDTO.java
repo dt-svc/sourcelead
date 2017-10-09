@@ -59,6 +59,8 @@ public class LeaveDTO extends SearchDTO implements Serializable{
 	private String colorCode;
 	private String rejectedReason;
 	private String cancelReason;
+	private String approvedByUser;
+	private String isWithdrawEnable;
 	
 	public String getLeavesTaken() {
 		return leavesTaken;
@@ -358,6 +360,18 @@ public class LeaveDTO extends SearchDTO implements Serializable{
 	}
 	public void setCancelReason(String cancelReason) {
 		this.cancelReason = cancelReason;
+	}
+	public String getApprovedByUser() {
+		return approvedByUser;
+	}
+	public void setApprovedByUser(String approvedByUser) {
+		this.approvedByUser = approvedByUser;
+	}
+	public String getIsWithdrawEnable() {
+		return isWithdrawEnable;
+	}
+	public void setIsWithdrawEnable(String isWithdrawEnable) {
+		this.isWithdrawEnable = isWithdrawEnable;
 	}
 	
 

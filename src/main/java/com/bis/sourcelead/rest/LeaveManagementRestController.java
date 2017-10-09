@@ -913,10 +913,10 @@ public class LeaveManagementRestController {
 	
 
 	@RequestMapping(value = "/getLeavesListByLocationIdAndStatus")
-	public @ResponseBody List<Leave> getLeavesListByLocationIdAndStatus(@RequestParam(value = "orgLocationId", required = false) Long orgLocationId, @RequestParam(value = "status", required = false) String status,@RequestParam(value = "userId", required = false) Long userId, HttpServletRequest request, HttpServletResponse response) throws Exception
+	public @ResponseBody ResponseList<LeaveDTO> getLeavesListByLocationIdAndStatus(@RequestParam(value = "orgLocationId", required = false) Long orgLocationId, @RequestParam(value = "status", required = false) String status,@RequestParam(value = "userId", required = false) Long userId, HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
-		List<Leave> leaveList = leaveService.getLeavesListByLocationIdAndStatus(orgLocationId,status,userId);
-		return leaveList;
+		ResponseList<LeaveDTO> leaveDtoList = leaveService.getLeavesListByLocationIdAndStatus(orgLocationId,status,userId);
+		return leaveDtoList;
 	}
 
 	/**
