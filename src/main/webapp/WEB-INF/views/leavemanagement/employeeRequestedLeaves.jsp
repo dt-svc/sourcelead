@@ -130,8 +130,10 @@ function redirectlocation(location){
 				        		 }else  if(opt.status == 'REJECTED'){
 				        			 result = result + ' <b title="Accept" class="paddingRight proj_closed">REJECTED</b>';
 				        		 }else{
-				        			 result = result + ' <span title="Accept" class="paddingRight"><i class="fa fa-check text-success cursorPointer" onclick="approveLeave(\''+opt.id+'\',\''+opt.leaveTypeId+'\',\'APPROVED\',\''+opt.noOfDays+'\');"></i></span>';
-					        		 result = result + '  <span title="Reject" class="paddingLeft"><i class="fa fa-times text-danger cursorPointer" onclick="rejectLeave(\''+opt.id+'\',\''+opt.leaveTypeId+'\',\''+opt.noOfDays+'\',\'REJECTED\');"></i></span>'; 
+				        			 '<sec:authorize access="hasAnyRole(\'ROLE_APPROVE_LEAVE\')">';
+					        			 result = result + ' <span title="Accept" class="paddingRight"><i class="fa fa-check text-success cursorPointer" onclick="approveLeave(\''+opt.id+'\',\''+opt.leaveTypeId+'\',\'APPROVED\',\''+opt.noOfDays+'\');"></i></span>';
+						        		 result = result + '  <span title="Reject" class="paddingLeft"><i class="fa fa-times text-danger cursorPointer" onclick="rejectLeave(\''+opt.id+'\',\''+opt.leaveTypeId+'\',\''+opt.noOfDays+'\',\'REJECTED\');"></i></span>';
+					        		 '</sec:authorize>';
 				        		 }
 				        		 result = result + ' </div>';
 				        		 result = result + '</td>';

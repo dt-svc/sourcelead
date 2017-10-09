@@ -117,6 +117,7 @@ function redirectlocation(location){
 				        		 result = result + ' </td>';
 				        		 
 				        		 result = result + ' <td>';
+// 				        		 '<sec:authorize access="hasAnyRole(\'ROLE_APPROVE_LEAVE\')">';
 				        		 result = result + '  <div class="tblminwidth-50">';
 				        		 result = result + '<a href="javascript:void(0)" onclick="CancelLeave(\''+opt.id+'\');"><b class="proj_closed">Cancel</b></a>';
 				        		 result = result + ' </div>';
