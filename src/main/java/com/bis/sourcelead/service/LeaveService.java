@@ -13,7 +13,7 @@ public interface LeaveService {
 
 	Leave saveLeave(LeaveDTO leaveDTO, OrgLocations orgLocations, User user) throws Exception;
 
-	List<LeaveDTO> getEmployeeRequestedLeavesBylocationId(OrgLocations orgLocationId, String userId,String leaveStatus)throws Exception;
+	ResponseList<LeaveDTO> getEmployeeRequestedLeavesBylocationId(LeaveDTO leaveDTO, OrgLocations orgLocations)throws Exception;
 
 	Leave getLeaveByLeavId(String leaveId) throws Exception;
 
