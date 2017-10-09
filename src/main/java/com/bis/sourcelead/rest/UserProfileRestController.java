@@ -125,7 +125,7 @@ public class UserProfileRestController {
 	}
 	
 
-	@RequestMapping(value = "/passwordSettings", method = RequestMethod.POST)
+	@RequestMapping(value = { "/passwordSettings", "/rest/passwordSettings" }, method = RequestMethod.POST)
 	public String passwordSettings(PasswordSettingsDTO passwordSettingsDTO,
 			HttpServletRequest request) throws Exception {
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
