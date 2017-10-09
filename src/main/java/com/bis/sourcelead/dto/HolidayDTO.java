@@ -21,9 +21,13 @@ private static final long serialVersionUID = 1L;
 	
 	private String toDate;
 	
-	private String halfDayCheckBox;
+	private String fromHalfDayCheckBox;
 	
-	private String halfDayAmPm;
+	private String fromHalfDayAmPm;
+	
+	private String toHalfDayCheckBox;
+	
+	private String toHalfDayAmPm;
 	
 	private String description;
 	
@@ -83,20 +87,36 @@ private static final long serialVersionUID = 1L;
 		this.toDate = toDate;
 	}
 
-	public String getHalfDayCheckBox() {
-		return halfDayCheckBox;
+	public String getFromHalfDayCheckBox() {
+		return fromHalfDayCheckBox;
 	}
 
-	public void setHalfDayCheckBox(String halfDayCheckBox) {
-		this.halfDayCheckBox = halfDayCheckBox;
+	public void setFromHalfDayCheckBox(String fromHalfDayCheckBox) {
+		this.fromHalfDayCheckBox = fromHalfDayCheckBox;
 	}
 
-	public String getHalfDayAmPm() {
-		return halfDayAmPm;
+	public String getFromHalfDayAmPm() {
+		return fromHalfDayAmPm;
 	}
 
-	public void setHalfDayAmPm(String halfDayAmPm) {
-		this.halfDayAmPm = halfDayAmPm;
+	public void setFromHalfDayAmPm(String fromHalfDayAmPm) {
+		this.fromHalfDayAmPm = fromHalfDayAmPm;
+	}
+
+	public String getToHalfDayCheckBox() {
+		return toHalfDayCheckBox;
+	}
+
+	public void setToHalfDayCheckBox(String toHalfDayCheckBox) {
+		this.toHalfDayCheckBox = toHalfDayCheckBox;
+	}
+
+	public String getToHalfDayAmPm() {
+		return toHalfDayAmPm;
+	}
+
+	public void setToHalfDayAmPm(String toHalfDayAmPm) {
+		this.toHalfDayAmPm = toHalfDayAmPm;
 	}
 
 	public String getDescription() {

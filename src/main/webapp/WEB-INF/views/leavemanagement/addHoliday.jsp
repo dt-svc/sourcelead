@@ -4,24 +4,46 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
  
  <script>
- function dayCheckBox(){
- var dayValue =  $("#halfDayCheckBox").val();
+ function fromDayCheckBox(){
+ var dayValue =  $("#fromHalfDayCheckBox").val();
 	 if(dayValue == "off"){
-		 $("#halfDayCheckBox").val('on');
-		 document.getElementById("amPmDivId").style.display="block";
+		 $("#fromHalfDayCheckBox").val('on');
+		 document.getElementById("fromAmPmDivId").style.display="block";
 	 }else{
-		 $("#halfDayCheckBox").val('off');
-		 document.getElementById("amPmDivId").style.display="none";
+		 $("#fromHalfDayCheckBox").val('off');
+		 document.getElementById("fromAmPmDivId").style.display="none";
 	 }
  }
  </script>
 <script>
 $(document).ready(function() {
-	var holidy = '${holidays.halfDayCheckBox}';
+	var holidy = '${holidays.fromHalfDayCheckBox}';
 	if(holidy == "on"){
-		document.getElementById("amPmDivId").style.display="block";
+		document.getElementById("fromAmPmDivId").style.display="block";
 	}else{
-		document.getElementById("amPmDivId").style.display="none";
+		document.getElementById("fromAmPmDivId").style.display="none";
+	}
+})
+</script>
+<script>
+ function toDayCheckBox(){
+ var dayValue =  $("#toHalfDayCheckBox").val();
+	 if(dayValue == "off"){
+		 $("#toHalfDayCheckBox").val('on');
+		 document.getElementById("toAmPmDivId").style.display="block";
+	 }else{
+		 $("#toHalfDayCheckBox").val('off');
+		 document.getElementById("toAmPmDivId").style.display="none";
+	 }
+ }
+ </script>
+<script>
+$(document).ready(function() {
+	var holidy = '${holidays.toHalfDayCheckBox}';
+	if(holidy == "on"){
+		document.getElementById("toAmPmDivId").style.display="block";
+	}else{
+		document.getElementById("toAmPmDivId").style.display="none";
 	}
 })
 </script>
@@ -46,26 +68,68 @@ $(document).ready(function() {
               </div>
             </div>
             <div class="form-group">
-              <label class="col-md-3">Date ${holidays.fromDate}</label>
+              <label class="col-md-3">Date<span class="text-danger">*</span></label>
               <div class="col-md-9">
                       <div class="width110px" id="errFromDate">
-                      <input type="text" class="form-control calendar" value="${holidays.fromDate}" field-name="From Date" data-validation="required" name="fromDate" id="fromDate" placeholder="From Date">
-                      </div>
-                      <div class="width110px" id="errToDate">
-                      <input type="text" class="form-control calendar" value="${holidays.toDate}" field-name="To Date" data-validation="required" name="toDate" id="toDate" placeholder="To Date">
+                      <input type="text" class="form-control calendar" value="${holidays.fromDateStr}" field-name="From Date" data-validation="required" name="fromDate" id="fromDate" placeholder="From Date">
                       </div>
                       <div class="width90px checkBox">
-                      <c:if test="${!empty holidays.halfDayCheckBox}">
-                      <input type="checkbox" id="halfDayCheckBox" name="halfDayCheckBox" checked="checked" value="${holidays.halfDayCheckBox}" onclick="dayCheckBox();">Half Day
+                      <c:if test="${!empty holidays.fromHalfDayCheckBox}">
+                      <input type="checkbox" id="fromHalfDayCheckBox" name="fromHalfDayCheckBox" checked="checked" value="${holidays.fromHalfDayCheckBox}" onclick="fromDayCheckBox();">Half Day
                       </c:if>
-                      <c:if test="${empty holidays.halfDayCheckBox}">
-                      <input type="checkbox" id="halfDayCheckBox" name="halfDayCheckBox"  value="off" onclick="dayCheckBox();">Half Day
+                      <c:if test="${empty holidays.fromHalfDayCheckBox}">
+                      <input type="checkbox" id="fromHalfDayCheckBox" name="fromHalfDayCheckBox"  value="off" onclick="fromDayCheckBox();">Half Day
                       </c:if>
                       </div>
-                      <div class="width50px dropdown-select dropdown-select-custom" id="amPmDivId" style="display:none">
+                      <div class="width50px dropdown-select dropdown-select-custom" id="fromAmPmDivId" style="display:none">
+                      <select name="fromHalfDayAmPm">
+                      
+                      <c:if test="${holidays.fromHalfDayAmPm  == 'AM'}">
+                       <option value="AM" selected>AM</option>
+                       <option value="PM">PM</option>
+                      </c:if>
+                       <c:if test="${holidays.fromHalfDayAmPm  == 'PM'}">
+                       <option value="AM">AM</option>
+                       <option value="PM" selected>PM</option>
+                       
+                      </c:if>
+                      <c:if test="${empty holidays.fromHalfDayAmPm}">
+	                      <option value="AM">AM</option>
+	                      <option value="PM">PM</option>
+                      </c:if>
+                              <!-- <option value="AM">AM</option>
+                              <option value="PM">PM</option> -->
+                          </select>
+                      </div>
+                      <div class="width110px" id="errToDate">
+                      <input type="text" class="form-control calendar" value="${holidays.toDateStr}" field-name="To Date" data-validation="required" name="toDate" id="toDate" placeholder="To Date">
+                      </div>
+                      <div class="width90px checkBox">
+                      <c:if test="${!empty holidays.toHalfDayCheckBox}">
+                      <input type="checkbox" id="toHalfDayCheckBox" name="toHalfDayCheckBox" checked="checked" value="${holidays.toHalfDayCheckBox}" onclick="toDayCheckBox();">Half Day
+                      </c:if>
+                      <c:if test="${empty holidays.toHalfDayCheckBox}">
+                      <input type="checkbox" id="toHalfDayCheckBox" name="toHalfDayCheckBox"  value="off" onclick="toDayCheckBox();">Half Day
+                      </c:if>
+                      </div>
+                      <div class="width50px dropdown-select dropdown-select-custom" id="toAmPmDivId" style="display:none">
                       <select name="halfDayAmPm">
-                              <option value="AM">AM</option>
-                              <option value="PM">PM</option>
+                      
+                      <c:if test="${holidays.toHalfDayAmPm  == 'AM'}">
+                       <option value="AM" selected>AM</option>
+                       <option value="PM">PM</option>
+                      </c:if>
+                       <c:if test="${holidays.toHalfDayAmPm  == 'PM'}">
+                       <option value="AM">AM</option>
+                       <option value="PM" selected>PM</option>
+                       
+                      </c:if>
+                      <c:if test="${empty holidays.toHalfDayAmPm}">
+	                      <option value="AM">AM</option>
+	                      <option value="PM">PM</option>
+                      </c:if>
+                              <!-- <option value="AM">AM</option>
+                              <option value="PM">PM</option> -->
                           </select>
                       </div>
                   </div>
@@ -79,12 +143,33 @@ $(document).ready(function() {
             </div>
                   
                   <div class="form-group">
-                  <label class="col-md-3">Status</label>
+                  <label class="col-md-3">Status ${holidays.holidayStatus}</label>
                   <div class="col-md-9">
-                                    <label class="paddingRight col-md-4">
-                                      <input type="radio" value="${holidays.holidayStatus}" name="holidayStatus" checked="checked"> Optional</label>
-                                    <label class="paddingLeft col-md-4">
-                                      <input type="radio" value="${holidays.holidayStatus}" name="holidayStatus"> Restricted </label>
+                                   
+                                     <c:if test="${holidays.holidayStatus  == 'Optional'}">
+	                                   <label class="paddingRight col-md-4">
+	                                     	<input type="radio" value="Optional"  checked name="holidayStatus" > Optional
+	                                    </label>
+	                                   <label class="paddingLeft col-md-4">
+	                                      <input type="radio" value="Restricted"  name="holidayStatus"> Restricted 
+	                                    </label>
+                                      </c:if>
+                                      <c:if test="${holidays.holidayStatus  == 'Restricted'}">
+	                                       <label class="paddingRight col-md-4">
+		                                     	<input type="radio" value="Optional"   name="holidayStatus" > Optional
+		                                    </label>
+	                                        <label class="paddingLeft col-md-4">
+		                                      <input type="radio" value="Restricted" checked name="holidayStatus"> Restricted 
+	                                      </label>
+                                      </c:if>
+                                      <c:if test="${empty holidays.holidayStatus}">
+                                      <label class="paddingRight col-md-4">
+	                                     	<input type="radio" value="Optional"  name="holidayStatus" > Optional
+	                                    </label>
+	                                   <label class="paddingLeft col-md-4">
+	                                      <input type="radio" value="Restricted"  name="holidayStatus"> Restricted 
+	                                    </label>
+                                      </c:if>
                                       </div>
                                   </div>
                                   
@@ -157,35 +242,42 @@ function cancel(){
 		if (locationDate.match("yyyy-dd-MM")) {
 			finalDateFormat = 'yy-dd-mm';
 		}
+				
 		$('#fromDate').datepicker({
-			dateFormat : finalDateFormat,
-			changeMonth : true,
-			changeYear : true,
-			onSelect : function(selected) {
-				var dt = $(this).datepicker('getDate', '+1d');
-				dt.setDate(dt.getDate() + 1);
-				$("#toDate").datepicker("option", "minDate", dt);
-				removeFromDate();
-			}
-		});
+		      dateFormat: finalDateFormat,
+		      changeMonth: true,
+		  	  changeYear: true, 
+		      onSelect: function (selected) {
+		            //var dt = new Date(selected);
+		            var dt = $(this).datepicker('getDate', '+1d');
+		            dt.setDate(dt.getDate() + 1);
+		            $("#toDate").datepicker("option", "minDate", dt);
+		            removeFromDate();
+		        }
+		  });
+		  
+		  $('#toDate').datepicker({
+		      dateFormat: finalDateFormat,
+		      changeMonth: true,
+		  	  changeYear: true, 
+		        onSelect: function (selected) {
+		            //var dt = new Date(selected);
+		            var dt = $(this).datepicker('getDate', '-1d');
+		            dt.setDate(dt.getDate() - 1);
+		            $("#fromDate").datepicker("option", "maxDate", dt);
+		            removeToDate();
+		        }
+		  });
 
-		$('#toDate').datepicker({
-			dateFormat : finalDateFormat,
-			changeMonth : true,
-			changeYear : true,
-			onSelect : function(selected) {
-				removeToDate();
-			}
-		});
 
 	});
 	
-	function removeFromDate() {
+	 function removeFromDate() {
 		$('#errFromDate').find('p.jquery_form_error_message').remove();
 	}
 	function removeToDate() {
 		$('#errToDate').find('p.jquery_form_error_message').remove();
-	}
+	} 
 </script>
 <script type="text/javascript">
 function validateHolidayName(){
