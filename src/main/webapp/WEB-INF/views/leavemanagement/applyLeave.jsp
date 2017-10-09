@@ -296,7 +296,6 @@ function removeEndValid(){
           
      }); 
 function getpieChar(json){
-	
 	 var chartData = [];
 
 	   for (var i = 0; i < json.length; i++) { 

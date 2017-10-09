@@ -7,6 +7,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -277,10 +278,12 @@ public class LeaveManagementRestController {
 		   List<LeaveType> roleLeaveType = new ArrayList<>();
 		   if(leaveTypeList !=null && !leaveTypeList.isEmpty()) {
 			   for(LeaveType leaveType : leaveTypeList) {
+				   Set<Long> roleIds = new HashSet<>();
 				   for(LeaveRole leaveRole : leaveType.getLeaveTypeRolesSet()) {
-					   if(leaveRole.getRoleId().getId().longValue() == roleId.longValue()) {
-						   roleLeaveType.add(leaveType);
-					   }
+					   roleIds.add(leaveRole.getRoleId().getId());
+				   }
+				   if(roleIds.contains(roleId)) {
+					   roleLeaveType.add(leaveType);
 				   }
 			   }
 			   
@@ -910,10 +913,10 @@ public class LeaveManagementRestController {
 	
 
 	@RequestMapping(value = "/getLeavesListByLocationIdAndStatus")
-	public @ResponseBody List<Leave> getLeavesListByLocationIdAndStatus(@RequestParam(value = "orgLocationId", required = false) Long orgLocationId, @RequestParam(value = "status", required = false) String status,@RequestParam(value = "userId", required = false) Long userId, HttpServletRequest request, HttpServletResponse response) throws Exception
+	public @ResponseBody ResponseList<LeaveDTO> getLeavesListByLocationIdAndStatus(@RequestParam(value = "orgLocationId", required = false) Long orgLocationId, @RequestParam(value = "status", required = false) String status,@RequestParam(value = "userId", required = false) Long userId, HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
-		List<Leave> leaveList = leaveService.getLeavesListByLocationIdAndStatus(orgLocationId,status,userId);
-		return leaveList;
+		ResponseList<LeaveDTO> leaveDtoList = leaveService.getLeavesListByLocationIdAndStatus(orgLocationId,status,userId);
+		return leaveDtoList;
 	}
 
 	/**
@@ -998,8 +1001,10 @@ public class LeaveManagementRestController {
 			leaveDto.setReason(leave.getReason());
 			leaveDto.setCreatedDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),leave.getCreatedDate()));
 			leaveDto.setFileName(leave.getFileName());
-
-			
+            if(leave.getRejectedReason() !=null) {
+            	leaveDto.setRejectedReason(leave.getRejectedReason());
+            }
+           
 			StringBuilder sbu = new StringBuilder();
 			if(leave.getUser() != null){
 			if(StringUtils.isNotBlank(leave.getUser().getLastName())){
@@ -1051,7 +1056,7 @@ public class LeaveManagementRestController {
 					e.printStackTrace();
 				}
 			}
-			leaveDto.setApproverUsers(String.join(",", aphlist));
+			leaveDto.setApproverUsers(String.join(",", aphlist)); 
 			int nuberOfLeavestaken = leaveDao.getNumberOfLeavesTakenByUser(leave.getUser().getId(),leave.getLeaveType().getId());
 			leaveDto.setLeavesTaken(String.valueOf(nuberOfLeavestaken));
 			int thisMonthLeaves = leaveDao.getThisMonthLeavesTakenByUser(leave.getUser().getId(),leave.getLeaveType().getId());
@@ -1089,14 +1094,13 @@ public class LeaveManagementRestController {
 		return isCancelled;
 	}	
 	
-	@RequestMapping(value = {"/getEmployeeLeavesList"})
+	@RequestMapping(value = { "/getEmployeeLeavesList" })
 	@ResponseBody
-	public List<LeaveReportsDTO> getEmployeeLeavesList(@RequestParam(value = "orgLocationId", required = true) Long orgLocationId,@RequestParam(value = "userId", required = true) String userId,@RequestParam(value = "department", required = true) String department) throws Exception
+	public List<LeaveReportsDTO> getEmployeeLeavesList(@RequestParam(value = "orgLocationId", required = true) Long orgLocationId, @RequestParam(value = "userId", required = true) String userId, @RequestParam(value = "department", required = false) String department, @RequestParam(value = "leaveDateStr", required = false) String leaveDate) throws Exception
 	{
 		OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
-		List<LeaveReportsDTO> leavesList = leaveService.getEmployeeLeavesByApproverIdAndStatus(orgLocations, userId, Constants.APPROVED,department);
+		List<LeaveReportsDTO> leavesList = leaveService.getEmployeeLeavesByApproverIdAndStatus(orgLocations, userId, Constants.APPROVED, department, leaveDate);
 		return leavesList;
-		
 	}
 	
 	/**
@@ -1126,10 +1130,12 @@ public class LeaveManagementRestController {
 		List<Leave> leaveList = response.getData();
 		List<LeaveDTO> leaveDtoList = new ArrayList<>();
 		HashMap<Long, LeaveDTO> reportMap = new HashMap<>();
+		int totalLeaves = 0;
 		for (Leave leave : leaveList) {
 			LeaveDTO leaveDto = reportMap.get(leave.getUser().getId());
 			if (leaveDto == null) {
 				leaveDto = new LeaveDTO();
+				totalLeaves = 0;
 			}
 			StringBuilder sb = new StringBuilder();
 			if (StringUtils.isNotBlank(leave.getUser().getLastName())) {
@@ -1139,7 +1145,8 @@ public class LeaveManagementRestController {
 			}
 			leaveDto.setEmpName(sb.toString());
 			leaveDto.setStatus(leave.getStatus());
-			leaveDto.setNoOfDays(leave.getNumberOfDays());
+			totalLeaves = totalLeaves + Integer.parseInt(leave.getNumberOfDays());
+			leaveDto.setNoOfDays(String.valueOf(totalLeaves));
 			reportMap.put(leave.getUser().getId(), leaveDto);
 		}
 
@@ -1165,6 +1172,7 @@ public class LeaveManagementRestController {
 		return isValid;
 	}
 	
+
 	@RequestMapping(value = "/totalCountsForEmployeeLeaves")
 	@ResponseBody
 	public LeaveDTO totalCountsForEmployeeLeaves(@RequestParam(value = "orgLocationId", required = false) Long orgLocationId,@RequestParam(value = "userId", required = false) Long userId) throws Exception {
@@ -1175,6 +1183,42 @@ public class LeaveManagementRestController {
 	@ResponseBody
 	public LeaveDTO totalCountsForSelfLeaves(@RequestParam(value = "orgLocationId", required = false) Long orgLocationId,@RequestParam(value = "userId", required = false) Long userId) throws Exception {
 		return leaveService.getAllSelfLeavesCounts(orgLocationId,userId);
+
+	}
+	/**
+	 * Get leave takers list for barchart
+	 * @param leaveDTO
+	 * @param request
+	 * @param response
+	 * @return List<LeaveDTO> 
+	 * @throws Exception
+	 */
+	@RequestMapping(value = { "/getLeaveTakersBarChat", "/rest/getLeaveTakersBarChat" },method=RequestMethod.GET)
+	@ResponseBody
+	public List<LeaveDTO>  getLeaveTakersBarChat(LeaveDTO leaveDTO,HttpServletRequest request,HttpServletResponse response) throws Exception {
+
+		OrgLocations orgLocation = orgLocationService.getOrgLocations(Long.parseLong(leaveDTO.getOrgLocationId()));
+		List<LeaveDTO> leavDtoList = leaveService.getLeaveTakersBarChat(orgLocation,leaveDTO);
+		return leavDtoList;
+	}
+	
+	/**
+	 * Withdraw leave by employee
+	 * @param orgLocationId
+	 * @param leaveId
+	 * @param reason
+	 * @return boolean
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/withdrawLeave")
+	@ResponseBody
+	public boolean withdrawLeave(@RequestParam(value = "orgLocationId", required = false) Long orgLocationId,
+			@RequestParam(value = "leaveId", required = false) String leaveId,
+			@RequestParam(value = "reason", required = false) String reason) throws Exception {
+		boolean isValid = false;
+		isValid = leaveService.getWithdrawLeave(leaveId,reason,orgLocationId);
+		
+		return isValid;
 
 	}
 }
