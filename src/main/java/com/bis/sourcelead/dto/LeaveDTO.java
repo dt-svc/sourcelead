@@ -51,6 +51,8 @@ public class LeaveDTO extends SearchDTO implements Serializable{
 	private String reportMonth;
 	private String reportFromDate;
 	private String reportEndDate;
+	private String department;
+	private String leavesearchDate;
 	private String barChartYear;
 	private String barCharMonth;
 	private String barChartFromDate;
@@ -313,6 +315,22 @@ public class LeaveDTO extends SearchDTO implements Serializable{
 	public void setReportEndDate(String reportEndDate) {
 		this.reportEndDate = reportEndDate;
 	}
+	public String getDepartment()
+	{
+		return department;
+	}
+	public void setDepartment(String department)
+	{
+		this.department = department;
+	}
+	public String getLeavesearchDate()
+	{
+		return leavesearchDate;
+	}
+	public void setLeavesearchDate(String leavesearchDate)
+	{
+		this.leavesearchDate = leavesearchDate;
+	}
 	public String getBarChartYear() {
 		return barChartYear;
 	}
@@ -373,6 +391,5 @@ public class LeaveDTO extends SearchDTO implements Serializable{
 	public void setIsWithdrawEnable(String isWithdrawEnable) {
 		this.isWithdrawEnable = isWithdrawEnable;
 	}
-	
 
 }

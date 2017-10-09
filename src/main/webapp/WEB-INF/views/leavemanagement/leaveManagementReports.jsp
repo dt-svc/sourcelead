@@ -155,17 +155,18 @@
                             <input type="text" class="calendar form-control input-sm" id="leavesCalendar">
                                     </div>
                                 <div class="form-group">
-                            <button type="button" class="btn btn-primary btn-sm" title="Custom" onClick="customizeEmployee();">Custom</button>
+                                <button type="button" class="btn btn-primary btn-sm" title="Clear" onClick="clearLeaveCalender();">Clear</button>
+<!--                             <button type="button" class="btn btn-primary btn-sm" title="Custom" onClick="customizeEmployee();">Custom</button> -->
                                 </div>
                                     </div>
                                 </div>
                                 <div class="clearfix customizeEmployee" style="display: none;">
                                 <div class="clearfix">
                                 <div class="col-md-5 noPad mR5">
-                                <input name="Date" placeholder="From" class="form-control calendar input-sm" type="text">
+                                <input name="Date" placeholder="From" class="form-control calendar input-sm" id="empCustFromDate" type="text">
                                 </div>
                                 <div class="col-md-5 noPad mR5">
-                                <input type="text" name="Date" placeholder="To" class="form-control calendar input-sm">
+                                <input type="text" name="Date" placeholder="To" id="empCustToDate" class="form-control calendar input-sm">
                                 </div>
                                 <button type="button" class="btn btn-primary btn-sm"><i class="fa fa-search"></i></button>
                                     </div>
@@ -176,10 +177,13 @@
                         </div>
                     </div>
                     <div class="clearfix ptagmrng-none">
+                    <div class="col-md-12" id="employeeEmptylist" style="display:none">
+		        		<div class="media media-custom mb dataTables_empty"></div>
+		            </div>
                     	<div id="employeelistDiv"></div>
                       </div>
                 </div>
-                <div class="clearfix"><hr></div>
+                <div class="clearfix"></div>
                 <div class="row">
                   <div class="col-md-6">
                  
@@ -326,6 +330,13 @@
 </script> 
 
 <script>
+function clearLeaveCalender(){
+	$("#leavesCalendar").val('');
+	getEmployeeLeavesList();
+}
+</script>
+
+<script>
 $(document).ready(function() {
 $("#tab-1").show();
     $(".project-tabs-menu a").click(function(event) {
@@ -428,115 +439,122 @@ $("#filterDepartmentPop, .statusFiler-1").click(function(e) {
 function getEmployeeLeavesList(){
 	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	var userId = '${SourceLeadWeb_userId}';
-	
+	var date = $("#leavesCalendar").val();
 	var department = [];
 	$('input:checkbox[name=department]:checked').each(function() 
     {
 		department.push($(this).val());
     });
-	$.get(sourceleadUrl+"/getEmployeeLeavesList?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&userId="+userId+"&department="+department, function(data) {
+	$.get(sourceleadUrl+"/getEmployeeLeavesList?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&userId="+userId+"&department="+department+"&leaveDateStr="+date, function(data) {
 		var result = "";	
-		for (var i=0; i<data.length; i++){
-			var opt = data[i];
-			result += '<div class="col-md-3">';
-	        result += '<div class="media media-custom mb">';
-	        result += '    <div class="media-left">';
-	        result += '        <div class="empimg-parent">';
-	        if(opt.empProfileImageURL != null && opt.empProfileImageURL != '' && opt.empProfileImageURL != 'undefined'){
-	        	result += '          <img onerror="predefineProfileImage(this);" src="'+opt.empProfileImageURL+'"  class="">';
-	        }else{
-	        	result += '          <img onerror="predefineProfileImage(this);" src=""  class="">';
-	        }
-	        result += '        </div>';
-	        result += '    </div>';
-	        result += '    <div class="media-body text-left">';
-	        if(opt.empName != null && opt.empName != '' && opt.empName != 'undefined'){
-	        	result += '      <h5 class="media-heading tbldata-dotdot">'+opt.empName+'</h5>';
-	        }
-	        
-	        if(opt.empType != null && opt.empType != '' && opt.empType != 'undefined'){
-	        	result += '      <p class="small text-muted">'+opt.empType+'</p>';
-	        }else{
-	        	result += '      <p class="small text-muted">NA</p>';
-	        }
-	        result += '        <ul class="list-unstyled list-inline mrng0 mt5 empLeave-li">';
-	        if(opt.isSunday == "Y" && opt.isSunday != null && opt.isSunday != '' && opt.isSunday != 'undefined'){
-	        	if(opt.isSundayHalfDay == "Y" && opt.isSundayHalfDay != null && opt.isSundayHalfDay != '' && opt.isSundayHalfDay != 'undefined'){
-	        		result += '            <li title="Date" class="halfday">S</li>';
-	        	}else{
-	        		result += '            <li title="Date" class="fullday">S</li>';
-	        	}
-	        }else{
-	        	result += '            <li title="Date">S</li>';
-	        }
-	        
-	        if(opt.isMonday == "Y" && opt.isMonday != null && opt.isMonday != '' && opt.isMonday != 'undefined'){
-	        	if(opt.isMondayHalfDay == "Y" && opt.isMondayHalfDay != null && opt.isMondayHalfDay != '' && opt.isMondayHalfDay != 'undefined'){
-	        		result += '            <li title="Date" class="halfday">M</li>';
-	        	}else{
-	        		result += '            <li title="Date" class="fullday">M</li>';
-	        	}
-	        }else{
-	        	result += '            <li title="Date">M</li>';
-	        }
-	        
-	        if(opt.isTuesday == "Y" && opt.isTuesday != null && opt.isTuesday != '' && opt.isTuesday != 'undefined'){
-	        	if(opt.isTuesdayHalfDay == "Y" && opt.isTuesdayHalfDay != null && opt.isTuesdayHalfDay != '' && opt.isTuesdayHalfDay != 'undefined'){
-	        		result += '            <li title="Date" class="halfday">T</li>';
-	        	}else{
-	        		result += '            <li title="Date" class="fullday">T</li>';
-	        	}
-	        }else{
-	        	result += '            <li title="Date">T</li>';
-	        }
-	        
-	        if(opt.isWednesday == "Y" && opt.isWednesday != null && opt.isWednesday != '' && opt.isWednesday != 'undefined'){
-	        	if(opt.isWednesdayHalfDay == "Y" && opt.isWednesdayHalfDay != null && opt.isWednesdayHalfDay != '' && opt.isWednesdayHalfDay != 'undefined'){
-	        		result += '            <li title="Date" class="halfday">W</li>';
-	        	}else{
-	        		result += '            <li title="Date" class="fullday">W</li>';
-	        	}
-	        }else{
-	        	result += '            <li title="Date">W</li>';
-	        }
-	        
-	        if(opt.isThursday == "Y" && opt.isThursday != null && opt.isThursday != '' && opt.isThursday != 'undefined'){
-	        	if(opt.isThursdayHalfDay == "Y" && opt.isThursdayHalfDay != null && opt.isThursdayHalfDay != '' && opt.isThursdayHalfDay != 'undefined'){
-	        		result += '            <li title="Date" class="halfday">T</li>';
-	        	}else{
-	        		result += '            <li title="Date" class="fullday">T</li>';
-	        	}
-	        }else{
-	        	result += '            <li title="Date">T</li>';
-	        }
-	        
-	        if(opt.isFriday == "Y" && opt.isFriday != null && opt.isFriday != '' && opt.isFriday != 'undefined'){
-	        	if(opt.isFridayHalfDay == "Y" && opt.isFridayHalfDay != null && opt.isFridayHalfDay != '' && opt.isFridayHalfDay != 'undefined'){
-	        		result += '            <li title="Date" class="halfday">F</li>';
-	        	}else{
-	        		result += '            <li title="Date" class="fullday">F</li>';
-	        	}
-	        }else{
-	        	result += '            <li title="Date">F</li>';
-	        }
-	        
-	        if(opt.isSaturday == "Y" && opt.isSaturday != null && opt.isSaturday != '' && opt.isSaturday != 'undefined'){
-	        	if(opt.isSaturdayHalfDay == "Y" && opt.isSaturdayHalfDay != null && opt.isSaturdayHalfDay != '' && opt.isSaturdayHalfDay != 'undefined'){
-	        		result += '            <li title="Date" class="halfday">S</li>';
-	        	}else{
-	        		result += '            <li title="Date" class="fullday">S</li>';
-	        	}
-	        }else{
-	        	result += '            <li title="Date">S</li>';
-	        }
-	        
-	        result += '        </ul>';
-	        result += '    </div>';
-	        result += '</div>';
-	        result += '</div>';
-	        $("#employeelistDiv").empty();
-	        $("#employeelistDiv").append(result);
+		 $("#employeelistDiv").empty();
+		if(data != '' && data != null){
+			$("#employeeEmptylist").hide();
+			for (var i=0; i<data.length; i++){
+				var opt = data[i];
+				result += '<div class="col-md-3">';
+		        result += '<div class="media media-custom mb">';
+		        result += '    <div class="media-left">';
+		        result += '        <div class="empimg-parent">';
+		        if(opt.empProfileImageURL != null && opt.empProfileImageURL != '' && opt.empProfileImageURL != 'undefined'){
+		        	result += '          <img onerror="predefineProfileImage(this);" src="'+opt.empProfileImageURL+'"  class="">';
+		        }else{
+		        	result += '          <img onerror="predefineProfileImage(this);" src=""  class="">';
+		        }
+		        result += '        </div>';
+		        result += '    </div>';
+		        result += '    <div class="media-body text-left">';
+		        if(opt.empName != null && opt.empName != '' && opt.empName != 'undefined'){
+		        	result += '      <h5 class="media-heading tbldata-dotdot">'+opt.empName+'</h5>';
+		        }
+		        
+		        if(opt.empType != null && opt.empType != '' && opt.empType != 'undefined'){
+		        	result += '      <p class="small text-muted">'+opt.empType+'</p>';
+		        }else{
+		        	result += '      <p class="small text-muted">NA</p>';
+		        }
+		        result += '        <ul class="list-unstyled list-inline mrng0 mt5 empLeave-li">';
+		        if(opt.isSunday == "Y" && opt.isSunday != null && opt.isSunday != '' && opt.isSunday != 'undefined'){
+		        	if(opt.isSundayHalfDay == "Y" && opt.isSundayHalfDay != null && opt.isSundayHalfDay != '' && opt.isSundayHalfDay != 'undefined'){
+		        		result += '            <li title="Date" class="halfday">S</li>';
+		        	}else{
+		        		result += '            <li title="Date" class="fullday">S</li>';
+		        	}
+		        }else{
+		        	result += '            <li title="Date">S</li>';
+		        }
+		        
+		        if(opt.isMonday == "Y" && opt.isMonday != null && opt.isMonday != '' && opt.isMonday != 'undefined'){
+		        	if(opt.isMondayHalfDay == "Y" && opt.isMondayHalfDay != null && opt.isMondayHalfDay != '' && opt.isMondayHalfDay != 'undefined'){
+		        		result += '            <li title="Date" class="halfday">M</li>';
+		        	}else{
+		        		result += '            <li title="Date" class="fullday">M</li>';
+		        	}
+		        }else{
+		        	result += '            <li title="Date">M</li>';
+		        }
+		        
+		        if(opt.isTuesday == "Y" && opt.isTuesday != null && opt.isTuesday != '' && opt.isTuesday != 'undefined'){
+		        	if(opt.isTuesdayHalfDay == "Y" && opt.isTuesdayHalfDay != null && opt.isTuesdayHalfDay != '' && opt.isTuesdayHalfDay != 'undefined'){
+		        		result += '            <li title="Date" class="halfday">T</li>';
+		        	}else{
+		        		result += '            <li title="Date" class="fullday">T</li>';
+		        	}
+		        }else{
+		        	result += '            <li title="Date">T</li>';
+		        }
+		        
+		        if(opt.isWednesday == "Y" && opt.isWednesday != null && opt.isWednesday != '' && opt.isWednesday != 'undefined'){
+		        	if(opt.isWednesdayHalfDay == "Y" && opt.isWednesdayHalfDay != null && opt.isWednesdayHalfDay != '' && opt.isWednesdayHalfDay != 'undefined'){
+		        		result += '            <li title="Date" class="halfday">W</li>';
+		        	}else{
+		        		result += '            <li title="Date" class="fullday">W</li>';
+		        	}
+		        }else{
+		        	result += '            <li title="Date">W</li>';
+		        }
+		        
+		        if(opt.isThursday == "Y" && opt.isThursday != null && opt.isThursday != '' && opt.isThursday != 'undefined'){
+		        	if(opt.isThursdayHalfDay == "Y" && opt.isThursdayHalfDay != null && opt.isThursdayHalfDay != '' && opt.isThursdayHalfDay != 'undefined'){
+		        		result += '            <li title="Date" class="halfday">T</li>';
+		        	}else{
+		        		result += '            <li title="Date" class="fullday">T</li>';
+		        	}
+		        }else{
+		        	result += '            <li title="Date">T</li>';
+		        }
+		        
+		        if(opt.isFriday == "Y" && opt.isFriday != null && opt.isFriday != '' && opt.isFriday != 'undefined'){
+		        	if(opt.isFridayHalfDay == "Y" && opt.isFridayHalfDay != null && opt.isFridayHalfDay != '' && opt.isFridayHalfDay != 'undefined'){
+		        		result += '            <li title="Date" class="halfday">F</li>';
+		        	}else{
+		        		result += '            <li title="Date" class="fullday">F</li>';
+		        	}
+		        }else{
+		        	result += '            <li title="Date">F</li>';
+		        }
+		        
+		        if(opt.isSaturday == "Y" && opt.isSaturday != null && opt.isSaturday != '' && opt.isSaturday != 'undefined'){
+		        	if(opt.isSaturdayHalfDay == "Y" && opt.isSaturdayHalfDay != null && opt.isSaturdayHalfDay != '' && opt.isSaturdayHalfDay != 'undefined'){
+		        		result += '            <li title="Date" class="halfday">S</li>';
+		        	}else{
+		        		result += '            <li title="Date" class="fullday">S</li>';
+		        	}
+		        }else{
+		        	result += '            <li title="Date">S</li>';
+		        }
+		        
+		        result += '        </ul>';
+		        result += '    </div>';
+		        result += '</div>';
+		        result += '</div>';
+		        $("#employeelistDiv").empty();
+		        $("#employeelistDiv").append(result);
+			}
+		}else{
+			$("#employeeEmptylist").show();
 		}
+		
 		
 	}); 
 	
@@ -799,7 +817,7 @@ function totalLeaveByEmployeeBarChart(data){
         $(".showLeaveReport").toggle();
     }
     //jQuery UI Calendar
-    $("#leavesCalendar").datepicker();
+//     $("#leavesCalendar").datepicker();
     </script>
     
 		
@@ -967,6 +985,37 @@ function topLeaveTakersPagination(url){
 			$("#fromdate").datepicker("option", "maxDate", dt);
 			removeEndValid();
 			validateDate();
+			}
+		});
+	  
+	  $('#leavesCalendar').datepicker({
+			dateFormat : finalDateFormatEndDate,
+			changeMonth: true,
+			changeYear: true, 
+			onSelect : function(selected) {
+			getEmployeeLeavesList();
+			}
+		});
+	  
+	  $('#empCustFromDate').datepicker({
+			dateFormat : finalDateFormatEndDate,
+			changeMonth: true,
+			changeYear: true, 
+			onSelect : function(selected) {
+			var dt = $(this).datepicker('getDate', '+1d');
+			dt.setDate(dt.getDate());
+			$("#empCustToDate").datepicker("option", "minDate", dt);
+			}
+		});
+		
+	  $('#empCustToDate').datepicker({
+			dateFormat : finalDateFormatEndDate,
+			changeMonth: true,
+			changeYear: true, 
+			onSelect : function(selected) {
+			var dt = $(this).datepicker('getDate', '-1d');
+			dt.setDate(dt.getDate());
+			$("#empCustFromDate").datepicker("option", "maxDate", dt);
 			}
 		});
 		

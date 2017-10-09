@@ -21,7 +21,7 @@ public interface LeaveService {
 
 	ResponseList<LeaveDTO> getLeavesListByLocationIdAndStatus(Long orgLocationId, String status, Long userId) throws Exception;
 
-	List<LeaveReportsDTO> getEmployeeLeavesByApproverIdAndStatus(OrgLocations orgLocations, String userId, String status, String department) throws Exception;
+	List<LeaveReportsDTO> getEmployeeLeavesByApproverIdAndStatus(OrgLocations orgLocations, String userId, String status, String department, String leaveDate) throws Exception;
 	
 	List<Leave> getLeavesListByTypeIdAndLocationIdAndUserId(String leaveTypeId, Long orgLocationId, Long userId);
 
