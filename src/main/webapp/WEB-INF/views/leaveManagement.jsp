@@ -30,7 +30,9 @@ $(document).ready(function(){
         <div class="clearfix require_wrap_table dashboard-data">
           <ul class="nav nav-tabs">
             <li class="active"><a data-toggle="tab" href="#self">Self</a></li>
-            <li><a data-toggle="tab" href="#employee">Employee</a></li>
+            <sec:authorize access="hasAnyRole(\'ROLE_APPROVE_LEAVE\')">
+            	<li><a data-toggle="tab" href="#employee">Employee</a></li>
+            </sec:authorize>
           </ul>
           <div class="tab-content clearfix mt">
             <div id="self" class="tab-pane fade in active">
@@ -52,7 +54,7 @@ $(document).ready(function(){
                         <a href="<c:url value='/rejectedLeaves'/>" class="color_white" title="Rejected Leaves"><span class="label label-danger pull-right" id="selfRejectedCounts"></span></a>
                     </li>
                     <li class="clearfix mt10">
-                        <label class="pull-left">Cancel Leaves</label>
+                        <label class="pull-left">Cancelled Leaves</label>
                         <a href="<c:url value='/cancelLeaves'/>" class="color_white" title="Cancel Leaves"><span class="label label-warning pull-right" id="selfCancelledCounts"></span></a>
                     </li>
                 </ul>

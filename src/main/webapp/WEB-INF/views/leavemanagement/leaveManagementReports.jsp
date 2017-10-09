@@ -12,7 +12,6 @@
 <script type="text/javascript">
 		 $(document).ready(function(){
 			 getHolidaysList();
-			 getEmployeeLeavesList();
 			});
 </script>
 
@@ -36,7 +35,9 @@
          </sec:authorize>  
           <ul class="project-tabs-menu projecttabs-custom">
             <li class="current"><a href="#tab-1">Self</a></li>
-            <li><a href="#tab-2" onclick="getTopLeaveTakers();getLeaveTakersBarChat();">Employees</a></li>
+            <sec:authorize access="hasAnyRole(\'ROLE_APPROVE_LEAVE\')">
+            	<li><a href="#tab-2" onclick="getEmployeeLeavesList();getTopLeaveTakers();getLeaveTakersBarChat();">Employees</a></li>
+            </sec:authorize>
             <div class="clearfix"></div>
           </ul>
            
