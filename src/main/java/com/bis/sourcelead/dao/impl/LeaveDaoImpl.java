@@ -276,4 +276,42 @@ public class LeaveDaoImpl implements LeaveDao{
 		return response;
 	}
 
+
+	@Override
+	@Transactional
+	public List<Leave> getLeaveTakersBarChat(OrgLocations orgLocation, LeaveDTO leaveDTO) throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		String subQuery = "";
+		if(StringUtils.isNotBlank(leaveDTO.getBarChartYear())) {
+			Date[] dates = commonUtil.getStartDateEndDateByYear(Integer.parseInt(leaveDTO.getBarChartYear()));
+			java.sql.Date satrtDate = new java.sql.Date(dates[0].getTime());
+			java.sql.Date endDate = new java.sql.Date(dates[1].getTime());
+			subQuery = " and leave.createdDate >= '"+satrtDate+"' AND leave.createdDate <= '"+endDate+"'";
+		}
+		if(StringUtils.isNotBlank(leaveDTO.getBarCharMonth())) {
+			Date[] dates = commonUtil.getMonthStartDateEndDateByMonth(Integer.parseInt(leaveDTO.getBarCharMonth()));
+			java.sql.Date satrtDate = new java.sql.Date(dates[0].getTime());
+			java.sql.Date endDate = new java.sql.Date(dates[1].getTime());
+			subQuery = " and leave.createdDate >= '"+satrtDate+"' AND leave.createdDate <= '"+endDate+"'";
+		}
+		if(StringUtils.isNotBlank(leaveDTO.getBarChartFromDate()) && StringUtils.isNotBlank(leaveDTO.getBarChartToDate())) {
+			Date startDate = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), leaveDTO.getBarChartFromDate());
+			Date eDate = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), leaveDTO.getBarChartToDate());
+			java.sql.Date satrtDate = new java.sql.Date(startDate.getTime());
+			java.sql.Date endDate = new java.sql.Date(eDate.getTime());
+			subQuery = " and leave.createdDate >= '"+satrtDate+"' AND leave.createdDate <= '"+endDate+"'";
+		}
+		if(StringUtils.isNotBlank(leaveDTO.getBarChartYear()) && StringUtils.isNotBlank(leaveDTO.getBarCharMonth())) {
+			Date[] dates = commonUtil.getMonthStartDateEndDateByYearAndMonth(Integer.parseInt(leaveDTO.getBarChartYear()),Integer.parseInt(leaveDTO.getBarCharMonth()));
+			java.sql.Date satrtDate = new java.sql.Date(dates[0].getTime());
+			java.sql.Date endDate = new java.sql.Date(dates[1].getTime());
+			subQuery = " and leave.createdDate >= '"+satrtDate+"' AND leave.createdDate <= '"+endDate+"'";
+		}
+		String query = "from Leave leave where leave.orgLocations.id = :orgLocationId and leave.status = 'APPROVED'"+subQuery;
+		List<Leave> leavesList = session.createQuery(query).setLong("orgLocationId", orgLocation.getId())
+				.setCacheable(true).list();
+		return leavesList;
+	}
+
 }

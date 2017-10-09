@@ -29,4 +29,6 @@ public interface LeaveDao {
 
 	ResponseList<Leave> getTopLeavetakers(OrgLocations orgLocation, LeaveDTO leaveDTO) throws Exception;
 
+	List<Leave> getLeaveTakersBarChat(OrgLocations orgLocation, LeaveDTO leaveDTO)throws Exception;
+
 }

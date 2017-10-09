@@ -53,6 +53,16 @@ public class LeaveDTO extends SearchDTO implements Serializable{
 	private String reportEndDate;
 	private String department;
 	private String leavesearchDate;
+	private String barChartYear;
+	private String barCharMonth;
+	private String barChartFromDate;
+	private String barChartToDate;
+	private String totalLeaves;
+	private String colorCode;
+	private String rejectedReason;
+	private String cancelReason;
+	private String approvedByUser;
+	private String isWithdrawEnable;
 	
 	public String getLeavesTaken() {
 		return leavesTaken;
@@ -320,6 +330,66 @@ public class LeaveDTO extends SearchDTO implements Serializable{
 	public void setLeavesearchDate(String leavesearchDate)
 	{
 		this.leavesearchDate = leavesearchDate;
+	}
+	public String getBarChartYear() {
+		return barChartYear;
+	}
+	public void setBarChartYear(String barChartYear) {
+		this.barChartYear = barChartYear;
+	}
+	public String getBarCharMonth() {
+		return barCharMonth;
+	}
+	public void setBarCharMonth(String barCharMonth) {
+		this.barCharMonth = barCharMonth;
+	}
+	public String getBarChartFromDate() {
+		return barChartFromDate;
+	}
+	public void setBarChartFromDate(String barChartFromDate) {
+		this.barChartFromDate = barChartFromDate;
+	}
+	public String getBarChartToDate() {
+		return barChartToDate;
+	}
+	public void setBarChartToDate(String barChartToDate) {
+		this.barChartToDate = barChartToDate;
+	}
+	public String getTotalLeaves() {
+		return totalLeaves;
+	}
+	public void setTotalLeaves(String totalLeaves) {
+		this.totalLeaves = totalLeaves;
+	}
+	public String getColorCode() {
+		return colorCode;
+	}
+	public void setColorCode(String colorCode) {
+		this.colorCode = colorCode;
+	}
+	public String getRejectedReason() {
+		return rejectedReason;
+	}
+	public void setRejectedReason(String rejectedReason) {
+		this.rejectedReason = rejectedReason;
+	}
+	public String getCancelReason() {
+		return cancelReason;
+	}
+	public void setCancelReason(String cancelReason) {
+		this.cancelReason = cancelReason;
+	}
+	public String getApprovedByUser() {
+		return approvedByUser;
+	}
+	public void setApprovedByUser(String approvedByUser) {
+		this.approvedByUser = approvedByUser;
+	}
+	public String getIsWithdrawEnable() {
+		return isWithdrawEnable;
+	}
+	public void setIsWithdrawEnable(String isWithdrawEnable) {
+		this.isWithdrawEnable = isWithdrawEnable;
 	}
 
 }

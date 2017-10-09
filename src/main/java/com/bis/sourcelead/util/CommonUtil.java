@@ -1195,14 +1195,16 @@ public class CommonUtil {
 			return dates;
 	}
 		public  Date[] getMonthStartDateEndDateByYearAndMonth(int year,int month) {
-			Date[] dates = new Date[2];
 			Calendar calendar = Calendar.getInstance();
+			Date[] dates = new Date[2];
+			int yearpart = 2017;
+			int monthPart = 9;
 			int dateDay = 1;
-			calendar.set(year, month, dateDay);
+			calendar.set(yearpart, monthPart, dateDay);
 			int numOfDaysInMonth = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
-			System.out.println("First Day of month: " + calendar.getTime());
+			dates[0] = calendar.getTime();
 			calendar.add(Calendar.DAY_OF_MONTH, numOfDaysInMonth-1);
-			System.out.println("Last Day of month: " + calendar.getTime());
+			dates[1] = calendar.getTime();
 			return dates;
 	}
 		

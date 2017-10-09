@@ -11,6 +11,7 @@ import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Stream;
 
@@ -264,6 +265,7 @@ public class LeaveServiceImpl implements LeaveService{
 		}
 		leaveManagementHistory.setLeaveid(leave);
 		leaveManagementHistory.setType(Constants.LEAVE);
+		leaveManagementHistory.setToStage(leave.getStatus());
 		leaveManagementHistory.setStatus(leave.getStatus());
 		leaveManagementHistory.setCreatedBy(user.getUserCode());
 		leaveManagementHistory.setCreatedDate(new Date());
@@ -274,12 +276,15 @@ public class LeaveServiceImpl implements LeaveService{
 	}
 
 	@Override
-	public List<Leave> getLeavesListByLocationIdAndStatus(Long orgLocationId, String status,Long userId) throws Exception
+	public ResponseList<LeaveDTO> getLeavesListByLocationIdAndStatus(Long orgLocationId, String status,Long userId) throws Exception
 	{
 		OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
 		List<Leave> leaveList = leaveDao.getLeavesListByLocationIdAndStatus(orgLocationId,status,userId);
+		ResponseList<LeaveDTO> responseList = new ResponseList<>();
+		List<LeaveDTO> leaveDtoList = new ArrayList<>();
 		for(Leave leave : leaveList){
-			leave.setLeaveTypeName(leave.getLeaveType().getName());
+			LeaveDTO leaveDto = new LeaveDTO();
+			leaveDto.setLeaveType(leave.getLeaveType().getName());
 			List<String> aphlist = new ArrayList<>();
 			for(LeaveApproveHierarchy laph : leave.getApproverHierarchyList()){
 				StringBuilder sb = new StringBuilder();
@@ -292,29 +297,36 @@ public class LeaveServiceImpl implements LeaveService{
 					}
 				}
 			}
-			leave.setApproverUsers(String.join(",", aphlist));
-			leave.setFromDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), leave.getFromDate()));
-			leave.setToDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), leave.getToDate()));
-			leave.setCreatedDateStr(ConversionUtil.getDateAsString(leave.getCreatedDate()));
+			leaveDto.setApproverUsers(String.join(",", aphlist));
+			leaveDto.setFromDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), leave.getFromDate()));
+			leaveDto.setToDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), leave.getToDate()));
+			leaveDto.setCreatedDate(ConversionUtil.getDateAsString(leave.getCreatedDate()));
 			if(leave.getApprovedBy() != null){
 				StringBuilder sb = new StringBuilder();
 				if(StringUtils.isNotBlank(leave.getApprovedBy().getFirstName()) && StringUtils.isNotBlank(leave.getApprovedBy().getLastName())){
-					leave.setApprovedByUser(sb.append(leave.getApprovedBy().getFirstName()).append(" ").append(leave.getApprovedBy().getLastName()).toString());
+					leaveDto.setApprovedByUser(sb.append(leave.getApprovedBy().getFirstName()).append(" ").append(leave.getApprovedBy().getLastName()).toString());
 				}else{
-					leave.setApprovedByUser(sb.append(leave.getApprovedBy().getFirstName()).toString());
+					leaveDto.setApprovedByUser(sb.append(leave.getApprovedBy().getFirstName()).toString());
 				}
 			}
 			if(StringUtils.isNotBlank(leave.getUpdatedBy())){
 				User user = userService.getUserByUserCode(leave.getUpdatedBy());
 				StringBuilder sb = new StringBuilder();
 				if(StringUtils.isNotBlank(user.getFirstName()) && StringUtils.isNotBlank(user.getLastName())){
-					leave.setUpdatedBy(sb.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
+					leaveDto.setUpdatedBy(sb.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
 				}else{
-					leave.setUpdatedBy(sb.append(user.getFirstName()).toString());
+					leaveDto.setUpdatedBy(sb.append(user.getFirstName()).toString());
 				}
 			}
+			leaveDto.setReason(leave.getReason());
+			leaveDto.setStatus(leave.getStatus());
+			if(new Date().before(leave.getFromDate()) || new Date().equals(leave.getFromDate())) {
+				leaveDto.setIsWithdrawEnable("Y");
+			}
+			leaveDtoList.add(leaveDto);
 		}
-		return leaveList;
+		responseList.setData(leaveDtoList);
+		return responseList;
 	}
 
 
@@ -486,10 +498,64 @@ public class LeaveServiceImpl implements LeaveService{
 	}
 
 	@Override
-	public List<LeaveDTO> getEmployeeLeavesByApproverIdAndStatus(OrgLocations orgLocations, String userId, String status) throws Exception
-	{
-		// TODO Auto-generated method stub
-		return null;
+	public List<LeaveDTO> getLeaveTakersBarChat(OrgLocations orgLocation, LeaveDTO leaveDTO) throws Exception {
+		List<Leave> leaveList = leaveDao.getLeaveTakersBarChat(orgLocation,leaveDTO);
+		HashMap<String, LeaveDTO> reportMap = new HashMap<>();
+		List<LeaveDTO> leaveDtoList = new ArrayList<>();
+		int totalLeaves = 0;
+		for (Leave leave : leaveList) {
+			LeaveDTO leaveDto = reportMap.get(leave.getLeaveType().getId());
+			if (leaveDto == null) {
+				leaveDto = new LeaveDTO();
+				totalLeaves = 0;
+			}
+			leaveDto.setLeaveType(leave.getLeaveType().getName());
+			totalLeaves = totalLeaves + Integer.parseInt(leave.getNumberOfDays());
+			leaveDto.setTotalLeaves(String.valueOf(leave.getNumberOfDays()));
+			leaveDto.setColorCode(leave.getLeaveType().getColorCode());
+			reportMap.put(leave.getLeaveType().getId(), leaveDto);
+		}
+
+		for (Map.Entry<String, LeaveDTO> entry : reportMap.entrySet()) {
+			leaveDtoList.add(entry.getValue());
+		}
+		
+		return leaveDtoList;
+	}
+
+	@Override
+	public boolean getWithdrawLeave(String leaveId, String reason, Long orgLocationId) throws Exception {
+		boolean isLeaveWithdraw = false;
+		LeaveManagementHistory leaveManagementHistory = new LeaveManagementHistory();
+		User user = userService.getUserById(orgLocationId);
+		Leave leave = leaveDao.getLeaveById(leaveId);
+		leaveManagementHistory.setFromStage(leave.getStatus());
+		if (leave != null) {
+			if (Constants.LEAVE_PENDING.equals(leave.getStatus())) {
+				leave.setStatus(Constants.LEAVE_WITHDRAW);
+			}else {
+				leave.setStatus(Constants.LEAVE_WITHDRAW);
+				leave.setNumberOfDays("0");
+			}
+			leave.setWithdrawReason(reason);
+			leave.setUpdatedBy(user.getUserCode());
+			leave.setUpdatedDate(new Date());
+			Leave updatedLeave = leaveDao.saveLeave(leave);
+			if(updatedLeave !=null) {
+				isLeaveWithdraw = true;
+			}
+			leaveManagementHistory.setLeaveid(leave);
+			leaveManagementHistory.setType(Constants.LEAVE);
+			leaveManagementHistory.setToStage(leave.getStatus());
+			leaveManagementHistory.setStatus(leave.getStatus());
+			leaveManagementHistory.setCreatedBy(user.getUserCode());
+			leaveManagementHistory.setCreatedDate(new Date());
+			leaveManagementHistory.setUpdatedBy(user.getUserCode());
+			leaveManagementHistory.setUpdatedDate(new Date());
+			leaveManagementHistoryDao.saveLeaveManagementHistory(leaveManagementHistory);
+		}
+
+		return isLeaveWithdraw;
 	}
 
 }

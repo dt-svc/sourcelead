@@ -95,6 +95,7 @@ public class LeaveTypeServiceImpl implements LeaveTypeService {
 		if (StringUtils.isNotBlank(leaveTypeDTO.getLeavePolicyDescription()))
 			leaveType.setPolicyDescription(leaveTypeDTO.getLeavePolicyDescription());
 		leaveType.setStatus(Constants.RECORD_ACTIVE.toString());
+		leaveType.setColorCode(leaveTypeDTO.getColorCode());
 		leaveType = leaveTypeDao.addLeaveType(leaveType);
 		return leaveType;
 	}

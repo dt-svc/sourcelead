@@ -58,6 +58,7 @@ public class Leave {
 
 	@NotFound(action = NotFoundAction.IGNORE)
 	@ManyToOne
+	@JsonBackReference
 	@JoinColumn(name = "LEAVE_TYPE_ID", nullable = false)
 	private LeaveType leaveType;
 	
@@ -100,6 +101,9 @@ public class Leave {
 	
 	@Column(name = "DELETE_REASON",columnDefinition = "TEXT default NULL")
 	private String deleteReason;
+	
+	@Column(name = "WITHDRAW_REASON",columnDefinition = "TEXT default NULL")
+	private String withdrawReason;
 	
 	@Column(name = "CREATED_DATE")
 	private Date createdDate;
@@ -404,6 +408,14 @@ public class Leave {
 	public void setApprovedByUser(String approvedByUser)
 	{
 		this.approvedByUser = approvedByUser;
+	}
+
+	public String getWithdrawReason() {
+		return withdrawReason;
+	}
+
+	public void setWithdrawReason(String withdrawReason) {
+		this.withdrawReason = withdrawReason;
 	}
 	
 
