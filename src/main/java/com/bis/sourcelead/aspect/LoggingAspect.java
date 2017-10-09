@@ -12,7 +12,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
+
 import com.bis.sourcelead.entity.OrgLocations;
+
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserLoginLogoutSession;
 import com.bis.sourcelead.service.ActionHistoryService;
@@ -114,7 +116,7 @@ public class LoggingAspect {
 	}*/
 
 
-	@AfterReturning(pointcut = "@annotation(org.springframework.security.access.prepost.PreAuthorize) && execution(* com.bis.sourcelead.rest..*.*(..))", returning = "result")
+	@AfterReturning(pointcut = "execution(* com.bis.sourcelead.web..*.*(..)) || execution(* com.bis.sourcelead.rest..*.*(..))", returning = "result")
 	public void logAfterReturningRestService(JoinPoint joinPoint, Object result) throws Exception {
 		//logger.info("********** Rest Service Layer After Method Exectution ************");
 		//logger.info("Class name : " + joinPoint.getTarget().getClass().getSimpleName());
@@ -129,8 +131,7 @@ public class LoggingAspect {
 		String methodName = joinPoint.getSignature().getName();
 		if(userLoginSession != null)
 			actionHistoryService.saveActionHistory(methodName,userLoginSession,loginOrgLocation);
-
-	}
+		}
 
 	/*@AfterThrowing(pointcut = "execution(* com.bis.sourcelead.rest.*.*(..))", throwing = "error")
 	public void logAfterThrowingRestService(JoinPoint joinPoint, Throwable error) {

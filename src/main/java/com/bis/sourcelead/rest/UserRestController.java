@@ -1054,6 +1054,8 @@ private void terminatedMailToEmployee(User loginUser, ProjectMembersHistory pmh,
 	        		        	    OrgLocationDTO orgLocationDTO =  getOrgLocationDetails(orgLocations,userRole);
 	        		        	    orgLocationDTO.setMenuList(tabNamesList);
 	        		        	    orgLocationDTO.setMenuIconsList(tabIconsList);
+	        		        	    Candidate candidate = candidateService.getCandidateByConsultantUserId(user.getId(), orgLocations.getId());
+	        		        	    orgLocationDTO.setCandidateId(candidate.getId());
 	        		        	    //orgLocationDTO.setRoleActionsList(actionRolesList);
 	        		        	    orgLocationDTO.setUserType(userRole.getUserType());
 	        		        	    orgLocationsList.add(orgLocationDTO);
@@ -1077,6 +1079,8 @@ private void terminatedMailToEmployee(User loginUser, ProjectMembersHistory pmh,
 		 private OrgLocationDTO getOrgLocationDetails(OrgLocations orgLocations,UserRole useRole){
 			 OrgLocationDTO orgLocationDTO = new OrgLocationDTO();
 			 orgLocationDTO.setOrgName(orgLocations.getOrgLocationName());
+			 orgLocationDTO.setOrgLocationId(orgLocations.getId());
+			 orgLocationDTO.setOrgId(orgLocations.getOrg().getId());
 			 orgLocationDTO.setLocationCode(orgLocations.getLocationCode());
 			 orgLocationDTO.setOrgCode(orgLocations.getOrg().getOrgCode());
 			 if(orgLocations.getOrg().getDocFile() != null && orgLocations.getOrg().getFileContentType() != null){

@@ -2038,6 +2038,10 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
    			 clientSubmissionFields.setCity(templateFields.getCity()); 
    		 }
    		 
+   		 
+   		 if(!isNullOrEmpty(templateFields.getLocation())){
+   			 clientSubmissionFields.setLocation(templateFields.getLocation());
+   		 }
    		 if(null != templateFields.getDateOfBirth()){
    			 clientSubmissionFields.setDateOfBirth(templateFields.getDateOfBirth()); 
    		 }

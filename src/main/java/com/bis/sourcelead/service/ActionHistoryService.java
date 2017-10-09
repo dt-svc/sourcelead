@@ -9,9 +9,10 @@ import com.bis.sourcelead.entity.UserLoginLogoutSession;
 
 public interface ActionHistoryService {
 
-	public  List<ActionHistory> getAllActionPerformedByUser(Long userSessionId) ;
+	public  List<ActionHistory> getAllActionPerformedByUser(Long userSessionId, Long orgLocation) ;
+	
+	public  List<ActionHistory> getAllOrglocationsActionHistoryList(Long userSessionId) ;
 
 	public void saveActionHistory(String methodName,UserLoginLogoutSession userLoginLogoutSession,OrgLocations loginOrgLocation) throws Exception;
-		
-
+	
 }

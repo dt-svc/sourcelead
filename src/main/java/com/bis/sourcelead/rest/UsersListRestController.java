@@ -247,7 +247,7 @@ public class UsersListRestController {
 							role.setFileUrl(role.getUser().getFileUrl());
 						}
 					}
-					
+					role.setMobilePhone(role.getUser().getMobilePhone());
 					if(role.getReportingManager() !=null){
 						StringBuilder reportingManagerName = new StringBuilder();
 						if(role.getReportingManager().getLastName() !=null && !"".equalsIgnoreCase(role.getReportingManager().getLastName())){

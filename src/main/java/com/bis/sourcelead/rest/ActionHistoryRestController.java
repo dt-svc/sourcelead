@@ -41,10 +41,11 @@ public class ActionHistoryRestController {
 	private UserLoginLogoutSessionService userLoginLogoutSessionService;
 	
 	@RequestMapping(value = "/getRestActionHistoryList", method = RequestMethod.GET)
-	public @ResponseBody List<ActionHistory> getActionHistoryList(@RequestParam(value = "userSessionId", required = true) Long userSessionId,HttpServletRequest request) throws Exception {
+	public @ResponseBody List<ActionHistory> getRestActionHistoryList(@RequestParam(value = "userSessionId", required = true) Long userSessionId,@RequestParam(value = "orgLocation", required = true) Long orgLocation,HttpServletRequest request) throws Exception {
 		UserLoginLogoutSession userLoginLogoutSession = userLoginLogoutSessionService.getUserLoginLogoutSessionById(userSessionId);
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
-		List<ActionHistory> actionHistoryList = actionHistoryService.getAllActionPerformedByUser(userLoginLogoutSession.getId());
+		List<ActionHistory> actionHistoryList = actionHistoryService.getAllActionPerformedByUser(userLoginLogoutSession.getId(), orgLocation);
+	
 		if(actionHistoryList != null){
 			 SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 			for(ActionHistory actionHistory:actionHistoryList){
@@ -53,11 +54,17 @@ public class ActionHistoryRestController {
 				// based on time Zone show time and date
 				ZoneId zone1 = ZoneId.of(loginOrgLocation.getTimezone().getTimeZoneId());
 				actionHistory.setActionTimeStr(conversionUtil.getDateAsddMMMYYYYHHMMSS(zoned.toDate(),zone1));
-
-				//actionHistory.setActionTimeStr(zoned.toString());
 			}
 		}
 		return actionHistoryList;
+	}
+	
+	@RequestMapping(value = "/getRestLocationActionHistoryList", method = RequestMethod.GET)
+	public @ResponseBody List<ActionHistory> getRestLocationActionHistoryList(@RequestParam(value = "userSessionId", required = true) Long userSessionId,HttpServletRequest request) throws Exception {
+		UserLoginLogoutSession userLoginLogoutSession = userLoginLogoutSessionService.getUserLoginLogoutSessionById(userSessionId);
+		
+		List<ActionHistory> actionHistoryListOrgLocations = actionHistoryService.getAllOrglocationsActionHistoryList(userLoginLogoutSession.getId());
+		return actionHistoryListOrgLocations;
 	}
 	
 }
