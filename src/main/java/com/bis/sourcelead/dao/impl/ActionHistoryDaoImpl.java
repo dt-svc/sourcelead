@@ -1,11 +1,18 @@
 package com.bis.sourcelead.dao.impl;
 
+import java.text.DateFormat;
 import java.text.MessageFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,10 +21,16 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.ActionHistoryDao;
 import com.bis.sourcelead.entity.ActionHistory;
 import com.bis.sourcelead.entity.ActionNames;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.Timezone;
+import com.bis.sourcelead.entity.UserLoginLogoutSession;
+import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
+import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.bis.sourcelead.entity.UserLoginLogoutSession;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.service.OrgLocationService;
@@ -69,23 +82,24 @@ public class ActionHistoryDaoImpl implements ActionHistoryDao {
 		return actionHistoryList;
 	}
 
-
 	@Override
 	@Async
 	@Transactional(rollbackFor = { Exception.class })
-	public void saveActionHistory(String methodName,UserLoginLogoutSession userLoginLogoutSession,Long orgLocationId) throws Exception {
+
+	public void saveActionHistory(String methodName,UserLoginLogoutSession userLoginLogoutSession,OrgLocations loginOrgLocation) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
-		OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
 		ActionNames actionNames = getActionNameUsingMethodName(methodName);
 		if(actionNames!=null)
 		{
 			ActionHistory actionHistory = new ActionHistory();
-			actionHistory.setOrgLocations(orgLocations);
+			actionHistory.setOrgLocations(loginOrgLocation);
 			actionHistory.setUserId(userLoginLogoutSession.getUserId().getId());
 			actionHistory.setUserLoginLogoutSessionId(userLoginLogoutSession);
 			actionHistory.setActionName(actionNames.getActionName());
 			actionHistory.setActionPerformed("You have performed "+ actionNames.getActionName()+" Action ");
-			actionHistory.setActionTime(new Date());
+			Date newDate = new Date();
+			DateTime zoned = new DateTime(newDate,DateTimeZone.forID(loginOrgLocation.getTimezone().getTimeZoneId()));
+			actionHistory.setActionTime(zoned.toDate());
 
 			try {
 				if (actionHistory != null) {

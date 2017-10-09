@@ -66,8 +66,7 @@ public class CandidateCertificationsRestController {
 		
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		User users = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		/*String json1 = "{"+json+"}";
-		JSONObject jsonObject = new JSONObject(json1);*/
+		candidateCertificationDTO.setDateFormat(loginOrgLocation.getDateFormat());
 		candidateCertificationsService.storeCandidateCertifications(candidateCertificationDTO,users,loginOrgLocation,candidateId);
 		Candidate candidate = candidateService.getCandidateByCandidateId(candidateId);
 		return "success";
