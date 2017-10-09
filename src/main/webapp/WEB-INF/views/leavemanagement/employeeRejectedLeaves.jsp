@@ -353,7 +353,7 @@ function getRequestedAproveSummary(leaveId,orgLocationId){
 			 result = result +'<div class="col-md-12 mb">';
 			 result = result +'<label class="col-md-2 control-label"><b>Employee Type:</b></label>';
 			 result = result +' <div class="col-md-8">';
-			 result = result +'<span>Contract to Hire</span>';
+			 result = result +'<span>'+data.empType+'</span>';
 			 result = result +'</div>';
 			 result = result +'</div>';
 			 result = result +'<div class="col-md-12 mb">';
@@ -377,13 +377,13 @@ function getRequestedAproveSummary(leaveId,orgLocationId){
              result = result +'<div class="col-md-12 mb">';
              result = result +'<label class="col-md-2 control-label"><b>No of leaves taken:</b></label>';
              result = result +' <div class="col-md-8">';
-             result = result +'<span>XXXXXXX</span>';
+             result = result +'<span>'+data.leavesTaken+'</span>';
              result = result +'</div>';
              result = result +'</div>';
              result = result +'<div class="col-md-12 mb">';
              result = result +'<label class="col-md-2 control-label"><b>This month:</b></label>';
              result = result +'<div class="col-md-8">';
-             result = result +' <span>XXXXX</span>';
+             result = result +' <span>'+data.thisMonthLeaves+'</span>';
              result = result +'</div>';
              result = result +'</div>';
              result = result +'<div class="col-md-12 mb">';
@@ -401,7 +401,7 @@ function getRequestedAproveSummary(leaveId,orgLocationId){
              result = result +'<div class="col-md-12 mb">';
              result = result +'<label class="col-md-2 control-label"><b>Approvers:</b></label>';
              result = result +'<div class="col-md-8">';
-             result = result +' <span>Srinivas Vemula</span>';
+             result = result +' <span>'+data.approverUsers+'</span>';
              result = result +'</div>';
              result = result +'</div>';
              result = result +'<div class="col-md-12 mb">';
@@ -430,7 +430,7 @@ function getRequestedAproveSummary(leaveId,orgLocationId){
              result = result +'<div class="col-md-12 mb">';
              result = result +'<label class="col-md-2 control-label"><b>Rejected Reason:</b></label>';
              result = result +'<div class="col-md-8">';
-             result = result +' <span>Srinivas Vemula</span>';
+             result = result +' <span>'+data.rejectedReason+'</span>';
              result = result +'</div>';
              result = result +'</div>';
              result = result +'<div class="clearfix"></div>';
