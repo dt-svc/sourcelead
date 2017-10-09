@@ -22,7 +22,7 @@
                   </div>
                   <div class="pull-left">
                       <h4 class="text-info">Leave Type</h4>
-                      <small class="text-muted">Loremipsum Loremipsum</small>
+<!--                       <small class="text-muted">Loremipsum Loremipsum</small> -->
                       <div class="clearfix mt10">
                           <a href="<c:url value='/addLeaveType'/>" class="btn btn-info btn-sm mr10" title="Add">Add</a>
                           <a href="<c:url value='/viewLeaveTypes'/>" class="btn btn-primary btn-sm" title="View">View</a>
@@ -35,7 +35,7 @@
                   </div>
                   <div class="pull-left">
                       <h4 class="text-muted">Holiday</h4>
-                      <small class="text-muted">Loremipsum Loremipsum</small>
+<!--                       <small class="text-muted">Loremipsum Loremipsum</small> -->
                       <div class="clearfix mt10">
                           <a href="<c:url value='/addHoliday'/>" class="btn btn-info btn-sm mr10" title="Add">Add</a>
                           <a href="<c:url value='/viewHoliday'/>" class="btn btn-primary btn-sm" title="View">View</a>
@@ -48,7 +48,7 @@
                   </div>
                   <div class="pull-left">
                       <h4 class="text-primary">Shift</h4>
-                      <small class="text-muted">Loremipsum Loremipsum</small>
+<!--                       <small class="text-muted">Loremipsum Loremipsum</small> -->
                       <div class="clearfix mt10">
                           <a href="<c:url value='/addShift'/>" class="btn btn-info btn-sm mr10" title="Add">Add</a>
                           <a href="<c:url value='/viewShift'/>" class="btn btn-primary btn-sm" title="View">View</a>
@@ -62,7 +62,7 @@
                   </div>
                   <div class="pull-left">
                       <h4 class="text-danger">Restrict Day</h4>
-                      <small class="text-muted">Loremipsum Loremipsum</small>
+<!--                       <small class="text-muted">Loremipsum Loremipsum</small> -->
                       <div class="clearfix mt10">
                           <a href="<c:url value='/addRestrictDay'/>" class="btn btn-info btn-sm mr10" title="Add">Add</a>
                           <a href="<c:url value='/viewRestrictDay'/>" class="btn btn-primary btn-sm" title="View">View</a>
@@ -75,7 +75,7 @@
                   </div>
                   <div class="pull-left">
                       <h4 class="text-warning">Options</h4>
-                      <small class="text-muted">Loremipsum Loremipsum</small>
+<!--                       <small class="text-muted">Loremipsum Loremipsum</small> -->
                       <div class="clearfix mt10">
                           <a href="<c:url value='/addOptions'/>" class="btn btn-info btn-sm mr10" title="Add">Add</a>
                           <a href="<c:url value='/viewOptions'/>" class="btn btn-primary btn-sm" title="View">View</a>
