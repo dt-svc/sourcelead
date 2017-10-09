@@ -879,8 +879,7 @@ public class SubmissionsRestController {
 
 		if (requirement != null && requirement.getParentRequirement() != null) {
 			if(requirement != null && requirement.getParentRequirement().getManagerUserId() != null){
-				sb.append("<p>").append("Hi,").append(requirement.getParentRequirement().getManagerUserId().getFirstName()).append(" ")
-				.append(requirement.getParentRequirement().getManagerUserId().getLastName()).append("</p>")
+				sb.append("<p>").append("Hi,").append(requirement.getParentRequirement().getManagerUserId().getFullName()).append("</p>")
 				.append("<p>").append(fullName).append(" submitted the applicants for the").append(" ")
 				.append(requirement.getJobTitle()).append("</p>")
 				.append("<p>").append("Total no.of submitted applicants :").append(submissions.length).append("<p>");
