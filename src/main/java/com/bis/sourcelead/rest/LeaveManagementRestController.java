@@ -282,7 +282,7 @@ public class LeaveManagementRestController {
 				   for(LeaveRole leaveRole : leaveType.getLeaveTypeRolesSet()) {
 					   roleIds.add(leaveRole.getRoleId().getId());
 				   }
-				   if(roleIds.contains(roleId)) {
+				   if(roleIds.contains(roleId) || "Y".equalsIgnoreCase(leaveType.getApplicableToUsers())) {
 					   roleLeaveType.add(leaveType);
 				   }
 			   }
@@ -775,9 +775,9 @@ public class LeaveManagementRestController {
 	public  String getleavePolicy(@RequestParam(value = "leaveTypeId", required = false) String leaveTypeId,HttpServletRequest request) throws Exception
 	{
 		String leavePolicy = null;
-		 LeaveType options = leaveTypeService.getLeaveTypeById(leaveTypeId);
-		 if(options !=null) {
-			 leavePolicy = options.getPolicyDescription();
+		 LeaveType leaveType = leaveTypeService.getLeaveTypeById(leaveTypeId);
+		 if(leaveType !=null && "Y".equalsIgnoreCase(leaveType.getVisibilityToAllUsers())) {
+			 leavePolicy = leaveType.getPolicyDescription();
 		 }
 		return leavePolicy;
 	}
@@ -1162,11 +1162,27 @@ public class LeaveManagementRestController {
 
 	@RequestMapping(value = "/validateRestrictDate")
 	@ResponseBody
-	public boolean validateRestrictDate(@RequestParam(value = "fromDate", required = false) String fromDate,@RequestParam(value = "toDate", required = false) String toDate,@RequestParam(value = "orgLocationId", required = false) Long orgLocationId) throws Exception {
+	public boolean validateRestrictDate(@RequestParam(value = "fromDate", required = false) String fromDate,
+			@RequestParam(value = "toDate", required = false) String toDate,
+			@RequestParam(value = "orgLocationId", required = false) Long orgLocationId,
+			@RequestParam(value = "roleId", required = false) Long roleId) throws Exception {
 
 		boolean isValid = false;
-		List<RestrictDay> resDay = restrictDayService.validateRestrictDayDates(fromDate,toDate,orgLocationId);
-		if(resDay != null && resDay.size()>0) {
+		List<RestrictDay> restrictDayList = new ArrayList<>();
+		List<RestrictDay> restDay = restrictDayService.validateRestrictDayDates(fromDate,toDate,orgLocationId);
+		 Set<Long> roleIds = new HashSet<>();
+		for (RestrictDay resDay : restDay) {
+			if (!"Y".equalsIgnoreCase(resDay.getApplicableToAll())) {
+				for (LeaveRole leaveRole : resDay.getRestrictDayRolesList()) {
+					roleIds.add(leaveRole.getRoleId().getId());
+				}
+			} else if (roleIds.contains(roleId)) {
+				restrictDayList.add(resDay);
+			} else {
+				restrictDayList.add(resDay);
+			}
+		}
+		if(restrictDayList != null && restrictDayList.size()>0) {
 			isValid = true;
 		}
 		return isValid;
