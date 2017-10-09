@@ -90,7 +90,7 @@ public class CandidateEducationRestController {
 		if(Validator.validate(candidateEducationDTO)) {
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-
+		candidateEducationDTO.setDateFormat(loginOrgLocation.getDateFormat());
 		candidateEducationService.storeCandidateEducation(candidateEducationDTO,Long.parseLong(candidateId),loginOrgLocation.getId(), user);
 		Candidate candidate = candidateService.getCandidateByCandidateId(Long.parseLong(candidateId));
 		Integer percentage = candidateService.getCandidatePercentage(candidate,loginOrgLocation);

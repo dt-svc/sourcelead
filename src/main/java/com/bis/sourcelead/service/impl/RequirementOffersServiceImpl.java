@@ -1305,6 +1305,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 		    		candidate.setLastName(templateFields.getLastName());
 		    		candidate.setEmail(templateFields.getEmailId());
 		    		candidate.setMobilePhone(templateFields.getPhoneNumber());
+		    		candidate.setLocation(templateFields.getLocation());
 		    		candidate.setCountry(templateFields.getCountry());
 		    		candidate.setState(templateFields.getState());
 		    		candidate.setCity(templateFields.getCity());

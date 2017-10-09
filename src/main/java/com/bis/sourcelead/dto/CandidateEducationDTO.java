@@ -4,7 +4,7 @@ import java.util.Date;
 
 import com.bis.sourcelead.annotations.Required;
 
-public class CandidateEducationDTO {
+public class CandidateEducationDTO extends CommonDTO {
 
 	
 	@Required(desc = "Education name")

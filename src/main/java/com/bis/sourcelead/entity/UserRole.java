@@ -196,6 +196,9 @@ public class UserRole implements Serializable {
 	private String userEmail;
 
 	@Transient
+	private String mobilePhone;
+	
+	@Transient
 	List<Roles> rolesList;
 
 	@Transient
@@ -806,4 +809,15 @@ public class UserRole implements Serializable {
 	public void setFileUrl(String fileUrl) {
 		this.fileUrl = fileUrl;
 	}
+
+	public String getMobilePhone()
+	{
+		return mobilePhone;
+	}
+
+	public void setMobilePhone(String mobilePhone)
+	{
+		this.mobilePhone = mobilePhone;
+	}
+	
 }

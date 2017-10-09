@@ -170,8 +170,11 @@ public class MailBoxController {
  	public ModelAndView requestForCandidateResume(@RequestParam(value="UUID", required=false) String UUID,
 			 HttpServletRequest request) {
 		    ModelAndView model = new ModelAndView();
+		    UserMailBox usermail = userMailBoxService.getUserMailBoxByUUID(UUID);
  			model.setViewName("requestForCandidateResume");
  			model.addObject("sourceleadUrl", sourceleadUrl);
+ 			model.addObject("orgLocationId", usermail.getOrgLocationId().getId());
+ 			model.addObject("orgId", usermail.getOrgLocationId().getOrg().getId());
  			model.addObject("UUID", UUID);
  			return model;
  	}

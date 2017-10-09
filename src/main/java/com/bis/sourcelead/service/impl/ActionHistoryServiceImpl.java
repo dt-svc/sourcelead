@@ -28,10 +28,10 @@ public class ActionHistoryServiceImpl implements ActionHistoryService{
 	}
 
 	@Override
-	public void saveActionHistory(String methodName, UserLoginLogoutSession userLoginLogoutSession,Long orgLocationId) {
+	public void saveActionHistory(String methodName, UserLoginLogoutSession userLoginLogoutSession,OrgLocations orgLocations) {
 		try {
-			actionHistoryDao.saveActionHistory(methodName,userLoginLogoutSession,orgLocationId);
-		} catch (Exception e) {
+			actionHistoryDao.saveActionHistory(methodName,userLoginLogoutSession,orgLocations);
+			} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
