@@ -15,6 +15,14 @@
     <div class="pull-right brud-crum">Home &raquo; Dashboard</div>
   </section> -->
   <!-- Tasks and and Row -->
+  
+<script type="text/javascript">
+$(document).ready(function(){
+	getEmployeeTotalCounts();
+	getSelfTotalCounts();
+});
+</script>
+  
   <div class="clearfix row mb">
     <div class="col-md-6">
       <div class="dashboard-widget">
@@ -33,19 +41,19 @@
                 <ul class="list-unstyled list-group clearfix">
                     <li class="clearfix">
                         <label class="pull-left">Pending Leaves</label>
-                        <span class="label label-primary pull-right"><a href="<c:url value='/pendingLeaves'/>" class="color_white" title="Pending Leaves">100</a></span>
+                        <a href="<c:url value='/pendingLeaves'/>" class="color_white" title="Pending Leaves"><span class="label label-primary pull-right" id="selfPendingCounts"></span></a>
                     </li>
                     <li class="clearfix mt10">
                         <label class="pull-left">Approved Leaves</label>
-                        <span class="label label-success pull-right"><a href="<c:url value='/approvedLeaves'/>" class="color_white" title="Approved Leaves">100</a></span>
+                        <a href="<c:url value='/approvedLeaves'/>" class="color_white" title="Approved Leaves"><span class="label label-success pull-right" id="selfApprovedCounts"></span></a>
                     </li>
                     <li class="clearfix mt10">
                         <label class="pull-left">Rejected Leaves</label>
-                        <span class="label label-danger pull-right"><a href="<c:url value='/rejectedLeaves'/>" class="color_white" title="Rejected Leaves">100</a></span>
+                        <a href="<c:url value='/rejectedLeaves'/>" class="color_white" title="Rejected Leaves"><span class="label label-danger pull-right" id="selfRejectedCounts"></span></a>
                     </li>
                     <li class="clearfix mt10">
                         <label class="pull-left">Cancel Leaves</label>
-                        <span class="label label-warning pull-right"><a href="<c:url value='/cancelLeaves'/>" class="color_white" title="Cancel Leaves">100</a></span>
+                        <a href="<c:url value='/cancelLeaves'/>" class="color_white" title="Cancel Leaves"><span class="label label-warning pull-right" id="selfCancelledCounts"></span></a>
                     </li>
                 </ul>
                       
@@ -71,19 +79,19 @@
                 <ul class="list-unstyled list-group clearfix">
                     <li class="clearfix">
                         <label class="pull-left">Requested Leaves</label>
-                        <span class="label label-primary pull-right"><a href="<c:url value='/employeeRequestedLeaves'/>" class="color_white" title="Pending Leaves">100</a></span>
+                        <a href="<c:url value='/employeeRequestedLeaves'/>" class="color_white" title="Pending Leaves"><span class="label label-primary pull-right" id="employeeRequestedCounts"></span>></a>
                     </li>
                     <li class="clearfix mt10">
                         <label class="pull-left">Approved Leaves</label>
-                        <span class="label label-success pull-right"><a href="<c:url value='/employeeApprovedLeaves'/>" class="color_white" title="Approved Leaves">100</a></span>
+                        <a href="<c:url value='/employeeApprovedLeaves'/>" class="color_white" title="Approved Leaves"><span class="label label-success pull-right" id="employeeApprovedCounts"></span></a>
                     </li>
                     <li class="clearfix mt10">
                         <label class="pull-left">Rejected Leaves</label>
-                        <span class="label label-danger pull-right"><a href="<c:url value='/employeeRejectedLeaves'/>" class="color_white" title="Rejected Leaves">100</a></span>
+                        <a href="<c:url value='/employeeRejectedLeaves'/>" class="color_white" title="Rejected Leaves"><span class="label label-danger pull-right" id="employeeRejectedCounts"></span></a>
                     </li>
                     <li class="clearfix mt10">
                         <label class="pull-left">Cancel Leaves</label>
-                        <span class="label label-warning pull-right"><a href="<c:url value='/employeeCancelLeaves'/>" class="color_white" title="Cancel Leaves">100</a></span>
+                        <a href="<c:url value='/employeeCancelLeaves'/>" class="color_white" title="Cancel Leaves"><span class="label label-warning pull-right" id="employeeCancelledCounts"></span></a>
                     </li>
                 </ul>
                       
@@ -532,3 +540,70 @@
 				}
 			);
 		</script>
+		
+		
+<script>
+function getEmployeeTotalCounts(){
+	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
+	var userId = '${SourceLeadWeb_userId}';
+	 $.ajax({
+	      type : "GET",
+	      url: sourceleadUrl+"/totalCountsForEmployeeLeaves?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&userId="+userId,  
+	       success :function(report) { 
+	    	   if(report.employeeRequestedCounts != null && report.employeeRequestedCounts != '' && report.employeeRequestedCounts != 'undefined'){
+    			   $("#employeeRequestedCounts").html(report.employeeRequestedCounts); 
+    		   }else{
+    			   $("#employeeRequestedCounts").html(0); 
+    		   }
+    		   if(report.employeeApprovedCounts != null && report.employeeApprovedCounts != '' && report.employeeApprovedCounts != 'undefined'){
+    			   $("#employeeApprovedCounts").html(report.employeeApprovedCounts); 
+    		   }else{
+    			   $("#employeeApprovedCounts").html(0); 
+    		   }
+    		   if(report.employeeRejectedCounts != null && report.employeeRejectedCounts != '' && report.employeeRejectedCounts != 'undefined'){
+    			   $("#employeeRejectedCounts").html(report.employeeRejectedCounts); 
+    		   }else{
+    			   $("#employeeRejectedCounts").html(0); 
+    		   }
+    		   if(report.employeeCancelledCounts != null && report.employeeCancelledCounts != '' && report.employeeCancelledCounts != 'undefined'){
+    			   $("#employeeCancelledCounts").html(report.employeeCancelledCounts); 
+    		   }else{
+    			   $("#employeeCancelledCounts").html(0); 
+    		   }
+	       },
+		  });
+}
+</script>
+
+<script>
+function getSelfTotalCounts(){
+	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
+	var userId = '${SourceLeadWeb_userId}';
+	 $.ajax({
+	      type : "GET",
+	      url: sourceleadUrl+"/totalCountsForSelfLeaves?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&userId="+userId,  
+	       success :function(report) { 
+	   	   if(report.selfPendingCounts != null && report.selfPendingCounts != '' && report.selfPendingCounts != 'undefined'){
+   			   $("#selfPendingCounts").html(report.selfPendingCounts); 
+   		   }else{
+   			   $("#selfPendingCounts").html(0); 
+   		   }
+   		   if(report.selfApprovedCounts != null && report.selfApprovedCounts != '' && report.selfApprovedCounts != 'undefined'){
+   			   $("#selfApprovedCounts").html(report.selfApprovedCounts); 
+   		   }else{
+   			   $("#selfApprovedCounts").html(0); 
+   		   }
+   		   if(report.selfRejectedCounts != null && report.selfRejectedCounts != '' && report.selfRejectedCounts != 'undefined'){
+   			   $("#selfRejectedCounts").html(report.selfRejectedCounts); 
+   		   }else{
+   			   $("#selfRejectedCounts").html(0); 
+   		   }
+   		   if(report.selfCancelledCounts != null && report.selfCancelledCounts != '' && report.selfCancelledCounts != 'undefined'){
+   			   $("#selfCancelledCounts").html(report.selfCancelledCounts); 
+   		   }else{
+   			   $("#selfCancelledCounts").html(0); 
+   		   } 
+	       },
+		  });
+}
+</script>

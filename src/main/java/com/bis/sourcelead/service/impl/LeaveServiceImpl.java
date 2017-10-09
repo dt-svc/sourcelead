@@ -9,7 +9,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 
@@ -24,6 +23,7 @@ import com.bis.sourcelead.dao.LeaveTypeDao;
 import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.dto.LeaveDTO;
 import com.bis.sourcelead.dto.LeaveReportsDTO;
+import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
@@ -610,6 +610,63 @@ public class LeaveServiceImpl implements LeaveService{
 	}
 
 	@Override
+	public LeaveDTO getAllEmployeesLeavesCounts(Long orgLocationId,Long userId) {
+		
+		int requestedCounts = 0;
+		int approvedCounts = 0;
+		int rejectedCounts = 0;
+		int cancelledCounts = 0;
+		LeaveDTO leaveDto = new LeaveDTO();
+		List<LeaveApproveHierarchy> leavesList = leaveDao.getAllEmployeesLeavesCounts(orgLocationId,userId);
+		for (LeaveApproveHierarchy lah : leavesList) {
+			if(Constants.PENDING.equalsIgnoreCase(lah.getLeaveid().getStatus()) || Constants.APPROVED.equalsIgnoreCase(lah.getLeaveid().getStatus()) || Constants.REJECTED.equalsIgnoreCase(lah.getLeaveid().getStatus()) || Constants.LEAVE_CANCELLED.equalsIgnoreCase(lah.getLeaveid().getStatus())) {
+				requestedCounts = requestedCounts + 1;
+			}
+			if(Constants.APPROVED.equalsIgnoreCase(lah.getLeaveid().getStatus())) {
+				approvedCounts = approvedCounts + 1;
+			}
+			if(Constants.REJECTED.equalsIgnoreCase(lah.getLeaveid().getStatus())) {
+				rejectedCounts = rejectedCounts + 1;
+			}
+			if(Constants.LEAVE_CANCELLED.equalsIgnoreCase(lah.getLeaveid().getStatus())) {
+				cancelledCounts = cancelledCounts + 1;
+			}
+		}
+		leaveDto.setEmployeeRequestedCounts(String.valueOf(requestedCounts));
+		leaveDto.setEmployeeApprovedCounts(String.valueOf(approvedCounts));
+		leaveDto.setEmployeeRejectedCounts(String.valueOf(rejectedCounts));
+		leaveDto.setEmployeeCancelledCounts(String.valueOf(cancelledCounts));
+		return leaveDto;
+	}
+
+	@Override
+	public LeaveDTO getAllSelfLeavesCounts(Long orgLocationId, Long userId) {
+		int selfPendingCounts = 0;
+		int selfApprovedCounts = 0;
+		int selfRejectedCounts = 0;
+		int selfCancelledCounts = 0;
+		LeaveDTO leaveDto = new LeaveDTO();
+		List<Leave> leavesList = leaveDao.getAllSelfLeavesCounts(orgLocationId,userId);
+		for (Leave leave : leavesList) {
+			if(Constants.PENDING.equalsIgnoreCase(leave.getStatus())) {
+				selfPendingCounts = selfPendingCounts + 1;
+			}
+			if(Constants.APPROVED.equalsIgnoreCase(leave.getStatus())) {
+				selfApprovedCounts = selfApprovedCounts + 1;
+			}
+			if(Constants.REJECTED.equalsIgnoreCase(leave.getStatus())) {
+				selfRejectedCounts = selfRejectedCounts + 1;
+			}
+			if(Constants.LEAVE_CANCELLED.equalsIgnoreCase(leave.getStatus())) {
+				selfCancelledCounts = selfCancelledCounts + 1;
+			}
+		}
+		leaveDto.setSelfPendingCounts(String.valueOf(selfPendingCounts));
+		leaveDto.setSelfApprovedCounts(String.valueOf(selfApprovedCounts));
+		leaveDto.setSelfRejectedCounts(String.valueOf(selfRejectedCounts));
+		leaveDto.setSelfCancelledCounts(String.valueOf(selfCancelledCounts));
+		return leaveDto;
+	}
 	public List<LeaveDTO> getLeaveTakersBarChat(OrgLocations orgLocation, LeaveDTO leaveDTO) throws Exception {
 		List<Leave> leaveList = leaveDao.getLeaveTakersBarChat(orgLocation,leaveDTO);
 		HashMap<String, LeaveDTO> reportMap = new HashMap<>();

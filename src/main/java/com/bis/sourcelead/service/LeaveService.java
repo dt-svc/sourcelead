@@ -27,6 +27,11 @@ public interface LeaveService {
 
 	ResponseList<Leave> getTopLeavetakers(OrgLocations orgLocation, LeaveDTO leaveDTO) throws Exception;
 
+
+	LeaveDTO getAllEmployeesLeavesCounts(Long orgLocationId,Long userId);
+
+	LeaveDTO getAllSelfLeavesCounts(Long orgLocationId, Long userId);
+
 	List<LeaveDTO> getLeaveTakersBarChat(OrgLocations orgLocation, LeaveDTO leaveDTO)throws Exception;
 
 	boolean getWithdrawLeave(String leaveId, String reason, Long orgLocationId) throws Exception;
