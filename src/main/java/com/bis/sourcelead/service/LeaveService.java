@@ -1,14 +1,11 @@
 package com.bis.sourcelead.service;
 
-import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 
 import com.bis.sourcelead.dto.LeaveDTO;
 import com.bis.sourcelead.dto.LeaveReportsDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Leave;
-import com.bis.sourcelead.entity.LeaveApproveHierarchy;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 
@@ -29,5 +26,9 @@ public interface LeaveService {
 	List<Leave> getLeavesListByTypeIdAndLocationIdAndUserId(String leaveTypeId, Long orgLocationId, Long userId);
 
 	ResponseList<Leave> getTopLeavetakers(OrgLocations orgLocation, LeaveDTO leaveDTO) throws Exception;
+
+	LeaveDTO getAllEmployeesLeavesCounts(Long orgLocationId,Long userId);
+
+	LeaveDTO getAllSelfLeavesCounts(Long orgLocationId, Long userId);
 
 }

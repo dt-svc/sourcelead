@@ -1,9 +1,5 @@
 package com.bis.sourcelead.service.impl;
 
-import java.text.ParseException;
-import java.time.LocalDate;
-import java.time.ZoneId;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -12,7 +8,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Stream;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +20,7 @@ import com.bis.sourcelead.dao.LeaveTypeDao;
 import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.dto.LeaveDTO;
 import com.bis.sourcelead.dto.LeaveReportsDTO;
+import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Leave;
 import com.bis.sourcelead.entity.LeaveApproveHierarchy;
@@ -43,7 +39,6 @@ import com.bis.sourcelead.util.CalendarUtil;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.ConversionUtil;
 import com.bis.sourcelead.util.FileUploadUtil;
-import com.itextpdf.text.log.SysoCounter;
 
 @Service
 public class LeaveServiceImpl implements LeaveService{
@@ -475,6 +470,63 @@ public class LeaveServiceImpl implements LeaveService{
 		return leaveDao.getTopLeavetakers(orgLocation,leaveDTO);
 	}
 
-	
+	@Override
+	public LeaveDTO getAllEmployeesLeavesCounts(Long orgLocationId,Long userId) {
+		
+		int requestedCounts = 0;
+		int approvedCounts = 0;
+		int rejectedCounts = 0;
+		int cancelledCounts = 0;
+		LeaveDTO leaveDto = new LeaveDTO();
+		List<LeaveApproveHierarchy> leavesList = leaveDao.getAllEmployeesLeavesCounts(orgLocationId,userId);
+		for (LeaveApproveHierarchy lah : leavesList) {
+			if(Constants.PENDING.equalsIgnoreCase(lah.getLeaveid().getStatus()) || Constants.APPROVED.equalsIgnoreCase(lah.getLeaveid().getStatus()) || Constants.REJECTED.equalsIgnoreCase(lah.getLeaveid().getStatus()) || Constants.LEAVE_CANCELLED.equalsIgnoreCase(lah.getLeaveid().getStatus())) {
+				requestedCounts = requestedCounts + 1;
+			}
+			if(Constants.APPROVED.equalsIgnoreCase(lah.getLeaveid().getStatus())) {
+				approvedCounts = approvedCounts + 1;
+			}
+			if(Constants.REJECTED.equalsIgnoreCase(lah.getLeaveid().getStatus())) {
+				rejectedCounts = rejectedCounts + 1;
+			}
+			if(Constants.LEAVE_CANCELLED.equalsIgnoreCase(lah.getLeaveid().getStatus())) {
+				cancelledCounts = cancelledCounts + 1;
+			}
+		}
+		leaveDto.setEmployeeRequestedCounts(String.valueOf(requestedCounts));
+		leaveDto.setEmployeeApprovedCounts(String.valueOf(approvedCounts));
+		leaveDto.setEmployeeRejectedCounts(String.valueOf(rejectedCounts));
+		leaveDto.setEmployeeCancelledCounts(String.valueOf(cancelledCounts));
+		return leaveDto;
+	}
+
+	@Override
+	public LeaveDTO getAllSelfLeavesCounts(Long orgLocationId, Long userId) {
+		int selfPendingCounts = 0;
+		int selfApprovedCounts = 0;
+		int selfRejectedCounts = 0;
+		int selfCancelledCounts = 0;
+		LeaveDTO leaveDto = new LeaveDTO();
+		List<Leave> leavesList = leaveDao.getAllSelfLeavesCounts(orgLocationId,userId);
+		for (Leave leave : leavesList) {
+			if(Constants.PENDING.equalsIgnoreCase(leave.getStatus())) {
+				selfPendingCounts = selfPendingCounts + 1;
+			}
+			if(Constants.APPROVED.equalsIgnoreCase(leave.getStatus())) {
+				selfApprovedCounts = selfApprovedCounts + 1;
+			}
+			if(Constants.REJECTED.equalsIgnoreCase(leave.getStatus())) {
+				selfRejectedCounts = selfRejectedCounts + 1;
+			}
+			if(Constants.LEAVE_CANCELLED.equalsIgnoreCase(leave.getStatus())) {
+				selfCancelledCounts = selfCancelledCounts + 1;
+			}
+		}
+		leaveDto.setSelfPendingCounts(String.valueOf(selfPendingCounts));
+		leaveDto.setSelfApprovedCounts(String.valueOf(selfApprovedCounts));
+		leaveDto.setSelfRejectedCounts(String.valueOf(selfRejectedCounts));
+		leaveDto.setSelfCancelledCounts(String.valueOf(selfCancelledCounts));
+		return leaveDto;
+	}
 
 }

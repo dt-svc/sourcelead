@@ -4,9 +4,12 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.Transient;
+
 import com.bis.sourcelead.entity.LeaveType;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class LeaveDTO extends SearchDTO implements Serializable{
 
@@ -55,6 +58,17 @@ public class LeaveDTO extends SearchDTO implements Serializable{
 	private String barCharMonth;
 	private String barChartFromDate;
 	private String barChartToDate;
+	
+	private String employeeRequestedCounts;
+	private String employeeApprovedCounts;
+	private String employeeRejectedCounts;
+	private String employeeCancelledCounts;
+	
+	private String selfPendingCounts;
+	private String selfApprovedCounts;
+	private String selfRejectedCounts;
+	private String selfCancelledCounts;
+	
 	
 	public String getLeavesTaken() {
 		return leavesTaken;
@@ -306,6 +320,54 @@ public class LeaveDTO extends SearchDTO implements Serializable{
 	}
 	public void setReportEndDate(String reportEndDate) {
 		this.reportEndDate = reportEndDate;
+	}
+	public String getEmployeeRequestedCounts() {
+		return employeeRequestedCounts;
+	}
+	public void setEmployeeRequestedCounts(String employeeRequestedCounts) {
+		this.employeeRequestedCounts = employeeRequestedCounts;
+	}
+	public String getEmployeeApprovedCounts() {
+		return employeeApprovedCounts;
+	}
+	public void setEmployeeApprovedCounts(String employeeApprovedCounts) {
+		this.employeeApprovedCounts = employeeApprovedCounts;
+	}
+	public String getEmployeeRejectedCounts() {
+		return employeeRejectedCounts;
+	}
+	public void setEmployeeRejectedCounts(String employeeRejectedCounts) {
+		this.employeeRejectedCounts = employeeRejectedCounts;
+	}
+	public String getEmployeeCancelledCounts() {
+		return employeeCancelledCounts;
+	}
+	public void setEmployeeCancelledCounts(String employeeCancelledCounts) {
+		this.employeeCancelledCounts = employeeCancelledCounts;
+	}
+	public String getSelfPendingCounts() {
+		return selfPendingCounts;
+	}
+	public void setSelfPendingCounts(String selfPendingCounts) {
+		this.selfPendingCounts = selfPendingCounts;
+	}
+	public String getSelfApprovedCounts() {
+		return selfApprovedCounts;
+	}
+	public void setSelfApprovedCounts(String selfApprovedCounts) {
+		this.selfApprovedCounts = selfApprovedCounts;
+	}
+	public String getSelfRejectedCounts() {
+		return selfRejectedCounts;
+	}
+	public void setSelfRejectedCounts(String selfRejectedCounts) {
+		this.selfRejectedCounts = selfRejectedCounts;
+	}
+	public String getSelfCancelledCounts() {
+		return selfCancelledCounts;
+	}
+	public void setSelfCancelledCounts(String selfCancelledCounts) {
+		this.selfCancelledCounts = selfCancelledCounts;
 	}
 
 }

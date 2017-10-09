@@ -29,4 +29,8 @@ public interface LeaveDao {
 
 	ResponseList<Leave> getTopLeavetakers(OrgLocations orgLocation, LeaveDTO leaveDTO) throws Exception;
 
+	List<LeaveApproveHierarchy> getAllEmployeesLeavesCounts(Long userId,Long orgLocationId);
+
+	List<Leave> getAllSelfLeavesCounts(Long orgLocationId, Long userId);
+
 }

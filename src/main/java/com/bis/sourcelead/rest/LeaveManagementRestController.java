@@ -1164,4 +1164,17 @@ public class LeaveManagementRestController {
 		}
 		return isValid;
 	}
+	
+	@RequestMapping(value = "/totalCountsForEmployeeLeaves")
+	@ResponseBody
+	public LeaveDTO totalCountsForEmployeeLeaves(@RequestParam(value = "orgLocationId", required = false) Long orgLocationId,@RequestParam(value = "userId", required = false) Long userId) throws Exception {
+		return leaveService.getAllEmployeesLeavesCounts(orgLocationId,userId);
+	}
+	
+	@RequestMapping(value = "/totalCountsForSelfLeaves")
+	@ResponseBody
+	public LeaveDTO totalCountsForSelfLeaves(@RequestParam(value = "orgLocationId", required = false) Long orgLocationId,@RequestParam(value = "userId", required = false) Long userId) throws Exception {
+		return leaveService.getAllSelfLeavesCounts(orgLocationId,userId);
+
+	}
 }
