@@ -49,7 +49,7 @@
         
         <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_RECRUITER'}">
         <li class="${sessionData.nav == 'Dashboard' ? 'side-nav-active' : ''}"><a href="<c:url value='/recruiterDashboard/${SourceLeadWeb_orgLocationId}/${SourceLeadWeb_displayName}'/>" title="Dashboard"><span><i class="fa fa-dashboard"></i></span><i class="subMenu">Dashboard</i></a></li>
-
+ 		</c:if>
            
              
          <li class="${sessionData.nav == 'Profile' ? 'side-nav-active' : ''}"><a href="<c:url value='/professionalProfile'/>" title="Profile"><span><i class="fa fa-id-card-o"></i></span><i class="subMenu">Profile</i></a></li> 
