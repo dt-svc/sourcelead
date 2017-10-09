@@ -293,6 +293,7 @@ public class LeaveDaoImpl implements LeaveDao{
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from Leave leave where leave.orgLocations.id = :orgLocationId and leave.user.id = :userId";
 		List<Leave> leavesList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setLong("userId", userId).setCacheable(true).list();
+		return leavesList;
 	}
 	
 	@Override
