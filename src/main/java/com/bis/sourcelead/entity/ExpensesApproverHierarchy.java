@@ -24,6 +24,7 @@ import org.hibernate.annotations.Type;
 
 import com.bis.sourcelead.enums.Submission_ApprovalStatus;
 import com.bis.sourcelead.enums.Submission_Status;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
 * This class is used to keep track of the approver hierarchy for Expenses.
@@ -107,33 +108,43 @@ private String reopenReason;
 private String reopenRejectedReason;
 
 @Transient
+@JsonProperty
 private long expensesUserid;
 
 @Transient
+@JsonProperty
 private String expenseStartDateString;
 
 @Transient
+@JsonProperty
 private String expenseEndDateString;
 
 @Transient
+@JsonProperty
 private String expenseEmpUserFirstNameLastName;
 
 @Transient
+@JsonProperty
 private String expenseEmpUserEmail;
 
 @Transient
+@JsonProperty
 private String expensesEmployeeUserId;
 
 @Transient
+@JsonProperty
 private String expenseEmpUserType;
 
 @Transient
+@JsonProperty
 private String expensesProjectName; 
 
 @Transient
+@JsonProperty
 private String userTypeVendorName;
 
 @Transient
+@JsonProperty
 private String expensesApproverHierarchyPurpose; 
 
 public Long getId()
