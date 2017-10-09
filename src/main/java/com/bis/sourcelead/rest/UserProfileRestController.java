@@ -36,6 +36,7 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.form.UserProfile;
+import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
@@ -70,6 +71,9 @@ public class UserProfileRestController {
 	
 	@Autowired
 	CommonUtil commonUtil;
+	
+	@Autowired
+	OrgLocationService orgLocationService;
 	
 	@RequestMapping(value = "/saveUserProfileImage", method = RequestMethod.POST)
 	public String saveProfileImage(AddUserProfileDTO addUserProfileDTO,	HttpServletRequest request) throws Exception{
@@ -128,8 +132,20 @@ public class UserProfileRestController {
 	@RequestMapping(value = { "/passwordSettings", "/rest/passwordSettings" }, method = RequestMethod.POST)
 	public String passwordSettings(PasswordSettingsDTO passwordSettingsDTO,
 			HttpServletRequest request) throws Exception {
-		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		
+		 User user = null;
+		 OrgLocations orgLocations = null;
+		 
+		 user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		 orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		
+		if(user == null) {
+			user = userService.getUserById(passwordSettingsDTO.getUserId());
+		}
+		
+		if(orgLocations == null) {
+			orgLocations = orgLocationService.getOrgLocations(passwordSettingsDTO.getOrgLocationId());
+		}
 
 		if (sourceleadPasswordEncoder.matches(passwordSettingsDTO.getCurrentPassword(), user.getPassword())) {
 			user.setPassword(sourceleadPasswordEncoder.encode(passwordSettingsDTO.getPassword()));
