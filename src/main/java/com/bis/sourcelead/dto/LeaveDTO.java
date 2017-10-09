@@ -56,27 +56,9 @@ public class LeaveDTO extends SearchDTO implements Serializable{
 	private String barChartToDate;
 	private String totalLeaves;
 	private String colorCode;
+	private String rejectedReason;
 	
-	public String getLeavesTaken() {
-		return leavesTaken;
-	}
-	public void setLeavesTaken(String leavesTaken) {
-		this.leavesTaken = leavesTaken;
-	}
 	
-	public String getFileName() {
-		return fileName;
-	}
-	public void setFileName(String fileName) {
-		this.fileName = fileName;
-	}
-	public String getEmpName() {
-		return empName;
-	}
-	public void setEmpName(String empName) {
-		this.empName = empName;
-	}
-
 	public String getId()
 	{
 		return id;
@@ -451,6 +433,14 @@ public class LeaveDTO extends SearchDTO implements Serializable{
 	}
 	public void setColorCode(String colorCode) {
 		this.colorCode = colorCode;
+	}
+	public String getRejectedReason()
+	{
+		return rejectedReason;
+	}
+	public void setRejectedReason(String rejectedReason)
+	{
+		this.rejectedReason = rejectedReason;
 	}
 
 }

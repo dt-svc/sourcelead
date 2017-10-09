@@ -67,79 +67,6 @@ public class LeaveDaoImpl implements LeaveDao{
 	@Transactional
 	public ResponseList<LeaveApproveHierarchy> getEmployeeRequestedLeavesBylocationId(LeaveDTO leaveDTO,OrgLocations orgLocations) throws ParseException {
 		
-		
-		// Rajashekar Start
-		/*Session session = this.sessionFactory.getCurrentSession();
-		List<LeaveApproveHierarchy> employerPayrollCostList = null;
-		ResponseList<EmployerPayrollCost> response = new ResponseList<>();
-		String query = "from EmployerPayrollCost epc  left join fetch epc.orgLocationId where epc.orgLocationId.id =:orgLocationId";
-		String countQuery = "from EmployerPayrollCost epc  where epc.orgLocationId.id =:orgLocationId";
-		
-		if(employerPayrollCostDTO.getSearchValue().contains("/") || employerPayrollCostDTO.getSearchValue().contains("-")){
-			String convertedDate=employerPayrollCostDTO.getSearchValue();
-			if(employerPayrollCostDTO.getSearchValue().contains("/")){
-				convertedDate = employerPayrollCostDTO.getSearchValue().replaceAll("/", "-");
-			}
-			DateTimeFormatter orgFormat = new DateTimeFormatterBuilder().appendPattern(orgLocation.getDateFormat()).toFormatter();
-            LocalDate parsedDate = LocalDate.parse(convertedDate, orgFormat);
-            DateTimeFormatter f2 = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-            String newDate = parsedDate.format(f2);
-            Date searchDate = new SimpleDateFormat("yyyy-MM-dd").parse(newDate);
-            java.sql.Date sqlDate = new java.sql.Date(searchDate.getTime());
-            String queryDate = "from EmployerPayrollCost epc where epc.orgLocationId.id =:orgLocationId and ( epc.fromDate =:sqlDate or epc.toDate =:sqlDate )";
-            Query queryObjDate = session.createQuery(queryDate.toString()).setDate("sqlDate", sqlDate).setLong("orgLocationId", orgLocation.getId());
-            response.setData(queryObjDate.list());
-
-		}else{
-		StringBuilder query1 = new StringBuilder("");
-			if(employerPayrollCostDTO.getSearchValue() !=null && !"".equalsIgnoreCase(employerPayrollCostDTO.getSearchValue())) {
-			query1.append(" and epc.fromDate like '%" + employerPayrollCostDTO.getSearchValue() + "%' ")
-					.append("OR epc.toDate like '%" + employerPayrollCostDTO.getSearchValue() + "%' ")
-					.append("OR epc.employeeId like '%" + employerPayrollCostDTO.getSearchValue() + "%' ")
-					.append("OR epc.employeeName like '%" + employerPayrollCostDTO.getSearchValue() + "%' ")
-					.append("OR epc.ssn like '%" + employerPayrollCostDTO.getSearchValue() + "%' ")
-					.append("OR epc.totalHrs like '%" + employerPayrollCostDTO.getSearchValue() + "%' ")
-					.append("OR epc.grossWages like '%" + employerPayrollCostDTO.getSearchValue() + "%' ")
-					.append("OR epc.fica like '%" + employerPayrollCostDTO.getSearchValue() + "%' ")
-					.append("OR epc.futa like '%" + employerPayrollCostDTO.getSearchValue() + "%' ")
-					.append("OR epc.sui like '%" + employerPayrollCostDTO.getSearchValue() + "%' ")
-					.append("OR epc.erLocals like '%" + employerPayrollCostDTO.getSearchValue() + "%' ")
-					.append("OR epc.wcCost like '%" + employerPayrollCostDTO.getSearchValue() + "%' ")
-					.append("OR epc.adminFee like '%" + employerPayrollCostDTO.getSearchValue() + "%' ")
-					.append("OR epc.totalErCost like '%" + employerPayrollCostDTO.getSearchValue() + "%' ");
-			}
-		Query queryObj = session.createQuery(query + query1.toString());
-		if (employerPayrollCostDTO != null && employerPayrollCostDTO.getLength() > 0) {
-			queryObj.setFirstResult(employerPayrollCostDTO.getStart());
-			queryObj.setMaxResults(employerPayrollCostDTO.getLength());
-			queryObj.setLong("orgLocationId", orgLocation.getId()).setCacheable(true).list();
-		}
-		employerPayrollCostList = queryObj.list();
-		int count = 0;
-		int filteredCount = 0;
-		List<Long> countlist = session.createQuery("select count(*) " + countQuery).setLong("orgLocationId", orgLocation.getId()).setCacheable(true).list();
-		if(countlist != null && !countlist.isEmpty()) {
-			count = countlist.iterator().next().intValue();
-		}
-		response.setRecordsTotal(count);
-		if (employerPayrollCostDTO != null) {
-			List<Long> filteredCountlist  = session.createQuery("select count(*) " + countQuery + query1.toString()).setLong("orgLocationId", orgLocation.getId()).list();
-			if(filteredCountlist != null && !filteredCountlist.isEmpty()) {
-				filteredCount = filteredCountlist.iterator().next().intValue();
-			}
-			response.setRecordsFiltered(filteredCount);
-		} else {
-			response.setRecordsFiltered(filteredCount);
-		}
-
-			response.setData(employerPayrollCostList);
-		}
-			return response;*/
-		// Rajashekar End
-		
-		
-		
-		
 		Long usrId = Long.parseLong(leaveDTO.getUserId());
 		Session session = this.sessionFactory.getCurrentSession();
 		String subQuery = "";
@@ -150,41 +77,49 @@ public class LeaveDaoImpl implements LeaveDao{
 		if(StringUtils.isNotBlank(leaveDTO.getLeaveStatus())) {
 			StringBuilder searchQuery = new StringBuilder("");
 			StringBuilder leavesearchQuery = new StringBuilder("");
-			if(Constants.APPROVED.equalsIgnoreCase(leaveDTO.getLeaveStatus())) {
-				subQuery = "and leave.status = :leaveStatus";
-			}else if(Constants.PENDING.equalsIgnoreCase(leaveDTO.getLeaveStatus())){
-				subQuery = "and leave.status = :leaveStatus";
-			}else if(Constants.REJECTED.equalsIgnoreCase(leaveDTO.getLeaveStatus())) {
-				subQuery = "and leave.status = :leaveStatus";
-			}else{
-				subQuery = "and leave.status = :leaveStatus";
-			}
-			String query = "from LeaveApproveHierarchy laph left join fetch laph.leaveid leave left join fetch leave.leaveType left join fetch leave.user ltype where leave.orgLocations.id = :orgLocationId and laph.approverUserId.id= :userId "+subQuery+"";
-			String countQuery ="from Leave leave where leave.orgLocations.id = :orgLocationId "+subQuery;
+			String query = "from LeaveApproveHierarchy laph left join fetch laph.leaveid leave left join fetch leave.leaveType left join fetch leave.user ltype left join fetch leave.approvedBy left join fetch leave.rejectedBy left join fetch leave.cancelledBy where leave.orgLocations.id = :orgLocationId and laph.approverUserId.id= :userId and leave.status = '"+leaveDTO.getLeaveStatus()+"'";
+			String countQuery ="from Leave leave where leave.orgLocations.id = :orgLocationId and leave.status = '"+leaveDTO.getLeaveStatus()+"'";
 			if(StringUtils.isNotBlank(leaveDTO.getSearchValue())){
-				searchQuery.append(" and laph.leaveid.user.firstName like '%" + leaveDTO.getSearchValue() + "%' ")
-				.append("OR laph.leaveid.user.lastName like '%" + leaveDTO.getSearchValue() + "%' ");
+				searchQuery.append(" and (laph.leaveid.user.firstName like '%" + leaveDTO.getSearchValue() + "%' ")
+				.append("OR leave.user.lastName like '%" + leaveDTO.getSearchValue() + "%' ")
+				.append("OR leave.leaveType.name like '%" + leaveDTO.getSearchValue() + "%' ")
+				.append("OR leave.numberOfDays like '%" + leaveDTO.getSearchValue() + "%' ")
+				.append("OR leave.approvedBy.firstName like '%" + leaveDTO.getSearchValue() + "%' ")
+				.append("OR leave.approvedBy.lastName like '%" + leaveDTO.getSearchValue() + "%' ")
+				.append("OR leave.updatedDate like '%" + leaveDTO.getSearchValue() + "%' ")
+				.append("OR leave.rejectedBy like '%" + leaveDTO.getSearchValue() + "%' ")
+				.append("OR leave.rejectedReason like '%" + leaveDTO.getSearchValue() + "%' ")
+				.append("OR leave.cancelledBy.firstName like '%" + leaveDTO.getSearchValue() + "%' ")
+				.append("OR leave.cancelledBy.lastName like '%" + leaveDTO.getSearchValue() + "%') ");
 				
-				leavesearchQuery.append(" and leave.user.firstName like '%" + leaveDTO.getSearchValue() + "%' ")
-				.append("OR leave.user.lastName like '%" + leaveDTO.getSearchValue() + "%' ");
+				leavesearchQuery.append(" and (leave.user.firstName like '%" + leaveDTO.getSearchValue() + "%' ")
+				.append("OR leave.user.lastName like '%" + leaveDTO.getSearchValue() + "%' ")
+				.append("OR leave.leaveType.name like '%" + leaveDTO.getSearchValue() + "%' ")
+				.append("OR leave.approvedBy.firstName like '%" + leaveDTO.getSearchValue() + "%' ")
+				.append("OR leave.approvedBy.lastName like '%" + leaveDTO.getSearchValue() + "%' ")
+				.append("OR leave.updatedDate like '%" + leaveDTO.getSearchValue() + "%' ")
+				.append("OR leave.rejectedBy like '%" + leaveDTO.getSearchValue() + "%' ")
+				.append("OR leave.rejectedReason like '%" + leaveDTO.getSearchValue() + "%' ")
+				.append("OR leave.cancelledBy.firstName like '%" + leaveDTO.getSearchValue() + "%' ")
+				.append("OR leave.cancelledBy.lastName like '%" + leaveDTO.getSearchValue() + "%') ");
 			}
 			
 			Query queryObj = session.createQuery(query+searchQuery);
 			if (leaveDTO != null && leaveDTO.getLength() > 0) {
 				queryObj.setFirstResult(leaveDTO.getStart());
 				queryObj.setMaxResults(leaveDTO.getLength());
-				queryObj.setParameter("leaveStatus",leaveDTO.getLeaveStatus()).setLong("orgLocationId", orgLocations.getId()).setLong("userId", usrId).setCacheable(true).list();
+				queryObj.setLong("orgLocationId", orgLocations.getId()).setLong("userId", usrId).setCacheable(true).list();
 			}
 			leaveApproveHierarchyList = queryObj.list();
 			int count = 0;
 			int filteredCount = 0;
-			List<Long> countlist = session.createQuery("select count(*) " + countQuery+leavesearchQuery).setLong("orgLocationId", orgLocations.getId()).setParameter("leaveStatus",leaveDTO.getLeaveStatus()).setCacheable(true).list();
+			List<Long> countlist = session.createQuery("select count(*) " + countQuery+leavesearchQuery).setLong("orgLocationId", orgLocations.getId()).setCacheable(true).list();
 			if(countlist != null && !countlist.isEmpty()) {
 				count = countlist.iterator().next().intValue();
 			}
 			response.setRecordsTotal(count);
 			if (leaveDTO != null) {
-				List<Long> filteredCountlist  = session.createQuery("select count(*) " + countQuery+leavesearchQuery).setLong("orgLocationId", orgLocations.getId()).setParameter("leaveStatus",leaveDTO.getLeaveStatus()).list();
+				List<Long> filteredCountlist  = session.createQuery("select count(*) " + countQuery+leavesearchQuery).setLong("orgLocationId", orgLocations.getId()).list();
 				if(filteredCountlist != null && !filteredCountlist.isEmpty()) {
 					filteredCount = filteredCountlist.iterator().next().intValue();
 				}
@@ -207,6 +142,7 @@ public class LeaveDaoImpl implements LeaveDao{
 				
 				leavesearchQuery.append(" and leave.user.firstName like '%" + leaveDTO.getSearchValue() + "%' ")
 				.append("OR leave.user.lastName like '%" + leaveDTO.getSearchValue() + "%' ");
+				
 			}
 			
 			Query queryObj = session.createQuery(query+searchQuery);

@@ -219,6 +219,12 @@ public class Constants {
 	public static final String UPDATEDREQUIREMENTNOTIFICATIONTOVENDOR = "updatedRequirementNotificationToVendor";
 	public static final String OFFBOARDINGPROCESSAPPLICANTTERMINATION = "OffBoardingProcessApplicantTermination";
 	
+	public static final String LEAVE_APPROVER_EMAIL = "Approver Leave";
+	public static final String LEAVE_APPROVER_NOTIFICATION = "ApproverLeaveNotification";
+	
+	public static final String LEAVE_REJECTED_EMAIL = "Rejected Leave";
+	public static final String LEAVE_REJECTED_NOTIFICATION = "RejectedLeaveNotification";
+	
 	public static final String RESOURCE_REQUEST = "Resource Request";
 	public static final String RESOURCE_REQUEST_NOTIFICATION = "ResourceRequestNotification";
 	

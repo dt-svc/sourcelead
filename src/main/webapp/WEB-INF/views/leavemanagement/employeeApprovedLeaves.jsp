@@ -41,13 +41,15 @@ $(document).ready(function(){
     </div>
        <div id="loading"></div>
     <div class="clients_wrap_table datatable_filter">
+		<div class='remove_search mt10'>
+		 <input type='text' placeholder='Search' id='approvedLeavesTableSearch'/>
+		</div>
     <div id="approvedLeavesDiv"></div>
   </div>
     
   </div>
 </div>
 </div>
-    
     
     <div class="side_mask">
     <div class="proj_close"></div>
@@ -79,7 +81,7 @@ function redirectlocation(location){
 		var userId = '${SourceLeadWeb_userId}';
 		var searchValue = $("#approvedLeavesTableSearch").val();
 		searchValue = searchValue ? searchValue : "";
-		var url = sourceleadUrl+"/getEmployeeRequestedLeaves?"+tokenParamName+"="+tokenValue+"searchValue="+searchValue+"&orgLocationId="+orgLocationId+"&userId="+userId+"&leaveStatus=APPROVED";
+		var url = sourceleadUrl+"/getEmployeeRequestedLeaves?"+tokenParamName+"="+tokenValue+"&searchValue="+searchValue+"&orgLocationId="+orgLocationId+"&userId="+userId+"&leaveStatus=APPROVED";
 		prepareApprovedEmployeesList(url);
 }
 </script> 
@@ -90,7 +92,6 @@ function prepareApprovedEmployeesList(url){
  	 $("#approvedLeavesDiv").empty();
  	 var result = "";
  	result = result +" <div class='remove_search'>";
- 	result = result +" <input type='text' placeholder='Search' id='approvedLeavesTableSearch'/>";
  	result = result +"</div>";
  	result = result + '<table id="approvedLeavesTable" class="display" cellspacing="0" width="100%" >';
  	result = result + '<thead>';

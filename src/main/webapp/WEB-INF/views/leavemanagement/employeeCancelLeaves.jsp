@@ -40,6 +40,9 @@ $(document).ready(function(){
       </div>
     <div id="loading"></div> 
     <div class="clients_wrap_table datatable_filter">
+    <div class='remove_search mt10'>
+		 <input type='text' placeholder='Search' id='cancelledLeavesTableSearch'/>
+		</div>
     <div id="cancelledLeavesDiv"></div>
   </div>
   </div>
@@ -77,7 +80,7 @@ function redirectlocation(location){
 		var userId = '${SourceLeadWeb_userId}';
 		var searchValue = $("#cancelledLeavesTableSearch").val();
 		searchValue = searchValue ? searchValue : "";
-		var url = sourceleadUrl+"/getEmployeeRequestedLeaves?"+tokenParamName+"="+tokenValue+"searchValue="+searchValue+"&orgLocationId="+orgLocationId+"&userId="+userId+"&leaveStatus=CANCELLED";
+		var url = sourceleadUrl+"/getEmployeeRequestedLeaves?"+tokenParamName+"="+tokenValue+"&searchValue="+searchValue+"&orgLocationId="+orgLocationId+"&userId="+userId+"&leaveStatus=CANCELLED";
 		prepareCancelledEmployeesList(url);
 }
 </script> 
@@ -88,7 +91,6 @@ function redirectlocation(location){
 	 	 $("#cancelledLeavesDiv").empty();
 	 	 var result = "";
 	 	result = result +" <div class='remove_search'>";
-	 	result = result +" <input type='text' placeholder='Search' id='cancelledLeavesTableSearch'/>";
 	 	result = result +"</div>";
 	 	result = result + '<table id="cancelledLeavesTable" class="display" cellspacing="0" width="100%" >';
 	 	result = result + '<thead>';

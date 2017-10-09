@@ -39,6 +39,9 @@ $(document).ready(function(){
       <div class="clearfix"></div>
       <div id="loading"></div> 
     <div class="clients_wrap_table datatable_filter">
+    <div class='remove_search mt10'>
+		 <input type='text' placeholder='Search' id='rejectedLeavesTableSearch'/>
+		</div>
     <div id="rejectedLeavesDiv"></div>
   </div>
   </div>
@@ -75,7 +78,7 @@ function redirectlocation(location){
 		var userId = '${SourceLeadWeb_userId}';
 		var searchValue = $("#rejectedLeavesTableSearch").val();
 		searchValue = searchValue ? searchValue : "";
-		var url = sourceleadUrl+"/getEmployeeRequestedLeaves?"+tokenParamName+"="+tokenValue+"searchValue="+searchValue+"&orgLocationId="+orgLocationId+"&userId="+userId+"&leaveStatus=REJECTED";
+		var url = sourceleadUrl+"/getEmployeeRequestedLeaves?"+tokenParamName+"="+tokenValue+"&searchValue="+searchValue+"&orgLocationId="+orgLocationId+"&userId="+userId+"&leaveStatus=REJECTED";
 		prepareRejectedEmployeesList(url);
 }
 </script> 
@@ -86,7 +89,6 @@ function redirectlocation(location){
 	 	 $("#rejectedLeavesDiv").empty();
 	 	 var result = "";
 	 	result = result +" <div class='remove_search'>";
-	 	result = result +" <input type='text' placeholder='Search' id='rejectedLeavesTableSearch'/>";
 	 	result = result +"</div>";
 	 	result = result + '<table id="rejectedLeavesTable" class="display" cellspacing="0" width="100%" >';
 	 	result = result + '<thead>';
@@ -183,7 +185,7 @@ function redirectlocation(location){
 		    	  	"data": "reason",
 		    	  	"render": function(data, type, opt, meta) {
 		    	  		 var result = "";
-		    	  		  result = result + ' <div title="2" class="tblminwidth-75">'+opt.reason+'</div>';	
+		    	  		  result = result + ' <div title="2" class="tblminwidth-75">'+opt.rejectedReason+'</div>';	
 		    	  		 return result; 
 		    	  	}
 		    	  }], 

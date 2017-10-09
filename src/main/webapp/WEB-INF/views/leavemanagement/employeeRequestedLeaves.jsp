@@ -43,6 +43,9 @@ $(document).ready(function(){
     </div>
      <div id="loading"></div> 
     <div class="clients_wrap_table datatable_filter">
+    <div class='remove_search mt10'>
+		 <input type='text' placeholder='Search' id='requestedEmployeesTableSearch'/>
+		</div>
     <div id="requestedLeavesDiv"></div>
   </div>
 </div>
@@ -87,7 +90,6 @@ function prepareRequestedEmployeesList(url){
  	 $("#requestedLeavesDiv").empty();
  	 var result = "";
  	result = result +" <div class='remove_search'>";
- 	result = result +" <input type='text' placeholder='Search' id='requestedEmployeesTableSearch'/>";
  	result = result +"</div>";
  	result = result + '<table id="requestedleavesTable" class="display" cellspacing="0" width="100%" >';
  	result = result + '<thead>';
