@@ -233,7 +233,7 @@
 									<select class="form-control selectpicker" id="experienceYears"
 										name="experienceYears" onchange="disableMonths();">
 										<option value="">Years</option>
-										<c:forEach begin="0" end="25" varStatus="loop">
+										<c:forEach begin="0" end="50" varStatus="loop">
 											<option>${loop.index}</option>
 										</c:forEach>
 									</select>
@@ -856,7 +856,7 @@ function validate_fileupload(fileName)
 <script type="text/javascript">
  function disableMonths() {
      $("#experienceYears").change(function() {
-         if ($("#experienceYears").val() == '25'){
+         if ($("#experienceYears").val() == '50'){
         	 $("#experienceMonths").val('');  
         	 $('#experienceMonths').selectpicker('refresh');
         	 $('#experienceMonths').attr("disabled", false);
