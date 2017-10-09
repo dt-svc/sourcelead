@@ -68,8 +68,13 @@ public class FileController {
 			if(!type.equalsIgnoreCase("profile") && (orgId == 0 || orgLocationId == 0)) {
 				Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 				OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
-				orgId = org.getId();
-				orgLocationId = loginOrgLocation.getId();
+				if(org != null) {
+					orgId = org.getId();
+				} 
+				if(loginOrgLocation != null) {
+					orgLocationId = loginOrgLocation.getId();
+				} 
+				
 			}
 			FileUploadUtil fileUploadUtil = new FileUploadUtil();
 			if(x > 0 || y > 0 || w > 0 || h > 0) {
