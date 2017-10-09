@@ -2038,6 +2038,10 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
    			 clientSubmissionFields.setCity(templateFields.getCity()); 
    		 }
    		 
+   		 
+   		 if(!isNullOrEmpty(templateFields.getLocation())){
+   			 clientSubmissionFields.setLocation(templateFields.getLocation());
+   		 }
    		 if(null != templateFields.getDateOfBirth()){
    			 clientSubmissionFields.setDateOfBirth(templateFields.getDateOfBirth()); 
    		 }
@@ -3065,7 +3069,11 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
             }*/
             User  submittedSourceUser = userDao.getUserByUserCode(reqsub.getCreatedBy());
             StringBuilder sub = new  StringBuilder();
+            if(submittedSourceUser.getLastName() != null && submittedSourceUser.getLastName() !=""){
             reqsub.setSubmittedBy(sub.append(submittedSourceUser.getFirstName()).append(" ").append(submittedSourceUser.getLastName()).toString() );
+            }else{
+           	reqsub.setSubmittedBy(sub.append(submittedSourceUser.getFirstName()).toString());	
+            }
             if(reqsub.getCreatedDate() != null){
 				String currentTimeStr = Constants.TZ_DF.format(reqsub.getCreatedDate());
 				if(null != timezone && null != timezone.getTimeZoneId()){

@@ -9,7 +9,7 @@ import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.UserRole;
 
-	public class AddUserDTO {
+	public class AddUserDTO extends CommonDTO {
 
 		@Required(desc = "first name")
 		private String firstName;
