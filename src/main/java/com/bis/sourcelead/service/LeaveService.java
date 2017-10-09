@@ -29,4 +29,6 @@ public interface LeaveService {
 
 	List<LeaveDTO> getLeaveTakersBarChat(OrgLocations orgLocation, LeaveDTO leaveDTO)throws Exception;
 
+	boolean getWithdrawLeave(String leaveId, String reason, Long orgLocationId) throws Exception;
+
 }
