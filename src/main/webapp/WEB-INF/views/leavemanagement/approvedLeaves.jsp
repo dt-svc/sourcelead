@@ -11,6 +11,9 @@ $(document).ready(function(){
 
  <!-- Content Area -->
   <section class="content-wraper" id="themeroller">
+  <div class="success_pop" id="selector1" style="display: none;">
+ 			<i class="fa fa-check-circle"></i><span id="msgDiv"></span>
+       </div>
     <section class="content-header clearfix">
       <div class="pull-left">
         <h2>Approved</h2>
@@ -84,12 +87,7 @@ function getApprovedLeavesList(){
 			        		 result = result + ' <tr>';
 			        		 result = result + ' <td>';
 			        		 result = result + ' <div class="proj_show tbldata-dotdot-big">';
-// 			        		 if(opt.leaveTypeName !=null && opt.leaveTypeName !='' && opt.leaveTypeName !='undefined'){
-// 			        			 result = result + '     <div class="pull-left tbldata-dotdot-me" title="'+opt.leaveTypeName+'">'+opt.leaveTypeName+'</div>'; 
-			        			 result = result + '     <div class="pull-left tbldata-dotdot-me" title="Sick Leave" onclick="getRequestedAproveSummary(\''+opt.id+'\','+orgLocationId+');">'+opt.empName+'('+opt.empType+')</div><i class="fa fa-binoculars pull-right" ></i>';
-// 			        		 }else{
-// 			        			 result = result + '     <div class="pull-left tbldata-dotdot-me" title="">--</div>';
-// 			        		 }
+			        		 result = result + '     <div class="pull-left tbldata-dotdot-me" title="Sick Leave" onclick="getRequestedAproveSummary(\''+opt.id+'\','+orgLocationId+');">'+opt.leaveTypeName+'</div><i class="fa fa-binoculars pull-right" ></i>';
 			        		 result = result + '  </div>';
 			        		 result = result + ' </td>';
 			        		 result = result + ' <td>';
@@ -126,6 +124,7 @@ function getApprovedLeavesList(){
 			        		 result = result + ' <td>';
 			        		 result = result + '  <div title="'+opt.status+'" class="tblminwidth-75">';
 			        		 result = result +' <b class="proj_active">'+opt.status+'</b> ';
+			        		 result = result +' <span class="btn btn-info btn-sm" onClick="withDrawLeave(\''+opt.id+'\','+orgLocationId+');">Withdraw</span>';
 			        		 result = result + '  </div>';
 			        		 result = result + ' </td>';
 			        		 result = result + '  </tr>';
@@ -194,8 +193,8 @@ function getRequestedAproveSummary(leaveId,orgLocationId){
              result = result +' </div>';
              result = result +'<div class="col-md-12 mb">';
              result = result +'<label class="col-md-2 control-label"><b>No of leaves taken:</b></label>';
-             result = result +' <div class="col-md-8">';
-             result = result +'<span>XXXXXXX</span>';
+             result = result +' <div class="col-md-8">'; 
+             result = result +'<span>'+data.leavesTaken+'</span>';
              result = result +'</div>';
              result = result +'</div>';
              result = result +'<div class="col-md-12 mb">';
@@ -207,19 +206,19 @@ function getRequestedAproveSummary(leaveId,orgLocationId){
              result = result +'<div class="col-md-12 mb">';
              result = result +'<label class="col-md-2 control-label"><b>Approvers:</b></label>';
              result = result +'<div class="col-md-8">';
-             result = result +' <span>Srinivas Vemula</span>';
+             result = result +' <span>'+data.approverUsers+'</span>';
              result = result +'</div>';
              result = result +'</div>';
              result = result +'<div class="col-md-12 mb">';
              result = result +'<label class="col-md-2 control-label"><b>Approved By:</b></label>';
              result = result +'<div class="col-md-8">';
-             result = result +' <span>Srinivas Vemula</span>';
+             result = result +' <span>'+data.approvedBy+'</span>';
              result = result +'</div>';
              result = result +'</div>';
              result = result +'<div class="col-md-12 mb">';
              result = result +'<label class="col-md-2 control-label"><b>Reason:</b></label>';
              result = result +'<div class="col-md-8">';
-             result = result +' <span>Srinivas Vemula</span>';
+             result = result +' <span>'+data.reason+'</span>';
              result = result +'</div>';
              result = result +'</div>';
              result = result +'<div class="col-md-12 mb">';
@@ -276,6 +275,62 @@ function approvedListPagination(){
       </div>
   </div>
 </div>
+
+
+<script>
+function withDrawLeave(leaveId,orgLocationId){
+	
+	var result = "";
+	result = result +"	<div class='comMask'></div>";
+	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+	result = result +"		<textarea id='withdrawReason' class='form-control' field-name='Reject Reason'  data-validation='required validate_Space validate_Description validate_length length2-250' name='reasonForSpoc' value='' placeholder='Terminate Reason' rows='2'></textarea>";
+	result = result + ' <div id="withdrawReasonDiv"/>';
+	result = result +'		<b href="javascript:void(0)"><input id="confirm-id" type="button" value="Delete" onclick="withdraw(\''+leaveId+'\','+orgLocationId+');"><input class="u_can_color" type="button"  value="Cancel" onClick="cancelTermination();"></b>';
+	result = result +"	</div>";
+	$("#popUp").append(result);
+	$("#remove_user_pop").slideDown(200);
+	$(".comMask").fadeIn(200);
+}
+</script>
+
+<div id="popUp"></div>
+
+<script>
+function cancelTermination(){
+	$(".comMask").remove();
+	$("#remove_user_pop, .sideMask").remove();
+}
+</script>
+<script>
+function withdraw(leaveId,orgLocationId){
+	 var reason = document.getElementById("withdrawReason").value;
+	 var userId = '${SourceLeadWeb_userId}';
+	 if(reason == null || reason == '' || reason == 'undefined'){
+		 $("#withdrawReasonDiv").find('p.jquery_form_error_message').remove();
+	  	 $("#withdrawReasonDiv").append("<p class='jquery_form_error_message'>Reason Is Required</p>");
+	 }else{
+		 $("#withdrawReasonDiv").find('p.jquery_form_error_message').remove();
+		  $.get(sourceleadUrl+"/withdrawLeave?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&leaveId="+leaveId+"&reason="+reason+"&userId="+userId, function(data) {
+				if(data == true){
+					$("#popUp").empty();
+		 			$("#remove_user_pop, .sideMask").fadeOut();
+		 			$("#selector1").removeAttr("style");
+		    		 $("#selector1").css({ display: "block" });
+		    	     $("#msgDiv").html("Withdraw Leave Successfully..");
+		    	     msgFadein();
+		    	     getApprovedLeavesList();
+				}
+			});
+	 }
+}
+</script>
+
+<script>
+	function msgFadein() {
+		$("#selector1").fadeIn(200);
+        $('#selector1').delay(2000).fadeOut('slow');
+	}
+</script> 
 
 
 <jsp:include page="../masterFooter.jsp" />

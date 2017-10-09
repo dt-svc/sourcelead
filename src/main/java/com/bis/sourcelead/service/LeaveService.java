@@ -31,4 +31,6 @@ public interface LeaveService {
 
 	void sendLeaveEmailToApprovers(User loginUser, LeaveDTO leaveDTO, OrgLocations orgLoc) throws Exception;
 
+	boolean getWithdrawLeave(String leaveId, String reason, Long orgLocationId) throws Exception;
+
 }

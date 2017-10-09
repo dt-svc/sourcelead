@@ -1012,8 +1012,10 @@ public class LeaveManagementRestController {
 			leaveDto.setReason(leave.getReason());
 			leaveDto.setCreatedDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),leave.getCreatedDate()));
 			leaveDto.setFileName(leave.getFileName());
-
-			
+            if(leave.getRejectedReason() !=null) {
+            	leaveDto.setRejectedReason(leave.getRejectedReason());
+            }
+           
 			StringBuilder sbu = new StringBuilder();
 			if(leave.getUser() != null){
 			if(StringUtils.isNotBlank(leave.getUser().getLastName())){
@@ -1065,7 +1067,7 @@ public class LeaveManagementRestController {
 					e.printStackTrace();
 				}
 			}
-			leaveDto.setApproverUsers(String.join(",", aphlist));
+			leaveDto.setApproverUsers(String.join(",", aphlist)); 
 			int nuberOfLeavestaken = leaveDao.getNumberOfLeavesTakenByUser(leave.getUser().getId(),leave.getLeaveType().getId());
 			leaveDto.setLeavesTaken(String.valueOf(nuberOfLeavestaken));
 			int thisMonthLeaves = leaveDao.getThisMonthLeavesTakenByUser(leave.getUser().getId(),leave.getLeaveType().getId());
@@ -1197,5 +1199,24 @@ public class LeaveManagementRestController {
 		OrgLocations orgLocation = orgLocationService.getOrgLocations(Long.parseLong(leaveDTO.getOrgLocationId()));
 		List<LeaveDTO> leavDtoList = leaveService.getLeaveTakersBarChat(orgLocation,leaveDTO);
 		return leavDtoList;
+	}
+	
+	/**
+	 * Withdraw leave by employee
+	 * @param orgLocationId
+	 * @param leaveId
+	 * @param reason
+	 * @return boolean
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/withdrawLeave")
+	@ResponseBody
+	public boolean withdrawLeave(@RequestParam(value = "orgLocationId", required = false) Long orgLocationId,
+			@RequestParam(value = "leaveId", required = false) String leaveId,
+			@RequestParam(value = "reason", required = false) String reason) throws Exception {
+		boolean isValid = false;
+		isValid = leaveService.getWithdrawLeave(leaveId,reason,orgLocationId);
+		
+		return isValid;
 	}
 }
