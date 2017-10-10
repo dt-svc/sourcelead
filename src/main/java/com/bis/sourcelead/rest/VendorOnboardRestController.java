@@ -309,6 +309,18 @@ public class VendorOnboardRestController {
 	 }
 	 
 	 
+	 
+	 
+	 @RequestMapping(value = "/getVendorOnboardDocumentByOrgRelationId", method = RequestMethod.GET)
+	 @ResponseBody List<VendorOnboardingTemplateDocuments> getVendorOnboardDocumentByOrgRelationId(@RequestParam(value="orgRelationId", required=false) Long orgRelationId,HttpServletRequest request) throws Exception{
+		 
+		    VendorOnboarding vendorOnboarding = vendorOnboardService.getVendorOnboardingByOrgRelationId(orgRelationId);
+			List<VendorOnboardingTemplateDocuments> documentsList = vendorOnboardTemplateDocumentsService.getVendorOnboaringTemplateDocumentsByVendorOnboardId(vendorOnboarding.getId());
+		    return documentsList;
+		
+	 }
+	 
+	 
 		@RequestMapping(value = "/saveVendorOnboardSubmittedDocuments", method = RequestMethod.POST)
 		public @ResponseBody String saveVendorOnboardSubmittedDocuments(VendorOnboardDTO vendorOnboardDTO, HttpServletRequest request) throws Exception {
 			if(Validator.validate(vendorOnboardDTO)) {

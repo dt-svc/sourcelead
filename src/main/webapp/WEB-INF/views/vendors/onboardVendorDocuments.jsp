@@ -48,7 +48,6 @@ a.downloadbtn {
 
 <div id="tab-b" class="newPrTabs_inn">
  <div id="choicepopUp"></div>
-  <div id="vendorDocumentsLoading"></div>
 	<form:form id="vendorOnboardUploadedDocuments_form" name="vendorOnboardUploadedDocuments_form" method="post">
 		 <div class="form-group">
 			<div id="timesheetDocumentsId" class="timesheetDocs timesheetDocs-custom">
