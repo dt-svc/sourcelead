@@ -51,9 +51,9 @@ $(document).ready(function() {
   <section class="content-wraper">
     <section class="content-header clearfix">
       <div class="pull-left">
-        <h2>Holiday</h2>
+        <h2>Add Holiday</h2>
       </div>
-      <div class="pull-right brud-crum">Home &raquo; Leave Management &raquo; Holiday</div>
+     <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo;<a href="<c:url value='/leaveConfiguration'/>"> Leave Configuration</a> &raquo;<a href="<c:url value='/viewHoliday'/>">Holiday List</a> &raquo; Add Holiday</div>
     </section>
     <div class="content-area content-new clearfix">
     <form id="holiday_form" name="holiday_form" method="post">

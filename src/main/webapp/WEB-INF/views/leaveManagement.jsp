@@ -23,7 +23,7 @@ $(document).ready(function(){
 });
 </script>
   
-  <div class="clearfix row mb">
+  <div class="clearfix mb">
     <div class="col-md-6">
       <div class="dashboard-widget">
           <h4 class="pull-left"><a href="<c:url value='/leaveManagementReports'/>" title="Leave Management">Leaves</a></h4>
@@ -34,31 +34,30 @@ $(document).ready(function(){
             	<li><a data-toggle="tab" href="#employee">Employee</a></li>
             </sec:authorize>
           </ul>
-          <div class="tab-content clearfix mt">
+          <div class="tab-content clearfix mt10">
             <div id="self" class="tab-pane fade in active">
-              <div class="db-widget-sm">
-                <div class="width100percnt">
-                  <div id="empselfLeaves" style="width: 60%; height: 150px;" class="amchartAnchor-Hide pull-left"> </div>
-                  <div style="width: 40%; height: 150px;" class="countList pull-left">
-                <ul class="list-unstyled list-group clearfix">
+              <div class="db-widget-sm clearfix">
+                <div class="width100percnt clearfix">
+                  <div id="empselfLeaves" style="width: 60%; height: 100px;" class="amchartAnchor-Hide pull-left"> </div>
+                  <div style="width: 40%; height: 105px;" class="countList pull-left">
+                <ul class="list-unstyled list-group clearfix mb5">
                     <li class="clearfix">
                         <label class="pull-left">Pending Leaves</label>
                         <a href="<c:url value='/pendingLeaves'/>" class="color_white" id="selfpend" title="Pending Leaves"><span class="label label-primary pull-right" id="selfPendingCounts"></span></a>
                     </li>
-                    <li class="clearfix mt10">
+                    <li class="clearfix">
                         <label class="pull-left">Approved Leaves</label>
                         <a href="<c:url value='/approvedLeaves'/>" class="color_white" id="selfapp" title="Approved Leaves"><span class="label label-success pull-right" id="selfApprovedCounts"></span></a>
                     </li>
-                    <li class="clearfix mt10">
+                    <li class="clearfix">
                         <label class="pull-left">Rejected Leaves</label>
                         <a href="<c:url value='/rejectedLeaves'/>" class="color_white" id="selfrej" title="Rejected Leaves"><span class="label label-danger pull-right" id="selfRejectedCounts"></span></a>
                     </li>
-                    <li class="clearfix mt10">
+                    <li class="clearfix">
                         <label class="pull-left">Cancelled Leaves</label>
                         <a href="<c:url value='/cancelLeaves'/>" class="color_white" id="selfcanc" title="Cancelled Leaves"><span class="label label-warning pull-right" id="selfCancelledCounts"></span></a>
                     </li>
                 </ul>
-                      
                     </div>
                 </div>
               </div>
@@ -74,24 +73,24 @@ $(document).ready(function(){
           
             <div id="employee" class="tab-pane fade">
                 
-            <div class="db-widget-sm">
-                <div class="width100percnt">
-                  <div id="employeeLeaves" style="width: 60%; height: 150px;" class="amchartAnchor-Hide pull-left"> </div>
-                  <div style="width: 40%; height: 150px;" class="countList pull-left">
-                <ul class="list-unstyled list-group clearfix">
+            <div class="db-widget-sm clearfix">
+                <div class="width100percnt clearfix">
+                  <div id="employeeLeaves" style="width: 60%; height: 105px;" class="amchartAnchor-Hide pull-left"> </div>
+                  <div style="width: 40%; height: 105px;" class="countList pull-left">
+                <ul class="list-unstyled list-group clearfix mb5">
                     <li class="clearfix">
                         <label class="pull-left">Requested Leaves</label>
                         <a href="<c:url value='/employeeRequestedLeaves'/>" class="color_white" id="empReq" title="Pending Leaves"><span class="label label-primary pull-right" id="employeeRequestedCounts"></span>></a>
                     </li>
-                    <li class="clearfix mt10">
+                    <li class="clearfix">
                         <label class="pull-left">Approved Leaves</label>
                         <a href="<c:url value='/employeeApprovedLeaves'/>" class="color_white" id="empApp" title="Approved Leaves"><span class="label label-success pull-right" id="employeeApprovedCounts"></span></a>
                     </li>
-                    <li class="clearfix mt10">
+                    <li class="clearfix">
                         <label class="pull-left">Rejected Leaves</label>
                         <a href="<c:url value='/employeeRejectedLeaves'/>" class="color_white" id="empRej" title="Rejected Leaves"><span class="label label-danger pull-right" id="employeeRejectedCounts"></span></a>
                     </li>
-                    <li class="clearfix mt10">
+                    <li class="clearfix">
                         <label class="pull-left">Cancel Leaves</label>
                         <a href="<c:url value='/employeeCancelLeaves'/>" class="color_white" id="empCanc" title="Cancel Leaves"><span class="label label-warning pull-right" id="employeeCancelledCounts"></span></a>
                     </li>

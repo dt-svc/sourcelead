@@ -17,7 +17,7 @@ $(document).ready(function(){
       <div class="pull-left">
         <h2>Pending</h2>
       </div>
-		<div class="pull-right brud-crum"><a href="dashboard_us.html">Home</a> &raquo; <a href="dashboard-lavemanagement.html">Pending </a> &raquo; Leave Type</div>
+		<div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>"> Home</a> &raquo; Pending Leaves</div>
     </section>
     
 <div class="content-area content-new clearfix">
@@ -32,7 +32,7 @@ $(document).ready(function(){
                         <option value="/pendingLeaves" selected>Pending Leaves</option>
                         <option  value="/approvedLeaves">Approved Leaves</option>
                         <option value="/rejectedLeaves">Rejected Leaves</option>
-                        <option value="/cancelLeaves">Cancel Leaves</option>
+                        <option value="/cancelLeaves">Cancelled Leaves</option>
                     </select>
                 </div>
          </li>
@@ -86,7 +86,7 @@ function getPendingLeavesList(){
 			        		 result = result + ' <tr>';
 			        		 result = result + ' <td>';
 			        		 result = result + ' <div class="proj_show tbldata-dotdot-big">';
-			        		 result = result + '     <div class="pull-left tbldata-dotdot-me" title="Sick Leave" onclick="getRequestedAproveSummary(\''+opt.id+'\','+orgLocationId+',\''+opt.status+'\');">'+opt.leaveType+'</div><i class="fa fa-binoculars pull-right" ></i>'; 
+			        		 result = result + '     <div class="pull-left tbldata-dotdot-me" title="'+opt.leaveType+'" onclick="getRequestedAproveSummary(\''+opt.id+'\','+orgLocationId+',\''+opt.status+'\');">'+opt.leaveType+'</div><i class="fa fa-binoculars pull-right" ></i>'; 
 			        		 result = result + '  </div>';
 			        		 result = result + ' </td>';
 			        		 result = result + ' <td>';
@@ -96,7 +96,7 @@ function getPendingLeavesList(){
 				        		 result = result + ' </div>';
 			        		 result = result + ' </td>';
 			        		 result = result + ' <td>';
-			        		 result = result + '   <div title="'+opt.createdDateStr+'" class="tbldata-dotdot-100">'+opt.createdDate+'</div>';
+			        		 result = result + '   <div title="'+opt.createdDate+'" class="tbldata-dotdot-100">'+opt.createdDate+'</div>';
 			        		 result = result + '</td>';
 			        		 result = result + ' <td>';
 			        		 if(opt.reason !=null && opt.reason != 'undefined' && opt.reason != ''){

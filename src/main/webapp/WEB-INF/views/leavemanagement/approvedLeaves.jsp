@@ -18,7 +18,7 @@ $(document).ready(function(){
       <div class="pull-left">
         <h2>Approved</h2>
       </div>
-		<div class="pull-right brud-crum"><a href="dashboard_us.html">Home</a> &raquo; <a href="dashboard-lavemanagement.html">Leave Management</a> &raquo; Approved</div>
+		<div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>"> Home</a> &raquo; Approved Leaves</div>
     </section>
     
 <div class="content-area content-new clearfix">
@@ -33,7 +33,7 @@ $(document).ready(function(){
                         <option value="/pendingLeaves">Pending Leaves</option>
                         <option value="/approvedLeaves" selected>Approved Leaves</option>
                         <option value="/rejectedLeaves">Rejected Leaves</option>
-                        <option value="/cancelLeaves">Cancel Leaves</option>
+                        <option value="/cancelLeaves">Cancelled Leaves</option>
                     </select>
                 </div>
          </li>
@@ -88,7 +88,7 @@ function getApprovedLeavesList(){
 			        		 result = result + ' <tr>';
 			        		 result = result + ' <td>';
 			        		 result = result + ' <div class="proj_show tbldata-dotdot-big">';
-			        		 result = result + '     <div class="pull-left tbldata-dotdot-me" title="Sick Leave" onclick="getRequestedAproveSummary(\''+opt.id+'\','+orgLocationId+');">'+opt.leaveType+'</div><i class="fa fa-binoculars pull-right" ></i>';
+			        		 result = result + '     <div class="pull-left tbldata-dotdot-me" title="'+opt.leaveType+'" onclick="getRequestedAproveSummary(\''+opt.id+'\','+orgLocationId+');">'+opt.leaveType+'</div><i class="fa fa-binoculars pull-right" ></i>';
 			        		 result = result + '  </div>';
 			        		 result = result + ' </td>';
 			        		 result = result + ' <td>';

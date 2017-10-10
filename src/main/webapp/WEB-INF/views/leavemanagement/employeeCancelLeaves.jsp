@@ -13,9 +13,9 @@ $(document).ready(function(){
   <section class="content-wraper" id="themeroller">
     <section class="content-header clearfix">
       <div class="pull-left">
-        <h2>Cancel Count</h2>
+        <h2>Cancelled Leaves</h2>
       </div>
-		<div class="pull-right brud-crum"><a href="dashboard_us.html">Home</a> &raquo; <a href="dashboard-lavemanagement.html">Leave Management</a> &raquo; Cancel Count</div>
+		<div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>"> Home</a> &raquo; Cancelled Leaves</div>
     </section>
     
 <div class="content-area content-new clearfix">
@@ -30,7 +30,7 @@ $(document).ready(function(){
                         <option value="/employeeRequestedLeaves">Requested Leaves</option>
                         <option  value="/employeeApprovedLeaves">Approved Leaves</option>
                         <option value="/employeeRejectedLeaves">Rejected Leaves</option>
-                        <option value="/employeeCancelLeaves" selected>Cancel Leaves</option>
+                        <option value="/employeeCancelLeaves" selected>Cancelled Leaves</option>
                     </select>
             </div>
         </li>
@@ -137,7 +137,7 @@ function redirectlocation(location){
 		    	  	"data": "empName",
 		    	  	"render": function(data, type, opt, meta) {
 		    	  		  var result = "";
-		    	  		   result = result + '     <div class="pull-left tbldata-dotdot-me cursorPointer" title="Sick Leave" onclick="getRequestedAproveSummary(\''+opt.id+'\','+opt.orgLocationId+');">'+opt.empName+'('+opt.empType+')</div><i class="fa fa-binoculars pull-right" ></i>'; 
+		    	  		   result = result + '     <div class="pull-left tbldata-dotdot-me cursorPointer" title="'+opt.empName+'('+opt.empType+')" onclick="getRequestedAproveSummary(\''+opt.id+'\','+opt.orgLocationId+');">'+opt.empName+'('+opt.empType+')</div><i class="fa fa-binoculars pull-right" ></i>'; 
 			              return result; 
 		    	  	}
 		      },{
@@ -145,7 +145,7 @@ function redirectlocation(location){
 	              "data": "leaveType",
 	              "render": function ( data, type, opt, meta ) {
 	            	   var result = "";
-	            	   result = result + '   <div title="Calendaer month" class="tblminwidth-75">'+opt.leaveType+'</div>';
+	            	   result = result + '   <div title="'+opt.leaveType+'" class="tblminwidth-75">'+opt.leaveType+'</div>';
 		              return result; 
 	              		
 	              }
@@ -154,7 +154,7 @@ function redirectlocation(location){
 	            "data": "duration",
 	            "render": function ( data, type, opt, meta ) {
 	            	 var result = "";
-	            	 result = result + '   <div title="Leave Transfer" class="tbldata-dotdot-100">'+opt.duration+'</div>';
+	            	 result = result + '   <div title="'+opt.duration+'" class="tbldata-dotdot-100">'+opt.duration+'</div>';
 	            	return result; 
 	            }
 	          }, {
@@ -162,7 +162,7 @@ function redirectlocation(location){
 	              "data": "noOfDays",
 	              "render": function ( data, type, opt, meta ) {
 	            	   var result = "";
-	            	    result = result + '     <div title="2" class="tblminwidth-75">'+opt.noOfDays+'</div>';		 
+	            	    result = result + '     <div class="tblminwidth-75">'+opt.noOfDays+'</div>';		 
 	            	   return result; 
 	              }
 	            }, {
@@ -170,7 +170,7 @@ function redirectlocation(location){
 	                "data": "leavesTaken",
 	                "render": function ( data, type, opt, meta ) {
 	                		 var result = "";
-	                		result = result + '     <div title="2" class="tblminwidth-75">'+opt.leavesTaken+'</div>';
+	                		result = result + '     <div class="tblminwidth-75">'+opt.leavesTaken+'</div>';
 	    	                return result; 
 	                }
 	          },{
@@ -178,7 +178,7 @@ function redirectlocation(location){
 		    	  	"data": "approvedBy",
 		    	  	"render": function(data, type, opt, meta) {
 		    	  		var result = "";
-		    	  		 result = result + '     <div title="2" class="tblminwidth-75">'+opt.approvedBy+'</div>';
+		    	  		 result = result + '     <div title="'+opt.approvedBy+'" class="tblminwidth-75">'+opt.approvedBy+'</div>';
 	  	                return result; 
 		    	  	}
 		    	  },{
@@ -186,7 +186,7 @@ function redirectlocation(location){
 		    	  	"data": "cancelledBy",
 		    	  	"render": function(data, type, opt, meta) {
 		    	  		var result = "";
-		    	  		 result = result + ' <div title="2" class="tblminwidth-75">'+opt.cancelledBy+'</div>';	
+		    	  		 result = result + ' <div title="'+opt.cancelledBy+'" class="tblminwidth-75">'+opt.cancelledBy+'</div>';	
 		    	  		return result; 
 		    	  	}
 		    	  }], 

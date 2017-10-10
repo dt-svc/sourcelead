@@ -1308,38 +1308,39 @@ public class LeaveManagementRestController {
 	}
 	
 	@RequestMapping(value = "/getLeaveTypeReport")
-	public  List<LeaveTypeDTO> getLeaveTypeReport(HttpServletRequest request,HttpServletResponse response) throws Exception {
-		   OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		   User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		   Long roleId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRoleId");
-		   List<LeaveType> leaveTypeList = leaveTypeService.getLeaveTypeListByLocationId(String.valueOf(orgLocations.getId()));
-		   List<LeaveType> roleLeaveType = new ArrayList<>();
+	public  List<LeaveTypeDTO> getLeaveTypeReport(@RequestParam(value = "orgLocationId", required = false) Long orgLocationId,
+			@RequestParam(value = "userId", required = false) Long userId,
+			HttpServletRequest request,HttpServletResponse response) throws Exception {
+		OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);   
+		User user = userService.getUserById(userId);
+		List<LeaveType> leaveTypeList = leaveTypeService.getLeaveTypeListByLocationId(String.valueOf(orgLocations.getId()));
+		
 		   List<LeaveTypeDTO> leaveTypeDTOList = new ArrayList<>();
-		   
 		   if(leaveTypeList !=null && !leaveTypeList.isEmpty()) {
-			   for(LeaveType leaveType : leaveTypeList) {
-				   Set<Long> roleIds = new HashSet<>();
-				   for(LeaveRole leaveRole : leaveType.getLeaveTypeRolesSet()) {
-					   roleIds.add(leaveRole.getRoleId().getId());
-				   }
-				   if(roleIds.contains(roleId)) {
-					   roleLeaveType.add(leaveType);
-				   }
-			   }
-			   
-				for(LeaveType type : roleLeaveType) {
+				for(LeaveType type : leaveTypeList) {
 					int pendingCounts = 0;
 				    int approvedCounts = 0;
 					int rejectedCounts = 0;
 					int cancelCounts = 0;
+					int noOfDays = 0;
 					LeaveTypeDTO leaveTypeDto = new LeaveTypeDTO();
-					List<Leave> totalleavesTaken = leaveService.getLeavesListByTypeIdAndLocationIdAndUserId(type.getId(),orgLocations.getId(), loginUser.getId());
-					for (Leave leave : totalleavesTaken) {
+					List<Leave> totalleavesTaken = leaveService.getLeavesListByTypeIdAndLocationIdAndUserId(type.getId(),orgLocations.getId(), user.getId());
+					if(totalleavesTaken != null && totalleavesTaken.size() > 0) {
+						for (Leave leave : totalleavesTaken) {
 							if(Constants.PENDING.equalsIgnoreCase(leave.getStatus())) {
 								pendingCounts = pendingCounts + 1;
 							}
 							if(Constants.APPROVED.equalsIgnoreCase(leave.getStatus())) {
 								approvedCounts = approvedCounts + 1;
+								
+								noOfDays = noOfDays + Integer.valueOf(leave.getNumberOfDays());
+								if(noOfDays > Integer.valueOf(type.getNumbefrOfLeavesPeryear())) {
+									int totalLeaves =  Integer.valueOf(type.getNumbefrOfLeavesPeryear()) - noOfDays;
+									leaveTypeDto.setNumberOfDaysCount(String.valueOf(totalLeaves));
+								}else {
+									leaveTypeDto.setNumberOfDaysCount(String.valueOf(noOfDays));
+								}
+								
 							}
 							if(Constants.REJECTED.equalsIgnoreCase(leave.getStatus())) {
 								rejectedCounts = rejectedCounts + 1;
@@ -1347,7 +1348,9 @@ public class LeaveManagementRestController {
 							if(Constants.LEAVE_CANCELLED.equalsIgnoreCase(leave.getStatus())) {
 								cancelCounts = cancelCounts + 1;
 							}
+							
 					 }
+						
 						leaveTypeDto.setName(type.getName());
 						leaveTypeDto.setLeaveTypeId(type.getId());
 						leaveTypeDto.setNoOfLeavesPerYear(type.getNumbefrOfLeavesPeryear());
@@ -1355,7 +1358,8 @@ public class LeaveManagementRestController {
 					    leaveTypeDto.setRejectedCount(rejectedCounts);
 					    leaveTypeDto.setPendingCount(pendingCounts);
 					    leaveTypeDto.setCancelCount(cancelCounts);
-					    leaveTypeDTOList.add(leaveTypeDto);
+					    leaveTypeDTOList.add(leaveTypeDto);					
+					}
 					}
 		   }
 		   
