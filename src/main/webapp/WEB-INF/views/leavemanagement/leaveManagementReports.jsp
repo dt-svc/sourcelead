@@ -616,68 +616,73 @@ function totalLeaveByEmployeeBarChart(data){
 
 <script>
 function getPieChartBasedOnUser(){
-	 
+	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
+	var userId = '${SourceLeadWeb_userId}';
 	 $.ajax({
         type : "GET",
-         url: sourceleadUrl+"/getLeaveTypeReport?"+tokenParamName+"="+tokenValue+"",    
+         url: sourceleadUrl+"/getLeaveTypeReport?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&userId="+userId,    
          success :function(data) {
        	  var chartData = [];
        		 var result = "";
-       		   for (var i = 0; i < data.length; i++) {
-       		 		 var opt = data[i]; 
-       		 		result = result +'  <div class="col-md-3 mb">';
-       	            result = result +'   <h4 class="text-center">'+opt.name+'</h4>';
-       	            result = result +'   <div id="vacationDonut'+opt.leaveTypeId+'" class="amchartAnchor-Hide" style="width: 100%; height: 125px;"> </div>';
-       	            result = result +'   <div class="text-center">';
-       	            result = result +'     <h2>';
-       	            result = result +'       <label class="small text-muted">Remaining:</label>';
-       	            result = result +'       <label class="clearfix width100percnt mt5">'+opt.approvedCount+' / '+opt.noOfLeavesPerYear+'</label>';
-       	            result = result +'     </h2>';
-       	            result = result +'   </div>';
-       	            result = result +' </div>';
-       	             AmCharts.makeChart("vacationDonut"+opt.leaveTypeId+"", {
-       						"type": "pie",
-       						"balloonText": "[[title]]<br><span style='font-size:14px'><b>[[value]]</b> </span>",
-       						"innerRadius": "60%",
-       						"pieX": "50%",
-       						"pieY": "50%",
-       						"radius": "48%",
-       						"colorField": "color",
-       						"colors": [],
-       						"labelsEnabled": false,
-       						"marginBottom": 0,
-       						"marginTop": 0,
-       						"titleField": "category",
-       						"valueField": "column-1",
-       						"allLabels": [],
-       						"balloon": {},
-       						"titles": [],
-       						"dataProvider": [
-       							{
-       								"category": "Approved",
-       								"column-1": opt.approvedCount,
-       								"color": "#5cb85c"
-       							},
-       							{
-       								"category": "Pending",
-       								"column-1": opt.pendingCount,
-       								"color": "#337ab7"
-       							},
-       							{
-       								"category": "Rejected",
-       								"column-1": opt.rejectedCount,
-       								"color": "#d9534f"
-       							},
-       							{
-       								"category": "Cancelled",
-       								"column-1": opt.cancelCount,
-       								"color": "#f0ad4e"
-       							}
-       						]
-       					}
-       							 
-       					); 
-       		   }
+       		 if(data.length > 0){
+       			for (var i = 0; i < data.length; i++) {
+      		 		 var opt = data[i]; 
+      		 		result = result +'  <div class="col-md-3 mb">';
+      	            result = result +'   <h4 class="text-center">'+opt.name+'</h4>';
+      	            result = result +'   <div id="vacationDonut'+opt.leaveTypeId+'" class="amchartAnchor-Hide" style="width: 100%; height: 125px;"> </div>';
+      	            result = result +'   <div class="text-center">';
+      	            result = result +'     <h2>';
+      	            result = result +'       <label class="small text-muted">Remaining:</label>';
+      	            result = result +'       <label class="clearfix width100percnt mt5">'+opt.numberOfDaysCount+' / '+opt.noOfLeavesPerYear+'</label>';
+      	            result = result +'     </h2>';
+      	            result = result +'   </div>';
+      	            result = result +' </div>';
+      	             AmCharts.makeChart("vacationDonut"+opt.leaveTypeId+"", {
+      						"type": "pie",
+      						"balloonText": "[[title]]<br><span style='font-size:14px'><b>[[value]]</b> </span>",
+      						"innerRadius": "60%",
+      						"pieX": "50%",
+      						"pieY": "50%",
+      						"radius": "48%",
+      						"colorField": "color",
+      						"colors": [],
+      						"labelsEnabled": false,
+      						"marginBottom": 0,
+      						"marginTop": 0,
+      						"titleField": "category",
+      						"valueField": "column-1",
+      						"allLabels": [],
+      						"balloon": {},
+      						"titles": [],
+      						"dataProvider": [
+      							{
+      								"category": "Approved",
+      								"column-1": opt.approvedCount,
+      								"color": "#5cb85c"
+      							},
+      							{
+      								"category": "Pending",
+      								"column-1": opt.pendingCount,
+      								"color": "#337ab7"
+      							},
+      							{
+      								"category": "Rejected",
+      								"column-1": opt.rejectedCount,
+      								"color": "#d9534f"
+      							},
+      							{
+      								"category": "Cancelled",
+      								"column-1": opt.cancelCount,
+      								"color": "#f0ad4e"
+      							}
+      						]
+      					}
+      							 
+      					); 
+      		   }
+       		 }else{
+       			result = result + '<div class="dataTables_empty center" ></div>';
+       		 }
        	            $("#pichartLeaveTypeIdDiv").empty();
        	            $("#pichartLeaveTypeIdDiv").append(result);
        	  
