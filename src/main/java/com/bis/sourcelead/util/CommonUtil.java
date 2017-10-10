@@ -195,6 +195,19 @@ public class CommonUtil {
 		return date;
 	}
 	
+	/**
+	 *  returns current date based on orglocation date format
+	 * @param orgDateFormat
+	 * @param dateStr
+	 * @return Date
+	 * @throws ParseException 
+	 */
+	public Date getOrgLocationCurrentDate(String orgDateFormat, Date date) throws ParseException{
+		DateFormat dateFormat = new SimpleDateFormat(orgDateFormat);
+			return dateFormat.parse(dateFormat.format(date));
+	}
+	
+	
 	
 	public void storeSourceleadTasks(User user,Projects projects) throws Exception{
 		Collection<ProjectTasks> tasksList = projectTasksService.getAllSourceleadTasks();
