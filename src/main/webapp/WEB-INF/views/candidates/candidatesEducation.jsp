@@ -353,7 +353,6 @@ function addEducation(candidateId) {
 	
 	function educationStartDate(){
 	}
-	
 	 var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
 	  var finalDateFormatEduSave = '';
 	  if(locationDate.match("yyyy-MM-dd")){

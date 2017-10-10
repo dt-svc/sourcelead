@@ -11,6 +11,7 @@ import java.util.regex.Pattern;
 
 import javax.mail.internet.InternetAddress;
 
+import org.apache.commons.lang.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -20,7 +21,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.FileInfo;
+import com.bis.sourcelead.dto.HotListEmailCampaignDTO;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
@@ -36,6 +40,7 @@ import com.bis.sourcelead.service.UserMailBoxService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserSignatureService;
 import com.bis.sourcelead.util.EmailScenerioUtil;
+import com.bis.sourcelead.util.FileUploadUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 
 @Service
@@ -75,8 +80,7 @@ public class HotListEmailCampaignServiceImpl implements HotListEmailCampaignServ
 	}
 
 	@Override
-	public void sendHotListEmailCampaign(JSONObject jsonObj, User user, OrgLocations orgLocation,
-			MultipartFile multiFile) throws Exception {
+	public void sendHotListEmailCampaign(HotListEmailCampaignDTO hotListEmailCampaignDTO, User user, OrgLocations orgLocation) throws Exception {
 		
 		
 	 EmailMessage emailMessage = new EmailMessage(); 
@@ -96,15 +100,10 @@ public class HotListEmailCampaignServiceImpl implements HotListEmailCampaignServ
 	   		 fullName = user.getFirstName();
 	   	 }
 			
-		if(jsonObj.has("Toemails") && !isNullOrEmpty(jsonObj.getString("Toemails"))){
+		if(StringUtils.isNotBlank(hotListEmailCampaignDTO.getToemails())){
 			
-	    	  try{
-	    		   JSONArray jsonArray = jsonObj.getJSONArray("Toemails");
-	    		   emails = jsonArray.toString();
-	    	  }
-	    	  catch(JSONException e){
-	    		  emails= jsonObj.getString("Toemails");
-	    	  }
+	    	  String jsonArray = hotListEmailCampaignDTO.getToemails();
+			   emails = jsonArray.toString();
 	    	  if(null != emails){
 	    		  emails = emails.replaceAll("\\[", "").replaceAll("\\]","");
 	    		  emails = emails.replaceAll("\"", "");
@@ -123,14 +122,9 @@ public class HotListEmailCampaignServiceImpl implements HotListEmailCampaignServ
 		}
 		
 		
-		if(jsonObj.has("otherEmails") && !isNullOrEmpty(jsonObj.getString("otherEmails"))){
-			 try{
-	    		   JSONArray jsonArray = jsonObj.getJSONArray("otherEmails");
-	    		   otherEmails = jsonArray.toString();
-	    	  }
-	    	  catch(JSONException e){
-	    		  otherEmails= jsonObj.getString("otherEmails");
-	    	  }
+		if(StringUtils.isNotBlank(hotListEmailCampaignDTO.getOtherEmails())){
+			 String jsonArray = hotListEmailCampaignDTO.getOtherEmails();
+			   otherEmails = jsonArray.toString();
 			 if(null != otherEmails){
 				 otherEmails = otherEmails.replaceAll("\\[", "").replaceAll("\\]","");
 				 otherEmails = otherEmails.replaceAll("\"", "");
@@ -163,15 +157,10 @@ public class HotListEmailCampaignServiceImpl implements HotListEmailCampaignServ
 		 emailMessage.setFromEmail(user.getEmail());
 		 emailMessage.setFromName(fullName);
 		
-		 if(jsonObj.has("hotlistcandidates") && !isNullOrEmpty(jsonObj.getString("hotlistcandidates"))){
+		 if(StringUtils.isNotBlank(hotListEmailCampaignDTO.getHotlistcandidates())){
 			    
-				 try{
-		    		   JSONArray jsonArray = jsonObj.getJSONArray("hotlistcandidates");
-		    		   candidates = jsonArray.toString();
-		    	  }
-		    	  catch(JSONException e){
-		    		  candidates= jsonObj.getString("hotlistcandidates");
-		    	  }
+				 String jsonArray = hotListEmailCampaignDTO.getHotlistcandidates();
+				   candidates = jsonArray.toString();
 				 if(null != candidates){
 					 candidates = candidates.replaceAll("\\[", "").replaceAll("\\]","");
 					 candidates = candidates.replaceAll("\"", "");
@@ -181,14 +170,14 @@ public class HotListEmailCampaignServiceImpl implements HotListEmailCampaignServ
 				 
 		 }
 		 
-		String table =  getHotListCandidatesTable(hotlistedCandidates,jsonObj.getString("namefield"));
+		String table =  getHotListCandidatesTable(hotlistedCandidates,hotListEmailCampaignDTO.getNamefield());
 		String UUID = SourceLeadRandomCodeHelper.generateUUID();
 		
 		signature = sourceleadSignatureService.buildSignature(user, orgLocation);
 		 
 		 Map<String, String> globalVarsMap = new HashMap<String, String>();
-		 globalVarsMap.put("salutation", jsonObj.getString("saluation"));
-		 globalVarsMap.put("body", jsonObj.getString("bodytext"));
+		 globalVarsMap.put("salutation", hotListEmailCampaignDTO.getSaluation());
+		 globalVarsMap.put("body", hotListEmailCampaignDTO.getBodytext());
 		 globalVarsMap.put("noOfCandidates", String.valueOf(hotlistedCandidates.length));
 		 
 		 globalVarsMap.put("hotlistTable", table);
@@ -196,7 +185,7 @@ public class HotListEmailCampaignServiceImpl implements HotListEmailCampaignServ
 		 
 		 EmailScenario emailScenario =  emailScenarioService.getEmailScenarioByUniqueName(Constants.HOT_LIST_CAMPAIGN,Constants.ENTITY_TYPE_EMAIL);
 		 //covert subject,body and signature
-		 String subject = emailScenerioUtil.bulidSubject(jsonObj.getString("subject"),globalVarsMap);
+		 String subject = emailScenerioUtil.bulidSubject(hotListEmailCampaignDTO.getSubject(),globalVarsMap);
 		 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
 		 
 		
@@ -212,26 +201,28 @@ public class HotListEmailCampaignServiceImpl implements HotListEmailCampaignServ
 		 
 		 ArrayList<EmailAttachment> attachmentList = null;
 		 EmailAttachment emailAttachment = new EmailAttachment();
-		 
-		 
-		 if(multiFile.getSize() > 0){
-			 attachmentList =  new ArrayList<EmailAttachment>();
-			 emailAttachment.setName(multiFile.getOriginalFilename());
-			 emailAttachment.setDocFile(multiFile.getBytes());
-			 emailAttachment.setType(multiFile.getContentType());
-			 attachmentList.add(emailAttachment);
+		 FileInfo fileInfo = null;
+		 if(hotListEmailCampaignDTO.getFileInfo() != null) {
+			   fileInfo = hotListEmailCampaignDTO.getFileInfo().get(0);
+			 if(fileInfo != null){
+				 attachmentList =  new ArrayList<EmailAttachment>();
+				 emailAttachment.setName(fileInfo.getFileName());
+				 emailAttachment.setFileUrl(fileInfo.getFileURL());
+				 emailAttachment.setType(fileInfo.getContentType());
+				 attachmentList.add(emailAttachment);
+			   FileUploadUtil.moveFile(hotListEmailCampaignDTO.getStaticPath(), fileInfo, "Hotlist Campaign Documents");
+			    }
 		 }
-		
 		 
-		 //calling the sendEmail method of emailScenerioUtil
+				
+		//calling the sendEmail method of emailScenerioUtil
 		 emailScenerioUtil.sendEmail(emailMessage,orgLocation.getId(),iAdressArray,attachmentList);
 		 
-		 saveUserMailBox(user,orgLocation,iAdressArray,candidates,subject,table,UUID,jsonObj.getString("bodytext"),signature,jsonObj.getString("namefield"),multiFile);
-		
+		 saveUserMailBox(user,orgLocation,iAdressArray,candidates,subject,table,UUID,hotListEmailCampaignDTO.getBodytext(),signature,hotListEmailCampaignDTO.getNamefield(),fileInfo);
 	}
 	
 	
-private void saveUserMailBox(User user,OrgLocations orgLocation,InternetAddress[] iAdressArray,String candidates,String subject,String table,String UUID,String body,String signature,String nameFields,MultipartFile multiFile) throws Exception{
+private void saveUserMailBox(User user,OrgLocations orgLocation,InternetAddress[] iAdressArray,String candidates,String subject,String table,String UUID,String body,String signature,String nameFields,FileInfo fileInfo) throws Exception{
 	
 	UserMailBox userMailBox = new UserMailBox();
 	
@@ -268,11 +259,11 @@ private void saveUserMailBox(User user,OrgLocations orgLocation,InternetAddress[
 	userMailBox.setUpdatedDate(new Date());
 	
 	
-	 if(null != multiFile.getContentType() && !multiFile.getContentType().equalsIgnoreCase("application/octet-stream")){
+	 if(fileInfo != null){
    	  try {
-   		userMailBox.setFileContentType(multiFile.getContentType());
-   		userMailBox.setDocFile(multiFile.getBytes());
-   		userMailBox.setFileName(multiFile.getOriginalFilename());
+   		userMailBox.setFileContentType(fileInfo.getContentType());
+   		userMailBox.setFileUrl(fileInfo.getFileURL());
+   		userMailBox.setFileName(fileInfo.getFileName());
    	   
 	       }catch (Exception e) {
    	      	 e.printStackTrace();

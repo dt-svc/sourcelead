@@ -484,6 +484,7 @@ function getVendorDetails(){
 							<div class="col-md-9">
 								<input type="text" class="form-control" id="firstName"
 									name="firstName" pattern="[A-Za-z\s]*" maxlength="100" field-name="First Name" data-validation="required validate_Space validate_AlphaNumber validate_length length1-100">
+
 							</div>
 						</div>
 

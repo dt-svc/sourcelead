@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.lang.StringUtils;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,6 +14,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.UserMailBoxDao;
+import com.bis.sourcelead.dto.FileInfo;
+import com.bis.sourcelead.dto.HotListEmailCampaignDTO;
 import com.bis.sourcelead.elk.index.CampaignIndex;
 import com.bis.sourcelead.elk.index.helper.CampaignIndexHelper;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
@@ -21,6 +24,7 @@ import com.bis.sourcelead.entity.UserMailBox;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.UserMailBoxService;
 import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.util.FileUploadUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 
 @Service
@@ -63,7 +67,7 @@ public class UserMailBoxServiceImpl implements UserMailBoxService{
 	}
 
 	@Override
-	public void setRequestForResumeDetails(JSONObject jsonObj,String candidatesIds,String UUID,MultipartFile multiFile) throws Exception {
+	public void setRequestForResumeDetails(HotListEmailCampaignDTO hotListEmailCampaignDTO,String candidatesIds,String UUID) throws Exception {
 		
 		UserMailBox mailBox = userMailBoxDao.getUserMailBoxByUUID(UUID);
 		
@@ -71,7 +75,7 @@ public class UserMailBoxServiceImpl implements UserMailBoxService{
 			
 			UserMailBox userMailBox = new UserMailBox();
 			userMailBox.setToMail(mailBox.getFromMail());
-			userMailBox.setFromMail(jsonObj.getString("email"));
+			userMailBox.setFromMail(hotListEmailCampaignDTO.getEmail());
 			userMailBox.setMailStatus(Constants.MAIL_REQUESTED);
 			userMailBox.setCandidateId(candidatesIds);
 			userMailBox.setUserId(mailBox.getUserId());
@@ -81,12 +85,12 @@ public class UserMailBoxServiceImpl implements UserMailBoxService{
 			StringBuilder sb = new StringBuilder();
 			userMailBox.setSubject(sb.append("Rep: ").append(mailBox.getSubject()).toString());
 			
-			if(jsonObj.has("phone") && !isNullOrEmpty(jsonObj.getString("phone"))){
-				userMailBox.setPhno(jsonObj.getString("phone"));
+			if(StringUtils.isNotBlank(hotListEmailCampaignDTO.getPhone())){
+				userMailBox.setPhno(hotListEmailCampaignDTO.getPhone());
 			}
 			
-			if(jsonObj.has("comment") && !isNullOrEmpty(jsonObj.getString("comment"))){
-				userMailBox.setComments(jsonObj.getString("comment"));
+			if(StringUtils.isNotBlank(hotListEmailCampaignDTO.getComment())){
+				userMailBox.setComments(hotListEmailCampaignDTO.getComment());
 			}
 			
 			userMailBox.setIsMailRead(0);
@@ -94,16 +98,15 @@ public class UserMailBoxServiceImpl implements UserMailBoxService{
 			userMailBox.setCreatedDate(new Date());
 			userMailBox.setUpdatedDate(new Date());
 			
-			 if(null != multiFile.getContentType() && !multiFile.getContentType().equalsIgnoreCase("application/octet-stream")){
-			   	  try {
-			   		userMailBox.setFileContentType(multiFile.getContentType());
-			   		userMailBox.setDocFile(multiFile.getBytes());
-			   		userMailBox.setFileName(multiFile.getOriginalFilename());
-			   	   
-				       }catch (Exception e) {
-			   	      	 e.printStackTrace();
-						    }
-			       }
+			
+			 FileInfo fileInfo = hotListEmailCampaignDTO.getFileInfo().get(0);
+			 if(fileInfo != null) {
+				 userMailBox.setFileContentType(fileInfo.getContentType());
+				 userMailBox.setFileUrl(fileInfo.getFileURL());
+			   	 userMailBox.setFileName(fileInfo.getFileName());
+			   	FileUploadUtil.moveFile(hotListEmailCampaignDTO.getStaticPath(), fileInfo, "Hotlist Campaign Documents");
+			 }
+			  
 			 
 			 
 			String table = getRequestedHotListCandidatesTable(candidatesIds);

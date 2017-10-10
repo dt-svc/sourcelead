@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.bis.sourcelead.dto.InviteCompanyDTO;
 import com.bis.sourcelead.service.InviteCompanyService;
 import com.bis.sourcelead.util.CommonUtil;
 
@@ -31,11 +32,9 @@ public class InviteCompanyRestController {
 	
 
     @RequestMapping(value = "/storeInviteCompany", method = RequestMethod.POST)
-	public @ResponseBody  void storeInviteCompany(@RequestParam(value="json", required=false) String json,HttpServletRequest request, HttpServletResponse response) throws Exception
+	public @ResponseBody  void storeInviteCompany(InviteCompanyDTO inviteCompanyDTO,HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
-    	 String json1 = "{"+json+"}";
-		    JSONObject jsonObj = new JSONObject(json1);
-    	  String inviteCompany =  inviteCompanyService.saveInviteCompany(jsonObj);
+    	  String inviteCompany =  inviteCompanyService.saveInviteCompany(inviteCompanyDTO);
 	}
    
      

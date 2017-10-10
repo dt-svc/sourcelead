@@ -1,7 +1,6 @@
 <jsp:include page="../masterHeader.jsp" />
 <jsp:include page="../masterSideNav.jsp" />
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
-<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
  <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
  <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
@@ -699,11 +698,13 @@ function getCustomReports(){
 	});		
 	</script>
 	
-<script src="resources/reports/amcharts.js"></script>
+	
+	
+<!-- <script src="resources/reports/amcharts.js"></script>
 <script src="resources/reports/piechart.js"></script>
 <script src="resources/reports/export.min.js"></script>
 <link rel="stylesheet" href="resources/reports/export.css" type="text/css" media="all" /> 
-<script src="resources/reports/light.js"></script> 
+<script src="resources/reports/light.js"></script>  -->
 
 <script>
 function getrequirementStagePieChat(newCount,draftCount,submittedCount,openCount,onHoldCount,cancelCount,filledclosedCount,unfilledclosedCount,rejectedCount){

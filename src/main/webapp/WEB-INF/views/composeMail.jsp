@@ -58,7 +58,7 @@ display: none;
      <div id ="popUp"></div>
       <div id ="textBoxPopUp"></div>
       <div class="form-horizontal compose-mail col-md-10 col-md-offset-1">
-       <form:form id="email_form" name="email_form" content="text/html" enctype='multipart/form-data' >
+       <form:form id="email_form" name="email_form" content="text/html" >
         <div class="col-md-12 clearfix">
           <label class="col-md-2 control-label text-muted small">From</label>
           <div class="col-md-10">
@@ -193,6 +193,11 @@ display: none;
 			 });
 	  
   }
+  $(function() {
+		$("#attachfileBtn").change(function() {
+			fileUpload("attachfileBtn", "Email Documents", "email_form");
+		});
+	 });
   </script> 
  
 
@@ -237,17 +242,8 @@ $(function(){
   <script type="text/javascript">
 	function sendEmails() {
 		if ($('#email_form').validate(false, validationSettings)){ 
-			
 				var sourceleadUrl = '${sourceleadUrl}';
-				//nicEditors.findEditor('bodytext').saveContent();
-				
-				var frm = $('#email_form').serializeFormJSON();
-				var jsonData = JSON.stringify(frm);
-				/* con = con.replace(/[{}]/g, ""); 
-			    var jsonData = encodeURIComponent(con); */
-			    var form = $('#email_form')[0];
-		  		var formData = new FormData(form);
-		  		formData.append("json",jsonData)
+		  		var formData = getFormData1("email_form");
 		  		var toEmails =  $('#emailsList_chosen span').size();
 		  		 
 		  		if(toEmails < 1){
@@ -262,11 +258,8 @@ $(function(){
 			  		 	$.ajax({
 			  				type : "POST",
 			  	    	    data: formData,
-			  	    	    contentType : 'application/json; charset=utf-8',
-			  	    	    enctype: 'multipart/form-data',
 			  		        processData: false,
 			  		        contentType:false, 
-			  	    	    dataType : 'json',
 			  				url : sourceleadUrl+"/sendEmailToUsers?${_csrf.parameterName}=${_csrf.token}",
 			  				success : function(result) {
 			  						location.replace(sourceleadUrl+"/mailBox");
