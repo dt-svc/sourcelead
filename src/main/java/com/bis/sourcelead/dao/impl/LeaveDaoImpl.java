@@ -77,31 +77,22 @@ public class LeaveDaoImpl implements LeaveDao{
 		if(StringUtils.isNotBlank(leaveDTO.getLeaveStatus())) {
 			StringBuilder searchQuery = new StringBuilder("");
 			StringBuilder leavesearchQuery = new StringBuilder("");
-			String query = "from LeaveApproveHierarchy laph left join fetch laph.leaveid leave left join fetch leave.leaveType left join fetch leave.user ltype left join fetch leave.approvedBy left join fetch leave.rejectedBy left join fetch leave.cancelledBy where leave.orgLocations.id = :orgLocationId and laph.approverUserId.id= :userId and leave.status = '"+leaveDTO.getLeaveStatus()+"'";
+			String query = "from LeaveApproveHierarchy laph left join fetch laph.leaveid leave left join fetch leave.leaveType left join fetch leave.user ltype where leave.orgLocations.id = :orgLocationId and laph.approverUserId.id= :userId and leave.status = '"+leaveDTO.getLeaveStatus()+"'";
 			String countQuery ="from Leave leave where leave.orgLocations.id = :orgLocationId and leave.status = '"+leaveDTO.getLeaveStatus()+"'";
 			if(StringUtils.isNotBlank(leaveDTO.getSearchValue())){
 				searchQuery.append(" and (laph.leaveid.user.firstName like '%" + leaveDTO.getSearchValue() + "%' ")
-				.append("OR leave.user.lastName like '%" + leaveDTO.getSearchValue() + "%' ")
-				.append("OR leave.leaveType.name like '%" + leaveDTO.getSearchValue() + "%' ")
-				.append("OR leave.numberOfDays like '%" + leaveDTO.getSearchValue() + "%' ")
-				.append("OR leave.approvedBy.firstName like '%" + leaveDTO.getSearchValue() + "%' ")
-				.append("OR leave.approvedBy.lastName like '%" + leaveDTO.getSearchValue() + "%' ")
-				.append("OR leave.updatedDate like '%" + leaveDTO.getSearchValue() + "%' ")
-				.append("OR leave.rejectedBy like '%" + leaveDTO.getSearchValue() + "%' ")
-				.append("OR leave.rejectedReason like '%" + leaveDTO.getSearchValue() + "%' ")
-				.append("OR leave.cancelledBy.firstName like '%" + leaveDTO.getSearchValue() + "%' ")
-				.append("OR leave.cancelledBy.lastName like '%" + leaveDTO.getSearchValue() + "%') ");
+				.append("OR laph.leaveid.user.lastName like '%" + leaveDTO.getSearchValue() + "%' ")
+				.append("OR laph.leaveid.numberOfDays like '%" + leaveDTO.getSearchValue() + "%' ")
+				.append("OR laph.leaveid.approvedBy.firstName like '%" + leaveDTO.getSearchValue() + "%' ")
+				.append("OR laph.leaveid.approvedBy.lastName like '%" + leaveDTO.getSearchValue() + "%' ")
+				.append("OR laph.leaveid.leaveType.name like '%" + leaveDTO.getSearchValue() + "%' )");
 				
 				leavesearchQuery.append(" and (leave.user.firstName like '%" + leaveDTO.getSearchValue() + "%' ")
 				.append("OR leave.user.lastName like '%" + leaveDTO.getSearchValue() + "%' ")
-				.append("OR leave.leaveType.name like '%" + leaveDTO.getSearchValue() + "%' ")
+				.append("OR leave.numberOfDays like '%" + leaveDTO.getSearchValue() + "%' ")
 				.append("OR leave.approvedBy.firstName like '%" + leaveDTO.getSearchValue() + "%' ")
 				.append("OR leave.approvedBy.lastName like '%" + leaveDTO.getSearchValue() + "%' ")
-				.append("OR leave.updatedDate like '%" + leaveDTO.getSearchValue() + "%' ")
-				.append("OR leave.rejectedBy like '%" + leaveDTO.getSearchValue() + "%' ")
-				.append("OR leave.rejectedReason like '%" + leaveDTO.getSearchValue() + "%' ")
-				.append("OR leave.cancelledBy.firstName like '%" + leaveDTO.getSearchValue() + "%' ")
-				.append("OR leave.cancelledBy.lastName like '%" + leaveDTO.getSearchValue() + "%') ");
+				.append("OR leave.leaveType.name like '%" + leaveDTO.getSearchValue() + "%' )");
 			}
 			
 			Query queryObj = session.createQuery(query+searchQuery);
@@ -136,12 +127,19 @@ public class LeaveDaoImpl implements LeaveDao{
 			String query = "from LeaveApproveHierarchy laph left join fetch laph.leaveid leave left join fetch leave.leaveType left join fetch leave.user ltype where leave.orgLocations.id = :orgLocationId and laph.approverUserId.id= :userId";
 			String countQuery ="from Leave leave where leave.orgLocations.id = :orgLocationId";
 			if(StringUtils.isNotBlank(leaveDTO.getSearchValue())){
-				searchQuery.append(" and laph.leaveid.user.firstName like '%" + leaveDTO.getSearchValue() + "%' ")
-				.append("OR laph.leaveid.user.lastName like '%" + leaveDTO.getSearchValue() + "%' ");
+				searchQuery.append(" and (laph.leaveid.user.firstName like '%" + leaveDTO.getSearchValue() + "%' ")
+				.append("OR laph.leaveid.user.lastName like '%" + leaveDTO.getSearchValue() + "%' ")
+				.append("OR laph.leaveid.numberOfDays like '%" + leaveDTO.getSearchValue() + "%' ")
+				.append("OR laph.leaveid.approvedBy.firstName like '%" + leaveDTO.getSearchValue() + "%' ")
+				.append("OR laph.leaveid.approvedBy.lastName like '%" + leaveDTO.getSearchValue() + "%' ")
+				.append("OR laph.leaveid.leaveType.name like '%" + leaveDTO.getSearchValue() + "%' )");
 				
-				
-				leavesearchQuery.append(" and leave.user.firstName like '%" + leaveDTO.getSearchValue() + "%' ")
-				.append("OR leave.user.lastName like '%" + leaveDTO.getSearchValue() + "%' ");
+				leavesearchQuery.append(" and (leave.user.firstName like '%" + leaveDTO.getSearchValue() + "%' ")
+				.append("OR leave.user.lastName like '%" + leaveDTO.getSearchValue() + "%' ")
+				.append("OR leave.numberOfDays like '%" + leaveDTO.getSearchValue() + "%' ")
+				.append("OR leave.approvedBy.firstName like '%" + leaveDTO.getSearchValue() + "%' ")
+				.append("OR leave.approvedBy.lastName like '%" + leaveDTO.getSearchValue() + "%' ")
+				.append("OR leave.leaveType.name like '%" + leaveDTO.getSearchValue() + "%' )");
 				
 			}
 			
