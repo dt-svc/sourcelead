@@ -76,7 +76,7 @@
           	<div class="form-group">
               <label class="col-md-4">Contract Title<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-8">
-                <input type="text" class="form-control" id="contractTitle" name="contractTitle" value="" data-validation="required validate_length length1-250" field-name="Contract Title">
+                <input type="text" class="form-control" id="contractTitle" name="contractTitle" value="" data-validation="required validate_length length1-250" field-name="Contract Title" onblur="validateContractTitle();">
               </div>
             </div>
                        
@@ -416,7 +416,7 @@
       <div class="form-footer clearfix contrFoot">
         <div class="col-lg-12">
           <div class="pull-right">
-            <input type="button" value="Finalize" id="save_template" onclick="saveExistigContract();" class="btn btn-success ml10">
+            <input type="button" value="Finalize" id="save_template" onmouseover="validateContractTitle();" onclick="saveExistigContract();" class="btn btn-success ml10">
             <input type="button" value="Cancel" class="btn btn-default ml10" id="cancel_contract" onclick="cancelContract();">
           </div>
         </div>
@@ -1747,12 +1747,40 @@ function cancelContract(){
 </script>
 
 <script>
-var sourceleadUrl = '${sourceleadUrl}';
- $(function() {
 	$("#uploadBtn").change(function() {
-		fileUpload(sourceleadUrl, "uploadBtn", "ContractDocs", "newcontract_form");
+		fileUpload("uploadBtn", "ContractDocs", "newcontract_form");
 	});
- }); 
+</script>
+
+<script>
+function validateContractTitle(){
+	var contractTitle = $('#contractTitle').val();
+	var contractType = $('#contractType').val();
+	if(contractTitle != null && contractTitle != "" && contractType != null && contractType != ""){
+		$.ajax({
+		    	type: "POST",
+		        url: sourceleadUrl+"/validateContractTitle?${_csrf.parameterName}=${_csrf.token}&contractTitle="+contractTitle+"&contractType="+contractType, 
+		        success: function(data) {
+		        	if(data == 'true'){
+		        		 // $('input#contractTitle').removeAttr( "record-exist record-exist-errormsg");
+		        		  $('#titleDiv').find('p.jquery_form_error_message').remove(); 
+						  $("input#contractTitle").after("<p class='jquery_form_error_message'>"+contractTitle+" is Already Existed</span>");
+						 // $("#save_template").attr("disabled", "disabled");
+						 // $("#draft_template").attr("disabled", "disabled");
+		        	}
+		        	else{
+		        		 $('input#contractTitle').removeAttr( "record-exist record-exist-errormsg");
+		        		 $('#titleDiv').find('p.jquery_form_error_message').remove(); 
+		        		 $("#save_template" ).addClass('button').val('Send');
+                         $("#save_template").removeAttr("disabled");
+                        //$("#draft_template").removeAttr("disabled");
+		        	}
+		        	}
+		        });
+	 }
+	
+}
+
 </script>
 
 <!-- Footer Area -->

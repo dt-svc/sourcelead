@@ -146,6 +146,9 @@ public class RequirementSubmission implements Serializable{
 	@Column(name = "STATUS")
     private Integer status;
 	
+	@Column(name = "FILE_URL")
+    private String docURL;
+	
 	@Column(name = "SCORE")
     private String candidateScore;
 	
@@ -1575,6 +1578,14 @@ public class RequirementSubmission implements Serializable{
 	public void setFileURL(String fileURL)
 	{
 		this.fileURL = fileURL;
+	}
+
+	public String getDocURL() {
+		return docURL;
+	}
+
+	public void setDocURL(String docURL) {
+		this.docURL = docURL;
 	}
 
 	

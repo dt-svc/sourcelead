@@ -52,7 +52,6 @@
 function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
 	var sourceleadUrl = '${sourceleadUrl}';
 	var loginUserId = '${SourceLeadWeb_userId}';
-	
 	$("#detailViewLoading").attr('style','position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	$.ajax({ 
 	    	type: "POST",
@@ -185,7 +184,12 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
                result = result + '<div class="col-md-6">';
                result = result + ' <div class="media">';
                result = result + '<div class="media-left image-parent positionRelative">';
+               if(json.candidate.fileUrl != null && json.candidate.fileUrl !='' && json.candidate.fileUrl !="undefined"){
                result = result + '<div class="imageParent"><img data-id="profileImage" onerror="predefineProfileImage(this);" src="'+json.candidate.fileUrl+'"  alt="candidate" title="Candidate"></div>';
+               }else{
+               result = result + '<div class="imageParent"><img data-id="profileImage" onerror="predefineProfileImage(this);" src="resources/images/userprofileImg.jpg" alt="candidate" title="Candidate"></div>';
+   
+               }
                if(json.candidateScore != null && json.candidateScore != '' && json.candidateScore != 'undefined'){
 					  if(json.candidateScore >=50){ 
 					 	 result = result +'                    <i class="valid-profile fa fa-check-square text-success"></i>';        
@@ -265,7 +269,6 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
 			   
 			    result = result + '<div class="acceptreject-actions">';
 			    if(json.needApplicantPermit == 'Y'){
-			    	
 			    	result = result + '		<p><strong>Applicant Authorization</strong></p>';
 			    	if(json.submissionRateStatus != 'REJECTED'){
 					result = result + ' <a href="#assignComment" class="btn commtn_btn btn-sm pull-right btn-info" title="Applicant Authorization Details">Details</a> ';
@@ -311,6 +314,7 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
 										result = result + '</li>';
 									}
 						   }else{
+							   
 							   <c:if test="${isTeamMember == true && isManager == false && isAdmin == false}">
 							   		result = result +'<span id= "requestsDiv">';
 							   		if(json.submissionStatus != 'REJECTED' && json.submissionStatus != 'SHORTLIST' && json.submissionStatus != 'OFFERMADE' && json.submissionStatus != 'INTERVIEW' && json.submissionStatus != 'SUBMIT_TO_CLIENT' && json.submissionStatus != 'SUBMISSION' && json.submissionStatus != 'OFFERREJECTED' && json.submissionStatus != 'OFFERACCEPTED'){
@@ -469,7 +473,7 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
           
         //Assignmemeber Comment
           if(json.needApplicantPermit == 'Y'){
-         	result = result + ' <div class="row positionRelative">';
+        	  result = result + ' <div class="row positionRelative">';
 	          result = result + ' <div class="col-sm-12 col-md-12">';
 		          //if(json.submissionRateStatus != '' && json.submissionStatus != '' && json.submissionRateStatus != null ){
 			          result = result + ' <div class="panel panel-default" id="assignComment">';
@@ -477,7 +481,7 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
 			          //result = result + ' <div class="panel-body" id="assignComment">'+json.submissionRequestComment+'</div>';
 			          result = result + ' <div class="panel-body row">';
 			          result = result + ' <div class="clearfix"><label class="col-md-2 text-right paddingRight">Requested by:</label><span class="col-md-9">'+json.submittedBy+'</span></div>';
-				          if(json.submissionRateStatus == 'ACCEPTED'){
+			          if(json.submissionRateStatus == 'ACCEPTED'){
 				        	  if(json.submissionRequestUser != null && json.submissionRequestUser != 'undefined'){
 				        		  result = result + ' <div class="clearfix mt10"><label class="col-md-2 text-right paddingRight">Accepted by:</label><span class="col-md-9">'+json.submissionRequestUser+'</span></div>';
 				        	  }else{
@@ -492,10 +496,10 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
 				        	  }
 				        	 }
 				          if(json.submissionRequestComment != null && json.submissionRequestComment != '' && json.submissionRequestComment != 'undefined'){
-					          result = result + ' <div class="clearfix mt10"><label class="col-md-2 text-right paddingRight">Attachment:</label><span class="col-md-9"><a href=\"'+opt.fileURL+'/downloadRequestDocumentBySubmissionId?submissionId='+submissionId+'\" class="pull-left" style="color:#151B8D">'+json.submissionRequestFileName+'</a></span></div>';
+					          result = result + ' <div class="clearfix mt10"><label class="col-md-2 text-right paddingRight">Attachment:</label><span class="col-md-9"><a href=\"'+json.docURL+'\" class="pull-left">'+json.submissionRequestFileName+'</a></span></div>';
 					          result = result + ' <div class="clearfix mt10"><label class="col-md-2 text-right paddingRight">Comment:</label><span class="col-md-9">'+json.submissionRequestComment+'</span></div>';
 					          }
-		          //}
+		          }
 	          
 	          result = result + ' </div>';
 	          result = result + ' </div>';
@@ -504,8 +508,6 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
 
 	        result = result + ' </div>';
        
-         
-        
           //Reject Reason
           result = result + '<div class="row positionRelative">';
           result = result + '<div class="col-sm-12 col-md-12">';
@@ -525,8 +527,6 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
           result = result + '</div>';
           result = result + '</div>';
           }
-          }
-        
         
 '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_INTERVIEW\',\'ROLE_VIEW_CANCEL_INTERVIEW\')">';
      getInternalInterviewsList(submissionId);
@@ -1470,7 +1470,7 @@ function notifyToVendor(submissionId,offerId,offerHistoryId){
 		$('#accpet-div').empty();
 		$('#request').empty();
 		var result = "";
-		result = result + '<form id="request_form" name="request_form" action="upload" enctype="multipart/form-data" method="post">';
+		result = result + '<form id="request_form" name="request_form" action="upload"  method="post">';
 		result = result + '			<div class="row">';
 		result = result + '				<div class="col-md-12">';
 		result = result + '					<textarea rows="2" class="form-control" placeholder="Comment *" id="comment" name="comment" onkeypress="submissionDetailsremoveSpaces();" data-validation="required validate_Space validate_length length2-250" field-name="Comment"></textarea>';
@@ -1486,8 +1486,8 @@ function notifyToVendor(submissionId,offerId,offerHistoryId){
 		result = result+'	                  <div class="clearfix mb10 row mt" id="docFileuploadFileGroup">';
 		result = result+'	                    <div class="col-md-12">';
 		result = result+'							<div class="input-group positionRelative" id="uploadFileGroup">';
-		result = result+'	                          <label class="input-group-btn"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File <span class="text-danger">&nbsp;*</span>';
-		result = result+'	                            <input type="file" name="docFile" id="docFile" style="display: none;"  multiple="" class="upload">';
+		result = result+'	                          <label class="input-group-btn" onchange = "submissionDocFile();"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File <span class="text-danger">&nbsp;*</span>';
+		result = result+'	                            <input type="file" name="docFile" id="docFile" style="display: none;" class="upload">';
 		result = result+'	                            </span> </label>';
 		result = result+'	                          <input type="text" class="form-control margnTop0" readonly id="subUploadFile" name="subUploadFile" placeholder="Attachment" field-name="Attachment" data-validation="required validate_Space validatedoc">';
 		result = result+'	                        </div>';
@@ -1531,7 +1531,11 @@ function notifyToVendor(submissionId,offerId,offerHistoryId){
 	
 	
 </script>
-
+<script type="text/javascript">
+function submissionDocFile() {
+	fileUpload("docFile", "requestDocuments", "request_form");
+}
+</script>
 <script>
    function submissionDetailsremoveSpaces() {
 	    var output = document.getElementById("comment").value;
@@ -1596,25 +1600,14 @@ function getApplicantOtherizationRejectedCategory(){
 					dateFormat : 'yyyy/mm/dd' 
 		         }; 
 			 if ($('#accept_form').validate(false, validationSettings)){
-				var frm = $('#accept_form').serializeFormJSON();
-				var con = JSON.stringify(frm);
-				con = con.replace(/[{}]/g, "");
-				var form = $('#accept_form')[0];
-	      		var formData = new FormData(form); 
-				var sourceleadUrl = '${sourceleadUrl}';
+	      		var formData = getFormData('accept_form'); 
 				$("#accept_candidate").attr("disabled", "disabled");
          		$("#accept_candidate" ).addClass('button').val('Processing..');
-				//It will escape all the special characters
-		        var jsonData = encodeURIComponent(con);
+				
 				$.ajax({
 						type : "POST",
 		        	    data: formData,
-		        	    contentType : 'application/json; charset=utf-8',
-		        	    enctype: 'multipart/form-data',
-		    	        processData: false,
-		    	        contentType:false,
-		        	    dataType : 'json',
-						url : sourceleadUrl+"/acceptRejectCandidate?"+tokenParamName+"="+tokenValue+"&json="+jsonData+"&submissionId="+submissionId+"&decision="+decision,
+						url : sourceleadUrl+"/acceptRejectCandidate?"+tokenParamName+"="+tokenValue+"&submissionId="+submissionId+"&decision="+decision,
 						success : function(result) {
 							 if( result.indexOf('Sign In') >= 0){
 					    		location.replace(sourceleadUrl);
@@ -1663,25 +1656,14 @@ function getApplicantOtherizationRejectedCategory(){
 					dateFormat : 'yyyy/mm/dd' 
 		         }; 
 			 if ($('#request_form').validate(false, validationSettings)){
-				var frm = $('#request_form').serializeFormJSON();
-				var con = JSON.stringify(frm);
-				con = con.replace(/[{}]/g, "");
-				var form = $('#request_form')[0];
-	      		var formData = new FormData(form); 
-				var sourceleadUrl = '${sourceleadUrl}';
+				 var formData = getFormData('request_form');
 				$("#request_candidate").attr("disabled", "disabled");
          		$("#request_candidate" ).addClass('button').val('Processing..');
 				//It will escape all the special characters
-		        var jsonData = encodeURIComponent(con);
 				$.ajax({
 						type : "POST",
 		        	    data: formData,
-		        	    contentType : 'application/json; charset=utf-8',
-		        	    enctype: 'multipart/form-data',
-		    	        processData: false,
-		    	        contentType:false,
-		        	    dataType : 'json',
-						url : sourceleadUrl+"/acceptRejectCandidate?"+tokenParamName+"="+tokenValue+"&json="+jsonData+"&submissionId="+submissionId+"&decision="+decision,
+						url : sourceleadUrl+"/acceptRejectCandidate?"+tokenParamName+"="+tokenValue+"&submissionId="+submissionId+"&decision="+decision,
 						success : function(result) {
 							 if( result.indexOf('Sign In') >= 0){
 					    		location.replace(sourceleadUrl);
@@ -1719,25 +1701,16 @@ function getApplicantOtherizationRejectedCategory(){
 					dateFormat : 'yyyy/mm/dd' 
 		         }; 
 			 if ($('#reject_form').validate(false, validationSettings)){
-				var frm = $('#reject_form').serializeFormJSON();
-				var con = JSON.stringify(frm);
-				con = con.replace(/[{}]/g, "");
-				var form = $('#reject_form')[0];
-	      		var formData = new FormData(form); 
-				var sourceleadUrl = '${sourceleadUrl}';
+				
+	      		var formData = getFormData('reject_form'); 
+				
 				$("#accept_candidate").attr("disabled", "disabled");
          		$("#accept_candidate" ).addClass('button').val('Processing..');
 				//It will escape all the special characters
-		        var jsonData = encodeURIComponent(con);
 				$.ajax({
 						type : "POST",
 		        	    data: formData,
-		        	    contentType : 'application/json; charset=utf-8',
-		        	    enctype: 'multipart/form-data',
-		    	        processData: false,
-		    	        contentType:false,
-		        	    dataType : 'json',
-						url : sourceleadUrl+"/acceptRejectCandidate?"+tokenParamName+"="+tokenValue+"&json="+jsonData+"&submissionId="+submissionId+"&decision="+decision,
+						url : sourceleadUrl+"/acceptRejectCandidate?"+tokenParamName+"="+tokenValue+"&submissionId="+submissionId+"&decision="+decision,
 						success : function(result) {
 							 if( result.indexOf('Sign In') >= 0){
 					    		location.replace(sourceleadUrl);
@@ -1915,8 +1888,7 @@ function interviewFeedback(interviewId,templateId,id){
 	$.ajax({
 	type: "GET",
 	url: sourceleadUrl+"/getInterviewrsFeedbackList?"+tokenParamName+"="+tokenValue+"&interviewId="+interviewId+"&locationId="+locationId,
-		success: function(data) {
-			var json = JSON.parse(data);
+		success: function(json) {
 			var result = "";
 			result = result +"<strong>Interview Feedback</strong>";
 			result = result +"<table id='requirementApproverPagination' cellspacing='0' width='100%' class='mt10'>"; 

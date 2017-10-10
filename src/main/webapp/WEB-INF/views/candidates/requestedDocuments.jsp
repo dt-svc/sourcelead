@@ -52,6 +52,9 @@ top: 20%; right: auto; left: 40%;
 </style>
 
 <body>
+<script type="text/javascript">
+var sourceleadUrl ='${sourceleadUrl}';
+</script>
 <div class="clearfix"> 
   <!-- Header Area -->
   <header class="main-header">
@@ -146,21 +149,11 @@ $('body').on('submit', '#requestForDocs_form', function(e){
 	  if ($("#requestForDocs_form").validate(false, validationSettings)){
       e.preventDefault();
      
-     /*  var frm = $('#requestForDocs_form').serializeFormJSON();
-      var con = JSON.stringify(frm);
-      con = con.replace(/[{}]/g, "");
-      
-      //It will escape all the special characters
-      var jsonData = encodeURIComponent(con);
-      
-      var form = $('#requestForDocs_form')[0];
-	  var formData = new FormData(form);  */
 	  var requestDocUUID = '${requestDocUUID}';
 	    var formData = getFormData1("requestForDocs_form");
-		var sourceleadUrl = '${sourceleadUrl}';
-		$("#save_doc").attr("disabled", "disabled");
-		$("#save_doc" ).addClass('button').val('Processing..');
-		
+		$("#submit_docs").attr("disabled", "disabled");
+		$("#submit_docs" ).addClass('button').val('Processing..');
+		alert("hello"+sourceleadUrl)
 		$.ajax({
 				 type : "POST",
 				 data: formData,
@@ -173,11 +166,6 @@ $('body').on('submit', '#requestForDocs_form', function(e){
 			},
 		});
 		
-	/* 	
-      $.post(sourceleadUrl+"/uploadRequestedDocuments?"+tokenParamName+"="+tokenValue+"", formData,processData: false,contentType:false, function(data) {
-    	  location.replace(sourceleadUrl+"/requestedDocuments?requestDocUUID="+requestDocUUID); 
-      }); */
-     
       return true; 
     }
     else{
@@ -190,10 +178,20 @@ $('body').on('submit', '#requestForDocs_form', function(e){
 		$("#requestForDocs_form").validateOnBlur(false, validationSettings);
 	});
   </script>
-  
+  <script type="text/javascript">
+var tokenParamName = "${_csrf.parameterName}";
+var tokenValue = "${_csrf.token}";
+
+function tagItBykeyForEmails(e){
+	if(e.which == 0 || e.which == 13 || e.which == 9 || e.which == 32 || e.which == 188){
+		 $(document).click();
+		 return true;
+	}
+}
+</script>
 <script>
 function uploadFileReqDoc(id){
-	var sourceleadUrl ='${sourceleadUrl}';
+	
 	fileUpload("uploadDocFile"+id+"", "requestedDocuments", "requestForDocs_form", '', '${orgId}', '${orgLocationId}');
 }
 </script> 

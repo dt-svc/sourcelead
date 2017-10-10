@@ -142,7 +142,9 @@ public class Constants {
 	public static final String MAIL_TEAM_MANAGER_APPROVED_EXPENSE = "ExpensesApprovalManagerEmailToEmployee";
 	public static final String MAIL_TEAM_MANAGER_REJECTED_EXPENSE = "ExpensesApprovalRejectedEmailToEmployee";
 	public static final String MAIL_APPROVERS_REOPEN_EXPENSE = "ExpensesReopenEmailToSuperAdmin";
-
+	
+	public static final String LEAVE_CANCEL_EMAIL_TO_USER = "LeaveCancelEmailToUser";
+	public static final String LEAVE_CANCEL_NOTOFICATION_TO_USER = "LeaveCancelNotificationToUser";
 	
 	public static final String MAIL_REOPEN_APPROVED_EXPENSES_EMAIL_TO_APPROVERS = "ReopenApprovedExpenseEmailToApprovers";
 	public static final String MAIL_REOPEN_REJECT_EXPENSES_EMAIL_TO_APPROVERS = "ReopenRejectExpenseEmailToApprovers";
@@ -854,5 +856,7 @@ public class Constants {
 	public static final String CLINT_VENDOR_DOES_NOT_EXIST = "false";
 	public static final String CLINT_VENDOR_IF_EXIST = "true";
 	public static final String CLINT_VENDOR_IF_EXIST_AS_SAMEORG = "sameorg";
+	public static final String LEAVE_EMAIL_TO_APPROVERS = "LeaveEmailToApprovers";
+	public static final String LEAVE_NOTIFICATION_TO_APPROVERS = "LeaveNotificationToApprovers";
 
 }

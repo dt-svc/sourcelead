@@ -1,4 +1,3 @@
-
 #Leave Management
 
 #LEAVE_OPTION
@@ -231,6 +230,20 @@ CREATE TABLE `sourcelead`.`LEAVE_MANAGEMENT_HISTORY` (
   FOREIGN KEY(LEAVE_ID) REFERENCES `sourcelead`.`LEAVE`(ID),
   FOREIGN KEY(LEAVE_TYPE_ID) REFERENCES `sourcelead`.`LEAVE_TYPE`(ID),
   FOREIGN KEY(OPTION_ID) REFERENCES `sourcelead`.`LEAVE_OPTION`(ID),
+  FOREIGN KEY(HOLIDAY_ID) REFERENCES `sourcelead`.`HOLIDAY`(ID),
+  FOREIGN KEY(SHIFT_ID) REFERENCES `sourcelead`.`SHIFT`(ID),
+  FOREIGN KEY(RESTRICT_DAY_ID) REFERENCES `sourcelead`.`RESTRICT_DAY`(ID),
+  FOREIGN KEY(APPROVED_BY) REFERENCES `sourcelead`.`USER`(ID),
+  FOREIGN KEY(REJECTED_BY) REFERENCES `sourcelead`.`USER`(ID),
+  FOREIGN KEY(CANCELLED_BY) REFERENCES `sourcelead`.`USER`(ID)
+) ;
+
+SET SQL_SAFE_UPDATES = 0;
+
+UPDATE `sourcelead`.`EMAIL_SCENARIO` SET `BODY`='Dear {{MSAFinalizeEmail.receiverParty}},\n We are happy to inform you {{MSAFinalizeEmail.contractTitle}} Contract got finalised from {{MSAFinalizeEmail.duration}}' WHERE `UNIQUE_SCENARIO_NAME`='MSAFinalizeEmail';
+
+SET SQL_SAFE_UPDATES = 1;
+
   FOREIGN KEY(HOLIDAY_ID) REFERENCES `sourcelead`.`HOLIDAY`(ID)
 ) ;
 

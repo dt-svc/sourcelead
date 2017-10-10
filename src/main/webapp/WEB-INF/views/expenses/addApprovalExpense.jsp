@@ -399,7 +399,6 @@ $(".project_inn_mask").fadeOut(200);
 <script>
 function getMembersForSelectedProject(){
 	var projectId = document.getElementById("projectId").value;
-	
 	$.ajax({
 	      type : "GET",
 	       url: sourceleadUrl+"/getMembersForSelectedProject?projectId="+projectId,       
@@ -412,7 +411,7 @@ function getMembersForSelectedProject(){
 				        var opt = json[i];
 				        result = result + '<option  value="'+opt.id+'">'+opt.empName+'</option>';
 			       	}
-				//$("#projectMemberId").empty();
+				$("#projectMemberId").empty();
 				$("#projectMemberId").append(result);
 				$("#projectMemberId").trigger("chosen:updated");
 	    	   }
