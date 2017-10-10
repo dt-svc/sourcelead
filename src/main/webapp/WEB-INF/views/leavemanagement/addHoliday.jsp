@@ -17,7 +17,7 @@
  </script>
 <script>
 $(document).ready(function() {
-	var holidy = '${holidays.fromHalfDayCheckBox}';
+	var holidy = '${holidayDTO.fromHalfDayCheckBox}';
 	if(holidy == "on"){
 		document.getElementById("fromAmPmDivId").style.display="block";
 	}else{
@@ -39,7 +39,7 @@ $(document).ready(function() {
  </script>
 <script>
 $(document).ready(function() {
-	var holidy = '${holidays.toHalfDayCheckBox}';
+	var holidy = '${holidayDTO.toHalfDayCheckBox}';
 	if(holidy == "on"){
 		document.getElementById("toAmPmDivId").style.display="block";
 	}else{
@@ -56,11 +56,11 @@ $(document).ready(function() {
       <div class="pull-right brud-crum">Home &raquo; Leave Management &raquo; Holiday</div>
     </section>
     <div class="content-area content-new clearfix">
-    <form:form id="holiday_form" name="holiday_form" method="post">
-    <input type="hidden" name="holidayId" value="${holidays.id}"/>
+    <form id="holiday_form" name="holiday_form" method="post">
+    <input type="hidden" name="holidayId" value="${holidayDTO.id}"/>
       <div class="clearfix form-horizontal inner-content">
-        <div class="row">
-          <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">
+        <div class="clearfix">
+          <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
             <div class="form-group">
               <label class="col-md-3">Holiday Name<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-9" id="holidayNameDiv">
@@ -70,10 +70,13 @@ $(document).ready(function() {
             <div class="form-group">
               <label class="col-md-3">Date<span class="text-danger">*</span></label>
               <div class="col-md-9">
-                      <div class="width110px" id="errFromDate">
+                      <div class="clearfix row">
+                      
+                      <div class="col-sm-5 paddingRight" id="errFromDate">
                       <input type="text" class="form-control calendar" value="${holidayDTO.fromDateStr}" field-name="From Date" data-validation="required" name="fromDate" id="fromDate" placeholder="From Date">
                       </div>
-                      <div class="width90px checkBox">
+                      
+                      <div class="col-sm-4 paddingLeft paddingRight checkBox">
                       <c:if test="${!empty holidayDTO.fromHalfDayCheckBox}">
                       <input type="checkbox" id="fromHalfDayCheckBox" name="fromHalfDayCheckBox" checked="checked" value="${holidayDTO.fromHalfDayCheckBox}" onclick="fromDayCheckBox();">Half Day
                       </c:if>
@@ -81,30 +84,35 @@ $(document).ready(function() {
                       <input type="checkbox" id="fromHalfDayCheckBox" name="fromHalfDayCheckBox"  value="off" onclick="fromDayCheckBox();">Half Day
                       </c:if>
                       </div>
-                      <div class="width50px dropdown-select dropdown-select-custom" id="fromAmPmDivId" style="display:none">
+                      
+                      <div class="col-sm-3 dropdown-select dropdown-select-custom paddingLeft" id="fromAmPmDivId" style="display:none">
                       <select name="fromHalfDayAmPm">
                       
                       <c:if test="${holidayDTO.fromHalfDayAmPm  == 'AM'}">
-                       <option value="AM" selected>AM</option>
-                       <option value="PM">PM</option>
+                       <option value="AM" selected>&nbsp;&nbsp;AM</option>
+                       <option value="PM">&nbsp;&nbsp;PM</option>
                       </c:if>
                        <c:if test="${holidayDTO.fromHalfDayAmPm  == 'PM'}">
-                       <option value="AM">AM</option>
-                       <option value="PM" selected>PM</option>
+                       <option value="AM">&nbsp;&nbsp;AM</option>
+                       <option value="PM" selected>&nbsp;&nbsp;PM</option>
                        
                       </c:if>
                       <c:if test="${empty holidayDTO.fromHalfDayAmPm}">
-	                      <option value="AM">AM</option>
-	                      <option value="PM">PM</option>
+	                      <option value="AM">&nbsp;&nbsp;AM</option>
+	                      <option value="PM">&nbsp;&nbsp;PM</option>
                       </c:if>
                               <!-- <option value="AM">AM</option>
                               <option value="PM">PM</option> -->
                           </select>
                       </div>
-                      <div class="width110px" id="errToDate">
+                      
+                      </div>
+                      
+                      <div class="clearfix row mt10 mb10">
+                      <div class="col-sm-5 paddingRight" id="errToDate">
                       <input type="text" class="form-control calendar" value="${holidayDTO.toDateStr}" field-name="To Date" data-validation="required" name="toDate" id="toDate" placeholder="To Date">
                       </div>
-                      <div class="width90px checkBox">
+                      <div class="col-sm-4 paddingLeft paddingRight checkBox">
                       <c:if test="${!empty holidayDTO.toHalfDayCheckBox}">
                       <input type="checkbox" id="toHalfDayCheckBox" name="toHalfDayCheckBox" checked="checked" value="${holidays.toHalfDayCheckBox}" onclick="toDayCheckBox();">Half Day
                       </c:if>
@@ -112,35 +120,31 @@ $(document).ready(function() {
                       <input type="checkbox" id="toHalfDayCheckBox" name="toHalfDayCheckBox"  value="off" onclick="toDayCheckBox();">Half Day
                       </c:if>
                       </div>
-                      <div class="width50px dropdown-select dropdown-select-custom" id="toAmPmDivId" style="display:none">
-                      <select name="halfDayAmPm">
+                      <div class="col-sm-3 dropdown-select dropdown-select-custom paddingLeft" id="toAmPmDivId" style="display:none">
+                      <select name="toHalfDayAmPm">
                       
                       <c:if test="${holidayDTO.toHalfDayAmPm  == 'AM'}">
-                       <option value="AM" selected>AM</option>
-                       <option value="PM">PM</option>
+                       <option value="AM" selected>&nbsp;&nbsp;AM</option>
+                       <option value="PM">&nbsp;&nbsp;PM</option>
                       </c:if>
                        <c:if test="${holidayDTO.toHalfDayAmPm  == 'PM'}">
-                       <option value="AM">AM</option>
-                       <option value="PM" selected>PM</option>
+                       <option value="AM">&nbsp;&nbsp;AM</option>
+                       <option value="PM" selected>&nbsp;&nbsp;PM</option>
                        
                       </c:if>
                       <c:if test="${empty holidayDTO.toHalfDayAmPm}">
-	                      <option value="AM">AM</option>
-	                      <option value="PM">PM</option>
+	                      <option value="AM">&nbsp;&nbsp;AM</option>
+	                      <option value="PM">&nbsp;&nbsp;PM</option>
                       </c:if>
                               <!-- <option value="AM">AM</option>
                               <option value="PM">PM</option> -->
                           </select>
                       </div>
+                      </div>
                   </div>
             </div>
-            
-           <div class="form-group">
-              <label class="col-md-3">Description</label>
-              <div class="col-md-9">
-                  <textarea rows="2" class="form-control" name="description" placeholder="Description" value="${holidayDTO.description}">${holidayDTO.description}</textarea>
-              </div>
-            </div>
+         </div>
+         <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">   
                   
                   <div class="form-group">
                   <label class="col-md-3">Status ${holidayDTO.holidayStatus}</label>
@@ -173,6 +177,13 @@ $(document).ready(function() {
                                       </div>
                                   </div>
                                   
+              <div class="form-group">
+              <label class="col-md-3">Description</label>
+              <div class="col-md-9">
+                  <textarea rows="2" class="form-control" name="description" placeholder="Description" value="${holidayDTO.description}">${holidayDTO.description}</textarea>
+              </div>
+            </div>
+              
               </div>
               
               
@@ -187,10 +198,8 @@ $(document).ready(function() {
           </div>
         </div>
       </div>
+      </form>
       </div>
-      <!-- Content Area Ends--> 
-      </form:form>
-    </div>
   </section>
   <script type="text/javascript">
 	function saveHoliday() {
@@ -249,8 +258,8 @@ function cancel(){
 		  	  changeYear: true, 
 		      onSelect: function (selected) {
 		            //var dt = new Date(selected);
-		            var dt = $(this).datepicker('getDate', '+1d');
-		            dt.setDate(dt.getDate() + 1);
+		            var dt = $(this).datepicker('getDate', '+0d');
+		            dt.setDate(dt.getDate() + 0);
 		            $("#toDate").datepicker("option", "minDate", dt);
 		            removeFromDate();
 		        }
@@ -262,8 +271,8 @@ function cancel(){
 		  	  changeYear: true, 
 		        onSelect: function (selected) {
 		            //var dt = new Date(selected);
-		            var dt = $(this).datepicker('getDate', '-1d');
-		            dt.setDate(dt.getDate() - 1);
+		            var dt = $(this).datepicker('getDate', '-0d');
+		            dt.setDate(dt.getDate() - 0);
 		            $("#fromDate").datepicker("option", "maxDate", dt);
 		            removeToDate();
 		        }

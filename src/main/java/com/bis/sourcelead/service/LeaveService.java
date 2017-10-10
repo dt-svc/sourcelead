@@ -6,6 +6,7 @@ import com.bis.sourcelead.dto.LeaveDTO;
 import com.bis.sourcelead.dto.LeaveReportsDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Leave;
+import com.bis.sourcelead.entity.LeaveManagementHistory;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 
@@ -32,5 +33,8 @@ public interface LeaveService {
 	void sendLeaveEmailToApprovers(User loginUser, LeaveDTO leaveDTO, OrgLocations orgLoc) throws Exception;
 
 	boolean getWithdrawLeave(String leaveId, String reason, Long orgLocationId) throws Exception;
+	
+	void LeaveCancelEmailToUser(User loginUser, LeaveManagementHistory leaveManagementHistory,String reason) throws Exception;
+	
 
 }

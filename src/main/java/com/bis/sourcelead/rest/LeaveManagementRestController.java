@@ -806,13 +806,16 @@ public class LeaveManagementRestController {
 		ModelAndView model = new ModelAndView();
 		   Holiday holidays = holidayService.getHolidaysById(holidayId);
 		   HolidayDTO holidayDTO = new HolidayDTO();
-		   holidayDTO.setDescription(holidays.getDescription());
-		   holidayDTO.setFromHalfDayCheckBox(holidays.getFromHalfDayCheckBox());
+		   holidayDTO.setId(holidays.getId());
 		   holidayDTO.setHolidayName(holidays.getHolidayName());
-		   holidayDTO.setHolidayStatus(holidays.getHolidayStatus());
-		   holidayDTO.setFromHalfDayAmPm(holidays.getFromHalfDayAmPm());
+		   holidayDTO.setDescription(holidays.getDescription());
 		   holidayDTO.setFromDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), holidays.getFromDate()));
+		   holidayDTO.setFromHalfDayCheckBox(holidays.getFromHalfDayCheckBox());
+		   holidayDTO.setFromHalfDayAmPm(holidays.getFromHalfDayAmPm());
 		   holidayDTO.setToDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), holidays.getToDate()));
+		   holidayDTO.setToHalfDayCheckBox(holidays.getToHalfDayCheckBox());
+		   holidayDTO.setToHalfDayAmPm(holidays.getToHalfDayAmPm());
+		   holidayDTO.setHolidayStatus(holidays.getHolidayStatus());
 		   model.addObject("holidayDTO", holidayDTO);
 		   model.addObject("sourceleadUrl", sourceleadUrl);
 		   model.setViewName("leavemanagement/addHoliday");
@@ -1111,6 +1114,7 @@ public class LeaveManagementRestController {
 			leaveManagementHistory.setUpdatedDate(new Date());
 			leaveManagementHistory.setToStage(Constants.LEAVE_CANCELLED);
 			leaveManagementHistoryDao.saveLeaveManagementHistory(leaveManagementHistory);
+			leaveService.LeaveCancelEmailToUser(user,leaveManagementHistory,reason);
 		return isCancelled;
 	}	
 	
