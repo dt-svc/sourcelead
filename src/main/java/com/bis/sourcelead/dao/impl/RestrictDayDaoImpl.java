@@ -16,7 +16,9 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.RestrictDayDao;
+import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.RestrictDay;
+import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.ConversionUtil;
 
 @Repository
@@ -27,6 +29,9 @@ public class RestrictDayDaoImpl implements RestrictDayDao{
 	
 	@Autowired
 	private ConversionUtil conversionUtil;
+	
+	@Autowired
+	CommonUtil commonUtil;
 	
 	private static final Logger logger = LoggerFactory.getLogger(UserDaoImpl.class);
 	
@@ -69,15 +74,15 @@ public class RestrictDayDaoImpl implements RestrictDayDao{
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public List<RestrictDay> validateRestrictDayDates(String fromDateStr, String toDateStr, Long orgLocationId) throws Exception {
+	public List<RestrictDay> validateRestrictDayDates(String fromDateStr, String toDateStr,OrgLocations orgLocations) throws Exception {
 		
 		
-		Date fromDate = conversionUtil.getDateFromString(fromDateStr);
-		Date toDate = conversionUtil.getDateFromString(toDateStr);
+		Date fromDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), fromDateStr);
+		Date toDate =  commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), toDateStr);
 		
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from RestrictDay resDay  where resDay.orgLocationId = :orgLocationId and ((resDay.startDate <= :fromDate and resDay.endDate >= :fromDate) or (resDay.startDate <= :toDate and resDay.endDate >= :toDate))";
-		List<RestrictDay> restrictDayList = session.createQuery(query).setParameter("fromDate", fromDate).setParameter("toDate", toDate).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+		List<RestrictDay> restrictDayList = session.createQuery(query).setParameter("fromDate", fromDate).setParameter("toDate", toDate).setLong("orgLocationId", orgLocations.getId()).setCacheable(true).list();
 		return restrictDayList;
 	}
 
