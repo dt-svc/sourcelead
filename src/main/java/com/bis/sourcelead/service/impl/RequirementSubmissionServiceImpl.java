@@ -381,9 +381,12 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 					if(jsonObj.has("vendors") && !"".equalsIgnoreCase(jsonObj.getString("vendors"))){
 						OrgRelations orgRelation = orgRelationsService.getOrRelationsById(Long.parseLong(jsonObj.getString("vendors")));
 						candidate.setOrgRelationId(orgRelation);
+						Candidate vendorCandidate =  commonUtil.getVendorCandidate(jsonObj, orgRelation, orgLocations, user);
+						candidate.setParentCandidateId(vendorCandidate);
 					}else{
 						candidate.setOrgRelationId(null);
-					}
+						candidate.setParentCandidateId(null);
+					} 
 					
 					if(jsonObj.has("vendorContact") && !"".equalsIgnoreCase(jsonObj.getString("vendorContact"))){
 						OrgSpoc orgspoc = orgSpocService.getOrgSpocById(Long.parseLong(jsonObj.getString("vendorContact")));
