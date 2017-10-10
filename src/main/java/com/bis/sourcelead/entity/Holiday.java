@@ -2,7 +2,6 @@ package com.bis.sourcelead.entity;
 
 import java.io.Serializable;
 import java.util.Date;
-import java.util.UUID;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -12,12 +11,14 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
+
 
 /**
  * @author BIS_SL2
@@ -48,12 +49,17 @@ private static final long serialVersionUID = 1L;
 	@Column(name = "TO_DATE")
 	private Date toDate;
 	
-	@Column(name = "HALF_DAY")
-	private String halfDayCheckBox;
+	@Column(name = "FROM_HALF_DAY")
+	private String fromHalfDayCheckBox;
 	
-	@Column(name = "HALF_DAY_AM_PM")
-	private String halfDayAmPm;
+	@Column(name = "FROM_HALF_DAY_AM_PM")
+	private String fromHalfDayAmPm;
 	
+	@Column(name = "TO_HALF_DAY")
+	private String toHalfDayCheckBox;
+	
+	@Column(name = "TO_HALF_DAY_AM_PM")
+	private String toHalfDayAmPm;
 	
 	@Column(name = "DESCRIPTION", columnDefinition = "TEXT default NULL")
 	private String description;
@@ -75,6 +81,12 @@ private static final long serialVersionUID = 1L;
 	
 	@Column(name = "UPDATED_DATE")
 	private Date updatedDate;
+	
+	@Transient
+	private String fromDateStr;
+	
+	@Transient
+	private String toDateStr;
 	
 	public String getId() {
 		return id;
@@ -119,20 +131,36 @@ private static final long serialVersionUID = 1L;
 		this.toDate = toDate;
 	}
 
-	public String getHalfDayCheckBox() {
-		return halfDayCheckBox;
+	public String getFromHalfDayCheckBox() {
+		return fromHalfDayCheckBox;
 	}
 
-	public void setHalfDayCheckBox(String halfDayCheckBox) {
-		this.halfDayCheckBox = halfDayCheckBox;
+	public void setFromHalfDayCheckBox(String fromHalfDayCheckBox) {
+		this.fromHalfDayCheckBox = fromHalfDayCheckBox;
 	}
 
-	public String getHalfDayAmPm() {
-		return halfDayAmPm;
+	public String getFromHalfDayAmPm() {
+		return fromHalfDayAmPm;
 	}
 
-	public void setHalfDayAmPm(String halfDayAmPm) {
-		this.halfDayAmPm = halfDayAmPm;
+	public void setFromHalfDayAmPm(String fromHalfDayAmPm) {
+		this.fromHalfDayAmPm = fromHalfDayAmPm;
+	}
+
+	public String getToHalfDayCheckBox() {
+		return toHalfDayCheckBox;
+	}
+
+	public void setToHalfDayCheckBox(String toHalfDayCheckBox) {
+		this.toHalfDayCheckBox = toHalfDayCheckBox;
+	}
+
+	public String getToHalfDayAmPm() {
+		return toHalfDayAmPm;
+	}
+
+	public void setToHalfDayAmPm(String toHalfDayAmPm) {
+		this.toHalfDayAmPm = toHalfDayAmPm;
 	}
 
 	public String getDescription() {
@@ -197,6 +225,22 @@ private static final long serialVersionUID = 1L;
 
 	public void setStatus(String status) {
 		this.status = status;
+	}
+
+	public String getFromDateStr() {
+		return fromDateStr;
+	}
+
+	public void setFromDateStr(String fromDateStr) {
+		this.fromDateStr = fromDateStr;
+	}
+
+	public String getToDateStr() {
+		return toDateStr;
+	}
+
+	public void setToDateStr(String toDateStr) {
+		this.toDateStr = toDateStr;
 	}
 	
 	

@@ -18,6 +18,7 @@ import com.bis.sourcelead.dao.ReferContactsDao;
 import com.bis.sourcelead.dao.RequirementDao;
 import com.bis.sourcelead.dao.RequirementReferDao;
 import com.bis.sourcelead.dao.UserDao;
+import com.bis.sourcelead.dto.ReferContactsDTO;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
@@ -364,21 +365,17 @@ public class RequirementReferServiceImpl implements RequirementReferService {
 	}
 
 	@Override
-	public void submitUserContactsToRequirement(User user, OrgLocations orgLocations, JSONObject jsonObj)
+	public void submitUserContactsToRequirement(User user, OrgLocations orgLocations, ReferContactsDTO referContactsDTO)
 			throws Exception {
 		
 		
-		if(jsonObj.has("userContacts") && !isNullOrEmpty(jsonObj.getString("userContacts"))){
+		if(referContactsDTO.getUserContacts() != null && referContactsDTO.getUserContacts().size() > 0){
 			
 			
-			String userContacts = jsonObj.getString("userContacts");
-			userContacts = userContacts.replaceAll("\\[", "").replaceAll("\\]","");
+			Requirement requirement = requirementDao.getRequirementByRequirementId(referContactsDTO.getContactReferRequirementId());
 			
-			String[] contacts = userContacts.split(",");
-			Requirement requirement = requirementDao.getRequirementByRequirementId(Long.valueOf(jsonObj.getString("contactReferRequirementId")));
-			
-			for(int i=0; i < contacts.length; i++){
-				ReferContacts referContacts = referContactsDao.getReferContactsById(Long.parseLong(contacts[i].replace("\"", "")));
+			for(String userContacts : referContactsDTO.getUserContacts()){
+				ReferContacts referContacts = referContactsDao.getReferContactsById(Long.parseLong(userContacts));
 				RequirementRefer refer = new RequirementRefer();
 				refer.setReferFromUser(user);
 				refer.setReferToUser(referContacts.getContactUser());

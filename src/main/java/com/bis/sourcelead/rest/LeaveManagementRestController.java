@@ -263,9 +263,6 @@ public class LeaveManagementRestController {
 				}
 				 model.addObject("approverList", approverList);
 			}
-			
-			
-			
 		   model.setViewName("leavemanagement/applyLeave");
 	       return model;
 	}
@@ -289,17 +286,15 @@ public class LeaveManagementRestController {
 				   }
 			   }
 			   
-			   int totalLeaves = 0;
 				for(LeaveType type : roleLeaveType) {
-				int balanceLeave = Integer.valueOf(type.getNumbefrOfLeavesPeryear());
-				totalLeaves = Integer.valueOf(type.getNumbefrOfLeavesPeryear());
+				int totalLeaves = Integer.valueOf(type.getNumbefrOfLeavesPeryear());
 				List<Leave> totalleavesTaken = leaveService.getLeavesListByTypeIdAndLocationIdAndUserId(type.getId(),orgLocations.getId(), loginUser.getId());
 				for (Leave leave : totalleavesTaken) {
 					if(Constants.APPROVED.equalsIgnoreCase(leave.getStatus())) {
-						balanceLeave = totalLeaves - (Integer.valueOf(leave.getNumberOfDays()));
+						totalLeaves = totalLeaves - (Integer.valueOf(leave.getNumberOfDays()));
 					}
 				}
-				 type.setRemainingTotalLeaveCounts(balanceLeave);
+				 type.setRemainingTotalLeaveCounts(totalLeaves);
 				}
 		   }
 		return roleLeaveType;
@@ -834,9 +829,21 @@ public class LeaveManagementRestController {
 	@PreAuthorize("hasAnyRole('ROLE_LEAVE_CONFIGURE')")
 	@RequestMapping(value = "/editHoliday")
 	public ModelAndView editHoliday(@RequestParam(value="holidayId", required=false) String holidayId,HttpServletRequest request,HttpServletResponse response) throws Exception {
-		   ModelAndView model = new ModelAndView();
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		ModelAndView model = new ModelAndView();
 		   Holiday holidays = holidayService.getHolidaysById(holidayId);
-		   model.addObject("holidays", holidays);
+		   HolidayDTO holidayDTO = new HolidayDTO();
+		   holidayDTO.setId(holidays.getId());
+		   holidayDTO.setHolidayName(holidays.getHolidayName());
+		   holidayDTO.setDescription(holidays.getDescription());
+		   holidayDTO.setFromDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), holidays.getFromDate()));
+		   holidayDTO.setFromHalfDayCheckBox(holidays.getFromHalfDayCheckBox());
+		   holidayDTO.setFromHalfDayAmPm(holidays.getFromHalfDayAmPm());
+		   holidayDTO.setToDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), holidays.getToDate()));
+		   holidayDTO.setToHalfDayCheckBox(holidays.getToHalfDayCheckBox());
+		   holidayDTO.setToHalfDayAmPm(holidays.getToHalfDayAmPm());
+		   holidayDTO.setHolidayStatus(holidays.getHolidayStatus());
+		   model.addObject("holidayDTO", holidayDTO);
 		   model.addObject("sourceleadUrl", sourceleadUrl);
 		   model.setViewName("leavemanagement/addHoliday");
 	       return model;
@@ -854,6 +861,20 @@ public class LeaveManagementRestController {
 			 isDeleted = true;
 		 }
 		return isDeleted;
+	}
+	
+	@RequestMapping(value = "/validateHolidayName", method = RequestMethod.GET)
+	public  @ResponseBody boolean validateHolidayName(@RequestParam(value = "holidayId", required = false) String holidayName,@RequestParam(value = "orgLocationId", required = false) Long orgLocationId,HttpServletRequest request) throws Exception
+	{
+		boolean isDeleted = false;
+		 Holiday deleteHoliday = holidayService.getHolidaysById(holidayName);
+		 if(deleteHoliday !=null) {
+			 deleteHoliday.setStatus("0");
+			 holidayDAO.saveDeleteHoliday(deleteHoliday);
+			 isDeleted = true;
+		 }
+		return isDeleted;
+		
 	}
 	
 	
@@ -1132,6 +1153,7 @@ public class LeaveManagementRestController {
 			leaveManagementHistory.setUpdatedDate(new Date());
 			leaveManagementHistory.setToStage(Constants.LEAVE_CANCELLED);
 			leaveManagementHistoryDao.saveLeaveManagementHistory(leaveManagementHistory);
+			leaveService.LeaveCancelEmailToUser(user,leaveManagementHistory,reason);
 		return isCancelled;
 	}	
 	
@@ -1284,4 +1306,62 @@ public class LeaveManagementRestController {
 		return isValid;
 
 	}
+	
+	@RequestMapping(value = "/getLeaveTypeReport")
+	public  List<LeaveTypeDTO> getLeaveTypeReport(HttpServletRequest request,HttpServletResponse response) throws Exception {
+		   OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		   User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		   Long roleId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRoleId");
+		   List<LeaveType> leaveTypeList = leaveTypeService.getLeaveTypeListByLocationId(String.valueOf(orgLocations.getId()));
+		   List<LeaveType> roleLeaveType = new ArrayList<>();
+		   List<LeaveTypeDTO> leaveTypeDTOList = new ArrayList<>();
+		   
+		   if(leaveTypeList !=null && !leaveTypeList.isEmpty()) {
+			   for(LeaveType leaveType : leaveTypeList) {
+				   Set<Long> roleIds = new HashSet<>();
+				   for(LeaveRole leaveRole : leaveType.getLeaveTypeRolesSet()) {
+					   roleIds.add(leaveRole.getRoleId().getId());
+				   }
+				   if(roleIds.contains(roleId)) {
+					   roleLeaveType.add(leaveType);
+				   }
+			   }
+			   
+				for(LeaveType type : roleLeaveType) {
+					int pendingCounts = 0;
+				    int approvedCounts = 0;
+					int rejectedCounts = 0;
+					int cancelCounts = 0;
+					LeaveTypeDTO leaveTypeDto = new LeaveTypeDTO();
+					List<Leave> totalleavesTaken = leaveService.getLeavesListByTypeIdAndLocationIdAndUserId(type.getId(),orgLocations.getId(), loginUser.getId());
+					for (Leave leave : totalleavesTaken) {
+							if(Constants.PENDING.equalsIgnoreCase(leave.getStatus())) {
+								pendingCounts = pendingCounts + 1;
+							}
+							if(Constants.APPROVED.equalsIgnoreCase(leave.getStatus())) {
+								approvedCounts = approvedCounts + 1;
+							}
+							if(Constants.REJECTED.equalsIgnoreCase(leave.getStatus())) {
+								rejectedCounts = rejectedCounts + 1;
+							}
+							if(Constants.LEAVE_CANCELLED.equalsIgnoreCase(leave.getStatus())) {
+								cancelCounts = cancelCounts + 1;
+							}
+					 }
+						leaveTypeDto.setName(type.getName());
+						leaveTypeDto.setLeaveTypeId(type.getId());
+						leaveTypeDto.setNoOfLeavesPerYear(type.getNumbefrOfLeavesPeryear());
+						leaveTypeDto.setApprovedCount(approvedCounts);
+					    leaveTypeDto.setRejectedCount(rejectedCounts);
+					    leaveTypeDto.setPendingCount(pendingCounts);
+					    leaveTypeDto.setCancelCount(cancelCounts);
+					    leaveTypeDTOList.add(leaveTypeDto);
+					}
+		   }
+		   
+		    
+		return leaveTypeDTOList;
+	}
+	
+	
 }

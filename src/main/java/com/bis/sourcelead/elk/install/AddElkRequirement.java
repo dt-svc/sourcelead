@@ -12,12 +12,12 @@ import java.sql.Statement;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 import javax.sql.DataSource;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
-import org.codehaus.plexus.util.StringUtils;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
@@ -140,7 +140,7 @@ public class AddElkRequirement {
 				requirementIndex.setReqLevel2ApproverUserId(lave21UserArry);
 				
 				ResultSet teamSet = getTeamDetails(Long.parseLong(rs.getString("ID")),conn);
-				List<String> assignTeamMembers = new ArrayList<>();
+				HashSet<String> assignTeamMembers = new HashSet<>();
 				if(teamSet !=null){
 					while(teamSet.next()){
 						if(teamSet.getString("ASSIGN_USER_ID") !=null && !"".equalsIgnoreCase(teamSet.getString("ASSIGN_USER_ID"))){
@@ -152,7 +152,7 @@ public class AddElkRequirement {
 					requirementIndex.setTeamAssignUserId(assignTeamMembersArray);
 				}
 				ResultSet resultTeam = getTeanOwnerIds(rs.getString("ID"),conn);
-				List<String> teamOwners = new ArrayList<>();
+				HashSet<String> teamOwners = new HashSet<>();
 				if(resultTeam != null){
 					while(resultTeam.next()){
 //						if(null!= resultTeam.getString("OWNER_USER_ID")&& !"".equalsIgnoreCase(resultTeam.getString("OWNER_USER_ID"))){

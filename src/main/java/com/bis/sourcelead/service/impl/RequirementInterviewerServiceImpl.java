@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.RequirementInterviewerDao;
+import com.bis.sourcelead.dto.RequirementInterviewerDTO;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
@@ -82,8 +83,8 @@ public class RequirementInterviewerServiceImpl implements RequirementInterviewer
 		 User interviewerUser = userService.getUserById(requirementInterviewer.getInterviewerUser().getId());
 		 Requirement requirement = requirementservice.getRequirementByRequirementId(requirementSubmission.getRequirement().getId());
 		 RequirementInterview requirementInterview = requirementInterviewService.getinterviewBySubmissionId(requirementSubmission.getId());
+		 if(requirementInterview!= null) {
 		 requirementInterview.getCandidateName();
-		 
 		EmailMessage emailMessage = new EmailMessage();
 		 emailMessage.setFirstName(requirement.getCreatedBy().getFirstName());
 		 emailMessage.setLastName(requirement.getCreatedBy().getLastName());
@@ -133,7 +134,7 @@ public class RequirementInterviewerServiceImpl implements RequirementInterviewer
 			 }
 		 
 			 StringBuilder feedbackBuilder = new StringBuilder();
-			 globalVarsMap.put("feedBackLink", feedbackBuilder.append("<a href='").append(sourceleadUrl).append("/publicInterviewFeedBackTemplate?templateId=").append(templateId).append("&requirementInterviewid=").append(requirementInterviewer.getId()).append("'style='text-decoration:none; '><div style=' width:100px; border-radius:30px; background-color:#D33B39; color:#FFF; font-size:15px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Feedback</div></a>").toString());
+			 globalVarsMap.put("feedBackLink", feedbackBuilder.append("<a href='").append(sourceleadUrl).append("/publicInterviewFeedBackTemplate?templateId=").append(templateId).append("&requirementInterviewid=").append(requirementInterviewer.getId()).append("&interviewerUser=").append(interviewerUser.getId()).append("'style='text-decoration:none; '><div style=' width:100px; border-radius:30px; background-color:#D33B39; color:#FFF; font-size:15px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Feedback</div></a>").toString());
 			
 		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 			
@@ -165,12 +166,17 @@ public class RequirementInterviewerServiceImpl implements RequirementInterviewer
 		 String actionLink="";
 		 emailScenerioUtil.sendNotification(actionLink, interviewerUser, requirement.getCreatedBy(), OrgLoc, notificationScenario);
 		}
-
+	}
 	@Override
 	public Boolean isInterviwerForByRequirementIdInterviewIdAndUserId(String reqUUID, Long requirementInterviewerId, Long userId)
 	{
 		return requirementInterviewerDao.isInterviwerForByRequirementIdInterviewIdAndUserId(reqUUID, requirementInterviewerId, userId);
 		
+	}
+
+	@Override
+	public List<RequirementInterviewerDTO> getInterviwersListByInterviewIdFromDTO(Long interviewId) {
+		return requirementInterviewerDao.getInterviwersListByInterviewIdFromDTO(interviewId);
 	}
 
 }

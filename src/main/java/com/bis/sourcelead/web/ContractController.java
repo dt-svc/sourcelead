@@ -183,7 +183,7 @@ public class ContractController {
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		
 		Contracts contract = null;
-		if(null != contractUUID && !contractUUID.isEmpty()){
+		if(null != contractUUID && !contractUUID.isEmpty() && !"null".equalsIgnoreCase(contractUUID)){
 			contract = contractsTemplateService.getContractByContractUUID(contractUUID);
 			
 			List<ContractRequestDocuments> contractRequestDocumentsList  = new ArrayList<>();

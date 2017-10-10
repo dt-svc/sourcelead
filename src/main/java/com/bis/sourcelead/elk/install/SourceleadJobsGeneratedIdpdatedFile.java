@@ -43,7 +43,6 @@ public class SourceleadJobsGeneratedIdpdatedFile{
 					 while(rSetorgShortCode.next()){
 						 Long  jobsOrgLocIds = rSetorgShortCode.getLong("ID");
 						 String  orgShortCode = rSetorgShortCode.getString("GENERATED_USER_ID");
-						 System.out.println("orgShortCode :"+orgShortCode);
 						 if(orgShortCode != null && orgShortCode != ""){
 							 String queryOrg = "SELECT * FROM sourcelead.REQUIREMENT requirement where requirement.ORG_LOCATION_ID= "+jobsOrgLocIds+"";
 							 ResultSet rs2 = stmt2.executeQuery(queryOrg);

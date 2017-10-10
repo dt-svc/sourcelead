@@ -12,6 +12,8 @@
 <script type="text/javascript">
 		 $(document).ready(function(){
 			 getHolidaysList();
+			 getEmployeeLeavesList();
+			 getPieChartBasedOnUser();
 			});
 </script>
 
@@ -49,58 +51,9 @@
                 <div class="row">
                   <div class="clearfix"></div>
                   <div class="col-md-6">
-                    <h4 class="leaves-heading">My Calendar</h4>
-                    <div id="scheduleCalendar"></div>
-                    <div class="clearfix"></div>
-                    <ul class="scheduleAvailable">
-                      <li><span class="bg-danger paddingRight"></span>Sick Leave</li>
-                      <li><span class="bg-primary paddingRight"></span>Vacation</li>
-                    </ul>
-                      
-                  </div>
-                  <div class="col-md-6">
                     <h4 class="leaves-heading">My Time off balance</h4>
                     <div class="row time-balance">
-                      <div class="col-md-3 mb">
-                        <h4 class="text-center">Vacation</h4>
-                        <div id="vacationDonut" class="amchartAnchor-Hide" style="width: 100%; height: 125px;"> </div>
-                        <div class="text-center">
-                          <h2>
-                            <label class="small text-muted">Remaining:</label>
-                            <label class="clearfix width100percnt mt5">120/80</label>
-                          </h2>
-                        </div>
-                      </div>
-                      <div class="col-md-3 mb">
-                        <h4 class="text-center">Sick Leaves</h4>
-                        <div id="sickDonut" class="amchartAnchor-Hide" style="width: 100%; height: 125px;"> </div>
-                        <div class="text-center">
-                          <h2>
-                            <label class="small text-muted">Remaining:</label>
-                            <label class="clearfix width100percnt mt5">120/80</label>
-                          </h2>
-                        </div>
-                      </div>
-                      <div class="col-md-3">
-                        <h4 class="text-center">Casual Leaves</h4>
-                        <div id="casualDonut" class="amchartAnchor-Hide" style="width: 100%; height: 125px;"></div>
-                        <div class="text-center">
-                          <h2>
-                            <label class="small text-muted">Remaining:</label>
-                            <label class="clearfix width100percnt mt5">120/80</label>
-                          </h2>
-                        </div>
-                      </div>
-                      <div class="col-md-3">
-                        <h4 class="text-center">Other Leaves</h4>
-                        <div id="otherDonut" class="amchartAnchor-Hide" style="width: 100%; height: 125px;"></div>
-                        <div class="text-center">
-                          <h2>
-                            <label class="small text-muted">Remaining:</label>
-                            <label class="clearfix width100percnt mt5">120/80</label>
-                          </h2>
-                        </div>
-                      </div>
+                    <div id="pichartLeaveTypeIdDiv"></div>
                     </div>
                   </div>
                   <div class="clearfix"></div>
@@ -660,6 +613,80 @@ function totalLeaveByEmployeeBarChart(data){
 }
 </script>
 
+
+<script>
+function getPieChartBasedOnUser(){
+	 
+	 $.ajax({
+        type : "GET",
+         url: sourceleadUrl+"/getLeaveTypeReport?"+tokenParamName+"="+tokenValue+"",    
+         success :function(data) {
+       	  var chartData = [];
+       		 var result = "";
+       		   for (var i = 0; i < data.length; i++) {
+       		 		 var opt = data[i]; 
+       		 		result = result +'  <div class="col-md-3 mb">';
+       	            result = result +'   <h4 class="text-center">'+opt.name+'</h4>';
+       	            result = result +'   <div id="vacationDonut'+opt.leaveTypeId+'" class="amchartAnchor-Hide" style="width: 100%; height: 125px;"> </div>';
+       	            result = result +'   <div class="text-center">';
+       	            result = result +'     <h2>';
+       	            result = result +'       <label class="small text-muted">Remaining:</label>';
+       	            result = result +'       <label class="clearfix width100percnt mt5">'+opt.approvedCount+' / '+opt.noOfLeavesPerYear+'</label>';
+       	            result = result +'     </h2>';
+       	            result = result +'   </div>';
+       	            result = result +' </div>';
+       	             AmCharts.makeChart("vacationDonut"+opt.leaveTypeId+"", {
+       						"type": "pie",
+       						"balloonText": "[[title]]<br><span style='font-size:14px'><b>[[value]]</b> </span>",
+       						"innerRadius": "60%",
+       						"pieX": "50%",
+       						"pieY": "50%",
+       						"radius": "48%",
+       						"colorField": "color",
+       						"colors": [],
+       						"labelsEnabled": false,
+       						"marginBottom": 0,
+       						"marginTop": 0,
+       						"titleField": "category",
+       						"valueField": "column-1",
+       						"allLabels": [],
+       						"balloon": {},
+       						"titles": [],
+       						"dataProvider": [
+       							{
+       								"category": "Approved",
+       								"column-1": opt.approvedCount,
+       								"color": "#5cb85c"
+       							},
+       							{
+       								"category": "Pending",
+       								"column-1": opt.pendingCount,
+       								"color": "#337ab7"
+       							},
+       							{
+       								"category": "Rejected",
+       								"column-1": opt.rejectedCount,
+       								"color": "#d9534f"
+       							},
+       							{
+       								"category": "Cancelled",
+       								"column-1": opt.cancelCount,
+       								"color": "#f0ad4e"
+       							}
+       						]
+       					}
+       							 
+       					); 
+       		   }
+       	            $("#pichartLeaveTypeIdDiv").empty();
+       	            $("#pichartLeaveTypeIdDiv").append(result);
+       	  
+       	  
+        },
+         
+    }); 
+}
+</script>
 
 <script>
     /*------My Timeoff Balance Piecharts------*/
