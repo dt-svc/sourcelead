@@ -916,6 +916,7 @@ public class LeaveServiceImpl implements LeaveService{
 				
 			}
 		}
+
 	}	
 
 	public void LeaveCancelEmailToUser(User loginUser,LeaveManagementHistory leaveManagementHistory,String reason) throws Exception{
@@ -974,6 +975,7 @@ public class LeaveServiceImpl implements LeaveService{
 		emailScenerioUtil.sendEmail(emailMessage, orgLocations.getId(), iAdressArray, new ArrayList<EmailAttachment>());
 		String actionLink = "";
 		emailScenerioUtil.sendNotification(actionLink, loginUser, toUser, orgLocations, notificationScenario);
+
 	}
 
 }
