@@ -22,6 +22,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -243,6 +244,7 @@ public class LeaveManagementRestController {
 	 * @return ModelAndView
 	 * @throws Exception 
 	 */
+	@PreAuthorize("hasAnyRole('ROLE_APPLY_LEAVE')")
 	@RequestMapping(value = "/applyLeave")
 	public ModelAndView applyLeaveJsp(HttpServletRequest request,HttpServletResponse response) throws Exception {
 		   ModelAndView model = new ModelAndView();
@@ -284,17 +286,15 @@ public class LeaveManagementRestController {
 				   }
 			   }
 			   
-			   int totalLeaves = 0;
 				for(LeaveType type : roleLeaveType) {
-				int balanceLeave = Integer.valueOf(type.getNumbefrOfLeavesPeryear());
-				totalLeaves = Integer.valueOf(type.getNumbefrOfLeavesPeryear());
+				int totalLeaves = Integer.valueOf(type.getNumbefrOfLeavesPeryear());
 				List<Leave> totalleavesTaken = leaveService.getLeavesListByTypeIdAndLocationIdAndUserId(type.getId(),orgLocations.getId(), loginUser.getId());
 				for (Leave leave : totalleavesTaken) {
 					if(Constants.APPROVED.equalsIgnoreCase(leave.getStatus())) {
-						balanceLeave = totalLeaves - (Integer.valueOf(leave.getNumberOfDays()));
+						totalLeaves = totalLeaves - (Integer.valueOf(leave.getNumberOfDays()));
 					}
 				}
-				 type.setRemainingTotalLeaveCounts(balanceLeave);
+				 type.setRemainingTotalLeaveCounts(totalLeaves);
 				}
 		   }
 		return roleLeaveType;
@@ -306,6 +306,7 @@ public class LeaveManagementRestController {
 	 * @param response
 	 * @return ModelAndView
 	 */
+	@PreAuthorize("hasAnyRole('ROLE_LEAVE_CONFIGURE')")
 	@RequestMapping(value = "/leaveConfiguration")
 	public ModelAndView leaveConfigurationJsp(HttpServletRequest request,HttpServletResponse response) {
 		   ModelAndView model = new ModelAndView();
@@ -323,6 +324,7 @@ public class LeaveManagementRestController {
 	 * @return ModelAndView
 	 * @throws Exception 
 	 */
+	@PreAuthorize("hasAnyRole('ROLE_LEAVE_CONFIGURE')")
 	@RequestMapping(value = "/addLeaveType")
 	public ModelAndView addLeaveJsp(HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
@@ -345,6 +347,7 @@ public class LeaveManagementRestController {
 	 * @param response
 	 * @return ModelAndView
 	 */
+	@PreAuthorize("hasAnyRole('ROLE_LEAVE_CONFIGURE')")
 	@RequestMapping(value = "/viewLeaveTypes")
 	public ModelAndView viewLeavesJsp(HttpServletRequest request,HttpServletResponse response) {
 		   ModelAndView model = new ModelAndView();
@@ -359,6 +362,7 @@ public class LeaveManagementRestController {
 	 * @param response
 	 * @return ModelAndView
 	 */
+	@PreAuthorize("hasAnyRole('ROLE_LEAVE_CONFIGURE')")
 	@RequestMapping(value = "/addHoliday")
 	public ModelAndView addHolidayJsp(HttpServletRequest request,HttpServletResponse response) {
 		   ModelAndView model = new ModelAndView();
@@ -373,6 +377,7 @@ public class LeaveManagementRestController {
 	 * @param response
 	 * @return ModelAndView
 	 */
+	@PreAuthorize("hasAnyRole('ROLE_LEAVE_CONFIGURE')")
 	@RequestMapping(value = "/viewHoliday")
 	public ModelAndView viewHolidayJsp(HttpServletRequest request,HttpServletResponse response) {
 		   ModelAndView model = new ModelAndView();
@@ -387,6 +392,7 @@ public class LeaveManagementRestController {
 	 * @param response
 	 * @return ModelAndView
 	 */
+	@PreAuthorize("hasAnyRole('ROLE_LEAVE_CONFIGURE')")
 	@RequestMapping(value = "/addShift")
 	public ModelAndView addShiftJsp(HttpServletRequest request,HttpServletResponse response) {
 		   ModelAndView model = new ModelAndView();
@@ -400,6 +406,7 @@ public class LeaveManagementRestController {
 	 * @param response
 	 * @return ModelAndView
 	 */
+	@PreAuthorize("hasAnyRole('ROLE_LEAVE_CONFIGURE')")
 	@RequestMapping(value = "/viewShift")
 	public ModelAndView viewShiftJsp(HttpServletRequest request,HttpServletResponse response) {
 		   ModelAndView model = new ModelAndView();
@@ -414,6 +421,7 @@ public class LeaveManagementRestController {
 	 * @param response
 	 * @return ModelAndView
 	 */
+	@PreAuthorize("hasAnyRole('ROLE_LEAVE_CONFIGURE')")
 	@RequestMapping(value = "/addRestrictDay")
 	public ModelAndView addRestrictDayJsp(HttpServletRequest request,HttpServletResponse response,@RequestParam(value = "restrictUUID", required = false) String restrictUUID) {
 		   ModelAndView model = new ModelAndView();
@@ -437,6 +445,7 @@ public class LeaveManagementRestController {
 	 * @param response
 	 * @return ModelAndView
 	 */
+	@PreAuthorize("hasAnyRole('ROLE_LEAVE_CONFIGURE')")
 	@RequestMapping(value = "/viewRestrictDay")
 	public ModelAndView viewRestrictDayJsp(HttpServletRequest request,HttpServletResponse response) {
 		   ModelAndView model = new ModelAndView();
@@ -453,6 +462,7 @@ public class LeaveManagementRestController {
 	 * @return ModelAndView
 	 * @throws Exception
 	 */
+	@PreAuthorize("hasAnyRole('ROLE_LEAVE_CONFIGURE')")
 	@RequestMapping(value = "/addOptions")
 	public ModelAndView addOptionsJsp(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		ModelAndView model = new ModelAndView();
@@ -478,6 +488,7 @@ public class LeaveManagementRestController {
 	 * @param response
 	 * @return ModelAndView
 	 */
+	@PreAuthorize("hasAnyRole('ROLE_LEAVE_CONFIGURE')")
 	@RequestMapping(value = "/viewOptions")
 	public ModelAndView viewOptionsJsp(HttpServletRequest request,HttpServletResponse response) {
 		   ModelAndView model = new ModelAndView();
@@ -494,6 +505,7 @@ public class LeaveManagementRestController {
 		return "success";
 	}
 	
+	@PreAuthorize("hasAnyRole('ROLE_LEAVE_CONFIGURE')")
 	@RequestMapping(value = "/getRestrictDayList")
 	public List<RestrictDay> getRestrictDayList(@RequestParam(value = "orgLocationId", required = true) Long orgLocationId) throws Exception {
 	      
@@ -501,18 +513,21 @@ public class LeaveManagementRestController {
 		return restrictDayList;
 	}
 
+	@PreAuthorize("hasAnyRole('ROLE_LEAVE_CONFIGURE')")
 	@RequestMapping(value = {"/saveShift", "/rest/saveShift"}, method = RequestMethod.POST)
 	public String saveShift(ShiftDTO shiftDTO) throws Exception {
 		shiftService.saveShift(shiftDTO);
 	       return "success";
 	}
 	
+	@PreAuthorize("hasAnyRole('ROLE_LEAVE_CONFIGURE')")
 	@RequestMapping(value = {"/getShiftList", "/rest/getShiftList"}, method = RequestMethod.GET)
 	public List<Shift> getShiftList(@RequestParam (value = "orgLocationId", required = true )Long orgLocationId) throws Exception{
 	List<Shift> shift = shiftService.getShiftList(orgLocationId);
 	return shift;
 	}
 	
+	@PreAuthorize("hasAnyRole('ROLE_LEAVE_CONFIGURE')")
 	@RequestMapping(value = "/editleaveshift")
 	public ModelAndView editShift(@RequestParam (value = "shiftId", required = false )String shiftId,HttpServletRequest request,HttpServletResponse response) throws Exception{
 		ModelAndView model = new ModelAndView();
@@ -523,6 +538,7 @@ public class LeaveManagementRestController {
 		return model;
 	}
 	
+	@PreAuthorize("hasAnyRole('ROLE_LEAVE_CONFIGURE')")
 	@RequestMapping(value = "/deleteShift")
 	public boolean deleteShift(@RequestParam(value = "shiftId", required = false) String shiftId,@RequestParam(value = "orgLocationId", required = false) String orgLocationId) throws Exception
 	{
@@ -536,6 +552,7 @@ public class LeaveManagementRestController {
 		return isDeleted;
 	}
 
+	@PreAuthorize("hasAnyRole('ROLE_LEAVE_CONFIGURE')")
 	@RequestMapping(value = "/saveHoliday", method = RequestMethod.POST)
 	public @ResponseBody String saveHoliday(HolidayDTO holidayDTO,HttpServletRequest request)
 			throws Exception {
@@ -547,6 +564,7 @@ public class LeaveManagementRestController {
 		return "success";
 	}
 	
+	@PreAuthorize("hasAnyRole('ROLE_LEAVE_CONFIGURE')")
 	@RequestMapping(value = "/getHolidaysList", method = RequestMethod.GET)
 	public @ResponseBody List<HolidayDTO> getHolidaysList(@RequestParam(value = "orgLocationId", required = false) Long orgLocationId, @RequestParam(value = "userId", required = false) Long userId,HttpServletRequest request) throws Exception
 	{
@@ -562,6 +580,7 @@ public class LeaveManagementRestController {
 	 * @throws Exception
 	 * 
 	 */
+	@PreAuthorize("hasAnyRole('ROLE_LEAVE_CONFIGURE')")
 	@RequestMapping(value = "/saveNewLeaveType")
 	public @ResponseBody String saveNewLeaveType(LeaveTypeDTO leaveTypeDTO, HttpServletRequest request) throws Exception
 	{
@@ -581,6 +600,7 @@ public class LeaveManagementRestController {
 	 * @return leave type list
 	 * @throws Exception
 	 */
+	@PreAuthorize("hasAnyRole('ROLE_LEAVE_CONFIGURE')")
 	@RequestMapping(value = "/getLeaveTypesByLocationid")
 	public @ResponseBody List<LeaveType> getLeaveTypesByLocationid(LeaveTypeDTO leaveTypeDTO, HttpServletRequest request) throws Exception
 	{
@@ -596,6 +616,7 @@ public class LeaveManagementRestController {
 	 * @return boolean
 	 * @throws Exception
 	 */
+	@PreAuthorize("hasAnyRole('ROLE_LEAVE_CONFIGURE')")
 	@RequestMapping(value = "/saveLeaveOption", method = RequestMethod.POST)
 	@ResponseBody
 	public boolean saveLeaveOption(OptionsDTO optionsDTO, HttpServletRequest request) throws Exception {
@@ -608,7 +629,7 @@ public class LeaveManagementRestController {
 		return isInserted;
 	}
 	
-
+	@PreAuthorize("hasAnyRole('ROLE_LEAVE_CONFIGURE')")
 	@RequestMapping(value = {"/viewLeaveOption", "/rest/viewLeaveOption"}, method = RequestMethod.GET)
 	@ResponseBody
 	public  List<OptionsDTO> getDeductionsDetailsbyId(@RequestParam(value = "orgLocationId", required = false) Long orgLocationId, @RequestParam(value = "userId", required = false) Long userId,HttpServletRequest request) throws Exception
@@ -621,6 +642,7 @@ public class LeaveManagementRestController {
 		return optionsDTOList;
 	}
 	
+	@PreAuthorize("hasAnyRole('ROLE_LEAVE_CONFIGURE')")
 	@RequestMapping(value = {"/deleteLeaveOption", "/rest/deleteLeaveOption"}, method = RequestMethod.POST)
 	@ResponseBody
 	public  boolean deleteLeaveOption(@RequestParam(value = "optionId", required = false) String optionId,@RequestParam(value = "reason", required = false) String reason,HttpServletRequest request) throws Exception
@@ -643,6 +665,7 @@ public class LeaveManagementRestController {
 	 * @return ModelAndView
 	 * @throws Exception 
 	 */
+	@PreAuthorize("hasAnyRole('ROLE_LEAVE_CONFIGURE')")
 	@RequestMapping(value = "/editOption")
 	public ModelAndView editOption(@RequestParam(value="optionId", required=false) String optionId,HttpServletRequest request,HttpServletResponse response) throws Exception {
 		   ModelAndView model = new ModelAndView();
@@ -693,6 +716,7 @@ public class LeaveManagementRestController {
 	}
 	
 
+	@PreAuthorize("hasAnyRole('ROLE_LEAVE_CONFIGURE')")
 	@RequestMapping(value = {"/deleteRestrictedDay"})
 	@ResponseBody
 	public  boolean deleteRestrictedDay(@RequestParam(value = "id", required = false) String id,@RequestParam(value = "reason", required = false) String reason) throws Exception
@@ -716,6 +740,7 @@ public class LeaveManagementRestController {
 		 * @return boolean
 		 * @throws Exception
 		 */
+	@PreAuthorize("hasAnyRole('ROLE_APPLY_LEAVE')")
 		@RequestMapping(value = "/applyLeave", method = RequestMethod.POST)
 		@ResponseBody
 		public boolean applyLeave(LeaveDTO leaveDTO, HttpServletRequest request) throws Exception {
@@ -731,7 +756,7 @@ public class LeaveManagementRestController {
 			return isInserted;
 		}
 	
-	
+	@PreAuthorize("hasAnyRole('ROLE_LEAVE_CONFIGURE')")
 	@RequestMapping(value = "/editLeaveType")
 	public ModelAndView editLeaveType(LeaveTypeDTO leaveTypeDTO, HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
@@ -780,6 +805,7 @@ public class LeaveManagementRestController {
 	}
 	
 
+	@PreAuthorize("hasAnyRole('ROLE_LEAVE_CONFIGURE')")
 	@RequestMapping(value = {"/deleteLeaveType", "/rest/deleteLeaveType"}, method = RequestMethod.POST)
 	@ResponseBody
 	public boolean deleteLeaveType(LeaveTypeDTO leaveTypeDTO, HttpServletRequest request) throws Exception
@@ -800,6 +826,7 @@ public class LeaveManagementRestController {
 		return isDeleted;
 	}
 
+	@PreAuthorize("hasAnyRole('ROLE_LEAVE_CONFIGURE')")
 	@RequestMapping(value = "/editHoliday")
 	public ModelAndView editHoliday(@RequestParam(value="holidayId", required=false) String holidayId,HttpServletRequest request,HttpServletResponse response) throws Exception {
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
@@ -822,6 +849,7 @@ public class LeaveManagementRestController {
 	       return model;
 	}
 	
+	@PreAuthorize("hasAnyRole('ROLE_LEAVE_CONFIGURE')")
 	@RequestMapping(value = "/deleteHoliday", method = RequestMethod.GET)
 	public  @ResponseBody boolean deleteHoliday(@RequestParam(value = "holidayId", required = false) String holidayId,HttpServletRequest request) throws Exception
 	{
@@ -856,6 +884,7 @@ public class LeaveManagementRestController {
 	 * @param response
 	 * @return ModelAndView
 	 */
+	@PreAuthorize("hasAnyRole('ROLE_APPROVE_LEAVE')")
 	@RequestMapping(value = "/employeeRequestedLeaves")
 	public ModelAndView employeeRequestedLeavesJsp(HttpServletRequest request,HttpServletResponse response) {
 		   ModelAndView model = new ModelAndView();
@@ -870,6 +899,7 @@ public class LeaveManagementRestController {
 	 * @param response
 	 * @return ModelAndView
 	 */
+	@PreAuthorize("hasAnyRole('ROLE_APPROVE_LEAVE')")
 	@RequestMapping(value = "/employeeApprovedLeaves")
 	public ModelAndView employeeApprovedLeavesJsp(HttpServletRequest request,HttpServletResponse response) {
 		   ModelAndView model = new ModelAndView();
@@ -884,6 +914,7 @@ public class LeaveManagementRestController {
 	 * @param response
 	 * @return ModelAndView
 	 */
+	@PreAuthorize("hasAnyRole('ROLE_APPROVE_LEAVE')")
 	@RequestMapping(value = "/employeeRejectedLeaves")
 	public ModelAndView employeeRejectedLeaves(HttpServletRequest request,HttpServletResponse response) {
 		   ModelAndView model = new ModelAndView();
@@ -898,6 +929,7 @@ public class LeaveManagementRestController {
 	 * @param response
 	 * @return ModelAndView
 	 */
+	@PreAuthorize("hasAnyRole('ROLE_APPROVE_LEAVE')")
 	@RequestMapping(value = "/employeeCancelLeaves")
 	public ModelAndView employeeCancelLeavesLeaves(HttpServletRequest request,HttpServletResponse response) {
 		   ModelAndView model = new ModelAndView();
@@ -906,6 +938,7 @@ public class LeaveManagementRestController {
 	       return model;
 	}
 
+	@PreAuthorize("hasAnyRole('ROLE_LEAVE_CONFIGURE')")
 	@RequestMapping(value = {"/leaveTypeSummary", "/rest/leaveTypeSummary"}, method = RequestMethod.POST)
 	@ResponseBody
 	public LeaveType leaveTypeSummary(LeaveTypeDTO leaveTypeDTO, HttpServletRequest request) throws Exception
@@ -922,13 +955,14 @@ public class LeaveManagementRestController {
 	 * @return List<LeaveDTO>
 	 * @throws Exception
 	 */
+	@PreAuthorize("hasAnyRole('ROLE_APPROVE_LEAVE')")
 	@RequestMapping(value = {"/getEmployeeRequestedLeaves","/rest/getEmployeeRequestedLeaves"}, method = RequestMethod.GET)
-	public  @ResponseBody List<LeaveDTO> getEmployeeRequestedLeaves(@RequestParam(value = "orgLocationId", required = false) Long orgLocationId,@RequestParam(value = "userId", required = false) String userId,@RequestParam(value = "leaveStatus", required = false) String leaveStatus,HttpServletRequest request) throws Exception
+	public  @ResponseBody ResponseList<LeaveDTO> getEmployeeRequestedLeaves(LeaveDTO leaveDTO,HttpServletRequest request) throws Exception
 	{
-		List<LeaveDTO> requestedLeavesList = null;
-		OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
-		requestedLeavesList = leaveService.getEmployeeRequestedLeavesBylocationId(orgLocations, userId,leaveStatus);
-		if (requestedLeavesList != null && !requestedLeavesList.isEmpty()) {
+		ResponseList<LeaveDTO> requestedLeavesList = null;
+		OrgLocations orgLocations = orgLocationService.getOrgLocations(Long.valueOf(leaveDTO.getOrgLocationId()));
+		requestedLeavesList = leaveService.getEmployeeRequestedLeavesBylocationId(leaveDTO,orgLocations);
+		if (requestedLeavesList != null) {
 			return requestedLeavesList;
 		}
 		return requestedLeavesList;
@@ -951,6 +985,7 @@ public class LeaveManagementRestController {
 	 * @return
 	 * @throws Exception
 	 */
+	@PreAuthorize("hasAnyRole('ROLE_APPROVE_LEAVE')")
 	@RequestMapping(value = {"/approveRequestedLeave", "/rest/approveRequestedLeave"}, method = RequestMethod.GET)
 	@ResponseBody
 	public  boolean approveRequestedLeave(
@@ -980,6 +1015,7 @@ public class LeaveManagementRestController {
 	 * @return LeaveDTO
 	 * @throws Exception
 	 */
+	@PreAuthorize("hasAnyRole('ROLE_APPROVE_LEAVE')")
 	@RequestMapping(value = { "/getRequestedAproveSummary","/rest/getRequestedAproveSummary" }, method = RequestMethod.GET)
 	@ResponseBody
 	public LeaveDTO getRequestedAproveSummary(@RequestParam(value = "leaveId", required = false) String leaveId,
@@ -1004,6 +1040,8 @@ public class LeaveManagementRestController {
 				if(employees !=null) {
 					leaveDto.setEmpid(employees.getEmployeeId());	
 				}
+					 UserRole userRole = userRoleService.getUserRoleByUserId(leave.getUser().getId());
+						leaveDto.setEmpType(userRole.getUserType());
 			}
 			durationSb.append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), leave.getFromDate()))
 					.append(System.getProperty("line.separator"))
@@ -1089,6 +1127,7 @@ public class LeaveManagementRestController {
 		return leaveDto;
 	}
 	
+	@PreAuthorize("hasAnyRole('ROLE_CANCEL_LEAVE')")
 	@RequestMapping(value = {"/storeCancelReason"})
 	@ResponseBody
 	public  boolean storeCancelReason(@RequestParam(value = "id", required = false) String id,@RequestParam(value = "reason", required = false) String reason,@RequestParam(value = "userId", required = false) Long userId) throws Exception
@@ -1118,6 +1157,7 @@ public class LeaveManagementRestController {
 		return isCancelled;
 	}	
 	
+	@PreAuthorize("hasAnyRole('ROLE_APPROVE_LEAVE')")
 	@RequestMapping(value = { "/getEmployeeLeavesList" })
 	@ResponseBody
 	public List<LeaveReportsDTO> getEmployeeLeavesList(@RequestParam(value = "orgLocationId", required = true) Long orgLocationId, @RequestParam(value = "userId", required = true) String userId, @RequestParam(value = "department", required = false) String department, @RequestParam(value = "leaveDateStr", required = false) String leaveDate) throws Exception
@@ -1212,6 +1252,19 @@ public class LeaveManagementRestController {
 		return isValid;
 	}
 	
+
+	@RequestMapping(value = "/totalCountsForEmployeeLeaves")
+	@ResponseBody
+	public LeaveDTO totalCountsForEmployeeLeaves(@RequestParam(value = "orgLocationId", required = false) Long orgLocationId,@RequestParam(value = "userId", required = false) Long userId) throws Exception {
+		return leaveService.getAllEmployeesLeavesCounts(orgLocationId,userId);
+	}
+	
+	@RequestMapping(value = "/totalCountsForSelfLeaves")
+	@ResponseBody
+	public LeaveDTO totalCountsForSelfLeaves(@RequestParam(value = "orgLocationId", required = false) Long orgLocationId,@RequestParam(value = "userId", required = false) Long userId) throws Exception {
+		return leaveService.getAllSelfLeavesCounts(orgLocationId,userId);
+
+	}
 	/**
 	 * Get leave takers list for barchart
 	 * @param leaveDTO
@@ -1237,6 +1290,7 @@ public class LeaveManagementRestController {
 	 * @return boolean
 	 * @throws Exception
 	 */
+	@PreAuthorize("hasAnyRole('ROLE_APPLY_LEAVE')")
 	@RequestMapping(value = "/withdrawLeave")
 	@ResponseBody
 	public boolean withdrawLeave(@RequestParam(value = "orgLocationId", required = false) Long orgLocationId,
@@ -1246,5 +1300,64 @@ public class LeaveManagementRestController {
 		isValid = leaveService.getWithdrawLeave(leaveId,reason,orgLocationId);
 		
 		return isValid;
+
 	}
+	
+	@RequestMapping(value = "/getLeaveTypeReport")
+	public  List<LeaveTypeDTO> getLeaveTypeReport(HttpServletRequest request,HttpServletResponse response) throws Exception {
+		   OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		   User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		   Long roleId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRoleId");
+		   List<LeaveType> leaveTypeList = leaveTypeService.getLeaveTypeListByLocationId(String.valueOf(orgLocations.getId()));
+		   List<LeaveType> roleLeaveType = new ArrayList<>();
+		   List<LeaveTypeDTO> leaveTypeDTOList = new ArrayList<>();
+		   
+		   if(leaveTypeList !=null && !leaveTypeList.isEmpty()) {
+			   for(LeaveType leaveType : leaveTypeList) {
+				   Set<Long> roleIds = new HashSet<>();
+				   for(LeaveRole leaveRole : leaveType.getLeaveTypeRolesSet()) {
+					   roleIds.add(leaveRole.getRoleId().getId());
+				   }
+				   if(roleIds.contains(roleId)) {
+					   roleLeaveType.add(leaveType);
+				   }
+			   }
+			   
+				for(LeaveType type : roleLeaveType) {
+					int pendingCounts = 0;
+				    int approvedCounts = 0;
+					int rejectedCounts = 0;
+					int cancelCounts = 0;
+					LeaveTypeDTO leaveTypeDto = new LeaveTypeDTO();
+					List<Leave> totalleavesTaken = leaveService.getLeavesListByTypeIdAndLocationIdAndUserId(type.getId(),orgLocations.getId(), loginUser.getId());
+					for (Leave leave : totalleavesTaken) {
+							if(Constants.PENDING.equalsIgnoreCase(leave.getStatus())) {
+								pendingCounts = pendingCounts + 1;
+							}
+							if(Constants.APPROVED.equalsIgnoreCase(leave.getStatus())) {
+								approvedCounts = approvedCounts + 1;
+							}
+							if(Constants.REJECTED.equalsIgnoreCase(leave.getStatus())) {
+								rejectedCounts = rejectedCounts + 1;
+							}
+							if(Constants.LEAVE_CANCELLED.equalsIgnoreCase(leave.getStatus())) {
+								cancelCounts = cancelCounts + 1;
+							}
+					 }
+						leaveTypeDto.setName(type.getName());
+						leaveTypeDto.setLeaveTypeId(type.getId());
+						leaveTypeDto.setNoOfLeavesPerYear(type.getNumbefrOfLeavesPeryear());
+						leaveTypeDto.setApprovedCount(approvedCounts);
+					    leaveTypeDto.setRejectedCount(rejectedCounts);
+					    leaveTypeDto.setPendingCount(pendingCounts);
+					    leaveTypeDto.setCancelCount(cancelCounts);
+					    leaveTypeDTOList.add(leaveTypeDto);
+					}
+		   }
+		   
+		    
+		return leaveTypeDTOList;
+	}
+	
+	
 }

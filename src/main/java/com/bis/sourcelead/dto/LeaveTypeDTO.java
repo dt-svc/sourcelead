@@ -24,6 +24,10 @@ public class LeaveTypeDTO {
 	private String leaveTypeId;
 	private String deleteReason;
 	private String colorCode;
+	private int approvedCount;
+	private int pendingCount;
+	private int rejectedCount;
+	private int cancelCount;
 	
 	public String getName()
 	{
@@ -232,5 +236,37 @@ public class LeaveTypeDTO {
 	public void setColorCode(String colorCode) {
 		this.colorCode = colorCode;
 	}
-	
+
+	public int getApprovedCount() {
+		return approvedCount;
+	}
+
+	public void setApprovedCount(int approvedCount) {
+		this.approvedCount = approvedCount;
+	}
+
+	public int getPendingCount() {
+		return pendingCount;
+	}
+
+	public void setPendingCount(int pendingCount) {
+		this.pendingCount = pendingCount;
+	}
+
+	public int getRejectedCount() {
+		return rejectedCount;
+	}
+
+	public void setRejectedCount(int rejectedCount) {
+		this.rejectedCount = rejectedCount;
+	}
+
+	public int getCancelCount() {
+		return cancelCount;
+	}
+
+	public void setCancelCount(int cancelCount) {
+		this.cancelCount = cancelCount;
+	}
+
 }

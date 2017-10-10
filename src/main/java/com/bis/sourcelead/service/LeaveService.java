@@ -14,7 +14,7 @@ public interface LeaveService {
 
 	Leave saveLeave(LeaveDTO leaveDTO, OrgLocations orgLocations, User user) throws Exception;
 
-	List<LeaveDTO> getEmployeeRequestedLeavesBylocationId(OrgLocations orgLocationId, String userId,String leaveStatus)throws Exception;
+	ResponseList<LeaveDTO> getEmployeeRequestedLeavesBylocationId(LeaveDTO leaveDTO, OrgLocations orgLocations)throws Exception;
 
 	Leave getLeaveByLeavId(String leaveId) throws Exception;
 
@@ -28,6 +28,11 @@ public interface LeaveService {
 
 	ResponseList<Leave> getTopLeavetakers(OrgLocations orgLocation, LeaveDTO leaveDTO) throws Exception;
 
+
+	LeaveDTO getAllEmployeesLeavesCounts(Long orgLocationId,Long userId);
+
+	LeaveDTO getAllSelfLeavesCounts(Long orgLocationId, Long userId);
+
 	List<LeaveDTO> getLeaveTakersBarChat(OrgLocations orgLocation, LeaveDTO leaveDTO)throws Exception;
 
 	void sendLeaveEmailToApprovers(User loginUser, LeaveDTO leaveDTO, OrgLocations orgLoc) throws Exception;
@@ -36,5 +41,6 @@ public interface LeaveService {
 	
 	void LeaveCancelEmailToUser(User loginUser, LeaveManagementHistory leaveManagementHistory,String reason) throws Exception;
 	
+
 
 }

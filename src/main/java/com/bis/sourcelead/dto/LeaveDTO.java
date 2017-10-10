@@ -1,12 +1,11 @@
 package com.bis.sourcelead.dto;
 
 import java.io.Serializable;
-import java.util.Date;
 import java.util.List;
-
 import com.bis.sourcelead.entity.LeaveType;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class LeaveDTO extends SearchDTO implements Serializable{
 
@@ -47,6 +46,10 @@ public class LeaveDTO extends SearchDTO implements Serializable{
 	private String leavesTaken;
 	private String approverUsers;
 	private String thisMonthLeaves;
+
+	private String action;
+	private String leaveStatus;
+
 	private String reportYear;
 	private String reportMonth;
 	private String reportFromDate;
@@ -60,9 +63,21 @@ public class LeaveDTO extends SearchDTO implements Serializable{
 	private String totalLeaves;
 	private String colorCode;
 	private String rejectedReason;
+
 	private String cancelReason;
 	private String approvedByUser;
 	private String isWithdrawEnable;
+
+	private String employeeRequestedCounts;
+	private String employeeApprovedCounts;
+	private String employeeRejectedCounts;
+	private String employeeCancelledCounts;
+	
+	private String selfPendingCounts;
+	private String selfApprovedCounts;
+	private String selfRejectedCounts;
+	private String selfCancelledCounts;
+	
 	
 	public String getLeavesTaken() {
 		return leavesTaken;
@@ -71,198 +86,263 @@ public class LeaveDTO extends SearchDTO implements Serializable{
 		this.leavesTaken = leavesTaken;
 	}
 	
-	public String getFileName() {
-		return fileName;
-	}
-	public void setFileName(String fileName) {
-		this.fileName = fileName;
-	}
-	public String getEmpName() {
-		return empName;
-	}
-	public void setEmpName(String empName) {
-		this.empName = empName;
-	}
-	public String getId() {
+	public String getId()
+	{
 		return id;
 	}
-	public void setId(String id) {
+	public void setId(String id)
+	{
 		this.id = id;
 	}
-	public String getOrgLocationId() {
+	public String getOrgLocationId()
+	{
 		return orgLocationId;
 	}
-	public void setOrgLocationId(String orgLocationId) {
+	public void setOrgLocationId(String orgLocationId)
+	{
 		this.orgLocationId = orgLocationId;
 	}
-	public String getUserId() {
+	public String getUserId()
+	{
 		return userId;
 	}
-	public void setUserId(String userId) {
+	public void setUserId(String userId)
+	{
 		this.userId = userId;
 	}
-	public String getUser() {
+	public String getUser()
+	{
 		return user;
 	}
-	public void setUser(String user) {
+	public void setUser(String user)
+	{
 		this.user = user;
 	}
-	public String getFromDate() {
+	public String getFromDate()
+	{
 		return fromDate;
 	}
-	public void setFromDate(String fromDate) {
+	public void setFromDate(String fromDate)
+	{
 		this.fromDate = fromDate;
 	}
-	public String getFromHalfDay() {
+	public String getFromHalfDay()
+	{
 		return fromHalfDay;
 	}
-	public void setFromHalfDay(String fromHalfDay) {
+	public void setFromHalfDay(String fromHalfDay)
+	{
 		this.fromHalfDay = fromHalfDay;
 	}
-	public String getToDate() {
+	public String getToDate()
+	{
 		return toDate;
 	}
-	public void setToDate(String toDate) {
+	public void setToDate(String toDate)
+	{
 		this.toDate = toDate;
 	}
-	public String getToHalfDay() {
+	public String getToHalfDay()
+	{
 		return toHalfDay;
 	}
-	public void setToHalfDay(String toHalfDay) {
+	public void setToHalfDay(String toHalfDay)
+	{
 		this.toHalfDay = toHalfDay;
 	}
-	public String getLeaveType() {
+	public String getLeaveType()
+	{
 		return leaveType;
 	}
-	public void setLeaveType(String leaveType) {
+	public void setLeaveType(String leaveType)
+	{
 		this.leaveType = leaveType;
 	}
-	public List<String> getApproverUser() {
-		return approverUser;
-	}
-	public void setApproverUser(List<String> approverUser) {
-		this.approverUser = approverUser;
-	}
-	public String getApprovedBy() {
-		return approvedBy;
-	}
-	public void setApprovedBy(String approvedBy) {
-		this.approvedBy = approvedBy;
-	}
-	public String getRejectedBy() {
-		return rejectedBy;
-	}
-	public void setRejectedBy(String rejectedBy) {
-		this.rejectedBy = rejectedBy;
-	}
-	public String getCancelledBy() {
-		return cancelledBy;
-	}
-	public void setCancelledBy(String cancelledBy) {
-		this.cancelledBy = cancelledBy;
-	}
-	public String getStatus() {
-		return status;
-	}
-	public void setStatus(String status) {
-		this.status = status;
-	}
-	public String getDeleteReason() {
-		return deleteReason;
-	}
-	public void setDeleteReason(String deleteReason) {
-		this.deleteReason = deleteReason;
-	}
-	public String getCreatedDate() {
-		return createdDate;
-	}
-	public void setCreatedDate(String createdDate) {
-		this.createdDate = createdDate;
-	}
-	public String getCreatedBy() {
-		return createdBy;
-	}
-	public void setCreatedBy(String createdBy) {
-		this.createdBy = createdBy;
-	}
-	public String getUpdatedDate() {
-		return updatedDate;
-	}
-	public void setUpdatedDate(String updatedDate) {
-		this.updatedDate = updatedDate;
-	}
-	public String getUpdatedBy() {
-		return updatedBy;
-	}
-	public void setUpdatedBy(String updatedBy) {
-		this.updatedBy = updatedBy;
-	}
-	public List<FileInfo> getFileInfo() {
-		return fileInfo;
-	}
-	public void setFileInfo(List<FileInfo> fileInfo) {
-		this.fileInfo = fileInfo;
-	}
-	public String getReason() {
-		return reason;
-	}
-	public void setReason(String reason) {
-		this.reason = reason;
-	}
-	public String getStaticPath() {
-		return staticPath;
-	}
-	public void setStaticPath(String staticPath) {
-		this.staticPath = staticPath;
-	}
-	public String getDuration() {
-		return duration;
-	}
-	public void setDuration(String duration) {
-		this.duration = duration;
-	}
-	public String getNoOfDays() {
-		return noOfDays;
-	}
-	public void setNoOfDays(String noOfDays) {
-		this.noOfDays = noOfDays;
-	}
-	public String getBalanceleaves() {
-		return balanceleaves;
-	}
-	public void setBalanceleaves(String balanceleaves) {
-		this.balanceleaves = balanceleaves;
-	}
-	public String getLeaveTypeId() {
+	public String getLeaveTypeId()
+	{
 		return leaveTypeId;
 	}
-	public void setLeaveTypeId(String leaveTypeId) {
+	public void setLeaveTypeId(String leaveTypeId)
+	{
 		this.leaveTypeId = leaveTypeId;
 	}
-	public String getFileUrl() {
+	public String getReason()
+	{
+		return reason;
+	}
+	public void setReason(String reason)
+	{
+		this.reason = reason;
+	}
+	public List<String> getApproverUser()
+	{
+		return approverUser;
+	}
+	public void setApproverUser(List<String> approverUser)
+	{
+		this.approverUser = approverUser;
+	}
+	public String getApprovedBy()
+	{
+		return approvedBy;
+	}
+	public void setApprovedBy(String approvedBy)
+	{
+		this.approvedBy = approvedBy;
+	}
+	public String getRejectedBy()
+	{
+		return rejectedBy;
+	}
+	public void setRejectedBy(String rejectedBy)
+	{
+		this.rejectedBy = rejectedBy;
+	}
+	public String getCancelledBy()
+	{
+		return cancelledBy;
+	}
+	public void setCancelledBy(String cancelledBy)
+	{
+		this.cancelledBy = cancelledBy;
+	}
+	public String getStatus()
+	{
+		return status;
+	}
+	public void setStatus(String status)
+	{
+		this.status = status;
+	}
+	public String getDeleteReason()
+	{
+		return deleteReason;
+	}
+	public void setDeleteReason(String deleteReason)
+	{
+		this.deleteReason = deleteReason;
+	}
+	public String getCreatedDate()
+	{
+		return createdDate;
+	}
+	public void setCreatedDate(String createdDate)
+	{
+		this.createdDate = createdDate;
+	}
+	public String getCreatedBy()
+	{
+		return createdBy;
+	}
+	public void setCreatedBy(String createdBy)
+	{
+		this.createdBy = createdBy;
+	}
+	public String getUpdatedDate()
+	{
+		return updatedDate;
+	}
+	public void setUpdatedDate(String updatedDate)
+	{
+		this.updatedDate = updatedDate;
+	}
+	public String getUpdatedBy()
+	{
+		return updatedBy;
+	}
+	public void setUpdatedBy(String updatedBy)
+	{
+		this.updatedBy = updatedBy;
+	}
+	public List<FileInfo> getFileInfo()
+	{
+		return fileInfo;
+	}
+	public void setFileInfo(List<FileInfo> fileInfo)
+	{
+		this.fileInfo = fileInfo;
+	}
+	public String getStaticPath()
+	{
+		return staticPath;
+	}
+	public void setStaticPath(String staticPath)
+	{
+		this.staticPath = staticPath;
+	}
+	public String getEmpName()
+	{
+		return empName;
+	}
+	public void setEmpName(String empName)
+	{
+		this.empName = empName;
+	}
+	public String getDuration()
+	{
+		return duration;
+	}
+	public void setDuration(String duration)
+	{
+		this.duration = duration;
+	}
+	public String getNoOfDays()
+	{
+		return noOfDays;
+	}
+	public void setNoOfDays(String noOfDays)
+	{
+		this.noOfDays = noOfDays;
+	}
+	public String getBalanceleaves()
+	{
+		return balanceleaves;
+	}
+	public void setBalanceleaves(String balanceleaves)
+	{
+		this.balanceleaves = balanceleaves;
+	}
+	public String getFileUrl()
+	{
 		return fileUrl;
 	}
-	public void setFileUrl(String fileUrl) {
+	public void setFileUrl(String fileUrl)
+	{
 		this.fileUrl = fileUrl;
 	}
-	public String getEmpid() {
+	public String getFileName()
+	{
+		return fileName;
+	}
+	public void setFileName(String fileName)
+	{
+		this.fileName = fileName;
+	}
+	public String getEmpid()
+	{
 		return empid;
 	}
-	public void setEmpid(String empid) {
+	public void setEmpid(String empid)
+	{
 		this.empid = empid;
 	}
-	public String getEmpType() {
+	public String getEmpType()
+	{
 		return empType;
 	}
-	public void setEmpType(String empType) {
+	public void setEmpType(String empType)
+	{
 		this.empType = empType;
 	}
-	public String getEmpEmail() {
+	public String getEmpEmail()
+	{
 		return empEmail;
 	}
-	public void setEmpEmail(String empEmail) {
+	public void setEmpEmail(String empEmail)
+	{
 		this.empEmail = empEmail;
 	}
+	
 	public String getFromDateDay()
 	{
 		return fromDateDay;
@@ -282,15 +362,37 @@ public class LeaveDTO extends SearchDTO implements Serializable{
 	public String getApproverUsers() {
 		return approverUsers;
 	}
-	public void setApproverUsers(String approverUsers) {
+	public void setApproverUsers(String approverUsers)
+	{
 		this.approverUsers = approverUsers;
 	}
-	public String getThisMonthLeaves() {
+	public String getThisMonthLeaves()
+	{
 		return thisMonthLeaves;
 	}
-	public void setThisMonthLeaves(String thisMonthLeaves) {
+	public void setThisMonthLeaves(String thisMonthLeaves)
+	{
 		this.thisMonthLeaves = thisMonthLeaves;
 	}
+
+	public String getAction()
+	{
+		return action;
+	}
+	public void setAction(String action)
+	{
+		this.action = action;
+	}
+	public String getLeaveStatus()
+	{
+		return leaveStatus;
+	}
+	public void setLeaveStatus(String leaveStatus)
+	{
+		this.leaveStatus = leaveStatus;
+	}
+	
+
 	public String getReportYear() {
 		return reportYear;
 	}
@@ -314,6 +416,55 @@ public class LeaveDTO extends SearchDTO implements Serializable{
 	}
 	public void setReportEndDate(String reportEndDate) {
 		this.reportEndDate = reportEndDate;
+	}
+
+	public String getEmployeeRequestedCounts() {
+		return employeeRequestedCounts;
+	}
+	public void setEmployeeRequestedCounts(String employeeRequestedCounts) {
+		this.employeeRequestedCounts = employeeRequestedCounts;
+	}
+	public String getEmployeeApprovedCounts() {
+		return employeeApprovedCounts;
+	}
+	public void setEmployeeApprovedCounts(String employeeApprovedCounts) {
+		this.employeeApprovedCounts = employeeApprovedCounts;
+	}
+	public String getEmployeeRejectedCounts() {
+		return employeeRejectedCounts;
+	}
+	public void setEmployeeRejectedCounts(String employeeRejectedCounts) {
+		this.employeeRejectedCounts = employeeRejectedCounts;
+	}
+	public String getEmployeeCancelledCounts() {
+		return employeeCancelledCounts;
+	}
+	public void setEmployeeCancelledCounts(String employeeCancelledCounts) {
+		this.employeeCancelledCounts = employeeCancelledCounts;
+	}
+	public String getSelfPendingCounts() {
+		return selfPendingCounts;
+	}
+	public void setSelfPendingCounts(String selfPendingCounts) {
+		this.selfPendingCounts = selfPendingCounts;
+	}
+	public String getSelfApprovedCounts() {
+		return selfApprovedCounts;
+	}
+	public void setSelfApprovedCounts(String selfApprovedCounts) {
+		this.selfApprovedCounts = selfApprovedCounts;
+	}
+	public String getSelfRejectedCounts() {
+		return selfRejectedCounts;
+	}
+	public void setSelfRejectedCounts(String selfRejectedCounts) {
+		this.selfRejectedCounts = selfRejectedCounts;
+	}
+	public String getSelfCancelledCounts() {
+		return selfCancelledCounts;
+	}
+	public void setSelfCancelledCounts(String selfCancelledCounts) {
+		this.selfCancelledCounts = selfCancelledCounts;
 	}
 	public String getDepartment()
 	{
@@ -391,5 +542,6 @@ public class LeaveDTO extends SearchDTO implements Serializable{
 	public void setIsWithdrawEnable(String isWithdrawEnable) {
 		this.isWithdrawEnable = isWithdrawEnable;
 	}
+
 
 }
