@@ -225,6 +225,57 @@ z-index: 1000000000 !important;
 	display:none;
 }
 </style>
+
+
+<script type="text/javascript">
+$(document).ready(function(){
+  getNotificationsByuserId();
+});
+</script>
+
+
+<script>
+function getNotificationsByuserId(){
+	var userId = '${SourceLeadWeb_user.id}';
+	var  orgCode ='${SourceLeadWeb_orgCode}';
+	var locationCode = '${SourceLeadWeb_locationCode}';
+	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
+	$.get(sourceleadUrl+"/getNotificationsByuserId?"+tokenParamName+"="+tokenValue+"&userId="+userId+"&locationCode="+locationCode+"&orgCode="+orgCode+"&orgLocationId="+orgLocationId, function(json) {
+		var data = json.data
+		var result = "";
+		result = result + '<div class="header-widget alert-area">';
+		result = result + '<ul class="list-unstyled">';
+		if(data !=null && data !='' && data !='undefined'){
+			for(var i=0;i<data.length;i++){
+				var opt = data[i];
+				result = result + ' <li>';
+				result = result + '<div class="clearfix msg">';
+				result = result + '<div class="msg-img"> <span>';
+				result = result + ' <img class="img-circle" title='+opt.notificationFrom.firstName+' '+opt.notificationFrom.lastName+' alt='+opt.notificationFrom.userType+' onerror="predefineProfileImage(this);" src='+opt.notificationFrom.fileUrl+'>';
+				result = result + ' </span> </div>';
+				result = result + '<div class="msg-content">';
+				result = result + ' <a href="#"><p>'+opt.body+'</p>';
+				/* result = result + ' <c:out value='+userId+' />'; */
+				result = result + ' <span>'+opt.calDays+'</span></a> ';
+				result = result + '</div>';
+				result = result + ' </div>';
+				result = result + ' </li>';
+			} 
+			
+		}else{
+			result = result + '<div class="clearfix msg_blank">All Caught UP!!! </div>'
+		}
+          result = result + '</ul>';
+         result = result + '<div class="headerwidget-footer"> <a href="<c:url value="/notificationsList"/>">View All</a> </div>';
+          result = result + ' </div>';
+		
+		$("#ndiv").empty();
+      $("#ndiv").append(result);
+		
+	});
+}
+</script>
+
 <!-- <script>
 $(window).load(function() {
 	var url = window.location.href;
@@ -578,7 +629,8 @@ function preventTabkey(e){
           <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_PROFESSIONAL' && SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}">
           <li id="alert"> 
           <a href="#" title="Alerts" id="alert" onmouseover="notificationStatusAsRead();" > <i class="fa fa-bell bell" ></i> <span class="label label-warning">${SourceLeadWeb_notificationCount > 0 ? SourceLeadWeb_notificationCount : ''}</span></a>
-            <div class="header-widget alert-area">
+           <div id="ndiv"></div>
+            <%-- <div class="header-widget alert-area">
               <ul class="list-unstyled">
               <c:if test="${empty SourceLeadWeb_notificationList}">
               	<div class="clearfix msg_blank">
@@ -603,7 +655,7 @@ function preventTabkey(e){
                 </c:if>
               </ul>
               <div class="headerwidget-footer"> <a href="<c:url value='/notificationsList'/>">View All</a> </div>
-            </div>
+            </div> --%>
           </li>
           </c:if>
           

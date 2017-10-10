@@ -118,8 +118,8 @@ public class RestrictDayServiceImpl implements RestrictDayService {
 	}
 
 	@Override
-	public List<RestrictDay> validateRestrictDayDates(String fromDate, String toDate, Long orgLocationId) throws Exception {
-		return restrictDayDao.validateRestrictDayDates(fromDate, toDate, orgLocationId);
+	public List<RestrictDay> validateRestrictDayDates(String fromDate, String toDate, OrgLocations orgLocations) throws Exception {
+		return restrictDayDao.validateRestrictDayDates(fromDate, toDate, orgLocations);
 	}
 
 }

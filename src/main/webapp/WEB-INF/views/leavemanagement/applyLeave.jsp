@@ -446,7 +446,7 @@ function validateDate(){
 	var toDate = $("#toDate").val();
 	$.get(sourceleadUrl+"/validateRestrictDate?"+tokenParamName+"="+tokenValue+"&fromDate="+fromDate+"&toDate="+toDate+"&orgLocationId="+orgLocationId+"&roleId="+roleId, function(data) {
 		if(data == true){
-			$("#toDate").after("<p class='warMess'>You cannot apply for leave on restricted day</span>");
+			$("#toDate").after("<p class='warMess'>You cannot apply for leave on restricted/holiday day</span>");
 		}else{
 			$('.warMess').hide();
 		}

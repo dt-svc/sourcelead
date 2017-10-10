@@ -16,6 +16,8 @@ public interface HolidayService {
 	
 	Holiday getHolidaysById(String holidayId)throws Exception;
 
+	public List<Holiday> validateHoliDayDates(String fromDate, String toDate, OrgLocations orgLocations) throws Exception;
+
 	
 
 }

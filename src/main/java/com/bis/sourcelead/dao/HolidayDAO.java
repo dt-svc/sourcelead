@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.bis.sourcelead.entity.Holiday;
 import com.bis.sourcelead.entity.Option;
+import com.bis.sourcelead.entity.OrgLocations;
 
 public interface HolidayDAO {
 
@@ -13,6 +14,8 @@ public interface HolidayDAO {
 	
 	Holiday getHolidaysById(String holidayId)throws Exception;
 	
-	Holiday saveDeleteHoliday(Holiday holidays)throws Exception;
+	Holiday saveDeleteHoliday(Holiday holidays) throws Exception;
+
+	List<Holiday> validateHoliDayDates(String fromDate, String toDate, OrgLocations orgLocations) throws Exception;
 	
 }

@@ -1,5 +1,6 @@
 package com.bis.sourcelead.dao.impl;
 
+import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
@@ -15,11 +16,17 @@ import org.springframework.transaction.annotation.Transactional;
 import com.bis.sourcelead.dao.HolidayDAO;
 import com.bis.sourcelead.entity.Holiday;
 import com.bis.sourcelead.entity.Option;
+import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.RestrictDay;
+import com.bis.sourcelead.util.CommonUtil;
 
 @Repository
 public class HolidayDaoImpl  implements HolidayDAO{
 	@Autowired
 	private SessionFactory sessionFactory;
+	
+	@Autowired
+	private CommonUtil commonUtil;
 	
 	private static final Logger logger = LoggerFactory.getLogger(HolidayDaoImpl.class);
 	
@@ -74,6 +81,18 @@ public class HolidayDaoImpl  implements HolidayDAO{
 			logger.error(ExceptionUtils.getFullStackTrace(exception));
 		}
 		return holidays;
+	}
+
+	@Override
+	@Transactional
+	public List<Holiday> validateHoliDayDates(String fromDateStr, String toDateStr, OrgLocations orgLocations) throws Exception {
+		Date fromDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), fromDateStr);
+		Date toDate =  commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), toDateStr);
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from Holiday hday  where hday.orgLocations.id = :orgLocationId and ((hday.fromDate <= :fromDate and hday.toDate >= :fromDate) or (hday.fromDate <= :toDate and hday.toDate >= :toDate))";
+		List<Holiday> restrictDayList = session.createQuery(query).setParameter("fromDate", fromDate).setParameter("toDate", toDate).setLong("orgLocationId", orgLocations.getId()).setCacheable(true).list();
+		return restrictDayList;
 	}
 
 

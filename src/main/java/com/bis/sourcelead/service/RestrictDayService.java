@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 
 import com.bis.sourcelead.dto.RestrictDayDTO;
+import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.RestrictDay;
 
 public interface RestrictDayService {
@@ -14,5 +15,5 @@ public interface RestrictDayService {
 
 	public RestrictDay getRestrictDayByUUID(String restrictUUID);
 
-	public List<RestrictDay> validateRestrictDayDates(String fromDate, String toDate, Long orgLocationId) throws Exception;
+	public List<RestrictDay> validateRestrictDayDates(String fromDate, String toDate, OrgLocations orgLocations) throws Exception;
 }

@@ -145,6 +145,11 @@ public class HolidayServiceImpl implements HolidayService{
 	public Holiday getHolidaysById(String holidayId) throws Exception {
 		return holidayDAO.getHolidaysById(holidayId);
 	}
+
+	@Override
+	public List<Holiday> validateHoliDayDates(String fromDate, String toDate, OrgLocations orgLocations) throws Exception {
+		return holidayDAO.validateHoliDayDates(fromDate,toDate,orgLocations);
+	}
 	
 	
 }

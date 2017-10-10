@@ -159,7 +159,6 @@ public class LeaveManagementRestController {
 	@Autowired
 	LeaveManagementHistoryDao leaveManagementHistoryDao;
 
-
 	
 	/**
 	 * returns Pending leaves jsp
@@ -1233,7 +1232,8 @@ public class LeaveManagementRestController {
 
 		boolean isValid = false;
 		List<RestrictDay> restrictDayList = new ArrayList<>();
-		List<RestrictDay> restDay = restrictDayService.validateRestrictDayDates(fromDate,toDate,orgLocationId);
+		OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
+		List<RestrictDay> restDay = restrictDayService.validateRestrictDayDates(fromDate,toDate,orgLocations);
 		 Set<Long> roleIds = new HashSet<>();
 		for (RestrictDay resDay : restDay) {
 			if (!"Y".equalsIgnoreCase(resDay.getApplicableToAll())) {
@@ -1249,6 +1249,13 @@ public class LeaveManagementRestController {
 		if(restrictDayList != null && restrictDayList.size()>0) {
 			isValid = true;
 		}
+		if(!isValid) {
+			List<Holiday> holiDayList = holidayService.validateHoliDayDates(fromDate,toDate,orgLocations);
+			if(holiDayList != null && holiDayList.size()>0) {
+				isValid = true;
+			}
+		}
+		
 		return isValid;
 	}
 	
