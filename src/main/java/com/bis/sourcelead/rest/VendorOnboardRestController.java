@@ -22,6 +22,7 @@ import com.bis.sourcelead.dto.OnboardTasksDTO;
 import com.bis.sourcelead.dto.VendorOnboardDTO;
 import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.Tasks;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.VendorOnboardTasks;
@@ -355,6 +356,19 @@ public class VendorOnboardRestController {
 			List<Tasks> tasksList = taskService.getTaskByAssignedUserIdAndOrgLocationIdAndVendorOnboardingId(orgLocations.getId(), user.getId(), vendorOnboardId);
 			return tasksList;
 		}
+		
+		
+		@RequestMapping(value = "/getVendorSubmittedOnboardTasksByOrgRelationId", method = RequestMethod.GET)
+		public @ResponseBody List<Tasks> getVendorSubmittedOnboardTasksByOrgRelationId(@RequestParam(value="orgRelationId", required=true) Long orgRelationId,HttpServletRequest request) throws Exception {
+			
+			VendorOnboarding vendorOnboarding = vendorOnboardService.getVendorOnboardingByOrgRelationId(orgRelationId);
+			OrgLocations vendorOrgLocations = vendorOnboarding.getVendorLocationId();
+			User vendorUser = vendorOnboarding.getSpocUserId();
+			List<Tasks> tasksList = taskService.getTaskByAssignedUserIdAndOrgLocationIdAndVendorOnboardingId(vendorOrgLocations.getId(), vendorUser.getId(), vendorOnboarding.getId());
+			
+			return tasksList;
+		}
+		
 		
 		
 		@RequestMapping(value = "/changeVendorOnboardTaskStatus", method = RequestMethod.POST)

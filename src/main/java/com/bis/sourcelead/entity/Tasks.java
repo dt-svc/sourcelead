@@ -113,6 +113,7 @@ public class Tasks implements Serializable{
     private String taskDateStr;
     
     @Transient
+    @JsonProperty
     private String assignedName;
     
     @Transient
@@ -277,6 +278,9 @@ public class Tasks implements Serializable{
 	}
 
 	public String getAssignedName() {
+		if(assignedUserId != null) {
+			assignedName = assignedUserId.getFullName();
+		}
 		return assignedName;
 	}
 

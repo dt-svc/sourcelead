@@ -1755,6 +1755,7 @@ function getVendorDashboardName(vendorDashboardName){
 		 
 		 result = result + '<li><a href="#tab-9" onClick="vendorOnboardDocumentsList('+orgRelationId+');">Onboard Documents</a></li>';
 		
+		 result = result + '<li><a href="#tab-10" onClick="vendorOnboardTasksList('+orgRelationId+');">Onboard Tasks</a></li>';
 
 
 		result = result + '<div class="clearfix"></div>'
@@ -1796,7 +1797,7 @@ function getVendorDashboardName(vendorDashboardName){
 		
 		
 		//for vendor onboard Documents list tab
-		  result = result + '<div class="tab-pane clearfix emp_onboarddocs" id="documents">';
+		  result = result + '<div class="tab-pane clearfix emp_onboarddocs" id="vendorDocuments">';
 		  result = result + '<div class="col-md-12 clearfix mt">';
 		  result = result + '<div class="form-group">';
 		  result = result + '<div id="tab-9" class="project_tabs_inn">';
@@ -1804,6 +1805,10 @@ function getVendorDashboardName(vendorDashboardName){
 		  result = result + '</div>';
 		  result = result + '</div>';
 		  result = result + '</div>';
+		  
+		  result = result + '<div class="tab-panes" id="tasks"> ';
+		  result = result + '<div id="tab-10" class="project_tabs_inn">';
+          result = result + '</div>';
 
 		result = result + '</div>';
 		result = result + '</div>'
@@ -2219,6 +2224,8 @@ $(".addcon-pop").click(function(){
 <jsp:include page="vendorListDatatable.jsp" />
 <jsp:include page="vendorContactsDataTable.jsp" />
 <jsp:include page="vendorOnboardSubmittedDocuments.jsp" />
+<jsp:include page="vendorOnboardSubmittedTasks.jsp" />
+
 
 <!-- Scripts for invitations  -->
 <script>
