@@ -18,7 +18,7 @@ $(document).ready(function(){
       <div class="pull-left">
         <h2>Approved</h2>
       </div>
-		<div class="pull-right brud-crum"><a href="dashboard_us.html">Home</a> &raquo; <a href="dashboard-lavemanagement.html">Leave Management</a> &raquo; Approved</div>
+		<div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>"> Home</a> &raquo; Approved Leaves</div>
     </section>
     
 <div class="content-area content-new clearfix">
@@ -33,7 +33,7 @@ $(document).ready(function(){
                         <option value="/pendingLeaves">Pending Leaves</option>
                         <option value="/approvedLeaves" selected>Approved Leaves</option>
                         <option value="/rejectedLeaves">Rejected Leaves</option>
-                        <option value="/cancelLeaves">Cancel Leaves</option>
+                        <option value="/cancelLeaves">Cancelled Leaves</option>
                     </select>
                 </div>
          </li>
@@ -88,7 +88,7 @@ function getApprovedLeavesList(){
 			        		 result = result + ' <tr>';
 			        		 result = result + ' <td>';
 			        		 result = result + ' <div class="proj_show tbldata-dotdot-big">';
-			        		 result = result + '     <div class="pull-left tbldata-dotdot-me" title="Sick Leave" onclick="getRequestedAproveSummary(\''+opt.id+'\','+orgLocationId+');">'+opt.leaveType+'</div><i class="fa fa-binoculars pull-right" ></i>';
+			        		 result = result + '     <div class="pull-left tbldata-dotdot-me" title="'+opt.leaveType+'" onclick="getRequestedAproveSummary(\''+opt.id+'\','+orgLocationId+');">'+opt.leaveType+'</div><i class="fa fa-binoculars pull-right" ></i>';
 			        		 result = result + '  </div>';
 			        		 result = result + ' </td>';
 			        		 result = result + ' <td>';
@@ -228,11 +228,11 @@ function getRequestedAproveSummary(leaveId,orgLocationId){
              result = result +'<label class="col-md-2 control-label"><b>Attachment:</b></label>';
              result = result +' <div class="col-md-8">';
 //              result = result +' <span><a href="javascript:void(o)">demo.pdf<i class="fa fa-download padddingLeft cursorPointer"></i></a></span>';
-             if(data.fileUrl != null && data.fileUrl != 'undefined' && data.fileUrl != ''){
-            	 result = result +'<span><a href="'+data.fileUrl+'">'+data.fileName+'<i class="fa fa-download padddingLeft cursorPointer"></i></a></span>';
-             }else{
-            	 result = result +'<span>--</span>'; 
-             }
+	         if(data.fileUrl != null && data.fileUrl != 'undefined' && data.fileUrl != ''){
+	            result = result + '<a href="#" title="Preview"><i class="fa fa-eye cursorPointer" onclick="viewFile(\''+data.fileUrl+'\', \''+data.fileName+'\', \''+data.fileType+'\')"></i></a>';
+	         }else{
+	            result = result +'<span>--</span>'; 
+	         }
              result = result +'</div>';
              result = result +' </div>';
              result = result +'<div class="clearfix"></div>';
@@ -281,7 +281,7 @@ function approvedListPagination(){
 
 
 <script>
-function withDrawLeave(leaveId,orgLocationId){
+function withDrawLeave(leaveId, userId){
 	
 	var result = "";
 	result = result +"	<div class='comMask'></div>";

@@ -9,7 +9,7 @@
 	function loadClientContactDataTable(clientSearchResult) {
 		if (clientSearchResult == "clientSearchResult") {
 			getClientContactList();
-			$("#dataTableSearch").val(clientSearchResult);
+// 			$("#dataTableSearch").val(clientSearchResult);
 		 }else{
 			 getClientContactList();
 		 }

@@ -194,6 +194,53 @@ public class DashboardRestController {
 			
 	}
 	
+	@RequestMapping(value = "/professionalDashboard/{orgLocationId}/{switchUserType}" , method = RequestMethod.GET)
+	 public @ResponseBody void professionalUserSummary(@PathVariable Long orgLocationId,@PathVariable String switchUserType,HttpServletRequest request,HttpServletResponse response) throws Exception {
+			
+		     //to update user state in user role based on location----> Prasad Salina
+		     User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		     OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+
+		     UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(), orgLocationId);
+		     if(userRole != null && userRole.getUserState() != null && userRole.getUserState().equals(Status.NOT_LOGGEDIN)){
+  			    userRole.setUserState(Status.ACTIVE);
+  			   UserRole userRoleElk = userRoleService.addUserRole(userRole);
+  			   
+  			   
+  			   
+  			   //user update/save in user Elk
+  			  userService.saveOrUpdateUserElkDocument(userRoleElk,null,user.getUserCode());
+  		      }
+				
+		     StringBuilder redirectUrl = new StringBuilder();
+		     response.sendRedirect(redirectUrl.append("/sourcelead/dashboardLinks?orgLocationId=").append(orgLocationId).append("&switchUserType=").append(switchUserType).toString());
+			
+	}
+	
+	@RequestMapping(value = "/recruiterDashboard/{orgLocationId}/{switchUserType}" , method = RequestMethod.GET)
+	 public @ResponseBody void recRuturUserSummary(@PathVariable Long orgLocationId,@PathVariable String switchUserType,HttpServletRequest request,HttpServletResponse response) throws Exception {
+			
+		     //to update user state in user role based on location----> Prasad Salina
+		     User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		     OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+
+		     UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(), orgLocationId);
+		     if(userRole != null && userRole.getUserState() != null && userRole.getUserState().equals(Status.NOT_LOGGEDIN)){
+ 			    userRole.setUserState(Status.ACTIVE);
+ 			   UserRole userRoleElk = userRoleService.addUserRole(userRole);
+ 			   
+ 			   
+ 			   
+ 			   //user update/save in user Elk
+ 			  userService.saveOrUpdateUserElkDocument(userRoleElk,null,user.getUserCode());
+ 		      }
+				
+		     StringBuilder redirectUrl = new StringBuilder();
+		     response.sendRedirect(redirectUrl.append("/sourcelead/dashboardLinks?orgLocationId=").append(orgLocationId).append("&switchUserType=").append(switchUserType).toString());
+			
+			
+	}
+	
 	
 	@RequestMapping(value = "/dashboard/{orgLocationId}/{switchUserType}" , method = RequestMethod.GET)
 	 public @ResponseBody void userSummaryWithUserType(@PathVariable Long orgLocationId,@PathVariable String switchUserType,HttpServletRequest request,HttpServletResponse response) throws Exception {

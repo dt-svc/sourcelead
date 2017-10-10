@@ -4,7 +4,8 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
-public class SearchDTO implements Serializable {
+public class SearchDTO extends CommonDTO implements Serializable {
+	
 	private List<String> anyOfKeyword;
 	private List<String> allKeywords;
 	private List<String> excludeKeyWord;

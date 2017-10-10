@@ -7,9 +7,9 @@
   <section class="content-wraper">
     <section class="content-header clearfix">
       <div class="pull-left">
-        <h2>Restrict Day</h2>
+        <h2>Add Restrict Day</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='/leaveConfiguration'/>">Leave Configure</a> &raquo; <a href="<c:url value='/viewRestrictDay'/>">Restrict Day List</a> &raquo; Restrict Day</div>
+      <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='/leaveConfiguration'/>">Leave Configuration</a> &raquo; <a href="<c:url value='/viewRestrictDay'/>">Restrict Day List</a> &raquo; Add Restrict Day</div>
     </section>
     <div class="content-area content-new clearfix">
     <div id="restrictLoading"></div>
@@ -74,7 +74,7 @@
         <div class="col-lg-12">
           <div class="pull-right">
             <input type="button" value="Save" class="btn btn-primary" onclick="storeRestrictedDay();">
-            <input type="button" value="Cancel" class="btn btn-default ml10" onClick="javascript:window.location.href = '<c:url value='/leaveConfiguration'/>'" >
+            <input type="button" value="Cancel" class="btn btn-default ml10" onClick="javascript:window.location.href = '<c:url value='/viewRestrictDay'/>'" >
           </div>
         </div>
       </div>

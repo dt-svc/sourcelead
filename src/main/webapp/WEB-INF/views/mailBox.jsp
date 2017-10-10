@@ -537,7 +537,7 @@ function getEmailDetails(uuid,type){
 	   			}
 	   			
 	   			if(opt.fileName != null && opt.fileName != "" && opt.fileName != 'undefined'){
-	   				result = result +'<div class="require_wrap_details_cta require_uploadfile"><b>Attachment:</b> <span>'+opt.fileName+'</span><a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadMailAttachment?UUID='+opt.uuid+'\"></a> ';
+	   				result = result +'<div class="require_wrap_details_cta require_uploadfile"><b>Attachment:</b> <span>'+opt.fileName+'</span><a class="glyphicon glyphicon-download-alt" href=\"'+opt.fileUrl+'\"></a> ';
 	   			    result = result +'<div class="clearfix"></div>';
 	   				result = result +'</div>';
 	   				result = result +'<div class="clearfix"></div>';

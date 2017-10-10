@@ -110,23 +110,23 @@ public class CandidateEducationServiceImpl implements CandidateEducationService 
 		}else{
 			candidateEducation.setSpecialization("");
 		}
-		if(candidateEducationDTO.getStartDate() != null){
+		if(candidateEducationDTO.getStartDate() != null && candidateEducationDTO.getStartDate() != ""){
 			try {
 				
 				//String pattern = "dd-MM-yyyy";
 				//DateFormat format = LoginSessionController.DATEFORMAT;
-                Date startDate = commonUtil.orgLocationDateFormat(locations.getDateFormat(),candidateEducationDTO.getStartDate());
+                Date startDate = commonUtil.orgLocationDateFormat(candidateEducationDTO.getDateFormat(),candidateEducationDTO.getStartDate());
                 candidateEducation.setStartDate(startDate);
 				
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		}
-		if (candidateEducationDTO.getEndDate() != null) {
+		if (candidateEducationDTO.getEndDate() != null && candidateEducationDTO.getEndDate() != "") {
 			try {
 				//String pattern = "dd-MM-yyyy";
 				//DateFormat format = LoginSessionController.DATEFORMAT;
-                Date validTo = commonUtil.orgLocationDateFormat(locations.getDateFormat(),candidateEducationDTO.getEndDate());
+                Date validTo = commonUtil.orgLocationDateFormat(candidateEducationDTO.getDateFormat(),candidateEducationDTO.getEndDate());
                 candidateEducation.setEndDate(validTo);
 			} catch (Exception e) {
 				e.printStackTrace();

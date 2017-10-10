@@ -8,9 +8,9 @@
   <section class="content-wraper">
     <section class="content-header clearfix">
       <div class="pull-left">
-        <h2>Leave Options</h2>
+        <h2>Add Leave Options</h2>
       </div>
-      <div class="pull-right brud-crum">Home &raquo; Leave Management &raquo; Leave Options</div>
+      <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo;<a href="<c:url value='/leaveConfiguration'/>"> Leave Configuration</a> &raquo;<a href="<c:url value='/viewOptions'/>">Leave Options List</a> &raquo; Add Leave Options</div>
     </section>
     <div class="content-area content-new clearfix">
     <div id="loading"></div> 

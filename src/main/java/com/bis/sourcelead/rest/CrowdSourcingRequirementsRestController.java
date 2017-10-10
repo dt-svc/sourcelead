@@ -51,6 +51,8 @@ import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import com.bis.sourcelead.annotations.Validator;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.CandidateDTO;
+import com.bis.sourcelead.dto.CrowdSourcingUserBankAccountsDTO;
+import com.bis.sourcelead.dto.ReferContactsDTO;
 import com.bis.sourcelead.dto.RequirementDTO;
 import com.bis.sourcelead.elk.index.CampaignIndex;
 import com.bis.sourcelead.elk.index.CandidateIndex;
@@ -664,7 +666,7 @@ public class CrowdSourcingRequirementsRestController {
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
 				"orgLocations");
-		RequirementSubmission requirementSubmission = requirementSubmissionService.saveRequirementSubmissionFromCrowdSourcing(jsonObj,user, con,orgLocations,multiFile);
+		RequirementSubmission requirementSubmission = requirementSubmissionService.saveRequirementSubmissionFromCrowdSourcing(jsonObj,user, con,orgLocations);
 		RequirementSubmissionHistory requirementSubmissionHistory = new RequirementSubmissionHistory();
 		requirementSubmissionHistory.setToStage(requirementSubmission.getSubmissionStatus().toString());
 		requirementSubmissionHistory.setFromStage("NEW");
@@ -683,11 +685,9 @@ public class CrowdSourcingRequirementsRestController {
 
 	/*@PreAuthorize("hasRole('ROLE_CROWDSOURCING_REQUIREMENTS')")*/
 	@RequestMapping(value = "/saveBankAccountDetails", method = RequestMethod.POST)
-	public String saveBankAccountDetails(@RequestParam(value = "jsonData", required = false) String json,HttpServletRequest request)
+	public String saveBankAccountDetails(CrowdSourcingUserBankAccountsDTO csuBankAccountsDTO,HttpServletRequest request)
 			throws Exception {
 
-		String json1 = "{" + json + "}";
-		JSONObject jsonObj = new JSONObject(json1);
 
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		CrowdSourcingUserBankAccounts bankAccount = null;
@@ -701,14 +701,17 @@ public class CrowdSourcingRequirementsRestController {
 		}
 		
 		bankAccount.setAccountUserId(user);
-		bankAccount.setAccountHolderName(jsonObj.getString("accountHolderName"));
-		bankAccount.setCountry(jsonObj.getString("country"));
-		bankAccount.setCurrency(jsonObj.getString("currency"));
-		if(jsonObj.has("bankName")){
-		  bankAccount.setBankName(jsonObj.getString("bankName"));
+		bankAccount.setAccountHolderName(csuBankAccountsDTO.getAccountHolderName());
+		bankAccount.setCountry(csuBankAccountsDTO.getCountry());
+		bankAccount.setCurrency(csuBankAccountsDTO.getCurrency());
+		
+		if(StringUtils.isNotBlank(csuBankAccountsDTO.getBankName())){
+		  bankAccount.setBankName(csuBankAccountsDTO.getBankName());
 		}
-		bankAccount.setAccountNumber(jsonObj.getString("accountNumber"));
-		bankAccount.setBankCode(jsonObj.getString("bankCode"));
+		
+		bankAccount.setAccountNumber(csuBankAccountsDTO.getAccountNumber());
+		
+		bankAccount.setBankCode(csuBankAccountsDTO.getBankCode());
 		bankAccount.setCreatedBy(user.getUserCode());
 		bankAccount.setUpdatedBy(user.getUserCode());
 		bankAccount.setUpdatedDate(new Date());
@@ -1243,38 +1246,27 @@ public class CrowdSourcingRequirementsRestController {
 
 	/* @PreAuthorize("hasRole('ROLE_CROWDSOURCING_REQUIREMENTS')")*/
 		@RequestMapping(value = "/submitUserContactsToRequirement", method = RequestMethod.POST)
-		public String submitUserContactsToRequirement(@RequestParam(value = "json", required = false) String json,
+		public String submitUserContactsToRequirement(ReferContactsDTO referContactsDTO,
 				HttpServletRequest request,HttpServletResponse response)
 				throws Exception {
-
-			String json1 = "{" + json + "}";
-			JSONObject jsonObj = new JSONObject(json1);
-
 			
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
-			
-			requirementReferService.submitUserContactsToRequirement(user, orgLocations, jsonObj);
+			requirementReferService.submitUserContactsToRequirement(user, orgLocations, referContactsDTO);
 						
 			return "success";
-
 		}
 	 
 	 
 	 
 		@RequestMapping(value = "/addCrowdSourcingUserContact", method = RequestMethod.POST)
-		public String addCrowdSourcingUserContact(@RequestParam(value = "json", required = false) String json,
+		public String addCrowdSourcingUserContact(ReferContactsDTO referContactsDTO,
 				HttpServletRequest request,HttpServletResponse response)
 				throws Exception {
 
-			String json1 = "{" + json + "}";
-			JSONObject jsonObj = new JSONObject(json1);
-
-			
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
-			
-			referContactsService.saveuserContacts(user, orgLocations, jsonObj);
+			referContactsService.saveuserContacts(user, orgLocations, referContactsDTO);
 						
 			return "success";
 

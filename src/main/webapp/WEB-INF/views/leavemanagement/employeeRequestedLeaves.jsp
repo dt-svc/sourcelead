@@ -16,10 +16,11 @@ $(document).ready(function(){
        </div>
     <section class="content-header clearfix">
       <div class="pull-left">
-        <h2>Requested Count</h2>
+        <h2>Requested Leaves</h2>
       </div>
-		<div class="pull-right brud-crum"><a href="dashboard_us.html">Home</a> &raquo; <a href="dashboard-lavemanagement.html">Leave Management</a> &raquo; Requested Count</div>
+		<div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>"> Home</a> &raquo; Requested Leaves</div>
     </section>
+    <div id="popUp"></div>
     
 <div class="content-area content-new clearfix">
 
@@ -33,7 +34,7 @@ $(document).ready(function(){
                         <option value="/employeeRequestedLeaves" selected>Requested Leaves</option>
                         <option  value="/employeeApprovedLeaves">Approved Leaves</option>
                         <option value="/employeeRejectedLeaves" >Rejected Leaves</option>
-                        <option value="/employeeCancelLeaves">Cancel Leaves</option>
+                        <option value="/employeeCancelLeaves">Cancelled Leaves</option>
                     </select>
             </div>
         </li>
@@ -47,6 +48,7 @@ $(document).ready(function(){
 		 <input type='text' placeholder='Search' id='requestedEmployeesTableSearch'/>
 		</div>
     <div id="requestedLeavesDiv"></div>
+    
   </div>
 </div>
 
@@ -139,9 +141,9 @@ function requestedEmployeesPagination(url){
 	    	  	"render": function(data, type, opt, meta) {
 	    	  		    var result = "";
 		    	  		if(opt.empType !=null && opt.empType != '' && opt.empType !='undefined'){
-		    	  			result = result + '     <div class="pull-left tbldata-dotdot-me cursorPointer" title="Sick Leave" onclick="getRequestedAproveSummary(\''+opt.id+'\','+opt.orgLocationId+');">'+opt.empName+'('+opt.empType+')</div><i class="fa fa-binoculars pull-right"></i>';	
+		    	  			result = result + '     <div class="pull-left tbldata-dotdot-me cursorPointer" title="'+opt.empName+'('+opt.empType+')" onclick="getRequestedAproveSummary(\''+opt.id+'\','+opt.orgLocationId+');">'+opt.empName+'('+opt.empType+')</div><i class="fa fa-binoculars pull-right"></i>';	
 		        		}else{
-		        			result = result + '     <div class="pull-left tbldata-dotdot-me cursorPointer" title="Sick Leave" onclick="getRequestedAproveSummary(\''+opt.id+'\','+opt.orgLocationId+');">'+opt.empName+'</div><i class="fa fa-binoculars pull-right"></i>';
+		        			result = result + '     <div class="pull-left tbldata-dotdot-me cursorPointer" title="'+opt.empName+'" onclick="getRequestedAproveSummary(\''+opt.id+'\','+opt.orgLocationId+');">'+opt.empName+'</div><i class="fa fa-binoculars pull-right"></i>';
 		        		}
 		              return result; 
 	    	  	}
@@ -150,7 +152,7 @@ function requestedEmployeesPagination(url){
               "data": "leaveType",
               "render": function ( data, type, opt, meta ) {
             	   var result = "";
-            	  result = result + '   <div title="Calendaer month" class="tblminwidth-75">'+opt.leaveType+'</div>';
+            	  result = result + '   <div title="'+opt.leaveType+'" class="tblminwidth-75">'+opt.leaveType+'</div>';
 	              return result; 
               		
               }
@@ -159,7 +161,7 @@ function requestedEmployeesPagination(url){
             "data": "duration",
             "render": function ( data, type, opt, meta ) {
             	 var result = "";
-            	result = result + '   <div title="Duration" class="">'+opt.duration+'</div>';
+            	result = result + '   <div title="'+opt.duration+'" class="">'+opt.duration+'</div>';
             	return result; 
             }
           }, {
@@ -167,7 +169,7 @@ function requestedEmployeesPagination(url){
               "data": "noOfDays",
               "render": function ( data, type, opt, meta ) {
             	   var result = "";
-            	  result = result + '     <div title="2" class="tblminwidth-75">'+opt.noOfDays+'</div>';	 
+            	  result = result + '     <div class="tblminwidth-75">'+opt.noOfDays+'</div>';	 
             	    return result; 
               }
             }, {
@@ -175,7 +177,7 @@ function requestedEmployeesPagination(url){
                 "data": "leavesTaken",
                 "render": function ( data, type, opt, meta ) {
                 		 var result = "";
-                		result = result + '     <div title="2" class="tblminwidth-75">'+opt.leavesTaken+'</div>';
+                		result = result + '     <div class="tblminwidth-75">'+opt.leavesTaken+'</div>';
     	                return result; 
                 }
           },{
@@ -183,7 +185,7 @@ function requestedEmployeesPagination(url){
 	    	  	"data": "thisMonthLeaves",
 	    	  	"render": function(data, type, opt, meta) {
 	    	  		 var result = "";
-	    	  		result = result + '     <div title="2" class="tblminwidth-75">'+opt.thisMonthLeaves+'</div>';
+	    	  		result = result + '     <div class="tblminwidth-75">'+opt.thisMonthLeaves+'</div>';
   	                return result; 
 	    	  	}
 	    	  },{
@@ -191,7 +193,7 @@ function requestedEmployeesPagination(url){
 	    	  	"data": "balanceleaves",
 	    	  	"render": function(data, type, opt, meta) {
 	    	  		 var result = "";
-	    	  		result = result + ' <div title="2" class="tblminwidth-75">'+opt.balanceleaves+'</div>';
+	    	  		result = result + ' <div class="tblminwidth-75">'+opt.balanceleaves+'</div>';
 	    	  		return result; 
 	    	  	}
 	    	  }, {
@@ -200,12 +202,14 @@ function requestedEmployeesPagination(url){
                   "render": function ( data, type, opt, meta ) {
                 	   var result = "";
                 	  if(opt.status == 'APPROVED'){
-		        			 result = result + ' <b title="Accept" class="paddingRight proj_active">APPROVED</b>';
+		        			 result = result + ' <b title="Approve" class="paddingRight proj_active">APPROVED</b>';
 		        		 }else  if(opt.status == 'REJECTED'){
-		        			 result = result + ' <b title="Accept" class="paddingRight proj_closed">REJECTED</b>';
+		        			 result = result + ' <b title="Reject" class="paddingRight proj_closed">REJECTED</b>';
 		        		 }else{
 		        			 '<sec:authorize access="hasAnyRole(\'ROLE_APPROVE_LEAVE\')">';
-                             result = result + ' <span title="Accept" class="paddingRight"><i class="fa fa-check text-success cursorPointer" onclick="approveLeave(\''+opt.id+'\',\''+opt.leaveTypeId+'\',\'APPROVED\',\''+opt.noOfDays+'\');"></i></span>';
+
+                             result = result + ' <span title="Approve" class="paddingRight"><i class="fa fa-check text-success cursorPointer" onclick="approveLeavePopup(\''+opt.id+'\',\''+opt.leaveTypeId+'\',\'APPROVED\',\''+opt.noOfDays+'\');"></i></span>';
+
                              result = result + '  <span title="Reject" class="paddingLeft"><i class="fa fa-times text-danger cursorPointer" onclick="rejectLeave(\''+opt.id+'\',\''+opt.leaveTypeId+'\',\''+opt.noOfDays+'\',\'REJECTED\');"></i></span>';
                             '</sec:authorize>';
 
@@ -236,7 +240,27 @@ function requestedEmployeesPagination(url){
 </script>
 
  
-
+<script>
+function approveLeavePopup(leaveId,leaveTypeId,approveStatus,numberOfDays){
+	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
+	$.get(sourceleadUrl+"/validateRestrictDate?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&leaveId="+leaveId, function(data) {
+		if(data == true){
+			var result = "";
+			result = result +"	<div class='project_inn_mask'></div>"; 
+			result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+			result = result +"		<p>This Employee applied leave on restricted day</p>";
+			result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+			result = result +'		<b href="javascript:void(0)"><input id="confirm-id" type="button" value="Ok" onclick="approveLeave(\''+leaveId+'\',\''+leaveTypeId+'\',\''+approveStatus+'\',\''+numberOfDays+'\');"><input class="u_can_color" type="button"  value="Cancel" onClick="approverPopupCancel();"></b>';
+			result = result +"	</div>";
+			$("#popUp").append(result);
+			$("#remove_user_pop").slideDown(200);
+			$(".project_inn_mask").fadeIn(200);
+		}else{
+			approveLeave(leaveId,leaveTypeId,approveStatus,numberOfDays);
+		}
+	}); 
+}
+</script>
 
 
 <script>
@@ -294,7 +318,7 @@ function getRequestedAproveSummary(leaveId,orgLocationId){
 			$("body").css('overflow-y', 'hidden');
 			 var result = "";	
 			 result = result +' <div class="viewgrid-header pull-right zIndex positionRelative">';
-			 result = result +'<span class="btn btn-primary btn-sm mr10" onclick="approveLeave(\''+data.id+'\',\''+data.leaveTypeId+'\',\'APPROVED\',\''+data.noOfDays+'\');">Approve</span>';
+			 result = result +'<span class="btn btn-primary btn-sm mr10" onclick="approveLeavePopup(\''+data.id+'\',\''+data.leaveTypeId+'\',\'APPROVED\',\''+data.noOfDays+'\');">Approve</span>';
 			 result = result +'<span class="btn btn-danger btn-sm mr10" onclick="rejectLeave(\''+data.id+'\',\''+data.leaveTypeId+'\',\''+data.noOfDays+'\',\'REJECTED\');">Reject</span>';
 			 result = result +'<div class="clearfix"></div>';
 			 result = result +'<div class="cancel-reason" id="cancelReason">';
@@ -387,7 +411,7 @@ function getRequestedAproveSummary(leaveId,orgLocationId){
              result = result +'<label class="col-md-2 control-label"><b>Attachment:</b></label>';
              result = result +' <div class="col-md-8">';
              if(data.fileUrl != null && data.fileUrl != 'undefined' && data.fileUrl != ''){
-            	 result = result +'<span><a href="'+data.fileUrl+'">'+data.fileName+'<i class="fa fa-download padddingLeft cursorPointer"></i></a></span>';
+            	 result = result + '<a href="#" title="Preview"><i class="fa fa-eye cursorPointer" onclick="viewFile(\''+data.fileUrl+'\', \''+data.fileName+'\', \''+data.fileType+'\')"></i></a>';
              }else{
             	 result = result +'<span>--</span>'; 
              }
@@ -420,13 +444,20 @@ function rejectLeave(id, leaveTypeId, noOfDays){
 }
 </script>
 
-<div id="popUp"></div>
 
 <script>
 function cancelTermination(){
 	$(".comMask").remove();
 	$("#remove_user_pop, .sideMask").remove();
 }
+</script>
+
+<script>
+function approverPopupCancel(){
+	$("#popUp").empty();
+	 $(".project_inn_mask").fadeOut(200);
+}
+
 </script>
 
 <script>

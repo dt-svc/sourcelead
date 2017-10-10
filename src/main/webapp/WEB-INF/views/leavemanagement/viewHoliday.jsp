@@ -17,7 +17,7 @@
       <div class="pull-left">
         <h2>Holiday</h2>
       </div>
-		<div class="pull-right brud-crum"><a href="dashboard_us.html">Home</a> &raquo; <a href="holiday.html">Leave Management </a> &raquo; Holiday</div>
+		<div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo; <a href="<c:url value='/leaveConfiguration'/>">Leave Configuration</a> &raquo; Holiday</div>
     </section>
     
 <div class="content-area content-new clearfix">
@@ -54,8 +54,9 @@ function getHolidaysList(){
 	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	var userId = '${SourceLeadWeb_userId}';
 	$.get(sourceleadUrl+"/getHolidaysList?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&userId="+userId+"", function(data) {
-		var result = "";				        	
-				result = result + '<table id="viewHolidaysTable" class="display" cellspacing="0" width="100%" >';
+		var result = "";	
+		$("#viewHolidaysDiv").empty();
+				result = result + '<table id="viewHolidaysTableId" class="display" cellspacing="0" width="100%" >';
 				result = result + '<thead>';
 				result = result + '<tr>';
 				result = result +'<th>Holiday Name</th>';
@@ -106,7 +107,6 @@ function getHolidaysList(){
 	        	
 				result = result + '  </tbody>';
 				result = result + ' </table>';
-				$("#viewHolidaysDiv").empty();
 				$("#viewHolidaysDiv").append(result);
 				$("#loading").removeAttr("style");
 				viewHolidaysTable();
@@ -123,7 +123,7 @@ function deleteHoliday(holidayId){
 </script>
 <script>
 function viewHolidaysTable(){ 
-    $('#viewHolidaysTable').DataTable( { 
+    $('#viewHolidaysTableId').DataTable( { 
     	"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	"bLengthChange": true,
@@ -134,7 +134,6 @@ function viewHolidaysTable(){
             "sZeroRecords": "", "sEmptyTable": ""
        }
     });
-    $("#viewHolidaysTable").wrap("<div class='overflow_Auto width100percnt'></div>")
 }
 </script>
 	

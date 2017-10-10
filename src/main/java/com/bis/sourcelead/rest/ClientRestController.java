@@ -488,7 +488,6 @@ public class ClientRestController {
 			 @RequestParam(value="userId", required=false) String userId,
 			 @RequestParam(value="orgLocationId", required=false) String orgLocationId,
 			 @RequestParam(value="responderType", required=false) String responderType) throws Exception{
-		
 		OrgSpoc orgSpoc = orgSpocService.getOrgSpocById(spocId);
 				if(orgSpoc != null){
 					orgSpoc.setStatus(Constants.MEMBER_IN_ACTIVE);
@@ -1257,7 +1256,7 @@ public class ClientRestController {
 		 combinedQueryBuilderCount.should(initiatorQueryBuilderCount);
 		 combinedQueryBuilderCount.should(responderQueryBuilderCount);
 		 
-		 boolQueryBuilderForCount.must(combinedQueryBuilder);
+		 boolQueryBuilderForCount.must(combinedQueryBuilderCount);
 		 //---end
 		 
 		 // filter based on client level
@@ -1322,7 +1321,7 @@ public class ClientRestController {
 				 BoolQueryBuilder allBoolQueryBuilder = QueryBuilders.boolQuery();
 				 for(String keywd : allKeyWordArray){
 					 BoolQueryBuilder allBoolSubQueryBuilder = QueryBuilders.boolQuery();
-					ArrayList<MatchQueryBuilder> matchQueryBuilderList =getMatchQueryBuilderList(keywd);
+					ArrayList<MatchQueryBuilder> matchQueryBuilderList = getMatchQueryBuilderList(keywd);
 					if(matchQueryBuilderList != null && !matchQueryBuilderList.isEmpty()){
 						for(MatchQueryBuilder matchQueryBuilder :matchQueryBuilderList){
 							allBoolSubQueryBuilder.should(matchQueryBuilder);
@@ -1347,6 +1346,8 @@ public class ClientRestController {
 			 //Country
 			if(clientVendorDTO.getCountry() !=null){
 				boolQueryBuilder.should(QueryBuilders.matchPhraseQuery("responderCountry", clientVendorDTO.getCountry()));
+		    }
+			if(clientVendorDTO.getCountry() !=null){
 				boolQueryBuilder.should(QueryBuilders.matchPhraseQuery("initiatorCountry", clientVendorDTO.getCountry()));
 		    }
 			
@@ -1389,10 +1390,6 @@ public class ClientRestController {
 				boolQueryBuilder.must(tierAdvancedBoolQueryBuilder);
 			}
 			
-		 // Rajashekar end
-			 // to   get the number of Vendor/Clients 
-		/*Long maxResults = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_CLIENTVENDOR_INDEX, Constants.ELK_CLIENTVENDOR_TYPE,
-				clientVendorDTO.getStart(), clientVendorDTO.getLength(), tableColumns[sortColumnIndex], sortColumnOrder ? SortOrder.ASC : SortOrder.DESC,boolQueryBuilder).getTotalHits();*/
 			SearchResponse searchResponse = sourceleadELKBaseIndexer
 					.searchDocumentWithMaxResults(Constants.ELK_CLIENTVENDOR_INDEX, Constants.ELK_CLIENTVENDOR_TYPE,
 							clientVendorDTO.getStart(), clientVendorDTO.getLength(), tableColumns1[sortColumnIndex], sortColumnOrder ? SortOrder.ASC : SortOrder.DESC, boolQueryBuilder);
@@ -1543,6 +1540,7 @@ public class ClientRestController {
 			 
 			 BoolQueryBuilder statusQueryBuilder = QueryBuilders.boolQuery();
 			 statusQueryBuilder.must(QueryBuilders.matchQuery("status", "1"));
+			 boolQueryBuilderForCount.must(QueryBuilders.matchQuery("status", "1"));
 			 
 			 boolQueryBuilder.must(responderQueryBuilder);
 			 boolQueryBuilder.must(statusQueryBuilder);
@@ -1610,6 +1608,39 @@ public class ClientRestController {
 						}
 						 boolQueryBuilder.must(anyBoolQueryBuilder);
 					}
+					
+					//Exclude Keyword
+					 List<String> excludeKeyWordArray = clientVendorDTO.getExcludeKeyWord();// getSearchKeywordsFromChosenSelectField(jsonObj, "excludeKeyWord");
+					 if(excludeKeyWordArray != null && !excludeKeyWordArray.isEmpty()){
+					 	 BoolQueryBuilder excludeBoolQueryBuilder = QueryBuilders.boolQuery();
+						 for(String keywd : excludeKeyWordArray){
+							 BoolQueryBuilder excludeBoolSubQueryBuilder = QueryBuilders.boolQuery();
+							ArrayList<MatchQueryBuilder> matchQueryBuilderList = getMatchQueryBuilderListForContacts(keywd,clientVendorDTO.getResponderType());
+							if(matchQueryBuilderList != null && !matchQueryBuilderList.isEmpty()){
+								for(MatchQueryBuilder matchQueryBuilder :matchQueryBuilderList){
+									excludeBoolSubQueryBuilder.should(matchQueryBuilder);
+								}
+								excludeBoolQueryBuilder.should(excludeBoolSubQueryBuilder);
+							}
+						}
+						 boolQueryBuilder.mustNot(excludeBoolQueryBuilder);
+					  }
+					 
+						List<String> allKeyWordArray = clientVendorDTO.getAllKeywords();//getSearchKeywordsFromChosenSelectField(jsonObj, "allKeywords");
+						if(allKeyWordArray != null && !allKeyWordArray.isEmpty()){
+							 BoolQueryBuilder allBoolQueryBuilder = QueryBuilders.boolQuery();
+							 for(String keywd : allKeyWordArray){
+								 BoolQueryBuilder allBoolSubQueryBuilder = QueryBuilders.boolQuery();
+								ArrayList<MatchQueryBuilder> matchQueryBuilderList = getMatchQueryBuilderListForContacts(keywd,clientVendorDTO.getResponderType());
+								if(matchQueryBuilderList != null && !matchQueryBuilderList.isEmpty()){
+									for(MatchQueryBuilder matchQueryBuilder :matchQueryBuilderList){
+										allBoolSubQueryBuilder.should(matchQueryBuilder);
+									}
+									allBoolQueryBuilder.must(allBoolSubQueryBuilder);
+								}
+							}
+							 boolQueryBuilder.must(allBoolQueryBuilder);
+						}
 				
 				
 				SearchResponse searchResponse = sourceleadELKBaseIndexer

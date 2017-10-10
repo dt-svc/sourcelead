@@ -6,22 +6,19 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.DateFormat;
-import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.YearMonth;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
+import java.util.TimeZone;
 
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDate;
 import org.joda.time.Period;
-import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,7 +30,6 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.service.TimeZoneService;
-import com.bis.sourcelead.service.impl.InvoiceServiceImpl;
 import com.google.gson.Gson;
 /**
  * 
@@ -400,9 +396,11 @@ public class ConversionUtil {
 		return formatter.format(date);
 	}
 	
-	public static String getDateAsddMMMYYYYHHMMSS(Date date) {
+	public static String getDateAsddMMMYYYYHHMMSS(Date date,ZoneId zoneId) {
 		SimpleDateFormat formatter = new SimpleDateFormat("dd MMM yyyy hh:mm:ss");
+		formatter.setTimeZone(TimeZone.getTimeZone(zoneId));
 		return formatter.format(date);
+		
 	}
 
 	public Date getDateFromMMDDYYY_HHMMSS(String dateStr) {

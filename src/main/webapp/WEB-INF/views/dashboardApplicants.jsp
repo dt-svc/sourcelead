@@ -34,6 +34,7 @@ $(document).ready(function(){
 <script>
 function ApplicantAuthorization(status){
 	var sourceleadUrl = '${sourceleadUrl}';
+	var loginUser = '${SourceLeadWeb_userName}';
 	//$("#accepted").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		
 	 var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
@@ -67,11 +68,11 @@ function ApplicantAuthorization(status){
 	            				resultToday = resultToday+'	    <th>Team Member</th>';
 	            				if(status == 'accepted'){
 	            					resultToday = resultToday+'	    <th>Accepted By</th>';
-		            				resultToday = resultToday+'	    <th>Accepted On<br>(<small class="custom-small">'+dashBoardDate+'</small>)</th>';
+		            				resultToday = resultToday+'	    <th><div class="tblminwidth-100">Accepted On<br>(<small class="custom-small">'+dashBoardDate+'</small>)</div></th>';
 	            				}
 	            				if(status == 'REJECTED'){
 	            					resultToday = resultToday+'	    <th>Rejected By</th>';
-		            				resultToday = resultToday+'	    <th>Rejected On<br>(<small class="custom-small">'+dashBoardDate+'</small>)</th>';
+		            				resultToday = resultToday+'	    <th><div class="tblminwidth-100">Rejected On<br>(<small class="custom-small">'+dashBoardDate+'</small>)</div></th>';
 	            				}
 	            				if(status == 'requestSent'){
 	            					resultToday = resultToday+'	    <th>Status</th>';
@@ -109,7 +110,7 @@ function ApplicantAuthorization(status){
 
                                     	  }
                                     		  
-                                    	  resultToday  = resultToday + '           <td><div><span title="'+report.submittedOn+'">'+report.submittedOn+'</span></div></td>';
+                                    	  resultToday  = resultToday + '           <td><div class="tblminwidth-100"><span title="'+report.submittedOn+'">'+report.submittedOn+'</span></div></td>';
                                       }
                                       if(status == 'REJECTED'){
                                     	  if(report.submissionRequestUser != null && report.submissionRequestUser != 'undefined'){
@@ -119,14 +120,16 @@ function ApplicantAuthorization(status){
 
                                     	  }
                                     		  
-                                    	  resultToday  = resultToday + '           <td><div><span title="'+report.submittedOn+'">'+report.submittedOn+'</span></div></td>';
+                                    	  resultToday  = resultToday + '           <td><div class="tblminwidth-100"><span title="'+report.submittedOn+'">'+report.submittedOn+'</span></div></td>';
                                       }
                                       if(status == 'requestSent'){ 
                                     	    resultToday  = resultToday + '<td><div>Received</div></td>';
                                     	    resultToday = resultToday +"<td>";
-                                    	    if(report.submissionRateStatus == 'REQUEST'){
+                                    	    if(report.submissionRateStatus == 'REQUEST' && report.createdUser != loginUser){
                                     	    	resultToday = resultToday + '<a  class="paddingRight"  href="javascript:void(0)" title="Accept"  onClick="acceptCandidateFromDashboard(\''+report.id+'\', \'accept\');"><i class="fa fa-check text-success"></i></a>';
                                     	    	resultToday = resultToday + '<a class="paddingLeft" href="javascript:void(0)" title="Reject"   onClick="rejectApplicantAlertMessage(\''+report.id+'\', \'rejected\');"><i class="fa fa-close text-danger"></i></a>';
+                                    	    }else{
+                                    	    resultToday = resultToday + '---';
                                     	    }
                                     	    resultToday = resultToday +"</td>";
                                       }
@@ -195,7 +198,7 @@ function rejectApplicantAlertMessage(submissionId, status){
      
      //result = result +"        <p>Applicant reject message here</p>";
      result = result +"    <div class='clearfix'>";
-     result = result +"        <textarea  id='reasonForReject' class='form-control txtarea_action' name='reasonForReject'  placeholder='Comments here' onkeypress='dashboardReasonForRejectRemoveSpaces();' data-validation='required validate_Space validate_length length2-500' field-name='Reason'></textarea>";
+     result = result +"        <textarea  id='comment' class='form-control txtarea_action' name='comment'  placeholder='Comments here' onkeypress='dashboardReasonForRejectRemoveSpaces();' data-validation='required validate_Space validate_length length2-500' field-name='Reason'></textarea>";
      result = result +" </div>";
      result = result +" </div>";
      result = result + ' <div id="reasonForApplicantDiv"/>';
@@ -220,24 +223,12 @@ function rejectApplicantAlertMessage(submissionId, status){
 </script>
 <script type="text/javascript">
     function acceptCandidateFromDashboard(submissionId, status){
-		var sourceleadUrl = '${sourceleadUrl}';
 		if ($('#rejected_from_dashboard').validate(false, validationSettings)) {
-			
-			var frm = $('#rejected_from_dashboard').serializeFormJSON();
-			var con = JSON.stringify(frm);
-			con = con.replace(/[{}]/g, "");
-			var form = $('#rejected_from_dashboard')[0];
-	  		var formData = new FormData(form); 
-			var jsonData = encodeURIComponent(con);
+	  		var formData = getFormData('rejected_from_dashboard'); 
 			$.ajax({
 				type : "POST",
 	    	    data: formData,
-	    	    contentType : 'application/json; charset=utf-8',
-	    	    enctype: 'multipart/form-data',
-		        processData: false,
-		        contentType:false,
-	    	    dataType : 'json',
-			    url: sourceleadUrl+"/acceptRejectCandidateFromDashboard?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&submissionId="+submissionId+"&status="+status,	    	   
+			    url: sourceleadUrl+"/acceptRejectCandidateFromDashboard?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId+"&status="+status,	    	   
 			    success: function(data) {
                                 	 ApplicantAuthorization('requestSent');
                                 	 $("#selector4").removeAttr("style");
@@ -304,22 +295,12 @@ function cancelAlert(){
 	function acceptRejectCandidateFromDashboard(submissionId, status){
 		
 		if ($('#rejected_from_dashboard').validate(false, validationSettings)) {
-			var sourceleadUrl = '${sourceleadUrl}';
-			var frm = $('#rejected_from_dashboard').serializeFormJSON();
-			var con = JSON.stringify(frm);
-			con = con.replace(/[{}]/g, "");
-			var form = $('#rejected_from_dashboard')[0];
-	  		var formData = new FormData(form); 
-			var jsonData = encodeURIComponent(con);
+			
+	  		var formData = getFormData('rejected_from_dashboard'); 
 			$.ajax({
 				type : "POST",
 	    	    data: formData,
-	    	    contentType : 'application/json; charset=utf-8',
-	    	    enctype: 'multipart/form-data',
-		        processData: false,
-		        contentType:false,
-	    	    dataType : 'json',
-			    url: sourceleadUrl+"/acceptRejectCandidateFromDashboard?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&submissionId="+submissionId+"&status="+status,	    	   
+			    url: sourceleadUrl+"/acceptRejectCandidateFromDashboard?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId+"&status="+status,	    	   
 			    success: function(data) {
 			    	$("#popUp").empty();
 			    	$("#rejectApplicantAlert").empty();
