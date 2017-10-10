@@ -574,7 +574,31 @@ public class UsersListRestController {
 			} else {
 				userRole.setHireDateStr("");
 			}
+			String hhmm1=null;
+			String hhmm2=null;
+			String Time=employee.getDailyHours();
+			if(!Time.contains(":00") && !Time.startsWith("0") ){
+				hhmm1="0";
+				hhmm2=Time.concat(":00");
+				userRole.setDailyHours(hhmm1.concat(hhmm2)); 
+			}
+			else if(!Time.contains(":00") &&Time.startsWith("1"))
+			{
+				hhmm2=Time.concat(":00");
+				userRole.setDailyHours(hhmm1.concat(hhmm2));
+			}
+			else if(Time.contains(":00") &&Time.startsWith("1"))
+			{
+				userRole.setDailyHours(employee.getDailyHours());
+			}
+			else if(Time.contains(":00") &&Time.startsWith("0"))
+			{
 			userRole.setDailyHours(employee.getDailyHours());
+			}
+			else 
+			{
+				userRole.setDailyHours(employee.getDailyHours());
+			}
 			userRole.setUserEmploymentType(employee.getUserEmploymentType());
 			userRole.setDesignationOtherType(employee.getDesignationOtherType());
 			

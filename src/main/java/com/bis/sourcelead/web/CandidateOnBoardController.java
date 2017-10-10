@@ -322,11 +322,12 @@ public class CandidateOnBoardController {
 				sessionData = new SessionMaintainanceData();
 			}
 			sessionData.setNav(Constants.OnAndOffboard);
+			CandidateOnBoarding onBoarding = candidateOnBoardingService.getCandidateOnBoardingByUUID(onboardUUID);
  			
- 			
- 			model.setViewName("onboard/viewOnboardCandidateSummary");
+ 			model.setViewName("onboard/candidateOnBoardCreation");
  			model.addObject("sourceleadUrl", sourceleadUrl);
- 			model.addObject("onBoardingUUID", onboardUUID);
+ 			model.addObject("onBoardingId", onBoarding.getId());
+ 			model.addObject("onBoardingUUID", onBoarding.getOnboardCandidateUUID());
  			return model;
  	}
 	
