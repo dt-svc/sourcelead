@@ -451,6 +451,18 @@ public class CandidateUploadFileServiceImpl implements CandidateUploadFileServic
 				}
 			}
 			
+			if(row.getCell(11) !=null && !"".equalsIgnoreCase(row.getCell(11).toString())){
+				String expectedRate=getCellValueAsString(row.getCell(11), fileName);
+				expectedRate = expectedRate.replaceAll("[^\\d.]", "");
+				if(expectedRate !=null && !"".equalsIgnoreCase(expectedRate)){
+					boolean isValidated =isExpectedRateValid(expectedRate);
+					if(isValidated == false){
+						candidateImport.setReason("Expected Rate Allow Only Integers");
+						return isValidated;
+					}
+				}
+			}
+			
 		}
 		return true;
 	}
@@ -670,6 +682,8 @@ public class CandidateUploadFileServiceImpl implements CandidateUploadFileServic
 		return null;
 	}
 	
+	
+	
 	/**
 	 * Check given string is numeric or not
 	 * 
@@ -778,5 +792,26 @@ public class CandidateUploadFileServiceImpl implements CandidateUploadFileServic
 				+ "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$");
 		Matcher matcher = pattern.matcher(emailId);
 		return matcher.matches();
+	}
+	
+	
+	/**
+	 * Handles Mobile number valid or not
+	 * 
+	 * @param mobileNmber
+	 * @return
+	 */
+	private boolean isExpectedRateValid(String expectedRate)
+	{
+		String regex = "^[0-9]";
+		boolean flag;
+		String expRate = expectedRate.trim();
+		if (expRate.length() >= 0 && expRate.length() <= 8) {
+			flag = expRate.matches(regex);
+		}
+		else {
+			flag = false;
+		}
+		return flag;
 	}
 }
