@@ -554,11 +554,11 @@ function exportToPdf(){
 			            		$('#usersListBody').append(opt);
 			            		 $("#searchByName").val("");
 			            	}else{
-			            		$('#usersListBody').append(result);
+			            		$('#usersListBody').append(opt);
 			            		 $("#searchByName").val("");
 			            	}
 				   }
-	 			result = result + '<div class="clear"></div>';
+	 			opt = opt + '<div class="clear"></div>';
 	 			$("#noUsers").val("")
 	   		    }
             }else if(type == "scroll"){

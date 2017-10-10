@@ -5,6 +5,7 @@ import java.util.List;
 import org.json.JSONObject;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.bis.sourcelead.dto.HotListEmailCampaignDTO;
 import com.bis.sourcelead.entity.UserMailBox;
 
 public interface UserMailBoxService {
@@ -15,7 +16,7 @@ public interface UserMailBoxService {
 	
 	UserMailBox getUserMailBoxByUUID(String UUID);
 	
-	public void setRequestForResumeDetails(JSONObject jsonObj,String candidatesIds,String UUID,MultipartFile multiFile) throws Exception;
+	public void setRequestForResumeDetails(HotListEmailCampaignDTO hotListEmailCampaignDTO,String candidatesIds,String UUID) throws Exception;
 	
 	UserMailBox getUserMailBoxById(String Id) throws Exception;
 	

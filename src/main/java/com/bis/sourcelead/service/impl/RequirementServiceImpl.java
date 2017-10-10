@@ -322,7 +322,7 @@ public class RequirementServiceImpl implements RequirementService {
 				// SimpleDateFormat formatter =
 				// orgLocations.getLocFullFormDateFormatter();
 				Timezone timezone = timeZoneService.getTimezone(orgLocations.getTimezone().getId());
-				Date startTime = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), requirementDTO.getClosedDate());
+				Date startTime = commonUtil.orgLocationDateFormat(requirementDTO.getDateFormat(), requirementDTO.getClosedDate());
 				String currentTimeStr = Constants.TZ_DF.format(startTime);
 				String startTimeUTC = CommonUtil.convertTimeZones(timezone.getTimeZoneId(), "UTC", currentTimeStr);
 				DateFormat TZ_DF_TS = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
