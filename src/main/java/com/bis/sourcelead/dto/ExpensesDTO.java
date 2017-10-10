@@ -4,7 +4,6 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
-import com.bis.sourcelead.entity.MasterCandidate;
 import com.bis.sourcelead.enums.Submission_Status;
 import com.ibm.icu.math.BigDecimal;
 
