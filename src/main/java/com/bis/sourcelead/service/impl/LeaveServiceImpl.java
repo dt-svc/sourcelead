@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 
 import org.apache.commons.lang.StringUtils;
@@ -659,6 +660,63 @@ public class LeaveServiceImpl implements LeaveService{
 		}
 
 		return isLeaveWithdraw;
+	}
+	
+	private void LeaveCancelEmailToUser(User loginUser,OrgLocations orgLocations,User toUser) throws Exception{
+
+		EmailMessage emailMessage = new EmailMessage();
+		emailMessage.setFirstName(loginUser.getFirstName());
+		emailMessage.setLastName(loginUser.getLastName());
+		emailMessage.setToEmail(toUser.getEmail());
+		emailMessage.setFromEmail(loginUser.getEmail());
+		emailMessage.setCreatedBy(loginUser.getUserCode());
+		StringBuilder msgBuild = new StringBuilder();
+		emailMessage.setFromName(msgBuild.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
+		emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
+		// setting the class filed values
+		Map<String, String> globalVarsMap = new HashMap<String, String>();
+			if(toUser.getLastName() != null && toUser.getLastName() !=""){
+			StringBuilder fNameBulid= new StringBuilder();
+			globalVarsMap.put("employeeUser", fNameBulid.append(toUser.getFirstName()).append(" ").append(toUser.getLastName()).toString());
+			}else{
+			globalVarsMap.put("employeeUser", toUser.getFirstName());
+			}
+			if(loginUser.getLastName() != null && loginUser.getLastName() !=""){
+			StringBuilder fName= new StringBuilder();
+			globalVarsMap.put("approverUser", fName.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
+			}else{
+			globalVarsMap.put("approverUser", loginUser.getFirstName());
+			}
+			globalVarsMap.put("noOfDays", "");
+			globalVarsMap.put("fromDate", "");
+			globalVarsMap.put("leaveType", "");
+			globalVarsMap.put("toDate", "");
+			globalVarsMap.put("reason", "");
+			
+			
+		InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
+		// getting the current EmailScenario by EmailScenario unique name and
+		// entity type
+		EmailScenario emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.Leave_Cancel_EmailToUser, Constants.ENTITY_TYPE_EMAIL);
+		EmailScenario notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.Leave_Cancel_EmailToUser, Constants.ENTITY_TYPE_NOTIFICATION);
+		// covert subject,body and signature
+		String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(), globalVarsMap);
+		String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(), globalVarsMap);
+		String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(), globalVarsMap);
+		String url = sourceleadUrl;
+		String notificationbody = emailScenerioUtil.buildTempBody(notificationScenario.getBody(), globalVarsMap);
+		notificationScenario.setBody(notificationbody);
+		// OrgLocations vendorOrgLoc =
+		// requirement.getSpocId().getVendorLocationId();
+		// construct HTML template using required data
+		String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario, emailMessage, subject, body, signature, url, orgLocations.getOrg(), orgLocations);
+		emailMessage.setSubject(subject);
+		emailMessage.setMessageBody(emailTemplate);
+		// calling the sendEmail method of emailScenerioUtil
+		emailScenerioUtil.sendEmail(emailMessage, orgLocations.getId(), iAdressArray, new ArrayList<EmailAttachment>());
+		String actionLink = "";
+		emailScenerioUtil.sendNotification(actionLink, loginUser, toUser, orgLocations, notificationScenario);
+	
 	}
 
 }

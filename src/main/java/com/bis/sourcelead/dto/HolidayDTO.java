@@ -39,6 +39,11 @@ private static final long serialVersionUID = 1L;
 	
 	private String dayOfTheWeek;
 	
+	private String fromDateStr;
+	
+	private String toDateStr;
+	
+	
 	public String getId() {
 		return id;
 	}
@@ -160,5 +165,23 @@ private static final long serialVersionUID = 1L;
 	{
 		this.dayOfTheWeek = dayOfTheWeek;
 	}
+
+	public String getFromDateStr() {
+		return fromDateStr;
+	}
+
+	public void setFromDateStr(String fromDateStr) {
+		this.fromDateStr = fromDateStr;
+	}
+
+	public String getToDateStr() {
+		return toDateStr;
+	}
+
+	public void setToDateStr(String toDateStr) {
+		this.toDateStr = toDateStr;
+	}
+	
+	
 
 }

@@ -64,36 +64,36 @@ $(document).ready(function() {
             <div class="form-group">
               <label class="col-md-3">Holiday Name<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-9" id="holidayNameDiv">
-                <input type="text" class="form-control" field-name="Holiday Name"  onblur="validateHolidayName();"  data-validation="required validate_Space validate_length length1-250" id="holidayName" name="holidayName" value="${holidays.holidayName}">
+                <input type="text" class="form-control" field-name="Holiday Name"  onblur="validateHolidayName();"  data-validation="required validate_Space validate_length length1-250" id="holidayName" name="holidayName" value="${holidayDTO.holidayName}">
               </div>
             </div>
             <div class="form-group">
               <label class="col-md-3">Date<span class="text-danger">*</span></label>
               <div class="col-md-9">
                       <div class="width110px" id="errFromDate">
-                      <input type="text" class="form-control calendar" value="${holidays.fromDateStr}" field-name="From Date" data-validation="required" name="fromDate" id="fromDate" placeholder="From Date">
+                      <input type="text" class="form-control calendar" value="${holidayDTO.fromDateStr}" field-name="From Date" data-validation="required" name="fromDate" id="fromDate" placeholder="From Date">
                       </div>
                       <div class="width90px checkBox">
-                      <c:if test="${!empty holidays.fromHalfDayCheckBox}">
-                      <input type="checkbox" id="fromHalfDayCheckBox" name="fromHalfDayCheckBox" checked="checked" value="${holidays.fromHalfDayCheckBox}" onclick="fromDayCheckBox();">Half Day
+                      <c:if test="${!empty holidayDTO.fromHalfDayCheckBox}">
+                      <input type="checkbox" id="fromHalfDayCheckBox" name="fromHalfDayCheckBox" checked="checked" value="${holidayDTO.fromHalfDayCheckBox}" onclick="fromDayCheckBox();">Half Day
                       </c:if>
-                      <c:if test="${empty holidays.fromHalfDayCheckBox}">
+                      <c:if test="${empty holidayDTO.fromHalfDayCheckBox}">
                       <input type="checkbox" id="fromHalfDayCheckBox" name="fromHalfDayCheckBox"  value="off" onclick="fromDayCheckBox();">Half Day
                       </c:if>
                       </div>
                       <div class="width50px dropdown-select dropdown-select-custom" id="fromAmPmDivId" style="display:none">
                       <select name="fromHalfDayAmPm">
                       
-                      <c:if test="${holidays.fromHalfDayAmPm  == 'AM'}">
+                      <c:if test="${holidayDTO.fromHalfDayAmPm  == 'AM'}">
                        <option value="AM" selected>AM</option>
                        <option value="PM">PM</option>
                       </c:if>
-                       <c:if test="${holidays.fromHalfDayAmPm  == 'PM'}">
+                       <c:if test="${holidayDTO.fromHalfDayAmPm  == 'PM'}">
                        <option value="AM">AM</option>
                        <option value="PM" selected>PM</option>
                        
                       </c:if>
-                      <c:if test="${empty holidays.fromHalfDayAmPm}">
+                      <c:if test="${empty holidayDTO.fromHalfDayAmPm}">
 	                      <option value="AM">AM</option>
 	                      <option value="PM">PM</option>
                       </c:if>
@@ -102,29 +102,29 @@ $(document).ready(function() {
                           </select>
                       </div>
                       <div class="width110px" id="errToDate">
-                      <input type="text" class="form-control calendar" value="${holidays.toDateStr}" field-name="To Date" data-validation="required" name="toDate" id="toDate" placeholder="To Date">
+                      <input type="text" class="form-control calendar" value="${holidayDTO.toDateStr}" field-name="To Date" data-validation="required" name="toDate" id="toDate" placeholder="To Date">
                       </div>
                       <div class="width90px checkBox">
-                      <c:if test="${!empty holidays.toHalfDayCheckBox}">
+                      <c:if test="${!empty holidayDTO.toHalfDayCheckBox}">
                       <input type="checkbox" id="toHalfDayCheckBox" name="toHalfDayCheckBox" checked="checked" value="${holidays.toHalfDayCheckBox}" onclick="toDayCheckBox();">Half Day
                       </c:if>
-                      <c:if test="${empty holidays.toHalfDayCheckBox}">
+                      <c:if test="${empty holidayDTO.toHalfDayCheckBox}">
                       <input type="checkbox" id="toHalfDayCheckBox" name="toHalfDayCheckBox"  value="off" onclick="toDayCheckBox();">Half Day
                       </c:if>
                       </div>
                       <div class="width50px dropdown-select dropdown-select-custom" id="toAmPmDivId" style="display:none">
                       <select name="halfDayAmPm">
                       
-                      <c:if test="${holidays.toHalfDayAmPm  == 'AM'}">
+                      <c:if test="${holidayDTO.toHalfDayAmPm  == 'AM'}">
                        <option value="AM" selected>AM</option>
                        <option value="PM">PM</option>
                       </c:if>
-                       <c:if test="${holidays.toHalfDayAmPm  == 'PM'}">
+                       <c:if test="${holidayDTO.toHalfDayAmPm  == 'PM'}">
                        <option value="AM">AM</option>
                        <option value="PM" selected>PM</option>
                        
                       </c:if>
-                      <c:if test="${empty holidays.toHalfDayAmPm}">
+                      <c:if test="${empty holidayDTO.toHalfDayAmPm}">
 	                      <option value="AM">AM</option>
 	                      <option value="PM">PM</option>
                       </c:if>
@@ -138,15 +138,15 @@ $(document).ready(function() {
            <div class="form-group">
               <label class="col-md-3">Description</label>
               <div class="col-md-9">
-                  <textarea rows="2" class="form-control" name="description" placeholder="Description" value="${holidays.description}">${holidays.description}</textarea>
+                  <textarea rows="2" class="form-control" name="description" placeholder="Description" value="${holidayDTO.description}">${holidayDTO.description}</textarea>
               </div>
             </div>
                   
                   <div class="form-group">
-                  <label class="col-md-3">Status ${holidays.holidayStatus}</label>
+                  <label class="col-md-3">Status ${holidayDTO.holidayStatus}</label>
                   <div class="col-md-9">
                                    
-                                     <c:if test="${holidays.holidayStatus  == 'Optional'}">
+                                     <c:if test="${holidayDTO.holidayStatus  == 'Optional'}">
 	                                   <label class="paddingRight col-md-4">
 	                                     	<input type="radio" value="Optional"  checked name="holidayStatus" > Optional
 	                                    </label>
@@ -154,7 +154,7 @@ $(document).ready(function() {
 	                                      <input type="radio" value="Restricted"  name="holidayStatus"> Restricted 
 	                                    </label>
                                       </c:if>
-                                      <c:if test="${holidays.holidayStatus  == 'Restricted'}">
+                                      <c:if test="${holidayDTO.holidayStatus  == 'Restricted'}">
 	                                       <label class="paddingRight col-md-4">
 		                                     	<input type="radio" value="Optional"   name="holidayStatus" > Optional
 		                                    </label>
@@ -162,7 +162,7 @@ $(document).ready(function() {
 		                                      <input type="radio" value="Restricted" checked name="holidayStatus"> Restricted 
 	                                      </label>
                                       </c:if>
-                                      <c:if test="${empty holidays.holidayStatus}">
+                                      <c:if test="${empty holidayDTO.holidayStatus}">
                                       <label class="paddingRight col-md-4">
 	                                     	<input type="radio" value="Optional"  name="holidayStatus" > Optional
 	                                    </label>

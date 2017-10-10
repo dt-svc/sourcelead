@@ -805,9 +805,15 @@ public class LeaveManagementRestController {
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		ModelAndView model = new ModelAndView();
 		   Holiday holidays = holidayService.getHolidaysById(holidayId);
-		   holidays.setFromDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), holidays.getFromDate()));
-		   holidays.setToDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), holidays.getToDate()));
-		   model.addObject("holidays", holidays);
+		   HolidayDTO holidayDTO = new HolidayDTO();
+		   holidayDTO.setDescription(holidays.getDescription());
+		   holidayDTO.setFromHalfDayCheckBox(holidays.getFromHalfDayCheckBox());
+		   holidayDTO.setHolidayName(holidays.getHolidayName());
+		   holidayDTO.setHolidayStatus(holidays.getHolidayStatus());
+		   holidayDTO.setFromHalfDayAmPm(holidays.getFromHalfDayAmPm());
+		   holidayDTO.setFromDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), holidays.getFromDate()));
+		   holidayDTO.setToDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), holidays.getToDate()));
+		   model.addObject("holidayDTO", holidayDTO);
 		   model.addObject("sourceleadUrl", sourceleadUrl);
 		   model.setViewName("leavemanagement/addHoliday");
 	       return model;
