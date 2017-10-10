@@ -1,5 +1,6 @@
 package com.bis.sourcelead.dao;
 
+import java.util.Date;
 import java.util.List;
 
 import com.bis.sourcelead.entity.ProjectBudget;
@@ -19,4 +20,6 @@ public interface ProjectBudgetDao {
 	List<ProjectBudget>  getProjectBudgetListByOrgLocationId(Long orgLocationId) throws Exception;
 	
 	Long getProjectBudgetReqestedIdByProjectId(Long projectId, Integer generatedIdcount);
+	
+	List<ProjectBudget>  getProjectBudgetByProjectTaskIdAndApprovedStatus(Long projectId,String filterDate, Date startDateUTC, Date endDateUTC) throws Exception;
 }

@@ -939,7 +939,7 @@ public class CandidateOnBoardRestController {
 				  for(FileInfo fileInfo : onboardingCandidateDocsStep3DTO.getUploadContractsFile()) {
 					  if(StringUtils.isNotEmpty(fileInfo.getFileDbId())) {
 						  OnBoardingTemplateDocuments contractsDocs = onBoardingTemplateDocumentsService.getOnBoardingTemplateDocumentsById(Long.parseLong(fileInfo.getFileDbId()));
-						  contractsDocs.setFileURL(fileInfo.getFileURL());
+						  contractsDocs.setUploadFileURL(fileInfo.getFileURL());
  			       		  contractsDocs.setUploadedDocFileName(fileInfo.getFileName());
 		                  contractsDocs.setUploadedFileContentType(fileInfo.getContentType());
 	                      contractsDocs.setDocumentStatus(OnboardStatus.ACCEPTED);
@@ -968,7 +968,7 @@ public class CandidateOnBoardRestController {
 				  for(FileInfo fileInfo : onboardingCandidateDocsStep3DTO.getUploadFormsFile()) {
 					  if(StringUtils.isNotEmpty(fileInfo.getFileDbId())) {
 						  OnBoardingTemplateDocuments formDocs = onBoardingTemplateDocumentsService.getOnBoardingTemplateDocumentsById(Long.parseLong(fileInfo.getFileDbId()));
-						  formDocs.setFileURL(fileInfo.getFileURL());
+						  formDocs.setUploadFileURL(fileInfo.getFileURL());
  			       		  formDocs.setUploadedDocFileName(fileInfo.getFileName());
 		                  formDocs.setUploadedFileContentType(fileInfo.getContentType());
 	                      formDocs.setDocumentStatus(OnboardStatus.ACCEPTED);
@@ -1633,6 +1633,7 @@ public class CandidateOnBoardRestController {
 				 document.setUploadedDocFile(null);
 				 document.setUploadedDocFileName(null);
 				 document.setUploadedFileContentType(null);
+				 document.setUploadFileURL(null);
 				 document.setDocumentStatus(OnboardStatus.PENDING);
 			 }
 			

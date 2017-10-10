@@ -30,6 +30,8 @@ public interface ProjectsDao {
 	
 	public Boolean validateProjectSequeneNumber(String projectSequeneNumber, Long orgLocationsId) throws Exception;
 	
+	Boolean validateProjectShortCode(String shortCode, Long orgLocationsId) throws Exception;
+	
 	public Integer projectIdValidation(Long projectId) throws Exception;
 	
 	List<Projects> getAllProjects() throws Exception;

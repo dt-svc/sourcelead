@@ -34,6 +34,7 @@ CALL sourcelead.AlterTableAddColumn ('sourcelead','PROJECT_TASKS','PROJECT_TASKS
 
 CALL sourcelead.AlterTableAddColumn ('sourcelead','PROJECT_TASKS','PERCENTAGE','INT(5) NULL AFTER `BUSINESS_VALUE`');
 
+CALL sourcelead.AlterTableAddColumn ('sourcelead','PROJECTS','CURRENCY','VARCHAR(5) NULL AFTER `NOTIFY_BUDGET_AT`');
 
 
 
@@ -72,11 +73,11 @@ CREATE TABLE `sourcelead`.`PROJECT_TASK_DOCUMENTS` (
 ); 
 
 
-INSERT INTO `sourcelead`.`LOOKUP_DATA` ( `NAME`, `DESCRIPTION`, `CATEGORY`) VALUES ( 'Epic', 'Epic', 'TaskType');
-INSERT INTO `sourcelead`.`LOOKUP_DATA` ( `NAME`, `DESCRIPTION`, `CATEGORY`) VALUES ( 'UserStory', 'UserStory', 'TaskType');
-INSERT INTO `sourcelead`.`LOOKUP_DATA` ( `NAME`, `DESCRIPTION`, `CATEGORY`) VALUES ( 'Bug', 'Bug', 'TaskType');
-INSERT INTO `sourcelead`.`LOOKUP_DATA` ( `NAME`, `DESCRIPTION`, `CATEGORY`) VALUES ( 'SubTask', 'SubTask', 'TaskType');
-INSERT INTO `sourcelead`.`LOOKUP_DATA` ( `NAME`, `DESCRIPTION`, `CATEGORY`) VALUES ( 'General', 'General', 'TaskType');
+INSERT INTO `sourcelead`.`LOOKUP_DATA` ( `NAME`, `DESCRIPTION`, `CATEGORY`, `UNIQUE_KEY`) VALUES ( 'Epic', 'Epic', 'TaskType', 'Epic');
+INSERT INTO `sourcelead`.`LOOKUP_DATA` ( `NAME`, `DESCRIPTION`, `CATEGORY`, `UNIQUE_KEY`) VALUES ( 'UserStory', 'UserStory', 'TaskType', 'UserStory');
+INSERT INTO `sourcelead`.`LOOKUP_DATA` ( `NAME`, `DESCRIPTION`, `CATEGORY`, `UNIQUE_KEY`) VALUES ( 'Bug', 'Bug', 'TaskType', 'Bug');
+INSERT INTO `sourcelead`.`LOOKUP_DATA` ( `NAME`, `DESCRIPTION`, `CATEGORY`, `UNIQUE_KEY`) VALUES ( 'SubTask', 'SubTask', 'TaskType','SubTask');
+INSERT INTO `sourcelead`.`LOOKUP_DATA` ( `NAME`, `DESCRIPTION`, `CATEGORY`, `UNIQUE_KEY`) VALUES ( 'General', 'General', 'TaskType', 'General');
 
 
 INSERT INTO `sourcelead`.`LOOKUP_DATA` ( `NAME`, `DESCRIPTION`, `CATEGORY`) VALUES ( 'Critical', 'Critical', 'TaskSeverity');
@@ -108,11 +109,15 @@ CREATE TABLE `sourcelead`.`PROJECT_TASK_ACTIVITY` (
    CREATE_USER_NAME varchar(250) DEFAULT NULL,
    ACTIVITY TEXT DEFAULT NULL,
    ACTIVITY_DESCRIPTION TEXT DEFAULT NULL,
+   PRIORITY BIGINT(20) NOT NULL,
+   TASK_STATUS BIGINT(20) NOT NULL,
    CREATED_DATE DATETIME,
    PRIMARY KEY (`ID`),
    FOREIGN KEY(PROJECT_TASK_ID) REFERENCES `sourcelead`.`PROJECT_TASKS`(ID),
    FOREIGN KEY(PROJECT_ID) REFERENCES `sourcelead`.`PROJECTS`(ID),
-   FOREIGN KEY(CREATED_USER_ID) REFERENCES `sourcelead`.`USER`(ID)
+   FOREIGN KEY(CREATED_USER_ID) REFERENCES `sourcelead`.`USER`(ID),
+   FOREIGN KEY(PRIORITY) REFERENCES `sourcelead`.`LOOKUP_DATA`(ID),
+   FOREIGN KEY(TASK_STATUS) REFERENCES `sourcelead`.`LOOKUP_DATA`(ID)
 ); 
 
 
@@ -131,6 +136,8 @@ CREATE TABLE `sourcelead`.`PROJECT_TASK_COMMENTS` (
 ); 
 
 CALL sourcelead.AlterTableAddColumn ('sourcelead','ON_BOARDING_TEMPLATE_DOCUMENTS','FILE_URL','TEXT NULL  AFTER `DOCUMENT_UUID`');
+
+CALL sourcelead.AlterTableAddColumn ('sourcelead','ON_BOARDING_TEMPLATE_DOCUMENTS','UPLOAD_FILE_URL','TEXT NULL  AFTER `FILE_URL`');
 
 CALL sourcelead.AlterTableAddColumn ('sourcelead','OFF_BOARDING_DOCUMENTS','FILE_URL','TEXT NULL  AFTER `DOCUMENT_UUID`');
 

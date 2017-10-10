@@ -161,10 +161,10 @@
          <h2 class="pull-left">New Resource Request</h2>
         <c:if test="${!empty msg}">
 	        <div class="success_pop" id="selector" style="display: block;">
-		         <i class="fa fa-check-circle"></i><span>${msg}</span>
+		         <i class="fa fa-check-circle"></i><span>${msg}</span> 
 			</div>
 	     </c:if>
-          <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='/projectDashboard'/>">Projects List</a> &raquo;Project Summary</div>
+          <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='/projectDashboard'/>">Projects List</a> &raquo;<a href="<c:url value='/projectSummary?projectUUID=${projectUUID}&projectClientUUID=${projectClientUUID}&tabType=resources'/>">Project Summary</a> &raquo; New Resource Request</div>
         </section>
 	   
 		   <div class="content-area content-new clearfix">

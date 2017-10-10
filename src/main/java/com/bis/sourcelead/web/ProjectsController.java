@@ -292,6 +292,7 @@ public class ProjectsController {
 				}
 				
 				model.addObject("projectUUID", projectUUID);
+				model.addObject("projectCurrency", projects.getCurrency());
 				model.addObject("postedOrgLocationId", projects.getOrgLocationsId().getId());
 				
 				List<OrgLocations> orgLocationsList = orgLocationService.getAllOrgLocationsByOrgId(org.getId());
@@ -315,7 +316,7 @@ public class ProjectsController {
 	}
 	 
 	 @RequestMapping(value = "/projectTaskSummary")
-		public ModelAndView projectTaskSummary(@RequestParam(value="taskUUID", required=true) String taskUUID,HttpServletRequest request) throws Exception {
+		public ModelAndView projectTaskSummary(@RequestParam(value="taskUUID", required=true) String taskUUID,@RequestParam(value="projectClientUUID", required=true) String projectClientUUID,HttpServletRequest request) throws Exception {
 				ModelAndView model = new ModelAndView();
 				OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 				SimpleDateFormat dateFormat = orgLocations.getLocFullFormDateFormatter();
@@ -363,6 +364,7 @@ public class ProjectsController {
 				 List<LookUpData> taskStatusList = lookUpDataService.getLookUpDataByCategory(Constants.TASKSTATUS);
 				 model.addObject("taskStatusList", taskStatusList);
 				 
+				model.addObject("projectClientUUID", projectClientUUID);
 				model.setViewName("project/projectTaskSummary");
 				model.addObject("sourceleadUrl", sourceleadUrl);
 				return model;

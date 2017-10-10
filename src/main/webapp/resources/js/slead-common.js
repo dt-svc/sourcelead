@@ -71,7 +71,7 @@ function applyData(data, formId, name, id) {
 	else{
 		var i = $("#"+formId+" input[type=hidden][name*="+name+"]").length / 3;
 	}
-	
+		
 	for(var e in data) {
 		var html = "<input type='hidden' name='"+name+"["+i+"].fileURL' data-id="+id+" value='"+data[e].fileURL+"'/>";
 		html += "<input type='hidden' name='"+name+"["+i+"].fileName' data-id="+id+" value='"+data[e].fileName+"'/>";

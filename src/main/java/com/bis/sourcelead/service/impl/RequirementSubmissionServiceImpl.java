@@ -565,6 +565,7 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
                  requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.SUBMISSION);
              }
 			 requirementSubmissionHistoryForCoolingOff = requirementSubmissionHistoryService.isInCoolingOffPeriodByEmailAndLocationsId(requirementSubmission.getCandidate().getEmail(), requirement.getOrgLocationId(), reqCoolingOffPeriodDays, requirement.getId());
+			 requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.SUBMISSION);
 			 if(requirementSubmissionHistoryForCoolingOff != null){
 				 if(requirementSubmissionHistoryForCoolingOff.getIsInCoolingOffPeriod()){
 					 requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.REJECTED);

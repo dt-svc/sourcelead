@@ -434,6 +434,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 	    	Set<ProjectClients> projectClientsList = getProjectClientsForProject(projects,orgLocations,approverUser);
 	    	projects.setProjectClients(projectClientsList);
 			projects.setProjectUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+			projects.setProjectShortCode("DFP");
 			projects.setProjectMode("Finished");
 			projects.setCreatedDate(new Date());
 			projects.setUpdatedDate(new Date());

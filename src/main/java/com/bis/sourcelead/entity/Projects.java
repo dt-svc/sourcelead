@@ -214,6 +214,8 @@ public class Projects implements Serializable{
     @JsonBackReference
     private Set<ProjectDocuments> projectDocuments;
     
+    @Column(name="CURRENCY")
+    private String currency;
     
     public Set<ProjectDocuments> getProjectDocuments() {
 		return projectDocuments;
@@ -958,4 +960,11 @@ public class Projects implements Serializable{
 		this.projectBudgetList = projectBudgetList;
 	}
 
+	public String getCurrency() {
+		return currency;
+	}
+
+	public void setCurrency(String currency) {
+		this.currency = currency;
+	}
 }

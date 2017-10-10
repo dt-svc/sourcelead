@@ -15,12 +15,14 @@ height: auto !important;
 width: auto !important;
 }
 </style>
-
+<script>
+var sourceleadUrl = '${sourceleadUrl}';
+</script>
 <script type="text/javascript">
 function taskNameValidation(){
 	var projectId  = $("#projectId").val();
 	var TaskName = document.getElementById("taskName").value.trim();
-	var sourceleadUrl = '${sourceleadUrl}';
+	
 	$.ajax({
 		type : "GET",
 		url : sourceleadUrl+ "/validateTasksNameById?${_csrf.parameterName}=${_csrf.token}&TaskName="+ TaskName+"&ProjectId="+projectId,
@@ -128,12 +130,12 @@ function projectTask(projectId, status) {
 <!-- this script is for Tasks list functionality at Projects screen -->
 <script>
 	function projectTaskList() {
-		
+		var projectClientUUID = '${projectClientUUID}';
 		var projectId = $("#projectId").val();
 		var status =  $("#projectStatus").val();
 		var result = "";
 		$("#tasksLoadingImg").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-		var sourceleadUrl = '${sourceleadUrl}';
+		
 		
 		 var taskStatus = [];
 		$('input:checkbox[name=taskStatusId]:checked').each(function() 
@@ -191,7 +193,7 @@ function projectTask(projectId, status) {
 							 
 							result = result + '<tr>';
 							'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_PROJECT_TASKS\')">'; 
-							result = result+ '<td><div class="tbldata-dotdot"><a href="'+sourceleadUrl+'/projectTaskSummary?taskUUID='+opt.projectTasksUUID+'" title="'+generatedId+' '+ opt.taskName+ '" >'+generatedId+' '+ opt.taskName+ '</a></div></td>';
+							result = result+ '<td><div class="tbldata-dotdot"><a href="'+sourceleadUrl+'/projectTaskSummary?taskUUID='+opt.projectTasksUUID+'&projectClientUUID='+projectClientUUID+'" title="'+generatedId+' '+ opt.taskName+ '" >'+generatedId+' '+ opt.taskName+ '</a></div></td>';
 							result = result	+ '<td><div class="tbldata-dotdot_50">'+opt.taskTypes+ '</div></td>';
 							result = result	+ '<td><div class="tbldata-dotdot_50">'+taskPriotiry+ '</div></td>';
 							result = result	+ '<td><div class="tbldata-dotdot-100"><span >'+taskAssignedUsers+'</span ></div></td>';
@@ -264,7 +266,7 @@ function saveUpdateTask(taskId,projectId,status){
 		con = con.replace(/[{}]/g, "");
 		//It will escape all the special characters
 		var jsonData = encodeURIComponent(con);
-		var sourceleadUrl = '${sourceleadUrl}';
+		
 		$.ajax({
 			type : "POST",
 			url : sourceleadUrl+ "/updateEditProjectTask?${_csrf.parameterName}=${_csrf.token}&json="+ jsonData+"&taskId="+taskId,
@@ -288,7 +290,7 @@ $('body').on('blur', '#editTask_form', function() {
 <script>
 function validateTaskName(projectId,taskId){
 	var TaskName = document.getElementById("editTaskName").value.trim();
-	var sourceleadUrl = '${sourceleadUrl}';
+	
 	$('#editTaskNamesDIV').find('p.jquery_form_error_message').remove();
 	$.ajax({
 		type : "GET",
@@ -331,20 +333,20 @@ function editCancel(){
 		 document.getElementById("userStory").style.display="none";
 		 document.getElementById("epic").style.display="none";
 		 document.getElementById("task").style.display="none";
-		 $('#taskId').removeAttr("data-validation","required");
-	 }
+		 $('#taskId').removeAttr("data-validation","required"); 
+	 } 
 	   if(taskType ==  "UserStory"){
 		 document.getElementById("epic").style.display="block";
 		 document.getElementById("userStory").style.display="none";
 		 document.getElementById("task").style.display="none";
-		 $('#taskId').removeAttr("data-validation","required");
+		 $('#taskId').removeAttr("data-validation","required"); 
 		 getSubEpicsByUserStory();
 	 }
 	    if(taskType ==  "Bug"){
 		 document.getElementById("epic").style.display="none";
 		 document.getElementById("userStory").style.display="block";
 		 document.getElementById("task").style.display="none";
-		 $('#taskId').removeAttr("data-validation","required");
+		 $('#taskId').removeAttr("data-validation","required"); 
 		 getUserStoryByBug();
 	 }
 	 if(taskType ==  "SubTask"){
@@ -521,9 +523,8 @@ function editCancel(){
 			result = result	+ '           <label class="col-md-4">Priority</label>';
 			result = result	+ '           <div class="col-md-8 dropdown-select">';
 			result = result	+ '             <select class="form-control" id="priority" name="priority">';
-			result = result	+ '               <option value="">-- Select Priority --</option>';
 			result = result	+ '           <c:forEach var="priority" items="${taskPriorityList}"> ';        
-			result = result	+ '		             <option value="${priority.id}">${priority.name}</option>';   
+			result = result	+ '		             <option value="${priority.id}" ${priority.name  == "P2" ? "selected" : ''} >${priority.name}</option>';   
 			result = result	+ '			</c:forEach>   ';	
 			result = result	+ '             </select>'; 
 			result = result	+ '           </div>';
@@ -710,8 +711,7 @@ function editCancel(){
 </script>
 <script>
 function uploadButton(id){
-	var sourceleadUrl ='${sourceleadUrl}';
-	fileUpload(sourceleadUrl, "file"+id+"", "tasks", "projectTask_form");
+	fileUpload("file"+id+"", "tasks", "projectTask_form");
 }
 </script>
  
@@ -747,7 +747,6 @@ function getOwnerList(){
 </script>
 <script>
 function tasksAssignList(projectId){
-	alert("hello");
 	var sourceleadUrl ='${sourceleadUrl}';
 	var values = "Active";
 	$.ajax({
@@ -777,7 +776,7 @@ function saveTasks(){
 		var formData = new FormData(form);
 		var projectId = $("#projectId").val();
 		var userId = '${SourceLeadWeb_userId}';
-	  	var sourceleadUrl = '${sourceleadUrl}';
+	  	
 	  	$("#save_task").attr("disabled", "disabled");
 		$("#save_task").addClass('button').val('Processing..');
 		$.ajax({
