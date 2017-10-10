@@ -342,15 +342,7 @@ public class LeaveDTO extends SearchDTO implements Serializable{
 	{
 		this.empEmail = empEmail;
 	}
-	public String getLeavesTaken()
-	{
-		return leavesTaken;
-	}
-	public void setLeavesTaken(String leavesTaken)
-	{
-		this.leavesTaken = leavesTaken;
-	}
-
+	
 	public String getFromDateDay()
 	{
 		return fromDateDay;
