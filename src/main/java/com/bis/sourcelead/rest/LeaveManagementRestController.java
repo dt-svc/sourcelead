@@ -1228,12 +1228,20 @@ public class LeaveManagementRestController {
 	public boolean validateRestrictDate(@RequestParam(value = "fromDate", required = false) String fromDate,
 			@RequestParam(value = "toDate", required = false) String toDate,
 			@RequestParam(value = "orgLocationId", required = false) Long orgLocationId,
-			@RequestParam(value = "roleId", required = false) Long roleId) throws Exception {
+			@RequestParam(value = "roleId", required = false) Long roleId,
+			@RequestParam(value = "leaveId", required = false) String leaveId) throws Exception {
 
 		boolean isValid = false;
 		List<RestrictDay> restrictDayList = new ArrayList<>();
-		OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
-		List<RestrictDay> restDay = restrictDayService.validateRestrictDayDates(fromDate,toDate,orgLocations);
+
+		if(StringUtils.isNotBlank(leaveId)){
+			Leave leave = leaveService.getLeaveByLeavId(leaveId);
+			OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
+			fromDate = commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), leave.getFromDate());
+			toDate = commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), leave.getToDate());
+		}
+		List<RestrictDay> restDay = restrictDayService.validateRestrictDayDates(fromDate,toDate,orgLocationId);
+
 		 Set<Long> roleIds = new HashSet<>();
 		for (RestrictDay resDay : restDay) {
 			if (!"Y".equalsIgnoreCase(resDay.getApplicableToAll())) {

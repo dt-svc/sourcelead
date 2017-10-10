@@ -214,7 +214,7 @@ function getRequestedAproveSummary(leaveId,orgLocationId,status){
              result = result +'<label class="col-md-2 control-label"><b>Attachment:</b></label>';
              result = result +' <div class="col-md-8">';
              if(data.fileUrl != null && data.fileUrl != 'undefined' && data.fileUrl != ''){
-            	 result = result +'<span><a href="'+data.fileUrl+'">'+data.fileName+'<i class="fa fa-download padddingLeft cursorPointer"></i></a></span>';
+            	 result = result + '<a href="#" title="Preview"><i class="fa fa-eye cursorPointer" onclick="viewFile(\''+data.fileUrl+'\', \''+data.fileName+'\', \''+data.fileType+'\')"></i></a>';
              }else{
             	 result = result +'<span>--</span>'; 
              }

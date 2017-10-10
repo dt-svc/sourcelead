@@ -137,7 +137,9 @@ function redirectlocation(location){
 		    	  	"data": "empName",
 		    	  	"render": function(data, type, opt, meta) {
 		    	  		  var result = "";
-		    	  		   result = result + '     <div class="pull-left tbldata-dotdot-me cursorPointer" title="'+opt.empName+'('+opt.empType+')" onclick="getRequestedAproveSummary(\''+opt.id+'\','+opt.orgLocationId+');">'+opt.empName+'('+opt.empType+')</div><i class="fa fa-binoculars pull-right" ></i>'; 
+
+		    	  		result = result + '     <div class="pull-left tbldata-dotdot-me cursorPointer" title="'+opt.empName+'('+opt.empType+')" onclick="getRequestedAproveSummary(\''+opt.id+'\','+opt.orgLocationId+');">'+opt.empName+'('+opt.empType+')<i class="fa fa-binoculars pull-right"></i></div>'; 
+
 			              return result; 
 		    	  	}
 		      },{
@@ -328,7 +330,7 @@ function getRequestedAproveSummary(leaveId,orgLocationId){
              result = result +' <div class="col-md-8">';
 //              result = result +' <span><a href="javascript:void(o)">demo.pdf<i class="fa fa-download padddingLeft cursorPointer"></i></a></span>';
              if(data.fileUrl != null && data.fileUrl != 'undefined' && data.fileUrl != ''){
-            	 result = result +'<span><a href="'+data.fileUrl+'">'+data.fileName+'<i class="fa fa-download padddingLeft cursorPointer"></i></a></span>';
+            	 result = result + '<a href="#" title="Preview"><i class="fa fa-eye cursorPointer" onclick="viewFile(\''+data.fileUrl+'\', \''+data.fileName+'\', \''+data.fileType+'\')"></i></a>';
              }else{
             	 result = result +'<span>--</span>'; 
              }

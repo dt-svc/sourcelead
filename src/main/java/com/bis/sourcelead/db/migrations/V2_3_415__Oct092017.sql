@@ -68,3 +68,22 @@ UPDATE `sourcelead`.`SOURCELEAD_ROLES` SET `ACTION_ID`='6,7,8,10,11,12,13,14,15,
 
 UPDATE `sourcelead`.`ROLES` SET `ACTION_ID`='1,2,3,4,5,6,7,8,10,11,12,13,14,15,16,17,18,19,20,24,25,26,28,29,30,32,33,34,35,36,37,38,39,40,41,42,46,47,48,50,51,52,53,54,55,56,57,58,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,96,99,100,101,102,104,105,106,107,108,109,110,111,112,113,114,115,116,117,118,119,120,121,122,123,124,126,127,128,129,130,131,132,133,134,135,136,137,138,139,140,141,142,143,144,145,146,147,148,149,150,154,155,156,157,158,159,160,161,162,163,164,165,166,167,168,169,170,171,172,173,174,175,176,177,178,179,180,181,182,183,184,185,186,187,188,189,190,191,192,193,194,195,196,197,198,199,200,201,202,203,204,205,206,207,208,209,210,211,212,213,214,215,216,217,218,219,220,221,222,223,224,225,226,227,228,229,230,231,232,233,234,235,236,237,238,239' WHERE `ID`='4';
 SET SQL_SAFE_UPDATES = 1;
+
+#Withdraw Leave Email 
+
+INSERT INTO `sourcelead`.`ENTITY_TYPE` (`ENTITY_NAME`,`ENTITY_TYPE`) VALUES ('WithdrawLeave','Email');
+INSERT INTO `sourcelead`.`CLASS_FIELD` (`ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_STR`) VALUES ((SELECT MAX( ID ) FROM `sourcelead`.`ENTITY_TYPE`), 'employeeName', '{{WithdrawLeave.EmployeeName}}');
+INSERT INTO `sourcelead`.`CLASS_FIELD` (`ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_STR`) VALUES ((SELECT MAX( ID ) FROM `sourcelead`.`ENTITY_TYPE`), 'approverName', '{{WithdrawLeave.ApproverName}}');
+INSERT INTO `sourcelead`.`CLASS_FIELD` (`ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_STR`) VALUES ((SELECT MAX( ID ) FROM `sourcelead`.`ENTITY_TYPE`), 'fromDate', '{{WithdrawLeave.FromDate}}');
+INSERT INTO `sourcelead`.`CLASS_FIELD` (`ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_STR`) VALUES ((SELECT MAX( ID ) FROM `sourcelead`.`ENTITY_TYPE`), 'toDate', '{{WithdrawLeave.ToDate}}');
+INSERT INTO `sourcelead`.`CLASS_FIELD` (`ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_STR`) VALUES ((SELECT MAX( ID ) FROM `sourcelead`.`ENTITY_TYPE`), 'reason', '{{WithdrawLeave.Reason}}');
+INSERT INTO `sourcelead`.`CLASS_FIELD` (`ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_STR`) VALUES ((SELECT MAX( ID ) FROM `sourcelead`.`ENTITY_TYPE`), 'loginOrg', '{{WithdrawLeave.LoginOrg}}');
+
+INSERT INTO `sourcelead`.`EMAIL_SCENARIO` (`SCENARIO_NAME`, `ENTITY_TYPE`, `UNIQUE_SCENARIO_NAME`, `DESCRIPTION`, `SUBJECT`, `TEMPLATE_TYPE`, `SIGNATURE`, `BODY`,`IS_TEMPLATE_MODIFIED`, `CREATED_BY`, `ORG_CODE`,`LOCATION_CODE`) VALUES ('Withdraw Leave','Email', 'Withdraw Leave', 'Used for Withdraw Leave', '{{WithdrawLeave.EmployeeName}} have withdraw leave.','org', 'Best Regards,\n{{WithdrawLeave.EmployeeName}}.', 'Dear {{WithdrawLeave.ApproverName}} \nThis is to inform i have withdrawn leave for the period {{WithdrawLeave.FromDate}} - {{WithdrawLeave.ToDate}} ,due to \nReason : {{WithdrawLeave.Reason}}.','N', 'SLADMIN', 'slead', 'sleadIN');
+
+
+#Withdraw Leave Notification
+
+INSERT INTO `sourcelead`.`ENTITY_TYPE` (`ENTITY_NAME`, `ENTITY_TYPE`) VALUES ('WithdrawLeaveNotification', 'Notification');
+INSERT INTO `sourcelead`.`EMAIL_SCENARIO` (`SCENARIO_NAME`, `ENTITY_TYPE`, `UNIQUE_SCENARIO_NAME`, `DESCRIPTION`, `TEMPLATE_TYPE`, `BODY`, `IS_TEMPLATE_MODIFIED`, `CREATED_BY`, `ORG_CODE`, `LOCATION_CODE`) VALUES ('WithdrawLeaveNotification', 'Notification', 'WithdrawLeaveNotification', 'Send mail to WithdrawLeaveNotification','org',' {{WithdrawLeave.EmployeeName}} have withdraw leave.','N', 'SLADMIN', 'sourceLead.com', 'in.sourceLead.com');
+ 
