@@ -26,7 +26,7 @@
       <div class="pull-left">
         <h2>Leave Type</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo;<a href="<c:url value='/leaveConfiguration'/>"> Leave Management</a> &raquo; Add Leave Type</div>
+      <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo;<a href="<c:url value='/leaveConfiguration'/>"> Leave Configuration</a> &raquo;<a href="<c:url value='/viewLeaveTypes'/>">Leave type List</a> &raquo; Add Leave Type</div>
     </section>
     <div class="content-area content-new clearfix">
      <form:form id="addLeaveType_form"  name="addLeaveType_form" method="post">
@@ -226,10 +226,10 @@
             
              <div class="form-group">
               <label class="col-md-3">Color Picker<span class="text-danger">&nbsp;*</span></label>
-              <div class="col-md-6">
-					<div id="cp"  class="input-group colorpicker-component">
-						<input type="text" name="colorCode" readonly="readonly" value="${leaveType.colorCode}" class="form-control" data-validation="required">
-							<span class="input-group-addon"><i></i></span>
+              <div class="col-md-9">
+					<div id="cp"  class="input-group colorpicker-component errorInptgroup">
+						<input type="text" name="colorCode" field-name="Color Picker" placeholder="Select Color Picker" readonly="readonly" value="${leaveType.colorCode}" class="form-control" data-validation="required">
+							<span class="input-group-addon"><i><img src="resources/images/theme-icon.png" class="img-responsive" title="Themes"></i></span>
 					</div>
               </div>
             </div> 

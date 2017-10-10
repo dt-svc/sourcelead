@@ -8,7 +8,8 @@
 <script type="text/javascript" src="https://www.amcharts.com/lib/3/pie.js"></script> 
 
 <%-- <jsp:include page="topLeaveTakers.jsp" /> --%>
-
+<script src="resources/js/pie.js?staticTime=${staticTime}"></script>
+<script src="resources/js/amcharts.js?staticTime=${staticTime}"></script>
 <script type="text/javascript">
 		 $(document).ready(function(){
 			 getHolidaysList();
@@ -24,7 +25,7 @@
       <div class="pull-left">
         <h2>Leave Management</h2>
       </div>
-      <div class="pull-right brud-crum">Home &raquo; Leave Management</div>
+      <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Leave Management</div>
     </section>
     <div class="timesheet_out">
       <div class="clients_side_wrap_inn no_pad">
@@ -50,10 +51,10 @@
               <div class="clearfix">
                 <div class="row">
                   <div class="clearfix"></div>
-                  <div class="col-md-6">
+                  <div class="col-md-12">
                     <h4 class="leaves-heading">My Time off balance</h4>
-                    <div class="row time-balance">
-                    <div id="pichartLeaveTypeIdDiv"></div>
+                    <div class="time-balance">
+                    <div id="pichartLeaveTypeIdDiv" class="timeBalance-scroll clearfix"></div>
                     </div>
                   </div>
                   <div class="clearfix"></div>
@@ -631,8 +632,8 @@ function getPieChartBasedOnUser(){
       		 		 if(opt.numberOfDaysCount != null && opt.numberOfDaysCount != "" && opt.numberOfDaysCount != 'undefined'){
       		 			numberOfDaysCount = opt.numberOfDaysCount 
       		 		 }
-      		 		result = result +'  <div class="col-md-3 mb">';
-      	            result = result +'   <h4 class="text-center">'+opt.name+'</h4>';
+      		 		result = result +'  <div class="col-md-2 mb">';
+      	            result = result +'   <h4 class="text-center tbldata-dotdot-vsm" title="'+opt.name+'">'+opt.name+'</h4>';
       	            result = result +'   <div id="vacationDonut'+opt.leaveTypeId+'" class="amchartAnchor-Hide" style="width: 100%; height: 125px;"> </div>';
       	            result = result +'   <div class="text-center">';
       	            result = result +'     <h2>';

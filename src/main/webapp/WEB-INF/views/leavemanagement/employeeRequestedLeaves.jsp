@@ -16,9 +16,9 @@ $(document).ready(function(){
        </div>
     <section class="content-header clearfix">
       <div class="pull-left">
-        <h2>Requested Count</h2>
+        <h2>Requested Leaves</h2>
       </div>
-		<div class="pull-right brud-crum"><a href="dashboard_us.html">Home</a> &raquo; <a href="dashboard-lavemanagement.html">Leave Management</a> &raquo; Requested Count</div>
+		<div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>"> Home</a> &raquo; Requested Leaves</div>
     </section>
     
 <div class="content-area content-new clearfix">
@@ -33,7 +33,7 @@ $(document).ready(function(){
                         <option value="/employeeRequestedLeaves" selected>Requested Leaves</option>
                         <option  value="/employeeApprovedLeaves">Approved Leaves</option>
                         <option value="/employeeRejectedLeaves" >Rejected Leaves</option>
-                        <option value="/employeeCancelLeaves">Cancel Leaves</option>
+                        <option value="/employeeCancelLeaves">Cancelled Leaves</option>
                     </select>
             </div>
         </li>
@@ -139,9 +139,9 @@ function requestedEmployeesPagination(url){
 	    	  	"render": function(data, type, opt, meta) {
 	    	  		    var result = "";
 		    	  		if(opt.empType !=null && opt.empType != '' && opt.empType !='undefined'){
-		    	  			result = result + '     <div class="pull-left tbldata-dotdot-me cursorPointer" title="Sick Leave" onclick="getRequestedAproveSummary(\''+opt.id+'\','+opt.orgLocationId+');">'+opt.empName+'('+opt.empType+')</div><i class="fa fa-binoculars pull-right"></i>';	
+		    	  			result = result + '     <div class="pull-left tbldata-dotdot-me cursorPointer" title="'+opt.empName+'('+opt.empType+')" onclick="getRequestedAproveSummary(\''+opt.id+'\','+opt.orgLocationId+');">'+opt.empName+'('+opt.empType+')</div><i class="fa fa-binoculars pull-right"></i>';	
 		        		}else{
-		        			result = result + '     <div class="pull-left tbldata-dotdot-me cursorPointer" title="Sick Leave" onclick="getRequestedAproveSummary(\''+opt.id+'\','+opt.orgLocationId+');">'+opt.empName+'</div><i class="fa fa-binoculars pull-right"></i>';
+		        			result = result + '     <div class="pull-left tbldata-dotdot-me cursorPointer" title="'+opt.empName+'" onclick="getRequestedAproveSummary(\''+opt.id+'\','+opt.orgLocationId+');">'+opt.empName+'</div><i class="fa fa-binoculars pull-right"></i>';
 		        		}
 		              return result; 
 	    	  	}
@@ -150,7 +150,7 @@ function requestedEmployeesPagination(url){
               "data": "leaveType",
               "render": function ( data, type, opt, meta ) {
             	   var result = "";
-            	  result = result + '   <div title="Calendaer month" class="tblminwidth-75">'+opt.leaveType+'</div>';
+            	  result = result + '   <div title="'+opt.leaveType+'" class="tblminwidth-75">'+opt.leaveType+'</div>';
 	              return result; 
               		
               }
@@ -159,7 +159,7 @@ function requestedEmployeesPagination(url){
             "data": "duration",
             "render": function ( data, type, opt, meta ) {
             	 var result = "";
-            	result = result + '   <div title="Duration" class="">'+opt.duration+'</div>';
+            	result = result + '   <div title="'+opt.duration+'" class="">'+opt.duration+'</div>';
             	return result; 
             }
           }, {
@@ -167,7 +167,7 @@ function requestedEmployeesPagination(url){
               "data": "noOfDays",
               "render": function ( data, type, opt, meta ) {
             	   var result = "";
-            	  result = result + '     <div title="2" class="tblminwidth-75">'+opt.noOfDays+'</div>';	 
+            	  result = result + '     <div class="tblminwidth-75">'+opt.noOfDays+'</div>';	 
             	    return result; 
               }
             }, {
@@ -175,7 +175,7 @@ function requestedEmployeesPagination(url){
                 "data": "leavesTaken",
                 "render": function ( data, type, opt, meta ) {
                 		 var result = "";
-                		result = result + '     <div title="2" class="tblminwidth-75">'+opt.leavesTaken+'</div>';
+                		result = result + '     <div class="tblminwidth-75">'+opt.leavesTaken+'</div>';
     	                return result; 
                 }
           },{
@@ -183,7 +183,7 @@ function requestedEmployeesPagination(url){
 	    	  	"data": "thisMonthLeaves",
 	    	  	"render": function(data, type, opt, meta) {
 	    	  		 var result = "";
-	    	  		result = result + '     <div title="2" class="tblminwidth-75">'+opt.thisMonthLeaves+'</div>';
+	    	  		result = result + '     <div class="tblminwidth-75">'+opt.thisMonthLeaves+'</div>';
   	                return result; 
 	    	  	}
 	    	  },{
@@ -191,7 +191,7 @@ function requestedEmployeesPagination(url){
 	    	  	"data": "balanceleaves",
 	    	  	"render": function(data, type, opt, meta) {
 	    	  		 var result = "";
-	    	  		result = result + ' <div title="2" class="tblminwidth-75">'+opt.balanceleaves+'</div>';
+	    	  		result = result + ' <div class="tblminwidth-75">'+opt.balanceleaves+'</div>';
 	    	  		return result; 
 	    	  	}
 	    	  }, {
@@ -200,12 +200,12 @@ function requestedEmployeesPagination(url){
                   "render": function ( data, type, opt, meta ) {
                 	   var result = "";
                 	  if(opt.status == 'APPROVED'){
-		        			 result = result + ' <b title="Accept" class="paddingRight proj_active">APPROVED</b>';
+		        			 result = result + ' <b title="Approve" class="paddingRight proj_active">APPROVED</b>';
 		        		 }else  if(opt.status == 'REJECTED'){
-		        			 result = result + ' <b title="Accept" class="paddingRight proj_closed">REJECTED</b>';
+		        			 result = result + ' <b title="Reject" class="paddingRight proj_closed">REJECTED</b>';
 		        		 }else{
 		        			 '<sec:authorize access="hasAnyRole(\'ROLE_APPROVE_LEAVE\')">';
-                             result = result + ' <span title="Accept" class="paddingRight"><i class="fa fa-check text-success cursorPointer" onclick="approveLeave(\''+opt.id+'\',\''+opt.leaveTypeId+'\',\'APPROVED\',\''+opt.noOfDays+'\');"></i></span>';
+                             result = result + ' <span title="Approve" class="paddingRight"><i class="fa fa-check text-success cursorPointer" onclick="approveLeave(\''+opt.id+'\',\''+opt.leaveTypeId+'\',\'APPROVED\',\''+opt.noOfDays+'\');"></i></span>';
                              result = result + '  <span title="Reject" class="paddingLeft"><i class="fa fa-times text-danger cursorPointer" onclick="rejectLeave(\''+opt.id+'\',\''+opt.leaveTypeId+'\',\''+opt.noOfDays+'\',\'REJECTED\');"></i></span>';
                             '</sec:authorize>';
 

@@ -15,7 +15,7 @@ $(document).ready(function(){
       <div class="pull-left">
         <h2>Cancelled</h2>
       </div>
-		<div class="pull-right brud-crum"><a href="dashboard_us.html">Home</a> &raquo; <a href="dashboard-lavemanagement.html">Leave Management</a> &raquo; Cancelled</div>
+		<div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>"> Home</a> &raquo; Cancelled Leaves</div>
     </section>
     
 <div class="content-area content-new clearfix">
@@ -30,7 +30,7 @@ $(document).ready(function(){
                         <option value="/pendingLeaves">Pending Leaves</option>
                         <option value="/approvedLeaves">Approved Leaves</option>
                         <option value="/rejectedLeaves">Rejected Leaves</option>
-                        <option value="/cancelLeaves" selected>Cancel Leaves</option>
+                        <option value="/cancelLeaves" selected>Cancelled Leaves</option>
                     </select>
                 </div>
          </li>
@@ -85,7 +85,7 @@ function getCancelledLeavesList(){
 			        		 result = result + ' <tr>';
 			        		 result = result + ' <td>';
 			        		 result = result + ' <div class="proj_show tbldata-dotdot-big">';
-			        		 result = result + '     <div class="pull-left tbldata-dotdot-me" title="Sick Leave" onclick="getRequestedAproveSummary(\''+opt.id+'\','+orgLocationId+');">'+opt.leaveType+'</div><i class="fa fa-binoculars pull-right" ></i>';
+			        		 result = result + '     <div class="pull-left tbldata-dotdot-me" title="'+opt.leaveType+'" onclick="getRequestedAproveSummary(\''+opt.id+'\','+orgLocationId+');">'+opt.leaveType+'</div><i class="fa fa-binoculars pull-right" ></i>';
 			        		 result = result + '  </div>';
 			        		 result = result + ' </td>';
 			        		 result = result + ' <td>';
@@ -106,7 +106,7 @@ function getCancelledLeavesList(){
 			        		 result = result + '  </td>';
 			        		 result = result + ' <td>';
 			        		 if(opt.approvedByUser !=null && opt.approvedByUser != 'undefined' && opt.approvedByUser != ''){
-			        			 result = result + '   <div title="" class="tbldata-dotdot-100">'+opt.approvedByUser+'</div>';
+			        			 result = result + '   <div title="'+opt.approvedByUser+'" class="tbldata-dotdot-100">'+opt.approvedByUser+'</div>';
 			        		 }else{
 			        			 result = result + '   <div title="" class="tbldata-dotdot-100">---</div>';
 			        		 }
