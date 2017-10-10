@@ -225,87 +225,6 @@ function redirectlocation(location){
 	}); 
 </script>
   
-  <!-- <script>
-  function getCancelledEmployeesList(){
-	  var orgLocationId = '${SourceLeadWeb_orgLocationId}';
-	  var userId = '${SourceLeadWeb_userId}';
-	  $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-	  $.get(sourceleadUrl+"/getEmployeeRequestedLeaves?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&userId="+userId+"&leaveStatus=CANCELLED", function(data) {
-				 var result = "";				        	
-					result = result + '<table id="cancelledLeavesTable" class="display" cellspacing="0" width="100%" >';
-					result = result + '<thead>';
-					result = result + '<tr>';
-					result = result + '<th>Employee Name</th>';
-					result = result + '<th>Leave Type</th>';
-					result = result + '<th>Duration</th>';
-					result = result + '<th>No Of Days</th>';
-					result = result + '<th>Leaves Taken</th>';
-					result = result + '<th>Approved By</th>';
-					result = result + '<th>Canceled By</th>';
-					result = result + '</tr>';
-					result = result + '</thead>	';
-					result = result + '<tbody>';
-					
-					if(data !=null && data !=''){
-						 for (var i=0; i<data.length; i++)
-							{
-				        		 var opt = data[i];
-				        		 result = result + ' <tr>';
-				        		 result = result + ' <td>';
-				        		 result = result + ' <div class="proj_show tbldata-dotdot-big">';
-				        		 result = result + '     <div class="pull-left tbldata-dotdot-me" title="Sick Leave" onclick="getRequestedAproveSummary(\''+opt.id+'\','+orgLocationId+');">'+opt.empName+'('+opt.empType+')</div><i class="fa fa-binoculars pull-right" ></i>'; 
-				        		 result = result + '  </div>';
-				        		 result = result + ' </td>';
-				        		 
-				        		 result = result + ' <td>';
-				        		 result = result + '   <div title="Calendaer month" class="tblminwidth-75">'+opt.leaveType+'</div>';
-				        		 result = result + ' </td>';
-				        		 
-				        		 result = result + ' <td>';
-				        		 result = result + '   <div title="Leave Transfer" class="tbldata-dotdot-100">'+opt.duration+'</div>';
-				        		 result = result + '</td>';
-				        		 
-				        		 result = result + ' <td>';
-				        		 result = result + '     <div title="2" class="tblminwidth-75">'+opt.noOfDays+'</div>';	 
-				        		 result = result + '  </td>';
-				        		 
-
-
-				        		 result = result + ' <td>';
-				        		 result = result + '     <div title="2" class="tblminwidth-75">'+opt.leavesTaken+'</div>';	 
-				        		 result = result + '  </td>';
-				        		 
-				        		 result = result + ' <td>';
-				        		 result = result + '     <div title="2" class="tblminwidth-75">'+opt.approvedBy+'</div>';	 
-				        		 result = result + '  </td>';
-				        		 
-				        		 result = result + ' <td>';
-				        		 result = result + ' <div title="2" class="tblminwidth-75">'+opt.cancelledBy+'</div>';	 
-				        		 result = result + ' </td>';
-				        		 
-				        		 result = result + '  </tr>';
-							}
-					}
-					result = result + '  </tbody>';
-					result = result + ' </table>';
-					$("#cancelledLeavesDiv").empty();
-					$("#cancelledLeavesDiv").append(result);
-					$("#loading").removeAttr("style");
-					cancelledLeavesTable();
-					 $(".proj_show").click(function(){
-						$(".new_side_wrap").addClass("new_side_wrap_active");
-						$(".side_mask").fadeIn(200);
-						$("body").css('overflow-y', 'hidden');
-					});
-					$(".proj_close, .side_mask").click(function(){
-						$(".new_side_wrap").removeClass("new_side_wrap_active");
-						$(".side_mask").fadeOut(200);
-						$("body").css('overflow-y', 'auto');
-					    $('.addcandidate-popup').fadeOut(200);
-					}); 
-		}); 
-  }
-  </script> -->
   
 <script>
 function getRequestedAproveSummary(leaveId,orgLocationId){
@@ -353,7 +272,7 @@ function getRequestedAproveSummary(leaveId,orgLocationId){
 			 result = result +'<div class="col-md-12 mb">';
 			 result = result +'<label class="col-md-2 control-label"><b>Employee Type:</b></label>';
 			 result = result +' <div class="col-md-8">';
-			 result = result +'<span>Contract to Hire</span>';
+			 result = result +'<span>'+data.empType+'</span>';
 			 result = result +'</div>';
 			 result = result +'</div>';
 			 result = result +'<div class="col-md-12 mb">';
@@ -377,13 +296,13 @@ function getRequestedAproveSummary(leaveId,orgLocationId){
              result = result +'<div class="col-md-12 mb">';
              result = result +'<label class="col-md-2 control-label"><b>No of leaves taken:</b></label>';
              result = result +' <div class="col-md-8">';
-             result = result +'<span>XXXXXXX</span>';
+             result = result +'<span>'+data.leavesTaken+'</span>';
              result = result +'</div>';
              result = result +'</div>';
              result = result +'<div class="col-md-12 mb">';
              result = result +'<label class="col-md-2 control-label"><b>This month:</b></label>';
              result = result +'<div class="col-md-8">';
-             result = result +' <span>XXXXX</span>';
+             result = result +' <span>'+data.thisMonthLeaves+'</span>';
              result = result +'</div>';
              result = result +'</div>';
              result = result +'<div class="col-md-12 mb">';
@@ -401,7 +320,7 @@ function getRequestedAproveSummary(leaveId,orgLocationId){
              result = result +'<div class="col-md-12 mb">';
              result = result +'<label class="col-md-2 control-label"><b>Approvers:</b></label>';
              result = result +'<div class="col-md-8">';
-             result = result +' <span>Srinivas Vemula</span>';
+             result = result +' <span>'+data.approverUsers+'</span>';
              result = result +'</div>';
              result = result +'</div>';
              result = result +'<div class="col-md-12 mb">';
@@ -442,7 +361,7 @@ function getRequestedAproveSummary(leaveId,orgLocationId){
              result = result +'<div class="col-md-12 mb">';
              result = result +'<label class="col-md-2 control-label"><b>Cancelled reason:</b></label>';
              result = result +'<div class="col-md-8">';
-             result = result +' <span>Srinivas Vemula</span>';
+             result = result +' <span>'+data.rejectedReason+'</span>';
              result = result +'</div>';
              result = result +'</div>';
              result = result +'<div class="clearfix"></div>';
