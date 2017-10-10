@@ -20,6 +20,7 @@ $(document).ready(function(){
       </div>
 		<div class="pull-right brud-crum"><a href="dashboard_us.html">Home</a> &raquo; <a href="dashboard-lavemanagement.html">Leave Management</a> &raquo; Requested Count</div>
     </section>
+    <div id="popUp"></div>
     
 <div class="content-area content-new clearfix">
 
@@ -47,6 +48,7 @@ $(document).ready(function(){
 		 <input type='text' placeholder='Search' id='requestedEmployeesTableSearch'/>
 		</div>
     <div id="requestedLeavesDiv"></div>
+    
   </div>
 </div>
 
@@ -205,7 +207,7 @@ function requestedEmployeesPagination(url){
 		        			 result = result + ' <b title="Accept" class="paddingRight proj_closed">REJECTED</b>';
 		        		 }else{
 		        			 '<sec:authorize access="hasAnyRole(\'ROLE_APPROVE_LEAVE\')">';
-                             result = result + ' <span title="Accept" class="paddingRight"><i class="fa fa-check text-success cursorPointer" onclick="approveLeave(\''+opt.id+'\',\''+opt.leaveTypeId+'\',\'APPROVED\',\''+opt.noOfDays+'\');"></i></span>';
+                             result = result + ' <span title="Accept" class="paddingRight"><i class="fa fa-check text-success cursorPointer" onclick="approveLeavePopup(\''+opt.id+'\',\''+opt.leaveTypeId+'\',\'APPROVED\',\''+opt.noOfDays+'\');"></i></span>';
                              result = result + '  <span title="Reject" class="paddingLeft"><i class="fa fa-times text-danger cursorPointer" onclick="rejectLeave(\''+opt.id+'\',\''+opt.leaveTypeId+'\',\''+opt.noOfDays+'\',\'REJECTED\');"></i></span>';
                             '</sec:authorize>';
 
@@ -236,7 +238,27 @@ function requestedEmployeesPagination(url){
 </script>
 
  
-
+<script>
+function approveLeavePopup(leaveId,leaveTypeId,approveStatus,numberOfDays){
+	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
+	$.get(sourceleadUrl+"/validateRestrictDate?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&leaveId="+leaveId, function(data) {
+		if(data == true){
+			var result = "";
+			result = result +"	<div class='project_inn_mask'></div>"; 
+			result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+			result = result +"		<p>This Employee applied leave on restricted day</p>";
+			result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+			result = result +'		<b href="javascript:void(0)"><input id="confirm-id" type="button" value="Ok" onclick="approveLeave(\''+leaveId+'\',\''+leaveTypeId+'\',\''+approveStatus+'\',\''+numberOfDays+'\');"><input class="u_can_color" type="button"  value="Cancel" onClick="approverPopupCancel();"></b>';
+			result = result +"	</div>";
+			$("#popUp").append(result);
+			$("#remove_user_pop").slideDown(200);
+			$(".project_inn_mask").fadeIn(200);
+		}else{
+			approveLeave(leaveId,leaveTypeId,approveStatus,numberOfDays);
+		}
+	}); 
+}
+</script>
 
 
 <script>
@@ -294,7 +316,7 @@ function getRequestedAproveSummary(leaveId,orgLocationId){
 			$("body").css('overflow-y', 'hidden');
 			 var result = "";	
 			 result = result +' <div class="viewgrid-header pull-right zIndex positionRelative">';
-			 result = result +'<span class="btn btn-primary btn-sm mr10" onclick="approveLeave(\''+data.id+'\',\''+data.leaveTypeId+'\',\'APPROVED\',\''+data.noOfDays+'\');">Approve</span>';
+			 result = result +'<span class="btn btn-primary btn-sm mr10" onclick="approveLeavePopup(\''+data.id+'\',\''+data.leaveTypeId+'\',\'APPROVED\',\''+data.noOfDays+'\');">Approve</span>';
 			 result = result +'<span class="btn btn-danger btn-sm mr10" onclick="rejectLeave(\''+data.id+'\',\''+data.leaveTypeId+'\',\''+data.noOfDays+'\',\'REJECTED\');">Reject</span>';
 			 result = result +'<div class="clearfix"></div>';
 			 result = result +'<div class="cancel-reason" id="cancelReason">';
@@ -387,7 +409,7 @@ function getRequestedAproveSummary(leaveId,orgLocationId){
              result = result +'<label class="col-md-2 control-label"><b>Attachment:</b></label>';
              result = result +' <div class="col-md-8">';
              if(data.fileUrl != null && data.fileUrl != 'undefined' && data.fileUrl != ''){
-            	 result = result +'<span><a href="'+data.fileUrl+'">'+data.fileName+'<i class="fa fa-download padddingLeft cursorPointer"></i></a></span>';
+            	 result = result + '<a href="#" title="Preview"><i class="fa fa-eye cursorPointer" onclick="viewFile(\''+data.fileUrl+'\', \''+data.fileName+'\', \''+data.fileType+'\')"></i></a>';
              }else{
             	 result = result +'<span>--</span>'; 
              }
@@ -420,13 +442,20 @@ function rejectLeave(id, leaveTypeId, noOfDays){
 }
 </script>
 
-<div id="popUp"></div>
 
 <script>
 function cancelTermination(){
 	$(".comMask").remove();
 	$("#remove_user_pop, .sideMask").remove();
 }
+</script>
+
+<script>
+function approverPopupCancel(){
+	$("#popUp").empty();
+	 $(".project_inn_mask").fadeOut(200);
+}
+
 </script>
 
 <script>

@@ -793,7 +793,7 @@ public class LeaveServiceImpl implements LeaveService{
 
 
 	@Override
-	public boolean getWithdrawLeave(OrgLocations orgLocations, String leaveId, User user, String reason) throws Exception {
+	public boolean getWithdrawLeave(OrgLocations orgLocations, String leaveId, User user, String withdrawReason) throws Exception {
 		boolean isLeaveWithdraw = false;
 		LeaveManagementHistory leaveManagementHistory = new LeaveManagementHistory();
 		Leave leave = leaveDao.getLeaveById(leaveId);
@@ -805,7 +805,7 @@ public class LeaveServiceImpl implements LeaveService{
 				leave.setStatus(Constants.LEAVE_WITHDRAW);
 				leave.setNumberOfDays("0");
 			}
-			leave.setWithdrawReason(reason);
+			leave.setWithdrawReason(withdrawReason);
 			leave.setUpdatedBy(user.getUserCode());
 			leave.setUpdatedDate(new Date());
 			leave.setApproverUsers(leave.getApproverUsers());
@@ -885,12 +885,12 @@ public class LeaveServiceImpl implements LeaveService{
 				
 				EmailScenario notificationScenario = null;
 				
-				if (leaveManagementHistory.getLeaveid().getReason() != null && !"".equalsIgnoreCase(leaveManagementHistory.getLeaveid().getReason())) {
-					globalVarsMap.put("reason", leaveManagementHistory.getLeaveid().getReason());
+				if (leaveManagementHistory.getLeaveid().getWithdrawReason() != null && !"".equalsIgnoreCase(leaveManagementHistory.getLeaveid().getWithdrawReason())) {
+					globalVarsMap.put("withdrawReason", leaveManagementHistory.getLeaveid().getWithdrawReason());
 					  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.LEAVE_WITHDRAW_EMAIL, Constants.ENTITY_TYPE_EMAIL);
 					   notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.LEAVE_WITHDRAW_NOTIFICATION, Constants.ENTITY_TYPE_NOTIFICATION);
 				}else{
-					globalVarsMap.put("reason", "--");
+					globalVarsMap.put("withdrawReason", "--");
 //					  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.LEAVE_APPROVER_EMAIL, Constants.ENTITY_TYPE_EMAIL);
 //					   notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.LEAVE_WITHDRAW_NOTIFICATION, Constants.ENTITY_TYPE_NOTIFICATION);
 				}
