@@ -281,7 +281,7 @@ function approvedListPagination(){
 
 
 <script>
-function withDrawLeave(leaveId,orgLocationId){
+function withDrawLeave(leaveId, userId){
 	
 	var result = "";
 	result = result +"	<div class='comMask'></div>";

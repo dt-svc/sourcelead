@@ -227,6 +227,9 @@ public class Constants {
 	public static final String LEAVE_REJECTED_EMAIL = "Rejected Leave";
 	public static final String LEAVE_REJECTED_NOTIFICATION = "RejectedLeaveNotification";
 	
+	public static final String LEAVE_WITHDRAW_EMAIL = "Withdraw Leave";
+	public static final String LEAVE_WITHDRAW_NOTIFICATION = "WithdrawLeaveNotification";
+	
 	public static final String RESOURCE_REQUEST = "Resource Request";
 	public static final String RESOURCE_REQUEST_NOTIFICATION = "ResourceRequestNotification";
 	

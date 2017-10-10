@@ -1295,9 +1295,13 @@ public class LeaveManagementRestController {
 	@ResponseBody
 	public boolean withdrawLeave(@RequestParam(value = "orgLocationId", required = false) Long orgLocationId,
 			@RequestParam(value = "leaveId", required = false) String leaveId,
+			@RequestParam(value = "userId", required = false) Long userId,
 			@RequestParam(value = "reason", required = false) String reason) throws Exception {
+		
+		OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
+		User user = userService.getUserById(userId);
 		boolean isValid = false;
-		isValid = leaveService.getWithdrawLeave(leaveId,reason,orgLocationId);
+		isValid = leaveService.getWithdrawLeave(orgLocations,leaveId,user,reason);
 		
 		return isValid;
 
