@@ -1307,8 +1307,8 @@ public class LeaveManagementRestController {
 								
 								noOfDays = noOfDays + Integer.valueOf(leave.getNumberOfDays());
 								if(noOfDays > Integer.valueOf(type.getNumbefrOfLeavesPeryear())) {
-									int totlaLeaves =  Integer.valueOf(type.getNumbefrOfLeavesPeryear()) - noOfDays;
-									leaveTypeDto.setNumberOfDaysCount(String.valueOf(totlaLeaves));
+									int totalLeaves =  Integer.valueOf(type.getNumbefrOfLeavesPeryear()) - noOfDays;
+									leaveTypeDto.setNumberOfDaysCount(String.valueOf(totalLeaves));
 								}else {
 									leaveTypeDto.setNumberOfDaysCount(String.valueOf(noOfDays));
 								}

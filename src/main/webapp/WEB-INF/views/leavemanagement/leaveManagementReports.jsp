@@ -626,14 +626,18 @@ function getPieChartBasedOnUser(){
        		 var result = "";
        		 if(data.length > 0){
        			for (var i = 0; i < data.length; i++) {
-      		 		 var opt = data[i]; 
+      		 		 var opt = data[i];
+      		 		 var numberOfDaysCount = 0;
+      		 		 if(opt.numberOfDaysCount != null && opt.numberOfDaysCount != "" && opt.numberOfDaysCount != 'undefined'){
+      		 			numberOfDaysCount = opt.numberOfDaysCount 
+      		 		 }
       		 		result = result +'  <div class="col-md-3 mb">';
       	            result = result +'   <h4 class="text-center">'+opt.name+'</h4>';
       	            result = result +'   <div id="vacationDonut'+opt.leaveTypeId+'" class="amchartAnchor-Hide" style="width: 100%; height: 125px;"> </div>';
       	            result = result +'   <div class="text-center">';
       	            result = result +'     <h2>';
       	            result = result +'       <label class="small text-muted">Remaining:</label>';
-      	            result = result +'       <label class="clearfix width100percnt mt5">'+opt.numberOfDaysCount+' / '+opt.noOfLeavesPerYear+'</label>';
+      	            result = result +'       <label class="clearfix width100percnt mt5">'+numberOfDaysCount+' / '+opt.noOfLeavesPerYear+'</label>';
       	            result = result +'     </h2>';
       	            result = result +'   </div>';
       	            result = result +' </div>';
