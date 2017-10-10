@@ -39,7 +39,7 @@ margin: 0.1% 2%;
             <jsp:include page="projectDetails.jsp" />
             <jsp:include page="projectTasks.jsp" />
             <jsp:include page="projectDocuments.jsp"/>
-           
+           <jsp:include page="projectReports.jsp"/>
             <jsp:include page="../masterFooter.jsp" />	
 
 	
@@ -94,7 +94,8 @@ window.onload = function () {
 				'</sec:authorize>';
 		  	  }
 		  	 
-			
+		  	 result = result + ' <li><a href="#tab-5" onClick="projectReports('+projectId+');getDayWiseReports('+projectId+');" >Reports</a></li>';
+		  	 
 		  	result = result + ' <div class="clearfix"></div>';
 		  	result = result + ' </ul>';
 		  	 
@@ -111,6 +112,9 @@ window.onload = function () {
 		  	result = result + '<div id="tab-4" class="project_tabs_inn">';
 		  	result = result + '</div>';
 		  	
+			result = result + '<div id="tab-5" class="project_tabs_inn">';
+		  	result = result + '</div>';
+		  	
 		  	result = result + '</div>'; 
 		  	$("#projectSideDiv").empty();  
 		    $("#projectSideDiv").append(result);  
@@ -120,13 +124,11 @@ window.onload = function () {
 				 if(tabType == "tasks"){
 					 document.getElementById('projectTaskTab').className = 'current'
 					 projectTask(projectId, status)
-				 }
-				 if(tabType == "projectMembers"){
+				 }else  if(tabType == "projectMembers"){
 					 document.getElementById('requestResources').className = 'current'
 					 projectEmployee(projectId,startDateStr,endDateStr,status,projectName);
 					 document.getElementById('projectMembersTab').click();
-				 }
-				 else{
+				 }else if(tabType == "resources") {
 					 document.getElementById('requestResources').className = 'current'
 					 projectEmployee(projectId,startDateStr,endDateStr,status,projectName);
 					 document.getElementById('resourceTab').click();

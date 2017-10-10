@@ -422,6 +422,10 @@ public class ProjectsServiceImpl implements ProjectsService{
 			projects.setAllowOffShore(null);
 		}
 		
+		if(StringUtils.isNotBlank(projectsDTO.getEstimatedBudgetCurrency())) {
+			projects.setCurrency(projectsDTO.getEstimatedBudgetCurrency());
+		}
+		
 		if(!isNullOrEmpty(projectsDTO.getIsTimeEntryAfterDeadline())){
 			projects.setAllowTimeEntryAfterDeadLine(BooleanUtils.toBoolean(projectsDTO.getIsTimeEntryAfterDeadline(),"Y",""));
 		}else{
@@ -452,8 +456,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 			}
 		}
 		
-		if(StringUtils.isNotBlank(projectsDTO.getEstimatedBudget()) || StringUtils.isNotBlank(projectsDTO.getEstimatedBudgetCurrency())
-			|| StringUtils.isNotBlank(projectsDTO.getEstimatedHours()) || StringUtils.isNotBlank(projectsDTO.getBudgetApproverUser())) {
+		if(StringUtils.isNotBlank(projectsDTO.getEstimatedBudget()) || StringUtils.isNotBlank(projectsDTO.getEstimatedHours()) || StringUtils.isNotBlank(projectsDTO.getBudgetApproverUser())) {
 			Set<ProjectBudget> projectBudget = storeProjectBudget(projectsDTO,user,projects);
 			projects.setProjectBudget(projectBudget);
 		}
@@ -515,7 +518,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 			projectBudget.setBudgetRequestedId(generatebudgetRequestId(projects,projectsDTO));
 		}
 		projectBudget.setProjectId(projects);
-		projectBudget.setBudgetStatus("Waiting For Approval");
+		projectBudget.setBudgetStatus(Constants.BUDGET_REQUEST_APPROVED);
 		projectBudget.setEstimatedHours(projectsDTO.getEstimatedHours());
 		projectBudget.setEstimatedBudgetCurrency(projectsDTO.getEstimatedBudgetCurrency());
 		projectBudget.setEstimatedBudgetValue(projectsDTO.getEstimatedBudget());
@@ -1782,7 +1785,12 @@ public class ProjectsServiceImpl implements ProjectsService{
 		for(ProjectMembers pm : projectMembersList){
 			 if(pm.getCandidateId() != null){
 				 StringBuilder membersListStringBuilder=new StringBuilder();
-				 pm.setEmpName(membersListStringBuilder.append(pm.getProjectMemberCandidteId().getFirstName()).append(" ").append(pm.getProjectMemberCandidteId().getLastName()).toString());	 
+				 if(pm.getProjectMemberCandidteId().getLastName() != null) {
+					 pm.setEmpName(membersListStringBuilder.append(pm.getProjectMemberCandidteId().getFirstName()).append(" ").append(pm.getProjectMemberCandidteId().getLastName()).toString());	 
+				 }else {
+					 pm.setEmpName(membersListStringBuilder.append(pm.getProjectMemberCandidteId().getFirstName()).toString());	 
+
+				 }
 				 if(pm.getProjectMemberCandidteId().getConsultantUser() != null){
 					 UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(pm.getProjectMemberCandidteId().getConsultantUser().getId(), pm.getProjects().getOrgLocationsId().getId());
 					 if(userRole != null){

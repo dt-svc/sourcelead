@@ -1,6 +1,7 @@
 package com.bis.sourcelead.entity;
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
@@ -33,6 +34,7 @@ import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.Type;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import com.bis.sourcelead.beans.TasksGraphBean;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -134,9 +136,20 @@ public class ProjectTasks implements Serializable{
     @JsonBackReference
     private Set<ProjectAssignTask> projectAssignTask;
     
+    
+    @NotFound(action=NotFoundAction.IGNORE)
+	@OneToMany(mappedBy = "projectTaskId",cascade = CascadeType.ALL)
+	@Fetch(FetchMode.SELECT)
+    private List<ProjectTaskActivity> projectTaskActivity;
+    
+
 	@OneToMany(mappedBy="projectTaskId",cascade = CascadeType.ALL)
     @Fetch(FetchMode.SELECT)
     private Set<ProjectTaskDocuments> projectTaskDocuments = new HashSet<>();
+	
+	@Transient
+	@JsonProperty
+	List<TasksGraphBean> tasksGraphBean;
 	
 	@JsonProperty
 	@Transient
@@ -153,6 +166,59 @@ public class ProjectTasks implements Serializable{
 	@JsonProperty
 	@Transient
 	private List<String> taskAssignedUsers;
+	
+	
+	@JsonProperty
+	@Transient
+	private String createdDateStr;
+	
+	@JsonProperty
+	@Transient
+	private Integer newCount;
+	
+	
+	@JsonProperty
+	@Transient
+	private Integer inProgressCount;
+	
+	@JsonProperty
+	@Transient
+	private Integer onHoldCount;
+	
+	@JsonProperty
+	@Transient
+	private Integer doneCount;
+	
+	@JsonProperty
+	@Transient
+	private Integer p1PriorityCount;
+	
+	
+	@JsonProperty
+	@Transient
+	private Integer p2PriorityCount;
+	
+	
+	@JsonProperty
+	@Transient
+	private Integer p3PriorityCount;
+	
+	
+	@JsonProperty
+	@Transient
+	private Integer p4PriorityCount;
+	
+	@JsonProperty
+	@Transient
+	private String userFileUrl;
+	
+	@JsonProperty
+	@Transient
+	private String userName;
+	
+	@JsonProperty
+	@Transient
+	private String actionTimeStr;
 	
 	public Long getId() {
 		return Id;
@@ -423,7 +489,121 @@ public class ProjectTasks implements Serializable{
 	public void setTaskAssignedUsers(List<String> taskAssignedUsers) {
 		this.taskAssignedUsers = taskAssignedUsers;
 	}
-	
-	
-	
+
+	public String getCreatedDateStr() {
+		if(createdDate != null) {
+			SimpleDateFormat dateFormat = projectId.getOrgLocationsId().getLocFullFormDateFormatter();
+			createdDateStr = dateFormat.format(createdDate);	
+		}
+		return createdDateStr;
+	}
+
+	public void setCreatedDateStr(String createdDateStr) {
+		this.createdDateStr = createdDateStr;
+	}
+
+	public Integer getNewCount() {
+		return newCount;
+	}
+
+	public Integer getInProgressCount() {
+		return inProgressCount;
+	}
+
+	public Integer getOnHoldCount() {
+		return onHoldCount;
+	}
+
+	public Integer getDoneCount() {
+		return doneCount;
+	}
+
+	public void setNewCount(Integer newCount) {
+		this.newCount = newCount;
+	}
+
+	public void setInProgressCount(Integer inProgressCount) {
+		this.inProgressCount = inProgressCount;
+	}
+
+	public void setOnHoldCount(Integer onHoldCount) {
+		this.onHoldCount = onHoldCount;
+	}
+
+	public void setDoneCount(Integer doneCount) {
+		this.doneCount = doneCount;
+	}
+
+	public Integer getP1PriorityCount() {
+		return p1PriorityCount;
+	}
+
+	public Integer getP2PriorityCount() {
+		return p2PriorityCount;
+	}
+
+	public Integer getP3PriorityCount() {
+		return p3PriorityCount;
+	}
+
+	public Integer getP4PriorityCount() {
+		return p4PriorityCount;
+	}
+
+	public void setP1PriorityCount(Integer p1PriorityCount) {
+		this.p1PriorityCount = p1PriorityCount;
+	}
+
+	public void setP2PriorityCount(Integer p2PriorityCount) {
+		this.p2PriorityCount = p2PriorityCount;
+	}
+
+	public void setP3PriorityCount(Integer p3PriorityCount) {
+		this.p3PriorityCount = p3PriorityCount;
+	}
+
+	public void setP4PriorityCount(Integer p4PriorityCount) {
+		this.p4PriorityCount = p4PriorityCount;
+	}
+
+	public List<TasksGraphBean> getTasksGraphBean() {
+		return tasksGraphBean;
+	}
+
+	public void setTasksGraphBean(List<TasksGraphBean> tasksGraphBean) {
+		this.tasksGraphBean = tasksGraphBean;
+	}
+
+	public String getUserFileUrl() {
+		return userFileUrl;
+	}
+
+	public String getUserName() {
+		return userName;
+	}
+
+	public void setUserFileUrl(String userFileUrl) {
+		this.userFileUrl = userFileUrl;
+	}
+
+	public void setUserName(String userName) {
+		this.userName = userName;
+	}
+
+	public String getActionTimeStr() {
+		return actionTimeStr;
+	}
+
+	public void setActionTimeStr(String actionTimeStr) {
+		this.actionTimeStr = actionTimeStr;
+	}
+
+	public List<ProjectTaskActivity> getProjectTaskActivity() {
+		return projectTaskActivity;
+	}
+
+	public void setProjectTaskActivity(List<ProjectTaskActivity> projectTaskActivity) {
+		this.projectTaskActivity = projectTaskActivity;
+	}
+	 
 }

@@ -1,6 +1,7 @@
 package com.bis.sourcelead.service;
 
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -9,12 +10,8 @@ import javax.servlet.http.HttpServletRequest;
 import org.json.JSONObject;
 
 import com.bis.sourcelead.dto.ProjectTasksDTO;
-import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.ProjectTasks;
 import com.bis.sourcelead.entity.Projects;
-import com.bis.sourcelead.entity.User;
-import com.bis.sourcelead.model.ProjectDocumentBO;
-import com.bis.sourcelead.model.ProjectTaskDocumentBO;
 
 public interface ProjectTasksService {
 	
@@ -64,5 +61,10 @@ public interface ProjectTasksService {
 	
 	public Long getProjectTasksGeneratedIdByProjectId(Long projectId,Integer generatedIdCount) throws Exception;
 	
+	Integer getProjectTasksListCountByProjectIdAndStatus(Long projectId,String  status) throws Exception;
 	
+	public List<ProjectTasks> getOverdueTaskListByProjectId(Long projectId,String filterDate, Date startDateUTC, Date endDateUTC)throws Exception;
+	
+	 public List<ProjectTasks> getAllTasksByProjectIdAndFilter(Long projectId,String filterDate, Date startDateUTC, Date endDateUTC)throws Exception;
+	 
 }

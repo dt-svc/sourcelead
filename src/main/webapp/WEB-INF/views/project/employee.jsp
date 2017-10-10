@@ -2054,16 +2054,9 @@ function editBudgetrequest(budgetRequestedId){
 					result = result + '	    <div class="clearfix mb10">';
 					result = result + '	      <div class="col-md-12">';
 					result = result + ' <div class="input-group">';
-					result = result + ' <div class="input-group-btn selp-custom-min selp-customMin">';
-					result = result + '       <select class="selectpicker" id="estimatedBudgetCurrency" name="estimatedBudgetCurrency" >';
-					result = result + '          <option '+ (json.estimatedBudgetCurrency == "INR" ? "selected" : '') +' value="INR" >INR</option>';
-					result = result + '          <option '+ (json.estimatedBudgetCurrency == "AUD" ? "selected" : '') +' value="AUD" >AUD</option>';
-					result = result + '          <option '+ (json.estimatedBudgetCurrency == "USD" ? "selected" : '') +' value="USD" >USD</option>';
-					result = result + '          <option '+ (json.estimatedBudgetCurrency == "GBP" ? "selected" : '') +' value="GBP" >GBP</option>';
-					result = result + '          <option '+ (json.estimatedBudgetCurrency == "SGD" ? "selected" : '') +' value="SGD" >SGD</option>';
-					result = result + '          <option '+ (json.estimatedBudgetCurrency == "EUR" ? "selected" : '') +' value="EUR" >EUR</option>';
-					result = result + '     </select>';
-					result = result + '     </div>';
+					result = result + '  <div class="input-group-btn tblminwidth-75" style="min-width: 65px !important;">';
+					result = result + '  <input type="text" class="pull-left btn btn-primary btn-block" id="estimatedBudgetCurrency" name="estimatedBudgetCurrency" value="${projectCurrency}" readonly>';
+					result = result + ' </div>';
 					result = result + '	        <input type="text" class="form-control " value="'+json.estimatedBudgetValue+'" id="estimatedBudget" name="estimatedBudget" placeholder="Estimated Budget *" field-name="Estimated Budget" data-validation="required validate_Space validate_float validate_length length1-16">';
 					result = result + ' </div>';
 					result = result + ' </div>';
@@ -2153,16 +2146,9 @@ function addBudgetRequestPopUp(){
 	result = result + '	    <div class="clearfix mb10">';
 	result = result + '	      <div class="col-md-12">';
 	result = result + ' <div class="input-group">';
-	result = result + ' <div class="input-group-btn selp-custom-min selp-customMin">';
-	result = result + '       <select class="selectpicker" id="estimatedBudgetCurrency" name="estimatedBudgetCurrency" >';
-	result = result + '          <option ${SourceLeadWeb_currencyCode == "INR" ? "selected" : ''}>INR</option>';
-	result = result + '          <option ${SourceLeadWeb_currencyCode == "AUD" ? "selected" : ''}>AUD</option>';
-	result = result + '          <option ${SourceLeadWeb_currencyCode == "USD" ? "selected" : ''}>USD</option>';
-	result = result + '          <option ${SourceLeadWeb_currencyCode == "GBP" ? "selected" : ''}>GBP</option>';
-	result = result + '          <option ${SourceLeadWeb_currencyCode == "SGD" ? "selected" : ''}>SGD</option>';
-	result = result + '          <option ${SourceLeadWeb_currencyCode == "EUR" ? "selected" : ''}>EUR</option>';
-	result = result + '     </select>';
-	result = result + '     </div>';
+	result = result + '  <div class="input-group-btn tblminwidth-75" style="min-width: 65px !important;">';
+	result = result + '  <input type="text" class="pull-left btn btn-primary btn-block" id="estimatedBudgetCurrency" name="estimatedBudgetCurrency" value="${projectCurrency}" readonly>';
+	result = result + ' </div>';
 	result = result + ' 	<input type="text" value="" id="estimatedBudget" name="estimatedBudget" class="form-control" placeholder="Estimated Budget *"';
 	result = result + ' 		data-validation="required validate_Space validate_float validate_length length1-16" data-validation-optional="true" class="form-control" field-name="Estimated Budget" >';
 	result = result + ' </div>';
@@ -2227,9 +2213,9 @@ var orgLocationId = '${SourceLeadWeb_orgLocations.id}';
 		     		}
 		     		 
 		     		 if(opt.id == approverUserId){
-		        			output = output + "<option value='"+opt.id+"' selected>"+opt.firstName+" "+opt.lastName+" ("+opt.userType+")</option>";
+		        			output = output + "<option value='"+opt.id+"' selected>"+opt.fullname+" ("+opt.userType+")</option>";
 		        		}else{
-		        			output = output + "<option value='"+opt.id+"'> "+opt.firstName+" "+opt.lastName+" ("+opt.userType+")</option>";
+		        			output = output + "<option value='"+opt.id+"'> "+opt.fullname+" ("+opt.userType+")</option>";
 		        		}
 		     		 
 	     		}

@@ -210,6 +210,7 @@ public class CommonUtil {
 		Collection<ProjectTasks> tasksList = projectTasksService.getAllSourceleadTasks();
 		if(tasksList != null && !tasksList.isEmpty()){
 			for(ProjectTasks task :tasksList){
+				task.setProjectTasksUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 				task.setProjectId(projects);
 				task.setCreatedBy(user.getCreatedBy());
 				task.setCreatedDate(new Date());
