@@ -502,7 +502,7 @@ public class LeaveServiceImpl implements LeaveService{
 		LeaveDTO leaveDto = new LeaveDTO();
 		List<LeaveApproveHierarchy> leavesList = leaveDao.getAllEmployeesLeavesCounts(orgLocationId,userId);
 		for (LeaveApproveHierarchy lah : leavesList) {
-			if(Constants.PENDING.equalsIgnoreCase(lah.getLeaveid().getStatus()) || Constants.APPROVED.equalsIgnoreCase(lah.getLeaveid().getStatus()) || Constants.REJECTED.equalsIgnoreCase(lah.getLeaveid().getStatus()) || Constants.LEAVE_CANCELLED.equalsIgnoreCase(lah.getLeaveid().getStatus())) {
+			if(Constants.PENDING.equalsIgnoreCase(lah.getLeaveid().getStatus())) {
 				requestedCounts = requestedCounts + 1;
 			}
 			if(Constants.APPROVED.equalsIgnoreCase(lah.getLeaveid().getStatus())) {

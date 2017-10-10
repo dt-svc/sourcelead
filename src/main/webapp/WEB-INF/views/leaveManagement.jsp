@@ -41,19 +41,19 @@ $(document).ready(function(){
                 <ul class="list-unstyled list-group clearfix">
                     <li class="clearfix">
                         <label class="pull-left">Pending Leaves</label>
-                        <a href="<c:url value='/pendingLeaves'/>" class="color_white" title="Pending Leaves"><span class="label label-primary pull-right" id="selfPendingCounts"></span></a>
+                        <a href="<c:url value='/pendingLeaves'/>" class="color_white" id="selfpend" title="Pending Leaves"><span class="label label-primary pull-right" id="selfPendingCounts"></span></a>
                     </li>
                     <li class="clearfix mt10">
                         <label class="pull-left">Approved Leaves</label>
-                        <a href="<c:url value='/approvedLeaves'/>" class="color_white" title="Approved Leaves"><span class="label label-success pull-right" id="selfApprovedCounts"></span></a>
+                        <a href="<c:url value='/approvedLeaves'/>" class="color_white" id="selfapp" title="Approved Leaves"><span class="label label-success pull-right" id="selfApprovedCounts"></span></a>
                     </li>
                     <li class="clearfix mt10">
                         <label class="pull-left">Rejected Leaves</label>
-                        <a href="<c:url value='/rejectedLeaves'/>" class="color_white" title="Rejected Leaves"><span class="label label-danger pull-right" id="selfRejectedCounts"></span></a>
+                        <a href="<c:url value='/rejectedLeaves'/>" class="color_white" id="selfrej" title="Rejected Leaves"><span class="label label-danger pull-right" id="selfRejectedCounts"></span></a>
                     </li>
                     <li class="clearfix mt10">
                         <label class="pull-left">Cancel Leaves</label>
-                        <a href="<c:url value='/cancelLeaves'/>" class="color_white" title="Cancel Leaves"><span class="label label-warning pull-right" id="selfCancelledCounts"></span></a>
+                        <a href="<c:url value='/cancelLeaves'/>" class="color_white" id="selfcanc" title="Cancel Leaves"><span class="label label-warning pull-right" id="selfCancelledCounts"></span></a>
                     </li>
                 </ul>
                       
@@ -79,19 +79,19 @@ $(document).ready(function(){
                 <ul class="list-unstyled list-group clearfix">
                     <li class="clearfix">
                         <label class="pull-left">Requested Leaves</label>
-                        <a href="<c:url value='/employeeRequestedLeaves'/>" class="color_white" title="Pending Leaves"><span class="label label-primary pull-right" id="employeeRequestedCounts"></span>></a>
+                        <a href="<c:url value='/employeeRequestedLeaves'/>" class="color_white" id="empReq" title="Pending Leaves"><span class="label label-primary pull-right" id="employeeRequestedCounts"></span>></a>
                     </li>
                     <li class="clearfix mt10">
                         <label class="pull-left">Approved Leaves</label>
-                        <a href="<c:url value='/employeeApprovedLeaves'/>" class="color_white" title="Approved Leaves"><span class="label label-success pull-right" id="employeeApprovedCounts"></span></a>
+                        <a href="<c:url value='/employeeApprovedLeaves'/>" class="color_white" id="empApp" title="Approved Leaves"><span class="label label-success pull-right" id="employeeApprovedCounts"></span></a>
                     </li>
                     <li class="clearfix mt10">
                         <label class="pull-left">Rejected Leaves</label>
-                        <a href="<c:url value='/employeeRejectedLeaves'/>" class="color_white" title="Rejected Leaves"><span class="label label-danger pull-right" id="employeeRejectedCounts"></span></a>
+                        <a href="<c:url value='/employeeRejectedLeaves'/>" class="color_white" id="empRej" title="Rejected Leaves"><span class="label label-danger pull-right" id="employeeRejectedCounts"></span></a>
                     </li>
                     <li class="clearfix mt10">
                         <label class="pull-left">Cancel Leaves</label>
-                        <a href="<c:url value='/employeeCancelLeaves'/>" class="color_white" title="Cancel Leaves"><span class="label label-warning pull-right" id="employeeCancelledCounts"></span></a>
+                        <a href="<c:url value='/employeeCancelLeaves'/>" class="color_white" id="empCanc" title="Cancel Leaves"><span class="label label-warning pull-right" id="employeeCancelledCounts"></span></a>
                     </li>
                 </ul>
                       
@@ -125,422 +125,6 @@ $(document).ready(function(){
   <!-- Tasks and Timesheets columns ends --> 
 <%-- </section> --%>
 
-<!-- amCharts javascript code --> 
-<script type="text/javascript">
-    //self Leaves
-			AmCharts.makeChart("empselfLeaves",
-				{
-					"type": "pie",
-					"balloonText": "[[title]]<br><span style='font-size:14px'><b>[[value]]</b> </span>",
-					"innerRadius": "50%",
-					"labelRadius": 0,
-					"minRadius": 0,
-					"pieX": "50%",
-					"pieY": "50%",
-					"pullOutRadius": 0,
-					"radius": "49%",
-					"startAngle": 0,
-					"colors": [
-						"#337ab7",
-						"#66bb6a",
-						"#ef5350",
-						"#ff5722",
-						"#ededed"
-					],
-					"labelsEnabled": false,
-					"marginBottom": 0,
-					"marginTop": 0,
-					"outlineThickness": 0,
-					"titleField": "category",
-					"valueField": "column-1",
-					"fontSize": 12,
-					"allLabels": [],
-					"balloon": {
-						"fixedPosition": false
-					},
-					"titles": [],
-					"dataProvider": [
-						{
-							"category": "Pending",
-							"column-1": "30"
-						},
-						{
-							"category": "Approved",
-							"column-1": "10"
-						},
-						{
-							"category": "Rejected",
-							"column-1": "12"
-						},
-						{
-							"category": "Canceled",
-							"column-1": "10"
-						},
-						{
-							"category": "Total Leaves",
-							"column-1": "10"
-						}
-					]
-				}
-			);
-    //employee Leaves
-    AmCharts.makeChart("employeeLeaves",
-				{
-					"type": "pie",
-					"balloonText": "[[title]]<br><span style='font-size:14px'><b>[[value]]</b> </span>",
-					"innerRadius": "50%",
-					"labelRadius": 0,
-					"minRadius": 0,
-					"pieX": "50%",
-					"pieY": "50%",
-					"pullOutRadius": 0,
-					"radius": "49%",
-					"startAngle": 0,
-					"colors": [
-						"#5c6bc0",
-						"#8bc34a",
-						"#ef5350",
-						"#ffc107",
-						"#ededed"
-					],
-					"labelsEnabled": false,
-					"marginBottom": 0,
-					"marginTop": 0,
-					"outlineThickness": 0,
-					"titleField": "category",
-					"valueField": "column-1",
-					"fontSize": 12,
-					"allLabels": [],
-					"balloon": {
-						"fixedPosition": false
-					},
-					"titles": [],
-					"dataProvider": [
-						{
-							"category": "Requested",
-							"column-1": "30"
-						},
-						{
-							"category": "Approved",
-							"column-1": "10"
-						},
-						{
-							"category": "Rejected",
-							"column-1": "12"
-						},
-						{
-							"category": "Canceled",
-							"column-1": "10"
-						},
-						{
-							"category": "Total Leaves",
-							"column-1": "10"
-						}
-					]
-				}
-			); 
-    
-    
-            //Pending Chart
-			AmCharts.makeChart("selfPending",
-				{
-					"type": "pie",
-					"adjustPrecision": true,
-					//"balloonText": "[[title]]<br><span style='font-size:14px'><b>[[value]]</b> </span>",
-                    "balloonText": "",
-					"innerRadius": "80%",
-					"labelRadius": 0,
-					"pieX": "50%",
-					"pieY": "50%",
-					"pullOutRadius": "5%",
-					"colors": [
-						"#42a5f5",
-						"#eeeeee"
-					],
-					"labelsEnabled": false,
-					"marginBottom": 0,
-					"marginTop": 0,
-					"titleField": "category",
-					"valueField": "column-1",
-					"creditsPosition": "bottom-left",
-					"allLabels": [
-						{
-							"align": "center",
-							"color": "#BBB9B9",
-							"id": "pending",
-							"size": 16,
-							"text": "Pending",
-							"x": 0,
-							"y": "40%"
-						}
-					],
-					"balloon": {
-                      "fixedPosition": false
-                    },
-					"titles": [],
-					"dataProvider": [
-						{
-							"category": "Pending",
-							"column-1": "80"
-						},
-						{
-							"category": "Total Leaves",
-							"column-1": "20"
-						}
-					]
-				}
-			);
-                        
-
-            //Approved Chart
-			AmCharts.makeChart("selfApproved",
-				{
-					"type": "pie",
-					"adjustPrecision": true,
-					//"balloonText": "[[title]]<br><span style='font-size:14px'><b>[[value]]</b> </span>",
-                    "balloonText": "",
-					"innerRadius": "80%",
-					"labelRadius": 0,
-					"pieX": "50%",
-					"pieY": "50%",
-					"pullOutRadius": "5%",
-					"colors": [
-						"#66bb6a",
-						"#eeeeee"
-					],
-					"labelsEnabled": false,
-					"marginBottom": 0,
-					"marginTop": 0,
-					"titleField": "category",
-					"valueField": "column-1",
-					"creditsPosition": "bottom-left",
-					"allLabels": [
-						{
-							"align": "center",
-							"color": "#BBB9B9",
-							"id": "approved",
-							"size": 16,
-							"text": "Approved",
-							"x": 0,
-							"y": "40%"
-						}
-					],
-					"balloon": {
-                      "fixedPosition": false
-                    },
-					"titles": [],
-					"dataProvider": [
-						{
-							"category": "Approved",
-							"column-1": "80"
-						},
-						{
-							"category": "Total Leaves",
-							"column-1": "20"
-						}
-					]
-				}
-			);
-                        //Pending Chart
-			AmCharts.makeChart("selfRejected",
-				{
-					"type": "pie",
-					"adjustPrecision": true,
-					//"balloonText": "[[title]]<br><span style='font-size:14px'><b>[[value]]</b> </span>",
-                    "balloonText": "",
-					"innerRadius": "80%",
-					"labelRadius": 0,
-					"pieX": "50%",
-					"pieY": "50%",
-					"pullOutRadius": "5%",
-					"colors": [
-						"#ef5350",
-						"#eeeeee"
-					],
-					"labelsEnabled": false,
-					"marginBottom": 0,
-					"marginTop": 0,
-					"titleField": "category",
-					"valueField": "column-1",
-					"creditsPosition": "bottom-left",
-					"allLabels": [
-						{
-							"align": "center",
-							"color": "#BBB9B9",
-							"id": "rejected",
-							"size": 16,
-							"text": "Rejected",
-							"x": 0,
-							"y": "40%"
-						}
-					],
-					"balloon": {
-                      "fixedPosition": false
-                    },
-					"titles": [],
-					"dataProvider": [
-						{
-							"category": "Rejected",
-							"column-1": "80"
-						},
-						{
-							"category": "Total Leaves",
-							"column-1": "20"
-						}
-					]
-				}
-			);
-    
-    //Employee Requested Chart
-			AmCharts.makeChart("empRequested",
-				{
-					"type": "pie",
-					"adjustPrecision": true,
-					//"balloonText": "[[title]]<br><span style='font-size:14px'><b>[[value]]</b> </span>",
-                    "balloonText": "",
-					"innerRadius": "80%",
-					"labelRadius": 0,
-					"pieX": "50%",
-					"pieY": "50%",
-					"pullOutRadius": "5%",
-					"colors": [
-						"#42a5f5",
-						"#eeeeee"
-					],
-					"labelsEnabled": false,
-					"marginBottom": 0,
-					"marginTop": 0,
-					"titleField": "category",
-					"valueField": "column-1",
-					"creditsPosition": "bottom-left",
-					"allLabels": [
-						{
-							"align": "center",
-							"color": "#BBB9B9",
-							"id": "requested",
-							"size": 16,
-							"text": "Requested",
-							"x": 0,
-							"y": "40%"
-						}
-					],
-					"balloon": {
-                      "fixedPosition": false
-                    },
-					"titles": [],
-					"dataProvider": [
-						{
-							"category": "Requested",
-							"column-1": "80"
-						},
-						{
-							"category": "Total Leaves",
-							"column-1": "20"
-						}
-					]
-				}
-			);
-    
-        //Employee Approved Chart
-			AmCharts.makeChart("empApproved",
-				{
-					"type": "pie",
-					"adjustPrecision": true,
-					//"balloonText": "[[title]]<br><span style='font-size:14px'><b>[[value]]</b> </span>",
-                    "balloonText": "",
-					"innerRadius": "80%",
-					"labelRadius": 0,
-					"pieX": "50%",
-					"pieY": "50%",
-					"pullOutRadius": "5%",
-					"colors": [
-						"#66bb6a",
-						"#eeeeee"
-					],
-					"labelsEnabled": false,
-					"marginBottom": 0,
-					"marginTop": 0,
-					"titleField": "category",
-					"valueField": "column-1",
-					"creditsPosition": "bottom-left",
-					"allLabels": [
-						{
-							"align": "center",
-							"color": "#BBB9B9",
-							"id": "approved",
-							"size": 16,
-							"text": "Approved",
-							"x": 0,
-							"y": "40%"
-						}
-					],
-					"balloon": {
-                      "fixedPosition": false
-                    },
-					"titles": [],
-					"dataProvider": [
-						{
-							"category": "Requested",
-							"column-1": "80"
-						},
-						{
-							"category": "Total Leaves",
-							"column-1": "20"
-						}
-					]
-				}
-			);
-            //Employee Rejected Chart
-			AmCharts.makeChart("empRejected",
-				{
-					"type": "pie",
-					"adjustPrecision": true,
-					//"balloonText": "[[title]]<br><span style='font-size:14px'><b>[[value]]</b> </span>",
-                    "balloonText": "",
-					"innerRadius": "80%",
-					"labelRadius": 0,
-					"pieX": "50%",
-					"pieY": "50%",
-					"pullOutRadius": "5%",
-					"colors": [
-						"#ef5350",
-						"#eeeeee"
-					],
-					"labelsEnabled": false,
-					"marginBottom": 0,
-					"marginTop": 0,
-					"titleField": "category",
-					"valueField": "column-1",
-					"creditsPosition": "bottom-left",
-					"allLabels": [
-						{
-							"align": "center",
-							"color": "#BBB9B9",
-							"id": "rejected",
-							"size": 16,
-							"text": "Rejected",
-							"x": 0,
-							"y": "40%"
-						}
-					],
-					"balloon": {
-                      "fixedPosition": false
-                    },
-					"titles": [],
-					"dataProvider": [
-						{
-							"category": "Rejected",
-							"column-1": "80"
-						},
-						{
-							"category": "Total Leaves",
-							"column-1": "20"
-						}
-					]
-				}
-			);
-		</script>
-		
 		
 <script>
 function getEmployeeTotalCounts(){
@@ -551,28 +135,87 @@ function getEmployeeTotalCounts(){
 	      url: sourceleadUrl+"/totalCountsForEmployeeLeaves?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&userId="+userId,  
 	       success :function(report) { 
 	    	   if(report.employeeRequestedCounts != null && report.employeeRequestedCounts != '' && report.employeeRequestedCounts != 'undefined'){
+	    		   if(report.employeeRequestedCounts == 0){
+	      				$('#empReq').removeAttr("href");
+	      			   }
     			   $("#employeeRequestedCounts").html(report.employeeRequestedCounts); 
-    		   }else{
-    			   $("#employeeRequestedCounts").html(0); 
     		   }
     		   if(report.employeeApprovedCounts != null && report.employeeApprovedCounts != '' && report.employeeApprovedCounts != 'undefined'){
+    			   if(report.employeeApprovedCounts == 0){
+    	   				$('#empApp').removeAttr("href");
+    	   			   }
     			   $("#employeeApprovedCounts").html(report.employeeApprovedCounts); 
-    		   }else{
-    			   $("#employeeApprovedCounts").html(0); 
     		   }
     		   if(report.employeeRejectedCounts != null && report.employeeRejectedCounts != '' && report.employeeRejectedCounts != 'undefined'){
+    			   if(report.employeeRejectedCounts == 0){
+    	   				$('#empRej').removeAttr("href");
+    	   			   }
     			   $("#employeeRejectedCounts").html(report.employeeRejectedCounts); 
-    		   }else{
-    			   $("#employeeRejectedCounts").html(0); 
     		   }
     		   if(report.employeeCancelledCounts != null && report.employeeCancelledCounts != '' && report.employeeCancelledCounts != 'undefined'){
+    			   if(report.employeeCancelledCounts == 0){
+    	   				$('#empCanc').removeAttr("href");
+    	   			   }
     			   $("#employeeCancelledCounts").html(report.employeeCancelledCounts); 
-    		   }else{
-    			   $("#employeeCancelledCounts").html(0); 
     		   }
+    		   
+    		   //pie chart count
+    		   AmCharts.makeChart("employeeLeaves",
+    					{
+    						"type": "pie",
+    						"balloonText": "[[title]]<br><span style='font-size:14px'><b>[[value]]</b> </span>",
+    						"innerRadius": "50%",
+    						"labelRadius": 0,
+    						"minRadius": 0,
+    						"pieX": "50%",
+    						"pieY": "50%",
+    						"pullOutRadius": 0,
+    						"radius": "49%",
+    						"startAngle": 0,
+    						"colors": [
+    							"#337ab7",
+    							"#66bb6a",
+    							"#ef5350",
+    							"#ff5722",
+    							"#ededed"
+    						],
+    						"labelsEnabled": false,
+    						"marginBottom": 0,
+    						"marginTop": 0,
+    						"outlineThickness": 0,
+    						"titleField": "category",
+    						"valueField": "column-1",
+    						"fontSize": 12,
+    						"allLabels": [],
+    						"balloon": {
+    							"fixedPosition": false
+    						},
+    						"titles": [],
+    						"dataProvider": [
+    							{
+    								"category": "Requested",
+    								"column-1": report.employeeRequestedCounts
+    							},
+    							{
+    								"category": "Approved",
+    								"column-1": report.employeeApprovedCounts
+    							},
+    							{
+    								"category": "Rejected",
+    								"column-1": report.employeeRejectedCounts
+    							},
+    							{
+    								"category": "Canceled",
+    								"column-1": report.employeeCancelledCounts
+    							} 
+    						]
+    					}
+    				);
+    		   
 	       },
 		  });
 }
+ 
 </script>
 
 <script>
@@ -584,25 +227,82 @@ function getSelfTotalCounts(){
 	      url: sourceleadUrl+"/totalCountsForSelfLeaves?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&userId="+userId,  
 	       success :function(report) { 
 	   	   if(report.selfPendingCounts != null && report.selfPendingCounts != '' && report.selfPendingCounts != 'undefined'){
+	   		if(report.selfPendingCounts == 0){
+   				$('#selfpend').removeAttr("href");
+   			   }
    			   $("#selfPendingCounts").html(report.selfPendingCounts); 
-   		   }else{
-   			   $("#selfPendingCounts").html(0); 
    		   }
    		   if(report.selfApprovedCounts != null && report.selfApprovedCounts != '' && report.selfApprovedCounts != 'undefined'){
+   			if(report.selfApprovedCounts == 0){
+   				$('#selfapp').removeAttr("href");
+   			   }
    			   $("#selfApprovedCounts").html(report.selfApprovedCounts); 
-   		   }else{
-   			   $("#selfApprovedCounts").html(0); 
    		   }
    		   if(report.selfRejectedCounts != null && report.selfRejectedCounts != '' && report.selfRejectedCounts != 'undefined'){
+   			   if(report.selfRejectedCounts == 0){
+   				$('#selfrej').removeAttr("href");
+   			   }
    			   $("#selfRejectedCounts").html(report.selfRejectedCounts); 
-   		   }else{
-   			   $("#selfRejectedCounts").html(0); 
    		   }
    		   if(report.selfCancelledCounts != null && report.selfCancelledCounts != '' && report.selfCancelledCounts != 'undefined'){
+   			if(report.selfCancelledCounts == 0){
+   				$('#selfcanc').removeAttr("href");
+   			   }
    			   $("#selfCancelledCounts").html(report.selfCancelledCounts); 
-   		   }else{
-   			   $("#selfCancelledCounts").html(0); 
-   		   } 
+   		   }
+   		   
+   		 AmCharts.makeChart("empselfLeaves",
+ 				{
+ 					"type": "pie",
+ 					"balloonText": "[[title]]<br><span style='font-size:14px'><b>[[value]]</b> </span>",
+ 					"innerRadius": "50%",
+ 					"labelRadius": 0,
+ 					"minRadius": 0,
+ 					"pieX": "50%",
+ 					"pieY": "50%",
+ 					"pullOutRadius": 0,
+ 					"radius": "49%",
+ 					"startAngle": 0,
+ 					"colors": [
+ 						"#5c6bc0",
+ 						"#8bc34a",
+ 						"#ef5350",
+ 						"#ffc107",
+ 						"#ededed"
+ 					],
+ 					"labelsEnabled": false,
+ 					"marginBottom": 0,
+ 					"marginTop": 0,
+ 					"outlineThickness": 0,
+ 					"titleField": "category",
+ 					"valueField": "column-1",
+ 					"fontSize": 12,
+ 					"allLabels": [],
+ 					"balloon": {
+ 						"fixedPosition": false
+ 					},
+ 					"titles": [],
+ 					"dataProvider": [
+ 						{
+ 							"category": "Pending",
+ 							"column-1": report.selfPendingCounts
+ 						},
+ 						{
+ 							"category": "Approved",
+ 							"column-1": report.selfApprovedCounts
+ 						},
+ 						{
+ 							"category": "Rejected",
+ 							"column-1": report.selfRejectedCounts
+ 						},
+ 						{
+ 							"category": "Canceled",
+ 							"column-1": report.selfCancelledCounts
+ 						} 
+ 					]
+ 				}
+ 			); 
+   		 
 	       },
 		  });
 }
