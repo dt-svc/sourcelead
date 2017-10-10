@@ -46,13 +46,13 @@
               <div class="col-md-9 dropdown-select">
                   <select class="chosen-select form-control" name="duration" field-name="Duration" data-validation="required">
                       <option value="">Select Duration</option>
-                      <option ${leaveType.duration  == 'Day' ? 'selected' : ''}>Day</option>
-                      <option ${leaveType.duration  == 'Hours' ? 'selected' : ''}>Hours</option>
+                      <option ${leaveType.duration  == 'Full Day' ? 'selected' : ''}>Full Day</option>
+                      <option ${leaveType.duration  == 'Half Day' ? 'selected' : ''}>Half Day</option>
                   </select>
               </div>
             </div>
               
-              <div class="form-group">
+             <%--  <div class="form-group">
               <label class="col-md-3">Hours</label>
               <div class="col-md-9 dropdown-select">
                   <div class="row">
@@ -66,7 +66,7 @@
                   </select>
                       </div></div>
               </div>
-            </div>
+            </div> --%>
               
             <div class="form-group">
               <label class="col-md-3">Type</label>

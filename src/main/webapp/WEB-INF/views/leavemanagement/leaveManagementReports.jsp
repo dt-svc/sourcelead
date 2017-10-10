@@ -2,6 +2,7 @@
 <jsp:include page="../masterSideNav.jsp" />
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
+<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <script type="text/javascript" src="https://www.amcharts.com/lib/3/amcharts.js"></script>
 <script type="text/javascript" src="https://www.amcharts.com/lib/3/serial.js"></script>
 <script type="text/javascript" src="https://www.amcharts.com/lib/3/pie.js"></script> 
@@ -28,12 +29,17 @@
     <div class="timesheet_out">
       <div class="clients_side_wrap_inn no_pad">
         <div class="project_side_wrap_inn_tabs" id="new-id">
+        
+         <sec:authorize access="hasRole('ROLE_APPLY_LEAVE')"> 
              <div class="pull-right">
-                          <a href="<c:url value='/applyLeave'/>" title="Apply Leave" class="btn btn-primary btn-sm zindex">Apply Leave</a>
-                      </div>
+                 <a href="<c:url value='/applyLeave'/>" title="Apply Leave" class="btn btn-primary btn-sm zindex">Apply Leave</a>
+             </div>
+         </sec:authorize>  
           <ul class="project-tabs-menu projecttabs-custom">
             <li class="current"><a href="#tab-1">Self</a></li>
-            <li><a href="#tab-2" onclick="getTopLeaveTakers();getLeaveTakersBarChat();">Employees</a></li>
+            <sec:authorize access="hasAnyRole(\'ROLE_APPROVE_LEAVE\')">
+            	<li><a href="#tab-2" onclick="getEmployeeLeavesList();getTopLeaveTakers();getLeaveTakersBarChat();">Employees</a></li>
+            </sec:authorize>
             <div class="clearfix"></div>
           </ul>
            

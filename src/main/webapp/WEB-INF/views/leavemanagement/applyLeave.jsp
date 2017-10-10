@@ -2,6 +2,7 @@
 <jsp:include page="../masterSideNav.jsp" />
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
+<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
  <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script> 
 <script type="text/javascript" src="https://www.amcharts.com/lib/3/amcharts.js"></script>
 <script type="text/javascript" src="https://www.amcharts.com/lib/3/pie.js"></script>
@@ -27,6 +28,7 @@ window.onload = function() {
     <form:form id="apply_leave_form" name="apply_leave_form" method="post">
       <div class="clearfix form-horizontal inner-content">
           <div class="col-xs-12 col-sm-12 col-md-6 col-md-offset-1">
+          <sec:authorize access="hasRole('ROLE_APPLY_BEHALF_LEAVE')"> 
               <div class="form-group">
                     <label class="checkBox pull-left mr10">
 					<input id="checkbox-1" class="checkbox-custom checkboxCustom onbehalf" name="checkbox-1" type="checkbox" onClick="onbehalf()">
@@ -34,6 +36,7 @@ window.onload = function() {
                   </label>
                   <span class="pull-left">On behalf of</span>
               </div>
+          </sec:authorize> 
                <div class="form-group" style="display: none" id="onbehalf">
               <label class="col-md-3">Select Employee</label>
               <div class="col-md-9 dropdown-select">
@@ -438,9 +441,10 @@ function getLeavePolicy(){
 function validateDate(){
 	$('.warMess').hide();
 	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
+	var roleId = '${SourceLeadWeb_loginUserRoleId}';
 	var fromDate = $("#fromDate").val();
 	var toDate = $("#toDate").val();
-	$.get(sourceleadUrl+"/validateRestrictDate?"+tokenParamName+"="+tokenValue+"&fromDate="+fromDate+"&toDate="+toDate+"&orgLocationId="+orgLocationId, function(data) {
+	$.get(sourceleadUrl+"/validateRestrictDate?"+tokenParamName+"="+tokenValue+"&fromDate="+fromDate+"&toDate="+toDate+"&orgLocationId="+orgLocationId+"&roleId="+roleId, function(data) {
 		if(data == true){
 			$("#toDate").after("<p class='warMess'>You cannot apply for leave on restricted day</span>");
 		}else{
