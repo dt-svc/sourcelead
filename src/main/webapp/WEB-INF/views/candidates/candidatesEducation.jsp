@@ -795,57 +795,7 @@ function candidateEducationStore(candidateId){
        			eduMsgFadeinFunction();
        			qveducationSubmission(candidateId);
 		        });
-			/* $.ajax({
-					type : "POST",
-					data : con,
-					processData: false,
-	    	        contentType: true,
-					url : sourceleadUrl+"/storeCandidateEducation?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,
-					success :function(data) {  
-				                 if(data != null && data != 'undefined' && data != ""){
-				               		if( data.indexOf('Sign In') >= 0){
-							    		location.replace(sourceleadUrl);
-							    	}
-				               		else if (data.indexOf('exception') >= 0) {
-				               			 location.replace(sourceleadUrl+"/errorPage");
-				               		}
-				               		else{
-				               			$('#perVal').attr('aria-valuenow', data).css('width',data+'%');
-				            			 if(data<50){
-				            			   $("#perVal").removeClass('progress-bar-success');
-				            			   $("#perVal").addClass("progress-bar-danger");
-				            			 }
-				            			 if(data>=50){
-				            				 $("#perVal").removeClass("progress-bar-danger");
-				            				 $("#perVal").addClass("progress-bar-success");
-				            			 }
-				            			 $("#disVal").empty();
-				            			$("#disVal").append(data+'%');
-				            			// for quick view bar update
-				            			$('#quickPerVal').attr('aria-valuenow', data).css('width',data+'%');
-					          			 if(data<50){
-						          			   $("#quickPerVal").removeClass('progress-bar-success');
-						          			   $("#quickPerVal").addClass("progress-bar-danger");
-						          			 }
-						          			 if(data>=50){
-						          				 $("#quickPerVal").removeClass('progress-bar-danger');
-						          				 $("#quickPerVal").addClass("progress-bar-success");
-						          			 }
-
-				            			$("#quickDisVal").empty();
-				            			$("#quickDisVal").append(data+'%');
-				            			
-				               		    $("#popUpDiv").removeClass("edit-details-active");
-				            			$("#selector4").removeAttr("style");
-				            			$("#selector4").css({ display: "block" });
-			            				$("#eduMsgDiv").html("Success!! New Education added");
-				               			candidateEducationList(candidateId);
-				               			eduMsgFadeinFunction();
-				               			qveducationSubmission(candidateId);
-							    	}
-				                 }   
-				      }, 
-		    }); */
+			
 			return true; 
 		} else {
 			return false;

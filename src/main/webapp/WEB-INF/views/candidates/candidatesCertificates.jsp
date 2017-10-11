@@ -123,14 +123,7 @@ function storeCertificate(candidateId){
 		 
 			
 		if ($('#Candidate_certification_form').validate(false,validationSettings)) {
-			/* var frm = $('#Candidate_certification_form').serializeFormJSON();
-			var con = JSON.stringify(frm);
-			con = con.replace(/[{}]/g, "");
-			var jsonData = encodeURIComponent(con);
-			var sourceleadUrl = '${sourceleadUrl}';
-			 
-			$("#Candidate_certification_form").attr("disabled", "disabled");
-			 $("#addCandidate").attr("disabled", "disabled"); */
+			
 			 var formData = getFormData("Candidate_certification_form");
 				$("#Candidate_certification_form").attr("disabled", "disabled");
 				 $("#addCandidate").attr("disabled", "disabled");
@@ -140,31 +133,7 @@ function storeCertificate(candidateId){
                		cerMsgFadein();
                		qwikCertificates(candidateId);
 		        });
-				/* $.ajax({
-						type : "POST",
-						url : sourceleadUrl
-								+ "/storeCandidateCertifications?"+tokenParamName+"="+tokenValue+"&json="
-								+ jsonData + "&candidateId=" + candidateId,
-						success : function(data) {
-							if (data != null && data != 'undefined'
-									&& data != "") {
-								if (data.indexOf('Sign In') >= 0) {
-									location.replace(sourceleadUrl);
-								} else if (data.indexOf('exception') >= 0) {
-									location.replace(sourceleadUrl+ "/errorPage");
-								}
-								else{
-									$("#popUpDivEmp").removeClass("edit-details-active");
-			            			$("#selector5").removeAttr("style");
-			            			$("#selector5").css({ display: "block" });
-			            			$("#cerMsgDiv").html("Success!! New Certification added");
-				               		candidateCertificateList(candidateId);
-				               		cerMsgFadein();
-				               		qwikCertificates(candidateId);
-							    	}
-							   }
-						},
-					}); */
+				
 			return true;
 		} else {
 			return false;
