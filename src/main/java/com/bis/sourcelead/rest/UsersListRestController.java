@@ -242,7 +242,12 @@ public class UsersListRestController {
 					role.setUserEmail(role.getUser().getEmail());
 					role.setUserId(role.getUser().getId());
 					role.setIsMailSent(role.getUser().getIsMailSent().toString());	
-					
+					if(role.getUser() != null) {
+						if(role.getUser().getFileUrl() != null) {
+							role.setFileUrl(role.getUser().getFileUrl());
+						}
+					}
+					role.setMobilePhone(role.getUser().getMobilePhone());
 					if(role.getReportingManager() !=null){
 						StringBuilder reportingManagerName = new StringBuilder();
 						if(role.getReportingManager().getLastName() !=null && !"".equalsIgnoreCase(role.getReportingManager().getLastName())){
@@ -1635,10 +1640,10 @@ public class UsersListRestController {
 			}
 
 			isUserActive = userRoleService.isUserActive(user.getId());
-			if (isUserActive == false && !emailId.equalsIgnoreCase(addUserDTO.getEmailId())) {
+			if (isUserActive == false && !emailId.equalsIgnoreCase(addUserDTO.getEmail())) {
 				// generate random password
-				user.setEmail(addUserDTO.getEmailId());
-				user.setUserName(addUserDTO.getEmailId());
+				user.setEmail(addUserDTO.getEmail());
+				user.setUserName(addUserDTO.getEmail());
 				password = SourceLeadRandomCodeHelper.generateRandomPassword();
 				user.setPassword(sourceleadPasswordEncoder.encode(password));
 				user.setIsMailSent(Status.Y);
@@ -1650,7 +1655,7 @@ public class UsersListRestController {
 			userService.addUser(user);
 			userRoleService.addUserRole(userRole);
 
-			if (isUserActive == false && !emailId.equalsIgnoreCase(addUserDTO.getEmailId())) {
+			if (isUserActive == false && !emailId.equalsIgnoreCase(addUserDTO.getEmail())) {
 				userService.sendEmail(user, loginUser, password, orgLocations.getId());
 			}
 		}

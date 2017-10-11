@@ -15,9 +15,9 @@ $(document).ready(function(){
   <section class="content-wraper" id="themeroller">
     <section class="content-header clearfix">
       <div class="pull-left">
-        <h2>Employee Approved Count</h2>
+        <h2>Approved Leaves</h2>
       </div>
-		<div class="pull-right brud-crum"><a href="dashboard_us.html">Home</a> &raquo; <a href="dashboard-lavemanagement.html">Leave Management</a> &raquo; Approved Count</div>
+		<div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>"> Home</a> &raquo; Approved Leaves</div>
     </section>
  <div id="popUp"></div>
 <div class="content-area content-new clearfix">
@@ -32,7 +32,7 @@ $(document).ready(function(){
                         <option value="/employeeRequestedLeaves">Requested Leaves</option>
                         <option  value="/employeeApprovedLeaves" selected>Approved Leaves</option>
                         <option value="/employeeRejectedLeaves">Rejected Leaves</option>
-                        <option value="/employeeCancelLeaves">Cancel Leaves</option>
+                        <option value="/employeeCancelLeaves">Cancelled Leaves</option>
                     </select>
             </div>
         </li>
@@ -141,7 +141,7 @@ function approvedEmployeesPagination(url){
 	    	  	"data": "empName",
 	    	  	"render": function(data, type, opt, meta) {
 	    	  		  var result = "";
-	    	  		  result = result + ' <div class="pull-left tbldata-dotdot-me cursorPointer" title="Sick Leave" onclick="getRequestedAproveSummary(\''+opt.id+'\','+opt.orgLocationId+');">'+opt.empName+'('+opt.empType+')</div><i class="fa fa-binoculars pull-right" ></i>'; 
+	    	  		  result = result + ' <div class="pull-left tbldata-dotdot-me cursorPointer" title="'+opt.empName+'('+opt.empType+')" onclick="getRequestedAproveSummary(\''+opt.id+'\','+opt.orgLocationId+');">'+opt.empName+'('+opt.empType+')</div><i class="fa fa-binoculars pull-right" ></i>'; 
 		              return result; 
 	    	  	}
 	      },{
@@ -149,7 +149,7 @@ function approvedEmployeesPagination(url){
               "data": "leaveType",
               "render": function ( data, type, opt, meta ) {
             	   var result = "";
-            	   result = result + '   <div title="Calendaer month" class="tblminwidth-75">'+opt.leaveType+'</div>';
+            	   result = result + '   <div title="'+opt.leaveType+'" class="tblminwidth-75">'+opt.leaveType+'</div>';
 	              return result; 
               		
               }
@@ -158,7 +158,7 @@ function approvedEmployeesPagination(url){
             "data": "duration",
             "render": function ( data, type, opt, meta ) {
             	 var result = "";
-            	 result = result + '   <div title="Leave Transfer" class="tbldata-dotdot-100">'+opt.duration+'</div>';
+            	 result = result + '   <div title="'+opt.duration+'" class="tbldata-dotdot-100">'+opt.duration+'</div>';
             	return result; 
             }
           }, {
@@ -166,7 +166,7 @@ function approvedEmployeesPagination(url){
               "data": "noOfDays",
               "render": function ( data, type, opt, meta ) {
             	   var result = "";
-            	   result = result + '     <div title="2" class="tblminwidth-75">'+opt.noOfDays+'</div>';		 
+            	   result = result + '     <div class="tblminwidth-75">'+opt.noOfDays+'</div>';		 
             	    return result; 
               }
             }, {
@@ -174,7 +174,7 @@ function approvedEmployeesPagination(url){
                 "data": "leavesTaken",
                 "render": function ( data, type, opt, meta ) {
                 		 var result = "";
-                		result = result + '     <div title="2" class="tblminwidth-75">'+opt.leavesTaken+'</div>';
+                		result = result + '     <div class="tblminwidth-75">'+opt.leavesTaken+'</div>';
     	                return result; 
                 }
           },{
@@ -182,7 +182,7 @@ function approvedEmployeesPagination(url){
 	    	  	"data": "approvedBy",
 	    	  	"render": function(data, type, opt, meta) {
 	    	  		 var result = "";
-	    	  		result = result + '     <div title="2" class="tblminwidth-75">'+opt.approvedBy+'</div>';
+	    	  		result = result + '     <div title="'+opt.approvedBy+'" class="tblminwidth-75">'+opt.approvedBy+'</div>';
   	                return result; 
 	    	  	}
 	    	  },{
@@ -190,7 +190,7 @@ function approvedEmployeesPagination(url){
 	    	  	"data": "updatedDate",
 	    	  	"render": function(data, type, opt, meta) {
 	    	  		 var result = "";
-	    	  		result = result + ' <div title="2" class="tblminwidth-75">'+opt.updatedDate+'</div>';	
+	    	  		result = result + ' <div class="tblminwidth-75">'+opt.updatedDate+'</div>';	
 	    	  		return result; 
 	    	  	}
 	    	  }, {
@@ -399,7 +399,7 @@ function getRequestedAproveSummary(leaveId,orgLocationId){
              result = result +' <div class="col-md-8">';
 //              result = result +' <span><a href="javascript:void(o)">demo.pdf<i class="fa fa-download padddingLeft cursorPointer"></i></a></span>';
              if(data.fileUrl != null && data.fileUrl != 'undefined' && data.fileUrl != ''){
-            	 result = result +'<span><a href="'+data.fileUrl+'">'+data.fileName+'<i class="fa fa-download padddingLeft cursorPointer"></i></a></span>';
+            	 result = result + '<a href="#" title="Preview"><i class="fa fa-eye cursorPointer" onclick="viewFile(\''+data.fileUrl+'\', \''+data.fileName+'\', \''+data.fileType+'\')"></i></a>';
              }else{
             	 result = result +'<span>--</span>'; 
              }

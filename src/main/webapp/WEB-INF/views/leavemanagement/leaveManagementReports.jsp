@@ -8,7 +8,8 @@
 <script type="text/javascript" src="https://www.amcharts.com/lib/3/pie.js"></script> 
 
 <%-- <jsp:include page="topLeaveTakers.jsp" /> --%>
-
+<script src="resources/js/pie.js?staticTime=${staticTime}"></script>
+<script src="resources/js/amcharts.js?staticTime=${staticTime}"></script>
 <script type="text/javascript">
 		 $(document).ready(function(){
 			 getHolidaysList();
@@ -24,7 +25,7 @@
       <div class="pull-left">
         <h2>Leave Management</h2>
       </div>
-      <div class="pull-right brud-crum">Home &raquo; Leave Management</div>
+      <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Leave Management</div>
     </section>
     <div class="timesheet_out">
       <div class="clients_side_wrap_inn no_pad">
@@ -50,10 +51,10 @@
               <div class="clearfix">
                 <div class="row">
                   <div class="clearfix"></div>
-                  <div class="col-md-6">
+                  <div class="col-md-12">
                     <h4 class="leaves-heading">My Time off balance</h4>
-                    <div class="row time-balance">
-                    <div id="pichartLeaveTypeIdDiv"></div>
+                    <div class="time-balance">
+                    <div id="pichartLeaveTypeIdDiv" class="timeBalance-scroll clearfix"></div>
                     </div>
                   </div>
                   <div class="clearfix"></div>
@@ -616,68 +617,77 @@ function totalLeaveByEmployeeBarChart(data){
 
 <script>
 function getPieChartBasedOnUser(){
-	 
+	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
+	var userId = '${SourceLeadWeb_userId}';
 	 $.ajax({
         type : "GET",
-         url: sourceleadUrl+"/getLeaveTypeReport?"+tokenParamName+"="+tokenValue+"",    
+         url: sourceleadUrl+"/getLeaveTypeReport?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&userId="+userId,    
          success :function(data) {
        	  var chartData = [];
        		 var result = "";
-       		   for (var i = 0; i < data.length; i++) {
-       		 		 var opt = data[i]; 
-       		 		result = result +'  <div class="col-md-3 mb">';
-       	            result = result +'   <h4 class="text-center">'+opt.name+'</h4>';
-       	            result = result +'   <div id="vacationDonut'+opt.leaveTypeId+'" class="amchartAnchor-Hide" style="width: 100%; height: 125px;"> </div>';
-       	            result = result +'   <div class="text-center">';
-       	            result = result +'     <h2>';
-       	            result = result +'       <label class="small text-muted">Remaining:</label>';
-       	            result = result +'       <label class="clearfix width100percnt mt5">'+opt.approvedCount+' / '+opt.noOfLeavesPerYear+'</label>';
-       	            result = result +'     </h2>';
-       	            result = result +'   </div>';
-       	            result = result +' </div>';
-       	             AmCharts.makeChart("vacationDonut"+opt.leaveTypeId+"", {
-       						"type": "pie",
-       						"balloonText": "[[title]]<br><span style='font-size:14px'><b>[[value]]</b> </span>",
-       						"innerRadius": "60%",
-       						"pieX": "50%",
-       						"pieY": "50%",
-       						"radius": "48%",
-       						"colorField": "color",
-       						"colors": [],
-       						"labelsEnabled": false,
-       						"marginBottom": 0,
-       						"marginTop": 0,
-       						"titleField": "category",
-       						"valueField": "column-1",
-       						"allLabels": [],
-       						"balloon": {},
-       						"titles": [],
-       						"dataProvider": [
-       							{
-       								"category": "Approved",
-       								"column-1": opt.approvedCount,
-       								"color": "#5cb85c"
-       							},
-       							{
-       								"category": "Pending",
-       								"column-1": opt.pendingCount,
-       								"color": "#337ab7"
-       							},
-       							{
-       								"category": "Rejected",
-       								"column-1": opt.rejectedCount,
-       								"color": "#d9534f"
-       							},
-       							{
-       								"category": "Cancelled",
-       								"column-1": opt.cancelCount,
-       								"color": "#f0ad4e"
-       							}
-       						]
-       					}
-       							 
-       					); 
-       		   }
+       		 if(data.length > 0){
+       			for (var i = 0; i < data.length; i++) {
+      		 		 var opt = data[i];
+      		 		 var numberOfDaysCount = 0;
+      		 		 if(opt.numberOfDaysCount != null && opt.numberOfDaysCount != "" && opt.numberOfDaysCount != 'undefined'){
+      		 			numberOfDaysCount = opt.numberOfDaysCount 
+      		 		 }
+      		 		result = result +'  <div class="col-md-2 mb">';
+      	            result = result +'   <h4 class="text-center tbldata-dotdot-vsm" title="'+opt.name+'">'+opt.name+'</h4>';
+      	            result = result +'   <div id="vacationDonut'+opt.leaveTypeId+'" class="amchartAnchor-Hide" style="width: 100%; height: 125px;"> </div>';
+      	            result = result +'   <div class="text-center">';
+      	            result = result +'     <h2>';
+      	            result = result +'       <label class="small text-muted">Remaining:</label>';
+      	            result = result +'       <label class="clearfix width100percnt mt5">'+numberOfDaysCount+' / '+opt.noOfLeavesPerYear+'</label>';
+      	            result = result +'     </h2>';
+      	            result = result +'   </div>';
+      	            result = result +' </div>';
+      	             AmCharts.makeChart("vacationDonut"+opt.leaveTypeId+"", {
+      						"type": "pie",
+      						"balloonText": "[[title]]<br><span style='font-size:14px'><b>[[value]]</b> </span>",
+      						"innerRadius": "60%",
+      						"pieX": "50%",
+      						"pieY": "50%",
+      						"radius": "48%",
+      						"colorField": "color",
+      						"colors": [],
+      						"labelsEnabled": false,
+      						"marginBottom": 0,
+      						"marginTop": 0,
+      						"titleField": "category",
+      						"valueField": "column-1",
+      						"allLabels": [],
+      						"balloon": {},
+      						"titles": [],
+      						"dataProvider": [
+      							{
+      								"category": "Approved",
+      								"column-1": opt.approvedCount,
+      								"color": "#5cb85c"
+      							},
+      							{
+      								"category": "Pending",
+      								"column-1": opt.pendingCount,
+      								"color": "#337ab7"
+      							},
+      							{
+      								"category": "Rejected",
+      								"column-1": opt.rejectedCount,
+      								"color": "#d9534f"
+      							},
+      							{
+      								"category": "Cancelled",
+      								"column-1": opt.cancelCount,
+      								"color": "#f0ad4e"
+      							}
+      						]
+      					}
+      							 
+      					); 
+      		   }
+       		 }else{
+       			result = result + '<div class="dataTables_empty center" ></div>';
+       		 }
        	            $("#pichartLeaveTypeIdDiv").empty();
        	            $("#pichartLeaveTypeIdDiv").append(result);
        	  

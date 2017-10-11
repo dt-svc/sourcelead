@@ -12,7 +12,7 @@ public interface HolidayService {
 
 	public Holiday storeHoliday(HolidayDTO holidayDTO) throws Exception;
 
-	public List<HolidayDTO> getAllHolidaysList(Long orgLocationId);
+	public List<HolidayDTO> getAllHolidaysList(Long orgLocationId) throws Exception;
 	
 	Holiday getHolidaysById(String holidayId)throws Exception;
 

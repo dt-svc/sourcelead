@@ -28,6 +28,7 @@ public class LeaveTypeDTO {
 	private int pendingCount;
 	private int rejectedCount;
 	private int cancelCount;
+	private String numberOfDaysCount;
 	
 	public String getName()
 	{
@@ -267,6 +268,14 @@ public class LeaveTypeDTO {
 
 	public void setCancelCount(int cancelCount) {
 		this.cancelCount = cancelCount;
+	}
+
+	public String getNumberOfDaysCount() {
+		return numberOfDaysCount;
+	}
+
+	public void setNumberOfDaysCount(String numberOfDaysCount) {
+		this.numberOfDaysCount = numberOfDaysCount;
 	}
 
 }

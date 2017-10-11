@@ -377,6 +377,7 @@ function addMember(teamId){
 	outPut = outPut+'          <form role="form"  id="teamMember_form" name="teamMember_form" method="post" > ';
 	outPut = outPut+ '<i class="fa fa-close close-div"  onClick="closePopup();"></i> ';
 	outPut = outPut+ '            <div class="form-horizontal clearfix">';
+	outPut = outPut +'<input type="hidden" class="form-control input-sm" name="teamId"  value="'+teamId+'">';
 	outPut = outPut+ '              <div class="clearfix mb10">';
 	outPut = outPut+ '                <div class="col-md-12">';
 	outPut = outPut + '<select multiple class="chosen-select form-control" name="teamMemberUserId" id="teamMemberUserId" data-validation="required validate_Space" field-name="Team Member">';
@@ -816,7 +817,6 @@ function deleteSelectedTeam(teamId){
  <!-- Team Member Store -->
  <script>
 function storeTeamMembers(teamId){
-	
 		var validationSettings = {
 		        errorMessagePosition : 'element',
 		        borderColorOnError : '',
@@ -826,13 +826,27 @@ function storeTeamMembers(teamId){
 		
 	   if ($('#teamMember_form').validate(false, validationSettings)){ 
 			
-		    var formData = getFormData("teamMember_form");
+		    var formData = getFormData1("teamMember_form");
 			$("#teamMember_form").attr("disabled", "disabled");
 			
-	        $.post(sourceleadUrl+"/storeTeamMembers?"+tokenParamName+"="+tokenValue+"&teamId="+teamId, formData, function(data) {
+			$.ajax({
+				type : "POST",
+        	    data: formData,
+    	        processData: false,
+    	        contentType:false,
+        	   	url : sourceleadUrl+"/storeTeamMembers?"+tokenParamName+"="+tokenValue+"teamId="+teamId,
+				success : function(data) {
+					sideBar(teamId);
+					teamList();
+            		 
+				},
+			}); 
+			
+			
+	       /*  $.post(sourceleadUrl+"/storeTeamMembers?"+tokenParamName+"="+tokenValue+"&teamId="+teamId, formData, function(data) {
 	        	sideBar(teamId);
 				teamList();
-	        });
+	        }); */
 		   
 			return true; 
 	   }else{ 

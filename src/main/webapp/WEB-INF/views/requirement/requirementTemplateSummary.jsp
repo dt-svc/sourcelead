@@ -17,10 +17,10 @@
       	  <div class="content-wraper">
 <section class="content-header clearfix">
 		<div class="pull-left">
-			<h2>Job Template Details</h2>
+			<h2>Job Template Details</h2> 
 		</div>
 		<div class="pull-right brud-crum">
-			<a href="/sourcelead/dashboard/1">Home</a>»<a href="/sourcelead/template">Job Template List </a>»
+			<a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>»<a href="<c:url value='/template'/>">Job Template List </a>»
 			View Job Template
 		</div>
 	</section>
@@ -28,7 +28,7 @@
 		      				<div id="viewReqTemplateDiv" class="mt clearfix">
 						     </div>
 						     <div class="modal-body pb">  
-						    <div id="formatedTextone"></div>
+						    <div id="formatedTextone" class="align-paragraph"></div>
 						    </div>
 		      </div>
           </div>
