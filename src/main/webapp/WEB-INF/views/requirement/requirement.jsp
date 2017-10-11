@@ -761,7 +761,7 @@ $(document).ready(function () {
 					<c:set var="val" value="${requirement.isClientJob}" />
 					<c:choose>
 						<c:when test="${val == 'Y'}">
-							<input disabled="disabled" type="checkbox" name="isTemplate"
+							<input  type="checkbox" name="isTemplate"
 								id="isTemplate" value="" onclick="getTemplateVal();">
 						</c:when>
 						<c:otherwise>
