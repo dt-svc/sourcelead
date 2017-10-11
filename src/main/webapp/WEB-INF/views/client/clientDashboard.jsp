@@ -1948,7 +1948,7 @@ function saveReason1(spocId, orgRelationID){
 	var sourceleadUrl = '${sourceleadUrl}';
 	var reason = document.getElementById("reasonForSpoc").value;
 	var reason1 = document.getElementById("reasonForSpoc").value;
-	var userId = '${SourceLeadWeb_user.id}';
+	var userId = '${SourceLeadWeb_userId}';
 	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	 reason = reason.replace(/\s/g, "")
 	if(reason.match(/^[^\s-](.*)*$/) != null){
