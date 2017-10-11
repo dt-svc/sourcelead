@@ -389,9 +389,7 @@ function addEducation(candidateId) {
 	        }
 	  });
 	
-	/* $(".addUser-org").click(function(){
-		 $(".edit-details").toggleClass("edit-details-active");
-	 }); */
+	
 	$(".edit-details").toggleClass("edit-details-active");
 	 $(".close-div").click(function(){ 
 		 $(this).parent("div.edit-details").removeClass("edit-details-active");
@@ -489,14 +487,7 @@ function EditEducation(candidateId,candidateEducationId) {
 	result = result  +'   ';
 	result = result  +'                  <div class="clearfix mb10"> ';
 	result = result + "<select  class='chosen-select form-control' name='name' id='candEdu' data-validation='validate_Space' data-validation-optional='true' onchange='validateEduname("+candidateId+");'onkeyup = 'validateEduname("+candidateId+");'>";
-		                /*  for (var j = 0; j < json.educationList.length; j++) {
-								var education = json.educationList[j];
-								   if(education.name == json.name){
-									   result = result+'<option value=\"'+education.name+'\" selected >'+education.name+'</option>';
-								  }else{
-									   result = result+'<option value=\"'+education.name+'\" >'+education.name+'</option>';
-				   		 	      } 
-							} */
+		               
 						
 				    	 $.each(json.allAndCandidateEducations, function( i, eduName){
 							  var existed = 0;
@@ -643,13 +634,6 @@ function EditEducation(candidateId,candidateEducationId) {
 		  finalDateFormatEduEditOneSave = 'yy-dd-mm';
 		  eduEndDateEdit = new Date(eduEndDateSplit[0], parseInt(eduEndDateSplit[2])-parseInt(1), parseInt(eduEndDateSplit[1])-parseInt(1));
 	  }
-	
-	/* var datepickerStartDate = toDate("#startDateEdit");
-	datepickerStartDate.setDate(datepickerStartDate.getDate() + 1);
-	
-	var datepickerEndDate = toDate("#endDateEdit");
-	datepickerEndDate.setDate(datepickerEndDate.getDate() - 1); */
-	
 	
 	  var finalDateFormatEduUpdate = '';
 	  if(locationDate.match("yyyy-MM-dd")){
@@ -1030,13 +1014,6 @@ function clearSearchKeyEducation() {
 
 <script type="text/javascript">
 	function updateCandidateEducation(candidateId, candidateEducationId) {
-		/* var validationSettings = {
-			errorMessagePosition : 'element',
-			borderColorOnError : '',
-			scrollToTopOnError : true,
-			dateFormat : 'yyyy/mm/dd'
-		}; */
-		
 		
 		if ($('#education_form').validate(false,
 				validationSettings)) {

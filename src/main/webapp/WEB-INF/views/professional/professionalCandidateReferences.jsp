@@ -412,10 +412,8 @@
 	        	closePopup();
 	        	$("#popUpDiv").removeClass("edit-details-active");
 				$("#selector10").removeAttr("style");
-				$("#selector10").css({
-					display : "block"
-				});
-				$("#refMsgDiv").html("Success!! New Candidate References added");
+				$("#selector10").css({display : "block"});
+				$("#refMsgDiv").html("Success!! New References added");
 				candReferencesList(candidateId);
 				refMsgFadein();
 	        });
@@ -501,13 +499,10 @@
 					success : function(data) {
 						if (data != null && data != 'undefined' && data != "") {
 							$("#selector10").removeAttr("style");
-							$("#selector10").css({
-								display : "block"
-							});
+							$("#selector10").css({display : "block"});
 							$("#refMsgDiv").html("Reference deleted");
 							$("#popUpDiv").removeClass("edit-details-active");
-							$("#remove_user_pop_reference, .project_inn_mask")
-									.fadeOut();
+							$("#remove_user_pop_reference, .project_inn_mask").fadeOut();
 							candReferencesList(candidateId);
 							refMsgFadein();
 						}
@@ -538,9 +533,7 @@
 	        $.post(sourceleadUrl+"/updateCandidateReferenceBycandidateIdAndReferenceId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&userId="+userId+"&locationCode="+locationCode, formData, function(data) {
 	        	
 	        	$("#selector10").removeAttr("style");
-				$("#selector10").css({
-					display : "block"
-				});
+				$("#selector10").css({display : "block"});
 				$("#refMsgDiv").html("Reference details updated");
 				closePopup();
 				candReferencesList(candidateId);
