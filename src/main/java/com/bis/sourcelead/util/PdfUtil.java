@@ -726,8 +726,7 @@ public class PdfUtil {
 			clientArray[0] = "--";
 		}
 		if (orgRelations.getWebSite() != null && !"".equalsIgnoreCase(orgRelations.getWebSite())) {
-			StringBuilder sb = new StringBuilder();
-			clientArray[1] = sb.append("www.").append(orgRelations.getWebSite()).toString();
+			clientArray[1] = orgRelations.getWebSite();
 		}else{
 			clientArray[1] = "--";
 		}
