@@ -255,7 +255,7 @@ window.onload = function () {
 								class="text-danger">&nbsp;*</span></label>
 							<div class="col-md-9">
 								<input type="text" class="form-control" id="firstName"
-									name="firstName" pattern="[A-Za-z\s]*" maxlength="100" required>
+									name="firstName" pattern="[A-Za-z\s]*" maxlength="100" field-name="First Name" data-validation="required validate_AlphaNumber validate_length length1-100">
 							</div>
 						</div>
 

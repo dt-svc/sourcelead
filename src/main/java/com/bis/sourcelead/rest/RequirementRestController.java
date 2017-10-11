@@ -162,6 +162,7 @@ public class RequirementRestController {
 		//	FileUploadUtil.fillUploadedFileInfo(requirementDTO, requirementDTO.getFileInfo());
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			requirementDTO.setDateFormat(orgLocation.getDateFormat());
 			Requirement requirement = requirementService.storeRequirement(requirementDTO, orgLocation, user);
 			if (requirementDTO.getSaveType().equalsIgnoreCase("saveType")
 					&& (null == (requirementDTO.getRequirementId())
