@@ -1558,6 +1558,7 @@ public class ClientRestController {
 						 combinationQueryBuilder.should(ownerLoginQueryBuilder);
 						 combinationQueryBuilder.should(spockQueryBuilder);
 						 boolQueryBuilder.must(combinationQueryBuilder);
+						 boolQueryBuilderForCount.must(combinationQueryBuilder);
 			}
 			 
 // Advance search start
