@@ -265,15 +265,15 @@ function approveLeavePopup(leaveId,leaveTypeId,approveStatus,numberOfDays){
 
 <script>
 function approveLeave(leaveId,leaveTypeId,approveStatus,numberOfDays){
-	 var orgLocationId = '${SourceLeadWeb_orgLocationId}';
+	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	 var userId = '${SourceLeadWeb_userId}';
-	
-	 if(approveStatus == "REJECTED"){
+	 if(approveStatus == 'REJECTED'){
 		 var reason = document.getElementById("leaveReasonForDelete").value;
 		 if(reason == null || reason == '' || reason == 'undefined'){
 			 $("#rejectReasonDiv").find('p.jquery_form_error_message').remove();
 		  	 $("#rejectReasonDiv").append("<p class='jquery_form_error_message'>Reason Is Required</p>");
-		 }else{
+		 } 
+	 }    
 			 $("#rejectReasonDiv").find('p.jquery_form_error_message').remove();
 			  $.get(sourceleadUrl+"/approveRequestedLeave?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&leaveId="+leaveId+"&leaveTypeId="+leaveTypeId+"&approveStatus="+approveStatus+"&userId="+userId+"&numberOfDays="+numberOfDays+"&reason="+reason, function(data) {
 					if(data == true){
@@ -281,31 +281,15 @@ function approveLeave(leaveId,leaveTypeId,approveStatus,numberOfDays){
 			 			$("#remove_user_pop, .side_mask").fadeOut();
 			 			$("#selector1").removeAttr("style");
 			    		 $("#selector1").css({ display: "block" });
-			    	     $("#msgDiv").html("Rejected Successfully..");
+			    		 if(approveStatus == 'REJECTED'){
+			    		 	$("#msgDiv").html("Rejected Successfully..");
+			    		 }else{
+			    			 $("#msgDiv").html("Approved Successfully..");
+			    		 }
 			    	     msgFadein();
 						getRequestedEmployeesList();
 					}
 				});
-		 }
-	 }else{
-		  $.get(sourceleadUrl+"/approveRequestedLeave?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&leaveId="+leaveId+"&leaveTypeId="+leaveTypeId+"&approveStatus="+approveStatus+"&userId="+userId+"&numberOfDays="+numberOfDays, function(data) {
-				if(data == true){
-					$("#popUp").empty();
-		 			$("#remove_user_pop, .project_inn_mask").fadeOut();
-                         $("#selector1").removeAttr("style");
-			    		 $("#selector1").css({ display: "block" });
-			    	     $("#msgDiv").html("Approved Successfully..");
-			    	     msgFadein();
-					getRequestedEmployeesList();
-				}else{
-					$("#selector1").removeAttr("style");
-		    		 $("#selector1").css({ display: "block" });
-		    	     $("#msgDiv").html("Something Went Wrong");
-		    	     msgFadein();
-				getRequestedEmployeesList();
-				}
-			});
-	 }
 }
 </script>
 
@@ -434,9 +418,9 @@ function rejectLeave(id, leaveTypeId, noOfDays){
 	result = result +"	<div class='comMask'></div>";
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 	//result = result +"		<p>Do you want to delete this vendor contact?</p>";
-	result = result +"		<textarea id='withdrawReason' class='form-control' field-name='Reject Reason'  data-validation='required validate_Space validate_Description validate_length length2-250' name='reasonForSpoc' value='' placeholder='Terminate Reason' rows='2'></textarea>";
-	result = result + ' <div id="withdrawReasonDiv"/>';
-	result = result +'		<b href="javascript:void(0)"><input id="confirm-id" type="button" value="Delete" onclick="approveLeave(\''+id+'\',\''+leaveTypeId+'\',\'REJECTED\',\''+noOfDays+'\');"><input class="u_can_color" type="button"  value="Cancel" onClick="cancelTermination();"></b>';
+	result = result +"		<textarea id='leaveReasonForDelete' class='form-control' field-name='Reject Reason'  data-validation='required validate_Space validate_Description validate_length length2-250' name='reasonForSpoc' value='' placeholder='Terminate Reason' rows='2'></textarea>";
+	result = result + ' <div id="rejectReasonDiv"/>';
+	result = result +'		<b href="javascript:void(0)"><input id="confirm-id" type="button" value="Reject" onclick="approveLeave(\''+id+'\',\''+leaveTypeId+'\',\'REJECTED\',\''+noOfDays+'\');"><input class="u_can_color" type="button"  value="Cancel" onClick="cancelTermination();"></b>';
 	result = result +"	</div>";
 	$("#popUp").append(result);
 	$("#remove_user_pop").slideDown(200);

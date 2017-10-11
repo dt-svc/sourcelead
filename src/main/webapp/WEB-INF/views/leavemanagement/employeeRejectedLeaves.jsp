@@ -144,7 +144,7 @@ function redirectlocation(location){
 	              "data": "leaveType",
 	              "render": function ( data, type, opt, meta ) {
 	            	   var result = "";
-	            	   result = result + '   <div title="">'+opt.leaveType+'" class="tblminwidth-75">'+opt.leaveType+'</div>';
+	            	   result = result + '   <div title="'+opt.leaveType+'" class="tblminwidth-75">'+opt.leaveType+'</div>';
 		              return result; 
 	              		
 	              }
@@ -224,88 +224,7 @@ function redirectlocation(location){
 	}); 
 </script>
   
-  <!--  <script>
-  function getRejectedEmployeesList(){
-	  var orgLocationId = '${SourceLeadWeb_orgLocationId}';
-	  var userId = '${SourceLeadWeb_userId}';
-	  var leaveStatus = "REJECTED";
-	  $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-	  $.get(sourceleadUrl+"/getEmployeeRequestedLeaves?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&userId="+userId+"&leaveStatus=REJECTED", function(data) {
-				 var result = "";				        	
-					result = result + '<table id="rejectedLeavesTable" class="display" cellspacing="0" width="100%" >';
-					result = result + '<thead>';
-					result = result + '<tr>';
-					result = result + '<th>Employee Name</th>';
-					result = result + '<th>Leave Type</th>';
-					result = result + '<th>Duration</th>';
-					result = result + '<th>No Of Days</th>';
-					result = result + '<th>Leaves Taken</th>';
-					result = result + '<th>Rejected By</th>';
-					result = result + '<th>Reason</th>';
-					result = result + '</tr>';
-					result = result + '</thead>	';
-					result = result + '<tbody>';
-					
-					if(data !=null && data !=''){
-						 for (var i=0; i<data.length; i++)
-							{
-				        		 var opt = data[i];
-				        		 result = result + ' <tr>';
-				        		 result = result + ' <td>';
-				        		 result = result + ' <div class="proj_show tbldata-dotdot-big">';
-				        		 result = result + '     <div class="pull-left tbldata-dotdot-me" title="Sick Leave" onclick="getRequestedAproveSummary(\''+opt.id+'\','+orgLocationId+');">'+opt.empName+'('+opt.empType+')</div><i class="fa fa-binoculars pull-right" ></i>'; 
-				        		 result = result + '  </div>';
-				        		 result = result + ' </td>';
-				        		 
-				        		 result = result + ' <td>';
-				        		 result = result + '   <div title="Calendaer month" class="tblminwidth-75">'+opt.leaveType+'</div>';
-				        		 result = result + ' </td>';
-				        		 
-				        		 result = result + ' <td>';
-				        		 result = result + '   <div title="Leave Transfer" class="tbldata-dotdot-100">'+opt.duration+'</div>';
-				        		 result = result + '</td>';
-				        		 
-				        		 result = result + ' <td>';
-				        		 result = result + '     <div title="2" class="tblminwidth-75">'+opt.noOfDays+'</div>';	 
-				        		 result = result + '  </td>';
-				        		 
-
-
-				        		 result = result + ' <td>';
-				        		 result = result + '     <div title="2" class="tblminwidth-75">'+opt.leavesTaken+'</div>';	 
-				        		 result = result + '  </td>';
-				        		 
-				        		 result = result + ' <td>';
-				        		 result = result + ' <div title="2" class="tblminwidth-75">'+opt.rejectedBy+'</div>';	 
-				        		 result = result + ' </td>';
-				        		 
-				        		 result = result + ' <td>';
-				        		 result = result + ' <div title="2" class="tblminwidth-75">'+opt.reason+'</div>';	 
-				        		 result = result + ' </td>';
-				        		 
-				        		 result = result + '  </tr>';
-							}
-					}
-					result = result + '  </tbody>';
-					result = result + ' </table>';
-					$("#rejectedLeavesDiv").empty();
-					$("#rejectedLeavesDiv").append(result);
-					$("#loading").removeAttr("style");
-					rejectedLeavesTable();
-					 $(".proj_show").click(function(){
-						$(".new_side_wrap").addClass("new_side_wrap_active");
-						$(".side_mask").fadeIn(200);
-						$("body").css('overflow-y', 'hidden');
-					});
-					$(".proj_close, .side_mask").click(function(){
-						$(".new_side_wrap").removeClass("new_side_wrap_active");
-						$(".side_mask").fadeOut(200);
-						$("body").css('overflow-y', 'auto');
-					    $('.addcandidate-popup').fadeOut(200);
-					}); 
-		}); 
-  }
-  </script> -->
+ 
   
   <script>
 function getRequestedAproveSummary(leaveId,orgLocationId){
