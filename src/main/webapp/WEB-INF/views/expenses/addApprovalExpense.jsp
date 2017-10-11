@@ -66,10 +66,10 @@
 					<div class="col-md-9" id="errProject">
 						<select class="chosen-select form-control" autocomplete="off" onchange="getClientBasedOnSelectedProject(); getMembersForSelectedProject();removeErrProject();flushOnchange();" id="projectId" name="projectId" field-name="Project" >
 
-							 <c:if test="${fn:length(projectsList) gt 0}">
+							 <c:if test="${fn:length(expEntry.projectsList) gt 0}">
 								<option value="">Select Project</option>
 							</c:if>
-							<c:forEach var="projects" items="${projectsList}">
+							<c:forEach var="projects" items="${expEntry.projectsList}">
 							       <option  ${expenses.projectMembers.projects.id == projects.id ? 'selected' : '' } value="${projects.id}">${projects.projectName}</option>
 							</c:forEach>
 						</select>
@@ -86,10 +86,10 @@
 	              <div class="col-md-9" >
 						<div class="row">
 						  <div class="col-lg-6 evDaPa" id="dateDiv">
-							  <input type="text" autocomplete="off" class="form-control calendar" data-validation="required" value="${expenses.startDateStr}" field-name="Start Date" name="startDateExpense" id="projectStartDateExpensesId" placeholder="Start Date" readonly="readonly">
+							  <input type="text" autocomplete="off" class="form-control calendar" data-validation="required" value="${expenses.startDate}" field-name="Start Date" name="startDateExpense" id="projectStartDateExpensesId" placeholder="Start Date" readonly="readonly">
 						  </div>
 						  <div class="col-lg-6" id="errEnd">
-							  <input type="text" autocomplete="off" class="form-control calendar" data-validation="required" value="${expenses.endDateStr}" name="endDateExpense"  field-name="End Date" id="projectEndDateExpensesId" placeholder="End Date" readonly="readonly">
+							  <input type="text" autocomplete="off" class="form-control calendar" data-validation="required" value="${expenses.endDate}" name="endDateExpense"  field-name="End Date" id="projectEndDateExpensesId" placeholder="End Date" readonly="readonly">
 						  </div>					  
 						</div>
 	              </div>
@@ -406,10 +406,15 @@ function getMembersForSelectedProject(){
 	    	   if(json != null && json !='undefined' && json !=''){
 	    	   /* var json = JSON.parse(data); */
 	    	   var result = "";
+	    	   var projectStartDate = '';
+	  		   var projectEndDate = '';
 	    	   result = result + '<option value="">Select Employee</option>';
 			       	for (var i=0; i<json.length; i++){
 				        var opt = json[i];
 				        result = result + '<option  value="'+opt.id+'">'+opt.empName+'</option>';
+				        projectStartDate = opt.projectAssignedDateStr;
+			 			projectEndDate = opt.projectEndDateStr;
+			 			expensesDatePickerStartDate(projectStartDate,projectEndDate);
 			       	}
 				$("#projectMemberId").empty();
 				$("#projectMemberId").append(result);
@@ -419,6 +424,30 @@ function getMembersForSelectedProject(){
 	});
 }
 </script>
+
+
+
+<script>
+function getClientBasedOnSelectedProject(){
+	 var locationCode ='${SourceLeadWeb_locationCode}'; 
+	 var projectId = document.getElementById("projectId").value;
+	 alert(projectId+" projectId213");
+	 if(projectId != null && projectId !='undefined' && projectId !=''){
+		 var projectStartDate = '';
+		 var projectEndDate = '';
+		 $('#expensePurpose').val('');
+		 <c:forEach var="project" items="${expEntry.projectsList}">
+		 if('${project.id}' == projectId){
+			 $('#clientNameId').val('${project.client}');
+			   projectStartDate = '${project.startDate}';
+ 			   projectEndDate = '${project.endDate}';
+ 			  expensesDatePickerStartDate(projectStartDate,projectEndDate);
+		 }  
+ 	    </c:forEach>
+	 }
+}
+</script>
+
 
 <script type="text/javascript">
 function removeWhiteSpaces(rowCount){
@@ -520,25 +549,7 @@ function removeWhiteSpaces(rowCount){
 </script>
 
 
-<script>
-function getClientBasedOnSelectedProject(){
-	 var locationCode ='${SourceLeadWeb_locationCode}'; 
-	 var projectId = document.getElementById("projectId").value;
-	 if(projectId != null && projectId !='undefined' && projectId !=''){
-		 var projectStartDate = '';
-		 var projectEndDate = '';
-		 $('#expensePurpose').val('');
-		 <c:forEach var="project" items="${projectsList}">
-		 if('${project.id}' == projectId){
-			 $('#clientNameId').val('${project.expensesClientName}');
-			   projectStartDate = '${project.startDateStr}';
- 			   projectEndDate = '${project.endDateStr}';
- 			  expensesDatePickerStartDate(projectStartDate,projectEndDate);
-		 }  
- 	    </c:forEach>
-	 }
-}
-</script>
+
 
 <script type="text/javascript">
 function flushOnchange(){

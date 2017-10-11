@@ -19,7 +19,7 @@ import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.AddExpensesDao;
-import com.bis.sourcelead.dto.AddExpensesDTO;
+import com.bis.sourcelead.dto.ExpensesDTO;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
@@ -115,14 +115,14 @@ public Expenses storeAddExpensesData(Expenses expenses) throws Exception{
 }
 
 @Override
-public void storeAddExpensesData(AddExpensesDTO addExpensesDTO, User loginUser, OrgLocations orgLoc,HttpServletRequest request,String status,String currencyCode) throws NumberFormatException, Exception {
+public void storeAddExpensesData(ExpensesDTO addExpensesDTO, User loginUser, OrgLocations orgLoc,HttpServletRequest request,String status,String currencyCode) throws NumberFormatException, Exception {
 	Expenses expenses = null;
 	ProjectMembers projMembers = null;
 	
 	//SimpleDateFormat dateFormat=orgLoc.getLocFullFormDateFormatter();
 	
-	if(StringUtils.isNotBlank(addExpensesDTO.getExpenseId())){
-		expenses = expensesService.getExpenseById(Long.parseLong(addExpensesDTO.getExpenseId()));
+	if(addExpensesDTO.getId() != null){
+		expenses = expensesService.getExpenseById(addExpensesDTO.getId());
 	}else {
 		expenses = new Expenses();
 	}
@@ -132,19 +132,19 @@ public void storeAddExpensesData(AddExpensesDTO addExpensesDTO, User loginUser, 
 	if (StringUtils.isNotBlank(addExpensesDTO.getExpensePurpose())){
 		expenses.setPurpose(addExpensesDTO.getExpensePurpose());	
 	 }
-	if (StringUtils.isNotBlank(addExpensesDTO.getProjectMemberId())){
-		projMembers = projectMembersService.getProjectMemberById(Long.parseLong(addExpensesDTO.getProjectMemberId()));
+	if (addExpensesDTO.getProjectMemberId()!= null){
+		projMembers = projectMembersService.getProjectMemberById(addExpensesDTO.getProjectMemberId());
 		expenses.setProjectMembers(projMembers);	
 	 }
-	if (StringUtils.isNotBlank(addExpensesDTO.getClientNameExpense())){
-		expenses.setClientName(addExpensesDTO.getClientNameExpense());	
+	if (StringUtils.isNotBlank(addExpensesDTO.getClientName())){
+		expenses.setClientName(addExpensesDTO.getClientName());	
 	 }
-	if (StringUtils.isNotBlank(addExpensesDTO.getStartDateExpense())){
-		 Date startdate = commonUtil.orgLocationDateFormat(orgLoc.getDateFormat(), addExpensesDTO.getStartDateExpense());
+	if (StringUtils.isNotBlank(addExpensesDTO.getStartDate())){
+		 Date startdate = commonUtil.orgLocationDateFormat(orgLoc.getDateFormat(), addExpensesDTO.getStartDate());
 		expenses.setStartDate(startdate);	
 	 }
-	if (StringUtils.isNotBlank(addExpensesDTO.getEndDateExpense())){
-		Date enddate = commonUtil.orgLocationDateFormat(orgLoc.getDateFormat(), addExpensesDTO.getEndDateExpense());
+	if (StringUtils.isNotBlank(addExpensesDTO.getEndDate())){
+		Date enddate = commonUtil.orgLocationDateFormat(orgLoc.getDateFormat(), addExpensesDTO.getEndDate());
 		expenses.setEndDate(enddate);	
 	 }
 	if(null != orgLoc){
@@ -187,8 +187,8 @@ public void storeAddExpensesData(AddExpensesDTO addExpensesDTO, User loginUser, 
 	if(projMembers != null){
 		ArrayList<User> managers = new ArrayList<User>() ;
 		HashSet<ExpensesApproverHierarchy> eaHierarchyList = new HashSet<ExpensesApproverHierarchy>();
-		if (StringUtils.isNotBlank(addExpensesDTO.getExpenseId())){
-		   List<ExpensesApproverHierarchy>eaSubHierarchyList  = expensesApprovalService.getExpensesApproverHierarchyListByExpenseId(Long.parseLong(addExpensesDTO.getExpenseId()));
+		if (addExpensesDTO.getId() != null){
+		   List<ExpensesApproverHierarchy>eaSubHierarchyList  = expensesApprovalService.getExpensesApproverHierarchyListByExpenseId(addExpensesDTO.getId());
 		   if(eaSubHierarchyList != null && !eaSubHierarchyList.isEmpty()){
 			   for(ExpensesApproverHierarchy eaHierarchy : eaSubHierarchyList){
 					if(status.equalsIgnoreCase(Submission_Status.SUBMITTED.getValue()) || status.equalsIgnoreCase(Submission_Status.APPROVED.getValue())){
@@ -241,6 +241,11 @@ public void storeAddExpensesData(AddExpensesDTO addExpensesDTO, User loginUser, 
 			expenses.setProjectManagerUserList(managers);
 		}
 	 }
+	
+	expenses.setMasterCandidateId(projMembers.getMasterCandidateId());
+	expenses.setProjects(projMembers.getProjects());
+	
+	
 	 expenses = addExpensesDao.storeAddExpensesData(expenses);
 	 if(status.equalsIgnoreCase(Submission_Status.APPROVED.getValue())){
 		 expensesApprovalService.updateApprovalStatusByApproverForExpense(expenses.getId(), loginUser.getId(),"APPROVED", "");

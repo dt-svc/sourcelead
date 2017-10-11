@@ -26,7 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.OrgLocationsDao;
-import com.bis.sourcelead.dto.AddExpensesDTO;
+import com.bis.sourcelead.dto.ExpensesDTO;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
@@ -236,7 +236,7 @@ public class AddExpensesRestController {
 	
 	
 	@RequestMapping(value = "/storeAddExpensesData",method = RequestMethod.POST)
-	public @ResponseBody String storeAddExpensesData(HttpServletRequest request,@RequestParam(value="status", required=false) String status,AddExpensesDTO addExpensesDTO) throws Exception {
+	public @ResponseBody String storeAddExpensesData(HttpServletRequest request,@RequestParam(value="status", required=false) String status,ExpensesDTO addExpensesDTO) throws Exception {
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		 String currencyCode = (String) SourceLeadSessionManager.getSessionAttribute(request, "currencyCode");
@@ -260,10 +260,20 @@ public class AddExpensesRestController {
 	 	
 		 	List<ProjectMembers> projectMembers = null;
 		 	if(projectId != null){
+		 		Projects project = projectsService.getProjectById(projectId);
 		 	    OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 				projectMembers = projectMembersService.getAllProjectMembersWithMasterCandidateIdByProjectIdAndLocationId(projectId,orgLoc.getId());
+				for(ProjectMembers pm:projectMembers) {
+					pm.setProjectAssignedDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLoc.getDateFormat(), pm.getProjectAssignedDate()));
+				if(pm.getProjectEndDate() != null) {
+					pm.setProjectEndDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLoc.getDateFormat(), pm.getProjectEndDate()));
+				}else {
+					pm.setProjectEndDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLoc.getDateFormat(),project.getEndDate()));
+				}
+			}
+				
 		 	}
-		 	return projectMembers;
+			return projectMembers ;
 	}
 	 
 	 

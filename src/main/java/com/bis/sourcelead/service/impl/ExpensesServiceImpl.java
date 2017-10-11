@@ -28,7 +28,6 @@ import org.springframework.stereotype.Service;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.ExpensesApproverHierarchyDao;
 import com.bis.sourcelead.dao.ExpensesDao;
-import com.bis.sourcelead.dto.ExpensesDTO;
 import com.bis.sourcelead.dto.ExpensesEntriesDTO;
 import com.bis.sourcelead.entity.Expenses;
 import com.bis.sourcelead.entity.ExpensesApproverHierarchy;
@@ -44,7 +43,6 @@ import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.ConversionUtil;
-import com.bis.sourcelead.web.LoginSessionController;
 import com.ibm.icu.math.BigDecimal;
 import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Document;
@@ -1189,15 +1187,13 @@ public class ExpensesServiceImpl implements ExpensesService{
 		Expenses expense = expensesDao.getExpenseById(expenseId);
 		Set<ExpensesEntries> entriesList = expense.getExpensesEntries();
 		List<ExpensesEntriesDTO> expensesEntriesDTOList = new ArrayList<>();
-		float sum = 0;
 		for(ExpensesEntries entries : entriesList){
 			ExpensesEntriesDTO  expensesEntriesDTO = new ExpensesEntriesDTO();
-			expensesEntriesDTO.setDate(ConversionUtil.getDateAsString(entries.getExpenseDate()));
-			expensesEntriesDTO.setDescription(entries.getDescription());
-			expensesEntriesDTO.setAmount(entries.getAmount());
-			expensesEntriesDTO.setCategory(entries.getExpensesCategoryId().getExpensesName());
-			sum = sum+entries.getAmount();
-			expensesEntriesDTO.setSubTotal(String.valueOf(sum));
+			expensesEntriesDTO.setDateOccurred(ConversionUtil.getDateAsString(entries.getExpenseDate()));
+			expensesEntriesDTO.setEntryDescription(entries.getDescription());
+			expensesEntriesDTO.setCategoryAmount(String.valueOf(entries.getAmount()));
+			expensesEntriesDTO.setCategoryName(entries.getExpensesCategoryId().getExpensesName());
+			expensesEntriesDTO.setCategoryAmount(String.valueOf(entries.getAmount()));
 			expensesEntriesDTOList.add(expensesEntriesDTO);
 		}
 		return expensesEntriesDTOList;

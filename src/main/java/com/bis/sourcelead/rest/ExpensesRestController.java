@@ -6,6 +6,8 @@ import java.io.FileInputStream;
 import java.io.InputStream;
 import java.net.URLConnection;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -34,7 +36,7 @@ import com.bis.sourcelead.dao.AddExpensesDao;
 import com.bis.sourcelead.dao.ExpensesEntriesDao;
 import com.bis.sourcelead.dao.ExpensesEntryDocumentsDao;
 import com.bis.sourcelead.dto.ExpenseEntryDetailsDTO;
-import com.bis.sourcelead.dto.ExpensesCategoryDTO;
+import com.bis.sourcelead.dto.ExpensesCategoryListDTO;
 import com.bis.sourcelead.dto.ExpensesDTO;
 import com.bis.sourcelead.dto.ExpensesListUtilDTO;
 import com.bis.sourcelead.dto.ProjectMembersDTO;
@@ -69,6 +71,7 @@ import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
 import com.bis.sourcelead.service.ProjectClientService;
+import com.bis.sourcelead.service.ProjectMembersHistoryService;
 import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.service.UserService;
@@ -129,6 +132,9 @@ public class ExpensesRestController {
 	@Autowired
 	private LoginSessionController loginSessionController;
 	
+	@Autowired
+	private ProjectMembersHistoryService projectMembersHistoryService;
+	
 	@RequestMapping(value = {"/getExpensesList","/rest/getExpensesList"})
 	public List<Expenses> getExpensesList( @RequestBody ExpensesListUtilDTO elDTO) throws Exception
 	{
@@ -146,7 +152,6 @@ public class ExpensesRestController {
 	@RequestMapping(value = "/rest/getExpenseEntryDetails")
 	public ExpenseEntryDetailsDTO getExpenseEntryDetails(@RequestBody TimesheetExpenseEntryDetailsUtilDTO eedDTO) throws Exception
 	{
-		
 		
 		ExpenseEntryDetailsDTO expenseEntryDetailsDTO = new ExpenseEntryDetailsDTO();
 		OrgLocations orgLocations = orgLocationService.getOrgLocationsByLocationCode(eedDTO.getLocationCode());
@@ -179,12 +184,28 @@ public class ExpensesRestController {
 					ProjectMembersDTO pmDTO =ProjectMemberDTOConverter.getProjectMembersDTOFromProjectMembers(pm);
 					List<ExpensesCategory> expensesCategoryList = expensesCategoryService.getAllExpensesCategoryByLocationIdAndStatus(pm.getProjects().getOrgLocationsId().getId(), "1");
 					if (expensesCategoryList != null && !expensesCategoryList.isEmpty()) {
-						ArrayList<ExpensesCategoryDTO> ecDTOList = new ArrayList<>();
+						ArrayList<ExpensesCategoryListDTO> ecDTOList = new ArrayList<>();
 						for (ExpensesCategory ec : expensesCategoryList) {
 							ecDTOList.add(ExpenseCategoryDTOConverter.getExpensesCategoryDTOFromExpensesCategory(ec));
 						}
 						pmDTO.setExpenseCategoryList(ecDTOList);
 					}
+					 if(pm.getProjectClientsId() != null &&  pm.getProjectClientsId().getOrgRelationId() != null){
+				    	 if("Vendor".equalsIgnoreCase(pm.getProjectClientsId().getOrgRelationId().getInitiatorType())){
+				    		 pmDTO.setClientName(pm.getProjectClientsId().getOrgRelationId().getResponderLocationId().getOrgLocationName());
+						 }else if("Client".equalsIgnoreCase(pm.getProjectClientsId().getOrgRelationId().getInitiatorType())){
+							 pmDTO.setClientName(pm.getProjectClientsId().getOrgRelationId().getLocationId().getOrgLocationName());
+						 }
+				    }
+					 HashMap<String, Date> dateMap = projectMembersHistoryService.getProjectMembersStartDateAndEndDateByProjectMemberId(pm.getId());
+					 if(dateMap != null && !dateMap.isEmpty()) {
+						 Date pmStartDate = dateMap.get("STARTDATE");
+						 Date pmEndDate =  dateMap.get("ENDDATE");
+						   pmDTO.setMemberStartDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),pmStartDate));
+						 if(null != pmEndDate){
+							 pmDTO.setMemberEndDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),pmEndDate));
+						  }
+					 }
 					pmDTOList.add(pmDTO);
 				}
 				expenseEntryDetailsDTO.setProjectMembersList(pmDTOList);
@@ -458,7 +479,7 @@ public class ExpensesRestController {
 				else {
 					createdName.append(createduser.getFirstName());
 				}
-				expensesDTO.setExpCreatedBy(createdName.toString());
+				expensesDTO.setCreatedBy(createdName.toString());
 			}
 			expensesDTO.setSahApproved(isSahApproved);
 		}
