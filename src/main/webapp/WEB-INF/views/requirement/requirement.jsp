@@ -2302,11 +2302,19 @@ function getUserList(teamType){
 		                    	 var opt = json[i]; 
 		                    	 result = result +'<tr>';
 		                    	 var localCheckedStatus = "";
+		                    	 
 		                    	 $(".defaultAssignCheckBox").each(function() {
          							var localValue = this.value;
-         							if(localValue == opt.id){
-         								localCheckedStatus = "checked";
-         							}  
+         						    var assignedUserId = '' ;
+         						    var assignedTeamId = '' ;
+         							if(localValue != null && localValue != '' && localValue != 'undefined'){
+         								var res = localValue.split(",")
+         								assignedUserId = res[0];
+         								assignedTeamId = res[1];
+	         							if(assignedUserId == opt.id){
+	         								localCheckedStatus = "checked";
+	         							}  
+         							}
 		                    	 });
 		                    	 
 		                    	 var lastName = '';
@@ -2327,16 +2335,18 @@ function getUserList(teamType){
 		                    		 result = result +'             <td><input id="'+opt.id+'"  class="myCheckbox" onclick="handleClick();" checked="checked" value="'+opt.id+','+opt.assignedTeamId+'"  type="checkbox" name="team" '+localCheckedStatus+' data-validation="required"></td>';
 		                    	 }else if('' != assignedTeam){
 		                    		 if(localCheckedStatus == "checked"){
-			                    		 result = result +'  <td><i class="text-muted fa fa-check-square" aria-hidden="true"></i></td>';
+			                    		 //result = result +'  <td><i class="text-muted fa fa-check-square" aria-hidden="true"></i></td>';
+		                    			 result = result +'  <td><input id="'+opt.id+'"  class="myCheckbox" onclick="handleClick();" checked="checked" value="'+opt.id+','+opt.assignedTeamId+'"  type="checkbox" name="team" '+localCheckedStatus+' data-validation="required" ></td>';
 		                    		 }else{
-		                    		 	 result = result +'  <td><input id="'+opt.id+'"  class="myCheckbox" onclick="handleClick();" checked="checked" value="'+opt.id+','+opt.assignedTeamId+'"  type="checkbox" name="team" '+localCheckedStatus+' data-validation="required" ></td>';
+		                    		 	 result = result +'  <td><input id="'+opt.id+'"  class="myCheckbox" onclick="handleClick();"  value="'+opt.id+','+opt.assignedTeamId+'"  type="checkbox" name="team" '+localCheckedStatus+' data-validation="required" ></td>';
 		                    		 }
 		                    	 }else if(localCheckedStatus == "checked"){
-		                    		 result = result +'  <td><i class="text-muted fa fa-check-square" aria-hidden="true"></i></td>';
-		                    		 //result = result +'  <td><input id="'+opt.id+'"  class="myCheckbox" onclick="handleClick();" value="'+opt.id+'"  type="checkbox" name="team" '+localCheckedStatus+' data-validation="required" ></td>';
+		                    		 //result = result +'  <td><i class="text-muted fa fa-check-square" aria-hidden="true"></i></td>';
+		                    		 result = result +'  <td><input id="'+opt.id+'"  class="myCheckbox" onclick="handleClick();" checked="checked" value="'+opt.id+','+opt.assignedTeamId+'"  type="checkbox" name="team" '+localCheckedStatus+' data-validation="required" ></td>';
 		                    	 }else{
 		                    		 if(localCheckedStatus == "checked"){
-			                    		 result = result +'  <td><i class="text-muted fa fa-check-square" aria-hidden="true"></i></td>';
+			                    		 //result = result +'  <td><i class="text-muted fa fa-check-square" aria-hidden="true"></i></td>';
+			                    		 result = result +'  <td><input class="myCheckbox"  type="checkbox" onclick="handleClick();" checked="checked"></td>';
 		                    		 }else{
 		                    			 
 		                    			 var selectedUserIdForAssign = "";
@@ -2576,7 +2586,7 @@ function assignMembers() {
 		$('#assignbtnId').attr("data-dismiss","modal");
 		rowcollection.each(function(index,elem){
 		    var checkbox_value = $(elem).val();
-		    result = result+ "<input type='hidden' class='defaultCheckBox' name='assignUsers["+(count-1)+"]' id='assignUserId"+count+"' value='"+checkbox_value+"' />";
+		    result = result+ "<input type='hidden' class='defaultAssignCheckBox' name='assignUsers["+(count-1)+"]' id='assignUserId"+count+"' value='"+checkbox_value+"' />";
 		    count++;
 		});
 		result = result+"<input type='hidden' name='assignedToMaxCount' id='assignedToMaxCount' value='"+count+"'/>";
@@ -2810,7 +2820,7 @@ function getLevel2Approvers(currentApproverId){
 
 <script type="text/javascript">
  function validateJobId(jobId) {
-	 
+	 $('input#jobId').removeAttr( "record-exist record-exist-errormsg");
 	 var requirementid = document.getElementById("requirementId").value;
 	/*  if(requirementid != null && requirementid != '' && requirementid != 'undefined' ){ */
 		 if(jobId == null || jobId == "" || jobId == "undefined"){

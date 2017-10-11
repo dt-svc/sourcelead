@@ -1,9 +1,11 @@
 package com.bis.sourcelead.dao.impl;
 
 import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.poi.ss.formula.functions.T;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
@@ -14,6 +16,8 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.RequirementInterviewerDao;
+import com.bis.sourcelead.dto.RequirementInterviewerDTO;
+import com.bis.sourcelead.dto.UserDTO;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementInterviewer;
@@ -60,11 +64,35 @@ public class RequirementInterviewerDaoImpl implements RequirementInterviewerDao{
 	public List<RequirementInterviewer> getInterviwersListByInterviewId(Long requirementInterviewId) {
 		logger.debug("In RequirementInterviewerDaoImpl class getInterviwersListByInterviewId method");
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from RequirementInterviewer interviewer where interviewer.requirementInterview.id = :requirementInterviewId and interviewer.status = 1";
+		String query = "from RequirementInterviewer interviewer left join fetch interviewer.interviewerUser where interviewer.requirementInterview.id = :requirementInterviewId and interviewer.status = 1";
 		List<RequirementInterviewer> requirementInterviewersList =  session.createQuery(query).setLong("requirementInterviewId", requirementInterviewId).setCacheable(true).list();
 		return requirementInterviewersList;
 	}
 
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<RequirementInterviewerDTO>  getInterviwersListByInterviewIdFromDTO(Long requirementInterviewId) {
+		List<RequirementInterviewerDTO> list = new ArrayList<>();
+		logger.debug("In RequirementInterviewerDaoImpl class getInterviwersListByInterviewId method");
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from RequirementInterviewer interviewer left join fetch interviewer.interviewerUser where interviewer.requirementInterview.id = :requirementInterviewId and interviewer.status = 1";
+		List<RequirementInterviewer> requirementInterviewersList =  session.createQuery(query).setLong("requirementInterviewId", requirementInterviewId).setCacheable(true).list();
+		for(RequirementInterviewer requirementInterviewer : requirementInterviewersList) {
+			RequirementInterviewerDTO requirementInterviewerDTO = new RequirementInterviewerDTO();
+			requirementInterviewerDTO.setId(requirementInterviewer.getId());
+			if(requirementInterviewer.getInterviewerUser().getLastName() != null) {
+				StringBuilder intName = new StringBuilder();
+				requirementInterviewerDTO.setInterviewerName(intName.append(requirementInterviewer.getInterviewerUser().getFirstName()).append(requirementInterviewer.getInterviewerUser().getLastName()).toString());
+			}else {
+				requirementInterviewerDTO.setInterviewerName(requirementInterviewer.getInterviewerUser().getFirstName());
+			}
+			list.add(requirementInterviewerDTO);
+		}
+		return list;
+	}
+	
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public RequirementInterviewer getInterviwerstByInterviewId(Long requirementInterviewerId) {
