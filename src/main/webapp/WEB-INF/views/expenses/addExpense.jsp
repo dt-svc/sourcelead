@@ -115,7 +115,7 @@
 </div>
 </div>
 	<div class="pull-left" id="exceedSpan"></div>
-	<a href="javascript:void(0)" class="btn btn-primary btn-sm AddRow" onclick='addExpenseRow();'><i class="fa fa-plus"></i>&nbsp; Add Item</a>
+	<a href="javascript:void(0)" class="btn btn-primary btn-sm AddRow" onclick='addExpenseRow("emp");'><i class="fa fa-plus"></i>&nbsp; Add Item</a>
 	<div class="clearfix"></div>
 </div>
 <div class="project_wrap_table expensTableView">
@@ -367,7 +367,6 @@ function removeWhiteSpacesMyExp(rowCount){
 
 <script>
 function getClientBasedOnSelectedProject(){
-	var locationId = '${SourceLeadWeb_orgLocationId}';
 	var projectMemberId = document.getElementById("projectMemberId").value;
 	 $('#clientNameId').val('');
 	 if(projectMemberId != null && projectMemberId !='undefined' && projectMemberId !=''){

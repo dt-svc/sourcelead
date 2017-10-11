@@ -22,8 +22,11 @@ public class ExpensesDTOConverter {
 		BigDecimal totalAmountRoundOff = totalAmo.setScale(2, BigDecimal.ROUND_HALF_EVEN);
 		expensesDTO.setExpenseAmountDivId(totalAmountRoundOff);
 		expensesDTO.setClientName(expenses.getClientName());
-		expensesDTO.setProjectName(expenses.getProjectMembers().getProjects().getProjectName());
-		expensesDTO.setProjectMemberId(expenses.getProjectMembers().getId());
+		if(expenses.getProjectMembers() != null && expenses.getProjectMembers().getProjects() != null){
+			expensesDTO.setProjectMemberId(expenses.getProjectMembers().getId());
+			expensesDTO.setProjectId(expenses.getProjectMembers().getProjects().getId());
+			expensesDTO.setProjectName(expenses.getProjectMembers().getProjects().getProjectName());
+		}
 		SimpleDateFormat dateFormat=expenses.getOrgLocationId().getLocFullFormDateFormatter();
 		if(expenses.getStartDate() != null){
 			expensesDTO.setStartDate(dateFormat.format(expenses.getStartDate()));	
@@ -37,6 +40,9 @@ public class ExpensesDTOConverter {
 			for(ExpensesEntries ee : expenses.getExpensesEntries()){
 				eeDTOList.add(ExpensesEntriesDTOConverter.getExpensesEntriesDTOFromExpensesEntries(ee, expensesDTO));
 			}
+		}
+		if(expenses.getProjectMembers() != null && expenses.getProjectMembers().getProjectMemberCandidteId() != null){
+			expensesDTO.setProjectMemberName(expenses.getProjectMembers().getEmpName());
 		}
 		expensesDTO.setExpenseEntry(eeDTOList);
 		return expensesDTO;

@@ -132,7 +132,7 @@ public class ExpensesEntriesServiceImpl implements ExpensesEntriesService{
 				    		  eedoc.setFileURL(fileinfo.getFileURL());
 				    		  eedoc.setFileName(fileinfo.getFileName());
 				    		  eedoc.setFileContentType(fileinfo.getContentType());
-							  FileUploadUtil.moveFile("c:/lillyput/slead-static", fileinfo, "expsesDocuments");
+							  FileUploadUtil.moveFile(staticPath, fileinfo, "expsesDocuments");
 				    		  
 			                       eedoc.setStatus(Constants.CANDIDATE_ACTIVE);
 			                       eedoc.setCreatedDate(CommonUtil.currentDate());

@@ -291,7 +291,7 @@ function removeWhiteSpacesAdd(rowCount){
 </script>
 
 <script>
-function addExpenseRow(){ 
+function addExpenseRow(from){ 
 	if ($('#add_expenses_form').validate(false, validationSettings)){
 		
 		var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
@@ -410,17 +410,32 @@ function addExpenseRow(){
 		    	    $this.next().css({'width': '100%'});
 		    	    })
 		    	  
+		    	    
 		    	    var output = '';
-		    	   	$("#categoryType"+maxRowNum).empty();
-		    	    var projectMemberId = $('#projectMemberId').val();
-		    	    output = output+'<option value="">Select Category Type</option>';
-			 	    <c:forEach var="pm" items="${expEntry.projectMembersList}">
-				 	     if('${pm.id}' == projectMemberId){
-				 	    	 <c:forEach var="expCat" items="${pm.expenseCategoryList}">
-				 	    	    output = output+'<option value="${expCat.id},${expCat.allowedAmount}">${expCat.categoryName}</option>';
-				 	    	 </c:forEach>
-						 }  
-		            </c:forEach>
+		    	    if(from == 'approver'){
+		    	    	var projectId = $('#projectId').val();
+			    	    output = output+'<option value="">Select Category Type</option>';
+			    	    <c:forEach var="project" items="${expEntry.projectsList}">
+			   		       if('${project.id}' == projectId){
+					 	    	 <c:forEach var="expCat" items="${project.expenseCategoryList}">
+					 	    	    output = output+'<option value="${expCat.id},${expCat.allowedAmount}">${expCat.categoryName}</option>';
+					 	    	 </c:forEach>
+							 }  
+			            </c:forEach>
+		    	    }
+		    	    else{
+		    	    	var projectMemberId = $('#projectMemberId').val();
+			    	    output = output+'<option value="">Select Category Type</option>';
+				 	    <c:forEach var="pm" items="${expEntry.projectMembersList}">
+					 	     if('${pm.id}' == projectMemberId){
+					 	    	 <c:forEach var="expCat" items="${pm.expenseCategoryList}">
+					 	    	    output = output+'<option value="${expCat.id},${expCat.allowedAmount}">${expCat.categoryName}</option>';
+					 	    	 </c:forEach>
+							 }  
+			            </c:forEach>
+		    	    }
+		    	    
+		        	$("#categoryType"+maxRowNum).empty();
 		            $("#categoryType"+maxRowNum).append(output);
 		            $('#categoryType'+maxRowNum).chosen();
 		    	    $('#categoryType'+maxRowNum).trigger("chosen:updated");

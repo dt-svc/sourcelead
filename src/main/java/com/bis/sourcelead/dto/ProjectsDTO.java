@@ -1,6 +1,7 @@
 package com.bis.sourcelead.dto;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -81,6 +82,10 @@ public class ProjectsDTO extends SearchDTO implements Serializable{
 	private String budgetStatus;
 	
 	private String projectShortCode;
+	
+	List<ExpensesCategoryListDTO> expenseCategoryList;
+	
+	List<ProjectMembersDTO> projectMembersList;
 	
 	public long getId()
 	{
@@ -379,4 +384,22 @@ public class ProjectsDTO extends SearchDTO implements Serializable{
 	public void setProjectShortCode(String projectShortCode) {
 		this.projectShortCode = projectShortCode;
 	}
+
+	public List<ExpensesCategoryListDTO> getExpenseCategoryList() {
+		return expenseCategoryList;
+	}
+
+	public void setExpenseCategoryList(List<ExpensesCategoryListDTO> expenseCategoryList) {
+		this.expenseCategoryList = expenseCategoryList;
+	}
+
+	public List<ProjectMembersDTO> getProjectMembersList() {
+		return projectMembersList;
+	}
+
+	public void setProjectMembersList(List<ProjectMembersDTO> projectMembersList) {
+		this.projectMembersList = projectMembersList;
+	}
+	
+	
 }

@@ -15,7 +15,9 @@ private static final long serialVersionUID = 1L;
 	
 	private String expensePurpose;
 	
-	private String projectId;
+	private long projectId;
+	
+	private String projectMemberName;
 	
 	private String projectName;
 	
@@ -67,11 +69,12 @@ private static final long serialVersionUID = 1L;
 		this.expensePurpose = expensePurpose;
 	}
 
-	public String getProjectId() {
+	
+	public long getProjectId() {
 		return projectId;
 	}
 
-	public void setProjectId(String projectId) {
+	public void setProjectId(long projectId) {
 		this.projectId = projectId;
 	}
 
@@ -177,6 +180,14 @@ private static final long serialVersionUID = 1L;
 
 	public void setExpenseAmountDivId(BigDecimal expenseAmountDivId) {
 		this.expenseAmountDivId = expenseAmountDivId;
+	}
+
+	public String getProjectMemberName() {
+		return projectMemberName;
+	}
+
+	public void setProjectMemberName(String projectMemberName) {
+		this.projectMemberName = projectMemberName;
 	}
 
 	

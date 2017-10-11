@@ -161,14 +161,37 @@ public class ExpensesRestController {
 			ArrayList<ProjectsDTO> projectsList = new ArrayList<>();
 			for(ProjectClients pc : projectClientsList){
 				Projects projects = pc.getProjectId();
-				ProjectsDTO projectDTO =ProjectDTOConverter.getProjectsDTOFromProjects(projects);
+				List<ProjectMembers> projectMembersList = projectMembersService.getAllProjectMembersWithMasterCandidateIdByProjectIdAndLocationId(projects.getId(),orgLocations.getId());
 				List<ExpensesCategory>  expensesCategoryList = expensesCategoryService.getAllExpensesCategoryByLocationIdAndStatus(projects.getOrgLocationsId().getId(), Constants.MEMBER_ACTIVE);
-				projects.setExpensesCategoryList(expensesCategoryList);
+				ProjectsDTO projectDTO =ProjectDTOConverter.getProjectsDTOFromProjects(projects);
+				if (expensesCategoryList != null && !expensesCategoryList.isEmpty()) {
+					ArrayList<ExpensesCategoryListDTO> ecDTOList = new ArrayList<>();
+					for (ExpensesCategory ec : expensesCategoryList) {
+						ecDTOList.add(ExpenseCategoryDTOConverter.getExpensesCategoryDTOFromExpensesCategory(ec));
+					}
+					projectDTO.setExpenseCategoryList(ecDTOList);
+				}
+				ArrayList<ProjectMembersDTO> pmDTOList = new ArrayList<>();
+				for (ProjectMembers pm : projectMembersList) {
+					ProjectMembersDTO pmDTO =ProjectMemberDTOConverter.getProjectMembersDTOFromProjectMembers(pm);
+					 HashMap<String, Date> dateMap = projectMembersHistoryService.getProjectMembersStartDateAndEndDateByProjectMemberId(pm.getId());
+					 if(dateMap != null && !dateMap.isEmpty()) {
+						 Date pmStartDate = dateMap.get("STARTDATE");
+						 Date pmEndDate =  dateMap.get("ENDDATE");
+						   pmDTO.setMemberStartDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),pmStartDate));
+						 if(null != pmEndDate){
+							 pmDTO.setMemberEndDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),pmEndDate));
+						  }
+					 }
+					pmDTOList.add(pmDTO);
+					
+				}
+				projectDTO.setProjectMembersList(pmDTOList);
 			    if(pc.getOrgRelationId() != null){
 			    	 if("Vendor".equalsIgnoreCase(pc.getOrgRelationId().getInitiatorType())){
-						 projects.setExpensesClientName(pc.getOrgRelationId().getResponderLocationId().getOrgLocationName());
+			    		 projectDTO.setClient(pc.getOrgRelationId().getResponderLocationId().getOrgLocationName());
 					 }else if("Client".equalsIgnoreCase(pc.getOrgRelationId().getInitiatorType())){
-						 projects.setExpensesClientName(pc.getOrgRelationId().getLocationId().getOrgLocationName());
+						 projectDTO.setClient(pc.getOrgRelationId().getLocationId().getOrgLocationName());
 					 }
 			    }
 				projectsList.add(projectDTO);
@@ -211,10 +234,6 @@ public class ExpensesRestController {
 				expenseEntryDetailsDTO.setProjectMembersList(pmDTOList);
 			}
 		}
-		
-		
-		
-		
 		String expenseId = addExpensesService.getExpenseId(orgLocations);
 		expenseEntryDetailsDTO.setExpenseId(expenseId);
 		Countries countries = countriesService.getCountriesByCountryName(orgLocations.getCountry());

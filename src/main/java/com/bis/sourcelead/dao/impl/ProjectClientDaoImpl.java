@@ -156,8 +156,11 @@ public class ProjectClientDaoImpl implements ProjectClientDao{
 		Session session = this.sessionFactory.getCurrentSession();
 		List<ProjectClients> projectClientsList = null; 
 		Query candidateListQuery= session.createQuery("from ProjectClients pc left join fetch pc.projectId left join fetch pc.orgRelationId rel left join fetch rel.locationId inloc left join fetch inloc.org  left join fetch rel.responderLocationId  resloc left join fetch resloc.org left join fetch pc.orgLocationsId "
-			  	 + " left join fetch pc.orgRelationId  where  pc.orgLocationsId.id = :locationsId and pc.status = '1' and pc.id IN "
-				 +"("
+			  	 + " left join fetch pc.orgRelationId  where  pc.orgLocationsId.id = :locationsId and pc.status = '1' "
+			  	 + " and "
+			  	 + " pc.projectId.id IN( select pm.projects.id from ProjectMembers pm where pm.status = '1')"
+			  	 + " and "
+				 +"  pc.id IN("
 				 + " select hierarchy.projectClientsId.id from ProjectApproverHierarchy hierarchy  where  "
 				 + " (hierarchy.projectClientsId.orgLocationsId.id = :locationsId and hierarchy.approverUserId.id = :userId "
 				 + " OR "

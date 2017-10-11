@@ -8,6 +8,7 @@ public class ProjectMemberDTOConverter {
 	public static ProjectMembersDTO getProjectMembersDTOFromProjectMembers(ProjectMembers projectMembers){
 		ProjectMembersDTO pmDTO = new ProjectMembersDTO();
 		pmDTO.setId(projectMembers.getId());
+		pmDTO.setName(projectMembers.getEmpName());
 		if(projectMembers.getProjects() != null){
 			    if(projectMembers.getProjects().getOrgRelationId() != null){
 				  pmDTO.setClientName(projectMembers.getProjects().getOrgRelationId().getClientName());
@@ -16,7 +17,7 @@ public class ProjectMemberDTOConverter {
 			    pmDTO.setProjectStartDate(projectMembers.getProjects().getStartDateStr());
 			    pmDTO.setProjectEndDate(projectMembers.getProjects().getEndDateStr());
 		}
-			
+	
 		return pmDTO;
 	}
 }

@@ -321,10 +321,6 @@ public class Projects implements Serializable{
     @JsonProperty
     Set<ProjectDocuments>  projectDocumentsList;
     
-    @Transient
-    @JsonProperty
-    List<ExpensesCategory> expensesCategoryList;
-    
     @Column(name = "GENERATED_ID")
 	private String generatedId;
     
@@ -911,16 +907,6 @@ public class Projects implements Serializable{
 
 	public void setProjectDocumentsList(Set<ProjectDocuments> projectDocumentsList) {
 		this.projectDocumentsList = projectDocumentsList;
-	}
-
-	public List<ExpensesCategory> getExpensesCategoryList()
-	{
-		return expensesCategoryList;
-	}
-
-	public void setExpensesCategoryList(List<ExpensesCategory> expensesCategoryList)
-	{
-		this.expensesCategoryList = expensesCategoryList;
 	}
 
 	public String getProjStatus() {
