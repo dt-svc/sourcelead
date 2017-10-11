@@ -908,7 +908,7 @@ function loadSignature(){
 							result = result + '<div class="col-md-3"><input type="text" '+readonly+' value="'+labelText+'" class="form-control input-sm"></div>';
 						}
 						
-						result = result + '<div class="col-md-2 select-field">';
+						result = result + '<div class="col-md-2 select-field" style="width:19.66666667%;">';
 						result = result + '<select name="fontFamily'+opt.id+'" class="form-control input-sm">';
 						for (var j=0; j<json.fontFamilyList.length; j++)
 	 					{
@@ -922,7 +922,7 @@ function loadSignature(){
 						result = result + '</select>';
 						result = result + '</div>';
 						
-						result = result + '<div class="col-md-2 select-field">';
+						result = result + '<div class="col-md-2 select-field" style="width:13.66666667%;">';
 						result = result + '<select name="fontsize'+opt.id+'" class="form-control input-sm">';
 						for (var k=0; k<json.fontFamilyList.length; k++)
 	 					{
