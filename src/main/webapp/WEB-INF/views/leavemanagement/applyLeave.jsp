@@ -259,7 +259,6 @@ function removeEndValid(){
  		
  <script type="text/javascript">
  function getPieChartBasedOnUser(){
-	 
 	 $.ajax({
          type : "GET",
           url: sourceleadUrl+"/getPieChartForLeaveStatus?"+tokenParamName+"="+tokenValue+"",    
