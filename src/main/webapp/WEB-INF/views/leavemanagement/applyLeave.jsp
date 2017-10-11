@@ -259,9 +259,11 @@ function removeEndValid(){
  		
  <script type="text/javascript">
  function getPieChartBasedOnUser(){
+	 var orgLocationId = '${SourceLeadWeb_orgLocationId}';
+		var userId = '${SourceLeadWeb_userId}';
 	 $.ajax({
          type : "GET",
-          url: sourceleadUrl+"/getPieChartForLeaveStatus?"+tokenParamName+"="+tokenValue+"&orgLocationId"+orgLocationId+"&userId="+userId,    
+          url: sourceleadUrl+"/getPieChartForLeaveStatus?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&userId="+userId,    
           success :function(json) {
         	  
         	  var output = "";
