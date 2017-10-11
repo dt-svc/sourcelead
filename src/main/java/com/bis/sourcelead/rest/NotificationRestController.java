@@ -120,7 +120,7 @@ public class NotificationRestController {
 	}
 	
 	
-	@RequestMapping(value = {"/getNotificationsByuserId","rest/getNotificationsByuserId"}, method = RequestMethod.GET)
+	@RequestMapping(value = {"/getNotificationsByuserId","/rest/getNotificationsByuserId"}, method = RequestMethod.GET)
 	@ResponseBody
 	public  ResponseList<Notifications> getNotificationsByuserId(@RequestParam(value = "userId", required = false) Long userId,
 						@RequestParam(value = "locationCode", required = false) String locationCode, 
