@@ -267,7 +267,7 @@ public class LeaveManagementRestController {
 	}
 	
 	
-	@RequestMapping(value = "/getPieChartForLeaveStatus")
+	@RequestMapping(value = {"/getPieChartForLeaveStatus", "/rest/getPieChartForLeaveStatus"}, method = RequestMethod.GET)
 	public List<LeaveType> getPieChartForLeaveStatus(HttpServletRequest request,HttpServletResponse response) throws Exception {
 		   OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		   User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
@@ -505,7 +505,7 @@ public class LeaveManagementRestController {
 	}
 	
 	@PreAuthorize("hasAnyRole('ROLE_LEAVE_CONFIGURE')")
-	@RequestMapping(value = "/getRestrictDayList")
+	@RequestMapping(value = {"/getRestrictDayList", "/rest/getRestrictDayList"}, method = RequestMethod.GET)
 	public List<RestrictDay> getRestrictDayList(@RequestParam(value = "orgLocationId", required = true) Long orgLocationId) throws Exception {
 	      
 		List<RestrictDay> restrictDayList = restrictDayService.getRestrictDayListByOrgLocationId(orgLocationId);
@@ -1233,14 +1233,14 @@ public class LeaveManagementRestController {
 
 		boolean isValid = false;
 		List<RestrictDay> restrictDayList = new ArrayList<>();
-
+		OrgLocations orgLocations = null;
 		if(StringUtils.isNotBlank(leaveId)){
 			Leave leave = leaveService.getLeaveByLeavId(leaveId);
-			OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
+			orgLocations = orgLocationService.getOrgLocations(orgLocationId);
 			fromDate = commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), leave.getFromDate());
 			toDate = commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), leave.getToDate());
 		}
-		List<RestrictDay> restDay = restrictDayService.validateRestrictDayDates(fromDate,toDate,orgLocationId);
+		List<RestrictDay> restDay = restrictDayService.validateRestrictDayDates(fromDate,toDate,orgLocations);
 
 		 Set<Long> roleIds = new HashSet<>();
 		for (RestrictDay resDay : restDay) {
