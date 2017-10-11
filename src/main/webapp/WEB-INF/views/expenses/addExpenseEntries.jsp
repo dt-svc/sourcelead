@@ -165,9 +165,8 @@ function addAttachment(entityRowId,from){
 		var sub = totlaMount - expenseAmount; 
 		var toFixed = sub.toFixed(2);
 		$("#expenseAmountDivId").val(toFixed);
-		 
-		 
-	    var count = 2*(r.cells.length);
+
+		var count = r.cells.length;
 	     for(i=0;i<=count;i++){
 	        if(i==0){
 	    		 r1.deleteCell(0);
@@ -274,8 +273,8 @@ function addAttachment(entityRowId,from){
 					</div>
 					      <div class="col-xs-12 col-sm-12 col-md-12 expAddRo myForm noPad clearfix">
 						      <div class="pull-right  mr mt10">
-						        <input type="button" value="Add" id="addExpenseCategoryButtonREPLACEROWID" class="btn btn-primary btn-sm mr10" onclick="addExpenseCategory(REPLACEROWID);calculateTotalamount(REPLACEROWID)">
-						        <input type="button" id="cancelExpenseCategoryButtonREPLACEROWID" value="Cancel" class="btn btn-default btn-sm" onclick="removeExpenseRow(REPLACEROWID,REPLACEDOWNROWID);calculateTotalamount(REPLACEROWID)">
+						        <input type="button" value="Add" id="addExpenseCategoryButtonREPLACEROWID" class="btn btn-primary btn-sm mr10" onclick="addExpenseCategory(REPLACEROWID);calculateTotalamount(REPLACEROWID);">
+						        <input type="button" id="cancelExpenseCategoryButtonREPLACEROWID" value="Cancel" class="btn btn-default btn-sm" onclick="calculateTotalamount(REPLACEROWID);removeExpenseRow(REPLACEROWID,REPLACEDOWNROWID);">
 						      </div>
 					      </div>
 		 

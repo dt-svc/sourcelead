@@ -545,7 +545,6 @@ function getClientBasedOnSelectedProject(){
 					  expensesDatePickerStartDate(projectStartDate,projectEndDate);
 		    	  }	
 
-		    	  $('#expensePurpose').val('');
 		    	  //$('#projectStartDateExpensesId').val('');
 		    	 // $('#projectEndDateExpensesId').val('');
 		    	    
@@ -558,9 +557,11 @@ function getClientBasedOnSelectedProject(){
 
 <script type="text/javascript">
 function flushOnchange(){
+
 	//$('#projectId').val('');	
 	
 $("#projectMemberId").val('')	
+
 $('#expensePurpose').val('');
 $('#projectStartDateExpensesId').val('');
 $('#projectEndDateExpensesId').val('');
