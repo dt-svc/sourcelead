@@ -448,6 +448,7 @@ public class CandidateOnBoardRestController {
 		if(null != template){
 			template.setTemplateStatus("Finished");
 			onBoardingTemplateService.saveOnBoardingTemplate(template);
+			SourceLeadSessionManager.setSessionAttribute(request, "OnboardCreateMsg", "Success!! New OnBoard Template created");
 		}
 		return "success";
 		
