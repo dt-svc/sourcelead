@@ -48,8 +48,8 @@ private static final long serialVersionUID = 1L;
 	
 	@NotFound(action=NotFoundAction.IGNORE)
     @ManyToOne
-    @JoinColumn(name = "SPOC_ID")
-    private OrgSpoc spocId;
+    @JoinColumn(name = "SPOC_USER_ID")
+    private User spocUserId;
 	
 	@Column(name = "VENDOR_ON_BOARD_STATUS")
 	private String vendorOnboardStatus;
@@ -115,12 +115,12 @@ private static final long serialVersionUID = 1L;
 		this.vendorLocationId = vendorLocationId;
 	}
 
-	public OrgSpoc getSpocId() {
-		return spocId;
+	public User getSpocUserId() {
+		return spocUserId;
 	}
 
-	public void setSpocId(OrgSpoc spocId) {
-		this.spocId = spocId;
+	public void setSpocUserId(User spocUserId) {
+		this.spocUserId = spocUserId;
 	}
 
 	public String getVendorOnboardStatus() {

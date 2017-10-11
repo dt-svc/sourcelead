@@ -2,6 +2,8 @@ package com.bis.sourcelead.service;
 
 import java.util.List;
 
+import com.bis.sourcelead.dto.OnboardTasksDTO;
+import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.VendorOnboardTasks;
 
 public interface VendorOnboardTasksService {
@@ -11,4 +13,10 @@ public interface VendorOnboardTasksService {
 	VendorOnboardTasks saveVendorOnboardTasks(VendorOnboardTasks vendorOnboardTasks) throws Exception;
 	
 	VendorOnboardTasks getVendorOnboardTasksByTaskId(Long Id) throws Exception;
+	
+	List<VendorOnboardTasks> getVendorOnboardTasksByTemplateIdsList(List<Long> templateIdsList) throws Exception;
+	
+	List<VendorOnboardTasks> getVendorOnboardTasksByVendorOnboardId(Long vendorOnboardingId) throws Exception;
+	
+	void saveVendorOnboardTemplateTask(OnboardTasksDTO onboardTasksDTO,User user) throws Exception;
 }

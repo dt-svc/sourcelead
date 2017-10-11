@@ -16,4 +16,12 @@ public interface VendorOnboardTemplateDocumentsService {
 	VendorOnboardingTemplateDocuments saveVendorOnBoardingTemplateDocuments(VendorOnboardingTemplateDocuments vendorOnboardingTemplateDocuments)throws Exception;
 	
 	VendorOnboardingTemplateDocuments getVendorOnBoardingTemplateDocumentsBydocumentUUID(String documentUUID) throws Exception;
+	
+	List<VendorOnboardingTemplateDocuments> getVendorOnBoardingTemplateDocumentsByTemplateList(List<Long> templateIdList,String documentType) throws Exception;
+	
+	List<VendorOnboardingTemplateDocuments> getVendorOnboaringTemplateDocumentsByVendorOnboardId(Long vendorOnboardingId) throws Exception;
+	
+	void storeVendorOnboardDocuments(OnBoardingTemplateDTO onBoardingTemplateDTO, User loginUser) throws Exception;
+	
+	VendorOnboardingTemplateDocuments getVendorOnBoardingTemplateDocumentsById(Long id) throws Exception;
 }

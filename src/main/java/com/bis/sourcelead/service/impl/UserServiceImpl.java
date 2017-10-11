@@ -454,11 +454,6 @@ public class UserServiceImpl implements UserService {
 			logger.error(ExceptionUtils.getFullStackTrace(e));
 		}
 		
-		if(StringUtils.isNotBlank(addUserDTO.getDepartment())){
-			
-			List<Department> departmentList = departmentService.getDepartmentByOrgLocationId(orgLocations.getId());
-		}
-		
 		userRole.setRoles(roles);
 		userRole.setUserType(roles.getDisplayName());
 		userRole.setCreatedDate(commonUtil.currentDate());
@@ -529,10 +524,7 @@ public class UserServiceImpl implements UserService {
 		
 		if(StringUtils.isNotBlank(addUserDTO.getDateofJoin())){
 			try {
-				   //SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
-					 OrgLocations orgLoc = orgLocationService.getOrgLocations(orgLocationsId);
-						 //SimpleDateFormat formatter = orgLoc.getLocFullFormDateFormatter();
-						 employees.setHireDate(commonUtil.orgLocationDateFormat(orgLoc.getDateFormat(), addUserDTO.getDateofJoin()));
+				 employees.setHireDate(commonUtil.orgLocationDateFormat(addUserDTO.getDateFormat(), addUserDTO.getDateofJoin()));
 				  
 				} catch (Exception e) {
 				  e.printStackTrace();

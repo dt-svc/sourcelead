@@ -86,6 +86,7 @@ public class AddClientVendorELK {
 			    	clientVendorIndex.setOrgLocationId(rs.getLong("LOCATION_ID"));
 			    	clientVendorIndex.setOrgRelationId(rs.getLong("ID"));
 			    	clientVendorIndex.setStatus(rs.getString("STATUS"));
+			    	clientVendorIndex.setOrgRelationUUID(rs.getString("UUID"));
 			    	
 			    	if(null != rs.getString("VENDOR_ONBOARD_TEMPLATE_ID")){
 			    		clientVendorIndex.setVendorOnboardTemplateId(rs.getString("VENDOR_ONBOARD_TEMPLATE_ID"));

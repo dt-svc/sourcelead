@@ -24,6 +24,7 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -34,6 +35,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.HotListEmailCampaignDTO;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CombinedList;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -68,6 +70,9 @@ import com.thoughtworks.xstream.io.json.JsonWriter;
 public class MailBoxRestController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(MailBoxRestController.class);
+	
+	@Value("${static.path}")
+	private String staticPath;
 	
 	@Autowired
 	OrgSpocService orgSpocService;
@@ -139,20 +144,11 @@ public class MailBoxRestController {
 	
 	@PreAuthorize("hasRole('ROLE_HOTLIST_CAMPAIGN')")
 	@RequestMapping(value = "/sendHotListCampaign", method = RequestMethod.POST)
-	public String sendHotListCampaign(@RequestParam(value = "json", required = false) String json,MultipartHttpServletRequest request) throws Exception {
-		
-		MultipartFile multiFile = null;
-		Iterator<String> itrator = request.getFileNames();
-		if(itrator.hasNext()){
-	        multiFile = request.getFile(itrator.next());
-		}
-		
-		String jsonc = "{" + json + "}";
-		JSONObject jsonObj = new JSONObject(jsonc);
-		
+	public String sendHotListCampaign(HotListEmailCampaignDTO hotListEmailCampaignDTO,HttpServletRequest request) throws Exception {
+		hotListEmailCampaignDTO.setStaticPath(staticPath);
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		hotListEmailCampaignService.sendHotListEmailCampaign(jsonObj, user, orgLocation, multiFile);
+		hotListEmailCampaignService.sendHotListEmailCampaign(hotListEmailCampaignDTO, user, orgLocation);
 		
 		
 		
@@ -163,21 +159,11 @@ public class MailBoxRestController {
 	
 	@PreAuthorize("hasRole('ROLE_MAIL_BOX')")
 	@RequestMapping(value = "/sendEmailToUsers", method = RequestMethod.POST)
-	public String sendEmailToUsers(MultipartHttpServletRequest request) throws Exception {
-		
-		MultipartFile multiFile = null;
-		Iterator<String> itrator = request.getFileNames();
-		if(itrator.hasNext()){
-	        multiFile = request.getFile(itrator.next());
-		}
-		
-		/*String jsonc = "{" + json + "}";*/
-		JSONObject jsonObj = new JSONObject(request.getParameter("json"));
-		
-		
+	public String sendEmailToUsers(HotListEmailCampaignDTO hotListEmailCampaignDTO,HttpServletRequest request) throws Exception {
+		hotListEmailCampaignDTO.setStaticPath(staticPath);
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		emailService.sendEmail(jsonObj, user, orgLocation, multiFile);
+		emailService.sendEmail(hotListEmailCampaignDTO, user, orgLocation);
 		
 		
 		return "success";
@@ -200,23 +186,10 @@ public class MailBoxRestController {
 	
 	
 	@RequestMapping(value = "/sendRequestForResume", method = RequestMethod.POST)
-	public String sendRequestForResume(@RequestParam(value = "json", required = false) String json,
-			@RequestParam(value = "candidatesIds", required = false) String candidatesIds,
-			@RequestParam(value = "UUID", required = false) String UUID,
-			MultipartHttpServletRequest request) throws Exception {
-		
-		MultipartFile multiFile = null;
-		Iterator<String> itrator = request.getFileNames();
-		if(itrator.hasNext()){
-	        multiFile = request.getFile(itrator.next());
-		}
-		
-		String jsonc = "{" + json + "}";
-		JSONObject jsonObj = new JSONObject(jsonc);
-		
-		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		userMailBoxService.setRequestForResumeDetails(jsonObj,candidatesIds,UUID,multiFile);
+	public String sendRequestForResume(HotListEmailCampaignDTO hotListEmailCampaignDTO,	@RequestParam(value = "candidatesIds", required = false) String candidatesIds,
+			@RequestParam(value = "UUID", required = false) String UUID, HttpServletRequest request) throws Exception {
+		hotListEmailCampaignDTO.setStaticPath(staticPath);
+		userMailBoxService.setRequestForResumeDetails(hotListEmailCampaignDTO,candidatesIds,UUID);
 		
 		
 		return "success";

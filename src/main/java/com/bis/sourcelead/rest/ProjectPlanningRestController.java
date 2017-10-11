@@ -556,7 +556,7 @@ public class ProjectPlanningRestController {
 				    	   projectBudget.setBudgetStatus(Constants.BUDGET_REQUEST_REJECTED);
 				    	   projectBudget.setUpdatedDate(new Date());
 				    	   projectBudgetService.saveProjectBudget(projectBudget);
-				    	   if(user.getId() != projectBudget.getApproverUserId().getId()) {
+				    	   if(projectBudget.getApproverUserId() != null && user.getId() != projectBudget.getApproverUserId().getId()) {
 				    		   projectBudgetService.sendEmailForBugetRequestApproversByAcceptAndRejectAndOnHold(user,projectBudget);
 				    	   }
 				       }

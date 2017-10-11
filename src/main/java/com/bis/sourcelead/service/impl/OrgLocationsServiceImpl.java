@@ -158,6 +158,13 @@ public class OrgLocationsServiceImpl implements OrgLocationService {
 				clientOrgLocations.setWebsite(clientDTO.getWebSite());
 			}
 			
+			if (StringUtils.isNotBlank(clientDTO.getAddress())) {
+				clientOrgLocations.setOrgLocationAddress(clientDTO.getAddress());
+			}
+			if (StringUtils.isNotBlank(clientDTO.getBillingAddress())) {
+				clientOrgLocations.setBillingAddress(clientDTO.getBillingAddress());
+			}
+			
 			if(StringUtils.isNotBlank(clientDTO.getCountry())){
 				clientOrgLocations.setCountry(clientDTO.getCountry());
 			}else if(StringUtils.isNotBlank(clientDTO.getOrgCountry())){

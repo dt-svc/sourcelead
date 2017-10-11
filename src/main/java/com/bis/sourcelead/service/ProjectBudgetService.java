@@ -1,5 +1,6 @@
 package com.bis.sourcelead.service;
 
+import java.util.Date;
 import java.util.List;
 
 import com.bis.sourcelead.dto.ProjectBudgetRequestDTO;
@@ -25,4 +26,6 @@ public interface ProjectBudgetService {
 	void saveProjectBudgetRequset(ProjectBudgetRequestDTO projectBudgetRequestDTO,User user)throws Exception;
 	
 	void sendEmailForBugetRequestApproversByAcceptAndRejectAndOnHold(User user, ProjectBudget projectBudget)throws Exception;
+	
+	List<ProjectBudget>  getProjectBudgetByProjectTaskIdAndApprovedStatus(Long projectId,String filterDate, Date startDateUTC, Date endDateUTC) throws Exception;
 }

@@ -93,10 +93,10 @@
     </div>
 </div>  
   
-	<script src="resources/js/jquery.min.js?staticTime=${staticTime}"></script>
+	<%-- <script src="resources/js/jquery.min.js?staticTime=${staticTime}"></script>
     <script src="resources/js/jquery-ui.js?staticTime=${staticTime}"></script>
     <script src="resources/js/bootstrap.min.js?staticTime=${staticTime}"></script>
-    <script src="resources/js/jquery-fun.js?staticTime=${staticTime}"></script> 
+    <script src="resources/js/jquery-fun.js?staticTime=${staticTime}"></script>  --%>
     
 </body>
 

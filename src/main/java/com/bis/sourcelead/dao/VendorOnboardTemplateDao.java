@@ -15,4 +15,6 @@ public interface VendorOnboardTemplateDao {
 	VendorOnboardingTemplate getVendorOnBoardingTemplateByTemplateNameAndOrgLocationId(String templateName,Long orgLocationId) throws Exception;
 	
 	VendorOnboardingTemplate getVendorOnBoardingTemplateByTemplateUUID(String templateUUID) throws Exception;
+	
+	List<VendorOnboardingTemplate> getVendorOnBoardingFinishedTemplatesList(Long orgLocationId) throws Exception;
 }

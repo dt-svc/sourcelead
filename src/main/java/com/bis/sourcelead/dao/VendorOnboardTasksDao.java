@@ -11,4 +11,8 @@ public interface VendorOnboardTasksDao {
 	VendorOnboardTasks saveVendorOnboardTasks(VendorOnboardTasks vendorOnboardTasks) throws Exception;
 	
 	VendorOnboardTasks getVendorOnboardTasksByTaskId(Long Id) throws Exception;
+	
+	List<VendorOnboardTasks> getVendorOnboardTasksByTemplateIdsList(List<Long> templateIdsList) throws Exception;
+	
+	List<VendorOnboardTasks> getVendorOnboardTasksByVendorOnboardId(Long vendorOnboardingId) throws Exception;
 }
