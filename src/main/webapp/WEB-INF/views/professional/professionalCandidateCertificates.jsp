@@ -106,35 +106,15 @@ function storeCertificate(candidateId){
 			 
 			 $.post(sourceleadUrl+"/storeCandidateCertifications?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId, formData, function(data) {
 				 closeCertificatePopup();
+				 $("#selector5").removeAttr("style");
+     			 $("#selector5").css({ display: "block" });
+     			 $("#cerMsgDiv").html("Success!! New Certification added");
+            		candidateCertificateList(candidateId);
 				 candidateCertificateList(candidateId);
-            		//cerMsgFadein();
+            		cerMsgFadein();
             		qwikCertificates(candidateId);
 			 });
-				/* $.ajax({
-						type : "POST",
-						url : sourceleadUrl
-								+ "/storeCandidateCertifications?${_csrf.parameterName}=${_csrf.token}&json="
-								+ jsonData + "&candidateId=" + candidateId,
-						success : function(data) {
-							if (data != null && data != 'undefined'
-									&& data != "") {
-								if (data.indexOf('Sign In') >= 0) {
-									location.replace(sourceleadUrl);
-								} else if (data.indexOf('exception') >= 0) {
-									location.replace(sourceleadUrl+ "/errorPage");
-								}
-								else{
-									$("#popUpDivEmp").removeClass("edit-details-active");
-			            			$("#selector5").removeAttr("style");
-			            			$("#selector5").css({ display: "block" });
-			            			$("#cerMsgDiv").html("Success!! New Certification added");
-				               		candidateCertificateList(candidateId);
-				               		cerMsgFadein();
-				               		qwikCertificates(candidateId);
-							    	}
-							   }
-						},
-					}); */
+				
 			return true;
 		} else {
 			return false;
@@ -198,21 +178,6 @@ function candidateCertificateList(candidateId){
           url: sourceleadUrl+"/getCandidateCertificationListByCandidateIdAndOrgLocationID?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,        
           success :function(data) {
         	  var json = JSON.parse(data);
-               /* if(data != null && data != 'undefined' && data != "" && data != '[]'){ */
-             			 
-             			/* var json = JSON.parse(data);
-	                      for (var i = 0; i < 1; i++) {
-	                             var val= json[i];
-	                             var opt = "";
-	                                     if(val.msg != null && val.msg != '' && val.msg != 'undefined'){
-	                                             opt  = opt + '<div class="success_pop" id="selector1" style="display: block;">';
-	                                             opt  = opt + '<i class="fa fa-check-circle"></i><span>'+val.msg+'</span>';
-	                                             opt  = opt + '</div>';
-	                                             }
-	                                     $("#msgDiv").empty();
-	                                     $("#msgDiv").append(opt);
-	                             } */
-	                      
 	                	 $("#candidateCertificateList").empty();
 	                	 var result = "";
 	                	
@@ -586,24 +551,6 @@ function addCertification(candidateId) {
 									 e.stopPropagation();
 								 });
 					 
-								 
-								 
-								/*  $('html').click(function(){
-									$(".edit-details").removeClass("edit-details-active");
-								   });	
-								 */
-								
-								/*  $(".addUser-org").click(function(){
-									 $(".edit-details").toggleClass("edit-details-active");
-								 });  */
-								/* $(".edit-details").toggleClass("edit-details-active");
-								 $(".addUser-org, .assign-org, .collapse-div-adduser, .collapse-div, .edit-details").click(function(e){
-									 e.stopPropagation();
-								 }); */
-							 /* $('html').click(function(){
-								$(".edit-details").removeClass("edit-details-active");
-							   });	 */
-
 							    var proCertificateStartDate = $("#StartDateEdit").val();
 								var proCertificateEndDate = $("#EndDateEdit").val(); 
 
@@ -653,12 +600,6 @@ function addCertification(candidateId) {
 									  finalDateFormatCerEdit = 'yy-dd-mm'; 
 								  }
 								 
-								/* var datepickerStartDate = toDate("#StartDateEdit");
-								datepickerStartDate.setDate(datepickerStartDate.getDate() + 1);
-								
-								var datepickerEndDate = toDate("#EndDateEdit");
-								datepickerEndDate.setDate(datepickerEndDate.getDate() - 1); */
-							   
 							  $('#StartDateEdit').datepicker({
 							      dateFormat: finalDateFormatCerEdit,
 							      changeMonth: true,
@@ -729,25 +670,14 @@ function addCertification(candidateId) {
 			 
 			 $.post(sourceleadUrl+"/updateCandidateCertificationsBycandidateIdandcandidateCertificateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId, formData, function(data) {
 				 closeCertificatePopup();
+				 $("#selector5").removeAttr("style");
+     			 $("#selector5").css({ display: "block" });
+     			 $("#cerMsgDiv").html("Certification details updated");
 				 candidateCertificateList(candidateId);
-            		//cerMsgFadein();
+            		cerMsgFadein();
             		qwikCertificates(candidateId);
 			 });
 
-			/* $.ajax({
-						type : "POST",
-						url : sourceleadUrl
-								+ "/updateCandidateCertificationsBycandidateIdandcandidateCertificateId?${_csrf.parameterName}=${_csrf.token}&json="+ jsonData + "&candidateId=" + candidateId	+ "&candidateCertificationId"+ candidateCertificationId,
-						success : function(data) {
-							closeCertificatePopup();
-	            			$("#selector5").removeAttr("style");
-	            			$("#selector5").css({ display: "block" });
-	            			$("#cerMsgDiv").html("Certification details updated");
-							candidateCertificateList(candidateId);
-							cerMsgFadein();
-							qwikCertificates(candidateId);
-						},
-					}); */
 			return true;
 		} else {
 			return false;

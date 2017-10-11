@@ -423,18 +423,16 @@ public class CandidateServiceImpl implements CandidateService {
 			}
 		candidate.setSummary(candidateDto.getSummary());
 		}
-		if(StringUtils.isNotBlank(candidateDto.getDesignationType())){
+		
 			if(candidate.getDesignationType() != null ){
 				activitySummary.append("Designation Type").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidate.getDesignationType()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDto.getDesignationType()).append(Constants.NEW_VALUE_TAG_END).append(" ");
 			}
 		candidate.setDesignationType(candidateDto.getDesignationType());
-		}
-		if(StringUtils.isNotBlank(candidateDto.getExperienceYears())){
+		
 			if(candidate.getExperienceYears() != null ){
 				activitySummary.append("Experience Years").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidate.getExperienceYears()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDto.getExperienceYears()).append(Constants.NEW_VALUE_TAG_END).append(" ");
 			}
 		candidate.setExperienceYears(candidateDto.getExperienceYears());
-		}
 		
 		
 		if(StringUtils.isNotBlank(candidateDto.getExperienceMonths())){
@@ -446,12 +444,10 @@ public class CandidateServiceImpl implements CandidateService {
 			candidate.setExperienceMonths(null);	
 		}
 		
-		if(StringUtils.isNotBlank(candidateDto.getNoticePeriod())){
 			if(candidate.getNoticePeriod() != null){
 				activitySummary.append("Notice Period").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidate.getNoticePeriod()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDto.getNoticePeriod()).append(Constants.NEW_VALUE_TAG_END).append(" ");
 			}
 			candidate.setNoticePeriod(candidateDto.getNoticePeriod());	
-		}
 		
 		if(StringUtils.isNotBlank(candidateDto.getAddress())){
 			if(candidate.getAddress() != null ){
@@ -482,12 +478,10 @@ public class CandidateServiceImpl implements CandidateService {
 	  	 
 		}
 		
-		if(StringUtils.isNotBlank(candidateDto.getPrimarySkill())){
 			if(candidate.getPrimarySkill() != null){
 				activitySummary.append("Primary Skills").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidate.getPrimarySkill()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDto.getPrimarySkill()).append(Constants.NEW_VALUE_TAG_END).append(" ");
 			}
 			candidate.setPrimarySkill(candidateDto.getPrimarySkill());
-		}
 
 		if(StringUtils.isNotBlank(candidateDto.getVendors())){
 			OrgRelations orgRelation = orgRelationsService.getOrRelationsById(Long.parseLong(candidateDto.getVendors()));
@@ -556,7 +550,7 @@ public class CandidateServiceImpl implements CandidateService {
 		 * Saving Candidate DB data as ElasticSearch Documents
 		 */
 		saveOrUpdateCandidateElkDocument(savedCandidate);
-		return null;
+		return savedCandidate;
 	}
 
 	private void inviteCandidateToSourceLead(User loginUser, Candidate candidate, OrgLocations orgLocations) throws Exception

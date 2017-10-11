@@ -4,6 +4,8 @@
  <%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
  <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
  
+ <jsp:include page="recommendationListTable.jsp"></jsp:include>
+ 
 <div class="profile_details requirement_details clearfix reqrementsummary">
 	 <a href="#" onClick="openTopDiv();">
 	    <h4 id="id1">
@@ -105,7 +107,7 @@
 			            		  <a href="<c:url value="/requirement?requirementUUID=${requirementUUID}"/>"><button  class="btn btn-primary btn-sm" type="button">Edit</button></a> 
 			            	</sec:authorize>
 			            </c:if>
-			            <c:if test="${(isAdmin == 'true' && requirement.requirementSubmissionStatus  != 'DRAFT' && requirement.requirementSubmissionStatus != 'ONHOLD'  && requirement.requirementSubmissionStatus != 'CANCEL' &&  requirement.requirementSubmissionStatus != 'APPROVED' &&  requirement.requirementSubmissionStatus != 'REJECTED'  &&  requirement.requirementSubmissionStatus != 'OPEN' && requirement.requirementSubmissionStatus  !='NEW' && requirement.requirementSubmissionStatus  != 'UNFILLEDCLOSED' && requirement.requirementSubmissionStatus  != 'FILLEDCLOSED' )  || (  !empty requirement.requirementApproverHierarchyStatus && requirement.requirementSubmissionStatus  !='DRAFT' && requirement.requirementSubmissionStatus != 'ONHOLD'  && requirement.requirementSubmissionStatus != 'CANCEL' &&  requirement.requirementApproverHierarchyStatus !='APPROVED' &&  requirement.requirementApproverHierarchyStatus != 'REJECTED'  &&  requirement.requirementApproverHierarchyStatus != 'OPEN') }">
+			            <c:if test="${(isAdmin == 'true' && requirement.requirementSubmissionStatus  != 'DRAFT' && requirement.requirementSubmissionStatus != 'ONHOLD' && requirement.requirementSubmissionStatus != 'CLOSED'  && requirement.requirementSubmissionStatus != 'CANCEL' &&  requirement.requirementSubmissionStatus != 'APPROVED' &&  requirement.requirementSubmissionStatus != 'REJECTED'  &&  requirement.requirementSubmissionStatus != 'OPEN' && requirement.requirementSubmissionStatus  !='NEW' && requirement.requirementSubmissionStatus  != 'UNFILLEDCLOSED' && requirement.requirementSubmissionStatus  != 'FILLEDCLOSED' )  || (  !empty requirement.requirementApproverHierarchyStatus && requirement.requirementSubmissionStatus  !='DRAFT' && requirement.requirementSubmissionStatus != 'ONHOLD'  && requirement.requirementSubmissionStatus != 'CANCEL' &&  requirement.requirementApproverHierarchyStatus !='APPROVED' &&  requirement.requirementApproverHierarchyStatus != 'REJECTED'  &&  requirement.requirementApproverHierarchyStatus != 'OPEN') }">
 			            	  <button  class="btn btn-success mr ml btn-sm" type="button" id = "approverbut" onClick ="updateReuqirementStatus('APPROVED');hideButtonOnClick();"  >Approve</button> 
          		              <button  class="btn btn-danger btn-sm" id = "rejectedbut" type="button" onClick ="rejectRequirementAlertMessage('REJECTED');hideButtonOnClick();">Reject</button>
 			            </c:if>
@@ -116,6 +118,30 @@
                  	<div class="clearfix row"> 
               			<div class="col-md-12 divskill divsAssigned pull-left"> 
           				<div id="assignedMemberList"></div> 
+          				
+          				<%-- <div class="clearfix mt5 mb">
+						    <table class="table table-responsive table-hover clearfix mb">
+							    <thead>
+								    <tr>
+									    <th>Name</th>
+									    <th>Role</th>
+									    <th>Team</th>
+								    </tr>
+							    </thead>
+							    <tbody>
+							    	<tr>
+								    	<c:forEach var ="assignTo" items="${requirement.requirementAssignTo}" varStatus="reqStatus">
+									        <td><div class="tbldata-dotdot">${assignTo.assignedUserName}</div></td>
+									    </c:forEach>
+						    			<td><div class="tbldata-dotdot">'+report.assignedUserName+'</div></td>
+						    			<td><div class="tbldata-dotdot">'+report.assignedUserName+'</div></td>
+						    		</tr>
+							    <tbody>
+							</table>
+          				 </div> --%>
+          				
+          				
+          				
 				        <h1>Description:</h1> 
 				        <div class="RDdetails">${!empty requirement.description ? requirement.description : ' No DATA '}</div>
 			            <h1>Skills:</h1>
@@ -276,7 +302,7 @@
 						   </c:when>
 						   <c:otherwise>
 						   		<c:forEach var ="req" items="${requirement.requirementApprover}" varStatus="reqStatus">
-							        <div class="require_wrap_details_cta"> <b>Approvers ${reqStatus.count}:</b> <span> ${req.approverUserId.firstName} ${req.approverUserId.lastName}</span></div>
+							        <div class="require_wrap_details_cta"> <b>Approvers ${req.level}:</b> <span> ${req.approverUserId.firstName} ${req.approverUserId.lastName}</span></div>
 							     </c:forEach>
 						   </c:otherwise>
 						</c:choose>

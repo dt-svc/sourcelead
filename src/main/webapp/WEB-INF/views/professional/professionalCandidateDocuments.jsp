@@ -417,7 +417,10 @@ function getDocumentType(documentType){
 							$("#popUpDiv").removeClass("edit-details-active");
 	            			$("#selector6").removeAttr("style");
 	            			$("#selector6").css({ display: "block" });
-            				$("#docMsgDiv").html("Success!! New Candidate Document added");
+	            			if(documentUUID != null && documentUUID !="" && documentUUID !="undefined")
+            				$("#docMsgDiv").html("Document updated");
+	            			else
+	            			$("#docMsgDiv").html("Success!! New Document added");
 	             			candDocumentsList(candidateId);
 					 		docMsgFadein();
 	            		 

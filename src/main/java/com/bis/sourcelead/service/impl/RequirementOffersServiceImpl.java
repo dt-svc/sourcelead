@@ -1305,6 +1305,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 		    		candidate.setLastName(templateFields.getLastName());
 		    		candidate.setEmail(templateFields.getEmailId());
 		    		candidate.setMobilePhone(templateFields.getPhoneNumber());
+		    		candidate.setLocation(templateFields.getLocation());
 		    		candidate.setCountry(templateFields.getCountry());
 		    		candidate.setState(templateFields.getState());
 		    		candidate.setCity(templateFields.getCity());
@@ -1322,6 +1323,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
     		candidate.setCandidateType("Candidate");
     		candidate.setCandidateUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
     		candidate.setDesignationType("C2C");
+    		candidate.setStatus(Constants.RECORD_ACTIVE);
     		
     		if(requirementSubmission.getSourceSubmission() != null){
     			OrgRelations orgRelations = orgRelationsDao.getVendorOrgRelationByResponderLocationIdAndLocationId(requirementOffers.getSubmissionId().getVendorLocationId().getId(), orgLocations.getId());

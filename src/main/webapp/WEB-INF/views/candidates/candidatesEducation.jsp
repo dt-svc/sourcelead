@@ -353,7 +353,6 @@ function addEducation(candidateId) {
 	
 	function educationStartDate(){
 	}
-	
 	 var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
 	  var finalDateFormatEduSave = '';
 	  if(locationDate.match("yyyy-MM-dd")){
@@ -390,9 +389,7 @@ function addEducation(candidateId) {
 	        }
 	  });
 	
-	/* $(".addUser-org").click(function(){
-		 $(".edit-details").toggleClass("edit-details-active");
-	 }); */
+	
 	$(".edit-details").toggleClass("edit-details-active");
 	 $(".close-div").click(function(){ 
 		 $(this).parent("div.edit-details").removeClass("edit-details-active");
@@ -490,14 +487,7 @@ function EditEducation(candidateId,candidateEducationId) {
 	result = result  +'   ';
 	result = result  +'                  <div class="clearfix mb10"> ';
 	result = result + "<select  class='chosen-select form-control' name='name' id='candEdu' data-validation='validate_Space' data-validation-optional='true' onchange='validateEduname("+candidateId+");'onkeyup = 'validateEduname("+candidateId+");'>";
-		                /*  for (var j = 0; j < json.educationList.length; j++) {
-								var education = json.educationList[j];
-								   if(education.name == json.name){
-									   result = result+'<option value=\"'+education.name+'\" selected >'+education.name+'</option>';
-								  }else{
-									   result = result+'<option value=\"'+education.name+'\" >'+education.name+'</option>';
-				   		 	      } 
-							} */
+		               
 						
 				    	 $.each(json.allAndCandidateEducations, function( i, eduName){
 							  var existed = 0;
@@ -645,13 +635,6 @@ function EditEducation(candidateId,candidateEducationId) {
 		  eduEndDateEdit = new Date(eduEndDateSplit[0], parseInt(eduEndDateSplit[2])-parseInt(1), parseInt(eduEndDateSplit[1])-parseInt(1));
 	  }
 	
-	/* var datepickerStartDate = toDate("#startDateEdit");
-	datepickerStartDate.setDate(datepickerStartDate.getDate() + 1);
-	
-	var datepickerEndDate = toDate("#endDateEdit");
-	datepickerEndDate.setDate(datepickerEndDate.getDate() - 1); */
-	
-	
 	  var finalDateFormatEduUpdate = '';
 	  if(locationDate.match("yyyy-MM-dd")){
 		  finalDateFormatEduUpdate = 'yy-mm-dd';
@@ -796,57 +779,7 @@ function candidateEducationStore(candidateId){
        			eduMsgFadeinFunction();
        			qveducationSubmission(candidateId);
 		        });
-			/* $.ajax({
-					type : "POST",
-					data : con,
-					processData: false,
-	    	        contentType: true,
-					url : sourceleadUrl+"/storeCandidateEducation?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,
-					success :function(data) {  
-				                 if(data != null && data != 'undefined' && data != ""){
-				               		if( data.indexOf('Sign In') >= 0){
-							    		location.replace(sourceleadUrl);
-							    	}
-				               		else if (data.indexOf('exception') >= 0) {
-				               			 location.replace(sourceleadUrl+"/errorPage");
-				               		}
-				               		else{
-				               			$('#perVal').attr('aria-valuenow', data).css('width',data+'%');
-				            			 if(data<50){
-				            			   $("#perVal").removeClass('progress-bar-success');
-				            			   $("#perVal").addClass("progress-bar-danger");
-				            			 }
-				            			 if(data>=50){
-				            				 $("#perVal").removeClass("progress-bar-danger");
-				            				 $("#perVal").addClass("progress-bar-success");
-				            			 }
-				            			 $("#disVal").empty();
-				            			$("#disVal").append(data+'%');
-				            			// for quick view bar update
-				            			$('#quickPerVal').attr('aria-valuenow', data).css('width',data+'%');
-					          			 if(data<50){
-						          			   $("#quickPerVal").removeClass('progress-bar-success');
-						          			   $("#quickPerVal").addClass("progress-bar-danger");
-						          			 }
-						          			 if(data>=50){
-						          				 $("#quickPerVal").removeClass('progress-bar-danger');
-						          				 $("#quickPerVal").addClass("progress-bar-success");
-						          			 }
-
-				            			$("#quickDisVal").empty();
-				            			$("#quickDisVal").append(data+'%');
-				            			
-				               		    $("#popUpDiv").removeClass("edit-details-active");
-				            			$("#selector4").removeAttr("style");
-				            			$("#selector4").css({ display: "block" });
-			            				$("#eduMsgDiv").html("Success!! New Education added");
-				               			candidateEducationList(candidateId);
-				               			eduMsgFadeinFunction();
-				               			qveducationSubmission(candidateId);
-							    	}
-				                 }   
-				      }, 
-		    }); */
+			
 			return true; 
 		} else {
 			return false;
@@ -1081,13 +1014,6 @@ function clearSearchKeyEducation() {
 
 <script type="text/javascript">
 	function updateCandidateEducation(candidateId, candidateEducationId) {
-		/* var validationSettings = {
-			errorMessagePosition : 'element',
-			borderColorOnError : '',
-			scrollToTopOnError : true,
-			dateFormat : 'yyyy/mm/dd'
-		}; */
-		
 		
 		if ($('#education_form').validate(false,
 				validationSettings)) {

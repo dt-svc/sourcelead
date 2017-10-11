@@ -28,7 +28,7 @@
   </section>
   <div class="content-area content-new clearfix">
   <div id="loading"></div> 
-  <form:form id="candidate_form" name="candidate_form">
+  <form:form id="candidate_form" name="candidate_form" enctype='multipart/form-data'>
     <div class="row form-horizontal mt myForm">
       <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12"> 
         
@@ -37,7 +37,7 @@
         <div class="well">
           <div class="input-group col-md-6" id="uploadFileGroup" style="margin:0 auto; position:relative;">
             <label class="input-group-btn"> <span class="btn btn-danger"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File<span class="text-danger">&nbsp;*</span>
-              <input type="file"  id="uploadBtn" class="hidden upload">
+              <input type="file"  name="uploadBtn" id="uploadBtn" class="hidden upload">
               </span> 
            </label>
 
@@ -80,7 +80,7 @@
         <div class="form-group" id="emailDiv">
           <label class="col-md-3">Email<span class="text-danger">&nbsp;*</span></label>
           <div class="col-md-9">
-            <input type="text" class="form-control" id="email" name="email" value="${email}"  field-name="Email" data-validation="required validate_Space validate_length length2-100 validate_email" onblur="validateCandidateEmail();"  value="">
+            <input type="text" class="form-control" id="email" name="email" value="${email}"  field-name="Email" data-validation="required validate_Space validate_length length2-100 validate_email" onblur="validateCandidateEmail();" onmouseout="validateCandidateEmail();" value="">
           <span class="hidden">Valid Email</span>
           </div>
         </div>
@@ -191,7 +191,7 @@
              <div class="col-xs-6 col-md-6">
              		<select class="form-control selectpicker" id="experienceYears" name="experienceYears" onchange="disableMonths();">
              		  <option value="">Years</option>
-             		  <c:forEach begin="0" end="25" varStatus="loop">
+             		  <c:forEach begin="0" end="50" varStatus="loop">
 						    <option>${loop.index}</option>
 						</c:forEach>
              		</select>
@@ -451,35 +451,20 @@
 				dateFormat : 'yyyy/mm/dd'
 			};
 		
-		 if ($('#candidate_form').validate(false, validationSettings)){ 
+if ($('#candidate_form').validate(false, validationSettings)){ 
 			
-			var sourceleadUrl = '${sourceleadUrl}';
-			var frm = $('#candidate_form').serializeFormJSON();
-			var con = JSON.stringify(frm);
-			con = con.replace(/[{}]/g, ""); 
-			
-			//It will escape all the special characters
-		    var jsonData = encodeURIComponent(con);
-			
-			var form = $('#candidate_form')[0];
-      		var formData = new FormData(form); 
-			
+			var formData = getFormData("candidate_form");
 			$("#store_candidate").attr("disabled", "disabled");
 			$("#store_candidate").addClass('button').val('Processing..');
 
 			$.ajax({
-						type : "POST",
+					type : "POST",
 		        	    data: formData,
-		        	    contentType : 'application/json; charset=utf-8',
-		        	    enctype: 'multipart/form-data',
-		    	        processData: false,
-		    	        contentType:false,
-		        	    dataType : 'json',
-						url : sourceleadUrl+"/storeCandidate?"+tokenParamName+"="+tokenValue+"&json="+jsonData,
-						success : function(result) {
+		        	    	url : sourceleadUrl+"/storeCandidate?"+tokenParamName+"="+tokenValue,
+					success : function(result) {
 								location.replace(sourceleadUrl+"/associatesList");
-						},
-					});
+					},
+			});
 			return true;
 		 }else{ 
 				return false;
@@ -619,25 +604,7 @@ function validate_fileupload(fileName)
 						       
 			    	         }
 		    	});
-		    /* 
-		    chosen.search_field.on('keyup', function(e)
-		    {
-		    	var newSkill = this.value.replace(",","");
-		        if ((e.which == 13 || e.which == 188) && (newSkill != null  && newSkill != '' && newSkill != 'undefined'))
-		        {
-		        	var par = this.parent;
-		            var option = $("<option>").val(newSkill).text(newSkill);
-		            select.append(option);
-		            select.find(option).prop('selected', true);
-		          //to doesn't allow duplicates
-                    $("#candidateSkills option").each(function(){
-                          $(this).siblings("[value='"+ this.value+"']").remove();
-                    });
-                    //end
-	        		$("#candidateSkills").trigger("chosen:updated");
-	        		
-		        }
-		    }); */
+		
 		    //Adding Customized Skills to the list
 		    
 		    //Adding Customized Educations to the list
@@ -740,7 +707,7 @@ function validate_fileupload(fileName)
  <script type="text/javascript">
 		 function disableMonths() {
 		     $("#experienceYears").change(function() {
-		         if ($("#experienceYears").val() == '25'){
+		         if ($("#experienceYears").val() == '50'){
 		        	 $("#experienceMonths").val('');  
 		        	 $('#experienceMonths').selectpicker('refresh');
 		        	/*  $('#experienceMonths').attr("disabled", true);
@@ -752,99 +719,6 @@ function validate_fileupload(fileName)
 		         }
 		     });
 		 }
-		   
- 
-	      var selectedFile = document.getElementById("uploadBtn");
-	      selectedFile.addEventListener("change", function() {
-	      	 $("#uploadFile").focus();
-	      	 if(validate_fileupload(this.value)){
-	      		 
-	      		 var docSize = this.files[0].size;
-	     	      $("#uploadFileGroup").find('p.jquery_form_error_message').remove();
-	     	      
-	     	      if(docSize > 2097152){
-	     	    	  document.getElementById("uploadFile").value = '';
-	     	    	 /*  $("#uploadFileGroup").append("<p class='jquery_form_error_message'></p>"); */
-	     	    	  $('#uploadFileGroup').find('p.jquery_form_error_message').remove();
-	     			  $("input#uploadFile").after("<p class='jquery_form_error_message'>Limit is exceeded than 2MB </span>");
-	     			  document.getElementById("uploadFile").setAttribute('record-exist','yes');
-	     			  document.getElementById("uploadFile").setAttribute('record-exist-errorMsg','Limit is exceeded than 2MB'); 
-	     	      }else{
-	     	    	 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-	     	    	 $('input#uploadFile').removeAttr( "record-exist record-exist-errormsg");
-	        		 $('#uploadFileGroup').find('p.jquery_form_error_message').remove(); 
-	     		var form = $('#candidate_form')[0];
-	       		var formData = new FormData(form); 
-	     		var sourceleadUrl = '${sourceleadUrl}';
-	     		   $.ajax({
-	     					type : "POST",
-	     	        	    data: formData,
-	     	        	    contentType : 'application/json; charset=utf-8',
-	     	        	    enctype: 'multipart/form-data',
-	     	    	        processData: false,
-	     	    	        contentType:false,
-	     	        	    dataType : 'json',
-	     				 	url : sourceleadUrl+"/parseResume?"+tokenParamName+"="+tokenValue+"", 
-	     					success : function(data) {
-	     						var json = JSON.parse(data);
-	     						var name = json.name;
-	     						var firstName = '';
-	     						var lastName = '';
-	     						if(name != null && name != 'undefined' && name != ''){
-	     							 firstName = name.split(".")[0]; 
-	     							 lastName = name.split(".")[1]; 
-	     							 if(firstName == null || firstName ==  'undefined' || firstName == '' ||
-	     									 lastName ==  null || lastName ==  'undefined'|| lastName ==  ''){
-	     								 firstName = name;
-	     							 }
-	     						}
-	     						
-	     						$("#firstName").val(firstName);
-	     						$("#lastName").val(lastName);
-	     						$("#email").val(json.email);
-	     						$("#mobilePhone").val(json.phoneNumbers);
-	     						validateCandidateEmail();
-	     						$("#candidateSkills").empty();
-	     						 var internalOutput = "";
-	     						 <c:forEach var="skill" items="${skillsList}">
-	     						    internalOutput = internalOutput+"<option value='${skill.name}'>${skill.name}</option>";
-	     	                     </c:forEach>
-	     						var skills = json.skills;
-	     						if(skills != null && skills != 'undefined' && skills != ''){
-	     							var str_array = skills.split(',');
-	     							for(var i = 0; i < str_array.length; i++) {
-	     							   str_array[i] = str_array[i].replace(/^\s*/, "").replace(/\s*$/, "");
-	     							   internalOutput = internalOutput+"<option value='" +str_array[i]+ "' selected>"+str_array[i]+"</option>";
-	     							}
-	     						}
-	     						$("#candidateSkills").append(internalOutput);
-	     		        		$("#candidateSkills").trigger("chosen:updated");
-	     		        		$("#candidateEducation").trigger("chosen:updated");
-	     		        		
-	     		        		$("#candidateEducation").empty();
-	     						 var internalOutput = "";
-	     						 <c:forEach var="edu" items="${educationsList}">
-	     						    internalOutput = internalOutput+"<option value='${edu.name}'>${edu.name}</option>";
-	     	                     </c:forEach>
-	     						var edu = json.edu;
-	     						if(edu != null && edu != 'undefined' && edu != ''){
-	     							var str_array = edu.split(',');
-	     							for(var i = 0; i < str_array.length; i++) {
-	     							   str_array[i] = str_array[i].replace(/^\s*/, "").replace(/\s*$/, "");
-	     							   internalOutput = internalOutput+"<option value='" +str_array[i]+ "' selected>"+str_array[i]+"</option>";
-	     							}
-	     						}
-	     						$("#candidateEducation").append(internalOutput);
-	     		        		
-	     		        		
-	     		        		
-	     						$("#loading").removeAttr("style");
-	     						
-	     					},
-	     				});
-	      	 }
-	      	 }
-	      });
 
 	     /* upload file script */
 	     document.getElementById("uploadBtn").onchange = function () {
@@ -1019,8 +893,6 @@ function  removeValiationVendorContact() {
  
  <script>
  $(function() {
-		$("#uploadBtn").change(function() {
-			fileUpload("uploadBtn", "resumes", "candidate_form");
-		});
-	 });
+	 uploadResumeOnSelect("candidate_form");
+ });
  </script>
