@@ -550,12 +550,7 @@ function deleteCandidate(candidateId,candidateType){
 	 // var reason = document.getElementById("rejectReason").value;
 	  var reason = document.getElementById("rejectReason").value;
 	  reason = reason.replace(/\s/g, "") 
-	 /*  if(reason == null || reason == '' || reason == 'undefined'){
-		  alert("test111");
-		  $(".rejectErrorMsgs").find('p.jquery_form_error_message').remove();
-    	  $(".rejectErrorMsgs").empty().append("<p class='jquery_form_error_message'>Must not Start With Space</p>");
-    	  
-  } */
+	 
 	  if(reason.length == 0){
 		  $(".rejectErrorMsgs").find('p.jquery_form_error_message').remove();
     	  $(".rejectErrorMsgs").append("<p class='jquery_form_error_message'>Reason is required</p>");

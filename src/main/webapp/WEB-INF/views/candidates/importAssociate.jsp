@@ -604,25 +604,7 @@ function validate_fileupload(fileName)
 						       
 			    	         }
 		    	});
-		    /* 
-		    chosen.search_field.on('keyup', function(e)
-		    {
-		    	var newSkill = this.value.replace(",","");
-		        if ((e.which == 13 || e.which == 188) && (newSkill != null  && newSkill != '' && newSkill != 'undefined'))
-		        {
-		        	var par = this.parent;
-		            var option = $("<option>").val(newSkill).text(newSkill);
-		            select.append(option);
-		            select.find(option).prop('selected', true);
-		          //to doesn't allow duplicates
-                    $("#candidateSkills option").each(function(){
-                          $(this).siblings("[value='"+ this.value+"']").remove();
-                    });
-                    //end
-	        		$("#candidateSkills").trigger("chosen:updated");
-	        		
-		        }
-		    }); */
+		
 		    //Adding Customized Skills to the list
 		    
 		    //Adding Customized Educations to the list

@@ -277,12 +277,7 @@
 		});
 	});
 
-	/* $(function() {
-	 $('#relation').change(function(){
-	 alert("X");
-	 $('#row_dim')[ ($("option[value='Work Related']").is(":checked"))? "show" : "hide" ]();  
-	 });
-	 }); */
+	
 </script>
 <%-- 
      @author : prasad K.
@@ -432,11 +427,8 @@
 		        	closePopup();
 		        	 $("#popUpDiv").removeClass("edit-details-active");
 					$("#selector10").removeAttr("style");
-					$("#selector10").css({
-						display : "block"
-					});
-					$("#refMsgDiv").html(
-							"Success!! New Candidate References added");
+					$("#selector10").css({display : "block"	});
+					$("#refMsgDiv").html("Success!! New References added");
 		        	candReferencesList(candidateId);
 					refMsgFadein(); 
 		        });
@@ -561,9 +553,7 @@
 	        $.post(sourceleadUrl+"/updateCandidateReferenceBycandidateIdAndReferenceId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&userId="+userId+"&locationCode="+locationCode, formData, function(data) {
 	        	
 	        	$("#selector10").removeAttr("style");
-				$("#selector10").css({
-					display : "block"
-				});
+				$("#selector10").css({display : "block"});
 				$("#refMsgDiv").html("Reference details updated");
 				closePopup();
 				candReferencesList(candidateId);

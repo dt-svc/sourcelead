@@ -1110,7 +1110,7 @@ public class CandidateListRestController {
 				candidate.setStatus(Constants.CANDIDATE_ACTIVE);
 			}
 
-			if (Constants.Candidate.equalsIgnoreCase(candidateType)) {
+			if (Constants.Candidates.equalsIgnoreCase(candidateType)) {
 				candidate.setIsAssociate(Constants.NO);
 				candidate.setStatus(Constants.CANDIDATE_IN_ACTIVE);
 			}
