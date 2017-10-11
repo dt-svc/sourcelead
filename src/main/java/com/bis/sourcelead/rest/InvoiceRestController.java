@@ -1217,7 +1217,7 @@ public class InvoiceRestController {
 	public void getBillingExportList(InvoiceDTO invoiceDTO,HttpServletRequest request,HttpServletResponse response) throws Exception {
 			
 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-			
+				invoiceDTO.setSearchValue("");
 			    Timezone timezone = timeZoneService.getTimezone(orgLocations.getTimezone().getId());
 				DateTime zoned = new DateTime(DateTimeZone.forID(timezone.getTimeZoneId()));
 				DateTimeFormatter outputFormatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'00:00:00");

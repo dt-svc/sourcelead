@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.RequirementInterviewerDTO;
 import com.bis.sourcelead.entity.InterviewFeedbackTemplate;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.RequirementInterviewer;
@@ -255,27 +256,17 @@ public class InterviewFeedbackRestController {
     
     
     @RequestMapping(value = "/getInterviewrsFeedbackList" , method = RequestMethod.GET)
-	   public String getInterviewrsFeedbackList(@RequestParam(value="interviewId", required=false) Long interviewId,@RequestParam(value="locationId", required=false) Long locationId) throws Exception {
-		    String resultJson = null;
-						List<RequirementInterviewer> interviewers = requirementInterviewerService.getInterviwersListByInterviewId(interviewId);
+	   public List<RequirementInterviewerDTO> getInterviewrsFeedbackList(@RequestParam(value="interviewId", required=false) Long interviewId,@RequestParam(value="locationId", required=false) Long locationId) throws Exception {
+						List<RequirementInterviewerDTO> interviewers = requirementInterviewerService.getInterviwersListByInterviewIdFromDTO(interviewId);
 						OrgLocations orgLocations = orgLocationService.getOrgLocations(locationId);
-						//SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
-						for(RequirementInterviewer interviewer: interviewers){
-							StringBuilder name = new StringBuilder();
-							if(null != interviewer.getInterviewerUser().getLastName() && !"".equalsIgnoreCase(interviewer.getInterviewerUser().getLastName())){
-								interviewer.setInterviewerName(name.append(interviewer.getInterviewerUser().getFirstName()).append(" ").append(interviewer.getInterviewerUser().getLastName()).toString());	
-							}else{
-								interviewer.setInterviewerName(name.append(interviewer.getInterviewerUser().getFirstName()).toString());
-							}
-							
+						for(RequirementInterviewerDTO interviewer: interviewers){
 							InterviewFeedbackTemplate feedbackTemplate = interviewFeedbackTemplateService.getInterviewFeedbackTemplateById(interviewer.getId()) ;
 							if(feedbackTemplate != null){
 								interviewer.setFeedbackDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),feedbackTemplate.getCreatedDate()));
 								interviewer.setFeedbackStatus(feedbackTemplate.getStatus());
 							}
 						}
-		      resultJson = toJSON(interviewers);
-			 return resultJson;
+			 return interviewers;
 	   }
     
     @RequestMapping(value = "/loadInterviewFeedbackTemplate" , method = RequestMethod.GET)

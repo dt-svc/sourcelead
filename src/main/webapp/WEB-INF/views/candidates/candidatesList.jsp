@@ -91,12 +91,13 @@ var candidateStatusGlobal ="";
 function candidateSideBar(candidateId){
 	  var loginUserId = '${SourceLeadWeb_userId}';
 	  var candidateType = "Candidates";
+	  var locationCode = '${SourceLeadWeb_locationCode}';
 	  $.ajax({
-          type : "POST",
-           url: sourceleadUrl+"/getCandidateById?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
-           success :function(data) {  
-                if(data != null && data != 'undefined' && data != ""){  
-                	 var json = JSON.parse(data);
+		  type: "GET",
+		    url: sourceleadUrl+"/getProfessionalInfo?candidateId="+candidateId+"&locationCode="+locationCode,
+           success :function(json) {  
+                if(json != null && json != 'undefined' && json != ""){  
+                	// var json = JSON.parse(data);
               			 candidateStatusGlobal = json.status;
 	                	 $("#candidateSideDiv").empty();
 	                	 var skills = [];
@@ -683,12 +684,25 @@ function addFavourite(candidateId){
 			type : "POST",
 			url : sourceleadUrl+"/saveCandidateAsFavourite?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,
 			success : function(result) {
+				var td = cacheLastJson.data;
+				for(var e in td) {
+					if(td[e].candidateId === candidateId) {
+						td[e]
+						if(isAssociate == "N"){
+							td[e].isFavourite = checked ? 1 : 0;
+		            	} else if(td[e].isFavouriteAssociate == '1' && isAssociate == "Y") {
+		            		td[e].isFavouriteAssociate = checked ? 1 : 0;
+		            	}
+						break;
+					}
+				}
+				cacheLastJson.data = td;
 				if(checked){
 					 document.getElementById("favourite"+candidateId).removeAttribute("class");
 					 document.getElementById("favourite"+candidateId).className = 'iconClass pull-left star-rating activestar-rating' 
 				}else{
 					 document.getElementById("favourite"+candidateId).removeAttribute("class");
-					 document.getElementById("favourite"+candidateId).className = 'iconClass pull-left star-rating' 
+					 document.getEmentById("favourite"+candidateId).className = 'iconClass pull-left star-rating' 
 				}
 				
 			},

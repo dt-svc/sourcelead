@@ -96,6 +96,9 @@ public class UserMailBox implements Serializable{
 	@Column(name="IS_MAIL_READ")
 	private Integer isMailRead;
 	
+	@Column(name = "FILE_URL")
+	@Type(type="text")
+	private String fileUrl;
 	
 	@Column(name="STATUS")
 	private Integer status;
@@ -445,7 +448,11 @@ public class UserMailBox implements Serializable{
 		this.hotListCandidatesList = hotListCandidatesList;
 	}
 
-	
-	
-	
+	public String getFileUrl() {
+		return fileUrl;
+	}
+
+	public void setFileUrl(String fileUrl) {
+		this.fileUrl = fileUrl;
+	}
 }

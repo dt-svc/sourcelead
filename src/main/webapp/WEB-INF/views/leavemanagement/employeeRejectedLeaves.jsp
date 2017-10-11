@@ -1,0 +1,387 @@
+<jsp:include page="../masterHeader.jsp" />
+<jsp:include page="../masterSideNav.jsp" />
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
+ 
+<script>
+$(document).ready(function(){
+   getRejectedEmployeesList();
+});
+</script>
+
+<!-- Content Area -->
+  <section class="content-wraper" id="themeroller">
+    <section class="content-header clearfix">
+      <div class="pull-left">
+        <h2>Rejected Leaves</h2>
+      </div>
+		<div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>"> Home</a> &raquo; Rejected Leaves</div>
+    </section>
+    
+<div class="content-area content-new clearfix">
+
+<div class="timesheet_out">
+  <div class="clearfix">
+    <div class="timesheet_head">
+      <ul>
+          <li class="dropdown">
+          <div class="pull-left select-fild">
+                    <select onchange="redirectlocation(this.value);">
+                        <option value="/employeeRequestedLeaves">Requested Leaves</option>
+                        <option  value="/employeeApprovedLeaves">Approved Leaves</option>
+                        <option value="/employeeRejectedLeaves" selected>Rejected Leaves</option>
+                        <option value="/employeeCancelLeaves">Cancelled Leaves</option>
+                    </select>
+            </div>
+          </li>
+        <div class="clearfix"></div>
+      </ul>
+      <div class="clearfix"></div>
+      <div id="loading"></div> 
+    <div class="clients_wrap_table datatable_filter">
+    <div class='remove_search mt10'>
+		 <input type='text' placeholder='Search' id='rejectedLeavesTableSearch'/>
+		</div>
+    <div id="rejectedLeavesDiv"></div>
+  </div>
+  </div>
+</div>
+
+    </div>
+    
+   <div class="side_mask">
+    <div class="proj_close"></div>
+  </div>
+
+<div class="new_side_wrap">
+<div class="clients_side_wrap_inn">
+      <div class="clerfix showDetails">
+      <div class="project_tabs minHeight_225 form-horizontal modal-body">
+      <div id="leaveSummaryId"></div>
+     </div>
+      </div>
+  </div>
+</div>
+    
+  </section>
+  <!-- Content Area Ends--> 
+  
+<script>
+function redirectlocation(location){
+	window.location.href = sourceleadUrl + location;
+}
+</script>
+
+<script>
+  function getRejectedEmployeesList(){
+		var orgLocationId = '${SourceLeadWeb_orgLocationId}';
+		var userId = '${SourceLeadWeb_userId}';
+		var searchValue = $("#rejectedLeavesTableSearch").val();
+		searchValue = searchValue ? searchValue : "";
+		var url = sourceleadUrl+"/getEmployeeRequestedLeaves?"+tokenParamName+"="+tokenValue+"&searchValue="+searchValue+"&orgLocationId="+orgLocationId+"&userId="+userId+"&leaveStatus=REJECTED";
+		prepareRejectedEmployeesList(url);
+}
+</script> 
+
+<script>
+	function prepareRejectedEmployeesList(url){
+		 $("#rejectedLeavesDiv").removeAttr("style");
+	 	 $("#rejectedLeavesDiv").empty();
+	 	 var result = "";
+	 	result = result +" <div class='remove_search'>";
+	 	result = result +"</div>";
+	 	result = result + '<table id="rejectedLeavesTable" class="display" cellspacing="0" width="100%" >';
+	 	result = result + '<thead>';
+			result = result + '<tr>';
+			result = result + '<th>Employee Name</th>';
+			result = result + '<th>Leave Type</th>';
+			result = result + '<th>Duration</th>';
+			result = result + '<th>No Of Days</th>';
+			result = result + '<th>Leaves Taken</th>';
+			result = result + '<th>Rejected By</th>';
+			result = result + '<th>Reason</th>';
+			result = result + '</tr>';
+			result = result + '</thead>	';
+	        result = result +"</table>";
+	      $("#rejectedLeavesDiv").append(result);
+	      rejectedEmployeesPagination(url); 
+	}
+</script>
+
+
+<script>
+	function rejectedEmployeesPagination(url){
+			var colIndex = 0;
+		    $('#rejectedLeavesTable').DataTable( { 
+	    	"processing": true,
+	        "serverSide": true,
+	        "searching": false,
+	        "ajax": $.fn.dataTable.pipeline( {
+	            url: url,
+	            method: 'GET',
+	            pages: 10
+	        }),
+	        "columns": [
+	            { "data": "empName" },
+	            { "data": "leaveType"},
+	            { "data": "duration"},
+	            { "data": "noOfDays" },
+	            { "data": "leavesTaken"},
+	            { "data": "rejectedBy" },
+	            { "data": "reason" },
+	            
+	        ],
+	        "columnDefs": [ {
+		    	  	"targets": colIndex++,
+		    	  	"data": "empName",
+		    	  	"render": function(data, type, opt, meta) {
+		    	  		  var result = "";
+		    	  		   result = result + '  <div class="pull-left tbldata-dotdot-me cursorPointer" title="'+opt.empName+'('+opt.empType+')" onclick="getRequestedAproveSummary(\''+opt.id+'\','+opt.orgLocationId+');">'+opt.empName+'('+opt.empType+')</div><i class="fa fa-binoculars pull-right" ></i>';  
+			              return result; 
+		    	  	}
+		      },{
+		    	  "targets": colIndex++,
+	              "data": "leaveType",
+	              "render": function ( data, type, opt, meta ) {
+	            	   var result = "";
+	            	   result = result + '   <div title="'+opt.leaveType+'" class="tblminwidth-75">'+opt.leaveType+'</div>';
+		              return result; 
+	              		
+	              }
+		          },{
+	            "targets": colIndex++,
+	            "data": "duration",
+	            "render": function ( data, type, opt, meta ) {
+	            	 var result = "";
+	            	 result = result + '   <div title="'+opt.duration+'" class="tbldata-dotdot-100">'+opt.duration+'</div>';
+	            	return result; 
+	            }
+	          }, {
+	              "targets": colIndex++,
+	              "data": "noOfDays",
+	              "render": function ( data, type, opt, meta ) {
+	            	   var result = "";
+	            	   result = result + '     <div title="2" class="tblminwidth-75">'+opt.noOfDays+'</div>';		 
+	            	    return result; 
+	              }
+	            }, {
+	                "targets": colIndex++,
+	                "data": "leavesTaken",
+	                "render": function ( data, type, opt, meta ) {
+	                		 var result = "";
+	                		result = result + '     <div class="tblminwidth-75">'+opt.leavesTaken+'</div>';
+	    	                return result; 
+	                }
+	          },{
+		    	  	"targets": colIndex++,
+		    	  	"data": "rejectedBy",
+		    	  	"render": function(data, type, opt, meta) {
+		    	  		 var result = "";
+		    	  		 result = result + ' <div title="'+opt.rejectedBy+'" class="tblminwidth-75">'+opt.rejectedBy+'</div>';
+	  	                 return result; 
+		    	  	}
+		    	  },{
+		    	  	"targets": colIndex++,
+		    	  	"data": "reason",
+		    	  	"render": function(data, type, opt, meta) {
+		    	  		 var result = "";
+		    	  		  result = result + ' <div title="'+opt.rejectedReason+'" class="tblminwidth-75">'+opt.rejectedReason+'</div>';	
+		    	  		 return result; 
+		    	  	}
+		    	  }], 
+	                "scrollCollapse": false,
+	            	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+	            	"bLengthChange": true,
+	            	"bDestroy": true,
+	            	"ordering": true,
+	            	"oLanguage": {
+	                    "sSearch": "",
+	                    "sZeroRecords": "", "sEmptyTable": ""
+	               }
+	            });
+	        
+	       $("#rejectedLeavesTable").wrap("<div class='overflow_Auto width100percnt'></div>")
+	       $("input[type=search]").hide();
+	       $("#rejectedLeavesTableSearch").keyup(function(e) {
+	       	   if(e.which === 13) {
+	       		getRejectedEmployeesList();
+	       	   }
+	       	});
+	}
+</script>
+
+<script>
+	$(".proj_show").click(function(){
+		$(".new_side_wrap").addClass("new_side_wrap_active");
+		$(".side_mask").fadeIn(200);
+		$("body").css('overflow-y', 'hidden');
+	});
+	$(".proj_close, .side_mask").click(function(){
+		$(".new_side_wrap").removeClass("new_side_wrap_active");
+		$(".side_mask").fadeOut(200);
+		$("body").css('overflow-y', 'auto');
+	    $('.addcandidate-popup').fadeOut(200);
+	}); 
+</script>
+  
+ 
+  
+  <script>
+function getRequestedAproveSummary(leaveId,orgLocationId){
+	   $.get(sourceleadUrl+"/getRequestedAproveSummary?"+tokenParamName+"="+tokenValue+"&leaveId="+leaveId+"&orgLocationId="+orgLocationId, function(data) {
+		   if(data != null){
+			$(".new_side_wrap").addClass("new_side_wrap_active");
+			$(".side_mask").fadeIn(200);
+			$("body").css('overflow-y', 'hidden');
+			 var result = "";	
+			 result = result +' <div class="viewgrid-header pull-right zIndex positionRelative">';
+			 result = result +' <span class="btn btn-danger btn-sm mr10">Rejected</span>';
+// 			 result = result +' <span class="btn btn-default btn-sm" onClick="cancel()">Cancel</span>';
+			 result = result +'<div class="clearfix"></div>';
+			 result = result +'<div class="cancel-reason" id="cancelReason">';
+			 result = result +'<div class="clearfix">';
+			 result = result +' <textarea rows="1" class="form-control" placeholder="Cancel Reason..." id="textarea"></textarea>';
+			 result = result +'</div>';
+			 result = result +'<div class="clearfix mt5">';
+			 result = result +'</div>';
+			 result = result +'</div>';
+			 result = result +' </div> ';
+			 result = result +' <div class="row">';
+			 result = result +'<div class="col-md-12 mb">';
+			 result = result +' <label class="col-md-2 control-label"><b>Employee Name:</b></label>';
+			 result = result +' <div class="col-md-8">';
+			 result = result +' <span>'+data.empName+'</span>';
+			 result = result +' </div>';
+			 result = result +'</div>';
+			 result = result +'<div class="col-md-12 mb">';
+			 result = result +'<label class="col-md-2 control-label"><b>Employee ID:</b></label>';
+			 result = result +'<div class="col-md-8">';
+			 if(data.empid !=null){
+				 result = result +'  <span>'+data.empid+'</span>';	 
+			 }else{
+				 result = result +'  <span>--</span>';
+			 }
+			 result = result +'</div>';
+			 result = result +'</div>';
+			 result = result +'<div class="col-md-12 mb">';
+			 result = result +'<label class="col-md-2 control-label"><b>Employee Email:</b></label>';
+			 result = result +' <div class="col-md-8">';
+			 result = result +' <span>'+data.empEmail+'</span>';
+			 result = result +' </div>';
+			 result = result +'</div>';
+			 result = result +'<div class="col-md-12 mb">';
+			 result = result +'<label class="col-md-2 control-label"><b>Employee Type:</b></label>';
+			 result = result +' <div class="col-md-8">';
+			 result = result +'<span>'+data.empType+'</span>';
+			 result = result +'</div>';
+			 result = result +'</div>';
+			 result = result +'<div class="col-md-12 mb">';
+			 result = result +'<label class="col-md-2 control-label"><b>Leave Type:</b></label>';
+			 result = result +'<div class="col-md-8">';
+			 result = result +'<span>'+data.leaveType+'</span>';
+			 result = result +'</div>';
+			 result = result +'</div>';
+			 result = result +'<div class="col-md-12 mb">';
+			 result = result +'<label class="col-md-2 control-label"><b>Duration:</b></label>';
+			 result = result +'<div class="col-md-8">';
+			 result = result +' <span>'+data.duration+'</span>';
+			 result = result +' </div>';
+			 result = result +'</div>';
+             result = result +' <div class="col-md-12 mb">';
+             result = result +'<label class="col-md-2 control-label"><b>Reason:</b></label>';
+             result = result +'<div class="col-md-8">';
+             result = result +'<span>'+data.reason+'</span>';
+             result = result +' </div>';
+             result = result +' </div>';
+             result = result +'<div class="col-md-12 mb">';
+             result = result +'<label class="col-md-2 control-label"><b>No of leaves taken:</b></label>';
+             result = result +' <div class="col-md-8">';
+             result = result +'<span>'+data.leavesTaken+'</span>';
+             result = result +'</div>';
+             result = result +'</div>';
+             result = result +'<div class="col-md-12 mb">';
+             result = result +'<label class="col-md-2 control-label"><b>This month:</b></label>';
+             result = result +'<div class="col-md-8">';
+             result = result +' <span>'+data.thisMonthLeaves+'</span>';
+             result = result +'</div>';
+             result = result +'</div>';
+             result = result +'<div class="col-md-12 mb">';
+             result = result +'<label class="col-md-2 control-label"><b>Balance leaves:</b></label>';
+             result = result +'<div class="col-md-8">';
+             result = result +' <span>'+data.balanceleaves+'</span>';
+             result = result +'</div>';
+             result = result +'</div>';
+             result = result +'<div class="col-md-12 mb">';
+             result = result +'<label class="col-md-2 control-label"><b>Applied on:</b></label>';
+             result = result +'<div class="col-md-8">';
+             result = result +'<span>'+data.createdDate+'</span>';
+             result = result +' </div>';
+             result = result +'</div>';
+             result = result +'<div class="col-md-12 mb">';
+             result = result +'<label class="col-md-2 control-label"><b>Approvers:</b></label>';
+             result = result +'<div class="col-md-8">';
+             result = result +' <span>'+data.approverUsers+'</span>';
+             result = result +'</div>';
+             result = result +'</div>';
+             result = result +'<div class="col-md-12 mb">';
+             result = result +'<label class="col-md-2 control-label"><b>Attachment:</b></label>';
+             result = result +' <div class="col-md-8">';
+//              result = result +' <span><a href="javascript:void(o)">demo.pdf<i class="fa fa-download padddingLeft cursorPointer"></i></a></span>';
+             if(data.fileUrl != null && data.fileUrl != 'undefined' && data.fileUrl != ''){
+            	 result = result + '<a href="#" title="Preview"><i class="fa fa-eye cursorPointer" onclick="viewFile(\''+data.fileUrl+'\', \''+data.fileName+'\', \''+data.fileType+'\')"></i></a>';
+             }else{
+            	 result = result +'<span>--</span>'; 
+             }
+             result = result +'</div>';
+             result = result +' </div>';
+             result = result +'<div class="col-md-12 mb">';
+             result = result +'<label class="col-md-2 control-label"><b>Rejected by:</b></label>';
+             result = result +'<div class="col-md-8">';
+             result = result +' <span>'+data.rejectedBy+'</span>';
+             result = result +'</div>';
+             result = result +'</div>';
+             result = result +'<div class="col-md-12 mb">';
+             result = result +'<label class="col-md-2 control-label"><b>Rejected on:</b></label>';
+             result = result +'<div class="col-md-8">';
+             result = result +' <span>'+data.updatedDate+'</span>';
+             result = result +'</div>';
+             result = result +'</div>';
+             result = result +'<div class="col-md-12 mb">';
+             result = result +'<label class="col-md-2 control-label"><b>Rejected Reason:</b></label>';
+             result = result +'<div class="col-md-8">';
+             result = result +' <span>'+data.rejectedReason+'</span>';
+             result = result +'</div>';
+             result = result +'</div>';
+             result = result +'<div class="clearfix"></div>';
+             result = result +'</div>';
+             
+             $("#leaveSummaryId").empty();
+             $("#leaveSummaryId").append(result);
+            
+		}	
+		 
+	});  
+}
+</script>
+  
+  
+  <!-- <script>
+function rejectedLeavesTable(){ 
+    $('#rejectedLeavesTable').DataTable( { 
+    	"scrollCollapse": false,
+    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+    	"bLengthChange": true,
+    	"bDestroy": true,
+    	"ordering": true,
+    	"oLanguage": {
+            "sSearch": "",
+            "sZeroRecords": "", "sEmptyTable": ""
+       }
+    });
+    $("#rejectedLeavesTable").wrap("<div class='overflow_Auto width100percnt'></div>")
+}
+</script> -->
+
+
+
+<jsp:include page="../masterFooter.jsp" />

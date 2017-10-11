@@ -5,7 +5,7 @@ import java.util.Map;
 
 import com.bis.sourcelead.annotations.Required;
 
-public class RequirementDTO {
+public class RequirementDTO extends CommonDTO {
 
 	
 	private String staticPath;

@@ -196,7 +196,7 @@ function backoutCount(requirementId){
     
     
 <div class="side_mask">
-  <div class="proj_close" onClick="activeTab();"></div>
+  <div class="proj_close" onClick="activeTabs();"></div>
 </div>
    
 </section>
@@ -509,7 +509,8 @@ function sideBar(requirementId,type){
 </script>
 
 <script type="text/javascript">
-function activeTab(){
+function activeTabs(){
+	document.getElementById("tab-1").style.display="none";
 	$("#quickviewTabsdetails").removeClass("active");
 	$("#quickviewTabsqv").addClass("active");
 	$("#quickresume_view").addClass("active in");
@@ -1297,7 +1298,7 @@ function reqNotes(requirementId){
 	});
 </script>
 
-<script type="text/javascript">
+<!-- <script type="text/javascript">
 function requirementRecommendations(requirementId){
 	$("#actionsDiv" ).hide();
 	
@@ -1591,8 +1592,8 @@ function checkMaxCount(id){
 	    }
 	})
 }
-</script>
-<script>
+</script> -->
+<!-- <script>
 function viewAssociateCandidateResumeDocView(candidateId,title){
 	var sourceleadUrl ='${sourceleadUrl}';
 	if(candidateId != null && candidateId != ""){
@@ -1630,7 +1631,7 @@ function recommendationpagination(){
     });
     	$("#recommendationTable").wrap("<div class='overflow_Auto' style='width:100%;'></div>"); 
 }
-</script>
+</script> -->
 
 <script>
 function getActions(){
@@ -1823,15 +1824,18 @@ function clientSideBar(candidateId,recScore){
 			             result = result+'                 <div class="clearfix">';
 			             result = result+'                 <div class="socialnetwork-details">';
 			             result = result+'                 <ul class="list-inline list-unstyled">';
-			             if(json.facebookUrl != null && json.facebookUrl != '' && json.facebookUrl != 'undefined'){
-			            	 result = result+'<li class="bg-facebook"><a href="'+json.facebookUrl+'"target="_blank"> <i class="fa fa-facebook-square"></i></a></li>';
-			            	 }
-			             if(json.linkedUrl != null && json.linkedUrl != '' && json.linkedUrl != 'undefined'){
-			            	 result = result+'<li class="bg-linked"><a href="'+json.linkedUrl+'"target="_blank"> <i class="fa fa-linkedin-square"></i></a></li>';
-			            	 }
-			             if(json.twitterUrl != null && json.twitterUrl != '' && json.twitterUrl != 'undefined'){
-			            	 result = result+'<li class="bg-twitter"><a href="'+json.twitterUrl+'"target="_blank"> <i class="fa fa-twitter-square"></i></a></li>';
-			            	 }
+			             if(json.consultantUser !=null && json.consultantUser.id != null && json.consultantUser.facebook != null && json.consultantUser.facebook !="undefined" && json.consultantUser.facebook != ""){
+				             result = result+'<li class="bg-facebook" title="Facebook"><a target="_blank" href=\"'+json.consultantUser.facebook+'\" > <i class="fa fa-facebook-square" ></i></a></li>';
+				             }
+				             if(json.consultantUser !=null && json.consultantUser.id != null && json.consultantUser.twitter != null && json.consultantUser.twitter !="undefined" && json.consultantUser.twitter != ""){
+				             result = result+'<li class="bg-twitter" title="Twitter"><a target="_blank" href=\"'+json.consultantUser.twitter+'\"> <i class="fa fa-twitter-square" ></i></a></li>';
+				             }
+				             if(json.consultantUser !=null && json.consultantUser.id != null && json.consultantUser.googlePlus != null && json.consultantUser.googlePlus !="undefined" && json.consultantUser.googlePlus != ""){
+				             result = result+'<li class="bg-google " title="Google-Plus"><a target="_blank" href=\"'+json.consultantUser.googlePlus+'\"> <i class="fa fa-google-plus-square" ></i></a></li>';
+				             }
+				             if(json.consultantUser !=null && json.consultantUser.id != null && json.consultantUser.linkedIn != null && json.consultantUser.linkedIn !="undefined" && json.consultantUser.linkedIn != ""){
+				             result = result+'<li class="bg-linked" title="Linkedin"><a target="_blank" href=\"'+json.consultantUser.linkedIn+'\"> <i class="fa fa-linkedin-square" ></i></a></li>';
+				             }
 			             
 			             result = result+'   </ul>';
 			             result = result+'                 </div>';

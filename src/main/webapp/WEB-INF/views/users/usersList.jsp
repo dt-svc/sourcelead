@@ -499,9 +499,8 @@ function exportToPdf(){
 	 				
 			 				var userRole = json[i];
 			 				var mobilePhone = ""
-			 			    
-			 			    if(userRole.user.mobilePhone != null && userRole.user.mobilePhone != ''){
-			 			    	mobilePhone = userRole.user.mobilePhone;
+			 			    if(userRole.mobilePhone != null && userRole.mobilePhone  != '' && userRole.mobilePhone != 'undefined'){
+			 			    	mobilePhone = userRole.mobilePhone;
 			 			    }else{
 			 			    	mobilePhone = "No Data"
 			 			    }
@@ -555,11 +554,11 @@ function exportToPdf(){
 			            		$('#usersListBody').append(opt);
 			            		 $("#searchByName").val("");
 			            	}else{
-			            		$('#usersListBody').append(result);
+			            		$('#usersListBody').append(opt);
 			            		 $("#searchByName").val("");
 			            	}
 				   }
-	 			result = result + '<div class="clear"></div>';
+	 			opt = opt + '<div class="clear"></div>';
 	 			$("#noUsers").val("")
 	   		    }
             }else if(type == "scroll"){

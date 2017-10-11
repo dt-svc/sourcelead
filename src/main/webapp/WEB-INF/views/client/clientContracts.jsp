@@ -524,7 +524,7 @@ document.getElementById("uploadBtn"+id).onchange = function () {
 
 function uploadRequestedDocuments(id){
 	var sourceleadUrl ='${sourceleadUrl}';
-	fileUpload(sourceleadUrl, "uploadBtn"+id+"", "Requested Documents", "contractDoc_form");
+	fileUpload("uploadBtn"+id+"", "Requested Documents", "contractDoc_form");
 }
 </script>
 
