@@ -161,95 +161,98 @@ public class LeaveServiceImpl implements LeaveService{
 
 		ResponseList<LeaveDTO> leaveDtoList = new ResponseList<>();
 		List<LeaveDTO> leavelistr = new ArrayList<>();
-		leaveApproveHierarchiesList.getData().forEach(laph -> {
-			Leave leave = laph.getLeaveid();
-			LeaveDTO leaveDto = new LeaveDTO();
-			StringBuilder sb = new StringBuilder();
-			StringBuilder durationSb = new StringBuilder();
-			leaveDto.setId(laph.getLeaveid().getId());
-			if (leave.getUser() != null) {
+		if(leaveApproveHierarchiesList.getData() !=null && leaveApproveHierarchiesList.getData().size() >0) {
+			leaveApproveHierarchiesList.getData().forEach(laph -> {
+				Leave leave = laph.getLeaveid();
+				LeaveDTO leaveDto = new LeaveDTO();
+				StringBuilder sb = new StringBuilder();
+				StringBuilder durationSb = new StringBuilder();
+				leaveDto.setId(laph.getLeaveid().getId());
+				if (leave.getUser() != null) {
+					try {
+						int nuberOfLeavestaken = leaveDao.getNumberOfLeavesTakenByUser(leave.getUser().getId(),leave.getLeaveType().getId());
+						int thisMonthLeaves = leaveDao.getThisMonthLeavesTakenByUser(leave.getUser().getId(),leave.getLeaveType().getId());
+						leaveDto.setLeavesTaken(String.valueOf(nuberOfLeavestaken));
+						leaveDto.setThisMonthLeaves(String.valueOf(thisMonthLeaves));
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+					if (StringUtils.isNotBlank(leave.getUser().getLastName())) {
+						sb.append(leave.getUser().getFirstName()).append(" ").append(leave.getUser().getLastName());
+					} else {
+						sb.append(leave.getUser().getFirstName());
+					}
+
+					leaveDto.setEmpName(sb.toString());
+				}
+				durationSb.append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), leave.getFromDate()))
+						.append(System.getProperty("line.separator")).append(" to ")
+						.append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), leave.getToDate()));
+
+				leaveDto.setDuration(durationSb.toString());
+				leaveDto.setLeaveType(leave.getLeaveType().getName());
+				leaveDto.setLeaveTypeId(leave.getLeaveType().getId());
+				leaveDto.setStatus(leave.getStatus());
+				leaveDto.setNoOfDays(leave.getNumberOfDays());
+				leaveDto.setBalanceleaves(leave.getLeaveType().getNumbefrOfLeavesPeryear());
+				leaveDto.setOrgLocationId(String.valueOf(leave.getOrgLocations().getId()));
+				if(leave.getUser().getId() != null){ 
+				 UserRole userrole;
 				try {
-					int nuberOfLeavestaken = leaveDao.getNumberOfLeavesTakenByUser(leave.getUser().getId(),leave.getLeaveType().getId());
-					int thisMonthLeaves = leaveDao.getThisMonthLeavesTakenByUser(leave.getUser().getId(),leave.getLeaveType().getId());
-					leaveDto.setLeavesTaken(String.valueOf(nuberOfLeavestaken));
-					leaveDto.setThisMonthLeaves(String.valueOf(thisMonthLeaves));
+					userrole = userRoleService.getUserRoleByUserId(leave.getUser().getId());
+					leaveDto.setEmpType(userrole.getUserType());
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
-				if (StringUtils.isNotBlank(leave.getUser().getLastName())) {
-					sb.append(leave.getUser().getFirstName()).append(" ").append(leave.getUser().getLastName());
-				} else {
-					sb.append(leave.getUser().getFirstName());
 				}
-
-				leaveDto.setEmpName(sb.toString());
-			}
-			durationSb.append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), leave.getFromDate()))
-					.append(System.getProperty("line.separator")).append(" to ")
-					.append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), leave.getToDate()));
-
-			leaveDto.setDuration(durationSb.toString());
-			leaveDto.setLeaveType(leave.getLeaveType().getName());
-			leaveDto.setLeaveTypeId(leave.getLeaveType().getId());
-			leaveDto.setStatus(leave.getStatus());
-			leaveDto.setNoOfDays(leave.getNumberOfDays());
-			leaveDto.setBalanceleaves(leave.getLeaveType().getNumbefrOfLeavesPeryear());
-			leaveDto.setOrgLocationId(String.valueOf(leave.getOrgLocations().getId()));
-			if(leave.getUser().getId() != null){ 
-			 UserRole userrole;
-			try {
-				userrole = userRoleService.getUserRoleByUserId(leave.getUser().getId());
-				leaveDto.setEmpType(userrole.getUserType());
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-			}
-			if(leave.getApprovedBy() !=null) {
-				StringBuilder sbApprover = new StringBuilder();
-				if (Constants.APPROVED.equalsIgnoreCase(leaveDTO.getLeaveStatus())) {
+				if(leave.getApprovedBy() !=null) {
+					StringBuilder sbApprover = new StringBuilder();
+					if (Constants.APPROVED.equalsIgnoreCase(leaveDTO.getLeaveStatus())) {
+						if (StringUtils.isNotBlank(leave.getApprovedBy().getLastName())) {
+							leaveDto.setApprovedBy(sbApprover.append(leave.getApprovedBy().getFirstName()).append(" ")
+									.append(leave.getApprovedBy().getLastName()).toString());
+						} else {
+							leaveDto.setApprovedBy(leave.getApprovedBy().getFirstName());
+						}
+					} 
+				}
+				if(leave.getRejectedBy() != null) {
+					StringBuilder sbRej = new StringBuilder();
+					if (Constants.REJECTED.equalsIgnoreCase(leaveDTO.getLeaveStatus())) {
+						if (StringUtils.isNotBlank(leave.getRejectedBy().getLastName())) {
+							leaveDto.setRejectedBy(sbRej.append(leave.getRejectedBy().getFirstName()).append(" ")
+									.append(leave.getRejectedBy().getLastName()).toString());
+						} else {
+							leaveDto.setRejectedBy(leave.getRejectedBy().getFirstName());
+						}
+					}
+				}
+				     leaveDto.setReason(leave.getReason());
+				     leaveDto.setRejectedReason(leave.getRejectedReason());
+				
+				if(leave.getCancelledBy() != null) {
+				  if (Constants.LEAVE_CANCELLED.equalsIgnoreCase(leaveDTO.getLeaveStatus())){
+					  StringBuilder sbCancelApp = new StringBuilder();
 					if (StringUtils.isNotBlank(leave.getApprovedBy().getLastName())) {
-						leaveDto.setApprovedBy(sbApprover.append(leave.getApprovedBy().getFirstName()).append(" ")
+						leaveDto.setApprovedBy(sbCancelApp.append(leave.getApprovedBy().getFirstName()).append(" ")
 								.append(leave.getApprovedBy().getLastName()).toString());
 					} else {
 						leaveDto.setApprovedBy(leave.getApprovedBy().getFirstName());
 					}
-				} 
-			}
-			if(leave.getRejectedBy() != null) {
-				StringBuilder sbRej = new StringBuilder();
-				if (Constants.REJECTED.equalsIgnoreCase(leaveDTO.getLeaveStatus())) {
-					if (StringUtils.isNotBlank(leave.getRejectedBy().getLastName())) {
-						leaveDto.setRejectedBy(sbRej.append(leave.getRejectedBy().getFirstName()).append(" ")
-								.append(leave.getRejectedBy().getLastName()).toString());
+					if (StringUtils.isNotBlank(leave.getCancelledBy().getLastName())) {
+						StringBuilder sbCancel = new StringBuilder();
+						leaveDto.setCancelledBy(sbCancel.append(leave.getCancelledBy().getFirstName()).append(" ")
+								.append(leave.getCancelledBy().getLastName()).toString());
 					} else {
-						leaveDto.setRejectedBy(leave.getRejectedBy().getFirstName());
+						leaveDto.setCancelledBy(leave.getCancelledBy().getFirstName());
 					}
 				}
-			}
-			     leaveDto.setReason(leave.getReason());
-			     leaveDto.setRejectedReason(leave.getRejectedReason());
-			
-			if(leave.getCancelledBy() != null) {
-			  if (Constants.LEAVE_CANCELLED.equalsIgnoreCase(leaveDTO.getLeaveStatus())){
-				  StringBuilder sbCancelApp = new StringBuilder();
-				if (StringUtils.isNotBlank(leave.getApprovedBy().getLastName())) {
-					leaveDto.setApprovedBy(sbCancelApp.append(leave.getApprovedBy().getFirstName()).append(" ")
-							.append(leave.getApprovedBy().getLastName()).toString());
-				} else {
-					leaveDto.setApprovedBy(leave.getApprovedBy().getFirstName());
 				}
-				if (StringUtils.isNotBlank(leave.getCancelledBy().getLastName())) {
-					StringBuilder sbCancel = new StringBuilder();
-					leaveDto.setCancelledBy(sbCancel.append(leave.getCancelledBy().getFirstName()).append(" ")
-							.append(leave.getCancelledBy().getLastName()).toString());
-				} else {
-					leaveDto.setCancelledBy(leave.getCancelledBy().getFirstName());
-				}
-			}
-			}
-			leaveDto.setUpdatedDate(ConversionUtil.getDateAsString(leave.getUpdatedDate()));
-			leavelistr.add(leaveDto);
-		});
+				leaveDto.setUpdatedDate(ConversionUtil.getDateAsString(leave.getUpdatedDate()));
+				leavelistr.add(leaveDto);
+			});
+		}
+		
 		leaveDtoList.setData(leavelistr);
 		leaveDtoList.setRecordsFiltered(leaveApproveHierarchiesList.getRecordsFiltered());
 		leaveDtoList.setRecordsTotal(leaveApproveHierarchiesList.getRecordsTotal());
@@ -276,8 +279,7 @@ public class LeaveServiceImpl implements LeaveService{
 				leave.setStatus(Constants.LEAVE_APPROVED);
 				leave.setApprovedBy(user);
 					LeaveType leaveType = leaveTypeService.getLeaveTypeById(leaveTypeId);
-					int numberOfLeavesPerYear = Integer.parseInt(leaveType.getNumbefrOfLeavesPeryear())
-							- Integer.parseInt(numberOfDays);
+					int numberOfLeavesPerYear = Integer.parseInt(leaveType.getNumbefrOfLeavesPeryear()) - Integer.parseInt(numberOfDays);
 					leave.setBalanceLeavesCount(numberOfLeavesPerYear);
 			} else {
 				leave.setStatus(Constants.LEAVE_REJECTED);
