@@ -196,7 +196,7 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 			    	  Calendar endCal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
 			    	  endCal.setLenient(false);
 			    	  endCal.setTime(employeeEndDate);
-			    	  startCal.setTime(CalendarUtil.getPreviousWeekDayByCalendar(endCal,"MON").getTime());
+			    	  startCal.setTime(CalendarUtil.getPreviousWeekDayByCalendar(endCal,"MON", orgLocations.getDateFormat()).getTime());
 			      }
 			      else if(employeeStartDate.after(currentWeekStartDate)){
 			    	  startCal.setTime(employeeStartDate);
@@ -211,7 +211,7 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
            	      Calendar endCal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
 			    	  endCal.setLenient(false);
 			    	  endCal.setTime(employeeEndDate);
-			    	  startCal.setTime(CalendarUtil.getPreviousWeekDayByCalendar(endCal,"MON").getTime());
+			    	  startCal.setTime(CalendarUtil.getPreviousWeekDayByCalendar(endCal,"MON", orgLocations.getDateFormat()).getTime());
               }
               else{
            	   startCal.setTime(sDate);

@@ -918,7 +918,6 @@ function removeSkillPopUp(candidateId){
 --%>         
 <script type="text/javascript">
 	function upDateCandidate(candidateId) {
-	
 		var expectedRate = document.getElementById("expectedRate").value; 
 		 if(expectedRate != null && expectedRate != ""){
 			 $('#expectedRateType').removeAttr('data-validation-optional');
@@ -928,7 +927,6 @@ function removeSkillPopUp(candidateId){
 			 $('#expectedRateType').removeAttr('data-validation');
 			 $('#expectedRateType').attr("data-validation-optional","true"); 
 		 }
-		 
 		 
 		 var expectedRateType =  document.getElementById("expectedRateType").value; 
 		 if(expectedRateType != null && expectedRateType != "" && expectedRateType != 'undefined'){
