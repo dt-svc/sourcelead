@@ -110,14 +110,24 @@ private static final long serialVersionUID = 1L;
 	private String billingPayableStatus;
 	
 	@NotFound(action=NotFoundAction.IGNORE)
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "PROJECT_ID", nullable=false)
+	private Projects projects;
+	
+	@NotFound(action=NotFoundAction.IGNORE)
+	@ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="MASTER_CANDIDATE_ID", nullable=false)        
+    private MasterCandidate masterCandidateId;
+	
+	@NotFound(action=NotFoundAction.IGNORE)
 	@OneToMany(mappedBy="expensesId",cascade = CascadeType.ALL)
-	 @JsonBackReference
-//    @Fetch(FetchMode.SELECT)
+	@JsonBackReference
+//  @Fetch(FetchMode.SELECT)
     private Set<ExpensesEntries> expensesEntries;
 	
 	@NotFound(action=NotFoundAction.IGNORE)
 	@OneToMany(mappedBy="expenseId",cascade = CascadeType.ALL)
-	 @JsonBackReference
+	@JsonBackReference
    // @Fetch(FetchMode.SELECT)
     private Set<ExpensesApproverHierarchy> approverHierarchyList;
 
@@ -419,6 +429,24 @@ private static final long serialVersionUID = 1L;
 		this.totalAmountRoundoffValue = totalAmountRoundoffValue;
 	}
 
+
+	public Projects getProjects() {
+		return projects;
+	}
+
+	public void setProjects(Projects projects) {
+		this.projects = projects;
+	}
+
+	public MasterCandidate getMasterCandidateId() {
+		return masterCandidateId;
+	}
+
+	public void setMasterCandidateId(MasterCandidate masterCandidateId) {
+		this.masterCandidateId = masterCandidateId;
+	}
+
+	
 
 
 //	public List<ExpensesEntries> getExpenseEntriesList() {

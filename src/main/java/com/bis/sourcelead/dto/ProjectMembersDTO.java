@@ -39,7 +39,7 @@ public class ProjectMembersDTO implements Serializable {
 	
 	private Double estBudget;
 	
-	List<ExpensesCategoryDTO> expenseCategoryList;
+	List<ExpensesCategoryListDTO> expenseCategoryList;
 	
 
 	public Long getId() {
@@ -178,12 +178,12 @@ public class ProjectMembersDTO implements Serializable {
 		this.estBudget = estBudget;
 	}
 
-	public List<ExpensesCategoryDTO> getExpenseCategoryList()
+	public List<ExpensesCategoryListDTO> getExpenseCategoryList()
 	{
 		return expenseCategoryList;
 	}
 
-	public void setExpenseCategoryList(List<ExpensesCategoryDTO> expenseCategoryList)
+	public void setExpenseCategoryList(List<ExpensesCategoryListDTO> expenseCategoryList)
 	{
 		this.expenseCategoryList = expenseCategoryList;
 	}

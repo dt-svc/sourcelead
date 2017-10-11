@@ -167,8 +167,8 @@ function addAttachment(entityRowId,from){
 		$("#expenseAmountDivId").val(toFixed);
 		 
 		 
-	    var count = 2*(r.cells.length);
-	     for(i=0;i<=count;i++){
+	    var count = r.cells.length;
+	     for(i=0;i<count;i++){
 	        if(i==0){
 	    		 r1.deleteCell(0);
 	    	}
@@ -215,25 +215,22 @@ function addAttachment(entityRowId,from){
 			          <div class="col-xs-12 col-sm-12 col-md-12 expAddRo myForm noPad clearfix">            
 						<div class="col-md-4 mb10 chosen-custom minHe">
 						<label>Category Type<span class="text-danger">&nbsp;*</span></label>
-							<select id="categoryTypeREPLACEROWID" name="categoryDTO[REPLACENAMEROWID].categoryType" class="form-control" field-name="Category Type" data-validation="required" onchange="getAmountValueCategory(REPLACEROWID);">
+							<select id="categoryTypeREPLACEROWID" name="expenseEntry[REPLACENAMEROWID].categoryType" class="form-control" field-name="Category Type" data-validation="required" onchange="getAmountValueCategory(REPLACEROWID);">
 							   <option value="">Select Category Type</option>				 							   
-							   <c:forEach var="expCat" items="${expEntry.expenseCategoryList}">
-					                 <option value="${expCat.id},${expCat.allowedAmount}">${expCat.expensesName}</option>
-	                	       </c:forEach>
 							</select>
 						</div>
 						<div class="col-md-4 mb10 minHe">
 							<label>Date Occurred<span class="text-danger">&nbsp;*</span></label>
-							<input type="text" id="categoryDateREPLACEROWID" name="categoryDTO[REPLACENAMEROWID].categoryDate" readonly="readonly"  class="form-control calendar"  value="" placeholder="Date" field-name="Date" data-validation="required"> 
+							<input type="text" id="categoryDateREPLACEROWID" name="expenseEntry[REPLACENAMEROWID].dateOccurred" readonly="readonly"  class="form-control calendar"  value="" placeholder="Date" field-name="Date" data-validation="required"> 
 						</div>
 						<div class="col-md-4 mb10 minHe">
 							<label>Receipt Issued by</label>
-							<input type="text" id="receiptIssuedByREPLACEROWID" name="categoryDTO[REPLACENAMEROWID].receiptIssuedBy" class="form-control" value=""  placeholder="Receipt Issued By" field-name="Receipt Issued By" data-validation-optional="true" data-validation="validate_length length1-100"> 
+							<input type="text" id="receiptIssuedByREPLACEROWID" name="expenseEntry[REPLACENAMEROWID].receiptIssuedBy" class="form-control" value=""  placeholder="Receipt Issued By" field-name="Receipt Issued By" data-validation-optional="true" data-validation="validate_length length1-100"> 
 						</div>
 
 						<div class="col-md-4 mb10 chosen-custom minHe">
 							<label>Payment Mode<span class="text-danger">&nbsp;*</span></label>
-							<select id="paymentModeREPLACEROWID" name="categoryDTO[REPLACENAMEROWID].paymentMode" class="form-control" field-name="Payment Mode" data-validation="required">
+							<select id="paymentModeREPLACEROWID" name="expenseEntry[REPLACENAMEROWID].paymentMode" class="form-control" field-name="Payment Mode" data-validation="required">
 							         <option value="">Select Mode</option>
 							          <c:forEach var="paymentMode" items="${expEntry.paymentModes}">
 							                  <option value="${paymentMode}">${paymentMode}</option>
@@ -244,18 +241,18 @@ function addAttachment(entityRowId,from){
 		                   <label>Amount<span class="text-danger">&nbsp;*</span></label>
 							  <div class="input-group positionRelative">
 									<div class="input-group-btn tblminwidth-75 select-field dropdown_inr" style="min-width: 65px !important;">
-											  <select class="btn btn-info" id="expenseRateTypeREPLACEROWID" name="categoryDTO[REPLACENAMEROWID].expenseRateType" field-name="Rate Type" field-name="Rate Type" data-validation="required">
+											  <select class="btn btn-info" id="expenseRateTypeREPLACEROWID" name="expenseEntry[REPLACENAMEROWID].categoryAmountType" field-name="Rate Type" field-name="Rate Type" data-validation="required">
 											  	   <c:forEach var="currencyType" items="${expEntry.currencyCodeList}">
-									                  <option ${expEntry.currencyCode == currencyType ? 'selected' : ''}   value="${currencyType}">${currencyType}</option>
+									                  <option  value="${currencyType}">${currencyType}</option>
 									               </c:forEach>
 											  </select>
 								</div>
-							         <input type="text" class="form-control allownumericwithdecimal"  placeholder="Amount"  name="categoryDTO[REPLACENAMEROWID].expenseAmount" id="expenseAmountREPLACEROWID" value="" field-name="Amount" data-validation="required validate_float validate_length length1-10" onkeyup="getAmountValue(REPLACEROWID);">
+							         <input type="text" class="form-control allownumericwithdecimal"  placeholder="Amount"  name="expenseEntry[REPLACENAMEROWID].categoryAmount" id="expenseAmountREPLACEROWID" value="" field-name="Amount" data-validation="required validate_float validate_length length1-10" onkeyup="getAmountValue(REPLACEROWID);">
 								</div>
 	                 </div>
 					<div class="col-md-4 mb10">
 						<label>Description<span class='text-danger'>&nbsp;*</span></label>
-						<textarea rows="2"  id="entryDesREPLACEROWID" name="categoryDTO[REPLACENAMEROWID].entryDes" class="form-control" placeholder="Description" field-name="Description" data-validation="required validate_Space validate_length length1-5000" onblur="removeWhiteSpacesAdd(REPLACEROWID);"></textarea>
+						<textarea rows="2"  id="entryDesREPLACEROWID" name="expenseEntry[REPLACENAMEROWID].entryDescription" class="form-control" placeholder="Description" field-name="Description" data-validation="required validate_Space validate_length length1-5000" onblur="removeWhiteSpacesAdd(REPLACEROWID);"></textarea>
 					</div>		
 	                   <div id='attachmentSection' class='col-md-4 mb10'>
 	                   <label>Attachments<span class="text-danger">&nbsp;*</span></label>
@@ -380,6 +377,7 @@ function addExpenseRow(){
 			cell2_0.innerHTML = divRowTd2_0Str;
 			cell2_0.colSpan = 7;
 			
+			
 			$("#categoryDate"+maxRowNum).datepicker("destroy");
 			var projectStartDate = $('#projectStartDateExpensesId').val();
 			var projectEndDate =   $('#projectEndDateExpensesId').val();
@@ -411,8 +409,23 @@ function addExpenseRow(){
 		    	    var $this = $(this);
 		    	    $this.next().css({'width': '100%'});
 		    	    })
-		    	    $('#categoryType'+maxRowNum).chosen();
+		    	  
+		    	    var output = '';
+		    	   	$("#categoryType"+maxRowNum).empty();
+		    	    var projectMemberId = $('#projectMemberId').val();
+		    	    output = output+'<option value="">Select Category Type</option>';
+			 	    <c:forEach var="pm" items="${expEntry.projectMembersList}">
+				 	     if('${pm.id}' == projectMemberId){
+				 	    	 <c:forEach var="expCat" items="${pm.expenseCategoryList}">
+				 	    	    output = output+'<option value="${expCat.id},${expCat.allowedAmount}">${expCat.categoryName}</option>';
+				 	    	 </c:forEach>
+						 }  
+		            </c:forEach>
+		            $("#categoryType"+maxRowNum).append(output);
+		            $('#categoryType'+maxRowNum).chosen();
 		    	    $('#categoryType'+maxRowNum).trigger("chosen:updated");
+		     
+					//categoryTypeREPLACEROWID
 	   }
 	else{
 		var maxRecCount = $("#maxRecCount").val();
@@ -518,7 +531,6 @@ function validate_fileupload(fileName)
 
     var allowed_extensions = new Array("ppt", "pptx", "pps", "ppsx", "doc", "docx", "pdf", "rtf", "odt", "xls", "xlsx", "csv", "zip", "txt", "jpg","jpeg","bmp","png","gif","eps","tiff","TGA","psd","svg","msg","wpd","wps");
     var file_extension = fileName.split('.').pop(); 
-
     for(var i = 0; i <= allowed_extensions.length; i++)
     {
         if(allowed_extensions[i] != null && allowed_extensions[i] != '' && allowed_extensions[i] != 'undefined' && allowed_extensions[i]==file_extension.toLowerCase())
@@ -533,21 +545,13 @@ function validate_fileupload(fileName)
  <script type="text/javascript">
  function validateUploadFile(id,entityId)
 	{
-		fileUpload(""+id+"docFile"+entityId+"", "expsesDocuments", "add_expenses_form","categoryDTO["+parseInt(((entityId+1)/2)-1)+"].fileInfo","","");
-
-		var selectedFile = $('#'+id+'docFile'+entityId).val();
+	      var selectedFile = $('#'+id+'docFile'+entityId).val();
 		  if(validate_fileupload(selectedFile)){
-			   var docSize = $('#'+id+'docFile'+entityId)[0].files[0].size;
-		       $("#"+id+"docFileuploadFileGroup"+entityId).find('p.jquery_form_error_message').remove();
-		      /* if(docSize > 2097152){
-		    	  $('#'+id+'docFileuploadFileGroup'+entityId).find('p.jquery_form_error_message').remove();
-		    	  $('#'+id+'docFileuploadFileGroup'+entityId).find('i').after("<p class='jquery_form_error_message'>Limit is exceeded than 2MB </span>");
-				  $('#'+id+'docFile'+entityId).attr('record-exist','yes');
-				  $('#'+id+'docFile'+entityId).attr('record-exist-errorMsg','Limit is exceeded than 2MB'); 
-		      }else{ */
+			      var docSize = $('#'+id+'docFile'+entityId)[0].files[0].size;
+		           $("#"+id+"docFileuploadFileGroup"+entityId).find('p.jquery_form_error_message').remove();
 		    	  $('input#'+id+'docFile'+entityId).removeAttr( "record-exist record-exist-errormsg");
 	   		      $('#'+id+'docFileuploadFileGroup'+entityId).find('p.jquery_form_error_message').remove(); 
-		      /* } */
+	   		      fileUpload(""+id+"docFile"+entityId+"", "expsesDocuments", "add_expenses_form","expenseEntry["+parseInt(((entityId+1)/2)-1)+"].fileInfo","","");
 		  }
 		  else{
 			      $('#'+id+'docFileuploadFileGroup'+entityId).find('p.jquery_form_error_message').remove();

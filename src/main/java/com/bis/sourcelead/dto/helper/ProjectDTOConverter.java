@@ -9,6 +9,7 @@ public class ProjectDTOConverter {
 		ProjectsDTO projectsDTO = new ProjectsDTO();
 		projectsDTO.setId(projects.getId());
 		projectsDTO.setClient(projects.getExpensesClientName());
+		projectsDTO.setProjectName(projects.getProjectName());
 		return projectsDTO;
 	}
 }

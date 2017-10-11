@@ -1,6 +1,5 @@
 package com.bis.sourcelead.web;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -21,11 +20,8 @@ import com.bis.sourcelead.dto.ExpensesListUtilDTO;
 import com.bis.sourcelead.dto.TimesheetExpenseEntryDetailsUtilDTO;
 import com.bis.sourcelead.entity.Expenses;
 import com.bis.sourcelead.entity.ExpensesApproverHierarchy;
-import com.bis.sourcelead.entity.ExpensesCategory;
 import com.bis.sourcelead.entity.OrgLocations;
-import com.bis.sourcelead.entity.ProjectClients;
 import com.bis.sourcelead.entity.ProjectMembers;
-import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Submission_Status;
 import com.bis.sourcelead.rest.ExpensesRestController;
@@ -131,7 +127,7 @@ public class ExpensesController {
 			 		type = "view";
 			 	 }
 			 	 model.addObject("type", type);
-			 	 model.addObject("isSahApproved", expensesDTO.getSahApproved());
+			 	 model.addObject("isSahApproved", expensesDTO.isSahApproved());
 			}
 				
 			StringBuffer rejectedReason = new StringBuffer();
