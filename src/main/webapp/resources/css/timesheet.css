@@ -1312,7 +1312,7 @@ background:url("../images/arrow-d-g.png") no-repeat right center; background-siz
     }
           
 .app_error_mes {
-    width:300px; background-color:#FFF; border-radius:3px; position:fixed !important; z-index:1000; margin: 0px auto; left: 0px; right: 0px;
+    width:300px; background-color:#FFF; border-radius:3px; position:fixed; z-index:1000; margin: 0px auto; left: 0px; right: 0px;
     padding:15px 20px; box-shadow:0px 0px 8px rgba(0,0,0,0.5); font-size:14px; border:1px solid #368ee0; top: 30%;
     transition:0.2s all ease-in-out; -webkit-transition:0.2s all ease-in-out; -moz-transition:0.2s all ease-in-out;
     min-height: 100px; display: none; opacity: 0;
@@ -4758,7 +4758,6 @@ display:none;
     font-weight:400; display: inline-block; padding:3px 0px; color:#FFF; font-size:13px; border-radius:3px; background-color:#34c244;
     text-align:center; width:70px;}
 .vendor_wrap_inn_table table tr td div b.Rejec { background-color:#d94747;}
-.vendor_wrap_inn_table table tr td div b.processs-hold { background-color:#FFA726;}
 .NeDe {
     padding:5px;
 }
@@ -5352,6 +5351,32 @@ width: auto !important;
 	cursor: pointer;
 }
 
+
+
+.empUlAli {}
+.empUlAli li {
+	position: relative; font-weight: 500; color: #999; cursor: pointer; list-style-type: none; padding: 5px 5px;
+}
+.empUlAli li .fa-filter {
+  	font-size: 18px; color: #545454; padding: 0px 10px 0px 0px;
+}
+.empUlAli li .fa-caret-down { 
+	display: inline-block; font-size: 14px; font-weight: 500; color: #333; padding: 0px 0px 0px 20px;
+}
+.empUlAli li .statusFiler-1 {
+	right:8px; min-width: 180px;
+}
+.empUlAli li label {
+	display: inline-block; padding: 0px 0px 0px 10px;
+}
+.empUlAli li ul {
+	padding: 4px 7px;
+}
+.mR5 {
+	margin: 0px 5px 0px 0px;
+}
+
+
 .clientProjSpan {
 	display: inline-block !important; float: left; padding: 0px 0px 0px 10px;
 }
@@ -5383,4 +5408,3 @@ width: auto !important;
 }
 .rejNam{
 	padding: 2px 0px 0px 0px; font-weight: 500; max-width: 100px !important;
-}

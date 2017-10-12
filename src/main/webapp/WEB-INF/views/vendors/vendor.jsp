@@ -29,29 +29,41 @@ window.onload = function () {
 	$(document).ready(function() {
 		document.getElementById("client_form").reset();
 		
-		var savedProjectId = '${savedProjectId}';
-		var projectUUID = '${projectUUID}';
-		if(savedProjectId != null && savedProjectId != '' && savedProjectId != 'undefined'){
-			$("#projectId").val(savedProjectId);
-			$("#projectUUID").val(projectUUID);
+		var orgRelationId = '${orgRelationId}';
+	
+		if(orgRelationId != null && orgRelationId != '' && orgRelationId != 'undefined'){
 			
+			var orgRelationUUID = '${orgRelationUUID}';
+			var vendorOrgLocationId = '${vendorOrgLocationId}';
+			var vendorOnboardId = '${vendorOnboardId}';
+			
+			$("#orgRelationId").val(orgRelationId);
+			$("#vendorOrgLocationId").val(vendorOrgLocationId);
+			$("#vendorOnboardId").val(vendorOnboardId);
 			getVendorDetails();
 			
-			var isProjectDetailsFilled = '${isProjectDetailsFilled}';
-			if(isProjectDetailsFilled == 'N'){
-				var vendorDocuments = document.getElementById("vendorDocuments");
-				if(vendorDocuments){
-					vendorDocuments.href = "#";
-					vendorDocuments.className = "disabledLink";
-				}
-			}
-			var isProjectMembersFilled = '${isProjectMembersFilled}';
-			if(isProjectMembersFilled == 'N'){
+		
+			 var vendorDocuments = document.getElementById("vendorDocuments");
+			 $("#vendorDocuments").removeClass("disabledLink");
+			 vendorDocuments.href="#tab-b";
+			 vendorDocuments.addEventListener("click", function() {
+				 getOnboardDocuments();
+			  });
+			
+			var isDocumentsFilled = '${isDocumentsFilled}';
+			if(isDocumentsFilled == 'N'){
 				var vendorTasks = document.getElementById("vendorTasks");
 				if(vendorTasks){
 					vendorTasks.href = "#";
 					vendorTasks.className = "disabledLink";
 				}
+			}else{
+				 var vendorTasks = document.getElementById("vendorTasks");
+				 $("#vendorTasks").removeClass("disabledLink");
+				 vendorTasks.href="#tab-c";
+				 vendorTasks.addEventListener("click", function() {
+					 getVendorOnboardTasksList();
+				  });
 			}
 			
 		}else{
@@ -85,9 +97,119 @@ window.onload = function () {
 <script>
 function getVendorDetails(){
 	var vendorOrgLocationId = document.getElementById("vendorOrgLocationId").value;
-	if(vendorOrgLocationId){
-		
-	}
+	var orgRelationId = document.getElementById("orgRelationId").value;
+	if(orgRelationId){
+		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+			
+	        $.ajax({
+		    	type: "GET",
+		    	 url: sourceleadUrl+"/getOrgRelationDetailsByOrgRelationId?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+orgRelationId, 
+		        success: function(json) {
+		        	
+		        	   $("input[name=orgName]").val(json.orgName);
+		        	   $("input[name=orgName]").attr("readonly","readonly");
+	        		   $('#orgName').removeAttr('onblur');
+		        	   
+	        		   if(json.webSite != null && json.webSite != 'undefined' && json.webSite != ''){
+	        			   $("input[name=webSite]").val(json.webSite);
+	        		   }
+	        		   
+	        		   
+	        		   $("input[name=location]").val(json.vendorOrgLocation);
+	        		   $("input[name=country]").val(json.country);
+	        		   $("input[name=state]").val(json.state);
+	        		   $("input[name=city]").val(json.city);
+	        		   
+	        		   if(json.zipCode != null && json.zipCode != 'undefined' && json.zipCode != ''){
+	        			   $("input[name=zipcode]").val(json.zipCode);
+	        		   }
+	        		   $("input[name=zipcode]").removeAttr("readonly");
+	        		   
+	        		   $("select[name=level]").val(json.responderLevel);
+	        		   
+	        		   if(json.address != null && json.address != 'undefined' && json.address != ''){
+	        			   $("textarea[name=address]").val(json.address);
+	        		   }
+	        		   
+	        		   if(json.billingAddress != null && json.billingAddress != 'undefined' && json.billingAddress != ''){
+	        			   $("textarea[name=billingAddress]").val(json.billingAddress);
+	        		   }
+	        		   
+	        		   
+	        		   if(json.paymentTerms != null && json.paymentTerms != 'undefined' && json.paymentTerms != ''){
+	        			   $("select[name=PaymentTerm]").val(json.paymentTerms);
+	        		   }
+	        		   
+	        		   
+	        			if(json.vendorOnboardTemplateId != null && json.vendorOnboardTemplateId != 'undefined'){
+	        				$("#templateId").empty();
+	        				var templatedIds = json.vendorOnboardTemplateId;
+	        				var internalOutput = "";
+	        				<c:forEach var="template" items="${templatesList}">
+		        			  var existed = 0;
+			        			
+		        			    var template_array = templatedIds.split(',');
+			        			for(var i = 0; i < template_array.length; i++) {
+				        			if(template_array[i] == "${template.id}"){
+					        			existed = 1;
+					        			internalOutput = internalOutput+"<option value='" +template_array[i]+ "' selected>${template.templateName}</option>";
+				        			}
+			        			}
+		        			if(existed == 0){
+		        			    internalOutput = internalOutput+"<option value='${template.id}'>${template.templateName}</option>";
+		        			}
+		        			</c:forEach>
+		        			$("#templateId").append(internalOutput);
+     		        		$("#templateId").trigger("chosen:updated");
+	        			}
+	        			
+	        			
+	        			 $("input[name=firstName]").val(json.vendorContactFirstName);
+	        			 if(json.vendorContactLastName != null && json.vendorContactLastName != 'undefined' && json.vendorContactLastName != ''){
+	        				 $("input[name=lastName]").val(json.vendorContactLastName);
+	        			 }
+	        			
+	        			 $("input[name=email]").val(json.email);
+	        			 
+	        			 if(json.phone != null && json.phone != 'undefined' && json.phone != ''){
+	        				 $("input[name=phoneNumber]").val(json.phone);
+	        			 }
+	        			
+	        			
+
+	        			if(json.clientContactIds != null && json.clientContactIds != 'undefined'){
+	        				$("#owner").empty();
+	        				var clientContactIds = json.clientContactIds;
+	        				var internalOutput = "";
+	        				<c:forEach var="user" items="${userList}">
+		        			  var existed = 0;
+			        			
+		        			    var user_array = clientContactIds.split(',');
+			        			for(var i = 0; i < user_array.length; i++) {
+				        			if(user_array[i] == "${user.id}"){
+					        			existed = 1;
+					        			internalOutput = internalOutput+"<option value='" +user_array[i]+ "' selected>${user.fullName}</option>";
+				        			}
+			        			}
+		        			if(existed == 0){
+		        			    internalOutput = internalOutput+"<option value='${user.id}'>${user.fullName}</option>";
+		        			}
+		        			</c:forEach>
+		        			$("#owner").append(internalOutput);
+     		        		$("#owner").trigger("chosen:updated");
+	        			}
+	        			
+	        			
+        			   $("select[name=spocStatus]").val(json.spocStatus);
+	        		   
+	      			   $("#loading").removeAttr("style");
+			        
+		        },
+		    }); 
+	        
+	        document.getElementById("update_vendor").style.display="";
+	    	document.getElementById("save_vendor").style.display="none";
+     } 
 }
 </script>
 
@@ -123,8 +245,8 @@ function getVendorDetails(){
       		<div class="newPrTabs">
    			  <ul class="newPrTabsMenu">
 				<li class="current" onclick="getVendorDetails();"><a href="#tab-a" data-toggle="tab">Vendor Details</a></li>
-				<li><a href="#tab-b" data-toggle="tab" id="vendorDocuments" onclick="getOnboardDocuments();">Documents</a></li>
-				<li><a href="#tab-c" data-toggle="tab" id="vendorTasks" onclick="getAdditionalDetails();">Tasks</a></li>
+				<li><a href="#tab-b" data-toggle="tab" id="vendorDocuments">Documents</a></li>
+				<li><a href="#tab-c" data-toggle="tab" id="vendorTasks">Tasks</a></li>
 				<div class="clearfix mb"></div>
 			  </ul>
 			  <div class="clearfix"></div>
@@ -137,6 +259,8 @@ function getVendorDetails(){
 					<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">
 					
 					 <input type="hidden" name="vendorOrgLocationId" id="vendorOrgLocationId" value=""/>
+				     <input type="hidden" name="orgRelationId" id="orgRelationId" value=""/>
+				     <input type="hidden" name="vendorOnboardId" id="vendorOnboardId" value=""/>
 					 
 						<div class="form-group">
 							<label class="col-md-3" for="Project Id">Vendor Name<span
@@ -277,8 +401,7 @@ function getVendorDetails(){
 						<div class="form-group">
 							<label class="col-md-3">Tier</label>
 							<div class="col-md-9">
-								<select class="form-control selectpicker" id="level"
-									name="level">
+								<select class="form-control" id="level" name="level">
 									<option value="Tier-1">Tier-1</option>
 									<option value="Tier-2">Tier-2</option>
 									<option value="Tier-3">Tier-3</option>
@@ -312,7 +435,7 @@ function getVendorDetails(){
 						<div class="form-group">
 							<label class="col-md-3">Payment Term</label>
 							<div class="col-md-9">
-								<select class="form-control selectpicker" id="PaymentTermId"
+								<select class="form-control" id="PaymentTermId"
 									name="PaymentTerm">
 									<option selected="selected" disabled value="">Select
 										Payment Term</option>
@@ -360,7 +483,8 @@ function getVendorDetails(){
 								class="text-danger">&nbsp;*</span></label>
 							<div class="col-md-9">
 								<input type="text" class="form-control" id="firstName"
-									name="firstName" pattern="[A-Za-z\s]*" maxlength="100" required>
+									name="firstName" pattern="[A-Za-z\s]*" maxlength="100" field-name="First Name" data-validation="required validate_Space validate_AlphaNumber validate_length length1-100">
+
 							</div>
 						</div>
 
@@ -368,7 +492,7 @@ function getVendorDetails(){
 							<label class="col-md-3">Last Name</label>
 							<div class="col-md-9">
 								<input type="text" class="form-control" id="lastName"
-									name="lastName" pattern="[A-Za-z\s]*" maxlength="100" required>
+									name="lastName" pattern="[A-Za-z\s]*" maxlength="100" data-validation-optional="true" field-name="Last Name" data-validation="validate_Space validate_AlphaNumber validate_length length1-100">
 							</div>
 						</div>
 
@@ -384,13 +508,10 @@ function getVendorDetails(){
 						<div class="form-group">
 							<label class="col-md-3">Status</label>
 							<div class="col-md-9">
-								<select class="form-control selectpicker" id="spocStatus"
+								<select class="form-control" id="spocStatus"
 									name="spocStatus">
 									<option value="Active">Active</option>
 									<option value="In-Active">In-Active</option>
-									<!--  <option value="New">New</option>
-                  <option value="Negotiation">Negotiation</option>
-                  <option value="Contract">Contract</option> -->
 								</select>
 							</div>
 						</div>
@@ -404,34 +525,24 @@ function getVendorDetails(){
 									field-name="Owner" data-validation="required">
 									<c:forEach var="user" items="${userList}">
 										<option value="${user.id}"
-											${user.id  == SourceLeadWeb_userId ? 'selected' : ''}>${user.firstName}
-											${user.lastName}</option>
+											${user.id  == SourceLeadWeb_userId ? 'selected' : ''}>${user.fullName}</option>
 									</c:forEach>
 								</select>
 							</div>
 						</div>
-						
-
 					</div>
+					<div class="clearfix mb"></div>
 					<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">
-						<div class="form-group">
+						<!-- <div class="form-group">
 							<label class="col-md-3"></label>
 							<div class="col-md-9 checkBox">
 								<label> <input type="checkbox" value="Y"
 									name="isMailSent" checked="checked"> Send Invitation
 								</label>
 							</div>
-						</div>
+						</div> -->
 
-						<!-- These are the default sourelead roles we are providing for spoc in client creation -->
-						<!-- <div class="form-group" id="roleDiv" style="display: block;">
-                  <label class="col-md-3">Role <span class="text-danger">&nbsp; *</span></label>
-                  <div class="col-md-9">
-                         <select class="form-control select-bg" id="role" name="roleType" field-name="Role" data-validation="required">
-									<option value="">-Select Role-</option>
-			              </select>
-                  </div>
-                </div> -->
+						
 
 						<div class="form-group" id="userRoleDiv" style="display: none;">
 							<label class="col-md-3">Role <span class="text-danger">&nbsp;
@@ -450,8 +561,12 @@ function getVendorDetails(){
 			<div class="form-footer clearfix">
 				<div class="col-lg-12">
 					<div class="pull-right">
-						<input type="button" value="Save & Continue" id="save_client"
+						<input type="button" value="Save & Continue" id="save_vendor"
 							onclick="saveVendor(); flushSaveClient()" class="btn btn-primary">
+						
+						<input type="button" value="Save & Continue" id="update_vendor" style="display: none"
+							onclick="updateVendor(); flushSaveClient()" class="btn btn-primary">
+						
 						<input type="button" value="Cancel"
 							onClick="javascript:window.location.href = '<c:url value='/vendorsList'/>'"
 							class="btn btn-default ml">
@@ -708,10 +823,15 @@ function getRolesList(){
 			$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 					$.post(sourceleadUrl+"/saveVendor?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&responderType=Vendor", formData, function(data) {
 						$("#vendorOrgLocationId").val(data.id); 
-						 $("#loading").removeAttr("style");
+						$("#orgRelationId").val(data.vendorOrgRelationId);
+						$("#vendorOnboardId").val(data.vendorOnboardId);
+						$("#loading").removeAttr("style");
 						 var vendorDocuments = document.getElementById("vendorDocuments");
-						 $("vendorDocuments").removeClass("disabledLink");
-						 vendorDocuments.href="#tab-b"; 
+						 $("#vendorDocuments").removeClass("disabledLink");
+						 vendorDocuments.href="#tab-b";
+						 vendorDocuments.addEventListener("click", function() {
+							 getOnboardDocuments();
+						  });
 						 vendorDocuments.click();
 					});
 			return true;
@@ -723,6 +843,39 @@ function getRolesList(){
 		$("#client_form").showHelpOnFocus();
 		$("#client_form").validateOnBlur(false, validationSettings);
 	});
+</script>
+
+
+<script type="text/javascript">
+
+function updateVendor(){
+	
+	if ($('#client_form').validate(false, validationSettings)) {
+		var orgRelationId = document.getElementById("orgRelationId").value;
+	  	var formData = $($('#client_form')[0]).serialize();
+		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+				$.post(sourceleadUrl+"/updateVendor?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId, formData, function(data) {
+					 $("#loading").removeAttr("style");
+					 var vendorDocuments = document.getElementById("vendorDocuments");
+					 $("#vendorDocuments").removeClass("disabledLink");
+					 vendorDocuments.href="#tab-b"; 
+					 
+					 vendorDocuments.addEventListener("click", function() {
+						 getOnboardDocuments();
+					});
+					 
+					 vendorDocuments.click();
+					 
+				}); 
+		return true;
+	} else {
+		return false;
+	}
+}
+$('body').on('blur', '#client_form', function() {
+	$("#client_form").showHelpOnFocus();
+	$("#client_form").validateOnBlur(false, validationSettings);
+});
 </script>
 
 
@@ -822,8 +975,8 @@ function validateClientName(){
 				var result = data;
 				if (result == 'true') {
 					//duplicate client
-					$("#save_client").removeAttr("disabled");
-			        $("#save_client").attr("disabled", "disabled");
+					$("#save_vendor").removeAttr("disabled");
+			        $("#save_vendor").attr("disabled", "disabled");
 					$("input#orgName").after( "<p class='jquery_form_error_message'>" + clientName + " is already existed as vendor</span>");
 					document.getElementById("orgName").setAttribute( 'record-exist', 'yes');
 					document.getElementById("orgName").setAttribute( 'record-exist-errorMsg', clientName +"  already existed as vendor");
@@ -831,8 +984,8 @@ function validateClientName(){
 					
 				}else if(result == 'sameorg') {
 					//duplicate client
-					$("#save_client").removeAttr("disabled");
-			        $("#save_client").attr("disabled", "disabled");
+					$("#save_vendor").removeAttr("disabled");
+			        $("#save_vendor").attr("disabled", "disabled");
 					$("input#orgName").after( "<p class='jquery_form_error_message'>" + clientName + " is already existed as sameorg</span>");
 					document.getElementById("orgName").setAttribute( 'record-exist', 'yes');
 					document.getElementById("orgName").setAttribute( 'record-exist-errorMsg', clientName +"  already existed as sameorg");
@@ -840,12 +993,12 @@ function validateClientName(){
 					
 				}else {
 					//New WebSite class="form-control"
-					//$("#save_client").removeAttr("disabled");
-					$("#save_client").removeAttr("disabled");
+					//$("#save_vendor").removeAttr("disabled");
+					$("#save_vendor").removeAttr("disabled");
 					$('input#orgName').removeAttr("class record-exist record-exist-errormsg");
 					$('input#orgName').attr('class','valid form-control');
 					$('#clientNameDiv').find('p.jquery_form_error_message').remove();
-					$("#save_client").click(function() {
+					$("#save_vendor").click(function() {
 						/* if ($(this).validate(false, validationSettings)) {
 						} */
 					});
@@ -901,7 +1054,7 @@ function validateClientName(){
 
 <script type="text/javascript">
 	function flushSaveClient() {
-		$("#save_client").removeAttr("disabled");
+		$("#save_vendor").removeAttr("disabled");
 	}
 </script>
 
@@ -1044,5 +1197,6 @@ $(function(){
 				var $this = $(this);
 				$this.next().css({'width': '100%'});
 		  })
+		  
 });
 </script>

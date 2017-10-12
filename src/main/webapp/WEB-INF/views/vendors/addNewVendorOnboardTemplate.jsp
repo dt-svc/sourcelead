@@ -86,8 +86,8 @@ filter: alpha(opacity=0);  -moz-opacity: 0; -khtml-opacity: 0;
                     <input type="hidden" name="templateId" id="onboardtemplateId" value=""/>
                   </div>
                   <div class="col-md-6">
-                    <label>Description <span class="text-danger paddingLeft">*</span></label>
-                    <textarea rows="1" class="form-control input-sm" name="description" field-name="Description" data-validation="required validate_Space validate_length length2-500"></textarea>
+                    <label>Description</label>
+                    <textarea rows="1" class="form-control input-sm" name="description" field-name="Description" data-validation-optional="true" data-validation="validate_Space validate_length length2-500"></textarea>
                   </div>
                 </div>
                 <div class="form-footer clearfix mt">
@@ -673,7 +673,7 @@ function saveOnboardTask(){
   	    	    data: formData,
   	    	    processData: false,
 		        contentType:false,
-	    	    url: sourceleadUrl+"/saveVendorOnBoardTasks?${_csrf.parameterName}=${_csrf.token}", 
+	    	    url: sourceleadUrl+"/saveVendorOnBoardTemplateTasks?${_csrf.parameterName}=${_csrf.token}", 
 		        success: function(result) {
 		        	
 		        	if(result == 'success'){
@@ -782,7 +782,7 @@ function getTemplateVendorDocumentsDetails(templateId){
                 			 checked = "checked";
                 		 }
                 		 result = result +"<strong id='contractsdocument"+opt.id+"'>";
-                		 result = result +"<input type='text' value='"+opt.documentName+"' readonly class='form-control input-sm vendorinput'></input>";
+                		 result = result +"<input type='text' value='"+opt.documentName+"' title='"+opt.documentName+"' readonly class='form-control input-sm vendorinput'></input>";
                 		 
                 	/* 	 result = result +"<div class='positionRelative inputpadding'>";
                 		 if(opt.fileUrl != null){
@@ -833,8 +833,6 @@ function getTemplateVendorDocumentsDetails(templateId){
 
 <script>
 function deleteTemplateDocument(documentUUID,documentId,documentType){
-	
-	var sourceleadUrl ='${sourceleadUrl}';
 	   $.ajax({
 	    	type: "POST",
 	    	 url: sourceleadUrl+"/deleteVendorTemplateDocumentByDocumentUUID?${_csrf.parameterName}=${_csrf.token}&documentUUID="+documentUUID, 
@@ -955,7 +953,7 @@ function getVendorOnboardingTasksList(){
 	 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	$.ajax({
 	   	type: "GET",
-	    url: sourceleadUrl+"/getVendorOnboardTasksListByTemplateId?${_csrf.parameterName}=${_csrf.token}&templateId="+templateId,	    	   
+	    url: sourceleadUrl+"/getVendorOnboardTemplateTasksListByTemplateId?${_csrf.parameterName}=${_csrf.token}&templateId="+templateId,	    	   
 	    success: function(json) {
         	 var result = "";
         	if(json.length > 0){ 

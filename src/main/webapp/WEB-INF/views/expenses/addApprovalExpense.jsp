@@ -571,8 +571,6 @@ function removeWhiteSpaces(rowCount){
 
 <script type="text/javascript">
 function flushOnchange(){
-	$('#projectId').val('');	
-	
 $('#expensePurpose').val('');
 $('#projectStartDateExpensesId').val('');
 $('#projectEndDateExpensesId').val('');

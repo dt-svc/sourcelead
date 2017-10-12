@@ -89,7 +89,12 @@ function onboardingTemplatesList(){
 	                    	 
 	                    		 result = result +"<td><div class='tbldata-dotdot-sm'><span title='"+opt.templateName+"'>"+opt.templateName+"</span></div></td>";
 	                    		
-	                    		 result = result +"<td><div><span title='"+opt.description+"'>"+opt.description+"</span></div></td>";
+	                    		 if(opt.description != null && opt.description != '' && opt.description != 'undefineda'){
+	                    			 result = result +"<td><div><span title='"+opt.description+"'>"+opt.description+"</span></div></td>";
+	                    		 }else{
+	                    			 result = result +"<td><div><span>--------</span></div></td>";
+	                    		 }
+	                    		
 	                    		 
 	                    		 result = result +"<td><div><span>"+opt.templateCreatedDate+"</span></div></td>";
 	                    		 

@@ -41,13 +41,19 @@ public class VendorOnboardTemplateServiceImpl implements VendorOnboardTemplateSe
 		 if(StringUtils.isNotBlank(onBoardingTemplateDTO.getTemplateId())){
 		 		onBoardingTemplate = getVendorOnBoardingTemplateById(Long.valueOf(onBoardingTemplateDTO.getTemplateId()));
 		 		onBoardingTemplate.setTemplateName(onBoardingTemplateDTO.getTemplateName());
-			 	onBoardingTemplate.setDescription(onBoardingTemplateDTO.getDescription());
+		 		 if(StringUtils.isNotBlank(onBoardingTemplateDTO.getDescription())) {
+			 		 onBoardingTemplate.setDescription(onBoardingTemplateDTO.getDescription());
+			 	 }else {
+			 		 onBoardingTemplate.setDescription(null);
+			 	 }
 			 	onBoardingTemplate.setUpdatedBy(user);
 			 	onBoardingTemplate.setUpdatedDate(new Date());
 		 	 }else{
 		 		 onBoardingTemplate = new VendorOnboardingTemplate();
 			 	 onBoardingTemplate.setTemplateName(onBoardingTemplateDTO.getTemplateName());
-			 	 onBoardingTemplate.setDescription(onBoardingTemplateDTO.getDescription());
+			 	 if(StringUtils.isNotBlank(onBoardingTemplateDTO.getDescription())) {
+			 		 onBoardingTemplate.setDescription(onBoardingTemplateDTO.getDescription());
+			 	 }
 			 	 onBoardingTemplate.setOrgLocationId(orgLocations);
 				 onBoardingTemplate.setTemplateStatus("Draft");
 				 onBoardingTemplate.setStatus(Constants.CANDIDATE_ACTIVE);

@@ -78,6 +78,9 @@ public class VendorOnboardTasks implements Serializable{
 	@Column(name = "TASK_NOTIFICATION")
    	private String taskNotification;
 	
+	@Column(name = "TASK_TYPE")
+   	private String taskType;
+	
 	@Column(name = "DESCRIPTION")
 	@Type(type="text")
 	private String description;
@@ -305,6 +308,14 @@ public class VendorOnboardTasks implements Serializable{
 
 	public void setUsersList(List<String> usersList) {
 		this.usersList = usersList;
+	}
+
+	public String getTaskType() {
+		return taskType;
+	}
+
+	public void setTaskType(String taskType) {
+		this.taskType = taskType;
 	}
    	
 }

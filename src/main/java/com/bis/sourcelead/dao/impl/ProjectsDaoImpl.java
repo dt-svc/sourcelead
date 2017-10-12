@@ -990,6 +990,22 @@ public HashSet<User> getAllUserTimeSheetSubmissionStatusCurrentWeek() {
 		return projectsList;
 	}
 
+	@SuppressWarnings("unchecked")
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Boolean validateProjectShortCode(String shortCode, Long orgLocationsId) throws Exception {
+		logger.debug("In ProjectsDaoImpl validateProjectSequeneNumber method");
+		 Session session = this.sessionFactory.getCurrentSession();
+		 boolean flag = false;
+		 if(shortCode != null && orgLocationsId != null){
+				String query = "from Projects project where project.orgLocationsId = :orgLocationsId and project.projectShortCode = :shortCode ";
+				Collection<Projects> projectsList = session.createQuery(query.toString()).setLong("orgLocationsId", orgLocationsId).setString("shortCode", shortCode).setCacheable(true).list();
 
+				if (projectsList != null && projectsList.size() > 0) {
+					flag = true;
+				}
+		 }
+		return flag;
+	}
 }
 

@@ -83,6 +83,9 @@ public class Constants {
 	public static final DateFormat SHORT_DF_MM_DD = new SimpleDateFormat("MMM-dd");
 	public static final DateFormat TZ_DF = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
 	
+	// Below line of code is used to print Week days like Sunday, Monday.... by passing Date.
+	public static final SimpleDateFormat WEEK_DAY =  new SimpleDateFormat("EEEE"); 
+	
 	public static final Long SOURCELEAD_ORG_LOCATION_ID = 1L;
 	/*
 	 * public static final DateFormat TZ_DF_TS = new SimpleDateFormat (
@@ -140,7 +143,9 @@ public class Constants {
 	public static final String MAIL_TEAM_MANAGER_APPROVED_EXPENSE = "ExpensesApprovalManagerEmailToEmployee";
 	public static final String MAIL_TEAM_MANAGER_REJECTED_EXPENSE = "ExpensesApprovalRejectedEmailToEmployee";
 	public static final String MAIL_APPROVERS_REOPEN_EXPENSE = "ExpensesReopenEmailToSuperAdmin";
-
+	
+	public static final String LEAVE_CANCEL_EMAIL_TO_USER = "LeaveCancelEmailToUser";
+	public static final String LEAVE_CANCEL_NOTOFICATION_TO_USER = "LeaveCancelNotificationToUser";
 	
 	public static final String MAIL_REOPEN_APPROVED_EXPENSES_EMAIL_TO_APPROVERS = "ReopenApprovedExpenseEmailToApprovers";
 	public static final String MAIL_REOPEN_REJECT_EXPENSES_EMAIL_TO_APPROVERS = "ReopenRejectExpenseEmailToApprovers";
@@ -217,6 +222,15 @@ public class Constants {
 	public static final String UPDATEDREQUIREMENTNOTIFICATIONTOVENDOR = "updatedRequirementNotificationToVendor";
 	public static final String OFFBOARDINGPROCESSAPPLICANTTERMINATION = "OffBoardingProcessApplicantTermination";
 	
+	public static final String LEAVE_APPROVER_EMAIL = "Approver Leave";
+	public static final String LEAVE_APPROVER_NOTIFICATION = "ApproverLeaveNotification";
+	
+	public static final String LEAVE_REJECTED_EMAIL = "Rejected Leave";
+	public static final String LEAVE_REJECTED_NOTIFICATION = "RejectedLeaveNotification";
+	
+	public static final String LEAVE_WITHDRAW_EMAIL = "Withdraw Leave";
+	public static final String LEAVE_WITHDRAW_NOTIFICATION = "WithdrawLeaveNotification";
+	
 	public static final String RESOURCE_REQUEST = "Resource Request";
 	public static final String RESOURCE_REQUEST_NOTIFICATION = "ResourceRequestNotification";
 	
@@ -252,6 +266,18 @@ public class Constants {
 	
 	public static final String ACCEPT_SINGLE_RESOURCE_REQUEST = "Accept Single Resource Request";
 	public static final String ACCEPT_SINGLE_RESOURCE_REQUEST_NOTIFICATION = "AcceptSingleResourceRequestNotification";
+	
+	public static final String BUDGET_REQUEST = "Budget Request";
+	public static final String BUDGET_REQUEST_NOTIFICATION = "BudgetRequestNotification";
+	
+	public static final String BUDGET_REQUEST_ACCEPTED = "Budget Request Accepted";
+	public static final String BUDGET_REQUEST_ACCEPTED_NOTIFICATION = "BudgetRequestAcceptedNotification";
+	
+	public static final String BUDGET_REQUEST_REJECTED_EMAIL = "Budget Request Rejected";
+	public static final String BUDGET_REQUEST_REJECTED_NOTIFICATION = "BudgetRequestRejectedNotification";
+	
+	public static final String BUDGET_REQUEST_ONHOLD_EMAIL = "Budget Request OnHold";
+	public static final String BUDGET_REQUEST_ONHOLD_NOTIFICATION = "BudgetRequestOnHoldNotification";
 	
 	public static final String INVITE_COMPANY = "inviteCompany";
 	public static final String UPDATED_USER_ROLE_EMAIL = "UserRoleChanged";
@@ -408,6 +434,7 @@ public class Constants {
 	public static final String EDUCATIONS = "Educations";
 	public static final String SKILLS = "Skills";
 	public static final String VISA = "VisaCategory";
+	public static final String INDUSTIRES = "Industries";
 	
 	public static final String TASKTYPE = "TaskType";
 	public static final String TASKSEVERITY = "TaskSeverity";
@@ -834,10 +861,57 @@ public class Constants {
 	public static final String ELECTRONIC_WITHDRAWLS = "ELECTRONIC_WITHDRAWLS";
 	public static final String PAYROLL_CHKS = "PAYROLL_CHKS";
 	
+	public static final String LEAVE_TYPE = "LEAVE_TYPE";
+	
 	public static final String DEFAULT_COOLINGOFF_PERIOD = "3 Months";
+	public static final String[] WEEKENDS = {"Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"};
+	
+	public static final String[] MONTHS = {"January","February","March","April","May","June","July","August","September","October","November","December"};
+	
+	public static final String LEAVE_OPTION = "LEAVE_OPTION";
+	public static final String RESTRICTDAY = "RESTRICT_DAY";
+
+	public static final String LEAVE_PENDING = "PENDING";
+	public static final String LEAVE_APPROVED = "APPROVED";
+	public static final String LEAVE_REJECTED = "REJECTED";
+	public static final String LEAVE_CANCELLED = "CANCELLED";
+	public static final String LEAVE = "LEAVE";
+	public static final String LEAVE_NEW = "NEW"; 
+	public static final String LEAVE_WITHDRAW = "WITHDRAW";
 	
 	public static final String CLINT_VENDOR_DOES_NOT_EXIST = "false";
 	public static final String CLINT_VENDOR_IF_EXIST = "true";
 	public static final String CLINT_VENDOR_IF_EXIST_AS_SAMEORG = "sameorg";
+
+	
+	
+	public static final String TASK_STATUS_NEW = "New";
+	public static final String TASK_STATUS_IN_PROGRESS = "In-Progress";
+	public static final String TASK_STATUS_DONE = "Done";
+	public static final String TASK_STATUS_ON_HOLD = "On-Hold";
+	
+	public static final String TASK_PRIORITY_P1 = "P1";
+	public static final String TASK_PRIORITY_P2 = "P2";
+	public static final String TASK_PRIORITY_P3 = "P3";
+	public static final String TASK_PRIORITY_P4 = "P4";
+	
+	public static final int TASK_PERCENTAGE_ZERO = 0;
+	public static final int TASK_PERCENTAGE_TEN = 10;
+	public static final int TASK_PERCENTAGE_TWENTY = 20;
+	public static final int TASK_PERCENTAGE_THIRTY = 30;
+	public static final int TASK_PERCENTAGE_FORTY = 40;
+	public static final int TASK_PERCENTAGE_FIFTY = 50;
+	public static final int TASK_PERCENTAGE_SIXTY = 60;
+	public static final int TASK_PERCENTAGE_SEVENTY = 70;
+	public static final int TASK_PERCENTAGE_EIGHTY = 80;
+	public static final int TASK_PERCENTAGE_NINTY = 90;
+	public static final int TASK_PERCENTAGE_HUNDRED = 100;
+	
+	public static final String TASK_ACTIVITY_STATUS = "Status";
+	public static final String TASK_ACTIVITY_PRIORITY = "Priority";
+
+	public static final String LEAVE_EMAIL_TO_APPROVERS = "LeaveEmailToApprovers";
+	public static final String LEAVE_NOTIFICATION_TO_APPROVERS = "LeaveNotificationToApprovers";
+
 
 }

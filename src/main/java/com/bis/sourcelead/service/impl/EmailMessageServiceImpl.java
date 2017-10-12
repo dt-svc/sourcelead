@@ -125,7 +125,6 @@ public class EmailMessageServiceImpl implements EmailMessageService {
 	@Async
 	public void sendEmail(EmailMessage emailMessage, Long locationsId, InternetAddress[] iAdressArray,
 			List<EmailAttachment> attachmentList) throws Exception {
-
 		if (emailMessage != null) {
 			Long emailNotificationId = null;
 

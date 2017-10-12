@@ -5,7 +5,6 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
@@ -20,17 +19,23 @@ import com.bis.sourcelead.annotations.Validator;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.OnBoardingTemplateDTO;
 import com.bis.sourcelead.dto.OnboardTasksDTO;
-import com.bis.sourcelead.entity.OnBoardingTemplate;
-import com.bis.sourcelead.entity.OnboardTasks;
+import com.bis.sourcelead.dto.VendorOnboardDTO;
+import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.OrgRelations;
+import com.bis.sourcelead.entity.Tasks;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.VendorOnboardTasks;
+import com.bis.sourcelead.entity.VendorOnboarding;
 import com.bis.sourcelead.entity.VendorOnboardingTemplate;
 import com.bis.sourcelead.entity.VendorOnboardingTemplateDocuments;
+import com.bis.sourcelead.service.TaskService;
 import com.bis.sourcelead.service.UserService;
+import com.bis.sourcelead.service.VendorOnboardService;
 import com.bis.sourcelead.service.VendorOnboardTasksService;
 import com.bis.sourcelead.service.VendorOnboardTemplateDocumentsService;
 import com.bis.sourcelead.service.VendorOnboardTemplateService;
+import com.bis.sourcelead.service.VendorService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
@@ -63,6 +68,15 @@ public class VendorOnboardRestController {
 	
 	@Value("${static.path}")
 	private String staticPath;
+	
+	@Autowired
+	VendorService vendorService;
+	
+	@Autowired
+	VendorOnboardService vendorOnboardService;
+	
+	@Autowired
+	TaskService taskService;
 	
 	@RequestMapping(value = "/getVendorOnboardingTemplatesList")
 	public List<VendorOnboardingTemplate> getVendorOnboardingTemplatesList(HttpServletRequest request) throws Exception {
@@ -194,8 +208,8 @@ public class VendorOnboardRestController {
 	}
 	
 	
-	 @RequestMapping(value = "/getVendorOnboardTasksListByTemplateId", method = RequestMethod.GET)
-	 @ResponseBody List<VendorOnboardTasks> getVendorOnboardTasksListByTemplateId(@RequestParam(value="templateId", required=false) Long templateId,HttpServletRequest request) throws Exception{
+	 @RequestMapping(value = "/getVendorOnboardTemplateTasksListByTemplateId", method = RequestMethod.GET)
+	 @ResponseBody List<VendorOnboardTasks> getVendorOnboardTemplateTasksListByTemplateId(@RequestParam(value="templateId", required=false) Long templateId,HttpServletRequest request) throws Exception{
 		
 		 List<VendorOnboardTasks> tasksList = vendorOnboardTasksService.getVendorOnboardTasksByTemplateId(templateId);
 		 
@@ -231,67 +245,11 @@ public class VendorOnboardRestController {
 	 
 	 
 	 
-	 @RequestMapping(value = "/saveVendorOnBoardTasks" , method = RequestMethod.POST)
-	 public @ResponseBody  String saveVendorOnBoardTasks(OnboardTasksDTO onboardTasksDTO, HttpServletRequest request) throws Exception {
+	 @RequestMapping(value = "/saveVendorOnBoardTemplateTasks" , method = RequestMethod.POST)
+	 public @ResponseBody  String saveVendorOnBoardTemplateTasks(OnboardTasksDTO onboardTasksDTO, HttpServletRequest request) throws Exception {
 		 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		 VendorOnboardTasks onboardTasks = new VendorOnboardTasks();
-		 if(StringUtils.isNotBlank(onboardTasksDTO.getTaskName())){
-			 onboardTasks.setTaskName(onboardTasksDTO.getTaskName());
-		 }
-		 
-		 VendorOnboardingTemplate template = new VendorOnboardingTemplate();
-		 template.setId(Long.valueOf(onboardTasksDTO.getTemplateId()));
-		 onboardTasks.setVendorOnboardingTemplateId(template);
-		 
-		 if(StringUtils.isNotBlank(onboardTasksDTO.getOnboardAssignedTo())){
-			 onboardTasks.setAssignToUsers(onboardTasksDTO.getOnboardAssignedTo());
-		 }else{
-			 onboardTasks.setAssignToVendor(Constants.YES);
-		 }
-		 
-		 if(StringUtils.isNotBlank(onboardTasksDTO.getTaskPriority())){
-			 onboardTasks.setPriority(onboardTasksDTO.getTaskPriority());
-		 }
-		 
-		 if(StringUtils.isNotBlank(onboardTasksDTO.getTaskRepeat())){
-			 onboardTasks.setTaskRepeat(onboardTasksDTO.getTaskRepeat());
-		 }
-		 
-		 if(StringUtils.isNotBlank(onboardTasksDTO.getTaskMonths())){
-			 onboardTasks.setDueAfterMonths(Integer.parseInt(onboardTasksDTO.getTaskMonths()));
-		 }
-		 
-		 if(StringUtils.isNotBlank(onboardTasksDTO.getTaskDays())){
-			 onboardTasks.setDueAfterDays(Integer.parseInt(onboardTasksDTO.getTaskDays()));
-		 }
-		 
-		 if(StringUtils.isNotBlank(onboardTasksDTO.getTaskHours())){
-			 onboardTasks.setDueAfterHours(Integer.parseInt(onboardTasksDTO.getTaskHours()));
-		 }
-		 
-		 if(StringUtils.isNotBlank(onboardTasksDTO.getTaskMinutes())){
-			 onboardTasks.setDueAfterMinutes(Integer.parseInt(onboardTasksDTO.getTaskMinutes()));
-		 }
-		 
-		 if(StringUtils.isNotBlank(onboardTasksDTO.getTaskNotification())){
-			 onboardTasks.setTaskNotification(onboardTasksDTO.getTaskNotification());
-		 }
-		 
-		 if(StringUtils.isNotBlank(onboardTasksDTO.getTaskEmail())){
-			 onboardTasks.setTaskEmail(onboardTasksDTO.getTaskEmail());
-		 }
-		 
-		 if(StringUtils.isNotBlank(onboardTasksDTO.getTaskdescription())){
-			 onboardTasks.setDescription(onboardTasksDTO.getTaskdescription());
-		 }
-		 
-		 onboardTasks.setStatus(Constants.CANDIDATE_ACTIVE);
-		 onboardTasks.setCreatedDate(CommonUtil.currentDate());
-		 onboardTasks.setCreatedBy(user);
-		 onboardTasks.setUpdatedDate(CommonUtil.currentDate());
-		 onboardTasks.setUpdatedBy(user);
-		 
-		 vendorOnboardTasksService.saveVendorOnboardTasks(onboardTasks);
+		
+		 vendorOnboardTasksService.saveVendorOnboardTemplateTask(onboardTasksDTO, user);
 		 return "success";
 	   }
 	 
@@ -320,5 +278,128 @@ public class VendorOnboardRestController {
 		return "success";
 		
 	 }
+	 
+	 
+	 
+	 @RequestMapping(value = "/getVendorOnboardDetailsByVendorOnboardId", method = RequestMethod.POST)
+	 @ResponseBody VendorOnboardDTO getVendorOnboardDetailsByVendorOnboardId(@RequestParam(value="vendorOnboardId", required=true) Long vendorOnboardId,
+			 @RequestParam(value="notificationUUID", required=false) String notificationUUID,HttpServletRequest request) throws Exception{
+		
+	     VendorOnboardDTO vendorOnboardDTO = vendorService.getVendorOnboardDetails(vendorOnboardId,notificationUUID);
+		 return vendorOnboardDTO;
+		
+	 }
+	 
+	 @RequestMapping(value = "/acceptAndSaveVendorOnboard", method = RequestMethod.POST)
+	 @ResponseBody String acceptAndSaveVendorOnboard(VendorOnboardDTO vendorOnboardDTO,@RequestParam(value="vendorOnboardId", required=false) Long vendorOnboardId,HttpServletRequest request) throws Exception{
+		 
+		 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		 vendorOnboardService.saveVendorOnboardDetails(vendorOnboardDTO, vendorOnboardId,user);
+		
+		 return "success";
+		
+	 }
+	 
+	 
+	 @RequestMapping(value = "/getVendorOnboardDocumentByVendorOnboardId", method = RequestMethod.GET)
+	 @ResponseBody List<VendorOnboardingTemplateDocuments> getVendorOnboardDocumentByVendorOnboardId(@RequestParam(value="vendorOnboardId", required=false) Long vendorOnboardId,HttpServletRequest request) throws Exception{
+		 
+			List<VendorOnboardingTemplateDocuments> documentsList = vendorOnboardTemplateDocumentsService.getVendorOnboaringTemplateDocumentsByVendorOnboardId(vendorOnboardId);
+		    return documentsList;
+		
+	 }
+	 
+	 
+	 
+	 
+	 @RequestMapping(value = "/getVendorOnboardDocumentByOrgRelationId", method = RequestMethod.GET)
+	 @ResponseBody List<VendorOnboardingTemplateDocuments> getVendorOnboardDocumentByOrgRelationId(@RequestParam(value="orgRelationId", required=false) Long orgRelationId,HttpServletRequest request) throws Exception{
+		 
+		    VendorOnboarding vendorOnboarding = vendorOnboardService.getVendorOnboardingByOrgRelationId(orgRelationId);
+			List<VendorOnboardingTemplateDocuments> documentsList = vendorOnboardTemplateDocumentsService.getVendorOnboaringTemplateDocumentsByVendorOnboardId(vendorOnboarding.getId());
+		    return documentsList;
+		
+	 }
+	 
+	 
+		@RequestMapping(value = "/saveVendorOnboardSubmittedDocuments", method = RequestMethod.POST)
+		public @ResponseBody String saveVendorOnboardSubmittedDocuments(VendorOnboardDTO vendorOnboardDTO, HttpServletRequest request) throws Exception {
+			if(Validator.validate(vendorOnboardDTO)) {
+				vendorOnboardDTO.setStaticPath(staticPath);
+				vendorOnboardService.saveVendorOnboardDocuments(vendorOnboardDTO);
+			 }else
+				 return "dataMissing";
+			
+			return "success";
+				
+		}
+		
+		
+		@RequestMapping(value = "/deleteVendorUploadedOnboardDocument", method = RequestMethod.POST)
+		public @ResponseBody String deleteVendorUploadedOnboardDocument(@RequestParam(value="documentId", required=false) Long documentId) throws Exception {
+			
+			VendorOnboardingTemplateDocuments documents = vendorOnboardTemplateDocumentsService.getVendorOnBoardingTemplateDocumentsById(documentId);
+			documents.setUploadedFileContentType(null);
+			documents.setUploadedFileContentType(null);
+			documents.setUploadedFileUrl(null);
+			documents.setDocumentStatus(null);
+			vendorOnboardTemplateDocumentsService.saveVendorOnBoardingTemplateDocuments(documents);
+			return "success";
+				
+		}
+		
+		@RequestMapping(value = "/getVendorOnboardTasksByVendorOnboardId", method = RequestMethod.GET)
+		public @ResponseBody List<Tasks> getVendorOnboardTasksByVendorOnboardId(@RequestParam(value="vendorOnboardId", required=false) Long vendorOnboardId,HttpServletRequest request) throws Exception {
+			
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+			List<Tasks> tasksList = taskService.getTaskByAssignedUserIdAndOrgLocationIdAndVendorOnboardingId(orgLocations.getId(), user.getId(), vendorOnboardId);
+			return tasksList;
+		}
+		
+		
+		@RequestMapping(value = "/getVendorSubmittedOnboardTasksByOrgRelationId", method = RequestMethod.GET)
+		public @ResponseBody List<Tasks> getVendorSubmittedOnboardTasksByOrgRelationId(@RequestParam(value="orgRelationId", required=true) Long orgRelationId,HttpServletRequest request) throws Exception {
+			
+			VendorOnboarding vendorOnboarding = vendorOnboardService.getVendorOnboardingByOrgRelationId(orgRelationId);
+			OrgLocations vendorOrgLocations = vendorOnboarding.getVendorLocationId();
+			User vendorUser = vendorOnboarding.getSpocUserId();
+			List<Tasks> tasksList = taskService.getTaskByAssignedUserIdAndOrgLocationIdAndVendorOnboardingId(vendorOrgLocations.getId(), vendorUser.getId(), vendorOnboarding.getId());
+			
+			return tasksList;
+		}
+		
+		
+		
+		@RequestMapping(value = "/changeVendorOnboardTaskStatus", method = RequestMethod.POST)
+		public @ResponseBody String changeVendorOnboardTaskStatus(@RequestParam(value="taskId", required=false) Long taskId) throws Exception {
+			
+			Tasks tasks = taskService.getTasksById(taskId);
+			if(tasks.getTaskStatus().equalsIgnoreCase(Constants.TASK_STATUS_OPEN)){
+				tasks.setTaskStatus(Constants.TASK_STATUS_CLOSE);
+			}else{
+				tasks.setTaskStatus(Constants.TASK_STATUS_OPEN);
+			}
+			
+			taskService.saveTasks(tasks);
+			
+			return "success";
+				
+		}
+		
+		
+		
+		@RequestMapping(value = "/finishVendorOnboardProcess", method = RequestMethod.POST)
+		public @ResponseBody String finishVendorOnboardProcess(@RequestParam(value="vendorOnboardId", required=true) Long vendorOnboardId,
+				@RequestParam(value="notificationUUID", required=true) String notificationUUID,HttpServletRequest request) throws Exception {
+			
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			vendorOnboardService.finishVendorOnboardProcess(vendorOnboardId, notificationUUID, user,Constants.MAIL_ACCEPTED);
+			
+			return "success";
+				
+		}
+		
+		
 	
 }

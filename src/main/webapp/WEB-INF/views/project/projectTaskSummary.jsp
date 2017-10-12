@@ -1,12 +1,13 @@
 <jsp:include page="../masterHeader.jsp" />
 <jsp:include page="../masterSideNav.jsp" />
+
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
- <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
-<script src="resources/js/editor.js"></script>
-<link href="resources/css/editor.css" type="text/css" rel="stylesheet"/>
+<script src="resources/js/editor.js?staticTime=${staticTime}"></script>
+<link href="resources/css/editor.css?staticTime=${staticTime}" type="text/css" rel="stylesheet"/>
 
 <script>
 //description script
@@ -25,7 +26,7 @@
 			<h2 class="pull-left paddingRight">Project Task Summary</h2>
 		</div>
 		<div class="pull-right brud-crum">
-			  <div class="pull-right brud-crum"><a href="<c:url value='/projectDashboard'/>">Projects List</a> &raquo;<a href="<c:url value='/projectSummary?projectUUID=${projectUUID}&tabType=tasks'/>">Project Task</a>&raquo;Project Task Summary</div>
+			  <div class="pull-right brud-crum"><a href="<c:url value='/projectDashboard'/>">Projects List</a> &raquo;<a href="<c:url value='/projectSummary?projectUUID=${projectUUID}&projectClientUUID=${projectClientUUID}&tabType=tasks'/>">Project Task</a>&raquo;Project Task Summary</div>
 		</div>
 		
 	</section>
@@ -37,18 +38,21 @@
 	          <div class="bg-success taskheaader-inlineedit mb10 clearfix">
 	          
 	          <div class="col-md-11 paddingRight paddingLeft edit-field edit-inputfield">
+		          
 		          <div class="showTaskname" id="taskedit-parent" onclick="editFun();">
 		          <span class="taskgeneratedid text-muted paddingRight bg-green" title="Task Generated ID">${projectTask.generatedId}</span>
-		          <span class="paddingLeft">${projectTask.taskName}</span>
+		          <span class="paddingLeft" id="projectTaskName">${projectTask.taskName}</span>
 		          <span class="editicon">
 		          	<i class="fa fa-pencil fa-2x"></i>
 		          	</span>
 		          	</div>
+		          	
 		          	<div class="editTaskname" style="display:none;">
 		          	<input type="text" id="taskName" name="taskName" value="${projectTask.taskName}"  class="form-control formcontrol-edit"/>
 		          	<input readonly type="hidden" id="hiddenTaskName" name="hiddenTaskName" value="${projectTask.taskName}" />
 		          	<p class="inputError" style="display:none;">The values should be between 2-250 characters</p>
 		          	</div>
+		          	
 	          </div>
 	          <div class="col-md-1 paddingLeft text-center" id="saveIcon" style="display:none;">
 	          	<i class="fa fa-save fa-2x" onclick="inlineditTaskName();"></i>
@@ -349,7 +353,7 @@ $('.chosen-select').chosen().on('change', function() {
 	}else{
 		assignValue = "";
 	}
-	var sourceleadUrl ='${sourceleadUrl}';
+	
 	var taskId = '${projectTask.id}';
 	var userId = '${SourceLeadWeb_userId}';
 	  $.ajax({
@@ -363,7 +367,6 @@ $('.chosen-select').chosen().on('change', function() {
 
 <script>
 function tasksAssignList(projectId){
-	var sourceleadUrl ='${sourceleadUrl}';
 	var values = "Active";
 	  var map = new Object(); // or var map = {};
       <c:forEach var="assign" items="${assignedUsers}">
@@ -372,8 +375,7 @@ function tasksAssignList(projectId){
 	$.ajax({
     	type: "POST",
         url: sourceleadUrl+"/getProjectEmployeeListById?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId+"&status="+values, 
-        success: function(data) {
-        	var json = JSON.parse(data);
+        success: function(json) {
         	var output = "";
         	for (var i=0; i<json.projectMembersList.length; i++)
 			{
@@ -392,9 +394,9 @@ function tasksAssignList(projectId){
         		}
         		
 			}
-        	$("#assignedUsers").chosen();
         	$("#assignedUsers").empty();
      		$("#assignedUsers").append(output);
+     		$("#assignedUsers").chosen();
      	    $("#assignedUsers").trigger("chosen:updated");
         }
 	});	
@@ -421,14 +423,17 @@ function inlineditTaskName(){
 			    	$(".editTaskname").hide();
 			    	document.getElementById("saveIcon").style.display="none";
 			    	$("#hiddenTaskName").val(data);
+			    	$("#projectTaskName").text(data);
 			    	$(".inputError").hide();
+			    	$("#temptxt").text(data);
 			    }
 		 }); 
 		}else{
-			$(".showTaskname").hide();
-	    	$(".editTaskname").show();
+			$(".showTaskname").show();
+	    	$(".editTaskname").hide();
 	    	document.getElementById("saveIcon").style.display="none";
 			$("#taskName").val(hiddenTaskName);
+			$("#projectTaskName").val(hiddenTaskName);
 		}
 	}
 	
@@ -437,6 +442,7 @@ function inlineditTaskName(){
 	 
 }
 function editFun(){
+	
 	$(".showTaskname").hide();
 	$(".editTaskname").show();
 // 	$("#taskName").removeClass("formcontrol-edit").removeAttr("readonly");
@@ -764,8 +770,7 @@ function addDocumentEntry(){
 	
 }
 function taskUploadFile(){
-	var sourceleadUrl = '${sourceleadUrl}';
-	fileUpload(sourceleadUrl, "uploadBtn", "tasks", "addDocument_form");
+	fileUpload("uploadBtn", "tasks", "addDocument_form");
 }
 
 function documentTableList(){
@@ -825,7 +830,7 @@ function documentTableList(){
 </script>
 <script>
 function getEditTaskDocument(projectTaskDocId){
-	var sourceleadUrl ='${sourceleadUrl}';
+	
 	 $.ajax({
 		   	type: "POST",
 		    url: sourceleadUrl+"/ProjectTasks/getProjectTaskDocument?${_csrf.parameterName}=${_csrf.token}&projectTaskDocId="+projectTaskDocId, 	   
@@ -923,7 +928,7 @@ function getEditTaskDocument(projectTaskDocId){
 </script>
 <script>
 function editUploadFile(){
-	var sourceleadUrl ='${sourceleadUrl}';
+	
 	fileUpload(sourceleadUrl, "uploadBtn", "tasks", "updateDocument_form");
 }
 </script>
@@ -1006,7 +1011,7 @@ function updateDocument(documentId){
 </script>
 <script>
 function projectTaskDocumentView(documentId,title){
-	 var sourceleadUrl ='${sourceleadUrl}';
+	 
 		if(documentId != null && documentId != ""){
 			window.open(sourceleadUrl+'/ProjectTasks/viewProjectTaskDocument/'+title+'?documentId='+documentId,title,"height=600,width=600");
 		}
@@ -1014,7 +1019,7 @@ function projectTaskDocumentView(documentId,title){
 </script>
 <script>
 function removeProjectTaskDocuments(documentId){
-	var sourceleadUrl ='${sourceleadUrl}';
+	
 	var userId = '${SourceLeadWeb_userId}';
 	$.ajax({
 	   	type: "POST",
@@ -1125,7 +1130,7 @@ function addSubTasks(){
 			result = result	+ '             <select class="form-control" id="priority" name="priority">';
 			result = result	+ '               <option value="">-- Select Priority --</option>';
 			result = result	+ '           <c:forEach var="priority" items="${taskPriorityList}"> ';        
-			result = result	+ '		             <option value="${priority.id}">${priority.name}</option>';   
+			result = result	+ '		            <option value="${priority.id}" ${priority.name  == "P2" ? "selected" : ''} >${priority.name}</option>';   
 			result = result	+ '			</c:forEach>   ';	
 			result = result	+ '             </select>'; 
 			result = result	+ '           </div>';
@@ -1304,13 +1309,12 @@ function cancelTask(){
 </script>
 <script>
 function uploadButton(id){
-	var sourceleadUrl ='${sourceleadUrl}';
-	fileUpload(sourceleadUrl, "file"+id+"", "tasks", "projectTask_form");
+	fileUpload("file"+id+"", "tasks", "projectTask_form");
 }
 </script>
 <script>
 function getOwnerList(){
-	var sourceleadUrl ='${sourceleadUrl}';
+	
 	var orgLocationId = '${SourceLeadWeb_orgLocations.id}';
 	$.ajax({
 	    	type: "GET",
@@ -1340,7 +1344,7 @@ function getOwnerList(){
 </script>
 <script>
 function subTasksAssignList(projectId){
-	var sourceleadUrl ='${sourceleadUrl}';
+	
 	var values = "Active";
 	$.ajax({
     	type: "POST",
@@ -1398,7 +1402,7 @@ function subTasksAssignList(projectId){
  <script>
  function getSubEpicsByUserStory(type){
 	 var projectId =  "${projectId}";
-	 var sourceleadUrl ='${sourceleadUrl}';
+	 
 	 var taskType = "Epic";
 	 $.ajax({
 	    	type: "POST",
@@ -1425,7 +1429,7 @@ function subTasksAssignList(projectId){
  }
  function getUserStoryByBug(){
 	 var projectId =  "${projectId}";
-	 var sourceleadUrl ='${sourceleadUrl}';
+	 
 	 var taskType = "UserStory";
 	 $.ajax({
 	    	type: "POST",
@@ -1455,7 +1459,7 @@ function subTasksAssignList(projectId){
  <script>
  function getSubTasks(){
 	 var projectId =  "${projectId}";
-	var sourceleadUrl ='${sourceleadUrl}';
+	
 	var projectTaskId = "${projectTask.id}";
 	taskType = "SubTask";
 	$.ajax({

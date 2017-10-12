@@ -1747,12 +1747,9 @@ function cancelContract(){
 </script>
 
 <script>
-var sourceleadUrl = '${sourceleadUrl}';
- $(function() {
 	$("#uploadBtn").change(function() {
-		fileUpload(sourceleadUrl, "uploadBtn", "ContractDocs", "newcontract_form");
+		fileUpload("uploadBtn", "ContractDocs", "newcontract_form");
 	});
- }); 
 </script>
 
 <script>

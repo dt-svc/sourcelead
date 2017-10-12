@@ -60,5 +60,7 @@ public interface OrgRelationsDao {
 	public List<OrgRelations> getAllClientsByOrgLocationIdAndDomain(Long orgLocationId, String domain, String responderType);
 	
 	OrgRelations getVendorOrgRelationByResponderLocationIdAndLocationId(Long responderLocationId,Long locationId) throws Exception;
+	
+	OrgRelations getOrgRelationsByUUID(String UUID) throws Exception;
 
 }

@@ -1096,12 +1096,23 @@ function reActiveProject(projectMemberId,empName,startDate,endDate,projectEndDat
 	  
    var reStatertDate = $('#Re-StartDate').val();
    
-		  
+	
+   var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+	  var finalDateFormatRecomondedCandCertSave = '';
+	  if(locationDate.match("yyyy-MM-dd")){
+		  finalDateFormatRecomondedCandCertSave = 'yy-mm-dd';
+	  }if(locationDate.match("dd-MM-yyyy")){
+		  finalDateFormatRecomondedCandCertSave = 'dd-mm-yy'; 
+	  }if(locationDate.match("MM-dd-yyyy")){
+		  finalDateFormatRecomondedCandCertSave = 'mm-dd-yy'; 
+	  }if(locationDate.match("yyyy-dd-MM")){
+		  finalDateFormatRecomondedCandCertSave = 'yy-dd-mm'; 
+	  }
    
   var reStatertDate = $('#Re-StartDate').val()
   if(projectEndDateStr != null && projectEndDateStr != "" && projectEndDateStr != 'undefined'){
 	  $('#Re-StartDate').datepicker({
-	      dateFormat: 'dd-mm-yy',
+	      dateFormat: finalDateFormatRecomondedCandCertSave,
 	      changeMonth: true,
 	  	  changeYear: true, 
 		  minDate:endDate,
@@ -1124,7 +1135,7 @@ function reActiveProject(projectMemberId,empName,startDate,endDate,projectEndDat
 	  });
 	  
 	  $('#Re-EndDate').datepicker({
-	      dateFormat: 'dd-mm-yy',
+	      dateFormat: finalDateFormatRecomondedCandCertSave,
 	      changeMonth: true,
 	  	  changeYear: true, 
 	      minDate:endDate,
@@ -1146,7 +1157,7 @@ function reActiveProject(projectMemberId,empName,startDate,endDate,projectEndDat
   }
   else{
 	  $('#Re-StartDate').datepicker({
-	      dateFormat: 'dd-mm-yy',
+	      dateFormat: finalDateFormatRecomondedCandCertSave,
 	      changeMonth: true,
 	  	  changeYear: true, 
 		  minDate:endDate,
@@ -1169,7 +1180,7 @@ function reActiveProject(projectMemberId,empName,startDate,endDate,projectEndDat
 	  
 	
 	  $('#Re-EndDate').datepicker({
-	      dateFormat: 'dd-mm-yy',
+	      dateFormat: finalDateFormatRecomondedCandCertSave,
 	      changeMonth: true,
 	  	  changeYear: true, 
 	      minDate:endDate,
@@ -1857,7 +1868,7 @@ function budgetRequests(){
 	    				budgetDescription = "--";
 	    			}
 	    			result = result + '	<tr>';
-	    			if(report.budgetStatus == "Rejected"){
+	    			if((report.approverUserIdlLong == '${SourceLeadWeb_user.id}') && (report.budgetStatus == "On Hold" || report.budgetStatus == "Rejected" || report.budgetStatus == "Waiting For Approval")){
 	    				result = result + ' 	<td><div class="tbldata-dotdot-sm"> <div class="tbldata-dotdot-100 pull-left">'+report.budgetRequestedId+'</div> <i class="fa fa-pencil ml10 pull-right" onclick="editBudgetrequest('+report.id+')"></i></div></td>';
 	    			}else{
 	    				result = result + '  <td><div class="tbldata-dotdot-sm"> <div class="tbldata-dotdot-100 pull-left">'+report.budgetRequestedId+'</div></div></td>';
@@ -1875,13 +1886,31 @@ function budgetRequests(){
 						result = result + '     <i class="fa fa-clock-o" alt="On hold" title="On hold" onclick="onholdBudgetRequaet('+report.id+');"></i></div></td>';
 					}
 					if(report.budgetStatus == "Rejected"){
-						result = result + '<td><div class="tblminwidth-90"><b class="Rejec">Rejected</b></div></td>';
+						result = result + '<td><div class="tblminwidth-90 paTp"><b class="Rejec">Rejected</b>';
+						 result = result+"  <i class='glyphicon glyphicon-comment colB' id='"+report.id+"' onclick='rejectedMessage(\""+report.rejectedReason+"\");'>";
+					 	 result = result+" <div class='app_error_mes' id='rejectedMessage"+report.id+"'>"+report.rejectedReason+"</div></i>";
+					 	 result = result+" <br><span class='rejNam' title='"+report.updatedUserName+"'>By : "+report.updatedUserName+"</span>";
+						result = result + '</div></td>';
 					}
 					if(report.budgetStatus == "Approved"){
-						result = result + '<td><div class="tblminwidth-90"><b>Approved</b></div></td>';
+						result = result + '<td><div class="tblminwidth-90 paTp"><b>Approved</b>';
+						 result = result+" <br><span class='rejNam' title='"+report.updatedUserName+"'>By : "+report.updatedUserName+"</span>";
+						 result = result + '</div></td>';
 					}
-					if(report.budgetStatus == "On Hold"){
-						result = result + '<td><div class="tblminwidth-90"><b class="processs-hold">On Hold</b></div></td>';
+					
+					if((report.approverUserIdlLong ==  '${SourceLeadWeb_user.id}') &&  report.budgetStatus == "On Hold"){
+						result = result + '     <td><div class="tblminwidth-75">';
+						result = result + '     <i class="fa fa-check" alt="Approve" title="Approved" onclick="acceptBudgetRequset('+report.id+')"></i>|';
+						result = result + '     <i class="fa fa-times" alt="Rejected" title="Rejected" onclick="deleteBudgetRequaet('+report.id+');"></i>';
+						result = result + '     </div></td>';
+						
+					}
+					if(report.budgetStatus == "On Hold" && (report.approverUserIdlLong !=  '${SourceLeadWeb_user.id}')){
+						result = result + '<td><div class="tblminwidth-90 paTp"><b class="processs-hold">On Hold</b>';
+						 result = result+"  <i class='glyphicon glyphicon-comment colB' id='"+report.id+"' onclick='rejectedMessage(\""+report.rejectedReason+"\");'>";
+					 	 result = result+" <div class='app_error_mes' id='rejectedMessage"+report.id+"'>"+report.rejectedReason+"</div></i>";
+					 	 result = result+" <br><span class='rejNam' title='"+report.updatedUserName+"'>By : "+report.updatedUserName+"</span>";
+						result = result + '</div></td>';
 					}
 					
 					result = result + ' </tr>';
@@ -1898,7 +1927,22 @@ function budgetRequests(){
 	   
      });
 }
-
+$(document).on("mouseover", ".glyphicon-comment", function() { 
+	var localId = $(this).attr('id');
+	$("#rejectedMessage"+localId).addClass('app_error_mes_active');
+	});	
+	$(document).on("mouseleave", ".glyphicon-comment", function() { 
+	var localId = $(this).attr('id');
+	$("#rejectedMessage"+localId).removeClass('app_error_mes_active');
+});	
+	
+function rejectedMessage(local){ 
+	   $("#"+local).slideToggle(200);
+	   $(".timesheet_appr_table .glyphicon strong, .timesheet_appr_table .glyphicon").click(function(e) {
+	       e.stopPropagation();
+	   });	
+	   
+	}
 </script>
 <script>
 function deleteBudgetRequaet(budgetRequestedId){
@@ -2001,7 +2045,7 @@ function editBudgetrequest(budgetRequestedId){
 					result = result + '	    <div class="clearfix mb10">';
 					result = result + '	    <div class="clearfix mb10">';
 					result = result + '	      <div class="col-md-12">';
-					result = result + '	        <input type="text" class="form-control" value="'+json.budgetDescription+'" id="baseLine" name="baseLine" placeholder="Base Line *" field-name="Base Line" data-validation="required validate_Space validate_length length1-250">';
+					result = result + '	        <input type="text" class="form-control" value="'+json.budgetDescription+'" id="baseLine" name="baseLine" placeholder="Descrption *" field-name="Description" data-validation="required validate_Space validate_length length1-250">';
 					result = result + '	      </div>';
 					result = result + '	    </div>    ';                        
 				 
@@ -2021,16 +2065,9 @@ function editBudgetrequest(budgetRequestedId){
 					result = result + '	    <div class="clearfix mb10">';
 					result = result + '	      <div class="col-md-12">';
 					result = result + ' <div class="input-group">';
-					result = result + ' <div class="input-group-btn selp-custom-min selp-customMin">';
-					result = result + '       <select class="selectpicker" id="estimatedBudgetCurrency" name="estimatedBudgetCurrency" >';
-					result = result + '          <option '+ (json.estimatedBudgetCurrency == "INR" ? "selected" : '') +' value="INR" >INR</option>';
-					result = result + '          <option '+ (json.estimatedBudgetCurrency == "AUD" ? "selected" : '') +' value="AUD" >AUD</option>';
-					result = result + '          <option '+ (json.estimatedBudgetCurrency == "USD" ? "selected" : '') +' value="USD" >USD</option>';
-					result = result + '          <option '+ (json.estimatedBudgetCurrency == "GBP" ? "selected" : '') +' value="GBP" >GBP</option>';
-					result = result + '          <option '+ (json.estimatedBudgetCurrency == "SGD" ? "selected" : '') +' value="SGD" >SGD</option>';
-					result = result + '          <option '+ (json.estimatedBudgetCurrency == "EUR" ? "selected" : '') +' value="EUR" >EUR</option>';
-					result = result + '     </select>';
-					result = result + '     </div>';
+					result = result + '  <div class="input-group-btn tblminwidth-75" style="min-width: 65px !important;">';
+					result = result + '  <input type="text" class="pull-left btn btn-primary btn-block" id="estimatedBudgetCurrency" name="estimatedBudgetCurrency" value="${projectCurrency}" readonly>';
+					result = result + ' </div>';
 					result = result + '	        <input type="text" class="form-control " value="'+json.estimatedBudgetValue+'" id="estimatedBudget" name="estimatedBudget" placeholder="Estimated Budget *" field-name="Estimated Budget" data-validation="required validate_Space validate_float validate_length length1-16">';
 					result = result + ' </div>';
 					result = result + ' </div>';
@@ -2100,7 +2137,7 @@ function addBudgetRequestPopUp(){
 	result = result + '	    <div class="clearfix mb10">';
 	result = result + '	    <div class="clearfix mb10">';
 	result = result + '	      <div class="col-md-12">';
-	result = result + '	        <input type="text" class="form-control input-sm" value="" id="baseLine" name="baseLine" placeholder="Base Line *" field-name="Base Line" data-validation="required validate_Space validate_length length1-250">';
+	result = result + '	        <input type="text" class="form-control input-sm" value="" id="baseLine" name="baseLine" placeholder="Description *" field-name="Description" data-validation="required validate_Space validate_length length1-250">';
 	result = result + '	      </div>';
 	result = result + '	    </div>    ';                        
  
@@ -2120,16 +2157,9 @@ function addBudgetRequestPopUp(){
 	result = result + '	    <div class="clearfix mb10">';
 	result = result + '	      <div class="col-md-12">';
 	result = result + ' <div class="input-group">';
-	result = result + ' <div class="input-group-btn selp-custom-min selp-customMin">';
-	result = result + '       <select class="selectpicker" id="estimatedBudgetCurrency" name="estimatedBudgetCurrency" >';
-	result = result + '          <option ${SourceLeadWeb_currencyCode == "INR" ? "selected" : ''}>INR</option>';
-	result = result + '          <option ${SourceLeadWeb_currencyCode == "AUD" ? "selected" : ''}>AUD</option>';
-	result = result + '          <option ${SourceLeadWeb_currencyCode == "USD" ? "selected" : ''}>USD</option>';
-	result = result + '          <option ${SourceLeadWeb_currencyCode == "GBP" ? "selected" : ''}>GBP</option>';
-	result = result + '          <option ${SourceLeadWeb_currencyCode == "SGD" ? "selected" : ''}>SGD</option>';
-	result = result + '          <option ${SourceLeadWeb_currencyCode == "EUR" ? "selected" : ''}>EUR</option>';
-	result = result + '     </select>';
-	result = result + '     </div>';
+	result = result + '  <div class="input-group-btn tblminwidth-75" style="min-width: 65px !important;">';
+	result = result + '  <input type="text" class="pull-left btn btn-primary btn-block" id="estimatedBudgetCurrency" name="estimatedBudgetCurrency" value="${projectCurrency}" readonly>';
+	result = result + ' </div>';
 	result = result + ' 	<input type="text" value="" id="estimatedBudget" name="estimatedBudget" class="form-control" placeholder="Estimated Budget *"';
 	result = result + ' 		data-validation="required validate_Space validate_float validate_length length1-16" data-validation-optional="true" class="form-control" field-name="Estimated Budget" >';
 	result = result + ' </div>';
@@ -2194,9 +2224,9 @@ var orgLocationId = '${SourceLeadWeb_orgLocations.id}';
 		     		}
 		     		 
 		     		 if(opt.id == approverUserId){
-		        			output = output + "<option value='"+opt.id+"' selected>"+opt.firstName+" "+opt.lastName+" ("+opt.userType+")</option>";
+		        			output = output + "<option value='"+opt.id+"' selected>"+opt.fullname+" ("+opt.userType+")</option>";
 		        		}else{
-		        			output = output + "<option value='"+opt.id+"'> "+opt.firstName+" "+opt.lastName+" ("+opt.userType+")</option>";
+		        			output = output + "<option value='"+opt.id+"'> "+opt.fullname+" ("+opt.userType+")</option>";
 		        		}
 		     		 
 	     		}

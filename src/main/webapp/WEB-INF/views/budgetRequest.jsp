@@ -249,7 +249,7 @@ function acceptBudgetRequset(budgetRequestedId){
 				type : "POST",
 				url : sourceleadUrl+"/acceptBudgetRequest?${_csrf.parameterName}=${_csrf.token}&budgetRequestedId="+budgetRequestedId+"&userId="+userId,
 				success : function(result) {
-					location.replace(sourceleadUrl+"/dashboard/${SourceLeadWeb_orgLocationId}");  
+					getBudgetRequestList();
 				},
 			}); 
 }
@@ -286,7 +286,7 @@ function saveBudgetReason(budgetRequestedId){
 				url : sourceleadUrl+"/saveBudgetRequestReason?${_csrf.parameterName}=${_csrf.token}",
 				success : function(result) {
 					cancelTermination();
-	   			 location.replace(sourceleadUrl+"/dashboard/${SourceLeadWeb_orgLocationId}"); 
+					getBudgetRequestList();
 				},
 			}); 
 }
@@ -415,7 +415,7 @@ function saveOnHoldBudgetReason(){
 				url : sourceleadUrl+"/onHoldBudgetRequest?${_csrf.parameterName}=${_csrf.token}",
 				success : function(result) {
 					cancelTermination();
-	   			 location.replace(sourceleadUrl+"/dashboard/${SourceLeadWeb_orgLocationId}"); 
+					getBudgetRequestList();
 				},
 			}); 
 }
@@ -441,7 +441,7 @@ function saveBudgetRequest(){
 						data :formData,
 						url : sourceleadUrl+"/saveBudgetRequest?${_csrf.parameterName}=${_csrf.token}",
 						success : function(result) {
-							 location.replace(sourceleadUrl+"/dashboard/${SourceLeadWeb_orgLocationId}"); 
+							getBudgetRequestList();
 							 editCloseDiv();
 						},
 					}); 

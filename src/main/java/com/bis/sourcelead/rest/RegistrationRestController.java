@@ -29,6 +29,7 @@ import com.bis.sourcelead.SourceleadPasswordEncoder;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.AddUserDTO;
 import com.bis.sourcelead.dto.CandidateDTO;
+import com.bis.sourcelead.dto.CrowdSourcingUserRegistrationDTO;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.PasswordResets;
@@ -263,35 +264,23 @@ public class RegistrationRestController {
 	
 	
 	 @RequestMapping(value = "/registerAsProfessional" , method = RequestMethod.POST)
-	 public  String registerAsProfessional(@RequestParam(value="json", required=false) String json,
+	 public  String registerAsProfessional(CrowdSourcingUserRegistrationDTO csuRegistrationDTOO,
 			 @RequestParam(value="contactUUID", required=false) String contactUUID,
 			 HttpServletRequest request) throws Exception {
-		 	
-		 json = "{"+json+"}";
-		 
-		 JSONObject jsonObj = new JSONObject(json);
-		 	
-		 String result = registrationService.saveProfessional(jsonObj,contactUUID);
-		 
+		
+		 String result = registrationService.saveProfessional(csuRegistrationDTOO,contactUUID);
 		 SourceLeadSessionManager.setSessionAttribute(request, "crowdSourcingRegistrationSuccessMsg",
 					"Username sent to your mail.");
-	 	
 	 	
 		 return result;
 	   }
 	 
 	 @RequestMapping(value = "/registerAsIndividualRecruiter" , method = RequestMethod.POST)
-	 public  String registerAsIndividualRecruiter(@RequestParam(value="json", required=false) String json, HttpServletRequest request) throws Exception {
-		 	
-		 json = "{"+json+"}";
-		 
-		 JSONObject jsonObj = new JSONObject(json);
-		 	
-		 String result = registrationService.saveIndividualRecruiter(jsonObj);
-		 
+	 public  String registerAsIndividualRecruiter(CrowdSourcingUserRegistrationDTO csUserRegistrationDTO, HttpServletRequest request) throws Exception {
+		
+		 String result = registrationService.saveIndividualRecruiter(csUserRegistrationDTO);
 		 SourceLeadSessionManager.setSessionAttribute(request, "crowdSourcingRegistrationSuccessMsg",
 					"Username sent to your mail.");
-	 	
 	 	
 		 return result;
 	   }
