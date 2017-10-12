@@ -86,15 +86,7 @@
 	<script src="resources/reports/light.js?staticTime=${staticTime}"></script>
 </c:if>
 
-<c:if test='${viewPage == "reports/requirementAssignToReports"}'>
-	 <script src="resources/js/pie.js?staticTime=${staticTime}"></script> 
-	 <script src="resources/js/amcharts.js?staticTime=${staticTime}"></script> 
-	 <script src="resources/js/serial.js?staticTime=${staticTime}"></script> 
-	 <script src="resources/reports/export.min.js?staticTime=${staticTime}"></script> 
-	 <script src="resources/js/themes/light.js?staticTime=${staticTime}"></script> 
- </c:if>
-
-<c:if test='${viewPage == "reports/requirementAssignToReports"}'>
+<c:if test='${viewPage == "reports/requirementAssignToReports" || viewPage == "reports/requirementAssignToReports" || viewPage == "reports/vendorsReport"}'>
 	 <script src="resources/js/pie.js?staticTime=${staticTime}"></script> 
 	 <script src="resources/js/amcharts.js?staticTime=${staticTime}"></script> 
 	 <script src="resources/js/serial.js?staticTime=${staticTime}"></script> 
@@ -103,27 +95,24 @@
  </c:if>
 
 
- <c:if test='${viewPage == "reports/vendorsReport"}'>
-	 <script src="resources/js/pie.js?staticTime=${staticTime}"></script> 
-	 <script src="resources/js/amcharts.js?staticTime=${staticTime}"></script> 
-	 <script src="resources/js/serial.js?staticTime=${staticTime}"></script> 
-	 <script src="resources/reports/export.min.js?staticTime=${staticTime}"></script> 
-	 <script src="resources/js/themes/light.js?staticTime=${staticTime}"></script> 
- </c:if>
-
-<c:if test='${viewPage == "professional/professionalDashboard"}'>
+<c:if test='${viewPage == "professional/professionalDashboard" || viewPage == "recruiter/recruiterDashboard" }'>
 	<script src="resources/js/amcharts.js?staticTime=${staticTime}"></script>
 	<script src="resources/js/serial.js?staticTime=${staticTime}"></script>
 	<script src="resources/js/light.js?staticTime=${staticTime}"></script>
 	<script src="resources/js/pie.js?staticTime=${staticTime}"></script>
  </c:if>
  
- 
- <c:if test='${viewPage == "recruiter/recruiterDashboard"}'>
-	 <script src="resources/js/amcharts.js?staticTime=${staticTime}"></script>
+ <c:if test='${viewPage == "leavemanagement/applyLeave"}'>
+    <script src="resources/js/amcharts.js?staticTime=${staticTime}"></script>
 	<script src="resources/js/serial.js?staticTime=${staticTime}"></script>
-	<script src="resources/js/light.js?staticTime=${staticTime}"></script>
 	<script src="resources/js/pie.js?staticTime=${staticTime}"></script>
+ </c:if>
+ 
+ <c:if test='${viewPage == "leavemanagement/addLeaveType"}'>
+	<link href="resources/css/summernote.css?staticTime=${staticTime}" rel="stylesheet">
+	<link href="resources/css/bootstrap-colorpicker.min.css?staticTime=${staticTime}" rel="stylesheet">
+	<script src="resources/js/bootstrap-colorpicker.min.js?staticTime=${staticTime}"></script> 
+	<script src="resources/js/summernote.js?staticTime=${staticTime}"></script>
  </c:if>
  
 <!--  Amcharts -->

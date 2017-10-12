@@ -452,7 +452,7 @@ public class CandidateUploadFileServiceImpl implements CandidateUploadFileServic
 			
 			if(row.getCell(11) !=null && !"".equalsIgnoreCase(row.getCell(11).toString())){
 				String expectedRate=getCellValueAsString(row.getCell(11), fileName);
-				expectedRate = expectedRate.replaceAll("[^\\d.]", "");
+				
 				if(expectedRate !=null && !"".equalsIgnoreCase(expectedRate)){
 					boolean isValidated =isExpectedRateValid(expectedRate);
 					if(isValidated == false){
@@ -802,7 +802,7 @@ public class CandidateUploadFileServiceImpl implements CandidateUploadFileServic
 	 */
 	private boolean isExpectedRateValid(String expectedRate)
 	{
-		String regex = "^[0-9]";
+		String regex = "^[0-9\b]+$";
 		boolean flag;
 		String expRate = expectedRate.trim();
 		if (expRate.length() >= 0 && expRate.length() <= 8) {
