@@ -758,7 +758,7 @@ $(document).ready(function () {
           <div class="clearfix"></div>
          <div class="form-group">
 				<div class="ml">
-					<c:set var="val" value="${requirement.isClientJob}" />
+<%-- 					<c:set var="val" value="${requirement.isClientJob}" /> --%>
 					<c:choose>
 						<c:when test="${val == 'Y'}">
 							<input  type="checkbox" name="isTemplate"
