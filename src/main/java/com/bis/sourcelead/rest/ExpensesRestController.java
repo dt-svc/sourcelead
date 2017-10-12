@@ -28,6 +28,7 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -567,12 +568,13 @@ public class ExpensesRestController {
 		return resultJson;
 	}
 	
-	@RequestMapping(value = "/employeeExpensesListByStage")
-	public String employeeExpensesListByStage(HttpServletRequest request, String expenseStatus) throws Exception
+	@RequestMapping(value = {"/employeeExpensesListByStage","rest/employeeExpensesListByStage"},method=RequestMethod.GET)
+	public List<ExpensesApproverHierarchy> employeeExpensesListByStage(HttpServletRequest request, String expenseStatus, @RequestParam(value = "orgLocation", required = false) String orgLocation, @RequestParam(value = "user", required = false) String user) throws Exception
 	{
-		String resultJson = "";
-		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		User loginUser = userService.getUserById(Long.parseLong(user));
+		OrgLocations orgLoc = orgLocationService.getOrgLocations(Long.parseLong(orgLocation));
+		//User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		//OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		List<ExpensesApproverHierarchy> expApperoverHierarchy = expensesService.getEmployeeExpensesApproverHierarchyListByuserIdAndOrgLocationIdForApproverLogin(loginUser.getId(), orgLoc.getId(), expenseStatus);
 		for (ExpensesApproverHierarchy expensesApproverHierarchy : expApperoverHierarchy) {
 			if (null != expensesApproverHierarchy.getExpenseId().getEndDate()) {
@@ -629,7 +631,6 @@ public class ExpensesRestController {
 				}
 			}
 		}
-		resultJson = commonUtil.toJSON(expApperoverHierarchy);
-		return resultJson;
+		return expApperoverHierarchy;
 	}
 }

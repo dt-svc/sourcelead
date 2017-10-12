@@ -62,10 +62,11 @@ function fileUpload(id, type, formId, name, orgId, orgLocationId,url) {
 }
 
 function applyData(data, formId, name, id) {
-	if($("#"+formId+" input[name*="+name+"][data-id="+id+"]").length > 0) {
-		$("#"+formId+" input[name*="+name+"][data-id="+id+"]").remove();
+	 
+	if($("#"+formId+" input[name*='"+name+"'][data-id="+id+"]").length > 0) {
+		$("#"+formId+" input[name*='"+name+"'][data-id="+id+"]").remove();
 	}
-	var i = $("#"+formId+" input[type=hidden][name*="+name+"]").length / 3;
+	var i = $("#"+formId+" input[type=hidden][name*='"+name+"']").length / 3;
 	
 	for(var e in data) {
 		var data1 = data[e];
