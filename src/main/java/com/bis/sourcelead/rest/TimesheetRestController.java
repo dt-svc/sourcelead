@@ -1583,7 +1583,7 @@ public class TimesheetRestController {
 		     	    	}
 		     	    	
 		     	    	ArrayList<TimesheetSubmissions> timesheetSubmissionsList = new ArrayList<TimesheetSubmissions>();
-		    	    	List<ProjectApproverHierarchy> hierarchyList = projectApproverHierarchyService.getApproverUsersByProjectId(projectMember.getProjects().getId());
+		    	    	List<ProjectApproverHierarchy> hierarchyList = projectApproverHierarchyService.getApproverUsersByProjectMemberMasterCandidateIdAndProjectId(projectMember.getMasterCandidateId().getId(), projectMember.getProjects().getId());
 		    	        if(hierarchyList != null && !hierarchyList.isEmpty()){
 		    					for(ProjectApproverHierarchy hierarchy : hierarchyList){
 		    						SubmissionApproverHierarchy saHierarchy = new SubmissionApproverHierarchy();
@@ -1907,7 +1907,7 @@ public class TimesheetRestController {
 									&&  projectMember.getProjects() != null
 									&& frequencyStartDate != null
 									&& frequencyEndDate != null ){
-								sendEmailToManagerAtTimesheetSubmissions(projectMember.getProjects().getId(),frequencyStartDate,frequencyEndDate,loginUser,loginOrgLocation,loginOrgCode);
+								sendEmailToManagerAtTimesheetSubmissions(projectMember.getMasterCandidateId().getId(),projectMember.getProjects().getId(),frequencyStartDate,frequencyEndDate,loginUser,loginOrgLocation,loginOrgCode);
 							}
 						}
 					}
@@ -1977,9 +1977,8 @@ public class TimesheetRestController {
 	 * @param loginOrgCode
 	 * @throws Exception
 	 */
-	private void sendEmailToManagerAtTimesheetSubmissions(Long projectId,Date frequencyStartDate,Date frequencyEndDate, User loginUser, OrgLocations loginOrgLocation, String loginOrgCode) throws Exception {
-		List<ProjectApproverHierarchy> approverHierarchyList = projectApproverHierarchyService.getApproverUsersByProjectId(projectId);
-		
+	private void sendEmailToManagerAtTimesheetSubmissions(Long masterCanidateId,Long projectId,Date frequencyStartDate,Date frequencyEndDate, User loginUser, OrgLocations loginOrgLocation, String loginOrgCode) throws Exception {
+		List<ProjectApproverHierarchy> approverHierarchyList = projectApproverHierarchyService.getActiveOrgApproverUsersByProjectMemberMasterCandidateIdAndProjectId(masterCanidateId,projectId);
 		for(ProjectApproverHierarchy approver : approverHierarchyList){
 				
 			if(!loginUser.getUserCode().equalsIgnoreCase(approver.getApproverUserId().getUserCode())){
@@ -2078,7 +2077,7 @@ public class TimesheetRestController {
 	    	timesheetSubmissions.setWeekcomments("");
 	    	
 	    	ArrayList<TimesheetSubmissions> timesheetSubmissionsList = new ArrayList<TimesheetSubmissions>();
-	    	List<ProjectApproverHierarchy> hierarchyList = projectApproverHierarchyService.getApproverUsersByProjectId(projectMember.getProjects().getId());
+	    	List<ProjectApproverHierarchy> hierarchyList = projectApproverHierarchyService.getApproverUsersByProjectMemberMasterCandidateIdAndProjectId(projectMember.getMasterCandidateId().getId(), projectMember.getProjects().getId());
 	    	HashSet<SubmissionApproverHierarchy> saHierarchyList = new HashSet<SubmissionApproverHierarchy>();
 	        if(hierarchyList != null && !hierarchyList.isEmpty()){
 					for(ProjectApproverHierarchy hierarchy : hierarchyList){
