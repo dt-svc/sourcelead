@@ -744,7 +744,7 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
                 table.completeRow();
             }
 	        
-	        document.addTitle("Candiate List Table");
+	        document.addTitle("TimeSheet Approval List");
 	        table.setSpacingBefore(15f);
 	        document.add(table);
 	        logger.info("Pdf table created !!");
