@@ -2,6 +2,7 @@ package com.bis.sourcelead.elk.index.helper;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.HashSet;
 
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -13,9 +14,12 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.RequirementDTO;
 import com.bis.sourcelead.elk.index.RequirementIndex;
 import com.bis.sourcelead.entity.Requirement;
+import com.bis.sourcelead.entity.RequirementAssignTo;
+import com.bis.sourcelead.entity.Team;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.RequirementApproverHierarchyService;
 import com.bis.sourcelead.service.RequirementService;
+import com.bis.sourcelead.service.TeamService;
 import com.bis.sourcelead.service.UserService;
 
 @Component
@@ -25,6 +29,10 @@ public class RequirementHelper {
 	private RequirementService requirementService;
 	@Autowired
 	private UserService userService;
+	
+	@Autowired
+	private TeamService teamService;
+	
 	@Autowired
 	private RequirementApproverHierarchyService requirementApproverHierarchyService;
 	
@@ -41,7 +49,7 @@ public class RequirementHelper {
 		return (str == null || "".equals(str.trim()));
 	}
 	
-	public RequirementIndex populateRequirementIndex(Requirement requirement, RequirementDTO requirementDTO) throws Exception
+	public RequirementIndex populateRequirementIndex(Requirement requirement,RequirementDTO requirementDTO) throws Exception
 	{
 		RequirementIndex requirementIndex = new RequirementIndex();
 		if (null != requirement) {
@@ -121,18 +129,27 @@ public class RequirementHelper {
 				requirementIndex.setReqLevel1ApproverUserId(sequentialApprovers1.split(","));
 				requirementIndex.setReqLevel2ApproverUserId(sequentialApprovers2.split(","));
 			}
-			if (StringUtils.isNotBlank(requirementDTO.getAssignedToMaxCount())) {
-				if (StringUtils.isNotBlank(requirementDTO.getAssignedTeamId())) {
-					String assignedTeamId = requirementDTO.getAssignedTeamId();
-					String[] teamOwnerUserId = assignedTeamId.split(",");
-					requirementIndex.setTeamOwnerUserId(teamOwnerUserId);
+			HashSet<String> teamOwnerUserId = new HashSet<>();
+			HashSet<String> teamAssignUserId = new HashSet<>();
+			if(requirement.getRequirementAssignTo() != null &&  !requirement.getRequirementAssignTo().isEmpty()){
+				
+				for(RequirementAssignTo assignTo: requirement.getRequirementAssignTo()){
+					if(assignTo.getAssignUserId() != null && assignTo.getAssignUserId().getId() != null)
+						teamAssignUserId.add(assignTo.getAssignUserId().getId().toString());
+					
+					if(assignTo.getTeamId() != null && assignTo.getTeamId().getId() != null){
+						Team team = teamService.getTeamByTeamId(assignTo.getTeamId().getId());
+						if(team.getOwnerUserId() != null && team.getOwnerUserId().getId() != null)
+						teamOwnerUserId.add(team.getOwnerUserId().getId().toString());
+					}
+						
 				}
-				if (requirementDTO.getAssignUsers() != null) {
-					String[] teamAssignUserId = requirementDTO.getAssignUsers().toArray(new String[requirementDTO.getAssignUsers().size()]);
-					requirementIndex.setTeamAssignUserId(teamAssignUserId);
-				}
-			}
-		}
+				
+				
+			requirementIndex.setTeamOwnerUserId(teamOwnerUserId.toArray(new String[teamOwnerUserId.size()]));
+			requirementIndex.setTeamAssignUserId(teamAssignUserId.toArray(new String[teamAssignUserId.size()]));
+		     }
+		   }
 			// requirementIndex.setRequirementSubmissionStatus(requirement.getRequirementSubmissionStatus().toString());
 			requirementIndex.setIsTemplate(requirement.getIsTemplate());
 			// education

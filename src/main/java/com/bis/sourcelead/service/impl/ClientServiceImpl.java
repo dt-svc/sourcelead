@@ -372,7 +372,7 @@ public class ClientServiceImpl implements ClientService {
 				orgSpoc.setUpdatedBy(user.getUserCode());
 				orgSpocService.addOrgSpoc(orgSpoc);
 
-				if (("Client".equals(responderType) || "Vendor".equals(responderType))	&& (StringUtils.isNotBlank(clientDTO.getIsMailSent()) && ("Y".equals(clientDTO.getIsMailSent())))) {
+				if (("Client".equals(responderType)) && (StringUtils.isNotBlank(clientDTO.getIsMailSent()) && ("Y".equals(clientDTO.getIsMailSent())))) {
 					userService.sendEmailToClientOrVendor(orgSpoc.getUUID(), spocUser, ownerUser, user,
 							spocUser.getTempPwd(), responderType, loginOrg, clientOrgLocations.getOrg(),
 							clientOrgLocations, orgLocations);
@@ -472,10 +472,12 @@ public class ClientServiceImpl implements ClientService {
 		}
 
 		for (OrgRelations orgRelation : orgRelationsList) {
+			clientOrgLocations.setVendorOrgRelationId(orgRelation.getId());
 			saveOrUpdateClientVendorElkDocument(org, clientOrgLocations, responderType, orgSpoc, orgRelation,
 					submissionTemplate, user, orgLocations);
 
 		}
+		clientOrgLocations.setVendorSpocId(spocUser.getId());
 		
 		return clientOrgLocations;
 	}
@@ -519,6 +521,7 @@ public class ClientServiceImpl implements ClientService {
 			projectClients.setOrgLocationsId(orglocations);
 			projectClients.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
 			projectClients.setStatus(1);
+			projectClients.setLevel(1);
 			projectClients.setCreatedDate(new Date());
 			projectClients.setUpdatedDate(new Date());
 			projectClients.setCreatedBy(approverUser);
@@ -553,15 +556,6 @@ public class ClientServiceImpl implements ClientService {
 
 		if (StringUtils.isNotBlank(clientDTO.getOrgName())) {
 			org.setOrgName(clientDTO.getOrgName());
-		}
-		if (StringUtils.isNotBlank(clientDTO.getAddress())) {
-			org.setClientAddress(clientDTO.getAddress());
-		}
-		if (StringUtils.isNotBlank(clientDTO.getBillingAddress())) {
-			org.setClientBillingAddress(clientDTO.getBillingAddress());
-		}
-		if (StringUtils.isNotBlank(clientDTO.getPaymentTerm())) {
-			org.setPaymentTerm(clientDTO.getPaymentTerm());
 		}
 		if (StringUtils.isNotBlank(clientDTO.getCompanyWebsite())) {
 			org.setWebSite(convertWebsite(clientDTO.getCompanyWebsite()));

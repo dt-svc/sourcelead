@@ -61,6 +61,7 @@ import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.SubmissionTemplate;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
+import com.bis.sourcelead.entity.VendorOnboarding;
 import com.bis.sourcelead.enums.ApplicantSubmissionStatus;
 import com.bis.sourcelead.service.ClientService;
 import com.bis.sourcelead.service.ClientVendorExport;
@@ -81,6 +82,7 @@ import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.SubmissionTemplateService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
+import com.bis.sourcelead.service.VendorOnboardService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -166,6 +168,9 @@ public class ClientRestController {
 	
 	@Autowired
 	private UserRoleDao userRoleDao;
+	
+	@Autowired
+	VendorOnboardService vendorOnboardService;
 	
 	/**
 	 * Handles to get Orgs
@@ -267,30 +272,6 @@ public class ClientRestController {
 		return "clientDashboard";
 	}
 	
-	
-	
-	
-	@PreAuthorize("hasRole('ROLE_CREATE_VENDOR')")
-	@RequestMapping(value = "/saveVendor", method = RequestMethod.POST)
-	@ResponseBody
-	public OrgLocations saveVendor(ClientDTO clientDTO,AddUserDTO addUserDTO,CandidateDTO candidateDTO,
-			@RequestParam(value = "responderType", required = false) String responderType,
-			@RequestParam(value = "orgLocationId", required = false) Long orgLocationId, HttpServletRequest request)
-			throws Exception {
-
-		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
-		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-
-		if (null != orgLocationId) {
-			clientDTO.setOrgLocationId(orgLocationId.toString());
-		}
-
-		OrgLocations invitedOrgLocation = clientService.storeClient(clientDTO,addUserDTO,candidateDTO, user, orgLocation, responderType, org);
-		SourceLeadSessionManager.setSessionAttribute(request, "vendorCreateMsg", "Success!! New Vendor created");
-		return invitedOrgLocation;
-	}
-		
 		
 		 @RequestMapping(value = "/validateClientOrVendorEmail",  method = RequestMethod.POST)
 		    public @ResponseBody String validateClientOrVendorEmail(@RequestParam(value="email", required=false) String email) throws Exception {
@@ -1745,6 +1726,14 @@ public class ClientRestController {
 									 clientVendorContactsIndex.setSpocUserId(clientVendorContactsIndex.getClientUserId());
 									 clientVendorContactsIndex.setOwnerUserId(clientVendorContactsIndex.getVendorUserId());
 								}
+								
+								VendorOnboarding onboard = vendorOnboardService.getVendorOnboardingByOrgRelationId(clientVendorContactsIndex.getOrgRelationId());
+								clientVendorContactsIndex.setOnboardUUID(onboard.getOnboardUUID());
+								
+								OrgSpoc orgSpoc = orgSpocService.getOrgSpocById(clientVendorContactsIndex.getId());
+								Notifications notifications = notificationsService.getNotificationBySpocUUID(orgSpoc.getUUID());
+								clientVendorContactsIndex.setNotificationUUID(notifications.getUUID());
+								
 						 }
 					}	
 					

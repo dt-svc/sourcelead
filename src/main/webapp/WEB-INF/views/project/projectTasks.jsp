@@ -130,7 +130,7 @@ function projectTask(projectId, status) {
 <!-- this script is for Tasks list functionality at Projects screen -->
 <script>
 	function projectTaskList() {
-		
+		var projectClientUUID = '${projectClientUUID}';
 		var projectId = $("#projectId").val();
 		var status =  $("#projectStatus").val();
 		var result = "";
@@ -193,7 +193,7 @@ function projectTask(projectId, status) {
 							 
 							result = result + '<tr>';
 							'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_PROJECT_TASKS\')">'; 
-							result = result+ '<td><div class="tbldata-dotdot"><a href="'+sourceleadUrl+'/projectTaskSummary?taskUUID='+opt.projectTasksUUID+'" title="'+generatedId+' '+ opt.taskName+ '" >'+generatedId+' '+ opt.taskName+ '</a></div></td>';
+							result = result+ '<td><div class="tbldata-dotdot"><a href="'+sourceleadUrl+'/projectTaskSummary?taskUUID='+opt.projectTasksUUID+'&projectClientUUID='+projectClientUUID+'" title="'+generatedId+' '+ opt.taskName+ '" >'+generatedId+' '+ opt.taskName+ '</a></div></td>';
 							result = result	+ '<td><div class="tbldata-dotdot_50">'+opt.taskTypes+ '</div></td>';
 							result = result	+ '<td><div class="tbldata-dotdot_50">'+taskPriotiry+ '</div></td>';
 							result = result	+ '<td><div class="tbldata-dotdot-100"><span >'+taskAssignedUsers+'</span ></div></td>';
@@ -523,9 +523,8 @@ function editCancel(){
 			result = result	+ '           <label class="col-md-4">Priority</label>';
 			result = result	+ '           <div class="col-md-8 dropdown-select">';
 			result = result	+ '             <select class="form-control" id="priority" name="priority">';
-			result = result	+ '               <option value="">-- Select Priority --</option>';
 			result = result	+ '           <c:forEach var="priority" items="${taskPriorityList}"> ';        
-			result = result	+ '		             <option value="${priority.id}">${priority.name}</option>';   
+			result = result	+ '		             <option value="${priority.id}" ${priority.name  == "P2" ? "selected" : ''} >${priority.name}</option>';   
 			result = result	+ '			</c:forEach>   ';	
 			result = result	+ '             </select>'; 
 			result = result	+ '           </div>';

@@ -31,6 +31,7 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.bis.sourcelead.SourceleadPasswordEncoder;
 import com.bis.sourcelead.dto.AddUserProfileDTO;
+import com.bis.sourcelead.dto.PasswordSettingsDTO;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
@@ -125,17 +126,13 @@ public class UserProfileRestController {
 	
 
 	@RequestMapping(value = "/passwordSettings", method = RequestMethod.POST)
-	public String passwordSettings(@RequestParam(value = "json", required = false) String json,
+	public String passwordSettings(PasswordSettingsDTO passwordSettingsDTO,
 			HttpServletRequest request) throws Exception {
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
-		json = "{" + json + "}";
-		JSONObject jsonObj = new JSONObject(json);
-		Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
-		UserProfile userProfile = gson.fromJson(json, UserProfile.class);
 
-		if (sourceleadPasswordEncoder.matches(userProfile.getCurrentPassword(), user.getPassword())) {
-			user.setPassword(sourceleadPasswordEncoder.encode(userProfile.getPassword()));
+		if (sourceleadPasswordEncoder.matches(passwordSettingsDTO.getCurrentPassword(), user.getPassword())) {
+			user.setPassword(sourceleadPasswordEncoder.encode(passwordSettingsDTO.getPassword()));
 			try {
 				userService.addUser(user);
 			} catch (Exception e) {
@@ -144,7 +141,7 @@ public class UserProfileRestController {
 			SourceLeadSessionManager.setSessionAttribute(request, "resetPwdMsg",
 					"Your password has reset successfully");
 			userService.passwordResetMailToLoginUser(user,orgLocations);
-			return "home";
+			return "success";
 		} else {
 			return "Invalid Password";
 		}

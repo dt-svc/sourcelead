@@ -2285,7 +2285,7 @@ function getUserList(teamType){
 			    	     $("#usersGrid").removeAttr("style");
 	                	    var result = '';
 	                	    result = result+"<input type='hidden' name='assignedTeamId' id='assignedTeamId' value='"+teamType+"'/>";
-	                		result = result +'       <table id="example" class="display table table-stripped table-bordered" cellspacing="0" width="100%" >';
+	                		result = result +'       <table id="assignToDataTableId" class="display table table-stripped table-bordered" cellspacing="0" width="100%" >';
 	                		result = result +'           <thead>';
 	                		result = result +'           <tr>';
 	                		result = result +'             <th style="padding:2px 15px !important;"><input type="checkbox" id="checkAll" onclick="toggle(this); handleClick();"></th>';
@@ -2302,11 +2302,19 @@ function getUserList(teamType){
 		                    	 var opt = json[i]; 
 		                    	 result = result +'<tr>';
 		                    	 var localCheckedStatus = "";
+		                    	 
 		                    	 $(".defaultAssignCheckBox").each(function() {
          							var localValue = this.value;
-         							if(localValue == opt.id){
-         								localCheckedStatus = "checked";
-         							}  
+         						    var assignedUserId = '' ;
+         						    var assignedTeamId = '' ;
+         							if(localValue != null && localValue != '' && localValue != 'undefined'){
+         								var res = localValue.split(",")
+         								assignedUserId = res[0];
+         								assignedTeamId = res[1];
+	         							if(assignedUserId == opt.id){
+	         								localCheckedStatus = "checked";
+	         							}  
+         							}
 		                    	 });
 		                    	 
 		                    	 var lastName = '';
@@ -2327,16 +2335,18 @@ function getUserList(teamType){
 		                    		 result = result +'             <td><input id="'+opt.id+'"  class="myCheckbox" onclick="handleClick();" checked="checked" value="'+opt.id+','+opt.assignedTeamId+'"  type="checkbox" name="team" '+localCheckedStatus+' data-validation="required"></td>';
 		                    	 }else if('' != assignedTeam){
 		                    		 if(localCheckedStatus == "checked"){
-			                    		 result = result +'  <td><i class="text-muted fa fa-check-square" aria-hidden="true"></i></td>';
+			                    		 //result = result +'  <td><i class="text-muted fa fa-check-square" aria-hidden="true"></i></td>';
+		                    			 result = result +'  <td><input id="'+opt.id+'"  class="myCheckbox" onclick="handleClick();" checked="checked" value="'+opt.id+','+opt.assignedTeamId+'"  type="checkbox" name="team" '+localCheckedStatus+' data-validation="required" ></td>';
 		                    		 }else{
-		                    		 	 result = result +'  <td><input id="'+opt.id+'"  class="myCheckbox" onclick="handleClick();" checked="checked" value="'+opt.id+','+opt.assignedTeamId+'"  type="checkbox" name="team" '+localCheckedStatus+' data-validation="required" ></td>';
+		                    		 	 result = result +'  <td><input id="'+opt.id+'"  class="myCheckbox" onclick="handleClick();"  value="'+opt.id+','+opt.assignedTeamId+'"  type="checkbox" name="team" '+localCheckedStatus+' data-validation="required" ></td>';
 		                    		 }
 		                    	 }else if(localCheckedStatus == "checked"){
-		                    		 result = result +'  <td><i class="text-muted fa fa-check-square" aria-hidden="true"></i></td>';
-		                    		 //result = result +'  <td><input id="'+opt.id+'"  class="myCheckbox" onclick="handleClick();" value="'+opt.id+'"  type="checkbox" name="team" '+localCheckedStatus+' data-validation="required" ></td>';
+		                    		 //result = result +'  <td><i class="text-muted fa fa-check-square" aria-hidden="true"></i></td>';
+		                    		 result = result +'  <td><input id="'+opt.id+'"  class="myCheckbox" onclick="handleClick();" checked="checked" value="'+opt.id+','+opt.assignedTeamId+'"  type="checkbox" name="team" '+localCheckedStatus+' data-validation="required" ></td>';
 		                    	 }else{
 		                    		 if(localCheckedStatus == "checked"){
-			                    		 result = result +'  <td><i class="text-muted fa fa-check-square" aria-hidden="true"></i></td>';
+			                    		 //result = result +'  <td><i class="text-muted fa fa-check-square" aria-hidden="true"></i></td>';
+			                    		 result = result +'  <td><input class="myCheckbox"  type="checkbox" onclick="handleClick();" checked="checked"></td>';
 		                    		 }else{
 		                    			 
 		                    			 var selectedUserIdForAssign = "";
@@ -2371,12 +2381,12 @@ function getUserList(teamType){
 	                 	   result = result +'   </div>'; 
 	                 	   $("#usersGrid").empty(); 
 	                       $("#usersGrid").append(result); 
-	                       pagination(); 
+	                       paginations(); 
 			    		}
                  	}else{
                 	 	$("#usersGrid").removeAttr("style");
   	    	        	var result ="";
-		        		result = result +'       <table id="example" class="display table table-stripped table-bordered" cellspacing="0" width="100%" >';
+		        		result = result +'       <table id="assignToDataTableId" class="display table table-stripped table-bordered" cellspacing="0" width="100%" >';
 		        		result = result +'           <thead>';
 		        		result = result +'           <tr>';
 		        		result = result +'             <th class="sorting_disabled" rowspan="1" colspan="1" style="width: 30px;"></th>';
@@ -2395,7 +2405,7 @@ function getUserList(teamType){
                  	    result = result +'   </div>'; 
 						$("#usersGrid").empty();
 					    $("#usersGrid").append(result); 
-					    pagination(); 
+					    paginations(); 
                 	}
           		},
        		}); 
@@ -2535,14 +2545,14 @@ function getTeamsList(reqId){
 --%>
 
 <script>
-function pagination(){
-    $("#example").DataTable( { 
+
+function paginations(){
+    $("#assignToDataTableId").DataTable( { 
     	"scrollCollapse": false,
     	"lengthMenu": [[5, 10, 15, -1], [5, 10, 15, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
-    	"ordering": true,
-    	"bPaginate":false,
+    	"ordering": false,
     	"aoColumnDefs": [{
 	           'bSortable': false,
 	           'aTargets': 0
@@ -2559,7 +2569,7 @@ function pagination(){
 function assignMembers() {
 	handleTeamRoleClick();
 	var result = "";
-	var oTable = $('#example').DataTable();
+	var oTable = $('#assignToDataTableId').DataTable();
 	var rowcollection =  oTable.$(".myCheckbox:checked", {"page": "all"});
 	//var totalCount = $("[type='checkbox']:checked").length;
 	var count = 1;
@@ -2576,7 +2586,7 @@ function assignMembers() {
 		$('#assignbtnId').attr("data-dismiss","modal");
 		rowcollection.each(function(index,elem){
 		    var checkbox_value = $(elem).val();
-		    result = result+ "<input type='hidden' class='defaultCheckBox' name='assignUsers["+(count-1)+"]' id='assignUserId"+count+"' value='"+checkbox_value+"' />";
+		    result = result+ "<input type='hidden' class='defaultAssignCheckBox' name='assignUsers["+(count-1)+"]' id='assignUserId"+count+"' value='"+checkbox_value+"' />";
 		    count++;
 		});
 		result = result+"<input type='hidden' name='assignedToMaxCount' id='assignedToMaxCount' value='"+count+"'/>";

@@ -85,4 +85,10 @@ public class VendorOnboardTemplateServiceImpl implements VendorOnboardTemplateSe
 		return vendorOnboardTemplateDao.getVendorOnBoardingTemplateByTemplateUUID(templateUUID);
 	}
 
+	@Override
+	public List<VendorOnboardingTemplate> getVendorOnBoardingFinishedTemplatesList(Long orgLocationId)
+			throws Exception {
+		return vendorOnboardTemplateDao.getVendorOnBoardingFinishedTemplatesList(orgLocationId);
+	}
+
 }

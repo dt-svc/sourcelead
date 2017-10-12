@@ -5,7 +5,9 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.ProjectTaskActivityDao;
+import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.ProjectTaskActivity;
 import com.bis.sourcelead.entity.ProjectTasks;
 import com.bis.sourcelead.entity.User;
@@ -45,7 +47,36 @@ public class ProjectTaskActivityServiceImpl implements ProjectTaskActivityServic
 		 projectTaskActivity.setCreatedDate(commonUtil.currentDate());
 		 projectTaskActivityDao.saveProjectTaskActivity(projectTaskActivity);
 	}
+
+	@Override
+	public void saveProjectTaskActivitiesByLookupData(String activity, String activityDescription, ProjectTasks projectTasks, User user, LookUpData data) throws Exception {
+		ProjectTaskActivity projectTaskActivity = new ProjectTaskActivity();
+		 projectTaskActivity.setProjecId(projectTasks.getProjectId());
+		 projectTaskActivity.setProjectTaskId(projectTasks);
+		 projectTaskActivity.setActivity(activity);
+		 projectTaskActivity.setUserId(user);
+		 projectTaskActivity.setTaskStatus(data);
+		 projectTaskActivity.setCreatedUserName(user.getFullName());
+		 projectTaskActivity.setActivityDescription(activityDescription);
+		 projectTaskActivity.setCreatedDate(commonUtil.currentDate());
+		 projectTaskActivityDao.saveProjectTaskActivity(projectTaskActivity);
+		
+	}
 	
+	@Override
+	public void savePriorityProjectTaskActivitiesByLookupData(String activity, String activityDescription, ProjectTasks projectTasks, User user, LookUpData data) throws Exception {
+		ProjectTaskActivity projectTaskActivity = new ProjectTaskActivity();
+		 projectTaskActivity.setProjecId(projectTasks.getProjectId());
+		 projectTaskActivity.setProjectTaskId(projectTasks);
+		 projectTaskActivity.setActivity(activity);
+		 projectTaskActivity.setUserId(user);
+		 projectTaskActivity.setPriority(data);
+		 projectTaskActivity.setCreatedUserName(user.getFullName());
+		 projectTaskActivity.setActivityDescription(activityDescription);
+		 projectTaskActivity.setCreatedDate(commonUtil.currentDate());
+		 projectTaskActivityDao.saveProjectTaskActivity(projectTaskActivity);
+		
+	}
 	
 	
 }

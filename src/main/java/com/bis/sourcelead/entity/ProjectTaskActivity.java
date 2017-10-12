@@ -16,8 +16,11 @@ import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
 import org.hibernate.annotations.Type;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
@@ -32,15 +35,16 @@ private static final long serialVersionUID = 1L;
     @Column(name = "ID", nullable = false)
     private Long id;
 	
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JsonBackReference
 	@JoinColumn(name = "PROJECT_TASK_ID", nullable = false)
 	private ProjectTasks projectTaskId;
     
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "PROJECT_ID", nullable = false)
 	private Projects projecId;
     
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
    	@JoinColumn(name = "CREATED_USER_ID", nullable = false)
    	private User userId;
     
@@ -51,6 +55,14 @@ private static final long serialVersionUID = 1L;
     @Type(type="text")
 	private String activity;
  
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name="PRIORITY", nullable=false )	
+	private LookUpData priority;
+	
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name="TASK_STATUS", nullable=false )	
+	private LookUpData taskStatus;
+	
 	@Column(name = "ACTIVITY_DESCRIPTION")
 	@Type(type="text")
 	private String activityDescription;
@@ -174,5 +186,20 @@ private static final long serialVersionUID = 1L;
 	public void setLoginUserId(Long loginUserId) {
 		this.loginUserId = loginUserId;
 	}
-	
+
+	public LookUpData getPriority() {
+		return priority;
+	}
+
+	public LookUpData getTaskStatus() {
+		return taskStatus;
+	}
+
+	public void setPriority(LookUpData priority) {
+		this.priority = priority;
+	}
+
+	public void setTaskStatus(LookUpData taskStatus) {
+		this.taskStatus = taskStatus;
+	}
 }

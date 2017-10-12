@@ -419,6 +419,7 @@ public class Constants {
 	public static final String EDUCATIONS = "Educations";
 	public static final String SKILLS = "Skills";
 	public static final String VISA = "VisaCategory";
+	public static final String INDUSTIRES = "Industries";
 	
 	public static final String TASKTYPE = "TaskType";
 	public static final String TASKSEVERITY = "TaskSeverity";
@@ -850,5 +851,31 @@ public class Constants {
 	public static final String CLINT_VENDOR_DOES_NOT_EXIST = "false";
 	public static final String CLINT_VENDOR_IF_EXIST = "true";
 	public static final String CLINT_VENDOR_IF_EXIST_AS_SAMEORG = "sameorg";
+	
+	
+	public static final String TASK_STATUS_NEW = "New";
+	public static final String TASK_STATUS_IN_PROGRESS = "In-Progress";
+	public static final String TASK_STATUS_DONE = "Done";
+	public static final String TASK_STATUS_ON_HOLD = "On-Hold";
+	
+	public static final String TASK_PRIORITY_P1 = "P1";
+	public static final String TASK_PRIORITY_P2 = "P2";
+	public static final String TASK_PRIORITY_P3 = "P3";
+	public static final String TASK_PRIORITY_P4 = "P4";
+	
+	public static final int TASK_PERCENTAGE_ZERO = 0;
+	public static final int TASK_PERCENTAGE_TEN = 10;
+	public static final int TASK_PERCENTAGE_TWENTY = 20;
+	public static final int TASK_PERCENTAGE_THIRTY = 30;
+	public static final int TASK_PERCENTAGE_FORTY = 40;
+	public static final int TASK_PERCENTAGE_FIFTY = 50;
+	public static final int TASK_PERCENTAGE_SIXTY = 60;
+	public static final int TASK_PERCENTAGE_SEVENTY = 70;
+	public static final int TASK_PERCENTAGE_EIGHTY = 80;
+	public static final int TASK_PERCENTAGE_NINTY = 90;
+	public static final int TASK_PERCENTAGE_HUNDRED = 100;
+	
+	public static final String TASK_ACTIVITY_STATUS = "Status";
+	public static final String TASK_ACTIVITY_PRIORITY = "Priority";
 
 }

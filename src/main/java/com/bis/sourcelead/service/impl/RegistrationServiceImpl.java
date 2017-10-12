@@ -31,6 +31,7 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.OrgDao;
 import com.bis.sourcelead.dto.AddUserDTO;
 import com.bis.sourcelead.dto.CandidateDTO;
+import com.bis.sourcelead.dto.CrowdSourcingUserRegistrationDTO;
 import com.bis.sourcelead.elk.index.UserIndex;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
@@ -434,6 +435,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 	    	Set<ProjectClients> projectClientsList = getProjectClientsForProject(projects,orgLocations,approverUser);
 	    	projects.setProjectClients(projectClientsList);
 			projects.setProjectUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+			projects.setProjectShortCode("DFP");
 			projects.setProjectMode("Finished");
 			projects.setCreatedDate(new Date());
 			projects.setUpdatedDate(new Date());
@@ -452,6 +454,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 			projectClients.setOrgLocationsId(orglocations);
 			projectClients.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
 			projectClients.setStatus(1);
+			projectClients.setLevel(1);
 			projectClients.setCreatedDate(new Date());
 			projectClients.setUpdatedDate(new Date());
 			projectClients.setCreatedBy(approverUser);
@@ -1029,33 +1032,33 @@ public class RegistrationServiceImpl implements RegistrationService{
 	}
 
 	@Override
-	public String saveProfessional(JSONObject jsonObj,String contactUUID) throws Exception {
+	public String saveProfessional(CrowdSourcingUserRegistrationDTO csuRegistrationDTO,String contactUUID) throws Exception {
 		
 		
 		User user = null;
-		user = userService.findByEmail(jsonObj.getString("email"));
+		user = userService.findByEmail(csuRegistrationDTO.getEmail());
 		String result = "";
 		
 		if(null == user){
 			user = new User();
-			if(jsonObj.has("firstName") && !isNullOrEmpty(jsonObj.getString("firstName"))){
-				user.setFirstName(jsonObj.getString("firstName"));
+			if(StringUtils.isNotBlank(csuRegistrationDTO.getFirstName())){
+				user.setFirstName(csuRegistrationDTO.getFirstName());
 			}
 			
-			if(jsonObj.has("lastName") && !isNullOrEmpty(jsonObj.getString("lastName"))){
-				user.setLastName(jsonObj.getString("lastName"));
+			if(StringUtils.isNotBlank(csuRegistrationDTO.getLastName())){
+				user.setLastName(csuRegistrationDTO.getLastName());
 			}
 			
-			if(jsonObj.has("email") && !isNullOrEmpty(jsonObj.getString("email"))){
-				user.setEmail(jsonObj.getString("email"));
+			if(StringUtils.isNotBlank(csuRegistrationDTO.getEmail())){
+				user.setEmail(csuRegistrationDTO.getEmail());
 			}
 			
-			if(jsonObj.has("location") && !isNullOrEmpty(jsonObj.getString("location"))){
-				user.setCountry(jsonObj.getString("location"));
-				user.setProfessionalRegisterCountry(jsonObj.getString("location"));
+			if(StringUtils.isNotBlank(csuRegistrationDTO.getLocation())){
+				user.setCountry(csuRegistrationDTO.getLocation());
+				user.setProfessionalRegisterCountry(csuRegistrationDTO.getLocation());
 			}
 			
-			user.setUserName(jsonObj.getString("email"));
+			user.setUserName(csuRegistrationDTO.getEmail());
 			user.setUserCode(SourceLeadRandomCodeHelper.generateRandomUserCode());
 			
 			user.setUserType(Constants.PROFESSIONAL);
@@ -1068,7 +1071,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 			
 		}else{
 			user.setRegistrationType("Existed User");
-			user.setProfessionalRegisterCountry(jsonObj.getString("location"));
+			user.setProfessionalRegisterCountry(csuRegistrationDTO.getLocation());
 			userService.addUser(user);
 			result = "login";
 		}
@@ -1106,18 +1109,18 @@ public class RegistrationServiceImpl implements RegistrationService{
 		candidate.setOrgId(org);
 		candidate.setOrgLocationId(orgLocations);
 		candidate.setCandidateType(Constants.PROFESSIONAL);
-		candidate.setCountry(jsonObj.getString("location"));
+		candidate.setCountry(csuRegistrationDTO.getLocation());
 		
-		if(jsonObj.has("firstName") && !isNullOrEmpty(jsonObj.getString("firstName"))){
-			candidate.setFirstName(jsonObj.getString("firstName"));
+		if(StringUtils.isNotBlank(csuRegistrationDTO.getFirstName())){
+			candidate.setFirstName(csuRegistrationDTO.getFirstName());
 		}
 		
-		if(jsonObj.has("lastName") && !isNullOrEmpty(jsonObj.getString("lastName"))){
-			candidate.setLastName(jsonObj.getString("lastName"));
+		if(StringUtils.isNotBlank(csuRegistrationDTO.getLastName())){
+			candidate.setLastName(csuRegistrationDTO.getLastName());
 		}
 		
-		if(jsonObj.has("email") && !isNullOrEmpty(jsonObj.getString("email"))){
-			candidate.setEmail(jsonObj.getString("email"));
+		if(StringUtils.isNotBlank(csuRegistrationDTO.getEmail())){
+			candidate.setEmail(csuRegistrationDTO.getEmail());
 		}
 		
 		candidate.setStatus(Constants.CANDIDATE_ACTIVE);
@@ -1127,7 +1130,9 @@ public class RegistrationServiceImpl implements RegistrationService{
 		candidate.setCandidateUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 		
 		MasterCandidate masterCandidate = null; 
-		 masterCandidate = masterCandidateService.getMasterCandidateByInteligence(jsonObj);
+		 CandidateDTO candidateDTO = new CandidateDTO();
+		 candidateDTO.setEmail(csuRegistrationDTO.getEmail());
+		 masterCandidate = masterCandidateService.getMasterCandidateByInteligenceCandidateDTO(candidateDTO);
 		 if(null == masterCandidate){
 			 masterCandidate = getMasterCandidateDetailsForProfessionalAndRecruiterLogins(candidate,user);
 		 }
@@ -1203,8 +1208,6 @@ public class RegistrationServiceImpl implements RegistrationService{
 		 }else{
 			 globalVarsMap.put("resetLink",loginBuilder.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
 		 }
-		
-		 
 
 		 StringBuilder linkBuilder = new StringBuilder();
 				 globalVarsMap.put("supportLink",linkBuilder.append("<a href='http://support.sourcelead.com/faq' target='_blank' style='outline:none; border:none;'>http://support.sourcelead.com/faq</a>").toString());
@@ -1244,34 +1247,34 @@ public class RegistrationServiceImpl implements RegistrationService{
 	}
 
 	@Override
-	public String saveIndividualRecruiter(JSONObject jsonObj) throws Exception {
+	public String saveIndividualRecruiter(CrowdSourcingUserRegistrationDTO csuRegistrationDTO) throws Exception {
 		
 		User user = null;
-		user = userService.findByEmail(jsonObj.getString("email"));
+		user = userService.findByEmail(csuRegistrationDTO.getEmail());
 		String result = "";
 		
 		if(null == user){
 			user = new User();
-			if(jsonObj.has("firstName") && !isNullOrEmpty(jsonObj.getString("firstName"))){
-				user.setFirstName(jsonObj.getString("firstName"));
+			if(StringUtils.isNotBlank(csuRegistrationDTO.getFirstName())){
+				user.setFirstName(csuRegistrationDTO.getFirstName());
 			}
 			
-			if(jsonObj.has("lastName") && !isNullOrEmpty(jsonObj.getString("lastName"))){
-				user.setLastName(jsonObj.getString("lastName"));
+			if(StringUtils.isNotBlank(csuRegistrationDTO.getLastName())){
+				user.setLastName(csuRegistrationDTO.getLastName());
 			}
 			
-			if(jsonObj.has("email") && !isNullOrEmpty(jsonObj.getString("email"))){
-				user.setEmail(jsonObj.getString("email"));
+			if(StringUtils.isNotBlank(csuRegistrationDTO.getEmail())){
+				user.setEmail(csuRegistrationDTO.getEmail());
 			}
 			
-			if(jsonObj.has("location") && !isNullOrEmpty(jsonObj.getString("location"))){
-				user.setCountry(jsonObj.getString("location"));
-				user.setRecruiterRegisterCountry(jsonObj.getString("location"));
+			if(StringUtils.isNotBlank(csuRegistrationDTO.getLocation())){
+				user.setCountry(csuRegistrationDTO.getLocation());
+				user.setRecruiterRegisterCountry(csuRegistrationDTO.getLocation());
 			}
 			
 			//prepareRegisterOptionalServicesToAllForms(jsonObj,user);
 					
-			user.setUserName(jsonObj.getString("email"));
+			user.setUserName(csuRegistrationDTO.getEmail());
 			user.setUserCode(SourceLeadRandomCodeHelper.generateRandomUserCode());
 			user.setUserType(Constants.INDIVIDUAL_RECRUITER);
 			user.setCreatedBy("sladmin");
@@ -1283,7 +1286,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 			result = "success";
 		}else{
 			user.setRegistrationType("Existed User");
-			user.setRecruiterRegisterCountry(jsonObj.getString("location"));
+			user.setRecruiterRegisterCountry(csuRegistrationDTO.getLocation());
 			userService.addUser(user);
 			result = "login";
 		}
@@ -1319,19 +1322,19 @@ public class RegistrationServiceImpl implements RegistrationService{
 		candidate.setConsultantUser(user);
 		candidate.setOrgId(org);
 		candidate.setOrgLocationId(orgLocations);
-		candidate.setCountry(jsonObj.getString("location"));
+		candidate.setCountry(csuRegistrationDTO.getLocation());
 		candidate.setCandidateType(Constants.INDIVIDUAL_RECRUITER);
 		
-		if(jsonObj.has("firstName") && !isNullOrEmpty(jsonObj.getString("firstName"))){
-			candidate.setFirstName(jsonObj.getString("firstName"));
+		if(StringUtils.isNotBlank(csuRegistrationDTO.getFirstName())){
+			candidate.setFirstName(csuRegistrationDTO.getFirstName());
 		}
 		
-		if(jsonObj.has("lastName") && !isNullOrEmpty(jsonObj.getString("lastName"))){
-			candidate.setLastName(jsonObj.getString("lastName"));
+		if(StringUtils.isNotBlank(csuRegistrationDTO.getLastName())){
+			candidate.setLastName(csuRegistrationDTO.getLastName());
 		}
 		
-		if(jsonObj.has("email") && !isNullOrEmpty(jsonObj.getString("email"))){
-			candidate.setEmail(jsonObj.getString("email"));
+		if(StringUtils.isNotBlank(csuRegistrationDTO.getEmail())){
+			candidate.setEmail(csuRegistrationDTO.getEmail());
 		}
 		
 		candidate.setStatus(Constants.CANDIDATE_ACTIVE);
@@ -1341,7 +1344,9 @@ public class RegistrationServiceImpl implements RegistrationService{
 		candidate.setCandidateUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 		
 		MasterCandidate masterCandidate = null; 
-		 masterCandidate = masterCandidateService.getMasterCandidateByInteligence(jsonObj);
+		 CandidateDTO candidateDTO = new CandidateDTO();
+		 candidateDTO.setEmail(csuRegistrationDTO.getEmail());
+		 masterCandidate = masterCandidateService.getMasterCandidateByInteligenceCandidateDTO(candidateDTO);
 		 if(null == masterCandidate){
 			 masterCandidate = getMasterCandidateDetailsForProfessionalAndRecruiterLogins(candidate,user);
 		 }

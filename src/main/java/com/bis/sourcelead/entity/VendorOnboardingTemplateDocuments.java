@@ -72,6 +72,9 @@ public class VendorOnboardingTemplateDocuments implements Serializable{
      @Column(name = "DOCUMENT_UUID")
  	 private String documentUUID;
      
+     @Column(name = "DOCUMENT_STATUS")
+ 	 private String documentStatus;
+     
      @Column(name = "IS_REQUIRED")
  	 private String isRequired;
      
@@ -236,5 +239,13 @@ public class VendorOnboardingTemplateDocuments implements Serializable{
 
 	public void setIsRequired(String isRequired) {
 		this.isRequired = isRequired;
+	}
+
+	public String getDocumentStatus() {
+		return documentStatus;
+	}
+
+	public void setDocumentStatus(String documentStatus) {
+		this.documentStatus = documentStatus;
 	}
 }

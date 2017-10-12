@@ -88,6 +88,11 @@ public class ProjectBudgetServiceImpl implements ProjectBudgetService{
 	}
 	
 	@Override
+	public List<ProjectBudget> getProjectBudgetByProjectTaskIdAndApprovedStatus(Long projectId,String filterDate, Date startDateUTC, Date endDateUTC) throws Exception {
+		return projectBudgetDao.getProjectBudgetByProjectTaskIdAndApprovedStatus(projectId, filterDate, startDateUTC, endDateUTC);
+	}
+	
+	@Override
 	public void saveProjectBudgetRequset(ProjectBudgetRequestDTO projectBudgetRequestDTO, User user) throws Exception {
 		ProjectBudget projectBudget = null;
 	      Projects projects = projectsService.getProjectByProjectUUID(projectBudgetRequestDTO.getProjectUUID());
@@ -257,5 +262,6 @@ public class ProjectBudgetServiceImpl implements ProjectBudgetService{
            }
    		return sb.append(companyShortCode).append("BR").append(convetredCandidateId).toString();
 	}
+
 	
 }

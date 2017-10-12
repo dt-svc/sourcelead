@@ -7,18 +7,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dao.OrgRelationsDao;
+import com.bis.sourcelead.dao.VendorOnboardDao;
 import com.bis.sourcelead.dao.VendorOnboardTemplateDao;
 import com.bis.sourcelead.dao.VendorOnboardTemplateDocumentsDao;
 import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.dto.OnBoardingTemplateDTO;
-import com.bis.sourcelead.entity.OnBoardingTemplate;
-import com.bis.sourcelead.entity.OnBoardingTemplateDocuments;
+import com.bis.sourcelead.dto.VendorsDocumentsDTO;
+import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.VendorOnboarding;
 import com.bis.sourcelead.entity.VendorOnboardingTemplate;
 import com.bis.sourcelead.entity.VendorOnboardingTemplateDocuments;
 import com.bis.sourcelead.service.VendorOnboardTemplateDocumentsService;
 import com.bis.sourcelead.util.CommonUtil;
-import com.bis.sourcelead.util.FileUploadUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 
 @Service
@@ -33,6 +35,12 @@ public class VendorOnboardTemplateDocumentsServiceImpl implements VendorOnboardT
 	@Autowired
 	VendorOnboardTemplateDao vendorOnboardTemplateDao;
 
+	@Autowired
+	VendorOnboardDao vendorOnboardDao;
+	
+	@Autowired
+	OrgRelationsDao orgRelationsDao;
+	
 	@Override
 	public List<VendorOnboardingTemplateDocuments> getVendorOnBoardingTemplateDocumentsByTemplateId(Long templateId,
 			String documentType) throws Exception {
@@ -83,6 +91,88 @@ public class VendorOnboardTemplateDocumentsServiceImpl implements VendorOnboardT
 	public VendorOnboardingTemplateDocuments getVendorOnBoardingTemplateDocumentsBydocumentUUID(String documentUUID)
 			throws Exception {
 		return vendorOnboardTemplateDocumentsDao.getVendorOnBoardingTemplateDocumentsBydocumentUUID(documentUUID);
+	}
+
+	@Override
+	public List<VendorOnboardingTemplateDocuments> getVendorOnBoardingTemplateDocumentsByTemplateList(
+			List<Long> templateIdList, String documentType) throws Exception {
+		return vendorOnboardTemplateDocumentsDao.getVendorOnBoardingTemplateDocumentsByTemplateList(templateIdList, documentType);
+	}
+
+	@Override
+	public List<VendorOnboardingTemplateDocuments> getVendorOnboaringTemplateDocumentsByVendorOnboardId(
+			Long vendorOnboardingId) throws Exception {
+		return vendorOnboardTemplateDocumentsDao.getVendorOnboaringTemplateDocumentsByVendorOnboardId(vendorOnboardingId);
+	}
+
+	@Override
+	public void storeVendorOnboardDocuments(OnBoardingTemplateDTO onBoardingTemplateDTO, User loginUser)
+			throws Exception {
+		
+		VendorOnboarding vendorOnboarding = vendorOnboardDao.getVendorOnboardingById(onBoardingTemplateDTO.getVendorOnboardId());
+		if(onBoardingTemplateDTO.getVendorTemplateDocumentsFileInfo() != null && onBoardingTemplateDTO.getVendorTemplateDocumentsFileInfo().size() > 0){
+			for(VendorsDocumentsDTO documentsDTO : onBoardingTemplateDTO.getVendorTemplateDocumentsFileInfo()) {
+				if(StringUtils.isNotBlank(documentsDTO.getDocId()) && StringUtils.isNotBlank(documentsDTO.getDocumentName())){
+					VendorOnboardingTemplateDocuments templateDocuments = null;
+					if(StringUtils.isNotBlank(documentsDTO.getDocumentType()) && documentsDTO.getDocumentType().equalsIgnoreCase("Documents")){
+						templateDocuments = new VendorOnboardingTemplateDocuments();
+						templateDocuments.setDocumentUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+					}else{
+						templateDocuments = getVendorOnBoardingTemplateDocumentsById(Long.parseLong(documentsDTO.getDocId()));
+						if(templateDocuments == null){
+							templateDocuments = new VendorOnboardingTemplateDocuments();
+							templateDocuments.setDocumentUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+						}
+					}
+					
+					templateDocuments.setVendorOnboardingId(vendorOnboarding);
+					templateDocuments.setDocumentName(documentsDTO.getDocumentName());
+					if(StringUtils.isNotBlank(documentsDTO.getDocChecked())){
+						templateDocuments.setIsRequired(Constants.YES);
+					}else{
+						templateDocuments.setIsRequired(Constants.NO);
+					}
+					templateDocuments.setStatus(Constants.CANDIDATE_ACTIVE);
+					templateDocuments.setDocumentType("Vendor Documents");
+					templateDocuments.setCreatedBy(loginUser);
+					templateDocuments.setUpdatedBy(loginUser);
+					templateDocuments.setCreatedDate(CommonUtil.currentDate());
+					templateDocuments.setUpdatedDate(CommonUtil.currentDate());
+					saveVendorOnBoardingTemplateDocuments(templateDocuments);
+				}
+			}
+		}
+		
+		if(onBoardingTemplateDTO.getVendorOnboardDocumentsFileInfo() != null && onBoardingTemplateDTO.getVendorOnboardDocumentsFileInfo().size() > 0){
+			for(VendorsDocumentsDTO documentsDTO : onBoardingTemplateDTO.getVendorOnboardDocumentsFileInfo()) {
+				VendorOnboardingTemplateDocuments templateDocuments = new VendorOnboardingTemplateDocuments();
+				templateDocuments.setDocumentName(documentsDTO.getDocFileName());
+				templateDocuments.setVendorOnboardingId(vendorOnboarding);
+				if(StringUtils.isNotBlank(documentsDTO.getChecked())){
+					templateDocuments.setIsRequired(Constants.YES);
+				}else{
+					templateDocuments.setIsRequired(Constants.NO);
+				}
+				templateDocuments.setDocumentUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+				templateDocuments.setDocumentType("Vendor Documents");
+				templateDocuments.setStatus(Constants.CANDIDATE_ACTIVE);
+				templateDocuments.setCreatedBy(loginUser);
+				templateDocuments.setUpdatedBy(loginUser);
+				templateDocuments.setCreatedDate(CommonUtil.currentDate());
+				templateDocuments.setUpdatedDate(CommonUtil.currentDate());
+				saveVendorOnBoardingTemplateDocuments(templateDocuments);
+			}
+		}
+		
+		OrgRelations orgRelations = vendorOnboarding.getOrgRelationId();
+		orgRelations.setIsVendorDocumentsFilled(Constants.YES);
+		orgRelationsDao.addOrgRelations(orgRelations);
+		
+	}
+
+	@Override
+	public VendorOnboardingTemplateDocuments getVendorOnBoardingTemplateDocumentsById(Long id) throws Exception {
+		return vendorOnboardTemplateDocumentsDao.getVendorOnBoardingTemplateDocumentsById(id);
 	}
 
 }

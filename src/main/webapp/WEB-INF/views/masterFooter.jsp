@@ -8,6 +8,8 @@
     <div class="copyright">@ Copyright : Source Lead, All right reserved </div>
     <div class="powered-by"> Powered by: businessintelli.com </div>
   </footer>
+  <div class='file_mask'>
+  </div>
   <div class="alert alert-danger" role="alert" style='display:none;'>
 	<div>
 		<strong>Alert</strong>
@@ -22,6 +24,23 @@
 	</div>
 	<span></span>
   </div>
+  <style type='text/css'>
+  	.file_mask {
+  		display: none;
+  		position: fixed;
+  		top: 0;
+  		left: 0;
+  		right: 0;
+  		bottom: 0;
+  		background-color: black;
+  		opacity: .4;
+  		background-image: url('resources/images/loading.gif');
+  		background-position: center;
+  		background-size: 50px;
+  		background-repeat: no-repeat;
+  		z-index: 100000;
+  	}
+  </style>
   <!-- Footer Area --> 
   <script type="text/javascript" src='resources/js/slead-common.js?staticTime=${staticTime}'></script>
   <script type="text/javascript">
