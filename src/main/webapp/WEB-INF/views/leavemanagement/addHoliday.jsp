@@ -152,7 +152,7 @@ $(document).ready(function() {
                                    
                                      <c:if test="${holidayDTO.holidayStatus  == 'Optional'}">
 	                                   <label class="paddingRight col-md-4">
-	                                     	<input type="radio" value="Optional"  checked name="holidayStatus" > Optional
+	                                     	<input type="radio" value="Optional" name="holidayStatus" > Optional
 	                                    </label>
 	                                   <label class="paddingLeft col-md-4">
 	                                      <input type="radio" value="Restricted"  name="holidayStatus"> Restricted 
@@ -168,7 +168,7 @@ $(document).ready(function() {
                                       </c:if>
                                       <c:if test="${empty holidayDTO.holidayStatus}">
                                       <label class="paddingRight col-md-4">
-	                                     	<input type="radio" value="Optional"  name="holidayStatus" > Optional
+	                                     	<input type="radio" value="Optional" checked="checked"  name="holidayStatus" > Optional
 	                                    </label>
 	                                   <label class="paddingLeft col-md-4">
 	                                      <input type="radio" value="Restricted"  name="holidayStatus"> Restricted 
