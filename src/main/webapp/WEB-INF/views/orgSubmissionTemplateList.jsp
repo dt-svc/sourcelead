@@ -464,7 +464,9 @@ function validateTemplateName(){
     <div class="vendor_wrap">
 	      <div class="timesheet_head timesheet_head_11"  id="addTemplate">
 	        <ul>
+	         <sec:authorize access="hasRole('ROLE_CREATE_APPLICANT_TEMPLATE')"> 
 	          <li><a onClick="addSubmissionTemplateFields();" id="add-tm"><i class="fa fa-plus"></i>Add Template</a></li>
+	          </sec:authorize>
 	          <div class="clearfix"></div>
 	        </ul>
 	        <div class="clearfix"></div>
