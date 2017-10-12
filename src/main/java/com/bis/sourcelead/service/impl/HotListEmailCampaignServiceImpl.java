@@ -80,7 +80,7 @@ public class HotListEmailCampaignServiceImpl implements HotListEmailCampaignServ
 	}
 
 	@Override
-	public void sendHotListEmailCampaign(HotListEmailCampaignDTO hotListEmailCampaignDTO, User user, OrgLocations orgLocation) throws Exception {
+	public void sendHotListEmailCampaign(HotListEmailCampaignDTO hotListEmailCampaignDTO, User user, OrgLocations orgLocation,MultipartFile multiFile) throws Exception {
 		
 		
 	 EmailMessage emailMessage = new EmailMessage(); 
@@ -210,13 +210,24 @@ public class HotListEmailCampaignServiceImpl implements HotListEmailCampaignServ
 				 emailAttachment.setFileUrl(fileInfo.getFileURL());
 				 emailAttachment.setType(fileInfo.getContentType());
 				 attachmentList.add(emailAttachment);
-			   FileUploadUtil.moveFile(hotListEmailCampaignDTO.getStaticPath(), fileInfo, "Hotlist Campaign Documents");
+			     FileUploadUtil.moveFile(hotListEmailCampaignDTO.getStaticPath(), fileInfo, "Hotlist Campaign Documents");
 			    }
+		 }
+		 
+		 ArrayList<EmailAttachment> fileAttachmentList = null;
+		 EmailAttachment attachment = new EmailAttachment();
+		 
+		 if(multiFile.getSize() > 0){
+			 fileAttachmentList =  new ArrayList<EmailAttachment>();
+			 attachment.setName(multiFile.getOriginalFilename());
+			 attachment.setDocFile(multiFile.getBytes());
+			 attachment.setType(multiFile.getContentType());
+			 fileAttachmentList.add(attachment);
 		 }
 		 
 				
 		//calling the sendEmail method of emailScenerioUtil
-		 emailScenerioUtil.sendEmail(emailMessage,orgLocation.getId(),iAdressArray,attachmentList);
+		 emailScenerioUtil.sendEmail(emailMessage,orgLocation.getId(),iAdressArray,fileAttachmentList);
 		 
 		 saveUserMailBox(user,orgLocation,iAdressArray,candidates,subject,table,UUID,hotListEmailCampaignDTO.getBodytext(),signature,hotListEmailCampaignDTO.getNamefield(),fileInfo);
 	}
