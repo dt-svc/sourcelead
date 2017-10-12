@@ -4,3 +4,12 @@ UPDATE `sourcelead`.`EMAIL_SCENARIO` SET `BODY`='Dear {{OffBoardingProcessApplic
 UPDATE `sourcelead`.`SOURCELEAD_ACTIONS` SET `ACTION_NAME`='Create  Onboard' WHERE `ID`='190';
 UPDATE `sourcelead`.`SOURCELEAD_ACTIONS` SET `ACTION_NAME`='Create  Offboard' WHERE `ID`='191';
 SET SQL_SAFE_UPDATES = 1;
+
+
+
+
+
+
+
+
+
