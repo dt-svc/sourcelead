@@ -500,6 +500,7 @@ private static final Logger logger = LoggerFactory.getLogger(TimesheetRestContro
 			if(null != template){
 				template.setTemplateStatus("Finished");
 				offBoardingTemplateService.saveOffBoardingTemplate(template);
+				SourceLeadSessionManager.setSessionAttribute(request, "OffboardCreateMsg", "Success!! New OffBoard Template created");
 			}
 			return "success";
 			

@@ -1095,7 +1095,7 @@ function deleteTask(taskId){
 	var sourceleadUrl ='${sourceleadUrl}';
 	   $.ajax({
 	    	type: "POST",
-	    	 url: sourceleadUrl+"/deleteOnboardTaskByTaskId?${_csrf.parameterName}=${_csrf.token}&taskId="+taskId, 
+	    	 url: sourceleadUrl+"/deleteOffboardTaskByTaskId?${_csrf.parameterName}=${_csrf.token}&taskId="+taskId, 
 	        success: function(data) {
 	        	if(data == 'success'){
 	        		document.getElementById("onboardTask"+taskId).remove();

@@ -374,6 +374,7 @@ public class SubmissionsRestController {
 			submissionTemplate.setUpdatedBy(user.getUserCode());
 			submissionTemplate.setUpdatedDate(new Date());
 			submissionTemplateService.addSubmissionTemplate(submissionTemplate);
+			SourceLeadSessionManager.setSessionAttribute(request, "SubmissionTemplateCreateMsg", "Success!! New Submission Template created");
 
 		} catch (Exception e) {
 			e.printStackTrace();
