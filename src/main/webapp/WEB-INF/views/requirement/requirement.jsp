@@ -365,7 +365,7 @@ $(document).ready(function () {
           
             
               <div class="form-group">
-              <label class="col-md-3">Education</label>
+              <label class="col-md-3">Education${requirement.reqEducationListString}</label>
               <div class="col-md-9">
                 <select multiple class="chosen-select form-control" name="education" data-placeholder="Select Education Options" id="education" data-validation-optional="true">
                <c:forEach var="education" items="${educationsList}">
@@ -761,7 +761,7 @@ $(document).ready(function () {
 <%-- 					<c:set var="val" value="${requirement.isClientJob}" /> --%>
 					<c:choose>
 						<c:when test="${val == 'Y'}">
-							<input disabled="disabled" type="checkbox" name="isTemplate"
+							<input  type="checkbox" name="isTemplate"
 								id="isTemplate" value="" onclick="getTemplateVal();">
 						</c:when>
 						<c:otherwise>
@@ -2820,7 +2820,7 @@ function getLevel2Approvers(currentApproverId){
 
 <script type="text/javascript">
  function validateJobId(jobId) {
-	 
+	 $('input#jobId').removeAttr( "record-exist record-exist-errormsg");
 	 var requirementid = document.getElementById("requirementId").value;
 	/*  if(requirementid != null && requirementid != '' && requirementid != 'undefined' ){ */
 		 if(jobId == null || jobId == "" || jobId == "undefined"){
