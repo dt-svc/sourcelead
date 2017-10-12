@@ -65,6 +65,20 @@ public class ProjectApproverHierarchyServiceImpl implements ProjectApproverHiera
 	}
 	
 	@Override
+	public List<ProjectApproverHierarchy> getApproverUsersByProjectMemberMasterCandidateIdAndProjectId(long projectMemberMasterCandidateId,long projectId) throws Exception
+	{
+		return projectApproverHierarchyDao.getApproverUsersByProjectMemberMasterCandidateIdAndProjectId(projectMemberMasterCandidateId, projectId);
+	}
+	
+	@Override
+	public List<ProjectApproverHierarchy> getActiveOrgApproverUsersByProjectMemberMasterCandidateIdAndProjectId(long projectMemberMasterCandidateId,long projectId) throws Exception
+	{
+		return projectApproverHierarchyDao.getActiveOrgApproverUsersByProjectMemberMasterCandidateIdAndProjectId(projectMemberMasterCandidateId, projectId);
+	}
+	
+	
+	
+	@Override
 	public List<ProjectApproverHierarchy> getAllProjectApproverHierarchyByProjectId(long projectId,long userId) throws Exception {
 		return projectApproverHierarchyDao.getAllProjectApproverHierarchyByProjectId(projectId,userId);
 		
