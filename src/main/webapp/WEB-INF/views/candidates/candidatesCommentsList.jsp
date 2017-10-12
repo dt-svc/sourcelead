@@ -51,16 +51,6 @@ function candidateCommentsList(candidateId,submissionId){
 	              }else{
 	 	    	         var result ="";
 	 	    	        result = result+"   <div class='dataTables_empty'>"; 
-	 	    	       /*  result = result+"   <div class='row'>"; 
-						 result = result+"	<div class='col-lg-12'>"; 
-						 result = result+"		<div class='content-area clearfix'>"; 
-						 result = result+"			<div class='blank-pages'>";
-						 result = result+"			        <p><i class='fa fa-5x fa fa-tasks'></i></p>";
-						 result = result+"			        <p>No Comments Found</p>";
-						 result = result+"			 </div>";
-						 result = result+"		</div>"; 
-						 result = result+"	</div>"; 
-						 result = result+"  </div> ";  */
 						 result = result+"  </div> ";
 	                }
           	  result  = result + '              </div>';
@@ -89,11 +79,6 @@ function candidateCommentsList(candidateId,submissionId){
          },
          
       });
-
-	/* result  = result + '<div class="project_tabs_inn_head">';
-	result  = result + '              <input class="vendorfild" type="text"><i class="fa fa-search"></i> </div>';
-	result  = result + '              <div class="project_tabs_inn_table vendor_wrap_inn_table">';
-	 */
     
 }
 </script>
