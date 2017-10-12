@@ -146,7 +146,7 @@ public class ContractRestController {
 	CandidateService candidateService;
 	
 	@RequestMapping(value = "/saveTemplate", method = RequestMethod.POST)
-	public @ResponseBody String saveClient(ContractTemplateDTO contractTemplateDTO,
+	public @ResponseBody String saveContractTemplate(ContractTemplateDTO contractTemplateDTO,
 			HttpServletRequest request) throws Exception {
 
 		/*String json1 = "{" + json + "}";
