@@ -5375,3 +5375,36 @@ width: auto !important;
 .mR5 {
 	margin: 0px 5px 0px 0px;
 }
+
+
+.clientProjSpan {
+	display: inline-block !important; float: left; padding: 0px 0px 0px 10px;
+}
+.clientInfo {
+	font-size: 20px; color: #9E9E9E !important; padding: 6px 5px 0px 5px;
+}
+
+
+
+.marOne {
+	margin: 0px 1px !important;
+}
+.popOut{
+	z-index: 15005 ; position: fixed; right: 0px !important; left: 0px !important; top: 25% !important; display: block; width: 450px; margin: 0px auto;
+    padding: 20px 5px 0px;
+}
+.popOut:after {
+	border-bottom: 0px solid #909090; border-left: 0px solid transparent; border-right: 0px solid transparent;
+	clear: both; content: ""; height: 0; position: absolute; right: 0px; top: -0px; width: 0;
+}
+.mrgTp {
+	margin: 2px 0px 0px 0px !important;
+}
+.colB{
+	color: #368ee0 !important;
+}
+.paTp{
+	padding: 6px 0px;
+}
+.rejNam{
+	padding: 2px 0px 0px 0px; font-weight: 500; max-width: 100px !important;
