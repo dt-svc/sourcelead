@@ -187,7 +187,8 @@ public class CandidateUploadFileServiceImpl implements CandidateUploadFileServic
 							}*/
 							if (row.getCell(11) != null) {
 								String expectedRate = getCellValueAsString(row.getCell(11), fileName);
-								candidateImport.setExpectedRate(expectedRate);
+								
+								candidateImport.setExpectedRate(getExpectedRateValid(expectedRate));
 							}
 							else {
 								candidateImport.setExpectedRate("");
@@ -795,16 +796,15 @@ public class CandidateUploadFileServiceImpl implements CandidateUploadFileServic
 	
 	
 	/**
-	 * Handles Mobile number valid or not
-	 * 
-	 * @param mobileNmber
+	 * Handles Expected Rate is valid or not
+	 * @param expectedRate
 	 * @return
 	 */
 	private boolean isExpectedRateValid(String expectedRate)
 	{
 		String regex = "^[0-9\b]+$";
 		boolean flag;
-		String expRate = expectedRate.trim();
+		String expRate = expectedRate.replaceAll("[^\\d.]", "");
 		if (expRate.length() >= 0 && expRate.length() <= 8) {
 			flag = expRate.matches(regex);
 		}
@@ -812,5 +812,24 @@ public class CandidateUploadFileServiceImpl implements CandidateUploadFileServic
 			flag = false;
 		}
 		return flag;
+	}
+	
+	/**Returns Expected RATE
+	 * @param expectedRate
+	 * @return
+	 */
+	private String getExpectedRateValid(String expectedRate)
+	{
+		String regex = "^[0-9\b]+$";
+		String  eRate = "";
+		String expRate = expectedRate.replaceAll("[^\\d.]", "");
+		if (expRate.length() >= 0 && expRate.length() <= 8) {
+			boolean flag = expRate.matches(regex);
+			if(flag){
+				eRate = expRate;
+			}
+		}
+		
+		return eRate;
 	}
 }
