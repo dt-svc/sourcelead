@@ -384,7 +384,7 @@ private List<String[]> prepareExpenseApprovalListStringArray(List<ExpensesApprov
 			}
 			if(null != expenseId.getStatus()){
 				
-				ExpensesApproverHierarchy  eah = getExpensesApproverHierarchyByApproverUserIdAndExpenseId(loginUser.getId(), expenseId.getId());
+				ExpensesApproverHierarchy  eah = getExpensesApproverHierarchyByApproverUserIdAndExpenseId(loginUser.getId(), expenseId.getId(),orgLoc.getId());
 			    Submission_Status submissionStatus = eah.getExpenseStatus();
 				expenseArray[12] = submissionStatus.getValue();
 			}else{
@@ -549,7 +549,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, ExpensesAppro
                 createExcelsheet.autoSizeColumn(11);
 			}
 			if(null != expenseId.getExpenseStatus()){
-				ExpensesApproverHierarchy  eah = getExpensesApproverHierarchyByApproverUserIdAndExpenseId(loginUser.getId(), expenseId.getId());
+				ExpensesApproverHierarchy  eah = getExpensesApproverHierarchyByApproverUserIdAndExpenseId(loginUser.getId(), expenseId.getId(),orgLoc.getId());
 			    Submission_Status submissionStatus = eah.getExpenseStatus();
 				writeRow.createCell(12).setCellValue(submissionStatus.getValue());
 				createExcelsheet.autoSizeColumn(12);
@@ -581,8 +581,8 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, ExpensesAppro
 	
 	@Override
 	public ExpensesApproverHierarchy getExpensesApproverHierarchyByApproverUserIdAndExpenseId(Long approverUserId,
-			Long expenseId) throws Exception {
-		return expensesApprovalDao.getExpensesApproverHierarchyByApproverUserIdAndExpenseId(approverUserId, expenseId);
+			Long expenseId,Long locationsId) throws Exception {
+		return expensesApprovalDao.getExpensesApproverHierarchyByApproverUserIdAndExpenseId(approverUserId, expenseId,locationsId);
 	}
 
 

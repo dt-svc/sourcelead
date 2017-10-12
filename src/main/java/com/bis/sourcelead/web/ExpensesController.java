@@ -187,7 +187,7 @@ public class ExpensesController {
 			ExpensesDTO expensesDTO = expensesRestController.getExpenseDetailsByExpenseId(elDTO);
 			model.addObject("expenses", expensesDTO);
 			
-			ExpensesApproverHierarchy  eah = expensesApprovalService.getExpensesApproverHierarchyByApproverUserIdAndExpenseId(loginUser.getId(), expensesDTO.getId());
+			ExpensesApproverHierarchy  eah = expensesApprovalService.getExpensesApproverHierarchyByApproverUserIdAndExpenseId(loginUser.getId(), expensesDTO.getId(),orgLoc.getId());
 		    Submission_Status submissionStatus = eah.getExpenseStatus();
 		 	model.addObject("submissionStatus", submissionStatus);
 		 	model.addObject("eah", eah);
