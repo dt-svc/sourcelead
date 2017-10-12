@@ -139,6 +139,7 @@ public class ExpensesController {
 		TimesheetExpenseEntryDetailsUtilDTO eedDTO = new TimesheetExpenseEntryDetailsUtilDTO();
 		eedDTO.setUserId(loginUser.getId());
 		eedDTO.setLocationCode(orgLoc.getLocationCode());
+		eedDTO.setExpenseId(expenseId);
 		ExpenseEntryDetailsDTO expEntryDTO =  expensesRestController.getExpenseEntryDetails(eedDTO);
 		model.addObject("expEntry", expEntryDTO);
 		model.addObject("sourceleadUrl", sourceleadUrl);
@@ -218,9 +219,6 @@ public class ExpensesController {
 			 model.addObject("isSuperUser", isSuperUser);	
 			 
 			
-		}else {
-			expenseId = addExpensesService.getExpenseId(orgLoc);
-			model.addObject("ExpensesId", expenseId);
 		}
 		
 		request.getSession().setAttribute("sessionData", sessionData);
@@ -228,6 +226,7 @@ public class ExpensesController {
 		TimesheetExpenseEntryDetailsUtilDTO eedDTO = new TimesheetExpenseEntryDetailsUtilDTO();
 		eedDTO.setUserId(loginUser.getId());
 		eedDTO.setLocationCode(orgLoc.getLocationCode());
+		eedDTO.setExpenseId(expenseId);
 		eedDTO.setExpenseFrom("approver");
 		ExpenseEntryDetailsDTO expEntryDTO =  expensesRestController.getExpenseEntryDetails(eedDTO);
 		model.addObject("expEntry", expEntryDTO);

@@ -24,6 +24,7 @@ public class ExpensesDTOConverter {
 		expensesDTO.setClientName(expenses.getClientName());
 		if(expenses.getProjectMembers() != null && expenses.getProjectMembers().getProjects() != null){
 			expensesDTO.setProjectMemberId(expenses.getProjectMembers().getId());
+			expensesDTO.setMasterCandidateId(expenses.getProjectMembers().getMasterCandidateId().getId());
 			expensesDTO.setProjectId(expenses.getProjectMembers().getProjects().getId());
 			expensesDTO.setProjectName(expenses.getProjectMembers().getProjects().getProjectName());
 		}

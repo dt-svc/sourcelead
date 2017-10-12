@@ -23,6 +23,8 @@ private static final long serialVersionUID = 1L;
 	
 	private Long projectMemberId;
 	
+	private Long masterCandidateId;
+	
 	private String clientName;
 	
 	private float totalAmount;
@@ -87,6 +89,15 @@ private static final long serialVersionUID = 1L;
 	public void setProjectName(String projectName) {
 		this.projectName = projectName;
 	}
+	
+	public Long getMasterCandidateId() {
+		return masterCandidateId;
+	}
+
+	public void setMasterCandidateId(Long masterCandidateId) {
+		this.masterCandidateId = masterCandidateId;
+	}
+
 
 	public Long getProjectMemberId() {
 		return projectMemberId;

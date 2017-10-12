@@ -70,7 +70,13 @@
 						<strong>Project Name:</strong><span>${expenses.projectName}</span><div class="clearfix"></div>
 					</div>
 					 <div class="project_details_cta">
-						<strong>Client:</strong><span>${expenses.clientName}</span><div class="clearfix"></div>
+						<strong>Client:</strong><span> 
+						 <c:forEach var="pm" items="${expEntry.projectMembersList}">
+						  <c:if test="${pm.masterCandidateId == expenses.masterCandidateId}">
+						   ${pm.clientName}
+						  </c:if>
+						</c:forEach>
+		             </span><div class="clearfix"></div>
 					</div> 
 					<div class="project_details_cta">
 						<strong>Start date:</strong><span>${expenses.startDate}</span><div class="clearfix"></div>

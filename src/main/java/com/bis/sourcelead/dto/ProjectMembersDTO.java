@@ -21,6 +21,8 @@ public class ProjectMembersDTO implements Serializable {
 	
 	private Long candidateId;
 	
+	private Long masterCandidateId;
+	
 	private Long projectMemberId;
 	
 	private String payRateCurrency;
@@ -208,6 +210,14 @@ public class ProjectMembersDTO implements Serializable {
 	public void setExpenseCategoryList(List<ExpensesCategoryListDTO> expenseCategoryList)
 	{
 		this.expenseCategoryList = expenseCategoryList;
+	}
+
+	public Long getMasterCandidateId() {
+		return masterCandidateId;
+	}
+
+	public void setMasterCandidateId(Long masterCandidateId) {
+		this.masterCandidateId = masterCandidateId;
 	}
 	
 	

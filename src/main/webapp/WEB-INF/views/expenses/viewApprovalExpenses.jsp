@@ -109,7 +109,13 @@
 						<strong>Employee:</strong><span>${expenses.projectMemberName}</span><div class="clearfix"></div>
 					</div>
 					<div class="project_details_cta">
-						<strong>Client:</strong><span>${expenses.clientName}</span><div class="clearfix"></div>
+						<strong>Client:</strong><span> 
+						 <c:forEach var="project" items="${expEntry.projectsList}">
+						      <c:if test="${project.id == expenses.projectId}">
+						      ${project.client}
+						      </c:if>
+		                  </c:forEach>
+		            </span><div class="clearfix"></div>
 					</div>
 					<div class="project_details_cta">
 						<strong>Start date:</strong><span>${expenses.startDate}</span><div class="clearfix"></div>

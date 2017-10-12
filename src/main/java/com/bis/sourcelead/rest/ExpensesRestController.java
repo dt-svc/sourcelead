@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
@@ -146,6 +147,23 @@ public class ExpensesRestController {
 			expenseStatus = elDTO.getExpenseStatus().stream ().map (i -> i.toString ()).collect (Collectors.joining (","));
 		}
 		List<Expenses> expensesList = expensesService.getAllExpenses(orgLoc, loginUser,expenseStatus, elDTO.getStartDate(), elDTO.getEndDate());
+		for(Expenses expenses :expensesList){
+			Set<ExpensesApproverHierarchy> hierarchyList = expenses.getApproverHierarchyList();
+			for(ExpensesApproverHierarchy eah :hierarchyList){
+				if(eah.getHierarchyId() != null && eah.getHierarchyId().getProjectClientsId() != null){
+					ProjectClients pc = eah.getHierarchyId().getProjectClientsId();
+					if(pc.getOrgLocationsId() != null && (pc.getOrgLocationsId().getId() == orgLoc.getId())){
+						if(pc.getOrgRelationId() != null && "Vendor".equalsIgnoreCase(pc.getOrgRelationId().getInitiatorType())){
+							expenses.setClientName(pc.getOrgRelationId().getResponderLocationId().getOrgLocationName());
+						 }else if(pc.getOrgRelationId() != null && "Client".equalsIgnoreCase(pc.getOrgRelationId().getInitiatorType())){
+							 expenses.setClientName(pc.getOrgRelationId().getLocationId().getOrgLocationName());
+						 }
+					}
+				}
+				
+			}
+		}
+		
 		return expensesList;
 	}
 	
@@ -171,8 +189,13 @@ public class ExpensesRestController {
 					}
 					projectDTO.setExpenseCategoryList(ecDTOList);
 				}
-				String expenseId = addExpensesService.getExpenseId(pc.getProjectId().getOrgLocationsId());
-				projectDTO.setExpenseId(expenseId);
+				if(StringUtils.isNotEmpty(eedDTO.getExpenseId())){
+					projectDTO.setExpenseId(eedDTO.getExpenseId());
+				}
+				else{
+					String expenseId = addExpensesService.getExpenseId(pc.getProjectId().getOrgLocationsId());
+					projectDTO.setExpenseId(expenseId);
+				}
 				ArrayList<ProjectMembersDTO> pmDTOList = new ArrayList<>();
 				for (ProjectMembers pm : projectMembersList) {
 					ProjectMembersDTO pmDTO =ProjectMemberDTOConverter.getProjectMembersDTOFromProjectMembers(pm);
@@ -216,9 +239,13 @@ public class ExpensesRestController {
 						pmDTO.setExpenseCategoryList(ecDTOList);
 					}
 					
-					String expenseId = addExpensesService.getExpenseId(pm.getProjects().getOrgLocationsId());
-					pmDTO.setExpenseId(expenseId);
-					
+					if(StringUtils.isNotEmpty(eedDTO.getExpenseId())){
+						pmDTO.setExpenseId(eedDTO.getExpenseId());
+					}
+					else{
+						String expenseId = addExpensesService.getExpenseId(pm.getProjects().getOrgLocationsId());
+						pmDTO.setExpenseId(expenseId);
+					}
 					 if(pm.getProjectClientsId() != null &&  pm.getProjectClientsId().getOrgRelationId() != null){
 				    	 if("Vendor".equalsIgnoreCase(pm.getProjectClientsId().getOrgRelationId().getInitiatorType())){
 				    		 pmDTO.setClientName(pm.getProjectClientsId().getOrgRelationId().getResponderLocationId().getOrgLocationName());
@@ -485,6 +512,7 @@ public class ExpensesRestController {
 		//loginSessionController.DATEFORMAT= new SimpleDateFormat(orgLocations.getDateFormat());
 		if (expenses != null) {
 			expensesDTO = ExpensesDTOConverter.getExpensesDTOFromExpenses(expenses, expensesDTO);
+			expensesDTO.setMasterCandidateId(expenses.getProjectMembers().getMasterCandidateId().getId());
 			ExpensesApproverHierarchy eah = expensesApprovalService.getexpensesApproverHierarchyForEmployeeByExpenseId(expenses.getId());
 			Submission_Status submissionStatus = eah.getExpenseStatus();
 			expensesDTO.setCombinedSubmissionStatus(submissionStatus);

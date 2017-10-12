@@ -436,7 +436,7 @@ function getClientBasedOnSelectedProject(){
 			 $('#clientNameId').val('${project.client}');
 			 $('#expenseAutoId').val('${project.expenseId}');
 			 <c:forEach var="pm" items="${project.projectMembersList}">
-			     result = result + '<option ${expenses.projectMemberId == pm.id ? "selected" : " " }  value="${pm.id}">${pm.name}</option>';
+			     result = result + '<option ${expenses.masterCandidateId == pm.masterCandidateId ? "selected" : " " }  value="${pm.id}">${pm.name}</option>';
 			 </c:forEach>
 		 }  
  	    </c:forEach>
