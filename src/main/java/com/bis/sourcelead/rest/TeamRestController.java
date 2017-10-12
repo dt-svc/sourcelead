@@ -84,7 +84,11 @@ public class TeamRestController {
 		List<Team> teamList = teamService.getTeamListByOrgLocationID(loginOrgLocation.getId());
 		for (Team team : teamList) {
 			StringBuilder ownerNameSB = new StringBuilder();
-			team.setTeamOwnerName(ownerNameSB.append(team.getOwnerUserId().getFirstName()).append(" ").append(team.getOwnerUserId().getLastName()).toString());
+			if(team.getOwnerUserId().getLastName() != null && StringUtils.isNotBlank(team.getOwnerUserId().getLastName())) {
+				team.setTeamOwnerName(ownerNameSB.append(team.getOwnerUserId().getFirstName()).append(" ").append(team.getOwnerUserId().getLastName()).toString());	
+			}else {
+				team.setTeamOwnerName(ownerNameSB.append(team.getOwnerUserId().getFirstName()).toString());
+			}
 			Collection<TeamMembers> teamMembersList = teamMembersService.getTeamMembersListByTeamID(team.getId(), loginOrgLocation.getId());
 			team.setTeamMembersCount(teamMembersList.size());
 			Integer favouriteCount = candidateService.getHotlistCandidatesCountByTeamIdAndOrgLocationId(team.getId(), loginOrgLocation.getId());
@@ -139,8 +143,16 @@ public class TeamRestController {
 			StringBuilder ownerNameSB = new StringBuilder();
 			StringBuilder memberNameSB = new StringBuilder();
 			teamMembers.setTeamName(teamMembers.getTeamId().getName());
-			teamMembers.setOwnerName(ownerNameSB.append(teamMembers.getTeamId().getOwnerUserId().getFirstName()).append(" ").append(teamMembers.getTeamId().getOwnerUserId().getLastName()).toString());
-			teamMembers.setMemberName(memberNameSB.append(teamMembers.getMemberUserId().getFirstName()).append(" ").append(teamMembers.getMemberUserId().getLastName()).toString());
+			if(teamMembers.getTeamId().getOwnerUserId().getLastName() != null && StringUtils.isNotEmpty(teamMembers.getTeamId().getOwnerUserId().getLastName())) {
+				teamMembers.setOwnerName(ownerNameSB.append(teamMembers.getTeamId().getOwnerUserId().getFirstName()).append(" ").append(teamMembers.getTeamId().getOwnerUserId().getLastName()).toString());
+			}else {
+				teamMembers.setOwnerName(ownerNameSB.append(teamMembers.getTeamId().getOwnerUserId().getFirstName()).toString());
+			}
+			if(teamMembers.getMemberUserId().getLastName() != null && StringUtils.isNotEmpty(teamMembers.getMemberUserId().getLastName())) {
+				teamMembers.setMemberName(memberNameSB.append(teamMembers.getMemberUserId().getFirstName()).append(" ").append(teamMembers.getMemberUserId().getLastName()).toString());
+			}else {
+				teamMembers.setMemberName(memberNameSB.append(teamMembers.getMemberUserId().getFirstName()).toString());
+			}
 			teamMembers.setEmail(teamMembers.getMemberUserId().getEmail());
 			UserRole userRole = userRoleService.getUserDetailsByUserIdAndLocationId(teamMembers.getMemberUserId().getId(), orgLocation.getId());
 			teamMembers.setUserType(userRole.getUserType());
