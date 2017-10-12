@@ -1306,6 +1306,7 @@ public void storeVendorOnboardDefaultTemplate(User user,OrgLocations orgLocation
 				 vendorOnboardTemplate.setTemplateName(orgLocations.getOrgLocationName()+" Default Vendor Onboard Template");
 			 	 vendorOnboardTemplate.setOrgLocationId(orgLocations);
 				 vendorOnboardTemplate.setTemplateStatus("Finished");
+				 vendorOnboardTemplate.setIsDefaultTemplate(Constants.YES);
 				 vendorOnboardTemplate.setStatus(Constants.CANDIDATE_ACTIVE);
 				 vendorOnboardTemplate.setTemplateUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 			 	 vendorOnboardTemplate.setCreatedBy(user);

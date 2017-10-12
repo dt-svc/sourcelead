@@ -54,6 +54,9 @@ public class VendorOnboardingTemplate implements Serializable{
     
     @Column(name = "TEMPLATE_STATUS")
    	private String templateStatus;
+    
+    @Column(name = "IS_DEFAULT_TEMPLATE")
+   	private String isDefaultTemplate;
 	
 	@Column(name = "DESCRIPTION")
 	@Type(type="text")
@@ -209,6 +212,14 @@ public class VendorOnboardingTemplate implements Serializable{
 
 	public void setOnboardTemplateDocuments(Set<VendorOnboardingTemplateDocuments> onboardTemplateDocuments) {
 		this.onboardTemplateDocuments = onboardTemplateDocuments;
+	}
+
+	public String getIsDefaultTemplate() {
+		return isDefaultTemplate;
+	}
+
+	public void setIsDefaultTemplate(String isDefaultTemplate) {
+		this.isDefaultTemplate = isDefaultTemplate;
 	}
 	
 
