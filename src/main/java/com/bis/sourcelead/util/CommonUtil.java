@@ -13,6 +13,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -40,6 +41,7 @@ import org.springframework.stereotype.Component;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.CandidateDTO;
+import com.bis.sourcelead.dto.ProjectsDTO;
 import com.bis.sourcelead.dto.RequirementDTO;
 import com.bis.sourcelead.elk.index.ClientVendorIndex;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
@@ -49,6 +51,7 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.ProjectApproverHierarchy;
+import com.bis.sourcelead.entity.ProjectBudget;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.ProjectMembersHistory;
 import com.bis.sourcelead.entity.ProjectTasks;
@@ -58,6 +61,8 @@ import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
 import com.bis.sourcelead.entity.TimesheetSubmissions;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
+import com.bis.sourcelead.entity.VendorOnboardingTemplate;
+import com.bis.sourcelead.entity.VendorOnboardingTemplateDocuments;
 import com.bis.sourcelead.enums.Primary;
 import com.bis.sourcelead.enums.Project_Status;
 import com.bis.sourcelead.rest.UserProfileRestController;
@@ -74,6 +79,8 @@ import com.bis.sourcelead.service.SubmissionApproverHierarchyService;
 import com.bis.sourcelead.service.TimesheetSubmissionsService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
+import com.bis.sourcelead.service.VendorOnboardTemplateDocumentsService;
+import com.bis.sourcelead.service.VendorOnboardTemplateService;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
@@ -135,6 +142,12 @@ public class CommonUtil {
 	
 	@Autowired
 	MasterCandidateService masterCandidateService;
+	
+	@Autowired
+	VendorOnboardTemplateService vendorOnboardTemplateService;
+	
+	@Autowired
+	VendorOnboardTemplateDocumentsService vendorOnboardTemplateDocumentsService;
 	
 	
 	/**
@@ -1278,6 +1291,57 @@ public class CommonUtil {
 				}
 			}
 			return bytesArray;
+		}
+		
+		
+		
+		public void storeVendorOnboardDefaultTemplate(User user,OrgLocations orgLocations) throws Exception{
+			
+			VendorOnboardingTemplate onboardTemplate = vendorOnboardTemplateService.getVendorOnBoardingTemplateById(1L);
+			if(onboardTemplate != null) {
+				 VendorOnboardingTemplate vendorOnboardTemplate = new VendorOnboardingTemplate();
+				 vendorOnboardTemplate.setTemplateName(orgLocations.getOrgLocationName()+" Default Vendor Onboard Template");
+			 	 vendorOnboardTemplate.setOrgLocationId(orgLocations);
+				 vendorOnboardTemplate.setTemplateStatus("Finished");
+				 vendorOnboardTemplate.setStatus(Constants.CANDIDATE_ACTIVE);
+				 vendorOnboardTemplate.setTemplateUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+			 	 vendorOnboardTemplate.setCreatedBy(user);
+			 	 vendorOnboardTemplate.setCreatedDate(new Date());
+			 	 vendorOnboardTemplate.setUpdatedBy(user);
+			 	 vendorOnboardTemplate.setUpdatedDate(new Date());
+			 	 Set<VendorOnboardingTemplateDocuments> templateDocumentsList = storeOnboardDocuments(user,orgLocations,vendorOnboardTemplate,onboardTemplate);
+			 	 vendorOnboardTemplate.setOnboardTemplateDocuments(templateDocumentsList);
+			 	 vendorOnboardTemplateService.saveVendorOnBoardingTemplate(vendorOnboardTemplate);
+			 	 
+			}
+			
+		}
+		
+		
+		private Set<VendorOnboardingTemplateDocuments> storeOnboardDocuments(User user,OrgLocations orgLocations,VendorOnboardingTemplate vendorOnboardTemplate,VendorOnboardingTemplate onboardTemplate) throws  Exception {
+			
+			 HashSet<VendorOnboardingTemplateDocuments> docuemntsList = new HashSet<VendorOnboardingTemplateDocuments>(); 
+			 
+			 List<VendorOnboardingTemplateDocuments> onboardDocumentsList = vendorOnboardTemplateDocumentsService.getVendorOnBoardTemplateDocumentsByTemplateId(onboardTemplate.getId());
+			 if(onboardDocumentsList != null && onboardDocumentsList.size() > 0) {
+				
+				 
+				 for(VendorOnboardingTemplateDocuments onboardDoc : onboardDocumentsList) {
+					 VendorOnboardingTemplateDocuments documents = new VendorOnboardingTemplateDocuments();
+					    documents.setVendorOnboardingTemplateId(vendorOnboardTemplate);
+					    documents.setDocumentType("Documents");
+					    documents.setDocumentName(onboardDoc.getDocumentName());
+					    documents.setIsRequired(onboardDoc.getIsRequired());
+		                documents.setStatus(Constants.CANDIDATE_ACTIVE);
+		                documents.setDocumentUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+		                documents.setCreatedDate(CommonUtil.currentDate());
+		                documents.setCreatedBy(user);
+		                documents.setUpdatedDate(CommonUtil.currentDate());
+		                documents.setUpdatedBy(user);
+		                docuemntsList.add(documents);
+				 }
+			 }
+			 return docuemntsList;
 		}
 
 }

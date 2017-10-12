@@ -86,8 +86,8 @@ filter: alpha(opacity=0);  -moz-opacity: 0; -khtml-opacity: 0;
                     <input type="hidden" name="templateId" id="onboardtemplateId" value=""/>
                   </div>
                   <div class="col-md-6">
-                    <label>Description <span class="text-danger paddingLeft">*</span></label>
-                    <textarea rows="1" class="form-control input-sm" name="description" field-name="Description" data-validation="required validate_Space validate_length length2-500"></textarea>
+                    <label>Description</label>
+                    <textarea rows="1" class="form-control input-sm" name="description" field-name="Description" data-validation-optional="true" data-validation="validate_Space validate_length length2-500"></textarea>
                   </div>
                 </div>
                 <div class="form-footer clearfix mt">
@@ -782,7 +782,7 @@ function getTemplateVendorDocumentsDetails(templateId){
                 			 checked = "checked";
                 		 }
                 		 result = result +"<strong id='contractsdocument"+opt.id+"'>";
-                		 result = result +"<input type='text' value='"+opt.documentName+"' readonly class='form-control input-sm vendorinput'></input>";
+                		 result = result +"<input type='text' value='"+opt.documentName+"' title='"+opt.documentName+"' readonly class='form-control input-sm vendorinput'></input>";
                 		 
                 	/* 	 result = result +"<div class='positionRelative inputpadding'>";
                 		 if(opt.fileUrl != null){

@@ -469,6 +469,7 @@ public class ClientServiceImpl implements ClientService {
 		
 		if(newlyRegistred.equalsIgnoreCase(Constants.YES)){
 			saveOrgLocationDefaultProject(clientOrgLocations, spocUser);
+			commonUtil.storeVendorOnboardDefaultTemplate(spocUser, clientOrgLocations);
 		}
 
 		for (OrgRelations orgRelation : orgRelationsList) {

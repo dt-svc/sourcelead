@@ -122,4 +122,17 @@ public class VendorOnboardTemplateDocumentsDaoImpl implements VendorOnboardTempl
 		}
 	}
 
+
+	@Override
+	@Transactional
+	public List<VendorOnboardingTemplateDocuments> getVendorOnBoardTemplateDocumentsByTemplateId(Long templateId)
+			throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+	    String query = "from VendorOnboardingTemplateDocuments documents left join fetch documents.vendorOnboardingTemplateId where documents.vendorOnboardingTemplateId.id = :templateId "
+	    		+ " and documents.status = '1' ";
+	    List<VendorOnboardingTemplateDocuments> documentsList = session.createQuery(query.toString()).setLong("templateId", templateId).setCacheable(true).list();
+        return documentsList;
+	}
+
 }
