@@ -502,7 +502,7 @@ function getEmailDetails(uuid,type){
 			    result = result +'<div class="mailbox-read-info">';
 			    result = result +'<h3>'+opt.subject+'</h3>';
 			    result = result +'<h5>From: '+opt.fromMail+'' 
-			    result = result +'<h5>To: '+opt.toMail+'' 
+			    result = result +'<h5 class="mail-height">To: '+opt.toMail+'' 
 			    result = result +'<span class="mailbox-read-time pull-right">'+opt.calDays+'</span></h5>';
 			    result = result +'</div>	';
 
