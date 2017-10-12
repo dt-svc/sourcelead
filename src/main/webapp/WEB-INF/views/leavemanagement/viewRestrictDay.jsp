@@ -71,7 +71,7 @@ function getRestrictDayList(){
 	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	$.ajax({
         type : "GET",
-         url: sourceleadUrl+"/getRestrictDayList?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId,       
+         url: sourceleadUrl+"/getRestrictDayList?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId,  
          success :function(json) {
         	 populateRestrictDayList(json);
         },

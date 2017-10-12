@@ -77,29 +77,45 @@ public class LeaveDaoImpl implements LeaveDao{
 		if(StringUtils.isNotBlank(leaveDTO.getLeaveStatus())) {
 			StringBuilder searchQuery = new StringBuilder("");
 			StringBuilder leavesearchQuery = new StringBuilder("");
-			String query = "from LeaveApproveHierarchy laph left join fetch laph.leaveid leave left join fetch leave.leaveType left join fetch leave.user ltype where leave.orgLocations.id = :orgLocationId and laph.approverUserId.id= :userId and leave.status = '"+leaveDTO.getLeaveStatus()+"'";
+			String query = "from LeaveApproveHierarchy laph left join fetch laph.leaveid leave left join fetch laph.leaveid.leaveType left join fetch leave.user ltype where leave.orgLocations.id = :orgLocationId and laph.approverUserId.id= :userId and leave.status =  '"+leaveDTO.getLeaveStatus()+"'";
 			String countQuery ="from Leave leave where leave.orgLocations.id = :orgLocationId and leave.status = '"+leaveDTO.getLeaveStatus()+"'";
 			if(StringUtils.isNotBlank(leaveDTO.getSearchValue())){
 				searchQuery.append(" and (laph.leaveid.user.firstName like '%" + leaveDTO.getSearchValue() + "%' ")
 				.append("OR laph.leaveid.user.lastName like '%" + leaveDTO.getSearchValue() + "%' ")
-				.append("OR laph.leaveid.numberOfDays like '%" + leaveDTO.getSearchValue() + "%' ")
-				.append("OR laph.leaveid.approvedBy.firstName like '%" + leaveDTO.getSearchValue() + "%' ")
-				.append("OR laph.leaveid.approvedBy.lastName like '%" + leaveDTO.getSearchValue() + "%' ")
-				.append("OR laph.leaveid.leaveType.name like '%" + leaveDTO.getSearchValue() + "%' )");
+				.append("OR laph.leaveid.numberOfDays like '%" + leaveDTO.getSearchValue() + "%' ");
+				if(Constants.LEAVE_APPROVED.equalsIgnoreCase(leaveDTO.getLeaveStatus())) {
+					searchQuery.append("OR laph.leaveid.approvedBy.firstName like '%" + leaveDTO.getSearchValue() + "%' ")
+					.append("OR laph.leaveid.approvedBy.lastName like '%" + leaveDTO.getSearchValue() + "%' ");
+				}else if(Constants.LEAVE_REJECTED.equalsIgnoreCase(leaveDTO.getLeaveStatus())) {
+					searchQuery.append("OR laph.leaveid.rejectedBy.firstName like '%" + leaveDTO.getSearchValue() + "%' ")
+					.append("OR laph.leaveid.rejectedBy.firstName like '%" + leaveDTO.getSearchValue() + "%' ");
+				}else {
+					searchQuery.append("OR laph.leaveid.cancelledBy.firstName like '%" + leaveDTO.getSearchValue() + "%' ")
+					.append("OR laph.leaveid.cancelledBy.firstName like '%" + leaveDTO.getSearchValue() + "%' ");
+				}
+				searchQuery.append("OR laph.leaveid.leaveType.name like '%" + leaveDTO.getSearchValue() + "%' )");
 				
 				leavesearchQuery.append(" and (leave.user.firstName like '%" + leaveDTO.getSearchValue() + "%' ")
 				.append("OR leave.user.lastName like '%" + leaveDTO.getSearchValue() + "%' ")
-				.append("OR leave.numberOfDays like '%" + leaveDTO.getSearchValue() + "%' ")
-				.append("OR leave.approvedBy.firstName like '%" + leaveDTO.getSearchValue() + "%' ")
-				.append("OR leave.approvedBy.lastName like '%" + leaveDTO.getSearchValue() + "%' ")
-				.append("OR leave.leaveType.name like '%" + leaveDTO.getSearchValue() + "%' )");
+				.append("OR leave.numberOfDays like '%" + leaveDTO.getSearchValue() + "%' ");
+				if(Constants.LEAVE_APPROVED.equalsIgnoreCase(leaveDTO.getLeaveStatus())) {
+					leavesearchQuery.append("OR leave.approvedBy.firstName like '%" + leaveDTO.getSearchValue() + "%' ")
+					.append("OR leave.approvedBy.lastName like '%" + leaveDTO.getSearchValue() + "%' ");
+				}else if(Constants.LEAVE_REJECTED.equalsIgnoreCase(leaveDTO.getLeaveStatus())) {
+					leavesearchQuery.append("OR leave.rejectedBy.firstName like '%" + leaveDTO.getSearchValue() + "%' ")
+					.append("OR leave.rejectedBy.firstName like '%" + leaveDTO.getSearchValue() + "%' ");
+				}else {
+					leavesearchQuery.append("OR leave.cancelledBy.firstName like '%" + leaveDTO.getSearchValue() + "%' ")
+					.append("OR leave.cancelledBy.firstName like '%" + leaveDTO.getSearchValue() + "%' ");
+				}
+				leavesearchQuery.append("OR leave.leaveType.name like '%" + leaveDTO.getSearchValue() + "%' )");
 			}
 			
 			Query queryObj = session.createQuery(query+searchQuery);
 			if (leaveDTO != null && leaveDTO.getLength() > 0) {
 				queryObj.setFirstResult(leaveDTO.getStart());
 				queryObj.setMaxResults(leaveDTO.getLength());
-				queryObj.setLong("orgLocationId", orgLocations.getId()).setLong("userId", usrId).setCacheable(true).list();
+				queryObj.setLong("orgLocationId", orgLocations.getId()).setLong("userId", usrId).setCacheable(false).list();
 			}
 			leaveApproveHierarchyList = queryObj.list();
 			int count = 0;
@@ -134,12 +150,12 @@ public class LeaveDaoImpl implements LeaveDao{
 				.append("OR laph.leaveid.approvedBy.lastName like '%" + leaveDTO.getSearchValue() + "%' ")
 				.append("OR laph.leaveid.leaveType.name like '%" + leaveDTO.getSearchValue() + "%' )");
 				
-				leavesearchQuery.append(" and (leave.user.firstName like '%" + leaveDTO.getSearchValue() + "%' ")
+			/*	leavesearchQuery.append(" and (leave.user.firstName like '%" + leaveDTO.getSearchValue() + "%' ")
 				.append("OR leave.user.lastName like '%" + leaveDTO.getSearchValue() + "%' ")
 				.append("OR leave.numberOfDays like '%" + leaveDTO.getSearchValue() + "%' ")
 				.append("OR leave.approvedBy.firstName like '%" + leaveDTO.getSearchValue() + "%' ")
 				.append("OR leave.approvedBy.lastName like '%" + leaveDTO.getSearchValue() + "%' ")
-				.append("OR leave.leaveType.name like '%" + leaveDTO.getSearchValue() + "%' )");
+				.append("OR leave.leaveType.name like '%" + leaveDTO.getSearchValue() + "%' )");*/
 				
 			}
 			
@@ -147,7 +163,7 @@ public class LeaveDaoImpl implements LeaveDao{
 			if (leaveDTO != null && leaveDTO.getLength() > 0) {
 				queryObj.setFirstResult(leaveDTO.getStart());
 				queryObj.setMaxResults(leaveDTO.getLength());
-				queryObj.setLong("orgLocationId", orgLocations.getId()).setLong("userId", usrId).setCacheable(true).list();
+				queryObj.setLong("orgLocationId", orgLocations.getId()).setLong("userId", usrId).setCacheable(false).list();
 			}
 			leaveApproveHierarchyList = queryObj.list();
 			int count = 0;

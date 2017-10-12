@@ -797,13 +797,6 @@ function validate_fileupload(fileName)
 		    }); 
 		    //Adding Customized Educations to the list
 	       
-	       
-	      /*  $("#country").on('change', function (e) {
-	    	   getStates();
-	       });
-	       $("#state").on('change', function (e) {
-	    	   getCities();
-	       }); */
 			for (var selector in config) {
 			  $(selector).chosen(config[selector]);
 			}
