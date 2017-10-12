@@ -149,7 +149,8 @@ public class OrgRelationsServiceImpl implements OrgRelationsService {
 			 if(orgRelation.getLocationId() != null && orgRelation.getLocationId().getId() != null && orgRelation.getLocationId().getId().longValue()== loginOrgLocationId.longValue()){ 
 					if(orgRelation.getResponderLocationId() !=  null){
 						orgRelation.setOrgName(orgRelation.getResponderLocationId().getOrgLocationName());
-						orgRelation.setWebSite(orgRelation.getResponderLocationId().getOrg().getWebSite());
+						StringBuilder sb =new StringBuilder();
+						orgRelation.setWebSite(sb.append("www.").append(orgRelation.getResponderLocationId().getOrg().getWebSite()).toString());
 						orgRelation.setCountry(orgRelation.getResponderLocationId().getCountry());
 						orgRelation.setCity(orgRelation.getResponderLocationId().getCity());
 						orgRelation.setLocation(orgRelation.getResponderLocationId().getLocation());
@@ -173,7 +174,8 @@ public class OrgRelationsServiceImpl implements OrgRelationsService {
 			 if(orgRelation.getResponderLocationId() != null && orgRelation.getResponderLocationId().getId() != null && orgRelation.getResponderLocationId().getId().longValue()== loginOrgLocationId.longValue()){ 
 					if(orgRelation.getLocationId() != null){
 						orgRelation.setOrgName(orgRelation.getLocationId().getOrgLocationName());
-						orgRelation.setWebSite(orgRelation.getLocationId().getOrg().getWebSite());
+						StringBuilder sb =new StringBuilder();
+						orgRelation.setWebSite(sb.append("www.").append(orgRelation.getResponderLocationId().getOrg().getWebSite()).toString());
 						orgRelation.setCountry(orgRelation.getLocationId().getCountry());
 						orgRelation.setCity(orgRelation.getLocationId().getCity());
 						orgRelation.setState(orgRelation.getLocationId().getState());

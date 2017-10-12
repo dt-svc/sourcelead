@@ -196,7 +196,8 @@ function actionHistoryPagenation(){
 	    	"ordering": true,
 	    	"oLanguage": {
 	            "sSearch": "",
-	            "sZeroRecords": "", "sEmptyTable": ""
+					"sZeroRecords" : "",
+					"sEmptyTable" : ""
 	       }
 	    });
 	 $('#actionHistoryPagenation').wrap('<div class="overflow_Auto width100percnt"></div>');
@@ -247,11 +248,14 @@ var validationSettings = {
 	})(jQuery);
 </script> 
 
-<script>
-	function enableTabs(orgLocationsId){
-		document.getElementById('shift'+orgLocationsId+'').className = 'active';
+	<script>
+		function enableTabs(orgLocationsId) {
+			$('[id^=shift]').each(function() {
+	                this.className = '';   
+	            });
+			document.getElementById('shift' + orgLocationsId + '').className = 'active';
 		};
-</script>
+	</script>
          
 
 </body>
