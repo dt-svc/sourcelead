@@ -180,7 +180,7 @@
                     		 
                     		 if(opt.onboardSubmitted != 'Y'){
                     			 if(opt.candidateOnBoardStatus == 'Finished'){
-                        			 result = result +"<td><div><span>Edit</span></div></td>";
+                        			 result = result +"<td><div><span>Sent</span></div></td>";
                         		 }else{
                         			 if(opt.candidateOnBoardStatus == 'Rejected'){
                         				 result = result +"<td><div><span>"+opt.candidateOnBoardStatus+"</span></div><i class='glyphicon glyphicon-comment edit-reason'><div class='edit-status'><p>"+opt.rejectedReason+"</p></div></i></td>";
