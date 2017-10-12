@@ -618,7 +618,7 @@ public class LeaveManagementRestController {
 	 * @throws Exception
 	 */
 	@PreAuthorize("hasAnyRole('ROLE_LEAVE_CONFIGURE')")
-	@RequestMapping(value = "/saveLeaveOption", method = RequestMethod.POST)
+	@RequestMapping(value = {"/saveLeaveOption","/rest/saveLeaveOption"}, method = RequestMethod.POST)
 	@ResponseBody
 	public boolean saveLeaveOption(OptionsDTO optionsDTO, HttpServletRequest request) throws Exception {
 
@@ -742,7 +742,7 @@ public class LeaveManagementRestController {
 		 * @throws Exception
 		 */
 	@PreAuthorize("hasAnyRole('ROLE_APPLY_LEAVE')")
-		@RequestMapping(value = "/applyLeave", method = RequestMethod.POST)
+		@RequestMapping(value = {"/applyLeave","/rest/applyLeave"}, method = RequestMethod.POST)
 		@ResponseBody
 		public boolean applyLeave(LeaveDTO leaveDTO, HttpServletRequest request) throws Exception {
 	
@@ -957,7 +957,7 @@ public class LeaveManagementRestController {
 	 * @throws Exception
 	 */
 	@PreAuthorize("hasAnyRole('ROLE_APPROVE_LEAVE')")
-	@RequestMapping(value = {"/getEmployeeRequestedLeaves","/rest/getEmployeeRequestedLeaves"}, method = RequestMethod.GET)
+	@RequestMapping(value = {"/getEmployeeRequestedLeaves","/rest/getEmployeeRequestedLeaves"}, method = RequestMethod.POST)
 	public  @ResponseBody ResponseList<LeaveDTO> getEmployeeRequestedLeaves(LeaveDTO leaveDTO,HttpServletRequest request) throws Exception
 	{
 		OrgLocations orgLocations = orgLocationService.getOrgLocations(Long.valueOf(leaveDTO.getOrgLocationId()));
@@ -1266,13 +1266,13 @@ public class LeaveManagementRestController {
 	}
 	
 
-	@RequestMapping(value = "/totalCountsForEmployeeLeaves")
+	@RequestMapping(value = {"/totalCountsForEmployeeLeaves","/rest/totalCountsForEmployeeLeaves"}, method=RequestMethod.GET)
 	@ResponseBody
 	public LeaveDTO totalCountsForEmployeeLeaves(@RequestParam(value = "orgLocationId", required = false) Long orgLocationId,@RequestParam(value = "userId", required = false) Long userId) throws Exception {
 		return leaveService.getAllEmployeesLeavesCounts(orgLocationId,userId);
 	}
 	
-	@RequestMapping(value = "/totalCountsForSelfLeaves")
+	@RequestMapping(value = {"/totalCountsForSelfLeaves","/rest/totalCountsForSelfLeaves"}, method=RequestMethod.GET)
 	@ResponseBody
 	public LeaveDTO totalCountsForSelfLeaves(@RequestParam(value = "orgLocationId", required = false) Long orgLocationId,@RequestParam(value = "userId", required = false) Long userId) throws Exception {
 		return leaveService.getAllSelfLeavesCounts(orgLocationId,userId);
