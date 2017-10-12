@@ -219,7 +219,7 @@ function getExpensesList(){
 			        		  }
 								 result = result +"<tr>";
 								 '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_MY_EXPENSES\')">'
-								 result = result +"<td><a href='"+sourceleadUrl+"/addExpense?expenseId="+expenseId+"&type=view'><div class='proj_show'><span>"+expenseId+"</span><i class='fa fa-binoculars'></i></div></a></td>";
+								 result = result +"<td><a href='"+sourceleadUrl+"/addExpense?expenseId="+expenseId+"&expenseLocationCode="+report.locationsCode+" &type=view'><div class='proj_show'><span>"+expenseId+"</span><i class='fa fa-binoculars'></i></div></a></td>";
 								 '</sec:authorize>';
 								 '<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_EDIT_MY_EXPENSES\')">'
 								 result = result +"<td><div class='proj_show'><span>"+expenseId+"</span></div></td>";

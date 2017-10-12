@@ -34,7 +34,7 @@
       </div>
       <c:choose>
 	    <c:when test="${expenses.id !='' && expenses.id != null}">
-	        <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='/addApprovalExpense?expenseId=${expenses.expenseAutoId}&type=view"'/>">View Expenses Approval</a> &raquo; Edit Expense</div> 
+	        <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='/addApprovalExpense?expenseId=${expenses.expenseAutoId}&expenseLocationCode=${expenses.expenseLocationCode}&type=view"'/>">View Expenses Approval</a> &raquo; Edit Expense</div> 
 	    </c:when>    
 	    <c:otherwise>
 	       <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='/expensesApprovalList'/>">Expenses Approval</a> &raquo; Add Expense</div> 
@@ -50,7 +50,7 @@
                  <div class="form-group">
                   <label class="col-md-3">Expenses Id<span class="text-danger" >&nbsp;*</span></label>
                   <div class="col-md-9">
-                    <input type="text" class="form-control" name="expenseAutoId" value="${expenses != null ? expenses.expenseAutoId : expEntry.expenseId}" readonly="readonly">
+                    <input type="text" class="form-control" id="expenseAutoId" name="expenseAutoId" value="${expenses != null ? expenses.expenseAutoId : ''}" readonly="readonly">
                     <input type="hidden"  class="form-control" name="id" value="${expenses.id}">
                   </div>
                 </div>  
@@ -250,7 +250,7 @@
 			<!-- <input type="button" value="Save" class="btn btn-sm btn-primary"> -->
 			<input type="button" id ="submitForApprovalExpensesId"value="Submit" class="btn btn-sm btn-primary" onclick="saveAddExpensesData('submitted');">
 			<input type="button" id ="submitForApprovalExpensesId"value="Approve" class="btn btn-sm btn-success ml10" onclick="saveAddExpensesData('approved');">
-			<input type="button" value="Cancel" id="cancelForApprovalExpensesId" class="btn btn-sm btn-default ml10" onclick="location.href='<c:url value='/addApprovalExpense?expenseId=${expenses.expenseAutoId}&type=view'/>' "  >
+			<input type="button" value="Cancel" id="cancelForApprovalExpensesId" class="btn btn-sm btn-default ml10" onclick="location.href='<c:url value='/addApprovalExpense?expenseId=${expenses.expenseAutoId}&expenseLocationCode=${expenses.expenseLocationCode}&type=view'/>' "  >
 		</div>
    </div>
   </div>
@@ -292,7 +292,7 @@ function acceptReopenExpenseBySuperUser(expenseId,reOpenedUserId){
 		type : "POST",
 		url : sourceleadUrl+"/acceptOrRejectReopenExpenseBySuperUser?"+tokenParamName+"="+tokenValue+"&expenseId="+expenseId+"&reOpenedUserId="+reOpenedUserId+"&type="+accept+"&userId="+userId+"&orgLocationId="+orgLocationId,
 		success : function(data) {
-			 location.replace(sourceleadUrl+"/addApprovalExpense?expenseId="+'${expenses.expenseAutoId}'+"&type=view"); 
+			 location.replace(sourceleadUrl+"/addApprovalExpense?expenseId="+'${expenses.expenseAutoId}'+"&expenseLocationCode="+'${expenses.expenseLocationCode}'+"&type=view"); 
 		},
 	});
 }
@@ -330,7 +330,7 @@ function storeReopenRejectedReason(expenseId,reOpenedUserId){
 		   	type: "POST",
 		   	url : sourceleadUrl+"/acceptOrRejectReopenExpenseBySuperUser?"+tokenParamName+"="+tokenValue+"&expenseId="+expenseId+"&reOpenedUserId="+reOpenedUserId+"&type=reject&reason="+reason+"&userId="+userId+"&orgLocationId="+orgLocationId,	    	   
 		    success: function(data) {
-		    	 location.replace(sourceleadUrl+"/addApprovalExpense?expenseId="+'${expenses.expenseAutoId}'+"&type=view"); 
+		    	 location.replace(sourceleadUrl+"/addApprovalExpense?expenseId="+'${expenses.expenseAutoId}'+"&expenseLocationCode="+'${expenses.expenseLocationCode}'+"&type=view"); 
 		    }
 	   });
 	}else{
@@ -371,7 +371,7 @@ function notifyReopenExpense(expenseId){
 		   	type: "POST",
 		    url: sourceleadUrl+"/notifyReopenExpense?"+tokenParamName+"="+tokenValue+"&expenseId="+expenseId+"&reason="+reason,	    	   
 		    success: function(data) {
-		    	 location.replace(sourceleadUrl+"/addApprovalExpense?expenseId="+'${expenses.expenseAutoId}'+"&type=view"); 
+		    	 location.replace(sourceleadUrl+"/addApprovalExpense?expenseId="+'${expenses.expenseAutoId}'+"&expenseLocationCode="+'${expenses.expenseLocationCode}'+"&type=view"); 
 		    }
 	   });
 	}else{
@@ -425,6 +425,8 @@ function getMembersForSelectedProject(){
 
 <script>
 function getClientBasedOnSelectedProject(){
+	$('#clientNameId').val('');
+	$('#expenseAutoId').val('');
 	 var projectId = document.getElementById("projectId").value;
 	 var result = "";
 	 if(projectId != null && projectId !='undefined' && projectId !=''){
@@ -432,6 +434,7 @@ function getClientBasedOnSelectedProject(){
 		 <c:forEach var="project" items="${expEntry.projectsList}">
 		 if('${project.id}' == projectId){
 			 $('#clientNameId').val('${project.client}');
+			 $('#expenseAutoId').val('${project.expenseId}');
 			 <c:forEach var="pm" items="${project.projectMembersList}">
 			     result = result + '<option ${expenses.projectMemberId == pm.id ? "selected" : " " }  value="${pm.id}">${pm.name}</option>';
 			 </c:forEach>
@@ -568,47 +571,15 @@ function removeWhiteSpaces(rowCount){
 
 
 
-<!--<script>
-function getClientBasedOnSelectedProject(){
-	 var locationCode ='${SourceLeadWeb_locationCode}'; 
-	var projectId = document.getElementById("projectId").value;
-	$.ajax({
-	      type : "GET",
-	       url: sourceleadUrl+"/getClientByProjectId?projectId="+projectId+"&locationCode="+locationCode,       
-	       success :function(data) {
-	    	   if(data != null && data !='undefined' && data !=''){
-	    	   var json = JSON.parse(data);
-		    	  if(json.expensesClientName != null && json.expensesClientName !='undefined' && json.expensesClientName !=''){
-		    	   		$('#clientNameId').val(json.expensesClientName);
-		    	   }else{
-		    	   		$('#clientNameId').val('');   
-		    	   }
-		    	  if(json.startDateStr != null && json.startDateStr !='undefined' && json.startDateStr !='' && json.endDateStr != null && json.endDateStr !='undefined' && json.endDateStr !=''){
-		    		  	var projectStartDate = json.startDateStr;
-		    			var projectEndDate = json.endDateStr;
-		    			expensesDatePickerStartDate(projectStartDate,projectEndDate);
-		    	  }else{
-					  var projectStartDate = json.startDateStr;
-					  var projectEndDate = json.endDateStr;
-					  expensesDatePickerStartDate(projectStartDate,projectEndDate);
-		    	  }	
-
-		    	  //$('#projectStartDateExpensesId').val('');
-		    	 // $('#projectEndDateExpensesId').val('');    	    
-</script> -->
-
 
 <script type="text/javascript">
 function flushOnchange(){
-
-	//$('#projectId').val('');	
+	$('#projectId').val('');	
 	
-$("#projectMemberId").val('')	
-
 $('#expensePurpose').val('');
 $('#projectStartDateExpensesId').val('');
 $('#projectEndDateExpensesId').val('');
-
+$("#projectMemberId").val('')
 }
 </script>
 

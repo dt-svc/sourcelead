@@ -25,7 +25,6 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -172,6 +171,8 @@ public class ExpensesRestController {
 					}
 					projectDTO.setExpenseCategoryList(ecDTOList);
 				}
+				String expenseId = addExpensesService.getExpenseId(pc.getProjectId().getOrgLocationsId());
+				projectDTO.setExpenseId(expenseId);
 				ArrayList<ProjectMembersDTO> pmDTOList = new ArrayList<>();
 				for (ProjectMembers pm : projectMembersList) {
 					ProjectMembersDTO pmDTO =ProjectMemberDTOConverter.getProjectMembersDTOFromProjectMembers(pm);
@@ -214,6 +215,10 @@ public class ExpensesRestController {
 						}
 						pmDTO.setExpenseCategoryList(ecDTOList);
 					}
+					
+					String expenseId = addExpensesService.getExpenseId(pm.getProjects().getOrgLocationsId());
+					pmDTO.setExpenseId(expenseId);
+					
 					 if(pm.getProjectClientsId() != null &&  pm.getProjectClientsId().getOrgRelationId() != null){
 				    	 if("Vendor".equalsIgnoreCase(pm.getProjectClientsId().getOrgRelationId().getInitiatorType())){
 				    		 pmDTO.setClientName(pm.getProjectClientsId().getOrgRelationId().getResponderLocationId().getOrgLocationName());
@@ -235,8 +240,6 @@ public class ExpensesRestController {
 				expenseEntryDetailsDTO.setProjectMembersList(pmDTOList);
 			}
 		}
-		String expenseId = addExpensesService.getExpenseId(orgLocations);
-		expenseEntryDetailsDTO.setExpenseId(expenseId);
 		Countries countries = countriesService.getCountriesByCountryName(orgLocations.getCountry());
 		if (null != countries) {
 			expenseEntryDetailsDTO.setCurrencyCode(countries.getCurrency());
@@ -477,7 +480,7 @@ public class ExpensesRestController {
 	public ExpensesDTO getExpenseDetailsByExpenseId(@RequestBody ExpensesListUtilDTO elDTO) throws Exception
 	{
 		ExpensesDTO expensesDTO = null;
-		OrgLocations orgLocations = orgLocationService.getOrgLocationsByLocationCode(elDTO.getLocationCode());
+		OrgLocations orgLocations = orgLocationService.getOrgLocationsByLocationCode(elDTO.getExpenseLocationCode());
 		Expenses expenses = expensesService.getExpenseByExpenseUniqueId(elDTO.getExpenseId(), orgLocations.getId());
 		//loginSessionController.DATEFORMAT= new SimpleDateFormat(orgLocations.getDateFormat());
 		if (expenses != null) {
@@ -533,7 +536,6 @@ public class ExpensesRestController {
 				exEnt.setExpenseIndList(expensesList);
 			}
 		}
-		System.out.println("expensesEntriesList" + expensesEntriesList);
 		resultJson = commonUtil.toJSON(expensesEntriesList);
 		return resultJson;
 	}
@@ -637,13 +639,12 @@ public class ExpensesRestController {
 		return resultJson;
 	}
 	
-	@RequestMapping(value = {"/employeeExpensesListByStage","rest/employeeExpensesListByStage"},method=RequestMethod.GET)
-	public List<ExpensesApproverHierarchy> employeeExpensesListByStage(HttpServletRequest request, String expenseStatus, @RequestParam(value = "orgLocation", required = false) String orgLocation, @RequestParam(value = "user", required = false) String user) throws Exception
+	@RequestMapping(value = "/employeeExpensesListByStage")
+	public String employeeExpensesListByStage(HttpServletRequest request, String expenseStatus) throws Exception
 	{
-		User loginUser = userService.getUserById(Long.parseLong(user));
-		OrgLocations orgLoc = orgLocationService.getOrgLocations(Long.parseLong(orgLocation));
-		//User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		//OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		String resultJson = "";
+		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		List<ExpensesApproverHierarchy> expApperoverHierarchy = expensesService.getEmployeeExpensesApproverHierarchyListByuserIdAndOrgLocationIdForApproverLogin(loginUser.getId(), orgLoc.getId(), expenseStatus);
 		for (ExpensesApproverHierarchy expensesApproverHierarchy : expApperoverHierarchy) {
 			if (null != expensesApproverHierarchy.getExpenseId().getEndDate()) {
@@ -700,6 +701,7 @@ public class ExpensesRestController {
 				}
 			}
 		}
-		return expApperoverHierarchy;
+		resultJson = commonUtil.toJSON(expApperoverHierarchy);
+		return resultJson;
 	}
 }

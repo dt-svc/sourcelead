@@ -29,7 +29,7 @@
 					<div class="Expdit pull-right mr">
 					
 					     <c:if test="${submissionStatus == 'SUBMITTED' || submissionStatus == 'REJECTED'}">
-					        <a href="${sourceleadUrl}/addApprovalExpense?expenseId=${expenses.expenseAutoId}&type=edit"  class="btn btn-default ml10 mr10" style='cursor: pointer !important'><i class="fa fa-pencil-square-o" ></i> &nbsp;Edit</a>
+					        <a href="${sourceleadUrl}/addApprovalExpense?expenseId=${expenses.expenseAutoId}&expenseLocationCode=${expenses.expenseLocationCode}&type=edit"  class="btn btn-default ml10 mr10" style='cursor: pointer !important'><i class="fa fa-pencil-square-o" ></i> &nbsp;Edit</a>
 					     </c:if>
 					     
 					      <c:if test="${isExpenseTotallyApproved && submissionStatus == 'APPROVED' && empty eah.reopenReason}">

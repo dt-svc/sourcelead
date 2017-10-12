@@ -34,6 +34,7 @@ public class ExpensesDTOConverter {
 		if(expenses.getEndDate() != null){
 			expensesDTO.setEndDate(dateFormat.format(expenses.getEndDate()));	
 		}
+		expensesDTO.setExpenseLocationCode(expenses.getOrgLocationId().getLocationCode());
 		expensesDTO.setNoOfExpenses(expenses.getNoOfExpenses());
 		List<ExpensesEntriesDTO> eeDTOList = new ArrayList<>();
 		if(expenses.getExpensesEntries() != null && !expenses.getExpensesEntries().isEmpty() && expenses.getExpensesEntries().size() > 0){

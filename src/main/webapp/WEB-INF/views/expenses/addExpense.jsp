@@ -42,7 +42,7 @@
     
 	 <c:choose>
 	    <c:when test="${expenses.id !='' && expenses.id != null}">
-	        <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='/addExpense?expenseId=${expenses.id}&type=view"'/>">View Expenses</a> &raquo; Edit Expense</div> 
+	        <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='/addExpense?expenseId=${expenses.id}&expenseLocationCode=${expenses.expenseLocationCode}&type=view"'/>">View Expenses</a> &raquo; Edit Expense</div> 
 	    </c:when>    
 	    <c:otherwise>
 	       <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='/expenses'/>">My Expenses</a> &raquo; Add Expense</div> 
@@ -60,7 +60,7 @@
                 <div class="form-group">
                   <label class="col-md-3">Expenses Id<span class="text-danger" >&nbsp;*</span></label>
                   <div class="col-md-9">
-                    <input type="text" class="form-control" name="expenseAutoId" value="${expenses != null ? expenses.expenseAutoId : expEntry.expenseId}" readonly="readonly">
+                    <input type="text" class="form-control" id="expenseAutoId" name="expenseAutoId" value="${expenses != null ? expenses.expenseAutoId : ''}" readonly="readonly">
                     <input type="hidden"  class="form-control" name="id" value="${expenses.id}">
                   </div>
                 </div>  
@@ -251,7 +251,7 @@
 			<div class="pull-right">
 			  <input type="button" value="Save" id ="draftForApprovalExpensesId" class="btn btn-sm btn-primary" onclick="saveAddExpensesData('draft');">
 			  <input type="button" id ="submitForApprovalExpensesId"value="Submit for Approval" class="btn btn-sm btn-success ml10" onclick="saveAddExpensesData('submitted');">
-			 <input type="button" value="Cancel" id ="cancelForApprovalExpensesId"  class="btn btn-sm btn-default ml10" onclick="location.href='<c:url value='/addExpense?expenseId=${expenses.id}&type=view'/>' "  >
+			 <input type="button" value="Cancel" id ="cancelForApprovalExpensesId"  class="btn btn-sm btn-default ml10" onclick="location.href='<c:url value='/addExpense?expenseId=${expenses.id}&expenseLocationCode=${expenses.expenseLocationCode}&type=view'/>' "  >
 			</div>
 		  </div>
 		</div>
@@ -369,11 +369,13 @@ function removeWhiteSpacesMyExp(rowCount){
 function getClientBasedOnSelectedProject(){
 	var projectMemberId = document.getElementById("projectMemberId").value;
 	 $('#clientNameId').val('');
+	 $('#expenseAutoId').val('');
 	 if(projectMemberId != null && projectMemberId !='undefined' && projectMemberId !=''){
 		 var projectStartDate = '';
 		 var projectEndDate = '';
 		 <c:forEach var="pm" items="${expEntry.projectMembersList}">
 		 if('${pm.id}' == projectMemberId){
+			 $('#expenseAutoId').val('${pm.expenseId}');
 			 $('#clientNameId').val('${pm.clientName}');
 			   projectStartDate = '${pm.memberStartDate}';
  			   projectEndDate = '${pm.memberEndDate}';
@@ -461,7 +463,7 @@ function withdrawMyExpense(id){
 	      type : "POST",
    	       url: sourceleadUrl+"/withDrawExpense?"+tokenParamName+"="+tokenValue+"&expenseId="+'${expenses.id}',		
 	      success :function(result) {
-	    	  location.replace(sourceleadUrl+"/addExpense?expenseId="+'${expenses.expenseAutoId}'+"&type=view"); 
+	    	  location.replace(sourceleadUrl+"/addExpense?expenseId="+'${expenses.expenseAutoId}'+"&expenseLocationCode="+'${expenses.expenseLocationCode}'+"&type=view"); 
 	      }
  }); 
 }

@@ -17,7 +17,7 @@
                 
 					<div class="Expdit pull-right">
 					     <c:if test="${submissionStatus == 'DRAFT' || submissionStatus == 'REJECTED'}">
-					        <a href="${sourceleadUrl}/addExpense?expenseId=${expenses.expenseAutoId}&type=edit"  class="btn btn-default mr10" style='cursor: pointer !important'><i class="fa fa-pencil-square-o" ></i> &nbsp;Edit</a>
+					        <a href="${sourceleadUrl}/addExpense?expenseId=${expenses.expenseAutoId}&expenseLocationCode=${expenses.expenseLocationCode}&type=edit"  class="btn btn-default mr10" style='cursor: pointer !important'><i class="fa fa-pencil-square-o" ></i> &nbsp;Edit</a>
 					     </c:if>
 					     
 					     <c:if test="${!isSahApproved && submissionStatus == 'SUBMITTED'}">

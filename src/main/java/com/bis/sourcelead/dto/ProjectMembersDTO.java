@@ -9,6 +9,8 @@ public class ProjectMembersDTO implements Serializable {
 	
 	private String name;
 	
+	private String expenseId;
+	
 	private String projectName;
 	
 	private String projectStartDate;
@@ -43,6 +45,15 @@ public class ProjectMembersDTO implements Serializable {
 	
 	List<ExpensesCategoryListDTO> expenseCategoryList;
 	
+	
+
+	public String getExpenseId() {
+		return expenseId;
+	}
+
+	public void setExpenseId(String expenseId) {
+		this.expenseId = expenseId;
+	}
 
 	public Long getId() {
 		return id;
