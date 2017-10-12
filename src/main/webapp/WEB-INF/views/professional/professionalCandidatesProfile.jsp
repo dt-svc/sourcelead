@@ -918,7 +918,6 @@ function removeSkillPopUp(candidateId){
 --%>         
 <script type="text/javascript">
 	function upDateCandidate(candidateId) {
-	
 		var expectedRate = document.getElementById("expectedRate").value; 
 		 if(expectedRate != null && expectedRate != ""){
 			 $('#expectedRateType').removeAttr('data-validation-optional');
@@ -928,7 +927,6 @@ function removeSkillPopUp(candidateId){
 			 $('#expectedRateType').removeAttr('data-validation');
 			 $('#expectedRateType').attr("data-validation-optional","true"); 
 		 }
-		 
 		 
 		 var expectedRateType =  document.getElementById("expectedRateType").value; 
 		 if(expectedRateType != null && expectedRateType != "" && expectedRateType != 'undefined'){
@@ -1123,12 +1121,6 @@ function removeSkillById(candidateId, skillId){
 									}
 									
 									
-								/* 	 if (opt.startMonth != null && opt.startMonth != '' && opt.startMonth != 'undefined') {
-										startMonth=   opt.startMonth +' - ';
-									}else{
-										startMonth = " ";
-									} */
-									
 									if (opt.startYear != null && opt.startYear != '' && opt.startYear != 'undefined' && opt.endYear != null	&& opt.endYear != '' && opt.endYear != 'undefined') {
 										startYear=   opt.startYear  +' To '+opt.endYear;
 									}else if(opt.startYear != null && opt.startYear != '' && opt.startYear != 'undefined'){
@@ -1138,12 +1130,6 @@ function removeSkillById(candidateId, skillId){
 									}else{
 										startYear = " ";
 									}
-									
-									/* if (opt.endMonth != null	&& opt.endMonth != '' && opt.endMonth != 'undefined') {
-										endMonth = opt.endMonth +' - ';  
-									} else {
-										endMonth = " ";
-									} */
 									
 									result = result +'   <li>';
 									result = result +'   <div class="clearfix">';
@@ -1309,29 +1295,6 @@ function certificationSubmissionProfile(candidateId){
 </script>
 <script>
 $('.selectpicker').selectpicker('refresh');
-
-/* function getAllSkills(candidateId){
-	
-	 var sourceleadUrl ='${sourceleadUrl}';
-		$.ajax({
-	    	type: "POST",
-	        url: sourceleadUrl+"/getSkillsExcludeExistingSkills?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId, 
-	        success: function(data) {
-	        	var json = JSON.parse(data);
-	        	var output = "";
-	        	for (var i=0; i<json.length; i++)
-				{
-		        		var opt = json[i];
-		        		output = output + "<option value='" +opt.name+ "'>"+opt.name+"</option>";
-				}
-	        	$("#skillName").empty();
-		        $("#skillName").append(output);
-		        $('#skillName').trigger("chosen:updated");
-	        },
-	    });
-	
-} */
-
 
 </script>    
      

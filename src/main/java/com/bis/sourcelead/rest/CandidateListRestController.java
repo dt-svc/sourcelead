@@ -1065,14 +1065,16 @@ public class CandidateListRestController {
 	 * 
 	 * @throws NullPointerException
 	 */
-	@RequestMapping(value = "/updateCandidate")
+	@RequestMapping(value = {"/updateCandidate", "/rest/updateCandidate"},method=RequestMethod.POST)
 	public String updateCandidate(CandidateDTO CandidateDto,HttpServletRequest request) throws Exception {
+		String isUpdated = "failed";
 		User user = userService.getUserById(Long.valueOf(CandidateDto.getLoginUserId()));
 		OrgLocations loginOrgLocation = orgLocationService.getOrgLocations(Long.valueOf(CandidateDto.getOrgloationId()));
-		StringBuilder candidateCreateMsg = new StringBuilder();
 		Candidate candidate = candidateService.storeCandidate(CandidateDto, loginOrgLocation, user);
-
-		return "success";
+        if(candidate != null) {
+        	isUpdated =  "success";	
+        }
+		return isUpdated;
 
 	}
 
@@ -1108,7 +1110,7 @@ public class CandidateListRestController {
 				candidate.setStatus(Constants.CANDIDATE_ACTIVE);
 			}
 
-			if (Constants.Candidate.equalsIgnoreCase(candidateType)) {
+			if (Constants.Candidates.equalsIgnoreCase(candidateType)) {
 				candidate.setIsAssociate(Constants.NO);
 				candidate.setStatus(Constants.CANDIDATE_IN_ACTIVE);
 			}
