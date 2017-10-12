@@ -286,15 +286,30 @@ public class ExpensesApprovalDaoImpl implements ExpensesApprovalDao{
                 				approver.setReopenRejectedReason("");
                         	  	
             	              }
-                			 else if(sah.getHierarchyId().getLevel()==(maxLevel) && (status!=null && status.equalsIgnoreCase("APPROVED"))){
-                				         approver.getExpenseId().setExpenseStatus(Submission_Status.APPROVED);
-		            	            	 approver.setExpenseApprovalStatus(Submission_ApprovalStatus.APPROVED);
-		            	            	 approver.setExpenseStatus(Submission_Status.APPROVED);
-		            	            	 approver.setActionPerformedBy(" "+loginUser.getFullName());
-		            	            	 approver.setReopenReason("");
-		                 				 approver.setReopenedUser(null);
-		                 				 approver.setReopenRejectedReason("");
-	                		  }
+                			 else if(status!=null && status.equalsIgnoreCase("APPROVED")){
+                				 if(approver.getHierarchyId().getProjectClientsId() != null && 
+                					approver.getHierarchyId().getProjectClientsId().getOrgLocationsId() != null && 
+                				    approver.getHierarchyId().getProjectClientsId().getOrgLocationsId().getOrg() != null && 
+                				     approver.getHierarchyId().getProjectClientsId().getOrgLocationsId().getOrg().getOrgType().equals(Constants.GUEST)) {
+                					     approver.getExpenseId().setExpenseStatus(Submission_Status.APPROVED);
+    	            				 	 approver.setExpenseApprovalStatus(Submission_ApprovalStatus.APPROVED);
+    	            	            	 approver.setExpenseStatus(Submission_Status.APPROVED);
+    	            	            	 approver.setActionPerformedBy(" "+loginUser.getFullName());
+    	            	            	 approver.setReopenReason("");
+    	                 				 approver.setReopenedUser(null);
+    	                 				 approver.setReopenRejectedReason("");
+                				 }
+                				 else if((approver.getHierarchyId().getProjectClientsId().getLevel() >=  sah.getHierarchyId().getProjectClientsId().getLevel())
+                					     || (approver.getHierarchyId().getProjectClientsId().getLevel() ==  sah.getHierarchyId().getProjectClientsId().getLevel() && sah.getHierarchyId().getLevel()==(maxLevel))){
+                					     approver.getExpenseId().setExpenseStatus(Submission_Status.APPROVED);
+                					     approver.setExpenseApprovalStatus(Submission_ApprovalStatus.APPROVED);
+    	            	            	 approver.setExpenseStatus(Submission_Status.APPROVED);
+    	            	            	 approver.setActionPerformedBy(" "+loginUser.getFullName());
+    	            	            	 approver.setReopenReason("");
+    	                 				 approver.setReopenedUser(null);
+    	                 				 approver.setReopenRejectedReason("");
+                    		     }
+                			 }
                 	        try {
                 	        	updateSubmissionApproverHierarchy(approver);
              				} catch (Exception e) {
