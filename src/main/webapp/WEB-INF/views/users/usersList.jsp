@@ -1082,8 +1082,8 @@ function showList(viewType){
 			 				var userRole = json[i];
 			 				var mobilePhone = ""
 			 			    
-			 			    if(userRole.user.mobilePhone != null && userRole.user.mobilePhone != ''){
-			 			    	mobilePhone = userRole.user.mobilePhone;
+			 			    if(userRole.mobilePhone != null && userRole.mobilePhone != ''){
+			 			    	mobilePhone = userRole.mobilePhone;
 			 			    }else{
 			 			    	mobilePhone = "--"
 			 			    }
@@ -1093,8 +1093,12 @@ function showList(viewType){
 			        			   '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_USER\',\'ROLE_VIEW_EDIT_USER\',\'ROLE_VIEW_DELETE_USER\')">' 
 			        			   result = result +"<td>"    
 			        			    result = result +" <a href='<c:url value='/userSummary/"+userRole.userId+"'/>'' class='UserTextLeft'>";
-					       	    	result = result +"<img data-id= 'userProfileImage' onerror='predefineProfileImage(this);' class='m-t-xs'  src="+userRole.user.fileUrl+" alt='image'>";
-									result = result + ''+userRole.userName+'</a></td>';
+			        			    if(userRole.fileUrl != null && userRole.fileUrl !="" && userRole.fileUrl != "undefined"){
+					       	    	result = result +"<img data-id= 'userProfileImage' onerror='predefineProfileImage(this);' class='m-t-xs'  src="+userRole.fileUrl+" alt='image'>";
+			        			    }else{
+						       	    result = result +"<img data-id= 'userProfileImage' onerror='predefineProfileImage(this);' class='m-t-xs'  src='resources/images/userprofileImg.jpg' alt='image'>";
+			        			    }
+					       	    	result = result + ''+userRole.userName+'</a></td>';
 									'</sec:authorize>';
 								}else{
 								result = result + ' <td><div>--</div></td>';

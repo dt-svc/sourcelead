@@ -32,7 +32,7 @@ border-radius:3px; cursor: pointer; padding:6px 0px 0px 0px;
   <section class="content-wraper">
     <section class="content-header clearfix">
     	<c:if test="${!empty msg}">
-			<div class="success_pop" id="selector2" style="display: block;">
+			<div class="success_pop" id="selectorReleaseMsg" style="display: block;">
 				<i class="fa fa-check-circle"></i><span>${msg}</span>
 			</div>
 		</c:if>
@@ -363,12 +363,7 @@ function releaseTo(){
 			contactsIds.push($(this).attr('id'));
 		});
 	
-	   /*  var contactsIds = new Array();
-	    $('input:checkbox[name=contactscheckbox]:checked').each(function() 
-	    {
-	    	contactsIds.push($(this).attr('id'));
-	    }); */
-	    
+	   
 	    var vendorIds = new Array();
 	    var vendorTable = $('#vendorPagination').DataTable();
 		var vendorRowcollection =  vendorTable.$(".vendorcheckbox:checked", {"page": "all"});
@@ -1123,14 +1118,11 @@ function getPostValueDetails(){
 
 </script>
 
-<script>
-       function msgFadein1() {
-           setTimeout(function(){
-                   $('#selector2').fadeOut('slow'); }, 1000);
-       }
-</script>
+
 
 <script>
+$("#selectorReleaseMsg").fadeIn(200);
+$('#selectorReleaseMsg').delay(2000).fadeOut('slow');
 	function msgFadein() {
 		$("#selector").fadeIn(200);
         $('#selector').delay(2000).fadeOut('slow');

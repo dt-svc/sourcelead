@@ -1464,6 +1464,8 @@ function terminateSpoc1(spocId, orgRelationID){
 function saveReason1(spocId, orgRelationID){
 	var sourceleadUrl = '${sourceleadUrl}';
 	var reason = document.getElementById("reasonForSpoc").value;
+	var userId = '${SourceLeadWeb_userId}';
+	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	 reason = reason.replace(/\s/g, "")
 	 var reason1 = document.getElementById("reasonForSpoc").value;
 	 var userId = '${SourceLeadWeb_user.id}';
@@ -1472,7 +1474,7 @@ function saveReason1(spocId, orgRelationID){
 		$("#reasonForVendorSpocDiv").empty();
 		$.ajax({
 		   	type: "POST",
-		    url: sourceleadUrl+"/terminateSpoc?"+tokenParamName+"="+tokenValue+"&spocId="+spocId+"&reason="+reason+"&userId="+userId+"&orgLocationId="+orgLocationId+"&responderType=Vendor",	    	   
+		 	url: sourceleadUrl+"/terminateSpoc?"+tokenParamName+"="+tokenValue+"&spocId="+spocId+"&reason="+reason+"&userId="+userId+"&orgLocationId="+orgLocationId+"&responderType=Vendor",	    	   
 		    success: function(data) {
 		    	getVendorContactList();
 		    	 $("#venselector").removeAttr("style");
