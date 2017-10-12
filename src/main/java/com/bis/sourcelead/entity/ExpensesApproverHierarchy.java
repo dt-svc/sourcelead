@@ -3,6 +3,7 @@ package com.bis.sourcelead.entity;
 import java.io.Serializable;
 import java.util.Date;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -18,6 +19,8 @@ import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 import org.hibernate.annotations.Type;
@@ -54,12 +57,14 @@ private static final long serialVersionUID = 1L;
 private Long id;
 
 @NotFound(action=NotFoundAction.IGNORE)
-@ManyToOne(fetch = FetchType.LAZY)
+@ManyToOne(cascade = CascadeType.ALL)
+@Fetch(FetchMode.SELECT)
 @JoinColumn(name="HIERARCHY_ID", nullable=false )        
 private ProjectApproverHierarchy hierarchyId;
 
 @NotFound(action=NotFoundAction.IGNORE)
-@ManyToOne
+@ManyToOne(cascade = CascadeType.ALL)
+@Fetch(FetchMode.SELECT)
 @JoinColumn(name="EXPENSESID", nullable=false )        
 private Expenses expenseId;
 
@@ -95,7 +100,8 @@ private Date updatedDate;
 private String updatedBy;
 
 @NotFound(action=NotFoundAction.IGNORE)
-@ManyToOne
+@ManyToOne(cascade = CascadeType.ALL)
+@Fetch(FetchMode.SELECT)
 @JoinColumn(name = "REOPENED_USER_ID", nullable = false)
 private User reopenedUser;
 

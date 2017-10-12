@@ -78,7 +78,8 @@ public class Constants {
 	public static final DateFormat DF_MM = new SimpleDateFormat("MM");
 	public static final DateFormat DF_DMY = new SimpleDateFormat("dd-MM-yyyy");
 	public static final DateFormat DF_STD_DMY = new SimpleDateFormat("dd/MM/yyyy");
-	public static final DateFormat SHORT_DF_STD_DM = new SimpleDateFormat("ddMMM");
+	public static final DateFormat SHORT_DF_STD_DM = new SimpleDateFormat("dd MMM");
+	public static final DateFormat SHORT_DF_STD_MD = new SimpleDateFormat("");
 	public static final DateFormat SHORT_DF_MM_DD = new SimpleDateFormat("MMM-dd");
 	public static final DateFormat TZ_DF = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
 	
@@ -174,9 +175,9 @@ public class Constants {
 	public static final String HOTLIST_ALERT_NOTIFICATION = "HotListAlertNotification";
 	public static final long SOURCELEAD_ADMIN_USERID = 1;
 	public static final TimeZone TIMEZONE_CENTRAL = TimeZone.getDefault();
-	public static final String loginUserAsAdmin = ":userId IN (select userRole.user.id from UserRole userRole where userRole.roles.roleName = 'ROLE_ADMIN' and userRole.orgLocations.id = ts.projectMembers.projects.orgLocationsId.id)";
-	public static final String loginUserAsAdminWithMaxHeirarchyLevel = "(:userId IN (select userRole.user.id from UserRole userRole where userRole.roles.roleName = 'ROLE_ADMIN' and userRole.orgLocations.id = pm.projects.orgLocationsId.id) and  sah.hierarchyId.level IN(select MAX(pah.level) from ProjectApproverHierarchy pah where pah.projectId.id = pm.projects.id))";
-	public static final String loginUserAsAdminForProjects = ":userId IN (select userRole.user.id from UserRole userRole where userRole.roles.roleName = 'ROLE_ADMIN' and userRole.orgLocations.id = projects.orgLocationsId.id)";
+	public static final String loginUserAsAdmin = ":userId IN (select userRole.user.id from UserRole userRole where userRole.roles.roleName = 'ROLE_ADMIN' and userRole.orgLocations.id = ts.projectMembers. projectClientsId.orgLocationsId.id)";
+	public static final String loginUserAsAdminWithMaxHeirarchyLevel = "(:userId IN (select userRole.user.id from UserRole userRole where userRole.roles.roleName = 'ROLE_ADMIN' and userRole.orgLocations.id = pm.projectClientsId.orgLocationsId.id) and  sah.hierarchyId.level IN(select MAX(pah.level) from ProjectApproverHierarchy pah where pah.projectClientsId.id = pm.projectClientsId.id))";
+	public static final String loginUserAsAdminForProjects = ":userId IN (select userRole.user.id from UserRole userRole where userRole.roles.roleName = 'ROLE_ADMIN' and userRole.orgLocations.id = pclient.orgLocationsId.id)";
 	/** projectMember constants **/
 	public static final String MEMBER_ACTIVE = "1";
 	public static final String MEMBER_IN_ACTIVE = "0";
@@ -265,6 +266,18 @@ public class Constants {
 	
 	public static final String ACCEPT_SINGLE_RESOURCE_REQUEST = "Accept Single Resource Request";
 	public static final String ACCEPT_SINGLE_RESOURCE_REQUEST_NOTIFICATION = "AcceptSingleResourceRequestNotification";
+	
+	public static final String BUDGET_REQUEST = "Budget Request";
+	public static final String BUDGET_REQUEST_NOTIFICATION = "BudgetRequestNotification";
+	
+	public static final String BUDGET_REQUEST_ACCEPTED = "Budget Request Accepted";
+	public static final String BUDGET_REQUEST_ACCEPTED_NOTIFICATION = "BudgetRequestAcceptedNotification";
+	
+	public static final String BUDGET_REQUEST_REJECTED_EMAIL = "Budget Request Rejected";
+	public static final String BUDGET_REQUEST_REJECTED_NOTIFICATION = "BudgetRequestRejectedNotification";
+	
+	public static final String BUDGET_REQUEST_ONHOLD_EMAIL = "Budget Request OnHold";
+	public static final String BUDGET_REQUEST_ONHOLD_NOTIFICATION = "BudgetRequestOnHoldNotification";
 	
 	public static final String INVITE_COMPANY = "inviteCompany";
 	public static final String UPDATED_USER_ROLE_EMAIL = "UserRoleChanged";
@@ -421,7 +434,12 @@ public class Constants {
 	public static final String EDUCATIONS = "Educations";
 	public static final String SKILLS = "Skills";
 	public static final String VISA = "VisaCategory";
+	public static final String INDUSTIRES = "Industries";
 	
+	public static final String TASKTYPE = "TaskType";
+	public static final String TASKSEVERITY = "TaskSeverity";
+	public static final String TASKPRIORITY = "TaskPriority";
+	public static final String TASKSTATUS = "TaskStatus";
 	
 	public static final String EXPENSESCATEGORY = "Expense Category";
 	
@@ -684,6 +702,11 @@ public class Constants {
 	public static final String RESOURCE_REQUEST_ASSOCIATE_REQUEST = "Associate Request";
 	
 	
+	public static final String BUDGET_REQUEST_WAITING_FOR_APPROVAL = "Waiting For Approval"; 
+	public static final String BUDGET_REQUEST_APPROVED = "Approved"; 
+	public static final String BUDGET_REQUEST_REJECTED = "Rejected";
+	public static final String BUDGET_REQUEST_ON_HOLD = "On Hold";
+	
 	public static final int WORKING_HOURS = 8;
 	
 	
@@ -859,7 +882,36 @@ public class Constants {
 	public static final String CLINT_VENDOR_DOES_NOT_EXIST = "false";
 	public static final String CLINT_VENDOR_IF_EXIST = "true";
 	public static final String CLINT_VENDOR_IF_EXIST_AS_SAMEORG = "sameorg";
+
+	
+	
+	public static final String TASK_STATUS_NEW = "New";
+	public static final String TASK_STATUS_IN_PROGRESS = "In-Progress";
+	public static final String TASK_STATUS_DONE = "Done";
+	public static final String TASK_STATUS_ON_HOLD = "On-Hold";
+	
+	public static final String TASK_PRIORITY_P1 = "P1";
+	public static final String TASK_PRIORITY_P2 = "P2";
+	public static final String TASK_PRIORITY_P3 = "P3";
+	public static final String TASK_PRIORITY_P4 = "P4";
+	
+	public static final int TASK_PERCENTAGE_ZERO = 0;
+	public static final int TASK_PERCENTAGE_TEN = 10;
+	public static final int TASK_PERCENTAGE_TWENTY = 20;
+	public static final int TASK_PERCENTAGE_THIRTY = 30;
+	public static final int TASK_PERCENTAGE_FORTY = 40;
+	public static final int TASK_PERCENTAGE_FIFTY = 50;
+	public static final int TASK_PERCENTAGE_SIXTY = 60;
+	public static final int TASK_PERCENTAGE_SEVENTY = 70;
+	public static final int TASK_PERCENTAGE_EIGHTY = 80;
+	public static final int TASK_PERCENTAGE_NINTY = 90;
+	public static final int TASK_PERCENTAGE_HUNDRED = 100;
+	
+	public static final String TASK_ACTIVITY_STATUS = "Status";
+	public static final String TASK_ACTIVITY_PRIORITY = "Priority";
+
 	public static final String LEAVE_EMAIL_TO_APPROVERS = "LeaveEmailToApprovers";
 	public static final String LEAVE_NOTIFICATION_TO_APPROVERS = "LeaveNotificationToApprovers";
+
 
 }

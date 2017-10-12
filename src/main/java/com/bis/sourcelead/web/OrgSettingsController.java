@@ -85,6 +85,11 @@ public class OrgSettingsController {
 		commonUtil.highLightMenu(Constants.OrgSettings, request);
 		model.setViewName("orgSubmissionTemplateList");
 		model.addObject("sourceleadUrl", sourceleadUrl);
+		String msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "SubmissionTemplateCreateMsg");
+		  if(!isNullOrEmpty(msg)){
+			model.addObject("msg", msg);
+			SourceLeadSessionManager.removeSessionAttribute(request, "SubmissionTemplateCreateMsg");
+		}
 		return model;
 	}
 	

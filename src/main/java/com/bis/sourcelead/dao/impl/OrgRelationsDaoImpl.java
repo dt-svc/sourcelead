@@ -206,7 +206,16 @@ public class OrgRelationsDaoImpl implements OrgRelationsDao {
 	public OrgRelations getOrRelationsById(Long id) throws Exception
 	{
 		Session session = this.sessionFactory.getCurrentSession();
-			return session.get(OrgRelations.class, id);
+	   	 String query = ("from OrgRelations orgrelation left join fetch orgrelation.responderLocationId responder left join fetch responder.org  "
+	   	 		+ " left join fetch orgrelation.locationId orgLoc left join fetch orgLoc.org where orgrelation.id = :id ");
+	      List<OrgRelations> orgRelations = session.createQuery(query.toString()).setLong("id", id).setCacheable(true).list();
+	      OrgRelations orgRelation = null;
+			if(orgRelations != null && !orgRelations.isEmpty())
+			{
+				orgRelation = orgRelations.iterator().next();
+			}
+			return orgRelation;
+		
 	}
 	/**
 	 * Prasanna vadla
@@ -819,6 +828,19 @@ public class OrgRelationsDaoImpl implements OrgRelationsDao {
 			
 			return orgRelations;
 	}
-	
+
+	@Override
+	@Transactional
+	public OrgRelations getOrgRelationsByUUID(String UUID) throws Exception {
+	Session session = this.sessionFactory.getCurrentSession();
+   	 String query = ("from OrgRelations orgrelation left join fetch orgrelation.responderLocationId left join fetch orgrelation.locationId where orgrelation.UUID = :UUID ");
+      List<OrgRelations> orgRelations = session.createQuery(query.toString()).setString("UUID", UUID).setCacheable(true).list();
+      OrgRelations orgRelation = null;
+		if(orgRelations != null && !orgRelations.isEmpty())
+		{
+			orgRelation = orgRelations.iterator().next();
+		}
+		return orgRelation;
+	}
 	
 }
