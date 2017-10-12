@@ -1233,10 +1233,9 @@ public class LeaveManagementRestController {
 
 		boolean isValid = false;
 		List<RestrictDay> restrictDayList = new ArrayList<>();
-		OrgLocations orgLocations = null;
+		OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
 		if(StringUtils.isNotBlank(leaveId)){
 			Leave leave = leaveService.getLeaveByLeavId(leaveId);
-			orgLocations = orgLocationService.getOrgLocations(orgLocationId);
 			fromDate = commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), leave.getFromDate());
 			toDate = commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), leave.getToDate());
 		}
