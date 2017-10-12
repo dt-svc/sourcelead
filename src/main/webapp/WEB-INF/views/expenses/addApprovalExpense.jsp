@@ -568,13 +568,47 @@ function removeWhiteSpaces(rowCount){
 
 
 
+<!--<script>
+function getClientBasedOnSelectedProject(){
+	 var locationCode ='${SourceLeadWeb_locationCode}'; 
+	var projectId = document.getElementById("projectId").value;
+	$.ajax({
+	      type : "GET",
+	       url: sourceleadUrl+"/getClientByProjectId?projectId="+projectId+"&locationCode="+locationCode,       
+	       success :function(data) {
+	    	   if(data != null && data !='undefined' && data !=''){
+	    	   var json = JSON.parse(data);
+		    	  if(json.expensesClientName != null && json.expensesClientName !='undefined' && json.expensesClientName !=''){
+		    	   		$('#clientNameId').val(json.expensesClientName);
+		    	   }else{
+		    	   		$('#clientNameId').val('');   
+		    	   }
+		    	  if(json.startDateStr != null && json.startDateStr !='undefined' && json.startDateStr !='' && json.endDateStr != null && json.endDateStr !='undefined' && json.endDateStr !=''){
+		    		  	var projectStartDate = json.startDateStr;
+		    			var projectEndDate = json.endDateStr;
+		    			expensesDatePickerStartDate(projectStartDate,projectEndDate);
+		    	  }else{
+					  var projectStartDate = json.startDateStr;
+					  var projectEndDate = json.endDateStr;
+					  expensesDatePickerStartDate(projectStartDate,projectEndDate);
+		    	  }	
+
+		    	  //$('#projectStartDateExpensesId').val('');
+		    	 // $('#projectEndDateExpensesId').val('');    	    
+</script> -->
+
 
 <script type="text/javascript">
 function flushOnchange(){
+
+	//$('#projectId').val('');	
+	
+$("#projectMemberId").val('')	
+
 $('#expensePurpose').val('');
 $('#projectStartDateExpensesId').val('');
 $('#projectEndDateExpensesId').val('');
-$("#projectMemberId").val('')
+
 }
 </script>
 

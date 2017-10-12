@@ -61,6 +61,7 @@ function fileUpload(id, type, formId, name, orgId, orgLocationId,url) {
 	});
 }
 
+
 /*function applyData(data, formId, name, id) {
 	if($("#"+formId+" input[name*="+name+"][data-id="+id+"]").length > 0) {
 		$("#"+formId+" input[name*="+name+"][data-id="+id+"]").remove();
@@ -78,6 +79,13 @@ function fileUpload(id, type, formId, name, orgId, orgLocationId,url) {
 	else{
 		var i = $("#"+formId+" input[type=hidden][name*="+name+"]").length / 3;
 	}
+
+function applyData(data, formId, name, id) {
+	 
+	if($("#"+formId+" input[name*='"+name+"'][data-id="+id+"]").length > 0) {
+		$("#"+formId+" input[name*='"+name+"'][data-id="+id+"]").remove();
+	}
+	var i = $("#"+formId+" input[type=hidden][name*='"+name+"']").length / 3;
 	
 
 		
