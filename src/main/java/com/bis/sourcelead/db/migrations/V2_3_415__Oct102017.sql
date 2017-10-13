@@ -1,1 +1,0 @@
-CALL sourcelead.AlterTableAddColumn ('sourcelead','USER_MAIL_BOX','FILE_URL','TEXT NULL  AFTER `FILE_NAME`');
