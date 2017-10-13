@@ -244,7 +244,7 @@ $.ajax({
 
 	result = result+' <td><div class="sm" title="'+data.expenseId.totalAmount.toFixed(2)+'">';
 	'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_EMPLOYEE_EXPENSES\')">'
-	result = result+'<a  href="'+sourceleadUrl+'/addApprovalExpense?expenseId='+data.expenseId.expenseId+'&type=view" class="ExpAmount">';
+	result = result+'<a  href="'+sourceleadUrl+'/addApprovalExpense?expenseId='+data.expenseId.expenseId+'&expenseLocationCode='+data.expenseId.locationsCode+'&type=view" class="ExpAmount">';
 	'</sec:authorize>';
 	 var  numb = data.expenseId.totalAmount.toFixed(2);
 	result = result+numb;
@@ -253,7 +253,7 @@ $.ajax({
 	result = result+'</a>';
 	'</sec:authorize>';
 	result = result+'</div></td>';
-	result = result+' <td><div id="status'+data.expenseId.id+'" title="'+data.expenseApprovalStatus+'">'+data.expenseApprovalStatus+'</div></td>';
+	result = result+' <td><div id="status'+data.expenseId.id+'" title="'+data.expenseStatus+'">'+data.expenseStatus+'</div></td>';
 	
 	result = result+' <td>';
 	var tdSpanLength = 9;
@@ -272,7 +272,7 @@ $.ajax({
     if(data.expenseApprovalStatus !=null && data.expenseApprovalStatus  == 'REJECTED'){
     	  result = result+" <div class='sm text-center'><h3 class='reje_color'>Rejected</h3>";
     	 result = result+"  <i class='glyphicon glyphicon-comment' id='"+data.expenseId.id+"' onclick='rejectedMessage(\"rejectedMessage"+data.expenseId.id+"\");'>";
-	 	 result = result+" <div class='app_error_mes' id='rejectedMessage"+data.expenseId.id+"'>"+data.rejectedReason+"</div>";
+	 	 result = result+" <div class='app_error_mes' id='rejectedMessage"+data.expenseId.id+"'>"+data.reopenRejectedReason+"</div>";
 	 	 result = result+" </i><br><p title='"+data.actionPerformedBy+"'>By : "+data.actionPerformedBy+"</p>";
 	 	 result = result+" </div>";
     }
@@ -281,7 +281,7 @@ $.ajax({
     }
     if(data.expenseApprovalStatus !=null && data.expenseApprovalStatus  == 'REOPEN'){
     	'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_EMPLOYEE_EXPENSES\')">'
-    	result = result+'<a  href="'+sourceleadUrl+'/addApprovalExpense?expenseId='+data.expenseId.expenseId+'&type=view" class="ExpAmount">';
+    	result = result+'<a  href="'+sourceleadUrl+'/addApprovalExpense?expenseId='+data.expenseId.expenseId+'&expenseLocationCode='+data.expenseId.locationsCode+'&type=view" class="ExpAmount">';
     	'</sec:authorize>'; 
    }
 

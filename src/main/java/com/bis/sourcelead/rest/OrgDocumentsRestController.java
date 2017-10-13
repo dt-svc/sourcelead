@@ -72,6 +72,7 @@ public class OrgDocumentsRestController {
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		clientDocumentsDTO.setStaticPath(staticPath);
+		clientDocumentsDTO.setDateFormat(orgLocation.getDateFormat());
 		//FileUploadUtil.fillUploadedFileInfo(clientDocumentsDTO, clientDocumentsDTO.getFileInfo());
 		orgDocumentsService.saveDocument(clientDocumentsDTO,responderLocationId,docId, orgLocation,user, sourceType);
 		if(docId.equalsIgnoreCase("null")){

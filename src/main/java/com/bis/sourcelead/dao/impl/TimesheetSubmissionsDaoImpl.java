@@ -291,6 +291,30 @@ public class TimesheetSubmissionsDaoImpl implements TimesheetSubmissionsDao {
 	
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
+	public TimesheetSubmissions getAllCandidateTimesheetSubmissionsByProjectIdAndMasterCandidateId(Date startDate,Date endDate,Long projectId,Long masterCandidateId) throws Exception {
+			
+		    // TODO Auto-generated method stub
+			Session session = this.sessionFactory.getCurrentSession();
+			java.sql.Date sqlStartDate = null;
+			if(startDate != null){
+				sqlStartDate = new java.sql.Date(startDate.getTime());
+			}
+			java.sql.Date sqlEndDate = null;
+			if(endDate != null){
+				sqlEndDate = new java.sql.Date(endDate.getTime());
+			}
+			String query = "from TimesheetSubmissions ts  left join fetch ts.projectMembers pm  left join fetch ts.projects pr left join fetch ts.masterCandidateId mc  left join fetch pm.employee emp left join fetch emp.user where pr.id = :projectId and mc.id = :masterCandidateId and ts.status ='1' and ts.startDate = :startDate and ts.endDate = :endDate  order by pr.id ";  
+			List<TimesheetSubmissions> timesheetSubmissionsList = session.createQuery(query).setLong("masterCandidateId", masterCandidateId).setLong("projectId", projectId).setParameter("startDate", sqlStartDate).setParameter("endDate", sqlEndDate).list();
+			TimesheetSubmissions ts = null;
+			if(timesheetSubmissionsList != null && !timesheetSubmissionsList.isEmpty()){
+				ts = timesheetSubmissionsList.iterator().next();
+			}
+			return ts;
+	}
+	
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
 	public List<TimesheetSubmissions> getAllEmployeeTimesheetSubmissionsByProjectMemberIdForUpdation(Date startDate,Date endDate,Long projectMemberId) throws Exception {
 			
 		    // TODO Auto-generated method stub
@@ -307,6 +331,26 @@ public class TimesheetSubmissionsDaoImpl implements TimesheetSubmissionsDao {
 			List<TimesheetSubmissions> timesheetSubmissionsList = session.createQuery(query).setLong("projectMemberId", projectMemberId).setParameter("startDate", sqlStartDate).setParameter("endDate", sqlEndDate).list();
 			return timesheetSubmissionsList;
 	}
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<TimesheetSubmissions> getAllCandidateTimesheetSubmissionsByProjectIdAndMasterCandidateIdForUpdation(Date startDate,Date endDate,Long projectId,Long masterCandidateId) throws Exception {
+			
+		    // TODO Auto-generated method stub
+			Session session = this.sessionFactory.getCurrentSession();
+			java.sql.Date sqlStartDate = null;
+			if(startDate != null){
+				sqlStartDate = new java.sql.Date(startDate.getTime());
+			}
+			java.sql.Date sqlEndDate = null;
+			if(endDate != null){
+				sqlEndDate = new java.sql.Date(endDate.getTime());
+			}
+			String query = "from TimesheetSubmissions ts  left join fetch ts.projectMembers pm  left join fetch pm.projects pr left join fetch ts.masterCandidateId mc  left join fetch pm.employee emp left join fetch emp.user where  pr.id = :projectId and mc.id = :masterCandidateId and ts.status ='1' and ts.startDate = :startDate and ts.endDate = :endDate  order by pr.id ";  
+			List<TimesheetSubmissions> timesheetSubmissionsList = session.createQuery(query).setLong("projectId", projectId).setLong("masterCandidateId", masterCandidateId).setParameter("startDate", sqlStartDate).setParameter("endDate", sqlEndDate).list();
+			return timesheetSubmissionsList;
+	}
+	
 	
 	
 	

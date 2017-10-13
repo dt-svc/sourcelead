@@ -194,10 +194,6 @@ function closeCertificatePopup(){
 		$("#popUpDivEmp").empty();
 		$("#popUpDivEmp").append(result);
 
-		
-		
-		
-
 		$( "#startYear, #endYear" ).datepicker({ 
 		            changeMonth: true,
 		           changeYear: true,
@@ -237,10 +233,6 @@ function closeCertificatePopup(){
 				.click(function(e) {
 					e.stopPropagation();
 				});
-		/* $('html').click(function() {
-			$(".edit-details").removeClass("edit-details-active");
-		}); */
-
 	}
 </script>
 
@@ -376,10 +368,6 @@ function closeCertificatePopup(){
 							.click(function(e) {
 								e.stopPropagation();
 							});
-								/* $('html').click(function() {
-											$(".edit-details").removeClass(
-													"edit-details-active");
-										}); */
 								
 							}
 						}
@@ -654,38 +642,6 @@ function alertMessageforEmp(candidateemployerId, candidateId){
 				empMsgFadein();
 				qvemployeeSubmission(candidateId);
 	        });
-			
-
-			/* var frm = $('#candidateExperianceEdit_form').serializeFormJSON();
-
-			var con = JSON.stringify(frm);
-			con = con.replace(/[{}]/g, "");
-			var jsonData = encodeURIComponent(con);
-			//It will escape all the special characters
-			var sourceleadUrl = '${sourceleadUrl}';
-
-			$.ajax({
-						type : "POST",
-						url : sourceleadUrl
-								+ "/upDateCandidateEmployerByCandidateIdAndCandidateExperianceId?${_csrf.parameterName}=${_csrf.token}&json="+ jsonData + "&candidateId=" + candidateId	+ "&candidateExperianceId"+ candidateExperianceId,
-						success : function(result) {
-							
-							$(".edit-details").toggleClass("edit-details-active");
-							$(".close-div")	.click(function() {
-												$(this).parent("div.edit-details")
-														.removeClass("edit-details-active");
-											});
-							$(".addUser-org, .assign-org, .collapse-div-adduser, .collapse-div, .edit-details")
-									.click(function(e) {
-										e.stopPropagation();
-									});
-							$("#selector3").removeAttr("style");
-	            			$("#selector3").css({ display: "block" });
-	            			$("#empMsgDiv").html("Employer details updated");
-							candidateEmployersList(candidateId);
-							empMsgFadein();
-						},
-					}); */
 			return true;
 		} else {
 			return false;
@@ -753,9 +709,6 @@ function alertMessageforEmp(candidateemployerId, candidateId){
 				 $("#endYearEdit" ).val( '' );
 			 }
 			 
-			/* if(exisitngEndYear == null || exisitngEndYear == '' || exisitngEndYear =='undefined'){
-				$("#endYearEdit" ).val( '' );
-			} */
 		}
 
 	}

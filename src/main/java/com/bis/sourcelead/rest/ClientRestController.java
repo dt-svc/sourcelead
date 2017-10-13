@@ -61,6 +61,7 @@ import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.SubmissionTemplate;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
+import com.bis.sourcelead.entity.VendorOnboarding;
 import com.bis.sourcelead.enums.ApplicantSubmissionStatus;
 import com.bis.sourcelead.service.ClientService;
 import com.bis.sourcelead.service.ClientVendorExport;
@@ -81,6 +82,7 @@ import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.SubmissionTemplateService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
+import com.bis.sourcelead.service.VendorOnboardService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -167,6 +169,9 @@ public class ClientRestController {
 	@Autowired
 	private UserRoleDao userRoleDao;
 	
+	@Autowired
+	VendorOnboardService vendorOnboardService;
+	
 	/**
 	 * Handles to get Orgs
 	 * @param json
@@ -246,7 +251,7 @@ public class ClientRestController {
 	 * @return String
 	 * @throws Exception
 	 */
-	@PreAuthorize("hasAnyRole('ROLE_CREATE_CLIENT','ROLE_CREATE_VENDOR')")
+	@PreAuthorize("hasRole('ROLE_CREATE_CLIENT')")
 	@RequestMapping(value = "/saveClient", method = RequestMethod.POST)
 	@ResponseBody
 	public String saveClient(ClientDTO clientDTO,AddUserDTO addUserDTO,CandidateDTO candidateDTO,
@@ -263,14 +268,10 @@ public class ClientRestController {
 		}
 
 		clientService.storeClient(clientDTO,addUserDTO,candidateDTO, user, orgLocation, responderType, org);
-		if (responderType.equalsIgnoreCase("Vendor")) {
-			SourceLeadSessionManager.setSessionAttribute(request, "vendorCreateMsg", "Success!! New Vendor created");
-		} else if (responderType.equalsIgnoreCase("Client")) {
-			SourceLeadSessionManager.setSessionAttribute(request, "clientCreateMsg", "Success!! New client created");
-		}
+		SourceLeadSessionManager.setSessionAttribute(request, "clientCreateMsg", "Success!! New client created");
 		return "clientDashboard";
 	}
-		
+	
 		
 		 @RequestMapping(value = "/validateClientOrVendorEmail",  method = RequestMethod.POST)
 		    public @ResponseBody String validateClientOrVendorEmail(@RequestParam(value="email", required=false) String email) throws Exception {
@@ -1558,6 +1559,7 @@ public class ClientRestController {
 						 combinationQueryBuilder.should(ownerLoginQueryBuilder);
 						 combinationQueryBuilder.should(spockQueryBuilder);
 						 boolQueryBuilder.must(combinationQueryBuilder);
+						 boolQueryBuilderForCount.must(combinationQueryBuilder);
 			}
 			 
 // Advance search start
@@ -1725,11 +1727,19 @@ public class ClientRestController {
 									 clientVendorContactsIndex.setSpocUserId(clientVendorContactsIndex.getClientUserId());
 									 clientVendorContactsIndex.setOwnerUserId(clientVendorContactsIndex.getVendorUserId());
 								}
+								
+								VendorOnboarding onboard = vendorOnboardService.getVendorOnboardingByOrgRelationId(clientVendorContactsIndex.getOrgRelationId());
+								clientVendorContactsIndex.setOnboardUUID(onboard.getOnboardUUID());
+								
+								OrgSpoc orgSpoc = orgSpocService.getOrgSpocById(clientVendorContactsIndex.getId());
+								Notifications notifications = notificationsService.getNotificationBySpocUUID(orgSpoc.getUUID());
+								clientVendorContactsIndex.setNotificationUUID(notifications.getUUID());
+								
 						 }
 					}	
 					
 				}
-				response.setRecordsFiltered(Long.valueOf(searchResponse.getHits().getTotalHits()).intValue());
+				response.setRecordsFiltered(searchHits.length);
 				SearchResponse searchResponseForCount = sourceleadELKBaseIndexer
 						.searchDocumentWithMaxResults(Constants.ELK_CLIENTVENDOR_CONTACT_INDEX, Constants.ELK_CLIENTVENDOR_CONTACT_TYPE,
 								0, 10, "invitationStatus", SortOrder.DESC, boolQueryBuilderForCount);

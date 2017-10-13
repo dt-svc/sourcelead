@@ -4,7 +4,6 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 
-<link href="resources/css/summernote.css?staticTime=${staticTime}" rel="stylesheet">
 <link rel="stylesheet" href="resources/css/bootstrap-multiselect.css?staticTime=${staticTime}" type="text/css">
 <link rel="stylesheet" href="resources/css/bootstrap3-wysihtml5.min.css?staticTime=${staticTime}" type="text/css">
 
@@ -16,6 +15,10 @@ display: none;
 
 .nicEdit-main {
 	overflow: auto !important;
+}
+
+.mt40{
+ margin-top: 50px !important;
 }
 </style>
 
@@ -58,7 +61,7 @@ display: none;
      <div id ="popUp"></div>
       <div id ="textBoxPopUp"></div>
       <div class="form-horizontal compose-mail col-md-10 col-md-offset-1">
-       <form:form id="email_form" name="email_form" content="text/html" enctype='multipart/form-data' >
+       <form:form id="email_form" name="email_form" >
         <div class="col-md-12 clearfix">
           <label class="col-md-2 control-label text-muted small">From</label>
           <div class="col-md-10">
@@ -81,7 +84,7 @@ display: none;
                     <h4 class="modal-title">Select Mailer</h4>
                   </div>
                   
-                   <div class="modal-body mail-body clearfix">
+                  <div class="modal-body clearfix hotmailSelOut">
                     <div class="modal-body-custom mailerpopup mt25 clearfix filter-position">
                      <div id="userList" class="datatable_filter"></div>
                     </div>
@@ -115,11 +118,9 @@ display: none;
         <div class="col-md-12 clearfix mb10 mt10">
           <div class="col-md-12">
             <div class="clearfix txt-area">
-              <textarea  id="bodytext" name="bodytext" class="form-control" rows="5" placeholder="Message" style="height: 250px; overflow: auto;">
+              <textarea id="bodytext" name="bodytext" class="form-control" rows="5" placeholder="Message" style="height: 250px">
                     
-			  </textarea> 
-			  
-			  
+			  </textarea>
             </div>
           </div>
         </div>
@@ -130,9 +131,9 @@ display: none;
           <div class="col-md-12 attachment">
             <div class="input-group">
               <label class="input-group-btn"> <b class="btn btn-primary"><i class="fa fa-paperclip"></i>
-                <input type="file" name="attachfile" style="display: none;" multiple id="attachfileBtn" class="upload">
+                <input type="file" name="attachfile" style="display: none;"  id="attachfileBtn" class="upload">
                 </b> </label>
-              <input type="text" class="form-control" readonly id="attachfile-mail" placeholder="Upload files ...">
+              <input type="text" class="form-control" readonly id="attachfile-mail" placeholder="Files are not selected...">
             </div>
           </div>
         </div>
@@ -162,7 +163,7 @@ display: none;
   <!-- <script type="text/javascript" src="resources/js/bootstrap-multiselect.js"></script>
   <script src="resources/js/bootstrap3-wysihtml5.all.min.js"></script>  -->
   
-  <!-- <script src="resources/js/nicEdit.js"></script> -->
+  <script src="resources/js/nicEdit.js"></script> 
   
   
    <script>
@@ -193,10 +194,13 @@ display: none;
 			 });
 	  
   }
+  $(function() {
+		$("#attachfileBtn").change(function() {
+			fileUpload("attachfileBtn", "Email Documents", "email_form");
+		});
+	 });
   </script> 
  
-
-<script src="resources/js/summernote.js"></script>
 <script>
 	$('#bodytext').summernote({
   toolbar: [
@@ -237,44 +241,33 @@ $(function(){
   <script type="text/javascript">
 	function sendEmails() {
 		if ($('#email_form').validate(false, validationSettings)){ 
-			
 				var sourceleadUrl = '${sourceleadUrl}';
-				//nicEditors.findEditor('bodytext').saveContent();
 				
-				var frm = $('#email_form').serializeFormJSON();
-				var jsonData = JSON.stringify(frm);
-				/* con = con.replace(/[{}]/g, ""); 
-			    var jsonData = encodeURIComponent(con); */
-			    var form = $('#email_form')[0];
-		  		var formData = new FormData(form);
-		  		formData.append("json",jsonData)
-		  		var toEmails =  $('#emailsList_chosen span').size();
+				nicEditors.findEditor('bodytext').saveContent();
+				
+				var form = $('#email_form')[0];
+		  		 var formData = new FormData(form)
+		  		
+		  		 var toEmails =  $('#emailsList_chosen span').size();
 		  		 
 		  		if(toEmails < 1){
 		   	    	alertMailerMsg("Provide at least one To mail");
 		   	    }
 		  		else{
-		  			//var bodytext = nicEditors.findEditor('bodytext').getContent();
-		  			var bodytext = $("#bodytext").summernote('code');
-		  			/*  if(bodytext.length < 60000){  */	
 		  			
 			  			$("#mailLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 			  		 	$.ajax({
-			  				type : "POST",
+			  		 		type : "POST",
 			  	    	    data: formData,
-			  	    	    contentType : 'application/json; charset=utf-8',
 			  	    	    enctype: 'multipart/form-data',
 			  		        processData: false,
 			  		        contentType:false, 
-			  	    	    dataType : 'json',
 			  				url : sourceleadUrl+"/sendEmailToUsers?${_csrf.parameterName}=${_csrf.token}",
 			  				success : function(result) {
 			  						location.replace(sourceleadUrl+"/mailBox");
 			  				},
 			  			}); 
-			  		 /*  }else{
-			  			alertTextboxMsg("Message body is too large. If you have more data, Plz go with attachment");
-			  		 }   */
+			  		
 		  		}
 		  		  
 				 return true
@@ -714,12 +707,12 @@ document.getElementById("attachfileBtn").onchange = function () {
 	};
 </script>
 
-<!-- 
+
 
 <script type="text/javascript">
 	bkLib.onDomLoaded(function() { nicEditors.allTextAreas() });
 </script>
--->
+
 
   
 <jsp:include page="masterFooter.jsp" />

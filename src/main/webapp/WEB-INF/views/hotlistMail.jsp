@@ -52,7 +52,7 @@ display: none;
     <div id ="popUp"></div>
     <div id ="textBoxPopUp"></div>
       <div class="form-horizontal compose-mail col-md-10 col-md-offset-1">
-       <form:form id="hotlistCampaign_form" name="hotlistCampaign_form"  enctype='multipart/form-data' >
+       <form:form id="hotlistCampaign_form" name="hotlistCampaign_form"  >
         <div class="col-md-12 clearfix">
           <label class="col-md-2 control-label text-muted small">From</label>
           <div class="col-md-10">
@@ -202,7 +202,7 @@ display: none;
           <div class="col-md-12 attachment">
             <div class="input-group">
               <label class="input-group-btn"> <b class="btn btn-primary"><i class="fa fa-paperclip"></i>
-                <input type="file" name="attachfile" style="display: none;" multiple id="attachfileBtn" class="upload">
+                <input type="file" name="attachfile" style="display: none;"  id="attachfileBtn" class="upload">
                 </b> </label>
               <input type="text" class="form-control" readonly id="attachfile-mail" placeholder="Files are not selected...">
             </div>
@@ -255,6 +255,13 @@ $(function(){
 				$this.next().css({'width': '100%'});
 		  })
 });
+
+$(function() {
+	$("#attachfileBtn").change(function() {
+		fileUpload("attachfileBtn", "Hotlist Campaign Documents", "hotlistCampaign_form");
+	});
+ });
+ 
 </script>
 
   
@@ -262,15 +269,12 @@ $(function(){
   <script type="text/javascript">
 	function sendHotListCampaign() {
 		if ($('#hotlistCampaign_form').validate(false, validationSettings)){ 
-		var sourceleadUrl = '${sourceleadUrl}';
 		nicEditors.findEditor('bodytext').saveContent();
-		var frm = $('#hotlistCampaign_form').serializeFormJSON();
-		var con = JSON.stringify(frm);
-		con = con.replace(/[{}]/g, ""); 
-	    var jsonData = encodeURIComponent(con);
-	    var form = $('#hotlistCampaign_form')[0];
-  		var formData = new FormData(form)
   		
+		 var form = $('#hotlistCampaign_form')[0];
+  		 var formData = new FormData(form)
+	  		
+		
   		var toEmails =  $('#emailsList_chosen span').size();
   		var otherEmails =  $('#otherEmails_chosen span').size();
   		
@@ -281,26 +285,20 @@ $(function(){
   	    	alertMailerMsg();
   	    }
   	    else{
-	  	    	var bodytext = nicEditors.findEditor('bodytext').getContent();
-	  			if(bodytext.length < 60000){
 	  	    	
 	  	    	$("#mailLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	  			$.ajax({
 	  				type : "POST",
 	  	    	    data: formData,
-	  	    	    contentType : 'application/json; charset=utf-8',
 	  	    	    enctype: 'multipart/form-data',
 	  		        processData: false,
 	  		        contentType:false, 
-	  	    	    dataType : 'json',
-	  				url : sourceleadUrl+"/sendHotListCampaign?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
+	  				url : sourceleadUrl+"/sendHotListCampaign?${_csrf.parameterName}=${_csrf.token}",
 	  				success : function(result) {
 	  						location.replace(sourceleadUrl+"/mailBox");
 	  				},
 	  			}); 
-	  	    }else{
-	  	    	alertTextboxMsg("Message body is too large. If you have more data, Plz go with attachment");
-	  	    }
+	  	    
   	    }
 		 return true
 		 

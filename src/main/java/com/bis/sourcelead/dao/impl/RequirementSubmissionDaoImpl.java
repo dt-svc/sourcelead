@@ -1528,11 +1528,14 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 				else if("REJECTED".equalsIgnoreCase(status)){
 					statusQuery= "  reqSub.submissionRateStatus = 'REJECTED' and reqSub.needApplicantPermit <>'N' and reqSub.submissionRateStatus IS NOT NULL";
 				}
-				subQuery = " where reqSub.orgLocations.id =:loginOrgLocation  and  reqSub.requirement.managerUserId.id  =:userId and "   +statusQuery;
+				subQuery = " where reqSub.orgLocations.id =:loginOrgLocation  and  (reqSub.requirement.managerUserId.id  =:userId or reqSub.createdUser =:userCreatedBy) and "   +statusQuery;
 				params.put("loginOrgLocation",orgLocationsId);
 				params.put("userId",user.getId());
-					
-				
+				if(user.getLastName() != null && user.getLastName() !=""){
+				params.put("userCreatedBy",user.getFirstName() +" "+user.getLastName());
+				}else{
+				params.put("userCreatedBy",user.getFirstName());	
+				}
 			}
 			String whereCondition = subQuery;
 			
@@ -1660,7 +1663,8 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 			 java.sql.Timestamp startDate = new java.sql.Timestamp(startDateFormat.getTime());
 			 java.sql.Timestamp endDate = new java.sql.Timestamp(endDateFormat.getTime());
 			 
-			 String query = "select count(distinct rs.requirement) from RequirementSubmission rs where rs.candidate.id = :candidateId and (rs.createdDate BETWEEN :startDate and :endDate)";
+			 String query = "select count(distinct rs.requirement) from RequirementSubmission rs where rs.candidate.id = :candidateId and "
+			 		+ "(rs.createdDate BETWEEN :startDate and :endDate) and rs.sourceSubmission IS NULL";
 		     
 		     List<Long> appliedCount = session.createQuery(query).setLong("candidateId", candidateId)
 		    		   .setDate("startDate", startDate)
@@ -1709,11 +1713,11 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 				String query;
 				List<RequirementSubmission>  submissionsCountList = null ;
 				if(null != submissionStatus && !"".equalsIgnoreCase(submissionStatus) && submissionStatus != "undefined"){
-					 query = "from RequirementSubmission rs left join fetch rs.requirement left join fetch rs.candidate where rs.candidate.id = :candidateId and rs.submissionStatus = :submissionStatus and (rs.createdDate BETWEEN :startDate and :endDate))";
+					 query = "from RequirementSubmission rs left join fetch rs.requirement left join fetch rs.candidate where rs.candidate.id = :candidateId and rs.submissionStatus = :submissionStatus and rs.sourceSubmission IS NULL and (rs.createdDate BETWEEN :startDate and :endDate))";
 					 submissionsCountList = session.createQuery(query).setLong("candidateId", candidateId) .setString("submissionStatus", submissionStatus)
 				    		   .setDate("startDate", startDate) .setDate("endDate", endDate).setCacheable(true).list();
 				}else{
-					 query = "from RequirementSubmission rs left join fetch rs.requirement left join fetch rs.candidate where rs.candidate.id = :candidateId and (rs.createdDate BETWEEN :startDate and :endDate))";
+					 query = "from RequirementSubmission rs left join fetch rs.requirement left join fetch rs.candidate where rs.candidate.id = :candidateId and (rs.createdDate BETWEEN :startDate and :endDate) and rs.sourceSubmission IS NULL)";
 					 submissionsCountList = session.createQuery(query).setLong("candidateId", candidateId) .setDate("startDate", startDate)
 							   .setDate("endDate", endDate).setCacheable(true).list();
 				}
@@ -1743,7 +1747,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 			 
 			 java.sql.Date ourJavaDateObject = new java.sql.Date(appliedDate.getTime());
 		     
-			 String query = "select count(distinct rs.requirement) from RequirementSubmission rs where rs.candidate.id = :candidateId and DATE(rs.createdDate) = :appliedDate ";
+			 String query = "select count(distinct rs.requirement) from RequirementSubmission rs where rs.candidate.id = :candidateId and DATE(rs.createdDate) = :appliedDate and rs.sourceSubmission IS NULL ";
 		     
 		     List<Long> appliedCount = session.createQuery(query).setLong("candidateId", candidateId).setDate("appliedDate", ourJavaDateObject).setCacheable(true).list();
 			 Integer count= 0;
@@ -2599,10 +2603,10 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 			 
 			 List<RequirementSubmission> shortListCandidatesList;
 			 if(existingApplicantsIds != null && !existingApplicantsIds.isEmpty()){
-				 String query = "from RequirementSubmission rs left join fetch rs.requirement left join fetch rs.candidate left join fetch rs.sourceSubmission left join fetch rs.candidateResumes where rs.orgLocations.id = :orgLocationsId and rs.requirement.id = :requirementId and rs.id NOT IN (:existingApplicantsIds) "+subQuery+" ";
+				 String query = "from RequirementSubmission rs left join fetch rs.requirement left join fetch rs.candidate left join fetch rs.sourceSubmission left join fetch rs.candidateResumes where rs.orgLocations.id = :orgLocationsId and rs.requirement.id = :requirementId and rs.candidate.orgLocationId.id <> :orgLocationsId  and rs.id NOT IN (:existingApplicantsIds) "+subQuery+" ";
 				 shortListCandidatesList = session.createQuery(query).setLong( "orgLocationsId", orgLocations.getId()).setLong( "requirementId", requirementId).setParameterList("existingApplicantsIds", existingApplicantsIds).setCacheable(true).list();
 			 }else{
-				 String query = "from RequirementSubmission rs left join fetch rs.requirement left join fetch rs.candidate left join fetch rs.sourceSubmission left join fetch rs.candidateResumes where rs.orgLocations.id = :orgLocationsId and rs.requirement.id = :requirementId "+subQuery+"";
+				 String query = "from RequirementSubmission rs left join fetch rs.requirement left join fetch rs.candidate left join fetch rs.sourceSubmission left join fetch rs.candidateResumes where rs.orgLocations.id = :orgLocationsId and rs.requirement.id = :requirementId and rs.candidate.orgLocationId.id <> :orgLocationsId "+subQuery+"";
 				 shortListCandidatesList = session.createQuery(query).setLong( "orgLocationsId", orgLocations.getId()).setLong( "requirementId", requirementId).setCacheable(true).list();
 			 }
 		     return shortListCandidatesList;

@@ -7,7 +7,7 @@ import java.util.List;
 
 import com.bis.sourcelead.dto.ExpensesDTO;
 import com.bis.sourcelead.dto.ExpensesEntriesDTO;
-import com.bis.sourcelead.dto.ExpensesEntryDocumentsDTO;
+import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.entity.ExpensesEntries;
 import com.bis.sourcelead.entity.ExpensesEntryDocuments;
 
@@ -17,28 +17,36 @@ public class ExpensesEntriesDTOConverter {
 		SimpleDateFormat dateFormat=expensesEntries.getExpensesId().getOrgLocationId().getLocFullFormDateFormatter();
 		ExpensesEntriesDTO expensesEntriesDTO = new ExpensesEntriesDTO();
 		expensesEntriesDTO.setId(expensesEntries.getId());
-		expensesEntriesDTO.setExpensesId(expensesDTO);
-		expensesEntriesDTO.setExpenseDate(dateFormat.format(expensesEntries.getExpenseDate()));
-		expensesEntriesDTO.setPaymentMode(expensesEntries.getPaymentMode());
+		expensesEntriesDTO.setDateOccurred(dateFormat.format(expensesEntries.getExpenseDate()));
+		expensesEntriesDTO.setPaymentMode(expensesEntries.getPaymentMode().getValue());
 		expensesEntriesDTO.setReceiptIssuedBy(expensesEntries.getReceiptIssuedBy());
-		expensesEntriesDTO.setCurrencyType(expensesEntries.getCurrencyType());
-		expensesEntriesDTO.setAmount(expensesEntries.getAmount());
+		expensesEntriesDTO.setCategoryAmountType(expensesEntries.getCurrencyType());
+		expensesEntriesDTO.setCategoryAmount(String.valueOf(expensesEntries.getAmount()));
 		BigDecimal totalAmo = new BigDecimal(expensesEntries.getAmount());
 		BigDecimal amountRoundOff = totalAmo.setScale(2, BigDecimal.ROUND_HALF_EVEN);
 		expensesEntriesDTO.setAmountRoundOff(amountRoundOff);	
-		expensesEntriesDTO.setDescription(expensesEntries.getDescription());
+		expensesEntriesDTO.setEntryDescription(expensesEntries.getDescription());
 		if(expensesEntries.getExpensesCategoryId() != null){
-			expensesEntriesDTO.setExpensesCategoryId(ExpenseCategoryDTOConverter.getExpensesCategoryDTOFromExpensesCategory(expensesEntries.getExpensesCategoryId()));
+			expensesEntriesDTO.setCategoryTypeId(expensesEntries.getExpensesCategoryId().getId());
+			expensesEntriesDTO.setCategoryName(expensesEntries.getExpensesCategoryId().getExpensesName());
+			expensesEntriesDTO.setCategoryType(expensesEntries.getExpensesCategoryId().getId()+","+expensesEntries.getExpensesCategoryId().getAllowedAmount());
 		}
-		List<ExpensesEntryDocumentsDTO> eedDTOList = new ArrayList<>();
+		List<FileInfo> fileInfoList = new ArrayList<>();
 		if(expensesEntries.getExpensesEntryDocuments() != null && expensesEntries.getExpensesEntryDocuments().size() > 0){
 			for(ExpensesEntryDocuments eed :expensesEntries.getExpensesEntryDocuments()){
-				eedDTOList.add(ExpensesEntryDocumentsDTOConverter.getExpensesEntryDocumentsDTOFromExpensesEntryDocuments(eed, expensesEntriesDTO));
+				FileInfo fileInfo = new FileInfo();
+				fileInfo.setFileDbId(eed.getId().toString());
+				fileInfo.setFileName(eed.getFileName());
+				fileInfo.setFileURL(eed.getFileURL());
+				fileInfo.setStatus(eed.getStatus());
+				fileInfo.setContentType(eed.getFileContentType());
+				fileInfoList.add(fileInfo);
+				/*eedDTOList.add(ExpensesEntryDocumentsDTOConverter.getExpensesEntryDocumentsDTOFromExpensesEntryDocuments(eed, expensesEntriesDTO));*/
 			}
 		}
 		
-		if(eedDTOList != null && !eedDTOList.isEmpty() && eedDTOList.size() > 0){
-			expensesEntriesDTO.setExpensesEntryDocuments(eedDTOList);
+		if(fileInfoList != null && !fileInfoList.isEmpty() && fileInfoList.size() > 0){
+			expensesEntriesDTO.setFileInfo(fileInfoList);
 		}
 		return expensesEntriesDTO;
 	}

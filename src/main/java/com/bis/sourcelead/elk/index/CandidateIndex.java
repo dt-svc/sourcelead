@@ -188,6 +188,10 @@ public class CandidateIndex implements Serializable {
 	
 	private String fileContentType;
 	
+	private String action;
+	
+	private String recommendationFileUrl;
+	
 	
 	public String getSearchType() {
 		return searchType;
@@ -937,5 +941,22 @@ public class CandidateIndex implements Serializable {
 	{
 		this.fileContentType = fileContentType;
 	}
+
+	public String getAction() {
+		return action;
+	}
+
+	public void setAction(String action) {
+		this.action = action;
+	}
+
+	public String getRecommendationFileUrl() {
+		return recommendationFileUrl;
+	}
+
+	public void setRecommendationFileUrl(String recommendationFileUrl) {
+		this.recommendationFileUrl = recommendationFileUrl;
+	}
+	
 }
 

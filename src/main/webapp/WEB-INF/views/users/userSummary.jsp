@@ -16,6 +16,12 @@
 #editUserDiv .user_summary_edit_cta {
 min-height: 65px;
 }
+.edit_role_pop.editrole-custom {
+height: 450px; overflow-y: auto;
+}
+.assignroles.changeRole {
+max-height: inherit !important;
+}
 
 </style>
 
@@ -232,7 +238,7 @@ $(document).ready(function(){
 				     result = result + ' </div>';
 				     
 				     
-				     result = result + ' <div id="edit_role_pop" class="edit_role_pop" >';
+				     result = result + ' <div id="edit_role_pop" class="edit_role_pop editrole-custom" >';
 				     result = result + ' <div id="editRoleLoading" ></div>';
 				     result = result + ' <div class="user_summary_edit_cta">';
 				     result = result + ' <form id="editRole_form"  name="editRole_form" method="post">';
@@ -718,14 +724,14 @@ function getChangeRole(userId,userRoleId){
 				
 				
 				
-				    result = result + '<div class="col-md-12 mb10 mt10" id="reasonDiv">';
+				    result = result + '<div class="col-md-12 mb10" id="reasonDiv">';
 				    result = result + '<textarea rows="3" class="form-control input-sm" name="reason" id="reason" data-validation="required" field-name="Reason" placeholder="Change Reason"></textarea>';
 				  	result = result + '</div><br/>';
 				  	
 				  	 result = result + '<div class="clearfix mb10 mt">';
 					  result = result + '</div>';
 				      result = result + '<div class="clearfix"></div>';
-					  result = result + '<div class="user_summary_edit_cta clearfix">';
+					  result = result + '<div class="user_summary_edit_cta clearfix pull-right">';
 					  result = result + '<input class="us-btn" type="button" value="Update" type="button" onclick="updateRole('+userId+');"/>';
 					  result = result + '&nbsp;<input class="us-btn us-btn_a" onclick="cancelEditRole();" type="button" value="Cancel"/>';
 					  result = result + '</div>';
@@ -1344,20 +1350,25 @@ $("#editRoleDetailsList").empty();
 					result = result + ' <input type="text" value="'+mobilePhone+'" name="phoneNumber" data-validation="validate_Space validate_phone validate_length length9-20" data-validation-optional="true">';
 					result = result + ' </div>';
 					
-					if(json.userState == "NOT_LOGGEDIN"){
+/* 					if(json.userState == "NOT_LOGGEDIN"){
 						
 						result = result + ' <div class="user_summary_edit_cta" id="EmailIdDiv">';
 						result = result + ' <label>Email Id<span class="text-danger">&nbsp; *</span></label>';
-						result = result + ' <input type="text" value="'+json.user.email+'"  id="EmailId" name="EmailId" field-name="EmailId" data-validation="required validate_Space validate_length length2-100 validate_email"/>';
+						result = result + ' <input type="text" value="'+json.user.email+'"  id="EmailId" name="email" field-name="EmailId" data-validation="required validate_Space validate_length length2-100 validate_email"/>';
 						result = result + ' </div>';
 					
 					}
 					else{
 						result = result + ' <div class="user_summary_edit_cta" id="EmailIdDiv">';
 						result = result + ' <label>Emaild Id<span class="text-danger">&nbsp; *</span></label>';
-						result = result + ' <input type="text" value="'+json.user.email+'" readonly="readonly" id="EmailId" name="EmailId" field-name="EmailId" data-validation="required validate_Space validate_length length2-100"/>';
+						result = result + ' <input type="text" value="'+json.user.email+'" readonly="readonly" id="EmailId" name="email" field-name="EmailId" data-validation="required validate_Space validate_length length2-100"/>';
 						result = result + ' </div>';
-					}
+					} */
+					
+					result = result + ' <div class="user_summary_edit_cta" id="EmailIdDiv">';
+					result = result + ' <label>Emaild Id<span class="text-danger">&nbsp; *</span></label>';
+					result = result + ' <input type="text" value="'+json.user.email+'" readonly="readonly" id="EmailId" name="email" field-name="EmailId" data-validation="required validate_Space validate_length length2-100"/>';
+					result = result + ' </div>';
 					
 					
 					if(json.allReportingManagers != null && json.allReportingManagers != "" && json.allReportingManagers != 'undefined' && json.allReportingManagers.length > 0){

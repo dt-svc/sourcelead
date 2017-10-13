@@ -273,12 +273,21 @@ public class UserServiceImpl implements UserService {
 				candidateService.saveOrUpdateCandidateElkDocument(candidate);
 			}	
 		}else{
-			MasterCandidate masterCandidate = null;
-			masterCandidate = masterCandidateService.getMasterCandidateByInteligenceCandidateDTO(candidateDTO);
-			if(null == masterCandidate){
-				masterCandidate = masterCandidateService.storeMasterCandidateByCandidateDTO(candidateDTO, loginuser);
+			// existing candidate saving as a User
+			Candidate candidate = candidateService.findByCandidateEmail(candidateDTO.getEmail(),orgLocations.getId());
+			if(candidate == null){
+				MasterCandidate masterCandidate = null;
+				masterCandidate = masterCandidateService.getMasterCandidateByInteligenceCandidateDTO(candidateDTO);
+				if(null == masterCandidate){
+					masterCandidate = masterCandidateService.storeMasterCandidateByCandidateDTO(candidateDTO, loginuser);
+				}
+				candidateService.storeCandidateForUsers(candidateDTO, user, orgLocations, masterCandidate);
+			}else{
+				candidate.setConsultantUser(user);
+				candidateService.addCandidate(candidate);
+				candidateService.saveOrUpdateCandidateElkDocument(candidate);
 			}
-			candidateService.storeCandidateForUsers(candidateDTO, user, orgLocations, masterCandidate);
+			
 		}
 		
 		//For saving Employee details (Every User is an Employee)
@@ -454,11 +463,6 @@ public class UserServiceImpl implements UserService {
 			logger.error(ExceptionUtils.getFullStackTrace(e));
 		}
 		
-		if(StringUtils.isNotBlank(addUserDTO.getDepartment())){
-			
-			List<Department> departmentList = departmentService.getDepartmentByOrgLocationId(orgLocations.getId());
-		}
-		
 		userRole.setRoles(roles);
 		userRole.setUserType(roles.getDisplayName());
 		userRole.setCreatedDate(commonUtil.currentDate());
@@ -529,10 +533,7 @@ public class UserServiceImpl implements UserService {
 		
 		if(StringUtils.isNotBlank(addUserDTO.getDateofJoin())){
 			try {
-				   //SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
-					 OrgLocations orgLoc = orgLocationService.getOrgLocations(orgLocationsId);
-						 //SimpleDateFormat formatter = orgLoc.getLocFullFormDateFormatter();
-						 employees.setHireDate(commonUtil.orgLocationDateFormat(orgLoc.getDateFormat(), addUserDTO.getDateofJoin()));
+				 employees.setHireDate(commonUtil.orgLocationDateFormat(addUserDTO.getDateFormat(), addUserDTO.getDateofJoin()));
 				  
 				} catch (Exception e) {
 				  e.printStackTrace();

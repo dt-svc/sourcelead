@@ -1,13 +1,15 @@
 <jsp:include page="../masterHeader.jsp" />
 <jsp:include page="../masterSideNav.jsp" />
+
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
-<link rel="stylesheet" href="resources/css/chosen.min.css">
-<script src="resources/js/chosen.jquery.min.js"></script> 
-<script src="resources/js/jquery-fun.js"></script> 
-<script src="resources/js/formvalidator.js"></script>
-<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+
+<link rel="stylesheet" href="resources/css/chosen.min.css?staticTime=${staticTime}">
+<script src="resources/js/chosen.jquery.min.js?staticTime=${staticTime}"></script> 
+<script src="resources/js/jquery-fun.js?staticTime=${staticTime}"></script> 
+<script src="resources/js/formvalidator.js?staticTime=${staticTime}"></script>
+
 
 
 <script> 
@@ -102,7 +104,7 @@
             <div class="tab-pane" id="documents">
               
             <div class="form-horizontal">
-              <form id='templateDocuments_form' name='templateDocuments_form' enctype='multipart/form-data' >
+              <form id='templateDocuments_form' name='templateDocuments_form' >
                  <input type="hidden" name="candidateonboardingId" id="documentstemplateId" value=""/>
                 <p><strong>Acceptance Documents</strong> <br>
                   <small class="text-muted">These documents need to be accepted by the new hire as part of acceptance step  - Learn more</small> </p>
@@ -384,28 +386,28 @@
   
 <div id="divAttachmentTd1" style="display: none; float: left;">
 			<div id='REPLACEROWIDdocFileuploadFileGroup'>
-	  			<input type='file' name='REPLACEROWIDdocFile' id='REPLACEROWIDdocFile' class="timesheetAttachmentValidation" data-validation="required validatedoc" field-name="Policies Document"  onchange='validateUploadFile(REPLACEROWID)'> 
+	  			<input type='file' name='REPLACEROWIDdocFile' id='REPLACEROWIDdocFile' class="timesheetAttachmentValidation" data-validation="required validatedoc" field-name="Policies Document"  onchange='uploadPoliciesDocument(REPLACEROWID)'> 
 	  			<i class="fa fa-times" onclick="removePoliciesAttachmentRow(REPLACEROWID);"></i>
 	  		</div>
 </div>
 
 <div id="divSupportingAttachmentTd1" style="display: none; float: left;">
 			<div id='REPLACEROWIDSupportingdocFileuploadFileGroup'>
-	  			<input type='file' name='REPLACEROWIDsupportingdocFile' id='REPLACEROWIDsupportingdocFile' class="timesheetAttachmentValidation" data-validation="required validatedoc" field-name="Supporting Document" onchange='validateSupportingUploadFile(REPLACEROWID)'> 
+	  			<input type='file' name='REPLACEROWIDsupportingdocFile' id='REPLACEROWIDsupportingdocFile' class="timesheetAttachmentValidation" data-validation="required validatedoc" field-name="Supporting Document" onchange='uploadSupportingDocument(REPLACEROWID)'> 
 	  			<i class="fa fa-times" onclick="removeSupportingAttachmentRow(REPLACEROWID);"></i>
 	  		</div>
 </div>
 
 <div id="divContractsAttachmentTd1" style="display: none; float: left;">
 			<div id='REPLACEROWIDContractsdocFileuploadFileGroup'>
-	  			<input type='file' name='REPLACEROWIDcontractsdocFile' id='REPLACEROWIDcontractsdocFile' class="timesheetAttachmentValidation" data-validation="required validatedoc"  field-name="Contract Document" onchange='validateContractsUploadFile(REPLACEROWID)'> 
+	  			<input type='file' name='REPLACEROWIDcontractsdocFile' id='REPLACEROWIDcontractsdocFile' class="timesheetAttachmentValidation" data-validation="required validatedoc"  field-name="Contract Document" onchange='uploadContractDocument(REPLACEROWID)'> 
 	  			<i class="fa fa-times" onclick="removeContractsAttachmentRow(REPLACEROWID);"></i>
 	  		</div>
 </div>
 
 <div id="divFormsAttachmentTd1" style="display: none; float: left;">
 			<div id='REPLACEROWIDFormsdocFileuploadFileGroup'>
-	  			<input type='file' name='REPLACEROWIDformsdocFile' id='REPLACEROWIDformsdocFile' class="timesheetAttachmentValidation" data-validation="required validatedoc" field-name="Forms Document"  onchange='validateFormsUploadFile(REPLACEROWID)'> 
+	  			<input type='file' name='REPLACEROWIDformsdocFile' id='REPLACEROWIDformsdocFile' class="timesheetAttachmentValidation" data-validation="required validatedoc" field-name="Forms Document"  onchange='uploadFormsDocument(REPLACEROWID)'> 
 	  			<i class="fa fa-times" onclick="removeFormsAttachmentRow(REPLACEROWID);"></i>
 	  		</div>
 </div>
@@ -454,6 +456,7 @@ function addPoliciesAttachment(){
 	function removePoliciesAttachmentRow(rowId) {
 		 document.getElementById("divAttachmentPoliciesRow"+rowId).style.display = 'none';
 		 document.getElementById("divAttachmentPoliciesRow"+rowId).value= '';
+		 $("#templateDocuments_form input[data-id='"+rowId+"docFile']").remove();
 		 var  rId = "divAttachmentPoliciesRow"+rowId;
 		  var r = document.getElementById("policiesAttachmentTable").rows[rId];
           var count = 2*(r.cells.length);
@@ -490,6 +493,7 @@ function addSupportingAttachment(){
 	function removeSupportingAttachmentRow(rowId) {
 		 document.getElementById("divAttachmentSupportingRow"+rowId).style.display = 'none';
 		 document.getElementById("divAttachmentSupportingRow"+rowId).value= '';
+		 $("#templateDocuments_form input[data-id='"+rowId+"supportingdocFile']").remove();
 		 var  rId = "divAttachmentSupportingRow"+rowId;
 		  var r = document.getElementById("supportingAttachmentTable").rows[rId];
           var count = 2*(r.cells.length);
@@ -521,13 +525,27 @@ function addContractsAttachment(){
 			cell0.innerHTML = divAttachmentTdStr;
 			
 			
-}			
+}	
+function uploadContractDocument(id){
+	fileUpload(""+id+"contractsdocFile", "Candidate-Onboard-Contracts", "templateDocuments_form","contractsFileInfo");
+}
+function uploadFormsDocument(id){
+	fileUpload(""+id+"formsdocFile", "Candidate-Onboard-Forms", "templateDocuments_form","formsFileInfo");
+}
+function uploadPoliciesDocument(id){
+	fileUpload(""+id+"docFile", "Candidate-Onboard-Policies", "templateDocuments_form","polaciesFileInfo");
+}
+function uploadSupportingDocument(id){
+	fileUpload(""+id+"supportingdocFile", "Candidate-Onboard-Supporting", "templateDocuments_form","supportingFileInfo");
+}
+ 
 </script>
 	
 <script type="text/javascript">
 	function removeContractsAttachmentRow(rowId) {
 		 document.getElementById("divAttachmentContractsRow"+rowId).style.display = 'none';
 		 document.getElementById("divAttachmentContractsRow"+rowId).value= '';
+		 $("#templateDocuments_form input[data-id='"+rowId+"contractsdocFile']").remove();
 		 var  rId = "divAttachmentContractsRow"+rowId;
 		  var r = document.getElementById("contractsAttachmentTable").rows[rId];
           var count = 2*(r.cells.length);
@@ -537,37 +555,6 @@ function addContractsAttachment(){
 		 
 	}
 </script>
-
-
-
-<!-- <script type="text/javascript">
-function validateContractsUploadFile(id)
-{
-	 var selectedFile = $('#'+id+'contractsdocFile').val();
-	  if(validate_fileupload(selectedFile)){
-		   var docSize = $('#'+id+'contractsdocFile')[0].files[0].size;
-	       $("#"+id+"ContractsdocFileuploadFileGroup").find('p.jquery_form_error_message').remove();
-	      if(docSize > 2097152){
-	    	  $('#'+id+'ContractsdocFileuploadFileGroup').find('p.jquery_form_error_message').remove();
-	    	  $('#'+id+'ContractsdocFileuploadFileGroup').find('i').after("<p class='jquery_form_error_message'>Limit is exceeded than 2MB </span>");
-			  $('#'+id+'contractsdocFile').attr('record-exist','yes');
-			  $('#'+id+'contractsdocFile').attr('record-exist-errorMsg','Limit is exceeded than 2MB'); 
-	      }else{
-	    	 $('input#'+id+'contractsdocFile').removeAttr( "record-exist record-exist-errormsg");
-   		 $('#'+id+'ContractsdocFileuploadFileGroup').find('p.jquery_form_error_message').remove(); 
-	      }
-	  }
-	  else{
-		      $('#'+id+'ContractsdocFileuploadFileGroup').find('p.jquery_form_error_message').remove();
-		      $('#'+id+'ContractsdocFileuploadFileGroup').find('i').after("<p class='jquery_form_error_message'>Invalid Format</span>");
-			  $('#'+id+'contractsdocFile').attr('record-exist','yes');
-			  $('#'+id+'contractsdocFile').attr('record-exist-errorMsg','Invalid Format'); 
-	  }
-	
-}
-</script> -->
-
-
 
 <script>
 function addFormsAttachment(){  
@@ -594,6 +581,7 @@ function addFormsAttachment(){
 	function removeFormsAttachmentRow(rowId) {
 		 document.getElementById("divAttachmentFormsRow"+rowId).style.display = 'none';
 		 document.getElementById("divAttachmentFormsRow"+rowId).value= '';
+		 $("#templateDocuments_form input[data-id='"+rowId+"formsdocFile']").remove();
 		 var  rId = "divAttachmentFormsRow"+rowId;
 		  var r = document.getElementById("formsAttachmentTable").rows[rId];
           var count = 2*(r.cells.length);
@@ -722,7 +710,7 @@ function validateUploadFile(id)
   
   <script>
   function loadOfferAcceptedCandidates(candidateId){
-		var sourceleadUrl = '${sourceleadUrl}';
+		
 		$.ajax({
 		   	type: "POST",
 		    url: sourceleadUrl+"/getOfferAcceptedCandidatesForOnBoard?${_csrf.parameterName}=${_csrf.token}",	    	   
@@ -759,7 +747,7 @@ function validateUploadFile(id)
 	  var candidate = onboardCandiate.split(",");
 	  var candidateId = candidate[0];
 	  
-	  var sourceleadUrl = '${sourceleadUrl}';
+	  
 	  
 	  if(candidateId != null && candidateId != "" && candidateId != 'undefined'){
 		  
@@ -803,7 +791,7 @@ function validateUploadFile(id)
 	  var candidate = onboardCandiate.split(",");
 	  var candidateId = candidate[0];
 	  
-	  var sourceleadUrl = '${sourceleadUrl}';
+	  
 	  
 	  if(candidateId != null && candidateId != "" && candidateId != 'undefined'){
 		  
@@ -836,7 +824,7 @@ function validateUploadFile(id)
 	  var offer = onboardCandiate.split(",");
 	  var offerId = offer[1];
 	  
-	  var sourceleadUrl = '${sourceleadUrl}';
+	  
 	  
 	  var locationCode ='${SourceLeadWeb_locationCode}';
 	  
@@ -1003,7 +991,7 @@ function getOnBoardCandidateCities(country,state,city){
 <script>
 function loadCandidateRoles(onBoardRoleId){
 	
-	var sourceleadUrl = '${sourceleadUrl}';
+	
 	$.ajax({
 	   	type: "POST",
 	    url: sourceleadUrl+"/getRolesListForCandidateOnBoarding?${_csrf.parameterName}=${_csrf.token}",	    	   
@@ -1033,7 +1021,7 @@ function loadCandidateRoles(onBoardRoleId){
 <script>
 function loadTeams(onboardTeamId){
 	
-	var sourceleadUrl = '${sourceleadUrl}';
+	
 	$.ajax({
 	   	type: "POST",
 	    url: sourceleadUrl+"/getTeamsListForCandidateOnBoarding?${_csrf.parameterName}=${_csrf.token}",	    	   
@@ -1064,7 +1052,7 @@ function loadTeams(onboardTeamId){
 <script>
 function loadOnBoardingTemplates(onboardTemplateId){
 	
-	var sourceleadUrl = '${sourceleadUrl}';
+	
 	$.ajax({
 	   	type: "POST",
 	    url: sourceleadUrl+"/getOnboardingTemplatesForCandidateOnBoarding?${_csrf.parameterName}=${_csrf.token}",	    	   
@@ -1154,39 +1142,33 @@ function loadOnBoardingTemplates(onboardTemplateId){
 	         }; 
 	 
 	 if ($('#onboardCandidate_form').validate(false, validationSettings)){ 
-		    var frm = $('#onboardCandidate_form').serializeFormJSON();
-	        var con = JSON.stringify(frm);
-	        con = con.replace(/[{}]/g, "");
-	        
-	        //It will escape all the special characters
-	        var jsonData = encodeURIComponent(con);
-	        
 	        var sourceleadUrl ='${sourceleadUrl}';
-	        
 	        $("#save_onboardUser").attr("disabled", "disabled");
 	        $("#saveAndContinue_onboardUser").attr("disabled", "disabled");
-	        
+	        var formData = getFormData1("onboardCandidate_form");
 	        $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	         $.ajax({
 		    	type: "POST",
-		    	 url: sourceleadUrl+"/saveOnboardingCandidateDetails?${_csrf.parameterName}=${_csrf.token}&json="+jsonData, 
-		        success: function(onboardId) {
-		        	
+		    	 data: formData,
+		 		processData: false, 
+		 		contentType: false,
+		    	 url: sourceleadUrl+"/saveOnboardingCandidateDetails?${_csrf.parameterName}=${_csrf.token}", 
+		        success: function(json) {
 		        	if(saveType == 'saveAndContinue'){
 		        		var $tabs = $('.tabbable li');
 		     	        $tabs.filter('.active').next('li').find('a[data-toggle="tab"]').tab('show');
 		     	        document.getElementById("templateDocs").disabled = false;
 		     	        
-		     	       getTemplatePolicyDocumentsDetails(onboardId);
-		     	       getTemplateSupportingDocumentsDetails(onboardId);
-		     	       getTemplateContractsDocumentsDetails(onboardId);
-		     	       getTemplateFormsDocumentsDetails(onboardId);
+		     	       getTemplatePolicyDocumentsDetails(json.id);
+		     	       getTemplateSupportingDocumentsDetails(json.id);
+		     	       getTemplateContractsDocumentsDetails(json.id);
+		     	       getTemplateFormsDocumentsDetails(json.id);
 		     	       
-		     	       $("#documentstemplateId").val(onboardId);
+		     	       $("#documentstemplateId").val(json.id);
 		        	}
 		        	
-	     	        $("#candidateOnBoardId").val(onboardId);
-	     	        $("#savedonboardId").val(onboardId);
+	     	        $("#candidateOnBoardId").val(json.id);
+	     	        $("#savedonboardId").val(json.id);
 	     	        
 	     	       $("#save_onboardUser").removeAttr("disabled");
 	   	           $("#saveAndContinue_onboardUser").removeAttr("disabled");
@@ -1396,6 +1378,11 @@ function loadOnBoardingTemplates(onboardTemplateId){
  
  <script>
 function getTemplatePolicyDocumentsDetails(onboardId){
+	$("#templateDocuments_form input[name*='contractsFileInfo']").remove();
+	$("#templateDocuments_form input[name*='formsFileInfo']").remove();
+	$("#templateDocuments_form input[name*='polaciesFileInfo']").remove();
+	$("#templateDocuments_form input[name*='supportingFileInfo']").remove();
+	
 	if(onboardId == '' || onboardId == null || onboardId =='undefined'){
 		onboardId = document.getElementById("candidateOnBoardId").value;
 	}
@@ -1413,7 +1400,7 @@ function getTemplatePolicyDocumentsDetails(onboardId){
                 	 for (var i = 0; i < json.length; i++) { 
                 		 var opt = json[i]; 
                 		 result = result +"<strong id='policydocument"+opt.id+"'>";
-           				 result = result +"<i class=''><a class='glyphicon glyphicon-save' href=\""+sourceleadUrl+"/downloadTemplateDocument?documentUUID="+opt.documentUUID+"\"></a></i>";
+           				 result = result +"<i class=''><a class='glyphicon glyphicon-save' href=\""+opt.fileURL+"\"></a></i>";
            				 result = result +"<input type='button' value='"+opt.fileName+"'>";
            				 result = result +"</a>";
            				
@@ -1434,7 +1421,7 @@ function getTemplatePolicyDocumentsDetails(onboardId){
                 	 result = result +"<input type='hidden' name='policiesAttcahmentMaxRowNumber'  id='policiesAttcahmentMaxRowNumber' value='1' />";
                 	 result = result +"<table class='timesheetAttachment' id='policiesAttachmentTable' cellpadding='0' cellspacing='0'>";
                 	 result = result +"<tr id='divAttachmentTsRow0'>";
-                	 result = result +"<td><div id='0docFileuploadFileGroup'><input type='file' name='0docFile' id='0docFile' field-name='Attachment' onchange='validateUploadFile(0)' data-validation='validatedoc' data-validation-optional='true' class='timesheetAttachmentValidation'><i class='fa fa-plus' onClick='addPoliciesAttachment()'></i></div></td>";
+                	 result = result +"<td><div id='0docFileuploadFileGroup'><input type='file'  id='0docFile' field-name='Attachment' onchange='uploadPoliciesDocument(0)' data-validation='validatedoc' data-validation-optional='true' class='timesheetAttachmentValidation'><i class='fa fa-plus' onClick='addPoliciesAttachment()'></i></div></td>";
                 	 result = result +"</tr>";
                 	 result = result +"</table>";
                 	 $("#savedPociliesAttachments").empty();
@@ -1469,7 +1456,7 @@ function getTemplateSupportingDocumentsDetails(onboardId){
                 	 for (var i = 0; i < json.length; i++) { 
                 		 var opt = json[i]; 
                 		 result = result +"<strong id='supportdocument"+opt.id+"'>";
-                		 result = result +"<i class=''><a class='glyphicon glyphicon-save' href=\""+sourceleadUrl+"/downloadTemplateDocument?documentUUID="+opt.documentUUID+"\"></a></i>";
+                		 result = result +"<i class=''><a class='glyphicon glyphicon-save' href=\""+opt.fileURL+"\"></a></i>";
            				 result = result +"<input type='button' value='"+opt.fileName+"'>";
            				 result = result +"</a>";
            				
@@ -1490,7 +1477,7 @@ function getTemplateSupportingDocumentsDetails(onboardId){
                 	 result = result +"<input type='hidden' name='supportingAttcahmentMaxRowNumber'  id='supportingAttcahmentMaxRowNumber' value='1' />";
                 	 result = result +"<table class='timesheetAttachment' id='supportingAttachmentTable' cellpadding='0' cellspacing='0'>";
                 	 result = result +"<tr id='divAttachmentTsRow0'>";
-                	 result = result +"<td><div id='0SupportingdocFileuploadFileGroup'><input type='file' name='0supportingdocFile' id='0supportingdocFile' data-validation='validatedoc' data-validation-optional='true' field-name='Attachment' onchange='validateSupportingUploadFile(0)'  class='timesheetAttachmentValidation'><i class='fa fa-plus' onClick='addSupportingAttachment()'></i></div></td>";
+                	 result = result +"<td><div id='0SupportingdocFileuploadFileGroup'><input type='file' id='0supportingdocFile' data-validation='validatedoc' data-validation-optional='true' field-name='Attachment' onchange='uploadSupportingDocument(0)'  class='timesheetAttachmentValidation'><i class='fa fa-plus' onClick='addSupportingAttachment()'></i></div></td>";
                 	 result = result +"</tr>";
                 	 result = result +"</table>";
                 	 $("#savedSupportedAttachments").empty();
@@ -1526,7 +1513,7 @@ function getTemplateContractsDocumentsDetails(onboardId){
                 	 for (var i = 0; i < json.length; i++) { 
                 		 var opt = json[i]; 
                 		 result = result +"<strong id='contractsdocument"+opt.id+"'>";
-                		 result = result +"<i class=''><a class='glyphicon glyphicon-save' href=\""+sourceleadUrl+"/downloadTemplateDocument?documentUUID="+opt.documentUUID+"\"></a></i>";
+                		 result = result +"<i class=''><a class='glyphicon glyphicon-save' href=\""+opt.fileURL+"\"></a></i>";
            				 result = result +"<input type='button' value='"+opt.fileName+"'>";
            				 result = result +"</a>";
            				
@@ -1547,7 +1534,7 @@ function getTemplateContractsDocumentsDetails(onboardId){
                 	 result = result +"<input type='hidden' name='contractsAttcahmentMaxRowNumber'  id='contractsAttcahmentMaxRowNumber' value='1' />";
                 	 result = result +"<table class='timesheetAttachment' id='contractsAttachmentTable' cellpadding='0' cellspacing='0'>";
                 	 result = result +"<tr id='divAttachmentTsRow0'>";
-                	 result = result +"<td><div id='0ContractsdocFileuploadFileGroup'><input type='file' name='0contractsdocFile' id='0contractsdocFile' field-name='Attachment' data-validation='validatedoc' data-validation-optional='true' onchange='validateContractsUploadFile(0)'  class='timesheetAttachmentValidation'><i class='fa fa-plus' onClick='addContractsAttachment()'></i></div></td>";
+                	 result = result +"<td><div id='0ContractsdocFileuploadFileGroup'><input type='file'  id='0contractsdocFile' field-name='Attachment' data-validation='validatedoc' data-validation-optional='true'    onChange='uploadContractDocument(0);' class='timesheetAttachmentValidation'><i class='fa fa-plus' onClick='addContractsAttachment()'></i></div></td>";
                 	 result = result +"</tr>";
                 	 result = result +"</table>";
                 	 $("#savedContractsAttachments").empty();
@@ -1585,7 +1572,7 @@ function getTemplateFormsDocumentsDetails(onboardId){
                 	 for (var i = 0; i < json.length; i++) { 
                 		 var opt = json[i]; 
                 		 result = result +"<strong id='formsdocument"+opt.id+"'>";
-                		 result = result +"<i class=''><a class='glyphicon glyphicon-save' href=\""+sourceleadUrl+"/downloadTemplateDocument?documentUUID="+opt.documentUUID+"\"></a></i>";
+                		 result = result +"<i class=''><a class='glyphicon glyphicon-save' href=\""+opt.fileURL+"\"></a></i>";
            				 result = result +"<input type='button' value='"+opt.fileName+"'>";
            				 result = result +"</a>";
            				
@@ -1606,7 +1593,7 @@ function getTemplateFormsDocumentsDetails(onboardId){
                 	 result = result +"<input type='hidden' name='formsAttcahmentMaxRowNumber'  id='formsAttcahmentMaxRowNumber' value='1' />";
                 	 result = result +"<table class='timesheetAttachment' id='formsAttachmentTable' cellpadding='0' cellspacing='0'>";
                 	 result = result +"<tr id='divAttachmentTsRow0'>";
-                	 result = result +"<td><div id='0FormsdocFileuploadFileGroup'><input type='file' name='0formsdocFile' id='0formsdocFile' field-name='Attachment' data-validation='validatedoc' data-validation-optional='true' onchange='validateFormsUploadFile(0)'  class='timesheetAttachmentValidation'><i class='fa fa-plus' onClick='addFormsAttachment()'></i></div></td>";
+                	 result = result +"<td><div id='0FormsdocFileuploadFileGroup'><input type='file' id='0formsdocFile' field-name='Attachment' data-validation='validatedoc' data-validation-optional='true' onchange='uploadFormsDocument(0)'  class='timesheetAttachmentValidation'><i class='fa fa-plus' onClick='addFormsAttachment()'></i></div></td>";
                 	 result = result +"</tr>";
                 	 result = result +"</table>";
                 	 $("#savedFormsAttachments").empty();
@@ -1693,32 +1680,17 @@ function createTemplateDocs(saveType){
          }; 
 	
 	  var sourceleadUrl ='${sourceleadUrl}';
-	  
 	  if ($('#templateDocuments_form').validate(false, validationSettings)){ 
-		  var frm = $('#templateDocuments_form').serializeFormJSON();
-	      var con = JSON.stringify(frm);
-	      con = con.replace(/[{}]/g, "");
-	      
-	      //It will escape all the special characters
-	      var jsonData = encodeURIComponent(con);
-	      
-		   var form = $('#templateDocuments_form')[0];
-		   var formData = new FormData(form); 
-		   
-		   
 		   $("#save_docs_button").attr("disabled", "disabled");
 		   $("#save_continue_docs_button").attr("disabled", "disabled");
-		
-	   $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-		$.ajax({
+		   var formData = getFormData1("templateDocuments_form");
+	       $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		   $.ajax({
 	        type : "POST",
 		      data: formData,
-		      contentType : 'application/json; charset=utf-8',
-		      enctype: 'multipart/form-data',
-	        processData: false,
-	        contentType:false,
-		      dataType : 'json',
-	    	  url: sourceleadUrl+"/saveCandidatedOnboardingTemplateDocuments?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,		
+		      processData: false, 
+		 	  contentType: false,
+	    	  url: sourceleadUrl+"/saveCandidatedOnboardingTemplateDocuments?${_csrf.parameterName}=${_csrf.token}",		
 		      success :function(result) {
 		    	  
 		    	  if(saveType == 'saveAndContinue'){
@@ -1841,7 +1813,7 @@ function getAssignToUsersList(){
 	var candidateOnBoardId = document.getElementById("candidateOnBoardId").value;
     $("#candidateOnboardTaskId").val(candidateOnBoardId);
     
-	var sourceleadUrl = '${sourceleadUrl}';
+	
 	$.ajax({
 	   	type: "POST",
 	    url: sourceleadUrl+"/getOnboardTasksAssignToUsersList?${_csrf.parameterName}=${_csrf.token}",	    	   
@@ -1872,15 +1844,8 @@ function saveOnboardTask(){
          }; 
 	
 	  if ($('#addonboardTask_form').validate(false, validationSettings)){ 
-		    var frm = $('#addonboardTask_form').serializeFormJSON();
-	        var con = JSON.stringify(frm);
-	        con = con.replace(/[{}]/g, "");
-	        
-	        //It will escape all the special characters
-	        var jsonData = encodeURIComponent(con);
-	        
-	        var sourceleadUrl ='${sourceleadUrl}';
-	        
+		    var sourceleadUrl ='${sourceleadUrl}';
+	        var formData = getFormData1("addonboardTask_form");
 	    	var tasksIds = document.getElementsByName("savedTemplateTask");
 	    	var tasks = '';
 	    	for(var i=0; i < tasksIds.length; i++){
@@ -1893,7 +1858,10 @@ function saveOnboardTask(){
 	        $("#onboardtasksLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	        $.ajax({
 		    	type: "POST",
-		    	 url: sourceleadUrl+"/saveCandidateOnBoardTasks?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&tasks="+tasks, 
+		    	 data: formData,
+		    	 processData: false,
+			     contentType:false,
+		    	 url: sourceleadUrl+"/saveCandidateOnBoardTasks?${_csrf.parameterName}=${_csrf.token}&tasks="+tasks, 
 		        success: function(result) {
 		        	if(result == 'success'){
 		        		$("#onboardtasksLoading").removeAttr("style");
@@ -1924,7 +1892,7 @@ $('body').on('blur', '#addonboardTask_form', function() {
 <script>
 function getOnboardingTasksList(){
 	var onboardId = document.getElementById("candidateOnBoardId").value;
-	var sourceleadUrl = '${sourceleadUrl}';
+	
 	var locationId = '${SourceLeadWeb_orgLocationId}';
 	
 	if(onboardId != null && onboardId != '' && onboardId!= 'undefined'){
@@ -2049,7 +2017,7 @@ function saveAndFinishOnboardTemplate(onboardId){
 	
 	tasks = tasks.substring(0, tasks.length - 1);
 	
-	var sourceleadUrl = '${sourceleadUrl}';
+	
 	 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	$.ajax({
 	   	type: "POST",
