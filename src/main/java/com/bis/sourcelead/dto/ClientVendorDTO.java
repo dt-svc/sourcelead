@@ -42,9 +42,11 @@ public class ClientVendorDTO extends SearchDTO implements Serializable {
 	private List<String> clientIds;
 	private List<String> status;
 	private List<String> invitationStatus;
+
 	private String UUID;
 	private List<String> emailAdvanced;
 	private List<String> contactNameAdvanced;
+
 	private AddUserDTO addUserDTO;
 	private List<String> phoneNumberAdvanced;
 	private List<String> orgAdvanced;
@@ -399,6 +401,5 @@ public class ClientVendorDTO extends SearchDTO implements Serializable {
 	}
 
 
-	
 
 }
