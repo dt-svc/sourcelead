@@ -182,22 +182,19 @@ public class AddExpensesRestController {
 		    
 		    String isSuperUser = Constants.NO;
 		   // SimpleDateFormat simpleDateFormat = orgLoc.getLocFullFormDateFormatter();
-		    if(null != orgLoc.getUser() && null != orgLoc.getUser().getId() && orgLoc.getUser().getId().longValue() == loginUser.getId().longValue()){
-		    	isSuperUser = Constants.YES;
-		    }
+		    
 		    
 			//DateFormat format = simpleDateFormat;
 			if(expenseId != null){
-			 	
-				expensesApprovalService.updateExpenseStatusByExpenseIdAndReOpenReason(expenseId,reason,loginUser,"notify",isSuperUser);
 				Expenses expenses = expensesService.getExpenseById(expenseId);
-				expenses.setExpenseStatus(Submission_Status.SUBMITTED);
-				addExpensesService.storeAddExpensesData(expenses);
-				sendEmailToSuperUserForReOpenExpenseApprovalStatus(expenseId,loginUser,orgLoc,reason,currencyCode);
+				if(commonUtil.isSuperAdminForProjectMemberToReopenTimeOrExpenseses(expenses.getProjectMembers().getId(), loginUser)){
+			    	isSuperUser = Constants.YES;
+			    }
+				expensesApprovalService.updateExpenseStatusByExpenseIdAndReOpenReason(expenseId,reason,loginUser,"notify",isSuperUser);
 			    //send mail & notification logic
-			  	/*if(isSuperUser.equalsIgnoreCase(Constants.NO)){
-			  		submissionApproverHierarchyService.sendReopenTimeSheetMail(projectMemberId,reason,loginUser,orgLoc,timesheetFrequency,totalHours);
-			  	}*/
+			  	if(isSuperUser.equalsIgnoreCase(Constants.NO)){
+			  		sendEmailToSuperUserForReOpenExpenseApprovalStatus(expenseId,loginUser,orgLoc,reason,currencyCode);
+			  	}
 			  	
 			}
 		
