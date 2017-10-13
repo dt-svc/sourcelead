@@ -51,6 +51,7 @@ import com.bis.sourcelead.dao.UserDao;
 import com.bis.sourcelead.dto.AddUserDTO;
 import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.ClientDTO;
+import com.bis.sourcelead.dto.ClientVendorUploadDTO;
 import com.bis.sourcelead.entity.BulkClientDetails;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -59,6 +60,7 @@ import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
+import com.bis.sourcelead.entity.VendorOnboarding;
 import com.bis.sourcelead.service.ClientImportsService;
 import com.bis.sourcelead.service.ClientService;
 import com.bis.sourcelead.service.OrgLocationService;
@@ -68,6 +70,7 @@ import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
+import com.bis.sourcelead.service.VendorOnboardService;
 
 /**
  * 
@@ -99,6 +102,9 @@ public class ClientImportsServiceImpl implements ClientImportsService {
 	private OrgLocationService orgLocationService;
 	@Autowired
 	private ClientImportDao clientImportDao;
+	
+	@Autowired
+	VendorOnboardService vendorOnboardService;
 	
 	@Override
 	public String clientBulkSavingImp(MultipartFile multipartFile, User user, OrgLocations orgLocation, Org org, String isMailSent, String responderType) throws Exception
@@ -1359,7 +1365,7 @@ public class ClientImportsServiceImpl implements ClientImportsService {
 	}
 	
 	@Override
-	public List<BulkClientDetails> getbulkClientDetailsByOrgLocationId(OrgLocations orgLocations, User user, Org org, String isMailSent, String responderType) throws Exception
+	public List<BulkClientDetails> getbulkClientDetailsByOrgLocationId(ClientVendorUploadDTO clientVendorUploadDTO,OrgLocations orgLocations, User user, Org org, String isMailSent, String responderType) throws Exception
 	{
 		List<BulkClientDetails> importClietDetails = clientImportDao.getbulkClientDetailsByOrgLocationId(orgLocations.getId(), responderType, user);
 		List<BulkClientDetails> duplicateClietDetails = new ArrayList<>();
@@ -1417,7 +1423,7 @@ public class ClientImportsServiceImpl implements ClientImportsService {
 												duplicateClietDetails.add(clientOrVendor);
 											}
 											else {
-												UserRole userRole = userRoleService.getUserDetailsByEmailAndLocationId(clientOrVendor.getEmail(), orgLocations.getId());
+												UserRole userRole = userRoleService.getUserDetailsByEmailAndLocationId(clientOrVendor.getEmail(), vendorLocations.getId());
 												if (userRole == null) {
 													List<OrgRelations> vandorsListByOrgLocationId;
 													if ("Client".equalsIgnoreCase(responderType)) {
@@ -1427,7 +1433,7 @@ public class ClientImportsServiceImpl implements ClientImportsService {
 														vandorsListByOrgLocationId = orgRelationsService.getAllVendorsListByOrgName(clientOrVendor.getOrgName(), orgLocations.getId());
 													}
 													OrgLocations orgLocation = null;
-													ClientDTO clientDTO = populateJsonObjectTemp(clientOrVendor, isMailSent, vandorsListByOrgLocationId, orgLocations, clientOrVendor.getOrgName(), "contact", orgLocation);
+													ClientDTO clientDTO = populateJsonObjectTemp(clientOrVendor, isMailSent, vandorsListByOrgLocationId, orgLocations, clientOrVendor.getOrgName(), "contact", orgLocation,user);
 													try {
 														orgSpocService.addVendorContacts(clientDTO,clientDTO.getAddUserDTO(),clientDTO.getCandidateDTO(), user, orgLocations, orgRelations.getId().toString(), "", responderType, org);
 														vandorsListByOrgLocationId.clear();
@@ -1454,7 +1460,7 @@ public class ClientImportsServiceImpl implements ClientImportsService {
 													vandorsListByOrgLocationId = orgRelationsService.getAllVendorsListByOrgName(clientOrVendor.getOrgName(), orgLocations.getId());
 												}
 												OrgLocations orgLocation = null;
-												ClientDTO clientDTO = populateJsonObjectTemp(clientOrVendor, isMailSent, vandorsListByOrgLocationId, orgLocations, clientOrVendor.getOrgName(), "contact", orgLocation);
+												ClientDTO clientDTO = populateJsonObjectTemp(clientOrVendor, isMailSent, vandorsListByOrgLocationId, orgLocations, clientOrVendor.getOrgName(), "contact", orgLocation,user);
 												try {
 													orgSpocService.addVendorContacts(clientDTO,clientDTO.getAddUserDTO(),clientDTO.getCandidateDTO(), user, orgLocations, orgRelations.getId().toString(), "", responderType, org);
 													vandorsListByOrgLocationId.clear();
@@ -1509,11 +1515,18 @@ public class ClientImportsServiceImpl implements ClientImportsService {
 												}
 												else {
 													OrgLocations mainOrgLocation = validateSourceleadOrg(clientOrVendor.getOrgName(), org);
-													ClientDTO clientDTO = populateJsonObjectTemp(clientOrVendor, isMailSent, null, orgLocations, clientOrVendor.getOrgName(), "org", mainOrgLocation);
+													ClientDTO clientDTO = populateJsonObjectTemp(clientOrVendor, isMailSent, null, orgLocations, clientOrVendor.getOrgName(), "org", mainOrgLocation,user);
 													try {
-														clientService.storeClient(clientDTO,clientDTO.getAddUserDTO(),clientDTO.getCandidateDTO(), user, orgLocations, responderType, org);
+														clientDTO.setTemplateId(clientVendorUploadDTO.getTemplateId());
+														OrgLocations invitedOrgLocation = clientService.storeClient(clientDTO,clientDTO.getAddUserDTO(),clientDTO.getCandidateDTO(), user, orgLocations, responderType, org);
 														clientOrVendor.setRecordStatus("1");
 														clientImportDao.saveClientVendorExcelData(clientOrVendor);
+														
+														if ("Vendor".equalsIgnoreCase(responderType)) {
+															User spocUser = userDao.getUserById(invitedOrgLocation.getVendorSpocId());
+															VendorOnboarding vendorOnboarding = vendorOnboardService.saveVendorOnboarding(invitedOrgLocation, orgLocations, user);
+															vendorOnboardService.saveVendorOnboardForVendorBulkImports(vendorOnboarding.getId(),user,spocUser,orgLocations);
+														}
 													} catch (Exception e) {
 														logger.error(ExceptionUtils.getFullStackTrace(e));
 													}
@@ -1536,11 +1549,19 @@ public class ClientImportsServiceImpl implements ClientImportsService {
 						else {
 							
 							OrgLocations mainOrgLocation = validateSourceleadOrg(clientOrVendor.getOrgName(), org);
-							ClientDTO clientDTO = populateJsonObjectTemp(clientOrVendor, isMailSent, null, orgLocations, clientOrVendor.getOrgName(), "org", mainOrgLocation);
+							ClientDTO clientDTO = populateJsonObjectTemp(clientOrVendor, isMailSent, null, orgLocations, clientOrVendor.getOrgName(), "org", mainOrgLocation,user);
 							try {
-								clientService.storeClient(clientDTO,clientDTO.getAddUserDTO(),clientDTO.getCandidateDTO(), user, orgLocations, responderType, org);
+								clientDTO.setTemplateId(clientVendorUploadDTO.getTemplateId());
+								OrgLocations invitedOrgLocation = clientService.storeClient(clientDTO,clientDTO.getAddUserDTO(),clientDTO.getCandidateDTO(), user, orgLocations, responderType, org);
 								clientOrVendor.setRecordStatus("1");
 								clientImportDao.saveClientVendorExcelData(clientOrVendor);
+								
+								if ("Vendor".equalsIgnoreCase(responderType)) {
+									User spocUser = userDao.getUserById(invitedOrgLocation.getVendorSpocId());
+									VendorOnboarding vendorOnboarding = vendorOnboardService.saveVendorOnboarding(invitedOrgLocation, orgLocations, user);
+									vendorOnboardService.saveVendorOnboardForVendorBulkImports(vendorOnboarding.getId(),user,spocUser,orgLocations);
+								}
+								
 							} catch (Exception e) {
 								logger.error(ExceptionUtils.getFullStackTrace(e));
 							}
@@ -1559,7 +1580,7 @@ public class ClientImportsServiceImpl implements ClientImportsService {
 		return duplicateClietDetails;
 	}
 	
-	private ClientDTO populateJsonObjectTemp(BulkClientDetails client, String isMailSent, List<OrgRelations> orgList, OrgLocations orgLocation, String orgName, String type, OrgLocations mainOrgLocation) throws Exception
+	private ClientDTO populateJsonObjectTemp(BulkClientDetails client, String isMailSent, List<OrgRelations> orgList, OrgLocations orgLocation, String orgName, String type, OrgLocations mainOrgLocation,User user) throws Exception
 	{
 		
 		String roleTypeId = "";
@@ -1660,10 +1681,16 @@ public class ClientImportsServiceImpl implements ClientImportsService {
 		if (client.getStatus() != null) {
 			clientDTO.setSpocStatus(client.getStatus());
 		}
-		/*if (client.getOwnerEmail() != null) {
+	
+		List<String> ownersList = new ArrayList<>();
+		if (client.getOwnerEmail() != null) {
 			UserRole ownerUser = userRoleService.getUserDetailsByEmailAndLocationId(client.getOwnerEmail(), orgLocation.getId());
-			clientDTO.setOwner(ownerUser.getUser().getId());
-		}*/
+			ownersList.add(ownerUser.getId().toString());
+			clientDTO.setOwner(ownersList);
+		}else{
+			ownersList.add(user.getId().toString());
+			clientDTO.setOwner(ownersList);
+		}
 		// if(!"org".equals(type)){
 		if (client.getEmail() != null) {
 			clientDTO.setEmail(client.getEmail());
@@ -1792,7 +1819,7 @@ public class ClientImportsServiceImpl implements ClientImportsService {
 	{
 		BulkClientDetails bulkClientDetails = clientImportDao.getbulkClientByrecordIdAndOrgLocationId(Long.parseLong(recordId), orgLocation.getId(), responderType);
 		OrgLocations mainOrgLocation = validateSourceleadOrg(bulkClientDetails.getOrgName(), org);
-		ClientDTO clientDTO = populateJsonObjectTemp(bulkClientDetails, "Y", null, orgLocation, bulkClientDetails.getOrgName(), "org", mainOrgLocation);
+		ClientDTO clientDTO = populateJsonObjectTemp(bulkClientDetails, "Y", null, orgLocation, bulkClientDetails.getOrgName(), "org", mainOrgLocation,user);
 		try {
 			clientService.storeClient(clientDTO , clientDTO.getAddUserDTO(), clientDTO.getCandidateDTO(), user, orgLocation, responderType, org);
 			bulkClientDetails.setRecordStatus("1");
@@ -1891,7 +1918,7 @@ public class ClientImportsServiceImpl implements ClientImportsService {
 			vandorsListByOrgLocationId = orgRelationsService.getAllVendorsListByOrgName(orgName, orgLocation.getId());
 		}
 		OrgLocations mainOrgLocations = null;
-		ClientDTO clientDTO = populateJsonObjectTemp(bulkClientDetails, "Y", vandorsListByOrgLocationId, orgLocation, orgName, "org", mainOrgLocations);
+		ClientDTO clientDTO = populateJsonObjectTemp(bulkClientDetails, "Y", vandorsListByOrgLocationId, orgLocation, orgName, "org", mainOrgLocations,user);
 		try {
 			orgSpocService.addVendorContacts(clientDTO,clientDTO.getAddUserDTO(),clientDTO.getCandidateDTO(), user, orgLocation, orgRelationId.toString(), "", responderType, org);
 			vandorsListByOrgLocationId.clear();

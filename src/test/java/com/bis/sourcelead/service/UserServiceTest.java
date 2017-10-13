@@ -241,7 +241,7 @@ public class UserServiceTest {
 		userProfile.setLocation("kolkatta");
 		userProfile.setMobilePhone("54789562123");
 		userProfile.setPassword("Bis@123");
-		
+
 		assertSame(user, userService.saveUserProfile(userProfile,user));
 
 	}

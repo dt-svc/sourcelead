@@ -1,7 +1,6 @@
 package com.bis.sourcelead.elk.index;
 
 import java.io.Serializable;
-import java.util.Date;
 
 public class ClientVendorIndex implements Serializable {
 
@@ -31,7 +30,7 @@ public class ClientVendorIndex implements Serializable {
 
 	private String initiatorCity;
 	
-   private String initiatorWebSite;
+    private String initiatorWebSite;
 	
 	private String initiatorOrgName;
 	
@@ -82,6 +81,12 @@ public class ClientVendorIndex implements Serializable {
 	private Long noOfReleasedJobs;
 	
 	private String releasedJobsCount;
+	
+    private String vendorOnboardTemplateId;
+	
+	private String vendorRelationStatus;
+	
+	private String orgRelationUUID;
 	
 	
 	public String getSearchType() {
@@ -393,6 +398,31 @@ public class ClientVendorIndex implements Serializable {
 	public void setReleasedJobsCount(String releasedJobsCount) {
 		this.releasedJobsCount = releasedJobsCount;
 	}
+
+	public String getVendorOnboardTemplateId() {
+		return vendorOnboardTemplateId;
+	}
+
+	public void setVendorOnboardTemplateId(String vendorOnboardTemplateId) {
+		this.vendorOnboardTemplateId = vendorOnboardTemplateId;
+	}
+
+	public String getVendorRelationStatus() {
+		return vendorRelationStatus;
+	}
+
+	public void setVendorRelationStatus(String vendorRelationStatus) {
+		this.vendorRelationStatus = vendorRelationStatus;
+	}
+
+	public String getOrgRelationUUID() {
+		return orgRelationUUID;
+	}
+
+	public void setOrgRelationUUID(String orgRelationUUID) {
+		this.orgRelationUUID = orgRelationUUID;
+	}
+
 	
 
 }

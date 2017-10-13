@@ -27,6 +27,9 @@
 <!-- For add New Applicant -->
 <script>
 function getAddApplicant(requirementId){
+	$(".new_side_wrap").addClass("new_side_wrap_active");
+	$(".side_mask").fadeIn(200);
+	$("body").css('overflow-y', 'hidden');
 	$('.action-pop').slideUp();
 	var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
 	  var finalDateFormatScript = '';

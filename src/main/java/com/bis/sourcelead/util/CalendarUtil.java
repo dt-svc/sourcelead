@@ -1,5 +1,7 @@
 package com.bis.sourcelead.util;
 
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.log;
+
 import java.text.DateFormat;
 import java.text.DateFormatSymbols;
 import java.text.ParseException;
@@ -654,10 +656,18 @@ public  class CalendarUtil {
 			Date currentDate = null;
 			try {
 				currentDate = format.parse(format.format(new Date()));
-				startDate = format.parse(weekStartDate.replaceAll("-", "/"));
-				endDate = format.parse(weekEndDate.replaceAll("-", "/"));
+				if(dateFormat.contains("-")){
+					startDate = format.parse(weekStartDate);
+					endDate = format.parse(weekEndDate);
+				}
+				else{
+					startDate = format.parse(weekStartDate.replaceAll("-", "/"));
+					endDate = format.parse(weekEndDate.replaceAll("-", "/"));
+				}
+				
 				flag =   ((currentDate.after(startDate) && currentDate.before(endDate)) || (currentDate.equals(startDate)) || ((currentDate.equals(endDate))));
 			} catch (ParseException e) {}
+			
 		}
 		return flag;
 	}

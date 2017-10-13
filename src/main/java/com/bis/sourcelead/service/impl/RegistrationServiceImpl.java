@@ -28,6 +28,7 @@ import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.SourceleadPasswordEncoder;
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dao.ExpensesCategoryDao;
 import com.bis.sourcelead.dao.OrgDao;
 import com.bis.sourcelead.dto.AddUserDTO;
 import com.bis.sourcelead.dto.CandidateDTO;
@@ -41,11 +42,14 @@ import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Employees;
+import com.bis.sourcelead.entity.ExpensesCategory;
+import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.MasterCandidate;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.PasswordResets;
 import com.bis.sourcelead.entity.ProjectApproverHierarchy;
+import com.bis.sourcelead.entity.ProjectClients;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.ReferContacts;
 import com.bis.sourcelead.entity.RequirementRefer;
@@ -65,6 +69,8 @@ import com.bis.sourcelead.service.ContractsTemplateService;
 import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.EmployeesService;
+import com.bis.sourcelead.service.ExpensesCategoryService;
+import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.service.MasterCandidateService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgService;
@@ -182,6 +188,15 @@ public class RegistrationServiceImpl implements RegistrationService{
 	@Autowired
 	MasterCandidateService masterCandidateService;
 	
+	@Autowired
+	private ExpensesCategoryService expensesCategoryService;
+	
+	@Autowired
+	private ExpensesCategoryDao expensesCategoryDao;
+	
+	@Autowired
+	private LookUpDataService lookUpDataService;
+	
 	
 	protected boolean isNullOrEmpty(String str) {
 			return (str == null || "".equals(str.trim()));
@@ -244,8 +259,21 @@ public class RegistrationServiceImpl implements RegistrationService{
 			e.printStackTrace();
 		}
 		
-		saveOrgRoleHierarchy(orgLocations,user);
+		List<LookUpData> lookUpExpCatList = lookUpDataService.getLookUpDataByCategory(Constants.EXPENSESCATEGORY);
+	    for(LookUpData lookUpData:lookUpExpCatList){
+		    ExpensesCategory expensesCategory = new ExpensesCategory();
+		    expensesCategory.setExpensesName(lookUpData.getName());
+		    expensesCategory.setAmountType("Flat");
+		    expensesCategory.setOrgLocationId(orgLocations);
+		    expensesCategory.setStatus(Constants.MEMBER_ACTIVE);
+			expensesCategory.setCreatedBy(user.getUserCode());
+			expensesCategory.setCreatedDate(commonUtil.currentDate());
+			expensesCategory.setUpdatedBy(user.getUserCode());
+			expensesCategory.setUpdatedDate(commonUtil.currentDate());
+			expensesCategoryDao.storeExpenseCategory(expensesCategory); 
+	    }
 		
+		saveOrgRoleHierarchy(orgLocations,user);
 		saveOrgBasedRoles(org,orgLocations,user);
 		
 		//For saving the User Role (At registration user will have Admin Role)
@@ -294,8 +322,10 @@ public class RegistrationServiceImpl implements RegistrationService{
 		saveDefaultContractTemplate(org,orgLocations,user," Default NDA Template",Constants.NDA);
 //		saveDefaultContractTemplate(org,orgLocations,user," Default NCA Template","NSA");
 		
-		userService.saveOrUpdateUserElkDocument(userRole,employee,"sladmin");
+		saveOrgLocationDefaultProject(registration, orgLocations, user);
+		//commonUtil.storeVendorOnboardDefaultTemplate(user, orgLocations);
 		
+		userService.saveOrUpdateUserElkDocument(userRole,employee,"sladmin");
 		userService.sendEmail(user, loginUser, password,orgLocations.getId());
 	
 	}
@@ -415,46 +445,64 @@ public class RegistrationServiceImpl implements RegistrationService{
 	}
 	
 	
-	 public Projects  saveProject(Registration registration,OrgLocations orgLocations,User approverUser,Employees employee) throws Exception {
+	 public Projects  saveOrgLocationDefaultProject(Registration registration,OrgLocations orgLocations,User approverUser) throws Exception {
 		 			 	
 	    	Projects projects = new Projects();
-	    	projects.setProjectSequeneNumber("Project001");
-	    	projects.setProjectName(registration.getCompanyName());
-	    	projects.setDescription(registration.getCompanyName());
+	    	StringBuilder defaultProjectName = new  StringBuilder();
+	    	projects.setProjectName(defaultProjectName.append(registration.getCompanyName()).append(" ").append("Default Project").toString());
+	    	StringBuilder defaultProjectNameDesc = new  StringBuilder();
+	    	projects.setDescription(defaultProjectNameDesc.append(registration.getCompanyName()).append(" ").append("Default Project").toString());
 	    	projects.setStartDate(new Date());
 	    	projects.setInvoiceFrequency(Constants.WEEKLY);
-	    	projects.setProjectStatus(Project_Status.STARTED);
+	    	projects.setTimesheetFrequency(Constants.WEEKLY);
+	    	projects.setProjectStatus(Project_Status.INPROGRESS);
 	    	projects.setIsPrimary(1);
 	    	projects.setCreatedDate(new Date());
 	    	projects.setUpdatedDate(new Date());
+	    	projects.setIsDefaultProject(Constants.YES);
 	    	projects.setOrgLocationsId(orgLocations);
-	    	Projects updatedProjects = null;
-	    	
-	    	updatedProjects = projectsService.saveProject(projects);
-	    	
-	    	
-			if(updatedProjects != null){
-				ProjectApproverHierarchy pah1 = new ProjectApproverHierarchy();
-		    	pah1.setProjectId(updatedProjects);
-		    	pah1.setApproverUserId(approverUser);
-		    	pah1.setLevel(2);
-		    	try {
-					 projectApproverHierarchyService.saveProjectApproverHierarchy(pah1);
-				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-		    /*	ProjectMembers pm = new ProjectMembers();
-				pm.setEmployee(employee);
-				pm.setProjects(projects);
-				pm.setProjectAssignedDate(projects.getStartDate());
-				pm.setCreatedDate(new Date());
-				pm.setUpdatedDate(new Date());
-				projectMembersService.saveProjectMember(pm);*/
-			}
+	    	Set<ProjectClients> projectClientsList = getProjectClientsForProject(projects,orgLocations,approverUser);
+	    	projects.setProjectClients(projectClientsList);
+			projects.setProjectUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+			projects.setProjectShortCode("DFP");
+			projects.setProjectMode("Finished");
+			projects.setCreatedDate(new Date());
+			projects.setUpdatedDate(new Date());
+			Projects updatedProjects = projectsService.saveProject(projects);
+			projectsService.saveOrUpdateProjectElkDocument(updatedProjects);
 			commonUtil.storeSourceleadTasks(approverUser, updatedProjects);
 			return updatedProjects;
 	}
+	 
+	 
+		private Set<ProjectClients> getProjectClientsForProject(Projects projects,OrgLocations orglocations,User approverUser) throws Exception {
+			Set<ProjectClients> projectClientsSet = new HashSet<>();
+			
+			ProjectClients projectClients = new ProjectClients();
+			projectClients.setProjectId(projects);
+			projectClients.setOrgLocationsId(orglocations);
+			projectClients.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
+			projectClients.setStatus(1);
+			projectClients.setLevel(1);
+			projectClients.setCreatedDate(new Date());
+			projectClients.setUpdatedDate(new Date());
+			projectClients.setCreatedBy(approverUser);
+			projectClients.setUpdatedBy(approverUser);
+			
+			//prepare ProjectApproverHierarchy
+			Set<ProjectApproverHierarchy> projectApproverHierarchyList = new HashSet<ProjectApproverHierarchy>();
+			ProjectApproverHierarchy pah = new ProjectApproverHierarchy();
+			pah.setProjectId(projects);
+			pah.setProjectClientsId(projectClients);
+			pah.setApproverUserId(approverUser);
+			pah.setLevel(1);
+			pah.setStatus("1");
+			projectApproverHierarchyList.add(pah);
+			
+			projectClients.setProjectApproverHierarchyList(projectApproverHierarchyList);
+	    	projectClientsSet.add(projectClients);
+			return projectClientsSet;
+		}
 	 
 	 
 	private OrgLocations getOrgLocationsDetails(Registration registration,Org org,User user,String subModules,String modules ) throws Exception{
