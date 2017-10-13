@@ -196,6 +196,19 @@ public class UserServiceImpl implements UserService {
 	   user = userDao.findByUserName(addUserDTO.getEmail());
 	   if(null != user){
 		  isUserActive = userRoleService.isUserActive(user.getId());
+		 
+		  if(StringUtils.isNotBlank(addUserDTO.getFirstName())) {
+			  user.setFirstName(addUserDTO.getFirstName());
+		  }
+		 
+		  if(StringUtils.isNotBlank(addUserDTO.getLastName())) {
+			  user.setLastName(addUserDTO.getLastName());
+		  }
+		
+		  if(StringUtils.isNotBlank(addUserDTO.getPhoneNumber())) {
+			  user.setMobilePhone(addUserDTO.getPhoneNumber());
+		  }
+		 
 	   }
 	   
 	   if(null == user){
