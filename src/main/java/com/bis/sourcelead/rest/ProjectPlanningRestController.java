@@ -10,6 +10,7 @@ import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang.StringUtils;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,9 +20,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.ProjectBudgetRequestDTO;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.ProjectBudget;
 import com.bis.sourcelead.entity.ProjectPlanningNewResourceRequest;
 import com.bis.sourcelead.entity.ProjectPlanningRequest;
 import com.bis.sourcelead.entity.ProjectPlanningResourceRequest;
@@ -32,6 +35,7 @@ import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.service.CandidateResumesService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.OrgLocationService;
+import com.bis.sourcelead.service.ProjectBudgetService;
 import com.bis.sourcelead.service.ProjectPlanningNewResourceRequestService;
 import com.bis.sourcelead.service.ProjectPlanningRequestService;
 import com.bis.sourcelead.service.ProjectPlanningResourceRequestService;
@@ -71,6 +75,9 @@ public class ProjectPlanningRestController {
 	
 	@Autowired
 	ProjectPlanningNewResourceRequestService projectPlanningNewResourceRequestService; 
+	
+	@Autowired
+	ProjectBudgetService projectBudgetService;
 	
 	@Autowired
 	UserService userService;
@@ -159,15 +166,10 @@ public class ProjectPlanningRestController {
 	 
 	 
 	 @RequestMapping(value = "/getOrgLocationRoles", method = RequestMethod.GET)
-	 public @ResponseBody String  getOrgLocationRoles(@RequestParam(value="orgLocations", required=false) String orgLocations) throws Exception{ 
+	 public @ResponseBody List<Roles>  getOrgLocationRoles(@RequestParam(value="orgLocations", required=false) String orgLocations) throws Exception{ 
 		 
-		 String resultJson;
-		 String[] orgLocationId = orgLocations.split(",");
-		
-		 List<Roles> rolesList = roleService.getRoles(Long.valueOf(orgLocationId[0]));
-		 
-		 resultJson = commonUtil.toJSON(rolesList);
-		 return resultJson;
+		 List<Roles> rolesList = roleService.getRoles(Long.valueOf(orgLocations));
+		 return rolesList;
 	  }
 	 
 	 
@@ -510,7 +512,175 @@ public class ProjectPlanningRestController {
 			  
 		    }
 
-	 
+	        /**
+	         * @author Laxman
+	         * @param projectUUID
+	         * @return projectBudgetList
+	         * @throws Exception
+	         */
+	        @RequestMapping(value = "/getBudgetRequestListByProjectUUID")
+			public @ResponseBody List<ProjectBudget> getBudgetRequestListByProjectUUID(@RequestParam(value="projectUUID", required=true) String projectUUID) throws Exception {
+			  Projects projects = projectsService.getProjectByProjectUUID(projectUUID);
+			  List<ProjectBudget> projectBudgetList= projectBudgetService.getProjectBudgetByProjectTaskId(projects.getId());
+			  return projectBudgetList;
+		    }
+	        
+		 /**
+		  * @author Laxman
+		  * @param projectBudgetRequestDTO
+		  * @return success
+		  * @throws Exception
+		  */
+	        @RequestMapping(value = "/saveBudgetRequest",method = RequestMethod.POST)
+			public @ResponseBody String saveBudgetRequest(ProjectBudgetRequestDTO projectBudgetRequestDTO) throws Exception {
+			       User user = userService.getUserById(Long.valueOf(projectBudgetRequestDTO.getLoginUserid()));
+			       projectBudgetService.saveProjectBudgetRequset(projectBudgetRequestDTO, user);
+			    return "success";
+		    }
+	        
+	        
+	        /**
+	         * @author Laxman
+	         * @param projectBudgetRequestDTO
+	         * @return success
+	         * @throws Exception
+	         */
+	        @RequestMapping(value = "/saveBudgetRequestReason",method = RequestMethod.POST)
+			public @ResponseBody String saveBudgetRequestReason(ProjectBudgetRequestDTO projectBudgetRequestDTO) throws Exception {
+			       if(StringUtils.isNotBlank(projectBudgetRequestDTO.getBudgetRequestedId())) {
+			    	   User user = userService.getUserById(Long.valueOf(projectBudgetRequestDTO.getLoginUserid()));
+			    	   ProjectBudget projectBudget =  projectBudgetService.getProjectBudgetsById(Long.valueOf(projectBudgetRequestDTO.getBudgetRequestedId()));
+				       if(projectBudget != null) {
+				    	   projectBudget.setRejectedReason(projectBudgetRequestDTO.getReasonForProjectBudget());
+				    	   projectBudget.setUpdateUserId(user);
+				    	   projectBudget.setBudgetStatus(Constants.BUDGET_REQUEST_REJECTED);
+				    	   projectBudget.setUpdatedDate(new Date());
+				    	   projectBudgetService.saveProjectBudget(projectBudget);
+				    	   if(projectBudget.getApproverUserId() != null && user.getId() != projectBudget.getApproverUserId().getId()) {
+				    		   projectBudgetService.sendEmailForBugetRequestApproversByAcceptAndRejectAndOnHold(user,projectBudget);
+				    	   }
+				       }
+			       }
+			    return "success";
+		    }
+	        
+	        
+	        /**
+	         * @author Laxman
+	         * @param budgetRequestedId
+	         * @param userId
+	         * @return success
+	         * @throws Exception
+	         */
+	        @RequestMapping(value = "/acceptBudgetRequest",method = RequestMethod.POST)
+			public @ResponseBody String acceptBudgetRequest(@RequestParam("budgetRequestedId") Long budgetRequestedId,@RequestParam("userId") Long userId) throws Exception {
+			    	   User user = userService.getUserById(userId);
+			    	   ProjectBudget projectBudget =  projectBudgetService.getProjectBudgetsById(budgetRequestedId);
+				       if(projectBudget != null) {
+				    	   projectBudget.setUpdateUserId(user);
+				    	   projectBudget.setBudgetStatus(Constants.BUDGET_REQUEST_APPROVED);
+				    	   projectBudget.setUpdatedDate(new Date());
+				    	   projectBudgetService.saveProjectBudget(projectBudget);
+				    	   if(user.getId() != projectBudget.getApproverUserId().getId()) {
+				    		   projectBudgetService.sendEmailForBugetRequestApproversByAcceptAndRejectAndOnHold(user,projectBudget);
+				    	   }
+				       }
+			    return "success";
+		    }
+	        
+	        
+	        /**
+	         * @author Laxman
+	         * @param budgetRequestedId
+	         * @param userId
+	         * @return success
+	         * @throws Exception
+	         */
+	        @RequestMapping(value = "/onHoldBudgetRequest",method = RequestMethod.POST)
+			public @ResponseBody String onHoldBudgetRequest(ProjectBudgetRequestDTO projectBudgetRequestDTO) throws Exception {
+				       if(StringUtils.isNotBlank(projectBudgetRequestDTO.getBudgetRequestedId())) {
+				    	   User user = userService.getUserById(Long.valueOf(projectBudgetRequestDTO.getLoginUserid()));
+				    	   ProjectBudget projectBudget =  projectBudgetService.getProjectBudgetsById(Long.valueOf(projectBudgetRequestDTO.getBudgetRequestedId()));
+					       if(projectBudget != null) {
+					    	   projectBudget.setRejectedReason(projectBudgetRequestDTO.getReasonForProjectBudget());
+					    	   projectBudget.setUpdateUserId(user);
+					    	   projectBudget.setBudgetStatus(Constants.BUDGET_REQUEST_ON_HOLD);
+					    	   projectBudget.setUpdatedDate(new Date());
+					    	   projectBudgetService.saveProjectBudget(projectBudget);
+					    	   if(user.getId() != projectBudget.getApproverUserId().getId()) {
+					    		   projectBudgetService.sendEmailForBugetRequestApproversByAcceptAndRejectAndOnHold(user,projectBudget);
+					    	   }
+					       }
+				       }
+				       
+			    return "success";
+		    }
+	        
+	        
+	        /**
+	         * @author Laxman
+	         * @param budgetRequestedId
+	         * @return projectBudget
+	         * @throws Exception
+	         */
+	        @RequestMapping(value = "/getBudgetRequestDetailsById",method = RequestMethod.POST)
+			public @ResponseBody ProjectBudget getBudgetRequestDetailsById(@RequestParam("budgetRequestedId") Long budgetRequestedId) throws Exception {
+			    	   ProjectBudget projectBudget =  projectBudgetService.getProjectBudgetsById(budgetRequestedId);
+			    return projectBudget;
+		    }
+	        
+	        
+	        /**
+	         * @author Laxman
+	         * @param orgLocationId
+	         * @param requestType
+	         * @return projectBudgetList
+	         * @throws Exception
+	         */
+	        @RequestMapping(value = "/getBudgetRequsetListByBudgetStatusAndOrgLocationId", method = RequestMethod.GET)
+			public @ResponseBody List<ProjectBudget> getBudgetRequsetListByBudgetStatusAndOrgLocationId(@RequestParam(value="orgLocationId", required=true) Long orgLocationId,@RequestParam(value="requestType", required=true) String requestType) throws Exception {
+	        	List<ProjectBudget> projectBudgetList= projectBudgetService.getProjectBudgetListByOrgLocationIdAndBudgetStatus(orgLocationId, requestType);
+			  return projectBudgetList;
+			  
+		    }
+	        
+	        
+	        /**'
+	         * @author Laxman
+	         * @param orgLocationId
+	         * @return projectBudget
+	         * @throws Exception
+	         */
+	        @RequestMapping(value = "/getBudgetRequestListCount", method = RequestMethod.GET)
+			public @ResponseBody ProjectBudget getBudgetRequestListCount(@RequestParam(value="orgLocationId", required=true) Long orgLocationId) throws Exception {
+	        	List<ProjectBudget> projectBudgetList= projectBudgetService.getProjectBudgetListByOrgLocationId(orgLocationId);
+	        	  ProjectBudget projectBudget = new ProjectBudget();
+				  Integer waitingCount = 0;
+				  Integer approvedCount = 0;
+				  Integer rejectedCount = 0;
+				  Integer onholdCount = 0;
+				  
+				  for(ProjectBudget budget : projectBudgetList){
+					  if(budget.getBudgetStatus().equalsIgnoreCase(Constants.BUDGET_REQUEST_APPROVED)){
+						  approvedCount = approvedCount + 1;
+					  }else if(budget.getBudgetStatus().equalsIgnoreCase(Constants.BUDGET_REQUEST_WAITING_FOR_APPROVAL)){
+						  waitingCount = waitingCount + 1;
+					  }else if(budget.getBudgetStatus().equalsIgnoreCase(Constants.BUDGET_REQUEST_REJECTED)){
+						  rejectedCount = rejectedCount + 1;
+					  }else if(budget.getBudgetStatus().equalsIgnoreCase(Constants.BUDGET_REQUEST_ON_HOLD)){
+						  onholdCount = onholdCount + 1;
+					  }
+				  }
+				  
+				  projectBudget.setWaitingCount(waitingCount);
+				  projectBudget.setApprovedCount(approvedCount);
+				  projectBudget.setRejectedCount(rejectedCount);
+				  projectBudget.setOnholdCount(onholdCount);
+				  
+				  return projectBudget;
+			  
+		    }
+	        
 	 protected static boolean isNullOrEmpty(String str) {
 			return (str == null || "".equals(str.trim()));
 		}

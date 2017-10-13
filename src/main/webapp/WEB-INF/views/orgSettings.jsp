@@ -908,7 +908,7 @@ function loadSignature(){
 							result = result + '<div class="col-md-3"><input type="text" '+readonly+' value="'+labelText+'" class="form-control input-sm"></div>';
 						}
 						
-						result = result + '<div class="col-md-2 select-field">';
+						result = result + '<div class="col-md-2 select-field" style="width:19.66666667%;">';
 						result = result + '<select name="fontFamily'+opt.id+'" class="form-control input-sm">';
 						for (var j=0; j<json.fontFamilyList.length; j++)
 	 					{
@@ -922,7 +922,7 @@ function loadSignature(){
 						result = result + '</select>';
 						result = result + '</div>';
 						
-						result = result + '<div class="col-md-2 select-field">';
+						result = result + '<div class="col-md-2 select-field" style="width:13.66666667%;">';
 						result = result + '<select name="fontsize'+opt.id+'" class="form-control input-sm">';
 						for (var k=0; k<json.fontFamilyList.length; k++)
 	 					{
@@ -1702,38 +1702,6 @@ function createOrg(){
 				result = result +'         </div>';
 				result = result +'       </div>';
 						        
-				
-				/* 
-	            result = result +' <div class="form-group">';
-	            result = result +'<label class="col-md-3">Country<span class="text-danger">&nbsp;*</span></label>';
-	            result = result +'<div class="col-md-9 dropdown-select">';
-	            result = result +'<select class="chosen-select form-control select-bg" name="country" id="locationCountry" field-name="Country" data-validation="required" value="${country}">';
-	            result = result +'<option value="" >Select Location</option>';
-	            result = result +'<option value="Australia">Australia</option>';
-	            result = result +'<option value="France">France</option>';
-	            result = result +'<option value="India">India</option>';
-	            result = result +'<option value="Singapore">Singapore</option>';
-	            result = result +'<option value="United Kingdom">United Kingdom</option>';
-	            result = result +'<option value="United States">United States</option>';
-	            result = result +'</select>';
-	            result = result +'<span class="hidden">Country</span>';
-	            result = result +'</div>';
-	            result = result +'</div>';
-          
-	            result = result +'<div class="form-group">';
-	            result = result +'<label class="col-md-3">State<span class="text-danger">&nbsp;*</span></label>';
-	            result = result +'<div class="col-md-9">';
-	            result = result +'<select  class="chosen-select form-control" name="state" id="locationState" field-name="State" data-validation="required" > </select>';
-	            result = result +'</div>';
-	            result = result +'</div>';
-							
-	            result = result +'<div class="form-group">';
-	            result = result +'<label class="col-md-3">City<span class="text-danger">&nbsp;*</span></label>';
-	            result = result +'<div class="col-md-9">';
-	            result = result +'<select  class="chosen-select form-control" name="city" id="locationCity" field-name="City" data-validation="required" ></select>';
-	            result = result +'</div>';
-	            result = result +'</div>'; */
-			
 	            result = result +'<div class="form-group">';
 	            result = result +'<label class="col-md-3">Address</label>';
 	            result = result +'<div class="col-md-9">';

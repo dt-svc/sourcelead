@@ -448,6 +448,11 @@ function validateTemplateName(){
 
 <section class="content-wraper">
   <section class="content-header clearfix">
+  <c:if test="${!empty msg}"> 
+<div class="success_pop" id="selector" style="display: block;"> 
+<i class="fa fa-check-circle"></i><span>${msg}</span> 
+</div> 
+</c:if> 
     <div class="pull-left">
       <!-- <h2>Submission Templates</h2> -->
       <h2 class="pull-left">Submission Templates</h2>
@@ -486,7 +491,11 @@ function validateTemplateName(){
   </div>
   
 </section>
+<script> 
+$("#selector").fadeIn(200); 
+$('#selector').delay(2000).fadeOut('slow'); 
 
+</script> 
 <script>
 $("#add-tm").click(function(){
 	$("#clientSubmissionTemplateList").hide();

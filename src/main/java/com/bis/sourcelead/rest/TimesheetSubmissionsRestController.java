@@ -217,7 +217,7 @@ public class TimesheetSubmissionsRestController {
 			 Date frequencyStartDate = commonUtil.orgLocationDateFormat(loginOrgLocation.getDateFormat(),startDate.replaceAll("/", "-"));
 			 Date frequencyEndDate = commonUtil.orgLocationDateFormat(loginOrgLocation.getDateFormat(),endDate.replaceAll("/", "-"));
 		 
-			 SubmissionApproverHierarchy sah =submissionApproverHierarchyService.getSubmissionApproverHierarchyForEmployeeByProjectMemberId(frequencyStartDate, frequencyEndDate, pmId);
+			 SubmissionApproverHierarchy sah =submissionApproverHierarchyService.getSubmissionApproverHierarchyForEmployeeByProjectIdAndMasterCandidateId(frequencyStartDate, frequencyEndDate, projectMembers.getProjects().getId(),projectMembers.getMasterCandidateId().getId());
 			 Submission_Status submissionStatus = sah.getSubmissionStatus();
 		 	 String submissionStatusStr = submissionStatus.getValue();
 		 	  if(!isNullOrEmpty(submissionStatusStr) && 
@@ -226,9 +226,9 @@ public class TimesheetSubmissionsRestController {
 		 	    )
 		 	   {
 		 		 EmailMessage emailMessage = new EmailMessage();
-		     	 emailMessage.setFirstName(projectMembers.getEmployee().getUser().getFirstName());
-			 	 emailMessage.setLastName(projectMembers.getEmployee().getUser().getLastName());
-			 	 emailMessage.setToEmail(projectMembers.getEmployee().getUser().getEmail());
+		     	 emailMessage.setFirstName(projectMembers.getProjectMemberCandidteId().getFirstName());
+			 	 emailMessage.setLastName(projectMembers.getProjectMemberCandidteId().getLastName());
+			 	 emailMessage.setToEmail(projectMembers.getProjectMemberCandidteId().getEmail());
 			 	 emailMessage.setFromEmail(loginUser.getEmail());
 			 	 emailMessage.setCreatedBy(loginUser.getUserCode());
 			 	 

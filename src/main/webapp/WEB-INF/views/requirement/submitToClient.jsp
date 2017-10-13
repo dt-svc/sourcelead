@@ -338,6 +338,7 @@ function cancelSumitToClient(){
 
 <script>
 function addEmailtemplate(requirementId){
+	
 	var result ="";
 		 var selectedShortlists = [];
 		 var selectedShortlistsRate = [];

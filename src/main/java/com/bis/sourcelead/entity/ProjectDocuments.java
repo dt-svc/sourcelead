@@ -17,6 +17,7 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
+import org.hibernate.annotations.Type;
 
 import com.bis.sourcelead.constants.Constants;
 
@@ -51,6 +52,10 @@ public class ProjectDocuments implements Serializable {
 	
 	@Column(name = "STATUS")
 	private Integer status;
+	
+	@Column(name = "FILE_URL")
+	@Type(type="text")
+	private String fileUrl;
 	
 	public Long getId() {
 		return Id;
@@ -98,12 +103,11 @@ public class ProjectDocuments implements Serializable {
 		
 	}
 
-	public ProjectDocuments(String fileName, String fileType, byte[] fileContents, Projects projects,Integer status) {
+	public ProjectDocuments(String fileName, String fileURL, String fileType, Projects projects) {
 		super();
 		this.fileName = fileName;
+		this.fileUrl = fileURL;
 		this.fileType = fileType;
-		this.fileContents = fileContents;
-		this.status = Constants.CANDIDATE_ACTIVE;
 		this.projects = projects;
 	}
 
@@ -123,7 +127,13 @@ public class ProjectDocuments implements Serializable {
 		this.status = status;
 	}
 
-	
+	public String getFileUrl() {
+		return fileUrl;
+	}
+
+	public void setFileUrl(String fileUrl) {
+		this.fileUrl = fileUrl;
+	}
 	
 	
 }
