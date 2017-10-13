@@ -501,7 +501,7 @@ function deleteCandidate(candidateId){
 	  var requirementId = $("#requirementId").val();
 	  $.ajax({
         type : "POST",
-         url: sourceleadUrl+"/deleteCandidateByCandidateId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&reason="+reason+"&candidateType=Candidate",        
+         url: sourceleadUrl+"/deleteCandidateByCandidateId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&reason="+reason+"&candidateType=Candidates",        
          success :function(data) {
               if(data != null && data != 'undefined' && data != ""){
 //             		 if( data.indexOf('Sign In') >= 0){

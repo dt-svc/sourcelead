@@ -53,7 +53,7 @@ public class ClientVendorIndexHelper {
 			
 			// this is to setting values for Initiator Details
 			OrgLocations initiatorLocation = orgLocationService.getOrgLocations(orgRelations.getLocationId().getId());
-			
+			clientVendorIndex.setId(initiatorLocation.getId());
 					if(!"".equalsIgnoreCase(initiatorLocation.getCountry())){
 						clientVendorIndex.setInitiatorCountry(initiatorLocation.getCountry());
 					}
@@ -153,6 +153,15 @@ public class ClientVendorIndexHelper {
 			clientVendorIndex.setOrgLocationId(orgRelations.getLocationId().getId());
 			clientVendorIndex.setInitiatorLevel(orgRelations.getInitiatorLevel());
 			clientVendorIndex.setResponderLevel(orgRelations.getResponderLevel());
+			clientVendorIndex.setOrgRelationUUID(orgRelations.getUUID());
+			
+			if(orgRelations.getVendorOnboardTemplateId() != null){
+				clientVendorIndex.setVendorOnboardTemplateId(orgRelations.getVendorOnboardTemplateId());
+			}
+			
+			if(orgRelations.getVendorRelationStatus() != null){
+				clientVendorIndex.setVendorRelationStatus(orgRelations.getVendorRelationStatus());
+			}
 			
 			clientVendorIndex.setStatus(orgRelations.getStatus());
 			clientVendorIndex.setCreatedByUserCode(orgRelations.getCreatedBy());

@@ -215,7 +215,7 @@
             <!-- TAB 2 -->
             <div class="tab-pane" id="documents">
               <div class="form-horizontal">
-                <form id='templateDocuments_form' name='templateDocuments_form' enctype='multipart/form-data' >
+                <form id='templateDocuments_form' name='templateDocuments_form' >
                  <input type="hidden" name="candidateoffboardingId" id="documentstemplateId" value=""/>
                  
                
@@ -477,14 +477,14 @@
   
   <div id="divResignationAttachmentTd1" style="display: none; float: left;">
 			<div id='REPLACEROWIDResignationdocFileuploadFileGroup'>
-	  			<input type='file' name='REPLACEROWIDresignationdocFile' id='REPLACEROWIDresignationdocFile' class="timesheetAttachmentValidation" data-validation="required validatedoc" field-name="Document" onchange='validateResignationUploadFile(REPLACEROWID)'> 
+	  			<input type='file'  id='REPLACEROWIDresignationdocFile' class="timesheetAttachmentValidation" data-validation="required validatedoc" field-name="Document" onchange='uploadResignationTerminationDoc(REPLACEROWID)'> 
 	  			<i class="fa fa-times" onclick="removeResignationAttachmentRow(REPLACEROWID);"></i>
 	  		</div>
 </div>
 
 <div id="divOffboardPackAttachmentTd1" style="display: none; float: left;">
 			<div id='REPLACEROWIDOffboardPackdocFileuploadFileGroup'>
-	  			<input type='file' name='REPLACEROWIDoffboardPackdocFile' id='REPLACEROWIDoffboardPackdocFile' class="timesheetAttachmentValidation" data-validation="required validatedoc" field-name="Document" onchange='validateOffboardPackUploadFile(REPLACEROWID)'> 
+	  			<input type='file' id='REPLACEROWIDoffboardPackdocFile' class="timesheetAttachmentValidation" data-validation="required validatedoc" field-name="Document" onchange='uploadOffboardPackDoc(REPLACEROWID)'> 
 	  			<i class="fa fa-times" onclick="removeOffboardPackAttachmentRow(REPLACEROWID);"></i>
 	  		</div>
 </div>
@@ -508,7 +508,13 @@ function addResignationAttachment(){
 			cell0.innerHTML = divAttachmentTdStr;
 			
 			
-}			
+}	
+function uploadResignationTerminationDoc(id){
+	fileUpload(""+id+"resignationdocFile", "Employee-Offboard-Resignation-Documents", "templateDocuments_form","resignationFileInfo");
+}
+function uploadOffboardPackDoc(id){
+	fileUpload(""+id+"offboardPackdocFile", "Employee-Offboard-OffboardPack-Documents", "templateDocuments_form","offboardPackFileInfo");
+}
 </script>
 
 
@@ -537,6 +543,7 @@ function addOffboardPackAttachment(){
 	function removeResignationAttachmentRow(rowId) {
 		 document.getElementById("divAttachmentResignationRow"+rowId).style.display = 'none';
 		 document.getElementById("divAttachmentResignationRow"+rowId).value= '';
+		 $("#templateDocuments_form input[data-id='"+rowId+"resignationdocFile']").remove();
 		 var  rId = "divAttachmentResignationRow"+rowId;
 		  var r = document.getElementById("resignationAttachmentTable").rows[rId];
           var count = 2*(r.cells.length);
@@ -546,36 +553,6 @@ function addOffboardPackAttachment(){
 		 
 	}
 </script>
-
-
-
-<!-- <script type="text/javascript">
-function validateResignationUploadFile(id)
-{
-	 var selectedFile = $('#'+id+'resignationdocFile').val();
-	  if(validate_fileupload(selectedFile)){
-		   var docSize = $('#'+id+'resignationdocFile')[0].files[0].size;
-	       $("#"+id+"ResignationdocFileuploadFileGroup").find('p.jquery_form_error_message').remove();
-	      if(docSize > 2097152){
-	    	  $('#'+id+'ResignationdocFileuploadFileGroup').find('p.jquery_form_error_message').remove();
-	    	  $('#'+id+'ResignationdocFileuploadFileGroup').find('i').after("<p class='jquery_form_error_message'>Limit is exceeded than 2MB </span>");
-			  $('#'+id+'resignationdocFile').attr('record-exist','yes');
-			  $('#'+id+'resignationdocFile').attr('record-exist-errorMsg','Limit is exceeded than 2MB'); 
-	      }else{
-	    	 $('input#'+id+'resignationdocFile').removeAttr( "record-exist record-exist-errormsg");
-   		 $('#'+id+'ResignationdocFileuploadFileGroup').find('p.jquery_form_error_message').remove(); 
-	      }
-	  }
-	  else{
-		      $('#'+id+'ResignationdocFileuploadFileGroup').find('p.jquery_form_error_message').remove();
-		      $('#'+id+'ResignationdocFileuploadFileGroup').find('i').after("<p class='jquery_form_error_message'>Invalid Format</span>");
-			  $('#'+id+'resignationdocFile').attr('record-exist','yes');
-			  $('#'+id+'resignationdocFile').attr('record-exist-errorMsg','Invalid Format'); 
-	  }
-	
-}
-</script> -->
-
 
 
 <script>
@@ -603,6 +580,7 @@ function addOffboardPackAttachment(){
 	function removeOffboardPackAttachmentRow(rowId) {
 		 document.getElementById("divAttachmentOffboardPackRow"+rowId).style.display = 'none';
 		 document.getElementById("divAttachmentOffboardPackRow"+rowId).value= '';
+		 $("#templateDocuments_form input[data-id='"+rowId+"offboardPackdocFile']").remove();
 		 var  rId = "divAttachmentOffboardPackRow"+rowId;
 		  var r = document.getElementById("offboardPackAttachmentTable").rows[rId];
           var count = 2*(r.cells.length);
@@ -613,34 +591,6 @@ function addOffboardPackAttachment(){
 	}
 </script>
 
-
-
-<!-- <script type="text/javascript">
-function validateOffboardPackUploadFile(id)
-{
-	 var selectedFile = $('#'+id+'offboardPackdocFile').val();
-	  if(validate_fileupload(selectedFile)){
-		   var docSize = $('#'+id+'offboardPackdocFile')[0].files[0].size;
-	       $("#"+id+"OffboardPackdocFileuploadFileGroup").find('p.jquery_form_error_message').remove();
-	      if(docSize > 2097152){
-	    	  $('#'+id+'OffboardPackdocFileuploadFileGroup').find('p.jquery_form_error_message').remove();
-	    	  $('#'+id+'OffboardPackdocFileuploadFileGroup').find('i').after("<p class='jquery_form_error_message'>Limit is exceeded than 2MB </span>");
-			  $('#'+id+'offboardPackdocFile').attr('record-exist','yes');
-			  $('#'+id+'offboardPackdocFile').attr('record-exist-errorMsg','Limit is exceeded than 2MB'); 
-	      }else{
-	    	 $('input#'+id+'offboardPackdocFile').removeAttr( "record-exist record-exist-errormsg");
-   		 $('#'+id+'OffboardPackdocFileuploadFileGroup').find('p.jquery_form_error_message').remove(); 
-	      }
-	  }
-	  else{
-		      $('#'+id+'OffboardPackdocFileuploadFileGroup').find('p.jquery_form_error_message').remove();
-		      $('#'+id+'OffboardPackdocFileuploadFileGroup').find('i').after("<p class='jquery_form_error_message'>Invalid Format</span>");
-			  $('#'+id+'offboardPackdocFile').attr('record-exist','yes');
-			  $('#'+id+'offboardPackdocFile').attr('record-exist-errorMsg','Invalid Format'); 
-	  }
-	
-}
-</script> -->
 
 <script type="text/javascript">
 function validate_fileupload(fileName)
@@ -740,6 +690,8 @@ function validate_fileupload(fileName)
   
   <script>
 function getTemplateResignationDocumentsDetails(offboardId){
+	$("#templateDocuments_form input[name*='resignationFileInfo']").remove();
+	$("#templateDocuments_form input[name*='offboardPackFileInfo']").remove();
 	if(offboardId == '' || offboardId == null || offboardId =='undefined'){
 		offboardId = document.getElementById("candidateOffBoardId").value;
 	}
@@ -757,7 +709,7 @@ function getTemplateResignationDocumentsDetails(offboardId){
                 	 for (var i = 0; i < json.length; i++) { 
                 		 var opt = json[i]; 
                 		 result = result +"<strong id='resignationdocument"+opt.id+"'>";
-                		 result = result +"<i class=''><a class='glyphicon glyphicon-save' href=\""+sourceleadUrl+"/downloadOffboardDocument?documentUUID="+opt.documentUUID+"\"></a></i>";
+                		 result = result +"<i class=''><a class='glyphicon glyphicon-save' href=\""+opt.fileURL+"\"></a></i>";
            				 result = result +"<input type='button' value='"+opt.fileName+"'>";
            				 result = result +"</a>";
            				 
@@ -777,7 +729,7 @@ function getTemplateResignationDocumentsDetails(offboardId){
                 	 result = result +"<input type='hidden' name='resignationAttcahmentMaxRowNumber'  id='resignationAttcahmentMaxRowNumber' value='1' />";
                 	 result = result +"<table class='timesheetAttachment' id='resignationAttachmentTable' cellpadding='0' cellspacing='0'>";
                 	 result = result +"<tr id='divAttachmentTsRow0'>";
-                	 result = result +"<td><div id='0ResignationdocFileuploadFileGroup'><input type='file' name='0resignationdocFile' id='0resignationdocFile' field-name='Attachment' data-validation='validatedoc' data-validation-optional='true' onchange='validateResignationUploadFile(0)'  class='timesheetAttachmentValidation'><i class='fa fa-plus' onClick='addResignationAttachment()'></i></div></td>";
+                	 result = result +"<td><div id='0ResignationdocFileuploadFileGroup'><input type='file' name='0resignationdocFile' id='0resignationdocFile' field-name='Attachment' data-validation='validatedoc' data-validation-optional='true' onchange='uploadResignationTerminationDoc(0)'  class='timesheetAttachmentValidation'><i class='fa fa-plus' onClick='addResignationAttachment()'></i></div></td>";
                 	 result = result +"</tr>";
                 	 result = result +"</table>";
                 	 $("#savedResignationAttachments").empty();
@@ -794,6 +746,8 @@ function getTemplateResignationDocumentsDetails(offboardId){
 
 <script>
 function getTemplateOffboardPackDocumentsDetails(offboardId){
+	$("#templateDocuments_form input[name*='resignationFileInfo']").remove();
+	$("#templateDocuments_form input[name*='offboardPackFileInfo']").remove();
 	if(offboardId == '' || offboardId == null || offboardId =='undefined'){
 		offboardId = document.getElementById("candidateOffBoardId").value;
 	}
@@ -812,7 +766,7 @@ function getTemplateOffboardPackDocumentsDetails(offboardId){
                 	 for (var i = 0; i < json.length; i++) { 
                 		 var opt = json[i]; 
                 		 result = result +"<strong id='offboardPackdocument"+opt.id+"'>";
-                		 result = result +"<i class=''><a class='glyphicon glyphicon-save' href=\""+sourceleadUrl+"/downloadTemplateDocument?documentUUID="+opt.documentUUID+"\"></a></i>";
+                		 result = result +"<i class=''><a class='glyphicon glyphicon-save' href=\""+opt.fileURL+"\"></a></i>";
            				 result = result +"<input type='button' value='"+opt.fileName+"'>";
            				 result = result +"</a>";
 
@@ -832,7 +786,7 @@ function getTemplateOffboardPackDocumentsDetails(offboardId){
                 	 result = result +"<input type='hidden' name='offboardPackAttcahmentMaxRowNumber'  id='offboardPackAttcahmentMaxRowNumber' value='1' />";
                 	 result = result +"<table class='timesheetAttachment' id='offboardPackAttachmentTable' cellpadding='0' cellspacing='0'>";
                 	 result = result +"<tr id='divAttachmentTsRow0'>";
-                	 result = result +"<td><div id='0OffboardPackdocFileuploadFileGroup'><input type='file' name='0offboardPackdocFile' id='0offboardPackdocFile' field-name='Attachment' data-validation='validatedoc' data-validation-optional='true' onchange='validateOffboardPackUploadFile(0)'  class='timesheetAttachmentValidation'><i class='fa fa-plus' onClick='addOffboardPackAttachment();'></i></div></td>";
+                	 result = result +"<td><div id='0OffboardPackdocFileuploadFileGroup'><input type='file'  id='0offboardPackdocFile' field-name='Attachment' data-validation='validatedoc' data-validation-optional='true' onchange='uploadOffboardPackDoc(0)'  class='timesheetAttachmentValidation'><i class='fa fa-plus' onClick='addOffboardPackAttachment();'></i></div></td>";
                 	 result = result +"</tr>";
                 	 result = result +"</table>";
                 	 $("#savedOffboardPackAttachments").empty();
@@ -960,39 +914,32 @@ function loadOffBoardingTemplates(offboardTemplateId){
 	         }; 
 	 
 	 if ($('#offboardCandidate_form').validate(false, validationSettings)){ 
-		    var frm = $('#offboardCandidate_form').serializeFormJSON();
-	        var con = JSON.stringify(frm);
-	        con = con.replace(/[{}]/g, "");
-	        
-	        //It will escape all the special characters
-	        var jsonData = encodeURIComponent(con);
-	        
+		 var formData = getFormData1("offboardCandidate_form");
 	        var sourceleadUrl ='${sourceleadUrl}';
-	        
 	        $("#save_offboardUser").attr("disabled", "disabled");
 	        $("#saveAndContinue_offboardUser").attr("disabled", "disabled");
 	       
 	        $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	         $.ajax({
 		    	type: "POST",
-		    	 url: sourceleadUrl+"/saveOffboardingCandidateDetails?${_csrf.parameterName}=${_csrf.token}&json="+jsonData, 
-		        success: function(offboardId) {
+		    	data: formData,
+		 		processData: false, 
+		 		contentType: false,
+		    	 url: sourceleadUrl+"/saveOffboardingCandidateDetails?${_csrf.parameterName}=${_csrf.token}", 
+		        success: function(json) {
 		        	
 		        	if(saveType == 'saveAndContinue'){
 		        		var $tabs = $('.tabbable li');
 		     	        $tabs.filter('.active').next('li').find('a[data-toggle="tab"]').tab('show');
 		     	        document.getElementById("templateDocs").disabled = false;
-		     	        
-		     	       getTemplateResignationDocumentsDetails(offboardId);
-		     	       getTemplateOffboardPackDocumentsDetails(offboardId);
+		     	       getTemplateResignationDocumentsDetails(json.id);
+		     	       getTemplateOffboardPackDocumentsDetails(json.id);
 		     	      
 		     	       
-		     	       $("#documentstemplateId").val(offboardId);
+		     	       $("#documentstemplateId").val(json.id);
 		        	}
-		        	
-		        	
-		        	$("#savedoffboardId").val(offboardId);
-	     	        $("#candidateOffBoardId").val(offboardId);
+		        	$("#savedoffboardId").val(json.id);
+	     	        $("#candidateOffBoardId").val(json.id);
 	     	        
 	     	       $("#save_offboardUser").removeAttr("disabled");
 	     	       $("#saveAndContinue_offboardUser").removeAttr("disabled");
@@ -1182,30 +1129,16 @@ function createTemplateDocs(saveType){
 	  var sourceleadUrl ='${sourceleadUrl}';
 	  
 	  if ($('#templateDocuments_form').validate(false, validationSettings)){ 
-		  var frm = $('#templateDocuments_form').serializeFormJSON();
-	      var con = JSON.stringify(frm);
-	      con = con.replace(/[{}]/g, "");
-	      
-	      //It will escape all the special characters
-	      var jsonData = encodeURIComponent(con);
-	      
-		   var form = $('#templateDocuments_form')[0];
-		   var formData = new FormData(form); 
-		   
-		   
 		   $("#save_docs_button").attr("disabled", "disabled");
 		   $("#save_continue_docs_button").attr("disabled", "disabled");
-		
+		   var formData = getFormData1("templateDocuments_form");
 	   $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		$.ajax({
 	        type : "POST",
 		      data: formData,
-		      contentType : 'application/json; charset=utf-8',
-		      enctype: 'multipart/form-data',
-	        processData: false,
-	        contentType:false,
-		      dataType : 'json',
-	    	  url: sourceleadUrl+"/saveCandidatedOffboardingDocuments?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,		
+		      processData: false,
+		      contentType:false, 
+	    	  url: sourceleadUrl+"/saveCandidatedOffboardingDocuments?${_csrf.parameterName}=${_csrf.token}",		
 		      success :function(result) {
 		    	  
 		    	  if(saveType == 'saveAndContinue'){
@@ -1319,11 +1252,6 @@ function createOffboardCheckList(saveType){
          }; 
 	
 	  if ($('#sjfb').validate(false, validationSettings)){ 
-		   
-	        var frm = $('#sjfb').serializeFormJSON();
-	        var con = JSON.stringify(frm);
-	        con = con.replace(/[{}]/g, "");
-	        var jsonData = encodeURIComponent(con);
 	        var isRemoved = '';
 	        var isLabelModified = 'N';
 	        //Loop through fields and save field data to array
@@ -1433,11 +1361,11 @@ function createOffboardCheckList(saveType){
 	        	
 	        	$("#save_checkList_button").attr("disabled", "disabled");
 	        	$("#save_continue_checkList_button").attr("disabled", "disabled");
-	        	
+	        	var checkListoffboardId = $("#checkListoffboardId").val();
 	        	 $("#offboardcheckListLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	        	  $.ajax({
 	      	    	type: "POST",
-	      	        url: sourceleadUrl+"/saveCandidateOffboardCheckList?${_csrf.parameterName}=${_csrf.token}&jsonData="+jsonData+"&jsonStringData="+jsonStringData, 
+	      	        url: sourceleadUrl+"/saveCandidateOffboardCheckList?${_csrf.parameterName}=${_csrf.token}&checkListoffboardId="+checkListoffboardId+"&jsonStringData="+jsonStringData, 
 	      	        success: function(result) {
 	      	        	if((result == 'home')){
 	      	        		
@@ -1744,12 +1672,6 @@ function saveOffboardTask(){
          }; 
 	
 	  if ($('#addoffboardTask_form').validate(false, validationSettings)){ 
-		    var frm = $('#addoffboardTask_form').serializeFormJSON();
-	        var con = JSON.stringify(frm);
-	        con = con.replace(/[{}]/g, "");
-	        
-	        //It will escape all the special characters
-	        var jsonData = encodeURIComponent(con);
 	        
 	        var sourceleadUrl ='${sourceleadUrl}';
 	        
@@ -1760,12 +1682,15 @@ function saveOffboardTask(){
 	    	}
 	    	
 	    	tasks = tasks.substring(0, tasks.length - 1);
-	        
+	    	var formData = getFormData1("addoffboardTask_form");
 	       
 	        $("#offboardtasksLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	        $.ajax({
 		    	type: "POST",
-		    	 url: sourceleadUrl+"/saveCandidateOffBoardTasks?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&tasks="+tasks,
+		    	data: formData,
+		    	 processData: false,
+		         contentType:false, 
+		    	 url: sourceleadUrl+"/saveCandidateOffBoardTasks?${_csrf.parameterName}=${_csrf.token}&tasks="+tasks,
 		        success: function(result) {
 		        	if(result == 'success'){
 		        		$("#offboardtasksLoading").removeAttr("style");

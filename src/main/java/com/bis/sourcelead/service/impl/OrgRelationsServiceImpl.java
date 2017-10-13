@@ -21,6 +21,7 @@ import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 
 @Service
 public class OrgRelationsServiceImpl implements OrgRelationsService {
@@ -108,6 +109,10 @@ public class OrgRelationsServiceImpl implements OrgRelationsService {
 		orgRelations.setCreatedDate(commonUtil.currentDate());
 		orgRelations.setUpdatedDate(commonUtil.currentDate());
 		
+		if (StringUtils.isNotBlank(clientDTO.getPaymentTerm())) {
+			orgRelations.setPaymentTerm(clientDTO.getPaymentTerm());
+		}
+		
 		if(null != responderType  && !responderType.isEmpty()){
 			if("Client".equalsIgnoreCase(responderType)){
 				orgRelations.setInitiatorType("Vendor"); 
@@ -115,16 +120,32 @@ public class OrgRelationsServiceImpl implements OrgRelationsService {
 			}else{
 				orgRelations.setInitiatorType("Client"); 
 				orgRelations.setResponderType("Vendor");
+				orgRelations.setVendorRelationStatus("Draft");
+				orgRelations.setIsVendorDetailsFilled(Constants.YES);
+				orgRelations.setIsVendorDocumentsFilled(Constants.NO);
+				orgRelations.setIsVendorTasksFilled(Constants.NO);
+				
+				 if(clientDTO.getTemplateId() != null && clientDTO.getTemplateId().size() > 0){
+				    	StringBuilder templateIds = new StringBuilder();
+				    	for(String templateId : clientDTO.getTemplateId()){
+				    		templateIds.append(templateId.trim()).append(",");
+				    	}
+				    	String templateIdsStr = templateIds.toString();
+				    	
+				    	orgRelations.setVendorOnboardTemplateId(templateIdsStr.substring(0, templateIdsStr.length()-1)); 
+				    }else{
+				    	orgRelations.setVendorOnboardTemplateId(null);
+				    }
 			}
 		  }
 		if(StringUtils.isNotBlank(clientDTO.getLevel())){
-			//orgRelations.setLevel(jsonObj.getString("level"));
 			orgRelations.setInitiatorLevel(clientDTO.getLevel());
 			orgRelations.setResponderLevel("Tier-5");
 		}else{
 			orgRelations.setInitiatorLevel("Tier-5");
 			orgRelations.setResponderLevel("Tier-5");
 		}
+		orgRelations.setUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 		orgRelationsList.add(orgRelations);
 		return orgRelationsList;
 	}
@@ -505,6 +526,11 @@ public class OrgRelationsServiceImpl implements OrgRelationsService {
 	public OrgRelations getVendorOrgRelationByResponderLocationIdAndLocationId(Long responderLocationId, Long locationId)
 			throws Exception {
 		return orgRelationsDao.getVendorOrgRelationByResponderLocationIdAndLocationId(responderLocationId, locationId);
+	}
+
+	@Override
+	public OrgRelations getOrgRelationsByUUID(String UUID) throws Exception {
+		return orgRelationsDao.getOrgRelationsByUUID(UUID);
 	}
 	
 }

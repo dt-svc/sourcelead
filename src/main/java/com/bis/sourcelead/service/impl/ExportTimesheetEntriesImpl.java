@@ -744,7 +744,7 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
                 table.completeRow();
             }
 	        
-	        document.addTitle("Candiate List Table");
+	        document.addTitle("TimeSheet Approval List");
 	        table.setSpacingBefore(15f);
 	        document.add(table);
 	        logger.info("Pdf table created !!");
@@ -837,7 +837,7 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
 		LinkedHashMap<Date,Date> displayWeeksList= getTotalCountFromStartAndEndDate(startDate, endDate,orgLocations.getDateFormat());
 			Float totalHours = 0f;
 		    Float estimatedTotalHours = 0f;
-			SubmissionApproverHierarchy sah = submissionApproverHierarchyService.getSubmissionApproverHierarchyByProjectMemberIdStartDateAndEndDateForApproverLogin(user.getId(),projMembers.getId(), startDate, endDate);
+			SubmissionApproverHierarchy sah = submissionApproverHierarchyService.getSubmissionApproverHierarchyByMasterCandidateIdStartDateAndEndDateForApproverLogin(user.getId(),projMembers.getProjects().getId(),projMembers.getMasterCandidateId().getId(),orgLocations.getId(), startDate, endDate);
 			if (displayWeeksList != null && !displayWeeksList.isEmpty()) {
 				if (displayWeeksList != null && !displayWeeksList.isEmpty()) {
 					for (Map.Entry<Date, Date> entry : displayWeeksList.entrySet()) {
@@ -985,7 +985,7 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
 		int column = 0;
 		for (ProjectMembers proMembers : projectMembers) {
 			writeRow = createExcelsheet.createRow(column + 5);
-			createExcelsheet = createXlsSheetTimesheetApproval(createExcelsheet, writeRow,proMembers,client,timesheetFrequency,startDate,endDate,user);
+			createExcelsheet = createXlsSheetTimesheetApproval(createExcelsheet, writeRow,proMembers,client,timesheetFrequency,startDate,endDate,user,orgLocations.getId());
 			column++;
 		}
 		// output the file using file output stream.
@@ -1002,7 +1002,7 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
 		return file;
 	}
 	// creating excel sheet data here depending upon input frequency.
-	private Sheet createXlsSheetTimesheetApproval(Sheet createExcelsheet, Row writeRow,ProjectMembers projMembers,String client,String timesheetFrequency,Date startDate,Date endDate,User user) throws Exception {
+	private Sheet createXlsSheetTimesheetApproval(Sheet createExcelsheet, Row writeRow,ProjectMembers projMembers,String client,String timesheetFrequency,Date startDate,Date endDate,User user,Long locationsId) throws Exception {
 		Projects projects = projectsService.getProjectById(projMembers.getProjects().getId());
 		if (projMembers.getEmployee().getUser().getFullName() != null && !"".equalsIgnoreCase(projMembers.getEmployee().getUser().getFullName())) {
 			writeRow.createCell(0).setCellValue(projMembers.getEmployee().getUser().getFullName());
@@ -1029,7 +1029,7 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
 			LinkedHashMap<Date,Date> displayWeeksList= getTotalCountFromStartAndEndDate(startDate, endDate,projects.getOrgLocationsId().getDateFormat());
 				Float totalHours = 0f;
 				Float estimatedTotalHours = 0f;
-				SubmissionApproverHierarchy sah = submissionApproverHierarchyService.getSubmissionApproverHierarchyByProjectMemberIdStartDateAndEndDateForApproverLogin(user.getId(),projMembers.getId(), startDate, endDate);
+				SubmissionApproverHierarchy sah = submissionApproverHierarchyService.getSubmissionApproverHierarchyByMasterCandidateIdStartDateAndEndDateForApproverLogin(user.getId(),projMembers.getProjects().getId(),projMembers.getMasterCandidateId().getId(),locationsId, startDate, endDate);
 				if (displayWeeksList != null && !displayWeeksList.isEmpty()) {
 					if (displayWeeksList != null && !displayWeeksList.isEmpty()) {
 						for (Map.Entry<Date, Date> entry : displayWeeksList.entrySet()) {
