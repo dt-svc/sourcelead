@@ -189,8 +189,14 @@
 							</div>	
 							<div class="col-md-4 mb10">
 								<label>Paid by</label>
-								<input type="text" id="paidBy${entryCount.count}" name="expenseEntry[${entryCount.index}].paidBy" class="form-control" value="${entry.paidBy}"  placeholder="Paid By" field-name="Paid By" data-validation-optional="true" data-validation="validate_length length1-100"> 
+								<select class="chosen-select form-control" id="paidBy${entryCount.count}" name="expenseEntry[${entryCount.index}].paidBy" class="form-control" field-name="Payment Mode" data-validation-optional="true">
+								         <option value="">Select Paid By</option>
+								          <c:forEach var="expEntrypaidBy" items="${expEntry.paidByType}">
+							                   <option  ${entry.paidBy == expEntrypaidBy ? 'selected' : ''} value="${expEntrypaidBy}">${expEntrypaidBy}</option>
+							             </c:forEach>
+								</select>
 							</div>
+							
 		                  <div id="amountDiv${entryCount.count}" class='col-md-4 mb10 valid_ation'>
 			                   <label>Amount<span class='text-danger'>&nbsp;*</span></label>
 								  <div class='input-group positionRelative'>

@@ -26,6 +26,7 @@ public class ExpensesEntriesDTOConverter {
 		BigDecimal amountRoundOff = totalAmo.setScale(2, BigDecimal.ROUND_HALF_EVEN);
 		expensesEntriesDTO.setAmountRoundOff(amountRoundOff);	
 		expensesEntriesDTO.setEntryDescription(expensesEntries.getDescription());
+		expensesEntriesDTO.setPaidBy(expensesEntries.getPaidBy());
 		if(expensesEntries.getExpensesCategoryId() != null){
 			expensesEntriesDTO.setCategoryTypeId(expensesEntries.getExpensesCategoryId().getId());
 			expensesEntriesDTO.setCategoryName(expensesEntries.getExpensesCategoryId().getExpensesName());

@@ -214,8 +214,6 @@ function addAttachment(entityRowId,from){
 			<i class="glyphicon glyphicon-trash Cred" onclick="removeExpenseRow(REPLACEROWID,REPLACEDOWNROWID);"></i>
 		</div>
 </div>
-
-
 <div id="divAddRowTr2" style="display: none; float: left;">
          <div class="expDetails">
 			          <div class="col-xs-12 col-sm-12 col-md-12 expAddRo myForm noPad clearfix">            
@@ -257,14 +255,16 @@ function addAttachment(entityRowId,from){
 								</div>
 	                 </div>
 	                 
+	                 
 	                 <div class="col-md-4 mb10 minHe">
 							<label>Paid by<span class="text-danger">&nbsp;*</span></label>
 							<select id="paidByREPLACEROWID" name="expenseEntry[REPLACENAMEROWID].paidBy" class="form-control" placeholder="Paid By" field-name="Paid By" data-validation="required">
-							         <option value="">Select Mode</option>
-							         <option value="Self">Self</option>
-							         <option value="Company">Company</option>
+							         <option value="">Select paid By</option>
+							         <c:forEach var="paidByType" items="${expEntry.paidByType}">
+									                  <option  value="${paidByType}">${paidByType}</option>
+									 </c:forEach>
 							</select> 
-						</div>
+					</div>
 	                 
 	                 
 					<div class="col-md-4 mb10">
@@ -505,21 +505,21 @@ function addExpenseRow(from){
 			var receiptIssuedBy = $("#receiptIssuedBy"+entityId).val();
 			var paymentMode = $("#paymentMode"+entityId).val();
 			var expenseRateType = $("#expenseRateType"+entityId).val();
-			var paidBy = $("#paidBy"+entityId).val();
 			var expenseAmount = parseFloat($("#expenseAmount"+entityId).val());
 			
 			var expenseRoundOffAmount = expenseAmount.toFixed(2);
 			var descriptions = $("#entryDes"+entityId).val();
+			var paidBy = $("#paidBy"+entityId).val();
+			
 			$("#categoryTypeDiv"+entityId).html(categoryTypeName);
 			$("#categoryDateDiv"+entityId).html(categoryDate);
 			$("#receiptIssuedByDiv"+entityId).html(receiptIssuedBy);
 			$("#paymentModeDiv"+entityId).html(paymentMode);
 			$("#expenseRateTypeDiv"+entityId).html(expenseRateType);
-			$("#paidByDiv"+entityId).html(paidBy);
 			$("#expenseAmountDiv"+entityId).html(expenseRoundOffAmount);
 			$("#entryDesDiv"+entityId).html(descriptions);
 			$("#entryDesDiv"+entityId).prop("title", descriptions);
-			
+			$("#paidByDiv"+entityId).html(paidBy);
 			
 			$("#hideAndShowDetailsButton"+entityId).removeAttr('style');
 			var hideAndShowDetailsHtml =  $("#hideAndShowDetailsButton"+entityId).html();
