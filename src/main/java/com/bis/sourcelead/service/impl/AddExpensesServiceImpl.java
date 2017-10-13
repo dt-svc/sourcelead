@@ -207,7 +207,8 @@ public void storeAddExpensesData(ExpensesDTO addExpensesDTO, User loginUser, Org
 		   }
 		}
 		else{
-			List<ProjectApproverHierarchy> hierarchyList = projectApproverHierarchyService.getApproverUsersByProjectId(projMembers.getProjects().getId());
+			/*List<ProjectApproverHierarchy> hierarchyList = projectApproverHierarchyService.getApproverUsersByProjectId(projMembers.getProjects().getId());*/
+			List<ProjectApproverHierarchy> hierarchyList = projectApproverHierarchyService.getActiveOrgApproverUsersByProjectMemberMasterCandidateIdAndProjectId(projMembers.getMasterCandidateId().getId(),projMembers.getProjects().getId());
 			 if(hierarchyList != null && !hierarchyList.isEmpty()){
 		        	
 						for(ProjectApproverHierarchy hierarchy : hierarchyList){
