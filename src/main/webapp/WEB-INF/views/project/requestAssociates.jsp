@@ -306,8 +306,7 @@ var orgLocationId = '${SourceLeadWeb_orgLocations.id}';
 	$.ajax({
 	    	type: "GET",
 	    	 url: sourceleadUrl+"/getResourceRequestApproversList?${_csrf.parameterName}=${_csrf.token}&orgLocationId="+orgLocationId,
-	    		success: function(data) {
-	        	var json = JSON.parse(data);
+	    		success: function(json) {
 	     		var output = "";
 	     			output = output + "<option value=''>--Select Approver--</option>";
 	     		for (var i=0; i<json.length; i++)

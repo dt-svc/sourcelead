@@ -145,7 +145,7 @@ left: 115px !important;
     <div class="proj_close"></div>
 </div> 
 <div id="associatesList"></div>
- 
+ <input type="hidden" id="employeeEmptyListId" name="employeeEmptyListId">
  
  <script>
  /* function filterStatus() {
@@ -372,10 +372,12 @@ result = result + '<div class="project_tabs mb">';
 	            result = result + '	 </tr>';
 	            result = result + '	</thead>';
 	            result = result + '	<tbody>';
-	        	for (var i=0; i<json.projectMembersList.length; i++)
+	        	for (var i=0; i<json.length; i++)
 				{      
-		        		var opt = json.projectMembersList[i];
+		        		var opt = json[i];
 		        		var role = '';
+		        		alert("opt.userRoleType"+opt.userRoleType);
+		        		
 						if (opt.userRoleType != null && opt.userRoleType != '' && opt.userRoleType != 'undefined') {
 							role = opt.userRoleType;
 						} else {
@@ -475,14 +477,15 @@ result = result + '<div class="project_tabs mb">';
 	    		result = result + '	     </div>';
 	    		$("#employeeDetailsDiv").empty();  
 	    		$("#employeeDetailsDiv").append(result);  
+	    		$("#employeeEmptyListId").val(json.length);  
 	    		 //pagination function
 	    	    projectEmployeePagination();
 	    		
-	    	    if(json.projectMembersList.length > 0)
+	    	    if(json.length > 0)
 		   		{
-	    			for (var i=0; i<json.projectMembersList.length; i++)
+	    			for (var i=0; i<json.length; i++)
 	    			{      
-	    	             var jsonData = json.projectMembersList[i];
+	    	             var jsonData = json[i];
 						 if(jsonData.status != null && jsonData.status != '' && jsonData.status !='undefined' && jsonData.status == 0)
 							   continue;
 						 //Assign date of project member
@@ -999,35 +1002,72 @@ this script is for Add Employee functionality at Projects screen
 <script>
 function exportToPdf(projectId){
 	var sourceleadUrl ='${sourceleadUrl}';
-	
-	 var values = [];
-	 var chekbox = $('input:checkbox[name=employeeStatus]:checked').val();
-	 if(chekbox != 'undefined' && chekbox != '' && chekbox != null){
-			$('input:checkbox[name=employeeStatus]:checked').each(function() 
-				    {
-						values.push($(this).val());
-				    });
-	 }else{
-		 values = "Active";
-	 }
-	window.location.href = sourceleadUrl+"/exportProjectEmployeeList?&projectId="+projectId+"&status="+values+"&exportType=pdf";
+	var employeeEmptyCount = $("#employeeEmptyListId").val();
+	if(employeeEmptyCount > 0 ){
+		var values = [];
+		 var chekbox = $('input:checkbox[name=employeeStatus]:checked').val();
+		 if(chekbox != 'undefined' && chekbox != '' && chekbox != null){
+				$('input:checkbox[name=employeeStatus]:checked').each(function() 
+					    {
+							values.push($(this).val());
+					    });
+		 }else{
+			 values = "Active";
+		 } 
+		 
+	   window.location.href = sourceleadUrl+"/exportProjectEmployeeList?&projectId="+projectId+"&status="+values+"&exportType=pdf";
+	}else{
+		var result = "";
+		result = result +"	<div class='project_inn_mask'></div>";
+		result = result +"	   <div id='client_user_pop' class='remove_user_pop remove_user_pop_a'>";
+		result = result +"		<p>Employee List is Empty</p>";
+		result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+		result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='empCancelTermination();'><input class='u_can_color' type='button'  value='Cancel' onClick='empCancelTermination();'></b>";
+		result = result +"	</div>";
+		$("#popUp").append(result);
+		$("#client_user_pop").slideDown(200);
+		$(".project_inn_mask").fadeIn(200);
+	}
+	 
 }
 </script>
-
+<script type="text/javascript">
+function empCancelTermination(){
+	$("#popUp").empty();
+	$(".project_inn_mask").fadeOut(200);
+	$("#exportPop").toggle();
+	$(".export_pipline").slideUp();
+}
+</script>
 <script>
 function exportToExcel(projectId){
 	var sourceleadUrl ='${sourceleadUrl}';
-	var values = [];
-	 var chekbox = $('input:checkbox[name=employeeStatus]:checked').val();
-	 if(chekbox != 'undefined' && chekbox != '' && chekbox != null){
-			$('input:checkbox[name=employeeStatus]:checked').each(function() 
-				    {
-						values.push($(this).val());
-				    });
-	 }else{
-		 values = "Active";
-	 }
-	window.location.href = sourceleadUrl+"/exportProjectEmployeeList?&projectId="+projectId+"&status="+values+"&exportType=xls";
+	var employeeEmptyCount = $("#employeeEmptyListId").val();
+	if(employeeEmptyCount > 0 ){
+		var values = [];
+		 var chekbox = $('input:checkbox[name=employeeStatus]:checked').val();
+		 if(chekbox != 'undefined' && chekbox != '' && chekbox != null){
+				$('input:checkbox[name=employeeStatus]:checked').each(function() 
+					    {
+							values.push($(this).val());
+					    });
+		 }else{
+			 values = "Active";
+		 }
+		window.location.href = sourceleadUrl+"/exportProjectEmployeeList?&projectId="+projectId+"&status="+values+"&exportType=xls";
+	}else{
+		var result = "";
+		result = result +"	<div class='project_inn_mask'></div>";
+		result = result +"	   <div id='client_user_pop' class='remove_user_pop remove_user_pop_a'>";
+		result = result +"		<p>Employee List is Empty</p>";
+		result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+		result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='empCancelTermination();'><input class='u_can_color' type='button'  value='Cancel' onClick='empCancelTermination();'></b>";
+		result = result +"	</div>";
+		$("#popUp").append(result);
+		$("#client_user_pop").slideDown(200);
+		$(".project_inn_mask").fadeIn(200);
+	}
+	
 }
 </script>
 
@@ -2209,13 +2249,13 @@ var orgLocationId = '${SourceLeadWeb_orgLocations.id}';
 	$.ajax({
 	    	type: "GET",
 	    	 url: sourceleadUrl+"/getResourceRequestApproversList?${_csrf.parameterName}=${_csrf.token}&orgLocationId="+orgLocationId,
-	    		success: function(data) {
-	        	var json = JSON.parse(data);
-	     		var output = "";
-	     			output = output + "<option value=''>--Select Approver--</option>";
+	    		success: function(json) {
+    			var output = "";
+     			output = output + "<option value=''>--Select Approver--</option>";
 	     		for (var i=0; i<json.length; i++)
 	     		{
 		     		var opt = json[i];
+		     		
 		     		var fullname = '';
 		     		if(opt.lastName != null && opt.lastName != '' && opt.lastName != 'undefined'){
 		     			fullname = opt.firstName+" "+opt.lastName;
@@ -2224,9 +2264,9 @@ var orgLocationId = '${SourceLeadWeb_orgLocations.id}';
 		     		}
 		     		 
 		     		 if(opt.id == approverUserId){
-		        			output = output + "<option value='"+opt.id+"' selected>"+opt.fullname+" ("+opt.userType+")</option>";
+		        			output = output + "<option value='"+opt.id+"' selected>"+fullname+" ("+opt.userType+")</option>";
 		        		}else{
-		        			output = output + "<option value='"+opt.id+"'> "+opt.fullname+" ("+opt.userType+")</option>";
+		        			output = output + "<option value='"+opt.id+"'> "+fullname+" ("+opt.userType+")</option>";
 		        		}
 		     		 
 	     		}

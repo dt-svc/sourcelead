@@ -122,7 +122,7 @@ function approvedEmployeesPagination(url){
         "searching": false,
         "ajax": $.fn.dataTable.pipeline( {
             url: url,
-            method: 'GET',
+            method: 'POST',
             pages: 10
         }),
         "columns": [

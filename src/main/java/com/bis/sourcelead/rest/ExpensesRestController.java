@@ -286,6 +286,10 @@ public class ExpensesRestController {
 		currencyCodeList.add(CurrencyCodes.SGD.getValue());
 		currencyCodeList.add(CurrencyCodes.EUR.getValue());
 		expenseEntryDetailsDTO.setCurrencyCodeList(currencyCodeList);
+		List<String> paidBy = new LinkedList<>();
+		paidBy.add("Self");
+		paidBy.add("Comapny");
+		expenseEntryDetailsDTO.setPaidByType(paidBy);
 		return expenseEntryDetailsDTO;
 	}
 	

@@ -200,7 +200,7 @@ function errRemoveVendorContact(){
 <div id="divTaskTd5" style="display: none; float: left;">
 	<div class="tbldata-dotdot_80">
 		<input type="text"
-			class="form-control input-sm allownumericwithdecimal"
+			class="form-control input-sm"
 			placeholder="Rate" id="REPLACEROWIDrate" name="lineItems[REPLACEROWID].rate"
 			onblur="totalHoursCalculateAmount(REPLACEROWID);" data-validation="required" field-name="Rate">
 	</div>
@@ -324,13 +324,13 @@ function errRemoveVendorContact(){
          result = result +'  <div class="col-md-7 select-field">';
          result = result +'  <div class="row">';
          result = result +'  <div class="col-md-7 paddingRight">';
-         result = result +'  <select class="form-control input-sm" id="disCount" name="disCount" onchange="calculateDiscount();">';
+         result = result +'  <select class="form-control input-sm" id="disCount" name="disCount" onchange="calculateDiscount();validateDiscount();"">';
          result = result +'  <option value="percentage">Discount %</option>';
          result = result +'  <option value="flat">Discount Value</option>';
          result = result +'  </select>';
          result = result +'  </div>';
-         result = result +'  <div class="col-md-5 paddingLeft">';
-         result = result +'  <input type="text" class="form-control input-sm allownumericwithdecimal" id="discountValue" disabled="disabled" name="discountValue" placeholder="Enter value" onblur="calculateDiscount();">';
+         result = result +'  <div class="col-md-5 paddingLeft" id="discountValueDiv">';
+         result = result +'  <input type="text" class="form-control input-sm" id="discountValue" disabled="disabled" name="discountValue" placeholder="Enter value" onblur="calculateDiscount();" onkeyup="validateDiscount();">';
          result = result +'  </div>';
          result = result +'  </div>';
          result = result +'  </div>';
@@ -922,8 +922,8 @@ function cancel(){
 	  var maxTsRowNum = parseInt($("input[name = 'maxTsRowNum']").val());
 	  
 	  var selectedAssociates = '';
-	  if(maxTsRowNum > 1){
-		  for(var i=1; i<maxTsRowNum; i++){
+	  if(maxTsRowNum > 0){
+		  for(var i=0; i<maxTsRowNum; i++){
 			  if(document.getElementById(i+"candidateId")){
 				  var associateId = document.getElementById(i+"candidateId").value;
 				  if(selectedAssociates == ''){
@@ -1502,7 +1502,7 @@ function calculateDiscount(){
 
 <div id="divTaxTd2" style="display: none; float: left;">
 	<div class="btn-group tblminwidth-75">
-		<select class="form-control input-sm" id="REPLACEROWIDtaxdiscountType" name="invoiceTax[REPLACEROWID].taxdiscountType" onchange="calculateTaxDiscount(REPLACEROWID);">
+		<select class="form-control input-sm" id="REPLACEROWIDtaxdiscountType" name="invoiceTax[REPLACEROWID].taxdiscountType" onchange="calculateTaxDiscount(REPLACEROWID);validateRowDiscount(REPLACEROWID);">
 			<option value="percentage">Percentage</option>
 			<option value="flat">Flat</option>
 		</select>
@@ -1510,12 +1510,12 @@ function calculateDiscount(){
 </div>
 
 <div id="divTaxTd3" style="display: none; float: left;">
-	<div class="tblminwidth-75">
+	<div class="tblminwidth-75" id="REPLACEROWIDdiscountRowDiv">
 		<input type="text"
-			class="form-control input-sm allownumericwithdecimal" value=""
+			class="form-control input-sm" value=""
 			placeholder="Flat / Discount" name='invoiceTax[REPLACEROWID].taxdiscountvalue'
 			id='REPLACEROWIDtaxdiscountvalue'
-			onblur="calculateTaxDiscount(REPLACEROWID);">
+			onblur="calculateTaxDiscount(REPLACEROWID);" onkeyup="validateRowDiscount(REPLACEROWID);">
 	</div>
 </div>
 
@@ -2088,14 +2088,70 @@ function validationHours(rowId){
 
 <script type="text/javascript">
  function attachFile(id){
-<<<<<<< HEAD
-	var sourceleadUrl ='${sourceleadUrl}';
-	fileUpload(sourceleadUrl, ""+id+"invoicedocFile", "invoiceDocuments", "invoice_form","fileInfo");
-}
-=======
 	fileUpload(""+id+"invoicedocFile", "invoiceDocuments", "invoice_form","fileInfo");
 }
->>>>>>> 3a3a5cb3d81a007344c7a51396b2b9ee3fb2d860
+</script>
+
+<script>
+function validateDiscount() {
+	$('#discountValueDiv').parent().find('p.jquery_form_error_message').remove(); 
+	 var selectedTextInvoice = document.getElementById("disCount").value;
+	 var enteredValue = document.getElementById("discountValue").value;
+	 
+	 if(selectedTextInvoice =='percentage'){
+		  var floatNum = /^(\d{0,2}(\.\d{0,2})?|100)$/
+		  if(enteredValue.match(floatNum)){
+			  $("#saveButtonId").removeAttr("disabled", "disabled");
+				$("#sendButtonId").removeAttr("disabled", "disabled");
+			   return true;
+		  }		  
+		 else{
+				$("#discountValueDiv").after("<p class='jquery_form_error_message'><span>Enter Valid Percentage</span>");
+				$("#saveButtonId").attr("disabled", "disabled");
+				$("#sendButtonId").attr("disabled", "disabled");
+				return false; 
+		 	 }
+	  }if(selectedTextInvoice =='flat'){
+			  $("#saveButtonId").removeAttr("disabled", "disabled");
+			  $("#sendButtonId").removeAttr("disabled", "disabled");
+		  }		  
+}
+</script>
+
+<script>
+function validateRowDiscount(maxRowNum) {
+$('#'+maxRowNum+'discountRowDiv').parent().find('p.jquery_form_error_message').remove();
+var selectedTextInvoice = $("#"+maxRowNum+"taxdiscountType").val();
+var enteredValue = $("#"+maxRowNum+"taxdiscountvalue").val();
+
+if(selectedTextInvoice =='percentage'){
+	  var floatNum = /^(\d{0,2}(\.\d{0,2})?|100)$/
+	  if(enteredValue.match(floatNum)){
+		  $("#saveButtonId").removeAttr("disabled", "disabled");
+			$("#sendButtonId").removeAttr("disabled", "disabled");
+		   return true;
+	  }		  
+	 else{
+			$("#"+maxRowNum+"discountRowDiv").after("<p class='jquery_form_error_message'><span>Enter Valid Percentage</span>");
+			$("#saveButtonId").attr("disabled", "disabled");
+			$("#sendButtonId").attr("disabled", "disabled");
+			return false; 
+	 	 }
+}if(selectedTextInvoice =='flat'){
+	/* var floatNum = /^[0-9]*$/
+		if(enteredValue.match(floatNum)){
+			  $("#saveButtonId").attr("disabled", "disabled");
+				$("#sendButtonId").attr("disabled", "disabled");
+			   return false;
+		  }
+		else{ */
+			$("#saveButtonId").removeAttr("disabled", "disabled");
+			  $("#sendButtonId").removeAttr("disabled", "disabled");
+// 		}
+	  }		
+	  
+ 
+}
 </script>
 
 <jsp:include page="../masterFooter.jsp" />

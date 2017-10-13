@@ -97,13 +97,12 @@
 
 <script>
 function cancelShift(){
-	var sourceleadUrl = '${sourceleadUrl}';
 	location.replace(sourceleadUrl+"/viewShift");
 }
 
 </script>
-<script src="resources/js/jquery.timepicker.min.js"></script>
-<script src="resources/js/bootstrap-datetimepicker.min.js"></script>
+<script src="resources/js/jquery.timepicker.min.js?staticTime=${staticTime}"></script>
+<script src="resources/js/bootstrap-datetimepicker.min.js?staticTime=${staticTime}"></script>
 <script type="text/javascript">
             $(function () {
                 $('#datetimepicker3,#datetimepicker2').datetimepicker({

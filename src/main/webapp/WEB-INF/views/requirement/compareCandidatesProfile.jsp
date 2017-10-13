@@ -371,7 +371,9 @@ function prepareCandidateGrid(data,requirementId){
 	    	    	if(report.currentResumeUUID != null && report.currentResumeUUID != '' && report.currentResumeUUID != 'undefined'){
 	    	    		opt = opt +'<button type="button" onClick="viewFile(\''+report.fileUrl+'\',\''+report.currentResumeName+'\',\''+report.fileContentType+'\');" class="btn btn-sm btn-primary">View Resume</button>';
 	    	    	}
-	    	    	opt = opt +'<button type="button" onClick="submitRecomendedApplicant('+requirementId+','+report.candidateId+',\'compare\');" class="btn btn-sm btn-success">Add</button>';
+	    	    	if(report.isCandidateSubmitted == 'N'){
+	    	    		opt = opt +'<button type="button" onClick="submitRecomendedApplicant('+requirementId+','+report.candidateId+',\'compare\');" class="btn btn-sm btn-success">Add</button>';
+	    	    	}
 	    	    	opt = opt +'</div>';
 		    	    opt = opt +'</div>';
 		    	    if(count==1){
@@ -599,7 +601,9 @@ function candidateDiv(report,div,requirementId){
 	   if(report.resumeUUID != null && report.resumeUUID != '' && report.resumeUUID != 'undefined'){
 		   opt = opt +'<button type="button" onClick="viewFile(\''+report.fileUrl+'\',\''+report.candidateResumeName+'\',\''+report.fileContentType+'\');" class="btn btn-sm btn-primary">View Resume</button>';   
 	   }
-	   opt = opt +'<button type="button" onClick="submitRecomendedApplicant('+requirementId+','+report.id+',\'compare\');" class="btn btn-sm btn-success">Add</button>';
+	   if(report.isCandidateSubmitted == 'N'){
+		   opt = opt +'<button type="button" onClick="submitRecomendedApplicant('+requirementId+','+report.id+',\'compare\');" class="btn btn-sm btn-success">Add</button>';
+	   }
 	   opt = opt +'</div>';
 	   opt = opt +'</div>';
 	   opt = opt +'<!-- profile_personalInfo -->';
