@@ -37,8 +37,19 @@ function fileUpload(id, type, formId, name, orgId, orgLocationId,url) {
 		orgLocationId = 0;
 	var data = new FormData();
 	var files = document.getElementById(id).files;
+	var count = 0;
 	for(var e in files) {
+		if(!$.isNumeric(e))
+			continue;
+		if(files[e].name.toLowerCase().endsWith(".zip") || files[e].name.toLowerCase().endsWith(".rar"))
+			continue;
 		data.append('file', files[e]);
+		count ++;
+	}
+	if(count === 0) {
+		$(".file_mask").hide();
+		alert("Please select valid file (zip files and rar files are not allowed)");
+		return;
 	}
 	data.append('orgId', orgId);
 	data.append('orgLocationId', orgLocationId);

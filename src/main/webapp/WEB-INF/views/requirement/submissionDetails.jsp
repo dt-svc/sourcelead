@@ -1505,18 +1505,6 @@ function notifyToVendor(submissionId,offerId,offerHistoryId){
 		//attachmentValidationFun();
 		 
 		/* upload file script for size validation 2MB*/
-	    var selectedFile = document.getElementById("docFile");
-	    selectedFile.addEventListener("change", function() {
-	      var docSize = this.files[0].size;
-	      $("#uploadFileGroup").find('p.jquery_form_error_message').remove();
-	      $("#request_candidate").attr("disabled", false);
-	      if(docSize > 2097152){
-	    	  document.getElementById("subUploadFile").value = '';
-	    	  $("#uploadFileGroup").append("<p class='jquery_form_error_message'>Limit is exceeded than 2MB </p>");
-	    	  $("#request_candidate").attr("disabled", true);
-	      }
-	    });
-	    
 	    
 	    document.getElementById("docFile").onchange = function () {
 			   //$("#uploadFile").dir(this.files[0]);
