@@ -2209,13 +2209,13 @@ var orgLocationId = '${SourceLeadWeb_orgLocations.id}';
 	$.ajax({
 	    	type: "GET",
 	    	 url: sourceleadUrl+"/getResourceRequestApproversList?${_csrf.parameterName}=${_csrf.token}&orgLocationId="+orgLocationId,
-	    		success: function(data) {
-	        	var json = JSON.parse(data);
-	     		var output = "";
-	     			output = output + "<option value=''>--Select Approver--</option>";
+	    		success: function(json) {
+    			var output = "";
+     			output = output + "<option value=''>--Select Approver--</option>";
 	     		for (var i=0; i<json.length; i++)
 	     		{
 		     		var opt = json[i];
+		     		
 		     		var fullname = '';
 		     		if(opt.lastName != null && opt.lastName != '' && opt.lastName != 'undefined'){
 		     			fullname = opt.firstName+" "+opt.lastName;
@@ -2224,9 +2224,9 @@ var orgLocationId = '${SourceLeadWeb_orgLocations.id}';
 		     		}
 		     		 
 		     		 if(opt.id == approverUserId){
-		        			output = output + "<option value='"+opt.id+"' selected>"+opt.fullname+" ("+opt.userType+")</option>";
+		        			output = output + "<option value='"+opt.id+"' selected>"+fullname+" ("+opt.userType+")</option>";
 		        		}else{
-		        			output = output + "<option value='"+opt.id+"'> "+opt.fullname+" ("+opt.userType+")</option>";
+		        			output = output + "<option value='"+opt.id+"'> "+fullname+" ("+opt.userType+")</option>";
 		        		}
 		     		 
 	     		}
