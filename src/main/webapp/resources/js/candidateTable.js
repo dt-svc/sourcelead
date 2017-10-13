@@ -3,8 +3,8 @@ function candidateListCheck(searchValue,universalCanddateSearchList,candidateKey
 		$("#dataTableSearch").val(searchValue);
 		candidateList();
 	} else if(candidateKeyword == "candidateSearch"){
-		/*candidateSideBar(candidateIdSearchId);
-		candidateQuickViewProfile(candidateIdSearchId);*/
+		candidateSideBar(candidateIdSearchId);
+		candidateQuickViewProfile(candidateIdSearchId);
 		candidateList();
 		$("#upcandidateStatus").val('');
 	} else {

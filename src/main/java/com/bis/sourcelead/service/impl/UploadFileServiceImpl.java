@@ -25,11 +25,16 @@ import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.poi.hssf.usermodel.DVConstraint;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFDataValidation;
+import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.hssf.util.CellRangeAddressList;
+import org.apache.poi.ss.util.CellRangeAddressList;
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.CreationHelper;
 import org.apache.poi.ss.usermodel.DataValidation;
 import org.apache.poi.ss.usermodel.DateUtil;
+import org.apache.poi.ss.usermodel.Name;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -62,6 +67,7 @@ import com.bis.sourcelead.enums.Status;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.MasterCandidateService;
+import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.UploadFileService;
 import com.bis.sourcelead.service.UserRoleService;
@@ -103,6 +109,9 @@ public class UploadFileServiceImpl implements UploadFileService {
 	
 	@Autowired
 	CommonUtil commonUtil;
+	
+	@Autowired
+	OrgLocationService orgLocationService;
 	
 	protected boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
@@ -298,7 +307,7 @@ public class UploadFileServiceImpl implements UploadFileService {
 					UsersImport userImport = new UsersImport();
 					Row row = rowIterator.next();
 					if (row.getRowNum() > 0) {
-						isValidated = validateExeclData(row,userImport,fileName);
+						isValidated = validateExeclData(row,userImport,fileName,orgLocations);
 					}
 					if (isValidated) {
 						if (row.getRowNum() > 0) { // Excluding column names
@@ -691,12 +700,13 @@ private String getCellValueAsString(Cell cell, String fileName) {
 		}
 		if (row.getCell(7) != null && !"".equalsIgnoreCase(row.getCell(7).toString())) {
 			
-			boolean isValidate = isCellValueDate(row.getCell(7), fileName);
+			boolean isValidate = isCellValueDate(row.getCell(7), fileName,orgLocations);
 			if(isValidate){
 				 Date date = getCellDate(row.getCell(7), fileName);
-				 DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyy");
-	             String strDate = dateFormat.format(date);
-				 writeRow.createCell(7).setCellValue(strDate);
+				 String userDate = commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), date);
+				 /*DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyy");
+	             String strDate = dateFormat.format(date);*/
+				 writeRow.createCell(7).setCellValue(userDate);
 			}else{
 				 writeRow.createCell(7).setCellValue(row.getCell(7).toString());
 			}
@@ -749,9 +759,10 @@ private String getCellValueAsString(Cell cell, String fileName) {
  * @param row
  * @param userImport 
  * @param fileName 
+	 * @param orgLocations 
  * @return
  */
-	private boolean validateExeclData(Row row, UsersImport userImport, String fileName) {
+	private boolean validateExeclData(Row row, UsersImport userImport, String fileName, OrgLocations orgLocations) {
 
 		boolean isValidated; 
 		if (row.getRowNum() > 0) { // Excluding column names
@@ -808,7 +819,7 @@ private String getCellValueAsString(Cell cell, String fileName) {
 				}
 			}
 			if (row.getCell(7) != null && !"".equalsIgnoreCase(row.getCell(7).toString())) {
-				isValidated = isCellValueDate(row.getCell(7),fileName);
+				isValidated = isCellValueDate(row.getCell(7),fileName,orgLocations);
 				if(isValidated == false){
 					userImport.setReason("Invalid Date");
 					return isValidated;
@@ -818,7 +829,7 @@ private String getCellValueAsString(Cell cell, String fileName) {
 				userImport.setReason("Required fields is not filled");
 				return false;
 			}
-				if (row.getCell(9) != null && !"".equalsIgnoreCase(row.getCell(9).toString())) {
+				/*if (row.getCell(9) != null && !"".equalsIgnoreCase(row.getCell(9).toString())) {
 					String dayHours = getCellValueAsString(row.getCell(9), fileName);
 					if (dayHours != null && !"".endsWith(dayHours)) {
 						isValidated = isDayHourValid(dayHours);
@@ -827,14 +838,15 @@ private String getCellValueAsString(Cell cell, String fileName) {
 							return isValidated;
 						}
 					}
-				}
+				}*/
 		}
 		return true;
 	}
 
-	private boolean isCellValueDate(Cell cell, String fileName) {
+	private boolean isCellValueDate(Cell cell, String fileName, OrgLocations orgLocations) {
 	
 		boolean isCellValueDate = false;
+		  
 		   if(fileName.toLowerCase().endsWith("xls")){
 			   HSSFCell hssfCell = (HSSFCell) cell;
 				if (hssfCell.getCellType() == HSSFCell.CELL_TYPE_NUMERIC && DateUtil.isCellDateFormatted((Cell) hssfCell)) {
@@ -935,12 +947,15 @@ private String getCellValueAsString(Cell cell, String fileName) {
 	
 	/**
 	 * Prepares Headers for xls template
+	 * @param orglocation 
 	 * @param createExcelsheet
 	 * @return
 	 */
-	private Sheet setTemplateHeaders(Sheet sheet) {
+	private Sheet setTemplateHeaders(Sheet sheet, OrgLocations orglocation) {
 		
 		Row excelHeader = sheet.createRow(0);
+		StringBuilder format = new StringBuilder();
+		String dateFormate = format.append("( ").append(orglocation.getDateFormat()).append(" )").toString();
 		excelHeader.createCell(0).setCellValue(Constants.EMPLOYEE_ID);
 		excelHeader.createCell(1).setCellValue(Constants.FIRST_NAME);
 		excelHeader.createCell(2).setCellValue(Constants.LAST_NAME);
@@ -948,7 +963,7 @@ private String getCellValueAsString(Cell cell, String fileName) {
 		excelHeader.createCell(4).setCellValue(Constants.PHONE_NUMBER);
 		excelHeader.createCell(5).setCellValue(Constants.RATE);
 		excelHeader.createCell(6).setCellValue(Constants.RATEPER);
-		excelHeader.createCell(7).setCellValue(Constants.DATEOFJOIN);
+		excelHeader.createCell(7).setCellValue(Constants.DATEOFJOIN+dateFormate);
 		excelHeader.createCell(8).setCellValue(Constants.ROLE);
 		excelHeader.createCell(9).setCellValue(Constants.DAY_HOURS);
 		return sheet;
@@ -1176,13 +1191,69 @@ private String getCellValueAsString(Cell cell, String fileName) {
 
 	@Override
 	public File getUserTemplate(Org org, Long orgLocationId, Long roleHierarchyId) throws FileNotFoundException {
+		OrgLocations orglocation = null;
+		try {
+			orglocation = orgLocationService.getOrgLocations(orgLocationId);
+		} catch (Exception e1) {
+			e1.printStackTrace();
+		}
 		Workbook wb = (Workbook) new HSSFWorkbook();
 		Sheet sheet = wb.createSheet("createuser");
-		sheet = setTemplateHeaders(sheet);
+		sheet = setTemplateHeaders(sheet,orglocation);
 		sheet.addValidationData(getDropDownListForCell(Constants.RATEPER_LIST,6,"xls"));
-		String[] rolesList = getRolesList(org,orgLocationId,roleHierarchyId);
-	    sheet.addValidationData(getDropDownListForCell(rolesList,8,"xls"));
-		//sheet.addValidationData(getDropDownListForCell(Constants.INVOICE_FREQUENCY_LIST,9,"xls"));
+		
+		CreationHelper creationHelper = wb.getCreationHelper();
+		
+//		Row dateRow = sheet.createRow(1);
+		 
+		// Create Cell and set value as new Date()
+//		Cell dateCell = dateRow.createCell((short) 7);
+//		dateCell.setCellValue(new Date());
+		CellStyle style1 = wb.createCellStyle();
+		String dtaeForm = orglocation.getDateFormat();
+		style1.setDataFormat(creationHelper.createDataFormat().getFormat(dtaeForm));
+//		dateCell.setCellStyle(style1);
+		sheet.setDefaultColumnStyle(7, style1);
+		
+		
+		
+		
+//		sheet.addValidationData(Constants.RATEPER_LIST,7,"xls");
+		//Roles list 
+		String[] rolesList = getRolesList(org,orgLocationId,roleHierarchyId); 
+		HSSFSheet rolehidden = (HSSFSheet) wb.createSheet("rolehidden");
+		HSSFRow roleRow = rolehidden.createRow(0);
+		for (int i = 0, length= rolesList.length; i < length; i++) {
+		   String name = rolesList[i];
+		   HSSFCell cell = roleRow.createCell(i);
+		   cell.setCellValue(name);
+		 }
+		 Name namedRoleCel = wb.createName();
+		 namedRoleCel.setNameName("rolehidden");
+		 namedRoleCel.setRefersToFormula("rolehidden!$A$1:$DZ$1" + rolesList.length);
+		 DVConstraint rolConstraint = DVConstraint.createFormulaListConstraint("rolehidden");
+		 CellRangeAddressList roleAddressList = new CellRangeAddressList(1, 1000, 8, 8);
+		 HSSFDataValidation roleValidation = new HSSFDataValidation(roleAddressList, rolConstraint);
+		 wb.setSheetHidden(1, true);
+		 sheet.addValidationData(roleValidation);
+		 
+	    //Day hours list
+	    HSSFSheet hidden = (HSSFSheet) wb.createSheet("hidden");
+	    HSSFRow row = hidden.createRow(0);
+		for (int i = 0, length= Constants.DAY_HOURS_LIST.length; i < length; i++) {
+		   String name = Constants.DAY_HOURS_LIST[i];
+		   HSSFCell cell = row.createCell(i);
+		   cell.setCellValue(name);
+		 }
+		 Name namedCell = wb.createName();
+		 namedCell.setNameName("hidden");
+		 namedCell.setRefersToFormula("hidden!$A$1:$AU$1" + Constants.DAY_HOURS_LIST.length);
+		 DVConstraint constraint = DVConstraint.createFormulaListConstraint("hidden");
+		 CellRangeAddressList addressList = new CellRangeAddressList(1, 1000, 9, 9);
+		 HSSFDataValidation validation = new HSSFDataValidation(addressList, constraint);
+		 wb.setSheetHidden(2, true);
+		 sheet.addValidationData(validation);
+		 
 		File file = new File("createuser.xls");
 		FileOutputStream fos = new FileOutputStream(file);
 		try {

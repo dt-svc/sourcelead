@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Set;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -720,18 +721,35 @@ public class PdfUtil {
 	private String[] prepareClientsArray(OrgRelations orgRelations, String[] headers) {
 		
 		String clientArray[] = new String[headers.length];
-		if (orgRelations.getOrgName() != null && !"".equalsIgnoreCase(orgRelations.getOrgName())) {
+		if (StringUtils.isNotEmpty(orgRelations.getOrgName())) {
 			clientArray[0] = orgRelations.getOrgName();
 		}else{
 			clientArray[0] = "--";
 		}
-		if (orgRelations.getWebSite() != null && !"".equalsIgnoreCase(orgRelations.getWebSite())) {
+		if (StringUtils.isNotEmpty(orgRelations.getWebSite())) {
 			StringBuilder sb = new StringBuilder();
 			clientArray[1] = sb.append("www.").append(orgRelations.getWebSite()).toString();
 		}else{
 			clientArray[1] = "--";
 		}
-		if (orgRelations.getCountry() != null && !"".equalsIgnoreCase(orgRelations.getCountry())) {
+		StringBuilder sb = new StringBuilder();
+		if ((StringUtils.isNotEmpty(orgRelations.getCity())) && (StringUtils.isNotEmpty(orgRelations.getState())) && (StringUtils.isNotEmpty(orgRelations.getCountry()))){
+			sb.append(orgRelations.getCity()).append(",").append(orgRelations.getState()).append(",").append(orgRelations.getCountry());
+			clientArray[2] = sb.toString();
+		}else if ((StringUtils.isNotEmpty(orgRelations.getCity())) && (StringUtils.isNotEmpty(orgRelations.getState()))){
+			sb.append(orgRelations.getCity()).append(",").append(orgRelations.getState());
+			clientArray[2] = sb.toString();
+		}else if((StringUtils.isNotEmpty(orgRelations.getState())) && (StringUtils.isNotEmpty(orgRelations.getCountry()))){
+			sb.append(orgRelations.getState()).append(",").append(orgRelations.getCountry());
+			clientArray[2] = sb.toString();
+		}else if ((StringUtils.isNotEmpty(orgRelations.getCity())) && (StringUtils.isNotEmpty(orgRelations.getCountry()))){
+			sb.append(orgRelations.getCity()).append(",").append(orgRelations.getCountry());
+			clientArray[2] = sb.toString();
+		}else if(StringUtils.isNotEmpty(orgRelations.getCity())){
+			clientArray[2] = orgRelations.getCity();
+		}else if(StringUtils.isNotEmpty(orgRelations.getState())){
+			clientArray[2] = orgRelations.getState();
+		}else if(StringUtils.isNotEmpty(orgRelations.getCountry())){
 			clientArray[2] = orgRelations.getCountry();
 		}else{
 			clientArray[2] = "--";
