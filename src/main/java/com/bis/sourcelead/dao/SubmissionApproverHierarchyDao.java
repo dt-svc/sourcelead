@@ -18,7 +18,7 @@ public interface SubmissionApproverHierarchyDao {
 	public SubmissionApproverHierarchy getSubmissionApproverHierarchy(String id)throws Exception;
    
 	public Boolean deleteSubmissionApproverHierarchy(String id)throws Exception;
-    
+
 	public List<SubmissionApproverHierarchy> getAllSubmissionApproverHierarchies()throws Exception; 
 	
 	public SubmissionApproverHierarchy getSubmissionApproverHierarchyForEmployee(Long submissionId);
@@ -48,9 +48,9 @@ public interface SubmissionApproverHierarchyDao {
 
 	public Float getTotalDraftAndSubmittedHoursByuserIdAndProjectIdForApprover(Long userId,Long projectId, String submissionStatus); 
 	
-	public Float getTotalApprovedOrRejectedHoursByuserIdAndProjectIdForEmployee(Long userId,Long projectId, String approvalStatus);
+	public Float getTotalApprovedOrRejectedHoursByMasterCandidateIdAndProjectIdForEmployee(Long masterCandidateId,Long projectId, String approvalStatus);
 
-	public Float getTotalDraftAndSubmittedHoursByuserIdAndProjectIdForEmployee(Long userId,Long projectId, String submissionStatus); 
+	public Float getTotalDraftAndSubmittedHoursByMasterCandidateIdAndProjectIdForEmployee(Long masterCandidateId,Long projectId, String submissionStatus); 
 	
 	public List<SubmissionApproverHierarchy>  getTotalDraftAndSubmittedListByuserIdAndProjectIdForEmployee(Long userId,Long projectId, String submissionStatus); 
 	
