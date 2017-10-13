@@ -23,11 +23,13 @@ import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
+import com.bis.sourcelead.entity.VendorOnboarding;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
+import com.bis.sourcelead.service.VendorOnboardService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 
@@ -65,6 +67,9 @@ public class OrgSpocServiceImpl implements OrgSpocService{
 
 	@Autowired
 	ClientVendorContactsIndexHelper clientVendorContactsIndexHelper;
+	
+	@Autowired
+	VendorOnboardService vendorOnboardService;
 	
 	
 	/**
@@ -154,23 +159,29 @@ public class OrgSpocServiceImpl implements OrgSpocService{
 				
 				orgSpoc.setUpdatedDate(CommonUtil.currentDate());
 				orgSpoc.setUpdatedBy(user.getUserCode());
-				OrgSpoc orgs  =orgSpocDao.addOrgSpoc(orgSpoc);
+				OrgSpoc orgs  = orgSpocDao.addOrgSpoc(orgSpoc);
 				
 				 //Elastic Search Document Saving
 				  ClientVendorContactsIndex clientVendorContactsIndex = clientVendorContactsIndexHelper.getClientVendorContactIndexFromSpoc(orgs);
 				  sourceleadELKBaseIndexer.saveOrUpdateElkDocument(clientVendorContactsIndex, Constants.ELK_CLIENTVENDOR_CONTACT_INDEX, Constants.ELK_CLIENTVENDOR_CONTACT_TYPE,orgs.getId().toString());
 				
-				  if((("Client".equals(responderType) || "Vendor".equals(responderType)) 
+				  if((("Client".equals(responderType)) 
 							&& StringUtils.isNotBlank(clientDTO.getIsMailSent()) ) 
 							&& ("Y".equals(clientDTO.getIsMailSent()))){
 						userService.sendEmailToClientOrVendor(orgSpoc.getUUID(),spocUser,ownerUser,user,spocUser.getTempPwd(),responderType,loginOrg,respondingOrgLocation.getOrg(),respondingOrgLocation,orgLocations);
 					}
 				  
-				 commonUtil.updateClientVendorElk(orgRelation,orgLocations,user,responderType);
+				     commonUtil.updateClientVendorElk(orgRelation,orgLocations,user,responderType);
 				  
-				logger.debug("Vendor Contac is added successfully");
 				} 
 		}
+		
+		 if((("Vendor".equals(responderType)) 
+					&& StringUtils.isNotBlank(clientDTO.getIsMailSent()) ) 
+					&& ("Y".equals(clientDTO.getIsMailSent()))){
+			 VendorOnboarding vendorOnboarding = vendorOnboardService.getVendorOnboardingByOrgRelationId(orgRelation.getId());
+			 vendorOnboardService.sendMailAndNotificationToVendorContact(vendorOnboarding, vendorOnboarding.getVendorLocationId(), orgLocations, user,spocUser);
+			}
 	}
 	@Override
 	public List<OrgSpoc> getAllSpocsByOrgRelationId(Long orgRelationId, Long userId,Long orgLocationId,String type) throws Exception {
@@ -550,6 +561,17 @@ public class OrgSpocServiceImpl implements OrgSpocService{
 	public boolean getOwnerUserExistedByOrgRelationIdAndOwnerUserId(Long orgRelationId, Long ownerUserId)
 			throws Exception {
 		return orgSpocDao.getOwnerUserExistedByOrgRelationIdAndOwnerUserId(orgRelationId, ownerUserId);
+	}
+
+	@Override
+	public OrgSpoc getSpocByOrgRelationIdAndAssignedUserId(Long orgRelationId, Long assignUserId) throws Exception {
+		return orgSpocDao.getSpocByOrgRelationIdAndAssignedUserId(orgRelationId, assignUserId);
+	}
+
+	@Override
+	public List<OrgSpoc> getSpocListByVendorUserIdAndOrgRelationId(Long orgRelationId, Long vendorUserId)
+			throws Exception {
+		return orgSpocDao.getSpocListByVendorUserIdAndOrgRelationId(orgRelationId, vendorUserId);
 	}
 	
 }

@@ -2,7 +2,7 @@ package com.bis.sourcelead.dto;
 
 import java.util.Date;
 
-public class CandidateCertificationDTO {
+public class CandidateCertificationDTO extends CommonDTO {
 
 
 	private String candidateId;

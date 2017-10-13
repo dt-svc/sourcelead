@@ -346,7 +346,7 @@ function jpagination(url,sourceleadUrl){
 			         			}
 			         			else if(opt.requirementSubmissionStatus == "CANCEL"){
 			         				result = result +"<option disabled selected >"+opt.requirementSubmissionStatus+"</option>";
-			         				result = result +"<option value='OPEN'>OPEN</option>";
+			         			
 
 			         			}else if(opt.requirementSubmissionStatus == "OPEN"){
 			         				result = result +"<option disabled selected>"+opt.requirementSubmissionStatus+"</option>";

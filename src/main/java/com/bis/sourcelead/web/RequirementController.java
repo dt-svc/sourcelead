@@ -489,6 +489,19 @@ public class RequirementController {
 		Timezone timezone = timeZoneService.getTimezone(orgLocations.getTimezone().getId());
 		Requirement requirement = requirementService.getRequirementByRequirementUUID(requirementUUID);
 		
+		/*Set<RequirementAssignTo> requirementAssignToList = requirement.getRequirementAssignTo();
+		for (RequirementAssignTo assing : requirementAssignToList) {
+			RequirementAssignTo ra = new RequirementAssignTo();
+			StringBuilder assignUserSB = new StringBuilder();
+			if (assing.getAssignUserId().getLastName() != null) {
+				ra.setAssignedUserName(assignUserSB.append(assing.getAssignUserId().getFirstName()).append(" ").append(assing.getAssignUserId().getLastName()).toString());
+			}
+			else {
+				ra.setAssignedUserName(assignUserSB.append(assing.getAssignUserId().getFirstName()).toString());
+			}
+			requirementAssignToList.add(ra);
+		}*/
+		
 		 Set<RequirementApproverHierarchy> approverList = requirement.getRequirementApprover();
 		 Integer maxLevel =  requirementApproverHierarchyService.getRequirementApproverHierarachyWithHighestLevel(requirement.getId());
 			if(null != maxLevel && maxLevel >1){

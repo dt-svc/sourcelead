@@ -31,7 +31,8 @@ public class FileUploadUtil {
 	public String cropImage(String staticPath, MultipartFile multiFile, int x, int y, int w, int h) {
 		try {
 			BufferedImage bufferedImage = Thumbnails.of(multiFile.getInputStream()).useExifOrientation(true).scale(1).asBufferedImage();
-			bufferedImage = bufferedImage.getSubimage(x, y, w, h);
+			if(x > 0 || y > 0 || w > 0 || h > 0)
+				bufferedImage = bufferedImage.getSubimage(x, y, w, h);
 			if (bufferedImage == null) {
 				return "failed";
 			}

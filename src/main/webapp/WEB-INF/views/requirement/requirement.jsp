@@ -365,7 +365,7 @@ $(document).ready(function () {
           
             
               <div class="form-group">
-              <label class="col-md-3">Education</label>
+              <label class="col-md-3">Education${requirement.reqEducationListString}</label>
               <div class="col-md-9">
                 <select multiple class="chosen-select form-control" name="education" data-placeholder="Select Education Options" id="education" data-validation-optional="true">
                <c:forEach var="education" items="${educationsList}">
@@ -758,7 +758,7 @@ $(document).ready(function () {
           <div class="clearfix"></div>
          <div class="form-group">
 				<div class="ml">
-					<c:set var="val" value="${requirement.isClientJob}" />
+<%-- 					<c:set var="val" value="${requirement.isClientJob}" /> --%>
 					<c:choose>
 						<c:when test="${val == 'Y'}">
 							<input  type="checkbox" name="isTemplate"
@@ -2285,7 +2285,7 @@ function getUserList(teamType){
 			    	     $("#usersGrid").removeAttr("style");
 	                	    var result = '';
 	                	    result = result+"<input type='hidden' name='assignedTeamId' id='assignedTeamId' value='"+teamType+"'/>";
-	                		result = result +'       <table id="example" class="display table table-stripped table-bordered" cellspacing="0" width="100%" >';
+	                		result = result +'       <table id="assignToDataTableId" class="display table table-stripped table-bordered" cellspacing="0" width="100%" >';
 	                		result = result +'           <thead>';
 	                		result = result +'           <tr>';
 	                		result = result +'             <th style="padding:2px 15px !important;"><input type="checkbox" id="checkAll" onclick="toggle(this); handleClick();"></th>';
@@ -2381,12 +2381,12 @@ function getUserList(teamType){
 	                 	   result = result +'   </div>'; 
 	                 	   $("#usersGrid").empty(); 
 	                       $("#usersGrid").append(result); 
-	                       pagination(); 
+	                       paginations(); 
 			    		}
                  	}else{
                 	 	$("#usersGrid").removeAttr("style");
   	    	        	var result ="";
-		        		result = result +'       <table id="example" class="display table table-stripped table-bordered" cellspacing="0" width="100%" >';
+		        		result = result +'       <table id="assignToDataTableId" class="display table table-stripped table-bordered" cellspacing="0" width="100%" >';
 		        		result = result +'           <thead>';
 		        		result = result +'           <tr>';
 		        		result = result +'             <th class="sorting_disabled" rowspan="1" colspan="1" style="width: 30px;"></th>';
@@ -2405,7 +2405,7 @@ function getUserList(teamType){
                  	    result = result +'   </div>'; 
 						$("#usersGrid").empty();
 					    $("#usersGrid").append(result); 
-					    pagination(); 
+					    paginations(); 
                 	}
           		},
        		}); 
@@ -2545,14 +2545,14 @@ function getTeamsList(reqId){
 --%>
 
 <script>
-function pagination(){
-    $("#example").DataTable( { 
+
+function paginations(){
+    $("#assignToDataTableId").DataTable( { 
     	"scrollCollapse": false,
     	"lengthMenu": [[5, 10, 15, -1], [5, 10, 15, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
-    	"ordering": true,
-    	"bPaginate":false,
+    	"ordering": false,
     	"aoColumnDefs": [{
 	           'bSortable': false,
 	           'aTargets': 0
@@ -2569,7 +2569,7 @@ function pagination(){
 function assignMembers() {
 	handleTeamRoleClick();
 	var result = "";
-	var oTable = $('#example').DataTable();
+	var oTable = $('#assignToDataTableId').DataTable();
 	var rowcollection =  oTable.$(".myCheckbox:checked", {"page": "all"});
 	//var totalCount = $("[type='checkbox']:checked").length;
 	var count = 1;

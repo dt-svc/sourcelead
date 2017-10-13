@@ -697,13 +697,3 @@ function getCustomReports(){
 		$(".repTab1").show();
 	});		
 	</script>
-
-<script src="resources/reports/amcharts.js"></script>
-<script src="resources/reports/pie.js"></script>
-<link rel="stylesheet" href="resources/reports/export.css" type="text/css" media="all" />
-<script src="resources/reports/light.js"></script>
-  
-     
-
-
-

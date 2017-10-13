@@ -1,6 +1,5 @@
 package com.bis.sourcelead.web;
 
-import java.util.Collection;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -15,14 +14,11 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.ExpenseEntryDetailsDTO;
-import com.bis.sourcelead.dto.ExpenseEntryDetailsUtilDTO;
 import com.bis.sourcelead.dto.ExpensesDTO;
 import com.bis.sourcelead.dto.ExpensesListUtilDTO;
-import com.bis.sourcelead.entity.Expenses;
+import com.bis.sourcelead.dto.TimesheetExpenseEntryDetailsUtilDTO;
 import com.bis.sourcelead.entity.ExpensesApproverHierarchy;
 import com.bis.sourcelead.entity.OrgLocations;
-import com.bis.sourcelead.entity.ProjectMembers;
-import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Submission_Status;
 import com.bis.sourcelead.rest.ExpensesRestController;
@@ -31,13 +27,13 @@ import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.ExpensesApprovalService;
 import com.bis.sourcelead.service.ExpensesCategoryService;
 import com.bis.sourcelead.service.ExpensesService;
+import com.bis.sourcelead.service.ProjectClientService;
 import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SessionMaintainanceData;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
-import com.ibm.icu.math.BigDecimal;
 
 @Controller
 public class ExpensesController {
@@ -59,6 +55,9 @@ public class ExpensesController {
 	
 	@Autowired
 	ProjectsService projectsService;
+	
+	@Autowired
+	ProjectClientService projectClientService;
 	
 	@Autowired
 	ExpensesService expensesService;
@@ -93,7 +92,7 @@ public class ExpensesController {
 	
 	
 	@RequestMapping(value = "/addExpense")
-	public ModelAndView addExpense(HttpServletRequest request, @RequestParam(value="expenseId", required=false)String expenseId) throws Exception
+	public ModelAndView addExpense(HttpServletRequest request, @RequestParam(value="expenseId", required=false)String expenseId, @RequestParam(value="expenseLocationCode", required=false)String expenseLocationCode) throws Exception
 	{
 		ModelAndView model = new ModelAndView();
 		SessionMaintainanceData sessionData = (SessionMaintainanceData) request.getSession().getAttribute("sessionData");
@@ -104,10 +103,11 @@ public class ExpensesController {
 		OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		sessionData.setNav(Constants.MY_EXPENSES);
 		request.getSession().setAttribute("sessionData", sessionData);
-		if(null != expenseId && !expenseId.isEmpty()){
+		if(StringUtils.isNotEmpty(expenseId)&& StringUtils.isNotEmpty(expenseLocationCode)){
 			ExpensesListUtilDTO elDTO = new ExpensesListUtilDTO();
 			elDTO.setUserId(loginUser.getId());
 			elDTO.setLocationCode(orgLoc.getLocationCode());
+			elDTO.setExpenseLocationCode(expenseLocationCode);
 			elDTO.setExpenseId(expenseId);
 			ExpensesDTO expensesDTO = expensesRestController.getExpenseDetailsByExpenseId(elDTO);
 			model.addObject("expenses", expensesDTO);
@@ -124,28 +124,9 @@ public class ExpensesController {
 			 		type = "view";
 			 	 }
 			 	 model.addObject("type", type);
-			 	 model.addObject("isSahApproved", expensesDTO.getSahApproved());
+			 	 model.addObject("isSahApproved", expensesDTO.isSahApproved());
 			}
 				
-		/*	Expenses expenses = expensesService.getExpenseByExpenseUniqueId(expenseId,orgLoc.getId());
-			expenses.setStartDateStr(Constants.DF_DMY.format(expenses.getStartDate()));
-			if(null != expenses.getEndDate()){
-				expenses.setEndDateStr(Constants.DF_DMY.format(expenses.getEndDate()));
-			}
-			ExpensesApproverHierarchy eah =expensesApprovalService.getexpensesApproverHierarchyForEmployeeByExpenseId(expenses.getId());
-			 Submission_Status submissionStatus = eah.getExpenseStatus();
-		 	model.addObject("submissionStatus", submissionStatus);
-		 	model.addObject("expenseApproverHierarchy", eah);
-		 	
-		 	
-		 	
-		    ExpensesApproverHierarchy isSah = expensesApprovalService.isThereAnyApproverApprovedTheExpense(expenses.getId());
-		    boolean isSahApproved = false;
-		    if(isSah != null){
-		        	isSahApproved = true;
-		    }
-		    model.addObject("isSahApproved", isSahApproved);	
-			model.addObject("expenses", expenses);*/
 			StringBuffer rejectedReason = new StringBuffer();
 			List<ExpensesApproverHierarchy> eahList =expensesApprovalService.getExpensesApproverHierarchyListByExpenseId(Long.parseLong(expenseId));
 			for(ExpensesApproverHierarchy eah : eahList){
@@ -155,28 +136,15 @@ public class ExpensesController {
 			}
 			model.addObject("expenseApproverHierarchy", rejectedReason.toString());
 		}
-		ExpenseEntryDetailsUtilDTO eedDTO = new ExpenseEntryDetailsUtilDTO();
+		TimesheetExpenseEntryDetailsUtilDTO eedDTO = new TimesheetExpenseEntryDetailsUtilDTO();
 		eedDTO.setUserId(loginUser.getId());
 		eedDTO.setLocationCode(orgLoc.getLocationCode());
+		eedDTO.setExpenseId(expenseId);
 		ExpenseEntryDetailsDTO expEntryDTO =  expensesRestController.getExpenseEntryDetails(eedDTO);
 		model.addObject("expEntry", expEntryDTO);
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.setViewName("expenses/addExpense");
 		return model;
-		
-		
-		/*List<ProjectMembers> projectMembersList = addExpensesService.getAllProjectsForExpenses(orgLoc,loginUser);
-		model.addObject("projectMembersList", projectMembersList);*/
-		
-		
-		/*Countries countries = countriesService.getCountriesByCountryName(orgLoc.getCountry());
-		if(null != countries){
-        model.addObject("currencyCode", countries.getCurrency());
-		}*/
-		
-	/*	List<ExpensesCategory>  expensesCategoryList = expensesCategoryService.getAllExpensesCategoryByLocationIdAndStatus(orgLoc.getId(), "1");
-	    model.addObject("expensesCategoryList", expensesCategoryList);*/
-		
 		
 	}
 	
@@ -198,7 +166,7 @@ public class ExpensesController {
 		
 	
 	@RequestMapping(value = "/addApprovalExpense")
-	public ModelAndView addApprovalExpense(HttpServletRequest request, @RequestParam(value="expenseId", required=false)String expenseId) throws Exception
+	public ModelAndView addApprovalExpense(HttpServletRequest request, @RequestParam(value="expenseId", required=false)String expenseId, @RequestParam(value="expenseLocationCode", required=false)String expenseLocationCode) throws Exception
 	{
 		
 		ModelAndView model = new ModelAndView();
@@ -209,40 +177,23 @@ public class ExpensesController {
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		sessionData.setNav(Constants.MY_EXPENSES);
-		/*String expensesId = addExpensesService.getExpenseId();
-		model.addObject("ExpensesId", expensesId);*/
-		//SimpleDateFormat dateFormat=orgLoc.getLocFullFormDateFormatter();
-		Expenses expenses = null;
-		if(null != expenseId && !expenseId.isEmpty()){
-			expenses = expensesService.getExpenseByExpenseUniqueId(expenseId,orgLoc.getId());
-			expenses.setStartDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLoc.getDateFormat(),expenses.getStartDate()));
-			if(null != expenses.getEndDate()){
-				expenses.setEndDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLoc.getDateFormat(),expenses.getEndDate()));
-			}
+		
+		if(StringUtils.isNotEmpty(expenseId)&& StringUtils.isNotEmpty(expenseLocationCode)){
+			ExpensesListUtilDTO elDTO = new ExpensesListUtilDTO();
+			elDTO.setUserId(loginUser.getId());
+			elDTO.setLocationCode(orgLoc.getLocationCode());
+			elDTO.setExpenseLocationCode(expenseLocationCode);
+			elDTO.setExpenseId(expenseId);
+			ExpensesDTO expensesDTO = expensesRestController.getExpenseDetailsByExpenseId(elDTO);
+			model.addObject("expenses", expensesDTO);
 			
-			BigDecimal totalAmo = new BigDecimal(expenses.getTotalAmount());
-			BigDecimal totalAmountRoundOff = totalAmo.setScale(2, BigDecimal.ROUND_HALF_EVEN);
-			expenses.setTotalAmountRoundoffValue(totalAmountRoundOff);
-			if(expenses.getCreatedBy()!= null){
-				User createduser = userService.getUserByUserCode(expenses.getCreatedBy());
-				StringBuilder createdName = new StringBuilder();
-				if(createduser.getFirstName()!= null && createduser.getLastName()!= null){
-					createdName.append(createduser.getFirstName()).append(" ").append(createduser.getLastName());
-				}else{
-					createdName.append(createduser.getFirstName());
-				}
-				model.addObject("expensesCreatedBy", createdName);
-			}
-			
-			model.addObject("expenses", expenses);
-			
-			ExpensesApproverHierarchy  eah = expensesApprovalService.getExpensesApproverHierarchyByApproverUserIdAndExpenseId(loginUser.getId(), expenses.getId());
+			ExpensesApproverHierarchy  eah = expensesApprovalService.getExpensesApproverHierarchyByApproverUserIdAndExpenseId(loginUser.getId(), expensesDTO.getId(),orgLoc.getId());
 		    Submission_Status submissionStatus = eah.getExpenseStatus();
 		 	model.addObject("submissionStatus", submissionStatus);
 		 	model.addObject("eah", eah);
 		 	
 		 	
-		 	 Boolean isExpenseTotallyApproved = expensesApprovalService.isTheExpenseTotallyApproved(expenses.getId());
+		 	 Boolean isExpenseTotallyApproved = expensesApprovalService.isTheExpenseTotallyApproved(expensesDTO.getId());
 			 model.addObject("isExpenseTotallyApproved", isExpenseTotallyApproved);	
 			 
 			 String type = request.getParameter("type");
@@ -268,32 +219,17 @@ public class ExpensesController {
 			 model.addObject("isSuperUser", isSuperUser);	
 			 
 			
-		   Collection<ProjectMembers> projectMembers = projectMembersService.getAllProjectMembersByProjectId(expenses.getProjectMembers().getProjects().getId());
-		   model.addObject("projectMembers", projectMembers);
-		}else if(expenses == null){
-			expenseId = addExpensesService.getExpenseId(orgLoc);
-			model.addObject("ExpensesId", expenseId);
 		}
-		
-		List<Projects> projectsList = projectsService.getProjectsByOrgLocationsIdAndApproverUserId(orgLoc.getId(),loginUser.getId());
-		model.addObject("projectsList", projectsList);
 		
 		request.getSession().setAttribute("sessionData", sessionData);
 		
-		/*Countries countries = countriesService.getCountriesByCountryName(orgLoc.getCountry());
-		if(null != countries){
-        model.addObject("currencyCode", countries.getCurrency());
-		}
-		
-		List<ExpensesCategory>  expensesCategoryList = expensesCategoryService.getAllExpensesCategoryByLocationIdAndStatus(orgLoc.getId(), "1");
-	    model.addObject("expensesCategoryList", expensesCategoryList);*/
-		
-		ExpenseEntryDetailsUtilDTO eedDTO = new ExpenseEntryDetailsUtilDTO();
+		TimesheetExpenseEntryDetailsUtilDTO eedDTO = new TimesheetExpenseEntryDetailsUtilDTO();
 		eedDTO.setUserId(loginUser.getId());
 		eedDTO.setLocationCode(orgLoc.getLocationCode());
+		eedDTO.setExpenseId(expenseId);
+		eedDTO.setExpenseFrom("approver");
 		ExpenseEntryDetailsDTO expEntryDTO =  expensesRestController.getExpenseEntryDetails(eedDTO);
 		model.addObject("expEntry", expEntryDTO);
-		
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.setViewName("expenses/addApprovalExpense");
 		return model;

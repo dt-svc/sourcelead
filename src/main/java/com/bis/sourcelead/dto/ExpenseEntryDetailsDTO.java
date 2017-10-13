@@ -9,26 +9,16 @@ public class ExpenseEntryDetailsDTO implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
 	
-	private String expenseId;
-	
 	private String currencyCode;
 	
 	List<ProjectMembersDTO> projectMembersList;
 	
-	List<ExpensesCategoryDTO> expenseCategoryList;
+	List<ProjectsDTO> projectsList;
 	
 	List<String> paymentModes;
 	
 	List<String> currencyCodeList;
 
-
-	public String getExpenseId() {
-		return expenseId;
-	}
-
-	public void setExpenseId(String expenseId) {
-		this.expenseId = expenseId;
-	}
 
 	public List<ProjectMembersDTO> getProjectMembersList() {
 		return projectMembersList;
@@ -38,12 +28,14 @@ public class ExpenseEntryDetailsDTO implements Serializable{
 		this.projectMembersList = projectMembersList;
 	}
 
-	public List<ExpensesCategoryDTO> getExpenseCategoryList() {
-		return expenseCategoryList;
+	public List<ProjectsDTO> getProjectsList()
+	{
+		return projectsList;
 	}
-	
-	public void setExpenseCategoryList(List<ExpensesCategoryDTO> expenseCategoryList) {
-		this.expenseCategoryList = expenseCategoryList;
+
+	public void setProjectsList(List<ProjectsDTO> projectsList)
+	{
+		this.projectsList = projectsList;
 	}
 
 	public String getCurrencyCode() {

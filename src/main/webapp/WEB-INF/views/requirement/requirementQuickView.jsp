@@ -4,6 +4,8 @@
  <%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
  <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
  
+ <jsp:include page="recommendationListTable.jsp"></jsp:include>
+ 
 <div class="profile_details requirement_details clearfix reqrementsummary">
 	 <a href="#" onClick="openTopDiv();">
 	    <h4 id="id1">
@@ -116,6 +118,30 @@
                  	<div class="clearfix row"> 
               			<div class="col-md-12 divskill divsAssigned pull-left"> 
           				<div id="assignedMemberList"></div> 
+          				
+          				<%-- <div class="clearfix mt5 mb">
+						    <table class="table table-responsive table-hover clearfix mb">
+							    <thead>
+								    <tr>
+									    <th>Name</th>
+									    <th>Role</th>
+									    <th>Team</th>
+								    </tr>
+							    </thead>
+							    <tbody>
+							    	<tr>
+								    	<c:forEach var ="assignTo" items="${requirement.requirementAssignTo}" varStatus="reqStatus">
+									        <td><div class="tbldata-dotdot">${assignTo.assignedUserName}</div></td>
+									    </c:forEach>
+						    			<td><div class="tbldata-dotdot">'+report.assignedUserName+'</div></td>
+						    			<td><div class="tbldata-dotdot">'+report.assignedUserName+'</div></td>
+						    		</tr>
+							    <tbody>
+							</table>
+          				 </div> --%>
+          				
+          				
+          				
 				        <h1>Description:</h1> 
 				        <div class="RDdetails">${!empty requirement.description ? requirement.description : ' No DATA '}</div>
 			            <h1>Skills:</h1>

@@ -22,7 +22,6 @@ import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.json.JSONException;
-import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -188,7 +187,8 @@ public class CandidateUploadFileServiceImpl implements CandidateUploadFileServic
 							}*/
 							if (row.getCell(11) != null) {
 								String expectedRate = getCellValueAsString(row.getCell(11), fileName);
-								candidateImport.setExpectedRate(expectedRate);
+								
+								candidateImport.setExpectedRate(getExpectedRateValid(expectedRate));
 							}
 							else {
 								candidateImport.setExpectedRate("");
@@ -451,6 +451,18 @@ public class CandidateUploadFileServiceImpl implements CandidateUploadFileServic
 				}
 			}
 			
+			if(row.getCell(11) !=null && !"".equalsIgnoreCase(row.getCell(11).toString())){
+				String expectedRate=getCellValueAsString(row.getCell(11), fileName);
+				
+				if(expectedRate !=null && !"".equalsIgnoreCase(expectedRate)){
+					boolean isValidated =isExpectedRateValid(expectedRate);
+					if(isValidated == false){
+						candidateImport.setReason("Expected Rate Allow Only Integers");
+						return isValidated;
+					}
+				}
+			}
+			
 		}
 		return true;
 	}
@@ -670,6 +682,8 @@ public class CandidateUploadFileServiceImpl implements CandidateUploadFileServic
 		return null;
 	}
 	
+	
+	
 	/**
 	 * Check given string is numeric or not
 	 * 
@@ -778,5 +792,44 @@ public class CandidateUploadFileServiceImpl implements CandidateUploadFileServic
 				+ "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$");
 		Matcher matcher = pattern.matcher(emailId);
 		return matcher.matches();
+	}
+	
+	
+	/**
+	 * Handles Expected Rate is valid or not
+	 * @param expectedRate
+	 * @return
+	 */
+	private boolean isExpectedRateValid(String expectedRate)
+	{
+		String regex = "^[0-9\b]+$";
+		boolean flag;
+		String expRate = expectedRate.replaceAll("[^\\d.]", "");
+		if (expRate.length() >= 0 && expRate.length() <= 8) {
+			flag = expRate.matches(regex);
+		}
+		else {
+			flag = false;
+		}
+		return flag;
+	}
+	
+	/**Returns Expected RATE
+	 * @param expectedRate
+	 * @return
+	 */
+	private String getExpectedRateValid(String expectedRate)
+	{
+		String regex = "^[0-9\b]+$";
+		String  eRate = "";
+		String expRate = expectedRate.replaceAll("[^\\d.]", "");
+		if (expRate.length() >= 0 && expRate.length() <= 8) {
+			boolean flag = expRate.matches(regex);
+			if(flag){
+				eRate = expRate;
+			}
+		}
+		
+		return eRate;
 	}
 }

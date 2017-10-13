@@ -22,9 +22,9 @@
 <section class="landTemp">
 	<div class="landTempCta">
 		<h2>Applicant Template</h2>
-		<p>Manage your Applicant Templates</p>
+		<p>Manage Your Applicant Templates</p>
 		<span>
-			<sec:authorize access="hasAnyRole('ROLE_CREATE_APPLICANT_TEMPLATE','ROLE_VIEW_APPLICANT_TEMPLATE','ROLE_VIEW_EDIT_APPLICANT_TEMPLATE')"> 
+			<sec:authorize access="hasAnyRole('ROLE_CREATE_APPLICANT_TEMPLATE')"> 
 			<a href="<c:url value="/orgSubmissionTemplate" />">Add Template</a> | &nbsp; 
 			</sec:authorize>
 			<sec:authorize access="hasAnyRole('ROLE_CREATE_APPLICANT_TEMPLATE','ROLE_VIEW_APPLICANT_TEMPLATE','ROLE_VIEW_EDIT_APPLICANT_TEMPLATE')"> 
@@ -34,7 +34,7 @@
 	</div>
 	<div class="landTempCta">
 		<h2>Contract Template</h2>
-		<p>Manage your Contract Templates</p>
+		<p>Manage Your Contract Templates</p>
 		<span>
 			<sec:authorize access="hasAnyRole('ROLE_ADD_CONTRACT_TEMPLATE')">
 			<a href="<c:url value="/addContractTemplate" />">Add Template</a> | &nbsp; 
@@ -47,7 +47,7 @@
 	</div>
 	<div class="landTempCta nomr">
 		<h2>Onboard Template</h2>
-		<p>Manage your Onboard Templates</p>
+		<p>Manage Your Onboard Templates</p>
 		<span>
 			<sec:authorize access="hasRole('ROLE_CREATE_ON_BOARD_TEMPLATE')"> 
 			<a href="<c:url value='/addNewOnboardTemplate'/>">Add Template</a> | &nbsp; 
@@ -59,7 +59,7 @@
 	</div>
 	<div class="landTempCta">
 		<h2>Offboard Template</h2>
-		<p>Manage your Offboard Templates</p>
+		<p>Manage Your Offboard Templates</p>
 		<span>
 			<sec:authorize access="hasRole('ROLE_CREATE_OFF_BOARD_TEMPLATE')"> 
 			<a href="<c:url value='/addNewOffboardTemplate'/>">Add Template</a> | &nbsp; 
@@ -67,6 +67,14 @@
 			<sec:authorize access="hasAnyRole('ROLE_CREATE_OFF_BOARD_TEMPLATE','ROLE_VIEW_EDIT_OFF_BOARD_TEMPLATE')"> 
 			<a href="<c:url value="/offboardingTemplatesList" />">View List</a>
 			</sec:authorize>
+		</span>
+	</div>
+	<div class="landTempCta nomr">
+		<h2>Vendor Onboard Template</h2>
+		<p>Manage Your Vendor Onboard Templates</p>
+		<span>
+			<a href="<c:url value='/addNewVendorOnboardTemplate'/>">Add Template</a> | &nbsp; 
+			<a href="<c:url value="/vendorOnboardTemplateList" />">View List</a>
 		</span>
 	</div>
 	
