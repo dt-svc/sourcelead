@@ -61,6 +61,7 @@ function fileUpload(id, type, formId, name, orgId, orgLocationId,url) {
 	});
 }
 
+
 /*function applyData(data, formId, name, id) {
 	if($("#"+formId+" input[name*="+name+"][data-id="+id+"]").length > 0) {
 		$("#"+formId+" input[name*="+name+"][data-id="+id+"]").remove();
@@ -78,6 +79,13 @@ function fileUpload(id, type, formId, name, orgId, orgLocationId,url) {
 	else{
 		var i = $("#"+formId+" input[type=hidden][name*="+name+"]").length / 3;
 	}
+
+function applyData(data, formId, name, id) {
+	 
+	if($("#"+formId+" input[name*='"+name+"'][data-id="+id+"]").length > 0) {
+		$("#"+formId+" input[name*='"+name+"'][data-id="+id+"]").remove();
+	}
+	var i = $("#"+formId+" input[type=hidden][name*='"+name+"']").length / 3;
 	
 
 		
@@ -112,14 +120,14 @@ function applyData(data, formId, name, id) {
 		$("#"+formId+" input[name*='"+name+"'][data-id="+id+"]").remove();
 	}
 	if(name == 'uploadContractsFile' || name == 'uploadFormsFile'){
-		var i = $("#"+formId+" input[type=hidden][name*="+name+"]").length / 4;
+		var i = $("#"+formId+" input[type=hidden][name*='"+name+"']").length / 4;
 	}
 	else if(formId == 'vendorOnboardUploadedDocuments_form'){
 		var i = name.split('@')[1];
 		  name = name.split('@')[0];
 	}
 	else{
-		var i = $("#"+formId+" input[type=hidden][name*="+name+"]").length / 3;
+		var i = $("#"+formId+" input[type=hidden][name*='"+name+"']").length / 3;
 	}
 	
 	for(var e in data) {

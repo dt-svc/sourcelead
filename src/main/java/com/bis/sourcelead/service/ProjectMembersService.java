@@ -38,6 +38,8 @@ public interface ProjectMembersService {
 	
 	public List<ProjectMembers> getAllProjectMembersByProjectId(Long id) throws Exception;
 	
+	public List<ProjectMembers> getAllProjectMembersWithMasterCandidateIdByProjectIdAndLocationId(Long id,Long locationsId) throws Exception;
+	
 	public List<Long> getAllProjectMembersIdsByProjectId(Long projectId) throws Exception;
 	
 	public List<Long> getAllProjectMembersIdsByemployeeId(Long employeeId) throws Exception;
@@ -77,6 +79,8 @@ public interface ProjectMembersService {
     
     public List<ProjectMembers> getProjectMembersListByOrgLocationsIdAndEmpUserId(Long locationsId, Long empUserId);
     
+    public List<ProjectMembers> getProjectMembersListByOrgLocationsIdAndCandidateId(Long locationsId, Long candidateId);
+    
     public List<ProjectMembers> getProjectMembersListByOrgLocationsIdAndApproverUserId(Long locationsId, Long approverUserId);
 	
 	public List<ProjectMembers> getProjectMembersListByTimesheetFrequencyOrgLocationsIdAndApproverUserId(String timesheetFrequency,Date startDate,Date endDate,Long clientId,String status,Long locationsId, Long approverUserId);
@@ -111,4 +115,6 @@ public interface ProjectMembersService {
 	Integer getProjectMembersCountByProjectClientId(Long projectClientId) throws Exception;
 	
 	ProjectMembers getProjectMembersByCandidateIdAndProjectId(Long candidateId,Long projectId) throws Exception;
+	
+	public ProjectMembers getClientProjectMemberByProjectMemberId(Long projectMemberId) throws Exception;
 }

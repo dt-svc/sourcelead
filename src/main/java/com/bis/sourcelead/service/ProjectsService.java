@@ -65,8 +65,6 @@ public interface ProjectsService {
 	    List<Long> getProjectIdsByOrgLocationsId(Long orgLocationsId) throws Exception;   
 	
 		Projects getProjectDetailsUpdateByProjectId(Long projectId,User user,JSONObject jsonObj) throws Exception ;
-		
-		List<Projects> getProjectBasedClientsByOrgLocationsIdAndApproverUserId(Long orgLocationsId, Long userId) throws Exception;
 
 		Projects getProjectByIdAndLoginOrgId(Long projectId,Long orgLocationId) throws Exception;
 	

@@ -8,6 +8,10 @@ public interface ProjectClientDao {
 
     ProjectClients storeProjectClients(ProjectClients projectClients) throws Exception;
 	
+    List<ProjectClients> getProjectClientsListByLoginUserAndOrgLocationId(Long locationsId,Long userId) throws Exception;
+    
+    List<ProjectClients> getAllProjectClientsByApproverUserAndOrgLocationId(Long userId,Long locationsId) throws Exception;
+    
 	ProjectClients getProjectClientsByProjectIdAndOrgLocationId(Long projectId,Long orgLocationsId) throws Exception;
 	
 	List<ProjectClients> getProjectClientsListByProjectId(Long projectId) throws Exception;

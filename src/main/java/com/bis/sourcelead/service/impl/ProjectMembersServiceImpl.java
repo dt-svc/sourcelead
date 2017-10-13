@@ -587,6 +587,12 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 	}
 
 	@Override
+	public List<ProjectMembers> getProjectMembersListByOrgLocationsIdAndCandidateId(Long locationsId, Long candidateId) {
+		return projectMembersDao.getProjectMembersListByOrgLocationsIdAndCandidateId(locationsId, candidateId);
+	}
+	
+	
+	@Override
 	public List<ProjectMembers> getProjectMembersListByOrgLocationsIdAndProjectIdAndStratDateAndEndDateAndStatus(
 			String status, String startDate, String endDate, Long projectId) {
 		 
@@ -1203,6 +1209,12 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 	public List<Long> getAllProjectMembersIdsByProjectId(Long projectId) throws Exception {
 		return projectMembersDao.getAllProjectMembersIdsByProjectId(projectId);
 	}
+	
+	@Override
+	public List<ProjectMembers> getAllProjectMembersWithMasterCandidateIdByProjectIdAndLocationId(Long projectId,Long locationId) throws Exception {
+		return projectMembersDao.getAllProjectMembersWithMasterCandidateIdByProjectIdAndLocationId(projectId, locationId);
+	}
+	
 
 	@Override
 	public void deleteProjectMember(ProjectMembers projectMembers) throws Exception {
@@ -1428,8 +1440,7 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 		while(parentCandidatId != null){
 			Candidate cand = candidateService.getCandidateByCandidateId(parentCandidatId);
 			if(cand != null){
-				ProjectClients pc = null;
-				pc = projectClientService.getProjectClientsByProjectIdAndOrgLocationId(projects.getId(), cand.getOrgLocationId().getId());
+				ProjectClients pc = projectClientService.getProjectClientsByProjectIdAndOrgLocationId(projects.getId(), cand.getOrgLocationId().getId());
 				if(pc == null){
 					Candidate clildCandidate = candidateService.getCandidateByParentCandidateId(parentCandidatId);
 					pc = new ProjectClients();
@@ -1489,6 +1500,11 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 	public ProjectMembers getProjectMembersByCandidateIdAndProjectId(Long candidateId, Long projectId)
 			throws Exception {
 		return projectMembersDao.getProjectMembersByCandidateIdAndProjectId(candidateId, projectId);
+	}
+
+	@Override
+	public ProjectMembers getClientProjectMemberByProjectMemberId(Long projectMemberId) throws Exception {
+		return projectMembersDao.getClientProjectMemberByProjectMemberId(projectMemberId);
 	}
 
 }

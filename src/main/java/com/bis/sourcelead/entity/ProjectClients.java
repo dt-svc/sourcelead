@@ -46,7 +46,7 @@ public class ProjectClients implements Serializable{
     @ManyToOne
     @JoinColumn(name = "ORG_RELATION_ID")
     private OrgRelations orgRelationId;
-    
+   
     @ManyToOne
     @JoinColumn(name = "ORG_LOCATIONS_ID")
     private OrgLocations orgLocationsId;

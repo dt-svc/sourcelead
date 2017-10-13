@@ -243,7 +243,31 @@ public class CommonUtil {
 		}
 		projectTasksService.saveAll(tasksList);
 	}
-	
+	/**
+	 * This method is used to Get the Approver User of Time or Expense Reopen Requests
+	 * @author: Naresh Bolisetty
+	 * 
+	 */
+	public Boolean isSuperAdminForProjectMemberToReopenTimeOrExpenseses(Long projectMemberId,User loginUser) throws Exception{
+		ProjectMembers clientProjectMember = projectMembersService.getClientProjectMemberByProjectMemberId(projectMemberId);
+	    ProjectApproverHierarchy pah =  null;
+	    Boolean isSuperUser = false;
+	    if(null != clientProjectMember && null != clientProjectMember.getProjects() && null != clientProjectMember.getProjectClientsId())
+	    	pah =  projectApproverHierarchyService.getApproverUsersByProjectIdAndProjectClientId(clientProjectMember.getProjects().getId(), clientProjectMember.getProjectClientsId().getId());
+	    if(     
+	    		//If the Login User As Location Admin Of Client
+	    		(null != clientProjectMember.getProjectClientsId() && null != clientProjectMember.getProjectClientsId().getOrgLocationsId() && null != clientProjectMember.getProjectClientsId().getOrgLocationsId().getUser()
+	    		 && null != clientProjectMember.getProjectClientsId().getOrgLocationsId().getUser().getId() && clientProjectMember.getProjectClientsId().getOrgLocationsId().getUser().getId().longValue() == loginUser.getId().longValue())
+	    		||
+	    		//If the Login User As Top-Level(Level2) Approver Of Client
+	    		(null != pah && null != pah.getApproverUserId() && null != pah.getApproverUserId().getId()
+	    		  && pah.getApproverUserId().getId().longValue() == loginUser.getId().longValue())
+	    		
+	      ){
+	    	isSuperUser = true;
+	  }
+	    return isSuperUser;
+	}
 	/**
 	 * This method is used to in-activate timesheet submissions based on projectmemberId and terminationdate
 	 * @author: Naresh Bolisetty

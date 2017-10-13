@@ -21,6 +21,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.apache.commons.lang3.StringUtils;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Fetch;
@@ -259,6 +260,10 @@ public class Candidate implements Serializable{
 	
 	@Column(name = "TWITTER_PROFILE_URL")
 	private String twitterUrl;
+	
+	@JsonProperty
+	@Transient
+    private String fullName;
 	
 	@NotFound(action=NotFoundAction.IGNORE)
 	@OneToMany(mappedBy = "candidateId",cascade = CascadeType.ALL)
@@ -1407,6 +1412,27 @@ public class Candidate implements Serializable{
 		this.twitterUrl = twitterUrl;
 	}
 
+	public String getFullName() {
+		if(StringUtils.isNotEmpty(fullName))
+			return fullName;
+		else{
+			if(StringUtils.isNotEmpty(firstName) && StringUtils.isEmpty(lastName)){
+				fullName = firstName;
+			}
+			else if(StringUtils.isEmpty(firstName) && StringUtils.isNotEmpty(lastName)){
+				fullName = lastName;
+			}
+			else if(StringUtils.isNotEmpty(firstName) && StringUtils.isNotEmpty(lastName)){
+				fullName = firstName+" "+lastName;
+			}
+			return fullName;
+		}
+	}
+
+	public void setFullName(String fullName) {
+		this.fullName = fullName;
+	}
+	
 
 	public String getSowContractName()
 	{
