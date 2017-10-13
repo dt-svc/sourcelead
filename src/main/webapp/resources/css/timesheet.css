@@ -5350,3 +5350,28 @@ width: auto !important;
 .exadRadio label {
 	cursor: pointer;
 }
+
+
+
+.empUlAli {}
+.empUlAli li {
+	position: relative; font-weight: 500; color: #999; cursor: pointer; list-style-type: none; padding: 5px 5px;
+}
+.empUlAli li .fa-filter {
+  	font-size: 18px; color: #545454; padding: 0px 10px 0px 0px;
+}
+.empUlAli li .fa-caret-down { 
+	display: inline-block; font-size: 14px; font-weight: 500; color: #333; padding: 0px 0px 0px 20px;
+}
+.empUlAli li .statusFiler-1 {
+	right:8px; min-width: 180px;
+}
+.empUlAli li label {
+	display: inline-block; padding: 0px 0px 0px 10px;
+}
+.empUlAli li ul {
+	padding: 4px 7px;
+}
+.mR5 {
+	margin: 0px 5px 0px 0px;
+}

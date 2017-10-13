@@ -152,6 +152,7 @@ function recommendationpagination(url,requirementId){
 	        ],
 	        "columnDefs": [ {
 	    	  	"targets": colIndex++,
+	    	  	"sortable": false,
 	    	  	"data": "",
 	    	  	"render": function(data, type, report, meta) {
 	    	  		 var result = "";
@@ -193,7 +194,6 @@ function recommendationpagination(url,requirementId){
 	        	},{
 	            "targets": colIndex++,
 	            "data": "email",
-	        	"sortable": false,
 	            "render": function ( data, type, report, meta ) {
 	            	  var result = "";
 	            	    if(report.email != null && report.email !='' && report.email !='undefined'){
@@ -230,6 +230,7 @@ function recommendationpagination(url,requirementId){
 	          },{
 		    	  	"targets": colIndex++,
 		    	  	"data": "currentResumeId",
+		    	  	"sortable": false,
 		    	  	"render": function(data, type, report, meta) {
 		    	  	 	var result = "";
 		    	  		if(report.currentResumeId != null && report.currentResumeId !='' && report.currentResumeId !='undefined' ){
@@ -263,6 +264,7 @@ function recommendationpagination(url,requirementId){
 			      },{
 				    	  	"targets": colIndex++,
 				    	  	"data": "finalScore",
+				    	  	"sortable": false,
 				    	  	"render": function(data, type, report, meta) {
 				    	  		 var result = "";
 				    	  		 result = result +'<td class="text-center"><div class="show_scroe"><span>'+report.finalScore+'%</span>';
@@ -363,6 +365,7 @@ function recommendationpagination(url,requirementId){
 				   },{
 					    	  	"targets": colIndex++,
 					    	  	"data": "action",
+					    	  	"sortable": false,
 					    	  	"render": function(data, type, report, meta) {
 					    	  		 var result = "";
 					    	  		 if(report.isCandidateSubmitted == 'N'){

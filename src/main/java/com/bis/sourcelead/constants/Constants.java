@@ -82,6 +82,9 @@ public class Constants {
 	public static final DateFormat SHORT_DF_MM_DD = new SimpleDateFormat("MMM-dd");
 	public static final DateFormat TZ_DF = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
 	
+	// Below line of code is used to print Week days like Sunday, Monday.... by passing Date.
+	public static final SimpleDateFormat WEEK_DAY =  new SimpleDateFormat("EEEE"); 
+	
 	public static final Long SOURCELEAD_ORG_LOCATION_ID = 1L;
 	/*
 	 * public static final DateFormat TZ_DF_TS = new SimpleDateFormat (
@@ -139,7 +142,9 @@ public class Constants {
 	public static final String MAIL_TEAM_MANAGER_APPROVED_EXPENSE = "ExpensesApprovalManagerEmailToEmployee";
 	public static final String MAIL_TEAM_MANAGER_REJECTED_EXPENSE = "ExpensesApprovalRejectedEmailToEmployee";
 	public static final String MAIL_APPROVERS_REOPEN_EXPENSE = "ExpensesReopenEmailToSuperAdmin";
-
+	
+	public static final String LEAVE_CANCEL_EMAIL_TO_USER = "LeaveCancelEmailToUser";
+	public static final String LEAVE_CANCEL_NOTOFICATION_TO_USER = "LeaveCancelNotificationToUser";
 	
 	public static final String MAIL_REOPEN_APPROVED_EXPENSES_EMAIL_TO_APPROVERS = "ReopenApprovedExpenseEmailToApprovers";
 	public static final String MAIL_REOPEN_REJECT_EXPENSES_EMAIL_TO_APPROVERS = "ReopenRejectExpenseEmailToApprovers";
@@ -215,6 +220,15 @@ public class Constants {
 	public static final String TIMESHEET_MANAGER_NOTIFICATION = "Timesheet Scheduler Level1 Manager";
 	public static final String UPDATEDREQUIREMENTNOTIFICATIONTOVENDOR = "updatedRequirementNotificationToVendor";
 	public static final String OFFBOARDINGPROCESSAPPLICANTTERMINATION = "OffBoardingProcessApplicantTermination";
+	
+	public static final String LEAVE_APPROVER_EMAIL = "Approver Leave";
+	public static final String LEAVE_APPROVER_NOTIFICATION = "ApproverLeaveNotification";
+	
+	public static final String LEAVE_REJECTED_EMAIL = "Rejected Leave";
+	public static final String LEAVE_REJECTED_NOTIFICATION = "RejectedLeaveNotification";
+	
+	public static final String LEAVE_WITHDRAW_EMAIL = "Withdraw Leave";
+	public static final String LEAVE_WITHDRAW_NOTIFICATION = "WithdrawLeaveNotification";
 	
 	public static final String RESOURCE_REQUEST = "Resource Request";
 	public static final String RESOURCE_REQUEST_NOTIFICATION = "ResourceRequestNotification";
@@ -824,10 +838,28 @@ public class Constants {
 	public static final String ELECTRONIC_WITHDRAWLS = "ELECTRONIC_WITHDRAWLS";
 	public static final String PAYROLL_CHKS = "PAYROLL_CHKS";
 	
+	public static final String LEAVE_TYPE = "LEAVE_TYPE";
+	
 	public static final String DEFAULT_COOLINGOFF_PERIOD = "3 Months";
+	public static final String[] WEEKENDS = {"Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"};
+	
+	public static final String[] MONTHS = {"January","February","March","April","May","June","July","August","September","October","November","December"};
+	
+	public static final String LEAVE_OPTION = "LEAVE_OPTION";
+	public static final String RESTRICTDAY = "RESTRICT_DAY";
+
+	public static final String LEAVE_PENDING = "PENDING";
+	public static final String LEAVE_APPROVED = "APPROVED";
+	public static final String LEAVE_REJECTED = "REJECTED";
+	public static final String LEAVE_CANCELLED = "CANCELLED";
+	public static final String LEAVE = "LEAVE";
+	public static final String LEAVE_NEW = "NEW"; 
+	public static final String LEAVE_WITHDRAW = "WITHDRAW";
 	
 	public static final String CLINT_VENDOR_DOES_NOT_EXIST = "false";
 	public static final String CLINT_VENDOR_IF_EXIST = "true";
 	public static final String CLINT_VENDOR_IF_EXIST_AS_SAMEORG = "sameorg";
+	public static final String LEAVE_EMAIL_TO_APPROVERS = "LeaveEmailToApprovers";
+	public static final String LEAVE_NOTIFICATION_TO_APPROVERS = "LeaveNotificationToApprovers";
 
 }
