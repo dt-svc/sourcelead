@@ -44,8 +44,6 @@ public class ClientVendorDTO extends SearchDTO implements Serializable {
 	private List<String> invitationStatus;
 
 	private String UUID;
-	
-
 	private List<String> emailAdvanced;
 	private List<String> contactNameAdvanced;
 
@@ -401,6 +399,7 @@ public class ClientVendorDTO extends SearchDTO implements Serializable {
 	public void setInvitationAdvanced(List<String> invitationAdvanced) {
 		this.invitationAdvanced = invitationAdvanced;
 	}
+
 
 
 }
