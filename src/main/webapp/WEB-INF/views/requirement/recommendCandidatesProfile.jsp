@@ -504,15 +504,20 @@ function deleteCandidate(candidateId){
          url: sourceleadUrl+"/deleteCandidateByCandidateId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&reason="+reason+"&candidateType=Candidate",        
          success :function(data) {
               if(data != null && data != 'undefined' && data != ""){
-            		 if( data.indexOf('Sign In') >= 0){
-			    		location.replace(sourceleadUrl);
-			    	 }
-            		 else if (data.indexOf('exception') >= 0) {
-            			 location.replace(sourceleadUrl+"/errorPage");
-            		 }
-            		 else{
+//             		 if( data.indexOf('Sign In') >= 0){
+// 			    		location.replace(sourceleadUrl);
+// 			    	 }
+//             		 else if (data.indexOf('exception') >= 0) {
+//             			 location.replace(sourceleadUrl+"/errorPage");
+//             		 }
+//             		 else{
+            			 $("#recommendationsLoading").attr('style','position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
             			 requirementRecommendations(requirementId);
-            		 }
+            			 	$(".clients_side_wrap").removeClass("clients_side_wrap_active");
+            			 	$(".side_mask").fadeOut();
+            			 	$(".project_inn_mask").fadeOut();
+            			 
+//             		 }
                 }
                  },
               }); 

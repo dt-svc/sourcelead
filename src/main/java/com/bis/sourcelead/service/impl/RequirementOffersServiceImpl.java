@@ -1253,9 +1253,9 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 					}
 					currentDateInTimezone = commonUtil.dateStrFromOrgDateFormatter(orglocation.getDateFormat(),converteDate);
 					offer.setDateOfJoiningStr(currentDateInTimezone);
-					SimpleDateFormat localDateFormat = new SimpleDateFormat("HH:mm:ss");
+					/*SimpleDateFormat localDateFormat = new SimpleDateFormat("HH:mm:ss");
 					String time = localDateFormat.format(converteDate);
-					offer.setDateOfJoiningStr(time);
+					offer.setDateOfJoiningStr(time);*/
 				}
 			}
 			
