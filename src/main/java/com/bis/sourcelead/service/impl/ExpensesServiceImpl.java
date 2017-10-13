@@ -71,7 +71,7 @@ import com.itextpdf.text.pdf.PdfWriter;
 public class ExpensesServiceImpl implements ExpensesService{
 	
 	@Autowired
-	ExpensesDao<Expenses> expensesDao;
+	ExpensesDao expensesDao;
 	
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;	
