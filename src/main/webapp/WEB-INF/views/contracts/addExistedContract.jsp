@@ -1343,7 +1343,7 @@ function hideCommonSOWFields(){
 <script type="text/javascript">
 	function saveExistigContract() {
 		if ($('#newcontract_form').validate(false, validationSettings)) {
-			$("#save_template").attr("disabled", "disabled");
+			/* $("#save_template").attr("disabled", "disabled");
 			$("#save_template" ).addClass('button').val('Processing..');
 			var form = $('#newcontract_form')[0];
       		var formData = new FormData(form); 
@@ -1361,7 +1361,15 @@ function hideCommonSOWFields(){
 					success : function(result) {
 						location.replace(sourceleadUrl+"/contractListbyStatus");
 					},
-					}); 
+					}); */ 
+			var formData = getFormData("newcontract_form");
+			$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:999;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	           $.post( sourceleadUrl+ "/saveExistigContract?${_csrf.parameterName}=${_csrf.token}", formData, function(data) {
+	                      if(data == true){
+	                   	   location.replace(sourceleadUrl+"/contractListbyStatus");
+	                      }
+	                   });		
+					
 			return true;
 		} else {
 			$('#submissionOffersListDiv').find('p.text-primary').remove();

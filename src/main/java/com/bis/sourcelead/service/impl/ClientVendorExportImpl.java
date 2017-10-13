@@ -9,6 +9,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.ss.usermodel.Cell;
@@ -108,21 +109,38 @@ public class ClientVendorExportImpl implements ClientVendorExport {
 	 * @return Sheet
 	 */
 	private Sheet createXlsSheet(Sheet sheet, Row writeRow, OrgRelations orgRelations) {
-//		{"VendorName","Website","Location","Level","Number of Contacts"};
-		if (orgRelations.getOrgName() != null && !"".equalsIgnoreCase(orgRelations.getOrgName())) {
+		//		{"VendorName","Website","Location","Level","Number of Contacts"};
+		if (StringUtils.isNotEmpty(orgRelations.getOrgName())) {
 			writeRow.createCell(0).setCellValue(orgRelations.getOrgName());
 		}
-		if (orgRelations.getWebSite() != null && !"".equalsIgnoreCase(orgRelations.getWebSite())) {
+		if (StringUtils.isNotEmpty(orgRelations.getOrgName())) {
 			StringBuilder sb = new StringBuilder();
 			writeRow.createCell(1).setCellValue(sb.append("www.").append(orgRelations.getWebSite()).toString());
 		}
-		if (orgRelations.getCountry() != null && !"".equalsIgnoreCase(orgRelations.getCountry())) {
+		StringBuilder sb = new StringBuilder();
+		if ((StringUtils.isNotEmpty(orgRelations.getCity())) && (StringUtils.isNotEmpty(orgRelations.getState())) && (StringUtils.isNotEmpty(orgRelations.getCountry()))){
+			sb.append(orgRelations.getCity()).append(",").append(orgRelations.getState()).append(",").append(orgRelations.getCountry());
+			writeRow.createCell(2).setCellValue(sb.toString());
+		}else if ((StringUtils.isNotEmpty(orgRelations.getCity())) && (StringUtils.isNotEmpty(orgRelations.getState()))){
+			sb.append(orgRelations.getCity()).append(",").append(orgRelations.getState());
+			writeRow.createCell(2).setCellValue(sb.toString());
+		}else if((StringUtils.isNotEmpty(orgRelations.getState())) && (StringUtils.isNotEmpty(orgRelations.getCountry()))){
+			sb.append(orgRelations.getState()).append(",").append(orgRelations.getCountry());
+			writeRow.createCell(2).setCellValue(sb.toString());
+		}else if ((StringUtils.isNotEmpty(orgRelations.getCity())) && (StringUtils.isNotEmpty(orgRelations.getCountry()))){
+			sb.append(orgRelations.getCity()).append(",").append(orgRelations.getCountry());
+			writeRow.createCell(2).setCellValue(sb.toString());
+		}else if(StringUtils.isNotEmpty(orgRelations.getCity())){
+			writeRow.createCell(2).setCellValue(orgRelations.getCity());
+		}else if(StringUtils.isNotEmpty(orgRelations.getState())){
+			writeRow.createCell(2).setCellValue(orgRelations.getState());
+		}else if(StringUtils.isNotEmpty(orgRelations.getCountry())){
 			writeRow.createCell(2).setCellValue(orgRelations.getCountry());
 		}
-		if (orgRelations.getLevel() != null && !"".equalsIgnoreCase(orgRelations.getLevel())) {
+		if (StringUtils.isNotEmpty(orgRelations.getLevel())){
 			writeRow.createCell(3).setCellValue(orgRelations.getLevel());
 		}
-		if (orgRelations.getNoOfContatcs() != null) {
+		if (orgRelations.getNoOfContatcs() != null){
 			writeRow.createCell(4).setCellValue(orgRelations.getNoOfContatcs());
 		}
 		return sheet;
