@@ -195,14 +195,14 @@
              <div class="col-xs-6 col-md-6">
              		<select class="form-control selectpicker" id="experienceYears" name="experienceYears" onchange="disableMonths();">
              		  <option value="">Years</option>
-             		  <c:forEach begin="0" end="25" varStatus="loop">
+             		  <c:forEach begin="0" end="50" varStatus="loop">
 						    <option>${loop.index}</option>
 						</c:forEach>
              		</select>
              </div>
              
              <div class="col-xs-6 col-md-6">
-             		<select class="form-control selectpicker" id="experienceMonths" name="experienceMonths">
+             		<select class="form-control selectpicker experienceMonths" id="experienceMonths" name="experienceMonths">
              		<option value="">Months</option>
              		 <c:forEach begin="0" end="11" varStatus="loop">
 						    <option>${loop.index}</option>
@@ -696,27 +696,24 @@ function validate_fileupload(fileName)
  
  <!-- Experience Years and Months validation Script years greater than  20 the months dropdown disabled script here -->
  <script type="text/javascript">
-		 function disableMonths() {
-		     $("#experienceYears").change(function() {
-		         if ($("#experienceYears").val() == '25'){
-		        	 $("#experienceMonths").val('');  
-		        	 $('#experienceMonths').selectpicker('refresh');
-		        	/*  $('#experienceMonths').attr("disabled", true);
-		             $('#experienceMonths').val("disabled", true); */
-		         }else{
-		        	 $("#experienceMonths").val('');  
-		        	 $('#experienceMonths').selectpicker('refresh');
-		        	 $("#experienceMonths").attr("disabled", false); 
-		         }
-		     });
-		 }
- 
-	      
-	     /* upload file script */
-	     document.getElementById("uploadBtn").onchange = function () {
-	     	$('#uploadFile').val($(this).val().replace(/C:\\fakepath\\/i, ''));
-	       // document.getElementById("uploadFile").value = this.value.split( '\\' ).pop();
-	     };
+ $("#experienceYears").change(function() {
+     if ($('#experienceYears').val()=='50'){
+    	 $("#experienceMonths").val('');
+    	 $('#experienceMonths').selectpicker('refresh');
+    	 $('#experienceMonths').attr("disabled", "disabled");
+    	
+     }else{
+    	 $('#experienceMonths').val("");  
+    	 $('#experienceMonths').selectpicker('refresh');
+    	 $("#experienceMonths").attr("disabled", false); 
+     }
+ });
+}
+    /* upload file script */
+    document.getElementById("uploadBtn").onchange = function () {
+    	$('#uploadFile').val($(this).val().replace(/C:\\fakepath\\/i, ''));
+      // document.getElementById("uploadFile").value = this.value.split( '\\' ).pop();
+    };
 
  
 </script>

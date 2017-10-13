@@ -18,6 +18,8 @@ import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
@@ -58,7 +60,8 @@ public class Leave {
 	private String toHalfDay;
 
 	@NotFound(action = NotFoundAction.IGNORE)
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(cascade = CascadeType.ALL)
+	@Fetch(FetchMode.SELECT)
 	@JsonBackReference
 	@JoinColumn(name = "LEAVE_TYPE_ID", nullable = false)
 	private LeaveType leaveType;

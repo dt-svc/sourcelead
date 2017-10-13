@@ -3,11 +3,8 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
- <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script> 
-<script type="text/javascript" src="https://www.amcharts.com/lib/3/amcharts.js"></script>
-<script type="text/javascript" src="https://www.amcharts.com/lib/3/pie.js"></script>
 
-
+	  
 <script type="text/javascript">
 window.onload = function() { 
 	getPieChartBasedOnUser();
@@ -259,10 +256,11 @@ function removeEndValid(){
  		
  <script type="text/javascript">
  function getPieChartBasedOnUser(){
-	 
+	 var orgLocationId = '${SourceLeadWeb_orgLocationId}';
+		var userId = '${SourceLeadWeb_userId}';
 	 $.ajax({
          type : "GET",
-          url: sourceleadUrl+"/getPieChartForLeaveStatus?"+tokenParamName+"="+tokenValue+"",    
+          url: sourceleadUrl+"/getPieChartForLeaveStatus?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&userId="+userId,    
           success :function(json) {
         	  
         	  var output = "";
@@ -337,7 +335,6 @@ function getpieChar(json){
 		}				
 	);
 }
-     
  }
 </script>
 		
@@ -369,7 +366,7 @@ function applyLeave(){
 		if ($('#apply_leave_form').validate(false, validationSettings)) {
 	  	var formData = $($('#apply_leave_form')[0]).serialize();
 		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-		$.post(sourceleadUrl+"/applyLeave?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&userId="+userId+"", formData, function(data) {
+		$.post(sourceleadUrl+"/applyLeave?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&userId="+userId, formData, function(data) {
 			if(data == true){
 				location.replace(sourceleadUrl+ "/leaveManagementReports");
 			}

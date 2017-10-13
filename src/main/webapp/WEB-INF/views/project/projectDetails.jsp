@@ -164,9 +164,11 @@
 					    result  = result + '<i class="fa fa-check-circle"></i><span id="docMsgDiv2"></span>';
 					    result  = result + '</div>';
 						
-						result = result +'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_PROJECT\')">'; 
-						result = result	+ '<a id="edit-user" href="javascript:editProjectDetails('+ projectId+ ')"><i class="glyphicon glyphicon-pencil"></i>Edit</a>';
-	   		    		result = result +'</sec:authorize>';
+						if(json.orgLocationsId.id == '${SourceLeadWeb_orgLocations.id}'){
+						    result = result +'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_PROJECT\')">'; 
+							result = result	+ '<a id="edit-user" href="javascript:editProjectDetails('+ projectId+ ')"><i class="glyphicon glyphicon-pencil"></i>Edit</a>';
+		   		    		result = result +'</sec:authorize>';
+						}
 						
 	   		    		result = result + '</div>';
 	   		    		
@@ -498,8 +500,7 @@
 							result = result + '</select>';
 							result = result + '</div>';
 
-						result = result + '<div class="user_summary_edit_cta projectdetails_edit_cta">';
-// 						result = result + '	<label class="user_summary_edit_cta projectdetails_checkbox">Is Client Project ? <input type="checkbox" valu="" name="isclient"></label>';
+						/* result = result + '<div class="user_summary_edit_cta projectdetails_edit_cta">';
 						result = result + '	<label class="user_summary_edit_cta projectdetails_checkbox">Is Client Project </label>';
 						if (json.relationId != null) {
 							result = result	+ '<select class="noImg" id="clientId" disabled="disabled" name="clientId">';
@@ -522,7 +523,7 @@
 
 						}
 						result = result + '</select>';
-						result = result + '</div>';
+						result = result + '</div>'; */
 
 						result = result + '<div class="user_summary_edit_cta projectdetails_edit_cta">';
 						result = result + '<label>Team members</label>';

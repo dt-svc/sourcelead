@@ -77,7 +77,7 @@ public class LeaveDaoImpl implements LeaveDao{
 		if(StringUtils.isNotBlank(leaveDTO.getLeaveStatus())) {
 			StringBuilder searchQuery = new StringBuilder("");
 			StringBuilder leavesearchQuery = new StringBuilder("");
-			String query = "from LeaveApproveHierarchy laph left join fetch laph.leaveid leave left join fetch laph.leaveid.leaveType left join fetch leave.user ltype where leave.orgLocations.id = :orgLocationId and laph.approverUserId.id= :userId and leave.status =  '"+leaveDTO.getLeaveStatus()+"'";
+			String query = "from LeaveApproveHierarchy laph left join fetch laph.leaveid leave left join fetch leave.leaveType left join fetch leave.user ltype where leave.orgLocations.id = :orgLocationId and laph.approverUserId.id= :userId and leave.status =  '"+leaveDTO.getLeaveStatus()+"'";
 			String countQuery ="from Leave leave where leave.orgLocations.id = :orgLocationId and leave.status = '"+leaveDTO.getLeaveStatus()+"'";
 			if(StringUtils.isNotBlank(leaveDTO.getSearchValue())){
 				searchQuery.append(" and (laph.leaveid.user.firstName like '%" + leaveDTO.getSearchValue() + "%' ")
@@ -115,7 +115,7 @@ public class LeaveDaoImpl implements LeaveDao{
 			if (leaveDTO != null && leaveDTO.getLength() > 0) {
 				queryObj.setFirstResult(leaveDTO.getStart());
 				queryObj.setMaxResults(leaveDTO.getLength());
-				queryObj.setLong("orgLocationId", orgLocations.getId()).setLong("userId", usrId).setCacheable(false).list();
+				queryObj.setLong("orgLocationId", orgLocations.getId()).setLong("userId", usrId).setCacheable(true).list();
 			}
 			leaveApproveHierarchyList = queryObj.list();
 			int count = 0;

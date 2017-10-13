@@ -52,8 +52,8 @@
 
 function getHolidaysList(){
 	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
-	var userId = '${SourceLeadWeb_userId}';
-	$.get(sourceleadUrl+"/getHolidaysList?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&userId="+userId+"", function(data) {
+// 	var userId = '${SourceLeadWeb_userId}';
+	$.get(sourceleadUrl+"/getHolidaysList?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId, function(data) {
 		var result = "";	
 		$("#viewHolidaysDiv").empty();
 				result = result + '<table id="viewHolidaysTableId" class="display" cellspacing="0" width="100%" >';

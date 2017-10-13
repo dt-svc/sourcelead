@@ -758,10 +758,10 @@ $(document).ready(function () {
           <div class="clearfix"></div>
          <div class="form-group">
 				<div class="ml">
-					<c:set var="val" value="${requirement.isClientJob}" />
+<%-- 					<c:set var="val" value="${requirement.isClientJob}" /> --%>
 					<c:choose>
 						<c:when test="${val == 'Y'}">
-							<input disabled="disabled" type="checkbox" name="isTemplate"
+							<input  type="checkbox" name="isTemplate"
 								id="isTemplate" value="" onclick="getTemplateVal();">
 						</c:when>
 						<c:otherwise>
@@ -2820,7 +2820,7 @@ function getLevel2Approvers(currentApproverId){
 
 <script type="text/javascript">
  function validateJobId(jobId) {
-	 
+	 $('input#jobId').removeAttr( "record-exist record-exist-errormsg");
 	 var requirementid = document.getElementById("requirementId").value;
 	/*  if(requirementid != null && requirementid != '' && requirementid != 'undefined' ){ */
 		 if(jobId == null || jobId == "" || jobId == "undefined"){

@@ -183,7 +183,7 @@ public class TimesheetSubmissionListController {
 				     	 sb.append("    </td>");
 					     Float totalHours = 0f;
 					     Float estimatedTotalHours = 0f;
-					     SubmissionApproverHierarchy sah = submissionApproverHierarchyService.getSubmissionApproverHierarchyByProjectMemberIdStartDateAndEndDateForApproverLogin(user.getId(),projectMember.getId(),actualStartDate,actualEndDate);
+					     SubmissionApproverHierarchy sah = submissionApproverHierarchyService.getSubmissionApproverHierarchyByMasterCandidateIdStartDateAndEndDateForApproverLogin(user.getId(),projectMember.getProjects().getId(),projectMember.getMasterCandidateId().getId(),loginOrgLocations.getId(),actualStartDate,actualEndDate);
 					     if(displayWeeksList != null && !displayWeeksList.isEmpty()){
 					    	    for (Map.Entry<Date,Date> entry : displayWeeksList.entrySet()) { 
 					    	    	  long diff = CalendarUtil.getNumberOfDays(entry.getKey(), entry.getValue());
