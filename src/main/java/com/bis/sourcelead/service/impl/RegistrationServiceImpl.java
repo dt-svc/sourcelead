@@ -295,7 +295,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 //		saveDefaultContractTemplate(org,orgLocations,user," Default NCA Template","NSA");
 		
 		saveOrgLocationDefaultProject(registration, orgLocations, user);
-		//commonUtil.storeVendorOnboardDefaultTemplate(user, orgLocations);
+		commonUtil.storeVendorOnboardDefaultTemplate(user, orgLocations);
 		
 		userService.saveOrUpdateUserElkDocument(userRole,employee,"sladmin");
 		userService.sendEmail(user, loginUser, password,orgLocations.getId());
