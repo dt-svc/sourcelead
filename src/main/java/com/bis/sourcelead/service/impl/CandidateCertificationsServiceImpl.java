@@ -126,32 +126,19 @@ public class CandidateCertificationsServiceImpl implements CandidateCertificatio
 				if (StringUtils.isNotBlank(candidateCertificationDTO.getValidFrom())) {
 					try {
 						
-						//String pattern = "dd-MM-yyyy";
-                        //DateFormat format = LoginSessionController.DATEFORMAT;
-                        
-                        Date validFrom = commonUtil.orgLocationDateFormat(orgLocationId.getDateFormat(),candidateCertificationDTO.getValidFrom());
+                        Date validFrom = commonUtil.orgLocationDateFormat(candidateCertificationDTO.getDateFormat(),candidateCertificationDTO.getValidFrom());
                         candidatecertificate.setValidFrom(validFrom);
 						
-						/*SimpleDateFormat sdf = new SimpleDateFormat("yyyy-mm-dd");
-						if(jsonObject.getString("validFrom") != null && jsonObject.getString("validFrom") != ""){
-						candidatecertificate.setValidFrom(sdf.parse(jsonObject.getString("validFrom")));
-						}*/
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
 				}
 				if (StringUtils.isNotBlank(candidateCertificationDTO.getValidTo())) {
 					try {
-						//String pattern = "dd-MM-yyyy";
-						//DateFormat format = LoginSessionController.DATEFORMAT;
                         
-                        Date validTo = commonUtil.orgLocationDateFormat(orgLocationId.getDateFormat(),candidateCertificationDTO.getValidTo());
+                        Date validTo = commonUtil.orgLocationDateFormat(candidateCertificationDTO.getDateFormat(),candidateCertificationDTO.getValidTo());
                         candidatecertificate.setValidTo(validTo);
 						
-						/*SimpleDateFormat sdf = new SimpleDateFormat("yyyy-mm-dd");
-						if(jsonObject.getString("validTo") != null && jsonObject.getString("validTo") != ""){
-						candidatecertificate.setValidTo(sdf.parse(jsonObject.getString("validTo")));
-						}*/
 					} catch (Exception e) {
 						e.printStackTrace();
 					}

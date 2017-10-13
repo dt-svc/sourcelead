@@ -80,8 +80,8 @@ public class CandidateReferencesDaoImpl implements CandidateReferencesDao{
 	public List<CandidateReferences> getCandidateReferencesListByCandidateIdAndOrgLocationID(Long candidateId,
 			Long orgLocationId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from CandidateReferences cr left join fetch cr.candidateId where cr.candidateId.id =:candidateId and cr.orgLocationId.id =:orgLocationId and cr.status ='1' ORDER BY cr.createdDate DESC";
-		List<CandidateReferences> candidateReferencesList = session.createQuery(query).setLong("candidateId", candidateId).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+		String query = "from CandidateReferences cr left join fetch cr.candidateId where cr.candidateId.id =:candidateId and cr.status ='1' ORDER BY cr.createdDate DESC";
+		List<CandidateReferences> candidateReferencesList = session.createQuery(query).setLong("candidateId", candidateId).setCacheable(true).list();
 		return candidateReferencesList;
 	}
 

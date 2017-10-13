@@ -1,5 +1,6 @@
 package com.bis.sourcelead.service.impl;
 
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -9,12 +10,17 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.index.query.BoolQueryBuilder;
+import org.elasticsearch.index.query.MatchQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
+import org.elasticsearch.search.sort.SortOrder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,16 +28,21 @@ import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.RecommendationsDao;
+import com.bis.sourcelead.dto.CandidateDTO;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.elk.index.CandidateIndex;
+import com.bis.sourcelead.elk.index.ClientVendorIndex;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateEducation;
 import com.bis.sourcelead.entity.CandidateResumes;
+import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.RecommendedCustomizeScore;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.service.CandidateResumesService;
 import com.bis.sourcelead.service.CandidateService;
+import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.RecommendationsService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
 import com.bis.sourcelead.util.CommonUtil;
@@ -62,6 +73,9 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 	 
 	 @Autowired
 	 private ConversionUtil conversionUtil;
+	 
+	 @Autowired
+	 private OrgLocationService orgLocationService;
 	 
 	 /*@Autowired
 	 private CandidateSkillsService candidateSkillsService;*/
@@ -587,7 +601,7 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<CandidateIndex> getRecommendationsUpdateWithScoreByUsingElk(Long orgLocationId, RecommendedCustomizeScore recommendedCustomizeScore,Long requirementId,String candidatesSelected) throws Exception {
+	public ResponseList<CandidateIndex> getRecommendationsUpdateWithScoreByUsingElk(Long orgLocationId, RecommendedCustomizeScore recommendedCustomizeScore,Long requirementId,String candidatesSelected,CandidateDTO candidateDTO) throws Exception {
 		float locationPercentage = 0; // location 10%
 		float ratePercentage = 0;    // rate 10 %
 		float skillPercentage = 0; // skill = 20%
@@ -600,12 +614,16 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 		float eduPer = 0;
 		float visaPer = 0;
 		List<CandidateIndex> CandidateListcopy = new ArrayList<>(); 
+		ResponseList<CandidateIndex> response = new ResponseList<>();
 		String reqSkills = "";
 		if(null != recommendedCustomizeScore.getCustomizeSkills() && !"".equalsIgnoreCase(recommendedCustomizeScore.getCustomizeSkills())){
 //			Long maxResults = candidateService.getCandidatesCountByOrgLocationID(orgLocationId,null);
+			BoolQueryBuilder boolQueryBuilderForCount = new BoolQueryBuilder();
 			BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
 			 boolQueryBuilder.must(QueryBuilders.matchQuery("orgLocationId", orgLocationId));
 			 boolQueryBuilder.must(QueryBuilders.matchQuery("status",1));
+			 boolQueryBuilderForCount.must(QueryBuilders.matchQuery("orgLocationId", orgLocationId));
+			 boolQueryBuilderForCount.must(QueryBuilders.matchQuery("status",1));
 		     reqSkills = recommendedCustomizeScore.getCustomizeSkills();
 		     String visaType = null;
 		     if(recommendedCustomizeScore.getCustomizeVisatype() != null){
@@ -629,6 +647,7 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 			if(reqMaxSkills != null && reqMaxSkills.length >0){
 				for(String skill : reqMaxSkills){
 					boolQueryBuilder.should(QueryBuilders.matchQuery("skillsName", skill));
+					boolQueryBuilderForCount.should(QueryBuilders.matchQuery("skillsName", skill));
 				}
 			}
 			
@@ -638,6 +657,7 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 				if(visatypeArr != null && visatypeArr.length >0){
 					for(String visa : visatypeArr){
 						boolQueryBuilder.should(QueryBuilders.matchQuery("visaType", visa));
+						boolQueryBuilderForCount.should(QueryBuilders.matchQuery("visaType", visa));
 					}
 				}
 			}
@@ -655,6 +675,7 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 		        	candiListBuilder.should(candidateCompareQueryBuilder);
 		        }
 		        boolQueryBuilder.must(candiListBuilder);
+		        boolQueryBuilderForCount.must(candiListBuilder);
 			}
 			
 			String [] educationArr = null;
@@ -662,14 +683,66 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 				educationArr = education.split(",");
 				for(String edu : educationArr){
 					boolQueryBuilder.should(QueryBuilders.matchQuery("education", edu));
+					boolQueryBuilderForCount.should(QueryBuilders.matchQuery("education", edu));
 				}
 			}
 			
 			boolQueryBuilder.minimumShouldMatch("1");
+			boolQueryBuilderForCount.minimumShouldMatch("1");
+			String[] tableColumns = {"firstName", "email", "city", "mobilePhone", "currentResumeId", "noOfReq","updatedDate","finalScore","action"};
 			
-			//Long  count = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_CANDIDATE_INDEX, Constants.ELK_CANDIDATE_TYPE,0,0,boolQueryBuilder).getTotalHits();
+		    int sortColumnIndex = 1; //by default sorting using updated date
+			boolean sortColumnOrder = false; //by default descending order
+			if(candidateDTO.getOrder() != null && !candidateDTO.getOrder().isEmpty()) {
+				sortColumnIndex = Integer.parseInt(candidateDTO.getOrder().get(0).get("column"));
+				sortColumnOrder = !candidateDTO.getOrder().get(0).get("dir").equalsIgnoreCase("desc");
+			}
 			
-			SearchHit[] searchHits = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_CANDIDATE_INDEX, Constants.ELK_CANDIDATE_TYPE,0,200,boolQueryBuilder).getHits();
+			// count
+			
+			
+			// count end
+			
+			 List<String> anyKeyWordArray = new ArrayList<>();
+				if(StringUtils.isNotEmpty(candidateDTO.getSearchValue())) {
+					anyKeyWordArray.add(candidateDTO.getSearchValue());
+				}
+				
+				if (anyKeyWordArray != null && !anyKeyWordArray.isEmpty()) {
+					BoolQueryBuilder anyBoolQueryBuilder = QueryBuilders.boolQuery();
+					for (String keywd : anyKeyWordArray) {
+						BoolQueryBuilder anyBoolSubQueryBuilder = QueryBuilders.boolQuery();
+						List<MatchQueryBuilder> matchQueryBuilderList = getMatchQueryBuilderList(keywd);
+						if (matchQueryBuilderList != null && !matchQueryBuilderList.isEmpty()) {
+							for (MatchQueryBuilder matchQueryBuilder : matchQueryBuilderList) {
+								anyBoolSubQueryBuilder.should(matchQueryBuilder);
+							}
+							
+							OrgLocations loginOrgLocation = orgLocationService.getOrgLocations(orgLocationId);
+							DateFormat df = loginOrgLocation.getLocFullFormDateFormatter();
+							try{
+								if(keywd.contains("/")){
+									keywd = keywd.replaceAll("/", "-");
+								}
+								Date d = df.parse(keywd);
+								anyBoolSubQueryBuilder = QueryBuilders.boolQuery();
+								String dateStr = commonUtil.elkDateFormatter(d);
+								anyBoolSubQueryBuilder.should(QueryBuilders.termQuery("updatedDate", dateStr));
+							 }
+							 catch(Exception e){}
+							
+							anyBoolQueryBuilder.should(anyBoolSubQueryBuilder);
+						}
+					}
+					boolQueryBuilder.must(anyBoolQueryBuilder);
+//					boolQueryBuilderForCount.must(anyBoolQueryBuilder);
+				}
+			
+			SearchResponse searchResponse = sourceleadELKBaseIndexer
+					.searchDocumentWithMaxResults(Constants.ELK_CANDIDATE_INDEX, Constants.ELK_CANDIDATE_TYPE,
+							0, 100, tableColumns[sortColumnIndex], sortColumnOrder ? SortOrder.ASC : SortOrder.DESC, boolQueryBuilder);
+			
+			SearchHit searchHits[] = searchResponse.getHits().getHits();
 			
 			if(null != searchHits && searchHits.length >0){
 				percentPerSkill = Integer.parseInt(recommendedCustomizeScore.getCustomizeSkillScore())/(float)reqMaxSkills.length;
@@ -833,10 +906,18 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 		                return 0;
 		            }  
 		        });
+				response.setRecordsFiltered(searchHits.length);
+				SearchResponse searchResponseForCount = sourceleadELKBaseIndexer
+						.searchDocumentWithMaxResults(Constants.ELK_CANDIDATE_INDEX, Constants.ELK_CANDIDATE_TYPE,
+								0, 10, "email", SortOrder.DESC, boolQueryBuilderForCount);
+				
+				response.setRecordsTotal(searchResponseForCount == null ? response.getRecordsFiltered() : Long.valueOf(searchResponseForCount.getHits().getTotalHits()).intValue());
 			 }
 		 }
-		logger.info("....RecommendationsWithScoreByUsingElk Method Ended...");
-		return CandidateListcopy;
+		 response.setData(CandidateListcopy);
+		 return response;
+//		logger.info("....RecommendationsWithScoreByUsingElk Method Ended...");
+//		return CandidateListcopy;
 	}
 	
 	
@@ -1054,5 +1135,54 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 			noticePeriod = 0;
 		}
 		return noticePeriod;
+	}
+	
+	private List<MatchQueryBuilder> getMatchQueryBuilderList(String keywd) {
+		List<MatchQueryBuilder> matchQueryBuilderList = new ArrayList<MatchQueryBuilder>();
+		matchQueryBuilderList.add(QueryBuilders.matchQuery("firstName", keywd));
+		matchQueryBuilderList.add(QueryBuilders.matchQuery("lastName", keywd));
+		matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("email", keywd));
+		matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("alternateEmail", keywd));
+		matchQueryBuilderList.add(QueryBuilders.matchQuery("country", keywd));
+		matchQueryBuilderList.add(QueryBuilders.matchQuery("city", keywd));
+		matchQueryBuilderList.add(QueryBuilders.matchQuery("state", keywd));
+		matchQueryBuilderList.add(QueryBuilders.matchQuery("address", keywd));
+		matchQueryBuilderList.add(QueryBuilders.matchQuery("designation", keywd));
+		matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("designationType", keywd));
+		matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("currentRateType", keywd));
+		matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("currentRateCurrency", keywd));
+		matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("rateType", keywd));
+		matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("expectedRateCurrencey", keywd));
+		matchQueryBuilderList.add(QueryBuilders.matchQuery("summary", keywd));
+		matchQueryBuilderList.add(QueryBuilders.matchQuery("education", keywd));
+		matchQueryBuilderList.add(QueryBuilders.matchQuery("skillsName", keywd));
+		matchQueryBuilderList.add(QueryBuilders.matchQuery("visaType", keywd));
+		matchQueryBuilderList.add(QueryBuilders.matchQuery("employer", keywd));
+		matchQueryBuilderList.add(QueryBuilders.matchQuery("certifications", keywd));
+		matchQueryBuilderList.add(QueryBuilders.matchQuery("candidateType", keywd));
+		matchQueryBuilderList.add(QueryBuilders.matchQuery("noticePriod", keywd));
+		// matchQueryBuilderList.add(QueryBuilders.matchQuery("currentResumeName",
+		// keywd));
+		matchQueryBuilderList.add(QueryBuilders.matchQuery("resumeContent", keywd));
+		matchQueryBuilderList.add(QueryBuilders.matchQuery("mobilePhone", keywd));
+		matchQueryBuilderList.add(QueryBuilders.matchQuery("alternateMobilePhone", keywd));
+		matchQueryBuilderList.add(QueryBuilders.matchQuery("generatedId", keywd));
+
+		Matcher matcher = Pattern.compile("\\d+").matcher(keywd);
+		if (matcher.find()) {
+			Float expYears = Float.valueOf(matcher.group());
+			matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("experienceYears", expYears));
+			// matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("experienceMonths",
+			// keywd));
+			String mobileKeywd = matcher.group().replaceAll("[+91]", "");
+			matchQueryBuilderList.add(QueryBuilders.matchQuery("alternateMobilePhone", mobileKeywd));
+			matchQueryBuilderList.add(QueryBuilders.matchQuery("mobilePhone", mobileKeywd));
+		}
+		if (StringUtils.isNumeric(keywd)) {
+			matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("currentRate", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("expectedRate", keywd));
+		}
+
+		return matchQueryBuilderList;
 	}
 }

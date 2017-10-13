@@ -1747,11 +1747,9 @@ function cancelContract(){
 </script>
 
 <script>
- $(function() {
 	$("#uploadBtn").change(function() {
 		fileUpload("uploadBtn", "ContractDocs", "newcontract_form");
 	});
- }); 
 </script>
 
 <script>

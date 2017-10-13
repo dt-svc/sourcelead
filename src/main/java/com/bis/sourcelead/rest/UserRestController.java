@@ -274,6 +274,8 @@ public class UserRestController {
 
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		addUserDTO.setDateFormat(orgLocations.getDateFormat());
+		candidateDTO.setDateFormat(orgLocations.getDateFormat());
 		userService.storeUser(addUserDTO, candidateDTO, user, orgLocations, "CREATEUSER", "", new Org());
 		// userService.createUser(jsonObj,user,orgLocations.getId());
 		SourceLeadSessionManager.setSessionAttribute(request, "userCreateMsg", "Success !!New user created");
@@ -557,7 +559,7 @@ public class UserRestController {
 				pmhList.add(pmh);
 				
 				if (employee.getRate() != null && !"".equalsIgnoreCase(employee.getRate())) {
-					projectMembers.setCurrentBillRate(Float.parseFloat(employee.getRate()));
+					projectMembers.setCurrentBillRate(Double.parseDouble(employee.getRate()));
 				}
 				// need change role
 				projectMembers.setRole(user.getUserType());
@@ -598,7 +600,38 @@ public class UserRestController {
 						  projectMembers.setUpdatedBy(user.getUserCode());
 						  projectMembers.setStatus(status);
 						  projectMembersService.saveProjectMember(projectMembers);
-					  	  ProjectMembersHistory pmh = projectMembersHistoryService.getProjectMembersOpenHistoryByProjectMemberId(projectMembers.getId());
+					  	  
+						  
+						  List<ProjectMembersHistory> pmhList = projectMembersHistoryService.getProjectMembersHistoryListByProjectMemberId(projectMembers.getId());
+						  int sendEmailCount = 1;
+						  if(pmhList != null && pmhList.size() > 0){
+							  for(ProjectMembersHistory pmh : pmhList){
+								  pmh.setProjectTerminationDate(new Date());
+								  pmh.setUpdatedDate(new Date());
+								  pmh.setUpdatedBy(user.getUserCode());
+								  pmh.setStatus(Constants.PROJECT_MEMBER_HISTORY_CLOSED);
+								  pmh =  projectMembersHistoryService.updateProjectMembersHistory(pmh);
+								  if(sendEmailCount == 1){
+									  terminatedMailToEmployee(user,pmh,orgLocations);
+								  }
+								  
+								  if(pmh.getProjectMemberId().getProjectClientsId().getOrgLocationsId().getId().equals(orgLocations.getId())){
+									   List<ProjectApproverHierarchy>  mangerList = projectApproverHierarchyService.getApproverUsersByProjectId(pmh.getProjectMemberId().getProjects().getId());
+									      for(ProjectApproverHierarchy pah : mangerList){
+									    	  if(user.getId() != pah.getApproverUserId().getId()){
+									    		  employeeTerminationMailToProjectManager(user,pmh,orgLocations);
+									    	  }
+									      }
+								  }else{
+									  employeeTerminationMailToProjectManager(pmh.getProjectMemberId().getProjectClientsId().getOrgLocationsId().getUser(),pmh,pmh.getProjectMemberId().getProjectClientsId().getOrgLocationsId());
+								  }
+								  
+								  sendEmailCount = sendEmailCount+1;
+							  }
+						  }
+						  
+						  
+						 /* ProjectMembersHistory pmh = projectMembersHistoryService.getProjectMembersOpenHistoryByProjectMemberId(projectMembers.getId());
 						  if(pmh != null){
 							  pmh.setProjectTerminationDate(new Date());
 							  pmh.setUpdatedDate(new Date());
@@ -608,16 +641,7 @@ public class UserRestController {
 						  }
 						  
 						  commonUtil.terminateProjectMemberByProjectMemberId(projectMemberId,Primary.Yes);
-					      updatedCount = 1;
-					      terminatedMailToEmployee(user,pmh,orgLocations);
-					      
-					      List<ProjectApproverHierarchy>  mangerList = projectApproverHierarchyService.getApproverUsersByProjectId(pmh.getProjectMemberId().getProjects().getId());
-					      for(ProjectApproverHierarchy pah : mangerList){
-					    	  if(user.getId() != pah.getApproverUserId().getId()){
-					    		  employeeTerminationMailToProjectManager(user,pmh,orgLocations);
-					    	  }
-					      }
-					      
+					      updatedCount = 1;*/
 					      
 				  	   }
 					   if(null != projectId){
@@ -1052,6 +1076,8 @@ private void terminatedMailToEmployee(User loginUser, ProjectMembersHistory pmh,
 	        		        	    OrgLocationDTO orgLocationDTO =  getOrgLocationDetails(orgLocations,userRole);
 	        		        	    orgLocationDTO.setMenuList(tabNamesList);
 	        		        	    orgLocationDTO.setMenuIconsList(tabIconsList);
+	        		        	    Candidate candidate = candidateService.getCandidateByConsultantUserId(user.getId(), orgLocations.getId());
+	        		        	    orgLocationDTO.setCandidateId(candidate.getId());
 	        		        	    //orgLocationDTO.setRoleActionsList(actionRolesList);
 	        		        	    orgLocationDTO.setUserType(userRole.getUserType());
 	        		        	    orgLocationsList.add(orgLocationDTO);
@@ -1075,6 +1101,8 @@ private void terminatedMailToEmployee(User loginUser, ProjectMembersHistory pmh,
 		 private OrgLocationDTO getOrgLocationDetails(OrgLocations orgLocations,UserRole useRole){
 			 OrgLocationDTO orgLocationDTO = new OrgLocationDTO();
 			 orgLocationDTO.setOrgName(orgLocations.getOrgLocationName());
+			 orgLocationDTO.setOrgLocationId(orgLocations.getId());
+			 orgLocationDTO.setOrgId(orgLocations.getOrg().getId());
 			 orgLocationDTO.setLocationCode(orgLocations.getLocationCode());
 			 orgLocationDTO.setOrgCode(orgLocations.getOrg().getOrgCode());
 			 if(orgLocations.getOrg().getDocFile() != null && orgLocations.getOrg().getFileContentType() != null){

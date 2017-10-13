@@ -123,48 +123,20 @@ function storeCertificate(candidateId){
 		 
 			
 		if ($('#Candidate_certification_form').validate(false,validationSettings)) {
-			/* var frm = $('#Candidate_certification_form').serializeFormJSON();
-			var con = JSON.stringify(frm);
-			con = con.replace(/[{}]/g, "");
-			var jsonData = encodeURIComponent(con);
-			var sourceleadUrl = '${sourceleadUrl}';
-			 
-			$("#Candidate_certification_form").attr("disabled", "disabled");
-			 $("#addCandidate").attr("disabled", "disabled"); */
+			
 			 var formData = getFormData("Candidate_certification_form");
 				$("#Candidate_certification_form").attr("disabled", "disabled");
 				 $("#addCandidate").attr("disabled", "disabled");
 		        $.post(sourceleadUrl+"/storeCandidateCertifications?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId, formData, function(data) {
 		        	closeCertificatePopup();
+		        	$("#selector5").removeAttr("style");
+	     			$("#selector5").css({ display: "block" });
+	     			$("#cerMsgDiv").html("Success!! New Certification added");
 		        	candidateCertificateList(candidateId);
                		cerMsgFadein();
                		qwikCertificates(candidateId);
 		        });
-				/* $.ajax({
-						type : "POST",
-						url : sourceleadUrl
-								+ "/storeCandidateCertifications?"+tokenParamName+"="+tokenValue+"&json="
-								+ jsonData + "&candidateId=" + candidateId,
-						success : function(data) {
-							if (data != null && data != 'undefined'
-									&& data != "") {
-								if (data.indexOf('Sign In') >= 0) {
-									location.replace(sourceleadUrl);
-								} else if (data.indexOf('exception') >= 0) {
-									location.replace(sourceleadUrl+ "/errorPage");
-								}
-								else{
-									$("#popUpDivEmp").removeClass("edit-details-active");
-			            			$("#selector5").removeAttr("style");
-			            			$("#selector5").css({ display: "block" });
-			            			$("#cerMsgDiv").html("Success!! New Certification added");
-				               		candidateCertificateList(candidateId);
-				               		cerMsgFadein();
-				               		qwikCertificates(candidateId);
-							    	}
-							   }
-						},
-					}); */
+				
 			return true;
 		} else {
 			return false;
@@ -227,21 +199,6 @@ function candidateCertificateList(candidateId){
           url: sourceleadUrl+"/getCandidateCertificationListByCandidateIdAndOrgLocationID?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
           success :function(data) {
         	  var json = JSON.parse(data);
-               /* if(data != null && data != 'undefined' && data != "" && data != '[]'){ */
-             			 
-             			/* var json = JSON.parse(data);
-	                      for (var i = 0; i < 1; i++) {
-	                             var val= json[i];
-	                             var opt = "";
-	                                     if(val.msg != null && val.msg != '' && val.msg != 'undefined'){
-	                                             opt  = opt + '<div class="success_pop" id="selector1" style="display: block;">';
-	                                             opt  = opt + '<i class="fa fa-check-circle"></i><span>'+val.msg+'</span>';
-	                                             opt  = opt + '</div>';
-	                                             }
-	                                     $("#msgDiv").empty();
-	                                     $("#msgDiv").append(opt);
-	                             } */
-	                      
 	                	 $("#candidateCertificateList").empty();
 	                	 var result = "";
 	                	
@@ -358,24 +315,6 @@ function candidateCertificateList(candidateId){
 	                     $("#candidateCertificateList").append(result); 
 	                     certificationPagination(); 
 	                     msgFadein(); 
-             /*   }else{
-	    	         var result ="";
-		    	     result = result+"   <div class='row'>"; 
-					 result = result+"	<div class='col-lg-12'>"; 
-					 result = result+"		<div class='content-area clearfix'>"; 
-					 result = result+"			<div class='blank-pages'>";
-					 result = result+"			        <p><i class='fa fa-5x fa-bar-chart'></i></p>";
-					 result = result+"			        <p>No Candidate Certifications Found</p>";
-					 result = result+"			 </div>";
-					 result = result+"		</div>"; 
-					 result = result+"	</div>"; 
-					 result = result+"  </div> "; 
-					$("#candidateCertificateList").empty();
-				    $("#candidateCertificateList").append(result);
-				    
-				    $("#popUpDivEmp").empty();
-					$("#popUpDivEmp").append(result);
-               } */
         },
           
      }); 
@@ -661,12 +600,6 @@ function addCertification(candidateId) {
 									 e.stopPropagation();
 								 });
 								 
-								 
-								/* var datepickerStartDate = toDate("#StartDateEdit");
-								datepickerStartDate.setDate(datepickerStartDate.getDate() + 1);
-								
-								var datepickerEndDate = toDate("#EndDateEdit");
-								datepickerEndDate.setDate(datepickerEndDate.getDate() - 1); */
 								var cerStartDate = $("#StartDateEdit").val();
 								var cerEndDate = $("#EndDateEdit").val(); 
 								

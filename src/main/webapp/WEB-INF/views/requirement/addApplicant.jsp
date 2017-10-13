@@ -27,6 +27,9 @@
 <!-- For add New Applicant -->
 <script>
 function getAddApplicant(requirementId){
+	$(".new_side_wrap").addClass("new_side_wrap_active");
+	$(".side_mask").fadeIn(200);
+	$("body").css('overflow-y', 'hidden');
 	$('.action-pop').slideUp();
 	var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
 	  var finalDateFormatScript = '';
@@ -609,7 +612,7 @@ $('body').on('submit', '#editSubmittedApplicant_form', function(e){
 	     	  if(name == "WorkExperience"){
 	     		 var monthExp = document.getElementById("monthExp").value; 
 	     		  if(null != inputValue){
-	     			  if(inputValue == "25"){
+	     			  if(inputValue == "50"){
 	     				 inputValue = inputValue+" Years";
 	     			  }else{
 	     				 inputValue = inputValue+" Years"+" "+monthExp+" Months" ;
@@ -725,7 +728,7 @@ function isCoolingOffAlert(){
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a' style='z-index:350000'>";
 	result = result +"		<p>Applicant Cooling-Off period (${requirement.reqCoolingOffPeriod}) not completed</p>";
 	result = result + ' <div id="reasonForSpocDiv"/>';
-	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Proceed' onClick='proceedApplicant();'><input class='u_can_color' type='button' value='Discord' onClick='discordApplicant();'></b>";
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Proceed' onClick='proceedApplicant();'><input class='u_can_color' type='button' value='Discard' onClick='discordApplicant();'></b>";
 	result = result +"	</div>";
 	$("#popUp").append(result);
 	$("#remove_user_pop").slideDown(200);
@@ -1011,7 +1014,7 @@ $('body').on('submit', '#addApplicant_form', function(e){
 	     	  if(name == "WorkExperience"){
 	     		 var monthExp = document.getElementById("monthExp").value; 
 	     		  if(null != inputValue){
-	     			  if(inputValue == "25"){
+	     			  if(inputValue == "50"){
 	     				 inputValue = inputValue+" Years";
 	     			  }else{
 	     				 inputValue = inputValue+" Years"+" "+monthExp+" Months" ;
@@ -1175,7 +1178,7 @@ $('body').on('submit', '#submitRecomendedApplicant_form', function(e){
 	     	  if(name == "WorkExperience"){
 	     		 var monthExp = document.getElementById("monthExp").value; 
 	     		  if(null != inputValue){
-	     			  if(inputValue == "25"){
+	     			  if(inputValue == "50"){
 	     				 inputValue = inputValue+" Years";
 	     			  }else{
 	     				 inputValue = inputValue+" Years"+" "+monthExp+" Months" ;
@@ -1674,7 +1677,7 @@ function getCandidateDetails(){
 		        	 
 		        	 if(json['experienceYears'] != null && json['experienceYears'] != "" && json['experienceYears'] != 'undefined'){
 		        		 $("select[name=WorkExperience]").val(json['experienceYears']);
-		        		 if(json['experienceYears'] == "25"){
+		        		 if(json['experienceYears'] == "50"){
 		        			 $("#monthExp").attr("disabled", "disabled");
 		        		 }else{
 		        			 $("#monthExp").removeAttr("disabled");
@@ -1996,7 +1999,7 @@ function getRecomededCandidateDetails(candidateId){
 		        	 
 		        	 if(json['experienceYears'] != null && json['experienceYears'] != "" && json['experienceYears'] != 'undefined'){
 		        		 $("select[name=WorkExperience]").val(json['experienceYears']);
-		        		 if(json['experienceYears'] == "25"){
+		        		 if(json['experienceYears'] == "50"){
 		        			 $("#monthExp").attr("disabled", "disabled");
 		        		 }else{
 		        			 $("#monthExp").removeAttr("disabled");
@@ -2081,7 +2084,7 @@ function getRecomededCandidateDetails(candidateId){
 <script>
 function getExpYears(){
 	var expYears = $("select[name=WorkExperience]").val();
-	 if(expYears == "25"){
+	 if(expYears == "50"){
 		/*  $("#monthExp").attr("disabled", "disabled"); */
 	 }else{
 		 $("#monthExp").removeAttr("disabled");

@@ -1,6 +1,7 @@
 package com.bis.sourcelead.dao;
 
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
 import com.bis.sourcelead.entity.ProjectTasks;
@@ -18,7 +19,13 @@ public interface ProjectTasksDao {
     
     public Boolean deleteTask(String id)throws Exception;
     
+    public ProjectTasks getProjectTasksByUUID(String taskUUD)throws Exception;
+    
     public List<ProjectTasks> getAllTasks()throws Exception;
+    
+    public List<ProjectTasks> getAllTasksByProjectIdAndTaskType(Long projectId,Long TaskType)throws Exception;
+    
+    public List<ProjectTasks> getAllTasksByProjectIdAndSubTaskType(Long projectId,Long subTaskType)throws Exception;
     
     public List<ProjectTasks> getAllTasksByProjectId(Long projectId)throws Exception;
     
@@ -27,4 +34,17 @@ public interface ProjectTasksDao {
     public List<ProjectTasks> getAllSourceleadTasks()throws Exception;
     
     public ProjectTasks validateTaskNameByTaskId(Long taskId,String taskName,Long projectId)throws Exception;
+    
+    public List<ProjectTasks> getAllTasksByProjectIdAndTaskTypeAndTaskStatus(Long projectId,String taskType,String taskStatus)throws Exception;
+    
+    public List<ProjectTasks> getAllTasksByProjectIdAndParentTaskId(Long projectId,Long parentTaskId)throws Exception;
+    
+    public Long getProjectTasksGeneratedIdByProjectId(Long projectId,Integer generatedIdCount) throws Exception;
+    
+    Integer getProjectTasksListCountByProjectIdAndStatus(Long projectId,String  status) throws Exception;
+    
+    public List<ProjectTasks> getOverdueTaskListByProjectId(Long projectId,String filterDate, Date startDateUTC, Date endDateUTC)throws Exception;
+    
+    public List<ProjectTasks> getAllTasksByProjectIdAndFilter(Long projectId,String filterDate, Date startDateUTC, Date endDateUTC)throws Exception;
+    
 }

@@ -195,21 +195,6 @@ function closeCertificatePopup(){
 		result = result + '	                  <input type="text" class="form-control input-sm" placeholder="Address" name="address" data-validation="required validate_Space validate_length length2-250"  data-validation-optional="true" field-name="Address" value=""> <span 	class="hidden">Address</span>';
 		result = result + '	                 </div>';
 		result = result + '	               </div>';
-		
-		/* result = result + '	               <div class="clearfix mb10 dates">';
-		
-		result = result + '	                   <div class="col-md-6" id="startYearDiv">';
-		result = result + '	                    <p>Start Date</p>';
-		result = result	+ '	                   <input type="text" max class="form-control calendar" value="" id="startYear" name="startYear"  placeholder="Start Date"  field-name="Start Date" readonly>';
-		result = result + '	                 </div>';
-		
-		result = result + '	                   <div class="col-md-6 endDate" id="endDateDiv" >';
-		result = result + '	                  <p>End Date</p>';
-		result = result	+ '	                   <input type="text" max class="form-control calendar" id="endYear" name="endYear" field-name="End Year"  placeholder="End Date" readonly>';
-		result = result + '	                 </div>';
-		
-		result = result + '	                 </div> '; */
-		
 		result = result + '	               <div class="clearfix mb10">';
 		result = result + '	                 <p class="ml">Start Date</p>';
 		result = result + '	                 <div class="col-md-6">';
@@ -601,24 +586,9 @@ function closeCertificatePopup(){
 					url : sourceleadUrl	+ "/getCandidatesEmployersListByCandidateIdAndOrgLocationID?"+tokenParamName+"="+tokenValue+"&candidateId="
 							+ candidateId,
 					success : function(data) {
-					/* 	if (data != null && data != 'undefined' && data != "" && data != '[]') {
-							if (data.indexOf('Sign In') >= 0) {
-								location.replace(sourceleadUrl);
-							} else if (data.indexOf('exception') >= 0) {
-								location.replace(sourceleadUrl + "/errorPage");
-							} else { */
+					
 								var json = JSON.parse(data);
-		             			/* for (var i = 0; i < 1; i++) {
-		                            var val= json[i];
-		                            var opt = "";
-		                                    if(val.msg != null && val.msg != '' && val.msg != 'undefined'){
-		                                            opt  = opt + '<div class="success_pop" id="selector3" style="display: block;">';
-		                                            opt  = opt + '<i class="fa fa-check-circle"></i><span>'+val.msg+'</span>';
-		                                            opt  = opt + '</div>';
-		                                            }
-		                                    $("#msgDiv2").empty();
-		                                    $("#msgDiv2").append(opt);
-		                            } */
+		             			
 								$("#candidateEmployersList").empty();
 								var result = "";
 								result = result	+ "<table id='candidateEmployersPagination' class='display' cellspacing='0' width='100%' >";
@@ -690,24 +660,7 @@ function closeCertificatePopup(){
 								$("#candidateEmployersList").append(result);
 								employeePagination();
 								msgFadein2();
-						/* 	}
-						} else {
-							var result = "";
-							result = result + "   <div class='row'>";
-							result = result + "	<div class='col-lg-12'>";
-							result = result + "		<div class='content-area clearfix'>";
-							result = result + "			<div class='blank-pages'>";
-							result = result
-									+ "			        <p><i class='fa fa-5x fa-bar-chart'></i></p>";
-							result = result
-									+ "			        <p>No Candidate Employers Found</p>";
-							result = result + "			 </div>";
-							result = result + "		</div>";
-							result = result + "	</div>";
-							result = result + "  </div> ";
-							$("#candidateEmployersList").empty();
-							$("#candidateEmployersList").append(result);
-						} */
+						
 					},
 
 				});
@@ -935,9 +888,6 @@ function removeEmployer(candidateemployerId, candidateId){
 				 $("#endYearEdit" ).val( '' );
 			 }
 			 
-			/* if(exisitngEndYear == null || exisitngEndYear == '' || exisitngEndYear =='undefined'){
-				$("#endYearEdit" ).val( '' );
-			} */
 		}
 
 	}

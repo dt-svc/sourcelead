@@ -550,7 +550,7 @@ public class TimesheetSubmissionsServiceImpl implements TimesheetSubmissionsServ
 				    	  Calendar endCal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
 				    	  endCal.setLenient(false);
 				    	  endCal.setTime(employeeEndDate);
-				    	  startCal.setTime(CalendarUtil.getPreviousWeekDayByCalendar(endCal,"MON").getTime());
+				    	  startCal.setTime(CalendarUtil.getPreviousWeekDayByCalendar(endCal,"MON", orgLocations.getDateFormat()).getTime());
 				      }
 				      else if(employeeStartDate.after(currentWeekStartDate)){
 				    	  startCal.setTime(employeeStartDate);
@@ -562,7 +562,7 @@ public class TimesheetSubmissionsServiceImpl implements TimesheetSubmissionsServ
 	            	      Calendar endCal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
 				    	  endCal.setLenient(false);
 				    	  endCal.setTime(employeeEndDate);
-				    	  startCal.setTime(CalendarUtil.getPreviousWeekDayByCalendar(endCal,"MON").getTime());
+				    	  startCal.setTime(CalendarUtil.getPreviousWeekDayByCalendar(endCal,"MON", orgLocations.getDateFormat()).getTime());
 	               }
 	               else{
 	            	   startCal.setTime(sDate);
@@ -1127,11 +1127,23 @@ public class TimesheetSubmissionsServiceImpl implements TimesheetSubmissionsServ
 	}
 	
 	@Override
+	public TimesheetSubmissions getAllCandidateTimesheetSubmissionsByProjectIdAndMasterCandidateId(Date startDate, Date endDate,
+			Long projectId,Long masterCandidateId) throws Exception {
+		return timesheetSubmissionsDao.getAllCandidateTimesheetSubmissionsByProjectIdAndMasterCandidateId(startDate, endDate, projectId,masterCandidateId);
+	}
+	
+	
+	@Override
 	public List<TimesheetSubmissions> getAllEmployeeTimesheetSubmissionsByProjectMemberIdForUpdation(Date startDate, Date endDate,
 			Long projectMemberId) throws Exception {
 		return timesheetSubmissionsDao.getAllEmployeeTimesheetSubmissionsByProjectMemberIdForUpdation(startDate, endDate, projectMemberId);
 	}
 
+	
+	@Override
+	public List<TimesheetSubmissions> getAllCandidateTimesheetSubmissionsByProjectIdAndMasterCandidateIdForUpdation(Date startDate,Date endDate,  Long  projectId,Long masterCandidateId) throws Exception {
+		return timesheetSubmissionsDao.getAllCandidateTimesheetSubmissionsByProjectIdAndMasterCandidateIdForUpdation(startDate, endDate, projectId, masterCandidateId);
+	}
 	
 	
 

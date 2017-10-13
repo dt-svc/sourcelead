@@ -191,7 +191,7 @@
              <div class="col-xs-6 col-md-6">
              		<select class="form-control selectpicker" id="experienceYears" name="experienceYears" onchange="disableMonths();">
              		  <option value="">Years</option>
-             		  <c:forEach begin="0" end="25" varStatus="loop">
+             		  <c:forEach begin="0" end="50" varStatus="loop">
 						    <option>${loop.index}</option>
 						</c:forEach>
              		</select>
@@ -604,25 +604,7 @@ function validate_fileupload(fileName)
 						       
 			    	         }
 		    	});
-		    /* 
-		    chosen.search_field.on('keyup', function(e)
-		    {
-		    	var newSkill = this.value.replace(",","");
-		        if ((e.which == 13 || e.which == 188) && (newSkill != null  && newSkill != '' && newSkill != 'undefined'))
-		        {
-		        	var par = this.parent;
-		            var option = $("<option>").val(newSkill).text(newSkill);
-		            select.append(option);
-		            select.find(option).prop('selected', true);
-		          //to doesn't allow duplicates
-                    $("#candidateSkills option").each(function(){
-                          $(this).siblings("[value='"+ this.value+"']").remove();
-                    });
-                    //end
-	        		$("#candidateSkills").trigger("chosen:updated");
-	        		
-		        }
-		    }); */
+		
 		    //Adding Customized Skills to the list
 		    
 		    //Adding Customized Educations to the list
@@ -725,7 +707,7 @@ function validate_fileupload(fileName)
  <script type="text/javascript">
 		 function disableMonths() {
 		     $("#experienceYears").change(function() {
-		         if ($("#experienceYears").val() == '25'){
+		         if ($("#experienceYears").val() == '50'){
 		        	 $("#experienceMonths").val('');  
 		        	 $('#experienceMonths').selectpicker('refresh');
 		        	/*  $('#experienceMonths').attr("disabled", true);
