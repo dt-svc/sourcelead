@@ -1663,7 +1663,8 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 			 java.sql.Timestamp startDate = new java.sql.Timestamp(startDateFormat.getTime());
 			 java.sql.Timestamp endDate = new java.sql.Timestamp(endDateFormat.getTime());
 			 
-			 String query = "select count(distinct rs.requirement) from RequirementSubmission rs where rs.candidate.id = :candidateId and (rs.createdDate BETWEEN :startDate and :endDate)";
+			 String query = "select count(distinct rs.requirement) from RequirementSubmission rs where rs.candidate.id = :candidateId and "
+			 		+ "(rs.createdDate BETWEEN :startDate and :endDate) and rs.sourceSubmission IS NULL";
 		     
 		     List<Long> appliedCount = session.createQuery(query).setLong("candidateId", candidateId)
 		    		   .setDate("startDate", startDate)
@@ -1712,11 +1713,11 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 				String query;
 				List<RequirementSubmission>  submissionsCountList = null ;
 				if(null != submissionStatus && !"".equalsIgnoreCase(submissionStatus) && submissionStatus != "undefined"){
-					 query = "from RequirementSubmission rs left join fetch rs.requirement left join fetch rs.candidate where rs.candidate.id = :candidateId and rs.submissionStatus = :submissionStatus and (rs.createdDate BETWEEN :startDate and :endDate))";
+					 query = "from RequirementSubmission rs left join fetch rs.requirement left join fetch rs.candidate where rs.candidate.id = :candidateId and rs.submissionStatus = :submissionStatus and rs.sourceSubmission IS NULL and (rs.createdDate BETWEEN :startDate and :endDate))";
 					 submissionsCountList = session.createQuery(query).setLong("candidateId", candidateId) .setString("submissionStatus", submissionStatus)
 				    		   .setDate("startDate", startDate) .setDate("endDate", endDate).setCacheable(true).list();
 				}else{
-					 query = "from RequirementSubmission rs left join fetch rs.requirement left join fetch rs.candidate where rs.candidate.id = :candidateId and (rs.createdDate BETWEEN :startDate and :endDate))";
+					 query = "from RequirementSubmission rs left join fetch rs.requirement left join fetch rs.candidate where rs.candidate.id = :candidateId and (rs.createdDate BETWEEN :startDate and :endDate) and rs.sourceSubmission IS NULL)";
 					 submissionsCountList = session.createQuery(query).setLong("candidateId", candidateId) .setDate("startDate", startDate)
 							   .setDate("endDate", endDate).setCacheable(true).list();
 				}
@@ -1746,7 +1747,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 			 
 			 java.sql.Date ourJavaDateObject = new java.sql.Date(appliedDate.getTime());
 		     
-			 String query = "select count(distinct rs.requirement) from RequirementSubmission rs where rs.candidate.id = :candidateId and DATE(rs.createdDate) = :appliedDate ";
+			 String query = "select count(distinct rs.requirement) from RequirementSubmission rs where rs.candidate.id = :candidateId and DATE(rs.createdDate) = :appliedDate and rs.sourceSubmission IS NULL ";
 		     
 		     List<Long> appliedCount = session.createQuery(query).setLong("candidateId", candidateId).setDate("appliedDate", ourJavaDateObject).setCacheable(true).list();
 			 Integer count= 0;

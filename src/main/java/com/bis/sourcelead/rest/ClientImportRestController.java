@@ -19,6 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.ClientVendorUploadDTO;
 import com.bis.sourcelead.entity.BulkClientDetails;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateEducation;
@@ -59,7 +60,7 @@ public class ClientImportRestController {
 	@PreAuthorize("hasAnyRole('ROLE_VENDOR_BULK_IMPORTS','ROLE_CLIENT_BULK_IMPORTS')")
 	@RequestMapping(value = "/clientExcelFileUpload", method = RequestMethod.POST)
 	@ResponseBody
-	public String fileUploaded(MultipartHttpServletRequest request,@RequestParam(value = "responderType", required = false) String responderType)throws Exception{
+	public String fileUploaded(ClientVendorUploadDTO clientVendorUploadDTO,MultipartHttpServletRequest request,@RequestParam(value = "responderType", required = false) String responderType)throws Exception{
 
 		String isSuccess =  "failure";
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
@@ -81,7 +82,7 @@ public class ClientImportRestController {
 		}else if("invalid".equalsIgnoreCase(isFileCreated)){
 			isSuccess = "invalid";
 		}else{
-			List<BulkClientDetails> bulkClientDetailsList = clientImportsService.getbulkClientDetailsByOrgLocationId(orgLocation,user,org,"Y",responderType);
+			List<BulkClientDetails> bulkClientDetailsList = clientImportsService.getbulkClientDetailsByOrgLocationId(clientVendorUploadDTO,orgLocation,user,org,"Y",responderType);
 			List<BulkClientDetails> filteredBulkClientDetailsList = bulkClientDetailsList.stream()
 					.filter(bulkClientDetails -> bulkClientDetails.getEmail() != null
 							&& !"".equalsIgnoreCase(bulkClientDetails.getEmail()))

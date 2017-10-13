@@ -574,7 +574,7 @@ public class UsersListRestController {
 			} else {
 				userRole.setHireDateStr("");
 			}
-			
+
 			userRole.setDailyHours(employee.getDailyHours());
 			userRole.setUserEmploymentType(employee.getUserEmploymentType());
 			userRole.setDesignationOtherType(employee.getDesignationOtherType());

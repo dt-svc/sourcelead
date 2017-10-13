@@ -34,7 +34,7 @@ padding-left: 25px;
       <div class="pull-left">
           <h2 id="candidateName"></h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>  &raquo; <a href="<c:url value='/candidateOnBoardingList'/>">Employee Offboarding Summary</a> &raquo; Employee Offboarding Summary </div>
+      <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>  &raquo; <a href="<c:url value='/candidateOnBoardingList'/>">Candidate Offboarding Summary</a> &raquo; Employee Offboard Summary </div>
     </section>
     <div class="content-area content-new clearfix">
       <div class="applicant_accept">

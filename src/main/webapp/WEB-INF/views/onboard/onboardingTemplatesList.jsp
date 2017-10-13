@@ -12,6 +12,11 @@
 <section class="content-wraper">
     <div id="onboardingLoading"></div>
     <section class="content-header clearfix">
+     <c:if test="${!empty msg}">
+	        <div class="success_pop" id="selector"  style="display: block;">
+		         <i class="fa fa-check-circle"></i><span>${msg}</span>
+			</div>
+	     </c:if>
           <div class="pull-left">
       <!-- <h2>Submission Templates</h2> -->
       <h2 class="pull-left">Onboard Templates</h2>
@@ -51,7 +56,11 @@ $(document).ready(function(){
 	onboardingTemplatesList();
 });
 </script>
-
+<script>
+  $("#selector").fadeIn(200);
+  $('#selector').delay(2000).fadeOut('slow');
+	      
+</script>
 
 <script>
 function onboardingTemplatesList(){  

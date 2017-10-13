@@ -144,14 +144,18 @@ public class MailBoxRestController {
 	
 	@PreAuthorize("hasRole('ROLE_HOTLIST_CAMPAIGN')")
 	@RequestMapping(value = "/sendHotListCampaign", method = RequestMethod.POST)
-	public String sendHotListCampaign(HotListEmailCampaignDTO hotListEmailCampaignDTO,HttpServletRequest request) throws Exception {
+	public String sendHotListCampaign(HotListEmailCampaignDTO hotListEmailCampaignDTO,MultipartHttpServletRequest  request) throws Exception {
+		
+		MultipartFile multiFile = null;
+		Iterator<String> itrator = request.getFileNames();
+		if(itrator.hasNext()){
+	        multiFile = request.getFile(itrator.next());
+		}
+		
 		hotListEmailCampaignDTO.setStaticPath(staticPath);
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		hotListEmailCampaignService.sendHotListEmailCampaign(hotListEmailCampaignDTO, user, orgLocation);
-		
-		
-		
+		hotListEmailCampaignService.sendHotListEmailCampaign(hotListEmailCampaignDTO, user, orgLocation,multiFile);
 		return "success";
 	}
 	
@@ -159,11 +163,18 @@ public class MailBoxRestController {
 	
 	@PreAuthorize("hasRole('ROLE_MAIL_BOX')")
 	@RequestMapping(value = "/sendEmailToUsers", method = RequestMethod.POST)
-	public String sendEmailToUsers(HotListEmailCampaignDTO hotListEmailCampaignDTO,HttpServletRequest request) throws Exception {
+	public String sendEmailToUsers(HotListEmailCampaignDTO hotListEmailCampaignDTO,MultipartHttpServletRequest  request) throws Exception {
+		
+		MultipartFile multiFile = null;
+		Iterator<String> itrator = request.getFileNames();
+		if(itrator.hasNext()){
+	        multiFile = request.getFile(itrator.next());
+		}
+		
 		hotListEmailCampaignDTO.setStaticPath(staticPath);
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		emailService.sendEmail(hotListEmailCampaignDTO, user, orgLocation);
+		emailService.sendEmail(hotListEmailCampaignDTO, user, orgLocation,multiFile);
 		
 		
 		return "success";

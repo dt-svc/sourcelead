@@ -64,6 +64,8 @@ public class ClientDTO {
 	
 	private List<String> owner;
 	
+	private List<String> templateId;
+	
 	private String OwnerUserId;
 	
 	private String existingSpocUserId;
@@ -97,6 +99,8 @@ public class ClientDTO {
 	private AddUserDTO addUserDTO;
 	
 	private CandidateDTO candidateDTO;
+	
+	private String UUID;
 	
 	
 	public String getOrgName() {
@@ -357,6 +361,18 @@ public class ClientDTO {
 	}
 	public void setExistingSpocUserId(String existingSpocUserId) {
 		this.existingSpocUserId = existingSpocUserId;
+	}
+	public List<String> getTemplateId() {
+		return templateId;
+	}
+	public void setTemplateId(List<String> templateId) {
+		this.templateId = templateId;
+	}
+	public String getUUID() {
+		return UUID;
+	}
+	public void setUUID(String uUID) {
+		UUID = uUID;
 	}
 	
 }
