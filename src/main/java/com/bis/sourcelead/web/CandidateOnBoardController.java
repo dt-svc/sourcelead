@@ -208,6 +208,11 @@ public class CandidateOnBoardController {
  			
  			model.setViewName("onboard/onboardingTemplatesList");
  			model.addObject("sourceleadUrl", sourceleadUrl);
+ 			String msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "OnboardCreateMsg"); 
+ 			if(!isNullOrEmpty(msg)){ 
+ 			model.addObject("msg", msg); 
+ 			SourceLeadSessionManager.removeSessionAttribute(request, "OnboardCreateMsg"); 
+ 			}
  			return model;
  	}
 	
@@ -310,24 +315,24 @@ public class CandidateOnBoardController {
 	
 	
 	@PreAuthorize("hasRole('ROLE_VIEW_EDIT_ON_BOARD_USER')")
-	@RequestMapping(value = "/viewOnboardCandidateSummary")
- 	public ModelAndView viewOnboardCandidateSummary(@RequestParam(value="onboardUUID", required=false) String onboardUUID,
- 			HttpServletRequest request) throws Exception {
-		   
-		    ModelAndView model = new ModelAndView();
- 			
-		    SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
-			if(sessionData == null)
-			{
-				sessionData = new SessionMaintainanceData();
-			}
-			sessionData.setNav(Constants.OnAndOffboard);
- 			
- 			
- 			model.setViewName("onboard/viewOnboardCandidateSummary");
- 			model.addObject("sourceleadUrl", sourceleadUrl);
- 			model.addObject("onBoardingUUID", onboardUUID);
- 			return model;
- 	}
-	
+    @RequestMapping(value = "/viewOnboardCandidateSummary")
+     public ModelAndView viewOnboardCandidateSummary(@RequestParam(value="onboardUUID", required=false) String onboardUUID,
+                     HttpServletRequest request) throws Exception {
+               
+                ModelAndView model = new ModelAndView();
+                     
+                SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
+                    if(sessionData == null)
+                    {
+                            sessionData = new SessionMaintainanceData();
+                    }
+                    sessionData.setNav(Constants.OnAndOffboard);
+                     
+                     
+                     model.setViewName("onboard/viewOnboardCandidateSummary");
+                     model.addObject("sourceleadUrl", sourceleadUrl);
+                     model.addObject("onBoardingUUID", onboardUUID);
+                     return model;
+     }
+
 }

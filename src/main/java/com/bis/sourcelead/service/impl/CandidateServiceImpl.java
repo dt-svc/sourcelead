@@ -486,8 +486,11 @@ public class CandidateServiceImpl implements CandidateService {
 		if(StringUtils.isNotBlank(candidateDto.getVendors())){
 			OrgRelations orgRelation = orgRelationsService.getOrRelationsById(Long.parseLong(candidateDto.getVendors()));
 			candidate.setOrgRelationId(orgRelation);
+			Candidate vendorCandidate =  commonUtil.getVendorCandidateForCandidateCreation(candidateDto, orgRelation, orgLocations, user);
+			candidate.setParentCandidateId(vendorCandidate);
 		}else{
 			candidate.setOrgRelationId(null);
+			candidate.setParentCandidateId(null);
 		}
 		
 		if(StringUtils.isNotBlank(candidateDto.getVendorcontact())){
@@ -1583,6 +1586,12 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 				can.setCandidateName(can.getFirstName());
 		}
 		return associateList;
+	}
+
+
+	@Override
+	public Candidate getCandidateByParentCandidateId(Long parentCandidateId) throws Exception {
+		return candidateDao.getCandidateByParentCandidateId(parentCandidateId);
 	}
 
 }

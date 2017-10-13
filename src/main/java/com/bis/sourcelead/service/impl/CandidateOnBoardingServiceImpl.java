@@ -11,6 +11,7 @@ import java.util.Map;
 
 import javax.mail.internet.InternetAddress;
 
+import org.apache.commons.lang.StringUtils;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -26,6 +27,7 @@ import com.bis.sourcelead.dao.TaskDao;
 import com.bis.sourcelead.dao.TeamMemberDao;
 import com.bis.sourcelead.dao.UserDao;
 import com.bis.sourcelead.dao.UserRoleDao;
+import com.bis.sourcelead.dto.CandidateOnBoardingDTO;
 import com.bis.sourcelead.elk.index.UserIndex;
 import com.bis.sourcelead.elk.index.helper.UserIndexHelper;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
@@ -54,6 +56,9 @@ import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.web.LoginSessionController;
+import com.drew.lang.StringUtil;
+
+import cucumber.deps.difflib.StringUtills;
 
 @Service
 public class CandidateOnBoardingServiceImpl implements CandidateOnBoardingService{
@@ -119,7 +124,7 @@ public class CandidateOnBoardingServiceImpl implements CandidateOnBoardingServic
 	}
 
 	@Override
-	public CandidateOnBoarding saveOnBoardingCandidatesDetails(JSONObject jsonObj, OrgLocations orgLocations, User user)
+	public CandidateOnBoarding saveOnBoardingCandidatesDetails(CandidateOnBoardingDTO candidateOnBoardingDTO, OrgLocations orgLocations, User user)
 			throws Exception {
 		
 		CandidateOnBoarding candidateOnBoarding = null;
@@ -127,14 +132,14 @@ public class CandidateOnBoardingServiceImpl implements CandidateOnBoardingServic
 		//date format code
 		//SimpleDateFormat dateFormat = orgLocations.getLocFullFormDateFormatter();
 		
-		if(jsonObj.has("savedonboardId") && !isNullOrEmpty(jsonObj.getString("savedonboardId"))){
-			candidateOnBoarding = candidateOnBoardingDao.getCandidateOnBoardingById(Long.valueOf(jsonObj.getString("savedonboardId")));
+		if(StringUtils.isNotBlank(candidateOnBoardingDTO.getSavedonboardId())){
+			candidateOnBoarding = candidateOnBoardingDao.getCandidateOnBoardingById(Long.valueOf(candidateOnBoardingDTO.getSavedonboardId()));
 		}else{
 			candidateOnBoarding = new CandidateOnBoarding();
 			candidateOnBoarding.setOnboardCandidateUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 		}
 		
-		String[] onboardCandiate = jsonObj.getString("onboardCandiate").split(",");
+		String[] onboardCandiate = candidateOnBoardingDTO.getOnboardCandiate().split(",");
 		
 		Candidate candidate = new Candidate();
 		candidate.setId(Long.valueOf(onboardCandiate[0]));
@@ -144,119 +149,119 @@ public class CandidateOnBoardingServiceImpl implements CandidateOnBoardingServic
 		
 		candidateOnBoarding.setCandidateId(candidate);
 		candidateOnBoarding.setOfferId(offer);
-		candidateOnBoarding.setFirstName(jsonObj.getString("firstName"));
+		candidateOnBoarding.setFirstName(candidateOnBoardingDTO.getFirstName());
 		
-		if(jsonObj.has("lastName") && !isNullOrEmpty(jsonObj.getString("lastName"))){
-			candidateOnBoarding.setLastName(jsonObj.getString("lastName"));
+		if(StringUtils.isNotBlank(candidateOnBoardingDTO.getLastName())){
+			candidateOnBoarding.setLastName(candidateOnBoardingDTO.getLastName());
 		}else{
 			candidateOnBoarding.setLastName(null);
 		}
 		
-		if(jsonObj.has("address1") && !isNullOrEmpty(jsonObj.getString("address1"))){
-			candidateOnBoarding.setAddress1(jsonObj.getString("address1"));
+		if(StringUtils.isNotBlank(candidateOnBoardingDTO.getAddress1())){
+			candidateOnBoarding.setAddress1(candidateOnBoardingDTO.getAddress1());
 		}
 		
-		if(jsonObj.has("address2") && !isNullOrEmpty(jsonObj.getString("address2"))){
-			candidateOnBoarding.setAddress2(jsonObj.getString("address2"));
+		if(StringUtils.isNotBlank(candidateOnBoardingDTO.getAddress2())){
+			candidateOnBoarding.setAddress2(candidateOnBoardingDTO.getAddress2());
 		}else{
 			candidateOnBoarding.setAddress2(null);
 		}
 		
-		if(jsonObj.has("location") && !isNullOrEmpty(jsonObj.getString("location"))){
-			candidateOnBoarding.setLocation(jsonObj.getString("location"));
+		if(StringUtils.isNotBlank(candidateOnBoardingDTO.getLocation())){
+			candidateOnBoarding.setLocation(candidateOnBoardingDTO.getLocation());
 		}
 		
-		if(jsonObj.has("country") && !isNullOrEmpty(jsonObj.getString("country"))){
-			candidateOnBoarding.setCountry(jsonObj.getString("country"));
+		if(StringUtils.isNotBlank(candidateOnBoardingDTO.getCountry())){
+			candidateOnBoarding.setCountry(candidateOnBoardingDTO.getCountry());
 		}
 		
-		if(jsonObj.has("state") && !isNullOrEmpty(jsonObj.getString("state"))){
-			candidateOnBoarding.setState(jsonObj.getString("state"));
+		if(StringUtils.isNotBlank(candidateOnBoardingDTO.getState())){
+			candidateOnBoarding.setState(candidateOnBoardingDTO.getState());
 		}else{
 			candidateOnBoarding.setState(null);
 		}
 		
-		if(jsonObj.has("city") && !isNullOrEmpty(jsonObj.getString("city"))){
-			candidateOnBoarding.setCity(jsonObj.getString("city"));
+		if(StringUtils.isNotBlank(candidateOnBoardingDTO.getCity())){
+			candidateOnBoarding.setCity(candidateOnBoardingDTO.getCity());
 		}else{
 			candidateOnBoarding.setCity(null);
 		}
 		
-		if(jsonObj.has("zipCode") && !isNullOrEmpty(jsonObj.getString("zipCode"))){
-			candidateOnBoarding.setZipCode(jsonObj.getString("zipCode"));
+		if(StringUtils.isNotBlank(candidateOnBoardingDTO.getZipCode())){
+			candidateOnBoarding.setZipCode(candidateOnBoardingDTO.getZipCode());
 		}else{
 			candidateOnBoarding.setZipCode(null);
 		}
 		
-		if(jsonObj.has("mobileNumber") && !isNullOrEmpty(jsonObj.getString("mobileNumber"))){
-			candidateOnBoarding.setMobileNumber(jsonObj.getString("mobileNumber"));
+		if(StringUtils.isNotBlank(candidateOnBoardingDTO.getMobileNumber())){
+			candidateOnBoarding.setMobileNumber(candidateOnBoardingDTO.getMobileNumber());
 		}
 		
-		if(jsonObj.has("personalEmail") && !isNullOrEmpty(jsonObj.getString("personalEmail"))){
-			candidateOnBoarding.setPersonalEmail(jsonObj.getString("personalEmail"));
+		if(StringUtils.isNotBlank(candidateOnBoardingDTO.getPersonalEmail())){
+			candidateOnBoarding.setPersonalEmail(candidateOnBoardingDTO.getPersonalEmail());
 		}
 		
-		if(jsonObj.has("companyEmail") && !isNullOrEmpty(jsonObj.getString("companyEmail"))){
-			candidateOnBoarding.setCompanyEmail(jsonObj.getString("companyEmail"));
+		if(StringUtils.isNotBlank(candidateOnBoardingDTO.getCompanyEmail())){
+			candidateOnBoarding.setCompanyEmail(candidateOnBoardingDTO.getCompanyEmail());
 		}else{
 			candidateOnBoarding.setCompanyEmail(null);
 		}
 		
 		
-		if(jsonObj.has("onboardCandidateRole") && !isNullOrEmpty(jsonObj.getString("onboardCandidateRole"))){
+		if(StringUtils.isNotBlank(candidateOnBoardingDTO.getOnboardCandidateRole())){
 			Roles roles = new Roles();
-			roles.setId(Long.valueOf(jsonObj.getString("onboardCandidateRole")));
+			roles.setId(Long.valueOf(candidateOnBoardingDTO.getOnboardCandidateRole()));
 			candidateOnBoarding.setRoleId(roles);
 		}
 		
-		if(jsonObj.has("startDate") && !isNullOrEmpty(jsonObj.getString("startDate"))){
-			candidateOnBoarding.setStartDate(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),jsonObj.getString("startDate")));
+		if(StringUtils.isNotBlank(candidateOnBoardingDTO.getStartDate())){
+			candidateOnBoarding.setStartDate(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),candidateOnBoardingDTO.getStartDate()));
 		}
 		
-		if(jsonObj.has("endDate") && !isNullOrEmpty(jsonObj.getString("endDate"))){
-			candidateOnBoarding.setEndDate(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),jsonObj.getString("endDate")));
+		if(StringUtils.isNotBlank(candidateOnBoardingDTO.getEndDate())){
+			candidateOnBoarding.setEndDate(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),candidateOnBoardingDTO.getEndDate()));
 		}else{
 			candidateOnBoarding.setEndDate(null);
 		}
 		
-		if(jsonObj.has("salaryRate") && !isNullOrEmpty(jsonObj.getString("salaryRate"))){
-			candidateOnBoarding.setSalaryRate(jsonObj.getString("salaryRate"));
+		if(StringUtils.isBlank(candidateOnBoardingDTO.getSalaryRate())){
+			candidateOnBoarding.setSalaryRate(candidateOnBoardingDTO.getSalaryRate());
 		}
 		
-		if(jsonObj.has("paymentType") && !isNullOrEmpty(jsonObj.getString("paymentType"))){
-			candidateOnBoarding.setPaymentType(jsonObj.getString("paymentType"));
+		if(StringUtils.isNotBlank(candidateOnBoardingDTO.getPaymentType())){
+			candidateOnBoarding.setPaymentType(candidateOnBoardingDTO.getPaymentType());
 		}	
 		
-		if(jsonObj.has("paymentMode") && !isNullOrEmpty(jsonObj.getString("paymentMode"))){
-			candidateOnBoarding.setPaymentMode(jsonObj.getString("paymentMode"));
+		if(StringUtils.isNotBlank(candidateOnBoardingDTO.getPaymentMode())){
+			candidateOnBoarding.setPaymentMode(candidateOnBoardingDTO.getPaymentMode());
 		}
-		if(jsonObj.has("reportingManager") && !isNullOrEmpty(jsonObj.getString("reportingManager"))){
+		if(StringUtils.isNotBlank(candidateOnBoardingDTO.getReportingManager())){
 			User reportingManager = new User();
-			reportingManager.setId(Long.valueOf(jsonObj.getString("reportingManager")));
+			reportingManager.setId(Long.valueOf(candidateOnBoardingDTO.getReportingManager()));
 			candidateOnBoarding.setManagerUserId(reportingManager);
 		}else{
 			candidateOnBoarding.setManagerUserId(null);
 		}
 		
-		if(jsonObj.has("team") && !isNullOrEmpty(jsonObj.getString("team"))){
+		if(StringUtils.isNotBlank(candidateOnBoardingDTO.getTeam())){
 			Team team = new Team();
-			team.setId(Long.valueOf(jsonObj.getString("team")));
+			team.setId(Long.valueOf(candidateOnBoardingDTO.getTeam()));
 			candidateOnBoarding.setTeamId(team);
 		}else{
 			candidateOnBoarding.setTeamId(null);
 		}
 		
-		if(jsonObj.has("employmentType") && !isNullOrEmpty(jsonObj.getString("employmentType"))){
-			candidateOnBoarding.setEmploymentType(jsonObj.getString("employmentType"));
+		if(StringUtils.isNotBlank(candidateOnBoardingDTO.getEmploymentType())){
+			candidateOnBoarding.setEmploymentType(candidateOnBoardingDTO.getEmploymentType());
 		}else{
 			candidateOnBoarding.setEmploymentType(null);
 			candidateOnBoarding.setEmploymentOtherType(null);
 		}
 		
-		if(jsonObj.has("employmentOtherType") && !isNullOrEmpty(jsonObj.getString("employmentOtherType"))){
+		if(StringUtils.isNotBlank(candidateOnBoardingDTO.getEmploymentOtherType())){
 			
-			if(jsonObj.has("employmentType") && !isNullOrEmpty(jsonObj.getString("employmentType")) && jsonObj.getString("employmentType").equalsIgnoreCase("Other")){
-				candidateOnBoarding.setEmploymentOtherType(jsonObj.getString("employmentOtherType"));
+			if(StringUtils.isNotBlank(candidateOnBoardingDTO.getEmploymentType()) && candidateOnBoardingDTO.getEmploymentType().equalsIgnoreCase("Other")){
+				candidateOnBoarding.setEmploymentOtherType(candidateOnBoardingDTO.getEmploymentOtherType());
 			}else{
 				candidateOnBoarding.setEmploymentOtherType(null);
 			}
@@ -264,37 +269,33 @@ public class CandidateOnBoardingServiceImpl implements CandidateOnBoardingServic
 		}
 		
 		
-		if(jsonObj.has("probationNotice") && !isNullOrEmpty(jsonObj.getString("probationNotice"))){
-			candidateOnBoarding.setProbationNotice(jsonObj.getString("probationNotice"));
+		if(StringUtils.isNotBlank(candidateOnBoardingDTO.getProbationNotice())){
+			candidateOnBoarding.setProbationNotice(candidateOnBoardingDTO.getProbationNotice());
 		}else{
 			candidateOnBoarding.setProbationNotice(null);
 		}
 		
-		if(jsonObj.has("terminationNotice") && !isNullOrEmpty(jsonObj.getString("terminationNotice"))){
-			candidateOnBoarding.setTerminationNotice(jsonObj.getString("terminationNotice"));
+		if(StringUtils.isNotBlank(candidateOnBoardingDTO.getTerminationNotice())){
+			candidateOnBoarding.setTerminationNotice(candidateOnBoardingDTO.getTerminationNotice());
 		}else{
 			candidateOnBoarding.setTerminationNotice(null);
 		}
 		
-		if(jsonObj.has("dueDate") && !isNullOrEmpty(jsonObj.getString("dueDate"))){
-			candidateOnBoarding.setDueDate(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),jsonObj.getString("dueDate")));
+		if(StringUtils.isNotBlank(candidateOnBoardingDTO.getDueDate())){
+			candidateOnBoarding.setDueDate(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),candidateOnBoardingDTO.getDueDate()));
 		}else{
 			candidateOnBoarding.setDueDate(null);
 		}
 		
 		
-		if(jsonObj.has("specialConditions") && !isNullOrEmpty(jsonObj.getString("specialConditions"))){
-			candidateOnBoarding.setSpecialConditions(jsonObj.getString("specialConditions"));
+		if(StringUtils.isNotBlank(candidateOnBoardingDTO.getSpecialConditions())){
+			candidateOnBoarding.setSpecialConditions(candidateOnBoardingDTO.getSpecialConditions());
 		}else{
 			candidateOnBoarding.setSpecialConditions(null);
 		}
 		
-		if(jsonObj.has("onboardingTemplate") && !isNullOrEmpty(jsonObj.getString("onboardingTemplate"))){
-			
-			String templateIds = jsonObj.getString("onboardingTemplate");
-			templateIds = templateIds.replaceAll("\\[", "").replaceAll("\\]","");
-			templateIds = templateIds.replaceAll("\"", "");
-			candidateOnBoarding.setOnboardTemplateId(templateIds);
+		if(StringUtils.isNotBlank(candidateOnBoardingDTO.getOnboardingTemplate())){
+					candidateOnBoarding.setOnboardTemplateId(candidateOnBoardingDTO.getOnboardingTemplate());
 		}else{
 			candidateOnBoarding.setOnboardTemplateId(null);
 		}
@@ -306,8 +307,6 @@ public class CandidateOnBoardingServiceImpl implements CandidateOnBoardingServic
 		candidateOnBoarding.setCreatedBy(user.getUserCode());
 		candidateOnBoarding.setUpdatedDate(CommonUtil.currentDate());
 		candidateOnBoarding.setUpdatedBy(user.getUserCode());
-		
-			
 		candidateOnBoardingDao.saveCandidateOnBoarding(candidateOnBoarding);
 		
 		return candidateOnBoarding;

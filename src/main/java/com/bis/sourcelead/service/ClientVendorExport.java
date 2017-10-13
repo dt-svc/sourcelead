@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
+import com.bis.sourcelead.entity.ProjectClients;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.Projects;
 
@@ -18,6 +19,6 @@ public interface ClientVendorExport {
 
 	File getVendorContactDetailsFile(List<OrgSpoc> vandorsContactList, String orgName, String exportType)throws Exception;
 
-    File getexportProjectEmployeeFile(List<ProjectMembers> employeeList,String exportType, Projects project)throws Exception;
+    File getexportProjectEmployeeFile(List<ProjectMembers> employeeList,String exportType, Projects project,ProjectClients projectClients)throws Exception;
   
 }

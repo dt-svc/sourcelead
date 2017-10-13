@@ -27,7 +27,7 @@
                 <th>Position Type</th>
                 <th>Attachment</th>
                 <th>Offered On</th>
-                <th>Current Status</th>
+                <th>Status</th>
               </tr>
             </thead>
             <tbody>
@@ -106,10 +106,10 @@
               </span></div></td> 
               
                <td><div><span>
-	               <c:if test="${not empty reqSub.submissionId.submissionStatus}">
-	            	  ${reqSub.submissionId.submissionStatus}
+	               <c:if test="${not empty reqSub.toStage}">
+	            	 ${reqSub.toStage}
 	              </c:if>
-	              <c:if test="${empty reqSub.submissionId.submissionStatus}">
+	              <c:if test="${empty reqSub.toStage}">
 	             	 --
 	              </c:if>
               </span></div></td>

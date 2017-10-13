@@ -2,6 +2,7 @@ package com.bis.sourcelead.entity;
 
 import java.util.Date;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -13,6 +14,8 @@ import javax.persistence.Table;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
@@ -30,13 +33,15 @@ public class LeaveApproveHierarchy {
 	private String id;
 	
 	@NotFound(action = NotFoundAction.IGNORE)
-	@ManyToOne
+	@ManyToOne(cascade = CascadeType.ALL)
+	@Fetch(FetchMode.SELECT)
 	@JsonBackReference
 	@JoinColumn(name = "LEAVE_ID", nullable = false)
 	private Leave leaveid;
 	
 	@NotFound(action = NotFoundAction.IGNORE)
-	@ManyToOne
+	@ManyToOne(cascade = CascadeType.ALL)
+	@Fetch(FetchMode.SELECT)
 	@JsonBackReference
 	@JoinColumn(name = "APPROVER_USER_ID", nullable = false)
 	private User approverUserId;

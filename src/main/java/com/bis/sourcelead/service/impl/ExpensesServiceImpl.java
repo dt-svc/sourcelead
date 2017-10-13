@@ -28,8 +28,8 @@ import org.springframework.stereotype.Service;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.ExpensesApproverHierarchyDao;
 import com.bis.sourcelead.dao.ExpensesDao;
-import com.bis.sourcelead.dto.ExpensesDTO;
 import com.bis.sourcelead.dto.ExpensesEntriesDTO;
+import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Expenses;
 import com.bis.sourcelead.entity.ExpensesApproverHierarchy;
 import com.bis.sourcelead.entity.ExpensesEntries;
@@ -38,13 +38,13 @@ import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.TimeSheetSubmissionCount;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.ExpensesService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.ConversionUtil;
-import com.bis.sourcelead.web.LoginSessionController;
 import com.ibm.icu.math.BigDecimal;
 import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Document;
@@ -92,6 +92,10 @@ public class ExpensesServiceImpl implements ExpensesService{
 	private CountriesService countriesService;
 	
 	@Autowired
+	private CandidateService candidateService;
+	
+	
+	@Autowired
 	private OrgRelationsService orgRelationsService;
 	
 	private static final Logger logger = LoggerFactory.getLogger(ExpensesServiceImpl.class);
@@ -111,15 +115,15 @@ public class ExpensesServiceImpl implements ExpensesService{
 				String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE, customStartTimeStr);
 				startDateUTC = TZ_DF_TS.parse(startDateString);
 			}
-			
+			Candidate candidate = candidateService.getCandidateByConsultantUserId(loginUser.getId(), orgLoc.getId());
 			if(StringUtils.isNotEmpty(endDate)){
 				Date endTime = commonUtil.orgLocationDateFormat(orgLoc.getDateFormat(),endDate);
 				String customEndTimeStr = TZ_DF_CED.format(endTime);
 				String endDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE, customEndTimeStr);
 				endDateUTC = TZ_DF_TS.parse(endDateString);
 			}
-		
-		List<Expenses> expensesList =  expensesDao.getAllExpenses(orgLoc.getId(),loginUser.getId(), expenseStatus, startDateUTC, endDateUTC);
+			//orgLoc.getId(),loginUser.getId()
+		List<Expenses> expensesList =  expensesDao.getAllExpenses(candidate.getMasterCandidateId().getId(),expenseStatus, startDateUTC, endDateUTC);
 
 		return expensesList;
 
@@ -146,8 +150,8 @@ public class ExpensesServiceImpl implements ExpensesService{
 	}
 	
 	@Override
-	public Expenses getExpenseByExpenseUniqueId(String expenseId,Long OrgLocationID) throws Exception {
-		return expensesDao.getExpenseByExpenseUniqueId(expenseId,OrgLocationID);
+	public Expenses getExpenseByExpenseUniqueId(String expenseId, Long orgLocationId) throws Exception {
+		return expensesDao.getExpenseByExpenseUniqueId(expenseId,orgLocationId);
 	}
 	@Override
 	public File exportMyExpensesToPdf(Expenses expenseDetails, OrgLocations orgLoc, User loginUser,String approverType) throws Exception {
@@ -1189,15 +1193,13 @@ public class ExpensesServiceImpl implements ExpensesService{
 		Expenses expense = expensesDao.getExpenseById(expenseId);
 		Set<ExpensesEntries> entriesList = expense.getExpensesEntries();
 		List<ExpensesEntriesDTO> expensesEntriesDTOList = new ArrayList<>();
-		float sum = 0;
 		for(ExpensesEntries entries : entriesList){
 			ExpensesEntriesDTO  expensesEntriesDTO = new ExpensesEntriesDTO();
-			expensesEntriesDTO.setDate(ConversionUtil.getDateAsString(entries.getExpenseDate()));
-			expensesEntriesDTO.setDescription(entries.getDescription());
-			expensesEntriesDTO.setAmount(entries.getAmount());
-			expensesEntriesDTO.setCategory(entries.getExpensesCategoryId().getExpensesName());
-			sum = sum+entries.getAmount();
-			expensesEntriesDTO.setSubTotal(String.valueOf(sum));
+			expensesEntriesDTO.setDateOccurred(ConversionUtil.getDateAsString(entries.getExpenseDate()));
+			expensesEntriesDTO.setEntryDescription(entries.getDescription());
+			expensesEntriesDTO.setCategoryAmount(String.valueOf(entries.getAmount()));
+			expensesEntriesDTO.setCategoryName(entries.getExpensesCategoryId().getExpensesName());
+			expensesEntriesDTO.setCategoryAmount(String.valueOf(entries.getAmount()));
 			expensesEntriesDTOList.add(expensesEntriesDTO);
 		}
 		return expensesEntriesDTOList;

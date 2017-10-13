@@ -108,14 +108,15 @@
                 <div class="form-group" id="FirstNameDiv">
                   <label class="col-md-3">First Name<span class="text-danger">*</span></label>
                   <div class="col-md-9">
-                    <input type="text" class="form-control" id="FirstName" name="firstName" pattern="[A-Za-z\s]*" maxlength="100" field-name="First Name" data-validation="required validate_AlphaNumber validate_length length1-100">
+                    <input type="text" class="form-control" id="FirstName" name="firstName" pattern="[A-Za-z\s]*" maxlength="100" field-name="First Name" data-validation="required validate_Space validate_AlphaNumber validate_length length1-100">
+
                   </div>
                 </div>
                 
                 <div class="form-group">
                   <label class="col-md-3">Last Name</label>
                   <div class="col-md-9">
-                    <input type="text" class="form-control" id="lastName" name="lastName" pattern="[A-Za-z\s]*" maxlength="100" required>
+                    <input type="text" class="form-control" id="lastName" name="lastName" pattern="[A-Za-z\s]*" maxlength="100" data-validation-optional="true"  field-name="Last Name" data-validation=" validate_Space validate_AlphaNumber validate_length length1-100">
                   </div>
                 </div>
                 
@@ -303,7 +304,7 @@ if(type == 'C2C' || type == 'C2C-1099'){
 		        success: function(data) {
 		        	var json = JSON.parse(data);
 		        	$('#vendors').empty();
-		        	$('#vendors').append('<option value="">--select Vendor --</option>');
+		        	$('#vendors').append('<option value="">--Select Vendor --</option>');
 		            for(var i=0;i<json.length;i++){
 		            	  var opt = json[i];
 		            		$('#vendors').append('<option value='+opt.id+' >'+opt.orgName+'</option>');
