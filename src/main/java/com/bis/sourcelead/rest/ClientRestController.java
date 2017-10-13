@@ -1562,31 +1562,6 @@ public class ClientRestController {
 			}
 			 
 // Advance search start
-				//Spoc Status
-				 List<String> statusAdvancedArray = clientVendorDTO.getStatus();
-				if(statusAdvancedArray != null && !statusAdvancedArray.isEmpty()){
-					BoolQueryBuilder statusAdvancedBoolQueryBuilder = QueryBuilders.boolQuery();
-					for(String keywd : statusAdvancedArray){
-							if(Constants.ACTIVE.equalsIgnoreCase(keywd)){
-								statusAdvancedBoolQueryBuilder.should(QueryBuilders.matchPhrasePrefixQuery("spocStatus", "Active"));
-								statusAdvancedBoolQueryBuilder.mustNot(QueryBuilders.matchPhrasePrefixQuery("spocStatus", "In-Active"));
-							}else{
-								  statusAdvancedBoolQueryBuilder.should(QueryBuilders.matchPhrasePrefixQuery("spocStatus", keywd));
-							}
-					}
-					boolQueryBuilder.must(statusAdvancedBoolQueryBuilder);
-				}
-				
-				
-				
-				List<String> invitationAdvancedArray = clientVendorDTO.getInvitationStatus();
-				if(invitationAdvancedArray != null && !invitationAdvancedArray.isEmpty()){
-					BoolQueryBuilder invitationAdvancedBoolQueryBuilder = QueryBuilders.boolQuery();
-					for(String keywd : invitationAdvancedArray){
-						invitationAdvancedBoolQueryBuilder.should(QueryBuilders.matchPhraseQuery("invitationStatus", keywd));
-					}
-					boolQueryBuilder.must(invitationAdvancedBoolQueryBuilder);
-				}
 					
 					//Any Keyword
 				List<String> anyKeyWordArray = clientVendorDTO.getAnyOfKeyword();
@@ -1642,7 +1617,113 @@ public class ClientRestController {
 							}
 							 boolQueryBuilder.must(allBoolQueryBuilder);
 						}
-				
+				//---
+						//contactName
+						List<String> contactNameArray = clientVendorDTO.getContactNameAdvanced();//getSearchKeywordsFromChosenSelectField(jsonObj, "contactNameAdvanced");
+						if(contactNameArray != null && !contactNameArray.isEmpty()){
+							BoolQueryBuilder contactNameBoolQueryBuilder = QueryBuilders.boolQuery();
+							for(String keywd : contactNameArray){
+								 if("Vendor".equalsIgnoreCase(clientVendorDTO.getResponderType())){
+									 contactNameBoolQueryBuilder.should(QueryBuilders.matchQuery("vendorUserFirstName" , keywd));
+									 contactNameBoolQueryBuilder.should(QueryBuilders.matchQuery("vendorUserLastName", keywd));
+									  }
+									 if("Client".equalsIgnoreCase(clientVendorDTO.getResponderType())){
+										 contactNameBoolQueryBuilder.should(QueryBuilders.matchQuery("clientUserFirstName" , keywd));
+										 contactNameBoolQueryBuilder.should(QueryBuilders.matchQuery("clientUserLastName", keywd));  
+									  }
+							}
+							boolQueryBuilder.must(contactNameBoolQueryBuilder);
+						}
+						
+						
+						//Spoc Email
+					   List<String> contactEmailNameArray = clientVendorDTO.getEmailAdvanced();//getSearchKeywordsFromChosenSelectField(jsonObj, "emailAdvanced");
+						if(contactEmailNameArray != null && !contactEmailNameArray.isEmpty()){
+							BoolQueryBuilder contactEmailBoolQueryBuilder = QueryBuilders.boolQuery();
+							for(String keywd : contactEmailNameArray){
+								if("Vendor".equalsIgnoreCase(clientVendorDTO.getResponderType())){
+									contactEmailBoolQueryBuilder.should(QueryBuilders.matchPhraseQuery("vendorUserEmail", keywd));
+								  }
+								 if("Client".equalsIgnoreCase(clientVendorDTO.getResponderType())){
+									 contactEmailBoolQueryBuilder.should(QueryBuilders.matchPhraseQuery("clientUserEmail", keywd));
+								  }
+							}
+							boolQueryBuilder.must(contactEmailBoolQueryBuilder);
+						}
+						
+						//Spoc PhoneNumber
+						List<String> phoneNumberNameArray = clientVendorDTO.getPhoneNumberAdvanced();//getSearchKeywordsFromChosenSelectField(jsonObj, "phoneNumberAdvanced");
+						if(phoneNumberNameArray != null && !phoneNumberNameArray.isEmpty()){
+							BoolQueryBuilder phoneNumberBoolQueryBuilder = QueryBuilders.boolQuery();
+							for(String keywd : phoneNumberNameArray){
+								 if("Vendor".equalsIgnoreCase(clientVendorDTO.getResponderType())){
+									 phoneNumberBoolQueryBuilder.should(QueryBuilders.matchPhraseQuery("vendorUserPhNo", keywd));
+								  }
+								 if("Client".equalsIgnoreCase(clientVendorDTO.getResponderType())){
+									 phoneNumberBoolQueryBuilder.should(QueryBuilders.matchPhraseQuery("clientUserPhNo", keywd));
+								  }
+							}
+							boolQueryBuilder.must(phoneNumberBoolQueryBuilder);
+						}
+						
+						//vendor
+						List<String> orgAdvancedArray = clientVendorDTO.getOrgAdvanced();//getSearchKeywordsFromChosenSelectField(jsonObj, "orgAdvanced");
+						if(orgAdvancedArray != null && !orgAdvancedArray.isEmpty()){
+							BoolQueryBuilder orgAdvancedBoolQueryBuilder = QueryBuilders.boolQuery();
+							for(String keywd : orgAdvancedArray){
+								if("Vendor".equalsIgnoreCase(clientVendorDTO.getResponderType())){
+									orgAdvancedBoolQueryBuilder.should(QueryBuilders.matchPhraseQuery("vendorOrgName", keywd));
+								  }
+								 if("Client".equalsIgnoreCase(clientVendorDTO.getResponderType())){
+									 orgAdvancedBoolQueryBuilder.should(QueryBuilders.matchPhraseQuery("clientOrgName", keywd));
+								  }
+							}
+							boolQueryBuilder.must(orgAdvancedBoolQueryBuilder);
+						}
+						
+						//Spoc ownerAdvanced
+						List<String> ownerAdvancedNameArray = clientVendorDTO.getOwnerAdvanced();//getSearchKeywordsFromChosenSelectField(jsonObj, "ownerAdvanced");
+						if(ownerAdvancedNameArray != null && !ownerAdvancedNameArray.isEmpty()){
+							BoolQueryBuilder ownerAdvancedBoolQueryBuilder = QueryBuilders.boolQuery();
+							for(String keywd : ownerAdvancedNameArray){
+								 if("Vendor".equalsIgnoreCase(clientVendorDTO.getResponderType())){
+									 ownerAdvancedBoolQueryBuilder.should(QueryBuilders.matchQuery("clientUserFirstName" , keywd));
+									 ownerAdvancedBoolQueryBuilder.should(QueryBuilders.matchQuery("clientUserLastName", keywd));
+									  }
+									 if("Client".equalsIgnoreCase(clientVendorDTO.getResponderType())){
+										 ownerAdvancedBoolQueryBuilder.should(QueryBuilders.matchQuery("vendorUserFirstName" , keywd));
+										 ownerAdvancedBoolQueryBuilder.should(QueryBuilders.matchQuery("vendorUserLastName", keywd));
+									  }
+							}
+							boolQueryBuilder.must(ownerAdvancedBoolQueryBuilder);
+						}
+						
+						//Spoc Status
+						List<String> statusAdvancedArray = clientVendorDTO.getStatusAdvanced();//getSearchKeywordsFromChosenSelectField(jsonObj, "statusAdvanced");
+						if(statusAdvancedArray != null && !statusAdvancedArray.isEmpty()){
+							BoolQueryBuilder statusAdvancedBoolQueryBuilder = QueryBuilders.boolQuery();
+							for(String keywd : statusAdvancedArray){
+									if(keywd.equalsIgnoreCase("Active")){
+										statusAdvancedBoolQueryBuilder.should(QueryBuilders.matchPhrasePrefixQuery("spocStatus", "Active"));
+										statusAdvancedBoolQueryBuilder.mustNot(QueryBuilders.matchPhrasePrefixQuery("spocStatus", "In-Active"));
+									}else{
+										  statusAdvancedBoolQueryBuilder.should(QueryBuilders.matchPhrasePrefixQuery("spocStatus", keywd));
+									}
+							}
+							boolQueryBuilder.must(statusAdvancedBoolQueryBuilder);
+						}
+						
+						//Invitation  Status
+						
+						List<String> invitationAdvancedArray = clientVendorDTO.getInvitationAdvanced();//getSearchKeywordsFromChosenSelectField(jsonObj, "invitationAdvanced");
+						if(invitationAdvancedArray != null && !invitationAdvancedArray.isEmpty()){
+							BoolQueryBuilder invitationAdvancedBoolQueryBuilder = QueryBuilders.boolQuery();
+							for(String keywd : invitationAdvancedArray){
+								invitationAdvancedBoolQueryBuilder.should(QueryBuilders.matchPhraseQuery("invitationStatus", keywd));
+							}
+							boolQueryBuilder.must(invitationAdvancedBoolQueryBuilder);
+						}
+			  // --end
 				
 				SearchResponse searchResponse = sourceleadELKBaseIndexer
 						.searchDocumentWithMaxResults(Constants.ELK_CLIENTVENDOR_CONTACT_INDEX, Constants.ELK_CLIENTVENDOR_CONTACT_TYPE,
