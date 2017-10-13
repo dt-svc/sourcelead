@@ -64,7 +64,7 @@ public class ProjectMembersServiceTest {
 		pmh.setUpdatedBy("Raj");
 		pmhList.add(pmh);
 		
-		projectMembers.setCurrentBillRate(100.0F);
+		projectMembers.setCurrentBillRate(100.0);
 		projectMembers.setRateType("Monthly");
 		projectMembers.setStatus("1");
 		projectMembers.setCreatedDate(new Date());
@@ -103,7 +103,7 @@ public class ProjectMembersServiceTest {
 		
 		
 		//projectMembers.setTimesheetFrequency("weekly");
-		projectMembers.setCurrentBillRate(500.0F);
+		projectMembers.setCurrentBillRate(500.0);
 		projectMembers.setRateType("Monthly");
 		projectMembers.setStatus("1");
 		projectMembers.setCreatedDate(new Date());

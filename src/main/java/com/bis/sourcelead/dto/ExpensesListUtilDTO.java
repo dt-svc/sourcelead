@@ -14,6 +14,8 @@ public class ExpensesListUtilDTO implements Serializable{
 	
 	private String locationCode;
 	
+	private String expenseLocationCode;
+	
 	private List<String> expenseStatus;
 	
 	private String startDate;
@@ -73,6 +75,14 @@ public class ExpensesListUtilDTO implements Serializable{
 
 	public void setExpenseId(String expenseId) {
 		this.expenseId = expenseId;
+	}
+
+	public String getExpenseLocationCode() {
+		return expenseLocationCode;
+	}
+
+	public void setExpenseLocationCode(String expenseLocationCode) {
+		this.expenseLocationCode = expenseLocationCode;
 	}
 	
 }

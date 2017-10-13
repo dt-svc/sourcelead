@@ -268,10 +268,12 @@ public class LeaveManagementRestController {
 	
 	
 	@RequestMapping(value = {"/getPieChartForLeaveStatus", "/rest/getPieChartForLeaveStatus"}, method = RequestMethod.GET)
-	public List<LeaveType> getPieChartForLeaveStatus(HttpServletRequest request,HttpServletResponse response) throws Exception {
-		   OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		   User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		   Long roleId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRoleId");
+	public List<LeaveType> getPieChartForLeaveStatus(@RequestParam(value = "orgLocationId", required = false) Long orgLocationId,
+			                                         @RequestParam(value = "userId", required = false) Long userId,
+			                                         HttpServletRequest request,HttpServletResponse response) throws Exception {
+		   OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
+		   User loginUser = userService.getUserById(userId);
+		   UserRole roleId = userRoleService.getUserRoleByUserId(userId);
 		   List<LeaveType> leaveTypeList = leaveTypeService.getLeaveTypeListByLocationId(String.valueOf(orgLocations.getId()));
 		   List<LeaveType> roleLeaveType = new ArrayList<>();
 		   if(leaveTypeList !=null && !leaveTypeList.isEmpty()) {
@@ -616,7 +618,7 @@ public class LeaveManagementRestController {
 	 * @throws Exception
 	 */
 	@PreAuthorize("hasAnyRole('ROLE_LEAVE_CONFIGURE')")
-	@RequestMapping(value = "/saveLeaveOption", method = RequestMethod.POST)
+	@RequestMapping(value = {"/saveLeaveOption","/rest/saveLeaveOption"}, method = RequestMethod.POST)
 	@ResponseBody
 	public boolean saveLeaveOption(OptionsDTO optionsDTO, HttpServletRequest request) throws Exception {
 
@@ -740,7 +742,7 @@ public class LeaveManagementRestController {
 		 * @throws Exception
 		 */
 	@PreAuthorize("hasAnyRole('ROLE_APPLY_LEAVE')")
-		@RequestMapping(value = "/applyLeave", method = RequestMethod.POST)
+		@RequestMapping(value = {"/applyLeave","/rest/applyLeave"}, method = RequestMethod.POST)
 		@ResponseBody
 		public boolean applyLeave(LeaveDTO leaveDTO, HttpServletRequest request) throws Exception {
 	
@@ -955,15 +957,11 @@ public class LeaveManagementRestController {
 	 * @throws Exception
 	 */
 	@PreAuthorize("hasAnyRole('ROLE_APPROVE_LEAVE')")
-	@RequestMapping(value = {"/getEmployeeRequestedLeaves","/rest/getEmployeeRequestedLeaves"}, method = RequestMethod.GET)
+	@RequestMapping(value = {"/getEmployeeRequestedLeaves","/rest/getEmployeeRequestedLeaves"}, method = RequestMethod.POST)
 	public  @ResponseBody ResponseList<LeaveDTO> getEmployeeRequestedLeaves(LeaveDTO leaveDTO,HttpServletRequest request) throws Exception
 	{
-		ResponseList<LeaveDTO> requestedLeavesList = null;
 		OrgLocations orgLocations = orgLocationService.getOrgLocations(Long.valueOf(leaveDTO.getOrgLocationId()));
-		requestedLeavesList = leaveService.getEmployeeRequestedLeavesBylocationId(leaveDTO,orgLocations);
-		if (requestedLeavesList != null) {
-			return requestedLeavesList;
-		}
+		ResponseList<LeaveDTO> requestedLeavesList = leaveService.getEmployeeRequestedLeavesBylocationId(leaveDTO,orgLocations);
 		return requestedLeavesList;
 	}
 	
@@ -1268,13 +1266,13 @@ public class LeaveManagementRestController {
 	}
 	
 
-	@RequestMapping(value = "/totalCountsForEmployeeLeaves")
+	@RequestMapping(value = {"/totalCountsForEmployeeLeaves","/rest/totalCountsForEmployeeLeaves"}, method=RequestMethod.GET)
 	@ResponseBody
 	public LeaveDTO totalCountsForEmployeeLeaves(@RequestParam(value = "orgLocationId", required = false) Long orgLocationId,@RequestParam(value = "userId", required = false) Long userId) throws Exception {
 		return leaveService.getAllEmployeesLeavesCounts(orgLocationId,userId);
 	}
 	
-	@RequestMapping(value = "/totalCountsForSelfLeaves")
+	@RequestMapping(value = {"/totalCountsForSelfLeaves","/rest/totalCountsForSelfLeaves"}, method=RequestMethod.GET)
 	@ResponseBody
 	public LeaveDTO totalCountsForSelfLeaves(@RequestParam(value = "orgLocationId", required = false) Long orgLocationId,@RequestParam(value = "userId", required = false) Long userId) throws Exception {
 		return leaveService.getAllSelfLeavesCounts(orgLocationId,userId);
@@ -1288,7 +1286,7 @@ public class LeaveManagementRestController {
 	 * @return List<LeaveDTO> 
 	 * @throws Exception
 	 */
-	@RequestMapping(value = { "/getLeaveTakersBarChat", "/rest/getLeaveTakersBarChat" },method=RequestMethod.GET)
+	@RequestMapping(value = { "/getLeaveTakersBarChat", "/rest/getLeaveTakersBarChat" }, method=RequestMethod.GET)
 	@ResponseBody
 	public List<LeaveDTO>  getLeaveTakersBarChat(LeaveDTO leaveDTO,HttpServletRequest request,HttpServletResponse response) throws Exception {
 
@@ -1321,8 +1319,16 @@ public class LeaveManagementRestController {
 		return isValid;
 
 	}
-	
-	@RequestMapping(value = "/getLeaveTypeReport")
+	/**
+	 * 
+	 * @param orgLocationId
+	 * @param userId
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = {"/getLeaveTypeReport","/rest/getLeaveTypeReport"}, method=RequestMethod.GET)
 	public  List<LeaveTypeDTO> getLeaveTypeReport(@RequestParam(value = "orgLocationId", required = false) Long orgLocationId,
 			@RequestParam(value = "userId", required = false) Long userId,
 			HttpServletRequest request,HttpServletResponse response) throws Exception {

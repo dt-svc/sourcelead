@@ -113,6 +113,8 @@ public interface CandidateService {
 	
 	public Candidate getCandidateById(Long candidateId) throws Exception;
 	
+	Candidate getCandidateByParentCandidateId(Long parentCandidateId) throws Exception;
+	
 	public List<Candidate> getCandidatesByOrgLocationIDAndSearchText(Long orgLocationId,Long requirementId, String candidateType,String searchApplicant) throws Exception;
 	
 	public Candidate storeProfessionalParseCandidate(CandidateDTO candidateDTO,OrgLocations orgLocations,User user,Long candidateId) throws Exception;

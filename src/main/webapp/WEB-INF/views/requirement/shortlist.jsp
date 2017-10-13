@@ -33,7 +33,7 @@ function candidateShortList(requirementId){
 	    	   var json = JSON.parse(data);
 	           result = result + '     <div class="clearfix"></div>';
 	           result = result + '   </div>';
-	           result = result + '   <div class="require_wrap_table scroll_table mt40">';
+	           result = result + '   <div class="require_wrap_table datatable_filter scroll_table mt40">';
 	           result = result + '     <table id="shortlistedPagination"  class="display" cellspacing="0" width="100%">';
 	           result = result + '       <thead>';
 	           result = result + '         <tr>';
@@ -170,8 +170,9 @@ function shortListPagination(){
     $('#shortlistedPagination').DataTable( { 
     	"scrollCollapse": false,
     	"scrollX": true,
-    	"bPaginate": false,
-    	"bLengthChange": false,
+    	"bPaginate": true,
+    	"bLengthChange": true,
+    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	"bDestroy": true,
     	"aaSorting": [[1,'desc']],
     	"ordering": true,
@@ -213,10 +214,12 @@ function selectAllShortlisted(){
             });         
         } 
 	
-   var selectedsubmissionslists = [];
-	 $("input[name='submissionList[]']:checked").each( function (i) {
-		 selectedsubmissionslists[i] = $(this).val();
-	});
+	 var selectedsubmissionslists = [];
+	 var oTable = $('#shortlistedPagination').dataTable();
+	 var rowcollection =  oTable.$("input[name='submissionList[]']:checked", {"page": "all"});
+	 rowcollection.each(function(index,elem){
+		 selectedsubmissionslists[index] = $(elem).val();
+	 });
 	 
 	$("#checkedshortlistedCount").html(selectedsubmissionslists.length);
 	  
@@ -227,9 +230,11 @@ function selectAllShortlisted(){
 <script>
 function getCheckedCandidatesCount(){
 	 var selectedsubmissionslists = [];
-	 $("input[name='submissionList[]']:checked").each( function (i) {
-		 selectedsubmissionslists[i] = $(this).val();
-	});
+	 var oTable = $('#shortlistedPagination').dataTable();
+	 var rowcollection =  oTable.$("input[name='submissionList[]']:checked", {"page": "all"});
+	 rowcollection.each(function(index,elem){
+		 selectedsubmissionslists[index] = $(elem).val();
+	 });
 	 
 	$("#checkedshortlistedCount").html(selectedsubmissionslists.length);
 	 
@@ -240,9 +245,11 @@ function getCheckedCandidatesCount(){
 <script>
 function shortlist(requirementId){
 	 var selectedsubmissionslists = [];
-	 $("input[name='submissionList[]']:checked").each( function (i) {
-		 selectedsubmissionslists[i] = $(this).val();
-	});
+	 var oTable = $('#shortlistedPagination').dataTable();
+	 var rowcollection =  oTable.$("input[name='submissionList[]']:checked", {"page": "all"});
+	 rowcollection.each(function(index,elem){
+		 selectedsubmissionslists[index] = $(elem).val();
+	 });
 	 
 	  if(selectedsubmissionslists.length > 0){
 		  
@@ -259,7 +266,7 @@ function shortlist(requirementId){
 				    		requirementPipeline(requirementId,allApplicants); 
 				    		pipelineList(requirementId);
 				        },
-				 });  
+				 });   
 		  }else{
 			  alertMessage("<b>Selected Candidates should not more than 50</b>");
 		  }
