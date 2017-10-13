@@ -42,10 +42,28 @@ public class ClientVendorDTO extends SearchDTO implements Serializable {
 	private List<String> clientIds;
 	private List<String> status;
 	private List<String> invitationStatus;
+
 	private String UUID;
 	
+
+	private List<String> emailAdvanced;
+	private List<String> contactNameAdvanced;
+
 	private AddUserDTO addUserDTO;
+	private List<String> phoneNumberAdvanced;
+	private List<String> orgAdvanced;
+	private List<String> ownerAdvanced;
+	private List<String> statusAdvanced;
+	private List<String> invitationAdvanced;
 	
+	public List<String> getOrgAdvanced() {
+		return orgAdvanced;
+	}
+
+	public void setOrgAdvanced(List<String> orgAdvanced) {
+		this.orgAdvanced = orgAdvanced;
+	}
+
 	public String getOrgName() {
 		return orgName;
 	}
@@ -326,6 +344,7 @@ public class ClientVendorDTO extends SearchDTO implements Serializable {
 		this.companyWebSite = companyWebSite;
 	}
 
+
 	public String getUUID() {
 		return UUID;
 	}
@@ -335,7 +354,53 @@ public class ClientVendorDTO extends SearchDTO implements Serializable {
 	}
 
 
-	
-	
+	public List<String> getEmailAdvanced() {
+		return emailAdvanced;
+	}
+
+	public void setEmailAdvanced(List<String> emailAdvanced) {
+		this.emailAdvanced = emailAdvanced;
+	}
+
+	public List<String> getContactNameAdvanced() {
+		return contactNameAdvanced;
+	}
+
+	public void setContactNameAdvanced(List<String> contactNameAdvanced) {
+		this.contactNameAdvanced = contactNameAdvanced;
+	}
+
+	public List<String> getPhoneNumberAdvanced() {
+		return phoneNumberAdvanced;
+	}
+
+	public void setPhoneNumberAdvanced(List<String> phoneNumberAdvanced) {
+		this.phoneNumberAdvanced = phoneNumberAdvanced;
+	}
+
+	public List<String> getOwnerAdvanced() {
+		return ownerAdvanced;
+	}
+
+	public void setOwnerAdvanced(List<String> ownerAdvanced) {
+		this.ownerAdvanced = ownerAdvanced;
+	}
+
+	public List<String> getStatusAdvanced() {
+		return statusAdvanced;
+	}
+
+	public void setStatusAdvanced(List<String> statusAdvanced) {
+		this.statusAdvanced = statusAdvanced;
+	}
+
+	public List<String> getInvitationAdvanced() {
+		return invitationAdvanced;
+	}
+
+	public void setInvitationAdvanced(List<String> invitationAdvanced) {
+		this.invitationAdvanced = invitationAdvanced;
+	}
+
 
 }
