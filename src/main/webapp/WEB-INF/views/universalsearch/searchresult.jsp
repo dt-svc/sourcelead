@@ -638,6 +638,12 @@ function getSearchResultsForAll(searchType,searchValue){
 								    	
 								    	result = result+'      <div class="srchresult-content col-xs-12 col-md-12">';
 								    	
+								    	if(report.designationType != null && report.designationType != '' && report.designationType !='undefined'){
+								    		designationType=','+report.designationType;
+								    	}else{
+								    		designationType='';
+								    	}
+								    	
 								    	if(report.experienceYears !=null && report.experienceYears !='' && report.experienceYears !='undefined' && report.experienceMonths !=null && report.experienceMonths !='' && report.experienceMonths !='undefined'){
 			 				    		result = result+'<p><label><strong><a href="#" onclick="candidateSearchSideBar('+report.candidateId+')">'+report.candidateName+'</a></strong></label>, <label>'+report.designationType+'</label>, <label>'+report.experienceYears+' Years - '+report.experienceMonths+' Months</label>';
 							    		 }else if(report.experienceYears !=null && report.experienceYears !='' && report.experienceYears !='undefined'){
@@ -875,9 +881,9 @@ function candidateSearchSideBar(candidateIdSearchId,isAssociate){
 	var candidateKeyword = "candidateSearch";
 	if(isAssociate == "Y"){
 		//Highlighting associate tab when search for associates through universal search
-		window.location.href = sourceleadUrl + "/associatesList?&candidateKeyword="+candidateKeyword+"&candidateIdSearchId="+candidateIdSearchId;
+		window.location.href = sourceleadUrl + "/associatesList?&candidateIdSearchId="+candidateIdSearchId+"&candidateKeyword="+candidateKeyword;
 	}else{
-		window.location.href = sourceleadUrl + "/candidatesList?&candidateKeyword="+candidateKeyword+"&candidateIdSearchId="+candidateIdSearchId;
+		window.location.href = sourceleadUrl + "/candidatesList?&candidateIdSearchId="+candidateIdSearchId+"&candidateKeyword="+candidateKeyword;
 	}
 }
 </script>

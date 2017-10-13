@@ -496,6 +496,14 @@ public class VendorOnboardServiceImpl implements VendorOnboardService {
 			orgRelations.setDunsNumber(vendorOnboardDTO.getDunsNumber());
 		}
 		
+		if(StringUtils.isNotBlank(vendorOnboardDTO.getNaicsCode())){
+			orgRelations.setNaicsCode(vendorOnboardDTO.getNaicsCode());
+		}
+		
+		if(StringUtils.isNotBlank(vendorOnboardDTO.getEinCode())){
+			orgRelations.setEinCode(vendorOnboardDTO.getEinCode());
+		}
+		
 		bankDetails = orgBankDetailsService.getOrgBankDetailsByOrgLocationId(onboarding.getVendorLocationId().getId());
 		if(bankDetails == null){
 			bankDetails = new OrgBankDetails();
