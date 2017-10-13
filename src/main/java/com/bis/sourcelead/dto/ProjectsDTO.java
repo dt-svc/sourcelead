@@ -13,6 +13,8 @@ public class ProjectsDTO extends SearchDTO implements Serializable{
 	
 	private String projectSequeneNumber;
 	
+	private String expenseId;
+	
 	private String startDate;
 	
 	private String endDate;
@@ -87,6 +89,14 @@ public class ProjectsDTO extends SearchDTO implements Serializable{
 	
 	List<ProjectMembersDTO> projectMembersList;
 	
+	public String getExpenseId() {
+		return expenseId;
+	}
+
+	public void setExpenseId(String expenseId) {
+		this.expenseId = expenseId;
+	}
+
 	public long getId()
 	{
 		return id;

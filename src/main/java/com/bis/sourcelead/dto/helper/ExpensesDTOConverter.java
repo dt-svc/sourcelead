@@ -24,6 +24,7 @@ public class ExpensesDTOConverter {
 		expensesDTO.setClientName(expenses.getClientName());
 		if(expenses.getProjectMembers() != null && expenses.getProjectMembers().getProjects() != null){
 			expensesDTO.setProjectMemberId(expenses.getProjectMembers().getId());
+			expensesDTO.setMasterCandidateId(expenses.getProjectMembers().getMasterCandidateId().getId());
 			expensesDTO.setProjectId(expenses.getProjectMembers().getProjects().getId());
 			expensesDTO.setProjectName(expenses.getProjectMembers().getProjects().getProjectName());
 		}
@@ -34,6 +35,7 @@ public class ExpensesDTOConverter {
 		if(expenses.getEndDate() != null){
 			expensesDTO.setEndDate(dateFormat.format(expenses.getEndDate()));	
 		}
+		expensesDTO.setExpenseLocationCode(expenses.getOrgLocationId().getLocationCode());
 		expensesDTO.setNoOfExpenses(expenses.getNoOfExpenses());
 		List<ExpensesEntriesDTO> eeDTOList = new ArrayList<>();
 		if(expenses.getExpensesEntries() != null && !expenses.getExpensesEntries().isEmpty() && expenses.getExpensesEntries().size() > 0){

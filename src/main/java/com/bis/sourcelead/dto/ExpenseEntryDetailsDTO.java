@@ -9,8 +9,6 @@ public class ExpenseEntryDetailsDTO implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
 	
-	private String expenseId;
-	
 	private String currencyCode;
 	
 	List<ProjectMembersDTO> projectMembersList;
@@ -21,14 +19,6 @@ public class ExpenseEntryDetailsDTO implements Serializable{
 	
 	List<String> currencyCodeList;
 
-
-	public String getExpenseId() {
-		return expenseId;
-	}
-
-	public void setExpenseId(String expenseId) {
-		this.expenseId = expenseId;
-	}
 
 	public List<ProjectMembersDTO> getProjectMembersList() {
 		return projectMembersList;

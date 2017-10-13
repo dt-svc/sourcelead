@@ -29,7 +29,7 @@
 					<div class="Expdit pull-right mr">
 					
 					     <c:if test="${submissionStatus == 'SUBMITTED' || submissionStatus == 'REJECTED'}">
-					        <a href="${sourceleadUrl}/addApprovalExpense?expenseId=${expenses.expenseAutoId}&type=edit"  class="btn btn-default ml10 mr10" style='cursor: pointer !important'><i class="fa fa-pencil-square-o" ></i> &nbsp;Edit</a>
+					        <a href="${sourceleadUrl}/addApprovalExpense?expenseId=${expenses.expenseAutoId}&expenseLocationCode=${expenses.expenseLocationCode}&type=edit"  class="btn btn-default ml10 mr10" style='cursor: pointer !important'><i class="fa fa-pencil-square-o" ></i> &nbsp;Edit</a>
 					     </c:if>
 					     
 					      <c:if test="${isExpenseTotallyApproved && submissionStatus == 'APPROVED' && empty eah.reopenReason}">
@@ -109,7 +109,13 @@
 						<strong>Employee:</strong><span>${expenses.projectMemberName}</span><div class="clearfix"></div>
 					</div>
 					<div class="project_details_cta">
-						<strong>Client:</strong><span>${expenses.clientName}</span><div class="clearfix"></div>
+						<strong>Client:</strong><span> 
+						 <c:forEach var="project" items="${expEntry.projectsList}">
+						      <c:if test="${project.id == expenses.projectId}">
+						      ${project.client}
+						      </c:if>
+		                  </c:forEach>
+		            </span><div class="clearfix"></div>
 					</div>
 					<div class="project_details_cta">
 						<strong>Start date:</strong><span>${expenses.startDate}</span><div class="clearfix"></div>
