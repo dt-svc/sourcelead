@@ -236,7 +236,7 @@ function errRemoveClientContact(){
 		 result = result +'  <input type="hidden" id="maxTsRowNum" name="maxTsRowNum" value="0" />';
 		 result = result +'  <table width="100%">';
 		 result = result +'  <thead id="addInvoiceTbl">';
-		 result = result +'  <tr id="divTsRow0">';
+		 result = result +'  <tr>';
 		 result = result +'  <th>Date</th>';
 		 result = result +'  <th>Associate</th>';
 		 result = result +'  <th>Description</th>';
@@ -643,11 +643,9 @@ if(selectedTextInvoice =='percentage'){
 				  $("#discountValue").val('');
 				  $("#discountValue").attr("disabled", "disabled");
 			  }
-			  
-		
 		document.getElementById('divTsRow' + rowId).style.display = 'none';
-		var r = document.getElementById('addInvoiceTbl').rows[rowId];
-		var count = 2 * (r.cells.length);
+		var r = document.getElementById('addInvoiceTbl').rows[rowId+1];
+		var count = r.cells.length;
 		for (i = 0; i <= count; i++) {
 			r.deleteCell(0);
 		}
