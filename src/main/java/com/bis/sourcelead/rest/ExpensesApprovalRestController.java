@@ -185,7 +185,7 @@ public class ExpensesApprovalRestController {
 
 	private void sendEmailToExpenseApprovalStatus(Long expenseId, User loginUser, String status, String rejectedReason, OrgLocations loginOrgLocation, String loginOrgCode, String currencyCode) throws Exception {
 		
-		ExpensesApproverHierarchy sah = expensesApprovalService.getExpensesApproverHierarchyByApproverUserIdAndExpenseId(loginUser.getId(), expenseId);
+		ExpensesApproverHierarchy sah = expensesApprovalService.getExpensesApproverHierarchyByApproverUserIdAndExpenseId(loginUser.getId(), expenseId,loginOrgLocation.getId());
 		//SimpleDateFormat dateFormat=loginOrgLocation.getLocFullFormDateFormatter();
 		 Submission_Status submissionStatus = sah.getExpenseStatus();
 	 	 String submissionStatusStr = submissionStatus.getValue();

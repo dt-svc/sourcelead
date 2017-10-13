@@ -23,6 +23,8 @@ private static final long serialVersionUID = 1L;
 	
 	private Long projectMemberId;
 	
+	private Long masterCandidateId;
+	
 	private String clientName;
 	
 	private float totalAmount;
@@ -42,6 +44,8 @@ private static final long serialVersionUID = 1L;
 	private String createdBy;
 	
 	private boolean sahApproved;
+	
+	private String expenseLocationCode;
 	
 	private BigDecimal expenseAmountDivId;
 
@@ -85,6 +89,15 @@ private static final long serialVersionUID = 1L;
 	public void setProjectName(String projectName) {
 		this.projectName = projectName;
 	}
+	
+	public Long getMasterCandidateId() {
+		return masterCandidateId;
+	}
+
+	public void setMasterCandidateId(Long masterCandidateId) {
+		this.masterCandidateId = masterCandidateId;
+	}
+
 
 	public Long getProjectMemberId() {
 		return projectMemberId;
@@ -190,5 +203,12 @@ private static final long serialVersionUID = 1L;
 		this.projectMemberName = projectMemberName;
 	}
 
-	
+	public String getExpenseLocationCode() {
+		return expenseLocationCode;
+	}
+
+	public void setExpenseLocationCode(String expenseLocationCode) {
+		this.expenseLocationCode = expenseLocationCode;
+	}
+
 }

@@ -24,7 +24,7 @@
 <link rel="icon" type="image/png" href="resources/images/fav.png" />
 <title>Welcome to Source Lead :: The Recruitment Application</title>
 <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Roboto:400,100,300,500">
-<link rel="stylesheet" href="resources/css/export.css?staticTime=${staticTime}" type="text/css" media="all" />
+<link rel="stylesheet" href="resources/reports/export.css?staticTime=${staticTime}" type="text/css" media="all" />
 <link href="resources/css/bootstrap-colorpicker.min.css?staticTime=${staticTime}" rel="stylesheet">
 <link rel="stylesheet" href="resources/css/bootstrap-select.min.css?staticTime=${staticTime}">
 <link href="resources/css/bootstrap.min.css?staticTime=${staticTime}" rel="stylesheet" type="text/css">
@@ -35,6 +35,7 @@
 <link rel="stylesheet" href="resources/css/font-awesome.min.css?staticTime=${staticTime}">
 <link rel="stylesheet" href="resources/css/chosen.min.css?staticTime=${staticTime}">
 <link rel="stylesheet" href="resources/css/jquery.timepicker.css?staticTime=${staticTime}">
+<link href="resources/css/editor.css?staticTime=${staticTime}" rel="stylesheet">
 <link href="resources/css/sourcelead-main.css?staticTime=${staticTime}" rel="stylesheet">
 <link rel="stylesheet" href="resources/css/timesheet.css?staticTime=${staticTime}" type="text/css" >
 <c:set scope="request" var="viewPage" value='${pageContext.request.servletPath.toString().replaceFirst("/WEB-INF/views/","").replaceFirst(".jsp","")}'></c:set>
@@ -56,11 +57,75 @@
 
 
 <!--  Amcharts -->
-<script src="resources/js/pie.js?staticTime=${staticTime}"></script>
-<script src="resources/js/amcharts.js?staticTime=${staticTime}"></script>
-<script src="resources/js/serial.js?staticTime=${staticTime}"></script>
-<script src="resources/js/export.min.js?staticTime=${staticTime}"></script>
-<script src="resources/js/themes/light.js?staticTime=${staticTime}"></script>
+<c:if test='${viewPage == "reports/userReports"}'>
+	 <script src="resources/js/pie.js?staticTime=${staticTime}"></script> 
+	 <script src="resources/js/amcharts.js?staticTime=${staticTime}"></script> 
+	 <script src="resources/js/serial.js?staticTime=${staticTime}"></script> 
+	 <script src="resources/reports/export.min.js?staticTime=${staticTime}"></script> 
+	 <script src="resources/js/themes/light.js?staticTime=${staticTime}"></script> 
+ </c:if>
+ 
+ <c:if test='${viewPage == "reports/applicantsReport"}'>
+	 <script src="resources/reports/amcharts.js?staticTime=${staticTime}"></script>
+	<script src="resources/reports/pie.js?staticTime=${staticTime}"></script>
+	<script src="resources/reports/export.min.js?staticTime=${staticTime}"></script>
+	<link rel="stylesheet" href="resources/reports/export.cs?staticTime=${staticTime}" type="text/css" media="all" />
+	<script src="resources/reports/light.js?staticTime=${staticTime}"></script>
+</c:if>
+
+<c:if test='${viewPage == "reports/applicantsReceivedReport"}'>
+	<script src="resources/reports/highcharts.js"></script>
+	<script src="resources/reports/exporting.js"></script> 
+</c:if>
+
+<c:if test='${viewPage == "reports/requirementStageReports"}'>
+	<script src="resources/reports/amcharts.js?staticTime=${staticTime}"></script>
+	<script src="resources/reports/piechart.js?staticTime=${staticTime}"></script>
+	<script src="resources/reports/export.min.js?staticTime=${staticTime}"></script>
+	<link rel="stylesheet" href="resources/reports/export.css?staticTime=${staticTime}" type="text/css" media="all" /> 
+	<script src="resources/reports/light.js?staticTime=${staticTime}"></script>
+</c:if>
+
+<c:if test='${viewPage == "reports/requirementAssignToReports"}'>
+	 <script src="resources/js/pie.js?staticTime=${staticTime}"></script> 
+	 <script src="resources/js/amcharts.js?staticTime=${staticTime}"></script> 
+	 <script src="resources/js/serial.js?staticTime=${staticTime}"></script> 
+	 <script src="resources/reports/export.min.js?staticTime=${staticTime}"></script> 
+	 <script src="resources/js/themes/light.js?staticTime=${staticTime}"></script> 
+ </c:if>
+
+<c:if test='${viewPage == "reports/requirementAssignToReports"}'>
+	 <script src="resources/js/pie.js?staticTime=${staticTime}"></script> 
+	 <script src="resources/js/amcharts.js?staticTime=${staticTime}"></script> 
+	 <script src="resources/js/serial.js?staticTime=${staticTime}"></script> 
+	 <script src="resources/reports/export.min.js?staticTime=${staticTime}"></script> 
+	 <script src="resources/js/themes/light.js?staticTime=${staticTime}"></script> 
+ </c:if>
+
+
+ <c:if test='${viewPage == "reports/vendorsReport"}'>
+	 <script src="resources/js/pie.js?staticTime=${staticTime}"></script> 
+	 <script src="resources/js/amcharts.js?staticTime=${staticTime}"></script> 
+	 <script src="resources/js/serial.js?staticTime=${staticTime}"></script> 
+	 <script src="resources/reports/export.min.js?staticTime=${staticTime}"></script> 
+	 <script src="resources/js/themes/light.js?staticTime=${staticTime}"></script> 
+ </c:if>
+
+<c:if test='${viewPage == "professional/professionalDashboard"}'>
+	<script src="resources/js/amcharts.js?staticTime=${staticTime}"></script>
+	<script src="resources/js/serial.js?staticTime=${staticTime}"></script>
+	<script src="resources/js/light.js?staticTime=${staticTime}"></script>
+	<script src="resources/js/pie.js?staticTime=${staticTime}"></script>
+ </c:if>
+ 
+ 
+ <c:if test='${viewPage == "recruiter/recruiterDashboard"}'>
+	 <script src="resources/js/amcharts.js?staticTime=${staticTime}"></script>
+	<script src="resources/js/serial.js?staticTime=${staticTime}"></script>
+	<script src="resources/js/light.js?staticTime=${staticTime}"></script>
+	<script src="resources/js/pie.js?staticTime=${staticTime}"></script>
+ </c:if>
+ 
 <!--  Amcharts -->
 <script src="resources/js/bootstrap-colorpicker.min.js?staticTime=${staticTime}"></script>
 <script src="resources/js/jquery-ui.js?staticTime=${staticTime}"></script>
@@ -77,7 +142,7 @@
 <!-- <script src="resources/js/jquery-1.12.4.js" type="text/javascript" charset="utf-8"></script> -->
 <script src="resources/js/jquery.dataTables.min.js?staticTime=${staticTime}" type="text/javascript" charset="utf-8"></script>
 <script src="resources/js/dataTables.buttons.min.js?staticTime=${staticTime}" type="text/javascript" charset="utf-8"></script>
-<script src="resources/js/buttons.flash.min.js?staticTime=${staticTime}" type="text/javascript" charset="utf-8"></script>
+
 <script src="resources/js/jszip.min.js?staticTime=${staticTime}" type="text/javascript" charset="utf-8"></script>
 <!--  chosen jquery -->
 <script src="resources/js/chosen.jquery.min.js?staticTime=${staticTime}"></script>
@@ -85,7 +150,8 @@
 <script src="resources/js/pdfmake.min.js?staticTime=${staticTime}" type="text/javascript" charset="utf-8"></script>
 <script src="resources/js/vfs_fonts.js?staticTime=${staticTime}" type="text/javascript" charset="utf-8"></script>
 <script src="resources/js/buttons.html5.min.js?staticTime=${staticTime}" type="text/javascript" charset="utf-8"></script>
-<script src="resources/js/buttons.print.min.js?staticTime=${staticTime}" type="text/javascript" charset="utf-8"></script>
+<%-- <script src="resources/js/buttons.print.min.js?staticTime=${staticTime}" type="text/javascript" charset="utf-8"></script> --%>
+<%-- <script src="resources/js/buttons.flash.min.js?staticTime=${staticTime}" type="text/javascript" charset="utf-8"></script> --%>
 <!--  Data tables script files ends -->
 
 
@@ -159,6 +225,57 @@ z-index: 1000000000 !important;
 	display:none;
 }
 </style>
+
+
+<script type="text/javascript">
+$(document).ready(function(){
+  getNotificationsByuserId();
+});
+</script>
+
+
+<script>
+function getNotificationsByuserId(){
+	var userId = '${SourceLeadWeb_user.id}';
+	var  orgCode ='${SourceLeadWeb_orgCode}';
+	var locationCode = '${SourceLeadWeb_locationCode}';
+	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
+	$.get(sourceleadUrl+"/getNotificationsByuserId?"+tokenParamName+"="+tokenValue+"&userId="+userId+"&locationCode="+locationCode+"&orgCode="+orgCode+"&orgLocationId="+orgLocationId, function(json) {
+		var data = json.data
+		var result = "";
+		result = result + '<div class="header-widget alert-area">';
+		result = result + '<ul class="list-unstyled">';
+		if(data !=null && data !='' && data !='undefined'){
+			for(var i=0;i<data.length;i++){
+				var opt = data[i];
+				result = result + ' <li>';
+				result = result + '<div class="clearfix msg">';
+				result = result + '<div class="msg-img"> <span>';
+				result = result + ' <img class="img-circle" title='+opt.notificationFrom.firstName+' '+opt.notificationFrom.lastName+' alt='+opt.notificationFrom.userType+' onerror="predefineProfileImage(this);" src='+opt.notificationFrom.fileUrl+'>';
+				result = result + ' </span> </div>';
+				result = result + '<div class="msg-content">';
+				result = result + ' <a href="#"><p>'+opt.body+'</p>';
+				/* result = result + ' <c:out value='+userId+' />'; */
+				result = result + ' <span>'+opt.calDays+'</span></a> ';
+				result = result + '</div>';
+				result = result + ' </div>';
+				result = result + ' </li>';
+			} 
+			
+		}else{
+			result = result + '<div class="clearfix msg_blank">All Caught UP!!! </div>'
+		}
+          result = result + '</ul>';
+         result = result + '<div class="headerwidget-footer"> <a href="<c:url value="/notificationsList"/>">View All</a> </div>';
+          result = result + ' </div>';
+		
+		$("#ndiv").empty();
+      $("#ndiv").append(result);
+		
+	});
+}
+</script>
+
 <!-- <script>
 $(window).load(function() {
 	var url = window.location.href;
@@ -512,7 +629,8 @@ function preventTabkey(e){
           <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_PROFESSIONAL' && SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}">
           <li id="alert"> 
           <a href="#" title="Alerts" id="alert" onmouseover="notificationStatusAsRead();" > <i class="fa fa-bell bell" ></i> <span class="label label-warning">${SourceLeadWeb_notificationCount > 0 ? SourceLeadWeb_notificationCount : ''}</span></a>
-            <div class="header-widget alert-area">
+           <div id="ndiv"></div>
+            <%-- <div class="header-widget alert-area">
               <ul class="list-unstyled">
               <c:if test="${empty SourceLeadWeb_notificationList}">
               	<div class="clearfix msg_blank">
@@ -537,7 +655,7 @@ function preventTabkey(e){
                 </c:if>
               </ul>
               <div class="headerwidget-footer"> <a href="<c:url value='/notificationsList'/>">View All</a> </div>
-            </div>
+            </div> --%>
           </li>
           </c:if>
           
@@ -567,7 +685,10 @@ function preventTabkey(e){
 						  	<li><a href="<c:url value="/expenseCategory" />"><i class="fa fa-file-text" aria-hidden="true"></i>Expense Category</a></li>
 						  </sec:authorize>
 						  <li><a href="<c:url value="/bankAccountDetails" />"><i class="fa fa-university" aria-hidden="true"></i>Account</a></li>
-						   <%-- <li><a href="<c:url value="/leaveConfiguration" />"><i class="fa fa-key" aria-hidden="true"></i>Leave Configure</a></li> --%>
+						  
+						  <sec:authorize access="hasRole('ROLE_LEAVE_CONFIGURE')"> 
+						  	<li><a href="<c:url value="/leaveConfiguration" />"><i class="fa fa-key" aria-hidden="true"></i>Leave Configure</a></li>
+						  </sec:authorize>
 	              </ul>
 	            </div>
 	          </li>
@@ -1489,14 +1610,15 @@ $("#searchType").selectpicker('refresh');
 <script>
 function saveInviteCompany() {
 	if ($('#inviteCompany_form').validate(false, validationSettings)) {
-		var frm = $('#inviteCompany_form').serializeFormJSON();
-		var con = JSON.stringify(frm);
-		con = con.replace(/[{}]/g, "");
-		var jsonData = encodeURIComponent(con);
-		var sourceleadUrl = '${sourceleadUrl}';
-		$.ajax({
-					type : "POST",
-					url : sourceleadUrl+ "/storeInviteCompany?${_csrf.parameterName}=${_csrf.token}&json="+ jsonData,
+		
+			var formData = getFormData1("inviteCompany_form");
+			var sourceleadUrl = '${sourceleadUrl}';
+			$.ajax({
+					  type : "POST",
+					  data: formData,
+	 		          processData: false,
+	 		          contentType:false, 
+					url : sourceleadUrl+ "/storeInviteCompany?${_csrf.parameterName}=${_csrf.token}",
 					success : function(result) {
 						 $(".modalInvite").fadeOut();
 						  $(".sideMask").fadeOut(); 

@@ -56,9 +56,9 @@ public void dumpProjectClientsToProjects() throws IOException, SQLException {
 				 if (rs2.next()) {
 					 Long  userId = rs2.getLong("ID");
 						 
-				 		String query2 = " insert into sourcelead.PROJECT_CLIENTS (PROJECT_ID, ORG_LOCATIONS_ID, UUID, STATUS,  "
+				 		String query2 = " insert into sourcelead.PROJECT_CLIENTS (PROJECT_ID, ORG_LOCATIONS_ID, UUID, STATUS, LEVEL,  "
 								+ "CREATED_DATE, CREATED_BY)"
-								+ " values (?, ?, ?, ?, ?, ?)";
+								+ " values (?, ?, ?, ?, ?, ?, ?)";
 			    		
 			    		try {
 			    			 PreparedStatement pstmt2 = conn.prepareStatement(query2);
@@ -66,8 +66,9 @@ public void dumpProjectClientsToProjects() throws IOException, SQLException {
 				    		 pstmt2.setLong(2,orgLocationId);
 				    		 pstmt2.setString(3, SourceLeadRandomCodeHelper.generateRandomUUID());
 				    		 pstmt2.setInt(4, 1);
-				    		 pstmt2.setDate(5,(java.sql.Date) startDate);
-				    		 pstmt2.setLong(6,userId);
+				    		 pstmt2.setInt(5,1);
+				    		 pstmt2.setDate(6,(java.sql.Date) startDate);
+				    		 pstmt2.setLong(7,userId);
 				    		 pstmt2.execute();	
 				    		 
 			    		}catch (Exception e){   

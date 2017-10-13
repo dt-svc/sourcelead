@@ -23,11 +23,24 @@ import org.joda.time.DateTime;
 import org.joda.time.Weeks;
 
 import com.bis.sourcelead.constants.Constants;
-import com.bis.sourcelead.rest.OrgSettingsRestController;
-import com.bis.sourcelead.web.LoginSessionController;
 
 public  class CalendarUtil {
 
+	public static void main(String[] args){
+		Calendar currentCal = Calendar.getInstance(TimeZone.getDefault());
+		currentCal.setLenient(false);
+		currentCal.setTime(new Date());
+		Calendar currentSunday = getPreviousWeekDayByCalendar(currentCal, "SUN","MM-dd-yyyy");
+		System.out.println("Current-Sunday>>>>>>>>>>>>"+currentSunday.getTime());
+		
+		Calendar currentSatday = getCurrentWeekDayByCalendar(currentCal, "SAT","MM-dd-yyyy");
+		System.out.println("Current-Saturday>>>>>>>>>>>>"+currentSatday.getTime());
+		
+		System.out.println(getNumberOfDays(currentSunday.getTime(), currentSunday.getTime()));
+		
+		
+		
+	}
 	/*public static void main(String[] args){
 		Calendar currentCal = Calendar.getInstance(TimeZone.getDefault());
 		currentCal.setLenient(false);
@@ -399,7 +412,7 @@ public  class CalendarUtil {
 	}
 
 
-	public static Calendar getPreviousWeekDayByCalendar(Calendar calendar,String day_Of_Week) {
+	public static Calendar getPreviousWeekDayByCalendar(Calendar calendar,String day_Of_Week,String dateFormart) {
 		Calendar cal = Calendar.getInstance(TimeZone.getDefault());
 		int day_offset = getDayOffset(day_Of_Week);
 		try {

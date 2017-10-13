@@ -213,7 +213,7 @@ window.onload = function () {
             <div class="form-group">
               <label class="col-md-3">First Name<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-9">
-                <input class="form-control" type="text" id="firstName" name="firstName" pattern="[A-Za-z\s]*" maxlength="100" required>
+                <input class="form-control" type="text" id="firstName" name="firstName" pattern="[A-Za-z\s]*" maxlength="100" field-name="First Name" data-validation="required validate_AlphaNumber validate_length length1-100">
               </div>
             </div>
             

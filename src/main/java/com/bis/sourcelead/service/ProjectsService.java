@@ -38,6 +38,8 @@ public interface ProjectsService {
 		
 		Boolean validateProjectSequeneNumber(String projectSequeneNumber, Long orgLocationsId) throws Exception;
 		
+		Boolean validateProjectShortCode(String shortCode, Long orgLocationsId) throws Exception;
+		
 		Integer projectIdValidation(Long id) throws Exception;
 		
 		List<Projects> getAllProjects() throws Exception;

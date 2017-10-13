@@ -249,7 +249,7 @@ public class TimesheetApprovalRestController {
 			 startCal.setTime(startDate);
 			 Calendar startMonday =null;
 			 if(dayOfTheDate == 1){
-				 startMonday = CalendarUtil.getPreviousWeekDayByCalendar(startCal, "MON");
+				 startMonday = CalendarUtil.getPreviousWeekDayByCalendar(startCal, "MON",orgLocations.getDateFormat());
 			  }
 			  else{
 				  startMonday = CalendarUtil.getCurrentWeekDayByCalendar(startCal, "MON",orgLocations.getDateFormat());

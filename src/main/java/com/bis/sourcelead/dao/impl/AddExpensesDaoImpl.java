@@ -11,11 +11,9 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.AddExpensesDao;
-import com.bis.sourcelead.entity.CandidateCertifications;
 import com.bis.sourcelead.entity.Expenses;
 import com.bis.sourcelead.entity.ExpensesEntryDocuments;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
-import com.itextpdf.text.pdf.PdfStructTreeController.returnType;
 
 @Repository
 public class AddExpensesDaoImpl implements AddExpensesDao {

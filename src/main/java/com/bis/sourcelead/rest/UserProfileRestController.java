@@ -31,10 +31,12 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.bis.sourcelead.SourceleadPasswordEncoder;
 import com.bis.sourcelead.dto.AddUserProfileDTO;
+import com.bis.sourcelead.dto.PasswordSettingsDTO;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.form.UserProfile;
+import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
@@ -69,6 +71,9 @@ public class UserProfileRestController {
 	
 	@Autowired
 	CommonUtil commonUtil;
+	
+	@Autowired
+	OrgLocationService orgLocationService;
 	
 	@RequestMapping(value = "/saveUserProfileImage", method = RequestMethod.POST)
 	public String saveProfileImage(AddUserProfileDTO addUserProfileDTO,	HttpServletRequest request) throws Exception{
@@ -124,18 +129,26 @@ public class UserProfileRestController {
 	}
 	
 
-	@RequestMapping(value = "/passwordSettings", method = RequestMethod.POST)
-	public String passwordSettings(@RequestParam(value = "json", required = false) String json,
+	@RequestMapping(value = { "/passwordSettings", "/rest/passwordSettings" }, method = RequestMethod.POST)
+	public String passwordSettings(PasswordSettingsDTO passwordSettingsDTO,
 			HttpServletRequest request) throws Exception {
-		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
-		json = "{" + json + "}";
-		JSONObject jsonObj = new JSONObject(json);
-		Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
-		UserProfile userProfile = gson.fromJson(json, UserProfile.class);
+		
+		 User user = null;
+		 OrgLocations orgLocations = null;
+		 
+		 user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		 orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		
+		if(user == null) {
+			user = userService.getUserById(passwordSettingsDTO.getUserId());
+		}
+		
+		if(orgLocations == null) {
+			orgLocations = orgLocationService.getOrgLocations(passwordSettingsDTO.getOrgLocationId());
+		}
 
-		if (sourceleadPasswordEncoder.matches(userProfile.getCurrentPassword(), user.getPassword())) {
-			user.setPassword(sourceleadPasswordEncoder.encode(userProfile.getPassword()));
+		if (sourceleadPasswordEncoder.matches(passwordSettingsDTO.getCurrentPassword(), user.getPassword())) {
+			user.setPassword(sourceleadPasswordEncoder.encode(passwordSettingsDTO.getPassword()));
 			try {
 				userService.addUser(user);
 			} catch (Exception e) {
@@ -144,7 +157,7 @@ public class UserProfileRestController {
 			SourceLeadSessionManager.setSessionAttribute(request, "resetPwdMsg",
 					"Your password has reset successfully");
 			userService.passwordResetMailToLoginUser(user,orgLocations);
-			return "home";
+			return "success";
 		} else {
 			return "Invalid Password";
 		}

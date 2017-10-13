@@ -250,10 +250,10 @@ public class ProjectsDashboardRestController {
 			    	 pl.setEstimatedBudgetCurrency(pl.getEstimatedBudgetCurrency());
 			    	 pl.setEstimatedHours(pl.getEstimatedHours());
 			    	 pl.setEstimatedBudgetValue(pl.getEstimatedBudgetValue());
-			    	 if(pl.getApproverUserId() != null){
+			    	 if(pl.getApproverUserId() != null) {
 			    		 pl.setUserId(pl.getApproverUserId().getId());
 			    	 }
-			    	 
+
 			    	 ProjectBudgetList.add(pl);
 			     }
 		    	 projects.setProjectBudgetList(ProjectBudgetList);

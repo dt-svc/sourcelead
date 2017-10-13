@@ -946,6 +946,7 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 					
 					if(candidate.getParentCandidateId() != null){
 						Long parentCandidatId = candidate.getParentCandidateId().getId();
+						int level = 1;
 						while(parentCandidatId != null){
 							Candidate cand = candidateService.getCandidateByCandidateId(parentCandidatId);
 							projectMembers = projectMembersDao.getProjectMembersByCandidateIdAndProjectId(cand.getId(), projects.getId());
@@ -962,6 +963,21 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 									projectClients.setOrgLocationsId(cand.getOrgLocationId());
 									projectClients.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
 									projectClients.setStatus(1);
+									
+								
+									Candidate pCandidate = candidateService.getCandidateByParentCandidateId(clildCandidate.getId());
+									if(pCandidate != null && pCandidate.getOrgRelationId() != null){
+										ProjectClients pClient = projectClientService.getProjectClientsByProjectIdAndOrgLocationIdAndOrgRelationId(projects.getId(), clildCandidate.getOrgLocationId().getId(),pCandidate.getOrgRelationId().getId());
+										if(pClient != null && pClient.getLevel() != null){
+											level = pClient.getLevel()+1;
+										}
+									}
+									else{
+										level = level+1;
+									}
+									
+									
+									projectClients.setLevel(level);
 									projectClients.setCreatedDate(new Date());
 									projectClients.setCreatedBy(user);
 									projectClients.setUpdatedDate(new Date());
@@ -1420,6 +1436,7 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 	public void saveVendorProjectClientDetails(Candidate candidate,Projects projects,User user,ProjectClients projectClients,ProjectMembers pm) throws Exception{
 		
 		Long parentCandidatId = candidate.getParentCandidateId().getId();
+		int level = 1;
 		while(parentCandidatId != null){
 			Candidate cand = candidateService.getCandidateByCandidateId(parentCandidatId);
 			if(cand != null){
@@ -1436,6 +1453,19 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 					pc.setCreatedBy(user);
 					pc.setUpdatedDate(new Date());
 					pc.setUpdatedBy(user);
+					
+					Candidate pCandidate = candidateService.getCandidateByParentCandidateId(clildCandidate.getId());
+					if(pCandidate != null && pCandidate.getOrgRelationId() != null){
+						ProjectClients pClient = projectClientService.getProjectClientsByProjectIdAndOrgLocationIdAndOrgRelationId(projects.getId(), clildCandidate.getOrgLocationId().getId(),pCandidate.getOrgRelationId().getId());
+						if(pClient != null && pClient.getLevel() != null){
+							level = pClient.getLevel()+1;
+						}
+					}
+					else{
+						level = level+1;
+					}
+					
+					pc.setLevel(level);
 					
 					//prepare ProjectApproverHierarchy
 					Set<ProjectApproverHierarchy> projectApproverHierarchyList = new HashSet<ProjectApproverHierarchy>();

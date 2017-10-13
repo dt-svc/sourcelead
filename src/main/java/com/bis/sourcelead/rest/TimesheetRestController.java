@@ -684,6 +684,9 @@ public class TimesheetRestController {
 		timesheetEntriesDiv.append("					</div>");   
 		
 		/*timesheetEntriesDiv.append("</div>");  */ 
+		/* Fix for Defect 3311 IE 11 issue*/
+		timesheetEntriesDiv.append("<input type='hidden' name='_ignore'/>");
+		/* End Of Fix for Defect 3311 IE 11 issue*/
 		
 		timesheetEntriesDiv.append("		 </form> 	");	
 		}

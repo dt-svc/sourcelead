@@ -409,9 +409,14 @@ public class CandidateListRestController {
 		}
 
 		String updatedDateRange = search.getUpdatedDateRange();
-		if (StringUtils.isNotEmpty(updatedDateRange) && !"null".equalsIgnoreCase(updatedDateRange)
-				&& !updatedDateRange.equalsIgnoreCase("all") && !updatedDateRange.equalsIgnoreCase("undefined")) {
-			DateTime zoned = new DateTime(DateTimeZone.forID(loginOrgLocation.getTimezone().getTimeZoneId()));
+		if (StringUtils.isNotEmpty(updatedDateRange) && !"null".equalsIgnoreCase(updatedDateRange)&& !updatedDateRange.equalsIgnoreCase("all") && !updatedDateRange.equalsIgnoreCase("undefined")) {
+			 Calendar c = Calendar.getInstance();
+			 SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			Integer dateRange = Integer.parseInt(updatedDateRange);
+	        c.add(Calendar.DATE, -dateRange); // Subtracting dateRange days
+	        String updatedDate     = dateFormat.format(c.getTime());
+	        Date newDate = dateFormat.parse(updatedDate);
+			DateTime zoned = new DateTime(newDate,DateTimeZone.forID(loginOrgLocation.getTimezone().getTimeZoneId()));
 			Date endDate = getPreviousDate(zoned, loginOrgLocation.getTimezone());
 			java.sql.Date endDate1 = new java.sql.Date(endDate.getTime());
 			boolQueryBuilder.must(QueryBuilders.rangeQuery("updatedDate").gte(endDate1));
@@ -1060,14 +1065,16 @@ public class CandidateListRestController {
 	 * 
 	 * @throws NullPointerException
 	 */
-	@RequestMapping(value = "/updateCandidate")
+	@RequestMapping(value = {"/updateCandidate", "/rest/updateCandidate"},method=RequestMethod.POST)
 	public String updateCandidate(CandidateDTO CandidateDto,HttpServletRequest request) throws Exception {
+		String isUpdated = "failed";
 		User user = userService.getUserById(Long.valueOf(CandidateDto.getLoginUserId()));
 		OrgLocations loginOrgLocation = orgLocationService.getOrgLocations(Long.valueOf(CandidateDto.getOrgloationId()));
-		StringBuilder candidateCreateMsg = new StringBuilder();
 		Candidate candidate = candidateService.storeCandidate(CandidateDto, loginOrgLocation, user);
-
-		return "success";
+        if(candidate != null) {
+        	isUpdated =  "success";	
+        }
+		return isUpdated;
 
 	}
 
@@ -1103,7 +1110,7 @@ public class CandidateListRestController {
 				candidate.setStatus(Constants.CANDIDATE_ACTIVE);
 			}
 
-			if (Constants.Candidate.equalsIgnoreCase(candidateType)) {
+			if (Constants.Candidates.equalsIgnoreCase(candidateType)) {
 				candidate.setIsAssociate(Constants.NO);
 				candidate.setStatus(Constants.CANDIDATE_IN_ACTIVE);
 			}

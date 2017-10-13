@@ -38,6 +38,13 @@ public class OnBoardingTemplateDTO implements Serializable {
 	 
 	 private List<FileInfo> requestDocumentList;
 	 
+	 private List<VendorsDocumentsDTO> vendorTemplateDocumentsFileInfo;
+	 
+	 private List<VendorsDocumentsDTO> vendorOnboardDocumentsFileInfo;
+	 
+	 private Long vendorOnboardId;
+	 
+	 
 	public String getTemplateId() {
 		return templateId;
 	}
@@ -150,7 +157,29 @@ public class OnBoardingTemplateDTO implements Serializable {
 		this.requestDocumentList = requestDocumentList;
 	}
 
-	
+	public List<VendorsDocumentsDTO> getVendorTemplateDocumentsFileInfo() {
+		return vendorTemplateDocumentsFileInfo;
+	}
+
+	public void setVendorTemplateDocumentsFileInfo(List<VendorsDocumentsDTO> vendorTemplateDocumentsFileInfo) {
+		this.vendorTemplateDocumentsFileInfo = vendorTemplateDocumentsFileInfo;
+	}
+
+	public List<VendorsDocumentsDTO> getVendorOnboardDocumentsFileInfo() {
+		return vendorOnboardDocumentsFileInfo;
+	}
+
+	public void setVendorOnboardDocumentsFileInfo(List<VendorsDocumentsDTO> vendorOnboardDocumentsFileInfo) {
+		this.vendorOnboardDocumentsFileInfo = vendorOnboardDocumentsFileInfo;
+	}
+
+	public Long getVendorOnboardId() {
+		return vendorOnboardId;
+	}
+
+	public void setVendorOnboardId(Long vendorOnboardId) {
+		this.vendorOnboardId = vendorOnboardId;
+	}
 
 	
 }

@@ -4,6 +4,7 @@ import java.math.BigInteger;
 import java.text.MessageFormat;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
 import org.hibernate.Session;
@@ -134,6 +135,16 @@ public class ProjectBudgetDaoImpl implements ProjectBudgetDao{
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from ProjectBudget  projectbudget left join fetch projectbudget.projectId.orgLocationsId orgLoaction where orgLoaction.id = :orgLocationId";
 		List<ProjectBudget> ProjectBudgetList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+		return ProjectBudgetList;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	@Transactional(rollbackFor = { Exception.class })	
+	public List<ProjectBudget> getProjectBudgetByProjectTaskIdAndApprovedStatus(Long projectId,String filterDate, Date startDateUTC, Date endDateUTC) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from ProjectBudget  projectbudget  where projectbudget.projectId.id =:projectId and projectbudget.budgetStatus = 'Approved' and projectbudget.createdDate >= :startDateUTC and projectbudget.createdDate <= :endDateUTC";
+		List<ProjectBudget> ProjectBudgetList = session.createQuery(query).setLong("projectId", projectId).setDate("startDateUTC", startDateUTC).setDate("endDateUTC", endDateUTC).setCacheable(true).list();
 		return ProjectBudgetList;
 	}
 }

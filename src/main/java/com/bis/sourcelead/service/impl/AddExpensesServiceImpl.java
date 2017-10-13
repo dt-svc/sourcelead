@@ -147,9 +147,7 @@ public void storeAddExpensesData(ExpensesDTO addExpensesDTO, User loginUser, Org
 		Date enddate = commonUtil.orgLocationDateFormat(orgLoc.getDateFormat(), addExpensesDTO.getEndDate());
 		expenses.setEndDate(enddate);	
 	 }
-	if(null != orgLoc){
-		expenses.setOrgLocationId(orgLoc);
-	}
+	
 	if(null == expenses.getId()){
 		expenses.setCreatedBy(loginUser.getUserCode());
 	}
@@ -245,7 +243,12 @@ public void storeAddExpensesData(ExpensesDTO addExpensesDTO, User loginUser, Org
 	
 	expenses.setMasterCandidateId(projMembers.getMasterCandidateId());
 	expenses.setProjects(projMembers.getProjects());
-	
+	if(null != expenses.getProjects() && expenses.getProjects().getOrgLocationsId() != null){
+		expenses.setOrgLocationId(expenses.getProjects().getOrgLocationsId());
+	}
+	else{
+		expenses.setOrgLocationId(orgLoc);
+	}
 	
 	 expenses = addExpensesDao.storeAddExpensesData(expenses);
 	 if(status.equalsIgnoreCase(Submission_Status.APPROVED.getValue())){

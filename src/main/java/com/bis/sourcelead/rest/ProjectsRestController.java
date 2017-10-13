@@ -350,6 +350,14 @@ public class ProjectsRestController {
 		return projectsService.validateProjectSequeneNumber(ProjectSequeneNumber, orgLocId);
 	}
 
+	// to validate Project Short Code
+		@RequestMapping(value = "/validateProjectShortCodeByOrgLocationId", method = RequestMethod.POST)
+		public @ResponseBody Boolean validateProjectShortCodeByOrgLocationId(@RequestParam(value = "projectShortCode", required = false) String projectShortCode,
+				@RequestParam("orgLocId") Long orgLocId) throws Exception {
+
+			return projectsService.validateProjectShortCode(projectShortCode, orgLocId);
+		}
+		
 	// Validate for Cilent Website
 	@RequestMapping(value = "/ws/validateClientWebsite", method = RequestMethod.GET)
 	public @ResponseBody String validateOrgWebsite(@RequestParam(value = "website", required = false) String website,

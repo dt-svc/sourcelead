@@ -423,6 +423,13 @@ public List<Tasks> getTasksListOnboardingId(Long onboardingId) throws Exception 
 public List<Tasks> getTaskListByRepeatStatus(String taskRepeatStatus) throws Exception {
 	return taskDao.getTaskListByRepeatStatus(taskRepeatStatus);
 }
+
+@Override
+public List<Tasks> getTaskByAssignedUserIdAndOrgLocationIdAndVendorOnboardingId(Long orgLocationId, Long userId,
+		Long vendorOnboardingId) throws Exception {
+	return taskDao.getTaskByAssignedUserIdAndOrgLocationIdAndVendorOnboardingId(orgLocationId, userId, vendorOnboardingId);
+}
+
 }
 	
 

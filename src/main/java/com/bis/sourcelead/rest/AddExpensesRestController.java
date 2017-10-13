@@ -153,7 +153,7 @@ public class AddExpensesRestController {
 			  	//submissionApproverHierarchyService.sendReopenTimeSheetAcceptOrRejectMail(projectMemberId,reason,loginUser,orgLoc,timesheetFrequency,type,reopenedUser);
 				Expenses expense = expensesService.getExpenseById(expenseId);
 				User superUser = userService.getUserById(reOpenedUserId);
-				ExpensesApproverHierarchy sah = expensesApprovalService.getExpensesApproverHierarchyByApproverUserIdAndExpenseId(loginUser.getId(), expenseId);
+				ExpensesApproverHierarchy sah = expensesApprovalService.getExpensesApproverHierarchyByApproverUserIdAndExpenseId(loginUser.getId(), expenseId,orgLoc.getId());
 				expensesApprovalService.sendReopenExpenseAcceptOrRejectMail(expense,reason,superUser,orgLoc,type,reopenedUser, sah.getExpenseId().getProjectMembers().getProjects().getProjectName());
 			  	
 			}else if(expenseId != null &&  null != type && "reject".equalsIgnoreCase(type) && null != reason && !"".equalsIgnoreCase(reason)){
@@ -162,7 +162,7 @@ public class AddExpensesRestController {
 			  	//submissionApproverHierarchyService.sendReopenTimeSheetAcceptOrRejectMail(projectMemberId,reason,loginUser,orgLoc,timesheetFrequency,type,reopenedUser);
 				Expenses expense = expensesService.getExpenseById(expenseId);
 				User superUser = userService.getUserById(reOpenedUserId);
-				ExpensesApproverHierarchy sah = expensesApprovalService.getExpensesApproverHierarchyByApproverUserIdAndExpenseId(loginUser.getId(), expenseId);
+				ExpensesApproverHierarchy sah = expensesApprovalService.getExpensesApproverHierarchyByApproverUserIdAndExpenseId(loginUser.getId(), expenseId,orgLoc.getId());
 				expensesApprovalService.sendReopenExpenseAcceptOrRejectMail(expense,reason,superUser,orgLoc,type,reopenedUser, sah.getExpenseId().getProjectMembers().getProjects().getProjectName());
 
 			}
@@ -311,7 +311,7 @@ public class AddExpensesRestController {
 	 
 	 private void sendEmailToSuperUserForReOpenExpenseApprovalStatus(Long expenseId, User loginUser, OrgLocations orgLoc, String reason, String currencyCode) throws Exception {
 			
-			ExpensesApproverHierarchy sah = expensesApprovalService.getExpensesApproverHierarchyByApproverUserIdAndExpenseId(loginUser.getId(), expenseId);
+			ExpensesApproverHierarchy sah = expensesApprovalService.getExpensesApproverHierarchyByApproverUserIdAndExpenseId(loginUser.getId(), expenseId,orgLoc.getId());
 			
 		 		 EmailMessage emailMessage = new EmailMessage();
 		     	 emailMessage.setFirstName(sah.getExpenseId().getProjectMembers().getEmployee().getUser().getFirstName());

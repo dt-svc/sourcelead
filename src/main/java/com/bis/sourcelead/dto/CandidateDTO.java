@@ -1,23 +1,12 @@
 package com.bis.sourcelead.dto;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import com.bis.sourcelead.annotations.Email;
 import com.bis.sourcelead.annotations.Phone;
 import com.bis.sourcelead.annotations.Required;
-import com.bis.sourcelead.entity.MasterCandidate;
-import com.bis.sourcelead.entity.Org;
-import com.bis.sourcelead.entity.OrgLocations;
-import com.bis.sourcelead.entity.OrgRelations;
-import com.bis.sourcelead.entity.OrgSpoc;
-import com.bis.sourcelead.entity.Team;
-import com.bis.sourcelead.entity.User;
 
-public class CandidateDTO {
+public class CandidateDTO extends SearchDTO{
 
 	private String candidateId;
 	

@@ -82,8 +82,11 @@ private static final long serialVersionUID = 1L;
     @Column(name = "STATUS")
 	private Integer status;
 		
+    @Column(name = "UPLOAD_FILE_URL", columnDefinition = "TEXT default NULL")
+	private String uploadFileURL;
+    
     @Column(name = "FILE_URL", columnDefinition = "TEXT default NULL")
-	private String fileURL;
+   	private String fileURL;
     
 	@Column(name = "CREATED_DATE")
 	private Date createdDate;
@@ -258,5 +261,13 @@ private static final long serialVersionUID = 1L;
 
 	public void setFileURL(String fileURL) {
 		this.fileURL = fileURL;
+	}
+
+	public String getUploadFileURL() {
+		return uploadFileURL;
+	}
+
+	public void setUploadFileURL(String uploadFileURL) {
+		this.uploadFileURL = uploadFileURL;
 	}
 }

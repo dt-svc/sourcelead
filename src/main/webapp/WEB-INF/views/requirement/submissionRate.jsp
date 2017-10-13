@@ -279,19 +279,18 @@ width: auto;
 
 <script type="text/javascript">
 	function storeNegotiation() {
-			var sourceleadUrl = '${sourceleadUrl}';
 			var submissionId = '${submissionId}';
 			var type = '${type}';
 			if ($('#negotiation_form').validate(false, validationSettings)){ 
 			$('#negotiationButtonId').addClass('button').val('Processing..').attr('disabled','disabled');
-			var frm = $('#negotiation_form').serializeFormJSON();
-			var con = JSON.stringify(frm);
-			con = con.replace(/[{}]/g, "");
-			//It will escape all the special characters
-		    var jsonData = encodeURIComponent(con);
+		    var formData = getFormData1("negotiation_form");
+		    
 			$.ajax({
 						type : "POST",
-						url : sourceleadUrl+'/storeNegotiation?"+tokenParamName+"="+tokenValue+"&json='+jsonData+'&submissionId='+submissionId+'&type='+type,
+						data: formData,
+						processData: false,
+					    contentType:false, 
+						url : sourceleadUrl+'/storeNegotiation?"+tokenParamName+"="+tokenValue+"&submissionId='+submissionId+'&type='+type,
 						success : function(result) {
 							$('#rateProposal').val('');
 							$('#rateType').val('');
