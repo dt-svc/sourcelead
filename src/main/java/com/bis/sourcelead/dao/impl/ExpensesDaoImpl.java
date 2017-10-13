@@ -16,7 +16,9 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dao.CandidateDao;
 import com.bis.sourcelead.dao.ExpensesDao;
+import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Expenses;
 import com.bis.sourcelead.entity.ExpensesEntries;
 
@@ -26,6 +28,9 @@ public class ExpensesDaoImpl implements ExpensesDao {
 
 	@Autowired
 	private SessionFactory sessionFactory;
+	
+	@Autowired
+	private CandidateDao candidateDao;
 
 	@Value("${SourceLead.100}")
 	private String notFound;
@@ -41,7 +46,7 @@ public class ExpensesDaoImpl implements ExpensesDao {
 	@SuppressWarnings("unchecked")
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public List<Expenses> getAllExpenses(Long orgLocId,Long loginUserId, String expenseStatus, Date startDateUTC, Date endDateUTC){
+	public List<Expenses> getAllExpenses(Long masterCandidateId, String expenseStatus, Date startDateUTC, Date endDateUTC){
 		Map<String, Object> params = new HashMap<String,Object>();
 		String[] expStatus = expenseStatus.split(",");
 		String subQuery2 = "";
@@ -93,14 +98,13 @@ public class ExpensesDaoImpl implements ExpensesDao {
 		*/
 		
 		Session session = this.sessionFactory.getCurrentSession();
-		String from = "from Expenses expenses left join fetch expenses.orgLocationId left join fetch expenses.projectMembers pm left join fetch pm.employee emp left join fetch emp.user user where expenses.orgLocationId.id =:orgLocId and user.id =:loginUserId and ( " + subQuery2 +" ) "+startDateSubQuery+" "+endDateSubQuery+" ";
-		params.put("loginUserId",loginUserId);
-		params.put("orgLocId",orgLocId);
+		String from = "from Expenses expenses left join fetch expenses.orgLocationId left join fetch expenses.projectMembers pm left join fetch pm.projects projects left join fetch pm.masterCandidateId mc left join fetch pm.projectClientsId pc left join fetch pc.orgLocationsId loc  where  mc.id = :masterCandidateId and ( " + subQuery2 +" ) "+startDateSubQuery+" "+endDateSubQuery+" and expenses.status = '1'";
+		params.put("masterCandidateId",masterCandidateId);
 		
 		Query query = session.createQuery(from);
 		for (String str : query.getNamedParameters())
         {
-			if(str.equalsIgnoreCase("loginUserId")){
+			if(str.equalsIgnoreCase("masterCandidateId")){
 				query.setParameter(str, (long) params.get(str));
 			}if(str.equalsIgnoreCase("startDateUTC")){
 				query.setParameter( str, (Date) params.get(str) );
@@ -108,10 +112,6 @@ public class ExpensesDaoImpl implements ExpensesDao {
 			if(str.equalsIgnoreCase("endDateUTC")){
 				query.setParameter( str, (Date) params.get(str) );
 			}
-			if(str.equalsIgnoreCase("orgLocId")){
-				query.setParameter(str, (long) params.get(str));
-			}
-			
         }
 		return query.setCacheable(true).list();
 		/*List<Expenses> expensesList =session.createQuery(query).setLong("orgLocId", orgLocId).setLong("loginUserId", loginUserId).setCacheable(true).list();
@@ -160,7 +160,7 @@ public class ExpensesDaoImpl implements ExpensesDao {
 	{
 		Session session = this.sessionFactory.getCurrentSession();
 		Expenses  expense =  null;
-		List<Expenses>  expensesList = session.createQuery("from Expenses expenses left join fetch expenses.orgLocationId orglocId left join fetch expenses.projectMembers pm left join fetch pm.employee emp left join fetch emp.user user where expenses.expenseId =:expenseId and orglocId.id =:OrgLocationID").setString("expenseId", expenseId).setLong("OrgLocationID", OrgLocationID).setCacheable(true).list();
+		List<Expenses>  expensesList = session.createQuery("from Expenses expenses left join fetch expenses.orgLocationId orglocId left join fetch expenses.projectMembers pm left join fetch pm.projectMemberCandidteId can left join fetch pm.employee emp left join fetch emp.user user where expenses.expenseId =:expenseId and orglocId.id =:OrgLocationID").setString("expenseId", expenseId).setLong("OrgLocationID", OrgLocationID).setCacheable(true).list();
 		if(null != expensesList && expensesList.size() >0){
 			expense = expensesList.get(0);
 		}

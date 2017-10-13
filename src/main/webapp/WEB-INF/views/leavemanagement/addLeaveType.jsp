@@ -2,9 +2,6 @@
 <jsp:include page="../masterSideNav.jsp" />
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
- 
-<link href="resources/css/summernote.css" rel="stylesheet">
-<link href="resources/css/bootstrap-colorpicker.min.css" rel="stylesheet">
 
 <script>
  window.onload = function() {
@@ -250,10 +247,10 @@
 							style="display: none;">
 							<h3>Leave Policy</h3>
 							<div class="form-group">
-								<label class="col-md-3">Policy Name</label>
-								<div class="col-md-9">
-									<input type="text" class="form-control" name="policyName"
-										value="${leaveType.policyName}">
+								<label class="col-md-3">Policy Name<span class="text-danger">&nbsp;*</span></label>
+								<div class="col-md-9" id=policyNameDiv>
+									<input type="text" class="form-control" name="policyName" id="policyName"
+										value="${leaveType.policyName}" field-name="Policy Name" data-validation-optional="true">
 								</div>
 							</div>
 							<div class="form-group">
@@ -270,9 +267,9 @@
 								</div>
 							</div>
 							<div class="clearfix">
-								<label class="col-md-12">Description</label>
-								<div class="col-md-12 txtEditor_p">
-									<textarea class="txtEditor" id="txtEditor" name="leavePolicyDescription" >${leaveType.policyDescription}</textarea>
+								<label class="col-md-12">Description<span class="text-danger">&nbsp;*</span></label>
+								<div class="col-md-12 txtEditor_p" id="leavePolicyDescDiv">
+									<textarea class="txtEditor" id="txtEditor" name="leavePolicyDescription" field-name="Description" data-validation-optional="true">${leaveType.policyDescription}</textarea>
 								</div>
 							</div>
 						</div>
@@ -319,7 +316,7 @@ function redirect(){
 }
 </script>
 
-<script src="resources/js/summernote.js"></script>
+
 <script>
 	$('#txtEditor').summernote({
   toolbar: [
@@ -345,8 +342,20 @@ function leavePolicy(){
    var ckbox = $('#leavePolicy');
    if (ckbox.is(':checked')) {
 		$("#leavepolicy-div").show();
+		$('#policyName').removeAttr('data-validation-optional');
+		$('#policyName').attr('data-validation',"required");
+		$('#txtEditor').removeAttr('data-validation-optional');
+		$('#txtEditor').attr('data-validation',"required");
+		$('#policyNameDiv').find('p.jquery_form_error_message').remove();
+		$('#leavePolicyDescDiv').find('p.jquery_form_error_message').remove();
 	} else {
 		$("#leavepolicy-div").hide();
+		$('#policyNameDiv').find('p.jquery_form_error_message').remove();
+		$('#leavePolicyDescDiv').find('p.jquery_form_error_message').remove();
+		$('#policyName').removeAttr('data-validation');
+		$('#policyName').attr('data-validation-optional',"true");
+		$('#txtEditor').removeAttr('data-validation');
+		$('#txtEditor').attr('data-validation-optional',"true");
 	}
 }
 
@@ -370,7 +379,7 @@ function noUsers(){
 }
 </script>
 
-<script src="resources/js/bootstrap-colorpicker.min.js"></script> 
+
 <script>
     //Color Picker
     $(function() {

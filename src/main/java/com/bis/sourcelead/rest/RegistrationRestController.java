@@ -145,9 +145,13 @@ public class RegistrationRestController {
 		try {
 
 				String json1 = "{"+json+"}";
+				
 				JSONObject jsonObj = new JSONObject(json1);
 				Gson gson =  new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
 				Registration registration =  gson.fromJson(json1,Registration.class);
+				
+				
+				
 				User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			    String[] registredModules =  modulesList.split(",");
 			    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");

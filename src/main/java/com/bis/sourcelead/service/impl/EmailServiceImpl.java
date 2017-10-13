@@ -13,6 +13,7 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.FileInfo;
@@ -64,7 +65,7 @@ public class EmailServiceImpl implements EmailService {
 	}
 
 	@Override
-	public void sendEmail(HotListEmailCampaignDTO hotListEmailCampaignDTO, User user, OrgLocations orgLocation)
+	public void sendEmail(HotListEmailCampaignDTO hotListEmailCampaignDTO, User user, OrgLocations orgLocation,MultipartFile multiFile)
 			throws Exception {
 		
 		
@@ -120,7 +121,7 @@ public class EmailServiceImpl implements EmailService {
 			 
 			 EmailScenario emailScenario =  emailScenarioService.getEmailScenarioByUniqueName(Constants.EMAIL_TO_USERS,Constants.ENTITY_TYPE_EMAIL);
 			 //covert subject,body and signature
-			 String subject = emailScenerioUtil.bulidSubject(hotListEmailCampaignDTO.getBodytext(),globalVarsMap);
+			 String subject = emailScenerioUtil.bulidSubject(hotListEmailCampaignDTO.getSubject(),globalVarsMap);
 			 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
 			 
 			
@@ -147,9 +148,19 @@ public class EmailServiceImpl implements EmailService {
 				 }
 				 
 			 
+				 ArrayList<EmailAttachment> fileAttachmentList = null;
+				 EmailAttachment attachment = new EmailAttachment();
+				 
+				 if(multiFile.getSize() > 0){
+					 fileAttachmentList =  new ArrayList<EmailAttachment>();
+					 attachment.setName(multiFile.getOriginalFilename());
+					 attachment.setDocFile(multiFile.getBytes());
+					 attachment.setType(multiFile.getContentType());
+					 fileAttachmentList.add(attachment);
+				 }
 			 
 			 //calling the sendEmail method of emailScenerioUtil
-			 emailScenerioUtil.sendEmail(emailMessage,orgLocation.getId(),iAdressArray,attachmentList);
+			 emailScenerioUtil.sendEmail(emailMessage,orgLocation.getId(),iAdressArray,fileAttachmentList);
 			 
 			saveUserMailBox(user,orgLocation,iAdressArray,subject,hotListEmailCampaignDTO.getBodytext(),signature,fileInfo);
 			 

@@ -162,7 +162,8 @@ public class SecurityConfig  {
     			.antMatchers("/uploadRequestedDocuments").permitAll()
     			.antMatchers("/viewAllJobAlerts").permitAll()
     			.antMatchers("/getAllJobsAlertList").permitAll()
-				
+    			.antMatchers("/upload/*").permitAll()
+    			
     			.antMatchers("/viewJobSummaryDocumentDocView").permitAll()
     			.antMatchers("/getActionHistoryList").permitAll()
     			.antMatchers("/upload/*").permitAll()

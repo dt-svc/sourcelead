@@ -4,17 +4,16 @@ import java.io.ByteArrayInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -26,10 +25,14 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.CandidateOffBoardingDTO;
+import com.bis.sourcelead.dto.CandidatedOffboardingDTO;
+import com.bis.sourcelead.dto.FileInfo;
+import com.bis.sourcelead.dto.OffBoardingTemplateDTO;
+import com.bis.sourcelead.dto.OffboardTasksDTO;
+import com.bis.sourcelead.dto.OffboardingCandidateSetpsDTO;
 import com.bis.sourcelead.entity.CandidateOffBoarding;
 import com.bis.sourcelead.entity.CandidateOnBoarding;
 import com.bis.sourcelead.entity.Employees;
@@ -54,15 +57,20 @@ import com.bis.sourcelead.service.TaskService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.util.FileUploadUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
-import com.bis.sourcelead.web.LoginSessionController;
+
+import cucumber.deps.difflib.StringUtills;
 
 @RestController
 public class CandidateOffBoardRestController {
 	
 private static final Logger logger = LoggerFactory.getLogger(TimesheetRestController.class);
 	
+	@Value("${static.path}")
+	private String staticPath;
+
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
 	
@@ -196,30 +204,22 @@ private static final Logger logger = LoggerFactory.getLogger(TimesheetRestContro
 	 
 	 
 	 @RequestMapping(value = "/createNewOffBoardingTemplate" , method = RequestMethod.POST)
-	 public @ResponseBody  String createNewOffBoardingTemplate(@RequestParam(value="json", required=false) String json, HttpServletRequest request) throws Exception {
-		
-		 String resultJson;
-		 
-		 json = "{"+json+"}";
-		 
-		 JSONObject jsonObj = new JSONObject(json);
-		 
+	 public @ResponseBody  OffBoardingTemplate createNewOffBoardingTemplate(OffBoardingTemplateDTO offBoardingTemplateDTO, HttpServletRequest request) throws Exception {
 		 OffBoardingTemplate offBoardingTemplate = null;
-		 	
 	 	 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 	 	 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 	 	 
-	 	 if(jsonObj.has("templateId") && !isNullOrEmpty(jsonObj.getString("templateId"))){
-	 		offBoardingTemplate = offBoardingTemplateService.getOffBoardingTemplateById(Long.valueOf(jsonObj.getString("templateId")));
-	 		offBoardingTemplate.setTemplateName(jsonObj.getString("templateName"));
-	 		offBoardingTemplate.setDescription(jsonObj.getString("description"));
+	 	 if(StringUtils.isNotBlank(offBoardingTemplateDTO.getTemplateId())){
+	 		offBoardingTemplate = offBoardingTemplateService.getOffBoardingTemplateById(Long.valueOf(offBoardingTemplateDTO.getTemplateId()));
+	 		offBoardingTemplate.setTemplateName(offBoardingTemplateDTO.getTemplateName());
+	 		offBoardingTemplate.setDescription(offBoardingTemplateDTO.getDescription());
 	 		offBoardingTemplate.setUpdatedBy(user.getUserCode());
 	 		offBoardingTemplate.setUpdatedDate(new Date());
 	 	 
 	 	 }else{
 	 		offBoardingTemplate = new OffBoardingTemplate();
-	 		offBoardingTemplate.setTemplateName(jsonObj.getString("templateName"));
-	 		offBoardingTemplate.setDescription(jsonObj.getString("description"));
+	 		offBoardingTemplate.setTemplateName(offBoardingTemplateDTO.getTemplateName());
+	 		offBoardingTemplate.setDescription(offBoardingTemplateDTO.getDescription());
 	 		offBoardingTemplate.setOrgLocationId(orgLocations);
 		 	
 		 	 StringBuilder userName = new StringBuilder();
@@ -236,12 +236,8 @@ private static final Logger logger = LoggerFactory.getLogger(TimesheetRestContro
 			offBoardingTemplate.setUpdatedBy(user.getUserCode());
 			offBoardingTemplate.setUpdatedDate(new Date());
 	 	 }
-	 	 
-	 	
 	 	offBoardingTemplate = offBoardingTemplateService.saveOffBoardingTemplate(offBoardingTemplate);
-		
-	 	resultJson = commonUtil.toJSON(Long.valueOf(offBoardingTemplate.getId()));
-		return resultJson;
+		return offBoardingTemplate;
 	   }
 	 
 	 
@@ -260,17 +256,59 @@ private static final Logger logger = LoggerFactory.getLogger(TimesheetRestContro
 		
 		
 		@RequestMapping(value = "/saveOffboardingTemplateDocuments", method = RequestMethod.POST)
-		public @ResponseBody String saveOffboardingTemplateDocuments(@RequestParam(value="json", required=false) String json,
-				MultipartHttpServletRequest request) throws Exception {
+		public @ResponseBody String saveOffboardingTemplateDocuments(OffBoardingTemplateDTO offBoardingTemplateDTO,HttpServletRequest request) throws Exception {
+			  offBoardingTemplateDTO.setStaticPath(staticPath);
+			  User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			
-			User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			//Resignation / Termination Letter documents saving
+			if(offBoardingTemplateDTO.getResignationFileInfo() != null &&  offBoardingTemplateDTO.getResignationFileInfo().size() > 0) {
+				OffBoardingTemplate template = offBoardingTemplateService.getOffBoardingTemplateById(Long.valueOf(offBoardingTemplateDTO.getTemplateId()));
+				for(FileInfo fileInfo : offBoardingTemplateDTO.getResignationFileInfo()) {
+					OffBoardingDocuments documents = new OffBoardingDocuments();
+						if(fileInfo != null && fileInfo.getFileURL() != null) {
+							   documents.setFileName(fileInfo.getFileName());
+							   documents.setFileContentType(fileInfo.getContentType());
+							   documents.setFileURL(fileInfo.getFileURL());
+						   }
+					       documents.setOffboardingTemplateId(template);
+					       documents.setDocumentType("Resignation");
+	                       documents.setStatus(Constants.CANDIDATE_ACTIVE);
+	                       documents.setDocumentUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+	                       documents.setCreatedDate(CommonUtil.currentDate());
+	                       documents.setCreatedBy(loginUser.getUserCode());
+	                       documents.setUpdatedDate(CommonUtil.currentDate());
+	                       documents.setUpdatedBy(loginUser.getUserCode());
+	                       offBoardingDocumentsService.saveOffBoardingDocuments(documents);
+	                       FileUploadUtil.moveFile(offBoardingTemplateDTO .getStaticPath(), fileInfo, "Offboard-Template-Resignation-Documents");
+				}
+			}
 			
-			json = "{"+json+"}";
-			JSONObject jsonObj = new JSONObject(json);
+			//Offboard Pack documents saving
+			if(offBoardingTemplateDTO.getOffboardPackFileInfo() != null &&  offBoardingTemplateDTO.getOffboardPackFileInfo().size() > 0) {
+				OffBoardingTemplate template = offBoardingTemplateService.getOffBoardingTemplateById(Long.valueOf(offBoardingTemplateDTO.getTemplateId()));
+				for(FileInfo fileInfo : offBoardingTemplateDTO.getOffboardPackFileInfo()) {
+					OffBoardingDocuments documents = new OffBoardingDocuments();
+					if(fileInfo != null && fileInfo.getFileURL() != null) {
+						   documents.setFileName(fileInfo.getFileName());
+						   documents.setFileContentType(fileInfo.getContentType());
+						   documents.setFileURL(fileInfo.getFileURL());
+					   }
+				      documents.setOffboardingTemplateId(template);
+					 documents.setDocumentType("Offboard Pack");
+                     documents.setStatus(Constants.CANDIDATE_ACTIVE);
+                     documents.setDocumentUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+                     documents.setCreatedDate(CommonUtil.currentDate());
+                     documents.setCreatedBy(loginUser.getUserCode());
+                     documents.setUpdatedDate(CommonUtil.currentDate());
+                     documents.setUpdatedBy(loginUser.getUserCode());
+                     offBoardingDocumentsService.saveOffBoardingDocuments(documents);
+                     FileUploadUtil.moveFile(offBoardingTemplateDTO .getStaticPath(), fileInfo, "Offboard-Template-OffboardPack-Documents");
+				}
+			}
 			
 			
 			//save  mutliple attachment for Resignation / Termination Documents.
-			if ((jsonObj.has("resignationAttcahmentMaxRowNumber"))){
+			/*if ((jsonObj.has("resignationAttcahmentMaxRowNumber"))){
 		    	String resignationAttcahmentMaxRowNumber = jsonObj.getString("resignationAttcahmentMaxRowNumber");
 				int resignationAttcahmentMaxRowNumberCount = Integer.parseInt(resignationAttcahmentMaxRowNumber);
 				
@@ -342,7 +380,7 @@ private static final Logger logger = LoggerFactory.getLogger(TimesheetRestContro
 			                 
 				    	}
 					}
-					
+					*/
 					return "success";
 			
 		}
@@ -462,6 +500,7 @@ private static final Logger logger = LoggerFactory.getLogger(TimesheetRestContro
 			if(null != template){
 				template.setTemplateStatus("Finished");
 				offBoardingTemplateService.saveOffBoardingTemplate(template);
+				SourceLeadSessionManager.setSessionAttribute(request, "OffboardCreateMsg", "Success!! New OffBoard Template created");
 			}
 			return "success";
 			
@@ -470,72 +509,62 @@ private static final Logger logger = LoggerFactory.getLogger(TimesheetRestContro
 		 
 		 
 		 @RequestMapping(value = "/saveOffBoardTasks" , method = RequestMethod.POST)
-		 public @ResponseBody  String saveOffBoardTasks(@RequestParam(value="json", required=false) String json, HttpServletRequest request) throws Exception {
+		 public @ResponseBody  String saveOffBoardTasks(OffboardTasksDTO offboardTasksDTO,HttpServletRequest request) throws Exception {
 			
-			 
-			 json = "{"+json+"}";
-			 
-			 JSONObject jsonObj = new JSONObject(json);
-			 
 			 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			
 			 
 			 OffboardTasks offboardTasks = new OffboardTasks();
 			 
 			 
-			 if(jsonObj.has("taskName") && !isNullOrEmpty(jsonObj.getString("taskName"))){
-				 offboardTasks.setTaskName(jsonObj.getString("taskName"));
+			 if(StringUtils.isNotBlank(offboardTasksDTO.getTaskName())){
+				 offboardTasks.setTaskName(offboardTasksDTO.getTaskName());
 			 }
 			 
 			 OffBoardingTemplate template = new OffBoardingTemplate();
-			 template.setId(Long.valueOf(jsonObj.getString("templateId")));
+			 template.setId(Long.valueOf(offboardTasksDTO.getTemplateId()));
 			 offboardTasks.setOffboardingTemplateId(template);
 			 
-			 if(jsonObj.has("onboardAssignedTo") && !isNullOrEmpty(jsonObj.getString("onboardAssignedTo"))){
-				
-				 String userIds = jsonObj.getString("onboardAssignedTo");
-				 
-				 userIds = userIds.replaceAll("\\[", "").replaceAll("\\]","");
-				 userIds = userIds.replaceAll("\"", "");
-				 offboardTasks.setAssignToUsers(userIds);
+			 if(StringUtils.isNotBlank(offboardTasksDTO.getOnboardAssignedTo())){
+				 offboardTasks.setAssignToUsers(offboardTasksDTO.getOnboardAssignedTo());
 			 }else{
 				 offboardTasks.setAssignToCandidate(Constants.YES);
 			 }
 			 
-			 if(jsonObj.has("taskPriority") && !isNullOrEmpty(jsonObj.getString("taskPriority"))){
-				 offboardTasks.setPriority(jsonObj.getString("taskPriority"));
+			 if(StringUtils.isNotBlank(offboardTasksDTO.getTaskPriority())){
+				 offboardTasks.setPriority(offboardTasksDTO.getTaskPriority());
 			 }
 			 
-			 if(jsonObj.has("taskRepeat") && !isNullOrEmpty(jsonObj.getString("taskRepeat"))){
-				 offboardTasks.setTaskRepeat(jsonObj.getString("taskRepeat"));
+			 if(StringUtils.isNotBlank(offboardTasksDTO.getTaskRepeat())){
+				 offboardTasks.setTaskRepeat(offboardTasksDTO.getTaskRepeat());
 			 }
 			 
-			 if(jsonObj.has("taskMonths") && !isNullOrEmpty(jsonObj.getString("taskMonths"))){
-				 offboardTasks.setDueAfterMonths(Integer.parseInt(jsonObj.getString("taskMonths")));
+			 if(StringUtils.isNotBlank(offboardTasksDTO.getTaskMonths())){
+				 offboardTasks.setDueAfterMonths(Integer.parseInt(offboardTasksDTO.getTaskMonths()));
 			 }
 			 
-			 if(jsonObj.has("taskDays") && !isNullOrEmpty(jsonObj.getString("taskDays"))){
-				 offboardTasks.setDueAfterDays(Integer.parseInt(jsonObj.getString("taskDays")));
+			 if(StringUtils.isNotBlank(offboardTasksDTO.getTaskDays())){
+				 offboardTasks.setDueAfterDays(Integer.parseInt(offboardTasksDTO.getTaskDays()));
 			 }
 			 
-			 if(jsonObj.has("taskHours") && !isNullOrEmpty(jsonObj.getString("taskHours"))){
-				 offboardTasks.setDueAfterHours(Integer.parseInt(jsonObj.getString("taskHours")));
+			 if(StringUtils.isNotBlank(offboardTasksDTO.getTaskHours())){
+				 offboardTasks.setDueAfterHours(Integer.parseInt(offboardTasksDTO.getTaskHours()));
 			 }
 			 
-			 if(jsonObj.has("taskMinutes") && !isNullOrEmpty(jsonObj.getString("taskMinutes"))){
-				 offboardTasks.setDueAfterMinutes(Integer.parseInt(jsonObj.getString("taskMinutes")));
+			 if(StringUtils.isNotBlank(offboardTasksDTO.getTaskMinutes())){
+				 offboardTasks.setDueAfterMinutes(Integer.parseInt(offboardTasksDTO.getTaskMinutes()));
 			 }
 			 
-			 if(jsonObj.has("taskNotification") && !isNullOrEmpty(jsonObj.getString("taskNotification"))){
-				 offboardTasks.setTaskNotification(jsonObj.getString("taskNotification"));
+			 if(StringUtils.isNotBlank(offboardTasksDTO.getTaskNotification())){
+				 offboardTasks.setTaskNotification(offboardTasksDTO.getTaskNotification());
 			 }
 			 
-			 if(jsonObj.has("taskEmail") && !isNullOrEmpty(jsonObj.getString("taskEmail"))){
-				 offboardTasks.setTaskEmail(jsonObj.getString("taskEmail"));
+			 if(StringUtils.isNotBlank(offboardTasksDTO.getTaskEmail())){
+				 offboardTasks.setTaskEmail(offboardTasksDTO.getTaskEmail());
 			 }
 			 
-			 if(jsonObj.has("taskdescription") && !isNullOrEmpty(jsonObj.getString("taskdescription"))){
-				 offboardTasks.setDescription(jsonObj.getString("taskdescription"));
+			 if(StringUtils.isNotBlank(offboardTasksDTO.getTaskdescription())){
+				 offboardTasks.setDescription(offboardTasksDTO.getTaskdescription());
 			 }
 			 
 			 offboardTasks.setStatus(Constants.CANDIDATE_ACTIVE);
@@ -616,28 +645,21 @@ private static final Logger logger = LoggerFactory.getLogger(TimesheetRestContro
 			
 			
 		@RequestMapping(value = "/saveOffboardTemplateCheckList" , method = RequestMethod.POST)
-		   public String saveOffboardTemplateCheckList(@RequestParam(value="jsonData", required=false) String json,
+		   public String saveOffboardTemplateCheckList(@RequestParam(value="checkListTemplateId", required=false) String checkListTemplateId,
 				   @RequestParam(value="jsonStringData", required=false) String jsonStringData,
 				   HttpServletRequest request) throws Exception {
-				
-			    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			    User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");		
-			    
-			    String json1 = "{" + json + "}";
-				JSONObject jsonObj = new JSONObject(json1);
-				
-				
 			   try {
 				   OffboardCheckList offboardCheckList = null;
 				   OffBoardingTemplate template = null;
-				   if(jsonObj.has("checkListTemplateId") && !isNullOrEmpty(jsonObj.getString("checkListTemplateId"))){
-					   offboardCheckList = offboardCheckListService.getOffboardCheckListByTemplateId(Long.valueOf(jsonObj.getString("checkListTemplateId")));
+				   if(checkListTemplateId != null){
+					   offboardCheckList = offboardCheckListService.getOffboardCheckListByTemplateId(Long.valueOf(checkListTemplateId));
 					   if(offboardCheckList == null){
 						   offboardCheckList = new OffboardCheckList();
 					   }
 					   
 					   template = new OffBoardingTemplate();
-					   template.setId(Long.valueOf(jsonObj.getString("checkListTemplateId")));
+					   template.setId(Long.valueOf(checkListTemplateId));
 					   offboardCheckList.setOffboardingTemplateId(template);
 					   offboardCheckList.setCheckListJsonString(jsonStringData);
 					   offboardCheckList.setStatus(Constants.CANDIDATE_ACTIVE);
@@ -669,21 +691,13 @@ private static final Logger logger = LoggerFactory.getLogger(TimesheetRestContro
 		 
 		 
 		 @RequestMapping(value = "/saveOffboardingCandidateDetails" , method = RequestMethod.POST)
-		 public @ResponseBody  String saveOffboardingCandidateDetails(@RequestParam(value="json", required=false) String json, HttpServletRequest request) throws Exception {
+		 public @ResponseBody  CandidateOffBoarding saveOffboardingCandidateDetails(CandidateOffBoardingDTO candidateOffBoardingDTO, HttpServletRequest request) throws Exception {
 			
 			 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			 OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
-			 
-			 String resultJson;
-			 
-			 json = "{"+json+"}";
-			 
-			 JSONObject jsonObj = new JSONObject(json);
-			 
-			 CandidateOffBoarding candidateOffBoarding = candidateOffBoardingService.saveOffBoardingCandidatesDetails(jsonObj, loginOrgLocation, user);
+			 CandidateOffBoarding candidateOffBoarding = candidateOffBoardingService.saveOffBoardingCandidatesDetails(candidateOffBoardingDTO, loginOrgLocation, user);
 			 	
-		 	resultJson = commonUtil.toJSON(Long.valueOf(candidateOffBoarding.getId()));
-			return resultJson;
+			return candidateOffBoarding;
 		   }
 		 
 		 
@@ -827,33 +841,44 @@ private static final Logger logger = LoggerFactory.getLogger(TimesheetRestContro
 		 
 		 
 		 @RequestMapping(value = "/saveCandidatedOffboardingDocuments", method = RequestMethod.POST)
-			public @ResponseBody String saveCandidatedOffboardingDocuments(@RequestParam(value="json", required=false) String json,
-					MultipartHttpServletRequest request) throws Exception {
+			public @ResponseBody String saveCandidatedOffboardingDocuments(CandidatedOffboardingDTO candidatedOffboardingDTO,HttpServletRequest request) throws Exception {
+			 candidatedOffboardingDTO.setStaticPath(staticPath);	
+			 User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+				CandidateOffBoarding offBoarding = candidateOffBoardingService.getCandidateOffBoardingById(Long.valueOf(candidatedOffboardingDTO.getCandidateoffboardingId()));
 				
-				User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+				//Resignation / Termination Letter documetns saving....
+				if(candidatedOffboardingDTO.getResignationFileInfo() != null && candidatedOffboardingDTO.getResignationFileInfo().size() > 0) {
+					for(FileInfo fileInfo : candidatedOffboardingDTO.getResignationFileInfo()) {
+						OffBoardingDocuments documents = new OffBoardingDocuments();
+							if(fileInfo != null && fileInfo.getFileURL() != null) {
+								   documents.setFileName(fileInfo.getFileName());
+								   documents.setFileContentType(fileInfo.getContentType());
+								   documents.setFileURL(fileInfo.getFileURL());
+							   }
+							  documents.setCandidateOffBoardingId(offBoarding);
+							   documents.setDocumentType("Resignation");
+		                       documents.setStatus(Constants.CANDIDATE_ACTIVE);
+		                       documents.setDocumentUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+		                       documents.setCreatedDate(CommonUtil.currentDate());
+		                       documents.setCreatedBy(loginUser.getUserCode());
+		                       documents.setUpdatedDate(CommonUtil.currentDate());
+		                       documents.setUpdatedBy(loginUser.getUserCode());
+		                       offBoardingDocumentsService.saveOffBoardingDocuments(documents);
+		                       FileUploadUtil.moveFile(candidatedOffboardingDTO .getStaticPath(), fileInfo, "Employee-Offboard-Resignation-Documents");
+					}
+				}
 				
-				json = "{"+json+"}";
-				JSONObject jsonObj = new JSONObject(json);
-				CandidateOffBoarding offBoarding = candidateOffBoardingService.getCandidateOffBoardingById(Long.valueOf(jsonObj.getString("candidateoffboardingId")));
+				//Resignation / Termination Letter documetns updating....
 				
-				
-				if(jsonObj.has("savedResignationAttcahments") && !isNullOrEmpty(jsonObj.getString("savedResignationAttcahments"))){
-					 String documentIds = jsonObj.getString("savedResignationAttcahments");
-					 documentIds = documentIds.replaceAll("\\[", "").replaceAll("\\]","");
-					 documentIds = documentIds.replaceAll("\"", "");
-					 
-					 String[] savedDocumentIds = documentIds.split(",");
+				if(StringUtils.isNotBlank(candidatedOffboardingDTO.getSavedResignationAttcahments())){
+					 String[] savedDocumentIds = candidatedOffboardingDTO.getSavedResignationAttcahments().split(",");
 					 for(int i=0; i < savedDocumentIds.length; i++){
 						    OffBoardingDocuments templateDocument = offBoardingDocumentsService.getOffBoardingDocumentsById(Long.valueOf(savedDocumentIds[i]));
-						 
-					 
 						    OffBoardingDocuments documents = new OffBoardingDocuments();
 		       		        documents.setCandidateOffBoardingId(offBoarding);
-		       		       
-		       		        documents.setDocFile(templateDocument.getDocFile());
+		       		        documents.setFileURL(templateDocument.getFileURL());
 	         	            documents.setFileName(templateDocument.getFileName());
 	         	            documents.setFileContentType(templateDocument.getFileContentType());
-		                  
 			       		    documents.setDocumentType("Resignation");
 			       		    documents.setDocumentStatus(OnboardStatus.NEW);
 		                    documents.setStatus(Constants.CANDIDATE_ACTIVE);
@@ -869,60 +894,41 @@ private static final Logger logger = LoggerFactory.getLogger(TimesheetRestContro
 				}
 				
 				
-				//save  mutliple attachment for Resignation / Termination Documents.
-				if ((jsonObj.has("resignationAttcahmentMaxRowNumber"))){
-			    	String resignationAttcahmentMaxRowNumber = jsonObj.getString("resignationAttcahmentMaxRowNumber");
-					int resignationAttcahmentMaxRowNumberCount = Integer.parseInt(resignationAttcahmentMaxRowNumber);
-					
-			    	for (int a = 0; a < resignationAttcahmentMaxRowNumberCount; a++) {
-						   
-						   OffBoardingDocuments documents = new OffBoardingDocuments();
-						   final MultipartHttpServletRequest multiRequest = (MultipartHttpServletRequest) request; 
-		       		       final Map files = multiRequest.getFileMap();
-		       		       
-		       		       documents.setCandidateOffBoardingId(offBoarding);
-		                   MultipartFile  multiFile = (MultipartFile)files.get(a+"resignationdocFile");
-		                   if(multiFile != null && !multiFile.isEmpty()){
-		                	   documents.setDocFile(multiFile.getBytes());
-		                	   documents.setFileName(multiFile.getOriginalFilename());
-		                       
-		                       if(multiFile.getContentType()!=null){
-		                    	   documents.setFileContentType(multiFile.getContentType());
-		                       }
-		                       documents.setDocumentType("Resignation");
-		                       documents.setStatus(Constants.CANDIDATE_ACTIVE);
-		                       documents.setDocumentUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
-		                       documents.setCreatedDate(CommonUtil.currentDate());
-		                       documents.setCreatedBy(loginUser.getUserCode());
-		                       documents.setUpdatedDate(CommonUtil.currentDate());
-		                       documents.setUpdatedBy(loginUser.getUserCode());
-		                       offBoardingDocumentsService.saveOffBoardingDocuments(documents);
-							   
-		                   }
-		                 
-			    	}
+				
+				//Offboard Package documetns saving....
+				if(candidatedOffboardingDTO.getOffboardPackFileInfo() != null && candidatedOffboardingDTO.getOffboardPackFileInfo().size() > 0) {
+					for(FileInfo fileInfo : candidatedOffboardingDTO.getOffboardPackFileInfo()) {
+						OffBoardingDocuments documents = new OffBoardingDocuments();
+							if(fileInfo != null && fileInfo.getFileURL() != null) {
+								   documents.setFileName(fileInfo.getFileName());
+								   documents.setFileContentType(fileInfo.getContentType());
+								   documents.setFileURL(fileInfo.getFileURL());
+							   }
+							       documents.setCandidateOffBoardingId(offBoarding);
+			                       documents.setDocumentType("Offboard Pack");
+			                       documents.setStatus(Constants.CANDIDATE_ACTIVE);
+			                       documents.setDocumentUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+			                       documents.setCreatedDate(CommonUtil.currentDate());
+			                       documents.setCreatedBy(loginUser.getUserCode());
+			                       documents.setUpdatedDate(CommonUtil.currentDate());
+			                       documents.setUpdatedBy(loginUser.getUserCode());
+			                       offBoardingDocumentsService.saveOffBoardingDocuments(documents);
+    		                       FileUploadUtil.moveFile(candidatedOffboardingDTO .getStaticPath(), fileInfo, "Employee-Offboard-OffboardPack-Documents");
+					}
 				}
 				
 				
 				
-				
-				if(jsonObj.has("savedOffboardPackAttcahments") && !isNullOrEmpty(jsonObj.getString("savedOffboardPackAttcahments"))){
-					 String documentIds = jsonObj.getString("savedOffboardPackAttcahments");
-					 documentIds = documentIds.replaceAll("\\[", "").replaceAll("\\]","");
-					 documentIds = documentIds.replaceAll("\"", "");
-					 
-					 String[] savedDocumentIds = documentIds.split(",");
+				//Offboard Package documetns updating....
+				if(StringUtils.isNotBlank(candidatedOffboardingDTO.getSavedOffboardPackAttcahments())){
+					 String[] savedDocumentIds = candidatedOffboardingDTO.getSavedOffboardPackAttcahments().split(",");
 					 for(int i=0; i < savedDocumentIds.length; i++){
 						    OffBoardingDocuments templateDocument = offBoardingDocumentsService.getOffBoardingDocumentsById(Long.valueOf(savedDocumentIds[i]));
-						 
-					 
 						    OffBoardingDocuments documents = new OffBoardingDocuments();
 		       		        documents.setCandidateOffBoardingId(offBoarding);
-		       		       
 		       		        documents.setDocFile(templateDocument.getDocFile());
 	         	            documents.setFileName(templateDocument.getFileName());
 	         	            documents.setFileContentType(templateDocument.getFileContentType());
-		                  
 			       		    documents.setDocumentType("Offboard Pack");
 			       		    documents.setDocumentStatus(OnboardStatus.NEW);
 		                    documents.setStatus(Constants.CANDIDATE_ACTIVE);
@@ -937,43 +943,7 @@ private static final Logger logger = LoggerFactory.getLogger(TimesheetRestContro
 					 
 				}
 				
-				
-				//save  mutliple attachment for offboard Documents.
-						if ((jsonObj.has("offboardPackAttcahmentMaxRowNumber"))){
-					    	String offboardPackAttcahmentMaxRowNumber = jsonObj.getString("offboardPackAttcahmentMaxRowNumber");
-							int offboardPackAttcahmentMaxRowNumberCount = Integer.parseInt(offboardPackAttcahmentMaxRowNumber);
-							
-							
-					    	for (int a = 0; a < offboardPackAttcahmentMaxRowNumberCount; a++) {
-								   
-								   OffBoardingDocuments documents = new OffBoardingDocuments();
-								   final MultipartHttpServletRequest multiRequest = (MultipartHttpServletRequest) request; 
-				       		       final Map files = multiRequest.getFileMap();
-				       		       
-				       		       documents.setCandidateOffBoardingId(offBoarding);
-				                   MultipartFile  multiFile = (MultipartFile)files.get(a+"offboardPackdocFile");
-				                   if(multiFile != null && !multiFile.isEmpty()){
-				                	   documents.setDocFile(multiFile.getBytes());
-				                	   documents.setFileName(multiFile.getOriginalFilename());
-				                       
-				                       if(multiFile.getContentType()!=null){
-				                    	   documents.setFileContentType(multiFile.getContentType());
-				                       }
-				                       documents.setDocumentType("Offboard Pack");
-				                       documents.setStatus(Constants.CANDIDATE_ACTIVE);
-				                       documents.setDocumentUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
-				                       documents.setCreatedDate(CommonUtil.currentDate());
-				                       documents.setCreatedBy(loginUser.getUserCode());
-				                       documents.setUpdatedDate(CommonUtil.currentDate());
-				                       documents.setUpdatedBy(loginUser.getUserCode());
-				                       offBoardingDocumentsService.saveOffBoardingDocuments(documents);
-									   
-				                   }
-				                 
-					    	}
-						}
-						
-						return "success";
+				return "success";
 				
 			}
 		 
@@ -1006,28 +976,21 @@ private static final Logger logger = LoggerFactory.getLogger(TimesheetRestContro
 		 
 		 
 		 @RequestMapping(value = "/saveCandidateOffboardCheckList" , method = RequestMethod.POST)
-		   public String saveCandidateOffboardCheckList(@RequestParam(value="jsonData", required=false) String json,
+		   public String saveCandidateOffboardCheckList(@RequestParam(value="checkListoffboardId", required=false) String checkListoffboardId,
 				   @RequestParam(value="jsonStringData", required=false) String jsonStringData,
 				   HttpServletRequest request) throws Exception {
-				
-			    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-			    User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");		
-			    
-			    String json1 = "{" + json + "}";
-				JSONObject jsonObj = new JSONObject(json1);
-				
-				
+			 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");		
 			   try {
 				   OffboardCheckList offboardCheckList = null;
 				   CandidateOffBoarding offboarding = null;
-				   if(jsonObj.has("checkListoffboardId") && !isNullOrEmpty(jsonObj.getString("checkListoffboardId"))){
-					   offboardCheckList = offboardCheckListService.getOffboardCheckListByOffboardingId(Long.valueOf(jsonObj.getString("checkListoffboardId")));
+				   if(StringUtils.isNotBlank(checkListoffboardId)){
+					   offboardCheckList = offboardCheckListService.getOffboardCheckListByOffboardingId(Long.valueOf(checkListoffboardId));
 					   if(offboardCheckList == null){
 						   offboardCheckList = new OffboardCheckList();
 					   }
 					   
 					   offboarding = new CandidateOffBoarding();
-					   offboarding.setId(Long.valueOf(jsonObj.getString("checkListoffboardId")));
+					   offboarding.setId(Long.valueOf(checkListoffboardId));
 					   offboardCheckList.setCandidateOffBoardingId(offboarding);
 					   offboardCheckList.setCheckListJsonString(jsonStringData);
 					   offboardCheckList.setStatus(Constants.CANDIDATE_ACTIVE);
@@ -1151,73 +1114,59 @@ private static final Logger logger = LoggerFactory.getLogger(TimesheetRestContro
 		 
 		 
 		 @RequestMapping(value = "/saveCandidateOffBoardTasks" , method = RequestMethod.POST)
-		 public @ResponseBody  String saveCandidateOffBoardTasks(@RequestParam(value="json", required=false) String json, 
-				 @RequestParam(value="tasks", required=false) String tasks,HttpServletRequest request) throws Exception {
-			
-			 
-			 json = "{"+json+"}";
-			 
-			 JSONObject jsonObj = new JSONObject(json);
-			 
+		 public @ResponseBody  String saveCandidateOffBoardTasks(OffboardTasksDTO offboardTasksDTO,@RequestParam(value="tasks", required=false) String tasks,HttpServletRequest request) throws Exception {
 			 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-			
-			 
 			 OffboardTasks offboardTasks = new OffboardTasks();
-			 
-			 
-			 if(jsonObj.has("taskName") && !isNullOrEmpty(jsonObj.getString("taskName"))){
-				 offboardTasks.setTaskName(jsonObj.getString("taskName"));
+			 if(StringUtils.isNotBlank(offboardTasksDTO.getTaskName())){
+				 offboardTasks.setTaskName(offboardTasksDTO.getTaskName());
 			 }
 			 
 			 CandidateOffBoarding offBoarding = new CandidateOffBoarding();
-			 offBoarding.setId(Long.valueOf(jsonObj.getString("offboardTaskId")));
+			 if(offboardTasksDTO.getOffboardTaskId() != null) {
+				 offBoarding.setId(Long.valueOf(offboardTasksDTO.getOffboardTaskId()));
+			 }
 			 offboardTasks.setCandidateOffBoardingId(offBoarding);
 			 
-			 if(jsonObj.has("offboardAssignedTo") && !isNullOrEmpty(jsonObj.getString("offboardAssignedTo"))){
-				
-				 String userIds = jsonObj.getString("offboardAssignedTo");
-				 
-				 userIds = userIds.replaceAll("\\[", "").replaceAll("\\]","");
-				 userIds = userIds.replaceAll("\"", "");
-				 offboardTasks.setAssignToUsers(userIds);
+			 if(StringUtils.isNotBlank(offboardTasksDTO.getOffboardAssignedTo())){
+				 offboardTasks.setAssignToUsers(offboardTasksDTO.getOffboardAssignedTo());
 			 }else{
 				 offboardTasks.setAssignToCandidate(Constants.YES);
 			 }
 			 
-			 if(jsonObj.has("taskPriority") && !isNullOrEmpty(jsonObj.getString("taskPriority"))){
-				 offboardTasks.setPriority(jsonObj.getString("taskPriority"));
+			 if(StringUtils.isNotBlank(offboardTasksDTO.getTaskPriority())){
+				 offboardTasks.setPriority(offboardTasksDTO.getTaskPriority());
 			 }
 			 
-			 if(jsonObj.has("taskRepeat") && !isNullOrEmpty(jsonObj.getString("taskRepeat"))){
-				 offboardTasks.setTaskRepeat(jsonObj.getString("taskRepeat"));
+			 if(StringUtils.isNotBlank(offboardTasksDTO.getTaskRepeat())){
+				 offboardTasks.setTaskRepeat(offboardTasksDTO.getTaskRepeat());
 			 }
 			 
-			 if(jsonObj.has("taskMonths") && !isNullOrEmpty(jsonObj.getString("taskMonths"))){
-				 offboardTasks.setDueAfterMonths(Integer.parseInt(jsonObj.getString("taskMonths")));
+			 if(StringUtils.isNotBlank(offboardTasksDTO.getTaskMonths())){
+				 offboardTasks.setDueAfterMonths(Integer.parseInt(offboardTasksDTO.getTaskMonths()));
 			 }
 			 
-			 if(jsonObj.has("taskDays") && !isNullOrEmpty(jsonObj.getString("taskDays"))){
-				 offboardTasks.setDueAfterDays(Integer.parseInt(jsonObj.getString("taskDays")));
+			 if(StringUtils.isNotBlank(offboardTasksDTO.getTaskDays())){
+				 offboardTasks.setDueAfterDays(Integer.parseInt(offboardTasksDTO.getTaskDays()));
 			 }
 			 
-			 if(jsonObj.has("taskHours") && !isNullOrEmpty(jsonObj.getString("taskHours"))){
-				 offboardTasks.setDueAfterHours(Integer.parseInt(jsonObj.getString("taskHours")));
+			 if(StringUtils.isNotBlank(offboardTasksDTO.getTaskHours())){
+				 offboardTasks.setDueAfterHours(Integer.parseInt(offboardTasksDTO.getTaskHours()));
 			 }
 			 
-			 if(jsonObj.has("taskMinutes") && !isNullOrEmpty(jsonObj.getString("taskMinutes"))){
-				 offboardTasks.setDueAfterMinutes(Integer.parseInt(jsonObj.getString("taskMinutes")));
+			 if(StringUtils.isNotBlank(offboardTasksDTO.getTaskMinutes())){
+				 offboardTasks.setDueAfterMinutes(Integer.parseInt(offboardTasksDTO.getTaskMinutes()));
 			 }
 			 
-			 if(jsonObj.has("taskNotification") && !isNullOrEmpty(jsonObj.getString("taskNotification"))){
-				 offboardTasks.setTaskNotification(jsonObj.getString("taskNotification"));
+			 if(StringUtils.isNotBlank(offboardTasksDTO.getTaskNotification())){
+				 offboardTasks.setTaskNotification(offboardTasksDTO.getTaskNotification());
 			 }
 			 
-			 if(jsonObj.has("taskEmail") && !isNullOrEmpty(jsonObj.getString("taskEmail"))){
-				 offboardTasks.setTaskEmail(jsonObj.getString("taskEmail"));
+			 if(StringUtils.isNotBlank(offboardTasksDTO.getTaskEmail())){
+				 offboardTasks.setTaskEmail(offboardTasksDTO.getTaskEmail());
 			 }
 			 
-			 if(jsonObj.has("taskdescription") && !isNullOrEmpty(jsonObj.getString("taskdescription"))){
-				 offboardTasks.setDescription(jsonObj.getString("taskdescription"));
+			 if(StringUtils.isNotBlank(offboardTasksDTO.getTaskdescription())){
+				 offboardTasks.setDescription(offboardTasksDTO.getTaskdescription());
 			 }
 			 
 			 offboardTasks.setStatus(Constants.CANDIDATE_ACTIVE);
@@ -1296,6 +1245,7 @@ private static final Logger logger = LoggerFactory.getLogger(TimesheetRestContro
 					 candidateTask.setTaskNotification(offboardTasks.getTaskNotification());
 					 candidateTask.setTaskEmail(offboardTasks.getTaskEmail());
 					 candidateTask.setDescription(offboardTasks.getDescription());
+					 candidateTask.setIsTaskSumbitted(Constants.NO);
 					 candidateTask.setStatus(Constants.CANDIDATE_ACTIVE);
 					 candidateTask.setCreatedDate(CommonUtil.currentDate());
 					 candidateTask.setCreatedBy(user.getUserCode());
@@ -1315,52 +1265,45 @@ private static final Logger logger = LoggerFactory.getLogger(TimesheetRestContro
 		 
 		 
 		 @RequestMapping(value = "/saveOffboardingCandidateStep1Details" , method = RequestMethod.POST)
-		 public @ResponseBody  String saveOffboardingCandidateStep1Details(@RequestParam(value="json", required=false) String json, HttpServletRequest request) throws Exception {
-			
-			 
+		 public @ResponseBody  String saveOffboardingCandidateStep1Details(OffboardingCandidateSetpsDTO offboardingCandidateSetpsDTO, HttpServletRequest request) throws Exception {
 			 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			 OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 			 
-			 json = "{"+json+"}";
-			 JSONObject jsonObj = new JSONObject(json);
-			 
 			 CandidateOffBoarding offboarding = candidateOffBoardingService.getCandidateOffBoardingByUserIdAndLocationId(user.getId(), loginOrgLocation.getId());
 			 if(null != offboarding){
-				 offboarding.setRating(Integer.parseInt(jsonObj.getString("rating")));
+				 offboarding.setRating(Integer.parseInt(offboardingCandidateSetpsDTO.getRating()));
 				 
-				 if(jsonObj.has("sellProperty") && !isNullOrEmpty("sellProperty") && jsonObj.getString("sellProperty").equalsIgnoreCase("Y")){
+				 if(StringUtils.isNotBlank(offboardingCandidateSetpsDTO.getSellProperty()) && offboardingCandidateSetpsDTO.getSellProperty().equalsIgnoreCase("Y")){
 					 offboarding.setWantedToSellProperty(Constants.YES);
 				 }else{
 					 offboarding.setWantedToSellProperty(Constants.NO);
 				 }
 				 
-				 if(jsonObj.has("sublease") && !isNullOrEmpty("sublease") && jsonObj.getString("sublease").equalsIgnoreCase("Y")){
+				 if(StringUtils.isNotBlank(offboardingCandidateSetpsDTO.getSublease()) && offboardingCandidateSetpsDTO.getSublease().equalsIgnoreCase("Y")){
 					 offboarding.setWantedToSubLease(Constants.YES);
 				 }else{
 					 offboarding.setWantedToSubLease(Constants.NO);
 				 }
 				 
-				 if(jsonObj.has("itemsStorage") && !isNullOrEmpty("itemsStorage") && jsonObj.getString("itemsStorage").equalsIgnoreCase("Y")){
+				 if(StringUtils.isNotBlank(offboardingCandidateSetpsDTO.getItemsStorage()) && offboardingCandidateSetpsDTO.getItemsStorage().equalsIgnoreCase("Y")){
 					 offboarding.setLookingForPublicStorage(Constants.YES);
 				 }else{
 					 offboarding.setLookingForPublicStorage(Constants.NO);
 				 }
 				 
-				 if(jsonObj.has("accommodation") && !isNullOrEmpty("accommodation") && jsonObj.getString("accommodation").equalsIgnoreCase("Y")){
+				 if(StringUtils.isNotBlank(offboardingCandidateSetpsDTO.getAccommodation()) && offboardingCandidateSetpsDTO.getAccommodation().equalsIgnoreCase("Y")){
 					 offboarding.setLookingForAccommodation(Constants.YES);
 				 }else{
 					 offboarding.setLookingForAccommodation(Constants.NO);
 				 }
 				 
-				 
-				 if(jsonObj.has("surveyReason") && !isNullOrEmpty(jsonObj.getString("surveyReason"))){
-					 offboarding.setSurveyReason(jsonObj.getString("surveyReason"));
+				 if(StringUtils.isNotBlank(offboardingCandidateSetpsDTO.getSurveyReason())){
+					 offboarding.setSurveyReason(offboardingCandidateSetpsDTO.getSurveyReason());
 				 }
 				 
-				 if(jsonObj.has("surveyExplanation") && !isNullOrEmpty(jsonObj.getString("surveyExplanation"))){
-					 offboarding.setSurveyExplanation(jsonObj.getString("surveyExplanation"));
+				 if(StringUtils.isNotBlank(offboardingCandidateSetpsDTO.getSurveyExplanation())){
+					 offboarding.setSurveyExplanation(offboardingCandidateSetpsDTO.getSurveyExplanation());
 				 }
-				 
 				 
 				 candidateOffBoardingService.saveCandidateOffBoarding(offboarding);
 				 

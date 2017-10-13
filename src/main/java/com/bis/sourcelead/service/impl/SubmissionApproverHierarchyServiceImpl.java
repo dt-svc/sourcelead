@@ -133,6 +133,12 @@ public class SubmissionApproverHierarchyServiceImpl implements SubmissionApprove
 	}
 	
 	@Override
+	public void updateSubmissionStatusByProjectIdMasterCandidateIdStartDateAndEndDate(Long projectId,Long masterCandidateId,Date startDate,Date endDate,String status) {
+		submissionApproverHierarchyDao.updateSubmissionStatusByProjectIdMasterCandidateIdStartDateAndEndDate(projectId, masterCandidateId,startDate, endDate, status);
+		
+	}
+	
+	@Override
 	public User updateSubmissionStatusByProjectMemberIdStartDateAndEndDateWithReOpenReason(Long projectMemberId,Date startDate,Date endDate,String reason, User loginUser, String type, String isSuperUser) throws Exception {
 		User reopendUser = submissionApproverHierarchyDao.updateSubmissionStatusByProjectMemberIdStartDateAndEndDateWithReOpenReason(projectMemberId, startDate, endDate,reason,loginUser,type,isSuperUser);
 		return reopendUser;
@@ -328,6 +334,12 @@ public class SubmissionApproverHierarchyServiceImpl implements SubmissionApprove
 		return submissionApproverHierarchyDao.isThereAnyApproverChangesStatusForProjectMember(projectMemberId,frequencyStartDate,frequencyEndDate,approvalStatus);
 	}
 	
+	@Override
+    public SubmissionApproverHierarchy isThereAnyApproverChangesStatusForProjectAndMasterCandidateId(Long projectId,Long masterCandidateId,Date frequencyStartDate,Date frequencyEndDate,String approvalStatus) {
+		return submissionApproverHierarchyDao.isThereAnyApproverChangesStatusForProjectAndMasterCandidateId(projectId,masterCandidateId,frequencyStartDate,frequencyEndDate,approvalStatus);
+	}
+	
+	
 
 	@Override
 	public Float getTotalApprovedOrRejectedHoursByuserIdAndProjectIdForApprover(Long userId, Long projectId,
@@ -446,13 +458,25 @@ public class SubmissionApproverHierarchyServiceImpl implements SubmissionApprove
 			Date frequencyStartDate, Date frequencyEndDate, Long projectMemberId) {
 		return submissionApproverHierarchyDao.getSubmissionApproverHierarchyForEmployeeByProjectMemberId(frequencyStartDate, frequencyEndDate, projectMemberId);
 	}
-
+	
 	@Override
+	public SubmissionApproverHierarchy getSubmissionApproverHierarchyForEmployeeByProjectIdAndMasterCandidateId(
+			Date frequencyStartDate, Date frequencyEndDate, Long projectId,Long masterCandidateId) {
+		return submissionApproverHierarchyDao.getSubmissionApproverHierarchyForEmployeeByProjectIdAndMasterCandidateId(frequencyStartDate, frequencyEndDate, projectId,masterCandidateId);
+	}
+	
+
+	/*@Override
 	public SubmissionApproverHierarchy getSubmissionApproverHierarchyByProjectMemberIdStartDateAndEndDateForApproverLogin (Long approverUserId,
 			Long projectMemberId, Date startDate, Date endDate) throws Exception{
 		return submissionApproverHierarchyDao.getSubmissionApproverHierarchyByProjectMemberIdStartDateAndEndDateForApproverLogin(approverUserId,projectMemberId, startDate, endDate);
+	}*/
+	
+	@Override
+	public SubmissionApproverHierarchy getSubmissionApproverHierarchyByMasterCandidateIdStartDateAndEndDateForApproverLogin(Long approverUserId,Long projectId,Long pmMasterCandidateId,Long locationsId,Date startDate, Date endDate) throws Exception
+	{
+		return submissionApproverHierarchyDao.getSubmissionApproverHierarchyByMasterCandidateIdStartDateAndEndDateForApproverLogin(approverUserId, projectId, pmMasterCandidateId, locationsId, startDate, endDate);
 	}
-
 	@Override
 	public void updateApprovalStatusByApproverForProjectMemberId(Long projectMemberId, Long approverUserId,
 			Date startDate, Date endDate, String status, String rejectedReason) throws Exception {
