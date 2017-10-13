@@ -27,7 +27,7 @@
                 <th>Primary Skill</th>
                 <th>Source</th>
                 <th>Score</th>
-                <th>Current Status</th>
+                <th>Status</th>
               </tr>
             </thead>
             <tbody>

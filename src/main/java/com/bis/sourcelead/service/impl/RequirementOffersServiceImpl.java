@@ -1278,7 +1278,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 		
 		RequirementSubmission clientSubmission = null;
 		Candidate candidate = null; 
-		
+		MasterCandidate masterCandidte = null;
 		if(requirementOffers.getSubmissionId().getRequirement().getIsClientJob().equalsIgnoreCase(Constants.YES) && 
     			requirementOffers.getSubmissionId().getRequirement().getParentRequirement() == null){
 			clientSubmission = requirementSubmissionService.getClientSubmissionsBySourceSubmissionIdAndVendorLocationId(requirementOffers.getSubmissionId().getId(), orgLocations.getId());
@@ -1291,10 +1291,11 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 		
 		if(candidate == null){
 			candidate = new Candidate();
-			MasterCandidate masterCandidte = masterCandidateDao.getMasterCandidateByEmailOrPhoneNumber(requirementOffers.getSubmissionId().getCandidate().getEmail(), requirementOffers.getSubmissionId().getCandidate().getMobilePhone());
+			masterCandidte = masterCandidateDao.getMasterCandidateByEmailOrPhoneNumber(requirementOffers.getSubmissionId().getCandidate().getEmail(), requirementOffers.getSubmissionId().getCandidate().getMobilePhone());
     		if(masterCandidte != null){
     			candidate.setMasterCandidateId(masterCandidte);
     		}
+		}
     		
     		
     		RequirementSubmission requirementSubmission = requirementSubmissionService.getRequirementSubmissionById(requirementOffers.getSubmissionId().getId());
@@ -1354,11 +1355,34 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
     		candidate.setGeneratedId(candidateService.getCandidateId(orgLocations));
     		candidate.setCreatedDate(new Date());
     		candidate.setUpdatedDate(new Date());
+    		candidate.setStatus(1);
+    		
+    		Candidate vendorCandidate = null;
+    		vendorCandidate = candidateService.findByCandidateEmail(requirementSubmission.getSourceSubmission().getCandidate().getEmail(), requirementSubmission.getSourceSubmission().getOrgLocations().getId());
+    		if(vendorCandidate == null){
+    			vendorCandidate = new Candidate();
+    			MasterCandidate vendorMasterCandidate = masterCandidateDao.getMasterCandidateByEmailOrPhoneNumber(requirementSubmission.getSourceSubmission().getCandidate().getEmail(), requirementSubmission.getSourceSubmission().getCandidate().getMobilePhone());
+    			if(vendorMasterCandidate != null){
+        			vendorCandidate.setMasterCandidateId(vendorMasterCandidate);
+        		}
+    			vendorCandidate.setOrgLocationId(requirementSubmission.getSourceSubmission().getOrgLocations());
+    			vendorCandidate.setCandidateType("Candidate");
+    			vendorCandidate.setCandidateUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+    			vendorCandidate.setFirstName(requirementSubmission.getSourceSubmission().getCandidate().getFirstName());
+    			vendorCandidate.setLastName(requirementSubmission.getSourceSubmission().getCandidate().getLastName());
+    			vendorCandidate.setEmail(requirementSubmission.getSourceSubmission().getCandidate().getEmail());
+    			vendorCandidate.setCountry(requirementSubmission.getSourceSubmission().getCandidate().getCountry());
+    			vendorCandidate.setStatus(1);
+    			candidateService.saveOrUpdateCandidate(vendorCandidate);
+    			candidateService.saveOrUpdateCandidateElkDocument(vendorCandidate);
+    		}
+    		
+    		candidate.setParentCandidateId(vendorCandidate);
     		candidateService.saveOrUpdateCandidate(candidate);
 	    	candidateService.saveOrUpdateCandidateElkDocument(candidate);
 	    	
 	    	if(requirementSubmission.getSourceSubmission() != null){
-	    		requirementSubmission.setVendorCandidateId(requirementSubmission.getCandidate());
+	    		requirementSubmission.setVendorCandidateId(vendorCandidate);
 		    	requirementSubmission.setCandidate(candidate);
 		    	requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
 	    	}else{
@@ -1373,7 +1397,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 	    			}
 	    	}
     		
-		}
+		
 		return candidate;
 		
 	}
