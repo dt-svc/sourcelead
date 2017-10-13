@@ -115,36 +115,36 @@ public Expenses storeAddExpensesData(Expenses expenses) throws Exception{
 }
 
 @Override
-public void storeAddExpensesData(ExpensesDTO addExpensesDTO, User loginUser, OrgLocations orgLoc,HttpServletRequest request,String status,String currencyCode) throws NumberFormatException, Exception {
+public void storeAddExpensesData(ExpensesDTO expensesDTO, User loginUser, OrgLocations orgLoc,HttpServletRequest request,String status,String currencyCode) throws NumberFormatException, Exception {
 	Expenses expenses = null;
 	ProjectMembers projMembers = null;
 	
 	//SimpleDateFormat dateFormat=orgLoc.getLocFullFormDateFormatter();
 	
-	if(addExpensesDTO.getId() != null){
-		expenses = expensesService.getExpenseById(addExpensesDTO.getId());
+	if(expensesDTO.getId() != null){
+		expenses = expensesService.getExpenseById(expensesDTO.getId());
 	}else {
 		expenses = new Expenses();
 	}
-	if (StringUtils.isNotBlank(addExpensesDTO.getExpenseAutoId())){
-		expenses.setExpenseId(addExpensesDTO.getExpenseAutoId());	
+	if (StringUtils.isNotBlank(expensesDTO.getExpenseAutoId())){
+		expenses.setExpenseId(expensesDTO.getExpenseAutoId());	
 	 }
-	if (StringUtils.isNotBlank(addExpensesDTO.getExpensePurpose())){
-		expenses.setPurpose(addExpensesDTO.getExpensePurpose());	
+	if (StringUtils.isNotBlank(expensesDTO.getExpensePurpose())){
+		expenses.setPurpose(expensesDTO.getExpensePurpose());	
 	 }
-	if (addExpensesDTO.getProjectMemberId()!= null){
-		projMembers = projectMembersService.getProjectMemberById(addExpensesDTO.getProjectMemberId());
+	if (expensesDTO.getProjectMemberId()!= null){
+		projMembers = projectMembersService.getProjectMemberById(expensesDTO.getProjectMemberId());
 		expenses.setProjectMembers(projMembers);	
 	 }
-	if (StringUtils.isNotBlank(addExpensesDTO.getClientName())){
-		expenses.setClientName(addExpensesDTO.getClientName());	
+	if (StringUtils.isNotBlank(expensesDTO.getClientName())){
+		expenses.setClientName(expensesDTO.getClientName());	
 	 }
-	if (StringUtils.isNotBlank(addExpensesDTO.getStartDate())){
-		 Date startdate = commonUtil.orgLocationDateFormat(orgLoc.getDateFormat(), addExpensesDTO.getStartDate());
+	if (StringUtils.isNotBlank(expensesDTO.getStartDate())){
+		 Date startdate = commonUtil.orgLocationDateFormat(orgLoc.getDateFormat(), expensesDTO.getStartDate());
 		expenses.setStartDate(startdate);	
 	 }
-	if (StringUtils.isNotBlank(addExpensesDTO.getEndDate())){
-		Date enddate = commonUtil.orgLocationDateFormat(orgLoc.getDateFormat(), addExpensesDTO.getEndDate());
+	if (StringUtils.isNotBlank(expensesDTO.getEndDate())){
+		Date enddate = commonUtil.orgLocationDateFormat(orgLoc.getDateFormat(), expensesDTO.getEndDate());
 		expenses.setEndDate(enddate);	
 	 }
 	
@@ -172,7 +172,7 @@ public void storeAddExpensesData(ExpensesDTO addExpensesDTO, User loginUser, Org
 		
 	}*/
 	expenses.setStatus(Constants.EXPENSES_STATUS);
-	Set<ExpensesEntries>  expensesEntriesList = expensesEntriesService.prepareExpensesEntriesListByJson(addExpensesDTO, request, expenses);
+	Set<ExpensesEntries>  expensesEntriesList = expensesEntriesService.prepareExpensesEntriesListByJson(expensesDTO, request, expenses);
 	expenses.setExpensesEntries(expensesEntriesList);
 	
 	expenses.setNoOfExpenses(String.valueOf(expensesEntriesList.size()));
@@ -185,8 +185,8 @@ public void storeAddExpensesData(ExpensesDTO addExpensesDTO, User loginUser, Org
 	if(projMembers != null){
 		ArrayList<User> managers = new ArrayList<User>() ;
 		HashSet<ExpensesApproverHierarchy> eaHierarchyList = new HashSet<ExpensesApproverHierarchy>();
-		if (addExpensesDTO.getId() != null){
-		   List<ExpensesApproverHierarchy>eaSubHierarchyList  = expensesApprovalService.getExpensesApproverHierarchyListByExpenseId(addExpensesDTO.getId());
+		if (expensesDTO.getId() != null){
+		   List<ExpensesApproverHierarchy>eaSubHierarchyList  = expensesApprovalService.getExpensesApproverHierarchyListByExpenseId(expensesDTO.getId());
 		   if(eaSubHierarchyList != null && !eaSubHierarchyList.isEmpty()){
 			   for(ExpensesApproverHierarchy eaHierarchy : eaSubHierarchyList){
 					if(status.equalsIgnoreCase(Submission_Status.SUBMITTED.getValue()) || status.equalsIgnoreCase(Submission_Status.APPROVED.getValue())){

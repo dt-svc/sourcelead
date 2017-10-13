@@ -203,12 +203,19 @@ function addAttachment(entityRowId,from){
 <div id="divAddRowTr1Td6" style="display: none; float: left;">
     <div id="paymentModeDivREPLACEROWID">--</div>
 </div>
+
 <div id="divAddRowTr1Td7" style="display: none; float: left;">
+    <div id="paidByDivREPLACEROWID">--</div>
+</div>
+
+<div id="divAddRowTr1Td8" style="display: none; float: left;">
        <div id="hideAndShowDetailsDivREPLACEROWID" class="tbldata-dotdot_50">
 			<span id="hideAndShowDetailsButtonREPLACEROWID" style="display:none;"> <i class="fa fa-pencil-square-o AddRow" onclick="hideAndShowDetailsRow(REPLACEDOWNROWID,'Edit');"></i></span>
 			<i class="glyphicon glyphicon-trash Cred" onclick="removeExpenseRow(REPLACEROWID,REPLACEDOWNROWID);"></i>
 		</div>
 </div>
+
+
 <div id="divAddRowTr2" style="display: none; float: left;">
          <div class="expDetails">
 			          <div class="col-xs-12 col-sm-12 col-md-12 expAddRo myForm noPad clearfix">            
@@ -249,6 +256,17 @@ function addAttachment(entityRowId,from){
 							         <input type="text" class="form-control allownumericwithdecimal"  placeholder="Amount"  name="expenseEntry[REPLACENAMEROWID].categoryAmount" id="expenseAmountREPLACEROWID" value="" field-name="Amount" data-validation="required validate_float validate_length length1-10" onkeyup="getAmountValue(REPLACEROWID);">
 								</div>
 	                 </div>
+	                 
+	                 <div class="col-md-4 mb10 minHe">
+							<label>Paid by<span class="text-danger">&nbsp;*</span></label>
+							<select id="paidByREPLACEROWID" name="expenseEntry[REPLACENAMEROWID].paidBy" class="form-control" placeholder="Paid By" field-name="Paid By" data-validation="required">
+							         <option value="">Select Mode</option>
+							         <option value="Self">Self</option>
+							         <option value="Company">Company</option>
+							</select> 
+						</div>
+	                 
+	                 
 					<div class="col-md-4 mb10">
 						<label>Description<span class='text-danger'>&nbsp;*</span></label>
 						<textarea rows="2"  id="entryDesREPLACEROWID" name="expenseEntry[REPLACENAMEROWID].entryDescription" class="form-control" placeholder="Description" field-name="Description" data-validation="required validate_Space validate_length length1-5000" onblur="removeWhiteSpacesAdd(REPLACEROWID);"></textarea>
@@ -359,8 +377,13 @@ function addExpenseRow(from){
 			var cell6 = row.insertCell(6);
 			var divRowTd6Str = document.getElementById("divAddRowTr1Td7").innerHTML;
 			divRowTd6Str = divRowTd6Str.replace(/REPLACEROWID/g, (maxRowNum));
-			divRowTd6Str = divRowTd6Str.replace(/REPLACEDOWNROWID/g, (parseInt(maxRowNum + 1)));
 			cell6.innerHTML = divRowTd6Str;
+			
+			var cell7 = row.insertCell(7);
+			var divRowTd7Str = document.getElementById("divAddRowTr1Td8").innerHTML;
+			divRowTd7Str = divRowTd7Str.replace(/REPLACEROWID/g, (maxRowNum));
+			divRowTd7Str = divRowTd7Str.replace(/REPLACEDOWNROWID/g, (parseInt(maxRowNum + 1)));
+			cell7.innerHTML = divRowTd7Str;
 			
 			
 			var detailsRow = parseInt(maxRowNum+1);
@@ -374,7 +397,7 @@ function addExpenseRow(from){
 			divRowTd2_0Str = divRowTd2_0Str.replace(/REPLACEDOWNROWID/g, (maxRowNum+1));
 			divRowTd2_0Str = divRowTd2_0Str.replace(/REPLACENAMEROWID/g, ((maxRowNum+1)/2-1));
 			cell2_0.innerHTML = divRowTd2_0Str;
-			cell2_0.colSpan = 7;
+			cell2_0.colSpan = 8;
 			
 			
 			$("#categoryDate"+maxRowNum).datepicker("destroy");
@@ -482,6 +505,7 @@ function addExpenseRow(from){
 			var receiptIssuedBy = $("#receiptIssuedBy"+entityId).val();
 			var paymentMode = $("#paymentMode"+entityId).val();
 			var expenseRateType = $("#expenseRateType"+entityId).val();
+			var paidBy = $("#paidBy"+entityId).val();
 			var expenseAmount = parseFloat($("#expenseAmount"+entityId).val());
 			
 			var expenseRoundOffAmount = expenseAmount.toFixed(2);
@@ -491,6 +515,7 @@ function addExpenseRow(from){
 			$("#receiptIssuedByDiv"+entityId).html(receiptIssuedBy);
 			$("#paymentModeDiv"+entityId).html(paymentMode);
 			$("#expenseRateTypeDiv"+entityId).html(expenseRateType);
+			$("#paidByDiv"+entityId).html(paidBy);
 			$("#expenseAmountDiv"+entityId).html(expenseRoundOffAmount);
 			$("#entryDesDiv"+entityId).html(descriptions);
 			$("#entryDesDiv"+entityId).prop("title", descriptions);
