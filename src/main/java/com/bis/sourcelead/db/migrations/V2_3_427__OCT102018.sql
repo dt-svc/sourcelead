@@ -17,3 +17,4 @@ INSERT INTO `sourcelead`.`EMAIL_SCENARIO` (`SCENARIO_NAME`, `ENTITY_TYPE`, `UNIQ
 INSERT INTO `sourcelead`.`EMAIL_SCENARIO` (`SCENARIO_NAME`, `ENTITY_TYPE`, `UNIQUE_SCENARIO_NAME`, `DESCRIPTION`, `SUBJECT`, `TEMPLATE_TYPE`, `SIGNATURE`, `BODY`,`IS_TEMPLATE_MODIFIED`,`CREATED_BY`, `ORG_CODE`,`LOCATION_CODE`) VALUES
 ('TimesheetApprovedEmailToVendor', 'Notification', 'TimesheetApprovedEmailToVendor', ' Notification should forward when the client(approver) approved the timesheets of vendor resource','{{TimesheetApprovedEmailToVendor.employeename}} timesheet has been approved', 'sourcelead', '', '{{TimesheetApprovedEmailToVendor.employeename}} timesheet has been approved','N','SLADMIN', 'sourceLead.com', 'in.sourceLead.com');
 
+ALTER TABLE `sourcelead`.`ACTION_HISTORY` ADD CONSTRAINT FK1_ORG_LOCATION_ID FOREIGN KEY(ORG_LOCATION_ID) REFERENCES `sourcelead`.ORG_LOCATIONS(ID);

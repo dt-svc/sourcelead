@@ -154,8 +154,8 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 	public ProjectMembers getProjectMemberById(Long id) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 		java.sql.Date  currentDate = new java.sql.Date(new Date().getTime());
-		String query = " from ProjectMembers pm left join fetch pm.projects left join fetch pm.projectMemberCandidteId left join fetch pm.masterCandidateId "
-				+ " left join fetch pm.projectClientsId left join fetch pm.projectClientsId.orgLocationsId "
+		String query = " from ProjectMembers pm left join fetch pm.projects project left join fetch pm.projectMemberCandidteId can left join fetch pm.masterCandidateId mc "
+				+ " left join fetch pm.projectClientsId pc left join fetch pc.orgLocationsId loc "
 				+ "where pm.id = :id" ;
 		List<ProjectMembers> pmList =session.createQuery(query).setLong("id", id).setCacheable(true).list(); 
 		ProjectMembers pm = null;
