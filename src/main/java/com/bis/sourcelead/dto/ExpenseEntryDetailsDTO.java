@@ -18,6 +18,8 @@ public class ExpenseEntryDetailsDTO implements Serializable{
 	List<String> paymentModes;
 	
 	List<String> currencyCodeList;
+	
+	List<String> paidByType;
 
 
 	public List<ProjectMembersDTO> getProjectMembersList() {
@@ -60,6 +62,14 @@ public class ExpenseEntryDetailsDTO implements Serializable{
 
 	public void setCurrencyCodeList(List<String> currencyCodeList) {
 		this.currencyCodeList = currencyCodeList;
+	}
+
+	public List<String> getPaidByType() {
+		return paidByType;
+	}
+
+	public void setPaidByType(List<String> paidByType) {
+		this.paidByType = paidByType;
 	}
 
 	
