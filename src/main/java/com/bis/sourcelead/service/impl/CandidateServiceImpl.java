@@ -553,6 +553,10 @@ public class CandidateServiceImpl implements CandidateService {
 		 * Saving Candidate DB data as ElasticSearch Documents
 		 */
 		saveOrUpdateCandidateElkDocument(savedCandidate);
+		// resume details update in elk
+		if(candidateDto.getFileInfo()!= null && !candidateDto.getFileInfo().isEmpty()){
+		candidateResumesService.saveOrUpdateCandidateElkDocumentWithResumeDetails(savedCandidate);
+		}
 		return savedCandidate;
 	}
 
