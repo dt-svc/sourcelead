@@ -37,8 +37,19 @@ function fileUpload(id, type, formId, name, orgId, orgLocationId,url) {
 		orgLocationId = 0;
 	var data = new FormData();
 	var files = document.getElementById(id).files;
+	var count = 0;
 	for(var e in files) {
+		if(!$.isNumeric(e))
+			continue;
+		if(files[e].name.toLowerCase().endsWith(".zip") || files[e].name.toLowerCase().endsWith(".rar"))
+			continue;
 		data.append('file', files[e]);
+		count ++;
+	}
+	if(count === 0) {
+		$(".file_mask").hide();
+		alert("Please select valid file (zip files and rar files are not allowed)");
+		return;
 	}
 	data.append('orgId', orgId);
 	data.append('orgLocationId', orgLocationId);
@@ -62,12 +73,23 @@ function fileUpload(id, type, formId, name, orgId, orgLocationId,url) {
 }
 
 function applyData(data, formId, name, id) {
-	if($("#"+formId+" input[name*="+name+"][data-id="+id+"]").length > 0) {
-		$("#"+formId+" input[name*="+name+"][data-id="+id+"]").remove();
+	if($("#"+formId+" input[name*='"+name+"'][data-id="+id+"]").length > 0) {
+		$("#"+formId+" input[name*='"+name+"'][data-id="+id+"]").remove();
 	}
-	var i = $("#"+formId+" input[type=hidden][name*="+name+"]").length / 3;
+	if(name == 'uploadContractsFile' || name == 'uploadFormsFile'){
+		var i = $("#"+formId+" input[type=hidden][name*='"+name+"']").length / 4;
+	}
+	else if(formId == 'vendorOnboardUploadedDocuments_form'){
+		var i = name.split('@')[1];
+		  name = name.split('@')[0];
+	}
+	else{
+		var i = $("#"+formId+" input[type=hidden][name*='"+name+"']").length / 3;
+	}
 	
 	for(var e in data) {
+		if(!$.isNumeric(e))
+			continue;
 		var data1 = data[e];
 		if(data[0].fileInfo) {
 			data1 = data[e].fileInfo;
@@ -75,16 +97,19 @@ function applyData(data, formId, name, id) {
 		var html = "<input type='hidden' name='"+name+"["+i+"].fileURL' data-id="+id+" value='"+data1.fileURL+"'/>";
 		html += "<input type='hidden' name='"+name+"["+i+"].fileName' data-id="+id+" value='"+data1.fileName+"'/>";
 		html += "<input type='hidden' name='"+name+"["+i+"].contentType' data-id="+id+" value='"+data1.contentType+"'/>";
+		if(name == 'uploadContractsFile' || name == 'uploadFormsFile'){
+			html += "<input type='hidden' name='"+name+"["+i+"].fileDbId' data-id="+id+" value='"+id.split(name)[1]+"'/>";
+		}
 		$("#"+formId).append(html);
 		i ++;
 	}
-	
 	if(data && data.length > 0 && data[e].fileInfo) {
 		for(var e in data) {
 			applyResumeData(data[e]);
 		}
 	}
 }
+
 
 function showError(error) {
     showMessage(error, 2);

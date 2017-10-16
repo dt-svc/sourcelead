@@ -3,7 +3,6 @@ package com.bis.sourcelead.service;
 import java.io.File;
 import java.util.List;
 
-import com.bis.sourcelead.dto.ExpensesDTO;
 import com.bis.sourcelead.dto.ExpensesEntriesDTO;
 import com.bis.sourcelead.entity.Expenses;
 import com.bis.sourcelead.entity.ExpensesApproverHierarchy;
@@ -33,7 +32,7 @@ public interface ExpensesService {
 	
 	public  List<ExpensesApproverHierarchy>  getEmployeeExpensesApproverHierarchyListByuserIdAndOrgLocationIdForApproverLogin(Long userId,Long orgLocationId, String expenseStatus)throws Exception;
 	
-	public List<Expenses>  getTotalMyExpensesListByuserIdAndOrgLocationIdForEmployeeLogin(Long userId,Long orgLocationId, String expenseStatus)throws Exception;
+	public List<Expenses>  getTotalMyExpensesListByMasterCandidateIdForEmployeeLogin(Long masterCandidateId, String expenseStatus)throws Exception;
 
 	public List<Expenses> getExpensesByProjectMemberId(Long projectMemberId, String invoiceType)throws Exception;
 

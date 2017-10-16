@@ -1,27 +1,20 @@
 package com.bis.sourcelead.rest;
 
-import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.URLConnection;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.TimeZone;
+import java.util.Set;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.MatchQueryBuilder;
@@ -35,7 +28,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -46,32 +38,41 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.ProjectsDTO;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.elk.index.ClientVendorIndex;
 import com.bis.sourcelead.elk.index.ProjectsIndex;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
-import com.bis.sourcelead.entity.CandidateDocuments;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.ProjectApproverHierarchy;
+import com.bis.sourcelead.entity.ProjectBudget;
+import com.bis.sourcelead.entity.ProjectClients;
 import com.bis.sourcelead.entity.ProjectDocuments;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.ProjectTasks;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
-import com.bis.sourcelead.model.ProjectDocumentBO;
 import com.bis.sourcelead.service.ClientVendorExport;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.EmployeesService;
+import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
+import com.bis.sourcelead.service.ProjectAssignTasksService;
 import com.bis.sourcelead.service.ProjectDocumentsService;
 import com.bis.sourcelead.service.ProjectMembersService;
+import com.bis.sourcelead.service.ProjectTaskActivityService;
+import com.bis.sourcelead.service.ProjectTaskCommentsService;
+import com.bis.sourcelead.service.ProjectTaskDocumentsService;
 import com.bis.sourcelead.service.ProjectTasksService;
 import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.SubmissionApproverHierarchyService;
+import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.service.TimesheetSubmissionsService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
@@ -99,7 +100,6 @@ public class ProjectsDashboardRestController {
 	 
 	 @Autowired
 	 private ProjectTasksService tasksService;
-
 	 
 	 @Autowired
 	 public UserService userService;
@@ -151,7 +151,27 @@ public class ProjectsDashboardRestController {
 	 
 	@Autowired
 	private PdfConversionUtil pdfConversionUtil;
-	 
+	
+	@Autowired
+	LookUpDataService lookUpDataService;
+	
+	@Autowired
+	private ProjectTaskDocumentsService projectTaskDocumentsService;
+	
+	@Autowired
+	ProjectAssignTasksService projectAssignTasksService;
+	
+	@Autowired
+	ProjectTaskActivityService projectTaskActivityService;
+	
+	@Autowired
+	ProjectTaskCommentsService projectTaskCommentsService;
+	
+	@Autowired
+	ProjectTasksService projectTasksService;
+	
+	@Autowired
+	TimeZoneService timeZoneService;
 		/**
 		 * to filter the projects based on client and project status
 		 * @author David Sammeta
@@ -162,21 +182,25 @@ public class ProjectsDashboardRestController {
 		 * @throws Exception
         */
 			@RequestMapping(value = "/getProjectsByStatusAndClient")
-			public String getProjectsByStatusAndClient(@RequestParam(value="values", required=false) String values,HttpServletRequest request,@RequestParam(value="clients", required=false) String clients) throws Exception {
+			public ResponseList<Projects> getProjectsByStatusAndClient(ProjectsDTO projectsDTO,@RequestParam(value="values", required=false) String values,HttpServletRequest request,@RequestParam(value="clients", required=false) String clients) throws Exception {
 
 			    String loginOrgLocation = (String) SourceLeadSessionManager.getSessionAttribute(request, "locationCode");
 			    OrgLocations loginOrgLocations = orgLocationService.getOrgLocationsByLocationCode(loginOrgLocation);
-				String resultJson;
+			    String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
 				User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-			    List<Projects> projectsList = projectsService.getProjectsBasedOnClientsAndStatusSelectionInFilters(user.getId(), clients, values,loginOrgLocations.getId());
-			    for(Projects ps : projectsList){
-			    	ps.setManagerLevel1(ps.getManagerLevel1());
-			    	if(ps.getManagerLevel2() != null){
-			    		ps.setManagerLevel2(ps.getManagerLevel2());	
-			    	}
-			    }
-				 resultJson = commonUtil.toJSON(projectsList);
-				 return resultJson;
+
+				String[] tableColumns = {"projectSequeneNumber", "projectName", "projectManagers", "invoiceFrequency", "projectDate", "client","status"};
+			    int sortColumnIndex = 1; //by default sorting using updated date
+				String sortColumnOrder = "desc"; //by default descending order
+				if(projectsDTO.getOrder() != null && !projectsDTO.getOrder().isEmpty()) {
+					sortColumnIndex = Integer.parseInt(projectsDTO.getOrder().get(0).get("column"));
+					sortColumnOrder = projectsDTO.getOrder().get(0).get("dir");
+				}
+				projectsDTO.setSortColumn(tableColumns[sortColumnIndex]);
+				projectsDTO.setSortOrder(sortColumnOrder);
+				ResponseList<Projects> projectsList = projectsService.getProjectsListByClientsAndStatus(projectsDTO,user.getId(), clients, values,loginOrgLocations.getId(),userRole);
+			    
+				return projectsList;
 			}
 	
 	/**
@@ -195,6 +219,71 @@ public class ProjectsDashboardRestController {
 		     String ProjectDetails=projectsService.getProjectDetailsByProjectIdAndLoginOrgId(projectId, user, loginOrgLocation);
 		   
 			 return ProjectDetails;
+	  }
+	 
+	 @PreAuthorize("hasRole('ROLE_CREATE_PROJECT')")
+	 @RequestMapping(value = "/getProjectDetailsByProjectId", method = RequestMethod.POST)
+	 public @ResponseBody Projects getProjectDetailsByProjectId(@RequestParam(value="projectId", required=false) Long projectId,HttpServletRequest request) throws Exception{ 
+		   
+		     OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		     Projects projects = projectsService.getProjectById(projectId);
+		     Set<ProjectClients> projectClientsList = projects.getProjectClients();
+		     if(projectClientsList != null){
+		    	 for(ProjectClients projectClients : projectClientsList){
+		    		 if(projectClients.getOrgLocationsId().getId().equals(loginOrgLocation.getId())){
+		    			 Set<ProjectApproverHierarchy> approverHierarchiesList =  projectClients.getProjectApproverHierarchyList();
+			    		 if(approverHierarchiesList != null){
+			    			 Set<ProjectApproverHierarchy> hirearchySet = new LinkedHashSet<ProjectApproverHierarchy>();
+			    			 for(ProjectApproverHierarchy hierarcy : approverHierarchiesList){
+			    				 hirearchySet.add(hierarcy);
+				    		 }
+			    			 projects.setApproverHierarchyList(hirearchySet);
+			    		 }
+		    		 }
+		    	 }
+		     }
+		     
+		     Set<ProjectBudget> projectBudgetList = projects.getProjectBudget();
+		     if(projectBudgetList != null && projectBudgetList.size() > 0) {
+		    	 Set<ProjectBudget> ProjectBudgetList =  new LinkedHashSet<ProjectBudget>();
+		    	 for(ProjectBudget pl:projectBudgetList ) {
+			    	 pl.setEstimatedBudgetCurrency(pl.getEstimatedBudgetCurrency());
+			    	 pl.setEstimatedHours(pl.getEstimatedHours());
+			    	 pl.setEstimatedBudgetValue(pl.getEstimatedBudgetValue());
+			    	 if(pl.getApproverUserId() != null) {
+			    		 pl.setUserId(pl.getApproverUserId().getId());
+			    	 }
+
+			    	 ProjectBudgetList.add(pl);
+			     }
+		    	 projects.setProjectBudgetList(ProjectBudgetList);
+		     }
+		     
+		    
+		     
+		     Set<ProjectDocuments> projectDocumentsList = projects.getProjectDocuments();
+		     if(projectDocumentsList != null && projectDocumentsList.size() > 0){
+		    	 Set<ProjectDocuments> documentsList =  new LinkedHashSet<ProjectDocuments>();
+		    	 for(ProjectDocuments projectDocuments : projectDocumentsList){
+		    		 if(projectDocuments.getStatus().equals(1)){
+		    			 documentsList.add(projectDocuments);
+		    		 }
+		    	 }
+		    	 projects.setProjectDocumentsList(documentsList);
+		     }
+		     
+			 return projects;
+	  }
+	 
+	 
+	 
+	 @RequestMapping(value = "/getProjectDetailsForResouceTransfer", method = RequestMethod.POST)
+	 public @ResponseBody String getProjectDetailsForResouceTransfer(@RequestParam(value="projectId", required=false) Long projectId,
+			 @RequestParam(value="orgLocationId", required=false) Long orgLocationId,HttpServletRequest request) throws Exception{ 
+		     User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		     OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
+		     String projectDetails=projectsService.getProjectDetailsByProjectIdAndLoginOrgId(projectId, user, orgLocations.getLocationCode());
+			 return projectDetails;
 	  }
 	 
 	 /**
@@ -219,73 +308,19 @@ public class ProjectsDashboardRestController {
 		 return resultJson;
 	 }
 	 
-
-	 /**
-	  * @author Laxman
-	  * update the tasks
-	  * @param json
-	  * @param taskId
-	  * @return success
-	  * @throws Exception
-	  */
-	 @PreAuthorize("hasAnyRole('ROLE_VIEW_EDIT_PROJECT_TASKS')")
-	 @RequestMapping(value = "/updateEditProjectTask", method = RequestMethod.POST)
-	 public String updateEditProjectTask(@RequestParam(value="json", required=false) String json,
-			 @RequestParam(value="taskId", required=false) String taskId) throws Exception{ 
-		    String  json1 = "{"+json+"}";	
-		    JSONObject jsonObj = new JSONObject(json1);
-		    ProjectTasks projectTasks = tasksService.getTasksId(taskId);
-		    if(jsonObj.has("taskName")){
-		    	projectTasks.setTaskName(jsonObj.getString("taskName"));
-		    }
-		    if(jsonObj.has("description")){
-		    	projectTasks.setDescription(jsonObj.getString("description"));
-		    }
-		    if(jsonObj.has("billableType")){
-		    	projectTasks.setBillableType(jsonObj.getString("billableType"));	
-		    }
-		    tasksService.updateTasks(projectTasks);
-		    return "success";
-	  }
-	 
-	 
-	 /**
-	  * save the projects task
-	  * @param json
-	  * @param projectId
-	  * @return JSON
-	  * @throws Exception
-	  */
-	 @PreAuthorize("hasAnyRole('ROLE_CREATE_PROJECT_TASKS')")
-	 @RequestMapping(value = "/saveProjectTasks" , method = RequestMethod.POST)
-	 public @ResponseBody  String saveProjectTasks(@RequestParam(value="json", required=false) String json,
-			 @RequestParam(value="projectId", required=false) Long projectId) throws Exception {
-		 	
-		   String  json1 = "{"+json+"}";	
-		    JSONObject jsonObj = new JSONObject(json1);
-		 	String saveProjectTasks = tasksService.saveProjectTasksByProjectId(projectId, jsonObj);
-		 	
-			 return saveProjectTasks;
-	 }
-	 
-	/** 
-	 * get projects tasks based on project id
-	 * @param projectId
-	 * @return JSON
-	 * @throws Exception
-	 */
-	 @PreAuthorize("hasAnyRole('ROLE_VIEW_PROJECT_TASKS', 'ROLE_VIEW_EDIT_PROJECT_TASKS')")
-	 @RequestMapping(value = "/getProjectTasks" , method = RequestMethod.POST)
-	 public @ResponseBody  String getProjectTasks(
-			 @RequestParam(value="projectId", required=false) Long projectId) throws Exception {
-		 	
-		 	 String resultJson;
-			 Collection<ProjectTasks> taskList=tasksService.getAllTasksByProjectId(projectId);
-			 resultJson = commonUtil.toJSON(taskList);
-			 return resultJson;
-		 	
-	 }
-	 
+	 /** 
+		 * get projects tasks based on project id
+		 * @param projectId
+		 * @return JSON
+		 * @throws Exception
+		 */
+		 @PreAuthorize("hasAnyRole('ROLE_VIEW_PROJECT_TASKS', 'ROLE_VIEW_EDIT_PROJECT_TASKS')")
+		 @RequestMapping(value = "/getProjectTasks" , method = RequestMethod.POST)
+		 public @ResponseBody   List<ProjectTasks> getProjectTasks(@RequestParam(value="projectId", required=false) Long projectId,@RequestParam(value="taskType", required=false) String taskType,@RequestParam(value="taskStatus", required=false) String taskStatus) throws Exception {
+			 List<ProjectTasks> taskList=tasksService.getAllTasksByProjectIdAndTaskTypeAndTaskStatus(projectId,taskType,taskStatus);
+			 return taskList;
+		 }
+				 
 	/**
 	 * Get Employees list based on project id
 	 * @param projectId
@@ -294,12 +329,11 @@ public class ProjectsDashboardRestController {
 	 */
 	 @PreAuthorize("hasAnyRole('ROLE_VIEW_PROJECT_EMPLOYEES', 'ROLE_VIEW_EDIT_PROJECT_EMPLOYEES', 'ROLE_VIEW_DELETE_PROJECT_EMPLOYEES')")
 	 @RequestMapping(value = "/getProjectEmployeeListById", method = RequestMethod.POST)
-	 public @ResponseBody String  getProjectEmployeeListById(@RequestParam(value="status", required=false) String status,@RequestParam(value="projectId", required=false) Long projectId) throws Exception{ 
-		 String resultJson;
-		 ProjectMembers employeeList = projectsService.getProjectEmployeeListByProjectIdAndStatus(projectId,status);
-		
-		 resultJson = commonUtil.toJSON(employeeList);
-		 return resultJson;
+	 public @ResponseBody List<ProjectMembers>  getProjectEmployeeListById(@RequestParam(value="status", required=false) String status,@RequestParam(value="projectId", required=false) Long projectId,
+			 HttpServletRequest request) throws Exception{ 
+		 OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		 List<ProjectMembers> employeeList = projectsService.getProjectEmployeeListByProjectIdAndStatus(projectId,status,loginOrgLocation);
+		 return employeeList;
 	  }
 	 
 	 /**

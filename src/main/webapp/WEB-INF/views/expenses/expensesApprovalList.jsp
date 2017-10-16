@@ -182,7 +182,7 @@ if(locationList.match("yyyy-MM-dd")){
 $.ajax({
     type : "POST",
      url: sourceleadUrl+"/getExpensesApprovalList?"+tokenParamName+"="+tokenValue+"&expenseStatus="+expenseStatus+"&startDate="+startDate+"&endDate="+endDate,      
-     success :function(data) {
+     success :function(json) {
     var result = "";
     
 	result = result+' <table id="example">';
@@ -202,7 +202,7 @@ $.ajax({
 	result = result+' </thead>';
 	result = result+' <tbody>';
 	if(data !='' && data !=[] && data !='[]'){
-	var json = JSON.parse(data);
+	//var json = JSON.parse(data);
 	 for (var i = 0; i < json.length; i++) { 
 	 var data = json[i];
 	result = result+' <tr id = "row'+data.expenseId.id+'">';
@@ -244,7 +244,7 @@ $.ajax({
 
 	result = result+' <td><div class="sm" title="'+data.expenseId.totalAmount.toFixed(2)+'">';
 	'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_EMPLOYEE_EXPENSES\')">'
-	result = result+'<a  href="'+sourceleadUrl+'/addApprovalExpense?expenseId='+data.expenseId.expenseId+'&type=view" class="ExpAmount">';
+	result = result+'<a  href="'+sourceleadUrl+'/addApprovalExpense?expenseId='+data.expenseId.expenseId+'&expenseLocationCode='+data.expenseId.locationsCode+'&type=view" class="ExpAmount">';
 	'</sec:authorize>';
 	 var  numb = data.expenseId.totalAmount.toFixed(2);
 	result = result+numb;
@@ -281,7 +281,7 @@ $.ajax({
     }
     if(data.expenseApprovalStatus !=null && data.expenseApprovalStatus  == 'REOPEN'){
     	'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_EMPLOYEE_EXPENSES\')">'
-    	result = result+'<a  href="'+sourceleadUrl+'/addApprovalExpense?expenseId='+data.expenseId.expenseId+'&type=view" class="ExpAmount">';
+    	result = result+'<a  href="'+sourceleadUrl+'/addApprovalExpense?expenseId='+data.expenseId.expenseId+'&expenseLocationCode='+data.expenseId.locationsCode+'&type=view" class="ExpAmount">';
     	'</sec:authorize>'; 
    }
 

@@ -77,7 +77,7 @@ public class FileController {
 				
 			}
 			FileUploadUtil fileUploadUtil = new FileUploadUtil();
-			if(x > 0 || y > 0 || w > 0 || h > 0) {
+			if(type.equals("profile")) {
 				fileInfo.setFileURL(fileUploadUtil.cropImage(staticPath, multiFile, x, y, w, h));
 				fileInfo.setFileName(multiFile.getOriginalFilename());
 				fileInfo.setContentType(multiFile.getContentType());
@@ -196,7 +196,6 @@ public class FileController {
 	}
 	
 }
-
 
 
 

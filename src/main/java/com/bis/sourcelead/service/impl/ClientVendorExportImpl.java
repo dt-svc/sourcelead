@@ -9,6 +9,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.ss.usermodel.Cell;
@@ -28,6 +29,7 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.ProjectApproverHierarchy;
+import com.bis.sourcelead.entity.ProjectClients;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.UserRole;
@@ -107,21 +109,38 @@ public class ClientVendorExportImpl implements ClientVendorExport {
 	 * @return Sheet
 	 */
 	private Sheet createXlsSheet(Sheet sheet, Row writeRow, OrgRelations orgRelations) {
-//		{"VendorName","Website","Location","Level","Number of Contacts"};
-		if (orgRelations.getOrgName() != null && !"".equalsIgnoreCase(orgRelations.getOrgName())) {
+		//		{"VendorName","Website","Location","Level","Number of Contacts"};
+		if (StringUtils.isNotEmpty(orgRelations.getOrgName())) {
 			writeRow.createCell(0).setCellValue(orgRelations.getOrgName());
 		}
-		if (orgRelations.getWebSite() != null && !"".equalsIgnoreCase(orgRelations.getWebSite())) {
+		if (StringUtils.isNotEmpty(orgRelations.getOrgName())) {
 			StringBuilder sb = new StringBuilder();
 			writeRow.createCell(1).setCellValue(sb.append("www.").append(orgRelations.getWebSite()).toString());
 		}
-		if (orgRelations.getCountry() != null && !"".equalsIgnoreCase(orgRelations.getCountry())) {
+		StringBuilder sb = new StringBuilder();
+		if ((StringUtils.isNotEmpty(orgRelations.getCity())) && (StringUtils.isNotEmpty(orgRelations.getState())) && (StringUtils.isNotEmpty(orgRelations.getCountry()))){
+			sb.append(orgRelations.getCity()).append(",").append(orgRelations.getState()).append(",").append(orgRelations.getCountry());
+			writeRow.createCell(2).setCellValue(sb.toString());
+		}else if ((StringUtils.isNotEmpty(orgRelations.getCity())) && (StringUtils.isNotEmpty(orgRelations.getState()))){
+			sb.append(orgRelations.getCity()).append(",").append(orgRelations.getState());
+			writeRow.createCell(2).setCellValue(sb.toString());
+		}else if((StringUtils.isNotEmpty(orgRelations.getState())) && (StringUtils.isNotEmpty(orgRelations.getCountry()))){
+			sb.append(orgRelations.getState()).append(",").append(orgRelations.getCountry());
+			writeRow.createCell(2).setCellValue(sb.toString());
+		}else if ((StringUtils.isNotEmpty(orgRelations.getCity())) && (StringUtils.isNotEmpty(orgRelations.getCountry()))){
+			sb.append(orgRelations.getCity()).append(",").append(orgRelations.getCountry());
+			writeRow.createCell(2).setCellValue(sb.toString());
+		}else if(StringUtils.isNotEmpty(orgRelations.getCity())){
+			writeRow.createCell(2).setCellValue(orgRelations.getCity());
+		}else if(StringUtils.isNotEmpty(orgRelations.getState())){
+			writeRow.createCell(2).setCellValue(orgRelations.getState());
+		}else if(StringUtils.isNotEmpty(orgRelations.getCountry())){
 			writeRow.createCell(2).setCellValue(orgRelations.getCountry());
 		}
-		if (orgRelations.getLevel() != null && !"".equalsIgnoreCase(orgRelations.getLevel())) {
+		if (StringUtils.isNotEmpty(orgRelations.getLevel())){
 			writeRow.createCell(3).setCellValue(orgRelations.getLevel());
 		}
-		if (orgRelations.getNoOfContatcs() != null) {
+		if (orgRelations.getNoOfContatcs() != null){
 			writeRow.createCell(4).setCellValue(orgRelations.getNoOfContatcs());
 		}
 		return sheet;
@@ -301,12 +320,12 @@ public class ClientVendorExportImpl implements ClientVendorExport {
 
 
 	@Override
-	public File getexportProjectEmployeeFile(List<ProjectMembers> employeeList,String exportType,Projects project)throws Exception {
+	public File getexportProjectEmployeeFile(List<ProjectMembers> employeeList,String exportType,Projects project,ProjectClients projectClients)throws Exception {
 		String headers[] = Constants.PROJECT_ASSIGNED_EMPLOYEES;
 
 		File file =null;
 		
-		Set<ProjectApproverHierarchy> projectApproverHierarchySet = project.getProjectApprovers();
+		Set<ProjectApproverHierarchy> projectApproverHierarchySet = projectClients.getProjectApproverHierarchyList();
 		 StringBuilder sb = new StringBuilder();
 		 for(ProjectApproverHierarchy ProjectApproverHierarchy:projectApproverHierarchySet ){
 			 sb.append(ProjectApproverHierarchy.getApproverUserId().getFirstName()).append(",");
@@ -416,29 +435,47 @@ public class ClientVendorExportImpl implements ClientVendorExport {
 	}
 
 	private Sheet createprojectMembersXlsSheet(Sheet sheet, Row writeRow, ProjectMembers projectMember) {
+		if(projectMember.getProjectMemberCandidteId().getConsultantUser() != null){
+			 UserRole userRole;
+			try {
+				userRole = userRoleService.getUserRoleByUserIdAndLocationId(projectMember.getProjectMemberCandidteId().getConsultantUser().getId(), projectMember.getProjects().getOrgLocationsId().getId());
+				 if(userRole != null){
+					 projectMember.setUserRoleType(userRole.getUserType());
+				 } 
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		 }else{
+			 projectMember.setUserRoleType("Candidate");
+		 }
+		
 		if (projectMember.getEmpName() != null && !"".equalsIgnoreCase(projectMember.getEmpName())) {
 			writeRow.createCell(0).setCellValue(projectMember.getEmpName());
 		}
 		if (projectMember.getEmployee().getUser().getEmail() != null && !"".equalsIgnoreCase(projectMember.getEmployee().getUser().getEmail())) {
 			writeRow.createCell(1).setCellValue(projectMember.getEmployee().getUser().getEmail());
 		}
+		if (projectMember.getUserRoleType() != null && !"".equalsIgnoreCase(projectMember.getUserRoleType())) {
+			writeRow.createCell(2).setCellValue(projectMember.getUserRoleType());
+		}
+		
 		if (projectMember.getProjectAssignedDateStr() != null && !"".equalsIgnoreCase(projectMember.getProjectAssignedDateStr())) {
-			writeRow.createCell(2).setCellValue(projectMember.getProjectAssignedDateStr());
+			writeRow.createCell(3).setCellValue(projectMember.getProjectAssignedDateStr());
 		}
 		if (projectMember.getProjectEndDateStr() != null && !"".equalsIgnoreCase(projectMember.getProjectEndDateStr())) {
-			writeRow.createCell(3).setCellValue(projectMember.getProjectEndDateStr());
+			writeRow.createCell(4).setCellValue(projectMember.getProjectEndDateStr());
 		}
 		if (projectMember.getApprovedHrs() != null && !"".equalsIgnoreCase(projectMember.getApprovedHrs())) {
-			writeRow.createCell(4).setCellValue(projectMember.getApprovedHrs());
+			writeRow.createCell(5).setCellValue(projectMember.getApprovedHrs());
 		}
 		if (projectMember.getRejectedHrs() != null && !"".equalsIgnoreCase(projectMember.getRejectedHrs())) {
-			writeRow.createCell(5).setCellValue(projectMember.getRejectedHrs());
+			writeRow.createCell(6).setCellValue(projectMember.getRejectedHrs());
 		}
 		if (projectMember.getSubmittedHrs() != null && !"".equalsIgnoreCase(projectMember.getSubmittedHrs())) {
-			writeRow.createCell(6).setCellValue(projectMember.getSubmittedHrs());
+			writeRow.createCell(7).setCellValue(projectMember.getSubmittedHrs());
 		}
 		if (projectMember.getDraftHrs() != null && !"".equalsIgnoreCase(projectMember.getDraftHrs())) {
-			writeRow.createCell(7).setCellValue(projectMember.getDraftHrs());
+			writeRow.createCell(8).setCellValue(projectMember.getDraftHrs());
 		}
 		return sheet;
 	}

@@ -21,6 +21,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.apache.commons.lang3.StringUtils;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Fetch;
@@ -48,6 +49,11 @@ public class Candidate implements Serializable{
     private MasterCandidate masterCandidateId;
 	
 	@NotFound(action=NotFoundAction.IGNORE)
+	@ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="PARENT_CANDIDATE_ID")        
+    private Candidate parentCandidateId;
+	
+
 	@ManyToOne
     @JoinColumn(name="ORG_LOCATION_ID", nullable=false )        
     private OrgLocations orgLocationId;
@@ -209,12 +215,14 @@ public class Candidate implements Serializable{
 	private String isAssociate;
 	
 	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne
+	@ManyToOne(cascade = CascadeType.ALL)
+	@Fetch(FetchMode.SELECT)
     @JoinColumn(name="ORG_RELATION_ID", nullable=false )        
     private OrgRelations orgRelationId; 
 	   
 	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne
+	@ManyToOne(cascade = CascadeType.ALL)
+	@Fetch(FetchMode.SELECT)
     @JoinColumn(name="SPOC_ID", nullable=false )        
     private OrgSpoc spocId; 
 	
@@ -254,6 +262,10 @@ public class Candidate implements Serializable{
 	
 	@Column(name = "TWITTER_PROFILE_URL")
 	private String twitterUrl;
+	
+	@JsonProperty
+	@Transient
+    private String fullName;
 	
 	@NotFound(action=NotFoundAction.IGNORE)
 	@OneToMany(mappedBy = "candidateId",cascade = CascadeType.ALL)
@@ -1402,6 +1414,27 @@ public class Candidate implements Serializable{
 		this.twitterUrl = twitterUrl;
 	}
 
+	public String getFullName() {
+		if(StringUtils.isNotEmpty(fullName))
+			return fullName;
+		else{
+			if(StringUtils.isNotEmpty(firstName) && StringUtils.isEmpty(lastName)){
+				fullName = firstName;
+			}
+			else if(StringUtils.isEmpty(firstName) && StringUtils.isNotEmpty(lastName)){
+				fullName = lastName;
+			}
+			else if(StringUtils.isNotEmpty(firstName) && StringUtils.isNotEmpty(lastName)){
+				fullName = firstName+" "+lastName;
+			}
+			return fullName;
+		}
+	}
+
+	public void setFullName(String fullName) {
+		this.fullName = fullName;
+	}
+	
 
 	public String getSowContractName()
 	{
@@ -1575,6 +1608,16 @@ public class Candidate implements Serializable{
 		this.venSpocId = venSpocId;
 	}
 
+
+	public Candidate getParentCandidateId() {
+		return parentCandidateId;
+	}
+
+	public void setParentCandidateId(Candidate parentCandidateId) {
+		this.parentCandidateId = parentCandidateId;
+	}
+
+
 	public String getFileUrl()
 	{
 		return fileUrl;
@@ -1584,5 +1627,6 @@ public class Candidate implements Serializable{
 	{
 		this.fileUrl = fileUrl;
 	}
+
 }
 

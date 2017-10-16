@@ -24,7 +24,7 @@ import com.bis.sourcelead.constants.Constants;
 
 public  class CalendarUtil {
 
-	public static void main(String[] args){
+	/*public static void main(String[] args){
 		Calendar currentCal = Calendar.getInstance(TimeZone.getDefault());
 		currentCal.setLenient(false);
 		currentCal.setTime(new Date());
@@ -38,7 +38,7 @@ public  class CalendarUtil {
 		
 		
 		
-	}
+	}*/
 	/*public static void main(String[] args){
 		Calendar currentCal = Calendar.getInstance(TimeZone.getDefault());
 		currentCal.setLenient(false);
@@ -654,10 +654,18 @@ public  class CalendarUtil {
 			Date currentDate = null;
 			try {
 				currentDate = format.parse(format.format(new Date()));
-				startDate = format.parse(weekStartDate.replaceAll("-", "/"));
-				endDate = format.parse(weekEndDate.replaceAll("-", "/"));
+				if(dateFormat.contains("-")){
+					startDate = format.parse(weekStartDate);
+					endDate = format.parse(weekEndDate);
+				}
+				else{
+					startDate = format.parse(weekStartDate.replaceAll("-", "/"));
+					endDate = format.parse(weekEndDate.replaceAll("-", "/"));
+				}
+				
 				flag =   ((currentDate.after(startDate) && currentDate.before(endDate)) || (currentDate.equals(startDate)) || ((currentDate.equals(endDate))));
 			} catch (ParseException e) {}
+			
 		}
 		return flag;
 	}

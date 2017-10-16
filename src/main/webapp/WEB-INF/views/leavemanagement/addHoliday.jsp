@@ -288,7 +288,7 @@ function cancel(){
 		$('#errToDate').find('p.jquery_form_error_message').remove();
 	} 
 </script>
-<script type="text/javascript">
+<!-- <script type="text/javascript">
 function validateHolidayName(){
 	var holidayName = (document.getElementById("holidayName").value).replace(/[{}]/g, "");
 	var holiday = encodeURIComponent(holidayName);
@@ -299,7 +299,7 @@ function validateHolidayName(){
 		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		$.ajax({
 			type : "GET",
-			url : sourceleadUrl + "/validateHolidayName?"+tokenParamName+"="+tokenValue+"&holidayName="+holidayName+"&orgLocationId="+orgLocationId,
+			url : sourceleadUrl + "/validateHolidayName?"+tokenParamName+"="+tokenValue+"&holidayName="+holiday+"&orgLocationId="+orgLocationId,
 			success : function(data) {
 				var result = data;
 				if (result == 'true') {
@@ -328,6 +328,6 @@ function validateHolidayName(){
 	}
   }
 }
-</script> 
+</script>  -->
 
 <jsp:include page="../masterFooter.jsp" />

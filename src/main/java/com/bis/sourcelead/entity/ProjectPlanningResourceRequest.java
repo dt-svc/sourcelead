@@ -20,6 +20,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
@@ -37,11 +38,13 @@ public class ProjectPlanningResourceRequest implements Serializable{
 	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne(fetch = FetchType.LAZY)
    	@JoinColumn(name = "PROJECT_PLANNING_REQUREST_ID")
+	@JsonBackReference
   	private ProjectPlanningRequest projectPlanningRequestId;
 	
 	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne
    	@JoinColumn(name = "CANDIDATE_ID")
+	@JsonBackReference
   	private Candidate candidateId;
 	
 	@Column(name = "CANDIDATE_NAME")

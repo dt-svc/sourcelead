@@ -20,6 +20,7 @@ import com.bis.sourcelead.entity.ActionHistory;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.UserLoginLogoutSession;
 import com.bis.sourcelead.service.ActionHistoryService;
+import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.UserLoginLogoutSessionService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.ConversionUtil;
@@ -35,6 +36,9 @@ public class ActionHistoryRestController {
 	UserService userService;
 	
 	@Autowired
+	private OrgLocationService orgLocationService;
+	
+	@Autowired
 	private ConversionUtil conversionUtil;
 	
 	@Autowired
@@ -43,9 +47,8 @@ public class ActionHistoryRestController {
 	@RequestMapping(value = "/getRestActionHistoryList", method = RequestMethod.GET)
 	public @ResponseBody List<ActionHistory> getRestActionHistoryList(@RequestParam(value = "userSessionId", required = true) Long userSessionId,@RequestParam(value = "orgLocation", required = true) Long orgLocation,HttpServletRequest request) throws Exception {
 		UserLoginLogoutSession userLoginLogoutSession = userLoginLogoutSessionService.getUserLoginLogoutSessionById(userSessionId);
-		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 		List<ActionHistory> actionHistoryList = actionHistoryService.getAllActionPerformedByUser(userLoginLogoutSession.getId(), orgLocation);
-	
+		OrgLocations loginOrgLocation = orgLocationService.getOrgLocations(orgLocation);
 		if(actionHistoryList != null){
 			 SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 			for(ActionHistory actionHistory:actionHistoryList){

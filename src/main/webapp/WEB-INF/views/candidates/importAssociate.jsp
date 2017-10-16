@@ -36,7 +36,7 @@
         <div class="col-md-12 clearfix">
         <div class="well">
           <div class="input-group col-md-6" id="uploadFileGroup" style="margin:0 auto; position:relative;">
-            <label class="input-group-btn"> <span class="btn btn-danger"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File<span class="text-danger">&nbsp;*</span>
+            <label class="input-group-btn"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File<span class="text-danger">&nbsp;*</span>
               <input type="file"  name="uploadBtn" id="uploadBtn" class="hidden upload">
               </span> 
            </label>
@@ -191,7 +191,7 @@
              <div class="col-xs-6 col-md-6">
              		<select class="form-control selectpicker" id="experienceYears" name="experienceYears" onchange="disableMonths();">
              		  <option value="">Years</option>
-             		  <c:forEach begin="0" end="25" varStatus="loop">
+             		  <c:forEach begin="0" end="50" varStatus="loop">
 						    <option>${loop.index}</option>
 						</c:forEach>
              		</select>
@@ -604,25 +604,7 @@ function validate_fileupload(fileName)
 						       
 			    	         }
 		    	});
-		    /* 
-		    chosen.search_field.on('keyup', function(e)
-		    {
-		    	var newSkill = this.value.replace(",","");
-		        if ((e.which == 13 || e.which == 188) && (newSkill != null  && newSkill != '' && newSkill != 'undefined'))
-		        {
-		        	var par = this.parent;
-		            var option = $("<option>").val(newSkill).text(newSkill);
-		            select.append(option);
-		            select.find(option).prop('selected', true);
-		          //to doesn't allow duplicates
-                    $("#candidateSkills option").each(function(){
-                          $(this).siblings("[value='"+ this.value+"']").remove();
-                    });
-                    //end
-	        		$("#candidateSkills").trigger("chosen:updated");
-	        		
-		        }
-		    }); */
+		
 		    //Adding Customized Skills to the list
 		    
 		    //Adding Customized Educations to the list
@@ -725,7 +707,7 @@ function validate_fileupload(fileName)
  <script type="text/javascript">
 		 function disableMonths() {
 		     $("#experienceYears").change(function() {
-		         if ($("#experienceYears").val() == '25'){
+		         if ($("#experienceYears").val() == '50'){
 		        	 $("#experienceMonths").val('');  
 		        	 $('#experienceMonths').selectpicker('refresh');
 		        	/*  $('#experienceMonths').attr("disabled", true);

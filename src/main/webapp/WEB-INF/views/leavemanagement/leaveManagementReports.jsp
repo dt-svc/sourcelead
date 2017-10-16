@@ -1,15 +1,23 @@
 <jsp:include page="../masterHeader.jsp" />
 <jsp:include page="../masterSideNav.jsp" />
+
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+
 <script type="text/javascript" src="https://www.amcharts.com/lib/3/amcharts.js"></script>
 <script type="text/javascript" src="https://www.amcharts.com/lib/3/serial.js"></script>
 <script type="text/javascript" src="https://www.amcharts.com/lib/3/pie.js"></script> 
 
-<%-- <jsp:include page="topLeaveTakers.jsp" /> --%>
+ <%-- <script src="resources/js/pie.js?staticTime=${staticTime}"></script> 
+	 <script src="resources/js/amcharts.js?staticTime=${staticTime}"></script> 
+	 <script src="resources/js/serial.js?staticTime=${staticTime}"></script> 
+	 <script src="resources/reports/export.min.js?staticTime=${staticTime}"></script> 
+	 <script src="resources/js/themes/light.js?staticTime=${staticTime}"></script> 
+
+<jsp:include page="topLeaveTakers.jsp" />
 <script src="resources/js/pie.js?staticTime=${staticTime}"></script>
-<script src="resources/js/amcharts.js?staticTime=${staticTime}"></script>
+<script src="resources/js/amcharts.js?staticTime=${staticTime}"></script> --%>
 <script type="text/javascript">
 		 $(document).ready(function(){
 			 getHolidaysList();
