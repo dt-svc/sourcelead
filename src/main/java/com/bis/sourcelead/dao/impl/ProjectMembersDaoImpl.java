@@ -1126,5 +1126,22 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 		return pm;  
 	}
 	
+	@Override
+	@Transactional
+	public ProjectMembers getConsultantUserProjectMemberByProjectMemberId(Long projectMemberId) throws Exception {
+ 		Session session = this.sessionFactory.getCurrentSession();
+		String query = " from ProjectMembers pm  left join fetch pm.projectClientsId pc left join fetch pc.orgLocationsId loc left join fetch pm.masterCandidateId mc  left join fetch pm.projectMemberCandidteId pmc left join fetch pm.projects projects left join fetch pm.employee emp left join fetch emp.user user "
+				+ " where  "
+				+ " (projects.id IN( select subPm.projects.id from ProjectMembers subPm where subPm.id = :projectMemberId ) and mc.id IN( select subPm.masterCandidateId.id from ProjectMembers subPm where subPm.id = :projectMemberId )) and pm.employee IS NOT NULL  " ;
+		List<ProjectMembers> pmList =session.createQuery(query).setLong("projectMemberId", projectMemberId).setCacheable(true).list(); 
+		ProjectMembers pm = null;
+		if(pmList != null && !pmList.isEmpty())  {
+			pm  = pmList.iterator().next();
+		}
+		return pm;  
+	}
+	
+	
+	
 }
 
