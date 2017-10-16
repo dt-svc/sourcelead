@@ -172,15 +172,7 @@ function addResume(candidateId) {
 	    };
 	    
 	    /* upload file script for size validation 2MB*/
-	    var selectedFile = document.getElementById("uploadBtn");
-	    selectedFile.addEventListener("change", function() {
-	      var docSize = this.files[0].size;
-	      $("#uploadFileGroup").find('p.jquery_form_error_message').remove();
-	      if(docSize > 2097152){
-	    	  document.getElementById("uploadFile").value = '';
-	    	  $("#uploadFileGroup").append("<p class='jquery_form_error_message'>Limit is exceeded than 2MB </p>");
-	      }
-	    });
+	    
 	}
 </script>	 
   
