@@ -10,4 +10,6 @@ public interface LeaveTypeDao {
 	List<LeaveType> getLeaveTypeListByLocationId(String orgLocationId);
 
 	LeaveType getLeaveTypeById(String leaveTypeId);
+
+	List<LeaveType> getLeaveTypeListByLocationIdAndStatus(String orgLocationId);
 }

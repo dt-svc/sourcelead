@@ -154,8 +154,8 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 	public ProjectMembers getProjectMemberById(Long id) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 		java.sql.Date  currentDate = new java.sql.Date(new Date().getTime());
-		String query = " from ProjectMembers pm left join fetch pm.projects left join fetch pm.projectMemberCandidteId left join fetch pm.masterCandidateId "
-				+ " left join fetch pm.projectClientsId left join fetch pm.projectClientsId.orgLocationsId "
+		String query = " from ProjectMembers pm left join fetch pm.projects project left join fetch pm.projectMemberCandidteId can left join fetch pm.masterCandidateId mc "
+				+ " left join fetch pm.projectClientsId pc left join fetch pc.orgLocationsId loc "
 				+ "where pm.id = :id" ;
 		List<ProjectMembers> pmList =session.createQuery(query).setLong("id", id).setCacheable(true).list(); 
 		ProjectMembers pm = null;
@@ -604,11 +604,13 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public List<ProjectMembers> getAllProjectsByUserId(Long userId) {
+	public List<ProjectMembers> getAllProjectsByUserId(Long userId,Long orgLocationId) {
 		Session session = this.sessionFactory.getCurrentSession();
+
 		String query = "from ProjectMembers pm left join fetch pm.projects left join fetch pm.employee emp left join fetch pm.projectMemberCandidteId "
-				+ " where (pm.projectMemberCandidteId.id IN(select cand.id from Candidate cand where cand.consultantUser.id = :userId ) and pm.projects.projectMode <> 'Draft')" ;
-		List<ProjectMembers> allProjectsList =session.createQuery(query).setLong("userId", userId).setCacheable(true) 
+				+ " where (pm.projectMemberCandidteId.id IN(select cand.id from Candidate cand where cand.consultantUser.id = :userId and candidate.orgLocationId.id = :orgLocationId ) and pm.projects.projectMode <> 'Draft')" ;
+		
+		List<ProjectMembers> allProjectsList =session.createQuery(query).setLong("userId", userId).setLong("orgLocationId",orgLocationId).setCacheable(true) 
 			    .list();
 		return allProjectsList;
 	}
