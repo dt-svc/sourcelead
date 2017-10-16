@@ -268,7 +268,7 @@ function getVendorDetails(){
 							<div class="col-md-9" id="clientNameDiv">
 								<input type="text" class="form-control" id="orgName"
 									name="orgName" value="${orgName}" onclick="getOrgName();"
-									onblur="getOrgDetails(); validateClientName();"
+									onblur="getOrgDetails(); validateOrgName();"
 									field-name="Vendor Name"
 									data-validation="required validate_length length2-250"
 									value=""> <input type="hidden" id="orgLocationId" /> <span
@@ -1005,6 +1005,51 @@ function validateClientName(){
 				}
 				
 				$("#loading").removeAttr("style");
+			},
+
+		});
+	}
+  }
+}
+</script>
+
+
+
+
+
+<script type="text/javascript">
+function validateOrgName(){
+	
+	var vendorName = (document.getElementById("orgName").value).replace(/[{}]/g, "");
+	var vendor = encodeURIComponent(vendorName);
+	if(vendor.match(/^[^\s-](.*)*$/) != null){
+		$('#clientNameDiv').find('p.jquery_form_error_message').remove();
+	if (vendor != null && vendor != '') {
+		
+		$.ajax({
+			type : "GET",
+			url : sourceleadUrl + "/ws/isInvitedClientOrVendorOrgValid?"+tokenParamName+"="+tokenValue+"&orgName="+vendor,
+			success : function(data) {
+				var result = data;
+				if (result == 'invalid') {
+					$("#save_vendor").removeAttr("disabled");
+			        $("#save_vendor").attr("disabled", "disabled");
+					$("input#orgName").after( "<p class='jquery_form_error_message'>" + vendorName + " is invalid</span>");
+					document.getElementById("orgName").setAttribute( 'record-exist', 'yes');
+					document.getElementById("orgName").setAttribute( 'record-exist-errorMsg', vendorName +"  is invalid");
+					$('input#orgName').removeAttr( "record-exist record-exist-errorMsg");
+					
+				}else {
+					$("#save_vendor").removeAttr("disabled");
+					$('input#orgName').removeAttr("class record-exist record-exist-errormsg");
+					$('input#orgName').attr('class','valid form-control');
+					$('#clientNameDiv').find('p.jquery_form_error_message').remove();
+					$("#save_vendor").click(function() {
+					});
+					
+					validateClientName();
+				}
+				
 			},
 
 		});
