@@ -33,7 +33,7 @@ function clientRequirementList(orgRelationId){
 	    
 	    result = result + '	<li><a class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-filter"></i><span>Status</span><i class="glyphicon glyphicon-play"></i></a>';
 	    result = result + '   	<div class="filterLi dropdown-menu bootstrap_dropdownMenu">';
-		result = result + '       	<ul>';
+		result = result + '       	<ul class="paddingLi">';
 		result = result + '           	<li><input type="checkbox" value="OPEN"  name="requirementStatusFilter" onclick="clientReqList(this)"><label class="paddingLeft">Open  </label></li>';
 		result = result + '           	<li><input type="checkbox" value="NEW"  name="requirementStatusFilter" onclick="clientReqList(this)"><label class="paddingLeft">New  </label></li>';
 		result = result + '           	<li><input type="checkbox" value="SUBMITTED"  name="requirementStatusFilter" onclick="clientReqList(this)"><label class="paddingLeft">Submitted </label></li>';
