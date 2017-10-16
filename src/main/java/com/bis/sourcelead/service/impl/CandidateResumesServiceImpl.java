@@ -320,6 +320,9 @@ public class CandidateResumesServiceImpl implements CandidateResumesService {
 				candidateIndex.setCurrentResumeId(candidateResumes.getId());
 				candidateIndex.setCurrentResumeName(candidateResumes.getFileName());
 				candidateIndex.setResumeContent("");
+				candidateIndex.setFileUrl(candidateResumes.getFileURL());
+				candidateIndex.setFileContentType(candidateResumes.getFileContentType());
+				candidateIndex.setResumeName(candidateResumes.getFileName());
 			}
 			sourceleadELKBaseIndexer.saveOrUpdateElkDocument(candidateIndex, Constants.ELK_CANDIDATE_INDEX, Constants.ELK_CANDIDATE_TYPE, candidate.getId().toString());
 		}

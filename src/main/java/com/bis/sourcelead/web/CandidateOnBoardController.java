@@ -290,7 +290,7 @@ public class CandidateOnBoardController {
 		return model;
 	}
 	
-	@PreAuthorize("hasRole('ROLE_CREATE_ON_BOARD_USER')")
+//	@PreAuthorize("hasRole('ROLE_CREATE_ON_BOARD_USER')")
 	@RequestMapping(value = "/viewOnboardCandidateDetails")
  	public ModelAndView viewOnboardCandidateDetails(@RequestParam(value="onboardUUID", required=false) String onboardUUID,
  			HttpServletRequest request) throws Exception {

@@ -198,7 +198,7 @@ function errRemoveClientContact(){
 <div id="divTaskTd5" style="display: none; float: left;">
 	<div class="tbldata-dotdot_80">
 		<input type="text"
-			class="form-control input-sm allownumericwithdecimal"
+			class="form-control input-sm"
 			placeholder="Rate" id="REPLACEROWIDrate" name="lineItems[REPLACEROWID].rate"
 			onblur="totalHoursCalculateAmount(REPLACEROWID);" data-validation="required" field-name="Rate">
 	</div>
@@ -236,7 +236,7 @@ function errRemoveClientContact(){
 		 result = result +'  <input type="hidden" id="maxTsRowNum" name="maxTsRowNum" value="0" />';
 		 result = result +'  <table width="100%">';
 		 result = result +'  <thead id="addInvoiceTbl">';
-		 result = result +'  <tr id="divTsRow0">';
+		 result = result +'  <tr>';
 		 result = result +'  <th>Date</th>';
 		 result = result +'  <th>Associate</th>';
 		 result = result +'  <th>Description</th>';
@@ -415,6 +415,42 @@ function validateDiscount() {
 			  $("#saveButtonId").removeAttr("disabled", "disabled");
 			  $("#sendButtonId").removeAttr("disabled", "disabled");
 		  }		  
+}
+</script>
+
+<script>
+function validateRowDiscount(maxRowNum) {
+$('#'+maxRowNum+'discountRowDiv').parent().find('p.jquery_form_error_message').remove();
+var selectedTextInvoice = $("#"+maxRowNum+"taxdiscountType").val();
+var enteredValue = $("#"+maxRowNum+"taxdiscountvalue").val();
+
+if(selectedTextInvoice =='percentage'){
+	  var floatNum = /^(\d{0,2}(\.\d{0,2})?|100)$/
+	  if(enteredValue.match(floatNum)){
+		  $("#saveButtonId").removeAttr("disabled", "disabled");
+			$("#sendButtonId").removeAttr("disabled", "disabled");
+		   return true;
+	  }		  
+	 else{
+			$("#"+maxRowNum+"discountRowDiv").after("<p class='jquery_form_error_message'><span>Enter Valid Percentage</span>");
+			$("#saveButtonId").attr("disabled", "disabled");
+			$("#sendButtonId").attr("disabled", "disabled");
+			return false; 
+	 	 }
+}if(selectedTextInvoice =='flat'){
+	/* var floatNum = /^[0-9]*$/
+		if(enteredValue.match(floatNum)){
+			  $("#saveButtonId").attr("disabled", "disabled");
+				$("#sendButtonId").attr("disabled", "disabled");
+			   return false;
+		  }
+		else{ */
+			$("#saveButtonId").removeAttr("disabled", "disabled");
+			  $("#sendButtonId").removeAttr("disabled", "disabled");
+// 		}
+	  }		
+	  
+ 
 }
 </script>
 
@@ -607,11 +643,9 @@ function validateDiscount() {
 				  $("#discountValue").val('');
 				  $("#discountValue").attr("disabled", "disabled");
 			  }
-			  
-		
 		document.getElementById('divTsRow' + rowId).style.display = 'none';
-		var r = document.getElementById('addInvoiceTbl').rows[rowId];
-		var count = 2 * (r.cells.length);
+		var r = document.getElementById('addInvoiceTbl').rows[rowId+1];
+		var count = r.cells.length;
 		for (i = 0; i <= count; i++) {
 			r.deleteCell(0);
 		}
@@ -932,8 +966,8 @@ function cancel(){
 	  var maxTsRowNum = parseInt($("input[name = 'maxTsRowNum']").val());
 	  var orgRelationId = $("#clientOrgRelationId").val();
 	  var selectedAssociates = '';
-	  if(maxTsRowNum > 1){
-		  for(var i=1; i<maxTsRowNum; i++){
+	  if(maxTsRowNum > 0){
+		  for(var i=0; i<maxTsRowNum; i++){
 			  if(document.getElementById(i+"candidateId")){
 				  var associateId = document.getElementById(i+"candidateId").value;
 				  if(selectedAssociates == ''){
@@ -1504,7 +1538,7 @@ function calculateDiscount(){
 
 <div id="divTaxTd2" style="display: none; float: left;">
 	<div class="btn-group tblminwidth-75">
-		<select class="form-control input-sm" id="REPLACEROWIDtaxdiscountType" name="invoiceTax[REPLACEROWID].taxdiscountType" onchange="calculateTaxDiscount(REPLACEROWID);">
+		<select class="form-control input-sm" id="REPLACEROWIDtaxdiscountType" name="invoiceTax[REPLACEROWID].taxdiscountType" onchange="calculateTaxDiscount(REPLACEROWID);validateRowDiscount(REPLACEROWID);">
 			<option value="percentage">Percentage</option>
 			<option value="flat">Flat</option>
 		</select>
@@ -1512,12 +1546,12 @@ function calculateDiscount(){
 </div>
 
 <div id="divTaxTd3" style="display: none; float: left;">
-	<div class="tblminwidth-75">
+	<div class="tblminwidth-75" id="REPLACEROWIDdiscountRowDiv">
 		<input type="text"
-			class="form-control input-sm allownumericwithdecimal" value=""
+			class="form-control input-sm" value=""
 			placeholder="Flat / Discount" name='invoiceTax[REPLACEROWID].taxdiscountvalue'
 			id='REPLACEROWIDtaxdiscountvalue'
-			onblur="calculateTaxDiscount(REPLACEROWID);">
+			onblur="calculateTaxDiscount(REPLACEROWID);" onkeyup="validateRowDiscount(REPLACEROWID);">
 	</div>
 </div>
 

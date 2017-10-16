@@ -252,21 +252,36 @@ public class ProjectPlanningRestController {
 	  
 	  @RequestMapping(value = "/getResourceRequestDetailsByRequestUUID")
 		 public ProjectPlanningRequest getResourceRequestDetailsByRequestUUID(@RequestParam(value="requestUUID", required=false) String requestUUID) throws Exception {
-				
-				return  projectPlanningRequestService.getProjectPlanningRequestByRequestUUID(requestUUID);
+		  ProjectPlanningRequest projectPlanningRequest =   projectPlanningRequestService.getProjectPlanningRequestByRequestUUID(requestUUID);
+		 
+		  Set<ProjectPlanningResourceRequest> planningResourceRequestList = projectPlanningRequest.getProjectPlanningResourceRequestList();
+		  if(planningResourceRequestList != null && planningResourceRequestList.size() > 0) {
+			  List<ProjectPlanningResourceRequest> resourceRequestList = new ArrayList<>();
+			  for(ProjectPlanningResourceRequest resourceRequest : planningResourceRequestList) {
+				  resourceRequestList.add(resourceRequest);
+			  }
+			  projectPlanningRequest.setResourceRequestList(resourceRequestList);
+		  }
+		  
+		  Set<ProjectPlanningNewResourceRequest> newRequestRessourceList = projectPlanningRequest.getProjectPlanningNewResourceRequestList();
+		  if(newRequestRessourceList != null && newRequestRessourceList.size() > 0) {
+			  List<ProjectPlanningNewResourceRequest> newResourceRequestList = new ArrayList<>();
+			  for(ProjectPlanningNewResourceRequest requestList : newRequestRessourceList) {
+				  newResourceRequestList.add(requestList);
+			  }
+			  projectPlanningRequest.setNewResourceRequestList(newResourceRequestList);
+		  }
+		 
+		  return  projectPlanningRequest;
 		 }
 	  
 	  
 	  
 	  @RequestMapping(value = "/getResourceRequestApproversList", method = RequestMethod.GET)
-		public @ResponseBody String getResourceRequestApproversList(@RequestParam(value="orgLocationId", required=true) Long orgLocationId) throws Exception {
+		public @ResponseBody List<User>  getResourceRequestApproversList(@RequestParam(value="orgLocationId", required=true) Long orgLocationId) throws Exception {
 		    
-		  String resultJson;
-		  
 	      List<User> approversList = userService.getTabAccessOwnersByOrgLocationIdAndTabId(orgLocationId,Long.valueOf(Constants.TAB_PROJECTS));
-		  
-		  resultJson = commonUtil.toJSON(approversList);
-		  return resultJson;
+		  return approversList;
 	    }
 	  
 	  

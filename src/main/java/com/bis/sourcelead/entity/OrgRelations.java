@@ -99,6 +99,12 @@ public class OrgRelations implements Serializable{
 	@Column(name="SIC_CODE")
 	private String sicCode;
 	
+	@Column(name="NAICS_CODE")
+	private String naicsCode;
+	
+	@Column(name="EIN_CODE")
+	private String einCode;
+	
 	@Column(name="TAX_REGISTRATION_NUMBER")
 	private String taxRegistrationNumber;
 	
@@ -938,6 +944,22 @@ public class OrgRelations implements Serializable{
 
 	public void setIndustryName(String industryName) {
 		this.industryName = industryName;
+	}
+
+	public String getNaicsCode() {
+		return naicsCode;
+	}
+
+	public void setNaicsCode(String naicsCode) {
+		this.naicsCode = naicsCode;
+	}
+
+	public String getEinCode() {
+		return einCode;
+	}
+
+	public void setEinCode(String einCode) {
+		this.einCode = einCode;
 	}
 
 	
