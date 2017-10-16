@@ -1380,8 +1380,6 @@ private static final Logger logger = LoggerFactory.getLogger(TimesheetRestContro
 			 return "success";
 			 
 		   }
-		 
-		 
 		 public void mailToOffboardCandidateReportingManager(CandidateOffBoarding candidateOffBoarding, User loginUser,OrgLocations orgLocations) throws Exception{
 		       // SimpleDateFormat dateFormat=orgLocations.getLocFullFormDateFormatter();
 			 User toUser = null;

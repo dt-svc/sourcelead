@@ -14,9 +14,6 @@ INSERT INTO `sourcelead`.`EMAIL_SCENARIO` (`SCENARIO_NAME`, `ENTITY_TYPE`, `UNIQ
 'Dear {{OffBoardingProcessMailToReportingManager.applicantName}},\n\nWe regret to inform you that {{OffBoardingProcessMailToReportingManager.loginUser}} with {{OffBoardingProcessMailToReportingManager.companyName}} has been Removed.,\nPlease assign is task to another Manager.\nPlease click here to login for further process.\n\n{{OffBoardingProcessMailToReportingManager.loginLink}}', 'N', 'SLADMIN', 'sourceLead.com','in.sourceLead.com');
 
 
-
-
-
 #OffBoarding_ProcessApplicantTerminationMailToReportingManager_Notification
 #entity_type
 INSERT INTO `sourcelead`.`ENTITY_TYPE` (`ENTITY_NAME`, `ENTITY_TYPE`) VALUES ('OffBoardingProcessMailToReportingManager', 'Notification');
