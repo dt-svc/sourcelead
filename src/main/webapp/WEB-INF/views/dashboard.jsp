@@ -219,7 +219,7 @@ overflow-x: auto;
 					</sec:authorize>
 					
 					<!-- Don't delete this commented code. Functionality is in progress -->
-					<%-- <jsp:include page="resourceRequest.jsp"></jsp:include>  --%>
+					 <jsp:include page="resourceRequest.jsp"></jsp:include>  
 					
 					<jsp:include page="budgetRequest.jsp"></jsp:include>
 					

@@ -1152,7 +1152,7 @@ public class ExpensesServiceImpl implements ExpensesService{
 	}
 
 	@Override
-	public List<Expenses> getTotalMyExpensesListByuserIdAndOrgLocationIdForEmployeeLogin(Long userId, Long orgLocationId, String expenseStatus) throws Exception
+	public List<Expenses> getTotalMyExpensesListByMasterCandidateIdForEmployeeLogin(Long masterCandidateId, String expenseStatus) throws Exception
 	{
 		String submissionStatus = null;
 		if ("submitted".equalsIgnoreCase(expenseStatus)) {
@@ -1167,7 +1167,7 @@ public class ExpensesServiceImpl implements ExpensesService{
 		if ("draft".equalsIgnoreCase(expenseStatus)) {
 			submissionStatus = "DRAFT";
 		}
-		return expensesApproverHierarchyDao.getTotalMyExpensesListByuserIdAndOrgLocationIdForEmployeeLogin(userId, orgLocationId, submissionStatus);
+		return expensesApproverHierarchyDao.getTotalMyExpensesListByMasterCandidateIdForEmployeeLogin(masterCandidateId, submissionStatus);
 	}
 	
 	@SuppressWarnings("static-access")
