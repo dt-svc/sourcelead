@@ -159,7 +159,7 @@
 			           <td><div id="expenseAmountDiv${entryCount.count}">${entry.categoryAmount}</div></td>
 			           <td><div id="expenseRateType${entryCount.count}">${entry.categoryAmountType}</div></td>
 			           <td><div id="paymentModeDiv${entryCount.count}">${entry.paymentMode}</div></td>
-			            <td><div id="paymentModeDiv${entryCount.count}">${entry.paidBy}</div></td>
+			           <td><div id="paidByDiv${entryCount.count}">${entry.paidBy}</div></td>
 			        </tr>
 			        <tr id="divEntityTsRow${2*(entryCount.count)}" style="display:none;">
 				        <td colspan="7">
@@ -172,6 +172,7 @@
 								<li><strong>Amount :</strong><span>${entry.categoryAmount}</span><div class="clearfix"></div></li>
 								<li><strong>Currency :</strong><span>${entry.categoryAmountType}</span><div class="clearfix"></div></li>
 								<li><strong>Payment Mode :</strong><span>${entry.paymentMode}</span><div class="clearfix"></div></li>
+								<li><strong>Paid By :</strong><span>${entry.paidBy}</span><div class="clearfix"></div></li>
 								<div class="clearfix"></div>
 								</li>
 								<div class="clearfix">
