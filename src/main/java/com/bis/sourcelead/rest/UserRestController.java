@@ -503,9 +503,9 @@ public class UserRestController {
 		 @RequestMapping(value = "/getProjectDetailsById", method = RequestMethod.POST)
 		 @ResponseBody String getProjectDetailsById(HttpServletRequest request,
 					@RequestParam(value = "userId", required = false) Long userId,
-					@RequestParam(value = "filterValue", required = false) String filterValue) throws Exception {
+					@RequestParam(value = "filterValue", required = false) String filterValue,@RequestParam(value = "orgLocationId", required = false) Long orgLocationId) throws Exception {
 
-				List<ProjectMembers> allProjectsList = projectMembersService.getAllProjectsByUserIdAndStatus(userId, filterValue);
+				List<ProjectMembers> allProjectsList = projectMembersService.getAllProjectsByUserIdAndStatus(userId, filterValue,orgLocationId);
 				return toJSON(allProjectsList);
 
 			}

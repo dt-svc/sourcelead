@@ -262,6 +262,8 @@ public class VendorServiceImpl implements VendorService{
 		onboardDTO.setPaymentTerm(orgRelations.getPaymentTerm());
 		onboardDTO.setTier(orgRelations.getInitiatorLevel());
 		onboardDTO.setSicCode(orgRelations.getSicCode());
+		onboardDTO.setNaicsCode(orgRelations.getNaicsCode());
+		onboardDTO.setEinCode(orgRelations.getEinCode());
 		onboardDTO.setIndustryName(orgRelations.getIndustryName());
 		onboardDTO.setCurrency(orgRelations.getCurrency());
 		onboardDTO.setTaxRegNumber(orgRelations.getTaxRegistrationNumber());

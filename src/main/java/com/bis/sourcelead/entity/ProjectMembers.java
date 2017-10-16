@@ -390,6 +390,7 @@ public class ProjectMembers implements Serializable {
 	private Long candidateId;
 
 	@Transient
+	@JsonProperty
 	private String userRoleType;
 
 	@Transient

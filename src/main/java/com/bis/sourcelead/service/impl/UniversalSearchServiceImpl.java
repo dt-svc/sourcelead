@@ -217,21 +217,6 @@ public class UniversalSearchServiceImpl implements UniversalSearchService{
 		{
 			String responderType = null;
 			
-			 
-		/*	 BoolQueryBuilder combinedQueryBuilder = QueryBuilders.boolQuery();
-			 
-			 BoolQueryBuilder initiatorQueryBuilder = QueryBuilders.boolQuery();
-			 initiatorQueryBuilder.must(QueryBuilders.matchQuery("orgLocationId", orgLocation.getId()));
-			 initiatorQueryBuilder.must(QueryBuilders.matchQuery("initiatorType", responderType));
-			 
-			 BoolQueryBuilder responderQueryBuilder = QueryBuilders.boolQuery();
-			 responderQueryBuilder.must(QueryBuilders.matchQuery("responderLocationId", orgLocation.getId()));
-			 responderQueryBuilder.must(QueryBuilders.matchQuery("responderType", responderType));
-			 
-			 combinedQueryBuilder.should(initiatorQueryBuilder);
-			 combinedQueryBuilder.should(responderQueryBuilder);
-			 boolQueryBuilder.must(combinedQueryBuilder);*/
-			
 			BoolQueryBuilder boolQueryBuilderClientVendor = new BoolQueryBuilder();
 			 
 			if(Constants.VENDOR.equalsIgnoreCase(searchType)){
@@ -255,6 +240,8 @@ public class UniversalSearchServiceImpl implements UniversalSearchService{
 			 
 			 boolQueryBuilderClientVendor.must(combinedQueryBuilder);
 			 
+			 
+			 
 			 Long maxResults = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_CLIENTVENDOR_INDEX, Constants.ELK_CLIENTVENDOR_TYPE,0,0,boolQueryBuilderClientVendor).getTotalHits();
 //			 Integer maxResults = orgRelationsService.getAllVendorsCountByOrgLocationId(orgLocation.getId(),responderType);
 				//Any Keywords
@@ -276,7 +263,7 @@ public class UniversalSearchServiceImpl implements UniversalSearchService{
 
 				DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 				df.setTimeZone(TimeZone.getTimeZone("GMT"));
-				SearchHit[] searchHits = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_CLIENTVENDOR_INDEX, Constants.ELK_CLIENTVENDOR_TYPE,0,maxResults.intValue(),boolQueryBuilder).getHits();
+				SearchHit[] searchHits = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_CLIENTVENDOR_INDEX, Constants.ELK_CLIENTVENDOR_TYPE,0,maxResults.intValue(),boolQueryBuilderClientVendor).getHits();
 				if(searchHits != null && searchHits.length >0){
 					ObjectMapper mapper = new ObjectMapper();
 					for (SearchHit hit : searchHits) {

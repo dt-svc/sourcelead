@@ -1,7 +1,5 @@
 package com.bis.sourcelead.util;
 
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.log;
-
 import java.text.DateFormat;
 import java.text.DateFormatSymbols;
 import java.text.ParseException;
@@ -26,7 +24,7 @@ import com.bis.sourcelead.constants.Constants;
 
 public  class CalendarUtil {
 
-	public static void main(String[] args){
+	/*public static void main(String[] args){
 		Calendar currentCal = Calendar.getInstance(TimeZone.getDefault());
 		currentCal.setLenient(false);
 		currentCal.setTime(new Date());
@@ -40,7 +38,7 @@ public  class CalendarUtil {
 		
 		
 		
-	}
+	}*/
 	/*public static void main(String[] args){
 		Calendar currentCal = Calendar.getInstance(TimeZone.getDefault());
 		currentCal.setLenient(false);

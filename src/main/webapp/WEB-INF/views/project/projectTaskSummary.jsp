@@ -1319,8 +1319,7 @@ function getOwnerList(){
 	$.ajax({
 	    	type: "GET",
 	    	 url: sourceleadUrl+"/getResourceRequestApproversList?${_csrf.parameterName}=${_csrf.token}&orgLocationId="+orgLocationId,
-	    		success: function(data) {
-	        	var json = JSON.parse(data);
+	    		success: function(json) {
 	     		var output = "";
 	     			output = output + "<option value=''>--Select Owner--</option>";
 	     		for (var i=0; i<json.length; i++)

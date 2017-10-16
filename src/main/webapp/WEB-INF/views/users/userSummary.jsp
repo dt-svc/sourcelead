@@ -1350,7 +1350,7 @@ $("#editRoleDetailsList").empty();
 					result = result + ' <input type="text" value="'+mobilePhone+'" name="phoneNumber" data-validation="validate_Space validate_phone validate_length length9-20" data-validation-optional="true">';
 					result = result + ' </div>';
 					
-					if(json.userState == "NOT_LOGGEDIN"){
+/* 					if(json.userState == "NOT_LOGGEDIN"){
 						
 						result = result + ' <div class="user_summary_edit_cta" id="EmailIdDiv">';
 						result = result + ' <label>Email Id<span class="text-danger">&nbsp; *</span></label>';
@@ -1363,7 +1363,12 @@ $("#editRoleDetailsList").empty();
 						result = result + ' <label>Emaild Id<span class="text-danger">&nbsp; *</span></label>';
 						result = result + ' <input type="text" value="'+json.user.email+'" readonly="readonly" id="EmailId" name="email" field-name="EmailId" data-validation="required validate_Space validate_length length2-100"/>';
 						result = result + ' </div>';
-					}
+					} */
+					
+					result = result + ' <div class="user_summary_edit_cta" id="EmailIdDiv">';
+					result = result + ' <label>Emaild Id<span class="text-danger">&nbsp; *</span></label>';
+					result = result + ' <input type="text" value="'+json.user.email+'" readonly="readonly" id="EmailId" name="email" field-name="EmailId" data-validation="required validate_Space validate_length length2-100"/>';
+					result = result + ' </div>';
 					
 					
 					if(json.allReportingManagers != null && json.allReportingManagers != "" && json.allReportingManagers != 'undefined' && json.allReportingManagers.length > 0){

@@ -52,7 +52,7 @@ public interface ProjectMembersService {
 	
 	public List<ProjectMembers> getAllTerminatedProjectMembersIdsByTimesheet() throws Exception;
 
-	public List<ProjectMembers> getAllProjectsByUserId(Long userId);
+	public List<ProjectMembers> getAllProjectsByUserId(Long userId,Long orgLocationId);
 	
 	public List<ProjectMembers> getAllProjectsByUserIdForCandidatesHotList(Long userId) throws Exception;
 	
@@ -64,7 +64,7 @@ public interface ProjectMembersService {
 	
 	public Integer updateProjectMemberDeletedReason(Long projectMemberId, String reason);
 
-	public List<ProjectMembers> getAllProjectsByUserIdAndStatus(Long userId, String mEMBER_ACTIVE) throws Exception;
+	public List<ProjectMembers> getAllProjectsByUserIdAndStatus(Long userId, String mEMBER_ACTIVE,Long orgLocationId) throws Exception;
 
 	public Integer updateEndDateOfProjectMemberId(Date endDate1, Long projectMemberId);
 	
