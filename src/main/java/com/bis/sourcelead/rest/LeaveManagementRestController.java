@@ -275,10 +275,12 @@ public class LeaveManagementRestController {
 		   OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
 		   User loginUser = userService.getUserById(userId);
 		   UserRole roleId = userRoleService.getUserRoleByUserId(userId);
-		   List<LeaveType> leaveTypeList = leaveTypeService.getLeaveTypeListByLocationId(String.valueOf(orgLocations.getId()));
+
 		   int balanceLeaveCounts = 0;
 		   int pendingLeaveCounts = 0;
 		   int takenLeaveCounts = 0;
+		   List<LeaveType> leaveTypeList = leaveTypeService.getLeaveTypeListByLocationIdAndStatus(String.valueOf(orgLocations.getId()));
+
 		   List<LeaveType> roleLeaveType = new ArrayList<>();
 		   if(leaveTypeList !=null && !leaveTypeList.isEmpty()) {
 			   for(LeaveType leaveType : leaveTypeList) {
@@ -827,16 +829,21 @@ public class LeaveManagementRestController {
 		boolean isDeleted = false;
 		LeaveType leaveType = leaveTypeService.getLeaveTypeById(leaveTypeDTO.getLeaveTypeId());
 		 if(leaveType !=null) {
+			 
+			 if("reactive".equalsIgnoreCase(leaveTypeDTO.getStatus())){
+				 leaveType.setStatus(Constants.RECORD_ACTIVE.toString());
+			 }else{
 			 leaveType.setStatus(Constants.RECORD_INACTIVE.toString());
 			 leaveType.setDeleteReason(leaveTypeDTO.getDeleteReason());
+			 }
 			 if(leaveTypeDTO.getLoginUserId() != null){
 				 User user = userService.getUserById(Long.parseLong(leaveTypeDTO.getLoginUserId()));
 				 leaveType.setUpdatedBy(user.getUserCode());
 			 }
 			 leaveType.setUpdatedDate(new Date());
 			 leaveTypeDao.addLeaveType(leaveType);
-			  isDeleted = true;
-		 }
+			 isDeleted = true;
+		}
 		return isDeleted;
 	}
 
