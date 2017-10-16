@@ -689,6 +689,29 @@ public class ClientRestController {
 			}
 		return flag;
 	}
+	
+	
+	
+	
+	@RequestMapping(value = "/ws/isInvitedClientOrVendorOrgValid", method = RequestMethod.GET)
+	@ResponseBody String isInvitedClientOrVendorOrgValid(
+			@RequestParam(value = "orgName", required = false) String orgName,HttpServletRequest request) throws Exception {
+		
+		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+		String flag = "valid";
+		List<OrgLocations> orgLocationsList = orgLocationService.getAllOrgLocationsByOrgId(org.getId());
+		if(orgLocationsList != null && orgLocationsList.size() > 0) {
+			for(OrgLocations orgLocations : orgLocationsList) {
+				if(StringUtils.containsIgnoreCase(orgName.trim(), orgLocations.getOrgLocationName())) {
+					flag = "invalid";
+				}
+			}
+		}
+		
+		return flag;
+	}
+	
+	
 /**
  * Verifies Client Email
  * @param EmailId
