@@ -689,6 +689,29 @@ public class ClientRestController {
 			}
 		return flag;
 	}
+	
+	
+	
+	
+	@RequestMapping(value = "/ws/isInvitedClientOrVendorOrgValid", method = RequestMethod.GET)
+	@ResponseBody String isInvitedClientOrVendorOrgValid(
+			@RequestParam(value = "orgName", required = false) String orgName,HttpServletRequest request) throws Exception {
+		
+		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+		String flag = "valid";
+		List<OrgLocations> orgLocationsList = orgLocationService.getAllOrgLocationsByOrgId(org.getId());
+		if(orgLocationsList != null && orgLocationsList.size() > 0) {
+			for(OrgLocations orgLocations : orgLocationsList) {
+				if(StringUtils.containsIgnoreCase(orgName.trim(), orgLocations.getOrgLocationName())) {
+					flag = "invalid";
+				}
+			}
+		}
+		
+		return flag;
+	}
+	
+	
 /**
  * Verifies Client Email
  * @param EmailId
@@ -1810,11 +1833,17 @@ public class ClientRestController {
 								}
 								
 								VendorOnboarding onboard = vendorOnboardService.getVendorOnboardingByOrgRelationId(clientVendorContactsIndex.getOrgRelationId());
-								clientVendorContactsIndex.setOnboardUUID(onboard.getOnboardUUID());
+								if(onboard != null) {
+									clientVendorContactsIndex.setOnboardUUID(onboard.getOnboardUUID());
+								}
+								
 								
 								OrgSpoc orgSpoc = orgSpocService.getOrgSpocById(clientVendorContactsIndex.getId());
 								Notifications notifications = notificationsService.getNotificationBySpocUUID(orgSpoc.getUUID());
-								clientVendorContactsIndex.setNotificationUUID(notifications.getUUID());
+								if(notifications != null) {
+									clientVendorContactsIndex.setNotificationUUID(notifications.getUUID());
+								}
+								
 								
 						 }
 					}	

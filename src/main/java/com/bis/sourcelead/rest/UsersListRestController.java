@@ -1024,10 +1024,9 @@ public class UsersListRestController {
 				}
 			}
 
-			/*if (jsonObj.has("projectApproverUser") && !isNullOrEmpty("projectApproverUser")) {
-
-				projectsService.tereminateAsProjectApprover(jsonObj, user, userId, orgLocations);
-			} */else {
+			if (StringUtils.isNotBlank(addUserDTO.getProjectApproverUser())) {
+				projectsService.tereminateAsProjectApprover(Long.valueOf(addUserDTO.getProjectApproverUser()), user, userId, orgLocations);
+			} else {
 
 				List<ProjectMembers> projectmembersList = projectMembersService
 						.getAllProjectsAssigendToUserByIdAndStatus(userId, Constants.MEMBER_ACTIVE);
@@ -1478,10 +1477,10 @@ public class UsersListRestController {
 
 			}
 
-			/*if (StringUtils.isNotBlank(addUserDTO.getProjectApproverUser())) {
+			if (StringUtils.isNotBlank(addUserDTO.getProjectApproverUser())) {
 
-				projectsService.tereminateAsProjectApprover(addUserDTO, user, userId, orgLocations);
-			}*/
+				projectsService.tereminateAsProjectApprover(Long.valueOf(addUserDTO.getProjectApproverUser()), user, userId, orgLocations);
+			}
 			
 			
 			
