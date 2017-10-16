@@ -57,8 +57,8 @@ public class ExpensesApproverHierarchyDaoImpl implements ExpensesApproverHierarc
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public List<Expenses> getTotalMyExpensesListByuserIdAndOrgLocationIdForEmployeeLogin(Long userId,
-			Long orgLocationId, String submissionStatus) throws Exception {
+	public List<Expenses> getTotalMyExpensesListByMasterCandidateIdForEmployeeLogin(Long masterCandidateId,
+			 String submissionStatus) throws Exception {
 		Map<String, Object> params = new HashMap<String,Object>();
 			String subQuery2 = "";
 			if ("APPROVED".equalsIgnoreCase(submissionStatus)) {
@@ -75,17 +75,13 @@ public class ExpensesApproverHierarchyDaoImpl implements ExpensesApproverHierarc
 			}
 		
 		Session session = this.sessionFactory.getCurrentSession();
-		String from = "from Expenses expenses left join fetch expenses.orgLocationId left join fetch expenses.projectMembers pm left join fetch pm.employee emp left join fetch emp.user user where expenses.orgLocationId.id =:orgLocationId and user.id =:userId and ( " + subQuery2 +" ) ";
-		params.put("userId",userId);
-		params.put("orgLocationId",orgLocationId);
+		String from = "from Expenses expenses left join fetch expenses.orgLocationId left join fetch expenses.masterCandidateId mc left join fetch expenses.projectMembers pm  left join fetch pm.projectClientsId pc left join fetch pm.employee emp left join fetch emp.user user where  mc.id =:masterCandidateId and ( " + subQuery2 +" ) ";
+		params.put("masterCandidateId",masterCandidateId);
 		
 		Query query = session.createQuery(from);
 		for (String str : query.getNamedParameters())
         {
-			if(str.equalsIgnoreCase("userId")){
-				query.setParameter(str, (long) params.get(str));
-			}
-			if(str.equalsIgnoreCase("orgLocationId")){
+			if(str.equalsIgnoreCase("masterCandidateId")){
 				query.setParameter(str, (long) params.get(str));
 			}
 			
@@ -113,16 +109,19 @@ public class ExpensesApproverHierarchyDaoImpl implements ExpensesApproverHierarc
 		}
 		
 		Session session = this.sessionFactory.getCurrentSession();
-		String from = "from  ExpensesApproverHierarchy sah left join fetch sah.hierarchyId hierarchy left join fetch hierarchy.approverUserId approver left join fetch sah.expenseId exp  left join fetch exp.projectMembers pm left join fetch pm.projects projects left join fetch pm.employee emp left join fetch emp.user user where exp.orgLocationId.id = :orgLocationId"
-				
+		String from = "from  ExpensesApproverHierarchy sah left join fetch sah.hierarchyId hierarchy left join fetch hierarchy.projectClientsId pc left join fetch hierarchy.approverUserId approver left join fetch sah.expenseId exp  left join fetch exp.projectMembers pm left join fetch pm.projectMemberCandidteId cand left join fetch cand.orgRelationId rel left join fetch pm.projects projects left join fetch pm.employee emp left join fetch emp.user user where "
+			+ " pc.orgLocationsId.id = :orgLocationId"
 			+ " and ( ("
 			+ "      hierarchy.approverUserId.id = :userId and "
 			+ "       (     (hierarchy.level = '2' and emp.user.id NOT IN(select subeah.hierarchyId.approverUserId.id from ExpensesApproverHierarchy subeah where subeah.expenseId.id = sah.expenseId.id and subeah.hierarchyId.level = '2')) "
 			+ "          OR (hierarchy.level = '1' and emp.user.id NOT IN(select subeah.hierarchyId.approverUserId.id from ExpensesApproverHierarchy subeah where subeah.expenseId.id = sah.expenseId.id) ) "
 			+ "       )"
 			+ "      ) "
-				+ "  OR ( :userId NOT IN( select subsah.hierarchyId.approverUserId.id from ExpensesApproverHierarchy subsah where subsah.expenseId.id = sah.expenseId.id ) and "+Constants.loginUserAsAdminWithMaxHeirarchyLevel+") "
-				+ "   ) and ( " + subQuery2 +" )";
+		    /*
+			 *  logged in user as admin but not in project_approver_hierarchy(hint:logged in user is admin but not assigned to project as approver)
+			 */
+			+ "  OR ( :userId NOT IN( select subsah.hierarchyId.approverUserId.id from ExpensesApproverHierarchy subsah where subsah.expenseId.id = sah.expenseId.id ) and "+Constants.loginUserAsAdminWithMaxHeirarchyLevel+") "
+			+ "   ) and ( " + subQuery2 +" )";
 		
 		
 		params.put("userId",userId);

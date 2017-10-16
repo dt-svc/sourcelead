@@ -310,6 +310,8 @@ public class ProjectsController {
 				 List<LookUpData> taskStatusList = lookUpDataService.getLookUpDataByCategory(Constants.TASKSTATUS);
 				 model.addObject("taskStatusList", taskStatusList);
 				 
+				commonUtil.highLightMenu(Constants.Projects, request);
+				 
 				model.setViewName("project/projectSummary");
 				model.addObject("sourceleadUrl", sourceleadUrl);
 				return model;
@@ -562,13 +564,15 @@ public class ProjectsController {
     @RequestMapping(value = "/viewNewResourceRequest")
    	public ModelAndView viewNewResourceRequest(@RequestParam(value="requestUUID", required=true) String requestUUID,
    			@RequestParam(value="projectUUID", required=true) String projectUUID,
-   			@RequestParam(value="projectClientUUID", required=true) String projectClientUUID) throws Exception {
+   			@RequestParam(value="projectClientUUID", required=true) String projectClientUUID,HttpServletRequest request) throws Exception {
    	    
    	    ModelAndView model = new ModelAndView();
+   	    
+   	    commonUtil.highLightMenu(Constants.Projects, request);
+   	    
    		model.addObject("projectUUID", projectUUID);
    		model.addObject("requestUUID",requestUUID);
    		model.addObject("projectClientUUID",projectClientUUID);
-   		
    		model.setViewName("project/viewNewResourceRequest");
    		model.addObject("sourceleadUrl", sourceleadUrl);
    		return model;
@@ -581,10 +585,12 @@ public class ProjectsController {
 			@RequestParam(value="projectClientUUID", required=true) String projectClientUUID,HttpServletRequest request) throws Exception {
 	    
 	    ModelAndView model = new ModelAndView();
+	    
+	    commonUtil.highLightMenu(Constants.Projects, request);
+	    
 		model.addObject("projectUUID", projectUUID);
 		model.addObject("requestUUID",requestUUID);
 		model.addObject("projectClientUUID",projectClientUUID);
-		
 		model.setViewName("project/viewResourceRequest");
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		return model;

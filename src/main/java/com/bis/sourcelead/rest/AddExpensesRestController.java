@@ -232,22 +232,31 @@ public class AddExpensesRestController {
     }
 	
 	
-	@RequestMapping(value = "/storeAddExpensesData",method = RequestMethod.POST)
-	public @ResponseBody String storeAddExpensesData(HttpServletRequest request,@RequestParam(value="status", required=false) String status,ExpensesDTO addExpensesDTO) throws Exception {
+	/**
+	 * This method serves the request for store expenses
+	 * 
+	 * @param request
+	 * @param status
+	 * @param expensesDTO
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = {"/storeAddExpensesData","/rest/storeAddExpensesData"},method = RequestMethod.POST)
+	public @ResponseBody String storeAddExpensesData(HttpServletRequest request,@RequestParam(value="status", required=false) String status,ExpensesDTO expensesDTO) throws Exception {
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		 String currencyCode = (String) SourceLeadSessionManager.getSessionAttribute(request, "currencyCode");
 		//JSONObject jsonObj = new JSONObject(request.getParameter("json"));
-		addExpensesService.storeAddExpensesData(addExpensesDTO,loginUser,orgLoc,request,status,currencyCode);
+		addExpensesService.storeAddExpensesData(expensesDTO,loginUser,orgLoc,request,status,currencyCode);
 		return "DataSaved";
-}
-	
+   }
+ 	
 	
 	@RequestMapping(value = "/deleteDocumentByDocumentId",method = RequestMethod.POST)
 	public @ResponseBody String deleteDocumentByDocumentId(@RequestParam(value="documentId", required=false) String documentId) throws Exception {
 		addExpensesService.deleteDocumentByDocumentId(documentId);
 		return "DataSaved";
-}
+    }
 	
 	
 	

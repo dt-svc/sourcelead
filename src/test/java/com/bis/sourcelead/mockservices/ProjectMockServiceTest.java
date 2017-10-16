@@ -123,19 +123,19 @@ public class ProjectMockServiceTest {
 		
 		projectsListForInActive.add(projectMembers1);
 		
-		when(projectMembersDao.getAllProjectsByUserId(1l)).thenReturn(projectsListForAll);
+		//when(projectMembersDao.getAllProjectsByUserId(1l)).thenReturn(projectsListForAll);
 		when(projectMembersDao.getAllProjectsByUserIdAndStatus(1l,"ACTIVE")).thenReturn(projectsListForActive);	
 		when(projectMembersDao.getAllProjectsByUserIdAndStatus(1l,"IN-ACTIVE")).thenReturn(projectsListForInActive);
 		
 		
-		when(submissionApproverHierarchyService.getTotalDraftAndSubmittedHoursByuserIdAndProjectIdForEmployee(anyLong(), anyLong(), anyString())).thenReturn(40.1f);
+		when(submissionApproverHierarchyService.getTotalDraftAndSubmittedHoursByMasterCandidateIdAndProjectIdForEmployee(anyLong(), anyLong(), anyString())).thenReturn(40.1f);
 		when(submissionApproverHierarchyService.getTotalDraftAndSubmittedHoursByuserIdAndProjectIdForApprover(anyLong(), anyLong(), anyString())).thenReturn(20.1f);
-		List<ProjectMembers> allProjectsList4 = projectMembersService.getAllProjectsByUserIdAndStatus(1l,"All");
+		//List<ProjectMembers> allProjectsList4 = projectMembersService.getAllProjectsByUserIdAndStatus(1l,"All");
 		
 		//assertSame(60.2f, allProjectsList4.get(0).getDraftHrs());
 		
 		
-		verify(projectMembersDao,times(1)).getAllProjectsByUserId(1l);
+		//verify(projectMembersDao,times(1)).getAllProjectsByUserId(1l);
 		
 		//verify(projectMembersDao,times(1)).getAllProjectsByUserIdAndStatus(1l,"ACTIVE");
 		
