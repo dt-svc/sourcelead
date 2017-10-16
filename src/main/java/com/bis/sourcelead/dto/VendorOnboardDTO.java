@@ -39,6 +39,10 @@ public class VendorOnboardDTO implements Serializable{
 	
 	private String sicCode;
 	
+    private String naicsCode;
+	
+	private String einCode;
+	
 	private String taxRegNumber;
 	
 	private String dunsNumber;
@@ -277,6 +281,22 @@ public class VendorOnboardDTO implements Serializable{
 
 	public void setVendorBillingAddress(String vendorBillingAddress) {
 		this.vendorBillingAddress = vendorBillingAddress;
+	}
+
+	public String getNaicsCode() {
+		return naicsCode;
+	}
+
+	public void setNaicsCode(String naicsCode) {
+		this.naicsCode = naicsCode;
+	}
+
+	public String getEinCode() {
+		return einCode;
+	}
+
+	public void setEinCode(String einCode) {
+		this.einCode = einCode;
 	}
 
 

@@ -182,7 +182,7 @@ if(locationList.match("yyyy-MM-dd")){
 $.ajax({
     type : "POST",
      url: sourceleadUrl+"/getExpensesApprovalList?"+tokenParamName+"="+tokenValue+"&expenseStatus="+expenseStatus+"&startDate="+startDate+"&endDate="+endDate,      
-     success :function(data) {
+     success :function(json) {
     var result = "";
     
 	result = result+' <table id="example">';
@@ -202,7 +202,7 @@ $.ajax({
 	result = result+' </thead>';
 	result = result+' <tbody>';
 	if(data !='' && data !=[] && data !='[]'){
-	var json = JSON.parse(data);
+	//var json = JSON.parse(data);
 	 for (var i = 0; i < json.length; i++) { 
 	 var data = json[i];
 	result = result+' <tr id = "row'+data.expenseId.id+'">';
