@@ -704,6 +704,7 @@ public class ClientRestController {
 			for(OrgLocations orgLocations : orgLocationsList) {
 				if(StringUtils.containsIgnoreCase(orgName.trim(), orgLocations.getOrgLocationName())) {
 					flag = "invalid";
+					break;
 				}
 			}
 		}
