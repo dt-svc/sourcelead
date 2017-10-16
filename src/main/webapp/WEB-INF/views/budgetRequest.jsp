@@ -35,16 +35,16 @@
       	    <div class="project_side_wrap_inn_tabs">
       	    <div id="resourceRequestsDivLoading"></div>
 			    <ul class="project-tabs-menu">
-			        <li class="current" id="waiting"><a data-toggle="tab" href="javascript:void(0)" onclick="getBudgetRequestList('Waiting For Approval')">Waiting (<span id="waitingCount"></span>)</a></li>
-			        <li id="approved"><a data-toggle="tab" href="javascript:void(0)"  onclick="getBudgetRequestList('Approved')">Approved (<span id="approvedCount"></span>)</a></li>
-			        <li id="rejected"><a data-toggle="tab" href="javascript:void(0)" onclick="getBudgetRequestList('Rejected')">Rejected (<span id="rejectedCount"></span>)</a></li>
-			        <li id="onhold"><a data-toggle="tab" href="javascript:void(0)" onclick="getBudgetRequestList('On Hold')">On hold (<span id="onholdCount"></span>)</a></li>
+			        <li class="current" id="budgetWaiting"><a data-toggle="tab" href="javascript:void(0)" onclick="getBudgetRequestList('Waiting For Approval')">Waiting (<span id="budgetWaitingCount"></span>)</a></li>
+			        <li id="budgetApproved"><a data-toggle="tab" href="javascript:void(0)"  onclick="getBudgetRequestList('Approved')">Approved (<span id="budgetApprovedCount"></span>)</a></li>
+			        <li id="budgetRejected"><a data-toggle="tab" href="javascript:void(0)" onclick="getBudgetRequestList('Rejected')">Rejected (<span id="budgetRejectedCount"></span>)</a></li>
+			        <li id="budgetOnhold"><a data-toggle="tab" href="javascript:void(0)" onclick="getBudgetRequestList('On Hold')">On hold (<span id="budgetOnholdCount"></span>)</a></li>
 			        <div class="clearfix"></div>
 			    </ul>
 			    <div id="budgetRequestListDiv"></div>
 			    <div class="vendor_wrap_mask"></div>
-   				<div id="requestRejectedReasonDiv" ></div>
-   				<div id="requestOnHoldReasonDiv"></div>
+   				<div id="budgetRejectedReasonDiv" ></div>
+   				<div id="budgetOnHoldReasonDiv"></div>
            </div>
       	  </div>
       </div>
@@ -60,10 +60,10 @@
 	    	type: "GET",
 	        url: sourceleadUrl+"/getBudgetRequestListCount?${_csrf.parameterName}=${_csrf.token}&approverUserId="+approverUserId+"&orgLocationId="+orgLocationId, 
 	        success: function(json) {
-	        	$("#waitingCount").html(json.waitingCount);
-	        	$("#approvedCount").html(json.approvedCount);
-	        	$("#rejectedCount").html(json.rejectedCount);
-	        	$("#onholdCount").html(json.onholdCount);
+	        	$("#budgetWaitingCount").html(json.waitingCount);
+	        	$("#budgetApprovedCount").html(json.approvedCount);
+	        	$("#budgetRejectedCount").html(json.rejectedCount);
+	        	$("#budgetOnholdCount").html(json.onholdCount);
 	        }
 	   
      });
@@ -92,7 +92,7 @@ function getBudgetRequestList(requestType){
 	        success: function(json) {
 	        	var result = "";
 	    		result = result + '		<div class="project_tabs_inn_table vendor_wrap_inn_table datatable_filter overflow_inherint mrgTp">';
-	    		result = result + '		<table id="planningRequestsPaginationList" cellspacing="0" width="100%">';
+	    		result = result + '		<table id="budgetRequestsPaginationList" cellspacing="0" width="100%">';
 	    		result = result + '	    <thead>';
 	    		result = result + '	     	<tr>';
 	    		result = result + '	         	<th>Request Id</th>';
@@ -191,31 +191,31 @@ function getBudgetRequestList(requestType){
 	    	    budgetRequsetPagination();
 	    	    
 	    	    if(requestType == 'Waiting For Approval'){
-	    	    	 $("#waiting").addClass("current");
-	    	    	 $("#approved").removeClass("current");
+	    	    	 $("#budgetWaiting").addClass("current");
+	    	    	 $("#budgetApproved").removeClass("current");
 	    	    	 $("#rejected").removeClass("current");
-	    	    	 $("#onhold").removeClass("current");
+	    	    	 $("#budgetOnhold").removeClass("current");
 	    	    }
 	    	   
 	    	    else if(requestType == 'Approved'){
-	    	    	 $("#approved").addClass("current");
-	    	    	 $("#waiting").removeClass("current");
-	    	    	 $("#rejected").removeClass("current");
-	    	    	 $("#onhold").removeClass("current");
+	    	    	 $("#budgetApproved").addClass("current");
+	    	    	 $("#budgetWaiting").removeClass("current");
+	    	    	 $("#budgetRejected").removeClass("current");
+	    	    	 $("#budgetOnhold").removeClass("current");
 	    	    }
 	    	    
 	    	    else if(requestType == 'Rejected'){
-	    	    	 $("#rejected").addClass("current");
-	    	    	 $("#waiting").removeClass("current");
-	    	    	 $("#approved").removeClass("current");
-	    	    	 $("#onhold").removeClass("current");
+	    	    	 $("#budgetRejected").addClass("current");
+	    	    	 $("#budgetWaiting").removeClass("current");
+	    	    	 $("#budgetApproved").removeClass("current");
+	    	    	 $("#budgetOnhold").removeClass("current");
 	    	    }
 	    	    
 	    	    else if(requestType == 'On Hold'){
-	    	    	 $("#onhold").addClass("current");
-	    	    	 $("#waiting").removeClass("current");
-	    	    	 $("#approved").removeClass("current");
-	    	    	 $("#rejected").removeClass("current");
+	    	    	 $("#budgetOnhold").addClass("current");
+	    	    	 $("#budgetWaiting").removeClass("current");
+	    	    	 $("#budgetApproved").removeClass("current");
+	    	    	 $("#budgetRejected").removeClass("current");
 	    	    	
 	    	    }
 	    	    
@@ -457,7 +457,7 @@ $('body').on('blur', '#budgetRequest-form', function() {
 </script>
 <script>
 function budgetRequsetPagination(){  
-    $('#planningRequestsPaginationList').DataTable( { 
+    $('#budgetRequestsPaginationList').DataTable( { 
     	"scrollCollapse": false,
     	"lengthMenu": [[5, 15, 25, 30, -1], [5, 15, 25, 30, "All"]],
 		"aaSorting": [[4,'desc']],
@@ -479,24 +479,17 @@ var orgLocationId = '${SourceLeadWeb_orgLocations.id}';
 	$.ajax({
 	    	type: "GET",
 	    	 url: sourceleadUrl+"/getResourceRequestApproversList?${_csrf.parameterName}=${_csrf.token}&orgLocationId="+orgLocationId,
-	    		success: function(data) {
-	        	var json = JSON.parse(data);
+	    		success: function(json) {
 	     		var output = "";
 	     			output = output + "<option value=''>--Select Approver--</option>";
 	     		for (var i=0; i<json.length; i++)
 	     		{
 		     		var opt = json[i];
-		     		var fullname = '';
-		     		if(opt.lastName != null && opt.lastName != '' && opt.lastName != 'undefined'){
-		     			fullname = opt.firstName+" "+opt.lastName;
-		     		}else{
-		     			fullname = opt.firstName;
-		     		}
 		     		 
 		     		 if(opt.id == approverUserId){
-		        			output = output + "<option value='"+opt.id+"' selected>"+opt.firstName+" "+opt.lastName+" ("+opt.userType+")</option>";
+		        			output = output + "<option value='"+opt.id+"' selected>"+opt.fullName+" ("+opt.userType+")</option>";
 		        		}else{
-		        			output = output + "<option value='"+opt.id+"'> "+opt.firstName+" "+opt.lastName+" ("+opt.userType+")</option>";
+		        			output = output + "<option value='"+opt.id+"'> "+opt.fullName+" ("+opt.userType+")</option>";
 		        		}
 		     		 
 	     		}

@@ -5,13 +5,16 @@ import java.util.Date;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
+import org.apache.commons.lang3.StringUtils;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Fetch;
@@ -21,6 +24,7 @@ import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "LEAVE_APPROVER_HIERARCHY", catalog = "sourcelead")
@@ -60,7 +64,7 @@ public class LeaveApproveHierarchy {
 
 	@Column(name = "UPDATED_BY")
 	private String updatedBy;
-
+	
 	public String getId() {
 		return id;
 	}
@@ -76,6 +80,7 @@ public class LeaveApproveHierarchy {
 	public void setLeaveid(Leave leaveid) {
 		this.leaveid = leaveid;
 	}
+
 
 	public User getApproverUserId() {
 		return approverUserId;

@@ -114,7 +114,11 @@ $(document).ready(function(){
 		         result += '    <td>';
 		         result += '        <div class="tblminwidth-50">';
 		         result += '            <span title="Edit" class="paddingRight"><a href="'+sourceleadUrl+'/editLeaveType?leaveTypeId='+report.id+'"><i class="fa fa-pencil text-primary cursorPointer"></i></a></span> ';
-		         result += '            <span title="Delete" class="paddingLeft"><i class="fa fa-trash text-danger cursorPointer" onclick="deleteLeaveType(\''+report.id+'\')"></i></span>';
+		         if(report.status == 1){
+		              	result += '            <span title="Delete" class="paddingLeft"><i class="fa fa-trash text-danger cursorPointer" onclick="deleteLeaveType(\''+report.id+'\')"></i></span>';
+		         }else{
+		        	 	result += '            <span title="Reactive" class="paddingLeft"><i class="fa fa-repeat text-primary cursorPointer" onclick="reactiveLeaveType(\''+report.id+'\')"></i></span>';
+		         }
 		         result += '        </div>';
 		         result += '    </td>';
 		         result += '  </tr>';
@@ -199,6 +203,26 @@ function deleteType(typeId){
 	}
 }
 
+function reactiveLeaveType(typeId, from){
+	var loginUserId = '${SourceLeadWeb_user.id}'
+	
+		$.ajax({
+		   	type: "POST",
+		   	url: sourceleadUrl+"/deleteLeaveType?"+tokenParamName+"="+tokenValue+"&leaveTypeId="+typeId+"&status=reactive",	    	   
+		    success: function(data) {
+	             if(data == true){
+	            	 if(from == "summary"){
+	            		 openLeaveTypeSummary(typeId);
+	            		 getLeaveTypesList();
+	            	 }else{
+	 				 	location.replace(sourceleadUrl+ "/viewLeaveTypes");
+	            	 }
+	             }
+		    }
+		
+		});
+}
+
 
 function validateReason() {
     var output = document.getElementById("reason").value;
@@ -234,8 +258,12 @@ function openLeaveTypeSummary(typeId){
 			result +='      <div class="project_tabs minHeight_225 form-horizontal modal-body">';
 			
 			result +='          <div class="viewgrid-header pull-right zIndex">';
+			if(report.status == 1){
 			result +='            <a href="javascript:void(0)" class= "btn btn-primary btn-sm mr10" title="Active">Active</a>';
-	 		result +='              <a href="'+sourceleadUrl+'/editLeaveType?leaveTypeId='+typeId+'" class="btn btn-default btn-sm" title="Edit"><i class="fa fa-pencil paddingRight"></i>Edit</a> ';
+	        }else{
+	        	result +='            <a class= "btn btn-danger btn-sm mr10" onclick="reactiveLeaveType(\''+report.id+'\', \'summary\')" title="InActive">InActive</a>';
+	        }
+			result +='              <a href="'+sourceleadUrl+'/editLeaveType?leaveTypeId='+typeId+'" class="btn btn-default btn-sm" title="Edit"><i class="fa fa-pencil paddingRight"></i>Edit</a> ';
 			result +='          </div> ';
 			
 			

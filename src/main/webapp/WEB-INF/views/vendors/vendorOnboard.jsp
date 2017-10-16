@@ -199,6 +199,20 @@
 							       </div>
 							       
 							       <div class="form-group">
+							         <label class="col-md-3">NAICS Code</label>
+							        <div class="col-md-9 validLabel">
+							             <input type="text" id="naicsCode" name="naicsCode" field-name="NAICS Code"  data-validation-optional="true"  data-validation="validate_Space validate_length length1-50"  value="" class="form-control" >
+							         </div>
+							       </div>
+							       
+							       <div class="form-group">
+							         <label class="col-md-3">EIN Code</label>
+							        <div class="col-md-9 validLabel">
+							             <input type="text" id="einCode" name="einCode" field-name="EIN Code"  data-validation-optional="true"  data-validation="validate_Space validate_length length1-50"  value="" class="form-control" >
+							         </div>
+							       </div>
+							       
+							       <div class="form-group">
 							         <label class="col-md-3">Tax Reg Number</label>
 							        <div class="col-md-9 validLabel">
 							             <input type="text" id="taxRegNumber" name="taxRegNumber" field-name="Tax Reg Number"  data-validation-optional="true"  data-validation="validate_Space validate_length length1-100"  value="" class="form-control" >
@@ -404,6 +418,16 @@ function getVendorOnboardDetails(){
 		        	
 		        	if(json.sicCode != null && json.sicCode != 'undefined' && json.sicCode != ''){
 		        		$("input[name=sicCode]").val(json.sicCode);
+		        	}
+		        	
+		        	
+		        	if(json.naicsCode != null && json.naicsCode != 'undefined' && json.naicsCode != ''){
+		        		$("input[name=naicsCode]").val(json.naicsCode);
+		        	}
+		        	
+		        	
+		        	if(json.einCode != null && json.einCode != 'undefined' && json.einCode != ''){
+		        		$("input[name=einCode]").val(json.einCode);
 		        	}
 		        	
 		        	if(json.currency != null && json.currency != 'undefined' && json.currency != ''){

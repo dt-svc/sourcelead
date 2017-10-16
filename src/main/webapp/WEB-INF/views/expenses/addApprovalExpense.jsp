@@ -47,20 +47,7 @@
           <div class="clearfix form-horizontal inner-content">
             <div class="row">
               <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">
-                 <div class="form-group">
-                  <label class="col-md-3">Expenses Id<span class="text-danger" >&nbsp;*</span></label>
-                  <div class="col-md-9">
-                    <input type="text" class="form-control" id="expenseAutoId" name="expenseAutoId" value="${expenses != null ? expenses.expenseAutoId : ''}" readonly="readonly">
-                    <input type="hidden"  class="form-control" name="id" value="${expenses.id}">
-                  </div>
-                </div>  
                 <div class="form-group">
-                  <label class="col-md-3">Purpose</label>
-                  <div class="col-md-9">
-                    <input type="text" class="form-control" autocomplete="off" name="expensePurpose" value="${expenses.expensePurpose}" data-validation-optional="true" data-validation="validate_Space validate_length length1-100">
-                  </div>
-                </div>  
-				<div class="form-group">
 					<label class="col-md-3">Select Project <span class="text-danger">&nbsp;*</span></label>
 					<div class="col-md-9" id="errProject">
 						<select class="chosen-select form-control" autocomplete="off" onchange="getClientBasedOnSelectedProject();" id="projectId" name="projectId" field-name="Project" >
@@ -73,13 +60,30 @@
 							</c:forEach>
 						</select>
 					</div>
-				</div>
+				</div> 
+                <div class="form-group">
+                  <label class="col-md-3">Purpose</label>
+                  <div class="col-md-9">
+                    <input type="text" class="form-control" autocomplete="off" name="expensePurpose" value="${expenses.expensePurpose}" data-validation-optional="true" data-validation="validate_Space validate_length length1-100">
+                  </div>
+                </div> 
+                
+                
+				<div class="form-group">
+                  <label class="col-md-3">Expenses Id<span class="text-danger" >&nbsp;*</span></label>
+                  <div class="col-md-9">
+                    <input type="text" class="form-control" id="expenseAutoId" name="expenseAutoId" value="${expenses != null ? expenses.expenseAutoId : ''}" readonly="readonly">
+                    <input type="hidden"  class="form-control" name="id" value="${expenses.id}">
+                  </div>
+                </div>
+                 
 				<div class="form-group">
 					<label class="col-md-3">Client</label>
 	                  <div class="col-md-9">
 	                    <input type="text" class="form-control" autocomplete="off" name="clientName" value="${expenses.clientName}" id="clientNameId" readonly="readonly">
 	                  </div>
 				</div> 
+				
 				<!--  removeErrProject();flushOnchange();removeErrProjectEmployee(); -->
 				 <div class="form-group" id="errEmployeeRemove">
 				<label class="col-md-3">Select Employee<span class="text-danger">&nbsp;*</span></label>
@@ -126,6 +130,7 @@
 				<th>Amount</th>
 				<th>Currency</th>
 				<th>Payment Mode</th>
+				<th>Paid By</th>
 				<th>Action</th>
 			</tr>
 		</thead>	
@@ -138,6 +143,7 @@
 			           <td><div id="expenseAmountDiv${entryCount.count}">${entry.categoryAmount}</div></td>
 			           <td><div id="expenseRateType${entryCount.count}">${entry.categoryAmountType}</div></td>
 			           <td><div id="paymentModeDiv${entryCount.count}">${entry.paymentMode}</div></td>
+			           <td><div id="paidByDiv${entryCount.count}">${entry.paidBy}</div></td>
 			           <td><div id="hideAndShowDetailsDiv${entryCount.count}">
 			                <i class="fa fa-pencil-square-o AddRow" title="Edit Expenses"  onclick="hideAndShowDetailsRow(${2*(entryCount.count)},'Edit');"></i>
 			                <i class="glyphicon glyphicon-trash Cred" title="Delete Expenses"  onclick="removeExpenseRow(${(2*(entryCount.count))-1},${2*(entryCount.count)})"></i>
@@ -145,7 +151,7 @@
 			          </td>
 			        </tr>
 			        <tr id="divEntityTsRow${2*(entryCount.count)}" style="display:none;">
-			          <td colspan="7">
+			          <td colspan="8">
 				         <div class="expDetails">
 				         <input type="hidden" id="expenseEntryId${entryCount.count}" name="expenseEntry[${entryCount.index}].id" value='${entry.id}'/>
 				          <div class="col-xs-12 col-sm-12 col-md-12 expAddRo myForm noPad clearfix">            
@@ -181,6 +187,16 @@
 							             </c:forEach>
 								</select>
 							</div>	
+							<div class="col-md-4 mb10">
+								<label>Paid by</label>
+								<select class="chosen-select form-control" id="paidBy${entryCount.count}" name="expenseEntry[${entryCount.index}].paidBy" class="form-control" field-name="Payment Mode" data-validation-optional="true">
+								         <option value="">Select Paid By</option>
+								          <c:forEach var="expEntrypaidBy" items="${expEntry.paidByType}">
+							                   <option  ${entry.paidBy == expEntrypaidBy ? 'selected' : ''} value="${expEntrypaidBy}">${expEntrypaidBy}</option>
+							             </c:forEach>
+								</select>
+							</div>
+							
 		                  <div id="amountDiv${entryCount.count}" class='col-md-4 mb10 valid_ation'>
 			                   <label>Amount<span class='text-danger'>&nbsp;*</span></label>
 								  <div class='input-group positionRelative'>
@@ -200,14 +216,14 @@
 						</div>		
 		                    <div id='attachmentSection' class='col-md-4 mb10 minHe'>
 		                   <div class="uploadFile timesheet_week_comm">
-			                  <input type='hidden' name='dbAttachmentMaxRowNumber${entryCount.count}'  id='dbAttachmentMaxRowNumber${entryCount.count}' value='${entry.fileInfo.size()}' />
-			                 <input type='hidden' name='attcahmentMaxRowNumber${entryCount.count}'  id='attcahmentMaxRowNumber${entryCount.count}' value='1' />
+			                  <input type='hidden' name='dbAttachmentMaxRowNumber${(2*(entryCount.count))-1}'  id='dbAttachmentMaxRowNumber${(2*(entryCount.count))-1}' value='${entry.fileInfo.size()}' />
+			                 <input type='hidden' name='attcahmentMaxRowNumber${(2*(entryCount.count))-1}'  id='attcahmentMaxRowNumber${(2*(entryCount.count))-1}' value='1' />
 			                 <div id='timesheetDocumentsId' class=''>
 			                       <c:forEach var="entryDoc" items="${entry.fileInfo}" varStatus="entryDocCount">
 			                       <c:if test = '${entryDoc.status == 1}'>
-			                         <strong class='proDown' id='${entryDocCount.index}document${entryCount.count}'>
-			                          <input type='hidden' name='${entryDocCount.index}DbdocFileId${entryCount.count}' id='${entryDocCount.index}DbdocFileId${entryCount.count}' value='${entryDoc.fileDbId}'/>
-			                          <input type='hidden' name='${entryDocCount.index}DbdocFileIsDeleted${entryCount.count}' id='${entryDocCount.index}DbdocFileIsDeleted${entryCount.count}' value='N'/>
+			                         <strong class='proDown' id='${entryDocCount.index}document${(2*(entryCount.count))-1}'>
+			                          <input type='hidden' name='${entryDocCount.index}DbdocFileId${(2*(entryCount.count))-1}' id='${entryDocCount.index}DbdocFileId${(2*(entryCount.count))-1}' value='${entryDoc.fileDbId}'/>
+			                          <input type='hidden' name='${entryDocCount.index}DbdocFileIsDeleted${(2*(entryCount.count))-1}' id='${entryDocCount.index}DbdocFileIsDeleted${(2*(entryCount.count))-1}' value='N'/>
 			                             <a class='downicon' href='${entryDoc.fileURL}'>
 			                                 <i class='glyphicon glyphicon-save'></i>
 								             <input type='button' value='${entryDoc.fileName}'/>

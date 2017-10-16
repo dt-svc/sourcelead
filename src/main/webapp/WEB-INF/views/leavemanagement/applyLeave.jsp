@@ -262,7 +262,6 @@ function removeEndValid(){
          type : "GET",
           url: sourceleadUrl+"/getPieChartForLeaveStatus?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&userId="+userId,    
           success :function(json) {
-        	  
         	  var output = "";
         	  output = output +'<select class="form-control" id="leaveType" name="leaveType" field-name="Leave Type" data-validation="required" onchange="getLeavePolicy();">';
         	  output = output +' <option value="">--Select Leave Type--</option>';
@@ -276,7 +275,11 @@ function removeEndValid(){
         	  $('#leaveType').chosen();
         	  $("#leaveType").trigger("chosen:updated");
         	  
-        	  getpieChar(json);
+        	  var counts = json[json.length-1];
+        	  var totalBalanceCounts = counts.balanceLeaveCounts;
+        	  var totalPendingCounts = counts.pendingLeaveCounts;
+        	  var totalTakenCounts = counts.takenLeaveCounts;
+        	  getpieChar(totalBalanceCounts,totalPendingCounts,totalTakenCounts);
         	  
         	  var result = "";
 	    	  result = result +' <ul class="list-unstyled leavelist col-md-10 mt25 col-md-offset-1 list-group">';
@@ -296,18 +299,8 @@ function removeEndValid(){
          },
           
      }); 
-function getpieChar(json){
-	 var chartData = [];
-
-	   for (var i = 0; i < json.length; i++) { 
-	 		 var opt = json[i]; 
-	         chartData.push({
-	        	 category: opt.name,
-	        	 counts: opt.remainingTotalLeaveCounts,
-	         	 color: opt.colorCode
-	       });
-	   }
-	   
+	 
+function getpieChar(totalBalanceCounts,totalPendingCounts,totalTakenCounts){
 	//ApplyLeves piechart
 	AmCharts.makeChart("leavestatsu",
 		{
@@ -327,11 +320,27 @@ function getpieChar(json){
 			"marginTop": 0,
 			"maxLabelWidth": 0,
 			"titleField": "category",
-			"valueField": "counts",
+			"valueField": "column-1",
 			"allLabels": [],
 			"balloon": {},
 			"titles": [],
-			"dataProvider": chartData
+			"dataProvider": [
+				{
+					"category": "Pending Leaves",
+					"column-1": totalPendingCounts,
+					"color"	  : "#337ab7"
+				},
+				{
+					"category": "Balance Leaves",
+					"column-1": totalBalanceCounts,
+					"color"	  : "#FF4500"
+				},
+				{
+					"category": "Taken Leaves",
+					"column-1": totalTakenCounts,
+					"color"	  : "#5cb85c"
+				}
+			]
 		}				
 	);
 }

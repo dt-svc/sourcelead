@@ -2066,6 +2066,8 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 							contractRequestDocuments.setDocFileName(file.getFileName());
 							contractRequestDocuments.setFileType(file.getContentType());
 							contractRequestDocuments.setFileName(doc.getDocumentName());
+							contractRequestDocuments.setDocType(doc.getCandiDoc());
+							contractRequestDocuments.setDescription(doc.getDescription());
 							
 							FileUploadUtil.moveFile(contractsDTO.getStaticPath(), file, "RequestDocuments");
 							contractRequestDocuments.setContractId(savedContracts);

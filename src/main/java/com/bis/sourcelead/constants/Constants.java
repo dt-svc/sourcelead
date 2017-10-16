@@ -143,6 +143,7 @@ public class Constants {
 	public static final String MAIL_TEAM_MANAGER_APPROVED_EXPENSE = "ExpensesApprovalManagerEmailToEmployee";
 	public static final String MAIL_TEAM_MANAGER_REJECTED_EXPENSE = "ExpensesApprovalRejectedEmailToEmployee";
 	public static final String MAIL_APPROVERS_REOPEN_EXPENSE = "ExpensesReopenEmailToSuperAdmin";
+	public static final String TIMESHEET_APPROVED_EMAIL_TOVENDOR = "TimesheetApprovedEmailToVendor";
 	
 	public static final String LEAVE_CANCEL_EMAIL_TO_USER = "LeaveCancelEmailToUser";
 	public static final String LEAVE_CANCEL_NOTOFICATION_TO_USER = "LeaveCancelNotificationToUser";
@@ -561,7 +562,7 @@ public class Constants {
 	public static final String MAIL_TRASH = "Trash";
 	public static final String MAIL_DELETE = "Deleted";
 	public static final String MAIL_REQUESTED = "Requested";
-	public static final String[] PROJECT_ASSIGNED_EMPLOYEES = { "Emp Name", "Emp Email", "Start Date",
+	public static final String[] PROJECT_ASSIGNED_EMPLOYEES = { "Emp Name", "Emp Email", "Role Type", "Start Date",
 			"End Date", "Approved Hrs", "Rejected Hrs", "Waiting for Approval", "Saved Hrs" };
 	// public static String[] VENDOR_CONTACTS_HEADERS = {"Vendor Name*","First
 	// Name*","Last Name","Email*","Phone","Status","Owner(Email)*"};
