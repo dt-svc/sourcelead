@@ -134,6 +134,7 @@ public class NotificationRestController {
 		List<Notifications> notificationList = notificationsService.getAllNotificationsListByUserId(loginUser.getId(),orgCode,locationCode);
 		
 		for (Notifications notifications : notificationList) {
+			
 			long diff = commonUtil.currentDate().getTime() - notifications.getCreatedDate().getTime();
 		    long diffSeconds = diff / 1000 % 60;
 			long diffMinutes = diff / (60 * 1000) % 60;
