@@ -234,7 +234,7 @@ public class TimesheetSubmissionsRestController {
 				//
 				
 				//Send Emails & Notifications to vendors
-				sendEmailToVendorAtTimesheetApprovalStatus(projectMembers,loginUser,loginOrgLocation,loginOrgCode,startDate, endDate);
+				sendEmailToVendorAtTimesheetApprovalStatus(projectMembers,loginUser,loginOrgLocation,loginOrgCode,startDate, endDate,status);
 		 	   
 		 	 }
 		
@@ -309,7 +309,7 @@ public class TimesheetSubmissionsRestController {
 			String actionLink = "";
 			emailScenerioUtil.sendNotification(actionLink, loginUser, projectMembers.getEmployee().getUser(), loginOrgLocation, notificationScenario); 
 	}
-	private void sendEmailToVendorAtTimesheetApprovalStatus(ProjectMembers projectMembers,User loginUser, OrgLocations loginOrgLocation, String loginOrgCode, String startDate, String endDate) throws Exception {
+	private void sendEmailToVendorAtTimesheetApprovalStatus(ProjectMembers projectMembers,User loginUser, OrgLocations loginOrgLocation, String loginOrgCode, String startDate, String endDate, String status) throws Exception {
 		
 		
 		List<ProjectApproverHierarchy> approverHierarchyList = projectApproverHierarchyService.getActiveOrgApproverUsersByProjectMemberMasterCandidateIdAndProjectId(projectMembers.getMasterCandidateId().getId(),projectMembers.getProjects().getId());
@@ -331,7 +331,7 @@ public class TimesheetSubmissionsRestController {
 			 
 			 /*String pattern = "dd-MM-yyyy";
 	         SimpleDateFormat format = new SimpleDateFormat(pattern);*/
-			 DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
+			 DateFormat TZ_DF_TS = new SimpleDateFormat (loginOrgLocation.getDateFormat());
 	         String startDateStr = commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),TZ_DF_TS.parse(startDate));
 	         String endDateStr = commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),TZ_DF_TS.parse(endDate));
 
@@ -362,8 +362,13 @@ public class TimesheetSubmissionsRestController {
 			 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 			 
 			 //getting the current EmailScenario by EmailScenario unique name and entity type
-			 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.TIMESHEET_APPROVED_EMAIL_TOVENDOR,Constants.ENTITY_TYPE_EMAIL);
-			
+			 EmailScenario  emailScenario = null;
+			 if(status.equals("REJECTED")){
+	             emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.TIMESHEET_REJECTED_EMAIL_TOVENDOR,Constants.ENTITY_TYPE_EMAIL);
+			 }else{
+				 emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.TIMESHEET_APPROVED_EMAIL_TOVENDOR,Constants.ENTITY_TYPE_EMAIL);
+			 }
+			 
 			 //covert subject,body and signature
 			 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
 			 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
