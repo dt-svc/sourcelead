@@ -167,6 +167,12 @@ public class ExpensesRestController {
 		return expensesList;
 	}
 	
+	/**
+	 *  This method serves request for New Expense Sreen
+	 * @param eedDTO
+	 * @return
+	 * @throws Exception
+	 */
 	@RequestMapping(value = "/rest/getExpenseEntryDetails")
 	public ExpenseEntryDetailsDTO getExpenseEntryDetails(@RequestBody TimesheetExpenseEntryDetailsUtilDTO eedDTO) throws Exception
 	{
@@ -292,7 +298,7 @@ public class ExpensesRestController {
 		expenseEntryDetailsDTO.setPaidByType(paidBy);
 		return expenseEntryDetailsDTO;
 	}
-	
+	/*
 	@RequestMapping(value = "/rest/storeDocumentForIOS")
 	public @ResponseBody String storeDocumentForIOS(MultipartHttpServletRequest request,@RequestParam(value = "docName") Long docName) throws Exception
 	{
@@ -300,7 +306,7 @@ public class ExpensesRestController {
            MultipartFile  multiFile = (MultipartFile)files.get(0);
            System.out.println(multiFile.getOriginalFilename());
            return multiFile.getOriginalFilename();
-	}
+	}*/
 	/*@RequestMapping(value = "/rest/storeExpenseEntryDetails")
 	public @ResponseBody String storeExpenseEntryDetails(@RequestParam("entryForm") String entryForm, 
 			MultipartHttpServletRequest request) throws Exception
@@ -507,6 +513,13 @@ public class ExpensesRestController {
 	 }
 	    return expensesEntriesList;
 	}*/
+	
+	/**
+	 *  This method serves request for Edit Expense Sreen
+	 * @param eedDTO
+	 * @return
+	 * @throws Exception
+	 */
 	@RequestMapping(value = "/rest/getExpenseDetailsByExpenseId")
 	public ExpensesDTO getExpenseDetailsByExpenseId(@RequestBody ExpensesListUtilDTO elDTO) throws Exception
 	{
