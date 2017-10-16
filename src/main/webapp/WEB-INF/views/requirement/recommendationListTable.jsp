@@ -234,7 +234,10 @@ function recommendationpagination(url,requirementId){
 		    	  	"render": function(data, type, report, meta) {
 		    	  	 	var result = "";
 		    	  		if(report.currentResumeId != null && report.currentResumeId !='' && report.currentResumeId !='undefined' ){
-		    			  	   result = result +'<td class="text-center"><div><span title="Download"><a class="glyphicon glyphicon-download-alt" href=\"'+report.recommendationFileUrl+'\"></a><a class="fa fa-eye ml10" onclick="viewFile(\''+report.recommendationFileUrl+'\',\''+report.currentResumeName+'\',\''+report.fileContentType+'\');"></a></span></div></td>';
+
+		    			  	 result = result +'<td class="text-center"><div><span title="Download"><a class="glyphicon glyphicon-download-alt" href=\"'+report.fileUrl+'\"></a>';
+		    			  	 result = result +'<a class="fa fa-eye ml10" onclick="viewFile(\''+report.fileUrl+'\',\''+report.resumeName+'\',\''+report.fileContentType+'\');"></a></span></div></td>';
+
 		    				  }else{
 		    					result = result +'<td class="text-center"><div><span>--</span></div></td>';
 		    				} 
