@@ -198,8 +198,13 @@
 						for (var j = 0; j < json.managersList.length; j++) {
 							var manager = json.managersList[j];
 							if (json.manager1 == manager.id) {
-								result = result + manager.firstName + " "
-										+ manager.lastName;
+								var fullName = '';
+								if(manager.lastName != null && manager.lastName != 'undefined' && manager.lastName != ''){
+									fullName = manager.firstName+" "+manager.lastName;
+								}else{
+									fullName = manager.firstName
+								}
+								result = result + fullName;
 							}
 						}
 						result = result	+ '</span><div class="clearfix"></div>';
@@ -212,8 +217,13 @@
 							for (var j = 0; j < json.managersList.length; j++) {
 								var manager = json.managersList[j];
 								if (json.manager2 == manager.id) {
-									result = result + manager.firstName + " "
-											+ manager.lastName;
+									var fullName = '';
+									if(manager.lastName != null && manager.lastName != 'undefined' && manager.lastName != ''){
+										fullName = manager.firstName+" "+manager.lastName;
+									}else{
+										fullName = manager.firstName
+									}
+									result = result + fullName;
 								}
 							}
 							result = result	+ '</span><div class="clearfix"></div>';

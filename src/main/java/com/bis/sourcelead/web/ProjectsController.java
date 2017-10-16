@@ -243,7 +243,7 @@ public class ProjectsController {
 				Projects projects = projectsService.getProjectByProjectUUID(projectUUID);
 				OrgLocations locations=orgLocationService.getOrgLocations(projects.getOrgLocationsId().getId());
 				OrgLocations clientOrgLocations = null;
-				String isClientOrgActive = Constants.YES;
+				String isClientOrgActive = Constants.NO;
 				if(projects != null){
 					model.addObject("projectId", projects.getId());
 					model.addObject("projectName", projects.getProjectName());
@@ -265,8 +265,8 @@ public class ProjectsController {
 							clientOrgLocations = projectClients.getOrgRelationId().getResponderLocationId();
 						}
 						
-						if(clientOrgLocations.getStatus() != null && !clientOrgLocations.getStatus().equals(Status.ACTIVE)){
-							isClientOrgActive = Constants.NO;
+						if(clientOrgLocations.getStatus() != null && clientOrgLocations.getStatus().equals(Status.ACTIVE)){
+							isClientOrgActive = Constants.YES;
 						}
 					}
 					model.addObject("isClientOrgActive", isClientOrgActive);
