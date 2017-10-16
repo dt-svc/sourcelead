@@ -1925,7 +1925,7 @@ public void userEmailToAdmin(StringBuilder tempHTML, OrgLocations orgLocations,U
 			
 			
 			@Override
-			public void tereminateAsProjectApprover(JSONObject jsonObj,User user,Long userId,OrgLocations orgLocations) throws Exception {
+			public void tereminateAsProjectApprover(Long approverUser,User user,Long userId,OrgLocations orgLocations) throws Exception {
 				
 				   boolean flag = false;
 				
@@ -1935,7 +1935,7 @@ public void userEmailToAdmin(StringBuilder tempHTML, OrgLocations orgLocations,U
 		    			
 							
 						   
-							User usr = userService.getUserById(Long.valueOf(jsonObj.getString("projectApproverUser")));
+							User usr = userService.getUserById(Long.valueOf(approverUser));
 							User terminatedUser = hierarchy.getApproverUserId();
 							hierarchy.setApproverUserId(usr);
 							hierarchy.setUpdatedBy(user.getUserCode());
@@ -1961,7 +1961,7 @@ public void userEmailToAdmin(StringBuilder tempHTML, OrgLocations orgLocations,U
 							ProjectApproverHierarchy assignedProjectManager=null;
 							 if(hierarchy.getProjectId() != null && hierarchy.getProjectId().getId() != null){
 			    					ProjectMembers pm1 = projectMembersService.getProjectMemberByUserIdAndProjectId(terminatedUser.getId(), hierarchy.getProjectId().getId());
-				    				if(pm1.getId() != null){
+				    				if(pm1 != null && pm1.getId() != null){
 				    					ProjectMembersHistory projectMembersHistory = projectMembersHistoryService.getProjectMembersOpenHistoryByProjectMemberId(pm1.getId());
 				    					
 				    					if(null != projectMembersHistory){
@@ -1970,17 +1970,19 @@ public void userEmailToAdmin(StringBuilder tempHTML, OrgLocations orgLocations,U
 				    					}
 				    					
 					    				commonUtil.terminateProjectMemberByProjectMemberId(pm1.getId(), Primary.Yes);
+					    				
+					    				List<TimesheetSubmissions> submissionsList = timesheetSubmissionsService.getTimeSheetSubmissionByProjectMemberId(pm1.getId());
+					    				if(null != submissionsList && submissionsList.size() > 0){
+					    					for(TimesheetSubmissions submissions : submissionsList){
+					    						submissions.setStatus(Constants.MEMBER_IN_ACTIVE);
+					    						submissions.setUpdatedBy(user.getUserCode());
+					    						submissions.setUpdatedDate(new Date());
+					    						timesheetSubmissionsService.addTimesheetSubmissions(submissions);
+					    					}
+					    				}
 				    				}
 				    				
-				    				List<TimesheetSubmissions> submissionsList = timesheetSubmissionsService.getTimeSheetSubmissionByProjectMemberId(pm1.getId());
-				    				if(null != submissionsList){
-				    					for(TimesheetSubmissions submissions : submissionsList){
-				    						submissions.setStatus(Constants.MEMBER_IN_ACTIVE);
-				    						submissions.setUpdatedBy(user.getUserCode());
-				    						submissions.setUpdatedDate(new Date());
-				    						timesheetSubmissionsService.addTimesheetSubmissions(submissions);
-				    					}
-				    				}
+				    		
 				    				 
 			    				}
 						

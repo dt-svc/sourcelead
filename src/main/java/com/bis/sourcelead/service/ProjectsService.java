@@ -98,7 +98,7 @@ public interface ProjectsService {
 		
 		Integer getProjectApproversCountByUserIdAndOrgLocationId(Long userId,Long orgLocationId)throws Exception;
 		
-		void tereminateAsProjectApprover(JSONObject jsonObj,User user,Long userId,OrgLocations orgLocations) throws Exception;
+		void tereminateAsProjectApprover(Long approverUser,User user,Long userId,OrgLocations orgLocations) throws Exception;
 		
 		void saveOrUpdateProjectElkDocument(Projects projects) throws Exception;
 		

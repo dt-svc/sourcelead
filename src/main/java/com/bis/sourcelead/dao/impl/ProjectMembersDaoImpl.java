@@ -260,7 +260,7 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 	public ProjectMembers getProjectMemberByUserIdAndProjectId(Long userId, Long projectId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 		java.sql.Date  currentDate = new java.sql.Date(new Date().getTime());
-		String subQueryForUserIdChecking = "(pm.employee.id IN(select emp.id from Employees emp where emp.user.id = :userId) OR pm.projects.id IN(select pah.projectId.id from ProjectApproverHierarchy pah where pah.approverUserId.id = :userId))";
+		String subQueryForUserIdChecking = "(pm.projectMemberCandidteId.id IN(select cand.id from Candidate cand where cand.consultantUser.id = :userId))";
 		String query = " from ProjectMembers pm left join fetch pm.projects left join fetch pm.employee where "+subQueryForUserIdChecking+" and pm.projects.id = :projectId" ;
 		List<ProjectMembers> pmList =session.createQuery(query).setLong("userId", userId).setLong("projectId", projectId).setCacheable(true).list(); 
 		ProjectMembers pm = null;
@@ -606,7 +606,8 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 	@Transactional(rollbackFor = { Exception.class })
 	public List<ProjectMembers> getAllProjectsByUserId(Long userId) {
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from ProjectMembers pm left join fetch pm.projects left join fetch pm.employee emp  where (pm.employee.id IN(select emp.id from Employees emp where emp.user.id = :userId ))" ;
+		String query = "from ProjectMembers pm left join fetch pm.projects left join fetch pm.employee emp left join fetch pm.projectMemberCandidteId "
+				+ " where (pm.projectMemberCandidteId.id IN(select cand.id from Candidate cand where cand.consultantUser.id = :userId ) and pm.projects.projectMode <> 'Draft')" ;
 		List<ProjectMembers> allProjectsList =session.createQuery(query).setLong("userId", userId).setCacheable(true) 
 			    .list();
 		return allProjectsList;
