@@ -79,11 +79,11 @@ public class ExpensesApprovalRestController {
     private String sourceleadUrl;
 	
 	@RequestMapping(value = "/getExpensesApprovalList")
-	public String getExpensesApprovalList(HttpServletRequest request, String expenseStatus, String startDate, String endDate) throws Exception {
+	public List<ExpensesApproverHierarchy> getExpensesApprovalList(HttpServletRequest request, String expenseStatus, String startDate, String endDate) throws Exception {
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		List<ExpensesApproverHierarchy> expApperoverHierarchy = expensesApprovalService.getExpensesApproverHierarchyByApproverUserIdAndOrgLocationId(loginUser, orgLoc, expenseStatus, startDate, endDate);
-			return commonUtil.toJSON(expApperoverHierarchy);
+			return expApperoverHierarchy;
    }
 	
 	@RequestMapping(value = "/getExpensesApprovalListForExports")
