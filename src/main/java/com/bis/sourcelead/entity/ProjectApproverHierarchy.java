@@ -48,7 +48,8 @@ public class ProjectApproverHierarchy implements Serializable{
 	@JoinColumn(name="APPROVER_USER_ID", nullable=false )	
 	private User approverUserId;
 	
-    @ManyToOne
+	@NotFound(action=NotFoundAction.IGNORE)
+	@ManyToOne(fetch=FetchType.EAGER)
     @JoinColumn(name = "PROJECT_CLIENTS_ID")
     private ProjectClients projectClientsId;
  	

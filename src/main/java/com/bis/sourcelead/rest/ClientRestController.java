@@ -1834,11 +1834,17 @@ public class ClientRestController {
 								}
 								
 								VendorOnboarding onboard = vendorOnboardService.getVendorOnboardingByOrgRelationId(clientVendorContactsIndex.getOrgRelationId());
-								clientVendorContactsIndex.setOnboardUUID(onboard.getOnboardUUID());
+								if(onboard != null) {
+									clientVendorContactsIndex.setOnboardUUID(onboard.getOnboardUUID());
+								}
+								
 								
 								OrgSpoc orgSpoc = orgSpocService.getOrgSpocById(clientVendorContactsIndex.getId());
 								Notifications notifications = notificationsService.getNotificationBySpocUUID(orgSpoc.getUUID());
-								clientVendorContactsIndex.setNotificationUUID(notifications.getUUID());
+								if(notifications != null) {
+									clientVendorContactsIndex.setNotificationUUID(notifications.getUUID());
+								}
+								
 								
 						 }
 					}	

@@ -352,7 +352,7 @@ overflow-x: auto;
 
 
        <div class="side_mask"><div class="proj_close"></div></div>
-		<div class="clients_side_wrap">
+		<div class="clients_side_wrap clientspagedrop">
 			<div class="clients_side_wrap_inn">
 				<h1 id="clientNameDiv"></h1>
 				<div class="proj_close">
