@@ -196,6 +196,19 @@ public class UserServiceImpl implements UserService {
 	   user = userDao.findByUserName(addUserDTO.getEmail());
 	   if(null != user){
 		  isUserActive = userRoleService.isUserActive(user.getId());
+		 
+		  if(StringUtils.isNotBlank(addUserDTO.getFirstName())) {
+			  user.setFirstName(addUserDTO.getFirstName());
+		  }
+		 
+		  if(StringUtils.isNotBlank(addUserDTO.getLastName())) {
+			  user.setLastName(addUserDTO.getLastName());
+		  }
+		
+		  if(StringUtils.isNotBlank(addUserDTO.getPhoneNumber())) {
+			  user.setMobilePhone(addUserDTO.getPhoneNumber());
+		  }
+		 
 	   }
 	   
 	   if(null == user){
@@ -273,12 +286,21 @@ public class UserServiceImpl implements UserService {
 				candidateService.saveOrUpdateCandidateElkDocument(candidate);
 			}	
 		}else{
-			MasterCandidate masterCandidate = null;
-			masterCandidate = masterCandidateService.getMasterCandidateByInteligenceCandidateDTO(candidateDTO);
-			if(null == masterCandidate){
-				masterCandidate = masterCandidateService.storeMasterCandidateByCandidateDTO(candidateDTO, loginuser);
+			// existing candidate saving as a User
+			Candidate candidate = candidateService.findByCandidateEmail(candidateDTO.getEmail(),orgLocations.getId());
+			if(candidate == null){
+				MasterCandidate masterCandidate = null;
+				masterCandidate = masterCandidateService.getMasterCandidateByInteligenceCandidateDTO(candidateDTO);
+				if(null == masterCandidate){
+					masterCandidate = masterCandidateService.storeMasterCandidateByCandidateDTO(candidateDTO, loginuser);
+				}
+				candidateService.storeCandidateForUsers(candidateDTO, user, orgLocations, masterCandidate);
+			}else{
+				candidate.setConsultantUser(user);
+				candidateService.addCandidate(candidate);
+				candidateService.saveOrUpdateCandidateElkDocument(candidate);
 			}
-			candidateService.storeCandidateForUsers(candidateDTO, user, orgLocations, masterCandidate);
+			
 		}
 		
 		//For saving Employee details (Every User is an Employee)

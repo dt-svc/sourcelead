@@ -101,11 +101,12 @@ function myExpensesListByStage(expenseStatus){
 }
 
 function employeeExpensesListByStage(expenseStatus){
-	
+	var userSession = '${SourceLeadWeb_user.id}';
+	var orgLocationSession = '${SourceLeadWeb_orgLocationId}';
 	$.ajax({
 	    type : "GET",
-	    url: sourceleadUrl+"/employeeExpensesListByStage?expenseStatus="+expenseStatus,
-	    success :function(data) {
+	    url: sourceleadUrl+"/employeeExpensesListByStage?expenseStatus="+expenseStatus+"&user="+userSession+"&orgLocation="+orgLocationSession,
+	    success :function(json) {
 	    	 var result = "";
 	    		result = result+' <table id="example">';
 	    		result = result+' <thead>';
@@ -123,10 +124,10 @@ function employeeExpensesListByStage(expenseStatus){
 	    		result = result+' </thead>';
 	    		result = result+' <tbody>';
 	    		result = result+' <input type="text" hidden value="'+expenseStatus+'" id="countType" readonly="readonly">';
-	    		if(data !=''){
-	    		var json = JSON.parse(data);
-	    		 for (var i = 0; i < json.length; i++) { 
+	    		if(json !=''){
+	    		for (var i = 0; i < json.length; i++) { 
 	    		 var data = json[i];
+	    		 alert(data);
 	    		result = result+' <tr id = "row'+data.expenseId.id+'">';
 	    		result = result+' <td><div class="time_appr_user"><img  id="userImage" onerror="predefineProfileImage(this);" src="'+sourceleadUrl+'/displayUserImage/'+data.expensesUserid+'" alt="Profile Image" class="img-circle img-responsive">';
 	    		result = result+' <span>';

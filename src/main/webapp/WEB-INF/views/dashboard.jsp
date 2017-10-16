@@ -219,7 +219,9 @@ overflow-x: auto;
 					</sec:authorize>
 					
 					<!-- Don't delete this commented code. Functionality is in progress -->
-					<%-- <jsp:include page="resourceRequest.jsp"></jsp:include>  --%>
+					 <jsp:include page="resourceRequest.jsp"></jsp:include>  
+					
+					<jsp:include page="budgetRequest.jsp"></jsp:include>
 					
 			    <div class="col-md-6 mb pdleft"> 
 			    	 <sec:authorize access="hasAnyRole('ROLE_VIEW_REQUIREMENT')">

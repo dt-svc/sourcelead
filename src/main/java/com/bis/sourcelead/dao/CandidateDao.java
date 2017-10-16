@@ -16,6 +16,8 @@ public interface CandidateDao {
 	
 	public Candidate getCandidateByCandidateId(Long candidateId) throws Exception;
 	
+	Candidate getCandidateByParentCandidateId(Long parentCandidateId) throws Exception;
+	
 	public Long getCandidatesCountByOrgLocationID(Long orgLocationId,String candidateStatus);
 	
 	public List<Candidate> getCandidatesListByOrgLocationID(Long orgLocationId,Long orgId, Integer candidateState,String updatedDateRange,String candidateType,String isAssociate) throws Exception;

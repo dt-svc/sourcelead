@@ -25,6 +25,8 @@ import javax.persistence.Transient;
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 
@@ -45,13 +47,15 @@ private static final long serialVersionUID = 1L;
 	private Long id;
 	
 	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne
+	@ManyToOne(cascade = CascadeType.ALL)
+	@Fetch(FetchMode.SELECT)
     @JoinColumn(name="LOCATION_ID", nullable=false ) 
 	@JsonBackReference
     private OrgLocations orgLocationId;
 	
 	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne(fetch=FetchType.EAGER)
+	@ManyToOne(cascade = CascadeType.ALL)
+	@Fetch(FetchMode.SELECT)
 	@JoinColumn(name = "PROJECT_MEMBERS_ID", nullable=false)
 	@JsonBackReference
 	private ProjectMembers projectMembers;
@@ -110,14 +114,26 @@ private static final long serialVersionUID = 1L;
 	private String billingPayableStatus;
 	
 	@NotFound(action=NotFoundAction.IGNORE)
+	@ManyToOne(cascade = CascadeType.ALL)
+	@Fetch(FetchMode.SELECT)
+	@JoinColumn(name = "PROJECT_ID", nullable=false)
+	private Projects projects;
+	
+	@NotFound(action=NotFoundAction.IGNORE)
+	@ManyToOne(cascade = CascadeType.ALL)
+	@Fetch(FetchMode.SELECT)
+    @JoinColumn(name="MASTER_CANDIDATE_ID", nullable=false)        
+    private MasterCandidate masterCandidateId;
+	
+	@NotFound(action=NotFoundAction.IGNORE)
 	@OneToMany(mappedBy="expensesId",cascade = CascadeType.ALL)
-	 @JsonBackReference
-//    @Fetch(FetchMode.SELECT)
+	@JsonBackReference
+//  @Fetch(FetchMode.SELECT)
     private Set<ExpensesEntries> expensesEntries;
 	
 	@NotFound(action=NotFoundAction.IGNORE)
 	@OneToMany(mappedBy="expenseId",cascade = CascadeType.ALL)
-	 @JsonBackReference
+	@JsonBackReference
    // @Fetch(FetchMode.SELECT)
     private Set<ExpensesApproverHierarchy> approverHierarchyList;
 
@@ -154,6 +170,10 @@ private static final long serialVersionUID = 1L;
 	@Transient
 	@JsonProperty
 	private String dateFrequency;
+	
+	@Transient
+	@JsonProperty
+	private String locationsCode;
     
 
 	@Transient
@@ -306,6 +326,17 @@ private static final long serialVersionUID = 1L;
 	}
 	
 
+	public String getLocationsCode() {
+		if(orgLocationId != null){
+			locationsCode = orgLocationId.getLocationCode();
+		}
+		return locationsCode;
+	}
+
+	public void setLocationsCode(String locationsCode) {
+		this.locationsCode = locationsCode;
+	}
+
 	public String getStartDateStr() {
 		if(startDate != null){
 			SimpleDateFormat dateFormat = orgLocationId.getLocFullFormDateFormatter();
@@ -419,6 +450,24 @@ private static final long serialVersionUID = 1L;
 		this.totalAmountRoundoffValue = totalAmountRoundoffValue;
 	}
 
+
+	public Projects getProjects() {
+		return projects;
+	}
+
+	public void setProjects(Projects projects) {
+		this.projects = projects;
+	}
+
+	public MasterCandidate getMasterCandidateId() {
+		return masterCandidateId;
+	}
+
+	public void setMasterCandidateId(MasterCandidate masterCandidateId) {
+		this.masterCandidateId = masterCandidateId;
+	}
+
+	
 
 
 //	public List<ExpensesEntries> getExpenseEntriesList() {

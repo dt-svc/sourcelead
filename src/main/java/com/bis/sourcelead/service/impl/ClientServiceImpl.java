@@ -42,6 +42,9 @@ import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
+import com.bis.sourcelead.entity.ProjectApproverHierarchy;
+import com.bis.sourcelead.entity.ProjectClients;
+import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RoleHierarchy;
 import com.bis.sourcelead.entity.Roles;
@@ -50,7 +53,9 @@ import com.bis.sourcelead.entity.SourceleadRoles;
 import com.bis.sourcelead.entity.SubmissionTemplate;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
+import com.bis.sourcelead.enums.Project_Status;
 import com.bis.sourcelead.exception.SourceLeadObjectNotFoundException;
+import com.bis.sourcelead.form.Registration;
 import com.bis.sourcelead.service.ClientService;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.EmployeesService;
@@ -60,6 +65,7 @@ import com.bis.sourcelead.service.OrgService;
 import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
 import com.bis.sourcelead.service.ProjectMembersService;
+import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.RoleHierarchyService;
 import com.bis.sourcelead.service.RolesService;
@@ -162,6 +168,9 @@ public class ClientServiceImpl implements ClientService {
 
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
+	
+	@Autowired
+	ProjectsService projectsService;
 
 	/**
 	 * @author VenkatKesav
@@ -179,7 +188,7 @@ public class ClientServiceImpl implements ClientService {
 	 */
 	@SuppressWarnings("unused")
 	@Override
-	public void storeClient(ClientDTO clientDTO,AddUserDTO addUserDTO,CandidateDTO candidateDTO, User user, OrgLocations orgLocations, String responderType,
+	public OrgLocations storeClient(ClientDTO clientDTO,AddUserDTO addUserDTO,CandidateDTO candidateDTO, User user, OrgLocations orgLocations, String responderType,
 			Org loginOrg) throws Exception {
 		HashSet<OrgLocations> orgLocationsList = new HashSet<OrgLocations>();
 		OrgLocations clientOrgLocations = null;
@@ -189,6 +198,9 @@ public class ClientServiceImpl implements ClientService {
 		OrgSpoc orgSpoc = null;
 		SubmissionTemplate submissionTemplate = null;
 		SubmissionTemplate sourceLeadDefaultTemplate = null;
+
+		String newlyRegistred = "N";
+	
 		if (StringUtils.isNotBlank(clientDTO.getOrgLocationId())) {
 			clientOrgLocations = orgLocationService.getOrgLocations(Long.parseLong(clientDTO.getOrgLocationId()));
 			if (StringUtils.isNotBlank(clientDTO.getOrgCountry())) {
@@ -277,6 +289,7 @@ public class ClientServiceImpl implements ClientService {
 			orgService.addOrganization(org);
 			saveOrgRoleHierarchy(clientOrgLocations, user);
 			saveOrgBasedRoles(org, clientOrgLocations, user);
+			newlyRegistred = "Y";
 		} else {
 			orgRelationsList = orgRelationsService.orgRelationsListByJson(clientDTO, clientOrgLocations, orgLocations,
 					user.getUserCode(), responderType);
@@ -359,7 +372,7 @@ public class ClientServiceImpl implements ClientService {
 				orgSpoc.setUpdatedBy(user.getUserCode());
 				orgSpocService.addOrgSpoc(orgSpoc);
 
-				if (("Client".equals(responderType) || "Vendor".equals(responderType))	&& (StringUtils.isNotBlank(clientDTO.getIsMailSent()) && ("Y".equals(clientDTO.getIsMailSent())))) {
+				if (("Client".equals(responderType)) && (StringUtils.isNotBlank(clientDTO.getIsMailSent()) && ("Y".equals(clientDTO.getIsMailSent())))) {
 					userService.sendEmailToClientOrVendor(orgSpoc.getUUID(), spocUser, ownerUser, user,
 							spocUser.getTempPwd(), responderType, loginOrg, clientOrgLocations.getOrg(),
 							clientOrgLocations, orgLocations);
@@ -453,14 +466,82 @@ public class ClientServiceImpl implements ClientService {
 			submissionTemplateService.addSubmissionTemplate(submissionTemplate);
 
 		}
+		
+		if(newlyRegistred.equalsIgnoreCase(Constants.YES)){
+			saveOrgLocationDefaultProject(clientOrgLocations, spocUser);
+			commonUtil.storeVendorOnboardDefaultTemplate(spocUser, clientOrgLocations);
+		}
 
 		for (OrgRelations orgRelation : orgRelationsList) {
-
+			clientOrgLocations.setVendorOrgRelationId(orgRelation.getId());
 			saveOrUpdateClientVendorElkDocument(org, clientOrgLocations, responderType, orgSpoc, orgRelation,
 					submissionTemplate, user, orgLocations);
 
 		}
+		clientOrgLocations.setVendorSpocId(spocUser.getId());
+		
+		return clientOrgLocations;
 	}
+	
+	
+	
+	 public Projects  saveOrgLocationDefaultProject(OrgLocations orgLocations,User approverUser) throws Exception {
+		 	
+	    	Projects projects = new Projects();
+	    	StringBuilder defaultProjectName = new  StringBuilder();
+	    	projects.setProjectName(defaultProjectName.append(orgLocations.getOrgLocationName()).append(" ").append("Default Project").toString());
+	    	StringBuilder defaultProjectNameDesc = new  StringBuilder();
+	    	projects.setDescription(defaultProjectNameDesc.append(orgLocations.getOrgLocationName()).append(" ").append("Default Project").toString());
+	    	projects.setStartDate(new Date());
+	    	projects.setInvoiceFrequency(Constants.WEEKLY);
+	    	projects.setProjectStatus(Project_Status.INPROGRESS);
+	    	projects.setIsDefaultProject(Constants.YES);
+	    	projects.setIsPrimary(1);
+	    	projects.setCreatedDate(new Date());
+	    	projects.setUpdatedDate(new Date());
+	    	projects.setOrgLocationsId(orgLocations);
+	    	Set<ProjectClients> projectClientsList = getProjectClientsForProject(projects,orgLocations,approverUser);
+	    	projects.setProjectClients(projectClientsList);
+			projects.setProjectUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+			projects.setIsClientProject(Constants.NO);
+			projects.setProjectMode("Finished");
+			projects.setCreatedDate(new Date());
+			projects.setUpdatedDate(new Date());
+			Projects updatedProjects = projectsService.saveProject(projects);
+			projectsService.saveOrUpdateProjectElkDocument(updatedProjects);
+			commonUtil.storeSourceleadTasks(approverUser, updatedProjects);
+			return updatedProjects;
+	}
+	 
+	 
+		private Set<ProjectClients> getProjectClientsForProject(Projects projects,OrgLocations orglocations,User approverUser) throws Exception {
+			Set<ProjectClients> projectClientsSet = new HashSet<>();
+			
+			ProjectClients projectClients = new ProjectClients();
+			projectClients.setProjectId(projects);
+			projectClients.setOrgLocationsId(orglocations);
+			projectClients.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
+			projectClients.setStatus(1);
+			projectClients.setLevel(1);
+			projectClients.setCreatedDate(new Date());
+			projectClients.setUpdatedDate(new Date());
+			projectClients.setCreatedBy(approverUser);
+			projectClients.setUpdatedBy(approverUser);
+			
+			//prepare ProjectApproverHierarchy
+			Set<ProjectApproverHierarchy> projectApproverHierarchyList = new HashSet<ProjectApproverHierarchy>();
+			ProjectApproverHierarchy pah = new ProjectApproverHierarchy();
+			pah.setProjectId(projects);
+			pah.setProjectClientsId(projectClients);
+			pah.setApproverUserId(approverUser);
+			pah.setLevel(1);
+			pah.setStatus("1");
+			projectApproverHierarchyList.add(pah);
+			
+			projectClients.setProjectApproverHierarchyList(projectApproverHierarchyList);
+	    	projectClientsSet.add(projectClients);
+			return projectClientsSet;
+		}
 
 
 	/**
@@ -476,15 +557,6 @@ public class ClientServiceImpl implements ClientService {
 
 		if (StringUtils.isNotBlank(clientDTO.getOrgName())) {
 			org.setOrgName(clientDTO.getOrgName());
-		}
-		if (StringUtils.isNotBlank(clientDTO.getAddress())) {
-			org.setClientAddress(clientDTO.getAddress());
-		}
-		if (StringUtils.isNotBlank(clientDTO.getBillingAddress())) {
-			org.setClientBillingAddress(clientDTO.getBillingAddress());
-		}
-		if (StringUtils.isNotBlank(clientDTO.getPaymentTerm())) {
-			org.setPaymentTerm(clientDTO.getPaymentTerm());
 		}
 		if (StringUtils.isNotBlank(clientDTO.getCompanyWebsite())) {
 			org.setWebSite(convertWebsite(clientDTO.getCompanyWebsite()));
