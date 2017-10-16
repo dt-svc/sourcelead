@@ -746,7 +746,10 @@ public class LeaveServiceImpl implements LeaveService{
 			 if(null != leaveDTO.getReason()){
 			 globalVarsMap.put("description",leaveDTO.getReason());
 			 }
-			 
+			 Date fromDate = commonUtil.orgLocationDateFormat(orgLoc.getDateFormat(),leaveDTO.getFromDate());
+			 Date toDate = commonUtil.orgLocationDateFormat(orgLoc.getDateFormat(),leaveDTO.getToDate());
+			 int numberOfdays = commonUtil.getNumberOfDaysBetweenTwoDates(fromDate, toDate);
+			 leaveDTO.setNoOfDays(String.valueOf(numberOfdays));
 			 if(null != leaveDTO.getNoOfDays()){
 			 globalVarsMap.put("noOfDays",leaveDTO.getNoOfDays());
 			 }
