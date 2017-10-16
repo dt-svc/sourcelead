@@ -701,8 +701,9 @@ function addFavourite(candidateId){
 					 document.getElementById("favourite"+candidateId).removeAttribute("class");
 					 document.getElementById("favourite"+candidateId).className = 'iconClass pull-left star-rating activestar-rating' 
 				}else{
-					 document.getElementById("favourite"+candidateId).removeAttribute("class");
-					 document.getEmentById("favourite"+candidateId).className = 'iconClass pull-left star-rating' 
+					 //document.getElementById("favourite"+candidateId).removeAttribute("class");
+					 document.getElementById("favourite"+candidateId).classList.remove("activestar-rating");
+					 document.getEmentById("favourite"+candidateId).className = 'iconClass pull-left star-rating';
 				}
 				
 			},
