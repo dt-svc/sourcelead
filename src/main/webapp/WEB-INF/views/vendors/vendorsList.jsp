@@ -371,7 +371,7 @@ border:none; background-color: none !important; padding:0 5px !important;
 <div class="side_mask"><div class="proj_close"></div></div>
 
 <!-- Client Side Nav Div -->
-<div class="clients_side_wrap">
+<div class="clients_side_wrap clientspagedrop">
 			<div class="clients_side_wrap_inn">
 				<h1 id="vendorNameDiv"></h1>
 				<div class="proj_close">
