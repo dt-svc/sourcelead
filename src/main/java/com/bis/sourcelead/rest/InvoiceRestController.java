@@ -459,7 +459,8 @@ public class InvoiceRestController {
 				invoice.setInvoiceDateStr(dateFormat.format(invoice.getInvoiceDate()));	
 			}
 			
-			invoice.setTotal(invoice.getTotal());
+			invoice.setTotal(String.format("%.2f", Float.valueOf(invoice.getTotal())));
+			invoice.setDueAmount(String.format("%.2f", Float.valueOf(invoice.getDueAmount())));
 			invoice.setInvoiceStatus(invoice.getInvoiceStatus());
 			invoice.setPaymentStatus(invoice.getPaymentStatus());
 			if(null != invoice.getProjectID()){
@@ -470,7 +471,7 @@ public class InvoiceRestController {
 				if(Constants.DRAFT.equalsIgnoreCase(invoice.getInvoiceStatus()) || Constants.REJECTED.equalsIgnoreCase(invoice.getInvoiceStatus())){
 					draftCount = draftCount+1;
 					draftTotalAmount = draftTotalAmount + Float.parseFloat(invoice.getDueAmount()) ;
-					invoice.setDraftInvoiceAmount(String.valueOf(draftTotalAmount));
+					invoice.setDraftInvoiceAmount(String.format("%.2f", draftTotalAmount));
 				}
 				
 				if(!Constants.DRAFT.equalsIgnoreCase(invoice.getInvoiceStatus()) && !Constants.REJECTED.equalsIgnoreCase(invoice.getInvoiceStatus()) && (Constants.INVOICE_STATUS_PAID.equalsIgnoreCase(invoice.getPaymentStatus()) || Constants.INVOICE_STATUS_PARTIAL_PAID.equalsIgnoreCase(invoice.getPaymentStatus())) && 
@@ -478,7 +479,7 @@ public class InvoiceRestController {
 					paidCount = paidCount+1;
 					Float paidAmount = Float.parseFloat(invoice.getTotal()) - Float.parseFloat(invoice.getDueAmount());
 					paidTotalAmount = paidTotalAmount + paidAmount;
-					invoice.setPaidInvoiceAmount(String.valueOf(paidTotalAmount));
+					invoice.setPaidInvoiceAmount(String.format("%.2f", paidTotalAmount));
 				}
 				
 				if(!Constants.DRAFT.equalsIgnoreCase(invoice.getInvoiceStatus()) && !Constants.REJECTED.equalsIgnoreCase(invoice.getInvoiceStatus()) &&
@@ -494,12 +495,12 @@ public class InvoiceRestController {
 						if(todayDate.after(invoiceDueDate)){
 							overDueInvoiceCount = overDueInvoiceCount+1;
 							dueAfterInvoiceAmount = dueAfterInvoiceAmount + Float.parseFloat(invoice.getDueAmount());
-							invoice.setDueAfterInvoiceAmount(String.valueOf(dueAfterInvoiceAmount));
+							invoice.setDueAfterInvoiceAmount(String.format("%.2f", dueAfterInvoiceAmount));
 							isInvoiceDueDate = true;
 						}else{
 							openInvoiceCount = openInvoiceCount+1;
 							dueBeforeInvoiceAmount = dueBeforeInvoiceAmount + Float.parseFloat(invoice.getDueAmount());
-							invoice.setDueBeforeInvoiceAmount(String.valueOf(dueBeforeInvoiceAmount));
+							invoice.setDueBeforeInvoiceAmount(String.format("%.2f", dueBeforeInvoiceAmount));
 						}
 					}
 					
@@ -594,7 +595,9 @@ public class InvoiceRestController {
 					}
 				}
 				invoice.setExchangeRate(invoice.getExchangeRate());
-				invoice.setConvertAmount(invoice.getConvertAmount());
+				if(invoice.getConvertAmount() != null) {
+				invoice.setConvertAmount(String.format("%.2f", Float.valueOf(invoice.getConvertAmount())));
+				}
 				invoice.setConvertCurrencyCode(invoice.getConvertCurrencyCode());
 				invoice.setCurrencyCode(invoice.getCurrencyCode());
 				

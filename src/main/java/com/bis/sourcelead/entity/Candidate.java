@@ -215,12 +215,14 @@ public class Candidate implements Serializable{
 	private String isAssociate;
 	
 	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne
+	@ManyToOne(cascade = CascadeType.ALL)
+	@Fetch(FetchMode.SELECT)
     @JoinColumn(name="ORG_RELATION_ID", nullable=false )        
     private OrgRelations orgRelationId; 
 	   
 	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne
+	@ManyToOne(cascade = CascadeType.ALL)
+	@Fetch(FetchMode.SELECT)
     @JoinColumn(name="SPOC_ID", nullable=false )        
     private OrgSpoc spocId; 
 	

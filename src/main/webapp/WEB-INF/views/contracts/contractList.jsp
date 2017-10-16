@@ -141,9 +141,9 @@ padding: 2px 300px 2px 0px;
 	</div>
 	<div id="loading"></div>
     <div class="clients_wrap_table repoPositiNoCount">
-    <div id="vendorContractsList"  class=" overflow-data" ></div>
-     <div id="clientContractsList"  class=" overflow-data" style="display: none"></div>
-     <div id="applicantsContractsList"  class=" overflow-data" style="display: none"></div>
+    <div id="vendorContractsList"  class=" overflow-data vendorContractsList" ></div>
+     <div id="clientContractsList"  class=" overflow-data clientContractsList" style="display: none"></div>
+     <div id="applicantsContractsList"  class=" overflow-data applicantsContractsList" style="display: none"></div>
 	</div>
 	
 </div>
@@ -665,15 +665,15 @@ function preparedContractListDraft(data){
     $("#clientContractsList").append(opt); 
     $("#applicantsContractsList").empty();
     $("#applicantsContractsList").append(res); 
-    listContractsPagination(SourceLeadWeb_loginOrg);	
-    vendorListContractsPagination(SourceLeadWeb_loginOrg);
-    appListContractsPagination(SourceLeadWeb_loginOrg);
+    listContractsPagination(SourceLeadWeb_loginOrg,json.clientcontractsList.length);	
+    vendorListContractsPagination(SourceLeadWeb_loginOrg,json.vendorcontractsList.length);
+    appListContractsPagination(SourceLeadWeb_loginOrg,json.fullTimeoffercontractsList.length);
 	
 }
 </script>
 
 <script>
-function listContractsPagination(SourceLeadWeb_loginOrg){
+function listContractsPagination(SourceLeadWeb_loginOrg,listLength){
 	$('#contractListTableDraft1').DataTable({ 
 		dom: 'Bfrtip',
         buttons: [
@@ -707,9 +707,12 @@ function listContractsPagination(SourceLeadWeb_loginOrg){
     });
 	$(".repoPositiNoCount").find('a.buttons-excel').prop("title", "Excel");
 	$(".repoPositiNoCount").find('a.buttons-pdf').prop("title", "PDF");
+	if(listLength == 0){
+		$(".clientContractsList").find('.dt-buttons').hide();
+	}
 	$("#contractListTableDraft1").wrap("<div class='overflow_Auto' style='width:100%;'></div>");  
 }
-function vendorListContractsPagination(SourceLeadWeb_loginOrg){ 
+function vendorListContractsPagination(SourceLeadWeb_loginOrg,listLength){ 
     $('#contractListTableDraft').DataTable( { 
     	dom: 'Bfrtip',
         buttons: [
@@ -743,9 +746,12 @@ function vendorListContractsPagination(SourceLeadWeb_loginOrg){
     });
     $(".repoPositiNoCount").find('a.buttons-excel').prop("title", "Excel");
 	$(".repoPositiNoCount").find('a.buttons-pdf').prop("title", "PDF");
+	if(listLength == 0){
+		$(".vendorContractsList").find('.dt-buttons').hide();
+	}
 	$("#contractListTableDraft").wrap("<div class='overflow_Auto' style='width:100%;'></div>");  
 }
-function appListContractsPagination(SourceLeadWeb_loginOrg){ 
+function appListContractsPagination(SourceLeadWeb_loginOrg,listLength){ 
     $('#contractListTableDraft2').DataTable( { 
     	dom: 'Bfrtip',
         buttons: [
@@ -777,6 +783,9 @@ function appListContractsPagination(SourceLeadWeb_loginOrg){
             "sZeroRecords": "", "sEmptyTable": ""
        }
     } );
+    if(listLength == 0){
+		$(".applicantsContractsList").find('.dt-buttons').hide();
+	}
     $("#contractListTableDraft2").wrap("<div class='overflow_Auto' style='width:100%;'></div>");  
 }
 </script>
@@ -1135,15 +1144,15 @@ function preparedContractListWFA(data){
     $("#clientContractsList").append(opt); 
     $("#applicantsContractsList").empty();
     $("#applicantsContractsList").append(res); 
-    listContractsPaginationWFA(SourceLeadWeb_loginOrg);	
-    vendorListContractsPaginationWFA(SourceLeadWeb_loginOrg);
-    appListContractsPaginationWFA(SourceLeadWeb_loginOrg);
+    listContractsPaginationWFA(SourceLeadWeb_loginOrg,clientsCount);	
+    vendorListContractsPaginationWFA(SourceLeadWeb_loginOrg,vendorsCount);
+    appListContractsPaginationWFA(SourceLeadWeb_loginOrg,fullTimeCount);
 	
 }
 </script>
 
 <script>
-function listContractsPaginationWFA(SourceLeadWeb_loginOrg){
+function listContractsPaginationWFA(SourceLeadWeb_loginOrg,listlength){
 	$('#contractListTableWFA1').DataTable({ 
 		dom: 'Bfrtip', 
 		buttons: [
@@ -1177,10 +1186,13 @@ function listContractsPaginationWFA(SourceLeadWeb_loginOrg){
     });
     $(".repoPositiNoCount").find('a.buttons-excel').prop("title", "Excel");
 	$(".repoPositiNoCount").find('a.buttons-pdf').prop("title", "PDF");
+	if(listLength == 0){
+		$(".clientContractsList").find('.dt-buttons').hide();
+	}
 	$("#contractListTableWFA1").wrap("<div class='overflow_Auto' style='width:100%;'></div>");  
 
 }
-function vendorListContractsPaginationWFA(SourceLeadWeb_loginOrg){ 
+function vendorListContractsPaginationWFA(SourceLeadWeb_loginOrg,listlength){ 
     $('#contractListTableWFA').DataTable( { 
     	dom: 'Bfrtip', 
 		buttons: [
@@ -1214,11 +1226,14 @@ function vendorListContractsPaginationWFA(SourceLeadWeb_loginOrg){
     });
     $(".repoPositiNoCount").find('a.buttons-excel').prop("title", "Excel");
 	$(".repoPositiNoCount").find('a.buttons-pdf').prop("title", "PDF");
+	if(listLength == 0){
+		$(".vendorContractsList").find('.dt-buttons').hide();
+	}
 	$("#contractListTableWFA").wrap("<div class='overflow_Auto' style='width:100%;'></div>");  
 
 }
 
-function appListContractsPaginationWFA(SourceLeadWeb_loginOrg){ 
+function appListContractsPaginationWFA(SourceLeadWeb_loginOrg,listlength){ 
     $('#contractListTableWTA2').DataTable( { 
     	dom: 'Bfrtip', 
 		buttons: [
@@ -1252,6 +1267,9 @@ function appListContractsPaginationWFA(SourceLeadWeb_loginOrg){
     });
     $(".repoPositiNoCount").find('a.buttons-excel').prop("title", "Excel");
 	$(".repoPositiNoCount").find('a.buttons-pdf').prop("title", "PDF");
+	if(listLength == 0){
+		$(".applicantsContractsList").find('.dt-buttons').hide();
+	}
 	$("#contractListTableWFA2").wrap("<div class='overflow_Auto' style='width:100%;'></div>");  
 
 }
@@ -1545,14 +1563,14 @@ function preparedContractListWTS(data){
     $("#clientContractsList").append(opt); 
     $("#applicantsContractsList").empty();
     $("#applicantsContractsList").append(res);
-    listContractsPaginationWTS(SourceLeadWeb_loginOrg);	
-    vendorListContractsPaginationWTS(SourceLeadWeb_loginOrg);
-    appListContractsPaginationWTS(SourceLeadWeb_loginOrg);
+    listContractsPaginationWTS(SourceLeadWeb_loginOrg,clientsCount);	
+    vendorListContractsPaginationWTS(SourceLeadWeb_loginOrg,vendorsCount);
+    appListContractsPaginationWTS(SourceLeadWeb_loginOrg,fullTimeCount);
 }
 </script>
 
 <script>
-function listContractsPaginationWTS(SourceLeadWeb_loginOrg){
+function listContractsPaginationWTS(SourceLeadWeb_loginOrg,listLength){
 	$('#contractListTableWTS1').DataTable({ 
 		dom: 'Bfrtip', 
 		buttons: [
@@ -1586,9 +1604,12 @@ function listContractsPaginationWTS(SourceLeadWeb_loginOrg){
     });
     $(".repoPositiNoCount").find('a.buttons-excel').prop("title", "Excel");
 	$(".repoPositiNoCount").find('a.buttons-pdf').prop("title", "PDF");
+	if(listLength == 0){
+		$(".clientContractsList").find('.dt-buttons').hide();
+	}
 	$("#contractListTableWTS1").wrap("<div class='overflow_Auto' style='width:100%;'></div>");  
 }
-function vendorListContractsPaginationWTS(SourceLeadWeb_loginOrg){ 
+function vendorListContractsPaginationWTS(SourceLeadWeb_loginOrg,listLength){ 
     $('#contractListTableWTS').DataTable( { 
     	dom: 'Bfrtip', 
 		buttons: [
@@ -1622,9 +1643,12 @@ function vendorListContractsPaginationWTS(SourceLeadWeb_loginOrg){
     });
     $(".repoPositiNoCount").find('a.buttons-excel').prop("title", "Excel");
 	$(".repoPositiNoCount").find('a.buttons-pdf').prop("title", "PDF");
+	if(listLength == 0){
+		$(".vendorContractsList").find('.dt-buttons').hide();
+	}
 	$("#contractListTableWTS").wrap("<div class='overflow_Auto' style='width:100%;'></div>"); 
 }
-function appListContractsPaginationWTS(SourceLeadWeb_loginOrg){
+function appListContractsPaginationWTS(SourceLeadWeb_loginOrg,listLength){
 	$('#contractListTableWTS2').DataTable({ 
 		dom: 'Bfrtip', 
 		buttons: [
@@ -1658,6 +1682,9 @@ function appListContractsPaginationWTS(SourceLeadWeb_loginOrg){
     });
     $(".repoPositiNoCount").find('a.buttons-excel').prop("title", "Excel");
 	$(".repoPositiNoCount").find('a.buttons-pdf').prop("title", "PDF");
+	if(listLength == 0){
+		$(".applicantsContractsList").find('.dt-buttons').hide();
+	}
 	$("#contractListTableWTS2").wrap("<div class='overflow_Auto' style='width:100%;'></div>"); 
 }
 </script>
@@ -1981,15 +2008,15 @@ function preparedContractListWTV(data){
     $("#clientContractsList").append(opt); 
     $("#applicantsContractsList").empty();
     $("#applicantsContractsList").append(res);
-    listContractsPaginationWTV(SourceLeadWeb_loginOrg);	
-    vendorListContractsPaginationWTV(SourceLeadWeb_loginOrg);
-    applicantsContractsPaginationWTV(SourceLeadWeb_loginOrg);	
+    listContractsPaginationWTV(SourceLeadWeb_loginOrg,clientsCount);	
+    vendorListContractsPaginationWTV(SourceLeadWeb_loginOrg,vendorsCount);
+    applicantsContractsPaginationWTV(SourceLeadWeb_loginOrg,fullTimeCount);	
 	
 }
 </script>
 
 <script>
-function listContractsPaginationWTV(SourceLeadWeb_loginOrg){
+function listContractsPaginationWTV(SourceLeadWeb_loginOrg,listLength){
 	$('#contractListTableWTV1').DataTable({ 
 		dom: 'Bfrtip', 
 		buttons: [
@@ -2023,9 +2050,12 @@ function listContractsPaginationWTV(SourceLeadWeb_loginOrg){
     });
     $(".repoPositiNoCount").find('a.buttons-excel').prop("title", "Excel");
 	$(".repoPositiNoCount").find('a.buttons-pdf').prop("title", "PDF");
+	if(listLength == 0){
+		$(".clientContractsList").find('.dt-buttons').hide();
+	}
 	$("#contractListTableWTV1").wrap("<div class='overflow_Auto'></div>");
 }
-function vendorListContractsPaginationWTV(SourceLeadWeb_loginOrg){ 
+function vendorListContractsPaginationWTV(SourceLeadWeb_loginOrg,listLength){ 
     $('#contractListTableWTV').DataTable( { 
     	dom: 'Bfrtip', 
 		buttons: [
@@ -2059,10 +2089,13 @@ function vendorListContractsPaginationWTV(SourceLeadWeb_loginOrg){
     });
     $(".repoPositiNoCount").find('a.buttons-excel').prop("title", "Excel");
 	$(".repoPositiNoCount").find('a.buttons-pdf').prop("title", "PDF");
+	if(listLength == 0){
+		$(".vendorContractsList").find('.dt-buttons').hide();
+	}
 	$("#contractListTableWTV").wrap("<div class='overflow_Auto'></div>");
 }
 
-function applicantsContractsPaginationWTV(SourceLeadWeb_loginOrg){ 
+function applicantsContractsPaginationWTV(SourceLeadWeb_loginOrg,listLength){ 
     $('#contractListTableWTV2').DataTable( { 
     	dom: 'Bfrtip', 
 		buttons: [
@@ -2096,6 +2129,9 @@ function applicantsContractsPaginationWTV(SourceLeadWeb_loginOrg){
     });
     $(".repoPositiNoCount").find('a.buttons-excel').prop("title", "Excel");
 	$(".repoPositiNoCount").find('a.buttons-pdf').prop("title", "PDF");
+	if(listLength == 0){
+		$(".applicantsContractsList").find('.dt-buttons').hide();
+	}
 	$("#contractListTableWTV2").wrap("<div class='overflow_Auto'></div>");
 }
 </script>
@@ -2375,15 +2411,15 @@ function preparedContractListFinalize(data){
     $("#clientContractsList").append(opt);
     $("#applicantsContractsList").empty();
     $("#applicantsContractsList").append(res);
-    listContractsPaginationFinalize(SourceLeadWeb_loginOrg);	
-    vendorListContractsPaginationFinalize(SourceLeadWeb_loginOrg);
-    applicantsContractsPaginationFinalize(SourceLeadWeb_loginOrg);	
+    listContractsPaginationFinalize(SourceLeadWeb_loginOrg,clientsCount);	
+    vendorListContractsPaginationFinalize(SourceLeadWeb_loginOrg,vendorsCount);
+    applicantsContractsPaginationFinalize(SourceLeadWeb_loginOrg,fullTimeCount);	
 	
 }
 </script>
 
 <script>
-function listContractsPaginationFinalize(SourceLeadWeb_loginOrg){
+function listContractsPaginationFinalize(SourceLeadWeb_loginOrg,listLength){
 	$('#contractListTableFinalize1').DataTable({ 
 		dom: 'Bfrtip', 
 		buttons: [
@@ -2417,9 +2453,12 @@ function listContractsPaginationFinalize(SourceLeadWeb_loginOrg){
     });
     $(".repoPositiNoCount").find('a.buttons-excel').prop("title", "Excel");
 	$(".repoPositiNoCount").find('a.buttons-pdf').prop("title", "PDF");
+	if(listLength == 0){
+		$(".clientContractsList").find('.dt-buttons').hide();
+	}
 	$("#contractListTableFinalize1").wrap("<div class='overflow_Auto' style='width:100%;'></div>"); 
 }
-function vendorListContractsPaginationFinalize(SourceLeadWeb_loginOrg){ 
+function vendorListContractsPaginationFinalize(SourceLeadWeb_loginOrg,listLength){ 
     $('#contractListTableFinalize').DataTable( { 
     	dom: 'Bfrtip', 
 		buttons: [
@@ -2453,9 +2492,12 @@ function vendorListContractsPaginationFinalize(SourceLeadWeb_loginOrg){
     });
     $(".repoPositiNoCount").find('a.buttons-excel').prop("title", "Excel");
 	$(".repoPositiNoCount").find('a.buttons-pdf').prop("title", "PDF");
+	if(listLength == 0){
+		$(".vendorContractsList").find('.dt-buttons').hide();
+	}
 	$("#contractListTableFinalize").wrap("<div class='overflow_Auto' style='width:100%;'></div>"); 
 }
-function applicantsContractsPaginationFinalize(SourceLeadWeb_loginOrg){
+function applicantsContractsPaginationFinalize(SourceLeadWeb_loginOrg,listLength){
 	$('#contractListTableFinalize2').DataTable({ 
 		dom: 'Bfrtip', 
 		buttons: [
@@ -2489,6 +2531,9 @@ function applicantsContractsPaginationFinalize(SourceLeadWeb_loginOrg){
     });
     $(".repoPositiNoCount").find('a.buttons-excel').prop("title", "Excel");
 	$(".repoPositiNoCount").find('a.buttons-pdf').prop("title", "PDF");
+	if(listLength == 0){
+		$(".applicantsContractsList").find('.dt-buttons').hide();
+	}
 	$("#contractListTableFinalize2").wrap("<div class='overflow_Auto' style='width:100%;'></div>"); 
 }
 </script>
@@ -2742,15 +2787,15 @@ function preparedContractListExpired(data){
     $("#clientContractsList").append(opt); 
     $("#applicantsContractsList").empty();
     $("#applicantsContractsList").append(res);
-    listContractsPaginationEXP(SourceLeadWeb_loginOrg);	
-    vendorListContractsPaginationEXP(SourceLeadWeb_loginOrg);
-    applicantsContractsPaginationEXP(SourceLeadWeb_loginOrg);
+    listContractsPaginationEXP(SourceLeadWeb_loginOrg,clientsCount);	
+    vendorListContractsPaginationEXP(SourceLeadWeb_loginOrg,vendorsCount);
+    applicantsContractsPaginationEXP(SourceLeadWeb_loginOrg,fullTimeCount);
 	
 }
 </script>
 
 <script>
-function listContractsPaginationEXP(SourceLeadWeb_loginOrg){
+function listContractsPaginationEXP(SourceLeadWeb_loginOrg,listLength){
 	$('#contractListTableEXP1').DataTable({ 
 		dom: 'Bfrtip', 
 		buttons: [
@@ -2784,9 +2829,12 @@ function listContractsPaginationEXP(SourceLeadWeb_loginOrg){
     });
     $(".repoPositiNoCount").find('a.buttons-excel').prop("title", "Excel");
 	$(".repoPositiNoCount").find('a.buttons-pdf').prop("title", "PDF");
+	if(listLength == 0){
+		$(".clientContractsList").find('.dt-buttons').hide();
+	}
 	$("#contractListTableEXP1").wrap("<div class='overflow_Auto' style='width:100%;'></div>"); 
 }
-function vendorListContractsPaginationEXP(SourceLeadWeb_loginOrg){ 
+function vendorListContractsPaginationEXP(SourceLeadWeb_loginOrg,listLength){ 
     $('#contractListTableEXP').DataTable( { 
     	dom: 'Bfrtip', 
 		buttons: [
@@ -2820,9 +2868,12 @@ function vendorListContractsPaginationEXP(SourceLeadWeb_loginOrg){
     });
     $(".repoPositiNoCount").find('a.buttons-excel').prop("title", "Excel");
 	$(".repoPositiNoCount").find('a.buttons-pdf').prop("title", "PDF");
+	if(listLength == 0){
+		$(".vendorContractsList").find('.dt-buttons').hide();
+	}
 	$("#contractListTableEXP").wrap("<div class='overflow_Auto' style='width:100%;'></div>"); 
 }
-function applicantsContractsPaginationEXP(SourceLeadWeb_loginOrg){
+function applicantsContractsPaginationEXP(SourceLeadWeb_loginOrg,listLength){
 	$('#contractListTableEXP2').DataTable({ 
 		dom: 'Bfrtip', 
 		buttons: [
@@ -2856,6 +2907,9 @@ function applicantsContractsPaginationEXP(SourceLeadWeb_loginOrg){
     });
     $(".repoPositiNoCount").find('a.buttons-excel').prop("title", "Excel");
 	$(".repoPositiNoCount").find('a.buttons-pdf').prop("title", "PDF");
+	if(listLength == 0){
+		$(".applicantsContractsList").find('.dt-buttons').hide();
+	}
 	$("#contractListTableEXP2").wrap("<div class='overflow_Auto' style='width:100%;'></div>"); 
 }
 </script>
@@ -3143,15 +3197,15 @@ function preparedContractListRejected(data){
     $("#clientContractsList").append(opt); 
     $("#applicantsContractsList").empty();
     $("#applicantsContractsList").append(res);
-    listContractsPaginationREJ(SourceLeadWeb_loginOrg);	
-    vendorListContractsPaginationREJ(SourceLeadWeb_loginOrg);
-    applicantsContractsPaginationREJ(SourceLeadWeb_loginOrg);
+    listContractsPaginationREJ(SourceLeadWeb_loginOrg,clientsCount);	
+    vendorListContractsPaginationREJ(SourceLeadWeb_loginOrg,vendorsCount);
+    applicantsContractsPaginationREJ(SourceLeadWeb_loginOrg,fullTimeCount);
 	
 }
 </script>
 
 <script>
-function listContractsPaginationREJ(SourceLeadWeb_loginOrg){
+function listContractsPaginationREJ(SourceLeadWeb_loginOrg,listLength){
 	$('#contractListTableREJ1').DataTable({ 
 		dom: 'Bfrtip', 
 		buttons: [
@@ -3185,9 +3239,12 @@ function listContractsPaginationREJ(SourceLeadWeb_loginOrg){
     });
     $(".repoPositiNoCount").find('a.buttons-excel').prop("title", "Excel");
 	$(".repoPositiNoCount").find('a.buttons-pdf').prop("title", "PDF");
+	if(listLength == 0){
+		$(".clientContractsList").find('.dt-buttons').hide();
+	}
 	$("#contractListTableREJ1").wrap("<div class='overflow_Auto' style='width:100%;'></div>"); 
 }
-function vendorListContractsPaginationREJ(SourceLeadWeb_loginOrg){ 
+function vendorListContractsPaginationREJ(SourceLeadWeb_loginOrg,listLength){ 
     $('#contractListTableREJ').DataTable( { 
     	dom: 'Bfrtip', 
     	buttons: [
@@ -3221,9 +3278,12 @@ function vendorListContractsPaginationREJ(SourceLeadWeb_loginOrg){
     });
     $(".repoPositiNoCount").find('a.buttons-excel').prop("title", "Excel");
 	$(".repoPositiNoCount").find('a.buttons-pdf').prop("title", "PDF");
+	if(listLength == 0){
+		$(".vendorContractsList").find('.dt-buttons').hide();
+	}
 	$("#contractListTableREJ").wrap("<div class='overflow_Auto' style='width:100%;'></div>");
 }
-function applicantsContractsPaginationREJ(SourceLeadWeb_loginOrg){
+function applicantsContractsPaginationREJ(SourceLeadWeb_loginOrg,listLength){
 	$('#contractListTableREJ2').DataTable({ 
 		dom: 'Bfrtip', 
 		buttons: [
@@ -3257,6 +3317,9 @@ function applicantsContractsPaginationREJ(SourceLeadWeb_loginOrg){
     });
     $(".repoPositiNoCount").find('a.buttons-excel').prop("title", "Excel");
 	$(".repoPositiNoCount").find('a.buttons-pdf').prop("title", "PDF");
+	if(listLength == 0){
+		$(".applicantsContractsList").find('.dt-buttons').hide();
+	}
 	$("#contractListTableREJ2").wrap("<div class='overflow_Auto' style='width:100%;'></div>");
 }
 </script>
@@ -3594,7 +3657,7 @@ function CountClick(contractUUID,parentId){
 			         		  result = result+' <a class="fa fa-eye" href="javascript:void(0)" onClick="viewFile(\''+opt.fileURL+'\', \''+opt.docFileName+'\', \''+opt.fileType+'\')"title="preview"></a>';
 							  result = result +'	       </div>			                                                                                                                  ';
 							  result = result +'	       <div class="col-md-8" id="uploadDocumentDiv'+opt.id+'" style="display: none;">                                                                                                             ';
-							  result = result +'				<div class="input-group positionRelative ratetype" id="uploadFileGroup'+opt.id+'" title="Document Type: .pdf format only">                  ';
+							  result = result +'				<div class="input-group positionRelative ratetype" id="uploadFileGroup'+opt.id+'" title="Browse files..">                  ';
 							  result = result +'					<label class="input-group-btn"> <span class="btn btn-primary padSm" onchange="uploadRequestedDocuments('+opt.id+');"><i class="fa fa-folder-open-o"></i>&nbsp;Browse           ';
 							  result = result +'	             <input name="uploadBtn'+opt.id+'" id="uploadBtn'+opt.id+'" style="display: none;" class="upload" type="file" onclick="check('+opt.id+');">                            ';
 							  result = result +'	             </span> </label>                                                                                                                 ';
@@ -3604,7 +3667,7 @@ function CountClick(contractUUID,parentId){
 						  }
 						  else{
 							  result = result +'	       <div class="col-md-8" id="uploadDocumentDiv'+opt.id+'">                                                                                                             ';
-							  result = result +'				<div class="input-group positionRelative ratetype" id="uploadFileGroup'+opt.id+'" title="Document Type: .pdf format only">                  ';
+							  result = result +'				<div class="input-group positionRelative ratetype" id="uploadFileGroup'+opt.id+'" title="Browse files..">                  ';
 							  result = result +'					<label class="input-group-btn"> <span class="btn btn-primary padSm" onchange="uploadRequestedDocuments('+opt.id+');"><i class="fa fa-folder-open-o"></i>&nbsp;Browse           ';
 							  result = result +'	             <input id="uploadBtn'+opt.id+'" style="display: none;" class="upload" type="file" onclick="check('+opt.id+');">                            ';
 							  result = result +'	             </span> </label>                                                                                                                 ';
