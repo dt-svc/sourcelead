@@ -271,10 +271,14 @@ public class LeaveManagementRestController {
 	public List<LeaveType> getPieChartForLeaveStatus(@RequestParam(value = "orgLocationId", required = false) Long orgLocationId,
 			                                         @RequestParam(value = "userId", required = false) Long userId,
 			                                         HttpServletRequest request,HttpServletResponse response) throws Exception {
+		
 		   OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
 		   User loginUser = userService.getUserById(userId);
 		   UserRole roleId = userRoleService.getUserRoleByUserId(userId);
 		   List<LeaveType> leaveTypeList = leaveTypeService.getLeaveTypeListByLocationId(String.valueOf(orgLocations.getId()));
+		   int balanceLeaveCounts = 0;
+		   int pendingLeaveCounts = 0;
+		   int takenLeaveCounts = 0;
 		   List<LeaveType> roleLeaveType = new ArrayList<>();
 		   if(leaveTypeList !=null && !leaveTypeList.isEmpty()) {
 			   for(LeaveType leaveType : leaveTypeList) {
@@ -291,11 +295,20 @@ public class LeaveManagementRestController {
 				int totalLeaves = Integer.valueOf(type.getNumbefrOfLeavesPeryear());
 				List<Leave> totalleavesTaken = leaveService.getLeavesListByTypeIdAndLocationIdAndUserId(type.getId(),orgLocations.getId(), loginUser.getId());
 				for (Leave leave : totalleavesTaken) {
+					if(Constants.PENDING.equalsIgnoreCase(leave.getStatus())) {
+						totalLeaves = totalLeaves - (Integer.valueOf(leave.getNumberOfDays()));
+						pendingLeaveCounts = pendingLeaveCounts + (Integer.valueOf(leave.getNumberOfDays()));
+					}
 					if(Constants.APPROVED.equalsIgnoreCase(leave.getStatus())) {
 						totalLeaves = totalLeaves - (Integer.valueOf(leave.getNumberOfDays()));
+						takenLeaveCounts = takenLeaveCounts + (Integer.valueOf(leave.getNumberOfDays()));
 					}
 				}
-				 type.setRemainingTotalLeaveCounts(totalLeaves);
+				balanceLeaveCounts += totalLeaves;
+				type.setBalanceLeaveCounts(balanceLeaveCounts);
+				type.setPendingLeaveCounts(pendingLeaveCounts);
+				type.setTakenLeaveCounts(takenLeaveCounts);
+				type.setRemainingTotalLeaveCounts(totalLeaves);
 				}
 		   }
 		return roleLeaveType;
