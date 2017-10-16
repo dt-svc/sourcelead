@@ -113,6 +113,7 @@ function getRequestedAssociatesList(){
 				result = result +'             <tbody>';
 				
 				
+				
 				 for(var i=0; i<json.newResourceRequestList.length; i++){
 					 var opt = json.newResourceRequestList[i];
 					 var startDate = '';
