@@ -3,6 +3,7 @@ package com.bis.sourcelead.rest;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.NotificationDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Notifications;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -122,18 +124,20 @@ public class NotificationRestController {
 	
 	@RequestMapping(value = {"/getNotificationsByuserId","/rest/getNotificationsByuserId"}, method = RequestMethod.GET)
 	@ResponseBody
-	public  ResponseList<Notifications> getNotificationsByuserId(@RequestParam(value = "userId", required = false) Long userId,
+	public  ResponseList<NotificationDTO> getNotificationsByuserId(@RequestParam(value = "userId", required = false) Long userId,
 						@RequestParam(value = "locationCode", required = false) String locationCode, 
 						@RequestParam(value = "orgCode", required = false) String orgCode,
 						@RequestParam(value = "orgLocationId", required = false) Long orgLocationId,HttpServletRequest request) throws Exception {
 		
-		ResponseList<Notifications> responseList = new ResponseList<>();
+		ResponseList<NotificationDTO> responseList = new ResponseList<>();
 		User loginUser = userService.getUserById(userId);
 		OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
 		Timezone timezone = timeZoneService.getTimezone(orgLocations.getTimezone().getId());
 		List<Notifications> notificationList = notificationsService.getAllNotificationsListByUserId(loginUser.getId(),orgCode,locationCode);
-		
+		List<NotificationDTO> notificationDTOList = new ArrayList<>();
 		for (Notifications notifications : notificationList) {
+			StringBuilder sb = new StringBuilder();
+			NotificationDTO notificationDTO = new NotificationDTO();
 			long diff = commonUtil.currentDate().getTime() - notifications.getCreatedDate().getTime();
 		    long diffSeconds = diff / 1000 % 60;
 			long diffMinutes = diff / (60 * 1000) % 60;
@@ -158,43 +162,23 @@ public class NotificationRestController {
 				notifications.setCalDays(commonDateFormat.toString());
 					
 				}
-					
+			if(notifications.getNotificationFrom().getLastName() != null){
+				sb.append(notifications.getNotificationFrom().getFirstName()).append(notifications.getNotificationFrom().getLastName());
+			}else{
+				sb.append(notifications.getNotificationFrom().getFirstName());
+			}
+			notificationDTO.setFirstName(sb.toString());
+			notificationDTO.setUserType(notifications.getNotificationFrom().getUserType());
+			notificationDTO.setFileUrl(notifications.getNotificationFrom().getFileUrl());
+			notificationDTO.setBody(notifications.getBody());
+			notificationDTO.setCalDays(notifications.getCalDays());
+			notificationDTOList.add(notificationDTO);
 				}
-		responseList.setData(notificationList);
+		responseList.setData(notificationDTOList);
 		return responseList;
 		
 	}
 	
 	
-	private void calculateDays(List<Notifications> notificationList, Timezone timezone) throws ParseException {
-		for (Notifications notifications : notificationList) {
-			long diff = commonUtil.currentDate().getTime() - notifications.getCreatedDate().getTime();
-		    long diffSeconds = diff / 1000 % 60;
-			long diffMinutes = diff / (60 * 1000) % 60;
-			long diffHours = diff / (60 * 60 * 1000) % 24;
-			long diffDays = diff / (24 * 60 * 60 * 1000);
-			StringBuilder  time = new StringBuilder();
-			if(diffDays == 0 && diffHours == 0 && diffMinutes == 0){
-				notifications.setCalDays(time.append(diffSeconds).append(" sec ago ").toString());
-			}else if(diffDays == 0 && diffHours == 0){
-				notifications.setCalDays(time.append(diffMinutes).append(" min ").append(diffSeconds).append(" sec ago ").toString());
-			}else if(diffDays == 0){
-				notifications.setCalDays(time.append(diffHours).append(" hours ").append(diffMinutes).append(" min ago ").toString());
-			}else if(diffDays < 7){
-				notifications.setCalDays(time.append(diffDays).append(" day(s) ago").toString());
-			}else{
-				DateFormat standardFormat = new SimpleDateFormat( "MMM dd, yyyy hh:mm:ss aa");
-				String currentTimeStr = Constants.TZ_DF.format(notifications.getCreatedDate());
-				String currentDateInTimezone= CommonUtil.convertTimeZones("UTC" ,timezone.getTimeZoneId(), currentTimeStr);
-				DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
-				Date converteDate = TZ_DF_TS.parse(currentDateInTimezone);
-				String commonDateFormat = standardFormat.format(converteDate);
-				notifications.setCalDays(commonDateFormat.toString());
-					
-				}
-					
-				}
-		
-	}
 	
 }
