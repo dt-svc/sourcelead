@@ -696,7 +696,6 @@ function validate_fileupload(fileName)
  
  <!-- Experience Years and Months validation Script years greater than  20 the months dropdown disabled script here -->
  <script type="text/javascript">
- function disableMonths(){
  $("#experienceYears").change(function() {
      if ($('#experienceYears').val()=='50'){
     	 $("#experienceMonths").val('');
