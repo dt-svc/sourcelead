@@ -196,22 +196,10 @@ return false;
 function uploadResumeOnSelect(formId) {
 	$("#uploadBtn").change(function() {
 		$("#uploadFile").focus();
-      	 if(validate_fileupload(this.value)){
-      		 var docSize = this.files[0].size;
      	      $("#uploadFileGroup").find('p.jquery_form_error_message').remove();
-     	      if(docSize > 2097152){
-     	    	  	document.getElementById("uploadFile").value = '';
-     	    	  	$('#uploadFileGroup').find('p.jquery_form_error_message').remove();
-     			$("input#uploadFile").after("<p class='jquery_form_error_message'>Limit is exceeded than 2MB </span>");
-     			document.getElementById("uploadFile").setAttribute('record-exist','yes');
-     			document.getElementById("uploadFile").setAttribute('record-exist-errorMsg','Limit is exceeded than 2MB'); 
-     	      }else{
-	     	    	 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-	     	    	 $('input#uploadFile').removeAttr( "record-exist record-exist-errormsg");
-	        		 $('#uploadFileGroup').find('p.jquery_form_error_message').remove(); 
-        		     fileUpload("uploadBtn", "resumes", formId, null, null, null, "/parse-resumes");
-     	      }
-      	 }
+     	     $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+ 		     fileUpload("uploadBtn", "resumes", formId, null, null, null, "/parse-resumes");
+
 	});
 }
 
