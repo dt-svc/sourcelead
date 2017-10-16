@@ -444,10 +444,10 @@ function CountClick(contractUUID,parentId){
 							  result = result +'	       <div class="col-md-8 text-center" id="removeDiv'+opt.id+'">                                                                                                             ';
 							  result = result+'	                      &nbsp;&nbsp;<span id="delete_resume" onclick="removeResumeNameDiv('+opt.id+');"><i class="fa fa-trash text-danger removeIcon"></i></span>';
 							  result = result+' <a class="glyphicon glyphicon-download-alt" href="'+opt.fileURL+'" title="Download"></a>';
-			         		  result = result+' <a class="fa fa-eye" href="javascript:void(0)" onClick="viewFile(\''+sourceleadUrl+'\', \''+opt.fileURL+'\', \''+opt.docFileName+'\', \''+opt.fileType+'\')"title="preview"></a>';
+			         		  result = result+' <a class="fa fa-eye" href="javascript:void(0)" onClick="viewFile(\''+opt.fileURL+'\', \''+opt.docFileName+'\', \''+opt.fileType+'\')"title="preview"></a>';
 							  result = result +'	       </div>			                                                                                                                  ';
 							  result = result +'	       <div class="col-md-8" id="uploadDocumentDiv'+opt.id+'" style="display: none;">                                                                                                             ';
-							  result = result +'				<div class="input-group positionRelative ratetype" id="uploadFileGroup'+opt.id+'" title="Document Type: .pdf format only">                  ';
+							  result = result +'				<div class="input-group positionRelative ratetype" id="uploadFileGroup'+opt.id+'" title="Browse files..">                  ';
 							  result = result +'					<label class="input-group-btn"> <span class="btn btn-primary padSm" onchange="uploadRequestedDocuments('+opt.id+');"><i class="fa fa-folder-open-o"></i>&nbsp;Browse           ';
 							  result = result +'	             <input name="uploadBtn'+opt.id+'" id="uploadBtn'+opt.id+'" style="display: none;" class="upload" type="file" onclick="check('+opt.id+');">                            ';
 							  result = result +'	             </span> </label>                                                                                                                 ';
@@ -457,7 +457,7 @@ function CountClick(contractUUID,parentId){
 						  }
 						  else{
 							  result = result +'	       <div class="col-md-8" id="uploadDocumentDiv'+opt.id+'">                                                                                                             ';
-							  result = result +'				<div class="input-group positionRelative ratetype" id="uploadFileGroup'+opt.id+'" title="Document Type: .pdf format only">                  ';
+							  result = result +'				<div class="input-group positionRelative ratetype" id="uploadFileGroup'+opt.id+'" title="Browse files..">                  ';
 							  result = result +'					<label class="input-group-btn"> <span class="btn btn-primary padSm" onchange="uploadRequestedDocuments('+opt.id+');"><i class="fa fa-folder-open-o"></i>&nbsp;Browse           ';
 							  result = result +'	             <input id="uploadBtn'+opt.id+'" style="display: none;" class="upload" type="file" onclick="check('+opt.id+');">                            ';
 							  result = result +'	             </span> </label>                                                                                                                 ';
@@ -485,13 +485,13 @@ function CountClick(contractUUID,parentId){
 	  }); 
 }
 
-function removeDoc(id){
+function removeResumeNameDiv(id){
 	$("#removeDiv"+id).hide();
 	
 		 var sourceleadUrl ='${sourceleadUrl}';
 		 $.ajax({
 	     type : "POST",
-	      url: sourceleadUrl+"/updateDocument?"+tokenParamName+"="+tokenValue+"&docuId="+id,       
+	      url: sourceleadUrl+"/updateDocument?${_csrf.parameterName}=${_csrf.token}&docuId="+id,       
 	      success :function(data) {
 	      	  //  $("#tr"+id).empty();
 	    	  $("#uploadDocumentDiv"+id).show();
@@ -532,7 +532,7 @@ function uploadRequestedDocuments(id){
 	function saveDocContract() {
 		var orgRelationId = $("#contractRelationId").val();
 		if ($('#contractDoc_form').validate(false, validationSettings)) {
-			var frm = $('#contractDoc_form').serializeFormJSON();
+			/* var frm = $('#contractDoc_form').serializeFormJSON();
 			var con = JSON.stringify(frm);
 			con = con.replace(/[{}]/g, "");
 	        var jsonData = encodeURIComponent(con);
@@ -551,11 +551,15 @@ function uploadRequestedDocuments(id){
 		         contentType:false,
 			     dataType : 'json',
 						url : sourceleadUrl+ "/saveDocContracts?"+tokenParamName+"="+tokenValue+"&json="+jsonData,
-						success : function(result) {
-							clientContracts(orgRelationId);
-							contPopClose();
-						},
-					}); 
+						success : function(result) { */
+							
+			var formData = getFormData("contractDoc_form");
+			var orgLocationId = '${SourceLeadWeb_orgLocationId}';
+			$("#loadingDoc").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+            $.post( sourceleadUrl+ "/saveDocContracts?${_csrf.parameterName}=${_csrf.token}&orgLocationId="+orgLocationId, formData, function(data) {
+				clientContracts(orgRelationId);
+				contPopClose();
+			}); 
 			return true;
 		} else {
 			return false;

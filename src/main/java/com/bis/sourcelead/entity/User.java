@@ -31,6 +31,7 @@ import org.hibernate.annotations.NotFoundAction;
 import org.hibernate.annotations.Type;
 
 import com.bis.sourcelead.enums.Status;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "USER", catalog = "sourcelead")
@@ -257,6 +258,7 @@ public class User implements Serializable{
 	}
 
 	@Transient
+	@JsonProperty
     private String fullName;
 	
 	public Long getId() {

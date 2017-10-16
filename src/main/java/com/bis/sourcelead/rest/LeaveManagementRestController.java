@@ -271,10 +271,16 @@ public class LeaveManagementRestController {
 	public List<LeaveType> getPieChartForLeaveStatus(@RequestParam(value = "orgLocationId", required = false) Long orgLocationId,
 			                                         @RequestParam(value = "userId", required = false) Long userId,
 			                                         HttpServletRequest request,HttpServletResponse response) throws Exception {
+		
 		   OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
 		   User loginUser = userService.getUserById(userId);
 		   UserRole roleId = userRoleService.getUserRoleByUserId(userId);
-		   List<LeaveType> leaveTypeList = leaveTypeService.getLeaveTypeListByLocationId(String.valueOf(orgLocations.getId()));
+
+		   int balanceLeaveCounts = 0;
+		   int pendingLeaveCounts = 0;
+		   int takenLeaveCounts = 0;
+		   List<LeaveType> leaveTypeList = leaveTypeService.getLeaveTypeListByLocationIdAndStatus(String.valueOf(orgLocations.getId()));
+
 		   List<LeaveType> roleLeaveType = new ArrayList<>();
 		   if(leaveTypeList !=null && !leaveTypeList.isEmpty()) {
 			   for(LeaveType leaveType : leaveTypeList) {
@@ -291,11 +297,20 @@ public class LeaveManagementRestController {
 				int totalLeaves = Integer.valueOf(type.getNumbefrOfLeavesPeryear());
 				List<Leave> totalleavesTaken = leaveService.getLeavesListByTypeIdAndLocationIdAndUserId(type.getId(),orgLocations.getId(), loginUser.getId());
 				for (Leave leave : totalleavesTaken) {
+					if(Constants.PENDING.equalsIgnoreCase(leave.getStatus())) {
+						totalLeaves = totalLeaves - (Integer.valueOf(leave.getNumberOfDays()));
+						pendingLeaveCounts = pendingLeaveCounts + (Integer.valueOf(leave.getNumberOfDays()));
+					}
 					if(Constants.APPROVED.equalsIgnoreCase(leave.getStatus())) {
 						totalLeaves = totalLeaves - (Integer.valueOf(leave.getNumberOfDays()));
+						takenLeaveCounts = takenLeaveCounts + (Integer.valueOf(leave.getNumberOfDays()));
 					}
 				}
-				 type.setRemainingTotalLeaveCounts(totalLeaves);
+				balanceLeaveCounts += totalLeaves;
+				type.setBalanceLeaveCounts(balanceLeaveCounts);
+				type.setPendingLeaveCounts(pendingLeaveCounts);
+				type.setTakenLeaveCounts(takenLeaveCounts);
+				type.setRemainingTotalLeaveCounts(totalLeaves);
 				}
 		   }
 		return roleLeaveType;
@@ -814,16 +829,21 @@ public class LeaveManagementRestController {
 		boolean isDeleted = false;
 		LeaveType leaveType = leaveTypeService.getLeaveTypeById(leaveTypeDTO.getLeaveTypeId());
 		 if(leaveType !=null) {
+			 
+			 if("reactive".equalsIgnoreCase(leaveTypeDTO.getStatus())){
+				 leaveType.setStatus(Constants.RECORD_ACTIVE.toString());
+			 }else{
 			 leaveType.setStatus(Constants.RECORD_INACTIVE.toString());
 			 leaveType.setDeleteReason(leaveTypeDTO.getDeleteReason());
+			 }
 			 if(leaveTypeDTO.getLoginUserId() != null){
 				 User user = userService.getUserById(Long.parseLong(leaveTypeDTO.getLoginUserId()));
 				 leaveType.setUpdatedBy(user.getUserCode());
 			 }
 			 leaveType.setUpdatedDate(new Date());
 			 leaveTypeDao.addLeaveType(leaveType);
-			  isDeleted = true;
-		 }
+			 isDeleted = true;
+		}
 		return isDeleted;
 	}
 
@@ -1231,10 +1251,9 @@ public class LeaveManagementRestController {
 
 		boolean isValid = false;
 		List<RestrictDay> restrictDayList = new ArrayList<>();
-		OrgLocations orgLocations = null;
+		OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
 		if(StringUtils.isNotBlank(leaveId)){
 			Leave leave = leaveService.getLeaveByLeavId(leaveId);
-			orgLocations = orgLocationService.getOrgLocations(orgLocationId);
 			fromDate = commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), leave.getFromDate());
 			toDate = commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), leave.getToDate());
 		}
