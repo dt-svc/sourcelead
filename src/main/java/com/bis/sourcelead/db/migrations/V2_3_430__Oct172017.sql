@@ -11,8 +11,8 @@ INSERT INTO `sourcelead`.`CLASS_FIELD` (`ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_S
 
 #Email
 INSERT INTO `sourcelead`.`EMAIL_SCENARIO` (`SCENARIO_NAME`, `ENTITY_TYPE`, `UNIQUE_SCENARIO_NAME`, `DESCRIPTION`, `SUBJECT`, `TEMPLATE_TYPE`, `SIGNATURE`, `BODY`,`IS_TEMPLATE_MODIFIED`, `CREATED_BY`, `ORG_CODE`,`LOCATION_CODE`) VALUES 
-('ExpensesApproveEmailToVendor','Email', 'ExpensesApproveEmailToVendor', 'Mail should forward when the client(approver) approves the expenses of vendor resource', ' Expenses approved','org', 'Thanks & Regards\n Sourcelead team', 'Claimed expenses approved for the{{ExpensesApproveEmailToVendor.employeename}}, by  {{ExpensesApproveEmailToVendor.orgname}}. The expenses brief details are following /n Project Name : {{ExpensesApproveEmailToVendor.projectname}} /n Expense Duration : {{ExpensesApproveEmailToVendor.expensesduration}} /n Amount : {{ExpensesApproveEmailToVendor.amount}} \n 
-For details login into the system /n ','N', 'SLADMIN', 'slead', 'sleadIN');
+('ExpensesApproveEmailToVendor','Email', 'ExpensesApproveEmailToVendor', 'Mail should forward when the client(approver) approves the expenses of vendor resource', ' Expenses approved','org', 'Thanks & Regards\n Sourcelead team', 'Claimed expenses approved for the {{ExpensesApproveEmailToVendor.employeename}} by {{ExpensesApproveEmailToVendor.orgname}}. The expenses brief details are following \n Project Name : {{ExpensesApproveEmailToVendor.projectname}} \n Expense Duration : {{ExpensesApproveEmailToVendor.expensesduration}} \n Amount : {{ExpensesApproveEmailToVendor.amount}} \n 
+For details login into the system \n ','N', 'SLADMIN', 'slead', 'sleadIN');
 
 	
 #Notification
