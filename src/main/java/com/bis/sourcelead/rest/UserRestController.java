@@ -485,6 +485,9 @@ public class UserRestController {
 	    			  if(null != employee){
 	    				  userService.saveOrUpdateUserElkDocument(userRole,employee,user.getUserCode());
 	    			  }
+	    			  
+	    			  userRole.setIsMailSent(Status.Y);
+	    			  userRoleService.addUserRole(userRole);
 	 			  }
 	 		}
 		

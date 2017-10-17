@@ -439,6 +439,12 @@ public class UserServiceImpl implements UserService {
 			userRole.setReportingManager(reportingManager);
 		}
 		
+	    if(StringUtils.isNotBlank(addUserDTO.getIsMailSent()) && ("Y".equals(addUserDTO.getIsMailSent()))){
+	    	userRole.setIsMailSent(Status.Y);
+			}else{
+				userRole.setIsMailSent(Status.N);
+			}
+		   
 		userRole.setUserState(Status.NOT_LOGGEDIN);
 		
 		Roles roles = null;
