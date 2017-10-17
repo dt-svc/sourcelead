@@ -190,7 +190,7 @@ public class OrgSpocServiceImpl implements OrgSpocService{
 		if(orgSpocsList != null && !orgSpocsList.isEmpty()){
 			for (OrgSpoc orgSpoc : orgSpocsList) {
 				
-				 StringBuilder spocNameSB = new StringBuilder();
+				 //StringBuilder spocNameSB = new StringBuilder();
 				 StringBuilder ownerNameSB = new StringBuilder();
 				
 				 //client summary contacts
@@ -199,12 +199,12 @@ public class OrgSpocServiceImpl implements OrgSpocService{
 						 orgSpoc.setSpocEmail(orgSpoc.getClientUser().getEmail());
 					 }
 					if(null != orgSpoc.getClientUser()){
-						if(orgSpoc.getClientUser().getLastName() != null && !"".equalsIgnoreCase(orgSpoc.getClientUser().getLastName())){
+						/*if(orgSpoc.getClientUser().getLastName() != null && !"".equalsIgnoreCase(orgSpoc.getClientUser().getLastName())){
 							spocNameSB.append(orgSpoc.getClientUser().getFirstName()).append(" ").append(orgSpoc.getClientUser().getLastName()); 
 						}else{
-							spocNameSB.append(orgSpoc.getClientUser().getFirstName()); 
-						}
-						orgSpoc.setSpocName(spocNameSB.toString());
+							spocNameSB.append(orgSpoc.getClientUser().getFullName()); 
+						}*/
+						orgSpoc.setSpocName(orgSpoc.getClientUser().getFullName());
 						
 						/*if(orgSpoc.getClientUser().getFirstName() !=null && "".equalsIgnoreCase(orgSpoc.getClientUser().getFirstName()) && orgSpoc.getClientUser().getLastName() !=null && "".equalsIgnoreCase(orgSpoc.getClientUser().getLastName())){
 							 spocNameSB.append(orgSpoc.getClientUser().getFirstName()).append(" ").append(orgSpoc.getClientUser().getLastName()); 
@@ -218,7 +218,7 @@ public class OrgSpocServiceImpl implements OrgSpocService{
 						orgSpoc.setSpocMobilePhone(orgSpoc.getClientUser().getMobilePhone());
 					}
 				
-					 orgSpoc.setOwnerName(ownerNameSB.append(orgSpoc.getVendorUser().getFirstName()).append(" ").append(orgSpoc.getVendorUser().getLastName()).toString());
+					 orgSpoc.setOwnerName(orgSpoc.getVendorUser().getFullName());
 					if(null != orgSpoc.getClientUser()){
 						orgSpoc.setTempOwnerId(orgSpoc.getClientUser().getId());	
 					}
@@ -233,14 +233,14 @@ public class OrgSpocServiceImpl implements OrgSpocService{
 				//vendor summary contacts
 				  else if(null != type && !"".equalsIgnoreCase(type) && "Vendor".equalsIgnoreCase(type)){
 					 orgSpoc.setSpocEmail(orgSpoc.getVendorUser().getEmail());
-					 if(orgSpoc.getVendorUser().getLastName() !=null && !"".equalsIgnoreCase(orgSpoc.getVendorUser().getLastName())){
+					 /*if(orgSpoc.getVendorUser().getLastName() !=null && !"".equalsIgnoreCase(orgSpoc.getVendorUser().getLastName())){
 						 spocNameSB.append(orgSpoc.getVendorUser().getFirstName()).append(" ").append(orgSpoc.getVendorUser().getLastName()); 
 					 }else{
 						 spocNameSB.append(orgSpoc.getVendorUser().getFirstName());
-					 }
-					 orgSpoc.setSpocName(spocNameSB.toString());
+					 }*/
+					 orgSpoc.setSpocName(orgSpoc.getVendorUser().getFullName());
 					 orgSpoc.setSpocMobilePhone(orgSpoc.getVendorUser().getMobilePhone());
-					 orgSpoc.setOwnerName(ownerNameSB.append(orgSpoc.getClientUser().getFirstName()).append(" ").append(orgSpoc.getClientUser().getLastName()).toString());
+					 orgSpoc.setOwnerName(orgSpoc.getClientUser().getFullName());
 					
 					 orgSpoc.setTempOwnerId(orgSpoc.getVendorUser().getId());
 					 orgSpoc.setUserId(orgSpoc.getClientUser().getId());
@@ -313,7 +313,7 @@ public class OrgSpocServiceImpl implements OrgSpocService{
 		    		 orgSpoc.setSpocName(spocNameSB.append(orgSpoc.getClientUser().getFirstName()).toString());
 		    	 }
 		    	 orgSpoc.setSpocStatus(orgSpoc.getSpocStatus());
-			     orgSpoc.setOwnerName(ownerNameSB.append(orgSpoc.getVendorUser().getFirstName()).append(" ").append(orgSpoc.getVendorUser().getLastName()).toString());
+			     orgSpoc.setOwnerName(orgSpoc.getVendorUser().getFullName());
 			     orgSpoc.setSpocFirstName(orgSpoc.getClientUser().getFirstName());
 			     orgSpoc.setSpocLastName(orgSpoc.getClientUser().getLastName());
 			     orgSpoc.setSpocMobilePhone(orgSpoc.getClientUser().getMobilePhone());
@@ -336,7 +336,7 @@ public class OrgSpocServiceImpl implements OrgSpocService{
 		    	 }
 		    	 orgSpoc.setSpocStatus(orgSpoc.getSpocStatus());
 		    	 
-			     orgSpoc.setOwnerName(ownerNameSB.append(orgSpoc.getClientUser().getFirstName()).append(" ").append(orgSpoc.getClientUser().getLastName()).toString());
+			     orgSpoc.setOwnerName(orgSpoc.getClientUser().getFullName());
 			     
 			     orgSpoc.setSpocFirstName(orgSpoc.getVendorUser().getFirstName());
 			     orgSpoc.setSpocLastName(orgSpoc.getVendorUser().getLastName());
