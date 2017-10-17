@@ -530,7 +530,7 @@ public class ExpensesRestController {
 			expensesDTO.setMasterCandidateId(expenses.getProjectMembers().getMasterCandidateId().getId());
 			ExpensesApproverHierarchy eah = expensesApprovalService.getexpensesApproverHierarchyForEmployeeByExpenseId(expenses.getId());
 			Submission_Status submissionStatus = eah.getExpenseStatus();
-			expensesDTO.setCombinedSubmissionStatus(submissionStatus);
+			expensesDTO.setCombinedSubmissionStatus(submissionStatus.getValue().toUpperCase());
 			ExpensesApproverHierarchy isSah = expensesApprovalService.isThereAnyApproverApprovedTheExpense(expenses.getId());
 			boolean isSahApproved = false;
 			if (isSah != null) {
