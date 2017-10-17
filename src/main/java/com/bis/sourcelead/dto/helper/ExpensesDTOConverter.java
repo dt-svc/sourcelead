@@ -9,6 +9,7 @@ import com.bis.sourcelead.dto.ExpensesEntriesDTO;
 import com.bis.sourcelead.dto.ExpensesDTO;
 import com.bis.sourcelead.entity.Expenses;
 import com.bis.sourcelead.entity.ExpensesEntries;
+import com.bis.sourcelead.enums.Submission_Status;
 
 public class ExpensesDTOConverter {
 
@@ -47,6 +48,9 @@ public class ExpensesDTOConverter {
 			expensesDTO.setProjectMemberName(expenses.getProjectMembers().getEmpName());
 		}
 		expensesDTO.setExpenseEntry(eeDTOList);
+		
+		expensesDTO.setExpenseStatus(expenses.getExpenseStatus().getValue().toUpperCase());
+		
 		return expensesDTO;
 	}
 }
