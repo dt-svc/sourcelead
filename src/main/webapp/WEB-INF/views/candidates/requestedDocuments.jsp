@@ -153,7 +153,6 @@ $('body').on('submit', '#requestForDocs_form', function(e){
 	    var formData = getFormData1("requestForDocs_form");
 		$("#submit_docs").attr("disabled", "disabled");
 		$("#submit_docs" ).addClass('button').val('Processing..');
-		alert("hello"+sourceleadUrl)
 		$.ajax({
 				 type : "POST",
 				 data: formData,

@@ -504,6 +504,11 @@ public class VendorOnboardServiceImpl implements VendorOnboardService {
 			orgRelations.setEinCode(vendorOnboardDTO.getEinCode());
 		}
 		
+		
+		if(StringUtils.isNotBlank(vendorOnboardDTO.getCurrency())){
+			orgRelations.setCurrency(vendorOnboardDTO.getCurrency());
+		}
+		
 		bankDetails = orgBankDetailsService.getOrgBankDetailsByOrgLocationId(onboarding.getVendorLocationId().getId());
 		if(bankDetails == null){
 			bankDetails = new OrgBankDetails();

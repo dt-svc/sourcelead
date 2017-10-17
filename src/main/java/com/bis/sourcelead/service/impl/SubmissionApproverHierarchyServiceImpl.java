@@ -24,6 +24,7 @@ import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.ProjectApproverHierarchy;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
 import com.bis.sourcelead.entity.User;
@@ -146,13 +147,13 @@ public class SubmissionApproverHierarchyServiceImpl implements SubmissionApprove
 	
 	@Override
 	public void sendReopenTimeSheetMail(Long projectMemberId,String reason, User loginUser, OrgLocations orgLocations, String timesheetFrequency, Float totalHours) throws Exception {
-		
-			OrgLocations ol = orgLocationsDao.getOrgLocations(orgLocations.getId());
-			 if(null != ol && null != ol.getUser()){
+		   ProjectMembers clientProjectMember = projectMembersDao.getClientProjectMemberByProjectMemberId(projectMemberId);
+		   ProjectApproverHierarchy pah =  projectApproverHierarchyDao.getApproverUsersByProjectIdAndProjectClientId(clientProjectMember.getProjects().getId(), clientProjectMember.getProjectClientsId().getId());
+			 if(null != pah && null != pah.getApproverUserId()){
 				 EmailMessage emailMessage = new EmailMessage();
-				 emailMessage.setFirstName(ol.getUser().getFirstName());
-				 emailMessage.setLastName(ol.getUser().getLastName());
-				 emailMessage.setToEmail(ol.getUser().getEmail());
+				 emailMessage.setFirstName(pah.getApproverUserId().getFirstName());
+				 emailMessage.setLastName(pah.getApproverUserId().getLastName());
+				 emailMessage.setToEmail(pah.getApproverUserId().getEmail());
 				 
 				 emailMessage.setFromEmail(loginUser.getEmail());
 				 emailMessage.setCreatedBy(loginUser.getUserCode());
@@ -160,7 +161,7 @@ public class SubmissionApproverHierarchyServiceImpl implements SubmissionApprove
 				 
 				 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
 				 
-				 ProjectMembers projectMembers = projectMembersDao.getProjectMemberById(projectMemberId);
+				 ProjectMembers projectMembers = projectMembersDao.getConsultantUserProjectMemberByProjectMemberId(projectMemberId);
 				 
 				 String[] frequency = timesheetFrequency.split("To");
 			 	 String weekStartDate = frequency[0].trim();
@@ -168,7 +169,7 @@ public class SubmissionApproverHierarchyServiceImpl implements SubmissionApprove
 				 
 				//setting the class filed values
 				 Map<String, String> globalVarsMap = new HashMap<String, String>();
-				 globalVarsMap.put("superUserName",ol.getUser().getFullName());
+				 globalVarsMap.put("superUserName",pah.getApproverUserId().getFullName());
 				 //globalVarsMap.put("employeeName",projectMembers.getEmployee().getUser().getFullName());
 				 globalVarsMap.put("managerName",loginUser.getFullName());
 				// globalVarsMap.put("projectName", projectMembers.getProjects().getProjectName());
@@ -177,6 +178,10 @@ public class SubmissionApproverHierarchyServiceImpl implements SubmissionApprove
 				 globalVarsMap.put("frequencyPeriod",emailMsgBuilder.append(weekStartDate).append(" TO ").append(weekEndDate).toString());
 				 globalVarsMap.put("totalHours",totalHours.toString());
 				 globalVarsMap.put("reason",reason);
+				 
+				 
+				 
+				 
 				 
 				 if(projectMembers.getEmployee().getEmployeeId() !=null && !"".equalsIgnoreCase(projectMembers.getEmployee().getEmployeeId())){
 					 
@@ -201,11 +206,11 @@ public class SubmissionApproverHierarchyServiceImpl implements SubmissionApprove
 				 
 				 StringBuilder acceptBuilder = new StringBuilder();
 				 StringBuilder rejectBuilder = new StringBuilder();
-				 globalVarsMap.put("acceptURL",acceptBuilder.append("<a href='").append(sourceleadUrl).append("/acceptOrRejectReopenTimeSheet?type=accept&projectMemberId=").append(projectMemberId).append("&userId=").append(ol.getUser().getId()).append("&timesheetFrequency=").append(timesheetFrequency).append("'style='text-decoration:none;float:left; margin-left:55px;'><div style=' width:220px; border-radius:30px; background-color:#5cb85c; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Accept</div></a>").toString());
-				 globalVarsMap.put("rejectURL",rejectBuilder.append("<a href='").append(sourceleadUrl).append("/acceptOrRejectReopenTimeSheet?type=reject&projectMemberId=").append(projectMemberId).append("&userId=").append(ol.getUser().getId()).append("&timesheetFrequency=").append(timesheetFrequency).append("'style='text-decoration:none;float:left;margin-left:55px;'><div style=' width:220px; border-radius:30px; background-color:#e74c51; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Reject</div></a>").toString());
+				 globalVarsMap.put("acceptURL",acceptBuilder.append("<a href='").append(sourceleadUrl).append("/acceptOrRejectReopenTimeSheet?type=accept&projectMemberId=").append(projectMemberId).append("&userId=").append(pah.getApproverUserId().getId()).append("&timesheetFrequency=").append(timesheetFrequency).append("'style='text-decoration:none; display:inline-block; margin-left:10px; margin-top:20px;'><div style=' width:170px; border-radius:30px; background-color:#5cb85c; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Accept</div></a>").toString());
+				 globalVarsMap.put("rejectURL",rejectBuilder.append("<a href='").append(sourceleadUrl).append("/acceptOrRejectReopenTimeSheet?type=reject&projectMemberId=").append(projectMemberId).append("&userId=").append(pah.getApproverUserId().getId()).append("&timesheetFrequency=").append(timesheetFrequency).append("'style='text-decoration:none; display:inline-block; margin-left:15px; margin-top:20px;'><div style=' width:170px; border-radius:30px; background-color:#e74c51; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Reject</div></a>").toString());
 				 StringBuilder stringBuildforLink = new StringBuilder();
 				 
-				globalVarsMap.put("loginLink",stringBuildforLink.append("<a href='").append(sourceleadUrl).append("/").append( "'style='text-decoration:none;float:left;margin-left:55px;'><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
+				globalVarsMap.put("loginLink",stringBuildforLink.append("<a href='").append(sourceleadUrl).append("/").append( "'style='text-decoration:none; display:inline-block; margin-left:15px; margin-top:20px;'><div style=' width:170px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
 				 //setting the Recipient information
 				 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 				 
@@ -231,7 +236,7 @@ public class SubmissionApproverHierarchyServiceImpl implements SubmissionApprove
 				String notificationBody = emailScenerioUtil.buildBody(notificationScenario.getBody(),globalVarsMap);
 				notificationScenario.setBody(notificationBody);
 				String actionLink = "";
-				emailScenerioUtil.sendNotification(actionLink, loginUser, ol.getUser(), orgLocations, notificationScenario);
+				emailScenerioUtil.sendNotification(actionLink, loginUser, pah.getApproverUserId(), orgLocations, notificationScenario);
 			 }
 	}
 	
@@ -252,7 +257,7 @@ public class SubmissionApproverHierarchyServiceImpl implements SubmissionApprove
 				 
 				 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
 				 
-				 ProjectMembers projectMembers = projectMembersDao.getProjectMemberById(projectMemberId);
+				 ProjectMembers projectMembers = projectMembersDao.getConsultantUserProjectMemberByProjectMemberId(projectMemberId);
 				 
 				//setting the class filed values
 				 Map<String, String> globalVarsMap = new HashMap<String, String>();

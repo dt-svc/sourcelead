@@ -10,7 +10,7 @@ INSERT INTO `sourcelead`.`CLASS_FIELD` (`ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_S
 
 #Email
 INSERT INTO `sourcelead`.`EMAIL_SCENARIO` (`SCENARIO_NAME`, `ENTITY_TYPE`, `UNIQUE_SCENARIO_NAME`, `DESCRIPTION`, `SUBJECT`, `TEMPLATE_TYPE`, `SIGNATURE`, `BODY`,`IS_TEMPLATE_MODIFIED`, `CREATED_BY`, `ORG_CODE`,`LOCATION_CODE`) VALUES 
-('TimesheetApprovedEmailToVendor','Email', 'TimesheetApprovedEmailToVendor', 'Mail should forward when the client(approver) approved the timesheets of vendor resource', '{{TimesheetApprovedEmailToVendor.employeename}} timesheet has been approved','org', 'Thanks & Regards\n Sourcelead team', 'Dear {{TimesheetApprovedEmailToVendor.vendorcontactname}},\n Timesheet of {{TimesheetApprovedEmailToVendor.employeename}}has been approved for {{TimesheetApprovedEmailToVendor.projectname}}project for the period{{TimesheetApprovedEmailToVendor.frequency}} by {{TimesheetApprovedEmailToVendor.clientName}}','N', 'SLADMIN', 'slead', 'sleadIN');
+('TimesheetApprovedEmailToVendor','Email', 'TimesheetApprovedEmailToVendor', 'Mail should forward when the client(approver) approved the timesheets of vendor resource', '{{TimesheetApprovedEmailToVendor.employeename}} timesheet has been approved','org', 'Thanks & Regards\n Sourcelead team', 'Dear {{TimesheetApprovedEmailToVendor.vendorcontactname}},\n Timesheet of {{TimesheetApprovedEmailToVendor.employeename}} has been approved for {{TimesheetApprovedEmailToVendor.projectname}}project for the period{{TimesheetApprovedEmailToVendor.frequency}} by {{TimesheetApprovedEmailToVendor.clientName}}','N', 'SLADMIN', 'slead', 'sleadIN');
 
 	
 #Notification

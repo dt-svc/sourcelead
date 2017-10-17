@@ -306,7 +306,36 @@ public class OrgRelations implements Serializable{
 	 @Transient
 	 @JsonProperty
 	 private String clientCurrency;
+	 
+	 
+    @Transient
+	@JsonProperty
+	private String isVendorOnboardSubmitted;
+    
+    @Transient
+	@JsonProperty
+    private String accountName;
+    
+    @Transient
+	@JsonProperty
+    private String accountNumber;
+    
+    @Transient
+	@JsonProperty
+    private String bankName;
+    
+    @Transient
+	@JsonProperty
+    private String branchNumber;
 	
+    @Transient
+	@JsonProperty
+    private String bankAddress;
+    
+    @Transient
+	@JsonProperty
+    private String bankIdentifierCode;
+    
 	public String getStringDate()
 	{
 		return stringDate;
@@ -960,6 +989,62 @@ public class OrgRelations implements Serializable{
 
 	public void setEinCode(String einCode) {
 		this.einCode = einCode;
+	}
+
+	public String getIsVendorOnboardSubmitted() {
+		return isVendorOnboardSubmitted;
+	}
+
+	public void setIsVendorOnboardSubmitted(String isVendorOnboardSubmitted) {
+		this.isVendorOnboardSubmitted = isVendorOnboardSubmitted;
+	}
+
+	public String getAccountName() {
+		return accountName;
+	}
+
+	public void setAccountName(String accountName) {
+		this.accountName = accountName;
+	}
+
+	public String getAccountNumber() {
+		return accountNumber;
+	}
+
+	public void setAccountNumber(String accountNumber) {
+		this.accountNumber = accountNumber;
+	}
+
+	public String getBankName() {
+		return bankName;
+	}
+
+	public void setBankName(String bankName) {
+		this.bankName = bankName;
+	}
+
+	public String getBranchNumber() {
+		return branchNumber;
+	}
+
+	public void setBranchNumber(String branchNumber) {
+		this.branchNumber = branchNumber;
+	}
+
+	public String getBankAddress() {
+		return bankAddress;
+	}
+
+	public void setBankAddress(String bankAddress) {
+		this.bankAddress = bankAddress;
+	}
+
+	public String getBankIdentifierCode() {
+		return bankIdentifierCode;
+	}
+
+	public void setBankIdentifierCode(String bankIdentifierCode) {
+		this.bankIdentifierCode = bankIdentifierCode;
 	}
 
 	
