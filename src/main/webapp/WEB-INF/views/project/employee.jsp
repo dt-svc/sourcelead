@@ -376,7 +376,6 @@ result = result + '<div class="project_tabs mb">';
 				{      
 		        		var opt = json[i];
 		        		var role = '';
-		        		alert("opt.userRoleType"+opt.userRoleType);
 		        		
 						if (opt.userRoleType != null && opt.userRoleType != '' && opt.userRoleType != 'undefined') {
 							role = opt.userRoleType;

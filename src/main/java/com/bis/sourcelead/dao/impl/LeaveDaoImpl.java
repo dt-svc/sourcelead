@@ -69,15 +69,16 @@ public class LeaveDaoImpl implements LeaveDao{
 		
 		Long usrId = Long.parseLong(leaveDTO.getUserId());
 		Session session = this.sessionFactory.getCurrentSession();
-		String subQuery = "";
-		
 		List<LeaveApproveHierarchy> leaveApproveHierarchyList = null;
 		ResponseList<LeaveApproveHierarchy> response = new ResponseList<>();
 		
 		if(StringUtils.isNotBlank(leaveDTO.getLeaveStatus())) {
 			StringBuilder searchQuery = new StringBuilder("");
 			StringBuilder leavesearchQuery = new StringBuilder("");
-			String query = "from LeaveApproveHierarchy laph left join fetch laph.leaveid leave left join fetch leave.leaveType left join fetch leave.user ltype where leave.orgLocations.id = :orgLocationId and laph.approverUserId.id= :userId and leave.status =  '"+leaveDTO.getLeaveStatus()+"'";
+			String query = "from LeaveApproveHierarchy laph left join fetch laph.leaveid leave "
+					      + " left join fetch leave.leaveType  leaveType"
+					      + " left join fetch leave.user user"
+					      + " where leave.orgLocations.id = :orgLocationId and laph.approverUserId.id= :userId and leave.status =  '"+leaveDTO.getLeaveStatus()+"'";
 			String countQuery ="from Leave leave where leave.orgLocations.id = :orgLocationId and leave.status = '"+leaveDTO.getLeaveStatus()+"'";
 			if(StringUtils.isNotBlank(leaveDTO.getSearchValue())){
 				searchQuery.append(" and (laph.leaveid.user.firstName like '%" + leaveDTO.getSearchValue() + "%' ")
@@ -140,22 +141,41 @@ public class LeaveDaoImpl implements LeaveDao{
 		else {
 			StringBuilder searchQuery = new StringBuilder("");
 			StringBuilder leavesearchQuery = new StringBuilder("");
-			String query = "from LeaveApproveHierarchy laph left join fetch laph.leaveid leave left join fetch leave.leaveType left join fetch leave.user ltype where leave.orgLocations.id = :orgLocationId and laph.approverUserId.id= :userId";
+			String query = "from LeaveApproveHierarchy laph left join fetch laph.leaveid leave "
+					+ "left join fetch leave.leaveType leaveType "
+					+ "left join fetch leave.user user "
+					+ " where leave.orgLocations.id = :orgLocationId and laph.approverUserId.id= :userId";
 			String countQuery ="from Leave leave where leave.orgLocations.id = :orgLocationId";
 			if(StringUtils.isNotBlank(leaveDTO.getSearchValue())){
 				searchQuery.append(" and (laph.leaveid.user.firstName like '%" + leaveDTO.getSearchValue() + "%' ")
 				.append("OR laph.leaveid.user.lastName like '%" + leaveDTO.getSearchValue() + "%' ")
-				.append("OR laph.leaveid.numberOfDays like '%" + leaveDTO.getSearchValue() + "%' ")
-				.append("OR laph.leaveid.approvedBy.firstName like '%" + leaveDTO.getSearchValue() + "%' ")
-				.append("OR laph.leaveid.approvedBy.lastName like '%" + leaveDTO.getSearchValue() + "%' ")
-				.append("OR laph.leaveid.leaveType.name like '%" + leaveDTO.getSearchValue() + "%' )");
+				.append("OR laph.leaveid.numberOfDays like '%" + leaveDTO.getSearchValue() + "%' ");
+				if(Constants.LEAVE_APPROVED.equalsIgnoreCase(leaveDTO.getLeaveStatus())) {
+					searchQuery.append("OR laph.leaveid.approvedBy.firstName like '%" + leaveDTO.getSearchValue() + "%' ")
+					.append("OR laph.leaveid.approvedBy.lastName like '%" + leaveDTO.getSearchValue() + "%' ");
+				}else if(Constants.LEAVE_REJECTED.equalsIgnoreCase(leaveDTO.getLeaveStatus())) {
+					searchQuery.append("OR laph.leaveid.rejectedBy.firstName like '%" + leaveDTO.getSearchValue() + "%' ")
+					.append("OR laph.leaveid.rejectedBy.firstName like '%" + leaveDTO.getSearchValue() + "%' ");
+				}else {
+					searchQuery.append("OR laph.leaveid.cancelledBy.firstName like '%" + leaveDTO.getSearchValue() + "%' ")
+					.append("OR laph.leaveid.cancelledBy.firstName like '%" + leaveDTO.getSearchValue() + "%' ");
+				}
+				searchQuery.append("OR laph.leaveid.leaveType.name like '%" + leaveDTO.getSearchValue() + "%' )");
 				
-			/*	leavesearchQuery.append(" and (leave.user.firstName like '%" + leaveDTO.getSearchValue() + "%' ")
+				leavesearchQuery.append(" and (leave.user.firstName like '%" + leaveDTO.getSearchValue() + "%' ")
 				.append("OR leave.user.lastName like '%" + leaveDTO.getSearchValue() + "%' ")
-				.append("OR leave.numberOfDays like '%" + leaveDTO.getSearchValue() + "%' ")
-				.append("OR leave.approvedBy.firstName like '%" + leaveDTO.getSearchValue() + "%' ")
-				.append("OR leave.approvedBy.lastName like '%" + leaveDTO.getSearchValue() + "%' ")
-				.append("OR leave.leaveType.name like '%" + leaveDTO.getSearchValue() + "%' )");*/
+				.append("OR leave.numberOfDays like '%" + leaveDTO.getSearchValue() + "%' ");
+				if(Constants.LEAVE_APPROVED.equalsIgnoreCase(leaveDTO.getLeaveStatus())) {
+					leavesearchQuery.append("OR leave.approvedBy.firstName like '%" + leaveDTO.getSearchValue() + "%' ")
+					.append("OR leave.approvedBy.lastName like '%" + leaveDTO.getSearchValue() + "%' ");
+				}else if(Constants.LEAVE_REJECTED.equalsIgnoreCase(leaveDTO.getLeaveStatus())) {
+					leavesearchQuery.append("OR leave.rejectedBy.firstName like '%" + leaveDTO.getSearchValue() + "%' ")
+					.append("OR leave.rejectedBy.firstName like '%" + leaveDTO.getSearchValue() + "%' ");
+				}else {
+					leavesearchQuery.append("OR leave.cancelledBy.firstName like '%" + leaveDTO.getSearchValue() + "%' ")
+					.append("OR leave.cancelledBy.firstName like '%" + leaveDTO.getSearchValue() + "%' ");
+				}
+				leavesearchQuery.append("OR leave.leaveType.name like '%" + leaveDTO.getSearchValue() + "%' )");
 				
 			}
 			
@@ -193,7 +213,12 @@ public class LeaveDaoImpl implements LeaveDao{
 	@Transactional
 	public Leave getLeaveById(String leaveId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
-		  Leave leave =  (Leave) session.get(Leave.class, leaveId);
+		String query = "from Leave leave left join fetch leave.leaveType left join fetch leave.user where leave.id = :leaveId";
+		Leave leave = null;
+		List<Leave> leaveList = session.createQuery(query).setString("leaveId", leaveId).setCacheable(false).list();
+		if(leaveList !=null && leaveList.size() >0){
+			leave =  leaveList.get(0);
+		}
 		return leave;
 	}
 
@@ -205,7 +230,7 @@ public class LeaveDaoImpl implements LeaveDao{
 		Session session = this.sessionFactory.getCurrentSession();
 		List<Leave> leaveList = null;
 		String query = "from Leave leave left join fetch leave.leaveType where leave.orgLocations.id = :orgLocationId and leave.status = :status and leave.createdBy IN (select user.userCode from User user where user.id=:userId)";
-		leaveList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setLong("userId", userId).setString("status", status).setCacheable(true).list();
+		leaveList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setLong("userId", userId).setString("status", status).setCacheable(false).list();
 		return leaveList;
 	}
 

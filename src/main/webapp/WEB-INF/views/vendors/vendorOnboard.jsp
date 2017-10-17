@@ -426,8 +426,6 @@ function getVendorOnboardDetails(){
 		        	}
 		        	
 		        	
-		        	alert(json.einCode);
-		        	
 		        	if(json.einCode != null && json.einCode != 'undefined' && json.einCode != ''){
 		        		$("input[name=einCode]").val(json.einCode);
 		        	}
