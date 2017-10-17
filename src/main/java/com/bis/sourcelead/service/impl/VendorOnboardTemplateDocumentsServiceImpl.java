@@ -54,28 +54,33 @@ public class VendorOnboardTemplateDocumentsServiceImpl implements VendorOnboardT
 		VendorOnboardingTemplate template = vendorOnboardTemplateDao.getVendorOnBoardingTemplateById(Long.valueOf(onBoardingTemplateDTO.getTemplateId()));
 		if(onBoardingTemplateDTO.getVendorDocumentsFileInfo() != null &&  onBoardingTemplateDTO.getVendorDocumentsFileInfo().size() > 0) {
 			for(FileInfo fileInfo : onBoardingTemplateDTO.getVendorDocumentsFileInfo()) {
-				VendorOnboardingTemplateDocuments documents = new VendorOnboardingTemplateDocuments();
-			/*	if(fileInfo != null && fileInfo.getFileURL() != null) {
-					   documents.setFileName(fileInfo.getFileName());
-					   documents.setFileContentType(fileInfo.getContentType());
-					   documents.setFileUrl(fileInfo.getFileURL());
-				   }*/
-				    documents.setVendorOnboardingTemplateId(template);
-				    documents.setDocumentType("Documents");
-				    documents.setDocumentName(fileInfo.getDocFileName());
-				    if(!isNullOrEmpty(fileInfo.getChecked()) && fileInfo.getChecked().equalsIgnoreCase(Constants.YES)){
-				    	documents.setIsRequired(Constants.YES);
-				    }else{
-				    	documents.setIsRequired(Constants.NO);
-				    }
-                    documents.setStatus(Constants.CANDIDATE_ACTIVE);
-                    documents.setDocumentUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
-                    documents.setCreatedDate(CommonUtil.currentDate());
-                    documents.setCreatedBy(loginUser);
-                    documents.setUpdatedDate(CommonUtil.currentDate());
-                    documents.setUpdatedBy(loginUser);
-                    saveVendorOnBoardingTemplateDocuments(documents);
-                  //  FileUploadUtil.moveFile(onBoardingTemplateDTO .getStaticPath(), fileInfo, "Vendor-Onboard-Template-Documents");
+				
+				if(StringUtils.isNotBlank(fileInfo.getDocFileName())) {
+					
+					     VendorOnboardingTemplateDocuments documents = new VendorOnboardingTemplateDocuments();
+					/*	if(fileInfo != null && fileInfo.getFileURL() != null) {
+							   documents.setFileName(fileInfo.getFileName());
+							   documents.setFileContentType(fileInfo.getContentType());
+							   documents.setFileUrl(fileInfo.getFileURL());
+						   }*/
+						    documents.setVendorOnboardingTemplateId(template);
+						    documents.setDocumentType("Documents");
+						    documents.setDocumentName(fileInfo.getDocFileName());
+						    if(!isNullOrEmpty(fileInfo.getChecked()) && fileInfo.getChecked().equalsIgnoreCase(Constants.YES)){
+						    	documents.setIsRequired(Constants.YES);
+						    }else{
+						    	documents.setIsRequired(Constants.NO);
+						    }
+		                    documents.setStatus(Constants.CANDIDATE_ACTIVE);
+		                    documents.setDocumentUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+		                    documents.setCreatedDate(CommonUtil.currentDate());
+		                    documents.setCreatedBy(loginUser);
+		                    documents.setUpdatedDate(CommonUtil.currentDate());
+		                    documents.setUpdatedBy(loginUser);
+		                    saveVendorOnBoardingTemplateDocuments(documents);
+		                  //  FileUploadUtil.moveFile(onBoardingTemplateDTO .getStaticPath(), fileInfo, "Vendor-Onboard-Template-Documents");
+				}
+				
 			}
 		}
 		
@@ -145,22 +150,25 @@ public class VendorOnboardTemplateDocumentsServiceImpl implements VendorOnboardT
 		
 		if(onBoardingTemplateDTO.getVendorOnboardDocumentsFileInfo() != null && onBoardingTemplateDTO.getVendorOnboardDocumentsFileInfo().size() > 0){
 			for(VendorsDocumentsDTO documentsDTO : onBoardingTemplateDTO.getVendorOnboardDocumentsFileInfo()) {
-				VendorOnboardingTemplateDocuments templateDocuments = new VendorOnboardingTemplateDocuments();
-				templateDocuments.setDocumentName(documentsDTO.getDocFileName());
-				templateDocuments.setVendorOnboardingId(vendorOnboarding);
-				if(StringUtils.isNotBlank(documentsDTO.getChecked())){
-					templateDocuments.setIsRequired(Constants.YES);
-				}else{
-					templateDocuments.setIsRequired(Constants.NO);
+				
+				if(StringUtils.isNotBlank(documentsDTO.getDocFileName())) {
+					VendorOnboardingTemplateDocuments templateDocuments = new VendorOnboardingTemplateDocuments();
+					templateDocuments.setDocumentName(documentsDTO.getDocFileName());
+					templateDocuments.setVendorOnboardingId(vendorOnboarding);
+					if(StringUtils.isNotBlank(documentsDTO.getChecked())){
+						templateDocuments.setIsRequired(Constants.YES);
+					}else{
+						templateDocuments.setIsRequired(Constants.NO);
+					}
+					templateDocuments.setDocumentUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+					templateDocuments.setDocumentType("Vendor Documents");
+					templateDocuments.setStatus(Constants.CANDIDATE_ACTIVE);
+					templateDocuments.setCreatedBy(loginUser);
+					templateDocuments.setUpdatedBy(loginUser);
+					templateDocuments.setCreatedDate(CommonUtil.currentDate());
+					templateDocuments.setUpdatedDate(CommonUtil.currentDate());
+					saveVendorOnBoardingTemplateDocuments(templateDocuments);
 				}
-				templateDocuments.setDocumentUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
-				templateDocuments.setDocumentType("Vendor Documents");
-				templateDocuments.setStatus(Constants.CANDIDATE_ACTIVE);
-				templateDocuments.setCreatedBy(loginUser);
-				templateDocuments.setUpdatedBy(loginUser);
-				templateDocuments.setCreatedDate(CommonUtil.currentDate());
-				templateDocuments.setUpdatedDate(CommonUtil.currentDate());
-				saveVendorOnBoardingTemplateDocuments(templateDocuments);
 			}
 		}
 		

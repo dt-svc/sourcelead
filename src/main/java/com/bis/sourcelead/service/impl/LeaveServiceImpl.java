@@ -162,8 +162,10 @@ public class LeaveServiceImpl implements LeaveService{
 		ResponseList<LeaveDTO> leaveDtoList = new ResponseList<>();
 		List<LeaveDTO> leavelistr = new ArrayList<>();
 		if(leaveApproveHierarchiesList.getData() !=null && leaveApproveHierarchiesList.getData().size() >0) {
-			leaveApproveHierarchiesList.getData().forEach(laph -> {
-				Leave leave = laph.getLeaveid();
+			for(LeaveApproveHierarchy laph : leaveApproveHierarchiesList.getData()) {
+//			leaveApproveHierarchiesList.getData().forEach(laph -> {
+				Leave leave = leaveDao.getLeaveById(laph.getLeaveid().getId());
+//				LeaveType LeaveType = leaveTypeService.get
 				LeaveDTO leaveDto = new LeaveDTO();
 				StringBuilder sb = new StringBuilder();
 				StringBuilder durationSb = new StringBuilder();
@@ -250,7 +252,7 @@ public class LeaveServiceImpl implements LeaveService{
 				}
 				leaveDto.setUpdatedDate(ConversionUtil.getDateAsString(leave.getUpdatedDate()));
 				leavelistr.add(leaveDto);
-			});
+			}
 		}
 		
 		leaveDtoList.setData(leavelistr);
