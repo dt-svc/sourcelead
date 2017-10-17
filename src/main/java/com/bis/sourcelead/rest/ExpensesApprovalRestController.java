@@ -244,6 +244,7 @@ public class ExpensesApprovalRestController {
 			 
 			 amountCurrencyType.append(amountCurrencyType1).append(" ").append(currencyCode);
 			 globalVarsMap.put("amount",amountCurrencyType1.toString());
+			 globalVarsMap.put("reason",rejectedReason);
 			 
 			 //setting the Recipient information
 			 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
