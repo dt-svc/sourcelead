@@ -864,21 +864,6 @@ public class LeaveManagementRestController {
 		return isDeleted;
 	}
 	
-	@RequestMapping(value = {"/validateHolidayName","/rest/validateHolidayName"}, method = RequestMethod.GET)
-	public  @ResponseBody boolean validateHolidayName(@RequestParam(value = "holidayName", required = false) String holidayName,@RequestParam(value = "orgLocationId", required = false) Long orgLocationId,HttpServletRequest request) throws Exception
-	{
-		boolean isDeleted = false;
-		 Holiday deleteHoliday = holidayService.getHolidaysById(holidayName);
-		 if(deleteHoliday !=null) {
-			 deleteHoliday.setStatus("0");
-			 holidayDAO.saveDeleteHoliday(deleteHoliday);
-			 isDeleted = true;
-		 }
-		return isDeleted;
-		
-	}
-	
-	
 	/**
 	 * returns add Employee Requested Leaves  jsp
 	 * @param request
@@ -1387,5 +1372,12 @@ public class LeaveManagementRestController {
 		return leaveTypeDTOList;
 	}
 	
+	@RequestMapping(value = { "/validateName", "/rest/validateName" }, method = RequestMethod.GET)
+	public boolean validateName(@RequestParam(value = "orgLocationId", required = true) Long orgLocationId, @RequestParam(value = "from", required = true) String fromTable, @RequestParam(value = "name", required = true) String name)
+	{
+		boolean flag = false;
+		flag = leaveService.validateNameByOrgLocationIdandFromTable(name, orgLocationId, fromTable);
+		return flag;
+	}
 	
 }
