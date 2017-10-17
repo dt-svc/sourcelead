@@ -3,16 +3,12 @@ package com.bis.sourcelead.rest;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collector;
-import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -38,26 +34,20 @@ import com.bis.sourcelead.dao.LeaveTypeDao;
 import com.bis.sourcelead.dao.OptionsDao;
 import com.bis.sourcelead.dao.RestrictDayDao;
 import com.bis.sourcelead.dao.ShiftDao;
-
-import com.bis.sourcelead.dto.EmployerPayrollCostDTO;
-
 import com.bis.sourcelead.dto.HolidayDTO;
 import com.bis.sourcelead.dto.LeaveDTO;
 import com.bis.sourcelead.dto.LeaveReportsDTO;
 import com.bis.sourcelead.dto.LeaveTypeDTO;
+import com.bis.sourcelead.dto.NotificationDTO;
 import com.bis.sourcelead.dto.OptionsDTO;
-
 import com.bis.sourcelead.dto.ResponseList;
-
 import com.bis.sourcelead.dto.RestrictDayDTO;
 import com.bis.sourcelead.dto.ShiftDTO;
 import com.bis.sourcelead.entity.Department;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.Holiday;
 import com.bis.sourcelead.entity.Leave;
-
 import com.bis.sourcelead.entity.LeaveApproveHierarchy;
-
 import com.bis.sourcelead.entity.LeaveManagementHistory;
 import com.bis.sourcelead.entity.LeaveRole;
 import com.bis.sourcelead.entity.LeaveType;
@@ -69,7 +59,6 @@ import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.Shift;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
-import com.bis.sourcelead.payroll.entity.EmployerPayrollCost;
 import com.bis.sourcelead.service.DepartmentService;
 import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.HolidayService;
@@ -84,7 +73,6 @@ import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
-import com.itextpdf.text.log.Level;
 
 
 @RestController
@@ -523,10 +511,25 @@ public class LeaveManagementRestController {
 	
 	@PreAuthorize("hasAnyRole('ROLE_LEAVE_CONFIGURE')")
 	@RequestMapping(value = {"/getRestrictDayList", "/rest/getRestrictDayList"}, method = RequestMethod.GET)
-	public List<RestrictDay> getRestrictDayList(@RequestParam(value = "orgLocationId", required = true) Long orgLocationId) throws Exception {
-	      
+	public ResponseList<RestrictDayDTO> getRestrictDayList(@RequestParam(value = "orgLocationId", required = true) Long orgLocationId) throws Exception {
+		OrgLocations orgLocations = orgLocationService.getOrgLocations(Long.valueOf(orgLocationId));
+		ResponseList<RestrictDayDTO> responseList = new ResponseList<>();
+		
 		List<RestrictDay> restrictDayList = restrictDayService.getRestrictDayListByOrgLocationId(orgLocationId);
-		return restrictDayList;
+		List<RestrictDayDTO> restrictDayDTOList = new ArrayList<>();
+		for(RestrictDay restrictDay : restrictDayList){
+			RestrictDayDTO restrictDayDTO = new RestrictDayDTO();
+			
+			restrictDayDTO.setRestrictName(restrictDay.getRestrictName());
+			restrictDayDTO.setStartDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), restrictDay.getStartDate()));
+			restrictDayDTO.setEndDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), restrictDay.getEndDate()));
+			restrictDayDTO.setReason(restrictDay.getReason());
+			restrictDayDTO.setIsApllicable(restrictDay.getApplicableToAll());
+			restrictDayDTO.setStatus(restrictDay.getStatus());
+			restrictDayDTOList.add(restrictDayDTO);
+		}
+		responseList.setData(restrictDayDTOList);
+		return responseList;
 	}
 
 	@PreAuthorize("hasAnyRole('ROLE_LEAVE_CONFIGURE')")
@@ -538,10 +541,24 @@ public class LeaveManagementRestController {
 	
 	@PreAuthorize("hasAnyRole('ROLE_LEAVE_CONFIGURE')")
 	@RequestMapping(value = {"/getShiftList", "/rest/getShiftList"}, method = RequestMethod.GET)
-	public List<Shift> getShiftList(@RequestParam (value = "orgLocationId", required = true )Long orgLocationId) throws Exception{
-	List<Shift> shift = shiftService.getShiftList(orgLocationId);
-	return shift;
-	}
+	public ResponseList<ShiftDTO> getShiftList(@RequestParam (value = "orgLocationId", required = true )Long orgLocationId) throws Exception{
+		ResponseList<ShiftDTO> responseList = new ResponseList<>();
+		List<Shift> shiftList = shiftService.getShiftList(orgLocationId);
+	    List<ShiftDTO> shiftDTOList = new ArrayList<>();
+	    
+	      for(Shift shift : shiftList){
+		     ShiftDTO shiftDTO = new ShiftDTO();
+				shiftDTO.setShiftName(shift.getShiftName());
+				shiftDTO.setTimeIn(shift.getTimeIn());
+				shiftDTO.setTimeOut(shift.getTimeOut());
+				shiftDTO.setShiftDescription(shift.getShiftDescription());
+				shiftDTO.setStatus(shift.getStatus());
+				shiftDTOList.add(shiftDTO);
+	
+	            }
+				responseList.setData(shiftDTOList);
+				return responseList;
+	         }
 	
 	@PreAuthorize("hasAnyRole('ROLE_LEAVE_CONFIGURE')")
 	@RequestMapping(value = "/editleaveshift")

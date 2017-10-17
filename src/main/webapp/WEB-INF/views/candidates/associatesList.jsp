@@ -680,7 +680,8 @@ function addFavourite(candidateId){
 					 document.getElementById("favourite"+candidateId).removeAttribute("class")
 					 document.getElementById("favourite"+candidateId).className = 'star-rating activestar-rating' 
 				}else{
-					 document.getElementById("favourite"+candidateId).removeAttribute("class")
+					 //document.getElementById("favourite"+candidateId).removeAttribute("class")
+					 document.getElementById("favourite"+candidateId).classList.remove("activestar-rating");
 					 document.getElementById("favourite"+candidateId).className = 'star-rating' 
 				}
 				
