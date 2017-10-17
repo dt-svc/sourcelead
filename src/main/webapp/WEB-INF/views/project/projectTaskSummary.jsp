@@ -325,7 +325,7 @@
 		                      <option value="100" ${projectTask.percentage  == 100 ? 'selected' : ''} >100 Percentage</option>  
 		                </select>
 		                <span class="pull-right">
-						 	<small class="status" id="percentageLabel" style="display:block;">Work Completed</small>
+						 	<small class="status" id="percentageLabel" style="display:block;">Completed</small>
 						 	<i class="fa fa-spinner fa-spin faSpin " id="percentageSpin" style="display:none;"></i>
 						 </span> 
 		            </div>
@@ -377,9 +377,9 @@ function tasksAssignList(projectId){
         url: sourceleadUrl+"/getProjectEmployeeListById?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId+"&status="+values, 
         success: function(json) {
         	var output = "";
-        	for (var i=0; i<json.projectMembersList.length; i++)
+        	for (var i=0; i<json.length; i++)
 			{
-        		var opt = json.projectMembersList[i];
+        		var opt = json[i];
 
         		if(!jQuery.isEmptyObject(map)){
         			 $.each(map, function(key, value) {

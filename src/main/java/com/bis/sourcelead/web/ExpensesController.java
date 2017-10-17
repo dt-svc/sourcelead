@@ -112,7 +112,7 @@ public class ExpensesController {
 			ExpensesDTO expensesDTO = expensesRestController.getExpenseDetailsByExpenseId(elDTO);
 			model.addObject("expenses", expensesDTO);
 			if(expensesDTO != null){
-				 Submission_Status submissionStatus = expensesDTO.getCombinedSubmissionStatus();
+				 Submission_Status submissionStatus = Submission_Status.getNameByValue(expensesDTO.getCombinedSubmissionStatus());
 				 model.addObject("submissionStatus",submissionStatus);
 				 
 			     String type = request.getParameter("type");
