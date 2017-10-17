@@ -465,6 +465,7 @@ public class LeaveDaoImpl implements LeaveDao{
 
 
 	@Override
+	@Transactional
 	public List<LeaveApproveHierarchy> getEmployeeRequestedLeavesBylocationIdAndUserIdAndStatus(Long orgLocationId, String userId, String leaveStatus)
 	{
 		Long usrId = Long.parseLong(userId);
