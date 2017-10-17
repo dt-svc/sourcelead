@@ -692,9 +692,9 @@ public class TimesheetApprovalRestController {
 						 timesheetApprovalDiv.append("  <td>");
 						 timesheetApprovalDiv.append("<div class='time_appr_user'>");
 						 timesheetApprovalDiv.append("   <img  id='userImage' onerror='predefineProfileImage(this);' src='").append(pm.getProjectMemberCandidteId().getConsultantUser().getFileUrl()).append("' alt='Profile Image' class='img-circle img-responsive'>");
-						 timesheetApprovalDiv.append("    <span><b title='").append(pm.getProjectMemberCandidteId().getConsultantUser().getFullName()).append("'>").append(pm.getProjectMemberCandidteId().getConsultantUser().getFullName()).append("</b>")
-						                                             .append("<b title='").append(pm.getProjectMemberCandidteId().getConsultantUser().getEmail()).append("'>").append(pm.getProjectMemberCandidteId().getConsultantUser().getEmail()).append("</b>")
-						                                             .append("<b title='").append((pm.getProjectMemberCandidteId().getConsultantUser().getMobilePhone() != null) ?(pm.getProjectMemberCandidteId().getConsultantUser().getMobilePhone()) : "").append("'>").append((pm.getProjectMemberCandidteId().getConsultantUser().getMobilePhone() != null) ?(pm.getProjectMemberCandidteId().getConsultantUser().getMobilePhone()) : "").append("</b>")
+						 timesheetApprovalDiv.append("    <span><b title='").append(projectMember.getProjectMemberCandidteId().getFullName()).append("'>").append(projectMember.getProjectMemberCandidteId().getFullName()).append("</b>")
+						                                             .append("<b title='").append(projectMember.getProjectMemberCandidteId().getEmail()).append("'>").append(projectMember.getProjectMemberCandidteId().getEmail()).append("</b>")
+						                                             .append("<b title='").append((projectMember.getProjectMemberCandidteId().getMobilePhone() != null) ?(projectMember.getProjectMemberCandidteId().getMobilePhone()) : "").append("'>").append((projectMember.getProjectMemberCandidteId().getMobilePhone() != null) ?(projectMember.getProjectMemberCandidteId().getMobilePhone()) : "").append("</b>")
 						                                             .append("</span>");
 						 timesheetApprovalDiv.append("   <div>");
 						 timesheetApprovalDiv.append(" </td>");
