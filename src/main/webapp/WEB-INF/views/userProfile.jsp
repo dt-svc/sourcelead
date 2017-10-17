@@ -555,8 +555,6 @@ var validationSettings = {
          $('body').on('submit', '#profileSettings_form', function(e){
         	 var userId = '${SourceLeadWeb_user.id}';
         	 var orgLocationId = '${SourceLeadWeb_orgLocationId}';
-        	 alert(userId);
-        	 alert(orgLocationId);
         	 
         	  if ($('#profileSettings_form').validate(false, validationSettings)){
         		    e.preventDefault(); 
