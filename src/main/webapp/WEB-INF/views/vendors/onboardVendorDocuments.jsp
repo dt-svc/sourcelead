@@ -132,7 +132,9 @@ function getOnboardDocuments(){
 	        	
      	       var result = "";
      	      result = result +"<table class='timesheetAttachment'  id='contractsAttachmentTable' cellpadding='0' cellspacing='0'>";
-	         	 for (var i = 0; i < json.length; i++) { 
+	         	 
+     	     if(json.length > 0){ 
+     	      for (var i = 0; i < json.length; i++) { 
 	         		 var opt = json[i]; 
 	         		 var datavalidation = '';
 	         		 if(opt.isRequired == 'Y'){
@@ -157,6 +159,9 @@ function getOnboardDocuments(){
                 	 
                 	 result = result +"</tr>";
 	         	 }
+     	     }else{
+	        		result = result +'<div><h4>&nbsp;&nbsp;&nbsp;No Documents Found</h4></div>';
+	        	}
          	 result = result +"</table>";
       	
       	 $("#vendorDocumentsList").empty();
