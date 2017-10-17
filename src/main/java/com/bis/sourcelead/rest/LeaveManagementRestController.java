@@ -286,7 +286,7 @@ public class LeaveManagementRestController {
 				List<Leave> totalleavesTaken = leaveService.getLeavesListByTypeIdAndLocationIdAndUserId(type.getId(),orgLocations.getId(), loginUser.getId());
 				for (Leave leave : totalleavesTaken) {
 					if(Constants.PENDING.equalsIgnoreCase(leave.getStatus())) {
-						totalLeaves = totalLeaves - (Integer.valueOf(leave.getNumberOfDays()));
+//						totalLeaves = totalLeaves - (Integer.valueOf(leave.getNumberOfDays()));
 						pendingLeaveCounts = pendingLeaveCounts + (Integer.valueOf(leave.getNumberOfDays()));
 					}
 					if(Constants.APPROVED.equalsIgnoreCase(leave.getStatus())) {
@@ -1422,6 +1422,28 @@ public class LeaveManagementRestController {
 		   
 		    
 		return leaveTypeDTOList;
+	}
+	
+	@RequestMapping(value = {"/validateMaxLeave","/rest/validateMaxLeave"}, method = RequestMethod.GET)
+	public  @ResponseBody boolean validateMaxLeave(@RequestParam(value = "leaveTypeId", required = false) String leaveTypeId,@RequestParam(value = "orgLocationId", required = false) Long orgLocationId,@RequestParam(value = "userId", required = false) Long userId) throws Exception
+	{
+		boolean isvalidate = false;
+		int totalLeavesApplied = 0;
+		int totalLeaves = 0;
+		List<Leave> leaveList = leaveService.getLeavesListByTypeIdAndLocationIdAndUserId(leaveTypeId, orgLocationId,userId);
+		for (Leave leave : leaveList) {
+			if(Constants.APPROVED.equalsIgnoreCase(leave.getStatus())) {
+				totalLeavesApplied = totalLeavesApplied + Integer.valueOf(leave.getNumberOfDays());
+			}
+			totalLeaves = Integer.valueOf(leave.getLeaveType().getNumbefrOfLeavesPeryear());
+		}
+		
+		if(totalLeavesApplied > totalLeaves) {
+			isvalidate = true;
+		}
+		
+		return isvalidate;
+		
 	}
 	
 	
