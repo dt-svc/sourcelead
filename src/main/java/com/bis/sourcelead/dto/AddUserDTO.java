@@ -123,6 +123,8 @@ import com.bis.sourcelead.entity.UserRole;
 		
 		private String phoneNumber;
 		
+		private String extensionNumber;
+		
 		private String assignReportingManagers;
 		
 		private String managerUsers;
@@ -564,6 +566,16 @@ import com.bis.sourcelead.entity.UserRole;
 
 		public void setPhoneNumber(String phoneNumber) {
 			this.phoneNumber = phoneNumber;
+		}
+		
+		public String getExtensionNumber()
+		{
+			return extensionNumber;
+		}
+
+		public void setExtensionNumber(String extensionNumber)
+		{
+			this.extensionNumber = extensionNumber;
 		}
 
 		public String getAssignReportingManagers() {

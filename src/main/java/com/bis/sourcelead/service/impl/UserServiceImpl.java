@@ -208,6 +208,10 @@ public class UserServiceImpl implements UserService {
 		  if(StringUtils.isNotBlank(addUserDTO.getPhoneNumber())) {
 			  user.setMobilePhone(addUserDTO.getPhoneNumber());
 		  }
+		  
+		  if(StringUtils.isNotBlank(addUserDTO.getExtensionNumber())){
+		    	user.setExtensionNumber(addUserDTO.getExtensionNumber());
+		    }
 		 
 	   }
 	   
@@ -223,6 +227,10 @@ public class UserServiceImpl implements UserService {
 	    if(StringUtils.isNotBlank(addUserDTO.getPhoneNumber())){
 			user.setMobilePhone(addUserDTO.getPhoneNumber());
 		}
+	    
+	    if(StringUtils.isNotBlank(addUserDTO.getExtensionNumber())){
+	    	user.setExtensionNumber(addUserDTO.getExtensionNumber());
+	    }
 		
 	    if(StringUtils.isNotBlank(addUserDTO.getIsMailSent()) && ("Y".equals(addUserDTO.getIsMailSent()))){
 			user.setIsMailSent(Status.Y);
@@ -481,7 +489,8 @@ public class UserServiceImpl implements UserService {
 		} catch (Exception e) {
 			logger.error(ExceptionUtils.getFullStackTrace(e));
 		}
-		
+		userRole.setPhoneNumber(addUserDTO.getPhoneNumber());
+		userRole.setExtensionNumber(addUserDTO.getExtensionNumber());
 		userRole.setRoles(roles);
 		userRole.setUserType(roles.getDisplayName());
 		userRole.setCreatedDate(commonUtil.currentDate());

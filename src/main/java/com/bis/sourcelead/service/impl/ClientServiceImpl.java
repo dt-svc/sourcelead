@@ -1012,11 +1012,19 @@ public class ClientServiceImpl implements ClientService {
 				} else {
 					existingUser.setLastName("");
 				}
+				
 				if (StringUtils.isNotBlank(clientDTO.getPhoneNumber())) {
 					existingUser.setMobilePhone(clientDTO.getPhoneNumber());
 				} else {
 					existingUser.setMobilePhone("");
 				}
+				
+				if(StringUtils.isNotBlank(clientDTO.getExtensionNumber())){
+					existingUser.setExtensionNumber(clientDTO.getExtensionNumber());
+				}else{
+					existingUser.setExtensionNumber("");
+				}
+				
 				if (StringUtils.isNotBlank(clientDTO.getEmail())) {
 					existingUser.setEmail(clientDTO.getEmail());
 				} else {
