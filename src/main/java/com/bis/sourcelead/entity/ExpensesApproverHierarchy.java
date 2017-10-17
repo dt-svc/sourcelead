@@ -153,6 +153,11 @@ private String userTypeVendorName;
 @JsonProperty
 private String expensesApproverHierarchyPurpose; 
 
+
+@Transient
+@JsonProperty
+private String userFileUrl; 
+
 public Long getId()
 {
 	return id;
@@ -370,6 +375,14 @@ public String getExpensesApproverHierarchyPurpose() {
 
 public void setExpensesApproverHierarchyPurpose(String expensesApproverHierarchyPurpose) {
 	this.expensesApproverHierarchyPurpose = expensesApproverHierarchyPurpose;
+}
+
+public String getUserFileUrl() {
+	return userFileUrl;
+}
+
+public void setUserFileUrl(String userFileUrl) {
+	this.userFileUrl = userFileUrl;
 }
 
 
