@@ -78,6 +78,7 @@ public class LeaveTypeDaoImpl implements LeaveTypeDao {
 	}
 
 	@Override
+	@Transactional(rollbackFor = { Exception.class })
 	public List<LeaveType> getLeaveTypeListByLocationIdAndStatus(String orgLocationId)
 	{
 		Session session = this.sessionFactory.getCurrentSession();
