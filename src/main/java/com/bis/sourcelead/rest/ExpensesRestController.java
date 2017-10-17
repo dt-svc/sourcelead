@@ -711,13 +711,13 @@ public class ExpensesRestController {
 								expensesApproverHierarchy.setExpensesProjectName("--");
 							}
 							
-					 ProjectMembers projectMember = projectMembersService.getConsultantUserProjectMemberByProjectMemberId(expensesApproverHierarchy.getExpenseId().getProjectMembers().getId());
-					if (null !=projectMember.getProjectMemberCandidteId().getConsultantUser()) {
-					     	ProjectMembers locProjectMember =expensesApproverHierarchy.getExpenseId().getProjectMembers();
-							if(null != locProjectMember.getProjectMemberCandidteId().getDesignationType() && !"".equalsIgnoreCase(locProjectMember.getProjectMemberCandidteId().getDesignationType())){
-								String empType = locProjectMember.getProjectMemberCandidteId().getDesignationType();
+					 ProjectMembers projectMember = expensesApproverHierarchy.getExpenseId().getProjectMembers();
+					 ProjectMembers pmWithUser = projectMembersService.getConsultantUserProjectMemberByProjectMemberId(projectMember.getId());
+					if (null !=projectMember.getProjectMemberCandidteId()) {
+							if(null != projectMember.getProjectMemberCandidteId().getDesignationType() && !"".equalsIgnoreCase(projectMember.getProjectMemberCandidteId().getDesignationType())){
+								String empType = projectMember.getProjectMemberCandidteId().getDesignationType();
 								if(empType.equalsIgnoreCase("C2C") || empType.equalsIgnoreCase("C2C-1099")){
-									OrgRelations orgRelation = locProjectMember.getProjectMemberCandidteId().getOrgRelationId();
+									OrgRelations orgRelation = projectMember.getProjectMemberCandidteId().getOrgRelationId();
 									expensesApproverHierarchy.setUserTypeVendorName(orgRelation.getResponderLocationId().getOrgLocationName());
 									expensesApproverHierarchy.setExpenseEmpUserType(empType);
 								 }else{
@@ -728,11 +728,11 @@ public class ExpensesRestController {
 							}
 						
 						if (null != projectMember.getProjectMemberCandidteId()) {
-							if(null !=  projectMember.getProjectMemberCandidteId().getConsultantUser()){
-								expensesApproverHierarchy.setExpenseEmpUserFirstNameLastName(projectMember.getProjectMemberCandidteId().getConsultantUser().getFullName());
-								expensesApproverHierarchy.setExpenseEmpUserEmail(projectMember.getProjectMemberCandidteId().getConsultantUser().getEmail());
-								expensesApproverHierarchy.setExpensesUserid(projectMember.getProjectMemberCandidteId().getConsultantUser().getId());
-								expensesApproverHierarchy.setUserFileUrl(projectMember.getProjectMemberCandidteId().getConsultantUser().getFileUrl());
+							expensesApproverHierarchy.setExpenseEmpUserFirstNameLastName(projectMember.getProjectMemberCandidteId().getFullName());
+							expensesApproverHierarchy.setExpenseEmpUserEmail(projectMember.getProjectMemberCandidteId().getEmail());
+							if(null !=  pmWithUser.getProjectMemberCandidteId().getConsultantUser()){
+								expensesApproverHierarchy.setExpensesUserid(pmWithUser.getProjectMemberCandidteId().getConsultantUser().getId());
+								expensesApproverHierarchy.setUserFileUrl(pmWithUser.getProjectMemberCandidteId().getConsultantUser().getFileUrl());
 							}
 						}
 						
