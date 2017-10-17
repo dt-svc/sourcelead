@@ -4,9 +4,7 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.List;
 
-import com.bis.sourcelead.enums.Submission_Status;
-
-public class ExpensesDTO implements Serializable {
+public class ExpensesDTO extends TimesheetExpenseEntryDetailsUtilDTO implements Serializable {
 private static final long serialVersionUID = 1L;
 
 	private Long id;
@@ -48,6 +46,8 @@ private static final long serialVersionUID = 1L;
 	private String expenseLocationCode;
 	
 	private BigDecimal expenseAmountDivId;
+	
+	private List<Long> removedDocumentIds;
 
 	public Long getId() {
 		return id;
@@ -209,6 +209,18 @@ private static final long serialVersionUID = 1L;
 
 	public void setExpenseLocationCode(String expenseLocationCode) {
 		this.expenseLocationCode = expenseLocationCode;
+	}
+
+	public static long getSerialversionuid() {
+		return serialVersionUID;
+	}
+
+	public List<Long> getRemovedDocumentIds() {
+		return removedDocumentIds;
+	}
+
+	public void setRemovedDocumentIds(List<Long> removedDocumentIds) {
+		this.removedDocumentIds = removedDocumentIds;
 	}
 
 }
