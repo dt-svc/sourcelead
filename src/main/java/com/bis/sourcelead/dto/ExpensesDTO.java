@@ -31,9 +31,9 @@ private static final long serialVersionUID = 1L;
 	
 	private String noOfExpenses;
 	
-	private Submission_Status expenseStatus;
+	private String expenseStatus;
 	
-	private Submission_Status combinedSubmissionStatus;
+	private String combinedSubmissionStatus;
 	
     private List<ExpensesEntriesDTO> expenseEntry;
 	
@@ -131,19 +131,19 @@ private static final long serialVersionUID = 1L;
 		this.noOfExpenses = noOfExpenses;
 	}
 
-	public Submission_Status getExpenseStatus() {
+	public String getExpenseStatus() {
 		return expenseStatus;
 	}
 
-	public void setExpenseStatus(Submission_Status expenseStatus) {
+	public void setExpenseStatus(String expenseStatus) {
 		this.expenseStatus = expenseStatus;
 	}
 
-	public Submission_Status getCombinedSubmissionStatus() {
+	public String getCombinedSubmissionStatus() {
 		return combinedSubmissionStatus;
 	}
 
-	public void setCombinedSubmissionStatus(Submission_Status combinedSubmissionStatus) {
+	public void setCombinedSubmissionStatus(String combinedSubmissionStatus) {
 		this.combinedSubmissionStatus = combinedSubmissionStatus;
 	}
 
