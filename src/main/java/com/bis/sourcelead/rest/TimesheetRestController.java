@@ -587,10 +587,8 @@ public class TimesheetRestController {
 			ProjectMembers projectMember = projectMembersService.getConsultantUserProjectMemberByProjectMemberId(projectMemberId);
 		    User consultantUser = null;
 			StringBuilder projectMemberName = new StringBuilder();
-			if(projectMember.getProjectMemberCandidteId() != null && 
-					projectMember.getProjectMemberCandidteId().getConsultantUser() != null) {
-				consultantUser = projectMember.getProjectMemberCandidteId().getConsultantUser();
-			   
+			if(projectMember.getProjectMemberCandidteId() != null && projectMember.getProjectMemberCandidteId().getConsultantUser() != null) {
+				consultantUser = projectMember.getProjectMemberCandidteId().getConsultantUser(); 
 			}
 			StringBuilder projectMemberEmailName = new StringBuilder();
 			if(consultantUser != null) {
@@ -610,6 +608,7 @@ public class TimesheetRestController {
 			}
 		  timesheetEntriesDiv.append("					<div class='clearfix'></div>   ");
 	 	  StringBuilder tabData = new StringBuilder();
+
 		
 		Map<String,String> tabFrequency = timesheetFrequencyGeneratorUtil.getTabFrequencyListFromProjectInvoiceFrequency(weekStartDate, weekEndDate,orgLocations.getDateFormat());
 		timesheetEntriesDiv.append("			<div class='timesheetNewTabs'> ");

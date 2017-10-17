@@ -49,8 +49,7 @@ public class ExpensesDTOConverter {
 		}
 		expensesDTO.setExpenseEntry(eeDTOList);
 		
-		expensesDTO.setExpenseStatus(expenses.getExpenseStatus());
-		
+		expensesDTO.setExpenseStatus(expenses.getExpenseStatus().getValue().toUpperCase());
 		
 		return expensesDTO;
 	}

@@ -10,8 +10,7 @@ public class ShiftDTO {
 	private String timeOut;
 	private String shiftDescription;
 	private String shiftId;
-	
-	
+	private String status;
 	public String getUserId()
 	{
 		return userId;
@@ -68,6 +67,16 @@ public class ShiftDTO {
 	{
 		this.shiftId = shiftId;
 	}
+	public String getStatus()
+	{
+		return status;
+	}
+	public void setStatus(String status)
+	{
+		this.status = status;
+	}
+	
+	
 	
 	
 }

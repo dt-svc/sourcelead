@@ -155,6 +155,10 @@ public class Leave {
 	@Transient
 	@JsonProperty
 	private String approvedByUser;
+	
+	@Transient
+	@JsonProperty
+	private int totalLeavesTaken;
 
 	public String getId() {
 		return id;
@@ -423,6 +427,13 @@ public class Leave {
 	public void setWithdrawReason(String withdrawReason) {
 		this.withdrawReason = withdrawReason;
 	}
-	
+
+	public int getTotalLeavesTaken() {
+		return totalLeavesTaken;
+	}
+
+	public void setTotalLeavesTaken(int totalLeavesTaken) {
+		this.totalLeavesTaken = totalLeavesTaken;
+	}
 
 }
