@@ -581,11 +581,32 @@ public class TimesheetRestController {
 	      timesheetEntriesDiv.append(submissionStatusDiv); 
 	      timesheetEntriesDiv.append("					</div>   ");
 		  timesheetEntriesDiv.append("					<div class='clearfix'></div>   ");
-		StringBuilder tabData = new StringBuilder();
+	 	 StringBuilder tabData = new StringBuilder();
+		
+		
+		ProjectMembers projectMember = projectMembersService.getConsultantUserProjectMemberByProjectMemberId(projectMemberId);
+	    User consultantUser = null;
+		StringBuilder projectMemberName = new StringBuilder();
+		if(projectMember.getProjectMemberCandidteId() != null && 
+				projectMember.getProjectMemberCandidteId().getConsultantUser() != null) {
+			consultantUser = projectMember.getProjectMemberCandidteId().getConsultantUser();
+		   
+		}
+		StringBuilder projectMemberEmailName = new StringBuilder();
+		if(consultantUser != null) {
+			projectMemberName.append(consultantUser.getFullName());
+			projectMemberEmailName.append(consultantUser.getEmail());
+		}
+		
+		timesheetEntriesDiv.append("<input type='text'  value='"+projectMemberName.toString()+"' >");
+		timesheetEntriesDiv.append("<input type='text'  value='"+projectMemberEmailName.toString()+"' >");
+		
+		
 		Map<String,String> tabFrequency = timesheetFrequencyGeneratorUtil.getTabFrequencyListFromProjectInvoiceFrequency(weekStartDate, weekEndDate,orgLocations.getDateFormat());
 		timesheetEntriesDiv.append("			<div class='timesheetNewTabs'> ");
 		timesheetEntriesDiv.append("			<div class='project_side_wrap_inn_tabs'> ");
 		timesheetEntriesDiv.append("			    <ul class='project-tabs-menu'> ");
+		
 		StringBuilder currentStartDate = new StringBuilder("");
 		StringBuilder currentEndDate = new StringBuilder("");
 		int count = 1;
