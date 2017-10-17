@@ -199,19 +199,8 @@ public class OrgSpocServiceImpl implements OrgSpocService{
 						 orgSpoc.setSpocEmail(orgSpoc.getClientUser().getEmail());
 					 }
 					if(null != orgSpoc.getClientUser()){
-						/*if(orgSpoc.getClientUser().getLastName() != null && !"".equalsIgnoreCase(orgSpoc.getClientUser().getLastName())){
-							spocNameSB.append(orgSpoc.getClientUser().getFirstName()).append(" ").append(orgSpoc.getClientUser().getLastName()); 
-						}else{
-							spocNameSB.append(orgSpoc.getClientUser().getFullName()); 
-						}*/
-						orgSpoc.setSpocName(orgSpoc.getClientUser().getFullName());
 						
-						/*if(orgSpoc.getClientUser().getFirstName() !=null && "".equalsIgnoreCase(orgSpoc.getClientUser().getFirstName()) && orgSpoc.getClientUser().getLastName() !=null && "".equalsIgnoreCase(orgSpoc.getClientUser().getLastName())){
-							 spocNameSB.append(orgSpoc.getClientUser().getFirstName()).append(" ").append(orgSpoc.getClientUser().getLastName()); 
-						 }else{
-							 spocNameSB.append(orgSpoc.getClientUser().getFirstName());
-						 }*/
-						 
+						orgSpoc.setSpocName(orgSpoc.getClientUser().getFullName());
 					}
 					 
 					if(null != orgSpoc.getClientUser()){
@@ -233,11 +222,6 @@ public class OrgSpocServiceImpl implements OrgSpocService{
 				//vendor summary contacts
 				  else if(null != type && !"".equalsIgnoreCase(type) && "Vendor".equalsIgnoreCase(type)){
 					 orgSpoc.setSpocEmail(orgSpoc.getVendorUser().getEmail());
-					 /*if(orgSpoc.getVendorUser().getLastName() !=null && !"".equalsIgnoreCase(orgSpoc.getVendorUser().getLastName())){
-						 spocNameSB.append(orgSpoc.getVendorUser().getFirstName()).append(" ").append(orgSpoc.getVendorUser().getLastName()); 
-					 }else{
-						 spocNameSB.append(orgSpoc.getVendorUser().getFirstName());
-					 }*/
 					 orgSpoc.setSpocName(orgSpoc.getVendorUser().getFullName());
 					 orgSpoc.setSpocMobilePhone(orgSpoc.getVendorUser().getMobilePhone());
 					 orgSpoc.setOwnerName(orgSpoc.getClientUser().getFullName());
