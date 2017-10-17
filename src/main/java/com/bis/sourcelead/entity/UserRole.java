@@ -111,6 +111,12 @@ public class UserRole implements Serializable {
 	@Column(name = "IS_MAIL_SENT")
 	@Enumerated(EnumType.STRING)
 	private Status isMailSent;
+	
+	@Column(name = "PHONE_NUMBER")
+	private String phoneNumber;
+	
+    @Column(name = "EXTENSION_NUMBER")
+	private String extensionNumber;
 
 	@Transient
 	private String userRoleName;
@@ -821,6 +827,24 @@ public class UserRole implements Serializable {
 		this.isMailSent = isMailSent;
 	}
 
-	
+	public String getPhoneNumber()
+	{
+		return phoneNumber;
+	}
+
+	public void setPhoneNumber(String phoneNumber)
+	{
+		this.phoneNumber = phoneNumber;
+	}
+
+	public String getExtensionNumber()
+	{
+		return extensionNumber;
+	}
+
+	public void setExtensionNumber(String extensionNumber)
+	{
+		this.extensionNumber = extensionNumber;
+	}
 	
 }
