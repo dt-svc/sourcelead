@@ -10,7 +10,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -27,10 +26,7 @@ import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.AddExpensesDao;
@@ -137,35 +133,37 @@ public class ExpensesRestController {
 	private ProjectMembersHistoryService projectMembersHistoryService;
 	
 	@RequestMapping(value = {"/getExpensesList","/rest/getExpensesList"})
-	public List<Expenses> getExpensesList( @RequestBody ExpensesListUtilDTO elDTO) throws Exception
-	{
-		
-		OrgLocations orgLoc = orgLocationService.getOrgLocationsByLocationCode(elDTO.getLocationCode());
-		User loginUser = userService.getUserById(elDTO.getUserId());
-		String expenseStatus = "";
-		if(elDTO.getExpenseStatus() != null && !elDTO.getExpenseStatus().isEmpty()){
-			expenseStatus = elDTO.getExpenseStatus().stream ().map (i -> i.toString ()).collect (Collectors.joining (","));
-		}
-		List<Expenses> expensesList = expensesService.getAllExpenses(orgLoc, loginUser,expenseStatus, elDTO.getStartDate(), elDTO.getEndDate());
-		for(Expenses expenses :expensesList){
-			Set<ExpensesApproverHierarchy> hierarchyList = expenses.getApproverHierarchyList();
-			for(ExpensesApproverHierarchy eah :hierarchyList){
-				if(eah.getHierarchyId() != null && eah.getHierarchyId().getProjectClientsId() != null){
-					ProjectClients pc = eah.getHierarchyId().getProjectClientsId();
-					if(pc.getOrgLocationsId() != null && (pc.getOrgLocationsId().getId() == orgLoc.getId())){
-						if(pc.getOrgRelationId() != null && "Vendor".equalsIgnoreCase(pc.getOrgRelationId().getInitiatorType())){
-							expenses.setClientName(pc.getOrgRelationId().getResponderLocationId().getOrgLocationName());
-						 }else if(pc.getOrgRelationId() != null && "Client".equalsIgnoreCase(pc.getOrgRelationId().getInitiatorType())){
-							 expenses.setClientName(pc.getOrgRelationId().getLocationId().getOrgLocationName());
-						 }
-					}
-				}
-				
-			}
-		}
-		
-		return expensesList;
-	}
+    public List<ExpensesDTO> getExpensesList( @RequestBody ExpensesListUtilDTO elDTO) throws Exception
+    {
+        
+        OrgLocations orgLoc = orgLocationService.getOrgLocationsByLocationCode(elDTO.getLocationCode());
+        User loginUser = userService.getUserById(elDTO.getUserId());
+        String expenseStatus = "";
+        if(elDTO.getExpenseStatus() != null && !elDTO.getExpenseStatus().isEmpty()){
+            expenseStatus = elDTO.getExpenseStatus().stream ().map (i -> i.toString ()).collect (Collectors.joining (","));
+        }
+        List<Expenses> expensesList = expensesService.getAllExpenses(orgLoc, loginUser,expenseStatus, elDTO.getStartDate(), elDTO.getEndDate());
+        List<ExpensesDTO> expensesDTOList = new ArrayList<>();
+        for(Expenses expenses :expensesList){
+            Set<ExpensesApproverHierarchy> hierarchyList = expenses.getApproverHierarchyList();
+            for(ExpensesApproverHierarchy eah :hierarchyList){
+                if(eah.getHierarchyId() != null && eah.getHierarchyId().getProjectClientsId() != null){
+                    ProjectClients pc = eah.getHierarchyId().getProjectClientsId();
+                    if(pc.getOrgLocationsId() != null && (pc.getOrgLocationsId().getId() == orgLoc.getId())){
+                        if(pc.getOrgRelationId() != null && "Vendor".equalsIgnoreCase(pc.getOrgRelationId().getInitiatorType())){
+                            expenses.setClientName(pc.getOrgRelationId().getResponderLocationId().getOrgLocationName());
+                         }else if(pc.getOrgRelationId() != null && "Client".equalsIgnoreCase(pc.getOrgRelationId().getInitiatorType())){
+                             expenses.setClientName(pc.getOrgRelationId().getLocationId().getOrgLocationName());
+                         }
+                    }
+                }
+                
+            }
+            expensesDTOList.add(ExpensesDTOConverter.getExpensesDTOFromExpenses(expenses,new ExpensesDTO()));
+        }
+        
+        return expensesDTOList;
+    }	
 	
 	/**
 	 *  This method serves request for New Expense Sreen
@@ -532,7 +530,7 @@ public class ExpensesRestController {
 			expensesDTO.setMasterCandidateId(expenses.getProjectMembers().getMasterCandidateId().getId());
 			ExpensesApproverHierarchy eah = expensesApprovalService.getexpensesApproverHierarchyForEmployeeByExpenseId(expenses.getId());
 			Submission_Status submissionStatus = eah.getExpenseStatus();
-			expensesDTO.setCombinedSubmissionStatus(submissionStatus);
+			expensesDTO.setCombinedSubmissionStatus(submissionStatus.getValue().toUpperCase());
 			ExpensesApproverHierarchy isSah = expensesApprovalService.isThereAnyApproverApprovedTheExpense(expenses.getId());
 			boolean isSahApproved = false;
 			if (isSah != null) {

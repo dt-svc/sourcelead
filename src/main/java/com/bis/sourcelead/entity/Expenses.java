@@ -117,12 +117,14 @@ private static final long serialVersionUID = 1L;
 	@ManyToOne(cascade = CascadeType.ALL)
 	@Fetch(FetchMode.SELECT)
 	@JoinColumn(name = "PROJECT_ID", nullable=false)
+	@JsonBackReference
 	private Projects projects;
 	
 	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne(cascade = CascadeType.ALL)
 	@Fetch(FetchMode.SELECT)
-    @JoinColumn(name="MASTER_CANDIDATE_ID", nullable=false)        
+    @JoinColumn(name="MASTER_CANDIDATE_ID", nullable=false) 
+	@JsonBackReference
     private MasterCandidate masterCandidateId;
 	
 	@NotFound(action=NotFoundAction.IGNORE)
