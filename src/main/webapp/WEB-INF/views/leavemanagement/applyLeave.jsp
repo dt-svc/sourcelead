@@ -263,7 +263,7 @@ function removeEndValid(){
           url: sourceleadUrl+"/getPieChartForLeaveStatus?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&userId="+userId,    
           success :function(json) {
         	  var output = "";
-        	  output = output +'<select class="form-control" id="leaveType" name="leaveType" field-name="Leave Type" data-validation="required" onchange="getLeavePolicy();">';
+        	  output = output +'<select class="form-control" id="leaveType" name="leaveType" field-name="Leave Type" data-validation="required" onchange="getLeavePolicy();validateMaxLeave(this);">';
         	  output = output +' <option value="">--Select Leave Type--</option>';
         	  for (var i = 0; i < json.length; i++) { 
         		  var leave = json[i];
@@ -283,6 +283,7 @@ function removeEndValid(){
         	  
         	  var result = "";
 	    	  result = result +' <ul class="list-unstyled leavelist col-md-10 mt25 col-md-offset-1 list-group">';
+	    	  result = result +'			<label>Balance Leaves :</label>';
 	          for (var i = 0; i < json.length; i++) { 
 	        		  var leaveType = json[i];
 				        result = result +'	<li>';
@@ -440,6 +441,24 @@ function getLeavePolicy(){
 			document.getElementById("termsModel").style.display="block";
 		}
 	}); 
+}
+</script>
+
+<script>
+function validateMaxLeave(data){
+	$('.warMess').hide();
+	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
+	var userId = '${SourceLeadWeb_userId}';
+	var leaveTypeId = $("#leaveType").val();
+	var leaveTypeName = data.options[data.selectedIndex].innerHTML;
+	$.get(sourceleadUrl+"/validateMaxLeave?"+tokenParamName+"="+tokenValue+"&leaveTypeId="+leaveTypeId+"&orgLocationId="+orgLocationId+"&userId="+userId, function(data) {
+		if(data == true){
+			$("#leaveTypeIdDiv").after("<p class='warMess'>You don't have balance for the '"+leaveTypeName+"'.</span>");
+		}else{
+			$('.warMess').hide();
+		}
+	}); 
+	
 }
 </script>
 
