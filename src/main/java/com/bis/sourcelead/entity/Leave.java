@@ -37,6 +37,15 @@ public class Leave {
 	@GenericGenerator(name = "uuid2", strategy = "uuid2")
 	private String id;
 	
+	
+	@NotFound(action = NotFoundAction.IGNORE)
+	@ManyToOne(cascade = CascadeType.ALL)
+	@Fetch(FetchMode.SELECT)
+	@JsonBackReference
+	@JoinColumn(name = "LEAVE_TYPE_ID", nullable = false)
+	private LeaveType leaveType;
+	
+	
 	@NotFound(action = NotFoundAction.IGNORE)
 	@ManyToOne
 	@JoinColumn(name = "ORGLOCATION_ID", nullable = false)
@@ -59,13 +68,6 @@ public class Leave {
 	@Column(name = "TO_HALF_DAY")
 	private String toHalfDay;
 
-	@NotFound(action = NotFoundAction.IGNORE)
-	@ManyToOne(cascade = CascadeType.ALL)
-	@Fetch(FetchMode.SELECT)
-	@JsonBackReference
-	@JoinColumn(name = "LEAVE_TYPE_ID", nullable = false)
-	private LeaveType leaveType;
-	
 //	 
 	@Column(name = "FILE_CONTENT_TYPE")
 	private String fileContentType;

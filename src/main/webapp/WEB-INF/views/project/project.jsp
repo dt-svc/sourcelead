@@ -1056,7 +1056,7 @@ function getProjectLevel1Approvers(approverUserId){
 		        		if(approverUserId != null && approverUserId != 'undefied' && approverUserId != '' && approverUserId == opt.id){
 		        			selected = "selected";
 		        		}
-			        		output = output + "<option value='" +opt.id+ ","+opt.userType+"' "+selected+">"+opt.firstName+" "+opt.lastName+"</option>";
+			        		output = output + "<option value='" +opt.id+ ","+opt.userType+"' "+selected+">"+opt.fullName+"</option>";
 					}
 		        	
 			        $("#level1Manager").append(output);
