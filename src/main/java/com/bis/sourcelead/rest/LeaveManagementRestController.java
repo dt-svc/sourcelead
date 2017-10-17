@@ -286,7 +286,7 @@ public class LeaveManagementRestController {
 				List<Leave> totalleavesTaken = leaveService.getLeavesListByTypeIdAndLocationIdAndUserId(type.getId(),orgLocations.getId(), loginUser.getId());
 				for (Leave leave : totalleavesTaken) {
 					if(Constants.PENDING.equalsIgnoreCase(leave.getStatus())) {
-						totalLeaves = totalLeaves - (Integer.valueOf(leave.getNumberOfDays()));
+//						totalLeaves = totalLeaves - (Integer.valueOf(leave.getNumberOfDays()));
 						pendingLeaveCounts = pendingLeaveCounts + (Integer.valueOf(leave.getNumberOfDays()));
 					}
 					if(Constants.APPROVED.equalsIgnoreCase(leave.getStatus())) {
@@ -901,21 +901,6 @@ public class LeaveManagementRestController {
 		return isDeleted;
 	}
 	
-	@RequestMapping(value = {"/validateHolidayName","/rest/validateHolidayName"}, method = RequestMethod.GET)
-	public  @ResponseBody boolean validateHolidayName(@RequestParam(value = "holidayName", required = false) String holidayName,@RequestParam(value = "orgLocationId", required = false) Long orgLocationId,HttpServletRequest request) throws Exception
-	{
-		boolean isDeleted = false;
-		 Holiday deleteHoliday = holidayService.getHolidaysById(holidayName);
-		 if(deleteHoliday !=null) {
-			 deleteHoliday.setStatus("0");
-			 holidayDAO.saveDeleteHoliday(deleteHoliday);
-			 isDeleted = true;
-		 }
-		return isDeleted;
-		
-	}
-	
-	
 	/**
 	 * returns add Employee Requested Leaves  jsp
 	 * @param request
@@ -1424,5 +1409,34 @@ public class LeaveManagementRestController {
 		return leaveTypeDTOList;
 	}
 	
+	@RequestMapping(value = { "/validateName", "/rest/validateName" }, method = RequestMethod.GET)
+	public boolean validateName(@RequestParam(value = "orgLocationId", required = true) Long orgLocationId, @RequestParam(value = "from", required = true) String fromTable, @RequestParam(value = "name", required = true) String name)
+	{
+		boolean flag = false;
+		flag = leaveService.validateNameByOrgLocationIdandFromTable(name, orgLocationId, fromTable);
+		return flag;
+	}
+
+	@RequestMapping(value = {"/validateMaxLeave","/rest/validateMaxLeave"}, method = RequestMethod.GET)
+	public  @ResponseBody boolean validateMaxLeave(@RequestParam(value = "leaveTypeId", required = false) String leaveTypeId,@RequestParam(value = "orgLocationId", required = false) Long orgLocationId,@RequestParam(value = "userId", required = false) Long userId) throws Exception
+	{
+		boolean isvalidate = false;
+		int totalLeavesApplied = 0;
+		int totalLeaves = 0;
+		List<Leave> leaveList = leaveService.getLeavesListByTypeIdAndLocationIdAndUserId(leaveTypeId, orgLocationId,userId);
+		for (Leave leave : leaveList) {
+			if(Constants.APPROVED.equalsIgnoreCase(leave.getStatus())) {
+				totalLeavesApplied = totalLeavesApplied + Integer.valueOf(leave.getNumberOfDays());
+			}
+			totalLeaves = Integer.valueOf(leave.getLeaveType().getNumbefrOfLeavesPeryear());
+		}
+		
+		if(totalLeavesApplied > totalLeaves) {
+			isvalidate = true;
+		}
+		
+		return isvalidate;
+		
+	}
 	
 }

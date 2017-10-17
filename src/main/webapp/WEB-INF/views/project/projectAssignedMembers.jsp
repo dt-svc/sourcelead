@@ -884,12 +884,12 @@ function assignMembers(){
 	
 	 if ($('#assignMembers_form').validate(false, validationSettings)){ 
 		 
- 		var associatesRowsCount = document.getElementById("associatesRowsCount").value;
+ 	/* 	var associatesRowsCount = document.getElementById("associatesRowsCount").value;
  		if(associatesRowsCount == 0){
  			 alertMessage();
  			 return false;
  		}else{
- 			
+ 			 */
  			
  			var checkMaxTsRowNum = $("#maxTsRowNum").val();
  	      	
@@ -916,7 +916,7 @@ function assignMembers(){
 				}); 
       		 return true;
          	   
- 		}
+ 		/* } */
 	 }else{
 			return false;
 	  }
