@@ -115,10 +115,13 @@ public Expenses storeAddExpensesData(Expenses expenses) throws Exception{
 }
 
 @Override
-public void storeAddExpensesData(ExpensesDTO expensesDTO, User loginUser, OrgLocations orgLoc,HttpServletRequest request,String status,String currencyCode) throws NumberFormatException, Exception {
+public void storeAddExpensesData(ExpensesDTO expensesDTO, User loginUser, OrgLocations orgLoc,HttpServletRequest request,String currencyCode) throws NumberFormatException, Exception {
 	Expenses expenses = null;
 	ProjectMembers projMembers = null;
-	
+	String status = "draft";
+	if(StringUtils.isNotEmpty(expensesDTO.getExpenseStatus())){
+		status = expensesDTO.getExpenseStatus();
+	}
 	//SimpleDateFormat dateFormat=orgLoc.getLocFullFormDateFormatter();
 	
 	if(expensesDTO.getId() != null){
