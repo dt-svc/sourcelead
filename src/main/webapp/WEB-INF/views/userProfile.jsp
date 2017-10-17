@@ -553,6 +553,11 @@ var validationSettings = {
 		dateFormat : 'yyyy/mm/dd' 
    };  
          $('body').on('submit', '#profileSettings_form', function(e){
+        	 var userId = '${SourceLeadWeb_user.id}';
+        	 var orgLocationId = '${SourceLeadWeb_orgLocationId}';
+        	 alert(userId);
+        	 alert(orgLocationId);
+        	 
         	  if ($('#profileSettings_form').validate(false, validationSettings)){
         		    e.preventDefault(); 
             		
@@ -563,9 +568,9 @@ var validationSettings = {
                     $.ajax({
                 	      type: "POST",
                 	      data: formData,
-                      	  url: sourceleadUrl+"/saveUserProfile?${_csrf.parameterName}=${_csrf.token}",
+                      	  url: sourceleadUrl+"/saveUserProfile?"+tokenParamName+"="+tokenValue+"&userId="+userId+"&orgLocationId="+orgLocationId,
                         	success: function(result) {
-    			        	 if(result == 'home'){
+    			        	 if(result == 'success'){
     			        		location.replace(sourceleadUrl+"/userProfile");  
     			        	}
     			        },  
