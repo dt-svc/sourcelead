@@ -251,13 +251,13 @@ public class AddExpensesRestController {
 	@RequestMapping(value = {"/storeAddExpensesData","/rest/storeAddExpensesData"},method = RequestMethod.POST)
 	public @ResponseBody String storeAddExpensesData(HttpServletRequest request,ExpensesDTO expensesDTO) throws Exception {
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		if(loginUser == null && StringUtils.isNotEmpty(request.getParameter("userId"))){
-			loginUser = userService.getUserById(Long.parseLong(request.getParameter("userId")));
+		if(loginUser == null && expensesDTO.getUserId() != null){
+			loginUser = userService.getUserById(expensesDTO.getUserId());
 		}
 		OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		String currencyCode = (String) SourceLeadSessionManager.getSessionAttribute(request, "currencyCode");
-		if(orgLoc == null && StringUtils.isNotEmpty(request.getParameter("locationCode"))){
-			orgLoc = orgLocationService.getOrgLocationsByLocationCode(request.getParameter("locationCode"));
+		if(orgLoc == null && StringUtils.isNotEmpty(expensesDTO.getLocationCode())){
+			orgLoc = orgLocationService.getOrgLocationsByLocationCode(expensesDTO.getLocationCode());
 			Countries countries = countriesService.getCountriesByCountryName(orgLoc.getCountry());
 			currencyCode = countries.getCurrency();
 		}
