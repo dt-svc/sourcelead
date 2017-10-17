@@ -22,3 +22,32 @@ INSERT INTO `sourcelead`.`ENTITY_TYPE` (`ENTITY_NAME`, `ENTITY_TYPE`) VALUES ('O
 #email_scenario
 INSERT INTO `sourcelead`.`EMAIL_SCENARIO` (`SCENARIO_NAME`, `ENTITY_TYPE`, `UNIQUE_SCENARIO_NAME`, `DESCRIPTION`, `TEMPLATE_TYPE`, `BODY`, `IS_TEMPLATE_MODIFIED`, `CREATED_BY`, `ORG_CODE`, `LOCATION_CODE`) VALUES ('OffBoardingProcessMailToReportingManager', 'Notification', 'OffBoardingProcessMailToReportingManager', 'Send mail to OffBoardingProcessMailToReportingManager','org','{{OffBoardingProcessMailToReportingManager.loginUser}} has been Removed from {{OffBoardingProcessMailToReportingManager.companyName}}','N', 'SLADMIN', 'sourceLead.com', 'in.sourceLead.com');
 
+
+#OffBoardingApplicantDealayProcess_Email
+#entity_type
+INSERT INTO `sourcelead`.`ENTITY_TYPE` (`ENTITY_NAME`, `ENTITY_TYPE`) VALUES ('OffBoardingApplicantDealayProcess', 'Email');
+
+#CLASS_FIELD
+INSERT INTO `sourcelead`.`CLASS_FIELD` (`ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_STR`) VALUES ((SELECT MAX( ID ) FROM `sourcelead`.`ENTITY_TYPE`), 'candidateName', '{{OffBoardingApplicantDealayProcess.candidateName}}');
+INSERT INTO `sourcelead`.`CLASS_FIELD` (`ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_STR`) VALUES ((SELECT MAX( ID ) FROM `sourcelead`.`ENTITY_TYPE`), 'companyName', '{{OffBoardingApplicantDealayProcess.companyName}}');
+INSERT INTO `sourcelead`.`CLASS_FIELD` (`ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_STR`) VALUES ((SELECT MAX( ID ) FROM `sourcelead`.`ENTITY_TYPE`), 'loginLink', '{{OffBoardingApplicantDealayProcess.loginLink}}');
+INSERT INTO `sourcelead`.`CLASS_FIELD` (`ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_STR`) VALUES ((SELECT MAX( ID ) FROM `sourcelead`.`ENTITY_TYPE`), 'ManagerName', '{{OffBoardingApplicantDealayProcess.ManagerName}}');
+
+#email_scenario
+INSERT INTO `sourcelead`.`EMAIL_SCENARIO` (`SCENARIO_NAME`, `ENTITY_TYPE`, `UNIQUE_SCENARIO_NAME`, `DESCRIPTION`, `SUBJECT`, `TEMPLATE_TYPE`, `SIGNATURE`, `BODY`, `IS_TEMPLATE_MODIFIED`, `CREATED_BY`, `ORG_CODE`, `LOCATION_CODE`) VALUES ('OffBoardingApplicantDealayProcess', 'Email', 'OffBoardingApplicantDealayProcess', 'Send mail to OffBoardingApplicantDealayProcess', 
+'Alert Off boarding process delayed for {{OffBoardingApplicantDealayProcess.candidateName}}','sourcelead','Best Regards,\n{{OffBoardingApplicantDealayProcess.companyName}}',
+'Dear {{OffBoardingApplicantDealayProcess.ManagerName}},\n\nOff-boarding process for {{OffBoardingApplicantDealayProcess.candidateName}} has been delayed. \nTo view more details please Login\n\n{{OffBoardingApplicantDealayProcess.loginLink}}', 'N', 'SLADMIN', 'sourceLead.com','in.sourceLead.com');
+
+
+
+
+CALL sourcelead.AlterTableAddColumn ('sourcelead','USER_ROLE','IS_MAIL_SENT','VARCHAR(10) NULL');
+
+SET SQL_SAFE_UPDATES=0;
+UPDATE `sourcelead`.`USER_ROLE` SET `IS_MAIL_SENT`='Y' ;
+SET SQL_SAFE_UPDATES=1;
+
+
+
+
+

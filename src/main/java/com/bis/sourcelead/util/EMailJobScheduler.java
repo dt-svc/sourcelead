@@ -46,6 +46,7 @@ import com.bis.sourcelead.elk.index.RequirementIndex;
 import com.bis.sourcelead.elk.index.helper.CandidateIndexHelper;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.CandidateOffBoarding;
 import com.bis.sourcelead.entity.CandidatesHotListDummy;
 import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.ContractsHistory;
@@ -70,6 +71,7 @@ import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 import com.bis.sourcelead.service.CandidateHotListService;
+import com.bis.sourcelead.service.CandidateOffBoardingService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.ContractsTemplateService;
 import com.bis.sourcelead.service.EmailScenarioService;
@@ -237,6 +239,8 @@ public class EMailJobScheduler {
 	@Autowired
 	InvoiceService invoiceService;
 	
+	@Autowired
+	private CandidateOffBoardingService candidateOffBoardingService;
 	
 	protected boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
@@ -1607,6 +1611,20 @@ public class EMailJobScheduler {
     }
 	
 	
+	@Scheduled(cron = "0 0 1 1/1 * ?")
+	public void candidateOffboringDelayMail() {
+		logger.info("******************  Jobs Alerts  Every Day ! **********");
+		try {
+			List<CandidateOffBoarding> candidateOffBoarding = candidateOffBoardingService.candidateOffboringDelayMail();
+			mailToOffboardCandidate(candidateOffBoarding);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+    }
+	
+	
+	
 	private void getJobsList(List<JobAlert> jobAlertsList){
 		
 		try{
@@ -1876,6 +1894,110 @@ public class EMailJobScheduler {
 		 
 		 return tempHTML;
 	 }
+	 
+	 
+	 
+	 
+	 public void mailToOffboardCandidate(List<CandidateOffBoarding> candidateOffBoardingList) throws Exception{
+		 
+		 User toUser = null;
+		
+		
+		 Date previousDat = yesterday();
+		 for(CandidateOffBoarding candidateOffBoarding: candidateOffBoardingList){
+			 
+			 
+			 UserRole userRole=userRoleService.getUserByUserId(candidateOffBoarding.getUserId().getId());
+			 
+			 if(userRole.getReportingManager() != null && userRole.getReportingManager().getId() != null){
+				 
+				  toUser = userService.getUserById(userRole.getReportingManager().getId());
+				 }else{
+					  toUser = userService.getUserById(userRole.getOrgLocations().getUser().getId());
+				 }
+			  OrgLocations orgLocations = orgLocationService.getOrgLocations(candidateOffBoarding.getOrgLocationId().getId());
+			
+			 
+			 
+			 SimpleDateFormat dateFormat = new SimpleDateFormat(orgLocations.getDateFormat());
+			 String previousDate = dateFormat.format(previousDat);
+			 String candidateOffBorfingDate = dateFormat.format(candidateOffBoarding.getEndDate());
+			if(previousDate.equals(candidateOffBorfingDate) && candidateOffBoarding.getOffboardSubmitted().equals("N")){
+	       // SimpleDateFormat dateFormat=orgLocations.getLocFullFormDateFormatter();
+	        EmailMessage emailMessage = new EmailMessage();
+	         emailMessage.setFirstName(toUser.getFirstName());
+	         emailMessage.setLastName(toUser.getLastName());
+	         emailMessage.setToEmail(toUser.getEmail());
+	         emailMessage.setFromEmail("donotreply@sourcelead.com");
+	         emailMessage.setCreatedBy(toUser.getUserCode());
+	         StringBuilder msgBuild = new StringBuilder();
+	        // emailMessage.setFromName(msgBuild.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
+	         emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
+	        //setting the class filed values
+	         Map<String, String> globalVarsMap = new HashMap<String, String>();
+	        
+	         globalVarsMap.put("loginUser", emailMessage.getFromName());
+
+	         StringBuilder name = new StringBuilder();
+	         if(candidateOffBoarding.getLastName() != null && candidateOffBoarding.getLastName() != "" && candidateOffBoarding.getLastName() != "undefined"){
+	        	  globalVarsMap.put("candidateName", name.append(candidateOffBoarding.getUserId().getFirstName()).append(" ").append(candidateOffBoarding.getUserId().getLastName()).toString());
+	        
+	         }
+	         else{
+	        	 globalVarsMap.put("candidateName", candidateOffBoarding.getUserId().getFirstName());
+	         }
+	         
+	         if(toUser.getLastName() != null && toUser.getLastName() != "" && toUser.getLastName() != "undefined"){
+	        	  globalVarsMap.put("ManagerName", name.append(toUser.getFirstName()).append(" ").append(toUser.getLastName()).toString());
+	        
+	         }
+	         else{
+	        	 globalVarsMap.put("ManagerName", toUser.getFirstName());
+	         }
+	         
+	         globalVarsMap.put("companyName", orgLocations.getOrg().getOrgName());
+	        
+	         StringBuilder linkBuild = new StringBuilder();
+	         globalVarsMap.put("loginLink",linkBuild.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
+	        
+	                
+	        
+	         InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
+	        
+	         //getting the current EmailScenario by EmailScenario unique name and entity type
+	         EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.OFFBOARDINGAPPLICANTDELAYPROCESS,Constants.ENTITY_TYPE_EMAIL);
+	         EmailScenario  notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.OFFBOARDINGAPPLICANTDELAYPROCESS,Constants.ENTITY_TYPE_NOTIFICATION);
+
+	        
+	         //covert subject,body and signature
+	         String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
+	         String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
+	         String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
+	         String url = sourceleadUrl;
+	        
+	        /* String notificationbody = emailScenerioUtil.buildTempBody(notificationScenario.getBody(),globalVarsMap);
+	         notificationScenario.setBody(notificationbody);
+*/
+	        
+	        // OrgLocations vendorOrgLoc = requirement.getSpocId().getVendorLocationId();
+
+	        
+	         //construct HTML template using required data
+	         String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, orgLocations.getOrg(),orgLocations);
+	         emailMessage.setSubject(subject);
+	         emailMessage.setMessageBody(emailTemplate);
+	        
+	         //calling the sendEmail method of emailScenerioUtil
+	         emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),iAdressArray,new ArrayList<EmailAttachment>());
+	         String actionLink="";
+	     // emailScenerioUtil.sendNotification(actionLink, loginUser, candidateOffBoarding.getUserId(), orgLocations, notificationScenario);
+			}
+	      }
+	    }
 	
-	
+	 private Date yesterday() {
+		    final Calendar cal = Calendar.getInstance();
+		    cal.add(Calendar.DATE, -1);
+		    return cal.getTime();
+		}
 }
