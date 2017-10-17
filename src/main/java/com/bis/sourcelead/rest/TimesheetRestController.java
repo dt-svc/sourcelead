@@ -584,18 +584,12 @@ public class TimesheetRestController {
 	 	 StringBuilder tabData = new StringBuilder();
 		
 		
-		ProjectMembers projectMember = projectMembersService.getConsultantUserProjectMemberByProjectMemberId(projectMemberId);
-	    User consultantUser = null;
+		ProjectMembers projectMember = projectMembersService.getProjectMemberById(projectMemberId);
 		StringBuilder projectMemberName = new StringBuilder();
-		if(projectMember.getProjectMemberCandidteId() != null && 
-				projectMember.getProjectMemberCandidteId().getConsultantUser() != null) {
-			consultantUser = projectMember.getProjectMemberCandidteId().getConsultantUser();
-		   
-		}
 		StringBuilder projectMemberEmailName = new StringBuilder();
-		if(consultantUser != null) {
-			projectMemberName.append(consultantUser.getFullName());
-			projectMemberEmailName.append(consultantUser.getEmail());
+		if(projectMember.getProjectMemberCandidteId() != null) {
+			projectMemberName.append(projectMember.getProjectMemberCandidteId().getFullName());
+			projectMemberEmailName.append(projectMember.getProjectMemberCandidteId().getEmail());
 		}
 		
 		timesheetEntriesDiv.append("<input type='text'  value='"+projectMemberName.toString()+"' >");
