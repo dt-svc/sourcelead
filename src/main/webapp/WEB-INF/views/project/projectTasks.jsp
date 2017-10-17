@@ -88,7 +88,8 @@ function projectTask(projectId, status) {
 		 
 		<c:if test="${taskTypeList[1] == type || taskTypeList[2] == type}">
 		result = result	+ '	 <li><input  name="taskTypeId" value ="${type.id}"  onclick="projectTaskList();" checked type="checkbox"><label for="taskTypeId${type.id}">${type.name}</label></li>';
-	    </c:if>	
+	    
+		</c:if>	
 	    <c:if test="${taskTypeList[1] != type && taskTypeList[2] != type}">
 	    result = result	+ '	 <li><input  name="taskTypeId" value ="${type.id}"  onclick="projectTaskList();"  type="checkbox"><label for="taskTypeId${type.id}">${type.name}</label></li>';
 	    </c:if>
@@ -753,9 +754,9 @@ function tasksAssignList(projectId){
         url: sourceleadUrl+"/getProjectEmployeeListById?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId+"&status="+values, 
         success: function(json) {
         	var output = "";
-        	for (var i=0; i<json.projectMembersList.length; i++)
+        	for (var i=0; i<json.length; i++)
 			{
-	        		var opt = json.projectMembersList[i];
+        		    var opt = json[i];
 	        		output = output + "<option value='"+opt.id+"'>"+opt.empName+"</option>";
 			}
         	$("#assignTaskId").chosen();
