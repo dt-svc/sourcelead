@@ -77,17 +77,15 @@ display: none;
                   </div>
                   
                    <div class="modal-body clearfix">
-                    <div class="form-horizontal custom-form">
-                      <div class="row">
-                        <div class="col-xs-12 col-md-4 col-lg-4 selectpicker100 select-field">
+                    <div class="col-xs-12 col-md-4 col-lg-4 selectpicker100 select-field paddingLeft mb10">
                           <select class="form-control" id="clientListType" onchange="listChange();">
                            <option value="listbyContact" selected>List by contact</option>
                             <option value="listbyClient">List by client</option>
                           </select>
-                        </div>
-                      </div>
                     </div>
-                    <div class="modal-body-custom mailerpopup mt25 clearfix filter-position">
+                    <div class="clearfix"></div>
+                    <!-- modal-body-custom mailerpopup filter-position --> 
+                    <div class="clearfix">
                      <div id="clientsList" class="datatable_filter"></div>
                     </div>
                   </div> 
@@ -126,7 +124,7 @@ display: none;
                     <h4 class="modal-title">Select Candidates / Associates</h4>
                   </div>
                   
-                  <div class="modal-body clearfix hotmailSelOut">
+                  <div class="modal-body clearfix">
 <!--                     <div class="form-horizontal custom-form">
                       <div class="row">
                         <div class="col-xs-12 col-md-4 col-lg-4 selectpicker100 select-field">
@@ -140,8 +138,8 @@ display: none;
                       </div>
                     </div> -->
                     
-                    <div class="modal-body-custom clearfix poMail">
-                        <div class="hotmailSel">
+                    <div class="clearfix">
+                        <div class="col-xs-12 col-sm-4 paddingLeft dropdown-select mb10">
                           <select class="form-control" id="candidatesListType" onchange="candidateListChange();">
                             <option value="consultants" selected>Associates</option>
                             <option value="candidates">Candidates</option>
@@ -428,7 +426,7 @@ function getClientContacts(){
                		
 	                	   
                			    var result = '';
-	                		result = result +'     <div class="modal-bodyCustom mt40 clearfix popupFilter hdrAlign">'; 
+	                		result = result +'     <div class="modal-bodyCustom clearfix popupFilter hdrAlign">'; 
 	                	    result = result +'       <table id="example" class="table table-bordered table-striped  clearfix" cellspacing="0" width="100%" >';
 	                		result = result +'           <thead>';
 	                		result = result +'           <tr>';
@@ -471,10 +469,12 @@ function getClientContacts(){
 	                 	
 	                 	 result = result +'       </div>'; 
 	                 	 result = result +'   </div>'; 
-	                 	 result = result +'   <div class="modal-footer">';
+	                 	 result = result +'   <div class="clearfix">';
+	                 	result = result +'   <div class="pull-right mr">';
 	                 	 result = result +'     <button data-dismiss="modal" class="btn btn-primary" type="button" onClick="getEmails();">Assign</button>';
 	                 	 result = result +'     <button data-dismiss="modal" class="btn btn-default" type="button">Cancel</button>';
 	                 	 result = result +'   </div>'; 
+	                 	result = result +'   </div>';
 	                 	 $("#clientsList").empty(); 
 	                     $("#clientsList").append(result); 
 	                     pagination(); 
@@ -529,9 +529,9 @@ function getClientList(){
                		 else{
 	                	   
                			    var result = '';
-	                	    result = result +'<div class="modal-body clearfix">';
+	                	    result = result +'<div class="clearfix">';
 	                		result = result +'     </div>';
-	                		result = result +'     <div class="modal-bodyCustom mt40 clearfix popupFilter">'; 
+	                		result = result +'     <div class="clearfix">'; 
 	                	    result = result +'       <table id="example" class="table table-bordered table-striped  clearfix" cellspacing="0" width="100%" >';
 	                		result = result +'           <thead>';
 	                		result = result +'           <tr>';
@@ -580,10 +580,12 @@ function getClientList(){
 	                 	
 	                 	 result = result +'       </div>'; 
 	                 	 result = result +'   </div>'; 
-	                 	 result = result +'   <div class="modal-footer">';
+	                 	result = result +'   <div class="clearfix">';
+	                 	result = result +'   <div class="pull-right mr">';
 	                 	 result = result +'     <button data-dismiss="modal" class="btn btn-primary" type="button" onClick="getContactEmails();">Assign</button>';
 	                 	 result = result +'     <button data-dismiss="modal" class="btn btn-default" type="button">Cancel</button>';
 	                 	 result = result +'   </div>'; 
+	                 	result = result +'   </div>';
 	                 	 $("#clientsList").empty(); 
 	                     $("#clientsList").append(result); 
 	                     pagination(); 
@@ -636,7 +638,7 @@ function pagination(){
      		 "sZeroRecords": "", "sEmptyTable": ""
      	}
     });
-    $("#example").wrap("<div class='overflow_inherint'></div>");
+    $("#example").wrap("<div class='modal-body-custom mailerpopup modalAlign'></div>");
 }
 </script>
 
@@ -735,9 +737,11 @@ function getCandidates(candidatesListType){
 	                 	
 	                 	 result = result +'       </div>'; 
 	                 	 result = result +'   </div>'; 
-	                 	 result = result +'   <div class="modal-footer">';
+	                 	 result = result +'   <div class="clearfix">';
+	                 	 result = result +'   <div class="pull-right mr">';
 	                 	 result = result +'     <button data-dismiss="modal" class="btn btn-primary" type="button" onClick="getCheckedCandidates();">Assign</button>';
 	                 	 result = result +'     <button data-dismiss="modal" class="btn btn-default" type="button">Cancel</button>';
+	                 	 result = result +'   </div>'; 
 	                 	 result = result +'   </div>'; 
 	                 	 $("#candidatesList").empty(); 
 	                     $("#candidatesList").append(result); 
@@ -795,7 +799,8 @@ function candidatePagenation(){
      		"sSearch": "",
      		 "sZeroRecords": "", "sEmptyTable": ""
      	}
-    } );
+    });
+    $("#candidates").wrap("<div class='modal-body-custom mailerpopup modalAlign'></div>");
 }
 </script>
 
