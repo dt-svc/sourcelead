@@ -346,7 +346,7 @@ public class EMailJobScheduler {
 	private void sendCronRemainderForProjectMember(ProjectMembers projectMember,UserRole userRole,String frequency) throws Exception{
 			String level ="";
 			OrgLocations orgLocations = orgLocationService.getOrgLocations(userRole.getOrgLocations().getId());
-			Map<String,String>  timesheetFrequencyMap = timesheetFrequencyGeneratorUtil.getTimesheetFrequencyListFromProjectInvoiceFrequency(projectMember,"employeeScheduler");
+			Map<String,String>  timesheetFrequencyMap = timesheetFrequencyGeneratorUtil.getTimesheetFrequencyListFromProjectInvoiceFrequency(projectMember,orgLocations,"employeeScheduler");
 			LinkedHashMap<String,String> finalTFMap = new LinkedHashMap<>();
 			if(null != timesheetFrequencyMap && !timesheetFrequencyMap.isEmpty()){
 				for (Map.Entry<String, String> entry : timesheetFrequencyMap.entrySet()) {
@@ -529,7 +529,7 @@ public class EMailJobScheduler {
 						}
 						for (ProjectMembers projectMembers : projectMembersList) {
 							timesheetFrequencyMap = timesheetFrequencyGeneratorUtil
-									.getTimesheetFrequencyListFromProjectInvoiceFrequency(projectMembers,
+									.getTimesheetFrequencyListFromProjectInvoiceFrequency(projectMembers,ol,
 											"approverScheduler");
 							if (null != timesheetFrequencyMap && !timesheetFrequencyMap.isEmpty()) {
 								LinkedList<String> frequency = new LinkedList<>();
@@ -678,7 +678,7 @@ public class EMailJobScheduler {
 							
 					    	 if(null != projectMembersList && !projectMembersList.isEmpty()){
 								for (ProjectMembers projectMembers : projectMembersList) {
-									timesheetFrequencyMap = timesheetFrequencyGeneratorUtil.getTimesheetFrequencyListFromProjectInvoiceFrequency(projectMembers,"approverScheduler");
+									timesheetFrequencyMap = timesheetFrequencyGeneratorUtil.getTimesheetFrequencyListFromProjectInvoiceFrequency(projectMembers,ol,"approverScheduler");
 									  if(null != timesheetFrequencyMap && !timesheetFrequencyMap.isEmpty()){
 									            LinkedList<String> frequency = new LinkedList<>();
 												 tempHTML.append("<tr>");
