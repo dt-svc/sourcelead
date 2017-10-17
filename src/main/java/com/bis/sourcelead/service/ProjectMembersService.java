@@ -117,4 +117,6 @@ public interface ProjectMembersService {
 	ProjectMembers getProjectMembersByCandidateIdAndProjectId(Long candidateId,Long projectId) throws Exception;
 	
 	public ProjectMembers getClientProjectMemberByProjectMemberId(Long projectMemberId) throws Exception;
+	
+	public ProjectMembers getConsultantUserProjectMemberByProjectMemberId(Long projectMemberId) throws Exception;
 }

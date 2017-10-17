@@ -126,6 +126,18 @@ public class LeaveType {
 	@JsonProperty
 	private int remainingTotalLeaveCounts;
 	
+	@Transient
+	@JsonProperty
+	private int pendingLeaveCounts;
+	
+	@Transient
+	@JsonProperty
+	private int balanceLeaveCounts;
+	
+	@Transient
+	@JsonProperty
+	private int takenLeaveCounts;
+	
 
 	public String getId() {
 		return id;
@@ -367,6 +379,30 @@ public class LeaveType {
 
 	public void setColorCode(String colorCode) {
 		this.colorCode = colorCode;
+	}
+
+	public int getPendingLeaveCounts() {
+		return pendingLeaveCounts;
+	}
+
+	public void setPendingLeaveCounts(int pendingLeaveCounts) {
+		this.pendingLeaveCounts = pendingLeaveCounts;
+	}
+
+	public int getBalanceLeaveCounts() {
+		return balanceLeaveCounts;
+	}
+
+	public void setBalanceLeaveCounts(int balanceLeaveCounts) {
+		this.balanceLeaveCounts = balanceLeaveCounts;
+	}
+
+	public int getTakenLeaveCounts() {
+		return takenLeaveCounts;
+	}
+
+	public void setTakenLeaveCounts(int takenLeaveCounts) {
+		this.takenLeaveCounts = takenLeaveCounts;
 	}
 
 }
