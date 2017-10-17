@@ -234,7 +234,7 @@ public class TimesheetSubmissionsRestController {
 				//
 				
 				//Send Emails & Notifications to vendors
-				sendEmailToVendorAtTimesheetApprovalStatus(projectMembers,loginUser,loginOrgLocation,loginOrgCode,startDate, endDate,status);
+				sendEmailToVendorAtTimesheetApprovalStatus(projectMembers,loginUser,loginOrgLocation,startDate, endDate,status);
 		 	   
 		 	 }
 		
@@ -309,7 +309,7 @@ public class TimesheetSubmissionsRestController {
 			String actionLink = "";
 			emailScenerioUtil.sendNotification(actionLink, loginUser, projectMembers.getEmployee().getUser(), loginOrgLocation, notificationScenario); 
 	}
-	private void sendEmailToVendorAtTimesheetApprovalStatus(ProjectMembers projectMembers,User loginUser, OrgLocations loginOrgLocation, String loginOrgCode, String startDate, String endDate, String status) throws Exception {
+	private void sendEmailToVendorAtTimesheetApprovalStatus(ProjectMembers projectMembers,User loginUser, OrgLocations loginOrgLocation, String startDate, String endDate, String status) throws Exception {
 		
 		
 		List<ProjectApproverHierarchy> approverHierarchyList = projectApproverHierarchyService.getActiveOrgApproverUsersByProjectMemberMasterCandidateIdAndProjectId(projectMembers.getMasterCandidateId().getId(),projectMembers.getProjects().getId());
@@ -388,7 +388,7 @@ public class TimesheetSubmissionsRestController {
 			EmailScenario  notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.TIMESHEET_APPROVED_EMAIL_TOVENDOR,Constants.ENTITY_TYPE_NOTIFICATION);
 			String notificationBody = emailScenerioUtil.buildBody(notificationScenario.getBody(),globalVarsMap);
 			notificationScenario.setBody(notificationBody);
-			notificationScenario.setOrgCode(loginOrgCode);
+			notificationScenario.setOrgCode(loginOrgLocation.getLocationCode());
 			//String url = null;
 			String actionLink = "";
 			emailScenerioUtil.sendNotification(actionLink, loginUser, approver.getApproverUserId(), loginOrgLocation, notificationScenario);
