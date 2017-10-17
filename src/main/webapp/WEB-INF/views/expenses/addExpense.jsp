@@ -323,7 +323,7 @@ function removeWhiteSpacesMyExp(rowCount){
 	        	    data: formData,
 	    	        processData: false,
 	    	        contentType:false,
-					url : sourceleadUrl+"/storeAddExpensesData?"+tokenParamName+"="+tokenValue+"&status="+status,
+					url : sourceleadUrl+"/storeAddExpensesData?"+tokenParamName+"="+tokenValue+"&expenseStatus="+status,
 					success : function(data) {
 						$( "#submitForApprovalExpensesId" ).addClass('button').val('Submit for Approval');
 						window.location.replace(sourceleadUrl+'/expenses');

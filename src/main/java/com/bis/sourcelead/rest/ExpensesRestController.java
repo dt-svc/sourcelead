@@ -698,41 +698,50 @@ public class ExpensesRestController {
 				expensesApproverHierarchy.setExpenseStartDateString(commonUtil.dateStrFromOrgDateFormatter(orgLoc.getDateFormat(),expensesApproverHierarchy.getExpenseId().getStartDate()));
 			}
 			if (null != expensesApproverHierarchy.getExpenseId()) {
+				
+				if(expensesApproverHierarchy.getExpenseId().getPurpose()!=null){
+					expensesApproverHierarchy.setExpensesApproverHierarchyPurpose(expensesApproverHierarchy.getExpenseId().getPurpose());
+				}else{
+					expensesApproverHierarchy.setExpensesApproverHierarchyPurpose("--");
+				}
 				if (null != expensesApproverHierarchy.getExpenseId().getProjectMembers()) {
-					if (null != expensesApproverHierarchy.getExpenseId().getProjectMembers().getProjects()) {
-						expensesApproverHierarchy.setExpensesProjectName(expensesApproverHierarchy.getExpenseId().getProjectMembers().getProjects().getProjectName());
-					}
-					else {
-						expensesApproverHierarchy.setExpensesProjectName("--");
-					}
-					if (null != expensesApproverHierarchy.getExpenseId().getProjectMembers().getEmployee()) {
-						if (null != expensesApproverHierarchy.getExpenseId().getProjectMembers().getEmployee().getEmployeeId()
-								&& !"".equalsIgnoreCase(expensesApproverHierarchy.getExpenseId().getProjectMembers().getEmployee().getEmployeeId())) {
-							expensesApproverHierarchy.setExpensesEmployeeUserId(expensesApproverHierarchy.getExpenseId().getProjectMembers().getEmployee().getEmployeeId());
-						}
-						else {
-							expensesApproverHierarchy.setExpensesEmployeeUserId("--");
-						}
-						if (null != expensesApproverHierarchy.getExpenseId().getProjectMembers().getProjectMemberCandidteId()
-								&& !"".equalsIgnoreCase(expensesApproverHierarchy.getExpenseId().getProjectMembers().getProjectMemberCandidteId().getDesignationType())) {
-							String empType = expensesApproverHierarchy.getExpenseId().getProjectMembers().getProjectMemberCandidteId().getDesignationType();
-							if (empType.equalsIgnoreCase("C2C")
-									|| empType.equalsIgnoreCase("C2C-1099")) {
-								OrgRelations orgRelation = expensesApproverHierarchy.getExpenseId().getProjectMembers().getProjectMemberCandidteId().getOrgRelationId();
-								expensesApproverHierarchy.setUserTypeVendorName(orgRelation.getResponderLocationId().getOrg().getOrgName());
-								expensesApproverHierarchy.setExpenseEmpUserType(empType);
+							if(null != expensesApproverHierarchy.getExpenseId().getProjectMembers().getProjects()){
+								expensesApproverHierarchy.setExpensesProjectName(expensesApproverHierarchy.getExpenseId().getProjectMembers().getProjects().getProjectName());
+							}else{
+								expensesApproverHierarchy.setExpensesProjectName("--");
 							}
-							else {
-								expensesApproverHierarchy.setExpenseEmpUserType(empType);
+							
+					 ProjectMembers projectMember = expensesApproverHierarchy.getExpenseId().getProjectMembers();
+					 ProjectMembers pmWithUser = projectMembersService.getConsultantUserProjectMemberByProjectMemberId(projectMember.getId());
+					if (null !=projectMember.getProjectMemberCandidteId()) {
+							if(null != projectMember.getProjectMemberCandidteId().getDesignationType() && !"".equalsIgnoreCase(projectMember.getProjectMemberCandidteId().getDesignationType())){
+								String empType = projectMember.getProjectMemberCandidteId().getDesignationType();
+								if(empType.equalsIgnoreCase("C2C") || empType.equalsIgnoreCase("C2C-1099")){
+									OrgRelations orgRelation = projectMember.getProjectMemberCandidteId().getOrgRelationId();
+									expensesApproverHierarchy.setUserTypeVendorName(orgRelation.getResponderLocationId().getOrgLocationName());
+									expensesApproverHierarchy.setExpenseEmpUserType(empType);
+								 }else{
+									 expensesApproverHierarchy.setExpenseEmpUserType(empType);
+								 }
+							}else{
+								expensesApproverHierarchy.setExpenseEmpUserType("--");
+							}
+						
+						if (null != projectMember.getProjectMemberCandidteId()) {
+							expensesApproverHierarchy.setExpenseEmpUserFirstNameLastName(projectMember.getProjectMemberCandidteId().getFullName());
+							expensesApproverHierarchy.setExpenseEmpUserEmail(projectMember.getProjectMemberCandidteId().getEmail());
+							if(null !=  pmWithUser.getProjectMemberCandidteId().getConsultantUser()){
+								expensesApproverHierarchy.setExpensesUserid(pmWithUser.getProjectMemberCandidteId().getConsultantUser().getId());
+								expensesApproverHierarchy.setUserFileUrl(pmWithUser.getProjectMemberCandidteId().getConsultantUser().getFileUrl());
 							}
 						}
-						else {
-							expensesApproverHierarchy.setExpenseEmpUserType("--");
-						}
-						if (null != expensesApproverHierarchy.getExpenseId().getProjectMembers().getProjectMemberCandidteId()) {
-							expensesApproverHierarchy.setExpenseEmpUserFirstNameLastName(expensesApproverHierarchy.getExpenseId().getProjectMembers().getProjectMemberCandidteId().getFullName());
-							expensesApproverHierarchy.setExpenseEmpUserEmail(expensesApproverHierarchy.getExpenseId().getProjectMembers().getProjectMemberCandidteId().getEmail());
-							expensesApproverHierarchy.setExpensesUserid(expensesApproverHierarchy.getExpenseId().getId());
+						
+						if (null != expensesApproverHierarchy.getExpenseId()) {
+							if(null != expensesApproverHierarchy.getExpenseId().getPurpose()){
+								expensesApproverHierarchy.setExpensesApproverHierarchyPurpose(expensesApproverHierarchy.getExpenseId().getPurpose());
+							}else{
+								expensesApproverHierarchy.setExpensesApproverHierarchyPurpose("-----");
+							}
 						}
 					}
 				}
