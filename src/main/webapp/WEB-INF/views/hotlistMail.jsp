@@ -146,7 +146,7 @@ display: none;
                             <option value="consultants" selected>Associates</option>
                             <option value="candidates">Candidates</option>
                              <option value="openHotlist">Open Hotlist</option>
-                            <option value="hotlistConsultants">Hostlist Associates</option>
+                            <option value="hotlistConsultants">Hotlist Associates</option>
                           </select>
                         </div>                    
                      <div id="candidatesList" class="mailFil datatable_filter"></div>
