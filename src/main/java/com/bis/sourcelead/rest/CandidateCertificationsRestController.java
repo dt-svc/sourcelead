@@ -1,5 +1,6 @@
 package com.bis.sourcelead.rest;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -13,6 +14,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bis.sourcelead.dto.CandidateCertificationDTO;
+import com.bis.sourcelead.dto.CandidateResumeDTO;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateCertifications;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -87,15 +90,29 @@ public class CandidateCertificationsRestController {
 	   */
 	//@PreAuthorize("hasAnyRole('ROLE_VIEW_CANDIDATE_CERTIFICATION','ROLE_CROWDSOURCING_PROFILE','ROLE_CROWDSOURCING_CANDIDATES')")
 	 @RequestMapping(value = "/getCandidateCertificationListByCandidateIdAndOrgLocationID") 
-	 public String getCandidateCertificationListByCandidateIdAndOrgLocationID(@RequestParam(value = "candidateId", required = false) String candidateId, HttpServletRequest request) throws Exception {
+	 public ResponseList<CandidateCertificationDTO> getCandidateCertificationListByCandidateIdAndOrgLocationID(@RequestParam(value = "candidateId", required = false) String candidateId, HttpServletRequest request) throws Exception {
 
+		 ResponseList<CandidateCertificationDTO> certificationList = new ResponseList<>();
 		 String msg = "";
 		String resultJson;
+		List<CandidateCertificationDTO> candidateCertificationDTOList = new ArrayList<>();
+		
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 		List<CandidateCertifications>   candidateCertificationsList = candidateCertificationsService.getCandidateCertificationListByCandidateIdAndOrgLocationID(Long.parseLong(candidateId) , loginOrgLocation.getId());
 		
 		for(CandidateCertifications candidateCertifications : candidateCertificationsList){
-
+			CandidateCertificationDTO candidateCertificationDTO = new CandidateCertificationDTO();
+			
+            candidateCertificationDTO.setId(candidateCertifications.getId());
+			candidateCertificationDTO.setName(candidateCertifications.getName());
+			candidateCertificationDTO.setProvider(candidateCertifications.getProvider());
+		    candidateCertificationDTO.setScore(candidateCertifications.getScore());
+		    candidateCertificationDTO.setScoreType(candidateCertifications.getScoreType());
+		    candidateCertificationDTO.setDescription(candidateCertifications.getDescription());
+		    candidateCertificationDTO.setValidFrom(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(), candidateCertifications.getValidFrom()));
+		    candidateCertificationDTO.setValidTo(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(), candidateCertifications.getValidTo()));
+		    candidateCertificationDTOList.add(candidateCertificationDTO);
+			
 			/*msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "addCertification");
 			if(msg == null){
 				msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "editCertification");
@@ -111,8 +128,8 @@ public class CandidateCertificationsRestController {
 			    SourceLeadSessionManager.removeSessionAttribute(request, "editCertification");
 			*/
 		}
-		resultJson = commonUtil.toJSON(candidateCertificationsList);
-		return resultJson;
+		certificationList.setData(candidateCertificationDTOList);
+		return certificationList;
 	 }
 	 
 	 
