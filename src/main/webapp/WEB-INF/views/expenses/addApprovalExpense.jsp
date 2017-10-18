@@ -380,11 +380,8 @@ function reOpenMyExpense(expenseId){
 
 <script>
 function notifyReopenExpense(expenseId){
-	alert("hi "+expenseId);
 	var reason = document.getElementById("reOpenReason").value;
-	alert(reason);
 	if(reason.match(/^[^\s-](.*)*$/) != null){
-		alert("hi");
 		$("#reOpenReasonDiv").empty();
 		$.ajax({
 		   	type: "POST",
