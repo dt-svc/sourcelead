@@ -1600,10 +1600,10 @@ public class CandidateListRestController {
 			public @ResponseBody String saveAssociateAsFavourite(@RequestParam(value = "candidateId", required = false) Long candidateId,HttpServletRequest request) throws Exception {
 				Candidate candidate = candidateService.getCandidateByCandidateId(candidateId);
 				if(null != candidate){
-					if(null == candidate.getIsFavouriteAssociate() || candidate.getIsFavouriteAssociate().equals(Constants.RECORD_ACTIVE)){
-						candidate.setIsFavouriteAssociate(Constants.RECORD_INACTIVE);
-					}else{
+					if(null == candidate.getIsFavouriteAssociate() || candidate.getIsFavouriteAssociate().equals(Constants.RECORD_INACTIVE)){
 						candidate.setIsFavouriteAssociate(Constants.RECORD_ACTIVE);
+					}else{
+						candidate.setIsFavouriteAssociate(Constants.RECORD_INACTIVE);
 					}
 					candidate.setTeamId(null);
 					candidateService.saveOrUpdateCandidate(candidate);

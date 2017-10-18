@@ -162,14 +162,15 @@ public class TimesheetSubmissionListController {
 								}
 							}
 							
-				    	  ProjectMembers projectMember = submissionApproverHierarchy.getSubmissionId().getProjectMembers();
+						 ProjectMembers pmWithUser = projectMembersService.getConsultantUserProjectMemberByProjectMemberId(submissionApproverHierarchy.getSubmissionId().getProjectMembers().getId());
+						 ProjectMembers projectMember =submissionApproverHierarchy.getSubmissionId().getProjectMembers();
 						 sb.append("<tr id='row").append(projectMember.getId()).append(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(),actualStartDate)).append("To").append(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(),actualEndDate)).append("'>");
 						 sb.append("  <td>");
 						 sb.append("<div class='time_appr_user'>");
-						 sb.append("   <img  id='userImage' onerror='predefineProfileImage(this);' src='").append(request.getContextPath()).append("/displayUserImage/").append(projectMember.getProjectMemberCandidteId().getId()).append("' alt='Profile Image' class='img-circle img-responsive'>");
-						 sb.append("    <span><b title='").append(projectMember.getProjectMemberCandidteId().getFullName()).append("'>").append(projectMember.getProjectMemberCandidteId().getFullName()).append("</b>")
-						                           .append("<b title='").append(projectMember.getProjectMemberCandidteId().getEmail()).append("'>").append(projectMember.getProjectMemberCandidteId().getEmail()).append("</b>")
-                                                   .append("<b title='").append((projectMember.getProjectMemberCandidteId().getMobilePhone() != null) ?(projectMember.getProjectMemberCandidteId().getMobilePhone()) : "").append("'>").append((projectMember.getProjectMemberCandidteId().getMobilePhone() != null) ?(projectMember.getProjectMemberCandidteId().getMobilePhone()) : "").append("</b>")
+						 sb.append("   <img  id='userImage' onerror='predefineProfileImage(this);' src='").append(pmWithUser.getProjectMemberCandidteId().getConsultantUser().getFileUrl()).append("' alt='Profile Image' class='img-circle img-responsive'>");
+						 sb.append("    <span><b title='").append(projectMember.getProjectMemberCandidteId().getFullName()).append("'>").append( projectMember.getProjectMemberCandidteId().getFullName()).append("</b>")
+						                           .append("<b title='").append( projectMember.getProjectMemberCandidteId().getEmail()).append("'>").append( projectMember.getProjectMemberCandidteId().getEmail()).append("</b>")
+                                                   .append("<b title='").append(( projectMember.getProjectMemberCandidteId().getMobilePhone() != null) ?( projectMember.getProjectMemberCandidteId().getMobilePhone()) : "").append("'>").append(( projectMember.getProjectMemberCandidteId().getMobilePhone() != null) ?( projectMember.getProjectMemberCandidteId().getMobilePhone()) : "").append("</b>")
 						                                             .append("</span>");
 						 sb.append("   <div>");
 						 sb.append(" </td>");

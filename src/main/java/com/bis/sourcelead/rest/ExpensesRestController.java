@@ -10,7 +10,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -27,10 +26,7 @@ import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.AddExpensesDao;
@@ -137,35 +133,44 @@ public class ExpensesRestController {
 	private ProjectMembersHistoryService projectMembersHistoryService;
 	
 	@RequestMapping(value = {"/getExpensesList","/rest/getExpensesList"})
-	public List<Expenses> getExpensesList( @RequestBody ExpensesListUtilDTO elDTO) throws Exception
-	{
+    public List<ExpensesDTO> getExpensesList( @RequestBody ExpensesListUtilDTO elDTO,HttpServletRequest request) throws Exception
+    {
+        
+		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		
-		OrgLocations orgLoc = orgLocationService.getOrgLocationsByLocationCode(elDTO.getLocationCode());
-		User loginUser = userService.getUserById(elDTO.getUserId());
-		String expenseStatus = "";
-		if(elDTO.getExpenseStatus() != null && !elDTO.getExpenseStatus().isEmpty()){
-			expenseStatus = elDTO.getExpenseStatus().stream ().map (i -> i.toString ()).collect (Collectors.joining (","));
+		if(orgLoc == null){
+			orgLoc = orgLocationService.getOrgLocationsByLocationCode(elDTO.getLocationCode());
 		}
-		List<Expenses> expensesList = expensesService.getAllExpenses(orgLoc, loginUser,expenseStatus, elDTO.getStartDate(), elDTO.getEndDate());
-		for(Expenses expenses :expensesList){
-			Set<ExpensesApproverHierarchy> hierarchyList = expenses.getApproverHierarchyList();
-			for(ExpensesApproverHierarchy eah :hierarchyList){
-				if(eah.getHierarchyId() != null && eah.getHierarchyId().getProjectClientsId() != null){
-					ProjectClients pc = eah.getHierarchyId().getProjectClientsId();
-					if(pc.getOrgLocationsId() != null && (pc.getOrgLocationsId().getId() == orgLoc.getId())){
-						if(pc.getOrgRelationId() != null && "Vendor".equalsIgnoreCase(pc.getOrgRelationId().getInitiatorType())){
-							expenses.setClientName(pc.getOrgRelationId().getResponderLocationId().getOrgLocationName());
-						 }else if(pc.getOrgRelationId() != null && "Client".equalsIgnoreCase(pc.getOrgRelationId().getInitiatorType())){
-							 expenses.setClientName(pc.getOrgRelationId().getLocationId().getOrgLocationName());
-						 }
-					}
-				}
-				
-			}
+		if(loginUser == null){
+			loginUser = userService.getUserById(elDTO.getUserId());
 		}
-		
-		return expensesList;
-	}
+        String expenseStatus = "";
+        if(elDTO.getExpenseStatus() != null && !elDTO.getExpenseStatus().isEmpty()){
+            expenseStatus = elDTO.getExpenseStatus().stream ().map (i -> i.toString ()).collect (Collectors.joining (","));
+        }
+        List<Expenses> expensesList = expensesService.getAllExpenses(orgLoc, loginUser,expenseStatus, elDTO.getStartDate(), elDTO.getEndDate());
+        List<ExpensesDTO> expensesDTOList = new ArrayList<>();
+        for(Expenses expenses :expensesList){
+            Set<ExpensesApproverHierarchy> hierarchyList = expenses.getApproverHierarchyList();
+            for(ExpensesApproverHierarchy eah :hierarchyList){
+                if(eah.getHierarchyId() != null && eah.getHierarchyId().getProjectClientsId() != null){
+                    ProjectClients pc = eah.getHierarchyId().getProjectClientsId();
+                    if(pc.getOrgLocationsId() != null && (pc.getOrgLocationsId().getId() == orgLoc.getId())){
+                        if(pc.getOrgRelationId() != null && "Vendor".equalsIgnoreCase(pc.getOrgRelationId().getInitiatorType())){
+                            expenses.setClientName(pc.getOrgRelationId().getResponderLocationId().getOrgLocationName());
+                         }else if(pc.getOrgRelationId() != null && "Client".equalsIgnoreCase(pc.getOrgRelationId().getInitiatorType())){
+                             expenses.setClientName(pc.getOrgRelationId().getLocationId().getOrgLocationName());
+                         }
+                    }
+                }
+                
+            }
+            expensesDTOList.add(ExpensesDTOConverter.getExpensesDTOFromExpenses(expenses,new ExpensesDTO()));
+        }
+        
+        return expensesDTOList;
+    }	
 	
 	/**
 	 *  This method serves request for New Expense Sreen
@@ -532,7 +537,7 @@ public class ExpensesRestController {
 			expensesDTO.setMasterCandidateId(expenses.getProjectMembers().getMasterCandidateId().getId());
 			ExpensesApproverHierarchy eah = expensesApprovalService.getexpensesApproverHierarchyForEmployeeByExpenseId(expenses.getId());
 			Submission_Status submissionStatus = eah.getExpenseStatus();
-			expensesDTO.setCombinedSubmissionStatus(submissionStatus);
+			expensesDTO.setCombinedSubmissionStatus(submissionStatus.getValue().toUpperCase());
 			ExpensesApproverHierarchy isSah = expensesApprovalService.isThereAnyApproverApprovedTheExpense(expenses.getId());
 			boolean isSahApproved = false;
 			if (isSah != null) {
@@ -700,41 +705,50 @@ public class ExpensesRestController {
 				expensesApproverHierarchy.setExpenseStartDateString(commonUtil.dateStrFromOrgDateFormatter(orgLoc.getDateFormat(),expensesApproverHierarchy.getExpenseId().getStartDate()));
 			}
 			if (null != expensesApproverHierarchy.getExpenseId()) {
+				
+				if(expensesApproverHierarchy.getExpenseId().getPurpose()!=null){
+					expensesApproverHierarchy.setExpensesApproverHierarchyPurpose(expensesApproverHierarchy.getExpenseId().getPurpose());
+				}else{
+					expensesApproverHierarchy.setExpensesApproverHierarchyPurpose("--");
+				}
 				if (null != expensesApproverHierarchy.getExpenseId().getProjectMembers()) {
-					if (null != expensesApproverHierarchy.getExpenseId().getProjectMembers().getProjects()) {
-						expensesApproverHierarchy.setExpensesProjectName(expensesApproverHierarchy.getExpenseId().getProjectMembers().getProjects().getProjectName());
-					}
-					else {
-						expensesApproverHierarchy.setExpensesProjectName("--");
-					}
-					if (null != expensesApproverHierarchy.getExpenseId().getProjectMembers().getEmployee()) {
-						if (null != expensesApproverHierarchy.getExpenseId().getProjectMembers().getEmployee().getEmployeeId()
-								&& !"".equalsIgnoreCase(expensesApproverHierarchy.getExpenseId().getProjectMembers().getEmployee().getEmployeeId())) {
-							expensesApproverHierarchy.setExpensesEmployeeUserId(expensesApproverHierarchy.getExpenseId().getProjectMembers().getEmployee().getEmployeeId());
-						}
-						else {
-							expensesApproverHierarchy.setExpensesEmployeeUserId("--");
-						}
-						if (null != expensesApproverHierarchy.getExpenseId().getProjectMembers().getProjectMemberCandidteId()
-								&& !"".equalsIgnoreCase(expensesApproverHierarchy.getExpenseId().getProjectMembers().getProjectMemberCandidteId().getDesignationType())) {
-							String empType = expensesApproverHierarchy.getExpenseId().getProjectMembers().getProjectMemberCandidteId().getDesignationType();
-							if (empType.equalsIgnoreCase("C2C")
-									|| empType.equalsIgnoreCase("C2C-1099")) {
-								OrgRelations orgRelation = expensesApproverHierarchy.getExpenseId().getProjectMembers().getProjectMemberCandidteId().getOrgRelationId();
-								expensesApproverHierarchy.setUserTypeVendorName(orgRelation.getResponderLocationId().getOrg().getOrgName());
-								expensesApproverHierarchy.setExpenseEmpUserType(empType);
+							if(null != expensesApproverHierarchy.getExpenseId().getProjectMembers().getProjects()){
+								expensesApproverHierarchy.setExpensesProjectName(expensesApproverHierarchy.getExpenseId().getProjectMembers().getProjects().getProjectName());
+							}else{
+								expensesApproverHierarchy.setExpensesProjectName("--");
 							}
-							else {
-								expensesApproverHierarchy.setExpenseEmpUserType(empType);
+							
+					 ProjectMembers projectMember = expensesApproverHierarchy.getExpenseId().getProjectMembers();
+					 ProjectMembers pmWithUser = projectMembersService.getConsultantUserProjectMemberByProjectMemberId(projectMember.getId());
+					if (null !=projectMember.getProjectMemberCandidteId()) {
+							if(null != projectMember.getProjectMemberCandidteId().getDesignationType() && !"".equalsIgnoreCase(projectMember.getProjectMemberCandidteId().getDesignationType())){
+								String empType = projectMember.getProjectMemberCandidteId().getDesignationType();
+								if(empType.equalsIgnoreCase("C2C") || empType.equalsIgnoreCase("C2C-1099")){
+									OrgRelations orgRelation = projectMember.getProjectMemberCandidteId().getOrgRelationId();
+									expensesApproverHierarchy.setUserTypeVendorName(orgRelation.getResponderLocationId().getOrgLocationName());
+									expensesApproverHierarchy.setExpenseEmpUserType(empType);
+								 }else{
+									 expensesApproverHierarchy.setExpenseEmpUserType(empType);
+								 }
+							}else{
+								expensesApproverHierarchy.setExpenseEmpUserType("--");
+							}
+						
+						if (null != projectMember.getProjectMemberCandidteId()) {
+							expensesApproverHierarchy.setExpenseEmpUserFirstNameLastName(projectMember.getProjectMemberCandidteId().getFullName());
+							expensesApproverHierarchy.setExpenseEmpUserEmail(projectMember.getProjectMemberCandidteId().getEmail());
+							if(null !=  pmWithUser.getProjectMemberCandidteId().getConsultantUser()){
+								expensesApproverHierarchy.setExpensesUserid(pmWithUser.getProjectMemberCandidteId().getConsultantUser().getId());
+								expensesApproverHierarchy.setUserFileUrl(pmWithUser.getProjectMemberCandidteId().getConsultantUser().getFileUrl());
 							}
 						}
-						else {
-							expensesApproverHierarchy.setExpenseEmpUserType("--");
-						}
-						if (null != expensesApproverHierarchy.getExpenseId().getProjectMembers().getProjectMemberCandidteId()) {
-							expensesApproverHierarchy.setExpenseEmpUserFirstNameLastName(expensesApproverHierarchy.getExpenseId().getProjectMembers().getProjectMemberCandidteId().getFullName());
-							expensesApproverHierarchy.setExpenseEmpUserEmail(expensesApproverHierarchy.getExpenseId().getProjectMembers().getProjectMemberCandidteId().getEmail());
-							expensesApproverHierarchy.setExpensesUserid(expensesApproverHierarchy.getExpenseId().getId());
+						
+						if (null != expensesApproverHierarchy.getExpenseId()) {
+							if(null != expensesApproverHierarchy.getExpenseId().getPurpose()){
+								expensesApproverHierarchy.setExpensesApproverHierarchyPurpose(expensesApproverHierarchy.getExpenseId().getPurpose());
+							}else{
+								expensesApproverHierarchy.setExpensesApproverHierarchyPurpose("-----");
+							}
 						}
 					}
 				}
