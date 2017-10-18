@@ -368,7 +368,7 @@ function reOpenMyExpense(expenseId){
 	result = result +"		<p>Re-open message here</p>";
 	result = result +"		<textarea  id='reOpenReason' name='reOpenReason'  placeholder='Comments here' onkeydown='return (event.keyCode!=13);'></textarea>";
 	result = result + ' <div id="reOpenReasonDiv"/>';
-	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Submit' onclick='notifyReopenExpense("+expenseId+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelReOpen();'></b>";
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button'  value = 'Submit' onclick='notifyReopenExpense("+expenseId+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelReOpen();'></b>";
 	result = result +"	</div>";
 	$("#reOpenPopup").append(result);
 	$("#remove_user_pop").slideDown(200);
@@ -380,8 +380,11 @@ function reOpenMyExpense(expenseId){
 
 <script>
 function notifyReopenExpense(expenseId){
+	alert("hi "+expenseId);
 	var reason = document.getElementById("reOpenReason").value;
+	alert(reason);
 	if(reason.match(/^[^\s-](.*)*$/) != null){
+		alert("hi");
 		$("#reOpenReasonDiv").empty();
 		$.ajax({
 		   	type: "POST",
