@@ -268,7 +268,7 @@ function getVendorDetails(){
 							<div class="col-md-9" id="clientNameDiv">
 								<input type="text" class="form-control" id="orgName"
 									name="orgName" value="${orgName}" onclick="getOrgName();"
-									onblur="getOrgDetails(); validateClientName();"
+									onblur="getOrgDetails(); validateOrgName();"
 									field-name="Vendor Name"
 									data-validation="required validate_length length2-250"
 									value=""> <input type="hidden" id="orgLocationId" /> <span
@@ -499,12 +499,29 @@ function getVendorDetails(){
 						<div class="form-group">
 							<label class="col-md-3">Phone Number</label>
 							<div class="col-md-9">
+							 <div class="row">
+							 <div class="col-md-7 paddingRight">
 								<input type="text" class="form-control" name="phoneNumber"
 									id="phoneNumber"
 									data-validation="validate_Space validate_length length9-20 validate_phone"
 									data-validation-optional="true">
+							  </div>
+							  
+							 <div class="col-md-5 paddingLeft">
+				             <div class="row">
+				             <label class="col-md-5">Extension </label>
+				             <div class="col-md-7">
+				             <input type="text" class="form-control" id="extensionNumber" name="extensionNumber" data-validation="validate_Space validate_length length4-5" data-validation-optional="true">
+				             </div>
+				             </div>
+			             </div>
+							  
+							  		
+							</div>		
 							</div>
 						</div>
+						
+						
 						<div class="form-group">
 							<label class="col-md-3">Status</label>
 							<div class="col-md-9">
@@ -1005,6 +1022,51 @@ function validateClientName(){
 				}
 				
 				$("#loading").removeAttr("style");
+			},
+
+		});
+	}
+  }
+}
+</script>
+
+
+
+
+
+<script type="text/javascript">
+function validateOrgName(){
+	
+	var vendorName = (document.getElementById("orgName").value).replace(/[{}]/g, "");
+	var vendor = encodeURIComponent(vendorName);
+	if(vendor.match(/^[^\s-](.*)*$/) != null){
+		$('#clientNameDiv').find('p.jquery_form_error_message').remove();
+	if (vendor != null && vendor != '') {
+		
+		$.ajax({
+			type : "GET",
+			url : sourceleadUrl + "/ws/isInvitedClientOrVendorOrgValid?"+tokenParamName+"="+tokenValue+"&orgName="+vendor,
+			success : function(data) {
+				var result = data;
+				if (result == 'invalid') {
+					$("#save_vendor").removeAttr("disabled");
+			        $("#save_vendor").attr("disabled", "disabled");
+					$("input#orgName").after( "<p class='jquery_form_error_message'>" + vendorName + " is invalid</span>");
+					document.getElementById("orgName").setAttribute( 'record-exist', 'yes');
+					document.getElementById("orgName").setAttribute( 'record-exist-errorMsg', vendorName +"  is invalid");
+					$('input#orgName').removeAttr( "record-exist record-exist-errorMsg");
+					
+				}else {
+					$("#save_vendor").removeAttr("disabled");
+					$('input#orgName').removeAttr("class record-exist record-exist-errormsg");
+					$('input#orgName').attr('class','valid form-control');
+					$('#clientNameDiv').find('p.jquery_form_error_message').remove();
+					$("#save_vendor").click(function() {
+					});
+					
+					validateClientName();
+				}
+				
 			},
 
 		});

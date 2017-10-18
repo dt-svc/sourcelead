@@ -128,6 +128,12 @@ public class LeaveTypeServiceImpl implements LeaveTypeService {
 	{
 		return leaveTypeDao.getLeaveTypeListByLocationId(orgLocationId);
 	}
+	
+	@Override
+	public List<LeaveType> getLeaveTypeListByLocationIdAndStatus(String orgLocationId)
+	{
+		return leaveTypeDao.getLeaveTypeListByLocationIdAndStatus(orgLocationId);
+	}
 
 	@Override
 	public LeaveType getLeaveTypeById(String leaveTypeId) throws Exception

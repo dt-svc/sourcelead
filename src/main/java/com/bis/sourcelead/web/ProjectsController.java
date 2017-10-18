@@ -157,7 +157,7 @@ public class ProjectsController {
 				Collection<Org> orgsList = orgService.getOrgs();
 				model.addObject("add_client", orgsList);*/
 				
-                Collection<User> userList = userService.getTabAccessOwnersByOrgLocationIdAndTabId(loginOrgLocations.getId(),Long.valueOf(Constants.TAB_TIMESHEET_APPROVAL));
+                Collection<User> userList = userService.getTabAccessOwnersByOrgLocationIdAndTabId(loginOrgLocations.getId(),Long.valueOf(Constants.TAB_PROJECTS));
 				model.addObject("user_List", userList);
 				
 				List<LookUpData> skillsList = lookUpDataService.getLookUpDataByCategory(Constants.SKILLS);
@@ -227,7 +227,7 @@ public class ProjectsController {
 	 @RequestMapping(value = "/getProjectLevel1Approvers", method = RequestMethod.GET)
 		public @ResponseBody List<User> getProjectLevel1Approvers(HttpServletRequest request) throws Exception {
 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
-			List<User> userList = userService.getTabAccessOwnersByOrgLocationIdAndTabId(orgLocations.getId(),Long.valueOf(Constants.TAB_TIMESHEET_APPROVAL));
+			List<User> userList = userService.getTabAccessOwnersByOrgLocationIdAndTabId(orgLocations.getId(),Long.valueOf(Constants.TAB_PROJECTS));
 			return userList;
 		}
 	 
@@ -243,7 +243,7 @@ public class ProjectsController {
 				Projects projects = projectsService.getProjectByProjectUUID(projectUUID);
 				OrgLocations locations=orgLocationService.getOrgLocations(projects.getOrgLocationsId().getId());
 				OrgLocations clientOrgLocations = null;
-				String isClientOrgActive = Constants.YES;
+				String isClientOrgActive = Constants.NO;
 				if(projects != null){
 					model.addObject("projectId", projects.getId());
 					model.addObject("projectName", projects.getProjectName());
@@ -265,8 +265,8 @@ public class ProjectsController {
 							clientOrgLocations = projectClients.getOrgRelationId().getResponderLocationId();
 						}
 						
-						if(clientOrgLocations.getStatus() != null && !clientOrgLocations.getStatus().equals(Status.ACTIVE)){
-							isClientOrgActive = Constants.NO;
+						if(clientOrgLocations.getStatus() != null && clientOrgLocations.getStatus().equals(Status.ACTIVE)){
+							isClientOrgActive = Constants.YES;
 						}
 					}
 					model.addObject("isClientOrgActive", isClientOrgActive);
@@ -309,6 +309,8 @@ public class ProjectsController {
 				 
 				 List<LookUpData> taskStatusList = lookUpDataService.getLookUpDataByCategory(Constants.TASKSTATUS);
 				 model.addObject("taskStatusList", taskStatusList);
+				 
+				commonUtil.highLightMenu(Constants.Projects, request);
 				 
 				model.setViewName("project/projectSummary");
 				model.addObject("sourceleadUrl", sourceleadUrl);
@@ -562,13 +564,15 @@ public class ProjectsController {
     @RequestMapping(value = "/viewNewResourceRequest")
    	public ModelAndView viewNewResourceRequest(@RequestParam(value="requestUUID", required=true) String requestUUID,
    			@RequestParam(value="projectUUID", required=true) String projectUUID,
-   			@RequestParam(value="projectClientUUID", required=true) String projectClientUUID) throws Exception {
+   			@RequestParam(value="projectClientUUID", required=true) String projectClientUUID,HttpServletRequest request) throws Exception {
    	    
    	    ModelAndView model = new ModelAndView();
+   	    
+   	    commonUtil.highLightMenu(Constants.Projects, request);
+   	    
    		model.addObject("projectUUID", projectUUID);
    		model.addObject("requestUUID",requestUUID);
    		model.addObject("projectClientUUID",projectClientUUID);
-   		
    		model.setViewName("project/viewNewResourceRequest");
    		model.addObject("sourceleadUrl", sourceleadUrl);
    		return model;
@@ -581,10 +585,12 @@ public class ProjectsController {
 			@RequestParam(value="projectClientUUID", required=true) String projectClientUUID,HttpServletRequest request) throws Exception {
 	    
 	    ModelAndView model = new ModelAndView();
+	    
+	    commonUtil.highLightMenu(Constants.Projects, request);
+	    
 		model.addObject("projectUUID", projectUUID);
 		model.addObject("requestUUID",requestUUID);
 		model.addObject("projectClientUUID",projectClientUUID);
-		
 		model.setViewName("project/viewResourceRequest");
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		return model;

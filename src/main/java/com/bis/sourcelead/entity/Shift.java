@@ -34,7 +34,7 @@ public class Shift {
 	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="ORGLOCATION_ID")        
-    private OrgLocations orgLocationId;
+    private OrgLocations orgLocations;
 	
 	@Column(name = "SHIFT_NAME")
 	private String shiftName;
@@ -79,14 +79,14 @@ public class Shift {
 		this.id = id;
 	}
 
-	public OrgLocations getOrgLocationId()
+	public OrgLocations getOrgLocations()
 	{
-		return orgLocationId;
+		return orgLocations;
 	}
 
-	public void setOrgLocationId(OrgLocations orgLocationId)
+	public void setOrgLocations(OrgLocations orgLocations)
 	{
-		this.orgLocationId = orgLocationId;
+		this.orgLocations = orgLocations;
 	}
 
 	public String getShiftName()

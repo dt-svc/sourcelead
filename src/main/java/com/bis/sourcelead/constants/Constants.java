@@ -44,6 +44,7 @@ public class Constants {
 	public static final String RESCHEDULED_EMAIL="entity_type_rescheduled_email";
 	public static final String CLIENT_NAME = "Client Name*";
 	public static final String PHONE = "Phone";
+	public static final String EXTENSION_NUMBER = "Extension Number";
 	public static final String STATUS = "Status";
 	public static final String OWNER = "Owner(Email)";
 	public static final String WEBSITE = "Website";
@@ -143,10 +144,12 @@ public class Constants {
 	public static final String MAIL_TEAM_MANAGER_APPROVED_EXPENSE = "ExpensesApprovalManagerEmailToEmployee";
 	public static final String MAIL_TEAM_MANAGER_REJECTED_EXPENSE = "ExpensesApprovalRejectedEmailToEmployee";
 	public static final String MAIL_APPROVERS_REOPEN_EXPENSE = "ExpensesReopenEmailToSuperAdmin";
-	
+	public static final String TIMESHEET_APPROVED_EMAIL_TOVENDOR = "TimesheetApprovedEmailToVendor";
+	public static final String TIMESHEET_REJECTED_EMAIL_TOVENDOR = "TimesheetRejectEmailToVendor";
 	public static final String LEAVE_CANCEL_EMAIL_TO_USER = "LeaveCancelEmailToUser";
 	public static final String LEAVE_CANCEL_NOTOFICATION_TO_USER = "LeaveCancelNotificationToUser";
-	
+	public static final String EXPENSES_REJECTED_EMAIL_TOVENDOR = "ExpensesRejectEmailToVendor";
+	public static final String EXPENSES_APPROVED_EMAIL_TOVENDOR = "ExpensesApproveEmailToVendor";
 	public static final String MAIL_REOPEN_APPROVED_EXPENSES_EMAIL_TO_APPROVERS = "ReopenApprovedExpenseEmailToApprovers";
 	public static final String MAIL_REOPEN_REJECT_EXPENSES_EMAIL_TO_APPROVERS = "ReopenRejectExpenseEmailToApprovers";
 	
@@ -220,7 +223,11 @@ public class Constants {
 	public static final String TIMESHEET_EMAIL_NOTIFICATION = "Timesheet Scheduler";
 	public static final String TIMESHEET_MANAGER_NOTIFICATION = "Timesheet Scheduler Level1 Manager";
 	public static final String UPDATEDREQUIREMENTNOTIFICATIONTOVENDOR = "updatedRequirementNotificationToVendor";
-	public static final String OFFBOARDINGPROCESSAPPLICANTTERMINATION = "OffBoardingProcessApplicantTermination";
+	public static final String OFFBOARDINGPROCESSAPPLICANTTERMINATION = "OffBoardingProcessApplicantTermination"; 
+	
+	public static final String OFFBOARDINGAPPLICANTDELAYPROCESS = "OffBoardingApplicantDealayProcess";
+	public static final String OFFBOARDINGPROCESSAPPLICANTTERMINATIONMAILTOREPORTINGMANAGER = "OffBoardingProcessMailToReportingManager";
+	
 	
 	public static final String LEAVE_APPROVER_EMAIL = "Approver Leave";
 	public static final String LEAVE_APPROVER_NOTIFICATION = "ApproverLeaveNotification";
@@ -557,17 +564,19 @@ public class Constants {
 	public static final String MAIL_TRASH = "Trash";
 	public static final String MAIL_DELETE = "Deleted";
 	public static final String MAIL_REQUESTED = "Requested";
-	public static final String[] PROJECT_ASSIGNED_EMPLOYEES = { "Emp Name", "Emp Email", "Start Date",
+	public static final String[] PROJECT_ASSIGNED_EMPLOYEES = { "Emp Name", "Emp Email", "Role Type", "Start Date",
 			"End Date", "Approved Hrs", "Rejected Hrs", "Waiting for Approval", "Saved Hrs" };
 	// public static String[] VENDOR_CONTACTS_HEADERS = {"Vendor Name*","First
 	// Name*","Last Name","Email*","Phone","Status","Owner(Email)*"};
 	// public static String[] CLIENT_CONTACTS_HEADERS = {"Client Name*","First
 	// Name*","Last Name","Email*","Phone","Status","Owner(Email)*"};
 	public static final String[] VENDOR_HEADERS = { "Vendor Name*", "Website", "Country", "State", "City",
-			"Tier", "First Name*", "Last Name", "Email*", "Phone", "Status", "Owner(Email)",
+			"Tier", "First Name*", "Last Name", "Email*", "Phone", 
+			"Extension Number","Status", "Owner(Email)",
 			"ClientAddress", "BillingAddress", "PaymentTerms" };
 	public static final String[] CLIENT_HEADERS = { "Client Name*", "Website", "Country", "State", "City",
-			"Tier", "First Name*", "Last Name", "Email*", "Phone", "Status", "Owner(Email)",
+			"Tier", "First Name*", "Last Name", "Email*", "Phone", 
+			"Extension Number","Status", "Owner(Email)",
 			"ClientAddress", "BillingAddress", "PaymentTerms" };
 	public static final String[] VENDOR_CONTACTS_STATUS_DROPDOWN = { "New", "Active", "In-Active",
 			"Negotiation", "Contracted" };

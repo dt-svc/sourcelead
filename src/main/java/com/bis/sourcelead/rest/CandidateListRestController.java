@@ -47,6 +47,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -1066,11 +1067,11 @@ public class CandidateListRestController {
 	 * @throws NullPointerException
 	 */
 	@RequestMapping(value = {"/updateCandidate", "/rest/updateCandidate"},method=RequestMethod.POST)
-	public String updateCandidate(CandidateDTO CandidateDto,HttpServletRequest request) throws Exception {
+	public String updateCandidate(CandidateDTO candidateDto,HttpServletRequest request) throws Exception {
 		String isUpdated = "failed";
-		User user = userService.getUserById(Long.valueOf(CandidateDto.getLoginUserId()));
-		OrgLocations loginOrgLocation = orgLocationService.getOrgLocations(Long.valueOf(CandidateDto.getOrgloationId()));
-		Candidate candidate = candidateService.storeCandidate(CandidateDto, loginOrgLocation, user);
+		User user = userService.getUserById(Long.valueOf(candidateDto.getLoginUserId()));
+		OrgLocations loginOrgLocation = orgLocationService.getOrgLocations(Long.valueOf(candidateDto.getOrgloationId()));
+		Candidate candidate = candidateService.storeCandidate(candidateDto, loginOrgLocation, user);
         if(candidate != null) {
         	isUpdated =  "success";	
         }
@@ -1599,10 +1600,10 @@ public class CandidateListRestController {
 			public @ResponseBody String saveAssociateAsFavourite(@RequestParam(value = "candidateId", required = false) Long candidateId,HttpServletRequest request) throws Exception {
 				Candidate candidate = candidateService.getCandidateByCandidateId(candidateId);
 				if(null != candidate){
-					if(null == candidate.getIsFavouriteAssociate() || candidate.getIsFavouriteAssociate().equals(Constants.RECORD_ACTIVE)){
-						candidate.setIsFavouriteAssociate(Constants.RECORD_INACTIVE);
-					}else{
+					if(null == candidate.getIsFavouriteAssociate() || candidate.getIsFavouriteAssociate().equals(Constants.RECORD_INACTIVE)){
 						candidate.setIsFavouriteAssociate(Constants.RECORD_ACTIVE);
+					}else{
+						candidate.setIsFavouriteAssociate(Constants.RECORD_INACTIVE);
 					}
 					candidate.setTeamId(null);
 					candidateService.saveOrUpdateCandidate(candidate);

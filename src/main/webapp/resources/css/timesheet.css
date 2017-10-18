@@ -6,7 +6,8 @@ body {
     outline:none;
     }      
 a { cursor:pointer;}
-       
+  
+
 .timesheet_out {
     width:auto; padding:0px 0px 0px 0px; position:relative;
     }
@@ -1892,7 +1893,7 @@ background:url("../images/arrow-d-g.png") no-repeat right center; background-siz
     position:relative; background-color:#fff; z-index:5; border-top:2px solid #368ee0;
     }
 .new-tabs li a {
-    padding:7px 25px; text-decoration:none; font-size:15px; color:#666; display:block;
+    padding:7px 15px; text-decoration:none; font-size:15px; color:#666; display:block;
     }
 .new-tabs .current a {
     color:#1d6cb5;
@@ -5351,40 +5352,37 @@ width: auto !important;
 	cursor: pointer;
 }
 
-
-
-.empUlAli {}
-.empUlAli li {
-	position: relative; font-weight: 500; color: #999; cursor: pointer; list-style-type: none; padding: 5px 5px;
+.widSta {
+	margin: 0px auto; width: 100px;
 }
-.empUlAli li .fa-filter {
-  	font-size: 18px; color: #545454; padding: 0px 10px 0px 0px;
-}
-.empUlAli li .fa-caret-down { 
-	display: inline-block; font-size: 14px; font-weight: 500; color: #333; padding: 0px 0px 0px 20px;
-}
-.empUlAli li .statusFiler-1 {
-	right:8px; min-width: 180px;
-}
-.empUlAli li label {
-	display: inline-block; padding: 0px 0px 0px 10px;
-}
-.empUlAli li ul {
-	padding: 4px 7px;
-}
-.mR5 {
-	margin: 0px 5px 0px 0px;
+.bText {
+	font-weight: 600 !important;
 }
 
-
-.clientProjSpan {
-	display: inline-block !important; float: left; padding: 0px 0px 0px 10px;
-}
-.clientInfo {
-	font-size: 20px; color: #9E9E9E !important; padding: 6px 5px 0px 5px;
+.adHeading {
+	padding: 5px 0px 8px 15px; margin: 0px 0px;font-size: 18px; font-weight: 500; color: #666;
 }
 
+.ExAdradio {}
+.ExAdradio label {
+	display: inline-block; margin: 0px 40px 0px 0px; cursor: pointer;
+}
+.ExAdradio label span {
+	padding: 0px 0px 0px 3px; display: inline-block; position: relative; top: 3px;
+}
 
+.editAdva {
+	height: 30px; width: 120px; border-radius: 2px; border: 1px solid #999; text-align: center;
+}
+.addRoAdv {
+	background-color: #f5f5f5; padding: 10px 0px; border-top: 1px solid #ededed; display: none;
+}
+
+.clientProjTab {
+}
+.clientProjTab table>tbody>tr>td {
+padding:8px 8px 3px 8px !important;
+}
 
 .marOne {
 	margin: 0px 1px !important;
@@ -5401,10 +5399,205 @@ width: auto !important;
 	margin: 2px 0px 0px 0px !important;
 }
 .colB{
-	color: #368ee0 !important;
+color: #368ee0 !important;
 }
 .paTp{
-	padding: 6px 0px;
+padding: 6px 0px;
 }
 .rejNam{
-	padding: 2px 0px 0px 0px; font-weight: 500; max-width: 100px !important;
+padding: 2px 0px 0px 0px; font-weight: 500; max-width: 100px !important;
+}
+
+.listof-holidays table.dataTable thead th {
+    padding: 10px !important;
+}
+.warMess {
+display: block; font-size: 12px; font-weight: 500; color: #ff6b01; padding: 2px 0px 0px 0px;
+}
+.empUlAli {}
+.empUlAli li {
+    position: relative; font-weight: 500; color: #999; cursor: pointer; list-style-type: none; padding: 5px 5px;
+}
+.empUlAli li .fa-filter {
+      font-size: 18px; color: #545454; padding: 0px 10px 0px 0px;
+}
+.empUlAli li .fa-caret-down {
+    display: inline-block; font-size: 14px; font-weight: 500; color: #333; padding: 0px 0px 0px 20px;
+}
+.empUlAli li .statusFiler-1 {
+    right:8px; min-width: 180px;
+}
+.empUlAli li label {
+    display: inline-block; padding: 0px 0px 0px 10px;
+}
+.empUlAli li ul {
+    padding: 4px 7px;
+}
+.mR5 {
+    margin: 0px 5px 0px 0px;
+}
+
+
+
+/*   Reports CSS  */
+.ReqRepHead {
+	padding: 6px 0px; border-bottom: 1px solid #dedede; background-color: #f5f5f5; box-shadow: 0px 0px 3px #999;
+	border-radius: 5px;
+}
+.ReqRepWrap {
+	background-color: #fff;
+}
+.ReqRepCta {	
+	background-color: #fff; width: 25%; float: left; padding: 20px;
+}
+.ReqRepCta h2 {
+	padding: 0px 0px 5px 0px; margin: 0px 0px; font-size: 14px; font-weight: 400; color: #454545; border-bottom: 2px solid #ededed;
+}
+.circleOut {
+	width: 130px; height: 130px; border-radius: 50%; margin: 20px auto; text-align: center; font-size: 38px; color: #333;
+}
+
+.circleOut div {
+    position:relative; width:130px; height:130px;
+}
+.circleOut canvas {
+    display: block; width:130px !important; height:130px !important; position:absolute; top:0; left:0;
+}
+.circleOut span {
+    color:#555; display:block; line-height:130px; text-align:center; width:130px; font-family:sans-serif;
+    font-size:35px; font-weight:100;
+}
+.circleOut input {
+    width: 130px;
+}
+
+.ReqRepInn {
+	border-top: 2px solid #ededed; padding: 8px 5px 6px;
+}
+.ReqRepInn p {
+	padding: 0px 0px; margin: 0px 0px; font-size: 12px; font-weight: 400; color: #787878;
+}
+.ReqRepInn h3 {
+	padding: 0px 0px; margin: 0px 0px; color: #02c48f; font-size: 20px; font-weight: 400;
+}
+.ReqRepInn h3 span {
+	padding: 0px 0px; margin: 0px 0px; font-size: 12px; font-weight: 400; color: #232323;
+}
+.ReqRepCtaCol1 .ReqRepInn h3 {
+	color: #2fa4ff;
+}
+.ReqRepCtaCol2 .ReqRepInn h3 { 
+	color: #8c64db;
+}
+.ReqRepCtaCol3 .ReqRepInn h3 { 
+	color: #ff8335;
+}
+
+.circleOut2 {
+	width:100% !important; height:170px; margin: 0px auto; overflow: hidden; position: relative;
+}
+.circleOut2 p {
+	position: absolute; z-index: 100; top: 37%; left: 0px; right: 0px; margin: 0px auto; text-align: center; display: block;
+	width: 100%; font-size:32px; font-weight:400; color: #454545;
+}
+.circleOut2 p span {
+	display: block; padding: 0px 0px; margin: 0px 0px; font-size: 12px; font-weight: 500; color: #787878;
+}
+.chaRT {
+	width: 200px !important; height: 200px !important; margin: 0px auto; display: block; min-height: 200px !important;
+}
+
+.reTenRep {
+	width: 98%; padding: 0px 1%; height: 350px; box-sizing: border-box; margin-bottom: 20px;
+}
+
+.reTenWrap {
+	padding: 0px 40px 25px;
+}
+.reTenWrap h2 {
+	padding: 0px 0px 8px; margin: 0px 0px; font-size: 22px; font-weight: 500;
+}
+.reTenWrap h3 {
+	padding: 4px 0px; margin: 0px 0px; font-size: 18px; font-weight: 400;
+}
+.reTenWrap p {
+	padding: 0px 0px; margin: 0px 0px; float: left; width: 200px;
+}
+.reTenWrap span {
+	width: 100px; float: left;
+}
+.tableBor {
+	border: 1px solid #e6e6e6; border-top: none;
+}
+.hiriRepOut {
+}
+.hiriRepCta {
+	float: left; width: 14.282%; text-align: center;
+}
+.hiriRepCta h2 {
+	font-size: 15px; font-weight: 400; color: #454545; margin: 0px 0px; padding: 0px 0px 10px 0px;
+}
+.hiriRepCta p {
+	font-size: 13px; font-weight: 400; color: #666; margin: 0px 0px; padding: 0px 0px 10px 0px;
+}
+.hiriRepCta p span {
+	display: inline-block; padding: 0px 0px 0px 5px; font-size: 15px; color: #368ee0;
+}
+.hiriRep {
+	width: 100px; height: 100px; border-radius: 50%; margin: 20px auto; text-align: center; font-size: 38px; color: #333;
+}
+
+.hiriRep div {
+    position:relative; width:100px; height:100px;
+}
+.hiriRep canvas {
+    display: block; width:100px !important; height:100px !important; position:absolute; top:0; left:0;
+}
+.hiriRep span {
+    color:#555; display:block; line-height:100px; text-align:center; width:100px; font-family:sans-serif;
+    font-size:28px; font-weight:100;
+}
+.hiriRep input {
+    width: 100px;
+}
+.reqListBtn {}
+.reqListBtn span {
+	background-image: linear-gradient(to bottom, #fff 0px, #e0e0e0 100%); background-repeat: repeat-x; border-color: #ccc;
+	font-size: 18px; padding: 3px 12px 0px; border-radius: 4px; display: inline-block;
+	border: 1px solid #ccc; height: 30px; color: #666; margin: 0px 10px 0px 0px; cursor: pointer;
+}
+.reqListBtn span.rAct {
+	color: #fff; background-color: #358ede; border: 1px solid #288eea;
+	background-image: linear-gradient(to bottom, #358ede 0px, #288eea 100%);
+}
+.LisView {
+	display: none;
+}
+.btHei {
+	height: 30px;
+}
+.btHei .btn {
+	padding: 4px 12px;
+}
+
+
+.timeAppUse {
+padding: 0px 10px 10px;
+}
+.timeAppUse span {
+width: 50px; height: 50px; background: #ccc; float: left; border-radius:50%;
+}
+.timeAppUse span img {
+width: 100%; height: 100%; border-radius: 50%; max-height: 50px;
+}
+.timeAppUse p {
+float: left; padding: 0px 0px; margin: 5px 0px 0px 15px;
+}
+.timeAppUse p input {
+width: 100%; border: none; background: transparent; font-size: 14px; color: #666; padding: 1px 0px;
+}
+.timeAppUse p input.timeUsName {
+font-size: 17px; font-weight: 500; color: #454545;
+}
+
+

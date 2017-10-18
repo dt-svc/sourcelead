@@ -27,4 +27,6 @@ public interface CandidateOffBoardingService {
 	public void terminateOffboardingUser(CandidateOffBoarding candidateOffBoarding,User user,OrgLocations orgLocations) throws Exception;
 	
 	CandidateOffBoarding getCandidateOffBoardingByUserIdAndLocationId(Long offboardingUser,Long orgLocationId) throws Exception;
+
+	List<CandidateOffBoarding> candidateOffboringDelayMail();
 }

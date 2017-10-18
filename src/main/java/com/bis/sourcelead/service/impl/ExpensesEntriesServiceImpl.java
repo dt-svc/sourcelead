@@ -110,6 +110,11 @@ public class ExpensesEntriesServiceImpl implements ExpensesEntriesService{
 						entries.setDescription(category.getEntryDescription());
 					}
 					
+					
+					if (StringUtils.isNotBlank(category.getPaidBy())){
+						entries.setPaidBy(category.getPaidBy());
+					 }
+					
 					if(StringUtils.isNotBlank(category.getPaymentMode())){
 						entries.setPaymentMode(PaymentModes.getNameByValue(category.getPaymentMode()));
 					}
@@ -160,6 +165,12 @@ public class ExpensesEntriesServiceImpl implements ExpensesEntriesService{
 		    		expensesEntriesDao.removeAllExpenseEntries(expenseEntryDbIds);
 		    	}
 		    }
+		    if(addExpensesDTO.getRemovedDocumentIds() != null && ! addExpensesDTO.getRemovedDocumentIds().isEmpty()){
+		    	for(Long id :addExpensesDTO.getRemovedDocumentIds()) {
+		    		expensesEntryDocumentsDao.removeExpensesEntryDocouments(id);
+		    	}
+		    }
+		   
 		   return expensesEntriesList;
 		    		  
 	}

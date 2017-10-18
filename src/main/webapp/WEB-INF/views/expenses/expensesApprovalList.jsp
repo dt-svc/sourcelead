@@ -182,7 +182,7 @@ if(locationList.match("yyyy-MM-dd")){
 $.ajax({
     type : "POST",
      url: sourceleadUrl+"/getExpensesApprovalList?"+tokenParamName+"="+tokenValue+"&expenseStatus="+expenseStatus+"&startDate="+startDate+"&endDate="+endDate,      
-     success :function(data) {
+     success :function(json) {
     var result = "";
     
 	result = result+' <table id="example">';
@@ -202,15 +202,14 @@ $.ajax({
 	result = result+' </thead>';
 	result = result+' <tbody>';
 	if(data !='' && data !=[] && data !='[]'){
-	var json = JSON.parse(data);
+	//var json = JSON.parse(data);
 	 for (var i = 0; i < json.length; i++) { 
 	 var data = json[i];
 	result = result+' <tr id = "row'+data.expenseId.id+'">';
-	result = result+' <td><div class="time_appr_user"><img  id="userImage" onerror="predefineProfileImage(this);" src="'+sourceleadUrl+'/displayUserImage/'+data.expensesUserid+'" alt="Profile Image" class="img-circle img-responsive">';
+	result = result+' <td><div class="time_appr_user"><img  id="userImage" onerror="predefineProfileImage(this);" src="'+data.userFileUrl+'" alt="Profile Image" class="img-circle img-responsive">';
 	result = result+' <span>';
 	result = result+' <b title="'+data.expenseEmpUserFirstNameLastName+'">'+data.expenseEmpUserFirstNameLastName+'</b>';
 	result = result+' <b title="'+data.expenseEmpUserEmail+'">'+data.expenseEmpUserEmail+'</b>';
-	result = result+' <b title="'+data.expensesEmployeeUserId+'">'+data.expensesEmployeeUserId+'</b>';
 	result = result+' </span></div>';
 	result = result+' </td>';
 	if(data.userTypeVendorName != null && data.userTypeVendorName != '' && data.userTypeVendorName !='undefined'){
