@@ -44,6 +44,7 @@ public class Constants {
 	public static final String RESCHEDULED_EMAIL="entity_type_rescheduled_email";
 	public static final String CLIENT_NAME = "Client Name*";
 	public static final String PHONE = "Phone";
+	public static final String EXTENSION_NUMBER = "Extension Number";
 	public static final String STATUS = "Status";
 	public static final String OWNER = "Owner(Email)";
 	public static final String WEBSITE = "Website";
@@ -570,10 +571,12 @@ public class Constants {
 	// public static String[] CLIENT_CONTACTS_HEADERS = {"Client Name*","First
 	// Name*","Last Name","Email*","Phone","Status","Owner(Email)*"};
 	public static final String[] VENDOR_HEADERS = { "Vendor Name*", "Website", "Country", "State", "City",
-			"Tier", "First Name*", "Last Name", "Email*", "Phone", "Status", "Owner(Email)",
+			"Tier", "First Name*", "Last Name", "Email*", "Phone", 
+			"Extension Number","Status", "Owner(Email)",
 			"ClientAddress", "BillingAddress", "PaymentTerms" };
 	public static final String[] CLIENT_HEADERS = { "Client Name*", "Website", "Country", "State", "City",
-			"Tier", "First Name*", "Last Name", "Email*", "Phone", "Status", "Owner(Email)",
+			"Tier", "First Name*", "Last Name", "Email*", "Phone", 
+			"Extension Number","Status", "Owner(Email)",
 			"ClientAddress", "BillingAddress", "PaymentTerms" };
 	public static final String[] VENDOR_CONTACTS_STATUS_DROPDOWN = { "New", "Active", "In-Active",
 			"Negotiation", "Contracted" };

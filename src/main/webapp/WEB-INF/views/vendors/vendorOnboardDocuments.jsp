@@ -72,7 +72,7 @@ filter: alpha(opacity=0);  -moz-opacity: 0; -khtml-opacity: 0;
 </div>
 
 <div id="divContractsNameTd1" style="display: none; float: left;">
-	  			<input type="text"  placeholder='Document Name' class='form-control input-sm vendorinput' id='REPLACEROWIDcontractsdocFileName' name="vendorOnboardDocumentsFileInfo[REPLACEROWID].docFileName"  data-validation="required" field-name="Document" > 
+	  			<input type="text"  placeholder='Document Name' class='form-control input-sm vendorinput' id='REPLACEROWIDcontractsdocFileName' name="vendorOnboardDocumentsFileInfo[REPLACEROWID].docFileName"  data-validation="required" field-name="Document Name" > 
 </div>
 
 
