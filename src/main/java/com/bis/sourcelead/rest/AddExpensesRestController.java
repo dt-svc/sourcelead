@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +28,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.OrgLocationsDao;
 import com.bis.sourcelead.dto.ExpensesDTO;
+import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
@@ -40,6 +42,7 @@ import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Submission_Status;
 import com.bis.sourcelead.service.AddExpensesService;
+import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.ExpensesApprovalService;
 import com.bis.sourcelead.service.ExpensesEntryDocumentsService;
@@ -68,6 +71,10 @@ public class AddExpensesRestController {
 	
 	@Autowired
 	private OrgLocationService orgLocationService;
+	
+	@Autowired
+	private CountriesService countriesService;
+	
 	
 	@Autowired
 	private CommonUtil commonUtil;
@@ -242,13 +249,29 @@ public class AddExpensesRestController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = {"/storeAddExpensesData","/rest/storeAddExpensesData"},method = RequestMethod.POST)
-	public @ResponseBody String storeAddExpensesData(HttpServletRequest request,@RequestParam(value="status", required=false) String status,ExpensesDTO expensesDTO) throws Exception {
+	public @ResponseBody String storeAddExpensesData(HttpServletRequest request,ExpensesDTO expensesDTO) throws Exception {
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		if(loginUser == null && expensesDTO.getUserId() != null){
+			loginUser = userService.getUserById(expensesDTO.getUserId());
+		}
 		OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		 String currencyCode = (String) SourceLeadSessionManager.getSessionAttribute(request, "currencyCode");
+		String currencyCode = (String) SourceLeadSessionManager.getSessionAttribute(request, "currencyCode");
+		if(orgLoc == null && StringUtils.isNotEmpty(expensesDTO.getLocationCode())){
+			orgLoc = orgLocationService.getOrgLocationsByLocationCode(expensesDTO.getLocationCode());
+			Countries countries = countriesService.getCountriesByCountryName(orgLoc.getCountry());
+			currencyCode = countries.getCurrency();
+		}
+		 
+		if(loginUser != null && orgLoc != null){
+			addExpensesService.storeAddExpensesData(expensesDTO,loginUser,orgLoc,request,currencyCode);
+			return "success";
+		}
+		else{
+			return "failure";
+		}
 		//JSONObject jsonObj = new JSONObject(request.getParameter("json"));
-		addExpensesService.storeAddExpensesData(expensesDTO,loginUser,orgLoc,request,status,currencyCode);
-		return "DataSaved";
+	
+		
    }
  	
 	
