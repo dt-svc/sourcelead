@@ -59,8 +59,8 @@ public class RestrictDayServiceImpl implements RestrictDayService {
 		}
 		
 		restrictDay.setRestrictName(restrictDayDTO.getRestrictName());
-		restrictDay.setStartDate(commonUtil.getDateFormat(restrictDayDTO.getStartDate()));
-		restrictDay.setEndDate(commonUtil.getDateFormat(restrictDayDTO.getEndDate()));
+		restrictDay.setStartDate(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),restrictDayDTO.getStartDate()));
+		restrictDay.setEndDate(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),restrictDayDTO.getEndDate()));
  		if(StringUtils.isNotBlank(restrictDayDTO.getReason())){
 			restrictDay.setReason(restrictDayDTO.getReason());
 		}

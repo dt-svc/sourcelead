@@ -73,6 +73,7 @@ function getCancelledLeavesList(){
 				result = result + '<th>Reason</th>';
 				result = result + '<th>Approved By</th>';
 				result = result + '<th>Cancelled By</th>';
+				result = result + '<th>Cancelled Reason</th>';
 				result = result + '<th>Status</th>';
 				result = result + '</tr>';
 				result = result + '</thead>	';
@@ -84,8 +85,8 @@ function getCancelledLeavesList(){
 			        		 var opt = data[i];
 			        		 result = result + ' <tr>';
 			        		 result = result + ' <td>';
-			        		 result = result + ' <div class="proj_show tbldata-dotdot-big">';
-			        		 result = result + '     <div class="pull-left tbldata-dotdot-me" title="'+opt.leaveType+'" onclick="getRequestedAproveSummary(\''+opt.id+'\','+orgLocationId+');">'+opt.leaveType+'</div><i class="fa fa-binoculars pull-right" ></i>';
+			        		 result = result + ' <div class="proj_show divmax-width">';
+			        		 result = result + '     <div class="pull-left tbldata-dotdot" title="'+opt.leaveType+'" onclick="getRequestedAproveSummary(\''+opt.id+'\','+orgLocationId+');">'+opt.leaveType+'</div><i class="fa fa-binoculars pull-right"></i>';
 			        		 result = result + '  </div>';
 			        		 result = result + ' </td>';
 			        		 result = result + ' <td>';
@@ -114,6 +115,13 @@ function getCancelledLeavesList(){
 			        		 result = result + ' <td>';
 			        		 if(opt.updatedBy !=null && opt.updatedBy != 'undefined' && opt.updatedBy != ''){
 			        			 result = result + '     <div title="'+opt.updatedBy+'" class="tblminwidth-75">'+opt.updatedBy+'</div>';	 
+			        		 }else{
+			        			 result = result + '     <div title="" class="tblminwidth-75">--</div>';	
+			        		 }
+			        		 result = result + '  </td>';
+			        		 result = result + ' <td>';
+			        		 if(opt.cancelReason !=null && opt.cancelReason != 'undefined' && opt.cancelReason != ''){
+			        			 result = result + '     <div title="'+opt.cancelReason+'" class="tblminwidth-75">'+opt.cancelReason+'</div>';	 
 			        		 }else{
 			        			 result = result + '     <div title="" class="tblminwidth-75">--</div>';	
 			        		 }

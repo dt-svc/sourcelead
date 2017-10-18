@@ -539,6 +539,7 @@ public class LeaveManagementRestController {
 			restrictDayDTO.setReason(restrictDay.getReason());
 			restrictDayDTO.setIsApllicable(restrictDay.getApplicableToAll());
 			restrictDayDTO.setStatus(restrictDay.getStatus());
+			restrictDayDTO.setRestrictDayId(restrictDay.getId());
 			restrictDayDTOList.add(restrictDayDTO);
 		}
 		responseList.setData(restrictDayDTOList);

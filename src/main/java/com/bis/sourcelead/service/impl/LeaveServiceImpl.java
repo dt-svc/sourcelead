@@ -198,6 +198,9 @@ public class LeaveServiceImpl implements LeaveService{
 				leaveDto.setNoOfDays(leave.getNumberOfDays());
 				leaveDto.setBalanceleaves(leave.getLeaveType().getNumbefrOfLeavesPeryear());
 				leaveDto.setOrgLocationId(String.valueOf(leave.getOrgLocations().getId()));
+				if(StringUtils.isNotBlank(leave.getDeleteReason())) {
+					leaveDto.setCancelReason(leave.getDeleteReason());
+				}
 				if(leave.getUser().getId() != null){ 
 				 UserRole userrole;
 				try {
@@ -439,6 +442,9 @@ public class LeaveServiceImpl implements LeaveService{
 				}else{
 					leaveDto.setUpdatedBy(sb.append(user.getFirstName()).toString());
 				}
+			}
+			if(StringUtils.isNotBlank(leave.getDeleteReason())) {
+				leaveDto.setCancelReason(leave.getDeleteReason());;
 			}
 			leaveDto.setReason(leave.getReason());
 			leaveDto.setStatus(leave.getStatus());
