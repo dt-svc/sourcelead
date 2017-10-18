@@ -402,7 +402,7 @@ public class TimesheetRestController {
 			if(projectMembersList != null && !projectMembersList.isEmpty()){
 				long count = 1;
 				for(ProjectMembers pm :projectMembersList){
-					Map<String,String>  timesheetFrequencyMap = timesheetFrequencyGeneratorUtil.getTimesheetFrequencyListFromProjectInvoiceFrequency(pm,"view");
+					Map<String,String>  timesheetFrequencyMap = timesheetFrequencyGeneratorUtil.getTimesheetFrequencyListFromProjectInvoiceFrequency(pm,orgLoc,"view");
                     if(timesheetFrequencyMap == null || timesheetFrequencyMap.isEmpty())
                         continue;
 					if(count == 1){
@@ -447,7 +447,7 @@ public class TimesheetRestController {
 		if(StringUtils.isNotEmpty(projectMemberId)){
 			ProjectMembers projectMember = projectMembersService.getProjectMemberById(Long.parseLong(projectMemberId));
 			if(projectMember != null){
-				Map<String,String>  timesheetFrequencyMap = timesheetFrequencyGeneratorUtil.getTimesheetFrequencyListFromProjectInvoiceFrequency(projectMember,"view");
+				Map<String,String>  timesheetFrequencyMap = timesheetFrequencyGeneratorUtil.getTimesheetFrequencyListFromProjectInvoiceFrequency(projectMember,orgLocations,"view");
 				if(timesheetFrequencyMap != null && !timesheetFrequencyMap.isEmpty()){
 					
 				/*timesheetEntriesDiv.append("					<div id='timesheetEntriesDivByProjectMemberId'>");*/
@@ -578,14 +578,43 @@ public class TimesheetRestController {
 	 	  timesheetEntriesDiv.append("					<div id='timesheetSubmissionStatusDiv' "+styleWidth+" class='timeNewSe "+pullRightClass+"'>");
 	 	 
 		   StringBuilder submissionStatusDiv = getSubmissionStatusDiv(sah ,projectMemberId,frequencyStartDate,frequencyEndDate,weekStartDate,weekEndDate,from,isSahApproved,pullRightClass,styleWidth,innerStyleWidth,superUserId,isSahReopened,isSuperUser,projectId,masterCandidateId);
-	      timesheetEntriesDiv.append(submissionStatusDiv); 
+	      timesheetEntriesDiv.append(submissionStatusDiv); 	      
+	      
+	      
 	      timesheetEntriesDiv.append("					</div>   ");
+	      
+	      
+			ProjectMembers projectMember = projectMembersService.getConsultantUserProjectMemberByProjectMemberId(projectMemberId);
+		    User consultantUser = null;
+			StringBuilder projectMemberName = new StringBuilder();
+			if(projectMember.getProjectMemberCandidteId() != null && projectMember.getProjectMemberCandidteId().getConsultantUser() != null) {
+				consultantUser = projectMember.getProjectMemberCandidteId().getConsultantUser(); 
+			}
+			StringBuilder projectMemberEmailName = new StringBuilder();
+			if(consultantUser != null) {
+				projectMemberName.append(consultantUser.getFullName());
+				projectMemberEmailName.append(consultantUser.getEmail());
+			}	      
+			if(from != null && !from.isEmpty() && !from.equalsIgnoreCase("user")){
+			timesheetEntriesDiv.append("<div class='pull-left timeAppUse'>");
+			timesheetEntriesDiv.append("<span><img src='resources/images/userprofile-img.png' /> ");
+			timesheetEntriesDiv.append("</span>   ");
+			timesheetEntriesDiv.append("<p>   ");
+			timesheetEntriesDiv.append("<input class='timeUsName' type='text' readonly  value='"+projectMemberName.toString()+"' >");
+			timesheetEntriesDiv.append("<input type='text' readonly value='"+projectMemberEmailName.toString()+"' >");
+			timesheetEntriesDiv.append("<p>   ");
+			timesheetEntriesDiv.append("<div class='clearfix'></div>   ");
+			timesheetEntriesDiv.append("</div>");	      
+			}
 		  timesheetEntriesDiv.append("					<div class='clearfix'></div>   ");
-		StringBuilder tabData = new StringBuilder();
+	 	  StringBuilder tabData = new StringBuilder();
+
+		
 		Map<String,String> tabFrequency = timesheetFrequencyGeneratorUtil.getTabFrequencyListFromProjectInvoiceFrequency(weekStartDate, weekEndDate,orgLocations.getDateFormat());
 		timesheetEntriesDiv.append("			<div class='timesheetNewTabs'> ");
 		timesheetEntriesDiv.append("			<div class='project_side_wrap_inn_tabs'> ");
 		timesheetEntriesDiv.append("			    <ul class='project-tabs-menu'> ");
+		
 		StringBuilder currentStartDate = new StringBuilder("");
 		StringBuilder currentEndDate = new StringBuilder("");
 		int count = 1;

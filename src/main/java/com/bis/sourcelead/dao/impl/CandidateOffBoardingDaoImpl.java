@@ -125,4 +125,13 @@ public class CandidateOffBoardingDaoImpl implements CandidateOffBoardingDao {
 			return null;
 		}
 	}
+
+
+	@Override
+	@Transactional
+	public List<CandidateOffBoarding> candidateOffboringDelayMail(){
+		Session session = this.sessionFactory.getCurrentSession();	
+		List<CandidateOffBoarding> candidateOffBoarding = session.createQuery("from CandidateOffBoarding offboarding").setCacheable(true).list();
+		return candidateOffBoarding;
+	}
 }
