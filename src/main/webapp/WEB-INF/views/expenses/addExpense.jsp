@@ -323,7 +323,7 @@ function removeWhiteSpacesMyExp(rowCount){
 	        	    data: formData,
 	    	        processData: false,
 	    	        contentType:false,
-					url : sourceleadUrl+"/storeAddExpensesData?"+tokenParamName+"="+tokenValue+"&status="+status,
+					url : sourceleadUrl+"/storeAddExpensesData?"+tokenParamName+"="+tokenValue+"&expenseStatus="+status,
 					success : function(data) {
 						$( "#submitForApprovalExpensesId" ).addClass('button').val('Submit for Approval');
 						window.location.replace(sourceleadUrl+'/expenses');
@@ -529,13 +529,20 @@ $(".allownumericwithdecimal").on("keypress keyup blur",function (event) {
 
 <script>
 function deleteAttchment(documentId){
-$.ajax({
+	if($("#timesheetDocumentsId input[name*='removedDocumentIds'][data-id=removedDocumentIds]").length > 0) {
+		$("#timesheetDocumentsId input[name*='removedDocumentIds'][data-id=removedDocumentIds]").remove();
+	}
+	var i = $("#timesheetDocumentsId input[type=hidden][name*='removedDocumentIds']").length;
+	var html = "<input type='hidden' name='removedDocumentIds["+i+"]' data-id='removedDocument' value='"+documentId+"'/>";
+	$("#timesheetDocumentsId").append(html);
+	
+/* $.ajax({
 	type : "POST",
 	url : sourceleadUrl+"/deleteDocumentByDocumentId?"+tokenParamName+"="+tokenValue+"&documentId="+documentId,
 	success : function(data) {
 		return true;
 	},
-});
+}); */
 }
 </script>
 

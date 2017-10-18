@@ -25,10 +25,10 @@
     <div class="form-group">
        <label class="col-md-3">Shift Name<span
 							class="text-danger">&nbsp;*</span></label>
-       <div class="col-md-9">
+       <div class="col-md-9" id="shiftNameDiv">
        <input type="hidden" name="shiftId" id="shiftId" value="${shift.id}"/>
        <input type="text" class="form-control" id="shiftName"
-			name="shiftName" value="${shift.shiftName}"  field-name="Shift Name" data-validation = "required">
+			name="shiftName" value="${shift.shiftName}" onblur="validateShiftName();"  field-name="Shift Name" data-validation = "required">
        </div>
     </div>
     <div class="form-group">
@@ -67,6 +67,26 @@
 <!--       Content Area Ends  -->
     </div>
   </section> 
+  
+<script>
+function validateShiftName(){
+	var locationId = '${SourceLeadWeb_orgLocationId}';
+	var name = $("#shiftName").val();
+	if(name != null && name != '' && name != 'undefined'){
+		$.get(sourceleadUrl+"/validateName?&orgLocationId="+locationId+"&from=Shift&name="+name, function(data) {
+          	if(data == true){
+          		$('#shiftNameDiv').find('p.jquery_form_error_message').remove();
+          		$("#save_shift").removeAttr("disabled");
+		        $("#save_shift").attr("disabled", "disabled");
+				$("input#shiftName").after( "<p class='jquery_form_error_message'>" + name + " is already existed as Shift</span>");
+                 }else{
+                	$("#save_shift").removeAttr("disabled");
+                	$('#shiftNameDiv').find('p.jquery_form_error_message').remove();
+                 }
+            });
+		}
+	}
+</script>
 
 <script type="text/javascript">
 	function saveShift() {

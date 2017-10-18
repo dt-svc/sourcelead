@@ -465,6 +465,7 @@ public class LeaveDaoImpl implements LeaveDao{
 
 
 	@Override
+	@Transactional
 	public List<LeaveApproveHierarchy> getEmployeeRequestedLeavesBylocationIdAndUserIdAndStatus(Long orgLocationId, String userId, String leaveStatus)
 	{
 		Long usrId = Long.parseLong(userId);
@@ -487,6 +488,30 @@ public class LeaveDaoImpl implements LeaveDao{
 			String query = "from LeaveApproveHierarchy laph left join fetch laph.leaveid leave left join fetch leave.leaveType left join fetch leave.user ltype where leave.orgLocations.id = :orgLocationId and laph.approverUserId.id= :userId";
 			return session.createQuery(query).setLong("orgLocationId", orgLocationId).setLong("userId", usrId).setCacheable(true).list();
 		}
+	}
+
+
+	@Override
+	@Transactional
+	public boolean validateNameByOrgLocationIdandFromTable(String name, Long orgLocationId, String fromTable)
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		String subQuery = "";
+		if("Holiday".equalsIgnoreCase(fromTable))
+			subQuery = " and frm.holidayName = :name ";
+		else if("Shift".equalsIgnoreCase(fromTable))
+			subQuery = " and frm.shiftName = :name ";
+		else if("LeaveType".equalsIgnoreCase(fromTable))
+			subQuery = " and frm.name = :name ";
+			
+		String query = "from "+fromTable+" frm where frm.orgLocations.id = :orgLocationId and frm.status = '1' "+subQuery+"";
+		List<Long> found = session.createQuery(query).setLong("orgLocationId", orgLocationId).setString("name", name).setCacheable(true).list();
+		if(found.size() > 0){
+			return true;
+		}else{
+			return false;
+		}
+		
 	}
 
 }

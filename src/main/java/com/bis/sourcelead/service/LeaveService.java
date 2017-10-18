@@ -41,4 +41,6 @@ public interface LeaveService {
 
 	boolean getWithdrawLeave(OrgLocations orgLocations, String leaveId, User user, String reason) throws Exception;
 
+	boolean validateNameByOrgLocationIdandFromTable(String name, Long orgLocationId, String fromTable);
+
 }
