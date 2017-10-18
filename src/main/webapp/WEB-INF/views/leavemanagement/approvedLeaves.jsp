@@ -219,6 +219,12 @@ function getRequestedAproveSummary(leaveId,orgLocationId){
              result = result +'</div>';
              result = result +'</div>';
              result = result +'<div class="col-md-12 mb">';
+			 result = result +'<label class="col-md-2 control-label"><b>Approved On:</b></label>';
+			 result = result +'<div class="col-md-8">';
+			 result = result +' <span>'+data.updatedDate+'</span>';
+			 result = result +' </div>';
+			 result = result +'</div>';
+             result = result +'<div class="col-md-12 mb">';
              result = result +'<label class="col-md-2 control-label"><b>Reason:</b></label>';
              result = result +'<div class="col-md-8">';
              result = result +' <span>'+data.reason+'</span>';
