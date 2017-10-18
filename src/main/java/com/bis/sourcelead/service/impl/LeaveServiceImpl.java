@@ -685,7 +685,8 @@ public class LeaveServiceImpl implements LeaveService{
 		HashMap<String, LeaveDTO> reportMap = new HashMap<>();
 		List<LeaveDTO> leaveDtoList = new ArrayList<>();
 		int totalLeaves = 0;
-		for (Leave leave : leaveList) {
+		for (Leave leave1 : leaveList) {
+			Leave leave = leaveDao.getLeaveById(leave1.getId());
 			LeaveDTO leaveDto = reportMap.get(leave.getLeaveType().getId());
 			if (leaveDto == null) {
 				leaveDto = new LeaveDTO();

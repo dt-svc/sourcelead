@@ -9,6 +9,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -241,9 +242,11 @@ public class LeaveManagementRestController {
 		   ModelAndView model = new ModelAndView();
 		   OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		   Long roleId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRoleId");
-		   List<User> usersLis = userService.getAllUsersByOrgLocationCode(orgLocations.getId());
+		   User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		   List<User> usrList = userService.getAllUsersByOrgLocationCode(orgLocations.getId());
+		   List<User> usersList =  usrList.stream().filter(u->u.getId().longValue() != loginUser.getId().longValue()).collect(Collectors.toList());
 		   model.addObject("sourceleadUrl", sourceleadUrl);
-		   model.addObject("usersLis", usersLis);
+		   model.addObject("usersLis", usersList);
 			List<User> approverList = userService.getManagersByUserRolesAndOrgLocationId(roleId, orgLocations.getId(),Long.valueOf(Constants.TAB_USER));
 			if(approverList !=null) {
 				for (User user : approverList) {
@@ -545,11 +548,22 @@ public class LeaveManagementRestController {
 		return responseList;
 	}
 
+	/**
+	 * Adding shift 
+	 * @param shiftDTO
+	 * @return  String
+	 * @throws Exception
+	 */
 	@PreAuthorize("hasAnyRole('ROLE_LEAVE_CONFIGURE')")
-	@RequestMapping(value = {"/saveShift", "/rest/saveShift"}, method = RequestMethod.POST)
+	@RequestMapping(value = { "/saveShift", "/rest/saveShift" }, method = RequestMethod.POST)
 	public String saveShift(ShiftDTO shiftDTO) throws Exception {
-		shiftService.saveShift(shiftDTO);
-	       return "success";
+		String isInserted = "failure";
+		Shift shift = shiftService.saveShift(shiftDTO);
+		if (shift != null) {
+			isInserted = "success";
+		}
+		return isInserted;
+
 	}
 	
 	@PreAuthorize("hasAnyRole('ROLE_LEAVE_CONFIGURE')")
@@ -561,11 +575,21 @@ public class LeaveManagementRestController {
 	    
 	      for(Shift shift : shiftList){
 		     ShiftDTO shiftDTO = new ShiftDTO();
+		        shiftDTO.setId(shift.getId());
 				shiftDTO.setShiftName(shift.getShiftName());
 				shiftDTO.setTimeIn(shift.getTimeIn());
 				shiftDTO.setTimeOut(shift.getTimeOut());
 				shiftDTO.setShiftDescription(shift.getShiftDescription());
 				shiftDTO.setStatus(shift.getStatus());
+				User user = userService.getUserByUserCode(shift.getCreatedBy());
+				StringBuilder sb = new StringBuilder();
+				if(StringUtils.isNotBlank(user.getLastName())) {
+					sb.append(user.getFirstName()).append("").append(user.getLastName());
+				}else {
+					sb.append(user.getFirstName());
+				}
+				shiftDTO.setUpdatedBy(sb.toString());
+				shiftDTO.setUserId(sb.toString());
 				shiftDTOList.add(shiftDTO);
 	
 	            }
@@ -1049,7 +1073,7 @@ public class LeaveManagementRestController {
 	 * @throws Exception
 	 */
 	@PreAuthorize("hasAnyRole('ROLE_APPROVE_LEAVE')")
-	@RequestMapping(value = { "/getRequestedAproveSummary","/rest/getRequestedAproveSummary" }, method = RequestMethod.GET)
+	@RequestMapping(value = { "/getRequestedAproveSummary" }, method = RequestMethod.GET)
 	@ResponseBody
 	public LeaveDTO getRequestedAproveSummary(@RequestParam(value = "leaveId", required = false) String leaveId,
 			@RequestParam(value = "orgLocationId", required = false) Long orgLocationId, HttpServletRequest request)
@@ -1350,7 +1374,6 @@ public class LeaveManagementRestController {
 		User user = userService.getUserById(userId);
 		boolean isValid = false;
 		isValid = leaveService.getWithdrawLeave(orgLocations,leaveId,user,reason);
-		
 		return isValid;
 
 	}

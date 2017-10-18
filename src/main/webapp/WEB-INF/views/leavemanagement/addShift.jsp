@@ -49,7 +49,7 @@
        <label class="col-md-3">Shift Description</label>
        <div class="col-md-9">
  			<textarea rows="2" class="form-control" id="shiftDescription"
-               name="shiftDescription"  field-name="Shift Description" >${shift.shiftDescription}</textarea>
+               name="shiftDescription"  data-validation="validate_length length1-500" data-validation-optional="true" field-name="Shift Description" >${shift.shiftDescription}</textarea>
        </div>
     </div>
           </div>

@@ -95,12 +95,17 @@ public class LeaveTypeServiceImpl implements LeaveTypeService {
 			leaveType.setVisibilityToAllUsers(leaveTypeDTO.getVisibilityToAllUsers());
 		if (StringUtils.isNotBlank(leaveTypeDTO.getLeavePolicyDescription()))
 			leaveType.setPolicyDescription(leaveTypeDTO.getLeavePolicyDescription());
-		leaveType.setStatus(Constants.RECORD_ACTIVE.toString());
+		if(leaveType !=null && "0".equals(leaveType.getStatus())) {
+			leaveType.setStatus(Constants.RECORD_INACTIVE.toString());
+		}else {
+			leaveType.setStatus(Constants.RECORD_ACTIVE.toString());
+		}
+		
 		leaveType.setColorCode(leaveTypeDTO.getColorCode());
 		leaveType = leaveTypeDao.addLeaveType(leaveType);
 		return leaveType;
 	}
-	
+	 
 	private Set<LeaveRole> getLeaveRoles(List<String> roles, LeaveType leaveType, User user) throws Exception
 	{
 		Set<LeaveRole> leaveRolesSet = new HashSet<>();
