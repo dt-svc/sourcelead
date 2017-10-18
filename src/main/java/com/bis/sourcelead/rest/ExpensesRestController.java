@@ -292,7 +292,7 @@ public class ExpensesRestController {
 		expenseEntryDetailsDTO.setCurrencyCodeList(currencyCodeList);
 		List<String> paidBy = new LinkedList<>();
 		paidBy.add("Self");
-		paidBy.add("Comapny");
+		paidBy.add("Company");
 		expenseEntryDetailsDTO.setPaidByType(paidBy);
 		return expenseEntryDetailsDTO;
 	}
