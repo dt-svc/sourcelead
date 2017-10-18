@@ -32,26 +32,25 @@ import com.bis.sourcelead.util.SourceLeadSessionManager;
 @Service
 public class TokenManagerImpl implements TokenManager {
 
-
+	private Map<String, UserDetails> validUsers = new HashMap<>();
 	/**
 	 * This maps system users to tokens because equals/hashCode is delegated to User entity.
 	 * This can store either one token or list of them for each user, depending on what you want to do.
 	 * Here we store single token, which means, that any older tokens are invalidated.
 	 */
-	//private Map<UserDetails, TokenInfo> tokens = new HashMap<>();
+	private Map<UserDetails, TokenInfo> tokens = new HashMap<>();
 
 	@Override
-	@SuppressWarnings("unchecked")
 	public TokenInfo createNewToken(UserDetails userDetails,HttpServletRequest request,UserService userService,UserRoleService userRoleService,CandidateService candidateService) {
 		HttpSession session = request.getSession();
-		Map<String, UserDetails> validUsers = (Map<String, UserDetails>) session.getAttribute("validUsers");
-		Map<UserDetails, TokenInfo> tokens = (Map<UserDetails, TokenInfo>) session.getAttribute("tokens");
-		if(validUsers == null){
+		//Map<String, UserDetails> validUsers = (Map<String, UserDetails>) session.getAttribute("validUsers");
+		//Map<UserDetails, TokenInfo> tokens = (Map<UserDetails, TokenInfo>) session.getAttribute("tokens");
+		/*if(validUsers == null){
 			validUsers = new HashMap<>();
 		}
 		if(tokens == null){
 			tokens = new HashMap<>();
-		}
+		}*/
 		
 		String token;
 		Collection<TokenInfo> tokenInfoList = null;
@@ -102,10 +101,7 @@ public class TokenManagerImpl implements TokenManager {
 	}
 
 	@Override
-	@SuppressWarnings("unchecked")
 	public void removeUserDetails(UserDetails userDetails,HttpSession session) {
-		Map<String, UserDetails> validUsers = (Map<String, UserDetails>) session.getAttribute("validUsers");
-		Map<UserDetails, TokenInfo> tokens = (Map<UserDetails, TokenInfo>) session.getAttribute("tokens");
 		TokenInfo token = tokens.remove(userDetails);
 		if (token != null) {
 			validUsers.remove(token.getToken());
@@ -113,10 +109,7 @@ public class TokenManagerImpl implements TokenManager {
 	}
 
 	@Override
-	@SuppressWarnings("unchecked")
 	public UserDetails removeToken(String token,HttpSession session) {
-		Map<String, UserDetails> validUsers = (Map<String, UserDetails>) session.getAttribute("validUsers");
-		Map<UserDetails, TokenInfo> tokens = (Map<UserDetails, TokenInfo>) session.getAttribute("tokens");
 		UserDetails userDetails = validUsers.remove(token);
 		if (userDetails != null) {
 			tokens.remove(userDetails);
@@ -125,23 +118,17 @@ public class TokenManagerImpl implements TokenManager {
 	}
 
 	@Override
-	@SuppressWarnings("unchecked")
 	public UserDetails getUserDetails(String token,HttpSession session) {
-		Map<String, UserDetails> validUsers = (Map<String, UserDetails>) session.getAttribute("validUsers");
 		return validUsers.get(token);
 	}
 
 	@Override
-	@SuppressWarnings("unchecked")
 	public Collection<TokenInfo> getUserTokens(UserDetails userDetails,HttpSession session) {
-		Map<UserDetails, TokenInfo> tokens = (Map<UserDetails, TokenInfo>) session.getAttribute("tokens");
 		return Arrays.asList(tokens.get(userDetails));
 	}
 
 	@Override
-	@SuppressWarnings("unchecked")
 	public Map<String, UserDetails> getValidUsers(HttpSession session) {
-		Map<String, UserDetails> validUsers = (Map<String, UserDetails>) session.getAttribute("validUsers");
 		return Collections.unmodifiableMap(validUsers);
 	}
 }
