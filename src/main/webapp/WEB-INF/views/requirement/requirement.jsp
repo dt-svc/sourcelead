@@ -2221,9 +2221,6 @@ function popupWindow(reqId){
 	  $("#popupWindow").removeAttr("style");
 	  var result = '';
 	    result = result +'<div class="modal-body clearfix">';
-        result = result +' <div class="form-horizontal custom-form">';
- 		result = result +'     <div class="row">';
- 		
  		result = result +'       <div class="col-xs-12 col-md-8 col-lg-8 hidden">';
  		result = result +'         <div class="input-group">';
  		result = result +'           <input type="search" class="form-control" value="">';
@@ -2231,14 +2228,12 @@ function popupWindow(reqId){
  		result = result +'			</div>';
  		result = result +'       </div>';
  		
- 		result = result +'       <div class="col-xs-12 col-md-4 col-lg-4 selectpicker100">';
+ 		result = result +'       <div class="col-xs-12 col-md-4 paddingLeft selectpicker100 mb10">';
  		result = result +'          <select id="rolesDiv" class="selectpicker" multiple data-actions-box="true" onchange="filterTeamMembers();" style="display:block !important" title="--Select Assign Team--">';
  		result = result +'          </select>';
  		result = result +'       </div>';
  		
- 		result = result +'     </div>';
- 		result = result +'  </div>';
- 		result = result +'  <div id="usersGrid" class="modal-bodyCustom mt clearfix popupFilter">'; 
+ 		result = result +'  <div id="usersGrid" class="clearfix datatable_filter">'; 
     	
  		result = result +'     </div>';
 		result = result +'     </div>';
@@ -2375,9 +2370,11 @@ function getUserList(teamType){
 	                       result = result +'   <div class="clearfix"></div>'; 
 	                 	   result = result +'   </div>'; 
 	                 	   result = result +'	<span class="jquery_form_error_message" style="display:none;">Assign at least to a new member</span>';
-	                 	   result = result +'   <div class="modal-footer mt">';
+	                 	   result = result +'   <div class="clearfix">';
+	                 	  result = result +'   <div class="pull-right mt">';
 	                 	   result = result +'     <button class="btn btn-primary" type="button" id="assignbtnId" onClick="assignMembers();">Assign</button>';
 	                 	   result = result +'     <button class="btn btn-default" type="button" id="cancelbtnId" onClick="clearSelections();">Clear</button>';
+	                 	   result = result +'   </div>'; 
 	                 	   result = result +'   </div>'; 
 	                 	   $("#usersGrid").empty(); 
 	                       $("#usersGrid").append(result); 
@@ -2550,9 +2547,10 @@ function paginations(){
     $("#assignToDataTableId").DataTable( { 
     	"scrollCollapse": false,
     	"lengthMenu": [[5, 10, 15, -1], [5, 10, 15, "All"]],
-    	"bLengthChange": false,
+    	"bLengthChange": true,
     	"bDestroy": true,
-    	"ordering": false,
+    	"aaSorting": [[1,'desc']],
+    	"ordering": true,
     	"aoColumnDefs": [{
 	           'bSortable': false,
 	           'aTargets': 0
@@ -2561,9 +2559,12 @@ function paginations(){
      		"sSearch": "",
      		 "sZeroRecords": "", "sEmptyTable": ""
      	}
-    } );
+    });
+    $("#assignToDataTableId").wrap("<div class='modal-body-custom mailerpopup modalAlign'></div>");
 }
 </script>
+
+
 
 <script>
 function assignMembers() {
