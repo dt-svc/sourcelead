@@ -267,9 +267,9 @@ function uploadProfileResume(){
 	  $.ajax({
 			type : "POST",
 			url : sourceleadUrl+"/candidateResumesListByCandidateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,
-			success : function(data) {
-				if (data != null && data != 'undefined' && data != "" && data != '[]') {
-					var json = JSON.parse(data);
+			success : function(json) {
+				if (json != null && json != 'undefined' && json != "" && json != '[]') {
+// 					var json = JSON.parse(data);
         			 
 							result = result+'<table  class="display" cellspacing="0" width="100%">';
 							result = result+'	        <tbody>';
@@ -283,9 +283,9 @@ function uploadProfileResume(){
 							result = result+'	          </tr>';
 							
 							
-				             for (var i = 0; i < json.length; i++) {
-				            	 	resumesCount = json.length;
-					            	var opt = json[i];
+				             for (var i = 0; i < json.data.length; i++) {
+				            	 	resumesCount = json.data.length;
+					            	var opt = json.data[i];
 					            	var title = "";
 					            	var description = "";
 					            	if(opt.title != null && opt.title != 'undefined' && opt.title != ""){
@@ -309,7 +309,6 @@ function uploadProfileResume(){
 					            	}else{
 					            		candidateResumeUpdateDateToString = '----';
 					            	} 
-					            	
 					            	result = result+'<tr>';
 					           		result = result+'<td><div><span title = "'+title+'">'+title+'</span></div></td>';
 					           		result = result+'<td><div><span title ="'+opt.fileName+'">'+opt.fileName+'</span><a class="fa fa-eye" onClick="viewFile(\''+opt.fileURL+'\',\''+opt.fileName+'\',\''+opt.fileContentType+'\');"></a><a class="glyphicon glyphicon-download-alt" target="_blank" href=\"'+opt.fileURL+'\" title="Download"></a></div></td>';
