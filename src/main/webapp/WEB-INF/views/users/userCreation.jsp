@@ -124,9 +124,20 @@
                  <div class="form-group">
                   <label class="col-md-3">Phone Number</label>
                    <div class="col-md-9">
+                   <div class="row">
+                    <div class="col-md-7 paddingRight">
                     <input type="text" class="form-control" id="phone" name="phoneNumber" data-validation="validate_Space validate_phone validate_length length9-20" data-validation-optional="true">
                     <span class="hidden">Phone Number</span>
                      <input type="hidden" name="country" id="CountryAutocomplete" value ="${SourceLeadWeb_country}" />
+                    </div>
+                    <div class="col-md-5 paddingLeft">
+                    <div class="row">
+                    <label class="col-md-5">Extension </label>
+                    <div class="col-md-7">
+                    <input type="text" class="form-control" id="extensionNumber" name="extensionNumber" data-validation="validate_Space validate_length length4-5" data-validation-optional="true">
+                    </div></div>
+                    </div>
+                     </div>
                   </div>
                 </div> 
                 

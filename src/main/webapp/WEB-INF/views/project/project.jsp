@@ -75,8 +75,7 @@
 
 <script>
 function uploadButton(id){
-	var sourceleadUrl ='${sourceleadUrl}';
-	fileUpload(sourceleadUrl, "file"+id+"", "projects", "project_form");
+	fileUpload("file"+id+"", "projects", "project_form","uploadedFileInfo");
 }
 function toUpperCase(){
 	var toupper = $('#projectShortCode').val().toUpperCase().trim();
