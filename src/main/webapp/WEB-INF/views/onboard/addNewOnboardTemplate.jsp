@@ -670,7 +670,9 @@ function createTemplate(saveType){
 		     	        document.getElementById("templateDocs").disabled = false;
 		     	        getTemplatePolicyDocumentsDetails(json.id);
 		        	}
-		        	
+		        	else if(saveType == 'save'){
+		        		 location.replace(sourceleadUrl+"/onboardingTemplatesList");
+		        	}
 	     	        $("#templateId").val(templateId);
 	     	        $("#onboardtemplateId").val(json.id);
 	     	        $("#documentstemplateId").val(json.id);
@@ -723,7 +725,11 @@ function createTemplateDocs(saveType){
 		     	        document.getElementById("templateTasks").disabled = false;
 		     	        $("#onboardTaskDiv").val('Y');
 		     	        getOnboardingTasksList();
-		        	}else{
+		        	}
+		    	  else if(saveType == 'save'){
+		        		 location.replace(sourceleadUrl+"/onboardingTemplatesList");
+		        	}
+		    	  else{
 		        		getTemplatePolicyDocumentsDetails();
 		        		/* getTemplateSupportingDocumentsDetails();
 		        		getTemplateContractsDocumentsDetails();
@@ -1168,6 +1174,7 @@ function getOnboardingTasksList(){
         	
         	result = result +'<div class="form-footer clearfix mt">';
     		result = result +'<div class="pull-right mr">';
+    		result = result +'<input type="button" value="Cancel" id="finish_task" onClick="redirect();" class="btn btn-sm btn-default">';
     		result = result +'<input type="button" value="Finish" id="finish_task" onclick="saveAndFinishOnboardTemplate('+templateId+');" class="btn btn-sm btn-primary">';
     		result = result +'</div>';
     		result = result +'</div>';
@@ -1182,6 +1189,11 @@ function getOnboardingTasksList(){
   $("#loading").removeAttr("style");
 	
  }
+}
+
+
+function redirect(){
+	window.location.href = sourceleadUrl +  "/onboardingTemplatesList";
 }
 </script>
 
