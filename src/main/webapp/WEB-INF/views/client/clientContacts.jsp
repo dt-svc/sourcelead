@@ -265,6 +265,10 @@ function contactPagination(){
         "bLengthChange": true,
         "bDestroy": true,
         "ordering": true,
+        "aoColumnDefs": [{
+	           'bSortable': false,
+	           'aTargets': [5,6]
+			}],
         "oLanguage": {
              "sSearch": "",
              "sZeroRecords": "", "sEmptyTable": ""

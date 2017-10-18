@@ -1163,6 +1163,10 @@ function userListViewPagination(){
 	    	"bLengthChange": true,
 	    	"bDestroy": true,
 	    	"ordering": true,
+	    	"aoColumnDefs": [{
+		           'bSortable': false,
+		           'aTargets': 6
+				}],
 	    	"oLanguage": {
 	            "sSearch": "",
 	            "sZeroRecords": "", "sEmptyTable": ""
