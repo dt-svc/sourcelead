@@ -403,7 +403,7 @@
 						result = result	+ ' <form id="editProject_form"  name="editProject_form" method="post">';
 						result = result	+ '<div class="user_summary_edit_cta projectdetails_edit_cta" id="ProjectIdDiv">';
 						result = result + '	<label>Project Id</label>';
-						result = result	+ '	<input type="text"  id="ProjectSequeneNumber" name="ProjectSequeneNumber" value="'+projectSequeneNumber+'" placeholder="Project Id" data-validation="validate_Space validate_length length2-50" data-validation-optional="true" onKeyUp="validateProjectSequeneNumber();" class="project_detfield">';
+						result = result	+ '	<input type="text"  id="ProjectSequeneNumber" name="projectSequeneNumber" value="'+projectSequeneNumber+'" placeholder="Project Id" data-validation="validate_Space validate_length length2-50" data-validation-optional="true" onKeyUp="validateProjectSequeneNumber();" class="project_detfield">';
 						result = result + '</div>';
 
 						result = result + '<div class="user_summary_edit_cta projectdetails_edit_cta">';
@@ -411,32 +411,32 @@
 						result = result	+ '<select id="projectStatusId" name="projectStatusId" onchange="projectStatus();" field-name="Status" data-validation="required">';
 						result = result	+ '<option value="">Select Status</option>';
 						if (json.projectStatus == 'NOTSTARTED') {
-							result = result	+ '<option selected >Not Started</option>';
+							result = result	+ '<option selected value="Not Started">Not Started</option>';
 						} else {
-							result = result + '<option>Not Started</option>';
+							result = result + '<option value="Not Started">Not Started</option>';
 						}
 
 						if (json.projectStatus == 'INPROGRESS') {
-							result = result	+ '<option selected>In-Progress</option>';
+							result = result	+ '<option selected value="In-Progress">In-Progress</option>';
 						} else {
-							result = result + '<option>In-Progress</option>';
+							result = result + '<option value="In-Progress">In-Progress</option>';
 						}
 
 						if (json.projectStatus == 'COMPLETED') {
-							result = result	+ '<option selected>Completed</option>';
+							result = result	+ '<option selected value="Completed">Completed</option>';
 						} else {
-							result = result + '<option>Completed</option>';
+							result = result + '<option value="Completed">Completed</option>';
 						}
 
 						if (json.projectStatus == 'ONHOLD') {
-							result = result	+ '<option selected>On-Hold</option>';
+							result = result	+ '<option selected value="On-Hold">On-Hold</option>';
 						} else {
-							result = result + '<option>On-Hold</option>';
+							result = result + '<option value="On-Hold">On-Hold</option>';
 						}
 						if (json.projectStatus == 'DROPPED') {
-							result = result	+ '<option selected>Dropped</option>';
+							result = result	+ '<option selected value="Dropped">Dropped</option>';
 						} else {
-							result = result + '<option>Dropped</option>';
+							result = result + '<option value="Dropped">Dropped</option>';
 						}
 						
 
@@ -610,10 +610,10 @@
 						
 							
 						result = result + '<div class="row mt5" id="rateIdDiv" style="display:none;">';
-						result = result + '<div class="col-md-5 paddingRight" id="flatPercentageId" name="flatPercentageId" >';
-						result = result + '<select class="form-control input-sm">';
-						result = result  +' <option '+(json.overtimeRateType == "flat" ? "selected" : '') +'>FLAT</option>';
-						result = result  +' <option '+(json.overtimeRateType == "percentage" ? "selected" : '') +'>PERCENTAGE</option>';
+						result = result + '<div class="col-md-5 paddingRight"  >';
+						result = result + '<select class="form-control input-sm" id="flatPercentageId" name="flatPercentageId">';
+						result = result  +' <option value="flat" '+(json.overtimeRateType == "flat" ? "selected" : '') +' >FLAT</option>';
+						result = result  +' <option value="percentage"  '+(json.overtimeRateType == "percentage" ? "selected" : '') +' >PERCENTAGE</option>';
 						
 						result = result + '</select>';
 						result = result + '</div>';
@@ -779,15 +779,11 @@ function projectStatus(){
 		var ee = $("#txtEditor1").val($('.Editor-editor').html()); 
 
 		if ($('#editProject_form').validate(false, validationSettings)) {
-			var frm = $('#editProject_form').serializeFormJSON();
-			var con = JSON.stringify(frm);
-			con = con.replace(/[{}]/g, "");
-			//It will escape all the special characters
-			var jsonData = encodeURIComponent(con);
-			var sourceleadUrl = '${sourceleadUrl}';
+			var formData = getFormData("editProject_form");
 			$.ajax({
 						type : "POST",
-						url : sourceleadUrl + "/updateProjectByProjectId?${_csrf.parameterName}=${_csrf.token}&json="+ jsonData + "&ProjectId=" + projectId,
+						data: formData,
+						url : sourceleadUrl + "/updateProjectByProjectId?${_csrf.parameterName}=${_csrf.token}&ProjectId=" + projectId,
 						success : function(data) {
 							$("#selector2").removeAttr("style");
 	            			$("#selector2").css({ display: "block" });
