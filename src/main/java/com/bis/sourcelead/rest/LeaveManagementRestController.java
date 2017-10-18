@@ -50,6 +50,7 @@ import com.bis.sourcelead.dto.OptionsDTO;
 import com.bis.sourcelead.dto.ResponseList;
 
 import com.bis.sourcelead.dto.RestrictDayDTO;
+import com.bis.sourcelead.dto.RoleDTO;
 import com.bis.sourcelead.dto.ShiftDTO;
 import com.bis.sourcelead.entity.Department;
 import com.bis.sourcelead.entity.Employees;
@@ -77,6 +78,7 @@ import com.bis.sourcelead.service.LeaveService;
 import com.bis.sourcelead.service.LeaveTypeService;
 import com.bis.sourcelead.service.OptionsService;
 import com.bis.sourcelead.service.OrgLocationService;
+import com.bis.sourcelead.service.OrgService;
 import com.bis.sourcelead.service.RestrictDayService;
 import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.ShiftService;
@@ -159,6 +161,8 @@ public class LeaveManagementRestController {
 	@Autowired
 	LeaveManagementHistoryDao leaveManagementHistoryDao;
 
+	@Autowired
+	private OrgService orgService;
 	
 	/**
 	 * returns Pending leaves jsp
@@ -429,6 +433,7 @@ public class LeaveManagementRestController {
 		   OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		   Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 		   Long roleHierarchyId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "roleHierarchyId");
+		   
 		   List<Roles> rolesList = rolesService.getUserRolesListByModuleAndLoginUserRoleHierarchy(org,orgLocations.getId(),roleHierarchyId);
 		   model.addObject("rolesList", rolesList);
 		   if(StringUtils.isNotBlank(restrictUUID)) {
@@ -472,12 +477,20 @@ public class LeaveManagementRestController {
 		Long roleHierarchyId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "roleHierarchyId");
 		List<Department> departmentList = departmentService.getDepartmentByOrgLocationId(orgLocations.getId());
 		List<Roles> rolesList = rolesService.getUserRolesListByModuleAndLoginUserRoleHierarchy(org,orgLocations.getId(),roleHierarchyId);
+		
+		List<Long> optionRoleIds = optionsService.getOptionRoleIds(orgLocations.getId());
+		List<Roles> rolesList1 = new ArrayList<>();
+		for(Roles role : rolesList) {
+			if(!optionRoleIds.contains(role.getId())) {
+				rolesList1.add(role);
+			}
+		}
 		List<String> calendarList = new ArrayList<String>(Arrays.asList(Constants.MONTHS));
 		List<String> weekends = new ArrayList<String>(Arrays.asList(Constants.WEEKENDS));
 		model.addObject("calendarList", calendarList);
 		model.addObject("weekends", weekends);
 		model.addObject("departmentList", departmentList);
-		model.addObject("rolesList", rolesList);
+		model.addObject("rolesList", rolesList1);
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.setViewName("leavemanagement/addOptions");
 		return model;
@@ -712,6 +725,7 @@ public class LeaveManagementRestController {
 		   model.addObject("departmentList", departmentList);
 		   model.addObject("options", options);
 		   model.addObject("sourceleadUrl", sourceleadUrl);
+		   model.addObject("optionId",options.getId());
 		   model.setViewName("leavemanagement/addOptions");
 	       return model;
 	}
@@ -1392,5 +1406,38 @@ public class LeaveManagementRestController {
 		return leaveTypeDTOList;
 	}
 	
-	
+	/**
+	 * 
+	 * @param orgLocationId
+	 * @param userId
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = {"/getRoles","/rest/getRoles"}, method=RequestMethod.GET)
+	public  ResponseList<RoleDTO> getRoles(@RequestParam(value = "orgLocationId", required = false) Long orgLocationId,
+			@RequestParam(value = "orgCode", required = false) String orgCode,
+			@RequestParam(value = "roleHierarchyId", required = false) Long roleHierarchyId,HttpServletRequest request,HttpServletResponse response) throws Exception {
+		
+		List<RoleDTO> roleDTOList =  new ArrayList<>();
+		ResponseList<RoleDTO> responseList = new ResponseList<>();
+		Org org = orgService.getOrgByOrgCode(orgCode);
+		List<Roles> rolesList = rolesService.getUserRolesListByModuleAndLoginUserRoleHierarchy(org,orgLocationId,roleHierarchyId);
+		List<Long> optionRoleIds = optionsService.getOptionRoleIds(orgLocationId);
+		List<Roles> rolesList1 = new ArrayList<>();
+		for(Roles role : rolesList) {
+			if(!optionRoleIds.contains(role.getId())) {
+				rolesList1.add(role);
+			}
+		}
+		rolesList1.forEach(role->{
+			RoleDTO roleDTO = new RoleDTO();
+			roleDTO.setId(role.getId());
+			roleDTO.setDisplayName(role.getDisplayName());
+			roleDTOList.add(roleDTO);
+		});
+		responseList.setData(roleDTOList);
+		return responseList;
+	}
 }
