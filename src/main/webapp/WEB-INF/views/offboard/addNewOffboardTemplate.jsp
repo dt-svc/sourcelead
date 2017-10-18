@@ -666,9 +666,6 @@ function createTemplate(saveType){
 		     	       getTemplateOffboardPackDocumentsDetails(json.id);
 		     	       
 		        	}
-		        	else if(saveType == 'save'){
-		        		 location.replace(sourceleadUrl+"/offboardingTemplatesList");
-		        	}
 	     	        $("#templateId").val(json.id);
 	     	        $("#offboardtemplateId").val(json.id);
 	     	        $("#documentstemplateId").val(json.id);
@@ -720,9 +717,6 @@ function createTemplateDocs(saveType){
 		     	        getOffboardingCheckList();
 		        	}
 		    	  
-		    	  else if(saveType == 'save'){
-		        		 location.replace(sourceleadUrl+"/offboardingTemplatesList");
-		        	}
 		    	  else{
 		        		getTemplateResignationDocumentsDetails();
 		     	        getTemplateOffboardPackDocumentsDetails();
@@ -1357,9 +1351,6 @@ function createTemplateCheckList(saveType){
 	      		     	        $("#offboardTaskDiv").val('Y');
 	      		     	        getOffboardingTasksList();
 	      		        	}
-	      	        		  else if(saveType == 'save'){
-	     		        		 location.replace(sourceleadUrl+"/offboardingTemplatesList");
-	     		        	}
 	      	        		 
 	      	        		 else{
 	      		        		getOffboardingCheckList();

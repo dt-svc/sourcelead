@@ -670,9 +670,6 @@ function createTemplate(saveType){
 		     	        document.getElementById("templateDocs").disabled = false;
 		     	        getTemplatePolicyDocumentsDetails(json.id);
 		        	}
-		        	else if(saveType == 'save'){
-		        		 location.replace(sourceleadUrl+"/onboardingTemplatesList");
-		        	}
 	     	        $("#templateId").val(templateId);
 	     	        $("#onboardtemplateId").val(json.id);
 	     	        $("#documentstemplateId").val(json.id);
@@ -725,9 +722,6 @@ function createTemplateDocs(saveType){
 		     	        document.getElementById("templateTasks").disabled = false;
 		     	        $("#onboardTaskDiv").val('Y');
 		     	        getOnboardingTasksList();
-		        	}
-		    	  else if(saveType == 'save'){
-		        		 location.replace(sourceleadUrl+"/onboardingTemplatesList");
 		        	}
 		    	  else{
 		        		getTemplatePolicyDocumentsDetails();

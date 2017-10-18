@@ -107,7 +107,7 @@ filter: alpha(opacity=0);  -moz-opacity: 0; -khtml-opacity: 0;
                 <form id='templateDocuments_form' name='templateDocuments_form' >
                  <input type="hidden" name="templateId" id="documentstemplateId" value=""/>
                 <p><strong>Vendor Acceptance Documents</strong> <br>
-                  <small class="text-muted">These documents need to be upload by the new vendor as part of acceptance step  - Learn more</small> </p>
+                  <small class="text-muted">These documents need to be upload by the new vendor as part of acceptance step  </small> </p>
                
                
                 <div class="form-group">
