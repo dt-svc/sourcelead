@@ -1358,6 +1358,8 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
     		candidate.setStatus(1);
     		
     		Candidate vendorCandidate = null;
+    		
+    		if(requirementSubmission.getSourceSubmission() != null){
     		vendorCandidate = candidateService.findByCandidateEmail(requirementSubmission.getSourceSubmission().getCandidate().getEmail(), requirementSubmission.getSourceSubmission().getOrgLocations().getId());
     		if(vendorCandidate == null){
     			vendorCandidate = new Candidate();
@@ -1375,6 +1377,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
     			vendorCandidate.setStatus(1);
     			candidateService.saveOrUpdateCandidate(vendorCandidate);
     			candidateService.saveOrUpdateCandidateElkDocument(vendorCandidate);
+    		 }
     		}
     		
     		candidate.setParentCandidateId(vendorCandidate);

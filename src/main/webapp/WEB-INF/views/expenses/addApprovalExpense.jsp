@@ -529,7 +529,7 @@ function removeWhiteSpaces(rowCount){
 			$.ajax({
        	        type : "POST",
         	    data: formData,
-				url : sourceleadUrl+"/storeAddExpensesData?"+tokenParamName+"="+tokenValue+"&status="+status,
+				url : sourceleadUrl+"/storeAddExpensesData?"+tokenParamName+"="+tokenValue+"&expenseStatus="+status,
 				success : function(data) {
 					$( "#submitForApprovalExpensesId" ).addClass('button').val('Sub for Approval');
 					window.location.replace(sourceleadUrl+'/expensesApprovalList');

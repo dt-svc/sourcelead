@@ -309,6 +309,14 @@ $(document).ready(function(){
 					result = result + ' 		</div>';
 				}
 				
+				
+				if(json.user.extensionNumber != null && json.user.extensionNumber !='' && json.user.extensionNumber !='undefined'){
+					
+					result = result + '			<div class="project_details_cta">';
+					result = result + '				 <strong>Extension:</strong><span class="fix">'+json.user.extensionNumber+'</span><div class="clearfix"></div>';
+					result = result + ' 		</div>';
+				}
+				
 				 if(json.userEmploymentType != null && json.userEmploymentType != "" && json.userEmploymentType != 'undefined'){
 					result = result + '			<div class="project_details_cta">';
 					result = result + '				<strong>Employment Type:</strong><span class="fix">'+json.userEmploymentType+'</span><div class="clearfix"></div>';
@@ -1288,6 +1296,7 @@ $("#editRoleDetailsList").empty();
 			    var lastName = "";
 			    var rate = "";
 			    var mobilePhone = "";
+			    var extensionNumber="";
 			    var dailyHours = "";
 			    var emailId= "";
 			    var manager = "";
@@ -1314,6 +1323,10 @@ $("#editRoleDetailsList").empty();
 				
 				if(json.user.mobilePhone != null && json.user.mobilePhone != "" && json.user.mobilePhone != 'undefined'){
 					mobilePhone = json.user.mobilePhone;
+				}
+				
+				if(json.user.extensionNumber != null && json.user.extensionNumber != "" && json.user.extensionNumber != 'undefined'){
+					extensionNumber = json.user.extensionNumber;
 				}
 				
 				if(json.dailyHours != null && json.dailyHours != "" && json.dailyHours != 'undefined'){
@@ -1346,8 +1359,19 @@ $("#editRoleDetailsList").empty();
 					result = result + ' </div>';
 					
 					result = result + ' <div class="user_summary_edit_cta">';
+					
+					result = result + ' <div class="row">';
+					
+					result = result + ' <div class="col-md-7">';
 					result = result + ' <label>Phone number</label>';
 					result = result + ' <input type="text" value="'+mobilePhone+'" name="phoneNumber" data-validation="validate_Space validate_phone validate_length length9-20" data-validation-optional="true">';
+					result = result + ' </div>';
+					result = result + ' <div class="col-md-5">';
+					result = result + ' <label>Extentsion</label>';
+					result = result + ' <input type="text" value="'+extensionNumber+'" name="extensionNumber" data-validation="validate_Space validate_length length4-5" data-validation-optional="true">';
+					result = result + ' </div>';
+					result = result + ' </div>';
+					
 					result = result + ' </div>';
 					
 /* 					if(json.userState == "NOT_LOGGEDIN"){

@@ -234,7 +234,7 @@ public class TimesheetSubmissionsRestController {
 				//
 				
 				//Send Emails & Notifications to vendors
-				sendEmailToVendorAtTimesheetApprovalStatus(projectMember,loginUser,loginOrgLocation,loginOrgCode,startDate, endDate);
+				sendEmailToVendorAtTimesheetApprovalStatus(projectMember,loginUser,loginOrgLocation,loginOrgCode,startDate, endDate,status);
 		 	   
 		 	 }
 		
@@ -310,7 +310,7 @@ public class TimesheetSubmissionsRestController {
 			emailScenerioUtil.sendNotification(actionLink, loginUser,  projectMember.getProjectMemberCandidteId().getConsultantUser(), loginOrgLocation, notificationScenario); 
 	}
 
-	private void sendEmailToVendorAtTimesheetApprovalStatus(ProjectMembers projectMember,User loginUser, OrgLocations loginOrgLocation, String loginOrgCode, String startDate, String endDate) throws Exception {
+	private void sendEmailToVendorAtTimesheetApprovalStatus(ProjectMembers projectMember,User loginUser, OrgLocations loginOrgLocation, String loginOrgCode, String startDate, String endDate, String status) throws Exception {
 		
 		List<ProjectApproverHierarchy> approverHierarchyList = projectApproverHierarchyService.getActiveOrgApproverUsersByProjectMemberMasterCandidateIdAndProjectId(projectMember.getMasterCandidateId().getId(),projectMember.getProjects().getId());
 		for(ProjectApproverHierarchy approver : approverHierarchyList){
@@ -363,8 +363,11 @@ public class TimesheetSubmissionsRestController {
 			 
 			 //getting the current EmailScenario by EmailScenario unique name and entity type
 			 EmailScenario  emailScenario = null;
-			 
-		       emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.TIMESHEET_APPROVED_EMAIL_TOVENDOR,Constants.ENTITY_TYPE_EMAIL);
+			 if(status.equals("REJECTED")){
+	             emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.TIMESHEET_REJECTED_EMAIL_TOVENDOR,Constants.ENTITY_TYPE_EMAIL);
+			 }else{
+				 emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.TIMESHEET_APPROVED_EMAIL_TOVENDOR,Constants.ENTITY_TYPE_EMAIL);
+			 }
 			 
 			 //covert subject,body and signature
 			 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
