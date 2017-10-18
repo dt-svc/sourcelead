@@ -1,6 +1,8 @@
 package com.bis.sourcelead.dto;
 
-public class NotificationDTO {
+import java.io.Serializable;
+
+public class NotificationDTO implements Serializable{
 	
 	private String firstName;
 	private String lastName;

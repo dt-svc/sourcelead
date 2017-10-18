@@ -29,7 +29,7 @@ function vendorRequirementListInclude(orgRelationID){
 	    
 	    result = result + '	<li><a class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-filter"></i><span>Status</span><i class="glyphicon glyphicon-play"></i></a>';
 	    result = result + '   	<div class="filterLi dropdown-menu bootstrap_dropdownMenu">';
-	    result = result + '<ul>';
+	    result = result + '<ul  class="paddingLi">';
         result = result + '<li>';
         result = result + '<input type="checkbox" value="open" name="requirementStatus" id="requirementStatus" onclick="vendorReqListFunction('+orgRelationID+');" >';
         result = result + '<label class="paddingLeft">Open</label>';

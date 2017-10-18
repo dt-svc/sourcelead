@@ -90,8 +90,8 @@ function populateRestrictDayList(json){
     result = result +' </tr>';
     result = result +' </thead>';
     result = result +' <tbody>';
-    for (var i=0; i<json.length; i++){
-    	var report = json[i];
+    for (var i=0; i<json.data.length; i++){
+    	var report = json.data[i];
     	result = result +'  <tr>                                                                                                                       ';
     	result = result +'  <td>                                                                                                                       ';
     	result = result +'    <div class="tbldata-dotdot-big">                                                                               ';
@@ -99,7 +99,7 @@ function populateRestrictDayList(json){
     	result = result +'    </div>                                                                                                                   ';
     	result = result +'  </td>                                                                                                                      ';
     	result = result +'  <td>                                                                                                                       ';
-    	result = result +'      <div class="tbldata-dotdot-big" title="'+report.startDateStr+' - '+report.endDateStr+'">'+report.startDateStr+' - '+report.endDateStr+'</div>                                                           ';
+    	result = result +'      <div class="tbldata-dotdot-big" title="'+report.startDate+' - '+report.endDate+'">'+report.startDate+' - '+report.endDate+'</div>                                                           ';
     	result = result +'  </td>                                                                                                                      ';
     	result = result +'  <td>                                                                                                                       ';
     	if(report.reason != null && report.reason != 'undefined' && report.reason != ''){
