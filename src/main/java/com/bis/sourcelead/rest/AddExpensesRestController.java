@@ -19,6 +19,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -238,6 +239,10 @@ public class AddExpensesRestController {
 		return projectId;
     }
 	
+	@RequestMapping(value = "/rest/storeAddExpensesData",method = RequestMethod.POST)
+	public @ResponseBody String storeAddExpensesData_mobile(HttpServletRequest request,@RequestBody ExpensesDTO expensesDTO) throws Exception {
+		return storeAddExpensesData(request, expensesDTO);
+   }
 	
 	/**
 	 * This method serves the request for store expenses
@@ -248,8 +253,8 @@ public class AddExpensesRestController {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping(value = {"/storeAddExpensesData","/rest/storeAddExpensesData"},method = RequestMethod.POST)
-	public @ResponseBody String storeAddExpensesData(HttpServletRequest request,ExpensesDTO expensesDTO) throws Exception {
+	@RequestMapping(value = "/storeAddExpensesData",method = RequestMethod.POST)
+	public @ResponseBody String storeAddExpensesData(HttpServletRequest request, ExpensesDTO expensesDTO) throws Exception {
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		if(loginUser == null && expensesDTO.getUserId() != null){
 			loginUser = userService.getUserById(expensesDTO.getUserId());
