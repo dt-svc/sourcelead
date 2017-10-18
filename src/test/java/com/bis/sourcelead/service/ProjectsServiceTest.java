@@ -259,13 +259,13 @@ public class ProjectsServiceTest {
 		logger.info("getPreviousWeekTimeShhetSubmissionStatus addded successfully"+ProjectMembersList.size());
 		if(ProjectMembersList !=null && ProjectMembersList.size() > 0){
 			for(ProjectMembers projectMember : ProjectMembersList){
-				UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(projectMember.getEmployee().getUser().getId(), projectMember.getProjects().getOrgLocationsId().getId());
+				UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(projectMember.getEmployee().getUser().getId(), projectMember.getProjectClientsId().getOrgLocationsId().getId());
 				if("Admin".equalsIgnoreCase(userRole.getUserType()))
 					continue;
 					String level ="";
 					DateFormat format = Constants.DF_STD_FORMAT;
 					String dateFormart = "MM-dd-yyyy";
-					Map<String,String>  timesheetFrequencyMap = timesheetFrequencyGeneratorUtil.getTimesheetFrequencyListFromProjectInvoiceFrequency(projectMember,"scheduler");
+					Map<String,String>  timesheetFrequencyMap = timesheetFrequencyGeneratorUtil.getTimesheetFrequencyListFromProjectInvoiceFrequency(projectMember,projectMember.getProjectClientsId().getOrgLocationsId(),"scheduler");
 					LinkedHashMap<String,String> finalTFMap = new LinkedHashMap<>();
 					if(null != timesheetFrequencyMap && !timesheetFrequencyMap.isEmpty()){
 						for (Map.Entry<String, String> entry : timesheetFrequencyMap.entrySet()) {
@@ -443,7 +443,7 @@ public class ProjectsServiceTest {
 								
 						    	 if(null != projectMembersList && !projectMembersList.isEmpty()){
 									for (ProjectMembers projectMembers : projectMembersList) {
-										timesheetFrequencyMap = timesheetFrequencyGeneratorUtil.getTimesheetFrequencyListFromProjectInvoiceFrequency(projectMembers,"approverScheduler");
+										timesheetFrequencyMap = timesheetFrequencyGeneratorUtil.getTimesheetFrequencyListFromProjectInvoiceFrequency(projectMembers,projectMembers.getProjectClientsId().getOrgLocationsId(),"approverScheduler");
 										  if(null != timesheetFrequencyMap && !timesheetFrequencyMap.isEmpty()){
 										            LinkedList<String> frequency = new LinkedList<>();
 													 tempHTML.append("<tr>");
@@ -526,7 +526,7 @@ public class ProjectsServiceTest {
 							
 					    	 if(null != projectMembersList && !projectMembersList.isEmpty()){
 								for (ProjectMembers projectMembers : projectMembersList) {
-									timesheetFrequencyMap = timesheetFrequencyGeneratorUtil.getTimesheetFrequencyListFromProjectInvoiceFrequency(projectMembers,"approverScheduler");
+									timesheetFrequencyMap = timesheetFrequencyGeneratorUtil.getTimesheetFrequencyListFromProjectInvoiceFrequency(projectMembers,projectMembers.getProjectClientsId().getOrgLocationsId(),"approverScheduler");
 									  if(null != timesheetFrequencyMap && !timesheetFrequencyMap.isEmpty()){
 									            LinkedList<String> frequency = new LinkedList<>();
 												 tempHTML.append("<tr>");

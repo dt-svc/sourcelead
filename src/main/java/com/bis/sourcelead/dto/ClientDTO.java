@@ -60,6 +60,8 @@ public class ClientDTO {
 	
 	private String phoneNumber;
 	
+	private String extensionNumber;
+	
 	private String spocStatus;
 	
 	private List<String> owner;
@@ -246,6 +248,15 @@ public class ClientDTO {
 	}
 	public void setPhoneNumber(String phoneNumber) {
 		this.phoneNumber = phoneNumber;
+	}
+	
+	public String getExtensionNumber()
+	{
+		return extensionNumber;
+	}
+	public void setExtensionNumber(String extensionNumber)
+	{
+		this.extensionNumber = extensionNumber;
 	}
 	public String getSpocStatus() {
 		return spocStatus;

@@ -44,7 +44,7 @@ public class ShiftServiceImpl implements ShiftService {
 			shift.setCreatedBy(user.getUserCode());
 			shift.setCreatedDate(new Date());
 		}
-		shift.setOrgLocationId(orgLocation);
+		shift.setOrgLocations(orgLocation);
 		shift.setShiftName(shiftDTO.getShiftName());
 		if(shiftDTO.getTimeIn() != null && !"".equalsIgnoreCase(shiftDTO.getTimeIn())){
 		    shift.setTimeIn(shiftDTO.getTimeIn());

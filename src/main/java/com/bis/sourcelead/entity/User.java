@@ -60,6 +60,9 @@ public class User implements Serializable{
 	@Column(name = "MOBILE_PHONE")
 	private String mobilePhone;
 	
+    @Column(name = "EXTENSION_NUMBER")
+	private String extensionNumber;
+
 	@Column(name = "USER_STATE")
 	@Enumerated(EnumType.STRING)
 	private Status userState;
@@ -307,6 +310,16 @@ public class User implements Serializable{
 
 	public void setMobilePhone(String mobilePhone) {
 		this.mobilePhone = mobilePhone;
+	}
+
+	public String getExtensionNumber()
+	{
+		return extensionNumber;
+	}
+
+	public void setExtensionNumber(String extensionNumber)
+	{
+		this.extensionNumber = extensionNumber;
 	}
 
 	public Status getUserState() {

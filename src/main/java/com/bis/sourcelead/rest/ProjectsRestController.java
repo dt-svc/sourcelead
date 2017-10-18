@@ -145,7 +145,6 @@ public class ProjectsRestController {
 		Projects projects = null;
 		 if(Validator.validate(projectsDTO)) {
 			 projectsDTO.setStaticPath(staticPath);
-			 FileUploadUtil.fillUploadedFileInfo(projectsDTO, projectsDTO.getFileInfo());
 			 projects = projectsService.storeProject(projectsDTO);
 		 }
 		return projects;
