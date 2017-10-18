@@ -38,6 +38,8 @@ public interface ProjectMembersService {
 	
 	public List<ProjectMembers> getAllProjectMembersByProjectId(Long id) throws Exception;
 	
+	public List<ProjectMembers> getAllProjectMembersWithMasterCandidateIdByProjectIdAndLocationId(Long id,Long locationsId) throws Exception;
+	
 	public List<Long> getAllProjectMembersIdsByProjectId(Long projectId) throws Exception;
 	
 	public List<Long> getAllProjectMembersIdsByemployeeId(Long employeeId) throws Exception;
@@ -50,7 +52,7 @@ public interface ProjectMembersService {
 	
 	public List<ProjectMembers> getAllTerminatedProjectMembersIdsByTimesheet() throws Exception;
 
-	public List<ProjectMembers> getAllProjectsByUserId(Long userId);
+	public List<ProjectMembers> getAllProjectsByUserId(Long userId,Long orgLocationId);
 	
 	public List<ProjectMembers> getAllProjectsByUserIdForCandidatesHotList(Long userId) throws Exception;
 	
@@ -62,7 +64,7 @@ public interface ProjectMembersService {
 	
 	public Integer updateProjectMemberDeletedReason(Long projectMemberId, String reason);
 
-	public List<ProjectMembers> getAllProjectsByUserIdAndStatus(Long userId, String mEMBER_ACTIVE) throws Exception;
+	public List<ProjectMembers> getAllProjectsByUserIdAndStatus(Long userId, String mEMBER_ACTIVE,Long orgLocationId) throws Exception;
 
 	public Integer updateEndDateOfProjectMemberId(Date endDate1, Long projectMemberId);
 	
@@ -76,6 +78,8 @@ public interface ProjectMembersService {
     public List<ProjectMembers> getAllProjectsAssigendToUserByIdAndStatus(Long userId, String status) throws Exception;
     
     public List<ProjectMembers> getProjectMembersListByOrgLocationsIdAndEmpUserId(Long locationsId, Long empUserId);
+    
+    public List<ProjectMembers> getProjectMembersListByOrgLocationsIdAndCandidateId(Long locationsId, Long candidateId);
     
     public List<ProjectMembers> getProjectMembersListByOrgLocationsIdAndApproverUserId(Long locationsId, Long approverUserId);
 	
@@ -111,4 +115,8 @@ public interface ProjectMembersService {
 	Integer getProjectMembersCountByProjectClientId(Long projectClientId) throws Exception;
 	
 	ProjectMembers getProjectMembersByCandidateIdAndProjectId(Long candidateId,Long projectId) throws Exception;
+	
+	public ProjectMembers getClientProjectMemberByProjectMemberId(Long projectMemberId) throws Exception;
+	
+	public ProjectMembers getConsultantUserProjectMemberByProjectMemberId(Long projectMemberId) throws Exception;
 }

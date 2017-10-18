@@ -17,4 +17,6 @@ public interface VendorOnboardTemplateDocumentsDao {
 	List<VendorOnboardingTemplateDocuments> getVendorOnboaringTemplateDocumentsByVendorOnboardId(Long vendorOnboardingId) throws Exception;
 	
 	VendorOnboardingTemplateDocuments getVendorOnBoardingTemplateDocumentsById(Long id) throws Exception;
+	
+	List<VendorOnboardingTemplateDocuments> getVendorOnBoardTemplateDocumentsByTemplateId(Long templateId) throws Exception;
 }

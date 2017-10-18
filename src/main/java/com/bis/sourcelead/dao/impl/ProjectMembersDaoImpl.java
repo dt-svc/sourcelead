@@ -154,8 +154,8 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 	public ProjectMembers getProjectMemberById(Long id) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 		java.sql.Date  currentDate = new java.sql.Date(new Date().getTime());
-		String query = " from ProjectMembers pm left join fetch pm.projects left join fetch pm.projectMemberCandidteId left join fetch pm.masterCandidateId "
-				+ " left join fetch pm.projectClientsId left join fetch pm.projectClientsId.orgLocationsId "
+		String query = " from ProjectMembers pm left join fetch pm.projects project left join fetch pm.projectMemberCandidteId can left join fetch pm.masterCandidateId mc "
+				+ " left join fetch pm.projectClientsId pc left join fetch pc.orgLocationsId loc "
 				+ "where pm.id = :id" ;
 		List<ProjectMembers> pmList =session.createQuery(query).setLong("id", id).setCacheable(true).list(); 
 		ProjectMembers pm = null;
@@ -260,7 +260,7 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 	public ProjectMembers getProjectMemberByUserIdAndProjectId(Long userId, Long projectId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 		java.sql.Date  currentDate = new java.sql.Date(new Date().getTime());
-		String subQueryForUserIdChecking = "(pm.employee.id IN(select emp.id from Employees emp where emp.user.id = :userId) OR pm.projects.id IN(select pah.projectId.id from ProjectApproverHierarchy pah where pah.approverUserId.id = :userId))";
+		String subQueryForUserIdChecking = "(pm.projectMemberCandidteId.id IN(select cand.id from Candidate cand where cand.consultantUser.id = :userId))";
 		String query = " from ProjectMembers pm left join fetch pm.projects left join fetch pm.employee where "+subQueryForUserIdChecking+" and pm.projects.id = :projectId" ;
 		List<ProjectMembers> pmList =session.createQuery(query).setLong("userId", userId).setLong("projectId", projectId).setCacheable(true).list(); 
 		ProjectMembers pm = null;
@@ -304,7 +304,17 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 		List<ProjectMembers> projectMemberList =  session.createQuery(query.toString()).setLong("orgLocationsId", locationsId).setLong("userId", empUserId).setCacheable(true).list();
 		return projectMemberList;
 	}
-
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<ProjectMembers> getProjectMembersListByOrgLocationsIdAndCandidateId(Long locationsId, Long candidateId) {
+		logger.debug("In ProjectsDaoImpl class getProjectByOrgLocationsId method");
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from ProjectMembers pm left join fetch pm.projectClientsId pc   left join fetch pc.orgRelationId rl left join fetch rl.locationId left join fetch rl.responderLocationId left join fetch pm.employee left join fetch pm.masterCandidateId left join fetch pm.projectMemberCandidteId  where pm.status = '1' and pm.projectMemberCandidteId.id = :candidateId and  pc.orgLocationsId.id = :locationsId ";
+		List<ProjectMembers> projectMemberList =  session.createQuery(query.toString()).setLong("locationsId", locationsId).setLong("candidateId", candidateId).setCacheable(true).list();
+		return projectMemberList;
+	}
+	
 	
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
@@ -312,8 +322,8 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 		logger.debug("In ProjectsDaoImpl class getProjectByOrgLocationsId method");
 		Session session = this.sessionFactory.getCurrentSession();
 		
-		String query = "from ProjectMembers pm left join fetch pm.projects projects left join fetch projects.orgLocationsId left join fetch pm.employee emp left join fetch emp.user  user "
-				+ " where project.orgLocationsId.id = :locationsId and "
+		String query = "from ProjectMembers pm left join fetch pm.projects projects  left join fetch projects.orgRelationId left join fetch projects.orgLocationsId left join fetch pm.masterCandidateId mc left join fetch pm.projectMemberCandidteId candidate left join fetch pm.projectClientsId pclient left join fetch pm.employee emp left join fetch emp.user  user "
+				+ " where pclient.orgLocationsId.id = :locationsId and "
 				+ " user.id IN(select userRole.user.id from UserRole userRole where userRole.userState != 'INACTIVE')  "
 				+ " and ( "
 				+ "  (projects.id IN ( select pah.projectId from ProjectApproverHierarchy pah where pah.approverUserId =:userId)) "
@@ -348,6 +358,7 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 		String dateQuery = "";
 		String clientQuery = "";
 		String statusQuery = "";
+		String fillingOptionQuery = "";
 		if(startDate != null && endDate != null){
 			   dateQuery =  " and pm.id IN ( "
                 + "    select pmh.projectMemberId.id  from ProjectMembersHistory pmh  where  "
@@ -361,20 +372,20 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 		}
 	  
 	     if(StringUtils.isNotEmpty(status) && !(status.equalsIgnoreCase("NEW") || status.equalsIgnoreCase("All"))){
-			 statusQuery = " and pm.id IN(select sah.submissionId.projectMembers.id from SubmissionApproverHierarchy sah where sah.frequencyStartDate = :startDate and  sah.frequencyEndDate = :endDate and sah.submissionApprovalStatus = '"+Submission_ApprovalStatus.getNameByValue(status)+"' )";
+			 statusQuery = " and pm.masterCandidateId.id IN(select sah.submissionId.masterCandidateId.id from SubmissionApproverHierarchy sah where sah.frequencyStartDate = :startDate and  sah.frequencyEndDate = :endDate and sah.submissionApprovalStatus = '"+Submission_ApprovalStatus.getNameByValue(status)+"' )";
          }
 	     else if(!(status.equalsIgnoreCase("All"))){
-	    	 statusQuery = " and pm.id NOT IN(select sah.submissionId.projectMembers.id from SubmissionApproverHierarchy sah where sah.frequencyStartDate = :startDate and  sah.frequencyEndDate = :endDate and (sah.submissionApprovalStatus = '"+Submission_ApprovalStatus.SUBMITTEDFORAPPROVAL+"' OR sah.submissionApprovalStatus = '"+Submission_ApprovalStatus.APPROVED+"' OR sah.submissionApprovalStatus = '"+Submission_ApprovalStatus.REJECTED+"' OR sah.submissionApprovalStatus = '"+Submission_ApprovalStatus.REOPENED+"') )";
+	    	 statusQuery = " and pm.masterCandidateId.id NOT IN(select sah.submissionId.masterCandidateId.id from SubmissionApproverHierarchy sah where sah.frequencyStartDate = :startDate and  sah.frequencyEndDate = :endDate and (sah.submissionApprovalStatus = '"+Submission_ApprovalStatus.SUBMITTEDFORAPPROVAL+"' OR sah.submissionApprovalStatus = '"+Submission_ApprovalStatus.APPROVED+"' OR sah.submissionApprovalStatus = '"+Submission_ApprovalStatus.REJECTED+"' OR sah.submissionApprovalStatus = '"+Submission_ApprovalStatus.REOPENED+"') )";
 	     }
-		
-		String queryStr = "from ProjectMembers pm left join fetch pm.projects projects  left join fetch projects.orgRelationId left join fetch projects.orgLocationsId left join fetch pm.employee emp left join fetch emp.user  user "
-				+ " where projects.invoiceFrequency = :timesheetFrequency and projects.orgLocationsId.id = :locationsId  "
+	     fillingOptionQuery = " and ((pclient.id IN(select pc.id from ProjectClients pc where pc.level IN(select Max(subPm.projectClientsId.level) from ProjectMembers subPm where subPm.projects.id = projects.id and subPm.masterCandidateId.id = mc.id) and pc.projectId.id = projects.id)) OR ( pm.masterCandidateId.id IN(select sah.submissionId.masterCandidateId.id from SubmissionApproverHierarchy sah where sah.frequencyStartDate = :startDate and  sah.frequencyEndDate = :endDate and (sah.submissionApprovalStatus = '"+Submission_ApprovalStatus.SUBMITTEDFORAPPROVAL+"' OR sah.submissionApprovalStatus = '"+Submission_ApprovalStatus.APPROVED+"' OR sah.submissionApprovalStatus = '"+Submission_ApprovalStatus.REJECTED+"' OR sah.submissionApprovalStatus = '"+Submission_ApprovalStatus.REOPENED+"'))))";
+		String queryStr = " from ProjectMembers pm left join fetch pm.projects projects  left join fetch projects.orgRelationId left join fetch projects.orgLocationsId left join fetch pm.masterCandidateId mc left join fetch pm.projectMemberCandidteId candidate left join fetch pm.projectClientsId pclient "
+				+ " where projects.invoiceFrequency = :timesheetFrequency and candidate.orgLocationId.id = :locationsId "
+				    +fillingOptionQuery
 				    + statusQuery
 				    +clientQuery
 				    + dateQuery
-					+ " and user.id IN (select userRole.user.id from UserRole userRole where userRole.userState != 'INACTIVE')  "
 					+ " and ( "
-					+  "      (  projects.id IN ( select pah.projectId.id from ProjectApproverHierarchy pah  where pah.approverUserId.id =:userId and ((pah.level = '2' and user.id NOT IN(select subpah.approverUserId.id from ProjectApproverHierarchy subpah where subpah.projectId.id = pah.projectId.id and subpah.level = '2')) OR (pah.level = '1' and user.id NOT IN(select subpah.approverUserId.id from ProjectApproverHierarchy subpah where subpah.projectId.id = pah.projectId.id )))))"
+					+  "      (  projects.id IN ( select pah.projectId.id from ProjectApproverHierarchy pah  where pah.approverUserId.id =:userId and ((pah.level = '2' and candidate.consultantUser.id NOT IN(select subpah.approverUserId.id from ProjectApproverHierarchy subpah where subpah.projectId.id = pah.projectId.id and subpah.level = '2')) OR (pah.level = '1' and candidate.consultantUser.id NOT IN(select subpah.approverUserId.id from ProjectApproverHierarchy subpah where subpah.projectId.id = pah.projectId.id )))))"
 					 + "       OR "+Constants.loginUserAsAdminForProjects+""
 					+ "     ) ";
 		
@@ -421,12 +432,12 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
                 + "    ( pmh.projectTerminationDate IS NULL and :endDate >= pmh.projectAssignedDate) "
                 + "  )  ";
 	     }
-		String queryStr = "from ProjectMembers pm left join fetch pm.projects projects  left join fetch projects.orgRelationId left join fetch projects.orgLocationsId left join fetch pm.employee emp left join fetch emp.user  user "
-				+ " where  projects.orgLocationsId.id = :locationsId  "
+		String queryStr = "from ProjectMembers pm left join fetch pm.projects projects  left join fetch projects.orgRelationId left join fetch projects.orgLocationsId left join fetch pm.masterCandidateId mc left join fetch pm.projectMemberCandidteId candidate left join fetch pm.projectClientsId pclient left join fetch pm.employee emp left join fetch emp.user  user "
+				+ " where pclient.orgLocationsId.id = :locationsId  "
 				    + dateQuery
 					+ " and user.id IN (select userRole.user.id from UserRole userRole where userRole.userState != 'INACTIVE') "
 					+ " and ( "
-					+  "      (  projects.id IN ( select pah.projectId.id from ProjectApproverHierarchy pah  where pah.approverUserId.id =:userId and ((pah.level = '2' and user.id NOT IN(select subpah.approverUserId.id from ProjectApproverHierarchy subpah where subpah.projectId.id = pah.projectId.id and subpah.level = '2')) OR (pah.level = '1' and user.id NOT IN(select subpah.approverUserId.id from ProjectApproverHierarchy subpah where subpah.projectId.id = pah.projectId.id )))))"
+					+  "      (  projects.id IN ( select pah.projectId.id from ProjectApproverHierarchy pah  where pah.approverUserId.id =:userId and ((pah.level = '2' and candidate.consultantUser.id NOT IN(select subpah.approverUserId.id from ProjectApproverHierarchy subpah where subpah.projectId.id = pah.projectId.id and subpah.level = '2')) OR (pah.level = '1' and candidate.consultantUser.id NOT IN(select subpah.approverUserId.id from ProjectApproverHierarchy subpah where subpah.projectId.id = pah.projectId.id )))))"
 					 + "       OR "+Constants.loginUserAsAdminForProjects+""
 					+ "     ) ";
 		
@@ -469,12 +480,12 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
                 + "    ( :endDate >= pmh.projectAssignedDate) "
                 + "  )  ";
 	     }
-		String queryStr = "from ProjectMembers pm left join fetch pm.projects projects  left join fetch projects.orgRelationId left join fetch projects.orgLocationsId left join fetch pm.employee emp left join fetch emp.user  user "
-				+ " where  projects.orgLocationsId.id = :locationsId"
+		String queryStr = "from ProjectMembers pm left join fetch pm.projects projects  left join fetch projects.orgRelationId left join fetch projects.orgLocationsId left join fetch pm.masterCandidateId mc left join fetch pm.projectMemberCandidteId candidate left join fetch pm.projectClientsId pclient left join fetch pm.employee emp left join fetch emp.user  user "
+				+ " where pclient.orgLocationsId.id = :locationsId "
 				    + dateQuery
 					+ " and user.id IN (select userRole.user.id from UserRole userRole where userRole.userState != 'INACTIVE') "
 					+ " and ( "
-					+  "      (  projects.id IN ( select pah.projectId.id from ProjectApproverHierarchy pah  where pah.approverUserId.id =:userId and ((pah.level = '2' and user.id NOT IN(select subpah.approverUserId.id from ProjectApproverHierarchy subpah where subpah.projectId.id = pah.projectId.id and subpah.level = '2')) OR (pah.level = '1' and user.id NOT IN(select subpah.approverUserId.id from ProjectApproverHierarchy subpah where subpah.projectId.id = pah.projectId.id )))))"
+					+  "      (  projects.id IN ( select pah.projectId.id from ProjectApproverHierarchy pah  where pah.approverUserId.id =:userId and ((pah.level = '2' and candidate.consultantUser.id NOT IN(select subpah.approverUserId.id from ProjectApproverHierarchy subpah where subpah.projectId.id = pah.projectId.id and subpah.level = '2')) OR (pah.level = '1' and candidate.consultantUser.id NOT IN(select subpah.approverUserId.id from ProjectApproverHierarchy subpah where subpah.projectId.id = pah.projectId.id )))))"
 					 + "       OR "+Constants.loginUserAsAdminForProjects+""
 					+ "     ) ";
 		
@@ -520,6 +531,22 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 		return projectsMembersList;
         
 	}
+	
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })	
+	public List<ProjectMembers> getAllProjectMembersWithMasterCandidateIdByProjectIdAndLocationId(Long id,Long locationsId) throws Exception {
+		logger.debug("In ProjectMember getAllProjectMembersByProjectId method");
+        Session session = this.sessionFactory.getCurrentSession();
+        List<ProjectMembers> projectsMembersList = null;
+		Query projectsMembersListQuery= session.createQuery("from ProjectMembers pm left join fetch pm.projects left join fetch pm.projectMemberCandidteId left join fetch pm.masterCandidateId mc left join fetch pm.projectClientsId pc where pc.orgLocationsId.id = :locationsId and pm.projects.id = :id and pm.status = '1' ");
+		projectsMembersList=projectsMembersListQuery.setLong("id", id).setLong("locationsId", locationsId).setCacheable(true).list();
+		return projectsMembersList;
+        
+	}
+	
+	
+	
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
@@ -577,10 +604,13 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public List<ProjectMembers> getAllProjectsByUserId(Long userId) {
+	public List<ProjectMembers> getAllProjectsByUserId(Long userId,Long orgLocationId) {
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from ProjectMembers pm left join fetch pm.projects left join fetch pm.employee emp  where (pm.employee.id IN(select emp.id from Employees emp where emp.user.id = :userId ))" ;
-		List<ProjectMembers> allProjectsList =session.createQuery(query).setLong("userId", userId).setCacheable(true) 
+
+		String query = "from ProjectMembers pm left join fetch pm.projects left join fetch pm.employee emp left join fetch pm.projectMemberCandidteId "
+				+ " where (pm.projectMemberCandidteId.id IN(select cand.id from Candidate cand where cand.consultantUser.id = :userId and cand.orgLocationId.id = :orgLocationId ) and pm.projects.projectMode <> 'Draft')" ;
+		
+		List<ProjectMembers> allProjectsList =session.createQuery(query).setLong("userId", userId).setLong("orgLocationId",orgLocationId).setCacheable(true) 
 			    .list();
 		return allProjectsList;
 	}
@@ -1084,5 +1114,37 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 		}
 		return pm;  
 	}
+	
+	@Override
+	@Transactional
+	public ProjectMembers getClientProjectMemberByProjectMemberId(Long projectMemberId) throws Exception {
+ 		Session session = this.sessionFactory.getCurrentSession();
+		String query = " from ProjectMembers pm  left join fetch pm.projectClientsId pc left join fetch pc.orgLocationsId loc left join fetch pm.masterCandidateId mc  left join fetch pm.projectMemberCandidteId pmc left join fetch pm.projects projects where  "
+				+ " (projects.id IN( select subPm.projects.id from ProjectMembers subPm where subPm.id = :projectMemberId ) and mc.id IN( select subPm.masterCandidateId.id from ProjectMembers subPm where subPm.id = :projectMemberId )) and pc.level IN ( select MIN(subPm.projectClientsId.level) from ProjectMembers subPm where subPm.projectClientsId.orgLocationsId.org.orgType <> '"+Constants.GUEST+"' and subPm.masterCandidateId.id = pm.masterCandidateId.id and subPm.projects.id = pm.projects.id) and pm.status = '1' " ;
+		List<ProjectMembers> pmList =session.createQuery(query).setLong("projectMemberId", projectMemberId).setCacheable(true).list(); 
+		ProjectMembers pm = null;
+		if(pmList != null && !pmList.isEmpty())  {
+			pm  = pmList.iterator().next();
+		}
+		return pm;  
+	}
+	
+	@Override
+	@Transactional
+	public ProjectMembers getConsultantUserProjectMemberByProjectMemberId(Long projectMemberId) throws Exception {
+ 		Session session = this.sessionFactory.getCurrentSession();
+		String query = " from ProjectMembers pm  left join fetch pm.projectClientsId pc left join fetch pc.orgLocationsId loc left join fetch pm.masterCandidateId mc  left join fetch pm.projectMemberCandidteId pmc left join fetch pmc.consultantUser consultantUser left join fetch pm.projects projects left join fetch pm.employee emp left join fetch emp.user user "
+				+ " where  "
+				+ " (projects.id IN( select subPm.projects.id from ProjectMembers subPm where subPm.id = :projectMemberId ) and mc.id IN( select subPm.masterCandidateId.id from ProjectMembers subPm where subPm.id = :projectMemberId )) and consultantUser IS NOT NULL  " ;
+		List<ProjectMembers> pmList =session.createQuery(query).setLong("projectMemberId", projectMemberId).setCacheable(true).list(); 
+		ProjectMembers pm = null;
+		if(pmList != null && !pmList.isEmpty())  {
+			pm  = pmList.iterator().next();
+		}
+		return pm;  
+	}
+	
+	
+	
 }
 

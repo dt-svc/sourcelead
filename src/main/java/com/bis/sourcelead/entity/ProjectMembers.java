@@ -60,13 +60,14 @@ public class ProjectMembers implements Serializable {
 	private Employees employee;
 
 	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne
+	@ManyToOne(cascade = CascadeType.ALL)
+	@Fetch(FetchMode.SELECT)
 	@JoinColumn(name = "CANDIDATE_ID", nullable = false)
 	@JsonBackReference
 	private Candidate projectMemberCandidteId;
 	
 	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="MASTER_CANDIDATE_ID", nullable=false )        
     private MasterCandidate masterCandidateId;
 	
@@ -389,6 +390,7 @@ public class ProjectMembers implements Serializable {
 	private Long candidateId;
 
 	@Transient
+	@JsonProperty
 	private String userRoleType;
 
 	@Transient
@@ -623,6 +625,14 @@ public class ProjectMembers implements Serializable {
 	}
 
 	public String getEmpName() {
+		if(projectMemberCandidteId != null && StringUtils.isNotEmpty(projectMemberCandidteId.getFirstName())&& StringUtils.isNotEmpty(projectMemberCandidteId.getLastName())){
+			empName = projectMemberCandidteId.getFirstName()+" "+projectMemberCandidteId.getLastName();
+		}else if(projectMemberCandidteId != null && StringUtils.isNotEmpty(projectMemberCandidteId.getFirstName())){
+			empName = projectMemberCandidteId.getFirstName();
+		}
+		else if(projectMemberCandidteId != null && StringUtils.isNotEmpty(projectMemberCandidteId.getLastName())){
+			empName = projectMemberCandidteId.getLastName();
+		}
 		return empName;
 	}
 

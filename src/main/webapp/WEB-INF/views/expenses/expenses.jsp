@@ -176,13 +176,13 @@ function getExpensesList(){
 					 if(json !=''){
 			        	  for (var i = 0; i < json.length; i++) { 
 			        		  var report = json[i]; 
-			        		  if(report.expenseId != null && report.expenseId != '' && report.expenseId != 'undefined'){
-			        			  expenseId = report.expenseId;
+			        		  if(report.expenseAutoId != null && report.expenseAutoId != '' && report.expenseAutoId != 'undefined'){
+			        			  expenseId = report.expenseAutoId;
 			        		  }else{
 			        			  expenseId = "--";
 			        		  }
-			        		  if(report.purpose != null && report.purpose != '' && report.purpose != 'undefined'){
-			        			  purpose = report.purpose;
+			        		  if(report.expensePurpose != null && report.expensePurpose != '' && report.expensePurpose != 'undefined'){
+			        			  purpose = report.expensePurpose;
 			        		  }else{
 			        			  purpose = "--";
 			        		  }
@@ -196,13 +196,13 @@ function getExpensesList(){
 			        		  }else{
 			        			  clientName = "--";
 			        		  }
-			        		  if(report.startDateStr != null && report.startDateStr != '' && report.startDateStr != 'undefined'){
-			        			  startDateStr = report.startDateStr;
+			        		  if(report.startDate != null && report.startDate != '' && report.startDate != 'undefined'){
+			        			  startDateStr = report.startDate;
 			        		  }else{
 			        			  startDateStr = "--";
 			        		  }
-			        		  if(report.endDateStr != null && report.endDateStr != '' && report.endDateStr != 'undefined'){
-			        			  endDateStr = report.endDateStr;
+			        		  if(report.endDate != null && report.endDate != '' && report.endDate != 'undefined'){
+			        			  endDateStr = report.endDate;
 			        		  }else{
 			        			  endDateStr = "--";
 			        		  }
@@ -219,7 +219,7 @@ function getExpensesList(){
 			        		  }
 								 result = result +"<tr>";
 								 '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_MY_EXPENSES\')">'
-								 result = result +"<td><a href='"+sourceleadUrl+"/addExpense?expenseId="+expenseId+"&type=view'><div class='proj_show'><span>"+expenseId+"</span><i class='fa fa-binoculars'></i></div></a></td>";
+								 result = result +"<td><a href='"+sourceleadUrl+"/addExpense?expenseId="+expenseId+"&expenseLocationCode="+report.expenseLocationCode+" &type=view'><div class='proj_show'><span>"+expenseId+"</span><i class='fa fa-binoculars'></i></div></a></td>";
 								 '</sec:authorize>';
 								 '<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_EDIT_MY_EXPENSES\')">'
 								 result = result +"<td><div class='proj_show'><span>"+expenseId+"</span></div></td>";

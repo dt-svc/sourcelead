@@ -86,8 +86,8 @@ filter: alpha(opacity=0);  -moz-opacity: 0; -khtml-opacity: 0;
                     <input type="hidden" name="templateId" id="onboardtemplateId" value=""/>
                   </div>
                   <div class="col-md-6">
-                    <label>Description <span class="text-danger paddingLeft">*</span></label>
-                    <textarea rows="1" class="form-control input-sm" name="description" field-name="Description" data-validation="required validate_Space validate_length length2-500"></textarea>
+                    <label>Description</label>
+                    <textarea rows="1" class="form-control input-sm" name="description" field-name="Description" data-validation-optional="true" data-validation="validate_Space validate_length length2-500"></textarea>
                   </div>
                 </div>
                 <div class="form-footer clearfix mt">
@@ -453,6 +453,13 @@ function addContractsAttachment(){
 			var row = tbl.insertRow(maxRowNum);
 			row.setAttribute("id", "divAttachmentContractsRow" + maxRowNum);
 			
+			$("input[id = 'addedDocumentsRowCount']").val(maxRowNum + 1);
+			 var documentsRow = document.getElementById("addedDocumentsRowCount").value;
+			 if(documentsRow > 1){
+				 $("#0contractsdocFileName").removeAttr("data-validation-optional");
+				 $("#0contractsdocFileName").removeAttr("data-validation");
+				 $("#0contractsdocFileName").attr("data-validation", "required");
+			 }
 			
 			var cell0 = row.insertCell(0);
 			var divDocTypeTdStr = document.getElementById("divContractsNameTd1").innerHTML;
@@ -488,6 +495,16 @@ function uploadContractDocument(id){
 	
 <script type="text/javascript">
 	function removeContractsAttachmentRow(rowId) {
+		
+		var addedDocumentsRowCount = document.getElementById("addedDocumentsRowCount").value;
+		 $("input[id = 'addedDocumentsRowCount']").val(parseInt(addedDocumentsRowCount) - 1);
+		 
+		 var documentsRow = document.getElementById("addedDocumentsRowCount").value;
+		 if(documentsRow == 1){
+			 $("#0contractsdocFileName").removeAttr("data-validation");
+			 $("#0contractsdocFileName").attr("data-validation-optional", "true");
+		 }
+		 
 		 document.getElementById("divAttachmentContractsRow"+rowId).style.display = 'none';
 		 document.getElementById("divAttachmentContractsRow"+rowId).value= '';
 		 $("#templateDocuments_form input[data-id='"+rowId+"contractsdocFile']").remove();
@@ -782,7 +799,7 @@ function getTemplateVendorDocumentsDetails(templateId){
                 			 checked = "checked";
                 		 }
                 		 result = result +"<strong id='contractsdocument"+opt.id+"'>";
-                		 result = result +"<input type='text' value='"+opt.documentName+"' readonly class='form-control input-sm vendorinput'></input>";
+                		 result = result +"<input type='text' value='"+opt.documentName+"' title='"+opt.documentName+"' readonly class='form-control input-sm vendorinput'></input>";
                 		 
                 	/* 	 result = result +"<div class='positionRelative inputpadding'>";
                 		 if(opt.fileUrl != null){
@@ -806,10 +823,10 @@ function getTemplateVendorDocumentsDetails(templateId){
                 	 }
                 	 
                 	 result = result +"<input type='hidden' name='contractsAttcahmentMaxRowNumber'  id='contractsAttcahmentMaxRowNumber' value='1' />";
+                	 result = result +"<input type='hidden' id='addedDocumentsRowCount' value='1' />";
                 	 result = result +"<table class='timesheetAttachment'  id='contractsAttachmentTable' cellpadding='0' cellspacing='0'>";
                 	 result = result +"<tr id='divAttachmentTsRow0'>";
-                	 result = result +"<td><input type='text' placeholder='Document Name' class='form-control input-sm vendorinput'  data-validation='required' field-name='Document' name='vendorDocumentsFileInfo[0].docFileName' id='0contractsdocFileName'></td>";
-                	 //result = result +"<td><div id='0ContractsdocFileuploadFileGroup'><input type='file' id='0contractsdocFile' field-name='Attachment' data-validation='validatedoc' data-validation-optional='true' onchange='uploadContractDocument(0)'  class='timesheetAttachmentValidation'></div></td>";
+                	 result = result +"<td><input type='text' placeholder='Document Name' class='form-control input-sm vendorinput'  data-validation-optional='true' field-name='Document' name='vendorDocumentsFileInfo[0].docFileName' id='0contractsdocFileName'></td>";
                 	 result = result +"<td>"; 
                 	 result = result +"<label class='switch pull-left ml-mr switchvendor-custom'>";
                 	 result = result +"<input type='checkbox' checked id='0checked' name='vendorDocumentsFileInfo[0].checked' onclick='checkDocument(0)' value='Y'>"

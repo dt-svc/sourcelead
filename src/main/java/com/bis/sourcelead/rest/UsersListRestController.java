@@ -241,7 +241,7 @@ public class UsersListRestController {
 					}
 					role.setUserEmail(role.getUser().getEmail());
 					role.setUserId(role.getUser().getId());
-					role.setIsMailSent(role.getUser().getIsMailSent().toString());	
+					//role.setIsMailSent(role.getUser().getIsMailSent().toString());	
 					if(role.getUser() != null) {
 						if(role.getUser().getFileUrl() != null) {
 							role.setFileUrl(role.getUser().getFileUrl());
@@ -574,7 +574,7 @@ public class UsersListRestController {
 			} else {
 				userRole.setHireDateStr("");
 			}
-		
+
 			userRole.setDailyHours(employee.getDailyHours());
 			userRole.setUserEmploymentType(employee.getUserEmploymentType());
 			userRole.setDesignationOtherType(employee.getDesignationOtherType());
@@ -1024,10 +1024,9 @@ public class UsersListRestController {
 				}
 			}
 
-			/*if (jsonObj.has("projectApproverUser") && !isNullOrEmpty("projectApproverUser")) {
-
-				projectsService.tereminateAsProjectApprover(jsonObj, user, userId, orgLocations);
-			} */else {
+			if (StringUtils.isNotBlank(addUserDTO.getProjectApproverUser())) {
+				projectsService.tereminateAsProjectApprover(Long.valueOf(addUserDTO.getProjectApproverUser()), user, userId, orgLocations);
+			} else {
 
 				List<ProjectMembers> projectmembersList = projectMembersService
 						.getAllProjectsAssigendToUserByIdAndStatus(userId, Constants.MEMBER_ACTIVE);
@@ -1478,10 +1477,10 @@ public class UsersListRestController {
 
 			}
 
-			/*if (StringUtils.isNotBlank(addUserDTO.getProjectApproverUser())) {
+			if (StringUtils.isNotBlank(addUserDTO.getProjectApproverUser())) {
 
-				projectsService.tereminateAsProjectApprover(addUserDTO, user, userId, orgLocations);
-			}*/
+				projectsService.tereminateAsProjectApprover(Long.valueOf(addUserDTO.getProjectApproverUser()), user, userId, orgLocations);
+			}
 			
 			
 			

@@ -1,6 +1,7 @@
 package com.bis.sourcelead.dao.impl;
 
 import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
@@ -17,9 +18,11 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dao.AddExpensesDao;
 import com.bis.sourcelead.dao.ExpensesApprovalDao;
 import com.bis.sourcelead.dao.ExpensesDao;
 import com.bis.sourcelead.dao.UserDao;
+import com.bis.sourcelead.entity.Expenses;
 import com.bis.sourcelead.entity.ExpensesApproverHierarchy;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Submission_ApprovalStatus;
@@ -37,6 +40,9 @@ public class ExpensesApprovalDaoImpl implements ExpensesApprovalDao{
 	
 	@Autowired
 	ExpensesDao expensesDao;
+	
+	@Autowired
+	AddExpensesDao addExpensesDao;
 	
 	
 	@Value("${SourceLead.100}")
@@ -109,8 +115,8 @@ public class ExpensesApprovalDaoImpl implements ExpensesApprovalDao{
 			  params.put("endDateUTC",endDateUTC);
 		}
 		Session session = this.sessionFactory.getCurrentSession();
-		String from = "from  ExpensesApproverHierarchy sah left join fetch sah.hierarchyId hierarchy left join fetch hierarchy.approverUserId approver left join fetch sah.expenseId exp  left join fetch exp.projectMembers pm left join fetch pm.projects projects left join fetch pm.employee emp left join fetch emp.user user where exp.orgLocationId.id = :orgLocationId"
-				
+		String from = "from  ExpensesApproverHierarchy sah left join fetch sah.hierarchyId hierarchy left join fetch hierarchy.projectClientsId pc left join fetch hierarchy.approverUserId approver left join fetch sah.expenseId exp  left join fetch exp.projectMembers pm left join fetch pm.projects projects left join fetch pm.employee emp left join fetch emp.user user where "
+			+ " pc.orgLocationsId.id = :orgLocationId"
 			+ " and ( ("
 			+ "      hierarchy.approverUserId.id = :userId and "
 			+ "       (     (hierarchy.level = '2' and emp.user.id NOT IN(select subeah.hierarchyId.approverUserId.id from ExpensesApproverHierarchy subeah where subeah.expenseId.id = sah.expenseId.id and subeah.hierarchyId.level = '2')) "
@@ -162,6 +168,7 @@ public class ExpensesApprovalDaoImpl implements ExpensesApprovalDao{
 	    		if(null != type && "notify".equalsIgnoreCase(type) && null != isSuperUser && isSuperUser.equalsIgnoreCase(Constants.YES)){
 	    			eah.setReopenReason(reason);
 	    			eah.setReopenedUser(loginUser);
+	    			eah.getExpenseId().setExpenseStatus(Submission_Status.SUBMITTED);;
 	    			eah.setExpenseStatus(Submission_Status.SUBMITTED);
 	    			eah.setExpenseApprovalStatus(Submission_ApprovalStatus.SUBMITTEDFORAPPROVAL);
 	    			eah.setReopenRejectedReason(null);
@@ -227,6 +234,7 @@ public class ExpensesApprovalDaoImpl implements ExpensesApprovalDao{
 		
 		
 		Integer maxLevel = 0;
+		ArrayList<String> expenseStatus = new ArrayList<>();
 		if(sahMainList != null && !sahMainList.isEmpty()){
 	    	for(ExpensesApproverHierarchy sah :sahMainList){
 	    		/*
@@ -240,7 +248,7 @@ public class ExpensesApprovalDaoImpl implements ExpensesApprovalDao{
 	    		}
 	    		
 	    		if(status!=null && status.equalsIgnoreCase("REJECTED")){
-	    		    sah.getExpenseId().setExpenseStatus(Submission_Status.REJECTED);
+	    			expenseStatus.add(Submission_Status.REJECTED.getValue());
             	 	sah.setExpenseApprovalStatus(Submission_ApprovalStatus.REJECTED);
             	 	sah.setExpenseStatus(Submission_Status.REJECTED);
             	 	sah.setActionPerformedBy(""+loginUser.getFullName());
@@ -250,15 +258,13 @@ public class ExpensesApprovalDaoImpl implements ExpensesApprovalDao{
             	    sah.setReopenRejectedReason(null);
             	 	
 	             }else if(status!=null && status.equalsIgnoreCase("APPROVED")){
+	            	 expenseStatus.add(Submission_Status.APPROVED.getValue());
 	            	 sah.setExpenseApprovalStatus(Submission_ApprovalStatus.APPROVED);
 	            	 sah.setExpenseStatus(Submission_Status.APPROVED);
 	            	 sah.setReopenReason(null);
 	            	 sah.setReopenedUser(null);
 	            	 sah.setReopenRejectedReason(null);
 	            	 sah.setActionPerformedBy(""+loginUser.getFullName());
-	            	 if(sah.getHierarchyId().getLevel()==(maxLevel)){
-	            		 sah.getExpenseId().setExpenseStatus(Submission_Status.APPROVED);
-	            	 }
 	             }
 	    		 try {
 	    			 updateSubmissionApproverHierarchy(sah);
@@ -276,6 +282,7 @@ public class ExpensesApprovalDaoImpl implements ExpensesApprovalDao{
                 	if(approversList != null && !approversList.isEmpty()){
                 		for(ExpensesApproverHierarchy approver  :  approversList){
                 			 if(status!=null && status.equalsIgnoreCase("REJECTED")){
+                			    expenseStatus.add(Submission_Status.APPROVED.getValue());
                 				approver.getExpenseId().setExpenseStatus(Submission_Status.REJECTED);
                 				approver.setExpenseApprovalStatus(Submission_ApprovalStatus.REJECTED);
                 				approver.setExpenseStatus(Submission_Status.REJECTED);
@@ -286,15 +293,35 @@ public class ExpensesApprovalDaoImpl implements ExpensesApprovalDao{
                 				approver.setReopenRejectedReason("");
                         	  	
             	              }
-                			 else if(sah.getHierarchyId().getLevel()==(maxLevel) && (status!=null && status.equalsIgnoreCase("APPROVED"))){
-                				         approver.getExpenseId().setExpenseStatus(Submission_Status.APPROVED);
-		            	            	 approver.setExpenseApprovalStatus(Submission_ApprovalStatus.APPROVED);
-		            	            	 approver.setExpenseStatus(Submission_Status.APPROVED);
-		            	            	 approver.setActionPerformedBy(" "+loginUser.getFullName());
-		            	            	 approver.setReopenReason("");
-		                 				 approver.setReopenedUser(null);
-		                 				 approver.setReopenRejectedReason("");
-	                		  }
+                			 else if(status!=null && status.equalsIgnoreCase("APPROVED")){
+                				 if(approver.getHierarchyId().getProjectClientsId() != null && 
+                					approver.getHierarchyId().getProjectClientsId().getOrgLocationsId() != null && 
+                				    approver.getHierarchyId().getProjectClientsId().getOrgLocationsId().getOrg() != null && 
+                				     approver.getHierarchyId().getProjectClientsId().getOrgLocationsId().getOrg().getOrgType().equals(Constants.GUEST)) {
+                					     expenseStatus.add(Submission_Status.APPROVED.getValue());
+                					     approver.getExpenseId().setExpenseStatus(Submission_Status.APPROVED);
+    	            				 	 approver.setExpenseApprovalStatus(Submission_ApprovalStatus.APPROVED);
+    	            	            	 approver.setExpenseStatus(Submission_Status.APPROVED);
+    	            	            	 approver.setActionPerformedBy(" "+loginUser.getFullName());
+    	            	            	 approver.setReopenReason("");
+    	                 				 approver.setReopenedUser(null);
+    	                 				 approver.setReopenRejectedReason("");
+                				 }
+                				 else if((approver.getHierarchyId().getProjectClientsId().getLevel() >=  sah.getHierarchyId().getProjectClientsId().getLevel())
+                					     || (approver.getHierarchyId().getProjectClientsId().getLevel() ==  sah.getHierarchyId().getProjectClientsId().getLevel() && sah.getHierarchyId().getLevel()==(maxLevel))){
+                					      expenseStatus.add(Submission_Status.APPROVED.getValue());
+                					     approver.getExpenseId().setExpenseStatus(Submission_Status.APPROVED);
+                					     approver.setExpenseApprovalStatus(Submission_ApprovalStatus.APPROVED);
+    	            	            	 approver.setExpenseStatus(Submission_Status.APPROVED);
+    	            	            	 approver.setActionPerformedBy(" "+loginUser.getFullName());
+    	            	            	 approver.setReopenReason("");
+    	                 				 approver.setReopenedUser(null);
+    	                 				 approver.setReopenRejectedReason("");
+                    		     }
+                				 else{
+                					 expenseStatus.add(Submission_Status.SUBMITTED.getValue());
+                				 }
+                			 }
                 	        try {
                 	        	updateSubmissionApproverHierarchy(approver);
              				} catch (Exception e) {
@@ -303,6 +330,15 @@ public class ExpensesApprovalDaoImpl implements ExpensesApprovalDao{
                 	}
 	    	}
 	    }
+		Expenses expenses = expensesDao.getExpenseById(expenseId);
+		if(expenseStatus.contains(Submission_Status.REJECTED.getValue())){
+			expenses.setExpenseStatus(Submission_Status.REJECTED);
+		}else if(expenseStatus.contains(Submission_Status.SUBMITTED.getValue())){
+			expenses.setExpenseStatus(Submission_Status.SUBMITTED);
+		}else{
+			expenses.setExpenseStatus(Submission_Status.APPROVED);
+		}
+		addExpensesDao.storeAddExpensesData(expenses);
 		return maxLevel;
 		
 	}
@@ -440,7 +476,7 @@ public class ExpensesApprovalDaoImpl implements ExpensesApprovalDao{
 	
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public ExpensesApproverHierarchy getExpensesApproverHierarchyByApproverUserIdAndExpenseId(Long approverUserId,Long expenseId) throws Exception {
+	public ExpensesApproverHierarchy getExpensesApproverHierarchyByApproverUserIdAndExpenseId(Long approverUserId,Long expenseId,Long locationsId) throws Exception {
 			
 		Session session = this.sessionFactory.getCurrentSession();
 		
@@ -453,17 +489,18 @@ public class ExpensesApprovalDaoImpl implements ExpensesApprovalDao{
 				           /*
 						   *  logged in user as approver in project_approver_hierarchy (Either Admins/project_managers/team leads ...etc)
 						   */
-					        + "    hierarchy.approverUserId.id = :approverUserId  "
+					        + "    (hierarchy.approverUserId.id = :approverUserId)  "
 					        /*
 							 *  logged in user as admin but not in project_approver_hierarchy(hint:logged in user is admin but not assigned to project as approver)
 							 */
-					          + " OR ( :approverUserId NOT IN( select subsah.hierarchyId.approverUserId.id from ExpensesApproverHierarchy subsah where subsah.expenseId.id = :expenseId and subsah.expenseApprovalStatus != 'APPROVED' and subsah.expenseId.id = :expenseId ) "
+					          + " OR ( :userId NOT IN( select subsah.hierarchyId.approverUserId.id from ExpensesApproverHierarchy subsah where subsah.expenseId.id = :expenseId and subsah.hierarchyId.projectClientsId.orgLocationsId.id = :locationsId) "
 					        + " and "+ Constants.loginUserAsAdminWithMaxHeirarchyLevel + ")"
 				            + ") ";
 		@SuppressWarnings("unchecked")
 		List<ExpensesApproverHierarchy> sahMainList = session.createQuery(query)
 																	  .setLong("expenseId", expenseId)	
 																	  .setLong("approverUserId",approverUserId)
+																	  .setLong("locationsId",locationsId)
 																	  .setLong("userId",approverUserId)
 				                                                      .list();
 		

@@ -403,7 +403,7 @@ public class UserRestController {
 			/*List<User> userList = userService.getUsersByUserRolesAndOrgLocationIdAndNoCurrentUser(currentApproverId,
 					orgLocations.getId());*/
 			
-			List<User> userList = userService.getTabAccessOwnersByOrgLocationIdAndTabIdAndNoCurrentUser(currentApproverId,orgLocations.getId(),Long.valueOf(Constants.TAB_TIMESHEET_APPROVAL));
+			List<User> userList = userService.getTabAccessOwnersByOrgLocationIdAndTabIdAndNoCurrentUser(currentApproverId,orgLocations.getId(),Long.valueOf(Constants.TAB_PROJECTS));
 			
 			
 			resultJson = toJSON(userList);
@@ -485,6 +485,9 @@ public class UserRestController {
 	    			  if(null != employee){
 	    				  userService.saveOrUpdateUserElkDocument(userRole,employee,user.getUserCode());
 	    			  }
+	    			  
+	    			  userRole.setIsMailSent(Status.Y);
+	    			  userRoleService.addUserRole(userRole);
 	 			  }
 	 		}
 		
@@ -503,9 +506,9 @@ public class UserRestController {
 		 @RequestMapping(value = "/getProjectDetailsById", method = RequestMethod.POST)
 		 @ResponseBody String getProjectDetailsById(HttpServletRequest request,
 					@RequestParam(value = "userId", required = false) Long userId,
-					@RequestParam(value = "filterValue", required = false) String filterValue) throws Exception {
+					@RequestParam(value = "filterValue", required = false) String filterValue,@RequestParam(value = "orgLocationId", required = false) Long orgLocationId) throws Exception {
 
-				List<ProjectMembers> allProjectsList = projectMembersService.getAllProjectsByUserIdAndStatus(userId, filterValue);
+				List<ProjectMembers> allProjectsList = projectMembersService.getAllProjectsByUserIdAndStatus(userId, filterValue,orgLocationId);
 				return toJSON(allProjectsList);
 
 			}

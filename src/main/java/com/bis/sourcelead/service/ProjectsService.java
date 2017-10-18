@@ -65,8 +65,6 @@ public interface ProjectsService {
 	    List<Long> getProjectIdsByOrgLocationsId(Long orgLocationsId) throws Exception;   
 	
 		Projects getProjectDetailsUpdateByProjectId(Long projectId,User user,JSONObject jsonObj) throws Exception ;
-		
-		List<Projects> getProjectBasedClientsByOrgLocationsIdAndApproverUserId(Long orgLocationsId, Long userId) throws Exception;
 
 		Projects getProjectByIdAndLoginOrgId(Long projectId,Long orgLocationId) throws Exception;
 	
@@ -100,7 +98,7 @@ public interface ProjectsService {
 		
 		Integer getProjectApproversCountByUserIdAndOrgLocationId(Long userId,Long orgLocationId)throws Exception;
 		
-		void tereminateAsProjectApprover(JSONObject jsonObj,User user,Long userId,OrgLocations orgLocations) throws Exception;
+		void tereminateAsProjectApprover(Long approverUser,User user,Long userId,OrgLocations orgLocations) throws Exception;
 		
 		void saveOrUpdateProjectElkDocument(Projects projects) throws Exception;
 		
@@ -110,7 +108,7 @@ public interface ProjectsService {
 		
 		Boolean validateTasksName(String taskname, Long projectId) throws Exception;
 		
-		ProjectMembers getProjectEmployeeListByProjectIdAndStatus(Long projectId,String status,OrgLocations loginOrgLocation) throws Exception ;
+		List<ProjectMembers> getProjectEmployeeListByProjectIdAndStatus(Long projectId,String status,OrgLocations loginOrgLocation) throws Exception ;
 
 		List<Projects> getClientProjectsByOrgRelationId(Long orgRelationId, Long orgLocationId)throws Exception ;
 

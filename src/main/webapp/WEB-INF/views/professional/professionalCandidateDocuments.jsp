@@ -120,7 +120,7 @@ function candDocumentsList(candidateId){
 	    	             	 }
 	                    	 
 	                    	 if(opt.fileName != null && opt.fileName != '' && opt.fileName != 'undefined'){
-	                    	 result  = result + ' <td><div class="tbldata-dotdot-me widAu" title="'+opt.fileName+'"><a class="fa fa-eye" onClick="viewFile(\''+opt.fileURL+'\',\''+opt.fileName+'\',\''+opt.fileContentType+'\');"></a><a class="glyphicon glyphicon-download-alt" target="_blank" href=\"'+opt.fileURL+'\" title="'+opt.fileName+'">&nbsp;&nbsp;&nbsp;'+opt.fileName+'</a></div></td>';
+	                    	 result  = result + ' <td><div> <span title="'+opt.fileName+'">'+opt.fileName+'</span><a class="fa fa-eye" onClick="viewFile(\''+opt.fileURL+'\',\''+opt.fileName+'\',\''+opt.fileContentType+'\');" title="View"></a><a class="glyphicon glyphicon-download-alt" target="_blank" href=\"'+opt.fileURL+'\" title="Download"></a></div></td>';
 	                    	 }else{
 	                    		 result  = result + ' <td><div><span>----</span></div></td>';
 	                    	 }
@@ -305,15 +305,7 @@ function addDocument(candidateId, documentUUID) {
 	   }; 
 	    
 	    /* upload file script for size validation 2MB*/
-	    var selectedFile = document.getElementById("uploadBtn");
-	    selectedFile.addEventListener("change", function() {
-	      var docSize = this.files[0].size;
-	      $("#uploadFileGroup").find('p.jquery_form_error_message').remove();
-	      if(docSize > 2097152){
-	    	  document.getElementById("uploadFile").value = '';
-	    	  $("#uploadFileGroup").append("<p class='jquery_form_error_message'>Limit is exceeded than 2MB </p>");
-	      }
-	    });
+	    
 	 <%-- Document Type Autocomplete Scripts Starts Here --%>
 	 var config = {
 			  '.chosen-select'           : {},
@@ -417,7 +409,10 @@ function getDocumentType(documentType){
 							$("#popUpDiv").removeClass("edit-details-active");
 	            			$("#selector6").removeAttr("style");
 	            			$("#selector6").css({ display: "block" });
-            				$("#docMsgDiv").html("Success!! New Candidate Document added");
+	            			if(documentUUID != null && documentUUID !="" && documentUUID !="undefined")
+            				$("#docMsgDiv").html("Document updated");
+	            			else
+	            			$("#docMsgDiv").html("Success!! New Document added");
 	             			candDocumentsList(candidateId);
 					 		docMsgFadein();
 	            		 

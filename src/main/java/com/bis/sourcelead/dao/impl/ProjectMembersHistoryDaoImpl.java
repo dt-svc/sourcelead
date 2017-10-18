@@ -20,8 +20,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.ProjectMembersHistoryDao;
-import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.ProjectMembersHistory;
+import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 
 @Repository
@@ -206,16 +206,18 @@ public class ProjectMembersHistoryDaoImpl implements ProjectMembersHistoryDao {
 	public HashMap<String, Date> getProjectMembersStartDateAndEndDateByProjectMemberId(Long projectMemberId) throws Exception {
 		logger.debug("In ProjectMembersHistory getProjectMembersStartDateAndEndDateByProjectMemberId method");
         Session session = this.sessionFactory.getCurrentSession();
-        Query projectMembersHistoryListQuery= session.createQuery("from ProjectMembersHistory pmh left join fetch pmh.projectMemberId where pmh.projectMemberId.id = :projectMemberId");
+        Query projectMembersHistoryListQuery= session.createQuery("from ProjectMembersHistory pmh left join fetch pmh.projectMemberId pm left join fetch pm.projects where pmh.projectMemberId.id = :projectMemberId");
 		@SuppressWarnings("unchecked")
 		List<ProjectMembersHistory> projectMembersHistoryList= projectMembersHistoryListQuery.setLong("projectMemberId", projectMemberId).setCacheable(true).list();
 		HashMap<String,Date> dateList = new HashMap<String,Date>();
 		Date startDate = null; 
 		Date endDate  = null;
+		Projects projects  = null;
 		if(projectMembersHistoryList != null && !projectMembersHistoryList.isEmpty()){
 			int count = 1;
 			for(ProjectMembersHistory pmh :projectMembersHistoryList){
 				if(count == 1){
+					projects = pmh.getProjectMemberId().getProjects();
 					startDate = pmh.getProjectAssignedDate();
 				}
 				else{
@@ -227,6 +229,9 @@ public class ProjectMembersHistoryDaoImpl implements ProjectMembersHistoryDao {
 				count++;
 			}
 			dateList.put("STARTDATE", startDate);
+			if(endDate == null) {
+				endDate = projects.getEndDate();
+			}
 			dateList.put("ENDDATE", endDate);
 		}
 		return dateList;

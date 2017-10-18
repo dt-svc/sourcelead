@@ -24,6 +24,7 @@ import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.ProjectApproverHierarchy;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
 import com.bis.sourcelead.entity.User;
@@ -133,6 +134,12 @@ public class SubmissionApproverHierarchyServiceImpl implements SubmissionApprove
 	}
 	
 	@Override
+	public void updateSubmissionStatusByProjectIdMasterCandidateIdStartDateAndEndDate(Long projectId,Long masterCandidateId,Date startDate,Date endDate,String status) {
+		submissionApproverHierarchyDao.updateSubmissionStatusByProjectIdMasterCandidateIdStartDateAndEndDate(projectId, masterCandidateId,startDate, endDate, status);
+		
+	}
+	
+	@Override
 	public User updateSubmissionStatusByProjectMemberIdStartDateAndEndDateWithReOpenReason(Long projectMemberId,Date startDate,Date endDate,String reason, User loginUser, String type, String isSuperUser) throws Exception {
 		User reopendUser = submissionApproverHierarchyDao.updateSubmissionStatusByProjectMemberIdStartDateAndEndDateWithReOpenReason(projectMemberId, startDate, endDate,reason,loginUser,type,isSuperUser);
 		return reopendUser;
@@ -140,13 +147,13 @@ public class SubmissionApproverHierarchyServiceImpl implements SubmissionApprove
 	
 	@Override
 	public void sendReopenTimeSheetMail(Long projectMemberId,String reason, User loginUser, OrgLocations orgLocations, String timesheetFrequency, Float totalHours) throws Exception {
-		
-			OrgLocations ol = orgLocationsDao.getOrgLocations(orgLocations.getId());
-			 if(null != ol && null != ol.getUser()){
+		   ProjectMembers clientProjectMember = projectMembersDao.getClientProjectMemberByProjectMemberId(projectMemberId);
+		   ProjectApproverHierarchy pah =  projectApproverHierarchyDao.getApproverUsersByProjectIdAndProjectClientId(clientProjectMember.getProjects().getId(), clientProjectMember.getProjectClientsId().getId());
+			 if(null != pah && null != pah.getApproverUserId()){
 				 EmailMessage emailMessage = new EmailMessage();
-				 emailMessage.setFirstName(ol.getUser().getFirstName());
-				 emailMessage.setLastName(ol.getUser().getLastName());
-				 emailMessage.setToEmail(ol.getUser().getEmail());
+				 emailMessage.setFirstName(pah.getApproverUserId().getFirstName());
+				 emailMessage.setLastName(pah.getApproverUserId().getLastName());
+				 emailMessage.setToEmail(pah.getApproverUserId().getEmail());
 				 
 				 emailMessage.setFromEmail(loginUser.getEmail());
 				 emailMessage.setCreatedBy(loginUser.getUserCode());
@@ -154,7 +161,7 @@ public class SubmissionApproverHierarchyServiceImpl implements SubmissionApprove
 				 
 				 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
 				 
-				 ProjectMembers projectMembers = projectMembersDao.getProjectMemberById(projectMemberId);
+				 ProjectMembers projectMembers = projectMembersDao.getConsultantUserProjectMemberByProjectMemberId(projectMemberId);
 				 
 				 String[] frequency = timesheetFrequency.split("To");
 			 	 String weekStartDate = frequency[0].trim();
@@ -162,7 +169,7 @@ public class SubmissionApproverHierarchyServiceImpl implements SubmissionApprove
 				 
 				//setting the class filed values
 				 Map<String, String> globalVarsMap = new HashMap<String, String>();
-				 globalVarsMap.put("superUserName",ol.getUser().getFullName());
+				 globalVarsMap.put("superUserName",pah.getApproverUserId().getFullName());
 				 //globalVarsMap.put("employeeName",projectMembers.getEmployee().getUser().getFullName());
 				 globalVarsMap.put("managerName",loginUser.getFullName());
 				// globalVarsMap.put("projectName", projectMembers.getProjects().getProjectName());
@@ -171,6 +178,10 @@ public class SubmissionApproverHierarchyServiceImpl implements SubmissionApprove
 				 globalVarsMap.put("frequencyPeriod",emailMsgBuilder.append(weekStartDate).append(" TO ").append(weekEndDate).toString());
 				 globalVarsMap.put("totalHours",totalHours.toString());
 				 globalVarsMap.put("reason",reason);
+				 
+				 
+				 
+				 
 				 
 				 if(projectMembers.getEmployee().getEmployeeId() !=null && !"".equalsIgnoreCase(projectMembers.getEmployee().getEmployeeId())){
 					 
@@ -195,11 +206,11 @@ public class SubmissionApproverHierarchyServiceImpl implements SubmissionApprove
 				 
 				 StringBuilder acceptBuilder = new StringBuilder();
 				 StringBuilder rejectBuilder = new StringBuilder();
-				 globalVarsMap.put("acceptURL",acceptBuilder.append("<a href='").append(sourceleadUrl).append("/acceptOrRejectReopenTimeSheet?type=accept&projectMemberId=").append(projectMemberId).append("&userId=").append(ol.getUser().getId()).append("&timesheetFrequency=").append(timesheetFrequency).append("'style='text-decoration:none;float:left; margin-left:55px;'><div style=' width:220px; border-radius:30px; background-color:#5cb85c; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Accept</div></a>").toString());
-				 globalVarsMap.put("rejectURL",rejectBuilder.append("<a href='").append(sourceleadUrl).append("/acceptOrRejectReopenTimeSheet?type=reject&projectMemberId=").append(projectMemberId).append("&userId=").append(ol.getUser().getId()).append("&timesheetFrequency=").append(timesheetFrequency).append("'style='text-decoration:none;float:left;margin-left:55px;'><div style=' width:220px; border-radius:30px; background-color:#e74c51; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Reject</div></a>").toString());
+				 globalVarsMap.put("acceptURL",acceptBuilder.append("<a href='").append(sourceleadUrl).append("/acceptOrRejectReopenTimeSheet?type=accept&projectMemberId=").append(projectMemberId).append("&userId=").append(pah.getApproverUserId().getId()).append("&timesheetFrequency=").append(timesheetFrequency).append("'style='text-decoration:none; display:inline-block; margin-left:10px; margin-top:20px;'><div style=' width:170px; border-radius:30px; background-color:#5cb85c; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Accept</div></a>").toString());
+				 globalVarsMap.put("rejectURL",rejectBuilder.append("<a href='").append(sourceleadUrl).append("/acceptOrRejectReopenTimeSheet?type=reject&projectMemberId=").append(projectMemberId).append("&userId=").append(pah.getApproverUserId().getId()).append("&timesheetFrequency=").append(timesheetFrequency).append("'style='text-decoration:none; display:inline-block; margin-left:15px; margin-top:20px;'><div style=' width:170px; border-radius:30px; background-color:#e74c51; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Reject</div></a>").toString());
 				 StringBuilder stringBuildforLink = new StringBuilder();
 				 
-				globalVarsMap.put("loginLink",stringBuildforLink.append("<a href='").append(sourceleadUrl).append("/").append( "'style='text-decoration:none;float:left;margin-left:55px;'><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
+				globalVarsMap.put("loginLink",stringBuildforLink.append("<a href='").append(sourceleadUrl).append("/").append( "'style='text-decoration:none; display:inline-block; margin-left:15px; margin-top:20px;'><div style=' width:170px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
 				 //setting the Recipient information
 				 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 				 
@@ -225,7 +236,7 @@ public class SubmissionApproverHierarchyServiceImpl implements SubmissionApprove
 				String notificationBody = emailScenerioUtil.buildBody(notificationScenario.getBody(),globalVarsMap);
 				notificationScenario.setBody(notificationBody);
 				String actionLink = "";
-				emailScenerioUtil.sendNotification(actionLink, loginUser, ol.getUser(), orgLocations, notificationScenario);
+				emailScenerioUtil.sendNotification(actionLink, loginUser, pah.getApproverUserId(), orgLocations, notificationScenario);
 			 }
 	}
 	
@@ -246,7 +257,7 @@ public class SubmissionApproverHierarchyServiceImpl implements SubmissionApprove
 				 
 				 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
 				 
-				 ProjectMembers projectMembers = projectMembersDao.getProjectMemberById(projectMemberId);
+				 ProjectMembers projectMembers = projectMembersDao.getConsultantUserProjectMemberByProjectMemberId(projectMemberId);
 				 
 				//setting the class filed values
 				 Map<String, String> globalVarsMap = new HashMap<String, String>();
@@ -328,6 +339,12 @@ public class SubmissionApproverHierarchyServiceImpl implements SubmissionApprove
 		return submissionApproverHierarchyDao.isThereAnyApproverChangesStatusForProjectMember(projectMemberId,frequencyStartDate,frequencyEndDate,approvalStatus);
 	}
 	
+	@Override
+    public SubmissionApproverHierarchy isThereAnyApproverChangesStatusForProjectAndMasterCandidateId(Long projectId,Long masterCandidateId,Date frequencyStartDate,Date frequencyEndDate,String approvalStatus) {
+		return submissionApproverHierarchyDao.isThereAnyApproverChangesStatusForProjectAndMasterCandidateId(projectId,masterCandidateId,frequencyStartDate,frequencyEndDate,approvalStatus);
+	}
+	
+	
 
 	@Override
 	public Float getTotalApprovedOrRejectedHoursByuserIdAndProjectIdForApprover(Long userId, Long projectId,
@@ -342,27 +359,25 @@ public class SubmissionApproverHierarchyServiceImpl implements SubmissionApprove
 	}
 
 	@Override
-	public Float getTotalApprovedOrRejectedHoursByuserIdAndProjectIdForEmployee(Long userId, Long projectId,
+	public Float getTotalApprovedOrRejectedHoursByMasterCandidateIdAndProjectIdForEmployee(Long masterCandidateId, Long projectId,
 			String approvalStatus) {
-		return submissionApproverHierarchyDao.getTotalApprovedOrRejectedHoursByuserIdAndProjectIdForEmployee(userId, projectId, approvalStatus);
+		return submissionApproverHierarchyDao.getTotalApprovedOrRejectedHoursByMasterCandidateIdAndProjectIdForEmployee(masterCandidateId, projectId, approvalStatus);
 	}
 
 	@Override
-	public Float getTotalDraftAndSubmittedHoursByuserIdAndProjectIdForEmployee(Long userId, Long projectId,
+	public Float getTotalDraftAndSubmittedHoursByMasterCandidateIdAndProjectIdForEmployee(Long masterCandidateId, Long projectId,
 			String submissionStatus) {
-		return submissionApproverHierarchyDao.getTotalDraftAndSubmittedHoursByuserIdAndProjectIdForEmployee(userId, projectId, submissionStatus);
+		return submissionApproverHierarchyDao.getTotalDraftAndSubmittedHoursByMasterCandidateIdAndProjectIdForEmployee(masterCandidateId, projectId, submissionStatus);
 	}
 
 	@Override
-	public List<SubmissionApproverHierarchy> getTotalApprovedOrRejectedListByuserIdAndOrgLocationIdForEmployeeLogin(
-			Long userId, Long orgLocationId, String submissionStatus) {
-		return submissionApproverHierarchyDao.getTotalApprovedOrRejectedListByuserIdAndOrgLocationIdForEmployeeLogin(userId,orgLocationId,submissionStatus);
+	public List<SubmissionApproverHierarchy> getTotalApprovedOrRejectedListByMasterCandidateIdForEmployeeLogin(Long userId, String submissionStatus) {
+		return submissionApproverHierarchyDao.getTotalApprovedOrRejectedListByMasterCandidateIdForEmployeeLogin(userId,submissionStatus);
 	}
 
 	@Override
-	public List<SubmissionApproverHierarchy> getTotalDraftAndSubmittedListByuserIdAndOrgLocationIdForEmployeeLogin(
-			Long userId, Long orgLocationId, String submissionStatus) {
-		return submissionApproverHierarchyDao.getTotalDraftAndSubmittedListByuserIdAndOrgLocationIdForEmployeeLogin(userId,orgLocationId,submissionStatus);
+	public List<SubmissionApproverHierarchy> getTotalDraftAndSubmittedListByMasterCandidateIdForEmployeeLogin(Long userId, String submissionStatus) {
+		return submissionApproverHierarchyDao.getTotalDraftAndSubmittedListByMasterCandidateIdForEmployeeLogin(userId,submissionStatus);
 
 	}
 
@@ -446,13 +461,25 @@ public class SubmissionApproverHierarchyServiceImpl implements SubmissionApprove
 			Date frequencyStartDate, Date frequencyEndDate, Long projectMemberId) {
 		return submissionApproverHierarchyDao.getSubmissionApproverHierarchyForEmployeeByProjectMemberId(frequencyStartDate, frequencyEndDate, projectMemberId);
 	}
-
+	
 	@Override
+	public SubmissionApproverHierarchy getSubmissionApproverHierarchyForEmployeeByProjectIdAndMasterCandidateId(
+			Date frequencyStartDate, Date frequencyEndDate, Long projectId,Long masterCandidateId) {
+		return submissionApproverHierarchyDao.getSubmissionApproverHierarchyForEmployeeByProjectIdAndMasterCandidateId(frequencyStartDate, frequencyEndDate, projectId,masterCandidateId);
+	}
+	
+
+	/*@Override
 	public SubmissionApproverHierarchy getSubmissionApproverHierarchyByProjectMemberIdStartDateAndEndDateForApproverLogin (Long approverUserId,
 			Long projectMemberId, Date startDate, Date endDate) throws Exception{
 		return submissionApproverHierarchyDao.getSubmissionApproverHierarchyByProjectMemberIdStartDateAndEndDateForApproverLogin(approverUserId,projectMemberId, startDate, endDate);
+	}*/
+	
+	@Override
+	public SubmissionApproverHierarchy getSubmissionApproverHierarchyByMasterCandidateIdStartDateAndEndDateForApproverLogin(Long approverUserId,Long projectId,Long pmMasterCandidateId,Long locationsId,Date startDate, Date endDate) throws Exception
+	{
+		return submissionApproverHierarchyDao.getSubmissionApproverHierarchyByMasterCandidateIdStartDateAndEndDateForApproverLogin(approverUserId, projectId, pmMasterCandidateId, locationsId, startDate, endDate);
 	}
-
 	@Override
 	public void updateApprovalStatusByApproverForProjectMemberId(Long projectMemberId, Long approverUserId,
 			Date startDate, Date endDate, String status, String rejectedReason) throws Exception {

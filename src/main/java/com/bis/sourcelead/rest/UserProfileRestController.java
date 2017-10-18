@@ -36,6 +36,7 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.form.UserProfile;
+import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
@@ -71,6 +72,9 @@ public class UserProfileRestController {
 	@Autowired
 	CommonUtil commonUtil;
 	
+	@Autowired
+	OrgLocationService orgLocationService;
+	
 	@RequestMapping(value = "/saveUserProfileImage", method = RequestMethod.POST)
 	public String saveProfileImage(AddUserProfileDTO addUserProfileDTO,	HttpServletRequest request) throws Exception{
 		addUserProfileDTO.setStaticPath(staticPath);
@@ -80,15 +84,13 @@ public class UserProfileRestController {
 		return "home";
 	}
 
-	@RequestMapping(value = "/saveUserProfile", method = RequestMethod.POST)
-	public String saveUserProfile(AddUserProfileDTO addUserProfileDTO,
-			HttpServletRequest request) throws Exception {
-
-		
+	@RequestMapping(value = {"/saveUserProfile","/rest/saveUserProfile"}, method = RequestMethod.POST)
+	public String saveUserProfile(AddUserProfileDTO addUserProfileDTO,HttpServletRequest request) throws Exception {
 		addUserProfileDTO.setStaticPath(staticPath);
-		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		User user = userService.getUserById(Long.parseLong(addUserProfileDTO.getUserId()));
+		OrgLocations orgLocations = orgLocationService.getOrgLocations(Long.parseLong(addUserProfileDTO.getOrgLocationId()));
 		UserRole userRoleElk = null;
+		String isUpdated = "failure";
 		try {
 			user = userService.saveUserProfile(addUserProfileDTO, user);
 			UserRole userRole = userRoleService.getUserDetailsByUserIdAndLocationId(user.getId(), orgLocations.getId());
@@ -120,16 +122,31 @@ public class UserProfileRestController {
 			logger.info("--exception--"+e);
 			
 		}
-		return "home";
+		if(user !=null) {
+			isUpdated = "success";
+		}
+		return isUpdated;
 
 	}
 	
 
-	@RequestMapping(value = "/passwordSettings", method = RequestMethod.POST)
+	@RequestMapping(value = { "/passwordSettings", "/rest/passwordSettings" }, method = RequestMethod.POST)
 	public String passwordSettings(PasswordSettingsDTO passwordSettingsDTO,
 			HttpServletRequest request) throws Exception {
-		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		
+		 User user = null;
+		 OrgLocations orgLocations = null;
+		 
+		 user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		 orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		
+		if(user == null) {
+			user = userService.getUserById(passwordSettingsDTO.getUserId());
+		}
+		
+		if(orgLocations == null) {
+			orgLocations = orgLocationService.getOrgLocations(passwordSettingsDTO.getOrgLocationId());
+		}
 
 		if (sourceleadPasswordEncoder.matches(passwordSettingsDTO.getCurrentPassword(), user.getPassword())) {
 			user.setPassword(sourceleadPasswordEncoder.encode(passwordSettingsDTO.getPassword()));

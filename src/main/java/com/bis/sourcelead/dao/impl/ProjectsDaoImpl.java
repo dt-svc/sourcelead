@@ -709,36 +709,17 @@ public class ProjectsDaoImpl implements ProjectsDao{
 		public List<Projects> getProjectsByOrgLocationsIdAndApproverUserId(Long orgLocationsId, Long userId) {
 			logger.debug("In ProjectsDaoImpl class getProjectByOrgLocationsId method");
 			Session session = this.sessionFactory.getCurrentSession();
-			String query= " from Projects projects where projects.orgLocationsId.id = :orgLocationsId and projects.id IN "
+			String query= " from Projects projects where  projects.id IN "
 					   +"("
 						 + " select hierarchy.projectId.id from ProjectApproverHierarchy hierarchy  where  "
-						 + "  hierarchy.approverUserId.id = :userId "
+						 + " (hierarchy.projectClientsId.orgLocationsId.id = :orgLocationsId and hierarchy.approverUserId.id = :userId "
 						 + " OR "
-						 + Constants.loginUserAsAdminForProjects
-					  + " )";
+						 + " (:userId IN (select userRole.user.id from UserRole userRole where userRole.roles.roleName = 'ROLE_ADMIN' and userRole.orgLocations.id = hierarchy.projectClientsId.orgLocationsId.id) )"
+					  + " ))";
 			List<Projects> projectsList =  session.createQuery(query).setLong("orgLocationsId", orgLocationsId).setLong("userId", userId).setCacheable(true).list();
 			return projectsList;
 		}
 
-		
-		
-		@SuppressWarnings("unchecked")
-		@Override
-		@Transactional(rollbackFor = { Exception.class })
-		public List<Projects> getProjectBasedClientsByOrgLocationsIdAndApproverUserId(Long orgLocationsId, Long userId) {
-			logger.debug("In ProjectsDaoImpl class getProjectByOrgLocationsId method");
-			Session session = this.sessionFactory.getCurrentSession();   
-			String query= " from Projects projects left join fetch projects.orgRelationId orgRelation left join fetch orgRelation.responderLocationId responder left join fetch responder.org left join fetch orgRelation.locationId initiator left join fetch initiator.org  "
-					+ " where projects.orgRelationId IS NOT NULL and projects.orgLocationsId = :orgLocationsId and projects.id IN "
-					   +"("
-						 + " select hierarchy.projectId.id from ProjectApproverHierarchy hierarchy  where  "
-						 + "  hierarchy.approverUserId.id = :userId "
-						 + " OR "
-						 + Constants.loginUserAsAdminForProjects
-					  + " ) group by projects.orgRelationId";
-			List<Projects> projectsList =  session.createQuery(query).setLong("orgLocationsId", orgLocationsId).setLong("userId", userId).setCacheable(true).list();
-			return projectsList;
-		}
 		
 		
 		@Override
@@ -766,7 +747,7 @@ public class ProjectsDaoImpl implements ProjectsDao{
 			Session session = this.sessionFactory.getCurrentSession();
 			
 			String query = "select pj from  Projects pj where pj.id IN (select pm.projects.id from ProjectMembers pm  "
-					+ "where pm.employee.id IN (select emp.id from Employees emp where emp.user.id = :userId and pm.status <> 'IN-ACTIVE'  and  emp.orgLocations.id = :orgLocationId ) and pm.status = '1')" ;
+					+ "where pm.projectMemberCandidteId.id IN (select cand.id from Candidate cand where cand.consultantUser.id = :userId and cand.orgLocationId.id = :orgLocationId )  and pm.status = '1') and pj.projectMode <> 'Draft' " ;
 			List<Projects> projectsList =session.createQuery(query.toString()).setLong("userId", userId)
 					.setLong("orgLocationId", orgLocationId).setCacheable(true).list(); 
 			      
@@ -880,8 +861,8 @@ public void saveAllProjects(List<Projects> projectsList) throws Exception {
 public Integer getProjectApproversCountByUserIdAndOrgLocationId(Long userId, Long orgLocationId) throws Exception {
 	logger.debug("getProjectApproversCountByUserIdAndOrgLocationId start");
 	Session session = this.sessionFactory.getCurrentSession();
-		String query = "select count(projects.id) from Projects projects "
-				+ "where projects.id IN (select hierarchy.projectId.id from ProjectApproverHierarchy hierarchy where hierarchy.approverUserId.id = :userId) and projects.orgLocationsId.id = :orgLocationId ";
+		String query = "select count(pc.projectId.id) from ProjectClients pc "
+				+ "where pc.projectId.id IN (select hierarchy.projectId.id from ProjectApproverHierarchy hierarchy where hierarchy.approverUserId.id = :userId) and pc.orgLocationsId.id = :orgLocationId ";
 		
 		List<Long> projectsCount = session.createQuery(query.toString()).setLong("userId", userId).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
 		Integer count = 0;

@@ -31,6 +31,7 @@ import org.hibernate.annotations.NotFoundAction;
 import org.hibernate.annotations.Type;
 
 import com.bis.sourcelead.enums.Status;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "USER", catalog = "sourcelead")
@@ -59,6 +60,9 @@ public class User implements Serializable{
 	@Column(name = "MOBILE_PHONE")
 	private String mobilePhone;
 	
+    @Column(name = "EXTENSION_NUMBER")
+	private String extensionNumber;
+
 	@Column(name = "USER_STATE")
 	@Enumerated(EnumType.STRING)
 	private Status userState;
@@ -257,6 +261,7 @@ public class User implements Serializable{
 	}
 
 	@Transient
+	@JsonProperty
     private String fullName;
 	
 	public Long getId() {
@@ -305,6 +310,16 @@ public class User implements Serializable{
 
 	public void setMobilePhone(String mobilePhone) {
 		this.mobilePhone = mobilePhone;
+	}
+
+	public String getExtensionNumber()
+	{
+		return extensionNumber;
+	}
+
+	public void setExtensionNumber(String extensionNumber)
+	{
+		this.extensionNumber = extensionNumber;
 	}
 
 	public Status getUserState() {

@@ -553,7 +553,11 @@ public class CandidateServiceImpl implements CandidateService {
 		 * Saving Candidate DB data as ElasticSearch Documents
 		 */
 		saveOrUpdateCandidateElkDocument(savedCandidate);
-		return null;
+		// resume details update in elk
+		if(candidateDto.getFileInfo()!= null && !candidateDto.getFileInfo().isEmpty()){
+		candidateResumesService.saveOrUpdateCandidateElkDocumentWithResumeDetails(savedCandidate);
+		}
+		return savedCandidate;
 	}
 
 	private void inviteCandidateToSourceLead(User loginUser, Candidate candidate, OrgLocations orgLocations) throws Exception

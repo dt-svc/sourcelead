@@ -24,4 +24,6 @@ public interface VendorOnboardTemplateDocumentsService {
 	void storeVendorOnboardDocuments(OnBoardingTemplateDTO onBoardingTemplateDTO, User loginUser) throws Exception;
 	
 	VendorOnboardingTemplateDocuments getVendorOnBoardingTemplateDocumentsById(Long id) throws Exception;
+	
+	List<VendorOnboardingTemplateDocuments> getVendorOnBoardTemplateDocumentsByTemplateId(Long templateId) throws Exception;
 }

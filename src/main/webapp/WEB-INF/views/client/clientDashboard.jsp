@@ -352,7 +352,7 @@ overflow-x: auto;
 
 
        <div class="side_mask"><div class="proj_close"></div></div>
-		<div class="clients_side_wrap">
+		<div class="clients_side_wrap clientspagedrop">
 			<div class="clients_side_wrap_inn">
 				<h1 id="clientNameDiv"></h1>
 				<div class="proj_close">
@@ -1948,7 +1948,7 @@ function saveReason1(spocId, orgRelationID){
 	var sourceleadUrl = '${sourceleadUrl}';
 	var reason = document.getElementById("reasonForSpoc").value;
 	var reason1 = document.getElementById("reasonForSpoc").value;
-	var userId = '${SourceLeadWeb_user.id}';
+	var userId = '${SourceLeadWeb_userId}';
 	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	 reason = reason.replace(/\s/g, "")
 	if(reason.match(/^[^\s-](.*)*$/) != null){

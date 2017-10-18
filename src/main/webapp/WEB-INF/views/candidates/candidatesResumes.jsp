@@ -202,9 +202,6 @@ function addResume(candidateId) {
 	 $(".addUser-org, .assign-org, .collapse-div-adduser, .collapse-div, .edit-details").click(function(e){
 		 e.stopPropagation();
 	 });
-	/*  $('html').click(function(){
-		$(".edit-details").removeClass("edit-details-active");
-	   }); */	
 	 
 	 	/* upload file script to show selected file name*/
 	    document.getElementById("uploadBtn").onchange = function () {
@@ -213,18 +210,6 @@ function addResume(candidateId) {
 	    	$('#uploadFile').val($(this).val().replace(/C:\\fakepath\\/i, ''))
 	  
 	   }; 
-	    
-	    /* upload file script for size validation 2MB*/
-	    var selectedFile = document.getElementById("uploadBtn");
-	    selectedFile.addEventListener("change", function() {
-	      var docSize = this.files[0].size;
-	      $("#uploadFileGroup").find('p.jquery_form_error_message').remove();
-	      if(docSize > 2097152){
-	    	  document.getElementById("uploadFile").value = '';
-	    	  $("#uploadFileGroup").append("<p class='jquery_form_error_message'>Limit is exceeded than 2MB </p>");
-	      }
-	    });
-	    
 }
 </script>
 	
@@ -348,17 +333,6 @@ function addResume(candidateId) {
 			success : function(data) {
 				if (data != null && data != 'undefined' && data != "" && data != '[]') {
 					var json = JSON.parse(data);
-        			 /* for (var i = 0; i < 1; i++) {
-                         var val= json[i];
-                         var opt = "";
-                         if(val.msg != null && val.msg != '' && val.msg != 'undefined'){
-                             opt  = opt + '<div class="success_pop" id="selector2" style="display: block;">';
-                             opt  = opt + '<i class="fa fa-check-circle"></i><span>'+val.msg+'</span>';
-                             opt  = opt + '</div>';
-                             }                                
-                                 $("#msgDiv3").empty();
-                                 $("#msgDiv3").append(opt);
-                         } */
 							result = result+'	      <table>';
 							result = result+'	        <tbody>';
 							result = result+'	          <tr>';

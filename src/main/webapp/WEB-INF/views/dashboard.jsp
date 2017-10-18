@@ -206,7 +206,7 @@ overflow-x: auto;
 				     <jsp:include page="expensesDashboardCounts.jsp"></jsp:include>
 			 </sec:authorize>  	
 			
-			 <%-- <jsp:include page="leaveManagement.jsp"></jsp:include> --%>
+			 <jsp:include page="leaveManagement.jsp"></jsp:include>
 		 </div>
 	    	<c:if test = "${SourceLeadWeb_ats == 'Y' || SourceLeadWeb_vms == 'Y'}">
 	    	
@@ -219,7 +219,7 @@ overflow-x: auto;
 					</sec:authorize>
 					
 					<!-- Don't delete this commented code. Functionality is in progress -->
-					<%-- <jsp:include page="resourceRequest.jsp"></jsp:include>  --%>
+					 <jsp:include page="resourceRequest.jsp"></jsp:include>  
 					
 					<jsp:include page="budgetRequest.jsp"></jsp:include>
 					

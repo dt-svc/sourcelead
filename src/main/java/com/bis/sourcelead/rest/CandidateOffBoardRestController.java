@@ -7,15 +7,16 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import javax.mail.internet.InternetAddress;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
-import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +36,9 @@ import com.bis.sourcelead.dto.OffboardTasksDTO;
 import com.bis.sourcelead.dto.OffboardingCandidateSetpsDTO;
 import com.bis.sourcelead.entity.CandidateOffBoarding;
 import com.bis.sourcelead.entity.CandidateOnBoarding;
+import com.bis.sourcelead.entity.EmailAttachment;
+import com.bis.sourcelead.entity.EmailMessage;
+import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.OffBoardingDocuments;
 import com.bis.sourcelead.entity.OffBoardingTemplate;
@@ -47,6 +51,7 @@ import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.OnboardStatus;
 import com.bis.sourcelead.service.CandidateOffBoardingService;
 import com.bis.sourcelead.service.CandidateOnBoardingService;
+import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.OffBoardingDocumentsService;
 import com.bis.sourcelead.service.OffBoardingTemplateService;
@@ -57,11 +62,10 @@ import com.bis.sourcelead.service.TaskService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.FileUploadUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
-
-import cucumber.deps.difflib.StringUtills;
 
 @RestController
 public class CandidateOffBoardRestController {
@@ -109,6 +113,11 @@ private static final Logger logger = LoggerFactory.getLogger(TimesheetRestContro
     
     @Autowired
     CandidateOnBoardingService candidateOnBoardingService;
+    
+    @Autowired
+    EmailScenarioService emailScenarioService;
+    @Autowired
+    EmailScenerioUtil emailScenerioUtil;
      
     protected static boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
@@ -1366,11 +1375,81 @@ private static final Logger logger = LoggerFactory.getLogger(TimesheetRestContro
 			 CandidateOffBoarding offboarding = candidateOffBoardingService.getCandidateOffBoardingByUserIdAndLocationId(user.getId(), loginOrgLocation.getId());
 			 offboarding.setOffboardSubmitted(Constants.YES);	
 			 candidateOffBoardingService.saveCandidateOffBoarding(offboarding);
-			 
+			 //mail for offboard candidates
+	         mailToOffboardCandidateReportingManager(offboarding,user,loginOrgLocation);
 			 return "success";
 			 
 		   }
-		 
+		 public void mailToOffboardCandidateReportingManager(CandidateOffBoarding candidateOffBoarding, User loginUser,OrgLocations orgLocations) throws Exception{
+		       // SimpleDateFormat dateFormat=orgLocations.getLocFullFormDateFormatter();
+			 User toUser = null;
+			 UserRole userRole=userRoleService.getUserByUserId(loginUser.getId());
+			 if(userRole.getReportingManager() != null && userRole.getReportingManager().getId() != null){
+			  toUser = userService.getUserById(userRole.getReportingManager().getId());
+			 }else{
+				  toUser = userService.getUserById(userRole.getOrgLocations().getUser().getId());
+			 }
+		        EmailMessage emailMessage = new EmailMessage();
+		         emailMessage.setFirstName(loginUser.getFirstName());
+		         emailMessage.setLastName(loginUser.getLastName());
+		         emailMessage.setToEmail(toUser.getEmail());
+		         emailMessage.setFromEmail(loginUser.getEmail());
+		         emailMessage.setCreatedBy(loginUser.getUserCode());
+		         StringBuilder msgBuild = new StringBuilder();
+		         emailMessage.setFromName(msgBuild.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
+		         emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
+		        //setting the class filed values
+		         Map<String, String> globalVarsMap = new HashMap<String, String>();
+		        
+		         globalVarsMap.put("loginUser", emailMessage.getFromName());
+
+		         StringBuilder name = new StringBuilder();
+		         if(candidateOffBoarding.getLastName() != null && candidateOffBoarding.getLastName() != "" && candidateOffBoarding.getLastName() != "undefined"){
+		        	  globalVarsMap.put("applicantName", name.append(toUser.getFirstName()).append(" ").append(toUser.getLastName()).toString());
+		        
+		         }
+		         else{
+		        	 globalVarsMap.put("applicantName", candidateOffBoarding.getFirstName());
+		         }
+		         globalVarsMap.put("companyName", orgLocations.getOrg().getOrgName());
+		        
+		         StringBuilder linkBuild = new StringBuilder();
+		         globalVarsMap.put("loginLink",linkBuild.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
+		        
+		                
+		        
+		         InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
+		        
+		         //getting the current EmailScenario by EmailScenario unique name and entity type
+		         EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.OFFBOARDINGPROCESSAPPLICANTTERMINATIONMAILTOREPORTINGMANAGER,Constants.ENTITY_TYPE_EMAIL);
+		         EmailScenario  notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.OFFBOARDINGPROCESSAPPLICANTTERMINATIONMAILTOREPORTINGMANAGER,Constants.ENTITY_TYPE_NOTIFICATION);
+
+		        
+		         //covert subject,body and signature
+		         String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
+		         String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
+		         String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
+		         String url = sourceleadUrl;
+		        
+		         String notificationbody = emailScenerioUtil.buildTempBody(notificationScenario.getBody(),globalVarsMap);
+		         notificationScenario.setBody(notificationbody);
+
+		        
+		        // OrgLocations vendorOrgLoc = requirement.getSpocId().getVendorLocationId();
+
+		        
+		         //construct HTML template using required data
+		         String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, orgLocations.getOrg(),orgLocations);
+		         emailMessage.setSubject(subject);
+		         emailMessage.setMessageBody(emailTemplate);
+		        
+		         //calling the sendEmail method of emailScenerioUtil
+		         emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),iAdressArray,new ArrayList<EmailAttachment>());
+		         String actionLink="";
+		       emailScenerioUtil.sendNotification(actionLink, loginUser, toUser, orgLocations, notificationScenario);
+
+
+		    }
 		 
 		 
 		 @RequestMapping(value = "/getOffboardCandidateTasksByOffboardUUID" , method = RequestMethod.GET)

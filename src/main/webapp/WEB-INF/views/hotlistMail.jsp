@@ -77,17 +77,15 @@ display: none;
                   </div>
                   
                    <div class="modal-body clearfix">
-                    <div class="form-horizontal custom-form">
-                      <div class="row">
-                        <div class="col-xs-12 col-md-4 col-lg-4 selectpicker100 select-field">
+                    <div class="col-xs-12 col-md-4 col-lg-4 selectpicker100 select-field paddingLeft mb10">
                           <select class="form-control" id="clientListType" onchange="listChange();">
                            <option value="listbyContact" selected>List by contact</option>
                             <option value="listbyClient">List by client</option>
                           </select>
-                        </div>
-                      </div>
                     </div>
-                    <div class="modal-body-custom mailerpopup mt25 clearfix filter-position">
+                    <div class="clearfix"></div>
+                    <!-- modal-body-custom mailerpopup filter-position --> 
+                    <div class="clearfix">
                      <div id="clientsList" class="datatable_filter"></div>
                     </div>
                   </div> 
@@ -126,7 +124,7 @@ display: none;
                     <h4 class="modal-title">Select Candidates / Associates</h4>
                   </div>
                   
-                  <div class="modal-body clearfix hotmailSelOut">
+                  <div class="modal-body clearfix">
 <!--                     <div class="form-horizontal custom-form">
                       <div class="row">
                         <div class="col-xs-12 col-md-4 col-lg-4 selectpicker100 select-field">
@@ -140,13 +138,13 @@ display: none;
                       </div>
                     </div> -->
                     
-                    <div class="modal-body-custom clearfix poMail">
-                        <div class="hotmailSel">
+                    <div class="clearfix">
+                        <div class="col-xs-12 col-sm-4 paddingLeft dropdown-select mb10">
                           <select class="form-control" id="candidatesListType" onchange="candidateListChange();">
                             <option value="consultants" selected>Associates</option>
                             <option value="candidates">Candidates</option>
                              <option value="openHotlist">Open Hotlist</option>
-                            <option value="hotlistConsultants">Hostlist Associates</option>
+                            <option value="hotlistConsultants">Hotlist Associates</option>
                           </select>
                         </div>                    
                      <div id="candidatesList" class="mailFil datatable_filter"></div>
@@ -270,7 +268,11 @@ $(function() {
 	function sendHotListCampaign() {
 		if ($('#hotlistCampaign_form').validate(false, validationSettings)){ 
 		nicEditors.findEditor('bodytext').saveContent();
-  		var formData = getFormData1("hotlistCampaign_form");
+  		
+		 var form = $('#hotlistCampaign_form')[0];
+  		 var formData = new FormData(form)
+	  		
+		
   		var toEmails =  $('#emailsList_chosen span').size();
   		var otherEmails =  $('#otherEmails_chosen span').size();
   		
@@ -281,13 +283,12 @@ $(function() {
   	    	alertMailerMsg();
   	    }
   	    else{
-	  	    	var bodytext = nicEditors.findEditor('bodytext').getContent();
-	  			if(bodytext.length < 60000){
 	  	    	
 	  	    	$("#mailLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	  			$.ajax({
 	  				type : "POST",
 	  	    	    data: formData,
+	  	    	    enctype: 'multipart/form-data',
 	  		        processData: false,
 	  		        contentType:false, 
 	  				url : sourceleadUrl+"/sendHotListCampaign?${_csrf.parameterName}=${_csrf.token}",
@@ -295,9 +296,7 @@ $(function() {
 	  						location.replace(sourceleadUrl+"/mailBox");
 	  				},
 	  			}); 
-	  	    }else{
-	  	    	alertTextboxMsg("Message body is too large. If you have more data, Plz go with attachment");
-	  	    }
+	  	    
   	    }
 		 return true
 		 
@@ -427,7 +426,7 @@ function getClientContacts(){
                		
 	                	   
                			    var result = '';
-	                		result = result +'     <div class="modal-bodyCustom mt40 clearfix popupFilter hdrAlign">'; 
+	                		result = result +'     <div class="modal-bodyCustom clearfix popupFilter hdrAlign">'; 
 	                	    result = result +'       <table id="example" class="table table-bordered table-striped  clearfix" cellspacing="0" width="100%" >';
 	                		result = result +'           <thead>';
 	                		result = result +'           <tr>';
@@ -470,10 +469,12 @@ function getClientContacts(){
 	                 	
 	                 	 result = result +'       </div>'; 
 	                 	 result = result +'   </div>'; 
-	                 	 result = result +'   <div class="modal-footer">';
+	                 	 result = result +'   <div class="clearfix">';
+	                 	result = result +'   <div class="pull-right mr">';
 	                 	 result = result +'     <button data-dismiss="modal" class="btn btn-primary" type="button" onClick="getEmails();">Assign</button>';
 	                 	 result = result +'     <button data-dismiss="modal" class="btn btn-default" type="button">Cancel</button>';
 	                 	 result = result +'   </div>'; 
+	                 	result = result +'   </div>';
 	                 	 $("#clientsList").empty(); 
 	                     $("#clientsList").append(result); 
 	                     pagination(); 
@@ -528,9 +529,9 @@ function getClientList(){
                		 else{
 	                	   
                			    var result = '';
-	                	    result = result +'<div class="modal-body clearfix">';
+	                	    result = result +'<div class="clearfix">';
 	                		result = result +'     </div>';
-	                		result = result +'     <div class="modal-bodyCustom mt40 clearfix popupFilter">'; 
+	                		result = result +'     <div class="clearfix">'; 
 	                	    result = result +'       <table id="example" class="table table-bordered table-striped  clearfix" cellspacing="0" width="100%" >';
 	                		result = result +'           <thead>';
 	                		result = result +'           <tr>';
@@ -579,10 +580,12 @@ function getClientList(){
 	                 	
 	                 	 result = result +'       </div>'; 
 	                 	 result = result +'   </div>'; 
-	                 	 result = result +'   <div class="modal-footer">';
+	                 	result = result +'   <div class="clearfix">';
+	                 	result = result +'   <div class="pull-right mr">';
 	                 	 result = result +'     <button data-dismiss="modal" class="btn btn-primary" type="button" onClick="getContactEmails();">Assign</button>';
 	                 	 result = result +'     <button data-dismiss="modal" class="btn btn-default" type="button">Cancel</button>';
 	                 	 result = result +'   </div>'; 
+	                 	result = result +'   </div>';
 	                 	 $("#clientsList").empty(); 
 	                     $("#clientsList").append(result); 
 	                     pagination(); 
@@ -635,7 +638,7 @@ function pagination(){
      		 "sZeroRecords": "", "sEmptyTable": ""
      	}
     });
-    $("#example").wrap("<div class='overflow_inherint'></div>");
+    $("#example").wrap("<div class='modal-body-custom mailerpopup modalAlign'></div>");
 }
 </script>
 
@@ -734,9 +737,11 @@ function getCandidates(candidatesListType){
 	                 	
 	                 	 result = result +'       </div>'; 
 	                 	 result = result +'   </div>'; 
-	                 	 result = result +'   <div class="modal-footer">';
+	                 	 result = result +'   <div class="clearfix">';
+	                 	 result = result +'   <div class="pull-right mr">';
 	                 	 result = result +'     <button data-dismiss="modal" class="btn btn-primary" type="button" onClick="getCheckedCandidates();">Assign</button>';
 	                 	 result = result +'     <button data-dismiss="modal" class="btn btn-default" type="button">Cancel</button>';
+	                 	 result = result +'   </div>'; 
 	                 	 result = result +'   </div>'; 
 	                 	 $("#candidatesList").empty(); 
 	                     $("#candidatesList").append(result); 
@@ -794,7 +799,8 @@ function candidatePagenation(){
      		"sSearch": "",
      		 "sZeroRecords": "", "sEmptyTable": ""
      	}
-    } );
+    });
+    $("#candidates").wrap("<div class='modal-body-custom mailerpopup modalAlign'></div>");
 }
 </script>
 

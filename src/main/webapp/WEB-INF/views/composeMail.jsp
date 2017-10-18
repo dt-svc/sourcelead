@@ -4,7 +4,6 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 
-<link href="resources/css/summernote.css?staticTime=${staticTime}" rel="stylesheet">
 <link rel="stylesheet" href="resources/css/bootstrap-multiselect.css?staticTime=${staticTime}" type="text/css">
 <link rel="stylesheet" href="resources/css/bootstrap3-wysihtml5.min.css?staticTime=${staticTime}" type="text/css">
 
@@ -16,6 +15,10 @@ display: none;
 
 .nicEdit-main {
 	overflow: auto !important;
+}
+
+.mt40{
+ margin-top: 50px !important;
 }
 </style>
 
@@ -58,7 +61,7 @@ display: none;
      <div id ="popUp"></div>
       <div id ="textBoxPopUp"></div>
       <div class="form-horizontal compose-mail col-md-10 col-md-offset-1">
-       <form:form id="email_form" name="email_form" content="text/html" >
+       <form:form id="email_form" name="email_form" >
         <div class="col-md-12 clearfix">
           <label class="col-md-2 control-label text-muted small">From</label>
           <div class="col-md-10">
@@ -69,7 +72,7 @@ display: none;
           <label class="col-md-2 control-label text-primary small">To</label>
           <div class="col-md-10 positionRelative disable-choosen-dropdown">
 
-          <select class="form-control"   field-name="To List" multiple data-placeholder="Enter Emails And Press Enter-Key Or Comma(,) Or Space To Add New Email" id="emailsList" name="Toemails" data-validation-optional="true" data-validation="validate_email"  field-name="Toemails" >
+          <select class="form-control" field-name="To List" multiple data-placeholder="Enter Emails And Press Enter-Key Or Comma(,) Or Space To Add New Email" id="emailsList" name="Toemails" data-validation-optional="true" data-validation="validate_email"  field-name="Toemails" >
             </select>
             <span class="select-multiple" data-target="#multiplemail" onclick="getUserList('All');" data-toggle="modal"><i class="fa fa-list-alt" title="Multiple Mail"></i></span> 
             <!-- Modal content Multiple mail -->
@@ -81,8 +84,8 @@ display: none;
                     <h4 class="modal-title">Select Mailer</h4>
                   </div>
                   
-                   <div class="modal-body mail-body clearfix">
-                    <div class="modal-body-custom mailerpopup mt25 clearfix filter-position">
+                  <div class="modal-body clearfix hotmailSelOut">
+                    <div class="clearfix">
                      <div id="userList" class="datatable_filter"></div>
                     </div>
                   </div> 
@@ -115,11 +118,9 @@ display: none;
         <div class="col-md-12 clearfix mb10 mt10">
           <div class="col-md-12">
             <div class="clearfix txt-area">
-              <textarea  id="bodytext" name="bodytext" class="form-control" rows="5" placeholder="Message" style="height: 250px; overflow: auto;">
+              <textarea id="bodytext" name="bodytext" class="form-control" rows="5" placeholder="Message" style="height: 250px">
                     
-			  </textarea> 
-			  
-			  
+			  </textarea>
             </div>
           </div>
         </div>
@@ -130,9 +131,9 @@ display: none;
           <div class="col-md-12 attachment">
             <div class="input-group">
               <label class="input-group-btn"> <b class="btn btn-primary"><i class="fa fa-paperclip"></i>
-                <input type="file" name="attachfile" style="display: none;" multiple id="attachfileBtn" class="upload">
+                <input type="file" name="attachfile" style="display: none;"  id="attachfileBtn" class="upload">
                 </b> </label>
-              <input type="text" class="form-control" readonly id="attachfile-mail" placeholder="Upload files ...">
+              <input type="text" class="form-control" readonly id="attachfile-mail" placeholder="Files are not selected...">
             </div>
           </div>
         </div>
@@ -162,7 +163,7 @@ display: none;
   <!-- <script type="text/javascript" src="resources/js/bootstrap-multiselect.js"></script>
   <script src="resources/js/bootstrap3-wysihtml5.all.min.js"></script>  -->
   
-  <!-- <script src="resources/js/nicEdit.js"></script> -->
+  <script src="resources/js/nicEdit.js"></script> 
   
   
    <script>
@@ -200,8 +201,6 @@ display: none;
 	 });
   </script> 
  
-
-<script src="resources/js/summernote.js"></script>
 <script>
 	$('#bodytext').summernote({
   toolbar: [
@@ -243,21 +242,24 @@ $(function(){
 	function sendEmails() {
 		if ($('#email_form').validate(false, validationSettings)){ 
 				var sourceleadUrl = '${sourceleadUrl}';
-		  		var formData = getFormData1("email_form");
-		  		var toEmails =  $('#emailsList_chosen span').size();
+				
+				nicEditors.findEditor('bodytext').saveContent();
+				
+				var form = $('#email_form')[0];
+		  		 var formData = new FormData(form)
+		  		
+		  		 var toEmails =  $('#emailsList_chosen span').size();
 		  		 
 		  		if(toEmails < 1){
 		   	    	alertMailerMsg("Provide at least one To mail");
 		   	    }
 		  		else{
-		  			//var bodytext = nicEditors.findEditor('bodytext').getContent();
-		  			var bodytext = $("#bodytext").summernote('code');
-		  			/*  if(bodytext.length < 60000){  */	
 		  			
 			  			$("#mailLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 			  		 	$.ajax({
-			  				type : "POST",
+			  		 		type : "POST",
 			  	    	    data: formData,
+			  	    	    enctype: 'multipart/form-data',
 			  		        processData: false,
 			  		        contentType:false, 
 			  				url : sourceleadUrl+"/sendEmailToUsers?${_csrf.parameterName}=${_csrf.token}",
@@ -265,9 +267,7 @@ $(function(){
 			  						location.replace(sourceleadUrl+"/mailBox");
 			  				},
 			  			}); 
-			  		 /*  }else{
-			  			alertTextboxMsg("Message body is too large. If you have more data, Plz go with attachment");
-			  		 }   */
+			  		
 		  		}
 		  		  
 				 return true
@@ -384,16 +384,12 @@ function getUserList(teamType){
                		
 			    	     $("#userList").removeAttr("style");
 	                	    var result = '';
-	                	    result = result +'<div class="modal-bodyCustom mt clearfix popupFilter">';
-	                	    result = result +'<div class="form-horizontal custom-form">';
-	                		result = result +'     <div class="row">';
-	                		result = result +'       <div class="col-xs-12 col-md-5 col-lg-5 selectpicker100">';
+	                	    result = result +'<div class="clearfix popupFilter">';
+	                		result = result +'       <div class="col-xs-12 col-md-5 col-lg-5 selectpicker100 dropdown-select paddingLeft mt10">';
 	                		result = result +'          <select id="rolesDiv" onchange="filterTeamMembers();" class="selectpicker form-control" style="display:block !important">';
 	                		result = result +'          </select>';
 	                		result = result +'     </div>';
-	                		result = result +'     </div>';
-	                		result = result +'     </div>';
-	                		result = result +'     <div class="modal-bodyCustom mt clearfix popupFilter"><br/><br/>'; 
+	                		result = result +'     <div class="mt clearfix popupFilter"><br/><br/>'; 
 	                		result = result +'       <table id="example"  class="display table table-stripped table-bordered" cellspacing="0" width="100%"  >';
 	                		result = result +'           <thead>';
 	                		result = result +'           <tr>';
@@ -428,7 +424,7 @@ function getUserList(teamType){
 	                 	 result = result +'     <div class="clearfix">';
 	                 	 result = result +'       </div>'; 
 	                 	 result = result +'   </div>'; 
-	                 	 result = result +'   <div class="clearfix pull-right mr mt10">';
+	                 	 result = result +'   <div class="clearfix pull-right mr mb">';
 	                 	 result = result +'     <button class="btn btn-primary"  type="button" data-dismiss="modal" id="assignbtnId" onClick="getEmails();">Add</button>';
 	                 	 result = result +'     <button data-dismiss="modal" class="btn btn-default" type="button">Close</button>';
 	                 	 result = result +'   </div>'; 
@@ -560,7 +556,8 @@ function pagination(){
     	"oLanguage": {
      		"sSearch": ""
      	}
-    } );
+    });
+    $("#example").wrap("<div class='modal-body-custom modalAlign mailerpopup'></div>")
 }
 </script>
 
@@ -707,12 +704,12 @@ document.getElementById("attachfileBtn").onchange = function () {
 	};
 </script>
 
-<!-- 
+
 
 <script type="text/javascript">
 	bkLib.onDomLoaded(function() { nicEditors.allTextAreas() });
 </script>
--->
+
 
   
 <jsp:include page="masterFooter.jsp" />

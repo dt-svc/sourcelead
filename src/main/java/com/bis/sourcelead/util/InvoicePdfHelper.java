@@ -116,10 +116,10 @@ public class InvoicePdfHelper {
 
 				StringBuilder address = new StringBuilder();
 				if (null != orgLocation.getCity()) {
-					address.append(orgLocation.getCountry()).append(orgLocation.getState())
+					address.append(orgLocation.getCountry()).append(",").append(orgLocation.getState()).append(",")
 							.append(orgLocation.getCity()).toString();
 				} else if (null != orgLocation.getState()) {
-					address.append(orgLocation.getCountry()).append(orgLocation.getState()).toString();
+					address.append(orgLocation.getCountry()).append(",").append(orgLocation.getState()).toString();
 				} else {
 					address.append(orgLocation.getCountry()).toString();
 				}
@@ -155,11 +155,11 @@ public class InvoicePdfHelper {
 
 				StringBuilder clientAddress = new StringBuilder();
 				if (null != orgRel.getResponderLocationId().getCity()) {
-					clientAddress.append(orgRel.getResponderLocationId().getCountry())
-							.append(orgRel.getResponderLocationId().getState())
+					clientAddress.append(orgRel.getResponderLocationId().getCountry()).append(",")
+							.append(orgRel.getResponderLocationId().getState()).append(",")
 							.append(orgRel.getResponderLocationId().getCity()).toString();
 				} else if (null != orgRel.getResponderLocationId().getState()) {
-					clientAddress.append(orgRel.getResponderLocationId().getCountry())
+					clientAddress.append(orgRel.getResponderLocationId().getCountry()).append(",")
 							.append(orgRel.getResponderLocationId().getState()).toString();
 				} else {
 					clientAddress.append(orgRel.getResponderLocationId().getCountry()).toString();
@@ -388,7 +388,12 @@ public class InvoicePdfHelper {
 						}
 					}
 				}
-
+				
+				
+				grandTotal.append(System.getProperty("line.separator"));
+				grandTotal.append(System.getProperty("line.separator"));
+				grandTotal.append(System.getProperty("line.separator"));
+				grandTotal.append(System.getProperty("line.separator"));
 				grandTotal.append("Grand Total :" + countryCurrency + "   " + invoice.getTotal());
 				grandTotal.append(System.getProperty("line.separator"));
 				grandTotal.append(System.getProperty("line.separator"));
@@ -446,10 +451,10 @@ public class InvoicePdfHelper {
 
 				StringBuilder address = new StringBuilder();
 				if (null != orgLocation.getCity()) {
-					address.append(orgLocation.getCountry()).append(orgLocation.getState())
+					address.append(orgLocation.getCountry()).append(",").append(orgLocation.getState()).append(",")
 							.append(orgLocation.getCity()).toString();
 				} else if (null != orgLocation.getState()) {
-					address.append(orgLocation.getCountry()).append(orgLocation.getState()).toString();
+					address.append(orgLocation.getCountry()).append(",").append(orgLocation.getState()).toString();
 				} else {
 					address.append(orgLocation.getCountry()).toString();
 				}
@@ -485,11 +490,11 @@ public class InvoicePdfHelper {
 
 				StringBuilder clientAddress = new StringBuilder();
 				if (null != orgRel.getResponderLocationId().getCity()) {
-					clientAddress.append(orgRel.getResponderLocationId().getCountry())
-							.append(orgRel.getResponderLocationId().getState())
+					clientAddress.append(orgRel.getResponderLocationId().getCountry()).append(",")
+							.append(orgRel.getResponderLocationId().getState()).append(",")
 							.append(orgRel.getResponderLocationId().getCity()).toString();
 				} else if (null != orgRel.getResponderLocationId().getState()) {
-					clientAddress.append(orgRel.getResponderLocationId().getCountry())
+					clientAddress.append(orgRel.getResponderLocationId().getCountry()).append(",")
 							.append(orgRel.getResponderLocationId().getState()).toString();
 				} else {
 					clientAddress.append(orgRel.getResponderLocationId().getCountry()).toString();
@@ -572,8 +577,7 @@ public class InvoicePdfHelper {
 					StringBuffer name = new StringBuffer();
 
 					if (null != invoiceLineItems.getCandidate()) {
-						if (invoiceLineItems.getCandidate().getFirstName() != null
-								&& invoiceLineItems.getCandidate().getLastName() != null) {
+						if (invoiceLineItems.getCandidate().getLastName() != null) {
 							table.addCell(getCell(
 									name.append(invoiceLineItems.getCandidate().getFirstName()).append(" ")
 											.append(invoiceLineItems.getCandidate().getLastName()).toString(),
@@ -717,6 +721,10 @@ public class InvoicePdfHelper {
 					}
 				}
 
+				grandTotal.append(System.getProperty("line.separator"));
+				grandTotal.append(System.getProperty("line.separator"));
+				grandTotal.append(System.getProperty("line.separator"));
+				grandTotal.append(System.getProperty("line.separator"));
 				grandTotal.append("Grand Total :" + countryCurrency + "   " + invoice.getTotal());
 				grandTotal.append(System.getProperty("line.separator"));
 				grandTotal.append(System.getProperty("line.separator"));
@@ -793,6 +801,7 @@ public class InvoicePdfHelper {
 		PdfPCell cell = new PdfPCell();
 		cell.setUseAscender(true);
 		cell.setUseAscender(true);
+		cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
 		Paragraph p = new Paragraph(value, font);
 		p.setAlignment(alignLeft);
 		cell.addElement(p);
