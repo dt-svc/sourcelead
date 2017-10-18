@@ -190,7 +190,7 @@ function clientDocumentsList(clientLocationId,orgRelationId){
 	                     result = result +"</table>";
 	                    
 	                     $("#clientDocumentsList").append(result); 
-	                     documentpagination(); 
+	                     clientDocsPagination(); 
 	                     //msgFadein();
         },
           
@@ -205,10 +205,10 @@ function viewClientDocument(docId,title){
 </script>
 
 <script>
-function documentpagination(){  
+function clientDocsPagination(){  
     $('#clientDocumentsPagination').DataTable( { 
     	"scrollCollapse": false,
-    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
     	"bLengthChange": true,
     	"bDestroy": true,
     	"ordering": true,
