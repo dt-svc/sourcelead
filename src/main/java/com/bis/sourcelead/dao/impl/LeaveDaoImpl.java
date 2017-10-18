@@ -490,4 +490,28 @@ public class LeaveDaoImpl implements LeaveDao{
 		}
 	}
 
+
+	@Override
+	@Transactional
+	public boolean validateNameByOrgLocationIdandFromTable(String name, Long orgLocationId, String fromTable)
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		String subQuery = "";
+		if("Holiday".equalsIgnoreCase(fromTable))
+			subQuery = " and frm.holidayName = :name ";
+		else if("Shift".equalsIgnoreCase(fromTable))
+			subQuery = " and frm.shiftName = :name ";
+		else if("LeaveType".equalsIgnoreCase(fromTable))
+			subQuery = " and frm.name = :name ";
+			
+		String query = "from "+fromTable+" frm where frm.orgLocations.id = :orgLocationId and frm.status = '1' "+subQuery+"";
+		List<Long> found = session.createQuery(query).setLong("orgLocationId", orgLocationId).setString("name", name).setCacheable(true).list();
+		if(found.size() > 0){
+			return true;
+		}else{
+			return false;
+		}
+		
+	}
+
 }

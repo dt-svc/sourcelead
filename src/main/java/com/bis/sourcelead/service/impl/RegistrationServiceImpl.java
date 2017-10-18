@@ -468,6 +468,12 @@ public class RegistrationServiceImpl implements RegistrationService{
 			projects.setProjectMode("Finished");
 			projects.setCreatedDate(new Date());
 			projects.setUpdatedDate(new Date());
+			
+			Countries countires = countriesService.getCountriesByCountryName(orgLocations.getCountry());
+			if(countires != null) {
+				projects.setCurrency(countires.getCurrency());
+			}
+			
 			Projects updatedProjects = projectsService.saveProject(projects);
 			projectsService.saveOrUpdateProjectElkDocument(updatedProjects);
 			commonUtil.storeSourceleadTasks(approverUser, updatedProjects);

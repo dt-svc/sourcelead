@@ -33,9 +33,9 @@
           <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">
             <div class="form-group">
               <label class="col-md-3">Name<span class="text-danger">&nbsp;*</span></label>
-              <div class="col-md-9">
+              <div class="col-md-9" id="leaveTypeDiv">
               	<input type="hidden" id="leaveTypeId" name="leaveTypeId" value="${leaveType.id}"/>
-                <input type="text" class="form-control" id="leaveTypeName" name="name" value="${leaveType.name}" field-name="Name" data-validation="required validate_Space validate_length length2-250">
+                <input type="text" class="form-control" id="leaveTypeName" name="name" value="${leaveType.name}" onblur="validateName();" field-name="Name" data-validation="required validate_Space validate_length length2-250">
               </div>
             </div>
             <div class="form-group">
@@ -280,7 +280,7 @@
       <div class="form-footer clearfix mt">
         <div class="col-lg-12">
           <div class="pull-right">
-            <input type="button" value="Save" onclick="submitLeaveType();" class="btn btn-primary">
+            <input type="button" id="saveLeaveType" value="Save" onclick="submitLeaveType();" class="btn btn-primary">
             <input type="button" value="Cancel" onclick="redirect();" class="btn btn-default ml10">
           </div>
         </div>
@@ -290,9 +290,29 @@
     </div>
   </section>
 
+<script>
+function validateName(){
+	var locationId = '${SourceLeadWeb_orgLocationId}';
+	var name = $("#leaveTypeName").val();
+	if(name != null && name != '' && name != 'undefined'){
+		$.get(sourceleadUrl+"/validateName?&orgLocationId="+locationId+"&from=LeaveType&name="+name, function(data) {
+          	if(data == true){
+          		$('#leaveTypeDiv').find('p.jquery_form_error_message').remove();
+          		$("#saveLeaveType").removeAttr("disabled");
+		        $("#saveLeaveType").attr("disabled", "disabled");
+				$("input#leaveTypeName").after( "<p class='jquery_form_error_message'>" + name + " is already existed as Leave Type</span>");
+                 }else{
+                	$("#saveLeaveType").removeAttr("disabled");
+                	$('#leaveTypeDiv').find('p.jquery_form_error_message').remove();
+                 }
+            });
+		}
+	}
+</script>
 
 <script type="text/javascript">
 function submitLeaveType(){
+	validateName();
 	var ee = $("#txtEditor").summernote('code');
 	var locationId = '${SourceLeadWeb_orgLocationId}';
 	var loginUserId = '${SourceLeadWeb_user.id}';

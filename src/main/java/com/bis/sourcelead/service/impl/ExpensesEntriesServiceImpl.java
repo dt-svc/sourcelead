@@ -165,6 +165,12 @@ public class ExpensesEntriesServiceImpl implements ExpensesEntriesService{
 		    		expensesEntriesDao.removeAllExpenseEntries(expenseEntryDbIds);
 		    	}
 		    }
+		    if(addExpensesDTO.getRemovedDocumentIds() != null && ! addExpensesDTO.getRemovedDocumentIds().isEmpty()){
+		    	for(Long id :addExpensesDTO.getRemovedDocumentIds()) {
+		    		expensesEntryDocumentsDao.removeExpensesEntryDocouments(id);
+		    	}
+		    }
+		   
 		   return expensesEntriesList;
 		    		  
 	}

@@ -296,29 +296,34 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 			timesheetApprovalDiv.append("	        	<tbody>");
 			for (ProjectMembers projectMember : projectMembers)
 			{
+				 ProjectMembers pmWithUser = projectMembersService.getConsultantUserProjectMemberByProjectMemberId(projectMember.getId());
 				 timesheetApprovalDiv.append("<tr id='row").append(projectMember.getId()).append("'>");
 					 timesheetApprovalDiv.append("  <td>")
 					                       .append("<div class='lg clearfix'>")
-					                                 .append("   <div class='uimg'><img  id='userImage' onerror='predefineProfileImage(this);' src='").append(sourceleadUrl).append("/displayUserImage/").append(projectMember.getEmployee().getUser().getId()).append("' alt='Profile Image' class='img-circle img-responsive'/>")
+					                                 .append("   <div class='uimg'><img  id='userImage' onerror='predefineProfileImage(this);' src='").append(pmWithUser.getProjectMemberCandidteId().getConsultantUser().getFileUrl()).append("' alt='Profile Image' class='img-circle img-responsive'/>")
 					                                 .append("</div>")
 					                                 .append("    <div class='Utext'>")
-				                                             .append("<i title='").append(projectMember.getEmployee().getUser().getFullName()).append("'>").append(projectMember.getEmployee().getUser().getFullName()).append("</i>");
-				                                             if(null != projectMember.getEmployee().getUserEmploymentType() && !"".equalsIgnoreCase(projectMember.getEmployee().getUserEmploymentType()) && null != projectMember.getEmployee().getEmployeeId() && !"".equalsIgnoreCase(projectMember.getEmployee().getEmployeeId())){
-				                                            	 timesheetApprovalDiv.append("<i title='").append("Emp Id :").append(projectMember.getEmployee().getEmployeeId()).append(" , ").append("Emp Type :").append(projectMember.getEmployee().getUserEmploymentType()).append("'>").append(projectMember.getEmployee().getEmployeeId()).append(",").append(projectMember.getEmployee().getUserEmploymentType()).append("</i>");	 
-				                                             }else if(null != projectMember.getEmployee().getEmployeeId() && !"".equalsIgnoreCase(projectMember.getEmployee().getEmployeeId())){
-				                                            	 timesheetApprovalDiv.append("<i title='").append("Emp Id :").append(projectMember.getEmployee().getEmployeeId()).append("'>").append(projectMember.getEmployee().getEmployeeId()).append("</i>");
-				                                             }else if(null != projectMember.getEmployee().getUserEmploymentType() && !"".equalsIgnoreCase(projectMember.getEmployee().getUserEmploymentType())){
-				                                            	 timesheetApprovalDiv.append("<i title='").append("Emp Type :").append(projectMember.getEmployee().getUserEmploymentType()).append("'>").append(projectMember.getEmployee().getUserEmploymentType()).append("</i>"); 
+				                                             .append("<i title='").append(projectMember.getProjectMemberCandidteId().getFullName()).append("'>").append(projectMember.getProjectMemberCandidteId().getFullName()).append("</i>");
+				                                             if(null != projectMember.getProjectMemberCandidteId().getDesignationType() && !"".equalsIgnoreCase(projectMember.getProjectMemberCandidteId().getDesignationType())){
+				                                            	 timesheetApprovalDiv.append("<i title='");
+				                                            	 if(null != projectMember.getEmployee().getEmployeeId() && !"".equalsIgnoreCase(projectMember.getEmployee().getEmployeeId())){
+				                                            		 timesheetApprovalDiv.append("Emp Id :").append(projectMember.getEmployee().getEmployeeId()).append(" , ");
+				                                            	 }
+				                                            	 timesheetApprovalDiv.append("Emp Type :").append(projectMember.getProjectMemberCandidteId().getDesignationType()).append("'>");
+				                                            	 if(null != projectMember.getEmployee().getEmployeeId() && !"".equalsIgnoreCase(projectMember.getEmployee().getEmployeeId())){
+				                                            		 timesheetApprovalDiv.append(projectMember.getEmployee().getEmployeeId()).append(",");
+				                                            	 }
+				                                            	 timesheetApprovalDiv.append(projectMember.getProjectMemberCandidteId().getDesignationType()).append("</i>");	 
 				                                             }
 					 											timesheetApprovalDiv.append("</div>")
 				                               .append("   <div>")
 					                        .append(" </td>");
 				     
-				     if(null != projectMember.getProjects().getOrgLocationsId() && null != projectMember.getProjects().getOrgRelationId()){
-				    	 OrgRelations orgRelation = orgRelationsService.getClientAndVendorOrgDeatilsById(projectMember.getProjects().getOrgLocationsId().getId(), projectMember.getProjects().getOrgRelationId().getId());
-			    	 timesheetApprovalDiv.append("<td><div class='md'><i title='").append(projectMember.getProjects().getProjectName()).append(" ").append(",").append(" ").append(orgRelation.getResponderLocationId().getOrgLocationName()).append("'>").append(projectMember.getProjects().getProjectName()).append("<br>").append(orgRelation.getResponderLocationId().getOrgLocationName()).append("</i></div></td>");
+				     if(null != projectMember.getProjectMemberCandidteId() && null != projectMember.getProjectMemberCandidteId().getOrgRelationId()){
+				    	 OrgRelations orgRelation = projectMember.getProjectMemberCandidteId().getOrgRelationId();
+			    	     timesheetApprovalDiv.append("<td><div class='md'><i title='").append(projectMember.getProjects().getProjectName()).append(" ").append(",").append(" ").append(orgRelation.getResponderLocationId().getOrgLocationName()).append("'>").append(projectMember.getProjects().getProjectName()).append("<br>").append(orgRelation.getResponderLocationId().getOrgLocationName()).append("</i></div></td>");
 				     }else{
-				     timesheetApprovalDiv.append("<td><div class='md'><i title='").append(projectMember.getProjects().getProjectName()).append("'>").append(projectMember.getProjects().getProjectName()).append("</i></div></td>");
+				        timesheetApprovalDiv.append("<td><div class='md'><i title='").append(projectMember.getProjects().getProjectName()).append("'>").append(projectMember.getProjects().getProjectName()).append("</i></div></td>");
 				     }
 				     if(null != projectMember.getProjects().getInvoiceFrequency()){
 				     timesheetApprovalDiv.append("<td><div class='sm'>").append(projectMember.getProjects().getInvoiceFrequency()).append("</div></td>");
@@ -660,48 +665,53 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 		String timeSheetReportsArray[] = new String[header.length];
 		
 		StringBuilder nameAndId = new StringBuilder();
-			if(null != projectMember.getEmployee().getUser().getFullName() && null != projectMember.getEmployee().getEmployeeId()){
-				timeSheetReportsArray[0] = nameAndId.append(projectMember.getEmployee().getUser().getFullName()).append("-").append(projectMember.getEmployee().getEmployeeId()).toString();
-			}else if((null != projectMember.getEmployee().getUser().getFullName())){
-				timeSheetReportsArray[0] = nameAndId.append(projectMember.getEmployee().getUser().getFullName()).toString();
-				}else{
+			if(null != projectMember.getProjectMemberCandidteId()){
+				        nameAndId.append(projectMember.getProjectMemberCandidteId().getFullName());
+						if(projectMember.getEmployee() != null){
+							nameAndId.append("-").append(projectMember.getEmployee().getEmployeeId()).toString();
+						}
+						timeSheetReportsArray[0] =	nameAndId.toString();	
+						
+			}else{
 					timeSheetReportsArray[0] = nameAndId.append("--").toString();	
-				}
-			if(projectMember.getEmployee().getUser().getEmail() !=null){
-				timeSheetReportsArray[1] = projectMember.getEmployee().getUser().getEmail();
+			}
+			if(projectMember.getProjectMemberCandidteId() !=null){
+				timeSheetReportsArray[1] = projectMember.getProjectMemberCandidteId().getEmail();
 			 }else{
 				 timeSheetReportsArray[1] = "--";
-			 }if(projectMember.getEmployee().getUser().getMobilePhone() !=null){
-				 timeSheetReportsArray[2] = projectMember.getEmployee().getUser().getMobilePhone();
+			 }if(projectMember.getProjectMemberCandidteId().getMobilePhone() !=null){
+				 timeSheetReportsArray[2] = projectMember.getProjectMemberCandidteId().getMobilePhone();
 			 }else{
 				 timeSheetReportsArray[2] = "--";
 			 }
-			 if(projectMember.getEmployee().getUserEmploymentType() !=null){
+			
+			 if(projectMember.getEmployee() != null && projectMember.getEmployee().getUserEmploymentType() !=null){
 				 timeSheetReportsArray[3] = projectMember.getEmployee().getUserEmploymentType();
 			 }else{
 				 timeSheetReportsArray[3] = "--";
 			 }
-			 if(projectMember.getEmployee().getRate() !=null){
+			 if(projectMember.getEmployee() != null && projectMember.getEmployee().getRate() !=null){
 				 StringBuilder rateString = new StringBuilder();
 				 timeSheetReportsArray[4] = rateString.append(projectMember.getEmployee().getRate()).append("/").append(projectMember.getEmployee().getRatePer()).toString();
 			 }else{
 				 timeSheetReportsArray[4] = "--";
 			 }
-			if(projectMember.getProjects().getProjectName() !=null){
+			
+			 if(projectMember.getProjects().getProjectName() !=null){
 				timeSheetReportsArray[5] = projectMember.getProjects().getProjectName();
 			 }else{
 				 timeSheetReportsArray[5] = "--";
 			 }
 			
-			if(null != projectMember.getProjects().getOrgLocationsId() && null != projectMember.getProjects().getOrgRelationId()){
-				OrgRelations orgRelation = orgRelationsService.getClientAndVendorOrgDeatilsById(projectMember.getProjects().getOrgLocationsId().getId(), projectMember.getProjects().getOrgRelationId().getId());
+			if(null != projectMember.getProjectMemberCandidteId() && null != projectMember.getProjectMemberCandidteId().getOrgRelationId()){
+				OrgRelations orgRelation =  projectMember.getProjectMemberCandidteId().getOrgRelationId();
 				 timeSheetReportsArray[6] = orgRelation.getResponderLocationId().getOrgLocationName(); 
 				 
 			 }else{
 				 timeSheetReportsArray[6] = "--";
 			 }
-			if(null != projectMember.getEmployee().getOrgLocations() && null != projectMember.getEmployee().getOrgRelationId() && (projectMember.getEmployee().getUserEmploymentType().equalsIgnoreCase("C2C-1099")||projectMember.getEmployee().getUserEmploymentType().equalsIgnoreCase("C2C"))){
-				OrgRelations orgRelation = orgRelationsService.getClientAndVendorOrgDeatilsById(projectMember.getEmployee().getOrgLocations().getId(), projectMember.getEmployee().getOrgRelationId().getId());
+			if(null != projectMember.getProjectMemberCandidteId() && null != projectMember.getProjectMemberCandidteId().getOrgRelationId() && (projectMember.getProjectMemberCandidteId().getDesignationType().equalsIgnoreCase("C2C-1099")||projectMember.getProjectMemberCandidteId().getDesignationType().equalsIgnoreCase("C2C"))){
+				OrgRelations orgRelation = projectMember.getProjectMemberCandidteId().getOrgRelationId();
 				timeSheetReportsArray[7] = orgRelation.getResponderLocationId().getOrgLocationName();
 				
 			 }else{
@@ -713,7 +723,7 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 			 }else{
 				 timeSheetReportsArray[8] = "--";
 			 }
-			int count = 9;
+			 int count = 9;
 			 SubmissionApproverHierarchy sah= null;
 			 float monthTotalHours = 0f;
 			 float  monthBillableTotalHours = 0f;
@@ -930,24 +940,20 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 			 writeRow.createCell(0).setCellValue(sbid.append(projectMember.getEmployee().getEmployeeId()).toString());
 			 createExcelsheet.autoSizeColumn(0);
 		}
-		StringBuilder sbname = new StringBuilder();
-		if(null != projectMember.getEmployee().getUser().getLastName() && !"".equalsIgnoreCase(projectMember.getEmployee().getUser().getLastName())){
-			 writeRow.createCell(1).setCellValue(sbname.append(projectMember.getEmployee().getUser().getFirstName()).append(" ").append(projectMember.getEmployee().getUser().getLastName()).toString()); 
-			 createExcelsheet.autoSizeColumn(1);
-		}else if(null != projectMember.getEmployee().getUser().getFirstName() && !"".equalsIgnoreCase(projectMember.getEmployee().getUser().getFirstName())){
-			writeRow.createCell(1).setCellValue(sbname.append(projectMember.getEmployee().getUser().getFirstName()).toString()); 
+		if(null != projectMember.getProjectMemberCandidteId()){
+			 writeRow.createCell(1).setCellValue(projectMember.getProjectMemberCandidteId().getFullName()); 
 			 createExcelsheet.autoSizeColumn(1);
 		}
-		if(projectMember.getEmployee().getUser().getEmail() != null){
-			 writeRow.createCell(2).setCellValue(projectMember.getEmployee().getUser().getEmail());
+		if(null != projectMember.getProjectMemberCandidteId()){
+			 writeRow.createCell(2).setCellValue(projectMember.getProjectMemberCandidteId().getEmail());
 			 createExcelsheet.autoSizeColumn(2);
 		}
-		if(null != projectMember.getEmployee().getUser().getMobilePhone()){
-			 writeRow.createCell(3).setCellValue(projectMember.getEmployee().getUser().getMobilePhone());
+		if(null != projectMember.getProjectMemberCandidteId().getMobilePhone()){
+			 writeRow.createCell(3).setCellValue(projectMember.getProjectMemberCandidteId().getMobilePhone());
 			 createExcelsheet.autoSizeColumn(3);
 		}
-		if(null != projectMember.getEmployee().getUserEmploymentType()){
-			 writeRow.createCell(4).setCellValue(projectMember.getEmployee().getUserEmploymentType());
+		if(null != projectMember.getProjectMemberCandidteId()){
+			 writeRow.createCell(4).setCellValue(projectMember.getProjectMemberCandidteId().getDesignationType());
 			 createExcelsheet.autoSizeColumn(4);
 		}
 		if(null != projectMember.getEmployee().getRate()){
@@ -960,16 +966,20 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 			 writeRow.createCell(6).setCellValue(projectMember.getProjects().getProjectName()); 
 			 createExcelsheet.autoSizeColumn(6);
 		}
-		if(null != projectMember.getProjects().getOrgLocationsId() && null != projectMember.getProjects().getOrgRelationId()){
-			OrgRelations orgRelation = orgRelationsService.getClientAndVendorOrgDeatilsById(projectMember.getProjects().getOrgLocationsId().getId(), projectMember.getProjects().getOrgRelationId().getId());
+		
+		
+		if(null != projectMember.getProjectMemberCandidteId() && null !=  projectMember.getProjectMemberCandidteId().getOrgRelationId()){
+			OrgRelations orgRelation = projectMember.getProjectMemberCandidteId().getOrgRelationId();
 			 writeRow.createCell(7).setCellValue(orgRelation.getResponderLocationId().getOrgLocationName()); 
 			 createExcelsheet.autoSizeColumn(7);
 		}
-		if(null != projectMember.getEmployee().getOrgLocations() && null != projectMember.getEmployee().getOrgRelationId() && (projectMember.getEmployee().getUserEmploymentType().equalsIgnoreCase("C2C-1099")||projectMember.getEmployee().getUserEmploymentType().equalsIgnoreCase("C2C"))){
-			OrgRelations orgRelation = orgRelationsService.getClientAndVendorOrgDeatilsById(projectMember.getEmployee().getOrgLocations().getId(), projectMember.getEmployee().getOrgRelationId().getId());
+		if(null != projectMember.getProjectMemberCandidteId() && null !=  projectMember.getProjectMemberCandidteId().getOrgRelationId() && (projectMember.getProjectMemberCandidteId().getDesignationType().equalsIgnoreCase("C2C-1099")||projectMember.getProjectMemberCandidteId().getDesignationType().equalsIgnoreCase("C2C"))){
+			OrgRelations orgRelation = projectMember.getProjectMemberCandidteId().getOrgRelationId();
 			writeRow.createCell(8).setCellValue(orgRelation.getResponderLocationId().getOrgLocationName()); 
 			 createExcelsheet.autoSizeColumn(8);
 		}
+		
+		
 		if(null != projectMember.getProjects().getInvoiceFrequency()){
 			 writeRow.createCell(9).setCellValue(projectMember.getProjects().getInvoiceFrequency()); 
 			 createExcelsheet.autoSizeColumn(9);

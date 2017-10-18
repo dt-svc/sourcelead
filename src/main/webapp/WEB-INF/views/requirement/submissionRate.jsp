@@ -210,6 +210,7 @@ width: auto;
   </footer>
   <!-- Footer Area --> 
 </div>
+<script type="text/javascript" src='resources/js/slead-common.js'></script>
 </body>
 </html>
 
@@ -279,18 +280,18 @@ width: auto;
 
 <script type="text/javascript">
 	function storeNegotiation() {
+		var sourceleadUrl = '${sourceleadUrl}';
 			var submissionId = '${submissionId}';
 			var type = '${type}';
-			if ($('#negotiation_form').validate(false, validationSettings)){ 
+			if ($('#negotiation_form').validate(false, validationSettings)){
 			$('#negotiationButtonId').addClass('button').val('Processing..').attr('disabled','disabled');
 		    var formData = getFormData1("negotiation_form");
-		    
 			$.ajax({
 						type : "POST",
 						data: formData,
 						processData: false,
 					    contentType:false, 
-						url : sourceleadUrl+'/storeNegotiation?"+tokenParamName+"="+tokenValue+"&submissionId='+submissionId+'&type='+type,
+						url : sourceleadUrl+'/storeNegotiation?'+tokenParamName+'='+tokenValue+'&submissionId='+submissionId+'&type='+type,
 						success : function(result) {
 							$('#rateProposal').val('');
 							$('#rateType').val('');
@@ -308,6 +309,17 @@ width: auto;
 	} 
 	    
 	
+</script>
+<script type="text/javascript">
+var tokenParamName = "${_csrf.parameterName}";
+var tokenValue = "${_csrf.token}";
+
+function tagItBykeyForEmails(e){
+	if(e.which == 0 || e.which == 13 || e.which == 9 || e.which == 32 || e.which == 188){
+		 $(document).click();
+		 return true;
+	}
+}
 </script>
 
 <script type="text/javascript">
