@@ -1179,7 +1179,7 @@ public class LeaveManagementRestController {
 			leaveDto.setLeavesTaken(String.valueOf(nuberOfLeavestaken));
 			int thisMonthLeaves = leaveDao.getThisMonthLeavesTakenByUser(leave.getUser().getId(),leave.getLeaveType().getId());
 			leaveDto.setThisMonthLeaves(String.valueOf(thisMonthLeaves));
-
+			leaveDto.setIsBillable(leave.getLeaveType().getLeaveType());
 		}
 		return leaveDto;
 	}
