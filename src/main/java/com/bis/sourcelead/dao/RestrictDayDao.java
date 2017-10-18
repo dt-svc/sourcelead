@@ -12,7 +12,7 @@ public interface RestrictDayDao {
 
 	public List<RestrictDay> getRestrictDayListByOrgLocationId(Long orgLocationId);
 	
-	public RestrictDay getRestrictDayByUUID(String restrictUUID);
+	public RestrictDay getRestrictDayById(String restrictDayId);
 	
 	public List<RestrictDay> validateRestrictDayDates(String fromDate, String toDate, OrgLocations orgLocations) throws Exception;
 	

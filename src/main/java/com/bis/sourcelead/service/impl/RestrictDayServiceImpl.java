@@ -13,6 +13,7 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.RestrictDayDao;
 import com.bis.sourcelead.dto.RestrictDayDTO;
 import com.bis.sourcelead.entity.LeaveRole;
+import com.bis.sourcelead.entity.LeaveType;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.RestrictDay;
 import com.bis.sourcelead.entity.Roles;
@@ -45,7 +46,18 @@ public class RestrictDayServiceImpl implements RestrictDayService {
 	public RestrictDay storeRestrictedDay(RestrictDayDTO restrictDayDTO) throws Exception {
 		OrgLocations orgLocations = orgLocationService.getOrgLocations(Long.valueOf(restrictDayDTO.getOrgLocationId()));
 		User user = userService.getUserById(Long.valueOf(restrictDayDTO.getUserId()));
-		RestrictDay restrictDay = new RestrictDay();
+		RestrictDay restrictDay = null;
+		
+		if(StringUtils.isNotBlank(restrictDayDTO.getRestrictDayId())) {
+			restrictDay = restrictDayDao.getRestrictDayById(restrictDayDTO.getRestrictDayId());
+			restrictDay.setUpdatedBy(user.getUserCode());
+			restrictDay.setUpdatedDate(new Date());
+		}else{
+			restrictDay = new RestrictDay();
+			restrictDay.setCreatedBy(user.getUserCode());
+			restrictDay.setCreatedDate(new Date());
+		}
+		
 		restrictDay.setRestrictName(restrictDayDTO.getRestrictName());
 		restrictDay.setStartDate(commonUtil.getDateFormat(restrictDayDTO.getStartDate()));
 		restrictDay.setEndDate(commonUtil.getDateFormat(restrictDayDTO.getEndDate()));
@@ -74,8 +86,8 @@ public class RestrictDayServiceImpl implements RestrictDayService {
 	}
 
 	@Override
-	public RestrictDay getRestrictDayByUUID(String restrictUUID) {
-		return restrictDayDao.getRestrictDayByUUID(restrictUUID);
+	public RestrictDay getRestrictDayById(String restrictDayId) {
+		return restrictDayDao.getRestrictDayById(restrictDayId);
 	}
 	
 

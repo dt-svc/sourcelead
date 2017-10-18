@@ -532,7 +532,7 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 					if(candidate.getVisaType() !=null && !"".equalsIgnoreCase(candidate.getVisaType())){
 						String[] visa = candidate.getVisaType().split(",");
 						Set<String> set = new HashSet<String>(Arrays.asList(visa));
-						visaPer = getVisaTypePercentage(set,visaTypePercentage,matchedVisaTypeCount,visaType);
+						visaPer = getVisaTypePercentage(set,visaTypePercentage,matchedVisaTypeCount,visaType,recommendedCustomizeScore.getCustomizeVisatypecore());
 					}
 					
 					
@@ -542,7 +542,7 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 						for(CandidateEducation can :edu){
 							set.add(can.getName());
 						}
-						 eduPer = getEducationPercentage(set,educationPercentage,matchedEducationCount,education);
+						 eduPer = getEducationPercentage(set,educationPercentage,matchedEducationCount,education,recommendedCustomizeScore.getCustomizeEducationScore());
 						
 					}
 					
@@ -807,14 +807,14 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 					if(null  != candidateIndex.getVisaType()){
 						String[] visa = candidateIndex.getVisaType();
 						Set<String> set = new HashSet<String>(Arrays.asList(visa));
-						visaPer = getVisaTypePercentage(set,visaTypePercentage,matchedVisaTypeCount,visaType);
+						visaPer = getVisaTypePercentage(set,visaTypePercentage,matchedVisaTypeCount,visaType,recommendedCustomizeScore.getCustomizeVisatypecore());
 					}
 					
 					
 					if(null  != candidateIndex.getEducation()){
 						ArrayList<String> edu = candidateIndex.getEducation();
 						Set<String> set = new HashSet<String>(edu);
-						 eduPer = getEducationPercentage(set,educationPercentage,matchedEducationCount,education);
+						 eduPer = getEducationPercentage(set,educationPercentage,matchedEducationCount,education,recommendedCustomizeScore.getCustomizeEducationScore());
 						
 					}
 					
@@ -892,7 +892,7 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 						candidateIndex.setUpdatedDate(strDate);	
 					}
 					
-					if(skillPercentage !=0 && totalPercentage !=0 ){
+					if(skillPercentage > 0 && totalPercentage > 0){
 						CandidateListcopy.add(candidateIndex);
 					}
 				}
@@ -947,16 +947,18 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 	 * @param visaTypePercentage
 	 * @param matchedSkillCount
 	 * @param visaType
+	 * @param string 
 	 * @return float
 	 */
 	
-	private float getVisaTypePercentage(Set<String> set, float visaTypePercentage, int matchedSkillCount, String visaType) {
-		float visaPer = 0;       
+	private float getVisaTypePercentage(Set<String> set, float visaTypePercentage, int matchedSkillCount, String visaType, String recommendedVisScore) {
+		float visaPer = 0;
+		float visaScore = Float.parseFloat(recommendedVisScore);
        if(visaType !=null){
     	   if(set != null && set.size() >0){
    			for(String visa : set){
    					if(visaType.contains(visa)){
-   						return visaPer = 10;
+   						return visaPer = visaScore;
    					}
    			}
    		}
@@ -972,16 +974,18 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 	 * @param educationPercentage
 	 * @param matchedSkillCount
 	 * @param education
+	 * @param string 
 	 * @return float
 	 */
 	
-	private float getEducationPercentage(Set<String> set, float educationPercentage, int matchedSkillCount, String education) {
+	private float getEducationPercentage(Set<String> set, float educationPercentage, int matchedSkillCount, String education, String recommendedEduScore) {
 		float eduPer = 0; 
+		float eduScore = Float.parseFloat(recommendedEduScore);
 		if(education !=null){
 				if(set != null && set.size() >0){
 					for(String edu : set){
 							if(education.contains(edu)){
-								return eduPer = 10;
+								return eduPer = eduScore;
 							}
 						}
 					}
