@@ -700,7 +700,7 @@ public class TimesheetApprovalRestController {
 						 timesheetApprovalDiv.append(" </td>");
 						 
 						 if(null != projectMember.getProjectMemberCandidteId().getDesignationType() && !"".equalsIgnoreCase(projectMember.getProjectMemberCandidteId().getDesignationType()) && (projectMember.getProjectMemberCandidteId().getDesignationType().equalsIgnoreCase("C2C-1099")||projectMember.getProjectMemberCandidteId().getDesignationType().equalsIgnoreCase("C2C"))){
-					    	 OrgRelations orgRelation = orgRelationsService.getClientAndVendorOrgDeatilsById(projectMember.getEmployee().getOrgLocations().getId(), projectMember.getEmployee().getOrgRelationId().getId());
+					    	 OrgRelations orgRelation = projectMember.getProjectMemberCandidteId().getOrgRelationId();
 					    	 timesheetApprovalDiv.append("	<td><div class='tbldata-dotdot-sm'><span><b title='").append(projectMember.getProjectMemberCandidteId().getDesignationType()+","+orgRelation.getResponderLocationId().getOrgLocationName()).append("'>").append(projectMember.getProjectMemberCandidteId().getDesignationType()+"<br/>"+orgRelation.getResponderLocationId().getOrgLocationName()).append("</b></span></div></td>"); 
 					     }else if(null != projectMember.getProjectMemberCandidteId().getDesignationType() && !"".equalsIgnoreCase(projectMember.getProjectMemberCandidteId().getDesignationType())){
 					    	 timesheetApprovalDiv.append("	<td><div class='tbldata-dotdot-sm'><span><b title='").append(projectMember.getProjectMemberCandidteId().getDesignationType()).append("'>").append(projectMember.getProjectMemberCandidteId().getDesignationType()).append("</b></span></div></td>"); 

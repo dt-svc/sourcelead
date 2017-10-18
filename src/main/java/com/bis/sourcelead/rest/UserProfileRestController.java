@@ -84,15 +84,13 @@ public class UserProfileRestController {
 		return "home";
 	}
 
-	@RequestMapping(value = "/saveUserProfile", method = RequestMethod.POST)
-	public String saveUserProfile(AddUserProfileDTO addUserProfileDTO,
-			HttpServletRequest request) throws Exception {
-
-		
+	@RequestMapping(value = {"/saveUserProfile","/rest/saveUserProfile"}, method = RequestMethod.POST)
+	public String saveUserProfile(AddUserProfileDTO addUserProfileDTO,HttpServletRequest request) throws Exception {
 		addUserProfileDTO.setStaticPath(staticPath);
-		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		User user = userService.getUserById(Long.parseLong(addUserProfileDTO.getUserId()));
+		OrgLocations orgLocations = orgLocationService.getOrgLocations(Long.parseLong(addUserProfileDTO.getOrgLocationId()));
 		UserRole userRoleElk = null;
+		String isUpdated = "failure";
 		try {
 			user = userService.saveUserProfile(addUserProfileDTO, user);
 			UserRole userRole = userRoleService.getUserDetailsByUserIdAndLocationId(user.getId(), orgLocations.getId());
@@ -124,7 +122,10 @@ public class UserProfileRestController {
 			logger.info("--exception--"+e);
 			
 		}
-		return "home";
+		if(user !=null) {
+			isUpdated = "success";
+		}
+		return isUpdated;
 
 	}
 	
