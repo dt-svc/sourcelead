@@ -258,6 +258,11 @@ public class UserServiceImpl implements UserService {
 				  userRole.setIsPrimary(0);
 			  }
 			}
+	   }else {
+		   userRole.setPhoneNumber(addUserDTO.getPhoneNumber());
+			if(StringUtils.isNotBlank(addUserDTO.getExtensionNumber())) {
+				userRole.setExtensionNumber(addUserDTO.getExtensionNumber());
+			}
 	   }
 		
 		HashSet<UserRole> userRoleList = new HashSet<UserRole>();
@@ -490,7 +495,10 @@ public class UserServiceImpl implements UserService {
 			logger.error(ExceptionUtils.getFullStackTrace(e));
 		}
 		userRole.setPhoneNumber(addUserDTO.getPhoneNumber());
-		userRole.setExtensionNumber(addUserDTO.getExtensionNumber());
+		if(StringUtils.isNotBlank(addUserDTO.getExtensionNumber())) {
+			userRole.setExtensionNumber(addUserDTO.getExtensionNumber());
+		}
+		
 		userRole.setRoles(roles);
 		userRole.setUserType(roles.getDisplayName());
 		userRole.setCreatedDate(commonUtil.currentDate());

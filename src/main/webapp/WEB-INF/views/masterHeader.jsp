@@ -55,7 +55,7 @@
 
 </head>
 
-
+<script src="resources/js/bootstrap.min.js?staticTime=${staticTime}"></script>
 <!--  Amcharts -->
 <c:if test='${viewPage == "reports/userReports"}'>
 	 <script src="resources/js/pie.js?staticTime=${staticTime}"></script> 
