@@ -177,6 +177,11 @@ public class OrgRelations implements Serializable{
 	@JsonProperty
 	private String phone;
 	
+	
+	@Transient
+	@JsonProperty
+	private String phoneNumber;
+	
 	@Transient
 	@JsonProperty
 	private String email;
@@ -1045,6 +1050,14 @@ public class OrgRelations implements Serializable{
 
 	public void setBankIdentifierCode(String bankIdentifierCode) {
 		this.bankIdentifierCode = bankIdentifierCode;
+	}
+
+	public String getPhoneNumber() {
+		return phoneNumber;
+	}
+
+	public void setPhoneNumber(String phoneNumber) {
+		this.phoneNumber = phoneNumber;
 	}
 
 	
