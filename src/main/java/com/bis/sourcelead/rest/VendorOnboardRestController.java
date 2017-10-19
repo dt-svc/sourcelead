@@ -22,6 +22,7 @@ import com.bis.sourcelead.dto.OnBoardingTemplateDTO;
 import com.bis.sourcelead.dto.OnboardTasksDTO;
 import com.bis.sourcelead.dto.TaskDTO;
 import com.bis.sourcelead.dto.VendorOnboardDTO;
+import com.bis.sourcelead.dto.VendorOnboardTaskDTO;
 import com.bis.sourcelead.dto.VendorOnboardingTemplateDocumentDTO;
 import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -89,25 +90,30 @@ public class VendorOnboardRestController {
 	 }
 	
 	
-	@RequestMapping(value = "/createNewVendorOnBoardingTemplate" , method = RequestMethod.POST)
-	 public @ResponseBody  VendorOnboardingTemplate createNewVendorOnBoardingTemplate(OnBoardingTemplateDTO onBoardingTemplateDTO,HttpServletRequest request) throws Exception {
+	@RequestMapping(value = { "/createNewVendorOnBoardingTemplate", "/rest/createNewVendorOnBoardingTemplate" }, method = RequestMethod.POST)
+	 public @ResponseBody  OnBoardingTemplateDTO createNewVendorOnBoardingTemplate(OnBoardingTemplateDTO onBoardingTemplateDTO,HttpServletRequest request) throws Exception {
 	 	 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 	 	 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 	 	 VendorOnboardingTemplate onBoardingTemplate = vendorOnboardTemplateService.getVendorOnBoardTemplateDetails(onBoardingTemplateDTO, user, orgLocations);
-		 return onBoardingTemplate;
+	 	 OnBoardingTemplateDTO templateDTO = new OnBoardingTemplateDTO();
+	 	 templateDTO.setId(onBoardingTemplate.getId());
+	 	 return templateDTO;
 	  
 	}
 	
-	@RequestMapping(value = "/getVendorOnboardTemplateById" , method = RequestMethod.POST)
-	 public @ResponseBody VendorOnboardingTemplate getVendorOnboardTemplateById(@RequestParam(value="templateId", required=false) Long templateId, HttpServletRequest request) throws Exception {
+	@RequestMapping(value = { "/getVendorOnboardTemplateById", "/rest/getVendorOnboardTemplateById" }, method = RequestMethod.POST)
+	 public @ResponseBody OnBoardingTemplateDTO getVendorOnboardTemplateById(@RequestParam(value="templateId", required=false) Long templateId, HttpServletRequest request) throws Exception {
 		
 		VendorOnboardingTemplate onBoardingTemplate = vendorOnboardTemplateService.getVendorOnBoardingTemplateById(templateId);
-		return onBoardingTemplate;
+		 OnBoardingTemplateDTO templateDTO = new OnBoardingTemplateDTO();
+	 	 templateDTO.setTemplateName(onBoardingTemplate.getTemplateName());
+	 	 templateDTO.setDescription(onBoardingTemplate.getDescription());
+	 	 return templateDTO;
 	   }
 	
 	
 	
-	@RequestMapping(value = "/validateVendorOnboardingTemplateName", method = RequestMethod.POST)
+	@RequestMapping(value = { "/validateVendorOnboardingTemplateName", "/rest/validateVendorOnboardingTemplateName" }, method = RequestMethod.POST)
 	@ResponseBody String validateVendorOnboardingTemplateName(@RequestParam(value = "templateName", required = false) String templateName,
 			@RequestParam(value = "templateId", required = false) String templateId,HttpServletRequest request) throws Exception {
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
@@ -143,12 +149,25 @@ public class VendorOnboardRestController {
 	}
 	
 	
-	@RequestMapping(value = "/getVendorOnboardTemplateDocumentByTemplateId" , method = RequestMethod.POST)
-	 public @ResponseBody List<VendorOnboardingTemplateDocuments> getVendorOnboardTemplateDocumentByTemplateId(@RequestParam(value="templateId", required=false) Long templateId,
+	@RequestMapping(value = { "/getVendorOnboardTemplateDocumentByTemplateId", "/rest/getVendorOnboardTemplateDocumentByTemplateId" }, method = RequestMethod.POST)
+	 public @ResponseBody List<VendorOnboardingTemplateDocumentDTO> getVendorOnboardTemplateDocumentByTemplateId(@RequestParam(value="templateId", required=false) Long templateId,
 			 @RequestParam(value="documentType", required=false) String documentType, HttpServletRequest request) throws Exception {
 		
+		List<VendorOnboardingTemplateDocumentDTO> documentsDTOList = new ArrayList<>();
 		List<VendorOnboardingTemplateDocuments> documentsList = vendorOnboardTemplateDocumentsService.getVendorOnBoardingTemplateDocumentsByTemplateId(templateId,documentType);
-		return documentsList;
+		
+		if(documentsList != null && documentsList.size() > 0) {
+			for(VendorOnboardingTemplateDocuments documents : documentsList) {
+				VendorOnboardingTemplateDocumentDTO docsDTO = new VendorOnboardingTemplateDocumentDTO();
+				docsDTO.setId(documents.getId());
+				docsDTO.setDocumentName(documents.getDocumentName());
+				docsDTO.setIsRequired(documents.getIsRequired());
+				docsDTO.setDocumentUUID(documents.getDocumentUUID());
+				documentsDTOList.add(docsDTO);
+			}
+		}
+		
+		return documentsDTOList;
 	}
 	
 	@RequestMapping(value = "/viewVendorOnboardTemplateByTemplateUUID")
@@ -211,12 +230,11 @@ public class VendorOnboardRestController {
 	}
 	
 	
-	 @RequestMapping(value = "/getVendorOnboardTemplateTasksListByTemplateId", method = RequestMethod.GET)
-	 @ResponseBody List<VendorOnboardTasks> getVendorOnboardTemplateTasksListByTemplateId(@RequestParam(value="templateId", required=false) Long templateId,HttpServletRequest request) throws Exception{
+	 @RequestMapping(value = { "/getVendorOnboardTemplateTasksListByTemplateId", "/rest/getVendorOnboardTemplateTasksListByTemplateId" }, method = RequestMethod.GET)
+	 @ResponseBody List<VendorOnboardTaskDTO> getVendorOnboardTemplateTasksListByTemplateId(@RequestParam(value="templateId", required=false) Long templateId,HttpServletRequest request) throws Exception{
 		
 		 List<VendorOnboardTasks> tasksList = vendorOnboardTasksService.getVendorOnboardTasksByTemplateId(templateId);
-		 
-		 List<VendorOnboardTasks> vendorOnboardtasksList = new ArrayList<VendorOnboardTasks>();
+		 List<VendorOnboardTaskDTO> tasksDTOList = new ArrayList<>();
 		 
 		 for(VendorOnboardTasks tasks : tasksList){
 			 
@@ -238,11 +256,17 @@ public class VendorOnboardRestController {
 					 }
 				 }
 				 
-				 tasks.setUsersList(usersList); 
-				 vendorOnboardtasksList.add(tasks);
+				 VendorOnboardTaskDTO taskDTO = new  VendorOnboardTaskDTO();
+				 taskDTO.setId(tasks.getId());
+				 taskDTO.setPriority(tasks.getPriority());
+				 taskDTO.setTaskRepeat(tasks.getTaskRepeat());
+				 taskDTO.setTaskName(tasks.getTaskName());
+				 taskDTO.setDueAfterString(tasks.getDueAfterString());
+				 taskDTO.setUsersList(usersList); 
+				 tasksDTOList.add(taskDTO);
 		 }
 		 
-		 return vendorOnboardtasksList;
+		 return tasksDTOList;
 			
 		}
 	 
