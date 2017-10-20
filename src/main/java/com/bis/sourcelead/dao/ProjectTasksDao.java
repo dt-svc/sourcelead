@@ -41,6 +41,8 @@ public interface ProjectTasksDao {
     
     public Long getProjectTasksGeneratedIdByProjectId(Long projectId,Integer generatedIdCount) throws Exception;
     
+    Integer getProjectTasksCountByProjectId(Long projectId) throws Exception;
+    
     Integer getProjectTasksListCountByProjectIdAndStatus(Long projectId,String  status) throws Exception;
     
     public List<ProjectTasks> getOverdueTaskListByProjectId(Long projectId,String filterDate, Date startDateUTC, Date endDateUTC)throws Exception;

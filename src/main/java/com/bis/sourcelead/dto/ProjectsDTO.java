@@ -49,6 +49,8 @@ public class ProjectsDTO extends SearchDTO implements Serializable{
 	
 	private String projectDescription;
 	
+	private String description;
+	
 	private String projectId;
 	
 	private String estimatedHours;
@@ -84,6 +86,10 @@ public class ProjectsDTO extends SearchDTO implements Serializable{
 	private String budgetStatus;
 	
 	private String projectShortCode;
+	
+	private String projectStatusId;
+	
+	private String endDateStr1;
 	
 	List<ExpensesCategoryListDTO> expenseCategoryList;
 	
@@ -409,6 +415,30 @@ public class ProjectsDTO extends SearchDTO implements Serializable{
 
 	public void setProjectMembersList(List<ProjectMembersDTO> projectMembersList) {
 		this.projectMembersList = projectMembersList;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	public String getProjectStatusId() {
+		return projectStatusId;
+	}
+
+	public void setProjectStatusId(String projectStatusId) {
+		this.projectStatusId = projectStatusId;
+	}
+
+	public String getEndDateStr1() {
+		return endDateStr1;
+	}
+
+	public void setEndDateStr1(String endDateStr1) {
+		this.endDateStr1 = endDateStr1;
 	}
 	
 	

@@ -8,46 +8,6 @@
 
 <script src="resources/js/formvalidator.js"></script>
 
-<style>
-.timesheet_week_comm strong input.dele  {
-width : 10px !important;
-}
-.timesheetDocs.timesheetDocs-custom .timesheet_week_comm strong input.dele {
-width : 20px !important;
-}
-.timesheetDocs.timesheetDocs-custom {
-width: 65%;
-}
-.timesheetDocs.timesheetDocs-custom .timesheetAttachment {
-width: auto !important;
-}
-.timesheetDocs.timesheetDocs-custom .timesheet_week_comm span input {
-width: 275px !important; padding-left: 15px !important; text-indent:0; text-align: left;
-}
-.timesheetDocs.timesheetDocs-custom .timesheet_week_comm label input[type="checkbox"] {
-width: auto !important;
-}
-.timesheetDocs.timesheetDocs-custom .timesheet_week_comm input.vendorinput {
-	background-color: #fff; color: #333; border: 1px solid #ddd; width: 250px !important;
-	margin-right: 15px;
-}
-.timesheetDocs.timesheetDocs-custom .timesheetAttachment td {
-width: auto !important;
-}
-.timesheetDocs.timesheetDocs-custom .timesheet_week_comm label.switch {
-position: relative; background-color: transparent; width: 35px; overflow: inherit; padding: 5px 10px;
-}
-.ml-mr {
-margin-left: 15px !important; margin-right: 15px !important; margin-top: 5px !important;
-}
-.switch.switchvendor-custom input[type="checkbox"]{
-background: #f60; position: relative;top:0; top: -15px; opacity: 0;
-filter: alpha(opacity=0);  -moz-opacity: 0; -khtml-opacity: 0;
-}
-.timesheetDocs.timesheetDocs-custom .timesheet_week_comm span .inputpadding input[type="button"] {
-	padding-left: 35px !important;
-}
-</style>
 
 <section class="content-wraper">
     <div id="loading"></div>
@@ -592,7 +552,7 @@ function createTemplate(saveType){
 	     	        $("#templateId").val(json.id);
 	     	        $("#onboardtemplateId").val(json.id);
 	     	        $("#documentstemplateId").val(json.id);
-	     	       $("#taskstemplateId").val(json.id);
+	     	        $("#taskstemplateId").val(json.id);
 	     	       
 	     	        $("#save_button").removeAttr("disabled")
 	        	    $("#save_continue_button").removeAttr("disabled")
