@@ -168,6 +168,7 @@ function getClientContactList(){
 		    	  },{
 		    	  	"targets": colIndex++,
 		    	  	"data": "spocStatus",
+		    	  	"sortable": false,
 		    	  	"render": function(data, type, report, meta) {
 		    	  		 var result = "";
 		    	  		result = result + ' <td><div>';
@@ -187,6 +188,7 @@ function getClientContactList(){
 		    	  },{
 			    	  	"targets": colIndex++,
 			    	  	"data": "invitationStatus",
+			    	  	"sortable": false,
 			    	  	"render": function(data, type, report, meta) {
 			    	  		 var result = "";
 			    	  		result = result + ' <td><div id="invitationStatus'+report.id+'">';
