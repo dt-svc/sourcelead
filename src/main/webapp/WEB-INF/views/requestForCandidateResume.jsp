@@ -385,4 +385,4 @@ document.getElementById("attachfileBtn").onchange = function () {
 		};
 	})(jQuery);
 </script>
-
+<script type="text/javascript" src='resources/js/slead-common.js'></script>
