@@ -55,7 +55,7 @@
 
 </head>
 
-
+<script src="resources/js/bootstrap.min.js?staticTime=${staticTime}"></script>
 <!--  Amcharts -->
 <c:if test='${viewPage == "reports/userReports"}'>
 	 <script src="resources/js/pie.js?staticTime=${staticTime}"></script> 
@@ -108,12 +108,12 @@
 	<script src="resources/js/pie.js?staticTime=${staticTime}"></script>
  </c:if>
  
- <c:if test='${viewPage == "leavemanagement/addLeaveType"}'>
+ <%-- <c:if test='${viewPage == "leavemanagement/addLeaveType"}'>
 	<link href="resources/css/summernote.css?staticTime=${staticTime}" rel="stylesheet">
 	<link href="resources/css/bootstrap-colorpicker.min.css?staticTime=${staticTime}" rel="stylesheet">
 	<script src="resources/js/bootstrap-colorpicker.min.js?staticTime=${staticTime}"></script> 
 	<script src="resources/js/summernote.js?staticTime=${staticTime}"></script>
- </c:if>
+ </c:if> --%>
  
 <!--  Amcharts -->
 <script src="resources/js/bootstrap-colorpicker.min.js?staticTime=${staticTime}"></script>

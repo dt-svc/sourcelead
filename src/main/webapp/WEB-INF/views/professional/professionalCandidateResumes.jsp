@@ -384,7 +384,6 @@ function deleteResume(candidateId, resumeId){
 	$("#deleteResumePopUp").append(result);
 	$("#remove_user_pop").slideDown(200);
 	$(".project_inn_mask").fadeIn(200);
-
 }
 </script>
 
@@ -403,7 +402,7 @@ function deleteSelectedResume(candidateId, resumeId){
 	   	type: "POST",
 	    url: sourceleadUrl+"/terminateResume?${_csrf.parameterName}=${_csrf.token}&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&resumeId="+resumeId, 	   
 		    success: function(data) {
-		    	
+		    	candidateResumesList(candidateId);
 		    	if(data != null && data != 'undefined' && data != ""){
 		    		$('#perVal').attr('aria-valuenow', data).css('width',data+'%');
         			 if(data<50){
@@ -422,7 +421,6 @@ function deleteSelectedResume(candidateId, resumeId){
      			 $("#selector2").css({ display: "block" });
      			 $("#resumeMsgDiv").html("Resume deleted");
     			 $("#popUpDivResume").removeClass("edit-details-active");
-    			 candidateResumesList(candidateId);
     			 deleteResumePopUp();
     			 resumesMsgFadein();
     			 

@@ -271,15 +271,9 @@ public class SubmissionApproverHierarchyServiceImpl implements SubmissionApprove
 			
 				 
 
-				 if(projectMembers.getEmployee().getEmployeeId() !=null && !"".equalsIgnoreCase(projectMembers.getEmployee().getEmployeeId())){
+				 if(projectMembers.getProjectMemberCandidteId() !=null && projectMembers.getProjectMemberCandidteId().getConsultantUser() != null && !"".equalsIgnoreCase(projectMembers.getProjectMemberCandidteId().getConsultantUser().getFullName())){
 					 
-					 StringBuilder builder=new StringBuilder();
-					 globalVarsMap.put("employeeName",builder.append(projectMembers.getEmployee().getEmployeeId()).append("-").append(projectMembers.getEmployee().getUser().getFullName()).toString());
-				 }
-				
-				 else{
-					 globalVarsMap.put("employeeName",projectMembers.getEmployee().getUser().getFullName()); 
-					 
+					 globalVarsMap.put("employeeName",projectMembers.getProjectMemberCandidteId().getConsultantUser().getFullName());
 				 }
 				 if( projectMembers.getProjects().getProjectSequeneNumber() !=null && !"".equalsIgnoreCase( projectMembers.getProjects().getProjectSequeneNumber())){
 					 StringBuilder builder=new StringBuilder();
