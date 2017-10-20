@@ -122,7 +122,7 @@ public class HolidayServiceImpl implements HolidayService{
 			hDTO.setHolidayName(hlist.getHolidayName());
 			if(hlist.getFromDate() != null){
 				hDTO.setFromDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), hlist.getFromDate()));
-				//hDTO.setDayOfTheWeek(Constants.WEEK_DAY.format(hlist.getFromDate()));
+				hDTO.setDayOfTheWeek(Constants.WEEK_DAY.format(hlist.getFromDate()));
 			}
 			if(hlist.getToDate() != null)
 			hDTO.setToDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), hlist.getToDate()));

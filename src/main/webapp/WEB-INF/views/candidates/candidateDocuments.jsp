@@ -102,9 +102,9 @@ function candDocumentsList(candidateId){
 	 $.ajax({  
           type : "POST",
           url: sourceleadUrl+"/getCandidateDocumentsListByCandidateId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
-          success :function(data) {
+          success :function(json) {
            
-             			 var json = JSON.parse(data); 
+//              			 var json = JSON.parse(data); 
              			 
 	                	 $("#candidateDocumentsList").empty();
 	                	 var result = "";
@@ -122,8 +122,8 @@ function candDocumentsList(candidateId){
 	                     result = result +"</thead>";
 	                     result = result +"<tbody>"; 
 	                     
-	                     for (var i = 0; i < json.length; i++) { 
-	                    	 var opt = json[i];  
+	                     for (var i = 0; i < json.data.length; i++) { 
+	                    	 var opt = json.data[i];  
 	                    	 result  = result + ' <tr>';
 	                    	 if(opt.requestedDocumentsId != null && opt.requestedDocStatus != "Rejected" && opt.requestedDocStatus != "Accepted"){
 	                    		 result = result +'<td><input id="'+opt.id+'" value="'+opt.id+'"  onclick="deleteRequestedDoc();" type="checkbox" name="documents[]" class="myCheckbox" >';

@@ -102,6 +102,7 @@ function redirectlocation(location){
 			result = result + '<th>Leaves Taken</th>';
 			result = result + '<th>Approved By</th>';
 			result = result + '<th>Cancelled By</th>';
+			result = result + '<th>Reason</th>';
 			result = result + '</tr>';
 			result = result + '</thead>	';
 	        result = result +"</table>";
@@ -130,6 +131,7 @@ function redirectlocation(location){
 	            { "data": "leavesTaken"},
 	            { "data": "approvedBy" },
 	            { "data": "cancelledBy" },
+	            { "data": "cancelReason" },
 	            
 	        ],
 	        "columnDefs": [ {
@@ -137,9 +139,9 @@ function redirectlocation(location){
 		    	  	"data": "empName",
 		    	  	"render": function(data, type, opt, meta) {
 		    	  		  var result = "";
-
-		    	  		result = result + '     <div class="pull-left tbldata-dotdot-me cursorPointer" title="'+opt.empName+'('+opt.empType+')" onclick="getRequestedAproveSummary(\''+opt.id+'\','+opt.orgLocationId+');">'+opt.empName+'('+opt.empType+')<i class="fa fa-binoculars pull-right"></i></div>'; 
-
+		    	  		result = result + ' <div class="proj_show divmax-width">';
+		    	  		result = result + '<div class="pull-left tbldata-dotdot cursorPointer" title="'+opt.empName+'('+opt.empType+')" onclick="getRequestedAproveSummary(\''+opt.id+'\','+opt.orgLocationId+');">'+opt.empName+'('+opt.empType+')</div><i class="fa fa-binoculars pull-right"></i>'; 
+		    	  		result = result + ' </div>';
 			              return result; 
 		    	  	}
 		      },{
@@ -191,6 +193,14 @@ function redirectlocation(location){
 		    	  		 result = result + ' <div title="'+opt.cancelledBy+'" class="tblminwidth-75">'+opt.cancelledBy+'</div>';	
 		    	  		return result; 
 		    	  	}
+		    	  },{
+			    	  	"targets": colIndex++,
+			    	  	"data": "cancelReason",
+			    	  	"render": function(data, type, opt, meta) {
+			    	  		var result = "";
+			    	  		 result = result + ' <div title="'+opt.cancelReason+'" class="tblminwidth-75">'+opt.cancelReason+'</div>';	
+			    	  		return result; 
+			    	  	}
 		    	  }], 
 	                "scrollCollapse": false,
 	            	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
@@ -252,13 +262,17 @@ function getRequestedAproveSummary(leaveId,orgLocationId){
 			 result = result +'<div class="col-md-12 mb">';
 			 result = result +' <label class="col-md-2 control-label"><b>Employee Name:</b></label>';
 			 result = result +' <div class="col-md-8">';
-			 result = result +' <span>'+data.empName+'</span>';
+			 if(data.empName !=null && data.empName !='' && data.empName !='undefined'){
+				 result = result +'  <span>'+data.empName+'</span>';	 
+			 }else{
+				 result = result +'  <span>--</span>';
+			 }
 			 result = result +' </div>';
 			 result = result +'</div>';
 			 result = result +'<div class="col-md-12 mb">';
 			 result = result +'<label class="col-md-2 control-label"><b>Employee ID:</b></label>';
 			 result = result +'<div class="col-md-8">';
-			 if(data.empid !=null){
+			 if(data.empid !=null && data.empid !='' && data.empid !='undefined'){
 				 result = result +'  <span>'+data.empid+'</span>';	 
 			 }else{
 				 result = result +'  <span>--</span>';
@@ -268,61 +282,101 @@ function getRequestedAproveSummary(leaveId,orgLocationId){
 			 result = result +'<div class="col-md-12 mb">';
 			 result = result +'<label class="col-md-2 control-label"><b>Employee Email:</b></label>';
 			 result = result +' <div class="col-md-8">';
-			 result = result +' <span>'+data.empEmail+'</span>';
+			 if(data.empEmail !=null && data.empEmail !='' && data.empEmail !='undefined'){
+				 result = result +'  <span>'+data.empEmail+'</span>';	 
+			 }else{
+				 result = result +'  <span>--</span>';
+			 }
 			 result = result +' </div>';
 			 result = result +'</div>';
 			 result = result +'<div class="col-md-12 mb">';
 			 result = result +'<label class="col-md-2 control-label"><b>Employee Type:</b></label>';
 			 result = result +' <div class="col-md-8">';
-			 result = result +'<span>'+data.empType+'</span>';
+			 if(data.empType !=null && data.empType !='' && data.empType !='undefined'){
+				 result = result +'  <span>'+data.empType+'</span>';	 
+			 }else{
+				 result = result +'  <span>--</span>';
+			 }
 			 result = result +'</div>';
 			 result = result +'</div>';
 			 result = result +'<div class="col-md-12 mb">';
 			 result = result +'<label class="col-md-2 control-label"><b>Leave Type:</b></label>';
 			 result = result +'<div class="col-md-8">';
-			 result = result +'<span>'+data.leaveType+'</span>';
+			 if(data.leaveType !=null && data.leaveType !='' && data.leaveType !='undefined'){
+				 result = result +'  <span>'+data.leaveType+'</span>';	 
+			 }else{
+				 result = result +'  <span>--</span>';
+			 }
 			 result = result +'</div>';
 			 result = result +'</div>';
 			 result = result +'<div class="col-md-12 mb">';
 			 result = result +'<label class="col-md-2 control-label"><b>Duration:</b></label>';
 			 result = result +'<div class="col-md-8">';
-			 result = result +' <span>'+data.duration+'</span>';
+			 if(data.duration !=null && data.duration !='' && data.duration !='undefined'){
+				 result = result +'  <span>'+data.duration+'</span>';	 
+			 }else{
+				 result = result +'  <span>--</span>';
+			 }
 			 result = result +' </div>';
 			 result = result +'</div>';
              result = result +' <div class="col-md-12 mb">';
              result = result +'<label class="col-md-2 control-label"><b>Reason:</b></label>';
              result = result +'<div class="col-md-8">';
-             result = result +'<span>'+data.reason+'</span>';
+        	 if(data.reason !=null && data.reason !='' && data.reason !='undefined'){
+				 result = result +'  <span>'+data.reason+'</span>';	 
+			 }else{
+				 result = result +'  <span>--</span>';
+			 }
              result = result +' </div>';
              result = result +' </div>';
              result = result +'<div class="col-md-12 mb">';
              result = result +'<label class="col-md-2 control-label"><b>No of leaves taken:</b></label>';
              result = result +' <div class="col-md-8">';
-             result = result +'<span>'+data.leavesTaken+'</span>';
+             if(data.leavesTaken !=null && data.leavesTaken !='' && data.leavesTaken !='undefined'){
+				 result = result +'  <span>'+data.leavesTaken+'</span>';	 
+			 }else{
+				 result = result +'  <span>--</span>';
+			 }
              result = result +'</div>';
              result = result +'</div>';
              result = result +'<div class="col-md-12 mb">';
              result = result +'<label class="col-md-2 control-label"><b>This month:</b></label>';
              result = result +'<div class="col-md-8">';
-             result = result +' <span>'+data.thisMonthLeaves+'</span>';
+             if(data.thisMonthLeaves !=null && data.thisMonthLeaves !='' && data.thisMonthLeaves !='undefined'){
+				 result = result +'  <span>'+data.thisMonthLeaves+'</span>';	 
+			 }else{
+				 result = result +'  <span>--</span>';
+			 }
              result = result +'</div>';
              result = result +'</div>';
              result = result +'<div class="col-md-12 mb">';
              result = result +'<label class="col-md-2 control-label"><b>Balance leaves:</b></label>';
              result = result +'<div class="col-md-8">';
-             result = result +' <span>'+data.balanceleaves+'</span>';
+             if(data.balanceleaves !=null && data.balanceleaves !='' && data.balanceleaves !='undefined'){
+				 result = result +'  <span>'+data.balanceleaves+'</span>';	 
+			 }else{
+				 result = result +'  <span>--</span>';
+			 }
              result = result +'</div>';
              result = result +'</div>';
              result = result +'<div class="col-md-12 mb">';
              result = result +'<label class="col-md-2 control-label"><b>Applied on:</b></label>';
              result = result +'<div class="col-md-8">';
-             result = result +'<span>'+data.createdDate+'</span>';
+             if(data.createdDate !=null && data.createdDate !='' && data.createdDate !='undefined'){
+				 result = result +'  <span>'+data.createdDate+'</span>';	 
+			 }else{
+				 result = result +'  <span>--</span>';
+			 }
              result = result +' </div>';
              result = result +'</div>';
              result = result +'<div class="col-md-12 mb">';
              result = result +'<label class="col-md-2 control-label"><b>Approvers:</b></label>';
              result = result +'<div class="col-md-8">';
-             result = result +' <span>'+data.approverUsers+'</span>';
+             if(data.approverUsers !=null && data.approverUsers !='' && data.approverUsers !='undefined'){
+				 result = result +'  <span>'+data.approverUsers+'</span>';	 
+			 }else{
+				 result = result +'  <span>--</span>';
+			 }
              result = result +'</div>';
              result = result +'</div>';
              result = result +'<div class="col-md-12 mb">';
@@ -330,7 +384,8 @@ function getRequestedAproveSummary(leaveId,orgLocationId){
              result = result +' <div class="col-md-8">';
 //              result = result +' <span><a href="javascript:void(o)">demo.pdf<i class="fa fa-download padddingLeft cursorPointer"></i></a></span>';
              if(data.fileUrl != null && data.fileUrl != 'undefined' && data.fileUrl != ''){
-            	 result = result + '<a href="#" title="Preview"><i class="fa fa-eye cursorPointer" onclick="viewFile(\''+data.fileUrl+'\', \''+data.fileName+'\', \''+data.fileType+'\')"></i></a>';
+            	 result = result+'<td><div class="tblicons_4"> <a class="glyphicon glyphicon-download-alt" target="_blank" href=\"'+data.fileUrl+'\" title="Download"></a>';
+            	 result = result + '<a href="#" title="Preview"><i class="fa fa-eye cursorPointer" onclick="viewFile(\''+data.fileUrl+'\', \''+data.fileName+'\', \''+data.fileContentType+'\')"></i></a>';
              }else{
             	 result = result +'<span>--</span>'; 
              }
@@ -339,31 +394,51 @@ function getRequestedAproveSummary(leaveId,orgLocationId){
              result = result +'<div class="col-md-12 mb">';
              result = result +'<label class="col-md-2 control-label"><b>Approved by:</b></label>';
              result = result +'<div class="col-md-8">';
-             result = result +' <span>'+data.rejectedBy+'</span>';
+             if(data.rejectedBy !=null && data.rejectedBy !='' && data.rejectedBy !='undefined'){
+				 result = result +'  <span>'+data.rejectedBy+'</span>';	 
+			 }else{
+				 result = result +'  <span>--</span>';
+			 }
              result = result +'</div>';
              result = result +'</div>';
              result = result +'<div class="col-md-12 mb">';
              result = result +'<label class="col-md-2 control-label"><b>Approved on:</b></label>';
              result = result +'<div class="col-md-8">';
-             result = result +' <span>'+data.updatedDate+'</span>';
+             if(data.updatedDate !=null && data.updatedDate !='' && data.updatedDate !='undefined'){
+				 result = result +'  <span>'+data.updatedDate+'</span>';	 
+			 }else{
+				 result = result +'  <span>--</span>';
+			 }
              result = result +'</div>';
              result = result +'</div>';
              result = result +'<div class="col-md-12 mb">';
              result = result +'<label class="col-md-2 control-label"><b>Cancelled by:</b></label>';
              result = result +'<div class="col-md-8">';
-             result = result +' <span>'+data.cancelledBy+'</span>';
+             if(data.cancelledBy !=null && data.cancelledBy !='' && data.cancelledBy !='undefined'){
+				 result = result +'  <span>'+data.cancelledBy+'</span>';	 
+			 }else{
+				 result = result +'  <span>--</span>';
+			 }
              result = result +'</div>';
              result = result +'</div>';
              result = result +'<div class="col-md-12 mb">';
              result = result +'<label class="col-md-2 control-label"><b>Cancelled on:</b></label>';
              result = result +'<div class="col-md-8">';
-             result = result +' <span>'+data.updatedDate+'</span>';
+             if(data.updatedDate !=null && data.updatedDate !='' && data.updatedDate !='undefined'){
+				 result = result +'  <span>'+data.updatedDate+'</span>';	 
+			 }else{
+				 result = result +'  <span>--</span>';
+			 }
              result = result +'</div>';
              result = result +'</div>';
              result = result +'<div class="col-md-12 mb">';
              result = result +'<label class="col-md-2 control-label"><b>Cancelled reason:</b></label>';
              result = result +'<div class="col-md-8">';
-             result = result +' <span>'+data.rejectedReason+'</span>';
+             if(data.rejectedReason !=null && data.rejectedReason !='' && data.rejectedReason !='undefined'){
+				 result = result +'  <span>'+data.rejectedReason+'</span>';	 
+			 }else{
+				 result = result +'  <span>--</span>';
+			 }
              result = result +'</div>';
              result = result +'</div>';
              result = result +'<div class="clearfix"></div>';

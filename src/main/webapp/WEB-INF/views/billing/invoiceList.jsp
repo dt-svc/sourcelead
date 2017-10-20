@@ -741,6 +741,7 @@ function invoicePagination(url){
                     },{
                         "targets": colIndex++,
                         "data": "action",
+                        "sortable": false,
                         "render": function ( data, type, report, meta ) {
                         	var result = "";
                         	result = result +'         <td> ';

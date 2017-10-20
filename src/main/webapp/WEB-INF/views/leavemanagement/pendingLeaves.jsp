@@ -171,50 +171,79 @@ function getRequestedAproveSummary(leaveId,orgLocationId,status){
 			 result = result +'<div class="col-md-12 mb">';
 			 result = result +'<label class="col-md-2 control-label"><b>Leave Type:</b></label>';
 			 result = result +'<div class="col-md-8">';
-			 result = result +'<span>'+data.leaveType+'</span>';
+			 if(data.leaveType != null && data.leaveType !='' && data.leaveType !='undefined'){
+				 result = result +'<span>'+data.leaveType+'</span>';
+			 }else{
+	            	result = result +' <span>--</span>';
+	            }
 			 result = result +'</div>';
 			 result = result +'</div>';
 			 result = result +'<div class="col-md-12 mb">';
 			 result = result +'<label class="col-md-2 control-label"><b>Duration:</b></label>';
 			 result = result +'<div class="col-md-8">';
-			 result = result +' <span>'+data.duration+'</span>';
+			 if(data.duration != null && data.duration !='' && data.duration !='undefined'){
+				 result = result +'<span>'+data.duration+'</span>';
+			 }else{
+	            	result = result +' <span>--</span>';
+	            }
 			 result = result +' </div>';
 			 result = result +'</div>';
              result = result +' <div class="col-md-12 mb">';
              result = result +'<label class="col-md-2 control-label"><b>Type:</b></label>';
              result = result +'<div class="col-md-8">';
-             result = result +'<span>'+data.reason+'</span>';
+             if(data.isBillable != null && data.isBillable !='' && data.isBillable !='undefined'){
+				 result = result +'<span>'+data.isBillable+'</span>';
+			 }else{
+	            	result = result +' <span>--</span>';
+	            }
              result = result +' </div>';
              result = result +' </div>';
              result = result +'<div class="col-md-12 mb">';
              result = result +'<label class="col-md-2 control-label"><b>No of leaves taken:</b></label>';
              result = result +' <div class="col-md-8">'; 
-             result = result +'<span>'+data.leavesTaken+'</span>';
+             if(data.leavesTaken != null && data.leavesTaken !='' && data.leavesTaken !='undefined'){
+				 result = result +'<span>'+data.leavesTaken+'</span>';
+			 }else{
+	            	result = result +' <span>--</span>';
+	            }
              result = result +'</div>';
              result = result +'</div>';
              result = result +'<div class="col-md-12 mb">';
              result = result +'<label class="col-md-2 control-label"><b>Applied on:</b></label>';
              result = result +'<div class="col-md-8">';
-             result = result +'<span>'+data.createdDate+'</span>';
+             if(data.createdDate != null && data.createdDate !='' && data.createdDate !='undefined'){
+				 result = result +'<span>'+data.createdDate+'</span>';
+			 }else{
+	            	result = result +' <span>--</span>';
+	            }
              result = result +' </div>';
              result = result +'</div>';
              result = result +'<div class="col-md-12 mb">';
              result = result +'<label class="col-md-2 control-label"><b>Approvers:</b></label>';
              result = result +'<div class="col-md-8">';
-             result = result +' <span>'+data.approverUsers+'</span>';
+             if(data.approverUsers != null && data.approverUsers !='' && data.approverUsers !='undefined'){
+				 result = result +'<span>'+data.approverUsers+'</span>';
+			 }else{
+	            	result = result +' <span>--</span>';
+	            }
              result = result +'</div>';
              result = result +'</div>';
              result = result +'<div class="col-md-12 mb">';
              result = result +'<label class="col-md-2 control-label"><b>Reason:</b></label>';
              result = result +'<div class="col-md-8">';
-             result = result +' <span>'+data.reason+'</span>';
+             if(data.reason != null && data.reason !='' && data.reason !='undefined'){
+				 result = result +'<span>'+data.reason+'</span>';
+			 }else{
+	            	result = result +' <span>--</span>';
+	            }
              result = result +'</div>';
              result = result +'</div>';
              result = result +'<div class="col-md-12 mb">';
              result = result +'<label class="col-md-2 control-label"><b>Attachment:</b></label>';
              result = result +' <div class="col-md-8">';
              if(data.fileUrl != null && data.fileUrl != 'undefined' && data.fileUrl != ''){
-            	 result = result + '<a href="#" title="Preview"><i class="fa fa-eye cursorPointer" onclick="viewFile(\''+data.fileUrl+'\', \''+data.fileName+'\', \''+data.fileType+'\')"></i></a>';
+            	 result = result+'<td><div class="tblicons_4"> <a class="glyphicon glyphicon-download-alt" target="_blank" href=\"'+data.fileUrl+'\" title="Download"></a>';
+            	 result = result + '<a href="#" title="Preview"><i class="fa fa-eye cursorPointer" onclick="viewFile(\''+data.fileUrl+'\', \''+data.fileName+'\', \''+data.fileContentType+'\')"></i></a>';
              }else{
             	 result = result +'<span>--</span>'; 
              }
@@ -269,9 +298,9 @@ function withDrawLeave(leaveId,orgLocationId){
 	var result = "";
 	result = result +"	<div class='comMask'></div>";
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
-	result = result +"		<textarea id='withdrawReason' class='form-control' field-name='Reject Reason'  data-validation='required validate_Space validate_Description validate_length length2-250' name='reasonForSpoc' value='' placeholder='Terminate Reason' rows='2'></textarea>";
+	result = result +"		<textarea id='withdrawReason' class='form-control' field-name='WithDraw Reason'  data-validation='required validate_Space validate_Description validate_length length2-250' name='reasonForSpoc' value='' placeholder='WithDraw Reason' rows='2'></textarea>";
 	result = result + ' <div id="withdrawReasonDiv"/>';
-	result = result +'		<b href="javascript:void(0)"><input id="confirm-id" type="button" value="Delete" onclick="withdraw(\''+leaveId+'\','+orgLocationId+');"><input class="u_can_color" type="button"  value="Cancel" onClick="cancelTermination();"></b>';
+	result = result +'		<b href="javascript:void(0)"><input id="confirm-id" type="button" value="Withdraw" onclick="withdraw(\''+leaveId+'\','+orgLocationId+');"><input class="u_can_color" type="button"  value="Cancel" onClick="cancelTermination();"></b>';
 	result = result +"	</div>";
 	$("#popUp").append(result);
 	$("#remove_user_pop").slideDown(200);

@@ -202,7 +202,7 @@ function filter(){
 	 	result = result + '<table id="projectsListTable" class="display" cellspacing="0" width="100%" >';
 		result = result + '<thead>';
 		result = result + '<tr>';
-		result = result +'	<th>Seq. Id</th>';
+		result = result +'	<th>Project Id</th>';
     	result = result +'    <th>Name</th>'; 
     	result = result +'     <th>Manager</th>';
     	result = result +'     <th>Invoice Frequency</th>';
@@ -352,6 +352,7 @@ function projectsPagination(url,sourceleadUrl){
 		     },{
 		    	  "targets": colIndex++,
 	              "data": "projectStatus",
+	              "sortable": false,
 	              "render": function ( data, type, opt, meta ) {
 	            	  var result = "";
 	            	  result = result +'<td data-title="Status"><div>';
