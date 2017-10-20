@@ -68,7 +68,7 @@ public class UserProfileRestController {
 	@Autowired
 	OrgLocationService orgLocationService;
 	
-	@RequestMapping(value = "/saveUserProfileImage", method = RequestMethod.POST)
+	@RequestMapping(value = {"/saveUserProfileImage","/rest/saveUserProfile"}, method = RequestMethod.POST)
 	public String saveProfileImage(AddUserProfileDTO addUserProfileDTO,	HttpServletRequest request) throws Exception{
 		addUserProfileDTO.setStaticPath(staticPath);
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
