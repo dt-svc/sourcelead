@@ -98,9 +98,8 @@ function candReferencesList(candidateId){
 	                     result = result +"  </tr>"; 
 	                     result = result +"</thead>";
 	                     result = result +"<tbody>"; 
-	                     
-	                      for (var i = 0; i < json.length; i++) { 
-	                    	 var opt = json[i];  
+	                      for (var i = 0; i < json.data.length; i++) { 
+	                    	 var opt = json.data[i];  
 	                    	 result  = result + ' <tr>';
 	                    	 if(opt.name != null && opt.name != '' && opt.name != "undefined")
 	    	             	 {
