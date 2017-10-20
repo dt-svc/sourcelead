@@ -258,7 +258,7 @@ public class UniversalSearchServiceImpl implements UniversalSearchService{
 							anyBoolQueryBuilder.should(anyBoolSubQueryBuilder);
 						}
 					}
-					 boolQueryBuilder.must(anyBoolQueryBuilder);
+					 boolQueryBuilderClientVendor.must(anyBoolQueryBuilder);
 				}
 
 				DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");

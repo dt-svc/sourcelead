@@ -291,6 +291,7 @@ public class ContractRestController {
 			orgSpoc.setSpocName(sb.toString());
 			orgSpoc.setSpocUserId(orgSpoc.getClientUser().getId());
 			orgSpoc.setTempOwnerId(orgSpoc.getVendorUser().getId());
+			orgSpoc.setSpocUserCode(orgSpoc.getVendorUser().getUserCode());
 			orgSpoc.setOwnerName(clientSb.toString());
 			if("Vendor".equalsIgnoreCase(listName)){
 				orgSpoc.setOwnerUserName(clientSb.toString());
@@ -547,7 +548,7 @@ public class ContractRestController {
 	
 	
 	@RequestMapping(value = "/getVendorForSOWByRequirementSubmissionId", method = RequestMethod.GET)
-	public @ResponseBody String getVendorForSOWByRequirementSubmissionId(@RequestParam(value = "reqSubId", required = false) String reqSubId, HttpServletRequest request,HttpServletResponse response) throws Exception {
+	public @ResponseBody RequirementSubmission getVendorForSOWByRequirementSubmissionId(@RequestParam(value = "reqSubId", required = false) String reqSubId, HttpServletRequest request,HttpServletResponse response) throws Exception {
 		
 		RequirementSubmission requirementSubmission = requirementSubmissionService.getRequirementSubmissionById(Long.parseLong(reqSubId));
 		if(requirementSubmission != null){
@@ -556,7 +557,7 @@ public class ContractRestController {
 			}
 		}
 		
-		return commonUtil.toJSON(requirementSubmission);
+		return requirementSubmission;
 	}
 	
 	

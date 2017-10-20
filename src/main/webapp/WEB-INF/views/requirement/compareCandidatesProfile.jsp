@@ -373,6 +373,8 @@ function prepareCandidateGrid(data,requirementId){
 	    	    	}
 	    	    	if(report.isCandidateSubmitted == 'N'){
 	    	    		opt = opt +'<button type="button" onClick="submitRecomendedApplicant('+requirementId+','+report.candidateId+',\'compare\');" class="btn btn-sm btn-success">Add</button>';
+	    	    	}else{
+	    	    		opt = opt +'<button type="button" class="btn btn-sm btn-success">Added</button>';
 	    	    	}
 	    	    	opt = opt +'</div>';
 		    	    opt = opt +'</div>';
@@ -603,6 +605,8 @@ function candidateDiv(report,div,requirementId){
 	   }
 	   if(report.isCandidateSubmitted == 'N'){
 		   opt = opt +'<button type="button" onClick="submitRecomendedApplicant('+requirementId+','+report.id+',\'compare\');" class="btn btn-sm btn-success">Add</button>';
+	   }else{
+		   opt = opt +'<button type="button" class="btn btn-sm btn-success">Added</button>';
 	   }
 	   opt = opt +'</div>';
 	   opt = opt +'</div>';

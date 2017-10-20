@@ -1,5 +1,6 @@
 package com.bis.sourcelead.service.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
@@ -15,6 +16,7 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.CandidateDocumentsDao;
 import com.bis.sourcelead.dto.CandidateDocumentsDTO;
 import com.bis.sourcelead.dto.FileInfo;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.elk.index.CandidateIndex;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
@@ -194,6 +196,46 @@ public class CandidateDocumentsServiceImpl implements CandidateDocumentsService 
 			
 		}
 		return candidateDocuments;
+	}
+	
+	@Override
+	public ResponseList<CandidateDocumentsDTO> getCandidateDocumentsDTOListByCandidateIdAndOrgLocationID(Long candidateId, Long orgLocationId) throws Exception
+	{
+		List<CandidateDocuments> docList = candidateDocumentsDao.getCandidateDocumentsListByCandidateIdAndOrgLocationID(candidateId, orgLocationId);
+		ResponseList<CandidateDocumentsDTO> candiDocDtoList = new ResponseList<>();
+		List<CandidateDocumentsDTO> candiDocList = new ArrayList<>();
+		for(CandidateDocuments doc : docList){
+			CandidateDocumentsDTO docDto = new CandidateDocumentsDTO();
+			docDto.setId(doc.getId().toString());
+			if(StringUtils.isNotBlank(doc.getDocumentOtherType()))
+				docDto.setDocumentOtherType(doc.getDocumentOtherType());
+			if(StringUtils.isNotBlank(doc.getDocumentType()))			
+				docDto.setDocumentType(doc.getDocumentType());
+			if(StringUtils.isNotBlank(doc.getIsConfidential()))		
+				docDto.setIsConfidential(doc.getIsConfidential());
+			if(StringUtils.isNotBlank(doc.getFileName()))		
+				docDto.setFileName(doc.getFileName());
+			if(StringUtils.isNotBlank(doc.getFileURL()))	
+				docDto.setFileURL(doc.getFileURL());
+			if(StringUtils.isNotBlank(doc.getFileContentType()))	
+				docDto.setFileContentType(doc.getFileContentType());
+			if(StringUtils.isNotBlank(doc.getDescription()))	
+				docDto.setDescription(doc.getDescription());
+			if(StringUtils.isNotBlank(doc.getDocumentUUID()))	
+				docDto.setDocumentUUID(doc.getDocumentUUID());
+			if(StringUtils.isNotBlank(doc.getDocUploadStatus()))	
+				docDto.setDocUploadStatus(doc.getDocUploadStatus());
+			if(doc.getRequestedDocumentsId() != null)	
+				docDto.setRequestDocumentId(doc.getRequestedDocumentsId().getId().longValue());
+			if(StringUtils.isNotBlank(doc.getDocUploadStatus()))	
+				docDto.setDocUploadStatus(doc.getDocUploadStatus());
+			if(StringUtils.isNotBlank(doc.getRequestedDocRejectedReason()))	
+				docDto.setRequestedDocRejectedReason(doc.getRequestedDocRejectedReason());
+			candiDocList.add(docDto);
+		}
+		
+		candiDocDtoList.setData(candiDocList);
+		return candiDocDtoList;
 	}
 	
 	@Override
