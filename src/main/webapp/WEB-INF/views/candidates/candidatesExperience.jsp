@@ -140,6 +140,9 @@ function closeCertificatePopup(){
 					candidateEmployersList(candidateId);
 					empMsgFadein();
 					qvemployeeSubmission(candidateId);
+					setTimeout(function(){
+			 			candidateList();					 			
+			 		},100);
 				}
 	        	}
 			
@@ -815,10 +818,10 @@ function removeEmployer(candidateemployerId, candidateId){
 				candidateEmployersList(candidateId);
 				empMsgFadein();
 				qvemployeeSubmission(candidateId);
+				setTimeout(function(){
+		 			candidateList();					 			
+		 		},100);
 	        });
-			
-			
-			
 			return true;
 		} else {
 			return false;
