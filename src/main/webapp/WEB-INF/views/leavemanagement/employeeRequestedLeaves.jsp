@@ -141,9 +141,13 @@ function requestedEmployeesPagination(url){
 	    	  	"render": function(data, type, opt, meta) {
 	    	  		    var result = "";
 		    	  		if(opt.empType !=null && opt.empType != '' && opt.empType !='undefined'){
-		    	  			result = result + '     <div class="pull-left tbldata-dotdot-me cursorPointer" title="'+opt.empName+'('+opt.empType+')" onclick="getRequestedAproveSummary(\''+opt.id+'\','+opt.orgLocationId+');">'+opt.empName+'('+opt.empType+')</div><i class="fa fa-binoculars pull-right"></i>';	
+		    	  			result = result + '     <div class="proj_show divmax-width">';
+		    	  			result = result + '     <div class="pull-left tbldata-dotdot cursorPointer" title="'+opt.empName+'('+opt.empType+')" onclick="getRequestedAproveSummary(\''+opt.id+'\','+opt.orgLocationId+');">'+opt.empName+'('+opt.empType+')</div><i class="fa fa-binoculars pull-right"></i>';
+		    	  			result = result + '     </div>';
 		        		}else{
-		        			result = result + '     <div class="pull-left tbldata-dotdot-me cursorPointer" title="'+opt.empName+'" onclick="getRequestedAproveSummary(\''+opt.id+'\','+opt.orgLocationId+');">'+opt.empName+'</div><i class="fa fa-binoculars pull-right"></i>';
+		        			result = result + '     <div class="proj_show divmax-width">';
+		        			result = result + '     <div class="pull-left tbldata-dotdot cursorPointer" title="'+opt.empName+'" onclick="getRequestedAproveSummary(\''+opt.id+'\','+opt.orgLocationId+');">'+opt.empName+'<i class="fa fa-binoculars pull-right"></i></div>';
+		        			result = result + '     </div>';
 		        		}
 		              return result; 
 	    	  	}
@@ -287,6 +291,9 @@ function approveLeave(leaveId,leaveTypeId,approveStatus,numberOfDays){
 			    			 $("#msgDiv").html("Approved Successfully..");
 			    		 }
 			    	     msgFadein();
+			    	     $(".new_side_wrap").removeClass("new_side_wrap_active");
+			    	 	$(".side_mask").fadeOut(200);
+			    	 	$("body").css('overflow-y', 'auto');
 						getRequestedEmployeesList();
 					}
 				});
@@ -418,7 +425,7 @@ function rejectLeave(id, leaveTypeId, noOfDays){
 	result = result +"	<div class='comMask'></div>";
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 	//result = result +"		<p>Do you want to delete this vendor contact?</p>";
-	result = result +"		<textarea id='leaveReasonForDelete' class='form-control' field-name='Reject Reason'  data-validation='required validate_Space validate_Description validate_length length2-250' name='reasonForSpoc' value='' placeholder='Terminate Reason' rows='2'></textarea>";
+	result = result +"		<textarea id='leaveReasonForDelete' class='form-control' field-name='Reject Reason'  data-validation='required validate_Space validate_Description validate_length length2-250' name='reasonForSpoc' value='' placeholder='Rejected Reason' rows='2'></textarea>";
 	result = result + ' <div id="rejectReasonDiv"/>';
 	result = result +'		<b href="javascript:void(0)"><input id="confirm-id" type="button" value="Reject" onclick="approveLeave(\''+id+'\',\''+leaveTypeId+'\',\'REJECTED\',\''+noOfDays+'\');"><input class="u_can_color" type="button"  value="Cancel" onClick="cancelTermination();"></b>';
 	result = result +"	</div>";

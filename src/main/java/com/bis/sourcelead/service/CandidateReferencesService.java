@@ -6,6 +6,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.bis.sourcelead.dto.CandidateReferencesDTO;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.CandidateReferences;
 import com.bis.sourcelead.entity.User;
 
@@ -23,7 +24,7 @@ public interface CandidateReferencesService {
 	 */
 	public CandidateReferences storeCandidateReferences(CandidateReferencesDTO candidateReferencesDTO,Long candidateId,Long orgLocationId,User user) throws JSONException,Exception;
 	
-    public List<CandidateReferences>  getCandidateReferencesListByCandidateIdAndOrgLocationID(Long candidateId, Long orgLocationId) throws Exception;
+    public ResponseList<CandidateReferencesDTO>  getCandidateReferencesListByCandidateIdAndOrgLocationID(Long candidateId, Long orgLocationId) throws Exception;
 	
 	public CandidateReferences getCandidateReferencesByCandidateIdAndReferenceId(Long candidateId,Long refId) throws Exception;
 	
