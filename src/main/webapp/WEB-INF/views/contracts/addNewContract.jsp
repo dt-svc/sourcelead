@@ -140,7 +140,7 @@
 				    	<span title="View Template" id="tempEye" style="display:block"> <i class="fa fa-eye btn btn-default formic1" onclick="previewTemplatePDF()"></i> </span>
 				    </c:when>
 				    <c:otherwise>
-				        <span title="View Template" id="tempEye" style="display:none"> <i class="fa fa-eye btn btn-default formic1" onclick="previewTemplatePDF()"></i> </span>
+				        <span title="View Template" id="tempEye" style="display:block"> <i class="fa fa-eye btn btn-default formic1" onclick="previewTemplatePDF()"></i> </span>
 				    </c:otherwise>
 				 </c:choose>
                   
@@ -1133,7 +1133,7 @@ function getContractTemplates(){
 
 <script>
 function contractTypeLabels(){
-	$("#tempEye").hide();
+	$("#tempEye").show();
 	var contractType = $("#contractType").val();
 /* 	if(contractType == ""){
 		$('#orgRelationId').removeAttr('data-validation');
