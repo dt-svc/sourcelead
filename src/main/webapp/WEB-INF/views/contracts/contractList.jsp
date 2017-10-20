@@ -370,7 +370,7 @@ function getTemplateList(){
 </script>
 
 <script>
-function preparedContractListDraft(data){
+function preparedContractListDraft(json){
 	var SourceLeadWeb_loginOrg= '${SourceLeadWeb_loginOrg}';
 	$("#vendorContractsList").empty();
     $("#clientContractsList").empty();
@@ -385,7 +385,7 @@ function preparedContractListDraft(data){
 	  }if(locationList.match("yyyy-dd-MM")){
 		  locationDate = 'YYYY-DD-MM'; 
 	  } 
-	 var json = JSON.parse(data);
+// 	 var json = JSON.parse(data);
 	 var result = '';
 	 result = result +  '<table id="contractListTableDraft" class="display" cellspacing="0" width="100%" >';
 		result = result + '	<thead>';
@@ -791,7 +791,7 @@ function appListContractsPagination(SourceLeadWeb_loginOrg,listLength){
 </script>
 
 <script>
-function preparedContractListWFA(data){
+function preparedContractListWFA(json){
 	var SourceLeadWeb_loginOrg= '${SourceLeadWeb_loginOrg}';
 	$("#vendorContractsList").empty();
     $("#clientContractsList").empty();
@@ -806,7 +806,7 @@ function preparedContractListWFA(data){
 	  }if(locationList.match("yyyy-dd-MM")){
 		  locationDate = 'YYYY-DD-MM'; 
 	  }
-	 var json = JSON.parse(data);
+// 	 var json = JSON.parse(data);
 	 var result = '';
 	 result = result +  '<table id="contractListTableWFA" class="display" cellspacing="0" width="100%" >';
 		result = result + '	<thead>';
@@ -1276,7 +1276,7 @@ function appListContractsPaginationWFA(SourceLeadWeb_loginOrg,listlength){
 </script>
 
 <script>
-function preparedContractListWTS(data){
+function preparedContractListWTS(json){
 	var SourceLeadWeb_loginOrg= '${SourceLeadWeb_loginOrg}';
 	$("#vendorContractsList").empty();
     $("#clientContractsList").empty();
@@ -1291,7 +1291,7 @@ function preparedContractListWTS(data){
 	  }if(locationList.match("yyyy-dd-MM")){
 		  locationDate = 'YYYY-DD-MM'; 
 	  } 
-	 var json = JSON.parse(data);
+// 	 var json = JSON.parse(data);
 	 var result = '';
 	 result = result +  '<table id="contractListTableWTS" class="display" cellspacing="0" width="100%" >';
 		result = result + '	<thead>';
@@ -1690,7 +1690,7 @@ function appListContractsPaginationWTS(SourceLeadWeb_loginOrg,listLength){
 </script>
 
 <script>
-function preparedContractListWTV(data){
+function preparedContractListWTV(json){
 	var SourceLeadWeb_loginOrg= '${SourceLeadWeb_loginOrg}';
 	$("#vendorContractsList").empty();
     $("#clientContractsList").empty();
@@ -1706,7 +1706,7 @@ function preparedContractListWTV(data){
 	  }if(locationList.match("yyyy-dd-MM")){
 		  locationDate = 'YYYY-DD-MM'; 
 	  } 
-	 var json = JSON.parse(data);
+// 	 var json = JSON.parse(data);
 	 var result = '';
 	 result = result +  '<table id="contractListTableWTV" class="display" cellspacing="0" width="100%" >';
 		result = result + '	<thead>';
@@ -2137,7 +2137,7 @@ function applicantsContractsPaginationWTV(SourceLeadWeb_loginOrg,listLength){
 </script>
 
 <script>
-function preparedContractListFinalize(data){
+function preparedContractListFinalize(json){
 	var SourceLeadWeb_loginOrg= '${SourceLeadWeb_loginOrg}';
 	$("#vendorContractsList").empty();
     $("#clientContractsList").empty();
@@ -2152,7 +2152,7 @@ function preparedContractListFinalize(data){
 	  }if(locationList.match("yyyy-dd-MM")){
 		  locationDate = 'YYYY-DD-MM'; 
 	  } 
-	 var json = JSON.parse(data);
+// 	 var json = JSON.parse(data);
 	 var result = '';
 	 result = result +  '<table id="contractListTableFinalize" class="display" cellspacing="0" width="100%" >';
 		result = result + '	<thead>';
@@ -2539,7 +2539,7 @@ function applicantsContractsPaginationFinalize(SourceLeadWeb_loginOrg,listLength
 </script>
 <!-- preparedContractListExpired -->
 <script>
-function preparedContractListExpired(data){
+function preparedContractListExpired(json){
 	var SourceLeadWeb_loginOrg= '${SourceLeadWeb_loginOrg}';
 	$("#vendorContractsList").empty();
     $("#clientContractsList").empty();
@@ -2555,7 +2555,7 @@ function preparedContractListExpired(data){
 	  }if(locationList.match("yyyy-dd-MM")){
 		  locationDate = 'YYYY-DD-MM'; 
 	  } 
-	 var json = JSON.parse(data);
+// 	 var json = JSON.parse(data);
 	 var result = '';
 	 result = result +  '<table id="contractListTableEXP" class="display" cellspacing="0" width="100%" >';
 		result = result + '	<thead>';
@@ -2915,7 +2915,7 @@ function applicantsContractsPaginationEXP(SourceLeadWeb_loginOrg,listLength){
 </script>
 
 <script>
-function preparedContractListRejected(data){
+function preparedContractListRejected(json){
 	var SourceLeadWeb_loginOrg= '${SourceLeadWeb_loginOrg}';
 	$("#vendorContractsList").empty();
     $("#clientContractsList").empty();
@@ -2931,7 +2931,7 @@ function preparedContractListRejected(data){
 	  }if(locationList.match("yyyy-dd-MM")){
 		  locationDate = 'YYYY-DD-MM'; 
 	  } 
-	 var json = JSON.parse(data);
+// 	 var json = JSON.parse(data);
 	 var result = '';
 	 result = result +  '<table id="contractListTableREJ" class="display" cellspacing="0" width="100%" >';
 		result = result + '	<thead>';

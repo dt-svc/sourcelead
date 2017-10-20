@@ -13,6 +13,10 @@ public class TimesheetExpenseEntryDetailsUtilDTO implements Serializable{
 	private String expenseFrom;
 	
 	private String expenseId;
+	
+	private String timeSheetsFor;
+	
+	private String expensesFor;
 
 	public Long getUserId() {
 		return userId;
@@ -47,6 +51,24 @@ public class TimesheetExpenseEntryDetailsUtilDTO implements Serializable{
 	public void setExpenseId(String expenseId) {
 		this.expenseId = expenseId;
 	}
+
+	public String getTimeSheetsFor() {
+		return timeSheetsFor;
+	}
+
+	public void setTimeSheetsFor(String timeSheetsFor) {
+		this.timeSheetsFor = timeSheetsFor;
+	}
+
+	public String getExpensesFor() {
+		return expensesFor;
+	}
+
+	public void setExpensesFor(String expensesFor) {
+		this.expensesFor = expensesFor;
+	}
+
+	
 	
 	                     
 }

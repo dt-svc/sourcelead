@@ -433,7 +433,7 @@ public class LeaveManagementRestController {
 	 */
 	@PreAuthorize("hasAnyRole('ROLE_LEAVE_CONFIGURE')")
 	@RequestMapping(value = "/addRestrictDay")
-	public ModelAndView addRestrictDayJsp(HttpServletRequest request,HttpServletResponse response,@RequestParam(value = "restrictUUID", required = false) String restrictUUID) {
+	public ModelAndView addRestrictDayJsp(HttpServletRequest request,HttpServletResponse response,@RequestParam(value = "restrictDayID", required = false) String restrictDayID) {
 		   ModelAndView model = new ModelAndView();
 		   OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		   Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
@@ -441,10 +441,23 @@ public class LeaveManagementRestController {
 		   
 		   List<Roles> rolesList = rolesService.getUserRolesListByModuleAndLoginUserRoleHierarchy(org,orgLocations.getId(),roleHierarchyId);
 		   model.addObject("rolesList", rolesList);
-		   if(StringUtils.isNotBlank(restrictUUID)) {
-			   RestrictDay restrictDay = restrictDayService.getRestrictDayByUUID(restrictUUID);
+		   List<Roles> existedRolesList = new ArrayList<Roles>();
+		   if(StringUtils.isNotBlank(restrictDayID)) {
+			   RestrictDay restrictDay = restrictDayService.getRestrictDayById(restrictDayID);
 			   model.addObject("restrictDay", restrictDay);
+			   
+				Set<LeaveRole> leaveRoles = restrictDay.getRestrictDayRolesList();
+				leaveRoles.forEach(role -> {
+					try {
+						Roles existedRole;
+						existedRole = rolesService.getRolesById(role.getRoleId().getId());
+						existedRolesList.add(existedRole);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				});
 		   }
+		   model.addObject("existedRoles", existedRolesList);
 		   model.addObject("sourceleadUrl", sourceleadUrl);
 		   model.setViewName("leavemanagement/addRestrictDay");
 	       return model;
@@ -541,6 +554,7 @@ public class LeaveManagementRestController {
 			restrictDayDTO.setReason(restrictDay.getReason());
 			restrictDayDTO.setIsApllicable(restrictDay.getApplicableToAll());
 			restrictDayDTO.setStatus(restrictDay.getStatus());
+			restrictDayDTO.setRestrictDayId(restrictDay.getId());
 			restrictDayDTOList.add(restrictDayDTO);
 		}
 		responseList.setData(restrictDayDTOList);
@@ -789,10 +803,10 @@ public class LeaveManagementRestController {
 	@PreAuthorize("hasAnyRole('ROLE_LEAVE_CONFIGURE')")
 	@RequestMapping(value = {"/deleteRestrictedDay"})
 	@ResponseBody
-	public  boolean deleteRestrictedDay(@RequestParam(value = "id", required = false) String id,@RequestParam(value = "reason", required = false) String reason) throws Exception
+	public  boolean deleteRestrictedDay(@RequestParam(value = "id", required = false) String restrictId,@RequestParam(value = "reason", required = false) String reason) throws Exception
 	{
 		boolean isDeleted = false;
-		 RestrictDay restrictDay = restrictDayService.getRestrictDayByUUID(id);
+		 RestrictDay restrictDay = restrictDayService.getRestrictDayById(restrictId);
 		 if(restrictDay !=null) {
 			 restrictDay.setStatus("0");
 			 restrictDay.setDeleteReason(reason);
@@ -1101,6 +1115,8 @@ public class LeaveManagementRestController {
 			}
 			durationSb.append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), leave.getFromDate()))
 					.append(System.getProperty("line.separator"))
+					.append("to")
+					.append(System.getProperty("line.separator"))
 					.append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), leave.getToDate()));
 
 			leaveDto.setDuration(durationSb.toString());
@@ -1113,22 +1129,26 @@ public class LeaveManagementRestController {
 			} catch (ParseException e) {
 				e.printStackTrace();
 			}
-			leaveDto.setBalanceleaves(leave.getLeaveType().getNumbefrOfLeavesPeryear());
 			leaveDto.setFileUrl(leave.getFileUrl());
 			leaveDto.setReason(leave.getReason());
 			leaveDto.setCreatedDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),leave.getCreatedDate()));
 			leaveDto.setFileName(leave.getFileName());
+			leaveDto.setFileContentType(leave.getFileContentType());
             if(leave.getRejectedReason() !=null) {
             	leaveDto.setRejectedReason(leave.getRejectedReason());
             }
-           
+            if(leave.getDeleteReason() !=null) {
+            	leaveDto.setDeleteReason(leave.getDeleteReason());
+            }
+            
 			StringBuilder sbu = new StringBuilder();
-			if(leave.getUser() != null){
-			if(StringUtils.isNotBlank(leave.getUser().getLastName())){
-				sbu.append(leave.getUser().getFirstName()).append(" ").append(leave.getUser().getLastName());
+			if(leave.getApprovedBy() != null){
+				User approvedUser = userService.getUserById(leave.getApprovedBy().getId());
+				if(StringUtils.isNotBlank(approvedUser.getLastName())){
+				sbu.append(approvedUser.getFirstName()).append(" ").append(approvedUser.getLastName());
 				leaveDto.setApprovedBy(sbu.toString());
 			}else{
-				sbu.append(leave.getUser().getFirstName());
+				sbu.append(approvedUser.getFirstName());
 				leaveDto.setApprovedBy(sbu.toString());
 			}
 		 }
@@ -1136,22 +1156,24 @@ public class LeaveManagementRestController {
 			leaveDto.setUpdatedDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),leave.getUpdatedDate()));
 			
 			StringBuilder sbr = new StringBuilder();
-			if(leave.getUser() != null){
-				if(StringUtils.isNotBlank(leave.getUser().getLastName())){
-					sbr.append(leave.getUser().getFirstName()).append(" ").append(leave.getUser().getLastName());
+			if(leave.getRejectedBy() != null){
+				User rejectedUser = userService.getUserById(leave.getRejectedBy().getId());
+				if(StringUtils.isNotBlank(rejectedUser.getLastName())){
+					sbr.append(rejectedUser.getFirstName()).append(" ").append(rejectedUser.getLastName());
 					leaveDto.setRejectedBy(sbr.toString());
 				}else{
-					sbr.append(leave.getUser().getFirstName());
+					sbr.append(rejectedUser.getFirstName());
 					leaveDto.setRejectedBy(sbr.toString());
 				}
 			}
 			StringBuilder sbc = new StringBuilder();
-			if(leave.getUser() != null){
-				if(StringUtils.isNotBlank(leave.getUser().getLastName())){
-					sbc.append(leave.getUser().getFirstName()).append(" ").append(leave.getUser().getLastName());
+			if(leave.getCancelledBy() != null){
+				User rejectedUser = userService.getUserById(leave.getCancelledBy().getId());
+				if(StringUtils.isNotBlank(rejectedUser.getLastName())){
+					sbc.append(rejectedUser.getFirstName()).append(" ").append(rejectedUser.getLastName());
 					leaveDto.setCancelledBy(sbc.toString());
 				}else{
-					sbc.append(leave.getUser().getFirstName());
+					sbc.append(rejectedUser.getFirstName());
 					leaveDto.setCancelledBy(sbc.toString());
 				}
 			 }
@@ -1179,6 +1201,8 @@ public class LeaveManagementRestController {
 			int thisMonthLeaves = leaveDao.getThisMonthLeavesTakenByUser(leave.getUser().getId(),leave.getLeaveType().getId());
 			leaveDto.setThisMonthLeaves(String.valueOf(thisMonthLeaves));
 			leaveDto.setIsBillable(leave.getLeaveType().getLeaveType());
+			int balLeaves = Integer.parseInt(leave.getLeaveType().getNumbefrOfLeavesPeryear()) - nuberOfLeavestaken;
+			leaveDto.setBalanceleaves(String.valueOf(balLeaves));
 		}
 		return leaveDto;
 	}
