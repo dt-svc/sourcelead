@@ -5,7 +5,6 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.aspectj.org.eclipse.jdt.internal.compiler.ast.ArrayAllocationExpression;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
@@ -24,9 +23,7 @@ import com.bis.sourcelead.dto.TaskDTO;
 import com.bis.sourcelead.dto.VendorOnboardDTO;
 import com.bis.sourcelead.dto.VendorOnboardTaskDTO;
 import com.bis.sourcelead.dto.VendorOnboardingTemplateDocumentDTO;
-import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.OrgLocations;
-import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.Tasks;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.VendorOnboardTasks;
@@ -82,11 +79,34 @@ public class VendorOnboardRestController {
 	@Autowired
 	TaskService taskService;
 	
-	@RequestMapping(value = "/getVendorOnboardingTemplatesList")
-	public List<VendorOnboardingTemplate> getVendorOnboardingTemplatesList(HttpServletRequest request) throws Exception {
+	@RequestMapping(value = { "/getVendorOnboardingTemplatesList", "/rest/getVendorOnboardingTemplatesList" }, method = RequestMethod.POST)
+	public List<OnBoardingTemplateDTO> getVendorOnboardingTemplatesList(HttpServletRequest request) throws Exception {
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		List<OnBoardingTemplateDTO> templateDTOList = new ArrayList<>();
 		List<VendorOnboardingTemplate> templatesList = vendorOnboardTemplateService.getVendorOnBoardingTemplatesList(loginOrgLocation.getId());
-		return templatesList;
+		if(templatesList != null && templatesList.size() > 0) {
+			for(VendorOnboardingTemplate template : templatesList) {
+				OnBoardingTemplateDTO templateDTO = new OnBoardingTemplateDTO();
+				templateDTO.setId(template.getId());
+				templateDTO.setTemplateName(template.getTemplateName());
+				templateDTO.setDescription(template.getDescription());
+				templateDTO.setTemplateStatus(template.getTemplateStatus());
+				templateDTO.setTemplateUUID(template.getTemplateUUID());
+				templateDTO.setTemplateCreatedDate(template.getTemplateCreatedDate());
+				templateDTO.setCreatedUser(template.getCreatedUser());
+				templateDTO.setIsDefaultTemplate(template.getIsDefaultTemplate());
+				
+				Integer documentsCount = vendorOnboardTemplateDocumentsService.getTemplateDocumentsCountByTemplateId(template.getId());
+				templateDTO.setDocumentsCount(documentsCount);
+				
+				Integer tasksCount = vendorOnboardTasksService.getTemplateTasksCountByTemplateId(template.getId());
+				templateDTO.setTasksCount(tasksCount);
+				
+				templateDTOList.add(templateDTO);
+			}
+		}
+		
+		return templateDTOList;
 	 }
 	
 	
@@ -211,6 +231,23 @@ public class VendorOnboardRestController {
 		return "success";
 	   
 	}
+	
+	
+	
+	@RequestMapping(value = "/deleteVendorOnboardTemplateByTemplateUUID" , method = RequestMethod.POST)
+	 public @ResponseBody  String deleteVendorOnboardTemplateByTemplateUUID(@RequestParam(value="templateUUID", required=false) String templateUUID,
+			 HttpServletRequest request) throws Exception {
+		
+		VendorOnboardingTemplate template =	vendorOnboardTemplateService.getVendorOnBoardingTemplateByTemplateUUID(templateUUID);
+	 	 if(template != null){
+	 		template.setStatus(Constants.CANDIDATE_IN_ACTIVE);
+	 		vendorOnboardTemplateService.saveVendorOnBoardingTemplate(template);
+	 	 }
+		return "success";
+	   
+	}
+	
+	
 	
 	@RequestMapping(value = "/requiredOrNotTemplateDocumentByDocumentUUID" , method = RequestMethod.POST)
 	 public @ResponseBody  String requiredOrNotTemplateDocumentByDocumentUUID(@RequestParam(value="documentUUID", required=false) String documentUUID,
