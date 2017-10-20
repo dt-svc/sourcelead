@@ -288,7 +288,7 @@ public class ProjectTasksDaoImpl implements ProjectTasksDao {
 	@Transactional(rollbackFor = { Exception.class })
 	public Long getProjectTasksGeneratedIdByProjectId(Long projectId, Integer generatedIdCount) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "SELECT MAX(CAST(SUBSTR(TRIM(GENERATED_ID),'"+generatedIdCount+"') AS UNSIGNED)) FROM SOURCELEAD.PROJECT_TASKS WHERE PROJECT_ID = '"+ projectId + "'";
+		String query = "SELECT count(*) FROM SOURCELEAD.PROJECT_TASKS WHERE PROJECT_ID = '"+ projectId + "'";
 		List<BigInteger> maxCountList = session.createSQLQuery(query).list();
 		Long count = 0L;
 		if (maxCountList != null && !maxCountList.isEmpty() && !maxCountList.contains(null)) {
@@ -343,6 +343,20 @@ public class ProjectTasksDaoImpl implements ProjectTasksDao {
 		String query = "from ProjectTasks pt where pt.projectId.id = :projectId and pt.createdDate >= :startDateUTC and pt.createdDate <= :endDateUTC" ;
 		List<ProjectTasks> projectTasksList =session.createQuery(query.toString()).setLong("projectId", projectId).setDate("startDateUTC", startDateUTC).setDate("endDateUTC", endDateUTC).setCacheable(true).list(); 
 		return projectTasksList;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Integer getProjectTasksCountByProjectId(Long projectId) throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		String query ="select count(*) from ProjectTasks pt where pt.projectId.id = :projectId ";
+		List<Long> tasksCount = session.createQuery(query.toString()).setLong("projectId", projectId).list();
+			Integer count = 0;
+			if(tasksCount != null && !tasksCount.isEmpty()){
+					count = tasksCount.get(0).intValue();
+			}
+			return count;
 	}
 	 
 }

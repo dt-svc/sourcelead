@@ -24,7 +24,8 @@ public class ClientVendorDTO extends SearchDTO implements Serializable {
 	private String level;
 	private String address;
 	private String billingAddress;
-	private String PaymentTerm;
+	//private String PaymentTerm;
+	private String paymentTerms;
 	private String email;
 	private String firstName;
 	private String lastName;
@@ -182,13 +183,13 @@ public class ClientVendorDTO extends SearchDTO implements Serializable {
 		this.billingAddress = billingAddress;
 	}
 
-	public String getPaymentTerm() {
+	/*public String getPaymentTerm() {
 		return PaymentTerm;
 	}
 
 	public void setPaymentTerm(String paymentTerm) {
 		PaymentTerm = paymentTerm;
-	}
+	}*/
 
 	public String getEmail() {
 		return email;
@@ -398,6 +399,16 @@ public class ClientVendorDTO extends SearchDTO implements Serializable {
 
 	public void setInvitationAdvanced(List<String> invitationAdvanced) {
 		this.invitationAdvanced = invitationAdvanced;
+	}
+
+	public String getPaymentTerms()
+	{
+		return paymentTerms;
+	}
+
+	public void setPaymentTerms(String paymentTerms)
+	{
+		this.paymentTerms = paymentTerms;
 	}
 
 

@@ -100,7 +100,7 @@ private Date updatedDate;
 private String updatedBy;
 
 @NotFound(action=NotFoundAction.IGNORE)
-@ManyToOne(cascade = CascadeType.ALL)
+@ManyToOne
 @Fetch(FetchMode.SELECT)
 @JoinColumn(name = "REOPENED_USER_ID", nullable = false)
 private User reopenedUser;

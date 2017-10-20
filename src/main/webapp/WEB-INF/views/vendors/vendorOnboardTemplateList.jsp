@@ -22,7 +22,7 @@
 			</div>
 		</div>
     </div>
-          <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='/orgTemplates'/>"> Templates</a> &raquo; Onboard Templates List</div>
+          <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='/orgTemplates'/>"> Templates</a> &raquo; Vendor Onboard Templates List</div>
  <div class="clearfix"></div>
     </section>
     
@@ -55,7 +55,6 @@ $(document).ready(function(){
 
 <script>
 function onboardingTemplatesList(){  
-	  var sourceleadUrl ='${sourceleadUrl}';
 	  $("#onboardingLoading").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	  $.ajax({
            type : "POST",
@@ -70,9 +69,12 @@ function onboardingTemplatesList(){
 	                     result = result +"  <tr>"; 
 	                     result = result +"    <th>Template Name</th>";
 	                     result = result +"    <th>Description</th>";
+	                     result = result +"    <th>Documents</th>";
+	                     result = result +"    <th>Tasks</th>";
 	                     result = result +"    <th>Created Date</th>";
 	                     result = result +"    <th>Created By</th>"; 
 	                     result = result +"    <th>Status</th>";
+	                     result = result +"    <th>Action</th>";
 	                    
 	                     '<sec:authorize access="hasRole(\'ROLE_VIEW_EDIT_ON_BOARD_TEMPLATE\')">'
 	                    		 result = result +"<th>Actions</th>";
@@ -85,7 +87,7 @@ function onboardingTemplatesList(){
 	                     
 	                    	 for (var i = 0; i < json.length; i++) { 
 	                    	 var opt = json[i]; 
-	                    	 result = result +"<tr>";
+	                    	 result = result +"<tr id='template"+opt.id+"'>";
 	                    	 
 	                    		 result = result +"<td><div class='tbldata-dotdot-sm'><span title='"+opt.templateName+"'>"+opt.templateName+"</span></div></td>";
 	                    		
@@ -94,15 +96,25 @@ function onboardingTemplatesList(){
 	                    		 }else{
 	                    			 result = result +"<td><div><span>--------</span></div></td>";
 	                    		 }
-	                    		
 	                    		 
+	                    		 result = result +"<td><div><span>"+opt.documentsCount+"</span></div></td>";
+	                    		 
+	                    		 result = result +"<td><div><span>"+opt.tasksCount+"</span></div></td>";
+	                    		
 	                    		 result = result +"<td><div><span>"+opt.templateCreatedDate+"</span></div></td>";
 	                    		 
 	                    		 result = result +"<td><div><span>"+opt.createdUser+"</span></div></td>";
 	                    		 
 	                    		 result = result +"<td><div><span>"+opt.templateStatus+"</span></div></td>";
 	                    		 
-		                    	 result = result +"<td><div class=''><a href='"+sourceleadUrl+"/viewVendorOnboardTemplateByTemplateUUID?templateUUID="+opt.templateUUID+"'>View</a></div></td>"; 
+		                    	 result = result +"<td>";
+		                    	 result = result +"<div class=''>";
+		                    	 result = result +"<a href='"+sourceleadUrl+"/viewVendorOnboardTemplateByTemplateUUID?templateUUID="+opt.templateUUID+"'>Edit</a> ";
+		                    	
+		                    	 if(opt.isDefaultTemplate != 'Y'){
+		                    		 result = result +'| <a href="javascript:void(0)" onclick="deleteOnboadTemplate(\''+opt.templateUUID+'\','+opt.id+');">Delete</a>';
+		                    	 }
+		                    	 result = result +"</div></td>"; 
 		                     
 		                     result = result +"</tr>";
 		                     result = result +"</tr>";
@@ -119,6 +131,24 @@ function onboardingTemplatesList(){
        }); 
   } 
 </script>   
+
+
+<script>
+function deleteOnboadTemplate(templateUUID,id){
+	  $("#onboardingLoading").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	  
+	  $.ajax({
+          type : "POST",
+          url: sourceleadUrl+"/deleteVendorOnboardTemplateByTemplateUUID?${_csrf.parameterName}=${_csrf.token}&templateUUID="+templateUUID,    
+           success :function(data) {
+        	   
+    			document.getElementById("template"+id).remove();
+    			 $("#onboardingLoading").removeAttr("style");
+           },
+           
+      }); 
+  }
+</script>
 
 <script>
 function onboardingPagenation(){ 

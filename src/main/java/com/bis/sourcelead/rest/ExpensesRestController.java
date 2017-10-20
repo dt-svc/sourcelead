@@ -133,11 +133,18 @@ public class ExpensesRestController {
 	private ProjectMembersHistoryService projectMembersHistoryService;
 	
 	@RequestMapping(value = {"/getExpensesList","/rest/getExpensesList"})
-    public List<ExpensesDTO> getExpensesList( @RequestBody ExpensesListUtilDTO elDTO) throws Exception
+    public List<ExpensesDTO> getExpensesList( @RequestBody ExpensesListUtilDTO elDTO,HttpServletRequest request) throws Exception
     {
         
-        OrgLocations orgLoc = orgLocationService.getOrgLocationsByLocationCode(elDTO.getLocationCode());
-        User loginUser = userService.getUserById(elDTO.getUserId());
+		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		
+		if(orgLoc == null){
+			orgLoc = orgLocationService.getOrgLocationsByLocationCode(elDTO.getLocationCode());
+		}
+		if(loginUser == null){
+			loginUser = userService.getUserById(elDTO.getUserId());
+		}
         String expenseStatus = "";
         if(elDTO.getExpenseStatus() != null && !elDTO.getExpenseStatus().isEmpty()){
             expenseStatus = elDTO.getExpenseStatus().stream ().map (i -> i.toString ()).collect (Collectors.joining (","));

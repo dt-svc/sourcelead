@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.CandidateDocumentsDTO;
 import com.bis.sourcelead.dto.FileInfo;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateDocuments;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -117,17 +118,15 @@ public class CandidateDocumentsRestController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/getCandidateDocumentsListByCandidateId")
-	public String getCandidateDocumentsListByCandidateId(@RequestParam(value = "candidateId", required = false) String candidateId, HttpServletRequest request) throws Exception
+	public ResponseList<CandidateDocumentsDTO> getCandidateDocumentsListByCandidateId(@RequestParam(value = "candidateId", required = false) String candidateId, HttpServletRequest request) throws Exception
 	{
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		String resultJson;
-		List<CandidateDocuments> CandidateDocumentsList = candidateDocumentsService.getCandidateDocumentsListByCandidateIdAndOrgLocationID(Long.parseLong(candidateId), loginOrgLocation.getId());
-		for (CandidateDocuments canDoc : CandidateDocumentsList) {
-			canDoc.setUserIdStr(user.getId());
+		ResponseList<CandidateDocumentsDTO> candidateDocumentsList = candidateDocumentsService.getCandidateDocumentsDTOListByCandidateIdAndOrgLocationID(Long.parseLong(candidateId), loginOrgLocation.getId());
+		for (CandidateDocumentsDTO canDoc : candidateDocumentsList.getData()) {
+			canDoc.setUserIdStr(user.getId().toString());
 		}
-		resultJson = commonUtil.toJSON(CandidateDocumentsList);
-		return resultJson;
+		return candidateDocumentsList;
 	}
 	
 	/**
