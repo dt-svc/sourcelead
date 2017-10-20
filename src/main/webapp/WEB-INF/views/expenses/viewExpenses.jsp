@@ -137,7 +137,7 @@
 								</li>
 								<div class="clearfix">
 								<div id='attachmentSection' class='col-md-4 noPad mt10'>
-				                   <div class="uploadFile timesheet_week_comm">
+				                   <div class="uploadFile timesheet_week_comm edit-Expense-upload">
 					                <div id='timesheetDocumentsId' class=''>
 					                       <c:forEach var="entryDoc" items="${entry.fileInfo}" varStatus="entryDocCount">
 					                        <c:if test = '${entryDoc.status == 1}'>

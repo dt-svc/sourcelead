@@ -733,6 +733,7 @@ public class TimesheetRestController {
 		   StringBuilder timesheetEntriesDiv = new StringBuilder();
 		  // DateFormat format = Constants.DF_DMY;
 		   //DateFormat  format = LoginSessionController.DATEFORMAT;
+		   Boolean isFillMyTimeSheet = commonUtil.hasRole("ROLE_FILL_MY_TIMESHEETS");
 		   Boolean isModifyMyTimeSheet = commonUtil.hasRole("ROLE_MODIFY_MY_TIMESHEETS");
 		   String acSubmissionStatusStr = null;
 		   if(!isNullOrEmpty(submissionStatusStr) && submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue())){
@@ -758,9 +759,10 @@ public class TimesheetRestController {
 	        	timesheetEntriesDiv.append("<b class='proj_draft "+pullRightClass+"'>").append(submissionStatus).append("</b>");
 	        }
 	        
+	       
 	        if(!isNullOrEmpty(submissionStatusStr) && (submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue()))){
 	        	timesheetEntriesDiv.append("<b "+innerStyleWidth+"  class='proj_process "+pullRightClass+" '>").append(submissionStatus).append("</b>");
-	        	if(isSahApproved && isModifyMyTimeSheet && from.equalsIgnoreCase("user") && isModifyMyTimeSheet){
+	        	if(isSahApproved && isModifyMyTimeSheet && from.equalsIgnoreCase("user") && isModifyMyTimeSheet && isFillMyTimeSheet){
 	                timesheetEntriesDiv.append("&nbsp;&nbsp;<b "+innerStyleWidth+" class='proj_withdraw'  onClick='withdrawMyTimesheet(\""+projectMemberId+"\",\""+weekStartDate+"To"+weekEndDate+"\");' >Modify</b>");
 	        	}
 	        }
@@ -1397,7 +1399,7 @@ public class TimesheetRestController {
 		tabDiv.append(" </ul>");
 		tabDiv.append("</div>");
 
-	      
+		if( isFillMyTimeSheet) {
 	    if(!isNullOrEmpty(approvalStatus)  && !(approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue()) && from.equalsIgnoreCase("user")) && !approvalStatus.equalsIgnoreCase(Submission_ApprovalStatus.getNameByValue("approved").getValue()) ){
 			
 	    	if(approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("new").getValue()) || approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("draft").getValue()) || !(approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue()) && from.equalsIgnoreCase("user")))
@@ -1411,11 +1413,12 @@ public class TimesheetRestController {
 			
 			if(!isNullOrEmpty(approvalStatus)  && approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("New").getValue()))
 			tabDiv.append("		            <input type='button' value='Clear' onClick='clearTimesheet();' class='time_btn time_cancel' />");	
-	    }
-	    else{
-	    	
-	    	tabDiv.append("		       <div class='clearfix'></div>   ");
-	    }
+	     }else{
+		    	
+		    	tabDiv.append("		       <div class='clearfix'></div>   ");
+		    }
+		}
+	    
 		
 		tabDiv.append("		        </div>   ");	
 		tabDiv.append("<div class='clearfix'></div> ");     
