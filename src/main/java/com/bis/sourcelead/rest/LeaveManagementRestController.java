@@ -1124,11 +1124,11 @@ public class LeaveManagementRestController {
            
 			StringBuilder sbu = new StringBuilder();
 			if(leave.getUser() != null){
-			if(StringUtils.isNotBlank(leave.getUser().getLastName())){
-				sbu.append(leave.getUser().getFirstName()).append(" ").append(leave.getUser().getLastName());
+			if(StringUtils.isNotBlank(leave.getApprovedBy().getLastName())){
+				sbu.append(leave.getApprovedBy().getFirstName()).append(" ").append(leave.getApprovedBy().getLastName());
 				leaveDto.setApprovedBy(sbu.toString());
 			}else{
-				sbu.append(leave.getUser().getFirstName());
+				sbu.append(leave.getApprovedBy().getFirstName());
 				leaveDto.setApprovedBy(sbu.toString());
 			}
 		 }
@@ -1137,21 +1137,21 @@ public class LeaveManagementRestController {
 			
 			StringBuilder sbr = new StringBuilder();
 			if(leave.getUser() != null){
-				if(StringUtils.isNotBlank(leave.getUser().getLastName())){
-					sbr.append(leave.getUser().getFirstName()).append(" ").append(leave.getUser().getLastName());
+				if(StringUtils.isNotBlank(leave.getRejectedBy().getLastName())){
+					sbr.append(leave.getRejectedBy().getFirstName()).append(" ").append(leave.getRejectedBy().getLastName());
 					leaveDto.setRejectedBy(sbr.toString());
 				}else{
-					sbr.append(leave.getUser().getFirstName());
+					sbr.append(leave.getRejectedBy().getFirstName());
 					leaveDto.setRejectedBy(sbr.toString());
 				}
 			}
 			StringBuilder sbc = new StringBuilder();
 			if(leave.getUser() != null){
-				if(StringUtils.isNotBlank(leave.getUser().getLastName())){
-					sbc.append(leave.getUser().getFirstName()).append(" ").append(leave.getUser().getLastName());
+				if(StringUtils.isNotBlank(leave.getCancelledBy().getLastName())){
+					sbc.append(leave.getCancelledBy().getFirstName()).append(" ").append(leave.getCancelledBy().getLastName());
 					leaveDto.setCancelledBy(sbc.toString());
 				}else{
-					sbc.append(leave.getUser().getFirstName());
+					sbc.append(leave.getCancelledBy().getFirstName());
 					leaveDto.setCancelledBy(sbc.toString());
 				}
 			 }
