@@ -1843,9 +1843,8 @@ function getVendorOrgname(vendorOrgname){
 		$.ajax({
 					type : "POST",
 					url : sourceleadUrl+"/getClientAndVendorOrgDeatilsById?"+tokenParamName+"="+tokenValue+"&vendorLocationId="+vendorLocationId+"&orgRelationId="+orgRelationId,
-					success : function(data) {
+					success : function(json) {
 						
-						var json = JSON.parse(data);
 						getVendorOrgname(json.orgName);
 						var result = "";
 						var city = "";
