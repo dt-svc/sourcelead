@@ -9,6 +9,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -42,6 +43,7 @@ import com.bis.sourcelead.dto.NotificationDTO;
 import com.bis.sourcelead.dto.OptionsDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.RestrictDayDTO;
+import com.bis.sourcelead.dto.RoleDTO;
 import com.bis.sourcelead.dto.ShiftDTO;
 import com.bis.sourcelead.entity.Department;
 import com.bis.sourcelead.entity.Employees;
@@ -66,6 +68,7 @@ import com.bis.sourcelead.service.LeaveService;
 import com.bis.sourcelead.service.LeaveTypeService;
 import com.bis.sourcelead.service.OptionsService;
 import com.bis.sourcelead.service.OrgLocationService;
+import com.bis.sourcelead.service.OrgService;
 import com.bis.sourcelead.service.RestrictDayService;
 import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.ShiftService;
@@ -147,6 +150,8 @@ public class LeaveManagementRestController {
 	@Autowired
 	LeaveManagementHistoryDao leaveManagementHistoryDao;
 
+	@Autowired
+	private OrgService orgService;
 	
 	/**
 	 * returns Pending leaves jsp
@@ -237,9 +242,10 @@ public class LeaveManagementRestController {
 		   ModelAndView model = new ModelAndView();
 		   OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		   Long roleId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRoleId");
-		   List<User> usersLis = userService.getAllUsersByOrgLocationCode(orgLocations.getId());
+		   User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		   List<User> usersList = userService.getUsersHierarchyListByOrgLocationIdAndRoleIdAndNoCurrentUser(loginUser.getId(), roleId, orgLocations.getId());
 		   model.addObject("sourceleadUrl", sourceleadUrl);
-		   model.addObject("usersLis", usersLis);
+		   model.addObject("usersLis", usersList);
 			List<User> approverList = userService.getManagersByUserRolesAndOrgLocationId(roleId, orgLocations.getId(),Long.valueOf(Constants.TAB_USER));
 			if(approverList !=null) {
 				for (User user : approverList) {
@@ -432,6 +438,7 @@ public class LeaveManagementRestController {
 		   OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		   Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 		   Long roleHierarchyId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "roleHierarchyId");
+		   
 		   List<Roles> rolesList = rolesService.getUserRolesListByModuleAndLoginUserRoleHierarchy(org,orgLocations.getId(),roleHierarchyId);
 		   model.addObject("rolesList", rolesList);
 		   if(StringUtils.isNotBlank(restrictUUID)) {
@@ -475,12 +482,20 @@ public class LeaveManagementRestController {
 		Long roleHierarchyId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "roleHierarchyId");
 		List<Department> departmentList = departmentService.getDepartmentByOrgLocationId(orgLocations.getId());
 		List<Roles> rolesList = rolesService.getUserRolesListByModuleAndLoginUserRoleHierarchy(org,orgLocations.getId(),roleHierarchyId);
+		
+		List<Long> optionRoleIds = optionsService.getOptionRoleIds(orgLocations.getId());
+		List<Roles> rolesList1 = new ArrayList<>();
+		for(Roles role : rolesList) {
+			if(!optionRoleIds.contains(role.getId())) {
+				rolesList1.add(role);
+			}
+		}
 		List<String> calendarList = new ArrayList<String>(Arrays.asList(Constants.MONTHS));
 		List<String> weekends = new ArrayList<String>(Arrays.asList(Constants.WEEKENDS));
 		model.addObject("calendarList", calendarList);
 		model.addObject("weekends", weekends);
 		model.addObject("departmentList", departmentList);
-		model.addObject("rolesList", rolesList);
+		model.addObject("rolesList", rolesList1);
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.setViewName("leavemanagement/addOptions");
 		return model;
@@ -532,11 +547,22 @@ public class LeaveManagementRestController {
 		return responseList;
 	}
 
+	/**
+	 * Adding shift 
+	 * @param shiftDTO
+	 * @return  String
+	 * @throws Exception
+	 */
 	@PreAuthorize("hasAnyRole('ROLE_LEAVE_CONFIGURE')")
-	@RequestMapping(value = {"/saveShift", "/rest/saveShift"}, method = RequestMethod.POST)
+	@RequestMapping(value = { "/saveShift", "/rest/saveShift" }, method = RequestMethod.POST)
 	public String saveShift(ShiftDTO shiftDTO) throws Exception {
-		shiftService.saveShift(shiftDTO);
-	       return "success";
+		String isInserted = "failure";
+		Shift shift = shiftService.saveShift(shiftDTO);
+		if (shift != null) {
+			isInserted = "success";
+		}
+		return isInserted;
+
 	}
 	
 	@PreAuthorize("hasAnyRole('ROLE_LEAVE_CONFIGURE')")
@@ -548,11 +574,21 @@ public class LeaveManagementRestController {
 	    
 	      for(Shift shift : shiftList){
 		     ShiftDTO shiftDTO = new ShiftDTO();
+		        shiftDTO.setId(shift.getId());
 				shiftDTO.setShiftName(shift.getShiftName());
 				shiftDTO.setTimeIn(shift.getTimeIn());
 				shiftDTO.setTimeOut(shift.getTimeOut());
 				shiftDTO.setShiftDescription(shift.getShiftDescription());
 				shiftDTO.setStatus(shift.getStatus());
+				User user = userService.getUserByUserCode(shift.getCreatedBy());
+				StringBuilder sb = new StringBuilder();
+				if(StringUtils.isNotBlank(user.getLastName())) {
+					sb.append(user.getFirstName()).append("").append(user.getLastName());
+				}else {
+					sb.append(user.getFirstName());
+				}
+				shiftDTO.setUpdatedBy(sb.toString());
+				shiftDTO.setUserId(sb.toString());
 				shiftDTOList.add(shiftDTO);
 	
 	            }
@@ -744,6 +780,7 @@ public class LeaveManagementRestController {
 		   model.addObject("departmentList", departmentList);
 		   model.addObject("options", options);
 		   model.addObject("sourceleadUrl", sourceleadUrl);
+		   model.addObject("optionId",options.getId());
 		   model.setViewName("leavemanagement/addOptions");
 	       return model;
 	}
@@ -1035,7 +1072,7 @@ public class LeaveManagementRestController {
 	 * @throws Exception
 	 */
 	@PreAuthorize("hasAnyRole('ROLE_APPROVE_LEAVE')")
-	@RequestMapping(value = { "/getRequestedAproveSummary","/rest/getRequestedAproveSummary" }, method = RequestMethod.GET)
+	@RequestMapping(value = { "/getRequestedAproveSummary" }, method = RequestMethod.GET)
 	@ResponseBody
 	public LeaveDTO getRequestedAproveSummary(@RequestParam(value = "leaveId", required = false) String leaveId,
 			@RequestParam(value = "orgLocationId", required = false) Long orgLocationId, HttpServletRequest request)
@@ -1141,7 +1178,7 @@ public class LeaveManagementRestController {
 			leaveDto.setLeavesTaken(String.valueOf(nuberOfLeavestaken));
 			int thisMonthLeaves = leaveDao.getThisMonthLeavesTakenByUser(leave.getUser().getId(),leave.getLeaveType().getId());
 			leaveDto.setThisMonthLeaves(String.valueOf(thisMonthLeaves));
-
+			leaveDto.setIsBillable(leave.getLeaveType().getLeaveType());
 		}
 		return leaveDto;
 	}
@@ -1245,7 +1282,7 @@ public class LeaveManagementRestController {
 
 	@RequestMapping(value = "/validateRestrictDate")
 	@ResponseBody
-	public boolean validateRestrictDate(@RequestParam(value = "fromDate", required = false) String fromDate,
+	public String validateRestrictDate(@RequestParam(value = "fromDate", required = false) String fromDate,
 			@RequestParam(value = "toDate", required = false) String toDate,
 			@RequestParam(value = "orgLocationId", required = false) Long orgLocationId,
 			@RequestParam(value = "roleId", required = false) Long roleId,
@@ -1253,15 +1290,17 @@ public class LeaveManagementRestController {
 
 		boolean isValid = false;
 		List<RestrictDay> restrictDayList = new ArrayList<>();
+		String isTrue = null;
+		StringBuilder sb = null;
 		OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
-		if(StringUtils.isNotBlank(leaveId)){
+		if (StringUtils.isNotBlank(leaveId)) {
 			Leave leave = leaveService.getLeaveByLeavId(leaveId);
 			fromDate = commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), leave.getFromDate());
 			toDate = commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), leave.getToDate());
 		}
-		List<RestrictDay> restDay = restrictDayService.validateRestrictDayDates(fromDate,toDate,orgLocations);
+		List<RestrictDay> restDay = restrictDayService.validateRestrictDayDates(fromDate, toDate, orgLocations);
 
-		 Set<Long> roleIds = new HashSet<>();
+		Set<Long> roleIds = new HashSet<>();
 		for (RestrictDay resDay : restDay) {
 			if (!"Y".equalsIgnoreCase(resDay.getApplicableToAll())) {
 				for (LeaveRole leaveRole : resDay.getRestrictDayRolesList()) {
@@ -1273,18 +1312,40 @@ public class LeaveManagementRestController {
 				restrictDayList.add(resDay);
 			}
 		}
-		if(restrictDayList != null && restrictDayList.size()>0) {
+		if (restrictDayList != null && restrictDayList.size() > 0) {
+			 sb = new StringBuilder();
+			for(RestrictDay day : restrictDayList) {
+				if(day.getStartDate().equals(day.getEndDate())) {
+					sb.append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), day.getStartDate()));
+				}else {
+					sb.append(commonUtil.getDaysBetweenDates(day.getStartDate(),day.getEndDate(),orgLocations.getDateFormat()));
+				}
+			}
 			isValid = true;
 		}
-		if(!isValid) {
-			List<Holiday> holiDayList = holidayService.validateHoliDayDates(fromDate,toDate,orgLocations);
-			if(holiDayList != null && holiDayList.size()>0) {
+		if (!isValid) {
+			List<Holiday> holiDayList = holidayService.validateHoliDayDates(fromDate, toDate, orgLocations);
+			if (holiDayList != null && holiDayList.size() > 0) {
+				 sb = new StringBuilder();
+				for(Holiday hlday : holiDayList) {
+					if(Constants.HOLIDAY_RESTRICTED.equalsIgnoreCase(hlday.getHolidayStatus())) {
+						if(hlday.getFromDate().equals(hlday.getToDate())) {
+							sb.append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), hlday.getFromDate()));
+						}else {
+							sb.append(commonUtil.getDaysBetweenDates(hlday.getFromDate(),hlday.getToDate(),orgLocations.getDateFormat()));
+						}
+					}
+					
+				}
 				isValid = true;
 			}
 		}
-		
-		return isValid;
+       if(sb !=null) {
+    	   isTrue = sb.toString();
+       }
+		return isTrue;
 	}
+
 	
 
 	@RequestMapping(value = {"/totalCountsForEmployeeLeaves","/rest/totalCountsForEmployeeLeaves"}, method=RequestMethod.GET)
@@ -1336,7 +1397,6 @@ public class LeaveManagementRestController {
 		User user = userService.getUserById(userId);
 		boolean isValid = false;
 		isValid = leaveService.getWithdrawLeave(orgLocations,leaveId,user,reason);
-		
 		return isValid;
 
 	}
@@ -1409,6 +1469,42 @@ public class LeaveManagementRestController {
 		return leaveTypeDTOList;
 	}
 	
+
+	/**
+	 * 
+	 * @param orgLocationId
+	 * @param userId
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = {"/getRoles","/rest/getRoles"}, method=RequestMethod.GET)
+	public  ResponseList<RoleDTO> getRoles(@RequestParam(value = "orgLocationId", required = false) Long orgLocationId,
+			@RequestParam(value = "orgCode", required = false) String orgCode,
+			@RequestParam(value = "roleHierarchyId", required = false) Long roleHierarchyId,HttpServletRequest request,HttpServletResponse response) throws Exception {
+		
+		List<RoleDTO> roleDTOList =  new ArrayList<>();
+		ResponseList<RoleDTO> responseList = new ResponseList<>();
+		Org org = orgService.getOrgByOrgCode(orgCode);
+		List<Roles> rolesList = rolesService.getUserRolesListByModuleAndLoginUserRoleHierarchy(org,orgLocationId,roleHierarchyId);
+		List<Long> optionRoleIds = optionsService.getOptionRoleIds(orgLocationId);
+		List<Roles> rolesList1 = new ArrayList<>();
+		for(Roles role : rolesList) {
+			if(!optionRoleIds.contains(role.getId())) {
+				rolesList1.add(role);
+			}
+		}
+		rolesList1.forEach(role->{
+			RoleDTO roleDTO = new RoleDTO();
+			roleDTO.setId(role.getId());
+			roleDTO.setDisplayName(role.getDisplayName());
+			roleDTOList.add(roleDTO);
+		});
+		responseList.setData(roleDTOList);
+		return responseList;
+	}
+
 	@RequestMapping(value = { "/validateName", "/rest/validateName" }, method = RequestMethod.GET)
 	public boolean validateName(@RequestParam(value = "orgLocationId", required = true) Long orgLocationId, @RequestParam(value = "from", required = true) String fromTable, @RequestParam(value = "name", required = true) String name)
 	{

@@ -39,7 +39,7 @@
     <div class="form-group">
        <label class="col-md-3">Reason</label>
         <div class="col-md-9">
-            <textarea class="form-control" name="reason" value="${restrictDay.reason}" rows="2" placeholder="Reason">${restrictDay.reason}</textarea>
+            <textarea class="form-control" name="reason" value="${restrictDay.reason}" rows="2" data-validation="validate_length length1-500" data-validation-optional="true" placeholder="Reason">${restrictDay.reason}</textarea>
        </div>
     </div>
     <div class="form-group">

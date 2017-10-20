@@ -175,7 +175,7 @@ function getRequestedAproveSummary(leaveId,orgLocationId){
              result = result +' <div class="col-md-12 mb">';
              result = result +'<label class="col-md-2 control-label"><b>Type:</b></label>';
              result = result +'<div class="col-md-8">';
-             result = result +'<span>'+data.reason+'</span>';
+             result = result +'<span>'+data.isBillable+'</span>';
              result = result +' </div>';
              result = result +' </div>';
              result = result +'<div class="col-md-12 mb">';
