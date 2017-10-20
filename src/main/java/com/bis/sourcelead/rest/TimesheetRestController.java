@@ -39,8 +39,9 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.TimesheetEntriesDao;
-import com.bis.sourcelead.dto.ExpenseEntryDetailsDTO;
 import com.bis.sourcelead.dto.ProjectMembersDTO;
+import com.bis.sourcelead.dto.TimesheetEntriesDTO;
+import com.bis.sourcelead.dto.TimesheetEntryDetailsDTO;
 import com.bis.sourcelead.dto.TimesheetExpenseEntryDetailsUtilDTO;
 import com.bis.sourcelead.dto.helper.ProjectMemberDTOConverter;
 import com.bis.sourcelead.entity.Candidate;
@@ -163,12 +164,13 @@ public class TimesheetRestController {
 	@Autowired
 	private CandidateService candidateService;
 	
-	/*@RequestMapping(value = "/rest/getTimesheetEntryDetails")
+	@RequestMapping(value = "/rest/getTimesheetEntryDetails")
 	public TimesheetEntryDetailsDTO getTimesheetEntryDetails(@RequestBody TimesheetExpenseEntryDetailsUtilDTO eedDTO) throws Exception
 	{
 		TimesheetEntryDetailsDTO timesheetEntryDetailsDTO = new TimesheetEntryDetailsDTO();
 		OrgLocations orgLocations = orgLocationService.getOrgLocationsByLocationCode(eedDTO.getLocationCode());
 		Candidate candidate = candidateService.getCandidateByConsultantUserId(eedDTO.getUserId(), orgLocations.getId());
+		//For List Projects 
 		List<ProjectMembers> projectMembersList =  projectMembersService.getProjectMembersListByOrgLocationsIdAndCandidateId(orgLocations.getId(),candidate.getId());
 		if (projectMembersList != null && !projectMembersList.isEmpty()) {
 			ArrayList<ProjectMembersDTO> pmDTOList = new ArrayList<>();
@@ -179,7 +181,7 @@ public class TimesheetRestController {
 			Map<String,String>  timesheetFrequencyMap  = null;
 			for (ProjectMembers pm : projectMembersList) {
                 if(count == 1){
-                    timesheetFrequencyMap = timesheetFrequencyGeneratorUtil.getTimesheetFrequencyListFromProjectInvoiceFrequency(pm,"view");
+                    timesheetFrequencyMap = timesheetFrequencyGeneratorUtil.getTimesheetFrequencyListFromProjectInvoiceFrequency(pm,orgLocations,"view");
                     if(timesheetFrequencyMap == null || timesheetFrequencyMap.isEmpty())
                         continue;
 					
@@ -192,6 +194,8 @@ public class TimesheetRestController {
 			}
 			timesheetEntryDetailsDTO.setProjectMembersList(pmDTOList);
 			timesheetEntryDetailsDTO.setProjectMemberId(initialProjectMemberId);
+			
+			//For List Of Frequencies 
 			StringBuilder selectedStartDate = new StringBuilder("");
 			StringBuilder selectedEndDate =  new StringBuilder("");
 			TimesheetEntriesDTO entriesDTO = new TimesheetEntriesDTO();
@@ -215,9 +219,9 @@ public class TimesheetRestController {
 				    	selectedStartDate.append(key.replaceAll("/", "-"));
 				    	selectedEndDate.append(value.replaceAll("/", "-"));
 				    }
-				    timesheetEntriesDiv.append("		                  <option data-icon='fa fa-calendar' "+isSelected.toString()+" value='"+key.replaceAll("/", "-")+"To"+value.replaceAll("/", "-")+"'>");
+				   /* timesheetEntriesDiv.append("		                  <option data-icon='fa fa-calendar' "+isSelected.toString()+" value='"+key.replaceAll("/", "-")+"To"+value.replaceAll("/", "-")+"'>");
 				    timesheetEntriesDiv.append(key).append(" To ").append(value);
-				    timesheetEntriesDiv.append("		                  </option>");
+				    timesheetEntriesDiv.append("		                  </option>");*/
 				    flag++;
 			   }
 			}
@@ -226,7 +230,7 @@ public class TimesheetRestController {
 		return null;
 		
 	}
-	*/
+	
 	
 	@RequestMapping(value = "/timesheetEntriesDivByProjectMemberId", method = RequestMethod.POST ) 
 	public @ResponseBody String timesheetEntriesDivByProjectMemberId(HttpServletRequest request,

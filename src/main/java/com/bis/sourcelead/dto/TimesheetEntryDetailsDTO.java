@@ -7,15 +7,20 @@ public class TimesheetEntryDetailsDTO implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
 	
-	List<ProjectMembersDTO> projectMembersList;
+	private List<ProjectMembersDTO> projectMembersList;
 	
-	Long projectMemberId;
+	private Long projectMemberId;
 	
-	String frequencyStartDate;
+	private List<String> timeFrequencies;
 	
-	List<TimesheetEntriesDTO> timesheetFrequencyList;
+	private String currentFrequency;
 	
+	private TimeSubFrequencyDTO timeSubFrequencies;
 	
+	private String timesheetStatus;
+	
+	private String rejectedReason;
+
 	public List<ProjectMembersDTO> getProjectMembersList() {
 		return projectMembersList;
 	}
@@ -32,13 +37,48 @@ public class TimesheetEntryDetailsDTO implements Serializable{
 		this.projectMemberId = projectMemberId;
 	}
 
-	public List<TimesheetEntriesDTO> getTimesheetFrequencyList() {
-		return timesheetFrequencyList;
+	public List<String> getTimeFrequencies() {
+		return timeFrequencies;
 	}
 
-	public void setTimesheetFrequencyList(List<TimesheetEntriesDTO> timesheetFrequencyList) {
-		this.timesheetFrequencyList = timesheetFrequencyList;
+	public void setTimeFrequencies(List<String> timeFrequencies) {
+		this.timeFrequencies = timeFrequencies;
 	}
+
+	public String getCurrentFrequency() {
+		return currentFrequency;
+	}
+
+	public void setCurrentFrequency(String currentFrequency) {
+		this.currentFrequency = currentFrequency;
+	}
+
+	public TimeSubFrequencyDTO getTimeSubFrequencies() {
+		return timeSubFrequencies;
+	}
+
+	public void setTimeSubFrequencies(TimeSubFrequencyDTO timeSubFrequencies) {
+		this.timeSubFrequencies = timeSubFrequencies;
+	}
+
+	public String getTimesheetStatus() {
+		return timesheetStatus;
+	}
+
+	public void setTimesheetStatus(String timesheetStatus) {
+		this.timesheetStatus = timesheetStatus;
+	}
+
+	public String getRejectedReason() {
+		return rejectedReason;
+	}
+
+	public void setRejectedReason(String rejectedReason) {
+		this.rejectedReason = rejectedReason;
+	}
+	
+	
+	
 	
     
 }
