@@ -394,7 +394,7 @@
 											+ '<a href="#" title="Preview"><i class="fa fa-eye cursorPointer" onclick="viewFile(\''
 											+ data.fileUrl + '\', \''
 											+ data.fileName + '\', \''
-											+ data.fileType + '\')"></i></a>';
+											+ data.fileContentType + '\')"></i></a>';
 								} else {
 									result = result + '<span>--</span>';
 								}

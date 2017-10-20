@@ -385,7 +385,7 @@ function getRequestedAproveSummary(leaveId,orgLocationId){
 //              result = result +' <span><a href="javascript:void(o)">demo.pdf<i class="fa fa-download padddingLeft cursorPointer"></i></a></span>';
              if(data.fileUrl != null && data.fileUrl != 'undefined' && data.fileUrl != ''){
             	 result = result+'<td><div class="tblicons_4"> <a class="glyphicon glyphicon-download-alt" target="_blank" href=\"'+data.fileUrl+'\" title="Download"></a>';
-            	 result = result + '<a href="#" title="Preview"><i class="fa fa-eye cursorPointer" onclick="viewFile(\''+data.fileUrl+'\', \''+data.fileName+'\', \''+data.fileType+'\')"></i></a>';
+            	 result = result + '<a href="#" title="Preview"><i class="fa fa-eye cursorPointer" onclick="viewFile(\''+data.fileUrl+'\', \''+data.fileName+'\', \''+data.fileContentType+'\')"></i></a>';
              }else{
             	 result = result +'<span>--</span>'; 
              }
