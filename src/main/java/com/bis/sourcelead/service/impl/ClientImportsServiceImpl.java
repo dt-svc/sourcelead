@@ -1752,7 +1752,7 @@ public class ClientImportsServiceImpl implements ClientImportsService {
 			clientDTO.setBillingAddress(client.getBillingAddress());
 		}
 		if (null != client.getPaymentTerm() && !"".equalsIgnoreCase(client.getPaymentTerm())) {
-			clientDTO.setPaymentTerm(client.getPaymentTerm());
+			clientDTO.setPaymentTerms(client.getPaymentTerm());
 		}
 		
 		clientDTO.setAddUserDTO(addUserDTO);
