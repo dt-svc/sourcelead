@@ -597,7 +597,7 @@ function deleteProject(projectMemberId,projectId,startDateStr,endDateStr){
 	result = result +"	<div class='project_inn_mask'></div>"; 
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 
-	result = result +"		<p>Are you sure you want to delete ?</p>";
+	result = result +"		<p>Are you sure you want to reject ?</p>";
 	result = result +"		<textarea  id='reasonForProject' name='reasonForProject'  placeholder='Comments here' ></textarea>";
 	result = result + ' <div id="reasonForProjectDiv"/>';
 	result = result +'		<b href="javascript:void(0)"><input id="confirm-id" type="button" value="Delete" onclick="saveReason('+projectMemberId+',\''+projectId+'\',\''+startDateStr+'\',\''+endDateStr+'\');"><input class="u_can_color" type="button"  value="Cancel" onClick="cancelTermination();"></b>';
@@ -610,6 +610,7 @@ function deleteProject(projectMemberId,projectId,startDateStr,endDateStr){
 function cancelTermination(){
 	$("#popUp").empty();
 	 $(".project_inn_mask").fadeOut(200);
+	 $(".vendor_wrap_mask").fadeOut(200);
 }
 
 function saveReason(projectMemberId,projectId,startDateStr,endDateStr){
@@ -1983,6 +1984,14 @@ function rejectedMessage(local){
 	   
 	}
 </script>
+<script type="text/javascript">
+        var validationSettings = {
+            errorMessagePosition : 'element',
+            borderColorOnError : '',
+			scrollToTopOnError : true,
+			dateFormat : 'yyyy/mm/dd' 
+            };
+</script> 
 <script>
 function deleteBudgetRequaet(budgetRequestedId){
 	var result = "";
@@ -1991,8 +2000,8 @@ function deleteBudgetRequaet(budgetRequestedId){
 	result = result +"<form id='deleteBudget_form' name='deleteBudget_form' >";
 	result = result +"<input type='hidden' id='budgetRequestedId' name='budgetRequestedId' value='"+budgetRequestedId+"'>";
 	result = result +"<input type='hidden' id='loginUserid' name='loginUserid' value='${SourceLeadWeb_user.id}'>";
-	result = result +"		<p>Are you sure you want to delete ?</p>";
-	result = result +"		<textarea  id='reasonForProjectBudget' name='reasonForProjectBudget'  placeholder='Comments here' field-name='Reason' data-validation='validate_length length2-5000' data-validation-optional='true'></textarea>";
+	result = result +"		<p>Are you sure you want to reject ?</p>";
+	result = result +"		<textarea  id='reasonForProjectBudget' name='reasonForProjectBudget'  placeholder='Comments here' field-name='Reason' data-validation='required validate_length length2-5000'></textarea>";
 	result = result +"</form>";
 	result = result +'		<b href="javascript:void(0)"><input id="delete_budget-id" type="button" value="Reject" onclick="saveBudgetReason('+budgetRequestedId+');"><input class="u_can_color" type="button"  value="Cancel" onClick="cancelTermination();"></b>';
 	result = result +"	</div>";
@@ -2005,8 +2014,10 @@ function deleteBudgetRequaet(budgetRequestedId){
 function cancelTermination(){
 	$("#popUp").empty();
 	 $(".project_inn_mask").fadeOut(200);
+	 $(".vendor_wrap_mask").fadeOut(200);
 }
 function saveBudgetReason(budgetRequestedId){
+	if ($('#deleteBudget_form').validate(false, validationSettings)) {
 	var sourceleadUrl = '${sourceleadUrl}';
      $("#delete_budget").attr("disabled", "disabled");
 	 $("#delete_budget").attr("disabled", "disabled");
@@ -2021,12 +2032,15 @@ function saveBudgetReason(budgetRequestedId){
 	   			 	budgetRequests();
 				},
 			}); 
-}
-$('body').on('blur', '#deleteBudget_form', function() {
+	 return true;
+	}else{
+		return false;
+}}
+/* $('body').on('blur', '#deleteBudget_form', function() {
 	$("#deleteBudget_form").showHelpOnFocus();;
 	$("#deleteBudget_form").validateOnBlur(false, validationSettings);  
 }); 
-
+ */
 function acceptBudgetRequset(budgetRequestedId){
 	var sourceleadUrl = '${sourceleadUrl}';
 	var userId = '${SourceLeadWeb_user.id}';
@@ -2048,7 +2062,7 @@ function onholdBudgetRequaet(budgetRequestedId){
 	result = result +"		<p>Are you sure you want to reject ?</p>";
 	result = result +"		<textarea  id='reasonForProjectBudget' name='reasonForProjectBudget'  placeholder='Comments here' field-name='Reason' data-validation='validate_length length2-5000' data-validation-optional='true'></textarea>";
 	result = result +"</form>";
-	result = result +'		<b href="javascript:void(0)"><input id="delete_budget-id" type="button" value="Delete" onclick="saveBudgetReason('+budgetRequestedId+');"><input class="u_can_color" type="button"  value="Cancel" onClick="cancelTermination();"></b>';
+	result = result +'		<b href="javascript:void(0)"><input id="delete_budget-id" type="button" value="Reject" onclick="saveBudgetReason('+budgetRequestedId+');"><input class="u_can_color" type="button"  value="Cancel" onClick="cancelTermination();"></b>';
 	result = result +"	</div>";
 
 	$("#popUp").append(result);
