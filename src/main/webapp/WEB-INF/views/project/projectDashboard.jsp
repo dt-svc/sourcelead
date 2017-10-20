@@ -352,6 +352,7 @@ function projectsPagination(url,sourceleadUrl){
 		     },{
 		    	  "targets": colIndex++,
 	              "data": "projectStatus",
+	              "sortable": false,
 	              "render": function ( data, type, opt, meta ) {
 	            	  var result = "";
 	            	  result = result +'<td data-title="Status"><div>';

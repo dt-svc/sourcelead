@@ -510,7 +510,7 @@ function exportToPdf(){
 			       	    	opt = opt +"<div class='text-center image-parent'>";
 			       	    	opt = opt +"<div class='imageParent'>";
 			       	    	if(userRole.fileUrl != null && userRole.fileUrl != "" && userRole.fileUrl != "undefined"){
-			       	    		opt = opt +"<img data-id= 'userProfileImage'  class='m-t-xs'  src="+userRole.fileUrl+" alt='image'>";
+			       	    		opt = opt +"<img data-id= 'userProfileImage'  class='m-t-xs'  src='"+userRole.fileUrl+"' alt='image'>";
 			       	    	}else{
 			       	    		opt = opt +"<img data-id= 'userProfileImage'  class='m-t-xs'  src='resources/images/userprofileImg.jpg' alt='image'>";
 			       	    	}
@@ -734,7 +734,7 @@ function getUserSummary(userId){
 			       	    	result = result +"<div class='col-xs-4 col-sm-4'>";
 			       	    	result = result +"<div class='text-center image-parent'>";
 			       	    	result = result +"<div class='imageParent'>";
-			       	    	result = result +"<img data-id= 'userProfileImage' onerror='predefineProfileImage(this);' class='m-t-xs'  src="+userRole.user.fileUrl+" alt='image'>";
+			       	    	result = result +"<img data-id= 'userProfileImage' onerror='predefineProfileImage(this);' class='m-t-xs'  src='"+userRole.user.fileUrl+"' alt='image'>";
 			       	    	result = result +"</div>";
 			       	    	
 			       	    	
@@ -1094,7 +1094,7 @@ function showList(viewType){
 			        			   result = result +"<td>"    
 			        			    result = result +" <a href='<c:url value='/userSummary/"+userRole.userId+"'/>'' class='UserTextLeft'>";
 			        			    if(userRole.fileUrl != null && userRole.fileUrl !="" && userRole.fileUrl != "undefined"){
-					       	    	result = result +"<img data-id= 'userProfileImage' onerror='predefineProfileImage(this);' class='m-t-xs'  src="+userRole.fileUrl+" alt='image'>";
+					       	    	result = result +"<img data-id= 'userProfileImage' onerror='predefineProfileImage(this);' class='m-t-xs'  src='"+userRole.fileUrl+"' alt='image'>";
 			        			    }else{
 						       	    result = result +"<img data-id= 'userProfileImage' onerror='predefineProfileImage(this);' class='m-t-xs'  src='resources/images/userprofileImg.jpg' alt='image'>";
 			        			    }
@@ -1163,6 +1163,10 @@ function userListViewPagination(){
 	    	"bLengthChange": true,
 	    	"bDestroy": true,
 	    	"ordering": true,
+	    	"aoColumnDefs": [{
+		           'bSortable': false,
+		           'aTargets': 6
+				}],
 	    	"oLanguage": {
 	            "sSearch": "",
 	            "sZeroRecords": "", "sEmptyTable": ""

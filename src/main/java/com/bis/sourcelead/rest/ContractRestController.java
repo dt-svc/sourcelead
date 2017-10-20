@@ -291,6 +291,7 @@ public class ContractRestController {
 			orgSpoc.setSpocName(sb.toString());
 			orgSpoc.setSpocUserId(orgSpoc.getClientUser().getId());
 			orgSpoc.setTempOwnerId(orgSpoc.getVendorUser().getId());
+			orgSpoc.setSpocUserCode(orgSpoc.getVendorUser().getUserCode());
 			orgSpoc.setOwnerName(clientSb.toString());
 			if("Vendor".equalsIgnoreCase(listName)){
 				orgSpoc.setOwnerUserName(clientSb.toString());
@@ -372,7 +373,7 @@ public class ContractRestController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/getAllContractsByOrgLocationIdandStatus", method = RequestMethod.GET)
-	public @ResponseBody String getAllContractsByOrgLocationIdandStatus(@RequestParam(value = "contractSubmissionType", required = false) String contractSubmissionType,
+	public @ResponseBody ContractsDTO getAllContractsByOrgLocationIdandStatus(@RequestParam(value = "contractSubmissionType", required = false) String contractSubmissionType,
 			@RequestParam(value = "tabType", required = false) String tabType,
 			@RequestParam(value = "contractsType", required = false) String contractsType,
 			@RequestParam(value = "contractStatus", required = false) String contractStatus, HttpServletRequest request,HttpServletResponse response) throws Exception {
@@ -381,8 +382,8 @@ public class ContractRestController {
 		User  user = (User)SourceLeadSessionManager.getSessionAttribute(request, "user");
 		String  userRoleName = (String)SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
 		
-		Contracts contracts = contractsTemplateService.getAllContractsByLocationIdAndStatus(orgLocation,contractSubmissionType,tabType, contractsType,contractStatus,user,userRoleName);
-		return commonUtil.toJSON(contracts);
+		ContractsDTO contracts = contractsTemplateService.getAllContractsByLocationIdAndStatus(orgLocation,contractSubmissionType,tabType, contractsType,contractStatus,user,userRoleName);
+		return contracts;
 	} 
 	
 	@RequestMapping(value = "/getEditContractTemplateDetails", method = RequestMethod.GET)
@@ -547,7 +548,7 @@ public class ContractRestController {
 	
 	
 	@RequestMapping(value = "/getVendorForSOWByRequirementSubmissionId", method = RequestMethod.GET)
-	public @ResponseBody String getVendorForSOWByRequirementSubmissionId(@RequestParam(value = "reqSubId", required = false) String reqSubId, HttpServletRequest request,HttpServletResponse response) throws Exception {
+	public @ResponseBody RequirementSubmission getVendorForSOWByRequirementSubmissionId(@RequestParam(value = "reqSubId", required = false) String reqSubId, HttpServletRequest request,HttpServletResponse response) throws Exception {
 		
 		RequirementSubmission requirementSubmission = requirementSubmissionService.getRequirementSubmissionById(Long.parseLong(reqSubId));
 		if(requirementSubmission != null){
@@ -556,7 +557,7 @@ public class ContractRestController {
 			}
 		}
 		
-		return commonUtil.toJSON(requirementSubmission);
+		return requirementSubmission;
 	}
 	
 	
