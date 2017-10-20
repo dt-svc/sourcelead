@@ -224,7 +224,7 @@ public class CandidateOnBoardingServiceImpl implements CandidateOnBoardingServic
 			candidateOnBoarding.setEndDate(null);
 		}
 		
-		if(StringUtils.isBlank(candidateOnBoardingDTO.getSalaryRate())){
+		if(StringUtils.isNotBlank(candidateOnBoardingDTO.getSalaryRate())){
 			candidateOnBoarding.setSalaryRate(candidateOnBoardingDTO.getSalaryRate());
 		}
 		
