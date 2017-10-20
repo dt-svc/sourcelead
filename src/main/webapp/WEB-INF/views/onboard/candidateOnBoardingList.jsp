@@ -331,6 +331,10 @@ function onboardingPagenation(){
 	    	"bLengthChange": true,
 	    	"bDestroy": true,
 	    	"ordering": true,
+	    	"aoColumnDefs": [{
+		           'bSortable': false,
+		           'aTargets': 5
+				}],
 	    	"oLanguage": {
 	            "sSearch": "",
 	            "sZeroRecords": "", "sEmptyTable": ""

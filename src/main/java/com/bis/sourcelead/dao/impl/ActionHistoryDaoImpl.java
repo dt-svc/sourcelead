@@ -100,6 +100,8 @@ public class ActionHistoryDaoImpl implements ActionHistoryDao {
 			Date newDate = new Date();
 			DateTime zoned = new DateTime(newDate,DateTimeZone.forID(loginOrgLocation.getTimezone().getTimeZoneId()));
 			actionHistory.setActionTime(zoned.toDate());
+			/*if(actionNames.getActionName().equalsIgnoreCase("loginSession"))
+				actionHistory.setActionPerformed("You have Logged in at : "+userLoginLogoutSession.getLoginTime());*/
 
 			try {
 				if (actionHistory != null) {
