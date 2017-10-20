@@ -50,6 +50,8 @@ public final class CustomTokenAuthenticationFilter extends GenericFilterBean {
 		if (canRequestProcessingContinue(httpRequest)) {
 			chain.doFilter(request, response);
 		}
+		//System.out.println(((HttpServletRequest) request).getSession().getAttribute("validUsers"));
+		
 	}
 	private void checkLogin(HttpServletRequest httpRequest, HttpServletResponse httpResponse,FilterChain chain) throws IOException, ServletException {
 		String username = httpRequest.getHeader(HEADER_USERNAME);
@@ -64,7 +66,7 @@ public final class CustomTokenAuthenticationFilter extends GenericFilterBean {
 	}
 	private void checkUsernameAndPassword(String username, String password,HttpServletRequest httpRequest, HttpServletResponse httpResponse) throws IOException {
 		try{
-			TokenInfo tokenInfo = authenticationService.authenticate(username, password);
+			TokenInfo tokenInfo = authenticationService.authenticate(username, password,httpRequest,httpRequest.getSession());
 			if (tokenInfo != null) {
 				httpResponse.setHeader(HEADER_TOKEN, tokenInfo.getToken());
 			}
@@ -91,7 +93,7 @@ public final class CustomTokenAuthenticationFilter extends GenericFilterBean {
 			}
 		}
 
-		if (authenticationService.checkToken(token)) {
+		if (authenticationService.checkToken(token,httpRequest.getSession())) {
 			return true;
 		} else {
 			httpResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED);
@@ -103,7 +105,7 @@ public final class CustomTokenAuthenticationFilter extends GenericFilterBean {
    private void checkLogout(HttpServletRequest httpRequest) {
 		if (currentLink(httpRequest).equals(logoutLink)) {
 			String token = httpRequest.getHeader(HEADER_TOKEN);
-			authenticationService.logout(token);
+			authenticationService.logout(token,httpRequest.getSession());
 			doNotContinueWithRequestProcessing(httpRequest);
 		}
 	}

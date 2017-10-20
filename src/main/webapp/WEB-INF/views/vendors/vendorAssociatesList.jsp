@@ -166,7 +166,7 @@ function viewAssociateCandidateResume(candidateId,title){
 function vendorAssociatesPagination(){  
     $('#vendorAssociatePagination').DataTable( { 
     	"scrollCollapse": false,
-    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
     	"bLengthChange": true,
     	"bDestroy": true,
     	"ordering": true,

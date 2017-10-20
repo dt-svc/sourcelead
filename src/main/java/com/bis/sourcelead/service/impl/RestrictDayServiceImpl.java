@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -108,21 +109,31 @@ public class RestrictDayServiceImpl implements RestrictDayService {
 	private Set<LeaveRole> getLeaveRoles(List<String> roles, RestrictDay restrictDay, User user) throws Exception {
 		Set<LeaveRole> leaveRolesSet = new HashSet<>();
 		roles.forEach(role -> {
-			LeaveRole leaveRoles = new LeaveRole();
-			leaveRoles.setRestrictDay(restrictDay);
-			leaveRoles.setType(Constants.RESTRICTDAY);
+			LeaveRole leaveRole = null;
+			if(restrictDay.getRestrictDayRolesList() !=null && restrictDay.getRestrictDayRolesList().size() >0) {
+				List<LeaveRole> list = restrictDay.getRestrictDayRolesList().stream().filter(r->r.getRoleId().getId().longValue() == Long.parseLong(role)).collect(Collectors.toList());
+				if(!list.isEmpty()) {
+					leaveRole = list.iterator().next();
+				}else {
+					leaveRole = new LeaveRole();
+				}
+			}else {
+				leaveRole = new LeaveRole();
+			}
+			leaveRole.setRestrictDay(restrictDay);
+			leaveRole.setType(Constants.RESTRICTDAY);
 			try {
 				Roles rol = rolesService.getRolesById(Long.parseLong(role));
-				leaveRoles.setRoleId(rol);
+				leaveRole.setRoleId(rol);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-			leaveRoles.setStatus("1");
-			leaveRoles.setCreatedDate(new Date());
-			leaveRoles.setUpdatedDate(new Date());
-			leaveRoles.setCreatedBy(user.getUserCode());
-			leaveRoles.setUpdatedBy(user.getUserCode());
-			leaveRolesSet.add(leaveRoles);
+			leaveRole.setStatus("1");
+			leaveRole.setCreatedDate(new Date());
+			leaveRole.setUpdatedDate(new Date());
+			leaveRole.setCreatedBy(user.getUserCode());
+			leaveRole.setUpdatedBy(user.getUserCode());
+			leaveRolesSet.add(leaveRole);
 		});
 
 		return leaveRolesSet;

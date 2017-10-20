@@ -119,8 +119,8 @@ public class OrgRelationsServiceImpl implements OrgRelationsService {
 		orgRelations.setCreatedDate(commonUtil.currentDate());
 		orgRelations.setUpdatedDate(commonUtil.currentDate());
 		
-		if (StringUtils.isNotBlank(clientDTO.getPaymentTerm())) {
-			orgRelations.setPaymentTerm(clientDTO.getPaymentTerm());
+		if (StringUtils.isNotBlank(clientDTO.getPaymentTerms())) {
+			orgRelations.setPaymentTerm(clientDTO.getPaymentTerms());
 		}
 		
 		if(null != responderType  && !responderType.isEmpty()){
@@ -182,7 +182,7 @@ public class OrgRelationsServiceImpl implements OrgRelationsService {
 						orgRelation.setOrgName(orgRelation.getResponderLocationId().getOrgLocationName());
 						if(StringUtils.isNotBlank(orgRelation.getResponderLocationId().getWebsite())) {
 							StringBuilder sb =new StringBuilder();
-							orgRelation.setWebSite(sb.append("www.").append(orgRelation.getResponderLocationId().getWebsite()).toString());
+							orgRelation.setWebSite(sb.append(orgRelation.getResponderLocationId().getWebsite()).toString());
 						}
 						
 						orgRelation.setCountry(orgRelation.getResponderLocationId().getCountry());
