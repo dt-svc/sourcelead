@@ -209,7 +209,7 @@ public class VendorServiceImpl implements VendorService{
 			clientService.saveOrUpdateClientVendorElkDocument(org, vendorOrgLocations, "Vendor", null, orgRelations,
 					submissionTemplate, user, orgLocations);
 		 
-		return null;
+		return vendorOrgLocations;
 	}
 	
 	
