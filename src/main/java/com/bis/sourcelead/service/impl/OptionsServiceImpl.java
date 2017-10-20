@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,35 +46,43 @@ public class OptionsServiceImpl implements OptionsService{
 	
 	@Override
 	public Option saveLeaveOptions(OptionsDTO optionsDTO) throws Exception {
-		Option options = new Option();
+		
+		Option option = null;
+		if(StringUtils.isNotBlank(optionsDTO.getOptionId())) {
+			option = optionsDao.getOptionsById(optionsDTO.getOptionId());
+		}else {
+		  option = new Option();
+		}
 		OrgLocations orgLocations = orgLocationService.getOrgLocations(Long.parseLong(optionsDTO.getOrgLocationId()));
 		User user = userService.getUserById(Long.parseLong(optionsDTO.getUserId()));
 		if (StringUtils.isNotBlank(optionsDTO.getDepartment())) {
 			Department department = departmentService.getDepartmentById(Long.parseLong(optionsDTO.getDepartment()));
-			options.setDepartmentId(department);
+			option.setDepartmentId(department);
 		}
-		options.setOrgLocations(orgLocations);
-		options.setCalendarMonth(optionsDTO.getCalendarMonth());
-		options.setWeekends(optionsDTO.getWeekends());
-		options.setHalfdayRequest(optionsDTO.getHalfDayRequest());
-		options.setLeaveTransfer(optionsDTO.getLeaveTransfer());
+		option.setOrgLocations(orgLocations);
+		
+		option.setCalendarMonth(optionsDTO.getCalendarMonth());
+		
+		option.setWeekends(optionsDTO.getWeekends());
+		option.setHalfdayRequest(optionsDTO.getHalfDayRequest());
+		option.setLeaveTransfer(optionsDTO.getLeaveTransfer());
 		if (StringUtils.isNotBlank(optionsDTO.getWorkingHours())) {
-			options.setWorkingHours(optionsDTO.getWorkingHours());
+			option.setWorkingHours(optionsDTO.getWorkingHours());
 		}
 		if (optionsDTO.getRoles() != null && !optionsDTO.getRoles().isEmpty()) {
-			Set<LeaveRole> leaveRolesSet = getLeaveRoles(optionsDTO.getRoles(), options, user);
-			options.setLeaverolesSet(leaveRolesSet);
+			Set<LeaveRole> leaveRolesSet = getLeaveRoles(optionsDTO.getRoles(), option, user);
+			option.setLeaverolesSet(leaveRolesSet);
 		}
 		if(optionsDTO.getWorkingHours() !=null) {
-			options.setWorkingHours(optionsDTO.getWorkingHours());
+			option.setWorkingHours(optionsDTO.getWorkingHours());
 		}
-		options.setStatus("1");
-		options.setCreatedDate(new Date());
-		options.setUpdatedDate(new Date());
-		options.setCreatedBy(user.getUserCode());
-		options.setUpdatedBy(user.getUserCode());
+		option.setStatus("1");
+		option.setCreatedDate(new Date());
+		option.setUpdatedDate(new Date());
+		option.setCreatedBy(user.getUserCode());
+		option.setUpdatedBy(user.getUserCode());
 		
-		return optionsDao.saveLeaveOption(options);
+		return optionsDao.saveLeaveOption(option);
 	}
 
 	
@@ -84,24 +93,35 @@ public class OptionsServiceImpl implements OptionsService{
 	 * @param options
 	 * @param user
 	 */
-	private Set<LeaveRole> getLeaveRoles(List<String> roles, Option options, User user) throws Exception {
+	private Set<LeaveRole> getLeaveRoles(List<String> roles, Option option, User user) throws Exception {
 		Set<LeaveRole> leaveRolesSet = new HashSet<>();
+		
 		roles.forEach(role -> {
-			LeaveRole leaveRoles = new LeaveRole();
-			leaveRoles.setLeavesOptionId(options);
-			leaveRoles.setType(Constants.LEAVE_OPTION);
+			LeaveRole leaveRole = null;
+			if(option.getLeaverolesSet() !=null && option.getLeaverolesSet().size() >0) {
+				List<LeaveRole> list = option.getLeaverolesSet().stream().filter(r->r.getRoleId().getId().longValue() == Long.parseLong(role)).collect(Collectors.toList());
+				if(!list.isEmpty()) {
+					leaveRole = list.iterator().next();
+				}else {
+					leaveRole = new LeaveRole();
+				}
+			}else {
+				leaveRole = new LeaveRole();
+			}
+			leaveRole.setLeavesOptionId(option);
+			leaveRole.setType(Constants.LEAVE_OPTION);
 			try {
 				Roles rol = rolesService.getRolesById(Long.parseLong(role));
-				leaveRoles.setRoleId(rol);
+				leaveRole.setRoleId(rol);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-			leaveRoles.setStatus("1");
-			leaveRoles.setCreatedDate(new Date());
-			leaveRoles.setUpdatedDate(new Date());
-			leaveRoles.setCreatedBy(user.getUserCode());
-			leaveRoles.setUpdatedBy(user.getUserCode());
-			leaveRolesSet.add(leaveRoles);
+			leaveRole.setStatus("1");
+			leaveRole.setCreatedDate(new Date());
+			leaveRole.setUpdatedDate(new Date());
+			leaveRole.setCreatedBy(user.getUserCode());
+			leaveRole.setUpdatedBy(user.getUserCode());
+			leaveRolesSet.add(leaveRole);
 		});
 		return leaveRolesSet;
 	}
@@ -132,6 +152,22 @@ public class OptionsServiceImpl implements OptionsService{
 	@Override
 	public Option getOptionsById(String optionId) throws Exception {
 		return optionsDao.getOptionsById(optionId);
+	}
+
+
+	@Override
+	public List<Long> getOptionRoleIds(Long orgLocationId) throws Exception {
+		List<Option> optionsList = optionsDao.getOptionsListByLocationId(orgLocationId);
+		List<Long>  rolesIdsList = new ArrayList<Long>();
+		optionsList.forEach(op->{
+			if (op.getLeaverolesSet() !=null && op.getLeaverolesSet().size() >0){
+				Set<LeaveRole> leaveList = op.getLeaverolesSet();
+				for(LeaveRole leaveRole : leaveList) {
+					rolesIdsList.add(leaveRole.getRoleId().getId());
+				}
+			}
+		});
+		return rolesIdsList;
 	}
 
 }

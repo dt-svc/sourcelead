@@ -60,6 +60,10 @@ function errRemoveClientContact(){
 			<h2>Custom Invoice</h2>
 		</div>
 		<div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='/invoiceList'/>">Receivable List</a> &raquo; Custom Based Invoice</div>
+	
+	<div class="success_pop" id="selector1" style="display: none;">
+ 			<i class="fa fa-check-circle"></i><span id="msgDiv"></span>
+       </div>
 	</section>
 	<div class="content-area content-new clearfix">
 		<div id="invoiceLoading"></div>
@@ -1982,6 +1986,10 @@ function saveInvoice(saveType){
 		  				if(data == "success"){
 		  					$("#invoiceLoading").removeAttr("style");
     		     			location.replace(sourceleadUrl+"/invoiceList");
+    		     			$("#selector1").removeAttr("style");
+				    		$("#selector1").css({ display: "block" });
+				    	    $("#msgDiv").html("Successfully you have created a Invoice..");
+    		     			msgFadein();
 		  				}
 		  			   }); 
 		        	  
@@ -1997,7 +2005,14 @@ $('body').on('blur', '#invoice_form', function() {
 	$("#invoice_form").showHelpOnFocus();
 	$("#invoice_form").validateOnBlur(false, validationSettings);  
 }); 
+
+function msgFadein() {
+	$("#selector1").fadeIn(200);
+    $('#selector1').delay(2000).fadeOut('slow');
+}
+
 </script>
+
 <!-- End by Rajashekar -->
 <!-- <script>
 $(document).ready(function(){

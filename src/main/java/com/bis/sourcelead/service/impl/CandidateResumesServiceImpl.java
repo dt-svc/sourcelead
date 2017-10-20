@@ -268,13 +268,8 @@ public class CandidateResumesServiceImpl implements CandidateResumesService {
 	@Override
 	public CandidateResumes updateCandidateResume(CandidateResumes candidateResumes) throws Exception
 	{
-		logger.debug("In CandidateResumeServiceImpl class updateCandidateResume method...");
 		candidateResumes.setUpdatedDate(commonUtil.currentDate());
 		candidateResumes = candidateResumesDao.updateCandidateResume(candidateResumes);
-		/*
-		 * updating Candidate Resume DB data in existing candidateindex
-		 */
-		// saveOrUpdateCandidateElkDocumentWithResumeDetails(candidateResumes.getCandidateId());
 		return candidateResumes;
 	}
 	

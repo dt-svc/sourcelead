@@ -16,6 +16,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.RestrictDayDao;
+import com.bis.sourcelead.entity.LeaveType;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.RestrictDay;
 import com.bis.sourcelead.util.CommonUtil;
@@ -60,11 +61,11 @@ public class RestrictDayDaoImpl implements RestrictDayDao{
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public RestrictDay getRestrictDayByUUID(String restrictUUID) {
+	public RestrictDay getRestrictDayById(String restrictDayId) {
 		List<RestrictDay> restrictDayList = null;
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from RestrictDay resDay  where resDay.id = :restrictUUID";
-		restrictDayList = session.createQuery(query).setString("restrictUUID", restrictUUID).setCacheable(true).list();
+		String query = "from RestrictDay resDay  where resDay.id = :restrictDayId";
+		restrictDayList = session.createQuery(query).setString("restrictDayId", restrictDayId).setCacheable(true).list();
 		if(restrictDayList != null) {
 			return restrictDayList.get(0);
 		}else {
