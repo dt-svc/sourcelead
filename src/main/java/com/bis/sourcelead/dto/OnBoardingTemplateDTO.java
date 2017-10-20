@@ -10,6 +10,8 @@ import java.util.List;
 @SuppressWarnings("serial")
 public class OnBoardingTemplateDTO implements Serializable {
 	
+	 private Long id;
+	
 	 private String templateId;
 	 
 	 private String templateName;
@@ -179,6 +181,14 @@ public class OnBoardingTemplateDTO implements Serializable {
 
 	public void setVendorOnboardId(Long vendorOnboardId) {
 		this.vendorOnboardId = vendorOnboardId;
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
 	}
 
 	
