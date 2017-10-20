@@ -78,6 +78,7 @@ public class LeaveDTO extends SearchDTO implements Serializable{
 	private String selfApprovedCounts;
 	private String selfRejectedCounts;
 	private String selfCancelledCounts;
+	private String isBillable;
 	
 	
 	public String getLeavesTaken() {
@@ -548,6 +549,12 @@ public class LeaveDTO extends SearchDTO implements Serializable{
 	}
 	public void setFileContentType(String fileContentType) {
 		this.fileContentType = fileContentType;
+	}
+	public String getIsBillable() {
+		return isBillable;
+	}
+	public void setIsBillable(String isBillable) {
+		this.isBillable = isBillable;
 	}
 
 

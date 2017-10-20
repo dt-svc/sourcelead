@@ -849,7 +849,7 @@ $('#startDateDiv').find('p.jquery_form_error_message').remove();
 </script> -->
 
 <script>
-function getVendorContacts(){
+function getVendorContacts(spocUserCode){
 	$('#errorVendor').find('p.jquery_form_error_message').remove();
 	var orgRelationId = $("#orgRelationId").val();
 	if("" != orgRelationId){
@@ -860,13 +860,19 @@ function getVendorContacts(){
 	       success :function(data) {
 	    	var json = JSON.parse(data);
 	       	var output = "";
-	       	output = output + "<option value=''>Select Vendor Contact</option>";
+	       	if(spocUserCode == null && spocUserCode != ''){
+	       		output = output + "<option value=''>Select Vendor Contact</option>";
+	       	}
 	       	for (var i=0; i<json.length; i++)
 				{
 		        var opt = json[i];
 		            // need to use in edit
 	       			//output = output + "<option value='" +opt.vendorUser.id+ "' selected>"+opt.spocName+"</option>";
-	       			output = output + "<option value='" +opt.tempOwnerId+ "'>"+opt.spocName+" ("+opt.ownerUserName+")</option>";
+		        if(spocUserCode != null && opt.spocUserCode == spocUserCode){
+       				output = output + "<option value='" +opt.tempOwnerId+ "'>"+opt.spocName+" ("+opt.ownerUserName+")</option>";
+       			}else{
+       				output = output + "<option value='" +opt.tempOwnerId+ "'>"+opt.spocName+" ("+opt.ownerUserName+")</option>";
+       			}
 				}
 	       	    $("#vendorContact").empty();
 		        $("#vendorContact").append(output);
@@ -1748,17 +1754,16 @@ function hideCommonSOWFields(){
 
 	}
 	
-	/* function getVendor(){
-		var sourceleadUrl ='${sourceleadUrl}';
+	function getVendor(){
 		var reqSubId = $("#submissionOffersList").val();
 		var sowType = $("#contractType").val();
 		if(sowType == "Vendor SOW"){
 			$.ajax({
 		        type : "GET",
 		        url: sourceleadUrl+"/getVendorForSOWByRequirementSubmissionId?reqSubId="+reqSubId,    
-		         success :function(data) {
-	              if(data != null && data != 'undefined' && data != "" && data != '[]'){
-	            	 var json = JSON.parse(data);
+		         success :function(json) {
+	              if(json != null && json != 'undefined' && json != "" && json != '[]'){
+// 	            	 var json = JSON.parse(data);
 		             <c:forEach var="vendor" items="${orgRelationsList}">
 		    	          if('${vendor.initiatorType}' == "Client" && '${vendor.locationId.id}' == '${orgLocation.id}'){
 		    	        	  if(json.vendorLocationCode == '${vendor.responderLocationId.locationCode}'){
@@ -1772,11 +1777,12 @@ function hideCommonSOWFields(){
 		    	        	  }
 		    	          }
 		              </c:forEach>
+		              getVendorContacts(json.createdBy);
 	              }
 		       },
 		    });
 		}
-	} */
+	} 
 </script>
 
 

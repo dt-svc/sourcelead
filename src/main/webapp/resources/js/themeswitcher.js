@@ -90,7 +90,7 @@ $(document).ready(function (e) {
         if (typeof (Storage) !== "undefined") {
             localStorage.setItem("themeColor", "flat-green");
         } else {
-            window.alert('Please use a modern browser to properly view this 					template!');
+            window.alert('Please use a modern browser to properly view this template!');
         }
         $('head').append('<link rel="stylesheet" href="resources/css/sourcelead-theme-two.css?staticTime="'+staticTime+'" type="text/css" />');
         $('link[rel=stylesheet][href~="resources/css/sourcelead-theme-one.css"]').remove();
@@ -105,6 +105,7 @@ $(document).ready(function (e) {
         } else {
             window.alert('Please use a modern browser to properly view this template!');
         }
+        $('head').append('<link rel="stylesheet" href="resources/css/sourcelead-main.css?staticTime="'+staticTime+'" type="text/css" />');
         $('link[rel=stylesheet][href~="resources/css/sourcelead-theme-one.css"]').remove();
         $('link[rel=stylesheet][href~="resources/css/sourcelead-theme-four.css"]').remove();
         $('link[rel=stylesheet][href~="resources/css/sourcelead-theme-two.css"]').remove();

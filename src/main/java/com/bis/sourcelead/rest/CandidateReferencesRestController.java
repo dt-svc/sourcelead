@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.CandidateReferencesDTO;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.CandidateReferences;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
@@ -90,13 +91,13 @@ public class CandidateReferencesRestController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/getCandidateReferencesListByCandidateId")
-	public List<CandidateReferences> getCandidateReferencesListByCandidateId(@RequestParam(value = "candidateId", required = false) String candidateId, @RequestParam("locationCode") String locationCode) throws Exception
+	public ResponseList<CandidateReferencesDTO> getCandidateReferencesListByCandidateId(@RequestParam(value = "candidateId", required = false) String candidateId, @RequestParam("locationCode") String locationCode) throws Exception
 	{
 		// OrgLocations loginOrgLocation = (OrgLocations)
 			// SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 		/* String resultJson; */
 		OrgLocations orgLocation = orgLocationService.getOrgLocationsByLocationCode(locationCode);
-		List<CandidateReferences> candidateReferencesList = candidateReferencesService.getCandidateReferencesListByCandidateIdAndOrgLocationID(Long.parseLong(candidateId), orgLocation.getId());
+		ResponseList<CandidateReferencesDTO> candidateReferencesList = candidateReferencesService.getCandidateReferencesListByCandidateIdAndOrgLocationID(Long.parseLong(candidateId), orgLocation.getId());
 		/* resultJson = commonUtil.toJSON(candidateReferencesList); */
 		return candidateReferencesList;
 	}

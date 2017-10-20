@@ -171,7 +171,7 @@ public class CandidateResumeRestController {
 			candidateResume.setStatus(Constants.CANDIDATE_IN_ACTIVE);
 			candidateResume.setUpdatedBy(user.getUserCode());
 			candidateResume.setUpdatedDate(commonUtil.currentDate());
-			candidateResumesService.updateCandidateResume(candidateResume);
+			candidateResume = candidateResumesService.updateCandidateResume(candidateResume);
 			if (candidateResume.getTitle() != null && candidateResume.getTitle() != ""
 					&& candidateResume.getTitle() != "undefined") {
 				activitySummary.append("Resume").append(" : ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateResume.getTitle()).append(Constants.NEW_VALUE_TAG_END).append(" ");

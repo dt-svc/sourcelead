@@ -4,6 +4,13 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
  
 
+
+<script type="text/javascript">
+$(document).ready(function(){
+ //getRoles();
+});
+</script>
+
   <!-- Content Area -->
   <section class="content-wraper">
     <section class="content-header clearfix">
@@ -32,7 +39,8 @@
             <div class="form-group">
               <label class="col-md-3">Select Role</label>
               <div class="col-md-9 dropdown-select">
-                <select multiple data-placeholder="select owner" class="chosen-select form-control"  id="roles" name="roles" field-name="Role">
+              <div id="rolesDiv"></div>
+                 <select multiple data-placeholder="select owner" class="chosen-select form-control"  id="roles" name="roles" field-name="Role">
 		                        <c:forEach var="role" items="${rolesList}">
 		                           <c:set var = "NUM" value = "${0}"/>
 			                        <c:forEach var="existedRoles" items="${existedRoles}">
@@ -45,7 +53,7 @@
 											<option value="${role.id}">${role.displayName}</option>
 										</c:if>
 								</c:forEach>
-			    </select>
+			    </select> 
               </div>
             </div>
             <div class="form-group">
@@ -139,6 +147,7 @@
               <label class="col-md-3">Working Hours</label>
               <div class="col-md-9 dropdown-select">
                 <input type="text" class="form-control" value="${options.workingHours}" placeholder="Working Hours" id="workingHours" name="workingHours">
+                <input type="hidden" value="${optionId}" name="optionId" id="optionId" />
               </div>
             </div>
           </div>
@@ -208,4 +217,64 @@ function cancel(){
         }
             }
         </script> 
+         <%--  <select multiple data-placeholder="select owner" class="chosen-select form-control"  id="roles" name="roles" field-name="Role">
+		                        <c:forEach var="role" items="${rolesList}">
+		                           <c:set var = "NUM" value = "${0}"/>
+			                        <c:forEach var="existedRoles" items="${existedRoles}">
+										     <c:if test="${existedRoles.id eq role.id}">
+										    	<c:set var = "NUM" value = "${1}"/>
+										       <option  selected value="${role.id}">${existedRoles.displayName}</option>
+ 										    </c:if> 
+										</c:forEach>
+										<c:if test="${NUM == 0}">
+											<option value="${role.id}">${role.displayName}</option>
+										</c:if>
+								</c:forEach>
+			    </select> --%>
+        
+ <script>
+  function getRoles(){
+	    var orgLocationId = '${SourceLeadWeb_orgLocationId}';
+		var  orgCode ='${SourceLeadWeb_orgCode}';
+		var  roleHierarchyId ='${SourceLeadWeb_roleHierarchyId}';
+		$.get(sourceleadUrl+"/getRoles?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&orgCode="+orgCode+"&roleHierarchyId="+roleHierarchyId, function(result) {
+		  var json = result.data;
+		  var output = "";
+      	  output = output +'<select multiple data-placeholder="select owner" class="chosen-select form-control"  id="roles" name="roles" field-name="Role">';
+      	  for (var i = 0; i < json.length; i++) { 
+      		  var role = json[i];
+      		  output = output +'<option value='+role.id+'>'+role.displayName+'</option>';
+      	  }
+      	  output = output +'</select>';
+      	  $("#rolesDiv").empty();
+      	  $("#rolesDiv").append(output);
+      	  /* $('#rolesDiv').chosen();
+      	 $("#rolesDiv").trigger("chosen:updated"); */
+      	 
+      	 var config = {
+      			  '.chosen-select'           : {},
+      			  '.chosen-select-deselect'  : {allow_single_deselect:true},
+      			  '.chosen-select-no-single' : {disable_search_threshold:10},
+      			  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
+      			  '.chosen-select-width'     : {width:"95%"}
+      			}
+      			for (var selector in config) {
+      			  $(selector).chosen(config[selector]);
+      			}
+      			$('.chosen-select').each(function() {
+
+      				var $this = $(this);
+      				$this.next().css({'width': '100%'});
+      				})
+      				$(document).ready(function(){
+      					$("#cd").click(function(){
+      						$(".clientDetails").toggleClass('hidden', 500);
+      					});
+
+      	});
+		}); 
+  }
+  
+ 
+  </script>
 <jsp:include page="../masterFooter.jsp" />

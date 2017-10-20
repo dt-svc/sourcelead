@@ -102,6 +102,7 @@ function redirectlocation(location){
 			result = result + '<th>Leaves Taken</th>';
 			result = result + '<th>Approved By</th>';
 			result = result + '<th>Cancelled By</th>';
+			result = result + '<th>Reason</th>';
 			result = result + '</tr>';
 			result = result + '</thead>	';
 	        result = result +"</table>";
@@ -130,6 +131,7 @@ function redirectlocation(location){
 	            { "data": "leavesTaken"},
 	            { "data": "approvedBy" },
 	            { "data": "cancelledBy" },
+	            { "data": "cancelReason" },
 	            
 	        ],
 	        "columnDefs": [ {
@@ -137,9 +139,9 @@ function redirectlocation(location){
 		    	  	"data": "empName",
 		    	  	"render": function(data, type, opt, meta) {
 		    	  		  var result = "";
-
-		    	  		result = result + '     <div class="pull-left tbldata-dotdot-me cursorPointer" title="'+opt.empName+'('+opt.empType+')" onclick="getRequestedAproveSummary(\''+opt.id+'\','+opt.orgLocationId+');">'+opt.empName+'('+opt.empType+')<i class="fa fa-binoculars pull-right"></i></div>'; 
-
+		    	  		result = result + ' <div class="proj_show divmax-width">';
+		    	  		result = result + '<div class="pull-left tbldata-dotdot cursorPointer" title="'+opt.empName+'('+opt.empType+')" onclick="getRequestedAproveSummary(\''+opt.id+'\','+opt.orgLocationId+');">'+opt.empName+'('+opt.empType+')</div><i class="fa fa-binoculars pull-right"></i>'; 
+		    	  		result = result + ' </div>';
 			              return result; 
 		    	  	}
 		      },{
@@ -191,6 +193,14 @@ function redirectlocation(location){
 		    	  		 result = result + ' <div title="'+opt.cancelledBy+'" class="tblminwidth-75">'+opt.cancelledBy+'</div>';	
 		    	  		return result; 
 		    	  	}
+		    	  },{
+			    	  	"targets": colIndex++,
+			    	  	"data": "cancelReason",
+			    	  	"render": function(data, type, opt, meta) {
+			    	  		var result = "";
+			    	  		 result = result + ' <div title="'+opt.cancelReason+'" class="tblminwidth-75">'+opt.cancelReason+'</div>';	
+			    	  		return result; 
+			    	  	}
 		    	  }], 
 	                "scrollCollapse": false,
 	            	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],

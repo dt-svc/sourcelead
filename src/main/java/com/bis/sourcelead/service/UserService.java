@@ -57,6 +57,8 @@ public interface UserService  {
 	
 	public List<User> getUsersByUserRolesAndOrgLocationIdAndNoCurrentUser(Long userId, Long orgLocationsId) throws Exception;
 	
+	public List<User> getUsersHierarchyListByOrgLocationIdAndRoleIdAndNoCurrentUser(Long userId, Long roleId, Long orgLocationsId) throws Exception;
+	
 	
 	/**
 	 * This method to fetch only Approver role users

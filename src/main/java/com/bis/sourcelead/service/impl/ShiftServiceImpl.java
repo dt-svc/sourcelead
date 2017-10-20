@@ -37,12 +37,8 @@ public class ShiftServiceImpl implements ShiftService {
 		Shift shift = null;
 		if(StringUtils.isNotBlank(shiftDTO.getShiftId())){
 			shift = shiftDao.getShiftById(shiftDTO.getShiftId());
-			shift.setUpdatedBy(user.getUserCode());
-			shift.setUpdatedDate(new Date());
 		}else{
 			shift = new Shift();
-			shift.setCreatedBy(user.getUserCode());
-			shift.setCreatedDate(new Date());
 		}
 		shift.setOrgLocations(orgLocation);
 		shift.setShiftName(shiftDTO.getShiftName());
@@ -62,7 +58,10 @@ public class ShiftServiceImpl implements ShiftService {
 			shift.setShiftDescription("");
 		}
 		shift.setStatus(Constants.RECORD_ACTIVE.toString());
-		
+		shift.setUpdatedBy(user.getUserCode());
+		shift.setUpdatedDate(new Date());
+		shift.setCreatedBy(user.getUserCode());
+		shift.setCreatedDate(new Date());
 		return shiftDao.saveShift(shift);
 	}
 
