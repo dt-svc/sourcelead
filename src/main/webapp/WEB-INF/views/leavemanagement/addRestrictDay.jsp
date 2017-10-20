@@ -3,6 +3,16 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 
+<script>
+ window.onload = function() {
+	 var applicable = '${restrictDay.applicableToAll}';
+	 if(applicable == 'N'){
+		 $("#selectRoles").show();
+	 }
+};
+</script>
+
+
   <!-- Content Area -->
   <section class="content-wraper">
     <section class="content-header clearfix">
@@ -21,6 +31,7 @@
     <div class="form-group">
        <label class="col-md-3">Name<span class="text-danger paddingLeft">*</span></label>
        <div class="col-md-9">
+       <input type="hidden" id="restrictDayId" name="restrictDayId" value="${restrictDay.id}"/>
        <input type="text" name="restrictName" placeholder="Restrict Name" value="${restrictDay.restrictName}" field-name="Restrict Name" class="form-control" data-validation="required validate_length length1-250">
        </div>
     </div>
@@ -46,12 +57,31 @@
        <label class="col-md-3 paddingRight">Applicable For All</label>
        <div class="col-md-9">
  			<div class="clearfix mb"> 
-              <label class="paddingLeft paddingRight">
+ 			<c:if test="${empty restrictDay.applicableToAll}">
+ 			<label class="paddingLeft paddingRight">
                 <input name="isApllicable" type="radio" id="yesApplica" value="Y" checked>
                 <span class="paddingLeft">Yes</span></label>
               <label class="paddingLeft">
                 <input name="isApllicable" type="radio" id="noApplica" value="N">
                 <span class="paddingLeft">No</span></label>
+ 			</c:if>
+ 			<c:if test="${restrictDay.applicableToAll == 'Y'}">
+ 			<label class="paddingLeft paddingRight">
+                <input name="isApllicable" type="radio" id="yesApplica" value="Y" checked>
+                <span class="paddingLeft">Yes</span></label>
+              <label class="paddingLeft">
+                <input name="isApllicable" type="radio" id="noApplica" value="N">
+                <span class="paddingLeft">No</span></label>
+ 			</c:if>
+ 			<c:if test="${restrictDay.applicableToAll == 'N'}">
+ 			<label class="paddingLeft paddingRight">
+                <input name="isApllicable" type="radio" id="yesApplica" value="Y" >
+                <span class="paddingLeft">Yes</span></label>
+              <label class="paddingLeft">
+                <input name="isApllicable" type="radio" id="noApplica" value="N" checked>
+                <span class="paddingLeft">No</span></label>
+ 			</c:if>
+              
             </div>
        </div>
     </div>
@@ -61,8 +91,17 @@
        <div class="col-md-9">
            <select multiple class="chosen-select form-control" name="rolesList" id="roleId" data-placeholder="Select Roles" field-name="Role" data-validation-optional="true">
                <option>--Select Roles--</option>
-                <c:forEach var="option" items="${rolesList}">
-					<option value="${option.id}">${option.displayName}</option>
+               <c:forEach var="role" items="${rolesList}">
+               <c:set var = "NUM" value = "${0}"/>
+                <c:forEach var="existedRoles" items="${existedRoles}">
+                	<c:if test="${existedRoles.id eq role.id}">
+						<c:set var = "NUM" value = "${1}"/>
+							<option selected value="${role.id}">${existedRoles.displayName}</option>
+					</c:if> 
+				</c:forEach>
+				<c:if test="${NUM == 0}">
+						<option value="${role.id}">${role.displayName}</option>
+				</c:if>
 				</c:forEach>
            </select>
        </div>

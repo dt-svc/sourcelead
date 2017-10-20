@@ -46,6 +46,10 @@ public class ContractsDTO {
 	private String percentageReward;
 	private String flatRateType;
 	
+	private List<VendorContractsDTO> vendorcontractsList;
+	private List<ClientContractsDTO> clientcontractsList;
+	private List<FullTimeContractsDTO> fullTimeoffercontractsList;
+	
 	private List<FileInfo> reqDocs;
 	
 	public String getStaticPath()
@@ -471,6 +475,35 @@ public class ContractsDTO {
 	public void setReqDocs(List<FileInfo> reqDocs) {
 		this.reqDocs = reqDocs;
 	}
-	
-	
+
+	public List<VendorContractsDTO> getVendorcontractsList()
+	{
+		return vendorcontractsList;
+	}
+
+	public void setVendorcontractsList(List<VendorContractsDTO> vendorcontractsList)
+	{
+		this.vendorcontractsList = vendorcontractsList;
+	}
+
+	public List<ClientContractsDTO> getClientcontractsList()
+	{
+		return clientcontractsList;
+	}
+
+	public void setClientcontractsList(List<ClientContractsDTO> clientcontractsList)
+	{
+		this.clientcontractsList = clientcontractsList;
+	}
+
+	public List<FullTimeContractsDTO> getFullTimeoffercontractsList()
+	{
+		return fullTimeoffercontractsList;
+	}
+
+	public void setFullTimeoffercontractsList(List<FullTimeContractsDTO> fullTimeoffercontractsList)
+	{
+		this.fullTimeoffercontractsList = fullTimeoffercontractsList;
+	}
+
 }

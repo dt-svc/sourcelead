@@ -136,8 +136,8 @@ function getVendorDetails(){
 	        		   }
 	        		   
 	        		   
-	        		   if(json.PaymentTerm != null && json.PaymentTerm != 'undefined' && json.PaymentTerm != ''){
-	        			   $("select[name=PaymentTerm]").val(json.PaymentTerm);
+	        		   if(json.paymentTerms != null && json.paymentTerms != 'undefined' && json.paymentTerms != ''){
+	        			   $("select[name=paymentTerms]").val(json.paymentTerms);
 	        		   }
 	        		   
 	        		   
@@ -440,7 +440,7 @@ function getVendorDetails(){
 							<label class="col-md-3">Payment Term</label>
 							<div class="col-md-9">
 								<select class="form-control" id="PaymentTermId"
-									name="PaymentTerm">
+									name="paymentTerms">
 									<option selected="selected" disabled value="">Select
 										Payment Term</option>
 									<option value="10 days">10 days</option>

@@ -8,44 +8,36 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.Iterator;
-import java.util.List;
 
 import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.bis.sourcelead.SourceleadPasswordEncoder;
 import com.bis.sourcelead.dto.AddUserProfileDTO;
-import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.dto.PasswordSettingsDTO;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
-import com.bis.sourcelead.form.UserProfile;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 
 @RestController
 @PropertySource("${propertyLocation:app.properties}")
@@ -81,9 +73,27 @@ public class UserProfileRestController {
 	public String saveProfileImage(AddUserProfileDTO addUserProfileDTO,	HttpServletRequest request) throws Exception{
 		addUserProfileDTO.setStaticPath(staticPath);
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
-		user = userService.saveUserProfileImage(addUserProfileDTO, user);
-		return "home";
+		if(user == null){
+			user = userService.getUserById(addUserProfileDTO.getUserId());
+		}
+		if(user != null){
+			user = userService.saveUserProfileImage(addUserProfileDTO, user);
+			return "success";
+		}
+		else
+			return "failure";
+		
+	}
+	
+	
+	@RequestMapping(value = "/rest/saveUserProfileImage", method = RequestMethod.POST)
+	public String saveProfileImageForMobile(@RequestBody AddUserProfileDTO addUserProfileDTO,	HttpServletRequest request)throws Exception{
+		return saveProfileImage(addUserProfileDTO, request);
+	}
+	@RequestMapping(value =  "/rest/saveUserProfile", method = RequestMethod.POST)
+	public AddUserProfileDTO saveUserProfileForMobile(@RequestBody AddUserProfileDTO addUserProfileDTO, HttpServletRequest request) throws Exception
+	{
+		return saveUserProfile(addUserProfileDTO, request);
 	}
 	/**
 	 * User profile updation 
@@ -92,13 +102,18 @@ public class UserProfileRestController {
 	 * @return AddUserProfileDTO
 	 * @throws Exception
 	 */
-	@RequestMapping(value = { "/saveUserProfile", "/rest/saveUserProfile" }, method = RequestMethod.POST)
+	@RequestMapping(value =  "/saveUserProfile", method = RequestMethod.POST)
 	public AddUserProfileDTO saveUserProfile(AddUserProfileDTO addUserProfileDTO, HttpServletRequest request)
 			throws Exception {
 		addUserProfileDTO.setStaticPath(staticPath);
-		User user = userService.getUserById(Long.parseLong(addUserProfileDTO.getUserId()));
-		OrgLocations orgLocations = orgLocationService
-				.getOrgLocations(Long.parseLong(addUserProfileDTO.getOrgLocationId()));
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		if(user == null){
+			user = userService.getUserById(addUserProfileDTO.getUserId());
+		}
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		if(orgLocations == null){
+			 orgLocations = orgLocationService.getOrgLocations(Long.parseLong(addUserProfileDTO.getOrgLocationId()));
+		}
 		UserRole userRoleElk = null;
 		AddUserProfileDTO profileDTO = null;
 		try {

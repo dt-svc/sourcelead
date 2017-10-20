@@ -670,7 +670,6 @@ function createTemplate(saveType){
 		     	        document.getElementById("templateDocs").disabled = false;
 		     	        getTemplatePolicyDocumentsDetails(json.id);
 		        	}
-		        	
 	     	        $("#templateId").val(templateId);
 	     	        $("#onboardtemplateId").val(json.id);
 	     	        $("#documentstemplateId").val(json.id);
@@ -723,7 +722,8 @@ function createTemplateDocs(saveType){
 		     	        document.getElementById("templateTasks").disabled = false;
 		     	        $("#onboardTaskDiv").val('Y');
 		     	        getOnboardingTasksList();
-		        	}else{
+		        	}
+		    	  else{
 		        		getTemplatePolicyDocumentsDetails();
 		        		/* getTemplateSupportingDocumentsDetails();
 		        		getTemplateContractsDocumentsDetails();
@@ -1168,6 +1168,7 @@ function getOnboardingTasksList(){
         	
         	result = result +'<div class="form-footer clearfix mt">';
     		result = result +'<div class="pull-right mr">';
+    		result = result +'<input type="button" value="Cancel" id="finish_task" onClick="redirect();" class="btn btn-sm btn-default">';
     		result = result +'<input type="button" value="Finish" id="finish_task" onclick="saveAndFinishOnboardTemplate('+templateId+');" class="btn btn-sm btn-primary">';
     		result = result +'</div>';
     		result = result +'</div>';
@@ -1183,6 +1184,11 @@ function getOnboardingTasksList(){
 	
  }
 }
+
+
+function redirect(){
+	window.location.href = sourceleadUrl +  "/onboardingTemplatesList";
+}
 </script>
 
 
@@ -1197,6 +1203,9 @@ function deleteTask(taskId){
 	        success: function(data) {
 	        	if(data == 'success'){
 	        		document.getElementById("onboardTask"+taskId).remove();
+	        		if($("#onboardTasksList div[id*=onboardTask]").length === 0) {
+	        			$("#onboardTasksList").prepend("<div><h4>No Tasks Found</h4></div>");
+	        		}
 	        	}
 	        },
 	    });

@@ -260,24 +260,6 @@ public class InvoiceRestController {
         invoiceDTO.setStaticPath(staticPath);
 		Invoice invoice = invoiceService.saveInvoice(user,orgLocation,saveType,invoiceType,org,currencyCode,invoiceDTO);
 		
-		if(invoiceType.equals("payable") && saveType.equals("DRAFT")){
-		 SourceLeadSessionManager.setSessionAttribute(request, "payableInvoiceCreateMsg", "Successfully you have created a Bill");
-		 
-		}
-		if(invoiceType.equals("payable") && saveType.equals("SENT")){
-			 SourceLeadSessionManager.setSessionAttribute(request, "payableInvoiceCreateMsg", "Successfully you have sent a Bill");
-			 
-			}
-		if(invoiceType.equals("Receivable") && saveType.equals("DRAFT"))
-		{
-			
-			 SourceLeadSessionManager.setSessionAttribute(request, "invoiceCreateMsg", "Successfully you have created a Invoice");	
-		}
-		
-		if(invoiceType.equals("Receivable") && saveType.equals("SENT")){
-			 SourceLeadSessionManager.setSessionAttribute(request, "invoiceCreateMsg", "Successfully you have sent a Invoice");
-			 
-			}
 		if(null !=invoice){
 			if(null != invoice.getProjectID()){
 				invoiceService.updateSubmissionApproverHiearachy(invoice.getSubmissionApproverHierarchyIds(),invoice.getInvoiceFrequency(),invoiceType);

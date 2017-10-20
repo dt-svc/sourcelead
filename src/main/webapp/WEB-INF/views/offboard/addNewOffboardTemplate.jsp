@@ -715,7 +715,9 @@ function createTemplateDocs(saveType){
 		     	        $tabs.filter('.active').next('li').find('a[data-toggle="tab"]').tab('show');
 		     	        document.getElementById("checkList").disabled = false;
 		     	        getOffboardingCheckList();
-		        	}else{
+		        	}
+		    	  
+		    	  else{
 		        		getTemplateResignationDocumentsDetails();
 		     	        getTemplateOffboardPackDocumentsDetails();
 		        	}
@@ -1068,6 +1070,7 @@ function getOffboardingTasksList(){
 	        	
 	        	result = result +'<div class="form-footer clearfix mt">';
 	    		result = result +'<div class="pull-right mr">';
+	    		result = result +'<input type="button" value="Cancel" id="finish_task" onClick="redirect();" class="btn btn-sm btn-default">';
 	    		result = result +'<input type="button" value="Finish" id="finish_task" onclick="saveAndFinishOffboardTemplate('+templateId+');" class="btn btn-sm btn-primary">';
 	    		result = result +'</div>';
 	    		result = result +'</div>';
@@ -1084,6 +1087,9 @@ function getOffboardingTasksList(){
   
 	}
 	
+}
+function redirect(){
+	window.location.href = sourceleadUrl +  "/onboardingTemplatesList";
 }
 </script>
 
@@ -1344,7 +1350,9 @@ function createTemplateCheckList(saveType){
 	      		     	        document.getElementById("templateTasks").disabled = false;
 	      		     	        $("#offboardTaskDiv").val('Y');
 	      		     	        getOffboardingTasksList();
-	      		        	}else{
+	      		        	}
+	      	        		 
+	      	        		 else{
 	      		        		getOffboardingCheckList();
 	      		        	}
 	      		        } 
