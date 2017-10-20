@@ -38,6 +38,7 @@ public class LeaveDTO extends SearchDTO implements Serializable{
 	private String balanceleaves;
 	private String fileUrl;
 	private String fileName;
+	private String fileContentType;
 	private String empid;
 	private String empType;
 	private String empEmail;
@@ -542,6 +543,12 @@ public class LeaveDTO extends SearchDTO implements Serializable{
 	}
 	public void setIsWithdrawEnable(String isWithdrawEnable) {
 		this.isWithdrawEnable = isWithdrawEnable;
+	}
+	public String getFileContentType() {
+		return fileContentType;
+	}
+	public void setFileContentType(String fileContentType) {
+		this.fileContentType = fileContentType;
 	}
 	public String getIsBillable() {
 		return isBillable;
