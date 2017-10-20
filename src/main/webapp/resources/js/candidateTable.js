@@ -229,6 +229,7 @@ function cpagination(url){
 	    	  },{
 	    	  	"targets": colIndex++,
 	    	  	"data": "mobilePhone",
+	    	  	"sortable": false,
 	    	  	"render": function(data, type, full, meta) {
 	    	  		var mobilePhone = "";
 	    	  		if(full.mobilePhone != null && full.mobilePhone != 'undefined' && full.mobilePhone != ""){
