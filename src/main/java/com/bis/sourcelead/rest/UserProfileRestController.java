@@ -8,14 +8,12 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.Iterator;
 
 import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,8 +24,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.bis.sourcelead.SourceleadPasswordEncoder;
 import com.bis.sourcelead.dto.AddUserProfileDTO;
@@ -35,15 +31,12 @@ import com.bis.sourcelead.dto.PasswordSettingsDTO;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
-import com.bis.sourcelead.form.UserProfile;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 
 @RestController
 @PropertySource("${propertyLocation:app.properties}")
@@ -79,25 +72,46 @@ public class UserProfileRestController {
 	public String saveProfileImage(AddUserProfileDTO addUserProfileDTO,	HttpServletRequest request) throws Exception{
 		addUserProfileDTO.setStaticPath(staticPath);
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
-		user = userService.saveUserProfileImage(addUserProfileDTO, user);
-		return "home";
+		if(user == null){
+			user = userService.getUserById(addUserProfileDTO.getUserId());
+		}
+		if(user != null){
+			user = userService.saveUserProfileImage(addUserProfileDTO, user);
+			return "success";
+		}
+		else
+			return "failure";
+		
 	}
-
-	@RequestMapping(value = {"/saveUserProfile","/rest/saveUserProfile"}, method = RequestMethod.POST)
-	public String saveUserProfile(AddUserProfileDTO addUserProfileDTO,HttpServletRequest request) throws Exception {
+	/**
+	 * User profile updation 
+	 * @param addUserProfileDTO
+	 * @param request
+	 * @return AddUserProfileDTO
+	 * @throws Exception
+	 */
+	@RequestMapping(value = { "/saveUserProfile", "/rest/saveUserProfile" }, method = RequestMethod.POST)
+	public AddUserProfileDTO saveUserProfile(AddUserProfileDTO addUserProfileDTO, HttpServletRequest request)
+			throws Exception {
 		addUserProfileDTO.setStaticPath(staticPath);
-		User user = userService.getUserById(Long.parseLong(addUserProfileDTO.getUserId()));
-		OrgLocations orgLocations = orgLocationService.getOrgLocations(Long.parseLong(addUserProfileDTO.getOrgLocationId()));
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		if(user == null){
+			user = userService.getUserById(addUserProfileDTO.getUserId());
+		}
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		if(orgLocations == null){
+			 orgLocations = orgLocationService.getOrgLocations(Long.parseLong(addUserProfileDTO.getOrgLocationId()));
+		}
 		UserRole userRoleElk = null;
-		String isUpdated = "failure";
+		AddUserProfileDTO profileDTO = null;
 		try {
 			user = userService.saveUserProfile(addUserProfileDTO, user);
 			UserRole userRole = userRoleService.getUserDetailsByUserIdAndLocationId(user.getId(), orgLocations.getId());
 			userRole.setDesignation(addUserProfileDTO.getDesignation());
 			userRoleElk = userRoleService.addUserRole(userRole);
 			/*
-			 * update common user (single user different orgs) details in  ElasticSearch Documents (User)
+			 * update common user (single user different orgs) details in ElasticSearch
+			 * Documents (User)
 			 */
 			commonUtil.commonUserUpdate(user);
 			/*
@@ -119,13 +133,27 @@ public class UserProfileRestController {
 			SourceLeadSessionManager.setSessionAttribute(request, "designation", userRole.getDesignation());
 
 		} catch (Exception e) {
-			logger.info("--exception--"+e);
-			
+			logger.info("--exception--" + e);
+
 		}
-		if(user !=null) {
-			isUpdated = "success";
+		if (user != null) {
+			profileDTO = new AddUserProfileDTO();
+			profileDTO.setId(String.valueOf(user.getId()));
+			profileDTO.setFirstName(user.getFirstName());
+			profileDTO.setLastName(user.getLastName());
+			profileDTO.setStaticPath(staticPath);
+			profileDTO.setMobilePhone(user.getMobilePhone());
+			profileDTO.setJobTitle(user.getJobTitle());
+			profileDTO.setLocation(user.getLocation());
+			profileDTO.setLinkedIn(user.getLinkedIn());
+			profileDTO.setFacebook(user.getFacebook());
+			profileDTO.setTwitter(user.getTwitter());
+			profileDTO.setGooglePlus(user.getGooglePlus());
+			profileDTO.setDesignation(addUserProfileDTO.getDesignation());
+			profileDTO.setUserId(addUserProfileDTO.getUserId());
+			profileDTO.setOrgLocationId(addUserProfileDTO.getOrgLocationId());
 		}
-		return isUpdated;
+		return profileDTO;
 
 	}
 	

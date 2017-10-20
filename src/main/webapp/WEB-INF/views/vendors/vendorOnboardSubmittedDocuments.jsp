@@ -35,8 +35,8 @@ function vendorOnboardDocumentsList(orgRelationId){
 						result = result +'</div>';
 		        	}
 	        	}else{
-	        		result = result +'    <div class="col-md-2 text-center mb10">  ';
-	        		result = result +'<p>No Documents Found</p>';
+	        		result = result +'    <div class="col-md-12 text-center mb10">  ';
+	        		result = result +'<p class="dataTables_empty"></p>';
 	        		result = result +'    </div> ';
 	        	}
 				result = result +'    </div>';
