@@ -170,9 +170,10 @@ public class LeaveServiceImpl implements LeaveService{
 				StringBuilder sb = new StringBuilder();
 				StringBuilder durationSb = new StringBuilder();
 				leaveDto.setId(laph.getLeaveid().getId());
+				int nuberOfLeavestaken = 0;
 				if (leave.getUser() != null) {
 					try {
-						int nuberOfLeavestaken = leaveDao.getNumberOfLeavesTakenByUser(leave.getUser().getId(),leave.getLeaveType().getId());
+						 nuberOfLeavestaken = leaveDao.getNumberOfLeavesTakenByUser(leave.getUser().getId(),leave.getLeaveType().getId());
 						int thisMonthLeaves = leaveDao.getThisMonthLeavesTakenByUser(leave.getUser().getId(),leave.getLeaveType().getId());
 						leaveDto.setLeavesTaken(String.valueOf(nuberOfLeavestaken));
 						leaveDto.setThisMonthLeaves(String.valueOf(thisMonthLeaves));
@@ -196,7 +197,8 @@ public class LeaveServiceImpl implements LeaveService{
 				leaveDto.setLeaveTypeId(leave.getLeaveType().getId());
 				leaveDto.setStatus(leave.getStatus());
 				leaveDto.setNoOfDays(leave.getNumberOfDays());
-				leaveDto.setBalanceleaves(leave.getLeaveType().getNumbefrOfLeavesPeryear());
+				int balLeaves = Integer.parseInt(leave.getLeaveType().getNumbefrOfLeavesPeryear()) - nuberOfLeavestaken;
+				leaveDto.setBalanceleaves(String.valueOf(balLeaves));
 				leaveDto.setOrgLocationId(String.valueOf(leave.getOrgLocations().getId()));
 				if(leave.getUser().getId() != null){ 
 				 UserRole userrole;

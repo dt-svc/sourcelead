@@ -243,8 +243,7 @@ public class LeaveManagementRestController {
 		   OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		   Long roleId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRoleId");
 		   User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		   List<User> usrList = userService.getAllUsersByOrgLocationCode(orgLocations.getId());
-		   List<User> usersList =  usrList.stream().filter(u->u.getId().longValue() != loginUser.getId().longValue()).collect(Collectors.toList());
+		   List<User> usersList = userService.getUsersHierarchyListByOrgLocationIdAndRoleIdAndNoCurrentUser(loginUser.getId(), roleId, orgLocations.getId());
 		   model.addObject("sourceleadUrl", sourceleadUrl);
 		   model.addObject("usersLis", usersList);
 			List<User> approverList = userService.getManagersByUserRolesAndOrgLocationId(roleId, orgLocations.getId(),Long.valueOf(Constants.TAB_USER));
@@ -1283,7 +1282,7 @@ public class LeaveManagementRestController {
 
 	@RequestMapping(value = "/validateRestrictDate")
 	@ResponseBody
-	public boolean validateRestrictDate(@RequestParam(value = "fromDate", required = false) String fromDate,
+	public String validateRestrictDate(@RequestParam(value = "fromDate", required = false) String fromDate,
 			@RequestParam(value = "toDate", required = false) String toDate,
 			@RequestParam(value = "orgLocationId", required = false) Long orgLocationId,
 			@RequestParam(value = "roleId", required = false) Long roleId,
@@ -1291,15 +1290,17 @@ public class LeaveManagementRestController {
 
 		boolean isValid = false;
 		List<RestrictDay> restrictDayList = new ArrayList<>();
+		String isTrue = null;
+		StringBuilder sb = null;
 		OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
-		if(StringUtils.isNotBlank(leaveId)){
+		if (StringUtils.isNotBlank(leaveId)) {
 			Leave leave = leaveService.getLeaveByLeavId(leaveId);
 			fromDate = commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), leave.getFromDate());
 			toDate = commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), leave.getToDate());
 		}
-		List<RestrictDay> restDay = restrictDayService.validateRestrictDayDates(fromDate,toDate,orgLocations);
+		List<RestrictDay> restDay = restrictDayService.validateRestrictDayDates(fromDate, toDate, orgLocations);
 
-		 Set<Long> roleIds = new HashSet<>();
+		Set<Long> roleIds = new HashSet<>();
 		for (RestrictDay resDay : restDay) {
 			if (!"Y".equalsIgnoreCase(resDay.getApplicableToAll())) {
 				for (LeaveRole leaveRole : resDay.getRestrictDayRolesList()) {
@@ -1311,18 +1312,40 @@ public class LeaveManagementRestController {
 				restrictDayList.add(resDay);
 			}
 		}
-		if(restrictDayList != null && restrictDayList.size()>0) {
+		if (restrictDayList != null && restrictDayList.size() > 0) {
+			 sb = new StringBuilder();
+			for(RestrictDay day : restrictDayList) {
+				if(day.getStartDate().equals(day.getEndDate())) {
+					sb.append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), day.getStartDate()));
+				}else {
+					sb.append(commonUtil.getDaysBetweenDates(day.getStartDate(),day.getEndDate(),orgLocations.getDateFormat()));
+				}
+			}
 			isValid = true;
 		}
-		if(!isValid) {
-			List<Holiday> holiDayList = holidayService.validateHoliDayDates(fromDate,toDate,orgLocations);
-			if(holiDayList != null && holiDayList.size()>0) {
+		if (!isValid) {
+			List<Holiday> holiDayList = holidayService.validateHoliDayDates(fromDate, toDate, orgLocations);
+			if (holiDayList != null && holiDayList.size() > 0) {
+				 sb = new StringBuilder();
+				for(Holiday hlday : holiDayList) {
+					if(Constants.HOLIDAY_RESTRICTED.equalsIgnoreCase(hlday.getHolidayStatus())) {
+						if(hlday.getFromDate().equals(hlday.getToDate())) {
+							sb.append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), hlday.getFromDate()));
+						}else {
+							sb.append(commonUtil.getDaysBetweenDates(hlday.getFromDate(),hlday.getToDate(),orgLocations.getDateFormat()));
+						}
+					}
+					
+				}
 				isValid = true;
 			}
 		}
-		
-		return isValid;
+       if(sb !=null) {
+    	   isTrue = sb.toString();
+       }
+		return isTrue;
 	}
+
 	
 
 	@RequestMapping(value = {"/totalCountsForEmployeeLeaves","/rest/totalCountsForEmployeeLeaves"}, method=RequestMethod.GET)

@@ -16,6 +16,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -1433,6 +1435,32 @@ public void storeVendorOnboardDefaultTemplate(User user,OrgLocations orgLocation
 			  return candidate;
 		  }
 
-		
+		/**
+		 * returns all the dates between two dates as String
+		 * @param startDate
+		 * @param endDate
+		 * @return String
+		 * @throws ParseException
+		 */
+	public String getDaysBetweenDates(Date startDate, Date endDate,String orgFormat) throws ParseException {
+		List<Date> dates = new ArrayList<Date>();
+		List<String> dateStr = new ArrayList<>();
+		DateFormat formatter;
+		formatter = new SimpleDateFormat(orgFormat);
+		long interval = 24 * 1000 * 60 * 60; // 1 hour in millis
+		long endTime = endDate.getTime(); // create your endtime here, possibly using Calendar or Date
+		long curTime = startDate.getTime();
+		while (curTime <= endTime) {
+			dates.add(new Date(curTime));
+			curTime += interval;
+		}
+		for (int i = 0; i < dates.size(); i++) {
+			Date lDate = (Date) dates.get(i);
+			String ds = formatter.format(lDate);
+			dateStr.add(ds);
+		}
+		String datesStrLisr = dateStr.stream().collect(Collectors.joining(","));
+		return datesStrLisr;
+	}
 		
 }
