@@ -86,7 +86,7 @@ public class UserProfileRestController {
 	}
 	
 	
-	@RequestMapping(value = "/rest/saveUserProfile", method = RequestMethod.POST)
+	@RequestMapping(value = "/rest/saveUserProfileImage", method = RequestMethod.POST)
 	public String saveProfileImageForMobile(@RequestBody AddUserProfileDTO addUserProfileDTO,	HttpServletRequest request)throws Exception{
 		return saveProfileImage(addUserProfileDTO, request);
 	}
