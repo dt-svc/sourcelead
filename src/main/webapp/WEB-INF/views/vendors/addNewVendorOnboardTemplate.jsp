@@ -46,8 +46,8 @@
                     <input type="hidden" name="templateId" id="onboardtemplateId" value=""/>
                   </div>
                   <div class="col-md-6">
-                    <label>Description</label>
-                    <textarea rows="1" class="form-control input-sm" name="description" field-name="Description" data-validation-optional="true" data-validation="validate_Space validate_length length2-500"></textarea>
+                    <label>Template Description <span class="text-danger paddingLeft">*</span></label>
+                    <textarea rows="1" class="form-control input-sm" name="description" field-name="Template Description"  data-validation="required validate_Space validate_length length2-500"></textarea>
                   </div>
                 </div>
                 <div class="form-footer clearfix mt">
@@ -67,8 +67,9 @@
                 <form id='templateDocuments_form' name='templateDocuments_form' >
                  <input type="hidden" name="templateId" id="documentstemplateId" value=""/>
                 <p><strong>Vendor Acceptance Documents</strong> <br>
-                  <small class="text-muted">These documents need to be upload by the new vendor as part of acceptance step  - Learn more</small> </p>
-               
+
+                  <small class="text-muted">These documents need to be upload by the new vendor as part of acceptance step  </small> </p>
+              
                
                 <div class="form-group">
                   <label class="col-md-12"> <strong>Documents</strong> <br>
@@ -177,7 +178,7 @@
                                   <div class="">
                                     <label class="paddingRight">
                                       <input type="radio"  name="assignedToType" checked="checked" onclick="validateAssignToType('assingToVendor');">
-                                      Vendor </label>
+                                      Vendor</label>
                                     <label class="paddingLeft">
                                       <input type="radio" name="assignedToType"  onclick="validateAssignToType('assingToUser');">
                                       User </label>
