@@ -224,7 +224,7 @@ public class CandidateOnBoardingServiceImpl implements CandidateOnBoardingServic
 			candidateOnBoarding.setEndDate(null);
 		}
 		
-		if(StringUtils.isBlank(candidateOnBoardingDTO.getSalaryRate())){
+		if(StringUtils.isNotBlank(candidateOnBoardingDTO.getSalaryRate())){
 			candidateOnBoarding.setSalaryRate(candidateOnBoardingDTO.getSalaryRate());
 		}
 		
@@ -590,6 +590,9 @@ public class CandidateOnBoardingServiceImpl implements CandidateOnBoardingServic
 		    employees.setUserEmploymentType(candidateOnBoarding.getEmploymentType());
 		    employees.setDesignationOtherType(candidateOnBoarding.getEmploymentOtherType());
 		    employees.setHireDate(candidateOnBoarding.getStartDate());
+		    employees.setRate(candidateOnBoarding.getSalaryRate());
+		    employees.setCurrentCurrency(candidateOnBoarding.getPaymentType());
+		    employees.setRatePer(candidateOnBoarding.getPaymentMode());
 		    employees.setCreatedBy(loginUser.getUserCode());
 		    employees.setCreatedDate(commonUtil.currentDate());
 		    employees.setUpdatedBy(loginUser.getUserCode());
