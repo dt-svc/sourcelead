@@ -1081,6 +1081,7 @@ public class LeaveManagementRestController {
 			leaveDto.setReason(leave.getReason());
 			leaveDto.setCreatedDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),leave.getCreatedDate()));
 			leaveDto.setFileName(leave.getFileName());
+			leaveDto.setFileContentType(leave.getFileContentType());
             if(leave.getRejectedReason() !=null) {
             	leaveDto.setRejectedReason(leave.getRejectedReason());
             }
