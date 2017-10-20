@@ -13,7 +13,7 @@ public interface RestrictDayService {
 
 	public List<RestrictDay> getRestrictDayListByOrgLocationId(Long orgLocationId) throws Exception;
 
-	public RestrictDay getRestrictDayByUUID(String restrictUUID);
+	public RestrictDay getRestrictDayById(String restrictDayId);
 
 	public List<RestrictDay> validateRestrictDayDates(String fromDate, String toDate, OrgLocations orgLocations) throws Exception;
 }
