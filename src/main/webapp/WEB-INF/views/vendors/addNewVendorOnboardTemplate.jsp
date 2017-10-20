@@ -67,8 +67,9 @@
                 <form id='templateDocuments_form' name='templateDocuments_form' >
                  <input type="hidden" name="templateId" id="documentstemplateId" value=""/>
                 <p><strong>Vendor Acceptance Documents</strong> <br>
-                  <small class="text-muted">These documents need to be upload by the new vendor as part of acceptance step</small> </p>
-               
+
+                  <small class="text-muted">These documents need to be upload by the new vendor as part of acceptance step  </small> </p>
+              
                
                 <div class="form-group">
                   <label class="col-md-12"> <strong>Documents</strong> <br>
