@@ -906,7 +906,7 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 		                return 0;
 		            }  
 		        });
-				response.setRecordsFiltered(searchHits.length);
+				response.setRecordsFiltered(CandidateListcopy.size());
 				SearchResponse searchResponseForCount = sourceleadELKBaseIndexer
 						.searchDocumentWithMaxResults(Constants.ELK_CANDIDATE_INDEX, Constants.ELK_CANDIDATE_TYPE,
 								0, 10, "email", SortOrder.DESC, boolQueryBuilderForCount);
