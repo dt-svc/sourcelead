@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -94,32 +95,50 @@ public class LeaveTypeServiceImpl implements LeaveTypeService {
 			leaveType.setVisibilityToAllUsers(leaveTypeDTO.getVisibilityToAllUsers());
 		if (StringUtils.isNotBlank(leaveTypeDTO.getLeavePolicyDescription()))
 			leaveType.setPolicyDescription(leaveTypeDTO.getLeavePolicyDescription());
-		leaveType.setStatus(Constants.RECORD_ACTIVE.toString());
+		if(leaveType !=null && "0".equals(leaveType.getStatus())) {
+			leaveType.setStatus(Constants.RECORD_INACTIVE.toString());
+		}else {
+			leaveType.setStatus(Constants.RECORD_ACTIVE.toString());
+		}
+		
 		leaveType.setColorCode(leaveTypeDTO.getColorCode());
 		leaveType = leaveTypeDao.addLeaveType(leaveType);
 		return leaveType;
 	}
-	
+	 
 	private Set<LeaveRole> getLeaveRoles(List<String> roles, LeaveType leaveType, User user) throws Exception
 	{
 		Set<LeaveRole> leaveRolesSet = new HashSet<>();
-		roles.forEach(role -> {
-			LeaveRole leaveRoles = new LeaveRole();
-			leaveRoles.setLeaveTypeid(leaveType);
-			leaveRoles.setType(Constants.LEAVE_TYPE);
+		for(String role : roles) {
+//		roles.forEach(role -> {
+			LeaveRole leaveRole = null;
+			Long l = Long.parseLong(role);
+			if(leaveType.getLeaveTypeRolesSet() !=null && leaveType.getLeaveTypeRolesSet().size() >0) {
+				List<LeaveRole> list = leaveType.getLeaveTypeRolesSet().stream().filter(r->r.getRoleId().getId().longValue() == l.longValue()).collect(Collectors.toList());
+				if(!list.isEmpty()) {
+					leaveRole = list.iterator().next();
+				}else {
+					leaveRole = new LeaveRole();
+				}
+			}else {
+				leaveRole = new LeaveRole();
+			}
+
+			leaveRole.setLeaveTypeid(leaveType);
+			leaveRole.setType(Constants.LEAVE_TYPE);
 			try {
 				Roles rol = rolesService.getRolesById(Long.parseLong(role));
-				leaveRoles.setRoleId(rol);
+				leaveRole.setRoleId(rol);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-			leaveRoles.setStatus("1");
-			leaveRoles.setCreatedDate(new Date());
-			leaveRoles.setUpdatedDate(new Date());
-			leaveRoles.setCreatedBy(user.getUserCode());
-			leaveRoles.setUpdatedBy(user.getUserCode());
-			leaveRolesSet.add(leaveRoles);
-		});
+			leaveRole.setStatus("1");
+			leaveRole.setCreatedDate(new Date());
+			leaveRole.setUpdatedDate(new Date());
+			leaveRole.setCreatedBy(user.getUserCode());
+			leaveRole.setUpdatedBy(user.getUserCode());
+			leaveRolesSet.add(leaveRole);
+		}
 		return leaveRolesSet;
 	}
 

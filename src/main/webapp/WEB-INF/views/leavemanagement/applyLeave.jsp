@@ -88,19 +88,12 @@ window.onload = function() {
               <label class="col-md-3">Leave Type<span class="text-danger paddingLeft">*</span></label>
               <div class="col-md-9 dropdown-select">
               <div id="leaveTypeIdDiv"></div>
-                <%-- <select class="form-control" id="leaveType" name="leaveType" field-name="Leave Type" data-validation="required" onchange="getLeavePolicy();">
-                  <option value="">--Select Leave Type--</option>
-                	<c:forEach var="leave" items="${leaveTypeList}">
-                	${dept.id  == departmentId ? 'selected' : ''}
-	                     <option value="${leave.id}">${leave.name}</option>
-                	</c:forEach>
-                </select> --%>
               </div>
             </div>
             <div class="form-group">
               <label class="col-md-3">Reason<span class="text-danger paddingLeft">*</span></label>
               <div class="col-md-9">
-                <textarea class="form-control" rows="2" placeholder="Reason" id="reason" name="reason" field-name="Reason" data-validation="required"></textarea>
+                <textarea class="form-control" rows="2" placeholder="Reason" id="reason" name="reason" field-name="Reason" data-validation="required validate_length length1-500"></textarea>
               </div>
             </div>
               
@@ -474,8 +467,8 @@ function validateDate(){
 	var fromDate = $("#fromDate").val();
 	var toDate = $("#toDate").val();
 	$.get(sourceleadUrl+"/validateRestrictDate?"+tokenParamName+"="+tokenValue+"&fromDate="+fromDate+"&toDate="+toDate+"&orgLocationId="+orgLocationId+"&roleId="+roleId, function(data) {
-		if(data == true){
-			$("#toDate").after("<p class='warMess'>You cannot apply for leave on restricted/holiday day</span>");
+		if(data != null){
+			$("#toDate").after("<p class='warMess'>You cannot apply for leave on restricted/holiday day</span> "+data);
 		}else{
 			$('.warMess').hide();
 		}

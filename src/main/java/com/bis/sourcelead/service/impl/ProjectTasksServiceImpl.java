@@ -213,11 +213,11 @@ public class ProjectTasksServiceImpl implements ProjectTasksService {
 			}
 		}
 		generatedIdcount = generatedIdcount + 1;
-		Long checkNumber = tasksDao.getProjectTasksGeneratedIdByProjectId(projects.getId(), generatedIdcount); 
+		Integer checkNumber = tasksDao.getProjectTasksCountByProjectId(projects.getId()); 
 		if (checkNumber == null) {
 			requirementId = number.toString();
 		} else {
-			Long reqId = checkNumber + 1;
+			Integer reqId = checkNumber + 1;
 			requirementId = reqId.toString();
 		}
 		final DecimalFormat decimalFormat = new DecimalFormat("0");

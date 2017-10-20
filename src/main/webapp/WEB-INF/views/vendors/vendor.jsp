@@ -120,12 +120,12 @@ function getVendorDetails(){
 	        		   $("input[name=state]").val(json.state);
 	        		   $("input[name=city]").val(json.city);
 	        		   
-	        		   if(json.zipCode != null && json.zipCode != 'undefined' && json.zipCode != ''){
-	        			   $("input[name=zipcode]").val(json.zipCode);
+	        		   if(json.zipcode != null && json.zipcode != 'undefined' && json.zipcode != ''){
+	        			   $("input[name=zipcode]").val(json.zipcode);
 	        		   }
 	        		   $("input[name=zipcode]").removeAttr("readonly");
 	        		   
-	        		   $("select[name=level]").val(json.responderLevel);
+	        		   $("select[name=level]").val(json.level);
 	        		   
 	        		   if(json.address != null && json.address != 'undefined' && json.address != ''){
 	        			   $("textarea[name=address]").val(json.address);
@@ -137,7 +137,7 @@ function getVendorDetails(){
 	        		   
 	        		   
 	        		   if(json.paymentTerms != null && json.paymentTerms != 'undefined' && json.paymentTerms != ''){
-	        			   $("select[name=PaymentTerm]").val(json.paymentTerms);
+	        			   $("select[name=paymentTerms]").val(json.paymentTerms);
 	        		   }
 	        		   
 	        		   
@@ -164,15 +164,19 @@ function getVendorDetails(){
 	        			}
 	        			
 	        			
-	        			 $("input[name=firstName]").val(json.vendorContactFirstName);
-	        			 if(json.vendorContactLastName != null && json.vendorContactLastName != 'undefined' && json.vendorContactLastName != ''){
-	        				 $("input[name=lastName]").val(json.vendorContactLastName);
+	        			 $("input[name=firstName]").val(json.firstName);
+	        			 if(json.lastName != null && json.lastName != 'undefined' && json.lastName != ''){
+	        				 $("input[name=lastName]").val(json.lastName);
 	        			 }
 	        			
 	        			 $("input[name=email]").val(json.email);
 	        			 
-	        			 if(json.phone != null && json.phone != 'undefined' && json.phone != ''){
-	        				 $("input[name=phoneNumber]").val(json.phone);
+	        			 if(json.phoneNumber != null && json.phoneNumber != 'undefined' && json.phoneNumber != ''){
+	        				 $("input[name=phoneNumber]").val(json.phoneNumber);
+	        			 }
+	        			 
+	        			 if(json.extensionNumber != null && json.extensionNumber != 'undefined' && json.extensionNumber != ''){
+	        				 $("input[name=extensionNumber]").val(json.extensionNumber);
 	        			 }
 	        			
 	        			
@@ -436,7 +440,7 @@ function getVendorDetails(){
 							<label class="col-md-3">Payment Term</label>
 							<div class="col-md-9">
 								<select class="form-control" id="PaymentTermId"
-									name="PaymentTerm">
+									name="paymentTerms">
 									<option selected="selected" disabled value="">Select
 										Payment Term</option>
 									<option value="10 days">10 days</option>

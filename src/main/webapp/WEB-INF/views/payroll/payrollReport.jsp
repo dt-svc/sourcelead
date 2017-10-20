@@ -1018,7 +1018,6 @@ function finalBalance(){
 			        	     result = result + ' <div class="clearfix col-md-10 col-md-offset-1">';
 			        	result = result + '  <div class="payrollinvoice-generate">';
 			        	result = result + '   <h4 class="clearfix text-center">Balance Sheet</h4>';
-			        	
 			        	result = result + '<table style="width:100%" class="table-responsive table-bordered table-BLsheet mb">';
 			        	result = result + '<tr>';
 			        	result = result + '<th rowspan="2" class="bg-info">Income</th>';
