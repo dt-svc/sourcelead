@@ -38,7 +38,29 @@ public class CandidateDocumentsDTO {
 	private String otherDocType;
 
 	private String requestDocType;
-
+	
+	private String id;
+	
+	private String documentUUID;
+	
+	private String fileName;
+	
+	private String documentType;
+	
+	private String fileURL;
+	
+	private String fileContentType;
+	
+	private String userIdStr;
+	
+	private long requestDocumentId;
+	
+	private String requestDocStatus;
+	
+	private String docUploadStatus;
+	
+	private String requestedDocRejectedReason;
+	
 	public String getCandidateId()
 	{
 		return candidateId;
@@ -183,6 +205,116 @@ public class CandidateDocumentsDTO {
 
 	public void setRequestDocType(String requestDocType) {
 		this.requestDocType = requestDocType;
+	}
+
+	public String getId()
+	{
+		return id;
+	}
+
+	public void setId(String id)
+	{
+		this.id = id;
+	}
+
+	public String getDocumentUUID()
+	{
+		return documentUUID;
+	}
+
+	public void setDocumentUUID(String documentUUID)
+	{
+		this.documentUUID = documentUUID;
+	}
+
+	public String getFileName()
+	{
+		return fileName;
+	}
+
+	public void setFileName(String fileName)
+	{
+		this.fileName = fileName;
+	}
+
+	public String getDocumentType()
+	{
+		return documentType;
+	}
+
+	public void setDocumentType(String documentType)
+	{
+		this.documentType = documentType;
+	}
+
+	public String getFileURL()
+	{
+		return fileURL;
+	}
+
+	public void setFileURL(String fileURL)
+	{
+		this.fileURL = fileURL;
+	}
+
+	public String getFileContentType()
+	{
+		return fileContentType;
+	}
+
+	public void setFileContentType(String fileContentType)
+	{
+		this.fileContentType = fileContentType;
+	}
+
+	public String getUserIdStr()
+	{
+		return userIdStr;
+	}
+
+	public void setUserIdStr(String userIdStr)
+	{
+		this.userIdStr = userIdStr;
+	}
+
+	public long getRequestDocumentId()
+	{
+		return requestDocumentId;
+	}
+
+	public void setRequestDocumentId(long requestDocumentId)
+	{
+		this.requestDocumentId = requestDocumentId;
+	}
+
+	public String getRequestDocStatus()
+	{
+		return requestDocStatus;
+	}
+
+	public void setRequestDocStatus(String requestDocStatus)
+	{
+		this.requestDocStatus = requestDocStatus;
+	}
+
+	public String getDocUploadStatus()
+	{
+		return docUploadStatus;
+	}
+
+	public void setDocUploadStatus(String docUploadStatus)
+	{
+		this.docUploadStatus = docUploadStatus;
+	}
+
+	public String getRequestedDocRejectedReason()
+	{
+		return requestedDocRejectedReason;
+	}
+
+	public void setRequestedDocRejectedReason(String requestedDocRejectedReason)
+	{
+		this.requestedDocRejectedReason = requestedDocRejectedReason;
 	}
 	
 }

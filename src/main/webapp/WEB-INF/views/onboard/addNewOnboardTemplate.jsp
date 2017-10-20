@@ -1203,6 +1203,9 @@ function deleteTask(taskId){
 	        success: function(data) {
 	        	if(data == 'success'){
 	        		document.getElementById("onboardTask"+taskId).remove();
+	        		if($("#onboardTasksList div[id*=onboardTask]").length === 0) {
+	        			$("#onboardTasksList").prepend("<div><h4>No Tasks Found</h4></div>");
+	        		}
 	        	}
 	        },
 	    });

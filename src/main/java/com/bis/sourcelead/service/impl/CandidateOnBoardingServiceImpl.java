@@ -565,6 +565,7 @@ public class CandidateOnBoardingServiceImpl implements CandidateOnBoardingServic
 			e.printStackTrace();
 		}
 	   
+	    userRole.setIsMailSent(Status.Y);
 	    userRole.setUserState(Status.NOT_LOGGEDIN);
 	    userRole.setCreatedBy(loginUser.getUserCode());
 	    userRole.setCreatedDate(commonUtil.currentDate());

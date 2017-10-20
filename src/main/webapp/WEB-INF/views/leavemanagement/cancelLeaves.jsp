@@ -88,6 +88,7 @@
 							result = result + '<th>Reason</th>';
 							result = result + '<th>Approved By</th>';
 							result = result + '<th>Cancelled By</th>';
+							result = result + '<th>Cancelled Reason</th>';
 							result = result + '<th>Status</th>';
 							result = result + '</tr>';
 							result = result + '</thead>	';
@@ -164,6 +165,13 @@
 												+ '     <div title="" class="tblminwidth-75">--</div>';
 									}
 									result = result + '  </td>';
+									result = result + ' <td>';
+			        		 if(opt.cancelReason !=null && opt.cancelReason != 'undefined' && opt.cancelReason != ''){
+			        			 result = result + '     <div title="'+opt.cancelReason+'" class="tblminwidth-75">'+opt.cancelReason+'</div>';	 
+			        		 }else{
+			        			 result = result + '     <div title="" class="tblminwidth-75">--</div>';	
+			        		 }
+			        		 result = result + '  </td>';
 									result = result + ' <td>';
 									result = result
 											+ '  <div title="'+opt.status+'" class="tblminwidth-75">';
