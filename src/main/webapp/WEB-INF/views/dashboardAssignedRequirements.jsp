@@ -63,8 +63,8 @@ function requirementList(){
 	  $.ajax({
            type : "POST",
            url: sourceleadUrl+"/getAssignedRequirementListByOrgLocationIDAndUserId?${_csrf.parameterName}=${_csrf.token}",    
-            success :function(data) {
-                 if(data != null && data != 'undefined' && data != "" && data != '[]'){
+            success :function(json) {
+                 if(json != null && json != 'undefined' && json != "" && json != '[]'){
                		
 			    	     $("#requirementList").removeAttr("style");
 	                	 $("#requirementList").empty();
@@ -98,7 +98,6 @@ function requirementList(){
 	                 	 result = result +'</div>';
 	                 	 result = result +'</div>';
 	                 	 
-	                 	var json = JSON.parse(data);
 	                 	var checkSize = json.length;
 	                     if(checkSize>10){
 	                         checkSize = 10;
