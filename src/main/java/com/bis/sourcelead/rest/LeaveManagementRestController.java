@@ -1115,6 +1115,8 @@ public class LeaveManagementRestController {
 			}
 			durationSb.append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), leave.getFromDate()))
 					.append(System.getProperty("line.separator"))
+					.append("to")
+					.append(System.getProperty("line.separator"))
 					.append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), leave.getToDate()));
 
 			leaveDto.setDuration(durationSb.toString());
@@ -1127,22 +1129,26 @@ public class LeaveManagementRestController {
 			} catch (ParseException e) {
 				e.printStackTrace();
 			}
-			leaveDto.setBalanceleaves(leave.getLeaveType().getNumbefrOfLeavesPeryear());
 			leaveDto.setFileUrl(leave.getFileUrl());
 			leaveDto.setReason(leave.getReason());
 			leaveDto.setCreatedDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),leave.getCreatedDate()));
 			leaveDto.setFileName(leave.getFileName());
+			leaveDto.setFileContentType(leave.getFileContentType());
             if(leave.getRejectedReason() !=null) {
             	leaveDto.setRejectedReason(leave.getRejectedReason());
             }
-           
+            if(leave.getDeleteReason() !=null) {
+            	leaveDto.setDeleteReason(leave.getDeleteReason());
+            }
+            
 			StringBuilder sbu = new StringBuilder();
-			if(leave.getUser() != null){
-			if(StringUtils.isNotBlank(leave.getApprovedBy().getLastName())){
-				sbu.append(leave.getApprovedBy().getFirstName()).append(" ").append(leave.getApprovedBy().getLastName());
+			if(leave.getApprovedBy() != null){
+				User approvedUser = userService.getUserById(leave.getApprovedBy().getId());
+				if(StringUtils.isNotBlank(approvedUser.getLastName())){
+				sbu.append(approvedUser.getFirstName()).append(" ").append(approvedUser.getLastName());
 				leaveDto.setApprovedBy(sbu.toString());
 			}else{
-				sbu.append(leave.getApprovedBy().getFirstName());
+				sbu.append(approvedUser.getFirstName());
 				leaveDto.setApprovedBy(sbu.toString());
 			}
 		 }
@@ -1150,22 +1156,24 @@ public class LeaveManagementRestController {
 			leaveDto.setUpdatedDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),leave.getUpdatedDate()));
 			
 			StringBuilder sbr = new StringBuilder();
-			if(leave.getUser() != null){
-				if(StringUtils.isNotBlank(leave.getRejectedBy().getLastName())){
-					sbr.append(leave.getRejectedBy().getFirstName()).append(" ").append(leave.getRejectedBy().getLastName());
+			if(leave.getRejectedBy() != null){
+				User rejectedUser = userService.getUserById(leave.getRejectedBy().getId());
+				if(StringUtils.isNotBlank(rejectedUser.getLastName())){
+					sbr.append(rejectedUser.getFirstName()).append(" ").append(rejectedUser.getLastName());
 					leaveDto.setRejectedBy(sbr.toString());
 				}else{
-					sbr.append(leave.getRejectedBy().getFirstName());
+					sbr.append(rejectedUser.getFirstName());
 					leaveDto.setRejectedBy(sbr.toString());
 				}
 			}
 			StringBuilder sbc = new StringBuilder();
-			if(leave.getUser() != null){
-				if(StringUtils.isNotBlank(leave.getCancelledBy().getLastName())){
-					sbc.append(leave.getCancelledBy().getFirstName()).append(" ").append(leave.getCancelledBy().getLastName());
+			if(leave.getCancelledBy() != null){
+				User rejectedUser = userService.getUserById(leave.getCancelledBy().getId());
+				if(StringUtils.isNotBlank(rejectedUser.getLastName())){
+					sbc.append(rejectedUser.getFirstName()).append(" ").append(rejectedUser.getLastName());
 					leaveDto.setCancelledBy(sbc.toString());
 				}else{
-					sbc.append(leave.getCancelledBy().getFirstName());
+					sbc.append(rejectedUser.getFirstName());
 					leaveDto.setCancelledBy(sbc.toString());
 				}
 			 }
@@ -1193,6 +1201,8 @@ public class LeaveManagementRestController {
 			int thisMonthLeaves = leaveDao.getThisMonthLeavesTakenByUser(leave.getUser().getId(),leave.getLeaveType().getId());
 			leaveDto.setThisMonthLeaves(String.valueOf(thisMonthLeaves));
 			leaveDto.setIsBillable(leave.getLeaveType().getLeaveType());
+			int balLeaves = Integer.parseInt(leave.getLeaveType().getNumbefrOfLeavesPeryear()) - nuberOfLeavestaken;
+			leaveDto.setBalanceleaves(String.valueOf(balLeaves));
 		}
 		return leaveDto;
 	}

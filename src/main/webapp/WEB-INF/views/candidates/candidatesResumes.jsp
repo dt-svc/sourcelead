@@ -286,6 +286,9 @@ function addResume(candidateId) {
 	             			}		             			
 					 		candidateResumesList(candidateId);
 					 		resMsgFadeinResumes();
+					 		setTimeout(function(){
+					 			candidateList();					 			
+					 		},100);
 	            		 }
 						 /* $("#conMsg").fadeIn(200);
 						 $('#conMsg').delay(2000).fadeOut('slow'); */

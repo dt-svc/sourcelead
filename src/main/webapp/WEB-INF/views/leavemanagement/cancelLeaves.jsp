@@ -70,6 +70,7 @@
 				.attr(
 						'style',
 						'position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:999;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+
 		$
 				.get(
 						sourceleadUrl + "/getLeavesListByLocationIdAndStatus?"
@@ -166,12 +167,17 @@
 									}
 									result = result + '  </td>';
 									result = result + ' <td>';
-			        		 if(opt.cancelReason !=null && opt.cancelReason != 'undefined' && opt.cancelReason != ''){
-			        			 result = result + '     <div title="'+opt.cancelReason+'" class="tblminwidth-75">'+opt.cancelReason+'</div>';	 
-			        		 }else{
-			        			 result = result + '     <div title="" class="tblminwidth-75">--</div>';	
-			        		 }
-			        		 result = result + '  </td>';
+									if (opt.cancelReason != null
+											&& opt.cancelReason != 'undefined'
+											&& opt.cancelReason != '') {
+										result = result
+												+ '     <div title="'+opt.cancelReason+'" class="tblminwidth-75">'
+												+ opt.cancelReason + '</div>';
+									} else {
+										result = result
+												+ '     <div title="" class="tblminwidth-75">--</div>';
+									}
+									result = result + '  </td>';
 									result = result + ' <td>';
 									result = result
 											+ '  <div title="'+opt.status+'" class="tblminwidth-75">';
@@ -190,6 +196,7 @@
 							$("#cancelledListDiv").append(result);
 							$("#loading").removeAttr("style");
 							rejectedListPagination();
+
 							$(".proj_show").click(
 									function() {
 										$(".new_side_wrap").addClass(
@@ -197,6 +204,7 @@
 										$(".side_mask").fadeIn(200);
 										$("body").css('overflow-y', 'hidden');
 									});
+
 							$(".proj_close, .side_mask").click(
 									function() {
 										$(".new_side_wrap").removeClass(
@@ -211,8 +219,7 @@
 
 <script>
 	function getRequestedAproveSummary(leaveId, orgLocationId) {
-		$
-				.get(
+		$.get(
 						sourceleadUrl + "/getRequestedAproveSummary?"
 								+ tokenParamName + "=" + tokenValue
 								+ "&leaveId=" + leaveId + "&orgLocationId="
@@ -246,96 +253,132 @@
 								result = result
 										+ '<label class="col-md-2 control-label"><b>Leave Type:</b></label>';
 								result = result + '<div class="col-md-8">';
-								result = result + '<span>' + data.leaveType
-										+ '</span>';
+								if(data.leaveType != null && data.leaveType !='' && data.leaveType !='undefined'){
+									 result = result +'<span>'+data.leaveType+'</span>';
+								 }else{
+						            	result = result +' <span>--</span>';
+						            }
 								result = result + '</div>';
 								result = result + '</div>';
 								result = result + '<div class="col-md-12 mb">';
 								result = result
 										+ '<label class="col-md-2 control-label"><b>Duration:</b></label>';
 								result = result + '<div class="col-md-8">';
-								result = result + ' <span>' + data.duration
-										+ '</span>';
+								if(data.duration != null && data.duration !='' && data.duration !='undefined'){
+									 result = result +'<span>'+data.duration+'</span>';
+								 }else{
+						            	result = result +' <span>--</span>';
+						            }
 								result = result + ' </div>';
 								result = result + '</div>';
 								result = result + ' <div class="col-md-12 mb">';
 								result = result
 										+ '<label class="col-md-2 control-label"><b>Type:</b></label>';
 								result = result + '<div class="col-md-8">';
-								result = result + '<span>' + data.isBillable
-										+ '</span>';
+								if(data.isBillable != null && data.isBillable !='' && data.isBillable !='undefined'){
+									 result = result +'<span>'+data.isBillable+'</span>';
+								 }else{
+						            	result = result +' <span>--</span>';
+						            }
 								result = result + ' </div>';
 								result = result + ' </div>';
 								result = result + '<div class="col-md-12 mb">';
 								result = result
 										+ '<label class="col-md-2 control-label"><b>No of leaves taken:</b></label>';
 								result = result + ' <div class="col-md-8">';
-								result = result + '<span>' + data.leavesTaken
-										+ '</span>';
+								if(data.leavesTaken != null && data.leavesTaken !='' && data.leavesTaken !='undefined'){
+									 result = result +'<span>'+data.leavesTaken+'</span>';
+								 }else{
+						            	result = result +' <span>--</span>';
+						            }
 								result = result + '</div>';
 								result = result + '</div>';
 								result = result + '<div class="col-md-12 mb">';
 								result = result
 										+ '<label class="col-md-2 control-label"><b>Applied on:</b></label>';
 								result = result + '<div class="col-md-8">';
-								result = result + '<span>' + data.createdDate
-										+ '</span>';
+								if(data.createdDate != null && data.createdDate !='' && data.createdDate !='undefined'){
+									 result = result +'<span>'+data.createdDate+'</span>';
+								 }else{
+						            	result = result +' <span>--</span>';
+						            }
 								result = result + ' </div>';
 								result = result + '</div>';
 								result = result + '<div class="col-md-12 mb">';
 								result = result
 										+ '<label class="col-md-2 control-label"><b>Approvers:</b></label>';
 								result = result + '<div class="col-md-8">';
-								result = result + ' <span>'
-										+ data.approverUsers + '</span>';
+								if(data.approverUsers != null && data.approverUsers !='' && data.approverUsers !='undefined'){
+									 result = result +'<span>'+data.approverUsers+'</span>';
+								 }else{
+						            	result = result +' <span>--</span>';
+						            }
 								result = result + '</div>';
 								result = result + '</div>';
 								result = result + '<div class="col-md-12 mb">';
 								result = result
 										+ '<label class="col-md-2 control-label"><b>Approved By:</b></label>';
 								result = result + '<div class="col-md-8">';
-								result = result + ' <span>' + data.approvedBy
-										+ '</span>';
+								if(data.approvedBy != null && data.approvedBy !='' && data.approvedBy !='undefined'){
+									 result = result +'<span>'+data.approvedBy+'</span>';
+								 }else{
+						            	result = result +' <span>--</span>';
+						            }
 								result = result + '</div>';
 								result = result + '</div>';
 								result = result + '<div class="col-md-12 mb">';
 								result = result
 										+ '<label class="col-md-2 control-label"><b>Approved On:</b></label>';
 								result = result + '<div class="col-md-8">';
-								result = result + ' <span>' + data.updatedDate
-										+ '</span>';
+								if(data.updatedDate != null && data.updatedDate !='' && data.updatedDate !='undefined'){
+									 result = result +'<span>'+data.updatedDate+'</span>';
+								 }else{
+						            	result = result +' <span>--</span>';
+						            }
 								result = result + '</div>';
 								result = result + '</div>';
 								result = result + '<div class="col-md-12 mb">';
 								result = result
 										+ '<label class="col-md-2 control-label"><b>Cancelled By:</b></label>';
 								result = result + '<div class="col-md-8">';
-								result = result + ' <span>' + data.cancelledBy
-										+ '</span>';
+								if(data.cancelledBy != null && data.cancelledBy !='' && data.cancelledBy !='undefined'){
+									 result = result +'<span>'+data.cancelledBy+'</span>';
+								 }else{
+						            	result = result +' <span>--</span>';
+						            }
 								result = result + '</div>';
 								result = result + '</div>';
 								result = result + '<div class="col-md-12 mb">';
 								result = result
 										+ '<label class="col-md-2 control-label"><b>Cancelled On:</b></label>';
 								result = result + '<div class="col-md-8">';
-								result = result + ' <span>' + data.updatedDate
-										+ '</span>';
+								if(data.updatedDate != null && data.updatedDate !='' && data.updatedDate !='undefined'){
+									 result = result +'<span>'+data.updatedDate+'</span>';
+								 }else{
+						            	result = result +' <span>--</span>';
+						            }
 								result = result + '</div>';
 								result = result + '</div>';
 								result = result + '<div class="col-md-12 mb">';
 								result = result
 										+ '<label class="col-md-2 control-label"><b>Cancelled Reason:</b></label>';
 								result = result + '<div class="col-md-8">';
-								result = result + ' <span>' + data.deleteReason
-										+ '</span>';
+								if(data.deleteReason != null && data.deleteReason !='' && data.deleteReason !='undefined'){
+									 result = result +'<span>'+data.deleteReason+'</span>';
+								 }else{
+						            	result = result +' <span>--</span>';
+						            }
 								result = result + '</div>';
 								result = result + '</div>';
 								result = result + '<div class="col-md-12 mb">';
 								result = result
 										+ '<label class="col-md-2 control-label"><b>Reason:</b></label>';
 								result = result + '<div class="col-md-8">';
-								result = result + ' <span>' + data.reason
-										+ '</span>';
+								if(data.reason != null && data.reason !='' && data.reason !='undefined'){
+									 result = result +'<span>'+data.reason+'</span>';
+								 }else{
+						            	result = result +' <span>--</span>';
+						            }
 								result = result + '</div>';
 								result = result + '</div>';
 								result = result + '<div class="col-md-12 mb">';
@@ -346,11 +389,12 @@
 								if (data.fileUrl != null
 										&& data.fileUrl != 'undefined'
 										&& data.fileUrl != '') {
+									result = result+'<td><div class="tblicons_4"> <a class="glyphicon glyphicon-download-alt" target="_blank" href=\"'+data.fileUrl+'\" title="Download"></a>&nbsp&nbsp';
 									result = result
 											+ '<a href="#" title="Preview"><i class="fa fa-eye cursorPointer" onclick="viewFile(\''
 											+ data.fileUrl + '\', \''
 											+ data.fileName + '\', \''
-											+ data.fileType + '\')"></i></a>';
+											+ data.fileContentType + '\')"></i></a>';
 								} else {
 									result = result + '<span>--</span>';
 								}

@@ -1,5 +1,7 @@
 package com.bis.sourcelead.service.impl;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
@@ -341,9 +343,13 @@ public class CandidateEducationServiceImpl implements CandidateEducationService 
 				ArrayList<String> eduList = new ArrayList<>();
 				for(CandidateEducation edu :educationList){
 					eduList.add(edu.getName());
+					
 				}
+				DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+				candidateIndex.setUpdatedDate(dateFormat.format(new Date()));
 				candidateIndex.setEducation(eduList);
 			}
+			
 			sourceleadELKBaseIndexer.saveOrUpdateElkDocument(candidateIndex, Constants.ELK_CANDIDATE_INDEX, Constants.ELK_CANDIDATE_TYPE,candidate.getId().toString());
 		}
 	}
