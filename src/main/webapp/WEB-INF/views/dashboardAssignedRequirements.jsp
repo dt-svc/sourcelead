@@ -65,7 +65,6 @@ function requirementList(){
            url: sourceleadUrl+"/getAssignedRequirementListByOrgLocationIDAndUserId?${_csrf.parameterName}=${_csrf.token}",    
             success :function(json) {
                  if(json != null && json != 'undefined' && json != "" && json != '[]'){
-               		
 			    	     $("#requirementList").removeAttr("style");
 	                	 $("#requirementList").empty();
 	                	 var result = "";
@@ -107,6 +106,7 @@ function requirementList(){
 	                     }
 	                     for (var i = 0; i < checkSize; i++) { 
 	                    	 var opt = json[i]; 
+	                    	 
 	                    	 result = result +"<tr>";
 	                    	 if(opt.jobId!=null && opt.jobId !='' && opt.jobId !='undefined'){
 	                    		 result = result +"<td><div class=''><span title='"+opt.jobId+"'>"+opt.jobId+"</span></a></div></td>";
@@ -140,12 +140,21 @@ function requirementList(){
 		                     }else{
 		                    	 result = result +"<td><div>---</div></td>";
 		                     }
+		                     if(opt.noOfApplicants != null && opt.noOfApplicants != '' && opt.noOfApplicants != 'undefined'){		                     
 	                    	 result = result +"<td><a href='<c:url value='/requirementSummary?type=applicants&requirementUUID="+opt.requirementUUID+"'/>'><div>"+opt.noOfApplicants+"</div></a></td>";
-
+		                     }
+		                     if(opt.noOfShortlistedApplicants != null && opt.noOfShortlistedApplicants != '' && opt.noOfShortlistedApplicants != 'undefined'){
 		                     result = result +"<td><a href='<c:url value='/requirementSummary?type=SHORTLIST&requirementUUID="+opt.requirementUUID+"'/>'><div>"+opt.noOfShortlistedApplicants+"</div></a></td>";
+		                     }
+		                     if(opt.noOfSubmittedApplicants != null && opt.noOfSubmittedApplicants != '' && opt.noOfSubmittedApplicants != 'undefined'){
 			                 result = result +"<td><a href='<c:url value='/requirementSummary?type=SUBMIT_TO_CLIENT&requirementUUID="+opt.requirementUUID+"'/>'><div>"+opt.noOfSubmittedApplicants+"</div></a></td>";
+		                     }
+		                     if(opt.noOfInterviewedApplicants != null && opt.noOfInterviewedApplicants != '' && opt.noOfInterviewedApplicants != 'undefined'){
 		                     result = result +"<td><a href='<c:url value='/requirementSummary?type=INTERVIEW&requirementUUID="+opt.requirementUUID+"'/>'><div>"+opt.noOfInterviewedApplicants+"</div></a></td>";
+		                     }
+		                     if(opt.noOfOfferedApplicants != null && opt.noOfOfferedApplicants != '' && opt.noOfOfferedApplicants != 'undefined'){
 		                     result = result +"<td><a href='<c:url value='/requirementSummary?type=OFFERMADE&requirementUUID="+opt.requirementUUID+"'/>'><div>"+opt.noOfOfferedApplicants+"</div></a></td>";
+		                     }
 
 		                     result = result +"<td>";
 		                     result = result + '<div class="tblminwidth-75">';
