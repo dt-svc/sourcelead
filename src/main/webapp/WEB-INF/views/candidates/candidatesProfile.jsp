@@ -1462,8 +1462,8 @@ function certificationSubmissionProfile(candidateId){
 	 $.ajax({  
           type : "POST",
           url: sourceleadUrl+"/getCandidateCertificationListByCandidateIdAndOrgLocationID?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
-          success :function(data) {
-        	  if (data != null && data != 'undefined' && data != "" && data != '[]') {
+          success :function(json) {
+        	  if (json != null && json != 'undefined' && json != "" && json != '[]') {
 	                	 $("#certificationSubmissionProfile").empty();
 	                	 var result = "";
 	                	 
@@ -1472,9 +1472,9 @@ function certificationSubmissionProfile(candidateId){
 							result = result +'          <div class="row">';
 							result = result +'            <div class="col-md-12">';
 							result = result +'              <ul class="list-unstyled personal-info">';
-							 var json = JSON.parse(data);
-							for (var i = 0; i < json.length; i++) { 
-		                    	var opt = json[i];  
+// 							 var json = JSON.parse(data);
+							for (var i = 0; i < json.data.length; i++) { 
+		                    	var opt = json.data[i];  
 		                    	if(opt.score != null && opt.score != 'undefined' && opt.score != ""){
 				            		score =' ( ' + opt.score;
 				            	}else{
@@ -1773,12 +1773,12 @@ function  removeValiationVendorContact() {
 			 $.ajax({
 				    type: "POST",
 			        url: sourceleadUrl+"/getOrgSpocsList?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationID+"&type=Vendor",  
-			        success: function(data) {
-			        	var json = JSON.parse(data);
+			        success: function(json) {
+			        	//var json = JSON.parse(data);
 			        	$('#vendorcontactName').empty();
 			        	$('#vendorcontactName').append('<option value="">--select Vendor contact--</option>');
-			             for(var i=0;i<json.length;i++){
-			            	 var opt = json[i];
+			             for(var i=0;i<json.data.length;i++){
+			            	 var opt = json.data[i];
 			            	 if(vendorContactName != null && vendorContactName != 'undefined' && vendorContactName  != ''){
 			            		 $('#vendorcontactName').append('<option '+ (opt.id == vendorSpocId ? "selected" : '') +' value="'+opt.id+'">'+opt.spocName+' ('+opt.ownerName+')</option>');
 				            	}else{
