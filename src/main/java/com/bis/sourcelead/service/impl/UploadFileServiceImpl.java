@@ -822,9 +822,9 @@ private String getCellValueAsString(Cell cell, String fileName) {
 				}
 			}
 			/*code to check Rate validation*/
-			if (row.getCell(6) != null && !"".equalsIgnoreCase(row.getCell(6).toString().trim())) {
-				if(row.getCell(7) != null && !"".equalsIgnoreCase(row.getCell(7).toString().trim())){
-					String rate = getCellValueAsString(row.getCell(6), fileName);
+			if (row.getCell(5) != null && !"".equalsIgnoreCase(row.getCell(5).toString().trim())) {
+				if(row.getCell(5) != null && !"".equalsIgnoreCase(row.getCell(5).toString().trim())){
+					String rate = getCellValueAsString(row.getCell(5), fileName);
 					if (rate != null && !"".equalsIgnoreCase(rate)) {
 						isValidated = isRateLengthValid(rate);
 						if(isValidated == false){
@@ -837,18 +837,18 @@ private String getCellValueAsString(Cell cell, String fileName) {
 					return false;
 				}
 			}
-			if(row.getCell(7) != null && !"".equalsIgnoreCase(row.getCell(7).toString().trim())){
+			if(row.getCell(6) != null && !"".equalsIgnoreCase(row.getCell(6).toString().trim())){
 				if(row.getCell(6) == null || "".equalsIgnoreCase(row.getCell(6).toString().trim())){
 					userImport.setReason("Rate is Required");
 					return false;
 				}
 			}
-			if (row.getCell(8) != null && !"".equalsIgnoreCase(row.getCell(8).toString())) {
-				isValidated = isCellValueDate(row.getCell(8),fileName,orgLocations);
+			if (row.getCell(7) != null && !"".equalsIgnoreCase(row.getCell(7).toString())) {
+				/*isValidated = isCellValueDate(row.getCell(8),fileName,orgLocations);
 				if(isValidated == false){
 					userImport.setReason("Invalid Date");
 					return isValidated;
-				}
+				}*/
 			}
 			
 			
