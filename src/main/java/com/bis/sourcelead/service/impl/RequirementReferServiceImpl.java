@@ -92,8 +92,8 @@ public class RequirementReferServiceImpl implements RequirementReferService {
 		
 		if(jsonObj.has("email") && !isNullOrEmpty(jsonObj.getString("email"))){
 			requirementRefer.setReferToEmail(jsonObj.getString("email"));
-			referToUser = userDao.getUserByEmailAndUserType(jsonObj.getString("email"), Constants.PROFESSIONAL);
-			if(null != referToUser){
+			referToUser = userDao.findByEmail(jsonObj.getString("email"));
+			if(referToUser != null){
 				requirementRefer.setReferToUser(referToUser);
 			}
 		}
@@ -149,6 +149,9 @@ public class RequirementReferServiceImpl implements RequirementReferService {
 			referContacts.setReferFromUser(user);
 			contactUUID = SourceLeadRandomCodeHelper.generateUUID();
 			referContacts.setContactUserUUID(contactUUID);
+			if(referToUser != null){
+				referContacts.setContactUser(referToUser);
+			}
 			referContacts.setOrgLocationId(orgLocations);
 			referContacts.setCreatedDate(new Date());
 			referContacts.setUpdatedDate(new Date());
