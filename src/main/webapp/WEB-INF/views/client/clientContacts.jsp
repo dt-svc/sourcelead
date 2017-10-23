@@ -59,11 +59,11 @@ function clientContacts(orgRelationID,clientLocationId){
 		$.ajax({
 	    	type: "POST",
 	    	url : sourceleadUrl+"/getOrgSpocsList?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationID+"&type=Client", 
-	        success: function(data) {
+	        success: function(json) {
 	        	
-	        var json = JSON.parse(data);
+	     //   var json = JSON.parse(data);
 	        for (var i = 0; i < 1; i++) { 
- 				var val= json[i];
+ 				var val= json.data[i];
  				var opt = "";
  					if(val.msg != null && val.msg != '' && val.msg != 'undefined'){
      					opt  = opt + '<div class="success_pop" id="clientMsgSelector" style="display: block;">';
@@ -74,7 +74,7 @@ function clientContacts(orgRelationID,clientLocationId){
  					$("#clientMsgDiv").append(opt);
  				}
 	      
-    		if(json.length != null && json.length != ''){
+    		if(json.data.length != null && json.data.length != ''){
     			$("#clientContactList").empty();
 				var result = "";
 				result = result +"<table id='clientContactsPagination' class='display' cellspacing='0' width='100%' >"; 
@@ -91,9 +91,9 @@ function clientContacts(orgRelationID,clientLocationId){
 	        	result = result +'</thead>';
 	        	result = result +'<tbody>';
 
-	        	for (var i=0; i<json.length; i++)
+	        	for (var i=0; i<json.data.length; i++)
 				  {	        		
-	        		var opt = json[i];
+	        		var opt = json.data[i];
 	        		var selected1 = '';
 					var selected2 = '';
 					var selected3 = '';
@@ -138,7 +138,7 @@ function clientContacts(orgRelationID,clientLocationId){
 	                if(opt.invitationStatus == 'Rejected'){
 	        			result = result + '<span>'+opt.spocStatus+'</span>';
 	        		}else{
-	        			result = result + ' <select id="spocStatus'+json[i].id+'" name="spocStatus" onChange="changeSpocStatus('+json[i].id+'\,'+clientLocationId+');">';
+	        			result = result + ' <select id="spocStatus'+json.data[i].id+'" name="spocStatus" onChange="changeSpocStatus('+json.data[i].id+'\,'+clientLocationId+');">';
 						result = result + ' <option value="Active"  '+selected1+'>Active</option>';
 						result = result + ' <option value="In-Active"    '+selected2+'>In-Active</option>';
 						/* result = result + ' <option value="New" '+selected3+'>New</option>';
@@ -184,9 +184,9 @@ function clientContacts(orgRelationID,clientLocationId){
    		    		result = result +'</div></td>';
 	                
    		    		'<sec:authorize access="hasAnyRole(\'ROLE_DELETE_CLIENT_CONTACT\')">';
-	                if(json[i].status != null && json[i].status != '' && json[i].status !='undefined' && json[i].status != "INACTIVE"){
+	                if(json.data[i].status != null && json.data[i].status != '' && json.data[i].status !='undefined' && json.data[i].status != "INACTIVE"){
 	                result = result + '	    <td><div>';
-	                                        result = result + '<i class="glyphicon glyphicon-trash" onClick="terminateClientSpoc('+json[i].id+'\,\''+orgRelationID+'\',\''+clientLocationId+'\',\''+opt.spocName+'\')"; title = "Remove client contact"></i>';
+	                                        result = result + '<i class="glyphicon glyphicon-trash" onClick="terminateClientSpoc('+json.data[i].id+'\,\''+orgRelationID+'\',\''+clientLocationId+'\',\''+opt.spocName+'\')"; title = "Remove client contact"></i>';
 	                	                    result = result +'</div></td>';
                      }
                      else{
@@ -196,7 +196,7 @@ function clientContacts(orgRelationID,clientLocationId){
 	                
 	                
 	                '<sec:authorize access="!hasAnyRole(\'ROLE_DELETE_CLIENT_CONTACT\')">';
-	                if(json[i].status != null && json[i].status != '' && json[i].status !='undefined' && json[i].status != "INACTIVE"){
+	                if(json.data[i].status != null && json.data[i].status != '' && json.data[i].status !='undefined' && json.data[i].status != "INACTIVE"){
 	                						result = result + '	    <td><div>';
 	                                        result = result + '--';
 	                	                    result = result +'</div></td>';

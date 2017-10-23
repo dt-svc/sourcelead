@@ -20,8 +20,8 @@
 		$.ajax({
 					type : "POST",
 					url : sourceleadUrl+"/getClientAndVendorOrgDeatilsById?"+tokenParamName+"="+tokenValue+"&vendorLocationId="+clientLocationId+"&orgRelationId="+orgRelationID,
-					success : function(data) {
-						var json = JSON.parse(data);
+					success : function(json) {
+					//	var json = JSON.parse(data);
 						getClientNeworgname(json.orgName);
 						var result = "";
 						var city = "";

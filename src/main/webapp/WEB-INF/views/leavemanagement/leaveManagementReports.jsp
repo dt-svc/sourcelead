@@ -1069,6 +1069,30 @@ function topLeaveTakersPagination(url){
 			}
 		});
 		
+	  $('#barChartFromDate').datepicker({
+			dateFormat : finalDateFormatEndDate,
+			changeMonth: true,
+			changeYear: true, 
+			onSelect : function(selected) {
+			var dt = $(this).datepicker('getDate', '+1d');
+			dt.setDate(dt.getDate());
+			$("#toDate").datepicker("option", "minDate", dt);
+			removeStartValid();
+			}
+		});
+		
+	  $('#barChartToDate').datepicker({
+			dateFormat : finalDateFormatEndDate,
+			changeMonth: true,
+			changeYear: true, 
+			onSelect : function(selected) {
+			var dt = $(this).datepicker('getDate', '-1d');
+			dt.setDate(dt.getDate());
+			$("#fromdate").datepicker("option", "maxDate", dt);
+			removeEndValid();
+			}
+		});
+	  
 	});
 </script>
 
