@@ -28,21 +28,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.TimesheetEntriesDao;
-import com.bis.sourcelead.dto.ExpenseEntryDetailsDTO;
-import com.bis.sourcelead.dto.ProjectMembersDTO;
-import com.bis.sourcelead.dto.TimesheetExpenseEntryDetailsUtilDTO;
-import com.bis.sourcelead.dto.helper.ProjectMemberDTOConverter;
+import com.bis.sourcelead.dto.FileInfo;
+import com.bis.sourcelead.dto.TimesheetStoringDTO;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
@@ -58,7 +53,6 @@ import com.bis.sourcelead.entity.TimesheetSubmissionsDocuments;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Submission_ApprovalStatus;
 import com.bis.sourcelead.enums.Submission_Status;
-import com.bis.sourcelead.form.TimesheetEntriesForm;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.ExportTimesheetEntries;
@@ -77,6 +71,7 @@ import com.bis.sourcelead.service.impl.TimeSheetExcelView;
 import com.bis.sourcelead.util.CalendarUtil;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
+import com.bis.sourcelead.util.FileUploadUtil;
 import com.bis.sourcelead.util.PdfConversionUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.bis.sourcelead.util.TimeSheetPdfUtil;
@@ -162,6 +157,9 @@ public class TimesheetRestController {
 	
 	@Autowired
 	private CandidateService candidateService;
+	
+	@Value("${static.path}")
+	private String staticPath;
 	
 	/*@RequestMapping(value = "/rest/getTimesheetEntryDetails")
 	public TimesheetEntryDetailsDTO getTimesheetEntryDetails(@RequestBody TimesheetExpenseEntryDetailsUtilDTO eedDTO) throws Exception
@@ -1453,7 +1451,7 @@ public class TimesheetRestController {
 						for(TimesheetSubmissionsDocuments tsd : timesheetSubmissionsDocumentsList){
 							if(!isNullOrEmpty(tsd.getFileName())){
 									documentBuffer.append("<strong id='"+tsd.getId()+"document'>");
-									documentBuffer.append(" <a class='downicon' href=\'").append(sourceleadUrl).append("/downloadDocument?submissionDocumentId=").append(tsd.getId()).append("\'>");
+									documentBuffer.append("<a class='downicon'").append("href='"+tsd.getFileUrl()+"'").append(">");
 									documentBuffer.append("<i class='glyphicon glyphicon-save'></i>");
 									documentBuffer.append(" <input type='button' value='"+tsd.getFileName()+"'>");
 									documentBuffer.append("</a>");
@@ -1464,7 +1462,7 @@ public class TimesheetRestController {
 								    		&& !approvalStatus.equalsIgnoreCase(Submission_ApprovalStatus.getNameByValue("approved").getValue())){
 										documentBuffer.append("<input class='dele' type='button' onClick='deleteSubmissionDocument(\""+tsd.getId()+"\");' >");
 									}
-									documentBuffer.append("<input class='deleApp' type='button' onClick='viewSubmissionDocument(\""+tsd.getId()+"\",\""+tsd.getFileName()+"\");' >");
+								    documentBuffer.append("<input class='deleApp' type='button' onClick='viewFile(\""+tsd.getFileUrl()+"\",\""+tsd.getFileName()+"\",\""+tsd.getFileContentType()+"\");'>");
 									documentBuffer.append("</strong>");
 							} 
 						}
@@ -1498,8 +1496,7 @@ public class TimesheetRestController {
 		
 	@PreAuthorize("hasAnyRole('ROLE_FILL_MY_TIMESHEETS','ROLE_MODIFY_MY_TIMESHEETS','ROLE_FILL_MEMBER_TIMESHEETS')")
 	@RequestMapping(value = "/newSaveTimesheet", method = RequestMethod.POST)
-	public @ResponseBody String saveTimesheet(TimesheetEntriesForm timesheetEntriesForm,@RequestParam(value="json", required=false) String json,
-			MultipartHttpServletRequest request,@RequestParam(value="status", required=false) String status,@RequestParam(value="savingType", required=false)  String savingType) throws Exception {
+	public @ResponseBody String saveTimesheet(TimesheetStoringDTO tsDTO,HttpServletRequest request) throws Exception {
 			
 			
 			OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
@@ -1508,7 +1505,9 @@ public class TimesheetRestController {
 		 	String loginOrgCode = (String) SourceLeadSessionManager.getSessionAttribute(request, "orgCode");
 		 	
 		 	
-			
+			String json = tsDTO.getJson();
+			String status = tsDTO.getStatus();
+			String savingType = tsDTO.getSavingType();
 			json = "{"+json+"}";
 			JSONObject jsonObj = new JSONObject(json);
 	    	Gson gson =  new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
@@ -1643,38 +1642,21 @@ public class TimesheetRestController {
 		    			timesheetSubmissionsService.saveAllTimesheetSubmissions(timesheetSubmissionsList);
 		            }
 			    	//save  mutliple attachment in timesheet submissison attachment.
-					if ((jsonObj.has("attcahmentMaxRowNumber"))){
-				    	String attcahmentMaxRowNumber = jsonObj.getString("attcahmentMaxRowNumber");
-						int attcahmentMaxRowNumberCount = Integer.parseInt(attcahmentMaxRowNumber);
-						int attachmentRowNum = 0;
-						
-				    	for (int a = 0; a < attcahmentMaxRowNumberCount; a++) {
-							   
-							   TimesheetSubmissionsDocuments tsd = new TimesheetSubmissionsDocuments();
-							   final MultipartHttpServletRequest multiRequest = (MultipartHttpServletRequest) request; 
-			       		       final Map files = multiRequest.getFileMap();
-			       		       
-			       		       tsd.setTimesheetSubmissions(timesheetSubmissions);
-			                   MultipartFile  multiFile = (MultipartFile)files.get(a+"docFile");
-			                   if(multiFile != null && !multiFile.isEmpty()){
-			                       tsd.setDocFile(multiFile.getBytes());
-			                       tsd.setFileName(multiFile.getOriginalFilename());
-			                       
-			                       if(multiFile.getContentType()!=null){
-			                    	   tsd.setFileContentType(multiFile.getContentType());
-			                       }
-			                       tsd.setStatus(Constants.CANDIDATE_ACTIVE);
-				                   tsd.setCreatedDate(CommonUtil.currentDate());
-				                   tsd.setCreatedBy(loginUser.getUserCode());
-				                   tsd.setUpdatedDate(CommonUtil.currentDate());
-				                   tsd.setUpdatedBy(loginUser.getUserCode());
-								   timesheetSubmissionsDocumentsService.addTimesheetSubmissionsDocuments(tsd);
-								   
-			                   }
-			                   
-			                 
-				    	}
-					}
+		            TimesheetSubmissionsDocuments tsd = new TimesheetSubmissionsDocuments();
+		            for(FileInfo file:tsDTO.getFileInfo()) {
+		            	 tsd.setTimesheetSubmissions(timesheetSubmissions);
+						FileUploadUtil.moveFile(staticPath, file, "timesheetDocuments");
+						tsd.setFileUrl(file.getFileURL());
+						tsd.setFileName(file.getFileName());
+						tsd.setFileContentType(file.getContentType());
+						tsd.setStatus(Constants.CANDIDATE_ACTIVE);
+						tsd.setCreatedDate(CommonUtil.currentDate());
+		                tsd.setCreatedBy(loginUser.getUserCode());
+		                tsd.setUpdatedDate(CommonUtil.currentDate());
+		                tsd.setUpdatedBy(loginUser.getUserCode());
+						timesheetSubmissionsDocumentsService.addTimesheetSubmissionsDocuments(tsd);
+		            }
+		            
 					String maxAdminTimeTypeRowNum = jsonObj.getString("maxRowNumber");
 					int maxCount = Integer.parseInt(maxAdminTimeTypeRowNum);
 					int rowNum = 0;
