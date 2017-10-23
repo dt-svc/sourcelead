@@ -1198,7 +1198,6 @@ function loadOnBoardingTemplates(onboardTemplateId){
 		 onBoardingUUID = document.getElementById("candidateOnBoardUUID").value;
 	 }
 	 
-	 alert(onBoardingUUID);
 	 
 	 if(onBoardingUUID){
 		 
@@ -1211,9 +1210,8 @@ function loadOnBoardingTemplates(onboardTemplateId){
 	    $.ajax({
 	    	type: "POST",
 	    	 url: sourceleadUrl+"/loadOnboardingCandidateDetails?${_csrf.parameterName}=${_csrf.token}&onBoardingUUID="+onBoardingUUID+"&locationCode="+locationCode, 
-	        success: function(data) {
+	        success: function(json) {
 	        	
-	        	 var json = JSON.parse(data);
 	        	
 	        	 var result = "";
 	        	 var selected = 'selected';
@@ -1394,9 +1392,8 @@ function getTemplatePolicyDocumentsDetails(onboardId){
 	     $.ajax({
 		    	type: "POST",
 		    	 url: sourceleadUrl+"/getCandidateOnboardTemplateDocumentByOnboardId?${_csrf.parameterName}=${_csrf.token}&onboardId="+onboardId+"&documentType="+documentType, 
-		        success: function(data) {
+		        success: function(json) {
 		        	
-		        	 var json = JSON.parse(data);
 		        	 var result = "";
 		        	 
                 	 for (var i = 0; i < json.length; i++) { 
@@ -1450,9 +1447,8 @@ function getTemplateSupportingDocumentsDetails(onboardId){
 	     $.ajax({
 		    	type: "POST",
 		    	 url: sourceleadUrl+"/getCandidateOnboardTemplateDocumentByOnboardId?${_csrf.parameterName}=${_csrf.token}&onboardId="+onboardId+"&documentType="+documentType, 
-		        success: function(data) {
+		        success: function(json) {
 		        	
-		        	 var json = JSON.parse(data);
 		        	 var result = "";
 		        	 
                 	 for (var i = 0; i < json.length; i++) { 
@@ -1507,9 +1503,8 @@ function getTemplateContractsDocumentsDetails(onboardId){
 	     $.ajax({
 		    	type: "POST",
 		    	 url: sourceleadUrl+"/getCandidateOnboardTemplateDocumentByOnboardId?${_csrf.parameterName}=${_csrf.token}&onboardId="+onboardId+"&documentType="+documentType, 
-		        success: function(data) {
+		        success: function(json) {
 		        	
-		        	 var json = JSON.parse(data);
 		        	 var result = "";
 		        	 
                 	 for (var i = 0; i < json.length; i++) { 
@@ -1566,9 +1561,8 @@ function getTemplateFormsDocumentsDetails(onboardId){
 	     $.ajax({
 		    	type: "POST",
 		    	 url: sourceleadUrl+"/getCandidateOnboardTemplateDocumentByOnboardId?${_csrf.parameterName}=${_csrf.token}&onboardId="+onboardId+"&documentType="+documentType, 
-		        success: function(data) {
+		        success: function(json) {
 		        	
-		        	 var json = JSON.parse(data);
 		        	 var result = "";
 		        	 
                 	 for (var i = 0; i < json.length; i++) { 
@@ -1819,8 +1813,7 @@ function getAssignToUsersList(){
 	$.ajax({
 	   	type: "POST",
 	    url: sourceleadUrl+"/getOnboardTasksAssignToUsersList?${_csrf.parameterName}=${_csrf.token}",	    	   
-	    success: function(data) {
-	    	 var json = JSON.parse(data);
+	    success: function(json) {
         	 var result = "";
         	for (var i=0; i<json.length; i++)
 			{
@@ -1903,8 +1896,7 @@ function getOnboardingTasksList(){
 	$.ajax({
 	   	type: "POST",
 	    url: sourceleadUrl+"/getCandidateOnboardTasksList?${_csrf.parameterName}=${_csrf.token}&onboardId="+onboardId,	    	   
-	    success: function(data) {
-	    	 var json = JSON.parse(data);
+	    success: function(json) {
         	 var result = "";
         	 
         	if(json.length > 0){ 
