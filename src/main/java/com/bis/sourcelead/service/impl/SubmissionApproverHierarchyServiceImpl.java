@@ -161,7 +161,7 @@ public class SubmissionApproverHierarchyServiceImpl implements SubmissionApprove
 				 
 				 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
 				 
-				 ProjectMembers projectMembers = projectMembersDao.getConsultantUserProjectMemberByProjectMemberId(projectMemberId);
+				 //ProjectMembers projectMembers = projectMembersDao.getConsultantUserProjectMemberByProjectMemberId(projectMemberId);
 				 
 				 String[] frequency = timesheetFrequency.split("To");
 			 	 String weekStartDate = frequency[0].trim();
@@ -173,7 +173,7 @@ public class SubmissionApproverHierarchyServiceImpl implements SubmissionApprove
 				 //globalVarsMap.put("employeeName",projectMembers.getEmployee().getUser().getFullName());
 				 globalVarsMap.put("managerName",loginUser.getFullName());
 				// globalVarsMap.put("projectName", projectMembers.getProjects().getProjectName());
-				 globalVarsMap.put("frequencyType",projectMembers.getProjects().getInvoiceFrequency());
+				 globalVarsMap.put("frequencyType",clientProjectMember.getProjects().getInvoiceFrequency());
 				 StringBuilder emailMsgBuilder = new StringBuilder();
 				 globalVarsMap.put("frequencyPeriod",emailMsgBuilder.append(weekStartDate).append(" TO ").append(weekEndDate).toString());
 				 globalVarsMap.put("totalHours",totalHours.toString());
@@ -183,26 +183,13 @@ public class SubmissionApproverHierarchyServiceImpl implements SubmissionApprove
 				 
 				 
 				 
-				 if(projectMembers.getEmployee().getEmployeeId() !=null && !"".equalsIgnoreCase(projectMembers.getEmployee().getEmployeeId())){
-					 
+				 if(clientProjectMember.getProjectMemberCandidteId() !=null && !"".equalsIgnoreCase(clientProjectMember.getProjectMemberCandidteId().getFullName())){
 					 StringBuilder builder=new StringBuilder();
-					 globalVarsMap.put("employeeName",builder.append(projectMembers.getEmployee().getEmployeeId()).append("-").append(projectMembers.getEmployee().getUser().getFullName()).toString());
+					 globalVarsMap.put("employeeName",clientProjectMember.getProjectMemberCandidteId().getFullName());
 				 }
+				 globalVarsMap.put("projectName", clientProjectMember.getProjects().getProjectName());
 				
-				 else{
-					 globalVarsMap.put("employeeName",projectMembers.getEmployee().getUser().getFullName()); 
-					 
-				 }
-				 if( projectMembers.getProjects().getProjectSequeneNumber() !=null && !"".equalsIgnoreCase( projectMembers.getProjects().getProjectSequeneNumber())){
-					 StringBuilder builder=new StringBuilder();
-				 globalVarsMap.put("projectName",builder.append(projectMembers.getProjects().getProjectSequeneNumber()).append("-").append(projectMembers.getProjects().getProjectName()).toString());
-				 
-				 }
-				 
-				 else{
-					 
-					 globalVarsMap.put("projectName", projectMembers.getProjects().getProjectName());
-				 }
+				
 				 
 				 StringBuilder acceptBuilder = new StringBuilder();
 				 StringBuilder rejectBuilder = new StringBuilder();

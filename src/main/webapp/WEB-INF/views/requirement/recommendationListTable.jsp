@@ -104,12 +104,12 @@ function prepareRecommendationList(url,requirementRecommendationsDate,requiremen
 	    result = result +'</thead>';
 	    result = result + "</table>";
 	    result = result +'</div>';
-	    $("#tab-1").empty();
 		$("#tab-2").empty(); 
 	    $("#tab-3").empty();
 	    $("#tab-4").empty();
 	    $("#recommendationsLoading").removeAttr("style");
 	    $("#status-div").empty();
+	    $("#actionsDiv").hide();
 	    $("#status-data").empty();
 		$("#tab-3").append(result);
 		
