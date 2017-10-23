@@ -58,7 +58,7 @@ function projectTask(projectId, status) {
 	if (status != 'COMPLETED' && status != '' && status != 'undefined' && status != null) {
 		result = result +'<li>';
 		result = result	+ '<span class="pad-sea">';
-		'<sec:authorize access="hasAnyRole(\'ROLE_CREATE_PROJECT_TASKS\')">';  
+		'<sec:authorize access="hasAnyRole(\'ROLE_ADD_TASK\')">';  
 		result = result	+ '<span onclick="addtask();" class="cursorPointer"><i class="glyphicon glyphicon-plus paddingRight"></i>Add Task</span>';
    		'</sec:authorize>'; 
 		result = result	+ '</span>';
@@ -73,7 +73,7 @@ function projectTask(projectId, status) {
 		<c:forEach var="status" items="${taskStatusList}">     
 			<c:if test="${taskStatusList[0] == status || taskStatusList[1] == status}">
 			  result = result	+ '	 <li><input   name="taskStatusId" value ="${status.id}" checked  onclick="projectTaskList();"  type="checkbox"><label for="taskStatusId${status.id}">${status.name}</label></li>';
-		    </c:if>	  
+			  </c:if>	  
 		    <c:if test="${taskStatusList[0] != status  && taskStatusList[1] != status}">
 		      result = result	+ '	 <li><input   name="taskStatusId" value ="${status.id}"  onclick="projectTaskList();"  type="checkbox"><label for="taskStatusId${status.id}">${status.name}</label></li>';
 		    </c:if>
@@ -193,7 +193,7 @@ function projectTask(projectId, status) {
 							}
 							 
 							result = result + '<tr>';
-							'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_PROJECT_TASKS\')">'; 
+							'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_TASK\')">'; 
 							result = result+ '<td><div class="tbldata-dotdot"><a href="'+sourceleadUrl+'/projectTaskSummary?taskUUID='+opt.projectTasksUUID+'&projectClientUUID='+projectClientUUID+'" title="'+generatedId+' '+ opt.taskName+ '" >'+generatedId+' '+ opt.taskName+ '</a></div></td>';
 							result = result	+ '<td><div class="tbldata-dotdot_50">'+opt.taskTypes+ '</div></td>';
 							result = result	+ '<td><div class="tbldata-dotdot_50">'+taskPriotiry+ '</div></td>';
@@ -201,7 +201,7 @@ function projectTask(projectId, status) {
 							result = result	+ '<td><div class="tbldata-dotdot_50">'+taskStaus+'</div></td>';
 							'</sec:authorize>'; 
 							
-							'<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_EDIT_PROJECT_TASKS\')">';
+							'<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_EDIT_TASK\')">';
 							result = result+ '<td><div><a title="'+ opt.taskName+ '" >'+ opt.taskName+ '</a></div></td>';
 							result = result	+ '<td><div><span>'+opt.taskTypes+ '</span></div></td>';
 							result = result	+ '<td><div><span>'+ taskPriotiry+ '</span></div></td>';

@@ -333,9 +333,10 @@ function addResume(candidateId) {
 	  $.ajax({
 			type : "POST",
 			url : sourceleadUrl+"/candidateResumesListByCandidateId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,
-			success : function(data) {
-				if (data != null && data != 'undefined' && data != "" && data != '[]') {
-					var json = JSON.parse(data);
+			success : function(json) {
+// 				if (json != null && json != 'undefined' && json != "" && json != '[]') {
+// 					var json = JSON.parse(data);
+				if(json.data.length > 0 ){
 							result = result+'	      <table>';
 							result = result+'	        <tbody>';
 							result = result+'	          <tr>';
@@ -349,61 +350,74 @@ function addResume(candidateId) {
 							result = result+'	          </tr>';
 							
 							
-				             for (var i = 0; i < json.length; i++) {
-				            	 	resumesCount = json.length;
-					            	var opt = json[i];
-					            	console.log(opt);
-					            	var title = "";
-					            	var description = "";
-					            	if(opt.title != null && opt.title != 'undefined' && opt.title != ""){
-					            		title = opt.title;
-					            	}else{
-					            		title = opt.fileName;
-					            	}
-					            	if(opt.description != null && opt.description != 'undefined' && opt.description != ""){
-					            		description = opt.description;
-					            	}else{
-					            		description = '----';
-					            	}
-					            	if(opt.createdBy != null && opt.createdBy != 'undefined' && opt.createdBy != ""){
-					            		createdBy = opt.createdBy;
-					            	}else{
-					            		createdBy = '----';
-					            	}
-					            	
-					            	
-					            	if(opt.candidateResumeUpdateDateToString != null && opt.candidateResumeUpdateDateToString != 'undefined' && opt.candidateResumeUpdateDateToString != ""){
-					            		candidateResumeUpdateDateToString = opt.candidateResumeUpdateDateToString; 
-					            	}else{
-					            		candidateResumeUpdateDateToString = "---";
-					            	} 
-					            	
-					            	result = result+'<tr>';
-					           		result = result+'<td><div><span title = "'+title+'">'+title+'</span></div></td>';
-					           		result = result+'<td><div><span title ="'+opt.fileName+'">'+opt.fileName+'</span></div></td>';
-					           		result = result+'<td><div><span title="'+description+'">'+description+'</span></div></td>';
-					           		result = result+'<td><div><span>'+createdBy+'</span></div></td>';
+								 for (var i = 0; i < json.data.length; i++) {
+					            	 	resumesCount = json.data.length;
+						            	var opt = json.data[i];
+						            	console.log(opt);
+						            	var title = "";
+						            	var description = "";
+						            	if(opt.title != null && opt.title != 'undefined' && opt.title != ""){
+						            		title = opt.title;
+						            	}else{
+						            		title = opt.fileName;
+						            	}
+						            	if(opt.description != null && opt.description != 'undefined' && opt.description != ""){
+						            		description = opt.description;
+						            	}else{
+						            		description = '----';
+						            	}
+						            	if(opt.createdBy != null && opt.createdBy != 'undefined' && opt.createdBy != ""){
+						            		createdBy = opt.createdBy;
+						            	}else{
+						            		createdBy = '----';
+						            	}
+						            	
+						            	if(opt.candidateResumeUpdateDateToString != null && opt.candidateResumeUpdateDateToString != 'undefined' && opt.candidateResumeUpdateDateToString != ""){
+						            		candidateResumeUpdateDateToString = opt.candidateResumeUpdateDateToString; 
+						            	}else{
+						            		candidateResumeUpdateDateToString = "---";
+						            	} 
+						            	
+						            	result = result+'<tr>';
+						           		result = result+'<td><div><span title = "'+title+'">'+title+'</span></div></td>';
+						           		result = result+'<td><div><span title ="'+opt.fileName+'">'+opt.fileName+'</span></div></td>';
+						           		result = result+'<td><div><span title="'+description+'">'+description+'</span></div></td>';
+						           		result = result+'<td><div><span>'+createdBy+'</span></div></td>';
 
-									result = result+'<td><div><span>'+candidateResumeUpdateDateToString+'</span></div></td>';
-					           		result = result+'<td><div class="tblicons_4"> <a class="glyphicon glyphicon-download-alt" target="_blank" href=\"'+opt.fileURL+'\" title="Download"></a>';
-					           		result = result+' <a class="fa fa-eye" href="javascript:void(0)" onClick="viewFile(\''+opt.fileURL+'\',\''+opt.fileName+'\',\''+opt.fileContentType+'\');"title="preview"></a>';		           						          
-					           		if(window.candidateStatusGlobal == 0){
-					           			result = result+'<a class="glyphicon glyphicon-pencil" href="javascript:void(0)"></a>';
-						           		result = result+'<i class="glyphicon glyphicon-trash" href="javascript:void(0)"></i>';
-					           		}else{
-					           			if(candidateType == "Candidates"){
-					           				result = result+'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_CANDIDATE_RESUMES\',\'ROLE_CROWDSOURCING_CANDIDATES\')">  <a class="glyphicon glyphicon-pencil" href="javascript:void(0)" onClick="addResume('+candidateId+'); getResume('+candidateId+', '+opt.id+');"title="Edit"></a></sec:authorize>';
-					           				result = result+'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_DELETE_CANDIDATE_RESUMES\',\'ROLE_CROWDSOURCING_CANDIDATES\')"><i class="glyphicon glyphicon-trash" onclick="removeresumePopUp('+candidateId+','+opt.id+');" title="Remove"></i></sec:authorize>';
-					           			}else{
-					           				result = result+'<sec:authorize access="hasRole(\'ROLE_VIEW_EDIT_ASSOCIATE_RESUMES\')">  <a class="glyphicon glyphicon-pencil" href="javascript:void(0)" onClick="addResume('+candidateId+'); getResume('+candidateId+', '+opt.id+');"title="Edit"></a></sec:authorize>';
-					           				result = result+'<sec:authorize access="hasRole(\'ROLE_VIEW_DELETE_ASSOCIATE_RESUMES\')"><i class="glyphicon glyphicon-trash" onclick="removeresumePopUp('+candidateId+','+opt.id+');" title="Remove"></i></sec:authorize>';
-					           			}
-					           		}
-					           		result = result+'</div></td>';
-					           		result = result+'</tr>';
-				             }
-				            result = result+'	          </tbody>';
+										result = result+'<td><div><span>'+candidateResumeUpdateDateToString+'</span></div></td>';
+						           		result = result+'<td><div class="tblicons_4"> <a class="glyphicon glyphicon-download-alt" target="_blank" href=\"'+opt.fileURL+'\" title="Download"></a>';
+						           		result = result+' <a class="fa fa-eye" href="javascript:void(0)" onClick="viewFile(\''+opt.fileURL+'\',\''+opt.fileName+'\',\''+opt.fileContentType+'\');"title="preview"></a>';		           						          
+						           		if(window.candidateStatusGlobal == 0){
+						           			result = result+'<a class="glyphicon glyphicon-pencil" href="javascript:void(0)"></a>';
+							           		result = result+'<i class="glyphicon glyphicon-trash" href="javascript:void(0)"></i>';
+						           		}else{
+						           			if(candidateType == "Candidates"){
+						           				result = result+'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_CANDIDATE_RESUMES\',\'ROLE_CROWDSOURCING_CANDIDATES\')">  <a class="glyphicon glyphicon-pencil" href="javascript:void(0)" onClick="addResume('+candidateId+'); getResume('+candidateId+', '+opt.id+');"title="Edit"></a></sec:authorize>';
+						           				result = result+'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_DELETE_CANDIDATE_RESUMES\',\'ROLE_CROWDSOURCING_CANDIDATES\')"><i class="glyphicon glyphicon-trash" onclick="removeresumePopUp('+candidateId+','+opt.id+');" title="Remove"></i></sec:authorize>';
+						           			}else{
+						           				result = result+'<sec:authorize access="hasRole(\'ROLE_VIEW_EDIT_ASSOCIATE_RESUMES\')">  <a class="glyphicon glyphicon-pencil" href="javascript:void(0)" onClick="addResume('+candidateId+'); getResume('+candidateId+', '+opt.id+');"title="Edit"></a></sec:authorize>';
+						           				result = result+'<sec:authorize access="hasRole(\'ROLE_VIEW_DELETE_ASSOCIATE_RESUMES\')"><i class="glyphicon glyphicon-trash" onclick="removeresumePopUp('+candidateId+','+opt.id+');" title="Remove"></i></sec:authorize>';
+						           			}
+						           		}
+						           		result = result+'</div></td>';
+						           		result = result+'</tr>';
+					             }
+							result = result+'	          </tbody>';
 				       		result = result+'	      </table>';
+							}else{
+								result = result + "   <div class='row'>";
+				 				result = result + "	<div class='col-lg-12'>";
+				 				result = result + "		<div class='content-area clearfix'>";
+				 				result = result + "			<div class='blank-pages'>";
+				 				result = result + "			        <p><i class='fa fa-5x fa-bar-chart'></i></p>";
+				 				result = result + "			        <p>No resumes Found</p>";
+				 				result = result + "			 </div>";
+				 				result = result + "		</div>";
+				 				result = result + "	</div>";
+				 				result = result + "  </div> ";
+							}
+				            
+				            
 					if(resumesCount>4){
 						$("#addCandidateResume").hide();
 						closeResumePopup();
@@ -412,20 +426,20 @@ function addResume(candidateId) {
 					}
 					$("#resumesList").empty();
 					$("#resumesList").append(result);
-				}else{
-				result = result + "   <div class='row'>";
-				result = result + "	<div class='col-lg-12'>";
-				result = result + "		<div class='content-area clearfix'>";
-				result = result + "			<div class='blank-pages'>";
-				result = result + "			        <p><i class='fa fa-5x fa-bar-chart'></i></p>";
-				result = result + "			        <p>No resumes Found</p>";
-				result = result + "			 </div>";
-				result = result + "		</div>";
-				result = result + "	</div>";
-				result = result + "  </div> ";
-				$("#resumesList").empty();
-				$("#resumesList").append(result);
-			}
+// 				}else{
+// 				result = result + "   <div class='row'>";
+// 				result = result + "	<div class='col-lg-12'>";
+// 				result = result + "		<div class='content-area clearfix'>";
+// 				result = result + "			<div class='blank-pages'>";
+// 				result = result + "			        <p><i class='fa fa-5x fa-bar-chart'></i></p>";
+// 				result = result + "			        <p>No resumes Found</p>";
+// 				result = result + "			 </div>";
+// 				result = result + "		</div>";
+// 				result = result + "	</div>";
+// 				result = result + "  </div> ";
+// 				$("#resumesList").empty();
+// 				$("#resumesList").append(result);
+// 			}
 	
 				},
 		});

@@ -206,7 +206,10 @@ overflow-x: auto;
 				     <jsp:include page="expensesDashboardCounts.jsp"></jsp:include>
 			 </sec:authorize>  	
 			
-			 <jsp:include page="leaveManagement.jsp"></jsp:include>
+			<sec:authorize access="hasAnyRole('ROLE_APPLY_LEAVE','ROLE_APPLY_BEHALF_LEAVE','ROLE_APPROVE_LEAVE')">
+				<jsp:include page="leaveManagement.jsp"></jsp:include>
+			</sec:authorize>
+			 
 		 </div>
 	    	<c:if test = "${SourceLeadWeb_ats == 'Y' || SourceLeadWeb_vms == 'Y'}">
 	    	
@@ -218,10 +221,13 @@ overflow-x: auto;
 					<jsp:include page="onboardingCandidatesList.jsp"></jsp:include> 
 					</sec:authorize>
 					
-					<!-- Don't delete this commented code. Functionality is in progress -->
-					 <jsp:include page="resourceRequest.jsp"></jsp:include>  
+					<sec:authorize access="hasAnyRole('ROLE_ADD_RESOURCE_REQUEST','ROLE_VIEW_EDIT_RESOURCE_REQUEST','ROLE_ADD_REQUEST_ASSOCIATE','ROLE_VIEW_EDIT_REQUEST_ASSOCIATE','ROLE_RESOURCE_REQUEST_APPROVER')">
+					   <jsp:include page="resourceRequest.jsp"></jsp:include>  
+					 </sec:authorize>
 					
-					<jsp:include page="budgetRequest.jsp"></jsp:include>
+					<sec:authorize access="hasAnyRole('ROLE_BUDGET_APPROVER','ROLE_ADD_BUDGET_REQUEST','ROLE_VIEW_EDIT_BUDGET_REQUEST')">
+					   <jsp:include page="budgetRequest.jsp"></jsp:include>
+					</sec:authorize>
 					
 			    <div class="col-md-6 mb pdleft"> 
 			    	 <sec:authorize access="hasAnyRole('ROLE_VIEW_REQUIREMENT')">
