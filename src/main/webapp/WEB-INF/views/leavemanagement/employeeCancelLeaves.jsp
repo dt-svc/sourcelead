@@ -140,7 +140,7 @@ function redirectlocation(location){
 		    	  	"render": function(data, type, opt, meta) {
 		    	  		  var result = "";
 		    	  		result = result + ' <div class="proj_show divmax-width">';
-		    	  		result = result + '<div class="pull-left tbldata-dotdot cursorPointer" title="'+opt.empName+'('+opt.empType+')" onclick="getRequestedAproveSummary(\''+opt.id+'\','+opt.orgLocationId+');">'+opt.empName+'('+opt.empType+')</div><i class="fa fa-binoculars pull-right"></i>'; 
+		    	  		result = result + '<div class="pull-left tbldata-dotdot cursorPointer" title="'+opt.empName+'('+opt.empType+')" onclick="getRequestedAproveSummary(\''+opt.id+'\','+opt.orgLocationId+');">'+opt.empName+'('+opt.empType+')</div><i class="fa fa-binoculars pull-right" onclick="getRequestedAproveSummary(\''+opt.id+'\','+opt.orgLocationId+');"></i>'; 
 		    	  		result = result + ' </div>';
 			              return result; 
 		    	  	}
