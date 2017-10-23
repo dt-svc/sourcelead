@@ -758,6 +758,9 @@ function candidateEducationStore(candidateId){
        			candidateEducationList(candidateId);
        			eduMsgFadeinFunction();
        			qveducationSubmission(candidateId);
+       			setTimeout(function(){
+		 			candidateList();					 			
+		 		},100);
 		        });
 			
 			return true; 
@@ -1018,6 +1021,9 @@ function clearSearchKeyEducation() {
 							candidateEducationList(candidateId)
 							eduMsgFadeinFunction();
 							qveducationSubmission(candidateId);
+							setTimeout(function(){
+					 			candidateList();					 			
+					 		},100);
 						},
 					}); 
 			return true;
