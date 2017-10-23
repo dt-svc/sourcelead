@@ -24,7 +24,7 @@ a { cursor:pointer;}
     padding: 2px 15px 2px 0px;
     }  
 .timesheet_head ul li {
-    list-style-type:none; float:right; padding:5px 5px; margin:5px 0px 5px 10px; position:relative;
+    list-style-type:none; float:right; padding:5px 5px; margin:5px 0px 5px 5px; position:relative;
     font-weight:500; color:#999; cursor: pointer;
     }
 .timesheet_head ul li span {
@@ -1313,7 +1313,8 @@ background:url("../images/arrow-d-g.png") no-repeat right center; background-siz
     }
           
 .app_error_mes {
-    width:300px; background-color:#FFF; border-radius:3px; position:fixed; z-index:1000; margin: 0px auto; left: 0px; right: 0px;
+    width:300px; background-color:#FFF; border-radius:3px; position:fixed !important; z-index:1000; margin: 0px auto; left: 0px;
+	right: 0px;
     padding:15px 20px; box-shadow:0px 0px 8px rgba(0,0,0,0.5); font-size:14px; border:1px solid #368ee0; top: 30%;
     transition:0.2s all ease-in-out; -webkit-transition:0.2s all ease-in-out; -moz-transition:0.2s all ease-in-out;
     min-height: 100px; display: none; opacity: 0;
@@ -1613,7 +1614,7 @@ background:url("../images/arrow-d-g.png") no-repeat right center; background-siz
     }  
           
 .user_summary_edit.user_summary_edit_a  {
-    z-index:11000; left:0px; top:40px; height: auto; min-height:91.5%;
+    z-index:1100; left:0px; top:40px; height: auto; min-height:91.5%;
     }  
 .useredit.useredit_a {
     padding:0px 0px 0px 0px;
@@ -2802,21 +2803,16 @@ padding-right:10px;
 .export.dropexport p{
 margin: 6px 0px 0px 0px;
     }
-     
-     
 /*  Modified  */
 .timeNewSe b.proj_closed { background-color:#d94747;  border: 1px solid #c3762b;}
 .timeNewSe b.proj_draft { background-color:#656565; border: 1px solid  #333;}
-     
-    
 .app_error_mes {
-   width:300px; background-color:#d94747; border-radius:3px; position:fixed; z-index:1000; margin: 0px auto; left: 0px; right: 0px;
+   width:300px; background-color:#d94747; border-radius:3px; position:fixed !important; z-index:1000; margin: 0px auto; left: 0px; right: 0px;
    padding:10px 15px; box-shadow:0px 0px 8px rgba(0,0,0,0.5); font-size:14px; border:1px solid #d94747; top: 30%;
    transition:0.2s all ease-in-out; -webkit-transition:0.2s all ease-in-out; -moz-transition:0.2s all ease-in-out;
    min-height: 50px; display: none; opacity: 0; font-family: 'Roboto', Arial, Helvetica, sans-serif; font-weight:400;
     line-height: 18px; text-align: left; color:#fff;
    }
-         
 .app_error_mes.app_error_mes_active {
      right:160px; 
     display:block;
@@ -3848,8 +3844,6 @@ position: relative; padding: 0px 0px 5px 0px;
 .contrFoot {
     min-height:60px; line-height: 60px;
 }
- 
- 
 .contrHead {
     padding: 0px 0px 15px 0px;
 }
@@ -3860,7 +3854,7 @@ position: relative; padding: 0px 0px 5px 0px;
     list-style-type:none; float: left;
 }
 .contrHead ul li a {
-    display: block; padding:8px 15px 8px 15px; background-color: #fff; border-radius: 2px; box-shadow: 0px 0px 3px rgba(0,0,0,0.2);
+    display: block; padding:8px 10px 8px 10px; background-color: #fff; border-radius: 2px; box-shadow: 0px 0px 3px rgba(0,0,0,0.2);
     margin: 0px 6px 0px 0px; font-size: 14px; font-weight: 400; color: #666; position: relative;
 }
 .contrHead ul li a span {
@@ -4544,7 +4538,7 @@ float: none !important; padding: 2px 5px; color: #333;
 }
 .NoPad {
     padding: 0px; padding-left:0px !important;
-}
+} 
 .evDaPa {
     padding: 0px 0px 0px 15px !important;
 }
