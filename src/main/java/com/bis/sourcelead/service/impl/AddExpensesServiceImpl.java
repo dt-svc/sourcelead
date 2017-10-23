@@ -183,7 +183,9 @@ public void storeAddExpensesData(ExpensesDTO expensesDTO, User loginUser, OrgLoc
 	for(ExpensesEntries expensesEntry : expensesEntriesList){
 		totalAmount = Float.sum(totalAmount, expensesEntry.getAmount());
 	}
-	expenses.setTotalAmount(totalAmount);
+	BigDecimal bd = new BigDecimal(Double.toString(totalAmount));
+	bd = bd.setScale(2,BigDecimal.ROUND_UP);
+	expenses.setTotalAmount(bd.floatValue());
 	
 	if(projMembers != null){
 		ArrayList<User> managers = new ArrayList<User>() ;
