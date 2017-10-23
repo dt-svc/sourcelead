@@ -1368,7 +1368,7 @@ $("#editRoleDetailsList").empty();
 					result = result + ' </div>';
 					result = result + ' <div class="col-md-5">';
 					result = result + ' <label>Extentsion</label>';
-					result = result + ' <input type="text" value="'+extensionNumber+'" name="extensionNumber" data-validation="validate_Space validate_length length4-5" data-validation-optional="true">';
+					result = result + ' <input type="text" value="'+extensionNumber+'" name="extensionNumber" data-validation="validate_Space validate_length length1-5" data-validation-optional="true">';
 					result = result + ' </div>';
 					result = result + ' </div>';
 					
