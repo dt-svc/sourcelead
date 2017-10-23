@@ -41,15 +41,15 @@ function certificationSubmissionDetailsList(candidateId){
 	 $.ajax({  
           type : "POST",
           url: sourceleadUrl+"/getCandidateCertificationListByCandidateIdAndOrgLocationID?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
-          success :function(data) {
+          success :function(json) {
                /* if(data != null && data != 'undefined' && data != "" && data != '[]'){ */
-             		 if( data.indexOf('Sign In') >= 0){
-			    		location.replace(sourceleadUrl);
-			    	 }
-             		 else if (data.indexOf('exception') >= 0) {
-             			 location.replace(sourceleadUrl+"/errorPage");
-             		 }
-             		 else{
+//              		 if( data.indexOf('Sign In') >= 0){
+// 			    		location.replace(sourceleadUrl);
+// 			    	 }
+//              		 else if (data.indexOf('exception') >= 0) {
+//              			 location.replace(sourceleadUrl+"/errorPage");
+//              		 }
+//              		 else{
 	                	 $("#certificationSubmissionDetailsList").empty();
 	                	 var result = "";
 	                	 result = result +"<table id='certificationSubmissionDetailPagination' class='display' cellspacing='0' width='100%' >"; 
@@ -65,9 +65,9 @@ function certificationSubmissionDetailsList(candidateId){
 	                     result = result +"  </tr>"; 
 	                     result = result +"</thead>";
 	                     result = result +"<tbody>"; 
-	                      var json = JSON.parse(data);
-	                     for (var i = 0; i < json.length; i++) { 
-	                    	 var opt = json[i];  
+// 	                      var json = JSON.parse(data);
+	                     for (var i = 0; i < json.data.length; i++) { 
+	                    	 var opt = json.data[i];  
 	                    	 var score = "";
 	                    	 var scoreType ="";
 	                    	 var description ="";
@@ -112,7 +112,7 @@ function certificationSubmissionDetailsList(candidateId){
 	                     result = result +"</table>";
 	                     $("#certificationSubmissionDetailsList").append(result); 
 	                     certificationSubmissionDetailsPagination(); 
-			    	} 
+// 			    	} 
                /* }else{
 	    	         var result ="";
 		    	     result = result+"   <div class='row'>"; 

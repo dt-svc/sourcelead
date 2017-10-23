@@ -20,8 +20,8 @@
 		$.ajax({
 					type : "POST",
 					url : sourceleadUrl+"/getClientAndVendorOrgDeatilsById?"+tokenParamName+"="+tokenValue+"&vendorLocationId="+clientLocationId+"&orgRelationId="+orgRelationID,
-					success : function(data) {
-						var json = JSON.parse(data);
+					success : function(json) {
+					//	var json = JSON.parse(data);
 						getClientNeworgname(json.orgName);
 						var result = "";
 						var city = "";
@@ -105,8 +105,8 @@
 						
 						result = result + '<div class="project_details_cta">';
 						result = result + '<strong>Client Zip Code :</strong>';
-						if(json.zipCode != null && json.zipCode !='' && json.zipCode !='undefined'){
-							result = result + '<span>'+json.zipCode+'</span><div class="clearfix"></div>';
+						if(json.zipcode != null && json.zipcode !='' && json.zipcode !='undefined'){
+							result = result + '<span>'+json.zipcode+'</span><div class="clearfix"></div>';
 						}else{
 							result = result + '<span> --- </span><div class="clearfix"></div>';
 						}
@@ -204,8 +204,8 @@
 		      $.ajax({
 						type : "POST",
 						url : sourceleadUrl+"/getClientAndVendorOrgDeatilsById?"+tokenParamName+"="+tokenValue+"&vendorLocationId="+clientLocationId+"&orgRelationId="+orgRelationID,
-						success : function(data) {
-						var json = JSON.parse(data);
+						success : function(json) {
+					//	var json = JSON.parse(data);
 						
 						var result = "";
 						
@@ -242,9 +242,6 @@
 						if(json.level == 'Tier-5'){
 								selected5 = 'selected';
 						}
-						
-						
-						
 						
 					if(json.paymentTerms == '10 days'){
 						paymentTerms1 = 'selected';
@@ -287,14 +284,13 @@
 						if(json.webSite != null && json.webSite !='' && json.webSite !='undefined'){
 							website = json.webSite;
 						}
-						if(json.zipCode != null && json.zipCode !='' && json.zipCode !='undefined'){
-							zipCode = json.zipCode;
+						if(json.zipcode != null && json.zipcode !='' && json.zipcode !='undefined'){
+							zipCode = json.zipcode;
 						}
 						
 						if(json.location != null && json.location !='' && json.location !='undefined'){
 							location = json.location;
 						}
-						
 						result = result + ' <form id="editClient_form"  name="editClient_form" method="post">';
 						if(json.orgType == 'Company'){
 								result = result + '<div class="user_summary_edit_cta">';
@@ -408,7 +404,7 @@
 						
 						result = result + ' <div class="user_summary_edit_cta">';
                         result = result + ' <label>Payment Terms</label>';
-                        result = result + ' <select id="paymentTermsId" name="PaymentTerm" >';
+                        result = result + ' <select id="paymentTermsId" name="paymentTerms" >';
                         result = result + ' <option '+paymentTerms0+' selected>SelectPaymentTerms</option>';
                         result = result + ' <option '+paymentTerms1+'>10 days</option>';
                         result = result + ' <option '+paymentTerms2+'>15 days</option>';

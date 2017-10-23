@@ -6916,6 +6916,30 @@ a.downloadbtn {
 .clientspagedrop .dataTables_length {
 bottom:1px;
 }
+.modal-body-custom.modalAlign {
+    margin-bottom: 0 !important; padding-bottom: 0 !important;
+}
+.minHeight{
+	min-height: 75px;
+}
+.timesheet_week_comm.edit-Expense-upload {
+	width: 100%;
+}
+.timesheet_week_comm.edit-Expense-upload .downicon {
+	width: 85%;
+}
+.timesheet_week_comm.edit-Expense-upload strong input.dele {
+	width: 20px !important;
+}
+.timesheet_week_comm.edit-Expense-upload strong input {
+	padding-left: 15px;
+}
+.timesheet_week_comm.edit-Expense-upload .glyphicon-save {
+	color: #fff !important;
+}
+.txtEditor_p.txtEditorP .Editor-editor {
+    height: 258px;
+}
 /* media 320px */
 @media (max-width: 320px) {
 	.uasrch-selectpicker {
