@@ -247,11 +247,12 @@ public class AddExpensesRestController {
 	    }
 		return projectId;
     }
+
 	
 	@RequestMapping(value = "/rest/storeAddExpensesData",method = RequestMethod.POST)
-	public @ResponseBody String storeAddExpensesData_mobile(HttpServletRequest request,@RequestBody ExpensesDTO expensesDTO) throws Exception {
+	public @ResponseBody String storeAddExpensesMobileData(HttpServletRequest request,@RequestBody ExpensesDTO expensesDTO) throws Exception {
 		return storeAddExpensesData(request, expensesDTO);
-   }
+	}
 	
 	/**
 	 * This method serves the request for store expenses

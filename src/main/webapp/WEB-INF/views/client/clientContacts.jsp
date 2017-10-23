@@ -62,7 +62,7 @@ function clientContacts(orgRelationID,clientLocationId){
 	        success: function(json) {
 	        	
 	     //   var json = JSON.parse(data);
-	        for (var i = 0; i < 1; i++) { 
+	     /*    for (var i = 0; i < 1; i++) { 
  				var val= json.data[i];
  				var opt = "";
  					if(val.msg != null && val.msg != '' && val.msg != 'undefined'){
@@ -72,7 +72,7 @@ function clientContacts(orgRelationID,clientLocationId){
  						}
  					$("#clientMsgDiv").empty();
  					$("#clientMsgDiv").append(opt);
- 				}
+ 				} */
 	      
     		if(json.data.length != null && json.data.length != ''){
     			$("#clientContactList").empty();

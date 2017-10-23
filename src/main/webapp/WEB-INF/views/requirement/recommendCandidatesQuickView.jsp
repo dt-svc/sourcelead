@@ -374,17 +374,17 @@ function recQwikCertificates(candidateId){
 	 $.ajax({  
           type : "POST",
           url: sourceleadUrl+"/getCandidateCertificationListByCandidateIdAndOrgLocationID?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
-          success :function(data) {
-        	  if (data != null && data != 'undefined' && data != "" && data != '[]') {
+          success :function(json) {
+        	  if (json != null && json != 'undefined' && json != "" && json != '[]') {
 	                	 $("#qvcertificationSubmission").empty();
 	                	 var result = "";
 	                	 
 	                	 result = result +'<div class="col-md-12">';
 						 result = result +' <h4>Certificates</h4>';
-							var json = JSON.parse(data);
-							for (var i = 0; i < json.length; i++) { 
+// 							var json = JSON.parse(data);
+							for (var i = 0; i < json.data.length; i++) { 
 								if(i < 3){
-		                    	var opt = json[i];  
+		                    	var opt = json.data[i];  
 								result = result +'<div class="resume-widget resumewidget">';
 								
 								if(opt.candidatevalidFromDateToString != null && opt.candidatevalidFromDateToString != 'undefined' && opt.candidatevalidFromDateToString != "" && opt.candidatevalidToDateToString != null && opt.candidatevalidToDateToString != 'undefined' && opt.candidatevalidToDateToString != ""){
