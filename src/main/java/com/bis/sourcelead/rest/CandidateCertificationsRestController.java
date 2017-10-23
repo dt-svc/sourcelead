@@ -109,8 +109,8 @@ public class CandidateCertificationsRestController {
 		    candidateCertificationDTO.setScore(candidateCertifications.getScore());
 		    candidateCertificationDTO.setScoreType(candidateCertifications.getScoreType());
 		    candidateCertificationDTO.setDescription(candidateCertifications.getDescription());
-		    candidateCertificationDTO.setValidFrom(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(), candidateCertifications.getValidFrom()));
-		    candidateCertificationDTO.setValidTo(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(), candidateCertifications.getValidTo()));
+		    candidateCertificationDTO.setCandidatevalidFromDateToString(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(), candidateCertifications.getValidFrom()));
+		    candidateCertificationDTO.setCandidatevalidToDateToString(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(), candidateCertifications.getValidTo()));
 		    candidateCertificationDTOList.add(candidateCertificationDTO);
 			
 			/*msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "addCertification");
