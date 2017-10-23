@@ -247,7 +247,8 @@ function addAttachment(entityRowId,from){
 									<div class="input-group-btn tblminwidth-75 select-field dropdown_inr" style="min-width: 65px !important;">
 											  <select class="btn btn-info" id="expenseRateTypeREPLACEROWID" name="expenseEntry[REPLACENAMEROWID].categoryAmountType" field-name="Rate Type" field-name="Rate Type" data-validation="required">
 											  	   <c:forEach var="currencyType" items="${expEntry.currencyCodeList}">
-									                  <option  value="${currencyType}">${currencyType}</option>
+									                 <%--  <option  value="${currencyType}">${currencyType}</option> --%>
+									                  <option ${currencyType == expEntry.loginCurrencyCode ? 'selected' : ''} value="${currencyType}">${currencyType}</option>
 									               </c:forEach>
 											  </select>
 								</div>

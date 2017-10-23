@@ -1139,22 +1139,19 @@ function newSaveTimesheet(status,savingType){
 		 $(".project_inn_mask").fadeOut(200);
 	      var frm = $('#timesheet_form').serializeFormJSON();
           var sourceleadUrl ='${sourceleadUrl}';
-		   var mydata = JSON.stringify(frm);
-		   mydata = mydata.replace(/[{}]/g, "");
-		   mydata = encodeURIComponent(mydata);
+		  var mydata = JSON.stringify(frm);
+		  mydata = mydata.replace(/[{}]/g, "");
+		  mydata = encodeURIComponent(mydata);
 		
 		   var form = $('#timesheet_form')[0];
 		   var formData = new FormData(form); 
 		   var submissionIds = $("#submissionId").val();
 		   
 	   $.ajax({
-	          type : "POST",
-    	      data: formData,
-    	      contentType : 'application/json; charset=utf-8',
-    	      enctype: 'multipart/form-data',
-	          processData: false,
-	          contentType:false,
-    	      dataType : 'json',
+		    type : "POST",
+   	        data: formData,
+	        processData: false,
+	        contentType:false,
 	      	  url: sourceleadUrl+"/newSaveTimesheet?${_csrf.parameterName}=${_csrf.token}&json="+mydata+"&status="+status+"&savingType="+savingType,		
 		      success :function(result) {
 		    	  $(".time_btn").removeAttr("disabled");
