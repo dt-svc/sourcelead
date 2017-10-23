@@ -92,8 +92,8 @@ public class VendorServiceImpl implements VendorService{
 		    	orgRelations.setVendorOnboardTemplateId(null);
 		    }
 		 
-		 if(StringUtils.isNotBlank(clientDTO.getPaymentTerm())){
-			 orgRelations.setPaymentTerm(clientDTO.getPaymentTerm());
+		 if(StringUtils.isNotBlank(clientDTO.getPaymentTerms())){
+			 orgRelations.setPaymentTerm(clientDTO.getPaymentTerms());
 		 }
 		 
 		 orgRelationsDao.addOrgRelations(orgRelations);
@@ -209,7 +209,7 @@ public class VendorServiceImpl implements VendorService{
 			clientService.saveOrUpdateClientVendorElkDocument(org, vendorOrgLocations, "Vendor", null, orgRelations,
 					submissionTemplate, user, orgLocations);
 		 
-		return null;
+		return vendorOrgLocations;
 	}
 	
 	

@@ -16,10 +16,9 @@
 		      $.ajax({
 						type : "POST",
 						url : sourceleadUrl+"/getClientAndVendorOrgDeatilsById?"+tokenParamName+"="+tokenValue+"&vendorLocationId="+vendorLocationId+"&orgRelationId="+orgRelationId,
-						success : function(data) {
-						var json = JSON.parse(data);
-						var result = "";
+						success : function(json) {
 						
+						var result = "";
 					    var selected1 = '';
 						var selected2 = '';
 						var selected3 = '';
@@ -58,7 +57,7 @@
 							paymentTerms1 = 'selected';
 							} 
 						
-						if(json.paymentTerms == '15 days'){
+						if(json.PaymentTerm == '15 days'){
 							paymentTerms2 = 'selected';
 							} 
 						
@@ -81,8 +80,10 @@
 						 var state = '';
 						 var city = '';
 						 var website = '';
-					 	 var zipCode = '';
+					 	 var zipcode = '';
 					 	 var location = '';
+					 	 
+					 	 
 						if(json.country != null && json.country !='' && json.country !='undefined'){
 							country = json.country;
 						}
@@ -95,12 +96,14 @@
 						if(json.webSite !=null && json.webSite !='' && json.webSite !='undefined'){
 							website = json.webSite;
 						}
-						if(json.zipCode != null && json.zipCode !='' && json.zipCode !='undefined'){
-							zipCode = json.zipCode;
+						if(json.zipcode != null && json.zipcode !='' && json.zipcode !='undefined'){
+							zipcode = json.zipcode;
 						}
 						if(json.location != null && json.location !='' && json.location !='undefined'){
 							location = json.location;
 						}
+						
+						
 						result = result + ' <form id="editClient_form"  name="editClient_form" method="post">';
 						if(json.orgType == 'Company'){
 							result = result + '<div class="user_summary_edit_cta" id="vendorNameDiv">';
@@ -136,7 +139,7 @@
 							
 							result = result + '<div class="user_summary_edit_cta">';
 							result = result + '<label>Zip Code</label>';
-							result = result + '<input type="text"  class="chosen-select form-control" name="zipcode" id="existingZipCode" value="'+zipCode+'" field-name="Zip Code"  > ';
+							result = result + '<input type="text"  class="chosen-select form-control" name="zipcode" id="existingZipCode" value="'+zipcode+'" field-name="Zip Code"  > ';
 							result = result + '</div> ';
 						}else{
 							result = result + '<div class="user_summary_edit_cta" id="vendorNameDiv">';
@@ -174,7 +177,7 @@
 							
 							result = result + '<div class="user_summary_edit_cta">';
 							result = result + '<label>Zip Code</label>';
-							result = result + '<input type="text"  class="chosen-select form-control" name="zipcode" id="clientZipCode" value="'+zipCode+'" field-name="Zip Code"  > ';
+							result = result + '<input type="text"  class="chosen-select form-control" name="zipcode" id="clientZipCode" value="'+zipcode+'" field-name="Zip Code"  > ';
 							result = result + '</div> ';
 							
 						}
@@ -211,8 +214,8 @@
 						
 						result = result + ' <div class="user_summary_edit_cta">';
                         result = result + ' <label>Payment Terms</label>';
-                        result = result + ' <select id="paymentTermsId" name="PaymentTerm" >';
-                        result = result + ' <option '+paymentTerms0+' selected>SelectPaymentTerms</option>';
+                        result = result + ' <select id="paymentTermsId" name="paymentTerms" >';
+                        result = result + ' <option '+paymentTerms0+'>SelectPaymentTerms</option>';
                         result = result + ' <option '+paymentTerms1+'>10 days</option>';
                         result = result + ' <option '+paymentTerms2+'>15 days</option>';
                         result = result + ' <option '+paymentTerms3+'>30 days</option>';

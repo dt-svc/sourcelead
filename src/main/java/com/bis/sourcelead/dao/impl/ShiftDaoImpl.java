@@ -43,7 +43,7 @@ public class ShiftDaoImpl implements ShiftDao {
 	public List<Shift> getShiftList(Long orgLocationId)	
 	{
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from Shift shift where shift.orgLocationId.id=:orgLocationId";
+		String query = "from Shift shift where shift.orgLocations.id=:orgLocationId";
 	    List<Shift> shiftList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
 		return shiftList;
 	}

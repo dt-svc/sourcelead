@@ -135,6 +135,9 @@ function storeCertificate(candidateId){
 		        	candidateCertificateList(candidateId);
                		cerMsgFadein();
                		qwikCertificates(candidateId);
+               		setTimeout(function(){
+			 			candidateList();					 			
+			 		},100);
 		        });
 				
 			return true;
@@ -727,6 +730,9 @@ function addCertification(candidateId) {
 					candidateCertificateList(candidateId);
 					cerMsgFadein();
 					qwikCertificates(candidateId);
+					setTimeout(function(){
+			 			candidateList();					 			
+			 		},100);
 		        });			
 
 			return true;
