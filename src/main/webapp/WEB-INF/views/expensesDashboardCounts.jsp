@@ -75,8 +75,8 @@ function expensesCount(expenseType){
 		 $.ajax({
 		    	type: "GET",
 		        url: sourceleadUrl+"/getExpensesCount?${_csrf.parameterName}=${_csrf.token}&expenseType="+expenseType, 
-		        success: function(data) {
-		        	var json = JSON.parse(data);
+		        success: function(json) {
+		        	//var json = JSON.parse(data);
 		        	 
 		        	 $("#expensesDraftCount").empty();
 	        		 $("#expensesSubmittedForApprovalCount").empty();

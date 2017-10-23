@@ -85,9 +85,9 @@ function candDocumentsList(candidateId){
 	 $.ajax({  
           type : "POST",
           url: sourceleadUrl+"/getCandidateDocumentsListByCandidateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,        
-          success :function(data) {
+          success :function(json) {
            
-             			 var json = JSON.parse(data); 
+//              			 var json = JSON.parse(data); 
              			 
 	                	 $("#candidateDocumentsList").empty();
 	                	 var result = "";
@@ -102,10 +102,12 @@ function candDocumentsList(candidateId){
 	                     result = result +"</thead>";
 	                     result = result +"<tbody>"; 
 	                     
-	                     for (var i = 0; i < json.length; i++) { 
-	                    	 var opt = json[i];  
+	                     for (var i = 0; i < json.data.length; i++) { 
+	                    	 var opt = json.data[i];  
 	                    	 
-	                    	 if(opt.isConfidential == 'N' || (opt.isConfidential == 'Y' && '${SourceLeadWeb_user.id}' == opt.userIdStr)){
+	                    	 //commented by Pavan Jampana
+// 	                    	 if(opt.isConfidential == 'N' || (opt.isConfidential == 'Y' && '${SourceLeadWeb_user.id}' == opt.userIdStr)){
+                    		 if(opt.isConfidential == 'N'){
 	                    	 result  = result + ' <tr>';
 	                    	 
 	                    	 if(opt.documentType != null && opt.documentType != '' && opt.documentType != "undefined")

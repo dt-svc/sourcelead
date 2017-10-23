@@ -74,7 +74,7 @@
                       <i class="fa fa-toggle-on fa-2x text-warning"></i>
                   </div>
                   <div class="pull-left">
-                      <h4 class="text-warning">Options</h4>
+                      <h4 class="text-warning">Leave Options</h4>
 <!--                       <small class="text-muted">Loremipsum Loremipsum</small> -->
                       <div class="clearfix mt10">
                           <a href="<c:url value='/addOptions'/>" class="btn btn-info btn-sm mr10" title="Add">Add</a>

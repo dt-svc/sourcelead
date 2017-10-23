@@ -105,4 +105,19 @@ public class VendorOnboardTasksDaoImpl implements VendorOnboardTasksDao{
         return tasksList;
 	}
 
+
+	@Override
+	@Transactional
+	public Integer getTemplateTasksCountByTemplateId(Long templateId) throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		String query ="select count(*) from VendorOnboardTasks tasks where tasks.vendorOnboardingTemplateId.id = :templateId ";
+		List<Long> tasksCount = session.createQuery(query.toString()).setLong("templateId", templateId).list();
+			Integer count = 0;
+			if(tasksCount != null && !tasksCount.isEmpty()){
+					count = tasksCount.get(0).intValue();
+			}
+			return count;
+	}
+
 }

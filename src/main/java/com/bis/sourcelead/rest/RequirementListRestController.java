@@ -1856,9 +1856,9 @@ public class RequirementListRestController {
 			matchQueryBuilderList.add(QueryBuilders.matchQuery("requirementStatus", keywd));
 			Matcher matcher = Pattern.compile("\\d+").matcher(keywd);
 			if(matcher.find()){
-				Float expYears = Float.valueOf(matcher.group());
-				matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("minExperience", expYears));
-				matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("maxExperience", expYears));
+//				Float expYears = Float.valueOf(matcher.group());
+				matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("minExperience", keywd));
+				matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("maxExperience", keywd));
 			}
 			return matchQueryBuilderList; 
 	 }

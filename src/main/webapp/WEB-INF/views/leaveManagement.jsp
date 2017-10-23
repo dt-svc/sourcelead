@@ -91,7 +91,7 @@ $(document).ready(function(){
                         <a href="<c:url value='/employeeRejectedLeaves'/>" class="color_white" id="empRej" title="Rejected Leaves"><span class="label label-danger pull-right" id="employeeRejectedCounts"></span></a>
                     </li>
                     <li class="clearfix">
-                        <label class="pull-left">Cancel Leaves</label>
+                        <label class="pull-left">Cancelled Leaves</label>
                         <a href="<c:url value='/employeeCancelLeaves'/>" class="color_white" id="empCanc" title="Cancel Leaves"><span class="label label-warning pull-right" id="employeeCancelledCounts"></span></a>
                     </li>
                 </ul>
@@ -177,8 +177,7 @@ function getEmployeeTotalCounts(){
     							"#337ab7",
     							"#66bb6a",
     							"#ef5350",
-    							"#ff5722",
-    							"#ededed"
+    							"#f0ad4e"
     						],
     						"labelsEnabled": false,
     						"marginBottom": 0,
@@ -206,7 +205,7 @@ function getEmployeeTotalCounts(){
     								"column-1": report.employeeRejectedCounts
     							},
     							{
-    								"category": "Canceled",
+    								"category": "Cancelled",
     								"column-1": report.employeeCancelledCounts
     							} 
     						]
@@ -265,11 +264,10 @@ function getSelfTotalCounts(){
  					"radius": "49%",
  					"startAngle": 0,
  					"colors": [
- 						"#5c6bc0",
- 						"#8bc34a",
- 						"#ef5350",
- 						"#ffc107",
- 						"#ededed"
+ 						"#337ab7",
+						"#66bb6a",
+						"#ef5350",
+						"#f0ad4e"
  					],
  					"labelsEnabled": false,
  					"marginBottom": 0,
@@ -297,7 +295,7 @@ function getSelfTotalCounts(){
  							"column-1": report.selfRejectedCounts
  						},
  						{
- 							"category": "Canceled",
+ 							"category": "Cancelled",
  							"column-1": report.selfCancelledCounts
  						} 
  					]

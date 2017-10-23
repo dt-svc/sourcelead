@@ -568,7 +568,7 @@ var validationSettings = {
                 	      data: formData,
                       	  url: sourceleadUrl+"/saveUserProfile?"+tokenParamName+"="+tokenValue+"&userId="+userId+"&orgLocationId="+orgLocationId,
                         	success: function(result) {
-    			        	 if(result == 'success'){
+    			        	 if(result != null){
     			        		location.replace(sourceleadUrl+"/userProfile");  
     			        	}
     			        },  
