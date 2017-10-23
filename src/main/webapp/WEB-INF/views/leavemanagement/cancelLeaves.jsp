@@ -389,7 +389,7 @@
 								if (data.fileUrl != null
 										&& data.fileUrl != 'undefined'
 										&& data.fileUrl != '') {
-									result = result+'<td><div class="tblicons_4"> <a class="glyphicon glyphicon-download-alt" target="_blank" href=\"'+data.fileUrl+'\" title="Download"></a>';
+									result = result+'<td><div class="tblicons_4"> <a class="glyphicon glyphicon-download-alt" target="_blank" href=\"'+data.fileUrl+'\" title="Download"></a>&nbsp&nbsp';
 									result = result
 											+ '<a href="#" title="Preview"><i class="fa fa-eye cursorPointer" onclick="viewFile(\''
 											+ data.fileUrl + '\', \''
