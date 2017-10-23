@@ -1614,12 +1614,12 @@ function updateUserDesignationOtherType(){
 		 $.ajax({
 			    type: "POST",
 		        url: sourceleadUrl+"/getOrgSpocsList?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationID+"&type=Vendor",  
-		        success: function(data) {
-		        	var json = JSON.parse(data);
+		        success: function(json) {
+		        	//var json = JSON.parse(data);
 		        	$('#vendorcontact').empty();
 		        	$('#vendorcontact').append('<option value="">--select Vendor contact--</option>');
-		             for(var i=0;i<json.length;i++){
-		            	 var opt = json[i];
+		             for(var i=0;i<json.data.length;i++){
+		            	 var opt = json.data[i];
 		            	 if(vendorContactName != null && vendorContactName != 'undefined' && vendorContactName  != ''){
 		            		 $('#vendorcontact').append('<option '+ (opt.id == vendorSpocId ? "selected" : '') +' value="'+opt.id+'">'+opt.spocName+'</option>');
 			            	}else{
