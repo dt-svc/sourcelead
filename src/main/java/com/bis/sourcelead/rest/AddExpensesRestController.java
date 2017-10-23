@@ -359,7 +359,7 @@ public class AddExpensesRestController {
 			 	 
 			// 	OrgLocations ol = orgLocationsDao.getOrgLocations(orgLoc.getId());
 			 	 
-			 	 emailMessage.setToEmail(orgLoc.getUser().getEmail());
+			 	 emailMessage.setToEmail(pah.getApproverUserId().getEmail());
 			 	 emailMessage.setFromEmail(loginUser.getEmail());
 			 	 emailMessage.setCreatedBy(loginUser.getUserCode());
 			 	 
@@ -382,7 +382,7 @@ public class AddExpensesRestController {
 				 }
 				 
 				 if(null != loginUser.getLastName() && !"".equalsIgnoreCase(loginUser.getLastName())){
-//					 StringBuilder manager =new StringBuilder();
+//					 StringBuilder manager =new StringBuilder();`
 					 globalVarsMap.put("superUser", orgLoc.getUser().getFullName());
 				 }else{
 					 globalVarsMap.put("superUser",orgLoc.getUser().getFullName());
