@@ -1115,6 +1115,8 @@ public class LeaveManagementRestController {
 			}
 			durationSb.append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), leave.getFromDate()))
 					.append(System.getProperty("line.separator"))
+					.append("to")
+					.append(System.getProperty("line.separator"))
 					.append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), leave.getToDate()));
 
 			leaveDto.setDuration(durationSb.toString());
@@ -1127,7 +1129,6 @@ public class LeaveManagementRestController {
 			} catch (ParseException e) {
 				e.printStackTrace();
 			}
-			leaveDto.setBalanceleaves(leave.getLeaveType().getNumbefrOfLeavesPeryear());
 			leaveDto.setFileUrl(leave.getFileUrl());
 			leaveDto.setReason(leave.getReason());
 			leaveDto.setCreatedDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),leave.getCreatedDate()));
@@ -1136,7 +1137,10 @@ public class LeaveManagementRestController {
             if(leave.getRejectedReason() !=null) {
             	leaveDto.setRejectedReason(leave.getRejectedReason());
             }
-           
+            if(leave.getDeleteReason() !=null) {
+            	leaveDto.setDeleteReason(leave.getDeleteReason());
+            }
+            
 			StringBuilder sbu = new StringBuilder();
 			if(leave.getApprovedBy() != null){
 				User approvedUser = userService.getUserById(leave.getApprovedBy().getId());
@@ -1197,6 +1201,8 @@ public class LeaveManagementRestController {
 			int thisMonthLeaves = leaveDao.getThisMonthLeavesTakenByUser(leave.getUser().getId(),leave.getLeaveType().getId());
 			leaveDto.setThisMonthLeaves(String.valueOf(thisMonthLeaves));
 			leaveDto.setIsBillable(leave.getLeaveType().getLeaveType());
+			int balLeaves = Integer.parseInt(leave.getLeaveType().getNumbefrOfLeavesPeryear()) - nuberOfLeavestaken;
+			leaveDto.setBalanceleaves(String.valueOf(balLeaves));
 		}
 		return leaveDto;
 	}

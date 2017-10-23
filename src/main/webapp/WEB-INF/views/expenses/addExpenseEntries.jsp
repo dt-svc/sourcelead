@@ -247,7 +247,8 @@ function addAttachment(entityRowId,from){
 									<div class="input-group-btn tblminwidth-75 select-field dropdown_inr" style="min-width: 65px !important;">
 											  <select class="btn btn-info" id="expenseRateTypeREPLACEROWID" name="expenseEntry[REPLACENAMEROWID].categoryAmountType" field-name="Rate Type" field-name="Rate Type" data-validation="required">
 											  	   <c:forEach var="currencyType" items="${expEntry.currencyCodeList}">
-									                  <option  value="${currencyType}">${currencyType}</option>
+									                 <%--  <option  value="${currencyType}">${currencyType}</option> --%>
+									                  <option ${currencyType == expEntry.loginCurrencyCode ? 'selected' : ''} value="${currencyType}">${currencyType}</option>
 									               </c:forEach>
 											  </select>
 								</div>
@@ -269,7 +270,7 @@ function addAttachment(entityRowId,from){
 	                 
 					<div class="col-md-12 minHeight mb">
 						<label>Description<span class='text-danger'>&nbsp;*</span></label>
-						<textarea rows="3"  id="entryDesREPLACEROWID" name="expenseEntry[REPLACENAMEROWID].entryDescription" class="form-control" placeholder="Description" field-name="Description" data-validation="required validate_Space validate_length length1-5000" onblur="removeWhiteSpacesAdd(REPLACEROWID);"></textarea>
+						<textarea rows="2"  id="entryDesREPLACEROWID" name="expenseEntry[REPLACENAMEROWID].entryDescription" class="form-control" placeholder="Description" field-name="Description" data-validation="required" onblur="removeWhiteSpacesAdd(REPLACEROWID);"></textarea>
 					</div>		
 	                   <div id='attachmentSection' class='col-md-4 minHeight'>
 	                   <label>Attachments<span class="text-danger">&nbsp;*</span></label>
@@ -302,11 +303,10 @@ function addAttachment(entityRowId,from){
 <script type="text/javascript">
 function removeWhiteSpacesAdd(rowCount){
 	var el = document.getElementsByName("entryDes"+rowCount)[0];
-	var val = el.value.replace(/(^\s*)|(\s*$)/gi,"")
+	var val = el.value.replace(/(^\s*)|(\s*$)/gi,"").replace(/\r?\n|\r/g);
 	$("#entryDes"+rowCount).val(val);
-}
+	}
 </script>
-
 <script>
 function addExpenseRow(from){ 
 	if ($('#add_expenses_form').validate(false, validationSettings)){

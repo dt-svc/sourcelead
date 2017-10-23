@@ -501,7 +501,34 @@ public class RequirementController {
 			}
 			requirementAssignToList.add(ra);
 		}*/
-		
+		if(requirement.getCreatedDate()!=null){
+			requirement.setRequirementCreatedDateToString(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),requirement.getCreatedDate()));
+		}
+		if (null != requirement.getClosedDate()) {
+			requirement.setClosedDateStringFormat(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),requirement.getClosedDate()));
+		}
+		if (requirement.getSpocId() != null) {
+			if (requirement.getClientId() != null) {
+				if (requirement.getClientId().getInitiatorType().equalsIgnoreCase("Client")) {
+					requirement.setClientName(requirement.getClientId().getLocationId().getOrgLocationName());
+				}
+				if (requirement.getClientId().getInitiatorType().equalsIgnoreCase("Vendor")) {
+					requirement.setClientName(requirement.getClientId().getResponderLocationId().getOrgLocationName());
+				}
+			}
+			if (requirement.getSpocId().getClientUser().getFirstName() != null
+					&& requirement.getSpocId().getClientUser().getFirstName() != ""
+					&& requirement.getSpocId().getClientUser().getLastName() != null
+					&& requirement.getSpocId().getClientUser().getLastName() != "") {
+				StringBuilder spocSB = new StringBuilder();
+				requirement.setSpocName(spocSB.append(requirement.getSpocId().getClientUser().getFirstName()).append(" ").append(requirement.getSpocId().getClientUser().getLastName()).toString());
+			}
+			else {
+				requirement.setSpocName(requirement.getSpocId().getClientUser().getFirstName());
+			}
+			requirement.setSpocEmail(requirement.getSpocId().getClientUser().getEmail());
+			requirement.setSpocMobilePhone(requirement.getSpocId().getClientUser().getMobilePhone());
+		}
 		 Set<RequirementApproverHierarchy> approverList = requirement.getRequirementApprover();
 		 Integer maxLevel =  requirementApproverHierarchyService.getRequirementApproverHierarachyWithHighestLevel(requirement.getId());
 			if(null != maxLevel && maxLevel >1){

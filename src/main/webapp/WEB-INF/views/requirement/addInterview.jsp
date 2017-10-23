@@ -115,7 +115,7 @@ function addInterview(requirementId){
 	if(parentRequirement == 'Y'){
 	   result = result + '<label><input type="checkbox" name="notificationToSpoc" value="Y" checked="checked"><b>Notify to Vendors</b></label>';
 	}
-	result = result + '<label><input type="checkbox" name="notificationToOthers" id="notificationToOthers" onClick="getNotifyToOtersVal();showOthersDiv();"><b>Notify to Others</b></label>';
+	result = result + '<label><input type="checkbox" name="notificationToOthers" id="notificationToOthers" onClick="getNotifyToOtersValInterview();showOthersDivInterview();"><b>Notify to Others</b></label>';
 
 	result = result + '<label><input type="checkbox" name="proposeTime" value="Y" checked="checked" ><b>Propose time</b></label>';
 	
@@ -207,7 +207,7 @@ function addInterview(requirementId){
 
 
 <script>
-function showOthersDiv(){
+function showOthersDivInterview(){
 	var isNofityToOthers = document.getElementById("notificationToOthers").checked;
 	if (isNofityToOthers) {
 		document.getElementById("notifyOthersDiv").style.display = '';
@@ -217,11 +217,11 @@ function showOthersDiv(){
 		       ,placeholderText:"Enter emails"
 		       ,allowDuplicates: false
 		    	,afterTagAdded: function(evt, ui){
-			              checkEmails();
+			              checkEmailsInterview();
 			              return false;
 			    }
 		       ,afterTagRemoved: function(evt, ui){
-	              checkEmails();
+	              checkEmailsInterview();
 	              return false;
 	         }
 		   });
@@ -238,7 +238,7 @@ function checkEmail(email) {
    return regExp.test(email);
 }
 
-function checkEmails(){
+function checkEmailsInterview(){
 	var emails = document.getElementById("notificationToOthersEmails").value;
 	var emailArray = emails.split(",");
 	var invEmails = "";
@@ -585,7 +585,7 @@ function cancelAddInterviewDiv(){
 </script>
 
 <script>
-function getNotifyToOtersVal(){
+function getNotifyToOtersValInterview(){
     if(document.getElementById('notificationToOthers').checked) {
         $("#notificationToOthers").val('Y');
         $("#notifyOthersDiv").find('p.jquery_form_error_message').remove();
