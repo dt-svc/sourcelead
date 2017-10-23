@@ -1137,6 +1137,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 		userRole.setUpdatedDate(new Date());
 		userRole.setUserState(Status.NOT_LOGGEDIN);
 		userRole.setUserType(Constants.PROFESSIONAL);
+		userRole.setIsMailSent(Status.Y);
 		userRoleService.addUserRole(userRole);
 		
 		Candidate candidate = new Candidate();
@@ -1338,6 +1339,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 		userRole.setRoles(roles);
 		userRole.setOrgId(org);
 		userRole.setOrgLocations(orgLocations);
+		userRole.setIsMailSent(Status.Y);
 		
 		UserRole primaryUserRole = userRoleService.getLoginUserPrimaryRole(user.getId());
 		if(null == primaryUserRole){
@@ -1608,6 +1610,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 				userRole.setUpdatedDate(new Date());
 				userRole.setUserState(Status.ACTIVE);
 				userRole.setUserType(Constants.PROFESSIONAL);
+				userRole.setIsMailSent(Status.Y);
 				userRole = userRoleService.addUserRole(userRole);
 				
 				Candidate candidate = new Candidate();
@@ -1774,6 +1777,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 			userRole.setCreatedDate(new Date());
 			userRole.setUpdatedDate(new Date());
 			userRole.setUserState(Status.ACTIVE);
+			userRole.setIsMailSent(Status.Y);
 			userRole.setUserType(Constants.INDIVIDUAL_RECRUITER);
 			userRoleService.addUserRole(userRole);
 			
