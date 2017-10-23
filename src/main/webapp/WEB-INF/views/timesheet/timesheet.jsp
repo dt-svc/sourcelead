@@ -1005,7 +1005,8 @@ function validateUploadFile(id)
 			  $('#'+id+'docFile').attr('record-exist-errorMsg','Limit is exceeded than 2MB'); 
 	      }else{
 	    	 $('input#'+id+'docFile').removeAttr( "record-exist record-exist-errormsg");
-   		 $('#'+id+'docFileuploadFileGroup').find('p.jquery_form_error_message').remove(); 
+   		 	 $('#'+id+'docFileuploadFileGroup').find('p.jquery_form_error_message').remove();
+   		 	 fileUpload(""+id+"docFile", "timesheetDocuments", "timesheet_form","","","");
 	      }
 	  }
 	  else{
@@ -1254,6 +1255,5 @@ function timesheetEntriesExport(startDate,endDate,projectMemberId,exportType,sub
 }
 </script>
  <!-- this script is for save Timesheet -->  
- 
-      
+<script type="text/javascript" src='resources/js/slead-common.js?staticTime=${staticTime}'></script>   
     
