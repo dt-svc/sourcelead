@@ -6937,6 +6937,9 @@ bottom:1px;
 .timesheet_week_comm.edit-Expense-upload .glyphicon-save {
 	color: #fff !important;
 }
+.txtEditor_p.txtEditorP .Editor-editor {
+    height: 258px;
+}
 /* media 320px */
 @media (max-width: 320px) {
 	.uasrch-selectpicker {
