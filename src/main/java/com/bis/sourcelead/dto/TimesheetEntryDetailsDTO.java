@@ -2,6 +2,7 @@ package com.bis.sourcelead.dto;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Map;
 
 public class TimesheetEntryDetailsDTO implements Serializable{
 	
@@ -11,15 +12,20 @@ public class TimesheetEntryDetailsDTO implements Serializable{
 	
 	private Long projectMemberId;
 	
-	private List<String> timeFrequencies;
+	private Long projectId;
 	
-	private String currentFrequency;
+	private Long masterCandidateId;
 	
-	private TimeSubFrequencyDTO timeSubFrequencies;
+    private Map<String,String> timeFrequencies;
 	
-	private String timesheetStatus;
+	private String currentTimeFrequency;
 	
-	private String rejectedReason;
+	private Map<String,String> timeSubFrequencies;
+	
+	private String currentTimeSubFrequency;
+	
+	private TimeSheetSubmissionDTO timesheetSubmission;
+	
 
 	public List<ProjectMembersDTO> getProjectMembersList() {
 		return projectMembersList;
@@ -36,49 +42,62 @@ public class TimesheetEntryDetailsDTO implements Serializable{
 	public void setProjectMemberId(Long projectMemberId) {
 		this.projectMemberId = projectMemberId;
 	}
-
-	public List<String> getTimeFrequencies() {
+	public Map<String, String> getTimeFrequencies() {
 		return timeFrequencies;
 	}
 
-	public void setTimeFrequencies(List<String> timeFrequencies) {
+	public void setTimeFrequencies(Map<String, String> timeFrequencies) {
 		this.timeFrequencies = timeFrequencies;
 	}
-
-	public String getCurrentFrequency() {
-		return currentFrequency;
+	public String getCurrentTimeFrequency() {
+		return currentTimeFrequency;
 	}
 
-	public void setCurrentFrequency(String currentFrequency) {
-		this.currentFrequency = currentFrequency;
+	public void setCurrentTimeFrequency(String currentTimeFrequency) {
+		this.currentTimeFrequency = currentTimeFrequency;
 	}
-
-	public TimeSubFrequencyDTO getTimeSubFrequencies() {
+	public Map<String, String> getTimeSubFrequencies() {
 		return timeSubFrequencies;
 	}
 
-	public void setTimeSubFrequencies(TimeSubFrequencyDTO timeSubFrequencies) {
+	public void setTimeSubFrequencies(Map<String, String> timeSubFrequencies) {
 		this.timeSubFrequencies = timeSubFrequencies;
 	}
 
-	public String getTimesheetStatus() {
-		return timesheetStatus;
+	public String getCurrentTimeSubFrequency() {
+		return currentTimeSubFrequency;
 	}
 
-	public void setTimesheetStatus(String timesheetStatus) {
-		this.timesheetStatus = timesheetStatus;
+	public void setCurrentTimeSubFrequency(String currentTimeSubFrequency) {
+		this.currentTimeSubFrequency = currentTimeSubFrequency;
 	}
 
-	public String getRejectedReason() {
-		return rejectedReason;
+
+	public Long getProjectId() {
+		return projectId;
 	}
 
-	public void setRejectedReason(String rejectedReason) {
-		this.rejectedReason = rejectedReason;
+	public void setProjectId(Long projectId) {
+		this.projectId = projectId;
 	}
+
+	public Long getMasterCandidateId() {
+		return masterCandidateId;
+	}
+
+	public void setMasterCandidateId(Long masterCandidateId) {
+		this.masterCandidateId = masterCandidateId;
+	}
+
+	public TimeSheetSubmissionDTO getTimesheetSubmission() {
+		return timesheetSubmission;
+	}
+
+	public void setTimesheetSubmission(TimeSheetSubmissionDTO timesheetSubmission) {
+		this.timesheetSubmission = timesheetSubmission;
+	}
+
 	
-	
-	
-	
+
     
 }
