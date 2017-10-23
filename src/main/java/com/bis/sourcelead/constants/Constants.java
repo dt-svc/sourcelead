@@ -924,6 +924,7 @@ public class Constants {
 	public static final String TASK_ACTIVITY_STATUS = "Status";
 	public static final String TASK_ACTIVITY_PRIORITY = "Priority";
 
+	public static final String HOLIDAY_RESTRICTED = "Restricted";
 	public static final String LEAVE_EMAIL_TO_APPROVERS = "LeaveEmailToApprovers";
 	public static final String LEAVE_NOTIFICATION_TO_APPROVERS = "LeaveNotificationToApprovers";
 

@@ -63,9 +63,9 @@ function candDocumentsList(candidateId){
 	 $.ajax({  
           type : "POST",
           url: sourceleadUrl+"/getCandidateDocumentsListByCandidateId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
-          success :function(data) {
+          success :function(json) {
            
-             			 var json = JSON.parse(data); 
+//              			 var json = JSON.parse(data); 
              			 
 	                	 $("#candidateDocumentsList").empty();
 	                	 var result = "";
@@ -80,8 +80,8 @@ function candDocumentsList(candidateId){
 	                     result = result +"</thead>";
 	                     result = result +"<tbody>"; 
 	                     
-	                     for (var i = 0; i < json.length; i++) { 
-	                    	 var opt = json[i];  
+	                     for (var i = 0; i < json.data.length; i++) { 
+	                    	 var opt = json.data[i];  
 	                    	 result  = result + ' <tr>';
 	                    	 if(opt.documentType != null && opt.documentType != '' && opt.documentType != "undefined")
 	    	             	 {
@@ -107,7 +107,7 @@ function candDocumentsList(candidateId){
 		                    	 }
 		                    	
 		                   
-		                   result = result+'<td><div class="tblicons"> <a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadDoc?documentUUID='+opt.documentUUID+'\"></a>';
+		                   result = result+'<td><div class="tblicons"> <a class="glyphicon glyphicon-download-alt" href=\"'+opt.fileURL+'\"></a>';
 			           		if(window.candidateStatusGlobal == 0){
 			           			result = result+'<a class="glyphicon glyphicon-pencil" href="javascript:void(0)"></a>';
 				           		result = result+'<i class="glyphicon glyphicon-trash" href="javascript:void(0)"></i>';

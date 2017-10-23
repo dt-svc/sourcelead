@@ -1356,5 +1356,11 @@ public class UserServiceImpl implements UserService {
 	public List<User> getUsersByOrgLocationIdExceptLoggedInUser(Long orgLocationsId, Long userId) throws Exception {
 		return userDao.getUsersByOrgLocationIdExceptLoggedInUser(orgLocationsId, userId);
 	}
+
+	@Override
+	public List<User> getUsersHierarchyListByOrgLocationIdAndRoleIdAndNoCurrentUser(Long userId, Long roleId,
+			Long orgLocationsId) throws Exception {
+		return userDao.getUsersHierarchyListByOrgLocationIdAndRoleIdAndNoCurrentUser(userId, roleId, orgLocationsId);
+	}
 	
 }

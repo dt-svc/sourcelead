@@ -46,6 +46,20 @@ public class OnBoardingTemplateDTO implements Serializable {
 	 
 	 private Long vendorOnboardId;
 	 
+	 private String templateCreatedDate;
+	 
+	 private String createdUser;
+	 
+	 private String templateStatus;
+	 
+	 private Integer documentsCount;
+	 
+	 private Integer tasksCount;
+	 
+	 private String templateUUID;
+	 
+	 private String isDefaultTemplate;
+	 
 	 
 	public String getTemplateId() {
 		return templateId;
@@ -189,6 +203,62 @@ public class OnBoardingTemplateDTO implements Serializable {
 
 	public void setId(Long id) {
 		this.id = id;
+	}
+
+	public String getTemplateCreatedDate() {
+		return templateCreatedDate;
+	}
+
+	public void setTemplateCreatedDate(String templateCreatedDate) {
+		this.templateCreatedDate = templateCreatedDate;
+	}
+
+	public String getCreatedUser() {
+		return createdUser;
+	}
+
+	public void setCreatedUser(String createdUser) {
+		this.createdUser = createdUser;
+	}
+
+	public String getTemplateStatus() {
+		return templateStatus;
+	}
+
+	public void setTemplateStatus(String templateStatus) {
+		this.templateStatus = templateStatus;
+	}
+
+	public Integer getDocumentsCount() {
+		return documentsCount;
+	}
+
+	public void setDocumentsCount(Integer documentsCount) {
+		this.documentsCount = documentsCount;
+	}
+
+	public Integer getTasksCount() {
+		return tasksCount;
+	}
+
+	public void setTasksCount(Integer tasksCount) {
+		this.tasksCount = tasksCount;
+	}
+
+	public String getTemplateUUID() {
+		return templateUUID;
+	}
+
+	public void setTemplateUUID(String templateUUID) {
+		this.templateUUID = templateUUID;
+	}
+
+	public String getIsDefaultTemplate() {
+		return isDefaultTemplate;
+	}
+
+	public void setIsDefaultTemplate(String isDefaultTemplate) {
+		this.isDefaultTemplate = isDefaultTemplate;
 	}
 
 	
