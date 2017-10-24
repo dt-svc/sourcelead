@@ -61,7 +61,7 @@ public class VendorOnboardDTO implements Serializable{
 	
 	private String staticPath;
 	
-	private List<FileInfo> vendorDocumentsFileInfo;
+	private List<VendorDocumentsFileInfo> vendorDocumentsFileInfo;
 	
 	private String vendorBillingAddress;
 	
@@ -267,11 +267,11 @@ public class VendorOnboardDTO implements Serializable{
 		this.staticPath = staticPath;
 	}
 
-	public List<FileInfo> getVendorDocumentsFileInfo() {
+	public List<VendorDocumentsFileInfo> getVendorDocumentsFileInfo() {
 		return vendorDocumentsFileInfo;
 	}
 
-	public void setVendorDocumentsFileInfo(List<FileInfo> vendorDocumentsFileInfo) {
+	public void setVendorDocumentsFileInfo(List<VendorDocumentsFileInfo> vendorDocumentsFileInfo) {
 		this.vendorDocumentsFileInfo = vendorDocumentsFileInfo;
 	}
 
