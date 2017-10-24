@@ -24,6 +24,7 @@ z-index: 15000;
 .remove_user_pop.remove_user_pop_a {
 z-index: 18000;
 }
+
 </style>
 
 <script type="text/javascript">
@@ -741,6 +742,7 @@ function invoicePagination(url){
                     },{
                         "targets": colIndex++,
                         "data": "action",
+                        "sortable": false,
                         "render": function ( data, type, report, meta ) {
                         	var result = "";
                         	result = result +'         <td> ';
@@ -1317,7 +1319,7 @@ function linkInvoice(invoiceId,totalAmount){
 			result = result +'        <h4 class="modal-title">Link Invoice</h4>                                                                             ';
 			result = result +'	<span class="jquery_form_error_message" style="display:none; padding-left:0px !important; font-size:12px;">Select at least 1 Invoice</span>';
 			result = result +'      </div>                                                                                                                  ';
-			result = result +'      <div class="modal-body clearfix">                                                                                       ';
+			result = result +'      <div class="modal-body clearfix mt25">                                                                                       ';
 			result = result +' <div class="timesheet_out clearfix">                                                                                         ';
 			result = result +'      <div class="candidate_wrap_table">                                                                                      ';
 			result = result +'      <table id="linkInvoiceListPagination">                                                                                                                 ';
@@ -1380,9 +1382,9 @@ function linkInvoice(invoiceId,totalAmount){
 			result = result +'          </tr>                                                                                                               ';
 			}
 			}else{
-	 			result = result +'          <tr>';
-				result = result +'                <td valign="top" colspan="10" class="dataTables_empty"></td>';
-				result = result +'          </tr>';
+			result = result +' 	<div class="col-md-12" style="display:none">';
+			result = result +'       <div class="dataTables_empty"></div>';
+			result = result +' 	</div>';
 			}
 			result = result +'        </tbody>                                                                                                              ';
 			result = result +'      </table>                                                                                                                ';

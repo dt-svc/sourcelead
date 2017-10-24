@@ -15,7 +15,7 @@ public class OptionsDTO implements Serializable {
 	private String halfDayRequest;
 	private String leaveTransfer;
 	private String workingHours;
-
+    private String optionId;
 	public String getOrgLocationId() {
 		return orgLocationId;
 	}
@@ -95,6 +95,15 @@ public class OptionsDTO implements Serializable {
 	public void setId(String id) {
 		this.id = id;
 	}
+
+	public String getOptionId() {
+		return optionId;
+	}
+
+	public void setOptionId(String optionId) {
+		this.optionId = optionId;
+	}
+
 	
 
 }

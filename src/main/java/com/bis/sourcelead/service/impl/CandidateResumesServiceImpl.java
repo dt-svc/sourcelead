@@ -1,5 +1,7 @@
 package com.bis.sourcelead.service.impl;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -12,6 +14,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dao.CandidateDao;
 import com.bis.sourcelead.dao.CandidateResumesDao;
 import com.bis.sourcelead.dto.CandidateResumeDTO;
 import com.bis.sourcelead.dto.FileInfo;
@@ -26,6 +29,7 @@ import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.util.CandidateActivityCommonUtil;
 import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.util.ConversionUtil;
 import com.bis.sourcelead.util.FileUploadUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 
@@ -38,6 +42,10 @@ public class CandidateResumesServiceImpl implements CandidateResumesService {
 	private static final Logger logger = LoggerFactory.getLogger(CandidateResumesServiceImpl.class);
 	@Autowired
 	private CommonUtil commonUtil;
+	
+	@Autowired
+	CandidateDao candidateDao;
+	
 	@Autowired
 	private CandidateResumesDao candidateResumesDao;
 	@Autowired
@@ -151,9 +159,13 @@ public class CandidateResumesServiceImpl implements CandidateResumesService {
 		/*
 		 * updating Candidate Resume DB data in existing candidateindex
 		 */
+
+//    	candidate.setUpdatedDate(new Date());
+    	
 		saveOrUpdateCandidateElkDocumentWithResumeDetails(candidate);
 		return candidateResume;
 	}
+	
 	
 	/**
 	 * @author prasad.k
@@ -268,13 +280,8 @@ public class CandidateResumesServiceImpl implements CandidateResumesService {
 	@Override
 	public CandidateResumes updateCandidateResume(CandidateResumes candidateResumes) throws Exception
 	{
-		logger.debug("In CandidateResumeServiceImpl class updateCandidateResume method...");
 		candidateResumes.setUpdatedDate(commonUtil.currentDate());
 		candidateResumes = candidateResumesDao.updateCandidateResume(candidateResumes);
-		/*
-		 * updating Candidate Resume DB data in existing candidateindex
-		 */
-		// saveOrUpdateCandidateElkDocumentWithResumeDetails(candidateResumes.getCandidateId());
 		return candidateResumes;
 	}
 	
@@ -323,6 +330,8 @@ public class CandidateResumesServiceImpl implements CandidateResumesService {
 				candidateIndex.setFileUrl(candidateResumes.getFileURL());
 				candidateIndex.setFileContentType(candidateResumes.getFileContentType());
 				candidateIndex.setResumeName(candidateResumes.getFileName());
+				 DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+				candidateIndex.setUpdatedDate(dateFormat.format(new Date()));
 			}
 			sourceleadELKBaseIndexer.saveOrUpdateElkDocument(candidateIndex, Constants.ELK_CANDIDATE_INDEX, Constants.ELK_CANDIDATE_TYPE, candidate.getId().toString());
 		}

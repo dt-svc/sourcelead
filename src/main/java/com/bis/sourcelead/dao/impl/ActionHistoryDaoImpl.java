@@ -4,6 +4,8 @@ import java.text.DateFormat;
 import java.text.MessageFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.Date;
 import java.util.List;
 
@@ -97,10 +99,13 @@ public class ActionHistoryDaoImpl implements ActionHistoryDao {
 			actionHistory.setUserLoginLogoutSessionId(userLoginLogoutSession);
 			actionHistory.setActionName(actionNames.getActionName());
 			actionHistory.setActionPerformed("You have performed "+ actionNames.getActionName()+" Action ");
-			Date newDate = new Date();
-			DateTime zoned = new DateTime(newDate,DateTimeZone.forID(loginOrgLocation.getTimezone().getTimeZoneId()));
-			actionHistory.setActionTime(zoned.toDate());
-
+			// saving the Activity Time based on the time zone 
+			Date date = new Date();
+		    DateTime dt = new DateTime(date);
+		    DateTimeZone dtZone = DateTimeZone.forID(loginOrgLocation.getTimezone().getTimeZoneId());
+		    DateTime dtus = dt.withZone(dtZone); 
+		    Date dateWithTimezone = dtus.toLocalDateTime().toDate();
+			actionHistory.setActionTime(dateWithTimezone);
 			try {
 				if (actionHistory != null) {
 					session.saveOrUpdate(actionHistory);

@@ -1,6 +1,8 @@
 package com.bis.sourcelead.service.impl;
 
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -269,6 +271,9 @@ public class CandidateCertificationsServiceImpl implements CandidateCertificatio
 				for(CandidateCertifications cert :certificationList){
 					certList.add(cert.getName());
 				}
+				
+				DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+				candidateIndex.setUpdatedDate(dateFormat.format(new Date()));
 				candidateIndex.setCertifications(certList);
 			}
 			sourceleadELKBaseIndexer.saveOrUpdateElkDocument(candidateIndex, Constants.ELK_CANDIDATE_INDEX, Constants.ELK_CANDIDATE_TYPE,candidateId.toString());

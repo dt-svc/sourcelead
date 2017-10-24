@@ -1,5 +1,6 @@
 package com.bis.sourcelead.service.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Service;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.CandidateReferencesDao;
 import com.bis.sourcelead.dto.CandidateReferencesDTO;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateReferences;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -125,9 +127,25 @@ public class CandidateReferencesServiceImpl implements CandidateReferencesServic
 	}
 
 	@Override
-	public List<CandidateReferences> getCandidateReferencesListByCandidateIdAndOrgLocationID(Long candidateId,
+	public ResponseList<CandidateReferencesDTO> getCandidateReferencesListByCandidateIdAndOrgLocationID(Long candidateId,
 			Long orgLocationId) throws Exception {
-		return candidateReferencesDao.getCandidateReferencesListByCandidateIdAndOrgLocationID(candidateId, orgLocationId);
+		List<CandidateReferences> referList =  candidateReferencesDao.getCandidateReferencesListByCandidateIdAndOrgLocationID(candidateId, orgLocationId);
+		ResponseList<CandidateReferencesDTO> responseReferList = new ResponseList<>();
+		List<CandidateReferencesDTO> referDTOLIst = new ArrayList<>();
+		for(CandidateReferences candiRefer : referList){
+			CandidateReferencesDTO refer = new CandidateReferencesDTO();
+			refer.setId(candiRefer.getId());
+			refer.setRefId(candiRefer.getId().toString());
+			refer.setName(candiRefer.getName());
+			refer.setEmail(candiRefer.getEmail());
+			refer.setMobilePhone(candiRefer.getMobilePhone());
+			refer.setRelation(candiRefer.getRelation());
+			refer.setComment(candiRefer.getComment());
+			refer.setDesignation(candiRefer.getDesignation());
+			referDTOLIst.add(refer);
+		}
+		responseReferList.setData(referDTOLIst);
+ 		return responseReferList;
 	}
 
 	@Override

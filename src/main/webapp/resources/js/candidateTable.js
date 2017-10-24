@@ -134,7 +134,7 @@ function cpagination(url){
         ],
         "columnDefs": [ {
 	    	  	"targets": colIndex++,
-	    	  	"className": "tbldata-dotdot_50",
+	    	  	//"className": "tbldata-dotdot_50",
 	    	  	"data": "isAssociate",
 	    	  	"sortable": false,
 	    	  	"render": function(data, type, full, meta) {
@@ -148,6 +148,7 @@ function cpagination(url){
 	            		isFavourite = "checked";
 	            		isFavClass = "activestar-rating";
 	            	}
+	    	  		result = result +"<div class='tblminwidth-50 pull-left'>";
 	    	  		if(data == "Y" && isAssociate == 'N'){
 		            	  result = result +"<i class='fa fa-black-tie pull-right mt10' title='Added as Associate'></i> ";  
 		             }
@@ -157,6 +158,7 @@ function cpagination(url){
 		            	  	result = result +"   <input type='checkbox' id='fav"+full.candidateId+"' "+isFavourite+" onclick='addFavourite("+full.candidateId+")'></input>";
 		             
 		              result = result +" <label></label>";
+		              result = result +"</div>";
 		              result = result +"</div>";
 		              return  result;
 	    	  	}
@@ -229,6 +231,7 @@ function cpagination(url){
 	    	  },{
 	    	  	"targets": colIndex++,
 	    	  	"data": "mobilePhone",
+	    	  	"sortable": false,
 	    	  	"render": function(data, type, full, meta) {
 	    	  		var mobilePhone = "";
 	    	  		if(full.mobilePhone != null && full.mobilePhone != 'undefined' && full.mobilePhone != ""){

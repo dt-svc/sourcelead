@@ -267,16 +267,16 @@ function addResume(candidateId) {
 	  $.ajax({
 			type : "POST",
 			url : sourceleadUrl+"/candidateResumesListByCandidateId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,
-			success : function(data) {
-				var json = JSON.parse(data);
-				if( data.indexOf('Sign In') >= 0){
-		    		location.replace(sourceleadUrl);
-		    	 }
-        		 else if (data.indexOf('exception') >= 0) {
-        			 location.replace(sourceleadUrl+"/errorPage");
-        		 }
-        		 else{
-					if(json.length<=0 || (data == null && data == 'undefined' && data == "")){
+			success : function(json) {
+// // 				var json = JSON.parse(data);
+// 				if( json.indexOf('Sign In') >= 0){
+// 		    		location.replace(sourceleadUrl);
+// 		    	 }
+//         		 else if (json.indexOf('exception') >= 0) {
+//         			 location.replace(sourceleadUrl+"/errorPage");
+//         		 }
+//         		 else{
+					if(json.data.length<=0 || (json == null && json == 'undefined' && json == "")){
 							result = result+"   <div class='row'>"; 
 						 	result = result+"	<div class='col-lg-12'>"; 
 						 	result = result+"		<div class='content-area clearfix'>"; 
@@ -300,9 +300,9 @@ function addResume(candidateId) {
 							result = result+'	          </tr>';
 							
 							
-				             for (var i = 0; i < json.length; i++) {
-				            	 	resumesCount = json.length;
-					            	var opt = json[i];
+				             for (var i = 0; i < json.data.length; i++) {
+				            	 	resumesCount = json.data.length;
+					            	var opt = json.data[i];
 					            	var title = "";
 					            	var description = "";
 					            	if(opt.title != null && opt.title != 'undefined' && opt.title != ""){
@@ -353,7 +353,7 @@ function addResume(candidateId) {
 					}
 					$("#resumesList").empty();
 					$("#resumesList").append(result);
-        		}
+//         		}
 				},
 		});
   }

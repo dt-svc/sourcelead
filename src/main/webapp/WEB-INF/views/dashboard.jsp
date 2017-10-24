@@ -206,7 +206,10 @@ overflow-x: auto;
 				     <jsp:include page="expensesDashboardCounts.jsp"></jsp:include>
 			 </sec:authorize>  	
 			
-			 <jsp:include page="leaveManagement.jsp"></jsp:include>
+			<sec:authorize access="hasAnyRole('ROLE_APPLY_LEAVE','ROLE_APPLY_BEHALF_LEAVE','ROLE_APPROVE_LEAVE')">
+				<jsp:include page="leaveManagement.jsp"></jsp:include>
+			</sec:authorize>
+			 
 		 </div>
 	    	<c:if test = "${SourceLeadWeb_ats == 'Y' || SourceLeadWeb_vms == 'Y'}">
 	    	
