@@ -241,7 +241,7 @@ public class UsersListRestController {
 					}
 					role.setUserEmail(role.getUser().getEmail());
 					role.setUserId(role.getUser().getId());
-					role.setIsMailSent(role.getUser().getIsMailSent().toString());	
+					//role.setIsMailSent(role.getUser().getIsMailSent().toString());	
 					if(role.getUser() != null) {
 						if(role.getUser().getFileUrl() != null) {
 							role.setFileUrl(role.getUser().getFileUrl());
@@ -1631,6 +1631,7 @@ public class UsersListRestController {
 			user.setFirstName(addUserDTO.getFirstName());
 			user.setLastName(addUserDTO.getLastName());
 			user.setMobilePhone(addUserDTO.getPhoneNumber());
+			user.setExtensionNumber(addUserDTO.getExtensionNumber());
 			if (StringUtils.isNotBlank(addUserDTO.getReportingManager())) {
 				User reportingManager = new User();
 				reportingManager.setId(Long.parseLong(addUserDTO.getReportingManager()));

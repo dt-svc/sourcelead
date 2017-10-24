@@ -115,10 +115,13 @@ public Expenses storeAddExpensesData(Expenses expenses) throws Exception{
 }
 
 @Override
-public void storeAddExpensesData(ExpensesDTO expensesDTO, User loginUser, OrgLocations orgLoc,HttpServletRequest request,String status,String currencyCode) throws NumberFormatException, Exception {
+public void storeAddExpensesData(ExpensesDTO expensesDTO, User loginUser, OrgLocations orgLoc,HttpServletRequest request,String currencyCode) throws NumberFormatException, Exception {
 	Expenses expenses = null;
 	ProjectMembers projMembers = null;
-	
+	String status = "draft";
+	if(StringUtils.isNotEmpty(expensesDTO.getExpenseStatus())){
+		status = expensesDTO.getExpenseStatus();
+	}
 	//SimpleDateFormat dateFormat=orgLoc.getLocFullFormDateFormatter();
 	
 	if(expensesDTO.getId() != null){
@@ -180,7 +183,9 @@ public void storeAddExpensesData(ExpensesDTO expensesDTO, User loginUser, OrgLoc
 	for(ExpensesEntries expensesEntry : expensesEntriesList){
 		totalAmount = Float.sum(totalAmount, expensesEntry.getAmount());
 	}
-	expenses.setTotalAmount(totalAmount);
+	BigDecimal bd = new BigDecimal(Double.toString(totalAmount));
+	bd = bd.setScale(2,BigDecimal.ROUND_UP);
+	expenses.setTotalAmount(bd.floatValue());
 	
 	if(projMembers != null){
 		ArrayList<User> managers = new ArrayList<User>() ;

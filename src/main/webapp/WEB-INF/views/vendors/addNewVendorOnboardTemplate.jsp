@@ -8,46 +8,6 @@
 
 <script src="resources/js/formvalidator.js"></script>
 
-<style>
-.timesheet_week_comm strong input.dele  {
-width : 10px !important;
-}
-.timesheetDocs.timesheetDocs-custom .timesheet_week_comm strong input.dele {
-width : 20px !important;
-}
-.timesheetDocs.timesheetDocs-custom {
-width: 65%;
-}
-.timesheetDocs.timesheetDocs-custom .timesheetAttachment {
-width: auto !important;
-}
-.timesheetDocs.timesheetDocs-custom .timesheet_week_comm span input {
-width: 275px !important; padding-left: 15px !important; text-indent:0; text-align: left;
-}
-.timesheetDocs.timesheetDocs-custom .timesheet_week_comm label input[type="checkbox"] {
-width: auto !important;
-}
-.timesheetDocs.timesheetDocs-custom .timesheet_week_comm input.vendorinput {
-	background-color: #fff; color: #333; border: 1px solid #ddd; width: 250px !important;
-	margin-right: 15px;
-}
-.timesheetDocs.timesheetDocs-custom .timesheetAttachment td {
-width: auto !important;
-}
-.timesheetDocs.timesheetDocs-custom .timesheet_week_comm label.switch {
-position: relative; background-color: transparent; width: 35px; overflow: inherit; padding: 5px 10px;
-}
-.ml-mr {
-margin-left: 15px !important; margin-right: 15px !important; margin-top: 5px !important;
-}
-.switch.switchvendor-custom input[type="checkbox"]{
-background: #f60; position: relative;top:0; top: -15px; opacity: 0;
-filter: alpha(opacity=0);  -moz-opacity: 0; -khtml-opacity: 0;
-}
-.timesheetDocs.timesheetDocs-custom .timesheet_week_comm span .inputpadding input[type="button"] {
-	padding-left: 35px !important;
-}
-</style>
 
 <section class="content-wraper">
     <div id="loading"></div>
@@ -86,8 +46,8 @@ filter: alpha(opacity=0);  -moz-opacity: 0; -khtml-opacity: 0;
                     <input type="hidden" name="templateId" id="onboardtemplateId" value=""/>
                   </div>
                   <div class="col-md-6">
-                    <label>Description</label>
-                    <textarea rows="1" class="form-control input-sm" name="description" field-name="Description" data-validation-optional="true" data-validation="validate_Space validate_length length2-500"></textarea>
+                    <label>Template Description <span class="text-danger paddingLeft">*</span></label>
+                    <textarea rows="1" class="form-control input-sm" name="description" field-name="Template Description"  data-validation="required validate_Space validate_length length2-500"></textarea>
                   </div>
                 </div>
                 <div class="form-footer clearfix mt">
@@ -107,8 +67,9 @@ filter: alpha(opacity=0);  -moz-opacity: 0; -khtml-opacity: 0;
                 <form id='templateDocuments_form' name='templateDocuments_form' >
                  <input type="hidden" name="templateId" id="documentstemplateId" value=""/>
                 <p><strong>Vendor Acceptance Documents</strong> <br>
-                  <small class="text-muted">These documents need to be upload by the new vendor as part of acceptance step  - Learn more</small> </p>
-               
+
+                  <small class="text-muted">These documents need to be upload by the new vendor as part of acceptance step  </small> </p>
+              
                
                 <div class="form-group">
                   <label class="col-md-12"> <strong>Documents</strong> <br>
@@ -217,7 +178,7 @@ filter: alpha(opacity=0);  -moz-opacity: 0; -khtml-opacity: 0;
                                   <div class="">
                                     <label class="paddingRight">
                                       <input type="radio"  name="assignedToType" checked="checked" onclick="validateAssignToType('assingToVendor');">
-                                      Vendor </label>
+                                      Vendor</label>
                                     <label class="paddingLeft">
                                       <input type="radio" name="assignedToType"  onclick="validateAssignToType('assingToUser');">
                                       User </label>
@@ -453,6 +414,13 @@ function addContractsAttachment(){
 			var row = tbl.insertRow(maxRowNum);
 			row.setAttribute("id", "divAttachmentContractsRow" + maxRowNum);
 			
+			$("input[id = 'addedDocumentsRowCount']").val(maxRowNum + 1);
+			 var documentsRow = document.getElementById("addedDocumentsRowCount").value;
+			 if(documentsRow > 1){
+				 $("#0contractsdocFileName").removeAttr("data-validation-optional");
+				 $("#0contractsdocFileName").removeAttr("data-validation");
+				 $("#0contractsdocFileName").attr("data-validation", "required");
+			 }
 			
 			var cell0 = row.insertCell(0);
 			var divDocTypeTdStr = document.getElementById("divContractsNameTd1").innerHTML;
@@ -488,6 +456,16 @@ function uploadContractDocument(id){
 	
 <script type="text/javascript">
 	function removeContractsAttachmentRow(rowId) {
+		
+		var addedDocumentsRowCount = document.getElementById("addedDocumentsRowCount").value;
+		 $("input[id = 'addedDocumentsRowCount']").val(parseInt(addedDocumentsRowCount) - 1);
+		 
+		 var documentsRow = document.getElementById("addedDocumentsRowCount").value;
+		 if(documentsRow == 1){
+			 $("#0contractsdocFileName").removeAttr("data-validation");
+			 $("#0contractsdocFileName").attr("data-validation-optional", "true");
+		 }
+		 
 		 document.getElementById("divAttachmentContractsRow"+rowId).style.display = 'none';
 		 document.getElementById("divAttachmentContractsRow"+rowId).value= '';
 		 $("#templateDocuments_form input[data-id='"+rowId+"contractsdocFile']").remove();
@@ -575,7 +553,7 @@ function createTemplate(saveType){
 	     	        $("#templateId").val(json.id);
 	     	        $("#onboardtemplateId").val(json.id);
 	     	        $("#documentstemplateId").val(json.id);
-	     	       $("#taskstemplateId").val(json.id);
+	     	        $("#taskstemplateId").val(json.id);
 	     	       
 	     	        $("#save_button").removeAttr("disabled")
 	        	    $("#save_continue_button").removeAttr("disabled")
@@ -806,10 +784,10 @@ function getTemplateVendorDocumentsDetails(templateId){
                 	 }
                 	 
                 	 result = result +"<input type='hidden' name='contractsAttcahmentMaxRowNumber'  id='contractsAttcahmentMaxRowNumber' value='1' />";
+                	 result = result +"<input type='hidden' id='addedDocumentsRowCount' value='1' />";
                 	 result = result +"<table class='timesheetAttachment'  id='contractsAttachmentTable' cellpadding='0' cellspacing='0'>";
                 	 result = result +"<tr id='divAttachmentTsRow0'>";
-                	 result = result +"<td><input type='text' placeholder='Document Name' class='form-control input-sm vendorinput'  data-validation='required' field-name='Document' name='vendorDocumentsFileInfo[0].docFileName' id='0contractsdocFileName'></td>";
-                	 //result = result +"<td><div id='0ContractsdocFileuploadFileGroup'><input type='file' id='0contractsdocFile' field-name='Attachment' data-validation='validatedoc' data-validation-optional='true' onchange='uploadContractDocument(0)'  class='timesheetAttachmentValidation'></div></td>";
+                	 result = result +"<td><input type='text' placeholder='Document Name' class='form-control input-sm vendorinput'  data-validation-optional='true' field-name='Document' name='vendorDocumentsFileInfo[0].docFileName' id='0contractsdocFileName'></td>";
                 	 result = result +"<td>"; 
                 	 result = result +"<label class='switch pull-left ml-mr switchvendor-custom'>";
                 	 result = result +"<input type='checkbox' checked id='0checked' name='vendorDocumentsFileInfo[0].checked' onclick='checkDocument(0)' value='Y'>"

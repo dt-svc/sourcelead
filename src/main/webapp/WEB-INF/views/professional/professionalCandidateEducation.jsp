@@ -91,10 +91,9 @@ function candidateEducationList(candidateId){
 	
 	 
 	 $.ajax({  
-          type : "POST",
+          type : "GET",
           url: sourceleadUrl+"/getCandidateEducationListByCandidateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,        
-          success :function(data) {
-             			var json = JSON.parse(data);
+          success :function(json) {
              			 
 	                	 $("#candidateEducationList").empty();
 	                	 var result = "";
@@ -114,9 +113,9 @@ function candidateEducationList(candidateId){
 	                     result = result +"</thead>";
 	                     result = result +"<tbody>"; 
 	                     
-	                     for (var i = 0; i < json.length; i++) { 
-	                    	 var opt = json[i];  
-	                    	 result  = result + '         <tr>';
+	                     for (var i = 0; i < json.data.length; i++) { 
+	                    	 var opt = json.data[i];  
+	                    	 result  = result + '<tr>';
 	                    	 if(opt.name != null && opt.name != '' && opt.name != 'undefined'){
 	                    	 result  = result + '<td><div><span title = "'+opt.name+'">'+opt.name+'</span></div></td>';
 	                    	    }else{
@@ -207,6 +206,10 @@ function educationPagination(){
     	"bLengthChange": true,
     	"bDestroy": true,
     	"ordering": true,
+    	"aoColumnDefs": [{
+	           'bSortable': false,
+	           'aTargets': 8
+			}],
     	"oLanguage": {
      		"sSearch": "",
      		 "sZeroRecords": "", "sEmptyTable": ""
@@ -403,8 +406,7 @@ function addEducation(candidateId) {
 function EditEducation(candidateId,candidateEducationId) {
 	$.ajax({	type : "POST",
 				url : sourceleadUrl+ "/getCandidateEducationBycandidateIdandEducationId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&candidateEducationId="+candidateEducationId,
-				success : function(data) {
-					var json = JSON.parse(data);
+				success : function(json) {
 					var specialization = "";
 					var grade = "";
 					var institute = "";
@@ -425,12 +427,12 @@ function EditEducation(candidateId,candidateEducationId) {
 						address = json.address;
 					}
 					
-					if (data != null && data != 'undefined' && data != "") {
-						if (data.indexOf('Sign In') >= 0) {
+					if (json != null && json != 'undefined' && json != "") {
+						/* if (data.indexOf('Sign In') >= 0) {
 							location.replace(sourceleadUrl);
 						} else if (data.indexOf('exception') >= 0) {
 							location.replace(sourceleadUrl + "/errorPage");
-						} else {	
+						} else { */	
 	var result = "";
 	result = result  +'<!-- Popup Div -->';
 	result = result  +'          <form role="form"  id="education_form" name="education_form" method="post" > ';
@@ -647,7 +649,7 @@ function EditEducation(candidateId,candidateEducationId) {
 		<%-- Eductions and Skills Autocomplete Scripts Ends Here --%>
 		
 }
-					}
+//					}
 			},
 
 		});

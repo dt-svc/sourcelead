@@ -155,7 +155,7 @@
 				         <div class="expDetails">
 				         <input type="hidden" id="expenseEntryId${entryCount.count}" name="expenseEntry[${entryCount.index}].id" value='${entry.id}'/>
 				          <div class="col-xs-12 col-sm-12 col-md-12 expAddRo myForm noPad clearfix">            
-							<div class="col-md-4 mb10 chosen-custom">
+							<div class="col-md-4 minHeight chosen-custom">
 							
 															
 						<label>Category Type<span class="text-danger">&nbsp;*</span></label>
@@ -170,34 +170,34 @@
 						</c:forEach>
 						</select>
 					</div>
-							<div class="col-md-4 mb10">
+							<div class="col-md-4 minHeight">
 								<label>Date Occurred<span class="text-danger">&nbsp;*</span></label>
 								<input type="text" id="categoryDate${entryCount.count}" name="expenseEntry[${entryCount.index}].dateOccurred" readonly="readonly" onclick="displayCalendar('${entryCount.count}')" class="form-control calendar" value="${entry.dateOccurred}" placeholder="Date" field-name="Date" data-validation="required"> 
 							</div>
-							<div class="col-md-4 mb10">
+							<div class="col-md-4 minHeight">
 								<label>Receipt Issued by</label>
 								<input type="text" id="receiptIssuedBy${entryCount.count}" name="expenseEntry[${entryCount.index}].receiptIssuedBy" class="form-control" value="${entry.receiptIssuedBy}"  placeholder="Receipt Issued By" field-name="Receipt Issued By" data-validation-optional="true" data-validation="validate_length length1-100"> 
 							</div>
-							<div class="col-md-4 mb10">
-								<label>Payment Mode</label>
-								<select id="paymentMode${entryCount.count}" name="expenseEntry[${entryCount.index}].paymentMode" class="form-control" field-name="Payment Mode" data-validation-optional="true">
+							<div class="col-md-4 minHeight">
+								<label>Payment Mode<span class="text-danger">&nbsp;*</span></label>
+								<select id="paymentMode${entryCount.count}" name="expenseEntry[${entryCount.index}].paymentMode" class="form-control" field-name="Payment Mode" data-validation="required">
 								         <option value="">Select Mode</option>
 								         <c:forEach var="paymentMode" items="${expEntry.paymentModes}">
 							                  <option  ${entry.paymentMode == paymentMode ? 'selected' : ''} value="${paymentMode}">${paymentMode}</option>
 							             </c:forEach>
 								</select>
 							</div>	
-							<div class="col-md-4 mb10">
-								<label>Paid by</label>
-								<select class="chosen-select form-control" id="paidBy${entryCount.count}" name="expenseEntry[${entryCount.index}].paidBy" class="form-control" field-name="Payment Mode" data-validation-optional="true">
-								         <option value="">Select Paid By</option>
+							<div class="col-md-4 minHeight">
+								<label>Paid by<span class="text-danger">&nbsp;*</span></label>
+								<select class="chosen-select form-control" id="paidBy${entryCount.count}" name="expenseEntry[${entryCount.index}].paidBy" class="form-control" field-name="Paid By" data-validation="required">
+								         <option value="" disabled>Select Paid By</option>
 								          <c:forEach var="expEntrypaidBy" items="${expEntry.paidByType}">
 							                   <option  ${entry.paidBy == expEntrypaidBy ? 'selected' : ''} value="${expEntrypaidBy}">${expEntrypaidBy}</option>
 							             </c:forEach>
 								</select>
 							</div>
 							
-		                  <div id="amountDiv${entryCount.count}" class='col-md-4 mb10 valid_ation'>
+		                  <div id="amountDiv${entryCount.count}" class='col-md-4 minHeight valid_ation'>
 			                   <label>Amount<span class='text-danger'>&nbsp;*</span></label>
 								  <div class='input-group positionRelative'>
 										<div class='input-group-btn tblminwidth-75 select-field dropdown_inr' style='min-width: 65px !important;'>
@@ -210,12 +210,12 @@
 								         <input type='text' class='form-control allownumericwithdecimal'  placeholder='Amount'  name='expenseEntry[${entryCount.index}].categoryAmount' id='expenseAmount${entryCount.count}' value='${entry.categoryAmount}' field-name='Amount' data-validation='required validate_float validate_length length1-10' onkeyup="getAmountValue(${entryCount.count});">
 									</div>
 		                 </div>
-						<div class="col-md-4 mb10">
+						<div class="col-md-12 minHeight mb">
 							<label>Description<span class='text-danger'>&nbsp;*</span></label>
-							<textarea rows="2"  id="entryDes${entryCount.count}" name="expenseEntry[${entryCount.index}].entryDescription" class="form-control" placeholder="Description" field-name="Description" data-validation="required validate_Space validate_length length1-5000" onblur="removeWhiteSpacesMyExp(${entryCount.count});">${entry.entryDescription}</textarea>
+							<textarea rows="3"  id="entryDes${entryCount.count}" name="expenseEntry[${entryCount.index}].entryDescription" class="form-control" placeholder="Description" field-name="Description" data-validation="required validate_Space validate_length length1-5000" onblur="removeWhiteSpacesMyExp(${entryCount.count});">${entry.entryDescription}</textarea>
 						</div>		
-		                    <div id='attachmentSection' class='col-md-4 mb10 minHe'>
-		                   <div class="uploadFile timesheet_week_comm">
+		                    <div id='attachmentSection' class='col-md-4 minHeight minHe'>
+		                   <div class="uploadFile timesheet_week_comm edit-Expense-upload">
 			                  <input type='hidden' name='dbAttachmentMaxRowNumber${(2*(entryCount.count))-1}'  id='dbAttachmentMaxRowNumber${(2*(entryCount.count))-1}' value='${entry.fileInfo.size()}' />
 			                 <input type='hidden' name='attcahmentMaxRowNumber${(2*(entryCount.count))-1}'  id='attcahmentMaxRowNumber${(2*(entryCount.count))-1}' value='1' />
 			                 <div id='timesheetDocumentsId' class=''>
@@ -368,7 +368,7 @@ function reOpenMyExpense(expenseId){
 	result = result +"		<p>Re-open message here</p>";
 	result = result +"		<textarea  id='reOpenReason' name='reOpenReason'  placeholder='Comments here' onkeydown='return (event.keyCode!=13);'></textarea>";
 	result = result + ' <div id="reOpenReasonDiv"/>';
-	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Submit' onclick='notifyReopenExpense("+expenseId+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelReOpen();'></b>";
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button'  value = 'Submit' onclick='notifyReopenExpense("+expenseId+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelReOpen();'></b>";
 	result = result +"	</div>";
 	$("#reOpenPopup").append(result);
 	$("#remove_user_pop").slideDown(200);
@@ -529,7 +529,7 @@ function removeWhiteSpaces(rowCount){
 			$.ajax({
        	        type : "POST",
         	    data: formData,
-				url : sourceleadUrl+"/storeAddExpensesData?"+tokenParamName+"="+tokenValue+"&status="+status,
+				url : sourceleadUrl+"/storeAddExpensesData?"+tokenParamName+"="+tokenValue+"&expenseStatus="+status,
 				success : function(data) {
 					$( "#submitForApprovalExpensesId" ).addClass('button').val('Sub for Approval');
 					window.location.replace(sourceleadUrl+'/expensesApprovalList');

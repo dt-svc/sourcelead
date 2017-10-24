@@ -262,7 +262,7 @@ $(document).ready(function(){
 				result = result + '	 <div class="user_details_cta_img">';
 				result = result + '		       <div class="user_change_img">';
 				if(json.user.fileUrl != null && json.user.fileUrl != "" && json.user.fileUrl !="undefiend"){
-					result = result +                  "<img data-id= 'userProfileImage' src="+json.user.fileUrl+" alt='image'>";
+					result = result +                  "<img data-id= 'userProfileImage' src='"+json.user.fileUrl+"' alt='image'>";
 				}else{
 					result = result +                  "<img data-id= 'userProfileImage'  src='resources/images/userprofile-img.png' alt='image'>";
 				}
@@ -306,6 +306,14 @@ $(document).ready(function(){
 				if(json.user.mobilePhone != null && json.user.mobilePhone != "" && json.user.mobilePhone != 'undefined'){
 					result = result + '			<div class="project_details_cta">';
 					result = result + '				 <strong>Phone Number:</strong><span class="fix">'+json.user.mobilePhone+'</span><div class="clearfix"></div>';
+					result = result + ' 		</div>';
+				}
+				
+				
+				if(json.user.extensionNumber != null && json.user.extensionNumber !='' && json.user.extensionNumber !='undefined'){
+					
+					result = result + '			<div class="project_details_cta">';
+					result = result + '				 <strong>Extension:</strong><span class="fix">'+json.user.extensionNumber+'</span><div class="clearfix"></div>';
 					result = result + ' 		</div>';
 				}
 				
@@ -1288,6 +1296,7 @@ $("#editRoleDetailsList").empty();
 			    var lastName = "";
 			    var rate = "";
 			    var mobilePhone = "";
+			    var extensionNumber="";
 			    var dailyHours = "";
 			    var emailId= "";
 			    var manager = "";
@@ -1314,6 +1323,10 @@ $("#editRoleDetailsList").empty();
 				
 				if(json.user.mobilePhone != null && json.user.mobilePhone != "" && json.user.mobilePhone != 'undefined'){
 					mobilePhone = json.user.mobilePhone;
+				}
+				
+				if(json.user.extensionNumber != null && json.user.extensionNumber != "" && json.user.extensionNumber != 'undefined'){
+					extensionNumber = json.user.extensionNumber;
 				}
 				
 				if(json.dailyHours != null && json.dailyHours != "" && json.dailyHours != 'undefined'){
@@ -1346,8 +1359,19 @@ $("#editRoleDetailsList").empty();
 					result = result + ' </div>';
 					
 					result = result + ' <div class="user_summary_edit_cta">';
+					
+					result = result + ' <div class="row">';
+					
+					result = result + ' <div class="col-md-7">';
 					result = result + ' <label>Phone number</label>';
 					result = result + ' <input type="text" value="'+mobilePhone+'" name="phoneNumber" data-validation="validate_Space validate_phone validate_length length9-20" data-validation-optional="true">';
+					result = result + ' </div>';
+					result = result + ' <div class="col-md-5">';
+					result = result + ' <label>Extentsion</label>';
+					result = result + ' <input type="text" value="'+extensionNumber+'" name="extensionNumber" data-validation="validate_Space validate_length length1-5" data-validation-optional="true">';
+					result = result + ' </div>';
+					result = result + ' </div>';
+					
 					result = result + ' </div>';
 					
 /* 					if(json.userState == "NOT_LOGGEDIN"){
@@ -1590,12 +1614,12 @@ function updateUserDesignationOtherType(){
 		 $.ajax({
 			    type: "POST",
 		        url: sourceleadUrl+"/getOrgSpocsList?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationID+"&type=Vendor",  
-		        success: function(data) {
-		        	var json = JSON.parse(data);
+		        success: function(json) {
+		        	//var json = JSON.parse(data);
 		        	$('#vendorcontact').empty();
 		        	$('#vendorcontact').append('<option value="">--select Vendor contact--</option>');
-		             for(var i=0;i<json.length;i++){
-		            	 var opt = json[i];
+		             for(var i=0;i<json.data.length;i++){
+		            	 var opt = json.data[i];
 		            	 if(vendorContactName != null && vendorContactName != 'undefined' && vendorContactName  != ''){
 		            		 $('#vendorcontact').append('<option '+ (opt.id == vendorSpocId ? "selected" : '') +' value="'+opt.id+'">'+opt.spocName+'</option>');
 			            	}else{

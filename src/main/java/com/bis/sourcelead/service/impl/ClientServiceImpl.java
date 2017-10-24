@@ -34,6 +34,7 @@ import com.bis.sourcelead.dto.ClientDTO;
 import com.bis.sourcelead.elk.index.ClientVendorIndex;
 import com.bis.sourcelead.elk.index.helper.ClientVendorIndexHelper;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
+import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
@@ -57,6 +58,7 @@ import com.bis.sourcelead.enums.Project_Status;
 import com.bis.sourcelead.exception.SourceLeadObjectNotFoundException;
 import com.bis.sourcelead.form.Registration;
 import com.bis.sourcelead.service.ClientService;
+import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.OrgLocationService;
@@ -171,6 +173,9 @@ public class ClientServiceImpl implements ClientService {
 	
 	@Autowired
 	ProjectsService projectsService;
+	
+	@Autowired
+	CountriesService countriesService;
 
 	/**
 	 * @author VenkatKesav
@@ -312,8 +317,8 @@ public class ClientServiceImpl implements ClientService {
 			}else{
 				org.setClientBillingAddress("--");
 			}
-			if (StringUtils.isNotBlank(clientDTO.getPaymentTerm())) {
-				org.setPaymentTerm(clientDTO.getPaymentTerm());
+			if (StringUtils.isNotBlank(clientDTO.getPaymentTerms())) {
+				org.setPaymentTerm(clientDTO.getPaymentTerms());
 			}else{
 				org.setPaymentTerm("--");
 			}
@@ -507,6 +512,12 @@ public class ClientServiceImpl implements ClientService {
 			projects.setProjectMode("Finished");
 			projects.setCreatedDate(new Date());
 			projects.setUpdatedDate(new Date());
+			projects.setProjectShortCode("DFP");
+			Countries countires = countriesService.getCountriesByCountryName(orgLocations.getCountry());
+			if(countires != null) {
+				projects.setCurrency(countires.getCurrency());
+			}
+			
 			Projects updatedProjects = projectsService.saveProject(projects);
 			projectsService.saveOrUpdateProjectElkDocument(updatedProjects);
 			commonUtil.storeSourceleadTasks(approverUser, updatedProjects);
@@ -795,9 +806,7 @@ public class ClientServiceImpl implements ClientService {
 				if (StringUtils.isNotBlank(clientDTO.getBillingAddress())) {
 					org.setClientBillingAddress(clientDTO.getBillingAddress());
 				}
-				if (StringUtils.isNotBlank(clientDTO.getPaymentTerm())) {
-					org.setPaymentTerm(clientDTO.getPaymentTerm());
-				}
+				
 				orgForElk = orgService.updateOrg(org);
 			}
 			if (StringUtils.isNotBlank(clientDTO.getCity())) {
@@ -891,6 +900,10 @@ public class ClientServiceImpl implements ClientService {
 					orgRelation.setResponderLevel(clientDTO.getLevel());
 				}
 			}
+			
+			if (StringUtils.isNotBlank(clientDTO.getPaymentTerms())) {
+				orgRelation.setPaymentTerm(clientDTO.getPaymentTerms());
+			}
 			// orgRelation.setLevel(jsonObj.getString(level));
 			orgRelationsForElk = orgRelationsService.addOrgRelations(orgRelation);
 
@@ -914,9 +927,7 @@ public class ClientServiceImpl implements ClientService {
 				}else{
 					org.setClientBillingAddress(null);
 				}
-				if (StringUtils.isNotBlank(clientDTO.getPaymentTerm())) {
-					org.setPaymentTerm(clientDTO.getPaymentTerm());
-				}
+				
 				orgForElk = orgService.updateOrg(org);
 			}
 			if (StringUtils.isNotBlank(clientDTO.getCompanyWebsite())) {
@@ -954,6 +965,7 @@ public class ClientServiceImpl implements ClientService {
 			} else {
 				orgLocations.setZipCode("");
 			}
+			
 
 			/*
 			 * if(jsonObj.getString(emailId) !=null &&
@@ -1012,11 +1024,19 @@ public class ClientServiceImpl implements ClientService {
 				} else {
 					existingUser.setLastName("");
 				}
+				
 				if (StringUtils.isNotBlank(clientDTO.getPhoneNumber())) {
 					existingUser.setMobilePhone(clientDTO.getPhoneNumber());
 				} else {
 					existingUser.setMobilePhone("");
 				}
+				
+				if(StringUtils.isNotBlank(clientDTO.getExtensionNumber())){
+					existingUser.setExtensionNumber(clientDTO.getExtensionNumber());
+				}else{
+					existingUser.setExtensionNumber("");
+				}
+				
 				if (StringUtils.isNotBlank(clientDTO.getEmail())) {
 					existingUser.setEmail(clientDTO.getEmail());
 				} else {

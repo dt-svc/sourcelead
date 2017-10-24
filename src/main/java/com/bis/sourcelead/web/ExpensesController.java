@@ -112,7 +112,7 @@ public class ExpensesController {
 			ExpensesDTO expensesDTO = expensesRestController.getExpenseDetailsByExpenseId(elDTO);
 			model.addObject("expenses", expensesDTO);
 			if(expensesDTO != null){
-				 Submission_Status submissionStatus = expensesDTO.getCombinedSubmissionStatus();
+				 Submission_Status submissionStatus = Submission_Status.getNameByValue(expensesDTO.getCombinedSubmissionStatus());
 				 model.addObject("submissionStatus",submissionStatus);
 				 
 			     String type = request.getParameter("type");
@@ -176,6 +176,7 @@ public class ExpensesController {
 		}
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		String currencyCode = (String) SourceLeadSessionManager.getSessionAttribute(request, "currencyCode");
 		sessionData.setNav(Constants.MY_EXPENSES);
 		
 		if(StringUtils.isNotEmpty(expenseId)&& StringUtils.isNotEmpty(expenseLocationCode)){
@@ -228,7 +229,9 @@ public class ExpensesController {
 		eedDTO.setLocationCode(orgLoc.getLocationCode());
 		eedDTO.setExpenseId(expenseId);
 		eedDTO.setExpenseFrom("approver");
+		
 		ExpenseEntryDetailsDTO expEntryDTO =  expensesRestController.getExpenseEntryDetails(eedDTO);
+		expEntryDTO.setLoginCurrencyCode(currencyCode);
 		model.addObject("expEntry", expEntryDTO);
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.setViewName("expenses/addApprovalExpense");

@@ -183,14 +183,20 @@ public class ClientImportsServiceImpl implements ClientImportsService {
 						String mobileNumer = getCellValueAsString(row.getCell(9), fname);
 						client.setPhone(mobileNumer);
 					}
-					if (row.getCell(10) != null
-							&& !"".equalsIgnoreCase(row.getCell(10).toString())) {
-						String status = getCellValueAsString(row.getCell(10), fname);
-						client.setStatus(status);;
+					
+					if (row.getCell(10) != null && !"".equalsIgnoreCase(row.getCell(10).toString())) {
+						String extensionNumber = getCellValueAsString(row.getCell(10), fname);
+						client.setPhone(extensionNumber);
 					}
+					
 					if (row.getCell(11) != null
 							&& !"".equalsIgnoreCase(row.getCell(11).toString())) {
-						client.setOwner(row.getCell(11).toString());
+						String status = getCellValueAsString(row.getCell(11), fname);
+						client.setStatus(status);;
+					}
+					if (row.getCell(12) != null
+							&& !"".equalsIgnoreCase(row.getCell(12).toString())) {
+						client.setOwner(row.getCell(12).toString());
 					}
 					else {
 						client.setOwner(user.getEmail());
@@ -481,6 +487,11 @@ public class ClientImportsServiceImpl implements ClientImportsService {
 		if (clientObject.getPhone() != null) {
 			clientDTO.setPhoneNumber(clientObject.getPhone());
 		}
+		
+		if(clientObject.getExtensionNumber() !=null){
+			clientDTO.setExtensionNumber(clientObject.getExtensionNumber());
+		}
+		
 		if (clientObject.getStatus() != null) {
 			clientDTO.setSpocStatus(clientObject.getStatus());
 		}
@@ -763,9 +774,10 @@ public class ClientImportsServiceImpl implements ClientImportsService {
 		excelHeader.createCell(7).setCellValue(Constants.LAST_NAME);
 		excelHeader.createCell(8).setCellValue(Constants.EMAIL);
 		excelHeader.createCell(9).setCellValue(Constants.PHONE);
-		excelHeader.createCell(10).setCellValue(Constants.STATUS);
-		excelHeader.createCell(11).setCellValue(Constants.OWNER);
-		excelHeader.createCell(12).setCellValue(Constants.FAILED_REASON);
+		excelHeader.createCell(10).setCellValue(Constants.EXTENSION_NUMBER);
+		excelHeader.createCell(11).setCellValue(Constants.STATUS);
+		excelHeader.createCell(12).setCellValue(Constants.OWNER);
+		excelHeader.createCell(13).setCellValue(Constants.FAILED_REASON);
 		return createExcelsheet;
 	}
 	
@@ -885,32 +897,42 @@ public class ClientImportsServiceImpl implements ClientImportsService {
 		else {
 			writeRow.createCell(9).setCellValue("");
 		}
+		
 		if (row.getCell(10) != null && !"".equalsIgnoreCase(row.getCell(10).toString())) {
-			if (!fname.endsWith("xlsx")) {
-				createExcelsheet.addValidationData(getDropDownListForCell(Constants.STATUS_DROPDOWN, 10));
-			}
-			else {
-				createExcelsheet.addValidationData(getXssfDropDownlist(Constants.STATUS_DROPDOWN, 10, createExcelsheet));
-			}
 			writeRow.createCell(10).setCellValue(row.getCell(10).toString());
 		}
 		else {
-			if (!fname.endsWith("xlsx")) {
-				createExcelsheet.addValidationData(getDropDownListForCell(Constants.STATUS_DROPDOWN, 10));
-			}
-			else {
-				createExcelsheet.addValidationData(getXssfDropDownlist(Constants.STATUS_DROPDOWN, 10, createExcelsheet));
-			}
 			writeRow.createCell(10).setCellValue("");
 		}
+		
+		
 		if (row.getCell(11) != null && !"".equalsIgnoreCase(row.getCell(11).toString())) {
+			if (!fname.endsWith("xlsx")) {
+				createExcelsheet.addValidationData(getDropDownListForCell(Constants.STATUS_DROPDOWN, 11));
+			}
+			else {
+				createExcelsheet.addValidationData(getXssfDropDownlist(Constants.STATUS_DROPDOWN, 11, createExcelsheet));
+			}
 			writeRow.createCell(11).setCellValue(row.getCell(11).toString());
 		}
 		else {
+			if (!fname.endsWith("xlsx")) {
+				createExcelsheet.addValidationData(getDropDownListForCell(Constants.STATUS_DROPDOWN, 11));
+			}
+			else {
+				createExcelsheet.addValidationData(getXssfDropDownlist(Constants.STATUS_DROPDOWN, 11, createExcelsheet));
+			}
 			writeRow.createCell(11).setCellValue("");
 		}
+		
+		if (row.getCell(12) != null && !"".equalsIgnoreCase(row.getCell(12).toString())) {
+			writeRow.createCell(12).setCellValue(row.getCell(12).toString());
+		}
+		else {
+			writeRow.createCell(12).setCellValue("");
+		}
 		if (client.getReason() != null) {
-			writeRow.createCell(12).setCellValue(client.getReason());
+			writeRow.createCell(13).setCellValue(client.getReason());
 		}
 	}
 	
@@ -1055,8 +1077,8 @@ public class ClientImportsServiceImpl implements ClientImportsService {
 			workbook.setSheetHidden(1, true);
 			realSheet.addValidationData(getDropDownListForCell(Constants.COUNTRY_DROPDOWN, 2, "xls"));
 			realSheet.addValidationData(getDropDownListForCell(Constants.LEVEL_DROPDOWN, 5, "xls"));
-			realSheet.addValidationData(getDropDownListForCell(Constants.CLIENT_CONTACTS_STATUS_DROPDOWN, 10, "xls"));
-			realSheet.addValidationData(getDropDownListForCell(Constants.CLIENT_PAYMENT_TERMS, 14, "xls"));
+			realSheet.addValidationData(getDropDownListForCell(Constants.CLIENT_CONTACTS_STATUS_DROPDOWN, 11, "xls"));
+			realSheet.addValidationData(getDropDownListForCell(Constants.CLIENT_PAYMENT_TERMS, 15, "xls"));
 			realSheet.addValidationData(validation);
 		}
 		File file = new File("vendors_contacts_Import.xls");
@@ -1160,8 +1182,8 @@ public class ClientImportsServiceImpl implements ClientImportsService {
 			workbook.setSheetHidden(1, true);
 			realSheet.addValidationData(getDropDownListForCell(Constants.COUNTRY_DROPDOWN, 2, "xls"));
 			realSheet.addValidationData(getDropDownListForCell(Constants.LEVEL_DROPDOWN, 5, "xls"));
-			realSheet.addValidationData(getDropDownListForCell(Constants.CLIENT_CONTACTS_STATUS_DROPDOWN, 10, "xls"));
-			realSheet.addValidationData(getDropDownListForCell(Constants.CLIENT_PAYMENT_TERMS, 14, "xls"));
+			realSheet.addValidationData(getDropDownListForCell(Constants.CLIENT_CONTACTS_STATUS_DROPDOWN, 11, "xls"));
+			realSheet.addValidationData(getDropDownListForCell(Constants.CLIENT_PAYMENT_TERMS, 15, "xls"));
 			realSheet.addValidationData(validation);
 		}
 		// realSheet.addValidationData(getDropDownListForCell(ownersList,6,"xls"));
@@ -1263,29 +1285,35 @@ public class ClientImportsServiceImpl implements ClientImportsService {
 						String mobileNumer = getCellValueAsString(row.getCell(9), fname);
 						bulkClientVendors.setPhone(mobileNumer);
 					}
-					if (row.getCell(10) != null
-							&& !"".equalsIgnoreCase(row.getCell(10).toString())) {
-						String status = getCellValueAsString(row.getCell(10), fname);
-						bulkClientVendors.setStatus(status);
+					
+					if(row.getCell(10) !=null && !"".equalsIgnoreCase(row.getCell(10).toString())){
+						String extensionNumber = getCellValueAsString(row.getCell(10), fname);
+						bulkClientVendors.setExtensionNumber(extensionNumber);
 					}
+					
 					if (row.getCell(11) != null
 							&& !"".equalsIgnoreCase(row.getCell(11).toString())) {
-						bulkClientVendors.setOwnerEmail(row.getCell(11).toString());
+						String status = getCellValueAsString(row.getCell(11), fname);
+						bulkClientVendors.setStatus(status);
+					}
+					if (row.getCell(12) != null
+							&& !"".equalsIgnoreCase(row.getCell(12).toString())) {
+						bulkClientVendors.setOwnerEmail(row.getCell(12).toString());
 					}
 					else {
 						bulkClientVendors.setOwnerEmail(user.getEmail());
 					}
-					if (row.getCell(12) != null
-							&& !"".equalsIgnoreCase(row.getCell(12).toString())) {
-						bulkClientVendors.setClientAddress(row.getCell(12).toString());
-					}
 					if (row.getCell(13) != null
 							&& !"".equalsIgnoreCase(row.getCell(13).toString())) {
-						bulkClientVendors.setBillingAddress(row.getCell(13).toString());
+						bulkClientVendors.setClientAddress(row.getCell(13).toString());
 					}
 					if (row.getCell(14) != null
 							&& !"".equalsIgnoreCase(row.getCell(14).toString())) {
-						String paymentTerms = getCellValueAsString(row.getCell(14), fname);
+						bulkClientVendors.setBillingAddress(row.getCell(14).toString());
+					}
+					if (row.getCell(15) != null
+							&& !"".equalsIgnoreCase(row.getCell(15).toString())) {
+						String paymentTerms = getCellValueAsString(row.getCell(15), fname);
 						bulkClientVendors.setPaymentTerm(paymentTerms);
 					}
 					if ("Client".equalsIgnoreCase(responderType)) {
@@ -1339,11 +1367,12 @@ public class ClientImportsServiceImpl implements ClientImportsService {
 										if (Constants.LAST_NAME.equalsIgnoreCase(row.getCell(7).getStringCellValue())) {
 											if (Constants.EMAIL_ID_BULK_IMPORT.equalsIgnoreCase(row.getCell(8).getStringCellValue())) {
 												if (Constants.PHONE_NUMBER_BULK_IMPORT.equalsIgnoreCase(row.getCell(9).getStringCellValue())) {
-													if (Constants.STATUS.equalsIgnoreCase(row.getCell(10).getStringCellValue())) {
-														if (Constants.OWNER.equalsIgnoreCase(row.getCell(11).getStringCellValue())) {
-															if (Constants.CLIENT_ADDRESS.equalsIgnoreCase(row.getCell(12).getStringCellValue())) {
-																if (Constants.BILLING_ADDRESS.equalsIgnoreCase(row.getCell(13).getStringCellValue())) {
-																	if (Constants.PAYMENT_TERMS.equalsIgnoreCase(row.getCell(14).getStringCellValue())) {
+												if(Constants.EXTENSION_NUMBER.equalsIgnoreCase(row.getCell(10).getStringCellValue())){	
+													if (Constants.STATUS.equalsIgnoreCase(row.getCell(11).getStringCellValue())) {
+														if (Constants.OWNER.equalsIgnoreCase(row.getCell(12).getStringCellValue())) {
+															if (Constants.CLIENT_ADDRESS.equalsIgnoreCase(row.getCell(13).getStringCellValue())) {
+																if (Constants.BILLING_ADDRESS.equalsIgnoreCase(row.getCell(14).getStringCellValue())) {
+																	if (Constants.PAYMENT_TERMS.equalsIgnoreCase(row.getCell(15).getStringCellValue())) {
 																		isValid = true;
 																	}
 																}
@@ -1351,6 +1380,7 @@ public class ClientImportsServiceImpl implements ClientImportsService {
 														}
 													}
 												}
+											  }
 											}
 										}
 									}
@@ -1678,6 +1708,12 @@ public class ClientImportsServiceImpl implements ClientImportsService {
 			addUserDTO.setPhoneNumber(client.getPhone());
 			candidateDTO.setPhoneNumber(client.getPhone());
 		}
+		
+		if(client.getExtensionNumber() !=null){
+			clientDTO.setExtensionNumber(client.getExtensionNumber());
+			addUserDTO.setExtensionNumber(client.getExtensionNumber());
+		}
+		
 		if (client.getStatus() != null) {
 			clientDTO.setSpocStatus(client.getStatus());
 		}
@@ -1716,7 +1752,7 @@ public class ClientImportsServiceImpl implements ClientImportsService {
 			clientDTO.setBillingAddress(client.getBillingAddress());
 		}
 		if (null != client.getPaymentTerm() && !"".equalsIgnoreCase(client.getPaymentTerm())) {
-			clientDTO.setPaymentTerm(client.getPaymentTerm());
+			clientDTO.setPaymentTerms(client.getPaymentTerm());
 		}
 		
 		clientDTO.setAddUserDTO(addUserDTO);

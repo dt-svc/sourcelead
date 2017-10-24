@@ -42,6 +42,7 @@ import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.SubmissionTemplate;
 import com.bis.sourcelead.entity.Tasks;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.entity.VendorOnboardTasks;
 import com.bis.sourcelead.entity.VendorOnboarding;
 import com.bis.sourcelead.entity.VendorOnboardingTemplateDocuments;
@@ -418,10 +419,16 @@ public class VendorOnboardServiceImpl implements VendorOnboardService {
 		 emailScenerioUtil.sendEmail(emailMessage,vendorOrgLocation.getId(),iAdressArray,new ArrayList<EmailAttachment>());
 		 String notificationbody = emailScenerioUtil.buildTempBody(noificationEmailScenario.getBody(),globalVarsMap);
 		 
-		
+		 UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(onboarding.getSpocUserId().getId(), onboarding.getVendorLocationId().getId());
+		 if(userRole != null) {
+			 userRole.setIsMailSent(Status.Y);
+			 userRoleService.addUserRole(userRole);
+		 }
+		 
 		if(invitationType.equalsIgnoreCase("Vendor Invitation")) {
 			Set<OrgSpoc> orgSpocList = onboarding.getOrgRelationId().getOrgSpocList();
 			for(OrgSpoc orgSpc : orgSpocList){
+				
 				 String notificationUUID = SourceLeadRandomCodeHelper.generateRandomUUID();
 				 noificationEmailScenario.setBody(notificationbody);
 				 noificationEmailScenario.setUUID(notificationUUID);
@@ -502,6 +509,11 @@ public class VendorOnboardServiceImpl implements VendorOnboardService {
 		
 		if(StringUtils.isNotBlank(vendorOnboardDTO.getEinCode())){
 			orgRelations.setEinCode(vendorOnboardDTO.getEinCode());
+		}
+		
+		
+		if(StringUtils.isNotBlank(vendorOnboardDTO.getCurrency())){
+			orgRelations.setCurrency(vendorOnboardDTO.getCurrency());
 		}
 		
 		bankDetails = orgBankDetailsService.getOrgBankDetailsByOrgLocationId(onboarding.getVendorLocationId().getId());

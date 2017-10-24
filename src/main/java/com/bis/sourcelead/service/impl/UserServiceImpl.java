@@ -208,6 +208,10 @@ public class UserServiceImpl implements UserService {
 		  if(StringUtils.isNotBlank(addUserDTO.getPhoneNumber())) {
 			  user.setMobilePhone(addUserDTO.getPhoneNumber());
 		  }
+		  
+		  if(StringUtils.isNotBlank(addUserDTO.getExtensionNumber())){
+		    	user.setExtensionNumber(addUserDTO.getExtensionNumber());
+		    }
 		 
 	   }
 	   
@@ -223,6 +227,10 @@ public class UserServiceImpl implements UserService {
 	    if(StringUtils.isNotBlank(addUserDTO.getPhoneNumber())){
 			user.setMobilePhone(addUserDTO.getPhoneNumber());
 		}
+	    
+	    if(StringUtils.isNotBlank(addUserDTO.getExtensionNumber())){
+	    	user.setExtensionNumber(addUserDTO.getExtensionNumber());
+	    }
 		
 	    if(StringUtils.isNotBlank(addUserDTO.getIsMailSent()) && ("Y".equals(addUserDTO.getIsMailSent()))){
 			user.setIsMailSent(Status.Y);
@@ -249,6 +257,11 @@ public class UserServiceImpl implements UserService {
 			  }else{
 				  userRole.setIsPrimary(0);
 			  }
+			}
+	   }else {
+		   userRole.setPhoneNumber(addUserDTO.getPhoneNumber());
+			if(StringUtils.isNotBlank(addUserDTO.getExtensionNumber())) {
+				userRole.setExtensionNumber(addUserDTO.getExtensionNumber());
 			}
 	   }
 		
@@ -439,6 +452,12 @@ public class UserServiceImpl implements UserService {
 			userRole.setReportingManager(reportingManager);
 		}
 		
+	    if(StringUtils.isNotBlank(addUserDTO.getIsMailSent()) && ("Y".equals(addUserDTO.getIsMailSent()))){
+	    	userRole.setIsMailSent(Status.Y);
+			}else{
+				userRole.setIsMailSent(Status.N);
+			}
+		   
 		userRole.setUserState(Status.NOT_LOGGEDIN);
 		
 		Roles roles = null;
@@ -474,6 +493,10 @@ public class UserServiceImpl implements UserService {
 
 		} catch (Exception e) {
 			logger.error(ExceptionUtils.getFullStackTrace(e));
+		}
+		userRole.setPhoneNumber(addUserDTO.getPhoneNumber());
+		if(StringUtils.isNotBlank(addUserDTO.getExtensionNumber())) {
+			userRole.setExtensionNumber(addUserDTO.getExtensionNumber());
 		}
 		
 		userRole.setRoles(roles);
@@ -1332,6 +1355,12 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public List<User> getUsersByOrgLocationIdExceptLoggedInUser(Long orgLocationsId, Long userId) throws Exception {
 		return userDao.getUsersByOrgLocationIdExceptLoggedInUser(orgLocationsId, userId);
+	}
+
+	@Override
+	public List<User> getUsersHierarchyListByOrgLocationIdAndRoleIdAndNoCurrentUser(Long userId, Long roleId,
+			Long orgLocationsId) throws Exception {
+		return userDao.getUsersHierarchyListByOrgLocationIdAndRoleIdAndNoCurrentUser(userId, roleId, orgLocationsId);
 	}
 	
 }

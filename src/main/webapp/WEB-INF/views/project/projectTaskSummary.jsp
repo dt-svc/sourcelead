@@ -97,7 +97,9 @@
 	            </c:if>
 	            <li><a href="#tab-task3" onclick="closeTimeEntry();documentTableList();">Documents</a></li>
 	            <li><a href="#tab-task4" onclick="getTaskActivities();">Activities</a></li>
-	             <li><a href="#tab-task5" onclick="commentTableList();">Comments</a></li>
+                 <sec:authorize access="hasAnyRole('ROLE_TASK_ADD_COMMENTS','ROLE_VIEW_EDIT_TASK_COMMENTS')">
+	                <li><a href="#tab-task5" onclick="commentTableList();">Comments</a></li>
+	             </sec:authorize>
 	            <div class="clearfix"></div>
 	          </ul>
 					          
@@ -203,7 +205,9 @@
 					<div id="tab-task2" class="project_tabs_inn" style="display: none;">
 						 <div class="clearfix mt mb">
 						  <div class="clearfix">
-						    <button type="button" class="btn btn-primary btn-sm pull-right mr" onclick="addSubTasks();showtasktype();"> Add Task </button>
+						   <sec:authorize access="hasRole('ROLE_ADD_SUB_TASK')">
+						     <button type="button" class="btn btn-primary btn-sm pull-right mr" onclick="addSubTasks();showtasktype();"> Add Task </button>
+						    </sec:authorize>
 						  </div>
 						</div>
 
@@ -215,7 +219,9 @@
 				   <div id="tab-task3" class="project_tabs_inn" style="display: none;">
 					  <div class="clearfix mt mb mr">
 						  <div class="clearfix">
+						   <sec:authorize access="hasRole('ROLE_ADD_DOCUMENTS')">
 						    <button type="button" class="btn btn-primary btn-sm pull-right" onclick="addDocumentEntryPopUp();">Add Documents</button>
+						    </sec:authorize>
 						  </div>
 						</div>
 						
@@ -239,7 +245,9 @@
 					 <div id="tab-task5" class="project_tabs_inn">
 						<div class="clearfix mt mb">
 						  <div class="clearfix mr">
+						  <sec:authorize access="hasRole('ROLE_ADD_TASK_COMMENTS')">
 						    <button type="button" class="btn btn-primary btn-sm pull-right" onclick="addCommentsPopUp()">Add Comment</button>
+						  </sec:authorize>
 						  </div>
 						</div>
 						<!-- TimeEntry Modal Pop -->
@@ -325,7 +333,7 @@
 		                      <option value="100" ${projectTask.percentage  == 100 ? 'selected' : ''} >100 Percentage</option>  
 		                </select>
 		                <span class="pull-right">
-						 	<small class="status" id="percentageLabel" style="display:block;">Work Completed</small>
+						 	<small class="status" id="percentageLabel" style="display:block;">Completed</small>
 						 	<i class="fa fa-spinner fa-spin faSpin " id="percentageSpin" style="display:none;"></i>
 						 </span> 
 		            </div>
@@ -377,9 +385,9 @@ function tasksAssignList(projectId){
         url: sourceleadUrl+"/getProjectEmployeeListById?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId+"&status="+values, 
         success: function(json) {
         	var output = "";
-        	for (var i=0; i<json.projectMembersList.length; i++)
+        	for (var i=0; i<json.length; i++)
 			{
-        		var opt = json.projectMembersList[i];
+        		var opt = json[i];
 
         		if(!jQuery.isEmptyObject(map)){
         			 $.each(map, function(key, value) {
@@ -813,8 +821,20 @@ function documentTableList(){
 	   		 		result  = result + '		          <td>';
 	   		 		result  = result + '		          <div class="tbldata-dotdot-me" title="'+description+'">'+description+'</div>';
 	   		 		result  = result + '		        </td>';
-	   		 	    result  = result + '               <td><div class="tblminwidth-50"><a href="javascript:void(0)" onclick="projectTaskDocumentView(\''+report.id+'\',\''+report.fileName+'\');" class="fa fa-eye ml10 paddingRight"></a><a class="paddingLeft glyphicon glyphicon-download-alt" href=\"'+report.fileURL+'\"></a></div></td>';
-	   		 	    result  = result + '               <td><div><a class="glyphicon glyphicon-pencil padddigRight" title="Edit" onclick="getEditTaskDocument('+report.id+');"></a><i title="Delete" class="glyphicon glyphicon-trash paddingLeft" onclick="removeProjectTaskDocuments('+report.id+');"></i></div></td>';
+	   		 	    result  = result + '               <td><div class="tblminwidth-50"><a href="javascript:void(0)" onclick="viewFile(\''+report.fileURL+'\',\''+report.fileName+'\', \''+report.fileType+'\');" class="fa fa-eye ml10 paddingRight"></a><a class="paddingLeft glyphicon glyphicon-download-alt" href=\"'+report.fileURL+'\"></a></div></td>';
+	   		 	    result  = result + '               <td><div>';
+	   		 	    '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_DOCUMENTS\')">';
+	   		 	       result  = result + '    <a class="glyphicon glyphicon-pencil padddigRight" title="Edit" onclick="getEditTaskDocument('+report.id+');"></a>';
+	   		 	    '</sec:authorize>'; 
+	   		 	   
+	   		 	    '<sec:authorize access="hasAnyRole(\'ROLE_DELETE_TASK_DOCUMENTS\')">';
+	   		 	       result  = result + ' <i title="Delete" class="glyphicon glyphicon-trash paddingLeft" onclick="removeProjectTaskDocuments('+report.id+');"></i>';
+	   		 	    '</sec:authorize>'; 
+	   		 	    
+	   		 	    '<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_EDIT_DOCUMENTS\',\'ROLE_DELETE_TASK_DOCUMENTS\')">';
+	   		 	       result  = result + '----';
+	   		 	     '</sec:authorize>';
+	   		 	    result  = result + '  </div></td>';
 	   		 		result  = result + '		      </tr>';
    				}
    		    	result  = result + '    </tbody>';
@@ -1563,7 +1583,14 @@ function getSubTaskList(){
 				
 				 
 				result = result + '<tr>';
-				result = result+ '<td><div><a href="'+sourceleadUrl+'/projectTaskSummary?taskId='+opt.id+'" title="'+ opt.taskName+ '" >'+ opt.taskName+ '</a></div></td>';
+				
+				'<sec:authorize access="hasRole(\'ROLE_VIEW_EDIT_SUB_TASK\')">'; 
+				   result = result+ '<td><div><a href="'+sourceleadUrl+'/projectTaskSummary?taskId='+opt.id+'" title="'+ opt.taskName+ '" >'+ opt.taskName+ '</a></div></td>';
+				'</sec:authorize>';
+				
+				'<sec:authorize access="!hasRole(\'ROLE_VIEW_EDIT_SUB_TASK\')">'; 
+				   result = result+ '<td><div><a title="'+ opt.taskName+ '" >'+ opt.taskName+ '</a></div></td>';
+				'</sec:authorize>';
 				result = result	+ '<td><div><span >'+taskAssignedUsers+'</span></div></td>';
 				result = result	+ '<td><div><span>'+taskStaus+'</span></div></td>';
 				result = result + '</tr>';

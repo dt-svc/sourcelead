@@ -114,29 +114,9 @@ function candidateEducationList(candidateId){
 		  canEduDatePattern = 'YYYY-DD-MM'; 
 	  }
 	 $.ajax({  
-          type : "POST",
+          type : "GET",
           url: sourceleadUrl+"/getCandidateEducationListByCandidateId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
-          success :function(data) {
-            /*    if(data != null && data != 'undefined' && data != "" && data != '[]'){
-             		 if( data.indexOf('Sign In') >= 0){
-			    		location.replace(sourceleadUrl);
-			    	 }
-             		 else if (data.indexOf('exception') >= 0) {
-             			 location.replace(sourceleadUrl+"/errorPage");
-             		 }
-             		 else{ */
-             			var json = JSON.parse(data);
-             			/* for (var i = 0; i < 1; i++) {
-                            var val= json[i];
-                            var opt = "";
-                                    if(val.msg != null && val.msg != '' && val.msg != 'undefined'){
-                                            opt  = opt + '<div class="success_pop" id="selector4" style="display: block;">';
-                                            opt  = opt + '<i class="fa fa-check-circle"></i><span>'+val.msg+'</span>';
-                                            opt  = opt + '</div>';
-                                            }
-                                    $("#msgDiv1").empty();
-                                    $("#msgDiv1").append(opt);
-                            } */
+          success :function(json) {
              			 
 	                	 $("#candidateEducationList").empty();
 	                	 var result = "";
@@ -156,8 +136,8 @@ function candidateEducationList(candidateId){
 	                     result = result +"</thead>";
 	                     result = result +"<tbody>"; 
 	                     
-	                     for (var i = 0; i < json.length; i++) { 
-	                    	 var opt = json[i];  
+	                     for (var i = 0; i < json.data.length; i++) { 
+	                    	 var opt = json.data[i];  
 	                    	 result  = result + '         <tr>';
 	                    	 if(opt.name != null && opt.name != '' && opt.name != 'undefined'){
 	                    	 result  = result + '<td><div><span title = "'+opt.name+'">'+opt.name+'</span></div></td>';
@@ -451,12 +431,13 @@ function addEducation(candidateId) {
 function EditEducation(candidateId,candidateEducationId) {
 	$.ajax({	type : "POST",
 				url : sourceleadUrl+ "/getCandidateEducationBycandidateIdandEducationId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&candidateEducationId="+candidateEducationId,
-				success : function(data) {
-					var json = JSON.parse(data);
+				success : function(json) {
+					//var json = JSON.parse(data);
 					var specialization = "";
 					var grade = "";
 					var institute = "";
 					var address  = "";
+					
 					if(json.specialization !=null && json.specialization !='undefined' && json.specialization !=''){
 						specialization = json.specialization;
 					}
@@ -472,21 +453,20 @@ function EditEducation(candidateId,candidateEducationId) {
 					if(json.address !=null && json.address !='undefined' && json.address !=''){
 						address = json.address;
 					}
-					
-					if (data != null && data != 'undefined' && data != "") {
-						if (data.indexOf('Sign In') >= 0) {
-							location.replace(sourceleadUrl);
-						} else if (data.indexOf('exception') >= 0) {
-							location.replace(sourceleadUrl + "/errorPage");
-						} else {	
-	var result = "";
-	result = result  +'<!-- Popup Div -->';
-	result = result  +'          <form role="form"  id="education_form" name="education_form" method="post" > ';
-	result = result  +'          <i class="fa fa-close close-div"  onClick="closePopup();"></i> ';
-	result = result  +'                <div class="form-horizontal clearfix"> ';
-	result = result  +'   ';
-	result = result  +'                  <div class="clearfix mb10"> ';
-	result = result + "<select  class='chosen-select form-control' name='name' id='candEdu' data-validation='validate_Space' data-validation-optional='true' onchange='validateEduname("+candidateId+");'onkeyup = 'validateEduname("+candidateId+");'>";
+					if (json != null && json != 'undefined' && json != "") {
+// 						if (json.indexOf('Sign In') >= 0) {
+// 							location.replace(sourceleadUrl);
+// 						} else if (json.indexOf('exception') >= 0) {
+// 							location.replace(sourceleadUrl + "/errorPage");
+// 						} else {
+							var result = "";
+							result = result  +'<!-- Popup Div -->';
+							result = result  +'          <form role="form"  id="education_form" name="educatio(n_form" method="post" > ';
+							result = result  +'          <i class="fa fa-close close-div"  onClick="closePopup();"></i> ';
+							result = result  +'                <div class="form-horizontal clearfix"> ';
+							result = result  +'   ';
+							result = result  +'                  <div class="clearfix mb10"> ';
+							result = result + "<select  class='chosen-select form-control' name='name' id='candEdu' data-validation='validate_Space' data-validation-optional='true' onchange='validateEduname("+candidateId+");'onkeyup = 'validateEduname("+candidateId+");'>";
 		               
 						
 				    	 $.each(json.allAndCandidateEducations, function( i, eduName){
@@ -704,7 +684,7 @@ function EditEducation(candidateId,candidateEducationId) {
 		<%-- Eductions and Skills Autocomplete Scripts Ends Here --%>
 		
 }
-					}
+// 					}
 			},
 
 		});
@@ -778,6 +758,9 @@ function candidateEducationStore(candidateId){
        			candidateEducationList(candidateId);
        			eduMsgFadeinFunction();
        			qveducationSubmission(candidateId);
+       			setTimeout(function(){
+		 			candidateList();					 			
+		 		},100);
 		        });
 			
 			return true; 
@@ -1038,6 +1021,9 @@ function clearSearchKeyEducation() {
 							candidateEducationList(candidateId)
 							eduMsgFadeinFunction();
 							qveducationSubmission(candidateId);
+							setTimeout(function(){
+					 			candidateList();					 			
+					 		},100);
 						},
 					}); 
 			return true;

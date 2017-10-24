@@ -72,7 +72,7 @@ display: none;
           <label class="col-md-2 control-label text-primary small">To</label>
           <div class="col-md-10 positionRelative disable-choosen-dropdown">
 
-          <select class="form-control"   field-name="To List" multiple data-placeholder="Enter Emails And Press Enter-Key Or Comma(,) Or Space To Add New Email" id="emailsList" name="Toemails" data-validation-optional="true" data-validation="validate_email"  field-name="Toemails" >
+          <select class="form-control" field-name="To List" multiple data-placeholder="Enter Emails And Press Enter-Key Or Comma(,) Or Space To Add New Email" id="emailsList" name="Toemails" data-validation-optional="true" data-validation="validate_email"  field-name="Toemails" >
             </select>
             <span class="select-multiple" data-target="#multiplemail" onclick="getUserList('All');" data-toggle="modal"><i class="fa fa-list-alt" title="Multiple Mail"></i></span> 
             <!-- Modal content Multiple mail -->
@@ -85,7 +85,7 @@ display: none;
                   </div>
                   
                   <div class="modal-body clearfix hotmailSelOut">
-                    <div class="modal-body-custom mailerpopup mt25 clearfix filter-position">
+                    <div class="clearfix">
                      <div id="userList" class="datatable_filter"></div>
                     </div>
                   </div> 
@@ -384,16 +384,12 @@ function getUserList(teamType){
                		
 			    	     $("#userList").removeAttr("style");
 	                	    var result = '';
-	                	    result = result +'<div class="modal-bodyCustom mt clearfix popupFilter">';
-	                	    result = result +'<div class="form-horizontal custom-form">';
-	                		result = result +'     <div class="row">';
-	                		result = result +'       <div class="col-xs-12 col-md-5 col-lg-5 selectpicker100">';
+	                	    result = result +'<div class="clearfix popupFilter">';
+	                		result = result +'       <div class="col-xs-12 col-md-5 col-lg-5 selectpicker100 dropdown-select paddingLeft mt10">';
 	                		result = result +'          <select id="rolesDiv" onchange="filterTeamMembers();" class="selectpicker form-control" style="display:block !important">';
 	                		result = result +'          </select>';
 	                		result = result +'     </div>';
-	                		result = result +'     </div>';
-	                		result = result +'     </div>';
-	                		result = result +'     <div class="modal-bodyCustom mt clearfix popupFilter"><br/><br/>'; 
+	                		result = result +'     <div class="mt clearfix popupFilter"><br/><br/>'; 
 	                		result = result +'       <table id="example"  class="display table table-stripped table-bordered" cellspacing="0" width="100%"  >';
 	                		result = result +'           <thead>';
 	                		result = result +'           <tr>';
@@ -428,7 +424,7 @@ function getUserList(teamType){
 	                 	 result = result +'     <div class="clearfix">';
 	                 	 result = result +'       </div>'; 
 	                 	 result = result +'   </div>'; 
-	                 	 result = result +'   <div class="clearfix pull-right mr mt10">';
+	                 	 result = result +'   <div class="clearfix pull-right mr mb">';
 	                 	 result = result +'     <button class="btn btn-primary"  type="button" data-dismiss="modal" id="assignbtnId" onClick="getEmails();">Add</button>';
 	                 	 result = result +'     <button data-dismiss="modal" class="btn btn-default" type="button">Close</button>';
 	                 	 result = result +'   </div>'; 
@@ -560,7 +556,8 @@ function pagination(){
     	"oLanguage": {
      		"sSearch": ""
      	}
-    } );
+    });
+    $("#example").wrap("<div class='modal-body-custom modalAlign mailerpopup'></div>")
 }
 </script>
 
