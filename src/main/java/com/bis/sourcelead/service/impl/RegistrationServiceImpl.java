@@ -820,7 +820,15 @@ public class RegistrationServiceImpl implements RegistrationService{
 		 Map<String, String> globalVarsMap = new HashMap<String, String>();
 		 globalVarsMap.put("firstName", emailMessage.getFirstName());
 		 globalVarsMap.put("lastName",emailMessage.getLastName());
-			
+		 globalVarsMap.put("userName",user.getEmail());
+		 globalVarsMap.put("updatedDate",user.getUpdatedDate().toString());
+		 StringBuilder sbLink = new StringBuilder();
+		 globalVarsMap.put("forgotPasswordLink",sbLink.append("<a href=").append(sourceleadUrl).append("/forgotPassword").append(" target='_blank' style='outline:none; border:none;'>Forgot Password</a>").toString());
+		 StringBuilder linkBuilder = new StringBuilder();
+		 globalVarsMap.put("supportLink",linkBuilder.append("<a href='support@sourcelead.com' target='_blank' style='outline:none; border:none;'>support@sourcelead.com</a>").toString());
+		 StringBuilder sourceLink = new StringBuilder();
+		 globalVarsMap.put("sourceleadLink",sourceLink.append("<a href='http://www.sourcelead.com/' target='_blank' style='outline:none; border:none;'>http://www.sourcelead.com/</a>").toString());
+		 
 		//setting the Recipient information
 		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 		
