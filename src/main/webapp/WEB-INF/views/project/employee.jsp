@@ -2078,7 +2078,7 @@ function onholdBudgetRequaet(budgetRequestedId){
 	result = result +"<input type='hidden' id='budgetRequestedId' name='budgetRequestedId' value='"+budgetRequestedId+"'>";
 	result = result +"<input type='hidden' id='loginUserid' name='loginUserid' value='${SourceLeadWeb_user.id}'>";
 	result = result +"		<p>Are you sure you want to On-Hold ?</p>";
-	result = result +"		<textarea  id='reasonForProjectBudget' name='reasonForProjectBudget'  placeholder='Comments here' field-name='Reason' data-validation='validate_length length2-5000' data-validation-optional='true'></textarea>";
+	result = result +"		<textarea  id='reasonForProjectBudget' name='reasonForProjectBudget'  placeholder='Comments here' field-name='Reason' data-validation='required validate_length length2-5000'></textarea>";
 	result = result +"</form>";
 	result = result +'		<b href="javascript:void(0)"><input id="delete_budget-id" type="button" value="On-Hold" onclick="onHoldBudgetRequest('+budgetRequestedId+');"><input class="u_can_color" type="button"  value="Cancel" onClick="cancelTermination();"></b>';
 	result = result +"	</div>";
@@ -2110,7 +2110,7 @@ function onHoldBudgetRequest(budgetRequestedId){
 				success : function(result) {
 					$("#popUp").empty();
 	   			 	//$(".project_inn_mask").fadeOut(200);
-	   			 	$(".vendor_wrap_mask").fadeIn(200);
+	   			 	$(".vendor_wrap_mask").fadeOut(200);
 	   			 	budgetRequests();
 				},
 			}); 

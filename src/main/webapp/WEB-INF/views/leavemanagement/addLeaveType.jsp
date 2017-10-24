@@ -319,7 +319,7 @@
 					<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12  txtEditor_p">
 						<h5>Description</h5>
 						<textarea id="txtEditor" name="leavePolicyDescription"   
-						value="" class="form-control newContrtextarea" data-validation="validate_length length2-5000" data-validation-optional="true"></textarea>
+						value="" field-name="Description" class="form-control newContrtextarea" data-validation="validate_length length2-5000" data-validation-optional="true"></textarea>
 					</div>
 
 						</div>
@@ -344,6 +344,7 @@
 
 <script>
 	function validateName() {
+		var editData = $("#leaveTypeId").val();
 		var locationId = '${SourceLeadWeb_orgLocationId}';
 		var name = $("#leaveTypeName").val();
 		if (name != null && name != '' && name != 'undefined') {
@@ -351,7 +352,7 @@
 					.get(
 							sourceleadUrl + "/validateName?&orgLocationId="
 									+ locationId + "&from=LeaveType&name="
-									+ name,
+									+ name+"&editData="+editData,
 							function(data) {
 								if (data == true) {
 									$('#leaveTypeDiv').find(
