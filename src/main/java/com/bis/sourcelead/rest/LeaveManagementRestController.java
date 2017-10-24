@@ -1530,10 +1530,12 @@ public class LeaveManagementRestController {
 	}
 
 	@RequestMapping(value = { "/validateName", "/rest/validateName" }, method = RequestMethod.GET)
-	public boolean validateName(@RequestParam(value = "orgLocationId", required = true) Long orgLocationId, @RequestParam(value = "from", required = true) String fromTable, @RequestParam(value = "name", required = true) String name)
+	public boolean validateName(@RequestParam(value = "orgLocationId", required = true) Long orgLocationId, @RequestParam(value = "from", required = true) String fromTable, @RequestParam(value = "name", required = true) String name,@RequestParam(value = "editData", required = false) String editDataId)
 	{
 		boolean flag = false;
-		flag = leaveService.validateNameByOrgLocationIdandFromTable(name, orgLocationId, fromTable);
+		if(editDataId.equalsIgnoreCase("")) {
+			flag = leaveService.validateNameByOrgLocationIdandFromTable(name, orgLocationId, fromTable);
+		}
 		return flag;
 	}
 

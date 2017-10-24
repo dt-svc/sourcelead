@@ -1364,11 +1364,17 @@ function resourceRequestsTab(){
 	        	
 	    		result = result + '	<div class="timesheet_head anchorTag-black">';
 	    		result = result + '	<ul>';
-	    		result = result + '	      <li><a href="'+sourceleadUrl+'/requestAssociates?projectUUID='+projectUUID+'&projectClientUUID='+projectClientUUID+'">';
-	    		result = result + '	       <i class="glyphicon glyphicon-plus"></i>Request Associates</a></li>';
-	    		result = result + '	      <li><a href="'+sourceleadUrl+'/newResourceRequest?projectUUID='+projectUUID+'&projectClientUUID='+projectClientUUID+'">';
-	    		result = result + '	       <i class="glyphicon glyphicon-plus"></i>New Resource Request</a>&nbsp; &nbsp;</li>';
-
+	    		
+	    		 '<sec:authorize access="hasRole(\'ROLE_ADD_RESOURCE_REQUEST\')">';
+		    		result = result + '	      <li><a href="'+sourceleadUrl+'/requestAssociates?projectUUID='+projectUUID+'&projectClientUUID='+projectClientUUID+'">';
+		    		result = result + '	       <i class="glyphicon glyphicon-plus"></i>Request Associates</a></li>';
+	    		 '</sec:authorize>';
+	    		
+	    		 '<sec:authorize access="hasRole(\'ROLE_ADD_REQUEST_ASSOCIATE\')">';
+		    		result = result + '	      <li><a href="'+sourceleadUrl+'/newResourceRequest?projectUUID='+projectUUID+'&projectClientUUID='+projectClientUUID+'">';
+		    		result = result + '	       <i class="glyphicon glyphicon-plus"></i>New Resource Request</a>&nbsp; &nbsp;</li>';
+	    		 '</sec:authorize>';
+		    		 
 	    		result = result + '	</ul>';
 	    		result = result + '	       </div>';
 	    		result = result + '		<div class="project_tabs_inn_table vendor_wrap_inn_table datatable_filter overflow_inherint">';
@@ -1393,9 +1399,21 @@ function resourceRequestsTab(){
 	    			result = result + '<tr>';
 	    			if(report.requestType == 'Associate Request'){
 						if(report.requestStatus == 'Draft' || report.requestStatus == 'Rejected'){
-							result = result + '<td><div><a href="'+sourceleadUrl+'/editResourceRequest?requestUUID='+report.requestUUID+'&projectUUID='+projectUUID+'&projectClientUUID='+projectClientUUID+'">'+report.requestId+'</a></div></td>';
+							'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_RESOURCE_REQUEST\',\'ROLE_VIEW_EDIT_REQUEST_ASSOCIATE\')">';
+							    result = result + '<td><div><a href="'+sourceleadUrl+'/editResourceRequest?requestUUID='+report.requestUUID+'&projectUUID='+projectUUID+'&projectClientUUID='+projectClientUUID+'">'+report.requestId+'</a></div></td>';
+							'</sec:authorize>';
+							
+							'<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_EDIT_RESOURCE_REQUEST\',\'ROLE_VIEW_EDIT_REQUEST_ASSOCIATE\')">';
+							    result = result + '<td><div><a href="#">'+report.requestId+'</a></div></td>';
+							'</sec:authorize>';
 						}else{
-							result = result + '<td><div><a href="'+sourceleadUrl+'/viewResourceRequest?requestUUID='+report.requestUUID+'&projectUUID='+projectUUID+'&projectClientUUID='+projectClientUUID+'">'+report.requestId+'</a></div></td>';
+							'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_RESOURCE_REQUEST\',\'ROLE_VIEW_EDIT_REQUEST_ASSOCIATE\')">';
+							     result = result + '<td><div><a href="'+sourceleadUrl+'/viewResourceRequest?requestUUID='+report.requestUUID+'&projectUUID='+projectUUID+'&projectClientUUID='+projectClientUUID+'">'+report.requestId+'</a></div></td>';
+							'</sec:authorize>';
+							
+							'<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_EDIT_RESOURCE_REQUEST\',\'ROLE_VIEW_EDIT_REQUEST_ASSOCIATE\')">';
+						        result = result + '<td><div>'+report.requestId+'</div></td>';
+						    '</sec:authorize>';
 						}
 	    			}else{
 	    				if(report.requestStatus == 'Draft' || report.requestStatus == 'Rejected'){
