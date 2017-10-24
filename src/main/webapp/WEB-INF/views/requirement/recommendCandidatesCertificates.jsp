@@ -166,15 +166,15 @@ function candidateCertificateList(candidateId){
 	 $.ajax({  
           type : "POST",
           url: sourceleadUrl+"/getCandidateCertificationListByCandidateIdAndOrgLocationID?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
-          success :function(data) {
+          success :function(json) {
               /*  if(data != null && data != 'undefined' && data != "" && data != '[]'){ */
-             		 if( data.indexOf('Sign In') >= 0){
-			    		location.replace(sourceleadUrl);
-			    	 }
-             		 else if (data.indexOf('exception') >= 0) {
-             			 location.replace(sourceleadUrl+"/errorPage");
-             		 }
-             		 else{
+//              		 if( data.indexOf('Sign In') >= 0){
+// 			    		location.replace(sourceleadUrl);
+// 			    	 }
+//              		 else if (data.indexOf('exception') >= 0) {
+//              			 location.replace(sourceleadUrl+"/errorPage");
+//              		 }
+//              		 else{
 	                	 $("#candidateCertificateList").empty();
 	                	 var result = "";
 	                	 result = result +"<table id='candidateCertificatePagination' class='display' cellspacing='0' width='100%' >"; 
@@ -191,9 +191,9 @@ function candidateCertificateList(candidateId){
 	                     result = result +"  </tr>"; 
 	                     result = result +"</thead>";
 	                     result = result +"<tbody>"; 
-	                      var json = JSON.parse(data);
-	                     for (var i = 0; i < json.length; i++) { 
-	                    	 var opt = json[i];  
+// 	                      var json = JSON.parse(data);
+	                     for (var i = 0; i < json.data.length; i++) { 
+	                    	 var opt = json.data[i];  
 	                    	 var score = "";
 	                    	 var scoreType ="";
 	                    	 var description ="";
@@ -249,7 +249,7 @@ function candidateCertificateList(candidateId){
 	                     result = result +"</table>";
 	                     $("#candidateCertificateList").append(result); 
 	                     certificationPagination(); 
-			    	} 
+// 			    	} 
               
         },
           
