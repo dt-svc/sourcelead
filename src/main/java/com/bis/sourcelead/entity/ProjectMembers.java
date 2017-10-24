@@ -60,7 +60,7 @@ public class ProjectMembers implements Serializable {
 	private Employees employee;
 
 	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne(cascade = CascadeType.ALL)
+	@ManyToOne
 	@Fetch(FetchMode.SELECT)
 	@JoinColumn(name = "CANDIDATE_ID", nullable = false)
 	@JsonBackReference
