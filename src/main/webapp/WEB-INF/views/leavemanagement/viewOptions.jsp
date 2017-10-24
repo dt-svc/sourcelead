@@ -35,7 +35,7 @@ $(document).ready(function(){
       </div> -->
     </div>
         <div id="loading"></div> 
-    <div class="require_wrap_table datatable_filter">
+    <div class="candidate_wrap_table datatable_filter">
     <div id="viewOptinsDiv"></div>
     </div>
   </div>

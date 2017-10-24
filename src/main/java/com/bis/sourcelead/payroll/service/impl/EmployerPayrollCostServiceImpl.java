@@ -40,11 +40,14 @@ import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.payroll.dao.EmployerPayrollCostDao;
 import com.bis.sourcelead.payroll.entity.EmployerPayrollCost;
+import com.bis.sourcelead.payroll.entity.PayrollBalance;
 import com.bis.sourcelead.payroll.entity.PayrollHelper;
 import com.bis.sourcelead.payroll.entity.UserPayroll;
 import com.bis.sourcelead.payroll.entity.WageTaxSummary;
+import com.bis.sourcelead.payroll.service.AccountDeductionsService;
 import com.bis.sourcelead.payroll.service.EmployerPayrollCostService;
 import com.bis.sourcelead.payroll.service.UserPayrollService;
+import com.bis.sourcelead.payroll.service.WageTaxSummaryService;
 import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.SubmissionApproverHierarchyService;
 import com.bis.sourcelead.util.ConversionUtil;
@@ -75,6 +78,12 @@ public class EmployerPayrollCostServiceImpl implements EmployerPayrollCostServic
 	
 	@Autowired
 	private UserPayrollService userPayrollService;
+	
+	@Autowired
+	private WageTaxSummaryService wageTaxSummaryService;
+	
+	@Autowired
+	private AccountDeductionsService accountDeductionsService;
 
 	@Override
 	public Integer saveEmployerPayrollCost(MultipartFile multipartFile, OrgLocations orgLocation, User user,JSONObject jsonObj)
@@ -379,6 +388,29 @@ public class EmployerPayrollCostServiceImpl implements EmployerPayrollCostServic
 	public int getEmployerPayrollCostVersionByLocationId(Long locationId)
 	{
 		return employerPayrollCostDao.getEmployerPayrollCostVersionByLocationId(locationId);
+	}
+
+
+	@Override
+	public ResponseList<PayrollBalance> getAllPayrollBalanceSheetByOrgLocationId(OrgLocations orgLocation,PayrollBalance payrollBalance) throws Exception {
+		
+//		  List<WageTaxSummary> wageTaxSummaryList =  wageTaxSummaryService.getUniqueWagesAndTaxListByOrgLocationId(orgLocation);
+		  ResponseList<WageTaxSummary> wageTaxSummaryList =  wageTaxSummaryService.getUniqueWagesAndTaxListByOrgLocationIdAndPagination(orgLocation,payrollBalance);
+		 ResponseList<PayrollBalance> responseList = new ResponseList<>();
+		 List<PayrollBalance> balanceList = new ArrayList<>();
+		  if(wageTaxSummaryList !=null) {
+			 for(WageTaxSummary WageTaxSummary : wageTaxSummaryList.getData()) {
+				 PayrollBalance balance = accountDeductionsService.getBalance(Long.parseLong(WageTaxSummary.getEmployeeId()), orgLocation);
+				 balance.setEmpName(WageTaxSummary.getEmployeeName());
+				 balanceList.add(balance);
+			 }
+			 responseList.setData(balanceList);
+			 responseList.setRecordsTotal(wageTaxSummaryList.getRecordsFiltered());
+			 responseList.setRecordsFiltered(wageTaxSummaryList.getRecordsTotal());
+		  }
+		  
+		  
+		return responseList; 
 	}
 }
 

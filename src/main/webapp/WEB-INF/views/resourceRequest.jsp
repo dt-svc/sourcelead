@@ -31,9 +31,9 @@
       	    <div id="resourceRequestsDivLoading"></div>
 			    <ul class="project-tabs-menu">
 			        <li class="current" id="waiting"><a data-toggle="tab" href="javascript:void(0)" onclick="resourceRequestList('Waiting For Approval')">Waiting (<span id="waitingCount"></span>)</a></li>
-			        <li id="approved"><a data-toggle="tab" href="javascript:void(0)"  onclick="resourceRequestList('Approved')">Approved (<span id="approvedCount"></span>)</a></li>
-			        <li id="rejected"><a data-toggle="tab" href="javascript:void(0)" onclick="resourceRequestList('Rejected')">Rejected (<span id="rejectedCount"></span>)</a></li>
-			        <li id="onhold"><a data-toggle="tab" href="javascript:void(0)" onclick="resourceRequestList('On hold')">On hold (<span id="onholdCount"></span>)</a></li>
+			        <li id="requestApproved"><a data-toggle="tab" href="javascript:void(0)"  onclick="resourceRequestList('Approved')">Approved (<span id="approvedCount"></span>)</a></li>
+			        <li id="requestRejected"><a data-toggle="tab" href="javascript:void(0)" onclick="resourceRequestList('Rejected')">Rejected (<span id="rejectedCount"></span>)</a></li>
+			        <li id="requestOnhold"><a data-toggle="tab" href="javascript:void(0)" onclick="resourceRequestList('On hold')">On hold (<span id="onholdCount"></span>)</a></li>
 			        <div class="clearfix"></div>
 			    </ul>
 			    <div id="resourceRequestList"></div>
@@ -133,7 +133,12 @@ function resourceRequestList(requestType){
 			    		}
 			    		
 		    		}else{
-		    			result = result + '<b>'+report.requestStatus+'</b>';
+		    			if(report.requestStatus == 'Rejected'){
+		    				result = result + '<b class="text-danger">'+report.requestStatus+'</b>';
+		    			}else{
+		    				result = result + '<b>'+report.requestStatus+'</b>';
+		    			}
+		    			
 		    		}
 		    		
 		    		result = result + '</div></td>';
@@ -150,30 +155,30 @@ function resourceRequestList(requestType){
 	    	    
 	    	    if(requestType == 'Waiting For Approval'){
 	    	    	 $("#waiting").addClass("current");
-	    	    	 $("#approved").removeClass("current");
-	    	    	 $("#rejected").removeClass("current");
-	    	    	 $("#onhold").removeClass("current");
+	    	    	 $("#requestApproved").removeClass("current");
+	    	    	 $("#requestRejected").removeClass("current");
+	    	    	 $("#requestOnhold").removeClass("current");
 	    	    }
 	    	   
 	    	    else if(requestType == 'Approved'){
-	    	    	 $("#approved").addClass("current");
+	    	    	 $("#requestApproved").addClass("current");
 	    	    	 $("#waiting").removeClass("current");
-	    	    	 $("#rejected").removeClass("current");
-	    	    	 $("#onhold").removeClass("current");
+	    	    	 $("#requestRejected").removeClass("current");
+	    	    	 $("#requestOnhold").removeClass("current");
 	    	    }
 	    	    
 	    	    else if(requestType == 'Rejected'){
-	    	    	 $("#rejected").addClass("current");
+	    	    	 $("#requestRejected").addClass("current");
 	    	    	 $("#waiting").removeClass("current");
-	    	    	 $("#approved").removeClass("current");
-	    	    	 $("#onhold").removeClass("current");
+	    	    	 $("#requestApproved").removeClass("current");
+	    	    	 $("#requestOnhold").removeClass("current");
 	    	    }
 	    	    
 	    	    else if(requestType == 'On hold'){
-	    	    	 $("#onhold").addClass("current");
+	    	    	 $("#requestOnhold").addClass("current");
 	    	    	 $("#waiting").removeClass("current");
-	    	    	 $("#approved").removeClass("current");
-	    	    	 $("#rejected").removeClass("current");
+	    	    	 $("#requestApproved").removeClass("current");
+	    	    	 $("#requestRejected").removeClass("current");
 	    	    	
 	    	    }
 	    	    
