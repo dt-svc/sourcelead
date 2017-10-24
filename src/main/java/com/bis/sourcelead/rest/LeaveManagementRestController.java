@@ -1544,17 +1544,18 @@ public class LeaveManagementRestController {
 		int totalLeavesApplied = 0;
 		int totalLeaves = 0;
 		List<Leave> leaveList = leaveService.getLeavesListByTypeIdAndLocationIdAndUserId(leaveTypeId, orgLocationId,userId);
-		for (Leave leave : leaveList) {
-			if(Constants.APPROVED.equalsIgnoreCase(leave.getStatus())) {
-				totalLeavesApplied = totalLeavesApplied + Integer.valueOf(leave.getNumberOfDays());
+		if(leaveList.size() > 0){
+			for (Leave leave : leaveList) {
+				if(Constants.APPROVED.equalsIgnoreCase(leave.getStatus())) {
+					totalLeavesApplied = totalLeavesApplied + Integer.valueOf(leave.getNumberOfDays());
+				}
+				totalLeaves = Integer.valueOf(leave.getLeaveType().getNumbefrOfLeavesPeryear());
 			}
-			totalLeaves = Integer.valueOf(leave.getLeaveType().getNumbefrOfLeavesPeryear());
+			
+			if(totalLeavesApplied >= totalLeaves) {
+				isvalidate = true;
+			}
 		}
-		
-		if(totalLeavesApplied > totalLeaves) {
-			isvalidate = true;
-		}
-		
 		return isvalidate;
 		
 	}
