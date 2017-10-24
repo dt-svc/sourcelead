@@ -49,8 +49,12 @@
 								document.getElementById("projectSequeneNumber").setAttribute('record-exist', 'yes');
 								document.getElementById("projectSequeneNumber").setAttribute('record-exist-errorMsg',ProjectSequeneNumber+ ' is Already Existed');
 								$('input#projectSequeneNumber').removeAttr( "record-exist record-exist-errorMsg");
+								$("#save_project").attr("disabled", "disabled");
+			    				
 							} else {
+								$("#save_project").removeAttr("disabled");
 								$('input#projectSequeneNumber').removeAttr("record-exist record-exist-errormsg");
+								
 							}
 						},
 					});
@@ -93,8 +97,10 @@ function validateShortCode(){
 				document.getElementById("projectShortCode").setAttribute('record-exist', 'yes');
 				document.getElementById("projectShortCode").setAttribute('record-exist-errorMsg',projectShortCode+ ' is Already Existed');
 				$('input#projectShortCode').removeAttr( "record-exist record-exist-errorMsg");
+				$("#save_project").attr("disabled", "disabled");
 			} else {
 				$('input#projectShortCode').removeAttr("record-exist record-exist-errormsg");
+				$("#save_project").removeAttr("disabled");
 			}
 		},
 	});
@@ -699,6 +705,8 @@ function getProjectDetails(){
 	        	 $("input[name=startDate]").val(json.startDateStr);
 	        	 $("input[name=endDate]").val(json.endDateStr);
 	        	 $("#projectShortCode").val(json.projectShortCode);
+	        	 $("input[name=projectShortCode]").attr("readonly","readonly");
+	        	 $('#projectShortCode').removeAttr('onblur');
 	        	 $("#notifyBudgetAt").val(json.notifyBudgetAt);
 	        	 
 	           var projectStatus = '';
@@ -1010,8 +1018,7 @@ function getChildLevel1Approvers(currentApproverId,level2ApproverUserId){
 		 $.ajax({
 		    	type: "POST",
 		        url: sourceleadUrl+"/getApproversByUserId?${_csrf.parameterName}=${_csrf.token}&currentApproverId="+currentApproverId,
-		        success: function(data) {
-		        	var json = JSON.parse(data);
+		        success: function(json) {
 		        	var output = "";
 		        	output = output + "<option value=''>-Select Manager-</option>"; 
 		        	for (var i=0; i<json.length; i++)
@@ -1021,7 +1028,7 @@ function getChildLevel1Approvers(currentApproverId,level2ApproverUserId){
 			        		if(level2ApproverUserId != null && level2ApproverUserId != 'undefied' && level2ApproverUserId != '' && level2ApproverUserId == opt.id){
 			        			selected = "selected";
 			        		}
-			        		output = output + "<option value='" +opt.id+ "' "+selected+">"+opt.firstName+" "+opt.lastName+"</option>";
+			        		output = output + "<option value='" +opt.id+ "' "+selected+">"+opt.fullName+" ("+opt.userType+")</option>";
 					}
 		        	$("#level2Manager").empty();
 			        $("#level2Manager").append(output);
@@ -1055,7 +1062,7 @@ function getProjectLevel1Approvers(approverUserId){
 		        		if(approverUserId != null && approverUserId != 'undefied' && approverUserId != '' && approverUserId == opt.id){
 		        			selected = "selected";
 		        		}
-			        		output = output + "<option value='" +opt.id+ ","+opt.userType+"' "+selected+">"+opt.fullName+"</option>";
+			        		output = output + "<option value='" +opt.id+ ","+opt.userType+"' "+selected+">"+opt.fullName+" ("+opt.userType+")</option>";
 					}
 		        	
 			        $("#level1Manager").append(output);

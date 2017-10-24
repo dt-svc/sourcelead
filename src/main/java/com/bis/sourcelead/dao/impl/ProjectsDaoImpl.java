@@ -518,7 +518,7 @@ public class ProjectsDaoImpl implements ProjectsDao{
 	@Override
 	@Transactional
 	public ResponseList<Projects> getProjectsListByClientsAndStatus(ProjectsDTO projectsDTO,Long userId, String clients, String status,
-			Long orgLocationsId,String userRole) throws Exception {
+			Long orgLocationsId,String userRole,Long candidateId) throws Exception {
 		
 		Session session = this.sessionFactory.getCurrentSession();
 		String approverQuery = "";
@@ -559,7 +559,8 @@ public class ProjectsDaoImpl implements ProjectsDao{
 		}
 		
 		if(!userRole.equalsIgnoreCase("ROLE_ADMIN") && !userRole.equalsIgnoreCase("ROLE_SOURCELEAD_ADMIN")){
-			approverQuery = " and pc.id IN (select pah.projectClientsId.id from ProjectApproverHierarchy pah where pah.approverUserId = "+userId+")";
+			approverQuery = " and (pc.id IN (select pah.projectClientsId.id from ProjectApproverHierarchy pah where pah.approverUserId = "+userId+") OR pc.createdBy.id = "+userId+" "
+					+ " OR pc.id IN (select pm.projectClientsId.id from ProjectMembers pm where pm.projectMemberCandidteId.id = "+candidateId+" and pm.status = '1') )";
 		}
 		
 		projectModeQuery = " and (ps.orgLocationsId = :orgLocationsId OR ps.projectMode = 'Finished')";
