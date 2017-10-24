@@ -240,6 +240,8 @@ public class OrgRelationsServiceImpl implements OrgRelationsService {
 							 orgRelation.setBranchNumber(bankDetails.getBranchNumber());
 							 orgRelation.setBankIdentifierCode(bankDetails.getBankIdentifierCode());
 							 orgRelation.setBankAddress(bankDetails.getBankAddress());
+							 orgRelation.setPoEmail(bankDetails.getPoEmail());
+							 orgRelation.setPaymentRemittanceEmail(bankDetails.getPaymentRemittanceEmail());
 						 }
 					 }
 				 }

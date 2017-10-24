@@ -65,6 +65,10 @@ public class VendorOnboardDTO implements Serializable{
 	
 	private String vendorBillingAddress;
 	
+	private String poEmail;
+	
+	private String paymentRemittanceEmail;
+	
 	
 
 	public String getClientName() {
@@ -297,6 +301,22 @@ public class VendorOnboardDTO implements Serializable{
 
 	public void setEinCode(String einCode) {
 		this.einCode = einCode;
+	}
+
+	public String getPoEmail() {
+		return poEmail;
+	}
+
+	public void setPoEmail(String poEmail) {
+		this.poEmail = poEmail;
+	}
+
+	public String getPaymentRemittanceEmail() {
+		return paymentRemittanceEmail;
+	}
+
+	public void setPaymentRemittanceEmail(String paymentRemittanceEmail) {
+		this.paymentRemittanceEmail = paymentRemittanceEmail;
 	}
 
 

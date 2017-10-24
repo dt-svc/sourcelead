@@ -552,6 +552,16 @@ public class VendorOnboardServiceImpl implements VendorOnboardService {
 		if(StringUtils.isNotBlank(vendorOnboardDTO.getBankAddress())){
 			bankDetails.setBankAddress(vendorOnboardDTO.getBankAddress());
 		}
+		
+		
+		if(StringUtils.isNotBlank(vendorOnboardDTO.getPoEmail())){
+			bankDetails.setPoEmail(vendorOnboardDTO.getPoEmail());
+		}
+		
+		if(StringUtils.isNotBlank(vendorOnboardDTO.getPaymentRemittanceEmail())){
+			bankDetails.setPaymentRemittanceEmail(vendorOnboardDTO.getPaymentRemittanceEmail());
+		}
+		
 		bankDetails.setCreatedBy(user);
 		bankDetails.setUpdatedBy(user);
 		bankDetails.setCreatedDate(commonUtil.currentDate());
