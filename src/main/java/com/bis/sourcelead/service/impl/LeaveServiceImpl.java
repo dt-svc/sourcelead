@@ -775,7 +775,7 @@ public class LeaveServiceImpl implements LeaveService{
 			 }
 			 
 			 if(null != leaveDTO.getReason()){
-			 globalVarsMap.put("description",leaveDTO.getReason());
+			 globalVarsMap.put("reason",leaveDTO.getReason());
 			 }
 			 Date fromDate = commonUtil.orgLocationDateFormat(orgLoc.getDateFormat(),leaveDTO.getFromDate());
 			 Date toDate = commonUtil.orgLocationDateFormat(orgLoc.getDateFormat(),leaveDTO.getToDate());

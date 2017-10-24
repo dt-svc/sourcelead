@@ -125,6 +125,10 @@ public class OrgSpoc implements Serializable{
 	
 	@Transient
 	@JsonProperty
+	private String spocExtensionNumber;
+	
+	@Transient
+	@JsonProperty
 	private String orgName;
 
 	@Transient
@@ -642,6 +646,16 @@ public class OrgSpoc implements Serializable{
 	public void setSpocUserCode(String spocUserCode)
 	{
 		this.spocUserCode = spocUserCode;
+	}
+
+	public String getSpocExtensionNumber()
+	{
+		return spocExtensionNumber;
+	}
+
+	public void setSpocExtensionNumber(String spocExtensionNumber)
+	{
+		this.spocExtensionNumber = spocExtensionNumber;
 	}
 	
 }

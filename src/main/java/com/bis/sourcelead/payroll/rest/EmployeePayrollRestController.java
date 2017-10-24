@@ -693,8 +693,14 @@ public class EmployeePayrollRestController {
 		return payrollBalance;
 	}
 	
-//	//
-	
+	/**
+	 * Add Check manually 
+	 * @param orgLocationId
+	 * @param userId
+	 * @param checksDTO
+	 * @return boolean
+	 * @throws Exception
+	 */
 	@RequestMapping(value = { "/addCheques" }, method = RequestMethod.POST)
 	public boolean addCheques(@RequestParam(value = "orgLocationId", required = false) Long orgLocationId,
 			                 @RequestParam(value = "userId", required = false) Long userId,ChecksDTO checksDTO) throws Exception {
@@ -705,4 +711,13 @@ public class EmployeePayrollRestController {
 		}
 		return isInserted;
 	}
+	
+	@RequestMapping(value = {"/getAllPayrollBalanceReport", "/rest/getAllPayrollBalanceReport"}, method = RequestMethod.POST)
+	public @ResponseBody  ResponseList<PayrollBalance> getAllPayrollBalanceReport(PayrollBalance payrollBalance,HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		OrgLocations orgLocation = orgLocationService.getOrgLocations(Long.parseLong(payrollBalance.getOrgLocationId()));
+		ResponseList<PayrollBalance> list = employerPayrollCostService.getAllPayrollBalanceSheetByOrgLocationId(orgLocation,payrollBalance);
+		return list;
+	}
+	
 }
