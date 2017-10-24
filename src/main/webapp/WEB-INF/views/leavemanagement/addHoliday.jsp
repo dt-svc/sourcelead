@@ -180,7 +180,7 @@ $(document).ready(function() {
               <div class="form-group">
               <label class="col-md-3">Description</label>
               <div class="col-md-9">
-                  <textarea rows="2" class="form-control" name="description" data-validation="validate_length length1-500" placeholder="Description" value="${holidayDTO.description}">${holidayDTO.description}</textarea>
+                  <textarea rows="2" class="form-control" name="description" data-validation="validate_length length1-500" data-validation-optional="true" placeholder="Description" value="${holidayDTO.description}">${holidayDTO.description}</textarea>
               </div>
             </div>
               
