@@ -136,6 +136,16 @@ public class HolidayServiceImpl implements HolidayService{
 			hDTO.setToHalfDayAmPm(hlist.getToHalfDayAmPm());
 			if(StringUtils.isNotBlank(hlist.getDescription()))
 		    hDTO.setDescription(hlist.getDescription());
+			
+			Date currentDate = commonUtil.getOrgLocationCurrentDate(orgLocations.getDateFormat(), new Date());
+			Date fromDate = commonUtil.getOrgLocationCurrentDate(orgLocations.getDateFormat(), hlist.getFromDate());
+			if(fromDate.before(currentDate)){
+				hDTO.setIsPast(Constants.YES);
+			}else if(fromDate.after(currentDate)){
+				hDTO.setIsFuture(Constants.YES);
+			}else{
+				hDTO.setIsCurrent(Constants.YES);
+			}
 			holidayDTOList.add(hDTO);
 		}
 		return holidayDTOList;
