@@ -38,7 +38,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
-import com.bis.sourcelead.annotations.Validator;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.UserRoleDao;
 import com.bis.sourcelead.dto.AddUserDTO;
@@ -46,6 +45,11 @@ import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.ClientDTO;
 import com.bis.sourcelead.dto.OnBoardingTemplateDTO;
 import com.bis.sourcelead.dto.OnboardTasksDTO;
+import com.bis.sourcelead.dto.OrgLocationDTO;
+import com.bis.sourcelead.dto.OrgRelationDTO;
+import com.bis.sourcelead.dto.VendorOnboardResponseList;
+import com.bis.sourcelead.dto.VendorOnboardTaskDTO;
+import com.bis.sourcelead.dto.VendorOnboardingTemplateDocumentDTO;
 import com.bis.sourcelead.elk.index.ClientVendorContactsIndex;
 import com.bis.sourcelead.elk.index.ClientVendorIndex;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
@@ -58,6 +62,7 @@ import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.RequirementSubmissionHistory;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.entity.VendorOnboardTasks;
 import com.bis.sourcelead.entity.VendorOnboarding;
 import com.bis.sourcelead.entity.VendorOnboardingTemplateDocuments;
@@ -65,6 +70,7 @@ import com.bis.sourcelead.enums.ApplicantSubmissionStatus;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.ClientService;
 import com.bis.sourcelead.service.ClientVendorExport;
+import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.RequirementReportService;
@@ -139,13 +145,15 @@ public class VendorRestController {
 	@Autowired
 	VendorOnboardTasksService vendorOnboardTasksService;
 	
+	@Autowired
+	OrgLocationService orgLocationService;
 	
 	
 	
 	@PreAuthorize("hasRole('ROLE_CREATE_VENDOR')")
-	@RequestMapping(value = "/saveVendor", method = RequestMethod.POST)
+	@RequestMapping(value = { "/saveVendor", "/rest/saveVendor" }, method = RequestMethod.POST)
 	@ResponseBody
-	public OrgLocations saveVendor(ClientDTO clientDTO,AddUserDTO addUserDTO,CandidateDTO candidateDTO,
+	public OrgLocationDTO saveVendor(ClientDTO clientDTO,AddUserDTO addUserDTO,CandidateDTO candidateDTO,
 			@RequestParam(value = "responderType", required = false) String responderType,
 			@RequestParam(value = "orgLocationId", required = false) Long orgLocationId, HttpServletRequest request)
 			throws Exception {
@@ -153,45 +161,51 @@ public class VendorRestController {
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-
+		OrgLocationDTO orgLocationDTO = new OrgLocationDTO();
+		
 		if (null != orgLocationId) {
 			clientDTO.setOrgLocationId(orgLocationId.toString());
 		}
 
 		OrgLocations invitedOrgLocation = clientService.storeClient(clientDTO,addUserDTO,candidateDTO, user, orgLocation, responderType, org);
 		VendorOnboarding vendorOnboarding = vendorOnboardService.saveVendorOnboarding(invitedOrgLocation, orgLocation, user);
-		invitedOrgLocation.setVendorOnboardId(vendorOnboarding.getId());
+		
+		orgLocationDTO.setId(invitedOrgLocation.getId());
+		orgLocationDTO.setVendorOrgRelationId(invitedOrgLocation.getVendorOrgRelationId());
+		orgLocationDTO.setVendorOnboardId(vendorOnboarding.getId());
 		
 		SourceLeadSessionManager.setSessionAttribute(request, "vendorCreateMsg", "Success!! New Vendor created");
-		return invitedOrgLocation;
+		return orgLocationDTO;
 	}
 	
 	
 	
 	
 	@PreAuthorize("hasRole('ROLE_CREATE_VENDOR')")
-	@RequestMapping(value = "/updateVendor", method = RequestMethod.POST)
+	@RequestMapping(value = { "/updateVendor", "/rest/updateVendor" }, method = RequestMethod.POST)
 	@ResponseBody
-	public OrgLocations updateVendor(ClientDTO clientDTO,AddUserDTO addUserDTO,CandidateDTO candidateDTO,
+	public OrgLocationDTO updateVendor(ClientDTO clientDTO,AddUserDTO addUserDTO,CandidateDTO candidateDTO,
 			@RequestParam(value="orgRelationId", required=false) Long orgRelationId,HttpServletRequest request)
 			throws Exception {
 
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-
+		OrgLocationDTO orgLocationDTO = new OrgLocationDTO();
+		
 		OrgLocations invitedOrgLocation = vendorService.updateVendor(clientDTO, addUserDTO, candidateDTO, user, orgLocations, orgRelationId, org);
+		orgLocationDTO.setId(invitedOrgLocation.getId());
 		SourceLeadSessionManager.setSessionAttribute(request, "vendorCreateMsg", "Success!! New Vendor created");
-		return invitedOrgLocation;
+		return orgLocationDTO;
 	}
 	
 	
 	
-	@RequestMapping(value = "/getVendorOnboardTemplateDocumentByOrgRelationId" , method = RequestMethod.POST)
-	 public @ResponseBody List<VendorOnboardingTemplateDocuments> getVendorOnboardTemplateDocumentByOrgRelationId(@RequestParam(value="orgRelationId", required = true) Long orgRelationId,
+	 @RequestMapping(value = { "/getVendorOnboardTemplateDocumentByOrgRelationId", "/rest/getVendorOnboardTemplateDocumentByOrgRelationId" }, method = RequestMethod.POST)
+	 public @ResponseBody List<VendorOnboardingTemplateDocumentDTO> getVendorOnboardTemplateDocumentByOrgRelationId(@RequestParam(value="orgRelationId", required = true) Long orgRelationId,
 			 @RequestParam(value="vendorOnboardId", required = true) Long vendorOnboardId,@RequestParam(value="documentType", required = false) String documentType, HttpServletRequest request) throws Exception {
 		
-		
+		List<VendorOnboardingTemplateDocumentDTO> documentsDTOList = new ArrayList<>();
 		List<VendorOnboardingTemplateDocuments> documentsList = null;
 		
 		documentsList = vendorOnboardTemplateDocumentsService.getVendorOnboaringTemplateDocumentsByVendorOnboardId(vendorOnboardId);
@@ -207,7 +221,18 @@ public class VendorRestController {
 			}
 		}
 		
-		return documentsList;
+		if(documentsList != null && documentsList.size() > 0) {
+			for(VendorOnboardingTemplateDocuments documents : documentsList) {
+				VendorOnboardingTemplateDocumentDTO docsDTO = new VendorOnboardingTemplateDocumentDTO();
+				docsDTO.setId(documents.getId());
+				docsDTO.setDocumentName(documents.getDocumentName());
+				docsDTO.setIsRequired(documents.getIsRequired());
+				docsDTO.setDocumentUUID(documents.getDocumentUUID());
+				docsDTO.setDocumentType(documents.getDocumentType());
+				documentsDTOList.add(docsDTO);
+			}
+		}
+		return documentsDTOList;
 	}
 	
 	
@@ -393,59 +418,75 @@ public class VendorRestController {
 	
 	
 	
-	@RequestMapping(value = "/getOrgRelationDetailsByOrgRelationId", method = RequestMethod.GET)
-	public @ResponseBody OrgRelations getOrgRelationDetailsByOrgRelationId(@RequestParam(value="orgRelationId", required=false) Long orgRelationId,HttpServletRequest request) throws Exception {
+	@RequestMapping(value = { "/getOrgRelationDetailsByOrgRelationId", "/rest/getOrgRelationDetailsByOrgRelationId" }, method = RequestMethod.GET)
+	public OrgRelationDTO getOrgRelationDetailsByOrgRelationId(OrgRelationDTO orgRelationDTO, @RequestParam(value="orgRelationId", required=false) Long orgRelationId,HttpServletRequest request) throws Exception {
 
-	    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		OrgLocations orgLocations = null;
+	    orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 	    OrgRelations orgRelations = orgRelationsService.getOrRelationsById(orgRelationId);
-		
+	    
+		if(orgLocations == null) {
+			orgLocations = orgLocationService.getOrgLocations(orgRelationDTO.getOrgLocationId());
+		}
+	    
 		if(orgRelations.getLocationId().getId().equals(orgLocations.getId())){
-			orgRelations.setWebSite(orgRelations.getResponderLocationId().getOrg().getWebSite());
-			orgRelations.setOrgName(orgRelations.getResponderLocationId().getOrgLocationName());
-			orgRelations.setCountry(orgRelations.getResponderLocationId().getCountry());
-			orgRelations.setState(orgRelations.getResponderLocationId().getState());
-			orgRelations.setCity(orgRelations.getResponderLocationId().getCity());
-			orgRelations.setZipCode(orgRelations.getResponderLocationId().getZipCode());
-			orgRelations.setPaymentTerms(orgRelations.getPaymentTerm());
-			orgRelations.setBillingAddress(orgRelations.getResponderLocationId().getBillingAddress());
-			orgRelations.setAddress(orgRelations.getResponderLocationId().getOrgLocationAddress());
-			orgRelations.setVendorlocationId(orgRelations.getResponderLocationId().getId());
-			orgRelations.setVendorOrgLocation(orgRelations.getResponderLocationId().getLocation());
+			orgRelationDTO.setWebSite(orgRelations.getResponderLocationId().getWebsite());
+			orgRelationDTO.setOrgName(orgRelations.getResponderLocationId().getOrgLocationName());
+			orgRelationDTO.setCountry(orgRelations.getResponderLocationId().getCountry());
+			orgRelationDTO.setState(orgRelations.getResponderLocationId().getState());
+			orgRelationDTO.setCity(orgRelations.getResponderLocationId().getCity());
+			orgRelationDTO.setZipcode(orgRelations.getResponderLocationId().getZipCode());
+			orgRelationDTO.setPaymentTerm(orgRelations.getPaymentTerm());
+			orgRelationDTO.setBillingAddress(orgRelations.getResponderLocationId().getBillingAddress());
+			orgRelationDTO.setAddress(orgRelations.getResponderLocationId().getOrgLocationAddress());
+			orgRelationDTO.setVendorlocationId(orgRelations.getResponderLocationId().getId());
+			orgRelationDTO.setVendorOrgLocation(orgRelations.getResponderLocationId().getLocation());
 		}else{
-			orgRelations.setWebSite(orgRelations.getLocationId().getOrg().getWebSite());
-			orgRelations.setOrgName(orgRelations.getLocationId().getOrgLocationName());
-			orgRelations.setCountry(orgRelations.getLocationId().getCountry());
-			orgRelations.setState(orgRelations.getLocationId().getState());
-			orgRelations.setCity(orgRelations.getLocationId().getCity());
-			orgRelations.setZipCode(orgRelations.getLocationId().getZipCode());
-			orgRelations.setBillingAddress(orgRelations.getLocationId().getBillingAddress());
-			orgRelations.setAddress(orgRelations.getLocationId().getOrgLocationAddress());
-			orgRelations.setPaymentTerms(orgRelations.getPaymentTerm());
-			orgRelations.setVendorlocationId(orgRelations.getLocationId().getId());
-			orgRelations.setVendorOrgLocation(orgRelations.getLocationId().getLocation());
+			orgRelationDTO.setWebSite(orgRelations.getLocationId().getWebsite());
+			orgRelationDTO.setOrgName(orgRelations.getLocationId().getOrgLocationName());
+			orgRelationDTO.setCountry(orgRelations.getLocationId().getCountry());
+			orgRelationDTO.setState(orgRelations.getLocationId().getState());
+			orgRelationDTO.setCity(orgRelations.getLocationId().getCity());
+			orgRelationDTO.setZipcode(orgRelations.getLocationId().getZipCode());
+			orgRelationDTO.setBillingAddress(orgRelations.getLocationId().getBillingAddress());
+			orgRelationDTO.setAddress(orgRelations.getLocationId().getOrgLocationAddress());
+			orgRelationDTO.setPaymentTerm(orgRelations.getPaymentTerm());
+			orgRelationDTO.setVendorlocationId(orgRelations.getLocationId().getId());
+			orgRelationDTO.setVendorOrgLocation(orgRelations.getLocationId().getLocation());
 		}
 		
+		if(StringUtils.isNotBlank(orgRelations.getVendorOnboardTemplateId())) {
+			orgRelationDTO.setVendorOnboardTemplateId(orgRelations.getVendorOnboardTemplateId());
+		}
+		
+		orgRelationDTO.setLevel(orgRelations.getResponderLevel());
 		
 		 Set<OrgSpoc> contactsList = orgRelations.getOrgSpocList();
 		 StringBuilder contactIds = new StringBuilder();
 		 for(OrgSpoc orgSpoc : contactsList){
 			if(orgSpoc.getStatus().equalsIgnoreCase(Constants.MEMBER_ACTIVE)){
 				contactIds.append(orgSpoc.getClientUser().getId()).append(",");
-				 orgRelations.setVendorContactFirstName(orgSpoc.getVendorUser().getFirstName());
+				orgRelationDTO.setFirstName(orgSpoc.getVendorUser().getFirstName());
 				 if(StringUtils.isNotBlank(orgSpoc.getVendorUser().getLastName())){
-					 orgRelations.setVendorContactLastName(orgSpoc.getVendorUser().getLastName());
+					 orgRelationDTO.setLastName(orgSpoc.getVendorUser().getLastName());
 				 }
-				 orgRelations.setEmail(orgSpoc.getVendorUser().getEmail());
+				 orgRelationDTO.setEmail(orgSpoc.getVendorUser().getEmail());
 				 if(StringUtils.isNotBlank(orgSpoc.getVendorUser().getMobilePhone())){
-					 orgRelations.setPhone(orgSpoc.getVendorUser().getMobilePhone());
+					 orgRelationDTO.setPhoneNumber(orgSpoc.getVendorUser().getMobilePhone());
 				 }
-				 orgRelations.setSpocStatus(orgSpoc.getSpocStatus());
+				 orgRelationDTO.setSpocStatus(orgSpoc.getSpocStatus());
+				 UserRole userRole = userRoleDao.getUserDetailsByUserIdAndLocationId(orgSpoc.getVendorUser().getId(), orgSpoc.getVendorLocationId().getId());
+				 if(userRole != null) {
+					 if(StringUtils.isNotBlank(userRole.getExtensionNumber())) {
+						 orgRelationDTO.setExtensionNumber(userRole.getExtensionNumber());
+					 }
+				 }
+				 
 			}
 		 }
 		 String contactIdsStr = contactIds.toString();
-		 orgRelations.setOrgSpocList(contactsList);
-		 orgRelations.setClientContactIds(contactIdsStr.substring(0, contactIdsStr.length()-1)); 
-		 return orgRelations;
+		 orgRelationDTO.setClientContactIds(contactIdsStr.substring(0, contactIdsStr.length()-1)); 
+		 return orgRelationDTO;
 		
 		}
 	
@@ -1709,20 +1750,18 @@ public class VendorRestController {
 	}
 	
 	
-	@RequestMapping(value = "/getVendorOnboardTasksListByTemplateId", method = RequestMethod.GET)
-	 @ResponseBody List<VendorOnboardTasks> getVendorOnboardTasksListByTemplateId(@RequestParam(value="orgRelationId", required = true) Long orgRelationId,
+	 @RequestMapping(value = { "/getVendorOnboardTasksListByTemplateId", "/rest/getVendorOnboardTasksListByTemplateId" }, method = RequestMethod.GET)
+	 public @ResponseBody List<VendorOnboardTaskDTO> getVendorOnboardTasksListByTemplateId(@RequestParam(value="orgRelationId", required = true) Long orgRelationId,
 			 @RequestParam(value="vendorOnboardId", required = true) Long vendorOnboardId,HttpServletRequest request) throws Exception{
 		
-		List<VendorOnboardTasks> onboardTasksList = new ArrayList<VendorOnboardTasks>();
 		 List<VendorOnboardTasks> vendorOnboardtasksList = new ArrayList<VendorOnboardTasks>();
 		 List<VendorOnboardTasks> tasksList = null;
+		 List<VendorOnboardTaskDTO> tasksDTOList = new ArrayList<>();
 		
 		 tasksList = vendorOnboardTasksService.getVendorOnboardTasksByVendorOnboardId(vendorOnboardId);
 		 if(tasksList != null && tasksList.size() > 0){
 			 vendorOnboardtasksList.addAll(tasksList);
 		 }
-		 
-		
 		 
 		 OrgRelations orgRelations = orgRelationsService.getOrgRelationById(orgRelationId);
 		 
@@ -1744,7 +1783,6 @@ public class VendorRestController {
 			 for(VendorOnboardTasks tasks : vendorOnboardtasksList){
 				 
 				 List<String> usersList = new ArrayList<String>();
-					 
 					 if(StringUtils.isNotBlank(tasks.getAssignToUsers())){
 						 String[] userIds = tasks.getAssignToUsers().split(",");
 						 
@@ -1761,11 +1799,17 @@ public class VendorRestController {
 						 }
 					 }
 					 
-					 tasks.setUsersList(usersList); 
-					 onboardTasksList.add(tasks);
+					 VendorOnboardTaskDTO taskDTO = new  VendorOnboardTaskDTO();
+					 taskDTO.setId(tasks.getId());
+					 taskDTO.setPriority(tasks.getPriority());
+					 taskDTO.setTaskRepeat(tasks.getTaskRepeat());
+					 taskDTO.setTaskName(tasks.getTaskName());
+					 taskDTO.setDueAfterString(tasks.getDueAfterString());
+					 taskDTO.setUsersList(usersList); 
+					 tasksDTOList.add(taskDTO);
 			 }
 		 }
-		 return onboardTasksList;
+		 return tasksDTOList;
 		}
 	
 	

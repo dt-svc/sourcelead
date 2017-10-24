@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URLDecoder;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.ServletOutputStream;
@@ -31,6 +32,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.CandidateResumeDTO;
+import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.dto.RestrictDayDTO;
 import com.bis.sourcelead.elk.index.CandidateIndex;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
@@ -125,23 +128,37 @@ public class CandidateResumeRestController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/candidateResumesListByCandidateId", method = RequestMethod.POST)
-	public @ResponseBody String candidateResumesListByCandidateId(@RequestParam(value = "candidateId", required = false) String candidateId, HttpServletRequest request) throws Exception
+	public @ResponseBody ResponseList<CandidateResumeDTO> candidateResumesListByCandidateId(@RequestParam(value = "candidateId", required = false) String candidateId, HttpServletRequest request) throws Exception
 	{
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		ResponseList<CandidateResumeDTO> resumeList = new ResponseList<>();
 		String msg = "";
 		String resultJson = null;
 		Integer status = Constants.CANDIDATE_ACTIVE;
+		List<CandidateResumeDTO> candidateResumesDTOList = new ArrayList<>();
 		if (candidateId != null) {
 			List<CandidateResumes> candidateResumesList = candidateResumesService.getCandidateResumesListByCandidateIdAndStatus(Long.parseLong(candidateId), status);
 			for (CandidateResumes candidateResume : candidateResumesList) {
+				CandidateResumeDTO candidateResumeDTO = new CandidateResumeDTO();
 				User createdUser = userService.getUserByUserCode(candidateResume.getCreatedBy());
 				if (createdUser != null) {
 					StringBuilder name = new StringBuilder();
 					candidateResume.setCreatedBy(name.append(createdUser.getFirstName()).append(" ").append(createdUser.getLastName()).toString());
 				}
+				candidateResumeDTO.setId(candidateResume.getId());
+				candidateResumeDTO.setTitle(candidateResume.getTitle());
+				candidateResumeDTO.setDescription(candidateResume.getDescription());
+				candidateResumeDTO.setCreatedBy(candidateResume.getCreatedBy());
+				candidateResumeDTO.setFileContentType(candidateResume.getFileContentType());
+				candidateResumeDTO.setFileName(candidateResume.getFileName());
+				candidateResumeDTO.setFileURL(candidateResume.getFileURL());
+				candidateResumeDTO.setCandidateResumeUpdateDateToString(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), candidateResume.getUpdatedDate()));
+				candidateResumesDTOList.add(candidateResumeDTO);
+				
 			}
-			resultJson = commonUtil.toJSON(candidateResumesList);
 		}
-		return resultJson;
+		resumeList.setData(candidateResumesDTOList);
+		return resumeList;
 	}
 	
 	/**
@@ -171,7 +188,7 @@ public class CandidateResumeRestController {
 			candidateResume.setStatus(Constants.CANDIDATE_IN_ACTIVE);
 			candidateResume.setUpdatedBy(user.getUserCode());
 			candidateResume.setUpdatedDate(commonUtil.currentDate());
-			candidateResumesService.updateCandidateResume(candidateResume);
+			candidateResume = candidateResumesService.updateCandidateResume(candidateResume);
 			if (candidateResume.getTitle() != null && candidateResume.getTitle() != ""
 					&& candidateResume.getTitle() != "undefined") {
 				activitySummary.append("Resume").append(" : ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateResume.getTitle()).append(Constants.NEW_VALUE_TAG_END).append(" ");

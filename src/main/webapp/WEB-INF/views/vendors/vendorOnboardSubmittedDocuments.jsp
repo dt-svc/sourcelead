@@ -22,7 +22,7 @@ function vendorOnboardDocumentsList(orgRelationId){
              		 var report = json[i]; 
              		   
 						result = result +'    <div class="col-md-2 text-center mb10">';
-						result = result +'    <span>'+report.documentName+'</span>';
+						result = result +'    <span class="tbldata-dotdot-sm" title="'+report.documentName+'">'+report.documentName+'</span>';
 						if(report.uploadedFileUrl != null && report.uploadedFileUrl != 'undefined' && report.uploadedFileUrl != ''){
 							result = result +'      <a href=\"'+report.uploadedFileUrl+'\"><div class="uploaded_file mt5"> <i class="fa fa-file-text-o fa-4x"></i>  ';
 							result = result +'<p class="small mt tbldata-dotdot-100" title="'+report.uploadedFileName+'">'+report.uploadedFileName+'</p>';
@@ -35,8 +35,8 @@ function vendorOnboardDocumentsList(orgRelationId){
 						result = result +'</div>';
 		        	}
 	        	}else{
-	        		result = result +'    <div class="col-md-2 text-center mb10">  ';
-	        		result = result +'<p>No Documents Found</p>';
+	        		result = result +'    <div class="col-md-12 text-center mb10">  ';
+	        		result = result +'<p class="dataTables_empty"></p>';
 	        		result = result +'    </div> ';
 	        	}
 				result = result +'    </div>';

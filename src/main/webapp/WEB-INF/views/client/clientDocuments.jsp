@@ -190,7 +190,7 @@ function clientDocumentsList(clientLocationId,orgRelationId){
 	                     result = result +"</table>";
 	                    
 	                     $("#clientDocumentsList").append(result); 
-	                     documentpagination(); 
+	                     clientDocsPagination(); 
 	                     //msgFadein();
         },
           
@@ -205,13 +205,17 @@ function viewClientDocument(docId,title){
 </script>
 
 <script>
-function documentpagination(){  
+function clientDocsPagination(){  
     $('#clientDocumentsPagination').DataTable( { 
     	"scrollCollapse": false,
-    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
     	"bLengthChange": true,
     	"bDestroy": true,
     	"ordering": true,
+    	"aoColumnDefs": [{
+	           'bSortable': false,
+	           'aTargets': 8
+			}],
     	"oLanguage": {
      		"sSearch": "",
      		 "sZeroRecords": "", "sEmptyTable": ""
@@ -451,13 +455,13 @@ function getSpocsList(orgRelationId){
 	$.ajax({
     	type: "POST",
         url: sourceleadUrl+"/getOrgSpocsList?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId+"&type=Client", 
-        success: function(data) {
-        	var json = JSON.parse(data);
+        success: function(json) {
+        	//var json = JSON.parse(data);
         	var output = "";
         	output = output + "<option value=''>Client Contact</option>"; 
-        	for (var i=0; i<json.length; i++)
+        	for (var i=0; i<json.data.length; i++)
 			{
-	        		var opt = json[i];
+	        		var opt = json.data[i];
 	        		output = output + "<option value='" +opt.spocUserId+ "'>"+opt.spocName+"&nbsp;("+opt.ownerName+")</option>";
 			}
         	$("#spoc").empty();

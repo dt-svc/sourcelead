@@ -1038,8 +1038,8 @@ private void terminatedMailToEmployee(User loginUser, ProjectMembersHistory pmh,
      	     userProfileDTO.setLastName(user.getLastName());
      	     userProfileDTO.setUserId(user.getId());
      	  
-     	     if(user.getDocFile() != null && user.getFileContentType() != null){
-        	    userProfileDTO.setProfileImageUrl(sourceleadUrl+"/displayUserImage/"+user.getId());
+     	     if(StringUtils.isNoneBlank(user.getFileUrl())){
+        	    userProfileDTO.setProfileImageUrl(user.getFileUrl());
    			 }else{
    				userProfileDTO.setProfileImageUrl(sourceleadUrl+"/resources/images/userprofile-img.png");
    			 }

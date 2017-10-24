@@ -217,37 +217,38 @@ function addAttachment(entityRowId,from){
 <div id="divAddRowTr2" style="display: none; float: left;">
          <div class="expDetails">
 			          <div class="col-xs-12 col-sm-12 col-md-12 expAddRo myForm noPad clearfix">            
-						<div class="col-md-4 mb10 chosen-custom minHe">
+						<div class="col-md-4 minHeight chosen-custom">
 						<label>Category Type<span class="text-danger">&nbsp;*</span></label>
 							<select id="categoryTypeREPLACEROWID" name="expenseEntry[REPLACENAMEROWID].categoryType" class="form-control" field-name="Category Type" data-validation="required" onchange="getAmountValueCategory(REPLACEROWID);">
 							   <option value="">Select Category Type</option>				 							   
 							</select>
 						</div>
-						<div class="col-md-4 mb10 minHe">
+						<div class="col-md-4 minHeight">
 							<label>Date Occurred<span class="text-danger">&nbsp;*</span></label>
 							<input type="text" id="categoryDateREPLACEROWID" name="expenseEntry[REPLACENAMEROWID].dateOccurred" readonly="readonly"  class="form-control calendar"  value="" placeholder="Date" field-name="Date" data-validation="required"> 
 						</div>
-						<div class="col-md-4 mb10 minHe">
+						<div class="col-md-4 minHeight">
 							<label>Receipt Issued by</label>
 							<input type="text" id="receiptIssuedByREPLACEROWID" name="expenseEntry[REPLACENAMEROWID].receiptIssuedBy" class="form-control" value=""  placeholder="Receipt Issued By" field-name="Receipt Issued By" data-validation-optional="true" data-validation="validate_length length1-100"> 
 						</div>
 
-						<div class="col-md-4 mb10 chosen-custom minHe">
+						<div class="col-md-4 minHeight chosen-custom">
 							<label>Payment Mode<span class="text-danger">&nbsp;*</span></label>
 							<select id="paymentModeREPLACEROWID" name="expenseEntry[REPLACENAMEROWID].paymentMode" class="form-control" field-name="Payment Mode" data-validation="required">
 							         <option value="">Select Mode</option>
 							          <c:forEach var="paymentMode" items="${expEntry.paymentModes}">
-							                  <option value="${paymentMode}">${paymentMode}</option>
+							                   <option ${paymentMode == 'Cash' ? 'selected' : ''} value="${paymentMode}">${paymentMode}</option>
 							          </c:forEach>
 							</select>
 						</div>	
-	                  <div id="amountDivREPLACEROWID" class="col-md-4 mb10 valid_ation">
+	                  <div id="amountDivREPLACEROWID" class="col-md-4 minHeight valid_ation">
 		                   <label>Amount<span class="text-danger">&nbsp;*</span></label>
 							  <div class="input-group positionRelative">
 									<div class="input-group-btn tblminwidth-75 select-field dropdown_inr" style="min-width: 65px !important;">
 											  <select class="btn btn-info" id="expenseRateTypeREPLACEROWID" name="expenseEntry[REPLACENAMEROWID].categoryAmountType" field-name="Rate Type" field-name="Rate Type" data-validation="required">
 											  	   <c:forEach var="currencyType" items="${expEntry.currencyCodeList}">
-									                  <option  value="${currencyType}">${currencyType}</option>
+									                 <%--  <option  value="${currencyType}">${currencyType}</option> --%>
+									                  <option ${currencyType == expEntry.loginCurrencyCode ? 'selected' : ''} value="${currencyType}">${currencyType}</option>
 									               </c:forEach>
 											  </select>
 								</div>
@@ -256,22 +257,22 @@ function addAttachment(entityRowId,from){
 	                 </div>
 	                 
 	                 
-	                 <div class="col-md-4 mb10 minHe">
+	                 <div class="col-md-4 minHeight">
 							<label>Paid by<span class="text-danger">&nbsp;*</span></label>
 							<select id="paidByREPLACEROWID" name="expenseEntry[REPLACENAMEROWID].paidBy" class="form-control" placeholder="Paid By" field-name="Paid By" data-validation="required">
-							         <option value="">Select paid By</option>
+							         <option value="" disabled>Select paid By</option>
 							         <c:forEach var="paidByType" items="${expEntry.paidByType}">
-									                  <option  value="${paidByType}">${paidByType}</option>
+							         			<option ${paidByType == 'Company' ? 'selected' : ''} value="${paidByType}">${paidByType}</option>
 									 </c:forEach>
 							</select> 
 					</div>
 	                 
 	                 
-					<div class="col-md-4 mb10">
+					<div class="col-md-12 minHeight mb">
 						<label>Description<span class='text-danger'>&nbsp;*</span></label>
-						<textarea rows="2"  id="entryDesREPLACEROWID" name="expenseEntry[REPLACENAMEROWID].entryDescription" class="form-control" placeholder="Description" field-name="Description" data-validation="required validate_Space validate_length length1-5000" onblur="removeWhiteSpacesAdd(REPLACEROWID);"></textarea>
+						<textarea rows="2"  id="entryDesREPLACEROWID" name="expenseEntry[REPLACENAMEROWID].entryDescription" class="form-control" placeholder="Description" field-name="Description" data-validation="required" onblur="removeWhiteSpacesAdd(REPLACEROWID);"></textarea>
 					</div>		
-	                   <div id='attachmentSection' class='col-md-4 mb10'>
+	                   <div id='attachmentSection' class='col-md-4 minHeight'>
 	                   <label>Attachments<span class="text-danger">&nbsp;*</span></label>
 	                   <i class='fa fa-info-circle' title='Allowed File Formats: ppt,pptx,pps,ppsx,doc,docx,pdf,rtf,odt,xls,xlsx,csv,  zip,txt,jpg,jpeg,bmp,png,gif,eps,tiff,TGA,psd,svg,msg,wpd,wps      Allowed Size : 2MB '></i>
 	                   <div class="uploadFile timesheet_week_comm">
@@ -302,11 +303,10 @@ function addAttachment(entityRowId,from){
 <script type="text/javascript">
 function removeWhiteSpacesAdd(rowCount){
 	var el = document.getElementsByName("entryDes"+rowCount)[0];
-	var val = el.value.replace(/(^\s*)|(\s*$)/gi,"")
+	var val = el.value.replace(/(^\s*)|(\s*$)/gi,"").replace(/\r?\n|\r/g);
 	$("#entryDes"+rowCount).val(val);
-}
+	}
 </script>
-
 <script>
 function addExpenseRow(from){ 
 	if ($('#add_expenses_form').validate(false, validationSettings)){

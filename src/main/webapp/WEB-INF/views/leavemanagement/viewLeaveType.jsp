@@ -247,6 +247,9 @@ function msgFadein() {
 
 <script>
 function openLeaveTypeSummary(typeId){
+	$(".new_side_wrap").addClass("new_side_wrap_active");
+	$(".side_mask").fadeIn(200);
+	$("body").css('overflow-y', 'hidden');
 	$.ajax({
 	   	type: "POST",
 	   	url: sourceleadUrl+"/leaveTypeSummary?&leaveTypeId="+typeId,	    	   

@@ -317,8 +317,8 @@ public class ClientServiceImpl implements ClientService {
 			}else{
 				org.setClientBillingAddress("--");
 			}
-			if (StringUtils.isNotBlank(clientDTO.getPaymentTerm())) {
-				org.setPaymentTerm(clientDTO.getPaymentTerm());
+			if (StringUtils.isNotBlank(clientDTO.getPaymentTerms())) {
+				org.setPaymentTerm(clientDTO.getPaymentTerms());
 			}else{
 				org.setPaymentTerm("--");
 			}
@@ -806,9 +806,7 @@ public class ClientServiceImpl implements ClientService {
 				if (StringUtils.isNotBlank(clientDTO.getBillingAddress())) {
 					org.setClientBillingAddress(clientDTO.getBillingAddress());
 				}
-				if (StringUtils.isNotBlank(clientDTO.getPaymentTerm())) {
-					org.setPaymentTerm(clientDTO.getPaymentTerm());
-				}
+				
 				orgForElk = orgService.updateOrg(org);
 			}
 			if (StringUtils.isNotBlank(clientDTO.getCity())) {
@@ -902,6 +900,10 @@ public class ClientServiceImpl implements ClientService {
 					orgRelation.setResponderLevel(clientDTO.getLevel());
 				}
 			}
+			
+			if (StringUtils.isNotBlank(clientDTO.getPaymentTerms())) {
+				orgRelation.setPaymentTerm(clientDTO.getPaymentTerms());
+			}
 			// orgRelation.setLevel(jsonObj.getString(level));
 			orgRelationsForElk = orgRelationsService.addOrgRelations(orgRelation);
 
@@ -925,9 +927,7 @@ public class ClientServiceImpl implements ClientService {
 				}else{
 					org.setClientBillingAddress(null);
 				}
-				if (StringUtils.isNotBlank(clientDTO.getPaymentTerm())) {
-					org.setPaymentTerm(clientDTO.getPaymentTerm());
-				}
+				
 				orgForElk = orgService.updateOrg(org);
 			}
 			if (StringUtils.isNotBlank(clientDTO.getCompanyWebsite())) {
@@ -965,6 +965,7 @@ public class ClientServiceImpl implements ClientService {
 			} else {
 				orgLocations.setZipCode("");
 			}
+			
 
 			/*
 			 * if(jsonObj.getString(emailId) !=null &&
