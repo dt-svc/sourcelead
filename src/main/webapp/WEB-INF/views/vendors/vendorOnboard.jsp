@@ -140,7 +140,7 @@
 										<select  class="chosen-select form-control" name="industryName" id="industryName" field-name="Industry" data-validation-optional="true">
 										<option value="">--Select Industry--</option>
 										 <c:forEach var="industry" items="${industryList}">
-							                     <option value="${industry.name}">${industry.name}</option>
+							                     <option value="${industry.name}" ${industry.name  == 'Recruitment / Staffing' ? 'selected' : ''}>${industry.name}</option>Recruitment / Staffing
 						                </c:forEach>  
 						                 </select>
 										</div>
@@ -181,12 +181,12 @@
 										<div class="col-md-9">
 											<select class="form-control" id="currency" name="currency">
 											    <option value="">--Select Currency--</option>
-												<option value="INR">INR</option>
-												<option value="AUD">AUD</option>
-												<option value="USD">USD</option>
-												<option value="GBP">GBP</option>
-												<option value="SGD">SGD</option>
-												<option value="EUR">EUR</option>
+												<option value="INR" ${SourceLeadWeb_currencyCode == 'INR' ? 'selected' : ''}>INR</option>
+												<option value="AUD" ${SourceLeadWeb_currencyCode == 'AUD' ? 'selected' : ''}>AUD</option>
+												<option value="USD" ${SourceLeadWeb_currencyCode == 'USD' ? 'selected' : ''}>USD</option>
+												<option value="GBP" ${SourceLeadWeb_currencyCode == 'GBP' ? 'selected' : ''}>GBP</option>
+												<option value="SGD" ${SourceLeadWeb_currencyCode == 'SGD' ? 'selected' : ''}>SGD</option>
+												<option value="EUR" ${SourceLeadWeb_currencyCode == 'EUR' ? 'selected' : ''}>EUR</option>
 											</select>
 										</div>
 									</div>
@@ -281,9 +281,9 @@
 							       </div>
 							       
 							       <div class="form-group">
-							         <label class="col-md-3">Branch Number(Routing Code)</label>
+							         <label class="col-md-3">Branch Number(Routing Code)<span class="text-danger">&nbsp;*</span></label>
 							        <div class="col-md-9 validLabel">
-							             <input type="text" id="branchNumber" name="branchNumber" field-name="Branch Number"  data-validation-optional="true"  data-validation="validate_Space validate_length length1-100"  value="" class="form-control" >
+							             <input type="text" id="branchNumber" name="branchNumber" field-name="Branch Number"   data-validation="required validate_Space validate_length length1-100"  value="" class="form-control" >
 							         </div>
 							       </div>
 							       

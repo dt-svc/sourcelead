@@ -257,6 +257,12 @@
 						result = result + '<span>'+allowFreeLance+'</span><div class="clearfix"></div>';
 						result = result + '<div class="clearfix"></div>';
 						result = result + '</div>';
+						
+						result = result + '<div class="project_details_cta">';
+						result = result + '<strong>Timesheet Attachment Required:</strong>';
+						result = result + '<span>'+isTimesheetAttachmentRequired+'</span><div class="clearfix"></div>';
+						result = result + '<div class="clearfix"></div>';
+						result = result + '</div>';
 
 						result = result + '<div class="project_details_cta">';
 						result = result + '<strong>Allow Offshore Resource:</strong>';
@@ -908,8 +914,7 @@ function projectStatus(){
 					url : sourceleadUrl
 							+ "/getApproversByUserId?${_csrf.parameterName}=${_csrf.token}&currentApproverId="
 							+ currentApproverId,
-					success : function(data) {
-						var json = JSON.parse(data);
+					success : function(json) {
 						var output = "";
 						output = output
 								+ "<option value=''>-Select Manager-</option>";
@@ -987,8 +992,7 @@ function showLevel2Div(){
 						.ajax({
 							type : "POST",
 							url : sourceleadUrl + "/getApproversByUserId?${_csrf.parameterName}=${_csrf.token}&currentApproverId=" + currentApproverId,
-							success : function(data) {
-								var json = JSON.parse(data);
+							success : function(json) {
 								var output = "";
 								output = output
 										+ "<option value=''>-Select Manager-</option>";

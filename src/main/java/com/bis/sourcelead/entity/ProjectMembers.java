@@ -431,6 +431,10 @@ public class ProjectMembers implements Serializable {
 	@JsonProperty
 	private String billRateStr;
 	
+	@Transient
+	@JsonProperty
+	private String projectClientUUID;
+	
 	public Long getSubmissionInvoiceId() {
 		return submissionInvoiceId;
 	}
@@ -1469,6 +1473,17 @@ public class ProjectMembers implements Serializable {
 
 	public void setMasterCandidateId(MasterCandidate masterCandidateId) {
 		this.masterCandidateId = masterCandidateId;
+	}
+
+	public String getProjectClientUUID() {
+		if(projectClientsId != null) {
+			projectClientUUID = projectClientsId.getUuid();
+		}
+		return projectClientUUID;
+	}
+
+	public void setProjectClientUUID(String projectClientUUID) {
+		this.projectClientUUID = projectClientUUID;
 	}
 
 	
