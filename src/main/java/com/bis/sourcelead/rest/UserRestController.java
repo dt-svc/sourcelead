@@ -1041,7 +1041,7 @@ private void terminatedMailToEmployee(User loginUser, ProjectMembersHistory pmh,
      	     if(StringUtils.isNoneBlank(user.getFileUrl())){
         	    userProfileDTO.setProfileImageUrl(user.getFileUrl());
    			 }else{
-   				userProfileDTO.setProfileImageUrl(sourceleadUrl+"/resources/images/userprofile-img.png");
+   				userProfileDTO.setProfileImageUrl("/resources/images/userprofile-img.png");
    			 }
      	     
 	         try {
