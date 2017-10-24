@@ -190,7 +190,7 @@ public class ProjectsDashboardRestController {
 				User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 				Long candidateId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "candidateId");
 
-				String[] tableColumns = {"projectSequeneNumber", "projectName", "projectManagers", "invoiceFrequency", "projectDate", "client","status"};
+				String[] tableColumns = {"projectSequeneNumber", "projectName", "projectManagers", "invoiceFrequency", "budget", "projectDate", "client","status"};
 			    int sortColumnIndex = 1; //by default sorting using updated date
 				String sortColumnOrder = "desc"; //by default descending order
 				if(projectsDTO.getOrder() != null && !projectsDTO.getOrder().isEmpty()) {
