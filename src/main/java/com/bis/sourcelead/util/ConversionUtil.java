@@ -402,6 +402,12 @@ public class ConversionUtil {
 		return formatter.format(date);
 		
 	}
+	
+	public static String getActionDateddMMMYYYYHHMMSS(Date date) {
+		SimpleDateFormat formatter = new SimpleDateFormat("dd MMM yyyy hh:mm:ss a");
+		return formatter.format(date);
+		
+	}
 
 	public Date getDateFromMMDDYYY_HHMMSS(String dateStr) {
         Date date = null;

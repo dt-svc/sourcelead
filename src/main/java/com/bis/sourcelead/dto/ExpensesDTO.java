@@ -74,7 +74,7 @@ private static final long serialVersionUID = 1L;
 	}
 
 	
-	public long getProjectId() {
+	public Long getProjectId() {
 		return projectId;
 	}
 

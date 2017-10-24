@@ -186,7 +186,7 @@ window.onload = function () {
              <div class="form-group">
               <label class="col-md-3">Payment Term</label>
               <div class="col-md-9">
-                  <select class="form-control selectpicker" id="PaymentTermId" name="PaymentTerm">
+                  <select class="form-control selectpicker" id="PaymentTermId" name="paymentTerms">
                   <option value="">Select Payment Term</option>
                     <option value="10 days">10 days</option>
                     <option value="15 days">15 days</option>
@@ -236,7 +236,7 @@ window.onload = function () {
 	             <div class="row">
 	             <label class="col-md-5">Extension </label>
 	             <div class="col-md-7">
-	             <input type="text" class="form-control" id="extensionNumber" name="extensionNumber" data-validation="validate_Space validate_length length4-5" data-validation-optional="true">
+	             <input type="text" class="form-control" id="extensionNumber" name="extensionNumber" data-validation="validate_Space validate_length length1-5" data-validation-optional="true">
 	             </div>
 	             </div>
              </div>
