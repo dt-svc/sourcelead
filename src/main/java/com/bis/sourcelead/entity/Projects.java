@@ -320,6 +320,14 @@ public class Projects implements Serializable{
     private String projectClientUUID;
     
     @Transient
+   	@JsonProperty
+    private String projectbudgetAmount;
+    
+    @Transient
+   	@JsonProperty
+    private String projectbudgetCurrency;
+    
+    @Transient
     @JsonProperty
     Set<ProjectDocuments>  projectDocumentsList;
     
@@ -967,5 +975,21 @@ public class Projects implements Serializable{
 
 	public void setCurrency(String currency) {
 		this.currency = currency;
+	}
+
+	public String getProjectbudgetAmount() {
+		return projectbudgetAmount;
+	}
+
+	public void setProjectbudgetAmount(String projectbudgetAmount) {
+		this.projectbudgetAmount = projectbudgetAmount;
+	}
+
+	public String getProjectbudgetCurrency() {
+		return projectbudgetCurrency;
+	}
+
+	public void setProjectbudgetCurrency(String projectbudgetCurrency) {
+		this.projectbudgetCurrency = projectbudgetCurrency;
 	}
 }

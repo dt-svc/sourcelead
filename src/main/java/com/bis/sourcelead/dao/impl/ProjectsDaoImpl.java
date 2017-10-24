@@ -30,6 +30,7 @@ import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectApproverHierarchy;
+import com.bis.sourcelead.entity.ProjectBudget;
 import com.bis.sourcelead.entity.ProjectClients;
 import com.bis.sourcelead.entity.ProjectTasks;
 import com.bis.sourcelead.entity.Projects;
@@ -38,6 +39,7 @@ import com.bis.sourcelead.enums.Project_Status;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.exception.SourceLeadObjectNotFoundException;
 import com.bis.sourcelead.payroll.entity.Checks;
+import com.bis.sourcelead.service.ProjectBudgetService;
 import com.bis.sourcelead.service.ProjectMembersHistoryService;
 import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.util.CommonUtil;
@@ -67,6 +69,8 @@ public class ProjectsDaoImpl implements ProjectsDao{
     @Autowired
     ProjectMembersService projectMembersService;
     
+    @Autowired
+    ProjectBudgetService projectBudgetService;
     
     @Value("${SourceLead.100}")
 	private String notFound;
@@ -702,6 +706,19 @@ public class ProjectsDaoImpl implements ProjectsDao{
 							    	}
 							    }
 							    
+							    
+							    Set<ProjectBudget>  budgetList = projects.getProjectBudget();
+							    if(budgetList != null && budgetList.size() > 0) {
+							    	 double budgetSum = budgetList.stream().filter(p->p.getEstimatedBudgetValue() !=null).mapToDouble(p->Double.parseDouble(p.getEstimatedBudgetValue())).sum();
+										if(budgetList.size() >0) {
+											ProjectBudget projectBudget = budgetList.iterator().next();
+											projects.setProjectbudgetCurrency(projectBudget.getEstimatedBudgetCurrency());
+										}
+										projects.setProjectbudgetAmount(String.valueOf(budgetSum));
+							    }
+							   
+								
+								
 							    orgProjectsList.add(projects);
 				    		 }
 				    		 

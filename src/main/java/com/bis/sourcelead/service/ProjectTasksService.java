@@ -56,7 +56,9 @@ public interface ProjectTasksService {
 	public void updateTaskName(String taskName, String taskId, Long userId)throws Exception;
 	
 	public void updateTaskPercentage(Integer percentage, String taskId, Long userId)throws Exception;
-    
+	
+	public void updateBillingType(String billing, String taskId, Long userId)throws Exception;
+	
 	public String saveProjectTasksDTOByProjectId(Long projectId, ProjectTasksDTO projectTasksDTO, Long userId) throws Exception;
 	
 	public Long getProjectTasksGeneratedIdByProjectId(Long projectId,Integer generatedIdCount) throws Exception;
