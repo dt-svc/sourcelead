@@ -47,7 +47,8 @@ import com.bis.sourcelead.dto.OnBoardingTemplateDTO;
 import com.bis.sourcelead.dto.OnboardTasksDTO;
 import com.bis.sourcelead.dto.OrgLocationDTO;
 import com.bis.sourcelead.dto.OrgRelationDTO;
-import com.bis.sourcelead.dto.VendorOnboardResponseList;
+import com.bis.sourcelead.dto.OrgSpocDTO;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.VendorOnboardTaskDTO;
 import com.bis.sourcelead.dto.VendorOnboardingTemplateDocumentDTO;
 import com.bis.sourcelead.elk.index.ClientVendorContactsIndex;
@@ -1729,14 +1730,12 @@ public class VendorRestController {
 	}
 	
 	
-	@RequestMapping(value = "/getVendorAssociatesListForVendors")
-	public String getVendorAssociatesListForVendors(@RequestParam(value = "orgRelationId", required = false) Long orgRelationId, HttpServletRequest request) throws Exception
+	@RequestMapping(value = { "/getVendorAssociatesListForVendors", "/rest/getVendorAssociatesListForVendors" }, method = RequestMethod.POST)
+	public ResponseList<CandidateDTO> getVendorAssociatesListForVendors(@RequestParam(value = "orgRelationId", required = false) Long orgRelationId, HttpServletRequest request) throws Exception
 	{
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		String resultJson;
-		List<Candidate> candidateList = candidateService.getCandidatesListByOrgLocationIdAndOrgRelationId(orgLocations.getId(), orgRelationId);
-		resultJson = commonUtil.toJSON(candidateList);
-		return resultJson;
+		ResponseList<CandidateDTO> candidateList = candidateService.getCandidateListByOrgLocationIdAndOrgRelationId(orgLocations.getId(), orgRelationId);
+		return candidateList;
 	}
 	
 	

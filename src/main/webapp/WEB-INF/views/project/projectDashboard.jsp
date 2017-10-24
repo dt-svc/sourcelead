@@ -67,9 +67,9 @@ overflow-x: auto;
                         	<!-- <li><input id="c5" type="checkbox" name="projectStatus" value ="All" onclick="filter();"  ><label for="c5">All</label></li> -->
                         	<li><input id="c7" name="projectStatus" type="checkbox" value ="In-Progress"  onclick="filter();"><label for="c7">In-Progress</label></li>
 							<li><input id="c9" type="checkbox" name="projectStatus" value ="Not Started"  onclick="filter();"><label for="c8">Not Started</label></li>
-							<li><input id="c8" type="checkbox"  name="projectStatus"  type="checkbox" value ="Completed"  onclick="filter();"><label for="c8">Completed</label></li>
-               				<li><input id="c8" type="checkbox"  name="projectStatus"  type="checkbox" value ="On-Hold"  onclick="filter();"><label for="c8">On-Hold</label></li>
-               				<li><input id="c10" type="checkbox"  name="projectStatus"  type="checkbox" value ="Dropped"  onclick="filter();"><label for="c8">Dropped</label></li>
+							<li><input id="c8" type="checkbox"  name="projectStatus"   value ="Completed"  onclick="filter();"><label for="c8">Completed</label></li>
+               				<li><input id="c8" type="checkbox"  name="projectStatus"  value ="On-Hold"  onclick="filter();"><label for="c8">On-Hold</label></li>
+               				<li><input id="c10" type="checkbox"  name="projectStatus"   value ="Dropped"  onclick="filter();"><label for="c8">Dropped</label></li>
                         </ul>
                     </div>                	
                 </li>
@@ -288,7 +288,7 @@ function projectsPagination(url,sourceleadUrl){
               "render": function ( data, type, opt, meta ) {
             	  var result = "";
             	  
-            	  '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_PROJECT\',\'ROLE_VIEW_EDIT_PROJECT\',\'ROLE_VIEW_PROJECT_TASKS\',\'ROLE_VIEW_EDIT_PROJECT_TASKS\',\'ROLE_VIEW_PROJECT_EMPLOYEES\',\'ROLE_VIEW_EDIT_PROJECT_EMPLOYEES\',\'ROLE_VIEW_DELETE_PROJECT_EMPLOYEES\')">'
+            	  '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_PROJECT\',\'ROLE_VIEW_EDIT_PROJECT\',\'ROLE_CREATE_PROJECT_TASKS\',\'ROLE_VIEW_EDIT_PROJECT_TASKS\',\'ROLE_VIEW_PROJECT_EMPLOYEES\',\'ROLE_VIEW_EDIT_PROJECT_EMPLOYEES\',\'ROLE_VIEW_DELETE_PROJECT_EMPLOYEES\')">'
  		    		if(opt.projectMode != null && opt.projectMode == 'Draft'){
  		    			result = result +'<td data-title="Name"><a href="'+sourceleadUrl+'/project?projectUUID='+opt.projectUUID+'" ><div class="proj_show tbldata-dotdot_140"><span class="pull-left" title="'+opt.projectName+'">'+opt.projectName+'</span><i class="fa fa-binoculars pull-right"></i></div></a></td>';
  		    		}else{

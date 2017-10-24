@@ -1425,20 +1425,38 @@ public class ClientServiceImpl implements ClientService {
 		emailMessage.setFromEmail(defaultFromEmailAddressForProd);
 		emailMessage.setCreatedBy(loginUser.getUserCode());
 		StringBuilder emailMsgBuilder = new StringBuilder();
-		emailMessage.setFromName(emailMsgBuilder.append(loginUser.getFirstName()).append(" ")
-				.append(loginUser.getLastName()).toString());
+		/*emailMessage.setFromName(emailMsgBuilder.append(loginUser.getFirstName()).append(" ")
+				.append(loginUser.getLastName()).toString());*/
 
 		// setting the class filed values
 		Map<String, String> globalVarsMap = new HashMap<String, String>();
 		String UUID = SourceLeadRandomCodeHelper.generateUUID();
+		StringBuilder orgSpocUser = new StringBuilder();
+		
 		if (Constants.CLIENT.equals(orgSpoc.getOrgRelations().getResponderType())) {
+			if (null != orgSpoc.getVendorUser().getLastName()) {
+				emailMessage.setFromName(orgSpocUser.append(orgSpoc.getVendorUser().getFirstName())
+						.append(" ").append(orgSpoc.getVendorUser().getLastName()).toString());
+			} else {
+				emailMessage.setFromName(
+						orgSpocUser.append(orgSpoc.getVendorUser().getFirstName()).toString());
+			}
 			globalVarsMap.put("firstName", emailMessage.getFirstName());
 			globalVarsMap.put("lastName", emailMessage.getLastName());
 			globalVarsMap.put("vendorFirstName", orgSpoc.getClientUser().getFirstName());
 			globalVarsMap.put("vendorLastName", orgSpoc.getClientUser().getLastName());
 			globalVarsMap.put("vendorOrgName", orgSpoc.getOrgRelations().getResponderLocationId().getOrgLocationName());
 			globalVarsMap.put("signature", "Sourcelead Team");
-		} else if (Constants.VENDOR.equals(orgSpoc.getOrgRelations().getResponderType())) {
+		}
+		
+		else if (Constants.VENDOR.equals(orgSpoc.getOrgRelations().getResponderType())) {
+			if (null != orgSpoc.getVendorUser().getLastName()) {
+				emailMessage.setFromName(orgSpocUser.append(orgSpoc.getVendorUser().getFirstName())
+						.append(" ").append(orgSpoc.getVendorUser().getLastName()).toString());
+			} else {
+				emailMessage.setFromName(
+						orgSpocUser.append(orgSpoc.getVendorUser().getFirstName()).toString());
+			}
 			globalVarsMap.put("firstName", emailMessage.getFirstName());
 			globalVarsMap.put("lastName", emailMessage.getLastName());
 			globalVarsMap.put("clientFirstName", orgSpoc.getVendorUser().getFirstName());

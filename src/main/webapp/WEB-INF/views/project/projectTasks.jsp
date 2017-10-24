@@ -58,7 +58,7 @@ function projectTask(projectId, status) {
 	if (status != 'COMPLETED' && status != '' && status != 'undefined' && status != null) {
 		result = result +'<li>';
 		result = result	+ '<span class="pad-sea">';
-		'<sec:authorize access="hasAnyRole(\'ROLE_ADD_TASK\')">';  
+		'<sec:authorize access="hasAnyRole(\'ROLE_CREATE_PROJECT_TASKS\')">';  
 		result = result	+ '<span onclick="addtask();" class="cursorPointer"><i class="glyphicon glyphicon-plus paddingRight"></i>Add Task</span>';
    		'</sec:authorize>'; 
 		result = result	+ '</span>';
@@ -194,7 +194,7 @@ function projectTask(projectId, status) {
 							}
 							 
 							result = result + '<tr>';
-							'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_TASK\')">'; 
+							'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_PROJECT_TASKS\')">'; 
 							result = result+ '<td><div class="tbldata-dotdot"><a href="'+sourceleadUrl+'/projectTaskSummary?taskUUID='+opt.projectTasksUUID+'&projectClientUUID='+projectClientUUID+'" title="'+generatedId+' '+ opt.taskName+ '" >'+generatedId+' '+ opt.taskName+ '</a></div></td>';
 							result = result	+ '<td><div class="tbldata-dotdot_50">'+opt.taskTypes+ '</div></td>';
 							result = result	+ '<td><div class="tbldata-dotdot_50">'+taskPriotiry+ '</div></td>';
@@ -202,8 +202,10 @@ function projectTask(projectId, status) {
 							result = result	+ '<td><div class="tbldata-dotdot_50">'+taskStaus+'</div></td>';
 							'</sec:authorize>'; 
 							
-							'<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_EDIT_TASK\')">';
+ 
+							'<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_EDIT_PROJECT_TASKS\')">';
 							result = result+ '<td><div><a title="'+ opt.taskName+ '" >'+generatedId+' '+ opt.taskName+ '</a></div></td>';
+
 							result = result	+ '<td><div><span>'+opt.taskTypes+ '</span></div></td>';
 							result = result	+ '<td><div><span>'+ taskPriotiry+ '</span></div></td>';
 							result = result	+ '<td><div><span >'+taskAssignedUsers+'</span></div></td>';

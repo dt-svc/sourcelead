@@ -1082,7 +1082,7 @@ public TimesheetEntryDetailsDTO getProjectMemberAndTimesheetFrequenciesList(Time
 				   isSahReopened = true;
 			    }
 			    
-				 StringBuilder submissionStatusDiv = getSubmissionStatusDiv(sah ,projectMemberId,frequencyStartDate,frequencyEndDate,startDate,endDate,from,isSahApproved,pullRightClass,styleWidth,innerStyleWidth,superUserId,isSahReopened,isSuperUser,pm.getProjects().getId(),pm.getMasterCandidateId().getId());
+				 StringBuilder submissionStatusDiv = getSubmissionStatusDiv(orgLocations,sah ,projectMemberId,frequencyStartDate,frequencyEndDate,startDate,endDate,from,isSahApproved,pullRightClass,styleWidth,innerStyleWidth,superUserId,isSahReopened,isSuperUser,pm.getProjects().getId(),pm.getMasterCandidateId().getId());
 				 statusDiv.append("<div>");
 				 statusDiv.append(submissionStatusDiv);
 			     result.put("StatusDiv",statusDiv.toString());
@@ -1301,7 +1301,7 @@ public TimesheetEntryDetailsDTO getProjectMemberAndTimesheetFrequenciesList(Time
 		
 	 	  timesheetEntriesDiv.append("					<div id='timesheetSubmissionStatusDiv' "+styleWidth+" class='timeNewSe "+pullRightClass+"'>");
 	 	 
-		   StringBuilder submissionStatusDiv = getSubmissionStatusDiv(sah ,projectMemberId,frequencyStartDate,frequencyEndDate,weekStartDate,weekEndDate,from,isSahApproved,pullRightClass,styleWidth,innerStyleWidth,superUserId,isSahReopened,isSuperUser,projectId,masterCandidateId);
+		   StringBuilder submissionStatusDiv = getSubmissionStatusDiv(orgLocations,sah ,projectMemberId,frequencyStartDate,frequencyEndDate,weekStartDate,weekEndDate,from,isSahApproved,pullRightClass,styleWidth,innerStyleWidth,superUserId,isSahReopened,isSuperUser,projectId,masterCandidateId);
 	      timesheetEntriesDiv.append(submissionStatusDiv); 	      
 	      
 	      
@@ -1450,7 +1450,7 @@ public TimesheetEntryDetailsDTO getProjectMemberAndTimesheetFrequenciesList(Time
 	}
 	
 	
-	public StringBuilder getSubmissionStatusDiv(SubmissionApproverHierarchy sah ,Long projectMemberId,Date frequencyStartDate,Date frequencyEndDate,String weekStartDate,String weekEndDate,String from,boolean isSahApproved,String pullRightClass,String styleWidth,String innerStyleWidth,Long superUserId,boolean isSahReopened,boolean isSuperUser,Long projectId,Long masterCandidateId){
+	public StringBuilder getSubmissionStatusDiv(OrgLocations loc,SubmissionApproverHierarchy sah ,Long projectMemberId,Date frequencyStartDate,Date frequencyEndDate,String weekStartDate,String weekEndDate,String from,boolean isSahApproved,String pullRightClass,String styleWidth,String innerStyleWidth,Long superUserId,boolean isSahReopened,boolean isSuperUser,Long projectId,Long masterCandidateId){
 		
 		   Submission_Status submissionStatus = sah.getSubmissionStatus();
 		   String submissionStatusStr = submissionStatus.getValue();
@@ -1460,10 +1460,12 @@ public TimesheetEntryDetailsDTO getProjectMemberAndTimesheetFrequenciesList(Time
 		   Boolean isFillMyTimeSheet = commonUtil.hasRole("ROLE_FILL_MY_TIMESHEETS");
 		   Boolean isModifyMyTimeSheet = commonUtil.hasRole("ROLE_MODIFY_MY_TIMESHEETS");
 		   String acSubmissionStatusStr = null;
+		   Boolean isReopenButtonVisible = false;
 		   if(!isNullOrEmpty(submissionStatusStr) && submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue())){
 			   SubmissionApproverHierarchy acsah =submissionApproverHierarchyService.getSubmissionApproverHierarchyForEmployeeByProjectIdAndMasterCandidateId(frequencyStartDate, frequencyEndDate, projectId,masterCandidateId);
 			   Submission_Status acSubmissionStatus = acsah.getSubmissionStatus();
 			   acSubmissionStatusStr = acSubmissionStatus.getValue();
+			   isReopenButtonVisible =submissionApproverHierarchyService.isReopenButtonVisible(frequencyStartDate, frequencyEndDate, projectId, masterCandidateId,loc.getId());
 		   }
 		  
 		   
@@ -1492,17 +1494,17 @@ public TimesheetEntryDetailsDTO getProjectMemberAndTimesheetFrequenciesList(Time
 	        }
 	        if(!isNullOrEmpty(submissionStatusStr) && submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue())){
 	        	timesheetEntriesDiv.append("<div id='reopenTimeSheetId'>");
-	        	if(from.equalsIgnoreCase("approver") && StringUtils.isEmpty(sah.getReopenReason())){
+	        	if(isReopenButtonVisible && from.equalsIgnoreCase("approver") && StringUtils.isEmpty(sah.getReopenReason())){
 	        		//to show re-open rejected reason
 	        		if(StringUtils.isNotEmpty(sah.getReopenRejectedReason())){
 	        			timesheetEntriesDiv.append(" <i class='glyphicon glyphicon-comment rejectedHover'>");
 	        			timesheetEntriesDiv.append(" <div class='app_error_mes' id='rejectedMessage"+projectMemberId+"'>").append(sah.getReopenRejectedReason()).append("</div>");
 		        		timesheetEntriesDiv.append(" </i>");
 	        		}
-	        		if(!isNullOrEmpty(acSubmissionStatusStr) && acSubmissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue()))
+	        		if( !isNullOrEmpty(acSubmissionStatusStr) && acSubmissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue()))
 	        		timesheetEntriesDiv.append("<b  "+innerStyleWidth+" class='proj_withdraw "+pullRightClass+" ml'  onClick='reOpenMyTimesheet(\""+projectMemberId+"\",\""+weekStartDate+"To"+weekEndDate+"\");' >Re-Open</b>");
 	        	}
-	        	else if(from.equalsIgnoreCase("approver") && !isSuperUser && StringUtils.isNotEmpty(sah.getReopenReason()) && isSahReopened){
+	        	else if(isReopenButtonVisible && from.equalsIgnoreCase("approver") && !isSuperUser && StringUtils.isNotEmpty(sah.getReopenReason()) && isSahReopened){
 	        		//to show re-open reason
 	        		if(StringUtils.isNotEmpty(sah.getReopenReason())){
 	        			timesheetEntriesDiv.append(" <i class='pull-right glyphicon glyphicon-comment rejectedHover'>");
@@ -1511,7 +1513,7 @@ public TimesheetEntryDetailsDTO getProjectMemberAndTimesheetFrequenciesList(Time
 	        		}
 	        		timesheetEntriesDiv.append("<p class='pull-right ml' style='width: 87px;'>Re-Open Request sent</p>");
 		        }
-	        	else if(from.equalsIgnoreCase("approver") && isSahReopened && isSuperUser && null != sah.getReopenedUser()){
+	        	else if(isReopenButtonVisible && from.equalsIgnoreCase("approver") && isSahReopened && isSuperUser && null != sah.getReopenedUser()){
 	        		//to show re-open reason
 	        		if(StringUtils.isNotEmpty(sah.getReopenReason())){
 	        			timesheetEntriesDiv.append(" <i class='pull-right  glyphicon glyphicon-comment rejectedHover'>");
@@ -2369,20 +2371,21 @@ public TimesheetEntryDetailsDTO getProjectMemberAndTimesheetFrequenciesList(Time
 		            }
 			    	//save  mutliple attachment in timesheet submissison attachment.
 		            TimesheetSubmissionsDocuments tsd = new TimesheetSubmissionsDocuments();
-		            for(FileInfo file:tsDTO.getFileInfo()) {
-		            	 tsd.setTimesheetSubmissions(timesheetSubmissions);
-						FileUploadUtil.moveFile(staticPath, file, "timesheetDocuments");
-						tsd.setFileUrl(file.getFileURL());
-						tsd.setFileName(file.getFileName());
-						tsd.setFileContentType(file.getContentType());
-						tsd.setStatus(Constants.CANDIDATE_ACTIVE);
-						tsd.setCreatedDate(CommonUtil.currentDate());
-		                tsd.setCreatedBy(loginUser.getUserCode());
-		                tsd.setUpdatedDate(CommonUtil.currentDate());
-		                tsd.setUpdatedBy(loginUser.getUserCode());
-						timesheetSubmissionsDocumentsService.addTimesheetSubmissionsDocuments(tsd);
+		            if(tsDTO.getFileInfo() != null){
+		            	 for(FileInfo file:tsDTO.getFileInfo()) {
+			            	 tsd.setTimesheetSubmissions(timesheetSubmissions);
+							FileUploadUtil.moveFile(staticPath, file, "timesheetDocuments");
+							tsd.setFileUrl(file.getFileURL());
+							tsd.setFileName(file.getFileName());
+							tsd.setFileContentType(file.getContentType());
+							tsd.setStatus(Constants.CANDIDATE_ACTIVE);
+							tsd.setCreatedDate(CommonUtil.currentDate());
+			                tsd.setCreatedBy(loginUser.getUserCode());
+			                tsd.setUpdatedDate(CommonUtil.currentDate());
+			                tsd.setUpdatedBy(loginUser.getUserCode());
+							timesheetSubmissionsDocumentsService.addTimesheetSubmissionsDocuments(tsd);
+			            }
 		            }
-		            
 					String maxAdminTimeTypeRowNum = jsonObj.getString("maxRowNumber");
 					int maxCount = Integer.parseInt(maxAdminTimeTypeRowNum);
 					int rowNum = 0;

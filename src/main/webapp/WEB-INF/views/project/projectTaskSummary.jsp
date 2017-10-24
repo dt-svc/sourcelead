@@ -100,7 +100,7 @@ var sourceleadUrl = '${sourceleadUrl}';
 	            </c:if>
 	            <li><a href="#tab-task3" onclick="closeTimeEntry();documentTableList();">Documents</a></li>
 	            <li><a href="#tab-task4" onclick="getTaskActivities();">Activities</a></li>
-                 <sec:authorize access="hasAnyRole('ROLE_TASK_ADD_COMMENTS','ROLE_VIEW_EDIT_TASK_COMMENTS')">
+                 <sec:authorize access="hasAnyRole('ROLE_ADD_TASK_COMMENTS','ROLE_VIEW_EDIT_TASK_COMMENTS')">
 	                <li><a href="#tab-task5" onclick="commentTableList();">Comments</a></li>
 	             </sec:authorize>
 	            <div class="clearfix"></div>
