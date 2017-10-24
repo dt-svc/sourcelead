@@ -25,6 +25,8 @@ public interface ExpensesApprovalDao {
     
     Boolean isTheExpenseTotallyApproved(Long expenseId);
     
+    public Boolean isReopenButtonVisibleForLoginOrg(Long expenseId,Long locationsId);
+    
     ExpensesApproverHierarchy getexpensesApproverHierarchyForEmployeeByExpenseId(Long expenseId);
     
     void updateExpenseStatusByExpenseId(Long expenseId,String status);

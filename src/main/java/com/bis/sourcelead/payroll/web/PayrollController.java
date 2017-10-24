@@ -110,9 +110,6 @@ public class PayrollController {
 		   
 		   List<WageTaxSummary> wageTaxSummaryList = wageTaxSummaryService.getAllImportedUsers(orgLocations);
 		   
-//		   List<WageTaxSummary> distinctList = getUniqueWageTaxSummary(wageTaxSummaryList);
-		   
-//		   List<BisUserMapping> masterUserList = bisUserMappingService.getBisUserListByOrgLocationId(orgLocations.getId());
 		 //lambda here!
 		   wageTaxSummaryList.sort((WageTaxSummary report1, WageTaxSummary report2)-> report1.getEmployeeName().compareToIgnoreCase(report2.getEmployeeName()));
 			
@@ -158,8 +155,6 @@ public class PayrollController {
 			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			List<WageTaxSummary> wageTaxSummaryList =  wageTaxSummaryService.getUniqueWagesAndTaxListByOrgLocationId(orgLocation);
-
-//			List<WageTaxSummary> distinctList = getUniqueWageTaxSummary(wageTaxSummaryList);
 			
 			if(wageTaxSummaryList !=null){
 				model.addObject("wageTaxSummaryList", wageTaxSummaryList);
@@ -205,5 +200,29 @@ public class PayrollController {
 
 			}
 
+		 
+		 
+		 /**
+			 * Returns all payroll balance reports for all employess jsp
+			 * @param request
+			 * @return ModelAndView
+			 * @throws Exception 
+			 */
+			 @RequestMapping(value = "/payrollAllBalanceReport")
+				public ModelAndView allPayrollReportsJsp(HttpServletRequest request) throws Exception {
+				 SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
+				 ModelAndView model = new ModelAndView();	
+				 if(sessionData == null)
+					{
+						sessionData = new SessionMaintainanceData();
+					}
+					sessionData.setNav(Constants.PAYROLL);
+					request.getSession().setAttribute("sessionData",sessionData);
+					
+					model.setViewName("payroll/allPayrollReports");
+					model.addObject("sourceleadUrl", sourceleadUrl);
+					return model;
+
+				}
 
 }
