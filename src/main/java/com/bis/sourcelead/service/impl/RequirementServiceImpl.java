@@ -1042,7 +1042,9 @@ public class RequirementServiceImpl implements RequirementService {
 		User vendorUser = userService.getUserById(spoc.getVendorUser().getId());
 		EmailMessage emailMessage = new EmailMessage();
 		emailMessage.setFirstName(loginUser.getFirstName());
-		emailMessage.setLastName(loginUser.getLastName());
+		if(loginUser.getLastName()!=null){
+			emailMessage.setLastName(loginUser.getLastName());
+		}
 		emailMessage.setToEmail(vendorUser.getEmail());
 		emailMessage.setFromEmail(loginUser.getEmail());
 		emailMessage.setCreatedBy(loginUser.getUserCode());
