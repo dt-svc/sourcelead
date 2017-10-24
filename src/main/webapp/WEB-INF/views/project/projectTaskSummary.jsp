@@ -821,7 +821,7 @@ function documentTableList(){
 	   		 		result  = result + '		          <td>';
 	   		 		result  = result + '		          <div class="tbldata-dotdot-me" title="'+description+'">'+description+'</div>';
 	   		 		result  = result + '		        </td>';
-	   		 	    result  = result + '               <td><div class="tblminwidth-50"><a href="javascript:void(0)" onclick="projectTaskDocumentView(\''+report.id+'\',\''+report.fileName+'\');" class="fa fa-eye ml10 paddingRight"></a><a class="paddingLeft glyphicon glyphicon-download-alt" href=\"'+report.fileURL+'\"></a></div></td>';
+	   		 	    result  = result + '               <td><div class="tblminwidth-50"><a href="javascript:void(0)" onclick="viewFile(\''+report.fileURL+'\',\''+report.fileName+'\', \''+report.fileType+'\');" class="fa fa-eye ml10 paddingRight"></a><a class="paddingLeft glyphicon glyphicon-download-alt" href=\"'+report.fileURL+'\"></a></div></td>';
 	   		 	    result  = result + '               <td><div>';
 	   		 	    '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_DOCUMENTS\')">';
 	   		 	       result  = result + '    <a class="glyphicon glyphicon-pencil padddigRight" title="Edit" onclick="getEditTaskDocument('+report.id+');"></a>';
