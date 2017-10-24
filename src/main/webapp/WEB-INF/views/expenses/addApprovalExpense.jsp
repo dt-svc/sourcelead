@@ -172,7 +172,7 @@
 					</div>
 							<div class="col-md-4 minHeight">
 								<label>Date Occurred<span class="text-danger">&nbsp;*</span></label>
-								<input type="text" id="categoryDate${entryCount.count}" name="expenseEntry[${entryCount.index}].dateOccurred" readonly="readonly" onclick="displayCalendar('${entryCount.count}')" class="form-control calendar" value="${entry.dateOccurred}" placeholder="Date" field-name="Date" data-validation="required"> 
+								<input type="text" id="categoryDate${entryCount.count}" name="expenseEntry[${entryCount.index}].dateOccurred" onclick="displayCalendar('${entryCount.count}')" class="form-control calendar" value="${entry.dateOccurred}" placeholder="Date" field-name="Date" data-validation="required"> 
 							</div>
 							<div class="col-md-4 minHeight">
 								<label>Receipt Issued by</label>
@@ -212,7 +212,7 @@
 		                 </div>
 						<div class="col-md-12 minHeight mb">
 							<label>Description<span class='text-danger'>&nbsp;*</span></label>
-							<textarea rows="3"  id="entryDes${entryCount.count}" name="expenseEntry[${entryCount.index}].entryDescription" class="form-control" placeholder="Description" field-name="Description" data-validation="required validate_Space validate_length length1-5000" onblur="removeWhiteSpacesMyExp(${entryCount.count});">${entry.entryDescription}</textarea>
+							<textarea rows="3"  id="entryDes${entryCount.count}" name="expenseEntry[${entryCount.index}].entryDescription" class="form-control" placeholder="Description" field-name="Description" data-validation="required " onblur="removeWhiteSpacesMyExp(${entryCount.count});">${entry.entryDescription}</textarea>
 						</div>		
 		                    <div id='attachmentSection' class='col-md-4 minHeight minHe'>
 		                   <div class="uploadFile timesheet_week_comm edit-Expense-upload">
@@ -704,7 +704,7 @@ if(expenseAmount !=null && expenseAmount !='' && expenseAmount!='Undefined'){
 	}
    }	
   }
-}
+
 </script>
 
 <jsp:include page="../masterFooter.jsp" />

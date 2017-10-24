@@ -716,9 +716,9 @@ public class ProjectsServiceImpl implements ProjectsService{
 	
 	@Override
 	public ResponseList<Projects> getProjectsListByClientsAndStatus(ProjectsDTO projectsDTO,Long userId, String clients, String status,
-			Long orgLocationsId,String userRole) throws Exception {
+			Long orgLocationsId,String userRole,Long candidateId) throws Exception {
 		
-		ResponseList<Projects> responseProjectsList = projectsDao.getProjectsListByClientsAndStatus(projectsDTO,userId,clients,status,orgLocationsId,userRole);
+		ResponseList<Projects> responseProjectsList = projectsDao.getProjectsListByClientsAndStatus(projectsDTO,userId,clients,status,orgLocationsId,userRole,candidateId);
 		return responseProjectsList;
 	}
 

@@ -197,6 +197,10 @@ public class ExpensesController {
 		 	 Boolean isExpenseTotallyApproved = expensesApprovalService.isTheExpenseTotallyApproved(expensesDTO.getId());
 			 model.addObject("isExpenseTotallyApproved", isExpenseTotallyApproved);	
 			 
+			 
+			 Boolean isReopenButtonVisible = expensesApprovalService.isReopenButtonVisibleForLoginOrg(expensesDTO.getId(),orgLoc.getId());
+			 model.addObject("isReopenButtonVisible", isReopenButtonVisible);
+			 
 			 String type = request.getParameter("type");
 		 	
 		 	 Boolean isEditable = false;
@@ -215,8 +219,7 @@ public class ExpensesController {
 			   isSahReopened = true;
 		     }
 		     model.addObject("isSahReopened", isSahReopened);	
-		     
-			 Boolean isSuperUser = (Boolean) SourceLeadSessionManager.getSessionAttribute(request, "isSuperUser");
+		     Boolean isSuperUser = commonUtil.isSuperAdminForProjectMemberToReopenTimeOrExpenseses(eah.getExpenseId().getProjectMembers().getId(), loginUser);
 			 model.addObject("isSuperUser", isSuperUser);	
 			 
 			

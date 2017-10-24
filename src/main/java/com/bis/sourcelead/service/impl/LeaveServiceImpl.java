@@ -666,6 +666,11 @@ public class LeaveServiceImpl implements LeaveService{
 		int selfApprovedCounts = 0;
 		int selfRejectedCounts = 0;
 		int selfCancelledCounts = 0;
+		
+		int balanceLeaveCounts = 0;
+		int pendingLeaveCounts = 0;
+		int takenLeaveCounts = 0;
+
 		LeaveDTO leaveDto = new LeaveDTO();
 		List<Leave> leavesList = leaveDao.getAllSelfLeavesCounts(orgLocationId,userId);
 		for (Leave leave : leavesList) {
@@ -682,10 +687,27 @@ public class LeaveServiceImpl implements LeaveService{
 				selfCancelledCounts = selfCancelledCounts + 1;
 			}
 		}
+		
+		List<LeaveType> leaveTypeList = leaveTypeDao.getLeaveTypeListByLocationId(String.valueOf(orgLocationId));
+		for (LeaveType leaveType : leaveTypeList) {
+			int totalLeaves = Integer.valueOf(leaveType.getNumbefrOfLeavesPeryear());
+			List<Leave> totalleavesTaken = getLeavesListByTypeIdAndLocationIdAndUserId(leaveType.getId(),orgLocationId, userId);
+			for (Leave leave : totalleavesTaken) {
+				if(Constants.PENDING.equalsIgnoreCase(leave.getStatus())) {
+					pendingLeaveCounts = pendingLeaveCounts + (Integer.valueOf(leave.getNumberOfDays()));
+				}
+				if(Constants.APPROVED.equalsIgnoreCase(leave.getStatus())) {
+					totalLeaves = totalLeaves - (Integer.valueOf(leave.getNumberOfDays()));
+					takenLeaveCounts = takenLeaveCounts + (Integer.valueOf(leave.getNumberOfDays()));
+				}
+				balanceLeaveCounts += totalLeaves;
+			}
+		}
 		leaveDto.setSelfPendingCounts(String.valueOf(selfPendingCounts));
 		leaveDto.setSelfApprovedCounts(String.valueOf(selfApprovedCounts));
 		leaveDto.setSelfRejectedCounts(String.valueOf(selfRejectedCounts));
 		leaveDto.setSelfCancelledCounts(String.valueOf(selfCancelledCounts));
+		leaveDto.setSelfBalancedCounts(balanceLeaveCounts);
 		return leaveDto;
 	}
 	public List<LeaveDTO> getLeaveTakersBarChat(OrgLocations orgLocation, LeaveDTO leaveDTO) throws Exception {

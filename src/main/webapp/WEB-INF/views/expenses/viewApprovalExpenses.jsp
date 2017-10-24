@@ -32,7 +32,7 @@
 					        <a href="${sourceleadUrl}/addApprovalExpense?expenseId=${expenses.expenseAutoId}&expenseLocationCode=${expenses.expenseLocationCode}&type=edit"  class="btn btn-default ml10 mr10" style='cursor: pointer !important'><i class="fa fa-pencil-square-o" ></i> &nbsp;Edit</a>
 					     </c:if>
 					     
-					      <c:if test="${isExpenseTotallyApproved && submissionStatus == 'APPROVED' && empty eah.reopenReason}">
+					      <c:if test="${isReopenButtonVisible && isExpenseTotallyApproved && submissionStatus == 'APPROVED' && empty eah.reopenReason}">
 						        <c:if test="${!empty eah.reopenRejectedReason}">
 						            <i class='glyphicon glyphicon-comment rejectedHover'>
 						               <div class='app_error_mes' id="rejectedMessage${expenses.id}">${eah.reopenRejectedReason}</div>
@@ -44,13 +44,13 @@
 						     </div>
 					     </c:if> 
 					     
-					     <c:if test="${isSahReopened && !isSuperUser && !empty eah.reopenReason}">
+					     <c:if test="${isReopenButtonVisible && isSahReopened && !isSuperUser && !empty eah.reopenReason}">
 					          <i class='pull-right glyphicon glyphicon-comment rejectedHover moveErrorMsgUp'>
 					            <div class='app_error_mes' id="rejectedMessage${expenses.id}">${eah.reopenReason}</div>
 						      </i>
 						      <p class='pull-right ml' style='width: 146px;'>Re-Open Request sent</p>
 					     </c:if>
-					      <c:if test="${submissionStatus != 'SUBMITTED' && isSahReopened && isSuperUser && !empty eah.reopenedUser}">
+					      <c:if test="${isReopenButtonVisible && submissionStatus != 'SUBMITTED' && isSahReopened && isSuperUser && !empty eah.reopenedUser}">
 					           <i class='pull-right  glyphicon glyphicon-comment rejectedHover'>
 					            <div class='app_error_mes' id="rejectedMessage${expenses.id}">${eah.reopenReason}</div>
 					            </i>
