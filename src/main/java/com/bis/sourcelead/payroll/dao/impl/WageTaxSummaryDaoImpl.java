@@ -27,6 +27,7 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.payroll.dao.WageTaxSummaryDao;
 import com.bis.sourcelead.payroll.entity.EmployerPayrollCost;
+import com.bis.sourcelead.payroll.entity.PayrollBalance;
 import com.bis.sourcelead.payroll.entity.WageTaxSummary;
 import com.bis.sourcelead.util.ConversionUtil;
 
@@ -108,13 +109,13 @@ public class WageTaxSummaryDaoImpl implements WageTaxSummaryDao {
 		int filteredCount = 0;
 		List<Long> countlist = session.createQuery("select count(*) " + countQuery).setLong("orgLocationId", orgLocation.getId()).setCacheable(true).list();
 		if(countlist != null && !countlist.isEmpty()) {
-			count = countlist.iterator().next().intValue();
+			count = countlist.size();
 		}
 		response.setRecordsTotal(count);
 		if (wagesTaxSummaryDTO != null) {
 			List<Long> filteredCountlist  = session.createQuery("select count(*) " + countQuery + query1.toString()).setLong("orgLocationId", orgLocation.getId()).list();
 			if(filteredCountlist != null && !filteredCountlist.isEmpty()) {
-				filteredCount = filteredCountlist.iterator().next().intValue();
+				filteredCount = filteredCountlist.size();
 			}
 			response.setRecordsFiltered(filteredCount);
 		} else {
@@ -221,6 +222,45 @@ public class WageTaxSummaryDaoImpl implements WageTaxSummaryDao {
 		}
 		return count;
 		
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public ResponseList<WageTaxSummary> getUniqueWagesAndTaxListByOrgLocationIdAndPagination(OrgLocations orgLocation,
+			PayrollBalance payrollBalance) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		List<WageTaxSummary> wagesAndTaxlist = null;
+		ResponseList<WageTaxSummary> response = new ResponseList<>();
+		String query = "from WageTaxSummary wts  left join fetch wts.orgLocationId where wts.orgLocationId.id =:orgLocationId GROUP BY wts.employeeId";
+		String countQuery = "from WageTaxSummary wts  where wts.orgLocationId.id =:orgLocationId GROUP BY wts.employeeId";
+		Query queryObj = session.createQuery(query);
+		if (payrollBalance != null && payrollBalance.getLength() > 0) {
+			queryObj.setFirstResult(payrollBalance.getStart());
+			queryObj.setMaxResults(payrollBalance.getLength());
+			queryObj.setLong("orgLocationId", orgLocation.getId()).setCacheable(true).list();
+		}
+		wagesAndTaxlist = queryObj.list();
+		int count = 0;
+		int filteredCount = 0;
+		List<Long> countlist = session.createQuery("select count(*) " + countQuery)
+				.setLong("orgLocationId", orgLocation.getId()).setCacheable(true).list();
+		if (countlist != null && !countlist.isEmpty()) {
+			count = countlist.size();
+		}
+		response.setRecordsTotal(count);
+		if (payrollBalance != null) {
+			List<Long> filteredCountlist = session.createQuery("select count(*) " + countQuery)
+					.setLong("orgLocationId", orgLocation.getId()).list();
+			if (filteredCountlist != null && !filteredCountlist.isEmpty()) {
+				filteredCount = filteredCountlist.size();
+			}
+			response.setRecordsFiltered(filteredCount);
+		} else {
+			response.setRecordsFiltered(filteredCount);
+		}
+
+		response.setData(wagesAndTaxlist);
+		return response;
 	}
 	
 
