@@ -191,7 +191,8 @@ window.onload = function() {
 		$('#fromDate').datepicker({
 			dateFormat : finalDateFormatEndDate,
 			changeMonth: true,
-			changeYear: true, 
+			changeYear: true,
+			minDate: 0,
 			onSelect : function(selected) {
 			var dt = $(this).datepicker('getDate', '+1d');
 			dt.setDate(dt.getDate());
@@ -331,7 +332,7 @@ function getpieChar(totalBalanceCounts,totalPendingCounts,totalTakenCounts){
 				{
 					"category": "Balance Leaves",
 					"column-1": totalBalanceCounts,
-					"color"	  : "#FF4500"
+					"color"	  : "#5bc0de"
 				},
 				{
 					"category": "Taken Leaves",
@@ -475,12 +476,19 @@ function validateDate(){
 	var toDate = $("#toDate").val();
 	$.get(sourceleadUrl+"/validateRestrictDate?"+tokenParamName+"="+tokenValue+"&fromDate="+fromDate+"&toDate="+toDate+"&orgLocationId="+orgLocationId+"&roleId="+roleId, function(data) {
 		if(data != null){
-			$("#toDate").after("<p class='warMess1'>You cannot apply for leave on restricted/holiday day</span> "+data);
+			$("#toDate").after("<p class='warMess'><span id='dataclosePop' class='fa fa-times text-danger' onclick='closedate();'></span>You cannot apply for leave on restricted/holiday day</span> "+data);
 		}else{
 			$('.warMess1').hide();
 		}
 	}); 
-}
+};
+
+function closedate(){
+$(".warMess").fadeOut();
+};
+
+
 </script>
+
 
 <jsp:include page="../masterFooter.jsp" />
