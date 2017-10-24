@@ -31,6 +31,7 @@ import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.enums.PaymentModes;
 import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.ExpensesEntriesService;
+import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.ConversionUtil;
@@ -61,16 +62,24 @@ public class ExpensesEntriesServiceImpl implements ExpensesEntriesService{
 	@Autowired
 	private CommonUtil commonUtil;
 	
+	@Autowired
+	private OrgLocationService orgLocationService;
+	
 	@Override
 	public Set<ExpensesEntries> prepareExpensesEntriesListByJson(ExpensesDTO addExpensesDTO,HttpServletRequest request,Expenses expenses) throws Exception {
 		
 		    List<Long> expenseEntryDbIds = null;
+		    OrgLocations orgLocation = null;
 		    ArrayList<Long> expenseEntryIds = new ArrayList<>();
 		    if(null != expenses && null != expenses.getId()){
 		    	expenseEntryDbIds = expensesEntriesDao.getExpensesEntryIdsByExpenseId(expenses.getId());
 		    }
-			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			 orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		 
+			if(orgLocation == null && addExpensesDTO.getLocationCode() != null ){
+			 orgLocation = orgLocationService.getOrgLocationsByLocationCode(addExpensesDTO.getLocationCode());
+			}
+			
 		    HashSet<ExpensesEntries> expensesEntriesList = new HashSet<ExpensesEntries>(); 
 		    for(ExpensesEntriesDTO category:addExpensesDTO.getExpenseEntry()){
 			    if(StringUtils.isNotEmpty(category.getCategoryType())){
@@ -79,11 +88,17 @@ public class ExpensesEntriesServiceImpl implements ExpensesEntriesService{
 							entries.setId(category.getId());
 						}
 						ExpensesCategory ec = new ExpensesCategory();
-						ec.setId(Long.parseLong(category.getCategoryType().split(",")[0]));
+						if(category.getCategoryTypeId() > 0){
+							ec.setId(category.getCategoryTypeId());
+						}
+						else{
+							ec.setId(Long.parseLong(category.getCategoryType().split(",")[0]));
+						}
 						entries.setExpensesCategoryId(ec);
 						
 						if(StringUtils.isNotBlank(category.getDateOccurred())){
-							Timezone timezone = timeZoneService.getTimezone(orgLocation.getTimezone().getId());
+							Timezone timezone = null;
+							timezone = timeZoneService.getTimezone(orgLocation.getTimezone().getId());
 							DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
 							Date date = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(),category.getDateOccurred());
 							String currentTimeStr = Constants.TZ_DF.format(date);  
