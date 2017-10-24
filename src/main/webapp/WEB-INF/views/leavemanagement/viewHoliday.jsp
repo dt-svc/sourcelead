@@ -31,13 +31,9 @@
           </li>
         <div class="clearfix"></div>
       </ul>
-      <div class="clearfix"></div>
-      <div class="remove_search">
-        <input placeholder="Search" type="text">
-      </div>
     </div>
         <div id="loading"></div> 
-    <div class="require_wrap_table datatable_filter">
+    <div class="clients_wrap_table datatable_filter">
     <div id="viewHolidaysDiv"></div>
     </div>
   </div>
@@ -109,7 +105,7 @@ function getHolidaysList(){
 				result = result + ' </table>';
 				$("#viewHolidaysDiv").append(result);
 				$("#loading").removeAttr("style");
-				viewHolidaysTable();
+				viewHolidaysTablePagination();
 		}); 
  }
 </script> 
@@ -122,10 +118,10 @@ function deleteHoliday(holidayId){
 }
 </script>
 <script>
-function viewHolidaysTable(){ 
+function viewHolidaysTablePagination(){ 
     $('#viewHolidaysTableId').DataTable( { 
     	"scrollCollapse": false,
-    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
     	"bLengthChange": true,
     	"bDestroy": true,
     	"ordering": true,
@@ -134,6 +130,7 @@ function viewHolidaysTable(){
             "sZeroRecords": "", "sEmptyTable": ""
        }
     });
+    $("#viewHolidaysTableId").wrap("<div class='overflow_Auto width100percnt'></div>")
 }
 </script>
 	
