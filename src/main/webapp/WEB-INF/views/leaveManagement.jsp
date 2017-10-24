@@ -80,7 +80,7 @@ $(document).ready(function(){
                 <ul class="list-unstyled list-group clearfix mb5">
                     <li class="clearfix">
                         <label class="pull-left">Requested Leaves</label>
-                        <a href="<c:url value='/employeeRequestedLeaves'/>" class="color_white" id="empReq" title="Pending Leaves"><span class="label label-primary pull-right" id="employeeRequestedCounts"></span>></a>
+                        <a href="<c:url value='/employeeRequestedLeaves'/>" class="color_white" id="empReq" title="Requested Leaves"><span class="label label-primary pull-right" id="employeeRequestedCounts"></span>></a>
                     </li>
                     <li class="clearfix">
                         <label class="pull-left">Approved Leaves</label>
@@ -92,7 +92,7 @@ $(document).ready(function(){
                     </li>
                     <li class="clearfix">
                         <label class="pull-left">Cancelled Leaves</label>
-                        <a href="<c:url value='/employeeCancelLeaves'/>" class="color_white" id="empCanc" title="Cancel Leaves"><span class="label label-warning pull-right" id="employeeCancelledCounts"></span></a>
+                        <a href="<c:url value='/employeeCancelLeaves'/>" class="color_white" id="empCanc" title="Cancelled Leaves"><span class="label label-warning pull-right" id="employeeCancelledCounts"></span></a>
                     </li>
                 </ul>
                       
