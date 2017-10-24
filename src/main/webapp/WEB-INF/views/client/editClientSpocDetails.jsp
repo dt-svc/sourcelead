@@ -138,11 +138,18 @@
 						var selected4 = '';
 						var selected5 = '';
 						var spocMobilePhone = "";
+						var spocExtensionNumber="";
 						if(json.spocMobilePhone != null && json.spocMobilePhone != '' && json.spocMobilePhone != 'undefined'){
 							spocMobilePhone = json.spocMobilePhone;
 						}else{
 							spocMobilePhone = "";
 						}
+						if(json.spocExtensionNumber != null && json.spocExtensionNumber != '' && json.spocExtensionNumber != 'undefined'){
+							spocExtensionNumber = json.spocExtensionNumber;
+						}else{
+							spocExtensionNumber = "";
+						}
+						
 						if(null != json.spocLastName && json.spocLastName != '' && json.spocLastName != 'undefined'){
 							spocLastName = json.spocLastName;
 						}else{
@@ -183,9 +190,20 @@
 							
 							
 							result = result + '<div class="user_summary_edit_cta" id="mobilePhone">';
+							result = result + ' <div class="row">';
+							result = result + ' <div class="col-md-7">';
 							result = result + '<label>Phone No:</label>';
 							result = result + '<input type="text"  id="mobilePhone" name="phoneNumber" value="'+spocMobilePhone+'" placeholder="Mobile Phone" field-name="Mobile Phone" data-validation-optional="true" readonly="readonly" >';
 							result = result + '</div>';
+							
+							result = result + ' <div class="col-md-5 errBotVal">';
+							result = result + ' <label>Extentsion</label>';
+							result = result + ' <input type="text" value="'+spocExtensionNumber+'" name="extensionNumber" data-validation="validate_Space validate_length length1-5" data-validation-optional="true">';
+							result = result + ' </div>';
+							result = result + ' </div>';
+							result = result + ' </div>';
+							
+							
 							
 					   }else{
 						   result = result + '<div class="user_summary_edit_cta" id="vendorContactFirstNameDiv">';
@@ -205,9 +223,18 @@
 							result = result + '</div>'; */
 							
 							result = result + '<div class="user_summary_edit_cta" id="mobilePhone">';
+							result = result + ' <div class="row">';
+							result = result + ' <div class="col-md-7">';
 							result = result + '<label>Phone No:</label>';
 							result = result + '<input type="text"  id="mobilePhone" name="phoneNumber" value="'+spocMobilePhone+'" placeholder="Mobile Phone" field-name="Mobile Phone" data-validation-optional="true" data-validation="validate_length length9-20 validate_phone" >';
 							result = result + '</div>';
+							
+							result = result + ' <div class="col-md-5 errBotVal">';
+							result = result + ' <label>Extentsion</label>';
+							result = result + ' <input type="text" value="'+spocExtensionNumber+'" name="extensionNumber" data-validation="validate_Space validate_length length1-5" data-validation-optional="true">';
+							result = result + ' </div>';
+							result = result + ' </div>';
+							result = result + ' </div>';
 					   }
 				     	result = result + '<div class="user_summary_edit_cta" id=" id="EmailIdDiv"">';
 						result = result + '<label>Email Id :</label>';

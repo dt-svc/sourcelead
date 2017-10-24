@@ -1778,15 +1778,17 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 		}
 
 		// Getting Max Hierarchy Level for which employee is Assigned
-		String subQueryForMaxLevel = " select MAX(subsah.hierarchyId.level) from SubmissionApproverHierarchy subsah where  subsah.submissionId.projectMembers.projects.id = :projectId ";
-		String query = "from SubmissionApproverHierarchy sah left join fetch sah.hierarchyId hierarchy left join fetch hierarchy.approverUserId left join fetch sah.submissionId ts left join fetch ts.projectMembers pm left join fetch pm.projects project left join fetch project.orgLocationsId left join fetch pm.employee emp left join fetch emp.user "
-				+ " where project.id = :projectId and sah.frequencyStartDate = :startDate and sah.frequencyEndDate = :endDate and "+statusSubQuery+" and sah.submissionId.status = '1'"
+		String subQueryForMaxLevel = " select MAX(subsah.hierarchyId.level) from SubmissionApproverHierarchy subsah where subsah.submissionId.id = ts.id and subsah.hierarchyId.projectClientsId.level = '1' ";
+		String query =  "from  SubmissionApproverHierarchy sah left join fetch sah.hierarchyId hierarchy  left join fetch hierarchy.projectClientsId pc "
+				+ " left join fetch hierarchy.approverUserId left join fetch sah.submissionId ts left join fetch ts.projects projects "
+				+ " left join fetch ts.masterCandidateId mc left join fetch ts.projectMembers pm  left join fetch pm.employee emp left join fetch emp.user "
+				+ " where projects.id = :projectId and sah.frequencyStartDate = :startDate and sah.frequencyEndDate = :endDate and "+statusSubQuery+" and ts.status = '1' and pc.level = '1'"
 				/*
 				 * For getting approved timesheet hours list
 				 */
 
 				+ " and ( hierarchy.level IN(" + subQueryForMaxLevel
-				+ ")) order by pm.id";
+				+ ")) and pc.level = '1' order by pm.id";
 		
 		
 		@SuppressWarnings("unchecked")

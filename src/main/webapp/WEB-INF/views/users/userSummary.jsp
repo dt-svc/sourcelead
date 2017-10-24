@@ -1366,9 +1366,9 @@ $("#editRoleDetailsList").empty();
 					result = result + ' <label>Phone number</label>';
 					result = result + ' <input type="text" value="'+mobilePhone+'" name="phoneNumber" data-validation="validate_Space validate_phone validate_length length9-20" data-validation-optional="true">';
 					result = result + ' </div>';
-					result = result + ' <div class="col-md-5">';
+					result = result + ' <div class="col-md-5 errBotVal">';
 					result = result + ' <label>Extentsion</label>';
-					result = result + ' <input type="text" value="'+extensionNumber+'" name="extensionNumber" data-validation="validate_Space validate_length length4-5" data-validation-optional="true">';
+					result = result + ' <input type="text" value="'+extensionNumber+'" name="extensionNumber" data-validation="validate_Space validate_phone validate_length length1-5" data-validation-optional="true">';
 					result = result + ' </div>';
 					result = result + ' </div>';
 					

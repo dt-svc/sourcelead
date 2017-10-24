@@ -104,6 +104,7 @@
 						}
 						
 						
+						
 						result = result + ' <form id="editClient_form"  name="editClient_form" method="post">';
 						if(json.orgType == 'Company'){
 							result = result + '<div class="user_summary_edit_cta" id="vendorNameDiv">';

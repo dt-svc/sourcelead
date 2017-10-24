@@ -525,6 +525,7 @@ public class ProjectsDaoImpl implements ProjectsDao{
 		String projectModeQuery = "";
 		String query = null;
 		List<Long> countlist = null;
+		Integer filterCount = 0;
 		ResponseList<Projects> response = new ResponseList<>();
 		Query queryObj = null;
 		
@@ -576,6 +577,9 @@ public class ProjectsDaoImpl implements ProjectsDao{
 			queryObj.setLong("orgLocationsId", orgLocationsId).setParameterList("projectStatusList", projectStatusList).setCacheable(true).list();
 			projectsList = queryObj.list();
 			countlist = session.createQuery("select count(*) " + query).setLong("orgLocationsId", orgLocationsId).setParameterList("projectStatusList", projectStatusList).setCacheable(true).list();
+			if(query1.toString() != null && !query1.toString().isEmpty()){
+				filterCount = projectsList.size();
+			}
 		}
 		else if(clientIdsList.size() > 0 && projectStatusList.size() == 0){
 			query = "from  Projects ps where ps.id IN(select pc.projectId.id from  ProjectClients pc where pc.orgLocationsId = :orgLocationsId and pc.orgRelationId.id IN (:clientIdsList) "+approverQuery+") "+projectModeQuery+" ";
@@ -590,6 +594,9 @@ public class ProjectsDaoImpl implements ProjectsDao{
 			queryObj.setLong("orgLocationsId", orgLocationsId).setParameterList("clientIdsList", clientIdsList).setCacheable(true).list();
 			projectsList = queryObj.list();
 			countlist = session.createQuery("select count(*) " + query).setLong("orgLocationsId", orgLocationsId).setParameterList("clientIdsList", clientIdsList).setCacheable(true).list();
+			if(query1.toString() != null && !query1.toString().isEmpty()){
+				filterCount = projectsList.size();
+			}
 		}
 		else if(projectStatusList.size() > 0 && clientIdsList.size() > 0){
 			query = "from  Projects ps where ps.id IN(select pc.projectId.id from  ProjectClients pc where pc.orgLocationsId = :orgLocationsId and pc.orgRelationId.id IN (:clientIdsList) "+approverQuery+") "+projectModeQuery+" and ps.projectStatus IN (:projectStatusList) ";
@@ -604,6 +611,9 @@ public class ProjectsDaoImpl implements ProjectsDao{
 			queryObj.setLong("orgLocationsId", orgLocationsId).setParameterList("clientIdsList", clientIdsList).setParameterList("projectStatusList", projectStatusList).setCacheable(true).list();
 			projectsList = queryObj.list();
 			countlist = session.createQuery("select count(*) " + query).setLong("orgLocationsId", orgLocationsId).setParameterList("clientIdsList", clientIdsList).setParameterList("projectStatusList", projectStatusList).setCacheable(true).list();
+			if(query1.toString() != null && !query1.toString().isEmpty()){
+				filterCount = projectsList.size();
+			}
 		}else{
 			query = "from  Projects ps where ps.id IN(select pc.projectId.id from  ProjectClients pc where pc.orgLocationsId = :orgLocationsId "+approverQuery+") "+projectModeQuery+" ";
 			if(query1.toString() != null && !query1.toString().isEmpty()){
@@ -617,17 +627,28 @@ public class ProjectsDaoImpl implements ProjectsDao{
 			queryObj.setLong("orgLocationsId", orgLocationsId).setCacheable(true).list();
 			projectsList = queryObj.list();
 			countlist = session.createQuery("select count(*) " + query).setLong("orgLocationsId", orgLocationsId).setCacheable(true).list();
+			if(query1.toString() != null && !query1.toString().isEmpty()){
+				filterCount = projectsList.size();
+			}
 		}
 		
-		int filteredCount = 0;
+		int totalCount = 0;
 
 		
 		if (projectsDTO != null) {
 			if(countlist != null && !countlist.isEmpty()) {
-				filteredCount = countlist.iterator().next().intValue();
+				totalCount = countlist.iterator().next().intValue();
 			}
 		} 
-		response.setRecordsFiltered(filteredCount);
+		response.setRecordsTotal(totalCount);
+		
+		if(query1.toString() != null && !query1.toString().isEmpty()){
+			response.setRecordsFiltered(filterCount);
+		}else {
+			response.setRecordsFiltered(totalCount);
+		}
+		
+		
 		response.setData(getProjectClientAndManagerDetails(projectsList,orgLocationsId));
 		return response;
 	}
@@ -935,8 +956,8 @@ public HashSet<User> getAllUserTimeSheetSubmissionStatusCurrentWeek() {
 	public List<Projects> getClientProjectsByOrgRelationId(Long orgRelationId, Long orgLocationId) throws Exception
 	{
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from Projects p where p.orgRelationId.id = :orgRelationId and p.orgLocationsId.id = :orgLocationId and p.projectStatus <> 'ONHOLD'";
-		return session.createQuery(query.toString()).setLong("orgRelationId", orgRelationId).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+		String query = "from Projects p where  p.id IN(select pc.projectId.id from  ProjectClients pc where pc.orgRelationId.id = :orgRelationId and pc.orgLocationsId.id = :orgLocationsId)  and p.projectStatus <> 'ONHOLD'";
+		return session.createQuery(query.toString()).setLong("orgRelationId", orgRelationId).setLong("orgLocationsId", orgLocationId).setCacheable(true).list();
 	}
 
 	@Override
