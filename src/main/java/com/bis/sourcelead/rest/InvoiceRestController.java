@@ -750,20 +750,20 @@ public class InvoiceRestController {
 				ProjectMembers projectMember = sah.getSubmissionId().getProjectMembers();
 				projectMember.setSubmissionApproverHierarchyId(sah.getId());
 				StringBuilder candidateName = new StringBuilder();
-				if (null != projectMember.getEmployee().getUser().getFirstName()
-						&& null != projectMember.getEmployee().getUser().getLastName()) {
-					candidateName.append(projectMember.getEmployee().getUser().getFirstName()).append(" ").append(projectMember.getEmployee().getUser().getLastName());
+				if (null != projectMember.getMasterCandidateId().getFirstName()
+						&& null != projectMember.getMasterCandidateId().getLastName()) {
+					candidateName.append(projectMember.getMasterCandidateId().getFirstName()).append(" ").append(projectMember.getMasterCandidateId().getLastName());
 				}
 				else {
-					candidateName.append(projectMember.getEmployee().getUser().getFirstName());
+					candidateName.append(projectMember.getMasterCandidateId().getFirstName());
 				}
 				projectMember.setCandidateName(candidateName.toString());
 				projectMember.setUserId(String.valueOf(projectMember.getEmployee().getUser().getId()));
 				if (null != projectMember.getEmployee().getUser().getId()) {
-					Candidate candidate = candidateService.getCandidateByConsultantUserId(projectMember.getEmployee().getUser().getId(), orgLocation.getId());
-					if(null != candidate){
-						projectMember.setCandidateId(candidate.getId());
-						List<Contracts> contractList = getSowContract(candidate.getId(),orgLocation,Long.parseLong(orgRelationId),contractType);
+//					Candidate candidate = candidateService.getCandidateByConsultantUserId(projectMember.getEmployee().getUser().getId(), orgLocation.getId());
+					if(null != projectMember.getMasterCandidateId()){
+						projectMember.setCandidateId(projectMember.getMasterCandidateId().getId());
+						List<Contracts> contractList = getSowContract(projectMember.getMasterCandidateId().getId(),orgLocation,Long.parseLong(orgRelationId),contractType);
 						if(null != contractList && contractList.size() >0){
 							projectMember.setContractsList(contractList);
 						}	
@@ -881,14 +881,14 @@ public class InvoiceRestController {
 						sb.append("0");
 					}
 					projectMember.setTotalHours(sb.toString());
-					Candidate candidate = candidateService.getCandidateByConsultantUserIdOrgRelationId(projectMember.getEmployee().getUser().getId(),orgLocation.getId(),orgRelationId);
-					if(candidate !=null){
-						projectMember.setCandidateId(candidate.getId());
-						List<Contracts> contractList = getSowContract(candidate.getId(),orgLocation,orgRelationId,contractType);
+//					Candidate candidate = candidateService.getCandidateByConsultantUserIdOrgRelationId(projectMember.getMasterCandidateId().getId(),orgLocation.getId(),orgRelationId);
+					if(projectMember.getMasterCandidateId() !=null){
+						projectMember.setCandidateId(projectMember.getMasterCandidateId().getId());
+						List<Contracts> contractList = getSowContract(projectMember.getMasterCandidateId().getId(),orgLocation,orgRelationId,contractType);
 						if(null != contractList && contractList.size() >0){
 							projectMember.setContractsList(contractList);
 						}
-						projectMember.setCandidateId(candidate.getId());
+						projectMember.setCandidateId(projectMember.getMasterCandidateId().getId());
 					}
 					
 					filteredMembersList.add(projectMember);
