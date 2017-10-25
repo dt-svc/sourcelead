@@ -533,12 +533,12 @@ public class ProjectTasksServiceImpl implements ProjectTasksService {
 		 ProjectTasks  oldData = tasksDao.getTasksId(taskId);
 	     StringBuffer activity = new StringBuffer();
 	     StringBuffer activitySummary = new StringBuffer();
-	     activity.append("Task Billing Type");
+	     activity.append("Billing Type");
 	     projectTasks.setBillableType(billing);
 	     projectTasks.setUpdatedDate(commonUtil.currentDate());
 	     tasksDao.updateTasks(projectTasks);
 	     
-	     activitySummary.append(oldData.getPercentage()).append(" to ").append(projectTasks.getPercentage());
+	     activitySummary.append(oldData.getBillableType()).append(" to ").append(projectTasks.getBillableType());
 		 projectTaskActivityService.saveProjectTaskActivities(activity.toString(), activitySummary.toString(),projectTasks,user);
 	}
 }

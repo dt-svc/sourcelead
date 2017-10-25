@@ -21,6 +21,7 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.DepartmentService;
+import com.bis.sourcelead.service.LeaveService;
 import com.bis.sourcelead.service.OptionsService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.RolesService;
@@ -43,6 +44,9 @@ public class OptionsServiceImpl implements OptionsService{
 	
 	@Autowired
 	UserService userService;
+	
+	@Autowired 
+	LeaveService leaveService;
 	
 	@Override
 	public Option saveLeaveOptions(OptionsDTO optionsDTO) throws Exception {
@@ -95,10 +99,10 @@ public class OptionsServiceImpl implements OptionsService{
 	 */
 	private Set<LeaveRole> getLeaveRoles(List<String> roles, Option option, User user) throws Exception {
 		Set<LeaveRole> leaveRolesSet = new HashSet<>();
-		
+		boolean flag = leaveService.deleteAllLeaveRolesByParticularTableId(Constants.LEAVE_OPTION,option.getId());
 		roles.forEach(role -> {
-			LeaveRole leaveRole = null;
-			if(option.getLeaverolesSet() !=null && option.getLeaverolesSet().size() >0) {
+			LeaveRole leaveRole = new LeaveRole();
+			/*if(option.getLeaverolesSet() !=null && option.getLeaverolesSet().size() >0) {
 				List<LeaveRole> list = option.getLeaverolesSet().stream().filter(r->r.getRoleId().getId().longValue() == Long.parseLong(role)).collect(Collectors.toList());
 				if(!list.isEmpty()) {
 					leaveRole = list.iterator().next();
@@ -107,7 +111,7 @@ public class OptionsServiceImpl implements OptionsService{
 				}
 			}else {
 				leaveRole = new LeaveRole();
-			}
+			}*/
 			leaveRole.setLeavesOptionId(option);
 			leaveRole.setType(Constants.LEAVE_OPTION);
 			try {

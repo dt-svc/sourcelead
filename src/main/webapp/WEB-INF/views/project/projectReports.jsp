@@ -11,7 +11,10 @@
     bottom: -26px;
 }
 </style>
-<script src="resources/js/pie.js?staticTime=${staticTime}"></script>
+<script src="resources/js/amcharts.js?staticTime=${staticTime}"></script>
+	<script src="resources/js/serial.js?staticTime=${staticTime}"></script>
+	<script src="resources/js/light.js?staticTime=${staticTime}"></script>
+	<script src="resources/js/pie.js?staticTime=${staticTime}"></script>
 <!-- this script is for Tasks list functionality at Projects screen -->
 <script>
 function getDayWiseReports(projectId){
