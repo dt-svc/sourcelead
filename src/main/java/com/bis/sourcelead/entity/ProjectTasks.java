@@ -85,6 +85,9 @@ public class ProjectTasks implements Serializable{
 	@Column(name = "ESTIMATE_DATE")
     private Date estimateDate;
 	
+	@Column(name = "ESTIMATE_TIME")
+    private String estimateTime;
+	
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name="SEVERITY", nullable=false )	
 	private LookUpData severity;
@@ -292,6 +295,14 @@ public class ProjectTasks implements Serializable{
 
 	public void setEstimateDate(Date estimateDate) {
 		this.estimateDate = estimateDate;
+	}
+
+	public String getEstimateTime() {
+		return estimateTime;
+	}
+
+	public void setEstimateTime(String estimateTime) {
+		this.estimateTime = estimateTime;
 	}
 
 	public LookUpData getTaskType() {

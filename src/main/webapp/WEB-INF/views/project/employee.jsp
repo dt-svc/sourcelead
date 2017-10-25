@@ -1970,7 +1970,7 @@ function budgetRequests(){
 					result = result + '     <td><div  class="tbldata-dotdot_80">'+report.createdStr+'</div></td>';
 					result = result + '     <td><div  class="tbldata-dotdot-vsm" title="'+report.createdUserName+'">'+report.createdUserName+'</div></td>';
 					if(report.budgetStatus == "Waiting For Approval"){
-						result = result + '     <td><div class="tblminwidth-75">';
+						result = result + '     <td><div class="tblminwidth-90">';
 						result = result + '     <i class="fa fa-check" alt="Approve" title="Approved" onclick="acceptBudgetRequset('+report.id+')"></i>|';
 						result = result + '     <i class="fa fa-times" alt="Rejected" title="Rejected" onclick="deleteBudgetRequaet('+report.id+');"></i>';
 						result = result + '     <i class="fa fa-clock-o" alt="On hold" title="On hold" onclick="onholdBudgetRequaet('+report.id+');"></i></div></td>';
@@ -2279,12 +2279,12 @@ function addBudgetRequestPopUp(){
  
 	result = result + '	    <div class="clearfix mb10">';
 	result = result + '	      <div class="col-md-12">';
-	result = result + ' <div class="input-group">';
+	result = result + ' <div class="input-group errorInptgroup">';
 	result = result + '  <div class="input-group-btn tblminwidth-75" style="min-width: 65px !important;">';
 	result = result + '  <input type="text" class="pull-left btn btn-primary btn-block" id="estimatedBudgetCurrency" name="estimatedBudgetCurrency" value="${projectCurrency}" readonly>';
 	result = result + ' </div>';
 	result = result + ' 	<input type="text" value="" id="estimatedBudget" name="estimatedBudget" class="form-control" placeholder="Estimated Budget *"';
-	result = result + ' 		data-validation="required validate_Space validate_float validate_length length1-16" data-validation-optional="true" class="form-control" field-name="Estimated Budget" >';
+	result = result + ' 		data-validation="required validate_Space validate_float validate_length length1-16" field-name="Estimated Budget" >';
 	result = result + ' </div>';
 	result = result + ' </div>';
 	
