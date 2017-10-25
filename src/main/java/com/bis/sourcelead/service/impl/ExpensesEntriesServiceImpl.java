@@ -147,20 +147,21 @@ public class ExpensesEntriesServiceImpl implements ExpensesEntriesService{
 					 HashSet<ExpensesEntryDocuments> eeDocList = new HashSet<>();
  	                   if(category.getFileInfo() != null && !category.getFileInfo().isEmpty()) {
 				    		for ( FileInfo fileinfo:category.getFileInfo()) {
-				    		  ExpensesEntryDocuments eedoc = new ExpensesEntryDocuments();
-				    		  eedoc.setExpensesEntriesId(entries);	
-				    		  eedoc.setFileURL(fileinfo.getFileURL());
-				    		  eedoc.setFileName(fileinfo.getFileName());
-				    		  eedoc.setFileContentType(fileinfo.getContentType());
-							  FileUploadUtil.moveFile(staticPath, fileinfo, "expsesDocuments");
-				    		  
-			                       eedoc.setStatus(Constants.CANDIDATE_ACTIVE);
-			                       eedoc.setCreatedDate(CommonUtil.currentDate());
-			                       eedoc.setCreatedBy(entries.getCreatedBy());
-			                       eedoc.setUpdatedDate(CommonUtil.currentDate());
-			                       eedoc.setUpdatedBy(entries.getUpdatedBy());
-				                   eeDocList.add(eedoc);
-				    	  }
+				    			if(StringUtils.isEmpty(fileinfo.getFileDbId()))	{
+				    		      ExpensesEntryDocuments eedoc = new ExpensesEntryDocuments();
+				    		  	  FileUploadUtil.moveFile(staticPath, fileinfo, "expsesDocuments");
+					    		  eedoc.setExpensesEntriesId(entries);	
+					    		  eedoc.setFileURL(fileinfo.getFileURL());
+					    		  eedoc.setFileName(fileinfo.getFileName());
+					    		  eedoc.setFileContentType(fileinfo.getContentType());
+			                      eedoc.setStatus(Constants.CANDIDATE_ACTIVE);
+			                      eedoc.setCreatedDate(CommonUtil.currentDate());
+			                      eedoc.setCreatedBy(entries.getCreatedBy());
+			                      eedoc.setUpdatedDate(CommonUtil.currentDate());
+			                      eedoc.setUpdatedBy(entries.getUpdatedBy());
+				                  eeDocList.add(eedoc);
+				    	       }
+ 	                        }
 				    	  entries.setExpensesEntryDocuments(eeDocList);
  	                    }
 						entries.setStatus(Constants.RECORD_ACTIVE.toString());
