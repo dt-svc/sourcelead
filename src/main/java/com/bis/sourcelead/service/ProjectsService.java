@@ -116,7 +116,7 @@ public interface ProjectsService {
 		
 		Projects getProjectByProjectUUID(String projectUUID) throws Exception;
 		
-		ResponseList<Projects> getProjectsListByClientsAndStatus(ProjectsDTO projectsDTO,Long userId,String clients,String status,Long orgLocationId,String userRole) throws Exception;
+		ResponseList<Projects> getProjectsListByClientsAndStatus(ProjectsDTO projectsDTO,Long userId,String clients,String status,Long orgLocationId,String userRole,Long candidateId) throws Exception;
 		
 //		public String getProjectId(OrgLocations orgLocations);
 		

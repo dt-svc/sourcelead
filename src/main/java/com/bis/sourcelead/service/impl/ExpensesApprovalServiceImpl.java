@@ -562,6 +562,10 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, ExpensesAppro
 		return expensesApprovalDao.isTheExpenseTotallyApproved(expenseId);
 	}
 
+	@Override
+	public Boolean isReopenButtonVisibleForLoginOrg(Long expenseId,Long locationsId){
+		return expensesApprovalDao.isReopenButtonVisibleForLoginOrg(expenseId, locationsId);
+	}
 
 	@Override
 	public ExpensesApproverHierarchy getexpensesApproverHierarchyForEmployeeByExpenseId(Long expenseId) {
