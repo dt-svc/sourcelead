@@ -300,7 +300,7 @@ public class LeaveDaoImpl implements LeaveDao{
 		Session session = this.sessionFactory.getCurrentSession();
 		List<Leave> leaveList = null;
 		String query = "from Leave leave left join fetch leave.leaveType lType left join fetch leave.user where leave.orgLocations.id = :orgLocationId and leave.user.id = :userId and lType.id = :leaveTypeId";
-		leaveList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setLong("userId", userId).setLong("userId", userId).setParameter("leaveTypeId", leaveTypeId).setCacheable(true).list();
+		leaveList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setLong("userId", userId).setLong("userId", userId).setParameter("leaveTypeId", leaveTypeId).list();
 		return leaveList;
 	}
 	
@@ -490,7 +490,7 @@ public class LeaveDaoImpl implements LeaveDao{
 
 	@Override
 	@Transactional
-	public boolean validateNameByOrgLocationIdandFromTable(String name, Long orgLocationId, String fromTable)
+	public boolean validateNameByOrgLocationIdandFromTable(String name, Long orgLocationId, String fromTable,String id)
 	{
 		Session session = this.sessionFactory.getCurrentSession();
 		String subQuery = "";
@@ -501,8 +501,8 @@ public class LeaveDaoImpl implements LeaveDao{
 		else if("LeaveType".equalsIgnoreCase(fromTable))
 			subQuery = " and frm.name = :name ";
 			
-		String query = "from "+fromTable+" frm where frm.orgLocations.id = :orgLocationId and frm.status = '1' "+subQuery+"";
-		List<Long> found = session.createQuery(query).setLong("orgLocationId", orgLocationId).setString("name", name).setCacheable(true).list();
+		String query = "from "+fromTable+" frm where frm.orgLocations.id = :orgLocationId and frm.status = '1' "+subQuery+" and frm.id <> :id";
+		List<Long> found = session.createQuery(query).setLong("orgLocationId", orgLocationId).setString("name", name).setString("id", id).setCacheable(true).list();
 		if(found.size() > 0){
 			return true;
 		}else{
@@ -511,4 +511,27 @@ public class LeaveDaoImpl implements LeaveDao{
 		
 	}
 
+
+	@Override
+	@Transactional
+	public boolean deleteAllLeaveRolesByParticularTableId(String from ,String fromId)
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		String subQuery = "";
+		if(Constants.LEAVE_TYPE.equalsIgnoreCase(from))
+			subQuery = " role.leaveTypeid.id = :fromId ";
+		else if(Constants.LEAVE_OPTION.equalsIgnoreCase(from))
+			subQuery = " role.leavesOptionId.id = :fromId ";
+		else if(Constants.RESTRICTDAY.equalsIgnoreCase(from))
+			subQuery = " role.restrictDay.id = :fromId ";
+		Query qry = session.createQuery("delete from LeaveRole role where "+subQuery+"");
+		qry.setParameter("fromId", fromId);
+		int res = qry.executeUpdate();
+		if (res > 0) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
 }
