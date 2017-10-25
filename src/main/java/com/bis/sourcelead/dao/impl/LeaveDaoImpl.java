@@ -12,6 +12,7 @@ import java.time.format.DateTimeFormatterBuilder;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
@@ -122,21 +123,19 @@ public class LeaveDaoImpl implements LeaveDao{
 			int count = 0;
 			int filteredCount = 0;
 			List<Long> countlist = session.createQuery("select count(*) " + countQuery+leavesearchQuery).setLong("orgLocationId", orgLocations.getId()).setCacheable(true).list();
-			if(countlist != null && !countlist.isEmpty()) {
-				count = countlist.iterator().next().intValue();
+			
+			if(leaveApproveHierarchyList != null && !leaveApproveHierarchyList.isEmpty()) {
+				count = leaveApproveHierarchyList.stream().filter(c->c.getLeaveid().getStatus().equalsIgnoreCase(leaveDTO.getLeaveStatus())).collect(Collectors.toList()).size();
 			}
 			response.setRecordsTotal(count);
 			if (leaveDTO != null) {
 				List<Long> filteredCountlist  = session.createQuery("select count(*) " + countQuery+leavesearchQuery).setLong("orgLocationId", orgLocations.getId()).list();
-				if(filteredCountlist != null && !filteredCountlist.isEmpty()) {
-					filteredCount = filteredCountlist.iterator().next().intValue();
+				if(leaveApproveHierarchyList != null && !leaveApproveHierarchyList.isEmpty()) {
+					filteredCount = leaveApproveHierarchyList.stream().filter(c->c.getLeaveid().getStatus().equalsIgnoreCase(leaveDTO.getLeaveStatus())).collect(Collectors.toList()).size();
 				}
 				response.setRecordsFiltered(filteredCount);
-			} else {
-				response.setRecordsFiltered(filteredCount);
 			}
-
-				response.setData(leaveApproveHierarchyList);
+			response.setData(leaveApproveHierarchyList);
 			}
 		else {
 			StringBuilder searchQuery = new StringBuilder("");
@@ -145,7 +144,7 @@ public class LeaveDaoImpl implements LeaveDao{
 					+ "left join fetch leave.leaveType leaveType "
 					+ "left join fetch leave.user user "
 					+ " where leave.orgLocations.id = :orgLocationId and laph.approverUserId.id= :userId";
-			String countQuery ="from Leave leave where leave.orgLocations.id = :orgLocationId";
+			String countQuery ="from Leave leave where leave.orgLocations.id = :orgLocationId and leave.status = '"+leaveDTO.getLeaveStatus()+"'";
 			if(StringUtils.isNotBlank(leaveDTO.getSearchValue())){
 				searchQuery.append(" and (laph.leaveid.user.firstName like '%" + leaveDTO.getSearchValue() + "%' ")
 				.append("OR laph.leaveid.user.lastName like '%" + leaveDTO.getSearchValue() + "%' ")
@@ -190,19 +189,16 @@ public class LeaveDaoImpl implements LeaveDao{
 			int filteredCount = 0;
 			List<Long> countlist = session.createQuery("select count(*) " + countQuery+leavesearchQuery).setLong("orgLocationId", orgLocations.getId()).setCacheable(true).list();
 			if(countlist != null && !countlist.isEmpty()) {
-				count = countlist.iterator().next().intValue();
+				count = countlist.size();
 			}
 			response.setRecordsTotal(count);
 			if (leaveDTO != null) {
 				List<Long> filteredCountlist  = session.createQuery("select count(*) " + countQuery+leavesearchQuery).setLong("orgLocationId", orgLocations.getId()).list();
 				if(filteredCountlist != null && !filteredCountlist.isEmpty()) {
-					filteredCount = filteredCountlist.iterator().next().intValue();
+					filteredCount = filteredCountlist.size();
 				}
 				response.setRecordsFiltered(filteredCount);
-			} else {
-				response.setRecordsFiltered(filteredCount);
-			}
-
+			} 
 				response.setData(leaveApproveHierarchyList);
 		}
 		return response;

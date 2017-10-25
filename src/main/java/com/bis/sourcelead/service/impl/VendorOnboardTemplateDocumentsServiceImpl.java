@@ -11,8 +11,8 @@ import com.bis.sourcelead.dao.OrgRelationsDao;
 import com.bis.sourcelead.dao.VendorOnboardDao;
 import com.bis.sourcelead.dao.VendorOnboardTemplateDao;
 import com.bis.sourcelead.dao.VendorOnboardTemplateDocumentsDao;
-import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.dto.OnBoardingTemplateDTO;
+import com.bis.sourcelead.dto.VendorDocumentsFileInfo;
 import com.bis.sourcelead.dto.VendorsDocumentsDTO;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.User;
@@ -53,7 +53,7 @@ public class VendorOnboardTemplateDocumentsServiceImpl implements VendorOnboardT
 		
 		VendorOnboardingTemplate template = vendorOnboardTemplateDao.getVendorOnBoardingTemplateById(Long.valueOf(onBoardingTemplateDTO.getTemplateId()));
 		if(onBoardingTemplateDTO.getVendorDocumentsFileInfo() != null &&  onBoardingTemplateDTO.getVendorDocumentsFileInfo().size() > 0) {
-			for(FileInfo fileInfo : onBoardingTemplateDTO.getVendorDocumentsFileInfo()) {
+			for(VendorDocumentsFileInfo fileInfo : onBoardingTemplateDTO.getVendorDocumentsFileInfo()) {
 				
 				if(StringUtils.isNotBlank(fileInfo.getDocFileName())) {
 					

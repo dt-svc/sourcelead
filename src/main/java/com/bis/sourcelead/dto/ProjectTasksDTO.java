@@ -30,6 +30,8 @@ public class ProjectTasksDTO implements Serializable {
 	
 	private String estimatedDate;
 	
+	private String estimatedTime;
+	
 	private Long taskStatus;
 	
 	private String taskDescription;
@@ -116,6 +118,12 @@ public class ProjectTasksDTO implements Serializable {
 	}
 	public void setEstimatedDate(String estimatedDate) {
 		this.estimatedDate = estimatedDate;
+	}
+	public String getEstimatedTime() {
+		return estimatedTime;
+	}
+	public void setEstimatedTime(String estimatedTime) {
+		this.estimatedTime = estimatedTime;
 	}
 	public Long getTaskStatus() {
 		return taskStatus;

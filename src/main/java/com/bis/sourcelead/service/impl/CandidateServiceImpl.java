@@ -40,6 +40,7 @@ import com.bis.sourcelead.dao.CandidateTimelineActivityDao;
 import com.bis.sourcelead.dto.AddUserDTO;
 import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.FileInfo;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.elk.index.CandidateIndex;
 import com.bis.sourcelead.elk.index.helper.CandidateIndexHelper;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
@@ -1596,6 +1597,55 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	@Override
 	public Candidate getCandidateByParentCandidateId(Long parentCandidateId) throws Exception {
 		return candidateDao.getCandidateByParentCandidateId(parentCandidateId);
+	}
+
+
+	@Override
+	public ResponseList<CandidateDTO> getCandidateListByOrgLocationIdAndOrgRelationId(Long orgLocationId, Long orgRelationId) throws Exception
+	{
+		
+		ResponseList<CandidateDTO> canList = new ResponseList<>();
+		List<CandidateDTO> candtoList = new ArrayList<>();
+		
+		List<Candidate> candidateList = candidateDao.getCandidatesListByOrgLocationIdAndOrgRelationId(orgLocationId, orgRelationId);
+		OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
+		//SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
+		for (Candidate candidate : candidateList) {
+			
+			CandidateDTO canDTO = new CandidateDTO();
+			
+			StringBuilder sb = new StringBuilder();
+			if(candidate.getLastName() != null){
+			canDTO.setCandidateName(sb.append(candidate.getFirstName()).append(" ").append(candidate.getLastName()).toString());
+			}else{
+				canDTO.setCandidateName(candidate.getFirstName());
+			}
+			canDTO.setEmail(candidate.getEmail());
+			
+			canDTO.setCountry(candidate.getCountry());
+			canDTO.setState(candidate.getState());
+			canDTO.setCity(candidate.getCity());
+			
+			canDTO.setCandidateUpdateDateToString(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),candidate.getUpdatedDate()));
+			canDTO.setPrimarySkill(candidate.getPrimarySkill());
+			StringBuilder stringBuilder = new StringBuilder();
+			canDTO.setVendorContactName(stringBuilder.append(candidate.getSpocId().getVendorUser().getFirstName()).append(" ").append(candidate.getSpocId().getVendorUser().getLastName()).toString());
+			
+			CandidateResumes candidateResumes = candidateResumesService.getCandidateResumesListByCandidateId(candidate.getId());
+			if(candidateResumes != null){
+				canDTO.setCandidateResumeName(candidateResumes.getFileName());
+				canDTO.setCandidateResumeFileType(candidateResumes.getFileContentType());
+				canDTO.setFileUrl(candidateResumes.getFileURL());
+			}
+			
+			if(candidate.getConsultantUser() != null){
+				Integer assignedProjectsCount = projectsService.getUserAssignedProjectsCount(candidate.getConsultantUser().getId(), orgLocationId);
+				canDTO.setAssignedProjectsCount(assignedProjectsCount);
+			}
+			candtoList.add(canDTO);
+		}
+		canList.setData(candtoList);
+		return canList;
 	}
 
 }
