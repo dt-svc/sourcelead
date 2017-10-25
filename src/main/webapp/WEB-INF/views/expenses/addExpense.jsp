@@ -562,7 +562,7 @@ function flushDetails(){
 		
 	}
 	
-}
+
 </script>
 
 <jsp:include page="../masterFooter.jsp" />
