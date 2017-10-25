@@ -201,7 +201,6 @@ $.ajax({
 	result = result+' </tr>';
 	result = result+' </thead>';
 	result = result+' <tbody>';
-	if(data !='' && data !=[] && data !='[]'){
 	//var json = JSON.parse(data);
 	 for (var i = 0; i < json.length; i++) { 
 	 var data = json[i];
@@ -271,7 +270,7 @@ $.ajax({
     if(data.expenseApprovalStatus !=null && data.expenseApprovalStatus  == 'REJECTED'){
     	  result = result+" <div class='sm text-center'><h3 class='reje_color'>Rejected</h3>";
     	 result = result+"  <i class='glyphicon glyphicon-comment' id='"+data.expenseId.id+"' onclick='rejectedMessage(\"rejectedMessage"+data.expenseId.id+"\");'>";
-	 	 result = result+" <div class='app_error_mes' id='rejectedMessage"+data.expenseId.id+"'>"+data.reopenRejectedReason+"</div>";
+	 	 result = result+" <div class='app_error_mes' id='rejectedMessage"+data.expenseId.id+"'>"+data.rejectedReason+"</div>";
 	 	 result = result+" </i><br><p title='"+data.actionPerformedBy+"'>By : "+data.actionPerformedBy+"</p>";
 	 	 result = result+" </div>";
     }
@@ -291,9 +290,7 @@ $.ajax({
 	 $("#temp").val("temp");
 	result = result+' </tbody>';
 	result = result+' </table>';
-	}else{ 
-		/* $('#hideExportIfDataEmptyId').hide(); */
-	}
+	
 	$("#approverDataExpensesDiv").empty();
 	$("#approverDataExpensesDiv").append(result);
 	pagination();

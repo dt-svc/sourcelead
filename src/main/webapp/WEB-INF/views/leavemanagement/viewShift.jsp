@@ -33,11 +33,8 @@
         <div class="clearfix"></div>
       </ul>
       <div class="clearfix"></div>
-      <div class="remove_search">
-        <input placeholder="Search" type="text">
-      </div>
     </div>
-    <div class="require_wrap_table datatable_filter">
+    <div class="clients_wrap_table datatable_filter">
       <div id= "shiftDev"></div> 
     </div>
   </div>
