@@ -18,9 +18,9 @@ public class TimesheetExpenseEntryDetailsUtilDTO implements Serializable{
 	
 	private String expensesFor;
 	
-	private Long projectMemberId;
+	private Long projectMembersId;
 	
-	private Long projectId;
+	private Long projectsId;
 	
 	private Long masterCandidateId;
 	
@@ -80,12 +80,22 @@ public class TimesheetExpenseEntryDetailsUtilDTO implements Serializable{
 		this.expensesFor = expensesFor;
 	}
 
-	public Long getProjectMemberId() {
-		return projectMemberId;
+	
+
+	public Long getProjectMembersId() {
+		return projectMembersId;
 	}
 
-	public void setProjectMemberId(Long projectMemberId) {
-		this.projectMemberId = projectMemberId;
+	public void setProjectMembersId(Long projectMembersId) {
+		this.projectMembersId = projectMembersId;
+	}
+
+	public Long getProjectsId() {
+		return projectsId;
+	}
+
+	public void setProjectsId(Long projectsId) {
+		this.projectsId = projectsId;
 	}
 
 	public String getCurrentTimeFrequency() {
@@ -104,13 +114,7 @@ public class TimesheetExpenseEntryDetailsUtilDTO implements Serializable{
 		this.currentTimeSubFrequency = currentTimeSubFrequency;
 	}
 
-	public Long getProjectId() {
-		return projectId;
-	}
 
-	public void setProjectId(Long projectId) {
-		this.projectId = projectId;
-	}
 
 	public Long getMasterCandidateId() {
 		return masterCandidateId;

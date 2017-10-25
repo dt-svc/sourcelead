@@ -286,7 +286,7 @@ function jpagination(url,sourceleadUrl){
 			         "render": function ( data, type, opt, meta ) {
 			         		var result = "";
 			         		if(opt.manager!=null && opt.manager!='' && opt.manager!='undefined'){
-			         	      	 result = result +"<td><div class='tbldata-dotdot-100' title='"+opt.manager+" "+opt.manager+"'>"+opt.manager+"</div></td>";
+			         	      	 result = result +"<td><div class='tbldata-dotdot-100' title='"+opt.manager+"'>"+opt.manager+"</div></td>";
 		         	        }else{
 		         	      	 result = result +"<td><div>----</div></td>";
 		         	        }
