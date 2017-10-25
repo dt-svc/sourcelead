@@ -15,7 +15,7 @@
   position: absolute !important; right: 0 !important;
 }
 .countShow {
-display: none;  border: none; min-width: 10px; text-align: center; cursor: pointer; max-width: 12px; 
+display: none;  border: none; min-width: 10px; text-align: center; cursor: pointer; max-width: 25px; 
 }
 .remove_user_pop.remove_user_pop_a {
 top:20% !important;
@@ -2010,6 +2010,7 @@ function budgetRequests(){
 	    		result = result + '</div>';
 	    	    $("#budgetRequestsTabDiv").empty();
 	    	    $("#budgetRequestsTabDiv").append(result); 
+	    	    
 	    	    $("#projectBudgetCount").val(json.length); 
 	    	    
 	    	    budgetRequestPagination();

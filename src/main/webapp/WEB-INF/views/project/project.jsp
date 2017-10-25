@@ -150,7 +150,10 @@ function validateShortCode(){
 						
 						 <input type="hidden" name="projectId" id=projectId value=""/>
 						 <input type="hidden" name="projectUUID" id="projectUUID" value=""/>
-
+						 <input type="hidden" name="startDateStr" id="startDateStr" value=""/>
+						 <input type="hidden" name="endDateStr" id="endDateStr" value=""/>
+						 
+ 
 						<div class="form-group">
 							<label class="col-md-3"> Date <span class="text-danger">*</span></label>
 							<div class="col-md-9">
@@ -320,7 +323,7 @@ function validateShortCode(){
 							</label>
 							<div class="col-md-9">
 								<input type="text" class="form-control" name="projectShortCode" id="projectShortCode" placeholder="Project Short Code" data-validation="required validate_length length3-3"
-									field-name="Project Short Code" value="" onkeyUp="toUpperCase();" onblur="validateShortCode();"   maxlength="3">  
+									field-name="Project Short Code" value="" onkeyUp="toUpperCase();" onblur="validateShortCode();"  pattern="[a-zA-Z]"  maxlength="3">  
 
 							</div>
 						</div>
@@ -653,6 +656,9 @@ function getStatus(){
 						success : function(projects) {
 								 $("#projectId").val(projects.id);
 								 $("#projectUUID").val(projects.projectUUID);
+								 $("#startDateStr").val(projects.startDateStr);
+								 $("#endDateStr").val(projects.endDateStr);
+								 
 								 $("#loading").removeAttr("style");
 								 var assignedMembers = document.getElementById("assignedMembers");
 								 $("assignedMembers").removeClass("disabledLink");
@@ -925,7 +931,8 @@ function assignEmployeeCancel(){
       		    }if(locationDate.match("yyyy-dd-MM")){
       		    	var d2 = new Date(proEndDateTP[0], proEndDateTP[2] - 1, proEndDateTP[1]);
       		    }
-                
+              /*   alert("d1>>>"+d1)
+                alert("d2"+d2) */
 				if(d1 > d2){
 					$("#status").empty();
 					$('#status').append('<option >Completed</option>');
