@@ -57,13 +57,13 @@ private static final long serialVersionUID = 1L;
 private Long id;
 
 @NotFound(action=NotFoundAction.IGNORE)
-@ManyToOne
+@ManyToOne(cascade = CascadeType.ALL)
 @Fetch(FetchMode.SELECT)
 @JoinColumn(name="HIERARCHY_ID", nullable=false )        
 private ProjectApproverHierarchy hierarchyId;
 
 @NotFound(action=NotFoundAction.IGNORE)
-@ManyToOne
+@ManyToOne(cascade = CascadeType.ALL)
 @Fetch(FetchMode.SELECT)
 @JoinColumn(name="EXPENSESID", nullable=false )        
 private Expenses expenseId;
@@ -100,7 +100,7 @@ private Date updatedDate;
 private String updatedBy;
 
 @NotFound(action=NotFoundAction.IGNORE)
-@ManyToOne
+@ManyToOne(cascade = CascadeType.ALL)
 @Fetch(FetchMode.SELECT)
 @JoinColumn(name = "REOPENED_USER_ID", nullable = false)
 private User reopenedUser;

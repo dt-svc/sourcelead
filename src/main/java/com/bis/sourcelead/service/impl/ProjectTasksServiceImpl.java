@@ -260,12 +260,10 @@ public class ProjectTasksServiceImpl implements ProjectTasksService {
 	    		Date duDate = commonUtil.orgLocationDateFormat(loginOrgLocation.getDateFormat(),projectTasksDTO.getDuDate());
 	    		tasks.setDueDate(duDate);
 		}
-		if(projectTasksDTO.getEstimatedDate() != null && !projectTasksDTO.getEstimatedDate().isEmpty()){
-	    		Date estimatedDate = commonUtil.orgLocationDateFormat(loginOrgLocation.getDateFormat(),projectTasksDTO.getEstimatedDate());
-	    		tasks.setEstimateDate(estimatedDate);
+		if(projectTasksDTO.getEstimatedTime() != null && !projectTasksDTO.getEstimatedTime().isEmpty()) {
+			tasks.setEstimateTime(projectTasksDTO.getEstimatedTime());
 		}
-		
-		
+
 		if(projectTasksDTO.getPriority() != null){
 			LookUpData priority = lookUpDataService.getTasksById(projectTasksDTO.getPriority());
 			tasks.setPriority(priority);
@@ -499,6 +497,8 @@ public class ProjectTasksServiceImpl implements ProjectTasksService {
 		
 	}
 	
+	
+	
 	@Override
 	public Long getProjectTasksGeneratedIdByProjectId(Long projectId, Integer generatedIdCount) throws Exception {
 		return tasksDao.getProjectTasksGeneratedIdByProjectId(projectId, generatedIdCount);
@@ -524,4 +524,21 @@ public class ProjectTasksServiceImpl implements ProjectTasksService {
 		return tasksDao.getAllTasksByProjectIdAndFilter(projectId, filterDate, startDateUTC, endDateUTC);
 	}
 
+	@Override
+	public void updateBillingType(String billing, String taskId, Long userId) throws Exception {
+		User user = userService.getUserById(userId);
+		ProjectTasks projectTasks = tasksDao.getTasksId(taskId);
+		
+		 //Task Billing Type activity	
+		 ProjectTasks  oldData = tasksDao.getTasksId(taskId);
+	     StringBuffer activity = new StringBuffer();
+	     StringBuffer activitySummary = new StringBuffer();
+	     activity.append("Billing Type");
+	     projectTasks.setBillableType(billing);
+	     projectTasks.setUpdatedDate(commonUtil.currentDate());
+	     tasksDao.updateTasks(projectTasks);
+	     
+	     activitySummary.append(oldData.getBillableType()).append(" to ").append(projectTasks.getBillableType());
+		 projectTaskActivityService.saveProjectTaskActivities(activity.toString(), activitySummary.toString(),projectTasks,user);
+	}
 }
