@@ -396,8 +396,10 @@ function validateOrgShortCode(){
 		    	url : sourceleadUrl+"/validateOrgShortCode?${_csrf.parameterName}=${_csrf.token}&orgShortId="+orgShortId, 
 		        success: function(data) {
 		        	if(data == true){
+		        		$('#generatedUserIdDiv').parent().find('p.jquery_form_error_message').remove();
 		        		$("input#generatedUserId").parent().after("<p class='jquery_form_error_message'><span>Org Short Code Already Exists !!!</span>");
 		        		$("#saveOrgConfiguration").attr("disabled","disabled");
+		        		
 		        	}else{
 		        		 $('#generatedUserIdDiv').parent().find('p.jquery_form_error_message').remove();
 		        		 $("#saveOrgConfiguration").removeAttr("disabled","disabled");
