@@ -32,7 +32,7 @@
 					        <a href="${sourceleadUrl}/addApprovalExpense?expenseId=${expenses.expenseAutoId}&expenseLocationCode=${expenses.expenseLocationCode}&type=edit"  class="btn btn-default ml10 mr10" style='cursor: pointer !important'><i class="fa fa-pencil-square-o" ></i> &nbsp;Edit</a>
 					     </c:if>
 					     
-					      <c:if test="${isExpenseTotallyApproved && submissionStatus == 'APPROVED' && empty eah.reopenReason}">
+					      <c:if test="${isReopenButtonVisible && isExpenseTotallyApproved && submissionStatus == 'APPROVED' && empty eah.reopenReason}">
 						        <c:if test="${!empty eah.reopenRejectedReason}">
 						            <i class='glyphicon glyphicon-comment rejectedHover'>
 						               <div class='app_error_mes' id="rejectedMessage${expenses.id}">${eah.reopenRejectedReason}</div>
@@ -44,13 +44,13 @@
 						     </div>
 					     </c:if> 
 					     
-					     <c:if test="${isSahReopened && !isSuperUser && !empty eah.reopenReason}">
+					     <c:if test="${isReopenButtonVisible && isSahReopened && !isSuperUser && !empty eah.reopenReason}">
 					          <i class='pull-right glyphicon glyphicon-comment rejectedHover moveErrorMsgUp'>
 					            <div class='app_error_mes' id="rejectedMessage${expenses.id}">${eah.reopenReason}</div>
 						      </i>
 						      <p class='pull-right ml' style='width: 146px;'>Re-Open Request sent</p>
 					     </c:if>
-					      <c:if test="${submissionStatus != 'SUBMITTED' && isSahReopened && isSuperUser && !empty eah.reopenedUser}">
+					      <c:if test="${isReopenButtonVisible && submissionStatus != 'SUBMITTED' && isSahReopened && isSuperUser && !empty eah.reopenedUser}">
 					           <i class='pull-right  glyphicon glyphicon-comment rejectedHover'>
 					            <div class='app_error_mes' id="rejectedMessage${expenses.id}">${eah.reopenReason}</div>
 					            </i>
@@ -127,7 +127,7 @@
 						<strong>No of Expenses:</strong><span>${expenses.noOfExpenses}</span><div class="clearfix"></div>
 					</div>
 					<div class="project_details_cta">
-						<strong>Amount:</strong><span>${expenses.totalAmount}</span><div class="clearfix"></div>
+						<strong>Amount:</strong><span>${expenses.expenseAmountDivId}</span><div class="clearfix"></div>
 					</div>
 					
 					<div class="project_details_cta">
@@ -156,7 +156,7 @@
 			           <td><div class="ExpShow" id="categoryDateDiv${entryCount.count}"><i class="fa fa-plus-square-o" aria-hidden="true" onclick="hideAndShowDetailsRow(${2*(entryCount.count)},'Edit');"></i>${entry.dateOccurred}</div></td>
 			           <td><div id="categoryTypeDiv${entryCount.count}">${entry.categoryName}</div></td>
 			           <td><div id="entryDesDiv${entryCount.count}" class="tbldata-dotdot_50" title="${entry.entryDescription}">${entry.entryDescription}</div></td>
-			           <td><div id="expenseAmountDiv${entryCount.count}">${entry.categoryAmount}</div></td>
+			           <td><div id="expenseAmountDiv${entryCount.count}">${entry.amountRoundOff}</div></td>
 			           <td><div id="expenseRateType${entryCount.count}">${entry.categoryAmountType}</div></td>
 			           <td><div id="paymentModeDiv${entryCount.count}">${entry.paymentMode}</div></td>
 			           <td><div id="paidByDiv${entryCount.count}">${entry.paidBy}</div></td>
@@ -169,7 +169,7 @@
 								<li><strong>Exp Category :</strong><span>${entry.categoryName}</span><div class="clearfix"></div></li>
 								<li><strong>Description :</strong><span title="${entry.entryDescription}">${entry.entryDescription}</span>
 								<li><strong>Receipt Issued by :</strong><span title="${entry.receiptIssuedBy}">${entry.receiptIssuedBy}</span><div class="clearfix"></div></li>
-								<li><strong>Amount :</strong><span>${entry.categoryAmount}</span><div class="clearfix"></div></li>
+								<li><strong>Amount :</strong><span>${entry.amountRoundOff}</span><div class="clearfix"></div></li>
 								<li><strong>Currency :</strong><span>${entry.categoryAmountType}</span><div class="clearfix"></div></li>
 								<li><strong>Payment Mode :</strong><span>${entry.paymentMode}</span><div class="clearfix"></div></li>
 								<li><strong>Paid By :</strong><span>${entry.paidBy}</span><div class="clearfix"></div></li>

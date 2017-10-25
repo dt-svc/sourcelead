@@ -351,7 +351,6 @@ result = result + '<div class="project_tabs mb">';
 	    		result = result + ' <i class="fa fa-check-circle"></i><span id="docMsgDiv3"></span>';
 	    		result = result + ' </div>';
 	    	    result = result + '        <div id="employeesLoadingImg"></div>';
-	    		/* if(json.projectMembersList.length!=null && json.projectMembersList.length!=''){ */
 	    	    result = result + '	<table id="projectEmployeePagination" class="display" cellspacing="0" width="100%">';
 	    		result = result + '	<thead>';
 	    		result = result + '		<tr>';
@@ -360,14 +359,15 @@ result = result + '<div class="project_tabs mb">';
 	    		  }
 	    		
 	            result = result + '	 	<th>Emp Name</th>';
-	            result = result + '	 	<th>Emp Email</th>';
-	            result = result + '	 	<th>Emp Role</th>';
+	        /*     result = result + '	 	<th>Emp Email</th>';
+	            result = result + '	 	<th>Emp Role</th>'; */
 	            result = result + '	     <th>Start Date<br>(<small class="custom-small">'+projectempListDate+'</small>)</th>';
 	            result = result + '	     <th>End Date<br>(<small class="custom-small">'+projectempListDate+'</small>)</th>';
-	            result = result + '	     <th>Approved hrs</th>';
-	            result = result + '	     <th>Rejected hrs</th>';
-	            result = result + '	     <th>Wait for Approval </th>';
-	            result = result + '	     <th>Saved hrs</th>';
+	            result = result + '	     <th>Bill Rate</th>';
+	            result = result + '	     <th>Pay Rate</th>';
+	            result = result + '	     <th>Estimated hrs</th>';
+	            result = result + '	     <th>Estimated Budget</th>';
+	            result = result + '	     <th>Actual hrs</th>';
 	            result = result + '	     <th>Action</th>';
 	            result = result + '	 </tr>';
 	            result = result + '	</thead>';
@@ -376,6 +376,10 @@ result = result + '<div class="project_tabs mb">';
 				{      
 		        		var opt = json[i];
 		        		var role = '';
+		        		var billRate = '';
+		        		var payRate = '';
+		        		var estimatedHours = '';
+		        		var estimatedBudget = '';
 		        		
 						if (opt.userRoleType != null && opt.userRoleType != '' && opt.userRoleType != 'undefined') {
 							role = opt.userRoleType;
@@ -389,14 +393,40 @@ result = result + '<div class="project_tabs mb">';
 		        		}else{
 		        			projectEndDateStr = "--"
 		        		}
+		        		
+		        		
+		        		if(opt.currentBillRate != null && opt.currentBillRate != 'undefined' && opt.currentBillRate != ''){
+		        			billRate = opt.billRateCurrency+" "+opt.currentBillRate+" /"+opt.rateType
+		        		}else{
+		        			billRate = "-----"
+		        		}
+		        		
+		        		if(opt.payRate != null && opt.payRate != 'undefined' && opt.payRate != ''){
+		        			payRate = opt.payRateCurrency+" "+opt.payRate+" /"+opt.payRateType
+		        		}else{
+		        			payRate = "-----"
+		        		}
+		        		
+		        		if(opt.estimatedHours != null && opt.estimatedHours != 'undefined' && opt.estimatedHours != ''){
+		        			estimatedHours = opt.estimatedHours;
+		        		}else{
+		        			estimatedHours = "------"
+		        		}
+		        		
+		        		if(opt.estimatedBudget != null && opt.estimatedBudget != 'undefined' && opt.estimatedBudget != ''){
+		        			estimatedBudget = opt.estimatedBudget;
+		        		}else{
+		        			estimatedBudget = "------"
+		        		}
+		        		
 		        		result = result + '	 <tr>';
 		        		 if('${postedOrgLocationId}' == '${SourceLeadWeb_orgLocations.id}'){
 		        			 result = result + '<td><input type="checkbox" onclick="selectedMember();"  class="projectMembersChecks" value='+opt.id+' name="projectMembers[]" ></td>';
 		        		 }
 		        		
 		                result = result + '	 	<td><div class="tbldata-dotdot" title="'+opt.candidateName+'"><span title="'+opt.candidateName+'">'+opt.candidateName+'</span></div></td>';
-		                result = result + '	 	<td><div class="tbldata-dotdot" title="'+opt.empEmail+'"><span title="'+opt.empEmail+'">'+opt.empEmail+'</span></div></td>';
-		                result = result + '	 	<td><div class="tbldata-dotdot_80" title="'+role+'"><span title="'+role+'">'+role+'</span></div></td>';
+		              /*   result = result + '	 	<td><div class="tbldata-dotdot" title="'+opt.empEmail+'"><span title="'+opt.empEmail+'">'+opt.empEmail+'</span></div></td>';
+		                result = result + '	 	<td><div class="tbldata-dotdot_80" title="'+role+'"><span title="'+role+'">'+role+'</span></div></td>'; */
 		                result = result + '	     <td><div class="tbldata-dotdot_80"><span title="'+opt.projectAssignedDateStr+'">'+opt.projectAssignedDateStr+'</span></div></td>';
 		                if(status == 'COMPLETED'){
 		                	result = result + '<td><div>'+projectEndDateStr+'</div></td>';
@@ -415,10 +445,12 @@ result = result + '<div class="project_tabs mb">';
 	                	   '</sec:authorize>';
 		                	
 		                }
+		                
+		                result = result + '	     <td><div class="tbldata-dotdot_80"><span title="'+billRate+'">'+billRate+'</span></div></td>';
+		                result = result + '	     <td><div class="tbldata-dotdot_80"><span title="'+payRate+'">'+payRate+'</span></div></td>';
+		                result = result + '	     <td><div class="tbldata-dotdot_80"><span title="'+estimatedHours+'">'+estimatedHours+'</span></div></td>';
+		                result = result + '	     <td><div class="tbldata-dotdot_80"><span title="'+estimatedBudget+'">'+estimatedBudget+'</span></div></td>';
 		                result = result + '	     <td><div class="tbldata-dotdot_80"><span title="'+opt.approvedHrs+'">'+opt.approvedHrs+'</span></div></td>';
-		                result = result + '	     <td><div class="tbldata-dotdot_80"><span title="'+opt.rejectedHrs+'">'+opt.rejectedHrs+'</span></div></td>';
-		                result = result + '	     <td><div class="tbldata-dotdot_80"><span title="'+opt.submittedHrs+'">'+opt.submittedHrs+'</span></div></td>';
-		                result = result + '	     <td><div class="tbldata-dotdot_80"><span title="'+opt.draftHrs+'">'+opt.draftHrs+'</span></div></td>';
 		                
 		                
 		                if('${postedOrgLocationId}' == '${SourceLeadWeb_orgLocations.id}'){
@@ -1364,11 +1396,17 @@ function resourceRequestsTab(){
 	        	
 	    		result = result + '	<div class="timesheet_head anchorTag-black">';
 	    		result = result + '	<ul>';
-	    		result = result + '	      <li><a href="'+sourceleadUrl+'/requestAssociates?projectUUID='+projectUUID+'&projectClientUUID='+projectClientUUID+'">';
-	    		result = result + '	       <i class="glyphicon glyphicon-plus"></i>Request Associates</a></li>';
-	    		result = result + '	      <li><a href="'+sourceleadUrl+'/newResourceRequest?projectUUID='+projectUUID+'&projectClientUUID='+projectClientUUID+'">';
-	    		result = result + '	       <i class="glyphicon glyphicon-plus"></i>New Resource Request</a>&nbsp; &nbsp;</li>';
-
+	    		
+	    		 '<sec:authorize access="hasRole(\'ROLE_ADD_RESOURCE_REQUEST\')">';
+		    		result = result + '	      <li><a href="'+sourceleadUrl+'/requestAssociates?projectUUID='+projectUUID+'&projectClientUUID='+projectClientUUID+'">';
+		    		result = result + '	       <i class="glyphicon glyphicon-plus"></i>Request Associates</a></li>';
+	    		 '</sec:authorize>';
+	    		
+	    		 '<sec:authorize access="hasRole(\'ROLE_ADD_REQUEST_ASSOCIATE\')">';
+		    		result = result + '	      <li><a href="'+sourceleadUrl+'/newResourceRequest?projectUUID='+projectUUID+'&projectClientUUID='+projectClientUUID+'">';
+		    		result = result + '	       <i class="glyphicon glyphicon-plus"></i>New Resource Request</a>&nbsp; &nbsp;</li>';
+	    		 '</sec:authorize>';
+		    		 
 	    		result = result + '	</ul>';
 	    		result = result + '	       </div>';
 	    		result = result + '		<div class="project_tabs_inn_table vendor_wrap_inn_table datatable_filter overflow_inherint">';
@@ -1393,9 +1431,21 @@ function resourceRequestsTab(){
 	    			result = result + '<tr>';
 	    			if(report.requestType == 'Associate Request'){
 						if(report.requestStatus == 'Draft' || report.requestStatus == 'Rejected'){
-							result = result + '<td><div><a href="'+sourceleadUrl+'/editResourceRequest?requestUUID='+report.requestUUID+'&projectUUID='+projectUUID+'&projectClientUUID='+projectClientUUID+'">'+report.requestId+'</a></div></td>';
+							'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_RESOURCE_REQUEST\',\'ROLE_VIEW_EDIT_REQUEST_ASSOCIATE\')">';
+							    result = result + '<td><div><a href="'+sourceleadUrl+'/editResourceRequest?requestUUID='+report.requestUUID+'&projectUUID='+projectUUID+'&projectClientUUID='+projectClientUUID+'">'+report.requestId+'</a></div></td>';
+							'</sec:authorize>';
+							
+							'<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_EDIT_RESOURCE_REQUEST\',\'ROLE_VIEW_EDIT_REQUEST_ASSOCIATE\')">';
+							    result = result + '<td><div><a href="#">'+report.requestId+'</a></div></td>';
+							'</sec:authorize>';
 						}else{
-							result = result + '<td><div><a href="'+sourceleadUrl+'/viewResourceRequest?requestUUID='+report.requestUUID+'&projectUUID='+projectUUID+'&projectClientUUID='+projectClientUUID+'">'+report.requestId+'</a></div></td>';
+							'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_RESOURCE_REQUEST\',\'ROLE_VIEW_EDIT_REQUEST_ASSOCIATE\')">';
+							     result = result + '<td><div><a href="'+sourceleadUrl+'/viewResourceRequest?requestUUID='+report.requestUUID+'&projectUUID='+projectUUID+'&projectClientUUID='+projectClientUUID+'">'+report.requestId+'</a></div></td>';
+							'</sec:authorize>';
+							
+							'<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_EDIT_RESOURCE_REQUEST\',\'ROLE_VIEW_EDIT_REQUEST_ASSOCIATE\')">';
+						        result = result + '<td><div>'+report.requestId+'</div></td>';
+						    '</sec:authorize>';
 						}
 	    			}else{
 	    				if(report.requestStatus == 'Draft' || report.requestStatus == 'Rejected'){
@@ -1920,7 +1970,7 @@ function budgetRequests(){
 					result = result + '     <td><div  class="tbldata-dotdot_80">'+report.createdStr+'</div></td>';
 					result = result + '     <td><div  class="tbldata-dotdot-vsm" title="'+report.createdUserName+'">'+report.createdUserName+'</div></td>';
 					if(report.budgetStatus == "Waiting For Approval"){
-						result = result + '     <td><div class="tblminwidth-75">';
+						result = result + '     <td><div class="tblminwidth-90">';
 						result = result + '     <i class="fa fa-check" alt="Approve" title="Approved" onclick="acceptBudgetRequset('+report.id+')"></i>|';
 						result = result + '     <i class="fa fa-times" alt="Rejected" title="Rejected" onclick="deleteBudgetRequaet('+report.id+');"></i>';
 						result = result + '     <i class="fa fa-clock-o" alt="On hold" title="On hold" onclick="onholdBudgetRequaet('+report.id+');"></i></div></td>';
@@ -2060,7 +2110,7 @@ function onholdBudgetRequaet(budgetRequestedId){
 	result = result +"<input type='hidden' id='budgetRequestedId' name='budgetRequestedId' value='"+budgetRequestedId+"'>";
 	result = result +"<input type='hidden' id='loginUserid' name='loginUserid' value='${SourceLeadWeb_user.id}'>";
 	result = result +"		<p>Are you sure you want to On-Hold ?</p>";
-	result = result +"		<textarea  id='reasonForProjectBudget' name='reasonForProjectBudget'  placeholder='Comments here' field-name='Reason' data-validation='validate_length length2-5000' data-validation-optional='true'></textarea>";
+	result = result +"		<textarea  id='reasonForProjectBudget' name='reasonForProjectBudget'  placeholder='Comments here' field-name='Reason' data-validation='required validate_length length2-5000'></textarea>";
 	result = result +"</form>";
 	result = result +'		<b href="javascript:void(0)"><input id="delete_budget-id" type="button" value="On-Hold" onclick="onHoldBudgetRequest('+budgetRequestedId+');"><input class="u_can_color" type="button"  value="Cancel" onClick="cancelTermination();"></b>';
 	result = result +"	</div>";
@@ -2092,7 +2142,7 @@ function onHoldBudgetRequest(budgetRequestedId){
 				success : function(result) {
 					$("#popUp").empty();
 	   			 	//$(".project_inn_mask").fadeOut(200);
-	   			 	$(".vendor_wrap_mask").fadeIn(200);
+	   			 	$(".vendor_wrap_mask").fadeOut(200);
 	   			 	budgetRequests();
 				},
 			}); 
@@ -2229,12 +2279,12 @@ function addBudgetRequestPopUp(){
  
 	result = result + '	    <div class="clearfix mb10">';
 	result = result + '	      <div class="col-md-12">';
-	result = result + ' <div class="input-group">';
+	result = result + ' <div class="input-group errorInptgroup">';
 	result = result + '  <div class="input-group-btn tblminwidth-75" style="min-width: 65px !important;">';
 	result = result + '  <input type="text" class="pull-left btn btn-primary btn-block" id="estimatedBudgetCurrency" name="estimatedBudgetCurrency" value="${projectCurrency}" readonly>';
 	result = result + ' </div>';
 	result = result + ' 	<input type="text" value="" id="estimatedBudget" name="estimatedBudget" class="form-control" placeholder="Estimated Budget *"';
-	result = result + ' 		data-validation="required validate_Space validate_float validate_length length1-16" data-validation-optional="true" class="form-control" field-name="Estimated Budget" >';
+	result = result + ' 		data-validation="required validate_Space validate_float validate_length length1-16" field-name="Estimated Budget" >';
 	result = result + ' </div>';
 	result = result + ' </div>';
 	

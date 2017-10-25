@@ -54,6 +54,7 @@ import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.CrowdSourcingUserBankAccountsDTO;
 import com.bis.sourcelead.dto.ReferContactsDTO;
 import com.bis.sourcelead.dto.RequirementDTO;
+import com.bis.sourcelead.dto.RequirementReferDTO;
 import com.bis.sourcelead.elk.index.CampaignIndex;
 import com.bis.sourcelead.elk.index.CandidateIndex;
 import com.bis.sourcelead.elk.index.RequirementIndex;
@@ -87,10 +88,8 @@ import com.bis.sourcelead.service.SavedJobsService;
 import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
-import com.bis.sourcelead.util.FileUploadUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
-import com.bis.sourcelead.web.LoginSessionController;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
@@ -1225,18 +1224,18 @@ public class CrowdSourcingRequirementsRestController {
 	 
 	 /*@PreAuthorize("hasRole('ROLE_CROWDSOURCING_REQUIREMENTS')")*/
 		@RequestMapping(value = "/submitReferToJob", method = RequestMethod.POST)
-		public String submitReferToJob(@RequestParam(value = "json", required = false) String json,
+		public String submitReferToJob(RequirementReferDTO requirementReferDTO,
 				HttpServletRequest request,HttpServletResponse response)
 				throws Exception {
 
-			String json1 = "{" + json + "}";
-			JSONObject jsonObj = new JSONObject(json1);
+			/*String json1 = "{" + json + "}";
+			JSONObject jsonObj = new JSONObject(json1);*/
 
 			
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 			
-			requirementReferService.saveReferCandidate(user, orgLocations, jsonObj);
+			requirementReferService.saveReferCandidate(user, orgLocations, requirementReferDTO);
 						
 			return "success";
 

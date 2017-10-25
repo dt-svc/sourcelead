@@ -301,6 +301,7 @@ public class OrgSpocServiceImpl implements OrgSpocService{
 			     orgSpoc.setSpocFirstName(orgSpoc.getClientUser().getFirstName());
 			     orgSpoc.setSpocLastName(orgSpoc.getClientUser().getLastName());
 			     orgSpoc.setSpocMobilePhone(orgSpoc.getClientUser().getMobilePhone());
+			     orgSpoc.setSpocExtensionNumber(orgSpoc.getClientUser().getExtensionNumber());
 			     orgSpoc.setSpocEmail(orgSpoc.getClientUser().getEmail());
 			     orgSpoc.setTempSpocId(orgSpoc.getClientUser().getId());
 			     
@@ -325,6 +326,7 @@ public class OrgSpocServiceImpl implements OrgSpocService{
 			     orgSpoc.setSpocFirstName(orgSpoc.getVendorUser().getFirstName());
 			     orgSpoc.setSpocLastName(orgSpoc.getVendorUser().getLastName());
 			     orgSpoc.setSpocMobilePhone(orgSpoc.getVendorUser().getMobilePhone());
+			     orgSpoc.setSpocExtensionNumber(orgSpoc.getVendorUser().getExtensionNumber());
 			     orgSpoc.setSpocEmail(orgSpoc.getVendorUser().getEmail());
 			     orgSpoc.setTempSpocId(orgSpoc.getVendorUser().getId());
 			     

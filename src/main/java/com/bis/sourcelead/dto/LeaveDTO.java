@@ -79,7 +79,7 @@ public class LeaveDTO extends SearchDTO implements Serializable{
 	private String selfRejectedCounts;
 	private String selfCancelledCounts;
 	private String isBillable;
-	
+	private int selfBalancedCounts;
 	
 	public String getLeavesTaken() {
 		return leavesTaken;
@@ -556,6 +556,11 @@ public class LeaveDTO extends SearchDTO implements Serializable{
 	public void setIsBillable(String isBillable) {
 		this.isBillable = isBillable;
 	}
-
+	public int getSelfBalancedCounts() {
+		return selfBalancedCounts;
+	}
+	public void setSelfBalancedCounts(int selfBalancedCounts) {
+		this.selfBalancedCounts = selfBalancedCounts;
+	}
 
 }

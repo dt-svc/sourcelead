@@ -698,7 +698,7 @@ public class ClientRestController {
 			for(OrgRelations orgRelations : relationsList){
 				for(OrgLocations orgRelations123 : orgLocationsList){
 				if(orgRelations.getLocationId().getId().longValue() == orgLocation.getId().longValue()){
-					if(StringUtils.containsIgnoreCase(clientName.trim(), orgRelations.getResponderLocationId().getOrgLocationName())||orgRelations123.getOrgLocationName().equalsIgnoreCase(clientName)) {
+					if(StringUtils.equalsIgnoreCase(clientName.trim(), orgRelations.getResponderLocationId().getOrgLocationName())||orgRelations123.getOrgLocationName().equalsIgnoreCase(clientName)) {
 //					if(clientName.trim().equalsIgnoreCase(orgRelations.getResponderLocationId().getOrgLocationName())){
 						flag = Constants.CLINT_VENDOR_IF_EXIST;
 						if(orgRelations123.getOrgLocationName().equalsIgnoreCase(clientName)){
@@ -707,7 +707,7 @@ public class ClientRestController {
 					}
 				}	
 				else if(orgRelations.getResponderLocationId().getId().longValue() == orgLocation.getId().longValue()){
-					if(StringUtils.containsIgnoreCase(clientName.trim(), orgRelations.getLocationId().getOrgLocationName())||orgRelations123.getOrgLocationName().equalsIgnoreCase(clientName)){
+					if(StringUtils.equalsIgnoreCase(clientName.trim(), orgRelations.getLocationId().getOrgLocationName())||orgRelations123.getOrgLocationName().equalsIgnoreCase(clientName)){
 //					if(clientName.trim().equalsIgnoreCase(orgRelations.getLocationId().getOrgLocationName())){
 						flag = Constants.CLINT_VENDOR_IF_EXIST;
 						if(orgRelations123.getOrgLocationName().equalsIgnoreCase(clientName)){
@@ -734,7 +734,7 @@ public class ClientRestController {
 		List<OrgLocations> orgLocationsList = orgLocationService.getAllOrgLocationsByOrgId(org.getId());
 		if(orgLocationsList != null && orgLocationsList.size() > 0) {
 			for(OrgLocations orgLocations : orgLocationsList) {
-				if(StringUtils.containsIgnoreCase(orgName.trim(), orgLocations.getOrgLocationName())) {
+				if(StringUtils.equalsIgnoreCase(orgName.trim(), orgLocations.getOrgLocationName())) {
 					flag = "invalid";
 					break;
 				}
@@ -836,6 +836,76 @@ public class ClientRestController {
 		if(orgRelation.getPaymentTerms() !=null){
 			clientVendorDTO.setPaymentTerms(orgRelation.getPaymentTerms());
 		}
+		
+		if(orgRelation.getIsVendorOnboardSubmitted().equalsIgnoreCase(Constants.YES)) {
+			clientVendorDTO.setIsVendorOnboardSubmitted(orgRelation.getIsVendorOnboardSubmitted());
+			if(StringUtils.isNotBlank(orgRelation.getIndustryName())) {
+				clientVendorDTO.setIndustryName(orgRelation.getIndustryName());
+			}
+			
+			if(StringUtils.isNotBlank(orgRelation.getCurrency())) {
+				clientVendorDTO.setCurrency(orgRelation.getCurrency());
+			}
+			
+			if(StringUtils.isNotBlank(orgRelation.getSicCode())) {
+				clientVendorDTO.setSicCode(orgRelation.getSicCode());
+			}
+			
+			if(StringUtils.isNotBlank(orgRelation.getNaicsCode())) {
+				clientVendorDTO.setNaicsCode(orgRelation.getNaicsCode());
+			}
+			
+			if(StringUtils.isNotBlank(orgRelation.getEinCode())) {
+				clientVendorDTO.setEinCode(orgRelation.getEinCode());
+			}
+			
+			if(StringUtils.isNotBlank(orgRelation.getTaxRegistrationNumber())) {
+				clientVendorDTO.setTaxRegistrationNumber(orgRelation.getTaxRegistrationNumber());
+			}
+			
+			if(StringUtils.isNotBlank(orgRelation.getDunsNumber())) {
+				clientVendorDTO.setDunsNumber(orgRelation.getDunsNumber());
+			}
+			
+			if(StringUtils.isNotBlank(orgRelation.getAccountName())) {
+				clientVendorDTO.setAccountName(orgRelation.getAccountName());
+			}
+			
+			if(StringUtils.isNotBlank(orgRelation.getAccountNumber())) {
+				clientVendorDTO.setAccountNumber(orgRelation.getAccountNumber());
+			}
+			
+			if(StringUtils.isNotBlank(orgRelation.getBankName())) {
+				clientVendorDTO.setBankName(orgRelation.getBankName());
+			}
+			
+			if(StringUtils.isNotBlank(orgRelation.getBranchNumber())) {
+				clientVendorDTO.setBranchNumber(orgRelation.getBranchNumber());
+			}
+			
+			if(StringUtils.isNotBlank(orgRelation.getBranchNumber())) {
+				clientVendorDTO.setBranchNumber(orgRelation.getBranchNumber());
+			}
+			
+			if(StringUtils.isNotBlank(orgRelation.getBankIdentifierCode())) {
+				clientVendorDTO.setBankIdentifierCode(orgRelation.getBankIdentifierCode());
+			}
+			
+			if(StringUtils.isNotBlank(orgRelation.getBankAddress())) {
+				clientVendorDTO.setBankAddress(orgRelation.getBankAddress());
+			}
+			
+			if(StringUtils.isNotBlank(orgRelation.getPoEmail())) {
+				clientVendorDTO.setPoEmail(orgRelation.getPoEmail());
+			}
+			
+			if(StringUtils.isNotBlank(orgRelation.getPaymentRemittanceEmail())) {
+				clientVendorDTO.setPaymentRemittanceEmail(orgRelation.getPaymentRemittanceEmail());
+			}
+		}
+		
+		
+		
 		
 		String msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "editClient");
 		if(msg != null && msg != ""){

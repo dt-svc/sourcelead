@@ -75,7 +75,7 @@ function vendorContacts(orgRelationID,clientLocationId){
 	        	
 	        //	var json = JSON.parse(data);
 	        	
-	        	for (var i = 0; i < 1; i++) { 
+	        	/* for (var i = 0; i < 1; i++) { 
 	 				var val= json.data[i];
 	 				var opt = "";
 	 					if(val.msg != null && val.msg != '' && val.msg != 'undefined'){
@@ -85,7 +85,7 @@ function vendorContacts(orgRelationID,clientLocationId){
 	 						}
 	 					$("#vendorConactMsgDiv").empty();
 	 					$("#vendorConactMsgDiv").append(opt);
-	 				}
+	 				} */
 	        	
 	        	$("#vendorContactListDiv").empty();
 	    		if(json.data.length != null && json.data.length != ''){

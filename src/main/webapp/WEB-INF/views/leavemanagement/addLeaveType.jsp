@@ -53,11 +53,8 @@
 						<div class="form-group">
 							<label class="col-md-3">Name<span class="text-danger">&nbsp;*</span></label>
 							<div class="col-md-9" id="leaveTypeDiv">
-								<input type="hidden" id="leaveTypeId" name="leaveTypeId"
-									value="${leaveType.id}" /> <input type="text"
-									class="form-control" id="leaveTypeName" name="name"
-									value="${leaveType.name}" onblur="validateName();"
-									field-name="Name"
+								<input type="hidden" id="leaveTypeId" name="leaveTypeId" value="${leaveType.id}" />
+								 <input type="text" class="form-control" id="leaveTypeName" name="name" value="${leaveType.name}" onblur="validateName();" field-name="Name"
 									data-validation="required validate_Space validate_length length1-250">
 							</div>
 						</div>
@@ -319,7 +316,7 @@
 					<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12  txtEditor_p">
 						<h5>Description</h5>
 						<textarea id="txtEditor" name="leavePolicyDescription"   
-						value="" class="form-control newContrtextarea" data-validation="validate_length length2-5000" data-validation-optional="true"></textarea>
+						value="" field-name="Description" class="form-control newContrtextarea" data-validation="validate_length length2-5000" data-validation-optional="true"></textarea>
 					</div>
 
 						</div>
@@ -344,14 +341,13 @@
 
 <script>
 	function validateName() {
+	
 		var locationId = '${SourceLeadWeb_orgLocationId}';
+		var id = $("#leaveTypeId").val();
 		var name = $("#leaveTypeName").val();
 		if (name != null && name != '' && name != 'undefined') {
-			$
-					.get(
-							sourceleadUrl + "/validateName?&orgLocationId="
-									+ locationId + "&from=LeaveType&name="
-									+ name,
+
+			$.get(sourceleadUrl + "/validateName?&orgLocationId="+ locationId + "&from=LeaveType&name="+name+"&id="+id,
 							function(data) {
 								if (data == true) {
 									$('#leaveTypeDiv').find(

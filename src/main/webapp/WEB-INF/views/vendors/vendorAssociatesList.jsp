@@ -14,7 +14,7 @@
 	border: 1px solid #ccc !important
 }
 </style>
-
+<script type="text/javascript" src='resources/js/slead-common.js'></script>
 <script type="text/javascript">
 //On document ready
 $(function(){
@@ -73,9 +73,9 @@ function vendorAssociatesList(orgRelationId){
 		$.ajax({
 	    	type: "POST",
 	    	   url: sourceleadUrl+"/getVendorAssociatesListForVendors?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId, 	
-	    	success: function(data) {
+	    	success: function(json) {
 	        	
-	        	var json = JSON.parse(data);
+	        ///	var json = JSON.parse(data);
 	        
 	        	$("#vendorAssociatesListTab").empty();
 	    		
@@ -95,9 +95,9 @@ function vendorAssociatesList(orgRelationId){
 		            result = result +'</thead>';
 		            result = result + '<tbody>';
 		            
-			          for (var i=0; i<json.length; i++)
+			          for (var i=0; i<json.data.length; i++)
 					  { 
-			        	  var opt = json[i];
+			        	  var opt = json.data[i];
 			        	  result = result + "<tr>";
 			            	
 			        	  result = result +"<td><div title='"+opt.candidateName+"' class='tbldata-dotdot-100'>"+opt.candidateName+"</div></td>";
@@ -122,7 +122,8 @@ function vendorAssociatesList(orgRelationId){
 	
 			               	}
 			               	if(opt.candidateResumeName != null && opt.candidateResumeName != '' && opt.candidateResumeName !='undefined'){
-		               		result = result +"<td title="+opt.candidateResumeName+"><a class='glyphicon glyphicon-download-alt' href=\'"+sourceleadUrl+"/candidateResumeDownload?candidateID="+opt.id+"\'></a>&nbsp;&nbsp;<a class='fa fa-eye' onclick='viewAssociateCandidateResume(\""+opt.id+"\",\""+opt.candidateResumeName+"\");'></a></td>";
+		               		result = result +'<td ><div title='+opt.candidateResumeName+' class="tblicons_4"><a class="glyphicon glyphicon-download-alt" href=\"'+opt.fileUrl+'\"></a>&nbsp;&nbsp;<a class="fa fa-eye"  href="javascript:void(0)" onClick="viewFile(\''+opt.fileUrl+'\',\''+opt.candidateResumeName+'\',\''+opt.candidateResumeFileType+'\');"></a></div></td>';
+			               	
 			               	}
 			               	else{
 				            	result = result +"<td><div> --- </div></td>";
