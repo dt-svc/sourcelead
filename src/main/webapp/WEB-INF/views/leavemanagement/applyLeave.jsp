@@ -444,16 +444,23 @@ function getLeavePolicy(){
 
 <script>
 function validateMaxLeave(data){
-	$('.warMess').hide();
+	$('.warMess1').hide();
+	var behalf = $("#checkbox-1");
+	var userId = "";
+	if(behalf.is(':checked')){
+		userId = $("#user").val();
+	}else{
+		userId = '${SourceLeadWeb_userId}';
+	}
 	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
-	var userId = '${SourceLeadWeb_userId}';
+	
 	var leaveTypeId = $("#leaveType").val();
 	var leaveTypeName = data.options[data.selectedIndex].innerHTML;
 	$.get(sourceleadUrl+"/validateMaxLeave?"+tokenParamName+"="+tokenValue+"&leaveTypeId="+leaveTypeId+"&orgLocationId="+orgLocationId+"&userId="+userId, function(data) {
 		if(data == true){
-			$("#leaveTypeIdDiv").after("<p class='warMess'>You don't have balance for the '"+leaveTypeName+"'.</span>");
+			$("#leaveTypeIdDiv").after("<p class='warMess1'>You don't have balance for the '"+leaveTypeName+"'.</span>");
 		}else{
-			$('.warMess').hide();
+			$('.warMess1').hide();
 		}
 	}); 
 	

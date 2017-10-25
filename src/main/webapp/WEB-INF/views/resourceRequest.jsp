@@ -134,7 +134,7 @@ function resourceRequestList(requestType){
 			    		
 		    		}else{
 		    			if(report.requestStatus == 'Rejected'){
-		    				result = result + '<b class="text-danger">'+report.requestStatus+'</b>';
+		    				result = result + '<b class="bg-red">'+report.requestStatus+'</b>';
 		    			}else{
 		    				result = result + '<b>'+report.requestStatus+'</b>';
 		    			}
