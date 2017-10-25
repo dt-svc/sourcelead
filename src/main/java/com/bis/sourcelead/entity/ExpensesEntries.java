@@ -41,13 +41,13 @@ public class ExpensesEntries implements Serializable {
 	private Long id;
 
 	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne(cascade = CascadeType.ALL)
+	@ManyToOne
 	@Fetch(FetchMode.SELECT)
 	@JoinColumn(name = "EXPENSESID", nullable = false)
 	private Expenses expensesId;
 	
 	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne(cascade = CascadeType.ALL)
+	@ManyToOne
 	@Fetch(FetchMode.SELECT)
 	@JoinColumn(name = "EXPENSE_CATEGORY_ID", nullable = false)
 	private ExpensesCategory expensesCategoryId;

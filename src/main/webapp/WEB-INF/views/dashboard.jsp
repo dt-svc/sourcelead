@@ -194,12 +194,15 @@ overflow-x: auto;
 			   <jsp:include page="dashboardTimesheets.jsp"></jsp:include>  
 			 </c:if> 
 	      </sec:authorize>
-			 <sec:authorize access="hasAnyRole('ROLE_VIEW_REQUIREMENT')">
-				<c:if test = "${SourceLeadWeb_ats == 'Y' || SourceLeadWeb_vms == 'Y'}">
-					<jsp:include page="dashboardRequirement.jsp"></jsp:include> 
-				</c:if>
-		     </sec:authorize>
-		     
+	      <c:forEach var="userTabs" items="${SourceLeadWeb_tabsList}">
+	      	<c:if test="${userTabs.tabName == 'Jobs'}">
+				 <sec:authorize access="hasAnyRole('ROLE_VIEW_REQUIREMENT')">
+					<c:if test = "${SourceLeadWeb_ats == 'Y' || SourceLeadWeb_vms == 'Y'}">
+						<jsp:include page="dashboardRequirement.jsp"></jsp:include> 
+					</c:if>
+			     </sec:authorize>
+		     </c:if>
+		   </c:forEach>
 	    </div>
 	    <div class="clearfix row mb">
 			 <sec:authorize access="hasAnyRole('ROLE_ADD_MY_EXPENSES','ROLE_VIEW_EDIT_MY_EXPENSES','ROLE_EXPORT_MY_EXPENSES','ROLE_ADD_EMPLOYEE_EXPENSES','ROLE_VIEW_EDIT_EMPLOYEE_EXPENSES','ROLE_EXPORT_EMPLOYEE_EXPENSES')">   
@@ -212,11 +215,13 @@ overflow-x: auto;
 			 
 		 </div>
 	    	<c:if test = "${SourceLeadWeb_ats == 'Y' || SourceLeadWeb_vms == 'Y'}">
-	    	
+	    		<c:forEach var="userTabs" items="${SourceLeadWeb_tabsList}">
+	    		<c:if test="${userTabs.tabName == 'Jobs'}">
 	    			<sec:authorize access="hasAnyRole('ROLE_VIEW_REQUIREMENT')">
 					<jsp:include page="dashboardAssignedRequirements.jsp"></jsp:include> 
 					</sec:authorize>
-					
+				</c:if>	
+				</c:forEach>
 					<sec:authorize access="hasAnyRole('ROLE_CREATE_ON_BOARD_USER','ROLE_VIEW_EDIT_ON_BOARD_USER')">
 					<jsp:include page="onboardingCandidatesList.jsp"></jsp:include> 
 					</sec:authorize>
@@ -230,18 +235,26 @@ overflow-x: auto;
 					</sec:authorize>
 					
 			    <div class="col-md-6 mb pdleft"> 
-			    	 <sec:authorize access="hasAnyRole('ROLE_VIEW_REQUIREMENT')">
-			   	 	 <jsp:include page="dashboardRequirementApprovals.jsp"></jsp:include>
-			   	 	 </sec:authorize>
+			    <c:forEach var="userTabs" items="${SourceLeadWeb_tabsList}">
+			    	<c:if test="${userTabs.tabName == 'Jobs'}">
+				    	 <sec:authorize access="hasAnyRole('ROLE_VIEW_REQUIREMENT')">
+				   	 	 <jsp:include page="dashboardRequirementApprovals.jsp"></jsp:include>
+				   	 	 </sec:authorize>
+			   	 	 </c:if>	
+			   	 </c:forEach>
 			   	 	 <%--  <sec:authorize access="hasAnyRole('ROLE_VIEW_INTERVIEW')">
 			    	 <jsp:include page="dashboardInterviews.jsp"></jsp:include>
 			    	 </sec:authorize> --%>
 			    </div>
 		    </c:if>
 		     <div class="col-md-6 mb pdRight"> 
-		     		<sec:authorize access="hasAnyRole('ROLE_VIEW_REQUIREMENT')">
-		     		<jsp:include page="dashboardApplicants.jsp"></jsp:include>
-		     		</sec:authorize>
+		     	<c:forEach var="userTabs" items="${SourceLeadWeb_tabsList}">
+			     	<c:if test="${userTabs.tabName == 'Jobs'}">
+			     		<sec:authorize access="hasAnyRole('ROLE_VIEW_REQUIREMENT')">
+			     		<jsp:include page="dashboardApplicants.jsp"></jsp:include>
+			     		</sec:authorize>
+			     	</c:if>
+		     	</c:forEach>
 		     </div>
 		     
 		     <div class="clearfix"></div>

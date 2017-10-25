@@ -380,7 +380,7 @@
 		</div>
 	</div>
 	<div id="actionsDiv" class="timesheet_head timesheetHead minHeight candidateHead recruitmentHead headersummary clearfix zindex" style="display: none;">
-		<ul class="alignUlList">
+		<ul class="alignUlList mt10">
 		  <li class="li-vendor">
 		   <c:if test="${requirement.requirementSubmissionStatus != 'SUBMITTED' && requirement.requirementSubmissionStatus != 'CLOSED' && requirement.requirementSubmissionStatus != 'REJECTED' &&  requirement.requirementSubmissionStatus != 'CANCEL' && requirement.requirementSubmissionStatus != 'DRAFT' && requirement.requirementSubmissionStatus != 'ONHOLD' && requirement.requirementSubmissionStatus != 'FILLEDCLOSED'  && requirement.requirementSubmissionStatus != 'UNFILLEDCLOSED' }">
 		        <a onclick="getActions();" href="javascript:void(0)" class="action"> Action <i  class="fa fa-caret-down" ></i></a>
