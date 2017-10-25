@@ -349,7 +349,12 @@ function getHolidaysList(){
 					 for (var i=0; i<data.length; i++)
 						{
 			        		 var opt = data[i];
-			        		 result = result + ' <tr class="text-danger">';
+			        		 if(opt.isFuture == 'Y'){
+			        			 result = result + ' <tr class="text-success">';
+			        		 }else{
+			        			 result = result + ' <tr class="text-danger">';
+			        		 }
+			        		 
 			        		 result = result + ' <td>'+j+'</td>';
 			        		 if(opt.holidayName !=null && opt.holidayName !='' && opt.holidayName !='undefined'){
 			        			 result = result + '<td title="'+opt.holidayName+'">'+opt.holidayName+'</td>'; 
