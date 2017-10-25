@@ -390,6 +390,7 @@ public class UploadFileServiceImpl implements UploadFileService {
 									 userImport.setIsMailChecked(Status.N);
 								 }
 								 saveBulkUser(userImport,orgLocations,user,isMailChecked);
+								 isFileCreated = "failure";
 							 }
 						}
 					} else {
@@ -397,6 +398,7 @@ public class UploadFileServiceImpl implements UploadFileService {
 							count++;
 							createXlsSheet(row, createExcelsheet, count,userImport,fileName,org,roleHierarchyId,orgLocations);
 						}
+						isFileCreated = "0";
 					}
 				}
 				if (count > 0) {
