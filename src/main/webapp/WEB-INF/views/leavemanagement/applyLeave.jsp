@@ -444,7 +444,7 @@ function getLeavePolicy(){
 
 <script>
 function validateMaxLeave(data){
-	$('.warMess').hide();
+	$('.warMess1').hide();
 	var behalf = $("#checkbox-1");
 	var userId = "";
 	if(behalf.is(':checked')){
@@ -458,9 +458,9 @@ function validateMaxLeave(data){
 	var leaveTypeName = data.options[data.selectedIndex].innerHTML;
 	$.get(sourceleadUrl+"/validateMaxLeave?"+tokenParamName+"="+tokenValue+"&leaveTypeId="+leaveTypeId+"&orgLocationId="+orgLocationId+"&userId="+userId, function(data) {
 		if(data == true){
-			$("#leaveTypeIdDiv").after("<p class='warMess'>You don't have balance for the '"+leaveTypeName+"'.</span>");
+			$("#leaveTypeIdDiv").after("<p class='warMess1'>You don't have balance for the '"+leaveTypeName+"'.</span>");
 		}else{
-			$('.warMess').hide();
+			$('.warMess1').hide();
 		}
 	}); 
 	
@@ -469,7 +469,7 @@ function validateMaxLeave(data){
 
 <script>
 function validateDate(){
-	$('.warMess1').hide();
+	$('.warMess').hide();
 	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	var roleId = '${SourceLeadWeb_loginUserRoleId}';
 	var fromDate = $("#fromDate").val();
@@ -478,7 +478,7 @@ function validateDate(){
 		if(data != null){
 			$("#toDate").after("<p class='warMess'><span id='dataclosePop' class='fa fa-times text-danger' onclick='closedate();'></span>You cannot apply for leave on restricted/holiday day</span> "+data);
 		}else{
-			$('.warMess1').hide();
+			$('.warMess').hide();
 		}
 	}); 
 };
