@@ -69,6 +69,9 @@ public class TimesheetSubmissionsDocuments implements Serializable{
 	
 	@Column(name = "UPDATED_BY")
 	private String updatedBy;
+	
+	@Column(name = "FILE_URL")
+	private String fileUrl;
 
 	public Long getId() {
 		return Id;
@@ -151,6 +154,14 @@ public class TimesheetSubmissionsDocuments implements Serializable{
 
 	public void setTimesheetSubmissions(TimesheetSubmissions timesheetSubmissions) {
 		this.timesheetSubmissions = timesheetSubmissions;
+	}
+
+	public String getFileUrl() {
+		return fileUrl;
+	}
+
+	public void setFileUrl(String fileUrl) {
+		this.fileUrl = fileUrl;
 	}
 
 	

@@ -1240,8 +1240,8 @@ function certificationSubmissionProfile(candidateId){
 	 $.ajax({  
           type : "POST",
           url: sourceleadUrl+"/getCandidateCertificationListByCandidateIdAndOrgLocationID?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,        
-          success :function(data) {
-        	  if (data != null && data != 'undefined' && data != "" && data != '[]') {
+          success :function(json) {
+        	  if (json != null && json != 'undefined' && json != "" && json != '[]') {
 	                	 $("#certificationSubmissionProfile").empty();
 	                	 var result = "";
 	                	 
@@ -1250,9 +1250,9 @@ function certificationSubmissionProfile(candidateId){
 							result = result +'          <div class="row">';
 							result = result +'            <div class="col-md-12">';
 							result = result +'              <ul class="list-unstyled personal-info">';
-							 var json = JSON.parse(data);
-							for (var i = 0; i < json.length; i++) { 
-		                    	var opt = json[i];  
+// 							 var json = JSON.parse(data);
+							for (var i = 0; i < json.data.length; i++) { 
+		                    	var opt = json.data[i];  
 		                    	if(opt.score != null && opt.score != 'undefined' && opt.score != ""){
 				            		score =' ( ' + opt.score;
 				            	}else{

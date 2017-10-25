@@ -378,7 +378,6 @@ function getClientSubmissionTemplates(local){
 	    	type: "POST",
 	    	url : sourceleadUrl+"/getOrgSpocsList?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationID+"&type=Client", 
 	        success: function(json) {
-	        	//var json = JSON.parse(data);
 				var output = "";
 				output = output
 						+ "<option value=''>-- Select Contact --</option>";

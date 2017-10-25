@@ -140,7 +140,7 @@ function redirectlocation(location){
 		    	  	"render": function(data, type, opt, meta) {
 		    	  		  var result = "";
 		    	  		result = result + ' <div class="proj_show divmax-width">';
-		    	  		result = result + '<div class="pull-left tbldata-dotdot cursorPointer" title="'+opt.empName+'('+opt.empType+')" onclick="getRequestedAproveSummary(\''+opt.id+'\','+opt.orgLocationId+');">'+opt.empName+'('+opt.empType+')</div><i class="fa fa-binoculars pull-right"></i>'; 
+		    	  		result = result + '<div class="pull-left tbldata-dotdot cursorPointer" title="'+opt.empName+'('+opt.empType+')" onclick="getRequestedAproveSummary(\''+opt.id+'\','+opt.orgLocationId+');">'+opt.empName+'('+opt.empType+')</div><i class="fa fa-binoculars pull-right" onclick="getRequestedAproveSummary(\''+opt.id+'\','+opt.orgLocationId+');"></i>'; 
 		    	  		result = result + ' </div>';
 			              return result; 
 		    	  	}
@@ -384,8 +384,8 @@ function getRequestedAproveSummary(leaveId,orgLocationId){
              result = result +' <div class="col-md-8">';
 //              result = result +' <span><a href="javascript:void(o)">demo.pdf<i class="fa fa-download padddingLeft cursorPointer"></i></a></span>';
              if(data.fileUrl != null && data.fileUrl != 'undefined' && data.fileUrl != ''){
-            	 result = result+'<td><div class="tblicons_4"> <a class="glyphicon glyphicon-download-alt" target="_blank" href=\"'+data.fileUrl+'\" title="Download"></a>&nbsp&nbsp';
-            	 result = result + '<a href="#" title="Preview"><i class="fa fa-eye cursorPointer" onclick="viewFile(\''+data.fileUrl+'\', \''+data.fileName+'\', \''+data.fileContentType+'\')"></i></a>';
+            	 result = result+'<div class="tblicons_4"> <a class="glyphicon glyphicon-download-alt" target="_blank" href=\"'+data.fileUrl+'\" title="Download"></a>&nbsp&nbsp';
+            	 result = result + '<a href="#" title="Preview"><i class="fa fa-eye cursorPointer" onclick="viewFile(\''+data.fileUrl+'\', \''+data.fileName+'\', \''+data.fileContentType+'\')"></i></a></div>';
              }else{
             	 result = result +'<span>--</span>'; 
              }

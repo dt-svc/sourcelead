@@ -72,7 +72,7 @@ function prepareAssignedProjectsData(data){
 	
 	result = result +"<td>";
    	if(opt.projectName != '' && opt.projectName != null && opt.projectName != 'undefined'){
-   		result = result +"<div class='tbldata-dotdot'><a href='"+sourceleadUrl+"/projectSummary?projectUUID="+opt.projectUUID+"'><span title='"+opt.projectName+"'>"+opt.projectName+"</span></a></div>";
+   		result = result +"<div class='tbldata-dotdot'><a href='"+sourceleadUrl+"/projectSummary?projectUUID="+opt.projectUUID+"&projectClientUUID="+opt.projectClientUUID+"'><span title='"+opt.projectName+"'>"+opt.projectName+"</span></a></div>";
    	}else{
    		result = result +"<div>-----</div>";
    	}

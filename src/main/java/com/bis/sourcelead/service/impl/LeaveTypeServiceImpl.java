@@ -22,6 +22,7 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.DepartmentService;
+import com.bis.sourcelead.service.LeaveService;
 import com.bis.sourcelead.service.LeaveTypeService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.RolesService;
@@ -40,6 +41,9 @@ public class LeaveTypeServiceImpl implements LeaveTypeService {
 	RolesService rolesService;
 	@Autowired
 	UserService userService;
+	
+	@Autowired 
+	LeaveService leaveService;
 	
 	@Override
 	public LeaveType addLeaveType(LeaveTypeDTO leaveTypeDTO) throws Exception
@@ -109,21 +113,10 @@ public class LeaveTypeServiceImpl implements LeaveTypeService {
 	private Set<LeaveRole> getLeaveRoles(List<String> roles, LeaveType leaveType, User user) throws Exception
 	{
 		Set<LeaveRole> leaveRolesSet = new HashSet<>();
+		boolean flag = leaveService.deleteAllLeaveRolesByParticularTableId(Constants.LEAVE_TYPE,leaveType.getId());
 		for(String role : roles) {
 //		roles.forEach(role -> {
-			LeaveRole leaveRole = null;
-			Long l = Long.parseLong(role);
-			if(leaveType.getLeaveTypeRolesSet() !=null && leaveType.getLeaveTypeRolesSet().size() >0) {
-				List<LeaveRole> list = leaveType.getLeaveTypeRolesSet().stream().filter(r->r.getRoleId().getId().longValue() == l.longValue()).collect(Collectors.toList());
-				if(!list.isEmpty()) {
-					leaveRole = list.iterator().next();
-				}else {
-					leaveRole = new LeaveRole();
-				}
-			}else {
-				leaveRole = new LeaveRole();
-			}
-
+			LeaveRole leaveRole = new LeaveRole();
 			leaveRole.setLeaveTypeid(leaveType);
 			leaveRole.setType(Constants.LEAVE_TYPE);
 			try {
