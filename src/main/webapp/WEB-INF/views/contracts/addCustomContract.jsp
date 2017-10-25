@@ -5,7 +5,11 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 
 
-
+<script>
+$(document).ready(function(){
+	$("#tempEye").hide();
+});
+</script>
 <style type="text/css">
 .chosen-container {
     width: 100% !important;
@@ -85,8 +89,8 @@
             </div>	
             <div class="form-group">
               <label class="col-md-4">Attachment<span class="text-danger">&nbsp;*</span></label>
-              <div class="col-md-8">
-							<div class="input-group positionRelative ratetype" id="uploadFileGroup" title="Document Type: .pdf format only
+              <div class="col-md-8 clearfix">
+							<div class="input-group positionRelative ratetype col-md-10 pull-left" id="uploadFileGroup" title="Document Type: .pdf format only
 							">
 	                        <label class="input-group-btn"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
 	                          <input type="file" id="uploadBtn" style="display: none;" class="upload">
@@ -94,6 +98,7 @@
 		                          <input type="text" class="form-control" readonly id="uploadFile" name="docFile" value="${contract.fileName}" placeholder="Upload .pdf File." field-name="Attachment" data-validation="required validate_Space validatepdf">
 	                        </div>
 	                         <!-- <p class="text-muted pull-right small"><i class="fa fa-info-circle"></i>Please upload PDF type doc.</p> -->
+              			<span class="col-md-2 noPad clearfix" title="View File" id="tempEye" style="display:block;"> <i class="fa fa-eye btn btn-default formic1 pull-right minHeBtn" onclick="previewTemplatePDF()"></i> </span>
               </div>			
 			</div>
           	
@@ -1779,8 +1784,19 @@ function validateContractTitle(){
 $(function() {
 	$("#uploadBtn").change(function() {
 		fileUpload("uploadBtn", "ContractDocs", "newcontract_form");
+		$("#tempEye").show();
 	});
  });
+</script>
+
+<script>
+function previewTemplatePDF(){
+	var res = $('input[name="fileInfo[0].fileURL"]').val();
+	var fileurl = res.replace("ContractDocs", "temp");
+	var filename = $('input[name="fileInfo[0].fileName"]').val();
+	var contentType = $('input[name="fileInfo[0].contentType"]').val();
+	viewFile(fileurl, filename, contentType);
+}
 </script>
 
 <script>
