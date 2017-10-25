@@ -45,6 +45,7 @@
        <label class="col-md-3">End Date<span class="text-danger paddingLeft">*</span></label>
         <div class="col-md-9">
        <input type="text" id="endDate" name="endDate" placeholder="End Date" value="${restrictDay.endDateStr}" field-name="End Date" class="form-control calendar" data-validation="required">
+        <div id="warnDiv"></div>
        </div>
     </div>
     <div class="form-group">
@@ -182,6 +183,7 @@ $('body').on('blur', '#restrictDay_form', function() {
             dt.setDate(dt.getDate());
             $("#startDate").datepicker("option", "maxDate", dt);
             removeEndValid();
+            checkDuplicateRestrictDay();
         }
 	  });
 	  
@@ -210,17 +212,19 @@ $('body').on('blur', '#restrictDay_form', function() {
  
 <script>
 function checkDuplicateRestrictDay(){
-	$('.warMess1').hide();
+	$('.jquery_form_error_message cOrange').hide();
 	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	var startDate = $("#startDate").val();
 	var endDate = $("#endDate").val();
-	$.get(sourceleadUrl + "/checkDuplicateRestrictDay?&orgLocationId="+ orgLocationId+"&startDate="+startDate+"&endDate="+endDate, function(data) {
+	if(startDate != null && startDate != '' && startDate != 'undefined' && startDate != null && startDate != '' && startDate != 'undefined'){
+		$.get(sourceleadUrl + "/checkDuplicateRestrictDay?&orgLocationId="+ orgLocationId+"&startDate="+startDate+"&endDate="+endDate, function(data) {
 			if(data == true){
-				$("#endDateDiv").after("<p class='warMess1'>You don't have balance for the '"+leaveTypeName+"'.</span>");
+				$("#warnDiv").after("<p class='jquery_form_error_message cOrange'><i class='fa fa-exclamation-circle'></i> Your restrict days are already added.</span>");
 			}else{
-				$('.warMess1').hide();
+				$('.jquery_form_error_message cOrange').hide();
 			}
 		});
+	}
 }
 </script>
  
