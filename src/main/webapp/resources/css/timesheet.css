@@ -1698,121 +1698,7 @@ background:url("../images/arrow-d-g.png") no-repeat right center; background-siz
           
               
           
-@media screen and (max-width: 1100px){
-.timesheet_table table table tr td {padding: 8px 2px;} 
-.timesheet_out { padding: 0px 0px 30px 0px;}
-.time_appr_side_wrap { width:85%; top:155px;}
-.clients_side_wrap { width:85%; top:155px;}
-.project_side_wrap { width:85%; top:155px;}
-.timesheet_table, .project_tabs_inn_table { width:auto; overflow-x:auto;}
-.timesheet_table table, .project_tabs_inn_table table { min-width:850px;}
-       
-          
-}  
-       
-@media screen and (max-width: 1023px){
-.timesheet_wrap {
-    padding:0px; margin:0px 0px; box-shadow:0px 0px 3px rgba(0,0,0,0.4); position: relative;
-    }
-.timesheet_head .glyphicon-print { padding:0px 10px 0px 0px;}  
-.timesheet_head { padding:5px 0px 2px 0px; height:auto;}           
-.timesheet_bot { padding:10px;}
-.timesheet_week_comm textarea {width:70%;}
-.timesheet_week_comm span { width:27%;}
-.res_total_hours { display:block;}
-       
-.project_field { width:60%;}   
-.proj_show i {
-    visibility: visible; opacity:1;
-    }  
-.timesheet_appr_table, .project_wrap_table, .user_summ_wrap_table { overflow:auto; width:auto;}
-.timesheet_appr_table table, .project_wrap_table table, .user_summ_wrap_table table { min-width:850px;}
-.clients_wrap_table { overflow:auto; width:auto;}  
-.clients_wrap_table table { min-width:900px;}
-.project_details_cta { width:100%;}
-       
-.project_details textarea { width:100%;}
-.user_details_cta { width:62%;}
-       
-       
-}
-       
-@media screen and (max-width: 766px){
-.timesheet_week_comm { width:100%; float:none; padding-bottom:12px;}
-.timesheet_button { width:100%; text-align:right; float:none;}
-.timesheet_week_comm textarea {width:68%; margin:0px 2% 0px 0px;}
-.timesheet_week_comm span { width:30%; text-align:center;} 
-.timesheet_week_comm label { padding:7px 5px;}
-.timesheet_week_comm label i { display:block; padding:1px 0px 5px 0px; font-size:20px;}
-.pullRight { display:none;}
-.content-wraper .content-header { padding:6px 0px 15px 0px;}
-.content-wraper .content-header h2 {font-size:20px;}
-       
-.user_summ_wrap .project_details { padding:20px 15px;}
-.user_details_cta { width:100%; padding:20px 0px 0px 0px; box-shadow:0px 0px 3px rgba(0,0,0,0.2);}
-.user_details_cta_img { width:268px; margin:10px auto 15px; float:none;}
-.user_summary_edit {
-    position:fixed; left:0px; right:0px; z-index:10000; top:0px; padding:20px 10px 20px 10px; max-height:100%; overflow-y:auto;
-    }
-.footer-area { height:auto; font-size:12px;}   
-       
-       
-}
-       
-@media screen and (max-width: 598px){
-    
-.timesheet_head { padding:2px 0px;}
-.timesheet_head ul { width: 100%; float:right;}
-.timesheet_head ul li:first-child + li + li + li { width:100%; margin:0px 0px 5px 0px; }
-.timesheet_head ul li:first-child + li + li + li span {
-    display:block; width:120px; padding:0px; margin:0px auto;
-    }      
-.timesheet_head .glyphicon-chevron-left, .timesheet_head .glyphicon-chevron-right {
-    position:absolute; font-size:15px; top:8px; right:16%;
-    }
-.timesheet_head .glyphicon-chevron-left { left:12%;}       
-.timesheet_head abbr { display:none;}  
-.timesheet_head ul li span { display:none;}
-.timesheet_head .glyphicon-play { font-size:22px; padding:3px; top:1px; right: 16px; opacity:0; -webkit-opacity:0; -moz-opacity:0;}
-.timesheet_head .glyphicon-export, .timesheet_head .fa-filter { padding:0px 16px 0px 0px;}
-.project_field { width:80%;}   
-.time_appr_rejct_pop { width:85%;}
-.project_details { padding:10px;}
-.project_details_cta { width:350px; float:none;}
-.project_details_cta span { width:52%;}
-       
-.project-tabs-menu { padding:0px;}
-.project-tabs-menu li { margin:0px 2px 0px 0px;}
-.project-tabs-menu li a { padding:7px 10px;}
-       
-.clients_wrap .timesheet_head ul li span { display: inline-block;}
-.clients_wrap .timesheet_head ul, .user_summ_wrap .timesheet_head ul, .project_wrap .timesheet_head ul { width:auto;}
-.clients_wrap .timesheet_head .glyphicon-play { opacity:1; top:7px; font-size:11px;}
-       
-.timesheet_status_wrap .timesheet_head ul li span {display:inline-block;}
-.timesheet_status_wrap .timesheet_head .glyphicon-play { opacity:1; top:7px; font-size:11px;}
-       
-.user_summ_wrap .timesheet_head ul li span {display:inline-block;}
-.user_summ_wrap .timesheet_head .glyphicon-play { opacity:1; top:7px; font-size:11px;}
-       
-.pagination > li > a, .pagination > li > span { padding:6px 9px;}
-.user_summ_wrap .project_details_cta strong { width:100px;}
-.timesheet_appr_wrap .timesheet_head .glyphicon-play {
-    right:13px; font-size:10px; top:6px;
-}
-.project_wrap .timesheet_head .glyphicon-play {
-    right:13px; font-size:10px; top:6px; opacity:1;
-}
-.timesheet_appr_wrap .timesheet_head ul li:first-child + li + li + li span { display:inline-block; width:auto;}
-.timesheet_appr_wrap .timesheet_head ul li:first-child + li + li + li { width:auto; margin: 5px 0px 5px 5px;}
-.project_wrap .timesheet_head ul li:first-child + li + li + li span { display:inline-block; width:auto;}
-.project_wrap .timesheet_head ul li:first-child + li + li + li { width:auto; margin: 5px 0px 5px 5px;}
-       
-.project_wrap  .timesheet_head ul li span {display:inline-block;}
-       
-.user_summary_edit_cta { width:94%; margin: 0.5% 3%;}
-       
-}
+
        
        
        
@@ -5406,7 +5292,13 @@ padding: 2px 0px 0px 0px; font-weight: 500; max-width: 100px !important;
     padding: 10px !important;
 }
 .warMess {
-display: block; font-size: 12px; font-weight: 500; color: #ff6b01; padding: 2px 0px 0px 0px;
+       display: block; font-size: 12px; font-weight: 500; color: #ff6b01;
+   position: fixed; z-index: 999; background: #fff; padding: 15px;
+   box-shadow: 1px 1px 5px #909090; border: 1px solid #ccc; top: 20%; left: 25%; width: 60%; line-height: 20px; border-radius: 5px;
+}
+.warMess #dataclosePop {
+position: absolute; right: -10px; top:-10px; background-color: #ededed; padding: 10px; cursor: pointer;
+border: 1px solid #333;
 }
 .empUlAli {}
 .empUlAli li {
@@ -5593,5 +5485,165 @@ width: 100%; border: none; background: transparent; font-size: 14px; color: #666
 .timeAppUse p input.timeUsName {
 font-size: 17px; font-weight: 500; color: #454545;
 }
+.erMesMid {
+position: relative;
+}
+.erMesMid p {
+position: absolute !important; left: 0px !important;
+}
+.posSta {
+position: static !important;
+}
+.errBotVal p {
+bottom:-30px !important; padding: 0px 10px 0px 15px !important;
+}
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+/*    Responsive CSS    */
+
+
+@media screen and (max-width: 1169px){
+.timesheet_table table table tr td {padding: 8px 2px;} 
+.timesheet_out { padding: 0px 0px 30px 0px;}
+.time_appr_side_wrap { width:85%; top:155px;}
+.clients_side_wrap { width:90%;}
+.project_side_wrap { width:90%;}
+.timesheet_table, .project_tabs_inn_table { width:auto; overflow-x:auto;}
+.timesheet_table table, .project_tabs_inn_table table { min-width:850px;}
+	
+	.side_mask .proj_close {
+		left: 2%;
+	}
+	.resTabScroll {
+		position: relative; padding: 0px 20px;
+	}
+	.resTabScroll ul {
+		padding: 0px 0px; width: 100%; overflow: auto; display: block; height: 40px;
+	}
+	.tabLeftArrow, .tabRightArrow {
+		position: absolute; display: block; left: 0px; top: 0px; width: 16px; height: 100%; background-color: #5B50DD;
+		vertical-align: middle; text-align: center; font-size: 23px; color: #fff; line-height: 40px;
+	}
+	.tabRightArrow {
+		right: 0px; left: inherit;
+	}	
+          
+}  
+       
+@media screen and (max-width: 1023px){
+.timesheet_wrap {
+    padding:0px; margin:0px 0px; box-shadow:0px 0px 3px rgba(0,0,0,0.4); position: relative;
+    }
+.timesheet_head .glyphicon-print { padding:0px 10px 0px 0px;}  
+.timesheet_head { padding:5px 0px 2px 0px; height:auto;}           
+.timesheet_bot { padding:10px;}
+.timesheet_week_comm textarea {width:70%;}
+.timesheet_week_comm span { width:27%;}
+.res_total_hours { display:block;}
+       
+.project_field { width:60%;}   
+.proj_show i {
+    visibility: visible; opacity:1;
+    }  
+.timesheet_appr_table, .project_wrap_table, .user_summ_wrap_table { overflow:auto; width:auto;}
+.timesheet_appr_table table, .project_wrap_table table, .user_summ_wrap_table table { min-width:850px;}
+.clients_wrap_table { overflow:auto; width:auto;}  
+.clients_wrap_table table { min-width:900px;}
+.project_details_cta { width:100%;}
+       
+.project_details textarea { width:100%;}
+.user_details_cta { width:62%;}
+       
+       
+}
+       
+@media screen and (max-width: 766px){
+.timesheet_week_comm { width:100%; float:none; padding-bottom:12px;}
+.timesheet_button { width:100%; text-align:right; float:none;}
+.timesheet_week_comm textarea {width:68%; margin:0px 2% 0px 0px;}
+.timesheet_week_comm span { width:30%; text-align:center;} 
+.timesheet_week_comm label { padding:7px 5px;}
+.timesheet_week_comm label i { display:block; padding:1px 0px 5px 0px; font-size:20px;}
+.pullRight { display:none;}
+.content-wraper .content-header { padding:6px 0px 15px 0px;}
+.content-wraper .content-header h2 {font-size:20px;}
+       
+.user_summ_wrap .project_details { padding:20px 15px;}
+.user_details_cta { width:100%; padding:20px 0px 0px 0px; box-shadow:0px 0px 3px rgba(0,0,0,0.2);}
+.user_details_cta_img { width:268px; margin:10px auto 15px; float:none;}
+.user_summary_edit {
+    position:fixed; left:0px; right:0px; z-index:10000; top:0px; padding:20px 10px 20px 10px; max-height:100%; overflow-y:auto;
+    }
+.footer-area { height:auto; font-size:12px;}   
+       
+       
+}
+       
+@media screen and (max-width: 598px){
+    
+.timesheet_head { padding:2px 0px;}
+.timesheet_head ul { width: 100%; float:right;}
+.timesheet_head ul li:first-child + li + li + li { width:100%; margin:0px 0px 5px 0px; }
+.timesheet_head ul li:first-child + li + li + li span {
+    display:block; width:120px; padding:0px; margin:0px auto;
+    }      
+.timesheet_head .glyphicon-chevron-left, .timesheet_head .glyphicon-chevron-right {
+    position:absolute; font-size:15px; top:8px; right:16%;
+    }
+.timesheet_head .glyphicon-chevron-left { left:12%;}       
+.timesheet_head abbr { display:none;}  
+.timesheet_head ul li span { display:none;}
+.timesheet_head .glyphicon-play { font-size:22px; padding:3px; top:1px; right: 16px; opacity:0; -webkit-opacity:0; -moz-opacity:0;}
+.timesheet_head .glyphicon-export, .timesheet_head .fa-filter { padding:0px 16px 0px 0px;}
+.project_field { width:80%;}   
+.time_appr_rejct_pop { width:85%;}
+.project_details { padding:10px;}
+.project_details_cta { width:350px; float:none;}
+.project_details_cta span { width:52%;}
+       
+.project-tabs-menu { padding:0px;}
+.project-tabs-menu li { margin:0px 2px 0px 0px;}
+.project-tabs-menu li a { padding:7px 10px;}
+       
+.clients_wrap .timesheet_head ul li span { display: inline-block;}
+.clients_wrap .timesheet_head ul, .user_summ_wrap .timesheet_head ul, .project_wrap .timesheet_head ul { width:auto;}
+.clients_wrap .timesheet_head .glyphicon-play { opacity:1; top:7px; font-size:11px;}
+       
+.timesheet_status_wrap .timesheet_head ul li span {display:inline-block;}
+.timesheet_status_wrap .timesheet_head .glyphicon-play { opacity:1; top:7px; font-size:11px;}
+       
+.user_summ_wrap .timesheet_head ul li span {display:inline-block;}
+.user_summ_wrap .timesheet_head .glyphicon-play { opacity:1; top:7px; font-size:11px;}
+       
+.pagination > li > a, .pagination > li > span { padding:6px 9px;}
+.user_summ_wrap .project_details_cta strong { width:100px;}
+.timesheet_appr_wrap .timesheet_head .glyphicon-play {
+    right:13px; font-size:10px; top:6px;
+}
+.project_wrap .timesheet_head .glyphicon-play {
+    right:13px; font-size:10px; top:6px; opacity:1;
+}
+.timesheet_appr_wrap .timesheet_head ul li:first-child + li + li + li span { display:inline-block; width:auto;}
+.timesheet_appr_wrap .timesheet_head ul li:first-child + li + li + li { width:auto; margin: 5px 0px 5px 5px;}
+.project_wrap .timesheet_head ul li:first-child + li + li + li span { display:inline-block; width:auto;}
+.project_wrap .timesheet_head ul li:first-child + li + li + li { width:auto; margin: 5px 0px 5px 5px;}
+       
+.project_wrap  .timesheet_head ul li span {display:inline-block;}
+       
+.user_summary_edit_cta { width:94%; margin: 0.5% 3%;}
+       
+}
+
+/*    Responsive CSS    */
