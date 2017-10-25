@@ -19,6 +19,7 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.RestrictDay;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.service.LeaveService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.RestrictDayService;
 import com.bis.sourcelead.service.RolesService;
@@ -42,6 +43,9 @@ public class RestrictDayServiceImpl implements RestrictDayService {
 	
 	@Autowired
 	private RolesService rolesService;
+	
+	@Autowired 
+	LeaveService leaveService;
 	
 	@Override
 	public RestrictDay storeRestrictedDay(RestrictDayDTO restrictDayDTO) throws Exception {
@@ -108,6 +112,7 @@ public class RestrictDayServiceImpl implements RestrictDayService {
 
 	private Set<LeaveRole> getLeaveRoles(List<String> roles, RestrictDay restrictDay, User user) throws Exception {
 		Set<LeaveRole> leaveRolesSet = new HashSet<>();
+		boolean flag = leaveService.deleteAllLeaveRolesByParticularTableId(Constants.RESTRICTDAY,restrictDay.getId());
 		roles.forEach(role -> {
 			LeaveRole leaveRole = null;
 			if(restrictDay.getRestrictDayRolesList() !=null && restrictDay.getRestrictDayRolesList().size() >0) {
