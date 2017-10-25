@@ -208,6 +208,14 @@ public class OrgRelations implements Serializable{
 	private String vendorCreateduserName;
 	
 	@Transient
+	@JsonProperty
+	private String poEmail;
+	
+	@Transient
+	@JsonProperty
+	private String paymentRemittanceEmail;
+	
+	@Transient
 	private Integer noOfContatcs;
 	
 	@Transient
@@ -1058,6 +1066,22 @@ public class OrgRelations implements Serializable{
 
 	public void setPhoneNumber(String phoneNumber) {
 		this.phoneNumber = phoneNumber;
+	}
+
+	public String getPoEmail() {
+		return poEmail;
+	}
+
+	public void setPoEmail(String poEmail) {
+		this.poEmail = poEmail;
+	}
+
+	public String getPaymentRemittanceEmail() {
+		return paymentRemittanceEmail;
+	}
+
+	public void setPaymentRemittanceEmail(String paymentRemittanceEmail) {
+		this.paymentRemittanceEmail = paymentRemittanceEmail;
 	}
 
 	

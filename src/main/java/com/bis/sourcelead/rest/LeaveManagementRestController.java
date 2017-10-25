@@ -1530,12 +1530,10 @@ public class LeaveManagementRestController {
 	}
 
 	@RequestMapping(value = { "/validateName", "/rest/validateName" }, method = RequestMethod.GET)
-	public boolean validateName(@RequestParam(value = "orgLocationId", required = true) Long orgLocationId, @RequestParam(value = "from", required = true) String fromTable, @RequestParam(value = "name", required = true) String name,@RequestParam(value = "editData", required = false) String editDataId)
+	public boolean validateName(@RequestParam(value = "orgLocationId", required = true) Long orgLocationId, @RequestParam(value = "from", required = true) String fromTable, @RequestParam(value = "name", required = true) String name, @RequestParam(value = "id", required = true) String id)
 	{
 		boolean flag = false;
-		if(editDataId.equalsIgnoreCase("")) {
-			flag = leaveService.validateNameByOrgLocationIdandFromTable(name, orgLocationId, fromTable);
-		}
+		flag = leaveService.validateNameByOrgLocationIdandFromTable(name, orgLocationId, fromTable,id);
 		return flag;
 	}
 
@@ -1546,19 +1544,35 @@ public class LeaveManagementRestController {
 		int totalLeavesApplied = 0;
 		int totalLeaves = 0;
 		List<Leave> leaveList = leaveService.getLeavesListByTypeIdAndLocationIdAndUserId(leaveTypeId, orgLocationId,userId);
-		for (Leave leave : leaveList) {
-			if(Constants.APPROVED.equalsIgnoreCase(leave.getStatus())) {
-				totalLeavesApplied = totalLeavesApplied + Integer.valueOf(leave.getNumberOfDays());
+		if(leaveList.size() > 0){
+			for (Leave leave : leaveList) {
+				if(Constants.APPROVED.equalsIgnoreCase(leave.getStatus())) {
+					totalLeavesApplied = totalLeavesApplied + Integer.valueOf(leave.getNumberOfDays());
+				}
+				totalLeaves = Integer.valueOf(leave.getLeaveType().getNumbefrOfLeavesPeryear());
 			}
-			totalLeaves = Integer.valueOf(leave.getLeaveType().getNumbefrOfLeavesPeryear());
+			
+			if(totalLeavesApplied >= totalLeaves) {
+				isvalidate = true;
+			}
 		}
-		
-		if(totalLeavesApplied > totalLeaves) {
-			isvalidate = true;
-		}
-		
 		return isvalidate;
 		
+	}
+	
+	/**
+	 * @author Pavan Jampana
+	 * @param restrictDayDTO
+	 * @return boolean
+	 * @throws Exception
+	 */
+	@RequestMapping(value = { "/checkDuplicateRestrictDay",
+			"/rest/checkDuplicateRestrictDay" }, method = RequestMethod.GET)
+	public @ResponseBody boolean checkDuplicateRestrictDay(RestrictDayDTO restrictDayDTO) throws Exception
+	{
+		boolean flag = false;
+		flag = restrictDayService.checkDuplicateRestrictDay(restrictDayDTO);
+		return flag;
 	}
 	
 }

@@ -1416,7 +1416,7 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
   	  						 projectMembersList = getVendorProjectAssinedMembersAutoInvoice(frequency,orgLocation,project.getId(),client.getId(),contractType,invoice);
   	  					}
   	  					if(null != projectMembersList && projectMembersList.size() >0){
-  	  						populateClientDetails(vendorOrgLocation,invoice);
+  	  						populateClientDetails(vendorOrgLocation,invoice,orgRelation);
   	  						invoice.setOrgRelationID(orgRelation);
   	  						invoice.setOrgLocation(orgLocation);
   	  						invoice.setInvoiceType(invoiceType);
@@ -1808,20 +1808,21 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 	 * 
 	 * @param vendorOrgLocation
 	 * @param invoice
+	 * @param orgRelation 
 	 */
-	private void populateClientDetails(OrgLocations vendorOrgLocation, Invoice invoice)
+	private void populateClientDetails(OrgLocations vendorOrgLocation, Invoice invoice, OrgRelations orgRelation)
 	{
 		invoice.setResponderLocationId(vendorOrgLocation);
-		if (null != vendorOrgLocation.getOrg().getPaymentTerm()
-				&& !"".equalsIgnoreCase(vendorOrgLocation.getOrg().getPaymentTerm())) {
-			invoice.setPaymentFrequency(vendorOrgLocation.getOrg().getPaymentTerm());
+		if (null != orgRelation.getPaymentTerm()
+				&& !"".equalsIgnoreCase(orgRelation.getPaymentTerm())) {
+			invoice.setPaymentFrequency(orgRelation.getPaymentTerm());
 			invoice.setInvoiceDate(new Date());
-			Date dueDate = getDueDateByPaymentTerm(new Date(), vendorOrgLocation.getOrg().getPaymentTerm());
+			Date dueDate = getDueDateByPaymentTerm(new Date(), orgRelation.getPaymentTerm());
 			invoice.setDueDate(dueDate);
 		}
-		if (null != vendorOrgLocation.getOrg().getClientBillingAddress()
-				&& !"".equalsIgnoreCase(vendorOrgLocation.getOrg().getClientBillingAddress())) {
-			invoice.setBillingAddress(vendorOrgLocation.getOrg().getClientBillingAddress());
+		if (null != orgRelation.getBillingAddress()
+				&& !"".equalsIgnoreCase(orgRelation.getBillingAddress())) {
+			invoice.setBillingAddress(orgRelation.getBillingAddress());
 		}
 	}
 	

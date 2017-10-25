@@ -373,7 +373,7 @@ public class LeaveServiceImpl implements LeaveService{
 		EmailScenario notificationScenario = null;
 		
 		if (leaveManagementHistory.getLeaveid().getReason() != null && !"".equalsIgnoreCase(leaveManagementHistory.getLeaveid().getReason())) {
-			globalVarsMap.put("reason", leaveManagementHistory.getLeaveid().getReason());
+			globalVarsMap.put("reason", leaveManagementHistory.getLeaveid().getRejectedReason());
 			  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.LEAVE_REJECTED_EMAIL, Constants.ENTITY_TYPE_EMAIL);
 			   notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.LEAVE_REJECTED_NOTIFICATION, Constants.ENTITY_TYPE_NOTIFICATION);
 		}else{
@@ -1017,9 +1017,15 @@ public class LeaveServiceImpl implements LeaveService{
 	}
 
 	@Override
-	public boolean validateNameByOrgLocationIdandFromTable(String name, Long orgLocationId, String fromTable)
+	public boolean validateNameByOrgLocationIdandFromTable(String name, Long orgLocationId, String fromTable,String id)
 	{
-		return leaveDao.validateNameByOrgLocationIdandFromTable(name,orgLocationId,fromTable);
+		return leaveDao.validateNameByOrgLocationIdandFromTable(name,orgLocationId,fromTable,id);
+	}
+
+	@Override
+	public boolean deleteAllLeaveRolesByParticularTableId(String from,String fromId)
+	{
+		return leaveDao.deleteAllLeaveRolesByParticularTableId(from,fromId);
 	}
 
 }

@@ -71,9 +71,10 @@
 function validateShiftName(){
 	var locationId = '${SourceLeadWeb_orgLocationId}';
 	var name = $("#shiftName").val();
+	var id = $("#shiftId").val();	
 	if(name != null && name != '' && name != 'undefined'){
 		if(name.length < 100){
-			$.get(sourceleadUrl+"/validateName?&orgLocationId="+locationId+"&from=Shift&name="+name, function(data) {
+			$.get(sourceleadUrl+"/validateName?&orgLocationId="+locationId+"&from=Shift&name="+name+"&id="+id, function(data) {
 	          	if(data == true){
 	          		$('#shiftNameDiv').find('p.jquery_form_error_message').remove();
 	          		$("#save_shift").removeAttr("disabled");
