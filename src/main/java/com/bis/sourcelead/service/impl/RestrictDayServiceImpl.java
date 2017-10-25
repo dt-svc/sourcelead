@@ -150,4 +150,19 @@ public class RestrictDayServiceImpl implements RestrictDayService {
 		return restrictDayDao.validateRestrictDayDates(fromDate, toDate, orgLocations);
 	}
 
+	@Override
+	public boolean checkDuplicateRestrictDay(RestrictDayDTO restrictDayDTO) throws Exception
+	{
+		OrgLocations orgLocations = orgLocationService.getOrgLocations(Long.parseLong(restrictDayDTO.getOrgLocationId()));
+		List<RestrictDay> list = validateRestrictDayDates(restrictDayDTO.getStartDate(), restrictDayDTO.getEndDate(), orgLocations);
+//		Date startDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),restrictDayDTO.getStartDate());
+//		Date endDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),restrictDayDTO.getEndDate());
+//		commonUtil.getNumberOfDaysBetweenTwoDates(startDate, endDate);
+		if(list != null && list.size() > 0){
+			return true;
+		}else{
+			return false;
+		}
+	}
+
 }

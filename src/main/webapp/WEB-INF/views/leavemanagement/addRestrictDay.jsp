@@ -209,6 +209,22 @@ $('body').on('blur', '#restrictDay_form', function() {
  </script>
  
 <script>
+function checkDuplicateRestrictDay(){
+	$('.warMess1').hide();
+	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
+	var startDate = $("#startDate").val();
+	var endDate = $("#endDate").val();
+	$.get(sourceleadUrl + "/checkDuplicateRestrictDay?&orgLocationId="+ orgLocationId+"&startDate="+startDate+"&endDate="+endDate, function(data) {
+			if(data == true){
+				$("#endDateDiv").after("<p class='warMess1'>You don't have balance for the '"+leaveTypeName+"'.</span>");
+			}else{
+				$('.warMess1').hide();
+			}
+		});
+}
+</script>
+ 
+<script>
 function removeStartValid(){
 	$('#startDateDiv').find('p.jquery_form_error_message').remove();
 }
