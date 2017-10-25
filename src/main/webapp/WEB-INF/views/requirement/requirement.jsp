@@ -365,7 +365,7 @@ $(document).ready(function () {
           
             
               <div class="form-group">
-              <label class="col-md-3">Education${requirement.reqEducationListString}</label>
+              <label class="col-md-3">Education</label>
               <div class="col-md-9">
                 <select multiple class="chosen-select form-control" name="education" data-placeholder="Select Education Options" id="education" data-validation-optional="true">
                <c:forEach var="education" items="${educationsList}">

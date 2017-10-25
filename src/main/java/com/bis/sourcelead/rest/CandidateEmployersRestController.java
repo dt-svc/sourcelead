@@ -1,5 +1,6 @@
 package com.bis.sourcelead.rest;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -7,7 +8,6 @@ import java.util.regex.Pattern;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -18,7 +18,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.CandidateEmployerDTO;
+import com.bis.sourcelead.dto.CandidateResumeDTO;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateEmployers;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -117,28 +120,43 @@ public class CandidateEmployersRestController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/getCandidatesEmployersListByCandidateIdAndOrgLocationID")
-	public String getCandidatesEmployersListByCandidateIdAndOrgLocationID(@RequestParam(value = "candidateId", required = false) String candidateId,HttpServletRequest request) throws Exception {
+	public ResponseList<CandidateEmployerDTO> getCandidatesEmployersListByCandidateIdAndOrgLocationID(@RequestParam(value = "candidateId", required = false) String candidateId,HttpServletRequest request) throws Exception {
 		
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		ResponseList<CandidateEmployerDTO> employeeList = new ResponseList<>();
 		Candidate employers =candidateService.getCandidateById(Long.parseLong(candidateId));
 		Long loc = employers.getOrgLocationId().getId();
 		
+		List<CandidateEmployerDTO> candidateEmployeeDTOList = new ArrayList<>();
 		String resultJson;
 		 List<CandidateEmployers>   candidatesEmployersList = candidateEmployersService.getCandidatesEmployersListByCandidateIdAndOrgLocationID(Long.valueOf(candidateId), loc);
 		 
-		 candidatesEmployersList.forEach(candidaet->{
+//		 candidatesEmployersList.forEach(candidaet->{
+			 for(CandidateEmployers candidateEmployers : candidatesEmployersList){
+				 CandidateEmployerDTO candidateEmployerDTO = new CandidateEmployerDTO();
 			 
-			 if(StringUtils.isNotBlank(candidaet.getStartMonth())){
-			 String smonth = getMonthAsString(candidaet.getStartMonth());
-			 candidaet.setStartMonth(smonth);
+			 if(StringUtils.isNotBlank(candidateEmployers.getStartMonth())){
+			 String smonth = getMonthAsString(candidateEmployers.getStartMonth());
+			 candidateEmployers.setStartMonth(smonth);
 			 }
 			 
-			 if(StringUtils.isNotBlank(candidaet.getEndMonth())){
-			 String emonth = getMonthAsString(candidaet.getEndMonth());
-			 candidaet.setEndMonth(emonth);
+			 if(StringUtils.isNotBlank(candidateEmployers.getEndMonth())){
+			 String emonth = getMonthAsString(candidateEmployers.getEndMonth());
+			 candidateEmployers.setEndMonth(emonth);
 			 }
-		 });
-		 resultJson = commonUtil.toJSON(candidatesEmployersList);
-		 return resultJson;
+			 candidateEmployerDTO.setId(candidateEmployers.getId());
+			 candidateEmployerDTO.setName(candidateEmployers.getName());
+			 candidateEmployerDTO.setDesignation(candidateEmployers.getDesignation());
+			 candidateEmployerDTO.setAddress(candidateEmployers.getAddress());
+			 candidateEmployerDTO.setStartMonth(candidateEmployers.getStartMonth());
+			 candidateEmployerDTO.setEndMonth(candidateEmployers.getEndMonth());
+			 candidateEmployerDTO.setStartYear(candidateEmployers.getStartYear());
+			 candidateEmployerDTO.setEndYear(candidateEmployers.getEndYear());
+			 candidateEmployeeDTOList.add(candidateEmployerDTO);
+			}
+//		 });
+		 employeeList.setData(candidateEmployeeDTOList);
+		 return employeeList;
 	}
 	
 	

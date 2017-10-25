@@ -424,6 +424,14 @@ public class ProjectTasksRestController {
 		return "success";
 	}
 
+	/**
+	 * @author Laxman
+	 * @param percentage
+	 * @param taskId
+	 * @param userId
+	 * @return success
+	 * @throws Exception
+	 */
 	@RequestMapping(value = "/updateTaskPercentage", method = RequestMethod.POST)
 	public String updateTaskPercentage(@RequestParam(value = "percentage", required = false) Integer percentage,
 			@RequestParam(value = "taskId", required = false) String taskId,
@@ -431,6 +439,24 @@ public class ProjectTasksRestController {
 		tasksService.updateTaskPercentage(percentage, taskId, userId);
 		return "success";
 	}
+	
+	
+	/**
+	 * @author Laxman
+	 * @param billingId
+	 * @param taskId
+	 * @param userId
+	 * @return successsssss
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/updateBillingType", method = RequestMethod.POST)
+	public String updateBillingType(@RequestParam(value = "billingId", required = false) String billingId,
+			@RequestParam(value = "taskId", required = false) String taskId,
+			@RequestParam(value = "userId", required = false) Long userId) throws Exception {
+		tasksService.updateBillingType(billingId, taskId, userId);
+		return "success";
+	}
+	
 
 	/**
 	 * @author Laxman

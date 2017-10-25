@@ -49,8 +49,12 @@
 								document.getElementById("projectSequeneNumber").setAttribute('record-exist', 'yes');
 								document.getElementById("projectSequeneNumber").setAttribute('record-exist-errorMsg',ProjectSequeneNumber+ ' is Already Existed');
 								$('input#projectSequeneNumber').removeAttr( "record-exist record-exist-errorMsg");
+								$("#save_project").attr("disabled", "disabled");
+			    				
 							} else {
+								$("#save_project").removeAttr("disabled");
 								$('input#projectSequeneNumber').removeAttr("record-exist record-exist-errormsg");
+								
 							}
 						},
 					});
@@ -93,8 +97,10 @@ function validateShortCode(){
 				document.getElementById("projectShortCode").setAttribute('record-exist', 'yes');
 				document.getElementById("projectShortCode").setAttribute('record-exist-errorMsg',projectShortCode+ ' is Already Existed');
 				$('input#projectShortCode').removeAttr( "record-exist record-exist-errorMsg");
+				$("#save_project").attr("disabled", "disabled");
 			} else {
 				$('input#projectShortCode').removeAttr("record-exist record-exist-errormsg");
+				$("#save_project").removeAttr("disabled");
 			}
 		},
 	});
@@ -144,7 +150,10 @@ function validateShortCode(){
 						
 						 <input type="hidden" name="projectId" id=projectId value=""/>
 						 <input type="hidden" name="projectUUID" id="projectUUID" value=""/>
-
+						 <input type="hidden" name="startDateStr" id="startDateStr" value=""/>
+						 <input type="hidden" name="endDateStr" id="endDateStr" value=""/>
+						 
+ 
 						<div class="form-group">
 							<label class="col-md-3"> Date <span class="text-danger">*</span></label>
 							<div class="col-md-9">
@@ -314,7 +323,7 @@ function validateShortCode(){
 							</label>
 							<div class="col-md-9">
 								<input type="text" class="form-control" name="projectShortCode" id="projectShortCode" placeholder="Project Short Code" data-validation="required validate_length length3-3"
-									field-name="Project Short Code" value="" onkeyUp="toUpperCase();" onblur="validateShortCode();"   maxlength="3">  
+									field-name="Project Short Code" value="" onkeyUp="toUpperCase();" onblur="validateShortCode();"  pattern="[a-zA-Z]"  maxlength="3">  
 
 							</div>
 						</div>
@@ -476,7 +485,7 @@ function validateShortCode(){
 				<div class="form-footer clearfix mt">
 					<div class="col-lg-12">
 						<div class="pull-right">
-							<input type="button" value="Cancel" onClick="javascript:window.location.href = '<c:url value='/projectDashboard'/>'" class="btn btn-danger ml">
+							<input type="button" value="Cancel" onClick="javascript:window.location.href = '<c:url value='/vendorsList'/>'" class="btn btn-danger ml">
 							<input type="button" value="Save & Continue" id="save_project" onclick="saveProject();flushSaveProject()" class="btn btn-primary">
 						</div>
 					</div>
@@ -647,6 +656,9 @@ function getStatus(){
 						success : function(projects) {
 								 $("#projectId").val(projects.id);
 								 $("#projectUUID").val(projects.projectUUID);
+								 $("#startDateStr").val(projects.startDateStr);
+								 $("#endDateStr").val(projects.endDateStr);
+								 
 								 $("#loading").removeAttr("style");
 								 var assignedMembers = document.getElementById("assignedMembers");
 								 $("assignedMembers").removeClass("disabledLink");
@@ -699,6 +711,8 @@ function getProjectDetails(){
 	        	 $("input[name=startDate]").val(json.startDateStr);
 	        	 $("input[name=endDate]").val(json.endDateStr);
 	        	 $("#projectShortCode").val(json.projectShortCode);
+	        	 $("input[name=projectShortCode]").attr("readonly","readonly");
+	        	 $('#projectShortCode').removeAttr('onblur');
 	        	 $("#notifyBudgetAt").val(json.notifyBudgetAt);
 	        	 
 	           var projectStatus = '';
@@ -917,7 +931,8 @@ function assignEmployeeCancel(){
       		    }if(locationDate.match("yyyy-dd-MM")){
       		    	var d2 = new Date(proEndDateTP[0], proEndDateTP[2] - 1, proEndDateTP[1]);
       		    }
-                
+              /*   alert("d1>>>"+d1)
+                alert("d2"+d2) */
 				if(d1 > d2){
 					$("#status").empty();
 					$('#status').append('<option >Completed</option>');
@@ -1010,8 +1025,7 @@ function getChildLevel1Approvers(currentApproverId,level2ApproverUserId){
 		 $.ajax({
 		    	type: "POST",
 		        url: sourceleadUrl+"/getApproversByUserId?${_csrf.parameterName}=${_csrf.token}&currentApproverId="+currentApproverId,
-		        success: function(data) {
-		        	var json = JSON.parse(data);
+		        success: function(json) {
 		        	var output = "";
 		        	output = output + "<option value=''>-Select Manager-</option>"; 
 		        	for (var i=0; i<json.length; i++)
@@ -1021,7 +1035,7 @@ function getChildLevel1Approvers(currentApproverId,level2ApproverUserId){
 			        		if(level2ApproverUserId != null && level2ApproverUserId != 'undefied' && level2ApproverUserId != '' && level2ApproverUserId == opt.id){
 			        			selected = "selected";
 			        		}
-			        		output = output + "<option value='" +opt.id+ "' "+selected+">"+opt.firstName+" "+opt.lastName+"</option>";
+			        		output = output + "<option value='" +opt.id+ "' "+selected+">"+opt.fullName+" ("+opt.userType+")</option>";
 					}
 		        	$("#level2Manager").empty();
 			        $("#level2Manager").append(output);
@@ -1055,7 +1069,7 @@ function getProjectLevel1Approvers(approverUserId){
 		        		if(approverUserId != null && approverUserId != 'undefied' && approverUserId != '' && approverUserId == opt.id){
 		        			selected = "selected";
 		        		}
-			        		output = output + "<option value='" +opt.id+ ","+opt.userType+"' "+selected+">"+opt.fullName+"</option>";
+			        		output = output + "<option value='" +opt.id+ ","+opt.userType+"' "+selected+">"+opt.fullName+" ("+opt.userType+")</option>";
 					}
 		        	
 			        $("#level1Manager").append(output);

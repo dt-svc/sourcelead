@@ -41,6 +41,8 @@ public interface LeaveDao {
 
 	List<LeaveApproveHierarchy> getEmployeeRequestedLeavesBylocationIdAndUserIdAndStatus(Long locationId, String userId, String status);
 
-	boolean validateNameByOrgLocationIdandFromTable(String name, Long orgLocationId, String fromTable);
+	boolean validateNameByOrgLocationIdandFromTable(String name, Long orgLocationId, String fromTable, String id);
+
+	boolean deleteAllLeaveRolesByParticularTableId(String from, String fromId);
 
 }

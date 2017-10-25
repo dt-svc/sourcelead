@@ -55,6 +55,23 @@ public class ClientVendorDTO extends SearchDTO implements Serializable {
 	private List<String> statusAdvanced;
 	private List<String> invitationAdvanced;
 	
+	private String isVendorOnboardSubmitted;
+	private String industryName;
+	private String currency;
+	private String sicCode;
+	private String naicsCode;
+	private String einCode;
+	private String taxRegistrationNumber;
+	private String dunsNumber;
+	private String accountName;
+	private String accountNumber;
+	private String bankName;
+	private String branchNumber;
+	private String bankIdentifierCode;
+	private String bankAddress;
+	private String poEmail;
+	private String paymentRemittanceEmail;
+	
 	public List<String> getOrgAdvanced() {
 		return orgAdvanced;
 	}
@@ -409,6 +426,134 @@ public class ClientVendorDTO extends SearchDTO implements Serializable {
 	public void setPaymentTerms(String paymentTerms)
 	{
 		this.paymentTerms = paymentTerms;
+	}
+
+	public String getIsVendorOnboardSubmitted() {
+		return isVendorOnboardSubmitted;
+	}
+
+	public void setIsVendorOnboardSubmitted(String isVendorOnboardSubmitted) {
+		this.isVendorOnboardSubmitted = isVendorOnboardSubmitted;
+	}
+
+	public String getIndustryName() {
+		return industryName;
+	}
+
+	public void setIndustryName(String industryName) {
+		this.industryName = industryName;
+	}
+
+	public String getCurrency() {
+		return currency;
+	}
+
+	public void setCurrency(String currency) {
+		this.currency = currency;
+	}
+
+	public String getSicCode() {
+		return sicCode;
+	}
+
+	public void setSicCode(String sicCode) {
+		this.sicCode = sicCode;
+	}
+
+	public String getNaicsCode() {
+		return naicsCode;
+	}
+
+	public void setNaicsCode(String naicsCode) {
+		this.naicsCode = naicsCode;
+	}
+
+	public String getEinCode() {
+		return einCode;
+	}
+
+	public void setEinCode(String einCode) {
+		this.einCode = einCode;
+	}
+
+	public String getTaxRegistrationNumber() {
+		return taxRegistrationNumber;
+	}
+
+	public void setTaxRegistrationNumber(String taxRegistrationNumber) {
+		this.taxRegistrationNumber = taxRegistrationNumber;
+	}
+
+	public String getDunsNumber() {
+		return dunsNumber;
+	}
+
+	public void setDunsNumber(String dunsNumber) {
+		this.dunsNumber = dunsNumber;
+	}
+
+	public String getAccountName() {
+		return accountName;
+	}
+
+	public void setAccountName(String accountName) {
+		this.accountName = accountName;
+	}
+
+	public String getAccountNumber() {
+		return accountNumber;
+	}
+
+	public void setAccountNumber(String accountNumber) {
+		this.accountNumber = accountNumber;
+	}
+
+	public String getBankName() {
+		return bankName;
+	}
+
+	public void setBankName(String bankName) {
+		this.bankName = bankName;
+	}
+
+	public String getBranchNumber() {
+		return branchNumber;
+	}
+
+	public void setBranchNumber(String branchNumber) {
+		this.branchNumber = branchNumber;
+	}
+
+	public String getBankIdentifierCode() {
+		return bankIdentifierCode;
+	}
+
+	public void setBankIdentifierCode(String bankIdentifierCode) {
+		this.bankIdentifierCode = bankIdentifierCode;
+	}
+
+	public String getBankAddress() {
+		return bankAddress;
+	}
+
+	public void setBankAddress(String bankAddress) {
+		this.bankAddress = bankAddress;
+	}
+
+	public String getPoEmail() {
+		return poEmail;
+	}
+
+	public void setPoEmail(String poEmail) {
+		this.poEmail = poEmail;
+	}
+
+	public String getPaymentRemittanceEmail() {
+		return paymentRemittanceEmail;
+	}
+
+	public void setPaymentRemittanceEmail(String paymentRemittanceEmail) {
+		this.paymentRemittanceEmail = paymentRemittanceEmail;
 	}
 
 
