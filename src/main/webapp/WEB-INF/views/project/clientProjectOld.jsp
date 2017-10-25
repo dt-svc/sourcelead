@@ -573,8 +573,7 @@ function getChildLevel1Approvers(currentApproverId,level2ApproverUserId){
 		 $.ajax({
 		    	type: "POST",
 		        url: sourceleadUrl+"/getApproversByUserId?${_csrf.parameterName}=${_csrf.token}&currentApproverId="+currentApproverId,
-		        success: function(data) {
-		        	var json = JSON.parse(data);
+		        success: function(json) {
 		        	var output = "";
 		        	output = output + "<option value=''>-Select Manager-</option>"; 
 		        	for (var i=0; i<json.length; i++)

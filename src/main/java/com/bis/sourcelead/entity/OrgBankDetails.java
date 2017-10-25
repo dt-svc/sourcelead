@@ -58,6 +58,12 @@ public class OrgBankDetails implements Serializable{
 	@Column(name = "UID")
 	private String uid;
 	
+	@Column(name="PO_EMAIL")
+	private String poEmail;
+	
+	@Column(name="PAYMENT_REMITTANCE_EMIL")
+	private String paymentRemittanceEmail;
+	
 	@Column(name = "STATUS")
 	private Integer status;
 		
@@ -185,6 +191,22 @@ public class OrgBankDetails implements Serializable{
 
 	public void setUpdatedBy(User updatedBy) {
 		this.updatedBy = updatedBy;
+	}
+	
+	public String getPoEmail() {
+		return poEmail;
+	}
+
+	public void setPoEmail(String poEmail) {
+		this.poEmail = poEmail;
+	}
+
+	public String getPaymentRemittanceEmail() {
+		return paymentRemittanceEmail;
+	}
+
+	public void setPaymentRemittanceEmail(String paymentRemittanceEmail) {
+		this.paymentRemittanceEmail = paymentRemittanceEmail;
 	}
     
 }

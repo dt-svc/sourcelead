@@ -57,6 +57,10 @@ $(document).ready(function(){
                         <label class="pull-left">Cancelled Leaves</label>
                         <a href="<c:url value='/cancelLeaves'/>" class="color_white" id="selfcanc" title="Cancelled Leaves"><span class="label label-warning pull-right" id="selfCancelledCounts"></span></a>
                     </li>
+                      <li class="clearfix">
+                        <label class="pull-left">Balanced Leaves</label>
+                        <div class="color_white" id="selfBalance" title="Balanced Leaves"><span class="label label-info pull-right" id="selfBalancedCounts"></span></div>
+                    </li>
                 </ul>
                     </div>
                 </div>
@@ -250,6 +254,9 @@ function getSelfTotalCounts(){
    			   }
    			   $("#selfCancelledCounts").html(report.selfCancelledCounts); 
    		   }
+   			if(report.selfBalancedCounts != null && report.selfBalancedCounts != '' && report.selfBalancedCounts != 'undefined'){
+   			   $("#selfBalancedCounts").html(report.selfBalancedCounts); 
+   		   }
    		   
    		 AmCharts.makeChart("empselfLeaves",
  				{
@@ -267,7 +274,8 @@ function getSelfTotalCounts(){
  						"#337ab7",
 						"#66bb6a",
 						"#ef5350",
-						"#f0ad4e"
+						"#f0ad4e",
+						"#5bc0de"
  					],
  					"labelsEnabled": false,
  					"marginBottom": 0,
@@ -297,6 +305,10 @@ function getSelfTotalCounts(){
  						{
  							"category": "Cancelled",
  							"column-1": report.selfCancelledCounts
+ 						},
+ 						{
+ 							"category": "Balanced",
+ 							"column-1": report.selfBalancedCounts
  						} 
  					]
  				}

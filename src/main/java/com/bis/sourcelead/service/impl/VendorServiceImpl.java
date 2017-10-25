@@ -277,6 +277,8 @@ public class VendorServiceImpl implements VendorService{
 			onboardDTO.setBranchNumber(bankDetails.getBranchNumber());
 			onboardDTO.setBicNumber(bankDetails.getBankIdentifierCode());
 			onboardDTO.setBankAddress(bankDetails.getBankAddress());
+			onboardDTO.setPoEmail(bankDetails.getPoEmail());
+			onboardDTO.setPaymentRemittanceEmail(bankDetails.getPaymentRemittanceEmail());
 		}
 		
 		return onboardDTO;

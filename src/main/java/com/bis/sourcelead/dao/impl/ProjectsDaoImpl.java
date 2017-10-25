@@ -30,6 +30,7 @@ import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectApproverHierarchy;
+import com.bis.sourcelead.entity.ProjectBudget;
 import com.bis.sourcelead.entity.ProjectClients;
 import com.bis.sourcelead.entity.ProjectTasks;
 import com.bis.sourcelead.entity.Projects;
@@ -38,6 +39,7 @@ import com.bis.sourcelead.enums.Project_Status;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.exception.SourceLeadObjectNotFoundException;
 import com.bis.sourcelead.payroll.entity.Checks;
+import com.bis.sourcelead.service.ProjectBudgetService;
 import com.bis.sourcelead.service.ProjectMembersHistoryService;
 import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.util.CommonUtil;
@@ -67,6 +69,8 @@ public class ProjectsDaoImpl implements ProjectsDao{
     @Autowired
     ProjectMembersService projectMembersService;
     
+    @Autowired
+    ProjectBudgetService projectBudgetService;
     
     @Value("${SourceLead.100}")
 	private String notFound;
@@ -518,7 +522,7 @@ public class ProjectsDaoImpl implements ProjectsDao{
 	@Override
 	@Transactional
 	public ResponseList<Projects> getProjectsListByClientsAndStatus(ProjectsDTO projectsDTO,Long userId, String clients, String status,
-			Long orgLocationsId,String userRole) throws Exception {
+			Long orgLocationsId,String userRole,Long candidateId) throws Exception {
 		
 		Session session = this.sessionFactory.getCurrentSession();
 		String approverQuery = "";
@@ -559,7 +563,8 @@ public class ProjectsDaoImpl implements ProjectsDao{
 		}
 		
 		if(!userRole.equalsIgnoreCase("ROLE_ADMIN") && !userRole.equalsIgnoreCase("ROLE_SOURCELEAD_ADMIN")){
-			approverQuery = " and pc.id IN (select pah.projectClientsId.id from ProjectApproverHierarchy pah where pah.approverUserId = "+userId+")";
+			approverQuery = " and (pc.id IN (select pah.projectClientsId.id from ProjectApproverHierarchy pah where pah.approverUserId = "+userId+") OR pc.createdBy.id = "+userId+" "
+					+ " OR pc.id IN (select pm.projectClientsId.id from ProjectMembers pm where pm.projectMemberCandidteId.id = "+candidateId+" and pm.status = '1') )";
 		}
 		
 		projectModeQuery = " and (ps.orgLocationsId = :orgLocationsId OR ps.projectMode = 'Finished')";
@@ -702,6 +707,19 @@ public class ProjectsDaoImpl implements ProjectsDao{
 							    	}
 							    }
 							    
+							    
+							    Set<ProjectBudget>  budgetList = projects.getProjectBudget();
+							    if(budgetList != null && budgetList.size() > 0) {
+							    	 double budgetSum = budgetList.stream().filter(p->p.getEstimatedBudgetValue() !=null).mapToDouble(p->Double.parseDouble(p.getEstimatedBudgetValue())).sum();
+										if(budgetList.size() >0) {
+											ProjectBudget projectBudget = budgetList.iterator().next();
+											projects.setProjectbudgetCurrency(projectBudget.getEstimatedBudgetCurrency());
+										}
+										projects.setProjectbudgetAmount(String.valueOf(budgetSum));
+							    }
+							   
+								
+								
 							    orgProjectsList.add(projects);
 				    		 }
 				    		 

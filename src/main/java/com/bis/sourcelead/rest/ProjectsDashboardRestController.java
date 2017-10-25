@@ -188,8 +188,9 @@ public class ProjectsDashboardRestController {
 			    OrgLocations loginOrgLocations = orgLocationService.getOrgLocationsByLocationCode(loginOrgLocation);
 			    String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
 				User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+				Long candidateId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "candidateId");
 
-				String[] tableColumns = {"projectSequeneNumber", "projectName", "projectManagers", "invoiceFrequency", "projectDate", "client","status"};
+				String[] tableColumns = {"projectSequeneNumber", "projectName", "projectManagers", "invoiceFrequency", "budget", "projectDate", "client","status"};
 			    int sortColumnIndex = 1; //by default sorting using updated date
 				String sortColumnOrder = "desc"; //by default descending order
 				if(projectsDTO.getOrder() != null && !projectsDTO.getOrder().isEmpty()) {
@@ -198,7 +199,7 @@ public class ProjectsDashboardRestController {
 				}
 				projectsDTO.setSortColumn(tableColumns[sortColumnIndex]);
 				projectsDTO.setSortOrder(sortColumnOrder);
-				ResponseList<Projects> projectsList = projectsService.getProjectsListByClientsAndStatus(projectsDTO,user.getId(), clients, values,loginOrgLocations.getId(),userRole);
+				ResponseList<Projects> projectsList = projectsService.getProjectsListByClientsAndStatus(projectsDTO,user.getId(), clients, values,loginOrgLocations.getId(),userRole,candidateId);
 			    
 				return projectsList;
 			}
