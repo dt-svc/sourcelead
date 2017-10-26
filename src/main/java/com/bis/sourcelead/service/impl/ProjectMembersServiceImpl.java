@@ -805,13 +805,16 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 
 		projectMemberList.forEach(pm -> {
 			StringBuilder sb = new StringBuilder();
-			if (pm.getEmployee().getUser().getLastName() != null) {
-				sb.append(pm.getEmployee().getUser().getFirstName()).append(" ")
-						.append(pm.getEmployee().getUser().getLastName());
-			} else {
-				sb.append(pm.getEmployee().getUser().getFirstName());
+			if(pm.getProjectMemberCandidteId() != null ) {
+				if (pm.getProjectMemberCandidteId() != null && pm.getProjectMemberCandidteId().getId() != null && StringUtils.isNotBlank(pm.getProjectMemberCandidteId().getLastName())) {
+					sb.append(pm.getProjectMemberCandidteId().getFirstName()).append(" ")
+							.append(pm.getProjectMemberCandidteId().getLastName());
+				} else {
+					sb.append(pm.getProjectMemberCandidteId().getFirstName());
+				}
+				pm.setEmpName(sb.toString());
 			}
-			pm.setEmpName(sb.toString());
+			
 		});
 		return (List<ProjectMembers>) projectMemberList;
 	}
