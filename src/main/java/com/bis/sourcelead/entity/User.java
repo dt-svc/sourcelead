@@ -93,9 +93,9 @@ public class User implements Serializable{
 	@JoinColumn(name = "REPORTING_MANAGER_ID")
 	private User reportingManager;
 	
-	@Column(name = "IS_MAIL_SENT")
+	/*@Column(name = "IS_MAIL_SENT")
 	@Enumerated(EnumType.STRING)
-	private Status isMailSent;
+	private Status isMailSent;*/
 	
 	@Column(name = "JOB_TITLE")
 	private String jobTitle;
@@ -250,6 +250,8 @@ public class User implements Serializable{
 	@Transient
 	private String registrationType;
 	
+	@Transient
+	private String isMailSent;
 	
 
 	public Status getPreviousUserState() {
@@ -371,13 +373,6 @@ public class User implements Serializable{
 		this.status = status;
 	}
 	
-	public Status getIsMailSent() {
-		return isMailSent;
-	}
-
-	public void setIsMailSent(Status isMailSent) {
-		this.isMailSent = isMailSent;
-	}
 
 	public byte[] getDocFile() {
 		return docFile;
@@ -761,5 +756,11 @@ public class User implements Serializable{
 		this.fileUrl = fileUrl;
 	}
 
-	
+	public String getIsMailSent() {
+		return isMailSent;
+	}
+
+	public void setIsMailSent(String isMailSent) {
+		this.isMailSent = isMailSent;
+	}
 }
