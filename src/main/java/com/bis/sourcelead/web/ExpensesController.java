@@ -134,7 +134,7 @@ public class ExpensesController {
 					rejectedReason  = eah.getRejectedReason(); 
 				}
 			}
-			model.addObject("expenseApproverHierarchy", rejectedReason.toString());
+			model.addObject("expenseApproverHierarchy", rejectedReason);
 		}
 		TimesheetExpenseEntryDetailsUtilDTO eedDTO = new TimesheetExpenseEntryDetailsUtilDTO();
 		eedDTO.setUserId(loginUser.getId());
