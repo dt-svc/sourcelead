@@ -13,6 +13,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
@@ -1360,7 +1361,19 @@ public class CandidateListRestController {
 		OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
 		StringBuffer activitySummary = new StringBuffer();
 		if (null != can && StringUtils.isNotEmpty(skillName)) {
-			activitySummary.append("Skills").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(can.getSkillsName()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(skillName).append(Constants.NEW_VALUE_TAG_END);
+			
+			
+			ArrayList<String> oldSkills = new ArrayList<>();
+			if(StringUtils.isNotBlank(can.getSkillsName())){
+				oldSkills.addAll(Arrays.asList(can.getSkillsName().split("\\s*,\\s*")));
+			}
+			ArrayList<String> newSkills = new ArrayList<>(Arrays.asList(skillName.split("\\s*,\\s*")));
+			ArrayList<String> actualNewSkills = new ArrayList<>();
+			actualNewSkills.addAll(newSkills);
+			 newSkills.removeAll(oldSkills);
+			 oldSkills.removeAll(actualNewSkills);
+			
+			activitySummary.append("Skills").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(String.join(",", oldSkills)).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(String.join(",", newSkills)).append(Constants.NEW_VALUE_TAG_END);
 			can.setSkillsName("");
 			can.setSkillsName(skillName);
 			candidateService.saveOrUpdateCandidate(can);
@@ -1369,7 +1382,18 @@ public class CandidateListRestController {
 			candidateActivityCommonUtil.storeCandidateActivity(user, orgLocations, can, "", Constants.CANDIDATE_SKILL_UPDATED, activitySummary.toString(), "CANDIDATE");
 			return "success";
 		} else {
-			activitySummary.append("Skills").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(can.getSkillsName()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(skillName).append(Constants.NEW_VALUE_TAG_END);
+			
+			ArrayList<String> oldSkills = new ArrayList<>();
+			if(StringUtils.isNotBlank(can.getSkillsName())){
+				oldSkills.addAll(Arrays.asList(can.getSkillsName().split("\\s*,\\s*")));
+			}
+			ArrayList<String> newSkills = new ArrayList<>(Arrays.asList(skillName.split("\\s*,\\s*")));
+			ArrayList<String> actualNewSkills = new ArrayList<>();
+			actualNewSkills.addAll(newSkills);
+			 newSkills.removeAll(oldSkills);
+			 oldSkills.removeAll(actualNewSkills);
+			
+			activitySummary.append("Skills").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(String.join(",", oldSkills)).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(String.join(",", newSkills)).append(Constants.NEW_VALUE_TAG_END);
 			can.setSkillsName("");
 			candidateService.saveOrUpdateCandidate(can);
 			candidateService.saveOrUpdateCandidateElkDocument(can);
