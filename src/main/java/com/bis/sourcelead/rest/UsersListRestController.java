@@ -232,6 +232,7 @@ public class UsersListRestController {
 				for(UserRole role : rolesList){
 					StringBuilder userName = new StringBuilder();
 					role.setUserRoleName(role.getRoles().getDisplayName());
+					role.setIsMailSent(role.getIsMailSent());
 					if(!isNullOrEmpty(role.getUser().getLastName())){
 						userName = userName.append(role.getUser().getFirstName()).append(" ").append(role.getUser().getLastName());
 						role.setUserName(userName.toString());
