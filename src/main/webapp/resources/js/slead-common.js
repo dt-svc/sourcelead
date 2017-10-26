@@ -204,6 +204,7 @@ function uploadResumeOnSelect(formId) {
 }
 
 function applyResumeData(json) {
+	
 	var name = json.name;
 	var firstName = '';
 	var lastName = '';
@@ -223,30 +224,59 @@ function applyResumeData(json) {
 	if(!$("#email").attr('readonly'))
 		validateCandidateEmail();
 	$("#candidateSkills").empty();
-	 var internalOutput = "";
-	 
+	
+	var internalOutput = "";
 	var skills = json.skills;
 	if(skills != null && skills != 'undefined' && skills != ''){
 		var str_array = skills.split(',');
+	} else {
+		str_array = [];
+	}
+	
+   for(var j = 0; j< skillList.length; j++){
+	    var existed = 0;
 		for(var i = 0; i < str_array.length; i++) {
 		   str_array[i] = str_array[i].replace(/^\s*/, "").replace(/\s*$/, "");
-		   internalOutput = internalOutput+"<option value='" +str_array[i]+ "' selected>"+str_array[i]+"</option>";
+		   if(str_array[i] == skillList[j]){
+				 existed = 1;
+				 internalOutput = internalOutput+"<option value='"+str_array[i]+ "' selected>"+str_array[i]+"</option>";
+				 break;
+		  }
 		}
-	}
-	$("#candidateSkills").append(internalOutput);
+		if(existed == 0){
+			internalOutput = internalOutput+"<option value='"+skillList[j]+"'>"+skillList[j]+"</option>";
+        }
+	 }
+	
+	$("#candidateSkills").html(internalOutput);
 	$("#candidateSkills").trigger("chosen:updated");
 	$("#candidateEducation").trigger("chosen:updated");
 	
 	$("#candidateEducation").empty();
+	
 	 var internalOutput = "";
-	var edu = json.edu;
-	if(edu != null && edu != 'undefined' && edu != ''){
-		var str_array = edu.split(',');
+	 var edu = json.edu;
+	 if(edu != null && edu != 'undefined' && edu != ''){
+			var str_array = edu.split(',');
+	 }else{
+		 str_array = [];
+	 }
+	 for(var j = 0; j< educationList.length; j++){
+		var existed = 0;
+	 
 		for(var i = 0; i < str_array.length; i++) {
 		   str_array[i] = str_array[i].replace(/^\s*/, "").replace(/\s*$/, "");
-		   internalOutput = internalOutput+"<option value='" +str_array[i]+ "' selected>"+str_array[i]+"</option>";
+		   if(str_array[i] == educationList[j]){
+				   existed = 1;
+				   internalOutput = internalOutput+"<option value='" +str_array[i]+ "' selected>"+str_array[i]+"</option>";
+				   break;
+		   }
 		}
-	}
+		if(existed == 0){
+			internalOutput = internalOutput+"<option value='"+educationList[j]+"'>"+educationList[j]+"</option>";
+        }
+		
+	 }		
 	$("#candidateEducation").append(internalOutput);
 	$("#loading").removeAttr("style");
 }
