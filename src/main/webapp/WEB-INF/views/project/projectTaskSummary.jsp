@@ -1713,7 +1713,7 @@ function addComment(){
 	result = result + '    <form id="addComment_form" name="addComment_form">';
 	result  = result + ' <div class="row clearfix">';
 	result  = result + '   <div class="col-md-12 mb10">';
-	result  = result + '     <textarea class="form-control" rows="1" id="taskComment" name="taskComment" placeholder="Comment here ..." data-validation="required validate_Space validate_float validate_length length2-500" field-name="Task Comment" ></textarea>';
+	result  = result + '     <textarea class="form-control" rows="1" id="taskComment" name="taskComment" placeholder="Comment here ..." data-validation="required validate_Space  validate_length length2-500" field-name="Task Comment" ></textarea>';
 	result  = result + '   </div>';
 	result  = result + '</div>';
 	result  = result + ' <div class="modalFooter mt5">';
