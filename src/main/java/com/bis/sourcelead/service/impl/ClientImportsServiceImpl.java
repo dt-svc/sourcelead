@@ -1072,7 +1072,7 @@ public class ClientImportsServiceImpl implements ClientImportsService {
 		if (ownersList.length > 0) {
 			namedCell.setRefersToFormula("hidden!$A$1:$A$" + ownersList.length);
 			DVConstraint constraint = DVConstraint.createFormulaListConstraint("hidden");
-			CellRangeAddressList addressList = new CellRangeAddressList(1, 500, 11, 11);
+			CellRangeAddressList addressList = new CellRangeAddressList(1, 500, 12, 12);
 			HSSFDataValidation validation = new HSSFDataValidation(addressList, constraint);
 			workbook.setSheetHidden(1, true);
 			realSheet.addValidationData(getDropDownListForCell(Constants.COUNTRY_DROPDOWN, 2, "xls"));
@@ -1177,7 +1177,7 @@ public class ClientImportsServiceImpl implements ClientImportsService {
 		if (ownersList.length > 0) {
 			namedCell.setRefersToFormula("hidden!$A$1:$A$" + ownersList.length);
 			DVConstraint constraint = DVConstraint.createFormulaListConstraint("hidden");
-			CellRangeAddressList addressList = new CellRangeAddressList(1, 500, 11, 11);
+			CellRangeAddressList addressList = new CellRangeAddressList(1, 500, 12, 12);
 			HSSFDataValidation validation = new HSSFDataValidation(addressList, constraint);
 			workbook.setSheetHidden(1, true);
 			realSheet.addValidationData(getDropDownListForCell(Constants.COUNTRY_DROPDOWN, 2, "xls"));

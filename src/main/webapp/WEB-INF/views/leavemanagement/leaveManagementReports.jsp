@@ -71,7 +71,7 @@
                         <div class="row">
                             <div class="col-md-5"><strong class="leaves-heading">List of Holidays</strong></div>
                             <div class="col-md-3 noPad dropdown-select">
-                                <select class="form-control">
+                                <select class="form-control" id="reportYear" name="reportYear" onChange="getHolidaysList(this);">
                                     <option selected>--Select Year--</option>
                                     <option>2020</option>
                                     <option>2019</option>
@@ -332,7 +332,11 @@ $("#tab-1").show();
 function getHolidaysList(){
 	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	var userId = '${SourceLeadWeb_userId}';
-	$.get(sourceleadUrl+"/getHolidaysList?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&userId="+userId+"", function(data) {
+	var reportYear = "";
+	if($("#reportYear").val() !=null && $("#reportYear").val() != 'undefined' && $("#reportYear").val() != ''){
+		reportYear = $("#reportYear").val();
+	}
+	$.get(sourceleadUrl+"/getHolidaysList?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&userId="+userId+"&reportYear="+reportYear+"", function(data) {
 		var result = "";				        	
 				result = result + '<table id="viewHolidaysTable" class="display table table-bordered" cellspacing="0" width="100%" >';
 				result = result + '<thead>';
@@ -1100,8 +1104,4 @@ function topLeaveTakersPagination(url){
 	  
 	});
 </script>
-
-
-
-
 <jsp:include page="../masterFooter.jsp" />
