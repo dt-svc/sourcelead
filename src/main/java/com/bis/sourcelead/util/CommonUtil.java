@@ -1246,7 +1246,7 @@ public class CommonUtil {
 		public  Date[] getMonthStartDateEndDateByMonth(int month) {
 			Date[] dates = new Date[2];
 			Calendar cal = Calendar.getInstance();
-			cal.set(Calendar.MONTH, month-1);
+			cal.set(Calendar.MONTH, month);
 			cal.set(Calendar.DATE, 1);
 			cal.set(Calendar.DATE, cal.get(Calendar.DAY_OF_MONTH));
 			dates[0] = cal.getTime();
@@ -1257,10 +1257,10 @@ public class CommonUtil {
 		public  Date[] getMonthStartDateEndDateByYearAndMonth(int year,int month) {
 			Calendar calendar = Calendar.getInstance();
 			Date[] dates = new Date[2];
-			int yearpart = 2017;
-			int monthPart = 9;
+//			int yearpart = 2017;
+//			int monthPart = 9;
 			int dateDay = 1;
-			calendar.set(yearpart, monthPart, dateDay);
+			calendar.set(year, month, dateDay);
 			int numOfDaysInMonth = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
 			dates[0] = calendar.getTime();
 			calendar.add(Calendar.DAY_OF_MONTH, numOfDaysInMonth-1);
