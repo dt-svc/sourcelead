@@ -228,6 +228,8 @@ public class Constants {
 	public static final String OFFBOARDINGAPPLICANTDELAYPROCESS = "OffBoardingApplicantDealayProcess";
 	public static final String OFFBOARDINGPROCESSAPPLICANTTERMINATIONMAILTOREPORTINGMANAGER = "OffBoardingProcessMailToReportingManager";
 	
+	public static final String USERTERMINATEDEMAIL="UserTerminatedEmail";
+	public static final String USERTERMINATEDNOTIFICATIONEMAIL="UserTerminatedNotificationEmail";
 	
 	public static final String LEAVE_APPROVER_EMAIL = "Approver Leave";
 	public static final String LEAVE_APPROVER_NOTIFICATION = "ApproverLeaveNotification";

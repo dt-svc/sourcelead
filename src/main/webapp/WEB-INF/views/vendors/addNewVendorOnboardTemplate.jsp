@@ -74,7 +74,7 @@
                 <div class="form-group">
                   <label class="col-md-12"> <strong>Documents</strong> <br>
                   </label>
-                  <label class="col-md-12 mt10">These documents will be added for vendor on-boarding:</label>
+                  <label class="col-md-12 mt10">Required documents for onboarding</label>
                      <div id="timesheetDocumentsId" class="timesheetDocs timesheetDocs-custom">
                       <div class="col-md-8 commentFile timesheet_week_comm onboardDocs">
 				        <span class="uploadAttachments"> 
@@ -576,7 +576,8 @@ $('body').on('blur', '#onboardTemplate_form', function() {
 
 <script>
 function createTemplateDocs(saveType){
-	var validationSettings = {
+	alert("hi");
+		var validationSettings = {
 	        errorMessagePosition : 'element',
 	       borderColorOnError : '',
 			scrollToTopOnError : true,
@@ -589,14 +590,14 @@ function createTemplateDocs(saveType){
 		   $("#save_doc_button").attr("disabled", "disabled");
 		   $("#save_continue_doc_button").attr("disabled", "disabled");
 		   var formData = getFormData("templateDocuments_form");
+		   
 	   $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		$.ajax({
 		      type : "POST",
     	      data: formData,
 	    	  url: sourceleadUrl+"/saveVendorOnboardingTemplateDocuments?${_csrf.parameterName}=${_csrf.token}",		
 		      success :function(result) {
-		    	  
-		    	  if(saveType == 'saveAndContinue'){
+		    	 	  if(saveType == 'saveAndContinue'){
 		        		var $tabs = $('.tabbable li');
 		     	        $tabs.filter('.active').next('li').find('a[data-toggle="tab"]').tab('show');
 		     	        document.getElementById("templateTasks").disabled = false;
