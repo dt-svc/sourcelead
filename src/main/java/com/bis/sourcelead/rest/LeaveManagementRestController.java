@@ -1567,4 +1567,19 @@ public class LeaveManagementRestController {
 		
 	}
 	
+	/**
+	 * @author Pavan Jampana
+	 * @param restrictDayDTO
+	 * @return boolean
+	 * @throws Exception
+	 */
+	@RequestMapping(value = { "/checkDuplicateRestrictDay",
+			"/rest/checkDuplicateRestrictDay" }, method = RequestMethod.GET)
+	public @ResponseBody boolean checkDuplicateRestrictDay(RestrictDayDTO restrictDayDTO) throws Exception
+	{
+		boolean flag = false;
+		flag = restrictDayService.checkDuplicateRestrictDay(restrictDayDTO);
+		return flag;
+	}
+	
 }

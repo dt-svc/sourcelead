@@ -837,7 +837,7 @@ public class ClientRestController {
 			clientVendorDTO.setPaymentTerms(orgRelation.getPaymentTerms());
 		}
 		
-		if(orgRelation.getIsVendorOnboardSubmitted().equalsIgnoreCase(Constants.YES)) {
+		if(StringUtils.isNotBlank(orgRelation.getIsVendorOnboardSubmitted()) && orgRelation.getIsVendorOnboardSubmitted().equalsIgnoreCase(Constants.YES)) {
 			clientVendorDTO.setIsVendorOnboardSubmitted(orgRelation.getIsVendorOnboardSubmitted());
 			if(StringUtils.isNotBlank(orgRelation.getIndustryName())) {
 				clientVendorDTO.setIndustryName(orgRelation.getIndustryName());
