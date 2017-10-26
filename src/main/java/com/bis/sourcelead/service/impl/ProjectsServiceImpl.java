@@ -48,6 +48,7 @@ import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Employees;
+import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
@@ -622,6 +623,14 @@ public class ProjectsServiceImpl implements ProjectsService{
 			} else {
 				projectTasks.setBillableType(Constants.TASK_BILLABLE);
 			}
+			LookUpData taskTypeLookUpData = new LookUpData();
+			taskTypeLookUpData.setId(1060L);
+			projectTasks.setTaskType(taskTypeLookUpData);
+			
+			LookUpData taskStatusLookUpData = new LookUpData();
+			taskStatusLookUpData.setId(1069L);
+			projectTasks.setTaskStatus(taskStatusLookUpData);
+			
 			projectTasks.setCreatedDate(new Date());
 			projectTasks.setUpdatedDate(new Date());
 			projectTasks.setProjectId(projects);
@@ -976,7 +985,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 	    List<User> userList = userService.getTabAccessOwnersByOrgLocationIdAndTabId(loginOrgLocations.getId(),Long.valueOf(Constants.TAB_PROJECTS));
 	    projects.setManagersList(userList);
 	    if(projects.getManager1() != null){
-	    	  List<User> userListwithoutmaneger1 = userService.getTabAccessOwnersByOrgLocationIdAndTabIdAndNoCurrentUser(projects.getManager1(),loginOrgLocations.getId(),Long.valueOf(Constants.TAB_TIMESHEET_APPROVAL));
+	    	  List<User> userListwithoutmaneger1 = userService.getTabAccessOwnersByOrgLocationIdAndTabIdAndNoCurrentUser(projects.getManager1(),loginOrgLocations.getId(),Long.valueOf(Constants.TAB_PROJECTS));
 			  projects.setManagersListwithoutManager1(userListwithoutmaneger1);
 	    }
 	    
@@ -1577,9 +1586,9 @@ public class ProjectsServiceImpl implements ProjectsService{
 		user.setPassword(sourceleadPasswordEncoder.encode(password));
 		
 		if((jsonObj.has("isMailSent") && !isNullOrEmpty(jsonObj.getString("isMailSent"))) && ("Y".equals(jsonObj.getString("isMailSent")))){
-			user.setIsMailSent(Status.Y);
+			user.setIsMailSent("Y");
 		}else{
-			user.setIsMailSent(Status.N);
+			user.setIsMailSent("N");
 		}
 		user.setUserCode(SourceLeadRandomCodeHelper.generateRandomUserCode());
 		return user;
