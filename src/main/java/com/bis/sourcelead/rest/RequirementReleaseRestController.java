@@ -624,6 +624,7 @@ public class RequirementReleaseRestController {
 		requirement.setDocFile(parentRequirement.getDocFile());
 		requirement.setFileContentType(parentRequirement.getFileContentType());
 		requirement.setFileName(parentRequirement.getFileName());
+		requirement.setFileURL(parentRequirement.getFileURL());
 		if(parentRequirement.getVisaType() != null){
 			requirement.setVisaType(parentRequirement.getVisaType());	
 		}

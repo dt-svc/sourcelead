@@ -196,20 +196,20 @@ function projectTask(projectId, status) {
 							result = result + '<tr>';
 							'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_PROJECT_TASKS\')">'; 
 							result = result+ '<td><div class="tbldata-dotdot"><a href="'+sourceleadUrl+'/projectTaskSummary?taskUUID='+opt.projectTasksUUID+'&projectClientUUID='+projectClientUUID+'" title="'+generatedId+' '+ opt.taskName+ '" >'+generatedId+' '+ opt.taskName+ '</a></div></td>';
-							result = result	+ '<td><div class="tbldata-dotdot_50">'+opt.taskTypes+ '</div></td>';
+							result = result	+ '<td><div class="tbldata-dotdot_50" title="'+opt.taskTypes+'">'+opt.taskTypes+ '</div></td>';
 							result = result	+ '<td><div class="tbldata-dotdot_50">'+taskPriotiry+ '</div></td>';
 							result = result	+ '<td><div class="tbldata-dotdot-100"><span >'+taskAssignedUsers+'</span ></div></td>';
-							result = result	+ '<td><div class="tbldata-dotdot_50">'+taskStaus+'</div></td>';
+							result = result	+ '<td><div class="tbldata-dotdot_50" title="'+opt.taskStaus+'">'+taskStaus+'</div></td>';
 							'</sec:authorize>'; 
 							
  
 							'<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_EDIT_PROJECT_TASKS\')">';
 							result = result+ '<td><div><a title="'+ opt.taskName+ '" >'+generatedId+' '+ opt.taskName+ '</a></div></td>';
 
-							result = result	+ '<td><div><span>'+opt.taskTypes+ '</span></div></td>';
+							result = result	+ '<td><div><span title="'+opt.taskTypes+'">'+opt.taskTypes+ '</span></div></td>';
 							result = result	+ '<td><div><span>'+ taskPriotiry+ '</span></div></td>';
 							result = result	+ '<td><div><span >'+taskAssignedUsers+'</span></div></td>';
-							result = result	+ '<td><div><span>'+opt.taskStaus+'</span></div></td>';
+							result = result	+ '<td><div><span title="'+opt.taskStaus+'">'+opt.taskStaus+'</span></div></td>';
 							'</sec:authorize>'; 
 							result = result + '</tr>';
 
@@ -464,6 +464,7 @@ function editCancel(){
     } 
     function addtask(){
     	var projectId =  $("#projectId").val();
+    	var projectStartDate = '${projectStartDate}';
         	var result = "";
 			result = result	+ ' 	<div class="tasks_wrapinn">';
 			result = result	+ '     <h4 class="modal-title">Add Task</h4>';
@@ -661,20 +662,13 @@ function editCancel(){
 					  finalDateFormatProjectSave = 'yy-dd-mm'; 
 				  }
 				  
-			    $('#estimatedDate').datepicker({
-					dateFormat : finalDateFormatProjectSave,
-					changeMonth: true,
-					changeYear: true, 
-					onSelect : function(selected) {
-					}
-				});
 			    
 			    $('#dueDate').datepicker({
 					dateFormat : finalDateFormatProjectSave,
 					changeMonth: true,
 					changeYear: true, 
-					onSelect : function(selected) {
-					}
+					minDate : projectStartDate,
+					 
 				});
     }
     $(".proj_close, .side_mask").click(function(){
