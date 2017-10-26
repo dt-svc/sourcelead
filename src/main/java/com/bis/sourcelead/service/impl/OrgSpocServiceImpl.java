@@ -189,6 +189,8 @@ public class OrgSpocServiceImpl implements OrgSpocService{
 				 }else {
 					 invitedOrgLocation = orgRelation.getLocationId();
 				 }
+				 invitedOrgLocation.setVendorOrgRelationId(orgRelation.getId());
+				 invitedOrgLocation.setVendorSpocId(spocUser.getId());
 				 vendorOnboarding = vendorOnboardService.saveVendorOnboarding(invitedOrgLocation, orgLocations, user);
 			 }
 			     vendorOnboardService.sendMailAndNotificationToVendorContact(vendorOnboarding, vendorOnboarding.getVendorLocationId(), orgLocations, user,spocUser);

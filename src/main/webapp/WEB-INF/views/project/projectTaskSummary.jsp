@@ -1104,6 +1104,7 @@ function taskDocumentPagination(){
 <script>
 function addSubTasks(){
 			var projectId =  "${projectId}";
+			var projectStartDate = '${projectStartDate}';
 			var result = "";
 			result = result	+ ' 	<div class="tasks_wrapinn">';
 			result = result	+ '     <h4 class="modal-title">Add Task</h4>';
@@ -1311,20 +1312,13 @@ function addSubTasks(){
 				  }if(locationDate.match("yyyy-dd-MM")){
 					  finalDateFormatProjectSave = 'yy-dd-mm'; 
 				  }
-			    $('#estimatedDate').datepicker({
-					dateFormat : finalDateFormatProjectSave,
-					changeMonth: true,
-					changeYear: true, 
-					onSelect : function(selected) {
-					}
-				});
+			    
 			    
 			    $('#dueDate').datepicker({
 					dateFormat : finalDateFormatProjectSave,
 					changeMonth: true,
 					changeYear: true, 
-					onSelect : function(selected) {
-					}
+					minDate : projectStartDate,
 				});
 			     
 }

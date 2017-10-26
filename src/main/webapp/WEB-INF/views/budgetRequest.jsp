@@ -129,7 +129,7 @@ function getBudgetRequestList(requestType){
 	    			result = result + '<tr>';
 		    		
 	    			if((report.approverUserIdlLong == '${SourceLeadWeb_user.id}') && (requestType == "On Hold" || requestType == "Rejected" || requestType == "Waiting For Approval")){
-	    				result = result + ' 	<td><div class="tbldata-dotdot-vsm"> <div class="tbldata-dotdot-100 pull-left">'+report.budgetRequestedId+'</div> <i class="fa fa-pencil ml10 pull-right" onclick="editBudgetrequest('+report.id+')"></i></div></td>';
+	    				result = result + ' 	<td><div class="tbldata-dotdot-vsm"> <div class="tbldata-dotdot-100 pull-left">'+report.budgetRequestedId+'</div> <i class="fa fa-pencil ml10 pull-right" onclick="editBudgetrequest(\''+report.id+'\',\''+requestType+'\')"></i></div></td>';
 	    			}else{
 	    				result = result + '  <td><div class="tbldata-dotdot-vsm"> <div class="tbldata-dotdot-100 pull-left">'+report.budgetRequestedId+'</div></div></td>';
 	    			}
@@ -143,9 +143,9 @@ function getBudgetRequestList(requestType){
 					
 					if(requestType == 'Waiting For Approval'){
 						result = result + '     <td><div class="tblminwidth-75">';
-						result = result + '     <i class="fa fa-check" alt="Approve" title="Approved" onclick="acceptBudgetRequset('+report.id+')"></i>|';
-						result = result + '     <i class="fa fa-times" alt="Rejected" title="Rejected" onclick="deleteBudgetRequaet('+report.id+');"></i>';
-						result = result + '     <i class="fa fa-clock-o marOne" alt="On hold" title="On hold" onclick="onholdBudgetRequaet('+report.id+');"></i></div></td>';
+						result = result + '     <i class="fa fa-check" alt="Approve" title="Approved" onclick="acceptBudgetRequset(\''+report.id+'\',\''+requestType+'\')"></i>|';
+						result = result + '     <i class="fa fa-times" alt="Rejected" title="Rejected" onclick="deleteBudgetRequaet(\''+report.id+'\',\''+requestType+'\');"></i>';
+						result = result + '     <i class="fa fa-clock-o marOne" alt="On hold" title="On hold" onclick="onholdBudgetRequaet(\''+report.id+'\',\''+requestType+'\');"></i></div></td>';
 					}
 					
 					if(requestType == "Rejected"){
@@ -165,8 +165,8 @@ function getBudgetRequestList(requestType){
 					
 					if((report.approverUserIdlLong ==  '${SourceLeadWeb_user.id}') &&  requestType == "On Hold"){
 						result = result + '     <td><div class="tblminwidth-75">';
-						result = result + '     <i class="fa fa-check" alt="Approve" title="Approved" onclick="acceptBudgetRequset('+report.id+')"></i>|';
-						result = result + '     <i class="fa fa-times" alt="Rejected" title="Rejected" onclick="deleteBudgetRequaet('+report.id+');"></i>';
+						result = result + '     <i class="fa fa-check" alt="Approve" title="Approved" onclick="acceptBudgetRequset(\''+report.id+'\',\''+requestType+'\')"></i>|';
+						result = result + '     <i class="fa fa-times" alt="Rejected" title="Rejected" onclick="deleteBudgetRequaet(\''+report.id+'\',\''+requestType+'\');"></i>';
 						result = result + '     </div></td>';
 						
 					}
@@ -242,18 +242,19 @@ function rejectedMessage(local){
 	   
 	}
 	
-function acceptBudgetRequset(budgetRequestedId){
+function acceptBudgetRequset(budgetRequestedId,requestType){
 	var sourceleadUrl = '${sourceleadUrl}';
 	var userId = '${SourceLeadWeb_user.id}';
 	 $.ajax({
 				type : "POST",
 				url : sourceleadUrl+"/acceptBudgetRequest?${_csrf.parameterName}=${_csrf.token}&budgetRequestedId="+budgetRequestedId+"&userId="+userId,
 				success : function(result) {
-					getBudgetRequestList();
+					getBudgetRequestList(requestType);
+					getBudgetRequestListCount();
 				},
 			}); 
 }
-function deleteBudgetRequaet(budgetRequestedId){
+function deleteBudgetRequaet(budgetRequestedId,requestType){
 	var result = "";
 	result = result +"	<div class='project_inn_mask'></div>"; 
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
@@ -263,7 +264,7 @@ function deleteBudgetRequaet(budgetRequestedId){
 	result = result +"		<p>Are you sure you want to reject ?</p>";
 	result = result +"		<textarea  id='reasonForProjectBudget' name='reasonForProjectBudget'  placeholder='Comments here' field-name='Reason' data-validation='validate_length length2-5000' data-validation-optional='true'></textarea>";
 	result = result +"</form>";
-	result = result +'		<b href="javascript:void(0)"><input id="delete_budget-id" type="button" value="Delete" onclick="saveBudgetReason('+budgetRequestedId+');"><input class="u_can_color" type="button"  value="Cancel" onClick="cancelTermination();"></b>';
+	result = result +'		<b href="javascript:void(0)"><input id="delete_budget-id" type="button" value="Delete" onclick="saveBudgetReason(\''+budgetRequestedId+'\',\''+requestType+'\');"><input class="u_can_color" type="button"  value="Cancel" onClick="cancelTermination();"></b>';
 	result = result +"	</div>";
 
 	$("#popUp").append(result);
@@ -275,7 +276,7 @@ function cancelTermination(){
 	$("#popUp").empty();
 	 $(".vendor_wrap_mask").fadeOut(200);
 }
-function saveBudgetReason(budgetRequestedId){
+function saveBudgetReason(budgetRequestedId,requestType){
 	var sourceleadUrl = '${sourceleadUrl}';
      $("#delete_budget").attr("disabled", "disabled");
 	 $("#delete_budget").attr("disabled", "disabled");
@@ -286,7 +287,8 @@ function saveBudgetReason(budgetRequestedId){
 				url : sourceleadUrl+"/saveBudgetRequestReason?${_csrf.parameterName}=${_csrf.token}",
 				success : function(result) {
 					cancelTermination();
-					getBudgetRequestList();
+					getBudgetRequestList(requestType);
+					getBudgetRequestListCount();
 				},
 			}); 
 }
@@ -295,7 +297,7 @@ $('body').on('blur', '#deleteBudget_form', function() {
 	$("#deleteBudget_form").validateOnBlur(false, validationSettings);  
 }); 
 
-function editBudgetrequest(budgetRequestedId){
+function editBudgetrequest(budgetRequestedId,requestType){
 	var sourceleadUrl = '${sourceleadUrl}';
 	 $.ajax({
 				type : "POST",
@@ -348,7 +350,7 @@ function editBudgetrequest(budgetRequestedId){
 					result = result + '	    <div class="clearfix mt10 mb10"></div>';
 					 
 					result = result + '	    <div class="clearfix mr">';
-					result = result + '	      <button type="button" class="btn btn-sm btn-primary pull-right" id="save_budget" onclick="saveBudgetRequest();">Update</button>';
+					result = result + '	      <button type="button" class="btn btn-sm btn-primary pull-right" id="save_budget" onclick="saveBudgetRequest(\''+requestType+'\');">Update</button>';
 					result = result + '	    </div>';
 					result = result + '	  </div>';
 					result = result + '</form>';
@@ -387,7 +389,7 @@ function editCloseDiv(){
 	$(".vendor_wrap_mask").hide(); 	
 }
 
-function onholdBudgetRequaet(budgetRequestedId){
+function onholdBudgetRequaet(budgetRequestedId,requestType){
 	var result = "";
 	result = result +"	<div class='project_inn_mask'></div>"; 
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
@@ -397,14 +399,14 @@ function onholdBudgetRequaet(budgetRequestedId){
 	result = result +"		<p>Are you sure you want to On-Hold ?</p>";
 	result = result +"		<textarea  id='reasonForProjectBudget' name='reasonForProjectBudget'  placeholder='Comments here' field-name='Reason' data-validation='validate_length length2-5000' data-validation-optional='true'></textarea>";
 	result = result +"</form>";
-	result = result +'		<b href="javascript:void(0)"><input id="onHold_budget-id" type="button" value="Delete" onclick="saveOnHoldBudgetReason();"><input class="u_can_color" type="button"  value="Cancel" onClick="cancelTermination();"></b>';
+	result = result +'		<b href="javascript:void(0)"><input id="onHold_budget-id" type="button" value="Delete" onclick="saveOnHoldBudgetReason(\''+requestType+'\');"><input class="u_can_color" type="button"  value="Cancel" onClick="cancelTermination();"></b>';
 	result = result +"	</div>";
 
 	$("#popUp").append(result);
 	$("#remove_user_pop").slideDown(200);
 	$(".vendor_wrap_mask").fadeIn(200);
 }
-function saveOnHoldBudgetReason(){
+function saveOnHoldBudgetReason(requestType){
 	var sourceleadUrl = '${sourceleadUrl}';
      $("#onHold_budget").attr("disabled", "disabled");
 	 $("#onHold_budget").attr("disabled", "disabled");
@@ -415,7 +417,8 @@ function saveOnHoldBudgetReason(){
 				url : sourceleadUrl+"/onHoldBudgetRequest?${_csrf.parameterName}=${_csrf.token}",
 				success : function(result) {
 					cancelTermination();
-					getBudgetRequestList();
+					getBudgetRequestList(requestType);
+					getBudgetRequestListCount();
 				},
 			}); 
 }
@@ -425,7 +428,7 @@ $('body').on('blur', '#deleteBudget_form', function() {
 }); 
 </script>
 <script>
-function saveBudgetRequest(){
+function saveBudgetRequest(requestType){
 	 var validationSettings = {
 			errorMessagePosition : 'element',
 			borderColorOnError : '',
@@ -441,7 +444,8 @@ function saveBudgetRequest(){
 						data :formData,
 						url : sourceleadUrl+"/saveBudgetRequest?${_csrf.parameterName}=${_csrf.token}",
 						success : function(result) {
-							getBudgetRequestList();
+							getBudgetRequestList(requestType);
+							getBudgetRequestListCount();
 							 editCloseDiv();
 						},
 					}); 

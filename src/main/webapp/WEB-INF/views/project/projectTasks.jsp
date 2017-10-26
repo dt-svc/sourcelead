@@ -464,6 +464,7 @@ function editCancel(){
     } 
     function addtask(){
     	var projectId =  $("#projectId").val();
+    	var projectStartDate = '${projectStartDate}';
         	var result = "";
 			result = result	+ ' 	<div class="tasks_wrapinn">';
 			result = result	+ '     <h4 class="modal-title">Add Task</h4>';
@@ -661,20 +662,13 @@ function editCancel(){
 					  finalDateFormatProjectSave = 'yy-dd-mm'; 
 				  }
 				  
-			    $('#estimatedDate').datepicker({
-					dateFormat : finalDateFormatProjectSave,
-					changeMonth: true,
-					changeYear: true, 
-					onSelect : function(selected) {
-					}
-				});
 			    
 			    $('#dueDate').datepicker({
 					dateFormat : finalDateFormatProjectSave,
 					changeMonth: true,
 					changeYear: true, 
-					onSelect : function(selected) {
-					}
+					minDate : projectStartDate,
+					 
 				});
     }
     $(".proj_close, .side_mask").click(function(){

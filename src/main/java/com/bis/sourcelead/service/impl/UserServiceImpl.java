@@ -232,12 +232,6 @@ public class UserServiceImpl implements UserService {
 	    	user.setExtensionNumber(addUserDTO.getExtensionNumber());
 	    }
 		
-	    if(StringUtils.isNotBlank(addUserDTO.getIsMailSent()) && ("Y".equals(addUserDTO.getIsMailSent()))){
-			user.setIsMailSent(Status.Y);
-		}else{
-			user.setIsMailSent(Status.N);
-		}
-	   
 	    if(sourceType.equalsIgnoreCase("PROJECTS")){
 	 		user.setUserType("Employee");
 	    } 
@@ -948,8 +942,14 @@ public class UserServiceImpl implements UserService {
 			 }else if(null == password && isUserActive == false){
 				 password = SourceLeadRandomCodeHelper.generateRandomPassword();
 				 user.setPassword(sourceleadPasswordEncoder.encode(password));
-				 user.setIsMailSent(Status.Y);
 				 userDao.addUser(user);
+				 
+				    UserRole userRole = userRoleService.getUserDetailsByUserIdAndLocationId(user.getId(), respondingPartyOrgLocation.getId());
+					if(userRole != null) {
+						userRole.setIsMailSent(Status.Y);
+						userRoleService.addUserRole(userRole);
+					}
+					
 				 globalVarsMap.put("userName",user.getEmail());
 				 globalVarsMap.put("password",password);
 			 }else{
@@ -1005,8 +1005,12 @@ public class UserServiceImpl implements UserService {
 			 }else if(null == password && isUserActive == false){
 				 password = SourceLeadRandomCodeHelper.generateRandomPassword();
 				 user.setPassword(sourceleadPasswordEncoder.encode(password));
-				 user.setIsMailSent(Status.Y);
 				 userDao.addUser(user);
+			     UserRole userRole = userRoleService.getUserDetailsByUserIdAndLocationId(user.getId(), respondingPartyOrgLocation.getId());
+				  if(userRole != null) {
+					userRole.setIsMailSent(Status.Y);
+					userRoleService.addUserRole(userRole);
+				  }
 				 globalVarsMap.put("userName",user.getEmail());
 				 globalVarsMap.put("password",password);
 			 }else{

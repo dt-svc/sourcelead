@@ -916,6 +916,7 @@ function assignEmployeeCancel(){
                     mm='0'+mm
                 } 
                 
+               
                 var today = yyyy+'-'+mm+'-'+dd;
                 
                 var proStartDateTP = today.split("-");
@@ -931,18 +932,39 @@ function assignEmployeeCancel(){
       		    }if(locationDate.match("yyyy-dd-MM")){
       		    	var d2 = new Date(proEndDateTP[0], proEndDateTP[2] - 1, proEndDateTP[1]);
       		    }
-              /*   alert("d1>>>"+d1)
-                alert("d2"+d2) */
+      		    
+      		    
+      		   var projectStartDate = $("#startDate").val();
+               var from = projectStartDate.split("-");
+               if(locationDate.match("yyyy-MM-dd")){
+            	   var d3 = new Date(from[0], from[1] - 1, from[2]);
+    		    }if(locationDate.match("dd-MM-yyyy")){
+    		    	var d3 = new Date(from[2], from[1] - 1, from[0]);
+    		    }if(locationDate.match("MM-dd-yyyy")){
+    		    	var d3 = new Date(from[2], from[0] - 1, from[1]);
+    		    }if(locationDate.match("yyyy-dd-MM")){
+    		    	var d3 = new Date(from[0], from[2] - 1, from[1]);
+    		    }
+                
 				if(d1 > d2){
 					$("#status").empty();
 					$('#status').append('<option >Completed</option>');
 				}else{
 					$("#status").empty();
-					$('#status').append('<option >In-Progress</option>');
-					$('#status').append('<option >Not Started</option>');
-					$('#status').append('<option >Completed</option>');
-					$('#status').append('<option >On-Hold</option>');
-					$('#status').append('<option >Dropped</option>');
+					if(d1 < d3){
+						$('#status').append('<option >Not Started</option>');
+						$('#status').append('<option >In-Progress</option>');
+						$('#status').append('<option >Completed</option>');
+						$('#status').append('<option >On-Hold</option>');
+						$('#status').append('<option >Dropped</option>');
+					}else{
+						$('#status').append('<option >In-Progress</option>');
+						$('#status').append('<option >Not Started</option>');
+						$('#status').append('<option >Completed</option>');
+						$('#status').append('<option >On-Hold</option>');
+						$('#status').append('<option >Dropped</option>');
+					}
+					
 				}
 			}
 		});

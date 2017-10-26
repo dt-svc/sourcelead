@@ -65,7 +65,6 @@ public class OrgSpocServiceTest {
 		user.setEmail("ajith@gmail.com");
 		user.setFileContentType("open");
 		user.setFirstName("matta");
-		user.setIsMailSent(Status.N);
 		user.setJobTitle("developer");
 		user.setLastName("reddy");
 		user.setLocation("hyderabad");

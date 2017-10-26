@@ -520,7 +520,6 @@ public class CandidateOnBoardingServiceImpl implements CandidateOnBoardingServic
     	 user.setMobilePhone(candidateOnBoarding.getMobileNumber());
         }
 	    
-	    user.setIsMailSent(Status.Y);
 	    user.setLocation(candidateOnBoarding.getAddress1());
 	   
 	    

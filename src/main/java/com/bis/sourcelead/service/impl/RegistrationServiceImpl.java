@@ -440,7 +440,6 @@ public class RegistrationServiceImpl implements RegistrationService{
 		user.setMobilePhone(registration.getMobilePhone());
 		user.setCreatedBy(user.getUserCode());
 		user.setCreatedDate(new Date());
-		user.setIsMailSent(Status.Y);
 		return user;
 	}
 	
@@ -566,6 +565,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 		UserRole primaryUserRole = null;
 		UserRole userRole = new UserRole();
 		userRole.setUser(user);
+		userRole.setIsMailSent(Status.Y);
 		userRole.setOrgLocations(orgLocations);
 		userRole.setUserState(Status.NOT_LOGGEDIN);
 		userRole.setUserType("Admin");
@@ -913,17 +913,17 @@ public class RegistrationServiceImpl implements RegistrationService{
 			orgUser.setUserName(addUserDTO.getEmail());
 			password = SourceLeadRandomCodeHelper.generateRandomPassword();
 			orgUser.setPassword(sourceleadPasswordEncoder.encode(password));
-			orgUser.setIsMailSent(Status.Y);
+			
 			orgUser.setUserCode(SourceLeadRandomCodeHelper.generateRandomUserCode());
 			orgUser.setUpdatedDate(new Date());
 			userService.addUser(orgUser);
 			userRole.setIsPrimary(1);
+			
 		}else{
 			userRole.setIsPrimary(0);
 		}
 		
-		
-		
+		userRole.setIsMailSent(Status.Y);
 		userRole.setUser(orgUser);
 		OrgLocations orgLocations = orgLocationService.getOrgLocations(Long.valueOf(addUserDTO.getRegisteredOrgLocationId()));
 		userRole.setOrgLocations(orgLocations);
