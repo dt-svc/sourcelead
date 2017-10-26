@@ -25,6 +25,7 @@ import javax.persistence.Transient;
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.CacheModeType;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.NotFound;
@@ -47,14 +48,14 @@ private static final long serialVersionUID = 1L;
 	private Long id;
 	
 	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne(cascade = CascadeType.ALL)
+	@ManyToOne
 	@Fetch(FetchMode.SELECT)
     @JoinColumn(name="LOCATION_ID", nullable=false ) 
 	@JsonBackReference
     private OrgLocations orgLocationId;
 	
 	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne(cascade = CascadeType.ALL)
+	@ManyToOne
 	@Fetch(FetchMode.SELECT)
 	@JoinColumn(name = "PROJECT_MEMBERS_ID", nullable=false)
 	@JsonBackReference
@@ -114,27 +115,27 @@ private static final long serialVersionUID = 1L;
 	private String billingPayableStatus;
 	
 	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne(cascade = CascadeType.ALL)
+	@ManyToOne
 	@Fetch(FetchMode.SELECT)
 	@JoinColumn(name = "PROJECT_ID", nullable=false)
 	@JsonBackReference
 	private Projects projects;
 	
 	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne(cascade = CascadeType.ALL)
+	@ManyToOne
 	@Fetch(FetchMode.SELECT)
     @JoinColumn(name="MASTER_CANDIDATE_ID", nullable=false) 
 	@JsonBackReference
     private MasterCandidate masterCandidateId;
 	
 	@NotFound(action=NotFoundAction.IGNORE)
-	@OneToMany(mappedBy="expensesId",cascade = CascadeType.ALL)
+	@OneToMany(mappedBy="expensesId")
 	@JsonBackReference
 //  @Fetch(FetchMode.SELECT)
     private Set<ExpensesEntries> expensesEntries;
 	
 	@NotFound(action=NotFoundAction.IGNORE)
-	@OneToMany(mappedBy="expenseId",cascade = CascadeType.ALL)
+	@OneToMany(mappedBy="expenseId")
 	@JsonBackReference
    // @Fetch(FetchMode.SELECT)
     private Set<ExpensesApproverHierarchy> approverHierarchyList;

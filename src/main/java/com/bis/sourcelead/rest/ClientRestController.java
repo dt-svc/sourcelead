@@ -837,6 +837,76 @@ public class ClientRestController {
 			clientVendorDTO.setPaymentTerms(orgRelation.getPaymentTerms());
 		}
 		
+		if(StringUtils.isNotBlank(orgRelation.getIsVendorOnboardSubmitted()) && orgRelation.getIsVendorOnboardSubmitted().equalsIgnoreCase(Constants.YES)) {
+			clientVendorDTO.setIsVendorOnboardSubmitted(orgRelation.getIsVendorOnboardSubmitted());
+			if(StringUtils.isNotBlank(orgRelation.getIndustryName())) {
+				clientVendorDTO.setIndustryName(orgRelation.getIndustryName());
+			}
+			
+			if(StringUtils.isNotBlank(orgRelation.getCurrency())) {
+				clientVendorDTO.setCurrency(orgRelation.getCurrency());
+			}
+			
+			if(StringUtils.isNotBlank(orgRelation.getSicCode())) {
+				clientVendorDTO.setSicCode(orgRelation.getSicCode());
+			}
+			
+			if(StringUtils.isNotBlank(orgRelation.getNaicsCode())) {
+				clientVendorDTO.setNaicsCode(orgRelation.getNaicsCode());
+			}
+			
+			if(StringUtils.isNotBlank(orgRelation.getEinCode())) {
+				clientVendorDTO.setEinCode(orgRelation.getEinCode());
+			}
+			
+			if(StringUtils.isNotBlank(orgRelation.getTaxRegistrationNumber())) {
+				clientVendorDTO.setTaxRegistrationNumber(orgRelation.getTaxRegistrationNumber());
+			}
+			
+			if(StringUtils.isNotBlank(orgRelation.getDunsNumber())) {
+				clientVendorDTO.setDunsNumber(orgRelation.getDunsNumber());
+			}
+			
+			if(StringUtils.isNotBlank(orgRelation.getAccountName())) {
+				clientVendorDTO.setAccountName(orgRelation.getAccountName());
+			}
+			
+			if(StringUtils.isNotBlank(orgRelation.getAccountNumber())) {
+				clientVendorDTO.setAccountNumber(orgRelation.getAccountNumber());
+			}
+			
+			if(StringUtils.isNotBlank(orgRelation.getBankName())) {
+				clientVendorDTO.setBankName(orgRelation.getBankName());
+			}
+			
+			if(StringUtils.isNotBlank(orgRelation.getBranchNumber())) {
+				clientVendorDTO.setBranchNumber(orgRelation.getBranchNumber());
+			}
+			
+			if(StringUtils.isNotBlank(orgRelation.getBranchNumber())) {
+				clientVendorDTO.setBranchNumber(orgRelation.getBranchNumber());
+			}
+			
+			if(StringUtils.isNotBlank(orgRelation.getBankIdentifierCode())) {
+				clientVendorDTO.setBankIdentifierCode(orgRelation.getBankIdentifierCode());
+			}
+			
+			if(StringUtils.isNotBlank(orgRelation.getBankAddress())) {
+				clientVendorDTO.setBankAddress(orgRelation.getBankAddress());
+			}
+			
+			if(StringUtils.isNotBlank(orgRelation.getPoEmail())) {
+				clientVendorDTO.setPoEmail(orgRelation.getPoEmail());
+			}
+			
+			if(StringUtils.isNotBlank(orgRelation.getPaymentRemittanceEmail())) {
+				clientVendorDTO.setPaymentRemittanceEmail(orgRelation.getPaymentRemittanceEmail());
+			}
+		}
+		
+		
+		
+		
 		String msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "editClient");
 		if(msg != null && msg != ""){
 			orgRelation.setMsg(msg);
@@ -1303,7 +1373,7 @@ public class ClientRestController {
 			String[] tableColumns = {"responderOrgName", "responderWebSite", "responderCity", "responderLevel", "createdBy", "noContacts"};
 			tableColumns1 = tableColumns;
 		}else if(Constants.VENDOR.equalsIgnoreCase(clientVendorDTO.getResponderType())){
-			String[] tableColumns = {"responderOrgName", "", "", "","createdBy","releasedJobsCount", "noContacts"};
+			String[] tableColumns = {"responderOrgName", "", "responderCity", "","createdBy","releasedJobsCount", "noContacts"};
 			tableColumns1 = tableColumns;
 		}
 		
@@ -1930,7 +2000,7 @@ public class ClientRestController {
 					}	
 					
 				}
-				response.setRecordsFiltered(searchHits.length);
+				response.setRecordsFiltered(Long.valueOf(searchResponse.getHits().getTotalHits()).intValue());
 				SearchResponse searchResponseForCount = sourceleadELKBaseIndexer
 						.searchDocumentWithMaxResults(Constants.ELK_CLIENTVENDOR_CONTACT_INDEX, Constants.ELK_CLIENTVENDOR_CONTACT_TYPE,
 								0, 10, "invitationStatus", SortOrder.DESC, boolQueryBuilderForCount);

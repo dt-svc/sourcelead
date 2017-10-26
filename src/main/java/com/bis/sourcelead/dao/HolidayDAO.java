@@ -12,6 +12,8 @@ public interface HolidayDAO {
 
 	List<Holiday> getAllHolidaysList(Long id);
 	
+	List<Holiday> getAllHolidaysListBasedOnYear(Long id,Long reportYear);
+	
 	Holiday getHolidaysById(String holidayId)throws Exception;
 	
 	Holiday saveDeleteHoliday(Holiday holidays) throws Exception;

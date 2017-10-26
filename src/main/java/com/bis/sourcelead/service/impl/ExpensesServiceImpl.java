@@ -408,13 +408,20 @@ public class ExpensesServiceImpl implements ExpensesService{
 			   }else{
 				   userArray[4] = "--";
 			 }
-			if(expEntries.getAmount() != 0){
+			
+			if(expEntries.getAmount() != null && !"".equalsIgnoreCase(expEntries.getCurrencyType())){
+				StringBuilder amount = new StringBuilder();
+				   userArray[5] = amount.append(expEntries.getAmount()).toString();
+			   }else{
+				   userArray[5] = "--";
+			
+			/*if(expEntries.getAmount() != 0){
 				StringBuilder str = new StringBuilder();
 				BigDecimal bd = new BigDecimal(Double.toString(expEntries.getExpensesId().getTotalAmount()));
 				bd = bd.setScale(2,BigDecimal.ROUND_HALF_UP );				
 				   userArray[5] = str.append(bd).toString();
 			   }else{
-				   userArray[5] = "00.00";
+				   userArray[5] = "00.00";*/
 			 }
 			
 			/*Countries country = countriesService.getCountriesByCountryName(orgLoc.getCountry());
@@ -502,7 +509,19 @@ public class ExpensesServiceImpl implements ExpensesService{
 		writeRow.createCell(4).setCellValue(expEntries.getCurrencyType());
 		createExcelsheet.autoSizeColumn(4);
 	   }
-	StringBuilder amount = new StringBuilder();
+	
+	if(expEntries.getAmount() != null && !"".equalsIgnoreCase(expEntries.getAmount().toString())){	
+		StringBuilder amount1 = new StringBuilder();
+		
+		writeRow.createCell(5).setCellValue( amount1.append(expEntries.getAmount()).toString());
+		createExcelsheet.autoSizeColumn(4);
+	   }
+	
+	if(expEntries.getAmount() != null && !"".equalsIgnoreCase(expEntries.getCurrencyType()))
+	
+	
+	
+	/*StringBuilder amount = new StringBuilder();
 	if(expEntries.getAmount() != 0){
 		StringBuilder str = new StringBuilder();
 		BigDecimal bd = new BigDecimal(Double.toString(expEntries.getExpensesId().getTotalAmount()));
@@ -512,7 +531,7 @@ public class ExpensesServiceImpl implements ExpensesService{
 	   }else{
 		writeRow.createCell(5).setCellValue(amount.append("00.00").toString());
 		createExcelsheet.autoSizeColumn(5);
-	}
+	}*/
 	 if(expEntries.getDescription() != null && !"".equalsIgnoreCase(expEntries.getDescription())){	
 		 writeRow.createCell(6).setCellValue( expEntries.getDescription());
 		 createExcelsheet.autoSizeColumn(6);

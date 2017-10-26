@@ -649,10 +649,17 @@ public class LeaveManagementRestController {
 	
 	@PreAuthorize("hasAnyRole('ROLE_LEAVE_CONFIGURE')")
 	@RequestMapping(value = {"/getHolidaysList","/rest/getHolidaysList"}, method = RequestMethod.GET)
-	public @ResponseBody List<HolidayDTO> getHolidaysList(@RequestParam(value = "orgLocationId", required = false) Long orgLocationId, HttpServletRequest request) throws Exception
+	public @ResponseBody List<HolidayDTO> getHolidaysList(@RequestParam(value = "orgLocationId", required = false) Long orgLocationId,@RequestParam(value = "reportYear", required = false) String reportYear, HttpServletRequest request) throws Exception
 	{
 		List<HolidayDTO> holiodaysDTOList = null;
-		holiodaysDTOList = holidayService.getAllHolidaysList(orgLocationId);
+		if(StringUtils.isNotBlank(reportYear) && !reportYear.equalsIgnoreCase("--Select Year--"))
+		{
+			holiodaysDTOList = holidayService.getAllHolidaysListBasedOnYear(orgLocationId,Long.parseLong(reportYear));
+		}else
+		{
+			holiodaysDTOList = holidayService.getAllHolidaysList(orgLocationId);
+		}
+		
 		return holiodaysDTOList;
 	}
 	
@@ -1298,8 +1305,8 @@ public class LeaveManagementRestController {
 			leaveDtoList.add(entry.getValue());
 		}
 		leaveDtoResponse.setData(leaveDtoList);
-		leaveDtoResponse.setRecordsFiltered(response.getRecordsFiltered());
-		leaveDtoResponse.setRecordsTotal(response.getRecordsTotal());
+		leaveDtoResponse.setRecordsFiltered(leaveDtoList.size());
+		leaveDtoResponse.setRecordsTotal(leaveDtoList.size());
 		leaveDtoResponse.setError(response.getError());
 		return leaveDtoResponse;
 	}
@@ -1530,12 +1537,10 @@ public class LeaveManagementRestController {
 	}
 
 	@RequestMapping(value = { "/validateName", "/rest/validateName" }, method = RequestMethod.GET)
-	public boolean validateName(@RequestParam(value = "orgLocationId", required = true) Long orgLocationId, @RequestParam(value = "from", required = true) String fromTable, @RequestParam(value = "name", required = true) String name,@RequestParam(value = "editData", required = false) String editDataId)
+	public boolean validateName(@RequestParam(value = "orgLocationId", required = true) Long orgLocationId, @RequestParam(value = "from", required = true) String fromTable, @RequestParam(value = "name", required = true) String name, @RequestParam(value = "id", required = true) String id)
 	{
 		boolean flag = false;
-		if(editDataId.equalsIgnoreCase("")) {
-			flag = leaveService.validateNameByOrgLocationIdandFromTable(name, orgLocationId, fromTable);
-		}
+		flag = leaveService.validateNameByOrgLocationIdandFromTable(name, orgLocationId, fromTable,id);
 		return flag;
 	}
 
@@ -1546,19 +1551,35 @@ public class LeaveManagementRestController {
 		int totalLeavesApplied = 0;
 		int totalLeaves = 0;
 		List<Leave> leaveList = leaveService.getLeavesListByTypeIdAndLocationIdAndUserId(leaveTypeId, orgLocationId,userId);
-		for (Leave leave : leaveList) {
-			if(Constants.APPROVED.equalsIgnoreCase(leave.getStatus())) {
-				totalLeavesApplied = totalLeavesApplied + Integer.valueOf(leave.getNumberOfDays());
+		if(leaveList.size() > 0){
+			for (Leave leave : leaveList) {
+				if(Constants.APPROVED.equalsIgnoreCase(leave.getStatus())) {
+					totalLeavesApplied = totalLeavesApplied + Integer.valueOf(leave.getNumberOfDays());
+				}
+				totalLeaves = Integer.valueOf(leave.getLeaveType().getNumbefrOfLeavesPeryear());
 			}
-			totalLeaves = Integer.valueOf(leave.getLeaveType().getNumbefrOfLeavesPeryear());
+			
+			if(totalLeavesApplied >= totalLeaves) {
+				isvalidate = true;
+			}
 		}
-		
-		if(totalLeavesApplied > totalLeaves) {
-			isvalidate = true;
-		}
-		
 		return isvalidate;
 		
+	}
+	
+	/**
+	 * @author Pavan Jampana
+	 * @param restrictDayDTO
+	 * @return boolean
+	 * @throws Exception
+	 */
+	@RequestMapping(value = { "/checkDuplicateRestrictDay",
+			"/rest/checkDuplicateRestrictDay" }, method = RequestMethod.GET)
+	public @ResponseBody boolean checkDuplicateRestrictDay(RestrictDayDTO restrictDayDTO) throws Exception
+	{
+		boolean flag = false;
+		flag = restrictDayService.checkDuplicateRestrictDay(restrictDayDTO);
+		return flag;
 	}
 	
 }

@@ -1722,7 +1722,7 @@ public class UsersListRestController {
 				user.setUserName(addUserDTO.getEmail());
 				password = SourceLeadRandomCodeHelper.generateRandomPassword();
 				user.setPassword(sourceleadPasswordEncoder.encode(password));
-				user.setIsMailSent(Status.Y);
+				userRole.setIsMailSent(Status.Y);
 			}
 			user.setUpdatedBy(loginUser.getUserCode());
 			user.setUpdatedDate(commonUtil.currentDate());

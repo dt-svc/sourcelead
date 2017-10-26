@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -127,7 +128,8 @@ public class InvoiceDaoImpl implements InvoiceDao {
 		    countQuery = "from Invoice invoice  where invoice.orgLocation.id =:orgLocationId and invoice.invoiceType='payables' and invoice.status = '1'";
 		}
 		
-		if(invoiceDTO.getSearchValue().contains("/") || invoiceDTO.getSearchValue().contains("-")){
+		if(StringUtils.isNotBlank(invoiceDTO.getSearchValue())){
+			if(invoiceDTO.getSearchValue().contains("/") || invoiceDTO.getSearchValue().contains("-")){
 			String convertedDate=invoiceDTO.getSearchValue();
 			if(invoiceDTO.getSearchValue().contains("/")){
 				convertedDate = invoiceDTO.getSearchValue().replaceAll("/", "-");
@@ -141,7 +143,7 @@ public class InvoiceDaoImpl implements InvoiceDao {
             String queryDate = "from Invoice invoice where invoice.orgLocation.id =:orgLocationId and ( invoice.invoiceDate =:sqlDate or invoice.dueDate =:sqlDate )";
             Query queryObjDate = session.createQuery(queryDate.toString()).setDate("sqlDate", sqlDate).setLong("orgLocationId", orgLocations.getId());
             response.setData(queryObjDate.list());
-
+			}
 		}else{
 		StringBuilder query1 = new StringBuilder("");
 			if(invoiceDTO.getSearchValue() !=null && !"".equalsIgnoreCase(invoiceDTO.getSearchValue())) {

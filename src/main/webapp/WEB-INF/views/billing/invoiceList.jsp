@@ -24,7 +24,6 @@ z-index: 15000;
 .remove_user_pop.remove_user_pop_a {
 z-index: 18000;
 }
-
 </style>
 
 <script type="text/javascript">
@@ -480,6 +479,7 @@ $('body').on('blur', '#receivePayment-form', function() {
 function getInvoiceList(){
 	var invoice = [];
 	var payment = [];
+	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	var dayWisetype = $("#dayWiseTypeId").val();
 	var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
 	  if(locationList.match("yyyy-MM-dd")){
@@ -515,7 +515,7 @@ function getInvoiceList(){
 	 });
 	var searchValue = $("#invoiceDataTableSearch").val();
 	searchValue = searchValue ? searchValue : "";
-	var url = sourceleadUrl+"/getInvoiceList?&invoiceStatus="+invoice+"&paymentStatus="+payment+"&dayWisetype="+dayWisetype+"&startDate="+startDate+"&endDate="+endDate+"&invoiceType=receivable&searchValue="+searchValue;
+	var url = sourceleadUrl+"/getInvoiceList?&invoiceStatus="+invoice+"&paymentStatus="+payment+"&dayWisetype="+dayWisetype+"&startDate="+startDate+"&endDate="+endDate+"&invoiceType=receivable&searchValue="+searchValue+"&orgLocationId="+orgLocationId;
 	prepareInvoiceList(url,locationdateForList);
 }
 
@@ -631,7 +631,11 @@ function invoicePagination(url){
               "render": function ( data, type, report, meta ) {
             	  var result = "";
             	  result = result +'         <td>   ';
+            	 if(report.clientName != null && report.clientName != '' && report.clientName != 'undefined'){
   				result = result +'           <div class="tbldata-dotdot-vsm" title="'+report.clientName+'">'+report.clientName+'</div>';
+            	 }else{
+            		 result = result +'<div class="tbldata-dotdot-vsm">--</div>  ';
+            	 }
   				result = result +'         </td> ';
 	              return result;
               		
@@ -742,7 +746,6 @@ function invoicePagination(url){
                     },{
                         "targets": colIndex++,
                         "data": "action",
-                        "sortable": false,
                         "render": function ( data, type, report, meta ) {
                         	var result = "";
                         	result = result +'         <td> ';
@@ -844,22 +847,22 @@ function showPopUp(id,invoiceStatus,invoiceParentId,totalAmount,fileUrl){
 	     if(invoiceParentId == 'undefined'){
 	    	 result = result +'    <ul class="list-inline list-unstyled menupop menupop_2"> ';
 	     }else{
-	    	 result = result +'    <ul class="list-inline list-unstyled menupop menupop_3"> ';
+	    	 result = result +'    <ul class="list-inline list-unstyled menupop menupop_2"> ';
 	     }
 		 result = result+' <i class="fa fa-close close-div closediv-small" onClick="removePopup();"></i>';
 		 result = result +'    <input type="hidden" id="invoicePopupId" value="'+id+'"> ';
-		 if(invoiceParentId == 'undefined'){
+		 if(invoiceParentId == 'undefined' || invoiceParentId == 'null'){
 			 '<sec:authorize access="hasAnyRole(\'ROLE_SEND_INVOICE_REMINDER\')">';
 			 result = result +'      <li onclick="sendReminder('+id+');"><i class="fa fa-bullhorn paddingRight" title="Send reminder"></i>Send reminder</li> ';
 			'</sec:authorize>'
 		 }
 		 '<sec:authorize access="hasAnyRole(\'ROLE_PRINT_INVOICE\')">';
 // 	     result = result +'      <li onclick="getPrint('+id+');"><i class="fa fa-print paddingLeft paddingRight" title="Print"></i>Print</li>';
-		result = result+' <a class="fa fa-print paddingLeft paddingRight" target="_blank" href="'+fileUrl+'" title="Print">Print</a>';
+		result = result+' <li><a class="" target="_blank" href="'+fileUrl+'" title="Print"><i class="fa fa-print paddingLeft paddingRight"></i>Print</a></li>';
 	 	'</sec:authorize>'
 	 	
 	 	'<sec:authorize access="hasAnyRole(\'ROLE_DOWNLOAD_INVOICE\')">';
-	     result = result+' <a class="fa fa-download paddingLeft paddingRight" target="_blank" href="'+fileUrl+'" title="Download">Download</a>';
+	     result = result+'<li><a target="_blank" href="'+fileUrl+'" title="Download"><i class="fa fa-download paddingLeft paddingRight"></i>Download</a></li>';
 	     '</sec:authorize>'
 	     result = result +'      <li onclick="linkInvoice('+id+',\''+totalAmount+'\');"><i class="fa fa-download paddingLeft paddingRight" title="Link Invoice"></i>Link Invoice</li>';
 	     result = result +'    </ul>';
@@ -1319,7 +1322,7 @@ function linkInvoice(invoiceId,totalAmount){
 			result = result +'        <h4 class="modal-title">Link Invoice</h4>                                                                             ';
 			result = result +'	<span class="jquery_form_error_message" style="display:none; padding-left:0px !important; font-size:12px;">Select at least 1 Invoice</span>';
 			result = result +'      </div>                                                                                                                  ';
-			result = result +'      <div class="modal-body clearfix mt25">                                                                                       ';
+			result = result +'      <div class="modal-body clearfix">                                                                                       ';
 			result = result +' <div class="timesheet_out clearfix">                                                                                         ';
 			result = result +'      <div class="candidate_wrap_table">                                                                                      ';
 			result = result +'      <table id="linkInvoiceListPagination">                                                                                                                 ';
@@ -1382,9 +1385,9 @@ function linkInvoice(invoiceId,totalAmount){
 			result = result +'          </tr>                                                                                                               ';
 			}
 			}else{
-			result = result +' 	<div class="col-md-12" style="display:none">';
-			result = result +'       <div class="dataTables_empty"></div>';
-			result = result +' 	</div>';
+				result = result +' <div class="col-md-12" style="display:none">';
+				result = result +' <div class="dataTables_empty"></div>';
+				result = result +' </div>';
 			}
 			result = result +'        </tbody>                                                                                                              ';
 			result = result +'      </table>                                                                                                                ';

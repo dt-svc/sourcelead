@@ -394,20 +394,23 @@ public class UserRestController {
 		  * @throws Exception
 		  */
 		@RequestMapping(value = "/getApproversByUserId", method = RequestMethod.POST)
-		public @ResponseBody String getApproversByUserId(
+		public @ResponseBody List<User> getApproversByUserId(
 				@RequestParam(value = "currentApproverId", required = false) Long currentApproverId,
 				HttpServletRequest request) throws Exception {
-			String resultJson = null;
 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
 					"orgLocations");
-			/*List<User> userList = userService.getUsersByUserRolesAndOrgLocationIdAndNoCurrentUser(currentApproverId,
-					orgLocations.getId());*/
-			
+			List<User> usersList = new ArrayList<>();
 			List<User> userList = userService.getTabAccessOwnersByOrgLocationIdAndTabIdAndNoCurrentUser(currentApproverId,orgLocations.getId(),Long.valueOf(Constants.TAB_PROJECTS));
-			
-			
-			resultJson = toJSON(userList);
-			return resultJson;
+			if(null != userList && !userList.isEmpty()){
+				for (User user : userList) {
+					UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(),orgLocations.getId());
+					if(null != userRole){
+						user.setUserType(userRole.getUserType());
+					}
+					usersList.add(user);
+				}
+			}
+			return usersList;
 		}
 
 		/**
@@ -467,7 +470,6 @@ public class UserRestController {
 	 			if(isUserActive == false){
 	 				user.setPassword(sourceleadPasswordEncoder.encode(password));
 	 			}
-	 			user.setIsMailSent(Status.Y);
 	 			userService.addUser(user);
 	 			
 	 			// mail should forward user when action done in sourcelead admin 
@@ -1041,7 +1043,7 @@ private void terminatedMailToEmployee(User loginUser, ProjectMembersHistory pmh,
      	     if(StringUtils.isNoneBlank(user.getFileUrl())){
         	    userProfileDTO.setProfileImageUrl(user.getFileUrl());
    			 }else{
-   				userProfileDTO.setProfileImageUrl(sourceleadUrl+"/resources/images/userprofile-img.png");
+   				userProfileDTO.setProfileImageUrl("/resources/images/userprofile-img.png");
    			 }
      	     
 	         try {

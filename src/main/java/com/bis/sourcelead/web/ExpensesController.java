@@ -127,11 +127,11 @@ public class ExpensesController {
 			 	 model.addObject("isSahApproved", expensesDTO.isSahApproved());
 			}
 				
-			StringBuffer rejectedReason = new StringBuffer();
+			String rejectedReason = null;
 			List<ExpensesApproverHierarchy> eahList =expensesApprovalService.getExpensesApproverHierarchyListByExpenseId(Long.parseLong(expenseId));
 			for(ExpensesApproverHierarchy eah : eahList){
 				if(eah.getExpenseApprovalStatus().toString().equalsIgnoreCase("REJECTED")){
-					rejectedReason.append(eah.getRejectedReason()).append(""); 
+					rejectedReason  = eah.getRejectedReason(); 
 				}
 			}
 			model.addObject("expenseApproverHierarchy", rejectedReason.toString());
@@ -197,6 +197,10 @@ public class ExpensesController {
 		 	 Boolean isExpenseTotallyApproved = expensesApprovalService.isTheExpenseTotallyApproved(expensesDTO.getId());
 			 model.addObject("isExpenseTotallyApproved", isExpenseTotallyApproved);	
 			 
+			 
+			 Boolean isReopenButtonVisible = expensesApprovalService.isReopenButtonVisibleForLoginOrg(expensesDTO.getId(),orgLoc.getId());
+			 model.addObject("isReopenButtonVisible", isReopenButtonVisible);
+			 
 			 String type = request.getParameter("type");
 		 	
 		 	 Boolean isEditable = false;
@@ -215,8 +219,7 @@ public class ExpensesController {
 			   isSahReopened = true;
 		     }
 		     model.addObject("isSahReopened", isSahReopened);	
-		     
-			 Boolean isSuperUser = (Boolean) SourceLeadSessionManager.getSessionAttribute(request, "isSuperUser");
+		     Boolean isSuperUser = commonUtil.isSuperAdminForProjectMemberToReopenTimeOrExpenseses(eah.getExpenseId().getProjectMembers().getId(), loginUser);
 			 model.addObject("isSuperUser", isSuperUser);	
 			 
 			
