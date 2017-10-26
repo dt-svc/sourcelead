@@ -459,6 +459,12 @@ public class InvoiceRestController {
 			if(null != invoice.getInvoiceDate()){
 				billingDto.setInvoiceDateStr(dateFormat.format(invoice.getInvoiceDate()));	
 			}
+			if(null != invoice.getInvoiceType()){
+				billingDto.setInvoiceType(invoice.getInvoiceType());
+			}
+			if(null != invoice.getRejectReason()){
+				billingDto.setRejectReason(invoice.getRejectReason());
+			}
 			
 			billingDto.setTotal(String.format("%.2f", Float.valueOf(invoice.getTotal())));
 			billingDto.setDueAmount(String.format("%.2f", Float.valueOf(invoice.getDueAmount())));
@@ -518,7 +524,8 @@ public class InvoiceRestController {
 			billingDto.setDueBeforeInvoiceCount(openInvoiceCount);
 			billingDtoList.add(billingDto);
 		}
-		
+		responseList.setRecordsFiltered(invoiceList.getRecordsFiltered());
+		responseList.setRecordsTotal(invoiceList.getRecordsTotal());
 		responseList.setData(billingDtoList);
 		return responseList;
 		
