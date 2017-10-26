@@ -176,10 +176,13 @@ public class CandidateOnBoardRestController {
 	
 	
 	@RequestMapping(value = "/getOnboardTemplateById" , method = RequestMethod.POST)
-	 public @ResponseBody OnBoardingTemplate getOnboardTemplateById(@RequestParam(value="templateId", required=false) Long templateId, HttpServletRequest request) throws Exception {
+	 public @ResponseBody OnBoardingTemplateDTO getOnboardTemplateById(@RequestParam(value="templateId", required=false) Long templateId, HttpServletRequest request) throws Exception {
 		
+		OnBoardingTemplateDTO onBoardingTemplateDTO=new OnBoardingTemplateDTO();
  	    OnBoardingTemplate onBoardingTemplate = onBoardingTemplateService.getOnBoardingTemplateById(templateId);
-		return onBoardingTemplate;
+ 	   onBoardingTemplateDTO.setTemplateName(onBoardingTemplate.getTemplateName());
+ 	  onBoardingTemplateDTO.setDescription(onBoardingTemplate.getDescription());
+		return onBoardingTemplateDTO;
 	   }
 	
 	
@@ -221,12 +224,22 @@ public class CandidateOnBoardRestController {
 	
 	
 	
-	@RequestMapping(value = "/getOnboardTemplateDocumentByTemplateId" , method = RequestMethod.POST)
-	 public @ResponseBody List<OnBoardingTemplateDocuments> getOnboardTemplateDocumentByTemplateId(@RequestParam(value="templateId", required=false) Long templateId,
+	@RequestMapping(value = {"/getOnboardTemplateDocumentByTemplateId", "/rest/getOnboardTemplateDocumentByTemplateId"}, method = RequestMethod.POST)
+	 public @ResponseBody List<OnBoardingTemplateDocumentsDTO> getOnboardTemplateDocumentByTemplateId(@RequestParam(value="templateId", required=false) Long templateId,
 			 @RequestParam(value="documentType", required=false) String documentType, HttpServletRequest request) throws Exception {
 		
+		List<OnBoardingTemplateDocumentsDTO> OnBoardingTemplateDocumentsListDTO=new ArrayList<>();
 		List<OnBoardingTemplateDocuments> documentsList = onBoardingTemplateDocumentsService.getOnBoardingTemplateDocumentsByTemplateId(templateId,documentType);
-		return documentsList;
+		for(OnBoardingTemplateDocuments tempDoc:documentsList){
+			OnBoardingTemplateDocumentsDTO OnBoardingTemplateDocumentsDTO=new OnBoardingTemplateDocumentsDTO();
+			OnBoardingTemplateDocumentsDTO.setId(tempDoc.getId());
+			OnBoardingTemplateDocumentsDTO.setFileName(tempDoc.getFileName());
+			OnBoardingTemplateDocumentsDTO.setFileURL(tempDoc.getFileURL());
+			OnBoardingTemplateDocumentsDTO.setDocumentUUID(tempDoc.getDocumentUUID());
+			OnBoardingTemplateDocumentsDTO.setOnboardDocumentType(tempDoc.getDocumentType());
+			OnBoardingTemplateDocumentsListDTO.add(OnBoardingTemplateDocumentsDTO);
+		}
+		return OnBoardingTemplateDocumentsListDTO;
 	   
 	}
 	
@@ -301,7 +314,7 @@ public class CandidateOnBoardRestController {
 	}
 	
 	
-	 @RequestMapping(value = "/getOnboardTasksAssignToUsersList", method = RequestMethod.POST)
+	 @RequestMapping(value = {"/getOnboardTasksAssignToUsersList","/rest/getOnboardTasksAssignToUsersList"}, method = RequestMethod.POST)
 	 @ResponseBody List<UserRoleDTO> getOnboardTasksAssignToUsersList(HttpServletRequest request) throws Exception{
 		 
 		 List<UserRoleDTO> userRoleListDTO=new ArrayList<>();
@@ -391,14 +404,17 @@ public class CandidateOnBoardRestController {
 	   }
 	 
 	 
-	 @RequestMapping(value = "/getOnboardTasksListByTemplateId", method = RequestMethod.POST)
-	 @ResponseBody String getOnboardTasksListByTemplateId(@RequestParam(value="templateId", required=false) Long templateId,HttpServletRequest request) throws Exception{
+	 @RequestMapping(value = {"/getOnboardTasksListByTemplateId","/rest/getOnboardTasksListByTemplateId"}, method = RequestMethod.POST)
+	 @ResponseBody List<OnboardTasksDTO> getOnboardTasksListByTemplateId(@RequestParam(value="templateId", required=false) Long templateId,HttpServletRequest request) throws Exception{
 		
 		 List<OnboardTasks> tasksList = onboardTasksService.getOnboardTasksByTemplateId(templateId);
 		 
-		 List<OnboardTasks> onboardtasksList = new ArrayList<OnboardTasks>();
+		 List<OnboardTasksDTO> OnboardTasksListDTO=new ArrayList<>();
+		 //List<OnboardTasks> onboardtasksList = new ArrayList<OnboardTasks>();
 		 
 		 for(OnboardTasks tasks : tasksList){
+			 
+			 OnboardTasksDTO OnboardTasksDTO=new OnboardTasksDTO();
 			 
 			 List<String> usersList = new ArrayList<String>();
 				 
@@ -437,12 +453,17 @@ public class CandidateOnBoardRestController {
 				 }
 				 
 				
-				 tasks.setDueAfterString(dueAfter.toString());
-				 tasks.setUsersList(usersList); 
-				 onboardtasksList.add(tasks);
+				 OnboardTasksDTO.setDueAfterString(dueAfter.toString());
+				 OnboardTasksDTO.setUsersList(usersList); 
+				 OnboardTasksDTO.setTaskRepeat(tasks.getTaskRepeat());
+				 OnboardTasksDTO.setTaskName(tasks.getTaskName());
+				 OnboardTasksDTO.setPriority(tasks.getPriority());
+				 OnboardTasksDTO.setId(tasks.getId());
+				 OnboardTasksListDTO.add(OnboardTasksDTO);
 		 }
 			
-		return commonUtil.toJSON(onboardtasksList);
+		//return commonUtil.toJSON(onboardtasksList);
+		 return OnboardTasksListDTO;
 		}
 	 
 	 
@@ -811,7 +832,7 @@ public class CandidateOnBoardRestController {
 			onBoardingTemplDTO.setFileName(onBoardTemp.getFileName());
 			onBoardingTemplDTO.setFileURL(onBoardTemp.getFileURL());
 			onBoardingTemplDTO.setDocumentUUID(onBoardTemp.getDocumentUUID());
-			onBoardingTemplDTO.setOnboardDocumentType(onBoardTemp.getDocumentType());
+			onBoardingTemplDTO.setOnboardDocumentType(onBoardTemp.getOnboardDocumentType());
 			return onBoardingTemplDTO;
 		}
 	 

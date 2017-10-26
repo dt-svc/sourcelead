@@ -989,11 +989,12 @@ function loadOffBoardingTemplates(offboardTemplateId){
 	    	 url: sourceleadUrl+"/loadOffboardingCandidateDetails?${_csrf.parameterName}=${_csrf.token}&offBoardingUUID="+offBoardingUUID+"&locationCode="+locationCode, 
 	        success: function(json) {
 	        	
-	        	 
 	        	 var result = "";
 	        	 var selected = 'selected';
 	        	 result = result +'<option disabled selected>--Select User--</option>';
-	        	 result = result +'<option value='+json['offBoardUserId']+' '+selected+' >'+json['candidateName']+'</option>';
+	        	 
+	        	 result = result +'<option value='+json.offboardUser+' '+selected+' >'+json['candidateName']+'</option>';
+	        	 
 	        	 $("#offboardUser").empty();
 	           	 $("#offboardUser").append(result); 
 	           	 $('#offboardUser').trigger("chosen:updated");
@@ -1065,7 +1066,7 @@ function loadOffBoardingTemplates(offboardTemplateId){
 		    		loadOffBoardingTemplates(json['offboardTemplateId']);
 		    	}
 		    	
-		    	$("#savedoffboardId").val(json['id']);
+		    	$("#savedoffboardId").val(json['savedoffboardId']);
 		    	
 		    	$("#loading").removeAttr("style");
 	        },

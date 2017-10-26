@@ -1402,6 +1402,7 @@ function getTemplatePolicyDocumentsDetails(onboardId){
            				 result = result +"<i class=''><a class='glyphicon glyphicon-save' href=\""+opt.fileURL+"\"></a></i>";
            				 result = result +"<input type='button' value='"+opt.fileName+"'>";
            				 result = result +"</a>";
+           				 
            				
            				 if(opt.onboardDocumentType != 'Candidate Documents'){
            					result = result +"<input class='dele' type='button' onClick='deleteTemplateDocument("+opt.id+",\""+documentType+"\");' >"; 
