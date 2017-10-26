@@ -302,8 +302,8 @@ function addAttachment(entityRowId,from){
 
 <script type="text/javascript">
 function removeWhiteSpacesAdd(rowCount){
-	var el = document.getElementsByName("entryDes"+rowCount)[0];
-	var val = el.value.replace(/(^\s*)|(\s*$)/gi,"").replace(/\r?\n|\r/g);
+	var el = $("#entryDes"+rowCount).val();
+	var val = el.replace(/(^\s*)|(\s*$)|((\r?\n|\r)+\s)/gi,"");
 	$("#entryDes"+rowCount).val(val);
 	}
 </script>

@@ -172,7 +172,7 @@
 					</div>
 							<div class="col-md-4 minHeight">
 								<label>Date Occurred<span class="text-danger">&nbsp;*</span></label>
-								<input type="text" id="categoryDate${entryCount.count}" name="expenseEntry[${entryCount.index}].dateOccurred" readonly="readonly" onclick="displayCalendar('${entryCount.count}')" class="form-control calendar" value="${entry.dateOccurred}" placeholder="Date" field-name="Date" data-validation="required"> 
+								<input type="text" id="categoryDate${entryCount.count}" name="expenseEntry[${entryCount.index}].dateOccurred" onclick="displayCalendar('${entryCount.count}')" class="form-control calendar" value="${entry.dateOccurred}" placeholder="Date" field-name="Date" data-validation="required"> 
 							</div>
 							<div class="col-md-4 minHeight">
 								<label>Receipt Issued by</label>
@@ -212,7 +212,7 @@
 		                 </div>
 						<div class="col-md-12 minHeight mb">
 							<label>Description<span class='text-danger'>&nbsp;*</span></label>
-							<textarea rows="3"  id="entryDes${entryCount.count}" name="expenseEntry[${entryCount.index}].entryDescription" class="form-control" placeholder="Description" field-name="Description" data-validation="required validate_Space validate_length length1-5000" onblur="removeWhiteSpacesMyExp(${entryCount.count});">${entry.entryDescription}</textarea>
+							<textarea rows="3"  id="entryDes${entryCount.count}" name="expenseEntry[${entryCount.index}].entryDescription" class="form-control" placeholder="Description" field-name="Description" data-validation="required " onblur="removeWhiteSpacesMyExp(${entryCount.count});">${entry.entryDescription}</textarea>
 						</div>		
 		                    <div id='attachmentSection' class='col-md-4 minHeight minHe'>
 		                   <div class="uploadFile timesheet_week_comm edit-Expense-upload">
@@ -368,14 +368,21 @@ function reOpenMyExpense(expenseId){
 	result = result +"		<p>Re-open message here</p>";
 	result = result +"		<textarea  id='reOpenReason' name='reOpenReason'  placeholder='Comments here' onkeydown='return (event.keyCode!=13);'></textarea>";
 	result = result + ' <div id="reOpenReasonDiv"/>';
-	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button'  value = 'Submit' onclick='notifyReopenExpense("+expenseId+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelReOpen();'></b>";
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button'  value = 'Submit' onclick='removeWhiteSpacesAdd();notifyReopenExpense("+expenseId+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelReOpen();'></b>";
 	result = result +"	</div>";
 	$("#reOpenPopup").append(result);
 	$("#remove_user_pop").slideDown(200);
 	$(".project_inn_mask").fadeIn(200);
 }
 </script>
-
+<script type="text/javascript">
+function removeWhiteSpacesAdd(){
+ var el = $("#reOpenReason").val();
+ var reopenval = el.replace(/(^\s*)|(\s*$)|((\r?\n|\r)+\s)/gi,"");
+ $("#reOpenReason").val(reopenval);
+ 
+}
+</script>
 
 
 <script>
@@ -704,7 +711,7 @@ if(expenseAmount !=null && expenseAmount !='' && expenseAmount!='Undefined'){
 	}
    }	
   }
-}
+
 </script>
 
 <jsp:include page="../masterFooter.jsp" />

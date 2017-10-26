@@ -1410,13 +1410,23 @@ function reOpenMyTimesheet(projectMemberId,timesheetFrequency){
 	result = result +"		<p>Re-open message here</p>";
 	result = result +"		<textarea  id='reOpenReason' name='reOpenReason'  placeholder='Comments here'></textarea>";
 	result = result + ' <div id="reOpenReasonDiv"/>';
-	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Submit' onclick='notifyReopenTimeSheet("+projectMemberId+",\""+timesheetFrequency+"\","+totalHours+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelReOpen();'></b>";
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Submit' onclick='removeWhiteSpacesAdd();notifyReopenTimeSheet("+projectMemberId+",\""+timesheetFrequency+"\","+totalHours+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelReOpen();'></b>";
 	result = result +"	</div>";
 	$("#reOpenPopup").append(result);
 	$("#remove_user_pop").slideDown(200);
 	$(".project_inn_mask").fadeIn(200);
 }
 </script>
+
+<script type="text/javascript">
+function removeWhiteSpacesAdd(){
+ var el = $("#reOpenReason").val();
+ var reopenval = el.replace(/(^\s*)|(\s*$)|((\r?\n|\r)+\s)/gi,"");
+ $("#reOpenReason").val(reopenval);
+ 
+}
+</script>
+
 
 <script>
 function notifyReopenTimeSheet(projectMemberId,timesheetFrequency,totalHours){

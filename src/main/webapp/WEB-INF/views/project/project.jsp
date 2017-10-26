@@ -150,7 +150,10 @@ function validateShortCode(){
 						
 						 <input type="hidden" name="projectId" id=projectId value=""/>
 						 <input type="hidden" name="projectUUID" id="projectUUID" value=""/>
-
+						 <input type="hidden" name="startDateStr" id="startDateStr" value=""/>
+						 <input type="hidden" name="endDateStr" id="endDateStr" value=""/>
+						 
+ 
 						<div class="form-group">
 							<label class="col-md-3"> Date <span class="text-danger">*</span></label>
 							<div class="col-md-9">
@@ -320,7 +323,7 @@ function validateShortCode(){
 							</label>
 							<div class="col-md-9">
 								<input type="text" class="form-control" name="projectShortCode" id="projectShortCode" placeholder="Project Short Code" data-validation="required validate_length length3-3"
-									field-name="Project Short Code" value="" onkeyUp="toUpperCase();" onblur="validateShortCode();"   maxlength="3">  
+									field-name="Project Short Code" value="" onkeyUp="toUpperCase();" onblur="validateShortCode();"  pattern="[a-zA-Z]"  maxlength="3">  
 
 							</div>
 						</div>
@@ -653,6 +656,9 @@ function getStatus(){
 						success : function(projects) {
 								 $("#projectId").val(projects.id);
 								 $("#projectUUID").val(projects.projectUUID);
+								 $("#startDateStr").val(projects.startDateStr);
+								 $("#endDateStr").val(projects.endDateStr);
+								 
 								 $("#loading").removeAttr("style");
 								 var assignedMembers = document.getElementById("assignedMembers");
 								 $("assignedMembers").removeClass("disabledLink");
@@ -910,6 +916,7 @@ function assignEmployeeCancel(){
                     mm='0'+mm
                 } 
                 
+               
                 var today = yyyy+'-'+mm+'-'+dd;
                 
                 var proStartDateTP = today.split("-");
@@ -925,17 +932,39 @@ function assignEmployeeCancel(){
       		    }if(locationDate.match("yyyy-dd-MM")){
       		    	var d2 = new Date(proEndDateTP[0], proEndDateTP[2] - 1, proEndDateTP[1]);
       		    }
+      		    
+      		    
+      		   var projectStartDate = $("#startDate").val();
+               var from = projectStartDate.split("-");
+               if(locationDate.match("yyyy-MM-dd")){
+            	   var d3 = new Date(from[0], from[1] - 1, from[2]);
+    		    }if(locationDate.match("dd-MM-yyyy")){
+    		    	var d3 = new Date(from[2], from[1] - 1, from[0]);
+    		    }if(locationDate.match("MM-dd-yyyy")){
+    		    	var d3 = new Date(from[2], from[0] - 1, from[1]);
+    		    }if(locationDate.match("yyyy-dd-MM")){
+    		    	var d3 = new Date(from[0], from[2] - 1, from[1]);
+    		    }
                 
 				if(d1 > d2){
 					$("#status").empty();
 					$('#status').append('<option >Completed</option>');
 				}else{
 					$("#status").empty();
-					$('#status').append('<option >In-Progress</option>');
-					$('#status').append('<option >Not Started</option>');
-					$('#status').append('<option >Completed</option>');
-					$('#status').append('<option >On-Hold</option>');
-					$('#status').append('<option >Dropped</option>');
+					if(d1 < d3){
+						$('#status').append('<option >Not Started</option>');
+						$('#status').append('<option >In-Progress</option>');
+						$('#status').append('<option >Completed</option>');
+						$('#status').append('<option >On-Hold</option>');
+						$('#status').append('<option >Dropped</option>');
+					}else{
+						$('#status').append('<option >In-Progress</option>');
+						$('#status').append('<option >Not Started</option>');
+						$('#status').append('<option >Completed</option>');
+						$('#status').append('<option >On-Hold</option>');
+						$('#status').append('<option >Dropped</option>');
+					}
+					
 				}
 			}
 		});

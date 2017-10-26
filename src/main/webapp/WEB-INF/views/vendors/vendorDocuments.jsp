@@ -196,7 +196,7 @@ function vendorDocumentsList(vendorLocationId,orgRelationId){
 	                     result = result +"</table>";
 	                    
 	                     $("#vendorDocumentsList").append(result); 
-	                     documentpagination(); 
+	                     vendorNewPagination(); 
                /* }else{
 	    	         var result ="";
 		    	     result = result+"   <div class='row'>"; 
@@ -225,7 +225,7 @@ function viewVendorDocument(docId,title){
 </script>
 
 <script>
-function documentpagination(){  
+function vendorNewPagination(){  
     $('#clientDocumentsPagination').DataTable( { 
     	"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
