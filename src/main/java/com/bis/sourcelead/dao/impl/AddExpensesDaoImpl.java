@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.AddExpensesDao;
 import com.bis.sourcelead.entity.Expenses;
+import com.bis.sourcelead.entity.ExpensesApproverHierarchy;
 import com.bis.sourcelead.entity.ExpensesEntries;
 import com.bis.sourcelead.entity.ExpensesEntryDocuments;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
@@ -55,6 +56,11 @@ public class AddExpensesDaoImpl implements AddExpensesDao {
 										session.saveOrUpdate(documents);
 								}
 						}
+					}
+				}
+				if(expenses.getApproverHierarchyList() != null && !expenses.getApproverHierarchyList().isEmpty()) {
+					for(ExpensesApproverHierarchy eah : expenses.getApproverHierarchyList()) {
+						session.saveOrUpdate(eah);
 					}
 				}
 			}
