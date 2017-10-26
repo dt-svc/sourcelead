@@ -840,6 +840,7 @@ function viewOfferDocument(offerID,title){
 
 <div class='project_inn_mask projectMask-zindex'></div>
 <div id="popUp"></div>
+<div class="project_inn_mask"></div>
 <div id="customizePopUp"></div>
 <script>
 function rejectApplicant(submissionId,requirementId,submissionType){
