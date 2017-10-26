@@ -48,6 +48,7 @@ import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Employees;
+import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
@@ -622,6 +623,14 @@ public class ProjectsServiceImpl implements ProjectsService{
 			} else {
 				projectTasks.setBillableType(Constants.TASK_BILLABLE);
 			}
+			LookUpData taskTypeLookUpData = new LookUpData();
+			taskTypeLookUpData.setId(1060L);
+			projectTasks.setTaskType(taskTypeLookUpData);
+			
+			LookUpData taskStatusLookUpData = new LookUpData();
+			taskStatusLookUpData.setId(1069L);
+			projectTasks.setTaskStatus(taskStatusLookUpData);
+			
 			projectTasks.setCreatedDate(new Date());
 			projectTasks.setUpdatedDate(new Date());
 			projectTasks.setProjectId(projects);
