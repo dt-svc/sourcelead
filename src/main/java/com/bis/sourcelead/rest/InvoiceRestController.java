@@ -1693,9 +1693,10 @@ public class InvoiceRestController {
 	@RequestMapping(value = "/getProjectAssignMembers", method = RequestMethod.GET)
 	@ResponseBody
 	public Collection<ProjectMembers> getProjectAssignMembers(
-			@RequestParam(value = "projectId", required = false) Long projectId) throws Exception {
+			@RequestParam(value = "projectId", required = false) Long projectId,HttpServletRequest request) throws Exception {
 
-		List<ProjectMembers> associatesList = projectMembersService.getProjectsAssignedMembersForExpenses(projectId);
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		List<ProjectMembers> associatesList = projectMembersService.getAllProjectMembersWithMasterCandidateIdByProjectIdAndLocationId(projectId,orgLocation.getId());
 		return associatesList;
 
 	}
