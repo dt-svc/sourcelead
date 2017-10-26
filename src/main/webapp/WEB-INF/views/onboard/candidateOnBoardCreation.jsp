@@ -1198,7 +1198,6 @@ function loadOnBoardingTemplates(onboardTemplateId){
 		 onBoardingUUID = document.getElementById("candidateOnBoardUUID").value;
 	 }
 	 
-	 alert(onBoardingUUID);
 	 
 	 if(onBoardingUUID){
 		 

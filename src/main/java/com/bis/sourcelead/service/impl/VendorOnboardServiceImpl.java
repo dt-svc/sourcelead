@@ -347,9 +347,9 @@ public class VendorOnboardServiceImpl implements VendorOnboardService {
 		 emailMessage.setCreatedBy(loginUser.getUserCode());
 		 emailMessage.setFromName(loginUser.getFullName());
 
-		 globalVarsMap.put("FirstName", spocUser.getFirstName());
+		 globalVarsMap.put("firstName", spocUser.getFirstName());
 		 if(StringUtils.isNotBlank(spocUser.getLastName())){
-			 globalVarsMap.put("LastName",spocUser.getLastName());
+			 globalVarsMap.put("lastName",spocUser.getLastName());
 		 }
 		 
 		 globalVarsMap.put("loginUsername",loginUser.getFullName());

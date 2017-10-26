@@ -4,7 +4,6 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
-import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
@@ -15,9 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.HolidayDAO;
 import com.bis.sourcelead.entity.Holiday;
-import com.bis.sourcelead.entity.Option;
 import com.bis.sourcelead.entity.OrgLocations;
-import com.bis.sourcelead.entity.RestrictDay;
 import com.bis.sourcelead.util.CommonUtil;
 
 @Repository
@@ -52,6 +49,19 @@ public class HolidayDaoImpl  implements HolidayDAO{
 		String status = "1";
 		Session session = this.sessionFactory.getCurrentSession();
 		String from = "from Holiday holiday where holiday.orgLocations.id =:id  and holiday.status =:status";
+		List<Holiday> holidayList = session.createQuery(from).setLong("id", id).setString("status", status).setCacheable(true).list();
+		return holidayList;
+	}
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<Holiday> getAllHolidaysListBasedOnYear(Long id,Long reportYear) {
+		String status = "1";
+		Session session = this.sessionFactory.getCurrentSession();
+		Date[] dates = commonUtil.getStartDateEndDateByYear(reportYear.intValue());
+		java.sql.Date satrtDate = new java.sql.Date(dates[0].getTime());
+		java.sql.Date endDate = new java.sql.Date(dates[1].getTime());
+		String from = "from Holiday holiday where holiday.orgLocations.id =:id  and holiday.status =:status and holiday.fromDate >= '"+satrtDate+"' AND holiday.toDate <= '"+endDate+"'";
 		List<Holiday> holidayList = session.createQuery(from).setLong("id", id).setString("status", status).setCacheable(true).list();
 		return holidayList;
 	}
