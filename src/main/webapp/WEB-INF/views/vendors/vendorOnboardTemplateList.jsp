@@ -74,9 +74,8 @@ function onboardingTemplatesList(){
 	                     result = result +"    <th>Created Date</th>";
 	                     result = result +"    <th>Created By</th>"; 
 	                     result = result +"    <th>Status</th>";
-	                     result = result +"    <th>Action</th>";
-	                    
-	                     '<sec:authorize access="hasRole(\'ROLE_VIEW_EDIT_ON_BOARD_TEMPLATE\')">'
+	              /*        result = result +"    <th>Action</th>"; */
+	                    '<sec:authorize access="hasRole(\'ROLE_VIEW_EDIT_ON_BOARD_TEMPLATE\')">'
 	                    		 result = result +"<th>Actions</th>";
 	                     '</sec:authorize>';
 	                     

@@ -203,8 +203,8 @@ public class TimesheetRestController {
 		timesheetEntryDetailsDTO = getTimesheetSubFrequencyListByCurrentFrequency(eedDTO, timesheetEntryDetailsDTO, currentTimeFrequency, orgLocations);
 		String currentTimeSubFrequency = timesheetEntryDetailsDTO.getCurrentTimeSubFrequency();
 		eedDTO.setCurrentTimeSubFrequency(currentTimeSubFrequency);
-		eedDTO.setProjectId(timesheetEntryDetailsDTO.getProjectId());
-		eedDTO.setProjectMemberId(timesheetEntryDetailsDTO.getProjectMemberId());
+		eedDTO.setProjectsId(timesheetEntryDetailsDTO.getProjectId());
+		eedDTO.setProjectMembersId(timesheetEntryDetailsDTO.getProjectMemberId());
 		eedDTO.setMasterCandidateId(timesheetEntryDetailsDTO.getMasterCandidateId());
 		
 		TimeSheetSubmissionDTO ts = timesheetSubmissionDetails(eedDTO, request);
@@ -215,8 +215,8 @@ public class TimesheetRestController {
 	
 public TimesheetEntryDetailsDTO getProjectMemberAndTimesheetFrequenciesList(TimesheetExpenseEntryDetailsUtilDTO eedDTO,TimesheetEntryDetailsDTO timesheetEntryDetailsDTO,OrgLocations orgLocations,Candidate candidate,HttpServletRequest request) throws Exception {
 		Map<String,String>  timesheetFrequencyMap  = null;
-		Long projectMemberId = eedDTO.getProjectMemberId();
-		Long projectId = eedDTO.getProjectId();
+		Long projectMemberId = eedDTO.getProjectMembersId();
+		Long projectId = eedDTO.getProjectsId();
 		Long masterCandidateId = eedDTO.getMasterCandidateId();
 		if(projectMemberId == null){
 			List<ProjectMembers> projectMembersList =  projectMembersService.getProjectMembersListByOrgLocationsIdAndCandidateId(orgLocations.getId(),candidate.getId());
@@ -240,7 +240,7 @@ public TimesheetEntryDetailsDTO getProjectMemberAndTimesheetFrequenciesList(Time
 			}
 		}
 		else{
-			 ProjectMembers pm = projectMembersService.getProjectMemberById(eedDTO.getProjectMemberId());
+			 ProjectMembers pm = projectMembersService.getProjectMemberById(eedDTO.getProjectMembersId());
 			 if(projectId == null || masterCandidateId == null){
 				 projectId =         pm.getProjects().getId();
 				 masterCandidateId = pm.getMasterCandidateId().getId();
@@ -478,7 +478,7 @@ public TimesheetEntryDetailsDTO getProjectMemberAndTimesheetFrequenciesList(Time
 		}
 	   
 	   
-	   Long projectMemberId = eedDTO.getProjectMemberId();
+	   Long projectMemberId = eedDTO.getProjectMembersId();
 	   String currentTimeFrequency = eedDTO.getCurrentTimeFrequency();
 	   String currentTimeSubFrequency = eedDTO.getCurrentTimeSubFrequency();
 	   String timesheetFor = eedDTO.getTimeSheetsFor();
