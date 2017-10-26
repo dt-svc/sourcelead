@@ -127,11 +127,11 @@ public class ExpensesController {
 			 	 model.addObject("isSahApproved", expensesDTO.isSahApproved());
 			}
 				
-			StringBuffer rejectedReason = new StringBuffer();
+			String rejectedReason = null;
 			List<ExpensesApproverHierarchy> eahList =expensesApprovalService.getExpensesApproverHierarchyListByExpenseId(Long.parseLong(expenseId));
 			for(ExpensesApproverHierarchy eah : eahList){
 				if(eah.getExpenseApprovalStatus().toString().equalsIgnoreCase("REJECTED")){
-					rejectedReason.append(eah.getRejectedReason()).append(""); 
+					rejectedReason  = eah.getRejectedReason(); 
 				}
 			}
 			model.addObject("expenseApproverHierarchy", rejectedReason.toString());
