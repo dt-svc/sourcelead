@@ -111,7 +111,7 @@
 											+ orgLocationId
 											+ ');">'
 											+ opt.leaveType
-											+ '</div><i class="fa fa-binoculars pull-right" ></i>';
+											+ ' <i class="fa fa-binoculars pull-right" ></i></div>';
 									result = result + '  </div>';
 									result = result + ' </td>';
 									result = result + ' <td>';

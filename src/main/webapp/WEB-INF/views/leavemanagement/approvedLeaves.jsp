@@ -88,7 +88,7 @@ function getApprovedLeavesList(){
 			        		 result = result + ' <tr>';
 			        		 result = result + ' <td>';
 			        		 result = result + ' <div class="proj_show divmax-width">';
-			        		 result = result + '     <div class="pull-left tbldata-dotdot" title="'+opt.leaveType+'" onclick="getRequestedAproveSummary(\''+opt.id+'\','+orgLocationId+');">'+opt.leaveType+'</div><i class="fa fa-binoculars pull-right"></i>';
+			        		 result = result + '     <div class="pull-left tbldata-dotdot" title="'+opt.leaveType+'" onclick="getRequestedAproveSummary(\''+opt.id+'\','+orgLocationId+');">'+opt.leaveType+' <i class="fa fa-binoculars pull-right"></i></div>';
 			        		 result = result + '  </div>';
 			        		 result = result + ' </td>';
 			        		 result = result + ' <td>';
@@ -323,24 +323,29 @@ function approvedListPagination(){
   </div>
 </div>
 
+<div id="popUp"></div>
 
 <script>
 function withDrawLeave(leaveId, userId){
-	
 	var result = "";
+	alert("hai1");
 	result = result +"	<div class='comMask'></div>";
+	alert("hai2");
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
-	result = result +"		<textarea id='withdrawReason' class='form-control' field-name='Reject Reason'  data-validation='required validate_Space validate_Description validate_length length2-250' name='reasonForSpoc' value='' placeholder='Terminate Reason' rows='2'></textarea>";
+	alert("hai3");
+	result = result +"		<textarea id='withdrawReason' class='form-control' field-name='Withdraw Reason'  data-validation='required validate_Space validate_Description validate_length length2-250' name='reasonForSpoc' value='' placeholder='Withdraw Reason' rows='2'></textarea>";
+	alert("hai4");
 	result = result + ' <div id="withdrawReasonDiv"/>';
-	result = result +'		<b href="javascript:void(0)"><input id="confirm-id" type="button" value="Delete" onclick="withdraw(\''+leaveId+'\','+orgLocationId+');"><input class="u_can_color" type="button"  value="Cancel" onClick="cancelTermination();"></b>';
+	result = result +'		<b href="javascript:void(0)"><input id="confirm-id" type="button" value="Withdraw" onclick="withdraw(\''+leaveId+'\','+userId+');"><input class="u_can_color" type="button"  value="Cancel" onClick="cancelTermination();"></b>';
 	result = result +"	</div>";
 	$("#popUp").append(result);
+	alert("hai5");
 	$("#remove_user_pop").slideDown(200);
 	$(".comMask").fadeIn(200);
 }
 </script>
 
-<div id="popUp"></div>
+
 
 <script>
 function cancelTermination(){
@@ -349,9 +354,10 @@ function cancelTermination(){
 }
 </script>
 <script>
-function withdraw(leaveId,orgLocationId){
+function withdraw(leaveId,userId){
 	 var reason = document.getElementById("withdrawReason").value;
-	 var userId = '${SourceLeadWeb_userId}';
+	 var orgLocationId = '${SourceLeadWeb_orgLocationId}';
+// 	 var userId = '${SourceLeadWeb_userId}';
 	 if(reason == null || reason == '' || reason == 'undefined'){
 		 $("#withdrawReasonDiv").find('p.jquery_form_error_message').remove();
 	  	 $("#withdrawReasonDiv").append("<p class='jquery_form_error_message'>Reason Is Required</p>");
