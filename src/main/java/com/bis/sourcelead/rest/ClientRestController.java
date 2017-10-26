@@ -837,7 +837,7 @@ public class ClientRestController {
 			clientVendorDTO.setPaymentTerms(orgRelation.getPaymentTerms());
 		}
 		
-		if(orgRelation.getIsVendorOnboardSubmitted().equalsIgnoreCase(Constants.YES)) {
+		if(StringUtils.isNotBlank(orgRelation.getIsVendorOnboardSubmitted()) && orgRelation.getIsVendorOnboardSubmitted().equalsIgnoreCase(Constants.YES)) {
 			clientVendorDTO.setIsVendorOnboardSubmitted(orgRelation.getIsVendorOnboardSubmitted());
 			if(StringUtils.isNotBlank(orgRelation.getIndustryName())) {
 				clientVendorDTO.setIndustryName(orgRelation.getIndustryName());
@@ -1373,7 +1373,7 @@ public class ClientRestController {
 			String[] tableColumns = {"responderOrgName", "responderWebSite", "responderCity", "responderLevel", "createdBy", "noContacts"};
 			tableColumns1 = tableColumns;
 		}else if(Constants.VENDOR.equalsIgnoreCase(clientVendorDTO.getResponderType())){
-			String[] tableColumns = {"responderOrgName", "", "", "","createdBy","releasedJobsCount", "noContacts"};
+			String[] tableColumns = {"responderOrgName", "", "responderCity", "","createdBy","releasedJobsCount", "noContacts"};
 			tableColumns1 = tableColumns;
 		}
 		
@@ -2000,7 +2000,7 @@ public class ClientRestController {
 					}	
 					
 				}
-				response.setRecordsFiltered(searchHits.length);
+				response.setRecordsFiltered(Long.valueOf(searchResponse.getHits().getTotalHits()).intValue());
 				SearchResponse searchResponseForCount = sourceleadELKBaseIndexer
 						.searchDocumentWithMaxResults(Constants.ELK_CLIENTVENDOR_CONTACT_INDEX, Constants.ELK_CLIENTVENDOR_CONTACT_TYPE,
 								0, 10, "invitationStatus", SortOrder.DESC, boolQueryBuilderForCount);

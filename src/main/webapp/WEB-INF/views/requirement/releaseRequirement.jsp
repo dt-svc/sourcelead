@@ -85,7 +85,7 @@ border-radius:3px; cursor: pointer; padding:6px 0px 0px 0px;
                     <div class="approved_pop">
                       <ul>
                       	  <c:forEach var="venReport" items="${vendor_list}">  
-	                      	<li><input id="vendorName${venReport.id}" name="vendorSelected" value ="${venReport.id}" onclick="getContactsLists();" type="checkbox"><label title="${venReport.vendorName}">&nbsp;&nbsp; ${venReport.vendorName}</label></li>
+	                      	<li id="VN${venReport.id}"><input id="vendorName${venReport.id}" name="vendorSelected" value ="${venReport.id}" onclick="getContactsLists();" type="checkbox"><label title="${venReport.vendorName}">&nbsp;&nbsp; ${venReport.vendorName}</label></li>
 						  </c:forEach>
                       </ul>
                     </div>
@@ -734,6 +734,10 @@ function getVendorLists(){
 	           	        	for (var i=0; i<json.length; i++)
 	           				{  
 	           	        		var report = json[i];
+	           	        		if(report.noOfContatcs == 0){
+	           	        			$("#VN"+report.id).empty();
+	           	        		}
+	           	        		
 	           	        		var location = "";
 	           	        		if(report.city != null && report.city != '' && report.city != 'undefined'){
 	           	        			location = report.country+", "+report.state+", "+report.city;

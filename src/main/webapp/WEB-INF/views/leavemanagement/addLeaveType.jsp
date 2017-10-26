@@ -30,6 +30,19 @@
 	});
 </script>
     
+    
+    <script>
+    function removeErrMsg(){
+    	$("#departmentDiv").find("p.jquery_form_error_message").remove();
+    }
+    function removeRoleErrMsg(){
+    	$("#rolesDiv").find("p.jquery_form_error_message").remove();
+    }
+    	function validateColor(){
+    		$("#cp").find("p.jquery_form_error_message").remove();
+    	}
+    	
+    </script>
 <!-- Content Area -->
 <section class="content-wraper">
 	<section class="content-header clearfix">
@@ -151,7 +164,7 @@
 							<div class="form-group" id="departmentDiv">
 								<label class="col-md-3">Select Department</label>
 								<div class="col-md-9 dropdown-select">
-									<select class="chosen-select form-control" name="department"
+									<select class="chosen-select form-control" name="department" onchange="removeErrMsg();"
 										id="department" field-name="Department"
 										data-validation-optional="true">
 										<option value="">Select Department</option>
@@ -165,10 +178,10 @@
 							<div class="form-group" id="rolesDiv">
 								<label class="col-md-3">Select Roles<span
 								class="text-danger">&nbsp;*</span></label>
-								<div class="col-md-9 dropdown-select">
+								<div class="col-md-9 dropdown-select" id="roleErrMsg">
 									<select multiple data-placeholder="Select Roles"
 										class="chosen-select form-control" id="roles" name="roles"
-										field-name="Roles" data-validation-optional="true">
+										field-name="Roles" data-validation-optional="true" onchange="removeRoleErrMsg();">
 										<c:forEach var="role" items="${rolesList}">
 											<c:set var="NUM" value="${0}" />
 											<c:forEach var="existedRoles" items="${existedRoles}">
@@ -262,10 +275,10 @@
 									class="input-group colorpicker-component errorInptgroup">
 									<input type="text" name="colorCode" field-name="Color Picker"
 										placeholder="Select Color Picker" readonly="readonly"
-										value="${leaveType.colorCode}" class="form-control"
-										data-validation="required"> <span
+										value="${leaveType.colorCode}" class="form-control" id="colorCode"
+										data-validation="required" > <span
 										class="input-group-addon"><i><img
-											src="resources/images/theme-icon.png" class="img-responsive"
+											src="resources/images/theme-icon.png" onselect="validateColor();" class="img-responsive"
 											title="Themes"></i></span>
 								</div>
 							</div>

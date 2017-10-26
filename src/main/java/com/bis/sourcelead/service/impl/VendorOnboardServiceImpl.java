@@ -347,9 +347,9 @@ public class VendorOnboardServiceImpl implements VendorOnboardService {
 		 emailMessage.setCreatedBy(loginUser.getUserCode());
 		 emailMessage.setFromName(loginUser.getFullName());
 
-		 globalVarsMap.put("FirstName", spocUser.getFirstName());
+		 globalVarsMap.put("firstName", spocUser.getFirstName());
 		 if(StringUtils.isNotBlank(spocUser.getLastName())){
-			 globalVarsMap.put("LastName",spocUser.getLastName());
+			 globalVarsMap.put("lastName",spocUser.getLastName());
 		 }
 		 
 		 globalVarsMap.put("loginUsername",loginUser.getFullName());
@@ -380,7 +380,6 @@ public class VendorOnboardServiceImpl implements VendorOnboardService {
 				  if(isUserActive == false){
 					  password = SourceLeadRandomCodeHelper.generateRandomPassword();
 					  spocUser.setPassword(sourceleadPasswordEncoder.encode(password));
-					  spocUser.setIsMailSent(Status.Y);
 					  userDao.addUser(spocUser);
 					  
 					  globalVarsMap.put("userName",spocUser.getUserName());
