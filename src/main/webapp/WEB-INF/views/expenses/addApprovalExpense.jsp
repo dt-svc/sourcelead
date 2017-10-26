@@ -187,15 +187,6 @@
 							             </c:forEach>
 								</select>
 							</div>	
-							<div class="col-md-4 minHeight">
-								<label>Paid by<span class="text-danger">&nbsp;*</span></label>
-								<select class="chosen-select form-control" id="paidBy${entryCount.count}" name="expenseEntry[${entryCount.index}].paidBy" class="form-control" field-name="Paid By" data-validation="required">
-								         <option value="" disabled>Select Paid By</option>
-								          <c:forEach var="expEntrypaidBy" items="${expEntry.paidByType}">
-							                   <option  ${entry.paidBy == expEntrypaidBy ? 'selected' : ''} value="${expEntrypaidBy}">${expEntrypaidBy}</option>
-							             </c:forEach>
-								</select>
-							</div>
 							
 		                  <div id="amountDiv${entryCount.count}" class='col-md-4 minHeight valid_ation'>
 			                   <label>Amount<span class='text-danger'>&nbsp;*</span></label>
@@ -210,6 +201,17 @@
 								         <input type='text' class='form-control allownumericwithdecimal'  placeholder='Amount'  name='expenseEntry[${entryCount.index}].categoryAmount' id='expenseAmount${entryCount.count}' value='${entry.categoryAmount}' field-name='Amount' data-validation='required validate_float validate_length length1-10' onkeyup="getAmountValue(${entryCount.count});">
 									</div>
 		                 </div>
+		                 
+		                 <div class="col-md-4 minHeight">
+								<label>Paid by<span class="text-danger">&nbsp;*</span></label>
+								<select class="chosen-select form-control" id="paidBy${entryCount.count}" name="expenseEntry[${entryCount.index}].paidBy" class="form-control" field-name="Paid By" data-validation="required">
+								         <option value="" disabled>Select Paid By</option>
+								          <c:forEach var="expEntrypaidBy" items="${expEntry.paidByType}">
+							                   <option  ${entry.paidBy == expEntrypaidBy ? 'selected' : ''} value="${expEntrypaidBy}">${expEntrypaidBy}</option>
+							             </c:forEach>
+								</select>
+							</div>
+		                 
 						<div class="col-md-12 minHeight mb">
 							<label>Description<span class='text-danger'>&nbsp;*</span></label>
 							<textarea rows="3"  id="entryDes${entryCount.count}" name="expenseEntry[${entryCount.index}].entryDescription" class="form-control" placeholder="Description" field-name="Description" data-validation="required " onblur="removeWhiteSpacesMyExp(${entryCount.count});">${entry.entryDescription}</textarea>
