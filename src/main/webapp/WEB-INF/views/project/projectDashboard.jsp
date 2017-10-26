@@ -66,10 +66,10 @@ overflow-x: auto;
                     	<ul>
                         	<!-- <li><input id="c5" type="checkbox" name="projectStatus" value ="All" onclick="filter();"  ><label for="c5">All</label></li> -->
                         	<li><input id="c7" name="projectStatus" type="checkbox" value ="In-Progress"  onclick="filter();"><label for="c7">In-Progress</label></li>
-							<li><input id="c9" type="checkbox" name="projectStatus" value ="Not Started"  onclick="filter();"><label for="c8">Not Started</label></li>
+							<li><input id="c9" type="checkbox" name="projectStatus" value ="Not Started"  onclick="filter();"><label for="c9">Not Started</label></li>
 							<li><input id="c8" type="checkbox"  name="projectStatus"   value ="Completed"  onclick="filter();"><label for="c8">Completed</label></li>
-               				<li><input id="c8" type="checkbox"  name="projectStatus"  value ="On-Hold"  onclick="filter();"><label for="c8">On-Hold</label></li>
-               				<li><input id="c10" type="checkbox"  name="projectStatus"   value ="Dropped"  onclick="filter();"><label for="c8">Dropped</label></li>
+               				<li><input id="c6" type="checkbox"  name="projectStatus"  value ="On-Hold"  onclick="filter();"><label for="c6">On-Hold</label></li>
+               				<li><input id="c10" type="checkbox"  name="projectStatus"   value ="Dropped"  onclick="filter();"><label for="c10">Dropped</label></li>
                         </ul>
                     </div>                	
                 </li>
