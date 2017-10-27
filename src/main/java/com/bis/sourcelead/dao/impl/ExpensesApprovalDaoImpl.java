@@ -120,8 +120,8 @@ public class ExpensesApprovalDaoImpl implements ExpensesApprovalDao{
 			+ " pc.orgLocationsId.id = :orgLocationId"
 			+ " and ( ("
 			+ "      hierarchy.approverUserId.id = :userId and "
-			+ "       (     ( emp.user.id  IS NULL OR  (hierarchy.level = '2' and emp.user.id NOT IN(select subeah.hierarchyId.approverUserId.id from ExpensesApproverHierarchy subeah where subeah.expenseId.id = sah.expenseId.id and subeah.hierarchyId.level = '2'))) "
-			+ "          OR ( emp.user.id  IS NULL OR  ( hierarchy.level = '1' and emp.user.id NOT IN(select subeah.hierarchyId.approverUserId.id from ExpensesApproverHierarchy subeah where subeah.expenseId.id = sah.expenseId.id) )) "
+			+ "       (     ((hierarchy.level = '2' and emp.user.id NOT IN(select subeah.hierarchyId.approverUserId.id from ExpensesApproverHierarchy subeah where subeah.expenseId.id = sah.expenseId.id and subeah.hierarchyId.level = '2'))) "
+			+ "          OR (( hierarchy.level = '1' and emp.user.id NOT IN(select subeah.hierarchyId.approverUserId.id from ExpensesApproverHierarchy subeah where subeah.expenseId.id = sah.expenseId.id) )) "
 			+ "       )"
 			+ "      ) "
 		    /*
@@ -150,8 +150,9 @@ public class ExpensesApprovalDaoImpl implements ExpensesApprovalDao{
 			}
 			
         }
-		return query.setCacheable(true).list();
-				
+		List<ExpensesApproverHierarchy> tslist = query.setCacheable(true).list();
+		System.out.println(tslist);
+	    return tslist;
 		/*@SuppressWarnings("unchecked")
 		List<ExpensesApproverHierarchy> tslist = session.createQuery(query.toString()).setLong("userId", userId).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
 		return tslist;*/
