@@ -27,6 +27,7 @@
 {
 	color: #333;
 	text-decoration : none;
+	pointer-events: none;
 }
 </style>
 
@@ -661,7 +662,7 @@ function getStatus(){
 								 
 								 $("#loading").removeAttr("style");
 								 var assignedMembers = document.getElementById("assignedMembers");
-								 $("assignedMembers").removeClass("disabledLink");
+								 document.getElementById("assignedMembers").removeAttribute("class");
 								 assignedMembers.href="#tab-b"; 
 								 assignedMembers.click();
 
