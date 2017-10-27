@@ -390,7 +390,6 @@ public class UploadFileServiceImpl implements UploadFileService {
 									 userImport.setIsMailChecked(Status.N);
 								 }
 								 saveBulkUser(userImport,orgLocations,user,isMailChecked);
-								 isFileCreated = "failure";
 							 }
 						}
 					} else {
@@ -398,7 +397,6 @@ public class UploadFileServiceImpl implements UploadFileService {
 							count++;
 							createXlsSheet(row, createExcelsheet, count,userImport,fileName,org,roleHierarchyId,orgLocations);
 						}
-						isFileCreated = "0";
 					}
 				}
 				if (count > 0) {
@@ -515,7 +513,6 @@ private String getCellValueAsString(Cell cell, String fileName) {
 			}else{
 				userRole.setUserState(Status.NOT_LOGGEDIN);
 			}
-			userRole.setIsMailSent(Status.Y);
 			userRole.setUser(userExisted);
 			userRoleService.addUserRole(userRole);
 			employee.setUser(userExisted);
