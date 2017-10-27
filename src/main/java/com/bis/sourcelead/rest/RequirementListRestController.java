@@ -1724,7 +1724,7 @@ public class RequirementListRestController {
 		if(StringUtils.isNotEmpty(search.getClient()) || StringUtils.isNotEmpty(search.getFilterClients())){
 			String clients = "";
 			if(StringUtils.isNotEmpty(search.getClient())){
-				clients = search.getRequirementStatus();
+				clients = search.getClient();
 			}
 			else{
 				clients = search.getFilterClients();
