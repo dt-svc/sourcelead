@@ -1,7 +1,6 @@
 package com.bis.sourcelead.dto;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -53,9 +52,9 @@ public class ProjectsDTO extends SearchDTO implements Serializable{
 	
 	private String projectId;
 	
-	private String estimatedHours;
+	private double estimatedHours;
 	
-	private String estimatedBudget;
+	private double estimatedBudget;
 	
 	private Double flatPercentage;
 	
@@ -94,6 +93,12 @@ public class ProjectsDTO extends SearchDTO implements Serializable{
 	List<ExpensesCategoryListDTO> expenseCategoryList;
 	
 	List<ProjectMembersDTO> projectMembersList;
+	
+	private String reStartDate;
+	
+	private String reEndDate;
+	
+	private String projectMode;
 	
 	public String getExpenseId() {
 		return expenseId;
@@ -265,19 +270,19 @@ public class ProjectsDTO extends SearchDTO implements Serializable{
 		this.projectId = projectId;
 	}
 
-	public String getEstimatedHours() {
+	public double getEstimatedHours() {
 		return estimatedHours;
 	}
 
-	public void setEstimatedHours(String estimatedHours) {
-		this.estimatedHours = estimatedHours;
-	}
-
-	public String getEstimatedBudget() {
+	public double getEstimatedBudget() {
 		return estimatedBudget;
 	}
 
-	public void setEstimatedBudget(String estimatedBudget) {
+	public void setEstimatedHours(double estimatedHours) {
+		this.estimatedHours = estimatedHours;
+	}
+
+	public void setEstimatedBudget(double estimatedBudget) {
 		this.estimatedBudget = estimatedBudget;
 	}
 
@@ -439,6 +444,30 @@ public class ProjectsDTO extends SearchDTO implements Serializable{
 
 	public void setEndDateStr1(String endDateStr1) {
 		this.endDateStr1 = endDateStr1;
+	}
+
+	public String getReStartDate() {
+		return reStartDate;
+	}
+
+	public void setReStartDate(String reStartDate) {
+		this.reStartDate = reStartDate;
+	}
+
+	public String getReEndDate() {
+		return reEndDate;
+	}
+
+	public void setReEndDate(String reEndDate) {
+		this.reEndDate = reEndDate;
+	}
+
+	public String getProjectMode() {
+		return projectMode;
+	}
+
+	public void setProjectMode(String projectMode) {
+		this.projectMode = projectMode;
 	}
 	
 	
