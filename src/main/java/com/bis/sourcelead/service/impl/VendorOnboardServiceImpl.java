@@ -789,6 +789,7 @@ public class VendorOnboardServiceImpl implements VendorOnboardService {
 					vendorTask.setUpdatedDate(commonUtil.currentDate());
 					vendorOnboardTasksDao.saveVendorOnboardTasks(vendorTask);
 	    		}
+	    	}
 	    		
 	    		List<VendorOnboardTasks> vendorOnboardTasksList = vendorOnboardTasksDao.getVendorOnboardTasksByVendorOnboardId(vendorOnboarding.getId());
 				if(vendorOnboardTasksList != null && vendorOnboardTasksList.size() > 0){
@@ -826,7 +827,7 @@ public class VendorOnboardServiceImpl implements VendorOnboardService {
 						submissionTemplate, user, orgLocations);
 				
 				setEmialAndNotificationToVendor(spocUser, user, orgLocations, vendorOnboarding, vendorOrgLocations,"Vendor Contact Invitation");
-	    	}
+	    	
 		}
 		
 	}
