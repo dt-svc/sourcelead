@@ -25,6 +25,15 @@ padding:0!important;
 ul.tagit li.tagit-choice-editable {
 z-index: 9 !important;
 }
+.requiresymbol {
+position: absolute; left: 1px; top:5px; font-size: 100%;
+}
+.requiresymbol2 {
+position: absolute; left: -7px; top:5px; font-size: 100%;
+}
+.add_inter table tr td {
+	position: relative;
+}
 
 </style>
 <!-- For add New Interview -->
@@ -315,8 +324,9 @@ function validateTimeZone(){
 
 
 
-<div id="divTaskTd1" style="display: none; float: left;">
-       <select  multiple data-placeholder="select applicants" onchange="selectInterviewApplicants()" class="blminwidth-50" id="REPLACEROWIDapplicant" name="REPLACEROWIDapplicant" field-name="Applicant" data-validation="required" >
+<div id="divTaskTd1" style="display: none; float: left;" class="positionRelative">
+<small class='requiresymbol text-danger'>*</small>
+       <select  multiple data-placeholder="Select Applicants" onchange="selectInterviewApplicants()" class="blminwidth-50" id="REPLACEROWIDapplicant" name="REPLACEROWIDapplicant" field-name="Applicant" data-validation="required" >
 			
 	  </select>
 </div>
@@ -385,7 +395,7 @@ function validateTimeZone(){
 		var text = "";
 		var cell2 = row.insertCell(2);
 		/* cell2.innerHTML = "<div class='positionRelative date'><input class='form-control input-sm Datepicker' placeholder='Date' name='"+maxRowNum+"dateOfInterview' id='"+maxRowNum+"dateOfInterview'  readonly='readonly'  type='text' data-validation='required' field-name='Interview Date' > <span class='input-group-addon input-groupAddon'><i class='fa fa-calendar'></i></span> </div>"; */
-		text = text+"<div class='positionRelative date' id='inteviewDatePic'><input class='form-control input-sm Datepicker' placeholder='Select Date' name='"+maxRowNum+"dateOfInterview' id='"+maxRowNum+"dateOfInterview'  readonly='readonly'  type='text' data-validation='required' field-name='Interview Date'>";
+		text = text+"<div class='positionRelative date' id='inteviewDatePic'><small class='requiresymbol2 text-danger'>*</small><input class='form-control input-sm Datepicker' placeholder='Select Date' name='"+maxRowNum+"dateOfInterview' id='"+maxRowNum+"dateOfInterview'  readonly='readonly'  type='text' data-validation='required' field-name='Interview Date'>";
 		text = text+"</div>";
 		
 		
@@ -415,7 +425,7 @@ function validateTimeZone(){
 		      }
 		});
 		var cell3 = row.insertCell(3);
-		cell3.innerHTML = "<div class='pull-left timeZone' id='"+maxRowNum+"timeDiv'> <span class='positionRelative'><input class='form-control input-sm timepicker' placeholder='Start Time' name='"+maxRowNum+"startTime' id='"+maxRowNum+"startTime' onBlur='validateInterEndTime("+maxRowNum+");' type='text' data-validation='required' field-name='Start Time'/></span> <span class='positionRelative'><input class='form-control input-sm timepicker' placeholder='End Time' name='"+maxRowNum+"endTime' id='"+maxRowNum+"endTime' onBlur='validateInterEndTime("+maxRowNum+");' type='text' field-name='End Time' /></span> </div> ";
+		cell3.innerHTML = "<div class='pull-left timeZone' id='"+maxRowNum+"timeDiv'> <span class='positionRelative'><small class='requiresymbol2 text-danger'>*</small><input class='form-control input-sm timepicker' placeholder='Start Time' name='"+maxRowNum+"startTime' id='"+maxRowNum+"startTime' onBlur='validateInterEndTime("+maxRowNum+");' type='text' data-validation='required' field-name='Start Time'/></span> <span class='positionRelative'><input class='form-control input-sm timepicker' placeholder='End Time' name='"+maxRowNum+"endTime' id='"+maxRowNum+"endTime' onBlur='validateInterEndTime("+maxRowNum+");' type='text' field-name='End Time' /></span> </div> ";
 		
 		$("#"+maxRowNum+"startTime").timepicker({
 			'showDuration': true,
