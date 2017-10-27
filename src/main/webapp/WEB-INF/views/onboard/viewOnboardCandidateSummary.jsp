@@ -102,9 +102,8 @@ padding-left: 25px;
 	    $.ajax({
 	    	type: "POST",
 	    	 url: sourceleadUrl+"/loadOnboardingCandidateDetails?${_csrf.parameterName}=${_csrf.token}&onBoardingUUID="+onBoardingUUID+"&locationCode="+locationCode, 
-	        success: function(data) {
+	        success: function(json) {
 	        	
-	        	 var json = JSON.parse(data);
 	        	if(json.zipCode != null && json.zipCode != '' && json.zipCode != 'undefined'){
 	        		zipCode = json.zipCode;
 	        	}else{

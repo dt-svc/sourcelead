@@ -810,7 +810,7 @@ function payablePagination(url){
             				result = result +'         <td> ';
             				result = result +'     <div class="tblminwidth-90">';
             				 result = result +'  <div class="pull-right positionRelative menuWidget" >';
-            				if(report.invoiceStatus == "SENT" || report.invoiceStatus == "Received" || report.invoiceStatus == "Accepted"){
+            				if(report.invoiceStatus != "SENT" && report.invoiceStatus != "Received" && report.invoiceStatus != "Rejected"){
             					 result = result +' <i class="fa fa-ellipsis-v" onClick="showPopUp('+report.id+',\''+report.invoiceStatus+'\',\''+report.invoiceParentId+'\',\''+report.total+'\',\''+report.fileUrl+'\');" ></i>  ';
             						result = result +'  <div id="popupDiv'+report.id+'"></div>';
             				} 
@@ -822,32 +822,30 @@ function payablePagination(url){
             						}else if(report.invoiceStatus == "DRAFT"){
             							result = result +'           <span class="text-primary successBtn primary pull-left" title="Paid">Send</span><i class="fa fa-trash text-danger pull-right cursorPointer" title="Remove Bill" onClick="deleteBill('+report.id+');";></i></td>          ';
             						}else if(report.invoiceStatus == "Rejected"){
-            							result = result +'           <span class="text-primary successBtn primary pull-left" title="Paid" >Send</span> </td>          ';
+            							result = result +'           <div class="text-primary successBtn primary pull-left bg-red">Rejected</div>   ';	
             						}
             							
             					}else{
             						if(report.invoiceStatus == "Accepted"){
             							result = result +'           <span class="text-primary receiveBtn receive_Btn pull-left" onclick="receivePaymentPop1('+report.id+','+report.dueAmount+');" title="Pay">Pay</span> </td>';
-            						}else{
-            							if(report.invoiceStatus == "Rejected"){
-            								result = result +'           <span class="text-danger successBtn primary pull-left" >Rejected</span> </td>          ';	
-            							}else if(report.invoiceStatus == "Linked"){
+            						}else if(report.invoiceStatus == "Linked"){
             								result = result +' <a class="text-primary successBtn primary pull-left cursorPointer" onClick="unLinkBill('+report.id+')">UnLink</a>  ';
             							}else{
             								result = result +'           <span class="clearfix" ><a onclick="acceptedInvoice('+report.id+');" title="Accept"><i class="fa fa-check text-success paddingRight"></i></a><a onclick="rejectInvoice('+report.id+');" title="Reject"><i class="paddingLeft fa fa-times text-danger"></i></a></span> </td>';
             							}
             							
-            						}
             					}
             					
             				}else{
-            					if((report.paymentStatus == "Paid" && report.invoiceStatus != "Linked") || report.invoiceStatus == "DRAFT" || report.invoiceStatus == "Rejected"){
+            					if((report.paymentStatus == "Paid" && report.invoiceStatus != "Linked") || report.invoiceStatus == "DRAFT" || report.invoiceStatus == "Rejected" || report.invoiceStatus == "SENT"){
             						if(report.paymentStatus == "Paid"){
             							result = result +'           <span class="text-primary successBtn primary pull-left" title="Paid" >Paid</span> </td>          ';	
             						}else if(report.invoiceStatus == "DRAFT"){
             							result = result +'           <span class="text-primary successBtn primary pull-left" title="Paid">Send</span><i class="fa fa-trash text-danger pull-right cursorPointer" title="Remove Bill" onClick="deleteBill('+report.id+');";></i></td>          ';
-            						}else{
-            							result = result +'           <span class="text-primary successBtn primary pull-left" title="Paid" >Send</span> </td>          ';
+            						}else if(report.invoiceStatus == "SENT"){
+            							result = result +'           <span class="text-primary successBtn primary pull-left" title="Paid" >Sent</span> </td>          ';
+            						}else if(report.invoiceStatus == "Rejected"){
+            							result = result +'           <div class="text-primary successBtn primary pull-left bg-red">Rejected</div>   ';
             						}
             							
             					}else{
@@ -1000,9 +998,9 @@ function rejectInvoice(id){
 	result = result +"	<div class='project_inn_mask'></div>";
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 	//result = result +"		<p>Do you want to delete this vendor contact?</p>";
-	result = result +"		<textarea id='reasonForDelete' class='form-control' field-name='Reject Reason'  data-validation='required validate_Space validate_Description validate_length length2-250' name='reasonForSpoc' value='' placeholder='Terminate Reason' rows='2'></textarea>";
+	result = result +"		<textarea id='reasonForDelete' class='form-control' field-name='Reject Reason'  data-validation='required validate_Space validate_Description validate_length length2-250' name='reasonForSpoc' value='' placeholder='Reject Reason' rows='2'></textarea>";
 	result = result + ' <div id="reasonForRejectDiv"/>';
-	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Delete' onclick='saveReasonforPayable("+id+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelTermination();'></b>";
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Reject' onclick='saveReasonforPayable("+id+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelTermination();'></b>";
 	result = result +"	</div>";
 	$("#popUp").append(result);
 	$("#remove_user_pop").slideDown(200);
