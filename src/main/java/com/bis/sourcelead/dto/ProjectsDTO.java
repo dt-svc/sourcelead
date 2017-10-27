@@ -99,6 +99,8 @@ public class ProjectsDTO extends SearchDTO implements Serializable{
 	
 	private String reEndDate;
 	
+	private String projectMode;
+	
 	public String getExpenseId() {
 		return expenseId;
 	}
@@ -459,6 +461,14 @@ public class ProjectsDTO extends SearchDTO implements Serializable{
 
 	public void setReEndDate(String reEndDate) {
 		this.reEndDate = reEndDate;
+	}
+
+	public String getProjectMode() {
+		return projectMode;
+	}
+
+	public void setProjectMode(String projectMode) {
+		this.projectMode = projectMode;
 	}
 	
 	
