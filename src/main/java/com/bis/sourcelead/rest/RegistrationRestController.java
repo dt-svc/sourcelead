@@ -110,12 +110,12 @@ public class RegistrationRestController {
 			for(Org regOrg : orgsList){
 				OrgLocations orglocations = orgLocationService.getPrimaryOrgLocationByOrgId(regOrg.getId());
 				if(null != regOrg.getUser()){
+					UserRole userRole = userRoleService.getUserDetailsByUserIdAndLocationId(regOrg.getUser().getId(),orglocations.getId());
 					regOrg.setEmail(regOrg.getUser().getEmail());
-					regOrg.setIsMailSent(regOrg.getUser().getIsMailSent());
+					regOrg.setIsMailSent(userRole.getIsMailSent());
 					regOrg.setUserState(regOrg.getUser().getUserState());
 					regOrg.setMobilePhone(regOrg.getUser().getMobilePhone());
 					regOrg.setRegisteredUserId(regOrg.getUser().getId());
-					UserRole userRole = userRoleService.getUserDetailsByUserIdAndLocationId(regOrg.getUser().getId(),orglocations.getId());
 					if(null != userRole){
 						regOrg.setUserState(userRole.getUserState());
 					}
