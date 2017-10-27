@@ -507,7 +507,7 @@ public class EMailJobScheduler {
 
 					HashSet<ProjectMembers> projectMembersList = userRoleService
 							.getAllUserPrevoiusWeekTimeSheetSubmissionStatusByApproverUserId(invoiceFrequency,
-									pah.getApproverUserId().getId());
+									pah.getApproverUserId().getId(),ol.getId());
 
 					if (null != projectMembersList && !projectMembersList.isEmpty()) {
 						StringBuilder tempHTML = new StringBuilder();
@@ -711,7 +711,7 @@ public class EMailJobScheduler {
 											     }
 												  tempHTML.append("<td style='text-align: center;'>"+projectMembers.getProjects().getProjectName()+"</td>");
 												 
-												  Collection<ProjectApproverHierarchy> projectApproverHierarchies = projectApproverHierarchyService.getApproverUsersByProjectId(projectMembers.getProjects().getId());
+												  Collection<ProjectApproverHierarchy> projectApproverHierarchies = projectApproverHierarchyService.getProjectsHierarchyListByProjectIdAndOrgLocationId(projectMembers.getProjects().getId(),ol.getId());
 												  StringBuilder projectStringBuilder=new StringBuilder();
 												  for(ProjectApproverHierarchy approverHierarchy :projectApproverHierarchies){
 													    if(StringUtils.isNoneEmpty(projectStringBuilder.toString())){

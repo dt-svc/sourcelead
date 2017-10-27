@@ -101,6 +101,7 @@ public class ExpensesController {
 		}
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		String currencyCode = (String) SourceLeadSessionManager.getSessionAttribute(request, "currencyCode");
 		sessionData.setNav(Constants.MY_EXPENSES);
 		request.getSession().setAttribute("sessionData", sessionData);
 		if(StringUtils.isNotEmpty(expenseId)&& StringUtils.isNotEmpty(expenseLocationCode)){
@@ -141,6 +142,7 @@ public class ExpensesController {
 		eedDTO.setLocationCode(orgLoc.getLocationCode());
 		eedDTO.setExpenseId(expenseId);
 		ExpenseEntryDetailsDTO expEntryDTO =  expensesRestController.getExpenseEntryDetails(eedDTO);
+		expEntryDTO.setLoginCurrencyCode(currencyCode);
 		model.addObject("expEntry", expEntryDTO);
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.setViewName("expenses/addExpense");
