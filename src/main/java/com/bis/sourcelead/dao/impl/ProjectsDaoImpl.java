@@ -708,7 +708,7 @@ public class ProjectsDaoImpl implements ProjectsDao{
 							    }
 							    
 							    
-							    Set<ProjectBudget>  budgetList = projects.getProjectBudget();
+							   /* Set<ProjectBudget>  budgetList = projects.getProjectBudget();
 							    if(budgetList != null && budgetList.size() > 0) {
 							    	 double budgetSum = budgetList.stream().filter(p->p.getEstimatedBudgetValue() !=null).mapToDouble(p->Double.parseDouble(p.getEstimatedBudgetValue())).sum();
 										if(budgetList.size() >0) {
@@ -716,7 +716,7 @@ public class ProjectsDaoImpl implements ProjectsDao{
 											projects.setProjectbudgetCurrency(projectBudget.getEstimatedBudgetCurrency());
 										}
 										projects.setProjectbudgetAmount(String.valueOf(budgetSum));
-							    }
+							    }*/
 							   
 								
 								

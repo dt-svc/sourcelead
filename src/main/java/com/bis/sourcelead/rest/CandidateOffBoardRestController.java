@@ -31,6 +31,7 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.CandidateOffBoardingDTO;
 import com.bis.sourcelead.dto.CandidatedOffboardingDTO;
 import com.bis.sourcelead.dto.FileInfo;
+import com.bis.sourcelead.dto.OffBoardingDocumentsDTO;
 import com.bis.sourcelead.dto.OffBoardingTemplateDTO;
 import com.bis.sourcelead.dto.OffboardTasksDTO;
 import com.bis.sourcelead.dto.OffboardingCandidateSetpsDTO;
@@ -250,15 +251,16 @@ private static final Logger logger = LoggerFactory.getLogger(TimesheetRestContro
 	   }
 	 
 	 
-		@RequestMapping(value = "/getOffboardTemplateById" , method = RequestMethod.POST)
-		 public @ResponseBody  String getOffboardTemplateById(@RequestParam(value="templateId", required=false) Long templateId, HttpServletRequest request) throws Exception {
+		@RequestMapping(value ={ "/getOffboardTemplateById","/rest/getOffboardTemplateById"} , method = RequestMethod.POST)
+		 public @ResponseBody  OffBoardingTemplateDTO getOffboardTemplateById(@RequestParam(value="templateId", required=false) Long templateId, HttpServletRequest request) throws Exception {
 			
-			String resultJson;
+			OffBoardingTemplateDTO offBoardingTemplateDTO=new OffBoardingTemplateDTO();
 		 	 
 	 	    OffBoardingTemplate offBoardingTemplate = offBoardingTemplateService.getOffBoardingTemplateById(templateId);
-			
-		 	resultJson = commonUtil.toJSON(offBoardingTemplate);
-			return resultJson;
+	 	   offBoardingTemplateDTO.setTemplateName(offBoardingTemplate.getTemplateName());
+	 	  offBoardingTemplateDTO.setDescription(offBoardingTemplate.getDescription());
+		 	//resultJson = commonUtil.toJSON(offBoardingTemplate);
+			return offBoardingTemplateDTO;
 		   }
 		
 		
@@ -396,16 +398,22 @@ private static final Logger logger = LoggerFactory.getLogger(TimesheetRestContro
 		
 		
 		
-		@RequestMapping(value = "/getOffboardTemplateDocumentByTemplateId" , method = RequestMethod.POST)
-		 public @ResponseBody  String getOffboardTemplateDocumentByTemplateId(@RequestParam(value="templateId", required=false) Long templateId,
+		@RequestMapping(value = {"/getOffboardTemplateDocumentByTemplateId","/rest/getOffboardTemplateDocumentByTemplateId"} , method = RequestMethod.POST)
+		 public @ResponseBody  List<OffBoardingDocumentsDTO> getOffboardTemplateDocumentByTemplateId(@RequestParam(value="templateId", required=false) Long templateId,
 				 @RequestParam(value="documentType", required=false) String documentType, HttpServletRequest request) throws Exception {
 			
-			String resultJson;
-			
+			List<OffBoardingDocumentsDTO> documentsListDTO=new ArrayList<>();
 			List<OffBoardingDocuments> documentsList = offBoardingDocumentsService.getOffBoardingDocumentsByTemplateId(templateId,documentType);
-		 	 
-		 	resultJson = commonUtil.toJSON(documentsList);
-			return resultJson;
+		 	for(OffBoardingDocuments offboardDocs:documentsList){
+		 		OffBoardingDocumentsDTO offBoardingDocumentsDTO=new OffBoardingDocumentsDTO();
+		 		offBoardingDocumentsDTO.setId(offboardDocs.getId());
+		 		offBoardingDocumentsDTO.setFileName(offboardDocs.getFileName());
+		 		offBoardingDocumentsDTO.setFileURL(offboardDocs.getFileURL());
+		 		offBoardingDocumentsDTO.setDocumentUUID(offboardDocs.getDocumentUUID());
+		 		documentsListDTO.add(offBoardingDocumentsDTO);
+		 	}
+		 	//resultJson = commonUtil.toJSON(documentsList);
+			return documentsListDTO;
 		   
 		}
 		
@@ -446,14 +454,16 @@ private static final Logger logger = LoggerFactory.getLogger(TimesheetRestContro
 		}
 		
 		
-		 @RequestMapping(value = "/getOffboardTasksListByTemplateId", method = RequestMethod.POST)
-		 @ResponseBody String getOffboardTasksListByTemplateId(@RequestParam(value="templateId", required=false) Long templateId,HttpServletRequest request) throws Exception{
+		 @RequestMapping(value = {"/getOffboardTasksListByTemplateId","/rest/getOffboardTasksListByTemplateId"}, method = RequestMethod.POST)
+		 @ResponseBody List<OffboardTasksDTO> getOffboardTasksListByTemplateId(@RequestParam(value="templateId", required=false) Long templateId,HttpServletRequest request) throws Exception{
 			
 			 List<OffboardTasks> tasksList = offboardTasksService.getOffboardTasksByTemplateId(templateId);
 			 
-			 List<OffboardTasks> offboardtasksList = new ArrayList<OffboardTasks>();
+			 List<OffboardTasksDTO> offboardtasksListDTO = new ArrayList<OffboardTasksDTO>();
 			 
 			 for(OffboardTasks tasks : tasksList){
+				 
+				 OffboardTasksDTO offboardTasksDTO=new OffboardTasksDTO();
 				 
 				 List<String> usersList = new ArrayList<String>();
 					 
@@ -492,12 +502,16 @@ private static final Logger logger = LoggerFactory.getLogger(TimesheetRestContro
 					 }
 					 
 					
-					 tasks.setDueAfterString(dueAfter.toString());
-					 tasks.setUsersList(usersList); 
-					 offboardtasksList.add(tasks);
+					 offboardTasksDTO.setDueAfterString(dueAfter.toString());
+					 offboardTasksDTO.setUsersList(usersList); 
+					 offboardTasksDTO.setPriority(tasks.getPriority());
+					 offboardTasksDTO.setId((tasks.getId()).toString());
+					 offboardTasksDTO.setTaskName(tasks.getTaskName());
+					 offboardTasksDTO.setTaskRepeat(tasks.getTaskRepeat());
+					 offboardtasksListDTO.add(offboardTasksDTO);
 			 }
 				
-			return commonUtil.toJSON(offboardtasksList);
+			return offboardtasksListDTO;
 			}
 		 
 		 
@@ -711,13 +725,12 @@ private static final Logger logger = LoggerFactory.getLogger(TimesheetRestContro
 		 
 		 
 		 
-		 @RequestMapping(value = "/getCandidateOffboardDocumentByOffboardId" , method = RequestMethod.POST)
-		 public @ResponseBody  String getCandidateOffboardDocumentByOffboardId(@RequestParam(value="offboardId", required=false) Long offboardId,
+		 @RequestMapping(value ={ "/getCandidateOffboardDocumentByOffboardId","/rest//getCandidateOffboardDocumentByOffboardId" }, method = RequestMethod.POST)
+		 public @ResponseBody  List<OffBoardingDocumentsDTO> getCandidateOffboardDocumentByOffboardId(@RequestParam(value="offboardId", required=false) Long offboardId,
 				 @RequestParam(value="documentType", required=false) String documentType, HttpServletRequest request) throws Exception {
 			
-			String resultJson;
+			List<OffBoardingDocumentsDTO> offboardingDocumentsListDTO = new ArrayList<OffBoardingDocumentsDTO>();
 			List<OffBoardingDocuments> documentsList = null;
-			List<OffBoardingDocuments> offboardingDocumentsList = new ArrayList<OffBoardingDocuments>();
 			
 			Integer documentsCount = offBoardingDocumentsService.getOffboardingDocumentsByOffboardingId(offboardId);
 			
@@ -726,7 +739,7 @@ private static final Logger logger = LoggerFactory.getLogger(TimesheetRestContro
 				if(null != documentsList && documentsList.size() > 0){
 					for(OffBoardingDocuments  documents : documentsList ){
 						documents.setOffboardDocumentType("Candidate Documents");
-						offboardingDocumentsList.add(documents);
+						offboardingDocumentsListDTO.add(getOffboardingDocuments(documents));
 					}
 				}
 				
@@ -745,17 +758,25 @@ private static final Logger logger = LoggerFactory.getLogger(TimesheetRestContro
 					if(null != documentsList && documentsList.size() > 0){
 						for(OffBoardingDocuments  documents : documentsList ){
 							documents.setOffboardDocumentType("Template Documents");
-							offboardingDocumentsList.add(documents);
+							offboardingDocumentsListDTO.add(getOffboardingDocuments(documents));
 						}
 					}
 				 }
 			}
 			
-		 	resultJson = commonUtil.toJSON(offboardingDocumentsList);
-			return resultJson;
+			return offboardingDocumentsListDTO;
 		   
 		}
 		 
+		public OffBoardingDocumentsDTO getOffboardingDocuments(OffBoardingDocuments offBoardingDocuments) {
+			OffBoardingDocumentsDTO offBoardingDocumentsDTO=new OffBoardingDocumentsDTO();
+			offBoardingDocumentsDTO.setId(offBoardingDocuments.getId());
+			offBoardingDocumentsDTO.setFileName(offBoardingDocuments.getFileName());
+			offBoardingDocumentsDTO.setFileURL(offBoardingDocuments.getFileURL());
+			offBoardingDocumentsDTO.setDocumentUUID(offBoardingDocuments.getDocumentUUID());
+			offBoardingDocumentsDTO.setOffboardDocumentType(offBoardingDocuments.getOffboardDocumentType());
+			return offBoardingDocumentsDTO;
+		}
 		 
 		 
 		 @RequestMapping(value = "/getOffboardCandidateList")
@@ -805,45 +826,84 @@ private static final Logger logger = LoggerFactory.getLogger(TimesheetRestContro
 		 
 		 
 		 
-		 @RequestMapping(value = "/loadOffboardingCandidateDetails", method = RequestMethod.POST)
-		 public String loadOffboardingCandidateDetails(@RequestParam(value="offBoardingUUID", required=false) String offBoardingUUID,
+		 @RequestMapping(value = {"/loadOffboardingCandidateDetails","/rest/loadOffboardingCandidateDetails"}, method = RequestMethod.POST)
+		 public CandidateOffBoardingDTO loadOffboardingCandidateDetails(@RequestParam(value="offBoardingUUID", required=false) String offBoardingUUID,
 				 @RequestParam(value="locationCode") String locationCode) throws Exception {
 
-			String resultJson;
 			StringBuilder candidateName = new StringBuilder();
+			CandidateOffBoardingDTO candidateOffBoardingDTO=new CandidateOffBoardingDTO();
 			// date format
 			OrgLocations locations = orgLocationService.getOrgLocationsByLocationCode(locationCode);
 			//SimpleDateFormat dateFormat = locations.getLocFullFormDateFormatter();
 			CandidateOffBoarding candidateOffBoarding = candidateOffBoardingService.getCandidateOffBoardingByOffboardUUID(offBoardingUUID);
 			if(null != candidateOffBoarding){
 				
-				candidateOffBoarding.setOffBoardUserId(candidateOffBoarding.getUserId().getId());
+				candidateOffBoardingDTO.setOffboardUser((candidateOffBoarding.getUserId().getId()).toString());
 			
 				if(null != candidateOffBoarding.getDateOfJoin()){
-					candidateOffBoarding.setDateOfJoinStr(commonUtil.dateStrFromOrgDateFormatter(locations.getDateFormat(),candidateOffBoarding.getDateOfJoin()));
+					candidateOffBoardingDTO.setDateOfJoinStr(commonUtil.dateStrFromOrgDateFormatter(locations.getDateFormat(),candidateOffBoarding.getDateOfJoin()));
 				}
 				
 				
 				if(null != candidateOffBoarding.getEndDate()){
-					candidateOffBoarding.setEndDateStr(commonUtil.dateStrFromOrgDateFormatter(locations.getDateFormat(),candidateOffBoarding.getEndDate()));
+					candidateOffBoardingDTO.setEndDateStr(commonUtil.dateStrFromOrgDateFormatter(locations.getDateFormat(),candidateOffBoarding.getEndDate()));
 				}
 				
 				if(null != candidateOffBoarding.getEffectiveDate()){
-					candidateOffBoarding.setEffectiveDateStr(commonUtil.dateStrFromOrgDateFormatter(locations.getDateFormat(),candidateOffBoarding.getEffectiveDate()));
+					candidateOffBoardingDTO.setEffectiveDateStr(commonUtil.dateStrFromOrgDateFormatter(locations.getDateFormat(),candidateOffBoarding.getEffectiveDate()));
 				}
 				
 				
 				if(null != candidateOffBoarding.getLastName()){
-					candidateOffBoarding.setCandidateName(candidateName.append(candidateOffBoarding.getFirstName()).append(" ").append(candidateOffBoarding.getLastName()).toString());
+					candidateOffBoardingDTO.setCandidateName(candidateName.append(candidateOffBoarding.getFirstName()).append(" ").append(candidateOffBoarding.getLastName()).toString());
 				}else{
-					candidateOffBoarding.setCandidateName(candidateName.append(candidateOffBoarding.getFirstName()).toString());
+					candidateOffBoardingDTO.setCandidateName(candidateName.append(candidateOffBoarding.getFirstName()).toString());
 				}
+				if(null != candidateOffBoarding.getFirstName()){
+					candidateOffBoardingDTO.setFirstName(candidateOffBoarding.getFirstName());
+				}
+				if(null != candidateOffBoarding.getLastName()){
+					candidateOffBoardingDTO.setLastName(candidateOffBoarding.getLastName());
+				}
+				if(null != candidateOffBoarding.getMobileNumber()){
+					candidateOffBoardingDTO.setMobileNumber(candidateOffBoarding.getMobileNumber());
+				}
+				if(null != candidateOffBoarding.getEmail()){
+					candidateOffBoardingDTO.setEmail(candidateOffBoarding.getEmail());
+				}
+				if(null != candidateOffBoarding.getRole()){
+					candidateOffBoardingDTO.setRole(candidateOffBoarding.getRole());
+				}
+				if(null != candidateOffBoarding.getEmploymentType()){
+					candidateOffBoardingDTO.setEmploymentType(candidateOffBoarding.getEmploymentType());
+				}
+				if(null != candidateOffBoarding.getReason()){
+					candidateOffBoardingDTO.setReason(candidateOffBoarding.getReason());
+				}
+				if(null != candidateOffBoarding.getNoticePeriod()){
+					candidateOffBoardingDTO.setNoticePeriod(candidateOffBoarding.getNoticePeriod());
+				}
+				if(null != candidateOffBoarding.getHaveToWorkInNoticePeriod()){
+					candidateOffBoardingDTO.setHaveToWorkInNoticePeriod(candidateOffBoarding.getHaveToWorkInNoticePeriod());
+				}
+				if(null != candidateOffBoarding.getExplanation()){
+					candidateOffBoardingDTO.setExplanation(candidateOffBoarding.getExplanation());
+				}
+				if(null != candidateOffBoarding.getEffectiveDate()){
+					candidateOffBoardingDTO.setEffectiveDate(candidateOffBoarding.getEffectiveDate().toString());
+				}
+				if(null != candidateOffBoarding.getOffboardTemplateId()){
+					candidateOffBoardingDTO.setOffboardTemplateId(candidateOffBoarding.getOffboardTemplateId());
+				}
+				if(null != candidateOffBoarding.getId()){
+					candidateOffBoardingDTO.setSavedoffboardId(candidateOffBoarding.getId().toString());
+				}
+				
 				
 			}
 			
-			resultJson = commonUtil.toJSON(candidateOffBoarding);
 			
-			return resultJson;
+			return candidateOffBoardingDTO;
 		 }
 		 
 		 
@@ -883,20 +943,10 @@ private static final Logger logger = LoggerFactory.getLogger(TimesheetRestContro
 					 String[] savedDocumentIds = candidatedOffboardingDTO.getSavedResignationAttcahments().split(",");
 					 for(int i=0; i < savedDocumentIds.length; i++){
 						    OffBoardingDocuments templateDocument = offBoardingDocumentsService.getOffBoardingDocumentsById(Long.valueOf(savedDocumentIds[i]));
-						    OffBoardingDocuments documents = new OffBoardingDocuments();
-		       		        documents.setCandidateOffBoardingId(offBoarding);
-		       		        documents.setFileURL(templateDocument.getFileURL());
-	         	            documents.setFileName(templateDocument.getFileName());
-	         	            documents.setFileContentType(templateDocument.getFileContentType());
-			       		    documents.setDocumentType("Resignation");
-			       		    documents.setDocumentStatus(OnboardStatus.NEW);
-		                    documents.setStatus(Constants.CANDIDATE_ACTIVE);
-		                    documents.setDocumentUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
-		                    documents.setCreatedDate(CommonUtil.currentDate());
-		                    documents.setCreatedBy(loginUser.getUserCode());
-		                    documents.setUpdatedDate(CommonUtil.currentDate());
-		                    documents.setUpdatedBy(loginUser.getUserCode());
-		                    offBoardingDocumentsService.saveOffBoardingDocuments(documents);
+						    templateDocument.setCandidateOffBoardingId(offBoarding);
+		                    templateDocument.setUpdatedDate(CommonUtil.currentDate());
+		                    templateDocument.setUpdatedBy(loginUser.getUserCode());
+		                    offBoardingDocumentsService.saveOffBoardingDocuments(templateDocument);
 					 
 					 }
 					 
@@ -933,20 +983,10 @@ private static final Logger logger = LoggerFactory.getLogger(TimesheetRestContro
 					 String[] savedDocumentIds = candidatedOffboardingDTO.getSavedOffboardPackAttcahments().split(",");
 					 for(int i=0; i < savedDocumentIds.length; i++){
 						    OffBoardingDocuments templateDocument = offBoardingDocumentsService.getOffBoardingDocumentsById(Long.valueOf(savedDocumentIds[i]));
-						    OffBoardingDocuments documents = new OffBoardingDocuments();
-		       		        documents.setCandidateOffBoardingId(offBoarding);
-		       		        documents.setDocFile(templateDocument.getDocFile());
-	         	            documents.setFileName(templateDocument.getFileName());
-	         	            documents.setFileContentType(templateDocument.getFileContentType());
-			       		    documents.setDocumentType("Offboard Pack");
-			       		    documents.setDocumentStatus(OnboardStatus.NEW);
-		                    documents.setStatus(Constants.CANDIDATE_ACTIVE);
-		                    documents.setDocumentUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
-		                    documents.setCreatedDate(CommonUtil.currentDate());
-		                    documents.setCreatedBy(loginUser.getUserCode());
-		                    documents.setUpdatedDate(CommonUtil.currentDate());
-		                    documents.setUpdatedBy(loginUser.getUserCode());
-		                    offBoardingDocumentsService.saveOffBoardingDocuments(documents);
+						    templateDocument.setCandidateOffBoardingId(offBoarding);
+		                    templateDocument.setUpdatedDate(CommonUtil.currentDate());
+		                    templateDocument.setUpdatedBy(loginUser.getUserCode());
+		                    offBoardingDocumentsService.saveOffBoardingDocuments(templateDocument);
 					 
 					 }
 					 
@@ -1021,8 +1061,8 @@ private static final Logger logger = LoggerFactory.getLogger(TimesheetRestContro
 		 
 		 
 		 
-		 @RequestMapping(value = "/getCandidateOffboardTasksList", method = RequestMethod.POST)
-		 @ResponseBody String getCandidateOffboardTasksList(@RequestParam(value="offboardId", required=false) Long offboardId,HttpServletRequest request) throws Exception{
+		 @RequestMapping(value ={ "/getCandidateOffboardTasksList","/rest/getCandidateOffboardTasksList"}, method = RequestMethod.POST)
+		 @ResponseBody List<OffboardTasksDTO> getCandidateOffboardTasksList(@RequestParam(value="offboardId", required=false) Long offboardId,HttpServletRequest request) throws Exception{
 			
 			 
 			 List<OffboardTasks> templateTasksList = null;
@@ -1050,7 +1090,7 @@ private static final Logger logger = LoggerFactory.getLogger(TimesheetRestContro
 				 }
 		     }
 			 
-			 List<OffboardTasks> offboardtasksList = new ArrayList<OffboardTasks>();
+			 List<OffboardTasksDTO> offboardtasksListDTO = new ArrayList<OffboardTasksDTO>();
 			 
 			 for(OffboardTasks tasks : tasksList){
 				 
@@ -1058,7 +1098,6 @@ private static final Logger logger = LoggerFactory.getLogger(TimesheetRestContro
 					 
 					 if(!isNullOrEmpty(tasks.getAssignToUsers())){
 						 String[] userIds = tasks.getAssignToUsers().split(",");
-						 
 						 for(int i = 0 ; i < userIds.length; i++ ){
 							 StringBuilder userName = new StringBuilder();
 							 User user = userService.getUserById(Long.valueOf(userIds[i]));
@@ -1100,12 +1139,23 @@ private static final Logger logger = LoggerFactory.getLogger(TimesheetRestContro
 						 tasks.setOffboardTaskType("Template Task");
 					 }
 					 
-					 offboardtasksList.add(tasks);
+					 offboardtasksListDTO.add(getOffboardtasks(tasks));
 			 }
 				
-			return commonUtil.toJSON(offboardtasksList);
+			return offboardtasksListDTO;
 			}
 		 
+		 public OffboardTasksDTO getOffboardtasks(OffboardTasks offboardTasks){
+			 OffboardTasksDTO offboardTasksDTO=new OffboardTasksDTO();
+			 offboardTasksDTO.setId((offboardTasks.getId()).toString());
+			 offboardTasksDTO.setPriority(offboardTasks.getPriority());
+			 offboardTasksDTO.setTaskRepeat(offboardTasks.getTaskRepeat());
+			 offboardTasksDTO.setTaskName(offboardTasks.getTaskName());
+			 offboardTasksDTO.setDueAfterString(offboardTasks.getDueAfterString());
+			 offboardTasksDTO.setUsersList(offboardTasks.getUsersList());
+			 offboardTasksDTO.setOffboardTaskType(offboardTasks.getOffboardTaskType());
+			 return offboardTasksDTO;
+		 }
 		 
 		 @RequestMapping(value = "/deleteOffboardTaskByTaskId" , method = RequestMethod.POST)
 		 public @ResponseBody  String deleteOffboardTaskByTaskId(@RequestParam(value="taskId", required=false) Long taskId,
