@@ -54,7 +54,7 @@ private static final long serialVersionUID = 1L;
    	private String estimatedBudgetCurrency;
 	
 	@Column(name = "ESTIMATED_BUDGET_VALUE")
-   	private String estimatedBudgetValue;
+   	private Double estimatedBudgetValue;
 	
 	@Column(name = "BUDGET_STATUS")
    	private String budgetStatus;
@@ -159,9 +159,6 @@ private static final long serialVersionUID = 1L;
 		return estimatedBudgetCurrency;
 	}
 
-	public String getEstimatedBudgetValue() {
-		return estimatedBudgetValue;
-	}
 
 	public String getBudgetStatus() {
 		return budgetStatus;
@@ -223,10 +220,14 @@ private static final long serialVersionUID = 1L;
 		this.estimatedBudgetCurrency = estimatedBudgetCurrency;
 	}
 
-	public void setEstimatedBudgetValue(String estimatedBudgetValue) {
-		this.estimatedBudgetValue = estimatedBudgetValue;
+
+	public Double getEstimatedBudgetValue() {
+		return estimatedBudgetValue;
 	}
 
+	public void setEstimatedBudgetValue(Double estimatedBudgetValue) {
+		this.estimatedBudgetValue = estimatedBudgetValue;
+	}
 
 	public void setBudgetStatus(String budgetStatus) {
 		this.budgetStatus = budgetStatus;

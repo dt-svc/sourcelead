@@ -254,7 +254,7 @@ function getSelfTotalCounts(){
    			   }
    			   $("#selfCancelledCounts").html(report.selfCancelledCounts); 
    		   }
-   			if(report.selfBalancedCounts != null && report.selfBalancedCounts != '' && report.selfBalancedCounts != 'undefined'){
+   			if((report.selfBalancedCounts != null && report.selfBalancedCounts != '' && report.selfBalancedCounts != 'undefined') || report.selfBalancedCounts == '0'){
    			   $("#selfBalancedCounts").html(report.selfBalancedCounts); 
    		   }
    		   
