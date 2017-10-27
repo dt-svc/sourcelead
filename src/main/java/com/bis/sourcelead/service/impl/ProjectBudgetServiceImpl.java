@@ -143,7 +143,7 @@ public class ProjectBudgetServiceImpl implements ProjectBudgetService{
         
         globalVarsMap.put("descrption", projectBudgetRequestDTO.getBaseLine());
         globalVarsMap.put("estimatedBudget", projectBudgetRequestDTO.getEstimatedBudgetCurrency() +" "+ projectBudgetRequestDTO.getEstimatedBudget());
-        globalVarsMap.put("estimatedHours", projectBudgetRequestDTO.getEstimatedHours());
+        globalVarsMap.put("estimatedHours", String.valueOf(projectBudgetRequestDTO.getEstimatedHours()));
         
         StringBuilder linkBuild = new StringBuilder();
         globalVarsMap.put("loginLink",linkBuild.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
