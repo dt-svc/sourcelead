@@ -128,7 +128,7 @@ public class ExpensesApprovalDaoImpl implements ExpensesApprovalDao{
 			 *  logged in user as admin but not in project_approver_hierarchy(hint:logged in user is admin but not assigned to project as approver)
 			 */
 				+ "  OR ( :userId NOT IN( select subsah.hierarchyId.approverUserId.id from ExpensesApproverHierarchy subsah where subsah.expenseId.id = sah.expenseId.id ) and  "+Constants.loginUserAsAdminWithMaxHeirarchyLevelForExp+") "
-				+ "   ) and ( " + subQuery2 +" )"+startDateSubQuery+" "+endDateSubQuery+" ";
+				+ "   ) and ( " + subQuery2 +" )"+startDateSubQuery+" "+endDateSubQuery+"  ORDER BY sah.id DESC ";
 		
 		
 		params.put("userId",userId);
@@ -186,7 +186,7 @@ public class ExpensesApprovalDaoImpl implements ExpensesApprovalDao{
 		    			eah.setReopenRejectedReason(reason);
 		    			eah.setReopenReason(null);
 		    			eah.setExpenseStatus(Submission_Status.APPROVED);
-		    			eah.setExpenseApprovalStatus(Submission_ApprovalStatus.REJECTED);
+		    			eah.setExpenseApprovalStatus(Submission_ApprovalStatus.APPROVED);
 		    		}else{
 		    			eah.setExpenseStatus(Submission_Status.SUBMITTED);
 		    			eah.setExpenseApprovalStatus(Submission_ApprovalStatus.SUBMITTEDFORAPPROVAL);
