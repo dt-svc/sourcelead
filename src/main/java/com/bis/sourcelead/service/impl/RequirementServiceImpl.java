@@ -845,7 +845,12 @@ public class RequirementServiceImpl implements RequirementService {
 		else {
 			globalVarsMap.put("RequirementRate", "--");
 		}
-		if (assUser.getFirstName() != null && assUser.getLastName() != null
+		
+		if(requirement.getSpocId() != null){
+			globalVarsMap.put("clientContactname", requirement.getSpocId().getClientLocationId().getOrgLocationName());
+		}
+		
+		/*if (assUser.getFirstName() != null && assUser.getLastName() != null
 				&& !"".equalsIgnoreCase(assUser.getFirstName())
 				&& !"".equalsIgnoreCase(assUser.getLastName())) {
 			StringBuilder userBuild = new StringBuilder();
@@ -853,7 +858,9 @@ public class RequirementServiceImpl implements RequirementService {
 		}
 		else {
 			globalVarsMap.put("clientContactname", assUser.getFirstName());
-		}
+		}*/
+		
+		
 		if ((requirement.getMinExp() != null && !"".equalsIgnoreCase(requirement.getMinExp()))
 				&& (requirement.getMaxExp() != null
 						&& !"".equalsIgnoreCase(requirement.getMaxExp()))) {
@@ -967,7 +974,10 @@ public class RequirementServiceImpl implements RequirementService {
 		else {
 			globalVarsMap.put("RequirementRate", "--");
 		}
-		if (managerUser.getFirstName() != null && managerUser.getLastName() != null
+		if(requirement.getSpocId() != null){
+			globalVarsMap.put("clientContactname", requirement.getSpocId().getClientLocationId().getOrgLocationName());
+		}
+		/*if (managerUser.getFirstName() != null && managerUser.getLastName() != null
 				&& !"".equalsIgnoreCase(managerUser.getFirstName())
 				&& !"".equalsIgnoreCase(managerUser.getLastName())) {
 			StringBuilder userBuild = new StringBuilder();
@@ -975,7 +985,7 @@ public class RequirementServiceImpl implements RequirementService {
 		}
 		else {
 			globalVarsMap.put("clientContactname", managerUser.getFirstName());
-		}
+		}*/
 		if ((requirement.getMinExp() != null && !"".equalsIgnoreCase(requirement.getMinExp()))
 				&& (requirement.getMaxExp() != null
 						&& !"".equalsIgnoreCase(requirement.getMaxExp()))) {

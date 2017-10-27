@@ -193,10 +193,10 @@ public class BillingPayableRestController {
 		    	}
 		    	if(invoice.getProjectMemberId() !=null) {
 		    		StringBuilder sb = new StringBuilder();
-		    		if(invoice.getProjectMemberId().getEmployee().getUser().getLastName() != null) {
-		    			sb.append(invoice.getProjectMemberId().getEmployee().getUser().getFirstName()).append(invoice.getProjectMemberId().getEmployee().getUser().getLastName());
+		    		if(invoice.getProjectMemberId().getMasterCandidateId().getLastName() != null) {
+		    			sb.append(invoice.getProjectMemberId().getMasterCandidateId().getFirstName()).append(invoice.getProjectMemberId().getMasterCandidateId().getLastName());
 		    		}else {
-		    			sb.append(invoice.getProjectMemberId().getEmployee().getUser().getFirstName());	
+		    			sb.append(invoice.getProjectMemberId().getMasterCandidateId().getFirstName());	
 		    		}
 		    		invoice.setProjectMemberName(sb.toString());
 		    		invoice.setMemberId(String.valueOf(invoice.getProjectMemberId().getId()));
