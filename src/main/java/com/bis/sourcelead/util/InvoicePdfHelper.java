@@ -234,8 +234,8 @@ public class InvoicePdfHelper {
 							table.addCell(getCell("--", Element.ALIGN_CENTER, font10));
 						}
 					} else {
-						if (invoiceLineItems.getUser() != null) {
-							table.addCell(getCell(invoiceLineItems.getUser().getId().toString(), Element.ALIGN_CENTER,
+						if (invoiceLineItems.getCandidate() != null) {
+							table.addCell(getCell(invoiceLineItems.getCandidate().getId().toString(), Element.ALIGN_CENTER,
 									font10));
 						} else {
 							table.addCell(getCell("--", Element.ALIGN_CENTER, font10));
@@ -256,14 +256,14 @@ public class InvoicePdfHelper {
 						}
 
 					} else {
-						if (null != invoiceLineItems.getUser()) {
+						if (null != invoiceLineItems.getCandidate()) {
 							table.addCell(getCell(
-									name.append(invoiceLineItems.getUser().getFirstName()).append(" ")
-											.append(invoiceLineItems.getUser().getLastName()).toString(),
+									name.append(invoiceLineItems.getCandidate().getFirstName()).append(" ")
+											.append(invoiceLineItems.getCandidate().getLastName()).toString(),
 									Element.ALIGN_CENTER, font10));
 						} else {
 							table.addCell(
-									getCell(invoiceLineItems.getUser().getFirstName(), Element.ALIGN_CENTER, font10));
+									getCell(invoiceLineItems.getCandidate().getFirstName(), Element.ALIGN_CENTER, font10));
 						}
 					}
 
@@ -567,8 +567,8 @@ public class InvoicePdfHelper {
 							table.addCell(getCell("--", Element.ALIGN_CENTER, font10));
 						}
 					} else {
-						if (invoiceLineItems.getUser() != null) {
-							table.addCell(getCell(invoiceLineItems.getUser().getId().toString(), Element.ALIGN_CENTER,
+						if (invoiceLineItems.getCandidate() != null) {
+							table.addCell(getCell(invoiceLineItems.getCandidate().getId().toString(), Element.ALIGN_CENTER,
 									font10));
 						} else {
 							table.addCell(getCell("--", Element.ALIGN_CENTER, font10));
@@ -588,14 +588,14 @@ public class InvoicePdfHelper {
 						}
 
 					} else {
-						if (null != invoiceLineItems.getUser()) {
+						if (null != invoiceLineItems.getCandidate()) {
 							table.addCell(getCell(
-									name.append(invoiceLineItems.getUser().getFirstName()).append(" ")
-											.append(invoiceLineItems.getUser().getLastName()).toString(),
+									name.append(invoiceLineItems.getCandidate().getFirstName()).append(" ")
+											.append(invoiceLineItems.getCandidate().getLastName()).toString(),
 									Element.ALIGN_CENTER, font10));
 						} else {
 							table.addCell(
-									getCell(invoiceLineItems.getUser().getFirstName(), Element.ALIGN_CENTER, font10));
+									getCell(invoiceLineItems.getCandidate().getFirstName(), Element.ALIGN_CENTER, font10));
 						}
 					}
 

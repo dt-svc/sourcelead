@@ -322,7 +322,9 @@ public class ProjectsController {
 				ModelAndView model = new ModelAndView();
 				OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 				SimpleDateFormat dateFormat = orgLocations.getLocFullFormDateFormatter();
+				
 				 ProjectTasks projectTask = projectTasksService.getProjectTasksByUUID(taskUUID);
+				 OrgLocations locations=orgLocationService.getOrgLocations(projectTask.getProjectId().getOrgLocationsId().getId());
 				 if(projectTask.getProjectId() != null) {
 					 model.addObject("projectUUID", projectTask.getProjectId().getProjectUUID());
 					 model.addObject("projectId", projectTask.getProjectId().getId());
@@ -338,6 +340,11 @@ public class ProjectsController {
 				 }else {
 					 model.addObject("dueDate",  "--");
 				 }
+				 
+				 if(projectTask.getProjectId() != null && projectTask.getProjectId().getStartDate() != null){
+						model.addObject("projectStartDate", commonUtil.dateStrFromOrgDateFormatter(locations.getDateFormat(),projectTask.getProjectId().getStartDate()));
+					}
+				 
 				 if(projectTask.getTaskAssignedUsers() != null) {
 					 model.addObject("assignTask", projectTask.getTaskAssignedUsers());
 				 }
@@ -352,6 +359,7 @@ public class ProjectsController {
 						 pat.setAssignedUserName(pat.getProjectMemberId().getEmployee().getUser().getFullName());
 					 }
 				 }
+				 model.addObject("taskTypeName", projectTask.getTaskType().getName());
 				 model.addObject("assignedUsers", assignedUsers);
 				 
 				 List<LookUpData> taskTypeList = lookUpDataService.getLookUpDataByCategory(Constants.TASKTYPE);

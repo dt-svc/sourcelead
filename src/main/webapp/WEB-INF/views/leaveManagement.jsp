@@ -40,7 +40,7 @@ $(document).ready(function(){
                 <div class="width100percnt clearfix">
                   <div id="empselfLeaves" style="width: 60%; height: 100px;" class="amchartAnchor-Hide pull-left"> </div>
                   <div style="width: 40%; height: 105px;" class="countList pull-left">
-                <ul class="list-unstyled list-group clearfix mb5">
+                <ul class="list-unstyled  clearfix">
                     <li class="clearfix">
                         <label class="pull-left">Pending Leaves</label>
                         <a href="<c:url value='/pendingLeaves'/>" class="color_white" id="selfpend" title="Pending Leaves"><span class="label label-primary pull-right" id="selfPendingCounts"></span></a>
@@ -56,6 +56,10 @@ $(document).ready(function(){
                     <li class="clearfix">
                         <label class="pull-left">Cancelled Leaves</label>
                         <a href="<c:url value='/cancelLeaves'/>" class="color_white" id="selfcanc" title="Cancelled Leaves"><span class="label label-warning pull-right" id="selfCancelledCounts"></span></a>
+                    </li>
+                      <li class="clearfix">
+                        <label class="pull-left">Balanced Leaves</label>
+                        <div class="color_white" id="selfBalance" title="Balanced Leaves"><span class="label label-info pull-right" id="selfBalancedCounts"></span></div>
                     </li>
                 </ul>
                     </div>
@@ -80,7 +84,7 @@ $(document).ready(function(){
                 <ul class="list-unstyled list-group clearfix mb5">
                     <li class="clearfix">
                         <label class="pull-left">Requested Leaves</label>
-                        <a href="<c:url value='/employeeRequestedLeaves'/>" class="color_white" id="empReq" title="Pending Leaves"><span class="label label-primary pull-right" id="employeeRequestedCounts"></span>></a>
+                        <a href="<c:url value='/employeeRequestedLeaves'/>" class="color_white" id="empReq" title="Requested Leaves"><span class="label label-primary pull-right" id="employeeRequestedCounts"></span>></a>
                     </li>
                     <li class="clearfix">
                         <label class="pull-left">Approved Leaves</label>
@@ -92,7 +96,7 @@ $(document).ready(function(){
                     </li>
                     <li class="clearfix">
                         <label class="pull-left">Cancelled Leaves</label>
-                        <a href="<c:url value='/employeeCancelLeaves'/>" class="color_white" id="empCanc" title="Cancel Leaves"><span class="label label-warning pull-right" id="employeeCancelledCounts"></span></a>
+                        <a href="<c:url value='/employeeCancelLeaves'/>" class="color_white" id="empCanc" title="Cancelled Leaves"><span class="label label-warning pull-right" id="employeeCancelledCounts"></span></a>
                     </li>
                 </ul>
                       
@@ -250,6 +254,9 @@ function getSelfTotalCounts(){
    			   }
    			   $("#selfCancelledCounts").html(report.selfCancelledCounts); 
    		   }
+   			if((report.selfBalancedCounts != null && report.selfBalancedCounts != '' && report.selfBalancedCounts != 'undefined') || report.selfBalancedCounts == '0'){
+   			   $("#selfBalancedCounts").html(report.selfBalancedCounts); 
+   		   }
    		   
    		 AmCharts.makeChart("empselfLeaves",
  				{
@@ -267,7 +274,8 @@ function getSelfTotalCounts(){
  						"#337ab7",
 						"#66bb6a",
 						"#ef5350",
-						"#f0ad4e"
+						"#f0ad4e",
+						"#5bc0de"
  					],
  					"labelsEnabled": false,
  					"marginBottom": 0,
@@ -297,6 +305,10 @@ function getSelfTotalCounts(){
  						{
  							"category": "Cancelled",
  							"column-1": report.selfCancelledCounts
+ 						},
+ 						{
+ 							"category": "Balanced",
+ 							"column-1": report.selfBalancedCounts
  						} 
  					]
  				}

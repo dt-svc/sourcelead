@@ -27,6 +27,7 @@ import com.bis.sourcelead.dao.VendorOnboardTasksDao;
 import com.bis.sourcelead.dao.VendorOnboardTemplateDocumentsDao;
 import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.dto.OnboardTasksDTO;
+import com.bis.sourcelead.dto.VendorDocumentsFileInfo;
 import com.bis.sourcelead.dto.VendorOnboardDTO;
 import com.bis.sourcelead.dto.VendorOnboardTaskDTO;
 import com.bis.sourcelead.entity.EmailAttachment;
@@ -346,9 +347,9 @@ public class VendorOnboardServiceImpl implements VendorOnboardService {
 		 emailMessage.setCreatedBy(loginUser.getUserCode());
 		 emailMessage.setFromName(loginUser.getFullName());
 
-		 globalVarsMap.put("FirstName", spocUser.getFirstName());
+		 globalVarsMap.put("firstName", spocUser.getFirstName());
 		 if(StringUtils.isNotBlank(spocUser.getLastName())){
-			 globalVarsMap.put("LastName",spocUser.getLastName());
+			 globalVarsMap.put("lastName",spocUser.getLastName());
 		 }
 		 
 		 globalVarsMap.put("loginUsername",loginUser.getFullName());
@@ -379,7 +380,6 @@ public class VendorOnboardServiceImpl implements VendorOnboardService {
 				  if(isUserActive == false){
 					  password = SourceLeadRandomCodeHelper.generateRandomPassword();
 					  spocUser.setPassword(sourceleadPasswordEncoder.encode(password));
-					  spocUser.setIsMailSent(Status.Y);
 					  userDao.addUser(spocUser);
 					  
 					  globalVarsMap.put("userName",spocUser.getUserName());
@@ -551,6 +551,16 @@ public class VendorOnboardServiceImpl implements VendorOnboardService {
 		if(StringUtils.isNotBlank(vendorOnboardDTO.getBankAddress())){
 			bankDetails.setBankAddress(vendorOnboardDTO.getBankAddress());
 		}
+		
+		
+		if(StringUtils.isNotBlank(vendorOnboardDTO.getPoEmail())){
+			bankDetails.setPoEmail(vendorOnboardDTO.getPoEmail());
+		}
+		
+		if(StringUtils.isNotBlank(vendorOnboardDTO.getPaymentRemittanceEmail())){
+			bankDetails.setPaymentRemittanceEmail(vendorOnboardDTO.getPaymentRemittanceEmail());
+		}
+		
 		bankDetails.setCreatedBy(user);
 		bankDetails.setUpdatedBy(user);
 		bankDetails.setCreatedDate(commonUtil.currentDate());
@@ -575,7 +585,7 @@ public class VendorOnboardServiceImpl implements VendorOnboardService {
 	public void saveVendorOnboardDocuments(VendorOnboardDTO vendorOnboardDTO) throws Exception {
 		
 		if(vendorOnboardDTO.getVendorDocumentsFileInfo() != null &&  vendorOnboardDTO.getVendorDocumentsFileInfo().size() > 0) {
-			for(FileInfo fileInfo : vendorOnboardDTO.getVendorDocumentsFileInfo()) {
+			for(VendorDocumentsFileInfo fileInfo : vendorOnboardDTO.getVendorDocumentsFileInfo()) {
 				if(fileInfo != null && fileInfo.getFileURL() != null) {
 					if(StringUtils.isNotBlank(fileInfo.getDocId())){
 						VendorOnboardingTemplateDocuments documents = vendorOnboardTemplateDocumentsDao.getVendorOnBoardingTemplateDocumentsById(Long.valueOf(fileInfo.getDocId()));
@@ -614,11 +624,12 @@ public class VendorOnboardServiceImpl implements VendorOnboardService {
 			 }
 			
 			 
-			 flag = moduleIds.contains(Constants.MODULE_VMS);
-	    		tabId = (long) Constants.TAB_VENDOR;
-	    		moduleId = (long) Constants.MODULE_VMS;
+			 flag = moduleIds.contains(Constants.MODULE_ATS);
+	    		tabId = (long) Constants.TAB_CLIENT;
+	    		moduleId = (long) Constants.MODULE_ATS;
 	    		if(flag == false){
-	    			modules = modules+","+Constants.MODULE_VMS;
+	    			modules = modules+","+Constants.MODULE_ATS;
+	    			vendorOrgLocations.setModulesId(modules);
 	    			saveUserRoleActions(moduleId,tabId,vendorOrgLocations);
 	    		}
 	    		
@@ -779,6 +790,7 @@ public class VendorOnboardServiceImpl implements VendorOnboardService {
 					vendorTask.setUpdatedDate(commonUtil.currentDate());
 					vendorOnboardTasksDao.saveVendorOnboardTasks(vendorTask);
 	    		}
+	    	}
 	    		
 	    		List<VendorOnboardTasks> vendorOnboardTasksList = vendorOnboardTasksDao.getVendorOnboardTasksByVendorOnboardId(vendorOnboarding.getId());
 				if(vendorOnboardTasksList != null && vendorOnboardTasksList.size() > 0){
@@ -816,7 +828,7 @@ public class VendorOnboardServiceImpl implements VendorOnboardService {
 						submissionTemplate, user, orgLocations);
 				
 				setEmialAndNotificationToVendor(spocUser, user, orgLocations, vendorOnboarding, vendorOrgLocations,"Vendor Contact Invitation");
-	    	}
+	    	
 		}
 		
 	}

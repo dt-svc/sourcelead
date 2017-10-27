@@ -33,11 +33,8 @@
         <div class="clearfix"></div>
       </ul>
       <div class="clearfix"></div>
-      <div class="remove_search">
-        <input placeholder="Search" type="text">
-      </div>
     </div>
-    <div class="require_wrap_table datatable_filter">
+    <div class="clients_wrap_table datatable_filter">
       <div id= "shiftDev"></div> 
     </div>
   </div>
@@ -91,7 +88,7 @@ function populategShiftList(json){
            result = result +'      <div class="tbldata-dotdot-100">'+report.timeOut+'</div>';                                                          
            result = result +'  </td>';
            result = result +'  <td>';                                                                                                                  
-           result = result +'    <div title="TimeOut" class="tbldata-dotdot-big">'+report.shiftDescription+'</div>';
+           result = result +'    <div title="'+report.shiftDescription+'" class="tbldata-dotdot-big">'+report.shiftDescription+'</div>';
            result = result +'  </td>';                                                                                                                
            result = result +'  <td>';
            if(report.updatedBy != null && report.updatedBy !='undefined' && report.updatedBy != ""){

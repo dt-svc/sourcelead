@@ -47,7 +47,9 @@ import com.bis.sourcelead.dto.OnBoardingTemplateDTO;
 import com.bis.sourcelead.dto.OnboardTasksDTO;
 import com.bis.sourcelead.dto.OrgLocationDTO;
 import com.bis.sourcelead.dto.OrgRelationDTO;
-import com.bis.sourcelead.dto.VendorOnboardResponseList;
+import com.bis.sourcelead.dto.OrgSpocDTO;
+import com.bis.sourcelead.dto.RequirementDTO;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.VendorOnboardTaskDTO;
 import com.bis.sourcelead.dto.VendorOnboardingTemplateDocumentDTO;
 import com.bis.sourcelead.elk.index.ClientVendorContactsIndex;
@@ -1636,107 +1638,119 @@ public class VendorRestController {
 		  * @return
 		  * @throws Exception
 		  */
-	@RequestMapping(value = "/getVendorJobs")
-	public String getVendorJobs(@RequestParam(value = "orgRelationID", required = false) Long orgRelationID, @RequestParam(value = "status", required = false) String status, HttpServletRequest request) throws Exception
-	{
-		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		String userRoleName = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
-		OrgRelations orgrel = orgRelationsService.getOrgRelationById(orgRelationID);
-		long vendorLocationId = 0L;
-		if (orgrel.getResponderLocationId().getId().longValue() == orgLocations.getId().longValue()) {
-			vendorLocationId = orgrel.getLocationId().getId();
-		}
-		else if (orgrel.getLocationId().getId().longValue() == orgLocations.getId().longValue()) {
-			vendorLocationId = orgrel.getResponderLocationId().getId();
-		}
-		// List<Requirement> reqList =
-		// requirementService.getAllReleasedJobsForVendorBasedOnStartAndEndDates(orgLocations.getId(),
-		// orgRelationID,null,null);
-		List<Requirement> mainReqList = new ArrayList<>();
-		Requirement mainRequirement = null;
-		Long tempReqId =0l;
-		int interviewsSum = 0;
-		int offeredSum = 0;
-		int backoutSum = 0;
-		int submitToclient = 0;
-		List<Requirement> reqList = requirementService.getAllVendorJobsBasedonRelationId(orgLocations.getId(), orgRelationID, userRoleName, loginUser, status);
-		for (Requirement requirement : reqList) {
-			if(tempReqId.longValue() != requirement.getParentRequirement().getId().longValue()){
-				mainRequirement = requirementService.getRequirementDetailsById(requirement.getParentRequirement().getId());
-				interviewsSum = 0;
-				offeredSum = 0;
-				backoutSum = 0;
-				submitToclient = 0;	
-//			}
-			List<RequirementSubmission> requirementSubmissionList1 = requirementSubmissionService.getApplicantRequirmentCountSubmittedByVendor(orgLocations.getId(), requirement.getParentRequirement().getId(), vendorLocationId);
-			if (null != requirementSubmissionList1 && requirementSubmissionList1.size() > 0) {
-				for (RequirementSubmission reqSub : requirementSubmissionList1) {
-					int vendorInterviewsCount = 0;
-					int vendorOfferedCount = 0;
-					int vendorBackoutCount = 0;
-					int vendorSubmittoClientCount = 0;
-					List<RequirementSubmissionHistory> requirementSubmissionHistoryList = requirementReportService.getApplicantsCountsByDateRange(reqSub.getId(), null, null);
-					if (null != requirementSubmissionHistoryList
-							&& requirementSubmissionHistoryList.size() > 0) {
-						for (RequirementSubmissionHistory rsh : requirementSubmissionHistoryList) {
-							if ("interview".equalsIgnoreCase(rsh.getToStage())) {
-								vendorInterviewsCount++;
-							}
-							else if ("offermade".equalsIgnoreCase(rsh.getToStage())) {
-								vendorOfferedCount++;
-							}
-							
-							else if ("backout".equalsIgnoreCase(rsh.getToStage())) {
-								vendorBackoutCount++;
-							}
-							else if(ApplicantSubmissionStatus.SUBMISSION.toString().equalsIgnoreCase(rsh.getToStage())){
-								vendorSubmittoClientCount++;
+			@RequestMapping(value ={ "/getVendorJobs","/rest/getVendorJobs"},method = RequestMethod.POST)
+			public List<RequirementDTO> getVendorJobs(@RequestParam(value = "orgRelationID", required = false) Long orgRelationID, @RequestParam(value = "status", required = false) String status, HttpServletRequest request) throws Exception
+			{
+				OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+				User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+				String userRoleName = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+				OrgRelations orgrel = orgRelationsService.getOrgRelationById(orgRelationID);
+				long vendorLocationId = 0L;
+				if (orgrel.getResponderLocationId().getId().longValue() == orgLocations.getId().longValue()) {
+					vendorLocationId = orgrel.getLocationId().getId();
+				}
+				else if (orgrel.getLocationId().getId().longValue() == orgLocations.getId().longValue()) {
+					vendorLocationId = orgrel.getResponderLocationId().getId();
+				}
+				// List<Requirement> reqList =
+				// requirementService.getAllReleasedJobsForVendorBasedOnStartAndEndDates(orgLocations.getId(),
+				// orgRelationID,null,null);
+				List<Requirement> mainReqList = new ArrayList<>();
+				List<RequirementDTO> mainReqListDTO = new ArrayList<>();
+				Requirement mainRequirement = null;
+				Long tempReqId =0l;
+				int interviewsSum = 0;
+				int offeredSum = 0;
+				int backoutSum = 0;
+				int submitToclient = 0;
+				List<Requirement> reqList = requirementService.getAllVendorJobsBasedonRelationId(orgLocations.getId(), orgRelationID, userRoleName, loginUser, status);
+				for (Requirement requirement : reqList) {
+					if(tempReqId.longValue() != requirement.getParentRequirement().getId().longValue()){
+						mainRequirement = requirementService.getRequirementDetailsById(requirement.getParentRequirement().getId());
+						RequirementDTO requirementDTO=new RequirementDTO();
+						interviewsSum = 0;
+						offeredSum = 0;
+						backoutSum = 0;
+						submitToclient = 0;	
+//					}
+					List<RequirementSubmission> requirementSubmissionList1 = requirementSubmissionService.getApplicantRequirmentCountSubmittedByVendor(orgLocations.getId(), requirement.getParentRequirement().getId(), vendorLocationId);
+					if (null != requirementSubmissionList1 && requirementSubmissionList1.size() > 0) {
+						for (RequirementSubmission reqSub : requirementSubmissionList1) {
+							int vendorInterviewsCount = 0;
+							int vendorOfferedCount = 0;
+							int vendorBackoutCount = 0;
+							int vendorSubmittoClientCount = 0;
+							List<RequirementSubmissionHistory> requirementSubmissionHistoryList = requirementReportService.getApplicantsCountsByDateRange(reqSub.getId(), null, null);
+							if (null != requirementSubmissionHistoryList
+									&& requirementSubmissionHistoryList.size() > 0) {
+								for (RequirementSubmissionHistory rsh : requirementSubmissionHistoryList) {
+									if ("interview".equalsIgnoreCase(rsh.getToStage())) {
+										vendorInterviewsCount++;
+									}
+									else if ("offermade".equalsIgnoreCase(rsh.getToStage())) {
+										vendorOfferedCount++;
+									}
+									
+									else if ("backout".equalsIgnoreCase(rsh.getToStage())) {
+										vendorBackoutCount++;
+									}
+									else if(ApplicantSubmissionStatus.SUBMISSION.toString().equalsIgnoreCase(rsh.getToStage())){
+										vendorSubmittoClientCount++;
+									}
+								}
+								interviewsSum = interviewsSum + vendorInterviewsCount;
+								offeredSum = offeredSum + vendorOfferedCount;
+								backoutSum = backoutSum + vendorBackoutCount;
+								submitToclient = submitToclient + vendorSubmittoClientCount;
 							}
 						}
-						interviewsSum = interviewsSum + vendorInterviewsCount;
-						offeredSum = offeredSum + vendorOfferedCount;
-						backoutSum = backoutSum + vendorBackoutCount;
-						submitToclient = submitToclient + vendorSubmittoClientCount;
 					}
+					   //SimpleDateFormat formatter = orgLocations.getLocFullFormDateFormatter();
+					requirementDTO.setVendorInterviewsCount(interviewsSum);
+					requirementDTO.setVendorOfferedCount(offeredSum);
+					requirementDTO.setVendorBackoutCount(backoutSum);
+					requirementDTO.setNoOfSubmittedApplicants(String.valueOf(submitToclient));
+					requirementDTO.setPostedDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),requirement.getCreatedDate()));
+					requirementDTO.setRequirementUUID(mainRequirement.getRequirementUUID());
+					requirementDTO.setJobTitle(mainRequirement.getJobTitle());
+					requirementDTO.setJobType(mainRequirement.getJobType());
+					requirementDTO.setOtherJobType(mainRequirement.getOtherJobType());
+					requirementDTO.setState(mainRequirement.getState());
+					requirementDTO.setCity(mainRequirement.getCity());
+					requirementDTO.setCountry(mainRequirement.getCountry());
+					requirementDTO.setManager(mainRequirement.getManager());
+					requirementDTO.setRequirementSubmissionStatus((mainRequirement.getRequirementSubmissionStatus()).toString());
+					if (mainRequirement.getManagerUserId() != null) {
+						String managerFirstName = "";
+						if (StringUtils.isNotEmpty(mainRequirement.getManagerUserId().getFirstName())) {
+							managerFirstName = mainRequirement.getManagerUserId().getFirstName();
+						}
+						String managerLastName = "";
+						if (StringUtils.isNotEmpty(mainRequirement.getManagerUserId().getLastName())) {
+							managerLastName = mainRequirement.getManagerUserId().getLastName();
+						}
+						StringBuilder name = new StringBuilder();
+						requirementDTO.setManager(name.append(managerFirstName).append(" ").append(managerLastName).toString());
+					}
+//					if(tempReqId.longValue() != requirement.getParentRequirement().getId().longValue()){
+						tempReqId = requirement.getParentRequirement().getId();
+						//mainReqList.add(mainRequirement);
+						mainReqListDTO.add(requirementDTO);
+						
+					}
+					
 				}
+				//return commonUtil.toJSON(mainReqList);
+				return mainReqListDTO;
 			}
-			   //SimpleDateFormat formatter = orgLocations.getLocFullFormDateFormatter();
-			mainRequirement.setVendorInterviewsCount(interviewsSum);
-			mainRequirement.setVendorOfferedCount(offeredSum);
-			mainRequirement.setVendorBackoutCount(backoutSum);
-			mainRequirement.setNoOfSubmittedApplicants(String.valueOf(submitToclient));
-			mainRequirement.setPostedDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),requirement.getCreatedDate()));
-			if (mainRequirement.getManagerUserId() != null) {
-				String managerFirstName = "";
-				if (StringUtils.isNotEmpty(mainRequirement.getManagerUserId().getFirstName())) {
-					managerFirstName = mainRequirement.getManagerUserId().getFirstName();
-				}
-				String managerLastName = "";
-				if (StringUtils.isNotEmpty(mainRequirement.getManagerUserId().getLastName())) {
-					managerLastName = mainRequirement.getManagerUserId().getLastName();
-				}
-				StringBuilder name = new StringBuilder();
-				mainRequirement.setManager(name.append(managerFirstName).append(" ").append(managerLastName).toString());
-			}
-//			if(tempReqId.longValue() != requirement.getParentRequirement().getId().longValue()){
-				tempReqId = requirement.getParentRequirement().getId();
-				mainReqList.add(mainRequirement);
-			}
-			
-		}
-		return commonUtil.toJSON(mainReqList);
-	}
 	
 	
-	@RequestMapping(value = "/getVendorAssociatesListForVendors")
-	public String getVendorAssociatesListForVendors(@RequestParam(value = "orgRelationId", required = false) Long orgRelationId, HttpServletRequest request) throws Exception
+	@RequestMapping(value = { "/getVendorAssociatesListForVendors", "/rest/getVendorAssociatesListForVendors" }, method = RequestMethod.POST)
+	public ResponseList<CandidateDTO> getVendorAssociatesListForVendors(@RequestParam(value = "orgRelationId", required = false) Long orgRelationId, HttpServletRequest request) throws Exception
 	{
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		String resultJson;
-		List<Candidate> candidateList = candidateService.getCandidatesListByOrgLocationIdAndOrgRelationId(orgLocations.getId(), orgRelationId);
-		resultJson = commonUtil.toJSON(candidateList);
-		return resultJson;
+		ResponseList<CandidateDTO> candidateList = candidateService.getCandidateListByOrgLocationIdAndOrgRelationId(orgLocations.getId(), orgRelationId);
+		return candidateList;
 	}
 	
 	

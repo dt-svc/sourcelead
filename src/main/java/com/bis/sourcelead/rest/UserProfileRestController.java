@@ -90,11 +90,7 @@ public class UserProfileRestController {
 	public String saveProfileImageForMobile(@RequestBody AddUserProfileDTO addUserProfileDTO,	HttpServletRequest request)throws Exception{
 		return saveProfileImage(addUserProfileDTO, request);
 	}
-	@RequestMapping(value =  "/rest/saveUserProfile", method = RequestMethod.POST)
-	public AddUserProfileDTO saveUserProfileForMobile(@RequestBody AddUserProfileDTO addUserProfileDTO, HttpServletRequest request) throws Exception
-	{
-		return saveUserProfile(addUserProfileDTO, request);
-	}
+
 	/**
 	 * User profile updation 
 	 * @param addUserProfileDTO
@@ -102,7 +98,7 @@ public class UserProfileRestController {
 	 * @return AddUserProfileDTO
 	 * @throws Exception
 	 */
-	@RequestMapping(value =  "/saveUserProfile", method = RequestMethod.POST)
+	@RequestMapping(value =  {"/saveUserProfile","/rest/saveUserProfile"}, method = RequestMethod.POST)
 	public AddUserProfileDTO saveUserProfile(AddUserProfileDTO addUserProfileDTO, HttpServletRequest request)
 			throws Exception {
 		addUserProfileDTO.setStaticPath(staticPath);

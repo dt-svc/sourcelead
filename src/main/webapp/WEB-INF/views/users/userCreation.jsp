@@ -125,17 +125,18 @@
                   <label class="col-md-3">Phone Number</label>
                    <div class="col-md-9">
                    <div class="row">
-                    <div class="col-md-7 paddingRight">
+                    <div class="col-md-6 paddingRight">
                     <input type="text" class="form-control" id="phone" name="phoneNumber" data-validation="validate_Space validate_phone validate_length length9-20" data-validation-optional="true">
                     <span class="hidden">Phone Number</span>
                      <input type="hidden" name="country" id="CountryAutocomplete" value ="${SourceLeadWeb_country}" />
                     </div>
-                    <div class="col-md-5 paddingLeft">
+                    <div class="col-md-6 paddingLeft erMesMid">
                     <div class="row">
                     <label class="col-md-5">Extension </label>
-                    <div class="col-md-7">
-                    <input type="text" class="form-control" id="extensionNumber" name="extensionNumber" data-validation="validate_Space validate_length length4-5" data-validation-optional="true">
-                    </div></div>
+                    <div class="col-md-7 posSta">
+                    <input type="text" class="form-control" id="extensionNumber" name="extensionNumber" data-validation="validate_Space validate_phone validate_length length1-5" data-validation-optional="true">
+                    </div>
+                    </div>
                     </div>
                      </div>
                   </div>
@@ -333,12 +334,12 @@ if(type == 'C2C' || type == 'C2C-1099'){
 		 $.ajax({
 			    type: "POST",
 		        url: sourceleadUrl+"/getOrgSpocsList?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationID+"&type=Vendor",  
-		        success: function(data) {
-		        	var json = JSON.parse(data);
+		        success: function(json) {
+		        	//var json = JSON.parse(data);
 		        	$('#vendorcontact').empty();
 		        	$('#vendorcontact').append('<option value="">--select Vendor contact--</option>');
-		             for(var i=0;i<json.length;i++){
-		            	 var opt = json[i];
+		             for(var i=0;i<json.data.length;i++){
+		            	 var opt = json.data[i];
 		            	 $('#vendorcontact').append('<option value='+opt.id+' >'+opt.spocName+'</option>');
 		            } 
 		            $('#vendorcontact').trigger("chosen:updated");
@@ -742,12 +743,12 @@ function getAssociateUserDetails(){
 		 $.ajax({
 			    type: "POST",
 		        url: sourceleadUrl+"/getOrgSpocsList?"+tokenParamName+"="+tokenValue+"&orgRelationId="+vendorOrgRelationId+"&type=Vendor",  
-		        success: function(data) {
-		        	var json = JSON.parse(data);
+		        success: function(json) {
+		        	//var json = JSON.parse(data);
 		        	$('#vendorcontact').empty();
 		        	$('#vendorcontact').append('<option value="">--select Vendor contact--</option>');
-		             for(var i=0;i<json.length;i++){
-		            	 var opt = json[i];
+		             for(var i=0;i<json.data.length;i++){
+		            	 var opt = json.data[i];
 		            	 if(vendorContactName != null && vendorContactName != 'undefined' && vendorContactName  != ''){
 		            		 $('#vendorcontact').append('<option '+ (opt.id == vendorSpocId ? "selected" : '') +' value="'+opt.id+'">'+opt.spocName+'</option>');
 			            	}else{

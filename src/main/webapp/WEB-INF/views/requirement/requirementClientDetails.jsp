@@ -377,13 +377,12 @@ function getClientSubmissionTemplates(local){
 		$.ajax({
 	    	type: "POST",
 	    	url : sourceleadUrl+"/getOrgSpocsList?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationID+"&type=Client", 
-	        success: function(data) {
-	        	var json = JSON.parse(data);
+	        success: function(json) {
 				var output = "";
 				output = output
 						+ "<option value=''>-- Select Contact --</option>";
-				for (var i = 0; i < json.length; i++) {
-					var opt = json[i];
+				for (var i = 0; i < json.data.length; i++) {
+					var opt = json.data[i];
 					if("" != opt.spocStatus && opt.spocStatus != "In-Active"){
 						output = output + "<option value='"+opt.id+"'>"+opt.spocName+ " ("+opt.ownerName+")</option>";
 					}

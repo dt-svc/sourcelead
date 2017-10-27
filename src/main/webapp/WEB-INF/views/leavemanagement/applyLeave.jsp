@@ -53,7 +53,7 @@ window.onload = function() {
               <div class="col-md-9">
                 <div class="row">
                   <div class="col-md-7 paddingRight" id="fromDateDiv">
-                    <input type="text" class="form-control calendar" id="fromDate" name="fromDate" placeholder="From Date" field-name="From Date" data-validation="required">
+                    <input type="text" class="form-control calendar" id="fromDate" name="fromDate" placeholder="From Date" field-name="From Date" data-validation="required" readonly>
                   </div>
                   <div class="col-md-5 paddingLeft">
                     <label class="checkBox mt5">
@@ -71,7 +71,7 @@ window.onload = function() {
               <div class="col-md-9">
                 <div class="row">
                   <div class="col-md-7 paddingRight" id="toDateDiv">
-                    <input type="text" class="form-control calendar" id="toDate" name="toDate" placeholder="To Date" field-name="To Date" data-validation="required">
+                    <input type="text" class="form-control calendar" id="toDate" name="toDate" placeholder="To Date" field-name="To Date" data-validation="required" readonly>
                   </div>
                   <div class="col-md-5 paddingLeft">
                     <label class="checkBox mt5">
@@ -103,7 +103,7 @@ window.onload = function() {
                   <div style="float:left; width:100%; border:1px solid #ddd; margin:0 15px 15px 0; padding:5px;overflow: hidden; background-color:#fff; color:#333; ">
                       <input  type="file" class="pull-left valid" id="uploadBtn" onchange="uploadButton(0);">
                       <a id="Button0value=">
-                      <i class="fa fa-times btn btn-danger btn-sm btn-sm2 pull-right" onClick="removedocfile();"></i>
+                      <i class="fa fa-times btn btn-danger btn-sm btn-sm2 pull-right" title="clear" onClick="removedocfile();"></i>
                       </a>
                   </div>
               </div>
@@ -191,7 +191,8 @@ window.onload = function() {
 		$('#fromDate').datepicker({
 			dateFormat : finalDateFormatEndDate,
 			changeMonth: true,
-			changeYear: true, 
+			changeYear: true,
+			minDate: 0,
 			onSelect : function(selected) {
 			var dt = $(this).datepicker('getDate', '+1d');
 			dt.setDate(dt.getDate());
@@ -331,7 +332,7 @@ function getpieChar(totalBalanceCounts,totalPendingCounts,totalTakenCounts){
 				{
 					"category": "Balance Leaves",
 					"column-1": totalBalanceCounts,
-					"color"	  : "#FF4500"
+					"color"	  : "#5bc0de"
 				},
 				{
 					"category": "Taken Leaves",
@@ -443,16 +444,23 @@ function getLeavePolicy(){
 
 <script>
 function validateMaxLeave(data){
-	$('.warMess').hide();
+	$('.jquery_form_error_message cOrange').hide();
+	var behalf = $("#checkbox-1");
+	var userId = "";
+	if(behalf.is(':checked')){
+		userId = $("#user").val();
+	}else{
+		userId = '${SourceLeadWeb_userId}';
+	}
 	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
-	var userId = '${SourceLeadWeb_userId}';
+	
 	var leaveTypeId = $("#leaveType").val();
 	var leaveTypeName = data.options[data.selectedIndex].innerHTML;
 	$.get(sourceleadUrl+"/validateMaxLeave?"+tokenParamName+"="+tokenValue+"&leaveTypeId="+leaveTypeId+"&orgLocationId="+orgLocationId+"&userId="+userId, function(data) {
 		if(data == true){
-			$("#leaveTypeIdDiv").after("<p class='warMess'>You don't have balance for the '"+leaveTypeName+"'.</span>");
+			$("#leaveTypeIdDiv").after("<p class='jquery_form_error_message cOrange'>You don't have balance for the '"+leaveTypeName+"'.</span>");
 		}else{
-			$('.warMess').hide();
+			$('.jquery_form_error_message cOranges').hide();
 		}
 	}); 
 	
@@ -468,12 +476,19 @@ function validateDate(){
 	var toDate = $("#toDate").val();
 	$.get(sourceleadUrl+"/validateRestrictDate?"+tokenParamName+"="+tokenValue+"&fromDate="+fromDate+"&toDate="+toDate+"&orgLocationId="+orgLocationId+"&roleId="+roleId, function(data) {
 		if(data != null){
-			$("#toDate").after("<p class='warMess'>You cannot apply for leave on restricted/holiday day</span> "+data);
+			$("#toDate").after("<p class='warMess'><span id='dataclosePop' class='fa fa-times text-danger' onclick='closedate();'></span>You cannot apply for leave on restricted/holiday day</span> "+data);
 		}else{
 			$('.warMess').hide();
 		}
 	}); 
-}
+};
+
+function closedate(){
+$(".warMess").fadeOut();
+};
+
+
 </script>
+
 
 <jsp:include page="../masterFooter.jsp" />

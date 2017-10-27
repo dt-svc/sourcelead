@@ -32,7 +32,7 @@ import org.springframework.stereotype.Service;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.ExpensesApprovalDao;
 import com.bis.sourcelead.dao.ProjectMembersDao;
-import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.dao.UserRoleDao;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
@@ -101,6 +101,9 @@ public class ExpensesApprovalServiceImpl implements ExpensesApprovalService{
 	@Autowired
 	private EmailScenerioUtil emailScenerioUtil;
 
+	@Autowired
+	private UserRoleDao userRoleDao;
+	
 	private static final Logger logger = LoggerFactory.getLogger(ExpensesApprovalServiceImpl.class);
 	
 	
@@ -184,6 +187,11 @@ public class ExpensesApprovalServiceImpl implements ExpensesApprovalService{
 								expensesApproverHierarchy.setExpensesApproverHierarchyPurpose("-----");
 							}
 						}
+						Boolean isadmin = userRoleDao.isUserAdminByOrgLocationId(loginUser.getId(),orgLoc.getId());
+						if(StringUtils.isNotEmpty(expensesApproverHierarchy.getReopenRejectedReason()) && !isadmin){
+							expensesApproverHierarchy.setReopenRejectedReason(expensesApproverHierarchy.getReopenRejectedReason());
+						}
+						expensesApproverHierarchy.setRejectedReason(expensesApproverHierarchy.getRejectedReason());
 					}
 				}
 			}
@@ -378,10 +386,13 @@ private List<String[]> prepareExpenseApprovalListStringArray(List<ExpensesApprov
 				expenseArray[11] = "--";
 			}
 			if(null != expenseId.getStatus()){
-				
 				ExpensesApproverHierarchy  eah = getExpensesApproverHierarchyByApproverUserIdAndExpenseId(loginUser.getId(), expenseId.getId(),orgLoc.getId());
 			    Submission_Status submissionStatus = eah.getExpenseStatus();
-				expenseArray[12] = submissionStatus.getValue();
+				    if(eah.getReopenRejectedReason()!= null) {
+				    	expenseArray[12] = "Rejected";
+				    }else {
+				    	expenseArray[12] = submissionStatus.getValue();	
+				    }
 			}else{
 				expenseArray[12] = "--";
 			}
@@ -546,8 +557,12 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, ExpensesAppro
 			if(null != expenseId.getExpenseStatus()){
 				ExpensesApproverHierarchy  eah = getExpensesApproverHierarchyByApproverUserIdAndExpenseId(loginUser.getId(), expenseId.getId(),orgLoc.getId());
 			    Submission_Status submissionStatus = eah.getExpenseStatus();
+			    if(eah.getReopenRejectedReason()!= null) {
+			    	writeRow.createCell(12).setCellValue("Rejected");
+			    }else {
 				writeRow.createCell(12).setCellValue(submissionStatus.getValue());
 				createExcelsheet.autoSizeColumn(12);
+			    }
 			}
 			if(null != ex.getActionPerformedBy()){
 				writeRow.createCell(13).setCellValue(ex.getActionPerformedBy());
@@ -562,6 +577,10 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, ExpensesAppro
 		return expensesApprovalDao.isTheExpenseTotallyApproved(expenseId);
 	}
 
+	@Override
+	public Boolean isReopenButtonVisibleForLoginOrg(Long expenseId,Long locationsId){
+		return expensesApprovalDao.isReopenButtonVisibleForLoginOrg(expenseId, locationsId);
+	}
 
 	@Override
 	public ExpensesApproverHierarchy getexpensesApproverHierarchyForEmployeeByExpenseId(Long expenseId) {
@@ -609,7 +628,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, ExpensesAppro
 				//setting the class filed values
 				 
 				 Map<String, String> globalVarsMap = new HashMap<String, String>();
-				 globalVarsMap.put("employeeUser",expenses.getProjectMembers().getEmployee().getUser().getFirstName());
+				 globalVarsMap.put("employeeUser",expenses.getProjectMembers().getProjectMemberCandidteId().getFirstName());
 				 globalVarsMap.put("approverUser",reopenedUser.getFirstName());
 				 globalVarsMap.put("reopenUser",orgLoc.getUser().getFirstName());
 				 globalVarsMap.put("projectName", projectName);

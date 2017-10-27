@@ -68,7 +68,6 @@ private ProjectApproverHierarchy hierarchyId;
 @JoinColumn(name="EXPENSESID", nullable=false )        
 private Expenses expenseId;
 
-
 @Column(name = "EXPENSE_STATUS")
 @Enumerated(EnumType.STRING)
 private Submission_Status expenseStatus;

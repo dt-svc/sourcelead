@@ -194,48 +194,67 @@ overflow-x: auto;
 			   <jsp:include page="dashboardTimesheets.jsp"></jsp:include>  
 			 </c:if> 
 	      </sec:authorize>
-			 <sec:authorize access="hasAnyRole('ROLE_VIEW_REQUIREMENT')">
-				<c:if test = "${SourceLeadWeb_ats == 'Y' || SourceLeadWeb_vms == 'Y'}">
-					<jsp:include page="dashboardRequirement.jsp"></jsp:include> 
-				</c:if>
-		     </sec:authorize>
-		     
+	      <c:forEach var="userTabs" items="${SourceLeadWeb_tabsList}">
+	      	<c:if test="${userTabs.tabName == 'Jobs'}">
+				 <sec:authorize access="hasAnyRole('ROLE_VIEW_REQUIREMENT')">
+					<c:if test = "${SourceLeadWeb_ats == 'Y' || SourceLeadWeb_vms == 'Y'}">
+						<jsp:include page="dashboardRequirement.jsp"></jsp:include> 
+					</c:if>
+			     </sec:authorize>
+		     </c:if>
+		   </c:forEach>
 	    </div>
 	    <div class="clearfix row mb">
 			 <sec:authorize access="hasAnyRole('ROLE_ADD_MY_EXPENSES','ROLE_VIEW_EDIT_MY_EXPENSES','ROLE_EXPORT_MY_EXPENSES','ROLE_ADD_EMPLOYEE_EXPENSES','ROLE_VIEW_EDIT_EMPLOYEE_EXPENSES','ROLE_EXPORT_EMPLOYEE_EXPENSES')">   
 				     <jsp:include page="expensesDashboardCounts.jsp"></jsp:include>
 			 </sec:authorize>  	
 			
-			 <jsp:include page="leaveManagement.jsp"></jsp:include>
+			<sec:authorize access="hasAnyRole('ROLE_APPLY_LEAVE','ROLE_APPLY_BEHALF_LEAVE','ROLE_APPROVE_LEAVE')">
+				<jsp:include page="leaveManagement.jsp"></jsp:include>
+			</sec:authorize>
+			 
 		 </div>
 	    	<c:if test = "${SourceLeadWeb_ats == 'Y' || SourceLeadWeb_vms == 'Y'}">
-	    	
+	    		<c:forEach var="userTabs" items="${SourceLeadWeb_tabsList}">
+	    		<c:if test="${userTabs.tabName == 'Jobs'}">
 	    			<sec:authorize access="hasAnyRole('ROLE_VIEW_REQUIREMENT')">
 					<jsp:include page="dashboardAssignedRequirements.jsp"></jsp:include> 
 					</sec:authorize>
-					
+				</c:if>	
+				</c:forEach>
 					<sec:authorize access="hasAnyRole('ROLE_CREATE_ON_BOARD_USER','ROLE_VIEW_EDIT_ON_BOARD_USER')">
 					<jsp:include page="onboardingCandidatesList.jsp"></jsp:include> 
 					</sec:authorize>
 					
-					<!-- Don't delete this commented code. Functionality is in progress -->
-					 <jsp:include page="resourceRequest.jsp"></jsp:include>  
+					<sec:authorize access="hasAnyRole('ROLE_ADD_RESOURCE_REQUEST','ROLE_VIEW_EDIT_RESOURCE_REQUEST','ROLE_ADD_REQUEST_ASSOCIATE','ROLE_VIEW_EDIT_REQUEST_ASSOCIATE','ROLE_RESOURCE_REQUEST_APPROVER')">
+					   <jsp:include page="resourceRequest.jsp"></jsp:include>  
+					 </sec:authorize>
 					
-					<jsp:include page="budgetRequest.jsp"></jsp:include>
+					<sec:authorize access="hasAnyRole('ROLE_BUDGET_APPROVER','ROLE_ADD_BUDGET_REQUEST','ROLE_VIEW_EDIT_BUDGET_REQUEST')">
+					   <jsp:include page="budgetRequest.jsp"></jsp:include>
+					</sec:authorize>
 					
 			    <div class="col-md-6 mb pdleft"> 
-			    	 <sec:authorize access="hasAnyRole('ROLE_VIEW_REQUIREMENT')">
-			   	 	 <jsp:include page="dashboardRequirementApprovals.jsp"></jsp:include>
-			   	 	 </sec:authorize>
+			    <c:forEach var="userTabs" items="${SourceLeadWeb_tabsList}">
+			    	<c:if test="${userTabs.tabName == 'Jobs'}">
+				    	 <sec:authorize access="hasAnyRole('ROLE_VIEW_REQUIREMENT')">
+				   	 	 <jsp:include page="dashboardRequirementApprovals.jsp"></jsp:include>
+				   	 	 </sec:authorize>
+			   	 	 </c:if>	
+			   	 </c:forEach>
 			   	 	 <%--  <sec:authorize access="hasAnyRole('ROLE_VIEW_INTERVIEW')">
 			    	 <jsp:include page="dashboardInterviews.jsp"></jsp:include>
 			    	 </sec:authorize> --%>
 			    </div>
 		    </c:if>
 		     <div class="col-md-6 mb pdRight"> 
-		     		<sec:authorize access="hasAnyRole('ROLE_VIEW_REQUIREMENT')">
-		     		<jsp:include page="dashboardApplicants.jsp"></jsp:include>
-		     		</sec:authorize>
+		     	<c:forEach var="userTabs" items="${SourceLeadWeb_tabsList}">
+			     	<c:if test="${userTabs.tabName == 'Jobs'}">
+			     		<sec:authorize access="hasAnyRole('ROLE_VIEW_REQUIREMENT')">
+			     		<jsp:include page="dashboardApplicants.jsp"></jsp:include>
+			     		</sec:authorize>
+			     	</c:if>
+		     	</c:forEach>
 		     </div>
 		     
 		     <div class="clearfix"></div>
@@ -390,8 +409,10 @@ function validateOrgShortCode(){
 		    	url : sourceleadUrl+"/validateOrgShortCode?${_csrf.parameterName}=${_csrf.token}&orgShortId="+orgShortId, 
 		        success: function(data) {
 		        	if(data == true){
+		        		$('#generatedUserIdDiv').parent().find('p.jquery_form_error_message').remove();
 		        		$("input#generatedUserId").parent().after("<p class='jquery_form_error_message'><span>Org Short Code Already Exists !!!</span>");
 		        		$("#saveOrgConfiguration").attr("disabled","disabled");
+		        		
 		        	}else{
 		        		 $('#generatedUserIdDiv').parent().find('p.jquery_form_error_message').remove();
 		        		 $("#saveOrgConfiguration").removeAttr("disabled","disabled");

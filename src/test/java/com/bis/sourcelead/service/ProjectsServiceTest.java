@@ -439,7 +439,7 @@ public class ProjectsServiceTest {
 						   
 						     for (ProjectApproverHierarchy pah : projectApproverHierarchyList) {
 						    	
-						    	 HashSet<ProjectMembers> projectMembersList = userRoleService.getAllUserPrevoiusWeekTimeSheetSubmissionStatusByApproverUserId(Constants.BI_WEEKLY,pah.getApproverUserId().getId());
+						    	 HashSet<ProjectMembers> projectMembersList = userRoleService.getAllUserPrevoiusWeekTimeSheetSubmissionStatusByApproverUserId(Constants.BI_WEEKLY,pah.getApproverUserId().getId(),1L);
 								
 						    	 if(null != projectMembersList && !projectMembersList.isEmpty()){
 									for (ProjectMembers projectMembers : projectMembersList) {

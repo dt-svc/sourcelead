@@ -101,6 +101,7 @@ public class ExpensesController {
 		}
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		String currencyCode = (String) SourceLeadSessionManager.getSessionAttribute(request, "currencyCode");
 		sessionData.setNav(Constants.MY_EXPENSES);
 		request.getSession().setAttribute("sessionData", sessionData);
 		if(StringUtils.isNotEmpty(expenseId)&& StringUtils.isNotEmpty(expenseLocationCode)){
@@ -127,20 +128,21 @@ public class ExpensesController {
 			 	 model.addObject("isSahApproved", expensesDTO.isSahApproved());
 			}
 				
-			StringBuffer rejectedReason = new StringBuffer();
+			String rejectedReason = null;
 			List<ExpensesApproverHierarchy> eahList =expensesApprovalService.getExpensesApproverHierarchyListByExpenseId(Long.parseLong(expenseId));
 			for(ExpensesApproverHierarchy eah : eahList){
 				if(eah.getExpenseApprovalStatus().toString().equalsIgnoreCase("REJECTED")){
-					rejectedReason.append(eah.getRejectedReason()).append(""); 
+					rejectedReason  = eah.getRejectedReason(); 
 				}
 			}
-			model.addObject("expenseApproverHierarchy", rejectedReason.toString());
+			model.addObject("expenseApproverHierarchy", rejectedReason);
 		}
 		TimesheetExpenseEntryDetailsUtilDTO eedDTO = new TimesheetExpenseEntryDetailsUtilDTO();
 		eedDTO.setUserId(loginUser.getId());
 		eedDTO.setLocationCode(orgLoc.getLocationCode());
 		eedDTO.setExpenseId(expenseId);
 		ExpenseEntryDetailsDTO expEntryDTO =  expensesRestController.getExpenseEntryDetails(eedDTO);
+		expEntryDTO.setLoginCurrencyCode(currencyCode);
 		model.addObject("expEntry", expEntryDTO);
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.setViewName("expenses/addExpense");
@@ -197,6 +199,10 @@ public class ExpensesController {
 		 	 Boolean isExpenseTotallyApproved = expensesApprovalService.isTheExpenseTotallyApproved(expensesDTO.getId());
 			 model.addObject("isExpenseTotallyApproved", isExpenseTotallyApproved);	
 			 
+			 
+			 Boolean isReopenButtonVisible = expensesApprovalService.isReopenButtonVisibleForLoginOrg(expensesDTO.getId(),orgLoc.getId());
+			 model.addObject("isReopenButtonVisible", isReopenButtonVisible);
+			 
 			 String type = request.getParameter("type");
 		 	
 		 	 Boolean isEditable = false;
@@ -215,8 +221,7 @@ public class ExpensesController {
 			   isSahReopened = true;
 		     }
 		     model.addObject("isSahReopened", isSahReopened);	
-		     
-			 Boolean isSuperUser = (Boolean) SourceLeadSessionManager.getSessionAttribute(request, "isSuperUser");
+		     Boolean isSuperUser = commonUtil.isSuperAdminForProjectMemberToReopenTimeOrExpenseses(eah.getExpenseId().getProjectMembers().getId(), loginUser);
 			 model.addObject("isSuperUser", isSuperUser);	
 			 
 			

@@ -51,6 +51,7 @@ import com.bis.sourcelead.beans.BillingReportDTO;
 import com.bis.sourcelead.beans.CurrencyConversionResponse;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.InvoiceDao;
+import com.bis.sourcelead.dto.BillingDTO;
 import com.bis.sourcelead.dto.ExpensesDTO;
 import com.bis.sourcelead.dto.ExpensesEntriesDTO;
 import com.bis.sourcelead.dto.InvoiceDTO;
@@ -333,10 +334,12 @@ public class InvoiceRestController {
  	  return resultJson;
  	}
     
-    @RequestMapping(value = "/getInvoiceList",method = RequestMethod.POST)
-	public ResponseList<Invoice> getInvoiceList(InvoiceDTO invoiceDTO,HttpServletRequest request) throws Exception {
+    @RequestMapping(value = {"/getInvoiceList","/rest/getInvoiceList"}, method = RequestMethod.POST)
+	public ResponseList<BillingDTO> getInvoiceList(InvoiceDTO invoiceDTO,HttpServletRequest request) throws Exception {
 		
-		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		OrgLocations orgLocations = orgLocationService.getOrgLocations(Long.parseLong(invoiceDTO.getOrgLocationId()));
+		ResponseList<BillingDTO> responseList = new ResponseList<>();
+		
 		
 		// TODO do not delete until sorting  work @Rajashekar
 	/*	String[] tableColumns = {"invoiceId", "clientName", "clientContact", "projectName", "invoiceDate", "inoviceTotal","inoviceDue","dueDate","inoviceStatus","paymentStatus","action"};
@@ -413,47 +416,69 @@ public class InvoiceRestController {
 		Float paidTotalAmount = 0f;
 		Float dueAfterInvoiceAmount = 0f;
 		Float dueBeforeInvoiceAmount = 0f;
+		List<BillingDTO> billingDtoList = new ArrayList<>();
 		for(Invoice invoice :invoiceFilterList){
-			
+			BillingDTO billingDto = new BillingDTO();
 			boolean isInvoiceDueDate = false;
 			
 			if(invoice.getOrgRelationID().getLocationId().getId().longValue() == orgLocations.getId().longValue()){
-				invoice.setClientName(invoice.getOrgRelationID().getResponderLocationId().getOrgLocationName());
+				billingDto.setClientName(invoice.getOrgRelationID().getResponderLocationId().getOrgLocationName());
 			}
 			if(invoice.getOrgRelationID().getResponderLocationId().getId().longValue() == orgLocations.getId().longValue()){
-				invoice.setClientName(invoice.getOrgRelationID().getLocationId().getOrgLocationName());
+				billingDto.setClientName(invoice.getOrgRelationID().getLocationId().getOrgLocationName());
 			}
 			if(null != invoice.getProjectID()){
-				invoice.setProjectName(invoice.getProjectID().getProjectName());	
+				billingDto.setProjectName(invoice.getProjectID().getProjectName());	
 			}
 			StringBuilder contactName = new StringBuilder();
 			if(null != invoice.getContactUser()){
 				if(invoice.getContactUser().getLastName() != null){
-					invoice.setClientContactName(contactName.append(invoice.getContactUser().getFirstName()).append(" ").append(invoice.getContactUser().getLastName()).toString());	
+					billingDto.setClientContactName(contactName.append(invoice.getContactUser().getFirstName()).append(" ").append(invoice.getContactUser().getLastName()).toString());	
 				}else{
-					invoice.setClientContactName(contactName.append(invoice.getContactUser().getFirstName()).toString());
+					billingDto.setClientContactName(contactName.append(invoice.getContactUser().getFirstName()).toString());
 				}
 			}
 			if(null != invoice.getDueDate()){
-				invoice.setDueDateStr(dateFormat.format(invoice.getDueDate()));	
+				billingDto.setDueDateStr(dateFormat.format(invoice.getDueDate()));	
+			}
+			if(null != invoice.getInvoiceUUID()){
+				billingDto.setInvoiceUUID(invoice.getInvoiceUUID());	
+			}
+			if(null != invoice.getInvoiceId()){
+				billingDto.setInvoiceId(invoice.getInvoiceId());
+			}
+			if(null != invoice.getId()){
+				billingDto.setId(invoice.getId());
+			}
+			if(null != invoice.getInvoiceParentId()){
+				billingDto.setInvoiceParentId(invoice.getInvoiceParentId());
+			}
+			if(null != invoice.getFileUrl()){
+				billingDto.setInvoiceParentId(invoice.getInvoiceParentId());
 			}
 			if(null != invoice.getInvoiceDate()){
-				invoice.setInvoiceDateStr(dateFormat.format(invoice.getInvoiceDate()));	
+				billingDto.setInvoiceDateStr(dateFormat.format(invoice.getInvoiceDate()));	
+			}
+			if(null != invoice.getInvoiceType()){
+				billingDto.setInvoiceType(invoice.getInvoiceType());
+			}
+			if(null != invoice.getRejectReason()){
+				billingDto.setRejectReason(invoice.getRejectReason());
 			}
 			
-			invoice.setTotal(String.format("%.2f", Float.valueOf(invoice.getTotal())));
-			invoice.setDueAmount(String.format("%.2f", Float.valueOf(invoice.getDueAmount())));
-			invoice.setInvoiceStatus(invoice.getInvoiceStatus());
-			invoice.setPaymentStatus(invoice.getPaymentStatus());
+			billingDto.setTotal(String.format("%.2f", Float.valueOf(invoice.getTotal())));
+			billingDto.setDueAmount(String.format("%.2f", Float.valueOf(invoice.getDueAmount())));
+			billingDto.setInvoiceStatus(invoice.getInvoiceStatus());
+			billingDto.setPaymentStatus(invoice.getPaymentStatus());
 			if(null != invoice.getProjectID()){
-				invoice.setProjectId(invoice.getProjectID().getId().toString());
+				billingDto.setProjectId(invoice.getProjectID().getId().toString());
 			}
 			
 			if(!isNullOrEmpty(invoice.getInvoiceStatus())){
 				if(Constants.DRAFT.equalsIgnoreCase(invoice.getInvoiceStatus()) || Constants.REJECTED.equalsIgnoreCase(invoice.getInvoiceStatus())){
 					draftCount = draftCount+1;
 					draftTotalAmount = draftTotalAmount + Float.parseFloat(invoice.getDueAmount()) ;
-					invoice.setDraftInvoiceAmount(String.format("%.2f", draftTotalAmount));
+					billingDto.setDraftInvoiceAmount(String.format("%.2f", draftTotalAmount));
 				}
 				
 				if(!Constants.DRAFT.equalsIgnoreCase(invoice.getInvoiceStatus()) && !Constants.REJECTED.equalsIgnoreCase(invoice.getInvoiceStatus()) && (Constants.INVOICE_STATUS_PAID.equalsIgnoreCase(invoice.getPaymentStatus()) || Constants.INVOICE_STATUS_PARTIAL_PAID.equalsIgnoreCase(invoice.getPaymentStatus())) && 
@@ -461,7 +486,7 @@ public class InvoiceRestController {
 					paidCount = paidCount+1;
 					Float paidAmount = Float.parseFloat(invoice.getTotal()) - Float.parseFloat(invoice.getDueAmount());
 					paidTotalAmount = paidTotalAmount + paidAmount;
-					invoice.setPaidInvoiceAmount(String.format("%.2f", paidTotalAmount));
+					billingDto.setPaidInvoiceAmount(String.format("%.2f", paidTotalAmount));
 				}
 				
 				if(!Constants.DRAFT.equalsIgnoreCase(invoice.getInvoiceStatus()) && !Constants.REJECTED.equalsIgnoreCase(invoice.getInvoiceStatus()) &&
@@ -477,12 +502,12 @@ public class InvoiceRestController {
 						if(todayDate.after(invoiceDueDate)){
 							overDueInvoiceCount = overDueInvoiceCount+1;
 							dueAfterInvoiceAmount = dueAfterInvoiceAmount + Float.parseFloat(invoice.getDueAmount());
-							invoice.setDueAfterInvoiceAmount(String.format("%.2f", dueAfterInvoiceAmount));
+							billingDto.setDueAfterInvoiceAmount(String.format("%.2f", dueAfterInvoiceAmount));
 							isInvoiceDueDate = true;
 						}else{
 							openInvoiceCount = openInvoiceCount+1;
 							dueBeforeInvoiceAmount = dueBeforeInvoiceAmount + Float.parseFloat(invoice.getDueAmount());
-							invoice.setDueBeforeInvoiceAmount(String.format("%.2f", dueBeforeInvoiceAmount));
+							billingDto.setDueBeforeInvoiceAmount(String.format("%.2f", dueBeforeInvoiceAmount));
 						}
 					}
 					
@@ -491,15 +516,18 @@ public class InvoiceRestController {
 				
 			}
 			if(null != invoice.getParentInvoiceId()){
-				invoice.setInvoiceParentId(invoice.getParentInvoiceId().getId());	
+				billingDto.setInvoiceParentId(invoice.getParentInvoiceId().getId());	
 			}
-			invoice.setDraftInvoiceCount(draftCount);
-			invoice.setPaidInvoiceCount(paidCount);
-			invoice.setDueAfterInvoiceCount(overDueInvoiceCount);
-			invoice.setDueBeforeInvoiceCount(openInvoiceCount);
+			billingDto.setDraftInvoiceCount(draftCount);
+			billingDto.setPaidInvoiceCount(paidCount);
+			billingDto.setDueAfterInvoiceCount(overDueInvoiceCount);
+			billingDto.setDueBeforeInvoiceCount(openInvoiceCount);
+			billingDtoList.add(billingDto);
 		}
-		invoiceList.setData(invoiceFilterList);
-		return invoiceList;
+		responseList.setRecordsFiltered(invoiceList.getRecordsFiltered());
+		responseList.setRecordsTotal(invoiceList.getRecordsTotal());
+		responseList.setData(billingDtoList);
+		return responseList;
 		
 	}
 	
@@ -750,20 +778,20 @@ public class InvoiceRestController {
 				ProjectMembers projectMember = sah.getSubmissionId().getProjectMembers();
 				projectMember.setSubmissionApproverHierarchyId(sah.getId());
 				StringBuilder candidateName = new StringBuilder();
-				if (null != projectMember.getEmployee().getUser().getFirstName()
-						&& null != projectMember.getEmployee().getUser().getLastName()) {
-					candidateName.append(projectMember.getEmployee().getUser().getFirstName()).append(" ").append(projectMember.getEmployee().getUser().getLastName());
+				if (null != projectMember.getMasterCandidateId().getFirstName()
+						&& null != projectMember.getMasterCandidateId().getLastName()) {
+					candidateName.append(projectMember.getMasterCandidateId().getFirstName()).append(" ").append(projectMember.getMasterCandidateId().getLastName());
 				}
 				else {
-					candidateName.append(projectMember.getEmployee().getUser().getFirstName());
+					candidateName.append(projectMember.getMasterCandidateId().getFirstName());
 				}
 				projectMember.setCandidateName(candidateName.toString());
 				projectMember.setUserId(String.valueOf(projectMember.getEmployee().getUser().getId()));
 				if (null != projectMember.getEmployee().getUser().getId()) {
-					Candidate candidate = candidateService.getCandidateByConsultantUserId(projectMember.getEmployee().getUser().getId(), orgLocation.getId());
-					if(null != candidate){
-						projectMember.setCandidateId(candidate.getId());
-						List<Contracts> contractList = getSowContract(candidate.getId(),orgLocation,Long.parseLong(orgRelationId),contractType);
+//					Candidate candidate = candidateService.getCandidateByConsultantUserId(projectMember.getEmployee().getUser().getId(), orgLocation.getId());
+					if(null != projectMember.getMasterCandidateId()){
+						projectMember.setCandidateId(projectMember.getMasterCandidateId().getId());
+						List<Contracts> contractList = getSowContract(projectMember.getMasterCandidateId().getId(),orgLocation,Long.parseLong(orgRelationId),contractType);
 						if(null != contractList && contractList.size() >0){
 							projectMember.setContractsList(contractList);
 						}	
@@ -848,19 +876,18 @@ public class InvoiceRestController {
 				ProjectMembers projectMember = sah.getSubmissionId().getProjectMembers();
 				projectMember.setSubmissionApproverHierarchyId(sah.getId());
 				projectMember.setSubmissionInvoiceId(sah.getSubmissionId().getId());
-				Employees employee = employeesService.getEmployeByUserIdAndOrgRelationId(projectMember.getEmployee().getUser().getId(),orgRelationId);
-//				Candidate candidate = candidateService.getCandidateByConsultantUserIdOrgRelationId(projectMember.getEmployee().getUser().getId(),orgLocation.getId(),orgRelationId);
-				if(null != employee){
+				/*Employees employee = employeesService.getEmployeByUserIdAndOrgRelationId(projectMember.getEmployee().getUser().getId(),orgRelationId);
+				if(null != employee){*/
 					StringBuilder empName =new StringBuilder();
-					if(null != projectMember.getEmployee().getUser().getFirstName() && null != projectMember.getEmployee().getUser().getLastName()){
-						empName.append(projectMember.getEmployee().getUser().getFirstName()).append(" ").append(projectMember.getEmployee().getUser().getLastName());
+					if(null != projectMember.getMasterCandidateId() && StringUtils.isNotBlank(projectMember.getMasterCandidateId().getLastName())){
+						empName.append(projectMember.getMasterCandidateId().getFirstName()).append(" ").append(projectMember.getMasterCandidateId().getLastName());
 					}else{
-						empName.append(projectMember.getEmployee().getUser().getFirstName());
+						empName.append(projectMember.getMasterCandidateId().getFirstName());
 					}
 					projectMember.setCandidateName(empName.toString());
 					projectMember.setStartDate(startDateStr);
 					projectMember.setEndDate(endDateStr);
-					projectMember.setUserId(employee.getUser().getId().toString());
+					//projectMember.setUserId(employee.getUser().getId().toString());
 					String billableHours = String.valueOf(sah.getBillableHours());
 					StringBuilder sb = new StringBuilder();
 					if(sah.getBillableHours() !=null){
@@ -882,14 +909,14 @@ public class InvoiceRestController {
 						sb.append("0");
 					}
 					projectMember.setTotalHours(sb.toString());
-					Candidate candidate = candidateService.getCandidateByConsultantUserIdOrgRelationId(projectMember.getEmployee().getUser().getId(),orgLocation.getId(),orgRelationId);
-					if(candidate !=null){
-						projectMember.setCandidateId(candidate.getId());
-						List<Contracts> contractList = getSowContract(candidate.getId(),orgLocation,orgRelationId,contractType);
+//					Candidate candidate = candidateService.getCandidateByConsultantUserIdOrgRelationId(projectMember.getMasterCandidateId().getId(),orgLocation.getId(),orgRelationId);
+					if(projectMember.getMasterCandidateId() !=null){
+						projectMember.setCandidateId(projectMember.getMasterCandidateId().getId());
+						List<Contracts> contractList = getSowContract(projectMember.getMasterCandidateId().getId(),orgLocation,orgRelationId,contractType);
 						if(null != contractList && contractList.size() >0){
 							projectMember.setContractsList(contractList);
 						}
-						projectMember.setCandidateId(candidate.getId());
+						projectMember.setCandidateId(projectMember.getMasterCandidateId().getId());
 					}
 					
 					filteredMembersList.add(projectMember);
@@ -899,7 +926,7 @@ public class InvoiceRestController {
 			if(filteredMembersList.size() >0){
 				resultJson =  commonUtil.toJSON(filteredMembersList);
 			}
-		}
+		//}
 		return resultJson;
 	} 
 	
@@ -1694,9 +1721,10 @@ public class InvoiceRestController {
 	@RequestMapping(value = "/getProjectAssignMembers", method = RequestMethod.GET)
 	@ResponseBody
 	public Collection<ProjectMembers> getProjectAssignMembers(
-			@RequestParam(value = "projectId", required = false) Long projectId) throws Exception {
+			@RequestParam(value = "projectId", required = false) Long projectId,HttpServletRequest request) throws Exception {
 
-		List<ProjectMembers> associatesList = projectMembersService.getProjectsAssignedMembersForExpenses(projectId);
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		List<ProjectMembers> associatesList = projectMembersService.getAllProjectMembersWithMasterCandidateIdByProjectIdAndLocationId(projectId,orgLocation.getId());
 		return associatesList;
 
 	}

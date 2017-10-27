@@ -40,6 +40,7 @@ import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.CountriesService;
+import com.bis.sourcelead.service.ExpensesEntriesService;
 import com.bis.sourcelead.service.ExpensesService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.TimeZoneService;
@@ -93,6 +94,9 @@ public class ExpensesServiceImpl implements ExpensesService{
 	
 	@Autowired
 	private CandidateService candidateService;
+	
+	@Autowired
+	private ExpensesEntriesService expensesEntriesService;
 	
 	
 	@Autowired
@@ -408,13 +412,20 @@ public class ExpensesServiceImpl implements ExpensesService{
 			   }else{
 				   userArray[4] = "--";
 			 }
-			if(expEntries.getAmount() != 0){
+			
+			if(expEntries.getAmount() != null && !"".equalsIgnoreCase(expEntries.getCurrencyType())){
+				StringBuilder amount = new StringBuilder();
+				   userArray[5] = amount.append(expEntries.getAmount()).toString();
+			   }else{
+				   userArray[5] = "--";
+			
+			/*if(expEntries.getAmount() != 0){
 				StringBuilder str = new StringBuilder();
 				BigDecimal bd = new BigDecimal(Double.toString(expEntries.getExpensesId().getTotalAmount()));
 				bd = bd.setScale(2,BigDecimal.ROUND_HALF_UP );				
 				   userArray[5] = str.append(bd).toString();
 			   }else{
-				   userArray[5] = "00.00";
+				   userArray[5] = "00.00";*/
 			 }
 			
 			/*Countries country = countriesService.getCountriesByCountryName(orgLoc.getCountry());
@@ -502,7 +513,19 @@ public class ExpensesServiceImpl implements ExpensesService{
 		writeRow.createCell(4).setCellValue(expEntries.getCurrencyType());
 		createExcelsheet.autoSizeColumn(4);
 	   }
-	StringBuilder amount = new StringBuilder();
+	
+	if(expEntries.getAmount() != null && !"".equalsIgnoreCase(expEntries.getAmount().toString())){	
+		StringBuilder amount1 = new StringBuilder();
+		
+		writeRow.createCell(5).setCellValue( amount1.append(expEntries.getAmount()).toString());
+		createExcelsheet.autoSizeColumn(4);
+	   }
+	
+	if(expEntries.getAmount() != null && !"".equalsIgnoreCase(expEntries.getCurrencyType()))
+	
+	
+	
+	/*StringBuilder amount = new StringBuilder();
 	if(expEntries.getAmount() != 0){
 		StringBuilder str = new StringBuilder();
 		BigDecimal bd = new BigDecimal(Double.toString(expEntries.getExpensesId().getTotalAmount()));
@@ -512,7 +535,7 @@ public class ExpensesServiceImpl implements ExpensesService{
 	   }else{
 		writeRow.createCell(5).setCellValue(amount.append("00.00").toString());
 		createExcelsheet.autoSizeColumn(5);
-	}
+	}*/
 	 if(expEntries.getDescription() != null && !"".equalsIgnoreCase(expEntries.getDescription())){	
 		 writeRow.createCell(6).setCellValue( expEntries.getDescription());
 		 createExcelsheet.autoSizeColumn(6);
@@ -1190,16 +1213,15 @@ public class ExpensesServiceImpl implements ExpensesService{
 	@Override
 	public List<ExpensesEntriesDTO> getApprovedExpenses(Long expenseId) throws Exception {
 
-		Expenses expense = expensesDao.getExpenseById(expenseId);
-		Set<ExpensesEntries> entriesList = expense.getExpensesEntries();
+		List<ExpensesEntries> entriesList = expensesEntriesService.getExpensesEntriesByExpenseId(expenseId);
 		List<ExpensesEntriesDTO> expensesEntriesDTOList = new ArrayList<>();
 		for(ExpensesEntries entries : entriesList){
 			ExpensesEntriesDTO  expensesEntriesDTO = new ExpensesEntriesDTO();
 			expensesEntriesDTO.setDateOccurred(ConversionUtil.getDateAsString(entries.getExpenseDate()));
 			expensesEntriesDTO.setEntryDescription(entries.getDescription());
 			expensesEntriesDTO.setCategoryAmount(String.valueOf(entries.getAmount()));
+			expensesEntriesDTO.setAmount(entries.getAmount());
 			expensesEntriesDTO.setCategoryName(entries.getExpensesCategoryId().getExpensesName());
-			expensesEntriesDTO.setCategoryAmount(String.valueOf(entries.getAmount()));
 			expensesEntriesDTOList.add(expensesEntriesDTO);
 		}
 		return expensesEntriesDTOList;

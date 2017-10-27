@@ -614,9 +614,9 @@ function rejectRequirementAlertMessage(status){
 	var result = "";
 	result = result +"	<div class='project_inn_mask'></div>";
 	result = result +"	    <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
-	result = result +"		<textarea id='rejectReason' class='form-control' field-name='Reject Reason' data-validation-optional='true' data-validation='validate_Space validate_Description validate_length length2-250' name='rejectReason' value='' placeholder='Terminate Reason' rows='2'></textarea>";
+	result = result +"		<textarea id='rejectReason' class='form-control' field-name='Reject Reason' data-validation-optional='true' data-validation='validate_Space validate_Description validate_length length2-250' name='rejectReason' value='' placeholder='Reject Reason' rows='2'></textarea>";
 	result = result +"	<div id='reasonDiv'/>";
-	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onClick ='updateReuqirementStatusReject(\""+ status+ "\");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelAlert12();'></b>";
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Reject' onClick ='updateReuqirementStatusReject(\""+ status+ "\");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelAlert12();'></b>";
 	result = result +"	</div>";
 	result = result +"	</div>";
 	$("#rejectRequirementAlert").append(result);
@@ -840,6 +840,7 @@ function viewOfferDocument(offerID,title){
 
 <div class='project_inn_mask projectMask-zindex'></div>
 <div id="popUp"></div>
+<div class="project_inn_mask"></div>
 <div id="customizePopUp"></div>
 <script>
 function rejectApplicant(submissionId,requirementId,submissionType){
@@ -2199,7 +2200,7 @@ function getRateListDiv(submissionId, candidateId){
 	                     if(report.submissionStatus != "REJECTED"){
 	                    	 /* if(report.isNeedApplicantPermit=="N" || (null != report.submissionRateStatus && '' != report.submissionRateStatus && 'undefined' != report.submissionRateStatus && 'REJECTED' != report.submissionRateStatus)){ */
 	                    	 '<sec:authorize access="hasAnyRole(\'ROLE_RATE_NEGOTIATION\')">';
-		                     result = result + '<div class="clearfix row">';
+		                     result = result + '<div class="clearfix row formgroup-minheight">';
 		                     result = result + '<form name="rate_form" id="rate_form" method="post">';
 		                     result = result + '  <div class="form-group col-md-6">';
 		                     result = result + '    <input type="text" class="form-control input-sm" placeholder="Rate" id="rateProposal" name="rateProposal" field-name="Rate" data-validation="required  validate_Space validate_float validate_length length1-8">';
@@ -2224,7 +2225,7 @@ function getRateListDiv(submissionId, candidateId){
 		                     result = result + '  <div class="form-group col-md-12">';
 		                     result = result + '    <div class="pull-right">';
 		                     result = result + '      <input type="button" value="Add" class="btn btn-primary btn-sm mr" id="add_rate" onClick="proposeNewRate('+submissionId+','+candidateId+');">';
-		                     result = result + '      <input type="button" value="Cancel" class="btn btn-default btn-sm" onClick="closeratediv();">';
+		                     result = result + '      <button type="button" value="Cancel" class="btn btn-default btn-sm" onClick="closeratediv();">Cancel</button>';
 		                     result = result + '    </div>';
 		                     result = result + '  </div>';
 		                     result = result + '</form>';

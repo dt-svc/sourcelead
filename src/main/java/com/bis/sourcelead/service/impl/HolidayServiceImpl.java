@@ -136,10 +136,64 @@ public class HolidayServiceImpl implements HolidayService{
 			hDTO.setToHalfDayAmPm(hlist.getToHalfDayAmPm());
 			if(StringUtils.isNotBlank(hlist.getDescription()))
 		    hDTO.setDescription(hlist.getDescription());
+			
+			Date currentDate = commonUtil.getOrgLocationCurrentDate(orgLocations.getDateFormat(), new Date());
+			Date fromDate = commonUtil.getOrgLocationCurrentDate(orgLocations.getDateFormat(), hlist.getFromDate());
+			if(fromDate.before(currentDate)){
+				hDTO.setIsPast(Constants.YES);
+			}else if(fromDate.after(currentDate)){
+				hDTO.setIsFuture(Constants.YES);
+			}else{
+				hDTO.setIsCurrent(Constants.YES);
+			}
 			holidayDTOList.add(hDTO);
 		}
 		return holidayDTOList;
 	}
+	
+	
+	@Override
+	public List<HolidayDTO> getAllHolidaysListBasedOnYear(Long orgLocationId,Long reportYear) throws Exception {
+		List<HolidayDTO> holidayDTOList = new ArrayList<HolidayDTO>();
+		OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
+		List<Holiday> holidaysList =  holidayDAO.getAllHolidaysListBasedOnYear(orgLocationId,reportYear);
+		for(Holiday hlist : holidaysList)
+		{ 
+			HolidayDTO hDTO = new HolidayDTO();
+		    hDTO.setId(hlist.getId());
+			if(StringUtils.isNotBlank(hlist.getHolidayName()))
+			hDTO.setHolidayName(hlist.getHolidayName());
+			if(hlist.getFromDate() != null){
+				hDTO.setFromDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), hlist.getFromDate()));
+				hDTO.setDayOfTheWeek(Constants.WEEK_DAY.format(hlist.getFromDate()));
+			}
+			if(hlist.getToDate() != null)
+			hDTO.setToDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), hlist.getToDate()));
+			if(StringUtils.isNotBlank(hlist.getFromHalfDayCheckBox()))
+			hDTO.setFromHalfDayCheckBox(hlist.getFromHalfDayCheckBox());
+			if(StringUtils.isNotBlank(hlist.getFromHalfDayAmPm()))
+			hDTO.setFromHalfDayAmPm(hlist.getFromHalfDayAmPm());
+			if(StringUtils.isNotBlank(hlist.getToHalfDayCheckBox()))
+			hDTO.setToHalfDayCheckBox(hlist.getToHalfDayCheckBox());
+			if(StringUtils.isNotBlank(hlist.getToHalfDayAmPm()))
+			hDTO.setToHalfDayAmPm(hlist.getToHalfDayAmPm());
+			if(StringUtils.isNotBlank(hlist.getDescription()))
+		    hDTO.setDescription(hlist.getDescription());
+			
+			Date currentDate = commonUtil.getOrgLocationCurrentDate(orgLocations.getDateFormat(), new Date());
+			Date fromDate = commonUtil.getOrgLocationCurrentDate(orgLocations.getDateFormat(), hlist.getFromDate());
+			if(fromDate.before(currentDate)){
+				hDTO.setIsPast(Constants.YES);
+			}else if(fromDate.after(currentDate)){
+				hDTO.setIsFuture(Constants.YES);
+			}else{
+				hDTO.setIsCurrent(Constants.YES);
+			}
+			holidayDTOList.add(hDTO);
+		}
+		return holidayDTOList;
+	}
+	
 	
 	@Override
 	public Holiday getHolidaysById(String holidayId) throws Exception {

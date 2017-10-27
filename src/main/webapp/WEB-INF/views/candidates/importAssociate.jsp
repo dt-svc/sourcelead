@@ -453,13 +453,16 @@
 		
 if ($('#candidate_form').validate(false, validationSettings)){ 
 			
-			var formData = getFormData("candidate_form");
-			$("#store_candidate").attr("disabled", "disabled");
-			$("#store_candidate").addClass('button').val('Processing..');
+			 var form = $('#candidate_form')[0];
+	      	 var formData = new FormData(form); 
+			 $("#store_candidate").attr("disabled", "disabled");
+			 $("#store_candidate").addClass('button').val('Processing..');
 
 			$.ajax({
-					type : "POST",
-		        	    data: formData,
+					 type : "POST",
+					 data: formData,
+		    	     processData: false,
+		    	     contentType:false,
 		        	    	url : sourceleadUrl+"/storeCandidate?"+tokenParamName+"="+tokenValue,
 					success : function(result) {
 								location.replace(sourceleadUrl+"/associatesList");
@@ -877,12 +880,12 @@ function  removeValiationVendorContact() {
 		 $.ajax({
 			    type: "POST",
 		        url: sourceleadUrl+"/getOrgSpocsList?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationID+"&type=Vendor",  
-		        success: function(data) {
-		        	var json = JSON.parse(data);
+		        success: function(json) {
+		        	//var json = JSON.parse(data);
 		        	$('#vendorcontact').empty();
 		        	$('#vendorcontact').append('<option value="">--Select Vendor contact--</option>');
-		             for(var i=0;i<json.length;i++){
-		            	 var opt = json[i];
+		             for(var i=0;i<json.data.length;i++){
+		            	 var opt = json.data[i];
 		            	 $('#vendorcontact').append('<option value='+opt.id+' >'+opt.spocName+'</option>');
 		            } 
 		            $('#vendorcontact').trigger("chosen:updated");
@@ -892,7 +895,19 @@ function  removeValiationVendorContact() {
  </script>
  
  <script>
+ var educationList = [];
+ var skillList = [];
  $(function() {
+	 var i= 0;
+	 <c:forEach var="skill" items="${skillsList}">
+	 	skillList[i++] = "${skill.name}";
+	 </c:forEach>
+	 var i= 0;
+	 <c:forEach var="edu" items="${educationsList}">
+	 	educationList[i++] = "${edu.name}";
+	 </c:forEach>
+	 
 	 uploadResumeOnSelect("candidate_form");
- });
+	 
+});
  </script>
