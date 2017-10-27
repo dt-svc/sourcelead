@@ -227,7 +227,7 @@
                         result = result + ' </div>'; 
 						
 						 result = result + '<div class="clearfix"></div>';
-						result = result + '<div class="user_summary_edit_cta">';
+						result = result + '<div class="user_summary_edit_cta pull-right">';
 						result = result + '<input class="us-btn" id="save_vendor" type="button" value="Save" onclick="storeVendorDetails('+orgRelationId+','+vendorLocationId+')"/> <input class="us-btn us-btn_a" type="button" value="Cancel" onclick="vendorDetailsbyLocationId('+vendorLocationId+','+orgRelationId+');"/>';
 						result = result + '</div>';		
 						result = result + '<div class="clearfix"></div>';

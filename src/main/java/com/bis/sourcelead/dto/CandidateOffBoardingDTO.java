@@ -40,8 +40,91 @@ public class CandidateOffBoardingDTO implements Serializable {
 	private String effectiveDate;
 	
 	private String offboardingTemplate;
-
 	
+	private String dateOfJoinStr;
+	
+	private String endDateStr;
+	
+	private String effectiveDateStr;
+	
+	private String candidateName;
+	
+	private String haveToWorkInNoticePeriod;
+	
+	private String offboardTemplateId;
+	
+	private String id;
+	
+	private long offboardUserId;
+	
+	
+	
+	
+	
+	public long getOffboardUserId() {
+		return offboardUserId;
+	}
+
+	public void setOffboardUserId(long offboardUserId) {
+		this.offboardUserId = offboardUserId;
+	}
+
+	public String getOffboardTemplateId() {
+		return offboardTemplateId;
+	}
+
+	public void setOffboardTemplateId(String offboardTemplateId) {
+		this.offboardTemplateId = offboardTemplateId;
+	}
+
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
+
+	public String getHaveToWorkInNoticePeriod() {
+		return haveToWorkInNoticePeriod;
+	}
+
+	public void setHaveToWorkInNoticePeriod(String haveToWorkInNoticePeriod) {
+		this.haveToWorkInNoticePeriod = haveToWorkInNoticePeriod;
+	}
+
+	public String getCandidateName() {
+		return candidateName;
+	}
+
+	public void setCandidateName(String candidateName) {
+		this.candidateName = candidateName;
+	}
+
+	public String getEffectiveDateStr() {
+		return effectiveDateStr;
+	}
+
+	public void setEffectiveDateStr(String effectiveDateStr) {
+		this.effectiveDateStr = effectiveDateStr;
+	}
+
+	public String getEndDateStr() {
+		return endDateStr;
+	}
+
+	public void setEndDateStr(String endDateStr) {
+		this.endDateStr = endDateStr;
+	}
+
+	public String getDateOfJoinStr() {
+		return dateOfJoinStr;
+	}
+
+	public void setDateOfJoinStr(String dateOfJoinStr) {
+		this.dateOfJoinStr = dateOfJoinStr;
+	}
+
 	public String getSavedoffboardId() {
 		return savedoffboardId;
 	}

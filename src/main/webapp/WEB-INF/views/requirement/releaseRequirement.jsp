@@ -227,7 +227,7 @@ border-radius:3px; cursor: pointer; padding:6px 0px 0px 0px;
         <div class="col-lg-12">
           <div class="pull-right">
             <span id="openNetworkRelease" class="text-danger small" style="font-size: 11px; display: none;">Public / Crowdsourcing  is mandatory</span>
-           	<input type="button" class="btn btn-primary ml" onclick="releaseToCrowdSourcing();" id="releaseToCWBtn" value="Release">
+           	<input type="button" class="btn btn-primary ml" onclick="releaseToCrowdSourcing();" id="releaseToCWBtn" value="Released">
             <input type="button" class="btn btn-default ml" id="releaseCancelBtn" value="Cancel" onClick="javascript:window.location.href = '<c:url value='requirementList'/>'">
           </div>
         </div>
@@ -241,7 +241,7 @@ border-radius:3px; cursor: pointer; padding:6px 0px 0px 0px;
          
             <sec:authorize access="hasAnyRole('ROLE_RELEASE_REQUIREMENT')">
             <span class="jquery_form_error_message" style="display:none;">Vendor/Contact selection is mandatory</span>
-            	<input type="button" class="btn btn-primary ml" id="releaseBtn" onclick="releaseTo();" value="Release">
+            	<input type="button" class="btn btn-primary ml" id="releaseBtn" onclick="releaseTo();" value="Released">
 			</sec:authorize>
 			
             <input type="button" class="btn btn-default ml" id="releaseCancelBtn" value="Cancel" onClick="javascript:window.location.href = '<c:url value='requirementList'/>'">

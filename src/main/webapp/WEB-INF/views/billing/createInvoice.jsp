@@ -1612,6 +1612,7 @@ function calculateDiscount(){
 
 <script type="text/javascript">
 	function removeTaxRow(rowId) {
+		$("#divTaxRow"+rowId).css("display", "none");
 		
 		//After removing the row calculate the amount and append the grand total
 		var grandTotal =  $("#grandTotal").val();
@@ -1623,12 +1624,12 @@ function calculateDiscount(){
         $("#conversionFrom").val(total);
        //=======================================
         conversion();
-		document.getElementById('divTaxRow' + rowId).style.display = 'none';
-		var r = document.getElementById('addTaxTbl').rows[rowId];
+		
+		/* var r = document.getElementById('addTaxTbl').rows[rowId];
 		var count = 2 * (r.cells.length);
 		for (i = 0; i <= count; i++) {
 			r.deleteCell(0);
-		}
+		} */
 		
 	}
 </script>
