@@ -120,8 +120,8 @@ public class ExpensesApprovalDaoImpl implements ExpensesApprovalDao{
 			+ " pc.orgLocationsId.id = :orgLocationId"
 			+ " and ( ("
 			+ "      hierarchy.approverUserId.id = :userId and "
-			+ "       (     ((hierarchy.level = '2' and emp.user.id NOT IN(select subeah.hierarchyId.approverUserId.id from ExpensesApproverHierarchy subeah where subeah.expenseId.id = sah.expenseId.id and subeah.hierarchyId.level = '2'))) "
-			+ "          OR (( hierarchy.level = '1' and emp.user.id NOT IN(select subeah.hierarchyId.approverUserId.id from ExpensesApproverHierarchy subeah where subeah.expenseId.id = sah.expenseId.id) )) "
+			+ "       (     (((emp.user.id IS NULL) OR (emp.user.id IS NOT NULL and hierarchy.level = '2' and emp.user.id NOT IN(select subeah.hierarchyId.approverUserId.id from ExpensesApproverHierarchy subeah where subeah.expenseId.id = sah.expenseId.id and subeah.hierarchyId.level = '2')))) "
+			+ "          OR (((emp.user.id IS NULL) OR (emp.user.id  IS NOT NULL and hierarchy.level = '1' and emp.user.id NOT IN(select subeah.hierarchyId.approverUserId.id from ExpensesApproverHierarchy subeah where subeah.expenseId.id = sah.expenseId.id)) )) "
 			+ "       )"
 			+ "      ) "
 		    /*
