@@ -61,7 +61,6 @@ public class ProjectMembers implements Serializable {
 
 	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne
-	@Fetch(FetchMode.SELECT)
 	@JoinColumn(name = "CANDIDATE_ID", nullable = false)
 	@JsonBackReference
 	private Candidate projectMemberCandidteId;
