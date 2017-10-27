@@ -32,7 +32,7 @@ import org.springframework.stereotype.Service;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.ExpensesApprovalDao;
 import com.bis.sourcelead.dao.ProjectMembersDao;
-import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.dao.UserRoleDao;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
@@ -101,6 +101,9 @@ public class ExpensesApprovalServiceImpl implements ExpensesApprovalService{
 	@Autowired
 	private EmailScenerioUtil emailScenerioUtil;
 
+	@Autowired
+	private UserRoleDao userRoleDao;
+	
 	private static final Logger logger = LoggerFactory.getLogger(ExpensesApprovalServiceImpl.class);
 	
 	
@@ -184,6 +187,11 @@ public class ExpensesApprovalServiceImpl implements ExpensesApprovalService{
 								expensesApproverHierarchy.setExpensesApproverHierarchyPurpose("-----");
 							}
 						}
+						Boolean isadmin = userRoleDao.isUserAdminByOrgLocationId(loginUser.getId(),orgLoc.getId());
+						if(StringUtils.isNotEmpty(expensesApproverHierarchy.getReopenRejectedReason()) && !isadmin){
+							expensesApproverHierarchy.setReopenRejectedReason(expensesApproverHierarchy.getReopenRejectedReason());
+						}
+						expensesApproverHierarchy.setRejectedReason(expensesApproverHierarchy.getRejectedReason());
 					}
 				}
 			}
@@ -620,7 +628,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, ExpensesAppro
 				//setting the class filed values
 				 
 				 Map<String, String> globalVarsMap = new HashMap<String, String>();
-				 globalVarsMap.put("employeeUser",expenses.getProjectMembers().getEmployee().getUser().getFirstName());
+				 globalVarsMap.put("employeeUser",expenses.getProjectMembers().getProjectMemberCandidteId().getFirstName());
 				 globalVarsMap.put("approverUser",reopenedUser.getFirstName());
 				 globalVarsMap.put("reopenUser",orgLoc.getUser().getFirstName());
 				 globalVarsMap.put("projectName", projectName);

@@ -180,7 +180,7 @@ function teamEditDetails(teamId){
 	        	outPut = outPut+ '<div class="col-md-6" id="teamNameDiv">';
 	        	outPut = outPut +'<input type="hidden" class="form-control input-sm" name="teamId"  value="'+teamId+'">';
 	        	outPut = outPut+ '<label>Team Name<b class="text-danger">*</b> </label>';
-	        	outPut = outPut+ '<input type="text" class="form-control"  placeholder="Team Name" id="name" name="name" data-validation="required validate_Space validate_AlphaNumaric validate_Name validate_length length2-100" field-name="Team Name" value="'+json.name+'"  onblur="validateTeamName();">';
+	        	outPut = outPut+ '<input type="text" class="form-control"  placeholder="Team Name" id="candidateName" name="name" data-validation="required validate_Space validate_AlphaNumaric validate_Name validate_length length2-100" field-name="Team Name" value="'+json.name+'"  onblur="validateTeamName();">';
 	        	outPut = outPut+ '                </div>';
 	        	
 	        	
@@ -304,7 +304,7 @@ function addTeam(){
 	/* outPut = outPut + '<input type="hidden" class="form-control input-sm" name="teamId"  value="'+teamId+'">'; */
 	outPut = outPut+ '<div class="col-md-12">';
 	outPut = outPut+ '<label>Team Name<b class="text-danger">*</b> </label>';
-	outPut = outPut+ '<input type="text" class="form-control"  placeholder="Team Name" id="name" name="name" data-validation="required validate_Space validate_AlphaNumaric validate_length length2-100" field-name="Team Name" value="" onblur="validateTeamName();">';
+	outPut = outPut+ '<input type="text" class="form-control"  placeholder="Team Name" id="candidateName" name="name" data-validation="required validate_Space validate_AlphaNumaric validate_length length2-100" field-name="Team Name" value="" onblur="validateTeamName();">';
 	outPut = outPut+ '                </div>';
 	outPut = outPut+ '              </div>';
 	outPut = outPut+ '              <div class="clearfix mb10">';
@@ -1180,7 +1180,7 @@ function removeFromTeam(id){
 <!-- Team Name validation script starts here -->
 <script type="text/javascript">
  function validateTeamName() {
-	 var name = $('#name').val(); 
+	 var name = $('#candidateName').val(); 
 	 $('#teamNameDiv').find('p.jquery_form_error_message').remove();
 	 if(name != null && name != ""){
 		 $.ajax({
@@ -1188,21 +1188,18 @@ function removeFromTeam(id){
 		        url: sourceleadUrl+"/validateTeamName?"+tokenParamName+"="+tokenValue+"&name="+name, 
 		        success: function(data) {
 		        	if(data == 'true'){
-						  
-		        		  $("input#name").after("<p class='jquery_form_error_message'>"+name+" is Already Existed</span>");
+		        		  $("input#candidateName").after("<p class='jquery_form_error_message'>"+name+" is Already Existed</span>");
 						  $("#add_team").attr("disabled", "disabled");
 						  $("#add_team").addClass('button').val('Processing..');
-		        	}
-		        	else{
-		        		
-		        		 $('input#name').removeAttr("record-exist record-exist-errormsg");
+		        	}else{
+		        		 $('input#candidateName').removeAttr("record-exist record-exist-errormsg");
 		        		 $('#teamNameDiv').find('p.jquery_form_error_message').remove(); 
 		        		 $("#add_team" ).addClass('button').val('Save');
                          $("#add_team").removeAttr("disabled");
 		        	}
 		        },
 		    });
-	 } 
+	 }
  }
  </script>     
  

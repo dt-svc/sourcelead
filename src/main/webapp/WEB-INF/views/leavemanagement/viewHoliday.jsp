@@ -85,7 +85,7 @@ function getHolidaysList(){
 			        		 result = result + '</td>';
 			        		 result = result + ' <td>';
 			        		 if(opt.description !=null && opt.description != 'undefined' && opt.description != ''){
-			        			 result = result + '     <div title="2" class="tblminwidth-75">'+opt.description+'</div>';	 
+			        			 result = result + '     <div title="'+opt.description+'" class="tblminwidth-75">'+opt.description+'</div>';	 
 			        		 }else{
 			        			 result = result + '     <div title="2" class="tblminwidth-75">--</div>';	
 			        		 }

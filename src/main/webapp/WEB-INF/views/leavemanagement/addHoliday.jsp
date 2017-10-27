@@ -73,7 +73,7 @@ $(document).ready(function() {
                       <div class="clearfix row">
                       
                       <div class="col-sm-5 paddingRight" id="errFromDate">
-                      <input type="text" class="form-control calendar" value="${holidayDTO.fromDateStr}" field-name="From Date" data-validation="required" name="fromDate" id="fromDate" placeholder="From Date">
+                      <input type="text" class="form-control calendar" value="${holidayDTO.fromDateStr}" field-name="From Date" data-validation="required" name="fromDate" id="fromDate" placeholder="From Date" readonly>
                       </div>
                       
                       <div class="col-sm-4 paddingLeft paddingRight checkBox">
@@ -110,7 +110,7 @@ $(document).ready(function() {
                       
                       <div class="clearfix row mt10 mb10">
                       <div class="col-sm-5 paddingRight" id="errToDate">
-                      <input type="text" class="form-control calendar" value="${holidayDTO.toDateStr}" field-name="To Date" data-validation="required" name="toDate" id="toDate" placeholder="To Date">
+                      <input type="text" class="form-control calendar" value="${holidayDTO.toDateStr}" field-name="To Date" data-validation="required" name="toDate" id="toDate" placeholder="To Date" readonly>
                       </div>
                       <div class="col-sm-4 paddingLeft paddingRight checkBox">
                       <c:if test="${!empty holidayDTO.toHalfDayCheckBox}">

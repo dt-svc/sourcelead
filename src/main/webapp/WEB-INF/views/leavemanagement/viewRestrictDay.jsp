@@ -103,9 +103,9 @@ function populateRestrictDayList(json){
     	result = result +'  </td>                                                                                                                      ';
     	result = result +'  <td>                                                                                                                       ';
     	if(report.reason != null && report.reason != 'undefined' && report.reason != ''){
-    		result = result +'    <div title="Reason" class="tbldata-dotdot-verybig">'+report.reason+'</div> ';
+    		result = result +'    <div title="'+report.reason+'" class="tbldata-dotdot-verybig">'+report.reason+'</div> ';
     	}else{
-    		result = result +'    <div title="Reason" class="tbldata-dotdot-verybig">--</div> ';
+    		result = result +'    <div title="'+report.reason+'" class="tbldata-dotdot-verybig">--</div> ';
     	}
     	result = result +'  </td>                                                                                                                      ';
     	result = result +'  <td>                                                                                                                       ';
