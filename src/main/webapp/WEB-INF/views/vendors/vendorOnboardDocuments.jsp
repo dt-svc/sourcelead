@@ -171,7 +171,7 @@ function saveDocuments(){
 		      success :function(result) {
 		    	  
 		    	     var vendorTasks = document.getElementById("vendorTasks");
-					 $("#vendorTasks").removeClass("disabledLink");
+					 document.getElementById("vendorTasks").removeAttribute("class");
 					 vendorTasks.href="#tab-c";
 					 vendorTasks.addEventListener("click", function() {
 						 getVendorOnboardTasksList();
