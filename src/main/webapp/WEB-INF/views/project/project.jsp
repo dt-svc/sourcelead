@@ -390,7 +390,7 @@ function validateShortCode(){
 						<div class="form-group" id="EstimatedHoursDiv">
 							<label class="col-md-3">Estimated hours</label>
 							<div class="col-md-9">
-								<input type="text" value="" id="estimatedHours"  name="estimatedHours" class="form-control"
+								<input type="text" value="0" id="estimatedHours"  name="estimatedHours" class="form-control"
 									data-validation-optional="true" class="form-control" onblur="">
 							</div>
 						</div>
@@ -427,7 +427,7 @@ function validateShortCode(){
 					                  
 					                </select>
 					                </div>
-									<input type="text" value="" id="estimatedBudget" name="estimatedBudget" class="form-control"
+									<input type="text" value="0" id="estimatedBudget" name="estimatedBudget" class="form-control"
 										data-validation="validate_Space validate_length length1-50" data-validation-optional="true" class="form-control" >
 								</div>
 							</div>
@@ -641,11 +641,11 @@ function getStatus(){
 		var ee = $("#txtEditor").val($('.Editor-editor').html()); 
 
 		if ($('#project_form').validate(false, validationSettings)) {
-			/* var frm = $('#project_form').serializeFormJSON();
+		   var frm = $('#project_form').serializeFormJSON();
 			 
 		    var form = $('#project_form')[0];
-		    var formData = new FormData(form); */
-		    var formData = getFormData1("project_form");
+		    var formData = new FormData(form); 
+// 		    var formData = getFormData1("project_form");
      		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 			$.ajax({
 						type : "POST",
