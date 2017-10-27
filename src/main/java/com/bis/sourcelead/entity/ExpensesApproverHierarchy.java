@@ -58,14 +58,15 @@ private Long id;
 
 @NotFound(action=NotFoundAction.IGNORE)
 @ManyToOne
+@Fetch(FetchMode.SELECT)
 @JoinColumn(name="HIERARCHY_ID", nullable=false )        
 private ProjectApproverHierarchy hierarchyId;
 
 @NotFound(action=NotFoundAction.IGNORE)
 @ManyToOne
+@Fetch(FetchMode.SELECT)
 @JoinColumn(name="EXPENSESID", nullable=false )        
 private Expenses expenseId;
-
 
 @Column(name = "EXPENSE_STATUS")
 @Enumerated(EnumType.STRING)
@@ -99,6 +100,7 @@ private String updatedBy;
 
 @NotFound(action=NotFoundAction.IGNORE)
 @ManyToOne
+@Fetch(FetchMode.SELECT)
 @JoinColumn(name = "REOPENED_USER_ID", nullable = false)
 private User reopenedUser;
 

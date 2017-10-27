@@ -91,8 +91,8 @@
                 <div class="form-footer">
                   <div class="pull-right mr">
                      <input type="button" value="Cancel" class="btn btn-sm btn-default" onClick="self.location='/sourcelead/vendorOnboardTemplateList'">
-                    <input type="button" value="Save" id="save_doc_button"  onclick="validateSavedDocuments('save');" class="btn btn-sm btn-success">
-                    <input type="button" value="Save and Continue" id="save_continue_doc_button" onclick="validateSavedDocuments('saveAndContinue');" class="btn btn-sm btn-primary">
+                    <input type="button" value="Save" id="save_doc_button"  onclick="createTemplateDocs('save');" class="btn btn-sm btn-success">
+                    <input type="button" value="Save and Continue" id="save_continue_doc_button" onclick="createTemplateDocs('saveAndContinue');" class="btn btn-sm btn-primary">
                   </div>
                 </div>
                 </form>
@@ -824,8 +824,16 @@ function validateDocumentName(id){
 				 } 
 			 }
 		 }
-		
-		
+	 }
+	 
+	 
+	 var savedDoc = $("#savedContractsAttachments strong[id*=contractsdocument]").length;
+	 for (var i = 0; i <= savedDoc; i++) { 
+		 var docName = $("#"+i+"savedDoc").val();
+		 if(documentName == docName){
+			 flag = false;
+			 break;
+		 }
 	 }
 	 
 	 if(flag == false){
@@ -844,43 +852,7 @@ function validateDocumentName(id){
 </script>
 
 
-<script>
-function validateSavedDocuments(type){
-	 var flag = true;
-	 var docNames = [];
-	 var savedDoc = $("#savedContractsAttachments strong[id*=contractsdocument]").length;
-	 alert(savedDoc);
-	 for (var i = 0; i <= savedDoc; i++) { 
-		  docNames.push($("#"+i+"savedDoc").val());
-	 }
-	 alert(docNames);
-	 var documentName = "";
-	 for (var i = 0; i < docNames.length; i++) 
-     {
-         for (var j = 0; j < docNames.length; j++) 
-         {
-             if (i != j) 
-             {
-                 if (docNames[i] == docNames[j]) 
-                 {
-                	 flag = false; 
-                	 documentName = docNames[i];
-                	 break;
-                 }
-             }
-         }
-     }
-	 
-	 if(flag == false){
-		  alertMessage(documentName);
-		  $("#save_continue_doc_button").attr("disabled", "disabled");
-	 }else{
-		  $("#save_continue_doc_button").removeAttr("disabled");
-		  //createTemplateDocs(type);
-	 }
-	
-}
-</script>
+
 
 <script type="text/javascript">
 function alertMessage(documentName){
@@ -1104,6 +1076,9 @@ function deleteTask(taskId){
 	        success: function(data) {
 	        	if(data == 'success'){
 	        		document.getElementById("onboardTask"+taskId).remove();
+	        		if($("#onboardTasksList div[id*=onboardTask]").length === 0) {
+	        			$("#onboardTasksList").prepend("<div><h4>No Tasks Found</h4></div>");
+	        		}
 	        	}
 	        },
 	    });
