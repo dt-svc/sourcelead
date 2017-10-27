@@ -113,9 +113,8 @@ function vendorRequirementListInclude(orgRelationID){
 		$.ajax({
 	    	type: "POST",
 	    	   url: sourceleadUrl+"/getVendorJobs?"+tokenParamName+"="+tokenValue+"&orgRelationID="+orgRelationID+"&status="+status, 	
-	    	success: function(data) {
+	    	success: function(json) {
 	        	
-	        	var json = JSON.parse(data);
 	        
 	        	$("#vendorRequirmentListDiv").empty();
 	        	
