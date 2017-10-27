@@ -829,7 +829,7 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 						.filter(predicate -> predicate.getProjectMemberCandidteId().getOrgRelationId() !=null && predicate.getProjectMemberCandidteId().getOrgRelationId().getId().longValue() == orgRelationId)
 				.collect(Collectors.toList());
 		
-		projectMemberList.forEach(pm -> {
+		projectMemberfilteredList.forEach(pm -> {
 			try {
 				StringBuilder sb = new StringBuilder();
 				if (pm.getProjectMemberCandidteId() != null && StringUtils.isNotEmpty(pm.getProjectMemberCandidteId().getLastName())) {
