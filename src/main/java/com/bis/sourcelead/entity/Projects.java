@@ -321,7 +321,7 @@ public class Projects implements Serializable{
     
     @Transient
    	@JsonProperty
-    private String projectbudgetAmount;
+    private Double projectbudgetAmount;
     
     @Transient
    	@JsonProperty
@@ -976,12 +976,12 @@ public class Projects implements Serializable{
 	public void setCurrency(String currency) {
 		this.currency = currency;
 	}
-
-	public String getProjectbudgetAmount() {
+ 
+	public Double getProjectbudgetAmount() {
 		return projectbudgetAmount;
 	}
 
-	public void setProjectbudgetAmount(String projectbudgetAmount) {
+	public void setProjectbudgetAmount(Double projectbudgetAmount) {
 		this.projectbudgetAmount = projectbudgetAmount;
 	}
 

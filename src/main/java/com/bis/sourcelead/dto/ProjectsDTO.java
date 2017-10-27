@@ -55,7 +55,7 @@ public class ProjectsDTO extends SearchDTO implements Serializable{
 	
 	private String estimatedHours;
 	
-	private String estimatedBudget;
+	private double estimatedBudget;
 	
 	private Double flatPercentage;
 	
@@ -94,6 +94,10 @@ public class ProjectsDTO extends SearchDTO implements Serializable{
 	List<ExpensesCategoryListDTO> expenseCategoryList;
 	
 	List<ProjectMembersDTO> projectMembersList;
+	
+	private String reStartDate;
+	
+	private String reEndDate;
 	
 	public String getExpenseId() {
 		return expenseId;
@@ -273,11 +277,11 @@ public class ProjectsDTO extends SearchDTO implements Serializable{
 		this.estimatedHours = estimatedHours;
 	}
 
-	public String getEstimatedBudget() {
+	public double getEstimatedBudget() {
 		return estimatedBudget;
 	}
 
-	public void setEstimatedBudget(String estimatedBudget) {
+	public void setEstimatedBudget(double estimatedBudget) {
 		this.estimatedBudget = estimatedBudget;
 	}
 
@@ -439,6 +443,22 @@ public class ProjectsDTO extends SearchDTO implements Serializable{
 
 	public void setEndDateStr1(String endDateStr1) {
 		this.endDateStr1 = endDateStr1;
+	}
+
+	public String getReStartDate() {
+		return reStartDate;
+	}
+
+	public void setReStartDate(String reStartDate) {
+		this.reStartDate = reStartDate;
+	}
+
+	public String getReEndDate() {
+		return reEndDate;
+	}
+
+	public void setReEndDate(String reEndDate) {
+		this.reEndDate = reEndDate;
 	}
 	
 	

@@ -145,7 +145,7 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
 		//DateFormat format = LoginSessionController.DATEFORMAT;
 		
 		StringBuilder fName=new StringBuilder();
-		Sheet sheet = wb.createSheet(fName.append(projectMember.getEmployee().getUser().getFirstName()).append("_").append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),new Date())).toString());
+		Sheet sheet = wb.createSheet(fName.append(projectMember.getProjectMemberCandidteId().getFirstName()).append("_").append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),new Date())).toString());
 		Row writeRow = null;
 		
 		CellStyle style = wb.createCellStyle();
@@ -386,8 +386,8 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
 						 String billable = getTotalHours((long) (Math.round(billableHours)));
 						 String nonBillable = getTotalHours( (long) (Math.round(nonBillableHours)));
 						 String grandtotal = getTotalHours(grandTotalHours);
-						 sheet = getExcelSheetWithHeader(sheet, writeRow, wb,frequencyStartDate,frequencyEndDate,projectMember.getEmployee().getUser(),grandtotal,projectMember.getProjects().getProjectName(),submissionStatusStr,billable,nonBillable);
-						file = new File(fileName.append(projectMember.getEmployee().getUser().getFirstName()).append("_").append(frequencyStartDate).append(" to ").append(frequencyEndDate).append(".xls").toString());
+						 sheet = getExcelSheetWithHeader(sheet, writeRow, wb,frequencyStartDate,frequencyEndDate,projectMember.getProjectMemberCandidteId().getConsultantUser(),grandtotal,projectMember.getProjects().getProjectName(),submissionStatusStr,billable,nonBillable);
+						file = new File(fileName.append(projectMember.getMasterCandidateId().getFirstName()).append("_").append(frequencyStartDate).append(" to ").append(frequencyEndDate).append(".xls").toString());
 						FileOutputStream fos = new FileOutputStream(file);
 						try {
 							wb.write(fos);
@@ -985,7 +985,7 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
 		int column = 0;
 		for (ProjectMembers proMembers : projectMembers) {
 			writeRow = createExcelsheet.createRow(column + 5);
-			createExcelsheet = createXlsSheetTimesheetApproval(createExcelsheet, writeRow,proMembers,client,timesheetFrequency,startDate,endDate,user,orgLocations.getId());
+			createExcelsheet = createXlsSheetTimesheetApproval(createExcelsheet, writeRow,proMembers,client,timesheetFrequency,startDate,endDate,user,orgLocations.getId(), proMembers);
 			column++;
 		}
 		// output the file using file output stream.
@@ -1002,17 +1002,17 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
 		return file;
 	}
 	// creating excel sheet data here depending upon input frequency.
-	private Sheet createXlsSheetTimesheetApproval(Sheet createExcelsheet, Row writeRow,ProjectMembers projMembers,String client,String timesheetFrequency,Date startDate,Date endDate,User user,Long locationsId) throws Exception {
+	private Sheet createXlsSheetTimesheetApproval(Sheet createExcelsheet, Row writeRow,ProjectMembers projMembers,String client,String timesheetFrequency,Date startDate,Date endDate,User user,Long locationsId, ProjectMembers projectMember) throws Exception {
 		Projects projects = projectsService.getProjectById(projMembers.getProjects().getId());
-		if (projMembers.getEmployee().getUser().getFullName() != null && !"".equalsIgnoreCase(projMembers.getEmployee().getUser().getFullName())) {
+		if (projectMember.getProjectMemberCandidteId().getFirstName() != null && !"".equalsIgnoreCase(projMembers.getEmployee().getUser().getFullName())) {
 			writeRow.createCell(0).setCellValue(projMembers.getEmployee().getUser().getFullName());
 			createExcelsheet.setColumnWidth(0, 10000);
 		}
-		if (projMembers.getEmployee().getUser().getEmail() != null && !"".equalsIgnoreCase(projMembers.getEmployee().getUser().getEmail())) {
+		if (projectMember.getProjectMemberCandidteId().getEmail() != null && !"".equalsIgnoreCase(projMembers.getEmployee().getUser().getEmail())) {
 			writeRow.createCell(1).setCellValue(projMembers.getEmployee().getUser().getEmail());
 			createExcelsheet.setColumnWidth(1, 10000);
 		}
-		if (projMembers.getEmployee().getUser().getMobilePhone() != null && !"".equalsIgnoreCase(projMembers.getEmployee().getUser().getMobilePhone())) {
+		if (projectMember.getProjectMemberCandidteId().getMobilePhone() != null && !"".equalsIgnoreCase(projMembers.getEmployee().getUser().getMobilePhone())) {
 			writeRow.createCell(2).setCellValue(projMembers.getEmployee().getUser().getMobilePhone());
 			createExcelsheet.setColumnWidth(2, 10000);
 		}
