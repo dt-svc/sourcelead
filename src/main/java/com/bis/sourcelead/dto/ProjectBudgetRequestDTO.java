@@ -12,9 +12,9 @@ public class ProjectBudgetRequestDTO implements Serializable {
 	 
 	 private String budgetApprover;
 	 
-	 private String estimatedHours;
+	 private double estimatedHours;
 	 
-	 private String estimatedBudget;
+	 private double estimatedBudget;
 	 
 	 private String projectUUID;
 
@@ -34,14 +34,6 @@ public class ProjectBudgetRequestDTO implements Serializable {
 		return budgetApprover;
 	}
 
-	public String getEstimatedHours() {
-		return estimatedHours;
-	}
-
-	public String getEstimatedBudget() {
-		return estimatedBudget;
-	}
-
 	public void setBaseLine(String baseLine) {
 		this.baseLine = baseLine;
 	}
@@ -50,11 +42,19 @@ public class ProjectBudgetRequestDTO implements Serializable {
 		this.budgetApprover = budgetApprover;
 	}
 
-	public void setEstimatedHours(String estimatedHours) {
+	public double getEstimatedHours() {
+		return estimatedHours;
+	}
+
+	public double getEstimatedBudget() {
+		return estimatedBudget;
+	}
+
+	public void setEstimatedHours(double estimatedHours) {
 		this.estimatedHours = estimatedHours;
 	}
 
-	public void setEstimatedBudget(String estimatedBudget) {
+	public void setEstimatedBudget(double estimatedBudget) {
 		this.estimatedBudget = estimatedBudget;
 	}
 
