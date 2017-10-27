@@ -629,6 +629,7 @@ public class VendorOnboardServiceImpl implements VendorOnboardService {
 	    		moduleId = (long) Constants.MODULE_ATS;
 	    		if(flag == false){
 	    			modules = modules+","+Constants.MODULE_ATS;
+	    			vendorOrgLocations.setModulesId(modules);
 	    			saveUserRoleActions(moduleId,tabId,vendorOrgLocations);
 	    		}
 	    		
