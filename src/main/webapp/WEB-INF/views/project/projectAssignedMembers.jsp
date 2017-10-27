@@ -1022,7 +1022,7 @@ function assignMembers(){
 
 						$("#associateRequestLoading").removeAttr("style");
 						 var additionalDetails = document.getElementById("additionalDetails");
-						 $("additionalDetails").removeClass("disabledLink");
+						 document.getElementById("additionalDetails").removeAttribute("class")
 						 additionalDetails.href="#tab-c"; 
 						 additionalDetails.click();
 					},
