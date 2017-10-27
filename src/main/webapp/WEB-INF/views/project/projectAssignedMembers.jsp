@@ -521,34 +521,6 @@ function getAssociatesFilter(){
 				  finalDateFormatAssignEmpUpdate = 'yy-dd-mm'; 
 			  }
 			
-			/* $( "#"+maxRowNum+"memberStartDate" ).datepicker({
-				  changeMonth: true,
-			      changeYear: true,
-			      dateFormat : finalDateFormatResourceReqSave,
-			      minDate : 0,
-				  onSelect : function(selected) {
-					  var dt = $(this).datepicker('getDate', '+1d');
-						dt.setDate(dt.getDate() + 1);
-						$("#"+maxRowNum+"memberEndDate").datepicker("option", "minDate", dt);
-						removeStartDateValidation(maxRowNum);
-						getEstimatedHours(maxRowNum)
-			 	  }
-			    });
-			
-			$( "#"+maxRowNum+"memberEndDate" ).datepicker({
-				  changeMonth: true,
-			      changeYear: true,
-			      dateFormat : finalDateFormatResourceReqSave,
-			      minDate : 0,
-				  onSelect : function(selected) {
-					   var dt = $(this).datepicker('getDate', '-1d');
-						dt.setDate(dt.getDate() - 1);
-						$("#"+maxRowNum+"memberStartDate").datepicker("option", "maxDate", dt);
-						getEstimatedHours(maxRowNum)
-			 	  }
-			    });
-			 */
-			
 			
 			var from = projectStartDate.split("-");
 	        var datepickerStartDate =  new Date(from[2], from[1] - 1, from[0]);
