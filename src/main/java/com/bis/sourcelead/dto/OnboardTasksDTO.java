@@ -41,6 +41,49 @@ public class OnboardTasksDTO implements Serializable {
 	  private List<VendorOnboardTaskDTO> vendorOnboardTasksInfo;
 	  
 	  private String isMailSent;
+	  
+	  private Long id;
+	  
+	  private String priority;
+	  
+	  private String dueAfterString;
+	  
+	  private List<String> usersList;
+	  
+	  private String onboardTaskType;
+	  
+	  
+	public List<String> getUsersList() {
+		return usersList;
+	}
+
+	public void setUsersList(List<String> usersList) {
+		this.usersList = usersList;
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public String getPriority() {
+		return priority;
+	}
+
+	public void setPriority(String priority) {
+		this.priority = priority;
+	}
+
+	public String getDueAfterString() {
+		return dueAfterString;
+	}
+
+	public void setDueAfterString(String dueAfterString) {
+		this.dueAfterString = dueAfterString;
+	}
 
 	public String getTaskName() {
 		return taskName;
@@ -169,5 +212,15 @@ public class OnboardTasksDTO implements Serializable {
 	public void setIsMailSent(String isMailSent) {
 		this.isMailSent = isMailSent;
 	}
+
+	public String getOnboardTaskType() {
+		return onboardTaskType;
+	}
+
+	public void setOnboardTaskType(String onboardTaskType) {
+		this.onboardTaskType = onboardTaskType;
+	}
+
+
 	
 }
