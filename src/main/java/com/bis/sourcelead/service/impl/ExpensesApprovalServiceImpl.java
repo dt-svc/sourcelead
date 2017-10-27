@@ -378,10 +378,13 @@ private List<String[]> prepareExpenseApprovalListStringArray(List<ExpensesApprov
 				expenseArray[11] = "--";
 			}
 			if(null != expenseId.getStatus()){
-				
 				ExpensesApproverHierarchy  eah = getExpensesApproverHierarchyByApproverUserIdAndExpenseId(loginUser.getId(), expenseId.getId(),orgLoc.getId());
 			    Submission_Status submissionStatus = eah.getExpenseStatus();
-				expenseArray[12] = submissionStatus.getValue();
+				    if(eah.getReopenRejectedReason()!= null) {
+				    	expenseArray[12] = "Rejected";
+				    }else {
+				    	expenseArray[12] = submissionStatus.getValue();	
+				    }
 			}else{
 				expenseArray[12] = "--";
 			}
@@ -546,8 +549,12 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, ExpensesAppro
 			if(null != expenseId.getExpenseStatus()){
 				ExpensesApproverHierarchy  eah = getExpensesApproverHierarchyByApproverUserIdAndExpenseId(loginUser.getId(), expenseId.getId(),orgLoc.getId());
 			    Submission_Status submissionStatus = eah.getExpenseStatus();
+			    if(eah.getReopenRejectedReason()!= null) {
+			    	writeRow.createCell(12).setCellValue("Rejected");
+			    }else {
 				writeRow.createCell(12).setCellValue(submissionStatus.getValue());
 				createExcelsheet.autoSizeColumn(12);
+			    }
 			}
 			if(null != ex.getActionPerformedBy()){
 				writeRow.createCell(13).setCellValue(ex.getActionPerformedBy());
