@@ -55,7 +55,7 @@ public class ProjectsDTO extends SearchDTO implements Serializable{
 	
 	private String estimatedHours;
 	
-	private String estimatedBudget;
+	private double estimatedBudget;
 	
 	private Double flatPercentage;
 	
@@ -273,11 +273,11 @@ public class ProjectsDTO extends SearchDTO implements Serializable{
 		this.estimatedHours = estimatedHours;
 	}
 
-	public String getEstimatedBudget() {
+	public double getEstimatedBudget() {
 		return estimatedBudget;
 	}
 
-	public void setEstimatedBudget(String estimatedBudget) {
+	public void setEstimatedBudget(double estimatedBudget) {
 		this.estimatedBudget = estimatedBudget;
 	}
 
