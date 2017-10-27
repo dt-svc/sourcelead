@@ -91,8 +91,8 @@
                 <div class="form-footer">
                   <div class="pull-right mr">
                      <input type="button" value="Cancel" class="btn btn-sm btn-default" onClick="self.location='/sourcelead/vendorOnboardTemplateList'">
-                    <input type="button" value="Save" id="save_doc_button"  onclick="createTemplateDocs('save');" class="btn btn-sm btn-success">
-                    <input type="button" value="Save and Continue" id="save_continue_doc_button" onclick="createTemplateDocs('saveAndContinue');" class="btn btn-sm btn-primary">
+                    <input type="button" value="Save" id="save_doc_button"  onclick="validateSavedDocuments('save');" class="btn btn-sm btn-success">
+                    <input type="button" value="Save and Continue" id="save_continue_doc_button" onclick="validateSavedDocuments('saveAndContinue');" class="btn btn-sm btn-primary">
                   </div>
                 </div>
                 </form>
@@ -369,7 +369,7 @@
 </script>
 
 <div id="divContractsNameTd1" style="display: none; float: left;">
-	  			<input type="text"  placeholder='Document Name' class='form-control input-sm vendorinput' id='REPLACEROWIDcontractsdocFileName' name="vendorDocumentsFileInfo[REPLACEROWID].docFileName"  data-validation="required" field-name="Document" > 
+	  			<input type="text"  placeholder='Document Name' onblur='validateDocumentName(REPLACEROWID)' class='form-control input-sm vendorinput' id='REPLACEROWIDcontractsdocFileName' name="vendorDocumentsFileInfo[REPLACEROWID].docFileName"  data-validation="required" field-name="Document" > 
 </div>
 
 <!-- <div id="divContractsAttachmentTd1" style="display: none; float: left;">
@@ -760,7 +760,7 @@ function getTemplateVendorDocumentsDetails(templateId){
                 			 checked = "checked";
                 		 }
                 		 result = result +"<strong id='contractsdocument"+opt.id+"'>";
-                		 result = result +"<input type='text' value='"+opt.documentName+"' title='"+opt.documentName+"' readonly class='form-control input-sm vendorinput'></input>";
+                		 result = result +"<input type='text' id='"+i+"savedDoc' value='"+opt.documentName+"' title='"+opt.documentName+"' readonly class='form-control input-sm vendorinput'></input>";
                 		 
                 	/* 	 result = result +"<div class='positionRelative inputpadding'>";
                 		 if(opt.fileUrl != null){
@@ -787,14 +787,14 @@ function getTemplateVendorDocumentsDetails(templateId){
                 	 result = result +"<input type='hidden' id='addedDocumentsRowCount' value='1' />";
                 	 result = result +"<table class='timesheetAttachment'  id='contractsAttachmentTable' cellpadding='0' cellspacing='0'>";
                 	 result = result +"<tr id='divAttachmentTsRow0'>";
-                	 result = result +"<td><input type='text' placeholder='Document Name' class='form-control input-sm vendorinput'  data-validation-optional='true' field-name='Document' name='vendorDocumentsFileInfo[0].docFileName' id='0contractsdocFileName'></td>";
+                	 result = result +"<td><input type='text' placeholder='Document Name' onblur='validateDocumentName(0)' class='form-control input-sm vendorinput'  data-validation-optional='true' field-name='Document' name='vendorDocumentsFileInfo[0].docFileName' id='0contractsdocFileName'></td>";
                 	 result = result +"<td>"; 
                 	 result = result +"<label class='switch pull-left ml-mr switchvendor-custom'>";
                 	 result = result +"<input type='checkbox' checked id='0checked' name='vendorDocumentsFileInfo[0].checked' onclick='checkDocument(0)' value='Y'>"
                 	 result = result +'<div class="slider round"></div>';
                		 result = result +'</label>';
                 	 result = result +"</td>";
-                	 result = result +"<td><i class='fa fa-plus' onClick='addContractsAttachment()'></i></td>";
+                	 result = result +"<td><i class='fa fa-plus' id='addDocRow' onClick='addContractsAttachment()'></i></td>";
                 	 result = result +"</tr>";
                 	 result = result +"</table>";
                 	 $("#savedContractsAttachments").empty();
@@ -807,6 +807,96 @@ function getTemplateVendorDocumentsDetails(templateId){
 }
 </script>
 
+<script>
+function validateDocumentName(id){
+	var checkMaxTsRowNum = $("#contractsAttcahmentMaxRowNumber").val();
+	var flag = true;
+	var j = "";
+	 var documentName = $("#"+id+"contractsdocFileName").val();
+	 for (var i = 0; i < checkMaxTsRowNum; i++) { 
+		
+		 if(id != i){
+			 if(documentName != "undefined"){
+				 var docName = $("#"+i+"contractsdocFileName").val();
+				 if(documentName == docName){
+					 flag = false;
+					 break;
+				 } 
+			 }
+		 }
+		
+		
+	 }
+	 
+	 if(flag == false){
+		  alertMessage(documentName);
+		  var addDocRow = document.getElementById("addDocRow");
+		  $("#addDocRow").removeAttr("onclick");
+		  $("#save_continue_doc_button").attr("disabled", "disabled");
+	 }else{
+		  $("#save_continue_doc_button").removeAttr("disabled"); 
+		  var addDocRow = document.getElementById("addDocRow");
+		  $("#addDocRow").attr("onclick","addContractsAttachment()");
+	 }
+	
+	
+}
+</script>
+
+
+<script>
+function validateSavedDocuments(type){
+	 var flag = true;
+	 var docNames = [];
+	 var savedDoc = $("#savedContractsAttachments strong[id*=contractsdocument]").length;
+	 alert(savedDoc);
+	 for (var i = 0; i <= savedDoc; i++) { 
+		  docNames.push($("#"+i+"savedDoc").val());
+	 }
+	 alert(docNames);
+	 var documentName = "";
+	 for (var i = 0; i < docNames.length; i++) 
+     {
+         for (var j = 0; j < docNames.length; j++) 
+         {
+             if (i != j) 
+             {
+                 if (docNames[i] == docNames[j]) 
+                 {
+                	 flag = false; 
+                	 documentName = docNames[i];
+                	 break;
+                 }
+             }
+         }
+     }
+	 
+	 if(flag == false){
+		  alertMessage(documentName);
+		  $("#save_continue_doc_button").attr("disabled", "disabled");
+	 }else{
+		  $("#save_continue_doc_button").removeAttr("disabled");
+		  //createTemplateDocs(type);
+	 }
+	
+}
+</script>
+
+<script type="text/javascript">
+function alertMessage(documentName){
+	var result = "";
+	result = result +"	<div class='project_inn_mask'></div>";
+	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+	result = result +"		<p>Duplicate Document <strong>"+documentName+"</strong></p>";
+	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='cancel();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
+	result = result +"	</div>";
+	$("#choicepopUp").append(result);
+	$("#remove_user_pop").slideDown(200);
+	$(".project_inn_mask").fadeIn(200);
+
+}
+</script>
 
 
 <script>
