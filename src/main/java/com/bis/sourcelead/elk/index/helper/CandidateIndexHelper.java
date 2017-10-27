@@ -64,7 +64,7 @@ public class CandidateIndexHelper {
 				candidateIndex.setRecruiterUserId(0L);
 			}
 			
-			if(null != candidate.getSkillsName() && !candidate.getSkillsName().isEmpty()){
+			if(null != candidate.getSkillsName()){
 				candidateIndex.setSkillsName(candidate.getSkillsName());
 			}
 			
