@@ -751,19 +751,21 @@ function invoicePagination(url){
                         	result = result +'         <td> ';
             				result = result +'     <div class="tblminwidth-90">';
             				 result = result +'  <div class="pull-right positionRelative menuWidget" >';
-            				 if(report.invoiceStatus == "SENT" || report.invoiceStatus == "Received" || report.invoiceStatus == "Accepted" ){
+            				 if(report.invoiceStatus != "SENT" && report.invoiceStatus != "Received" && report.invoiceStatus != "Rejected" ){
             					 result = result +' <i class="fa fa-ellipsis-v" onClick="showPopUp('+report.id+',\''+report.invoiceStatus+'\',\''+report.invoiceParentId+'\',\''+report.total+'\',\''+report.fileUrl+'\');" ></i>  ';
             						result = result +'  <div id="popupDiv'+report.id+'"></div>';
             				} 
             				result = result +'  </div> ';
             				if(report.invoiceType == "Receivable" && (report.invoiceParentId == null || report.invoiceParentId == '' || report.invoiceParentId == "undefined")){
-            					if(report.paymentStatus == "Paid" || report.invoiceStatus == "DRAFT" || report.invoiceStatus == "Rejected"){
+            					if(report.paymentStatus == "Paid" || report.invoiceStatus == "DRAFT" || report.invoiceStatus == "Rejected" || report.invoiceStatus == "SENT"){
             						if(report.paymentStatus == "Paid"){
             							result = result +'           <span class="text-primary successBtn primary pull-left" >Receive</span>   ';
             						}else if(report.invoiceStatus == "DRAFT"){
             							result = result +'           <span class="text-primary successBtn primary pull-left">Send</span><i class="fa fa-trash text-danger pull-right cursorPointer" title="Remove Invoice" onClick="deleteInvoice('+report.id+');";></i>';	
+            						}else if(report.invoiceStatus == "Rejected"){
+            							result = result +'           <div class="text-primary successBtn primary pull-left bg-red">Rejected</div>   ';	
             						}else{
-            							result = result +'           <span class="text-primary successBtn primary pull-left">Send</span>   ';	
+            							result = result +'           <span class="text-primary successBtn primary pull-left">Sent</span>   ';	
             						}
             							
             					}else{
@@ -776,14 +778,14 @@ function invoicePagination(url){
             				}else{
             					if(report.invoiceStatus == "Accepted"){
             						if(report.paymentStatus == "Paid"){
-            							result = result +'           <span class="text-primary successBtn primary pull-left" >Receive</span>   ';	
+            							result = result +'           <span class="text-primary successBtn primary pull-left">Receive</span>   ';	
             						}else{
             							result = result +'           <span class="text-primary receiveBtn pull-left" onclick="receivePaymentPop1('+report.id+','+report.dueAmount+');">Receive</span> </td>';
             						}
             						
             					}else{
             						if(report.invoiceStatus == "Rejected"){
-            							result = result +'           <span class="text-primary successBtn primary pull-left" >Send</span>           ';	
+            							result = result +'           <div class="text-primary successBtn primary pull-left bg-red">Rejected</div>   ';	
             						}else if(report.invoiceStatus == "Linked"){
             							result = result +' <a class="text-primary successBtn primary pull-left" onClick="unLinkInvoice('+report.id+')">UnLink</a>  ';
             						}else{
@@ -967,9 +969,9 @@ function rejectInvoice(id){
 	result = result +"	<div class='project_inn_mask'></div>";
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 	//result = result +"		<p>Do you want to delete this vendor contact?</p>";
-	result = result +"		<textarea id='reasonForDelete' class='form-control' field-name='Reject Reason'  data-validation='required validate_Space validate_Description validate_length length2-250' name='reasonForSpoc' value='' placeholder='Terminate Reason' rows='2'></textarea>";
+	result = result +"		<textarea id='reasonForDelete' class='form-control' field-name='Reject Reason'  data-validation='required validate_Space validate_Description validate_length length2-250' name='reasonForSpoc' value='' placeholder='Reject Reason' rows='2'></textarea>";
 	result = result + ' <div id="reasonForRejectDiv"/>';
-	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Delete' onclick='saveReasonforReceivable("+id+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelTermination();'></b>";
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Reject' onclick='saveReasonforReceivable("+id+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelTermination();'></b>";
 	result = result +"	</div>";
 	$("#popUp").append(result);
 	$("#remove_user_pop").slideDown(200);
