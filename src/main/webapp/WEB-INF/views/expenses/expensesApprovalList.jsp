@@ -270,7 +270,7 @@ $.ajax({
     if(data.expenseApprovalStatus !=null && data.expenseApprovalStatus  == 'REJECTED'){
     	  result = result+" <div class='sm text-center'><h3 class='reje_color'>Rejected</h3>";
     	 result = result+"  <i class='glyphicon glyphicon-comment' id='"+data.expenseId.id+"' onclick='rejectedMessage(\"rejectedMessage"+data.expenseId.id+"\");'>";
-	 	 result = result+" <div class='app_error_mes' id='rejectedMessage"+data.expenseId.id+"'>"+data.rejectedReason+"</div>";
+	 	 result = result+" <div class='app_error_mes' id='rejectedMessage"+data.expenseId.id+"'>"+data.reopenFinalReason+"</div>";
 	 	 result = result+" </i><br><p title='"+data.actionPerformedBy+"'>By : "+data.actionPerformedBy+"</p>";
 	 	 result = result+" </div>";
     }
