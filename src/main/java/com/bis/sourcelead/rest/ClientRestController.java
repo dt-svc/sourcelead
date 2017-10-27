@@ -46,6 +46,7 @@ import com.bis.sourcelead.dto.CandidateEducationDTO;
 import com.bis.sourcelead.dto.ClientDTO;
 import com.bis.sourcelead.dto.ClientVendorDTO;
 import com.bis.sourcelead.dto.OrgSpocDTO;
+import com.bis.sourcelead.dto.RequirementDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.elk.index.ClientVendorContactsIndex;
 import com.bis.sourcelead.elk.index.ClientVendorIndex;
@@ -944,18 +945,19 @@ public class ClientRestController {
 	 
 	   
 	   
-	@RequestMapping(value = "/getClientReleasedRequirementList", method = RequestMethod.POST)
+	@RequestMapping(value = {"/getClientReleasedRequirementList","/rest/getClientReleasedRequirementList"}, method = RequestMethod.POST)
 	@ResponseBody
-	String getClientReleasedRequirementList(@RequestParam(value = "orgRelationId", required = false) String orgRelationId, @RequestParam(value = "status", required = false) String status, HttpServletRequest request) throws Exception
+	List<RequirementDTO> getClientReleasedRequirementList(@RequestParam(value = "orgRelationId", required = false) String orgRelationId, @RequestParam(value = "status", required = false) String status, HttpServletRequest request) throws Exception
 	{
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		String userRoleName = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
-		String resultJson;
+		List<RequirementDTO> reqListDTO=new ArrayList<>();
 		List<Requirement> reqList = requirementService.getAllClientJobsBasedonRelationId(orgLocations.getId(), Long.parseLong(orgRelationId), userRoleName, loginUser, status);
 		//SimpleDateFormat formatter = orgLocations.getLocFullFormDateFormatter();
 		for (Requirement req : reqList) {
-			req.setPostedDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),req.getCreatedDate()));
+			RequirementDTO RequirementDTO=new RequirementDTO();
+			RequirementDTO.setPostedDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),req.getCreatedDate()));
 			int interviewsSum = 0;
 			int offeredSum = 0;
 			int submitToClient = 0;
@@ -969,7 +971,7 @@ public class ClientRestController {
 					managerLastName = req.getManagerUserId().getLastName();
 				}
 				StringBuilder name = new StringBuilder();
-				req.setManager(name.append(managerFirstName).append(" ").append(managerLastName).toString());
+				RequirementDTO.setManager(name.append(managerFirstName).append(" ").append(managerLastName).toString());
 				
 				List<RequirementSubmission> subList = requirementSubmissionService.getSubmissionsByRequirementId(req.getId(), loginUser, orgLocations,userRoleName);
 				for(RequirementSubmission reqsub : subList){
@@ -1019,15 +1021,26 @@ public class ClientRestController {
 					}
 				}
 				
-				req.setNoOfInterviewedApplicants(String.valueOf(interviewsSum));
-				req.setNoOfOfferedApplicants(String.valueOf(offeredSum));
-				req.setNoOfSubmittedApplicants(String.valueOf(submitToClient));
+				RequirementDTO.setNoOfInterviewedApplicants(String.valueOf(interviewsSum));
+				RequirementDTO.setNoOfOfferedApplicants(String.valueOf(offeredSum));
+				RequirementDTO.setNoOfSubmittedApplicants(String.valueOf(submitToClient));
+				RequirementDTO.setRequirementUUID(req.getRequirementUUID());
+				RequirementDTO.setJobTitle(req.getJobTitle());
+				RequirementDTO.setState(req.getState());
+				RequirementDTO.setCity(req.getCity());
+				RequirementDTO.setCountry(req.getCountry());
+				RequirementDTO.setJobOtherType(req.getOtherJobType());
+				RequirementDTO.setJobType(req.getJobType());
+				
+				RequirementDTO.setManager(req.getManager());
+				RequirementDTO.setRequirementSubmissionStatus((req.getRequirementSubmissionStatus()).toString());
+				reqListDTO.add(RequirementDTO);
 			   /*RequirementSubmission rs=requirementSubmissionService.getRequirementSubmissionByRequirementIdAndUserId(req.getId(), loginUser.getId());
 				requirementSubmissionHistoryService.getCandidatesCountBySubmissionIdandRequirementId(rs.getId(), rs.getSubmissionStatus().toString());*/
 			}
 		}
-		resultJson = commonUtil.toJSON(reqList);
-		return resultJson;
+		
+		return reqListDTO;
 	}
 	   
 	/**
@@ -2000,7 +2013,7 @@ public class ClientRestController {
 					}	
 					
 				}
-				response.setRecordsFiltered(searchHits.length);
+				response.setRecordsFiltered(Long.valueOf(searchResponse.getHits().getTotalHits()).intValue());
 				SearchResponse searchResponseForCount = sourceleadELKBaseIndexer
 						.searchDocumentWithMaxResults(Constants.ELK_CLIENTVENDOR_CONTACT_INDEX, Constants.ELK_CLIENTVENDOR_CONTACT_TYPE,
 								0, 10, "invitationStatus", SortOrder.DESC, boolQueryBuilderForCount);

@@ -1,6 +1,7 @@
 package com.bis.sourcelead.dto;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * @author Laxman
@@ -36,6 +37,49 @@ public class OffboardTasksDTO implements Serializable {
 	  private String offboardTaskId;
 	  
 	  private String offboardAssignedTo;
+	  
+	  private String id;
+	  
+	  private String priority;
+	  
+	  private String dueAfterString;
+	  
+	  private List<String> usersList;
+	  
+	  private String offboardTaskType;
+	  
+	public String getPriority() {
+		return priority;
+	}
+
+	public void setPriority(String priority) {
+		this.priority = priority;
+	}
+
+	public String getDueAfterString() {
+		return dueAfterString;
+	}
+
+	public void setDueAfterString(String dueAfterString) {
+		this.dueAfterString = dueAfterString;
+	}
+
+
+	public List<String> getUsersList() {
+		return usersList;
+	}
+
+	public void setUsersList(List<String> usersList) {
+		this.usersList = usersList;
+	}
+
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
 
 	public String getTaskName() {
 		return taskName;
@@ -147,5 +191,13 @@ public class OffboardTasksDTO implements Serializable {
 
 	public void setOffboardAssignedTo(String offboardAssignedTo) {
 		this.offboardAssignedTo = offboardAssignedTo;
+	}
+
+	public String getOffboardTaskType() {
+		return offboardTaskType;
+	}
+
+	public void setOffboardTaskType(String offboardTaskType) {
+		this.offboardTaskType = offboardTaskType;
 	}
 }

@@ -380,7 +380,6 @@ public class VendorOnboardServiceImpl implements VendorOnboardService {
 				  if(isUserActive == false){
 					  password = SourceLeadRandomCodeHelper.generateRandomPassword();
 					  spocUser.setPassword(sourceleadPasswordEncoder.encode(password));
-					  spocUser.setIsMailSent(Status.Y);
 					  userDao.addUser(spocUser);
 					  
 					  globalVarsMap.put("userName",spocUser.getUserName());

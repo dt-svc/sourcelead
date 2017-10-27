@@ -470,7 +470,6 @@ public class UserRestController {
 	 			if(isUserActive == false){
 	 				user.setPassword(sourceleadPasswordEncoder.encode(password));
 	 			}
-	 			user.setIsMailSent(Status.Y);
 	 			userService.addUser(user);
 	 			
 	 			// mail should forward user when action done in sourcelead admin 

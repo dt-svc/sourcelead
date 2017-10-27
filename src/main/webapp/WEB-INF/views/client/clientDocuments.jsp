@@ -96,8 +96,7 @@ function clientDocumentsList(clientLocationId,orgRelationId){
 	 $.ajax({  
           type : "POST",
           url: sourceleadUrl+"/getclientDocumentsListByResponderLocationId?"+tokenParamName+"="+tokenValue+"&responderLocationId="+clientLocationId+"&sourceType=Client",        
-          success :function(data) {
-             			var json = JSON.parse(data);
+          success :function(json) {
 	                	 $("#clientDocumentsList").empty();
 	                	 var result = "";
 	                	 result = result +"<table id='clientDocumentsPagination' class='display' cellspacing='0' width='100%' >"; 
@@ -303,7 +302,7 @@ function addDocument(clientLocationId,orgRelationId) {
 	
 	result = result+'	                  <div class="clearfix mb10" id="docNameDiv" style="display: none;">';
 	result = result+'	                    <div class="col-md-12 mt">';
-	result = result+'	                      <label id="documentName" name="documentName" class="text-primary tbldata-dotdot-vsm pull-left"></label>&nbsp;&nbsp;<span id="delete_resume" onclick="removeResumeNameDiv();"><i class="fa fa-trash removeIcon"></i></span>';
+	result = result+'	                      <label id="documentName" name="documentName" class="text-primary tbldata-dotdot-vsm pull-left"></label>&nbsp;&nbsp;<span id="delete_resume" onclick="removeResumeDiv();"><i class="fa fa-trash removeIcon"></i></span>';
 	result = result+'	                    </div>';
 	result = result+'	                  </div>';
 	
@@ -481,8 +480,7 @@ function getClientDocument(clientLocationId,orgRelationId,docId){
 	$.ajax({
 	   	type: "POST",
 	    url: sourceleadUrl+"/getOrgDocument?"+tokenParamName+"="+tokenValue+"&docId="+docId+"&orgRelationId="+orgRelationId+"&type=Client", 	   
-		    success: function(data) {
-		    	var json = JSON.parse(data);
+		    success: function(json) {
 		    	var spoc = "";
 		    	var owner = "";
     			 $("#uploadDocumentDiv").hide();
@@ -602,7 +600,7 @@ function manageDates(startDateStr,endDateStr) {
 </script>
 
 <script>
-function removeResumeNameDiv(){
+function removeResumeDiv(){
 	$("#docNameDiv").hide();
 	$("#uploadDocumentDiv").show();
 	$("#uploadFile").attr("data-validation", "required validate_Space validatedoc");
