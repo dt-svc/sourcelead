@@ -1,7 +1,6 @@
 package com.bis.sourcelead.dto;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -53,7 +52,7 @@ public class ProjectsDTO extends SearchDTO implements Serializable{
 	
 	private String projectId;
 	
-	private String estimatedHours;
+	private double estimatedHours;
 	
 	private double estimatedBudget;
 	
@@ -269,16 +268,16 @@ public class ProjectsDTO extends SearchDTO implements Serializable{
 		this.projectId = projectId;
 	}
 
-	public String getEstimatedHours() {
+	public double getEstimatedHours() {
 		return estimatedHours;
-	}
-
-	public void setEstimatedHours(String estimatedHours) {
-		this.estimatedHours = estimatedHours;
 	}
 
 	public double getEstimatedBudget() {
 		return estimatedBudget;
+	}
+
+	public void setEstimatedHours(double estimatedHours) {
+		this.estimatedHours = estimatedHours;
 	}
 
 	public void setEstimatedBudget(double estimatedBudget) {
