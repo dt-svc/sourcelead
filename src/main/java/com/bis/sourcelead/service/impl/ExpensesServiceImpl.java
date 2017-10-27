@@ -40,6 +40,7 @@ import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.CountriesService;
+import com.bis.sourcelead.service.ExpensesEntriesService;
 import com.bis.sourcelead.service.ExpensesService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.TimeZoneService;
@@ -93,6 +94,9 @@ public class ExpensesServiceImpl implements ExpensesService{
 	
 	@Autowired
 	private CandidateService candidateService;
+	
+	@Autowired
+	private ExpensesEntriesService expensesEntriesService;
 	
 	
 	@Autowired
@@ -1209,16 +1213,15 @@ public class ExpensesServiceImpl implements ExpensesService{
 	@Override
 	public List<ExpensesEntriesDTO> getApprovedExpenses(Long expenseId) throws Exception {
 
-		Expenses expense = expensesDao.getExpenseById(expenseId);
-		Set<ExpensesEntries> entriesList = expense.getExpensesEntries();
+		List<ExpensesEntries> entriesList = expensesEntriesService.getExpensesEntriesByExpenseId(expenseId);
 		List<ExpensesEntriesDTO> expensesEntriesDTOList = new ArrayList<>();
 		for(ExpensesEntries entries : entriesList){
 			ExpensesEntriesDTO  expensesEntriesDTO = new ExpensesEntriesDTO();
 			expensesEntriesDTO.setDateOccurred(ConversionUtil.getDateAsString(entries.getExpenseDate()));
 			expensesEntriesDTO.setEntryDescription(entries.getDescription());
 			expensesEntriesDTO.setCategoryAmount(String.valueOf(entries.getAmount()));
+			expensesEntriesDTO.setAmount(entries.getAmount());
 			expensesEntriesDTO.setCategoryName(entries.getExpensesCategoryId().getExpensesName());
-			expensesEntriesDTO.setCategoryAmount(String.valueOf(entries.getAmount()));
 			expensesEntriesDTOList.add(expensesEntriesDTO);
 		}
 		return expensesEntriesDTOList;

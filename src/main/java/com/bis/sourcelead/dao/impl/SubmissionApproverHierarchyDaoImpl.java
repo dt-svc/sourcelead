@@ -606,7 +606,7 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 	    		    			    		
 	    		
 	    		//Get Max Level in Current Location
-	    		Query queryForMaxLevel = session.createQuery("select Max(sah.hierarchyId.level) from SubmissionApproverHierarchy sah  where  sah.submissionId.id = :submissionId and sah.hierarchyId.id = :hierarchyId");
+	    		Query queryForMaxLevel = session.createQuery("select Max(sah.hierarchyId.level) from SubmissionApproverHierarchy sah  where  sah.submissionId.id = :submissionId and sah.hierarchyId.id = :hierarchyId and sah.hierarchyId.status != '0' ");
 	    		List<Integer> maxList = queryForMaxLevel.setLong("hierarchyId", sah.getHierarchyId().getId()).setLong("submissionId", sah.getSubmissionId().getId()).list();
 	    		Integer maxLevel = 0;
 	    		if(maxList !=null && !maxList.isEmpty()){

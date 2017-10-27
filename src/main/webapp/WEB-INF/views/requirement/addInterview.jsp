@@ -265,7 +265,7 @@ function checkEmailsInterview(){
 }
 </script> 
 <script>
-function validateOtherMail(){
+function validateAddInterviewOthersMail(){
 var dataNotify =document.getElementById("notificationToOthersEmails").value;
 var isNofityToOthers = document.getElementById("notificationToOthers").value;
 if((dataNotify == '' || dataNotify == 0)){
@@ -602,7 +602,7 @@ function getNotifyToOtersValInterview(){
    	$('body').on('submit', '#addInterview_form', function(e){
    	var isNofityToOthers = document.getElementById("notificationToOthers").value;
    		if(isNofityToOthers == "Y"){
-   			validateOtherMail();
+   			validateAddInterviewOthersMail();
    		}else{
    			$('input#notificationToOthersEmails').removeAttr( "record-exist record-exist-errormsg");
    			$('#notifyOthersDiv').find('p.jquery_form_error_message').remove(); 

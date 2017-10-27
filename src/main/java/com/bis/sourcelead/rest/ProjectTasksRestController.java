@@ -1163,8 +1163,8 @@ public class ProjectTasksRestController {
 		
 		BudgetReportDTO report = new BudgetReportDTO();
 		List<ProjectBudget> budgetList = projectBudgetService.getProjectBudgetByProjectTaskIdAndApprovedStatus(projectId, filterDate, startDateUTC, endDateUTC);
-		double budgetSum = budgetList.stream().filter(p->p.getEstimatedBudgetValue() !=null).mapToDouble(p->Double.parseDouble(p.getEstimatedBudgetValue())).sum();
-		double estimatehoursSum = budgetList.stream().filter(p->p.getEstimatedHours() !=null).mapToDouble(p->Double.parseDouble(p.getEstimatedHours())).sum();
+		double budgetSum = budgetList.stream().filter(p->p.getEstimatedBudgetValue() !=null).mapToDouble(p->p.getEstimatedBudgetValue()).sum();
+		double estimatehoursSum = budgetList.stream().filter(p->p.getEstimatedHours() !=null).mapToDouble(p->p.getEstimatedHours()).sum();
 		if(budgetList.size() >1) {
 			String currency = budgetList.get(0).getEstimatedBudgetCurrency();
 			report.setCurrency(currency);
