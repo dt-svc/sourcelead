@@ -39,7 +39,6 @@ public void addMasterCandidate() throws IOException, SQLException {
 			 ResultSet rs1 = stmt1.executeQuery(sql1);
 			while(rs1.next()){
 				Long masterCand = rs1.getLong("MASTER_CANDIDATE_ID");
-				System.out.println(masterCand);
 				
 				if(masterCand == 0){
 				 String  email = rs1.getString("EMAIL");
