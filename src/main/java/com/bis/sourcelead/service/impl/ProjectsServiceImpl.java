@@ -36,14 +36,12 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.ProjectApproverHierarchyDao;
 import com.bis.sourcelead.dao.ProjectsDao;
 import com.bis.sourcelead.dto.ClientProjectDTO;
-import com.bis.sourcelead.dto.ClientProjectLevelsDTO;
 import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.dto.ProjectsDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.elk.index.ProjectsIndex;
 import com.bis.sourcelead.elk.index.helper.ProjectsIndexHelper;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
-import com.bis.sourcelead.entity.CandidateEducation;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
@@ -53,6 +51,7 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.ProjectApproverHierarchy;
+import com.bis.sourcelead.entity.ProjectBudget;
 import com.bis.sourcelead.entity.ProjectClients;
 import com.bis.sourcelead.entity.ProjectDocuments;
 import com.bis.sourcelead.entity.ProjectMembers;
@@ -63,7 +62,6 @@ import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.TimesheetSubmissions;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
-import com.bis.sourcelead.entity.ProjectBudget;
 import com.bis.sourcelead.enums.Primary;
 import com.bis.sourcelead.enums.Project_Status;
 import com.bis.sourcelead.enums.Status;
@@ -457,7 +455,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 			}
 		}
 		
-		if(StringUtils.isNotBlank(projectsDTO.getEstimatedBudget()) || StringUtils.isNotBlank(projectsDTO.getEstimatedHours()) || StringUtils.isNotBlank(projectsDTO.getBudgetApproverUser())) {
+		if(StringUtils.isNotBlank(projectsDTO.getEstimatedHours()) || StringUtils.isNotBlank(projectsDTO.getBudgetApproverUser())) {
 			Set<ProjectBudget> projectBudget = storeProjectBudget(projectsDTO,user,projects);
 			projects.setProjectBudget(projectBudget);
 		}
@@ -965,7 +963,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 	     */
 	  
 	 	for(ProjectApproverHierarchy approverHierarchy : projectApproverHierarchies){
-	    	if(approverHierarchy.getLevel() != null && approverHierarchy.getLevel() == 1){
+	    	if(approverHierarchy.getLevel() != null && approverHierarchy.getLevel() == 1 && !approverHierarchy.getStatus().equalsIgnoreCase("0")){
 	    		projects.setManager1(approverHierarchy.getApproverUserId().getId());
 	    		UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(approverHierarchy.getApproverUserId().getId(),loginOrgLocations.getId());
 	    		if(null != userRole){
@@ -973,7 +971,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 	    		}
 	    		projects.setManagerLevel1(projectApprover.append(approverHierarchy.getApproverUserId().getFirstName()).append(" ").append(approverHierarchy.getApproverUserId().getLastName()).toString());
 	    	}
-	    	if(approverHierarchy.getLevel() != null && approverHierarchy.getLevel() == 2){
+	    	if(approverHierarchy.getLevel() != null && approverHierarchy.getLevel() == 2 && !approverHierarchy.getStatus().equalsIgnoreCase("0")){
 	    		projects.setManager2(approverHierarchy.getApproverUserId().getId());
 	    		projects.setManagerLevel2(projectApprover.append(approverHierarchy.getApproverUserId().getFirstName()).append(" ").append(approverHierarchy.getApproverUserId().getLastName()).toString());
 	    	}
@@ -1285,9 +1283,10 @@ public class ProjectsServiceImpl implements ProjectsService{
 			    		HashSet<Long> oldlist = new HashSet<>();
 			    		HashSet<Long> freshlist = new HashSet<>();
 			    		HashSet<Long> templist = null;
-			    		Collection<ProjectApproverHierarchy> projectApproverHierarchies = projectApproverHierarchyService.getApproverUsersByProjectId(projectId);
-			    		
+			    		Collection<ProjectApproverHierarchy> projectApproverHierarchies = projectApproverHierarchyService.getProjectsHierarchyListByProjectIdAndOrgLocationId(projectId,loginOrgLocation.getId());
+			    		ProjectClients pc = null;
 			    		for(ProjectApproverHierarchy prHierarchy :projectApproverHierarchies ){
+			    			     pc = prHierarchy.getProjectClientsId();
 								 ProjectApproverHierarchy pah  = projectApproverHierarchyService.getByProjectApproverHierarchyId(prHierarchy.getId());
 								 Long fieldValuelong = null;
 								     String level1UserDetails[] = projectDTO.getLevel1Manager().split(",");
@@ -1303,7 +1302,8 @@ public class ProjectsServiceImpl implements ProjectsService{
 								     }
 								      if(prHierarchy.getLevel() == 2 && (StringUtils.isEmpty(projectDTO.getLevel2Manager()))){
 								    	 oldlist.add(pah.getApproverUserId().getId());
-								    	 projectApproverHierarchyService.deleteProjectApproverHierarchy(pah);
+								    	 pah.setStatus("0");
+								    	 projectApproverHierarchyService.updateProjectApproverHierarchy(pah);
 								     }
 								     
 								     if(fieldValuelong != null){
@@ -1311,21 +1311,24 @@ public class ProjectsServiceImpl implements ProjectsService{
 										 oldlist.add(pah.getApproverUserId().getId());
 										 freshlist.add(usr.getId());
 										 pah.setApproverUserId(usr);
+										 pah.setStatus("1");
 										 projectApproverHierarchyService.updateProjectApproverHierarchy(pah);
 								     }
 								    
 			    	    }
 			    		
 			    		// if   we  are adding new  level 2 manager while editing
-			    		if(projectApproverHierarchies.size() == 1){ 	
+			    		if(projectApproverHierarchies.size()== 1){ 	
 							if(StringUtils.isNotBlank(projectDTO.getLevel2Manager())){
-								Long[] ids = new Long[1000];
+								Long[] ids = new Long[10];
 								User approverUserId2 = new User();
 								ProjectApproverHierarchy pah2 = new ProjectApproverHierarchy();
 								pah2.setProjectId(projects);
 								approverUserId2.setId(Long.parseLong(projectDTO.getLevel2Manager()));
 								pah2.setApproverUserId(approverUserId2);
 								pah2.setLevel(2);
+								pah2.setProjectClientsId(pc);
+								pah2.setStatus("1");
 								ids[1] = approverUserId2.getId();
 								projectApproverHierarchyService.saveProjectApproverHierarchy(pah2);
 								freshlist.add(Long.parseLong(projectDTO.getLevel2Manager()));
@@ -1467,7 +1470,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 	         			      approverUserId2 =   userService.getUserById(Long.valueOf(projectDTO.getLevel2Manager()));
 	         				}
 	         				
-	         			    Collection<ProjectMembers>  projectMemberList = projectMembersService.getAllProjectMembersByProjectId(projects.getId()) ;
+	         			    Collection<ProjectMembers>  projectMemberList = projectMembersService.getAllProjectMembersWithMasterCandidateIdByProjectIdAndLocationId(projects.getId(),loginOrgLocation.getId()) ;
 
 	         			    if(projectMemberList != null && projectMemberList.size() >0){
 	         			    	for(ProjectMembers projectMembers : projectMemberList){
@@ -1478,13 +1481,13 @@ public class ProjectsServiceImpl implements ProjectsService{
 		         						if( null != approverUserId1 && null != approverUserId2){
 		         							  if(approverUserId1.getId().longValue() != emp.getUser().getId().longValue() && approverUserId2.getId().longValue() != emp.getUser().getId().longValue()){
 		         								  if(user.getId().longValue() != emp.getUser().getId().longValue()){
-		         									  //sendProjectEditMailtoTeamMembers(projects, emp, user, approverUserId1, loginOrgLocation,loginOrgCode, changedEndDate);
+		         									  sendProjectEditMailtoTeamMembers(projects, emp, user, approverUserId1, loginOrgLocation,loginOrgCode, changedEndDate);
 		         								  }
 		         					    }
 		         							//if  we have   both level1 only One ProjectManagers
 		         						}else if(approverUserId1.getId().longValue() != emp.getUser().getId().longValue()){
 		         							 if(user.getId().longValue() != emp.getUser().getId().longValue()){
-		         								// sendProjectEditMailtoTeamMembers(projects, emp, user, approverUserId1, loginOrgLocation,loginOrgCode, changedEndDate);
+		         								 sendProjectEditMailtoTeamMembers(projects, emp, user, approverUserId1, loginOrgLocation,loginOrgCode, changedEndDate);
 		         							 }
 		         							 
 		         							 }   
@@ -1498,7 +1501,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 	         						String level1UserDetails[] = projectDTO.getLevel1Manager().split(",");
 	         						approverUserId111.setId(Long.valueOf(level1UserDetails[0]));
 	         						if(approverUserId111 != null && user.getId() != approverUserId111.getId()){
-	         							//sendProjectEditMailtoProjectManager(projects, user, approverUserId111, loginOrgLocation,"",loginOrgCode,changedEndDate);
+	         							sendProjectEditMailtoProjectManager(projects, user, approverUserId111, loginOrgLocation,"",loginOrgCode,changedEndDate);
 	         						}
 	         						
 	         					}
@@ -1514,7 +1517,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 	         						approverUserId22.setId(Long.valueOf(projectDTO.getLevel2Manager()));
 	         						if(null !=  approverUserId22 && user.getId() != approverUserId22.getId()){
 	         							 if(user.getId().longValue() != approverUserId22.getId().longValue()){
-	         								 	//sendProjectEditMailtoProjectManager(projects, user, approverUserId22, loginOrgLocation,"",loginOrgCode,changedEndDate);
+	         								 	sendProjectEditMailtoProjectManager(projects, user, approverUserId22, loginOrgLocation,"",loginOrgCode,changedEndDate);
 	         							 }
 	         						 }
 	         					}
