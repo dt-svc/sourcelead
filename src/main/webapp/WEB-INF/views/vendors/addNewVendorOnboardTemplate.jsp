@@ -74,7 +74,7 @@
                 <div class="form-group">
                   <label class="col-md-12"> <strong>Documents</strong> <br>
                   </label>
-                  <label class="col-md-12 mt10">Required documents for onboarding</label>
+                  <label class="col-md-12 mt10">Required documents for onboarding :</label>
                      <div id="timesheetDocumentsId" class="timesheetDocs timesheetDocs-custom">
                       <div class="col-md-8 commentFile timesheet_week_comm onboardDocs">
 				        <span class="uploadAttachments"> 
