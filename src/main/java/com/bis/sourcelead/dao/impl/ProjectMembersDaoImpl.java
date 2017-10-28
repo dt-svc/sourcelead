@@ -523,7 +523,6 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 	@Override
 	@Transactional(rollbackFor = { Exception.class })	
 	public List<ProjectMembers> getAllProjectMembersByProjectId(Long id) throws Exception {
-		logger.debug("In ProjectMember getAllProjectMembersByProjectId method");
         Session session = this.sessionFactory.getCurrentSession();
         List<ProjectMembers> projectsMembersList = null;
 		Query projectsMembersListQuery= session.createQuery("from ProjectMembers pm left join fetch pm.projects left join fetch pm.projectMemberCandidteId left join fetch pm.employee emp left join fetch emp.user where pm.projects.id = :id ");
@@ -1021,6 +1020,10 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 	        
 	        if (Arrays.asList(tokens).contains("In-Active")) {
 				subQuery2 = subQuery2 + "pm.status ='0' or ";
+			}
+	        
+	        if (Arrays.asList(tokens).contains("All")) {
+				subQuery2 = subQuery2 + "pm.status ='0' or pm.status ='1' or ";
 			}
 	        
 	        if ((tokens[0] != null && tokens[0].length() > 0) ) {

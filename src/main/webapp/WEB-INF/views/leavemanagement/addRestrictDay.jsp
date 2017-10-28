@@ -38,13 +38,13 @@
     <div class="form-group" id="startDateDiv">
        <label class="col-md-3">Start Date<span class="text-danger paddingLeft">*</span></label>
         <div class="col-md-9">
-       <input type="text" id="startDate" name="startDate" placeholder="Start Date" value="${restrictDay.startDateStr}" field-name="Start Date" class="form-control calendar" data-validation="required">
+       <input type="text" id="startDate" name="startDate" placeholder="Start Date" value="${restrictDay.startDateStr}" field-name="Start Date" class="form-control calendar" data-validation="required" readonly>
        </div>
     </div>
     <div class="form-group" id="endDateDiv">
        <label class="col-md-3">End Date<span class="text-danger paddingLeft">*</span></label>
         <div class="col-md-9">
-       <input type="text" id="endDate" name="endDate" placeholder="End Date" value="${restrictDay.endDateStr}" field-name="End Date" class="form-control calendar" data-validation="required">
+       <input type="text" id="endDate" name="endDate" placeholder="End Date" value="${restrictDay.endDateStr}" field-name="End Date" class="form-control calendar" data-validation="required" readonly>
         <div id="warnDiv"></div>
        </div>
     </div>

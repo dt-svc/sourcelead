@@ -146,7 +146,7 @@ $(document).ready(function(){
             <div class="form-group">
               <label class="col-md-3">Working Hours</label>
               <div class="col-md-9 dropdown-select">
-                <input type="text" class="form-control" value="${options.workingHours}" placeholder="Working Hours" id="workingHours" name="workingHours">
+                <input type="text" class="form-control" value="${options.workingHours}" placeholder="Working Hours" id="workingHours" name="workingHours" field-name="Working Hours"  data-validation="validate_Space validate_length length1-8 validate_int" data-validation-optional="true">
                 <input type="hidden" value="${optionId}" name="optionId" id="optionId" />
               </div>
             </div>
@@ -165,17 +165,27 @@ $(document).ready(function(){
   
 <script type="text/javascript">
 function saveLeaveOption(){
-		var orgLocationId = '${SourceLeadWeb_orgLocationId}';
-		var userId = '${SourceLeadWeb_userId}';
-	  	/* var formData = getFormData("add_option_form"); */
-	  	var formData = $($('#add_option_form')[0]).serialize();
-		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-		$.post(sourceleadUrl+"/saveLeaveOption?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&userId="+userId, formData, function(data) {
-			if(data == true){
-				location.replace(sourceleadUrl+ "/viewOptions");
-			}
-		}); 
+	 if ($('#add_option_form').validate(false, validationSettings)){ 
+		 var orgLocationId = '${SourceLeadWeb_orgLocationId}';
+			var userId = '${SourceLeadWeb_userId}';
+		  	/* var formData = getFormData("add_option_form"); */
+		  	var formData = $($('#add_option_form')[0]).serialize();
+			$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+			$.post(sourceleadUrl+"/saveLeaveOption?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&userId="+userId, formData, function(data) {
+				if(data == true){
+					location.replace(sourceleadUrl+ "/viewOptions");
+				}
+			}); 
+			return true;
+	 }else{ 
+			return false;
+	 }   
+		
 }
+$('body').on('blur', '#add_option_form', function() {
+	$("#add_option_form").showHelpOnFocus();
+	$("#add_option_form").validateOnBlur(false, validationSettings);
+});
 </script>
 
 <script>

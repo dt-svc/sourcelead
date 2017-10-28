@@ -179,7 +179,8 @@ public class Constants {
 	public static final long SOURCELEAD_ADMIN_USERID = 1;
 	public static final TimeZone TIMEZONE_CENTRAL = TimeZone.getDefault();
 	public static final String loginUserAsAdmin = ":userId IN (select userRole.user.id from UserRole userRole where userRole.roles.roleName = 'ROLE_ADMIN' and userRole.orgLocations.id = ts.projectMembers. projectClientsId.orgLocationsId.id)";
-	public static final String loginUserAsAdminWithMaxHeirarchyLevel = "(:userId IN (select userRole.user.id from UserRole userRole where userRole.roles.roleName = 'ROLE_ADMIN' and userRole.orgLocations.id = pm.projectClientsId.orgLocationsId.id) and  sah.hierarchyId.level IN(select MAX(pah.level) from ProjectApproverHierarchy pah where pah.projectClientsId.id = pm.projectClientsId.id))";
+	public static final String loginUserAsAdminWithMaxHeirarchyLevelForTs = "(:userId IN (select userRole.user.id from UserRole userRole where userRole.roles.roleName = 'ROLE_ADMIN' and userRole.orgLocations.id = pm.projectClientsId.orgLocationsId.id) and  sah.hierarchyId.level IN(select MAX(pah.level) from ProjectApproverHierarchy pah where pah.projectClientsId.id = pm.projectClientsId.id and pah.status != '0'))";
+	public static final String loginUserAsAdminWithMaxHeirarchyLevelForExp = "(:userId IN (select userRole.user.id from UserRole userRole where userRole.roles.roleName = 'ROLE_ADMIN' and userRole.orgLocations.id = pc.orgLocationsId.id) and  sah.hierarchyId.level IN(select MAX(pah.level) from ProjectApproverHierarchy pah where pah.projectClientsId.id = pc.id and pah.status != '0' ))";
 	public static final String loginUserAsAdminForProjects = ":userId IN (select userRole.user.id from UserRole userRole where userRole.roles.roleName = 'ROLE_ADMIN' and userRole.orgLocations.id = pclient.orgLocationsId.id)";
 	/** projectMember constants **/
 	public static final String MEMBER_ACTIVE = "1";
@@ -300,6 +301,7 @@ public class Constants {
 	public static final String UPDATED_FEEDBACK_NOTIFICATIONTO_REQUIREMENTOWNER = "updatedFeedbackNotificationToRequirementOwner";
 	public static final String OFFERREJECT_EMAIL = "Vendor Offer Reject";
 	public static final String OFFERACCEPT_EMAIL = "VendorAcceptedOffer";
+	public static final String APPLICANT_OFFER_ACCEPT_EMAIL = "ApplicantAcceptOffer";
 	public static final String APPLICANT_RECEIVE_MAILABOUT_REQUIREMENT_EMAIL = "ApplicantReceiveMailAboutRequirement";
 	public static final String NOTIFY_APPLICANT_MAILABOUT_REQUIREMENT = "notifyApplicantMailAboutRequirement";
 	public static final String APPLICANT_RECEIVE_MAILABOUT_REQUIREMENT_NOTIFICATION = "ApplicantReceiveMailAboutRequirement";

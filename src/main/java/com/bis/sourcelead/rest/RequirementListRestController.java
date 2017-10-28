@@ -761,19 +761,19 @@ public class RequirementListRestController {
 						}
 					}
 					String candidateName = "";
-					if (requirementSubmissionTemplateFields != null) {
-						if (!isNullOrEmpty(requirementSubmissionTemplateFields.getLastName())) {
+					if (requirementSubmission.getCandidate() != null) {
+						if (!isNullOrEmpty(requirementSubmission.getCandidate().getLastName())) {
 							StringBuilder candidateNameSB = new StringBuilder();
-							candidateName = candidateNameSB.append(requirementSubmissionTemplateFields.getFirstName()).append(" ").append(requirementSubmissionTemplateFields.getLastName()).toString();
+							candidateName = candidateNameSB.append(requirementSubmission.getCandidate().getFirstName()).append(" ").append(requirementSubmission.getCandidate().getLastName()).toString();
 						}
 						else {
-							candidateName = requirementSubmissionTemplateFields.getFirstName();
+							candidateName = requirementSubmission.getCandidate().getFirstName();
 						}
 						requirementSubmission.setCandidateName(candidateName);
-						requirementSubmission.setCandidateEmail(requirementSubmissionTemplateFields.getEmailId());
+						requirementSubmission.setCandidateEmail(requirementSubmission.getCandidate().getEmail());
 						requirementSubmission.setExpectedCTC(requirementSubmissionTemplateFields.getExpectedCTC());
 						requirementSubmission.setWorkExperience(requirementSubmissionTemplateFields.getWorkExperience());
-						requirementSubmission.setPhoneNumber(requirementSubmissionTemplateFields.getPhoneNumber());
+						requirementSubmission.setPhoneNumber(requirementSubmission.getCandidate().getMobilePhone());
 					}
 					requirementSubmission.setCandidateId(requirementSubmission.getCandidate().getId().toString());
 					requirementSubmission.setResumeId(requirementSubmission.getCandidateResumes().getId());
@@ -1724,7 +1724,7 @@ public class RequirementListRestController {
 		if(StringUtils.isNotEmpty(search.getClient()) || StringUtils.isNotEmpty(search.getFilterClients())){
 			String clients = "";
 			if(StringUtils.isNotEmpty(search.getClient())){
-				clients = search.getRequirementStatus();
+				clients = search.getClient();
 			}
 			else{
 				clients = search.getFilterClients();
