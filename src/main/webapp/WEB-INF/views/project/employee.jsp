@@ -1603,8 +1603,7 @@ function getProjectDetails(){
 				$.ajax({
 					type : "POST",
 					url : sourceleadUrl	+ "/getProjectDetailsForResouceTransfer?${_csrf.parameterName}=${_csrf.token}&projectId="+ orgLocationProjects+"&orgLocationId="+orgLocations,
-					success : function(data) {
-						var json = JSON.parse(data);
+					success : function(json) {
 						var endDateStr = "";
 						var description = "";
 						var clientName = "";

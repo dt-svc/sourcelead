@@ -213,11 +213,11 @@ public class ProjectsDashboardRestController {
 	 */
 	 @PreAuthorize("hasAnyRole('ROLE_VIEW_EDIT_PROJECT','ROLE_VIEW_PROJECT')") 
 	 @RequestMapping(value = "/getProjectById", method = RequestMethod.POST)
-	 public @ResponseBody String getProjectById(@RequestParam(value="ProjectId", required=false) Long projectId,HttpServletRequest request) throws Exception{ 
+	 public @ResponseBody ProjectsDTO getProjectById(@RequestParam(value="ProjectId", required=false) Long projectId,HttpServletRequest request) throws Exception{ 
 		   String loginOrgLocation = (String) SourceLeadSessionManager.getSessionAttribute(request, "locationCode");
 		   User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		   
-		     String ProjectDetails=projectsService.getProjectDetailsByProjectIdAndLoginOrgId(projectId, user, loginOrgLocation);
+		     ProjectsDTO ProjectDetails = projectsService.getProjectDetailsByProjectIdAndLoginOrgId(projectId, user, loginOrgLocation);
 		   
 			 return ProjectDetails;
 	  }
@@ -279,11 +279,11 @@ public class ProjectsDashboardRestController {
 	 
 	 
 	 @RequestMapping(value = "/getProjectDetailsForResouceTransfer", method = RequestMethod.POST)
-	 public @ResponseBody String getProjectDetailsForResouceTransfer(@RequestParam(value="projectId", required=false) Long projectId,
+	 public @ResponseBody ProjectsDTO getProjectDetailsForResouceTransfer(@RequestParam(value="projectId", required=false) Long projectId,
 			 @RequestParam(value="orgLocationId", required=false) Long orgLocationId,HttpServletRequest request) throws Exception{ 
 		     User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		     OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
-		     String projectDetails=projectsService.getProjectDetailsByProjectIdAndLoginOrgId(projectId, user, orgLocations.getLocationCode());
+		     ProjectsDTO projectDetails = projectsService.getProjectDetailsByProjectIdAndLoginOrgId(projectId, user, orgLocations.getLocationCode());
 			 return projectDetails;
 	  }
 	 
