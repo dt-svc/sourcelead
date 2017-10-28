@@ -39,6 +39,7 @@ import com.bis.sourcelead.dto.ClientProjectDTO;
 import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.dto.ProjectsDTO;
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.dto.UserDTO;
 import com.bis.sourcelead.elk.index.ProjectsIndex;
 import com.bis.sourcelead.elk.index.helper.ProjectsIndexHelper;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
@@ -923,34 +924,35 @@ public class ProjectsServiceImpl implements ProjectsService{
 	 */
 	
 	@Override
-	public String getProjectDetailsByProjectIdAndLoginOrgId(Long projectId, User user, String loginOrgLocation)throws Exception {
+	public ProjectsDTO getProjectDetailsByProjectIdAndLoginOrgId(Long projectId, User user, String loginOrgLocation)throws Exception {
 		OrgLocations loginOrgLocations = orgLocationService.getOrgLocationsByLocationCode(loginOrgLocation);
 		
 		Projects projects = getProjectById(projectId);
+		ProjectsDTO projectsDTO = new ProjectsDTO();
 		
 		String resultJson =null;
 		
 		if(projects.getCreatedDate() != null){
-			projects.setCreatedDateStr(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(),projects.getCreatedDate()));	
+			projectsDTO.setCreatedDateStr(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(),projects.getCreatedDate()));	
 		}
-	    projects.setStartDateStr(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(),projects.getStartDate()));
+		projectsDTO.setStartDateStr(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(),projects.getStartDate()));
 	    if(projects.getEndDate() != null){
-	    	 projects.setEndDateStr(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(),projects.getEndDate()));
+	    	projectsDTO.setEndDateStr(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(),projects.getEndDate()));
 	    }
 	    if(projects.getUpdatedDate() != null){
-	    	projects.setUpdatedDateStr(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(),projects.getUpdatedDate()));
+	    	projectsDTO.setUpdatedDateStr(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(),projects.getUpdatedDate()));
 	    }
 	    if(projects.getProjectSequeneNumber() != null){
-	    	projects.setProjectSequeneNumber(projects.getProjectSequeneNumber());
+	    	projectsDTO.setProjectSequeneNumber(projects.getProjectSequeneNumber());
 	    }
 	   
 	    User createdByUseraName= userService.getUserDetailsByUserCode(projects.getCreatedBy());
 	    if(null !=createdByUseraName){
 	    	StringBuilder userName = new StringBuilder();
 	    	if(null != createdByUseraName.getLastName()){
-	    		projects.setCreatedByName(userName.append(createdByUseraName.getFirstName()).append(" ").append(createdByUseraName.getLastName()).toString());	
+	    		projectsDTO.setCreatedByName(userName.append(createdByUseraName.getFirstName()).append(" ").append(createdByUseraName.getLastName()).toString());	
 	    	}else{
-	    		projects.setCreatedByName(userName.append(createdByUseraName.getLastName()).toString());
+	    		projectsDTO.setCreatedByName(userName.append(createdByUseraName.getLastName()).toString());
 	    	}
 	    	
 	    }
@@ -965,28 +967,52 @@ public class ProjectsServiceImpl implements ProjectsService{
 	    if(projectApproverHierarchies != null && projectApproverHierarchies.size() > 0) {
 		 	for(ProjectApproverHierarchy approverHierarchy : projectApproverHierarchies){
 		    	if(approverHierarchy.getLevel() != null && approverHierarchy.getLevel() == 1 && (approverHierarchy.getStatus() == null || approverHierarchy.getStatus().equalsIgnoreCase("1"))){
-		    		projects.setManager1(approverHierarchy.getApproverUserId().getId());
+		    		projectsDTO.setManager1(approverHierarchy.getApproverUserId().getId());
+		    		projectsDTO.setManager1Name(approverHierarchy.getApproverUserId().getFullName());
 		    		UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(approverHierarchy.getApproverUserId().getId(),loginOrgLocations.getId());
 		    		if(null != userRole){
-		    			projects.setManagerLevel1UserType(userRole.getUserType());
+		    			projectsDTO.setManagerLevel1UserType(userRole.getUserType());
 		    		}
-		    		projects.setManagerLevel1(projectApprover.append(approverHierarchy.getApproverUserId().getFirstName()).append(" ").append(approverHierarchy.getApproverUserId().getLastName()).toString());
+		    		projectsDTO.setManagerLevel1(projectApprover.append(approverHierarchy.getApproverUserId().getFirstName()).append(" ").append(approverHierarchy.getApproverUserId().getLastName()).toString());
 		    	}
 		    	if(approverHierarchy.getLevel() != null && approverHierarchy.getLevel() == 2 && (approverHierarchy.getStatus() == null || approverHierarchy.getStatus().equalsIgnoreCase("1"))){
-		    		projects.setManager2(approverHierarchy.getApproverUserId().getId());
-		    		projects.setManagerLevel2(projectApprover.append(approverHierarchy.getApproverUserId().getFirstName()).append(" ").append(approverHierarchy.getApproverUserId().getLastName()).toString());
+		    		projectsDTO.setManager2(approverHierarchy.getApproverUserId().getId());
+		    		projectsDTO.setManager2Name(approverHierarchy.getApproverUserId().getFullName());
+		    		projectsDTO.setManagerLevel2(projectApprover.append(approverHierarchy.getApproverUserId().getFirstName()).append(" ").append(approverHierarchy.getApproverUserId().getLastName()).toString());
 		    	}
 		    	
 		    }
 	    }
 	    
-	    projects.setProjectApproverHierarchiesList(projectApproverHierarchies);
+	    //projects.setProjectApproverHierarchiesList(projectApproverHierarchies);
 	    
 	    List<User> userList = userService.getTabAccessOwnersByOrgLocationIdAndTabId(loginOrgLocations.getId(),Long.valueOf(Constants.TAB_PROJECTS));
-	    projects.setManagersList(userList);
+	    List<UserDTO> userDTOList = new ArrayList<>();
+	    if(userList != null && userList.size() > 0) {
+	    	for(User mrguser : userList) {
+	    		UserDTO userDTO = new UserDTO();
+	    		userDTO.setId(mrguser.getId());
+	    		userDTO.setUserType(mrguser.getUserType());
+	    		userDTO.setName(mrguser.getFullName());
+	    		userDTOList.add(userDTO);
+	    	}
+	    }
+	    
+	    
+	    projectsDTO.setManagersList(userDTOList);
 	    if(projects.getManager1() != null){
 	    	  List<User> userListwithoutmaneger1 = userService.getTabAccessOwnersByOrgLocationIdAndTabIdAndNoCurrentUser(projects.getManager1(),loginOrgLocations.getId(),Long.valueOf(Constants.TAB_PROJECTS));
-			  projects.setManagersListwithoutManager1(userListwithoutmaneger1);
+			  List<UserDTO> mrguserDTOList = new ArrayList<>();
+			    if(userList != null && userList.size() > 0) {
+			    	for(User mrguser2 : userListwithoutmaneger1) {
+			    		UserDTO userDTO = new UserDTO();
+			    		userDTO.setId(mrguser2.getId());
+			    		userDTO.setUserType(mrguser2.getUserType());
+			    		userDTO.setName(mrguser2.getFullName());
+			    		mrguserDTOList.add(userDTO);
+			    	}
+			    }
+			    projectsDTO.setManagersListwithoutManager1(mrguserDTOList);
 	    }
 	    
 	    String[] approvers = new String[projectApproverHierarchies.size()];
@@ -996,23 +1022,61 @@ public class ProjectsServiceImpl implements ProjectsService{
 	    	approvers[i] = approverHierarchies.append(php.getApproverUserId().getFirstName()).append("&").append(php.getApproverUserId().getId()).toString();
 	    	i++;
 	    }
-	    projects.setProjectManagerName(approvers);
+	    projectsDTO.setProjectManagerName(approvers);
 	    
 		 if(projectClients.getOrgRelationId() != null){
     		 
  			if(null != projectClients.getOrgRelationId().getLocationId() && projectClients.getOrgRelationId().getLocationId().getId().longValue() == loginOrgLocations.getId().longValue()){
-					projects.setClient(projectClients.getOrgRelationId().getResponderLocationId().getOrgLocationName());
+ 				   projectsDTO.setClient(projectClients.getOrgRelationId().getResponderLocationId().getOrgLocationName());
 				}if(null != projectClients.getOrgRelationId().getResponderLocationId() && projectClients.getOrgRelationId().getResponderLocationId().getId().longValue() == loginOrgLocations.getId().longValue()){
-					projects.setClient(projectClients.getOrgRelationId().getLocationId().getOrgLocationName());
+					projectsDTO.setClient(projectClients.getOrgRelationId().getLocationId().getOrgLocationName());
 				}
  	  }
 	    
 		
 		Integer projectMembersCount  = projectMembersService.getAllProjectMembersCountByProjectId(projectId);
-		projects.setProjectMembersCount(projectMembersCount.toString());
+		projectsDTO.setProjectMembersCount(projectMembersCount.toString());
 		
-		 resultJson = commonUtil.toJSON(projects);
-		 return resultJson;
+		if(projects.getIsTimesheetAttachmentRequired() != null) {
+			projectsDTO.setIsTimesheetAttachmentRequired(projects.getIsTimesheetAttachmentRequired().toString());
+		}
+		
+		if(projects.getAllowFreeLance() != null) {
+			projectsDTO.setAllowFreeLance(projects.getAllowFreeLance().toString());
+		}
+		
+		if(projects.getAllowRemote() != null) {
+			projectsDTO.setAllowRemote(projects.getAllowRemote().toString());
+		}
+		
+		if(projects.getAllowOvertime() != null) {
+			projectsDTO.setAllowOvertime(projects.getAllowOvertime().toString());
+		}
+		
+		if(projects.getAllowTimeEntryAfterDeadLine() != null) {
+			projectsDTO.setAllowTimeEntryAfterDeadLine(projects.getAllowTimeEntryAfterDeadLine().toString());
+		}
+		
+		if(projects.getAllowBidding() != null) {
+			projectsDTO.setAllowBidding(projects.getAllowBidding().toString());
+		}
+		
+		if(projects.getAllowOffShore() != null) {
+			projectsDTO.setAllowOffShore(projects.getAllowOffShore().toString());
+		}
+		
+		projectsDTO.setDescription(projects.getDescription());
+		projectsDTO.setProjectSequeneNumber(projects.getProjectSequeneNumber());
+		projectsDTO.setOvertimeRateType(projects.getOvertimeRateType());
+		projectsDTO.setProjectStatus(projects.getProjectStatus().toString());
+		projectsDTO.setProjectName(projects.getProjectName());
+		projectsDTO.setOrgLocationId(projects.getOrgLocationsId().getId());
+		
+		if(projects.getFlatPercent() != null) {
+			projectsDTO.setFlatPercent(projects.getFlatPercent().toString());
+		}
+		
+		 return projectsDTO;
 	}
 
 	 /**
