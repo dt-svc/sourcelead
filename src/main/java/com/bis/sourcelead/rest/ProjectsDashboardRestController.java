@@ -182,7 +182,7 @@ public class ProjectsDashboardRestController {
 		 * @throws Exception
         */
 			@RequestMapping(value = "/getProjectsByStatusAndClient")
-			public ResponseList<Projects> getProjectsByStatusAndClient(ProjectsDTO projectsDTO,@RequestParam(value="values", required=false) String values,HttpServletRequest request,@RequestParam(value="clients", required=false) String clients) throws Exception {
+			public ResponseList<ProjectsDTO> getProjectsByStatusAndClient(ProjectsDTO projectsDTO,@RequestParam(value="values", required=false) String values,HttpServletRequest request,@RequestParam(value="clients", required=false) String clients) throws Exception {
 
 			    String loginOrgLocation = (String) SourceLeadSessionManager.getSessionAttribute(request, "locationCode");
 			    OrgLocations loginOrgLocations = orgLocationService.getOrgLocationsByLocationCode(loginOrgLocation);
@@ -199,7 +199,7 @@ public class ProjectsDashboardRestController {
 				}
 				projectsDTO.setSortColumn(tableColumns[sortColumnIndex]);
 				projectsDTO.setSortOrder(sortColumnOrder);
-				ResponseList<Projects> projectsList = projectsService.getProjectsListByClientsAndStatus(projectsDTO,user.getId(), clients, values,loginOrgLocations.getId(),userRole,candidateId);
+				ResponseList<ProjectsDTO> projectsList = projectsService.getProjectsListByClientsAndStatus(projectsDTO,user.getId(), clients, values,loginOrgLocations.getId(),userRole,candidateId);
 			    
 				return projectsList;
 			}

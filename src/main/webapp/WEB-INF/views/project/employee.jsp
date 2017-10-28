@@ -457,7 +457,7 @@ result = result + '<div class="project_tabs mb">';
 		                result = result + '	     <td><div class="tbldata-dotdot_80"><span title="'+opt.approvedHrs+'">'+opt.approvedHrs+'</span></div></td>';
 		                
 		                
-		                if('${postedOrgLocationId}' == '${SourceLeadWeb_orgLocations.id}'){
+		                if('${postedOrgLocationId}' == '${SourceLeadWeb_orgLocations.id}' || '${isClientOrgActive}' == "N"){
 		                	
 		                	 if(opt.status != null && opt.status != '' && opt.status !='undefined' && opt.status != 0){
 				                	result = result + '	<td><div>';
