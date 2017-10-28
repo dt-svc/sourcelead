@@ -100,6 +100,22 @@ public class ProjectsDTO extends SearchDTO implements Serializable{
 	
 	private String projectMode;
 	
+	private String projectUUID;
+	
+	private String projectClientUUID;
+	
+	private String employeeStartDateStr;
+	
+	private String employeeEndDateStr;
+	
+	private String managerLevel1;
+	
+	private String managerLevel2;
+	
+	private String projectbudgetCurrency;
+	
+	private Double projectbudgetAmount;
+	
 	public String getExpenseId() {
 		return expenseId;
 	}
@@ -468,6 +484,70 @@ public class ProjectsDTO extends SearchDTO implements Serializable{
 
 	public void setProjectMode(String projectMode) {
 		this.projectMode = projectMode;
+	}
+
+	public String getProjectUUID() {
+		return projectUUID;
+	}
+
+	public void setProjectUUID(String projectUUID) {
+		this.projectUUID = projectUUID;
+	}
+
+	public String getProjectClientUUID() {
+		return projectClientUUID;
+	}
+
+	public void setProjectClientUUID(String projectClientUUID) {
+		this.projectClientUUID = projectClientUUID;
+	}
+
+	public String getEmployeeStartDateStr() {
+		return employeeStartDateStr;
+	}
+
+	public void setEmployeeStartDateStr(String employeeStartDateStr) {
+		this.employeeStartDateStr = employeeStartDateStr;
+	}
+
+	public String getEmployeeEndDateStr() {
+		return employeeEndDateStr;
+	}
+
+	public void setEmployeeEndDateStr(String employeeEndDateStr) {
+		this.employeeEndDateStr = employeeEndDateStr;
+	}
+
+	public String getManagerLevel1() {
+		return managerLevel1;
+	}
+
+	public void setManagerLevel1(String managerLevel1) {
+		this.managerLevel1 = managerLevel1;
+	}
+
+	public String getManagerLevel2() {
+		return managerLevel2;
+	}
+
+	public void setManagerLevel2(String managerLevel2) {
+		this.managerLevel2 = managerLevel2;
+	}
+
+	public String getProjectbudgetCurrency() {
+		return projectbudgetCurrency;
+	}
+
+	public void setProjectbudgetCurrency(String projectbudgetCurrency) {
+		this.projectbudgetCurrency = projectbudgetCurrency;
+	}
+
+	public Double getProjectbudgetAmount() {
+		return projectbudgetAmount;
+	}
+
+	public void setProjectbudgetAmount(Double projectbudgetAmount) {
+		this.projectbudgetAmount = projectbudgetAmount;
 	}
 	
 	

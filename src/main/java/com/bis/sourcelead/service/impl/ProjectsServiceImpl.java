@@ -722,10 +722,10 @@ public class ProjectsServiceImpl implements ProjectsService{
 	
 	
 	@Override
-	public ResponseList<Projects> getProjectsListByClientsAndStatus(ProjectsDTO projectsDTO,Long userId, String clients, String status,
+	public ResponseList<ProjectsDTO> getProjectsListByClientsAndStatus(ProjectsDTO projectsDTO,Long userId, String clients, String status,
 			Long orgLocationsId,String userRole,Long candidateId) throws Exception {
 		
-		ResponseList<Projects> responseProjectsList = projectsDao.getProjectsListByClientsAndStatus(projectsDTO,userId,clients,status,orgLocationsId,userRole,candidateId);
+		ResponseList<ProjectsDTO> responseProjectsList = projectsDao.getProjectsListByClientsAndStatus(projectsDTO,userId,clients,status,orgLocationsId,userRole,candidateId);
 		return responseProjectsList;
 	}
 
@@ -957,25 +957,27 @@ public class ProjectsServiceImpl implements ProjectsService{
 	    StringBuilder projectApprover = new StringBuilder();
 	  
 	    ProjectClients projectClients = projectClientService.getProjectClientsByProjectIdAndOrgLocationId(projects.getId(), loginOrgLocations.getId());
-	    Set<ProjectApproverHierarchy> projectApproverHierarchies = projectClients.getProjectApproverHierarchyList();
+	    List<ProjectApproverHierarchy> projectApproverHierarchies = projectApproverHierarchyService.getProjectsHierarchyListByProjectIdAndOrgLocationId(projects.getId(), loginOrgLocations.getId());
 	    /**
 	     * If the Project has Only Manager the His Level is taken as Higher Level  
 	     */
 	  
-	 	for(ProjectApproverHierarchy approverHierarchy : projectApproverHierarchies){
-	    	if(approverHierarchy.getLevel() != null && approverHierarchy.getLevel() == 1 && !approverHierarchy.getStatus().equalsIgnoreCase("0")){
-	    		projects.setManager1(approverHierarchy.getApproverUserId().getId());
-	    		UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(approverHierarchy.getApproverUserId().getId(),loginOrgLocations.getId());
-	    		if(null != userRole){
-	    			projects.setManagerLevel1UserType(userRole.getUserType());
-	    		}
-	    		projects.setManagerLevel1(projectApprover.append(approverHierarchy.getApproverUserId().getFirstName()).append(" ").append(approverHierarchy.getApproverUserId().getLastName()).toString());
-	    	}
-	    	if(approverHierarchy.getLevel() != null && approverHierarchy.getLevel() == 2 && !approverHierarchy.getStatus().equalsIgnoreCase("0")){
-	    		projects.setManager2(approverHierarchy.getApproverUserId().getId());
-	    		projects.setManagerLevel2(projectApprover.append(approverHierarchy.getApproverUserId().getFirstName()).append(" ").append(approverHierarchy.getApproverUserId().getLastName()).toString());
-	    	}
-	    	
+	    if(projectApproverHierarchies != null && projectApproverHierarchies.size() > 0) {
+		 	for(ProjectApproverHierarchy approverHierarchy : projectApproverHierarchies){
+		    	if(approverHierarchy.getLevel() != null && approverHierarchy.getLevel() == 1 && (approverHierarchy.getStatus() == null || approverHierarchy.getStatus().equalsIgnoreCase("1"))){
+		    		projects.setManager1(approverHierarchy.getApproverUserId().getId());
+		    		UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(approverHierarchy.getApproverUserId().getId(),loginOrgLocations.getId());
+		    		if(null != userRole){
+		    			projects.setManagerLevel1UserType(userRole.getUserType());
+		    		}
+		    		projects.setManagerLevel1(projectApprover.append(approverHierarchy.getApproverUserId().getFirstName()).append(" ").append(approverHierarchy.getApproverUserId().getLastName()).toString());
+		    	}
+		    	if(approverHierarchy.getLevel() != null && approverHierarchy.getLevel() == 2 && (approverHierarchy.getStatus() == null || approverHierarchy.getStatus().equalsIgnoreCase("1"))){
+		    		projects.setManager2(approverHierarchy.getApproverUserId().getId());
+		    		projects.setManagerLevel2(projectApprover.append(approverHierarchy.getApproverUserId().getFirstName()).append(" ").append(approverHierarchy.getApproverUserId().getLastName()).toString());
+		    	}
+		    	
+		    }
 	    }
 	    
 	    projects.setProjectApproverHierarchiesList(projectApproverHierarchies);
@@ -2054,7 +2056,7 @@ public void userEmailToAdmin(StringBuilder tempHTML, OrgLocations orgLocations,U
 			public void saveOrUpdateProjectElkDocument(Projects projects) throws Exception{
 				List<ProjectApproverHierarchy> projectApproverHierarchy = projectApproverHierarchyService.getApproverUsersByProjectId(projects.getId());
 				Collection<ProjectMembers> projectMembers = projectMembersService.getAllProjectMembersByProjectId(projects.getId());
-;				Projects updatedProject = getProjectById(projects.getId());
+				Projects updatedProject = getProjectById(projects.getId());
 				 //Elastic Search Document Saving
 				ProjectsIndex projectsIndex = projectsIndexHelper.getProjectsIndexFromProjects(updatedProject, projectApproverHierarchy, projectMembers);
 				sourceleadELKBaseIndexer.saveOrUpdateElkDocument(projectsIndex, Constants.ELK_PROJECT_INDEX, Constants.ELK_PROJECT_TYPE,updatedProject.getId().toString());
