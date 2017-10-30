@@ -521,7 +521,7 @@ public class ProjectsDaoImpl implements ProjectsDao{
 	
 	@Override
 	@Transactional
-	public ResponseList<Projects> getProjectsListByClientsAndStatus(ProjectsDTO projectsDTO,Long userId, String clients, String status,
+	public ResponseList<ProjectsDTO> getProjectsListByClientsAndStatus(ProjectsDTO projectsDTO,Long userId, String clients, String status,
 			Long orgLocationsId,String userRole,Long candidateId) throws Exception {
 		
 		Session session = this.sessionFactory.getCurrentSession();
@@ -530,7 +530,7 @@ public class ProjectsDaoImpl implements ProjectsDao{
 		String query = null;
 		List<Long> countlist = null;
 		Integer filterCount = 0;
-		ResponseList<Projects> response = new ResponseList<>();
+		ResponseList<ProjectsDTO> response = new ResponseList<>();
 		Query queryObj = null;
 		
 		StringBuilder query1 = new StringBuilder("");
@@ -654,35 +654,38 @@ public class ProjectsDaoImpl implements ProjectsDao{
 		}
 		
 		
-		response.setData(getProjectClientAndManagerDetails(projectsList,orgLocationsId));
+		response.setData(getProjectClientAndManagerDetails(projectsList,orgLocationsId,userRole));
 		return response;
 	}
 
 
 
 
-		private List<Projects> getProjectClientAndManagerDetails(List<Projects> projectsList,Long orgLocationsId) throws Exception {
-			List<Projects> orgProjectsList = new ArrayList<>();
+		private List<ProjectsDTO> getProjectClientAndManagerDetails(List<Projects> projectsList,Long orgLocationsId,String userRole) throws Exception {
 			OrgLocations orglo = orgLocationsDao.getOrgLocations(orgLocationsId);
+			List<ProjectsDTO> projectsDTOList = new ArrayList<>();
 			for (Projects projects :projectsList ){
 				    	 ProjectClients projectClients = projectClientDao.getProjectClientsByProjectIdAndOrgLocationId(projects.getId(), orgLocationsId);
 				    	 if(projectClients != null){
 				    		 Integer pmhCount = projectMembersService.getProjectMembersCountByProjectClientId(projectClients.getId());
-				    		 if(projects.getOrgLocationsId().getId().equals(orgLocationsId) || pmhCount > 0){
-				    			 projects.setProjectClientUUID(projectClients.getUuid());
-				    			 projects.setStartDateStr(commonUtil.dateStrFromOrgDateFormatter(orglo.getDateFormat(),projects.getStartDate()));
-						    	    projects.setEmployeeStartDateStr(commonUtil.dateStrFromOrgDateFormatter(orglo.getDateFormat(),projects.getStartDate()));
+				    		 if(projects.getOrgLocationsId().getId().equals(orgLocationsId) || pmhCount > 0 || userRole.equalsIgnoreCase("ROLE_ADMIN") || userRole.equalsIgnoreCase("ROLE_SOURCELEAD_ADMIN")){
+				    			 
+				    			 ProjectsDTO projectsDTO = new ProjectsDTO();
+				    			 
+				    			 projectsDTO.setProjectClientUUID(projectClients.getUuid());
+				    			 projectsDTO.setStartDateStr(commonUtil.dateStrFromOrgDateFormatter(orglo.getDateFormat(),projects.getStartDate()));
+				    			 projectsDTO.setEmployeeStartDateStr(commonUtil.dateStrFromOrgDateFormatter(orglo.getDateFormat(),projects.getStartDate()));
 								    if(projects.getEndDate() != null){
-								    	 projects.setEndDateStr(commonUtil.dateStrFromOrgDateFormatter(orglo.getDateFormat(),projects.getEndDate()));
-								    	 projects.setEmployeeEndDateStr(commonUtil.dateStrFromOrgDateFormatter(orglo.getDateFormat(),projects.getEndDate()));
+								    	projectsDTO.setEndDateStr(commonUtil.dateStrFromOrgDateFormatter(orglo.getDateFormat(),projects.getEndDate()));
+								    	projectsDTO.setEmployeeEndDateStr(commonUtil.dateStrFromOrgDateFormatter(orglo.getDateFormat(),projects.getEndDate()));
 								    }
 				    			 
 				    			 if(projectClients.getOrgRelationId() != null){
 						    		 
 						    			if(null != projectClients.getOrgRelationId().getLocationId() && projectClients.getOrgRelationId().getLocationId().getId().longValue() == orgLocationsId.longValue()){
-											projects.setClient(projectClients.getOrgRelationId().getResponderLocationId().getOrgLocationName());
+						    				projectsDTO.setClient(projectClients.getOrgRelationId().getResponderLocationId().getOrgLocationName());
 										}if(null != projectClients.getOrgRelationId().getResponderLocationId() && projectClients.getOrgRelationId().getResponderLocationId().getId().longValue() == orgLocationsId.longValue()){
-											projects.setClient(projectClients.getOrgRelationId().getLocationId().getOrgLocationName());
+											projectsDTO.setClient(projectClients.getOrgRelationId().getLocationId().getOrgLocationName());
 										}
 						    	  }
 						    	 
@@ -691,43 +694,47 @@ public class ProjectsDaoImpl implements ProjectsDao{
 							    	if(approverHierarchy.getLevel()==1){
 							    		StringBuilder manager1 = new StringBuilder();
 							    		if(approverHierarchy.getApproverUserId().getLastName() != null){
-							    			projects.setManagerLevel1(manager1.append(approverHierarchy.getApproverUserId().getFirstName()).append(" ").append(approverHierarchy.getApproverUserId().getLastName()).toString());	
+							    			projectsDTO.setManagerLevel1(manager1.append(approverHierarchy.getApproverUserId().getFirstName()).append(" ").append(approverHierarchy.getApproverUserId().getLastName()).toString());	
 							    		}else{
-							    			projects.setManagerLevel1(manager1.append(approverHierarchy.getApproverUserId().getFirstName()).toString());
+							    			projectsDTO.setManagerLevel1(manager1.append(approverHierarchy.getApproverUserId().getFirstName()).toString());
 							    		}
 							    		
 							    	}else if(approverHierarchy.getLevel()==2){
 							    		StringBuilder manager2 = new StringBuilder();
 							    		if(approverHierarchy.getApproverUserId().getLastName() != null){
-							    			projects.setManagerLevel2(manager2.append(approverHierarchy.getApproverUserId().getFirstName()).append(" ").append(approverHierarchy.getApproverUserId().getLastName()).toString());	
+							    			projectsDTO.setManagerLevel2(manager2.append(approverHierarchy.getApproverUserId().getFirstName()).append(" ").append(approverHierarchy.getApproverUserId().getLastName()).toString());	
 							    		}else{
-							    			projects.setManagerLevel2(manager2.append(approverHierarchy.getApproverUserId().getFirstName()).append(" ").toString());
+							    			projectsDTO.setManagerLevel2(manager2.append(approverHierarchy.getApproverUserId().getFirstName()).append(" ").toString());
 							    		}
 							    		
 							    	}
 							    }
 							    
 							    
-							   Set<ProjectBudget>  budgetList = projects.getProjectBudget();
+							   List<ProjectBudget>  budgetList = projectBudgetService.getProjectBudgetByProjectTaskId(projects.getId());
 							    if(budgetList != null && budgetList.size() > 0) {
 							    	 double budgetSum = budgetList.stream().filter(p->p.getEstimatedBudgetValue() !=null).mapToDouble(p->p.getEstimatedBudgetValue()).sum();
 										if(budgetList.size() >0) {
 											ProjectBudget projectBudget = budgetList.iterator().next();
-											projects.setProjectbudgetCurrency(projectBudget.getEstimatedBudgetCurrency());
+											projectsDTO.setProjectbudgetCurrency(projectBudget.getEstimatedBudgetCurrency());
 										}
-										projects.setProjectbudgetAmount(budgetSum);
+										projectsDTO.setProjectbudgetAmount(budgetSum);
 							    }
 							   
-								
-								
-							    orgProjectsList.add(projects);
+							    projectsDTO.setProjectName(projects.getProjectName());
+							    projectsDTO.setProjectSequeneNumber(projects.getProjectSequeneNumber());
+							    projectsDTO.setProjectMode(projects.getProjectMode());
+							    projectsDTO.setProjectUUID(projects.getProjectUUID());
+							    projectsDTO.setInvoiceFrequency(projects.getInvoiceFrequency());
+							    projectsDTO.setProjectStatus(projects.getProjectStatus().toString());
+							    projectsDTOList.add(projectsDTO);
 				    		 }
 				    		 
 				    	 }
 				    	
 			}
 			
-			return orgProjectsList;
+			return projectsDTOList;
 		
 	}
 
