@@ -132,14 +132,6 @@ window.onload = function() {
                 <div id="leavestatsu" style="width: 100%; height: 150px;"></div>
                 <div class="row">
                 <div id="leaveStatusIdDiv"></div>
-                <%-- <ul class="list-unstyled leavelist col-md-10 mt25 col-md-offset-1 list-group">
-                        <c:forEach var="leaveType" items="${leaveTypeList}">
-                        	<li>
-									<label>${leaveType.name}</label>
-									<span class="label label-info" style="background-color: ${leaveType.colorCode};">${leaveType.remainingTotalLeaveCounts}</span>
-							</li>
-						</c:forEach>
-              	</ul> --%>
                 </div>
                 
             </div>
@@ -433,12 +425,14 @@ $(".close").click(function(){
 <script>
 function getLeavePolicy(){
 	var leaveTypeId = $("#leaveType").val();
-	$.get(sourceleadUrl+"/getLeavePolicy?"+tokenParamName+"="+tokenValue+"&leaveTypeId="+leaveTypeId, function(data) {
-		if(data !=null){
-			$("#termsAndConditions").html(data);
-			document.getElementById("termsModel").style.display="block";
-		}
-	}); 
+	if(leaveTypeId !=null && leaveTypeId != '' && leaveTypeId !='undefined'){
+		$.get(sourceleadUrl+"/getLeavePolicy?"+tokenParamName+"="+tokenValue+"&leaveTypeId="+leaveTypeId, function(data) {
+			if(data !=null){
+				$("#termsAndConditions").html(data);
+				document.getElementById("termsModel").style.display="block";
+			}
+		}); 
+	}
 }
 </script>
 
@@ -455,14 +449,16 @@ function validateMaxLeave(data){
 	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	
 	var leaveTypeId = $("#leaveType").val();
-	var leaveTypeName = data.options[data.selectedIndex].innerHTML;
-	$.get(sourceleadUrl+"/validateMaxLeave?"+tokenParamName+"="+tokenValue+"&leaveTypeId="+leaveTypeId+"&orgLocationId="+orgLocationId+"&userId="+userId, function(data) {
-		if(data == true){
-			$("#leaveTypeIdDiv").after("<p class='jquery_form_error_message cOrange'>You don't have balance for the '"+leaveTypeName+"'.</span>");
-		}else{
-			$('.jquery_form_error_message cOranges').hide();
-		}
-	}); 
+	if(leaveTypeId !=null && leaveTypeId != '' && leaveTypeId !='undefined'){
+		var leaveTypeName = data.options[data.selectedIndex].innerHTML;
+		$.get(sourceleadUrl+"/validateMaxLeave?"+tokenParamName+"="+tokenValue+"&leaveTypeId="+leaveTypeId+"&orgLocationId="+orgLocationId+"&userId="+userId, function(data) {
+			if(data == true){
+				$("#leaveTypeIdDiv").after("<p class='jquery_form_error_message cOrange'>You don't have balance for the '"+leaveTypeName+"'.</span>");
+			}else{
+				$('.jquery_form_error_message cOranges').hide();
+			}
+		}); 
+	}
 	
 }
 </script>

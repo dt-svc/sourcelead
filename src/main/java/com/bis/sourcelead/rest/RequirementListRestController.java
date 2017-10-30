@@ -1811,6 +1811,8 @@ public class RequirementListRestController {
 					RequirementIndex requirementIndex = mapper.readValue(sourceAsString, RequirementIndex.class);
 					Requirement	requirement = getData(requirementIndex,user,orgLocation);
 	            	if(requirement !=null){
+	            		Integer applicantsCount = requirementSubmissionService.getAllPipeLineCountsByRequirementIdAndSubmissionStage(requirement.getId(), user, orgLocation, "APPLICANTS");
+	            		requirement.setTotalApplicants(applicantsCount);
 	            		reqList.add(requirement);
 	            	}
 	            }
