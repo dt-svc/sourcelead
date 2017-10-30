@@ -11,6 +11,7 @@ import java.util.Set;
 
 import javax.mail.internet.InternetAddress;
 
+import org.apache.commons.lang.StringUtils;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -410,7 +411,11 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 		 emailMessage.setToEmail(interviewerUser.getEmail());
 		 emailMessage.setFromEmail(loginUser.getEmail());
 		 emailMessage.setCreatedBy(loginUser.getUserCode());
-		 emailMessage.setFromName(interviewStringBuilder.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
+		 if(StringUtils.isNotBlank(loginUser.getLastName())){
+			 emailMessage.setFromName(interviewStringBuilder.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
+		 }else{
+			 emailMessage.setFromName(interviewStringBuilder.append(loginUser.getFirstName()).toString());
+		 }
 		 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
 		 
 		 /*String dateOfInterviewValue ="";
@@ -473,7 +478,14 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 			 globalVarsMap.put("loginUser", emailMessage.getFromName());
 			 RequirementSubmission submission = requirementSubmissionService.getRequirementSubmissionById(requirementInterview.getSubmissionId().getId());
 			 Requirement requirement = requirementService.getRequirementByRequirementId(submission.getRequirement().getId());
-			 globalVarsMap.put("requirementTitle", requirement.getJobTitle());
+//			 globalVarsMap.put("requirementTitle", requirement.getJobTitle());
+			 StringBuilder sb = new StringBuilder();
+			 if(StringUtils.isNotBlank(requirement.getJobId())){
+				 sb.append(requirement.getJobId()).append(" - ").append(requirement.getJobTitle());
+				 globalVarsMap.put("requirementTitle", sb.toString());
+			 }else{
+				 globalVarsMap.put("requirementTitle", requirement.getJobTitle());
+			 }
 			 globalVarsMap.put("LoginLink",linkBuild.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
 			globalVarsMap.put("interviewTableDetails",interviewTable.toString());
 			globalVarsMap.put("loginOrg",orgLocations.getOrgLocationName());
@@ -1039,7 +1051,6 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 			 globalVarsMap.put("interviewerFirstName", emailMessage.getFirstName());
 			 globalVarsMap.put("interviewerLastName",emailMessage.getLastName());
 			 globalVarsMap.put("loginUser", emailMessage.getFromName());
-			 globalVarsMap.put("requirementTitle", requirementSubmission.getRequirement().getJobTitle());
 			 globalVarsMap.put("interviewDate", dateOfInterviewValue);
 			 globalVarsMap.put("interviewType",interviewTypeValue);
 			 globalVarsMap.put("applicantName",candidateName);

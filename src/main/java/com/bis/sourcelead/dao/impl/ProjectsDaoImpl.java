@@ -538,7 +538,8 @@ public class ProjectsDaoImpl implements ProjectsDao{
 		 query1.append(" ps.projectSequeneNumber like '%" + projectsDTO.getSearchValue() + "%' ")
 				.append("OR ps.projectName like '%" + projectsDTO.getSearchValue() + "%' ")
 				.append("OR ps.invoiceFrequency like '%" + projectsDTO.getSearchValue() + "%' ")
-				.append("OR ps.projectStatus like '%" + projectsDTO.getSearchValue() + "%' ");
+				.append("OR ps.projectStatus like '%" + projectsDTO.getSearchValue() + "%' ")
+				.append("OR ps.projectMode like '%" + projectsDTO.getSearchValue() + "%' ");
 					
 		}
 		
@@ -667,9 +668,7 @@ public class ProjectsDaoImpl implements ProjectsDao{
 			for (Projects projects :projectsList ){
 				    	 ProjectClients projectClients = projectClientDao.getProjectClientsByProjectIdAndOrgLocationId(projects.getId(), orgLocationsId);
 				    	 if(projectClients != null){
-				    		 Integer pmhCount = projectMembersService.getProjectMembersCountByProjectClientId(projectClients.getId());
-				    		 if(projects.getOrgLocationsId().getId().equals(orgLocationsId) || pmhCount > 0 || userRole.equalsIgnoreCase("ROLE_ADMIN") || userRole.equalsIgnoreCase("ROLE_SOURCELEAD_ADMIN")){
-				    			 
+				    		 
 				    			 ProjectsDTO projectsDTO = new ProjectsDTO();
 				    			 
 				    			 projectsDTO.setProjectClientUUID(projectClients.getUuid());
@@ -728,7 +727,6 @@ public class ProjectsDaoImpl implements ProjectsDao{
 							    projectsDTO.setInvoiceFrequency(projects.getInvoiceFrequency());
 							    projectsDTO.setProjectStatus(projects.getProjectStatus().toString());
 							    projectsDTOList.add(projectsDTO);
-				    		 }
 				    		 
 				    	 }
 				    	
