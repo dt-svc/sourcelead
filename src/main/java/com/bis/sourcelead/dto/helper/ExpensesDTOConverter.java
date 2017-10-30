@@ -2,14 +2,13 @@ package com.bis.sourcelead.dto.helper;
 
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.LinkedList;
+import java.util.TreeMap;
 
-import com.bis.sourcelead.dto.ExpensesEntriesDTO;
 import com.bis.sourcelead.dto.ExpensesDTO;
+import com.bis.sourcelead.dto.ExpensesEntriesDTO;
 import com.bis.sourcelead.entity.Expenses;
 import com.bis.sourcelead.entity.ExpensesEntries;
-import com.bis.sourcelead.enums.Submission_Status;
 
 public class ExpensesDTOConverter {
 
@@ -38,16 +37,19 @@ public class ExpensesDTOConverter {
 		}
 		expensesDTO.setExpenseLocationCode(expenses.getOrgLocationId().getLocationCode());
 		expensesDTO.setNoOfExpenses(expenses.getNoOfExpenses());
-		List<ExpensesEntriesDTO> eeDTOList = new ArrayList<>();
+		TreeMap<Long,ExpensesEntriesDTO> eeDTOMap = new TreeMap<>();
 		if(expenses.getExpensesEntries() != null && !expenses.getExpensesEntries().isEmpty() && expenses.getExpensesEntries().size() > 0){
 			for(ExpensesEntries ee : expenses.getExpensesEntries()){
-				eeDTOList.add(ExpensesEntriesDTOConverter.getExpensesEntriesDTOFromExpensesEntries(ee, expensesDTO));
+				eeDTOMap.put(ee.getId(), ExpensesEntriesDTOConverter.getExpensesEntriesDTOFromExpensesEntries(ee, expensesDTO));
 			}
 		}
 		if(expenses.getProjectMembers() != null && expenses.getProjectMembers().getProjectMemberCandidteId() != null){
 			expensesDTO.setProjectMemberName(expenses.getProjectMembers().getEmpName());
 		}
-		expensesDTO.setExpenseEntry(eeDTOList);
+		if(eeDTOMap != null && !eeDTOMap.isEmpty()){
+			expensesDTO.setExpenseEntry(new LinkedList(eeDTOMap.values()));
+		}
+		
 		
 		expensesDTO.setExpenseStatus(expenses.getExpenseStatus().getValue().toUpperCase());
 		

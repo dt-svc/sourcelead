@@ -380,7 +380,6 @@ public class VendorOnboardServiceImpl implements VendorOnboardService {
 				  if(isUserActive == false){
 					  password = SourceLeadRandomCodeHelper.generateRandomPassword();
 					  spocUser.setPassword(sourceleadPasswordEncoder.encode(password));
-					  spocUser.setIsMailSent(Status.Y);
 					  userDao.addUser(spocUser);
 					  
 					  globalVarsMap.put("userName",spocUser.getUserName());
@@ -625,11 +624,12 @@ public class VendorOnboardServiceImpl implements VendorOnboardService {
 			 }
 			
 			 
-			 flag = moduleIds.contains(Constants.MODULE_VMS);
-	    		tabId = (long) Constants.TAB_VENDOR;
-	    		moduleId = (long) Constants.MODULE_VMS;
+			 flag = moduleIds.contains(Constants.MODULE_ATS);
+	    		tabId = (long) Constants.TAB_CLIENT;
+	    		moduleId = (long) Constants.MODULE_ATS;
 	    		if(flag == false){
-	    			modules = modules+","+Constants.MODULE_VMS;
+	    			modules = modules+","+Constants.MODULE_ATS;
+	    			vendorOrgLocations.setModulesId(modules);
 	    			saveUserRoleActions(moduleId,tabId,vendorOrgLocations);
 	    		}
 	    		
@@ -790,6 +790,7 @@ public class VendorOnboardServiceImpl implements VendorOnboardService {
 					vendorTask.setUpdatedDate(commonUtil.currentDate());
 					vendorOnboardTasksDao.saveVendorOnboardTasks(vendorTask);
 	    		}
+	    	}
 	    		
 	    		List<VendorOnboardTasks> vendorOnboardTasksList = vendorOnboardTasksDao.getVendorOnboardTasksByVendorOnboardId(vendorOnboarding.getId());
 				if(vendorOnboardTasksList != null && vendorOnboardTasksList.size() > 0){
@@ -827,7 +828,7 @@ public class VendorOnboardServiceImpl implements VendorOnboardService {
 						submissionTemplate, user, orgLocations);
 				
 				setEmialAndNotificationToVendor(spocUser, user, orgLocations, vendorOnboarding, vendorOrgLocations,"Vendor Contact Invitation");
-	    	}
+	    	
 		}
 		
 	}

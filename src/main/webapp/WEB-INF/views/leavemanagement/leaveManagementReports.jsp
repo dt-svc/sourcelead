@@ -870,11 +870,24 @@ function getPieChartBasedOnUser(){
 			);
     //Custom buttons
     function showCustom(){
-        $(".customLeaves").toggle();
+    	$(".customLeaves").toggle();
     }
+    $("html").click(function() {
+    	$(".customLeaves").hide();
+    })
+    $("#customLeaves, .showCustom").click(function(e) {
+    	e.stopPropagation();
+    })
+    
     function showLeaveReport(){
         $(".showLeaveReport").toggle();
     }
+    $("html").click(function() {
+        $(".showLeaveReport").hide();
+    });	
+    $("#showLeaveReport, .showLeaveReport").click(function(e) {
+        e.stopPropagation();
+    });
     //jQuery UI Calendar
 //     $("#leavesCalendar").datepicker();
     </script>

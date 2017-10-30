@@ -25,7 +25,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.UploadedFile;
@@ -72,25 +71,21 @@ public class UploadController {
 		
 		try {
 			String isFileCreated = uploadFileService.uploadFile(uploadedFile.getFile(), orgLocations,user,uploadedFile.getEmail(),org,roleHierarchyId);
-			if(!isFileCreated.equalsIgnoreCase(Constants.MEMBER_IN_ACTIVE)) {
-				if ("FailureUsersForCheck.xlsx".equalsIgnoreCase(isFileCreated)) {
-					model.addAttribute("errorMessage", "Please download Error file here");
-	                 model.addAttribute("fileName", "xlsx");
-					return "upload/uploadForm";
-				}else if("FailureUsersForCheck.xls".equalsIgnoreCase(isFileCreated)){
-					model.addAttribute("errorMessage", "Please download Error file here");
-	                model.addAttribute("fileName", "xls");
-					return "upload/uploadForm";
-				}
-				SourceLeadSessionManager.setSessionAttribute(request, "userCreateMsg", "Successfully you have created a user");
-			}else {
-				SourceLeadSessionManager.setSessionAttribute(request, "userCreateMsg", "This is an empty file");
+			if ("FailureUsersForCheck.xlsx".equalsIgnoreCase(isFileCreated)) {
+				model.addAttribute("errorMessage", "Please download Error file here");
+                 model.addAttribute("fileName", "xlsx");
+				return "upload/uploadForm";
+			}else if("FailureUsersForCheck.xls".equalsIgnoreCase(isFileCreated)){
+				model.addAttribute("errorMessage", "Please download Error file here");
+                model.addAttribute("fileName", "xls");
+				return "upload/uploadForm";
 			}
 		} catch (Exception e) {
 			logger.error("Exception cause is : "+ExceptionUtils.getFullStackTrace(e));	
 		}
-//		model.addAttribute("msg", "successfully uploaded");
+		model.addAttribute("msg", "successfully uploaded");
 		 model.addAttribute("fileName", "");
+		 SourceLeadSessionManager.setSessionAttribute(request, "userCreateMsg", "Successfully you have created a user");
 		return "redirect:/usersList";
 	}
 /**

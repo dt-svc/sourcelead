@@ -95,7 +95,7 @@ var sourceleadUrl = '${sourceleadUrl}';
 	         <div class="project_side_wrap_inn_tabs">
 	          <ul class="project-tabs-menu">
 <!-- 	            <li class="current"><a href="#tab-task1">Time Entry</a></li> -->
-	            <c:if test="${projectTask.taskType.id != 1059}">
+	            <c:if test="${taskTypeName != 'SubTask'}">
 	            <li class="current"><a href="#tab-task2" onclick="getSubTaskList();">Sub Tasks</a></li>
 	            </c:if>
 	            <li><a href="#tab-task3" onclick="closeTimeEntry();documentTableList();">Documents</a></li>
@@ -1434,7 +1434,7 @@ function subTasksAssignList(projectId){
 		 document.getElementById("epic").style.display="none";
 		 document.getElementById("userStory").style.display="none";
 		 document.getElementById("task").style.display="block";
-		 $('#taskId').attr("data-validation","required"); 
+		 $('#taskId').removeAttr("data-validation","required");
 		 getSubTasks();
 	 } 
 	 
@@ -1508,7 +1508,6 @@ function subTasksAssignList(projectId){
 	    	 url: sourceleadUrl+"/ProjectTasks/getProjectTasksBySubTaskType?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId+"&taskType="+taskType,
 	    		success: function(json) {
 	     		var output = "";
-	     			output = output + "<option value=''>--Select Task--</option>";
 	     		for (var i=0; i<json.length; i++)
 	     		{
 		     		var opt = json[i];
@@ -1707,7 +1706,7 @@ function addComment(){
 	result = result + '    <form id="addComment_form" name="addComment_form">';
 	result  = result + ' <div class="row clearfix">';
 	result  = result + '   <div class="col-md-12 mb10">';
-	result  = result + '     <textarea class="form-control" rows="1" id="taskComment" name="taskComment" placeholder="Comment here ..." data-validation="required validate_Space validate_float validate_length length2-500" field-name="Task Comment" ></textarea>';
+	result  = result + '     <textarea class="form-control" rows="1" id="taskComment" name="taskComment" placeholder="Comment here ..." data-validation="required validate_Space  validate_length length2-500" field-name="Task Comment" ></textarea>';
 	result  = result + '   </div>';
 	result  = result + '</div>';
 	result  = result + ' <div class="modalFooter mt5">';

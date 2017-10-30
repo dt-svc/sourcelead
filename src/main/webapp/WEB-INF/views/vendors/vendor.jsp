@@ -22,6 +22,7 @@ window.onload = function () {
 {
 	color: #333;
 	text-decoration : none;
+	pointer-events: none;
 }
 </style>
 
@@ -848,7 +849,7 @@ function getRolesList(){
 						$("#vendorOnboardId").val(data.vendorOnboardId);
 						$("#loading").removeAttr("style");
 						 var vendorDocuments = document.getElementById("vendorDocuments");
-						 $("#vendorDocuments").removeClass("disabledLink");
+						 document.getElementById("vendorDocuments").removeAttribute("class");
 						 vendorDocuments.href="#tab-b";
 						 vendorDocuments.addEventListener("click", function() {
 							 getOnboardDocuments();
