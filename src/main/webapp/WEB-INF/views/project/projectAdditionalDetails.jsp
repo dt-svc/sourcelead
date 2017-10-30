@@ -13,7 +13,7 @@
 	<form:form id="project_additional_form" name="project_additional_form" method="post" >
 	<section class="projQueWrap">
 		<div class="projQueCta">
-			<h2>1. Project location</h2>
+			<h2>1. Project location <span class="text-danger">*</span></h2>
 			<div class="projQueCtaInn wid50">
 				<input type="text" name="projectLocation" id="projectLocation" data-validation="required" field-name="Project Location" class="form-control" />
 			</div>
