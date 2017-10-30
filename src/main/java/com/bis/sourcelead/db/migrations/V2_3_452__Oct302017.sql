@@ -298,3 +298,4 @@ INSERT INTO `sourcelead`.`action_names` (`ID`, `ACTION_NAME`, `METHOD_NAME`) VAL
 INSERT INTO `sourcelead`.`action_names` (`ID`, `ACTION_NAME`, `METHOD_NAME`) VALUES ('276', 'Fill Member Timesheet', 'saveTimesheet');
 INSERT INTO `sourcelead`.`action_names` (`ID`, `ACTION_NAME`, `METHOD_NAME`) VALUES ('277', 'View Member Timesheet', 'timesheetDivByFrequency');
 INSERT INTO `sourcelead`.`action_names` (`ID`, `ACTION_NAME`, `METHOD_NAME`) VALUES ('278', 'Export Member Timesheet', 'exportTimesheetPdf');
+INSERT INTO `sourcelead`.`ACTION_NAMES` (`ID`, `ACTION_NAME`, `METHOD_NAME`) VALUES ('279', 'Log Out', 'getActionHistoryList');
