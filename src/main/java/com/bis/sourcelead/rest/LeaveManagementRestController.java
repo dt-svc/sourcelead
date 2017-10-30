@@ -652,7 +652,7 @@ public class LeaveManagementRestController {
 	public @ResponseBody List<HolidayDTO> getHolidaysList(@RequestParam(value = "orgLocationId", required = false) Long orgLocationId,@RequestParam(value = "reportYear", required = false) String reportYear, HttpServletRequest request) throws Exception
 	{
 		List<HolidayDTO> holiodaysDTOList = null;
-		if(StringUtils.isNotBlank(reportYear) && !reportYear.equalsIgnoreCase("--Select Year--"))
+		if(StringUtils.isNotBlank(reportYear))
 		{
 			holiodaysDTOList = holidayService.getAllHolidaysListBasedOnYear(orgLocationId,Long.parseLong(reportYear));
 		}else

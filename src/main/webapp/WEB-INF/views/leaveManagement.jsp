@@ -31,7 +31,7 @@ $(document).ready(function(){
           <ul class="nav nav-tabs">
             <li class="active"><a data-toggle="tab" href="#self">Self</a></li>
             <sec:authorize access="hasAnyRole(\'ROLE_APPROVE_LEAVE\')">
-            	<li><a data-toggle="tab" href="#employee">Employee</a></li>
+            	<li><a data-toggle="tab" href="#employee">Employees</a></li>
             </sec:authorize>
           </ul>
           <div class="tab-content clearfix mt10">
@@ -59,7 +59,7 @@ $(document).ready(function(){
                     </li>
                       <li class="clearfix">
                         <label class="pull-left">Balanced Leaves</label>
-                        <div class="color_white" id="selfBalance" title="Balanced Leaves"><span class="label label-info pull-right" id="selfBalancedCounts"></span></div>
+                        <div class="color_white" title="Balanced Leaves"><span class="label label-info pull-right" id="selfBalancedCounts"></span></div>
                     </li>
                 </ul>
                     </div>
