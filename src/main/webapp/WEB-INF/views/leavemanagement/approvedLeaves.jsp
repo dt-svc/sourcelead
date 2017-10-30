@@ -328,18 +328,13 @@ function approvedListPagination(){
 <script>
 function withDrawLeave(leaveId, userId){
 	var result = "";
-	alert("hai1");
 	result = result +"	<div class='comMask'></div>";
-	alert("hai2");
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
-	alert("hai3");
 	result = result +"		<textarea id='withdrawReason' class='form-control' field-name='Withdraw Reason'  data-validation='required validate_Space validate_Description validate_length length2-250' name='reasonForSpoc' value='' placeholder='Withdraw Reason' rows='2'></textarea>";
-	alert("hai4");
 	result = result + ' <div id="withdrawReasonDiv"/>';
 	result = result +'		<b href="javascript:void(0)"><input id="confirm-id" type="button" value="Withdraw" onclick="withdraw(\''+leaveId+'\','+userId+');"><input class="u_can_color" type="button"  value="Cancel" onClick="cancelTermination();"></b>';
 	result = result +"	</div>";
 	$("#popUp").append(result);
-	alert("hai5");
 	$("#remove_user_pop").slideDown(200);
 	$(".comMask").fadeIn(200);
 }

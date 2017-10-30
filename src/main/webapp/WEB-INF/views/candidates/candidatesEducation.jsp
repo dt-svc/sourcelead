@@ -882,6 +882,9 @@ function deleteSelectedEducation(candidateEducationId,candidateId){
              			$("#remove_user_pop, .project_inn_mask").fadeOut();
              			 candidateEducationList(candidateId);
              			eduMsgFadeinFunction();
+             			 setTimeout(function(){
+ 				 			candidateList();					 			
+ 				 	    },100);
 			    	}
                } 
         },

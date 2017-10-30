@@ -74,7 +74,7 @@ public class CandidateEducationServiceImpl implements CandidateEducationService 
 		Candidate candidate = new Candidate();
 		OrgLocations orgLocations = new OrgLocations();
 		StringBuffer activitySummary = new StringBuffer();
-		if(candidateId!=null){
+		if(candidateId !=null){
         	if(StringUtils.isNotBlank(candidateEducationDTO.getCandidateEduId())){
 	       		 if(candidateEducationDTO.getCandidateEduId() !=null){
 	       			//candidateEducation.setId(Long.valueOf(jsonObject.getString("candidateEduId")));

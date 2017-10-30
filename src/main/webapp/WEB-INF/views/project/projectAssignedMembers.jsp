@@ -8,7 +8,7 @@
 <form:form id="assignMembers_form" name="assignMembers_form" method="post">
 	<div class="project_tabs_inn_head">
 		<a href="javascript:void(0)" onclick="getAssociates();" id="addDiv">
-		<i class="glyphicon glyphicon-plus"></i>Assign Members</a> 
+		<i class="glyphicon glyphicon-plus"></i>Search Members</a> 
 		
 		<div id="resourceListLoading"></div>
 		<div id="searchAssociatesList"></div>
@@ -175,11 +175,11 @@ function getAssociates(){
 	result = result +'<div class="dropdown-menu bootstrap_dropdownMenu" role="menu" aria-labelledby="menu2">';
 	result = result +'<ul class="resourcetype-filter">';
 	result = result +'<li>';
-	result = result +'<input value="hotlist" id="hotlist" name="resourceType" checked type="checkbox" onclick="getAssociatesFilter()" >';
+	result = result +'<input value="hotlist" id="hotlist" name="resourceType"  type="checkbox" onclick="getAssociatesFilter()" >';
 	result = result +'<label for="hotlist">Hotlist</label>';
 	result = result +'</li>';
 	result = result +'<li>';
-	result = result +'<input  value="assigned" id="Assigned" name="resourceType" checked type="checkbox" onclick="getAssociatesFilter()" >';
+	result = result +'<input  value="assigned" id="Assigned" name="resourceType"  type="checkbox" onclick="getAssociatesFilter()" >';
 	result = result +'<label for="Assigned">Assigned</label>';
 	result = result +'</li>';
 	result = result +'</ul>';
@@ -362,7 +362,7 @@ function getAssociatesFilter(){
 			        	result = result +'<div title="'+primarySkill+'" class="tbldata-dotdot_80">'+primarySkill+'</div>';
 			        	result = result +'</td>';
 			        	result = result +'<td>';
-			        	result = result +'<div class="tbldata-dotdot-sm">';
+			        	result = result +'<div class="tbldata-dotdot-200">';
 			        	result = result +'<small class="pull-left">'+currentRateCurrency+'</small>';
 			        	result = result +'<div class="tbldata-dotdot-100 pull-left">'+currentRate+'</div>';
 			        	result = result +'<small class="pull-right">'+currentRateType+'</small>';

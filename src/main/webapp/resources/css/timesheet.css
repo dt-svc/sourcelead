@@ -248,7 +248,7 @@ input.inline_field::-moz-placeholder { color: #333; }-->*/
     font-weight:400; font-size:13px; white-space: nowrap; text-overflow: ellipsis;
     }
 .timesheet_week_comm strong input.dele {
-    width:18%; text-align:center; font-size:20px; color:red; border:none; text-indent:0px; background-color:transparent;
+    width:18px; text-align:center; font-size:20px; color:red; border:none; text-indent:0px; background-color:transparent;
     padding:0px 0px 0px 0px; margin:0px 0px 0px 5px;  background-image:url(../images/delete.png);
     background-position:center; background-repeat:no-repeat; background-size:13px;
 }
@@ -5497,15 +5497,15 @@ position: static !important;
 .errBotVal p {
 bottom:-30px !important; padding: 0px 10px 0px 15px !important;
 }
-
-
-
-
-
-
-
-
-
+.minHeBtn {
+min-height: 34px; padding: 9px 12px 0px;
+}
+.cOrange {
+    color: #f17929 !important;
+}
+.padIcon {
+	padding: 0px 5px 0px 20px !important;
+}
 
 
 
@@ -5530,7 +5530,7 @@ bottom:-30px !important; padding: 0px 10px 0px 15px !important;
 		position: relative; padding: 0px 20px;
 	}
 	.resTabScroll ul {
-		padding: 0px 0px; width: 100%; overflow: auto; display: block; height: 40px;
+		padding: 0px 0px; width: 100%; overflow: auto; display: flex; height: 40px; background-color: #ededed;
 	}
 	.tabLeftArrow, .tabRightArrow {
 		position: absolute; display: block; left: 0px; top: 0px; width: 16px; height: 100%; background-color: #5B50DD;
@@ -5538,7 +5538,11 @@ bottom:-30px !important; padding: 0px 10px 0px 15px !important;
 	}
 	.tabRightArrow {
 		right: 0px; left: inherit;
-	}	
+	}
+	.new-tabs li a {
+		padding: 8px 15px;
+	}
+	
           
 }  
        
