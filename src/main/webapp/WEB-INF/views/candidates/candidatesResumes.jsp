@@ -552,6 +552,9 @@ function deleteResume(candidateId, resumeId){
         		     candidateResumesList(candidateId);
         		     $("#remove_user_pop_resume, .project_inn_mask").fadeOut();
         		     resMsgFadeinResumes();
+        		     setTimeout(function(){
+				 			candidateList();					 			
+				 	 },100);
    		    	}
    		    },
 	     });
