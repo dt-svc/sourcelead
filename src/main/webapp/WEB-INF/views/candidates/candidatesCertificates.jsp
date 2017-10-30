@@ -807,6 +807,9 @@ function  deleteSelectedCertification(candidateCertificationId,candidateId){
              			$("#remove_user_pop_certificates, .project_inn_mask").fadeOut();
              			candidateCertificateList(candidateId);
              			cerMsgFadein();
+             			setTimeout(function(){
+				 			candidateList();					 			
+				 	    },100);
 			    	}
                } 
         },
