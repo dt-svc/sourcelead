@@ -29,7 +29,7 @@ width : 6% !important;
           <ul class="nav nav-tabs" id="tab_bar">
             <li class="active" onclick="getTemplateDetails();"> <a href="#details" data-toggle="tab"> <i class="fa fa-th-list paddingRight"></i> <span>Details</span> <br>
               <small>Template details</small> </a> </li>
-            <li onclick="getTemplatePolicyDocumentsDetails();"><a href="#documents" data-toggle="tab" id="templateDocs"> <i class="fa fa-files-o paddingRight"></i> <span>Documents</span> <br>
+            <li onclick="getTemplateContractsDocumentsDetails();getTemplateFormsDocumentsDetails();getTemplatePolicyDocumentsDetails();getTemplateSupportingDocumentsDetails();"><a href="#documents" data-toggle="tab" id="templateDocs"> <i class="fa fa-files-o paddingRight"></i> <span>Documents</span> <br>
               <small>Acceptance &amp; Policy Documents</small> </a> </li>
             <li onclick="getOnboardingTasksList();"> <a href="#tasks" data-toggle="tab" id="templateTasks"> <i class="fa fa-check-square-o paddingRight"></i> <span>Tasks</span> <br>
               <small>List of tasks</small> </a></li>
@@ -610,8 +610,7 @@ function getAssignToUsersList(){
 	$.ajax({
 	   	type: "POST",
 	    url: sourceleadUrl+"/getOnboardTasksAssignToUsersList?${_csrf.parameterName}=${_csrf.token}",	    	   
-	    success: function(data) {
-	    	 var json = JSON.parse(data);
+	    success: function(json) {
         	 var result = "";
         	for (var i=0; i<json.length; i++)
 			{
@@ -868,7 +867,7 @@ function getTemplatePolicyDocumentsDetails(templateId){
 	$("#templateDocuments_form input[name*='polaciesFileInfo']").remove();
 	$("#templateDocuments_form input[name*='supportingFileInfo']").remove();
 	if(templateId == '' || templateId == null || templateId =='undefined'){
-		templateId = document.getElementById("templateId").value;
+		templateId = $("#documentstemplateId").val();
 	}
 	var documentType = "Policies"
 	if(templateId){
@@ -915,7 +914,7 @@ function getTemplatePolicyDocumentsDetails(templateId){
 <script>
 function getTemplateSupportingDocumentsDetails(templateId){
 	if(templateId == '' || templateId == null || templateId =='undefined'){
-		templateId = document.getElementById("templateId").value;
+		templateId = $("#documentstemplateId").val();
 	}
 	var documentType = "Supported"
 	if(templateId){
@@ -959,7 +958,7 @@ function getTemplateSupportingDocumentsDetails(templateId){
 <script>
 function getTemplateContractsDocumentsDetails(templateId){
 	if(templateId == '' || templateId == null || templateId =='undefined'){
-		templateId = document.getElementById("templateId").value;
+		templateId = $("#documentstemplateId").val();
 	}
 	var documentType = "Contracts"
 	if(templateId){
@@ -1002,7 +1001,7 @@ function getTemplateContractsDocumentsDetails(templateId){
 <script>
 function getTemplateFormsDocumentsDetails(templateId){
 	if(templateId == '' || templateId == null || templateId =='undefined'){
-		templateId = document.getElementById("templateId").value;
+		templateId = $("#documentstemplateId").val();
 	}
 	var documentType = "Forms"
 	if(templateId){
@@ -1114,8 +1113,7 @@ function getOnboardingTasksList(){
 	$.ajax({
 	   	type: "POST",
 	    url: sourceleadUrl+"/getOnboardTasksListByTemplateId?${_csrf.parameterName}=${_csrf.token}&templateId="+templateId,	    	   
-	    success: function(data) {
-	    	 var json = JSON.parse(data);
+	    success: function(json) {
         	 var result = "";
         	if(json.length > 0){ 
 	        	for (var i=0; i<json.length; i++)

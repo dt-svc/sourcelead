@@ -1706,6 +1706,8 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 		OrgLocations orglo = orgLocationService.getOrgLocations(reqSubmission.getOrgLocations().getId());
 		EmailMessage emailMessage = new EmailMessage();
 		 OrgSpoc spoc= null;
+		 RequirementSubmissionTemplateFields interviewDetails = requirementSubmissionTemplateFieldsService
+					.getSubmissionsTemplateFieldsByRequirementSubmissionsId(reqnterview.getSubmissionId().getId());
 		if(null != reqSubmission.getVendorLocationId()){
 			emailMessage.setFirstName(interviewCreactorUser.getFirstName());
 			 emailMessage.setLastName(interviewCreactorUser.getLastName());
@@ -1723,7 +1725,8 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 		 emailMessage.setFirstName(interviewCreactorUser.getFirstName());
 		 emailMessage.setLastName(interviewCreactorUser.getLastName());
 		 emailMessage.setToEmail(interviewCreactorUser.getEmail());
-		 emailMessage.setFromEmail(defaultFromEmailAddressForProd);
+		/* emailMessage.setFromEmail(defaultFromEmailAddressForProd);*/
+		 emailMessage.setFromEmail(interviewDetails.getEmailId());
 		 emailMessage.setCreatedBy(interviewCreactorUser.getUserCode());
 		 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
 		}
@@ -1735,8 +1738,8 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 			globalVarsMap.put("InterviewCreatorName", "--");
 		}
 
-		RequirementSubmissionTemplateFields interviewDetails = requirementSubmissionTemplateFieldsService
-				.getSubmissionsTemplateFieldsByRequirementSubmissionsId(reqnterview.getSubmissionId().getId());
+		/*RequirementSubmissionTemplateFields interviewDetails = requirementSubmissionTemplateFieldsService
+				.getSubmissionsTemplateFieldsByRequirementSubmissionsId(reqnterview.getSubmissionId().getId());*/
 		if (null != interviewDetails.getFirstName() && !"".equalsIgnoreCase(interviewDetails.getFirstName())) {
 			globalVarsMap.put("ApplicantName", interviewDetails.getFirstName());
 		} else {

@@ -128,6 +128,7 @@ public class InvoiceDaoImpl implements InvoiceDao {
 		    countQuery = "from Invoice invoice  where invoice.orgLocation.id =:orgLocationId and invoice.invoiceType='payables' and invoice.status = '1'";
 		}
 		
+		StringBuilder query1 = new StringBuilder("");
 		if(StringUtils.isNotBlank(invoiceDTO.getSearchValue())){
 			if(invoiceDTO.getSearchValue().contains("/") || invoiceDTO.getSearchValue().contains("-")){
 			String convertedDate=invoiceDTO.getSearchValue();
@@ -143,10 +144,8 @@ public class InvoiceDaoImpl implements InvoiceDao {
             String queryDate = "from Invoice invoice where invoice.orgLocation.id =:orgLocationId and ( invoice.invoiceDate =:sqlDate or invoice.dueDate =:sqlDate )";
             Query queryObjDate = session.createQuery(queryDate.toString()).setDate("sqlDate", sqlDate).setLong("orgLocationId", orgLocations.getId());
             response.setData(queryObjDate.list());
-			}
-		}else{
-		StringBuilder query1 = new StringBuilder("");
-			if(invoiceDTO.getSearchValue() !=null && !"".equalsIgnoreCase(invoiceDTO.getSearchValue())) {
+			}else{
+				if(invoiceDTO.getSearchValue() !=null && !"".equalsIgnoreCase(invoiceDTO.getSearchValue())) {
 				query1.append(" and (invoice.invoiceId like '%" + invoiceDTO.getSearchValue() + "%' ")
 				.append("OR invoice.responderLocationId.orgLocationName like '%" + invoiceDTO.getSearchValue() + "%' ")
 				.append("OR invoice.orgLocation.orgLocationName like '%" + invoiceDTO.getSearchValue() + "%' ")
@@ -161,6 +160,8 @@ public class InvoiceDaoImpl implements InvoiceDao {
 				.append("OR invoice.paymentStatus like '%" + invoiceDTO.getSearchValue() + "%' )");
 						
 			}
+			}
+		}
 		Query queryObj = session.createQuery(query + query1.toString() + "  ORDER BY invoice.id DESC");
 		if (invoiceDTO != null && invoiceDTO.getLength() > 0) {
 			queryObj.setFirstResult(invoiceDTO.getStart());
@@ -181,12 +182,8 @@ public class InvoiceDaoImpl implements InvoiceDao {
 				filteredCount = filteredCountlist.iterator().next().intValue();
 			}
 			response.setRecordsFiltered(filteredCount);
-		} else {
-			response.setRecordsFiltered(filteredCount);
-		}
-
+		} 
 			response.setData(invoiceList);
-		}
 			return response;
 		
 		

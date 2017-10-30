@@ -50,7 +50,6 @@
 						
 						result = result + '<div class="project_details_cta">';
 						result = result + '<strong>Client Name :</strong>';
-						
 						if(json.orgName !=null && json.orgName !='' && json.orgName !='undefined'){
 						result = result + '<span title='+json.orgName+'>'+json.orgName+'</span>';
 						}
@@ -416,7 +415,7 @@
                         result = result + ' </div>'; 
 						
 						result = result + '<div class="clearfix"></div>';
-						result = result + '<div class="user_summary_edit_cta">';
+						result = result + '<div class="user_summary_edit_cta pull-right">';
 						result = result + '<input class="us-btn" id="save_client" type="button" value="Save" onclick="storeClientDetails('+orgRelationID+','+clientLocationId+')"/> <input class="us-btn us-btn_a" type="button" value="Cancel" onclick="clientDetails('+clientLocationId+','+orgRelationID+')"/>';
 						result = result + '</div>';		
 						result = result + '<div class="clearfix"></div>';

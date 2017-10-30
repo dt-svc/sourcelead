@@ -592,8 +592,7 @@ function getAssignToUsersList(){
 	$.ajax({
 	   	type: "POST",
 	    url: sourceleadUrl+"/getOnboardTasksAssignToUsersList?${_csrf.parameterName}=${_csrf.token}",	    	   
-	    success: function(data) {
-	    	 var json = JSON.parse(data);
+	    success: function(json) {
         	 var result = "";
         	for (var i=0; i<json.length; i++)
 			{
@@ -836,8 +835,7 @@ function getTemplateDetails(){
         $.ajax({
 	    	type: "POST",
 	    	 url: sourceleadUrl+"/getOffboardTemplateById?${_csrf.parameterName}=${_csrf.token}&templateId="+templateId, 
-	        success: function(data) {
-	        	 var json = JSON.parse(data);
+	        success: function(json) {
 	        	
 	        	 $("input[name=templateName]").val(json['templateName']);
 	        	 $("textarea[name=description]").val(json['description']);
@@ -866,9 +864,8 @@ function getTemplateResignationDocumentsDetails(templateId){
 	     $.ajax({
 		    	type: "POST",
 		    	 url: sourceleadUrl+"/getOffboardTemplateDocumentByTemplateId?${_csrf.parameterName}=${_csrf.token}&templateId="+templateId+"&documentType="+documentType, 
-		        success: function(data) {
+		        success: function(json) {
 		        	
-		        	 var json = JSON.parse(data);
 		        	 var result = "";
 		        	 
                 	 for (var i = 0; i < json.length; i++) { 
@@ -912,9 +909,8 @@ function getTemplateOffboardPackDocumentsDetails(templateId){
 	     $.ajax({
 		    	type: "POST",
 		    	 url: sourceleadUrl+"/getOffboardTemplateDocumentByTemplateId?${_csrf.parameterName}=${_csrf.token}&templateId="+templateId+"&documentType="+documentType, 
-		        success: function(data) {
+		        success: function(json) {
 		        	
-		        	 var json = JSON.parse(data);
 		        	 var result = "";
 		        	 
                 	 for (var i = 0; i < json.length; i++) { 
@@ -1015,8 +1011,7 @@ function getOffboardingTasksList(){
 		$.ajax({
 		   	type: "POST",
 		    url: sourceleadUrl+"/getOffboardTasksListByTemplateId?${_csrf.parameterName}=${_csrf.token}&templateId="+templateId,	    	   
-		    success: function(data) {
-		    	 var json = JSON.parse(data);
+		    success: function(json) {
 	        	 var result = "";
 	        	 
 	        	if(json.length > 0){ 
@@ -1105,6 +1100,9 @@ function deleteTask(taskId){
 	        success: function(data) {
 	        	if(data == 'success'){
 	        		document.getElementById("onboardTask"+taskId).remove();
+	        		if($("#offboardTasksList div[id*=onboardTask]").length === 0) {
+	        			$("#offboardTasksList").prepend("<div><h4>No Tasks Found</h4></div>");
+	        		}
 	        	}
 	        },
 	    });

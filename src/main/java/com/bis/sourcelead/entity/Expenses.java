@@ -49,14 +49,12 @@ private static final long serialVersionUID = 1L;
 	
 	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne
-	@Fetch(FetchMode.SELECT)
     @JoinColumn(name="LOCATION_ID", nullable=false ) 
 	@JsonBackReference
     private OrgLocations orgLocationId;
 	
 	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne
-	@Fetch(FetchMode.SELECT)
 	@JoinColumn(name = "PROJECT_MEMBERS_ID", nullable=false)
 	@JsonBackReference
 	private ProjectMembers projectMembers;
@@ -116,14 +114,12 @@ private static final long serialVersionUID = 1L;
 	
 	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne
-	@Fetch(FetchMode.SELECT)
 	@JoinColumn(name = "PROJECT_ID", nullable=false)
 	@JsonBackReference
 	private Projects projects;
 	
 	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne
-	@Fetch(FetchMode.SELECT)
     @JoinColumn(name="MASTER_CANDIDATE_ID", nullable=false) 
 	@JsonBackReference
     private MasterCandidate masterCandidateId;

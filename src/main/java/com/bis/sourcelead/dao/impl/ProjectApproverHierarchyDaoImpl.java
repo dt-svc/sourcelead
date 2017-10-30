@@ -292,7 +292,10 @@ public class ProjectApproverHierarchyDaoImpl implements ProjectApproverHierarchy
 	@Transactional
 	public List<ProjectApproverHierarchy> getApproverUserIdsByOrgLocationIdAndLevelAndFrequency(Long orgLocationId, String invoiceFrequency, int managerLevel) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from ProjectApproverHierarchy hierarchy left join fetch hierarchy.approverUserId user left join fetch hierarchy.projectId proj left join fetch proj.orgLocationsId ol where ol.id = :orgLocationId and hierarchy.level = :managerLevel and proj.invoiceFrequency = :invoiceFrequency GROUP BY hierarchy.approverUserId.id " ;
+		String query = "from ProjectApproverHierarchy hierarchy left join fetch hierarchy.projectClientsId pc left join fetch hierarchy.approverUserId user left join fetch hierarchy.projectId proj left join fetch proj.orgLocationsId ol"
+				+ "  where ol.id = :orgLocationId and hierarchy.level = :managerLevel and proj.invoiceFrequency = :invoiceFrequency "
+				+ " and  pc.level IN ( select MIN(pah.projectClientsId.level) from ProjectApproverHierarchy pah where pah.projectClientsId.orgLocationsId.org.orgType <> '"+Constants.GUEST+"' and  pah.projectId.id = hierarchy.projectId.id) "
+				+ " GROUP BY hierarchy.approverUserId.id " ;
 	    List<ProjectApproverHierarchy> projectHirachyList = session.createQuery(query).setLong( "orgLocationId", orgLocationId).setInteger("managerLevel", managerLevel).setString("invoiceFrequency", invoiceFrequency).setCacheable(true).list();
         return projectHirachyList;
 	}

@@ -162,7 +162,7 @@
 						<div class="clearfix" id="noUsersDiv" style="display: none;">
 							<div class="clearfix"></div>
 							<div class="form-group" id="departmentDiv">
-								<label class="col-md-3">Select Department</label>
+								<label class="col-md-3">Select Department<span class="text-danger">&nbsp;*</span></label>
 								<div class="col-md-9 dropdown-select">
 									<select class="chosen-select form-control" name="department" onchange="removeErrMsg();"
 										id="department" field-name="Department"

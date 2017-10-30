@@ -364,7 +364,7 @@ public class RequirementRestController {
 									
 									if(loginUser.getId().longValue() != requirement.getManagerUserId().getId().longValue()){
 										if(!requirement.getCreatedBy().getId().equals(managerUser.getId())){
-									requirementService.rejectedEmailScenario(loginUser, requirement.getCreatedBy(), requirement, location, reason,orgLocation);
+									requirementService.rejectedInitiatorUserEmailScenario(loginUser, requirement.getCreatedBy(), requirement, location, reason,orgLocation);
 									requirementService.rejectedEmailScenario(loginUser, managerUser, requirement, location, reason,orgLocation);
 										}
 										else{
