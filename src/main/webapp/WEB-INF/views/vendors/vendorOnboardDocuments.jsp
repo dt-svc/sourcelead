@@ -7,7 +7,7 @@
   <div id="vendorDocumentsLoading"></div>
 	<form:form id="vendorDocuments_form" name="vendorDocuments_form" method="post">
 		 <div class="form-group">
-		 <label class="col-md-12 mt10">These documents will be added for vendor on-boarding:</label>
+		 <label class="col-md-12 mt10">Required documents for onboarding :</label>
 			<div id="timesheetDocumentsId" class="timesheetDocs timesheetDocs-custom">
                       <div class="col-md-8 commentFile timesheet_week_comm onboardDocs">
 				        <span class="uploadAttachments"> 
