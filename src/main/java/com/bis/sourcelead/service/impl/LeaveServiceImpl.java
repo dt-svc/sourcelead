@@ -32,6 +32,7 @@ import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Leave;
 import com.bis.sourcelead.entity.LeaveApproveHierarchy;
 import com.bis.sourcelead.entity.LeaveManagementHistory;
+import com.bis.sourcelead.entity.LeaveRole;
 import com.bis.sourcelead.entity.LeaveType;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
@@ -661,7 +662,7 @@ public class LeaveServiceImpl implements LeaveService{
 	}
 
 	@Override
-	public LeaveDTO getAllSelfLeavesCounts(Long orgLocationId, Long userId) {
+	public LeaveDTO getAllSelfLeavesCounts(Long orgLocationId, Long userId) throws Exception {
 		int selfPendingCounts = 0;
 		int selfApprovedCounts = 0;
 		int selfRejectedCounts = 0;
@@ -669,7 +670,8 @@ public class LeaveServiceImpl implements LeaveService{
 		
 		int balanceLeaveCounts = 0;
 		int pendingLeaveCounts = 0;
-		int takenLeaveCounts = 0;
+		
+		UserRole roleId = userRoleService.getUserRoleByUserId(userId);
 
 		LeaveDTO leaveDto = new LeaveDTO();
 		List<Leave> leavesList = leaveDao.getAllSelfLeavesCounts(orgLocationId,userId);
@@ -688,21 +690,34 @@ public class LeaveServiceImpl implements LeaveService{
 			}
 		}
 		
-		List<LeaveType> leaveTypeList = leaveTypeDao.getLeaveTypeListByLocationId(String.valueOf(orgLocationId));
-		for (LeaveType leaveType : leaveTypeList) {
-			int totalLeaves = Integer.valueOf(leaveType.getNumbefrOfLeavesPeryear());
-			List<Leave> totalleavesTaken = getLeavesListByTypeIdAndLocationIdAndUserId(leaveType.getId(),orgLocationId, userId);
-			for (Leave leave : totalleavesTaken) {
+		List<LeaveType> leaveTypeList = leaveTypeService.getLeaveTypeListByLocationIdAndStatus(String.valueOf(orgLocationId));
+		List<LeaveType> roleLeaveType = new ArrayList<>();  
+		if(leaveTypeList !=null && !leaveTypeList.isEmpty()) {
+			   for(LeaveType leaveType : leaveTypeList) {
+				   Set<Long> roleIds = new HashSet<>();
+				   for(LeaveRole leaveRole : leaveType.getLeaveTypeRolesSet()) {
+					   roleIds.add(leaveRole.getRoleId().getId());
+				   }
+				   if(roleIds.contains(roleId) || "Y".equalsIgnoreCase(leaveType.getApplicableToUsers())) {
+					   roleLeaveType.add(leaveType);
+				   }
+			   }
+			   
+			   for (LeaveType leaveType : roleLeaveType) {
+				   int totalLeaves = Integer.valueOf(leaveType.getNumbefrOfLeavesPeryear());
+				   List<Leave> totalleavesTaken = getLeavesListByTypeIdAndLocationIdAndUserId(leaveType.getId(),orgLocationId, userId);
+			   
+			   for (Leave leave : totalleavesTaken) {
 				if(Constants.PENDING.equalsIgnoreCase(leave.getStatus())) {
 					pendingLeaveCounts = pendingLeaveCounts + (Integer.valueOf(leave.getNumberOfDays()));
 				}
 				if(Constants.APPROVED.equalsIgnoreCase(leave.getStatus())) {
 					totalLeaves = totalLeaves - (Integer.valueOf(leave.getNumberOfDays()));
-					takenLeaveCounts = takenLeaveCounts + (Integer.valueOf(leave.getNumberOfDays()));
 				}
-				balanceLeaveCounts += totalLeaves;
 			}
+			   balanceLeaveCounts += totalLeaves;
 		}
+	}
 		leaveDto.setSelfPendingCounts(String.valueOf(selfPendingCounts));
 		leaveDto.setSelfApprovedCounts(String.valueOf(selfApprovedCounts));
 		leaveDto.setSelfRejectedCounts(String.valueOf(selfRejectedCounts));

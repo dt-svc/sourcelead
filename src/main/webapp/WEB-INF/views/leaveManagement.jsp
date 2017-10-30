@@ -59,7 +59,7 @@ $(document).ready(function(){
                     </li>
                       <li class="clearfix">
                         <label class="pull-left">Balanced Leaves</label>
-                        <div class="color_white" id="selfBalance" title="Balanced Leaves"><span class="label label-info pull-right" id="selfBalancedCounts"></span></div>
+                        <div class="color_white" title="Balanced Leaves"><span class="label label-info pull-right" id="selfBalancedCounts"></span></div>
                     </li>
                 </ul>
                     </div>
