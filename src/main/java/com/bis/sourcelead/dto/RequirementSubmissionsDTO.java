@@ -32,7 +32,6 @@ public class RequirementSubmissionsDTO extends SearchDTO implements Serializable
 	private String resume;
 	private String appliedOn;
 	private String rate;
-	private String rateper;
 	private String source;
 	private String exp;
 	private String status;
@@ -193,11 +192,4 @@ public class RequirementSubmissionsDTO extends SearchDTO implements Serializable
 	{
 		this.fileURL = fileURL;
 	}
-	public String getRateper() {
-		return rateper;
-	}
-	public void setRateper(String rateper) {
-		this.rateper = rateper;
-	}
-	
 }
