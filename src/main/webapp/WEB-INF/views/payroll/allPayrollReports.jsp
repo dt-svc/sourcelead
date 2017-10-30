@@ -23,16 +23,17 @@ $(document).ready(function(){
 <div class="content-area content-new clearfix">
 
 <div class="timesheet_out">
-  <div class="clearfix">
+  <div class="timesheet_head clearfix seaHeight">
+  		<div class='remove_search'><input type='text' placeholder='search' id='dataTableSearch'/></div> 
+  </div>
     <div class="clients_wrap_table datatable_filter">
-    <div class='remove_search'><input type='text' placeholder='search' id='dataTableSearch'/></div> 
     		<div
 			class="project_tabs_inn_table vendor_wrap_inn_table dataFilterNew pdtop">
 			<!-- <div id="loading"></div> -->
 			<div id="balanceListDiv" class="datatable_filter"></div>
 		</div>
     </div>
-  </div>
+
 </div>
 
     </div>
