@@ -901,9 +901,18 @@ public TimesheetEntryDetailsDTO getProjectMemberAndTimesheetFrequenciesList(Time
 					List<TimesheetSubmissionsDocuments> timesheetSubmissionsDocumentsList = null;
 					if(ts != null){
 						timesheetSubmissionsDocumentsList = timesheetSubmissionsDocumentsService.getAllTimesheetSubmissionsDocumentsBySubmissionId(ts.getId());
+						List<FileInfo> fileInfoList = new ArrayList<>();
 						if(timesheetSubmissionsDocumentsList != null && !timesheetSubmissionsDocumentsList.isEmpty()){
 								for(TimesheetSubmissionsDocuments tsd : timesheetSubmissionsDocumentsList){
+									FileInfo fileInfo = new FileInfo();
+									fileInfo.setFileDbId(tsd.getId().toString());
+									fileInfo.setFileName(tsd.getFileName());
+									fileInfo.setFileURL(tsd.getFileUrl());
+									fileInfo.setStatus(tsd.getStatus());
+									fileInfo.setContentType(tsd.getFileContentType());
+									fileInfoList.add(fileInfo);
 								}
+								tsDTO.setFileInfo(fileInfoList);
 							} 
 					}
 					 if(isFillMyTimeSheet 
@@ -2173,29 +2182,6 @@ public TimesheetEntryDetailsDTO getProjectMemberAndTimesheetFrequenciesList(Time
 			StringBuilder documentBuffer = new StringBuilder();	
 			documentBuffer.append("<input type='hidden' name='attcahmentMaxRowNumber'  id='attcahmentMaxRowNumber' value='1' />");
 			documentBuffer.append("<div id='timesheetDocumentsId' class='timesheetDocs'>"); 
-			if(ts != null){
-				timesheetSubmissionsDocumentsList = timesheetSubmissionsDocumentsService.getAllTimesheetSubmissionsDocumentsBySubmissionId(ts.getId());
-				if(timesheetSubmissionsDocumentsList != null && !timesheetSubmissionsDocumentsList.isEmpty()){
-						for(TimesheetSubmissionsDocuments tsd : timesheetSubmissionsDocumentsList){
-							if(!isNullOrEmpty(tsd.getFileName())){
-									documentBuffer.append("<strong id='"+tsd.getId()+"document'>");
-									documentBuffer.append("<a class='downicon'").append("href='"+tsd.getFileUrl()+"'").append(">");
-									documentBuffer.append("<i class='glyphicon glyphicon-save'></i>");
-									documentBuffer.append(" <input type='button' value='"+tsd.getFileName()+"'>");
-									documentBuffer.append("</a>");
-									
-								    if(isFillMyTimeSheet 
-								    		&&!isNullOrEmpty(approvalStatus)
-								    		&&!(approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue())&& from.equalsIgnoreCase("user"))
-								    		&& !approvalStatus.equalsIgnoreCase(Submission_ApprovalStatus.getNameByValue("approved").getValue())){
-										documentBuffer.append("<input class='dele' type='button' onClick='deleteSubmissionDocument(\""+tsd.getId()+"\");' >");
-									}
-								    documentBuffer.append("<input class='deleApp' type='button' onClick='viewFile(\""+tsd.getFileUrl()+"\",\""+tsd.getFileName()+"\",\""+tsd.getFileContentType()+"\");'>");
-									documentBuffer.append("</strong>");
-							} 
-						}
-					} 
-			}
 			 if(isFillMyTimeSheet 
 			    		&&!isNullOrEmpty(approvalStatus)
 			    		&&!(approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue()) && from.equalsIgnoreCase("user")) 
@@ -2217,6 +2203,29 @@ public TimesheetEntryDetailsDTO getProjectMemberAndTimesheetFrequenciesList(Time
 				documentBuffer.append("<i class='fa fa-info-circle' title='Allowed File Formats: ppt,pptx,pps,ppsx,doc,docx,pdf,rtf,odt,xls,xlsx,csv,  zip,txt,jpg,jpeg,bmp,png,gif,eps,tiff,TGA,psd,svg,msg,wpd,wps      Allowed Size : 2MB '></i>"); 
 				documentBuffer.append("</div>");
 			}
+			 if(ts != null){
+					timesheetSubmissionsDocumentsList = timesheetSubmissionsDocumentsService.getAllTimesheetSubmissionsDocumentsBySubmissionId(ts.getId());
+					if(timesheetSubmissionsDocumentsList != null && !timesheetSubmissionsDocumentsList.isEmpty()){
+							for(TimesheetSubmissionsDocuments tsd : timesheetSubmissionsDocumentsList){
+								if(!isNullOrEmpty(tsd.getFileName())){
+										documentBuffer.append("<strong id='"+tsd.getId()+"document'>");
+										documentBuffer.append("<a class='downicon'").append("href='"+tsd.getFileUrl()+"'").append(">");
+										documentBuffer.append("<i class='glyphicon glyphicon-save'></i>");
+										documentBuffer.append(" <input type='button' class='padIcon' value='"+tsd.getFileName()+"'>");
+										documentBuffer.append("</a>");
+										
+									    if(isFillMyTimeSheet 
+									    		&&!isNullOrEmpty(approvalStatus)
+									    		&&!(approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue())&& from.equalsIgnoreCase("user"))
+									    		&& !approvalStatus.equalsIgnoreCase(Submission_ApprovalStatus.getNameByValue("approved").getValue())){
+											documentBuffer.append("<input class='dele' type='button' onClick='deleteSubmissionDocument(\""+tsd.getId()+"\");' >");
+										}
+									    documentBuffer.append("<input class='deleApp' type='button' onClick='viewFile(\""+tsd.getFileUrl()+"\",\""+tsd.getFileName()+"\",\""+tsd.getFileContentType()+"\");'>");
+										documentBuffer.append("</strong>");
+								} 
+							}
+						} 
+				}
 		documentBuffer.append("</div>"); 
 		return documentBuffer;
 	}

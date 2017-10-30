@@ -74,7 +74,7 @@
                 <div class="form-group">
                   <label class="col-md-12"> <strong>Documents</strong> <br>
                   </label>
-                  <label class="col-md-12 mt10">Required documents for onboarding</label>
+                  <label class="col-md-12 mt10">Required documents for onboarding :</label>
                      <div id="timesheetDocumentsId" class="timesheetDocs timesheetDocs-custom">
                       <div class="col-md-8 commentFile timesheet_week_comm onboardDocs">
 				        <span class="uploadAttachments"> 
@@ -1076,6 +1076,9 @@ function deleteTask(taskId){
 	        success: function(data) {
 	        	if(data == 'success'){
 	        		document.getElementById("onboardTask"+taskId).remove();
+	        		if($("#onboardTasksList div[id*=onboardTask]").length === 0) {
+	        			$("#onboardTasksList").prepend("<div><h4>No Tasks Found</h4></div>");
+	        		}
 	        	}
 	        },
 	    });

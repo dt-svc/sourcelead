@@ -237,8 +237,8 @@ result = result + '<div class="project_tabs mb">';
 		    result = result + '	<li><a onClick="filterStatus()" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-filter"></i><span>Status</span><i class="glyphicon glyphicon-play"></i></a>';
 		    result = result + '   	<div class="filterLi dropdown-menu bootstrap_dropdownMenu dropdownPadding">';
 			result = result + '       	<ul>';
-			/* result = result + '           	<li><input id="c5" type="checkbox" name="employeeStatus" value ="All" onclick="getFilterEmployeeDetails('+projectId+',\''+startDateStr+'\',\''+endDateStr+'\',\''+status+'\',\''+projectName+'\');"><label for="c5">All</label></li>'; */
-			result = result + '				<li><input id="c6" type="checkbox"  checked="true" name="employeeStatus" value ="Active" onclick="getFilterEmployeeDetails('+projectId+',\''+startDateStr+'\',\''+endDateStr+'\',\''+status+'\',\''+projectName+'\');"><label for="c6">Active</label></li>';
+			result = result + '           	<li><input id="c5" type="checkbox" name="employeeStatus" checked="true" value ="All" onclick="getFilterEmployeeDetails('+projectId+',\''+startDateStr+'\',\''+endDateStr+'\',\''+status+'\',\''+projectName+'\');"><label for="c5">All</label></li>'; 
+			result = result + '				<li><input id="c6" type="checkbox"   name="employeeStatus" value ="Active" onclick="getFilterEmployeeDetails('+projectId+',\''+startDateStr+'\',\''+endDateStr+'\',\''+status+'\',\''+projectName+'\');"><label for="c6">Active</label></li>';
 			result = result + '				<li><input id="c7" name="employeeStatus" type="checkbox" value ="In-Active" onclick="getFilterEmployeeDetails('+projectId+',\''+startDateStr+'\',\''+endDateStr+'\',\''+status+'\',\''+projectName+'\');"><label for="c7">In-Active</label></li> ';
 			result = result + '           </ul>';
 			result = result + '       </div>'; 
@@ -327,7 +327,7 @@ result = result + '<div class="project_tabs mb">';
 						values.push($(this).val());
 				    });
 	 }else{
-		 values = "Active";
+		 values = "All";
 	 }
 	 var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
 	  if(locationList.match("yyyy-MM-dd")){
@@ -421,7 +421,11 @@ result = result + '<div class="project_tabs mb">';
 		        		
 		        		result = result + '	 <tr>';
 		        		 if('${postedOrgLocationId}' == '${SourceLeadWeb_orgLocations.id}'){
-		        			 result = result + '<td><input type="checkbox" onclick="selectedMember();"  class="projectMembersChecks" value='+opt.id+' name="projectMembers[]" ></td>';
+		        			 if(opt.status == 1){
+		        				 result = result + '<td><input type="checkbox" onclick="selectedMember();"  class="projectMembersChecks" value='+opt.id+' name="projectMembers[]" ></td>';
+		        			 }else{
+		        				 result = result + '<td>--</td>';
+		        			 }
 		        		 }
 		        		
 		                result = result + '	 	<td><div class="tbldata-dotdot" title="'+opt.candidateName+'"><span title="'+opt.candidateName+'">'+opt.candidateName+'</span></div></td>';
@@ -453,7 +457,7 @@ result = result + '<div class="project_tabs mb">';
 		                result = result + '	     <td><div class="tbldata-dotdot_80"><span title="'+opt.approvedHrs+'">'+opt.approvedHrs+'</span></div></td>';
 		                
 		                
-		                if('${postedOrgLocationId}' == '${SourceLeadWeb_orgLocations.id}'){
+		                if('${postedOrgLocationId}' == '${SourceLeadWeb_orgLocations.id}' || '${isClientOrgActive}' == "N"){
 		                	
 		                	 if(opt.status != null && opt.status != '' && opt.status !='undefined' && opt.status != 0){
 				                	result = result + '	<td><div>';
@@ -1145,7 +1149,7 @@ function reActiveProject(projectMemberId,empName,startDate,endDate,projectEndDat
    result = result +'<label class="col-lg-3" >Start date<span <span class="text-danger">*</span></label>';
    result = result +'<div class="col-lg-9 positionRelative" id="empDatePicker">';
    
-   result = result +'<input type="text" class="form-control calendar" readonly="readonly" placeholder="DD-MM-YYYY" id="Re-StartDate" name="Re-StartDate" field-name="Start Date" data-validation="required">';
+   result = result +'<input type="text" class="form-control calendar" readonly="readonly" placeholder="DD-MM-YYYY" id="reStartDate" name="reStartDate" field-name="Start Date" data-validation="required">';
 
    result = result +'</div>';
    result = result +'</div>';
@@ -1154,7 +1158,7 @@ function reActiveProject(projectMemberId,empName,startDate,endDate,projectEndDat
    result = result +'<label class="col-lg-3">End date</label>';
    result = result +'<div class="col-lg-9 positionRelative">';
 
-   result = result +'<input type="text" class="form-control calendar" readonly="readonly" placeholder="DD-MM-YYYY" id="Re-EndDate" name="Re-EndDate"  field-name="End Date" />';
+   result = result +'<input type="text" class="form-control calendar" readonly="readonly" placeholder="DD-MM-YYYY" id="reEndDate" name="reEndDate"  field-name="End Date" />';
 
    result = result +'</div>';
    result = result +'</div>';
@@ -1166,7 +1170,7 @@ function reActiveProject(projectMemberId,empName,startDate,endDate,projectEndDat
    $("#ReAssignProjectId").empty();
    $("#ReAssignProjectId").append(result);
 	  
-   var reStatertDate = $('#Re-StartDate').val();
+   var reStatertDate = $('#reStartDate').val();
    
 	
    var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
@@ -1181,9 +1185,9 @@ function reActiveProject(projectMemberId,empName,startDate,endDate,projectEndDat
 		  finalDateFormatRecomondedCandCertSave = 'yy-dd-mm'; 
 	  }
    
-  var reStatertDate = $('#Re-StartDate').val()
+  var reStatertDate = $('#reStartDate').val()
   if(projectEndDateStr != null && projectEndDateStr != "" && projectEndDateStr != 'undefined'){
-	  $('#Re-StartDate').datepicker({
+	  $('#reStartDate').datepicker({
 	      dateFormat: finalDateFormatRecomondedCandCertSave,
 	      changeMonth: true,
 	  	  changeYear: true, 
@@ -1194,9 +1198,9 @@ function reActiveProject(projectMemberId,empName,startDate,endDate,projectEndDat
           closeText: 'Clear',
           onClose: function (selected) {
 	    	    removevalidation();
-	            var dt = toDate('#Re-StartDate');
+	            var dt = toDate('#reStartDate');
 	            dt.setDate(dt.getDate() + 1);
-	            $("#Re-EndDate").datepicker("option", "minDate", dt);
+	            $("#reEndDate").datepicker("option", "minDate", dt);
 	            var event = arguments.callee.caller.caller.arguments[0];
                 // If "Clear" gets clicked, then really clear it
                 if ($(event.delegateTarget).hasClass('ui-datepicker-close')) {
@@ -1206,7 +1210,7 @@ function reActiveProject(projectMemberId,empName,startDate,endDate,projectEndDat
 	  
 	  });
 	  
-	  $('#Re-EndDate').datepicker({
+	  $('#reEndDate').datepicker({
 	      dateFormat: finalDateFormatRecomondedCandCertSave,
 	      changeMonth: true,
 	  	  changeYear: true, 
@@ -1216,9 +1220,9 @@ function reActiveProject(projectMemberId,empName,startDate,endDate,projectEndDat
           showButtonPanel: true,
           closeText: 'Clear',
           onClose: function (selected) {
-	            var dt = toDate('#Re-EndDate');
+	            var dt = toDate('#reEndDate');
 	            dt.setDate(dt.getDate() - 1);
-	            $("#Re-StartDate").datepicker("option", "maxDate", dt);
+	            $("#reStartDate").datepicker("option", "maxDate", dt);
 	            var event = arguments.callee.caller.caller.arguments[0];
                 // If "Clear" gets clicked, then really clear it
                 if ($(event.delegateTarget).hasClass('ui-datepicker-close')) {
@@ -1228,7 +1232,7 @@ function reActiveProject(projectMemberId,empName,startDate,endDate,projectEndDat
 	  });
   }
   else{
-	  $('#Re-StartDate').datepicker({
+	  $('#reStartDate').datepicker({
 	      dateFormat: finalDateFormatRecomondedCandCertSave,
 	      changeMonth: true,
 	  	  changeYear: true, 
@@ -1237,9 +1241,9 @@ function reActiveProject(projectMemberId,empName,startDate,endDate,projectEndDat
           showButtonPanel: true,
           closeText: 'Clear',
           onClose: function (selected) {
-	            var dt = toDate('#Re-StartDate');
+	            var dt = toDate('#reStartDate');
 	            dt.setDate(dt.getDate() + 1);
-	            $("#Re-EndDate").datepicker("option", "minDate", dt);
+	            $("#reEndDate").datepicker("option", "minDate", dt);
 	            var event = arguments.callee.caller.caller.arguments[0];
                 // If "Clear" gets clicked, then really clear it
                 if ($(event.delegateTarget).hasClass('ui-datepicker-close')) {
@@ -1251,7 +1255,7 @@ function reActiveProject(projectMemberId,empName,startDate,endDate,projectEndDat
 	  
 	  
 	
-	  $('#Re-EndDate').datepicker({
+	  $('#reEndDate').datepicker({
 	      dateFormat: finalDateFormatRecomondedCandCertSave,
 	      changeMonth: true,
 	  	  changeYear: true, 
@@ -1261,9 +1265,9 @@ function reActiveProject(projectMemberId,empName,startDate,endDate,projectEndDat
           showButtonPanel: true,
           closeText: 'Clear',
           onClose: function (selected) {
-	            var dt = toDate('#Re-EndDate');
+	            var dt = toDate('#reEndDate');
 	            dt.setDate(dt.getDate() - 1);
-	            $("#Re-StartDate").datepicker("option", "maxDate", dt);
+	            $("#reStartDate").datepicker("option", "maxDate", dt);
 	            var event = arguments.callee.caller.caller.arguments[0];
                 // If "Clear" gets clicked, then really clear it
                 if ($(event.delegateTarget).hasClass('ui-datepicker-close')) {
@@ -1299,13 +1303,15 @@ function removevalidation(){
 		   }; 
 	 if ($('#reAssignProject_form').validate(false, validationSettings)){ 
 		 var projectMemberId = $("#projectMemberId").val();
-	        var frm = $('#reAssignProject_form').serializeFormJSON();
+	       /*  var frm = $('#reAssignProject_form').serializeFormJSON();
 	        var con = JSON.stringify(frm);
 	        con = con.replace(/[{}]/g, "");
-	        var sourceleadUrl ='${sourceleadUrl}';
+	        var sourceleadUrl ='${sourceleadUrl}'; */
+	        var formData = getFormData("reAssignProject_form");
 	        $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/saveReAssignProject?${_csrf.parameterName}=${_csrf.token}&json="+con+"&projectMemberId="+projectMemberId, 
+		    	data: formData,
+		        url: sourceleadUrl+"/saveReAssignProject?${_csrf.parameterName}=${_csrf.token}&projectMemberId="+projectMemberId, 
 		        success: function(data) {
 		        	if(data="success"){
 		        	 	//$("#Re-AssignProject").modal('hide');
@@ -1333,8 +1339,8 @@ function removevalidation(){
 </script>
 <script type="text/javascript">
 function flushReProject(){
-	$('#Re-StartDate').val('');
-	$('#Re-EndDate').val('');
+	$('#reStartDate').val('');
+	$('#reEndDate').val('');
 	$(".error").removeClass("error");
 	$('#assignProjectDiv').find('p.jquery_form_error_message').remove();
 }
@@ -1597,8 +1603,7 @@ function getProjectDetails(){
 				$.ajax({
 					type : "POST",
 					url : sourceleadUrl	+ "/getProjectDetailsForResouceTransfer?${_csrf.parameterName}=${_csrf.token}&projectId="+ orgLocationProjects+"&orgLocationId="+orgLocations,
-					success : function(data) {
-						var json = JSON.parse(data);
+					success : function(json) {
 						var endDateStr = "";
 						var description = "";
 						var clientName = "";

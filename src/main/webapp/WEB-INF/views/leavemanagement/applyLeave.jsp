@@ -53,7 +53,7 @@ window.onload = function() {
               <div class="col-md-9">
                 <div class="row">
                   <div class="col-md-7 paddingRight" id="fromDateDiv">
-                    <input type="text" class="form-control calendar" id="fromDate" name="fromDate" placeholder="From Date" field-name="From Date" data-validation="required">
+                    <input type="text" class="form-control calendar" id="fromDate" name="fromDate" placeholder="From Date" field-name="From Date" data-validation="required" readonly>
                   </div>
                   <div class="col-md-5 paddingLeft">
                     <label class="checkBox mt5">
@@ -71,7 +71,7 @@ window.onload = function() {
               <div class="col-md-9">
                 <div class="row">
                   <div class="col-md-7 paddingRight" id="toDateDiv">
-                    <input type="text" class="form-control calendar" id="toDate" name="toDate" placeholder="To Date" field-name="To Date" data-validation="required">
+                    <input type="text" class="form-control calendar" id="toDate" name="toDate" placeholder="To Date" field-name="To Date" data-validation="required" readonly>
                   </div>
                   <div class="col-md-5 paddingLeft">
                     <label class="checkBox mt5">
@@ -103,7 +103,7 @@ window.onload = function() {
                   <div style="float:left; width:100%; border:1px solid #ddd; margin:0 15px 15px 0; padding:5px;overflow: hidden; background-color:#fff; color:#333; ">
                       <input  type="file" class="pull-left valid" id="uploadBtn" onchange="uploadButton(0);">
                       <a id="Button0value=">
-                      <i class="fa fa-times btn btn-danger btn-sm btn-sm2 pull-right" onClick="removedocfile();"></i>
+                      <i class="fa fa-times btn btn-danger btn-sm btn-sm2 pull-right" title="clear" onClick="removedocfile();"></i>
                       </a>
                   </div>
               </div>
@@ -444,7 +444,7 @@ function getLeavePolicy(){
 
 <script>
 function validateMaxLeave(data){
-	$('.warMess1').hide();
+	$('.jquery_form_error_message cOrange').hide();
 	var behalf = $("#checkbox-1");
 	var userId = "";
 	if(behalf.is(':checked')){
@@ -458,9 +458,9 @@ function validateMaxLeave(data){
 	var leaveTypeName = data.options[data.selectedIndex].innerHTML;
 	$.get(sourceleadUrl+"/validateMaxLeave?"+tokenParamName+"="+tokenValue+"&leaveTypeId="+leaveTypeId+"&orgLocationId="+orgLocationId+"&userId="+userId, function(data) {
 		if(data == true){
-			$("#leaveTypeIdDiv").after("<p class='warMess1'>You don't have balance for the '"+leaveTypeName+"'.</span>");
+			$("#leaveTypeIdDiv").after("<p class='jquery_form_error_message cOrange'>You don't have balance for the '"+leaveTypeName+"'.</span>");
 		}else{
-			$('.warMess1').hide();
+			$('.jquery_form_error_message cOranges').hide();
 		}
 	}); 
 	
