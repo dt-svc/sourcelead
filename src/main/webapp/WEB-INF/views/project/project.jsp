@@ -27,6 +27,7 @@
 {
 	color: #333;
 	text-decoration : none;
+	pointer-events: none;
 }
 </style>
 
@@ -398,7 +399,7 @@ function validateShortCode(){
 						<div class="form-group" id="EstimatedBudgetDiv">
 							<label class="col-md-3">Notify Budget At</label>
 							<div class="col-md-9">
-								<div class="input-group">
+								<div class="input-group errorInptgroup">
 								<div class="input-group-btn tblminwidth-75" style="min-width: 65px !important;">
 								      <input type="text" class="pull-left btn btn-primary btn-block" value="%" readonly>
 					                </div>
@@ -641,10 +642,11 @@ function getStatus(){
 		var ee = $("#txtEditor").val($('.Editor-editor').html()); 
 
 		if ($('#project_form').validate(false, validationSettings)) {
-			var frm = $('#project_form').serializeFormJSON();
+		   var frm = $('#project_form').serializeFormJSON();
 			 
 		    var form = $('#project_form')[0];
-		    var formData = new FormData(form);
+		    var formData = new FormData(form); 
+// 		    var formData = getFormData1("project_form");
      		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 			$.ajax({
 						type : "POST",
@@ -660,7 +662,7 @@ function getStatus(){
 								 
 								 $("#loading").removeAttr("style");
 								 var assignedMembers = document.getElementById("assignedMembers");
-								 $("assignedMembers").removeClass("disabledLink");
+								 document.getElementById("assignedMembers").removeAttribute("class");
 								 assignedMembers.href="#tab-b"; 
 								 assignedMembers.click();
 
