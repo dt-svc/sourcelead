@@ -11,6 +11,7 @@ import java.util.Set;
 
 import javax.mail.internet.InternetAddress;
 
+import org.apache.commons.lang.StringUtils;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -410,7 +411,11 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 		 emailMessage.setToEmail(interviewerUser.getEmail());
 		 emailMessage.setFromEmail(loginUser.getEmail());
 		 emailMessage.setCreatedBy(loginUser.getUserCode());
-		 emailMessage.setFromName(interviewStringBuilder.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
+		 if(StringUtils.isNotBlank(loginUser.getLastName())){
+			 emailMessage.setFromName(interviewStringBuilder.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
+		 }else{
+			 emailMessage.setFromName(interviewStringBuilder.append(loginUser.getFirstName()).toString());
+		 }
 		 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
 		 
 		 /*String dateOfInterviewValue ="";
@@ -473,7 +478,14 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 			 globalVarsMap.put("loginUser", emailMessage.getFromName());
 			 RequirementSubmission submission = requirementSubmissionService.getRequirementSubmissionById(requirementInterview.getSubmissionId().getId());
 			 Requirement requirement = requirementService.getRequirementByRequirementId(submission.getRequirement().getId());
-			 globalVarsMap.put("requirementTitle", requirement.getJobTitle());
+//			 globalVarsMap.put("requirementTitle", requirement.getJobTitle());
+			 StringBuilder sb = new StringBuilder();
+			 if(StringUtils.isNotBlank(requirement.getJobId())){
+				 sb.append(requirement.getJobId()).append(" - ").append(requirement.getJobTitle());
+				 globalVarsMap.put("requirementTitle", sb.toString());
+			 }else{
+				 globalVarsMap.put("requirementTitle", requirement.getJobTitle());
+			 }
 			 globalVarsMap.put("LoginLink",linkBuild.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
 			globalVarsMap.put("interviewTableDetails",interviewTable.toString());
 			globalVarsMap.put("loginOrg",orgLocations.getOrgLocationName());
@@ -1039,7 +1051,6 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 			 globalVarsMap.put("interviewerFirstName", emailMessage.getFirstName());
 			 globalVarsMap.put("interviewerLastName",emailMessage.getLastName());
 			 globalVarsMap.put("loginUser", emailMessage.getFromName());
-			 globalVarsMap.put("requirementTitle", requirementSubmission.getRequirement().getJobTitle());
 			 globalVarsMap.put("interviewDate", dateOfInterviewValue);
 			 globalVarsMap.put("interviewType",interviewTypeValue);
 			 globalVarsMap.put("applicantName",candidateName);
@@ -1144,10 +1155,12 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 			 globalVarsMap.put("loginUser", emailMessage.getFromName());
 			 globalVarsMap.put("requirementTitle", requirementSubmission.getRequirement().getJobTitle());
 			 globalVarsMap.put("loginOrgName",loginOrgLocations.getOrgLocationName());
-			 globalVarsMap.put("interviewDate", dateOfInterviewStr);
-			 globalVarsMap.put("interviewTime",time);
-			 globalVarsMap.put("interviewType",interviewTypeValue);
-			 globalVarsMap.put("Details",requirementInterview.getLocation());
+			 //globalVarsMap.put("interviewDate", dateOfInterviewStr);
+			 //globalVarsMap.put("interviewTime",time);
+			 //globalVarsMap.put("interviewType",interviewTypeValue);
+			 StringBuilder applicantTable = sendEmailToApplicantTable(requirementSubmission,dateOfInterviewStr,time,interviewTypeValue,requirementInterview);
+			 globalVarsMap.put("Details",applicantTable.toString());
+			 
 			 StringBuilder acceptBuilder = new StringBuilder();
 			 StringBuilder rejectBuilder = new StringBuilder();
 			 StringBuilder tentativeBuilder = new StringBuilder();
@@ -1183,6 +1196,58 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 		 
 	}
 
+	
+	
+	
+	
+
+
+	public StringBuilder sendEmailToApplicantTable(RequirementSubmission requirementSubmission, String dateOfInterviewStr,String time, String interviewTypeValue, RequirementInterview requirementInterview) throws Exception {
+		StringBuilder tempHTML = new StringBuilder();
+	         tempHTML.append("<table width='100%' bgcolor='#F9F9F9' cellpadding='0' border='2' cellspacing='0' style='background-color:#F9F9F9;'>");
+	         tempHTML.append("<tr>");
+	         tempHTML.append("<th> Job Details </th>");
+	         tempHTML.append("<th> Interview Type </th>");
+	         tempHTML.append("<th> Interview Time & Date </th>");
+	         tempHTML.append("<th> Details </th>");
+	         tempHTML.append("</tr>");
+	     			tempHTML.append("<tr>");
+			         if(requirementSubmission != null && !"".equalsIgnoreCase(requirementSubmission.getRequirement().getJobTitle())){
+		        		 tempHTML.append("<td style='text-align: center;'>").append(requirementSubmission.getRequirement().getJobTitle()).append("</td>");
+			         }
+			         if(interviewTypeValue != null && !"".equalsIgnoreCase(interviewTypeValue)){
+		        		 tempHTML.append("<td style='text-align: center;'>").append(interviewTypeValue).append("</td>");
+		        	 }else{
+		        		 tempHTML.append("<td style='text-align: center;'>").append("--").append("</td>");
+		        	 }
+			         if(dateOfInterviewStr != null && !"".equalsIgnoreCase(dateOfInterviewStr) && time !=null && !"".equalsIgnoreCase(time)){
+		        		 tempHTML.append("<td style='text-align: center;'>").append(dateOfInterviewStr).append(" ").append(time).append("</td>");
+		        	 }else{
+		        		 tempHTML.append("<td style='text-align: center;'>").append("--").append("</td>");
+		        	 }
+			         if(requirementInterview.getLocation() != null && !"".equalsIgnoreCase(requirementInterview.getLocation())){
+		        		 tempHTML.append("<td style='text-align: center;'>").append(requirementInterview.getLocation()).append("</td>");
+		        	 }else{
+		        		 tempHTML.append("<td style='text-align: center;'>").append("--").append("</td>");
+		        	 }
+	         tempHTML.append("</tr>");
+		     tempHTML.append("</table> ");
+		return tempHTML;
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 
 	@Override
 	public RequirementInterview getRequirementInterviewById(String requirementInterviewId) {

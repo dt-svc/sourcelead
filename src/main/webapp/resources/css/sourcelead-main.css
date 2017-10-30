@@ -6794,7 +6794,7 @@ border: 1px solid #ccc; padding-top:15px; margin:0 15px 15px;
 
 /* venkat subbaiah */
 .timesheet_week_comm strong input.dele  {
-width : 10px !important;
+width : 18px !important;
 }
 .timesheetDocs.timesheetDocs-custom .timesheet_week_comm strong input.dele {
 width : 20px !important;
@@ -6942,6 +6942,12 @@ bottom:1px;
 }
 .formgroup-minheight .form-group {
 min-height: 65px; margin-bottom: 0px;
+}
+.listof-holidays table thead{
+background: #375d81; color:#fff;
+}
+.countList label {
+   margin-bottom: 2px; font-size: 13px;
 }
 /* media 320px */
 @media (max-width: 320px) {
