@@ -31,7 +31,7 @@ public interface LeaveService {
 
 	LeaveDTO getAllEmployeesLeavesCounts(Long orgLocationId,Long userId);
 
-	LeaveDTO getAllSelfLeavesCounts(Long orgLocationId, Long userId);
+	LeaveDTO getAllSelfLeavesCounts(Long orgLocationId, Long userId) throws Exception;
 
 	List<LeaveDTO> getLeaveTakersBarChat(OrgLocations orgLocation, LeaveDTO leaveDTO)throws Exception;
 
