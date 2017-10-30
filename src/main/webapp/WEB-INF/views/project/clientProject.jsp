@@ -101,7 +101,7 @@
 			
 			<div class="col-md-6 col-lg-6">
 				<div class="form-group mb10">
-					<label class="col-md-3 paddingRight">Client Project <span class="text-danger">*&nbsp;</span></label>
+					<label class="col-md-3 paddingRight mt10">Client Project <span class="text-danger">*&nbsp;</span></label>
 					<div class="col-md-9">
 						<div class="form-icon-min" id="clientProjectDiv">
 							<select class="form-control chosen-select"
@@ -250,11 +250,16 @@ function getChildLevel1Approvers(currentApproverId,level2ApproverUserId){
 		        	for (var i=0; i<json.length; i++)
 					{
 			        		var opt = json[i];
+			        		if(opt.lastName != null && opt.lastName != '' && opt.lastName != 'undefined'){
+			        			var fullName = opt.firstName +" "+ opt.lastName;
+			        		}else{
+			        			var fullName = opt.firstName;
+			        		}
 			        		var selected = '';
 			        		if(level2ApproverUserId != null && level2ApproverUserId != 'undefied' && level2ApproverUserId != '' && level2ApproverUserId == opt.id){
 			        			selected = "selected";
 			        		}
-			        		output = output + "<option value='" +opt.id+ "' "+selected+">"+opt.firstName+" "+opt.lastName+" ("+opt.userType+")</option>";
+			        		output = output + "<option value='" +opt.id+ "' "+selected+">"+fullName+"  ("+opt.userType+")</option>";
 					}
 		        	$("#level2Manager").empty();
 			        $("#level2Manager").append(output);

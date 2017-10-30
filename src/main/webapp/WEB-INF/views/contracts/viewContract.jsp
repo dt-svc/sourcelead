@@ -354,7 +354,7 @@ function displyContract(stage){
 			if(null != json.typeOfContract && (json.contractType.includes("SOW") || json.contractType =="Full time offer")){
 				if(null != json.requirementName && "" != json.requirementName && 'undefined' != json.requirementName){
 				result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
-				result = result +	'		<div class="col-md-4 col-sm-4">Requirement Title</div>';
+				result = result +	'		<div class="col-md-4 col-sm-4">Job Title</div>';
 				result = result +	'		<div class="col-md-8 col-sm-8">: '+json.requirementName+'</div>';
 				result = result +	'	</div>';
 			}
@@ -531,7 +531,7 @@ function displyContract(stage){
 			
 			if(null != json.paymentTerm && "" != json.paymentTerm && 'undefined' != json.paymentTerm){
 				result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
-				result = result +	'		<div class="col-md-4 col-sm-4">Payment Term</div>';
+				result = result +	'		<div class="col-md-4 col-sm-4">Payment Frequency</div>';
 				result = result +	'		<div class="col-md-8 col-sm-8">: '+json.paymentTerm+'</div>';
 				result = result +	'	</div>';
 			}

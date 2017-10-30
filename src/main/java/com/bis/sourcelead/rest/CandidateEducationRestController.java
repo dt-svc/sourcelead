@@ -1,6 +1,9 @@
 package com.bis.sourcelead.rest;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.List;
 
@@ -19,6 +22,8 @@ import com.bis.sourcelead.annotations.Validator;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.CandidateEducationDTO;
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.elk.index.CandidateIndex;
+import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateEducation;
 import com.bis.sourcelead.entity.LookUpData;
@@ -66,7 +71,9 @@ public class CandidateEducationRestController {
 	
 	@Autowired
 	OrgLocationService orgLocationService;
-
+	
+	@Autowired
+	private SourceleadELKBaseIndexer<CandidateIndex> sourceleadELKBaseIndexer;
 
 	 /**
 	 * @author Ajith Matta
@@ -165,7 +172,17 @@ public class CandidateEducationRestController {
 		CandidateEducation  candidateEducation = candidateEducationService.removeCandidateEducationBycandidateIdandcandidateEducationId(candidateId, candidateEducationId, user, orgLocations);
 		 //OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		 Candidate candidate = candidateService.getCandidateByCandidateId(candidateId);
-			Integer percentage = candidateService.getCandidatePercentage(candidate,orgLocations);
+		 if (null != candidate && null != candidate.getId()) {
+			 CandidateIndex candidateIndex = new CandidateIndex();
+			 candidateIndex.setCandidateId(candidate.getId());
+			 DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+			 candidateIndex.setUpdatedDate(dateFormat.format(new Date()));
+			 candidateIndex.setCurrentResumeId(Constants.CANDIATE_RESUME_IN_ACTIVE);
+			
+			sourceleadELKBaseIndexer.saveOrUpdateElkDocument(candidateIndex, Constants.ELK_CANDIDATE_INDEX, Constants.ELK_CANDIDATE_TYPE, candidate.getId().toString());
+		}	
+		 
+		 Integer percentage = candidateService.getCandidatePercentage(candidate,orgLocations);
 			return percentage.toString();
 	}
 
