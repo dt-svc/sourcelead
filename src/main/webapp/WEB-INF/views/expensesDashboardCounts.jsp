@@ -98,8 +98,7 @@ function expensesCount(expenseType){
 		        	 var  empExpensesRejectedCount =json.empExpensesRejectedCount;
 		        	// var  empExpensesReopenCount = json.empExpensesReopenCount;
 		        	 
-		        	 if(expensesDraftCount<1 || expenseType == "myExpenses"){
-		        		 
+		        	 if((expensesDraftCount<1 || expenseType == "myExpenses") && expensesDraftCount!=null){
 		        		 if(json.expensesDraftCount >0){
 		        			 $("#dial1txt").html("<a onclick='myExpensesListByStage(\"draft\");'>Draft</a>");
 		        			 $("#expensesDraftCount").html("<a onclick='myExpensesListByStage(\"draft\");'>"+expensesDraftCount+"</a>");
@@ -109,8 +108,7 @@ function expensesCount(expenseType){
 		        		   }
 		        		 
 	                  }else{
-	                	  
-	                	  if(json.empExpensesSubmittedForApprovalCount >0){
+	                	  if(empExpensesSubmittedForApprovalCount >0){
 		                	  $("#dial1txt").html("<a onclick='employeeExpensesListByStage(\"submitted\");'>Waiting</a>");
 		                	  $("#expensesDraftCount").html("<a onclick='employeeExpensesListByStage(\"submitted\");'>"+empExpensesSubmittedForApprovalCount+"</a>");
 	                	  }else{
@@ -120,7 +118,7 @@ function expensesCount(expenseType){
 	                	  
 	                  }
 		        	 
-		        	if(expensesSubmittedForApprovalCount<1 || expenseType == "myExpenses"){
+		        	if((expensesSubmittedForApprovalCount<1 || expenseType == "myExpenses") && expensesSubmittedForApprovalCount!=null){
 		        		
 		        		if(expensesSubmittedForApprovalCount > 0){
 			        		  $("#dial2txt").html("<a onclick='myExpensesListByStage(\"submitted\");'>Submitted</a>");
@@ -141,7 +139,7 @@ function expensesCount(expenseType){
 	                	  }
 	                  }
 		        	
-		        	if(expensesApprovedCount<1 || expenseType == "myExpenses"){
+		        	if((expensesApprovedCount<1 || expenseType == "myExpenses") && expensesApprovedCount!= null){
 		        		  if(expensesApprovedCount > 0){
 			        		  $("#dial3txt").html("<a onclick='myExpensesListByStage(\"approved\");'>Approved</a>");
 			        		  $("#expensesApprovedCount").html("<a onclick='myExpensesListByStage(\"approved\");'>"+expensesApprovedCount+"</a>");
@@ -162,7 +160,7 @@ function expensesCount(expenseType){
 	                	
 	                  }
 		        	
-		        	if(expensesRejectCount<1 || expenseType == "myExpenses"){
+		        	if((expensesRejectCount<1 || expenseType == "myExpenses") && expensesRejectCount!= null){
 		        		  $("#dial4txtDial").show();
 		        		  
 		        		  if(expensesRejectCount > 0){
