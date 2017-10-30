@@ -245,17 +245,17 @@ result = result + '<div class="project_tabs mb">';
 			result = result + '   </li>';
 	 
 				'<sec:authorize access="hasAnyRole(\'ROLE_EXPORT_EMPLOYEE\')">';
-					result = result +'<li>';
+					result = result +'<li class="dropdown">';
 					if(status != 'COMPLETED' &&  status != '' &&  status != 'undefined' ){
-						result = result +' <a title="Export" id="export-pop" onClick="exportFun()"><i class="glyphicon glyphicon-export expIcon"></i>&nbsp;</a>';	
+						result = result +' <a title="Export" id="export-pop" class="dropdown-toggle" data-toggle="dropdown"><i class="glyphicon glyphicon-export expIcon"></i>&nbsp;</a>';	
 					} 
 					
-					result = result +'<div class="" id="exportPop" style="display:none;">';
-					result = result +'<ul>';
+					result = result +'<div class="dropdown-menu bootstrap_dropdownMenu">';
+					result = result +'<ul class="ul_padding">';
 					if(status != 'COMPLETED' &&  status != '' &&  status != 'undefined' ){
-						result = result +'<li onclick="exportToPdf(\''+projectId+'\');"><i class="fa fa-file-pdf-o"></i>&nbsp;&nbsp;PDF</li>';
+						result = result +'<li onclick="exportToPdf(\''+projectId+'\');"><i class="fa fa-file-pdf-o text-danger paddingRight"></i>PDF</li>';
 						
-						result = result +'<li onclick="exportToExcel(\''+projectId+'\');"><i class="fa fa-file-excel-o">&nbsp;&nbsp;Excel</i></li>';
+						result = result +'<li onclick="exportToExcel(\''+projectId+'\');"><i class="fa fa-file-excel-o text-success paddingRight"></i>Excel</li>';
 			
 					} 
 					result = result +'</ul>';

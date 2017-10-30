@@ -253,11 +253,8 @@ public class CandidateEducationRestController {
 		    OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 		    User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			CandidateEducation candidateEdu;
-			/*String jsonc = "{" + json + "}";
-			JSONObject jsonObj = new JSONObject(jsonc);*/
+			candidateEducationDTO.setDateFormat(loginOrgLocation.getDateFormat());
 			candidateEdu = candidateEducationService.storeCandidateEducation(candidateEducationDTO,candidateId,loginOrgLocation.getId(), user);
-
-			//candidateEdu = candidateEducationService.storeCandidateEducation(jsonObj,candidateId,loginOrgLocation.getId(),user);
 			return "success";
 	}
 	

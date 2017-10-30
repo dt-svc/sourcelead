@@ -1092,7 +1092,6 @@ public class LeaveManagementRestController {
 	 * @return LeaveDTO
 	 * @throws Exception
 	 */
-	@PreAuthorize("hasAnyRole('ROLE_APPROVE_LEAVE')")
 	@RequestMapping(value = { "/getRequestedAproveSummary" }, method = RequestMethod.GET)
 	@ResponseBody
 	public LeaveDTO getRequestedAproveSummary(@RequestParam(value = "leaveId", required = false) String leaveId,
