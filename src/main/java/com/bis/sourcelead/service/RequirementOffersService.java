@@ -49,5 +49,7 @@ public interface RequirementOffersService {
 	Candidate addCandidateToClientAfterOfferAccepted(RequirementOffers requirementOffers,OrgLocations orgLocations) throws Exception;
 	
 	void sendApplicantOfferAcceptMail(RequirementOffers requirementOffers) throws Exception;
+
+	void sendApplicantOfferRejectMail(RequirementOffers requirementOffers) throws Exception;
 }
 
