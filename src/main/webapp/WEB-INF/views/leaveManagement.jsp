@@ -31,7 +31,7 @@ $(document).ready(function(){
           <ul class="nav nav-tabs">
             <li class="active"><a data-toggle="tab" href="#self">Self</a></li>
             <sec:authorize access="hasAnyRole(\'ROLE_APPROVE_LEAVE\')">
-            	<li><a data-toggle="tab" href="#employee">Employee</a></li>
+            	<li><a data-toggle="tab" href="#employee">Employees</a></li>
             </sec:authorize>
           </ul>
           <div class="tab-content clearfix mt10">
