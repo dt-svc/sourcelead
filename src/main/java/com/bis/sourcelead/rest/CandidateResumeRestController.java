@@ -8,7 +8,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URLDecoder;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.servlet.ServletOutputStream;
@@ -200,13 +203,17 @@ public class CandidateResumeRestController {
 			candidateActivityCommonUtil.storeCandidateActivity(user, orgLocations, candidateResume.getCandidateId(), "", Constants.CANDIDATE_DELETED_RESUME, activitySummary.toString(), "CANDIDATE");
 			// update the candidate Resume on ELK
 			if (null != candidate && null != candidate.getId()) {
-				CandidateIndex candidateIndex = new CandidateIndex();
-				candidateIndex.setCandidateId(candidate.getId());
-				candidateIndex.setCurrentResumeId(Constants.CANDIATE_RESUME_IN_ACTIVE);
+				 CandidateIndex candidateIndex = new CandidateIndex();
+				 candidateIndex.setCandidateId(candidate.getId());
+				 DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+				 candidateIndex.setUpdatedDate(dateFormat.format(new Date()));
+				 candidateIndex.setCurrentResumeId(Constants.CANDIATE_RESUME_IN_ACTIVE);
+				
 				sourceleadELKBaseIndexer.saveOrUpdateElkDocument(candidateIndex, Constants.ELK_CANDIDATE_INDEX, Constants.ELK_CANDIDATE_TYPE, candidate.getId().toString());
 			}
 		}
 		Integer percentage = candidateService.getCandidatePercentage(candidate, orgLocations);
+		
 		return percentage.toString();
 	}
 	

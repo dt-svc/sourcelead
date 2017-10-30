@@ -431,6 +431,9 @@
 					$("#refMsgDiv").html("Success!! New References added");
 		        	candReferencesList(candidateId);
 					refMsgFadein(); 
+					setTimeout(function(){
+			 			candidateList();					 			
+			 	 },100);
 		        });
 			
 			return true;
@@ -524,6 +527,9 @@
 									.fadeOut();
 							candReferencesList(candidateId);
 							refMsgFadein();
+							setTimeout(function(){
+					 			candidateList();					 			
+					 	 },100);
 						}
 					},
 				});
