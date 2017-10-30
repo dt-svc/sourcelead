@@ -344,8 +344,8 @@ public class LeaveDaoImpl implements LeaveDao{
 
 		Session session = this.sessionFactory.getCurrentSession();
 		String subQuery = "";
-		if(StringUtils.isNotBlank(leaveDTO.getReportYear())) {
-			Date[] dates = commonUtil.getStartDateEndDateByYear(Integer.parseInt(leaveDTO.getReportYear()));
+		if(StringUtils.isNotBlank(leaveDTO.getTopLeaveTakersreportYear())) {
+			Date[] dates = commonUtil.getStartDateEndDateByYear(Integer.parseInt(leaveDTO.getTopLeaveTakersreportYear()));
 			java.sql.Date satrtDate = new java.sql.Date(dates[0].getTime());
 			java.sql.Date endDate = new java.sql.Date(dates[1].getTime());
 			subQuery = " and leave.createdDate >= '"+satrtDate+"' AND leave.createdDate <= '"+endDate+"'";
@@ -363,8 +363,8 @@ public class LeaveDaoImpl implements LeaveDao{
 			java.sql.Date endDate = new java.sql.Date(eDate.getTime());
 			subQuery = " and leave.createdDate >= '"+satrtDate+"' AND leave.createdDate <= '"+endDate+"'";
 		}
-		if(StringUtils.isNotBlank(leaveDTO.getReportYear()) && StringUtils.isNotBlank(leaveDTO.getReportMonth())) {
-			Date[] dates = commonUtil.getMonthStartDateEndDateByYearAndMonth(Integer.parseInt(leaveDTO.getReportYear()),Integer.parseInt(leaveDTO.getReportMonth()));
+		if(StringUtils.isNotBlank(leaveDTO.getTopLeaveTakersreportYear()) && StringUtils.isNotBlank(leaveDTO.getReportMonth())) {
+			Date[] dates = commonUtil.getMonthStartDateEndDateByYearAndMonth(Integer.parseInt(leaveDTO.getTopLeaveTakersreportYear()),Integer.parseInt(leaveDTO.getReportMonth()));
 			java.sql.Date satrtDate = new java.sql.Date(dates[0].getTime());
 			java.sql.Date endDate = new java.sql.Date(dates[1].getTime());
 			subQuery = " and leave.createdDate >= '"+satrtDate+"' AND leave.createdDate <= '"+endDate+"'";

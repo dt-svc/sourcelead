@@ -2,8 +2,11 @@ package com.bis.sourcelead.service.impl;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.sql.Timestamp;
 import java.text.DateFormat;
@@ -464,17 +467,18 @@ public class EmailMessageServiceImpl implements EmailMessageService {
 					.getResumeIdsByRequirementSubmissionId(tempSubmissionIds);
 			if (submissionResumeIds != null && !submissionResumeIds.isEmpty()) {
 				try {
-					List<CandidateResumes> candidateResumesList = candidateResumesService
-							.getCandidateResumesByIds(submissionResumeIds);
+					List<CandidateResumes> candidateResumesList = candidateResumesService.getCandidateResumesByIds(submissionResumeIds);
 					if (candidateResumesList != null && !candidateResumesList.isEmpty()) {
-						int i = 0;
 						for (CandidateResumes wte : candidateResumesList) {
-							EmailAttachment emailAttachment = new EmailAttachment();
-							//emailAttachment.setDocFile(wte.getDocFile());
-							emailAttachment.setName(wte.getFileName());
-							emailAttachment.setType(wte.getFileContentType());
-							i++;
-							emailAttachmentList.add(emailAttachment);
+							File file = new File(wte.getFileURL());
+							if(file.exists()) {
+								EmailAttachment emailAttachment = new EmailAttachment();
+								byte[] bytesArray = getByteArray(file);
+								emailAttachment.setDocFile(bytesArray);
+								emailAttachment.setName(wte.getFileName());
+								emailAttachment.setType(wte.getFileContentType());
+								emailAttachmentList.add(emailAttachment);	
+							}
 						}
 					}
 				} catch (Exception e) {
@@ -483,6 +487,40 @@ public class EmailMessageServiceImpl implements EmailMessageService {
 			}
 		}
 		return emailAttachmentList;
+	}
+
+	/**
+	 * Get the bytes from file
+	 * @param file
+	 * @return byte
+	 * @throws IOException
+	 */
+	private byte[] getByteArray(File file) throws IOException {
+		ByteArrayOutputStream ous = null;
+		InputStream ios = null;
+		try {
+			byte[] buffer = new byte[4096];
+			ous = new ByteArrayOutputStream();
+			ios = new FileInputStream(file);
+			int read = 0;
+			while ((read = ios.read(buffer)) != -1) {
+				ous.write(buffer, 0, read);
+			}
+		} finally {
+			try {
+				if (ous != null)
+					ous.close();
+			} catch (IOException e) {
+			}
+
+			try {
+				if (ios != null)
+					ios.close();
+			} catch (IOException e) {
+			}
+		}
+		return ous.toByteArray();
+
 	}
 
 	private MimeMultipart createResumeZipFile(String[] submissionIds) throws Exception {
@@ -496,21 +534,24 @@ public class EmailMessageServiceImpl implements EmailMessageService {
 					.getResumeIdsByRequirementSubmissionId(tempSubmissionIds);
 			if (submissionResumeIds != null && !submissionResumeIds.isEmpty()) {
 				try {
-					List<CandidateResumes> candidateResumesList = candidateResumesService
-							.getCandidateResumesByIds(submissionResumeIds);
+					List<CandidateResumes> candidateResumesList = candidateResumesService.getCandidateResumesByIds(submissionResumeIds);
 					if (candidateResumesList != null && !candidateResumesList.isEmpty()) {
 						ByteArrayOutputStream zipBytes = new ByteArrayOutputStream();
 						ZipOutputStream outZip = new ZipOutputStream(zipBytes);
 
 						int i = 0;
 						for (CandidateResumes wte : candidateResumesList) {
-							StringBuilder sb = new StringBuilder();
-							String st = wte.getFileName();
-							String lastIndex = st.substring(0, st.lastIndexOf("."));
-							String newFilename = (sb.append(lastIndex).append("-").append(i)
-									.append(st.substring(st.lastIndexOf("."))).toString());
-							//addToZipFile(wte.getDocFile(), outZip, newFilename);
-							i++;
+							File file = new File(wte.getFileURL());
+							if(file.exists()) {
+								StringBuilder sb = new StringBuilder();
+								String st = wte.getFileName();
+								String lastIndex = st.substring(0, st.lastIndexOf("."));
+								String newFilename = (sb.append(lastIndex).append("-").append(i).append(st.substring(st.lastIndexOf("."))).toString());
+								byte[] docFile = getByteArray(file);
+								addToZipFile(docFile, outZip, newFilename);
+								i++;
+							}
+							
 						}
 
 						outZip.closeEntry();

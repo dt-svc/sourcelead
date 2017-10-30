@@ -144,8 +144,10 @@
           				
 				        <h1>Description:</h1> 
 				        <div class="RDdetails">${!empty requirement.description ? requirement.description : ' No DATA '}</div>
+			            <div class="clearfix"></div>
 			            <h1>Skills:</h1>
 			            <div class="RDdetails">${!empty requirement.skills ? requirement.skills : ' No DATA '}</div>
+			            <div class="clearfix"></div>
 			            <h2 class="RPadT"> Job Details:</h2> 
 			            <div class="require_one">
 				            <div class="require_wrap_details_cta"> <b>No. of positions:</b><span>${!empty requirement.positions ? requirement.positions : ' -- '}</span>
@@ -286,11 +288,7 @@
 			         	 </c:if>
 					     <div class="clearfix"></div> 
 					           
-			         	 <div class="require_wrap_details_cta"> <b>Release to all Users:</b><span>${requirement.releaseJobToAllUsers  == 'Y' ? 'YES' : 'NO'}</span></div>
-			         	 <div class="clearfix"></div>			           	            
-			            
 			            <c:if test="${!empty requirement.approvalMechanismType}">
-			           
 			           	<c:choose>
 						   <c:when test="${requirement.approvalMechanismType == 'PARALLEL'}">
 						   	 <div class="require_wrap_details_cta"> <b>Approvers:</b> <span> 
@@ -308,7 +306,10 @@
 						</c:choose>
 			            </c:if>  
 			            
-                    <div class="clearfix"></div> 				            
+                    <div class="clearfix"></div>
+                    
+                    <div class="require_wrap_details_cta"> <b>Release to all Users:</b><span>${requirement.releaseJobToAllUsers  == 'Y' ? 'YES' : 'NO'}</span></div>
+			        <div class="clearfix"></div>			            
                 </div> 							            
            
                    <div class="clearfix"></div> 
