@@ -531,7 +531,10 @@ function generateOrgSubmissionForm(sourceleadUrl,requirementId,finalDateFormatSc
             	 yearRange: "-70Y:-18Y" ,
             	 defaultDate: d,
             	 changeMonth: true,
-                 changeYear: true
+                 changeYear: true,
+                 onSelect : function(selected) {
+                	 $('p.jquery_form_error_message').remove();
+                 }
                  
              });
         },

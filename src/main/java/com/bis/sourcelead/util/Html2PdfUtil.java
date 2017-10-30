@@ -192,7 +192,7 @@ public class Html2PdfUtil {
 		            		matchPattern.appendReplacement(sb,"");
 		            	}
 	                }
-		            else if(matchPattern.group().equalsIgnoreCase("[Requirement Title]")){
+		            else if(matchPattern.group().equalsIgnoreCase("[Job Title]")){
 		            	if(null !=contracts.getRequirementSubmission().getRequirement().getId()){
 				            	Requirement req = requirementService.getRequirementByRequirementId(contracts.getRequirementSubmission().getRequirement().getId());
 			                    matchPattern.appendReplacement(sb, req.getJobTitle());

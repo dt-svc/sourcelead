@@ -82,8 +82,8 @@ border:none; background-color: none !important; padding:0 5px !important;
                   <label>Vendor Name</label>
                   <div class="clearfix">
                     <select class="chosen-select form-control input-sm" multiple data-placeholder="Vendor Name" id="orgNameAdvanced" name="orgNameAdvanced">
-                        <c:forEach var="vendor" items="${vendor_list}">
-                                <option value="${vendor.clientName}">${vendor.clientName}</option>
+                        <c:forEach var="vendorList" items="${vendor_list}">
+                                <option value="${vendorList.vendorNameForList}">${vendorList.vendorNameForList}</option>
                          </c:forEach>
                     </select>
                   </div>

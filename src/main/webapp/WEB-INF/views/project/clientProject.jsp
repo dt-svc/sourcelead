@@ -40,6 +40,52 @@
 		
 			<form:form id="project_form" name="project_form" method="post">
 			 <input type="hidden" name="projectClientId" id="projectClientId" value=""/>
+			
+			<div class="col-md-12 clearfix mt5 mb5">
+			<div class="col-md-6 col-lg-6">
+			  <div class="form-group mb10">
+					<label class="col-md-3 mt10" for="Project Manager">Select Client<span
+						class="text-danger">*&nbsp;</span></label>
+					<div class="col-md-9">
+						<div class="form-icon-min" id="clientsDiv">
+							<select class="form-control chosen-select"
+								name="clientOrgLocId" id="clientOrgLocId" field-name="Client"
+								data-validation="required" onchange="getEndClientProjects();">
+								<option value="">-- Select Client --</option>
+								<c:forEach var="report" items="${clientsList}">
+								 <c:if test="${report.locationId.id == SourceLeadWeb_orgLocations.id}">
+								    <option value="${report.responderLocationId.id}">${report.responderLocationId.org.orgName}</option>
+								 </c:if>
+								 <c:if test="${report.responderLocationId.id == SourceLeadWeb_orgLocations.id}">
+								    <option value="${report.locationId.id}">${report.locationId.org.orgName}</option>
+								 </c:if>
+								</c:forEach>
+							</select> 
+						</div>
+						<span class="hidden">Select Client</span>
+					</div>
+				</div>
+			</div>
+			
+			
+			<div class="col-md-6 col-lg-6">
+				<div class="form-group mb10">
+					<label class="col-md-3 paddingRight mt10">Client Project <span class="text-danger">*&nbsp;</span></label>
+					<div class="col-md-9">
+						<div class="form-icon-min" id="clientProjectDiv">
+							<select class="form-control chosen-select"
+								name="clientProject" id="clientProject" field-name="Client Project"
+								data-validation="required">
+								<option value="">-- Select Project --</option>
+							</select> 
+							<i class='fa fa-info-circle' title='Client projects will be auto populate after selection of client'></i>
+						</div>
+						<span class="hidden">Select Client Project</span>
+					</div>
+				</div>
+				</div> 
+				</div>
+			
 			<div class="col-md-12 clearfix mt5 mb5">
 			<div class="col-md-6 col-lg-6">
 				<div class="form-group mb10">
@@ -72,50 +118,7 @@
 				</div>
 			</div>
 			
-			<div class="col-md-12 clearfix mt5 mb5">
-			<div class="col-md-6 col-lg-6">
-			  <div class="form-group mb10">
-					<label class="col-md-3 mt10" for="Project Manager">Select Client<span
-						class="text-danger">*&nbsp;</span></label>
-					<div class="col-md-9">
-						<div class="form-icon-min" id="clientsDiv">
-							<select class="form-control chosen-select"
-								name="clientOrgLocId" id="clientOrgLocId" field-name="Client"
-								data-validation="required" onchange="getEndClientProjects();">
-								<option value="">-- Select Client --</option>
-								<c:forEach var="report" items="${clientsList}">
-								 <c:if test="${report.locationId.id == SourceLeadWeb_orgLocations.id}">
-								    <option value="${report.responderLocationId.id}">${report.responderLocationId.org.orgName}</option>
-								 </c:if>
-								 <c:if test="${report.responderLocationId.id == SourceLeadWeb_orgLocations.id}">
-								    <option value="${report.locationId.id}">${report.locationId.org.orgName}</option>
-								 </c:if>
-								</c:forEach>
-							</select> 
-						</div>
-						<span class="hidden">Select Client</span>
-					</div>
-				</div>
-			</div>
 			
-			
-			<div class="col-md-6 col-lg-6">
-				<div class="form-group mb10">
-					<label class="col-md-3 paddingRight">Client Project <span class="text-danger">*&nbsp;</span></label>
-					<div class="col-md-9">
-						<div class="form-icon-min" id="clientProjectDiv">
-							<select class="form-control chosen-select"
-								name="clientProject" id="clientProject" field-name="Client Project"
-								data-validation="required">
-								<option value="">-- Select Project --</option>
-							</select> 
-							<i class='fa fa-info-circle' title='Client projects will be auto populate after selection of client'></i>
-						</div>
-						<span class="hidden">Select Client Project</span>
-					</div>
-				</div>
-				</div> 
-				</div>
               <div class="clearfix"></div>
 				<div class="form-footer clearfix mt">
 					<div class="col-lg-12">
@@ -250,11 +253,16 @@ function getChildLevel1Approvers(currentApproverId,level2ApproverUserId){
 		        	for (var i=0; i<json.length; i++)
 					{
 			        		var opt = json[i];
+			        		if(opt.lastName != null && opt.lastName != '' && opt.lastName != 'undefined'){
+			        			var fullName = opt.firstName +" "+ opt.lastName;
+			        		}else{
+			        			var fullName = opt.firstName;
+			        		}
 			        		var selected = '';
 			        		if(level2ApproverUserId != null && level2ApproverUserId != 'undefied' && level2ApproverUserId != '' && level2ApproverUserId == opt.id){
 			        			selected = "selected";
 			        		}
-			        		output = output + "<option value='" +opt.id+ "' "+selected+">"+opt.firstName+" "+opt.lastName+" ("+opt.userType+")</option>";
+			        		output = output + "<option value='" +opt.id+ "' "+selected+">"+fullName+"  ("+opt.userType+")</option>";
 					}
 		        	$("#level2Manager").empty();
 			        $("#level2Manager").append(output);
