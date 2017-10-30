@@ -1,8 +1,11 @@
 package com.bis.sourcelead.dto;
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+
+import com.bis.sourcelead.entity.User;
 
 public class ProjectsDTO extends SearchDTO implements Serializable{
 
@@ -99,6 +102,64 @@ public class ProjectsDTO extends SearchDTO implements Serializable{
 	private String reEndDate;
 	
 	private String projectMode;
+	
+	private String projectUUID;
+	
+	private String projectClientUUID;
+	
+	private String employeeStartDateStr;
+	
+	private String employeeEndDateStr;
+	
+	private String managerLevel1;
+	
+	private String managerLevel2;
+	
+	private String projectbudgetCurrency;
+	
+	private Double projectbudgetAmount;
+	
+	private String createdDateStr;
+	
+	private String updatedDateStr;
+	
+	private String createdByName;
+	
+	private Long manager1;
+	
+	private Long manager2;
+	
+	private String managerLevel1UserType;
+	
+	private Collection<UserDTO> managersList;
+	
+	private Collection<UserDTO> managersListwithoutManager1;
+	
+	private String[] projectManagerName;
+	
+	private String projectMembersCount;
+	
+	private String allowFreeLance;
+	
+	private String allowRemote;
+	
+	private String allowOvertime;
+	
+	private String allowTimeEntryAfterDeadLine;
+	
+	private String allowBidding;
+	
+	private String allowOffShore;
+	
+	private String overtimeRateType;
+	
+	private Long orgLocationId;
+	
+	private String manager1Name;
+	
+	private String manager2Name;
+	
+	private String flatPercent; 
 	
 	public String getExpenseId() {
 		return expenseId;
@@ -468,6 +529,238 @@ public class ProjectsDTO extends SearchDTO implements Serializable{
 
 	public void setProjectMode(String projectMode) {
 		this.projectMode = projectMode;
+	}
+
+	public String getProjectUUID() {
+		return projectUUID;
+	}
+
+	public void setProjectUUID(String projectUUID) {
+		this.projectUUID = projectUUID;
+	}
+
+	public String getProjectClientUUID() {
+		return projectClientUUID;
+	}
+
+	public void setProjectClientUUID(String projectClientUUID) {
+		this.projectClientUUID = projectClientUUID;
+	}
+
+	public String getEmployeeStartDateStr() {
+		return employeeStartDateStr;
+	}
+
+	public void setEmployeeStartDateStr(String employeeStartDateStr) {
+		this.employeeStartDateStr = employeeStartDateStr;
+	}
+
+	public String getEmployeeEndDateStr() {
+		return employeeEndDateStr;
+	}
+
+	public void setEmployeeEndDateStr(String employeeEndDateStr) {
+		this.employeeEndDateStr = employeeEndDateStr;
+	}
+
+	public String getManagerLevel1() {
+		return managerLevel1;
+	}
+
+	public void setManagerLevel1(String managerLevel1) {
+		this.managerLevel1 = managerLevel1;
+	}
+
+	public String getManagerLevel2() {
+		return managerLevel2;
+	}
+
+	public void setManagerLevel2(String managerLevel2) {
+		this.managerLevel2 = managerLevel2;
+	}
+
+	public String getProjectbudgetCurrency() {
+		return projectbudgetCurrency;
+	}
+
+	public void setProjectbudgetCurrency(String projectbudgetCurrency) {
+		this.projectbudgetCurrency = projectbudgetCurrency;
+	}
+
+	public Double getProjectbudgetAmount() {
+		return projectbudgetAmount;
+	}
+
+	public void setProjectbudgetAmount(Double projectbudgetAmount) {
+		this.projectbudgetAmount = projectbudgetAmount;
+	}
+
+	public String getCreatedDateStr() {
+		return createdDateStr;
+	}
+
+	public void setCreatedDateStr(String createdDateStr) {
+		this.createdDateStr = createdDateStr;
+	}
+
+	public String getUpdatedDateStr() {
+		return updatedDateStr;
+	}
+
+	public void setUpdatedDateStr(String updatedDateStr) {
+		this.updatedDateStr = updatedDateStr;
+	}
+
+	public String getCreatedByName() {
+		return createdByName;
+	}
+
+	public void setCreatedByName(String createdByName) {
+		this.createdByName = createdByName;
+	}
+
+	public Long getManager1() {
+		return manager1;
+	}
+
+	public void setManager1(Long manager1) {
+		this.manager1 = manager1;
+	}
+
+	public Long getManager2() {
+		return manager2;
+	}
+
+	public void setManager2(Long manager2) {
+		this.manager2 = manager2;
+	}
+
+	public String getManagerLevel1UserType() {
+		return managerLevel1UserType;
+	}
+
+	public void setManagerLevel1UserType(String managerLevel1UserType) {
+		this.managerLevel1UserType = managerLevel1UserType;
+	}
+
+	public Collection<UserDTO> getManagersList() {
+		return managersList;
+	}
+
+	public void setManagersList(Collection<UserDTO> managersList) {
+		this.managersList = managersList;
+	}
+
+	public Collection<UserDTO> getManagersListwithoutManager1() {
+		return managersListwithoutManager1;
+	}
+
+	public void setManagersListwithoutManager1(Collection<UserDTO> managersListwithoutManager1) {
+		this.managersListwithoutManager1 = managersListwithoutManager1;
+	}
+
+	public String[] getProjectManagerName() {
+		return projectManagerName;
+	}
+
+	public void setProjectManagerName(String[] projectManagerName) {
+		this.projectManagerName = projectManagerName;
+	}
+
+	public String getProjectMembersCount() {
+		return projectMembersCount;
+	}
+
+	public void setProjectMembersCount(String projectMembersCount) {
+		this.projectMembersCount = projectMembersCount;
+	}
+
+	public String getAllowFreeLance() {
+		return allowFreeLance;
+	}
+
+	public void setAllowFreeLance(String allowFreeLance) {
+		this.allowFreeLance = allowFreeLance;
+	}
+
+	public String getAllowRemote() {
+		return allowRemote;
+	}
+
+	public void setAllowRemote(String allowRemote) {
+		this.allowRemote = allowRemote;
+	}
+
+	public String getAllowOvertime() {
+		return allowOvertime;
+	}
+
+	public void setAllowOvertime(String allowOvertime) {
+		this.allowOvertime = allowOvertime;
+	}
+
+	public String getAllowTimeEntryAfterDeadLine() {
+		return allowTimeEntryAfterDeadLine;
+	}
+
+	public void setAllowTimeEntryAfterDeadLine(String allowTimeEntryAfterDeadLine) {
+		this.allowTimeEntryAfterDeadLine = allowTimeEntryAfterDeadLine;
+	}
+
+	public String getAllowBidding() {
+		return allowBidding;
+	}
+
+	public void setAllowBidding(String allowBidding) {
+		this.allowBidding = allowBidding;
+	}
+
+	public String getAllowOffShore() {
+		return allowOffShore;
+	}
+
+	public void setAllowOffShore(String allowOffShore) {
+		this.allowOffShore = allowOffShore;
+	}
+
+	public String getOvertimeRateType() {
+		return overtimeRateType;
+	}
+
+	public void setOvertimeRateType(String overtimeRateType) {
+		this.overtimeRateType = overtimeRateType;
+	}
+
+	public Long getOrgLocationId() {
+		return orgLocationId;
+	}
+
+	public void setOrgLocationId(Long orgLocationId) {
+		this.orgLocationId = orgLocationId;
+	}
+
+	public String getManager1Name() {
+		return manager1Name;
+	}
+
+	public void setManager1Name(String manager1Name) {
+		this.manager1Name = manager1Name;
+	}
+
+	public String getManager2Name() {
+		return manager2Name;
+	}
+
+	public void setManager2Name(String manager2Name) {
+		this.manager2Name = manager2Name;
+	}
+
+	public String getFlatPercent() {
+		return flatPercent;
+	}
+
+	public void setFlatPercent(String flatPercent) {
+		this.flatPercent = flatPercent;
 	}
 	
 	

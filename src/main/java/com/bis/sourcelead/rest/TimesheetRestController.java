@@ -901,9 +901,18 @@ public TimesheetEntryDetailsDTO getProjectMemberAndTimesheetFrequenciesList(Time
 					List<TimesheetSubmissionsDocuments> timesheetSubmissionsDocumentsList = null;
 					if(ts != null){
 						timesheetSubmissionsDocumentsList = timesheetSubmissionsDocumentsService.getAllTimesheetSubmissionsDocumentsBySubmissionId(ts.getId());
+						List<FileInfo> fileInfoList = new ArrayList<>();
 						if(timesheetSubmissionsDocumentsList != null && !timesheetSubmissionsDocumentsList.isEmpty()){
 								for(TimesheetSubmissionsDocuments tsd : timesheetSubmissionsDocumentsList){
+									FileInfo fileInfo = new FileInfo();
+									fileInfo.setFileDbId(tsd.getId().toString());
+									fileInfo.setFileName(tsd.getFileName());
+									fileInfo.setFileURL(tsd.getFileUrl());
+									fileInfo.setStatus(tsd.getStatus());
+									fileInfo.setContentType(tsd.getFileContentType());
+									fileInfoList.add(fileInfo);
 								}
+								tsDTO.setFileInfo(fileInfoList);
 							} 
 					}
 					 if(isFillMyTimeSheet 

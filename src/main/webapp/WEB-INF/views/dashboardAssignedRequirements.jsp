@@ -82,7 +82,8 @@ function requirementList(){
 	                     result = result +"    <th>Shortlisted</th>"; 
 	                     result = result +"    <th>Submitted</th>"; 
 	                     result = result +"    <th>Interview</th>"; 
-	                     result = result +"    <th>Offered</th>"; 
+	                     result = result +"    <th>Offered</th>";
+	                     result = result +"    <th>Status</th>";
 	                     result = result +"<th>Actions</th>";
 // 	                     result = result +"    <th>Release</th>"; 
 	                     result = result +"  </tr>"; 
@@ -155,7 +156,13 @@ function requirementList(){
 		                     if(opt.noOfOfferedApplicants != null && opt.noOfOfferedApplicants != '' && opt.noOfOfferedApplicants != 'undefined'){
 		                     result = result +"<td><a href='<c:url value='/requirementSummary?type=OFFERMADE&requirementUUID="+opt.requirementUUID+"'/>'><div>"+opt.noOfOfferedApplicants+"</div></a></td>";
 		                     }
-
+		                     if(opt.requirementSubmissionStatus!=null && opt.requirementSubmissionStatus !='' && opt.requirementSubmissionStatus !='undefined'){
+	                    		 result = result +"<td><div class=''><span title='"+opt.requirementSubmissionStatus+"'>"+opt.requirementSubmissionStatus+"</span></a></div></td>";
+	                    	 }
+	                    	 else{
+	                    		 result = result +"<td><div>---</div></td>";
+	                    	 }
+		                     
 		                     result = result +"<td>";
 		                     result = result + '<div class="tblminwidth-75">';
 		         	        '<sec:authorize access="hasAnyRole(\'ROLE_ADD_APPLICANT\')">';
