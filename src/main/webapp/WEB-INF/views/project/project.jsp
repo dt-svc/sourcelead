@@ -628,8 +628,8 @@ function getStatus(){
 
 <script type="text/javascript">
 	function saveProject() {
-		var savedProjectId = '${savedProjectId}';
-		if(savedProjectId == null || savedProjectId == '' || savedProjectId == 'undefined'){
+		var projectId = document.getElementById("projectId").value;
+		if(projectId == null || projectId == '' || projectId == 'undefined'){
 			validateProjectSequeneNumber();
 		}
 		var validationSettings = {
@@ -713,7 +713,6 @@ function getProjectDetails(){
 	        		 $("input[name=projectSequeneNumber]").attr("readonly","readonly");
 	        		 $('#projectSequeneNumber').removeAttr('onblur');
 	        	}
-	        	
 	        	
 	        	 $("input[name=projectName]").val(json.projectName);
 	        	 $("input[name=startDate]").val(json.startDateStr);
@@ -811,6 +810,8 @@ function getProjectDetails(){
         		   $("#savedProjectDocuments").empty();
       			   $("#savedProjectDocuments").append(result);
         	   }
+        	   
+        	   $("input[type=hidden][name*=uploadedFileInfo]").remove();
       			   
       			   for(var i=0; i<json.approverHierarchyList.length; i++){
 	        		  var opt = json.approverHierarchyList[i];
