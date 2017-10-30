@@ -1371,6 +1371,9 @@ overflow: hidden;text-overflow: ellipsis;white-space: nowrap;width: 80px; displa
 .tbldata-dotdot-100 {
 overflow: hidden; text-overflow: ellipsis; white-space: nowrap; width: 100px; display: block; margin: 0 auto;
 }
+.tbldata-dotdot-200 {
+overflow: hidden; text-overflow: ellipsis; white-space: nowrap; width: 200px; display: block; margin: 0 auto;
+}
 .tbldata-dotdot {
 overflow: hidden; text-overflow: ellipsis; white-space: nowrap; width: 180px; display: block; margin: 0 auto;
 }
