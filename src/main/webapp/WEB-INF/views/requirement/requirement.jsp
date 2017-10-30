@@ -1303,7 +1303,7 @@ $(document).ready(function () {
 </section>
 
 <script>
-  $( function() {
+  
 	  var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
 	  var finalDateFormatJobSave = '';
 	  if(locationDate.match("yyyy-MM-dd")){
@@ -1325,7 +1325,7 @@ $(document).ready(function () {
 	  	}
 	  });
 	  
-  } );
+ 
 </script>
 
 <script>
