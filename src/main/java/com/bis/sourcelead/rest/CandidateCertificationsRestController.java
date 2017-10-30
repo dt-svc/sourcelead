@@ -1,6 +1,9 @@
 package com.bis.sourcelead.rest;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -13,9 +16,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.CandidateCertificationDTO;
 import com.bis.sourcelead.dto.CandidateResumeDTO;
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.elk.index.CandidateIndex;
+import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateCertifications;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -48,6 +54,9 @@ public class CandidateCertificationsRestController {
 	
 	@Autowired
 	private OrgLocationService orgLocationService;
+	
+	@Autowired
+	private SourceleadELKBaseIndexer<CandidateIndex> sourceleadELKBaseIndexer;
 	 
 	
 	/**
@@ -153,10 +162,18 @@ public class CandidateCertificationsRestController {
 			String resultJson;
 			User user = userService.getUserById(loginUserId);
 			OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
+			Candidate candidate =candidateService.getCandidateById(candidateId);
 			 CandidateCertifications  candidatesCertificate = candidateCertificationsService.removeCandidateCertificateBycandidateIdandcandidateCertificateId(candidateId, candidateCertificationId, user, orgLocations);
 			 resultJson = commonUtil.toJSON(candidatesCertificate);
 			 //SourceLeadSessionManager.setSessionAttribute(request, "deleteCertification", "Certfification deleted");
-
+			 if (null != candidate && null != candidate.getId()) {
+				 CandidateIndex candidateIndex = new CandidateIndex();
+				 candidateIndex.setCandidateId(candidate.getId());
+				 DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+				 candidateIndex.setUpdatedDate(dateFormat.format(new Date()));
+				 candidateIndex.setCurrentResumeId(Constants.CANDIATE_RESUME_IN_ACTIVE);
+				sourceleadELKBaseIndexer.saveOrUpdateElkDocument(candidateIndex, Constants.ELK_CANDIDATE_INDEX, Constants.ELK_CANDIDATE_TYPE, candidate.getId().toString());
+			  }	
 			 return resultJson;
 		}
 	   

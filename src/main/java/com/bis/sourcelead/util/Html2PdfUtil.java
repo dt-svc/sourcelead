@@ -270,8 +270,8 @@ public class Html2PdfUtil {
 		            	}
 		            } 
 		            else if(matchPattern.group().equalsIgnoreCase("[Billing Cycle]")){
-		            	if(null != contracts.getBillingPer()){
-		            		matchPattern.appendReplacement(sb, contracts.getBillingPer());
+		            	if(null != contracts.getInvoiceFrequency()){
+		            		matchPattern.appendReplacement(sb, contracts.getInvoiceFrequency());
 		            	}
 		            } 
 	        		else if(matchPattern.group().equalsIgnoreCase("[Employee Location]")){
