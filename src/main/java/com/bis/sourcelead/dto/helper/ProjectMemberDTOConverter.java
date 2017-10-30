@@ -17,7 +17,7 @@ public class ProjectMemberDTOConverter {
 			    pmDTO.setProjectStartDate(projectMembers.getProjects().getStartDateStr());
 			    pmDTO.setProjectEndDate(projectMembers.getProjects().getEndDateStr());
 		}
-		pmDTO.setMasterCandidateId(projectMembers.getMasterCandidateId().getId());
+		pmDTO.setMasterCandidateId(projectMembers.getProjectMemberCandidteId().getConsultantUser().getId());
 		return pmDTO;
 	}
 }
