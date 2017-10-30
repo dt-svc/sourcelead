@@ -362,7 +362,7 @@ function getAssociatesFilter(){
 			        	result = result +'<div title="'+primarySkill+'" class="tbldata-dotdot_80">'+primarySkill+'</div>';
 			        	result = result +'</td>';
 			        	result = result +'<td>';
-			        	result = result +'<div class="tbldata-dotdot-sm">';
+			        	result = result +'<div class="tbldata-dotdot-200">';
 			        	result = result +'<small class="pull-left">'+currentRateCurrency+'</small>';
 			        	result = result +'<div class="tbldata-dotdot-100 pull-left">'+currentRate+'</div>';
 			        	result = result +'<small class="pull-right">'+currentRateType+'</small>';
