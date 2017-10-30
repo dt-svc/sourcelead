@@ -159,7 +159,7 @@ INSERT INTO `sourcelead`.`ACTION_NAMES` (`ID`, `ACTION_NAME`, `METHOD_NAME`) VAL
 INSERT INTO `sourcelead`.`ACTION_NAMES` (`ID`, `ACTION_NAME`, `METHOD_NAME`) VALUES ('145', 'Assign Employee into ELK', 'storeAssignEmployeeIntoELK');
 #Time Sheets
 INSERT INTO `sourcelead`.`ACTION_NAMES` (`ID`, `ACTION_NAME`, `METHOD_NAME`) VALUES ('146', 'Fill/Modify My Timesheets', 'saveTimesheet');
-INSERT INTO `sourcelead`.`ACTION_NAMES` (`ID`, `ACTION_NAME`, `METHOD_NAME`) VALUES ('147', 'Fill My Timesheets', 'ExportTimeShhettimesheetEntries');
+INSERT INTO `sourcelead`.`ACTION_NAMES` (`ID`, `ACTION_NAME`, `METHOD_NAME`) VALUES ('147', 'Export My Timesheets', 'exportTimesheetPdf');
 #Settings
 INSERT INTO `sourcelead`.`ACTION_NAMES` (`ID`, `ACTION_NAME`, `METHOD_NAME`) VALUES ('148', 'Add Applicant Template', 'orgSubmissionTemplate');
 INSERT INTO `sourcelead`.`ACTION_NAMES` (`ID`, `ACTION_NAME`, `METHOD_NAME`) VALUES ('149', 'View Applicant Template', '');
@@ -286,11 +286,15 @@ INSERT INTO `sourcelead`.`ACTION_NAMES` (`ID`, `ACTION_NAME`, `METHOD_NAME`) VAL
 INSERT INTO `sourcelead`.`ACTION_NAMES` (`ID`, `ACTION_NAME`, `METHOD_NAME`) VALUES ('266', 'Bill Payment History', '');
 #Expenses
 INSERT INTO `sourcelead`.`ACTION_NAMES` (`ID`, `ACTION_NAME`, `METHOD_NAME`) VALUES ('267', 'Add My Expenses', 'storeAddExpensesData');
-INSERT INTO `sourcelead`.`ACTION_NAMES` (`ID`, `ACTION_NAME`, `METHOD_NAME`) VALUES ('268', 'View & Edit My Expenses', '');
+INSERT INTO `sourcelead`.`ACTION_NAMES` (`ID`, `ACTION_NAME`, `METHOD_NAME`) VALUES ('268', 'View & Edit My Expenses', 'addExpensescontroller');
 INSERT INTO `sourcelead`.`ACTION_NAMES` (`ID`, `ACTION_NAME`, `METHOD_NAME`) VALUES ('269', 'Export My Expenses', 'exportAllMyExpensesList');
 INSERT INTO `sourcelead`.`ACTION_NAMES` (`ID`, `ACTION_NAME`, `METHOD_NAME`) VALUES ('270', 'Approve Employee Expenses', 'saveExpenseApprovalStatusByExpenseId');
 INSERT INTO `sourcelead`.`ACTION_NAMES` (`ID`, `ACTION_NAME`, `METHOD_NAME`) VALUES ('271', 'Add Employee Expenses', 'storeAddExpensesData');
-INSERT INTO `sourcelead`.`ACTION_NAMES` (`ID`, `ACTION_NAME`, `METHOD_NAME`) VALUES ('272', 'View & Edit Employee Expenses', '');
+INSERT INTO `sourcelead`.`ACTION_NAMES` (`ID`, `ACTION_NAME`, `METHOD_NAME`) VALUES ('272', 'View & Edit Employee Expenses', 'addExpensescontroller');
 INSERT INTO `sourcelead`.`ACTION_NAMES` (`ID`, `ACTION_NAME`, `METHOD_NAME`) VALUES ('273', 'Export Employee Expenses', 'exportAllMyExpensesList');
 #Extra
 INSERT INTO `sourcelead`.`ACTION_NAMES` (`ID`, `ACTION_NAME`, `METHOD_NAME`) VALUES ('274', 'Candidate Experience Updated', 'upDateCandidateEmployerByCandidateIdAndCandidateExperianceId');
+INSERT INTO `sourcelead`.`action_names` (`ID`, `ACTION_NAME`, `METHOD_NAME`) VALUES ('275', 'Modify My Timesheets', 'withDrawTimesheet');
+INSERT INTO `sourcelead`.`action_names` (`ID`, `ACTION_NAME`, `METHOD_NAME`) VALUES ('276', 'Fill Member Timesheet', 'saveTimesheet');
+INSERT INTO `sourcelead`.`action_names` (`ID`, `ACTION_NAME`, `METHOD_NAME`) VALUES ('277', 'View Member Timesheet', 'timesheetDivByFrequency');
+INSERT INTO `sourcelead`.`action_names` (`ID`, `ACTION_NAME`, `METHOD_NAME`) VALUES ('278', 'Export Member Timesheet', 'exportTimesheetPdf');
