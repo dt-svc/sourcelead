@@ -688,7 +688,18 @@ function uploadAddApplicantRecrutierDoc() {
 <script>
 function getRequirementSubmissionTemaplate(jobTitle,requirementId,referId){
 	 var candidateId = '${candidateId}';
-	 generateOrgSubmissionForm(sourceleadUrl,requirementId) 
+	 var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+	  var finalDateFormatScript = '';
+	  if(locationDate.match("yyyy-MM-dd")){
+		  finalDateFormatScript = 'yy-mm-dd';
+	  }if(locationDate.match("dd-MM-yyyy")){
+		  finalDateFormatScript = 'dd-mm-yy'; 
+	  }if(locationDate.match("MM-dd-yyyy")){
+		  finalDateFormatScript = 'mm-dd-yy'; 
+	  }if(locationDate.match("yyyy-dd-MM")){
+		  finalDateFormatScript = 'yy-dd-mm'; 
+	  }
+	 generateOrgSubmissionForm(sourceleadUrl,requirementId,finalDateFormatScript); 
 	 
 	 var loginUserRole = '${SourceLeadWeb_loginUserRole}';
 	 var result = "";
