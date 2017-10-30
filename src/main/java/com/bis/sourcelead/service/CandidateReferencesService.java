@@ -1,12 +1,10 @@
 package com.bis.sourcelead.service;
 
-import java.util.List;
-
 import org.json.JSONException;
-import org.json.JSONObject;
 
 import com.bis.sourcelead.dto.CandidateReferencesDTO;
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateReferences;
 import com.bis.sourcelead.entity.User;
 
@@ -31,5 +29,7 @@ public interface CandidateReferencesService {
     public CandidateReferences updateCandidateReferences(CandidateReferences candidateReferences) throws Exception;
 	
 	public CandidateReferences getCandidateReferenceByReferenceId(Long refId) throws Exception;
+
+	void saveOrUpdateCandidateElkDocumentWithReferenceDetails(Candidate candidate, Long locationId) throws Exception;
 	
 }
