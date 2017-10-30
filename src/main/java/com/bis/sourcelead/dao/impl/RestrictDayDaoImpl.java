@@ -82,7 +82,7 @@ public class RestrictDayDaoImpl implements RestrictDayDao{
 		Date toDate =  commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), toDateStr);
 		
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from RestrictDay resDay  where resDay.orgLocationId = :orgLocationId  and resDay.status = '1' and ((resDay.startDate <= :fromDate and resDay.endDate >= :fromDate) or (resDay.startDate <= :toDate and resDay.endDate >= :toDate ))";
+		String query = "from RestrictDay resDay  where resDay.orgLocationId = :orgLocationId  and resDay.status = '1' and (((resDay.startDate <= :fromDate and resDay.endDate >= :fromDate) or (resDay.startDate <= :toDate and resDay.endDate >= :toDate )) or ((resDay.startDate >= :fromDate and resDay.endDate >= :fromDate) or (resDay.startDate <= :toDate and resDay.endDate <= :toDate)))";
 		List<RestrictDay> restrictDayList = session.createQuery(query).setParameter("fromDate", fromDate).setParameter("toDate", toDate).setLong("orgLocationId", orgLocations.getId()).setCacheable(true).list();
 		return restrictDayList;
 	}
