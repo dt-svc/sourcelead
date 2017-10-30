@@ -214,14 +214,14 @@
 								<li onclick="copyToClipboard('text_element42')"><i></i>
 									<p class="copyText" id="text_element42">[Vendor Location]</li>
 								<li onclick="copyToClipboard('text_element43')"><i></i>
-									<p class="copyText" id="text_element43">[Requirement Title]</li>
+									<p class="copyText" id="text_element43">[Job Title]</li>
 								<!--  <li onclick="copyToClipboard('text_element45')"><i></i><p class="copyText" id="text_element45">[Offer Rate]</li> -->
 								<li onclick="copyToClipboard('text_element46')"><i></i>
-									<p class="copyText" id="text_element46">[Billing Rate]</li>
+									<p class="copyText" id="text_element46">[Billing Amount]</li>
 								<li onclick="copyToClipboard('text_element47')"><i></i>
-									<p class="copyText" id="text_element47">[Overtime]</li>
+									<p class="copyText" id="text_element47">[Overtime Hours]</li>
 								<li onclick="copyToClipboard('text_element48')"><i></i>
-									<p class="copyText" id="text_element48">[Payment Term]</li>
+									<p class="copyText" id="text_element48">[Payment Frequency]</li>
 								<li onclick="copyToClipboard('text_element88')"><i></i>
 									<p class="copyText" id="text_element88">[Start Date]</p></li>
 								<li onclick="copyToClipboard('text_element49')"><i></i>
@@ -252,11 +252,11 @@
 									<p class="copyText" id="text_element63">[State Of
 										Jurisdiction]</p></li>
 								<li onclick="copyToClipboard('text_element95')"><i></i>
-									<p class="copyText" id="text_element95">[Billing Rate]</li>
+									<p class="copyText" id="text_element95">[Billing Amount]</li>
 								<li onclick="copyToClipboard('text_element96')"><i></i>
-									<p class="copyText" id="text_element96">[Overtime]</li>
+									<p class="copyText" id="text_element96">[Overtime Hours]</li>
 								<li onclick="copyToClipboard('text_element97')"><i></i>
-									<p class="copyText" id="text_element97">[Payment Term]</li>
+									<p class="copyText" id="text_element97">[Payment Frequency]</li>
 
 							</ul>
 							<ul id="nsa" style="display: none">
@@ -274,11 +274,11 @@
 									<p class="copyText" id="text_element62">[State Of
 										Jurisdiction]</p></li>
 								<li onclick="copyToClipboard('text_element98')"><i></i>
-									<p class="copyText" id="text_element98">[Billing Rate]</li>
+									<p class="copyText" id="text_element98">[Billing Amount]</li>
 								<li onclick="copyToClipboard('text_element99')"><i></i>
-									<p class="copyText" id="text_element99">[Overtime]</li>
+									<p class="copyText" id="text_element99">[Overtime Hours]</li>
 								<li onclick="copyToClipboard('text_element100')"><i></i>
-									<p class="copyText" id="text_element100">[Payment Term]</li>
+									<p class="copyText" id="text_element100">[Payment Frequency]</li>
 							</ul>
 							<ul id="w-4Form" style="display: none">
 								<li onclick="copyToClipboard('text_element64')"><i></i>
@@ -299,11 +299,11 @@
 								<li onclick="copyToClipboard('text_element71')"><i></i>
 									<p class="copyText" id="text_element71">[Zipcode]</li>
 								<li onclick="copyToClipboard('text_element101')"><i></i>
-									<p class="copyText" id="text_element101">[Billing Rate]</li>
+									<p class="copyText" id="text_element101">[Billing Amount]</li>
 								<li onclick="copyToClipboard('text_element102')"><i></i>
-									<p class="copyText" id="text_element102">[Overtime]</li>
+									<p class="copyText" id="text_element102">[Overtime Hours]</li>
 								<li onclick="copyToClipboard('text_element103')"><i></i>
-									<p class="copyText" id="text_element103">[Payment Term]</li>
+									<p class="copyText" id="text_element103">[Payment Frequency]</li>
 								<li onclick="copyToClipboard('text_element109')"><i></i>
 									<p class="copyText" id="text_element109">[State Of
 										Jurisdiction]</p></li>
@@ -353,11 +353,11 @@
 								<li onclick="copyToClipboard('text_element87')"><i></i>
 									<p class="copyText" id="text_element87">[Join Date]</li>
 								<li onclick="copyToClipboard('text_element104')"><i></i>
-									<p class="copyText" id="text_element104">[Billing Rate]</li>
+									<p class="copyText" id="text_element104">[Billing Amount]</li>
 								<li onclick="copyToClipboard('text_element105')"><i></i>
-									<p class="copyText" id="text_element105">[Overtime]</li>
+									<p class="copyText" id="text_element105">[Overtime Hours]</li>
 								<li onclick="copyToClipboard('text_element106')"><i></i>
-									<p class="copyText" id="text_element106">[Payment Term]</li>
+									<p class="copyText" id="text_element106">[Payment Frequency]</li>
 								<li onclick="copyToClipboard('text_element110')"><i></i>
 									<p class="copyText" id="text_element110">[State Of
 										Jurisdiction]</p></li>
