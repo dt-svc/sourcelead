@@ -771,6 +771,9 @@ function removeEmployer(candidateemployerId, candidateId){
 								 $("#remove_user_pop_emp, .project_inn_mask").fadeOut();
 								 candidateEmployersList(candidateId);
 								 empMsgFadein();
+								 setTimeout(function(){
+							 			candidateList();					 			
+							 	 },100);
 							}
 						}
 					},

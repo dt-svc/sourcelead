@@ -112,6 +112,9 @@ border-radius:3px; cursor: pointer; padding:6px 0px 0px 0px;
 
       <!-- Accordion second Tab -->
          <form:form id="releaseToCrowdSourcing_form"  name="releaseToCrowdSourcing_form" method="post">
+         <div class="success_pop" id="relTocro" style="display: none;">
+	    	<i class="fa fa-check-circle"></i><span id="relMsgDiv"></span>
+	    </div>
          <div class="clearfix">
           <h2 onclick="opennetwork();">Open Network</h2>
           <div class="content clearfix" >
@@ -458,6 +461,13 @@ function releaseToOneVendor(vendorcheckboxId){
 			    	 url: sourceleadUrl+"/releaseToCrowdSourcingNetwork?"+tokenParamName+"="+tokenValue+"&json="+jsonData+"&requirementId="+requirementId, 
 			        success: function(result) {
 			        	location.replace(sourceleadUrl+"/releaseRequirementToClientOrVendors?requirementUUID="+requirementUUID);
+			        	
+			        	$("#relTocro").removeAttr("style");
+		    			$("#relTocro").css({ display: "block" });
+						$("#relMsgDiv").html("Success!! Job Release To Open Network");
+		       			relMsgFadeinFunction();
+			        	
+			        	
 			        },
 			    });  
 		        return true;
@@ -475,6 +485,15 @@ function releaseToOneVendor(vendorcheckboxId){
   
  
 </script>  
+
+<!-- Show success message after form submission script -->
+<script>
+	function relMsgFadeinFunction() {
+		$("#relTocro").fadeIn(200);
+        $('#relTocro').delay(2000).fadeOut('slow');
+	}
+</script> 
+<!-- End -->
 
 <script type="text/javascript">
         var validationSettings = {
