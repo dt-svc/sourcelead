@@ -349,6 +349,10 @@ public class OrgRelations implements Serializable{
 	@JsonProperty
     private String bankIdentifierCode;
     
+    @Transient
+	@JsonProperty
+    private String vendorNameForList;
+    
 	public String getStringDate()
 	{
 		return stringDate;
@@ -1082,6 +1086,26 @@ public class OrgRelations implements Serializable{
 
 	public void setPaymentRemittanceEmail(String paymentRemittanceEmail) {
 		this.paymentRemittanceEmail = paymentRemittanceEmail;
+	}
+
+	public String getVendorNameForList()
+	{
+		return vendorNameForList;
+	}
+
+	public void setVendorNameForList(String vendorNameForList)
+	{
+		this.vendorNameForList = vendorNameForList;
+	}
+
+	public void setResponderJsonLocationId(Long responderJsonLocationId)
+	{
+		this.responderJsonLocationId = responderJsonLocationId;
+	}
+
+	public void setLocationJsonId(Long locationJsonId)
+	{
+		this.locationJsonId = locationJsonId;
 	}
 
 	
