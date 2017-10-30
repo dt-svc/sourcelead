@@ -161,7 +161,7 @@
 								<li onclick="copyToClipboard('text_element28')"><i></i>
 								<p class="copyText" id="text_element28">[Client Location]</li>
 								<li onclick="copyToClipboard('text_element29')"><i></i>
-								<p class="copyText" id="text_element29">[Requirement Title]</li>
+								<p class="copyText" id="text_element29">[Job Title]</li>
 								<!--  <li onclick="copyToClipboard('text_element31')"><i></i><p class="copyText" id="text_element31">[Offer Rate]</li> -->
 								<li onclick="copyToClipboard('text_element32')"><i></i>
 								<p class="copyText" id="text_element32">[Billing Rate]]</li>
