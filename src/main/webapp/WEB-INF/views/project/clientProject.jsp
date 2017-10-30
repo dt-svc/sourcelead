@@ -40,37 +40,6 @@
 		
 			<form:form id="project_form" name="project_form" method="post">
 			 <input type="hidden" name="projectClientId" id="projectClientId" value=""/>
-			<div class="col-md-12 clearfix mt5 mb5">
-			<div class="col-md-6 col-lg-6">
-				<div class="form-group mb10">
-					<label class="col-md-3 mt10" for="Project Manager">Manager <span
-						class="text-danger">*&nbsp;</span></label>
-					<div class="col-md-9">
-						<div class="form-icon-min" id="chosen-level1Manager">
-							<select class="form-control chosen-select"
-								name="level1Manager" id="level1Manager" field-name="Manager"
-								data-validation="required" onchange="getLevel2Approvers();">
-								<option value="">-- Select Level1 Manager --</option>
-							</select> <span class="btn btn-default formic1 addLevel"
-								id="level2Toggle" onclick="getLevel2Approvers();">Add
-								Level-II</span>
-						</div>
-						<span class="hidden">Select Project Manager</span>
-					</div>
-				</div>
-				</div>
-				
-				<div class="col-md-6 col-lg-6">
-				<div class="form-group level-second mb10" id="level2Div">
-						<label class="col-md-3 mt10" for="Level-II">Level-II</label>
-						<div class="col-md-9">
-							<select class="form-control chosen-select" name="level2Manager"
-								id="level2Manager">
-							</select>
-						</div>
-					</div>
-				</div>
-			</div>
 			
 			<div class="col-md-12 clearfix mt5 mb5">
 			<div class="col-md-6 col-lg-6">
@@ -116,6 +85,40 @@
 				</div>
 				</div> 
 				</div>
+			
+			<div class="col-md-12 clearfix mt5 mb5">
+			<div class="col-md-6 col-lg-6">
+				<div class="form-group mb10">
+					<label class="col-md-3 mt10" for="Project Manager">Manager <span
+						class="text-danger">*&nbsp;</span></label>
+					<div class="col-md-9">
+						<div class="form-icon-min" id="chosen-level1Manager">
+							<select class="form-control chosen-select"
+								name="level1Manager" id="level1Manager" field-name="Manager"
+								data-validation="required" onchange="getLevel2Approvers();">
+								<option value="">-- Select Level1 Manager --</option>
+							</select> <span class="btn btn-default formic1 addLevel"
+								id="level2Toggle" onclick="getLevel2Approvers();">Add
+								Level-II</span>
+						</div>
+						<span class="hidden">Select Project Manager</span>
+					</div>
+				</div>
+				</div>
+				
+				<div class="col-md-6 col-lg-6">
+				<div class="form-group level-second mb10" id="level2Div">
+						<label class="col-md-3 mt10" for="Level-II">Level-II</label>
+						<div class="col-md-9">
+							<select class="form-control chosen-select" name="level2Manager"
+								id="level2Manager">
+							</select>
+						</div>
+					</div>
+				</div>
+			</div>
+			
+			
               <div class="clearfix"></div>
 				<div class="form-footer clearfix mt">
 					<div class="col-lg-12">
