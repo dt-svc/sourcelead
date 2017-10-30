@@ -805,13 +805,16 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 
 		projectMemberList.forEach(pm -> {
 			StringBuilder sb = new StringBuilder();
-			if (pm.getEmployee().getUser().getLastName() != null) {
-				sb.append(pm.getEmployee().getUser().getFirstName()).append(" ")
-						.append(pm.getEmployee().getUser().getLastName());
-			} else {
-				sb.append(pm.getEmployee().getUser().getFirstName());
+			if(pm.getProjectMemberCandidteId() != null ) {
+				if (pm.getProjectMemberCandidteId() != null && pm.getProjectMemberCandidteId().getId() != null && StringUtils.isNotBlank(pm.getProjectMemberCandidteId().getLastName())) {
+					sb.append(pm.getProjectMemberCandidteId().getFirstName()).append(" ")
+							.append(pm.getProjectMemberCandidteId().getLastName());
+				} else {
+					sb.append(pm.getProjectMemberCandidteId().getFirstName());
+				}
+				pm.setEmpName(sb.toString());
 			}
-			pm.setEmpName(sb.toString());
+			
 		});
 		return (List<ProjectMembers>) projectMemberList;
 	}
@@ -820,21 +823,20 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 	public List<ProjectMembers> getVendorAssignedMembersForProjects(Long projectId, Long orgLocationId,
 			Long orgRelationId) throws Exception {
 
-		Collection<ProjectMembers> projectMemberList = projectMembersDao.getAllProjectMembersByProjectId(projectId);
+		Collection<ProjectMembers> projectMemberList = projectMembersDao.getAllProjectMembersWithMasterCandidateIdByProjectIdAndLocationId(projectId,orgLocationId);
 
 		List<ProjectMembers> projectMemberfilteredList = projectMemberList.stream()
-				.filter(item -> item.getEmployee().getUser().getCandidateSet().stream()
-						.filter(predicate -> predicate.getOrgRelationId().getId().longValue() == orgRelationId)
-						.findAny().isPresent())
+						.filter(predicate -> predicate.getProjectMemberCandidteId().getOrgRelationId() !=null && predicate.getProjectMemberCandidteId().getOrgRelationId().getId().longValue() == orgRelationId)
 				.collect(Collectors.toList());
-		projectMemberList.forEach(pm -> {
+		
+		projectMemberfilteredList.forEach(pm -> {
 			try {
 				StringBuilder sb = new StringBuilder();
-				if (pm.getEmployee().getUser().getLastName() != null) {
-					sb.append(pm.getEmployee().getUser().getFirstName()).append(" ")
-							.append(pm.getEmployee().getUser().getLastName());
+				if (pm.getProjectMemberCandidteId() != null && StringUtils.isNotEmpty(pm.getProjectMemberCandidteId().getLastName())) {
+					sb.append(pm.getProjectMemberCandidteId().getFirstName()).append(" ")
+							.append(pm.getProjectMemberCandidteId().getLastName());
 				} else {
-					sb.append(pm.getEmployee().getUser().getFirstName());
+					sb.append(pm.getProjectMemberCandidteId().getFirstName());
 				}
 				pm.setEmpName(sb.toString());
 

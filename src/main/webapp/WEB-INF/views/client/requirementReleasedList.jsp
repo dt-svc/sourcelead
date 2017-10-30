@@ -95,9 +95,8 @@ function clientRequirementList(orgRelationId){
 		$.ajax({
 	    	type: "POST",
 	    	url : sourceleadUrl+"/getClientReleasedRequirementList?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId+"&status="+status, 
-	        success: function(data) {
+	        success: function(json) {
 	        	
-	        var json = JSON.parse(data);
     			$("#clientSubmissionRequirementList").empty();
     			
     			

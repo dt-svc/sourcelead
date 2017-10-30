@@ -852,6 +852,10 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 				venContractsDto.setFileURL(contracts.getFileURL());
 			}
 			
+			if(contracts.getContractStatus() != null){
+				venContractsDto.setContractStatus(contracts.getContractStatus());
+			}
+			
 			if(contracts.getFileType() != null){
 				venContractsDto.setFileType(contracts.getFileType());
 			}
@@ -966,6 +970,10 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 			
 			if(contracts.getContractType() != null){
 				clientConDto.setContractType(contracts.getContractType());
+			}
+			
+			if(contracts.getContractStatus() != null){
+				clientConDto.setContractStatus(contracts.getContractStatus());
 			}
 			
 			if(contracts.getTemplateSubmissionStatus() != null){

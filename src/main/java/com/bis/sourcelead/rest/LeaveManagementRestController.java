@@ -1305,8 +1305,8 @@ public class LeaveManagementRestController {
 			leaveDtoList.add(entry.getValue());
 		}
 		leaveDtoResponse.setData(leaveDtoList);
-		leaveDtoResponse.setRecordsFiltered(response.getRecordsFiltered());
-		leaveDtoResponse.setRecordsTotal(response.getRecordsTotal());
+		leaveDtoResponse.setRecordsFiltered(leaveDtoList.size());
+		leaveDtoResponse.setRecordsTotal(leaveDtoList.size());
 		leaveDtoResponse.setError(response.getError());
 		return leaveDtoResponse;
 	}

@@ -1,0 +1,1 @@
+CALL sourcelead.AlterTableAddColumn ('sourcelead','TIMESHEET_SUBMISSIONS_DOCUMENTS','FILE_URL','VARCHAR(500) NULL  AFTER `UPDATED_BY`');

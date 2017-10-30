@@ -37,7 +37,7 @@ public void dumpProjectClientsToProjects() throws IOException, SQLException {
 		conn = dataSource.getConnection();
 			
 		
-			 String sql1 = "SELECT * from sourcelead.PROJECTS where IS_DEFAULT_PROJECT = 'N' ";
+			 String sql1 = "SELECT * from sourcelead.PROJECTS where (IS_DEFAULT_PROJECT = 'N' OR IS_DEFAULT_PROJECT IS NULL) ";
 			 stmt1 = conn.createStatement();
 			 ResultSet rs1 = stmt1.executeQuery(sql1);
 			

@@ -11,7 +11,13 @@ public class CandidateOnBoardingDTO implements Serializable {
 	
 	private String savedonboardId;
 	
+	private String id;
+	
+	private String OnBoardRoleId;
+	
 	private String onboardCandiate;
+	
+	private String onBoardOffer;
 	
 	private String firstName;
 	
@@ -41,8 +47,6 @@ public class CandidateOnBoardingDTO implements Serializable {
 	
 	private String startDate;
 	
-	private String endDate;
-	
 	private String salaryRate;
 	
 	private String paymentType;
@@ -66,8 +70,165 @@ public class CandidateOnBoardingDTO implements Serializable {
 	private String specialConditions;
 	
 	private String onboardingTemplate;
-
 	
+	private String jobTitle;
+	
+	private String managerName;
+	
+	private String teamName;
+	
+	private String roleName;
+	
+	private String onBoardManagerId;
+	
+	private String onBoardTeamId;
+	
+	private String joiningDateStr;
+	
+	private String endDateStr;
+	
+	private String endDate;
+	
+	private String dueDateStr;
+	
+	private String candidateName;
+	
+	private String onboardTemplateId;
+	
+	private long onBoardCandidateId;
+	
+	private long onBoardOfferId;
+	
+	
+	public long getOnBoardCandidateId() {
+		return onBoardCandidateId;
+	}
+
+	public void setOnBoardCandidateId(long onBoardCandidateId) {
+		this.onBoardCandidateId = onBoardCandidateId;
+	}
+
+	public long getOnBoardOfferId() {
+		return onBoardOfferId;
+	}
+
+	public void setOnBoardOfferId(long onBoardOfferId) {
+		this.onBoardOfferId = onBoardOfferId;
+	}
+
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
+
+	public String getOnboardTemplateId() {
+		return onboardTemplateId;
+	}
+
+	public void setOnboardTemplateId(String onboardTemplateId) {
+		this.onboardTemplateId = onboardTemplateId;
+	}
+
+	public String getCandidateName() {
+		return candidateName;
+	}
+
+	public void setCandidateName(String candidateName) {
+		this.candidateName = candidateName;
+	}
+
+	public String getDueDateStr() {
+		return dueDateStr;
+	}
+
+	public void setDueDateStr(String dueDateStr) {
+		this.dueDateStr = dueDateStr;
+	}
+
+	public String getEndDateStr() {
+		return endDateStr;
+	}
+
+	public void setEndDateStr(String endDateStr) {
+		this.endDateStr = endDateStr;
+	}
+
+	public String getJoiningDateStr() {
+		return joiningDateStr;
+	}
+
+	public void setJoiningDateStr(String joiningDateStr) {
+		this.joiningDateStr = joiningDateStr;
+	}
+
+	public String getOnBoardTeamId() {
+		return onBoardTeamId;
+	}
+
+	public void setOnBoardTeamId(String onBoardTeamId) {
+		this.onBoardTeamId = onBoardTeamId;
+	}
+
+	public String getOnBoardManagerId() {
+		return onBoardManagerId;
+	}
+
+	public void setOnBoardManagerId(String onBoardManagerId) {
+		this.onBoardManagerId = onBoardManagerId;
+	}
+
+	public String getRoleName() {
+		return roleName;
+	}
+
+	public void setRoleName(String roleName) {
+		this.roleName = roleName;
+	}
+
+	public String getTeamName() {
+		return teamName;
+	}
+
+	public void setTeamName(String teamName) {
+		this.teamName = teamName;
+	}
+
+	public String getManagerName() {
+		return managerName;
+	}
+
+	public void setManagerName(String managerName) {
+		this.managerName = managerName;
+	}
+
+	public String getJobTitle() {
+		return jobTitle;
+	}
+
+	public void setJobTitle(String jobTitle) {
+		this.jobTitle = jobTitle;
+	}
+
+	public String getOnBoardRoleId() {
+		return OnBoardRoleId;
+	}
+
+	public void setOnBoardRoleId(String onBoardRoleId) {
+		OnBoardRoleId = onBoardRoleId;
+	}
+	
+	
+	public String getOnBoardOffer() {
+		return onBoardOffer;
+	}
+
+	public void setOnBoardOffer(String onBoardOffer) {
+		this.onBoardOffer = onBoardOffer;
+	}
+
 	public String getSavedonboardId() {
 		return savedonboardId;
 	}

@@ -40,7 +40,7 @@ $(document).ready(function(){
                 <div class="width100percnt clearfix">
                   <div id="empselfLeaves" style="width: 60%; height: 100px;" class="amchartAnchor-Hide pull-left"> </div>
                   <div style="width: 40%; height: 105px;" class="countList pull-left">
-                <ul class="list-unstyled list-group clearfix mb5">
+                <ul class="list-unstyled  clearfix">
                     <li class="clearfix">
                         <label class="pull-left">Pending Leaves</label>
                         <a href="<c:url value='/pendingLeaves'/>" class="color_white" id="selfpend" title="Pending Leaves"><span class="label label-primary pull-right" id="selfPendingCounts"></span></a>
@@ -254,7 +254,7 @@ function getSelfTotalCounts(){
    			   }
    			   $("#selfCancelledCounts").html(report.selfCancelledCounts); 
    		   }
-   			if(report.selfBalancedCounts != null && report.selfBalancedCounts != '' && report.selfBalancedCounts != 'undefined'){
+   			if((report.selfBalancedCounts != null && report.selfBalancedCounts != '' && report.selfBalancedCounts != 'undefined') || report.selfBalancedCounts == '0'){
    			   $("#selfBalancedCounts").html(report.selfBalancedCounts); 
    		   }
    		   

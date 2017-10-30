@@ -2422,7 +2422,7 @@ function pipelineList(requirementId){
 	$("#offerMadeli").removeClass("pipeline-active");
 	$("#rejectedli").removeClass("pipeline-active");
 	$("#applicantli").addClass("pipeline-active");
-	filterReq(requirementId,submissionType);
+// 	filterReq(requirementId,submissionType);
 }
 </script>
 <script>
