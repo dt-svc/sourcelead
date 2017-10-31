@@ -8,6 +8,7 @@
 <script type="text/javascript">
 window.onload = function() { 
 	getPieChartBasedOnUser();
+	getApproversList();
 	}
 </script>
 
@@ -28,7 +29,7 @@ window.onload = function() {
           <sec:authorize access="hasRole('ROLE_APPLY_BEHALF_LEAVE')"> 
               <div class="form-group">
                     <label class="checkBox pull-left mr10">
-					<input id="checkbox-1" class="checkbox-custom checkboxCustom onbehalf" name="checkbox-1" type="checkbox" onClick="onbehalf()">
+					<input id="checkbox-1" class="checkbox-custom checkboxCustom onbehalf" name="checkbox-1" type="checkbox" onClick="onbehalf(); getApproversList();">
 					<label for="checkbox-1" class="checkbox-custom-label"></label>
                   </label>
                   <span class="pull-left">On behalf of</span>
@@ -113,11 +114,11 @@ window.onload = function() {
               <label class="col-md-3">Approved By<span class="text-danger paddingLeft">*</span></label>
               <div class="col-md-9 dropdown-select">
                   <select  multiple data-placeholder="Select Approver" class="chosen-select form-control" id="approverUser" name="approverUser" field-name="Approver" data-validation="required">
-                	<c:forEach var="user" items="${approverList}">
-	                	<c:if test="${user.id != SourceLeadWeb_userId}">
-	                		<option value="${user.id}">${user.firstName} ${user.lastName} (${user.userType})</option>
-	                	</c:if>
-                	</c:forEach>
+<%--                 	<c:forEach var="user" items="${approverList}"> --%>
+<%-- 	                	<c:if test="${user.id != SourceLeadWeb_userId}"> --%>
+<%-- 	                		<option value="${user.id}">${user.firstName} ${user.lastName} (${user.userType})</option> --%>
+<%-- 	                	</c:if> --%>
+<%--                 	</c:forEach> --%>
                   </select>
               </div>
             </div>
@@ -484,6 +485,28 @@ $(".warMess").fadeOut();
 };
 
 
+</script>
+
+<script>
+function getApproversList(){
+	var userId = '${SourceLeadWeb_userId}';
+	var behalf = $("#checkbox-1");
+	var result = "";
+	if(behalf.is(':checked')){
+		<c:forEach var="user" items="${approverList}">
+			result += "<option value='${user.id}'> ${user.firstName} ${user.lastName} (${user.userType}) </option> ";
+		</c:forEach>
+	}else{
+		<c:forEach var="user" items="${approverList}">
+			if(userId != '${user.id}'){
+				result += "<option value='${user.id}'> ${user.firstName} ${user.lastName} (${user.userType}) </option> ";
+			}
+		</c:forEach>
+	} 
+	$("#approverUser").empty();
+	$("#approverUser").append(result);
+	$('#approverUser').trigger("chosen:updated");
+}
 </script>
 
 
