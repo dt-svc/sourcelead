@@ -207,7 +207,7 @@ function filter(){
     	result = result +'     <th>Manager</th>';
     	result = result +'     <th>Invoice Frequency</th>';
     	result = result +'     <th>Budget</th>';
-    	result = result +'     <th>Project Mode</th>';
+    	result = result +'     <th>Project Status</th>';
     	result = result +'     <th>Date<br>(<small class="custom-small">'+projectListDate+'</small>)</th>';
     	result = result +'      <th>Client</th>';
     	result = result +'       <th>Status</th>';

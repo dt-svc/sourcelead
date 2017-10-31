@@ -554,6 +554,14 @@ public class RegistrationServiceImpl implements RegistrationService{
 		
 		
 		orgModules = orgModules.substring(0, orgModules.length()-1);
+		
+		if(!isNullOrEmpty(subModules)){
+			String[] registeredModules =  modules.split(",");
+			if(registeredModules.length == 1) {
+				orgModules = orgModules+","+Constants.MODULE_TIMESHEET;
+			}
+		}
+		
 		orgLocations.setModulesId(orgModules);
 		
 		
