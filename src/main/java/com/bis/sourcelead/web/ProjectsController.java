@@ -159,7 +159,7 @@ public class ProjectsController {
 				Collection<Org> orgsList = orgService.getOrgs();
 				model.addObject("add_client", orgsList);*/
 				
-                Collection<User> userList = userService.getTabAccessOwnersByOrgLocationIdAndTabId(loginOrgLocations.getId(),Long.valueOf(Constants.TAB_PROJECTS));
+                Collection<User> userList = userService.getTabAccessOwnersByOrgLocationIdAndTabId(loginOrgLocations.getId(),Long.valueOf(Constants.TAB_TIMESHEET_APPROVAL));
 				model.addObject("user_List", userList);
 				
 				List<LookUpData> skillsList = lookUpDataService.getLookUpDataByCategory(Constants.SKILLS);
@@ -245,7 +245,7 @@ public class ProjectsController {
 	 @RequestMapping(value = "/getProjectLevel1Approvers", method = RequestMethod.GET)
 		public @ResponseBody List<User> getProjectLevel1Approvers(HttpServletRequest request) throws Exception {
 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
-			List<User> userList = userService.getTabAccessOwnersByOrgLocationIdAndTabId(orgLocations.getId(),Long.valueOf(Constants.TAB_PROJECTS));
+			List<User> userList = userService.getTabAccessOwnersByOrgLocationIdAndTabId(orgLocations.getId(),Long.valueOf(Constants.TAB_TIMESHEET_APPROVAL));
 			return userList;
 		}
 	 
@@ -302,7 +302,7 @@ public class ProjectsController {
 				Integer resourceRequestsCount = projectPlanningRequestService.getProjectPlanningRequestCountByProjectId(projects.getId());
 				model.addObject("resourceRequestsCount", resourceRequestsCount);
 				
-				List<ProjectBudget> projectBudgetList= projectBudgetService.getProjectBudgetByProjectTaskId(projects.getId());
+				List<ProjectBudget> projectBudgetList= projectBudgetService.getProjectBudgetByProjectTaskId(projects.getId(),orgLocations.getId());
 				if(projectBudgetList != null) {
 					model.addObject("projectBudgetCount", projectBudgetList.size());
 				}else {
@@ -379,6 +379,13 @@ public class ProjectsController {
 				 }
 				 model.addObject("taskTypeName", projectTask.getTaskType().getName());
 				 model.addObject("assignedUsers", assignedUsers);
+				 if(projectTask.getParentTaskId() != null) {
+					 model.addObject("parentProjectTaskUUID", projectTask.getParentTaskId().getProjectTasksUUID());
+					 model.addObject("parentGeneratedId", projectTask.getParentTaskId().getGeneratedId());
+				 }
+				if(projectTask.getProjectId() != null) {
+					model.addObject("projectName", projectTask.getProjectId().getProjectName());
+				}
 				 
 				 List<LookUpData> taskTypeList = lookUpDataService.getLookUpDataByCategory(Constants.TASKTYPE);
 				 model.addObject("taskTypeList", taskTypeList);

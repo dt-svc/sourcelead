@@ -42,7 +42,7 @@
 <jsp:include page="candidatesCommentsList.jsp"></jsp:include>
  </sec:authorize> 
  <jsp:include page="candidatesQuickView.jsp"></jsp:include>
- 
+ <input type="hidden" id="noCandidates" name="noCandidates" />
 <script>
 var isAssociate = 'Y';
 var _csrfParam = '${_csrf.parameterName}';

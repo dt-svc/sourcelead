@@ -433,9 +433,9 @@
 					refMsgFadein(); 
 					setTimeout(function(){
 			 			candidateList();					 			
-			 	 },100);
+			 	     },100);
 		        });
-			
+		        
 			return true;
 		} else {
 			return false;

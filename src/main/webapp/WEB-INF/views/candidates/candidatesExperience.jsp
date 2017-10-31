@@ -140,6 +140,7 @@ function closeCertificatePopup(){
 					candidateEmployersList(candidateId);
 					empMsgFadein();
 					qvemployeeSubmission(candidateId);
+					
 					setTimeout(function(){
 			 			candidateList();					 			
 			 		},100);
@@ -225,7 +226,7 @@ function closeCertificatePopup(){
 		result = result + '	                 <div class="clearfix mb10 endDate">';
 		result = result + '	                 <p class="ml">End Date</p>';
 		result = result	+ '	                 <div class="col-md-6 id = "endMR"">';
-		result = result	+ '	                    <select class="chosen-select" class="required" name="endMonth" id="endMonth" onChange="monthIfYearRequired();">';
+		result = result	+ '	                    <select class="chosen-select" class="required" field-name="End Month" name="endMonth" id="endMonth" onChange="monthIfYearRequired();">';
 		result = result	+ '	                       <option value="">Select Month</option>';
 		result = result	+ '	                       <option value="1&January">January</option>';
 		result = result	+ '	                       <option value="2&February">February</option>';
@@ -341,7 +342,7 @@ function closeCertificatePopup(){
 								if (json.startMonth == "January") {
 									result = result + ' <option '+ (json.startMonth == "January" ? "selected" : '') +' value="January">January</option>';
 								} else {
-									result = result + ' <option '+ (json.startMonth == "1&January" ? "selected" : '') +' value="1&January">May</option>';
+									result = result + ' <option '+ (json.startMonth == "1&January" ? "selected" : '') +' value="1&January">January</option>';
 								}
 								
 								if (json.startMonth == "February") {
@@ -420,14 +421,14 @@ function closeCertificatePopup(){
 								result = result	+ '<div class="clearfix mb10 endDate >';
 								result = result	+ '<p class="ml">End Date</p>';
 								result = result	+ '<div class="col-md-6 id = "endMR"">';
-								result = result	+ '<select class="chosen-select" selected  class="required" name="endMonth" id="endMonthEdit" onchange="monthIfYearRequired();">';
+								result = result	+ '<select class="chosen-select" selected  class="required" field-name="End Month" name="endMonth" id="endMonthEdit" onchange="monthIfYearRequired();">';
 								result = result	+ '<option value="">Select Month</option>';
 								
 								
 								if (json.endMonth == "January") {
 									result = result + ' <option '+ (json.endMonth == "January" ? "selected" : '') +' value="January">January</option>';
 								} else {
-									result = result + ' <option '+ (json.endMonth == "1&January" ? "selected" : '') +' value="1&January">May</option>';
+									result = result + ' <option '+ (json.endMonth == "1&January" ? "selected" : '') +' value="1&January">January</option>';
 								}
 								
 								if (json.endMonth == "February") {
@@ -439,7 +440,7 @@ function closeCertificatePopup(){
 								if (json.endMonth == "March") {
 									result = result + ' <option '+ (json.endMonth == "March" ? "selected" : '') +' value="March">March</option>';
 								} else {
-									result = result + ' <option '+ (json.endMonth == "3&March" ? "selected" : '') +' value="3&March">May</option>';
+									result = result + ' <option '+ (json.endMonth == "3&March" ? "selected" : '') +' value="3&March">March</option>';
 								}
 								if (json.endMonth == "April") {
 									result = result + ' <option '+ (json.endMonth == "April" ? "selected" : '') +' value="April">April</option>';
@@ -907,7 +908,7 @@ function removeEmployer(candidateemployerId, candidateId){
 function monthIfYearRequired(){
 	
 	var startMonth= document.getElementById("startMonth").value;
-	if(startMonth != null && startMonth != "" && startMonth != null){
+	if(startMonth != null && startMonth != "" && startMonth != "undefined"){
 		 $('#startYear').removeAttr('data-validation-optional');
 	     $('#startYear').attr("data-validation","required"); 
 	}else{
@@ -917,7 +918,7 @@ function monthIfYearRequired(){
 	
 	var endMonth= document.getElementById("endMonth").value;
 	
-	if(endMonth != null && endMonth != "" && endMonth != null){
+	if(endMonth != null && endMonth != "" && endMonth != "undefined"){
 			 $('#endYear').removeAttr('data-validation-optional');
 		     $('#endYear').attr("data-validation","required"); 
 		}else{
@@ -947,7 +948,7 @@ function validYear(){
 	 if( (startMonth > endMonth) && (startYear == endYear) ){
 			 
 		 $("#startYear").parent().after("<p class='jquery_form_error_message'><span>Start Month Should be less then end Month</span></p>");
-	}else if((startYear > endYear )&&(endYear != '' && endYear!=null && endYear!='undefined')){
+	}else if((startYear > endYear )&&(endYear != '' && endYear != null && endYear != 'undefined')){
 		$("input#startYear").parent().after("<p class='jquery_form_error_message'><span>Start Month Should be less then end Month</span></p>");
 	}else{
 		$('#startYearDiv').parent().find('p.jquery_form_error_message').remove(); 
