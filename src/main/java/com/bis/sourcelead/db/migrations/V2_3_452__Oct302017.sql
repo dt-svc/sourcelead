@@ -65,10 +65,10 @@ INSERT INTO `sourcelead`.`ACTION_NAMES` (`ID`, `ACTION_NAME`, `METHOD_NAME`) VAL
 INSERT INTO `sourcelead`.`ACTION_NAMES` (`ID`, `ACTION_NAME`, `METHOD_NAME`) VALUES ('53', 'View Job', 'requirementSummary');
 INSERT INTO `sourcelead`.`ACTION_NAMES` (`ID`, `ACTION_NAME`, `METHOD_NAME`) VALUES ('54', 'Release Job', 'releaseJobsToClientsOrVendors');
 INSERT INTO `sourcelead`.`ACTION_NAMES` (`ID`, `ACTION_NAME`, `METHOD_NAME`) VALUES ('55', 'Release Job', 'releaseRequirementToClientOrVendors');
-INSERT INTO `sourcelead`.`ACTION_NAMES` (`ID`, `ACTION_NAME`, `METHOD_NAME`) VALUES ('56', 'Close Filled Job', 'saveChangedStatus');
-INSERT INTO `sourcelead`.`ACTION_NAMES` (`ID`, `ACTION_NAME`, `METHOD_NAME`) VALUES ('57', 'Close Unfilled Job', 'saveChangedStatus');
-INSERT INTO `sourcelead`.`ACTION_NAMES` (`ID`, `ACTION_NAME`, `METHOD_NAME`) VALUES ('58', 'Cancel Job', 'saveChangedStatus');
-INSERT INTO `sourcelead`.`ACTION_NAMES` (`ID`, `ACTION_NAME`, `METHOD_NAME`) VALUES ('59', 'Onhold Job', 'saveChangedStatus');
+INSERT INTO `sourcelead`.`ACTION_NAMES` (`ID`, `ACTION_NAME`, `METHOD_NAME`) VALUES ('56', 'Job Status Change', 'saveChangedStatus');
+INSERT INTO `sourcelead`.`ACTION_NAMES` (`ID`, `ACTION_NAME`, `METHOD_NAME`) VALUES ('57', 'Edit Job', 'newRequirement');
+INSERT INTO `sourcelead`.`ACTION_NAMES` (`ID`, `ACTION_NAME`, `METHOD_NAME`) VALUES ('58', 'Job Status Change', 'saveChangedStatus');
+INSERT INTO `sourcelead`.`ACTION_NAMES` (`ID`, `ACTION_NAME`, `METHOD_NAME`) VALUES ('59', 'Job Status Change', 'saveChangedStatus');
 INSERT INTO `sourcelead`.`ACTION_NAMES` (`ID`, `ACTION_NAME`, `METHOD_NAME`) VALUES ('60', 'Add Applicant', 'saveAddApplicant');
 INSERT INTO `sourcelead`.`ACTION_NAMES` (`ID`, `ACTION_NAME`, `METHOD_NAME`) VALUES ('61', 'View Applicant', 'getSubmissionDetails');
 INSERT INTO `sourcelead`.`ACTION_NAMES` (`ID`, `ACTION_NAME`, `METHOD_NAME`) VALUES ('62', 'Schedule Interview', 'saveInterview');
@@ -107,8 +107,8 @@ INSERT INTO `sourcelead`.`ACTION_NAMES` (`ID`, `ACTION_NAME`, `METHOD_NAME`) VAL
 INSERT INTO `sourcelead`.`ACTION_NAMES` (`ID`, `ACTION_NAME`, `METHOD_NAME`) VALUES ('95', 'Add TeamMember', 'storeTeamMembers');
 INSERT INTO `sourcelead`.`ACTION_NAMES` (`ID`, `ACTION_NAME`, `METHOD_NAME`) VALUES ('96', 'View Submission Template', 'loadSavedSubmissionTemplate');
 #Candidates
-INSERT INTO `sourcelead`.`ACTION_NAMES` (`ID`, `ACTION_NAME`, `METHOD_NAME`) VALUES ('97', 'Candidate Added', 'storeCandidate');
-INSERT INTO `sourcelead`.`ACTION_NAMES` (`ID`, `ACTION_NAME`, `METHOD_NAME`) VALUES ('98', 'View Candidate Details', 'getCandidateById');
+INSERT INTO `sourcelead`.`ACTION_NAMES` (`ID`, `ACTION_NAME`, `METHOD_NAME`) VALUES ('97', ' Add Candidate', 'storeCandidate');
+INSERT INTO `sourcelead`.`ACTION_NAMES` (`ID`, `ACTION_NAME`, `METHOD_NAME`) VALUES ('98', 'View/Edit Candidate Details', 'getCandidateById');
 INSERT INTO `sourcelead`.`ACTION_NAMES` (`ID`, `ACTION_NAME`, `METHOD_NAME`) VALUES ('99', 'View & Edit Profile Candidate', '');
 INSERT INTO `sourcelead`.`ACTION_NAMES` (`ID`, `ACTION_NAME`, `METHOD_NAME`) VALUES ('100', 'View & Remove Candidate', '');
 INSERT INTO `sourcelead`.`ACTION_NAMES` (`ID`, `ACTION_NAME`, `METHOD_NAME`) VALUES ('101', 'Re-Active Candidate', 'reActivateCandidateByCandidateId');
@@ -144,7 +144,7 @@ INSERT INTO `sourcelead`.`ACTION_NAMES` (`ID`, `ACTION_NAME`, `METHOD_NAME`) VAL
 INSERT INTO `sourcelead`.`ACTION_NAMES` (`ID`, `ACTION_NAME`, `METHOD_NAME`) VALUES ('131', 'Candidate Details Updated', 'updateCandidate');
 INSERT INTO `sourcelead`.`ACTION_NAMES` (`ID`, `ACTION_NAME`, `METHOD_NAME`) VALUES ('132', 'Save/Update Candidate Skills', 'saveOrUpdateOnlySkillBycandidateId');
 INSERT INTO `sourcelead`.`ACTION_NAMES` (`ID`, `ACTION_NAME`, `METHOD_NAME`) VALUES ('133', 'Save/Update Candidate Visya', 'saveOrUpdateOnlyVisaBycandidateId');
-INSERT INTO `sourcelead`.`ACTION_NAMES` (`ID`, `ACTION_NAME`, `METHOD_NAME`) VALUES ('134', 'Candidate Removed', 'deleteCandidateByCandidateId');
+INSERT INTO `sourcelead`.`ACTION_NAMES` (`ID`, `ACTION_NAME`, `METHOD_NAME`) VALUES ('134', 'Remove Candidate', 'deleteCandidateByCandidateId');
 #Projects
 INSERT INTO `sourcelead`.`ACTION_NAMES` (`ID`, `ACTION_NAME`, `METHOD_NAME`) VALUES ('135', 'Add Project', 'storeProject');
 INSERT INTO `sourcelead`.`ACTION_NAMES` (`ID`, `ACTION_NAME`, `METHOD_NAME`) VALUES ('136', 'View Project Details', 'getProjectById');
@@ -294,7 +294,8 @@ INSERT INTO `sourcelead`.`ACTION_NAMES` (`ID`, `ACTION_NAME`, `METHOD_NAME`) VAL
 INSERT INTO `sourcelead`.`ACTION_NAMES` (`ID`, `ACTION_NAME`, `METHOD_NAME`) VALUES ('273', 'Export Employee Expenses', 'exportAllMyExpensesList');
 #Extra
 INSERT INTO `sourcelead`.`ACTION_NAMES` (`ID`, `ACTION_NAME`, `METHOD_NAME`) VALUES ('274', 'Candidate Experience Updated', 'upDateCandidateEmployerByCandidateIdAndCandidateExperianceId');
-INSERT INTO `sourcelead`.`action_names` (`ID`, `ACTION_NAME`, `METHOD_NAME`) VALUES ('275', 'Modify My Timesheets', 'withDrawTimesheet');
-INSERT INTO `sourcelead`.`action_names` (`ID`, `ACTION_NAME`, `METHOD_NAME`) VALUES ('276', 'Fill Member Timesheet', 'saveTimesheet');
-INSERT INTO `sourcelead`.`action_names` (`ID`, `ACTION_NAME`, `METHOD_NAME`) VALUES ('277', 'View Member Timesheet', 'timesheetDivByFrequency');
-INSERT INTO `sourcelead`.`action_names` (`ID`, `ACTION_NAME`, `METHOD_NAME`) VALUES ('278', 'Export Member Timesheet', 'exportTimesheetPdf');
+INSERT INTO `sourcelead`.`ACTION_NAMES` (`ID`, `ACTION_NAME`, `METHOD_NAME`) VALUES ('275', 'Modify My Timesheets', 'withDrawTimesheet');
+INSERT INTO `sourcelead`.`ACTION_NAMES` (`ID`, `ACTION_NAME`, `METHOD_NAME`) VALUES ('276', 'Fill Member Timesheet', 'saveTimesheet');
+INSERT INTO `sourcelead`.`ACTION_NAMES` (`ID`, `ACTION_NAME`, `METHOD_NAME`) VALUES ('277', 'View Member Timesheet', 'timesheetDivByFrequency');
+INSERT INTO `sourcelead`.`ACTION_NAMES` (`ID`, `ACTION_NAME`, `METHOD_NAME`) VALUES ('278', 'Export Member Timesheet', 'exportTimesheetPdf');
+INSERT INTO `sourcelead`.`ACTION_NAMES` (`ID`, `ACTION_NAME`, `METHOD_NAME`) VALUES ('279', 'Log Out', 'getActionHistoryList');
