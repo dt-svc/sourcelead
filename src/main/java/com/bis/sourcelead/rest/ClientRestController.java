@@ -1887,7 +1887,12 @@ public class ClientRestController {
 						}
 						
 						//Spoc Status
-						List<String> statusAdvancedArray = clientVendorDTO.getStatusAdvanced();//getSearchKeywordsFromChosenSelectField(jsonObj, "statusAdvanced");
+						List<String> statusAdvancedArray = null;//getSearchKeywordsFromChosenSelectField(jsonObj, "statusAdvanced");
+						if(clientVendorDTO.getStatus() !=null && clientVendorDTO.getStatus().size() >0) {
+							statusAdvancedArray = clientVendorDTO.getStatus();
+						}if(clientVendorDTO.getStatusAdvanced() !=null && clientVendorDTO.getStatusAdvanced().size() >0) {
+							statusAdvancedArray = clientVendorDTO.getStatus();
+						}
 						if(statusAdvancedArray != null && !statusAdvancedArray.isEmpty()){
 							BoolQueryBuilder statusAdvancedBoolQueryBuilder = QueryBuilders.boolQuery();
 							for(String keywd : statusAdvancedArray){
@@ -1903,7 +1908,13 @@ public class ClientRestController {
 						
 						//Invitation  Status
 						
-						List<String> invitationAdvancedArray = clientVendorDTO.getInvitationAdvanced();//getSearchKeywordsFromChosenSelectField(jsonObj, "invitationAdvanced");
+						List<String> invitationAdvancedArray = null;//getSearchKeywordsFromChosenSelectField(jsonObj, "invitationAdvanced");
+					
+						if(clientVendorDTO.getInvitationAdvanced() !=null && clientVendorDTO.getInvitationAdvanced().size() >0) {
+							invitationAdvancedArray = clientVendorDTO.getInvitationAdvanced();
+						}if(clientVendorDTO.getInvitationStatus() !=null && clientVendorDTO.getInvitationStatus().size() >0) {
+							invitationAdvancedArray = clientVendorDTO.getInvitationStatus();
+						}
 						if(invitationAdvancedArray != null && !invitationAdvancedArray.isEmpty()){
 							BoolQueryBuilder invitationAdvancedBoolQueryBuilder = QueryBuilders.boolQuery();
 							for(String keywd : invitationAdvancedArray){
