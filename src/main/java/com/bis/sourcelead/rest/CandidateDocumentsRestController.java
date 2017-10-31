@@ -4,6 +4,9 @@ import java.io.ByteArrayInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -25,6 +28,8 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.CandidateDocumentsDTO;
 import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.elk.index.CandidateIndex;
+import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateDocuments;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -73,6 +78,9 @@ public class CandidateDocumentsRestController {
 	OrgLocationService orgLocationService;
 	@Autowired
 	CandidateActivityCommonUtil candidateActivityCommonUtil;
+	
+	@Autowired
+	private SourceleadELKBaseIndexer<CandidateIndex> sourceleadELKBaseIndexer;
 	
 	/**
 	 * @author Prasad K
@@ -227,6 +235,13 @@ public class CandidateDocumentsRestController {
 
 		}
 		Candidate candidate = candidateService.getCandidateByCandidateId(candidateId);
+		 if (null != candidate && null != candidate.getId()) {
+			 CandidateIndex candidateIndex = new CandidateIndex();
+			 candidateIndex.setCandidateId(candidate.getId());
+			 DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+			 candidateIndex.setUpdatedDate(dateFormat.format(new Date()));
+			sourceleadELKBaseIndexer.saveOrUpdateElkDocument(candidateIndex, Constants.ELK_CANDIDATE_INDEX, Constants.ELK_CANDIDATE_TYPE, candidate.getId().toString());
+		}	
 		//OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		Integer percentage = candidateService.getCandidatePercentage(candidate,loginOrgLocation);
 		return percentage.toString();

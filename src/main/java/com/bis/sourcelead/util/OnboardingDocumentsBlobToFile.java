@@ -28,7 +28,7 @@ public class OnboardingDocumentsBlobToFile {
 			Statement stmt = con.createStatement();
 			Statement stmt1 = con.createStatement();
 			
-			ResultSet rs = stmt.executeQuery("SELECT onb.*, o.ID as ORG_ID,coId.ORG_LOCATION_ID FROM "+table+" onb, ORG o, ORG_LOCATIONS ol,candidate_on_boarding coId where o.ID = ol.ORG_ID and onb.CANDIDATE_ON_BOARDING_ID = coId.ID and coId.ORG_LOCATION_ID = ol.ID");
+			ResultSet rs = stmt.executeQuery("SELECT onb.*, o.ID as ORG_ID,coId.ORG_LOCATION_ID FROM "+table+" onb, ORG o, ORG_LOCATIONS ol,CANDIDATE_ON_BOARDING coId where o.ID = ol.ORG_ID and onb.CANDIDATE_ON_BOARDING_ID = coId.ID and coId.ORG_LOCATION_ID = ol.ID");
 			int i = 0;
 			ResultSetMetaData rsmd = rs.getMetaData();
 			boolean flag = false;

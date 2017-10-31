@@ -58,30 +58,23 @@
 									field-name="Template Type" name="contractType"
 									onchange="contractTemplateType(); validateContractTemplateName();">
 									<option
-										${contractsTemplate.templateType  == 'Client MSA' ? 'selected' : ''}>Client
-										MSA</option>
+										${contractsTemplate.templateType  == 'Client MSA' ? 'selected' : ''}>Client MSA</option>
 									<option
-										${contractsTemplate.templateType  == 'Vendor MSA' ? 'selected' : ''}>Vendor
-										MSA</option>
+										${contractsTemplate.templateType  == 'Vendor MSA' ? 'selected' : ''}>Vendor MSA</option>
 									<option
-										${contractsTemplate.templateType  == 'Client SOW' ? 'selected' : ''}>Client
-										SOW</option>
+										${contractsTemplate.templateType  == 'Client SOW' ? 'selected' : ''}>Client SOW</option>
 									<option
-										${contractsTemplate.templateType  == 'Vendor SOW' ? 'selected' : ''}>Vendor
-										SOW</option>
+										${contractsTemplate.templateType  == 'Vendor SOW' ? 'selected' : ''}>Vendor SOW</option>
 									<option
 										${contractsTemplate.templateType  == 'NDA' ? 'selected' : ''}>NDA</option>
 									<option
 										${contractsTemplate.templateType  == 'NSA' ? 'selected' : ''}>NSA</option>
 									<option
-										${contractsTemplate.templateType  == 'W-4 Form' ? 'selected' : ''}>W-4
-										Form</option>
+										${contractsTemplate.templateType  == 'W-4 Form' ? 'selected' : ''}>W-4 Form</option>
 									<option
-										${contractsTemplate.templateType  == 'I-9 Form' ? 'selected' : ''}>I-9
-										Form</option>
+										${contractsTemplate.templateType  == 'I-9 Form' ? 'selected' : ''}>I-9 Form</option>
 									<option
-										${contractsTemplate.templateType  == 'Full Time Offer' ? 'selected' : ''}>Full
-										Time Offer</option>
+										${contractsTemplate.templateType  == 'Full Time Offer' ? 'selected' : ''}>Full Time Offer</option>
 
 
 								</select>
@@ -197,8 +190,7 @@
 								<li onclick="copyToClipboard('text_element38')"><i></i>
 									<p class="copyText" id="text_element38">[Company Name]</p></li>
 								<li onclick="copyToClipboard('text_element107')"><i></i>
-									<p class="copyText" id="text_element107">[State Of
-										Jurisdiction]</p></li>
+									<p class="copyText" id="text_element107">[State Of Jurisdiction]</p></li>
 								<li onclick="copyToClipboard('text_element111')"><i></i>
 									<p class="copyText" id="text_element111">[Offer Rate]</p></li>
 
@@ -231,8 +223,7 @@
 								<li onclick="copyToClipboard('text_element51')"><i></i>
 									<p class="copyText" id="text_element51">[Company Name]</p></li>
 								<li onclick="copyToClipboard('text_element108')"><i></i>
-									<p class="copyText" id="text_element108">[State Of
-										Jurisdiction]</p></li>
+									<p class="copyText" id="text_element108">[State Of Jurisdiction]</p></li>
 								<li onclick="copyToClipboard('text_element114')"><i></i>
 									<p class="copyText" id="text_element114">[Offer Rate]</p></li>
 
@@ -249,8 +240,7 @@
 								<li onclick="copyToClipboard('text_element56')"><i></i>
 									<p class="copyText" id="text_element56">[Company Name]</p></li>
 								<li onclick="copyToClipboard('text_element63')"><i></i>
-									<p class="copyText" id="text_element63">[State Of
-										Jurisdiction]</p></li>
+									<p class="copyText" id="text_element63">[State Of Jurisdiction]</p></li>
 								<li onclick="copyToClipboard('text_element95')"><i></i>
 									<p class="copyText" id="text_element95">[Billing Amount]</li>
 								<li onclick="copyToClipboard('text_element96')"><i></i>
@@ -271,8 +261,7 @@
 								<li onclick="copyToClipboard('text_element61')"><i></i>
 									<p class="copyText" id="text_element61">[Company Name]</p></li>
 								<li onclick="copyToClipboard('text_element62')"><i></i>
-									<p class="copyText" id="text_element62">[State Of
-										Jurisdiction]</p></li>
+									<p class="copyText" id="text_element62">[State Of Jurisdiction]</p></li>
 								<li onclick="copyToClipboard('text_element98')"><i></i>
 									<p class="copyText" id="text_element98">[Billing Amount]</li>
 								<li onclick="copyToClipboard('text_element99')"><i></i>
@@ -286,8 +275,7 @@
 								<li onclick="copyToClipboard('text_element65')"><i></i>
 									<p class="copyText" id="text_element65">[Last Name]</li>
 								<li onclick="copyToClipboard('text_element66')"><i></i>
-									<p class="copyText" id="text_element66">[Social Security
-										Number]</li>
+									<p class="copyText" id="text_element66">[Social Security Number]</li>
 								<li onclick="copyToClipboard('text_element67')"><i></i>
 									<p class="copyText" id="text_element67">[Address]</li>
 								<li onclick="copyToClipboard('text_element68')"><i></i>
@@ -305,8 +293,7 @@
 								<li onclick="copyToClipboard('text_element103')"><i></i>
 									<p class="copyText" id="text_element103">[Payment Frequency]</li>
 								<li onclick="copyToClipboard('text_element109')"><i></i>
-									<p class="copyText" id="text_element109">[State Of
-										Jurisdiction]</p></li>
+									<p class="copyText" id="text_element109">[State Of Jurisdiction]</p></li>
 							</ul>
 
 							<ul id="I-9Form" style="display: none">
@@ -319,8 +306,7 @@
 								<li onclick="copyToClipboard('text_element118')"><i></i>
 									<p class="copyText" id="text_element118">[Email]</p></li>
 								<li onclick="copyToClipboard('text_element119')"><i></i>
-									<p class="copyText" id="text_element119">[Social Security
-										Number]</p></li>
+									<p class="copyText" id="text_element119">[Social Security Number]</p></li>
 								<li onclick="copyToClipboard('text_element74')"><i></i>
 									<p class="copyText" id="text_element74">[Address]</li>
 								<li onclick="copyToClipboard('text_element75')"><i></i>
@@ -332,16 +318,13 @@
 								<li onclick="copyToClipboard('text_element78')"><i></i>
 									<p class="copyText" id="text_element78">[Zipcode]</li>
 								<li onclick="copyToClipboard('text_element79')"><i></i>
-									<p class="copyText" id="text_element79">[Registration
-										Number]</li>
+									<p class="copyText" id="text_element79">[Registration Number]</li>
 								<li onclick="copyToClipboard('text_element80')"><i></i>
 									<p class="copyText" id="text_element80">[Admission Number]</li>
 								<li onclick="copyToClipboard('text_element81')"><i></i>
-									<p class="copyText" id="text_element81">[Foreign Passport
-										Number]</li>
+									<p class="copyText" id="text_element81">[Foreign Passport Number]</li>
 								<li onclick="copyToClipboard('text_element82')"><i></i>
-									<p class="copyText" id="text_element82">[Authorized to
-										work]</li>
+									<p class="copyText" id="text_element82">[Authorized to work]</li>
 								<li onclick="copyToClipboard('text_element83')"><i></i>
 									<p class="copyText" id="text_element83">[Document Title]</li>
 								<li onclick="copyToClipboard('text_element84')"><i></i>
@@ -359,8 +342,7 @@
 								<li onclick="copyToClipboard('text_element106')"><i></i>
 									<p class="copyText" id="text_element106">[Payment Frequency]</li>
 								<li onclick="copyToClipboard('text_element110')"><i></i>
-									<p class="copyText" id="text_element110">[State Of
-										Jurisdiction]</p></li>
+									<p class="copyText" id="text_element110">[State Of Jurisdiction]</p></li>
 							</ul>
 							<ul id="fullTimeOffer" style="display: none">
 								<li onclick="copyToClipboard('text_element120')"><i></i>
@@ -384,13 +366,11 @@
 								<li onclick="copyToClipboard('text_element129')"><i></i>
 									<p class="copyText" id="text_element129">[Rate Type]</li>
 								<li onclick="copyToClipboard('text_element130')"><i></i>
-									<p class="copyText" id="text_element130">[Employee
-										Location]</li>
+									<p class="copyText" id="text_element130">[Employee Location]</li>
 								<li onclick="copyToClipboard('text_element131')"><i></i>
 									<p class="copyText" id="text_element131">[Work Location]</p></li>
 								<li onclick="copyToClipboard('text_element132')"><i></i>
-									<p class="copyText" id="text_element132">[State of
-										Jurisdiction]</p></li>
+									<p class="copyText" id="text_element132">[State of Jurisdiction]</p></li>
 							</ul>
 						</div>
 					</div>
