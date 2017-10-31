@@ -140,21 +140,11 @@ public class CandidateReferencesServiceImpl implements CandidateReferencesServic
     @Async
 	public void saveOrUpdateCandidateElkDocumentWithReferenceDetails(Candidate candidate,Long locationId) throws Exception {
 		if(null != candidate && null != candidate.getId()){
-			CandidateIndex candidateIndex = new CandidateIndex();
-			candidateIndex.setCandidateId(candidate.getId());
-			List<CandidateReferences> referenceList =  candidateReferencesDao.getCandidateReferencesListByCandidateIdAndOrgLocationID(candidate.getId(), locationId);
-			if(null != referenceList && !referenceList.isEmpty()){
-				ArrayList<String> refList = new ArrayList<>();
-				for(CandidateReferences ref :referenceList){
-					refList.add(ref.getName());
-					
-				}
+			    CandidateIndex candidateIndex = new CandidateIndex();
+			    candidateIndex.setCandidateId(candidate.getId());
 				DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 				candidateIndex.setUpdatedDate(dateFormat.format(new Date()));
-				candidateIndex.setEducation(refList);
-			}
-			
-			sourceleadELKBaseIndexer.saveOrUpdateElkDocument(candidateIndex, Constants.ELK_CANDIDATE_INDEX, Constants.ELK_CANDIDATE_TYPE,candidate.getId().toString());
+			    sourceleadELKBaseIndexer.saveOrUpdateElkDocument(candidateIndex, Constants.ELK_CANDIDATE_INDEX, Constants.ELK_CANDIDATE_TYPE,candidate.getId().toString());
 		}
 	}
 

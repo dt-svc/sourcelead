@@ -621,6 +621,9 @@ function getDocumentType(documentType){
 		            		$("#docMsgDiv").html("Success!! New Document added");
 	             			candDocumentsList(candidateId);
 	             			docMsgFadein();
+	             			setTimeout(function(){
+	        		 			candidateList();					 			
+	        		 		},100);
 	            		 
 					},
 				}); 
@@ -778,6 +781,9 @@ function deleteDocument(candidateId, documentId){
         			 $("#remove_user_pop_documents, .project_inn_mask").fadeOut();
         			 candDocumentsList(candidateId);
         			 docMsgFadein();
+        			 setTimeout(function(){
+ 			 			candidateList();					 			
+ 			 	     },100);
    		    	}
    		    },
 	     });
