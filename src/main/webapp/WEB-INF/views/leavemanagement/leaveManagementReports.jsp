@@ -213,7 +213,7 @@
 
                   <div class="col-md-6">
                     <div class="clearfix mt5">
-                   <h4 class="heading col-md-4">Employee Leave Report</h4>
+                   <h4 class="heading col-md-4">Leaves Report</h4>
                     <div class="timesheet_head clearfix col-md-8">
                           <div class="dropdown-select">
                             <div class="form-inline pull-right">
