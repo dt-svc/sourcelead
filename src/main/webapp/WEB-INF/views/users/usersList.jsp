@@ -240,7 +240,7 @@ function getUsersSearchResult(searchValue){
 				</select>
 		   </li>
 		   
-		 <li>
+		 <li id="searchIdDiv">
 			  <a href="javascript:void(0)">
 			  <i class="fa fa-user"></i></a>
 				<span class="action-search"><input type="text" placeholder="Email/Name" id="searchByName"></span>
@@ -980,13 +980,15 @@ function getUserSummary(userId){
 		$("#ShowList").show();
 		$("#ShowGrid").hide();
 		$("#listView").show();
-		$("#gridView").hide();		
+		$("#gridView").hide();	
+		$("#searchIdDiv").hide();
 	});
 	$("#ShowList").click(function(){
 		$("#ShowGrid").show();
 		$("#ShowList").hide();
 		$("#gridView").show();
-		$("#listView").hide();			
+		$("#listView").hide();	
+		$("#searchIdDiv").show();
 	});	
 </script>
 
