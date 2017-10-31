@@ -451,7 +451,7 @@
 							}
 							if (json.manager1 == manager.id) {
 								selected = 'selected';
-								result = result	+ "<option value="+manager.id+","+manager.userType+" "+selected+" >"	+ managerName + " </option>";
+								result = result	+ "<option value="+manager.id+","+manager.userType+" "+selected+" >"	+ manager.name + " </option>";
 							} else {
 								result = result	+ "<option value="+manager.id+","+manager.userType+" >"+ manager.name + "</option>";
 
