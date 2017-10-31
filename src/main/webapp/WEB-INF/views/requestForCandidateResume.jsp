@@ -102,7 +102,7 @@ padding: 0 !important; padding-left: 165px !important; margin-top: 15px;
 								    <div class="clearfix"></div>
 						          <div class="col-md-6 mt attachment">
 						            <div class="input-group">
-						              <label class="input-group-btn"> <b class="btn btn-primary"><i class="fa fa-paperclip"></i>
+						              <label class="input-group-btn"> <b class="btn btn-primary"><i class="fa fa-paperclip ColWhite"></i>
 						                <input type="file"  style="display: none;"  id="attachfileBtn" class="upload">
 						                </b> </label>
 						              <input type="text" class="form-control" readonly id="attachfile-mail" placeholder="File Attachment">

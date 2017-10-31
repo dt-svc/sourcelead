@@ -1305,11 +1305,19 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 							 }
 							 boolean flag = moduleIds.contains(Constants.MODULE_VMS);
 							 if(flag == false){
-								 Long tabId = (long) Constants.TAB_CLIENT;
 								 Long moduleId = (long) Constants.MODULE_ATS;
 							     modules = modules+","+Constants.MODULE_VMS;
-							     registrationController.saveUserRoleActions(moduleId,tabId,orgLoc);
+							     registrationController.saveUserRoleActions(moduleId,orgLoc);
 							 }
+							 
+							 Long tsModuleId = (long) Constants.MODULE_TIMESHEET;
+							 boolean tsflag = moduleIds.contains(Constants.MODULE_TIMESHEET);
+							 if(tsflag == false) {
+				    				modules = modules+","+Constants.MODULE_TIMESHEET;
+				    				registrationController.saveUserRoleActions(tsModuleId,orgLocations);
+				    			}
+							
+							 
 							 orgLoc.setModulesId(modules);
 							 orgLocationService.updateOrgLocations(orgLoc);
 							 

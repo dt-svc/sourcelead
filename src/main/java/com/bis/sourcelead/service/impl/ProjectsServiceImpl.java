@@ -986,7 +986,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 	    
 	    //projects.setProjectApproverHierarchiesList(projectApproverHierarchies);
 	    
-	    List<User> userList = userService.getTabAccessOwnersByOrgLocationIdAndTabId(loginOrgLocations.getId(),Long.valueOf(Constants.TAB_PROJECTS));
+	    List<User> userList = userService.getTabAccessOwnersByOrgLocationIdAndTabId(loginOrgLocations.getId(),Long.valueOf(Constants.TAB_TIMESHEET_APPROVAL));
 	    List<UserDTO> userDTOList = new ArrayList<>();
 	    if(userList != null && userList.size() > 0) {
 	    	for(User mrguser : userList) {
@@ -1001,7 +1001,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 	    
 	    projectsDTO.setManagersList(userDTOList);
 	    if(projects.getManager1() != null){
-	    	  List<User> userListwithoutmaneger1 = userService.getTabAccessOwnersByOrgLocationIdAndTabIdAndNoCurrentUser(projects.getManager1(),loginOrgLocations.getId(),Long.valueOf(Constants.TAB_PROJECTS));
+	    	  List<User> userListwithoutmaneger1 = userService.getTabAccessOwnersByOrgLocationIdAndTabIdAndNoCurrentUser(projects.getManager1(),loginOrgLocations.getId(),Long.valueOf(Constants.TAB_TIMESHEET_APPROVAL));
 			  List<UserDTO> mrguserDTOList = new ArrayList<>();
 			    if(userList != null && userList.size() > 0) {
 			    	for(User mrguser2 : userListwithoutmaneger1) {
